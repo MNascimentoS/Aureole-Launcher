@@ -1,10 +1,8 @@
 package dev.mnascimentos.aureole
 
-import android.app.Activity
 import android.appwidget.AppWidgetHost
 import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProviderInfo
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -17,13 +15,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.dp
-import androidx.core.content.edit
 import dev.mnascimentos.aureole.ui.MainViewModel
 import dev.mnascimentos.aureole.ui.components.WidgetPickerBottomSheet
 import dev.mnascimentos.aureole.ui.screens.HomeScreen
@@ -38,34 +30,31 @@ class MainActivity : ComponentActivity() {
     private lateinit var appWidgetManager: AppWidgetManager
     private lateinit var appWidgetHost: AppWidgetHost
 
-    private var topWidgetIds by mutableStateOf<List<Int>>(emptyList())
-    private var widgetRowHeight by mutableStateOf(160.dp)
-    private var showWidgetPicker by mutableStateOf(false)
-    private var pendingWidgetId by mutableIntStateOf(-1)
-
     private val bindWidgetLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            val pendingId = viewModel.pendingWidgetId
             if (result.resultCode == RESULT_OK) {
-                val provider = appWidgetManager.getAppWidgetInfo(pendingWidgetId)
-                configureWidget(pendingWidgetId, provider)
+                val provider = appWidgetManager.getAppWidgetInfo(pendingId)
+                configureWidget(pendingId, provider)
             } else {
-                if (pendingWidgetId != -1) appWidgetHost.deleteAppWidgetId(pendingWidgetId)
-                pendingWidgetId = -1
+                if (pendingId != -1) appWidgetHost.deleteAppWidgetId(pendingId)
+                viewModel.setPendingWidgetId(-1)
             }
         }
 
     private val configureWidgetLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            val pendingId = viewModel.pendingWidgetId
             if (result.resultCode == RESULT_OK) {
                 val widgetId = result.data?.getIntExtra(
                     AppWidgetManager.EXTRA_APPWIDGET_ID,
-                    pendingWidgetId
-                ) ?: pendingWidgetId
-                if (widgetId != -1) addWidgetId(widgetId)
+                    pendingId
+                ) ?: pendingId
+                if (widgetId != -1) viewModel.addWidgetId(widgetId)
             } else {
-                if (pendingWidgetId != -1) appWidgetHost.deleteAppWidgetId(pendingWidgetId)
+                if (pendingId != -1) appWidgetHost.deleteAppWidgetId(pendingId)
             }
-            pendingWidgetId = -1
+            viewModel.setPendingWidgetId(-1)
         }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -77,14 +66,6 @@ class MainActivity : ComponentActivity() {
         appWidgetHost = AppWidgetHost(this, APPWIDGET_HOST_ID)
         appWidgetHost.startListening()
 
-        // Recupera os widgets salvos anteriormente
-        val prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
-        val savedIds = prefs.getString(KEY_TOP_WIDGET_IDS, "") ?: ""
-        topWidgetIds = savedIds.split(",").mapNotNull { it.toIntOrNull() }
-
-        val savedHeight = prefs.getFloat(KEY_WIDGET_ROW_HEIGHT, DEFAULT_WIDGET_ROW_HEIGHT)
-        widgetRowHeight = savedHeight.dp
-
         setContent {
             AureoleLauncherTheme {
                 val uiState by viewModel.uiState.collectAsState()
@@ -92,26 +73,26 @@ class MainActivity : ComponentActivity() {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     HomeScreen(
                         uiState = uiState,
-                        topWidgetIds = topWidgetIds,
+                        topWidgetIds = uiState.topWidgetIds,
                         appWidgetHost = appWidgetHost,
-                        widgetRowHeight = widgetRowHeight,
+                        widgetRowHeight = uiState.widgetRowHeight,
                         actions = HomeScreenActions(
-                            onWidgetRowHeightChanged = { saveWidgetRowHeight(it) },
-                            onAddWidgetClick = { showWidgetPicker = true },
+                            onWidgetRowHeightChanged = { viewModel.setWidgetRowHeight(it) },
+                            onAddWidgetClick = { viewModel.setShowWidgetPicker(true) },
                             onRemoveWidgetClick = { widgetId -> removeWidget(widgetId) },
                             onAppClick = { appInfo -> viewModel.launchApp(appInfo.componentName) }
                         ),
                         modifier = Modifier.padding(innerPadding)
                     )
 
-                    if (showWidgetPicker) {
+                    if (uiState.showWidgetPicker) {
                         WidgetPickerBottomSheet(
                             appWidgetManager = appWidgetManager,
                             onWidgetSelected = { provider ->
-                                showWidgetPicker = false
+                                viewModel.setShowWidgetPicker(false)
                                 handleWidgetSelected(provider)
                             },
-                            onDismiss = { showWidgetPicker = false }
+                            onDismiss = { viewModel.setShowWidgetPicker(false) }
                         )
                     }
                 }
@@ -121,7 +102,7 @@ class MainActivity : ComponentActivity() {
 
     private fun handleWidgetSelected(provider: AppWidgetProviderInfo) {
         val id = appWidgetHost.allocateAppWidgetId()
-        pendingWidgetId = id
+        viewModel.setPendingWidgetId(id)
         val allowed = appWidgetManager.bindAppWidgetIdIfAllowed(id, provider.provider)
         if (allowed) {
             configureWidget(id, provider)
@@ -142,36 +123,14 @@ class MainActivity : ComponentActivity() {
             }
             configureWidgetLauncher.launch(intent)
         } else {
-            addWidgetId(widgetId)
-            pendingWidgetId = -1
-        }
-    }
-
-    private fun addWidgetId(widgetId: Int) {
-        if (!topWidgetIds.contains(widgetId)) {
-            val newList = topWidgetIds + widgetId
-            saveWidgetIds(newList)
+            viewModel.addWidgetId(widgetId)
+            viewModel.setPendingWidgetId(-1)
         }
     }
 
     private fun removeWidget(widgetId: Int) {
         appWidgetHost.deleteAppWidgetId(widgetId)
-        val newList = topWidgetIds - widgetId
-        saveWidgetIds(newList)
-    }
-
-    private fun saveWidgetIds(ids: List<Int>) {
-        topWidgetIds = ids
-        getSharedPreferences(PREFS_NAME, MODE_PRIVATE).edit {
-            putString(KEY_TOP_WIDGET_IDS, ids.joinToString(","))
-        }
-    }
-
-    private fun saveWidgetRowHeight(height: Dp) {
-        widgetRowHeight = height
-        getSharedPreferences(PREFS_NAME, MODE_PRIVATE).edit {
-            putFloat(KEY_WIDGET_ROW_HEIGHT, height.value)
-        }
+        viewModel.removeWidgetId(widgetId)
     }
 
     override fun onStart() {
@@ -192,9 +151,5 @@ class MainActivity : ComponentActivity() {
 
     companion object {
         private const val APPWIDGET_HOST_ID = 1024
-        private const val PREFS_NAME = "aureole_prefs"
-        private const val KEY_TOP_WIDGET_IDS = "top_widget_ids_list"
-        private const val KEY_WIDGET_ROW_HEIGHT = "widget_row_height"
-        private const val DEFAULT_WIDGET_ROW_HEIGHT = 160f
     }
 }
