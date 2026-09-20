@@ -2,10 +2,18 @@ default_platform(:android)
 
 platform :android do
   desc "Build and upload a new internal release to Google Play"
-  lane :internal do
+  lane :internal do |options|
+    version_name = options[:version_name]
+
+    gradle_properties = {}
+    if version_name && !version_name.empty?
+      gradle_properties["VERSION_NAME"] = version_name
+    end
+
     gradle(
       task: "bundleRelease",
-      project_dir: "."
+      project_dir: ".",
+      properties: gradle_properties
     )
 
     upload_to_play_store(

@@ -12,6 +12,8 @@ val gitCommitCount = providers.exec {
     commandLine("git", "rev-list", "--count", "HEAD")
 }.standardOutput.asText.map { it.trim().toIntOrNull() ?: 1 }.orElse(1).get()
 
+val customVersionName = providers.gradleProperty("VERSION_NAME").orNull
+
 android {
     namespace = "dev.mnascimentos.aureole"
     compileSdk {
@@ -23,7 +25,7 @@ android {
         minSdk = 28
         targetSdk = 37
         versionCode = gitCommitCount
-        versionName = "0.1.$gitCommitCount"
+        versionName = customVersionName ?: "0.1.$gitCommitCount"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
