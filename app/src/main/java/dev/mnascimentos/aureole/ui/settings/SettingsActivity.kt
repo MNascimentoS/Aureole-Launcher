@@ -75,6 +75,7 @@ class SettingsActivity : ComponentActivity() {
             onOpenFavoritePickerClick = { viewModel.setShowFavoritePicker(show = true) },
             onToggleShowAllAppsOnHome = { viewModel.toggleShowAllAppsOnHome() },
             onToggleHomeButtonOpensAllApps = { viewModel.toggleHomeOpensAllApps() },
+            onToggleWidgetRow = { viewModel.toggleWidgetRow() },
             onToggleSidePanel = { viewModel.toggleSidePanel() },
             onToggleShowFolderLabels = { viewModel.toggleShowFolderLabels() },
             onOpenSidePanelPositionDialog = { viewModel.setShowSidePanelPositionDialog(show = true) },

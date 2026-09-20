@@ -33,6 +33,7 @@ data class SettingsUiState(
     val showFolderLabels: Boolean = false,
     val homeButtonOpensAllApps: Boolean = true,
     val showAllAppsOnHome: Boolean = true,
+    val isWidgetRowEnabled: Boolean = true,
     val favoriteAppPackages: List<String> = emptyList(),
     val allApps: List<AppInfo> = emptyList(),
     val isDefaultLauncher: Boolean = false,
@@ -74,6 +75,7 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
                 showFolderLabels = settingsRepository.showFolderLabels,
                 homeButtonOpensAllApps = settingsRepository.homeButtonOpensAllApps,
                 showAllAppsOnHome = settingsRepository.showAllAppsOnHome,
+                isWidgetRowEnabled = settingsRepository.isWidgetRowEnabled,
                 favoriteAppPackages = settingsRepository.favoriteAppPackages,
                 isCustomWallpaperSet = settingsRepository.isCustomWallpaperSet,
                 customWallpaperPath = settingsRepository.customWallpaperPath,
@@ -136,6 +138,12 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
         val newValue = !_uiState.value.showAllAppsOnHome
         settingsRepository.showAllAppsOnHome = newValue
         _uiState.update { it.copy(showAllAppsOnHome = newValue) }
+    }
+
+    fun toggleWidgetRow() {
+        val newValue = !_uiState.value.isWidgetRowEnabled
+        settingsRepository.isWidgetRowEnabled = newValue
+        _uiState.update { it.copy(isWidgetRowEnabled = newValue) }
     }
 
     fun toggleFavorite(packageName: String) {

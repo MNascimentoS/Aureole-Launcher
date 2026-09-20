@@ -465,6 +465,7 @@ private fun HomeScreenFolderOverlays(
     }
 }
 
+@Suppress("LongMethod")
 @Composable
 fun FavoritesList(
     config: FavoritesListConfig,
@@ -486,17 +487,19 @@ fun FavoritesList(
             ClockHeader()
         }
 
-        item(key = "stacked_widget_section") {
-            StackedWidgetSection(
-                topWidgetIds = config.uiState.topWidgetIds,
-                appWidgetHost = appWidgetHost,
-                currentHeightDp = config.currentHeightDp,
-                onHeightChange = { newHeightPx ->
-                    actions.onWidgetRowHeightChanged(with(density) { newHeightPx.toDp() })
-                },
-                actions = actions,
-                currentHeightPx = config.currentHeightPx
-            )
+        if (config.uiState.isWidgetRowEnabled) {
+            item(key = "stacked_widget_section") {
+                StackedWidgetSection(
+                    topWidgetIds = config.uiState.topWidgetIds,
+                    appWidgetHost = appWidgetHost,
+                    currentHeightDp = config.currentHeightDp,
+                    onHeightChange = { newHeightPx ->
+                        actions.onWidgetRowHeightChanged(with(density) { newHeightPx.toDp() })
+                    },
+                    actions = actions,
+                    currentHeightPx = config.currentHeightPx
+                )
+            }
         }
 
         if (config.uiState.favoriteApps.isNotEmpty()) {

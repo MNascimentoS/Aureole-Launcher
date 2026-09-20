@@ -41,6 +41,7 @@ data class MainUiState(
     // Widgets
     val topWidgetIds: List<Int> = emptyList(),
     val widgetRowHeight: Dp = 160.dp,
+    val isWidgetRowEnabled: Boolean = true,
     val showWidgetPicker: Boolean = false,
     val pendingWidgetId: Int = -1,
 
@@ -125,6 +126,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
             val showFolderLabels = settingsRepository.showFolderLabels
             val homeOpensAllApps = settingsRepository.homeButtonOpensAllApps
             val showAllAppsHome = settingsRepository.showAllAppsOnHome
+            val isWidgetRowEnabled = settingsRepository.isWidgetRowEnabled
             val favoritePackages = settingsRepository.favoriteAppPackages
             val savedFolders = folderRepository.getFolders()
             val isCustomWallpaperSet = settingsRepository.isCustomWallpaperSet
@@ -140,6 +142,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
                     showFolderLabels = showFolderLabels,
                     homeButtonOpensAllApps = homeOpensAllApps,
                     showAllAppsOnHome = showAllAppsHome,
+                    isWidgetRowEnabled = isWidgetRowEnabled,
                     favoriteAppPackages = favoritePackages,
                     folders = savedFolders,
                     isCustomWallpaperSet = isCustomWallpaperSet,

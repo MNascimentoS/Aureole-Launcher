@@ -38,6 +38,10 @@ class SettingsRepository(private val context: Context) {
         get() = prefs.getBoolean(KEY_SHOW_ALL_APPS_ON_HOME, true)
         set(value) = prefs.edit { putBoolean(KEY_SHOW_ALL_APPS_ON_HOME, value) }
 
+    var isWidgetRowEnabled: Boolean
+        get() = prefs.getBoolean(KEY_WIDGET_ROW_ENABLED, true)
+        set(value) = prefs.edit { putBoolean(KEY_WIDGET_ROW_ENABLED, value) }
+
     var isDynamicWallpaperEnabled: Boolean
         get() = prefs.getBoolean(KEY_USE_WALLPAPER_COLORS, Build.VERSION.SDK_INT >= Build.VERSION_CODES.S)
         set(value) = prefs.edit { putBoolean(KEY_USE_WALLPAPER_COLORS, value) }
@@ -84,6 +88,7 @@ class SettingsRepository(private val context: Context) {
         private const val KEY_FAVORITE_APPS = "favorite_apps"
         private const val KEY_HOME_OPENS_ALL_APPS = "home_opens_all_apps"
         private const val KEY_SHOW_ALL_APPS_ON_HOME = "show_all_apps_on_home"
+        private const val KEY_WIDGET_ROW_ENABLED = "widget_row_enabled"
         private const val KEY_IS_CUSTOM_WALLPAPER_SET = "is_custom_wallpaper_set"
         private const val KEY_CUSTOM_WALLPAPER_PATH = "custom_wallpaper_path"
         private const val KEY_USE_WALLPAPER_COLORS = "use_wallpaper_colors"

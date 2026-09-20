@@ -176,6 +176,7 @@ data class SettingsScreenActions(
     val onOpenFavoritePickerClick: () -> Unit = {},
     val onToggleShowAllAppsOnHome: () -> Unit = {},
     val onToggleHomeButtonOpensAllApps: () -> Unit = {},
+    val onToggleWidgetRow: () -> Unit = {},
     val onToggleSidePanel: () -> Unit = {},
     val onToggleShowFolderLabels: () -> Unit = {},
     val onOpenSidePanelPositionDialog: () -> Unit = {},
@@ -368,6 +369,18 @@ private fun HomeScreenCategorySection(
     Column {
         PreferenceCategoryHeader(title = "Home Screen & Drawer")
         PreferenceCard {
+            PreferenceSwitchRow(
+                title = "Show Widget Row Container",
+                subtitle = "Display widget container on the home screen",
+                checked = uiState.isWidgetRowEnabled,
+                onCheckedChange = { actions.onToggleWidgetRow() }
+            )
+
+            HorizontalDivider(
+                modifier = Modifier.padding(start = 16.dp),
+                color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f)
+            )
+
             PreferenceSwitchRow(
                 title = "Show All Apps on Home",
                 subtitle = "Display full list of installed apps directly on the home screen below favorites",
