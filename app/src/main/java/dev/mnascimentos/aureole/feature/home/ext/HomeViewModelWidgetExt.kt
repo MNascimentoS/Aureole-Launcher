@@ -1,7 +1,8 @@
-package dev.mnascimentos.aureole.feature.home
+package dev.mnascimentos.aureole.feature.home.ext
 
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import dev.mnascimentos.aureole.feature.home.HomeViewModel
 
 internal fun HomeViewModel.loadWidgetSettings() {
     val savedIds = widgetRepository.getSavedWidgetIds()

@@ -21,10 +21,17 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.core.designsystem.theme.LocalHazeState
 import dev.mnascimentos.aureole.feature.home.components.FavoriteAppsDialog
+import dev.mnascimentos.aureole.feature.home.ext.closeWidgetPopup
+import dev.mnascimentos.aureole.feature.home.ext.setShowFavoritePicker
+import dev.mnascimentos.aureole.feature.home.ext.setShowWidgetPicker
+import dev.mnascimentos.aureole.feature.home.ext.setShowWidgetResizeDialog
+import dev.mnascimentos.aureole.feature.home.ext.setWidgetRowHeight
+import dev.mnascimentos.aureole.feature.home.ext.toggleFavorite
+import dev.mnascimentos.aureole.feature.home.model.MainUiState
 import dev.mnascimentos.aureole.feature.home.widget.OpenedWidgetPopup
-import dev.mnascimentos.aureole.feature.home.widget.OpenedWidgetPopupConfig
 import dev.mnascimentos.aureole.feature.home.widget.WidgetPickerBottomSheet
 import dev.mnascimentos.aureole.feature.home.widget.WidgetResizeDialog
+import dev.mnascimentos.aureole.feature.home.widget.model.OpenedWidgetPopupConfig
 
 @Composable
 fun MainScaffold(

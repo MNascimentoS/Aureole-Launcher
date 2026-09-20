@@ -38,7 +38,10 @@ import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.theme.AureolePreview
 import dev.mnascimentos.aureole.feature.home.LocalHomeUiState
-import dev.mnascimentos.aureole.feature.home.MainUiState
+import dev.mnascimentos.aureole.feature.home.components.model.ScrubberCallbacks
+import dev.mnascimentos.aureole.feature.home.components.model.ScrubberOptions
+import dev.mnascimentos.aureole.feature.home.components.model.ScrubberRenderParams
+import dev.mnascimentos.aureole.feature.home.model.MainUiState
 import kotlin.math.exp
 import kotlin.math.roundToInt
 
@@ -56,26 +59,6 @@ private const val GAUSSIAN_HALF_FACTOR = 0.5f
 private const val SCRUBBER_ANIMATION_DURATION = 150
 private const val INACTIVE_LETTER_ALPHA = 0.6f
 private val BADGE_ELEVATION = 6.dp
-
-data class ScrubberCallbacks(
-    val onLetterSelected: (Char) -> Unit,
-    val onInteractionStarted: () -> Unit = {},
-    val onInteractionEnded: () -> Unit = {}
-)
-
-data class ScrubberOptions(
-    val isAlwaysVisible: Boolean = false,
-    val isGestureEnabled: Boolean = true,
-    val externalTouchY: Float = -1f
-)
-
-data class ScrubberRenderParams(
-    val touchYPx: Float,
-    val isDragging: Boolean,
-    val selectedIndex: Int,
-    val scrubberAlpha: Float,
-    val alignment: Alignment
-)
 
 @Composable
 fun CurvedAlphabetScrubber(

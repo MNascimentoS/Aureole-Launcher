@@ -63,10 +63,13 @@ import dev.chrisbanes.haze.HazeTint
 import dev.chrisbanes.haze.hazeEffect
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.theme.AureolePreview
-import dev.mnascimentos.aureole.feature.home.HomeScreenActions
 import dev.mnascimentos.aureole.feature.home.LocalHomeActions
 import dev.mnascimentos.aureole.feature.home.LocalHomeUiState
-import dev.mnascimentos.aureole.feature.home.MainUiState
+import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
+import dev.mnascimentos.aureole.feature.home.model.MainUiState
+import dev.mnascimentos.aureole.feature.home.widget.model.OpenedWidgetPopupConfig
+import dev.mnascimentos.aureole.feature.home.widget.model.StackedWidgetConfig
+import dev.mnascimentos.aureole.feature.home.widget.model.WidgetItemActions
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -82,28 +85,6 @@ private const val ADD_BUTTON_HAZE_ALPHA_FACTOR = 0.7f
 private const val POPUP_HAZE_ALPHA_FACTOR = 0.8f
 private const val PREVIEW_APPWIDGET_HOST_ID = 1024
 private const val PREVIEW_HEIGHT_PX = 400f
-
-data class StackedWidgetConfig(
-    val topWidgetIds: List<Int>,
-    val currentHeightDp: Dp,
-    val currentHeightPx: Float,
-    val showWidgetDots: Boolean = true,
-    val hazeState: HazeState? = null
-)
-
-data class OpenedWidgetPopupConfig(
-    val onDismiss: () -> Unit,
-    val onResizeClick: () -> Unit,
-    val onRemoveClick: () -> Unit,
-    val hazeState: HazeState? = null,
-    val isHazeEnabled: Boolean = false,
-    val hazeOpacity: Float = DEFAULT_HAZE_OPACITY
-)
-
-data class WidgetItemActions(
-    val onOpenWidgetPopup: (Int, Float) -> Unit,
-    val onRemoveClick: (Int) -> Unit
-)
 
 @Composable
 fun StackedWidgetSection(

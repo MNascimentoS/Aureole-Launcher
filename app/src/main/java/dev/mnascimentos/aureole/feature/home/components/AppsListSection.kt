@@ -47,10 +47,10 @@ import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.theme.AureolePreview
 import dev.mnascimentos.aureole.core.designsystem.theme.fadingEdges
-import dev.mnascimentos.aureole.feature.home.HomeScreenActions
 import dev.mnascimentos.aureole.feature.home.LocalHomeActions
 import dev.mnascimentos.aureole.feature.home.LocalHomeUiState
-import dev.mnascimentos.aureole.feature.home.MainUiState
+import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
+import dev.mnascimentos.aureole.feature.home.model.MainUiState
 
 private const val SEARCH_BAR_HAZE_ALPHA_MULTIPLIER = 0.7f
 private const val SEARCH_BAR_MIN_ALPHA = 0.2f

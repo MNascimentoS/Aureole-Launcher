@@ -2,21 +2,19 @@ package dev.mnascimentos.aureole.feature.settings
 
 import android.app.Application
 import android.app.WallpaperManager
-import android.app.role.RoleManager
-import android.content.Intent
-import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
-import android.os.Build
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import dev.mnascimentos.aureole.core.data.model.AppFolder
-import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.data.repository.AppRepository
 import dev.mnascimentos.aureole.core.data.repository.FolderRepository
 import dev.mnascimentos.aureole.core.data.repository.SettingsRepository
+import dev.mnascimentos.aureole.feature.settings.ext.checkDefaultLauncher
+import dev.mnascimentos.aureole.feature.settings.model.SettingValue
+import dev.mnascimentos.aureole.feature.settings.model.SettingsUiState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -48,41 +46,6 @@ enum class SettingsDialog {
     RESTORE_WALLPAPER,
     CREATE_FOLDER
 }
-
-sealed interface SettingValue {
-    data class SidePanelPosition(val position: String) : SettingValue
-    data class HazeOpacity(val opacity: Float) : SettingValue
-    data class ManualSeedColor(val color: Int) : SettingValue
-}
-
-data class SettingsUiState(
-    val isLeftHandedMode: Boolean = false,
-    val isSidePanelEnabled: Boolean = true,
-    val sidePanelPosition: String = "Center",
-    val showFolderLabels: Boolean = false,
-    val homeButtonOpensAllApps: Boolean = true,
-    val showAllAppsOnHome: Boolean = true,
-    val isWidgetRowEnabled: Boolean = true,
-    val showWidgetDots: Boolean = true,
-    val favoriteAppPackages: List<String> = emptyList(),
-    val allApps: List<AppInfo> = emptyList(),
-    val isDefaultLauncher: Boolean = false,
-    val showFavoritePickerDialog: Boolean = false,
-    val showSidePanelPositionDialog: Boolean = false,
-    val isCustomWallpaperSet: Boolean = false,
-    val customWallpaperPath: String? = null,
-    val showRestoreWallpaperDialog: Boolean = false,
-    val showCreateFolderDialog: Boolean = false,
-    val isDynamicWallpaperEnabled: Boolean = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S,
-    val manualSeedColor: Int = SettingsRepository.DEFAULT_SEED_COLOR,
-    val isHazeEnabled: Boolean = true,
-    val isHazeSupported: Boolean = true,
-    val hazeOpacity: Float = 0.5f,
-    val showHazeOpacityDialog: Boolean = false,
-    val showColorPickerDialog: Boolean = false,
-    val shouldFinishActivity: Boolean = false,
-    val errorMessage: String? = null,
-)
 
 class SettingsViewModel(application: Application) : AndroidViewModel(application) {
 
@@ -304,42 +267,5 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
     companion object {
         private const val TAG = "SettingsViewModel"
         private const val JPEG_QUALITY = 90
-    }
-}
-
-fun SettingsViewModel.checkDefaultLauncher() {
-    val context = getApplication<Application>()
-    val isDefault = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-        val roleManager = context.getSystemService(RoleManager::class.java)
-        roleManager?.isRoleHeld(RoleManager.ROLE_HOME) ?: false
-    } else {
-        val intent = Intent(Intent.ACTION_MAIN).apply { addCategory(Intent.CATEGORY_HOME) }
-        val resolveInfo = context.packageManager.resolveActivity(intent, PackageManager.MATCH_DEFAULT_ONLY)
-        resolveInfo?.activityInfo?.packageName == context.packageName
-    }
-    updateUiState { it.copy(isDefaultLauncher = isDefault) }
-}
-
-fun SettingsViewModel.restoreDefaultWallpaper() {
-    viewModelScope.launch {
-        val app = getApplication<Application>()
-        withContext(Dispatchers.IO) {
-            settingsRepository.clearCustomWallpaper()
-            try {
-                val wallpaperManager = WallpaperManager.getInstance(app)
-                wallpaperManager.clear()
-            } catch (e: IOException) {
-                Log.w("SettingsViewModel", "IOException clearing wallpaper", e)
-            } catch (e: SecurityException) {
-                Log.w("SettingsViewModel", "SecurityException clearing wallpaper", e)
-            }
-        }
-        updateUiState {
-            it.copy(
-                isCustomWallpaperSet = false,
-                customWallpaperPath = null,
-                showRestoreWallpaperDialog = false
-            )
-        }
     }
 }

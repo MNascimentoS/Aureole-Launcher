@@ -19,6 +19,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.graphics.Color
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.feature.home.components.FavoriteAppsDialog
+import dev.mnascimentos.aureole.feature.settings.ext.checkDefaultLauncher
+import dev.mnascimentos.aureole.feature.settings.ext.restoreDefaultWallpaper
+import dev.mnascimentos.aureole.feature.settings.model.SettingValue
+import dev.mnascimentos.aureole.feature.settings.model.SettingsScreenActions
 
 class SettingsActivity : ComponentActivity() {
 

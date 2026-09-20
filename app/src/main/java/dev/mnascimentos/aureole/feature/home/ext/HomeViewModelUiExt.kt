@@ -1,4 +1,6 @@
-package dev.mnascimentos.aureole.feature.home
+package dev.mnascimentos.aureole.feature.home.ext
+
+import dev.mnascimentos.aureole.feature.home.HomeViewModel
 
 // --- Settings & Side Panel Actions ---
 

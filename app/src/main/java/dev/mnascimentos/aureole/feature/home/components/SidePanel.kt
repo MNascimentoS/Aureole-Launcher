@@ -42,8 +42,9 @@ import dev.mnascimentos.aureole.core.data.model.AppFolder
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.theme.AureolePreview
 import dev.mnascimentos.aureole.feature.home.LocalHomeUiState
-import dev.mnascimentos.aureole.feature.home.MainUiState
+import dev.mnascimentos.aureole.feature.home.components.model.SidePanelConfig
 import dev.mnascimentos.aureole.feature.home.folder.FolderIconRegistry
+import dev.mnascimentos.aureole.feature.home.model.MainUiState
 
 private const val SIDE_PANEL_HAZE_ALPHA_MULTIPLIER = 0.7f
 private const val SIDE_PANEL_MIN_ALPHA = 0.2f
@@ -129,14 +130,6 @@ private fun SidePanelColumn(
         }
     }
 }
-
-data class SidePanelConfig(
-    val folders: List<AppFolder>,
-    val openedFolderId: String?,
-    val position: String = "Center",
-    val showFolderLabels: Boolean = false,
-    val hazeState: HazeState? = null,
-)
 
 @Composable
 private fun SidePanelFolderItem(

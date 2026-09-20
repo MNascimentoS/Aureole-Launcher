@@ -1,6 +1,8 @@
-package dev.mnascimentos.aureole.feature.home
+package dev.mnascimentos.aureole.feature.home.ext
 
 import dev.mnascimentos.aureole.core.data.model.AppFolder
+import dev.mnascimentos.aureole.feature.home.HomeViewModel
+import dev.mnascimentos.aureole.feature.home.model.FolderViewIntent
 
 fun HomeViewModel.setRenameFolderDialogVisible(visible: Boolean) {
     updateUiState { it.copy(isRenameFolderDialogVisible = visible) }

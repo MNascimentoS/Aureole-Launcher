@@ -1,6 +1,7 @@
-package dev.mnascimentos.aureole.feature.home
+package dev.mnascimentos.aureole.feature.home.ext
 
 import dev.mnascimentos.aureole.core.data.model.AppInfo
+import dev.mnascimentos.aureole.feature.home.HomeViewModel
 
 fun HomeViewModel.onSearchQueryChanged(query: String) {
     updateUiState { it.copy(searchQuery = query) }

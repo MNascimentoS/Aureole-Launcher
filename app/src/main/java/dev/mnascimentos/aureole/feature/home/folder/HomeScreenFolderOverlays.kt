@@ -16,11 +16,12 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import dev.chrisbanes.haze.HazeState
-import dev.mnascimentos.aureole.feature.home.FolderViewIntent
-import dev.mnascimentos.aureole.feature.home.HomeScreenActions
 import dev.mnascimentos.aureole.feature.home.LocalHomeActions
 import dev.mnascimentos.aureole.feature.home.LocalHomeUiState
-import dev.mnascimentos.aureole.feature.home.MainUiState
+import dev.mnascimentos.aureole.feature.home.folder.model.FolderPopupActions
+import dev.mnascimentos.aureole.feature.home.model.FolderViewIntent
+import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
+import dev.mnascimentos.aureole.feature.home.model.MainUiState
 
 private const val POPUP_MAX_OFFSET_SUBTRAHEND = 300
 private const val POPUP_MIN_OFFSET_DP = 16f

@@ -8,9 +8,9 @@ import android.content.Intent
 import androidx.activity.ComponentActivity
 import androidx.activity.result.contract.ActivityResultContracts
 import dev.mnascimentos.aureole.feature.home.HomeViewModel
-import dev.mnascimentos.aureole.feature.home.addWidgetId
-import dev.mnascimentos.aureole.feature.home.removeWidgetId
-import dev.mnascimentos.aureole.feature.home.setPendingWidgetId
+import dev.mnascimentos.aureole.feature.home.ext.addWidgetId
+import dev.mnascimentos.aureole.feature.home.ext.removeWidgetId
+import dev.mnascimentos.aureole.feature.home.ext.setPendingWidgetId
 
 class WidgetHostManager(
     activity: ComponentActivity,

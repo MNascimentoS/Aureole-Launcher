@@ -61,19 +61,13 @@ import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.theme.AureolePreview
 import dev.mnascimentos.aureole.feature.home.LocalHomeUiState
-import dev.mnascimentos.aureole.feature.home.MainUiState
+import dev.mnascimentos.aureole.feature.home.folder.model.FolderPopupActions
+import dev.mnascimentos.aureole.feature.home.model.MainUiState
 
 private const val HAZE_ALPHA_MULTIPLIER = 0.8f
 private const val HAZE_MIN_ALPHA = 0.25f
 private const val HAZE_MAX_ALPHA = 0.95f
 private const val OPAQUE_ALPHA = 1f
-
-data class FolderPopupActions(
-    val onDismiss: () -> Unit,
-    val onAppClick: (AppInfo) -> Unit,
-    val onAddAppsClick: () -> Unit,
-    val onEditFolderClick: () -> Unit
-)
 
 @Composable
 fun OpenedFolderPopup(

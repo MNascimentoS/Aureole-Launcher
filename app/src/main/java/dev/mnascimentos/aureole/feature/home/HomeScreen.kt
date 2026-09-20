@@ -49,12 +49,19 @@ import dev.mnascimentos.aureole.feature.home.components.AppsListDrawer
 import dev.mnascimentos.aureole.feature.home.components.CurvedAlphabetScrubber
 import dev.mnascimentos.aureole.feature.home.components.FavoritesList
 import dev.mnascimentos.aureole.feature.home.components.FavoritesListConfig
-import dev.mnascimentos.aureole.feature.home.components.ScrubberCallbacks
-import dev.mnascimentos.aureole.feature.home.components.ScrubberOptions
 import dev.mnascimentos.aureole.feature.home.components.SidePanel
-import dev.mnascimentos.aureole.feature.home.components.SidePanelConfig
 import dev.mnascimentos.aureole.feature.home.components.WallpaperBackground
+import dev.mnascimentos.aureole.feature.home.components.model.ScrubberCallbacks
+import dev.mnascimentos.aureole.feature.home.components.model.ScrubberOptions
+import dev.mnascimentos.aureole.feature.home.components.model.SidePanelConfig
 import dev.mnascimentos.aureole.feature.home.folder.HomeScreenFolderOverlays
+import dev.mnascimentos.aureole.feature.home.model.FolderViewIntent
+import dev.mnascimentos.aureole.feature.home.model.HomeDragParams
+import dev.mnascimentos.aureole.feature.home.model.HomeOverlaysConfig
+import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
+import dev.mnascimentos.aureole.feature.home.model.HomeScreenBodyConfig
+import dev.mnascimentos.aureole.feature.home.model.MainUiState
+import dev.mnascimentos.aureole.feature.home.model.ScrubberOverlayConfig
 import dev.mnascimentos.aureole.feature.home.widget.HomeScreenWidgetOverlays
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -64,74 +71,6 @@ private const val DRAG_THRESHOLD_PX = 15
 private const val EDGE_EXCLUSION_WIDTH_DP = 60
 private const val TOP_PADDING_DP = 64
 private const val PREVIEW_APPWIDGET_HOST_ID = 1024
-
-data class HomeScreenActions(
-    val onWidgetRowHeightChanged: (Dp) -> Unit,
-    val onAddWidgetClick: () -> Unit,
-    val onRemoveWidgetClick: (Int) -> Unit,
-    val onAppClick: (AppInfo) -> Unit,
-    val onExpandNotificationShade: () -> Unit,
-    val onFolderIntent: (FolderViewIntent) -> Unit,
-    val onSetAddAppToFolderDialogVisible: (Boolean) -> Unit,
-    val onSetRenameFolderDialogVisible: (Boolean) -> Unit,
-    val onSearchQueryChanged: (String) -> Unit,
-    val onSettingsClick: () -> Unit,
-    val onAllAppsDrawerClose: () -> Unit,
-    val onAllAppsDrawerOpen: () -> Unit,
-    val onToggleFavorite: (String) -> Unit = {},
-    val onAppInfoClick: (AppInfo) -> Unit = {},
-    val onOpenFavoritePicker: () -> Unit = {},
-    val onOpenWidgetPopup: (Int, Float) -> Unit = { _, _ -> },
-    val onCloseWidgetPopup: () -> Unit = {},
-    val onOpenWidgetResizeDialog: () -> Unit = {},
-    val onCloseWidgetResizeDialog: () -> Unit = {},
-    val onResizeWidgetHeight: (Dp) -> Unit = {},
-)
-
-data class HomeDragParams(
-    val isLeftHandedMode: Boolean,
-    val screenHeightPx: Float,
-    val screenWidthPx: Float,
-    val isAllAppsDrawerOpen: Boolean,
-    val density: Density,
-    val onAllAppsDrawerOpen: () -> Unit,
-    val onExpandNotificationShade: () -> Unit,
-    val onExternalTouchYChange: (Float) -> Unit,
-)
-
-data class ScrubberOverlayConfig(
-    val uiState: MainUiState,
-    val externalTouchY: Float,
-    val listState: LazyListState,
-    val coroutineScope: CoroutineScope,
-    val actions: HomeScreenActions,
-    val onExternalTouchYReset: () -> Unit,
-)
-
-data class HomeOverlaysConfig(
-    val uiState: MainUiState,
-    val actions: HomeScreenActions,
-    val listState: LazyListState,
-    val hazeState: HazeState,
-    val externalTouchY: Float,
-    val coroutineScope: CoroutineScope,
-    val screenHeightPx: Float,
-    val onExternalTouchYReset: () -> Unit
-)
-
-data class HomeScreenBodyConfig(
-    val uiState: MainUiState,
-    val actions: HomeScreenActions,
-    val appWidgetHost: AppWidgetHost,
-    val currentHeightPx: Float,
-    val favListState: LazyListState,
-    val listState: LazyListState,
-    val hazeState: HazeState,
-    val externalTouchY: Float,
-    val coroutineScope: CoroutineScope,
-    val screenHeightPx: Float,
-    val onExternalTouchYReset: () -> Unit
-)
 
 val LocalHomeUiState = staticCompositionLocalOf<MainUiState> { error("No MainUiState provided") }
 val LocalHomeActions = staticCompositionLocalOf<HomeScreenActions> { error("No HomeScreenActions provided") }

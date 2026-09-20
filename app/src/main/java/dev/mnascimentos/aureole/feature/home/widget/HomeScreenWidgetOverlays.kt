@@ -18,6 +18,7 @@ import androidx.compose.ui.unit.dp
 import dev.chrisbanes.haze.HazeState
 import dev.mnascimentos.aureole.feature.home.LocalHomeActions
 import dev.mnascimentos.aureole.feature.home.LocalHomeUiState
+import dev.mnascimentos.aureole.feature.home.widget.model.OpenedWidgetPopupConfig
 
 @Composable
 fun HomeScreenWidgetOverlays(

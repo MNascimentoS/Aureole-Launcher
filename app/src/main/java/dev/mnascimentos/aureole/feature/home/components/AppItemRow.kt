@@ -38,14 +38,10 @@ import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.theme.AureolePreview
 import dev.mnascimentos.aureole.feature.home.LocalHomeUiState
-import dev.mnascimentos.aureole.feature.home.MainUiState
+import dev.mnascimentos.aureole.feature.home.components.model.AppItemRowActions
+import dev.mnascimentos.aureole.feature.home.model.MainUiState
 
 private const val FAVORITE_INACTIVE_ALPHA = 0.4f
-
-data class AppItemRowActions(
-    val onToggleFavorite: ((String) -> Unit)? = null,
-    val onAppInfoClick: ((AppInfo) -> Unit)? = null
-)
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
