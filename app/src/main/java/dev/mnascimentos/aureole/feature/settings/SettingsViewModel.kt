@@ -35,7 +35,8 @@ enum class SettingToggle {
     HOME_OPENS_ALL_APPS,
     SHOW_ALL_APPS_ON_HOME,
     WIDGET_ROW,
-    DYNAMIC_WALLPAPER
+    DYNAMIC_WALLPAPER,
+    IN_APP_UPDATE
 }
 
 enum class SettingsDialog {
@@ -89,6 +90,7 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
                 isHazeEnabled = settingsRepository.isHazeEnabled,
                 isHazeSupported = settingsRepository.isHazeSupported,
                 hazeOpacity = settingsRepository.hazeOpacity,
+                isInAppUpdateEnabled = settingsRepository.isInAppUpdateEnabled,
             )
         }
     }
@@ -140,6 +142,11 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
                 val newValue = !_uiState.value.isDynamicWallpaperEnabled
                 settingsRepository.isDynamicWallpaperEnabled = newValue
                 _uiState.update { it.copy(isDynamicWallpaperEnabled = newValue) }
+            }
+            SettingToggle.IN_APP_UPDATE -> {
+                val newValue = !_uiState.value.isInAppUpdateEnabled
+                settingsRepository.isInAppUpdateEnabled = newValue
+                _uiState.update { it.copy(isInAppUpdateEnabled = newValue) }
             }
         }
     }

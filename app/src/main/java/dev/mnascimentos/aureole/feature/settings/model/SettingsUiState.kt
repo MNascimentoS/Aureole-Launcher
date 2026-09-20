@@ -33,6 +33,7 @@ data class SettingsUiState(
     val isHazeEnabled: Boolean = true,
     val isHazeSupported: Boolean = true,
     val hazeOpacity: Float = 0.5f,
+    val isInAppUpdateEnabled: Boolean = true,
     val showHazeOpacityDialog: Boolean = false,
     val showColorPickerDialog: Boolean = false,
     val shouldFinishActivity: Boolean = false,

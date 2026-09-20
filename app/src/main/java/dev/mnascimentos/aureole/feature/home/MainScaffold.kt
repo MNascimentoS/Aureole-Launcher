@@ -21,6 +21,9 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.core.designsystem.theme.LocalHazeState
 import dev.mnascimentos.aureole.feature.home.components.FavoriteAppsDialog
+import dev.mnascimentos.aureole.feature.home.components.UpdateAvailableDialog
+import dev.mnascimentos.aureole.feature.home.components.UpdateDownloadedDialog
+import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
 import dev.mnascimentos.aureole.feature.home.extensions.closeWidgetPopup
 import dev.mnascimentos.aureole.feature.home.extensions.setShowFavoritePicker
 import dev.mnascimentos.aureole.feature.home.extensions.setShowWidgetPicker
@@ -72,6 +75,11 @@ fun MainScaffold(
         WidgetResizeOverlay(
             uiState = uiState,
             viewModel = viewModel
+        )
+
+        InAppUpdateOverlay(
+            uiState = uiState,
+            actions = LocalHomeActions.current
         )
     }
 }
@@ -174,6 +182,26 @@ private fun WidgetResizeOverlay(
                 viewModel.closeWidgetPopup()
             },
             onDismiss = { viewModel.closeWidgetPopup() }
+        )
+    }
+}
+
+@Composable
+private fun InAppUpdateOverlay(
+    uiState: MainUiState,
+    actions: HomeScreenActions
+) {
+    if (uiState.showUpdateAvailableDialog) {
+        UpdateAvailableDialog(
+            onConfirmUpdate = actions.onStartInAppUpdate,
+            onDismiss = actions.onDismissUpdateDialog
+        )
+    }
+
+    if (uiState.showUpdateDownloadedDialog) {
+        UpdateDownloadedDialog(
+            onConfirmRestart = actions.onCompleteInAppUpdate,
+            onDismiss = actions.onDismissUpdateDialog
         )
     }
 }

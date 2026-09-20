@@ -82,6 +82,7 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
             val isHazeEnabled = settingsRepository.isHazeEnabled
             val isHazeSupported = settingsRepository.isHazeSupported
             val hazeOpacity = settingsRepository.hazeOpacity
+            val isInAppUpdateEnabled = settingsRepository.isInAppUpdateEnabled
 
             _uiState.update {
                 it.copy(
@@ -101,9 +102,18 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
                     manualSeedColor = manualSeedColor,
                     isHazeEnabled = isHazeEnabled,
                     isHazeSupported = isHazeSupported,
-                    hazeOpacity = hazeOpacity
+                    hazeOpacity = hazeOpacity,
+                    isInAppUpdateEnabled = isInAppUpdateEnabled,
                 )
             }
         }
+    }
+
+    fun setShowUpdateAvailableDialog(visible: Boolean) {
+        _uiState.update { it.copy(showUpdateAvailableDialog = visible) }
+    }
+
+    fun setShowUpdateDownloadedDialog(visible: Boolean) {
+        _uiState.update { it.copy(showUpdateDownloadedDialog = visible) }
     }
 }

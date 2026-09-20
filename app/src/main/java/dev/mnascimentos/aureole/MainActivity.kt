@@ -6,12 +6,24 @@ import android.content.Intent
 import android.graphics.Rect
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.IntentSenderRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
+import com.google.android.play.core.appupdate.AppUpdateInfo
+import com.google.android.play.core.appupdate.AppUpdateManager
+import com.google.android.play.core.appupdate.AppUpdateManagerFactory
+import com.google.android.play.core.appupdate.AppUpdateOptions
+import com.google.android.play.core.install.InstallStateUpdatedListener
+import com.google.android.play.core.install.model.AppUpdateType
+import com.google.android.play.core.install.model.InstallStatus
+import com.google.android.play.core.install.model.UpdateAvailability
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -26,7 +38,9 @@ import dev.mnascimentos.aureole.feature.home.HomeViewModel
 import dev.mnascimentos.aureole.feature.home.LocalHomeActions
 import dev.mnascimentos.aureole.feature.home.LocalHomeUiState
 import dev.mnascimentos.aureole.feature.home.MainScaffold
+import dev.mnascimentos.aureole.feature.home.extensions.checkAppUpdate
 import dev.mnascimentos.aureole.feature.home.extensions.closeWidgetPopup
+import dev.mnascimentos.aureole.feature.home.extensions.handleBackNavigation
 import dev.mnascimentos.aureole.feature.home.extensions.onFolderIntent
 import dev.mnascimentos.aureole.feature.home.extensions.onSearchQueryChanged
 import dev.mnascimentos.aureole.feature.home.extensions.openWidgetPopup
@@ -54,6 +68,23 @@ class MainActivity : ComponentActivity() {
     private lateinit var appWidgetHost: AppWidgetHost
     private lateinit var widgetHostManager: WidgetHostManager
 
+    // In-App Update
+    private lateinit var appUpdateManager: AppUpdateManager
+    private var cachedAppUpdateInfo: AppUpdateInfo? = null
+
+    private val updateActivityResultLauncher: ActivityResultLauncher<IntentSenderRequest> =
+        registerForActivityResult(ActivityResultContracts.StartIntentSenderForResult()) { result ->
+            if (result.resultCode != RESULT_OK) {
+                Log.w(TAG, "In-app update flow failed or was cancelled by user: ${result.resultCode}")
+            }
+        }
+
+    private val installStateUpdatedListener = InstallStateUpdatedListener { state ->
+        if (state.installStatus() == InstallStatus.DOWNLOADED) {
+            viewModel.setShowUpdateDownloadedDialog(visible = true)
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -61,6 +92,9 @@ class MainActivity : ComponentActivity() {
         appWidgetManager = AppWidgetManager.getInstance(this)
         appWidgetHost = AppWidgetHost(this, APPWIDGET_HOST_ID)
         widgetHostManager = WidgetHostManager(this, viewModel, appWidgetHost, appWidgetManager)
+
+        appUpdateManager = AppUpdateManagerFactory.create(this)
+        appUpdateManager.registerListener(installStateUpdatedListener)
 
         setupWindowAndBackHandling()
         setupContent()
@@ -75,7 +109,7 @@ class MainActivity : ComponentActivity() {
             override fun handleOnBackPressed() {
                 val state = viewModel.uiState.value
                 if (checkOverlayActive(state)) {
-                    handleBackNavigation(state)
+                    handleBackNavigation(state, viewModel)
                 } else {
                     isEnabled = false
                     onBackPressedDispatcher.onBackPressed()
@@ -128,7 +162,7 @@ class MainActivity : ComponentActivity() {
                     seedColor = Color(uiState.manualSeedColor),
                 ) {
                     BackHandler(enabled = isOverlayActive) {
-                        handleBackNavigation(uiState)
+                        handleBackNavigation(uiState, viewModel)
                     }
 
                     val homeActions = createHomeActions()
@@ -163,20 +197,6 @@ class MainActivity : ComponentActivity() {
                 uiState.showWidgetResizeDialog)
     }
 
-    private fun handleBackNavigation(uiState: MainUiState) {
-        when {
-            uiState.showWidgetPopup || uiState.showWidgetResizeDialog -> viewModel.closeWidgetPopup()
-            uiState.isCreateFolderDialogVisible ||
-            uiState.isAddAppToFolderDialogVisible ||
-            uiState.isRenameFolderDialogVisible ||
-            uiState.activeFolder != null -> viewModel.onFolderIntent(FolderViewIntent.CloseFolder)
-            uiState.isAllAppsDrawerOpen -> viewModel.setAllAppsDrawerOpen(false)
-            uiState.searchQuery.isNotEmpty() -> viewModel.onSearchQueryChanged("")
-            uiState.showWidgetPicker -> viewModel.setShowWidgetPicker(false)
-            uiState.showFavoritePickerDialog -> viewModel.setShowFavoritePicker(false)
-        }
-    }
-
     private fun createHomeActions(): HomeScreenActions {
         return HomeScreenActions(
             onWidgetRowHeightChanged = { viewModel.setWidgetRowHeight(it) },
@@ -198,7 +218,31 @@ class MainActivity : ComponentActivity() {
             onCloseWidgetPopup = { viewModel.closeWidgetPopup() },
             onOpenWidgetResizeDialog = { viewModel.setShowWidgetResizeDialog(true) },
             onCloseWidgetResizeDialog = { viewModel.closeWidgetPopup() },
-            onResizeWidgetHeight = { height -> viewModel.setWidgetRowHeight(height) }
+            onResizeWidgetHeight = { height -> viewModel.setWidgetRowHeight(height) },
+            onStartInAppUpdate = {
+                viewModel.setShowUpdateAvailableDialog(visible = false)
+                cachedAppUpdateInfo?.let { appUpdateInfo ->
+                    val updateType = if (appUpdateInfo.isUpdateTypeAllowed(AppUpdateType.FLEXIBLE)) {
+                        AppUpdateType.FLEXIBLE
+                    } else {
+                        AppUpdateType.IMMEDIATE
+                    }
+                    val options = AppUpdateOptions.newBuilder(updateType).build()
+                    appUpdateManager.startUpdateFlowForResult(
+                        appUpdateInfo,
+                        updateActivityResultLauncher,
+                        options
+                    )
+                }
+            },
+            onCompleteInAppUpdate = {
+                viewModel.setShowUpdateDownloadedDialog(visible = false)
+                appUpdateManager.completeUpdate()
+            },
+            onDismissUpdateDialog = {
+                viewModel.setShowUpdateAvailableDialog(visible = false)
+                viewModel.setShowUpdateDownloadedDialog(visible = false)
+            }
         )
     }
 
@@ -224,13 +268,22 @@ class MainActivity : ComponentActivity() {
         appWidgetHost.stopListening()
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        if (::appUpdateManager.isInitialized) {
+            appUpdateManager.unregisterListener(installStateUpdatedListener)
+        }
+    }
+
     override fun onResume() {
         super.onResume()
         viewModel.loadSettings()
         viewModel.loadApps()
+        checkAppUpdate(appUpdateManager, viewModel) { cachedAppUpdateInfo = it }
     }
 
     companion object {
+        private const val TAG = "MainActivity"
         private const val APPWIDGET_HOST_ID = 1024
     }
 }

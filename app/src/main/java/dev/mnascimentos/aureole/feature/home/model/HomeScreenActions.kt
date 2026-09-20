@@ -24,4 +24,7 @@ data class HomeScreenActions(
     val onOpenWidgetResizeDialog: () -> Unit = {},
     val onCloseWidgetResizeDialog: () -> Unit = {},
     val onResizeWidgetHeight: (Dp) -> Unit = {},
+    val onStartInAppUpdate: () -> Unit = {},
+    val onCompleteInAppUpdate: () -> Unit = {},
+    val onDismissUpdateDialog: () -> Unit = {},
 )
