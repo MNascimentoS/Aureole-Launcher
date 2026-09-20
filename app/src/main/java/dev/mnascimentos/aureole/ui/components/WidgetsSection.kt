@@ -11,16 +11,17 @@ import androidx.compose.foundation.gestures.waitForUpOrCancellation
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -48,59 +49,107 @@ import androidx.compose.ui.viewinterop.AndroidView
 import dev.mnascimentos.aureole.ui.screens.HomeScreenActions
 
 private const val LONG_PRESS_TIMEOUT_MS = 500L
-private val WIDGET_WIDTH = 320.dp
-private val ADD_WIDGET_WIDTH = 120.dp
+private const val LONG_PRESS_CANCEL_MULTIPLIER = 4
+private const val MAX_WIDGETS = 3
 private val MIN_WIDGET_HEIGHT = 100.dp
 private val MAX_WIDGET_HEIGHT = 600.dp
 
+data class StackedWidgetSectionState(
+    val topWidgetIds: List<Int>,
+    val currentHeightDp: Dp,
+    val currentHeightPx: Float
+)
+
+data class WidgetItemActions(
+    val onShowMenu: (Int?) -> Unit,
+    val onResizeClick: () -> Unit,
+    val onRemoveClick: (Int) -> Unit
+)
+
+@Suppress("LongParameterList")
 @Composable
-fun WidgetsSection(
+fun StackedWidgetSection(
     topWidgetIds: List<Int>,
     appWidgetHost: AppWidgetHost,
     currentHeightDp: Dp,
     onHeightChange: (Float) -> Unit,
     actions: HomeScreenActions,
     currentHeightPx: Float,
-    modifier: Modifier = Modifier,
+    modifier: Modifier = Modifier
+) {
+    StackedWidgetSection(
+        sectionState = StackedWidgetSectionState(
+            topWidgetIds = topWidgetIds,
+            currentHeightDp = currentHeightDp,
+            currentHeightPx = currentHeightPx
+        ),
+        appWidgetHost = appWidgetHost,
+        onHeightChange = onHeightChange,
+        actions = actions,
+        modifier = modifier
+    )
+}
+
+@Suppress("LongMethod")
+@Composable
+fun StackedWidgetSection(
+    sectionState: StackedWidgetSectionState,
+    appWidgetHost: AppWidgetHost,
+    onHeightChange: (Float) -> Unit,
+    actions: HomeScreenActions,
+    modifier: Modifier = Modifier
 ) {
     var showMenuForWidget by remember { mutableStateOf<Int?>(null) }
     var isResizing by remember { mutableStateOf(false) }
     val density = LocalDensity.current
 
-    Column(modifier = modifier) {
-        LazyRow(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(currentHeightDp),
-            contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
-            horizontalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
-            items(topWidgetIds, key = { it }) { widgetId ->
-                WidgetHostItem(
-                    widgetId = widgetId,
-                    appWidgetHost = appWidgetHost,
-                    showMenu = showMenuForWidget == widgetId,
-                    onShowMenu = { showMenuForWidget = it },
-                    onResizeClick = {
-                        showMenuForWidget = null
-                        isResizing = true
-                    },
-                    onRemoveClick = { id ->
-                        showMenuForWidget = null
-                        actions.onRemoveWidgetClick(id)
-                    }
-                )
-            }
+    val showAddButton = sectionState.topWidgetIds.size < MAX_WIDGETS
+    val pageCount = sectionState.topWidgetIds.size + if (showAddButton) 1 else 0
+    val pagerState = rememberPagerState(pageCount = { pageCount })
 
-            item {
-                AddWidgetButton(onClick = actions.onAddWidgetClick)
+    Column(modifier = modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
+        if (pageCount > 0) {
+            HorizontalPager(
+                state = pagerState,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(sectionState.currentHeightDp)
+                    .padding(horizontal = 16.dp, vertical = 8.dp)
+            ) { page ->
+                if (page < sectionState.topWidgetIds.size) {
+                    val widgetId = sectionState.topWidgetIds[page]
+                    WidgetHostItem(
+                        widgetId = widgetId,
+                        appWidgetHost = appWidgetHost,
+                        showMenu = showMenuForWidget == widgetId,
+                        itemActions = WidgetItemActions(
+                            onShowMenu = { showMenuForWidget = it },
+                            onResizeClick = {
+                                showMenuForWidget = null
+                                isResizing = true
+                            },
+                            onRemoveClick = { id ->
+                                showMenuForWidget = null
+                                actions.onRemoveWidgetClick(id)
+                            }
+                        ),
+                        modifier = Modifier.fillMaxSize()
+                    )
+                } else if (showAddButton) {
+                    AddWidgetButton(
+                        onClick = actions.onAddWidgetClick,
+                        modifier = Modifier.fillMaxSize()
+                    )
+                }
             }
+        } else {
+            Spacer(modifier = Modifier.height(sectionState.currentHeightDp))
         }
 
         if (isResizing) {
             ResizeHandle(
                 onDragDelta = { dragAmount ->
-                    val newHeight = (currentHeightPx + dragAmount).coerceIn(
+                    val newHeight = (sectionState.currentHeightPx + dragAmount).coerceIn(
                         with(density) { MIN_WIDGET_HEIGHT.toPx() },
                         with(density) { MAX_WIDGET_HEIGHT.toPx() }
                     )
@@ -108,8 +157,39 @@ fun WidgetsSection(
                 },
                 onDragEnd = {
                     isResizing = false
-                    actions.onWidgetRowHeightChanged(currentHeightDp)
+                    actions.onWidgetRowHeightChanged(sectionState.currentHeightDp)
                 }
+            )
+        } else if (pageCount > 1) {
+            PagerIndicatorDots(pageCount = pageCount, currentPage = pagerState.currentPage)
+        }
+    }
+}
+
+@Composable
+private fun PagerIndicatorDots(
+    pageCount: Int,
+    currentPage: Int
+) {
+    Row(
+        modifier = Modifier
+            .padding(vertical = 8.dp)
+            .fillMaxWidth(),
+        horizontalArrangement = Arrangement.Center
+    ) {
+        repeat(pageCount) { iteration ->
+            val color = if (currentPage == iteration) {
+                MaterialTheme.colorScheme.primary
+            } else {
+                MaterialTheme.colorScheme.primary.copy(alpha = 0.5f)
+            }
+
+            Box(
+                modifier = Modifier
+                    .padding(2.dp)
+                    .clip(CircleShape)
+                    .background(color)
+                    .size(6.dp)
             )
         }
     }
@@ -120,13 +200,11 @@ private fun WidgetHostItem(
     widgetId: Int,
     appWidgetHost: AppWidgetHost,
     showMenu: Boolean,
-    onShowMenu: (Int?) -> Unit,
-    onResizeClick: () -> Unit,
-    onRemoveClick: (Int) -> Unit
+    itemActions: WidgetItemActions,
+    modifier: Modifier = Modifier
 ) {
     Box(
-        modifier = Modifier
-            .width(WIDGET_WIDTH)
+        modifier = modifier
             .fillMaxHeight()
             .clip(MaterialTheme.shapes.large)
             .pointerInput(widgetId) {
@@ -138,8 +216,8 @@ private fun WidgetHostItem(
                         }
                         if (upOrCancel == null) {
                             down.consume()
-                            onShowMenu(widgetId)
-                            withTimeoutOrNull(LONG_PRESS_TIMEOUT_MS * 4) {
+                            itemActions.onShowMenu(widgetId)
+                            withTimeoutOrNull(LONG_PRESS_TIMEOUT_MS * LONG_PRESS_CANCEL_MULTIPLIER) {
                                 waitForUpOrCancellation(pass = PointerEventPass.Initial)
                             }
                         }
@@ -160,9 +238,9 @@ private fun WidgetHostItem(
 
         if (showMenu) {
             WidgetOverlayMenu(
-                onDismiss = { onShowMenu(null) },
-                onResizeClick = onResizeClick,
-                onRemoveClick = { onRemoveClick(widgetId) }
+                onDismiss = { itemActions.onShowMenu(null) },
+                onResizeClick = itemActions.onResizeClick,
+                onRemoveClick = { itemActions.onRemoveClick(widgetId) }
             )
         }
     }
@@ -227,10 +305,12 @@ private fun OverlayActionButton(
 }
 
 @Composable
-private fun AddWidgetButton(onClick: () -> Unit) {
+private fun AddWidgetButton(
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
     Box(
-        modifier = Modifier
-            .width(ADD_WIDGET_WIDTH)
+        modifier = modifier
             .fillMaxHeight()
             .clip(MaterialTheme.shapes.large)
             .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.4f))
@@ -245,7 +325,7 @@ private fun AddWidgetButton(onClick: () -> Unit) {
                 modifier = Modifier.padding(bottom = 8.dp)
             )
             Text(
-                text = "Add",
+                text = "Add Widget",
                 color = MaterialTheme.colorScheme.primary,
                 style = MaterialTheme.typography.labelLarge
             )

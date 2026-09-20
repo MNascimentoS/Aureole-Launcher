@@ -37,8 +37,6 @@ console-reports:
      - 'ProjectStatisticsReport'
      - 'ComplexityReport'
      - 'NotificationReport'
-     - 'FindingsReport'
-     - 'FileBasedFindingsReport'
   #  - 'LiteFindingsReport'
 
 output-reports:
@@ -136,7 +134,9 @@ complexity:
     constructorThreshold: 7
     ignoreDefaultParameters: false
     ignoreDataClasses: true
-    ignoreAnnotatedParameter: []
+    ignoreAnnotatedParameter:
+      - 'Composable'
+      - 'androidx.compose.runtime.Composable'
   MethodOverloading:
     active: false
     threshold: 6
@@ -176,7 +176,9 @@ complexity:
     ignoreDeprecated: false
     ignorePrivate: false
     ignoreOverridden: false
-    ignoreAnnotatedFunctions: []
+    ignoreAnnotatedFunctions:
+      - 'Composable'
+      - 'androidx.compose.runtime.Composable'
 
 coroutines:
   active: true

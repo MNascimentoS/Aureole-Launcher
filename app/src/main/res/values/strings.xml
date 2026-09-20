@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Aureole Launcher</string>
+    <string name="add_folder">Adicionar Pasta</string>
+    <string name="add_folder_subtitle">Criar uma nova pasta na tela inicial</string>
 </resources>
