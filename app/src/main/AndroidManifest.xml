@@ -38,14 +38,14 @@
         </activity>
 
         <activity
-            android:name=".ui.settings.SettingsActivity"
+            android:name=".feature.settings.SettingsActivity"
             android:exported="false"
             android:label="Launcher Settings"
             android:theme="@style/Theme.AureoleLauncher"
             android:windowSoftInputMode="adjustResize" />
 
         <receiver
-            android:name=".data.receiver.PackageReceiver"
+            android:name=".core.data.receiver.PackageReceiver"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.PACKAGE_ADDED" />

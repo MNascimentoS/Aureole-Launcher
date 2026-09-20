@@ -1,0 +1,257 @@
+package dev.mnascimentos.aureole.feature.home.components
+
+import android.content.res.Configuration
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBars
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBars
+import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.layout.windowInsetsPadding
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.layout.positionInWindow
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import dev.chrisbanes.haze.HazeState
+import dev.chrisbanes.haze.HazeStyle
+import dev.chrisbanes.haze.HazeTint
+import dev.chrisbanes.haze.hazeEffect
+import dev.mnascimentos.aureole.core.data.model.AppFolder
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
+import dev.mnascimentos.aureole.feature.home.LocalHomeUiState
+import dev.mnascimentos.aureole.feature.home.MainUiState
+import dev.mnascimentos.aureole.feature.home.folder.FolderIconRegistry
+
+private const val SIDE_PANEL_HAZE_ALPHA_MULTIPLIER = 0.7f
+private const val SIDE_PANEL_MIN_ALPHA = 0.2f
+private const val SIDE_PANEL_MAX_ALPHA = 0.95f
+private const val SIDE_PANEL_DEFAULT_ALPHA = 0.85f
+private const val FOLDER_BG_INACTIVE_ALPHA = 0.7f
+
+@Composable
+fun SidePanel(
+    config: SidePanelConfig,
+    onFolderClick: (AppFolder, Float) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    val uiState = LocalHomeUiState.current
+    val hazeModifier = if (uiState.isHazeEnabled && (config.hazeState != null)) {
+        Modifier.hazeEffect(
+            state = config.hazeState,
+            style = HazeStyle(
+                blurRadius = 20.dp,
+                tint = HazeTint(MaterialTheme.colorScheme.surfaceContainerHigh.copy(alpha = uiState.hazeOpacity))
+            )
+        ) {
+            blurEnabled = uiState.isHazeEnabled
+        }
+    } else {
+        Modifier
+    }
+
+    val backgroundAlpha = if (uiState.isHazeEnabled) {
+        (uiState.hazeOpacity * SIDE_PANEL_HAZE_ALPHA_MULTIPLIER)
+            .coerceIn(SIDE_PANEL_MIN_ALPHA, SIDE_PANEL_MAX_ALPHA)
+    } else {
+        SIDE_PANEL_DEFAULT_ALPHA
+    }
+
+    Box(
+        modifier = modifier
+            .padding(
+                start = if (uiState.isLeftHandedMode) 16.dp else 8.dp,
+                end = if (uiState.isLeftHandedMode) 8.dp else 16.dp,
+                top = 8.dp,
+                bottom = 8.dp
+            )
+            .windowInsetsPadding(
+                when (config.position) {
+                    "Top" -> WindowInsets.statusBars
+                    "Bottom" -> WindowInsets.navigationBars
+                    else -> WindowInsets(0, 0, 0, 0)
+                }
+            )
+    ) {
+        SidePanelColumn(
+            config = config,
+            backgroundAlpha = backgroundAlpha,
+            onFolderClick = onFolderClick,
+            modifier = hazeModifier
+        )
+    }
+}
+
+@Composable
+private fun SidePanelColumn(
+    config: SidePanelConfig,
+    backgroundAlpha: Float,
+    onFolderClick: (AppFolder, Float) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier
+            .clip(RoundedCornerShape(18.dp))
+            .then(modifier)
+            .background(MaterialTheme.colorScheme.surfaceContainerHigh.copy(alpha = backgroundAlpha))
+            .padding(8.dp)
+    ) {
+        config.folders.forEach { folder ->
+            SidePanelFolderItem(
+                folder = folder,
+                isOpened = folder.id == config.openedFolderId,
+                showFolderLabels = config.showFolderLabels,
+                onFolderClick = onFolderClick
+            )
+        }
+    }
+}
+
+data class SidePanelConfig(
+    val folders: List<AppFolder>,
+    val openedFolderId: String?,
+    val position: String = "Center",
+    val showFolderLabels: Boolean = false,
+    val hazeState: HazeState? = null,
+)
+
+@Composable
+private fun SidePanelFolderItem(
+    folder: AppFolder,
+    isOpened: Boolean,
+    showFolderLabels: Boolean,
+    onFolderClick: (AppFolder, Float) -> Unit,
+) {
+    var itemYInWindow by remember { mutableFloatStateOf(0f) }
+
+    val containerColor by animateColorAsState(
+        targetValue = if (isOpened) {
+            MaterialTheme.colorScheme.primary
+        } else {
+            MaterialTheme.colorScheme.primaryContainer.copy(alpha = FOLDER_BG_INACTIVE_ALPHA)
+        },
+        label = "folder_bg"
+    )
+    val textColor = if (isOpened) {
+        MaterialTheme.colorScheme.onPrimary
+    } else {
+        MaterialTheme.colorScheme.onPrimaryContainer
+    }
+
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier
+            .padding(vertical = 4.dp)
+            .widthIn(max = 60.dp),
+    ) {
+        SidePanelFolderButton(
+            folder = folder,
+            containerColor = containerColor,
+            textColor = textColor,
+            onPositionedY = { y -> itemYInWindow = y },
+            onClick = { onFolderClick(folder, itemYInWindow) }
+        )
+
+        if (showFolderLabels) {
+            SidePanelFolderLabel(name = folder.name)
+        }
+    }
+}
+
+@Composable
+private fun SidePanelFolderButton(
+    folder: AppFolder,
+    containerColor: Color,
+    textColor: Color,
+    onPositionedY: (Float) -> Unit,
+    onClick: () -> Unit
+) {
+    Box(
+        modifier = Modifier
+            .size(48.dp)
+            .clip(RoundedCornerShape(14.dp))
+            .background(containerColor)
+            .onGloballyPositioned { coordinates ->
+                onPositionedY(coordinates.positionInWindow().y)
+            }
+            .clickable(onClick = onClick),
+        contentAlignment = Alignment.Center
+    ) {
+        val iconVector = FolderIconRegistry.getIcon(folder.icon)
+        if (iconVector != null) {
+            Icon(
+                imageVector = iconVector,
+                contentDescription = folder.name,
+                tint = textColor,
+                modifier = Modifier.size(24.dp)
+            )
+        } else {
+            Text(
+                text = folder.name.take(1).uppercase(),
+                color = textColor,
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold
+            )
+        }
+    }
+}
+
+@Composable
+private fun SidePanelFolderLabel(name: String) {
+    Spacer(modifier = Modifier.height(2.dp))
+    Text(
+        text = name,
+        color = MaterialTheme.colorScheme.onSurface,
+        style = MaterialTheme.typography.labelSmall,
+        fontWeight = FontWeight.Medium,
+        maxLines = 1,
+        overflow = TextOverflow.Ellipsis,
+        textAlign = TextAlign.Center,
+        modifier = Modifier.widthIn(max = 56.dp)
+    )
+}
+
+@Preview(name = "Light Mode", showBackground = true)
+@Preview(name = "Dark Mode", uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
+@Composable
+fun SidePanelPreview() {
+    val mockFolder = AppFolder(id = "1", name = "Social")
+    val config = SidePanelConfig(
+        folders = listOf(mockFolder),
+        openedFolderId = null,
+        showFolderLabels = true
+    )
+    AureoleLauncherTheme {
+        CompositionLocalProvider(LocalHomeUiState provides MainUiState()) {
+            SidePanel(
+                config = config,
+                onFolderClick = { _, _ -> }
+            )
+        }
+    }
+}
+

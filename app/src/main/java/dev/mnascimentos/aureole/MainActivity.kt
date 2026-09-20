@@ -2,94 +2,87 @@ package dev.mnascimentos.aureole
 
 import android.appwidget.AppWidgetHost
 import android.appwidget.AppWidgetManager
-import android.appwidget.AppWidgetProviderInfo
 import android.content.Intent
 import android.graphics.Rect
-import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.provider.Settings
 import androidx.activity.ComponentActivity
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
-import androidx.core.view.WindowCompat
-import androidx.core.view.WindowInsetsControllerCompat
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import dev.mnascimentos.aureole.ui.FolderViewIntent
-import dev.mnascimentos.aureole.ui.MainUiState
-import dev.mnascimentos.aureole.ui.MainViewModel
-import dev.mnascimentos.aureole.ui.components.FavoriteAppsDialog
-import dev.mnascimentos.aureole.ui.components.WidgetPickerBottomSheet
-import dev.mnascimentos.aureole.ui.components.OpenedWidgetPopup
-import dev.mnascimentos.aureole.ui.components.WidgetResizeDialog
-import dev.mnascimentos.aureole.ui.screens.HomeScreen
-import dev.mnascimentos.aureole.ui.screens.HomeScreenActions
-import dev.mnascimentos.aureole.ui.settings.SettingsActivity
-import dev.mnascimentos.aureole.ui.theme.AureoleLauncherTheme
-import dev.mnascimentos.aureole.ui.theme.LocalHazeState
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsControllerCompat
 import dev.chrisbanes.haze.rememberHazeState
-import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.foundation.background
-import androidx.compose.foundation.gestures.detectTapGestures
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.asPaddingValues
-import androidx.compose.foundation.layout.statusBars
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.unit.dp
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
+import dev.mnascimentos.aureole.core.designsystem.theme.LocalHazeState
+import dev.mnascimentos.aureole.feature.home.FolderViewIntent
+import dev.mnascimentos.aureole.feature.home.HomeScreenActions
+import dev.mnascimentos.aureole.feature.home.HomeViewModel
+import dev.mnascimentos.aureole.feature.home.LocalHomeActions
+import dev.mnascimentos.aureole.feature.home.LocalHomeUiState
+import dev.mnascimentos.aureole.feature.home.MainScaffold
+import dev.mnascimentos.aureole.feature.home.MainUiState
+import dev.mnascimentos.aureole.feature.home.closeWidgetPopup
+import dev.mnascimentos.aureole.feature.home.onFolderIntent
+import dev.mnascimentos.aureole.feature.home.onSearchQueryChanged
+import dev.mnascimentos.aureole.feature.home.openWidgetPopup
+import dev.mnascimentos.aureole.feature.home.setAddAppToFolderDialogVisible
+import dev.mnascimentos.aureole.feature.home.setAllAppsDrawerOpen
+import dev.mnascimentos.aureole.feature.home.setRenameFolderDialogVisible
+import dev.mnascimentos.aureole.feature.home.setShowFavoritePicker
+import dev.mnascimentos.aureole.feature.home.setShowWidgetPicker
+import dev.mnascimentos.aureole.feature.home.setShowWidgetResizeDialog
+import dev.mnascimentos.aureole.feature.home.setWidgetRowHeight
+import dev.mnascimentos.aureole.feature.home.toggleFavorite
+import dev.mnascimentos.aureole.feature.home.widget.WidgetHostManager
+import dev.mnascimentos.aureole.feature.settings.SettingsActivity
+import dev.mnascimentos.aureole.util.IntentUtils
 
-@Suppress("TooManyFunctions")
 class MainActivity : ComponentActivity() {
 
-    private val viewModel: MainViewModel by viewModels()
+    private val viewModel: HomeViewModel by viewModels()
 
     // Widget System
     private lateinit var appWidgetManager: AppWidgetManager
     private lateinit var appWidgetHost: AppWidgetHost
-
-    private val bindWidgetLauncher =
-        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-            val pendingId = viewModel.pendingWidgetId
-            if (result.resultCode == RESULT_OK) {
-                val provider = appWidgetManager.getAppWidgetInfo(pendingId)
-                configureWidget(pendingId, provider)
-            } else {
-                if (pendingId != -1) appWidgetHost.deleteAppWidgetId(pendingId)
-                viewModel.setPendingWidgetId(-1)
-            }
-        }
-
-    private val configureWidgetLauncher =
-        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-            val pendingId = viewModel.pendingWidgetId
-            if (result.resultCode == RESULT_OK) {
-                val widgetId = result.data?.getIntExtra(
-                    AppWidgetManager.EXTRA_APPWIDGET_ID,
-                    pendingId,
-                ) ?: pendingId
-                if (widgetId != -1) viewModel.addWidgetId(widgetId)
-            } else {
-                if (pendingId != -1) appWidgetHost.deleteAppWidgetId(pendingId)
-            }
-            viewModel.setPendingWidgetId(-1)
-        }
+    private lateinit var widgetHostManager: WidgetHostManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+
+        appWidgetManager = AppWidgetManager.getInstance(this)
+        appWidgetHost = AppWidgetHost(this, APPWIDGET_HOST_ID)
+        widgetHostManager = WidgetHostManager(this, viewModel, appWidgetHost, appWidgetManager)
+
+        setupWindowAndBackHandling()
+        setupContent()
+    }
+
+    private fun setupWindowAndBackHandling() {
+        WindowCompat.getInsetsController(window, window.decorView).apply {
+            systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+        }
+
+        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                val state = viewModel.uiState.value
+                if (checkOverlayActive(state)) {
+                    handleBackNavigation(state)
+                } else {
+                    isEnabled = false
+                    onBackPressedDispatcher.onBackPressed()
+                    isEnabled = true
+                }
+            }
+        })
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             window.isNavigationBarContrastEnforced = false
@@ -106,14 +99,9 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
+    }
 
-        WindowCompat.getInsetsController(window, window.decorView).apply {
-            systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
-        }
-
-        appWidgetManager = AppWidgetManager.getInstance(this)
-        appWidgetHost = AppWidgetHost(this, APPWIDGET_HOST_ID).apply { startListening() }
-
+    private fun setupContent() {
         setContent {
             val uiState by viewModel.uiState.collectAsState()
             val isOverlayActive = checkOverlayActive(uiState)
@@ -145,105 +133,19 @@ class MainActivity : ComponentActivity() {
 
                     val homeActions = createHomeActions()
 
-                    MainScaffold(
-                        uiState = uiState,
-                        homeActions = homeActions
-                    )
-                }
-            }
-        }
-    }
-
-    @Suppress("LongMethod")
-    @Composable
-    private fun MainScaffold(
-        uiState: MainUiState,
-        homeActions: HomeScreenActions
-    ) {
-        Scaffold(
-            modifier = Modifier.fillMaxSize(),
-            contentWindowInsets = WindowInsets(0, 0, 0, 0)
-        ) { _ ->
-            HomeScreen(
-                uiState = uiState,
-                appWidgetHost = appWidgetHost,
-                actions = homeActions,
-                modifier = Modifier.fillMaxSize()
-            )
-
-            if (uiState.showWidgetPicker) {
-                WidgetPickerBottomSheet(
-                    appWidgetManager = appWidgetManager,
-                    onWidgetSelected = { provider ->
-                        viewModel.setShowWidgetPicker(false)
-                        handleWidgetSelected(provider)
-                    },
-                    onDismiss = { viewModel.setShowWidgetPicker(false) }
-                )
-            }
-
-            if (uiState.showFavoritePickerDialog) {
-                FavoriteAppsDialog(
-                    allApps = uiState.apps,
-                    favoriteAppPackages = uiState.favoriteAppPackages,
-                    onToggleFavorite = { pkg -> viewModel.toggleFavorite(pkg) },
-                    onDismiss = { viewModel.setShowFavoritePicker(false) }
-                )
-            }
-
-            if (uiState.showWidgetPopup && uiState.activeWidgetId != null) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .background(Color.Transparent)
-                        .pointerInput(Unit) {
-                            detectTapGestures(onTap = { viewModel.closeWidgetPopup() })
-                        }
-                ) {
-                    val popupAlign = if (uiState.isLeftHandedMode) Alignment.TopStart else Alignment.TopEnd
-                    val sidePadding = 76.dp
-                    val screenDensity = LocalDensity.current.density
-                    val topInsetDp = WindowInsets.statusBars.asPaddingValues().calculateTopPadding()
-
-                    val rawTopDp = if (uiState.activeWidgetTopYPx > 0f) {
-                        (uiState.activeWidgetTopYPx / screenDensity).dp - topInsetDp
-                    } else {
-                        40.dp
+                    CompositionLocalProvider(
+                        LocalHomeUiState provides uiState,
+                        LocalHomeActions provides homeActions
+                    ) {
+                        MainScaffold(
+                            appWidgetHost = appWidgetHost,
+                            appWidgetManager = appWidgetManager,
+                            viewModel = viewModel,
+                            onWidgetSelected = { widgetHostManager.handleWidgetSelected(it) },
+                            onRemoveWidget = { widgetHostManager.removeWidget(it) }
+                        )
                     }
-                    val clampedTopDp = rawTopDp.coerceIn(8.dp, 500.dp)
-
-                    OpenedWidgetPopup(
-                        widgetId = uiState.activeWidgetId,
-                        appWidgetHost = appWidgetHost,
-                        onDismiss = { viewModel.closeWidgetPopup() },
-                        onResizeClick = { viewModel.setShowWidgetResizeDialog(true) },
-                        onRemoveClick = {
-                            removeWidget(uiState.activeWidgetId!!)
-                            viewModel.closeWidgetPopup()
-                        },
-                        hazeState = LocalHazeState.current,
-                        isHazeEnabled = uiState.isHazeEnabled,
-                        hazeOpacity = uiState.hazeOpacity,
-                        modifier = Modifier
-                            .align(popupAlign)
-                            .padding(
-                                start = if (uiState.isLeftHandedMode) sidePadding else 0.dp,
-                                end = if (!uiState.isLeftHandedMode) sidePadding else 0.dp,
-                                top = clampedTopDp
-                            )
-                    )
                 }
-            }
-
-            if (uiState.showWidgetResizeDialog) {
-                WidgetResizeDialog(
-                    currentHeightDp = uiState.widgetRowHeight,
-                    onHeightSelected = { newHeight ->
-                        viewModel.setWidgetRowHeight(newHeight)
-                        viewModel.closeWidgetPopup()
-                    },
-                    onDismiss = { viewModel.closeWidgetPopup() }
-                )
             }
         }
     }
@@ -279,9 +181,9 @@ class MainActivity : ComponentActivity() {
         return HomeScreenActions(
             onWidgetRowHeightChanged = { viewModel.setWidgetRowHeight(it) },
             onAddWidgetClick = { viewModel.setShowWidgetPicker(true) },
-            onRemoveWidgetClick = { widgetId -> removeWidget(widgetId) },
+            onRemoveWidgetClick = { widgetId -> widgetHostManager.removeWidget(widgetId) },
             onAppClick = { appInfo -> viewModel.launchApp(appInfo.componentName) },
-            onExpandNotificationShade = { expandNotificationShade() },
+            onExpandNotificationShade = { IntentUtils.expandNotificationShade(this) },
             onFolderIntent = { intent -> viewModel.onFolderIntent(intent) },
             onSetAddAppToFolderDialogVisible = { visible -> viewModel.setAddAppToFolderDialogVisible(visible) },
             onSetRenameFolderDialogVisible = { visible -> viewModel.setRenameFolderDialogVisible(visible) },
@@ -290,7 +192,7 @@ class MainActivity : ComponentActivity() {
             onAllAppsDrawerClose = { viewModel.setAllAppsDrawerOpen(false) },
             onAllAppsDrawerOpen = { viewModel.setAllAppsDrawerOpen(true) },
             onToggleFavorite = { pkg -> viewModel.toggleFavorite(pkg) },
-            onAppInfoClick = { app -> openAppInfo(app.packageName) },
+            onAppInfoClick = { app -> IntentUtils.openAppInfo(this, app.packageName) },
             onOpenFavoritePicker = { viewModel.setShowFavoritePicker(true) },
             onOpenWidgetPopup = { widgetId, topY -> viewModel.openWidgetPopup(widgetId, topY) },
             onCloseWidgetPopup = { viewModel.closeWidgetPopup() },
@@ -298,70 +200,6 @@ class MainActivity : ComponentActivity() {
             onCloseWidgetResizeDialog = { viewModel.closeWidgetPopup() },
             onResizeWidgetHeight = { height -> viewModel.setWidgetRowHeight(height) }
         )
-    }
-
-    private fun handleWidgetSelected(provider: AppWidgetProviderInfo) {
-        val id = appWidgetHost.allocateAppWidgetId()
-        viewModel.setPendingWidgetId(id)
-        val allowed = appWidgetManager.bindAppWidgetIdIfAllowed(id, provider.provider)
-        if (allowed) {
-            configureWidget(id, provider)
-        } else {
-            val intent = Intent(AppWidgetManager.ACTION_APPWIDGET_BIND).apply {
-                putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, id)
-                putExtra(AppWidgetManager.EXTRA_APPWIDGET_PROVIDER, provider.provider)
-            }
-            bindWidgetLauncher.launch(intent)
-        }
-    }
-
-    private fun configureWidget(widgetId: Int, provider: AppWidgetProviderInfo?) {
-        if (provider?.configure != null) {
-            val intent = Intent(AppWidgetManager.ACTION_APPWIDGET_CONFIGURE).apply {
-                component = provider.configure
-                putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId)
-            }
-            configureWidgetLauncher.launch(intent)
-        } else {
-            viewModel.addWidgetId(widgetId)
-            viewModel.setPendingWidgetId(-1)
-        }
-    }
-
-    private fun removeWidget(widgetId: Int) {
-        appWidgetHost.deleteAppWidgetId(widgetId)
-        viewModel.removeWidgetId(widgetId)
-    }
-
-    @Deprecated("Deprecated in Java")
-    @Suppress("MissingSuperCall")
-    override fun onBackPressed() {
-        val state = viewModel.uiState.value
-        if (checkOverlayActive(state)) {
-            handleBackNavigation(state)
-        }
-    }
-
-    private fun openAppInfo(packageName: String) {
-        try {
-            val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
-                data = Uri.fromParts("package", packageName, null)
-                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-            }
-            startActivity(intent)
-        } catch (_: Exception) {}
-    }
-
-    @Suppress("TooGenericExceptionCaught", "SwallowedException")
-    private fun expandNotificationShade() {
-        try {
-            val statusBarService = getSystemService("statusbar")
-            val statusBarManager = Class.forName("android.app.StatusBarManager")
-            val expandMethod = statusBarManager.getMethod("expandNotificationsPanel")
-            expandMethod.invoke(statusBarService)
-        } catch (_: Exception) {
-            // Cannot expansion without framework internal permissions
-        }
     }
 
     override fun onNewIntent(intent: Intent) {
