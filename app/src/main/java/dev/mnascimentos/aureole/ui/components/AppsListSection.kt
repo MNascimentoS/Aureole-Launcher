@@ -37,22 +37,51 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.ui.MainUiState
 import dev.mnascimentos.aureole.ui.screens.HomeScreenActions
+import dev.mnascimentos.aureole.ui.theme.fadingEdges
+import dev.chrisbanes.haze.HazeState
+import dev.chrisbanes.haze.HazeStyle
+import dev.chrisbanes.haze.HazeTint
+import dev.chrisbanes.haze.hazeEffect
 
+@Suppress("LongParameterList", "MagicNumber")
 @Composable
 fun AppsListDrawer(
     uiState: MainUiState,
     actions: HomeScreenActions,
     listState: LazyListState,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    hazeState: HazeState? = null,
+    isHazeEnabled: Boolean = false,
+    hazeOpacity: Float = 0.5f
 ) {
     val startPadding = if (uiState.isLeftHandedMode) 72.dp else 24.dp
     val endPadding = if (uiState.isLeftHandedMode) 24.dp else 72.dp
+
+    val hazeModifier = if (isHazeEnabled && (hazeState != null)) {
+        Modifier.hazeEffect(
+            state = hazeState,
+            style = HazeStyle(
+                blurRadius = 30.dp,
+                tint = HazeTint(MaterialTheme.colorScheme.background.copy(alpha = hazeOpacity))
+            )
+        ) {
+            blurEnabled = isHazeEnabled
+        }
+    } else {
+        Modifier
+    }
+    val drawerBgColor = if (isHazeEnabled && (hazeState != null)) {
+        MaterialTheme.colorScheme.background.copy(alpha = hazeOpacity)
+    } else {
+        MaterialTheme.colorScheme.background
+    }
 
     Column(
         modifier = modifier
             .fillMaxHeight()
             .fillMaxWidth()
-            .background(MaterialTheme.colorScheme.background)
+            .then(hazeModifier)
+            .background(drawerBgColor)
             .statusBarsPadding()
     ) {
         LazyColumn(
@@ -63,7 +92,9 @@ fun AppsListDrawer(
                 end = endPadding,
                 bottom = 100.dp
             ),
-            modifier = Modifier.weight(1f)
+            modifier = Modifier
+                .weight(1f)
+                .fadingEdges(listState)
         ) {
             appsListItems(uiState, actions)
         }
@@ -73,6 +104,9 @@ fun AppsListDrawer(
             onQueryChange = actions.onSearchQueryChanged,
             onSettingsClick = actions.onSettingsClick,
             isLeftHandedMode = uiState.isLeftHandedMode,
+            hazeState = hazeState,
+            isHazeEnabled = isHazeEnabled,
+            hazeOpacity = hazeOpacity,
             modifier = Modifier
                 .fillMaxWidth()
                 .navigationBarsPadding()
@@ -90,27 +124,56 @@ fun AppsListDrawer(
     listState: LazyListState,
     onSearchQueryChanged: (String) -> Unit,
     onSettingsClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    hazeState: HazeState? = null,
+    isHazeEnabled: Boolean = false,
+    hazeOpacity: Float = 0.5f
 ) {
     AppsListDrawer(
         uiState = uiState,
         actions = actions,
         listState = listState,
-        modifier = modifier
+        modifier = modifier,
+        hazeState = hazeState,
+        isHazeEnabled = isHazeEnabled,
+        hazeOpacity = hazeOpacity
     )
 }
 
+@Suppress("LongParameterList", "MagicNumber")
 @Composable
 private fun BottomSearchBar(
     query: String,
     onQueryChange: (String) -> Unit,
     onSettingsClick: () -> Unit,
     isLeftHandedMode: Boolean,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    hazeState: HazeState? = null,
+    isHazeEnabled: Boolean = false,
+    hazeOpacity: Float = 0.5f
 ) {
+    val searchBarHazeModifier = if (isHazeEnabled && (hazeState != null)) {
+        Modifier.hazeEffect(
+            state = hazeState,
+            style = HazeStyle(
+                blurRadius = 20.dp,
+                tint = HazeTint(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = hazeOpacity))
+            )
+        ) {
+            blurEnabled = isHazeEnabled
+        }
+    } else {
+        Modifier
+    }
+
     Box(
         modifier = modifier
-            .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.9f))
+            .then(searchBarHazeModifier)
+            .background(
+                MaterialTheme.colorScheme.surfaceVariant.copy(
+                    alpha = if (isHazeEnabled) (hazeOpacity * 0.7f).coerceIn(0.2f, 0.95f) else 0.9f
+                )
+            )
             .padding(16.dp)
     ) {
         Row(

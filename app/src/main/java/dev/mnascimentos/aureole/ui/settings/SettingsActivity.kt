@@ -1,6 +1,5 @@
 package dev.mnascimentos.aureole.ui.settings
 
-import android.app.role.RoleManager
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
@@ -98,6 +97,11 @@ class SettingsActivity : ComponentActivity() {
             onAddFolderClick = { viewModel.setShowCreateFolderDialog(show = true) },
             onDismissCreateFolderDialog = { viewModel.setShowCreateFolderDialog(show = false) },
             onSubmitCreateFolder = viewModel::createFolder,
+            onToggleHaze = { viewModel.toggleHaze() },
+            onOpenHazeOpacityDialog = { viewModel.setShowHazeOpacityDialog(show = true) },
+            onHazeOpacitySelected = { opacity -> viewModel.setHazeOpacity(opacity) },
+            onDismissHazeOpacityDialog = { viewModel.setShowHazeOpacityDialog(show = false) },
+            onToggleShowWidgetDots = { viewModel.toggleShowWidgetDots() },
         )
     }
 
@@ -110,21 +114,23 @@ class SettingsActivity : ComponentActivity() {
     @Suppress("TooGenericExceptionCaught", "SwallowedException")
     private fun openDefaultLauncherSettings() {
         try {
-            val intent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                val roleManager = getSystemService(RoleManager::class.java)
-                if (roleManager != null && roleManager.isRoleAvailable(RoleManager.ROLE_HOME)) {
-                    roleManager.createRequestRoleIntent(RoleManager.ROLE_HOME)
-                } else {
-                    Intent(Settings.ACTION_HOME_SETTINGS)
-                }
-            } else {
-                Intent(Settings.ACTION_HOME_SETTINGS)
+            val intent = Intent(Settings.ACTION_HOME_SETTINGS).apply {
+                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             }
             startActivity(intent)
         } catch (_: Exception) {
             try {
-                startActivity(Intent(Settings.ACTION_HOME_SETTINGS))
-            } catch (_: Exception) {}
+                val intent = Intent("android.settings.MANAGE_DEFAULT_APPS_SETTINGS").apply {
+                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                }
+                startActivity(intent)
+            } catch (_: Exception) {
+                try {
+                    startActivity(Intent(Settings.ACTION_SETTINGS).apply {
+                        addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                    })
+                } catch (_: Exception) {}
+            }
         }
     }
 }

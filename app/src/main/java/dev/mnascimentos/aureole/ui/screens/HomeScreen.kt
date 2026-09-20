@@ -1,6 +1,7 @@
 package dev.mnascimentos.aureole.ui.screens
 
 import android.appwidget.AppWidgetHost
+import android.content.res.Configuration
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -53,8 +54,12 @@ import androidx.compose.ui.layout.ContentScale
 import coil.compose.AsyncImage
 import dev.mnascimentos.aureole.R
 import java.io.File
+import dev.chrisbanes.haze.HazeState
+import dev.chrisbanes.haze.rememberHazeState
+import dev.chrisbanes.haze.hazeSource
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -69,7 +74,10 @@ import dev.mnascimentos.aureole.ui.components.CurvedAlphabetScrubber
 import dev.mnascimentos.aureole.ui.components.EditFolderDialog
 import dev.mnascimentos.aureole.ui.components.FolderAppPickerDialog
 import dev.mnascimentos.aureole.ui.components.OpenedFolderPopup
+import dev.mnascimentos.aureole.ui.components.OpenedWidgetPopup
 import dev.mnascimentos.aureole.ui.components.SidePanel
+import dev.mnascimentos.aureole.ui.components.WidgetResizeDialog
+import dev.mnascimentos.aureole.ui.theme.fadingEdges
 import dev.mnascimentos.aureole.ui.components.SidePanelConfig
 import dev.mnascimentos.aureole.ui.components.StackedWidgetSection
 import kotlinx.coroutines.launch
@@ -97,13 +105,19 @@ data class HomeScreenActions(
     val onToggleFavorite: (String) -> Unit = {},
     val onAppInfoClick: (AppInfo) -> Unit = {},
     val onOpenFavoritePicker: () -> Unit = {},
+    val onOpenWidgetPopup: (Int, Float) -> Unit = { _, _ -> },
+    val onCloseWidgetPopup: () -> Unit = {},
+    val onOpenWidgetResizeDialog: () -> Unit = {},
+    val onCloseWidgetResizeDialog: () -> Unit = {},
+    val onResizeWidgetHeight: (Dp) -> Unit = {},
 )
 
 data class FavoritesListConfig(
     val uiState: MainUiState,
     val currentHeightDp: Dp,
     val currentHeightPx: Float,
-    val state: LazyListState
+    val state: LazyListState,
+    val hazeState: HazeState? = null
 )
 
 @Suppress("LongMethod", "CyclomaticComplexMethod")
@@ -184,6 +198,8 @@ fun HomeScreen(
         Modifier
     }
 
+    val hazeState = rememberHazeState()
+
     Box(
         modifier = modifier
             .fillMaxSize()
@@ -196,7 +212,9 @@ fun HomeScreen(
     ) {
         WallpaperBackground(
             isCustomWallpaperSet = uiState.isCustomWallpaperSet,
-            customWallpaperPath = uiState.customWallpaperPath
+            customWallpaperPath = uiState.customWallpaperPath,
+            hazeState = hazeState,
+            isHazeEnabled = uiState.isHazeEnabled
         )
 
         if (uiState.isLoading) {
@@ -207,7 +225,10 @@ fun HomeScreen(
                 actions = actions,
                 appWidgetHost = appWidgetHost,
                 currentHeightPx = currentHeightPx,
-                favListState = favListState
+                favListState = favListState,
+                hazeState = hazeState,
+                isHazeEnabled = uiState.isHazeEnabled,
+                hazeOpacity = uiState.hazeOpacity
             )
 
             AnimatedVisibility(
@@ -219,7 +240,7 @@ fun HomeScreen(
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
-                        .background(MaterialTheme.colorScheme.background.copy(alpha = 0.95f))
+                        .background(Color.Transparent)
                         .pointerInput(Unit) {
                             detectTapGestures(onTap = { actions.onAllAppsDrawerClose() })
                         }
@@ -230,6 +251,9 @@ fun HomeScreen(
                         uiState = uiState,
                         actions = actions,
                         listState = listState,
+                        hazeState = hazeState,
+                        isHazeEnabled = uiState.isHazeEnabled,
+                        hazeOpacity = uiState.hazeOpacity,
                         modifier = Modifier.align(drawerAlign)
                     )
                 }
@@ -266,20 +290,35 @@ fun HomeScreen(
             HomeScreenFolderOverlays(
                 uiState = uiState,
                 actions = actions,
-                screenHeightPx = screenHeightPx
+                screenHeightPx = screenHeightPx,
+                hazeState = hazeState,
+                isHazeEnabled = uiState.isHazeEnabled,
+                hazeOpacity = uiState.hazeOpacity
+            )
+
+            HomeScreenWidgetOverlays(
+                uiState = uiState,
+                actions = actions,
+                appWidgetHost = appWidgetHost,
+                hazeState = hazeState,
+                isHazeEnabled = uiState.isHazeEnabled,
+                hazeOpacity = uiState.hazeOpacity
             )
         }
     }
 }
 
-@Suppress("LongMethod")
+@Suppress("LongMethod", "LongParameterList")
 @Composable
 private fun MainHomeLayout(
     uiState: MainUiState,
     actions: HomeScreenActions,
     appWidgetHost: AppWidgetHost,
     currentHeightPx: Float,
-    favListState: LazyListState
+    favListState: LazyListState,
+    hazeState: HazeState,
+    isHazeEnabled: Boolean,
+    hazeOpacity: Float
 ) {
     val density = LocalDensity.current
     val currentHeightDp = with(density) { currentHeightPx.toDp() }
@@ -289,14 +328,18 @@ private fun MainHomeLayout(
         openedFolderId = uiState.openedFolderId,
         isLeftHandedMode = uiState.isLeftHandedMode,
         position = uiState.sidePanelPosition,
-        showFolderLabels = uiState.showFolderLabels
+        showFolderLabels = uiState.showFolderLabels,
+        hazeState = hazeState,
+        isHazeEnabled = isHazeEnabled,
+        hazeOpacity = hazeOpacity
     )
 
     val favConfig = FavoritesListConfig(
         uiState = uiState,
         currentHeightDp = currentHeightDp,
         currentHeightPx = currentHeightPx,
-        state = favListState
+        state = favListState,
+        hazeState = hazeState
     )
 
     Row(
@@ -349,12 +392,15 @@ private fun MainHomeLayout(
     }
 }
 
-@Suppress("LongMethod")
+@Suppress("LongMethod", "LongParameterList")
 @Composable
 private fun HomeScreenFolderOverlays(
     uiState: MainUiState,
     actions: HomeScreenActions,
-    screenHeightPx: Float
+    screenHeightPx: Float,
+    hazeState: HazeState,
+    isHazeEnabled: Boolean,
+    hazeOpacity: Float
 ) {
     val density = LocalDensity.current
 
@@ -400,6 +446,9 @@ private fun HomeScreenFolderOverlays(
                 onAddAppsClick = { actions.onFolderIntent(FolderViewIntent.AddAppToFolder(uiState.activeFolder.id)) },
                 onEditFolderClick = { actions.onSetRenameFolderDialogVisible(true) },
                 isLeftHandedMode = uiState.isLeftHandedMode,
+                hazeState = hazeState,
+                isHazeEnabled = isHazeEnabled,
+                hazeOpacity = hazeOpacity,
                 modifier = Modifier
                     .align(popupAlign)
                     .padding(
@@ -445,6 +494,74 @@ private fun HomeScreenFolderOverlays(
     }
 }
 
+@Suppress("LongMethod", "LongParameterList")
+@Composable
+private fun HomeScreenWidgetOverlays(
+    uiState: MainUiState,
+    actions: HomeScreenActions,
+    appWidgetHost: AppWidgetHost,
+    hazeState: HazeState,
+    isHazeEnabled: Boolean,
+    hazeOpacity: Float
+) {
+    val density = LocalDensity.current
+
+    if (uiState.showWidgetPopup && uiState.activeWidgetId != null) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color.Transparent)
+                .pointerInput(Unit) {
+                    detectTapGestures(onTap = { actions.onCloseWidgetPopup() })
+                }
+        ) {
+            val popupAlign = if (uiState.isLeftHandedMode) Alignment.TopStart else Alignment.TopEnd
+            val sidePadding = 76.dp
+            val screenDensity = density.density
+            val topInsetDp = WindowInsets.statusBars.asPaddingValues().calculateTopPadding()
+
+            val rawTopDp = if (uiState.activeWidgetTopYPx > 0f) {
+                (uiState.activeWidgetTopYPx / screenDensity).dp - topInsetDp
+            } else {
+                40.dp
+            }
+            val clampedTopDp = rawTopDp.coerceIn(8.dp, 500.dp)
+
+            OpenedWidgetPopup(
+                widgetId = uiState.activeWidgetId,
+                appWidgetHost = appWidgetHost,
+                onDismiss = actions.onCloseWidgetPopup,
+                onResizeClick = actions.onOpenWidgetResizeDialog,
+                onRemoveClick = {
+                    actions.onRemoveWidgetClick(uiState.activeWidgetId)
+                    actions.onCloseWidgetPopup()
+                },
+                hazeState = hazeState,
+                isHazeEnabled = isHazeEnabled,
+                hazeOpacity = hazeOpacity,
+                modifier = Modifier
+                    .align(popupAlign)
+                    .padding(
+                        start = if (uiState.isLeftHandedMode) sidePadding else 0.dp,
+                        end = if (!uiState.isLeftHandedMode) sidePadding else 0.dp,
+                        top = clampedTopDp
+                    )
+            )
+        }
+    }
+
+    if (uiState.showWidgetResizeDialog) {
+        WidgetResizeDialog(
+            currentHeightDp = uiState.widgetRowHeight,
+            onHeightSelected = { newHeight ->
+                actions.onResizeWidgetHeight(newHeight)
+                actions.onCloseWidgetPopup()
+            },
+            onDismiss = actions.onCloseWidgetPopup
+        )
+    }
+}
+
 @Suppress("LongMethod")
 @Composable
 fun FavoritesList(
@@ -454,20 +571,28 @@ fun FavoritesList(
     modifier: Modifier = Modifier
 ) {
     val density = LocalDensity.current
+    val configuration = LocalConfiguration.current
+    val isLandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
     val favoritePackages = remember(config.uiState.favoriteAppPackages) {
         config.uiState.favoriteAppPackages.toSet()
     }
 
     LazyColumn(
         state = config.state,
-        modifier = modifier.fillMaxHeight(),
+        modifier = modifier
+            .fillMaxHeight()
+            .fadingEdges(config.state),
         contentPadding = PaddingValues(vertical = 12.dp)
     ) {
         item(key = "clock_header") {
-            ClockHeader()
+            ClockHeader(
+                hazeState = config.hazeState,
+                isHazeEnabled = config.uiState.isHazeEnabled,
+                hazeOpacity = config.uiState.hazeOpacity
+            )
         }
 
-        if (config.uiState.isWidgetRowEnabled) {
+        if (config.uiState.isWidgetRowEnabled && !isLandscape) {
             item(key = "stacked_widget_section") {
                 StackedWidgetSection(
                     topWidgetIds = config.uiState.topWidgetIds,
@@ -477,7 +602,13 @@ fun FavoritesList(
                         actions.onWidgetRowHeightChanged(with(density) { newHeightPx.toDp() })
                     },
                     actions = actions,
-                    currentHeightPx = config.currentHeightPx
+                    currentHeightPx = config.currentHeightPx,
+                    showWidgetDots = config.uiState.showWidgetDots,
+                    isLeftHandedMode = config.uiState.isLeftHandedMode,
+                    isSidePanelEnabled = config.uiState.isSidePanelEnabled,
+                    hazeState = config.hazeState,
+                    isHazeEnabled = config.uiState.isHazeEnabled,
+                    hazeOpacity = config.uiState.hazeOpacity
                 )
             }
         }
@@ -601,7 +732,9 @@ private fun AllAppsDivider() {
 @Composable
 private fun WallpaperBackground(
     isCustomWallpaperSet: Boolean,
-    customWallpaperPath: String?
+    customWallpaperPath: String?,
+    hazeState: HazeState,
+    isHazeEnabled: Boolean
 ) {
     val model: Any = if (isCustomWallpaperSet && !customWallpaperPath.isNullOrEmpty()) {
         File(customWallpaperPath)
@@ -609,7 +742,13 @@ private fun WallpaperBackground(
         R.drawable.default_wallpaper
     }
 
-    Box(modifier = Modifier.fillMaxSize()) {
+    val hazeModifier = if (isHazeEnabled) {
+        Modifier.hazeSource(state = hazeState)
+    } else {
+        Modifier
+    }
+
+    Box(modifier = Modifier.fillMaxSize().then(hazeModifier)) {
         AsyncImage(
             model = model,
             contentDescription = null,

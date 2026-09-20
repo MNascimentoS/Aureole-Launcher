@@ -34,6 +34,7 @@ data class SettingsUiState(
     val homeButtonOpensAllApps: Boolean = true,
     val showAllAppsOnHome: Boolean = true,
     val isWidgetRowEnabled: Boolean = true,
+    val showWidgetDots: Boolean = true,
     val favoriteAppPackages: List<String> = emptyList(),
     val allApps: List<AppInfo> = emptyList(),
     val isDefaultLauncher: Boolean = false,
@@ -45,6 +46,10 @@ data class SettingsUiState(
     val showCreateFolderDialog: Boolean = false,
     val isDynamicWallpaperEnabled: Boolean = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S,
     val manualSeedColor: Int = SettingsRepository.DEFAULT_SEED_COLOR,
+    val isHazeEnabled: Boolean = true,
+    val isHazeSupported: Boolean = true,
+    val hazeOpacity: Float = 0.5f,
+    val showHazeOpacityDialog: Boolean = false,
     val showColorPickerDialog: Boolean = false,
     val shouldFinishActivity: Boolean = false,
     val errorMessage: String? = null,
@@ -76,13 +81,39 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
                 homeButtonOpensAllApps = settingsRepository.homeButtonOpensAllApps,
                 showAllAppsOnHome = settingsRepository.showAllAppsOnHome,
                 isWidgetRowEnabled = settingsRepository.isWidgetRowEnabled,
+                showWidgetDots = settingsRepository.showWidgetDots,
                 favoriteAppPackages = settingsRepository.favoriteAppPackages,
                 isCustomWallpaperSet = settingsRepository.isCustomWallpaperSet,
                 customWallpaperPath = settingsRepository.customWallpaperPath,
                 isDynamicWallpaperEnabled = settingsRepository.isDynamicWallpaperEnabled,
                 manualSeedColor = settingsRepository.manualSeedColor,
+                isHazeEnabled = settingsRepository.isHazeEnabled,
+                isHazeSupported = settingsRepository.isHazeSupported,
+                hazeOpacity = settingsRepository.hazeOpacity,
             )
         }
+    }
+
+    fun toggleShowWidgetDots() {
+        val newValue = !_uiState.value.showWidgetDots
+        settingsRepository.showWidgetDots = newValue
+        _uiState.update { it.copy(showWidgetDots = newValue) }
+    }
+
+    fun toggleHaze() {
+        if (!settingsRepository.isHazeSupported) return
+        val newValue = !_uiState.value.isHazeEnabled
+        settingsRepository.isHazeEnabled = newValue
+        _uiState.update { it.copy(isHazeEnabled = newValue) }
+    }
+
+    fun setShowHazeOpacityDialog(show: Boolean) {
+        _uiState.update { it.copy(showHazeOpacityDialog = show) }
+    }
+
+    fun setHazeOpacity(opacity: Float) {
+        settingsRepository.hazeOpacity = opacity
+        _uiState.update { it.copy(hazeOpacity = opacity, showHazeOpacityDialog = false) }
     }
 
     fun loadApps() {

@@ -3,8 +3,10 @@ package dev.mnascimentos.aureole.data.repository
 import android.content.Context
 import android.os.Build
 import androidx.core.content.edit
+import dev.mnascimentos.aureole.ui.theme.HazeUtils
 import java.io.File
 
+@Suppress("MagicNumber")
 class SettingsRepository(private val context: Context) {
 
     var isLeftHandedMode: Boolean
@@ -41,6 +43,24 @@ class SettingsRepository(private val context: Context) {
     var isWidgetRowEnabled: Boolean
         get() = prefs.getBoolean(KEY_WIDGET_ROW_ENABLED, true)
         set(value) = prefs.edit { putBoolean(KEY_WIDGET_ROW_ENABLED, value) }
+
+    var showWidgetDots: Boolean
+        get() = prefs.getBoolean(KEY_SHOW_WIDGET_DOTS, true)
+        set(value) = prefs.edit { putBoolean(KEY_SHOW_WIDGET_DOTS, value) }
+
+    val isHazeSupported: Boolean
+        get() = HazeUtils.isDeviceHazeSupported(context)
+
+    var isHazeEnabled: Boolean
+        get() {
+            if (!isHazeSupported) return false
+            return prefs.getBoolean(KEY_HAZE_ENABLED, true)
+        }
+        set(value) = prefs.edit { putBoolean(KEY_HAZE_ENABLED, value) }
+
+    var hazeOpacity: Float
+        get() = prefs.getFloat(KEY_HAZE_OPACITY, 0.5f)
+        set(value) = prefs.edit { putFloat(KEY_HAZE_OPACITY, value) }
 
     var isDynamicWallpaperEnabled: Boolean
         get() = prefs.getBoolean(KEY_USE_WALLPAPER_COLORS, Build.VERSION.SDK_INT >= Build.VERSION_CODES.S)
@@ -93,6 +113,9 @@ class SettingsRepository(private val context: Context) {
         private const val KEY_CUSTOM_WALLPAPER_PATH = "custom_wallpaper_path"
         private const val KEY_USE_WALLPAPER_COLORS = "use_wallpaper_colors"
         private const val KEY_MANUAL_SEED_COLOR = "manual_seed_color"
+        private const val KEY_HAZE_ENABLED = "haze_enabled"
+        private const val KEY_HAZE_OPACITY = "haze_opacity"
+        private const val KEY_SHOW_WIDGET_DOTS = "show_widget_dots"
         const val DEFAULT_SEED_COLOR = 0xFF6650A4.toInt()
     }
 }

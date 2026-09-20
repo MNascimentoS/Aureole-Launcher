@@ -125,6 +125,14 @@ fun SettingsScreen(
         )
     }
 
+    if (uiState.showHazeOpacityDialog) {
+        HazeOpacityDialog(
+            currentOpacity = uiState.hazeOpacity,
+            onOpacitySelected = actions.onHazeOpacitySelected,
+            onDismiss = actions.onDismissHazeOpacityDialog
+        )
+    }
+
     if (uiState.showColorPickerDialog) {
         ColorPickerDialog(
             initialColor = uiState.manualSeedColor,
@@ -195,6 +203,11 @@ data class SettingsScreenActions(
     val onAddFolderClick: () -> Unit = {},
     val onDismissCreateFolderDialog: () -> Unit = {},
     val onSubmitCreateFolder: (String) -> Unit = {},
+    val onToggleHaze: () -> Unit = {},
+    val onOpenHazeOpacityDialog: () -> Unit = {},
+    val onHazeOpacitySelected: (Float) -> Unit = {},
+    val onDismissHazeOpacityDialog: () -> Unit = {},
+    val onToggleShowWidgetDots: () -> Unit = {},
 )
 
 // Convenience overload for backwards compatibility
@@ -401,6 +414,18 @@ private fun HomeScreenCategorySection(
             )
 
             HorizontalDivider(
+                modifier = Modifier.padding(start = 16.dp),
+                color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f)
+            )
+
+            PreferenceSwitchRow(
+                title = "Show Widget Indicator Dots",
+                subtitle = "Display page indicator dots below widget row",
+                checked = uiState.showWidgetDots,
+                onCheckedChange = { actions.onToggleShowWidgetDots() }
+            )
+
+            HorizontalDivider(
                 modifier = Modifier.padding(start = 56.dp),
                 color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f)
             )
@@ -476,8 +501,99 @@ private fun LayoutCategorySection(
                 checked = uiState.isLeftHandedMode,
                 onCheckedChange = { actions.onToggleLeftHandedMode() }
             )
+
+            HorizontalDivider(
+                modifier = Modifier.padding(start = 16.dp),
+                color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f)
+            )
+
+            PreferenceSwitchRow(
+                title = "Haze Blur Effects",
+                subtitle = if (!uiState.isHazeSupported) {
+                    "Not supported on this device (requires Android 12+)"
+                } else {
+                    "Frosted glass blur effect on side panel, folders, and drawers"
+                },
+                checked = uiState.isHazeEnabled,
+                enabled = uiState.isHazeSupported,
+                onCheckedChange = { actions.onToggleHaze() }
+            )
+
+            if (uiState.isHazeEnabled) {
+                HorizontalDivider(
+                    modifier = Modifier.padding(start = 16.dp),
+                    color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f)
+                )
+
+                PreferenceRowItem(
+                    title = "Blur Opacity",
+                    subtitle = when {
+                        uiState.hazeOpacity <= 0.25f -> "Low (20%)"
+                        uiState.hazeOpacity <= 0.5f -> "Medium (50%)"
+                        uiState.hazeOpacity <= 0.7f -> "High (70%)"
+                        else -> "Solid (90%)"
+                    },
+                    onClick = actions.onOpenHazeOpacityDialog
+                )
+            }
         }
     }
+}
+
+@Suppress("MagicNumber")
+@Composable
+private fun HazeOpacityDialog(
+    currentOpacity: Float,
+    onOpacitySelected: (Float) -> Unit,
+    onDismiss: () -> Unit
+) {
+    val options = listOf(
+        0.20f to "Low (20%)",
+        0.50f to "Medium (50%)",
+        0.70f to "High (70%)",
+        0.90f to "Solid (90%)"
+    )
+
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = {
+            Text(
+                text = "Blur Opacity",
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold
+            )
+        },
+        text = {
+            Column {
+                options.forEach { (value, label) ->
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clip(RoundedCornerShape(12.dp))
+                            .clickable { onOpacitySelected(value) }
+                            .padding(vertical = 8.dp, horizontal = 8.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        RadioButton(
+                            selected = (currentOpacity == value),
+                            onClick = { onOpacitySelected(value) }
+                        )
+                        Spacer(modifier = Modifier.width(12.dp))
+                        Text(
+                            text = label,
+                            style = MaterialTheme.typography.bodyLarge,
+                            color = MaterialTheme.colorScheme.onSurface
+                        )
+                    }
+                }
+            }
+        },
+        confirmButton = {
+            TextButton(onClick = onDismiss) {
+                Text("Cancel")
+            }
+        }
+    )
 }
 
 @Composable

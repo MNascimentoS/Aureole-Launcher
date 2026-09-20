@@ -51,7 +51,12 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.data.model.AppFolder
 import dev.mnascimentos.aureole.data.model.AppInfo
+import dev.chrisbanes.haze.HazeState
+import dev.chrisbanes.haze.HazeStyle
+import dev.chrisbanes.haze.HazeTint
+import dev.chrisbanes.haze.hazeEffect
 
+@Suppress("LongParameterList", "MagicNumber")
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun OpenedFolderPopup(
@@ -59,7 +64,10 @@ fun OpenedFolderPopup(
     allApps: List<AppInfo>,
     actions: FolderPopupActions,
     modifier: Modifier = Modifier,
-    isLeftHandedMode: Boolean = false
+    isLeftHandedMode: Boolean = false,
+    hazeState: HazeState? = null,
+    isHazeEnabled: Boolean = false,
+    hazeOpacity: Float = 0.5f
 ) {
     val appsInFolder = folder.appPackageNames.mapNotNull { pkgName ->
         allApps.find { it.packageName == pkgName }
@@ -68,12 +76,31 @@ fun OpenedFolderPopup(
     var showActionsByLongPress by remember { mutableStateOf(false) }
     val isActionsVisible = appsInFolder.isEmpty() || showActionsByLongPress
 
+    val hazeModifier = if (isHazeEnabled && (hazeState != null)) {
+        Modifier.hazeEffect(
+            state = hazeState,
+            style = HazeStyle(
+                blurRadius = 24.dp,
+                tint = HazeTint(MaterialTheme.colorScheme.surfaceContainerHigh.copy(alpha = hazeOpacity))
+            )
+        ) {
+            blurEnabled = isHazeEnabled
+        }
+    } else {
+        Modifier
+    }
+
     Box(
         modifier = modifier
             .widthIn(min = 210.dp, max = 250.dp)
             .heightIn(max = 380.dp)
             .clip(RoundedCornerShape(18.dp))
-            .background(MaterialTheme.colorScheme.surfaceContainerHigh)
+            .then(hazeModifier)
+            .background(
+                MaterialTheme.colorScheme.surfaceContainerHigh.copy(
+                    alpha = if (isHazeEnabled) (hazeOpacity * 0.8f).coerceIn(0.25f, 0.95f) else 1f
+                )
+            )
             .padding(12.dp)
     ) {
         Column(modifier = Modifier.fillMaxWidth()) {
@@ -118,7 +145,10 @@ fun OpenedFolderPopup(
     onAddAppsClick: () -> Unit,
     onEditFolderClick: () -> Unit,
     modifier: Modifier = Modifier,
-    isLeftHandedMode: Boolean = false
+    isLeftHandedMode: Boolean = false,
+    hazeState: HazeState? = null,
+    isHazeEnabled: Boolean = false,
+    hazeOpacity: Float = 0.5f
 ) {
     OpenedFolderPopup(
         folder = folder,
@@ -130,7 +160,10 @@ fun OpenedFolderPopup(
             onEditFolderClick = onEditFolderClick
         ),
         modifier = modifier,
-        isLeftHandedMode = isLeftHandedMode
+        isLeftHandedMode = isLeftHandedMode,
+        hazeState = hazeState,
+        isHazeEnabled = isHazeEnabled,
+        hazeOpacity = hazeOpacity
     )
 }
 

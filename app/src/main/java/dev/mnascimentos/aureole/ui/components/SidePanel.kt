@@ -33,14 +33,33 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import dev.chrisbanes.haze.HazeState
+import dev.chrisbanes.haze.HazeStyle
+import dev.chrisbanes.haze.HazeTint
+import dev.chrisbanes.haze.hazeEffect
 import dev.mnascimentos.aureole.data.model.AppFolder
 
+@Suppress("MagicNumber")
 @Composable
 fun SidePanel(
     config: SidePanelConfig,
     onFolderClick: (AppFolder, Float) -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val hazeModifier = if (config.isHazeEnabled && (config.hazeState != null)) {
+        Modifier.hazeEffect(
+            state = config.hazeState,
+            style = HazeStyle(
+                blurRadius = 20.dp,
+                tint = HazeTint(MaterialTheme.colorScheme.surfaceContainerHigh.copy(alpha = config.hazeOpacity))
+            )
+        ) {
+            blurEnabled = config.isHazeEnabled
+        }
+    } else {
+        Modifier
+    }
+
     Box(
         modifier = modifier
             .padding(
@@ -61,7 +80,12 @@ fun SidePanel(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
                 .clip(RoundedCornerShape(18.dp))
-                .background(MaterialTheme.colorScheme.surfaceContainerHigh.copy(alpha = 0.85f))
+                .then(hazeModifier)
+                .background(
+                    MaterialTheme.colorScheme.surfaceContainerHigh.copy(
+                        alpha = if (config.isHazeEnabled) (config.hazeOpacity * 0.7f).coerceIn(0.2f, 0.95f) else 0.85f
+                    )
+                )
                 .padding(8.dp)
         ) {
             config.folders.forEach { folder ->
@@ -76,12 +100,16 @@ fun SidePanel(
     }
 }
 
+@Suppress("LongParameterList")
 data class SidePanelConfig(
     val folders: List<AppFolder>,
     val openedFolderId: String?,
     val isLeftHandedMode: Boolean,
     val position: String = "Center",
     val showFolderLabels: Boolean = false,
+    val hazeState: HazeState? = null,
+    val isHazeEnabled: Boolean = false,
+    val hazeOpacity: Float = 0.5f,
 )
 
 @Composable

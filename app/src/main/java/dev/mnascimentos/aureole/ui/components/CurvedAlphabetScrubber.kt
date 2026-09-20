@@ -38,7 +38,7 @@ private val MAX_BULGE_AMPLITUDE = 56.dp
 private val CURVE_SPREAD = 80.dp
 private val SCRUBBER_WIDTH = 48.dp
 private val BADGE_SIZE = 48.dp
-private val BADGE_MARGIN = 12.dp
+private val BADGE_MARGIN = 28.dp
 
 private val SCRUBBER_PADDING_TOP = 64.dp
 private val SCRUBBER_PADDING_BOTTOM = 110.dp

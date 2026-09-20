@@ -32,10 +32,24 @@ import dev.mnascimentos.aureole.ui.MainUiState
 import dev.mnascimentos.aureole.ui.MainViewModel
 import dev.mnascimentos.aureole.ui.components.FavoriteAppsDialog
 import dev.mnascimentos.aureole.ui.components.WidgetPickerBottomSheet
+import dev.mnascimentos.aureole.ui.components.OpenedWidgetPopup
+import dev.mnascimentos.aureole.ui.components.WidgetResizeDialog
 import dev.mnascimentos.aureole.ui.screens.HomeScreen
 import dev.mnascimentos.aureole.ui.screens.HomeScreenActions
 import dev.mnascimentos.aureole.ui.settings.SettingsActivity
 import dev.mnascimentos.aureole.ui.theme.AureoleLauncherTheme
+import dev.mnascimentos.aureole.ui.theme.LocalHazeState
+import dev.chrisbanes.haze.rememberHazeState
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.statusBars
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.unit.dp
 
 @Suppress("TooManyFunctions")
 class MainActivity : ComponentActivity() {
@@ -103,40 +117,44 @@ class MainActivity : ComponentActivity() {
         setContent {
             val uiState by viewModel.uiState.collectAsState()
             val isOverlayActive = checkOverlayActive(uiState)
+            val hazeState = rememberHazeState()
 
-            LaunchedEffect(isOverlayActive) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                    val view = window.decorView
-                    val w = view.width
-                    val h = view.height
-                    if (w > 0 && h > 0) {
-                        view.systemGestureExclusionRects = if (isOverlayActive) {
-                            emptyList()
-                        } else {
-                            listOf(Rect(0, 0, w, h))
+            CompositionLocalProvider(LocalHazeState provides hazeState) {
+                LaunchedEffect(isOverlayActive) {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                        val view = window.decorView
+                        val w = view.width
+                        val h = view.height
+                        if (w > 0 && h > 0) {
+                            view.systemGestureExclusionRects = if (isOverlayActive) {
+                                emptyList()
+                            } else {
+                                listOf(Rect(0, 0, w, h))
+                            }
                         }
                     }
                 }
-            }
 
-            AureoleLauncherTheme(
-                isDynamicWallpaperEnabled = uiState.isDynamicWallpaperEnabled,
-                seedColor = Color(uiState.manualSeedColor),
-            ) {
-                BackHandler(enabled = isOverlayActive) {
-                    handleBackNavigation(uiState)
+                AureoleLauncherTheme(
+                    isDynamicWallpaperEnabled = uiState.isDynamicWallpaperEnabled,
+                    seedColor = Color(uiState.manualSeedColor),
+                ) {
+                    BackHandler(enabled = isOverlayActive) {
+                        handleBackNavigation(uiState)
+                    }
+
+                    val homeActions = createHomeActions()
+
+                    MainScaffold(
+                        uiState = uiState,
+                        homeActions = homeActions
+                    )
                 }
-
-                val homeActions = createHomeActions()
-
-                MainScaffold(
-                    uiState = uiState,
-                    homeActions = homeActions
-                )
             }
         }
     }
 
+    @Suppress("LongMethod")
     @Composable
     private fun MainScaffold(
         uiState: MainUiState,
@@ -172,6 +190,61 @@ class MainActivity : ComponentActivity() {
                     onDismiss = { viewModel.setShowFavoritePicker(false) }
                 )
             }
+
+            if (uiState.showWidgetPopup && uiState.activeWidgetId != null) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(Color.Transparent)
+                        .pointerInput(Unit) {
+                            detectTapGestures(onTap = { viewModel.closeWidgetPopup() })
+                        }
+                ) {
+                    val popupAlign = if (uiState.isLeftHandedMode) Alignment.TopStart else Alignment.TopEnd
+                    val sidePadding = 76.dp
+                    val screenDensity = LocalDensity.current.density
+                    val topInsetDp = WindowInsets.statusBars.asPaddingValues().calculateTopPadding()
+
+                    val rawTopDp = if (uiState.activeWidgetTopYPx > 0f) {
+                        (uiState.activeWidgetTopYPx / screenDensity).dp - topInsetDp
+                    } else {
+                        40.dp
+                    }
+                    val clampedTopDp = rawTopDp.coerceIn(8.dp, 500.dp)
+
+                    OpenedWidgetPopup(
+                        widgetId = uiState.activeWidgetId,
+                        appWidgetHost = appWidgetHost,
+                        onDismiss = { viewModel.closeWidgetPopup() },
+                        onResizeClick = { viewModel.setShowWidgetResizeDialog(true) },
+                        onRemoveClick = {
+                            removeWidget(uiState.activeWidgetId!!)
+                            viewModel.closeWidgetPopup()
+                        },
+                        hazeState = LocalHazeState.current,
+                        isHazeEnabled = uiState.isHazeEnabled,
+                        hazeOpacity = uiState.hazeOpacity,
+                        modifier = Modifier
+                            .align(popupAlign)
+                            .padding(
+                                start = if (uiState.isLeftHandedMode) sidePadding else 0.dp,
+                                end = if (!uiState.isLeftHandedMode) sidePadding else 0.dp,
+                                top = clampedTopDp
+                            )
+                    )
+                }
+            }
+
+            if (uiState.showWidgetResizeDialog) {
+                WidgetResizeDialog(
+                    currentHeightDp = uiState.widgetRowHeight,
+                    onHeightSelected = { newHeight ->
+                        viewModel.setWidgetRowHeight(newHeight)
+                        viewModel.closeWidgetPopup()
+                    },
+                    onDismiss = { viewModel.closeWidgetPopup() }
+                )
+            }
         }
     }
 
@@ -183,11 +256,14 @@ class MainActivity : ComponentActivity() {
                 uiState.isRenameFolderDialogVisible ||
                 uiState.searchQuery.isNotEmpty() ||
                 uiState.showWidgetPicker ||
-                uiState.showFavoritePickerDialog)
+                uiState.showFavoritePickerDialog ||
+                uiState.showWidgetPopup ||
+                uiState.showWidgetResizeDialog)
     }
 
     private fun handleBackNavigation(uiState: MainUiState) {
         when {
+            uiState.showWidgetPopup || uiState.showWidgetResizeDialog -> viewModel.closeWidgetPopup()
             uiState.isCreateFolderDialogVisible ||
             uiState.isAddAppToFolderDialogVisible ||
             uiState.isRenameFolderDialogVisible ||
@@ -215,7 +291,12 @@ class MainActivity : ComponentActivity() {
             onAllAppsDrawerOpen = { viewModel.setAllAppsDrawerOpen(true) },
             onToggleFavorite = { pkg -> viewModel.toggleFavorite(pkg) },
             onAppInfoClick = { app -> openAppInfo(app.packageName) },
-            onOpenFavoritePicker = { viewModel.setShowFavoritePicker(true) }
+            onOpenFavoritePicker = { viewModel.setShowFavoritePicker(true) },
+            onOpenWidgetPopup = { widgetId, topY -> viewModel.openWidgetPopup(widgetId, topY) },
+            onCloseWidgetPopup = { viewModel.closeWidgetPopup() },
+            onOpenWidgetResizeDialog = { viewModel.setShowWidgetResizeDialog(true) },
+            onCloseWidgetResizeDialog = { viewModel.closeWidgetPopup() },
+            onResizeWidgetHeight = { height -> viewModel.setWidgetRowHeight(height) }
         )
     }
 

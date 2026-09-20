@@ -42,6 +42,7 @@ data class MainUiState(
     val topWidgetIds: List<Int> = emptyList(),
     val widgetRowHeight: Dp = 160.dp,
     val isWidgetRowEnabled: Boolean = true,
+    val showWidgetDots: Boolean = true,
     val showWidgetPicker: Boolean = false,
     val pendingWidgetId: Int = -1,
 
@@ -56,6 +57,9 @@ data class MainUiState(
     val customWallpaperPath: String? = null,
     val isDynamicWallpaperEnabled: Boolean = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S,
     val manualSeedColor: Int = SettingsRepository.DEFAULT_SEED_COLOR,
+    val isHazeEnabled: Boolean = true,
+    val isHazeSupported: Boolean = true,
+    val hazeOpacity: Float = 0.5f,
 
     // Favorites & Folders
     val favoriteAppPackages: List<String> = emptyList(),
@@ -73,6 +77,10 @@ data class MainUiState(
     val showSettingsDialog: Boolean = false,
     val showFavoritePickerDialog: Boolean = false,
     val isAllAppsDrawerOpen: Boolean = false,
+    val activeWidgetId: Int? = null,
+    val activeWidgetTopYPx: Float = 0f,
+    val showWidgetPopup: Boolean = false,
+    val showWidgetResizeDialog: Boolean = false,
 )
 
 @Suppress("TooManyFunctions")
@@ -138,12 +146,16 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
             val homeOpensAllApps = settingsRepository.homeButtonOpensAllApps
             val showAllAppsHome = settingsRepository.showAllAppsOnHome
             val isWidgetRowEnabled = settingsRepository.isWidgetRowEnabled
+            val showWidgetDots = settingsRepository.showWidgetDots
             val favoritePackages = settingsRepository.favoriteAppPackages
             val savedFolders = folderRepository.getFolders()
             val isCustomWallpaperSet = settingsRepository.isCustomWallpaperSet
             val customWallpaperPath = settingsRepository.customWallpaperPath
             val isDynamicWallpaperEnabled = settingsRepository.isDynamicWallpaperEnabled
             val manualSeedColor = settingsRepository.manualSeedColor
+            val isHazeEnabled = settingsRepository.isHazeEnabled
+            val isHazeSupported = settingsRepository.isHazeSupported
+            val hazeOpacity = settingsRepository.hazeOpacity
 
             _uiState.update {
                 it.copy(
@@ -154,12 +166,16 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
                     homeButtonOpensAllApps = homeOpensAllApps,
                     showAllAppsOnHome = showAllAppsHome,
                     isWidgetRowEnabled = isWidgetRowEnabled,
+                    showWidgetDots = showWidgetDots,
                     favoriteAppPackages = favoritePackages,
                     folders = savedFolders,
                     isCustomWallpaperSet = isCustomWallpaperSet,
                     customWallpaperPath = customWallpaperPath,
                     isDynamicWallpaperEnabled = isDynamicWallpaperEnabled,
-                    manualSeedColor = manualSeedColor
+                    manualSeedColor = manualSeedColor,
+                    isHazeEnabled = isHazeEnabled,
+                    isHazeSupported = isHazeSupported,
+                    hazeOpacity = hazeOpacity
                 )
             }
         }
@@ -263,6 +279,31 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
 
     fun setRenameFolderDialogVisible(visible: Boolean) {
         _uiState.update { it.copy(isRenameFolderDialogVisible = visible) }
+    }
+
+    fun openWidgetPopup(widgetId: Int, topYPx: Float) {
+        _uiState.update {
+            it.copy(
+                activeWidgetId = widgetId,
+                activeWidgetTopYPx = topYPx,
+                showWidgetPopup = true
+            )
+        }
+    }
+
+    fun closeWidgetPopup() {
+        _uiState.update {
+            it.copy(
+                activeWidgetId = null,
+                activeWidgetTopYPx = 0f,
+                showWidgetPopup = false,
+                showWidgetResizeDialog = false
+            )
+        }
+    }
+
+    fun setShowWidgetResizeDialog(show: Boolean) {
+        _uiState.update { it.copy(showWidgetResizeDialog = show, showWidgetPopup = false) }
     }
 
     fun setAddAppToFolderDialogVisible(visible: Boolean) {
