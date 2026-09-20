@@ -1,9 +1,8 @@
 name: Deploy to Google Play Internal Track
 
 on:
-  push:
-    branches:
-      - 'release/**'
+  pull_request:
+    types: [opened, synchronize, reopened]
   workflow_dispatch:
     inputs:
       version_name:
@@ -13,6 +12,7 @@ on:
 jobs:
   deploy:
     name: Build & Deploy Internal Release
+    if: github.event_name == 'workflow_dispatch' || startsWith(github.head_ref, 'release/') || startsWith(github.base_ref, 'release/')
     runs-on: ubuntu-latest
 
     steps:
@@ -26,9 +26,12 @@ jobs:
         run: |
           if [ -n "${{ github.event.inputs.version_name }}" ]; then
             VERSION_NAME="${{ github.event.inputs.version_name }}"
+          elif [[ "${GITHUB_HEAD_REF}" == release/* ]]; then
+            VERSION_NAME="${GITHUB_HEAD_REF#release/}"
+          elif [[ "${GITHUB_BASE_REF}" == release/* ]]; then
+            VERSION_NAME="${GITHUB_BASE_REF#release/}"
           else
-            BRANCH_NAME="${GITHUB_REF_NAME}"
-            VERSION_NAME="${BRANCH_NAME#release/}"
+            VERSION_NAME="${GITHUB_REF_NAME#release/}"
           fi
           echo "VERSION_NAME=${VERSION_NAME}" >> $GITHUB_OUTPUT
           echo "Extracted Version Name: ${VERSION_NAME}"
