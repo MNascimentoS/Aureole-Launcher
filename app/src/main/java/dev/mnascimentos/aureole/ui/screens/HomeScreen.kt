@@ -18,16 +18,19 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.systemGestureExclusion
+import androidx.compose.ui.geometry.Rect
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBars
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.systemGestureExclusion
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.CircularProgressIndicator
@@ -45,13 +48,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import coil.compose.AsyncImage
 import dev.mnascimentos.aureole.R
 import java.io.File
-import androidx.compose.ui.input.pointer.PointerEventPass
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
@@ -72,9 +73,9 @@ import dev.mnascimentos.aureole.ui.components.SidePanel
 import dev.mnascimentos.aureole.ui.components.SidePanelConfig
 import dev.mnascimentos.aureole.ui.components.StackedWidgetSection
 import kotlinx.coroutines.launch
+import kotlin.math.abs
 
 private const val DRAG_THRESHOLD_PX = 15
-private const val EDGE_EXCLUSION_HEIGHT_DP = 200
 private const val EDGE_EXCLUSION_WIDTH_DP = 60
 
 private const val POPUP_MAX_OFFSET_SUBTRAHEND = 300
@@ -158,22 +159,29 @@ fun HomeScreen(
                 if (dragStartedOnEdge) {
                     val topPaddingPx = with(density) { 64.dp.toPx() }
                     externalTouchY = change.position.y - topPaddingPx
-                }
+                } else if (!uiState.isAllAppsDrawerOpen) {
+                    val absX = abs(dragAmount.x)
+                    val absY = abs(dragAmount.y)
+                    val isVertical = absY > DRAG_THRESHOLD_PX && absY > absX
 
-                val absX = Math.abs(dragAmount.x)
-                val absY = Math.abs(dragAmount.y)
-                val isHorizontal = absX > DRAG_THRESHOLD_PX && absX > absY
-                val isVertical = absY > DRAG_THRESHOLD_PX && absY > absX
-
-                if (isVertical && dragAmount.y > 0) {
-                    actions.onExpandNotificationShade()
-                } else if ((isVertical && dragAmount.y < 0) || isHorizontal) {
-                    if (!uiState.isAllAppsDrawerOpen) {
+                    if (isVertical && dragAmount.y > 0) {
+                        actions.onExpandNotificationShade()
+                    } else if (isVertical && dragAmount.y < 0) {
                         actions.onAllAppsDrawerOpen()
                     }
                 }
             }
         )
+    }
+
+    val exclusionModifier = if (!uiState.isAllAppsDrawerOpen) {
+        Modifier.systemGestureExclusion {
+            val heightPx = it.size.height.toFloat()
+            val widthPx = it.size.width.toFloat()
+            Rect(0f, 0f, widthPx, heightPx)
+        }
+    } else {
+        Modifier
     }
 
     Box(
@@ -183,45 +191,12 @@ fun HomeScreen(
                 screenHeightPx = it.size.height.toFloat()
                 screenWidthPx = it.size.width.toFloat()
             }
+            .then(exclusionModifier)
             .then(dragModifier)
     ) {
         WallpaperBackground(
             isCustomWallpaperSet = uiState.isCustomWallpaperSet,
             customWallpaperPath = uiState.customWallpaperPath
-        )
-
-        var edgeTouchYPx by remember { mutableFloatStateOf(-1f) }
-
-        Box(
-            modifier = Modifier
-                .fillMaxHeight()
-                .width(EDGE_EXCLUSION_WIDTH_DP.dp)
-                .align(if (uiState.isLeftHandedMode) Alignment.CenterStart else Alignment.CenterEnd)
-                .pointerInput(Unit) {
-                    awaitPointerEventScope {
-                        while (true) {
-                            val event = awaitPointerEvent(PointerEventPass.Initial)
-                            val position = event.changes.firstOrNull()?.position
-                            if (position != null) {
-                                edgeTouchYPx = position.y
-                            }
-                        }
-                    }
-                }
-                .systemGestureExclusion { layoutCoordinates ->
-                    val heightPx = layoutCoordinates.size.height.toFloat()
-                    val widthPx = layoutCoordinates.size.width.toFloat()
-                    val maxExclusionHeightPx = with(density) { EDGE_EXCLUSION_HEIGHT_DP.dp.toPx() }
-
-                    val centerY = if (edgeTouchYPx >= 0f) edgeTouchYPx else heightPx / 2f
-                    val top = (centerY - maxExclusionHeightPx / 2f).coerceIn(
-                        0f,
-                        (heightPx - maxExclusionHeightPx).coerceAtLeast(0f)
-                    )
-                    val bottom = (top + maxExclusionHeightPx).coerceAtMost(heightPx)
-
-                    Rect(left = 0f, top = top, right = widthPx, bottom = bottom)
-                }
         )
 
         if (uiState.isLoading) {
@@ -324,7 +299,12 @@ private fun MainHomeLayout(
         state = favListState
     )
 
-    Row(modifier = Modifier.fillMaxSize()) {
+    Row(
+        modifier = Modifier
+            .fillMaxSize()
+            .statusBarsPadding()
+            .navigationBarsPadding()
+    ) {
         if (uiState.isLeftHandedMode) {
             if (uiState.isSidePanelEnabled) {
                 SidePanel(

@@ -17,6 +17,9 @@ import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.layout.imePadding
+import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Settings
@@ -50,6 +53,7 @@ fun AppsListDrawer(
             .fillMaxHeight()
             .fillMaxWidth()
             .background(MaterialTheme.colorScheme.background)
+            .statusBarsPadding()
     ) {
         LazyColumn(
             state = listState,
@@ -69,7 +73,10 @@ fun AppsListDrawer(
             onQueryChange = actions.onSearchQueryChanged,
             onSettingsClick = actions.onSettingsClick,
             isLeftHandedMode = uiState.isLeftHandedMode,
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth()
+                .navigationBarsPadding()
+                .imePadding()
         )
     }
 }

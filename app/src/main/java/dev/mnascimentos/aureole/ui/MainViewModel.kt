@@ -91,15 +91,26 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
 
     init {
         loadSettings()
-        loadApps()
+        observeAppsFlow()
         loadWidgetSettings()
+        syncApps()
+    }
+
+    private fun observeAppsFlow() {
+        viewModelScope.launch {
+            appRepository.appsFlow.collect { appsList ->
+                updateAppsState(appsList)
+            }
+        }
     }
 
     fun loadApps() {
+        syncApps()
+    }
+
+    fun syncApps() {
         viewModelScope.launch {
-            _uiState.update { it.copy(isLoading = true) }
-            val appsList = appRepository.getInstalledApps()
-            updateAppsState(appsList)
+            appRepository.syncApps()
         }
     }
 
@@ -211,9 +222,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
 
     private fun launchAppFromFolder(packageName: String) {
         val appInfo = _uiState.value.apps.find { it.packageName == packageName }
-        if (appInfo != null) {
-            launchApp(appInfo.componentName)
-        }
+        appInfo?.let { launchApp(it.componentName) }
         closeFolder()
     }
 
@@ -387,6 +396,8 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         val favApps = apps.filter { favoritePackages.contains(it.packageName) }
             .sortedBy { favoritePackages.indexOf(it.packageName) }
 
+        val shouldKeepLoading = apps.isEmpty() && _uiState.value.isLoading
+
         _uiState.update {
             it.copy(
                 apps = apps,
@@ -394,7 +405,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
                 favoriteApps = favApps,
                 alphabet = alphabet,
                 letterIndexMap = indexMap,
-                isLoading = false,
+                isLoading = shouldKeepLoading,
             )
         }
     }

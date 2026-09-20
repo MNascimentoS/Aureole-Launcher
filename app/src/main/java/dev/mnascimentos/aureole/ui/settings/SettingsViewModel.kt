@@ -87,8 +87,9 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
 
     fun loadApps() {
         viewModelScope.launch {
-            val apps = appRepository.getInstalledApps()
-            _uiState.update { it.copy(allApps = apps) }
+            appRepository.appsFlow.collect { apps ->
+                _uiState.update { it.copy(allApps = apps) }
+            }
         }
     }
 

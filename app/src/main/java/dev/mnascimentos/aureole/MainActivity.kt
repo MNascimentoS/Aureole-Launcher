@@ -4,7 +4,9 @@ import android.appwidget.AppWidgetHost
 import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProviderInfo
 import android.content.Intent
+import android.graphics.Rect
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
 import androidx.activity.ComponentActivity
@@ -13,10 +15,14 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsControllerCompat
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -71,17 +77,52 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            window.isNavigationBarContrastEnforced = false
+            window.decorView.addOnLayoutChangeListener { view, _, _, _, _, _, _, _, _ ->
+                val w = view.width
+                val h = view.height
+                val isOverlayActive = checkOverlayActive(viewModel.uiState.value)
+                if (w > 0 && h > 0) {
+                    view.systemGestureExclusionRects = if (isOverlayActive) {
+                        emptyList()
+                    } else {
+                        listOf(Rect(0, 0, w, h))
+                    }
+                }
+            }
+        }
+
+        WindowCompat.getInsetsController(window, window.decorView).apply {
+            systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+        }
+
         appWidgetManager = AppWidgetManager.getInstance(this)
         appWidgetHost = AppWidgetHost(this, APPWIDGET_HOST_ID).apply { startListening() }
 
         setContent {
             val uiState by viewModel.uiState.collectAsState()
+            val isOverlayActive = checkOverlayActive(uiState)
+
+            LaunchedEffect(isOverlayActive) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                    val view = window.decorView
+                    val w = view.width
+                    val h = view.height
+                    if (w > 0 && h > 0) {
+                        view.systemGestureExclusionRects = if (isOverlayActive) {
+                            emptyList()
+                        } else {
+                            listOf(Rect(0, 0, w, h))
+                        }
+                    }
+                }
+            }
+
             AureoleLauncherTheme(
                 isDynamicWallpaperEnabled = uiState.isDynamicWallpaperEnabled,
                 seedColor = Color(uiState.manualSeedColor),
             ) {
-                val isOverlayActive = checkOverlayActive(uiState)
-
                 BackHandler(enabled = isOverlayActive) {
                     handleBackNavigation(uiState)
                 }
@@ -101,12 +142,15 @@ class MainActivity : ComponentActivity() {
         uiState: MainUiState,
         homeActions: HomeScreenActions
     ) {
-        Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+        Scaffold(
+            modifier = Modifier.fillMaxSize(),
+            contentWindowInsets = WindowInsets(0, 0, 0, 0)
+        ) { _ ->
             HomeScreen(
                 uiState = uiState,
                 appWidgetHost = appWidgetHost,
                 actions = homeActions,
-                modifier = Modifier.padding(innerPadding)
+                modifier = Modifier.fillMaxSize()
             )
 
             if (uiState.showWidgetPicker) {
