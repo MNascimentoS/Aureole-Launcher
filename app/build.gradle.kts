@@ -98,6 +98,9 @@ dependencies {
     implementation(libs.androidx.room.ktx)
     ksp(libs.androidx.room.compiler)
 
+    implementation(libs.playAppUpdate)
+    implementation(libs.playAppUpdateKtx)
+
     testImplementation(libs.junit)
     testImplementation(libs.robolectric)
     androidTestImplementation(composeBom)

@@ -109,6 +109,7 @@ class SettingsActivity : ComponentActivity() {
             onToggleLeftHandedMode = { viewModel.toggleSetting(SettingToggle.LEFT_HANDED_MODE) },
             onToggleDynamicWallpaper = { viewModel.toggleSetting(SettingToggle.DYNAMIC_WALLPAPER) },
             onToggleHaze = { viewModel.toggleSetting(SettingToggle.HAZE) },
+            onToggleInAppUpdate = { viewModel.toggleSetting(SettingToggle.IN_APP_UPDATE) },
             onOpenFavoritePickerClick = {
                 viewModel.setDialogVisible(SettingsDialog.FAVORITE_PICKER, visible = true)
             },

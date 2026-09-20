@@ -36,6 +36,9 @@ data class MainUiState(
     val isHazeEnabled: Boolean = true,
     val isHazeSupported: Boolean = true,
     val hazeOpacity: Float = 0.5f,
+    val isInAppUpdateEnabled: Boolean = true,
+    val showUpdateAvailableDialog: Boolean = false,
+    val showUpdateDownloadedDialog: Boolean = false,
 
     // Favorites & Folders
     val favoriteAppPackages: List<String> = emptyList(),

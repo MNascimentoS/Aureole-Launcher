@@ -51,7 +51,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -128,6 +127,7 @@ fun SettingsScreen(
             item { WidgetsSettingsGroup(uiState = uiState, actions = actions) }
             item { FoldersSettingsGroup(uiState = uiState, actions = actions) }
             item { LayoutSettingsGroup(uiState = uiState, actions = actions) }
+            item { SystemSettingsGroup(uiState = uiState, actions = actions) }
             item { AboutSettingsGroup() }
         }
     }
@@ -534,6 +534,26 @@ private fun LayoutSettingsGroup(
                     onClick = actions.onOpenHazeOpacityDialog
                 )
             }
+        }
+    }
+}
+
+@Composable
+private fun SystemSettingsGroup(
+    uiState: SettingsUiState,
+    actions: SettingsScreenActions
+) {
+    Column {
+        PreferenceCategoryHeader(title = "Updates & System")
+        PreferenceCard {
+            PreferenceSwitchRow(
+                config = PreferenceItemConfig(
+                    title = "Buscar atualizações no Google Play",
+                    subtitle = "Exibe um aviso no início caso exista uma nova versão do app disponível"
+                ),
+                checked = uiState.isInAppUpdateEnabled,
+                onCheckedChange = { actions.onToggleInAppUpdate() }
+            )
         }
     }
 }
