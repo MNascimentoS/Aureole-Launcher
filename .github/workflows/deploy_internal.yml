@@ -6,6 +6,11 @@ on:
       - 'release/**'
   pull_request:
     types: [opened, synchronize, reopened]
+    branches:
+      - 'main'
+      - 'master'
+      - 'develop'
+      - 'release/**'
   workflow_dispatch:
     inputs:
       version_name:
