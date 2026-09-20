@@ -8,8 +8,8 @@ import dev.mnascimentos.aureole.core.data.repository.AppRepository
 import dev.mnascimentos.aureole.core.data.repository.FolderRepository
 import dev.mnascimentos.aureole.core.data.repository.SettingsRepository
 import dev.mnascimentos.aureole.core.data.repository.WidgetRepository
-import dev.mnascimentos.aureole.feature.home.ext.loadWidgetSettings
-import dev.mnascimentos.aureole.feature.home.ext.updateAppsState
+import dev.mnascimentos.aureole.feature.home.extensions.loadWidgetSettings
+import dev.mnascimentos.aureole.feature.home.extensions.updateAppsState
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

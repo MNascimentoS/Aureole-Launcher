@@ -1,4 +1,4 @@
-package dev.mnascimentos.aureole.feature.home.ext
+package dev.mnascimentos.aureole.feature.home.extensions
 
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
