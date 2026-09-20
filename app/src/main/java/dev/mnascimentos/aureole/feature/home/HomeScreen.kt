@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyListState
@@ -264,7 +265,11 @@ private fun BoxScope.HomeOverlaysContent(
             actions = config.actions,
             onExternalTouchYReset = config.onExternalTouchYReset
         ),
-        modifier = Modifier.align(scrubberAlign)
+        modifier = Modifier
+            .align(scrubberAlign)
+            .statusBarsPadding()
+            .navigationBarsPadding()
+            .imePadding()
     )
 
     HomeScreenFolderOverlays(
