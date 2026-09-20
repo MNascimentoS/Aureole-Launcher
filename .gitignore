@@ -10,4 +10,9 @@
 local.properties
 .kotlin/
 .artifacts/
+*.aab
+*.apk
+release.keystore
+play_store_key.json
+app/release/
 
