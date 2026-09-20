@@ -2,7 +2,6 @@ package dev.mnascimentos.aureole.feature.home
 
 import android.appwidget.AppWidgetHost
 import android.content.ComponentName
-import android.content.res.Configuration
 import android.graphics.drawable.ColorDrawable
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
@@ -38,7 +37,6 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -46,6 +44,7 @@ import dev.chrisbanes.haze.HazeState
 import dev.chrisbanes.haze.rememberHazeState
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
+import dev.mnascimentos.aureole.core.designsystem.theme.AureolePreview
 import dev.mnascimentos.aureole.feature.home.components.AppsListDrawer
 import dev.mnascimentos.aureole.feature.home.components.CurvedAlphabetScrubber
 import dev.mnascimentos.aureole.feature.home.components.FavoritesList
@@ -478,8 +477,7 @@ private fun SidePanelSection(
     }
 }
 
-@Preview(name = "Light Mode", showBackground = true)
-@Preview(name = "Dark Mode", uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
+@AureolePreview
 @Composable
 fun HomeScreenPreview() {
     val context = LocalContext.current

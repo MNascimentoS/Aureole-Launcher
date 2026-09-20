@@ -1,7 +1,6 @@
 package dev.mnascimentos.aureole.feature.home.components
 
 import android.content.ComponentName
-import android.content.res.Configuration
 import android.graphics.drawable.ColorDrawable
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -39,7 +38,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import dev.chrisbanes.haze.HazeState
 import dev.chrisbanes.haze.HazeStyle
@@ -47,6 +45,7 @@ import dev.chrisbanes.haze.HazeTint
 import dev.chrisbanes.haze.hazeEffect
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
+import dev.mnascimentos.aureole.core.designsystem.theme.AureolePreview
 import dev.mnascimentos.aureole.core.designsystem.theme.fadingEdges
 import dev.mnascimentos.aureole.feature.home.HomeScreenActions
 import dev.mnascimentos.aureole.feature.home.LocalHomeActions
@@ -248,8 +247,7 @@ fun LazyListScope.appsListItems(
     }
 }
 
-@Preview(name = "Light Mode", showBackground = true)
-@Preview(name = "Dark Mode", uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
+@AureolePreview
 @Composable
 fun AppsListDrawerPreview() {
     val mockApp = AppInfo(

@@ -1,6 +1,5 @@
 package dev.mnascimentos.aureole.feature.home.components
 
-import android.content.res.Configuration
 import android.graphics.Typeface
 import android.widget.TextClock
 import androidx.compose.foundation.background
@@ -20,7 +19,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import dev.chrisbanes.haze.HazeState
@@ -28,6 +26,7 @@ import dev.chrisbanes.haze.HazeStyle
 import dev.chrisbanes.haze.HazeTint
 import dev.chrisbanes.haze.hazeEffect
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
+import dev.mnascimentos.aureole.core.designsystem.theme.AureolePreview
 import java.util.Calendar
 
 private const val CLOCK_TEXT_SIZE = 64f
@@ -148,8 +147,7 @@ private fun ClockDateDisplay(colorPrimary: Int) {
     )
 }
 
-@Preview(name = "Light Mode", showBackground = true)
-@Preview(name = "Dark Mode", uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
+@AureolePreview
 @Composable
 fun ClockHeaderPreview() {
     AureoleLauncherTheme {

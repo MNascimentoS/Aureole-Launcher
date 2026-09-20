@@ -1,7 +1,6 @@
 package dev.mnascimentos.aureole.feature.home.components
 
 import android.content.ComponentName
-import android.content.res.Configuration
 import android.graphics.drawable.ColorDrawable
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -36,12 +35,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
+import dev.mnascimentos.aureole.core.designsystem.theme.AureolePreview
 
 private const val FAVORITE_DIALOG_HEIGHT_FRACTION = 0.8f
 
@@ -194,8 +193,7 @@ private fun FavoriteAppsFooter(onDismiss: () -> Unit) {
     }
 }
 
-@Preview(name = "Light Mode", showBackground = true)
-@Preview(name = "Dark Mode", uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
+@AureolePreview
 @Composable
 fun FavoriteAppsDialogPreview() {
     val mockApp = AppInfo(
