@@ -7,6 +7,7 @@ data class FolderEntity(
     val name: String,
     val color: String? = null,
     val iconFallback: String? = null,
+    val icon: String? = null,
     val displayAsGrid: Boolean = false,
     val createdAt: Long = System.currentTimeMillis()
 )

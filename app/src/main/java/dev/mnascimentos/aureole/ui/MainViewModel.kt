@@ -2,6 +2,7 @@ package dev.mnascimentos.aureole.ui
 
 import android.app.Application
 import android.content.ComponentName
+import android.os.Build
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.AndroidViewModel
@@ -26,7 +27,7 @@ sealed interface FolderViewIntent {
     data class LaunchApp(val packageName: String) : FolderViewIntent
     data class AddAppToFolder(val folderId: String) : FolderViewIntent
     data class SaveFolderApps(val folderId: String, val selectedPackageNames: List<String>) : FolderViewIntent
-    data class RenameFolder(val folderId: String, val newName: String) : FolderViewIntent
+    data class RenameFolder(val folderId: String, val newName: String, val icon: String? = null) : FolderViewIntent
     data class DeleteFolder(val folderId: String) : FolderViewIntent
 }
 
@@ -47,10 +48,13 @@ data class MainUiState(
     val isLeftHandedMode: Boolean = false,
     val isSidePanelEnabled: Boolean = true,
     val sidePanelPosition: String = "Center",
+    val showFolderLabels: Boolean = false,
     val homeButtonOpensAllApps: Boolean = true,
     val showAllAppsOnHome: Boolean = true,
     val isCustomWallpaperSet: Boolean = false,
     val customWallpaperPath: String? = null,
+    val isDynamicWallpaperEnabled: Boolean = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S,
+    val manualSeedColor: Int = SettingsRepository.DEFAULT_SEED_COLOR,
 
     // Favorites & Folders
     val favoriteAppPackages: List<String> = emptyList(),
@@ -118,24 +122,30 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
             val isLeftHanded = settingsRepository.isLeftHandedMode
             val isSidePanelEnabled = settingsRepository.isSidePanelEnabled
             val sidePanelPosition = settingsRepository.sidePanelPosition
+            val showFolderLabels = settingsRepository.showFolderLabels
             val homeOpensAllApps = settingsRepository.homeButtonOpensAllApps
             val showAllAppsHome = settingsRepository.showAllAppsOnHome
             val favoritePackages = settingsRepository.favoriteAppPackages
             val savedFolders = folderRepository.getFolders()
             val isCustomWallpaperSet = settingsRepository.isCustomWallpaperSet
             val customWallpaperPath = settingsRepository.customWallpaperPath
+            val isDynamicWallpaperEnabled = settingsRepository.isDynamicWallpaperEnabled
+            val manualSeedColor = settingsRepository.manualSeedColor
 
             _uiState.update {
                 it.copy(
                     isLeftHandedMode = isLeftHanded,
                     isSidePanelEnabled = isSidePanelEnabled,
                     sidePanelPosition = sidePanelPosition,
+                    showFolderLabels = showFolderLabels,
                     homeButtonOpensAllApps = homeOpensAllApps,
                     showAllAppsOnHome = showAllAppsHome,
                     favoriteAppPackages = favoritePackages,
                     folders = savedFolders,
                     isCustomWallpaperSet = isCustomWallpaperSet,
-                    customWallpaperPath = customWallpaperPath
+                    customWallpaperPath = customWallpaperPath,
+                    isDynamicWallpaperEnabled = isDynamicWallpaperEnabled,
+                    manualSeedColor = manualSeedColor
                 )
             }
         }
@@ -211,7 +221,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     private suspend fun renameFolder(intent: FolderViewIntent.RenameFolder) {
-        folderRepository.renameFolder(intent.folderId, intent.newName)
+        folderRepository.updateFolderDetails(intent.folderId, intent.newName, intent.icon)
         refreshFoldersAndOpen(intent.folderId)
         _uiState.update { it.copy(isRenameFolderDialogVisible = false) }
     }

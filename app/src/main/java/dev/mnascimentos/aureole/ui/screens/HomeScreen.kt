@@ -313,7 +313,8 @@ private fun MainHomeLayout(
         folders = uiState.folders,
         openedFolderId = uiState.openedFolderId,
         isLeftHandedMode = uiState.isLeftHandedMode,
-        position = uiState.sidePanelPosition
+        position = uiState.sidePanelPosition,
+        showFolderLabels = uiState.showFolderLabels
     )
 
     val favConfig = FavoritesListConfig(
@@ -450,11 +451,12 @@ private fun HomeScreenFolderOverlays(
         EditFolderDialog(
             folder = uiState.activeFolder,
             onDismiss = { actions.onSetRenameFolderDialogVisible(false) },
-            onRename = { newName ->
+            onSave = { newName, icon ->
                 actions.onFolderIntent(
                     FolderViewIntent.RenameFolder(
                         folderId = uiState.activeFolder.id,
-                        newName = newName
+                        newName = newName,
+                        icon = icon
                     )
                 )
             },

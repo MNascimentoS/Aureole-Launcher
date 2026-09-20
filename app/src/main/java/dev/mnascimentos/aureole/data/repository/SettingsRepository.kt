@@ -1,6 +1,7 @@
 package dev.mnascimentos.aureole.data.repository
 
 import android.content.Context
+import android.os.Build
 import androidx.core.content.edit
 import java.io.File
 
@@ -18,6 +19,10 @@ class SettingsRepository(private val context: Context) {
         get() = prefs.getString(KEY_SIDE_PANEL_POSITION, "Center") ?: "Center"
         set(value) = prefs.edit { putString(KEY_SIDE_PANEL_POSITION, value) }
 
+    var showFolderLabels: Boolean
+        get() = prefs.getBoolean(KEY_SHOW_FOLDER_LABELS, false)
+        set(value) = prefs.edit { putBoolean(KEY_SHOW_FOLDER_LABELS, value) }
+
     var favoriteAppPackages: List<String>
         get() {
             val saved = prefs.getString(KEY_FAVORITE_APPS, "") ?: ""
@@ -32,6 +37,14 @@ class SettingsRepository(private val context: Context) {
     var showAllAppsOnHome: Boolean
         get() = prefs.getBoolean(KEY_SHOW_ALL_APPS_ON_HOME, true)
         set(value) = prefs.edit { putBoolean(KEY_SHOW_ALL_APPS_ON_HOME, value) }
+
+    var isDynamicWallpaperEnabled: Boolean
+        get() = prefs.getBoolean(KEY_USE_WALLPAPER_COLORS, Build.VERSION.SDK_INT >= Build.VERSION_CODES.S)
+        set(value) = prefs.edit { putBoolean(KEY_USE_WALLPAPER_COLORS, value) }
+
+    var manualSeedColor: Int
+        get() = prefs.getInt(KEY_MANUAL_SEED_COLOR, DEFAULT_SEED_COLOR)
+        set(value) = prefs.edit { putInt(KEY_MANUAL_SEED_COLOR, value) }
 
     var isCustomWallpaperSet: Boolean
         get() {
@@ -67,10 +80,14 @@ class SettingsRepository(private val context: Context) {
         private const val KEY_LEFT_HANDED_MODE = "left_handed_mode"
         private const val KEY_SIDE_PANEL_ENABLED = "side_panel_enabled"
         private const val KEY_SIDE_PANEL_POSITION = "side_panel_position"
+        private const val KEY_SHOW_FOLDER_LABELS = "show_folder_labels"
         private const val KEY_FAVORITE_APPS = "favorite_apps"
         private const val KEY_HOME_OPENS_ALL_APPS = "home_opens_all_apps"
         private const val KEY_SHOW_ALL_APPS_ON_HOME = "show_all_apps_on_home"
         private const val KEY_IS_CUSTOM_WALLPAPER_SET = "is_custom_wallpaper_set"
         private const val KEY_CUSTOM_WALLPAPER_PATH = "custom_wallpaper_path"
+        private const val KEY_USE_WALLPAPER_COLORS = "use_wallpaper_colors"
+        private const val KEY_MANUAL_SEED_COLOR = "manual_seed_color"
+        const val DEFAULT_SEED_COLOR = 0xFF6650A4.toInt()
     }
 }

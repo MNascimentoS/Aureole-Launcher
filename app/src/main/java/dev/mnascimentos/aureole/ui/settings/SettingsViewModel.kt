@@ -30,6 +30,7 @@ data class SettingsUiState(
     val isLeftHandedMode: Boolean = false,
     val isSidePanelEnabled: Boolean = true,
     val sidePanelPosition: String = "Center",
+    val showFolderLabels: Boolean = false,
     val homeButtonOpensAllApps: Boolean = true,
     val showAllAppsOnHome: Boolean = true,
     val favoriteAppPackages: List<String> = emptyList(),
@@ -41,6 +42,9 @@ data class SettingsUiState(
     val customWallpaperPath: String? = null,
     val showRestoreWallpaperDialog: Boolean = false,
     val showCreateFolderDialog: Boolean = false,
+    val isDynamicWallpaperEnabled: Boolean = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S,
+    val manualSeedColor: Int = SettingsRepository.DEFAULT_SEED_COLOR,
+    val showColorPickerDialog: Boolean = false,
     val shouldFinishActivity: Boolean = false,
     val errorMessage: String? = null,
 )
@@ -67,11 +71,14 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
                 isLeftHandedMode = settingsRepository.isLeftHandedMode,
                 isSidePanelEnabled = settingsRepository.isSidePanelEnabled,
                 sidePanelPosition = settingsRepository.sidePanelPosition,
+                showFolderLabels = settingsRepository.showFolderLabels,
                 homeButtonOpensAllApps = settingsRepository.homeButtonOpensAllApps,
                 showAllAppsOnHome = settingsRepository.showAllAppsOnHome,
                 favoriteAppPackages = settingsRepository.favoriteAppPackages,
                 isCustomWallpaperSet = settingsRepository.isCustomWallpaperSet,
-                customWallpaperPath = settingsRepository.customWallpaperPath
+                customWallpaperPath = settingsRepository.customWallpaperPath,
+                isDynamicWallpaperEnabled = settingsRepository.isDynamicWallpaperEnabled,
+                manualSeedColor = settingsRepository.manualSeedColor,
             )
         }
     }
@@ -108,6 +115,12 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
         _uiState.update { it.copy(isSidePanelEnabled = newValue) }
     }
 
+    fun toggleShowFolderLabels() {
+        val newValue = !_uiState.value.showFolderLabels
+        settingsRepository.showFolderLabels = newValue
+        _uiState.update { it.copy(showFolderLabels = newValue) }
+    }
+
     fun setSidePanelPosition(position: String) {
         settingsRepository.sidePanelPosition = position
         _uiState.update { it.copy(sidePanelPosition = position, showSidePanelPositionDialog = false) }
@@ -142,6 +155,21 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
 
     fun setShowSidePanelPositionDialog(show: Boolean) {
         _uiState.update { it.copy(showSidePanelPositionDialog = show) }
+    }
+
+    fun toggleDynamicWallpaper() {
+        val newValue = !_uiState.value.isDynamicWallpaperEnabled
+        settingsRepository.isDynamicWallpaperEnabled = newValue
+        _uiState.update { it.copy(isDynamicWallpaperEnabled = newValue) }
+    }
+
+    fun setManualSeedColor(color: Int) {
+        settingsRepository.manualSeedColor = color
+        _uiState.update { it.copy(manualSeedColor = color, showColorPickerDialog = false) }
+    }
+
+    fun setShowColorPickerDialog(show: Boolean) {
+        _uiState.update { it.copy(showColorPickerDialog = show) }
     }
 
     @Suppress("TooGenericExceptionCaught", "SwallowedException")

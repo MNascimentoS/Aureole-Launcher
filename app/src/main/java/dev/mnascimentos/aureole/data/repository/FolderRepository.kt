@@ -38,12 +38,16 @@ class FolderRepository(private val context: Context) {
     }
 
     suspend fun updateFolder(folder: AppFolder) = withContext(Dispatchers.IO) {
-        dbHelper.renameFolder(folder.id, folder.name)
+        dbHelper.updateFolderDetails(folder.id, folder.name, folder.icon)
         dbHelper.updateFolderItems(folder.id, folder.appPackageNames)
     }
 
+    suspend fun updateFolderDetails(folderId: String, newName: String, icon: String?) = withContext(Dispatchers.IO) {
+        dbHelper.updateFolderDetails(folderId, newName, icon)
+    }
+
     suspend fun renameFolder(folderId: String, newName: String) = withContext(Dispatchers.IO) {
-        dbHelper.renameFolder(folderId, newName)
+        dbHelper.updateFolderDetails(folderId, newName, null)
     }
 
     suspend fun updateFolderApps(folderId: String, packageNames: List<String>) = withContext(Dispatchers.IO) {

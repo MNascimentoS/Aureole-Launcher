@@ -1,7 +1,12 @@
+@file:Suppress("LongMethod")
+
 package dev.mnascimentos.aureole.ui.settings
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.PaddingValues
@@ -11,15 +16,17 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
@@ -45,14 +52,15 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.R
+import dev.mnascimentos.aureole.ui.components.ColorPickerDialog
 import dev.mnascimentos.aureole.ui.components.CreateFolderDialog
 
-@Suppress("LongMethod")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsScreen(
@@ -117,6 +125,14 @@ fun SettingsScreen(
         )
     }
 
+    if (uiState.showColorPickerDialog) {
+        ColorPickerDialog(
+            initialColor = uiState.manualSeedColor,
+            onColorSelected = actions.onSelectManualSeedColor,
+            onDismiss = actions.onDismissColorPickerDialog
+        )
+    }
+
     if (uiState.showRestoreWallpaperDialog) {
         AlertDialog(
             onDismissRequest = actions.onDismissRestoreWallpaperDialog,
@@ -161,10 +177,15 @@ data class SettingsScreenActions(
     val onToggleShowAllAppsOnHome: () -> Unit = {},
     val onToggleHomeButtonOpensAllApps: () -> Unit = {},
     val onToggleSidePanel: () -> Unit = {},
+    val onToggleShowFolderLabels: () -> Unit = {},
     val onOpenSidePanelPositionDialog: () -> Unit = {},
     val onToggleLeftHandedMode: () -> Unit = {},
     val onSidePanelPositionSelected: (String) -> Unit = {},
     val onDismissSidePanelPositionDialog: () -> Unit = {},
+    val onToggleDynamicWallpaper: () -> Unit = {},
+    val onOpenColorPickerDialog: () -> Unit = {},
+    val onSelectManualSeedColor: (Int) -> Unit = {},
+    val onDismissColorPickerDialog: () -> Unit = {},
     val onChangeWallpaperClick: () -> Unit = {},
     val onRestoreDefaultWallpaperClick: () -> Unit = {},
     val onConfirmRestoreWallpaper: () -> Unit = {},
@@ -265,6 +286,56 @@ private fun WallpaperCategorySection(
     Column {
         PreferenceCategoryHeader(title = "Personalização & Papel de Parede")
         PreferenceCard {
+            PreferenceSwitchRow(
+                title = "Usar cores do papel de parede",
+                subtitle = "Extrair paleta de cores dinâmicas do papel de parede do sistema",
+                leadingIcon = Icons.Default.Edit,
+                checked = uiState.isDynamicWallpaperEnabled,
+                onCheckedChange = { actions.onToggleDynamicWallpaper() }
+            )
+
+            HorizontalDivider(
+                modifier = Modifier.padding(start = 16.dp),
+                color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f)
+            )
+
+            PreferenceRowItem(
+                title = "Cor Primária do Tema",
+                subtitle = if (uiState.isDynamicWallpaperEnabled) {
+                    "Desabilitado quando as cores do papel de parede estão ativas"
+                } else {
+                    "Toque para escolher uma cor primária personalizada"
+                },
+                enabled = !uiState.isDynamicWallpaperEnabled,
+                trailingContent = {
+                    Box(
+                        modifier = Modifier
+                            .size(24.dp)
+                            .clip(CircleShape)
+                            .background(
+                                if (!uiState.isDynamicWallpaperEnabled) {
+                                    Color(uiState.manualSeedColor)
+                                } else {
+                                    Color(uiState.manualSeedColor).copy(alpha = 0.38f)
+                                }
+                            )
+                            .border(
+                                width = 1.dp,
+                                color = MaterialTheme.colorScheme.outline.copy(
+                                    alpha = if (!uiState.isDynamicWallpaperEnabled) 1f else 0.38f
+                                ),
+                                shape = CircleShape
+                            )
+                    )
+                },
+                onClick = actions.onOpenColorPickerDialog
+            )
+
+            HorizontalDivider(
+                modifier = Modifier.padding(start = 56.dp),
+                color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f)
+            )
+
             PreferenceRowItem(
                 title = "Alterar Papel de Parede",
                 subtitle = "Escolher uma imagem do seu dispositivo",
@@ -347,6 +418,18 @@ private fun SidePanelCategorySection(
             )
 
             if (uiState.isSidePanelEnabled) {
+                HorizontalDivider(
+                    modifier = Modifier.padding(start = 16.dp),
+                    color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f)
+                )
+
+                PreferenceSwitchRow(
+                    title = "Mostrar nome da pasta no painel lateral",
+                    subtitle = "Exibe o nome da pasta abaixo de cada botão no painel lateral",
+                    checked = uiState.showFolderLabels,
+                    onCheckedChange = { actions.onToggleShowFolderLabels() }
+                )
+
                 HorizontalDivider(
                     modifier = Modifier.padding(start = 16.dp),
                     color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f)

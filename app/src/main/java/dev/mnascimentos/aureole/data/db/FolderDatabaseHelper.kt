@@ -24,6 +24,7 @@ class FolderDatabaseHelper(context: Context) : SQLiteOpenHelper(
                 name TEXT NOT NULL,
                 color TEXT,
                 icon_fallback TEXT,
+                icon TEXT,
                 display_as_grid INTEGER NOT NULL DEFAULT 0,
                 created_at INTEGER NOT NULL
             )
@@ -46,9 +47,13 @@ class FolderDatabaseHelper(context: Context) : SQLiteOpenHelper(
     }
 
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
-        db.execSQL("DROP TABLE IF EXISTS folder_items")
-        db.execSQL("DROP TABLE IF EXISTS folders")
-        onCreate(db)
+        if (oldVersion < 2) {
+            db.execSQL("ALTER TABLE folders ADD COLUMN icon TEXT")
+        } else {
+            db.execSQL("DROP TABLE IF EXISTS folder_items")
+            db.execSQL("DROP TABLE IF EXISTS folders")
+            onCreate(db)
+        }
     }
 
     override fun onConfigure(db: SQLiteDatabase) {
@@ -76,6 +81,12 @@ class FolderDatabaseHelper(context: Context) : SQLiteOpenHelper(
                 val name = folderCursor.getString(folderCursor.getColumnIndexOrThrow("name"))
                 val color = folderCursor.getString(folderCursor.getColumnIndexOrThrow("color"))
                 val iconFallback = folderCursor.getString(folderCursor.getColumnIndexOrThrow("icon_fallback"))
+                val iconIndex = folderCursor.getColumnIndex("icon")
+                val icon = if (iconIndex != -1 && !folderCursor.isNull(iconIndex)) {
+                    folderCursor.getString(iconIndex)
+                } else {
+                    null
+                }
                 val displayAsGrid = folderCursor.getInt(folderCursor.getColumnIndexOrThrow("display_as_grid")) == 1
                 val createdAt = folderCursor.getLong(folderCursor.getColumnIndexOrThrow("created_at"))
 
@@ -84,6 +95,7 @@ class FolderDatabaseHelper(context: Context) : SQLiteOpenHelper(
                     name = name,
                     color = color,
                     iconFallback = iconFallback,
+                    icon = icon,
                     displayAsGrid = displayAsGrid,
                     createdAt = createdAt
                 )
@@ -94,44 +106,6 @@ class FolderDatabaseHelper(context: Context) : SQLiteOpenHelper(
         }
 
         return result
-    }
-
-    fun getFolderWithItemsById(folderId: String): FolderWithItems? {
-        val db = readableDatabase
-        val cursor = db.query(
-            "folders",
-            null,
-            "id = ?",
-            arrayOf(folderId),
-            null,
-            null,
-            null
-        )
-
-        cursor.use { folderCursor ->
-            if (folderCursor.moveToFirst()) {
-                val id = folderCursor.getString(folderCursor.getColumnIndexOrThrow("id"))
-                val name = folderCursor.getString(folderCursor.getColumnIndexOrThrow("name"))
-                val color = folderCursor.getString(folderCursor.getColumnIndexOrThrow("color"))
-                val iconFallback = folderCursor.getString(folderCursor.getColumnIndexOrThrow("icon_fallback"))
-                val displayAsGrid = folderCursor.getInt(folderCursor.getColumnIndexOrThrow("display_as_grid")) == 1
-                val createdAt = folderCursor.getLong(folderCursor.getColumnIndexOrThrow("created_at"))
-
-                val folderEntity = FolderEntity(
-                    id = id,
-                    name = name,
-                    color = color,
-                    iconFallback = iconFallback,
-                    displayAsGrid = displayAsGrid,
-                    createdAt = createdAt
-                )
-
-                val items = getFolderItems(db, id)
-                return FolderWithItems(folderEntity, items)
-            }
-        }
-
-        return null
     }
 
     private fun getFolderItems(db: SQLiteDatabase, folderId: String): List<FolderItemEntity> {
@@ -174,6 +148,7 @@ class FolderDatabaseHelper(context: Context) : SQLiteOpenHelper(
                 put("id", folder.id)
                 put("name", folder.name)
                 put("icon_fallback", folder.iconPackage)
+                put("icon", folder.icon)
                 put("display_as_grid", if (folder.displayAsGrid) 1 else 0)
                 put("created_at", System.currentTimeMillis())
             }
@@ -194,10 +169,11 @@ class FolderDatabaseHelper(context: Context) : SQLiteOpenHelper(
         }
     }
 
-    fun renameFolder(folderId: String, newName: String) {
+    fun updateFolderDetails(folderId: String, newName: String, icon: String? = null) {
         val db = writableDatabase
         val values = ContentValues().apply {
             put("name", newName)
+            put("icon", icon)
         }
         db.update("folders", values, "id = ?", arrayOf(folderId))
     }
@@ -228,6 +204,6 @@ class FolderDatabaseHelper(context: Context) : SQLiteOpenHelper(
 
     companion object {
         private const val DATABASE_NAME = "aureole_launcher_folders.db"
-        private const val DATABASE_VERSION = 1
+        private const val DATABASE_VERSION = 2
     }
 }

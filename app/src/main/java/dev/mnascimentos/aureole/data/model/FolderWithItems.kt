@@ -9,6 +9,7 @@ data class FolderWithItems(
             id = folder.id,
             name = folder.name,
             iconPackage = folder.iconFallback,
+            icon = folder.icon,
             appPackageNames = items.sortedBy { it.itemOrder }.map { it.packageName },
             displayAsGrid = folder.displayAsGrid
         )

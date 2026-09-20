@@ -5,13 +5,17 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBars
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -22,9 +26,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInWindow
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.data.model.AppFolder
 
@@ -32,7 +39,7 @@ import dev.mnascimentos.aureole.data.model.AppFolder
 fun SidePanel(
     config: SidePanelConfig,
     onFolderClick: (AppFolder, Float) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Box(
         modifier = modifier
@@ -61,6 +68,7 @@ fun SidePanel(
                 SidePanelFolderItem(
                     folder = folder,
                     isOpened = folder.id == config.openedFolderId,
+                    showFolderLabels = config.showFolderLabels,
                     onFolderClick = onFolderClick
                 )
             }
@@ -72,37 +80,16 @@ data class SidePanelConfig(
     val folders: List<AppFolder>,
     val openedFolderId: String?,
     val isLeftHandedMode: Boolean,
-    val position: String = "Center"
+    val position: String = "Center",
+    val showFolderLabels: Boolean = false,
 )
-
-// Convenience overload
-@Suppress("LongParameterList")
-@Composable
-fun SidePanel(
-    folders: List<AppFolder>,
-    openedFolderId: String?,
-    isLeftHandedMode: Boolean,
-    modifier: Modifier = Modifier,
-    position: String = "Center",
-    onFolderClick: (AppFolder, Float) -> Unit
-) {
-    SidePanel(
-        config = SidePanelConfig(
-            folders = folders,
-            openedFolderId = openedFolderId,
-            isLeftHandedMode = isLeftHandedMode,
-            position = position
-        ),
-        onFolderClick = onFolderClick,
-        modifier = modifier
-    )
-}
 
 @Composable
 private fun SidePanelFolderItem(
     folder: AppFolder,
     isOpened: Boolean,
-    onFolderClick: (AppFolder, Float) -> Unit
+    showFolderLabels: Boolean,
+    onFolderClick: (AppFolder, Float) -> Unit,
 ) {
     var itemYInWindow by remember { mutableFloatStateOf(0f) }
 
@@ -120,23 +107,75 @@ private fun SidePanelFolderItem(
         MaterialTheme.colorScheme.onPrimaryContainer
     }
 
-    Box(
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
             .padding(vertical = 4.dp)
+            .widthIn(max = 60.dp),
+    ) {
+        SidePanelFolderButton(
+            folder = folder,
+            containerColor = containerColor,
+            textColor = textColor,
+            onPositionedY = { y -> itemYInWindow = y },
+            onClick = { onFolderClick(folder, itemYInWindow) }
+        )
+
+        if (showFolderLabels) {
+            SidePanelFolderLabel(name = folder.name)
+        }
+    }
+}
+
+@Composable
+private fun SidePanelFolderButton(
+    folder: AppFolder,
+    containerColor: Color,
+    textColor: Color,
+    onPositionedY: (Float) -> Unit,
+    onClick: () -> Unit
+) {
+    Box(
+        modifier = Modifier
             .size(48.dp)
             .clip(RoundedCornerShape(14.dp))
             .background(containerColor)
             .onGloballyPositioned { coordinates ->
-                itemYInWindow = coordinates.positionInWindow().y
+                onPositionedY(coordinates.positionInWindow().y)
             }
-            .clickable { onFolderClick(folder, itemYInWindow) },
+            .clickable(onClick = onClick),
         contentAlignment = Alignment.Center
     ) {
-        Text(
-            text = folder.name.take(1).uppercase(),
-            color = textColor,
-            style = MaterialTheme.typography.titleMedium,
-            fontWeight = FontWeight.Bold
-        )
+        val iconVector = FolderIconRegistry.getIcon(folder.icon)
+        if (iconVector != null) {
+            Icon(
+                imageVector = iconVector,
+                contentDescription = folder.name,
+                tint = textColor,
+                modifier = Modifier.size(24.dp)
+            )
+        } else {
+            Text(
+                text = folder.name.take(1).uppercase(),
+                color = textColor,
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold
+            )
+        }
     }
+}
+
+@Composable
+private fun SidePanelFolderLabel(name: String) {
+    Spacer(modifier = Modifier.height(2.dp))
+    Text(
+        text = name,
+        color = MaterialTheme.colorScheme.onSurface,
+        style = MaterialTheme.typography.labelSmall,
+        fontWeight = FontWeight.Medium,
+        maxLines = 1,
+        overflow = TextOverflow.Ellipsis,
+        textAlign = TextAlign.Center,
+        modifier = Modifier.widthIn(max = 56.dp)
+    )
 }

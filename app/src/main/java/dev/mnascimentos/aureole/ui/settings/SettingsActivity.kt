@@ -9,12 +9,14 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.graphics.Color
 import dev.mnascimentos.aureole.ui.components.FavoriteAppsDialog
 import dev.mnascimentos.aureole.ui.theme.AureoleLauncherTheme
 
@@ -22,14 +24,18 @@ class SettingsActivity : ComponentActivity() {
 
     private val viewModel: SettingsViewModel by viewModels()
 
+    @Suppress("LongMethod")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
         setContent {
-            AureoleLauncherTheme {
-                val uiState by viewModel.uiState.collectAsState()
+            val uiState by viewModel.uiState.collectAsState()
 
+            AureoleLauncherTheme(
+                isDynamicWallpaperEnabled = uiState.isDynamicWallpaperEnabled,
+                seedColor = Color(uiState.manualSeedColor),
+            ) {
                 LaunchedEffect(uiState.shouldFinishActivity) {
                     if (uiState.shouldFinishActivity) {
                         viewModel.onActivityFinishedHandled()
@@ -38,39 +44,14 @@ class SettingsActivity : ComponentActivity() {
                 }
 
                 val photoPickerLauncher = rememberLauncherForActivityResult(
-                    contract = ActivityResultContracts.PickVisualMedia()
+                    contract = ActivityResultContracts.PickVisualMedia(),
                 ) { uri ->
-                    if (uri != null) {
-                        viewModel.setCustomWallpaper(uri)
-                    }
+                    uri?.let { viewModel.setCustomWallpaper(it) }
                 }
 
                 SettingsScreen(
                     uiState = uiState,
-                    actions = SettingsScreenActions(
-                        onBackClick = { finish() },
-                        onSetDefaultLauncherClick = { openDefaultLauncherSettings() },
-                        onOpenFavoritePickerClick = { viewModel.setShowFavoritePicker(true) },
-                        onToggleShowAllAppsOnHome = { viewModel.toggleShowAllAppsOnHome() },
-                        onToggleHomeButtonOpensAllApps = { viewModel.toggleHomeOpensAllApps() },
-                        onToggleSidePanel = { viewModel.toggleSidePanel() },
-                        onOpenSidePanelPositionDialog = { viewModel.setShowSidePanelPositionDialog(true) },
-                        onToggleLeftHandedMode = { viewModel.toggleLeftHandedMode() },
-                        onSidePanelPositionSelected = { position -> viewModel.setSidePanelPosition(position) },
-                        onDismissSidePanelPositionDialog = { viewModel.setShowSidePanelPositionDialog(false) },
-                        onChangeWallpaperClick = {
-                            photoPickerLauncher.launch(
-                                PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
-                            )
-                        },
-                        onRestoreDefaultWallpaperClick = { viewModel.setShowRestoreWallpaperDialog(true) },
-                        onConfirmRestoreWallpaper = { viewModel.restoreDefaultWallpaper() },
-                        onDismissRestoreWallpaperDialog = { viewModel.setShowRestoreWallpaperDialog(false) },
-                        onClearErrorMessage = { viewModel.clearErrorMessage() },
-                        onAddFolderClick = { viewModel.setShowCreateFolderDialog(true) },
-                        onDismissCreateFolderDialog = { viewModel.setShowCreateFolderDialog(false) },
-                        onSubmitCreateFolder = { folderName -> viewModel.createFolder(folderName) }
-                    )
+                    actions = buildSettingsScreenActions(photoPickerLauncher),
                 )
 
                 if (uiState.showFavoritePickerDialog) {
@@ -78,11 +59,45 @@ class SettingsActivity : ComponentActivity() {
                         allApps = uiState.allApps,
                         favoriteAppPackages = uiState.favoriteAppPackages,
                         onToggleFavorite = { pkg -> viewModel.toggleFavorite(pkg) },
-                        onDismiss = { viewModel.setShowFavoritePicker(false) }
+                        onDismiss = { viewModel.setShowFavoritePicker(show = false) },
                     )
                 }
             }
         }
+    }
+
+    private fun buildSettingsScreenActions(
+        photoPickerLauncher: ActivityResultLauncher<PickVisualMediaRequest>
+    ): SettingsScreenActions {
+        return SettingsScreenActions(
+            onBackClick = { finish() },
+            onSetDefaultLauncherClick = { openDefaultLauncherSettings() },
+            onOpenFavoritePickerClick = { viewModel.setShowFavoritePicker(show = true) },
+            onToggleShowAllAppsOnHome = { viewModel.toggleShowAllAppsOnHome() },
+            onToggleHomeButtonOpensAllApps = { viewModel.toggleHomeOpensAllApps() },
+            onToggleSidePanel = { viewModel.toggleSidePanel() },
+            onToggleShowFolderLabels = { viewModel.toggleShowFolderLabels() },
+            onOpenSidePanelPositionDialog = { viewModel.setShowSidePanelPositionDialog(show = true) },
+            onToggleLeftHandedMode = { viewModel.toggleLeftHandedMode() },
+            onSidePanelPositionSelected = { position -> viewModel.setSidePanelPosition(position) },
+            onDismissSidePanelPositionDialog = { viewModel.setShowSidePanelPositionDialog(show = false) },
+            onToggleDynamicWallpaper = { viewModel.toggleDynamicWallpaper() },
+            onOpenColorPickerDialog = { viewModel.setShowColorPickerDialog(show = true) },
+            onSelectManualSeedColor = { color -> viewModel.setManualSeedColor(color) },
+            onDismissColorPickerDialog = { viewModel.setShowColorPickerDialog(show = false) },
+            onChangeWallpaperClick = {
+                photoPickerLauncher.launch(
+                    PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly),
+                )
+            },
+            onRestoreDefaultWallpaperClick = { viewModel.setShowRestoreWallpaperDialog(show = true) },
+            onConfirmRestoreWallpaper = { viewModel.restoreDefaultWallpaper() },
+            onDismissRestoreWallpaperDialog = { viewModel.setShowRestoreWallpaperDialog(show = false) },
+            onClearErrorMessage = { viewModel.clearErrorMessage() },
+            onAddFolderClick = { viewModel.setShowCreateFolderDialog(show = true) },
+            onDismissCreateFolderDialog = { viewModel.setShowCreateFolderDialog(show = false) },
+            onSubmitCreateFolder = viewModel::createFolder,
+        )
     }
 
     override fun onResume() {

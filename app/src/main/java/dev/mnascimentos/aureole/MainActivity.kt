@@ -20,6 +20,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import dev.mnascimentos.aureole.ui.FolderViewIntent
 import dev.mnascimentos.aureole.ui.MainUiState
 import dev.mnascimentos.aureole.ui.MainViewModel
@@ -57,7 +58,7 @@ class MainActivity : ComponentActivity() {
             if (result.resultCode == RESULT_OK) {
                 val widgetId = result.data?.getIntExtra(
                     AppWidgetManager.EXTRA_APPWIDGET_ID,
-                    pendingId
+                    pendingId,
                 ) ?: pendingId
                 if (widgetId != -1) viewModel.addWidgetId(widgetId)
             } else {
@@ -74,8 +75,11 @@ class MainActivity : ComponentActivity() {
         appWidgetHost = AppWidgetHost(this, APPWIDGET_HOST_ID).apply { startListening() }
 
         setContent {
-            AureoleLauncherTheme {
-                val uiState by viewModel.uiState.collectAsState()
+            val uiState by viewModel.uiState.collectAsState()
+            AureoleLauncherTheme(
+                isDynamicWallpaperEnabled = uiState.isDynamicWallpaperEnabled,
+                seedColor = Color(uiState.manualSeedColor),
+            ) {
                 val isOverlayActive = checkOverlayActive(uiState)
 
                 BackHandler(enabled = isOverlayActive) {
@@ -128,14 +132,14 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun checkOverlayActive(uiState: MainUiState): Boolean {
-        return uiState.isAllAppsDrawerOpen ||
+        return (uiState.isAllAppsDrawerOpen ||
                 uiState.activeFolder != null ||
                 uiState.isCreateFolderDialogVisible ||
                 uiState.isAddAppToFolderDialogVisible ||
                 uiState.isRenameFolderDialogVisible ||
                 uiState.searchQuery.isNotEmpty() ||
                 uiState.showWidgetPicker ||
-                uiState.showFavoritePickerDialog
+                uiState.showFavoritePickerDialog)
     }
 
     private fun handleBackNavigation(uiState: MainUiState) {
