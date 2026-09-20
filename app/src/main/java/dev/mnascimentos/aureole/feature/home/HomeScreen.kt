@@ -14,6 +14,7 @@ import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.statusBarsPadding
@@ -397,12 +398,17 @@ private fun MainHomeLayout(
 }
 
 @Composable
-private fun SidePanelSection(
+private fun RowScope.SidePanelSection(
     uiState: MainUiState,
     sidePanelConfig: SidePanelConfig,
     actions: HomeScreenActions
 ) {
     if (uiState.isSidePanelEnabled) {
+        val alignment = when (sidePanelConfig.position) {
+            "Top" -> Alignment.Top
+            "Bottom" -> Alignment.Bottom
+            else -> Alignment.CenterVertically
+        }
         SidePanel(
             config = sidePanelConfig,
             onFolderClick = { folder, topYPx ->
@@ -411,7 +417,8 @@ private fun SidePanelSection(
                 } else {
                     actions.onFolderIntent(FolderViewIntent.OpenFolder(folder.id, topYPx))
                 }
-            }
+            },
+            modifier = Modifier.align(alignment)
         )
     }
 }

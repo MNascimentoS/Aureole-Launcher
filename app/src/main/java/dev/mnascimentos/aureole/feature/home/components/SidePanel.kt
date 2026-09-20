@@ -6,14 +6,10 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.widthIn
-import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -87,13 +83,6 @@ fun SidePanel(
                 end = if (uiState.isLeftHandedMode) 8.dp else 16.dp,
                 top = 8.dp,
                 bottom = 8.dp
-            )
-            .windowInsetsPadding(
-                when (config.position) {
-                    "Top" -> WindowInsets.statusBars
-                    "Bottom" -> WindowInsets.navigationBars
-                    else -> WindowInsets(0, 0, 0, 0)
-                }
             )
     ) {
         SidePanelColumn(
