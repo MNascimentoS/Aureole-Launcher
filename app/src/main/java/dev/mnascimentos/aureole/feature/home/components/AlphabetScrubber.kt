@@ -1,5 +1,6 @@
 package dev.mnascimentos.aureole.feature.home.components
 
+import android.content.res.Configuration
 import androidx.compose.foundation.gestures.detectVerticalDragGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -17,6 +18,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.theme.AureolePreview
@@ -27,7 +29,10 @@ fun AlphabetScrubber(
     onLetterSelected: (Char) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    if (alphabet.isEmpty()) return
+    val configuration = LocalConfiguration.current
+    val isLandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
+
+    if (alphabet.isEmpty() || isLandscape) return
 
     var totalHeightPx by remember { mutableFloatStateOf(0f) }
 

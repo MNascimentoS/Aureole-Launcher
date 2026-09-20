@@ -1,5 +1,6 @@
 package dev.mnascimentos.aureole.feature.home.components
 
+import android.content.res.Configuration
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.gestures.detectDragGestures
@@ -30,6 +31,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Density
@@ -51,8 +53,8 @@ private val SCRUBBER_WIDTH = 48.dp
 private val BADGE_SIZE = 48.dp
 private val BADGE_MARGIN = 28.dp
 
-private val SCRUBBER_PADDING_TOP = 64.dp
-private val SCRUBBER_PADDING_BOTTOM = 110.dp
+private val SCRUBBER_PADDING_TOP = 24.dp
+private val SCRUBBER_PADDING_BOTTOM = 96.dp
 private val SCRUBBER_PADDING_HORIZONTAL = 16.dp
 private const val GAUSSIAN_HALF_FACTOR = 0.5f
 
@@ -67,7 +69,10 @@ fun CurvedAlphabetScrubber(
     callbacks: ScrubberCallbacks,
     modifier: Modifier = Modifier,
 ) {
-    if (alphabet.isEmpty()) return
+    val configuration = LocalConfiguration.current
+    val isLandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
+
+    if (alphabet.isEmpty() || isLandscape) return
 
     ScrubberContainer(
         alphabet = alphabet,
