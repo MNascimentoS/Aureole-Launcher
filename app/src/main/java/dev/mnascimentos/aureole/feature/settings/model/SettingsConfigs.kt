@@ -40,4 +40,5 @@ data class SettingsScreenActions(
     val onDismissHazeOpacityDialog: () -> Unit = {},
     val onToggleShowWidgetDots: () -> Unit = {},
     val onToggleInAppUpdate: () -> Unit = {},
+    val onToggleThemedAppIcons: () -> Unit = {},
 )

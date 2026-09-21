@@ -5,6 +5,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.core.data.model.AppFolder
 import dev.mnascimentos.aureole.core.data.model.AppInfo
+import dev.mnascimentos.aureole.core.data.model.LauncherItemState
 import dev.mnascimentos.aureole.core.data.repository.SettingsRepository
 
 data class MainUiState(
@@ -37,6 +38,7 @@ data class MainUiState(
     val isHazeSupported: Boolean = true,
     val hazeOpacity: Float = 0.5f,
     val isInAppUpdateEnabled: Boolean = true,
+    val isThemedAppIconsEnabled: Boolean = false,
     val showUpdateAvailableDialog: Boolean = false,
     val showUpdateDownloadedDialog: Boolean = false,
 
@@ -60,4 +62,12 @@ data class MainUiState(
     val activeWidgetTopYPx: Float = 0f,
     val showWidgetPopup: Boolean = false,
     val showWidgetResizeDialog: Boolean = false,
+
+    // Dynamic Grid Engine
+    val gridItems: List<LauncherItemState> = emptyList(),
+    val isGridEditMode: Boolean = false,
+    val editingGridItem: LauncherItemState? = null,
+    val showAddContainerDialog: Boolean = false,
+    val gridErrorMessage: String? = null,
+    val isAddingSingleWidget: Boolean = false,
 )

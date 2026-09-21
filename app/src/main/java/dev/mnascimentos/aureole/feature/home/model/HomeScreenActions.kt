@@ -2,6 +2,8 @@ package dev.mnascimentos.aureole.feature.home.model
 
 import androidx.compose.ui.unit.Dp
 import dev.mnascimentos.aureole.core.data.model.AppInfo
+import dev.mnascimentos.aureole.core.data.model.LauncherItemState
+import dev.mnascimentos.aureole.core.data.model.LauncherItemType
 
 data class HomeScreenActions(
     val onWidgetRowHeightChanged: (Dp) -> Unit,
@@ -27,4 +29,18 @@ data class HomeScreenActions(
     val onStartInAppUpdate: () -> Unit = {},
     val onCompleteInAppUpdate: () -> Unit = {},
     val onDismissUpdateDialog: () -> Unit = {},
+
+    // Grid Actions
+    val onToggleGridEditMode: () -> Unit = {},
+    val onMoveGridItem: (String, Int, Int) -> Unit = { _, _, _ -> },
+    val onResizeGridItem: (String, Int, Int) -> Unit = { _, _, _ -> },
+    val onResetGridItems: () -> Unit = {},
+    val onOpenAddContainerDialog: () -> Unit = {},
+    val onCloseAddContainerDialog: () -> Unit = {},
+    val onAddGridItem: (LauncherItemType, Int?) -> Unit = { _, _ -> },
+    val onOpenEditContainerDialog: (LauncherItemState) -> Unit = {},
+    val onCloseEditContainerDialog: () -> Unit = {},
+    val onDeleteGridItem: (String) -> Unit = {},
+    val onDismissGridError: () -> Unit = {},
+    val onSetIsAddingSingleWidget: (Boolean) -> Unit = {},
 )

@@ -54,7 +54,8 @@ private const val PREVIEW_APPWIDGET_HOST_ID = 1024
 fun FavoritesList(
     config: FavoritesListConfig,
     appWidgetHost: AppWidgetHost,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    showHeadersAndWidgets: Boolean = true
 ) {
     val uiState = LocalHomeUiState.current
     val actions = LocalHomeActions.current
@@ -71,22 +72,24 @@ fun FavoritesList(
             .fadingEdges(config.state),
         contentPadding = PaddingValues(vertical = 12.dp)
     ) {
-        item(key = "clock_header") {
-            ClockHeader(hazeState = config.hazeState)
-        }
+        if (showHeadersAndWidgets) {
+            item(key = "clock_header") {
+                ClockHeader(hazeState = config.hazeState)
+            }
 
-        if (uiState.isWidgetRowEnabled && !isLandscape) {
-            item(key = "stacked_widget_section") {
-                StackedWidgetSection(
-                    config = StackedWidgetConfig(
-                        topWidgetIds = uiState.topWidgetIds,
-                        currentHeightDp = config.currentHeightDp,
-                        currentHeightPx = config.currentHeightPx,
-                        showWidgetDots = uiState.showWidgetDots,
-                        hazeState = config.hazeState,
-                    ),
-                    appWidgetHost = appWidgetHost
-                )
+            if (uiState.isWidgetRowEnabled && !isLandscape) {
+                item(key = "stacked_widget_section") {
+                    StackedWidgetSection(
+                        config = StackedWidgetConfig(
+                            topWidgetIds = uiState.topWidgetIds,
+                            currentHeightDp = config.currentHeightDp,
+                            currentHeightPx = config.currentHeightPx,
+                            showWidgetDots = uiState.showWidgetDots,
+                            hazeState = config.hazeState,
+                        ),
+                        appWidgetHost = appWidgetHost
+                    )
+                }
             }
         }
 

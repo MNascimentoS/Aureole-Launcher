@@ -51,6 +51,10 @@ class SettingsRepository(private val context: Context) {
         get() = prefs.getBoolean(KEY_IN_APP_UPDATE_ENABLED, true)
         set(value) = prefs.edit { putBoolean(KEY_IN_APP_UPDATE_ENABLED, value) }
 
+    var isThemedAppIconsEnabled: Boolean
+        get() = prefs.getBoolean(KEY_USE_THEMED_APP_ICONS, false)
+        set(value) = prefs.edit { putBoolean(KEY_USE_THEMED_APP_ICONS, value) }
+
     val isHazeSupported: Boolean
         get() = HazeUtils.isDeviceHazeSupported(context)
 
@@ -120,6 +124,7 @@ class SettingsRepository(private val context: Context) {
         private const val KEY_HAZE_OPACITY = "haze_opacity"
         private const val KEY_SHOW_WIDGET_DOTS = "show_widget_dots"
         private const val KEY_IN_APP_UPDATE_ENABLED = "in_app_update_enabled"
+        private const val KEY_USE_THEMED_APP_ICONS = "use_themed_app_icons"
         private const val DEFAULT_HAZE_OPACITY = 0.5f
         const val DEFAULT_SEED_COLOR = 0xFF6650A4.toInt()
     }

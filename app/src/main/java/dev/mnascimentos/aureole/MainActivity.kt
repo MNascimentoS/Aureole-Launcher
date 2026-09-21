@@ -41,17 +41,27 @@ import dev.mnascimentos.aureole.feature.home.MainScaffold
 import dev.mnascimentos.aureole.feature.home.extensions.checkAppUpdate
 import dev.mnascimentos.aureole.feature.home.extensions.closeWidgetPopup
 import dev.mnascimentos.aureole.feature.home.extensions.handleBackNavigation
+import dev.mnascimentos.aureole.feature.home.extensions.addGridItem
+import dev.mnascimentos.aureole.feature.home.extensions.deleteGridItem
+import dev.mnascimentos.aureole.feature.home.extensions.dismissGridError
+import dev.mnascimentos.aureole.feature.home.extensions.moveGridItem
 import dev.mnascimentos.aureole.feature.home.extensions.onFolderIntent
 import dev.mnascimentos.aureole.feature.home.extensions.onSearchQueryChanged
 import dev.mnascimentos.aureole.feature.home.extensions.openWidgetPopup
+import dev.mnascimentos.aureole.feature.home.extensions.resetGridItems
+import dev.mnascimentos.aureole.feature.home.extensions.resizeGridItem
 import dev.mnascimentos.aureole.feature.home.extensions.setAddAppToFolderDialogVisible
 import dev.mnascimentos.aureole.feature.home.extensions.setAllAppsDrawerOpen
+import dev.mnascimentos.aureole.feature.home.extensions.setEditingGridItem
+import dev.mnascimentos.aureole.feature.home.extensions.setIsAddingSingleWidget
 import dev.mnascimentos.aureole.feature.home.extensions.setRenameFolderDialogVisible
+import dev.mnascimentos.aureole.feature.home.extensions.setShowAddContainerDialog
 import dev.mnascimentos.aureole.feature.home.extensions.setShowFavoritePicker
 import dev.mnascimentos.aureole.feature.home.extensions.setShowWidgetPicker
 import dev.mnascimentos.aureole.feature.home.extensions.setShowWidgetResizeDialog
 import dev.mnascimentos.aureole.feature.home.extensions.setWidgetRowHeight
 import dev.mnascimentos.aureole.feature.home.extensions.toggleFavorite
+import dev.mnascimentos.aureole.feature.home.extensions.toggleGridEditMode
 import dev.mnascimentos.aureole.feature.home.model.FolderViewIntent
 import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
@@ -61,18 +71,18 @@ import dev.mnascimentos.aureole.util.IntentUtils
 
 class MainActivity : ComponentActivity() {
 
-    private val viewModel: HomeViewModel by viewModels()
+    internal val viewModel: HomeViewModel by viewModels()
 
     // Widget System
-    private lateinit var appWidgetManager: AppWidgetManager
-    private lateinit var appWidgetHost: AppWidgetHost
-    private lateinit var widgetHostManager: WidgetHostManager
+    internal lateinit var appWidgetManager: AppWidgetManager
+    internal lateinit var appWidgetHost: AppWidgetHost
+    internal lateinit var widgetHostManager: WidgetHostManager
 
     // In-App Update
-    private lateinit var appUpdateManager: AppUpdateManager
-    private var cachedAppUpdateInfo: AppUpdateInfo? = null
+    internal lateinit var appUpdateManager: AppUpdateManager
+    internal var cachedAppUpdateInfo: AppUpdateInfo? = null
 
-    private val updateActivityResultLauncher: ActivityResultLauncher<IntentSenderRequest> =
+    internal val updateActivityResultLauncher: ActivityResultLauncher<IntentSenderRequest> =
         registerForActivityResult(ActivityResultContracts.StartIntentSenderForResult()) { result ->
             if (result.resultCode != RESULT_OK) {
                 Log.w(TAG, "In-app update flow failed or was cancelled by user: ${result.resultCode}")
@@ -198,52 +208,14 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun createHomeActions(): HomeScreenActions {
-        return HomeScreenActions(
-            onWidgetRowHeightChanged = { viewModel.setWidgetRowHeight(it) },
-            onAddWidgetClick = { viewModel.setShowWidgetPicker(true) },
-            onRemoveWidgetClick = { widgetId -> widgetHostManager.removeWidget(widgetId) },
-            onAppClick = { appInfo -> viewModel.launchApp(appInfo.componentName) },
-            onExpandNotificationShade = { IntentUtils.expandNotificationShade(this) },
-            onFolderIntent = { intent -> viewModel.onFolderIntent(intent) },
-            onSetAddAppToFolderDialogVisible = { visible -> viewModel.setAddAppToFolderDialogVisible(visible) },
-            onSetRenameFolderDialogVisible = { visible -> viewModel.setRenameFolderDialogVisible(visible) },
-            onSearchQueryChanged = { query -> viewModel.onSearchQueryChanged(query) },
-            onSettingsClick = { startActivity(Intent(this, SettingsActivity::class.java)) },
-            onAllAppsDrawerClose = { viewModel.setAllAppsDrawerOpen(false) },
-            onAllAppsDrawerOpen = { viewModel.setAllAppsDrawerOpen(true) },
-            onToggleFavorite = { pkg -> viewModel.toggleFavorite(pkg) },
-            onAppInfoClick = { app -> IntentUtils.openAppInfo(this, app.packageName) },
-            onOpenFavoritePicker = { viewModel.setShowFavoritePicker(true) },
-            onOpenWidgetPopup = { widgetId, topY -> viewModel.openWidgetPopup(widgetId, topY) },
-            onCloseWidgetPopup = { viewModel.closeWidgetPopup() },
-            onOpenWidgetResizeDialog = { viewModel.setShowWidgetResizeDialog(true) },
-            onCloseWidgetResizeDialog = { viewModel.closeWidgetPopup() },
-            onResizeWidgetHeight = { height -> viewModel.setWidgetRowHeight(height) },
-            onStartInAppUpdate = {
-                viewModel.setShowUpdateAvailableDialog(visible = false)
-                cachedAppUpdateInfo?.let { appUpdateInfo ->
-                    val updateType = if (appUpdateInfo.isUpdateTypeAllowed(AppUpdateType.FLEXIBLE)) {
-                        AppUpdateType.FLEXIBLE
-                    } else {
-                        AppUpdateType.IMMEDIATE
-                    }
-                    val options = AppUpdateOptions.newBuilder(updateType).build()
-                    appUpdateManager.startUpdateFlowForResult(
-                        appUpdateInfo,
-                        updateActivityResultLauncher,
-                        options
-                    )
-                }
-            },
-            onCompleteInAppUpdate = {
-                viewModel.setShowUpdateDownloadedDialog(visible = false)
-                appUpdateManager.completeUpdate()
-            },
-            onDismissUpdateDialog = {
-                viewModel.setShowUpdateAvailableDialog(visible = false)
-                viewModel.setShowUpdateDownloadedDialog(visible = false)
-            }
-        )
+        return HomeActionsFactory(
+            activity = this,
+            viewModel = viewModel,
+            widgetHostManager = widgetHostManager,
+            appUpdateManager = appUpdateManager,
+            updateActivityResultLauncher = updateActivityResultLauncher,
+            cachedAppUpdateInfo = cachedAppUpdateInfo
+        ).createHomeActions()
     }
 
     override fun onNewIntent(intent: Intent) {

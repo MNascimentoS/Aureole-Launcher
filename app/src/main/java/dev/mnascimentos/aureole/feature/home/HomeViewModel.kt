@@ -8,6 +8,7 @@ import dev.mnascimentos.aureole.core.data.repository.AppRepository
 import dev.mnascimentos.aureole.core.data.repository.FolderRepository
 import dev.mnascimentos.aureole.core.data.repository.SettingsRepository
 import dev.mnascimentos.aureole.core.data.repository.WidgetRepository
+import dev.mnascimentos.aureole.feature.home.extensions.loadGridItems
 import dev.mnascimentos.aureole.feature.home.extensions.loadWidgetSettings
 import dev.mnascimentos.aureole.feature.home.extensions.updateAppsState
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
@@ -38,6 +39,7 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
         loadSettings()
         observeAppsFlow()
         loadWidgetSettings()
+        loadGridItems()
         syncApps()
     }
 
@@ -83,6 +85,7 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
             val isHazeSupported = settingsRepository.isHazeSupported
             val hazeOpacity = settingsRepository.hazeOpacity
             val isInAppUpdateEnabled = settingsRepository.isInAppUpdateEnabled
+            val isThemedAppIconsEnabled = settingsRepository.isThemedAppIconsEnabled
 
             _uiState.update {
                 it.copy(
@@ -104,6 +107,7 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
                     isHazeSupported = isHazeSupported,
                     hazeOpacity = hazeOpacity,
                     isInAppUpdateEnabled = isInAppUpdateEnabled,
+                    isThemedAppIconsEnabled = isThemedAppIconsEnabled,
                 )
             }
         }

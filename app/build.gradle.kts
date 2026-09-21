@@ -77,11 +77,16 @@ android {
 detekt {
     buildUponDefaultConfig = true
     allRules = false
+    ignoreFailures = false
     config.setFrom(file("$projectDir/config/detekt/detekt.yml"))
 }
 
 tasks.withType<Detekt>().configureEach {
     jvmTarget = "11"
+    reports {
+        txt.required.set(true)
+        html.required.set(true)
+    }
 }
 
 dependencies {

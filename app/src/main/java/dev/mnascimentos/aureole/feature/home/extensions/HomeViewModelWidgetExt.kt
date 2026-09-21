@@ -2,6 +2,7 @@ package dev.mnascimentos.aureole.feature.home.extensions
 
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import dev.mnascimentos.aureole.core.data.model.LauncherItemType
 import dev.mnascimentos.aureole.feature.home.HomeViewModel
 
 internal fun HomeViewModel.loadWidgetSettings() {
@@ -54,11 +55,16 @@ fun HomeViewModel.setPendingWidgetId(id: Int) {
 }
 
 fun HomeViewModel.addWidgetId(widgetId: Int) {
-    val currentList = uiState.value.topWidgetIds
-    if (!currentList.contains(widgetId)) {
-        val newList = currentList + widgetId
-        updateUiState { it.copy(topWidgetIds = newList) }
-        widgetRepository.saveWidgetIds(newList)
+    if (uiState.value.isAddingSingleWidget) {
+        addSingleWidgetGridItem(widgetId)
+        setIsAddingSingleWidget(false)
+    } else {
+        val currentList = uiState.value.topWidgetIds
+        if (!currentList.contains(widgetId)) {
+            val newList = currentList + widgetId
+            updateUiState { it.copy(topWidgetIds = newList) }
+            widgetRepository.saveWidgetIds(newList)
+        }
     }
 }
 

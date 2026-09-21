@@ -271,6 +271,21 @@ private fun WallpaperSettingsGroup(
                 onChangeWallpaperClick = actions.onChangeWallpaperClick,
                 onRestoreDefaultWallpaperClick = actions.onRestoreDefaultWallpaperClick
             )
+
+            HorizontalDivider(
+                modifier = Modifier.padding(start = 56.dp),
+                color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = ALPHA_SEMI_TRANSPARENT)
+            )
+
+            PreferenceSwitchRow(
+                config = PreferenceItemConfig(
+                    title = "Ícones Temáticos",
+                    subtitle = "Usar cor primária do tema nos ícones de aplicativos",
+                    leadingIcon = Icons.Default.Star
+                ),
+                checked = uiState.isThemedAppIconsEnabled,
+                onCheckedChange = { actions.onToggleThemedAppIcons() }
+            )
         }
     }
 }

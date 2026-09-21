@@ -1,8 +1,11 @@
 package dev.mnascimentos.aureole.feature.home
 
 import android.appwidget.AppWidgetHost
+import android.appwidget.AppWidgetManager
 import android.content.ComponentName
 import android.graphics.drawable.ColorDrawable
+import android.widget.TextView
+import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -23,8 +26,11 @@ import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.systemGestureExclusion
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.remember
@@ -42,13 +48,19 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.viewinterop.AndroidView
 import dev.chrisbanes.haze.HazeState
 import dev.chrisbanes.haze.rememberHazeState
 import dev.mnascimentos.aureole.core.data.model.AppInfo
+import dev.mnascimentos.aureole.core.data.model.LauncherItemState
+import dev.mnascimentos.aureole.core.data.model.LauncherItemType
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.theme.AureolePreview
 import dev.mnascimentos.aureole.feature.home.components.AppsListDrawer
+import dev.mnascimentos.aureole.feature.home.components.ClockHeader
 import dev.mnascimentos.aureole.feature.home.components.CurvedAlphabetScrubber
+import dev.mnascimentos.aureole.feature.home.grid.AddContainerDialog
+import dev.mnascimentos.aureole.feature.home.grid.EditContainerDialog
 import dev.mnascimentos.aureole.feature.home.components.FavoritesList
 import dev.mnascimentos.aureole.feature.home.components.FavoritesListConfig
 import dev.mnascimentos.aureole.feature.home.components.SidePanel
@@ -57,6 +69,8 @@ import dev.mnascimentos.aureole.feature.home.components.model.ScrubberCallbacks
 import dev.mnascimentos.aureole.feature.home.components.model.ScrubberOptions
 import dev.mnascimentos.aureole.feature.home.components.model.SidePanelConfig
 import dev.mnascimentos.aureole.feature.home.folder.HomeScreenFolderOverlays
+import dev.mnascimentos.aureole.feature.home.grid.DynamicGridContainer
+import dev.mnascimentos.aureole.feature.home.grid.GridEditConfig
 import dev.mnascimentos.aureole.feature.home.model.FolderViewIntent
 import dev.mnascimentos.aureole.feature.home.model.HomeDragParams
 import dev.mnascimentos.aureole.feature.home.model.HomeOverlaysConfig
@@ -65,6 +79,8 @@ import dev.mnascimentos.aureole.feature.home.model.HomeScreenBodyConfig
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
 import dev.mnascimentos.aureole.feature.home.model.ScrubberOverlayConfig
 import dev.mnascimentos.aureole.feature.home.widget.HomeScreenWidgetOverlays
+import dev.mnascimentos.aureole.feature.home.widget.StackedWidgetSection
+import dev.mnascimentos.aureole.feature.home.widget.model.StackedWidgetConfig
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import kotlin.math.abs
@@ -120,7 +136,7 @@ fun HomeScreen(
                 screenWidthPx = it.size.width.toFloat()
             }
             .then(HomeScreenExclusionModifier(uiState.isAllAppsDrawerOpen))
-            .then(dragModifier)
+            .then(if (uiState.isGridEditMode) Modifier else dragModifier)
     ) {
         HomeScreenBody(
             HomeScreenBodyConfig(
@@ -280,6 +296,42 @@ private fun BoxScope.HomeOverlaysContent(
     HomeScreenWidgetOverlays(
         hazeState = config.hazeState,
     )
+
+    HomeOverlaysDialogsAndErrors(config = config)
+}
+
+@Composable
+private fun HomeOverlaysDialogsAndErrors(config: HomeOverlaysConfig) {
+    if (config.uiState.showAddContainerDialog) {
+        AddContainerDialog(
+            onDismissRequest = config.actions.onCloseAddContainerDialog,
+            onSelectType = { type ->
+                if (type == LauncherItemType.SINGLE_APP_WIDGET) {
+                    config.actions.onSetIsAddingSingleWidget(true)
+                    config.actions.onAddWidgetClick()
+                    config.actions.onCloseAddContainerDialog()
+                } else {
+                    config.actions.onAddGridItem(type, null)
+                }
+            }
+        )
+    }
+
+    config.uiState.editingGridItem?.let { editingItem ->
+        EditContainerDialog(
+            item = editingItem,
+            onDismissRequest = config.actions.onCloseEditContainerDialog,
+            onDeleteConfirm = { id -> config.actions.onDeleteGridItem(id) }
+        )
+    }
+
+    val context = LocalContext.current
+    config.uiState.gridErrorMessage?.let { message ->
+        LaunchedEffect(message) {
+            Toast.makeText(context, message, Toast.LENGTH_LONG).show()
+            config.actions.onDismissGridError()
+        }
+    }
 }
 
 @Composable
@@ -378,6 +430,49 @@ private fun MainHomeLayout(
         hazeState = hazeState
     )
 
+    val stackedWidgetConfig = StackedWidgetConfig(
+        topWidgetIds = uiState.topWidgetIds,
+        currentHeightDp = currentHeightDp,
+        currentHeightPx = currentHeightPx,
+        showWidgetDots = uiState.showWidgetDots,
+        hazeState = hazeState
+    )
+
+    if (uiState.gridItems.isNotEmpty()) {
+        DynamicGridContainer(
+            items = uiState.gridItems,
+            config = GridEditConfig(isEditMode = uiState.isGridEditMode),
+            actions = actions,
+            modifier = Modifier
+                .fillMaxSize()
+                .statusBarsPadding()
+                .navigationBarsPadding()
+        ) { item ->
+            GridItemContent(
+                item = item,
+                favConfig = favConfig,
+                appWidgetHost = appWidgetHost,
+                stackedWidgetConfig = stackedWidgetConfig,
+                sidePanelConfig = sidePanelConfig
+            )
+        }
+    } else {
+        FallbackHomeLayout(
+            appWidgetHost = appWidgetHost,
+            favConfig = favConfig,
+            sidePanelConfig = sidePanelConfig
+        )
+    }
+}
+
+@Composable
+private fun FallbackHomeLayout(
+    appWidgetHost: AppWidgetHost,
+    favConfig: FavoritesListConfig,
+    sidePanelConfig: SidePanelConfig
+) {
+    val uiState = LocalHomeUiState.current
+    val actions = LocalHomeActions.current
     Row(
         modifier = Modifier
             .fillMaxSize()
@@ -425,6 +520,90 @@ private fun RowScope.SidePanelSection(
             },
             modifier = Modifier.align(alignment)
         )
+    }
+}
+
+@Composable
+private fun GridItemContent(
+    item: LauncherItemState,
+    favConfig: FavoritesListConfig,
+    appWidgetHost: AppWidgetHost,
+    stackedWidgetConfig: StackedWidgetConfig,
+    sidePanelConfig: SidePanelConfig
+) {
+    val uiState = LocalHomeUiState.current
+    val actions = LocalHomeActions.current
+    when (item.safeType) {
+        LauncherItemType.CLOCK -> {
+            Box(modifier = Modifier.fillMaxSize()) {
+                ClockHeader()
+            }
+        }
+        LauncherItemType.APPS_LIST -> {
+            Box(modifier = Modifier.fillMaxSize()) {
+                FavoritesList(
+                    config = favConfig,
+                    appWidgetHost = appWidgetHost,
+                    showHeadersAndWidgets = false,
+                    modifier = Modifier.fillMaxSize()
+                )
+            }
+        }
+        LauncherItemType.SHORTCUTS_SIDE_PANEL -> {
+            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                SidePanel(
+                    config = sidePanelConfig,
+                    onFolderClick = { folder, topYPx ->
+                        if (uiState.openedFolderId == folder.id) {
+                            actions.onFolderIntent(FolderViewIntent.CloseFolder)
+                        } else {
+                            actions.onFolderIntent(FolderViewIntent.OpenFolder(folder.id, topYPx))
+                        }
+                    }
+                )
+            }
+        }
+        LauncherItemType.SINGLE_APP_WIDGET -> {
+            SingleAppWidgetContent(item = item, appWidgetHost = appWidgetHost)
+        }
+        LauncherItemType.WIDGET_LIST -> {
+            Box(modifier = Modifier.fillMaxSize()) {
+                StackedWidgetSection(
+                    config = stackedWidgetConfig,
+                    appWidgetHost = appWidgetHost
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun SingleAppWidgetContent(
+    item: LauncherItemState,
+    appWidgetHost: AppWidgetHost
+) {
+    Box(modifier = Modifier.fillMaxSize()) {
+        if (item.widgetId != null && item.widgetId != -1) {
+            AndroidView(
+                factory = { context ->
+                    val appWidgetManager = AppWidgetManager.getInstance(context)
+                    val appWidgetInfo = appWidgetManager.getAppWidgetInfo(item.widgetId)
+                    if (appWidgetInfo != null) {
+                        appWidgetHost.createView(context, item.widgetId, appWidgetInfo)
+                    } else {
+                        TextView(context).apply { text = "Widget" }
+                    }
+                },
+                modifier = Modifier.fillMaxSize()
+            )
+        } else {
+            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                Text(
+                    text = "Widget não configurado",
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+            }
+        }
     }
 }
 
