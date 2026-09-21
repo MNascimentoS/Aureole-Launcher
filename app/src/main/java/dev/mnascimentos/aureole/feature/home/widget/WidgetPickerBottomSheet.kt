@@ -5,7 +5,11 @@ import android.appwidget.AppWidgetProviderInfo
 import android.content.Context
 import android.content.pm.PackageManager
 import android.graphics.drawable.Drawable
+import android.os.Build
 import android.util.Log
+import android.widget.ImageView
+import android.widget.RemoteViews
+import android.widget.TextView
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -43,7 +47,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -52,6 +58,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import coil.compose.AsyncImage
@@ -78,6 +85,7 @@ data class WidgetVariant(
     val widgetId: String,
     val title: String,
     val previewImage: Drawable?,
+    val previewLayoutRes: Int = 0,
     val minSpanX: Int,
     val minSpanY: Int,
     val providerInfo: AppWidgetProviderInfo
@@ -146,9 +154,15 @@ class WidgetPickerViewModel : ViewModel() {
                         val appName = pm.getApplicationLabel(appInfo).toString()
                         val appIcon = pm.getApplicationIcon(appInfo)
                         
+                        val densityDpi = context.resources.displayMetrics.densityDpi
                         val variants = providers.map { provider ->
                             val label = provider.loadLabel(pm)
-                            val preview = provider.loadPreviewImage(context, 0) ?: provider.loadIcon(context, 0)
+                            val preview = provider.loadPreviewImage(context, densityDpi) ?: provider.loadPreviewImage(context, 0)
+                            val previewLayout = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                                provider.previewLayout
+                            } else {
+                                0
+                            }
                             
                             // Rough estimate of spans. Widget sizing can be complex,
                             // but for preview display we estimate.
@@ -162,6 +176,7 @@ class WidgetPickerViewModel : ViewModel() {
                                 widgetId = provider.provider.flattenToString(),
                                 title = label,
                                 previewImage = preview,
+                                previewLayoutRes = previewLayout,
                                 minSpanX = spanX,
                                 minSpanY = spanY,
                                 providerInfo = provider
@@ -386,6 +401,18 @@ fun WidgetPreviewCard(
     widget: WidgetVariant,
     onClick: () -> Unit
 ) {
+    val context = LocalContext.current
+    var previewFailed by remember(widget.widgetId) { mutableStateOf(false) }
+
+    val appIcon = remember(widget.providerInfo) {
+        try {
+            widget.providerInfo.loadIcon(context, 0)
+                ?: context.packageManager.getApplicationIcon(widget.providerInfo.provider.packageName)
+        } catch (e: Exception) {
+            null
+        }
+    }
+
     Column(
         modifier = Modifier
             .width(140.dp)
@@ -407,11 +434,36 @@ fun WidgetPreviewCard(
                     contentScale = ContentScale.Fit,
                     modifier = Modifier.padding(8.dp).fillMaxSize()
                 )
+            } else if (widget.previewLayoutRes != 0 && !previewFailed) {
+                AndroidView(
+                    factory = { ctx ->
+                        try {
+                            val rv = RemoteViews(widget.providerInfo.provider.packageName, widget.previewLayoutRes)
+                            rv.apply(ctx, null)
+                        } catch (e: Throwable) {
+                            Log.e(TAG, "Failed to inflate previewLayout for ${widget.title}", e)
+                            previewFailed = true
+                            ImageView(ctx).apply {
+                                if (appIcon != null) setImageDrawable(appIcon)
+                            }
+                        }
+                    },
+                    modifier = Modifier.padding(8.dp).fillMaxSize()
+                )
+            } else if (appIcon != null) {
+                AsyncImage(
+                    model = appIcon,
+                    contentDescription = widget.title,
+                    contentScale = ContentScale.Fit,
+                    modifier = Modifier.padding(16.dp).fillMaxSize()
+                )
             } else {
                 Text(
-                    text = "Sem Preview",
+                    text = widget.title,
                     style = MaterialTheme.typography.labelSmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.padding(8.dp)
                 )
             }
             

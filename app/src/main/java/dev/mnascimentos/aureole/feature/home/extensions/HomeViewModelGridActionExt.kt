@@ -18,27 +18,42 @@ fun HomeViewModel.setEditingGridItem(item: LauncherItemState?) {
 
 fun HomeViewModel.addGridItem(
     type: LauncherItemType,
-    widgetId: Int? = null
+    widgetId: Int? = null,
+    targetColSpan: Int? = null,
+    targetRowSpan: Int? = null,
+    minColSpan: Int? = null,
+    minRowSpan: Int? = null
 ) {
     updateUiState { state ->
         val currentItems = state.gridItems
-        val (spans, minSpans) = GridEngineUtils.getDefaultSpanForType(type)
-        val (colSpan, rowSpan) = spans
-        val (minColSpan, minRowSpan) = minSpans
+        val (defaultSpans, defaultMinSpans) = GridEngineUtils.getDefaultSpanForType(type)
+        
+        val reqTargetColSpan = targetColSpan ?: defaultSpans.first
+        val reqTargetRowSpan = targetRowSpan ?: defaultSpans.second
+        val reqMinColSpan = minColSpan ?: defaultMinSpans.first
+        val reqMinRowSpan = minRowSpan ?: defaultMinSpans.second
 
-        val availableSlot = GridEngineUtils.findFirstAvailableSlot(colSpan, rowSpan, currentItems)
-        if (availableSlot == null) {
+        val largestSlotResult = GridEngineUtils.findLargestAvailableSlot(
+            targetColSpan = reqTargetColSpan,
+            targetRowSpan = reqTargetRowSpan,
+            minColSpan = reqMinColSpan,
+            minRowSpan = reqMinRowSpan,
+            items = currentItems
+        )
+
+        if (largestSlotResult == null) {
             state.copy(gridErrorMessage = CONTAINER_ERROR_MSG)
         } else {
+            val (actualColSpan, actualRowSpan, slot) = largestSlotResult
             val newItem = LauncherItemState(
                 id = UUID.randomUUID().toString(),
                 type = type,
-                col = availableSlot.first,
-                row = availableSlot.second,
-                colSpan = colSpan,
-                rowSpan = rowSpan,
-                minColSpan = minColSpan,
-                minRowSpan = minRowSpan,
+                col = slot.first,
+                row = slot.second,
+                colSpan = actualColSpan,
+                rowSpan = actualRowSpan,
+                minColSpan = reqMinColSpan,
+                minRowSpan = reqMinRowSpan,
                 widgetId = widgetId
             )
             val updatedList = currentItems + newItem
@@ -65,6 +80,19 @@ fun HomeViewModel.setIsAddingSingleWidget(isAdding: Boolean) {
     updateUiState { it.copy(isAddingSingleWidget = isAdding) }
 }
 
-fun HomeViewModel.addSingleWidgetGridItem(widgetId: Int) {
-    addGridItem(LauncherItemType.SINGLE_APP_WIDGET, widgetId = widgetId)
+fun HomeViewModel.addSingleWidgetGridItem(
+    widgetId: Int,
+    targetSpanX: Int? = null,
+    targetSpanY: Int? = null,
+    minSpanX: Int? = null,
+    minSpanY: Int? = null
+) {
+    addGridItem(
+        type = LauncherItemType.SINGLE_APP_WIDGET,
+        widgetId = widgetId,
+        targetColSpan = targetSpanX,
+        targetRowSpan = targetSpanY,
+        minColSpan = minSpanX,
+        minRowSpan = minSpanY
+    )
 }

@@ -5,6 +5,9 @@ import android.appwidget.AppWidgetHost
 import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProviderInfo
 import android.content.Intent
+import android.os.Build
+import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.result.contract.ActivityResultContracts
 import dev.mnascimentos.aureole.feature.home.HomeViewModel
@@ -39,7 +42,10 @@ class WidgetHostManager(
                     AppWidgetManager.EXTRA_APPWIDGET_ID,
                     pendingId,
                 ) ?: pendingId
-                if (widgetId != -1) viewModel.addWidgetId(widgetId)
+                if (widgetId != -1) {
+                    val provider = appWidgetManager.getAppWidgetInfo(widgetId)
+                    viewModel.addWidgetId(widgetId, provider)
+                }
             } else {
                 if (pendingId != -1) appWidgetHost.deleteAppWidgetId(pendingId)
             }
@@ -49,19 +55,37 @@ class WidgetHostManager(
     fun handleWidgetSelected(provider: AppWidgetProviderInfo) {
         val id = appWidgetHost.allocateAppWidgetId()
         viewModel.setPendingWidgetId(id)
-        val allowed = appWidgetManager.bindAppWidgetIdIfAllowed(id, provider.provider)
+
+        val options = Bundle().apply {
+            putInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH, provider.minWidth)
+            putInt(AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT, provider.minHeight)
+            putInt(AppWidgetManager.OPTION_APPWIDGET_MAX_WIDTH, provider.minWidth * 2)
+            putInt(AppWidgetManager.OPTION_APPWIDGET_MAX_HEIGHT, provider.minHeight * 2)
+        }
+
+        val allowed = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && provider.profile != null) {
+            appWidgetManager.bindAppWidgetIdIfAllowed(id, provider.profile, provider.provider, options)
+        } else {
+            appWidgetManager.bindAppWidgetIdIfAllowed(id, provider.provider, options)
+        }
+
         if (allowed) {
             configureWidget(id, provider)
         } else {
             val intent = Intent(AppWidgetManager.ACTION_APPWIDGET_BIND).apply {
                 putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, id)
                 putExtra(AppWidgetManager.EXTRA_APPWIDGET_PROVIDER, provider.provider)
+                putExtra(AppWidgetManager.EXTRA_APPWIDGET_OPTIONS, options)
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && provider.profile != null) {
+                    putExtra(Intent.EXTRA_USER, provider.profile)
+                }
             }
             bindWidgetLauncher.launch(intent)
         }
     }
 
     private fun configureWidget(widgetId: Int, provider: AppWidgetProviderInfo?) {
+        updateWidgetOptions(widgetId, provider)
         if (provider?.configure != null) {
             val intent = Intent(AppWidgetManager.ACTION_APPWIDGET_CONFIGURE).apply {
                 component = provider.configure
@@ -69,8 +93,23 @@ class WidgetHostManager(
             }
             configureWidgetLauncher.launch(intent)
         } else {
-            viewModel.addWidgetId(widgetId)
+            viewModel.addWidgetId(widgetId, provider)
             viewModel.setPendingWidgetId(-1)
+        }
+    }
+
+    private fun updateWidgetOptions(widgetId: Int, provider: AppWidgetProviderInfo?) {
+        if (provider == null) return
+        try {
+            val options = Bundle().apply {
+                putInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH, provider.minWidth)
+                putInt(AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT, provider.minHeight)
+                putInt(AppWidgetManager.OPTION_APPWIDGET_MAX_WIDTH, provider.minWidth * 2)
+                putInt(AppWidgetManager.OPTION_APPWIDGET_MAX_HEIGHT, provider.minHeight * 2)
+            }
+            appWidgetManager.updateAppWidgetOptions(widgetId, options)
+        } catch (e: Exception) {
+            Log.e("WidgetHostManager", "Failed to update widget options for id $widgetId", e)
         }
     }
 

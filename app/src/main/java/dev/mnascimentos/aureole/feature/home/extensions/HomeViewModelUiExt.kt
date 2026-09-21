@@ -41,8 +41,13 @@ fun HomeViewModel.setShowFavoritePicker(show: Boolean) {
     updateUiState { it.copy(showFavoritePickerDialog = show) }
 }
 
-fun HomeViewModel.setAllAppsDrawerOpen(open: Boolean) {
-    updateUiState { it.copy(isAllAppsDrawerOpen = open) }
+fun HomeViewModel.setAllAppsDrawerOpen(open: Boolean, fromHomeButton: Boolean = false) {
+    updateUiState {
+        it.copy(
+            isAllAppsDrawerOpen = open,
+            isAllAppsOpenedFromBottom = if (open) fromHomeButton else it.isAllAppsOpenedFromBottom,
+        )
+    }
     if (open) {
         updateUiState { it.copy(searchQuery = "") }
         applySearchFilter("")

@@ -1,5 +1,6 @@
 package dev.mnascimentos.aureole.feature.home.extensions
 
+import android.appwidget.AppWidgetProviderInfo
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.feature.home.HomeViewModel
@@ -53,9 +54,28 @@ fun HomeViewModel.setPendingWidgetId(id: Int) {
     updateUiState { it.copy(pendingWidgetId = id) }
 }
 
-fun HomeViewModel.addWidgetId(widgetId: Int) {
+fun HomeViewModel.addWidgetId(
+    widgetId: Int,
+    providerInfo: AppWidgetProviderInfo? = null
+) {
     if (uiState.value.isAddingSingleWidget) {
-        addSingleWidgetGridItem(widgetId)
+        if (providerInfo != null) {
+            val minWidthAdjusted = providerInfo.minWidth + 30
+            val targetSpanX = Math.max(1, Math.ceil(minWidthAdjusted / 70.0).toInt())
+
+            val minHeightAdjusted = providerInfo.minHeight + 30
+            val targetSpanY = Math.max(1, Math.ceil(minHeightAdjusted / 70.0).toInt())
+
+            addSingleWidgetGridItem(
+                widgetId = widgetId,
+                targetSpanX = targetSpanX,
+                targetSpanY = targetSpanY,
+                minSpanX = 1,
+                minSpanY = 1
+            )
+        } else {
+            addSingleWidgetGridItem(widgetId)
+        }
         setIsAddingSingleWidget(false)
     } else {
         val currentList = uiState.value.topWidgetIds
