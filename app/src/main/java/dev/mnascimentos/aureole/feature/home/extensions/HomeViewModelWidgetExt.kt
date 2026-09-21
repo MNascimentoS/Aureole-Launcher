@@ -2,7 +2,6 @@ package dev.mnascimentos.aureole.feature.home.extensions
 
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import dev.mnascimentos.aureole.core.data.model.LauncherItemType
 import dev.mnascimentos.aureole.feature.home.HomeViewModel
 
 internal fun HomeViewModel.loadWidgetSettings() {

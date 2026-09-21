@@ -31,7 +31,10 @@ data class HomeScreenActions(
     val onDismissUpdateDialog: () -> Unit = {},
 
     // Grid Actions
-    val onToggleGridEditMode: () -> Unit = {},
+    val onEnterGridEditMode: () -> Unit = {},
+    val onCancelGridEditMode: () -> Unit = {},
+    val onSaveGridEditMode: () -> Unit = {},
+    val onUpdateGridOrientation: (Int, Int) -> Unit = { _, _ -> },
     val onMoveGridItem: (String, Int, Int) -> Unit = { _, _, _ -> },
     val onResizeGridItem: (String, Int, Int) -> Unit = { _, _, _ -> },
     val onResetGridItems: () -> Unit = {},

@@ -10,11 +10,9 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.gestures.detectTapGestures
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.BoxWithConstraints
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -28,6 +26,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -39,8 +38,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -61,7 +61,7 @@ import dev.mnascimentos.aureole.core.data.model.LauncherItemState
 import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
-import kotlin.math.roundToInt
+import kotlin.math.ceil
 
 private val HANDLE_TOUCH_SIZE = 28.dp
 private val CORNER_TOUCH_SIZE = 36.dp
@@ -72,6 +72,7 @@ private const val GRID_MARGIN_PX = 16f
 private const val GRID_LINE_WIDTH = 2f
 private const val GRID_CORNER_RADIUS = 24f
 private const val DASH_LENGTH_PX = 10f
+private const val RESIZE_SNAP_EPSILON = 0.05f
 
 data class GridEditConfig(
     val isEditMode: Boolean,
@@ -145,8 +146,6 @@ private data class CellBoxConfig(
     val metrics: CellBoxMetrics,
     val modifier: Modifier,
     val params: GridCellParams,
-    val resizeExtraWidthPx: Float,
-    val resizeExtraHeightPx: Float,
     val callbacks: CellBoxCallbacks,
     val actions: HomeScreenActions,
     val content: @Composable () -> Unit
@@ -179,7 +178,7 @@ fun DynamicGridContainer(
             .pointerInput(isEditMode) {
                 detectTapGestures(
                     onLongPress = {
-                        if (!isEditMode) actions.onToggleGridEditMode()
+                        if (!isEditMode) actions.onEnterGridEditMode()
                     }
                 )
             }
@@ -211,7 +210,10 @@ fun DynamicGridContainer(
         }
 
         if (isEditMode) {
-            GridTopEditBar(onSave = actions.onToggleGridEditMode)
+            GridTopEditBar(
+                onSave = actions.onSaveGridEditMode,
+                onCancel = actions.onCancelGridEditMode
+            )
             FloatingActionButton(
                 onClick = actions.onOpenAddContainerDialog,
                 modifier = Modifier
@@ -227,26 +229,38 @@ fun DynamicGridContainer(
 }
 
 @Composable
-private fun GridTopEditBar(onSave: () -> Unit) {
-    Row(
+private fun GridTopEditBar(onSave: () -> Unit, onCancel: () -> Unit) {
+    Box(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 8.dp),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
+            .padding(horizontal = 16.dp, vertical = 8.dp)
     ) {
-        Text(text = "Modo de Edição", style = MaterialTheme.typography.titleMedium, color = Color.White)
+        Button(
+            onClick = onCancel,
+            shape = RoundedCornerShape(20.dp),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = MaterialTheme.colorScheme.surfaceVariant,
+                contentColor = MaterialTheme.colorScheme.onSurfaceVariant
+            ),
+            modifier = Modifier.align(Alignment.CenterStart)
+        ) {
+            Icon(imageVector = Icons.Default.Close, contentDescription = "Cancelar", modifier = Modifier.size(18.dp))
+            Spacer(modifier = Modifier.width(4.dp))
+            Text(text = "Cancelar", maxLines = 1)
+        }
+
         Button(
             onClick = onSave,
             shape = RoundedCornerShape(20.dp),
             colors = ButtonDefaults.buttonColors(
                 containerColor = MaterialTheme.colorScheme.primary,
                 contentColor = MaterialTheme.colorScheme.onPrimary
-            )
+            ),
+            modifier = Modifier.align(Alignment.CenterEnd)
         ) {
             Icon(imageVector = Icons.Default.Check, contentDescription = "Salvar", modifier = Modifier.size(18.dp))
-            Spacer(modifier = Modifier.width(6.dp))
-            Text(text = "Salvar")
+            Spacer(modifier = Modifier.width(4.dp))
+            Text(text = "Salvar", maxLines = 1)
         }
     }
 }
@@ -306,8 +320,6 @@ private fun GridItemCell(
             metrics = CellBoxMetrics(leftDp, topDp, currentWidthDp, currentHeightDp, totalDragX, totalDragY),
             modifier = editModifier,
             params = params,
-            resizeExtraWidthPx = resizeExtraWidthPx,
-            resizeExtraHeightPx = resizeExtraHeightPx,
             callbacks = CellBoxCallbacks(
                 onResizingChange = { isResizing = it },
                 onResizeWidthChange = { resizeExtraWidthPx += it },
@@ -396,8 +408,6 @@ private fun GridItemCellBox(config: CellBoxConfig) {
         if (params.isEditMode) {
             GridItemEditOverlay(
                 params = params,
-                resizeExtraWidthPx = config.resizeExtraWidthPx,
-                resizeExtraHeightPx = config.resizeExtraHeightPx,
                 callbacks = GridItemEditCallbacks(
                     onResizing = config.callbacks.onResizingChange,
                     onResizeWidthDelta = config.callbacks.onResizeWidthChange,
@@ -444,8 +454,6 @@ private fun Modifier.gridCellEditModifier(params: GridEditModifierParams): Modif
 @Composable
 private fun BoxScope.GridItemEditOverlay(
     params: GridCellParams,
-    resizeExtraWidthPx: Float,
-    resizeExtraHeightPx: Float,
     callbacks: GridItemEditCallbacks
 ) {
     val item = params.item
@@ -459,7 +467,6 @@ private fun BoxScope.GridItemEditOverlay(
 
     RightEdgeResizeHandle(
         params = params,
-        resizeExtraWidthPx = resizeExtraWidthPx,
         callbacks = ResizeHandleCallbacks(
             onResizing = callbacks.onResizing,
             onDelta = callbacks.onResizeWidthDelta,
@@ -470,7 +477,6 @@ private fun BoxScope.GridItemEditOverlay(
 
     BottomEdgeResizeHandle(
         params = params,
-        resizeExtraHeightPx = resizeExtraHeightPx,
         callbacks = ResizeHandleCallbacks(
             onResizing = callbacks.onResizing,
             onDelta = callbacks.onResizeHeightDelta,
@@ -481,8 +487,6 @@ private fun BoxScope.GridItemEditOverlay(
 
     CornerResizeHandle(
         params = params,
-        resizeExtraWidthPx = resizeExtraWidthPx,
-        resizeExtraHeightPx = resizeExtraHeightPx,
         callbacks = CornerResizeCallbacks(
             onResizing = callbacks.onResizing,
             onDelta = callbacks.onResizeDelta,
@@ -531,30 +535,42 @@ private fun handleCellDragEnd(
 @Composable
 private fun BoxScope.RightEdgeResizeHandle(
     params: GridCellParams,
-    resizeExtraWidthPx: Float,
     callbacks: ResizeHandleCallbacks
 ) {
-    val item = params.item
+    val currentItem by rememberUpdatedState(params.item)
+    val currentParams by rememberUpdatedState(params)
+    val currentCallbacks by rememberUpdatedState(callbacks)
+
     Box(
         modifier = Modifier
             .align(Alignment.CenterEnd)
             .fillMaxHeight()
             .width(HANDLE_TOUCH_SIZE)
-            .pointerInput(item.id) {
+            .pointerInput(params.item.id) {
+                var totalDragX = 0f
                 detectDragGestures(
-                    onDragStart = { callbacks.onResizing(true) },
-                    onDragEnd = {
-                        callbacks.onResizing(false)
-                        val currW = (item.colSpan * params.cellWidthPx) + resizeExtraWidthPx
-                        val targetColSpan = (currW / params.cellWidthPx).roundToInt()
-                            .coerceIn(1, params.limits.maxCols - item.col)
-                        val resizedItem = item.copy(colSpan = targetColSpan)
-                        val hasCollision = GridEngineUtils.checkCollisionWithOthers(resizedItem, params.items)
-                        callbacks.onResetExtra()
-                        if (!hasCollision) callbacks.onResizeItem(item.id, targetColSpan, item.rowSpan)
+                    onDragStart = { 
+                        totalDragX = 0f
+                        currentCallbacks.onResizing(true) 
                     },
-                    onDragCancel = { callbacks.onResizing(false); callbacks.onResetExtra() },
-                    onDrag = { change, dragAmount -> change.consume(); callbacks.onDelta(dragAmount.x) }
+                    onDragEnd = {
+                        currentCallbacks.onResizing(false)
+                        val currW = (currentItem.colSpan * currentParams.cellWidthPx) + totalDragX
+                        val targetColSpan = ceil((currW / currentParams.cellWidthPx) - RESIZE_SNAP_EPSILON).toInt()
+                            .coerceIn(currentItem.minColSpan, currentParams.limits.maxCols - currentItem.col)
+                        val resizedItem = currentItem.copy(colSpan = targetColSpan)
+                        val hasCollision = GridEngineUtils.checkCollisionWithOthers(resizedItem, currentParams.items)
+                        currentCallbacks.onResetExtra()
+                        if (!hasCollision && targetColSpan != currentItem.colSpan) {
+                            currentCallbacks.onResizeItem(currentItem.id, targetColSpan, currentItem.rowSpan)
+                        }
+                    },
+                    onDragCancel = { currentCallbacks.onResizing(false); currentCallbacks.onResetExtra() },
+                    onDrag = { change, dragAmount -> 
+                        change.consume()
+                        totalDragX += dragAmount.x
+                        currentCallbacks.onDelta(dragAmount.x) 
+                    }
                 )
             }
     )
@@ -563,30 +579,42 @@ private fun BoxScope.RightEdgeResizeHandle(
 @Composable
 private fun BoxScope.BottomEdgeResizeHandle(
     params: GridCellParams,
-    resizeExtraHeightPx: Float,
     callbacks: ResizeHandleCallbacks
 ) {
-    val item = params.item
+    val currentItem by rememberUpdatedState(params.item)
+    val currentParams by rememberUpdatedState(params)
+    val currentCallbacks by rememberUpdatedState(callbacks)
+
     Box(
         modifier = Modifier
             .align(Alignment.BottomCenter)
             .fillMaxWidth()
             .height(HANDLE_TOUCH_SIZE)
-            .pointerInput(item.id) {
+            .pointerInput(params.item.id) {
+                var totalDragY = 0f
                 detectDragGestures(
-                    onDragStart = { callbacks.onResizing(true) },
-                    onDragEnd = {
-                        callbacks.onResizing(false)
-                        val currH = (item.rowSpan * params.cellHeightPx) + resizeExtraHeightPx
-                        val targetRowSpan = (currH / params.cellHeightPx).roundToInt()
-                            .coerceIn(1, params.limits.maxRows - item.row)
-                        val resizedItem = item.copy(rowSpan = targetRowSpan)
-                        val hasCollision = GridEngineUtils.checkCollisionWithOthers(resizedItem, params.items)
-                        callbacks.onResetExtra()
-                        if (!hasCollision) callbacks.onResizeItem(item.id, item.colSpan, targetRowSpan)
+                    onDragStart = { 
+                        totalDragY = 0f
+                        currentCallbacks.onResizing(true) 
                     },
-                    onDragCancel = { callbacks.onResizing(false); callbacks.onResetExtra() },
-                    onDrag = { change, dragAmount -> change.consume(); callbacks.onDelta(dragAmount.y) }
+                    onDragEnd = {
+                        currentCallbacks.onResizing(false)
+                        val currH = (currentItem.rowSpan * currentParams.cellHeightPx) + totalDragY
+                        val targetRowSpan = ceil((currH / currentParams.cellHeightPx) - RESIZE_SNAP_EPSILON).toInt()
+                            .coerceIn(currentItem.minRowSpan, currentParams.limits.maxRows - currentItem.row)
+                        val resizedItem = currentItem.copy(rowSpan = targetRowSpan)
+                        val hasCollision = GridEngineUtils.checkCollisionWithOthers(resizedItem, currentParams.items)
+                        currentCallbacks.onResetExtra()
+                        if (!hasCollision && targetRowSpan != currentItem.rowSpan) {
+                            currentCallbacks.onResizeItem(currentItem.id, currentItem.colSpan, targetRowSpan)
+                        }
+                    },
+                    onDragCancel = { currentCallbacks.onResizing(false); currentCallbacks.onResetExtra() },
+                    onDrag = { change, dragAmount -> 
+                        change.consume()
+                        totalDragY += dragAmount.y
+                        currentCallbacks.onDelta(dragAmount.y) 
+                    }
                 )
             }
     )
@@ -595,11 +623,12 @@ private fun BoxScope.BottomEdgeResizeHandle(
 @Composable
 private fun BoxScope.CornerResizeHandle(
     params: GridCellParams,
-    resizeExtraWidthPx: Float,
-    resizeExtraHeightPx: Float,
     callbacks: CornerResizeCallbacks
 ) {
-    val item = params.item
+    val currentItem by rememberUpdatedState(params.item)
+    val currentParams by rememberUpdatedState(params)
+    val currentCallbacks by rememberUpdatedState(callbacks)
+
     Box(
         modifier = Modifier
             .align(Alignment.BottomEnd)
@@ -608,25 +637,40 @@ private fun BoxScope.CornerResizeHandle(
                 color = MaterialTheme.colorScheme.primaryContainer,
                 shape = RoundedCornerShape(topStart = CORNER_HANDLE_RADIUS)
             )
-            .pointerInput(item.id) { detectTapGestures(onTap = { callbacks.onEditItem() }) }
-            .pointerInput(item.id) {
+            .pointerInput(params.item.id) { detectTapGestures(onTap = { currentCallbacks.onEditItem() }) }
+            .pointerInput(params.item.id) {
+                var totalDragX = 0f
+                var totalDragY = 0f
                 detectDragGestures(
-                    onDragStart = { callbacks.onResizing(true) },
-                    onDragEnd = {
-                        callbacks.onResizing(false)
-                        val currW = (item.colSpan * params.cellWidthPx) + resizeExtraWidthPx
-                        val currH = (item.rowSpan * params.cellHeightPx) + resizeExtraHeightPx
-                        val targetColSpan = (currW / params.cellWidthPx).roundToInt()
-                            .coerceIn(1, params.limits.maxCols - item.col)
-                        val targetRowSpan = (currH / params.cellHeightPx).roundToInt()
-                            .coerceIn(1, params.limits.maxRows - item.row)
-                        val resizedItem = item.copy(colSpan = targetColSpan, rowSpan = targetRowSpan)
-                        val hasCollision = GridEngineUtils.checkCollisionWithOthers(resizedItem, params.items)
-                        callbacks.onResetExtra()
-                        if (!hasCollision) callbacks.onResizeItem(item.id, targetColSpan, targetRowSpan)
+                    onDragStart = { 
+                        totalDragX = 0f
+                        totalDragY = 0f
+                        currentCallbacks.onResizing(true) 
                     },
-                    onDragCancel = { callbacks.onResizing(false); callbacks.onResetExtra() },
-                    onDrag = { change, dragAmount -> change.consume(); callbacks.onDelta(dragAmount.x, dragAmount.y) }
+                    onDragEnd = {
+                        currentCallbacks.onResizing(false)
+                        val currW = (currentItem.colSpan * currentParams.cellWidthPx) + totalDragX
+                        val currH = (currentItem.rowSpan * currentParams.cellHeightPx) + totalDragY
+                        val targetColSpan = ceil((currW / currentParams.cellWidthPx) - RESIZE_SNAP_EPSILON).toInt()
+                            .coerceIn(currentItem.minColSpan, currentParams.limits.maxCols - currentItem.col)
+                        val targetRowSpan = ceil((currH / currentParams.cellHeightPx) - RESIZE_SNAP_EPSILON).toInt()
+                            .coerceIn(currentItem.minRowSpan, currentParams.limits.maxRows - currentItem.row)
+                        val resizedItem = currentItem.copy(colSpan = targetColSpan, rowSpan = targetRowSpan)
+                        val hasCollision = GridEngineUtils.checkCollisionWithOthers(resizedItem, currentParams.items)
+                        currentCallbacks.onResetExtra()
+                        val colSpanChanged = targetColSpan != currentItem.colSpan
+                        val rowSpanChanged = targetRowSpan != currentItem.rowSpan
+                        if (!hasCollision && (colSpanChanged || rowSpanChanged)) {
+                            currentCallbacks.onResizeItem(currentItem.id, targetColSpan, targetRowSpan)
+                        }
+                    },
+                    onDragCancel = { currentCallbacks.onResizing(false); currentCallbacks.onResetExtra() },
+                    onDrag = { change, dragAmount -> 
+                        change.consume()
+                        totalDragX += dragAmount.x
+                        totalDragY += dragAmount.y
+                        currentCallbacks.onDelta(dragAmount.x, dragAmount.y) 
+                    }
                 )
             },
         contentAlignment = Alignment.Center

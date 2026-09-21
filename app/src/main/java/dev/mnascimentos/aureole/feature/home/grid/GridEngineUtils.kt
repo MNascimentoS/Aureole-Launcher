@@ -19,19 +19,22 @@ data class SnapParams(
 )
 
 private const val SEARCH_MAX_RADIUS = 3
-private const val DEFAULT_CLOCK_SPAN_X = 9
-private const val DEFAULT_CLOCK_SPAN_Y = 2
-private const val DEFAULT_PANEL_COL = 9
-private const val DEFAULT_PANEL_SPAN_Y = 20
-private const val DEFAULT_APPS_ROW = 2
-private const val DEFAULT_APPS_SPAN_Y = 18
+private const val DEFAULT_CLOCK_SPAN_X = 10
+private const val DEFAULT_CLOCK_SPAN_Y = 6
+private const val DEFAULT_PANEL_COL = 7
+private const val DEFAULT_PANEL_ROW = 7
+private const val DEFAULT_PANEL_SPAN_X = 3
+private const val DEFAULT_PANEL_SPAN_Y = 7
+private const val DEFAULT_APPS_ROW = 9
+private const val DEFAULT_APPS_SPAN_X = 7
+private const val DEFAULT_APPS_SPAN_Y = 11
 
-private const val CLOCK_DEFAULT_COL_SPAN = 3
-private const val CLOCK_DEFAULT_ROW_SPAN = 2
-private const val APPS_DEFAULT_COL_SPAN = 3
-private const val APPS_DEFAULT_ROW_SPAN = 4
-private const val SIDE_PANEL_DEFAULT_COL_SPAN = 1
-private const val SIDE_PANEL_DEFAULT_ROW_SPAN = 4
+private const val CLOCK_DEFAULT_COL_SPAN = 10
+private const val CLOCK_DEFAULT_ROW_SPAN = 6
+private const val APPS_DEFAULT_COL_SPAN = 7
+private const val APPS_DEFAULT_ROW_SPAN = 11
+private const val SIDE_PANEL_DEFAULT_COL_SPAN = 3
+private const val SIDE_PANEL_DEFAULT_ROW_SPAN = 7
 private const val WIDGET_DEFAULT_COL_SPAN = 2
 private const val WIDGET_DEFAULT_ROW_SPAN = 2
 private const val WIDGET_LIST_DEFAULT_COL_SPAN = 3
@@ -46,10 +49,39 @@ private data class RadiusSearchParams(
     val limits: GridLimits
 )
 
+@Suppress("TooManyFunctions")
 object GridEngineUtils {
 
-    const val DEFAULT_MAX_COLS = 10
-    const val DEFAULT_MAX_ROWS = 20
+    const val PORTRAIT_MAX_COLS = 10
+    const val PORTRAIT_MAX_ROWS = 20
+    
+    const val LANDSCAPE_MAX_COLS = 20
+    const val LANDSCAPE_MAX_ROWS = 10
+    
+    // For backwards compatibility or default initialization
+    const val DEFAULT_MAX_COLS = PORTRAIT_MAX_COLS
+    const val DEFAULT_MAX_ROWS = PORTRAIT_MAX_ROWS
+
+    fun constrainItemsToBounds(items: List<LauncherItemState>, limits: GridLimits): List<LauncherItemState> {
+        val constrainedList = mutableListOf<LauncherItemState>()
+        for (item in items) {
+            var newColSpan = item.colSpan.coerceAtMost(limits.maxCols)
+            var newRowSpan = item.rowSpan.coerceAtMost(limits.maxRows)
+            
+            var newCol = item.col.coerceIn(0, limits.maxCols - newColSpan)
+            var newRow = item.row.coerceIn(0, limits.maxRows - newRowSpan)
+            
+            // Note: simple fallback allows overlap if items are forced into the same constrained spot upon rotation
+            val constrainedItem = item.copy(
+                col = newCol,
+                row = newRow,
+                colSpan = newColSpan,
+                rowSpan = newRowSpan
+            )
+            constrainedList.add(constrainedItem)
+        }
+        return constrainedList
+    }
 
     fun hasAABBCollision(itemA: LauncherItemState, itemB: LauncherItemState): Boolean {
         return itemA.col < itemB.col + itemB.colSpan &&
@@ -201,7 +233,7 @@ object GridEngineUtils {
                 id = "clock_item",
                 type = LauncherItemType.CLOCK,
                 col = 0,
-                row = 0,
+                row = 1,
                 colSpan = DEFAULT_CLOCK_SPAN_X,
                 rowSpan = DEFAULT_CLOCK_SPAN_Y,
                 minColSpan = 1,
@@ -211,8 +243,8 @@ object GridEngineUtils {
                 id = "side_panel_item",
                 type = LauncherItemType.SHORTCUTS_SIDE_PANEL,
                 col = DEFAULT_PANEL_COL,
-                row = 0,
-                colSpan = 1,
+                row = DEFAULT_PANEL_ROW,
+                colSpan = DEFAULT_PANEL_SPAN_X,
                 rowSpan = DEFAULT_PANEL_SPAN_Y,
                 minColSpan = 1,
                 minRowSpan = 1
@@ -222,7 +254,7 @@ object GridEngineUtils {
                 type = LauncherItemType.APPS_LIST,
                 col = 0,
                 row = DEFAULT_APPS_ROW,
-                colSpan = DEFAULT_CLOCK_SPAN_X,
+                colSpan = DEFAULT_APPS_SPAN_X,
                 rowSpan = DEFAULT_APPS_SPAN_Y,
                 minColSpan = 1,
                 minRowSpan = 1

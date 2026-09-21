@@ -177,6 +177,41 @@ private fun SettingsDialogs(
             onSubmit = actions.onSubmitCreateFolder
         )
     }
+
+    if (uiState.showResetGridDialog) {
+        ResetGridDialog(actions = actions)
+    }
+}
+
+@Composable
+private fun ResetGridDialog(
+    actions: SettingsScreenActions
+) {
+    AlertDialog(
+        onDismissRequest = actions.onDismissResetGridDialog,
+        title = { Text("Restaurar Layout Padrão?") },
+        text = {
+            Text(
+                "Esta ação redefinirá o posicionamento e o " +
+                        "tamanho de todos os elementos da tela inicial para a configuração padrão."
+            )
+        },
+        confirmButton = {
+            TextButton(
+                onClick = {
+                    actions.onConfirmResetGrid()
+                    actions.onDismissResetGridDialog()
+                }
+            ) {
+                Text("Restaurar")
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = actions.onDismissResetGridDialog) {
+                Text("Cancelar")
+            }
+        }
+    )
 }
 
 @Composable
@@ -511,45 +546,87 @@ private fun LayoutSettingsGroup(
                 onCheckedChange = { actions.onToggleLeftHandedMode() }
             )
 
-            HorizontalDivider(
-                modifier = Modifier.padding(start = 16.dp),
-                color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = ALPHA_SEMI_TRANSPARENT)
-            )
-
-            PreferenceSwitchRow(
-                config = PreferenceItemConfig(
-                    title = "Haze Blur Effects",
-                    subtitle = if (!uiState.isHazeSupported) {
-                        "Not supported on this device (requires Android 12+)"
-                    } else {
-                        "Frosted glass blur effect on side panel, folders, and drawers"
-                    },
-                    enabled = uiState.isHazeSupported
-                ),
-                checked = uiState.isHazeEnabled,
-                onCheckedChange = { actions.onToggleHaze() }
-            )
-
-            if (uiState.isHazeEnabled) {
-                HorizontalDivider(
-                    modifier = Modifier.padding(start = 16.dp),
-                    color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = ALPHA_SEMI_TRANSPARENT)
-                )
-
-                PreferenceRowItem(
-                    config = PreferenceItemConfig(
-                        title = "Blur Opacity",
-                        subtitle = when {
-                            uiState.hazeOpacity <= OPACITY_LOW_THRESHOLD -> "Low (20%)"
-                            uiState.hazeOpacity <= OPACITY_MEDIUM -> "Medium (50%)"
-                            uiState.hazeOpacity <= OPACITY_HIGH_THRESHOLD -> "High (70%)"
-                            else -> "Solid (90%)"
-                        }
-                    ),
-                    onClick = actions.onOpenHazeOpacityDialog
-                )
-            }
+            HazeSettingsSection(uiState = uiState, actions = actions)
+            ExtraLayoutSettingsSection(uiState = uiState, actions = actions)
         }
+    }
+}
+
+@Composable
+private fun ExtraLayoutSettingsSection(
+    uiState: SettingsUiState,
+    actions: SettingsScreenActions
+) {
+    HorizontalDivider(
+        modifier = Modifier.padding(start = 16.dp),
+        color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = ALPHA_SEMI_TRANSPARENT)
+    )
+
+    PreferenceSwitchRow(
+        config = PreferenceItemConfig(
+            title = "Desativar Alphabet Scrubber",
+            subtitle = "Ocultar a barra alfabética lateral na lista de aplicativos"
+        ),
+        checked = uiState.isAlphabetScrubberDisabled,
+        onCheckedChange = { actions.onToggleDisableAlphabetScrubber() }
+    )
+
+    HorizontalDivider(
+        modifier = Modifier.padding(start = 16.dp),
+        color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = ALPHA_SEMI_TRANSPARENT)
+    )
+
+    PreferenceRowItem(
+        config = PreferenceItemConfig(
+            title = "Restaurar Layout Padrão",
+            subtitle = "Redefinir tamanho e posição dos containers da tela inicial"
+        ),
+        onClick = actions.onOpenResetGridDialog
+    )
+}
+
+@Composable
+private fun HazeSettingsSection(
+    uiState: SettingsUiState,
+    actions: SettingsScreenActions
+) {
+    HorizontalDivider(
+        modifier = Modifier.padding(start = 16.dp),
+        color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = ALPHA_SEMI_TRANSPARENT)
+    )
+
+    PreferenceSwitchRow(
+        config = PreferenceItemConfig(
+            title = "Haze Blur Effects",
+            subtitle = if (!uiState.isHazeSupported) {
+                "Not supported on this device (requires Android 12+)"
+            } else {
+                "Frosted glass blur effect on side panel, folders, and drawers"
+            },
+            enabled = uiState.isHazeSupported
+        ),
+        checked = uiState.isHazeEnabled,
+        onCheckedChange = { actions.onToggleHaze() }
+    )
+
+    if (uiState.isHazeEnabled) {
+        HorizontalDivider(
+            modifier = Modifier.padding(start = 16.dp),
+            color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = ALPHA_SEMI_TRANSPARENT)
+        )
+
+        PreferenceRowItem(
+            config = PreferenceItemConfig(
+                title = "Blur Opacity",
+                subtitle = when {
+                    uiState.hazeOpacity <= OPACITY_LOW_THRESHOLD -> "Low (20%)"
+                    uiState.hazeOpacity <= OPACITY_MEDIUM -> "Medium (50%)"
+                    uiState.hazeOpacity <= OPACITY_HIGH_THRESHOLD -> "High (70%)"
+                    else -> "Solid (90%)"
+                }
+            ),
+            onClick = actions.onOpenHazeOpacityDialog
+        )
     }
 }
 

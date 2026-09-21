@@ -10,7 +10,8 @@ internal object SettingsToggleManager {
             SettingToggle.SHOW_FOLDER_LABELS,
             SettingToggle.HOME_OPENS_ALL_APPS,
             SettingToggle.SHOW_ALL_APPS_ON_HOME,
-            SettingToggle.WIDGET_ROW -> toggleGroupTwo(vm, toggle)
+            SettingToggle.WIDGET_ROW,
+            SettingToggle.DISABLE_ALPHABET_SCRUBBER -> toggleGroupTwo(vm, toggle)
             SettingToggle.DYNAMIC_WALLPAPER,
             SettingToggle.IN_APP_UPDATE,
             SettingToggle.THEMED_APP_ICONS -> toggleGroupThree(vm, toggle)
@@ -65,6 +66,11 @@ internal object SettingsToggleManager {
                 val newValue = !vm.uiState.value.isWidgetRowEnabled
                 vm.settingsRepository.isWidgetRowEnabled = newValue
                 vm.updateUiState { it.copy(isWidgetRowEnabled = newValue) }
+            }
+            SettingToggle.DISABLE_ALPHABET_SCRUBBER -> {
+                val newValue = !vm.uiState.value.isAlphabetScrubberDisabled
+                vm.settingsRepository.isAlphabetScrubberDisabled = newValue
+                vm.updateUiState { it.copy(isAlphabetScrubberDisabled = newValue) }
             }
             else -> {}
         }

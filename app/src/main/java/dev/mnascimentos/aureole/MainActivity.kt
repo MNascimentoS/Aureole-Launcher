@@ -19,11 +19,8 @@ import androidx.activity.viewModels
 import com.google.android.play.core.appupdate.AppUpdateInfo
 import com.google.android.play.core.appupdate.AppUpdateManager
 import com.google.android.play.core.appupdate.AppUpdateManagerFactory
-import com.google.android.play.core.appupdate.AppUpdateOptions
 import com.google.android.play.core.install.InstallStateUpdatedListener
-import com.google.android.play.core.install.model.AppUpdateType
 import com.google.android.play.core.install.model.InstallStatus
-import com.google.android.play.core.install.model.UpdateAvailability
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -39,35 +36,12 @@ import dev.mnascimentos.aureole.feature.home.LocalHomeActions
 import dev.mnascimentos.aureole.feature.home.LocalHomeUiState
 import dev.mnascimentos.aureole.feature.home.MainScaffold
 import dev.mnascimentos.aureole.feature.home.extensions.checkAppUpdate
-import dev.mnascimentos.aureole.feature.home.extensions.closeWidgetPopup
 import dev.mnascimentos.aureole.feature.home.extensions.handleBackNavigation
-import dev.mnascimentos.aureole.feature.home.extensions.addGridItem
-import dev.mnascimentos.aureole.feature.home.extensions.deleteGridItem
-import dev.mnascimentos.aureole.feature.home.extensions.dismissGridError
-import dev.mnascimentos.aureole.feature.home.extensions.moveGridItem
-import dev.mnascimentos.aureole.feature.home.extensions.onFolderIntent
-import dev.mnascimentos.aureole.feature.home.extensions.onSearchQueryChanged
-import dev.mnascimentos.aureole.feature.home.extensions.openWidgetPopup
-import dev.mnascimentos.aureole.feature.home.extensions.resetGridItems
-import dev.mnascimentos.aureole.feature.home.extensions.resizeGridItem
-import dev.mnascimentos.aureole.feature.home.extensions.setAddAppToFolderDialogVisible
+import dev.mnascimentos.aureole.feature.home.extensions.loadGridItems
 import dev.mnascimentos.aureole.feature.home.extensions.setAllAppsDrawerOpen
-import dev.mnascimentos.aureole.feature.home.extensions.setEditingGridItem
-import dev.mnascimentos.aureole.feature.home.extensions.setIsAddingSingleWidget
-import dev.mnascimentos.aureole.feature.home.extensions.setRenameFolderDialogVisible
-import dev.mnascimentos.aureole.feature.home.extensions.setShowAddContainerDialog
-import dev.mnascimentos.aureole.feature.home.extensions.setShowFavoritePicker
-import dev.mnascimentos.aureole.feature.home.extensions.setShowWidgetPicker
-import dev.mnascimentos.aureole.feature.home.extensions.setShowWidgetResizeDialog
-import dev.mnascimentos.aureole.feature.home.extensions.setWidgetRowHeight
-import dev.mnascimentos.aureole.feature.home.extensions.toggleFavorite
-import dev.mnascimentos.aureole.feature.home.extensions.toggleGridEditMode
-import dev.mnascimentos.aureole.feature.home.model.FolderViewIntent
 import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
 import dev.mnascimentos.aureole.feature.home.widget.WidgetHostManager
-import dev.mnascimentos.aureole.feature.settings.SettingsActivity
-import dev.mnascimentos.aureole.util.IntentUtils
 
 class MainActivity : ComponentActivity() {
 
@@ -251,6 +225,7 @@ class MainActivity : ComponentActivity() {
         super.onResume()
         viewModel.loadSettings()
         viewModel.loadApps()
+        viewModel.loadGridItems()
         checkAppUpdate(appUpdateManager, viewModel) { cachedAppUpdateInfo = it }
     }
 

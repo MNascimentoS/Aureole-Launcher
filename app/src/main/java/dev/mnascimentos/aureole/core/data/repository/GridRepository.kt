@@ -20,14 +20,14 @@ class GridRepository(private val context: Context) {
 
     fun getGridItems(): List<LauncherItemState> {
         val json = prefs.getString(KEY_GRID_ITEMS, null)
-        if (json.isNullOrBlank()) {
+        if (json == null) {
             return GridEngineUtils.getDefaultGridItems()
         }
         return try {
             val type = object : TypeToken<List<LauncherItemState>>() {}.type
             val items: List<LauncherItemState>? = gson.fromJson(json, type)
-            if (items.isNullOrEmpty()) {
-                GridEngineUtils.getDefaultGridItems()
+            if (items == null) {
+                emptyList()
             } else {
                 items.map { item ->
                     if (item.type == null) {
@@ -39,10 +39,10 @@ class GridRepository(private val context: Context) {
             }
         } catch (e: JsonSyntaxException) {
             Log.w(TAG, "Failed to parse grid items JSON", e)
-            GridEngineUtils.getDefaultGridItems()
+            emptyList()
         } catch (e: IllegalStateException) {
             Log.w(TAG, "Illegal state while parsing grid items JSON", e)
-            GridEngineUtils.getDefaultGridItems()
+            emptyList()
         }
     }
 

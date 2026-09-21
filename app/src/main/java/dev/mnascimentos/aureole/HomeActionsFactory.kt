@@ -10,15 +10,18 @@ import com.google.android.play.core.install.model.AppUpdateType
 import dev.mnascimentos.aureole.feature.home.widget.WidgetHostManager
 import dev.mnascimentos.aureole.feature.home.HomeViewModel
 import dev.mnascimentos.aureole.feature.home.extensions.addGridItem
+import dev.mnascimentos.aureole.feature.home.extensions.cancelGridEditMode
 import dev.mnascimentos.aureole.feature.home.extensions.closeWidgetPopup
 import dev.mnascimentos.aureole.feature.home.extensions.deleteGridItem
 import dev.mnascimentos.aureole.feature.home.extensions.dismissGridError
+import dev.mnascimentos.aureole.feature.home.extensions.enterGridEditMode
 import dev.mnascimentos.aureole.feature.home.extensions.moveGridItem
 import dev.mnascimentos.aureole.feature.home.extensions.onFolderIntent
 import dev.mnascimentos.aureole.feature.home.extensions.onSearchQueryChanged
 import dev.mnascimentos.aureole.feature.home.extensions.openWidgetPopup
 import dev.mnascimentos.aureole.feature.home.extensions.resetGridItems
 import dev.mnascimentos.aureole.feature.home.extensions.resizeGridItem
+import dev.mnascimentos.aureole.feature.home.extensions.saveGridEditMode
 import dev.mnascimentos.aureole.feature.home.extensions.setAddAppToFolderDialogVisible
 import dev.mnascimentos.aureole.feature.home.extensions.setAllAppsDrawerOpen
 import dev.mnascimentos.aureole.feature.home.extensions.setEditingGridItem
@@ -30,7 +33,7 @@ import dev.mnascimentos.aureole.feature.home.extensions.setShowWidgetPicker
 import dev.mnascimentos.aureole.feature.home.extensions.setShowWidgetResizeDialog
 import dev.mnascimentos.aureole.feature.home.extensions.setWidgetRowHeight
 import dev.mnascimentos.aureole.feature.home.extensions.toggleFavorite
-import dev.mnascimentos.aureole.feature.home.extensions.toggleGridEditMode
+import dev.mnascimentos.aureole.feature.home.extensions.updateGridItemsOrientation
 import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
 import dev.mnascimentos.aureole.feature.settings.SettingsActivity
 import dev.mnascimentos.aureole.util.IntentUtils
@@ -74,7 +77,10 @@ class HomeActionsFactory(
                 viewModel.setShowUpdateAvailableDialog(visible = false)
                 viewModel.setShowUpdateDownloadedDialog(visible = false)
             },
-            onToggleGridEditMode = { viewModel.toggleGridEditMode() },
+            onEnterGridEditMode = { viewModel.enterGridEditMode() },
+            onCancelGridEditMode = { viewModel.cancelGridEditMode() },
+            onSaveGridEditMode = { viewModel.saveGridEditMode() },
+            onUpdateGridOrientation = { cols, rows -> viewModel.updateGridItemsOrientation(cols, rows) },
             onMoveGridItem = { id, col, row -> viewModel.moveGridItem(id, col, row) },
             onResizeGridItem = { id, colSpan, rowSpan -> viewModel.resizeGridItem(id, colSpan, rowSpan) },
             onResetGridItems = { viewModel.resetGridItems() },

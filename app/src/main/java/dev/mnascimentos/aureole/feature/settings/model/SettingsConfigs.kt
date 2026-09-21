@@ -41,4 +41,8 @@ data class SettingsScreenActions(
     val onToggleShowWidgetDots: () -> Unit = {},
     val onToggleInAppUpdate: () -> Unit = {},
     val onToggleThemedAppIcons: () -> Unit = {},
+    val onToggleDisableAlphabetScrubber: () -> Unit = {},
+    val onOpenResetGridDialog: () -> Unit = {},
+    val onConfirmResetGrid: () -> Unit = {},
+    val onDismissResetGridDialog: () -> Unit = {},
 )

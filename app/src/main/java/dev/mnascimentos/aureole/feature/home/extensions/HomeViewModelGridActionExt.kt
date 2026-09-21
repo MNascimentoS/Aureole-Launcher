@@ -20,37 +20,41 @@ fun HomeViewModel.addGridItem(
     type: LauncherItemType,
     widgetId: Int? = null
 ) {
-    val currentItems = uiState.value.gridItems
-    val (spans, minSpans) = GridEngineUtils.getDefaultSpanForType(type)
-    val (colSpan, rowSpan) = spans
-    val (minColSpan, minRowSpan) = minSpans
+    updateUiState { state ->
+        val currentItems = state.gridItems
+        val (spans, minSpans) = GridEngineUtils.getDefaultSpanForType(type)
+        val (colSpan, rowSpan) = spans
+        val (minColSpan, minRowSpan) = minSpans
 
-    val availableSlot = GridEngineUtils.findFirstAvailableSlot(colSpan, rowSpan, currentItems)
-    if (availableSlot == null) {
-        updateUiState { it.copy(gridErrorMessage = CONTAINER_ERROR_MSG) }
-    } else {
-        val newItem = LauncherItemState(
-            id = UUID.randomUUID().toString(),
-            type = type,
-            col = availableSlot.first,
-            row = availableSlot.second,
-            colSpan = colSpan,
-            rowSpan = rowSpan,
-            minColSpan = minColSpan,
-            minRowSpan = minRowSpan,
-            widgetId = widgetId
-        )
-        val updatedList = currentItems + newItem
-        updateUiState { it.copy(gridItems = updatedList, showAddContainerDialog = false) }
-        getGridRepository().saveGridItems(updatedList)
+        val availableSlot = GridEngineUtils.findFirstAvailableSlot(colSpan, rowSpan, currentItems)
+        if (availableSlot == null) {
+            state.copy(gridErrorMessage = CONTAINER_ERROR_MSG)
+        } else {
+            val newItem = LauncherItemState(
+                id = UUID.randomUUID().toString(),
+                type = type,
+                col = availableSlot.first,
+                row = availableSlot.second,
+                colSpan = colSpan,
+                rowSpan = rowSpan,
+                minColSpan = minColSpan,
+                minRowSpan = minRowSpan,
+                widgetId = widgetId
+            )
+            val updatedList = currentItems + newItem
+            getGridRepository().saveGridItems(updatedList)
+            state.copy(gridItems = updatedList, showAddContainerDialog = false)
+        }
     }
 }
 
 fun HomeViewModel.deleteGridItem(id: String) {
-    val currentItems = uiState.value.gridItems
-    val updatedList = currentItems.filterNot { it.id == id }
-    updateUiState { it.copy(gridItems = updatedList, editingGridItem = null) }
-    getGridRepository().saveGridItems(updatedList)
+    updateUiState { state ->
+        val currentItems = state.gridItems
+        val updatedList = currentItems.filterNot { it.id == id }
+        getGridRepository().saveGridItems(updatedList)
+        state.copy(gridItems = updatedList, editingGridItem = null)
+    }
 }
 
 fun HomeViewModel.dismissGridError() {

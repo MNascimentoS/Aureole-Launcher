@@ -86,6 +86,7 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
             val hazeOpacity = settingsRepository.hazeOpacity
             val isInAppUpdateEnabled = settingsRepository.isInAppUpdateEnabled
             val isThemedAppIconsEnabled = settingsRepository.isThemedAppIconsEnabled
+            val isAlphabetScrubberDisabled = settingsRepository.isAlphabetScrubberDisabled
 
             _uiState.update {
                 it.copy(
@@ -108,6 +109,7 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
                     hazeOpacity = hazeOpacity,
                     isInAppUpdateEnabled = isInAppUpdateEnabled,
                     isThemedAppIconsEnabled = isThemedAppIconsEnabled,
+                    isAlphabetScrubberDisabled = isAlphabetScrubberDisabled,
                 )
             }
         }

@@ -3,6 +3,7 @@ package dev.mnascimentos.aureole.feature.home
 import android.appwidget.AppWidgetHost
 import android.appwidget.AppWidgetManager
 import android.content.ComponentName
+import android.content.res.Configuration
 import android.graphics.drawable.ColorDrawable
 import android.widget.TextView
 import android.widget.Toast
@@ -16,8 +17,6 @@ import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.navigationBarsPadding
@@ -43,10 +42,9 @@ import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.unit.Density
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import dev.chrisbanes.haze.HazeState
@@ -71,6 +69,8 @@ import dev.mnascimentos.aureole.feature.home.components.model.SidePanelConfig
 import dev.mnascimentos.aureole.feature.home.folder.HomeScreenFolderOverlays
 import dev.mnascimentos.aureole.feature.home.grid.DynamicGridContainer
 import dev.mnascimentos.aureole.feature.home.grid.GridEditConfig
+import dev.mnascimentos.aureole.feature.home.grid.GridEngineUtils
+import dev.mnascimentos.aureole.feature.home.grid.GridLimits
 import dev.mnascimentos.aureole.feature.home.model.FolderViewIntent
 import dev.mnascimentos.aureole.feature.home.model.HomeDragParams
 import dev.mnascimentos.aureole.feature.home.model.HomeOverlaysConfig
@@ -81,7 +81,6 @@ import dev.mnascimentos.aureole.feature.home.model.ScrubberOverlayConfig
 import dev.mnascimentos.aureole.feature.home.widget.HomeScreenWidgetOverlays
 import dev.mnascimentos.aureole.feature.home.widget.StackedWidgetSection
 import dev.mnascimentos.aureole.feature.home.widget.model.StackedWidgetConfig
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import kotlin.math.abs
 
@@ -266,27 +265,29 @@ private fun BoxScope.HomeOverlaysContent(
         onClose = config.actions.onAllAppsDrawerClose
     )
 
-    val scrubberAlign = if (config.uiState.isLeftHandedMode) {
-        Alignment.CenterStart
-    } else {
-        Alignment.CenterEnd
-    }
+    if (!config.uiState.isAlphabetScrubberDisabled) {
+        val scrubberAlign = if (config.uiState.isLeftHandedMode) {
+            Alignment.CenterStart
+        } else {
+            Alignment.CenterEnd
+        }
 
-    ScrubberOverlay(
-        config = ScrubberOverlayConfig(
-            uiState = config.uiState,
-            externalTouchY = config.externalTouchY,
-            listState = config.listState,
-            coroutineScope = config.coroutineScope,
-            actions = config.actions,
-            onExternalTouchYReset = config.onExternalTouchYReset
-        ),
-        modifier = Modifier
-            .align(scrubberAlign)
-            .statusBarsPadding()
-            .navigationBarsPadding()
-            .imePadding()
-    )
+        ScrubberOverlay(
+            config = ScrubberOverlayConfig(
+                uiState = config.uiState,
+                externalTouchY = config.externalTouchY,
+                listState = config.listState,
+                coroutineScope = config.coroutineScope,
+                actions = config.actions,
+                onExternalTouchYReset = config.onExternalTouchYReset
+            ),
+            modifier = Modifier
+                .align(scrubberAlign)
+                .statusBarsPadding()
+                .navigationBarsPadding()
+                .imePadding()
+        )
+    }
 
     HomeScreenFolderOverlays(
         screenHeightPx = config.screenHeightPx,
@@ -403,6 +404,28 @@ private fun ScrubberOverlay(
     )
 }
 
+private fun getGridLimits(orientation: Int): GridLimits {
+    val maxCols = if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+        GridEngineUtils.LANDSCAPE_MAX_COLS
+    } else {
+        GridEngineUtils.PORTRAIT_MAX_COLS
+    }
+    val maxRows = if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+        GridEngineUtils.LANDSCAPE_MAX_ROWS
+    } else {
+        GridEngineUtils.PORTRAIT_MAX_ROWS
+    }
+    return GridLimits(maxCols, maxRows)
+}
+
+@Composable
+private fun GridOrientationEffect(orientation: Int, actions: HomeScreenActions) {
+    LaunchedEffect(orientation) {
+        val limits = getGridLimits(orientation)
+        actions.onUpdateGridOrientation(limits.maxCols, limits.maxRows)
+    }
+}
+
 @Composable
 private fun MainHomeLayout(
     appWidgetHost: AppWidgetHost,
@@ -413,7 +436,11 @@ private fun MainHomeLayout(
     val uiState = LocalHomeUiState.current
     val actions = LocalHomeActions.current
     val density = LocalDensity.current
+    val configuration = LocalConfiguration.current
+    
     val currentHeightDp = with(density) { currentHeightPx.toDp() }
+
+    GridOrientationEffect(configuration.orientation, actions)
 
     val sidePanelConfig = SidePanelConfig(
         folders = uiState.folders,
@@ -438,87 +465,23 @@ private fun MainHomeLayout(
         hazeState = hazeState
     )
 
-    if (uiState.gridItems.isNotEmpty()) {
-        DynamicGridContainer(
-            items = uiState.gridItems,
-            config = GridEditConfig(isEditMode = uiState.isGridEditMode),
-            actions = actions,
-            modifier = Modifier
-                .fillMaxSize()
-                .statusBarsPadding()
-                .navigationBarsPadding()
-        ) { item ->
-            GridItemContent(
-                item = item,
-                favConfig = favConfig,
-                appWidgetHost = appWidgetHost,
-                stackedWidgetConfig = stackedWidgetConfig,
-                sidePanelConfig = sidePanelConfig
-            )
-        }
-    } else {
-        FallbackHomeLayout(
-            appWidgetHost = appWidgetHost,
-            favConfig = favConfig,
-            sidePanelConfig = sidePanelConfig
-        )
-    }
-}
+    val limits = getGridLimits(configuration.orientation)
 
-@Composable
-private fun FallbackHomeLayout(
-    appWidgetHost: AppWidgetHost,
-    favConfig: FavoritesListConfig,
-    sidePanelConfig: SidePanelConfig
-) {
-    val uiState = LocalHomeUiState.current
-    val actions = LocalHomeActions.current
-    Row(
+    DynamicGridContainer(
+        items = uiState.gridItems,
+        config = GridEditConfig(isEditMode = uiState.isGridEditMode, limits = limits),
+        actions = actions,
         modifier = Modifier
             .fillMaxSize()
             .statusBarsPadding()
             .navigationBarsPadding()
-    ) {
-        if (uiState.isLeftHandedMode) {
-            SidePanelSection(uiState = uiState, sidePanelConfig = sidePanelConfig, actions = actions)
-            FavoritesList(
-                config = favConfig,
-                appWidgetHost = appWidgetHost,
-                modifier = Modifier.weight(1f)
-            )
-        } else {
-            FavoritesList(
-                config = favConfig,
-                appWidgetHost = appWidgetHost,
-                modifier = Modifier.weight(1f)
-            )
-            SidePanelSection(uiState = uiState, sidePanelConfig = sidePanelConfig, actions = actions)
-        }
-    }
-}
-
-@Composable
-private fun RowScope.SidePanelSection(
-    uiState: MainUiState,
-    sidePanelConfig: SidePanelConfig,
-    actions: HomeScreenActions
-) {
-    if (uiState.isSidePanelEnabled) {
-        val alignment = when (sidePanelConfig.position) {
-            "Top" -> Alignment.Top
-            "Bottom" -> Alignment.Bottom
-            else -> Alignment.CenterVertically
-        }
-        SidePanel(
-            config = sidePanelConfig,
-            onFolderClick = { folder, topYPx ->
-                if (uiState.openedFolderId == folder.id) {
-                    actions.onFolderIntent(FolderViewIntent.CloseFolder)
-                } else {
-                    actions.onFolderIntent(FolderViewIntent.OpenFolder(folder.id, topYPx))
-                }
-            },
-            modifier = Modifier.align(alignment)
+    ) { item ->
+        GridItemContent(
+            item = item,
+            favConfig = favConfig,
+            appWidgetHost = appWidgetHost,
+            stackedWidgetConfig = stackedWidgetConfig,
+            sidePanelConfig = sidePanelConfig
         )
     }
 }
@@ -635,7 +598,10 @@ fun HomeScreenPreview() {
         onSearchQueryChanged = {},
         onSettingsClick = {},
         onAllAppsDrawerClose = {},
-        onAllAppsDrawerOpen = {}
+        onAllAppsDrawerOpen = {},
+        onEnterGridEditMode = {},
+        onCancelGridEditMode = {},
+        onSaveGridEditMode = {}
     )
 
     AureoleLauncherTheme {
