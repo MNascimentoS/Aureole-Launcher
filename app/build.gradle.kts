@@ -27,7 +27,11 @@ android {
         minSdk = 28
         targetSdk = 37
         versionCode = gitCommitCount
-        versionName = customVersionName ?: "0.1.$gitCommitCount"
+        versionName = if (customVersionName != null) {
+            if (customVersionName.endsWith(".$gitCommitCount")) customVersionName else "$customVersionName.$gitCommitCount"
+        } else {
+            "0.1.$gitCommitCount"
+        }
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }

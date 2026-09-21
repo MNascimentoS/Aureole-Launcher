@@ -1,9 +1,11 @@
 package dev.mnascimentos.aureole.feature.home.widget
 
 import android.appwidget.AppWidgetHost
+import android.appwidget.AppWidgetHostView
 import android.appwidget.AppWidgetManager
 import android.content.Context
 import android.graphics.Color
+import android.os.Bundle
 import android.util.Log
 import android.view.Gravity
 import android.view.View
@@ -259,7 +261,7 @@ private fun WidgetHostItem(
             }
             .pointerInput(widgetId) {
                 awaitEachGesture {
-                    val down = awaitFirstDown(pass = PointerEventPass.Initial)
+                    val down = awaitFirstDown(pass = PointerEventPass.Main)
                     var isLongPressTriggered = false
 
                     val job = coroutineScope.launch {
@@ -269,7 +271,7 @@ private fun WidgetHostItem(
                     }
 
                     try {
-                        waitForUpOrCancellation(pass = PointerEventPass.Initial)
+                        waitForUpOrCancellation(pass = PointerEventPass.Main)
                         job.cancel()
                         if (isLongPressTriggered) {
                             down.consume()
@@ -283,6 +285,20 @@ private fun WidgetHostItem(
     ) {
         AndroidView(
             factory = { context -> createWidgetHostView(context, appWidgetHost, widgetId) },
+            update = { view ->
+                val appWidgetManager = AppWidgetManager.getInstance(view.context)
+                val appWidgetInfo = appWidgetManager.getAppWidgetInfo(widgetId)
+                if (appWidgetInfo != null && view is AppWidgetHostView) {
+                    val widthDp = (view.context.resources.configuration.screenWidthDp).coerceAtLeast(100)
+                    val options = Bundle().apply {
+                        putInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH, appWidgetInfo.minWidth)
+                        putInt(AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT, appWidgetInfo.minHeight)
+                        putInt(AppWidgetManager.OPTION_APPWIDGET_MAX_WIDTH, widthDp)
+                        putInt(AppWidgetManager.OPTION_APPWIDGET_MAX_HEIGHT, 360)
+                    }
+                    appWidgetManager.updateAppWidgetOptions(widgetId, options)
+                }
+            },
             modifier = Modifier.fillMaxSize()
         )
     }
@@ -297,6 +313,14 @@ private fun createWidgetHostView(
     val appWidgetInfo = appWidgetManager.getAppWidgetInfo(widgetId)
     return if (appWidgetInfo != null) {
         try {
+            val widthDp = (context.resources.configuration.screenWidthDp).coerceAtLeast(100)
+            val options = Bundle().apply {
+                putInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH, appWidgetInfo.minWidth)
+                putInt(AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT, appWidgetInfo.minHeight)
+                putInt(AppWidgetManager.OPTION_APPWIDGET_MAX_WIDTH, widthDp)
+                putInt(AppWidgetManager.OPTION_APPWIDGET_MAX_HEIGHT, 360)
+            }
+            appWidgetManager.updateAppWidgetOptions(widgetId, options)
             appWidgetHost.createView(context, widgetId, appWidgetInfo)
         } catch (e: IllegalArgumentException) {
             Log.e("WidgetHostItem", "Error creating widget view", e)

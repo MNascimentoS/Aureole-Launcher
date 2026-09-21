@@ -1,5 +1,7 @@
 package dev.mnascimentos.aureole.feature.settings
 
+import android.content.pm.PackageManager
+import android.os.Build
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -51,6 +53,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -652,6 +655,21 @@ private fun SystemSettingsGroup(
 
 @Composable
 private fun AboutSettingsGroup() {
+    val context = LocalContext.current
+    val versionName = remember(context) {
+        try {
+            val packageInfo = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                context.packageManager.getPackageInfo(context.packageName, PackageManager.PackageInfoFlags.of(0))
+            } else {
+                @Suppress("DEPRECATION")
+                context.packageManager.getPackageInfo(context.packageName, 0)
+            }
+            packageInfo.versionName ?: "1.0"
+        } catch (e: Exception) {
+            "1.0"
+        }
+    }
+
     Column {
         PreferenceCategoryHeader(title = "About")
         PreferenceCard {
@@ -669,7 +687,7 @@ private fun AboutSettingsGroup() {
                 )
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
-                    text = "Version 1.0",
+                    text = "Version $versionName",
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )

@@ -1,17 +1,21 @@
 package dev.mnascimentos.aureole.feature.home
 
 import android.appwidget.AppWidgetHost
+import android.appwidget.AppWidgetHostView
 import android.appwidget.AppWidgetManager
 import android.content.ComponentName
 import android.content.res.Configuration
 import android.graphics.drawable.ColorDrawable
+import android.os.Bundle
 import android.widget.TextView
 import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.gestures.detectTapGestures
@@ -258,11 +262,14 @@ private fun BoxScope.HomeOverlaysContent(
     config: HomeOverlaysConfig
 ) {
     AppsDrawerOverlay(
-        isAllAppsDrawerOpen = config.uiState.isAllAppsDrawerOpen,
-        isLeftHandedMode = config.uiState.isLeftHandedMode,
-        listState = config.listState,
-        hazeState = config.hazeState,
-        onClose = config.actions.onAllAppsDrawerClose
+        config = AppsDrawerOverlayConfig(
+            isAllAppsDrawerOpen = config.uiState.isAllAppsDrawerOpen,
+            isOpenedFromBottom = config.uiState.isAllAppsOpenedFromBottom,
+            isLeftHandedMode = config.uiState.isLeftHandedMode,
+            listState = config.listState,
+            hazeState = config.hazeState,
+            onClose = config.actions.onAllAppsDrawerClose,
+        ),
     )
 
     if (!config.uiState.isAlphabetScrubberDisabled) {
@@ -335,34 +342,51 @@ private fun HomeOverlaysDialogsAndErrors(config: HomeOverlaysConfig) {
     }
 }
 
+private data class AppsDrawerOverlayConfig(
+    val isAllAppsDrawerOpen: Boolean,
+    val isOpenedFromBottom: Boolean,
+    val isLeftHandedMode: Boolean,
+    val listState: LazyListState,
+    val hazeState: HazeState,
+    val onClose: () -> Unit,
+)
+
 @Composable
 private fun AppsDrawerOverlay(
-    isAllAppsDrawerOpen: Boolean,
-    isLeftHandedMode: Boolean,
-    listState: LazyListState,
-    hazeState: HazeState,
-    onClose: () -> Unit
+    config: AppsDrawerOverlayConfig,
 ) {
+    val enterTransition = if (config.isOpenedFromBottom) {
+        fadeIn() + slideInVertically { it }
+    } else {
+        fadeIn() + slideInHorizontally { if (config.isLeftHandedMode) -it / 2 else it / 2 }
+    }
+
+    val exitTransition = if (config.isOpenedFromBottom) {
+        fadeOut() + slideOutVertically { it }
+    } else {
+        fadeOut() + slideOutHorizontally { if (config.isLeftHandedMode) -it / 2 else it / 2 }
+    }
+
     AnimatedVisibility(
-        visible = isAllAppsDrawerOpen,
-        enter = fadeIn() + slideInHorizontally { if (isLeftHandedMode) -it / 2 else it / 2 },
-        exit = fadeOut() + slideOutHorizontally { if (isLeftHandedMode) -it / 2 else it / 2 },
-        modifier = Modifier.fillMaxSize()
+        visible = config.isAllAppsDrawerOpen,
+        enter = enterTransition,
+        exit = exitTransition,
+        modifier = Modifier.fillMaxSize(),
     ) {
         Box(
             modifier = Modifier
                 .fillMaxSize()
                 .background(Color.Transparent)
                 .pointerInput(Unit) {
-                    detectTapGestures(onTap = { onClose() })
-                }
+                    detectTapGestures(onTap = { config.onClose() })
+                },
         ) {
-            val drawerAlign = if (isLeftHandedMode) Alignment.CenterStart else Alignment.CenterEnd
+            val drawerAlign = if (config.isLeftHandedMode) Alignment.CenterStart else Alignment.CenterEnd
 
             AppsListDrawer(
-                listState = listState,
-                hazeState = hazeState,
-                modifier = Modifier.align(drawerAlign)
+                listState = config.listState,
+                hazeState = config.hazeState,
+                modifier = Modifier.align(drawerAlign),
             )
         }
     }
@@ -552,9 +576,31 @@ private fun SingleAppWidgetContent(
                     val appWidgetManager = AppWidgetManager.getInstance(context)
                     val appWidgetInfo = appWidgetManager.getAppWidgetInfo(item.widgetId)
                     if (appWidgetInfo != null) {
+                        val widthDp = (context.resources.configuration.screenWidthDp).coerceAtLeast(100)
+                        val options = Bundle().apply {
+                            putInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH, appWidgetInfo.minWidth)
+                            putInt(AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT, appWidgetInfo.minHeight)
+                            putInt(AppWidgetManager.OPTION_APPWIDGET_MAX_WIDTH, widthDp)
+                            putInt(AppWidgetManager.OPTION_APPWIDGET_MAX_HEIGHT, 360)
+                        }
+                        appWidgetManager.updateAppWidgetOptions(item.widgetId, options)
                         appWidgetHost.createView(context, item.widgetId, appWidgetInfo)
                     } else {
                         TextView(context).apply { text = "Widget" }
+                    }
+                },
+                update = { view ->
+                    val appWidgetManager = AppWidgetManager.getInstance(view.context)
+                    val appWidgetInfo = appWidgetManager.getAppWidgetInfo(item.widgetId)
+                    if (appWidgetInfo != null && view is AppWidgetHostView) {
+                        val widthDp = (view.context.resources.configuration.screenWidthDp).coerceAtLeast(100)
+                        val options = Bundle().apply {
+                            putInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH, appWidgetInfo.minWidth)
+                            putInt(AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT, appWidgetInfo.minHeight)
+                            putInt(AppWidgetManager.OPTION_APPWIDGET_MAX_WIDTH, widthDp)
+                            putInt(AppWidgetManager.OPTION_APPWIDGET_MAX_HEIGHT, 360)
+                        }
+                        appWidgetManager.updateAppWidgetOptions(item.widgetId, options)
                     }
                 },
                 modifier = Modifier.fillMaxSize()

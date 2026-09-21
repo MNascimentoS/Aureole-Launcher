@@ -60,6 +60,7 @@ data class MainUiState(
     val showSettingsDialog: Boolean = false,
     val showFavoritePickerDialog: Boolean = false,
     val isAllAppsDrawerOpen: Boolean = false,
+    val isAllAppsOpenedFromBottom: Boolean = false,
     val activeWidgetId: Int? = null,
     val activeWidgetTopYPx: Float = 0f,
     val showWidgetPopup: Boolean = false,

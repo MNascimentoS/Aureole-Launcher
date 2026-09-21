@@ -192,12 +192,17 @@ class MainActivity : ComponentActivity() {
         ).createHomeActions()
     }
 
+    private var wasInBackground = false
+
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
         if (intent.action == Intent.ACTION_MAIN && intent.hasCategory(Intent.CATEGORY_HOME)) {
             val state = viewModel.uiState.value
-            if (state.homeButtonOpensAllApps) {
-                viewModel.setAllAppsDrawerOpen(!state.isAllAppsDrawerOpen)
+            if (wasInBackground) {
+                viewModel.setAllAppsDrawerOpen(false)
+                wasInBackground = false
+            } else if (state.homeButtonOpensAllApps) {
+                viewModel.setAllAppsDrawerOpen(!state.isAllAppsDrawerOpen, fromHomeButton = true)
             } else {
                 viewModel.setAllAppsDrawerOpen(false)
             }
@@ -211,6 +216,7 @@ class MainActivity : ComponentActivity() {
 
     override fun onStop() {
         super.onStop()
+        wasInBackground = true
         appWidgetHost.stopListening()
     }
 
@@ -227,6 +233,7 @@ class MainActivity : ComponentActivity() {
         viewModel.loadApps()
         viewModel.loadGridItems()
         checkAppUpdate(appUpdateManager, viewModel) { cachedAppUpdateInfo = it }
+        wasInBackground = false
     }
 
     companion object {

@@ -151,6 +151,40 @@ object GridEngineUtils {
         return null
     }
 
+    fun findLargestAvailableSlot(
+        targetColSpan: Int,
+        targetRowSpan: Int,
+        minColSpan: Int = 1,
+        minRowSpan: Int = 1,
+        items: List<LauncherItemState>,
+        limits: GridLimits = GridLimits()
+    ): Triple<Int, Int, Pair<Int, Int>>? {
+        val safeMinColSpan = minColSpan.coerceIn(1, limits.maxCols)
+        val safeMinRowSpan = minRowSpan.coerceIn(1, limits.maxRows)
+        val safeTargetColSpan = targetColSpan.coerceIn(safeMinColSpan, limits.maxCols)
+        val safeTargetRowSpan = targetRowSpan.coerceIn(safeMinRowSpan, limits.maxRows)
+
+        val candidates = mutableListOf<Pair<Int, Int>>()
+        for (cSpan in safeTargetColSpan downTo safeMinColSpan) {
+            for (rSpan in safeTargetRowSpan downTo safeMinRowSpan) {
+                candidates.add(Pair(cSpan, rSpan))
+            }
+        }
+        candidates.sortWith(
+            compareByDescending<Pair<Int, Int>> { it.first * it.second }
+                .thenByDescending { it.first }
+                .thenByDescending { it.second }
+        )
+
+        for ((cSpan, rSpan) in candidates) {
+            val slot = findFirstAvailableSlot(cSpan, rSpan, items, limits)
+            if (slot != null) {
+                return Triple(cSpan, rSpan, slot)
+            }
+        }
+        return null
+    }
+
     fun getDefaultSpanForType(type: LauncherItemType): Pair<Pair<Int, Int>, Pair<Int, Int>> {
         return when (type) {
             LauncherItemType.CLOCK -> Pair(
