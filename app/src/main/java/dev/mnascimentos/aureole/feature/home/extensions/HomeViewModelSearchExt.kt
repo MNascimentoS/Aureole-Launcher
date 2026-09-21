@@ -53,7 +53,7 @@ internal fun HomeViewModel.updateAppsState(apps: List<AppInfo>) {
 }
 
 private fun computeAlphabetAndIndexMap(apps: List<AppInfo>): Pair<List<Char>, Map<Char, Int>> {
-    val fullAlphabet = listOf('☆', '#') + ('A'..'Z').toList()
+    val fullAlphabet = listOf('#') + ('A'..'Z').toList()
 
     val firstOccurrenceMap = mutableMapOf<Char, Int>()
     apps.forEachIndexed { index, app ->

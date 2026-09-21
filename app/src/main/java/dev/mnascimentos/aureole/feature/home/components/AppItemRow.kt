@@ -1,9 +1,11 @@
 package dev.mnascimentos.aureole.feature.home.components
 
 import android.content.ComponentName
+import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -13,6 +15,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Star
@@ -42,6 +45,11 @@ import dev.mnascimentos.aureole.feature.home.components.model.AppItemRowActions
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
 
 private const val FAVORITE_INACTIVE_ALPHA = 0.4f
+private const val COLOR_MAX_FACTOR = 255
+private val ICON_OUTER_SIZE = 42.dp
+private val ICON_INNER_SIZE = 26.dp
+private val ICON_CORNER_RADIUS = 12.dp
+private val ICON_PADDING = 8.dp
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -91,6 +99,21 @@ private fun RowScope.AppItemRowContent(
     iconBitmap: ImageBitmap,
 ) {
     val uiState = LocalHomeUiState.current
+    val onPrimaryContainerColor = MaterialTheme.colorScheme.onPrimaryContainer
+    val displayBitmap = remember(app.packageName, uiState.isThemedAppIconsEnabled, onPrimaryContainerColor) {
+        if (uiState.isThemedAppIconsEnabled) {
+            val argb = Color.argb(
+                (onPrimaryContainerColor.alpha * COLOR_MAX_FACTOR).toInt(),
+                (onPrimaryContainerColor.red * COLOR_MAX_FACTOR).toInt(),
+                (onPrimaryContainerColor.green * COLOR_MAX_FACTOR).toInt(),
+                (onPrimaryContainerColor.blue * COLOR_MAX_FACTOR).toInt()
+            )
+            app.getThemedIconBitmap(argb)
+        } else {
+            iconBitmap
+        }
+    }
+
     if (uiState.isLeftHandedMode) {
         Text(
             text = app.label,
@@ -102,17 +125,9 @@ private fun RowScope.AppItemRowContent(
             modifier = Modifier.weight(1f)
         )
         Spacer(modifier = Modifier.width(16.dp))
-        Image(
-            bitmap = iconBitmap,
-            contentDescription = app.label,
-            modifier = Modifier.size(42.dp)
-        )
+        AppItemIcon(bitmap = displayBitmap, label = app.label, isThemed = uiState.isThemedAppIconsEnabled)
     } else {
-        Image(
-            bitmap = iconBitmap,
-            contentDescription = app.label,
-            modifier = Modifier.size(42.dp)
-        )
+        AppItemIcon(bitmap = displayBitmap, label = app.label, isThemed = uiState.isThemedAppIconsEnabled)
         Spacer(modifier = Modifier.width(16.dp))
         Text(
             text = app.label,
@@ -121,6 +136,36 @@ private fun RowScope.AppItemRowContent(
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
             modifier = Modifier.weight(1f)
+        )
+    }
+}
+
+@Composable
+private fun AppItemIcon(
+    bitmap: ImageBitmap,
+    label: String,
+    isThemed: Boolean
+) {
+    if (isThemed) {
+        Box(
+            modifier = Modifier
+                .size(ICON_OUTER_SIZE)
+                .clip(RoundedCornerShape(ICON_CORNER_RADIUS))
+                .background(MaterialTheme.colorScheme.primaryContainer)
+                .padding(ICON_PADDING),
+            contentAlignment = Alignment.Center
+        ) {
+            Image(
+                bitmap = bitmap,
+                contentDescription = label,
+                modifier = Modifier.size(ICON_INNER_SIZE)
+            )
+        }
+    } else {
+        Image(
+            bitmap = bitmap,
+            contentDescription = label,
+            modifier = Modifier.size(ICON_OUTER_SIZE)
         )
     }
 }
@@ -144,9 +189,7 @@ private fun AppItemRowDropdownMenu(
                 MaterialTheme.colorScheme.onSurface.copy(alpha = FAVORITE_INACTIVE_ALPHA)
             }
             DropdownMenuItem(
-                text = {
-                    Text(if (isFavorite) "Remove from Favorites" else "Add to Favorites")
-                },
+                text = { Text(if (isFavorite) "Remove from Favorites" else "Add to Favorites") },
                 leadingIcon = {
                     Icon(
                         imageVector = Icons.Default.Star,
@@ -155,23 +198,25 @@ private fun AppItemRowDropdownMenu(
                     )
                 },
                 onClick = {
-                    onDismiss()
                     actions.onToggleFavorite.invoke(app.packageName)
+                    onDismiss()
                 }
             )
         }
+
         if (actions.onAppInfoClick != null) {
             DropdownMenuItem(
                 text = { Text("App Info") },
                 leadingIcon = {
                     Icon(
                         imageVector = Icons.Default.Info,
-                        contentDescription = null
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.onSurface
                     )
                 },
                 onClick = {
-                    onDismiss()
                     actions.onAppInfoClick.invoke(app)
+                    onDismiss()
                 }
             )
         }
@@ -182,13 +227,18 @@ private fun AppItemRowDropdownMenu(
 @Composable
 fun AppItemRowPreview() {
     val mockApp = AppInfo(
-        label = "Browser",
-        packageName = "com.example.browser",
-        componentName = ComponentName("com.example.browser", "MainActivity"),
+        label = "Camera",
+        packageName = "com.example.camera",
+        componentName = ComponentName("com.example.camera", "MainActivity"),
         icon = ColorDrawable(0xFF1B65C0.toInt())
     )
+    val mockUiState = MainUiState(
+        apps = listOf(mockApp),
+        favoriteApps = listOf(mockApp)
+    )
+
     AureoleLauncherTheme {
-        CompositionLocalProvider(LocalHomeUiState provides MainUiState()) {
+        CompositionLocalProvider(LocalHomeUiState provides mockUiState) {
             AppItemRow(
                 app = mockApp,
                 onClick = {},
@@ -197,4 +247,3 @@ fun AppItemRowPreview() {
         }
     }
 }
-

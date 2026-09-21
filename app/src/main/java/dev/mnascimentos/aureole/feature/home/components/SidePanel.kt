@@ -10,7 +10,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -30,7 +32,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import dev.chrisbanes.haze.HazeState
 import dev.chrisbanes.haze.HazeStyle
 import dev.chrisbanes.haze.HazeTint
 import dev.chrisbanes.haze.hazeEffect
@@ -78,12 +79,6 @@ fun SidePanel(
 
     Box(
         modifier = modifier
-            .padding(
-                start = if (uiState.isLeftHandedMode) 16.dp else 8.dp,
-                end = if (uiState.isLeftHandedMode) 8.dp else 16.dp,
-                top = 8.dp,
-                bottom = 8.dp
-            )
     ) {
         SidePanelColumn(
             config = config,
@@ -107,6 +102,7 @@ private fun SidePanelColumn(
             .clip(RoundedCornerShape(18.dp))
             .then(modifier)
             .background(MaterialTheme.colorScheme.surfaceContainerHigh.copy(alpha = backgroundAlpha))
+            .verticalScroll(rememberScrollState())
             .padding(8.dp)
     ) {
         config.folders.forEach { folder ->

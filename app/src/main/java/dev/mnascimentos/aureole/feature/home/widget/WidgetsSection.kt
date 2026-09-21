@@ -2,6 +2,12 @@ package dev.mnascimentos.aureole.feature.home.widget
 
 import android.appwidget.AppWidgetHost
 import android.appwidget.AppWidgetManager
+import android.content.Context
+import android.graphics.Color
+import android.util.Log
+import android.view.Gravity
+import android.view.View
+import android.widget.TextView
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.awaitEachGesture
@@ -21,6 +27,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -85,6 +92,14 @@ private const val ADD_BUTTON_HAZE_ALPHA_FACTOR = 0.7f
 private const val POPUP_HAZE_ALPHA_FACTOR = 0.8f
 private const val PREVIEW_APPWIDGET_HOST_ID = 1024
 private const val PREVIEW_HEIGHT_PX = 400f
+private const val WIDGET_NOT_AVAILABLE_TEXT = "Widget não disponível (Remova e adicione novamente)"
+
+private data class PagerContentParams(
+    val showAddButton: Boolean,
+    val pageCount: Int,
+    val pagerState: PagerState,
+    val hasFillMaxSize: Boolean
+)
 
 @Composable
 fun StackedWidgetSection(
@@ -93,63 +108,106 @@ fun StackedWidgetSection(
     modifier: Modifier = Modifier
 ) {
     val uiState = LocalHomeUiState.current
-    val actions = LocalHomeActions.current
     val showAddButton = config.topWidgetIds.size < MAX_WIDGETS
     val pageCount = config.topWidgetIds.size + if (showAddButton) 1 else 0
     val pagerState = rememberPagerState(pageCount = { pageCount })
 
-    val startPad = if (uiState.isSidePanelEnabled) {
-        if (uiState.isLeftHandedMode) 8.dp else 16.dp
-    } else {
-        16.dp
-    }
-    val endPad = if (uiState.isSidePanelEnabled) {
-        if (uiState.isLeftHandedMode) 16.dp else 8.dp
-    } else {
-        16.dp
-    }
+    val hasFillMaxSize = modifier.toString().contains("fillMaxSize") || modifier == Modifier.fillMaxSize()
+    val (startPad, endPad) = calculateWidgetSectionPadding(
+        hasFillMaxSize = hasFillMaxSize,
+        isSidePanelEnabled = uiState.isSidePanelEnabled,
+        isLeftHandedMode = uiState.isLeftHandedMode
+    )
 
     Column(
         modifier = modifier
-            .fillMaxWidth()
-            .padding(start = startPad, end = endPad, top = 4.dp, bottom = 4.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
+            .then(
+                if (hasFillMaxSize) Modifier.fillMaxSize()
+                else Modifier.fillMaxWidth().padding(start = startPad, end = endPad, top = 4.dp, bottom = 4.dp)
+            ),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
     ) {
-        if (pageCount > 0) {
-            HorizontalPager(
-                state = pagerState,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(config.currentHeightDp)
-            ) { page ->
-                if (page < config.topWidgetIds.size) {
-                    val widgetId = config.topWidgetIds[page]
-                    WidgetHostItem(
-                        widgetId = widgetId,
-                        appWidgetHost = appWidgetHost,
-                        itemActions = WidgetItemActions(
-                            onOpenWidgetPopup = { id, topY -> actions.onOpenWidgetPopup(id, topY) },
-                            onRemoveClick = { id -> actions.onRemoveWidgetClick(id) }
-                        ),
-                        modifier = Modifier.fillMaxSize()
-                    )
-                } else if (showAddButton) {
-                    AddWidgetButton(
-                        onClick = actions.onAddWidgetClick,
-                        modifier = Modifier.fillMaxSize(),
-                        hazeState = config.hazeState,
-                        isHazeEnabled = uiState.isHazeEnabled,
-                        hazeOpacity = uiState.hazeOpacity
-                    )
-                }
-            }
-        } else {
-            Spacer(modifier = Modifier.height(config.currentHeightDp))
-        }
+        StackedWidgetPagerContent(
+            config = config,
+            appWidgetHost = appWidgetHost,
+            params = PagerContentParams(
+                showAddButton = showAddButton,
+                pageCount = pageCount,
+                pagerState = pagerState,
+                hasFillMaxSize = hasFillMaxSize
+            )
+        )
 
         if (pageCount > 1 && config.showWidgetDots) {
             PagerIndicatorDots(pageCount = pageCount, currentPage = pagerState.currentPage)
         }
+    }
+}
+
+private fun calculateWidgetSectionPadding(
+    hasFillMaxSize: Boolean,
+    isSidePanelEnabled: Boolean,
+    isLeftHandedMode: Boolean
+): Pair<Dp, Dp> {
+    val startPad = if (hasFillMaxSize) 0.dp else if (isSidePanelEnabled) {
+        if (isLeftHandedMode) 8.dp else 16.dp
+    } else {
+        16.dp
+    }
+    val endPad = if (hasFillMaxSize) 0.dp else if (isSidePanelEnabled) {
+        if (isLeftHandedMode) 16.dp else 8.dp
+    } else {
+        16.dp
+    }
+    return Pair(startPad, endPad)
+}
+
+@Composable
+private fun StackedWidgetPagerContent(
+    config: StackedWidgetConfig,
+    appWidgetHost: AppWidgetHost,
+    params: PagerContentParams
+) {
+    val uiState = LocalHomeUiState.current
+    val actions = LocalHomeActions.current
+    val pageCount = params.pageCount
+    val showAddButton = params.showAddButton
+    val hasFillMaxSize = params.hasFillMaxSize
+
+    if (pageCount > 0) {
+        val pagerModifier = if (hasFillMaxSize) {
+            Modifier.fillMaxSize()
+        } else {
+            Modifier.fillMaxWidth().height(config.currentHeightDp)
+        }
+        HorizontalPager(
+            state = params.pagerState,
+            modifier = pagerModifier
+        ) { page ->
+            if (page < config.topWidgetIds.size) {
+                val widgetId = config.topWidgetIds[page]
+                WidgetHostItem(
+                    widgetId = widgetId,
+                    appWidgetHost = appWidgetHost,
+                    itemActions = WidgetItemActions(
+                        onOpenWidgetPopup = { id, topY -> actions.onOpenWidgetPopup(id, topY) },
+                        onRemoveClick = { id -> actions.onRemoveWidgetClick(id) }
+                    ),
+                    modifier = Modifier.fillMaxSize()
+                )
+            } else if (showAddButton) {
+                AddWidgetButton(
+                    onClick = actions.onAddWidgetClick,
+                    modifier = Modifier.fillMaxSize(),
+                    hazeState = config.hazeState,
+                    isHazeEnabled = uiState.isHazeEnabled,
+                    hazeOpacity = uiState.hazeOpacity
+                )
+            }
+        }
+    } else {
+        Spacer(modifier = Modifier.height(config.currentHeightDp))
     }
 }
 
@@ -216,20 +274,50 @@ private fun WidgetHostItem(
                         if (isLongPressTriggered) {
                             down.consume()
                         }
-                    } catch (_: Exception) {
+                    } catch (e: IllegalArgumentException) {
+                        Log.e("WidgetHostItem", "Gesture error", e)
                         job.cancel()
                     }
                 }
             }
     ) {
         AndroidView(
-            factory = { context ->
-                val appWidgetManager = AppWidgetManager.getInstance(context)
-                val appWidgetInfo = appWidgetManager.getAppWidgetInfo(widgetId)
-                appWidgetHost.createView(context, widgetId, appWidgetInfo)
-            },
+            factory = { context -> createWidgetHostView(context, appWidgetHost, widgetId) },
             modifier = Modifier.fillMaxSize()
         )
+    }
+}
+
+private fun createWidgetHostView(
+    context: Context,
+    appWidgetHost: AppWidgetHost,
+    widgetId: Int
+): View {
+    val appWidgetManager = AppWidgetManager.getInstance(context)
+    val appWidgetInfo = appWidgetManager.getAppWidgetInfo(widgetId)
+    return if (appWidgetInfo != null) {
+        try {
+            appWidgetHost.createView(context, widgetId, appWidgetInfo)
+        } catch (e: IllegalArgumentException) {
+            Log.e("WidgetHostItem", "Error creating widget view", e)
+            createErrorWidgetView(context, "Toque para reconfigurar widget")
+        } catch (e: IllegalStateException) {
+            Log.e("WidgetHostItem", "Error creating widget view", e)
+            createErrorWidgetView(context, "Toque para reconfigurar widget")
+        } catch (e: SecurityException) {
+            Log.e("WidgetHostItem", "Error creating widget view", e)
+            createErrorWidgetView(context, "Toque para reconfigurar widget")
+        }
+    } else {
+        createErrorWidgetView(context, WIDGET_NOT_AVAILABLE_TEXT)
+    }
+}
+
+private fun createErrorWidgetView(context: Context, message: String): TextView {
+    return TextView(context).apply {
+        text = message
+        setTextColor(Color.WHITE)
+        gravity = Gravity.CENTER
     }
 }
 

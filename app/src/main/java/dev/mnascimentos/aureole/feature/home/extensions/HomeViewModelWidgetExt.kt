@@ -54,11 +54,16 @@ fun HomeViewModel.setPendingWidgetId(id: Int) {
 }
 
 fun HomeViewModel.addWidgetId(widgetId: Int) {
-    val currentList = uiState.value.topWidgetIds
-    if (!currentList.contains(widgetId)) {
-        val newList = currentList + widgetId
-        updateUiState { it.copy(topWidgetIds = newList) }
-        widgetRepository.saveWidgetIds(newList)
+    if (uiState.value.isAddingSingleWidget) {
+        addSingleWidgetGridItem(widgetId)
+        setIsAddingSingleWidget(false)
+    } else {
+        val currentList = uiState.value.topWidgetIds
+        if (!currentList.contains(widgetId)) {
+            val newList = currentList + widgetId
+            updateUiState { it.copy(topWidgetIds = newList) }
+            widgetRepository.saveWidgetIds(newList)
+        }
     }
 }
 

@@ -1,8 +1,12 @@
 package dev.mnascimentos.aureole.feature.home
 
 import android.appwidget.AppWidgetHost
+import android.appwidget.AppWidgetManager
 import android.content.ComponentName
+import android.content.res.Configuration
 import android.graphics.drawable.ColorDrawable
+import android.widget.TextView
+import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -13,8 +17,6 @@ import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.navigationBarsPadding
@@ -23,8 +25,11 @@ import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.systemGestureExclusion
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.remember
@@ -37,18 +42,23 @@ import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.unit.Density
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.viewinterop.AndroidView
 import dev.chrisbanes.haze.HazeState
 import dev.chrisbanes.haze.rememberHazeState
 import dev.mnascimentos.aureole.core.data.model.AppInfo
+import dev.mnascimentos.aureole.core.data.model.LauncherItemState
+import dev.mnascimentos.aureole.core.data.model.LauncherItemType
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.theme.AureolePreview
 import dev.mnascimentos.aureole.feature.home.components.AppsListDrawer
+import dev.mnascimentos.aureole.feature.home.components.ClockHeader
 import dev.mnascimentos.aureole.feature.home.components.CurvedAlphabetScrubber
+import dev.mnascimentos.aureole.feature.home.grid.AddContainerDialog
+import dev.mnascimentos.aureole.feature.home.grid.EditContainerDialog
 import dev.mnascimentos.aureole.feature.home.components.FavoritesList
 import dev.mnascimentos.aureole.feature.home.components.FavoritesListConfig
 import dev.mnascimentos.aureole.feature.home.components.SidePanel
@@ -57,6 +67,10 @@ import dev.mnascimentos.aureole.feature.home.components.model.ScrubberCallbacks
 import dev.mnascimentos.aureole.feature.home.components.model.ScrubberOptions
 import dev.mnascimentos.aureole.feature.home.components.model.SidePanelConfig
 import dev.mnascimentos.aureole.feature.home.folder.HomeScreenFolderOverlays
+import dev.mnascimentos.aureole.feature.home.grid.DynamicGridContainer
+import dev.mnascimentos.aureole.feature.home.grid.GridEditConfig
+import dev.mnascimentos.aureole.feature.home.grid.GridEngineUtils
+import dev.mnascimentos.aureole.feature.home.grid.GridLimits
 import dev.mnascimentos.aureole.feature.home.model.FolderViewIntent
 import dev.mnascimentos.aureole.feature.home.model.HomeDragParams
 import dev.mnascimentos.aureole.feature.home.model.HomeOverlaysConfig
@@ -65,7 +79,8 @@ import dev.mnascimentos.aureole.feature.home.model.HomeScreenBodyConfig
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
 import dev.mnascimentos.aureole.feature.home.model.ScrubberOverlayConfig
 import dev.mnascimentos.aureole.feature.home.widget.HomeScreenWidgetOverlays
-import kotlinx.coroutines.CoroutineScope
+import dev.mnascimentos.aureole.feature.home.widget.StackedWidgetSection
+import dev.mnascimentos.aureole.feature.home.widget.model.StackedWidgetConfig
 import kotlinx.coroutines.launch
 import kotlin.math.abs
 
@@ -120,7 +135,7 @@ fun HomeScreen(
                 screenWidthPx = it.size.width.toFloat()
             }
             .then(HomeScreenExclusionModifier(uiState.isAllAppsDrawerOpen))
-            .then(dragModifier)
+            .then(if (uiState.isGridEditMode) Modifier else dragModifier)
     ) {
         HomeScreenBody(
             HomeScreenBodyConfig(
@@ -250,27 +265,29 @@ private fun BoxScope.HomeOverlaysContent(
         onClose = config.actions.onAllAppsDrawerClose
     )
 
-    val scrubberAlign = if (config.uiState.isLeftHandedMode) {
-        Alignment.CenterStart
-    } else {
-        Alignment.CenterEnd
-    }
+    if (!config.uiState.isAlphabetScrubberDisabled) {
+        val scrubberAlign = if (config.uiState.isLeftHandedMode) {
+            Alignment.CenterStart
+        } else {
+            Alignment.CenterEnd
+        }
 
-    ScrubberOverlay(
-        config = ScrubberOverlayConfig(
-            uiState = config.uiState,
-            externalTouchY = config.externalTouchY,
-            listState = config.listState,
-            coroutineScope = config.coroutineScope,
-            actions = config.actions,
-            onExternalTouchYReset = config.onExternalTouchYReset
-        ),
-        modifier = Modifier
-            .align(scrubberAlign)
-            .statusBarsPadding()
-            .navigationBarsPadding()
-            .imePadding()
-    )
+        ScrubberOverlay(
+            config = ScrubberOverlayConfig(
+                uiState = config.uiState,
+                externalTouchY = config.externalTouchY,
+                listState = config.listState,
+                coroutineScope = config.coroutineScope,
+                actions = config.actions,
+                onExternalTouchYReset = config.onExternalTouchYReset
+            ),
+            modifier = Modifier
+                .align(scrubberAlign)
+                .statusBarsPadding()
+                .navigationBarsPadding()
+                .imePadding()
+        )
+    }
 
     HomeScreenFolderOverlays(
         screenHeightPx = config.screenHeightPx,
@@ -280,6 +297,42 @@ private fun BoxScope.HomeOverlaysContent(
     HomeScreenWidgetOverlays(
         hazeState = config.hazeState,
     )
+
+    HomeOverlaysDialogsAndErrors(config = config)
+}
+
+@Composable
+private fun HomeOverlaysDialogsAndErrors(config: HomeOverlaysConfig) {
+    if (config.uiState.showAddContainerDialog) {
+        AddContainerDialog(
+            onDismissRequest = config.actions.onCloseAddContainerDialog,
+            onSelectType = { type ->
+                if (type == LauncherItemType.SINGLE_APP_WIDGET) {
+                    config.actions.onSetIsAddingSingleWidget(true)
+                    config.actions.onAddWidgetClick()
+                    config.actions.onCloseAddContainerDialog()
+                } else {
+                    config.actions.onAddGridItem(type, null)
+                }
+            }
+        )
+    }
+
+    config.uiState.editingGridItem?.let { editingItem ->
+        EditContainerDialog(
+            item = editingItem,
+            onDismissRequest = config.actions.onCloseEditContainerDialog,
+            onDeleteConfirm = { id -> config.actions.onDeleteGridItem(id) }
+        )
+    }
+
+    val context = LocalContext.current
+    config.uiState.gridErrorMessage?.let { message ->
+        LaunchedEffect(message) {
+            Toast.makeText(context, message, Toast.LENGTH_LONG).show()
+            config.actions.onDismissGridError()
+        }
+    }
 }
 
 @Composable
@@ -351,6 +404,28 @@ private fun ScrubberOverlay(
     )
 }
 
+private fun getGridLimits(orientation: Int): GridLimits {
+    val maxCols = if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+        GridEngineUtils.LANDSCAPE_MAX_COLS
+    } else {
+        GridEngineUtils.PORTRAIT_MAX_COLS
+    }
+    val maxRows = if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+        GridEngineUtils.LANDSCAPE_MAX_ROWS
+    } else {
+        GridEngineUtils.PORTRAIT_MAX_ROWS
+    }
+    return GridLimits(maxCols, maxRows)
+}
+
+@Composable
+private fun GridOrientationEffect(orientation: Int, actions: HomeScreenActions) {
+    LaunchedEffect(orientation) {
+        val limits = getGridLimits(orientation)
+        actions.onUpdateGridOrientation(limits.maxCols, limits.maxRows)
+    }
+}
+
 @Composable
 private fun MainHomeLayout(
     appWidgetHost: AppWidgetHost,
@@ -361,7 +436,11 @@ private fun MainHomeLayout(
     val uiState = LocalHomeUiState.current
     val actions = LocalHomeActions.current
     val density = LocalDensity.current
+    val configuration = LocalConfiguration.current
+    
     val currentHeightDp = with(density) { currentHeightPx.toDp() }
+
+    GridOrientationEffect(configuration.orientation, actions)
 
     val sidePanelConfig = SidePanelConfig(
         folders = uiState.folders,
@@ -378,53 +457,116 @@ private fun MainHomeLayout(
         hazeState = hazeState
     )
 
-    Row(
+    val stackedWidgetConfig = StackedWidgetConfig(
+        topWidgetIds = uiState.topWidgetIds,
+        currentHeightDp = currentHeightDp,
+        currentHeightPx = currentHeightPx,
+        showWidgetDots = uiState.showWidgetDots,
+        hazeState = hazeState
+    )
+
+    val limits = getGridLimits(configuration.orientation)
+
+    DynamicGridContainer(
+        items = uiState.gridItems,
+        config = GridEditConfig(isEditMode = uiState.isGridEditMode, limits = limits),
+        actions = actions,
         modifier = Modifier
             .fillMaxSize()
             .statusBarsPadding()
             .navigationBarsPadding()
-    ) {
-        if (uiState.isLeftHandedMode) {
-            SidePanelSection(uiState = uiState, sidePanelConfig = sidePanelConfig, actions = actions)
-            FavoritesList(
-                config = favConfig,
-                appWidgetHost = appWidgetHost,
-                modifier = Modifier.weight(1f)
-            )
-        } else {
-            FavoritesList(
-                config = favConfig,
-                appWidgetHost = appWidgetHost,
-                modifier = Modifier.weight(1f)
-            )
-            SidePanelSection(uiState = uiState, sidePanelConfig = sidePanelConfig, actions = actions)
+    ) { item ->
+        GridItemContent(
+            item = item,
+            favConfig = favConfig,
+            appWidgetHost = appWidgetHost,
+            stackedWidgetConfig = stackedWidgetConfig,
+            sidePanelConfig = sidePanelConfig
+        )
+    }
+}
+
+@Composable
+private fun GridItemContent(
+    item: LauncherItemState,
+    favConfig: FavoritesListConfig,
+    appWidgetHost: AppWidgetHost,
+    stackedWidgetConfig: StackedWidgetConfig,
+    sidePanelConfig: SidePanelConfig
+) {
+    val uiState = LocalHomeUiState.current
+    val actions = LocalHomeActions.current
+    when (item.safeType) {
+        LauncherItemType.CLOCK -> {
+            Box(modifier = Modifier.fillMaxSize()) {
+                ClockHeader()
+            }
+        }
+        LauncherItemType.APPS_LIST -> {
+            Box(modifier = Modifier.fillMaxSize()) {
+                FavoritesList(
+                    config = favConfig,
+                    appWidgetHost = appWidgetHost,
+                    showHeadersAndWidgets = false,
+                    modifier = Modifier.fillMaxSize()
+                )
+            }
+        }
+        LauncherItemType.SHORTCUTS_SIDE_PANEL -> {
+            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                SidePanel(
+                    config = sidePanelConfig,
+                    onFolderClick = { folder, topYPx ->
+                        if (uiState.openedFolderId == folder.id) {
+                            actions.onFolderIntent(FolderViewIntent.CloseFolder)
+                        } else {
+                            actions.onFolderIntent(FolderViewIntent.OpenFolder(folder.id, topYPx))
+                        }
+                    }
+                )
+            }
+        }
+        LauncherItemType.SINGLE_APP_WIDGET -> {
+            SingleAppWidgetContent(item = item, appWidgetHost = appWidgetHost)
+        }
+        LauncherItemType.WIDGET_LIST -> {
+            Box(modifier = Modifier.fillMaxSize()) {
+                StackedWidgetSection(
+                    config = stackedWidgetConfig,
+                    appWidgetHost = appWidgetHost
+                )
+            }
         }
     }
 }
 
 @Composable
-private fun RowScope.SidePanelSection(
-    uiState: MainUiState,
-    sidePanelConfig: SidePanelConfig,
-    actions: HomeScreenActions
+private fun SingleAppWidgetContent(
+    item: LauncherItemState,
+    appWidgetHost: AppWidgetHost
 ) {
-    if (uiState.isSidePanelEnabled) {
-        val alignment = when (sidePanelConfig.position) {
-            "Top" -> Alignment.Top
-            "Bottom" -> Alignment.Bottom
-            else -> Alignment.CenterVertically
+    Box(modifier = Modifier.fillMaxSize()) {
+        if (item.widgetId != null && item.widgetId != -1) {
+            AndroidView(
+                factory = { context ->
+                    val appWidgetManager = AppWidgetManager.getInstance(context)
+                    val appWidgetInfo = appWidgetManager.getAppWidgetInfo(item.widgetId)
+                    if (appWidgetInfo != null) {
+                        appWidgetHost.createView(context, item.widgetId, appWidgetInfo)
+                    } else {
+                        TextView(context).apply { text = "Widget" }
+                    }
+                },
+                modifier = Modifier.fillMaxSize()
+            )
+        } else {
+            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                Text(
+                    text = "Widget não configurado",
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+            }
         }
-        SidePanel(
-            config = sidePanelConfig,
-            onFolderClick = { folder, topYPx ->
-                if (uiState.openedFolderId == folder.id) {
-                    actions.onFolderIntent(FolderViewIntent.CloseFolder)
-                } else {
-                    actions.onFolderIntent(FolderViewIntent.OpenFolder(folder.id, topYPx))
-                }
-            },
-            modifier = Modifier.align(alignment)
-        )
     }
 }
 
@@ -456,7 +598,10 @@ fun HomeScreenPreview() {
         onSearchQueryChanged = {},
         onSettingsClick = {},
         onAllAppsDrawerClose = {},
-        onAllAppsDrawerOpen = {}
+        onAllAppsDrawerOpen = {},
+        onEnterGridEditMode = {},
+        onCancelGridEditMode = {},
+        onSaveGridEditMode = {}
     )
 
     AureoleLauncherTheme {

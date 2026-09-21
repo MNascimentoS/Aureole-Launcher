@@ -94,6 +94,7 @@ class SettingsActivity : ComponentActivity() {
             onHazeOpacitySelected = { opacity ->
                 viewModel.setSettingValue(SettingValue.HazeOpacity(opacity))
             },
+            onConfirmResetGrid = { viewModel.resetGridLayout() },
         )
         return applyTogglesAndDialogs(baseActions)
     }
@@ -110,6 +111,14 @@ class SettingsActivity : ComponentActivity() {
             onToggleDynamicWallpaper = { viewModel.toggleSetting(SettingToggle.DYNAMIC_WALLPAPER) },
             onToggleHaze = { viewModel.toggleSetting(SettingToggle.HAZE) },
             onToggleInAppUpdate = { viewModel.toggleSetting(SettingToggle.IN_APP_UPDATE) },
+            onToggleThemedAppIcons = { viewModel.toggleSetting(SettingToggle.THEMED_APP_ICONS) },
+            onToggleDisableAlphabetScrubber = { viewModel.toggleSetting(SettingToggle.DISABLE_ALPHABET_SCRUBBER) },
+            onOpenResetGridDialog = {
+                viewModel.setDialogVisible(SettingsDialog.RESET_GRID, visible = true)
+            },
+            onDismissResetGridDialog = {
+                viewModel.setDialogVisible(SettingsDialog.RESET_GRID, visible = false)
+            },
             onOpenFavoritePickerClick = {
                 viewModel.setDialogVisible(SettingsDialog.FAVORITE_PICKER, visible = true)
             },

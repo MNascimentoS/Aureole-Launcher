@@ -11,6 +11,7 @@ import androidx.lifecycle.viewModelScope
 import dev.mnascimentos.aureole.core.data.model.AppFolder
 import dev.mnascimentos.aureole.core.data.repository.AppRepository
 import dev.mnascimentos.aureole.core.data.repository.FolderRepository
+import dev.mnascimentos.aureole.core.data.repository.GridRepository
 import dev.mnascimentos.aureole.core.data.repository.SettingsRepository
 import dev.mnascimentos.aureole.feature.settings.ext.checkDefaultLauncher
 import dev.mnascimentos.aureole.feature.settings.model.SettingValue
@@ -36,7 +37,9 @@ enum class SettingToggle {
     SHOW_ALL_APPS_ON_HOME,
     WIDGET_ROW,
     DYNAMIC_WALLPAPER,
-    IN_APP_UPDATE
+    IN_APP_UPDATE,
+    THEMED_APP_ICONS,
+    DISABLE_ALPHABET_SCRUBBER
 }
 
 enum class SettingsDialog {
@@ -45,9 +48,11 @@ enum class SettingsDialog {
     HAZE_OPACITY,
     COLOR_PICKER,
     RESTORE_WALLPAPER,
-    CREATE_FOLDER
+    CREATE_FOLDER,
+    RESET_GRID
 }
 
+@Suppress("TooManyFunctions")
 class SettingsViewModel(application: Application) : AndroidViewModel(application) {
 
     internal val settingsRepository = SettingsRepository(application)
@@ -91,64 +96,14 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
                 isHazeSupported = settingsRepository.isHazeSupported,
                 hazeOpacity = settingsRepository.hazeOpacity,
                 isInAppUpdateEnabled = settingsRepository.isInAppUpdateEnabled,
+                isThemedAppIconsEnabled = settingsRepository.isThemedAppIconsEnabled,
+                isAlphabetScrubberDisabled = settingsRepository.isAlphabetScrubberDisabled,
             )
         }
     }
 
     fun toggleSetting(toggle: SettingToggle) {
-        when (toggle) {
-            SettingToggle.SHOW_WIDGET_DOTS -> {
-                val newValue = !_uiState.value.showWidgetDots
-                settingsRepository.showWidgetDots = newValue
-                _uiState.update { it.copy(showWidgetDots = newValue) }
-            }
-            SettingToggle.HAZE -> {
-                if (!settingsRepository.isHazeSupported) return
-                val newValue = !_uiState.value.isHazeEnabled
-                settingsRepository.isHazeEnabled = newValue
-                _uiState.update { it.copy(isHazeEnabled = newValue) }
-            }
-            SettingToggle.LEFT_HANDED_MODE -> {
-                val newValue = !_uiState.value.isLeftHandedMode
-                settingsRepository.isLeftHandedMode = newValue
-                _uiState.update { it.copy(isLeftHandedMode = newValue) }
-            }
-            SettingToggle.SIDE_PANEL -> {
-                val newValue = !_uiState.value.isSidePanelEnabled
-                settingsRepository.isSidePanelEnabled = newValue
-                _uiState.update { it.copy(isSidePanelEnabled = newValue) }
-            }
-            SettingToggle.SHOW_FOLDER_LABELS -> {
-                val newValue = !_uiState.value.showFolderLabels
-                settingsRepository.showFolderLabels = newValue
-                _uiState.update { it.copy(showFolderLabels = newValue) }
-            }
-            SettingToggle.HOME_OPENS_ALL_APPS -> {
-                val newValue = !_uiState.value.homeButtonOpensAllApps
-                settingsRepository.homeButtonOpensAllApps = newValue
-                _uiState.update { it.copy(homeButtonOpensAllApps = newValue) }
-            }
-            SettingToggle.SHOW_ALL_APPS_ON_HOME -> {
-                val newValue = !_uiState.value.showAllAppsOnHome
-                settingsRepository.showAllAppsOnHome = newValue
-                _uiState.update { it.copy(showAllAppsOnHome = newValue) }
-            }
-            SettingToggle.WIDGET_ROW -> {
-                val newValue = !_uiState.value.isWidgetRowEnabled
-                settingsRepository.isWidgetRowEnabled = newValue
-                _uiState.update { it.copy(isWidgetRowEnabled = newValue) }
-            }
-            SettingToggle.DYNAMIC_WALLPAPER -> {
-                val newValue = !_uiState.value.isDynamicWallpaperEnabled
-                settingsRepository.isDynamicWallpaperEnabled = newValue
-                _uiState.update { it.copy(isDynamicWallpaperEnabled = newValue) }
-            }
-            SettingToggle.IN_APP_UPDATE -> {
-                val newValue = !_uiState.value.isInAppUpdateEnabled
-                settingsRepository.isInAppUpdateEnabled = newValue
-                _uiState.update { it.copy(isInAppUpdateEnabled = newValue) }
-            }
-        }
+        SettingsToggleManager.toggleSetting(this, toggle)
     }
 
     fun setDialogVisible(dialog: SettingsDialog, visible: Boolean) {
@@ -160,6 +115,7 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
                 SettingsDialog.COLOR_PICKER -> it.copy(showColorPickerDialog = visible)
                 SettingsDialog.RESTORE_WALLPAPER -> it.copy(showRestoreWallpaperDialog = visible)
                 SettingsDialog.CREATE_FOLDER -> it.copy(showCreateFolderDialog = visible)
+                SettingsDialog.RESET_GRID -> it.copy(showResetGridDialog = visible)
             }
         }
     }
@@ -258,6 +214,19 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
                 it.copy(
                     showCreateFolderDialog = false,
                     shouldFinishActivity = true
+                )
+            }
+        }
+    }
+
+    fun resetGridLayout() {
+        viewModelScope.launch {
+            GridRepository(getApplication()).resetToDefault()
+            _uiState.update {
+                it.copy(
+                    showResetGridDialog = false,
+                    shouldFinishActivity = true,
+                    errorMessage = "Layout da tela inicial resetado para o padrão"
                 )
             }
         }
