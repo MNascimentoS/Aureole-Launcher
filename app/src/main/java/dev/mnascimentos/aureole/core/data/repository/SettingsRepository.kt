@@ -16,6 +16,18 @@ class SettingsRepository(private val context: Context) {
         get() = prefs.getBoolean(KEY_SIDE_PANEL_ENABLED, true)
         set(value) = prefs.edit { putBoolean(KEY_SIDE_PANEL_ENABLED, value) }
 
+    var isSidePanelBackgroundEnabled: Boolean
+        get() = prefs.getBoolean(KEY_SIDE_PANEL_BACKGROUND_ENABLED, true)
+        set(value) = prefs.edit { putBoolean(KEY_SIDE_PANEL_BACKGROUND_ENABLED, value) }
+
+    var isClockBackgroundEnabled: Boolean
+        get() = prefs.getBoolean(KEY_CLOCK_BACKGROUND_ENABLED, true)
+        set(value) = prefs.edit { putBoolean(KEY_CLOCK_BACKGROUND_ENABLED, value) }
+
+    var showSidePanelAddFolderButton: Boolean
+        get() = prefs.getBoolean(KEY_SHOW_SIDE_PANEL_ADD_FOLDER_BUTTON, true)
+        set(value) = prefs.edit { putBoolean(KEY_SHOW_SIDE_PANEL_ADD_FOLDER_BUTTON, value) }
+
     var sidePanelPosition: String
         get() = prefs.getString(KEY_SIDE_PANEL_POSITION, "Center") ?: "Center"
         set(value) = prefs.edit { putString(KEY_SIDE_PANEL_POSITION, value) }
@@ -114,6 +126,9 @@ class SettingsRepository(private val context: Context) {
         private const val PREFS_NAME = "aureole_settings_prefs"
         private const val KEY_LEFT_HANDED_MODE = "left_handed_mode"
         private const val KEY_SIDE_PANEL_ENABLED = "side_panel_enabled"
+        private const val KEY_SIDE_PANEL_BACKGROUND_ENABLED = "side_panel_background_enabled"
+        private const val KEY_CLOCK_BACKGROUND_ENABLED = "clock_background_enabled"
+        private const val KEY_SHOW_SIDE_PANEL_ADD_FOLDER_BUTTON = "show_side_panel_add_folder_button"
         private const val KEY_SIDE_PANEL_POSITION = "side_panel_position"
         private const val KEY_SHOW_FOLDER_LABELS = "show_folder_labels"
         private const val KEY_FAVORITE_APPS = "favorite_apps"

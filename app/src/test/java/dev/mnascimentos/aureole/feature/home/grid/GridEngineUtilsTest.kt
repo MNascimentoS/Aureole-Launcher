@@ -174,4 +174,139 @@ class GridEngineUtilsTest {
         )
         assertEquals(null, slot)
     }
+
+    @Test
+    fun `findNearestValidSlot returns direct target slot when unoccupied`() {
+        val movingItem = LauncherItemState(
+            id = "a",
+            type = LauncherItemType.SINGLE_APP_WIDGET,
+            col = 0,
+            row = 0,
+            colSpan = 2,
+            rowSpan = 2
+        )
+        val otherItem = LauncherItemState(
+            id = "b",
+            type = LauncherItemType.CLOCK,
+            col = 2,
+            row = 0,
+            colSpan = 2,
+            rowSpan = 2
+        )
+        val items = listOf(movingItem, otherItem)
+
+        val slot = GridEngineUtils.findNearestValidSlot(
+            targetCol = 0,
+            targetRow = 2,
+            item = movingItem,
+            items = items,
+            limits = testLimits
+        )
+
+        assertEquals(Pair(0, 2), slot)
+    }
+
+    @Test
+    fun `findNearestValidSlot falls back to nearest valid slot when target is occupied`() {
+        val movingItem = LauncherItemState(
+            id = "a",
+            type = LauncherItemType.SINGLE_APP_WIDGET,
+            col = 0,
+            row = 0,
+            colSpan = 2,
+            rowSpan = 2
+        )
+        val blockingItem = LauncherItemState(
+            id = "b",
+            type = LauncherItemType.CLOCK,
+            col = 0,
+            row = 2,
+            colSpan = 2,
+            rowSpan = 2
+        )
+        val items = listOf(movingItem, blockingItem)
+
+        val slot = GridEngineUtils.findNearestValidSlot(
+            targetCol = 0,
+            targetRow = 2,
+            item = movingItem,
+            items = items,
+            limits = testLimits
+        )
+
+        // Since (0,2) is occupied by item b, the nearest free 2x2 slot to (0,2) is (2,2) or (0,0)
+        assertTrue(slot == Pair(2, 2) || slot == Pair(0, 0))
+    }
+
+    @Test
+    fun `findNearestValidSlot works across distance greater than 3 cells`() {
+        val movingItem = LauncherItemState(
+            id = "a",
+            type = LauncherItemType.SINGLE_APP_WIDGET,
+            col = 0,
+            row = 0,
+            colSpan = 2,
+            rowSpan = 2
+        )
+        // Block rows 0 through 4 completely except for movingItem at (0,0)
+        val blocker1 = LauncherItemState(
+            id = "b",
+            type = LauncherItemType.CLOCK,
+            col = 2,
+            row = 0,
+            colSpan = 2,
+            rowSpan = 8
+        )
+        val blocker2 = LauncherItemState(
+            id = "c",
+            type = LauncherItemType.CLOCK,
+            col = 0,
+            row = 2,
+            colSpan = 2,
+            rowSpan = 3
+        )
+        val items = listOf(movingItem, blocker1, blocker2)
+
+        val slot = GridEngineUtils.findNearestValidSlot(
+            targetCol = 2,
+            targetRow = 5,
+            item = movingItem,
+            items = items,
+            limits = testLimits
+        )
+
+        assertEquals(Pair(0, 5), slot)
+    }
+
+    @Test
+    fun `getDefaultSpanForType returns correct default span for SCROLL_VIEW`() {
+        val (spans, minSpans) = GridEngineUtils.getDefaultSpanForType(LauncherItemType.SCROLL_VIEW)
+        assertEquals(Pair(7, 6), spans)
+        assertEquals(Pair(1, 1), minSpans)
+    }
+
+    @Test
+    fun `ScrollView LauncherItemState supports nested children and scroll orientation`() {
+        val childClock = LauncherItemState(
+            id = "child_clock",
+            type = LauncherItemType.CLOCK,
+            col = 0,
+            row = 0,
+            colSpan = 1,
+            rowSpan = 1
+        )
+        val scrollViewItem = LauncherItemState(
+            id = "scroll_view_1",
+            type = LauncherItemType.SCROLL_VIEW,
+            col = 0,
+            row = 0,
+            colSpan = 7,
+            rowSpan = 6,
+            children = listOf(childClock)
+        )
+
+        assertEquals(LauncherItemType.SCROLL_VIEW, scrollViewItem.safeType)
+        assertEquals(1, scrollViewItem.safeChildren.size)
+        assertEquals(LauncherItemType.CLOCK, scrollViewItem.safeChildren.first().safeType)
+    }
 }

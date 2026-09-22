@@ -69,6 +69,9 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
         viewModelScope.launch {
             val isLeftHanded = settingsRepository.isLeftHandedMode
             val isSidePanelEnabled = settingsRepository.isSidePanelEnabled
+            val isSidePanelBackgroundEnabled = settingsRepository.isSidePanelBackgroundEnabled
+            val isClockBackgroundEnabled = settingsRepository.isClockBackgroundEnabled
+            val showSidePanelAddFolderButton = settingsRepository.showSidePanelAddFolderButton
             val sidePanelPosition = settingsRepository.sidePanelPosition
             val showFolderLabels = settingsRepository.showFolderLabels
             val homeOpensAllApps = settingsRepository.homeButtonOpensAllApps
@@ -92,6 +95,9 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
                 it.copy(
                     isLeftHandedMode = isLeftHanded,
                     isSidePanelEnabled = isSidePanelEnabled,
+                    isSidePanelBackgroundEnabled = isSidePanelBackgroundEnabled,
+                    isClockBackgroundEnabled = isClockBackgroundEnabled,
+                    showSidePanelAddFolderButton = showSidePanelAddFolderButton,
                     sidePanelPosition = sidePanelPosition,
                     showFolderLabels = showFolderLabels,
                     homeButtonOpensAllApps = homeOpensAllApps,

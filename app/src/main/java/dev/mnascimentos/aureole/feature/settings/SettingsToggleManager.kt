@@ -6,6 +6,9 @@ internal object SettingsToggleManager {
             SettingToggle.SHOW_WIDGET_DOTS,
             SettingToggle.HAZE,
             SettingToggle.LEFT_HANDED_MODE,
+            SettingToggle.SIDE_PANEL_BACKGROUND,
+            SettingToggle.CLOCK_BACKGROUND,
+            SettingToggle.SHOW_SIDE_PANEL_ADD_FOLDER_BUTTON,
             SettingToggle.SIDE_PANEL -> toggleGroupOne(vm, toggle)
             SettingToggle.SHOW_FOLDER_LABELS,
             SettingToggle.HOME_OPENS_ALL_APPS,
@@ -36,10 +39,25 @@ internal object SettingsToggleManager {
                 vm.settingsRepository.isLeftHandedMode = newValue
                 vm.updateUiState { it.copy(isLeftHandedMode = newValue) }
             }
+            SettingToggle.SIDE_PANEL_BACKGROUND -> {
+                val newValue = !vm.uiState.value.isSidePanelBackgroundEnabled
+                vm.settingsRepository.isSidePanelBackgroundEnabled = newValue
+                vm.updateUiState { it.copy(isSidePanelBackgroundEnabled = newValue) }
+            }
+            SettingToggle.CLOCK_BACKGROUND -> {
+                val newValue = !vm.uiState.value.isClockBackgroundEnabled
+                vm.settingsRepository.isClockBackgroundEnabled = newValue
+                vm.updateUiState { it.copy(isClockBackgroundEnabled = newValue) }
+            }
             SettingToggle.SIDE_PANEL -> {
                 val newValue = !vm.uiState.value.isSidePanelEnabled
                 vm.settingsRepository.isSidePanelEnabled = newValue
                 vm.updateUiState { it.copy(isSidePanelEnabled = newValue) }
+            }
+            SettingToggle.SHOW_SIDE_PANEL_ADD_FOLDER_BUTTON -> {
+                val newValue = !vm.uiState.value.showSidePanelAddFolderButton
+                vm.settingsRepository.showSidePanelAddFolderButton = newValue
+                vm.updateUiState { it.copy(showSidePanelAddFolderButton = newValue) }
             }
             else -> {}
         }

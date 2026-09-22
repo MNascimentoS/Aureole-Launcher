@@ -5,7 +5,13 @@ enum class LauncherItemType {
     APPS_LIST,
     SHORTCUTS_SIDE_PANEL,
     SINGLE_APP_WIDGET,
-    WIDGET_LIST
+    WIDGET_LIST,
+    SCROLL_VIEW
+}
+
+enum class ScrollOrientation {
+    HORIZONTAL,
+    VERTICAL
 }
 
 data class LauncherItemState(
@@ -17,8 +23,16 @@ data class LauncherItemState(
     val rowSpan: Int,
     val minColSpan: Int = 1,
     val minRowSpan: Int = 1,
-    val widgetId: Int? = null
+    val widgetId: Int? = null,
+    val scrollOrientation: ScrollOrientation? = ScrollOrientation.VERTICAL,
+    val children: List<LauncherItemState>? = emptyList()
 ) {
     val safeType: LauncherItemType
         get() = type ?: LauncherItemType.APPS_LIST
+
+    val safeScrollOrientation: ScrollOrientation
+        get() = scrollOrientation ?: ScrollOrientation.VERTICAL
+
+    val safeChildren: List<LauncherItemState>
+        get() = children ?: emptyList()
 }

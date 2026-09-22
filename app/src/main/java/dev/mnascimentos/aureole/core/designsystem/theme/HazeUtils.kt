@@ -3,6 +3,7 @@ package dev.mnascimentos.aureole.core.designsystem.theme
 import android.app.ActivityManager
 import android.content.Context
 import android.os.Build
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.ui.Modifier
@@ -51,6 +52,63 @@ fun Modifier.fadingEdges(
             ),
             blendMode = BlendMode.DstIn
         )
+    }
+}
+
+fun Modifier.fadingEdges(
+    scrollState: ScrollState,
+    edgeLength: Dp = 24.dp,
+    isHorizontal: Boolean = false
+): Modifier = this.graphicsLayer {
+    compositingStrategy = CompositingStrategy.Offscreen
+}.drawWithContent {
+    drawContent()
+    val edgePx = edgeLength.toPx()
+    val showStartFade = scrollState.canScrollBackward
+    val showEndFade = scrollState.canScrollForward
+
+    if (isHorizontal) {
+        if (showStartFade && edgePx > 0f) {
+            drawRect(
+                brush = Brush.horizontalGradient(
+                    colors = listOf(Color.Transparent, Color.Black),
+                    startX = 0f,
+                    endX = edgePx
+                ),
+                blendMode = BlendMode.DstIn
+            )
+        }
+        if (showEndFade && edgePx > 0f) {
+            drawRect(
+                brush = Brush.horizontalGradient(
+                    colors = listOf(Color.Black, Color.Transparent),
+                    startX = size.width - edgePx,
+                    endX = size.width
+                ),
+                blendMode = BlendMode.DstIn
+            )
+        }
+    } else {
+        if (showStartFade && edgePx > 0f) {
+            drawRect(
+                brush = Brush.verticalGradient(
+                    colors = listOf(Color.Transparent, Color.Black),
+                    startY = 0f,
+                    endY = edgePx
+                ),
+                blendMode = BlendMode.DstIn
+            )
+        }
+        if (showEndFade && edgePx > 0f) {
+            drawRect(
+                brush = Brush.verticalGradient(
+                    colors = listOf(Color.Black, Color.Transparent),
+                    startY = size.height - edgePx,
+                    endY = size.height
+                ),
+                blendMode = BlendMode.DstIn
+            )
+        }
     }
 }
 

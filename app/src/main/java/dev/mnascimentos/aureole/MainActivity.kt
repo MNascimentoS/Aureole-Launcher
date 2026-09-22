@@ -16,11 +16,6 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
-import com.google.android.play.core.appupdate.AppUpdateInfo
-import com.google.android.play.core.appupdate.AppUpdateManager
-import com.google.android.play.core.appupdate.AppUpdateManagerFactory
-import com.google.android.play.core.install.InstallStateUpdatedListener
-import com.google.android.play.core.install.model.InstallStatus
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -28,6 +23,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.graphics.Color
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsControllerCompat
+import com.google.android.play.core.appupdate.AppUpdateInfo
+import com.google.android.play.core.appupdate.AppUpdateManager
+import com.google.android.play.core.appupdate.AppUpdateManagerFactory
+import com.google.android.play.core.install.InstallStateUpdatedListener
+import com.google.android.play.core.install.model.InstallStatus
 import dev.chrisbanes.haze.rememberHazeState
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.theme.LocalHazeState
@@ -89,18 +89,21 @@ class MainActivity : ComponentActivity() {
             systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
         }
 
-        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-                val state = viewModel.uiState.value
-                if (checkOverlayActive(state)) {
-                    handleBackNavigation(state, viewModel)
-                } else {
-                    isEnabled = false
-                    onBackPressedDispatcher.onBackPressed()
-                    isEnabled = true
+        onBackPressedDispatcher.addCallback(
+            this,
+            object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    val state = viewModel.uiState.value
+                    if (checkOverlayActive(state)) {
+                        handleBackNavigation(state, viewModel)
+                    } else {
+                        isEnabled = false
+                        onBackPressedDispatcher.onBackPressed()
+                        isEnabled = true
+                    }
                 }
             }
-        })
+        )
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             window.isNavigationBarContrastEnforced = false
@@ -169,7 +172,8 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun checkOverlayActive(uiState: MainUiState): Boolean {
-        return (uiState.isAllAppsDrawerOpen ||
+        return (
+            uiState.isAllAppsDrawerOpen ||
                 uiState.activeFolder != null ||
                 uiState.isCreateFolderDialogVisible ||
                 uiState.isAddAppToFolderDialogVisible ||
@@ -178,7 +182,8 @@ class MainActivity : ComponentActivity() {
                 uiState.showWidgetPicker ||
                 uiState.showFavoritePickerDialog ||
                 uiState.showWidgetPopup ||
-                uiState.showWidgetResizeDialog)
+                uiState.showWidgetResizeDialog
+            )
     }
 
     private fun createHomeActions(): HomeScreenActions {

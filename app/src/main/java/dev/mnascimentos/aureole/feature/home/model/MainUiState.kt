@@ -27,6 +27,9 @@ data class MainUiState(
     // Settings
     val isLeftHandedMode: Boolean = false,
     val isSidePanelEnabled: Boolean = true,
+    val isSidePanelBackgroundEnabled: Boolean = true,
+    val isClockBackgroundEnabled: Boolean = true,
+    val showSidePanelAddFolderButton: Boolean = true,
     val sidePanelPosition: String = "Center",
     val showFolderLabels: Boolean = false,
     val homeButtonOpensAllApps: Boolean = true,
@@ -68,11 +71,17 @@ data class MainUiState(
 
     // Dynamic Grid Engine
     val gridItems: List<LauncherItemState> = emptyList(),
+    val portraitGridItems: List<LauncherItemState> = emptyList(),
+    val landscapeGridItems: List<LauncherItemState> = emptyList(),
+    val cachedPortraitGridItems: List<LauncherItemState>? = null,
+    val cachedLandscapeGridItems: List<LauncherItemState>? = null,
     val cachedGridItems: List<LauncherItemState>? = null,
     val gridLimits: GridLimits = GridLimits(),
+    val isLandscape: Boolean = false,
     val isGridEditMode: Boolean = false,
     val editingGridItem: LauncherItemState? = null,
     val showAddContainerDialog: Boolean = false,
+    val targetParentContainerId: String? = null,
     val gridErrorMessage: String? = null,
     val isAddingSingleWidget: Boolean = false,
 )

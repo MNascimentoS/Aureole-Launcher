@@ -13,6 +13,9 @@ sealed interface SettingValue {
 data class SettingsUiState(
     val isLeftHandedMode: Boolean = false,
     val isSidePanelEnabled: Boolean = true,
+    val isSidePanelBackgroundEnabled: Boolean = true,
+    val isClockBackgroundEnabled: Boolean = true,
+    val showSidePanelAddFolderButton: Boolean = true,
     val sidePanelPosition: String = "Center",
     val showFolderLabels: Boolean = false,
     val homeButtonOpensAllApps: Boolean = true,
@@ -28,6 +31,7 @@ data class SettingsUiState(
     val customWallpaperPath: String? = null,
     val showRestoreWallpaperDialog: Boolean = false,
     val showResetGridDialog: Boolean = false,
+    val showFactoryResetDialog: Boolean = false,
     val showCreateFolderDialog: Boolean = false,
     val isDynamicWallpaperEnabled: Boolean = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S,
     val manualSeedColor: Int = SettingsRepository.DEFAULT_SEED_COLOR,

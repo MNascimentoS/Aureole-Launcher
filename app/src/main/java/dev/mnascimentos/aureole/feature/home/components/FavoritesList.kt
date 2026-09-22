@@ -2,11 +2,11 @@ package dev.mnascimentos.aureole.feature.home.components
 
 import android.appwidget.AppWidgetHost
 import android.content.ComponentName
-import android.content.res.Configuration
 import android.graphics.drawable.ColorDrawable
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -32,7 +32,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -49,21 +48,63 @@ import dev.mnascimentos.aureole.feature.home.widget.StackedWidgetSection
 import dev.mnascimentos.aureole.feature.home.widget.model.StackedWidgetConfig
 
 private const val PREVIEW_APPWIDGET_HOST_ID = 1024
+private const val MAX_NON_SCROLLABLE_APPS = 20
+
+data class ScrollableFavoritesParams(
+    val config: FavoritesListConfig,
+    val uiState: MainUiState,
+    val actions: HomeScreenActions,
+    val favoritePackages: Set<String>,
+    val appWidgetHost: AppWidgetHost,
+    val showHeadersAndWidgets: Boolean,
+    val modifier: Modifier
+)
 
 @Composable
 fun FavoritesList(
     config: FavoritesListConfig,
     appWidgetHost: AppWidgetHost,
     modifier: Modifier = Modifier,
-    showHeadersAndWidgets: Boolean = true
+    showHeadersAndWidgets: Boolean = true,
+    isInsideScrollView: Boolean = false
 ) {
     val uiState = LocalHomeUiState.current
     val actions = LocalHomeActions.current
-    val configuration = LocalConfiguration.current
-    val isLandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
     val favoritePackages = remember(uiState.favoriteAppPackages) {
         uiState.favoriteAppPackages.toSet()
     }
+
+    if (isInsideScrollView) {
+        NonScrollableFavoritesList(
+            uiState = uiState,
+            actions = actions,
+            favoritePackages = favoritePackages,
+            modifier = modifier
+        )
+    } else {
+        ScrollableFavoritesList(
+            ScrollableFavoritesParams(
+                config = config,
+                uiState = uiState,
+                actions = actions,
+                favoritePackages = favoritePackages,
+                appWidgetHost = appWidgetHost,
+                showHeadersAndWidgets = showHeadersAndWidgets,
+                modifier = modifier
+            )
+        )
+    }
+}
+
+@Composable
+private fun ScrollableFavoritesList(params: ScrollableFavoritesParams) {
+    val config = params.config
+    val uiState = params.uiState
+    val actions = params.actions
+    val favoritePackages = params.favoritePackages
+    val appWidgetHost = params.appWidgetHost
+    val showHeadersAndWidgets = params.showHeadersAndWidgets
+    val modifier = params.modifier
 
     LazyColumn(
         state = config.state,
@@ -74,10 +115,15 @@ fun FavoritesList(
     ) {
         if (showHeadersAndWidgets) {
             item(key = "clock_header") {
-                ClockHeader(hazeState = config.hazeState)
+                ClockHeader(
+                    hazeState = config.hazeState,
+                    isHazeEnabled = uiState.isHazeEnabled,
+                    hazeOpacity = uiState.hazeOpacity,
+                    isBackgroundEnabled = uiState.isClockBackgroundEnabled
+                )
             }
 
-            if (uiState.isWidgetRowEnabled && !isLandscape) {
+            if (uiState.isWidgetRowEnabled) {
                 item(key = "stacked_widget_section") {
                     StackedWidgetSection(
                         config = StackedWidgetConfig(
@@ -105,6 +151,51 @@ fun FavoritesList(
             favoritePackages = favoritePackages,
             actions = actions
         )
+    }
+}
+
+@Composable
+private fun NonScrollableFavoritesList(
+    uiState: MainUiState,
+    actions: HomeScreenActions,
+    favoritePackages: Set<String>,
+    modifier: Modifier = Modifier
+) {
+    Column(
+        modifier = modifier.fillMaxWidth()
+    ) {
+        if (uiState.favoriteApps.isNotEmpty()) {
+            uiState.favoriteApps.forEach { app ->
+                AppItemRow(
+                    app = app,
+                    onClick = { actions.onAppClick(app) },
+                    isFavorite = true,
+                    actions = AppItemRowActions(
+                        onToggleFavorite = { actions.onToggleFavorite(it) },
+                        onAppInfoClick = { actions.onAppInfoClick(it) }
+                    )
+                )
+            }
+        } else {
+            FavoritesEmptyHint(onClick = actions.onOpenFavoritePicker)
+        }
+
+        if (uiState.showAllAppsOnHome) {
+            AllAppsDivider()
+            val appsToDisplay = remember(uiState.apps) { uiState.apps.take(MAX_NON_SCROLLABLE_APPS) }
+            appsToDisplay.forEach { app ->
+                val isFav = favoritePackages.contains(app.packageName)
+                AppItemRow(
+                    app = app,
+                    onClick = { actions.onAppClick(app) },
+                    isFavorite = isFav,
+                    actions = AppItemRowActions(
+                        onToggleFavorite = { actions.onToggleFavorite(it) },
+                        onAppInfoClick = { actions.onAppInfoClick(it) }
+                    )
+                )
+            }
+        }
     }
 }
 
