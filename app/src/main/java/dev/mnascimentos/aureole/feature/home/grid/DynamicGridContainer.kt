@@ -19,7 +19,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
-import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -159,6 +158,20 @@ private fun DynamicGridItemsList(
     }
 }
 
+data class GridEditModifierArgs(
+    val params: GridCellParams,
+    val isDragging: Boolean,
+    val isResizing: Boolean,
+    val onDraggingChange: (Boolean) -> Unit,
+    val dragOffset: Offset,
+    val onDragOffsetChange: (Offset) -> Unit,
+    val animatableOffset: Animatable<Offset, AnimationVector2D>,
+    val coroutineScope: CoroutineScope,
+    val currentParams: GridCellParams,
+    val currentActions: HomeScreenActions,
+    val currentOnDragTargetChange: (DragTargetSlot?) -> Unit
+)
+
 @Composable
 private fun GridItemCell(
     params: GridCellParams,
@@ -169,93 +182,45 @@ private fun GridItemCell(
     val currentParams by rememberUpdatedState(params)
     val currentActions by rememberUpdatedState(actions)
     val currentOnDragTargetChange by rememberUpdatedState(onDragTargetChange)
-
     val item = params.item
     val coroutineScope = rememberCoroutineScope()
-
-    var resizeExtraWidthPx by remember { mutableFloatStateOf(0f) }
-    var resizeExtraHeightPx by remember { mutableFloatStateOf(0f) }
+    var resizeExtra by remember { mutableStateOf(Offset.Zero) }
     var isResizing by remember { mutableStateOf(false) }
     var isDragging by remember { mutableStateOf(false) }
-
-    var dragOffsetX by remember { mutableFloatStateOf(0f) }
-    var dragOffsetY by remember { mutableFloatStateOf(0f) }
-
-    val animatableOffset = remember { Animatable(Offset.Zero, Offset.VectorConverter) }
-    val density = LocalDensity.current
-
-    val currentWidthDp = (params.cellWidthDp * item.colSpan) + with(density) { resizeExtraWidthPx.toDp() }
-    val currentHeightDp = (params.cellHeightDp * item.rowSpan) + with(density) { resizeExtraHeightPx.toDp() }
-
-    val editParams = buildGridEditModifierParams(
-        isEditMode = params.isEditMode,
-        itemId = item.id,
-        isDragging = isDragging,
-        isResizing = isResizing,
-        onStartDrag = {
-            isDragging = true
-            dragOffsetX = 0f
-            dragOffsetY = 0f
-            coroutineScope.launch { animatableOffset.snapTo(Offset.Zero) }
-        },
-        onEndDrag = {
-            handleDragEnd(
-                dragParams = DragEndParams(
-                    params = currentParams,
-                    dragOffsetX = dragOffsetX,
-                    dragOffsetY = dragOffsetY,
-                    coroutineScope = coroutineScope,
-                    animatableOffset = animatableOffset
-                ),
-                onMoveItem = { id, c, r -> currentActions.onMoveGridItem(id, c, r) },
-                onFinishDrag = {
-                    isDragging = false
-                    dragOffsetX = 0f
-                    dragOffsetY = 0f
-                    currentOnDragTargetChange(null)
-                }
-            )
-        },
-        onCancelDrag = {
-            isDragging = false
-            dragOffsetX = 0f
-            dragOffsetY = 0f
-            currentOnDragTargetChange(null)
-        },
-        onDeltaDrag = { dx, dy ->
-            dragOffsetX += dx
-            dragOffsetY += dy
-            updateDragTargetSlot(currentParams, dragOffsetX, dragOffsetY, currentOnDragTargetChange)
-        }
+    var dragOffset by remember { mutableStateOf(Offset.Zero) }
+    val animOffset = remember { Animatable(Offset.Zero, Offset.VectorConverter) }
+    val wDp = (params.cellWidthDp * item.colSpan) + with(LocalDensity.current) { resizeExtra.x.toDp() }
+    val hDp = (params.cellHeightDp * item.rowSpan) + with(LocalDensity.current) { resizeExtra.y.toDp() }
+    val editModifier = rememberGridCellEditModifier(
+        GridEditModifierArgs(
+            params = params,
+            isDragging = isDragging,
+            isResizing = isResizing,
+            onDraggingChange = { isDragging = it },
+            dragOffset = dragOffset,
+            onDragOffsetChange = { dragOffset = it },
+            animatableOffset = animOffset,
+            coroutineScope = coroutineScope,
+            currentParams = currentParams,
+            currentActions = currentActions,
+            currentOnDragTargetChange = currentOnDragTargetChange
+        )
     )
-
-    val editModifier = Modifier.gridCellEditModifier(editParams)
-
     val boxMetrics = CellBoxMetrics(
         leftDp = params.cellWidthDp * item.col,
         topDp = params.cellHeightDp * item.row,
-        currentWidthDp = currentWidthDp,
-        currentHeightDp = currentHeightDp,
-        totalDragX = animatableOffset.value.x + dragOffsetX,
-        totalDragY = animatableOffset.value.y + dragOffsetY
+        currentWidthDp = wDp,
+        currentHeightDp = hDp,
+        totalDragX = animOffset.value.x + dragOffset.x,
+        totalDragY = animOffset.value.y + dragOffset.y
     )
-
-    val boxCallbacks = CellBoxCallbacks(
+    val boxCallbacks = rememberCellCallbacks(
         onResizingChange = { isResizing = it },
-        onResizeWidthChange = { resizeExtraWidthPx += it },
-        onResizeHeightChange = { resizeExtraHeightPx += it },
-        onResizeDelta = { dx, dy ->
-            resizeExtraWidthPx += dx
-            resizeExtraHeightPx += dy
-        },
-        onResetWidth = { resizeExtraWidthPx = 0f },
-        onResetHeight = { resizeExtraHeightPx = 0f },
-        onResetAll = {
-            resizeExtraWidthPx = 0f
-            resizeExtraHeightPx = 0f
-        }
+        onResizeWidthChange = { resizeExtra = resizeExtra.copy(x = resizeExtra.x + it) },
+        onResizeHeightChange = { resizeExtra = resizeExtra.copy(y = resizeExtra.y + it) },
+        onResetWidth = { resizeExtra = resizeExtra.copy(x = 0f) },
+        onResetHeight = { resizeExtra = resizeExtra.copy(y = 0f) }
     )
-
     GridItemCellBox(
         CellBoxConfig(
             metrics = boxMetrics,
@@ -270,26 +235,73 @@ private fun GridItemCell(
     )
 }
 
-private fun buildGridEditModifierParams(
-    isEditMode: Boolean,
-    itemId: String,
-    isDragging: Boolean,
-    isResizing: Boolean,
-    onStartDrag: () -> Unit,
-    onEndDrag: () -> Unit,
-    onCancelDrag: () -> Unit,
-    onDeltaDrag: (Float, Float) -> Unit
-): GridEditModifierParams {
-    return GridEditModifierParams(
-        isEditMode = isEditMode,
-        itemId = itemId,
-        isDragging = isDragging,
-        isResizing = isResizing,
-        onDragStart = onStartDrag,
-        onDragEnd = onEndDrag,
-        onDragCancel = onCancelDrag,
-        onDrag = { _, amount -> onDeltaDrag(amount.x, amount.y) }
+private fun rememberCellCallbacks(
+    onResizingChange: (Boolean) -> Unit,
+    onResizeWidthChange: (Float) -> Unit,
+    onResizeHeightChange: (Float) -> Unit,
+    onResetWidth: () -> Unit,
+    onResetHeight: () -> Unit
+): CellBoxCallbacks {
+    return CellBoxCallbacks(
+        onResizingChange = onResizingChange,
+        onResizeWidthChange = onResizeWidthChange,
+        onResizeHeightChange = onResizeHeightChange,
+        onResizeDelta = { dx, dy ->
+            onResizeWidthChange(dx)
+            onResizeHeightChange(dy)
+        },
+        onResetWidth = onResetWidth,
+        onResetHeight = onResetHeight,
+        onResetAll = {
+            onResetWidth()
+            onResetHeight()
+        }
     )
+}
+
+@Composable
+private fun rememberGridCellEditModifier(args: GridEditModifierArgs): Modifier {
+    val item = args.params.item
+    val editParams = GridEditModifierParams(
+        isEditMode = args.params.isEditMode,
+        itemId = item.id,
+        isDragging = args.isDragging,
+        isResizing = args.isResizing,
+        onDragStart = {
+            args.onDraggingChange(true)
+            args.onDragOffsetChange(Offset.Zero)
+            args.coroutineScope.launch { args.animatableOffset.snapTo(Offset.Zero) }
+        },
+        onDragEnd = {
+            handleDragEnd(
+                dragParams = DragEndParams(
+                    params = args.currentParams,
+                    dragOffsetX = args.dragOffset.x,
+                    dragOffsetY = args.dragOffset.y,
+                    coroutineScope = args.coroutineScope,
+                    animatableOffset = args.animatableOffset
+                ),
+                onMoveItem = { id, c, r -> args.currentActions.onMoveGridItem(id, c, r) },
+                onFinishDrag = {
+                    args.onDraggingChange(false)
+                    args.onDragOffsetChange(Offset.Zero)
+                    args.currentOnDragTargetChange(null)
+                }
+            )
+        },
+        onDragCancel = {
+            args.onDraggingChange(false)
+            args.onDragOffsetChange(Offset.Zero)
+            args.currentOnDragTargetChange(null)
+        },
+        onDrag = { _, amount ->
+            val newX = args.dragOffset.x + amount.x
+            val newY = args.dragOffset.y + amount.y
+            args.onDragOffsetChange(Offset(newX, newY))
+            updateDragTargetSlot(args.currentParams, newX, newY, args.currentOnDragTargetChange)
+        }
+    )
+    return Modifier.gridCellEditModifier(editParams)
 }
 
 data class DragEndParams(

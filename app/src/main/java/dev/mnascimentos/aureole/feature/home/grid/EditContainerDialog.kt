@@ -19,7 +19,6 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
@@ -144,7 +143,7 @@ private fun EditDialogTypeActionSection(
     }
 }
 
-private fun getContainerTitle(type: LauncherItemType?): String {
+internal fun getContainerTitle(type: LauncherItemType?): String {
     return when (type) {
         LauncherItemType.CLOCK -> "Relógio"
         LauncherItemType.APPS_LIST -> "Lista de Aplicativos"
@@ -287,95 +286,6 @@ private fun ScrollViewOrientationSelector(
             )
             Spacer(modifier = Modifier.width(4.dp))
             Text(text = "Horizontal", style = MaterialTheme.typography.bodyMedium)
-        }
-    }
-}
-
-@Composable
-private fun ScrollViewChildItemRow(
-    parentId: String,
-    child: LauncherItemState,
-    isVertical: Boolean,
-    actions: HomeScreenActions,
-    onDismissRequest: () -> Unit
-) {
-    val spanVal = if (isVertical) child.rowSpan else child.colSpan
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 4.dp),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween
-    ) {
-        Text(
-            text = getContainerTitle(child.type),
-            style = MaterialTheme.typography.bodyMedium,
-            modifier = Modifier.weight(1f)
-        )
-
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            TextButton(
-                onClick = {
-                    if (isVertical) {
-                        actions.onResizeChildInScrollView(
-                            parentId,
-                            child.id,
-                            child.colSpan,
-                            (child.rowSpan - 1).coerceAtLeast(1)
-                        )
-                    } else {
-                        actions.onResizeChildInScrollView(
-                            parentId,
-                            child.id,
-                            (child.colSpan - 1).coerceAtLeast(1),
-                            child.rowSpan
-                        )
-                    }
-                }
-            ) {
-                Text("-", style = MaterialTheme.typography.titleMedium)
-            }
-
-            Text(
-                text = "$spanVal",
-                style = MaterialTheme.typography.bodyMedium,
-                modifier = Modifier.padding(horizontal = 2.dp)
-            )
-
-            TextButton(
-                onClick = {
-                    if (isVertical) {
-                        actions.onResizeChildInScrollView(parentId, child.id, child.colSpan, child.rowSpan + 1)
-                    } else {
-                        actions.onResizeChildInScrollView(parentId, child.id, child.colSpan + 1, child.rowSpan)
-                    }
-                }
-            ) {
-                Text("+", style = MaterialTheme.typography.titleMedium)
-            }
-
-            if (child.type == LauncherItemType.APPS_LIST) {
-                IconButton(
-                    onClick = {
-                        actions.onOpenFavoritePicker(child.id)
-                        onDismissRequest()
-                    }
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Edit,
-                        contentDescription = "Editar Favoritos",
-                        tint = MaterialTheme.colorScheme.primary
-                    )
-                }
-            }
-
-            IconButton(onClick = { actions.onRemoveChildFromScrollView(parentId, child.id) }) {
-                Icon(
-                    imageVector = Icons.Default.Delete,
-                    contentDescription = "Remover",
-                    tint = MaterialTheme.colorScheme.error
-                )
-            }
         }
     }
 }

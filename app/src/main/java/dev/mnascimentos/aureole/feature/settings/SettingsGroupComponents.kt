@@ -1,24 +1,14 @@
 package dev.mnascimentos.aureole.feature.settings
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Menu
-import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.R
@@ -30,168 +20,7 @@ private const val OPACITY_LOW_THRESHOLD = 0.25f
 private const val OPACITY_MEDIUM = 0.50f
 private const val OPACITY_HIGH_THRESHOLD = 0.70f
 
-private const val ALPHA_DISABLED = 0.38f
 private const val ALPHA_SEMI_TRANSPARENT = 0.5f
-private const val ALPHA_FULL = 1.0f
-
-@Composable
-fun WallpaperSettingsGroup(
-    uiState: SettingsUiState,
-    actions: SettingsScreenActions
-) {
-    Column {
-        PreferenceCategoryHeader(title = "Personalização & Papel de Parede")
-        PreferenceCard {
-            WallpaperSettingsContent(uiState = uiState, actions = actions)
-        }
-    }
-}
-
-@Composable
-private fun WallpaperSettingsContent(
-    uiState: SettingsUiState,
-    actions: SettingsScreenActions
-) {
-    Column {
-        PreferenceSwitchRow(
-            config = PreferenceItemConfig(
-                title = "Usar cores do papel de parede",
-                subtitle = "Extrair paleta de cores dinâmicas do papel de parede do sistema",
-                leadingIcon = Icons.Default.Edit
-            ),
-            checked = uiState.isDynamicWallpaperEnabled,
-            onCheckedChange = { actions.onToggleDynamicWallpaper() }
-        )
-
-        HorizontalDivider(
-            modifier = Modifier.padding(start = 16.dp),
-            color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = ALPHA_SEMI_TRANSPARENT)
-        )
-
-        ThemeColorPreferenceRow(
-            isDynamicWallpaperEnabled = uiState.isDynamicWallpaperEnabled,
-            manualSeedColor = uiState.manualSeedColor,
-            onOpenColorPickerDialog = actions.onOpenColorPickerDialog
-        )
-
-        HorizontalDivider(
-            modifier = Modifier.padding(start = 56.dp),
-            color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = ALPHA_SEMI_TRANSPARENT)
-        )
-
-        WallpaperImagePreferenceRows(
-            isCustomWallpaperSet = uiState.isCustomWallpaperSet,
-            onChangeWallpaperClick = actions.onChangeWallpaperClick,
-            onRestoreDefaultWallpaperClick = actions.onRestoreDefaultWallpaperClick
-        )
-
-        HorizontalDivider(
-            modifier = Modifier.padding(start = 56.dp),
-            color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = ALPHA_SEMI_TRANSPARENT)
-        )
-
-        PreferenceSwitchRow(
-            config = PreferenceItemConfig(
-                title = "Ícones Temáticos",
-                subtitle = "Usar cor primária do tema nos ícones de aplicativos",
-                leadingIcon = Icons.Default.Star
-            ),
-            checked = uiState.isThemedAppIconsEnabled,
-            onCheckedChange = { actions.onToggleThemedAppIcons() }
-        )
-
-        HorizontalDivider(
-            modifier = Modifier.padding(start = 56.dp),
-            color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = ALPHA_SEMI_TRANSPARENT)
-        )
-
-        val clockSubtitle = "Exibe o container com efeito de desfoque (blur) para o relógio quando o desfoque estiver ativo"
-        PreferenceSwitchRow(
-            config = PreferenceItemConfig(
-                title = "Fundo do Relógio",
-                subtitle = clockSubtitle,
-                leadingIcon = Icons.Default.Edit
-            ),
-            checked = uiState.isClockBackgroundEnabled,
-            onCheckedChange = { actions.onToggleClockBackground() }
-        )
-    }
-}
-
-@Composable
-private fun ThemeColorPreferenceRow(
-    isDynamicWallpaperEnabled: Boolean,
-    manualSeedColor: Int,
-    onOpenColorPickerDialog: () -> Unit
-) {
-    PreferenceRowItem(
-        config = PreferenceItemConfig(
-            title = "Cor Primária do Tema",
-            subtitle = if (isDynamicWallpaperEnabled) {
-                "Desabilitado quando as cores do papel de parede estão ativas"
-            } else {
-                "Toque para escolher uma cor primária personalizada"
-            },
-            enabled = !isDynamicWallpaperEnabled
-        ),
-        trailingContent = {
-            Box(
-                modifier = Modifier
-                    .size(24.dp)
-                    .clip(CircleShape)
-                    .background(
-                        if (!isDynamicWallpaperEnabled) {
-                            Color(manualSeedColor)
-                        } else {
-                            Color(manualSeedColor).copy(alpha = ALPHA_DISABLED)
-                        }
-                    )
-                    .border(
-                        width = 1.dp,
-                        color = MaterialTheme.colorScheme.outline.copy(
-                            alpha = if (!isDynamicWallpaperEnabled) ALPHA_FULL else ALPHA_DISABLED
-                        ),
-                        shape = CircleShape
-                    )
-            )
-        },
-        onClick = onOpenColorPickerDialog
-    )
-}
-
-@Composable
-private fun WallpaperImagePreferenceRows(
-    isCustomWallpaperSet: Boolean,
-    onChangeWallpaperClick: () -> Unit,
-    onRestoreDefaultWallpaperClick: () -> Unit
-) {
-    Column {
-        PreferenceRowItem(
-            config = PreferenceItemConfig(
-                title = "Alterar Papel de Parede",
-                subtitle = "Escolher uma imagem do seu dispositivo",
-                leadingIcon = Icons.Default.Edit
-            ),
-            onClick = onChangeWallpaperClick
-        )
-
-        if (isCustomWallpaperSet) {
-            HorizontalDivider(
-                modifier = Modifier.padding(start = 56.dp),
-                color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = ALPHA_SEMI_TRANSPARENT)
-            )
-
-            PreferenceRowItem(
-                config = PreferenceItemConfig(
-                    title = "Restaurar Padrão",
-                    subtitle = "Remover imagem customizada e usar o papel de parede padrão",
-                    leadingIcon = Icons.Default.Delete
-                ),
-                onClick = onRestoreDefaultWallpaperClick
-            )
-        }
-    }
-}
 
 @Composable
 fun WidgetsSettingsGroup(
@@ -246,6 +75,17 @@ private fun FoldersSettingsContent(
     actions: SettingsScreenActions
 ) {
     Column {
+        SidePanelPreferencesContent(uiState = uiState, actions = actions)
+        FolderPreferencesContent(uiState = uiState, actions = actions)
+    }
+}
+
+@Composable
+private fun SidePanelPreferencesContent(
+    uiState: SettingsUiState,
+    actions: SettingsScreenActions
+) {
+    Column {
         PreferenceSwitchRow(
             config = PreferenceItemConfig(
                 title = "Fundo do Painel Lateral",
@@ -282,7 +122,15 @@ private fun FoldersSettingsContent(
             ),
             onClick = actions.onOpenSidePanelPositionDialog
         )
+    }
+}
 
+@Composable
+private fun FolderPreferencesContent(
+    uiState: SettingsUiState,
+    actions: SettingsScreenActions
+) {
+    Column {
         HorizontalDivider(
             modifier = Modifier.padding(start = 16.dp),
             color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = ALPHA_SEMI_TRANSPARENT)

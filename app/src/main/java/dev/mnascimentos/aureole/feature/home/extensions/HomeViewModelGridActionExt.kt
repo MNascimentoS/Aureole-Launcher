@@ -4,6 +4,7 @@ import dev.mnascimentos.aureole.core.data.model.LauncherItemState
 import dev.mnascimentos.aureole.core.data.model.LauncherItemType
 import dev.mnascimentos.aureole.core.data.model.ScrollOrientation
 import dev.mnascimentos.aureole.feature.home.HomeViewModel
+import dev.mnascimentos.aureole.feature.home.grid.GridDefaults
 import dev.mnascimentos.aureole.feature.home.grid.GridEngineUtils
 import dev.mnascimentos.aureole.feature.home.grid.SlotSearchRequest
 import java.util.UUID
@@ -60,7 +61,7 @@ fun HomeViewModel.updateScrollViewOrientation(parentId: String, orientation: Scr
 
 fun HomeViewModel.addChildToScrollView(parentId: String, type: LauncherItemType, widgetId: Int? = null) {
     updateUiState { state ->
-        val (defaultSpans, defaultMinSpans) = GridEngineUtils.getDefaultSpanForType(type)
+        val (defaultSpans, defaultMinSpans) = GridDefaults.getDefaultSpanForType(type)
         val newChild = LauncherItemState(
             id = UUID.randomUUID().toString(),
             type = type,
@@ -172,7 +173,7 @@ fun HomeViewModel.addGridItem(spec: GridItemSpec) {
 
     updateUiState { state ->
         val currentItems = state.gridItems
-        val (defaultSpans, defaultMinSpans) = GridEngineUtils.getDefaultSpanForType(spec.type)
+        val (defaultSpans, defaultMinSpans) = GridDefaults.getDefaultSpanForType(spec.type)
 
         val reqTargetColSpan = spec.targetColSpan ?: defaultSpans.first
         val reqTargetRowSpan = spec.targetRowSpan ?: defaultSpans.second

@@ -13,7 +13,51 @@ private const val DEFAULT_APPS_ROW = 9
 private const val DEFAULT_APPS_SPAN_X = 7
 private const val DEFAULT_APPS_SPAN_Y = 11
 
+private const val CLOCK_DEFAULT_COL_SPAN = 10
+private const val CLOCK_DEFAULT_ROW_SPAN = 6
+private const val APPS_DEFAULT_COL_SPAN = 7
+private const val APPS_DEFAULT_ROW_SPAN = 11
+private const val SIDE_PANEL_DEFAULT_COL_SPAN = 3
+private const val SIDE_PANEL_DEFAULT_ROW_SPAN = 7
+private const val WIDGET_DEFAULT_COL_SPAN = 2
+private const val WIDGET_DEFAULT_ROW_SPAN = 2
+private const val WIDGET_LIST_DEFAULT_COL_SPAN = 3
+private const val WIDGET_LIST_DEFAULT_ROW_SPAN = 2
+private const val SCROLL_VIEW_DEFAULT_COL_SPAN = 7
+private const val SCROLL_VIEW_DEFAULT_ROW_SPAN = 6
+private const val DEFAULT_MIN_COL_SPAN = 1
+private const val DEFAULT_MIN_ROW_SPAN = 1
+
 object GridDefaults {
+    fun getDefaultSpanForType(type: LauncherItemType): Pair<Pair<Int, Int>, Pair<Int, Int>> {
+        return when (type) {
+            LauncherItemType.CLOCK -> Pair(
+                Pair(CLOCK_DEFAULT_COL_SPAN, CLOCK_DEFAULT_ROW_SPAN),
+                Pair(DEFAULT_MIN_COL_SPAN, DEFAULT_MIN_ROW_SPAN)
+            )
+            LauncherItemType.APPS_LIST -> Pair(
+                Pair(APPS_DEFAULT_COL_SPAN, APPS_DEFAULT_ROW_SPAN),
+                Pair(DEFAULT_MIN_COL_SPAN, DEFAULT_MIN_ROW_SPAN)
+            )
+            LauncherItemType.SHORTCUTS_SIDE_PANEL -> Pair(
+                Pair(SIDE_PANEL_DEFAULT_COL_SPAN, SIDE_PANEL_DEFAULT_ROW_SPAN),
+                Pair(DEFAULT_MIN_COL_SPAN, DEFAULT_MIN_ROW_SPAN)
+            )
+            LauncherItemType.SINGLE_APP_WIDGET -> Pair(
+                Pair(WIDGET_DEFAULT_COL_SPAN, WIDGET_DEFAULT_ROW_SPAN),
+                Pair(DEFAULT_MIN_COL_SPAN, DEFAULT_MIN_ROW_SPAN)
+            )
+            LauncherItemType.WIDGET_LIST -> Pair(
+                Pair(WIDGET_LIST_DEFAULT_COL_SPAN, WIDGET_LIST_DEFAULT_ROW_SPAN),
+                Pair(DEFAULT_MIN_COL_SPAN, DEFAULT_MIN_ROW_SPAN)
+            )
+            LauncherItemType.SCROLL_VIEW -> Pair(
+                Pair(SCROLL_VIEW_DEFAULT_COL_SPAN, SCROLL_VIEW_DEFAULT_ROW_SPAN),
+                Pair(DEFAULT_MIN_COL_SPAN, DEFAULT_MIN_ROW_SPAN)
+            )
+        }
+    }
+
     fun getDefaultGridItems(isLandscape: Boolean = false): List<LauncherItemState> {
         return if (isLandscape) {
             getDefaultLandscapeGridItems()

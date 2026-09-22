@@ -1,6 +1,6 @@
 Regras de Desenvolvimento e Arquitetura do Projeto (Android + Compose)
 1. Detekt e Qualidade de Código
-   Validação Contínua: Sempre que modificar código Kotlin, execute ./gradlew detekt (ou a task equivalente). Se houver falhas, corrija os problemas introduzidos antes do commit. Utilize ./gradlew detekt --auto-correct (via plugin de formatação) para agilizar correções de estilo.
+   Validação Contínua: Sempre ao fim de uma atividade, execute ./gradlew detekt --auto-correct (ou a task equivalente). Se houver falhas, corrija os problemas introduzidos antes do commit. Utilize ./gradlew detekt --auto-correct (via plugin de formatação) para agilizar correções de estilo.
 
 Imutabilidade das Regras: Nunca edite os arquivos de configuração do Detekt (app/config/detekt/detekt.yml) ou adicione supressões cegas (@Suppress) sem uma justificativa técnica formalizada em comentário.
 

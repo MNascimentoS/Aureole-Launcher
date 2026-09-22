@@ -12,7 +12,7 @@ import com.android.tools.screenshot.PreviewTest
 import dev.mnascimentos.aureole.core.data.model.AppFolder
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
-import dev.mnascimentos.aureole.feature.home.grid.GridEngineUtils
+import dev.mnascimentos.aureole.feature.home.grid.GridDefaults
 import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
 
@@ -67,7 +67,7 @@ fun HomeScreenScreenshotTest() {
         favoriteApps = favoriteApps,
         favoriteAppPackages = favoriteApps.map { it.packageName },
         folders = sampleFolders,
-        gridItems = GridEngineUtils.getDefaultGridItems(),
+        gridItems = GridDefaults.getDefaultGridItems(),
         alphabet = listOf('B', 'C', 'M', 'P', 'S'),
         isLoading = false,
         isHazeEnabled = false,
