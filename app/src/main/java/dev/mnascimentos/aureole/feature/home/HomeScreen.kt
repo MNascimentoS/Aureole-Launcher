@@ -509,10 +509,11 @@ private fun MainHomeLayout(
     val sidePanelConfig = SidePanelConfig(
         folders = uiState.folders,
         openedFolderId = uiState.openedFolderId,
-        position = "Center",
+        position = uiState.sidePanelPosition,
         showFolderLabels = uiState.showFolderLabels,
         showAddFolderButton = uiState.showSidePanelAddFolderButton,
         isBackgroundEnabled = uiState.isSidePanelBackgroundEnabled,
+        isExpandCell = uiState.isSidePanelExpandCell,
         hazeState = hazeState
     )
 
@@ -892,7 +893,7 @@ data class ScrollViewContentParams(
     val scrollState: ScrollState? = null
 )
 
-data class ScrollViewChildParams(
+data class ScrollViewChildItemParams(
     val parentId: String,
     val childItem: LauncherItemState,
     val favConfig: FavoritesListConfig,
@@ -917,7 +918,7 @@ private fun VerticalScrollViewContent(params: VerticalScrollViewContentParams) {
     ) {
         item.safeChildren.forEach { childItem ->
             ScrollViewChildItem(
-                ScrollViewChildParams(
+                ScrollViewChildItemParams(
                     parentId = item.id,
                     childItem = childItem,
                     favConfig = params.favConfig,
@@ -949,7 +950,7 @@ private fun HorizontalScrollViewContent(params: ScrollViewContentParams) {
     ) {
         item.safeChildren.forEach { childItem ->
             ScrollViewChildItem(
-                ScrollViewChildParams(
+                ScrollViewChildItemParams(
                     parentId = item.id,
                     childItem = childItem,
                     favConfig = params.favConfig,
@@ -967,7 +968,7 @@ private fun HorizontalScrollViewContent(params: ScrollViewContentParams) {
 }
 
 @Composable
-private fun ScrollViewChildItem(params: ScrollViewChildParams) {
+private fun ScrollViewChildItem(params: ScrollViewChildItemParams) {
     val uiState = LocalHomeUiState.current
     val actions = LocalHomeActions.current
     val parentId = params.parentId

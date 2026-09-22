@@ -103,6 +103,9 @@ class SettingsActivity : ComponentActivity() {
             onToggleWidgetRow = { viewModel.toggleSetting(SettingToggle.WIDGET_ROW) },
             onToggleShowWidgetDots = { viewModel.toggleSetting(SettingToggle.SHOW_WIDGET_DOTS) },
             onToggleSidePanelBackground = { viewModel.toggleSetting(SettingToggle.SIDE_PANEL_BACKGROUND) },
+            onToggleSidePanelExpandCell = {
+                viewModel.toggleSetting(SettingToggle.SIDE_PANEL_EXPAND_CELL)
+            },
             onToggleClockBackground = { viewModel.toggleSetting(SettingToggle.CLOCK_BACKGROUND) },
             onToggleShowSidePanelAddFolderButton = {
                 viewModel.toggleSetting(
@@ -110,6 +113,15 @@ class SettingsActivity : ComponentActivity() {
                 )
             },
             onToggleShowFolderLabels = { viewModel.toggleSetting(SettingToggle.SHOW_FOLDER_LABELS) },
+            onOpenSidePanelPositionDialog = {
+                viewModel.setDialogVisible(SettingsDialog.SIDE_PANEL_POSITION, visible = true)
+            },
+            onDismissSidePanelPositionDialog = {
+                viewModel.setDialogVisible(SettingsDialog.SIDE_PANEL_POSITION, visible = false)
+            },
+            onSidePanelPositionSelected = { pos ->
+                viewModel.setSettingValue(SettingValue.SidePanelPosition(pos))
+            },
             onToggleLeftHandedMode = { viewModel.toggleSetting(SettingToggle.LEFT_HANDED_MODE) },
             onToggleDynamicWallpaper = { viewModel.toggleSetting(SettingToggle.DYNAMIC_WALLPAPER) },
             onToggleHaze = { viewModel.toggleSetting(SettingToggle.HAZE) },

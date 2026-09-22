@@ -3,9 +3,11 @@ package dev.mnascimentos.aureole.feature.home.components
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -60,6 +62,7 @@ fun SidePanel(
 ) {
     val uiState = LocalHomeUiState.current
     val isBgEnabled = config.isBackgroundEnabled
+    val isExpandCell = config.isExpandCell
     val hazeState = config.hazeState
     val hasHaze = isBgEnabled && uiState.isHazeEnabled && (hazeState != null)
 
@@ -89,12 +92,25 @@ fun SidePanel(
         Color.Transparent
     }
 
+    val boxModifier = modifier.then(if (isExpandCell) Modifier.fillMaxSize() else Modifier)
+
+    val verticalArrangement = when (config.position) {
+        "Top" -> Arrangement.Top
+        "Center" -> Arrangement.Center
+        "Bottom" -> Arrangement.Bottom
+        "Space Evenly" -> Arrangement.SpaceEvenly
+        "Space Between" -> Arrangement.SpaceBetween
+        else -> Arrangement.SpaceBetween
+    }
+
     Box(
-        modifier = modifier
+        modifier = boxModifier
     ) {
         SidePanelColumn(
             config = config,
             backgroundColor = backgroundColor,
+            isExpandCell = isExpandCell,
+            verticalArrangement = verticalArrangement,
             onFolderClick = onFolderClick,
             modifier = if (isBgEnabled) hazeModifier else Modifier
         )
@@ -105,6 +121,8 @@ fun SidePanel(
 private fun SidePanelColumn(
     config: SidePanelConfig,
     backgroundColor: Color,
+    isExpandCell: Boolean,
+    verticalArrangement: Arrangement.Vertical,
     onFolderClick: (AppFolder, Float) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -112,8 +130,10 @@ private fun SidePanelColumn(
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = verticalArrangement,
         modifier = Modifier
             .clip(RoundedCornerShape(18.dp))
+            .then(if (isExpandCell) Modifier.fillMaxSize() else Modifier)
             .then(modifier)
             .background(backgroundColor)
             .verticalScroll(rememberScrollState())

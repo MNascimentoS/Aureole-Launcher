@@ -7,6 +7,7 @@ internal object SettingsToggleManager {
             SettingToggle.HAZE,
             SettingToggle.LEFT_HANDED_MODE,
             SettingToggle.SIDE_PANEL_BACKGROUND,
+            SettingToggle.SIDE_PANEL_EXPAND_CELL,
             SettingToggle.CLOCK_BACKGROUND,
             SettingToggle.SHOW_SIDE_PANEL_ADD_FOLDER_BUTTON,
             SettingToggle.SIDE_PANEL -> toggleGroupOne(vm, toggle)
@@ -43,6 +44,11 @@ internal object SettingsToggleManager {
                 val newValue = !vm.uiState.value.isSidePanelBackgroundEnabled
                 vm.settingsRepository.isSidePanelBackgroundEnabled = newValue
                 vm.updateUiState { it.copy(isSidePanelBackgroundEnabled = newValue) }
+            }
+            SettingToggle.SIDE_PANEL_EXPAND_CELL -> {
+                val newValue = !vm.uiState.value.isSidePanelExpandCell
+                vm.settingsRepository.isSidePanelExpandCell = newValue
+                vm.updateUiState { it.copy(isSidePanelExpandCell = newValue) }
             }
             SettingToggle.CLOCK_BACKGROUND -> {
                 val newValue = !vm.uiState.value.isClockBackgroundEnabled

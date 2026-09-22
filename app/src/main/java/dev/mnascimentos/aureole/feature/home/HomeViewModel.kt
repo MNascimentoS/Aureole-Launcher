@@ -70,6 +70,7 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
             val isLeftHanded = settingsRepository.isLeftHandedMode
             val isSidePanelEnabled = settingsRepository.isSidePanelEnabled
             val isSidePanelBackgroundEnabled = settingsRepository.isSidePanelBackgroundEnabled
+            val isSidePanelExpandCell = settingsRepository.isSidePanelExpandCell
             val isClockBackgroundEnabled = settingsRepository.isClockBackgroundEnabled
             val showSidePanelAddFolderButton = settingsRepository.showSidePanelAddFolderButton
             val sidePanelPosition = settingsRepository.sidePanelPosition
@@ -96,6 +97,7 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
                     isLeftHandedMode = isLeftHanded,
                     isSidePanelEnabled = isSidePanelEnabled,
                     isSidePanelBackgroundEnabled = isSidePanelBackgroundEnabled,
+                    isSidePanelExpandCell = isSidePanelExpandCell,
                     isClockBackgroundEnabled = isClockBackgroundEnabled,
                     showSidePanelAddFolderButton = showSidePanelAddFolderButton,
                     sidePanelPosition = sidePanelPosition,
