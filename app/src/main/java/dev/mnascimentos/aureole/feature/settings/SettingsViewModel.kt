@@ -135,15 +135,32 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
         when (value) {
             is SettingValue.SidePanelPosition -> {
                 settingsRepository.sidePanelPosition = value.position
-                _uiState.update { it.copy(sidePanelPosition = value.position, showSidePanelPositionDialog = false) }
+                _uiState.update {
+                    it.copy(
+                        sidePanelPosition = value.position,
+                        showSidePanelPositionDialog = false
+                    )
+                }
             }
+
             is SettingValue.HazeOpacity -> {
                 settingsRepository.hazeOpacity = value.opacity
-                _uiState.update { it.copy(hazeOpacity = value.opacity, showHazeOpacityDialog = false) }
+                _uiState.update {
+                    it.copy(
+                        hazeOpacity = value.opacity,
+                        showHazeOpacityDialog = false
+                    )
+                }
             }
+
             is SettingValue.ManualSeedColor -> {
                 settingsRepository.manualSeedColor = value.color
-                _uiState.update { it.copy(manualSeedColor = value.color, showColorPickerDialog = false) }
+                _uiState.update {
+                    it.copy(
+                        manualSeedColor = value.color,
+                        showColorPickerDialog = false
+                    )
+                }
             }
         }
     }
@@ -164,7 +181,8 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
             val app = getApplication<Application>()
             val success = withContext(Dispatchers.IO) {
                 try {
-                    val inputStream = app.contentResolver.openInputStream(uri) ?: return@withContext false
+                    val inputStream =
+                        app.contentResolver.openInputStream(uri) ?: return@withContext false
                     val bitmap = BitmapFactory.decodeStream(inputStream)
                     inputStream.close()
                     if (bitmap == null) return@withContext false
@@ -259,8 +277,14 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
                     app.deleteDatabase("aureole_folders.db")
 
                     // CA-03: Clear SharedPreferences
-                    listOf("aureole_grid_prefs", "aureole_settings_prefs", "aureole_widget_prefs", "${app.packageName}_preferences").forEach { prefName ->
-                        app.getSharedPreferences(prefName, Context.MODE_PRIVATE).edit().clear().commit()
+                    listOf(
+                        "aureole_grid_prefs",
+                        "aureole_settings_prefs",
+                        "aureole_widget_prefs",
+                        "${app.packageName}_preferences"
+                    ).forEach { prefName ->
+                        app.getSharedPreferences(prefName, Context.MODE_PRIVATE).edit().clear()
+                            .commit()
                     }
 
                     // CA-05: Clear Cache and files
@@ -273,7 +297,9 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
 
             // CA-06: Restart Workspace / Activity
             val intent = app.packageManager.getLaunchIntentForPackage(app.packageName)?.apply {
-                addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                addFlags(
+                    Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                )
             }
             if (intent != null) {
                 app.startActivity(intent)

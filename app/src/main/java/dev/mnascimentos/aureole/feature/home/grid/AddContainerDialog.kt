@@ -35,7 +35,15 @@ fun AddContainerDialog(
 ) {
     AlertDialog(
         onDismissRequest = onDismissRequest,
-        title = { Text(text = if (isNested) "Adicionar ao Scroll View" else "Adicionar Container") },
+        title = {
+            Text(
+                text = if (isNested) {
+                    "Adicionar ao Scroll View"
+                } else {
+                    "Adicionar Container"
+                }
+            )
+        },
         text = {
             Column(
                 modifier = Modifier.verticalScroll(rememberScrollState())

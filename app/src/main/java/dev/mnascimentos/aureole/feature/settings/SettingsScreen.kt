@@ -192,7 +192,7 @@ private fun FactoryResetDialog(
         text = {
             Text(
                 "Isso apagará todas as suas configurações, pastas, " +
-                    "atalhos e disposição da tela inicial. Deseja continuar?"
+                        "atalhos e disposição da tela inicial. Deseja continuar?"
             )
         },
         confirmButton = {
@@ -222,7 +222,7 @@ private fun ResetGridDialog(
         text = {
             Text(
                 "Esta ação redefinirá o posicionamento e o " +
-                    "tamanho de todos os elementos da tela inicial para a configuração padrão."
+                        "tamanho de todos os elementos da tela inicial para a configuração padrão."
             )
         },
         confirmButton = {
@@ -695,7 +695,10 @@ private fun AboutSettingsGroup() {
     val versionName = remember(context) {
         try {
             val packageInfo = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                context.packageManager.getPackageInfo(context.packageName, PackageManager.PackageInfoFlags.of(0))
+                context.packageManager.getPackageInfo(
+                    context.packageName,
+                    PackageManager.PackageInfoFlags.of(0)
+                )
             } else {
                 @Suppress("DEPRECATION")
                 context.packageManager.getPackageInfo(context.packageName, 0)

@@ -15,8 +15,6 @@ import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.Surface
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -38,10 +36,9 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.FilledTonalIconButton
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -65,6 +62,7 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.PointerInputChange
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
@@ -76,6 +74,7 @@ import kotlin.math.roundToInt
 
 private val HANDLE_TOUCH_SIZE = 28.dp
 private val CORNER_TOUCH_SIZE = 36.dp
+
 private data class GridMetricsTuple(
     val cellWidthPx: Float,
     val cellHeightPx: Float,
@@ -210,7 +209,7 @@ fun DynamicGridContainer(
         val density = LocalDensity.current
         val editTopPaddingDp = if (isEditMode) 52.dp else 0.dp
 
-        val (cellWidthPx, cellHeightPx, cellWidthDp, cellHeightDp) = remember(
+        val metrics = remember(
             constraints.maxWidth,
             constraints.maxHeight,
             editTopPaddingDp,
@@ -224,6 +223,10 @@ fun DynamicGridContainer(
             val cHeightDp = with(density) { cHeightPx.toDp() }
             GridMetricsTuple(cWidthPx, cHeightPx, cWidthDp, cHeightDp)
         }
+        val cellWidthPx = metrics.cellWidthPx
+        val cellHeightPx = metrics.cellHeightPx
+        val cellWidthDp = metrics.cellWidthDp
+        val cellHeightDp = metrics.cellHeightDp
 
         if (isEditMode) {
             Box(
@@ -306,7 +309,11 @@ private fun GridTopEditBar(
                 shape = RoundedCornerShape(20.dp),
                 contentPadding = PaddingValues(horizontal = 12.dp, vertical = 6.dp)
             ) {
-                Icon(imageVector = Icons.Default.Close, contentDescription = "Cancelar", modifier = Modifier.size(18.dp))
+                Icon(
+                    imageVector = Icons.Default.Close,
+                    contentDescription = "Cancelar",
+                    modifier = Modifier.size(18.dp)
+                )
                 Spacer(modifier = Modifier.width(4.dp))
                 Text(text = "Cancelar", maxLines = 1, style = MaterialTheme.typography.labelMedium)
             }
@@ -346,9 +353,18 @@ private fun GridTopEditBar(
                     ),
                     contentPadding = PaddingValues(horizontal = 12.dp, vertical = 6.dp)
                 ) {
-                    Icon(imageVector = Icons.Default.Check, contentDescription = "Salvar", modifier = Modifier.size(18.dp))
+                    Icon(
+                        imageVector = Icons.Default.Check,
+                        contentDescription = "Salvar",
+                        modifier = Modifier.size(18.dp)
+                    )
                     Spacer(modifier = Modifier.width(4.dp))
-                    Text(text = "Salvar", maxLines = 1, style = MaterialTheme.typography.labelMedium, fontWeight = FontWeight.Bold)
+                    Text(
+                        text = "Salvar",
+                        maxLines = 1,
+                        style = MaterialTheme.typography.labelMedium,
+                        fontWeight = FontWeight.Bold
+                    )
                 }
             }
         }
@@ -376,7 +392,10 @@ private fun GridBackgroundOverlay(
             for (row in 0 until limits.maxRows) {
                 drawRoundRect(
                     color = gridColor,
-                    topLeft = Offset((col * cellWidthPx) + GRID_OFFSET_PX, (row * cellHeightPx) + GRID_OFFSET_PX),
+                    topLeft = Offset(
+                        (col * cellWidthPx) + GRID_OFFSET_PX,
+                        (row * cellHeightPx) + GRID_OFFSET_PX
+                    ),
                     size = Size(cellWidthPx - GRID_MARGIN_PX, cellHeightPx - GRID_MARGIN_PX),
                     cornerRadius = CornerRadius(GRID_CORNER_RADIUS, GRID_CORNER_RADIUS),
                     style = stroke
@@ -435,8 +454,10 @@ private fun GridItemCell(
     val animatableOffset = remember { Animatable(Offset.Zero, Offset.VectorConverter) }
 
     val density = LocalDensity.current
-    val currentWidthDp = (params.cellWidthDp * item.colSpan) + with(density) { resizeExtraWidthPx.toDp() }
-    val currentHeightDp = (params.cellHeightDp * item.rowSpan) + with(density) { resizeExtraHeightPx.toDp() }
+    val currentWidthDp =
+        (params.cellWidthDp * item.colSpan) + with(density) { resizeExtraWidthPx.toDp() }
+    val currentHeightDp =
+        (params.cellHeightDp * item.rowSpan) + with(density) { resizeExtraHeightPx.toDp() }
     val leftDp = params.cellWidthDp * item.col
     val topDp = params.cellHeightDp * item.row
 
@@ -582,7 +603,14 @@ private fun GridItemCell(
 
     GridItemCellBox(
         CellBoxConfig(
-            metrics = CellBoxMetrics(leftDp, topDp, currentWidthDp, currentHeightDp, totalDragX, totalDragY),
+            metrics = CellBoxMetrics(
+                leftDp,
+                topDp,
+                currentWidthDp,
+                currentHeightDp,
+                totalDragX,
+                totalDragY
+            ),
             modifier = editModifier,
             params = params,
             isDragging = isDragging,
@@ -761,7 +789,8 @@ private fun BoxScope.RightEdgeResizeHandle(
                         val targetColSpan = (currW / p.cellWidthPx).roundToInt()
                             .coerceIn(item.minColSpan, p.limits.maxCols - item.col)
                         val resizedItem = item.copy(colSpan = targetColSpan)
-                        val hasCollision = GridEngineUtils.checkCollisionWithOthers(resizedItem, p.items)
+                        val hasCollision =
+                            GridEngineUtils.checkCollisionWithOthers(resizedItem, p.items)
                         currentCallbacks.onResetExtra()
                         if (!hasCollision && targetColSpan != item.colSpan) {
                             currentCallbacks.onResizeItem(item.id, targetColSpan, item.rowSpan)
@@ -810,7 +839,8 @@ private fun BoxScope.BottomEdgeResizeHandle(
                         val targetRowSpan = (currH / p.cellHeightPx).roundToInt()
                             .coerceIn(item.minRowSpan, p.limits.maxRows - item.row)
                         val resizedItem = item.copy(rowSpan = targetRowSpan)
-                        val hasCollision = GridEngineUtils.checkCollisionWithOthers(resizedItem, p.items)
+                        val hasCollision =
+                            GridEngineUtils.checkCollisionWithOthers(resizedItem, p.items)
                         currentCallbacks.onResetExtra()
                         if (!hasCollision && targetRowSpan != item.rowSpan) {
                             currentCallbacks.onResizeItem(item.id, item.colSpan, targetRowSpan)
@@ -867,8 +897,10 @@ private fun BoxScope.CornerResizeHandle(
                             .coerceIn(item.minColSpan, p.limits.maxCols - item.col)
                         val targetRowSpan = (currH / p.cellHeightPx).roundToInt()
                             .coerceIn(item.minRowSpan, p.limits.maxRows - item.row)
-                        val resizedItem = item.copy(colSpan = targetColSpan, rowSpan = targetRowSpan)
-                        val hasCollision = GridEngineUtils.checkCollisionWithOthers(resizedItem, p.items)
+                        val resizedItem =
+                            item.copy(colSpan = targetColSpan, rowSpan = targetRowSpan)
+                        val hasCollision =
+                            GridEngineUtils.checkCollisionWithOthers(resizedItem, p.items)
                         currentCallbacks.onResetExtra()
                         val colSpanChanged = targetColSpan != item.colSpan
                         val rowSpanChanged = targetRowSpan != item.rowSpan

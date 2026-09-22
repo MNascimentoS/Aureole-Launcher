@@ -104,7 +104,11 @@ class SettingsActivity : ComponentActivity() {
             onToggleShowWidgetDots = { viewModel.toggleSetting(SettingToggle.SHOW_WIDGET_DOTS) },
             onToggleSidePanelBackground = { viewModel.toggleSetting(SettingToggle.SIDE_PANEL_BACKGROUND) },
             onToggleClockBackground = { viewModel.toggleSetting(SettingToggle.CLOCK_BACKGROUND) },
-            onToggleShowSidePanelAddFolderButton = { viewModel.toggleSetting(SettingToggle.SHOW_SIDE_PANEL_ADD_FOLDER_BUTTON) },
+            onToggleShowSidePanelAddFolderButton = {
+                viewModel.toggleSetting(
+                    SettingToggle.SHOW_SIDE_PANEL_ADD_FOLDER_BUTTON
+                )
+            },
             onToggleShowFolderLabels = { viewModel.toggleSetting(SettingToggle.SHOW_FOLDER_LABELS) },
             onToggleLeftHandedMode = { viewModel.toggleSetting(SettingToggle.LEFT_HANDED_MODE) },
             onToggleDynamicWallpaper = { viewModel.toggleSetting(SettingToggle.DYNAMIC_WALLPAPER) },

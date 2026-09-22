@@ -50,6 +50,16 @@ import dev.mnascimentos.aureole.feature.home.widget.model.StackedWidgetConfig
 private const val PREVIEW_APPWIDGET_HOST_ID = 1024
 private const val MAX_NON_SCROLLABLE_APPS = 20
 
+data class ScrollableFavoritesParams(
+    val config: FavoritesListConfig,
+    val uiState: MainUiState,
+    val actions: HomeScreenActions,
+    val favoritePackages: Set<String>,
+    val appWidgetHost: AppWidgetHost,
+    val showHeadersAndWidgets: Boolean,
+    val modifier: Modifier
+)
+
 @Composable
 fun FavoritesList(
     config: FavoritesListConfig,
@@ -73,27 +83,29 @@ fun FavoritesList(
         )
     } else {
         ScrollableFavoritesList(
-            config = config,
-            uiState = uiState,
-            actions = actions,
-            favoritePackages = favoritePackages,
-            appWidgetHost = appWidgetHost,
-            showHeadersAndWidgets = showHeadersAndWidgets,
-            modifier = modifier
+            ScrollableFavoritesParams(
+                config = config,
+                uiState = uiState,
+                actions = actions,
+                favoritePackages = favoritePackages,
+                appWidgetHost = appWidgetHost,
+                showHeadersAndWidgets = showHeadersAndWidgets,
+                modifier = modifier
+            )
         )
     }
 }
 
 @Composable
-private fun ScrollableFavoritesList(
-    config: FavoritesListConfig,
-    uiState: MainUiState,
-    actions: HomeScreenActions,
-    favoritePackages: Set<String>,
-    appWidgetHost: AppWidgetHost,
-    showHeadersAndWidgets: Boolean,
-    modifier: Modifier
-) {
+private fun ScrollableFavoritesList(params: ScrollableFavoritesParams) {
+    val config = params.config
+    val uiState = params.uiState
+    val actions = params.actions
+    val favoritePackages = params.favoritePackages
+    val appWidgetHost = params.appWidgetHost
+    val showHeadersAndWidgets = params.showHeadersAndWidgets
+    val modifier = params.modifier
+
     LazyColumn(
         state = config.state,
         modifier = modifier

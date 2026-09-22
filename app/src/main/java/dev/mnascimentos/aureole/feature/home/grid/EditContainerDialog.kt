@@ -211,9 +211,19 @@ private fun EditDialogScrollViewSection(
                     TextButton(
                         onClick = {
                             if (isVertical) {
-                                actions.onResizeChildInScrollView(item.id, child.id, child.colSpan, (child.rowSpan - 1).coerceAtLeast(1))
+                                actions.onResizeChildInScrollView(
+                                    item.id,
+                                    child.id,
+                                    child.colSpan,
+                                    (child.rowSpan - 1).coerceAtLeast(1)
+                                )
                             } else {
-                                actions.onResizeChildInScrollView(item.id, child.id, (child.colSpan - 1).coerceAtLeast(1), child.rowSpan)
+                                actions.onResizeChildInScrollView(
+                                    item.id,
+                                    child.id,
+                                    (child.colSpan - 1).coerceAtLeast(1),
+                                    child.rowSpan
+                                )
                             }
                         }
                     ) {
