@@ -4,6 +4,7 @@ import java.util.UUID
 
 data class AppFolder(
     val id: String = UUID.randomUUID().toString(),
+    val panelId: String? = null,
     val name: String,
     val iconPackage: String? = null,
     val icon: String? = null,

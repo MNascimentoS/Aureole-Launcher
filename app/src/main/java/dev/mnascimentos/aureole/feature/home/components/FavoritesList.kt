@@ -42,6 +42,7 @@ import dev.mnascimentos.aureole.core.designsystem.theme.fadingEdges
 import dev.mnascimentos.aureole.feature.home.LocalHomeActions
 import dev.mnascimentos.aureole.feature.home.LocalHomeUiState
 import dev.mnascimentos.aureole.feature.home.components.model.AppItemRowActions
+import dev.mnascimentos.aureole.feature.home.components.model.ScrollableFavoritesParams
 import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
 import dev.mnascimentos.aureole.feature.home.widget.StackedWidgetSection
@@ -50,40 +51,46 @@ import dev.mnascimentos.aureole.feature.home.widget.model.StackedWidgetConfig
 private const val PREVIEW_APPWIDGET_HOST_ID = 1024
 private const val MAX_NON_SCROLLABLE_APPS = 20
 
-data class ScrollableFavoritesParams(
-    val config: FavoritesListConfig,
-    val uiState: MainUiState,
-    val actions: HomeScreenActions,
-    val favoritePackages: Set<String>,
-    val appWidgetHost: AppWidgetHost,
-    val showHeadersAndWidgets: Boolean,
-    val modifier: Modifier
-)
-
 @Composable
 fun FavoritesList(
     config: FavoritesListConfig,
     appWidgetHost: AppWidgetHost,
+    containerId: String? = null,
     modifier: Modifier = Modifier,
     showHeadersAndWidgets: Boolean = true,
     isInsideScrollView: Boolean = false
 ) {
     val uiState = LocalHomeUiState.current
     val actions = LocalHomeActions.current
-    val favoritePackages = remember(uiState.favoriteAppPackages) {
-        uiState.favoriteAppPackages.toSet()
+
+    val favoritePackagesList = remember(containerId, uiState.containerFavorites, uiState.favoriteAppPackages) {
+        if (containerId != null && uiState.containerFavorites.containsKey(containerId)) {
+            uiState.containerFavorites[containerId] ?: uiState.favoriteAppPackages
+        } else {
+            uiState.favoriteAppPackages
+        }
+    }
+    val favoritePackages = remember(favoritePackagesList) {
+        favoritePackagesList.toSet()
+    }
+
+    val appMap = remember(uiState.apps) { uiState.apps.associateBy { it.packageName } }
+    val favoriteApps = remember(favoritePackagesList, appMap) {
+        favoritePackagesList.mapNotNull { pkg -> appMap[pkg] }
     }
 
     if (isInsideScrollView) {
         NonScrollableFavoritesList(
             uiState = uiState,
+            favoriteApps = favoriteApps,
             actions = actions,
             favoritePackages = favoritePackages,
+            containerId = containerId,
             modifier = modifier
         )
     } else {
         ScrollableFavoritesList(
-            ScrollableFavoritesParams(
+            params = ScrollableFavoritesParams(
                 config = config,
                 uiState = uiState,
                 actions = actions,
@@ -91,13 +98,19 @@ fun FavoritesList(
                 appWidgetHost = appWidgetHost,
                 showHeadersAndWidgets = showHeadersAndWidgets,
                 modifier = modifier
-            )
+            ),
+            favoriteApps = favoriteApps,
+            containerId = containerId
         )
     }
 }
 
 @Composable
-private fun ScrollableFavoritesList(params: ScrollableFavoritesParams) {
+private fun ScrollableFavoritesList(
+    params: ScrollableFavoritesParams,
+    favoriteApps: List<AppInfo>,
+    containerId: String? = null
+) {
     val config = params.config
     val uiState = params.uiState
     val actions = params.actions
@@ -140,16 +153,18 @@ private fun ScrollableFavoritesList(params: ScrollableFavoritesParams) {
         }
 
         favoriteAppsSection(
-            favoriteApps = uiState.favoriteApps,
+            favoriteApps = favoriteApps,
             actions = actions,
-            onEmptyClick = actions.onOpenFavoritePicker
+            containerId = containerId,
+            onEmptyClick = { actions.onOpenFavoritePicker(containerId) }
         )
 
         allAppsSection(
             showAllApps = uiState.showAllAppsOnHome,
             apps = uiState.apps,
             favoritePackages = favoritePackages,
-            actions = actions
+            actions = actions,
+            containerId = containerId
         )
     }
 }
@@ -157,27 +172,30 @@ private fun ScrollableFavoritesList(params: ScrollableFavoritesParams) {
 @Composable
 private fun NonScrollableFavoritesList(
     uiState: MainUiState,
+    favoriteApps: List<AppInfo>,
     actions: HomeScreenActions,
     favoritePackages: Set<String>,
+    containerId: String? = null,
     modifier: Modifier = Modifier
 ) {
     Column(
         modifier = modifier.fillMaxWidth()
     ) {
-        if (uiState.favoriteApps.isNotEmpty()) {
-            uiState.favoriteApps.forEach { app ->
+        if (favoriteApps.isNotEmpty()) {
+            favoriteApps.forEach { app ->
                 AppItemRow(
                     app = app,
                     onClick = { actions.onAppClick(app) },
                     isFavorite = true,
                     actions = AppItemRowActions(
                         onToggleFavorite = { actions.onToggleFavorite(it) },
+                        onEditFavoritesClick = { actions.onOpenFavoritePicker(containerId) },
                         onAppInfoClick = { actions.onAppInfoClick(it) }
                     )
                 )
             }
         } else {
-            FavoritesEmptyHint(onClick = actions.onOpenFavoritePicker)
+            FavoritesEmptyHint(onClick = { actions.onOpenFavoritePicker(containerId) })
         }
 
         if (uiState.showAllAppsOnHome) {
@@ -191,6 +209,7 @@ private fun NonScrollableFavoritesList(
                     isFavorite = isFav,
                     actions = AppItemRowActions(
                         onToggleFavorite = { actions.onToggleFavorite(it) },
+                        onEditFavoritesClick = { actions.onOpenFavoritePicker(containerId) },
                         onAppInfoClick = { actions.onAppInfoClick(it) }
                     )
                 )
@@ -202,6 +221,7 @@ private fun NonScrollableFavoritesList(
 private fun LazyListScope.favoriteAppsSection(
     favoriteApps: List<AppInfo>,
     actions: HomeScreenActions,
+    containerId: String? = null,
     onEmptyClick: () -> Unit
 ) {
     if (favoriteApps.isNotEmpty()) {
@@ -212,6 +232,7 @@ private fun LazyListScope.favoriteAppsSection(
                 isFavorite = true,
                 actions = AppItemRowActions(
                     onToggleFavorite = { actions.onToggleFavorite(it) },
+                    onEditFavoritesClick = { actions.onOpenFavoritePicker(containerId) },
                     onAppInfoClick = { actions.onAppInfoClick(it) }
                 )
             )
@@ -227,7 +248,8 @@ private fun LazyListScope.allAppsSection(
     showAllApps: Boolean,
     apps: List<AppInfo>,
     favoritePackages: Set<String>,
-    actions: HomeScreenActions
+    actions: HomeScreenActions,
+    containerId: String? = null
 ) {
     if (showAllApps) {
         item(key = "all_apps_divider") {
@@ -242,6 +264,7 @@ private fun LazyListScope.allAppsSection(
                 isFavorite = isFav,
                 actions = AppItemRowActions(
                     onToggleFavorite = { actions.onToggleFavorite(it) },
+                    onEditFavoritesClick = { actions.onOpenFavoritePicker(containerId) },
                     onAppInfoClick = { actions.onAppInfoClick(it) }
                 )
             )

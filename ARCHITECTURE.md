@@ -15,6 +15,7 @@ Cada nova funcionalidade ou tela do aplicativo deve ser dividida na seguinte est
 - O arquivo principal de UI da funcionalidade utilizando Jetpack Compose.
 - Deve ser *stateless* (sempre que possível), recebendo o estado do ViewModel e repassando eventos (callbacks) de volta para ele.
 - **Regra de Ouro da UI:** Todo componente visual utilizado na Screen (Botões, Cards, TextFields, etc.) deve ser importado da nossa pasta compartilhada `composable/` (nosso Design System interno). Não crie componentes genéricos isolados dentro da feature.
+- **Proibido `data class` em arquivos de View:** Arquivos de UI / Screen ou componentes visuais não devem conter declarações de `data class`. Todos os modelos de dados e estados devem ser definidos em arquivos de modelo dedicados.
 
 ### ViewModel (`*ViewModel.kt`)
 - Gerencia o estado da Screen (`StateFlow`/`LiveData`) e reage às ações do usuário.
@@ -40,7 +41,7 @@ Cada nova funcionalidade ou tela do aplicativo deve ser dividida na seguinte est
 
 O código deve ser pequeno, simples e direto. A leitura deve ser natural.
 
-- **Arquivos Pequenos:** Classes devem ser concisas. Se um arquivo estiver passando de 300-400 linhas, ele está fazendo coisas demais. Refatore e divida as responsabilidades.
+- **Tamanho Máximo de Arquivos (Limite Estrito):** Classes e arquivos devem ser extremamente concisos. **O tamanho máximo permitido para um arquivo é de 300-400 linhas.** Se um arquivo ultrapassar esse limite, ele está fazendo coisas demais e deve ser imediatamente refatorado e dividido.
 - **Funções Limpas:** Funções devem fazer apenas uma coisa. Evite aninhamentos complexos (`if` dentro de `if` dentro de `for`).
 - **Detekt:** O código sempre deve estar de acordo com o detekt. O build falhará se houver violações (`maxIssues: 0`). Não utilize `@Suppress` sem uma justificativa arquitetural documentada e revisada. **Atenção:** Os arquivos de configuração do Detekt (como `detekt.yml`) nunca devem ser editados ou alterados.
 - **Nomenclatura:** Variáveis e funções devem dizer exatamente o que fazem (ex: `fetchUserPreferences()` em vez de `getData()`).

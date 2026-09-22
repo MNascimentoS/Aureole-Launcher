@@ -14,6 +14,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -60,10 +61,56 @@ fun EditContainerDialog(
                     modifier = Modifier.padding(bottom = 12.dp)
                 )
 
+                if (item.type == LauncherItemType.APPS_LIST) {
+                    Button(
+                        onClick = {
+                            actions.onOpenFavoritePicker(item.id)
+                            onDismissRequest()
+                        },
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = MaterialTheme.colorScheme.primaryContainer,
+                            contentColor = MaterialTheme.colorScheme.onPrimaryContainer
+                        ),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(bottom = 12.dp)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Edit,
+                            contentDescription = "Editar Favoritos",
+                            modifier = Modifier.padding(end = 8.dp)
+                        )
+                        Text(text = "Editar Favoritos e Configurações")
+                    }
+                }
+
+                if (item.type == LauncherItemType.SHORTCUTS_SIDE_PANEL) {
+                    Button(
+                        onClick = {
+                            actions.onOpenEditSidePanelDialog(item.id)
+                            onDismissRequest()
+                        },
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = MaterialTheme.colorScheme.primaryContainer,
+                            contentColor = MaterialTheme.colorScheme.onPrimaryContainer
+                        ),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(bottom = 12.dp)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Edit,
+                            contentDescription = "Editar Painel Lateral",
+                            modifier = Modifier.padding(end = 8.dp)
+                        )
+                        Text(text = "Editar Configurações do Painel Lateral")
+                    }
+                }
+
                 EditDialogWidgetListSection(item = item, uiState = uiState, actions = actions)
 
                 if (item.type == LauncherItemType.SCROLL_VIEW) {
-                    EditDialogScrollViewSection(item = item, actions = actions)
+                    EditDialogScrollViewSection(item = item, actions = actions, onDismissRequest = onDismissRequest)
                 }
 
                 EditDialogDeleteButtonRow(
@@ -129,7 +176,8 @@ private fun EditDialogWidgetListSection(
 @Composable
 private fun EditDialogScrollViewSection(
     item: LauncherItemState,
-    actions: HomeScreenActions
+    actions: HomeScreenActions,
+    onDismissRequest: () -> Unit
 ) {
     Text(
         text = "Orientação do Scroll:",
@@ -246,6 +294,21 @@ private fun EditDialogScrollViewSection(
                         }
                     ) {
                         Text("+", style = MaterialTheme.typography.titleMedium)
+                    }
+
+                    if (child.type == LauncherItemType.APPS_LIST) {
+                        IconButton(
+                            onClick = {
+                                actions.onOpenFavoritePicker(child.id)
+                                onDismissRequest()
+                            }
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Edit,
+                                contentDescription = "Editar Favoritos",
+                                tint = MaterialTheme.colorScheme.primary
+                            )
+                        }
                     }
 
                     IconButton(onClick = { actions.onRemoveChildFromScrollView(item.id, child.id) }) {

@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.DropdownMenu
@@ -202,6 +203,23 @@ private fun AppItemRowDropdownMenu(
                 },
                 onClick = {
                     actions.onToggleFavorite.invoke(app.packageName)
+                    onDismiss()
+                }
+            )
+        }
+
+        if (actions.onEditFavoritesClick != null) {
+            DropdownMenuItem(
+                text = { Text("Editar Favoritos") },
+                leadingIcon = {
+                    Icon(
+                        imageVector = Icons.Default.Edit,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.onSurface
+                    )
+                },
+                onClick = {
+                    actions.onEditFavoritesClick.invoke()
                     onDismiss()
                 }
             )

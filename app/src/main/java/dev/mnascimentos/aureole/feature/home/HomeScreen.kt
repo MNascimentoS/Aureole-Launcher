@@ -1,62 +1,18 @@
 package dev.mnascimentos.aureole.feature.home
 
 import android.appwidget.AppWidgetHost
-import android.appwidget.AppWidgetHostView
-import android.appwidget.AppWidgetManager
-import android.content.ComponentName
 import android.content.res.Configuration
-import android.graphics.drawable.ColorDrawable
-import android.os.Bundle
-import android.widget.TextView
 import android.widget.Toast
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.slideInHorizontally
-import androidx.compose.animation.slideInVertically
-import androidx.compose.animation.slideOutHorizontally
-import androidx.compose.animation.slideOutVertically
-import androidx.compose.foundation.ScrollState
-import androidx.compose.foundation.background
-import androidx.compose.foundation.gestures.detectDragGestures
-import androidx.compose.foundation.gestures.detectTapGestures
-import androidx.compose.foundation.horizontalScroll
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ExperimentalLayoutApi
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.imePadding
-import androidx.compose.foundation.layout.isImeVisible
 import androidx.compose.foundation.layout.navigationBarsPadding
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.systemGestureExclusion
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
@@ -66,78 +22,42 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
-import androidx.compose.ui.input.nestedscroll.NestedScrollSource
-import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.platform.rememberNestedScrollInteropConnection
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.viewinterop.AndroidView
-import androidx.compose.ui.zIndex
 import dev.chrisbanes.haze.HazeState
 import dev.chrisbanes.haze.rememberHazeState
-import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.data.model.LauncherItemState
 import dev.mnascimentos.aureole.core.data.model.LauncherItemType
-import dev.mnascimentos.aureole.core.data.model.ScrollOrientation
-import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
-import dev.mnascimentos.aureole.core.designsystem.theme.AureolePreview
-import dev.mnascimentos.aureole.core.designsystem.theme.fadingEdges
-import dev.mnascimentos.aureole.feature.home.components.AppsListDrawer
-import dev.mnascimentos.aureole.feature.home.components.ClockHeader
-import dev.mnascimentos.aureole.feature.home.components.CurvedAlphabetScrubber
-import dev.mnascimentos.aureole.feature.home.components.FavoritesList
+import dev.mnascimentos.aureole.core.data.model.SidePanelModel
+import dev.mnascimentos.aureole.feature.home.components.EditSidePanelDialog
 import dev.mnascimentos.aureole.feature.home.components.FavoritesListConfig
-import dev.mnascimentos.aureole.feature.home.components.SidePanel
+import dev.mnascimentos.aureole.feature.home.components.GridItemContent
+import dev.mnascimentos.aureole.feature.home.components.HomeOverlaysContent
 import dev.mnascimentos.aureole.feature.home.components.WallpaperBackground
-import dev.mnascimentos.aureole.feature.home.components.model.ScrubberCallbacks
-import dev.mnascimentos.aureole.feature.home.components.model.ScrubberOptions
+import dev.mnascimentos.aureole.feature.home.components.homeDragGestures
 import dev.mnascimentos.aureole.feature.home.components.model.SidePanelConfig
 import dev.mnascimentos.aureole.feature.home.folder.HomeScreenFolderOverlays
 import dev.mnascimentos.aureole.feature.home.grid.AddContainerDialog
 import dev.mnascimentos.aureole.feature.home.grid.DynamicGridContainer
 import dev.mnascimentos.aureole.feature.home.grid.EditContainerDialog
-import dev.mnascimentos.aureole.feature.home.grid.GridEditConfig
 import dev.mnascimentos.aureole.feature.home.grid.GridEngineUtils
 import dev.mnascimentos.aureole.feature.home.grid.GridLimits
-import dev.mnascimentos.aureole.feature.home.model.FolderViewIntent
+import dev.mnascimentos.aureole.feature.home.grid.model.GridEditConfig
+import dev.mnascimentos.aureole.feature.home.model.GridItemContentParams
 import dev.mnascimentos.aureole.feature.home.model.HomeDragParams
 import dev.mnascimentos.aureole.feature.home.model.HomeOverlaysConfig
 import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
 import dev.mnascimentos.aureole.feature.home.model.HomeScreenBodyConfig
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
-import dev.mnascimentos.aureole.feature.home.model.ScrubberOverlayConfig
 import dev.mnascimentos.aureole.feature.home.widget.HomeScreenWidgetOverlays
-import dev.mnascimentos.aureole.feature.home.widget.StackedWidgetSection
 import dev.mnascimentos.aureole.feature.home.widget.model.StackedWidgetConfig
-import kotlinx.coroutines.launch
-import kotlin.math.abs
-
-private const val DRAG_THRESHOLD_PX = 15
-private const val EDGE_EXCLUSION_WIDTH_DP = 60
-private const val TOP_PADDING_DP = 64
-private const val PREVIEW_APPWIDGET_HOST_ID = 1024
 
 val LocalHomeUiState = staticCompositionLocalOf<MainUiState> { error("No MainUiState provided") }
 val LocalHomeActions =
     staticCompositionLocalOf<HomeScreenActions> { error("No HomeScreenActions provided") }
-
-private const val DEFAULT_WIDGET_MIN_WIDTH = 100
-private const val DEFAULT_WIDGET_MAX_HEIGHT = 360
-private const val SCROLL_CHILD_MIN_HEIGHT = 70
-private const val SCROLL_CHILD_MIN_WIDTH = 100
-private const val SCROLL_CHILD_ROW_HEIGHT = 60
-private const val SCROLL_CHILD_COL_WIDTH = 70
-private const val REMOVE_BTN_SIZE = 28
 
 @Composable
 fun HomeScreen(
@@ -236,126 +156,30 @@ private fun BoxScope.HomeScreenBody(
             hazeState = config.hazeState,
         )
 
-        HomeOverlaysContent(
-            HomeOverlaysConfig(
-                uiState = config.uiState,
-                actions = config.actions,
-                listState = config.listState,
-                hazeState = config.hazeState,
-                externalTouchY = config.externalTouchY,
-                coroutineScope = config.coroutineScope,
-                screenHeightPx = config.screenHeightPx,
-                onExternalTouchYReset = config.onExternalTouchYReset
-            )
-        )
-    }
-}
-
-private fun Modifier.homeDragGestures(
-    params: HomeDragParams
-): Modifier = pointerInput(params.isLeftHandedMode, params.screenHeightPx, params.screenWidthPx) {
-    var dragStartedOnEdge = false
-    detectDragGestures(
-        onDragStart = { offset ->
-            val edgeThreshold = with(params.density) { EDGE_EXCLUSION_WIDTH_DP.dp.toPx() }
-            dragStartedOnEdge = if (params.isLeftHandedMode) {
-                offset.x < edgeThreshold
-            } else {
-                offset.x > params.screenWidthPx - edgeThreshold
-            }
-
-            if (dragStartedOnEdge) {
-                val topPaddingPx = with(params.density) { TOP_PADDING_DP.dp.toPx() }
-                params.onExternalTouchYChange(offset.y - topPaddingPx)
-                if (!params.isAllAppsDrawerOpen) {
-                    params.onAllAppsDrawerOpen()
-                }
-            }
-        },
-        onDragEnd = {
-            params.onExternalTouchYChange(-1f)
-            dragStartedOnEdge = false
-        },
-        onDragCancel = {
-            params.onExternalTouchYChange(-1f)
-            dragStartedOnEdge = false
-        },
-        onDrag = { change, dragAmount ->
-            if (dragStartedOnEdge) {
-                change.consume()
-                val topPaddingPx = with(params.density) { TOP_PADDING_DP.dp.toPx() }
-                params.onExternalTouchYChange(change.position.y - topPaddingPx)
-                return@detectDragGestures
-            }
-
-            if (params.isAllAppsDrawerOpen || change.isConsumed) return@detectDragGestures
-
-            val absX = abs(dragAmount.x)
-            val absY = abs(dragAmount.y)
-            val isVertical = absY > DRAG_THRESHOLD_PX && absY > absX
-
-            if (isVertical) {
-                change.consume()
-                if (dragAmount.y > 0) {
-                    params.onExpandNotificationShade()
-                } else {
-                    params.onAllAppsDrawerOpen()
-                }
-            }
-        }
-    )
-}
-
-@OptIn(ExperimentalLayoutApi::class)
-@Composable
-private fun BoxScope.HomeOverlaysContent(
-    config: HomeOverlaysConfig
-) {
-    AppsDrawerOverlay(
-        config = AppsDrawerOverlayConfig(
-            isAllAppsDrawerOpen = config.uiState.isAllAppsDrawerOpen,
-            isOpenedFromBottom = config.uiState.isAllAppsOpenedFromBottom,
-            isLeftHandedMode = config.uiState.isLeftHandedMode,
+        val overlaysConfig = HomeOverlaysConfig(
+            uiState = config.uiState,
+            actions = config.actions,
             listState = config.listState,
             hazeState = config.hazeState,
-            onClose = config.actions.onAllAppsDrawerClose,
-        ),
-    )
-
-    if (!config.uiState.isAlphabetScrubberDisabled && !WindowInsets.isImeVisible) {
-        val scrubberAlign = if (config.uiState.isLeftHandedMode) {
-            Alignment.CenterStart
-        } else {
-            Alignment.CenterEnd
-        }
-
-        ScrubberOverlay(
-            config = ScrubberOverlayConfig(
-                uiState = config.uiState,
-                externalTouchY = config.externalTouchY,
-                listState = config.listState,
-                coroutineScope = config.coroutineScope,
-                actions = config.actions,
-                onExternalTouchYReset = config.onExternalTouchYReset
-            ),
-            modifier = Modifier
-                .align(scrubberAlign)
-                .statusBarsPadding()
-                .navigationBarsPadding()
-                .imePadding()
+            externalTouchY = config.externalTouchY,
+            coroutineScope = config.coroutineScope,
+            screenHeightPx = config.screenHeightPx,
+            onExternalTouchYReset = config.onExternalTouchYReset
         )
+
+        HomeOverlaysContent(overlaysConfig)
+
+        HomeScreenFolderOverlays(
+            screenHeightPx = config.screenHeightPx,
+            hazeState = config.hazeState,
+        )
+
+        HomeScreenWidgetOverlays(
+            hazeState = config.hazeState,
+        )
+
+        HomeOverlaysDialogsAndErrors(config = overlaysConfig)
     }
-
-    HomeScreenFolderOverlays(
-        screenHeightPx = config.screenHeightPx,
-        hazeState = config.hazeState,
-    )
-
-    HomeScreenWidgetOverlays(
-        hazeState = config.hazeState,
-    )
-
-    HomeOverlaysDialogsAndErrors(config = config)
 }
 
 @Composable
@@ -384,6 +208,18 @@ private fun HomeOverlaysDialogsAndErrors(config: HomeOverlaysConfig) {
         )
     }
 
+    if (config.uiState.isEditSidePanelDialogVisible && config.uiState.editingSidePanelId != null) {
+        val editingPanel = config.uiState.sidePanels[config.uiState.editingSidePanelId]
+            ?: SidePanelModel(id = config.uiState.editingSidePanelId)
+        EditSidePanelDialog(
+            panel = editingPanel,
+            allApps = config.uiState.apps,
+            onDismiss = config.actions.onCloseEditSidePanelDialog,
+            onSave = config.actions.onSaveSidePanelModel,
+            onDeletePanel = config.actions.onDeleteSidePanelInstance
+        )
+    }
+
     val context = LocalContext.current
     config.uiState.gridErrorMessage?.let { message ->
         LaunchedEffect(message) {
@@ -391,93 +227,6 @@ private fun HomeOverlaysDialogsAndErrors(config: HomeOverlaysConfig) {
             config.actions.onDismissGridError()
         }
     }
-}
-
-private data class AppsDrawerOverlayConfig(
-    val isAllAppsDrawerOpen: Boolean,
-    val isOpenedFromBottom: Boolean,
-    val isLeftHandedMode: Boolean,
-    val listState: LazyListState,
-    val hazeState: HazeState,
-    val onClose: () -> Unit,
-)
-
-@Composable
-private fun AppsDrawerOverlay(
-    config: AppsDrawerOverlayConfig,
-) {
-    val enterTransition = if (config.isOpenedFromBottom) {
-        fadeIn() + slideInVertically { it }
-    } else {
-        fadeIn() + slideInHorizontally { if (config.isLeftHandedMode) -it / 2 else it / 2 }
-    }
-
-    val exitTransition = if (config.isOpenedFromBottom) {
-        fadeOut() + slideOutVertically { it }
-    } else {
-        fadeOut() + slideOutHorizontally { if (config.isLeftHandedMode) -it / 2 else it / 2 }
-    }
-
-    AnimatedVisibility(
-        visible = config.isAllAppsDrawerOpen,
-        enter = enterTransition,
-        exit = exitTransition,
-        modifier = Modifier.fillMaxSize(),
-    ) {
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(Color.Transparent)
-                .pointerInput(Unit) {
-                    detectTapGestures(onTap = { config.onClose() })
-                },
-        ) {
-            val drawerAlign =
-                if (config.isLeftHandedMode) Alignment.CenterStart else Alignment.CenterEnd
-
-            AppsListDrawer(
-                listState = config.listState,
-                hazeState = config.hazeState,
-                modifier = Modifier.align(drawerAlign),
-            )
-        }
-    }
-}
-
-@Composable
-private fun ScrubberOverlay(
-    config: ScrubberOverlayConfig,
-    modifier: Modifier = Modifier
-) {
-    CurvedAlphabetScrubber(
-        alphabet = config.uiState.alphabet,
-        options = ScrubberOptions(
-            isAlwaysVisible = config.uiState.isAllAppsDrawerOpen,
-            isGestureEnabled = config.uiState.isAllAppsDrawerOpen,
-            externalTouchY = config.externalTouchY
-        ),
-        callbacks = ScrubberCallbacks(
-            onLetterSelected = { letter ->
-                if (!config.uiState.isAllAppsDrawerOpen) {
-                    config.actions.onAllAppsDrawerOpen()
-                }
-                config.uiState.letterIndexMap[letter]?.let { targetIndex ->
-                    config.coroutineScope.launch {
-                        config.listState.scrollToItem(targetIndex)
-                    }
-                }
-            },
-            onInteractionStarted = {
-                if (!config.uiState.isAllAppsDrawerOpen) {
-                    config.actions.onAllAppsDrawerOpen()
-                }
-            },
-            onInteractionEnded = {
-                config.onExternalTouchYReset()
-            }
-        ),
-        modifier = modifier
-    )
 }
 
 private fun getGridLimits(orientation: Int): GridLimits {
@@ -502,6 +251,14 @@ private fun GridOrientationEffect(orientation: Int, actions: HomeScreenActions) 
     }
 }
 
+private fun getGridItemsForOrientation(isLandscape: Boolean, uiState: MainUiState): List<LauncherItemState> {
+    return if (isLandscape) {
+        uiState.landscapeGridItems.ifEmpty { uiState.gridItems }
+    } else {
+        uiState.portraitGridItems.ifEmpty { uiState.gridItems }
+    }
+}
+
 @Composable
 private fun MainHomeLayout(
     appWidgetHost: AppWidgetHost,
@@ -517,17 +274,6 @@ private fun MainHomeLayout(
     val currentHeightDp = with(density) { currentHeightPx.toDp() }
 
     GridOrientationEffect(configuration.orientation, actions)
-
-    val sidePanelConfig = SidePanelConfig(
-        folders = uiState.folders,
-        openedFolderId = uiState.openedFolderId,
-        position = uiState.sidePanelPosition,
-        showFolderLabels = uiState.showFolderLabels,
-        showAddFolderButton = uiState.showSidePanelAddFolderButton,
-        isBackgroundEnabled = uiState.isSidePanelBackgroundEnabled,
-        isExpandCell = uiState.isSidePanelExpandCell,
-        hazeState = hazeState
-    )
 
     val favConfig = FavoritesListConfig(
         currentHeightDp = currentHeightDp,
@@ -545,22 +291,8 @@ private fun MainHomeLayout(
     )
 
     val isLandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
-
-    val currentLimits = if (isLandscape) {
-        GridLimits(GridEngineUtils.LANDSCAPE_MAX_COLS, GridEngineUtils.LANDSCAPE_MAX_ROWS)
-    } else {
-        GridLimits(GridEngineUtils.PORTRAIT_MAX_COLS, GridEngineUtils.PORTRAIT_MAX_ROWS)
-    }
-
-    val currentItems = if (isLandscape) {
-        uiState.landscapeGridItems.ifEmpty {
-            uiState.gridItems
-        }
-    } else {
-        uiState.portraitGridItems.ifEmpty {
-            uiState.gridItems
-        }
-    }
+    val currentLimits = getGridLimits(configuration.orientation)
+    val currentItems = getGridItemsForOrientation(isLandscape, uiState)
 
     DynamicGridContainer(
         items = currentItems,
@@ -571,515 +303,44 @@ private fun MainHomeLayout(
             .statusBarsPadding()
             .navigationBarsPadding()
     ) { item ->
+        val panelModel = uiState.sidePanels[item.id]
+        val currentSidePanelConfig = if (item.safeType == LauncherItemType.SHORTCUTS_SIDE_PANEL && panelModel != null) {
+            SidePanelConfig(
+                panelId = panelModel.id,
+                title = panelModel.title,
+                folders = panelModel.folders.ifEmpty { uiState.folders },
+                appPackageNames = panelModel.appPackageNames,
+                openedFolderId = uiState.openedFolderId,
+                position = panelModel.position,
+                showFolderLabels = panelModel.showFolderLabels,
+                showAddFolderButton = panelModel.showAddFolderButton,
+                isBackgroundEnabled = panelModel.isBackgroundEnabled,
+                isExpandCell = panelModel.isExpandCell,
+                isGridFolderEnabled = panelModel.isGridFolderEnabled,
+                hazeState = hazeState
+            )
+        } else {
+            SidePanelConfig(
+                panelId = item.id,
+                folders = uiState.folders,
+                openedFolderId = uiState.openedFolderId,
+                position = uiState.sidePanelPosition,
+                showFolderLabels = uiState.showFolderLabels,
+                showAddFolderButton = uiState.showSidePanelAddFolderButton,
+                isBackgroundEnabled = uiState.isSidePanelBackgroundEnabled,
+                isExpandCell = uiState.isSidePanelExpandCell,
+                hazeState = hazeState
+            )
+        }
+
         GridItemContent(
             GridItemContentParams(
                 item = item,
                 favConfig = favConfig,
                 appWidgetHost = appWidgetHost,
                 stackedWidgetConfig = stackedWidgetConfig,
-                sidePanelConfig = sidePanelConfig
+                sidePanelConfig = currentSidePanelConfig
             )
         )
-    }
-}
-
-data class GridItemContentParams(
-    val item: LauncherItemState,
-    val favConfig: FavoritesListConfig,
-    val appWidgetHost: AppWidgetHost,
-    val stackedWidgetConfig: StackedWidgetConfig,
-    val sidePanelConfig: SidePanelConfig,
-    val isInScrollView: Boolean = false
-)
-
-@Composable
-private fun GridClockContent(sidePanelConfig: SidePanelConfig, uiState: MainUiState) {
-    Box(modifier = Modifier.fillMaxSize()) {
-        ClockHeader(
-            hazeState = sidePanelConfig.hazeState,
-            isHazeEnabled = uiState.isHazeEnabled,
-            hazeOpacity = uiState.hazeOpacity,
-            isBackgroundEnabled = uiState.isClockBackgroundEnabled
-        )
-    }
-}
-
-@Composable
-private fun GridAppsListContent(params: GridItemContentParams) {
-    val isInScrollView = params.isInScrollView
-    Box(modifier = if (isInScrollView) Modifier.fillMaxWidth() else Modifier.fillMaxSize()) {
-        FavoritesList(
-            config = if (isInScrollView) params.favConfig.copy(hazeState = null) else params.favConfig,
-            appWidgetHost = params.appWidgetHost,
-            showHeadersAndWidgets = false,
-            isInsideScrollView = isInScrollView,
-            modifier = if (isInScrollView) Modifier.fillMaxWidth() else Modifier.fillMaxSize()
-        )
-    }
-}
-
-@Composable
-private fun GridSidePanelContent(
-    sidePanelConfig: SidePanelConfig,
-    uiState: MainUiState,
-    actions: HomeScreenActions,
-    isInScrollView: Boolean = false
-) {
-    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-        SidePanel(
-            config = if (isInScrollView) {
-                sidePanelConfig.copy(hazeState = null)
-            } else {
-                sidePanelConfig
-            },
-            onFolderClick = { folder, topYPx ->
-                if (uiState.openedFolderId == folder.id) {
-                    actions.onFolderIntent(FolderViewIntent.CloseFolder)
-                } else {
-                    actions.onFolderIntent(FolderViewIntent.OpenFolder(folder.id, topYPx))
-                }
-            }
-        )
-    }
-}
-
-@Composable
-private fun GridWidgetListContent(params: GridItemContentParams) {
-    Box(modifier = Modifier.fillMaxSize()) {
-        StackedWidgetSection(
-            config = if (params.isInScrollView) {
-                params.stackedWidgetConfig.copy(
-                    hazeState = null
-                )
-            } else {
-                params.stackedWidgetConfig
-            },
-            appWidgetHost = params.appWidgetHost
-        )
-    }
-}
-
-@Composable
-private fun GridItemContent(params: GridItemContentParams) {
-    val item = params.item
-    val uiState = LocalHomeUiState.current
-    val actions = LocalHomeActions.current
-    when (item.safeType) {
-        LauncherItemType.CLOCK -> GridClockContent(params.sidePanelConfig, uiState)
-        LauncherItemType.APPS_LIST -> GridAppsListContent(params)
-        LauncherItemType.SHORTCUTS_SIDE_PANEL -> GridSidePanelContent(
-            params.sidePanelConfig,
-            uiState,
-            actions,
-            params.isInScrollView
-        )
-
-        LauncherItemType.SINGLE_APP_WIDGET -> SingleAppWidgetContent(
-            item = item,
-            appWidgetHost = params.appWidgetHost
-        )
-
-        LauncherItemType.WIDGET_LIST -> GridWidgetListContent(params)
-        LauncherItemType.SCROLL_VIEW -> ScrollViewContainerContent(
-            item = item,
-            favConfig = params.favConfig,
-            appWidgetHost = params.appWidgetHost,
-            stackedWidgetConfig = params.stackedWidgetConfig,
-            sidePanelConfig = params.sidePanelConfig
-        )
-    }
-}
-
-@Composable
-private fun SingleAppWidgetContent(
-    item: LauncherItemState,
-    appWidgetHost: AppWidgetHost
-) {
-    Box(modifier = Modifier.fillMaxSize()) {
-        if (item.widgetId != null && item.widgetId != -1) {
-            AndroidView(
-                factory = { context ->
-                    val appWidgetManager = AppWidgetManager.getInstance(context)
-                    val appWidgetInfo = appWidgetManager.getAppWidgetInfo(item.widgetId)
-                    if (appWidgetInfo != null) {
-                        val widthDp =
-                            (context.resources.configuration.screenWidthDp)
-                                .coerceAtLeast(DEFAULT_WIDGET_MIN_WIDTH)
-                        val options = Bundle().apply {
-                            putInt(
-                                AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH,
-                                appWidgetInfo.minWidth
-                            )
-                            putInt(
-                                AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT,
-                                appWidgetInfo.minHeight
-                            )
-                            putInt(AppWidgetManager.OPTION_APPWIDGET_MAX_WIDTH, widthDp)
-                            putInt(AppWidgetManager.OPTION_APPWIDGET_MAX_HEIGHT, DEFAULT_WIDGET_MAX_HEIGHT)
-                        }
-                        appWidgetManager.updateAppWidgetOptions(item.widgetId, options)
-                        appWidgetHost.createView(context, item.widgetId, appWidgetInfo)
-                    } else {
-                        TextView(context).apply { text = "Widget" }
-                    }
-                },
-                update = { view ->
-                    val widthDp = view.context.resources.configuration.screenWidthDp
-                    if (view is AppWidgetHostView && view.tag != widthDp) {
-                        view.tag = widthDp
-                        val appWidgetManager = AppWidgetManager.getInstance(view.context)
-                        val appWidgetInfo = appWidgetManager.getAppWidgetInfo(item.widgetId)
-                        if (appWidgetInfo != null) {
-                            val options = Bundle().apply {
-                                putInt(
-                                    AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH,
-                                    appWidgetInfo.minWidth
-                                )
-                                putInt(
-                                    AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT,
-                                    appWidgetInfo.minHeight
-                                )
-                                putInt(
-                                    AppWidgetManager.OPTION_APPWIDGET_MAX_WIDTH,
-                                    widthDp.coerceAtLeast(DEFAULT_WIDGET_MIN_WIDTH)
-                                )
-                                putInt(AppWidgetManager.OPTION_APPWIDGET_MAX_HEIGHT, DEFAULT_WIDGET_MAX_HEIGHT)
-                            }
-                            appWidgetManager
-                                .updateAppWidgetOptions(item.widgetId, options)
-                        }
-                    }
-                },
-                modifier = Modifier
-                    .fillMaxSize()
-                    .nestedScroll(rememberNestedScrollInteropConnection())
-            )
-        } else {
-            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                Text(
-                    text = "Widget não configurado",
-                    color = MaterialTheme.colorScheme.onSurface
-                )
-            }
-        }
-    }
-}
-
-@AureolePreview
-@Composable
-fun HomeScreenPreview() {
-    val context = LocalContext.current
-    val mockApp = AppInfo(
-        label = "Camera",
-        packageName = "com.example.camera",
-        componentName = ComponentName("com.example.camera", "MainActivity"),
-        icon = ColorDrawable(0xFF1B65C0.toInt())
-    )
-    val mockUiState = MainUiState(
-        apps = listOf(mockApp),
-        favoriteApps = listOf(mockApp),
-        alphabet = listOf('C'),
-        isLoading = false
-    )
-    val mockActions = HomeScreenActions(
-        onWidgetRowHeightChanged = {},
-        onAddWidgetClick = {},
-        onRemoveWidgetClick = {},
-        onAppClick = {},
-        onExpandNotificationShade = {},
-        onFolderIntent = {},
-        onSetAddAppToFolderDialogVisible = {},
-        onSetRenameFolderDialogVisible = {},
-        onSearchQueryChanged = {},
-        onSettingsClick = {},
-        onAllAppsDrawerClose = {},
-        onAllAppsDrawerOpen = {},
-        onEnterGridEditMode = {},
-        onCancelGridEditMode = {},
-        onSaveGridEditMode = {}
-    )
-
-    AureoleLauncherTheme {
-        CompositionLocalProvider(
-            LocalHomeUiState provides mockUiState,
-            LocalHomeActions provides mockActions
-        ) {
-            HomeScreen(
-                appWidgetHost = remember { AppWidgetHost(context, PREVIEW_APPWIDGET_HOST_ID) }
-            )
-        }
-    }
-}
-
-@Composable
-private fun ScrollViewContainerContent(
-    item: LauncherItemState,
-    favConfig: FavoritesListConfig,
-    appWidgetHost: AppWidgetHost,
-    stackedWidgetConfig: StackedWidgetConfig,
-    sidePanelConfig: SidePanelConfig
-) {
-    val isVertical = item.safeScrollOrientation == ScrollOrientation.VERTICAL
-    val scrollState = rememberScrollState()
-    val nestedScrollInterop = rememberNestedScrollInteropConnection()
-    val parentNestedScrollConnection = rememberScrollViewNestedConnection(scrollState, isVertical)
-
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .fadingEdges(scrollState, isHorizontal = !isVertical)
-            .nestedScroll(parentNestedScrollConnection)
-            .nestedScroll(nestedScrollInterop)
-    ) {
-        if (isVertical) {
-            VerticalScrollViewContent(
-                VerticalScrollViewContentParams(
-                    item = item,
-                    favConfig = favConfig,
-                    appWidgetHost = appWidgetHost,
-                    stackedWidgetConfig = stackedWidgetConfig,
-                    sidePanelConfig = sidePanelConfig,
-                    scrollState = scrollState
-                )
-            )
-        } else {
-            HorizontalScrollViewContent(
-                ScrollViewContentParams(
-                    item = item,
-                    favConfig = favConfig,
-                    appWidgetHost = appWidgetHost,
-                    stackedWidgetConfig = stackedWidgetConfig,
-                    sidePanelConfig = sidePanelConfig
-                )
-            )
-        }
-    }
-}
-
-@Composable
-private fun rememberScrollViewNestedConnection(
-    scrollState: ScrollState,
-    isVertical: Boolean
-): NestedScrollConnection {
-    return remember(scrollState, isVertical) {
-        object : NestedScrollConnection {
-            override fun onPostScroll(
-                consumed: Offset,
-                available: Offset,
-                source: NestedScrollSource
-            ): Offset {
-                val delta = if (isVertical) {
-                    available.y
-                } else {
-                    available.x
-                }
-                if (delta != 0f && (scrollState.canScrollForward || scrollState.canScrollBackward)) {
-                    val consumedByParent = scrollState.dispatchRawDelta(-delta)
-                    return if (isVertical) {
-                        Offset(0f, -consumedByParent)
-                    } else {
-                        Offset(-consumedByParent, 0f)
-                    }
-                }
-                return Offset.Zero
-            }
-        }
-    }
-}
-
-data class VerticalScrollViewContentParams(
-    val item: LauncherItemState,
-    val favConfig: FavoritesListConfig,
-    val appWidgetHost: AppWidgetHost,
-    val stackedWidgetConfig: StackedWidgetConfig,
-    val sidePanelConfig: SidePanelConfig,
-    val scrollState: ScrollState
-)
-
-data class ScrollViewContentParams(
-    val item: LauncherItemState,
-    val favConfig: FavoritesListConfig,
-    val appWidgetHost: AppWidgetHost,
-    val stackedWidgetConfig: StackedWidgetConfig,
-    val sidePanelConfig: SidePanelConfig,
-    val scrollState: ScrollState? = null
-)
-
-data class ScrollViewChildItemParams(
-    val parentId: String,
-    val childItem: LauncherItemState,
-    val favConfig: FavoritesListConfig,
-    val appWidgetHost: AppWidgetHost,
-    val stackedWidgetConfig: StackedWidgetConfig,
-    val sidePanelConfig: SidePanelConfig,
-    val isVertical: Boolean
-)
-
-@Composable
-private fun VerticalScrollViewContent(params: VerticalScrollViewContentParams) {
-    val uiState = LocalHomeUiState.current
-    val actions = LocalHomeActions.current
-    val item = params.item
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .verticalScroll(params.scrollState)
-            .padding(horizontal = 4.dp, vertical = 4.dp),
-        verticalArrangement = Arrangement.spacedBy(4.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        item.safeChildren.forEach { childItem ->
-            ScrollViewChildItem(
-                ScrollViewChildItemParams(
-                    parentId = item.id,
-                    childItem = childItem,
-                    favConfig = params.favConfig,
-                    appWidgetHost = params.appWidgetHost,
-                    stackedWidgetConfig = params.stackedWidgetConfig,
-                    sidePanelConfig = params.sidePanelConfig,
-                    isVertical = true
-                )
-            )
-        }
-        if (uiState.isGridEditMode) {
-            ScrollViewAddComponentButton(parentId = item.id, actions = actions)
-        }
-    }
-}
-
-@Composable
-private fun HorizontalScrollViewContent(params: ScrollViewContentParams) {
-    val uiState = LocalHomeUiState.current
-    val actions = LocalHomeActions.current
-    val item = params.item
-    Row(
-        modifier = Modifier
-            .fillMaxSize()
-            .horizontalScroll(rememberScrollState())
-            .padding(8.dp),
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        item.safeChildren.forEach { childItem ->
-            ScrollViewChildItem(
-                ScrollViewChildItemParams(
-                    parentId = item.id,
-                    childItem = childItem,
-                    favConfig = params.favConfig,
-                    appWidgetHost = params.appWidgetHost,
-                    stackedWidgetConfig = params.stackedWidgetConfig,
-                    sidePanelConfig = params.sidePanelConfig,
-                    isVertical = false
-                )
-            )
-        }
-        if (uiState.isGridEditMode) {
-            ScrollViewAddComponentButton(parentId = item.id, actions = actions)
-        }
-    }
-}
-
-@Composable
-private fun ScrollViewChildItem(params: ScrollViewChildItemParams) {
-    val uiState = LocalHomeUiState.current
-    val actions = LocalHomeActions.current
-    val parentId = params.parentId
-    val childItem = params.childItem
-    val isVertical = params.isVertical
-    val isAppsList = childItem.safeType == LauncherItemType.APPS_LIST
-    val childModifier = when {
-        isAppsList && isVertical -> {
-            Modifier.fillMaxWidth().wrapContentHeight()
-        }
-        isVertical -> {
-            val childHeightDp = (childItem.rowSpan * SCROLL_CHILD_ROW_HEIGHT).dp
-                .coerceAtLeast(SCROLL_CHILD_MIN_HEIGHT.dp)
-            Modifier.fillMaxWidth().height(childHeightDp)
-        }
-        else -> {
-            val childWidthDp = (childItem.colSpan * SCROLL_CHILD_COL_WIDTH).dp
-                .coerceAtLeast(SCROLL_CHILD_MIN_WIDTH.dp)
-            Modifier.width(childWidthDp).fillMaxHeight()
-        }
-    }
-
-    Box(modifier = childModifier) {
-        GridItemContent(
-            GridItemContentParams(
-                item = childItem,
-                favConfig = params.favConfig,
-                appWidgetHost = params.appWidgetHost,
-                stackedWidgetConfig = params.stackedWidgetConfig,
-                sidePanelConfig = params.sidePanelConfig,
-                isInScrollView = true
-            )
-        )
-        if (uiState.isGridEditMode) {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .pointerInput("block_child_" + childItem.id) {
-                        detectTapGestures(onTap = {})
-                    }
-            )
-            Box(
-                modifier = Modifier
-                    .align(Alignment.TopEnd)
-                    .padding(4.dp)
-                    .size(REMOVE_BTN_SIZE.dp)
-                    .zIndex(100f)
-                    .background(MaterialTheme.colorScheme.error, CircleShape)
-                    .pointerInput("remove_btn_" + childItem.id) {
-                        detectTapGestures(
-                            onTap = {
-                                actions.onRemoveChildFromScrollView(parentId, childItem.id)
-                            }
-                        )
-                    },
-                contentAlignment = Alignment.Center
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Close,
-                    contentDescription = "Remover",
-                    tint = MaterialTheme.colorScheme.onError,
-                    modifier = Modifier.size(16.dp)
-                )
-            }
-        }
-    }
-}
-
-@Composable
-private fun ScrollViewAddComponentButton(parentId: String, actions: HomeScreenActions) {
-    Box(
-        modifier = Modifier
-            .padding(vertical = 12.dp)
-            .clip(RoundedCornerShape(20.dp))
-            .background(MaterialTheme.colorScheme.primaryContainer)
-            .pointerInput("add_btn_" + parentId) {
-                detectTapGestures(
-                    onTap = {
-                        actions.onOpenAddContainerForParent(parentId)
-                    }
-                )
-            }
-            .padding(horizontal = 16.dp, vertical = 8.dp),
-        contentAlignment = Alignment.Center
-    ) {
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Icon(
-                imageVector = Icons.Default.Add,
-                contentDescription = "Adicionar ao Scroll View",
-                tint = MaterialTheme.colorScheme.onPrimaryContainer,
-                modifier = Modifier.size(18.dp)
-            )
-            Spacer(modifier = Modifier.width(6.dp))
-            Text(
-                text = "Componente",
-                style = MaterialTheme.typography.labelMedium,
-                color = MaterialTheme.colorScheme.onPrimaryContainer,
-                fontWeight = FontWeight.SemiBold
-            )
-        }
     }
 }

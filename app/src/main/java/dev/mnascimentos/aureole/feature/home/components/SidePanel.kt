@@ -1,11 +1,15 @@
 package dev.mnascimentos.aureole.feature.home.components
 
 import androidx.compose.animation.animateColorAsState
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
@@ -13,6 +17,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -41,6 +46,7 @@ import dev.chrisbanes.haze.HazeStyle
 import dev.chrisbanes.haze.HazeTint
 import dev.chrisbanes.haze.hazeEffect
 import dev.mnascimentos.aureole.core.data.model.AppFolder
+import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.theme.AureolePreview
 import dev.mnascimentos.aureole.feature.home.LocalHomeActions
@@ -136,6 +142,7 @@ fun SidePanel(
     }
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun SidePanelColumn(
     config: SidePanelConfig,
@@ -154,6 +161,10 @@ private fun SidePanelColumn(
             .then(if (config.isExpandCell) Modifier.fillMaxSize() else Modifier)
             .then(modifier)
             .background(backgroundColor)
+            .combinedClickable(
+                onClick = {},
+                onLongClick = { actions.onOpenEditSidePanelDialog(config.panelId) }
+            )
             .verticalScroll(rememberScrollState())
             .padding(8.dp)
     ) {
@@ -169,7 +180,14 @@ private fun SidePanelColumn(
                     folder = folder,
                     isOpened = folder.id == config.openedFolderId,
                     showFolderLabels = config.showFolderLabels,
-                    onFolderClick = onFolderClick
+                    isGridFolderEnabled = config.isGridFolderEnabled,
+                    onFolderClick = { f, y ->
+                        val updatedFolder = f.copy(
+                            panelId = config.panelId,
+                            displayAsGrid = config.isGridFolderEnabled || f.displayAsGrid
+                        )
+                        onFolderClick(updatedFolder, y)
+                    }
                 )
             }
             if (config.showAddFolderButton) {
@@ -209,6 +227,7 @@ private fun SidePanelFolderItem(
     folder: AppFolder,
     isOpened: Boolean,
     showFolderLabels: Boolean,
+    isGridFolderEnabled: Boolean,
     onFolderClick: (AppFolder, Float) -> Unit,
 ) {
     var itemYInWindow by remember { mutableFloatStateOf(0f) }
@@ -235,6 +254,7 @@ private fun SidePanelFolderItem(
     ) {
         SidePanelFolderButton(
             folder = folder,
+            isGridFolderEnabled = isGridFolderEnabled,
             containerColor = containerColor,
             textColor = textColor,
             onPositionedY = { y -> itemYInWindow = y },
@@ -250,11 +270,15 @@ private fun SidePanelFolderItem(
 @Composable
 private fun SidePanelFolderButton(
     folder: AppFolder,
+    isGridFolderEnabled: Boolean,
     containerColor: Color,
     textColor: Color,
     onPositionedY: (Float) -> Unit,
     onClick: () -> Unit
 ) {
+    val uiState = LocalHomeUiState.current
+    val showGridPreview = isGridFolderEnabled || folder.displayAsGrid
+
     Box(
         modifier = Modifier
             .size(48.dp)
@@ -266,21 +290,96 @@ private fun SidePanelFolderButton(
             .clickable(onClick = onClick),
         contentAlignment = Alignment.Center
     ) {
-        val iconVector = FolderIconRegistry.getIcon(folder.icon)
-        if (iconVector != null) {
-            Icon(
-                imageVector = iconVector,
-                contentDescription = folder.name,
-                tint = textColor,
-                modifier = Modifier.size(24.dp)
+        if (showGridPreview) {
+            FolderMiniGridPreview(
+                folder = folder,
+                allApps = uiState.apps
             )
         } else {
-            Text(
-                text = folder.name.take(1).uppercase(),
-                color = textColor,
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Bold
-            )
+            val iconVector = FolderIconRegistry.getIcon(folder.icon)
+            if (iconVector != null) {
+                Icon(
+                    imageVector = iconVector,
+                    contentDescription = folder.name,
+                    tint = textColor,
+                    modifier = Modifier.size(24.dp)
+                )
+            } else {
+                Text(
+                    text = folder.name.take(1).uppercase(),
+                    color = textColor,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun FolderMiniGridPreview(
+    folder: AppFolder,
+    allApps: List<AppInfo>,
+    modifier: Modifier = Modifier
+) {
+    val folderApps = remember(folder.appPackageNames, allApps) {
+        folder.appPackageNames.take(9).mapNotNull { pkg -> allApps.find { it.packageName == pkg } }
+    }
+
+    Box(
+        modifier = modifier
+            .size(48.dp)
+            .clip(RoundedCornerShape(14.dp))
+            .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.85f))
+            .padding(3.dp),
+        contentAlignment = Alignment.Center
+    ) {
+        if (folderApps.isEmpty()) {
+            val iconVector = FolderIconRegistry.getIcon(folder.icon)
+            if (iconVector != null) {
+                Icon(
+                    imageVector = iconVector,
+                    contentDescription = folder.name,
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.size(24.dp)
+                )
+            } else {
+                Text(
+                    text = folder.name.take(1).uppercase(),
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold
+                )
+            }
+        } else {
+            Column(
+                verticalArrangement = Arrangement.spacedBy(2.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                for (row in 0 until 3) {
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(2.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        for (col in 0 until 3) {
+                            val index = row * 3 + col
+                            if (index < folderApps.size) {
+                                val app = folderApps[index]
+                                val bitmap = remember(app.packageName) { app.getIconBitmap() }
+                                Image(
+                                    bitmap = bitmap,
+                                    contentDescription = app.label,
+                                    modifier = Modifier
+                                        .size(10.dp)
+                                        .clip(CircleShape)
+                                )
+                            } else {
+                                Spacer(modifier = Modifier.size(10.dp))
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 }

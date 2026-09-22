@@ -11,20 +11,24 @@ import dev.mnascimentos.aureole.feature.home.HomeViewModel
 import dev.mnascimentos.aureole.feature.home.extensions.GridItemSpec
 import dev.mnascimentos.aureole.feature.home.extensions.addGridItem
 import dev.mnascimentos.aureole.feature.home.extensions.cancelGridEditMode
+import dev.mnascimentos.aureole.feature.home.extensions.closeEditSidePanelDialog
 import dev.mnascimentos.aureole.feature.home.extensions.closeWidgetPopup
 import dev.mnascimentos.aureole.feature.home.extensions.deleteGridItem
+import dev.mnascimentos.aureole.feature.home.extensions.deleteSidePanelInstance
 import dev.mnascimentos.aureole.feature.home.extensions.dismissGridError
 import dev.mnascimentos.aureole.feature.home.extensions.enterGridEditMode
 import dev.mnascimentos.aureole.feature.home.extensions.moveGridItem
 import dev.mnascimentos.aureole.feature.home.extensions.onFolderIntent
 import dev.mnascimentos.aureole.feature.home.extensions.onSearchQueryChanged
 import dev.mnascimentos.aureole.feature.home.extensions.openAddContainerForParent
+import dev.mnascimentos.aureole.feature.home.extensions.openEditSidePanelDialog
 import dev.mnascimentos.aureole.feature.home.extensions.openWidgetPopup
 import dev.mnascimentos.aureole.feature.home.extensions.removeChildFromScrollView
 import dev.mnascimentos.aureole.feature.home.extensions.resetGridItems
 import dev.mnascimentos.aureole.feature.home.extensions.resizeChildInScrollView
 import dev.mnascimentos.aureole.feature.home.extensions.resizeGridItem
 import dev.mnascimentos.aureole.feature.home.extensions.saveGridEditMode
+import dev.mnascimentos.aureole.feature.home.extensions.saveSidePanelModel
 import dev.mnascimentos.aureole.feature.home.extensions.setAddAppToFolderDialogVisible
 import dev.mnascimentos.aureole.feature.home.extensions.setAllAppsDrawerOpen
 import dev.mnascimentos.aureole.feature.home.extensions.setEditingGridItem
@@ -36,6 +40,9 @@ import dev.mnascimentos.aureole.feature.home.extensions.setShowWidgetPicker
 import dev.mnascimentos.aureole.feature.home.extensions.setShowWidgetResizeDialog
 import dev.mnascimentos.aureole.feature.home.extensions.setWidgetRowHeight
 import dev.mnascimentos.aureole.feature.home.extensions.toggleFavorite
+import dev.mnascimentos.aureole.feature.home.extensions.toggleShowAllAppsOnHome
+import dev.mnascimentos.aureole.feature.home.extensions.updateContainerFavorites
+import dev.mnascimentos.aureole.feature.home.extensions.updateFavoritePackages
 import dev.mnascimentos.aureole.feature.home.extensions.updateGridItemsOrientation
 import dev.mnascimentos.aureole.feature.home.extensions.updateScrollViewOrientation
 import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
@@ -72,8 +79,16 @@ class HomeActionsFactory(
             onAllAppsDrawerClose = { viewModel.setAllAppsDrawerOpen(false) },
             onAllAppsDrawerOpen = { viewModel.setAllAppsDrawerOpen(true) },
             onToggleFavorite = { pkg -> viewModel.toggleFavorite(pkg) },
+            onUpdateFavoritePackages = { containerId, pkgs ->
+                if (containerId != null) {
+                    viewModel.updateContainerFavorites(containerId, pkgs)
+                } else {
+                    viewModel.updateFavoritePackages(pkgs)
+                }
+            },
+            onToggleShowAllAppsOnHome = { viewModel.toggleShowAllAppsOnHome() },
             onAppInfoClick = { app -> IntentUtils.openAppInfo(activity, app.packageName) },
-            onOpenFavoritePicker = { viewModel.setShowFavoritePicker(true) },
+            onOpenFavoritePicker = { containerId -> viewModel.setShowFavoritePicker(true, containerId) },
             onOpenWidgetPopup = { widgetId, topY -> viewModel.openWidgetPopup(widgetId, topY) },
             onCloseWidgetPopup = { viewModel.closeWidgetPopup() },
             onOpenWidgetResizeDialog = { viewModel.setShowWidgetResizeDialog(true) },
@@ -120,7 +135,11 @@ class HomeActionsFactory(
             },
             onOpenAddContainerForParent = { parentId ->
                 viewModel.openAddContainerForParent(parentId)
-            }
+            },
+            onOpenEditSidePanelDialog = { id -> viewModel.openEditSidePanelDialog(id) },
+            onCloseEditSidePanelDialog = { viewModel.closeEditSidePanelDialog() },
+            onSaveSidePanelModel = { model -> viewModel.saveSidePanelModel(model) },
+            onDeleteSidePanelInstance = { id -> viewModel.deleteSidePanelInstance(id) }
         )
     }
 

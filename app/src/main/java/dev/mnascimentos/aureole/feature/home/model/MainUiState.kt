@@ -6,6 +6,7 @@ import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.core.data.model.AppFolder
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.data.model.LauncherItemState
+import dev.mnascimentos.aureole.core.data.model.SidePanelModel
 import dev.mnascimentos.aureole.core.data.repository.SettingsRepository
 import dev.mnascimentos.aureole.feature.home.grid.GridLimits
 
@@ -50,6 +51,8 @@ data class MainUiState(
 
     // Favorites & Folders
     val favoriteAppPackages: List<String> = emptyList(),
+    val containerFavorites: Map<String, List<String>> = emptyMap(),
+    val activeFavoriteContainerId: String? = null,
     val folders: List<AppFolder> = emptyList(),
     val favoriteApps: List<AppInfo> = emptyList(),
 
@@ -85,4 +88,9 @@ data class MainUiState(
     val targetParentContainerId: String? = null,
     val gridErrorMessage: String? = null,
     val isAddingSingleWidget: Boolean = false,
+
+    // Side Panels
+    val sidePanels: Map<String, SidePanelModel> = emptyMap(),
+    val editingSidePanelId: String? = null,
+    val isEditSidePanelDialogVisible: Boolean = false,
 )

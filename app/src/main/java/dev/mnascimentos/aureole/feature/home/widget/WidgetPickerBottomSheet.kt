@@ -4,7 +4,6 @@ import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProviderInfo
 import android.content.Context
 import android.content.pm.PackageManager
-import android.graphics.drawable.Drawable
 import android.os.Build
 import android.util.Log
 import android.widget.ImageView
@@ -61,6 +60,10 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import coil.compose.AsyncImage
+import dev.mnascimentos.aureole.feature.home.widget.model.WidgetAppGroup
+import dev.mnascimentos.aureole.feature.home.widget.model.WidgetSelectorIntent
+import dev.mnascimentos.aureole.feature.home.widget.model.WidgetSelectorState
+import dev.mnascimentos.aureole.feature.home.widget.model.WidgetVariant
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -72,37 +75,6 @@ import kotlinx.coroutines.withContext
 private const val TAG = "WidgetPickerBottomSheet"
 private const val CELL_MARGIN_ESTIMATE_DP = 30
 private const val CELL_SIZE_ESTIMATE_DP = 70.0
-
-data class WidgetAppGroup(
-    val appId: String,
-    val appName: String,
-    val appIcon: Drawable?,
-    val availableWidgets: List<WidgetVariant>
-)
-
-data class WidgetVariant(
-    val widgetId: String,
-    val title: String,
-    val previewImage: Drawable?,
-    val previewLayoutRes: Int = 0,
-    val minSpanX: Int,
-    val minSpanY: Int,
-    val providerInfo: AppWidgetProviderInfo
-)
-
-data class WidgetSelectorState(
-    val isLoading: Boolean = false,
-    val searchQuery: String = "",
-    val widgetGroups: List<WidgetAppGroup> = emptyList(),
-    val expandedAppIds: Set<String> = emptySet(),
-    val error: String? = null
-)
-
-sealed class WidgetSelectorIntent {
-    object LoadWidgets : WidgetSelectorIntent()
-    data class SearchQueryChanged(val query: String) : WidgetSelectorIntent()
-    data class ToggleAppGroup(val appId: String) : WidgetSelectorIntent()
-}
 
 class WidgetPickerViewModel : ViewModel() {
     private val _state = MutableStateFlow(WidgetSelectorState(isLoading = true))

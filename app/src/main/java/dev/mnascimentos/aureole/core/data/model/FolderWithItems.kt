@@ -7,6 +7,7 @@ data class FolderWithItems(
     fun toAppFolder(): AppFolder {
         return AppFolder(
             id = folder.id,
+            panelId = folder.panelId,
             name = folder.name,
             iconPackage = folder.iconFallback,
             icon = folder.icon,

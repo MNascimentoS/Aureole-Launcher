@@ -5,10 +5,13 @@ import android.content.ComponentName
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import dev.mnascimentos.aureole.core.data.repository.AppRepository
+import dev.mnascimentos.aureole.core.data.repository.FavoriteContainerRepository
 import dev.mnascimentos.aureole.core.data.repository.FolderRepository
 import dev.mnascimentos.aureole.core.data.repository.SettingsRepository
+import dev.mnascimentos.aureole.core.data.repository.SidePanelRepository
 import dev.mnascimentos.aureole.core.data.repository.WidgetRepository
 import dev.mnascimentos.aureole.feature.home.extensions.loadGridItems
+import dev.mnascimentos.aureole.feature.home.extensions.loadSidePanels
 import dev.mnascimentos.aureole.feature.home.extensions.loadWidgetSettings
 import dev.mnascimentos.aureole.feature.home.extensions.updateAppsState
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
@@ -24,6 +27,8 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
     internal val widgetRepository = WidgetRepository(application)
     internal val settingsRepository = SettingsRepository(application)
     internal val folderRepository = FolderRepository(application)
+    internal val favoriteContainerRepository = FavoriteContainerRepository(application)
+    internal val sidePanelRepository = SidePanelRepository(application)
 
     private val _uiState = MutableStateFlow(MainUiState())
     val uiState: StateFlow<MainUiState> = _uiState.asStateFlow()
@@ -40,6 +45,7 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
         observeAppsFlow()
         loadWidgetSettings()
         loadGridItems()
+        loadSidePanels()
         syncApps()
     }
 
@@ -80,6 +86,7 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
             val isWidgetRowEnabled = settingsRepository.isWidgetRowEnabled
             val showWidgetDots = settingsRepository.showWidgetDots
             val favoritePackages = settingsRepository.favoriteAppPackages
+            val containerFavsMap = favoriteContainerRepository.getAllContainerFavorites()
             val savedFolders = folderRepository.getFolders()
             val isCustomWallpaperSet = settingsRepository.isCustomWallpaperSet
             val customWallpaperPath = settingsRepository.customWallpaperPath
@@ -107,6 +114,7 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
                     isWidgetRowEnabled = isWidgetRowEnabled,
                     showWidgetDots = showWidgetDots,
                     favoriteAppPackages = favoritePackages,
+                    containerFavorites = containerFavsMap,
                     folders = savedFolders,
                     isCustomWallpaperSet = isCustomWallpaperSet,
                     customWallpaperPath = customWallpaperPath,

@@ -29,7 +29,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.pager.HorizontalPager
-import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -79,6 +78,7 @@ import dev.mnascimentos.aureole.feature.home.LocalHomeUiState
 import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
 import dev.mnascimentos.aureole.feature.home.widget.model.OpenedWidgetPopupConfig
+import dev.mnascimentos.aureole.feature.home.widget.model.PagerContentParams
 import dev.mnascimentos.aureole.feature.home.widget.model.StackedWidgetConfig
 import dev.mnascimentos.aureole.feature.home.widget.model.WidgetItemActions
 import kotlinx.coroutines.delay
@@ -97,13 +97,6 @@ private const val POPUP_HAZE_ALPHA_FACTOR = 0.8f
 private const val PREVIEW_APPWIDGET_HOST_ID = 1024
 private const val PREVIEW_HEIGHT_PX = 400f
 private const val WIDGET_NOT_AVAILABLE_TEXT = "Widget não disponível (Remova e adicione novamente)"
-
-private data class PagerContentParams(
-    val showAddButton: Boolean,
-    val pageCount: Int,
-    val pagerState: PagerState,
-    val hasFillMaxSize: Boolean
-)
 
 @Composable
 fun StackedWidgetSection(

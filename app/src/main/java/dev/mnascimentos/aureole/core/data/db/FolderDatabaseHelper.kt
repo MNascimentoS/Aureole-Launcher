@@ -21,6 +21,7 @@ class FolderDatabaseHelper(context: Context) : SQLiteOpenHelper(
             """
             CREATE TABLE IF NOT EXISTS folders (
                 id TEXT PRIMARY KEY NOT NULL,
+                panel_id TEXT,
                 name TEXT NOT NULL,
                 color TEXT,
                 icon_fallback TEXT,
@@ -44,15 +45,20 @@ class FolderDatabaseHelper(context: Context) : SQLiteOpenHelper(
         )
 
         db.execSQL("CREATE INDEX IF NOT EXISTS idx_folder_items_folder_id ON folder_items(folder_id)")
+        db.execSQL("CREATE INDEX IF NOT EXISTS idx_folders_panel_id ON folders(panel_id)")
     }
 
+    @Suppress("TooGenericExceptionCaught", "SwallowedException")
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
         if (oldVersion < 2) {
             db.execSQL("ALTER TABLE folders ADD COLUMN icon TEXT")
-        } else {
-            db.execSQL("DROP TABLE IF EXISTS folder_items")
-            db.execSQL("DROP TABLE IF EXISTS folders")
-            onCreate(db)
+        }
+        if (oldVersion < 3) {
+            try {
+                db.execSQL("ALTER TABLE folders ADD COLUMN panel_id TEXT")
+            } catch (e: Exception) {
+                // Column may already exist
+            }
         }
     }
 
@@ -78,6 +84,12 @@ class FolderDatabaseHelper(context: Context) : SQLiteOpenHelper(
         cursor.use { folderCursor ->
             while (folderCursor.moveToNext()) {
                 val id = folderCursor.getString(folderCursor.getColumnIndexOrThrow("id"))
+                val panelIdIndex = folderCursor.getColumnIndex("panel_id")
+                val panelId = if (panelIdIndex != -1 && !folderCursor.isNull(panelIdIndex)) {
+                    folderCursor.getString(panelIdIndex)
+                } else {
+                    null
+                }
                 val name = folderCursor.getString(folderCursor.getColumnIndexOrThrow("name"))
                 val color = folderCursor.getString(folderCursor.getColumnIndexOrThrow("color"))
                 val iconFallback = folderCursor.getString(folderCursor.getColumnIndexOrThrow("icon_fallback"))
@@ -92,6 +104,7 @@ class FolderDatabaseHelper(context: Context) : SQLiteOpenHelper(
 
                 val folderEntity = FolderEntity(
                     id = id,
+                    panelId = panelId,
                     name = name,
                     color = color,
                     iconFallback = iconFallback,
@@ -146,6 +159,7 @@ class FolderDatabaseHelper(context: Context) : SQLiteOpenHelper(
         try {
             val folderValues = ContentValues().apply {
                 put("id", folder.id)
+                put("panel_id", folder.panelId)
                 put("name", folder.name)
                 put("icon_fallback", folder.iconPackage)
                 put("icon", folder.icon)
@@ -204,6 +218,6 @@ class FolderDatabaseHelper(context: Context) : SQLiteOpenHelper(
 
     companion object {
         private const val DATABASE_NAME = "aureole_launcher_folders.db"
-        private const val DATABASE_VERSION = 2
+        private const val DATABASE_VERSION = 3
     }
 }
