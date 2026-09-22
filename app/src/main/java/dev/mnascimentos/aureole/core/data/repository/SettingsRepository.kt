@@ -75,6 +75,22 @@ class SettingsRepository(private val context: Context) {
         get() = prefs.getBoolean(KEY_DISABLE_ALPHABET_SCRUBBER, false)
         set(value) = prefs.edit { putBoolean(KEY_DISABLE_ALPHABET_SCRUBBER, value) }
 
+    var showSettingsButtonInAllApps: Boolean
+        get() = prefs.getBoolean(KEY_SHOW_SETTINGS_BUTTON_IN_ALL_APPS, true)
+        set(value) = prefs.edit { putBoolean(KEY_SHOW_SETTINGS_BUTTON_IN_ALL_APPS, value) }
+
+    var settingsButtonPosition: String
+        get() = prefs.getString(KEY_SETTINGS_BUTTON_POSITION, "Right") ?: "Right"
+        set(value) = prefs.edit { putString(KEY_SETTINGS_BUTTON_POSITION, value) }
+
+    var showSearchBarInAllApps: Boolean
+        get() = prefs.getBoolean(KEY_SHOW_SEARCH_BAR_IN_ALL_APPS, true)
+        set(value) = prefs.edit { putBoolean(KEY_SHOW_SEARCH_BAR_IN_ALL_APPS, value) }
+
+    var searchIconPosition: String
+        get() = prefs.getString(KEY_SEARCH_ICON_POSITION, "Left") ?: "Left"
+        set(value) = prefs.edit { putString(KEY_SEARCH_ICON_POSITION, value) }
+
     val isHazeSupported: Boolean
         get() = HazeUtils.isDeviceHazeSupported(context)
 
@@ -150,6 +166,10 @@ class SettingsRepository(private val context: Context) {
         private const val KEY_IN_APP_UPDATE_ENABLED = "in_app_update_enabled"
         private const val KEY_USE_THEMED_APP_ICONS = "use_themed_app_icons"
         private const val KEY_DISABLE_ALPHABET_SCRUBBER = "disable_alphabet_scrubber"
+        private const val KEY_SHOW_SETTINGS_BUTTON_IN_ALL_APPS = "show_settings_button_in_all_apps"
+        private const val KEY_SETTINGS_BUTTON_POSITION = "settings_button_position"
+        private const val KEY_SHOW_SEARCH_BAR_IN_ALL_APPS = "show_search_bar_in_all_apps"
+        private const val KEY_SEARCH_ICON_POSITION = "search_icon_position"
         private const val DEFAULT_HAZE_OPACITY = 0.5f
         const val DEFAULT_SEED_COLOR = 0xFF6650A4.toInt()
     }

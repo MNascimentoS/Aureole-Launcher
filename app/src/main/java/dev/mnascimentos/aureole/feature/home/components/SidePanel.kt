@@ -3,6 +3,7 @@ package dev.mnascimentos.aureole.feature.home.components
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -16,6 +17,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -140,6 +142,8 @@ private fun SidePanelColumn(
             .then(modifier)
             .background(backgroundColor)
             .combinedClickable(
+                interactionSource = remember { MutableInteractionSource() },
+                indication = null,
                 onClick = {},
                 onLongClick = { actions.onOpenEditSidePanelDialog(config.panelId) }
             )
@@ -149,7 +153,7 @@ private fun SidePanelColumn(
         if (config.folders.isEmpty()) {
             if (config.showAddFolderButton) {
                 SidePanelAddFolderButton(
-                    onClick = { actions.onFolderIntent(FolderViewIntent.OpenCreateFolderDialog) }
+                    onClick = { actions.onFolderIntent(FolderViewIntent.OpenCreateFolderDialog(config.panelId)) }
                 )
             }
         } else {
@@ -171,7 +175,7 @@ private fun SidePanelColumn(
             if (config.showAddFolderButton) {
                 Spacer(modifier = Modifier.height(4.dp))
                 SidePanelAddFolderButton(
-                    onClick = { actions.onFolderIntent(FolderViewIntent.OpenCreateFolderDialog) }
+                    onClick = { actions.onFolderIntent(FolderViewIntent.OpenCreateFolderDialog(config.panelId)) }
                 )
             }
         }

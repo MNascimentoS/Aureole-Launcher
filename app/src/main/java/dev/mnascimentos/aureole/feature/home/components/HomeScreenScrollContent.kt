@@ -7,7 +7,6 @@ import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -20,12 +19,10 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -42,7 +39,6 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.rememberNestedScrollInteropConnection
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.zIndex
 import dev.mnascimentos.aureole.core.data.model.LauncherItemState
 import dev.mnascimentos.aureole.core.data.model.LauncherItemType
 import dev.mnascimentos.aureole.core.data.model.ScrollOrientation
@@ -61,10 +57,6 @@ private const val SCROLL_CHILD_MIN_HEIGHT = 70
 private const val SCROLL_CHILD_MIN_WIDTH = 100
 private const val SCROLL_CHILD_ROW_HEIGHT = 60
 private const val SCROLL_CHILD_COL_WIDTH = 70
-private const val REMOVE_BTN_SIZE = 28
-private const val EDIT_MODE_Z_INDEX = 100f
-private val REMOVE_BTN_PADDING = 4.dp
-private val CLOSE_ICON_SIZE = 16.dp
 
 @Composable
 fun ScrollViewContainerContent(
@@ -208,9 +200,6 @@ private fun HorizontalScrollViewContent(params: ScrollViewContentParams) {
 
 @Composable
 private fun ScrollViewChildItem(params: ScrollViewChildItemParams) {
-    val uiState = LocalHomeUiState.current
-    val actions = LocalHomeActions.current
-    val parentId = params.parentId
     val childItem = params.childItem
     val isVertical = params.isVertical
     val isAppsList = childItem.safeType == LauncherItemType.APPS_LIST
@@ -238,45 +227,6 @@ private fun ScrollViewChildItem(params: ScrollViewChildItemParams) {
                 sidePanelConfig = params.sidePanelConfig,
                 isInScrollView = true
             )
-        )
-        if (uiState.isGridEditMode) {
-            ChildItemRemoveOverlay(
-                childId = childItem.id,
-                onRemove = { actions.onRemoveChildFromScrollView(parentId, childItem.id) }
-            )
-        }
-    }
-}
-
-@Composable
-private fun BoxScope.ChildItemRemoveOverlay(
-    childId: String,
-    onRemove: () -> Unit
-) {
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .pointerInput("block_child_" + childId) {
-                detectTapGestures(onTap = {})
-            }
-    )
-    Box(
-        modifier = Modifier
-            .align(Alignment.TopEnd)
-            .padding(REMOVE_BTN_PADDING)
-            .size(REMOVE_BTN_SIZE.dp)
-            .zIndex(EDIT_MODE_Z_INDEX)
-            .background(MaterialTheme.colorScheme.error, CircleShape)
-            .pointerInput("remove_btn_" + childId) {
-                detectTapGestures(onTap = { onRemove() })
-            },
-        contentAlignment = Alignment.Center
-    ) {
-        Icon(
-            imageVector = Icons.Default.Close,
-            contentDescription = "Remover",
-            tint = MaterialTheme.colorScheme.onError,
-            modifier = Modifier.size(CLOSE_ICON_SIZE)
         )
     }
 }

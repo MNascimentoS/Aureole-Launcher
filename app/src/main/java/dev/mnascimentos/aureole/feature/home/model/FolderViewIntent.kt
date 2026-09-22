@@ -1,7 +1,7 @@
 package dev.mnascimentos.aureole.feature.home.model
 
 sealed interface FolderViewIntent {
-    object OpenCreateFolderDialog : FolderViewIntent
+    data class OpenCreateFolderDialog(val panelId: String? = null) : FolderViewIntent
     data class SubmitFolderName(val name: String) : FolderViewIntent
     data class OpenFolder(val folderId: String, val topYPx: Float = 0f) : FolderViewIntent
     object CloseFolder : FolderViewIntent

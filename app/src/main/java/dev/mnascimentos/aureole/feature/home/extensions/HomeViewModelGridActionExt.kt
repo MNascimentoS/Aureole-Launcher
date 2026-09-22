@@ -92,7 +92,8 @@ fun HomeViewModel.addChildToScrollView(parentId: String, type: LauncherItemType,
             editingGridItem = updatedEditingItem,
             showAddContainerDialog = false,
             targetParentContainerId = null,
-            isAddingSingleWidget = false
+            isAddingSingleWidget = false,
+            gridErrorMessage = null,
         )
     }
 }

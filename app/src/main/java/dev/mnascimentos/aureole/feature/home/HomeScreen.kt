@@ -326,7 +326,7 @@ private fun buildSidePanelConfig(
         SidePanelConfig(
             panelId = panelModel.id,
             title = panelModel.title,
-            folders = panelModel.folders.ifEmpty { uiState.folders },
+            folders = panelModel.folders,
             appPackageNames = panelModel.appPackageNames,
             openedFolderId = uiState.openedFolderId,
             position = panelModel.position,
@@ -340,7 +340,7 @@ private fun buildSidePanelConfig(
     } else {
         SidePanelConfig(
             panelId = item.id,
-            folders = uiState.folders,
+            folders = emptyList(),
             openedFolderId = uiState.openedFolderId,
             position = uiState.sidePanelPosition,
             showFolderLabels = uiState.showFolderLabels,

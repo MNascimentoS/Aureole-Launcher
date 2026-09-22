@@ -5,6 +5,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -273,5 +275,71 @@ private fun HazeSettingsSection(
             ),
             onClick = actions.onOpenHazeOpacityDialog
         )
+    }
+}
+
+@Composable
+fun AllAppsSettingsGroup(
+    uiState: SettingsUiState,
+    actions: SettingsScreenActions
+) {
+    Column {
+        PreferenceCategoryHeader(title = "All Apps & Search Bar")
+        PreferenceCard {
+            PreferenceSwitchRow(
+                config = PreferenceItemConfig(
+                    title = "Show Settings Button in All Apps",
+                    subtitle = "Display settings button in the app drawer"
+                ),
+                checked = uiState.showSettingsButtonInAllApps,
+                onCheckedChange = { actions.onToggleShowSettingsButtonInAllApps() }
+            )
+
+            if (uiState.showSettingsButtonInAllApps) {
+                HorizontalDivider(
+                    modifier = Modifier.padding(start = 16.dp),
+                    color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = ALPHA_SEMI_TRANSPARENT)
+                )
+
+                PreferenceRowItem(
+                    config = PreferenceItemConfig(
+                        title = "Settings Button Position",
+                        subtitle = uiState.settingsButtonPosition,
+                        leadingIcon = Icons.Default.Settings
+                    ),
+                    onClick = actions.onOpenSettingsButtonPositionDialog
+                )
+            }
+
+            HorizontalDivider(
+                modifier = Modifier.padding(start = 16.dp),
+                color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = ALPHA_SEMI_TRANSPARENT)
+            )
+
+            PreferenceSwitchRow(
+                config = PreferenceItemConfig(
+                    title = "Show Search Bar in All Apps",
+                    subtitle = "Display search bar at the bottom of the app drawer"
+                ),
+                checked = uiState.showSearchBarInAllApps,
+                onCheckedChange = { actions.onToggleShowSearchBarInAllApps() }
+            )
+
+            if (uiState.showSearchBarInAllApps) {
+                HorizontalDivider(
+                    modifier = Modifier.padding(start = 16.dp),
+                    color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = ALPHA_SEMI_TRANSPARENT)
+                )
+
+                PreferenceRowItem(
+                    config = PreferenceItemConfig(
+                        title = "Search Icon Position",
+                        subtitle = uiState.searchIconPosition,
+                        leadingIcon = Icons.Default.Search
+                    ),
+                    onClick = actions.onOpenSearchIconPositionDialog
+                )
+            }
+        }
     }
 }

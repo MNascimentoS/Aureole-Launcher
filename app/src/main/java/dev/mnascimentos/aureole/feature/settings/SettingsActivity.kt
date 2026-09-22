@@ -127,7 +127,13 @@ class SettingsActivity : ComponentActivity() {
             onToggleHaze = { viewModel.toggleSetting(SettingToggle.HAZE) },
             onToggleInAppUpdate = { viewModel.toggleSetting(SettingToggle.IN_APP_UPDATE) },
             onToggleThemedAppIcons = { viewModel.toggleSetting(SettingToggle.THEMED_APP_ICONS) },
-            onToggleDisableAlphabetScrubber = { viewModel.toggleSetting(SettingToggle.DISABLE_ALPHABET_SCRUBBER) }
+            onToggleDisableAlphabetScrubber = { viewModel.toggleSetting(SettingToggle.DISABLE_ALPHABET_SCRUBBER) },
+            onToggleShowSettingsButtonInAllApps = {
+                viewModel.toggleSetting(
+                    SettingToggle.SHOW_SETTINGS_BUTTON_IN_ALL_APPS
+                )
+            },
+            onToggleShowSearchBarInAllApps = { viewModel.toggleSetting(SettingToggle.SHOW_SEARCH_BAR_IN_ALL_APPS) }
         )
     }
 
@@ -154,7 +160,32 @@ class SettingsActivity : ComponentActivity() {
             onAddFolderClick = { viewModel.setDialogVisible(SettingsDialog.CREATE_FOLDER, true) },
             onDismissCreateFolderDialog = { viewModel.setDialogVisible(SettingsDialog.CREATE_FOLDER, false) },
             onOpenHazeOpacityDialog = { viewModel.setDialogVisible(SettingsDialog.HAZE_OPACITY, true) },
-            onDismissHazeOpacityDialog = { viewModel.setDialogVisible(SettingsDialog.HAZE_OPACITY, false) }
+            onDismissHazeOpacityDialog = { viewModel.setDialogVisible(SettingsDialog.HAZE_OPACITY, false) },
+            onOpenSettingsButtonPositionDialog = {
+                viewModel.setDialogVisible(
+                    SettingsDialog.SETTINGS_BUTTON_POSITION,
+                    true
+                )
+            },
+            onDismissSettingsButtonPositionDialog = {
+                viewModel.setDialogVisible(
+                    SettingsDialog.SETTINGS_BUTTON_POSITION,
+                    false
+                )
+            },
+            onSettingsButtonPositionSelected = { pos ->
+                viewModel.setSettingValue(
+                    SettingValue.SettingsButtonPosition(pos)
+                )
+            },
+            onOpenSearchIconPositionDialog = { viewModel.setDialogVisible(SettingsDialog.SEARCH_ICON_POSITION, true) },
+            onDismissSearchIconPositionDialog = {
+                viewModel.setDialogVisible(
+                    SettingsDialog.SEARCH_ICON_POSITION,
+                    false
+                )
+            },
+            onSearchIconPositionSelected = { pos -> viewModel.setSettingValue(SettingValue.SearchIconPosition(pos)) }
         )
     }
 

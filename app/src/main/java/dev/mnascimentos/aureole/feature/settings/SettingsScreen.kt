@@ -99,6 +99,7 @@ fun SettingsScreen(
             item { WidgetsSettingsGroup(uiState = uiState, actions = actions) }
             item { FoldersSettingsGroup(uiState = uiState, actions = actions) }
             item { LayoutSettingsGroup(uiState = uiState, actions = actions) }
+            item { AllAppsSettingsGroup(uiState = uiState, actions = actions) }
             item { SystemSettingsGroup(uiState = uiState, actions = actions) }
             item { AboutSettingsGroup() }
         }
@@ -109,6 +110,15 @@ fun SettingsScreen(
 
 @Composable
 private fun SettingsDialogs(
+    uiState: SettingsUiState,
+    actions: SettingsScreenActions
+) {
+    SettingsDialogsPrimary(uiState = uiState, actions = actions)
+    SettingsDialogsSecondary(uiState = uiState, actions = actions)
+}
+
+@Composable
+private fun SettingsDialogsPrimary(
     uiState: SettingsUiState,
     actions: SettingsScreenActions
 ) {
@@ -145,7 +155,13 @@ private fun SettingsDialogs(
     if (uiState.showResetGridDialog) {
         ResetGridDialog(actions = actions)
     }
+}
 
+@Composable
+private fun SettingsDialogsSecondary(
+    uiState: SettingsUiState,
+    actions: SettingsScreenActions
+) {
     if (uiState.showSidePanelPositionDialog) {
         SidePanelPositionDialog(
             currentPosition = uiState.sidePanelPosition,
@@ -154,6 +170,28 @@ private fun SettingsDialogs(
                 actions.onDismissSidePanelPositionDialog()
             },
             onDismiss = actions.onDismissSidePanelPositionDialog
+        )
+    }
+
+    if (uiState.showSettingsButtonPositionDialog) {
+        SettingsButtonPositionDialog(
+            currentPosition = uiState.settingsButtonPosition,
+            onPositionSelected = { pos ->
+                actions.onSettingsButtonPositionSelected(pos)
+                actions.onDismissSettingsButtonPositionDialog()
+            },
+            onDismiss = actions.onDismissSettingsButtonPositionDialog
+        )
+    }
+
+    if (uiState.showSearchIconPositionDialog) {
+        SearchIconPositionDialog(
+            currentPosition = uiState.searchIconPosition,
+            onPositionSelected = { pos ->
+                actions.onSearchIconPositionSelected(pos)
+                actions.onDismissSearchIconPositionDialog()
+            },
+            onDismiss = actions.onDismissSearchIconPositionDialog
         )
     }
 
@@ -215,62 +253,6 @@ private fun ResetGridDialog(
         },
         dismissButton = {
             TextButton(onClick = actions.onDismissResetGridDialog) {
-                Text("Cancelar")
-            }
-        }
-    )
-}
-
-@Composable
-private fun SidePanelPositionDialog(
-    currentPosition: String,
-    onPositionSelected: (String) -> Unit,
-    onDismiss: () -> Unit
-) {
-    val options = listOf(
-        "Top" to "Superior (Top)",
-        "Center" to "Centro (Center)",
-        "Bottom" to "Inferior (Bottom)",
-        "Space Evenly" to "Espaçamento Igual (Space Evenly)",
-        "Space Between" to "Espaçamento Entre (Space Between)"
-    )
-
-    AlertDialog(
-        onDismissRequest = onDismiss,
-        title = {
-            Text(
-                text = "Alinhamento do Painel Lateral",
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Bold
-            )
-        },
-        text = {
-            Column {
-                options.forEach { (value, label) ->
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .clip(RoundedCornerShape(12.dp))
-                            .clickable { onPositionSelected(value) }
-                            .padding(vertical = 8.dp, horizontal = 8.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        RadioButton(
-                            selected = (currentPosition == value),
-                            onClick = { onPositionSelected(value) }
-                        )
-                        Spacer(modifier = Modifier.width(12.dp))
-                        Text(
-                            text = label,
-                            style = MaterialTheme.typography.bodyLarge,
-                            color = MaterialTheme.colorScheme.onSurface
-                        )
-                    }
-                }
-            }
-        },
-        confirmButton = {
-            TextButton(onClick = onDismiss) {
                 Text("Cancelar")
             }
         }

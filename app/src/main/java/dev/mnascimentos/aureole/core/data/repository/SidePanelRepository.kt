@@ -70,19 +70,11 @@ class SidePanelRepository(context: Context) {
             val existing = getSidePanel(panelId)
             if (existing != null) return@withContext existing
 
-            // Migrar pastas sem panelId para este novo painel
-            val allFolders = folderDbHelper.getAllFoldersWithItems().map { it.toAppFolder() }
-            val unassignedFolders = allFolders.filter { it.panelId == null }
-
             val newEntity = SidePanelEntity(
                 id = panelId,
                 title = defaultTitle
             )
             dbHelper.insertOrUpdateSidePanel(newEntity)
-
-            unassignedFolders.forEach { folder ->
-                folderDbHelper.insertFolder(folder.copy(panelId = panelId))
-            }
 
             getSidePanel(panelId) ?: SidePanelModel(id = panelId, title = defaultTitle)
         }

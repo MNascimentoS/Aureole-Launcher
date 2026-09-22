@@ -15,7 +15,9 @@ internal object SettingsToggleManager {
             SettingToggle.HOME_OPENS_ALL_APPS,
             SettingToggle.SHOW_ALL_APPS_ON_HOME,
             SettingToggle.WIDGET_ROW,
-            SettingToggle.DISABLE_ALPHABET_SCRUBBER -> toggleGroupTwo(vm, toggle)
+            SettingToggle.DISABLE_ALPHABET_SCRUBBER,
+            SettingToggle.SHOW_SETTINGS_BUTTON_IN_ALL_APPS,
+            SettingToggle.SHOW_SEARCH_BAR_IN_ALL_APPS -> toggleGroupTwo(vm, toggle)
             SettingToggle.DYNAMIC_WALLPAPER,
             SettingToggle.IN_APP_UPDATE,
             SettingToggle.THEMED_APP_ICONS -> toggleGroupThree(vm, toggle)
@@ -95,6 +97,16 @@ internal object SettingsToggleManager {
                 val newValue = !vm.uiState.value.isAlphabetScrubberDisabled
                 vm.settingsRepository.isAlphabetScrubberDisabled = newValue
                 vm.updateUiState { it.copy(isAlphabetScrubberDisabled = newValue) }
+            }
+            SettingToggle.SHOW_SETTINGS_BUTTON_IN_ALL_APPS -> {
+                val newValue = !vm.uiState.value.showSettingsButtonInAllApps
+                vm.settingsRepository.showSettingsButtonInAllApps = newValue
+                vm.updateUiState { it.copy(showSettingsButtonInAllApps = newValue) }
+            }
+            SettingToggle.SHOW_SEARCH_BAR_IN_ALL_APPS -> {
+                val newValue = !vm.uiState.value.showSearchBarInAllApps
+                vm.settingsRepository.showSearchBarInAllApps = newValue
+                vm.updateUiState { it.copy(showSearchBarInAllApps = newValue) }
             }
             else -> {}
         }

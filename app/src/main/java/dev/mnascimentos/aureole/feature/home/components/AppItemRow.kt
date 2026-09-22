@@ -61,6 +61,9 @@ fun AppItemRow(
     isFavorite: Boolean = false,
     actions: AppItemRowActions = AppItemRowActions()
 ) {
+    val uiState = LocalHomeUiState.current
+    val isThemedAppIconsEnabled = uiState.isThemedAppIconsEnabled
+    val isLeftHandedMode = uiState.isLeftHandedMode
     var showMenu by remember { mutableStateOf(false) }
     val iconBitmap: ImageBitmap = remember(app.packageName) {
         app.getIconBitmap()
@@ -81,6 +84,8 @@ fun AppItemRow(
             AppItemRowContent(
                 app = app,
                 iconBitmap = iconBitmap,
+                isThemedAppIconsEnabled = isThemedAppIconsEnabled,
+                isLeftHandedMode = isLeftHandedMode
             )
         }
 
@@ -98,11 +103,12 @@ fun AppItemRow(
 private fun RowScope.AppItemRowContent(
     app: AppInfo,
     iconBitmap: ImageBitmap,
+    isThemedAppIconsEnabled: Boolean,
+    isLeftHandedMode: Boolean
 ) {
-    val uiState = LocalHomeUiState.current
     val onPrimaryContainerColor = MaterialTheme.colorScheme.onPrimaryContainer
-    val displayBitmap = remember(app.packageName, uiState.isThemedAppIconsEnabled, onPrimaryContainerColor) {
-        if (uiState.isThemedAppIconsEnabled) {
+    val displayBitmap = remember(app.packageName, isThemedAppIconsEnabled, onPrimaryContainerColor) {
+        if (isThemedAppIconsEnabled) {
             val argb = Color.argb(
                 (onPrimaryContainerColor.alpha * COLOR_MAX_FACTOR).toInt(),
                 (onPrimaryContainerColor.red * COLOR_MAX_FACTOR).toInt(),
@@ -114,8 +120,6 @@ private fun RowScope.AppItemRowContent(
             iconBitmap
         }
     }
-
-    val isLeftHandedMode = uiState.isLeftHandedMode
 
     val appLabel = @Composable {
         Text(
@@ -130,7 +134,7 @@ private fun RowScope.AppItemRowContent(
     }
 
     val appIcon = @Composable {
-        AppItemIcon(bitmap = displayBitmap, label = app.label, isThemed = uiState.isThemedAppIconsEnabled)
+        AppItemIcon(bitmap = displayBitmap, label = app.label, isThemed = isThemedAppIconsEnabled)
     }
 
     if (isLeftHandedMode) {

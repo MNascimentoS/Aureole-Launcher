@@ -73,59 +73,39 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
 
     fun loadSettings() {
         viewModelScope.launch {
-            val isLeftHanded = settingsRepository.isLeftHandedMode
-            val isSidePanelEnabled = settingsRepository.isSidePanelEnabled
-            val isSidePanelBackgroundEnabled = settingsRepository.isSidePanelBackgroundEnabled
-            val isSidePanelExpandCell = settingsRepository.isSidePanelExpandCell
-            val isClockBackgroundEnabled = settingsRepository.isClockBackgroundEnabled
-            val showSidePanelAddFolderButton = settingsRepository.showSidePanelAddFolderButton
-            val sidePanelPosition = settingsRepository.sidePanelPosition
-            val showFolderLabels = settingsRepository.showFolderLabels
-            val homeOpensAllApps = settingsRepository.homeButtonOpensAllApps
-            val showAllAppsHome = settingsRepository.showAllAppsOnHome
-            val isWidgetRowEnabled = settingsRepository.isWidgetRowEnabled
-            val showWidgetDots = settingsRepository.showWidgetDots
-            val favoritePackages = settingsRepository.favoriteAppPackages
             val containerFavsMap = favoriteContainerRepository.getAllContainerFavorites()
             val savedFolders = folderRepository.getFolders()
-            val isCustomWallpaperSet = settingsRepository.isCustomWallpaperSet
-            val customWallpaperPath = settingsRepository.customWallpaperPath
-            val isDynamicWallpaperEnabled = settingsRepository.isDynamicWallpaperEnabled
-            val manualSeedColor = settingsRepository.manualSeedColor
-            val isHazeEnabled = settingsRepository.isHazeEnabled
-            val isHazeSupported = settingsRepository.isHazeSupported
-            val hazeOpacity = settingsRepository.hazeOpacity
-            val isInAppUpdateEnabled = settingsRepository.isInAppUpdateEnabled
-            val isThemedAppIconsEnabled = settingsRepository.isThemedAppIconsEnabled
-            val isAlphabetScrubberDisabled = settingsRepository.isAlphabetScrubberDisabled
-
             _uiState.update {
                 it.copy(
-                    isLeftHandedMode = isLeftHanded,
-                    isSidePanelEnabled = isSidePanelEnabled,
-                    isSidePanelBackgroundEnabled = isSidePanelBackgroundEnabled,
-                    isSidePanelExpandCell = isSidePanelExpandCell,
-                    isClockBackgroundEnabled = isClockBackgroundEnabled,
-                    showSidePanelAddFolderButton = showSidePanelAddFolderButton,
-                    sidePanelPosition = sidePanelPosition,
-                    showFolderLabels = showFolderLabels,
-                    homeButtonOpensAllApps = homeOpensAllApps,
-                    showAllAppsOnHome = showAllAppsHome,
-                    isWidgetRowEnabled = isWidgetRowEnabled,
-                    showWidgetDots = showWidgetDots,
-                    favoriteAppPackages = favoritePackages,
+                    isLeftHandedMode = settingsRepository.isLeftHandedMode,
+                    isSidePanelEnabled = settingsRepository.isSidePanelEnabled,
+                    isSidePanelBackgroundEnabled = settingsRepository.isSidePanelBackgroundEnabled,
+                    isSidePanelExpandCell = settingsRepository.isSidePanelExpandCell,
+                    isClockBackgroundEnabled = settingsRepository.isClockBackgroundEnabled,
+                    showSidePanelAddFolderButton = settingsRepository.showSidePanelAddFolderButton,
+                    sidePanelPosition = settingsRepository.sidePanelPosition,
+                    showFolderLabels = settingsRepository.showFolderLabels,
+                    homeButtonOpensAllApps = settingsRepository.homeButtonOpensAllApps,
+                    showAllAppsOnHome = settingsRepository.showAllAppsOnHome,
+                    isWidgetRowEnabled = settingsRepository.isWidgetRowEnabled,
+                    showWidgetDots = settingsRepository.showWidgetDots,
+                    favoriteAppPackages = settingsRepository.favoriteAppPackages,
                     containerFavorites = containerFavsMap,
                     folders = savedFolders,
-                    isCustomWallpaperSet = isCustomWallpaperSet,
-                    customWallpaperPath = customWallpaperPath,
-                    isDynamicWallpaperEnabled = isDynamicWallpaperEnabled,
-                    manualSeedColor = manualSeedColor,
-                    isHazeEnabled = isHazeEnabled,
-                    isHazeSupported = isHazeSupported,
-                    hazeOpacity = hazeOpacity,
-                    isInAppUpdateEnabled = isInAppUpdateEnabled,
-                    isThemedAppIconsEnabled = isThemedAppIconsEnabled,
-                    isAlphabetScrubberDisabled = isAlphabetScrubberDisabled,
+                    isCustomWallpaperSet = settingsRepository.isCustomWallpaperSet,
+                    customWallpaperPath = settingsRepository.customWallpaperPath,
+                    isDynamicWallpaperEnabled = settingsRepository.isDynamicWallpaperEnabled,
+                    manualSeedColor = settingsRepository.manualSeedColor,
+                    isHazeEnabled = settingsRepository.isHazeEnabled,
+                    isHazeSupported = settingsRepository.isHazeSupported,
+                    hazeOpacity = settingsRepository.hazeOpacity,
+                    isInAppUpdateEnabled = settingsRepository.isInAppUpdateEnabled,
+                    isThemedAppIconsEnabled = settingsRepository.isThemedAppIconsEnabled,
+                    isAlphabetScrubberDisabled = settingsRepository.isAlphabetScrubberDisabled,
+                    showSettingsButtonInAllApps = settingsRepository.showSettingsButtonInAllApps,
+                    settingsButtonPosition = settingsRepository.settingsButtonPosition,
+                    showSearchBarInAllApps = settingsRepository.showSearchBarInAllApps,
+                    searchIconPosition = settingsRepository.searchIconPosition
                 )
             }
         }
