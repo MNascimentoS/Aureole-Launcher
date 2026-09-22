@@ -26,4 +26,20 @@ platform :android do
       skip_upload_changelogs: true
     )
   end
+
+  desc "Record screenshot test reference images"
+  lane :record_screenshots do
+    gradle(
+      task: "updateDebugScreenshotTest",
+      project_dir: "."
+    )
+  end
+
+  desc "Verify screenshot tests against reference images"
+  lane :verify_screenshots do
+    gradle(
+      task: "validateDebugScreenshotTest",
+      project_dir: "."
+    )
+  end
 end

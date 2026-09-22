@@ -7,6 +7,8 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.List
@@ -28,13 +30,16 @@ import dev.mnascimentos.aureole.core.data.model.LauncherItemType
 fun AddContainerDialog(
     onDismissRequest: () -> Unit,
     onSelectType: (LauncherItemType) -> Unit,
+    isNested: Boolean = false,
     modifier: Modifier = Modifier
 ) {
     AlertDialog(
         onDismissRequest = onDismissRequest,
-        title = { Text(text = "Adicionar Container") },
+        title = { Text(text = if (isNested) "Adicionar ao Scroll View" else "Adicionar Container") },
         text = {
-            Column {
+            Column(
+                modifier = Modifier.verticalScroll(rememberScrollState())
+            ) {
                 AddContainerOptionItem(
                     title = "Relógio",
                     icon = Icons.Default.Add,
@@ -75,6 +80,16 @@ fun AddContainerDialog(
                         onDismissRequest()
                     }
                 )
+                if (!isNested) {
+                    AddContainerOptionItem(
+                        title = "Container Scroll View",
+                        icon = Icons.Default.List,
+                        onClick = {
+                            onSelectType(LauncherItemType.SCROLL_VIEW)
+                            onDismissRequest()
+                        }
+                    )
+                }
             }
         },
         confirmButton = {},

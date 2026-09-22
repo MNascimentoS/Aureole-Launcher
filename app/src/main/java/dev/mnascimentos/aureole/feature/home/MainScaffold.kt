@@ -23,13 +23,13 @@ import dev.mnascimentos.aureole.core.designsystem.theme.LocalHazeState
 import dev.mnascimentos.aureole.feature.home.components.FavoriteAppsDialog
 import dev.mnascimentos.aureole.feature.home.components.UpdateAvailableDialog
 import dev.mnascimentos.aureole.feature.home.components.UpdateDownloadedDialog
-import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
 import dev.mnascimentos.aureole.feature.home.extensions.closeWidgetPopup
 import dev.mnascimentos.aureole.feature.home.extensions.setShowFavoritePicker
 import dev.mnascimentos.aureole.feature.home.extensions.setShowWidgetPicker
 import dev.mnascimentos.aureole.feature.home.extensions.setShowWidgetResizeDialog
 import dev.mnascimentos.aureole.feature.home.extensions.setWidgetRowHeight
 import dev.mnascimentos.aureole.feature.home.extensions.toggleFavorite
+import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
 import dev.mnascimentos.aureole.feature.home.widget.OpenedWidgetPopup
 import dev.mnascimentos.aureole.feature.home.widget.WidgetPickerBottomSheet

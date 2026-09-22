@@ -57,11 +57,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.input.pointer.PointerEventPass
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInWindow
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.rememberNestedScrollInteropConnection
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -124,8 +126,11 @@ fun StackedWidgetSection(
     Column(
         modifier = modifier
             .then(
-                if (hasFillMaxSize) Modifier.fillMaxSize()
-                else Modifier.fillMaxWidth().padding(start = startPad, end = endPad, top = 4.dp, bottom = 4.dp)
+                if (hasFillMaxSize) {
+                    Modifier.fillMaxSize()
+                } else {
+                    Modifier.fillMaxWidth().padding(start = startPad, end = endPad, top = 4.dp, bottom = 4.dp)
+                }
             ),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
@@ -152,12 +157,16 @@ private fun calculateWidgetSectionPadding(
     isSidePanelEnabled: Boolean,
     isLeftHandedMode: Boolean
 ): Pair<Dp, Dp> {
-    val startPad = if (hasFillMaxSize) 0.dp else if (isSidePanelEnabled) {
+    val startPad = if (hasFillMaxSize) {
+        0.dp
+    } else if (isSidePanelEnabled) {
         if (isLeftHandedMode) 8.dp else 16.dp
     } else {
         16.dp
     }
-    val endPad = if (hasFillMaxSize) 0.dp else if (isSidePanelEnabled) {
+    val endPad = if (hasFillMaxSize) {
+        0.dp
+    } else if (isSidePanelEnabled) {
         if (isLeftHandedMode) 16.dp else 8.dp
     } else {
         16.dp
@@ -286,20 +295,23 @@ private fun WidgetHostItem(
         AndroidView(
             factory = { context -> createWidgetHostView(context, appWidgetHost, widgetId) },
             update = { view ->
-                val appWidgetManager = AppWidgetManager.getInstance(view.context)
-                val appWidgetInfo = appWidgetManager.getAppWidgetInfo(widgetId)
-                if (appWidgetInfo != null && view is AppWidgetHostView) {
-                    val widthDp = (view.context.resources.configuration.screenWidthDp).coerceAtLeast(100)
-                    val options = Bundle().apply {
-                        putInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH, appWidgetInfo.minWidth)
-                        putInt(AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT, appWidgetInfo.minHeight)
-                        putInt(AppWidgetManager.OPTION_APPWIDGET_MAX_WIDTH, widthDp)
-                        putInt(AppWidgetManager.OPTION_APPWIDGET_MAX_HEIGHT, 360)
+                val widthDp = view.context.resources.configuration.screenWidthDp
+                if (view is AppWidgetHostView && view.tag != widthDp) {
+                    view.tag = widthDp
+                    val appWidgetManager = AppWidgetManager.getInstance(view.context)
+                    val appWidgetInfo = appWidgetManager.getAppWidgetInfo(widgetId)
+                    if (appWidgetInfo != null) {
+                        val options = Bundle().apply {
+                            putInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH, appWidgetInfo.minWidth)
+                            putInt(AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT, appWidgetInfo.minHeight)
+                            putInt(AppWidgetManager.OPTION_APPWIDGET_MAX_WIDTH, widthDp.coerceAtLeast(100))
+                            putInt(AppWidgetManager.OPTION_APPWIDGET_MAX_HEIGHT, 360)
+                        }
+                        appWidgetManager.updateAppWidgetOptions(widgetId, options)
                     }
-                    appWidgetManager.updateAppWidgetOptions(widgetId, options)
                 }
             },
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier.fillMaxSize().nestedScroll(rememberNestedScrollInteropConnection())
         )
     }
 }

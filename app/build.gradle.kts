@@ -7,6 +7,7 @@ plugins {
     alias(libs.plugins.ksp)
     alias(libs.plugins.google.services)
     alias(libs.plugins.firebase.crashlytics)
+    alias(libs.plugins.screenshot)
     jacoco
 }
 
@@ -50,6 +51,7 @@ android {
 
     buildTypes {
         debug {
+            applicationIdSuffix = ".debug"
             enableUnitTestCoverage = true
         }
         release {
@@ -70,6 +72,12 @@ android {
     }
     buildFeatures {
         compose = true
+    }
+    experimentalProperties["android.experimental.enableScreenshotTest"] = true
+    testOptions {
+        unitTests {
+            isIncludeAndroidResources = true
+        }
     }
     lint {
         checkReleaseBuilds = false
@@ -94,6 +102,8 @@ tasks.withType<Detekt>().configureEach {
 }
 
 dependencies {
+    detektPlugins(libs.detekt.formatting)
+
     val composeBom = platform(libs.androidx.compose.bom)
 
     implementation(composeBom)
@@ -129,6 +139,9 @@ dependencies {
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(libs.androidx.junit)
+
+    screenshotTestImplementation(libs.screenshot.validation.api)
+    screenshotTestImplementation(libs.androidx.compose.ui.tooling)
 
     debugImplementation(libs.androidx.compose.ui.test.manifest)
     debugImplementation(libs.androidx.compose.ui.tooling)

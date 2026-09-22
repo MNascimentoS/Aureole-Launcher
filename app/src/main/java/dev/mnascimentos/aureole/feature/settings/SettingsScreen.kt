@@ -143,14 +143,6 @@ private fun SettingsDialogs(
     uiState: SettingsUiState,
     actions: SettingsScreenActions
 ) {
-    if (uiState.showSidePanelPositionDialog) {
-        SidePanelPositionDialog(
-            currentPosition = uiState.sidePanelPosition,
-            onPositionSelected = actions.onSidePanelPositionSelected,
-            onDismiss = actions.onDismissSidePanelPositionDialog
-        )
-    }
-
     if (uiState.showHazeOpacityDialog) {
         HazeOpacityDialog(
             currentOpacity = uiState.hazeOpacity,
@@ -184,6 +176,40 @@ private fun SettingsDialogs(
     if (uiState.showResetGridDialog) {
         ResetGridDialog(actions = actions)
     }
+
+    if (uiState.showFactoryResetDialog) {
+        FactoryResetDialog(actions = actions)
+    }
+}
+
+@Composable
+private fun FactoryResetDialog(
+    actions: SettingsScreenActions
+) {
+    AlertDialog(
+        onDismissRequest = actions.onDismissFactoryResetDialog,
+        title = { Text("Apagar todos os dados?") },
+        text = {
+            Text(
+                "Isso apagará todas as suas configurações, pastas, " +
+                    "atalhos e disposição da tela inicial. Deseja continuar?"
+            )
+        },
+        confirmButton = {
+            TextButton(
+                onClick = {
+                    actions.onConfirmFactoryReset()
+                }
+            ) {
+                Text("Apagar", color = MaterialTheme.colorScheme.error)
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = actions.onDismissFactoryResetDialog) {
+                Text("Cancelar")
+            }
+        }
+    )
 }
 
 @Composable
@@ -196,7 +222,7 @@ private fun ResetGridDialog(
         text = {
             Text(
                 "Esta ação redefinirá o posicionamento e o " +
-                        "tamanho de todos os elementos da tela inicial para a configuração padrão."
+                    "tamanho de todos os elementos da tela inicial para a configuração padrão."
             )
         },
         confirmButton = {
@@ -324,6 +350,21 @@ private fun WallpaperSettingsGroup(
                 checked = uiState.isThemedAppIconsEnabled,
                 onCheckedChange = { actions.onToggleThemedAppIcons() }
             )
+
+            HorizontalDivider(
+                modifier = Modifier.padding(start = 56.dp),
+                color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = ALPHA_SEMI_TRANSPARENT)
+            )
+
+            PreferenceSwitchRow(
+                config = PreferenceItemConfig(
+                    title = "Fundo do Relógio",
+                    subtitle = "Exibe o container com efeito de desfoque (blur) para o relógio quando o desfoque estiver ativo",
+                    leadingIcon = Icons.Default.Edit
+                ),
+                checked = uiState.isClockBackgroundEnabled,
+                onCheckedChange = { actions.onToggleClockBackground() }
+            )
         }
     }
 }
@@ -413,20 +454,6 @@ private fun WidgetsSettingsGroup(
         PreferenceCard {
             PreferenceSwitchRow(
                 config = PreferenceItemConfig(
-                    title = "Show Widget Row Container",
-                    subtitle = "Display widget container on the home screen"
-                ),
-                checked = uiState.isWidgetRowEnabled,
-                onCheckedChange = { actions.onToggleWidgetRow() }
-            )
-
-            HorizontalDivider(
-                modifier = Modifier.padding(start = 16.dp),
-                color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = ALPHA_SEMI_TRANSPARENT)
-            )
-
-            PreferenceSwitchRow(
-                config = PreferenceItemConfig(
                     title = "Show Widget Indicator Dots",
                     subtitle = "Display page indicator dots below widget row"
                 ),
@@ -475,45 +502,40 @@ private fun FoldersSettingsGroup(
         PreferenceCard {
             PreferenceSwitchRow(
                 config = PreferenceItemConfig(
-                    title = "Enable Side Panel",
-                    subtitle = "Quick-access side panel for app folders on the edge of the screen"
+                    title = "Fundo do Painel Lateral",
+                    subtitle = "Exibe o container de fundo translúcido no painel lateral"
                 ),
-                checked = uiState.isSidePanelEnabled,
-                onCheckedChange = { actions.onToggleSidePanel() }
+                checked = uiState.isSidePanelBackgroundEnabled,
+                onCheckedChange = { actions.onToggleSidePanelBackground() }
             )
 
-            if (uiState.isSidePanelEnabled) {
-                HorizontalDivider(
-                    modifier = Modifier.padding(start = 16.dp),
-                    color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = ALPHA_SEMI_TRANSPARENT)
-                )
+            HorizontalDivider(
+                modifier = Modifier.padding(start = 16.dp),
+                color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = ALPHA_SEMI_TRANSPARENT)
+            )
 
-                PreferenceSwitchRow(
-                    config = PreferenceItemConfig(
-                        title = "Mostrar nome da pasta no painel lateral",
-                        subtitle = "Exibe o nome da pasta abaixo de cada botão no painel lateral"
-                    ),
-                    checked = uiState.showFolderLabels,
-                    onCheckedChange = { actions.onToggleShowFolderLabels() }
-                )
+            PreferenceSwitchRow(
+                config = PreferenceItemConfig(
+                    title = "Mostrar botão de criar pasta",
+                    subtitle = "Exibe o botão (+) no painel lateral para adicionar pastas rapidamente"
+                ),
+                checked = uiState.showSidePanelAddFolderButton,
+                onCheckedChange = { actions.onToggleShowSidePanelAddFolderButton() }
+            )
 
-                HorizontalDivider(
-                    modifier = Modifier.padding(start = 16.dp),
-                    color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = ALPHA_SEMI_TRANSPARENT)
-                )
+            HorizontalDivider(
+                modifier = Modifier.padding(start = 16.dp),
+                color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = ALPHA_SEMI_TRANSPARENT)
+            )
 
-                PreferenceRowItem(
-                    config = PreferenceItemConfig(
-                        title = "Side Panel Position",
-                        subtitle = when (uiState.sidePanelPosition) {
-                            "Top" -> "Top"
-                            "Bottom" -> "Bottom"
-                            else -> "Center"
-                        }
-                    ),
-                    onClick = actions.onOpenSidePanelPositionDialog
-                )
-            }
+            PreferenceSwitchRow(
+                config = PreferenceItemConfig(
+                    title = "Mostrar nome da pasta no painel lateral",
+                    subtitle = "Exibe o nome da pasta abaixo de cada botão no painel lateral"
+                ),
+                checked = uiState.showFolderLabels,
+                onCheckedChange = { actions.onToggleShowFolderLabels() }
+            )
 
             HorizontalDivider(
                 modifier = Modifier.padding(start = 56.dp),
@@ -648,6 +670,20 @@ private fun SystemSettingsGroup(
                 ),
                 checked = uiState.isInAppUpdateEnabled,
                 onCheckedChange = { actions.onToggleInAppUpdate() }
+            )
+
+            HorizontalDivider(
+                modifier = Modifier.padding(start = 16.dp),
+                color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = ALPHA_SEMI_TRANSPARENT)
+            )
+
+            PreferenceRowItem(
+                config = PreferenceItemConfig(
+                    title = "Apagar todos os dados",
+                    subtitle = "Restaurar o aplicativo ao seu estado de instalação inicial",
+                    leadingIcon = Icons.Default.Delete
+                ),
+                onClick = actions.onOpenFactoryResetDialog
             )
         }
     }
@@ -893,60 +929,6 @@ private fun PreferenceSwitchRow(
     )
 }
 
-@Composable
-private fun SidePanelPositionDialog(
-    currentPosition: String,
-    onPositionSelected: (String) -> Unit,
-    onDismiss: () -> Unit
-) {
-    val options = listOf(
-        "Top" to "Top",
-        "Center" to "Center",
-        "Bottom" to "Bottom"
-    )
-
-    AlertDialog(
-        onDismissRequest = onDismiss,
-        title = {
-            Text(
-                text = "Side Panel Position",
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Bold
-            )
-        },
-        text = {
-            Column {
-                options.forEach { (key, label) ->
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .clip(RoundedCornerShape(12.dp))
-                            .clickable { onPositionSelected(key) }
-                            .padding(vertical = 8.dp, horizontal = 8.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        RadioButton(
-                            selected = (currentPosition == key),
-                            onClick = { onPositionSelected(key) }
-                        )
-                        Spacer(modifier = Modifier.width(12.dp))
-                        Text(
-                            text = label,
-                            style = MaterialTheme.typography.bodyLarge,
-                            color = MaterialTheme.colorScheme.onSurface
-                        )
-                    }
-                }
-            }
-        },
-        confirmButton = {
-            TextButton(onClick = onDismiss) {
-                Text("Cancel")
-            }
-        }
-    )
-}
-
 @AureolePreview
 @Composable
 fun SettingsScreenPreview() {
@@ -957,4 +939,3 @@ fun SettingsScreenPreview() {
         )
     }
 }
-

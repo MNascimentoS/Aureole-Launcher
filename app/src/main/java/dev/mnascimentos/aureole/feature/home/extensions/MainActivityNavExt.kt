@@ -8,9 +8,9 @@ fun handleBackNavigation(uiState: MainUiState, viewModel: HomeViewModel) {
     when {
         uiState.showWidgetPopup || uiState.showWidgetResizeDialog -> viewModel.closeWidgetPopup()
         uiState.isCreateFolderDialogVisible ||
-        uiState.isAddAppToFolderDialogVisible ||
-        uiState.isRenameFolderDialogVisible ||
-        uiState.activeFolder != null -> viewModel.onFolderIntent(FolderViewIntent.CloseFolder)
+            uiState.isAddAppToFolderDialogVisible ||
+            uiState.isRenameFolderDialogVisible ||
+            uiState.activeFolder != null -> viewModel.onFolderIntent(FolderViewIntent.CloseFolder)
         uiState.isAllAppsDrawerOpen -> viewModel.setAllAppsDrawerOpen(open = false)
         uiState.searchQuery.isNotEmpty() -> viewModel.onSearchQueryChanged("")
         uiState.showWidgetPicker -> viewModel.setShowWidgetPicker(show = false)

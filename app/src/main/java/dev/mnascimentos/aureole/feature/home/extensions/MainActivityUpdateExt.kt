@@ -21,8 +21,10 @@ fun MainActivity.checkAppUpdate(
         if (appUpdateInfo.installStatus() == InstallStatus.DOWNLOADED) {
             viewModel.setShowUpdateDownloadedDialog(visible = true)
         } else if (appUpdateInfo.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE &&
-            (appUpdateInfo.isUpdateTypeAllowed(AppUpdateType.FLEXIBLE) ||
-             appUpdateInfo.isUpdateTypeAllowed(AppUpdateType.IMMEDIATE))
+            (
+                appUpdateInfo.isUpdateTypeAllowed(AppUpdateType.FLEXIBLE) ||
+                    appUpdateInfo.isUpdateTypeAllowed(AppUpdateType.IMMEDIATE)
+                )
         ) {
             viewModel.setShowUpdateAvailableDialog(visible = true)
         }

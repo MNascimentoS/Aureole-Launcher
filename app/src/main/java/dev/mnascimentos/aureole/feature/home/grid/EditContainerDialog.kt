@@ -9,11 +9,18 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -22,6 +29,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.core.data.model.LauncherItemState
 import dev.mnascimentos.aureole.core.data.model.LauncherItemType
+import dev.mnascimentos.aureole.core.data.model.ScrollOrientation
 import dev.mnascimentos.aureole.feature.home.LocalHomeActions
 import dev.mnascimentos.aureole.feature.home.LocalHomeUiState
 import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
@@ -42,7 +50,9 @@ fun EditContainerDialog(
         onDismissRequest = onDismissRequest,
         title = { Text(text = "Configurar $title") },
         text = {
-            Column {
+            Column(
+                modifier = Modifier.verticalScroll(rememberScrollState())
+            ) {
                 Text(
                     text = "Tamanho atual: ${item.colSpan} x ${item.rowSpan} células",
                     style = MaterialTheme.typography.bodyMedium,
@@ -51,6 +61,10 @@ fun EditContainerDialog(
                 )
 
                 EditDialogWidgetListSection(item = item, uiState = uiState, actions = actions)
+
+                if (item.type == LauncherItemType.SCROLL_VIEW) {
+                    EditDialogScrollViewSection(item = item, actions = actions)
+                }
 
                 EditDialogDeleteButtonRow(
                     onDelete = {
@@ -77,6 +91,7 @@ private fun getContainerTitle(type: LauncherItemType?): String {
         LauncherItemType.SHORTCUTS_SIDE_PANEL -> "Barra de Atalhos"
         LauncherItemType.SINGLE_APP_WIDGET -> "Widget Individual"
         LauncherItemType.WIDGET_LIST -> "Lista de Widgets"
+        LauncherItemType.SCROLL_VIEW -> "Scroll View"
         null -> "Container"
     }
 }
@@ -109,6 +124,151 @@ private fun EditDialogWidgetListSection(
         }
         Spacer(modifier = Modifier.height(8.dp))
     }
+}
+
+@Composable
+private fun EditDialogScrollViewSection(
+    item: LauncherItemState,
+    actions: HomeScreenActions
+) {
+    Text(
+        text = "Orientação do Scroll:",
+        style = MaterialTheme.typography.labelLarge,
+        color = MaterialTheme.colorScheme.onSurface,
+        modifier = Modifier.padding(bottom = 4.dp)
+    )
+
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(bottom = 12.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.Start
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+                .clickable { actions.onUpdateScrollViewOrientation(item.id, ScrollOrientation.VERTICAL) }
+                .padding(end = 16.dp)
+        ) {
+            RadioButton(
+                selected = item.safeScrollOrientation == ScrollOrientation.VERTICAL,
+                onClick = { actions.onUpdateScrollViewOrientation(item.id, ScrollOrientation.VERTICAL) }
+            )
+            Spacer(modifier = Modifier.width(4.dp))
+            Text(text = "Vertical", style = MaterialTheme.typography.bodyMedium)
+        }
+
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.clickable {
+                actions.onUpdateScrollViewOrientation(item.id, ScrollOrientation.HORIZONTAL)
+            }
+        ) {
+            RadioButton(
+                selected = item.safeScrollOrientation == ScrollOrientation.HORIZONTAL,
+                onClick = { actions.onUpdateScrollViewOrientation(item.id, ScrollOrientation.HORIZONTAL) }
+            )
+            Spacer(modifier = Modifier.width(4.dp))
+            Text(text = "Horizontal", style = MaterialTheme.typography.bodyMedium)
+        }
+    }
+
+    Text(
+        text = "Componentes Filhos (${item.safeChildren.size}):",
+        style = MaterialTheme.typography.labelLarge,
+        color = MaterialTheme.colorScheme.onSurface,
+        modifier = Modifier.padding(bottom = 4.dp)
+    )
+
+    if (item.safeChildren.isEmpty()) {
+        Text(
+            text = "Nenhum componente adicionado ainda.",
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier.padding(bottom = 8.dp)
+        )
+    } else {
+        val isVertical = item.safeScrollOrientation == ScrollOrientation.VERTICAL
+        item.safeChildren.forEach { child ->
+            val spanVal = if (isVertical) child.rowSpan else child.colSpan
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 4.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Text(
+                    text = getContainerTitle(child.type),
+                    style = MaterialTheme.typography.bodyMedium,
+                    modifier = Modifier.weight(1f)
+                )
+
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    TextButton(
+                        onClick = {
+                            if (isVertical) {
+                                actions.onResizeChildInScrollView(item.id, child.id, child.colSpan, (child.rowSpan - 1).coerceAtLeast(1))
+                            } else {
+                                actions.onResizeChildInScrollView(item.id, child.id, (child.colSpan - 1).coerceAtLeast(1), child.rowSpan)
+                            }
+                        }
+                    ) {
+                        Text("-", style = MaterialTheme.typography.titleMedium)
+                    }
+
+                    Text(
+                        text = "$spanVal",
+                        style = MaterialTheme.typography.bodyMedium,
+                        modifier = Modifier.padding(horizontal = 2.dp)
+                    )
+
+                    TextButton(
+                        onClick = {
+                            if (isVertical) {
+                                actions.onResizeChildInScrollView(item.id, child.id, child.colSpan, child.rowSpan + 1)
+                            } else {
+                                actions.onResizeChildInScrollView(item.id, child.id, child.colSpan + 1, child.rowSpan)
+                            }
+                        }
+                    ) {
+                        Text("+", style = MaterialTheme.typography.titleMedium)
+                    }
+
+                    IconButton(onClick = { actions.onRemoveChildFromScrollView(item.id, child.id) }) {
+                        Icon(
+                            imageVector = Icons.Default.Delete,
+                            contentDescription = "Remover",
+                            tint = MaterialTheme.colorScheme.error
+                        )
+                    }
+                }
+            }
+        }
+    }
+
+    Button(
+        onClick = { actions.onOpenAddContainerForParent(item.id) },
+        colors = ButtonDefaults.buttonColors(
+            containerColor = MaterialTheme.colorScheme.primaryContainer,
+            contentColor = MaterialTheme.colorScheme.onPrimaryContainer
+        ),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 8.dp)
+    ) {
+        Icon(
+            imageVector = Icons.Default.Add,
+            contentDescription = "Adicionar Componente",
+            modifier = Modifier.padding(end = 8.dp)
+        )
+        Text(text = "Adicionar Componente")
+    }
+
+    Spacer(modifier = Modifier.height(8.dp))
 }
 
 @Composable

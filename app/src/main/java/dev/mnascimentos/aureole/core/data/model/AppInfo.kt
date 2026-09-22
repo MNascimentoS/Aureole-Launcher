@@ -74,8 +74,8 @@ data class AppInfo(
 
 private fun isNearWhiteBackground(red: Int, green: Int, blue: Int, alpha: Int): Boolean {
     val isWhite = red > BACKGROUND_WHITE_THRESHOLD &&
-            green > BACKGROUND_WHITE_THRESHOLD &&
-            blue > BACKGROUND_WHITE_THRESHOLD
+        green > BACKGROUND_WHITE_THRESHOLD &&
+        blue > BACKGROUND_WHITE_THRESHOLD
     return isWhite && alpha > BACKGROUND_ALPHA_THRESHOLD
 }
 

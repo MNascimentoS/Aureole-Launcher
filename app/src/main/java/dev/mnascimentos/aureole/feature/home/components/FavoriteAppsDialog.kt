@@ -211,4 +211,3 @@ fun FavoriteAppsDialogPreview() {
         )
     }
 }
-

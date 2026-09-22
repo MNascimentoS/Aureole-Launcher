@@ -85,9 +85,6 @@ class SettingsActivity : ComponentActivity() {
             onSubmitCreateFolder = viewModel::createFolder,
             onConfirmRestoreWallpaper = { viewModel.restoreDefaultWallpaper() },
             onClearErrorMessage = { viewModel.clearErrorMessage() },
-            onSidePanelPositionSelected = { pos ->
-                viewModel.setSettingValue(SettingValue.SidePanelPosition(pos))
-            },
             onSelectManualSeedColor = { color ->
                 viewModel.setSettingValue(SettingValue.ManualSeedColor(color))
             },
@@ -105,7 +102,9 @@ class SettingsActivity : ComponentActivity() {
             onToggleHomeButtonOpensAllApps = { viewModel.toggleSetting(SettingToggle.HOME_OPENS_ALL_APPS) },
             onToggleWidgetRow = { viewModel.toggleSetting(SettingToggle.WIDGET_ROW) },
             onToggleShowWidgetDots = { viewModel.toggleSetting(SettingToggle.SHOW_WIDGET_DOTS) },
-            onToggleSidePanel = { viewModel.toggleSetting(SettingToggle.SIDE_PANEL) },
+            onToggleSidePanelBackground = { viewModel.toggleSetting(SettingToggle.SIDE_PANEL_BACKGROUND) },
+            onToggleClockBackground = { viewModel.toggleSetting(SettingToggle.CLOCK_BACKGROUND) },
+            onToggleShowSidePanelAddFolderButton = { viewModel.toggleSetting(SettingToggle.SHOW_SIDE_PANEL_ADD_FOLDER_BUTTON) },
             onToggleShowFolderLabels = { viewModel.toggleSetting(SettingToggle.SHOW_FOLDER_LABELS) },
             onToggleLeftHandedMode = { viewModel.toggleSetting(SettingToggle.LEFT_HANDED_MODE) },
             onToggleDynamicWallpaper = { viewModel.toggleSetting(SettingToggle.DYNAMIC_WALLPAPER) },
@@ -119,14 +118,17 @@ class SettingsActivity : ComponentActivity() {
             onDismissResetGridDialog = {
                 viewModel.setDialogVisible(SettingsDialog.RESET_GRID, visible = false)
             },
+            onOpenFactoryResetDialog = {
+                viewModel.setDialogVisible(SettingsDialog.FACTORY_RESET, visible = true)
+            },
+            onDismissFactoryResetDialog = {
+                viewModel.setDialogVisible(SettingsDialog.FACTORY_RESET, visible = false)
+            },
+            onConfirmFactoryReset = {
+                viewModel.performFactoryReset()
+            },
             onOpenFavoritePickerClick = {
                 viewModel.setDialogVisible(SettingsDialog.FAVORITE_PICKER, visible = true)
-            },
-            onOpenSidePanelPositionDialog = {
-                viewModel.setDialogVisible(SettingsDialog.SIDE_PANEL_POSITION, visible = true)
-            },
-            onDismissSidePanelPositionDialog = {
-                viewModel.setDialogVisible(SettingsDialog.SIDE_PANEL_POSITION, visible = false)
             },
             onOpenColorPickerDialog = {
                 viewModel.setDialogVisible(SettingsDialog.COLOR_PICKER, visible = true)

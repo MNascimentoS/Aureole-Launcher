@@ -390,4 +390,3 @@ fun OpenedFolderPopupPreview() {
         }
     }
 }
-

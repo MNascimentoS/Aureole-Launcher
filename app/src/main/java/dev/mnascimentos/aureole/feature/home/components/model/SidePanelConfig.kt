@@ -8,5 +8,7 @@ data class SidePanelConfig(
     val openedFolderId: String?,
     val position: String = "Center",
     val showFolderLabels: Boolean = false,
+    val showAddFolderButton: Boolean = true,
+    val isBackgroundEnabled: Boolean = true,
     val hazeState: HazeState? = null,
 )

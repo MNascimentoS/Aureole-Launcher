@@ -13,9 +13,13 @@ import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import dev.mnascimentos.aureole.feature.home.LocalHomeActions
+import dev.mnascimentos.aureole.feature.home.model.FolderViewIntent
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
@@ -46,7 +50,6 @@ import dev.mnascimentos.aureole.feature.home.model.MainUiState
 private const val SIDE_PANEL_HAZE_ALPHA_MULTIPLIER = 0.7f
 private const val SIDE_PANEL_MIN_ALPHA = 0.2f
 private const val SIDE_PANEL_MAX_ALPHA = 0.95f
-private const val SIDE_PANEL_DEFAULT_ALPHA = 0.85f
 private const val FOLDER_BG_INACTIVE_ALPHA = 0.7f
 
 @Composable
@@ -56,25 +59,34 @@ fun SidePanel(
     modifier: Modifier = Modifier,
 ) {
     val uiState = LocalHomeUiState.current
-    val hazeModifier = if (uiState.isHazeEnabled && (config.hazeState != null)) {
+    val isBgEnabled = config.isBackgroundEnabled
+    val hazeState = config.hazeState
+    val hasHaze = isBgEnabled && uiState.isHazeEnabled && (hazeState != null)
+
+    val hazeModifier = if (hasHaze && hazeState != null) {
         Modifier.hazeEffect(
-            state = config.hazeState,
+            state = hazeState,
             style = HazeStyle(
                 blurRadius = 20.dp,
                 tint = HazeTint(MaterialTheme.colorScheme.surfaceContainerHigh.copy(alpha = uiState.hazeOpacity))
             )
         ) {
-            blurEnabled = uiState.isHazeEnabled
+            blurEnabled = true
         }
     } else {
         Modifier
     }
 
-    val backgroundAlpha = if (uiState.isHazeEnabled) {
-        (uiState.hazeOpacity * SIDE_PANEL_HAZE_ALPHA_MULTIPLIER)
-            .coerceIn(SIDE_PANEL_MIN_ALPHA, SIDE_PANEL_MAX_ALPHA)
+    val backgroundColor = if (isBgEnabled) {
+        if (hasHaze) {
+            val backgroundAlpha = (uiState.hazeOpacity * SIDE_PANEL_HAZE_ALPHA_MULTIPLIER)
+                .coerceIn(SIDE_PANEL_MIN_ALPHA, SIDE_PANEL_MAX_ALPHA)
+            MaterialTheme.colorScheme.surfaceContainerHigh.copy(alpha = backgroundAlpha)
+        } else {
+            MaterialTheme.colorScheme.surfaceContainerHigh.copy(alpha = 0.95f)
+        }
     } else {
-        SIDE_PANEL_DEFAULT_ALPHA
+        Color.Transparent
     }
 
     Box(
@@ -82,9 +94,9 @@ fun SidePanel(
     ) {
         SidePanelColumn(
             config = config,
-            backgroundAlpha = backgroundAlpha,
+            backgroundColor = backgroundColor,
             onFolderClick = onFolderClick,
-            modifier = hazeModifier
+            modifier = if (isBgEnabled) hazeModifier else Modifier
         )
     }
 }
@@ -92,27 +104,65 @@ fun SidePanel(
 @Composable
 private fun SidePanelColumn(
     config: SidePanelConfig,
-    backgroundAlpha: Float,
+    backgroundColor: Color,
     onFolderClick: (AppFolder, Float) -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val actions = LocalHomeActions.current
+
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
             .clip(RoundedCornerShape(18.dp))
             .then(modifier)
-            .background(MaterialTheme.colorScheme.surfaceContainerHigh.copy(alpha = backgroundAlpha))
+            .background(backgroundColor)
             .verticalScroll(rememberScrollState())
             .padding(8.dp)
     ) {
-        config.folders.forEach { folder ->
-            SidePanelFolderItem(
-                folder = folder,
-                isOpened = folder.id == config.openedFolderId,
-                showFolderLabels = config.showFolderLabels,
-                onFolderClick = onFolderClick
-            )
+        if (config.folders.isEmpty()) {
+            if (config.showAddFolderButton) {
+                SidePanelAddFolderButton(
+                    onClick = { actions.onFolderIntent(FolderViewIntent.OpenCreateFolderDialog) }
+                )
+            }
+        } else {
+            config.folders.forEach { folder ->
+                SidePanelFolderItem(
+                    folder = folder,
+                    isOpened = folder.id == config.openedFolderId,
+                    showFolderLabels = config.showFolderLabels,
+                    onFolderClick = onFolderClick
+                )
+            }
+            if (config.showAddFolderButton) {
+                Spacer(modifier = Modifier.height(4.dp))
+                SidePanelAddFolderButton(
+                    onClick = { actions.onFolderIntent(FolderViewIntent.OpenCreateFolderDialog) }
+                )
+            }
         }
+    }
+}
+
+@Composable
+private fun SidePanelAddFolderButton(
+    onClick: () -> Unit
+) {
+    Box(
+        modifier = Modifier
+            .padding(vertical = 4.dp)
+            .size(48.dp)
+            .clip(RoundedCornerShape(14.dp))
+            .background(MaterialTheme.colorScheme.primaryContainer.copy(alpha = FOLDER_BG_INACTIVE_ALPHA))
+            .clickable(onClick = onClick),
+        contentAlignment = Alignment.Center
+    ) {
+        Icon(
+            imageVector = Icons.Default.Add,
+            contentDescription = "Criar Pasta",
+            tint = MaterialTheme.colorScheme.onPrimaryContainer,
+            modifier = Modifier.size(24.dp)
+        )
     }
 }
 
@@ -230,4 +280,3 @@ fun SidePanelPreview() {
         }
     }
 }
-

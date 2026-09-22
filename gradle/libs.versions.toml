@@ -20,6 +20,7 @@ firebaseBom = "34.19.0"
 googleServices = "4.5.0"
 firebaseCrashlyticsPlugin = "3.0.8"
 fragmentKtx = "1.8.6"
+screenshot = "0.0.1-alpha16"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -51,6 +52,8 @@ firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.r
 firebase-crashlytics = { group = "com.google.firebase", name = "firebase-crashlytics" }
 firebase-analytics = { group = "com.google.firebase", name = "firebase-analytics" }
 androidx-fragment-ktx = { group = "androidx.fragment", name = "fragment-ktx", version.ref = "fragmentKtx" }
+detekt-formatting = { group = "io.gitlab.arturbosch.detekt", name = "detekt-formatting", version.ref = "detekt" }
+screenshot-validation-api = { group = "com.android.tools.screenshot", name = "screenshot-validation-api", version.ref = "screenshot" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
@@ -59,4 +62,5 @@ detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
 ksp = { id = "com.google.devtools.ksp", version = "2.1.10-1.0.30" }
 google-services = { id = "com.google.gms.google-services", version.ref = "googleServices" }
 firebase-crashlytics = { id = "com.google.firebase.crashlytics", version.ref = "firebaseCrashlyticsPlugin" }
+screenshot = { id = "com.android.compose.screenshot", version.ref = "screenshot" }
 

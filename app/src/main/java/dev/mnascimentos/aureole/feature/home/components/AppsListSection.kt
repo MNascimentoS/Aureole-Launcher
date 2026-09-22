@@ -287,4 +287,3 @@ fun AppsListDrawerPreview() {
         }
     }
 }
-

@@ -18,7 +18,6 @@ data class SnapParams(
     val rowSpan: Int
 )
 
-private const val SEARCH_MAX_RADIUS = 3
 private const val DEFAULT_CLOCK_SPAN_X = 10
 private const val DEFAULT_CLOCK_SPAN_Y = 6
 private const val DEFAULT_PANEL_COL = 7
@@ -39,25 +38,20 @@ private const val WIDGET_DEFAULT_COL_SPAN = 2
 private const val WIDGET_DEFAULT_ROW_SPAN = 2
 private const val WIDGET_LIST_DEFAULT_COL_SPAN = 3
 private const val WIDGET_LIST_DEFAULT_ROW_SPAN = 2
+private const val SCROLL_VIEW_DEFAULT_COL_SPAN = 7
+private const val SCROLL_VIEW_DEFAULT_ROW_SPAN = 6
 private const val DEFAULT_MIN_COL_SPAN = 1
 private const val DEFAULT_MIN_ROW_SPAN = 1
-
-private data class RadiusSearchParams(
-    val radius: Int,
-    val targetCol: Int,
-    val targetRow: Int,
-    val limits: GridLimits
-)
 
 @Suppress("TooManyFunctions")
 object GridEngineUtils {
 
     const val PORTRAIT_MAX_COLS = 10
     const val PORTRAIT_MAX_ROWS = 20
-    
+
     const val LANDSCAPE_MAX_COLS = 20
     const val LANDSCAPE_MAX_ROWS = 10
-    
+
     // For backwards compatibility or default initialization
     const val DEFAULT_MAX_COLS = PORTRAIT_MAX_COLS
     const val DEFAULT_MAX_ROWS = PORTRAIT_MAX_ROWS
@@ -67,10 +61,10 @@ object GridEngineUtils {
         for (item in items) {
             var newColSpan = item.colSpan.coerceAtMost(limits.maxCols)
             var newRowSpan = item.rowSpan.coerceAtMost(limits.maxRows)
-            
+
             var newCol = item.col.coerceIn(0, limits.maxCols - newColSpan)
             var newRow = item.row.coerceIn(0, limits.maxRows - newRowSpan)
-            
+
             // Note: simple fallback allows overlap if items are forced into the same constrained spot upon rotation
             val constrainedItem = item.copy(
                 col = newCol,
@@ -85,9 +79,9 @@ object GridEngineUtils {
 
     fun hasAABBCollision(itemA: LauncherItemState, itemB: LauncherItemState): Boolean {
         return itemA.col < itemB.col + itemB.colSpan &&
-                itemA.col + itemA.colSpan > itemB.col &&
-                itemA.row < itemB.row + itemB.rowSpan &&
-                itemA.row + itemA.rowSpan > itemB.row
+            itemA.col + itemA.colSpan > itemB.col &&
+            itemA.row < itemB.row + itemB.rowSpan &&
+            itemA.row + itemA.rowSpan > itemB.row
     }
 
     fun checkCollisionWithOthers(
@@ -107,9 +101,9 @@ object GridEngineUtils {
         limits: GridLimits = GridLimits()
     ): Boolean {
         return col >= 0 &&
-                row >= 0 &&
-                col + colSpan <= limits.maxCols &&
-                row + rowSpan <= limits.maxRows
+            row >= 0 &&
+            col + colSpan <= limits.maxCols &&
+            row + rowSpan <= limits.maxRows
     }
 
     fun calculateSnapCell(
@@ -207,6 +201,10 @@ object GridEngineUtils {
                 Pair(WIDGET_LIST_DEFAULT_COL_SPAN, WIDGET_LIST_DEFAULT_ROW_SPAN),
                 Pair(DEFAULT_MIN_COL_SPAN, DEFAULT_MIN_ROW_SPAN)
             )
+            LauncherItemType.SCROLL_VIEW -> Pair(
+                Pair(SCROLL_VIEW_DEFAULT_COL_SPAN, SCROLL_VIEW_DEFAULT_ROW_SPAN),
+                Pair(DEFAULT_MIN_COL_SPAN, DEFAULT_MIN_ROW_SPAN)
+            )
         }
     }
 
@@ -217,82 +215,107 @@ object GridEngineUtils {
         items: List<LauncherItemState>,
         limits: GridLimits = GridLimits()
     ): Pair<Int, Int>? {
-        val testItem = item.copy(col = targetCol, row = targetRow)
+        val maxCol = (limits.maxCols - item.colSpan).coerceAtLeast(0)
+        val maxRow = (limits.maxRows - item.rowSpan).coerceAtLeast(0)
+        val clampedTargetCol = targetCol.coerceIn(0, maxCol)
+        val clampedTargetRow = targetRow.coerceIn(0, maxRow)
+
+        val testItem = item.copy(col = clampedTargetCol, row = clampedTargetRow)
         if (!checkCollisionWithOthers(testItem, items) &&
-            isWithinBounds(targetCol, targetRow, item.colSpan, item.rowSpan, limits)
+            isWithinBounds(clampedTargetCol, clampedTargetRow, item.colSpan, item.rowSpan, limits)
         ) {
-            return Pair(targetCol, targetRow)
+            return Pair(clampedTargetCol, clampedTargetRow)
         }
-        return searchRadiusSlots(targetCol, targetRow, item, items, limits)
-    }
 
-    private fun searchRadiusSlots(
-        targetCol: Int,
-        targetRow: Int,
-        item: LauncherItemState,
-        items: List<LauncherItemState>,
-        limits: GridLimits
-    ): Pair<Int, Int>? {
-        for (radius in 1..SEARCH_MAX_RADIUS) {
-            val params = RadiusSearchParams(radius, targetCol, targetRow, limits)
-            val found = findSlotAtRadius(params, item, items)
-            if (found != null) return found
-        }
-        return null
-    }
+        var bestSlot: Pair<Int, Int>? = null
+        var minDistanceSq = Float.MAX_VALUE
 
-    private fun findSlotAtRadius(
-        params: RadiusSearchParams,
-        item: LauncherItemState,
-        items: List<LauncherItemState>
-    ): Pair<Int, Int>? {
-        for (dc in -params.radius..params.radius) {
-            for (dr in -params.radius..params.radius) {
-                val c = (params.targetCol + dc).coerceIn(0, params.limits.maxCols - item.colSpan)
-                val r = (params.targetRow + dr).coerceIn(0, params.limits.maxRows - item.rowSpan)
+        for (r in 0..maxRow) {
+            for (c in 0..maxCol) {
                 val candidate = item.copy(col = c, row = r)
                 if (!checkCollisionWithOthers(candidate, items) &&
-                    isWithinBounds(c, r, item.colSpan, item.rowSpan, params.limits)
+                    isWithinBounds(c, r, item.colSpan, item.rowSpan, limits)
                 ) {
-                    return Pair(c, r)
+                    val dc = c - targetCol
+                    val dr = r - targetRow
+                    val distSq = (dc * dc + dr * dr).toFloat()
+                    if (distSq < minDistanceSq) {
+                        minDistanceSq = distSq
+                        bestSlot = Pair(c, r)
+                    }
                 }
             }
         }
-        return null
+        return bestSlot
     }
 
-    fun getDefaultGridItems(): List<LauncherItemState> {
-        return listOf(
-            LauncherItemState(
-                id = "clock_item",
-                type = LauncherItemType.CLOCK,
-                col = 0,
-                row = 1,
-                colSpan = DEFAULT_CLOCK_SPAN_X,
-                rowSpan = DEFAULT_CLOCK_SPAN_Y,
-                minColSpan = 1,
-                minRowSpan = 1
-            ),
-            LauncherItemState(
-                id = "side_panel_item",
-                type = LauncherItemType.SHORTCUTS_SIDE_PANEL,
-                col = DEFAULT_PANEL_COL,
-                row = DEFAULT_PANEL_ROW,
-                colSpan = DEFAULT_PANEL_SPAN_X,
-                rowSpan = DEFAULT_PANEL_SPAN_Y,
-                minColSpan = 1,
-                minRowSpan = 1
-            ),
-            LauncherItemState(
-                id = "apps_list_item",
-                type = LauncherItemType.APPS_LIST,
-                col = 0,
-                row = DEFAULT_APPS_ROW,
-                colSpan = DEFAULT_APPS_SPAN_X,
-                rowSpan = DEFAULT_APPS_SPAN_Y,
-                minColSpan = 1,
-                minRowSpan = 1
+    fun getDefaultGridItems(isLandscape: Boolean = false): List<LauncherItemState> {
+        if (isLandscape) {
+            return listOf(
+                LauncherItemState(
+                    id = "clock_item",
+                    type = LauncherItemType.CLOCK,
+                    col = 0,
+                    row = 0,
+                    colSpan = 10,
+                    rowSpan = 4,
+                    minColSpan = 1,
+                    minRowSpan = 1
+                ),
+                LauncherItemState(
+                    id = "side_panel_item",
+                    type = LauncherItemType.SHORTCUTS_SIDE_PANEL,
+                    col = 17,
+                    row = 0,
+                    colSpan = 3,
+                    rowSpan = 10,
+                    minColSpan = 1,
+                    minRowSpan = 1
+                ),
+                LauncherItemState(
+                    id = "apps_list_item",
+                    type = LauncherItemType.APPS_LIST,
+                    col = 0,
+                    row = 4,
+                    colSpan = 16,
+                    rowSpan = 6,
+                    minColSpan = 1,
+                    minRowSpan = 1
+                )
             )
-        )
+        } else {
+            return listOf(
+                LauncherItemState(
+                    id = "clock_item",
+                    type = LauncherItemType.CLOCK,
+                    col = 0,
+                    row = 1,
+                    colSpan = DEFAULT_CLOCK_SPAN_X,
+                    rowSpan = DEFAULT_CLOCK_SPAN_Y,
+                    minColSpan = 1,
+                    minRowSpan = 1
+                ),
+                LauncherItemState(
+                    id = "side_panel_item",
+                    type = LauncherItemType.SHORTCUTS_SIDE_PANEL,
+                    col = DEFAULT_PANEL_COL,
+                    row = DEFAULT_PANEL_ROW,
+                    colSpan = DEFAULT_PANEL_SPAN_X,
+                    rowSpan = DEFAULT_PANEL_SPAN_Y,
+                    minColSpan = 1,
+                    minRowSpan = 1
+                ),
+                LauncherItemState(
+                    id = "apps_list_item",
+                    type = LauncherItemType.APPS_LIST,
+                    col = 0,
+                    row = DEFAULT_APPS_ROW,
+                    colSpan = DEFAULT_APPS_SPAN_X,
+                    rowSpan = DEFAULT_APPS_SPAN_Y,
+                    minColSpan = 1,
+                    minRowSpan = 1
+                )
+            )
+        }
     }
 }

@@ -9,7 +9,6 @@ import android.os.Build
 import android.util.Log
 import android.widget.ImageView
 import android.widget.RemoteViews
-import android.widget.TextView
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -146,14 +145,14 @@ class WidgetPickerViewModel : ViewModel() {
             val groups = withContext(Dispatchers.IO) {
                 val installed = appWidgetManager.installedProviders
                 val pm = context.packageManager
-                
+
                 val grouped = installed.groupBy { it.provider.packageName }
                 grouped.mapNotNull { (packageName, providers) ->
                     try {
                         val appInfo = pm.getApplicationInfo(packageName, 0)
                         val appName = pm.getApplicationLabel(appInfo).toString()
                         val appIcon = pm.getApplicationIcon(appInfo)
-                        
+
                         val densityDpi = context.resources.displayMetrics.densityDpi
                         val variants = providers.map { provider ->
                             val label = provider.loadLabel(pm)
@@ -163,15 +162,15 @@ class WidgetPickerViewModel : ViewModel() {
                             } else {
                                 0
                             }
-                            
+
                             // Rough estimate of spans. Widget sizing can be complex,
                             // but for preview display we estimate.
                             val minWidthAdjusted = provider.minWidth + CELL_MARGIN_ESTIMATE_DP
                             val spanX = Math.max(1, Math.ceil(minWidthAdjusted / CELL_SIZE_ESTIMATE_DP).toInt())
-                            
+
                             val minHeightAdjusted = provider.minHeight + CELL_MARGIN_ESTIMATE_DP
                             val spanY = Math.max(1, Math.ceil(minHeightAdjusted / CELL_SIZE_ESTIMATE_DP).toInt())
-                            
+
                             WidgetVariant(
                                 widgetId = provider.provider.flattenToString(),
                                 title = label,
@@ -466,7 +465,7 @@ fun WidgetPreviewCard(
                     modifier = Modifier.padding(8.dp)
                 )
             }
-            
+
             // Grid Span indicator
             Box(
                 modifier = Modifier
@@ -485,9 +484,9 @@ fun WidgetPreviewCard(
                 )
             }
         }
-        
+
         Spacer(modifier = Modifier.height(8.dp))
-        
+
         Text(
             text = widget.title,
             style = MaterialTheme.typography.bodySmall,
