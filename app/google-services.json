@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "430099619604",
+    "project_id": "aureole-launcher-65895",
+    "storage_bucket": "aureole-launcher-65895.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:430099619604:android:020909642488a499986c01",
+        "android_client_info": {
+          "package_name": "dev.mnascimentos.aureole"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDgij1ApGA0IzO8G8--8JkdU7CpD_uN2d4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:430099619604:android:020909642488a499986c02",
+        "android_client_info": {
+          "package_name": "dev.mnascimentos.aureole.debug"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDgij1ApGA0IzO8G8--8JkdU7CpD_uN2d4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
