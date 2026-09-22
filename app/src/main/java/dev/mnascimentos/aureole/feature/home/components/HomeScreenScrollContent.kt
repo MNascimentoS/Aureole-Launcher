@@ -7,6 +7,7 @@ import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -61,6 +62,7 @@ private const val SCROLL_CHILD_MIN_WIDTH = 100
 private const val SCROLL_CHILD_ROW_HEIGHT = 60
 private const val SCROLL_CHILD_COL_WIDTH = 70
 private const val REMOVE_BTN_SIZE = 28
+private const val EDIT_MODE_Z_INDEX = 100f
 private val REMOVE_BTN_PADDING = 4.dp
 private val CLOSE_ICON_SIZE = 16.dp
 
@@ -213,9 +215,7 @@ private fun ScrollViewChildItem(params: ScrollViewChildItemParams) {
     val isVertical = params.isVertical
     val isAppsList = childItem.safeType == LauncherItemType.APPS_LIST
     val childModifier = when {
-        isAppsList && isVertical -> {
-            Modifier.fillMaxWidth().wrapContentHeight()
-        }
+        isAppsList && isVertical -> Modifier.fillMaxWidth().wrapContentHeight()
         isVertical -> {
             val childHeightDp = (childItem.rowSpan * SCROLL_CHILD_ROW_HEIGHT).dp
                 .coerceAtLeast(SCROLL_CHILD_MIN_HEIGHT.dp)
@@ -240,37 +240,44 @@ private fun ScrollViewChildItem(params: ScrollViewChildItemParams) {
             )
         )
         if (uiState.isGridEditMode) {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .pointerInput("block_child_" + childItem.id) {
-                        detectTapGestures(onTap = {})
-                    }
+            ChildItemRemoveOverlay(
+                childId = childItem.id,
+                onRemove = { actions.onRemoveChildFromScrollView(parentId, childItem.id) }
             )
-            Box(
-                modifier = Modifier
-                    .align(Alignment.TopEnd)
-                    .padding(REMOVE_BTN_PADDING)
-                    .size(REMOVE_BTN_SIZE.dp)
-                    .zIndex(100f)
-                    .background(MaterialTheme.colorScheme.error, CircleShape)
-                    .pointerInput("remove_btn_" + childItem.id) {
-                        detectTapGestures(
-                            onTap = {
-                                actions.onRemoveChildFromScrollView(parentId, childItem.id)
-                            }
-                        )
-                    },
-                contentAlignment = Alignment.Center
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Close,
-                    contentDescription = "Remover",
-                    tint = MaterialTheme.colorScheme.onError,
-                    modifier = Modifier.size(CLOSE_ICON_SIZE)
-                )
-            }
         }
+    }
+}
+
+@Composable
+private fun BoxScope.ChildItemRemoveOverlay(
+    childId: String,
+    onRemove: () -> Unit
+) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .pointerInput("block_child_" + childId) {
+                detectTapGestures(onTap = {})
+            }
+    )
+    Box(
+        modifier = Modifier
+            .align(Alignment.TopEnd)
+            .padding(REMOVE_BTN_PADDING)
+            .size(REMOVE_BTN_SIZE.dp)
+            .zIndex(EDIT_MODE_Z_INDEX)
+            .background(MaterialTheme.colorScheme.error, CircleShape)
+            .pointerInput("remove_btn_" + childId) {
+                detectTapGestures(onTap = { onRemove() })
+            },
+        contentAlignment = Alignment.Center
+    ) {
+        Icon(
+            imageVector = Icons.Default.Close,
+            contentDescription = "Remover",
+            tint = MaterialTheme.colorScheme.onError,
+            modifier = Modifier.size(CLOSE_ICON_SIZE)
+        )
     }
 }
 

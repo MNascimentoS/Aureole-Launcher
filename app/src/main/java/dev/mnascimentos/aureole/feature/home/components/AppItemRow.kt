@@ -187,20 +187,8 @@ private fun AppItemRowDropdownMenu(
         onDismissRequest = onDismiss
     ) {
         if (actions.onToggleFavorite != null) {
-            val favTint = if (isFavorite) {
-                MaterialTheme.colorScheme.primary
-            } else {
-                MaterialTheme.colorScheme.onSurface.copy(alpha = FAVORITE_INACTIVE_ALPHA)
-            }
-            DropdownMenuItem(
-                text = { Text(if (isFavorite) "Remove from Favorites" else "Add to Favorites") },
-                leadingIcon = {
-                    Icon(
-                        imageVector = Icons.Default.Star,
-                        contentDescription = null,
-                        tint = favTint
-                    )
-                },
+            FavoriteMenuItem(
+                isFavorite = isFavorite,
                 onClick = {
                     actions.onToggleFavorite.invoke(app.packageName)
                     onDismiss()
@@ -209,15 +197,7 @@ private fun AppItemRowDropdownMenu(
         }
 
         if (actions.onEditFavoritesClick != null) {
-            DropdownMenuItem(
-                text = { Text("Editar Favoritos") },
-                leadingIcon = {
-                    Icon(
-                        imageVector = Icons.Default.Edit,
-                        contentDescription = null,
-                        tint = MaterialTheme.colorScheme.onSurface
-                    )
-                },
+            EditFavoritesMenuItem(
                 onClick = {
                     actions.onEditFavoritesClick.invoke()
                     onDismiss()
@@ -226,15 +206,7 @@ private fun AppItemRowDropdownMenu(
         }
 
         if (actions.onAppInfoClick != null) {
-            DropdownMenuItem(
-                text = { Text("App Info") },
-                leadingIcon = {
-                    Icon(
-                        imageVector = Icons.Default.Info,
-                        contentDescription = null,
-                        tint = MaterialTheme.colorScheme.onSurface
-                    )
-                },
+            AppInfoMenuItem(
                 onClick = {
                     actions.onAppInfoClick.invoke(app)
                     onDismiss()
@@ -242,6 +214,63 @@ private fun AppItemRowDropdownMenu(
             )
         }
     }
+}
+
+@Composable
+private fun FavoriteMenuItem(
+    isFavorite: Boolean,
+    onClick: () -> Unit
+) {
+    val favTint = if (isFavorite) {
+        MaterialTheme.colorScheme.primary
+    } else {
+        MaterialTheme.colorScheme.onSurface.copy(alpha = FAVORITE_INACTIVE_ALPHA)
+    }
+    DropdownMenuItem(
+        text = { Text(if (isFavorite) "Remove from Favorites" else "Add to Favorites") },
+        leadingIcon = {
+            Icon(
+                imageVector = Icons.Default.Star,
+                contentDescription = null,
+                tint = favTint
+            )
+        },
+        onClick = onClick
+    )
+}
+
+@Composable
+private fun EditFavoritesMenuItem(
+    onClick: () -> Unit
+) {
+    DropdownMenuItem(
+        text = { Text("Editar Favoritos") },
+        leadingIcon = {
+            Icon(
+                imageVector = Icons.Default.Edit,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.onSurface
+            )
+        },
+        onClick = onClick
+    )
+}
+
+@Composable
+private fun AppInfoMenuItem(
+    onClick: () -> Unit
+) {
+    DropdownMenuItem(
+        text = { Text("App Info") },
+        leadingIcon = {
+            Icon(
+                imageVector = Icons.Default.Info,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.onSurface
+            )
+        },
+        onClick = onClick
+    )
 }
 
 @AureolePreview

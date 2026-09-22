@@ -213,7 +213,6 @@ private fun HomeOverlaysDialogsAndErrors(config: HomeOverlaysConfig) {
             ?: SidePanelModel(id = config.uiState.editingSidePanelId)
         EditSidePanelDialog(
             panel = editingPanel,
-            allApps = config.uiState.apps,
             onDismiss = config.actions.onCloseEditSidePanelDialog,
             onSave = config.actions.onSaveSidePanelModel,
             onDeletePanel = config.actions.onDeleteSidePanelInstance
@@ -303,35 +302,7 @@ private fun MainHomeLayout(
             .statusBarsPadding()
             .navigationBarsPadding()
     ) { item ->
-        val panelModel = uiState.sidePanels[item.id]
-        val currentSidePanelConfig = if (item.safeType == LauncherItemType.SHORTCUTS_SIDE_PANEL && panelModel != null) {
-            SidePanelConfig(
-                panelId = panelModel.id,
-                title = panelModel.title,
-                folders = panelModel.folders.ifEmpty { uiState.folders },
-                appPackageNames = panelModel.appPackageNames,
-                openedFolderId = uiState.openedFolderId,
-                position = panelModel.position,
-                showFolderLabels = panelModel.showFolderLabels,
-                showAddFolderButton = panelModel.showAddFolderButton,
-                isBackgroundEnabled = panelModel.isBackgroundEnabled,
-                isExpandCell = panelModel.isExpandCell,
-                isGridFolderEnabled = panelModel.isGridFolderEnabled,
-                hazeState = hazeState
-            )
-        } else {
-            SidePanelConfig(
-                panelId = item.id,
-                folders = uiState.folders,
-                openedFolderId = uiState.openedFolderId,
-                position = uiState.sidePanelPosition,
-                showFolderLabels = uiState.showFolderLabels,
-                showAddFolderButton = uiState.showSidePanelAddFolderButton,
-                isBackgroundEnabled = uiState.isSidePanelBackgroundEnabled,
-                isExpandCell = uiState.isSidePanelExpandCell,
-                hazeState = hazeState
-            )
-        }
+        val currentSidePanelConfig = buildSidePanelConfig(item, uiState, hazeState)
 
         GridItemContent(
             GridItemContentParams(
@@ -341,6 +312,42 @@ private fun MainHomeLayout(
                 stackedWidgetConfig = stackedWidgetConfig,
                 sidePanelConfig = currentSidePanelConfig
             )
+        )
+    }
+}
+
+private fun buildSidePanelConfig(
+    item: LauncherItemState,
+    uiState: MainUiState,
+    hazeState: HazeState
+): SidePanelConfig {
+    val panelModel = uiState.sidePanels[item.id]
+    return if (item.safeType == LauncherItemType.SHORTCUTS_SIDE_PANEL && panelModel != null) {
+        SidePanelConfig(
+            panelId = panelModel.id,
+            title = panelModel.title,
+            folders = panelModel.folders.ifEmpty { uiState.folders },
+            appPackageNames = panelModel.appPackageNames,
+            openedFolderId = uiState.openedFolderId,
+            position = panelModel.position,
+            showFolderLabels = panelModel.showFolderLabels,
+            showAddFolderButton = panelModel.showAddFolderButton,
+            isBackgroundEnabled = panelModel.isBackgroundEnabled,
+            isExpandCell = panelModel.isExpandCell,
+            isGridFolderEnabled = panelModel.isGridFolderEnabled,
+            hazeState = hazeState
+        )
+    } else {
+        SidePanelConfig(
+            panelId = item.id,
+            folders = uiState.folders,
+            openedFolderId = uiState.openedFolderId,
+            position = uiState.sidePanelPosition,
+            showFolderLabels = uiState.showFolderLabels,
+            showAddFolderButton = uiState.showSidePanelAddFolderButton,
+            isBackgroundEnabled = uiState.isSidePanelBackgroundEnabled,
+            isExpandCell = uiState.isSidePanelExpandCell,
+            hazeState = hazeState
         )
     }
 }

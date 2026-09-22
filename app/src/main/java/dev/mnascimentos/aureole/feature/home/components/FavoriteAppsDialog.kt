@@ -1,39 +1,27 @@
 package dev.mnascimentos.aureole.feature.home.components
 
-import android.content.ComponentName
-import android.graphics.drawable.ColorDrawable
-import androidx.compose.animation.animateContentSize
-import androidx.compose.foundation.Image
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.KeyboardArrowDown
-import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material3.Checkbox
-import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -43,449 +31,340 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import dev.mnascimentos.aureole.core.data.model.AppInfo
-import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
-import dev.mnascimentos.aureole.core.designsystem.theme.AureolePreview
 
-private const val FAVORITE_DIALOG_HEIGHT_FRACTION = 0.85f
-private val APP_ICON_SIZE = 36.dp
+private const val DIALOG_WIDTH_FRACTION = 0.92f
+
+data class FavoriteAppsDialogConfig(
+    val allApps: List<AppInfo>,
+    val favoriteAppPackages: List<String>,
+    val containerId: String? = null,
+    val showAllAppsOnHome: Boolean = true
+)
+
+data class FavoriteAppsDialogActions(
+    val onToggleFavorite: (String) -> Unit = {},
+    val onUpdateFavoritePackages: (String?, List<String>) -> Unit = { _, _ -> },
+    val onToggleShowAllAppsOnHome: () -> Unit = {},
+    val onDismiss: () -> Unit = {}
+)
+
+data class FavoriteAppRowParams(
+    val app: AppInfo,
+    val index: Int,
+    val totalCount: Int,
+    val canReorder: Boolean
+)
+
+data class FavoriteSectionParams(
+    val filteredFavorites: List<AppInfo>,
+    val searchQuery: String,
+    val favoriteCount: Int
+)
+
+data class FavoriteAppsBodyParams(
+    val config: FavoriteAppsDialogConfig,
+    val actions: FavoriteAppsDialogActions,
+    val searchQuery: String,
+    val favoriteCount: Int,
+    val filteredFavorites: List<AppInfo>,
+    val filteredRemaining: List<AppInfo>
+)
 
 @Composable
 fun FavoriteAppsDialog(
-    allApps: List<AppInfo>,
-    favoriteAppPackages: List<String>,
-    containerId: String? = null,
-    showAllAppsOnHome: Boolean = true,
-    onToggleFavorite: (String) -> Unit = {},
-    onUpdateFavoritePackages: (String?, List<String>) -> Unit = { _, _ -> },
-    onToggleShowAllAppsOnHome: () -> Unit = {},
-    onDismiss: () -> Unit
+    config: FavoriteAppsDialogConfig,
+    actions: FavoriteAppsDialogActions
 ) {
-    var searchQuery by remember { mutableStateOf("") }
-
-    val appMap = remember(allApps) {
-        allApps.associateBy { it.packageName }
-    }
-
-    // Map ordered favorite packages to AppInfo list
-    val favoriteApps = remember(favoriteAppPackages, appMap) {
-        favoriteAppPackages.mapNotNull { pkg -> appMap[pkg] }
-    }
-
-    // Remaining non-favorite apps
-    val remainingApps = remember(allApps, favoriteAppPackages) {
-        val favSet = favoriteAppPackages.toSet()
-        allApps.filter { it.packageName !in favSet }
-            .sortedBy { it.label.lowercase() }
-    }
-
-    // Filter by search query
-    val filteredFavorites = remember(searchQuery, favoriteApps) {
-        if (searchQuery.isBlank()) {
-            favoriteApps
-        } else {
-            favoriteApps.filter { it.label.contains(searchQuery, ignoreCase = true) }
-        }
-    }
-
-    val filteredRemaining = remember(searchQuery, remainingApps) {
-        if (searchQuery.isBlank()) {
-            remainingApps
-        } else {
-            remainingApps.filter { it.label.contains(searchQuery, ignoreCase = true) }
-        }
-    }
-
-    val handleMoveUp = { index: Int ->
-        if (index > 0 && index < favoriteAppPackages.size) {
-            val list = favoriteAppPackages.toMutableList()
-            val item = list.removeAt(index)
-            list.add(index - 1, item)
-            onUpdateFavoritePackages(containerId, list)
-        }
-    }
-
-    val handleMoveDown = { index: Int ->
-        if (index >= 0 && index < favoriteAppPackages.size - 1) {
-            val list = favoriteAppPackages.toMutableList()
-            val item = list.removeAt(index)
-            list.add(index + 1, item)
-            onUpdateFavoritePackages(containerId, list)
-        }
-    }
-
     Dialog(
-        onDismissRequest = onDismiss,
+        onDismissRequest = actions.onDismiss,
         properties = DialogProperties(
             dismissOnBackPress = true,
             dismissOnClickOutside = true,
             usePlatformDefaultWidth = false
         )
     ) {
-        Column(
+        Box(
             modifier = Modifier
-                .widthIn(max = 380.dp)
-                .fillMaxHeight(FAVORITE_DIALOG_HEIGHT_FRACTION)
+                .fillMaxWidth(DIALOG_WIDTH_FRACTION)
+                .heightIn(max = 620.dp)
                 .clip(RoundedCornerShape(24.dp))
                 .background(MaterialTheme.colorScheme.surface)
                 .padding(20.dp)
         ) {
-            FavoriteAppsHeader(onDismiss = onDismiss)
-
-            Spacer(modifier = Modifier.height(12.dp))
-
-            // Container settings: Toggle Show All Apps on Home
-            ShowAllAppsSettingRow(
-                showAllAppsOnHome = showAllAppsOnHome,
-                onToggleShowAllAppsOnHome = onToggleShowAllAppsOnHome
-            )
-
-            Spacer(modifier = Modifier.height(12.dp))
-
-            FavoriteAppsSearchField(
-                searchQuery = searchQuery,
-                onQueryChange = { searchQuery = it }
-            )
-
-            Spacer(modifier = Modifier.height(12.dp))
-
-            LazyColumn(
-                modifier = Modifier
-                    .weight(1f)
-                    .fillMaxWidth()
-                    .animateContentSize(),
-                verticalArrangement = Arrangement.spacedBy(4.dp)
-            ) {
-                // Section 1: Favorites Pinned at Top (RF04 & RF05)
-                item(key = "header_favorites") {
-                    Text(
-                        text = "Favoritos (${favoriteApps.size})",
-                        style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.primary,
-                        modifier = Modifier.padding(vertical = 8.dp)
-                    )
-                }
-
-                if (filteredFavorites.isEmpty()) {
-                    item(key = "empty_favorites") {
-                        Text(
-                            text = if (searchQuery.isBlank()) "Nenhum aplicativo favorito selecionado." else "Nenhum favorito encontrado.",
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            modifier = Modifier.padding(vertical = 8.dp, horizontal = 4.dp)
-                        )
-                    }
-                } else {
-                    itemsIndexed(
-                        items = filteredFavorites,
-                        key = { _, app -> "fav_${app.packageName}" }
-                    ) { index, app ->
-                        FavoriteAppRow(
-                            app = app,
-                            index = index,
-                            totalCount = filteredFavorites.size,
-                            canReorder = searchQuery.isBlank(),
-                            onMoveUp = { handleMoveUp(index) },
-                            onMoveDown = { handleMoveDown(index) },
-                            onToggleFavorite = {
-                                onToggleFavorite(app.packageName)
-                            }
-                        )
-                    }
-                }
-
-                item(key = "divider_sections") {
-                    HorizontalDivider(
-                        modifier = Modifier.padding(vertical = 12.dp),
-                        color = MaterialTheme.colorScheme.outlineVariant
-                    )
-                }
-
-                // Section 2: Other Installed Apps
-                item(key = "header_remaining") {
-                    Text(
-                        text = "Outros Aplicativos",
-                        style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.onSurface,
-                        modifier = Modifier.padding(vertical = 8.dp)
-                    )
-                }
-
-                if (filteredRemaining.isEmpty()) {
-                    item(key = "empty_remaining") {
-                        Text(
-                            text = if (searchQuery.isBlank()) "Todos os aplicativos já estão nos favoritos." else "Nenhum outro aplicativo encontrado.",
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            modifier = Modifier.padding(vertical = 8.dp, horizontal = 4.dp)
-                        )
-                    }
-                } else {
-                    itemsIndexed(
-                        items = filteredRemaining,
-                        key = { _, app -> "rem_${app.packageName}" }
-                    ) { _, app ->
-                        NonFavoriteAppRow(
-                            app = app,
-                            onToggleFavorite = {
-                                onToggleFavorite(app.packageName)
-                            }
-                        )
-                    }
-                }
-            }
-
-            Spacer(modifier = Modifier.height(12.dp))
-
-            FavoriteAppsFooter(onDismiss = onDismiss)
+            FavoriteAppsDialogContent(config = config, actions = actions)
         }
     }
 }
 
 @Composable
-private fun FavoriteAppsHeader(onDismiss: () -> Unit) {
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Text(
-            text = "Configurar Favoritos",
-            style = MaterialTheme.typography.titleLarge,
-            fontWeight = FontWeight.Bold,
-            color = MaterialTheme.colorScheme.onSurface,
-            modifier = Modifier.weight(1f)
-        )
-        IconButton(onClick = onDismiss) {
-            Icon(
-                imageVector = Icons.Default.Close,
-                contentDescription = "Fechar"
-            )
-        }
-    }
-}
-
-@Composable
-private fun ShowAllAppsSettingRow(
-    showAllAppsOnHome: Boolean,
-    onToggleShowAllAppsOnHome: () -> Unit
+private fun FavoriteAppsDialogContent(
+    config: FavoriteAppsDialogConfig,
+    actions: FavoriteAppsDialogActions
 ) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clip(RoundedCornerShape(12.dp))
-            .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f))
-            .clickable(onClick = onToggleShowAllAppsOnHome)
-            .padding(horizontal = 12.dp, vertical = 8.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Column(modifier = Modifier.weight(1f)) {
-            Text(
-                text = "Mostrar todos os apps na home",
-                style = MaterialTheme.typography.bodyMedium,
-                fontWeight = FontWeight.SemiBold,
-                color = MaterialTheme.colorScheme.onSurface
-            )
-            Text(
-                text = "Exibe lista completa abaixo dos favoritos",
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-        }
-        Spacer(modifier = Modifier.width(8.dp))
-        Switch(
-            checked = showAllAppsOnHome,
-            onCheckedChange = { onToggleShowAllAppsOnHome() }
-        )
-    }
-}
+    var searchQuery by remember { mutableStateOf("") }
 
-@Composable
-private fun FavoriteAppsSearchField(
-    searchQuery: String,
-    onQueryChange: (String) -> Unit
-) {
-    OutlinedTextField(
-        value = searchQuery,
-        onValueChange = onQueryChange,
-        placeholder = { Text("Buscar aplicativos...") },
-        leadingIcon = {
-            Icon(
-                imageVector = Icons.Default.Search,
-                contentDescription = "Buscar"
-            )
-        },
-        modifier = Modifier.fillMaxWidth(),
-        singleLine = true,
-        shape = RoundedCornerShape(12.dp)
+    val appMap = remember(config.allApps) {
+        config.allApps.associateBy { it.packageName }
+    }
+
+    val favoriteApps = remember(config.favoriteAppPackages, appMap) {
+        config.favoriteAppPackages.mapNotNull { pkg -> appMap[pkg] }
+    }
+
+    val remainingApps = remember(config.allApps, config.favoriteAppPackages) {
+        val favSet = config.favoriteAppPackages.toSet()
+        config.allApps.filter { it.packageName !in favSet }
+            .sortedBy { it.label.lowercase() }
+    }
+
+    val filteredFavorites = remember(searchQuery, favoriteApps) {
+        filterAppsByQuery(favoriteApps, searchQuery)
+    }
+
+    val filteredRemaining = remember(searchQuery, remainingApps) {
+        filterAppsByQuery(remainingApps, searchQuery)
+    }
+
+    FavoriteAppsDialogBody(
+        params = FavoriteAppsBodyParams(
+            config = config,
+            actions = actions,
+            searchQuery = searchQuery,
+            favoriteCount = favoriteApps.size,
+            filteredFavorites = filteredFavorites,
+            filteredRemaining = filteredRemaining
+        ),
+        onSearchQueryChange = { searchQuery = it }
     )
 }
 
-@Composable
-private fun FavoriteAppRow(
-    app: AppInfo,
-    index: Int,
-    totalCount: Int,
-    canReorder: Boolean,
-    onMoveUp: () -> Unit,
-    onMoveDown: () -> Unit,
-    onToggleFavorite: () -> Unit
-) {
-    val iconBitmap = remember(app.packageName) { app.getIconBitmap() }
+private fun filterAppsByQuery(apps: List<AppInfo>, query: String): List<AppInfo> {
+    return if (query.isBlank()) {
+        apps
+    } else {
+        apps.filter { it.label.contains(query, ignoreCase = true) }
+    }
+}
 
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clip(RoundedCornerShape(8.dp))
-            .background(MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.25f))
-            .clickable(onClick = onToggleFavorite)
-            .padding(vertical = 6.dp, horizontal = 8.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        if (canReorder) {
-            Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                IconButton(
-                    onClick = onMoveUp,
-                    enabled = index > 0,
-                    modifier = Modifier.size(24.dp)
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.KeyboardArrowUp,
-                        contentDescription = "Mover para cima",
-                        tint = if (index > 0) {
-                            MaterialTheme.colorScheme.primary
-                        } else {
-                            MaterialTheme.colorScheme.outline.copy(
-                                alpha = 0.3f
-                            )
-                        }
-                    )
-                }
-                IconButton(
-                    onClick = onMoveDown,
-                    enabled = index < totalCount - 1,
-                    modifier = Modifier.size(24.dp)
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.KeyboardArrowDown,
-                        contentDescription = "Mover para baixo",
-                        tint = if (index < totalCount - 1) {
-                            MaterialTheme.colorScheme.primary
-                        } else {
-                            MaterialTheme.colorScheme.outline.copy(
-                                alpha = 0.3f
-                            )
-                        }
-                    )
-                }
-            }
-            Spacer(modifier = Modifier.width(4.dp))
+@Composable
+private fun FavoriteAppsDialogBody(
+    params: FavoriteAppsBodyParams,
+    onSearchQueryChange: (String) -> Unit
+) {
+    val config = params.config
+    val actions = params.actions
+    val handleMoveUp = { index: Int -> moveFavoriteItem(config, actions, index, delta = -1) }
+    val handleMoveDown = { index: Int -> moveFavoriteItem(config, actions, index, delta = 1) }
+
+    Column(modifier = Modifier.fillMaxWidth()) {
+        FavoriteAppsDialogHeader(onDismiss = actions.onDismiss, containerId = config.containerId)
+        Spacer(modifier = Modifier.height(12.dp))
+
+        if (config.containerId == null) {
+            FavoriteAppsShowAllSwitchRow(
+                showAllAppsOnHome = config.showAllAppsOnHome,
+                onToggleShowAllAppsOnHome = actions.onToggleShowAllAppsOnHome
+            )
+            Spacer(modifier = Modifier.height(12.dp))
         }
 
-        Image(
-            bitmap = iconBitmap,
-            contentDescription = app.label,
-            modifier = Modifier.size(APP_ICON_SIZE)
+        OutlinedTextField(
+            value = params.searchQuery,
+            onValueChange = onSearchQueryChange,
+            placeholder = { Text("Buscar aplicativo...") },
+            leadingIcon = {
+                Icon(
+                    imageVector = Icons.Default.Search,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            },
+            singleLine = true,
+            modifier = Modifier.fillMaxWidth()
         )
 
-        Spacer(modifier = Modifier.width(12.dp))
+        Spacer(modifier = Modifier.height(12.dp))
 
-        Text(
-            text = app.label,
-            style = MaterialTheme.typography.bodyLarge,
-            fontWeight = FontWeight.Medium,
-            color = MaterialTheme.colorScheme.onSurface,
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis,
-            modifier = Modifier.weight(1f)
-        )
+        LazyColumn(
+            modifier = Modifier.weight(1f).fillMaxWidth(),
+            verticalArrangement = Arrangement.spacedBy(4.dp)
+        ) {
+            favoriteSectionItems(
+                params = FavoriteSectionParams(
+                    filteredFavorites = params.filteredFavorites,
+                    searchQuery = params.searchQuery,
+                    favoriteCount = params.favoriteCount
+                ),
+                onMoveUp = handleMoveUp,
+                onMoveDown = handleMoveDown,
+                onToggleFavorite = { pkg -> actions.onToggleFavorite(pkg) }
+            )
 
-        Spacer(modifier = Modifier.width(8.dp))
+            remainingSectionItems(
+                filteredRemaining = params.filteredRemaining,
+                searchQuery = params.searchQuery,
+                onToggleFavorite = { pkg -> actions.onToggleFavorite(pkg) }
+            )
+        }
 
-        Checkbox(
-            checked = true,
-            onCheckedChange = { onToggleFavorite() }
-        )
-    }
-}
-
-@Composable
-private fun NonFavoriteAppRow(
-    app: AppInfo,
-    onToggleFavorite: () -> Unit
-) {
-    val iconBitmap = remember(app.packageName) { app.getIconBitmap() }
-
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clip(RoundedCornerShape(8.dp))
-            .clickable(onClick = onToggleFavorite)
-            .padding(vertical = 6.dp, horizontal = 8.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Image(
-            bitmap = iconBitmap,
-            contentDescription = app.label,
-            modifier = Modifier.size(APP_ICON_SIZE)
-        )
-
-        Spacer(modifier = Modifier.width(12.dp))
-
-        Text(
-            text = app.label,
-            style = MaterialTheme.typography.bodyLarge,
-            color = MaterialTheme.colorScheme.onSurface,
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis,
-            modifier = Modifier.weight(1f)
-        )
-
-        Spacer(modifier = Modifier.width(8.dp))
-
-        Checkbox(
-            checked = false,
-            onCheckedChange = { onToggleFavorite() }
-        )
-    }
-}
-
-@Composable
-private fun FavoriteAppsFooter(onDismiss: () -> Unit) {
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Spacer(modifier = Modifier.weight(1f))
-        TextButton(onClick = onDismiss) {
+        Spacer(modifier = Modifier.height(12.dp))
+        Button(onClick = actions.onDismiss, modifier = Modifier.align(Alignment.End)) {
             Text("Concluído")
         }
     }
 }
 
-@AureolePreview
+private fun moveFavoriteItem(
+    config: FavoriteAppsDialogConfig,
+    actions: FavoriteAppsDialogActions,
+    index: Int,
+    delta: Int
+) {
+    val targetIndex = index + delta
+    if (targetIndex in 0 until config.favoriteAppPackages.size) {
+        val list = config.favoriteAppPackages.toMutableList()
+        val item = list.removeAt(index)
+        list.add(targetIndex, item)
+        actions.onUpdateFavoritePackages(config.containerId, list)
+    }
+}
+
+@OptIn(ExperimentalFoundationApi::class)
+private fun LazyListScope.favoriteSectionItems(
+    params: FavoriteSectionParams,
+    onMoveUp: (Int) -> Unit,
+    onMoveDown: (Int) -> Unit,
+    onToggleFavorite: (String) -> Unit
+) {
+    val filteredFavorites = params.filteredFavorites
+    val searchQuery = params.searchQuery
+    val favoriteCount = params.favoriteCount
+
+    item {
+        Text(
+            text = "Favoritos (${filteredFavorites.size})",
+            style = MaterialTheme.typography.titleSmall,
+            fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colorScheme.primary,
+            modifier = Modifier.padding(vertical = 4.dp)
+        )
+    }
+
+    if (filteredFavorites.isEmpty()) {
+        item {
+            val emptyMsg = if (searchQuery.isBlank()) {
+                "Nenhum aplicativo favorito selecionado."
+            } else {
+                "Nenhum favorito encontrado."
+            }
+            Text(
+                text = emptyMsg,
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 12.dp),
+                textAlign = TextAlign.Center
+            )
+        }
+    } else {
+        itemsIndexed(
+            items = filteredFavorites,
+            key = { _, app -> "fav_${app.packageName}" }
+        ) { index, app ->
+            FavoriteAppRow(
+                params = FavoriteAppRowParams(
+                    app = app,
+                    index = index,
+                    totalCount = favoriteCount,
+                    canReorder = searchQuery.isBlank()
+                ),
+                onMoveUp = { onMoveUp(index) },
+                onMoveDown = { onMoveDown(index) },
+                onToggleFavorite = { onToggleFavorite(app.packageName) },
+                modifier = Modifier.animateItem()
+            )
+        }
+    }
+}
+
+@OptIn(ExperimentalFoundationApi::class)
+private fun LazyListScope.remainingSectionItems(
+    filteredRemaining: List<AppInfo>,
+    searchQuery: String,
+    onToggleFavorite: (String) -> Unit
+) {
+    item {
+        Spacer(modifier = Modifier.height(8.dp))
+        Text(
+            text = "Outros Aplicativos (${filteredRemaining.size})",
+            style = MaterialTheme.typography.titleSmall,
+            fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier.padding(vertical = 4.dp)
+        )
+    }
+
+    if (filteredRemaining.isEmpty()) {
+        item {
+            val emptyMsg = if (searchQuery.isBlank()) {
+                "Todos os aplicativos já estão nos favoritos."
+            } else {
+                "Nenhum outro aplicativo encontrado."
+            }
+            Text(
+                text = emptyMsg,
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 12.dp),
+                textAlign = TextAlign.Center
+            )
+        }
+    } else {
+        itemsIndexed(
+            items = filteredRemaining,
+            key = { _, app -> "rem_${app.packageName}" }
+        ) { _, app ->
+            RemainingAppRow(
+                app = app,
+                onToggleFavorite = { onToggleFavorite(app.packageName) },
+                modifier = Modifier.animateItem()
+            )
+        }
+    }
+}
+
 @Composable
-fun FavoriteAppsDialogPreview() {
-    val mockApp = AppInfo(
-        label = "Mensagens",
-        packageName = "com.example.messages",
-        componentName = ComponentName("com.example.messages", "MainActivity"),
-        icon = ColorDrawable(0xFF1B65C0.toInt())
-    )
-    AureoleLauncherTheme {
-        FavoriteAppsDialog(
-            allApps = listOf(mockApp),
-            favoriteAppPackages = listOf(mockApp.packageName),
-            showAllAppsOnHome = true,
-            onToggleFavorite = {},
-            onUpdateFavoritePackages = { _, _ -> },
-            onToggleShowAllAppsOnHome = {},
-            onDismiss = {}
+private fun FavoriteAppRow(
+    params: FavoriteAppRowParams,
+    onMoveUp: () -> Unit,
+    onMoveDown: () -> Unit,
+    onToggleFavorite: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(12.dp))
+            .background(MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.3f))
+            .padding(horizontal = 12.dp, vertical = 6.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        FavoriteAppRowInfo(app = params.app)
+
+        FavoriteAppRowActionButtons(
+            params = params,
+            onMoveUp = onMoveUp,
+            onMoveDown = onMoveDown,
+            onToggleFavorite = onToggleFavorite
         )
     }
 }

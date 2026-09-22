@@ -3,7 +3,9 @@ package dev.mnascimentos.aureole.core.data.db
 import android.content.ContentValues
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
+import android.database.sqlite.SQLiteException
 import android.database.sqlite.SQLiteOpenHelper
+import android.util.Log
 import dev.mnascimentos.aureole.core.data.model.AppFolder
 import dev.mnascimentos.aureole.core.data.model.FolderEntity
 import dev.mnascimentos.aureole.core.data.model.FolderItemEntity
@@ -48,16 +50,15 @@ class FolderDatabaseHelper(context: Context) : SQLiteOpenHelper(
         db.execSQL("CREATE INDEX IF NOT EXISTS idx_folders_panel_id ON folders(panel_id)")
     }
 
-    @Suppress("TooGenericExceptionCaught", "SwallowedException")
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
-        if (oldVersion < 2) {
+        if (oldVersion < VERSION_2) {
             db.execSQL("ALTER TABLE folders ADD COLUMN icon TEXT")
         }
-        if (oldVersion < 3) {
+        if (oldVersion < VERSION_3) {
             try {
                 db.execSQL("ALTER TABLE folders ADD COLUMN panel_id TEXT")
-            } catch (e: Exception) {
-                // Column may already exist
+            } catch (e: SQLiteException) {
+                Log.w("FolderDatabaseHelper", "Column panel_id may already exist", e)
             }
         }
     }
@@ -219,5 +220,7 @@ class FolderDatabaseHelper(context: Context) : SQLiteOpenHelper(
     companion object {
         private const val DATABASE_NAME = "aureole_launcher_folders.db"
         private const val DATABASE_VERSION = 3
+        private const val VERSION_2 = 2
+        private const val VERSION_3 = 3
     }
 }

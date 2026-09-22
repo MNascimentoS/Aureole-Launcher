@@ -5,6 +5,7 @@ import dev.mnascimentos.aureole.core.data.model.LauncherItemType
 import dev.mnascimentos.aureole.core.data.model.ScrollOrientation
 import dev.mnascimentos.aureole.feature.home.HomeViewModel
 import dev.mnascimentos.aureole.feature.home.grid.GridEngineUtils
+import dev.mnascimentos.aureole.feature.home.grid.SlotSearchRequest
 import java.util.UUID
 
 private const val CONTAINER_ERROR_MSG = "Não há espaço livre suficiente na grade para este container."
@@ -179,10 +180,12 @@ fun HomeViewModel.addGridItem(spec: GridItemSpec) {
         val reqMinRowSpan = spec.minRowSpan ?: defaultMinSpans.second
 
         val largestSlotResult = GridEngineUtils.findLargestAvailableSlot(
-            targetColSpan = reqTargetColSpan,
-            targetRowSpan = reqTargetRowSpan,
-            minColSpan = reqMinColSpan,
-            minRowSpan = reqMinRowSpan,
+            request = SlotSearchRequest(
+                targetColSpan = reqTargetColSpan,
+                targetRowSpan = reqTargetRowSpan,
+                minColSpan = reqMinColSpan,
+                minRowSpan = reqMinRowSpan
+            ),
             items = currentItems
         )
 

@@ -33,72 +33,18 @@ fun AddContainerDialog(
     isNested: Boolean = false,
     modifier: Modifier = Modifier
 ) {
+    val titleText = if (isNested) "Adicionar ao Scroll View" else "Adicionar Container"
     AlertDialog(
         onDismissRequest = onDismissRequest,
-        title = {
-            Text(
-                text = if (isNested) {
-                    "Adicionar ao Scroll View"
-                } else {
-                    "Adicionar Container"
+        title = { Text(text = titleText) },
+        text = {
+            AddContainerOptionList(
+                isNested = isNested,
+                onSelectType = { type ->
+                    onSelectType(type)
+                    onDismissRequest()
                 }
             )
-        },
-        text = {
-            Column(
-                modifier = Modifier.verticalScroll(rememberScrollState())
-            ) {
-                AddContainerOptionItem(
-                    title = "Relógio",
-                    icon = Icons.Default.Add,
-                    onClick = {
-                        onSelectType(LauncherItemType.CLOCK)
-                        onDismissRequest()
-                    }
-                )
-                AddContainerOptionItem(
-                    title = "Lista de Aplicativos",
-                    icon = Icons.Default.List,
-                    onClick = {
-                        onSelectType(LauncherItemType.APPS_LIST)
-                        onDismissRequest()
-                    }
-                )
-                AddContainerOptionItem(
-                    title = "Barra de Atalhos (Side Panel)",
-                    icon = Icons.Default.Menu,
-                    onClick = {
-                        onSelectType(LauncherItemType.SHORTCUTS_SIDE_PANEL)
-                        onDismissRequest()
-                    }
-                )
-                AddContainerOptionItem(
-                    title = "Widget Individual do Android",
-                    icon = Icons.Default.Settings,
-                    onClick = {
-                        onSelectType(LauncherItemType.SINGLE_APP_WIDGET)
-                        onDismissRequest()
-                    }
-                )
-                AddContainerOptionItem(
-                    title = "Lista de Widgets do Android",
-                    icon = Icons.Default.Add,
-                    onClick = {
-                        onSelectType(LauncherItemType.WIDGET_LIST)
-                        onDismissRequest()
-                    }
-                )
-                if (!isNested) {
-                    AddContainerOptionItem(
-                        title = "Container Scroll View",
-                        icon = Icons.Default.List,
-                        onClick = {
-                            onSelectType(LauncherItemType.SCROLL_VIEW)
-                            onDismissRequest()
-                        }
-                    )
-                }
-            }
         },
         confirmButton = {},
         dismissButton = {
@@ -108,6 +54,49 @@ fun AddContainerDialog(
         },
         modifier = modifier
     )
+}
+
+@Composable
+private fun AddContainerOptionList(
+    isNested: Boolean,
+    onSelectType: (LauncherItemType) -> Unit
+) {
+    Column(
+        modifier = Modifier.verticalScroll(rememberScrollState())
+    ) {
+        AddContainerOptionItem(
+            title = "Relógio",
+            icon = Icons.Default.Add,
+            onClick = { onSelectType(LauncherItemType.CLOCK) }
+        )
+        AddContainerOptionItem(
+            title = "Lista de Aplicativos",
+            icon = Icons.Default.List,
+            onClick = { onSelectType(LauncherItemType.APPS_LIST) }
+        )
+        AddContainerOptionItem(
+            title = "Barra de Atalhos (Side Panel)",
+            icon = Icons.Default.Menu,
+            onClick = { onSelectType(LauncherItemType.SHORTCUTS_SIDE_PANEL) }
+        )
+        AddContainerOptionItem(
+            title = "Widget Individual do Android",
+            icon = Icons.Default.Settings,
+            onClick = { onSelectType(LauncherItemType.SINGLE_APP_WIDGET) }
+        )
+        AddContainerOptionItem(
+            title = "Lista de Widgets do Android",
+            icon = Icons.Default.Add,
+            onClick = { onSelectType(LauncherItemType.WIDGET_LIST) }
+        )
+        if (!isNested) {
+            AddContainerOptionItem(
+                title = "Container Scroll View",
+                icon = Icons.Default.List,
+                onClick = { onSelectType(LauncherItemType.SCROLL_VIEW) }
+            )
+        }
+    }
 }
 
 @Composable

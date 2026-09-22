@@ -19,7 +19,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.graphics.Color
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.feature.home.components.FavoriteAppsDialog
+import dev.mnascimentos.aureole.feature.home.components.FavoriteAppsDialogActions
+import dev.mnascimentos.aureole.feature.home.components.FavoriteAppsDialogConfig
 import dev.mnascimentos.aureole.feature.settings.ext.checkDefaultLauncher
+import dev.mnascimentos.aureole.feature.settings.ext.performFactoryReset
+import dev.mnascimentos.aureole.feature.settings.ext.resetGridLayout
 import dev.mnascimentos.aureole.feature.settings.ext.restoreDefaultWallpaper
 import dev.mnascimentos.aureole.feature.settings.model.SettingValue
 import dev.mnascimentos.aureole.feature.settings.model.SettingsScreenActions
@@ -59,12 +63,16 @@ class SettingsActivity : ComponentActivity() {
 
                 if (uiState.showFavoritePickerDialog) {
                     FavoriteAppsDialog(
-                        allApps = uiState.allApps,
-                        favoriteAppPackages = uiState.favoriteAppPackages,
-                        onToggleFavorite = { pkg -> viewModel.toggleFavorite(pkg) },
-                        onDismiss = {
-                            viewModel.setDialogVisible(SettingsDialog.FAVORITE_PICKER, visible = false)
-                        },
+                        config = FavoriteAppsDialogConfig(
+                            allApps = uiState.allApps,
+                            favoriteAppPackages = uiState.favoriteAppPackages
+                        ),
+                        actions = FavoriteAppsDialogActions(
+                            onToggleFavorite = { pkg -> viewModel.toggleFavorite(pkg) },
+                            onDismiss = {
+                                viewModel.setDialogVisible(SettingsDialog.FAVORITE_PICKER, visible = false)
+                            }
+                        )
                     )
                 }
             }
@@ -97,79 +105,56 @@ class SettingsActivity : ComponentActivity() {
     }
 
     private fun applyTogglesAndDialogs(base: SettingsScreenActions): SettingsScreenActions {
+        val withToggles = applyToggleActions(base)
+        return applyDialogActions(withToggles)
+    }
+
+    private fun applyToggleActions(base: SettingsScreenActions): SettingsScreenActions {
         return base.copy(
             onToggleShowAllAppsOnHome = { viewModel.toggleSetting(SettingToggle.SHOW_ALL_APPS_ON_HOME) },
             onToggleHomeButtonOpensAllApps = { viewModel.toggleSetting(SettingToggle.HOME_OPENS_ALL_APPS) },
             onToggleWidgetRow = { viewModel.toggleSetting(SettingToggle.WIDGET_ROW) },
             onToggleShowWidgetDots = { viewModel.toggleSetting(SettingToggle.SHOW_WIDGET_DOTS) },
             onToggleSidePanelBackground = { viewModel.toggleSetting(SettingToggle.SIDE_PANEL_BACKGROUND) },
-            onToggleSidePanelExpandCell = {
-                viewModel.toggleSetting(SettingToggle.SIDE_PANEL_EXPAND_CELL)
-            },
+            onToggleSidePanelExpandCell = { viewModel.toggleSetting(SettingToggle.SIDE_PANEL_EXPAND_CELL) },
             onToggleClockBackground = { viewModel.toggleSetting(SettingToggle.CLOCK_BACKGROUND) },
             onToggleShowSidePanelAddFolderButton = {
-                viewModel.toggleSetting(
-                    SettingToggle.SHOW_SIDE_PANEL_ADD_FOLDER_BUTTON
-                )
+                viewModel.toggleSetting(SettingToggle.SHOW_SIDE_PANEL_ADD_FOLDER_BUTTON)
             },
             onToggleShowFolderLabels = { viewModel.toggleSetting(SettingToggle.SHOW_FOLDER_LABELS) },
-            onOpenSidePanelPositionDialog = {
-                viewModel.setDialogVisible(SettingsDialog.SIDE_PANEL_POSITION, visible = true)
-            },
-            onDismissSidePanelPositionDialog = {
-                viewModel.setDialogVisible(SettingsDialog.SIDE_PANEL_POSITION, visible = false)
-            },
-            onSidePanelPositionSelected = { pos ->
-                viewModel.setSettingValue(SettingValue.SidePanelPosition(pos))
-            },
             onToggleLeftHandedMode = { viewModel.toggleSetting(SettingToggle.LEFT_HANDED_MODE) },
             onToggleDynamicWallpaper = { viewModel.toggleSetting(SettingToggle.DYNAMIC_WALLPAPER) },
             onToggleHaze = { viewModel.toggleSetting(SettingToggle.HAZE) },
             onToggleInAppUpdate = { viewModel.toggleSetting(SettingToggle.IN_APP_UPDATE) },
             onToggleThemedAppIcons = { viewModel.toggleSetting(SettingToggle.THEMED_APP_ICONS) },
-            onToggleDisableAlphabetScrubber = { viewModel.toggleSetting(SettingToggle.DISABLE_ALPHABET_SCRUBBER) },
-            onOpenResetGridDialog = {
-                viewModel.setDialogVisible(SettingsDialog.RESET_GRID, visible = true)
+            onToggleDisableAlphabetScrubber = { viewModel.toggleSetting(SettingToggle.DISABLE_ALPHABET_SCRUBBER) }
+        )
+    }
+
+    private fun applyDialogActions(base: SettingsScreenActions): SettingsScreenActions {
+        return base.copy(
+            onOpenSidePanelPositionDialog = { viewModel.setDialogVisible(SettingsDialog.SIDE_PANEL_POSITION, true) },
+            onDismissSidePanelPositionDialog = {
+                viewModel.setDialogVisible(
+                    SettingsDialog.SIDE_PANEL_POSITION,
+                    false
+                )
             },
-            onDismissResetGridDialog = {
-                viewModel.setDialogVisible(SettingsDialog.RESET_GRID, visible = false)
-            },
-            onOpenFactoryResetDialog = {
-                viewModel.setDialogVisible(SettingsDialog.FACTORY_RESET, visible = true)
-            },
-            onDismissFactoryResetDialog = {
-                viewModel.setDialogVisible(SettingsDialog.FACTORY_RESET, visible = false)
-            },
-            onConfirmFactoryReset = {
-                viewModel.performFactoryReset()
-            },
-            onOpenFavoritePickerClick = {
-                viewModel.setDialogVisible(SettingsDialog.FAVORITE_PICKER, visible = true)
-            },
-            onOpenColorPickerDialog = {
-                viewModel.setDialogVisible(SettingsDialog.COLOR_PICKER, visible = true)
-            },
-            onDismissColorPickerDialog = {
-                viewModel.setDialogVisible(SettingsDialog.COLOR_PICKER, visible = false)
-            },
-            onRestoreDefaultWallpaperClick = {
-                viewModel.setDialogVisible(SettingsDialog.RESTORE_WALLPAPER, visible = true)
-            },
-            onDismissRestoreWallpaperDialog = {
-                viewModel.setDialogVisible(SettingsDialog.RESTORE_WALLPAPER, visible = false)
-            },
-            onAddFolderClick = {
-                viewModel.setDialogVisible(SettingsDialog.CREATE_FOLDER, visible = true)
-            },
-            onDismissCreateFolderDialog = {
-                viewModel.setDialogVisible(SettingsDialog.CREATE_FOLDER, visible = false)
-            },
-            onOpenHazeOpacityDialog = {
-                viewModel.setDialogVisible(SettingsDialog.HAZE_OPACITY, visible = true)
-            },
-            onDismissHazeOpacityDialog = {
-                viewModel.setDialogVisible(SettingsDialog.HAZE_OPACITY, visible = false)
-            }
+            onSidePanelPositionSelected = { pos -> viewModel.setSettingValue(SettingValue.SidePanelPosition(pos)) },
+            onOpenResetGridDialog = { viewModel.setDialogVisible(SettingsDialog.RESET_GRID, true) },
+            onDismissResetGridDialog = { viewModel.setDialogVisible(SettingsDialog.RESET_GRID, false) },
+            onOpenFactoryResetDialog = { viewModel.setDialogVisible(SettingsDialog.FACTORY_RESET, true) },
+            onDismissFactoryResetDialog = { viewModel.setDialogVisible(SettingsDialog.FACTORY_RESET, false) },
+            onConfirmFactoryReset = { viewModel.performFactoryReset() },
+            onOpenFavoritePickerClick = { viewModel.setDialogVisible(SettingsDialog.FAVORITE_PICKER, true) },
+            onOpenColorPickerDialog = { viewModel.setDialogVisible(SettingsDialog.COLOR_PICKER, true) },
+            onDismissColorPickerDialog = { viewModel.setDialogVisible(SettingsDialog.COLOR_PICKER, false) },
+            onRestoreDefaultWallpaperClick = { viewModel.setDialogVisible(SettingsDialog.RESTORE_WALLPAPER, true) },
+            onDismissRestoreWallpaperDialog = { viewModel.setDialogVisible(SettingsDialog.RESTORE_WALLPAPER, false) },
+            onAddFolderClick = { viewModel.setDialogVisible(SettingsDialog.CREATE_FOLDER, true) },
+            onDismissCreateFolderDialog = { viewModel.setDialogVisible(SettingsDialog.CREATE_FOLDER, false) },
+            onOpenHazeOpacityDialog = { viewModel.setDialogVisible(SettingsDialog.HAZE_OPACITY, true) },
+            onDismissHazeOpacityDialog = { viewModel.setDialogVisible(SettingsDialog.HAZE_OPACITY, false) }
         )
     }
 

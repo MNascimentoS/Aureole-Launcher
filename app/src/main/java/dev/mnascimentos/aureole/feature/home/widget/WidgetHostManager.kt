@@ -22,6 +22,7 @@ class WidgetHostManager(
 ) {
     companion object {
         private const val TAG = "WidgetHostManager"
+        const val REQUEST_PICK_APPWIDGET = 1001
     }
 
     fun handleWidgetSelected(provider: AppWidgetProviderInfo?) {
@@ -39,7 +40,7 @@ class WidgetHostManager(
             }
             try {
                 if (context is Activity) {
-                    context.startActivityForResult(intent, 1001)
+                    context.startActivityForResult(intent, REQUEST_PICK_APPWIDGET)
                 }
             } catch (e: ActivityNotFoundException) {
                 Log.e(TAG, "Activity not found for widget configure", e)
@@ -72,7 +73,11 @@ class WidgetHostManager(
                 putInt(AppWidgetManager.OPTION_APPWIDGET_MAX_HEIGHT, provider.minHeight * 2)
             }
             appWidgetManager.updateAppWidgetOptions(widgetId, options)
-        } catch (e: Throwable) {
+        } catch (e: IllegalArgumentException) {
+            Log.e(TAG, "Failed to update widget options for id $widgetId", e)
+        } catch (e: IllegalStateException) {
+            Log.e(TAG, "Failed to update widget options for id $widgetId", e)
+        } catch (e: SecurityException) {
             Log.e(TAG, "Failed to update widget options for id $widgetId", e)
         }
     }

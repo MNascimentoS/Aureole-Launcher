@@ -2,19 +2,15 @@ package dev.mnascimentos.aureole.feature.settings
 
 import android.app.Application
 import android.app.WallpaperManager
-import android.content.Context
-import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import dev.mnascimentos.aureole.core.data.db.AppDatabase
 import dev.mnascimentos.aureole.core.data.model.AppFolder
 import dev.mnascimentos.aureole.core.data.repository.AppRepository
 import dev.mnascimentos.aureole.core.data.repository.FolderRepository
-import dev.mnascimentos.aureole.core.data.repository.GridRepository
 import dev.mnascimentos.aureole.core.data.repository.SettingsRepository
 import dev.mnascimentos.aureole.feature.settings.ext.checkDefaultLauncher
 import dev.mnascimentos.aureole.feature.settings.model.SettingValue
@@ -60,7 +56,6 @@ enum class SettingsDialog {
     FACTORY_RESET
 }
 
-@Suppress("TooManyFunctions")
 class SettingsViewModel(application: Application) : AndroidViewModel(application) {
 
     internal val settingsRepository = SettingsRepository(application)
@@ -247,66 +242,6 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
                     shouldFinishActivity = true
                 )
             }
-        }
-    }
-
-    fun resetGridLayout() {
-        viewModelScope.launch {
-            GridRepository(getApplication()).resetToDefault()
-            _uiState.update {
-                it.copy(
-                    showResetGridDialog = false,
-                    shouldFinishActivity = true,
-                    errorMessage = "Layout da tela inicial resetado para o padrão"
-                )
-            }
-        }
-    }
-
-    fun performFactoryReset() {
-        viewModelScope.launch {
-            val app = getApplication<Application>()
-            _uiState.update { it.copy(showFactoryResetDialog = false) }
-            withContext(Dispatchers.IO) {
-                try {
-                    // CA-04: Clear Databases
-                    try {
-                        AppDatabase.getInstance(app).clearAllTables()
-                    } catch (e: Exception) {
-                        Log.w(TAG, "Error clearing Room database", e)
-                    }
-                    app.deleteDatabase("aureole_app_database.db")
-                    app.deleteDatabase("aureole_folders.db")
-
-                    // CA-03: Clear SharedPreferences
-                    listOf(
-                        "aureole_grid_prefs",
-                        "aureole_settings_prefs",
-                        "aureole_widget_prefs",
-                        "${app.packageName}_preferences"
-                    ).forEach { prefName ->
-                        app.getSharedPreferences(prefName, Context.MODE_PRIVATE).edit().clear()
-                            .commit()
-                    }
-
-                    // CA-05: Clear Cache and files
-                    app.cacheDir.deleteRecursively()
-                    File(app.filesDir, "custom_wallpaper.jpg").delete()
-                } catch (e: Exception) {
-                    Log.w(TAG, "Error performing factory reset", e)
-                }
-            }
-
-            // CA-06: Restart Workspace / Activity
-            val intent = app.packageManager.getLaunchIntentForPackage(app.packageName)?.apply {
-                addFlags(
-                    Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                )
-            }
-            if (intent != null) {
-                app.startActivity(intent)
-            }
-            Runtime.getRuntime().exit(0)
         }
     }
 
