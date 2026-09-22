@@ -18,8 +18,6 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import dev.mnascimentos.aureole.feature.home.LocalHomeActions
-import dev.mnascimentos.aureole.feature.home.model.FolderViewIntent
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
@@ -42,9 +40,11 @@ import dev.chrisbanes.haze.hazeEffect
 import dev.mnascimentos.aureole.core.data.model.AppFolder
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.theme.AureolePreview
+import dev.mnascimentos.aureole.feature.home.LocalHomeActions
 import dev.mnascimentos.aureole.feature.home.LocalHomeUiState
 import dev.mnascimentos.aureole.feature.home.components.model.SidePanelConfig
 import dev.mnascimentos.aureole.feature.home.folder.FolderIconRegistry
+import dev.mnascimentos.aureole.feature.home.model.FolderViewIntent
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
 
 private const val SIDE_PANEL_HAZE_ALPHA_MULTIPLIER = 0.7f
