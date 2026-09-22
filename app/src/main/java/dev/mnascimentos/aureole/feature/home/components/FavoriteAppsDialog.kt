@@ -358,7 +358,7 @@ private fun FavoriteAppRow(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        FavoriteAppRowInfo(app = params.app)
+        FavoriteAppRowInfo(app = params.app, modifier = Modifier.weight(1f))
 
         FavoriteAppRowActionButtons(
             params = params,
