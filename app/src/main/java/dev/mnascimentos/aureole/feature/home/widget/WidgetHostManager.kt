@@ -27,6 +27,8 @@ class WidgetHostManager(
     fun handleWidgetSelected(provider: AppWidgetProviderInfo?) {
         if (provider == null) return
         val appWidgetId = appWidgetHost.allocateAppWidgetId()
+        if (appWidgetId == AppWidgetManager.INVALID_APPWIDGET_ID) return
+
         if (provider.configure != null) {
             viewModel.setPendingWidgetId(appWidgetId)
             val intent = Intent(
@@ -61,7 +63,7 @@ class WidgetHostManager(
     }
 
     private fun updateWidgetOptions(widgetId: Int, provider: AppWidgetProviderInfo?) {
-        if (provider == null) return
+        if (provider == null || widgetId == AppWidgetManager.INVALID_APPWIDGET_ID) return
         try {
             val options = Bundle().apply {
                 putInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH, provider.minWidth)
@@ -70,9 +72,7 @@ class WidgetHostManager(
                 putInt(AppWidgetManager.OPTION_APPWIDGET_MAX_HEIGHT, provider.minHeight * 2)
             }
             appWidgetManager.updateAppWidgetOptions(widgetId, options)
-        } catch (e: IllegalArgumentException) {
-            Log.e(TAG, "Failed to update widget options for id $widgetId", e)
-        } catch (e: IllegalStateException) {
+        } catch (e: Throwable) {
             Log.e(TAG, "Failed to update widget options for id $widgetId", e)
         }
     }

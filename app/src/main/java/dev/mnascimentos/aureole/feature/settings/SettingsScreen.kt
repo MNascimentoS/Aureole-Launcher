@@ -27,6 +27,7 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
@@ -177,6 +178,17 @@ private fun SettingsDialogs(
         ResetGridDialog(actions = actions)
     }
 
+    if (uiState.showSidePanelPositionDialog) {
+        SidePanelPositionDialog(
+            currentPosition = uiState.sidePanelPosition,
+            onPositionSelected = { pos ->
+                actions.onSidePanelPositionSelected(pos)
+                actions.onDismissSidePanelPositionDialog()
+            },
+            onDismiss = actions.onDismissSidePanelPositionDialog
+        )
+    }
+
     if (uiState.showFactoryResetDialog) {
         FactoryResetDialog(actions = actions)
     }
@@ -237,6 +249,62 @@ private fun ResetGridDialog(
         },
         dismissButton = {
             TextButton(onClick = actions.onDismissResetGridDialog) {
+                Text("Cancelar")
+            }
+        }
+    )
+}
+
+@Composable
+private fun SidePanelPositionDialog(
+    currentPosition: String,
+    onPositionSelected: (String) -> Unit,
+    onDismiss: () -> Unit
+) {
+    val options = listOf(
+        "Top" to "Superior (Top)",
+        "Center" to "Centro (Center)",
+        "Bottom" to "Inferior (Bottom)",
+        "Space Evenly" to "Espaçamento Igual (Space Evenly)",
+        "Space Between" to "Espaçamento Entre (Space Between)"
+    )
+
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = {
+            Text(
+                text = "Alinhamento do Painel Lateral",
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold
+            )
+        },
+        text = {
+            Column {
+                options.forEach { (value, label) ->
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clip(RoundedCornerShape(12.dp))
+                            .clickable { onPositionSelected(value) }
+                            .padding(vertical = 8.dp, horizontal = 8.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        RadioButton(
+                            selected = (currentPosition == value),
+                            onClick = { onPositionSelected(value) }
+                        )
+                        Spacer(modifier = Modifier.width(12.dp))
+                        Text(
+                            text = label,
+                            style = MaterialTheme.typography.bodyLarge,
+                            color = MaterialTheme.colorScheme.onSurface
+                        )
+                    }
+                }
+            }
+        },
+        confirmButton = {
+            TextButton(onClick = onDismiss) {
                 Text("Cancelar")
             }
         }
@@ -507,6 +575,34 @@ private fun FoldersSettingsGroup(
                 ),
                 checked = uiState.isSidePanelBackgroundEnabled,
                 onCheckedChange = { actions.onToggleSidePanelBackground() }
+            )
+
+            HorizontalDivider(
+                modifier = Modifier.padding(start = 16.dp),
+                color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = ALPHA_SEMI_TRANSPARENT)
+            )
+
+            PreferenceSwitchRow(
+                config = PreferenceItemConfig(
+                    title = "Expandir Painel Lateral na Célula",
+                    subtitle = "Faz o painel lateral ocupar todo o espaço da célula com ícones espaçados uniformemente"
+                ),
+                checked = uiState.isSidePanelExpandCell,
+                onCheckedChange = { actions.onToggleSidePanelExpandCell() }
+            )
+
+            HorizontalDivider(
+                modifier = Modifier.padding(start = 16.dp),
+                color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = ALPHA_SEMI_TRANSPARENT)
+            )
+
+            PreferenceRowItem(
+                config = PreferenceItemConfig(
+                    title = "Alinhamento do Painel Lateral",
+                    subtitle = uiState.sidePanelPosition,
+                    leadingIcon = Icons.Default.Menu
+                ),
+                onClick = actions.onOpenSidePanelPositionDialog
             )
 
             HorizontalDivider(

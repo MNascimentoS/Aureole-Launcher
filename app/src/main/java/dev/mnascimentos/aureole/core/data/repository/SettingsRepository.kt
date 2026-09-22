@@ -20,6 +20,10 @@ class SettingsRepository(private val context: Context) {
         get() = prefs.getBoolean(KEY_SIDE_PANEL_BACKGROUND_ENABLED, true)
         set(value) = prefs.edit { putBoolean(KEY_SIDE_PANEL_BACKGROUND_ENABLED, value) }
 
+    var isSidePanelExpandCell: Boolean
+        get() = prefs.getBoolean(KEY_SIDE_PANEL_EXPAND_CELL, false)
+        set(value) = prefs.edit { putBoolean(KEY_SIDE_PANEL_EXPAND_CELL, value) }
+
     var isClockBackgroundEnabled: Boolean
         get() = prefs.getBoolean(KEY_CLOCK_BACKGROUND_ENABLED, true)
         set(value) = prefs.edit { putBoolean(KEY_CLOCK_BACKGROUND_ENABLED, value) }
@@ -127,6 +131,7 @@ class SettingsRepository(private val context: Context) {
         private const val KEY_LEFT_HANDED_MODE = "left_handed_mode"
         private const val KEY_SIDE_PANEL_ENABLED = "side_panel_enabled"
         private const val KEY_SIDE_PANEL_BACKGROUND_ENABLED = "side_panel_background_enabled"
+        private const val KEY_SIDE_PANEL_EXPAND_CELL = "side_panel_expand_cell"
         private const val KEY_CLOCK_BACKGROUND_ENABLED = "clock_background_enabled"
         private const val KEY_SHOW_SIDE_PANEL_ADD_FOLDER_BUTTON = "show_side_panel_add_folder_button"
         private const val KEY_SIDE_PANEL_POSITION = "side_panel_position"

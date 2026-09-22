@@ -28,6 +28,7 @@ data class MainUiState(
     val isLeftHandedMode: Boolean = false,
     val isSidePanelEnabled: Boolean = true,
     val isSidePanelBackgroundEnabled: Boolean = true,
+    val isSidePanelExpandCell: Boolean = false,
     val isClockBackgroundEnabled: Boolean = true,
     val showSidePanelAddFolderButton: Boolean = true,
     val sidePanelPosition: String = "Center",
