@@ -29,6 +29,9 @@ import dev.mnascimentos.aureole.feature.home.extensions.setShowWidgetPicker
 import dev.mnascimentos.aureole.feature.home.extensions.setShowWidgetResizeDialog
 import dev.mnascimentos.aureole.feature.home.extensions.setWidgetRowHeight
 import dev.mnascimentos.aureole.feature.home.extensions.toggleFavorite
+import dev.mnascimentos.aureole.feature.home.extensions.toggleShowAllAppsOnHome
+import dev.mnascimentos.aureole.feature.home.extensions.updateContainerFavorites
+import dev.mnascimentos.aureole.feature.home.extensions.updateFavoritePackages
 import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
 import dev.mnascimentos.aureole.feature.home.widget.OpenedWidgetPopup
@@ -109,10 +112,27 @@ private fun FavoritePickerOverlay(
     viewModel: HomeViewModel
 ) {
     if (uiState.showFavoritePickerDialog) {
+        val containerId = uiState.activeFavoriteContainerId
+        val favPackages = if (containerId != null && uiState.containerFavorites.containsKey(containerId)) {
+            uiState.containerFavorites[containerId] ?: uiState.favoriteAppPackages
+        } else {
+            uiState.favoriteAppPackages
+        }
+
         FavoriteAppsDialog(
             allApps = uiState.apps,
-            favoriteAppPackages = uiState.favoriteAppPackages,
-            onToggleFavorite = { pkg -> viewModel.toggleFavorite(pkg) },
+            favoriteAppPackages = favPackages,
+            containerId = containerId,
+            showAllAppsOnHome = uiState.showAllAppsOnHome,
+            onToggleFavorite = { pkg -> viewModel.toggleFavorite(pkg, containerId) },
+            onUpdateFavoritePackages = { cId, pkgs ->
+                if (cId != null) {
+                    viewModel.updateContainerFavorites(cId, pkgs)
+                } else {
+                    viewModel.updateFavoritePackages(pkgs)
+                }
+            },
+            onToggleShowAllAppsOnHome = { viewModel.toggleShowAllAppsOnHome() },
             onDismiss = { viewModel.setShowFavoritePicker(false) }
         )
     }

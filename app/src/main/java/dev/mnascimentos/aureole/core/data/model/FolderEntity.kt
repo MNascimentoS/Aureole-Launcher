@@ -4,6 +4,7 @@ import java.util.UUID
 
 data class FolderEntity(
     val id: String = UUID.randomUUID().toString(),
+    val panelId: String? = null,
     val name: String,
     val color: String? = null,
     val iconFallback: String? = null,

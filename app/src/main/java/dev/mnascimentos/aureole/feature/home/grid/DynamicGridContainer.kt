@@ -59,28 +59,30 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.input.pointer.PointerInputChange
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import dev.mnascimentos.aureole.core.data.model.LauncherItemState
 import dev.mnascimentos.aureole.core.data.model.LauncherItemType
+import dev.mnascimentos.aureole.feature.home.grid.model.CellBoxCallbacks
+import dev.mnascimentos.aureole.feature.home.grid.model.CellBoxConfig
+import dev.mnascimentos.aureole.feature.home.grid.model.CellBoxMetrics
+import dev.mnascimentos.aureole.feature.home.grid.model.CornerResizeCallbacks
+import dev.mnascimentos.aureole.feature.home.grid.model.DragTargetSlot
+import dev.mnascimentos.aureole.feature.home.grid.model.GridCellParams
+import dev.mnascimentos.aureole.feature.home.grid.model.GridEditConfig
+import dev.mnascimentos.aureole.feature.home.grid.model.GridEditModifierParams
+import dev.mnascimentos.aureole.feature.home.grid.model.GridItemEditCallbacks
+import dev.mnascimentos.aureole.feature.home.grid.model.GridMetricsTuple
+import dev.mnascimentos.aureole.feature.home.grid.model.ResizeHandleCallbacks
 import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
 private val HANDLE_TOUCH_SIZE = 28.dp
 private val CORNER_TOUCH_SIZE = 36.dp
-
-private data class GridMetricsTuple(
-    val cellWidthPx: Float,
-    val cellHeightPx: Float,
-    val cellWidthDp: Dp,
-    val cellHeightDp: Dp
-)
 
 private val BORDER_CORNER_RADIUS = 16.dp
 private val CORNER_HANDLE_RADIUS = 12.dp
@@ -89,99 +91,6 @@ private const val GRID_MARGIN_PX = 16f
 private const val GRID_LINE_WIDTH = 2f
 private const val GRID_CORNER_RADIUS = 24f
 private const val DASH_LENGTH_PX = 10f
-
-data class GridEditConfig(
-    val isEditMode: Boolean,
-    val limits: GridLimits = GridLimits()
-)
-
-data class DragTargetSlot(
-    val itemId: String,
-    val col: Int,
-    val row: Int,
-    val colSpan: Int,
-    val rowSpan: Int,
-    val isValid: Boolean
-)
-
-private data class ResizeHandleCallbacks(
-    val onResizing: (Boolean) -> Unit,
-    val onDelta: (Float) -> Unit,
-    val onResetExtra: () -> Unit,
-    val onResizeItem: (String, Int, Int) -> Unit
-)
-
-private data class CornerResizeCallbacks(
-    val onResizing: (Boolean) -> Unit,
-    val onDelta: (Float, Float) -> Unit,
-    val onResetExtra: () -> Unit,
-    val onResizeItem: (String, Int, Int) -> Unit,
-    val onEditItem: () -> Unit
-)
-
-private data class GridItemEditCallbacks(
-    val onResizing: (Boolean) -> Unit,
-    val onResizeWidthDelta: (Float) -> Unit,
-    val onResizeHeightDelta: (Float) -> Unit,
-    val onResizeDelta: (Float, Float) -> Unit,
-    val onResetWidthExtra: () -> Unit,
-    val onResetHeightExtra: () -> Unit,
-    val onResetAllExtra: () -> Unit,
-    val onResizeItem: (String, Int, Int) -> Unit,
-    val onEditItem: () -> Unit
-)
-
-private data class GridEditModifierParams(
-    val isEditMode: Boolean,
-    val itemId: String,
-    val isDragging: Boolean,
-    val isResizing: Boolean,
-    val onDragStart: () -> Unit,
-    val onDragEnd: () -> Unit,
-    val onDragCancel: () -> Unit,
-    val onDrag: (PointerInputChange, Offset) -> Unit
-)
-
-private data class CellBoxCallbacks(
-    val onResizingChange: (Boolean) -> Unit,
-    val onResizeWidthChange: (Float) -> Unit,
-    val onResizeHeightChange: (Float) -> Unit,
-    val onResizeDelta: (Float, Float) -> Unit,
-    val onResetWidth: () -> Unit,
-    val onResetHeight: () -> Unit,
-    val onResetAll: () -> Unit
-)
-
-private data class CellBoxMetrics(
-    val leftDp: Dp,
-    val topDp: Dp,
-    val currentWidthDp: Dp,
-    val currentHeightDp: Dp,
-    val totalDragX: Float,
-    val totalDragY: Float
-)
-
-private data class CellBoxConfig(
-    val metrics: CellBoxMetrics,
-    val modifier: Modifier,
-    val params: GridCellParams,
-    val isDragging: Boolean,
-    val isResizing: Boolean,
-    val callbacks: CellBoxCallbacks,
-    val actions: HomeScreenActions,
-    val content: @Composable () -> Unit
-)
-
-data class GridCellParams(
-    val item: LauncherItemState,
-    val items: List<LauncherItemState>,
-    val isEditMode: Boolean,
-    val cellWidthPx: Float,
-    val cellHeightPx: Float,
-    val cellWidthDp: Dp,
-    val cellHeightDp: Dp,
-    val limits: GridLimits = GridLimits()
-)
 
 @Composable
 fun DynamicGridContainer(

@@ -204,7 +204,7 @@ private fun FactoryResetDialog(
         text = {
             Text(
                 "Isso apagará todas as suas configurações, pastas, " +
-                        "atalhos e disposição da tela inicial. Deseja continuar?"
+                    "atalhos e disposição da tela inicial. Deseja continuar?"
             )
         },
         confirmButton = {
@@ -234,7 +234,7 @@ private fun ResetGridDialog(
         text = {
             Text(
                 "Esta ação redefinirá o posicionamento e o " +
-                        "tamanho de todos os elementos da tela inicial para a configuração padrão."
+                    "tamanho de todos os elementos da tela inicial para a configuração padrão."
             )
         },
         confirmButton = {
@@ -345,20 +345,6 @@ private fun AppearanceSettingsGroup(
                     }
                 },
                 onClick = actions.onSetDefaultLauncherClick
-            )
-
-            HorizontalDivider(
-                modifier = Modifier.padding(start = 56.dp),
-                color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = ALPHA_SEMI_TRANSPARENT)
-            )
-
-            PreferenceRowItem(
-                config = PreferenceItemConfig(
-                    title = "Select Favorite Apps",
-                    subtitle = "${uiState.favoriteAppPackages.size} apps selected as favorites",
-                    leadingIcon = Icons.Default.Star
-                ),
-                onClick = actions.onOpenFavoritePickerClick
             )
         }
     }
@@ -527,20 +513,6 @@ private fun WidgetsSettingsGroup(
                 ),
                 checked = uiState.showWidgetDots,
                 onCheckedChange = { actions.onToggleShowWidgetDots() }
-            )
-
-            HorizontalDivider(
-                modifier = Modifier.padding(start = 16.dp),
-                color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = ALPHA_SEMI_TRANSPARENT)
-            )
-
-            PreferenceSwitchRow(
-                config = PreferenceItemConfig(
-                    title = "Show All Apps on Home",
-                    subtitle = "Display full list of installed apps directly on the home screen below favorites"
-                ),
-                checked = uiState.showAllAppsOnHome,
-                onCheckedChange = { actions.onToggleShowAllAppsOnHome() }
             )
 
             HorizontalDivider(

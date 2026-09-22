@@ -88,6 +88,7 @@ android {
 
 detekt {
     buildUponDefaultConfig = true
+    autoCorrect = true
     allRules = false
     ignoreFailures = false
     config.setFrom(file("$projectDir/config/detekt/detekt.yml"))

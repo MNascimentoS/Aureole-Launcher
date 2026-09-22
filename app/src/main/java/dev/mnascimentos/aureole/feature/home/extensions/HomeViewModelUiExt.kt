@@ -1,6 +1,8 @@
 package dev.mnascimentos.aureole.feature.home.extensions
 
+import androidx.lifecycle.viewModelScope
 import dev.mnascimentos.aureole.feature.home.HomeViewModel
+import kotlinx.coroutines.launch
 
 // --- Settings & Side Panel Actions ---
 
@@ -37,8 +39,13 @@ fun HomeViewModel.setShowSettingsDialog(show: Boolean) {
     updateUiState { it.copy(showSettingsDialog = show) }
 }
 
-fun HomeViewModel.setShowFavoritePicker(show: Boolean) {
-    updateUiState { it.copy(showFavoritePickerDialog = show) }
+fun HomeViewModel.setShowFavoritePicker(show: Boolean, containerId: String? = null) {
+    updateUiState {
+        it.copy(
+            showFavoritePickerDialog = show,
+            activeFavoriteContainerId = if (show) (containerId ?: it.activeFavoriteContainerId) else null
+        )
+    }
 }
 
 fun HomeViewModel.setAllAppsDrawerOpen(open: Boolean, fromHomeButton: Boolean = false) {
@@ -56,14 +63,34 @@ fun HomeViewModel.setAllAppsDrawerOpen(open: Boolean, fromHomeButton: Boolean = 
 
 // --- Favorites Actions ---
 
-fun HomeViewModel.toggleFavorite(packageName: String) {
-    val currentFavs = uiState.value.favoriteAppPackages.toMutableList()
+fun HomeViewModel.toggleFavorite(packageName: String, containerId: String? = null) {
+    val targetContainerId = containerId ?: uiState.value.activeFavoriteContainerId ?: "default_favorites"
+    val currentFavs = (uiState.value.containerFavorites[targetContainerId] ?: uiState.value.favoriteAppPackages).toMutableList()
     if (currentFavs.contains(packageName)) {
         currentFavs.remove(packageName)
     } else {
         currentFavs.add(packageName)
     }
-    settingsRepository.favoriteAppPackages = currentFavs
-    updateUiState { it.copy(favoriteAppPackages = currentFavs) }
-    updateAppsState(uiState.value.apps)
+    updateContainerFavorites(targetContainerId, currentFavs)
+}
+
+fun HomeViewModel.updateFavoritePackages(newFavorites: List<String>) {
+    val targetContainerId = uiState.value.activeFavoriteContainerId ?: "default_favorites"
+    updateContainerFavorites(targetContainerId, newFavorites)
+}
+
+fun HomeViewModel.updateContainerFavorites(containerId: String, newFavorites: List<String>) {
+    viewModelScope.launch {
+        favoriteContainerRepository.updateContainerFavorites(containerId, newFavorites)
+        val updatedMap = uiState.value.containerFavorites.toMutableMap()
+        updatedMap[containerId] = newFavorites
+        settingsRepository.favoriteAppPackages = newFavorites
+        updateUiState {
+            it.copy(
+                favoriteAppPackages = newFavorites,
+                containerFavorites = updatedMap
+            )
+        }
+        updateAppsState(uiState.value.apps)
+    }
 }

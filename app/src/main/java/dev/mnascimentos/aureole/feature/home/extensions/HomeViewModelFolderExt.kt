@@ -31,10 +31,16 @@ private suspend fun HomeViewModel.handleFolderIntent(intent: FolderViewIntent) {
 
 private fun HomeViewModel.openFolder(intent: FolderViewIntent.OpenFolder) {
     val targetFolder = uiState.value.folders.find { it.id == intent.folderId }
+    val panel = targetFolder?.panelId?.let { uiState.value.sidePanels[it] }
+    val isAnyGridPanel = uiState.value.sidePanels.values.any { it.isGridFolderEnabled }
+    val active = targetFolder?.copy(
+        displayAsGrid = isAnyGridPanel || (panel?.isGridFolderEnabled == true) || targetFolder.displayAsGrid
+    ) ?: targetFolder
+
     updateUiState {
         it.copy(
             openedFolderId = intent.folderId,
-            activeFolder = targetFolder,
+            activeFolder = active,
             activeFolderTopYPx = intent.topYPx
         )
     }

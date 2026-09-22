@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.DropdownMenu
@@ -114,29 +115,32 @@ private fun RowScope.AppItemRowContent(
         }
     }
 
-    if (uiState.isLeftHandedMode) {
+    val isLeftHandedMode = uiState.isLeftHandedMode
+
+    val appLabel = @Composable {
         Text(
             text = app.label,
             style = MaterialTheme.typography.bodyLarge,
             color = MaterialTheme.colorScheme.onBackground,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
-            textAlign = TextAlign.End,
+            textAlign = if (isLeftHandedMode) TextAlign.End else TextAlign.Start,
             modifier = Modifier.weight(1f)
         )
-        Spacer(modifier = Modifier.width(16.dp))
+    }
+
+    val appIcon = @Composable {
         AppItemIcon(bitmap = displayBitmap, label = app.label, isThemed = uiState.isThemedAppIconsEnabled)
+    }
+
+    if (isLeftHandedMode) {
+        appLabel()
+        Spacer(modifier = Modifier.width(16.dp))
+        appIcon()
     } else {
-        AppItemIcon(bitmap = displayBitmap, label = app.label, isThemed = uiState.isThemedAppIconsEnabled)
+        appIcon()
         Spacer(modifier = Modifier.width(16.dp))
-        Text(
-            text = app.label,
-            style = MaterialTheme.typography.bodyLarge,
-            color = MaterialTheme.colorScheme.onBackground,
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis,
-            modifier = Modifier.weight(1f)
-        )
+        appLabel()
     }
 }
 
@@ -199,6 +203,23 @@ private fun AppItemRowDropdownMenu(
                 },
                 onClick = {
                     actions.onToggleFavorite.invoke(app.packageName)
+                    onDismiss()
+                }
+            )
+        }
+
+        if (actions.onEditFavoritesClick != null) {
+            DropdownMenuItem(
+                text = { Text("Editar Favoritos") },
+                leadingIcon = {
+                    Icon(
+                        imageVector = Icons.Default.Edit,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.onSurface
+                    )
+                },
+                onClick = {
+                    actions.onEditFavoritesClick.invoke()
                     onDismiss()
                 }
             )

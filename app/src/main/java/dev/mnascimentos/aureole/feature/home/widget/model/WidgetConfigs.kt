@@ -1,5 +1,6 @@
 package dev.mnascimentos.aureole.feature.home.widget.model
 
+import androidx.compose.foundation.pager.PagerState
 import androidx.compose.ui.unit.Dp
 import dev.chrisbanes.haze.HazeState
 
@@ -25,4 +26,11 @@ data class OpenedWidgetPopupConfig(
 data class WidgetItemActions(
     val onOpenWidgetPopup: (Int, Float) -> Unit,
     val onRemoveClick: (Int) -> Unit
+)
+
+data class PagerContentParams(
+    val showAddButton: Boolean,
+    val pageCount: Int,
+    val pagerState: PagerState,
+    val hasFillMaxSize: Boolean
 )

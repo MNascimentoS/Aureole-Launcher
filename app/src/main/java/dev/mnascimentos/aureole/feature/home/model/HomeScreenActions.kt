@@ -5,6 +5,7 @@ import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.data.model.LauncherItemState
 import dev.mnascimentos.aureole.core.data.model.LauncherItemType
 import dev.mnascimentos.aureole.core.data.model.ScrollOrientation
+import dev.mnascimentos.aureole.core.data.model.SidePanelModel
 
 data class HomeScreenActions(
     val onWidgetRowHeightChanged: (Dp) -> Unit,
@@ -20,8 +21,10 @@ data class HomeScreenActions(
     val onAllAppsDrawerClose: () -> Unit,
     val onAllAppsDrawerOpen: () -> Unit,
     val onToggleFavorite: (String) -> Unit = {},
+    val onUpdateFavoritePackages: (String?, List<String>) -> Unit = { _, _ -> },
+    val onToggleShowAllAppsOnHome: () -> Unit = {},
     val onAppInfoClick: (AppInfo) -> Unit = {},
-    val onOpenFavoritePicker: () -> Unit = {},
+    val onOpenFavoritePicker: (String?) -> Unit = {},
     val onOpenWidgetPopup: (Int, Float) -> Unit = { _, _ -> },
     val onCloseWidgetPopup: () -> Unit = {},
     val onOpenWidgetResizeDialog: () -> Unit = {},
@@ -51,4 +54,10 @@ data class HomeScreenActions(
     val onRemoveChildFromScrollView: (String, String) -> Unit = { _, _ -> },
     val onResizeChildInScrollView: (String, String, Int, Int) -> Unit = { _, _, _, _ -> },
     val onOpenAddContainerForParent: (String) -> Unit = {},
+
+    // Side Panel Actions
+    val onOpenEditSidePanelDialog: (String) -> Unit = {},
+    val onCloseEditSidePanelDialog: () -> Unit = {},
+    val onSaveSidePanelModel: (SidePanelModel) -> Unit = {},
+    val onDeleteSidePanelInstance: (String) -> Unit = {},
 )
