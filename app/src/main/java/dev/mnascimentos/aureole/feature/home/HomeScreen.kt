@@ -131,6 +131,14 @@ val LocalHomeUiState = staticCompositionLocalOf<MainUiState> { error("No MainUiS
 val LocalHomeActions =
     staticCompositionLocalOf<HomeScreenActions> { error("No HomeScreenActions provided") }
 
+private const val DEFAULT_WIDGET_MIN_WIDTH = 100
+private const val DEFAULT_WIDGET_MAX_HEIGHT = 360
+private const val SCROLL_CHILD_MIN_HEIGHT = 70
+private const val SCROLL_CHILD_MIN_WIDTH = 100
+private const val SCROLL_CHILD_ROW_HEIGHT = 60
+private const val SCROLL_CHILD_COL_WIDTH = 70
+private const val REMOVE_BTN_SIZE = 28
+
 @Composable
 fun HomeScreen(
     appWidgetHost: AppWidgetHost,
@@ -277,16 +285,20 @@ private fun Modifier.homeDragGestures(
                 change.consume()
                 val topPaddingPx = with(params.density) { TOP_PADDING_DP.dp.toPx() }
                 params.onExternalTouchYChange(change.position.y - topPaddingPx)
-            } else if (!params.isAllAppsDrawerOpen && !change.isConsumed) {
-                val absX = abs(dragAmount.x)
-                val absY = abs(dragAmount.y)
-                val isVertical = absY > DRAG_THRESHOLD_PX && absY > absX
+                return@detectDragGestures
+            }
 
-                if (isVertical && dragAmount.y > 0) {
-                    change.consume()
+            if (params.isAllAppsDrawerOpen || change.isConsumed) return@detectDragGestures
+
+            val absX = abs(dragAmount.x)
+            val absY = abs(dragAmount.y)
+            val isVertical = absY > DRAG_THRESHOLD_PX && absY > absX
+
+            if (isVertical) {
+                change.consume()
+                if (dragAmount.y > 0) {
                     params.onExpandNotificationShade()
-                } else if (isVertical && dragAmount.y < 0) {
-                    change.consume()
+                } else {
                     params.onAllAppsDrawerOpen()
                 }
             }
@@ -692,7 +704,7 @@ private fun SingleAppWidgetContent(
                     if (appWidgetInfo != null) {
                         val widthDp =
                             (context.resources.configuration.screenWidthDp)
-                                .coerceAtLeast(100)
+                                .coerceAtLeast(DEFAULT_WIDGET_MIN_WIDTH)
                         val options = Bundle().apply {
                             putInt(
                                 AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH,
@@ -703,7 +715,7 @@ private fun SingleAppWidgetContent(
                                 appWidgetInfo.minHeight
                             )
                             putInt(AppWidgetManager.OPTION_APPWIDGET_MAX_WIDTH, widthDp)
-                            putInt(AppWidgetManager.OPTION_APPWIDGET_MAX_HEIGHT, 360)
+                            putInt(AppWidgetManager.OPTION_APPWIDGET_MAX_HEIGHT, DEFAULT_WIDGET_MAX_HEIGHT)
                         }
                         appWidgetManager.updateAppWidgetOptions(item.widgetId, options)
                         appWidgetHost.createView(context, item.widgetId, appWidgetInfo)
@@ -729,9 +741,9 @@ private fun SingleAppWidgetContent(
                                 )
                                 putInt(
                                     AppWidgetManager.OPTION_APPWIDGET_MAX_WIDTH,
-                                    widthDp.coerceAtLeast(100)
+                                    widthDp.coerceAtLeast(DEFAULT_WIDGET_MIN_WIDTH)
                                 )
-                                putInt(AppWidgetManager.OPTION_APPWIDGET_MAX_HEIGHT, 360)
+                                putInt(AppWidgetManager.OPTION_APPWIDGET_MAX_HEIGHT, DEFAULT_WIDGET_MAX_HEIGHT)
                             }
                             appWidgetManager
                                 .updateAppWidgetOptions(item.widgetId, options)
@@ -980,11 +992,13 @@ private fun ScrollViewChildItem(params: ScrollViewChildItemParams) {
             Modifier.fillMaxWidth().wrapContentHeight()
         }
         isVertical -> {
-            val childHeightDp = (childItem.rowSpan * 60).dp.coerceAtLeast(70.dp)
+            val childHeightDp = (childItem.rowSpan * SCROLL_CHILD_ROW_HEIGHT).dp
+                .coerceAtLeast(SCROLL_CHILD_MIN_HEIGHT.dp)
             Modifier.fillMaxWidth().height(childHeightDp)
         }
         else -> {
-            val childWidthDp = (childItem.colSpan * 70).dp.coerceAtLeast(100.dp)
+            val childWidthDp = (childItem.colSpan * SCROLL_CHILD_COL_WIDTH).dp
+                .coerceAtLeast(SCROLL_CHILD_MIN_WIDTH.dp)
             Modifier.width(childWidthDp).fillMaxHeight()
         }
     }
@@ -1012,7 +1026,7 @@ private fun ScrollViewChildItem(params: ScrollViewChildItemParams) {
                 modifier = Modifier
                     .align(Alignment.TopEnd)
                     .padding(4.dp)
-                    .size(28.dp)
+                    .size(REMOVE_BTN_SIZE.dp)
                     .zIndex(100f)
                     .background(MaterialTheme.colorScheme.error, CircleShape)
                     .pointerInput("remove_btn_" + childItem.id) {

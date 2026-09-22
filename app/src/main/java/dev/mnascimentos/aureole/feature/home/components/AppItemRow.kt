@@ -114,29 +114,32 @@ private fun RowScope.AppItemRowContent(
         }
     }
 
-    if (uiState.isLeftHandedMode) {
+    val isLeftHandedMode = uiState.isLeftHandedMode
+
+    val appLabel = @Composable {
         Text(
             text = app.label,
             style = MaterialTheme.typography.bodyLarge,
             color = MaterialTheme.colorScheme.onBackground,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
-            textAlign = TextAlign.End,
+            textAlign = if (isLeftHandedMode) TextAlign.End else TextAlign.Start,
             modifier = Modifier.weight(1f)
         )
-        Spacer(modifier = Modifier.width(16.dp))
+    }
+
+    val appIcon = @Composable {
         AppItemIcon(bitmap = displayBitmap, label = app.label, isThemed = uiState.isThemedAppIconsEnabled)
+    }
+
+    if (isLeftHandedMode) {
+        appLabel()
+        Spacer(modifier = Modifier.width(16.dp))
+        appIcon()
     } else {
-        AppItemIcon(bitmap = displayBitmap, label = app.label, isThemed = uiState.isThemedAppIconsEnabled)
+        appIcon()
         Spacer(modifier = Modifier.width(16.dp))
-        Text(
-            text = app.label,
-            style = MaterialTheme.typography.bodyLarge,
-            color = MaterialTheme.colorScheme.onBackground,
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis,
-            modifier = Modifier.weight(1f)
-        )
+        appLabel()
     }
 }
 

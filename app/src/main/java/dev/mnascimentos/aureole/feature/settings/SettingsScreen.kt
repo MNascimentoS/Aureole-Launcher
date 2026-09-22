@@ -204,7 +204,7 @@ private fun FactoryResetDialog(
         text = {
             Text(
                 "Isso apagará todas as suas configurações, pastas, " +
-                        "atalhos e disposição da tela inicial. Deseja continuar?"
+                    "atalhos e disposição da tela inicial. Deseja continuar?"
             )
         },
         confirmButton = {
@@ -234,7 +234,7 @@ private fun ResetGridDialog(
         text = {
             Text(
                 "Esta ação redefinirá o posicionamento e o " +
-                        "tamanho de todos os elementos da tela inicial para a configuração padrão."
+                    "tamanho de todos os elementos da tela inicial para a configuração padrão."
             )
         },
         confirmButton = {

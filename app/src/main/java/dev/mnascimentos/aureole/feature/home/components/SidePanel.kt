@@ -36,6 +36,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import dev.chrisbanes.haze.HazeState
 import dev.chrisbanes.haze.HazeStyle
 import dev.chrisbanes.haze.HazeTint
 import dev.chrisbanes.haze.hazeEffect
@@ -54,6 +55,58 @@ private const val SIDE_PANEL_MIN_ALPHA = 0.2f
 private const val SIDE_PANEL_MAX_ALPHA = 0.95f
 private const val FOLDER_BG_INACTIVE_ALPHA = 0.7f
 
+private fun Modifier.hazeModifier(
+    hasHaze: Boolean,
+    hazeState: HazeState?,
+    hazeOpacity: Float,
+    surfaceColor: Color
+): Modifier {
+    return if (hasHaze && hazeState != null) {
+        this.then(
+            Modifier.hazeEffect(
+                state = hazeState,
+                style = HazeStyle(
+                    blurRadius = 20.dp,
+                    tint = HazeTint(surfaceColor.copy(alpha = hazeOpacity))
+                )
+            ) {
+                blurEnabled = true
+            }
+        )
+    } else {
+        this
+    }
+}
+
+private fun getBackgroundColor(
+    isBgEnabled: Boolean,
+    hasHaze: Boolean,
+    hazeOpacity: Float,
+    surfaceColor: Color
+): Color {
+    return if (isBgEnabled) {
+        if (hasHaze) {
+            val backgroundAlpha = (hazeOpacity * SIDE_PANEL_HAZE_ALPHA_MULTIPLIER)
+                .coerceIn(SIDE_PANEL_MIN_ALPHA, SIDE_PANEL_MAX_ALPHA)
+            surfaceColor.copy(alpha = backgroundAlpha)
+        } else {
+            surfaceColor.copy(alpha = 0.95f)
+        }
+    } else {
+        Color.Transparent
+    }
+}
+
+private fun getVerticalArrangement(position: String): Arrangement.Vertical {
+    return when (position) {
+        "Top" -> Arrangement.Top
+        "Center" -> Arrangement.Center
+        "Bottom" -> Arrangement.Bottom
+        "Space Evenly" -> Arrangement.SpaceEvenly
+        else -> Arrangement.SpaceBetween
+    }
+}
+
 @Composable
 fun SidePanel(
     config: SidePanelConfig,
@@ -61,47 +114,14 @@ fun SidePanel(
     modifier: Modifier = Modifier,
 ) {
     val uiState = LocalHomeUiState.current
-    val isBgEnabled = config.isBackgroundEnabled
-    val isExpandCell = config.isExpandCell
-    val hazeState = config.hazeState
-    val hasHaze = isBgEnabled && uiState.isHazeEnabled && (hazeState != null)
+    val surfaceColor = MaterialTheme.colorScheme.surfaceContainerHigh
+    val hasHaze = config.isBackgroundEnabled && uiState.isHazeEnabled && (config.hazeState != null)
 
-    val hazeModifier = if (hasHaze && hazeState != null) {
-        Modifier.hazeEffect(
-            state = hazeState,
-            style = HazeStyle(
-                blurRadius = 20.dp,
-                tint = HazeTint(MaterialTheme.colorScheme.surfaceContainerHigh.copy(alpha = uiState.hazeOpacity))
-            )
-        ) {
-            blurEnabled = true
-        }
-    } else {
-        Modifier
-    }
+    val hazeModifier = Modifier.hazeModifier(hasHaze, config.hazeState, uiState.hazeOpacity, surfaceColor)
+    val backgroundColor = getBackgroundColor(config.isBackgroundEnabled, hasHaze, uiState.hazeOpacity, surfaceColor)
+    val verticalArrangement = getVerticalArrangement(config.position)
 
-    val backgroundColor = if (isBgEnabled) {
-        if (hasHaze) {
-            val backgroundAlpha = (uiState.hazeOpacity * SIDE_PANEL_HAZE_ALPHA_MULTIPLIER)
-                .coerceIn(SIDE_PANEL_MIN_ALPHA, SIDE_PANEL_MAX_ALPHA)
-            MaterialTheme.colorScheme.surfaceContainerHigh.copy(alpha = backgroundAlpha)
-        } else {
-            MaterialTheme.colorScheme.surfaceContainerHigh.copy(alpha = 0.95f)
-        }
-    } else {
-        Color.Transparent
-    }
-
-    val boxModifier = modifier.then(if (isExpandCell) Modifier.fillMaxSize() else Modifier)
-
-    val verticalArrangement = when (config.position) {
-        "Top" -> Arrangement.Top
-        "Center" -> Arrangement.Center
-        "Bottom" -> Arrangement.Bottom
-        "Space Evenly" -> Arrangement.SpaceEvenly
-        "Space Between" -> Arrangement.SpaceBetween
-        else -> Arrangement.SpaceBetween
-    }
+    val boxModifier = modifier.then(if (config.isExpandCell) Modifier.fillMaxSize() else Modifier)
 
     Box(
         modifier = boxModifier
@@ -109,10 +129,9 @@ fun SidePanel(
         SidePanelColumn(
             config = config,
             backgroundColor = backgroundColor,
-            isExpandCell = isExpandCell,
             verticalArrangement = verticalArrangement,
             onFolderClick = onFolderClick,
-            modifier = if (isBgEnabled) hazeModifier else Modifier
+            modifier = if (config.isBackgroundEnabled) hazeModifier else Modifier
         )
     }
 }
@@ -121,7 +140,6 @@ fun SidePanel(
 private fun SidePanelColumn(
     config: SidePanelConfig,
     backgroundColor: Color,
-    isExpandCell: Boolean,
     verticalArrangement: Arrangement.Vertical,
     onFolderClick: (AppFolder, Float) -> Unit,
     modifier: Modifier = Modifier
@@ -133,7 +151,7 @@ private fun SidePanelColumn(
         verticalArrangement = verticalArrangement,
         modifier = Modifier
             .clip(RoundedCornerShape(18.dp))
-            .then(if (isExpandCell) Modifier.fillMaxSize() else Modifier)
+            .then(if (config.isExpandCell) Modifier.fillMaxSize() else Modifier)
             .then(modifier)
             .background(backgroundColor)
             .verticalScroll(rememberScrollState())
