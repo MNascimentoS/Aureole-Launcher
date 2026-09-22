@@ -8,6 +8,8 @@ sealed interface SettingValue {
     data class SidePanelPosition(val position: String) : SettingValue
     data class HazeOpacity(val opacity: Float) : SettingValue
     data class ManualSeedColor(val color: Int) : SettingValue
+    data class SettingsButtonPosition(val position: String) : SettingValue
+    data class SearchIconPosition(val position: String) : SettingValue
 }
 
 data class SettingsUiState(
@@ -42,6 +44,12 @@ data class SettingsUiState(
     val isInAppUpdateEnabled: Boolean = true,
     val isThemedAppIconsEnabled: Boolean = false,
     val isAlphabetScrubberDisabled: Boolean = false,
+    val showSettingsButtonInAllApps: Boolean = true,
+    val settingsButtonPosition: String = "Right",
+    val showSearchBarInAllApps: Boolean = true,
+    val searchIconPosition: String = "Left",
+    val showSettingsButtonPositionDialog: Boolean = false,
+    val showSearchIconPositionDialog: Boolean = false,
     val showHazeOpacityDialog: Boolean = false,
     val showColorPickerDialog: Boolean = false,
     val shouldFinishActivity: Boolean = false,

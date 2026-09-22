@@ -86,10 +86,16 @@ fun ClockHeader(
     val hazeModifier = Modifier.buildClockHazeModifier(hasHaze, hazeStateRef, actualHazeOpacity)
     val backgroundColor = getClockBackgroundColor(actualIsBgEnabled, hasHaze, actualHazeOpacity)
 
+    val containerMarginModifier = if (actualIsBgEnabled) {
+        Modifier.padding(horizontal = 4.dp, vertical = 4.dp)
+    } else {
+        Modifier.padding(start = 12.dp, top = 0.dp, end = 0.dp, bottom = 0.dp)
+    }
+
     BoxWithConstraints(
         modifier = modifier
             .fillMaxSize()
-            .then(if (actualIsBgEnabled) Modifier.padding(horizontal = 4.dp, vertical = 4.dp) else Modifier)
+            .then(containerMarginModifier)
             .clip(RoundedCornerShape(20.dp))
             .then(if (hasHaze) hazeModifier else Modifier)
             .background(backgroundColor)

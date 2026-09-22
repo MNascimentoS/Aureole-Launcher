@@ -3,7 +3,9 @@ package dev.mnascimentos.aureole.feature.home.components
 import android.appwidget.AppWidgetHost
 import android.appwidget.AppWidgetHostView
 import android.appwidget.AppWidgetManager
+import android.content.Context
 import android.os.Bundle
+import android.view.View
 import android.widget.TextView
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -49,9 +51,11 @@ fun GridAppsListContent(params: GridItemContentParams) {
         FavoritesList(
             config = if (isInScrollView) params.favConfig.copy(hazeState = null) else params.favConfig,
             appWidgetHost = params.appWidgetHost,
-            containerId = params.item.id,
-            showHeadersAndWidgets = false,
-            isInsideScrollView = isInScrollView,
+            options = FavoritesListOptions(
+                containerId = params.item.id,
+                showHeadersAndWidgets = false,
+                isInsideScrollView = isInScrollView
+            ),
             modifier = if (isInScrollView) Modifier.fillMaxWidth() else Modifier.fillMaxSize()
         )
     }
@@ -87,9 +91,7 @@ fun GridWidgetListContent(params: GridItemContentParams) {
     Box(modifier = Modifier.fillMaxSize()) {
         StackedWidgetSection(
             config = if (params.isInScrollView) {
-                params.stackedWidgetConfig.copy(
-                    hazeState = null
-                )
+                params.stackedWidgetConfig.copy(hazeState = null)
             } else {
                 params.stackedWidgetConfig
             },
@@ -137,69 +139,68 @@ fun SingleAppWidgetContent(
     Box(modifier = Modifier.fillMaxSize()) {
         if (item.widgetId != null && item.widgetId != -1) {
             AndroidView(
-                factory = { context ->
-                    val appWidgetManager = AppWidgetManager.getInstance(context)
-                    val appWidgetInfo = appWidgetManager.getAppWidgetInfo(item.widgetId)
-                    if (appWidgetInfo != null) {
-                        val widthDp =
-                            (context.resources.configuration.screenWidthDp)
-                                .coerceAtLeast(DEFAULT_WIDGET_MIN_WIDTH)
-                        val options = Bundle().apply {
-                            putInt(
-                                AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH,
-                                appWidgetInfo.minWidth
-                            )
-                            putInt(
-                                AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT,
-                                appWidgetInfo.minHeight
-                            )
-                            putInt(AppWidgetManager.OPTION_APPWIDGET_MAX_WIDTH, widthDp)
-                            putInt(AppWidgetManager.OPTION_APPWIDGET_MAX_HEIGHT, DEFAULT_WIDGET_MAX_HEIGHT)
-                        }
-                        appWidgetManager.updateAppWidgetOptions(item.widgetId, options)
-                        appWidgetHost.createView(context, item.widgetId, appWidgetInfo)
-                    } else {
-                        TextView(context).apply { text = "Widget" }
-                    }
-                },
-                update = { view ->
-                    val widthDp = view.context.resources.configuration.screenWidthDp
-                    if (view is AppWidgetHostView && view.tag != widthDp) {
-                        view.tag = widthDp
-                        val appWidgetManager = AppWidgetManager.getInstance(view.context)
-                        val appWidgetInfo = appWidgetManager.getAppWidgetInfo(item.widgetId)
-                        if (appWidgetInfo != null) {
-                            val options = Bundle().apply {
-                                putInt(
-                                    AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH,
-                                    appWidgetInfo.minWidth
-                                )
-                                putInt(
-                                    AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT,
-                                    appWidgetInfo.minHeight
-                                )
-                                putInt(
-                                    AppWidgetManager.OPTION_APPWIDGET_MAX_WIDTH,
-                                    widthDp.coerceAtLeast(DEFAULT_WIDGET_MIN_WIDTH)
-                                )
-                                putInt(AppWidgetManager.OPTION_APPWIDGET_MAX_HEIGHT, DEFAULT_WIDGET_MAX_HEIGHT)
-                            }
-                            appWidgetManager
-                                .updateAppWidgetOptions(item.widgetId, options)
-                        }
-                    }
-                },
+                factory = { context -> createSingleWidgetView(context, item.widgetId, appWidgetHost) },
+                update = { view -> updateSingleWidgetView(view, item.widgetId) },
                 modifier = Modifier
                     .fillMaxSize()
                     .nestedScroll(rememberNestedScrollInteropConnection())
             )
         } else {
-            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                Text(
-                    text = "Widget não configurado",
-                    color = MaterialTheme.colorScheme.onSurface
-                )
-            }
+            UnconfiguredWidgetPlaceholder()
         }
+    }
+}
+
+private fun createSingleWidgetView(
+    context: Context,
+    widgetId: Int,
+    appWidgetHost: AppWidgetHost
+): View {
+    val appWidgetManager = AppWidgetManager.getInstance(context)
+    val appWidgetInfo = appWidgetManager.getAppWidgetInfo(widgetId)
+    return if (appWidgetInfo != null) {
+        val widthDp = (context.resources.configuration.screenWidthDp)
+            .coerceAtLeast(DEFAULT_WIDGET_MIN_WIDTH)
+        val options = Bundle().apply {
+            putInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH, appWidgetInfo.minWidth)
+            putInt(AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT, appWidgetInfo.minHeight)
+            putInt(AppWidgetManager.OPTION_APPWIDGET_MAX_WIDTH, widthDp)
+            putInt(AppWidgetManager.OPTION_APPWIDGET_MAX_HEIGHT, DEFAULT_WIDGET_MAX_HEIGHT)
+        }
+        appWidgetManager.updateAppWidgetOptions(widgetId, options)
+        appWidgetHost.createView(context, widgetId, appWidgetInfo)
+    } else {
+        TextView(context).apply { text = "Widget" }
+    }
+}
+
+private fun updateSingleWidgetView(view: View, widgetId: Int) {
+    val widthDp = view.context.resources.configuration.screenWidthDp
+    if (view is AppWidgetHostView && view.tag != widthDp) {
+        view.tag = widthDp
+        val appWidgetManager = AppWidgetManager.getInstance(view.context)
+        val appWidgetInfo = appWidgetManager.getAppWidgetInfo(widgetId)
+        if (appWidgetInfo != null) {
+            val options = Bundle().apply {
+                putInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH, appWidgetInfo.minWidth)
+                putInt(AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT, appWidgetInfo.minHeight)
+                putInt(
+                    AppWidgetManager.OPTION_APPWIDGET_MAX_WIDTH,
+                    widthDp.coerceAtLeast(DEFAULT_WIDGET_MIN_WIDTH)
+                )
+                putInt(AppWidgetManager.OPTION_APPWIDGET_MAX_HEIGHT, DEFAULT_WIDGET_MAX_HEIGHT)
+            }
+            appWidgetManager.updateAppWidgetOptions(widgetId, options)
+        }
+    }
+}
+
+@Composable
+private fun UnconfiguredWidgetPlaceholder() {
+    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+        Text(
+            text = "Widget não configurado",
+            color = MaterialTheme.colorScheme.onSurface
+        )
     }
 }

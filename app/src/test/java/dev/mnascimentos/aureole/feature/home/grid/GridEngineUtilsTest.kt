@@ -280,7 +280,7 @@ class GridEngineUtilsTest {
 
     @Test
     fun `getDefaultSpanForType returns correct default span for SCROLL_VIEW`() {
-        val (spans, minSpans) = GridEngineUtils.getDefaultSpanForType(LauncherItemType.SCROLL_VIEW)
+        val (spans, minSpans) = GridDefaults.getDefaultSpanForType(LauncherItemType.SCROLL_VIEW)
         assertEquals(Pair(7, 6), spans)
         assertEquals(Pair(1, 1), minSpans)
     }

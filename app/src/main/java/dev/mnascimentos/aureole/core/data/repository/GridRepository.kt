@@ -7,7 +7,7 @@ import com.google.gson.Gson
 import com.google.gson.JsonSyntaxException
 import com.google.gson.reflect.TypeToken
 import dev.mnascimentos.aureole.core.data.model.LauncherItemState
-import dev.mnascimentos.aureole.feature.home.grid.GridEngineUtils
+import dev.mnascimentos.aureole.feature.home.grid.GridDefaults
 
 private const val TAG = "GridRepository"
 
@@ -24,13 +24,13 @@ class GridRepository(private val context: Context) {
             json = prefs.getString(KEY_GRID_ITEMS, null)
         }
         if (json == null) {
-            return GridEngineUtils.getDefaultGridItems(isLandscape)
+            return GridDefaults.getDefaultGridItems(isLandscape)
         }
         return try {
             val type = object : TypeToken<List<LauncherItemState>>() {}.type
             val items: List<LauncherItemState>? = gson.fromJson(json, type)
             if (items.isNullOrEmpty()) {
-                GridEngineUtils.getDefaultGridItems(isLandscape)
+                GridDefaults.getDefaultGridItems(isLandscape)
             } else {
                 items.map { item ->
                     val sanitizedChildren = item.safeChildren.map { child ->
@@ -49,10 +49,10 @@ class GridRepository(private val context: Context) {
             }
         } catch (e: JsonSyntaxException) {
             Log.w(TAG, "Failed to parse grid items JSON", e)
-            GridEngineUtils.getDefaultGridItems(isLandscape)
+            GridDefaults.getDefaultGridItems(isLandscape)
         } catch (e: IllegalStateException) {
             Log.w(TAG, "Illegal state while parsing grid items JSON", e)
-            GridEngineUtils.getDefaultGridItems(isLandscape)
+            GridDefaults.getDefaultGridItems(isLandscape)
         }
     }
 

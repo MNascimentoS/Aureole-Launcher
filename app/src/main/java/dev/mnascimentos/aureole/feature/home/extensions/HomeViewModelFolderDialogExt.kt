@@ -13,10 +13,28 @@ fun HomeViewModel.setAddAppToFolderDialogVisible(visible: Boolean) {
 }
 
 internal suspend fun HomeViewModel.createNewFolder(name: String) {
-    val newFolder = AppFolder(name = name)
-    folderRepository.addFolder(newFolder)
+    val targetPanelId = uiState.value.targetPanelIdForFolder
+    val newFolder = AppFolder(name = name, panelId = targetPanelId)
+
+    if (targetPanelId != null) {
+        sidePanelRepository.addFolderToPanel(targetPanelId, newFolder)
+    } else {
+        folderRepository.addFolder(newFolder)
+    }
+
+    val updatedPanels = sidePanelRepository.getAllSidePanels().associateBy { it.id }
+    val updatedFolders = folderRepository.getFolders()
+
+    updateUiState {
+        it.copy(
+            sidePanels = updatedPanels,
+            folders = updatedFolders,
+            isCreateFolderDialogVisible = false,
+            targetPanelIdForFolder = null,
+        )
+    }
+
     refreshFoldersAndOpen(newFolder.id)
-    updateUiState { it.copy(isCreateFolderDialogVisible = false) }
 }
 
 internal suspend fun HomeViewModel.saveFolderApps(intent: FolderViewIntent.SaveFolderApps) {

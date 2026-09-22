@@ -52,4 +52,12 @@ data class SettingsScreenActions(
     val onOpenFactoryResetDialog: () -> Unit = {},
     val onConfirmFactoryReset: () -> Unit = {},
     val onDismissFactoryResetDialog: () -> Unit = {},
+    val onToggleShowSettingsButtonInAllApps: () -> Unit = {},
+    val onOpenSettingsButtonPositionDialog: () -> Unit = {},
+    val onDismissSettingsButtonPositionDialog: () -> Unit = {},
+    val onSettingsButtonPositionSelected: (String) -> Unit = {},
+    val onToggleShowSearchBarInAllApps: () -> Unit = {},
+    val onOpenSearchIconPositionDialog: () -> Unit = {},
+    val onDismissSearchIconPositionDialog: () -> Unit = {},
+    val onSearchIconPositionSelected: (String) -> Unit = {},
 )

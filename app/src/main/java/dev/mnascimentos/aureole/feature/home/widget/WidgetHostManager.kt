@@ -22,38 +22,88 @@ class WidgetHostManager(
 ) {
     companion object {
         private const val TAG = "WidgetHostManager"
+        const val REQUEST_PICK_APPWIDGET = 1001
+        const val REQUEST_BIND_APPWIDGET = 1002
     }
 
     fun handleWidgetSelected(provider: AppWidgetProviderInfo?) {
-        if (provider == null) return
-        val appWidgetId = appWidgetHost.allocateAppWidgetId()
-        if (appWidgetId == AppWidgetManager.INVALID_APPWIDGET_ID) return
+        if (provider != null) {
+            val appWidgetId = appWidgetHost.allocateAppWidgetId()
+            if (appWidgetId != AppWidgetManager.INVALID_APPWIDGET_ID) {
+                processSelectedWidget(appWidgetId, provider)
+            }
+        }
+    }
 
-        if (provider.configure != null) {
-            viewModel.setPendingWidgetId(appWidgetId)
-            val intent = Intent(
-                AppWidgetManager.ACTION_APPWIDGET_CONFIGURE
-            ).apply {
-                component = provider.configure
-                putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
-            }
-            try {
-                if (context is Activity) {
-                    context.startActivityForResult(intent, 1001)
-                }
-            } catch (e: ActivityNotFoundException) {
-                Log.e(TAG, "Activity not found for widget configure", e)
-                completeWidgetConfiguration(appWidgetId, provider)
-            } catch (e: SecurityException) {
-                Log.e(TAG, "Security exception for widget configure", e)
-                completeWidgetConfiguration(appWidgetId, provider)
-            }
+    private fun processSelectedWidget(appWidgetId: Int, provider: AppWidgetProviderInfo) {
+        val canBind = try {
+            appWidgetManager.bindAppWidgetIdIfAllowed(appWidgetId, provider.provider)
+        } catch (e: IllegalArgumentException) {
+            Log.w(TAG, "IllegalArgumentException checking bind for id $appWidgetId", e)
+            false
+        } catch (e: IllegalStateException) {
+            Log.w(TAG, "IllegalStateException checking bind for id $appWidgetId", e)
+            false
+        } catch (e: SecurityException) {
+            Log.w(TAG, "SecurityException checking bind for id $appWidgetId", e)
+            false
+        }
+
+        if (!canBind) {
+            handleBindIntent(appWidgetId, provider)
+        } else if (provider.configure != null) {
+            handleConfigureIntent(appWidgetId, provider)
         } else {
             completeWidgetConfiguration(appWidgetId, provider)
         }
     }
 
-    private fun completeWidgetConfiguration(
+    private fun handleBindIntent(appWidgetId: Int, provider: AppWidgetProviderInfo) {
+        viewModel.setPendingWidgetId(appWidgetId)
+        val intent = Intent(AppWidgetManager.ACTION_APPWIDGET_BIND).apply {
+            putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
+            putExtra(AppWidgetManager.EXTRA_APPWIDGET_PROVIDER, provider.provider)
+        }
+        try {
+            if (context is Activity) {
+                context.startActivityForResult(intent, REQUEST_BIND_APPWIDGET)
+            } else {
+                appWidgetHost.deleteAppWidgetId(appWidgetId)
+                viewModel.setPendingWidgetId(-1)
+            }
+        } catch (e: ActivityNotFoundException) {
+            Log.e(TAG, "Activity not found for widget bind intent for id $appWidgetId", e)
+            appWidgetHost.deleteAppWidgetId(appWidgetId)
+            viewModel.setPendingWidgetId(-1)
+        } catch (e: SecurityException) {
+            Log.e(TAG, "Security exception for widget bind intent for id $appWidgetId", e)
+            appWidgetHost.deleteAppWidgetId(appWidgetId)
+            viewModel.setPendingWidgetId(-1)
+        }
+    }
+
+    private fun handleConfigureIntent(appWidgetId: Int, provider: AppWidgetProviderInfo) {
+        viewModel.setPendingWidgetId(appWidgetId)
+        val intent = Intent(
+            AppWidgetManager.ACTION_APPWIDGET_CONFIGURE
+        ).apply {
+            component = provider.configure
+            putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
+        }
+        try {
+            if (context is Activity) {
+                context.startActivityForResult(intent, REQUEST_PICK_APPWIDGET)
+            }
+        } catch (e: ActivityNotFoundException) {
+            Log.e(TAG, "Activity not found for widget configure", e)
+            completeWidgetConfiguration(appWidgetId, provider)
+        } catch (e: SecurityException) {
+            Log.e(TAG, "Security exception for widget configure", e)
+            completeWidgetConfiguration(appWidgetId, provider)
+        }
+    }
+
+    fun completeWidgetConfiguration(
         widgetId: Int,
         provider: AppWidgetProviderInfo?
     ) {
@@ -72,7 +122,11 @@ class WidgetHostManager(
                 putInt(AppWidgetManager.OPTION_APPWIDGET_MAX_HEIGHT, provider.minHeight * 2)
             }
             appWidgetManager.updateAppWidgetOptions(widgetId, options)
-        } catch (e: Throwable) {
+        } catch (e: IllegalArgumentException) {
+            Log.e(TAG, "Failed to update widget options for id $widgetId", e)
+        } catch (e: IllegalStateException) {
+            Log.e(TAG, "Failed to update widget options for id $widgetId", e)
+        } catch (e: SecurityException) {
             Log.e(TAG, "Failed to update widget options for id $widgetId", e)
         }
     }

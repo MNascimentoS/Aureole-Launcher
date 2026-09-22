@@ -39,6 +39,8 @@ import dev.mnascimentos.aureole.feature.home.extensions.checkAppUpdate
 import dev.mnascimentos.aureole.feature.home.extensions.handleBackNavigation
 import dev.mnascimentos.aureole.feature.home.extensions.loadGridItems
 import dev.mnascimentos.aureole.feature.home.extensions.setAllAppsDrawerOpen
+import dev.mnascimentos.aureole.feature.home.extensions.setIsAddingSingleWidget
+import dev.mnascimentos.aureole.feature.home.extensions.setPendingWidgetId
 import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
 import dev.mnascimentos.aureole.feature.home.widget.WidgetHostManager
@@ -171,32 +173,6 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    private fun checkOverlayActive(uiState: MainUiState): Boolean {
-        return (
-            uiState.isAllAppsDrawerOpen ||
-                uiState.activeFolder != null ||
-                uiState.isCreateFolderDialogVisible ||
-                uiState.isAddAppToFolderDialogVisible ||
-                uiState.isRenameFolderDialogVisible ||
-                uiState.searchQuery.isNotEmpty() ||
-                uiState.showWidgetPicker ||
-                uiState.showFavoritePickerDialog ||
-                uiState.showWidgetPopup ||
-                uiState.showWidgetResizeDialog
-            )
-    }
-
-    private fun createHomeActions(): HomeScreenActions {
-        return HomeActionsFactory(
-            activity = this,
-            viewModel = viewModel,
-            widgetHostManager = widgetHostManager,
-            appUpdateManager = appUpdateManager,
-            updateActivityResultLauncher = updateActivityResultLauncher,
-            cachedAppUpdateInfo = cachedAppUpdateInfo
-        ).createHomeActions()
-    }
-
     private var wasInBackground = false
 
     override fun onNewIntent(intent: Intent) {
@@ -241,8 +217,54 @@ class MainActivity : ComponentActivity() {
         wasInBackground = false
     }
 
+    @Deprecated("Deprecated in Java")
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == WidgetHostManager.REQUEST_PICK_APPWIDGET ||
+            requestCode == WidgetHostManager.REQUEST_BIND_APPWIDGET
+        ) {
+            val pendingWidgetId = viewModel.pendingWidgetId
+            if (pendingWidgetId != -1) {
+                if (resultCode == RESULT_OK) {
+                    val appWidgetInfo = appWidgetManager.getAppWidgetInfo(pendingWidgetId)
+                    widgetHostManager.completeWidgetConfiguration(pendingWidgetId, appWidgetInfo)
+                } else {
+                    appWidgetHost.deleteAppWidgetId(pendingWidgetId)
+                    viewModel.setPendingWidgetId(-1)
+                    viewModel.setIsAddingSingleWidget(false)
+                }
+            }
+        }
+    }
+
     companion object {
         private const val TAG = "MainActivity"
         private const val APPWIDGET_HOST_ID = 1024
     }
+}
+
+private fun checkOverlayActive(uiState: MainUiState): Boolean {
+    return (
+        uiState.isAllAppsDrawerOpen ||
+            uiState.activeFolder != null ||
+            uiState.isCreateFolderDialogVisible ||
+            uiState.isAddAppToFolderDialogVisible ||
+            uiState.isRenameFolderDialogVisible ||
+            uiState.searchQuery.isNotEmpty() ||
+            uiState.showWidgetPicker ||
+            uiState.showFavoritePickerDialog ||
+            uiState.showWidgetPopup ||
+            uiState.showWidgetResizeDialog
+        )
+}
+
+private fun MainActivity.createHomeActions(): HomeScreenActions {
+    return HomeActionsFactory(
+        activity = this,
+        viewModel = viewModel,
+        widgetHostManager = widgetHostManager,
+        appUpdateManager = appUpdateManager,
+        updateActivityResultLauncher = updateActivityResultLauncher,
+        cachedAppUpdateInfo = cachedAppUpdateInfo
+    ).createHomeActions()
 }

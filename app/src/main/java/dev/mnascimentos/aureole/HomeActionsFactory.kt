@@ -59,33 +59,21 @@ class HomeActionsFactory(
     private val cachedAppUpdateInfo: AppUpdateInfo?
 ) {
     fun createHomeActions(): HomeScreenActions {
-        return HomeScreenActions(
+        val actions = HomeScreenActions(
             onWidgetRowHeightChanged = { viewModel.setWidgetRowHeight(it) },
             onAddWidgetClick = { viewModel.setShowWidgetPicker(true) },
             onRemoveWidgetClick = { widgetId -> widgetHostManager.removeWidget(widgetId) },
             onAppClick = { appInfo -> viewModel.launchApp(appInfo.componentName) },
             onExpandNotificationShade = { IntentUtils.expandNotificationShade(activity) },
             onFolderIntent = { intent -> viewModel.onFolderIntent(intent) },
-            onSetAddAppToFolderDialogVisible = { visible ->
-                viewModel.setAddAppToFolderDialogVisible(visible)
-            },
-            onSetRenameFolderDialogVisible = { visible ->
-                viewModel.setRenameFolderDialogVisible(visible)
-            },
+            onSetAddAppToFolderDialogVisible = { visible -> viewModel.setAddAppToFolderDialogVisible(visible) },
+            onSetRenameFolderDialogVisible = { visible -> viewModel.setRenameFolderDialogVisible(visible) },
             onSearchQueryChanged = { query -> viewModel.onSearchQueryChanged(query) },
-            onSettingsClick = {
-                activity.startActivity(Intent(activity, SettingsActivity::class.java))
-            },
+            onSettingsClick = { activity.startActivity(Intent(activity, SettingsActivity::class.java)) },
             onAllAppsDrawerClose = { viewModel.setAllAppsDrawerOpen(false) },
             onAllAppsDrawerOpen = { viewModel.setAllAppsDrawerOpen(true) },
             onToggleFavorite = { pkg -> viewModel.toggleFavorite(pkg) },
-            onUpdateFavoritePackages = { containerId, pkgs ->
-                if (containerId != null) {
-                    viewModel.updateContainerFavorites(containerId, pkgs)
-                } else {
-                    viewModel.updateFavoritePackages(pkgs)
-                }
-            },
+            onUpdateFavoritePackages = { cId, pkgs -> handleUpdateFavoritePackages(cId, pkgs) },
             onToggleShowAllAppsOnHome = { viewModel.toggleShowAllAppsOnHome() },
             onAppInfoClick = { app -> IntentUtils.openAppInfo(activity, app.packageName) },
             onOpenFavoritePicker = { containerId -> viewModel.setShowFavoritePicker(true, containerId) },
@@ -95,52 +83,63 @@ class HomeActionsFactory(
             onCloseWidgetResizeDialog = { viewModel.closeWidgetPopup() },
             onResizeWidgetHeight = { height -> viewModel.setWidgetRowHeight(height) },
             onStartInAppUpdate = createStartUpdateAction(),
-            onCompleteInAppUpdate = {
-                viewModel.setShowUpdateDownloadedDialog(visible = false)
-                appUpdateManager.completeUpdate()
-            },
-            onDismissUpdateDialog = {
-                viewModel.setShowUpdateAvailableDialog(visible = false)
-                viewModel.setShowUpdateDownloadedDialog(visible = false)
-            },
+            onCompleteInAppUpdate = { handleCompleteInAppUpdate() },
+            onDismissUpdateDialog = { handleDismissUpdateDialog() }
+        )
+        return attachGridActions(actions)
+    }
+
+    private fun attachGridActions(base: HomeScreenActions): HomeScreenActions {
+        return base.copy(
             onEnterGridEditMode = { viewModel.enterGridEditMode() },
             onCancelGridEditMode = { viewModel.cancelGridEditMode() },
             onSaveGridEditMode = { viewModel.saveGridEditMode() },
-            onUpdateGridOrientation = { cols, rows ->
-                viewModel.updateGridItemsOrientation(cols, rows)
-            },
+            onUpdateGridOrientation = { cols, rows -> viewModel.updateGridItemsOrientation(cols, rows) },
             onMoveGridItem = { id, col, row -> viewModel.moveGridItem(id, col, row) },
-            onResizeGridItem = { id, colSpan, rowSpan ->
-                viewModel.resizeGridItem(id, colSpan, rowSpan)
-            },
+            onResizeGridItem = { id, colSpan, rowSpan -> viewModel.resizeGridItem(id, colSpan, rowSpan) },
             onResetGridItems = { viewModel.resetGridItems() },
             onOpenAddContainerDialog = { viewModel.setShowAddContainerDialog(true) },
             onCloseAddContainerDialog = { viewModel.setShowAddContainerDialog(false) },
-            onAddGridItem = { type, widgetId ->
-                viewModel.addGridItem(GridItemSpec(type = type, widgetId = widgetId))
-            },
+            onAddGridItem = { type, widgetId -> viewModel.addGridItem(GridItemSpec(type = type, widgetId = widgetId)) },
             onOpenEditContainerDialog = { item -> viewModel.setEditingGridItem(item) },
             onCloseEditContainerDialog = { viewModel.setEditingGridItem(null) },
             onDeleteGridItem = { id -> viewModel.deleteGridItem(id) },
             onDismissGridError = { viewModel.dismissGridError() },
             onSetIsAddingSingleWidget = { viewModel.setIsAddingSingleWidget(it) },
-            onUpdateScrollViewOrientation = { id, orientation ->
-                viewModel.updateScrollViewOrientation(id, orientation)
+            onUpdateScrollViewOrientation = { id, o -> viewModel.updateScrollViewOrientation(id, o) },
+            onRemoveChildFromScrollView = { pId, cId -> viewModel.removeChildFromScrollView(pId, cId) },
+            onResizeChildInScrollView = { pId, cId, cSpan, rSpan ->
+                viewModel.resizeChildInScrollView(
+                    pId,
+                    cId,
+                    cSpan,
+                    rSpan
+                )
             },
-            onRemoveChildFromScrollView = { parentId, childId ->
-                viewModel.removeChildFromScrollView(parentId, childId)
-            },
-            onResizeChildInScrollView = { parentId, childId, colSpan, rowSpan ->
-                viewModel.resizeChildInScrollView(parentId, childId, colSpan, rowSpan)
-            },
-            onOpenAddContainerForParent = { parentId ->
-                viewModel.openAddContainerForParent(parentId)
-            },
+            onOpenAddContainerForParent = { pId -> viewModel.openAddContainerForParent(pId) },
             onOpenEditSidePanelDialog = { id -> viewModel.openEditSidePanelDialog(id) },
             onCloseEditSidePanelDialog = { viewModel.closeEditSidePanelDialog() },
             onSaveSidePanelModel = { model -> viewModel.saveSidePanelModel(model) },
             onDeleteSidePanelInstance = { id -> viewModel.deleteSidePanelInstance(id) }
         )
+    }
+
+    private fun handleUpdateFavoritePackages(containerId: String?, pkgs: List<String>) {
+        if (containerId != null) {
+            viewModel.updateContainerFavorites(containerId, pkgs)
+        } else {
+            viewModel.updateFavoritePackages(pkgs)
+        }
+    }
+
+    private fun handleCompleteInAppUpdate() {
+        viewModel.setShowUpdateDownloadedDialog(visible = false)
+        appUpdateManager.completeUpdate()
+    }
+
+    private fun handleDismissUpdateDialog() {
+        viewModel.setShowUpdateAvailableDialog(visible = false)
+        viewModel.setShowUpdateDownloadedDialog(visible = false)
     }
 
     private fun createStartUpdateAction(): () -> Unit = {

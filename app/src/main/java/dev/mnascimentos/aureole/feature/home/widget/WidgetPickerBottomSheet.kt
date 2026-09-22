@@ -4,8 +4,10 @@ import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProviderInfo
 import android.content.Context
 import android.content.pm.PackageManager
+import android.graphics.drawable.Drawable
 import android.os.Build
 import android.util.Log
+import android.view.InflateException
 import android.widget.ImageView
 import android.widget.RemoteViews
 import androidx.compose.animation.animateContentSize
@@ -139,8 +141,6 @@ class WidgetPickerViewModel : ViewModel() {
                                     0
                                 }
 
-                            // Rough estimate of spans. Widget sizing can be complex,
-                            // but for preview display we estimate.
                             val minWidthAdjusted = provider.minWidth + CELL_MARGIN_ESTIMATE_DP
                             val spanX = Math.max(
                                 1,
@@ -361,9 +361,8 @@ fun AppGroupHeader(
             modifier = Modifier.weight(1f)
         )
 
-        val countText = group.availableWidgets.size.toString()
         Text(
-            text = countText,
+            text = group.availableWidgets.size.toString(),
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             modifier = Modifier.padding(end = 8.dp)
@@ -383,13 +382,13 @@ fun WidgetPreviewCard(
     onClick: () -> Unit
 ) {
     val context = LocalContext.current
-    var previewFailed by remember(widget.widgetId) { mutableStateOf(false) }
 
     val appIcon = remember(widget.providerInfo) {
         try {
             widget.providerInfo.loadIcon(context, 0)
                 ?: context.packageManager.getApplicationIcon(widget.providerInfo.provider.packageName)
-        } catch (e: Exception) {
+        } catch (e: PackageManager.NameNotFoundException) {
+            Log.e(TAG, "App icon not found for ${widget.providerInfo.provider.packageName}", e)
             null
         }
     }
@@ -408,72 +407,9 @@ fun WidgetPreviewCard(
                 .background(MaterialTheme.colorScheme.surfaceVariant),
             contentAlignment = Alignment.Center
         ) {
-            if (widget.previewImage != null) {
-                AsyncImage(
-                    model = widget.previewImage,
-                    contentDescription = widget.title,
-                    contentScale = ContentScale.Fit,
-                    modifier = Modifier
-                        .padding(8.dp)
-                        .fillMaxSize()
-                )
-            } else if (widget.previewLayoutRes != 0 && !previewFailed) {
-                AndroidView(
-                    factory = { ctx ->
-                        try {
-                            val rv = RemoteViews(
-                                widget.providerInfo.provider.packageName,
-                                widget.previewLayoutRes
-                            )
-                            rv.apply(ctx, null)
-                        } catch (e: Throwable) {
-                            Log.e(TAG, "Failed to inflate previewLayout for ${widget.title}", e)
-                            previewFailed = true
-                            ImageView(ctx).apply {
-                                if (appIcon != null) setImageDrawable(appIcon)
-                            }
-                        }
-                    },
-                    modifier = Modifier
-                        .padding(8.dp)
-                        .fillMaxSize()
-                )
-            } else if (appIcon != null) {
-                AsyncImage(
-                    model = appIcon,
-                    contentDescription = widget.title,
-                    contentScale = ContentScale.Fit,
-                    modifier = Modifier
-                        .padding(16.dp)
-                        .fillMaxSize()
-                )
-            } else {
-                Text(
-                    text = widget.title,
-                    style = MaterialTheme.typography.labelSmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.padding(8.dp)
-                )
-            }
+            WidgetPreviewContent(widget = widget, appIcon = appIcon)
 
-            // Grid Span indicator
-            Box(
-                modifier = Modifier
-                    .align(Alignment.TopEnd)
-                    .padding(8.dp)
-                    .background(
-                        MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.8f),
-                        RoundedCornerShape(4.dp)
-                    )
-                    .padding(horizontal = 4.dp, vertical = 2.dp)
-            ) {
-                Text(
-                    text = "${widget.minSpanX}x${widget.minSpanY}",
-                    style = MaterialTheme.typography.labelSmall,
-                    color = MaterialTheme.colorScheme.onPrimaryContainer
-                )
-            }
+            WidgetSpanBadge(spanX = widget.minSpanX, spanY = widget.minSpanY)
         }
 
         Spacer(modifier = Modifier.height(8.dp))
@@ -486,5 +422,89 @@ fun WidgetPreviewCard(
             maxLines = 2,
             overflow = TextOverflow.Ellipsis
         )
+    }
+}
+
+@Composable
+private fun WidgetPreviewContent(
+    widget: WidgetVariant,
+    appIcon: Drawable?
+) {
+    var previewFailed by remember(widget.widgetId) { mutableStateOf(false) }
+
+    if (widget.previewImage != null) {
+        AsyncImage(
+            model = widget.previewImage,
+            contentDescription = widget.title,
+            contentScale = ContentScale.Fit,
+            modifier = Modifier
+                .padding(8.dp)
+                .fillMaxSize()
+        )
+    } else if (widget.previewLayoutRes != 0 && !previewFailed) {
+        AndroidView(
+            factory = { ctx ->
+                try {
+                    val rv = RemoteViews(
+                        widget.providerInfo.provider.packageName,
+                        widget.previewLayoutRes
+                    )
+                    rv.apply(ctx, null)
+                } catch (e: InflateException) {
+                    Log.e(TAG, "Failed to inflate previewLayout for ${widget.title}", e)
+                    previewFailed = true
+                    ImageView(ctx).apply { if (appIcon != null) setImageDrawable(appIcon) }
+                } catch (e: IllegalArgumentException) {
+                    Log.e(TAG, "Invalid previewLayout for ${widget.title}", e)
+                    previewFailed = true
+                    ImageView(ctx).apply { if (appIcon != null) setImageDrawable(appIcon) }
+                }
+            },
+            modifier = Modifier
+                .padding(8.dp)
+                .fillMaxSize()
+        )
+    } else if (appIcon != null) {
+        AsyncImage(
+            model = appIcon,
+            contentDescription = widget.title,
+            contentScale = ContentScale.Fit,
+            modifier = Modifier
+                .padding(16.dp)
+                .fillMaxSize()
+        )
+    } else {
+        Text(
+            text = widget.title,
+            style = MaterialTheme.typography.labelSmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            textAlign = TextAlign.Center,
+            modifier = Modifier.padding(8.dp)
+        )
+    }
+}
+
+@Composable
+private fun WidgetSpanBadge(spanX: Int, spanY: Int) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(8.dp),
+        contentAlignment = Alignment.TopEnd
+    ) {
+        Box(
+            modifier = Modifier
+                .background(
+                    MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.8f),
+                    RoundedCornerShape(4.dp)
+                )
+                .padding(horizontal = 4.dp, vertical = 2.dp)
+        ) {
+            Text(
+                text = "${spanX}x$spanY",
+                style = MaterialTheme.typography.labelSmall,
+                color = MaterialTheme.colorScheme.onPrimaryContainer
+            )
+        }
     }
 }

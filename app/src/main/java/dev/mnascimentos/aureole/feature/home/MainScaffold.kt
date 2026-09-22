@@ -21,6 +21,8 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.core.designsystem.theme.LocalHazeState
 import dev.mnascimentos.aureole.feature.home.components.FavoriteAppsDialog
+import dev.mnascimentos.aureole.feature.home.components.FavoriteAppsDialogActions
+import dev.mnascimentos.aureole.feature.home.components.FavoriteAppsDialogConfig
 import dev.mnascimentos.aureole.feature.home.components.UpdateAvailableDialog
 import dev.mnascimentos.aureole.feature.home.components.UpdateDownloadedDialog
 import dev.mnascimentos.aureole.feature.home.extensions.closeWidgetPopup
@@ -120,20 +122,24 @@ private fun FavoritePickerOverlay(
         }
 
         FavoriteAppsDialog(
-            allApps = uiState.apps,
-            favoriteAppPackages = favPackages,
-            containerId = containerId,
-            showAllAppsOnHome = uiState.showAllAppsOnHome,
-            onToggleFavorite = { pkg -> viewModel.toggleFavorite(pkg, containerId) },
-            onUpdateFavoritePackages = { cId, pkgs ->
-                if (cId != null) {
-                    viewModel.updateContainerFavorites(cId, pkgs)
-                } else {
-                    viewModel.updateFavoritePackages(pkgs)
-                }
-            },
-            onToggleShowAllAppsOnHome = { viewModel.toggleShowAllAppsOnHome() },
-            onDismiss = { viewModel.setShowFavoritePicker(false) }
+            config = FavoriteAppsDialogConfig(
+                allApps = uiState.apps,
+                favoriteAppPackages = favPackages,
+                containerId = containerId,
+                showAllAppsOnHome = uiState.showAllAppsOnHome
+            ),
+            actions = FavoriteAppsDialogActions(
+                onToggleFavorite = { pkg -> viewModel.toggleFavorite(pkg, containerId) },
+                onUpdateFavoritePackages = { cId, pkgs ->
+                    if (cId != null) {
+                        viewModel.updateContainerFavorites(cId, pkgs)
+                    } else {
+                        viewModel.updateFavoritePackages(pkgs)
+                    }
+                },
+                onToggleShowAllAppsOnHome = { viewModel.toggleShowAllAppsOnHome() },
+                onDismiss = { viewModel.setShowFavoritePicker(false) }
+            )
         )
     }
 }

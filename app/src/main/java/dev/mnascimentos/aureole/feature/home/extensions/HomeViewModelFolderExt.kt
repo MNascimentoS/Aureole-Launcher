@@ -14,7 +14,12 @@ fun HomeViewModel.onFolderIntent(intent: FolderViewIntent) {
 private suspend fun HomeViewModel.handleFolderIntent(intent: FolderViewIntent) {
     when (intent) {
         is FolderViewIntent.OpenCreateFolderDialog -> {
-            updateUiState { it.copy(isCreateFolderDialogVisible = true) }
+            updateUiState {
+                it.copy(
+                    isCreateFolderDialogVisible = true,
+                    targetPanelIdForFolder = intent.panelId,
+                )
+            }
         }
         is FolderViewIntent.SubmitFolderName -> createNewFolder(intent.name)
         is FolderViewIntent.OpenFolder -> openFolder(intent)
@@ -52,7 +57,9 @@ private fun HomeViewModel.closeFolder() {
             openedFolderId = null,
             activeFolder = null,
             isAddAppToFolderDialogVisible = false,
-            isRenameFolderDialogVisible = false
+            isRenameFolderDialogVisible = false,
+            isCreateFolderDialogVisible = false,
+            targetPanelIdForFolder = null
         )
     }
 }
@@ -71,9 +78,11 @@ private suspend fun HomeViewModel.deleteFolder(folderId: String) {
 
 internal suspend fun HomeViewModel.refreshFoldersAndOpen(folderId: String) {
     val updatedFolders = folderRepository.getFolders()
+    val updatedPanels = sidePanelRepository.getAllSidePanels().associateBy { it.id }
     val active = updatedFolders.find { it.id == folderId }
     updateUiState {
         it.copy(
+            sidePanels = updatedPanels,
             folders = updatedFolders,
             openedFolderId = active?.id,
             activeFolder = active
@@ -83,5 +92,11 @@ internal suspend fun HomeViewModel.refreshFoldersAndOpen(folderId: String) {
 
 private suspend fun HomeViewModel.refreshFolders() {
     val updatedFolders = folderRepository.getFolders()
-    updateUiState { it.copy(folders = updatedFolders) }
+    val updatedPanels = sidePanelRepository.getAllSidePanels().associateBy { it.id }
+    updateUiState {
+        it.copy(
+            sidePanels = updatedPanels,
+            folders = updatedFolders
+        )
+    }
 }

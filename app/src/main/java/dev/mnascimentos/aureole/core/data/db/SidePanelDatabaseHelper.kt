@@ -165,7 +165,6 @@ class SidePanelDatabaseHelper(context: Context) : SQLiteOpenHelper(
         db.delete("side_panels", "id = ?", arrayOf(panelId))
     }
 
-    @Suppress("TooGenericExceptionCaught", "SwallowedException")
     fun getItemsForPanel(panelId: String): List<SidePanelItemEntity> {
         val db = readableDatabase
         val result = mutableListOf<SidePanelItemEntity>()
@@ -189,11 +188,7 @@ class SidePanelDatabaseHelper(context: Context) : SQLiteOpenHelper(
                 val folderId = c.getString(c.getColumnIndexOrThrow("folder_id"))
                 val orderIndex = c.getInt(c.getColumnIndexOrThrow("order_index"))
 
-                val itemType = try {
-                    SidePanelItemType.valueOf(itemTypeStr)
-                } catch (e: Exception) {
-                    SidePanelItemType.APP
-                }
+                val itemType = SidePanelItemType.entries.find { it.name == itemTypeStr } ?: SidePanelItemType.APP
 
                 result.add(
                     SidePanelItemEntity(

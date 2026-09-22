@@ -51,18 +51,31 @@ import dev.mnascimentos.aureole.feature.home.widget.model.StackedWidgetConfig
 private const val PREVIEW_APPWIDGET_HOST_ID = 1024
 private const val MAX_NON_SCROLLABLE_APPS = 20
 
+data class FavoritesListOptions(
+    val containerId: String? = null,
+    val showHeadersAndWidgets: Boolean = true,
+    val isInsideScrollView: Boolean = false
+)
+
+data class NonScrollableFavoritesParams(
+    val uiState: MainUiState,
+    val favoriteApps: List<AppInfo>,
+    val actions: HomeScreenActions,
+    val favoritePackages: Set<String>,
+    val containerId: String? = null
+)
+
 @Composable
 fun FavoritesList(
     config: FavoritesListConfig,
     appWidgetHost: AppWidgetHost,
-    containerId: String? = null,
     modifier: Modifier = Modifier,
-    showHeadersAndWidgets: Boolean = true,
-    isInsideScrollView: Boolean = false
+    options: FavoritesListOptions = FavoritesListOptions()
 ) {
     val uiState = LocalHomeUiState.current
     val actions = LocalHomeActions.current
 
+    val containerId = options.containerId
     val favoritePackagesList = remember(containerId, uiState.containerFavorites, uiState.favoriteAppPackages) {
         if (containerId != null && uiState.containerFavorites.containsKey(containerId)) {
             uiState.containerFavorites[containerId] ?: uiState.favoriteAppPackages
@@ -79,13 +92,15 @@ fun FavoritesList(
         favoritePackagesList.mapNotNull { pkg -> appMap[pkg] }
     }
 
-    if (isInsideScrollView) {
+    if (options.isInsideScrollView) {
         NonScrollableFavoritesList(
-            uiState = uiState,
-            favoriteApps = favoriteApps,
-            actions = actions,
-            favoritePackages = favoritePackages,
-            containerId = containerId,
+            params = NonScrollableFavoritesParams(
+                uiState = uiState,
+                favoriteApps = favoriteApps,
+                actions = actions,
+                favoritePackages = favoritePackages,
+                containerId = containerId
+            ),
             modifier = modifier
         )
     } else {
@@ -96,7 +111,7 @@ fun FavoritesList(
                 actions = actions,
                 favoritePackages = favoritePackages,
                 appWidgetHost = appWidgetHost,
-                showHeadersAndWidgets = showHeadersAndWidgets,
+                showHeadersAndWidgets = options.showHeadersAndWidgets,
                 modifier = modifier
             ),
             favoriteApps = favoriteApps,
@@ -171,13 +186,15 @@ private fun ScrollableFavoritesList(
 
 @Composable
 private fun NonScrollableFavoritesList(
-    uiState: MainUiState,
-    favoriteApps: List<AppInfo>,
-    actions: HomeScreenActions,
-    favoritePackages: Set<String>,
-    containerId: String? = null,
+    params: NonScrollableFavoritesParams,
     modifier: Modifier = Modifier
 ) {
+    val uiState = params.uiState
+    val favoriteApps = params.favoriteApps
+    val actions = params.actions
+    val favoritePackages = params.favoritePackages
+    val containerId = params.containerId
+
     Column(
         modifier = modifier.fillMaxWidth()
     ) {

@@ -19,7 +19,6 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
@@ -61,51 +60,11 @@ fun EditContainerDialog(
                     modifier = Modifier.padding(bottom = 12.dp)
                 )
 
-                if (item.type == LauncherItemType.APPS_LIST) {
-                    Button(
-                        onClick = {
-                            actions.onOpenFavoritePicker(item.id)
-                            onDismissRequest()
-                        },
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = MaterialTheme.colorScheme.primaryContainer,
-                            contentColor = MaterialTheme.colorScheme.onPrimaryContainer
-                        ),
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(bottom = 12.dp)
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.Edit,
-                            contentDescription = "Editar Favoritos",
-                            modifier = Modifier.padding(end = 8.dp)
-                        )
-                        Text(text = "Editar Favoritos e Configurações")
-                    }
-                }
-
-                if (item.type == LauncherItemType.SHORTCUTS_SIDE_PANEL) {
-                    Button(
-                        onClick = {
-                            actions.onOpenEditSidePanelDialog(item.id)
-                            onDismissRequest()
-                        },
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = MaterialTheme.colorScheme.primaryContainer,
-                            contentColor = MaterialTheme.colorScheme.onPrimaryContainer
-                        ),
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(bottom = 12.dp)
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.Edit,
-                            contentDescription = "Editar Painel Lateral",
-                            modifier = Modifier.padding(end = 8.dp)
-                        )
-                        Text(text = "Editar Configurações do Painel Lateral")
-                    }
-                }
+                EditDialogTypeActionSection(
+                    item = item,
+                    actions = actions,
+                    onDismissRequest = onDismissRequest
+                )
 
                 EditDialogWidgetListSection(item = item, uiState = uiState, actions = actions)
 
@@ -131,7 +90,60 @@ fun EditContainerDialog(
     )
 }
 
-private fun getContainerTitle(type: LauncherItemType?): String {
+@Composable
+private fun EditDialogTypeActionSection(
+    item: LauncherItemState,
+    actions: HomeScreenActions,
+    onDismissRequest: () -> Unit
+) {
+    if (item.type == LauncherItemType.APPS_LIST) {
+        Button(
+            onClick = {
+                actions.onOpenFavoritePicker(item.id)
+                onDismissRequest()
+            },
+            colors = ButtonDefaults.buttonColors(
+                containerColor = MaterialTheme.colorScheme.primaryContainer,
+                contentColor = MaterialTheme.colorScheme.onPrimaryContainer
+            ),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 12.dp)
+        ) {
+            Icon(
+                imageVector = Icons.Default.Edit,
+                contentDescription = "Editar Favoritos",
+                modifier = Modifier.padding(end = 8.dp)
+            )
+            Text(text = "Editar Favoritos e Configurações")
+        }
+    }
+
+    if (item.type == LauncherItemType.SHORTCUTS_SIDE_PANEL) {
+        Button(
+            onClick = {
+                actions.onOpenEditSidePanelDialog(item.id)
+                onDismissRequest()
+            },
+            colors = ButtonDefaults.buttonColors(
+                containerColor = MaterialTheme.colorScheme.primaryContainer,
+                contentColor = MaterialTheme.colorScheme.onPrimaryContainer
+            ),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 12.dp)
+        ) {
+            Icon(
+                imageVector = Icons.Default.Edit,
+                contentDescription = "Editar Painel Lateral",
+                modifier = Modifier.padding(end = 8.dp)
+            )
+            Text(text = "Editar Configurações do Painel Lateral")
+        }
+    }
+}
+
+internal fun getContainerTitle(type: LauncherItemType?): String {
     return when (type) {
         LauncherItemType.CLOCK -> "Relógio"
         LauncherItemType.APPS_LIST -> "Lista de Aplicativos"
@@ -179,6 +191,61 @@ private fun EditDialogScrollViewSection(
     actions: HomeScreenActions,
     onDismissRequest: () -> Unit
 ) {
+    ScrollViewOrientationSelector(item = item, actions = actions)
+
+    Text(
+        text = "Componentes Filhos (${item.safeChildren.size}):",
+        style = MaterialTheme.typography.labelLarge,
+        color = MaterialTheme.colorScheme.onSurface,
+        modifier = Modifier.padding(bottom = 4.dp)
+    )
+
+    if (item.safeChildren.isEmpty()) {
+        Text(
+            text = "Nenhum componente adicionado ainda.",
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier.padding(bottom = 8.dp)
+        )
+    } else {
+        val isVertical = item.safeScrollOrientation == ScrollOrientation.VERTICAL
+        item.safeChildren.forEach { child ->
+            ScrollViewChildItemRow(
+                parentId = item.id,
+                child = child,
+                isVertical = isVertical,
+                actions = actions,
+                onDismissRequest = onDismissRequest
+            )
+        }
+    }
+
+    Button(
+        onClick = { actions.onOpenAddContainerForParent(item.id) },
+        colors = ButtonDefaults.buttonColors(
+            containerColor = MaterialTheme.colorScheme.primaryContainer,
+            contentColor = MaterialTheme.colorScheme.onPrimaryContainer
+        ),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 8.dp)
+    ) {
+        Icon(
+            imageVector = Icons.Default.Add,
+            contentDescription = "Adicionar Componente",
+            modifier = Modifier.padding(end = 8.dp)
+        )
+        Text(text = "Adicionar Componente")
+    }
+
+    Spacer(modifier = Modifier.height(8.dp))
+}
+
+@Composable
+private fun ScrollViewOrientationSelector(
+    item: LauncherItemState,
+    actions: HomeScreenActions
+) {
     Text(
         text = "Orientação do Scroll:",
         style = MaterialTheme.typography.labelLarge,
@@ -221,127 +288,6 @@ private fun EditDialogScrollViewSection(
             Text(text = "Horizontal", style = MaterialTheme.typography.bodyMedium)
         }
     }
-
-    Text(
-        text = "Componentes Filhos (${item.safeChildren.size}):",
-        style = MaterialTheme.typography.labelLarge,
-        color = MaterialTheme.colorScheme.onSurface,
-        modifier = Modifier.padding(bottom = 4.dp)
-    )
-
-    if (item.safeChildren.isEmpty()) {
-        Text(
-            text = "Nenhum componente adicionado ainda.",
-            style = MaterialTheme.typography.bodySmall,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            modifier = Modifier.padding(bottom = 8.dp)
-        )
-    } else {
-        val isVertical = item.safeScrollOrientation == ScrollOrientation.VERTICAL
-        item.safeChildren.forEach { child ->
-            val spanVal = if (isVertical) child.rowSpan else child.colSpan
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 4.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Text(
-                    text = getContainerTitle(child.type),
-                    style = MaterialTheme.typography.bodyMedium,
-                    modifier = Modifier.weight(1f)
-                )
-
-                Row(
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    TextButton(
-                        onClick = {
-                            if (isVertical) {
-                                actions.onResizeChildInScrollView(
-                                    item.id,
-                                    child.id,
-                                    child.colSpan,
-                                    (child.rowSpan - 1).coerceAtLeast(1)
-                                )
-                            } else {
-                                actions.onResizeChildInScrollView(
-                                    item.id,
-                                    child.id,
-                                    (child.colSpan - 1).coerceAtLeast(1),
-                                    child.rowSpan
-                                )
-                            }
-                        }
-                    ) {
-                        Text("-", style = MaterialTheme.typography.titleMedium)
-                    }
-
-                    Text(
-                        text = "$spanVal",
-                        style = MaterialTheme.typography.bodyMedium,
-                        modifier = Modifier.padding(horizontal = 2.dp)
-                    )
-
-                    TextButton(
-                        onClick = {
-                            if (isVertical) {
-                                actions.onResizeChildInScrollView(item.id, child.id, child.colSpan, child.rowSpan + 1)
-                            } else {
-                                actions.onResizeChildInScrollView(item.id, child.id, child.colSpan + 1, child.rowSpan)
-                            }
-                        }
-                    ) {
-                        Text("+", style = MaterialTheme.typography.titleMedium)
-                    }
-
-                    if (child.type == LauncherItemType.APPS_LIST) {
-                        IconButton(
-                            onClick = {
-                                actions.onOpenFavoritePicker(child.id)
-                                onDismissRequest()
-                            }
-                        ) {
-                            Icon(
-                                imageVector = Icons.Default.Edit,
-                                contentDescription = "Editar Favoritos",
-                                tint = MaterialTheme.colorScheme.primary
-                            )
-                        }
-                    }
-
-                    IconButton(onClick = { actions.onRemoveChildFromScrollView(item.id, child.id) }) {
-                        Icon(
-                            imageVector = Icons.Default.Delete,
-                            contentDescription = "Remover",
-                            tint = MaterialTheme.colorScheme.error
-                        )
-                    }
-                }
-            }
-        }
-    }
-
-    Button(
-        onClick = { actions.onOpenAddContainerForParent(item.id) },
-        colors = ButtonDefaults.buttonColors(
-            containerColor = MaterialTheme.colorScheme.primaryContainer,
-            contentColor = MaterialTheme.colorScheme.onPrimaryContainer
-        ),
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 8.dp)
-    ) {
-        Icon(
-            imageVector = Icons.Default.Add,
-            contentDescription = "Adicionar Componente",
-            modifier = Modifier.padding(end = 8.dp)
-        )
-        Text(text = "Adicionar Componente")
-    }
-
-    Spacer(modifier = Modifier.height(8.dp))
 }
 
 @Composable

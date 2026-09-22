@@ -2,19 +2,15 @@ package dev.mnascimentos.aureole.feature.settings
 
 import android.app.Application
 import android.app.WallpaperManager
-import android.content.Context
-import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import dev.mnascimentos.aureole.core.data.db.AppDatabase
 import dev.mnascimentos.aureole.core.data.model.AppFolder
 import dev.mnascimentos.aureole.core.data.repository.AppRepository
 import dev.mnascimentos.aureole.core.data.repository.FolderRepository
-import dev.mnascimentos.aureole.core.data.repository.GridRepository
 import dev.mnascimentos.aureole.core.data.repository.SettingsRepository
 import dev.mnascimentos.aureole.feature.settings.ext.checkDefaultLauncher
 import dev.mnascimentos.aureole.feature.settings.model.SettingValue
@@ -46,7 +42,9 @@ enum class SettingToggle {
     DYNAMIC_WALLPAPER,
     IN_APP_UPDATE,
     THEMED_APP_ICONS,
-    DISABLE_ALPHABET_SCRUBBER
+    DISABLE_ALPHABET_SCRUBBER,
+    SHOW_SETTINGS_BUTTON_IN_ALL_APPS,
+    SHOW_SEARCH_BAR_IN_ALL_APPS
 }
 
 enum class SettingsDialog {
@@ -57,10 +55,11 @@ enum class SettingsDialog {
     RESTORE_WALLPAPER,
     CREATE_FOLDER,
     RESET_GRID,
-    FACTORY_RESET
+    FACTORY_RESET,
+    SETTINGS_BUTTON_POSITION,
+    SEARCH_ICON_POSITION
 }
 
-@Suppress("TooManyFunctions")
 class SettingsViewModel(application: Application) : AndroidViewModel(application) {
 
     internal val settingsRepository = SettingsRepository(application)
@@ -110,6 +109,10 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
                 isInAppUpdateEnabled = settingsRepository.isInAppUpdateEnabled,
                 isThemedAppIconsEnabled = settingsRepository.isThemedAppIconsEnabled,
                 isAlphabetScrubberDisabled = settingsRepository.isAlphabetScrubberDisabled,
+                showSettingsButtonInAllApps = settingsRepository.showSettingsButtonInAllApps,
+                settingsButtonPosition = settingsRepository.settingsButtonPosition,
+                showSearchBarInAllApps = settingsRepository.showSearchBarInAllApps,
+                searchIconPosition = settingsRepository.searchIconPosition,
             )
         }
     }
@@ -129,6 +132,8 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
                 SettingsDialog.CREATE_FOLDER -> it.copy(showCreateFolderDialog = visible)
                 SettingsDialog.RESET_GRID -> it.copy(showResetGridDialog = visible)
                 SettingsDialog.FACTORY_RESET -> it.copy(showFactoryResetDialog = visible)
+                SettingsDialog.SETTINGS_BUTTON_POSITION -> it.copy(showSettingsButtonPositionDialog = visible)
+                SettingsDialog.SEARCH_ICON_POSITION -> it.copy(showSearchIconPositionDialog = visible)
             }
         }
     }
@@ -161,6 +166,26 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
                     it.copy(
                         manualSeedColor = value.color,
                         showColorPickerDialog = false
+                    )
+                }
+            }
+
+            is SettingValue.SettingsButtonPosition -> {
+                settingsRepository.settingsButtonPosition = value.position
+                _uiState.update {
+                    it.copy(
+                        settingsButtonPosition = value.position,
+                        showSettingsButtonPositionDialog = false
+                    )
+                }
+            }
+
+            is SettingValue.SearchIconPosition -> {
+                settingsRepository.searchIconPosition = value.position
+                _uiState.update {
+                    it.copy(
+                        searchIconPosition = value.position,
+                        showSearchIconPositionDialog = false
                     )
                 }
             }
@@ -247,66 +272,6 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
                     shouldFinishActivity = true
                 )
             }
-        }
-    }
-
-    fun resetGridLayout() {
-        viewModelScope.launch {
-            GridRepository(getApplication()).resetToDefault()
-            _uiState.update {
-                it.copy(
-                    showResetGridDialog = false,
-                    shouldFinishActivity = true,
-                    errorMessage = "Layout da tela inicial resetado para o padrão"
-                )
-            }
-        }
-    }
-
-    fun performFactoryReset() {
-        viewModelScope.launch {
-            val app = getApplication<Application>()
-            _uiState.update { it.copy(showFactoryResetDialog = false) }
-            withContext(Dispatchers.IO) {
-                try {
-                    // CA-04: Clear Databases
-                    try {
-                        AppDatabase.getInstance(app).clearAllTables()
-                    } catch (e: Exception) {
-                        Log.w(TAG, "Error clearing Room database", e)
-                    }
-                    app.deleteDatabase("aureole_app_database.db")
-                    app.deleteDatabase("aureole_folders.db")
-
-                    // CA-03: Clear SharedPreferences
-                    listOf(
-                        "aureole_grid_prefs",
-                        "aureole_settings_prefs",
-                        "aureole_widget_prefs",
-                        "${app.packageName}_preferences"
-                    ).forEach { prefName ->
-                        app.getSharedPreferences(prefName, Context.MODE_PRIVATE).edit().clear()
-                            .commit()
-                    }
-
-                    // CA-05: Clear Cache and files
-                    app.cacheDir.deleteRecursively()
-                    File(app.filesDir, "custom_wallpaper.jpg").delete()
-                } catch (e: Exception) {
-                    Log.w(TAG, "Error performing factory reset", e)
-                }
-            }
-
-            // CA-06: Restart Workspace / Activity
-            val intent = app.packageManager.getLaunchIntentForPackage(app.packageName)?.apply {
-                addFlags(
-                    Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                )
-            }
-            if (intent != null) {
-                app.startActivity(intent)
-            }
-            Runtime.getRuntime().exit(0)
         }
     }
 

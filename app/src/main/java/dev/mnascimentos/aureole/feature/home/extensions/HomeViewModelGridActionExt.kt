@@ -4,7 +4,9 @@ import dev.mnascimentos.aureole.core.data.model.LauncherItemState
 import dev.mnascimentos.aureole.core.data.model.LauncherItemType
 import dev.mnascimentos.aureole.core.data.model.ScrollOrientation
 import dev.mnascimentos.aureole.feature.home.HomeViewModel
+import dev.mnascimentos.aureole.feature.home.grid.GridDefaults
 import dev.mnascimentos.aureole.feature.home.grid.GridEngineUtils
+import dev.mnascimentos.aureole.feature.home.grid.SlotSearchRequest
 import java.util.UUID
 
 private const val CONTAINER_ERROR_MSG = "Não há espaço livre suficiente na grade para este container."
@@ -59,7 +61,7 @@ fun HomeViewModel.updateScrollViewOrientation(parentId: String, orientation: Scr
 
 fun HomeViewModel.addChildToScrollView(parentId: String, type: LauncherItemType, widgetId: Int? = null) {
     updateUiState { state ->
-        val (defaultSpans, defaultMinSpans) = GridEngineUtils.getDefaultSpanForType(type)
+        val (defaultSpans, defaultMinSpans) = GridDefaults.getDefaultSpanForType(type)
         val newChild = LauncherItemState(
             id = UUID.randomUUID().toString(),
             type = type,
@@ -90,7 +92,8 @@ fun HomeViewModel.addChildToScrollView(parentId: String, type: LauncherItemType,
             editingGridItem = updatedEditingItem,
             showAddContainerDialog = false,
             targetParentContainerId = null,
-            isAddingSingleWidget = false
+            isAddingSingleWidget = false,
+            gridErrorMessage = null,
         )
     }
 }
@@ -171,7 +174,7 @@ fun HomeViewModel.addGridItem(spec: GridItemSpec) {
 
     updateUiState { state ->
         val currentItems = state.gridItems
-        val (defaultSpans, defaultMinSpans) = GridEngineUtils.getDefaultSpanForType(spec.type)
+        val (defaultSpans, defaultMinSpans) = GridDefaults.getDefaultSpanForType(spec.type)
 
         val reqTargetColSpan = spec.targetColSpan ?: defaultSpans.first
         val reqTargetRowSpan = spec.targetRowSpan ?: defaultSpans.second
@@ -179,10 +182,12 @@ fun HomeViewModel.addGridItem(spec: GridItemSpec) {
         val reqMinRowSpan = spec.minRowSpan ?: defaultMinSpans.second
 
         val largestSlotResult = GridEngineUtils.findLargestAvailableSlot(
-            targetColSpan = reqTargetColSpan,
-            targetRowSpan = reqTargetRowSpan,
-            minColSpan = reqMinColSpan,
-            minRowSpan = reqMinRowSpan,
+            request = SlotSearchRequest(
+                targetColSpan = reqTargetColSpan,
+                targetRowSpan = reqTargetRowSpan,
+                minColSpan = reqMinColSpan,
+                minRowSpan = reqMinRowSpan
+            ),
             items = currentItems
         )
 

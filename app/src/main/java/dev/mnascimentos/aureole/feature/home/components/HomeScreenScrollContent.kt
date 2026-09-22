@@ -19,12 +19,10 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -41,7 +39,6 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.rememberNestedScrollInteropConnection
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.zIndex
 import dev.mnascimentos.aureole.core.data.model.LauncherItemState
 import dev.mnascimentos.aureole.core.data.model.LauncherItemType
 import dev.mnascimentos.aureole.core.data.model.ScrollOrientation
@@ -60,9 +57,6 @@ private const val SCROLL_CHILD_MIN_HEIGHT = 70
 private const val SCROLL_CHILD_MIN_WIDTH = 100
 private const val SCROLL_CHILD_ROW_HEIGHT = 60
 private const val SCROLL_CHILD_COL_WIDTH = 70
-private const val REMOVE_BTN_SIZE = 28
-private val REMOVE_BTN_PADDING = 4.dp
-private val CLOSE_ICON_SIZE = 16.dp
 
 @Composable
 fun ScrollViewContainerContent(
@@ -206,16 +200,11 @@ private fun HorizontalScrollViewContent(params: ScrollViewContentParams) {
 
 @Composable
 private fun ScrollViewChildItem(params: ScrollViewChildItemParams) {
-    val uiState = LocalHomeUiState.current
-    val actions = LocalHomeActions.current
-    val parentId = params.parentId
     val childItem = params.childItem
     val isVertical = params.isVertical
     val isAppsList = childItem.safeType == LauncherItemType.APPS_LIST
     val childModifier = when {
-        isAppsList && isVertical -> {
-            Modifier.fillMaxWidth().wrapContentHeight()
-        }
+        isAppsList && isVertical -> Modifier.fillMaxWidth().wrapContentHeight()
         isVertical -> {
             val childHeightDp = (childItem.rowSpan * SCROLL_CHILD_ROW_HEIGHT).dp
                 .coerceAtLeast(SCROLL_CHILD_MIN_HEIGHT.dp)
@@ -239,38 +228,6 @@ private fun ScrollViewChildItem(params: ScrollViewChildItemParams) {
                 isInScrollView = true
             )
         )
-        if (uiState.isGridEditMode) {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .pointerInput("block_child_" + childItem.id) {
-                        detectTapGestures(onTap = {})
-                    }
-            )
-            Box(
-                modifier = Modifier
-                    .align(Alignment.TopEnd)
-                    .padding(REMOVE_BTN_PADDING)
-                    .size(REMOVE_BTN_SIZE.dp)
-                    .zIndex(100f)
-                    .background(MaterialTheme.colorScheme.error, CircleShape)
-                    .pointerInput("remove_btn_" + childItem.id) {
-                        detectTapGestures(
-                            onTap = {
-                                actions.onRemoveChildFromScrollView(parentId, childItem.id)
-                            }
-                        )
-                    },
-                contentAlignment = Alignment.Center
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Close,
-                    contentDescription = "Remover",
-                    tint = MaterialTheme.colorScheme.onError,
-                    modifier = Modifier.size(CLOSE_ICON_SIZE)
-                )
-            }
-        }
     }
 }
 

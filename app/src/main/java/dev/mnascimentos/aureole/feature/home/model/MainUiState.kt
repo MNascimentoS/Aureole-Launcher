@@ -46,6 +46,10 @@ data class MainUiState(
     val isInAppUpdateEnabled: Boolean = true,
     val isThemedAppIconsEnabled: Boolean = false,
     val isAlphabetScrubberDisabled: Boolean = false,
+    val showSettingsButtonInAllApps: Boolean = true,
+    val settingsButtonPosition: String = "Right",
+    val showSearchBarInAllApps: Boolean = true,
+    val searchIconPosition: String = "Left",
     val showUpdateAvailableDialog: Boolean = false,
     val showUpdateDownloadedDialog: Boolean = false,
 
@@ -61,6 +65,7 @@ data class MainUiState(
     val activeFolder: AppFolder? = null,
     val activeFolderTopYPx: Float = 0f,
     val isCreateFolderDialogVisible: Boolean = false,
+    val targetPanelIdForFolder: String? = null,
     val isAddAppToFolderDialogVisible: Boolean = false,
     val isRenameFolderDialogVisible: Boolean = false,
     val searchQuery: String = "",

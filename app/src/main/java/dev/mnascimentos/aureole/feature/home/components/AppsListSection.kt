@@ -72,7 +72,7 @@ fun AppsListDrawer(
         Modifier.hazeEffect(
             state = hazeState,
             style = HazeStyle(
-                blurRadius = 30.dp,
+                blurRadius = 24.dp,
                 tint = HazeTint(MaterialTheme.colorScheme.background.copy(alpha = uiState.hazeOpacity))
             )
         ) {
@@ -110,16 +110,18 @@ fun AppsListDrawer(
             appsListItems(uiState, actions)
         }
 
-        BottomSearchBar(
-            query = uiState.searchQuery,
-            onQueryChange = actions.onSearchQueryChanged,
-            onSettingsClick = actions.onSettingsClick,
-            hazeState = hazeState,
-            modifier = Modifier
-                .fillMaxWidth()
-                .navigationBarsPadding()
-                .imePadding()
-        )
+        if (uiState.showSearchBarInAllApps || uiState.showSettingsButtonInAllApps) {
+            BottomSearchBar(
+                query = uiState.searchQuery,
+                onQueryChange = actions.onSearchQueryChanged,
+                onSettingsClick = actions.onSettingsClick,
+                hazeState = hazeState,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .navigationBarsPadding()
+                    .imePadding()
+            )
+        }
     }
 }
 
@@ -132,6 +134,8 @@ private fun BottomSearchBar(
     hazeState: HazeState? = null,
 ) {
     val uiState = LocalHomeUiState.current
+    if (!uiState.showSearchBarInAllApps && !uiState.showSettingsButtonInAllApps) return
+
     val searchBarHazeModifier = if (uiState.isHazeEnabled && (hazeState != null)) {
         Modifier.hazeEffect(
             state = hazeState,
@@ -161,30 +165,87 @@ private fun BottomSearchBar(
             )
             .padding(16.dp)
     ) {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            if (uiState.isLeftHandedMode) {
-                SettingsButton(onClick = onSettingsClick)
-                Spacer(modifier = Modifier.width(16.dp))
-                SearchField(query = query, onQueryChange = onQueryChange, modifier = Modifier.weight(1f))
-            } else {
-                SearchField(query = query, onQueryChange = onQueryChange, modifier = Modifier.weight(1f))
-                Spacer(modifier = Modifier.width(16.dp))
+        BottomSearchRowContent(
+            query = query,
+            onQueryChange = onQueryChange,
+            onSettingsClick = onSettingsClick
+        )
+    }
+}
+
+@Composable
+private fun BottomSearchRowContent(
+    query: String,
+    onQueryChange: (String) -> Unit,
+    onSettingsClick: () -> Unit
+) {
+    val uiState = LocalHomeUiState.current
+    val showSettings = uiState.showSettingsButtonInAllApps
+    val showSearch = uiState.showSearchBarInAllApps
+    val settingsOnLeft = uiState.settingsButtonPosition == "Left"
+
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        if (showSettings && showSearch && settingsOnLeft) {
+            SettingsButton(onClick = onSettingsClick)
+            Spacer(modifier = Modifier.width(16.dp))
+            SearchField(
+                query = query,
+                onQueryChange = onQueryChange,
+                iconPosition = uiState.searchIconPosition,
+                modifier = Modifier.weight(1f)
+            )
+        } else if (showSettings && showSearch) {
+            SearchField(
+                query = query,
+                onQueryChange = onQueryChange,
+                iconPosition = uiState.searchIconPosition,
+                modifier = Modifier.weight(1f)
+            )
+            Spacer(modifier = Modifier.width(16.dp))
+            SettingsButton(onClick = onSettingsClick)
+        } else if (showSettings) {
+            Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
                 SettingsButton(onClick = onSettingsClick)
             }
+        } else {
+            SearchField(
+                query = query,
+                onQueryChange = onQueryChange,
+                iconPosition = uiState.searchIconPosition,
+                modifier = Modifier.fillMaxWidth()
+            )
         }
     }
 }
 
 @Composable
-private fun SearchField(query: String, onQueryChange: (String) -> Unit, modifier: Modifier = Modifier) {
+private fun SearchField(
+    query: String,
+    onQueryChange: (String) -> Unit,
+    iconPosition: String,
+    modifier: Modifier = Modifier
+) {
+    val leadingIcon: (@Composable () -> Unit)? = if (iconPosition == "Left") {
+        { Icon(Icons.Default.Search, contentDescription = "Search") }
+    } else {
+        null
+    }
+
+    val trailingIcon: (@Composable () -> Unit)? = if (iconPosition == "Right") {
+        { Icon(Icons.Default.Search, contentDescription = "Search") }
+    } else {
+        null
+    }
+
     TextField(
         value = query,
         onValueChange = onQueryChange,
         placeholder = { Text("Search apps") },
-        leadingIcon = { Icon(Icons.Default.Search, contentDescription = "Search") },
+        leadingIcon = leadingIcon,
+        trailingIcon = trailingIcon,
         singleLine = true,
         shape = RoundedCornerShape(24.dp),
         colors = TextFieldDefaults.colors(
@@ -242,7 +303,7 @@ fun LazyListScope.appsListItems(
 
         AppItemRow(
             app = app,
-            onClick = { actions.onAppClick(app) },
+            onClick = { actions.onAppClick(app) }
         )
     }
 }
