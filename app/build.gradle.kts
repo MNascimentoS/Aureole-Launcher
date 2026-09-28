@@ -15,6 +15,7 @@ val gitCommitCount = providers.exec {
     commandLine("git", "rev-list", "--count", "HEAD")
 }.standardOutput.asText.map { it.trim().toIntOrNull() ?: 1 }.orElse(1).get()
 
+val customVersionCode = providers.gradleProperty("VERSION_CODE").orNull?.toIntOrNull()
 val customVersionName = providers.gradleProperty("VERSION_NAME").orNull
 
 android {
@@ -27,7 +28,7 @@ android {
         applicationId = "dev.mnascimentos.aureole"
         minSdk = 28
         targetSdk = 37
-        versionCode = gitCommitCount
+        versionCode = customVersionCode ?: gitCommitCount
         versionName = if (customVersionName != null) {
             if (customVersionName.endsWith(".$gitCommitCount")) customVersionName else "$customVersionName.$gitCommitCount"
         } else {

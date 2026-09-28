@@ -4,8 +4,23 @@ platform :android do
   desc "Build and upload a new internal release to Google Play"
   lane :internal do |options|
     version_name = options[:version_name]
+    version_code = options[:version_code]
+
+    # Automatically fetch highest version code from Google Play if version_code is not passed
+    unless version_code && !version_code.empty?
+      begin
+        play_version_codes = google_play_track_version_codes(track: "internal")
+        highest_code = play_version_codes.max || 0
+        version_code = (highest_code + 1).to_s
+      rescue => e
+        UI.important("Could not fetch version code from Google Play: #{e.message}")
+      end
+    end
 
     gradle_properties = {}
+    if version_code && !version_code.empty?
+      gradle_properties["VERSION_CODE"] = version_code
+    end
     if version_name && !version_name.empty?
       gradle_properties["VERSION_NAME"] = version_name
     end
