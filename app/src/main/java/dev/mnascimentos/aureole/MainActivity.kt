@@ -157,7 +157,8 @@ class MainActivity : ComponentActivity() {
                 AureoleLauncherTheme(
                     darkTheme = isDarkTheme,
                     isDynamicWallpaperEnabled = uiState.isDynamicWallpaperEnabled,
-                    aureoleColors = palette.colors
+                    aureoleColors = palette.colors,
+                    aureoleFontName = uiState.selectedFontName
                 ) {
                     BackHandler(enabled = isOverlayActive) {
                         handleBackNavigation(uiState, viewModel)

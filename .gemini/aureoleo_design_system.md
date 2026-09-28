@@ -65,8 +65,29 @@ Os seguintes design tokens formam a base da paleta de todos os temas do app:
 
 Essas cores podem ser acessadas no Compose utilizando:
 ```kotlin
-AureoleTheme.colors.onSurfaceHigh
-AureoleTheme.colors.surfaceVariant
+AureoleDS.colors.onSurfaceHigh
+AureoleDS.colors.surfaceVariant
+```
+
+### Design Tokens de Espaçamento (AureoleSpacing)
+Os tokens de espaçamento do Aureole Launcher seguem a escala baseada nas regras do Figma (grade de 4dp/8dp) para garantir consistência visual em margens, preenchimentos (padding) e arranjos entre componentes:
+
+- `none`: `0.dp`
+- `xxxSmall`: `2.dp`
+- `xxSmall`: `4.dp`
+- `xSmall`: `8.dp`
+- `small`: `12.dp`
+- `medium`: `16.dp`
+- `large`: `20.dp`
+- `xLarge`: `24.dp`
+- `xxLarge`: `32.dp`
+- `xxxLarge`: `48.dp`
+- `huge`: `64.dp`
+
+Esses espaçamentos podem ser acessados via Compose utilizando:
+```kotlin
+AureoleDS.spacings.medium // 16.dp
+AureoleDS.spacings.xSmall // 8.dp
 ```
 
 ### Tema Padrão: Frostbite

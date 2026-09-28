@@ -11,6 +11,7 @@ internal fun SettingsViewModel.applySettingValue(value: SettingValue) {
         is SettingValue.HazeOpacity -> handleHazeOpacity(value.opacity)
         is SettingValue.ManualSeedColor -> handleManualSeedColor(value.color)
         is SettingValue.SelectedTheme -> handleSelectedTheme(value.themeName)
+        is SettingValue.SelectedFont -> handleSelectedFont(value.fontName)
         is SettingValue.SettingsButtonPosition -> handleSettingsButtonPosition(value.position)
         is SettingValue.SearchIconPosition -> handleSearchIconPosition(value.position)
     }
@@ -50,6 +51,11 @@ private fun SettingsViewModel.handleSelectedTheme(themeName: String) {
             manualSeedColor = surfaceVariantColorArgb
         )
     }
+}
+
+private fun SettingsViewModel.handleSelectedFont(fontName: String) {
+    settingsRepository.selectedFontName = fontName
+    updateUiState { it.copy(selectedFontName = fontName) }
 }
 
 private fun SettingsViewModel.handleSettingsButtonPosition(position: String) {

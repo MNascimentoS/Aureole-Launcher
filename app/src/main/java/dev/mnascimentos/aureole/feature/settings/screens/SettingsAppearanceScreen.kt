@@ -22,7 +22,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -37,6 +36,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.composable.SettingsMenuItem
 import dev.mnascimentos.aureole.composable.SettingsToggleItem
+import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.icons.AppSelect
 import dev.mnascimentos.aureole.core.designsystem.icons.ColorFill
 import dev.mnascimentos.aureole.core.designsystem.icons.Corners
@@ -46,6 +46,7 @@ import dev.mnascimentos.aureole.core.designsystem.icons.StrokeColor
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleTheme
 import dev.mnascimentos.aureole.feature.settings.components.BlurBottomSheet
+import dev.mnascimentos.aureole.feature.settings.components.PickFontBottomSheet
 import dev.mnascimentos.aureole.feature.settings.components.PickPaletteBottomSheet
 import dev.mnascimentos.aureole.feature.settings.components.SetBackgroundBottomSheet
 import dev.mnascimentos.aureole.feature.settings.model.AppearanceDialogFlags
@@ -65,7 +66,9 @@ fun SettingsAppearanceScreen(
     @Suppress("UNUSED_PARAMETER") onNavigateBack: () -> Unit
 ) {
     var flags by remember {
-        mutableStateOf(AppearanceDialogFlags(showPalette = false, showSetBg = false, showBlur = false))
+        mutableStateOf(
+            AppearanceDialogFlags(showPalette = false, showFont = false, showSetBg = false, showBlur = false)
+        )
     }
 
     Scaffold(
@@ -89,7 +92,7 @@ fun SettingsAppearanceScreen(
             ) {
                 Spacer(modifier = Modifier.height(topSpacerHeight))
 
-                Text(
+                AureoleText(
                     text = "Appearance",
                     style = AureoleTheme.typography.titleLarge,
                     fontWeight = FontWeight.Medium,
@@ -105,7 +108,8 @@ fun SettingsAppearanceScreen(
                     actions = actions,
                     onShowSetBackgroundDialog = { flags = flags.copy(showSetBg = true) },
                     onShowBlurDialog = { flags = flags.copy(showBlur = true) },
-                    onShowPaletteDialog = { flags = flags.copy(showPalette = true) }
+                    onShowPaletteDialog = { flags = flags.copy(showPalette = true) },
+                    onShowFontDialog = { flags = flags.copy(showFont = true) }
                 )
 
                 Spacer(modifier = Modifier.height(bottomSpacerHeight))
@@ -117,19 +121,21 @@ fun SettingsAppearanceScreen(
             uiState = uiState,
             actions = actions,
             onDismissDialog = {
-                flags = AppearanceDialogFlags(showPalette = false, showSetBg = false, showBlur = false)
+                flags = AppearanceDialogFlags(showPalette = false, showFont = false, showSetBg = false, showBlur = false)
             }
         )
     }
 }
 
+@Suppress("LongParameterList") // Helper composable grouping dialog action handlers for appearance settings
 @Composable
 private fun AppearanceMenuItems(
     uiState: SettingsUiState,
     actions: SettingsScreenActions,
     onShowSetBackgroundDialog: () -> Unit,
     onShowBlurDialog: () -> Unit,
-    onShowPaletteDialog: () -> Unit
+    onShowPaletteDialog: () -> Unit,
+    onShowFontDialog: () -> Unit
 ) {
     Column(
         verticalArrangement = Arrangement.spacedBy(8.dp),
@@ -165,6 +171,12 @@ private fun AppearanceMenuItems(
             leadingContent = { AureoleDS.icons.StrokeColor() },
             onClick = onShowPaletteDialog
         )
+
+        SettingsMenuItem(
+            title = "Fonts",
+            leadingContent = { AureoleDS.icons.Edit() },
+            onClick = onShowFontDialog
+        )
     }
 }
 
@@ -182,14 +194,14 @@ private fun ShortcutRow() {
             tint = AureoleTheme.colors.onSurfaceMedium,
             modifier = Modifier.padding(end = 20.dp).size(20.dp)
         )
-        Text(
+        AureoleText(
             text = "Press shortcut",
             style = AureoleTheme.typography.bodyLarge,
             fontWeight = FontWeight.Normal,
             color = AureoleTheme.colors.onSurfaceMedium,
             modifier = Modifier.weight(1f)
         )
-        Text(
+        AureoleText(
             text = "Rounded",
             style = AureoleTheme.typography.bodyLarge,
             color = AureoleTheme.colors.onSurfaceLow
@@ -214,7 +226,7 @@ private fun MenuColorRow(
             tint = AureoleTheme.colors.onSurfaceMedium,
             modifier = Modifier.padding(end = 20.dp).size(20.dp)
         )
-        Text(
+        AureoleText(
             text = "Menu background color",
             style = AureoleTheme.typography.bodyLarge,
             fontWeight = FontWeight.Normal,
@@ -247,7 +259,7 @@ private fun GlassAndBlurRow(
             tint = AureoleTheme.colors.onSurfaceMedium,
             modifier = Modifier.padding(end = 20.dp).size(20.dp)
         )
-        Text(
+        AureoleText(
             text = "Glass & Blur",
             style = AureoleTheme.typography.bodyLarge,
             fontWeight = FontWeight.Normal,
@@ -260,7 +272,7 @@ private fun GlassAndBlurRow(
             uiState.hazeOpacity <= OPACITY_MEDIUM_THRESHOLD -> "Medium"
             else -> "Max"
         }
-        Text(
+        AureoleText(
             text = opacityText,
             style = AureoleTheme.typography.bodyLarge,
             color = AureoleTheme.colors.onSurfaceLow
@@ -281,6 +293,17 @@ private fun AppearanceDialogs(
             onPaletteSelected = { palette ->
                 onDismissDialog()
                 actions.onSelectTheme(palette.name)
+            },
+            onDismissRequest = onDismissDialog
+        )
+    }
+
+    if (flags.showFont) {
+        PickFontBottomSheet(
+            selectedFontName = uiState.selectedFontName,
+            onFontSelected = { fontName ->
+                onDismissDialog()
+                actions.onSelectFont(fontName)
             },
             onDismissRequest = onDismissDialog
         )

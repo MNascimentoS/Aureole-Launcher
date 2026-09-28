@@ -41,6 +41,7 @@ data class MainUiState(
     val isDynamicWallpaperEnabled: Boolean = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S,
     val manualSeedColor: Int = SettingsRepository.DEFAULT_SEED_COLOR,
     val selectedThemeName: String = "Frostbite",
+    val selectedFontName: String = "Istok Web",
     val isHazeEnabled: Boolean = true,
     val isHazeSupported: Boolean = true,
     val hazeOpacity: Float = 0.5f,

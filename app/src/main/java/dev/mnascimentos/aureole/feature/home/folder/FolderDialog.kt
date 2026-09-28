@@ -3,6 +3,7 @@ package dev.mnascimentos.aureole.feature.home.folder
 import android.content.ComponentName
 import android.graphics.drawable.ColorDrawable
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -16,8 +17,6 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
@@ -29,7 +28,9 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import dev.mnascimentos.aureole.core.data.model.AppFolder
 import dev.mnascimentos.aureole.core.data.model.AppInfo
+import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.LocalHomeUiState
 import dev.mnascimentos.aureole.feature.home.components.AppItemRow
@@ -56,19 +57,24 @@ fun FolderDialog(
         Box(
             modifier = Modifier
                 .widthIn(max = 320.dp)
-                .clip(RoundedCornerShape(24.dp))
-                .background(MaterialTheme.colorScheme.surface)
+                .clip(RoundedCornerShape(22.dp))
+                .border(
+                    width = 0.5.dp,
+                    color = AureoleTheme.colors.outline,
+                    shape = RoundedCornerShape(22.dp)
+                )
+                .background(AureoleTheme.colors.surface)
                 .padding(24.dp)
         ) {
             Column(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text(
+                AureoleText(
                     text = folder.name,
-                    style = MaterialTheme.typography.titleLarge,
+                    style = AureoleTheme.typography.titleLarge,
                     fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.onSurface,
+                    color = AureoleTheme.colors.onSurfaceHigh,
                     modifier = Modifier.padding(bottom = 16.dp)
                 )
 
@@ -91,10 +97,10 @@ private fun FolderDialogContent(
     onAppClick: (AppInfo) -> Unit,
 ) {
     if (appsInFolder.isEmpty()) {
-        Text(
+        AureoleText(
             text = "Folder is empty",
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            style = AureoleTheme.typography.bodyMedium,
+            color = AureoleTheme.colors.onSurfaceMedium,
             modifier = Modifier.padding(vertical = 32.dp)
         )
     } else if (folder.displayAsGrid) {
@@ -106,7 +112,7 @@ private fun FolderDialogContent(
         ) {
             items(appsInFolder, key = { it.packageName }) { app ->
                 Box(modifier = Modifier.padding(4.dp)) {
-                    Text(app.label.take(1))
+                    AureoleText(app.label.take(1), color = AureoleTheme.colors.onSurfaceHigh)
                 }
             }
         }

@@ -24,7 +24,6 @@ import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
@@ -39,6 +38,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.core.data.model.AppInfo
+import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
@@ -79,7 +79,7 @@ fun AppItemRow(
                     onClick = onClick,
                     onLongClick = { showMenu = true }
                 )
-                .padding(horizontal = 16.dp, vertical = 12.dp),
+                .padding(horizontal = AureoleDS.spacings.medium, vertical = AureoleDS.spacings.small),
             verticalAlignment = Alignment.CenterVertically
         ) {
             AppItemRowContent(
@@ -123,9 +123,9 @@ private fun RowScope.AppItemRowContent(
     }
 
     val appLabel = @Composable {
-        Text(
+        AureoleText(
             text = app.label,
-            style = MaterialTheme.typography.bodyLarge,
+            style = AureoleDS.typography.bodyLarge,
             color = AureoleDS.colors.onSurfaceHigh,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
@@ -140,11 +140,11 @@ private fun RowScope.AppItemRowContent(
 
     if (isLeftHandedMode) {
         appLabel()
-        Spacer(modifier = Modifier.width(16.dp))
+        Spacer(modifier = Modifier.width(AureoleDS.spacings.medium))
         appIcon()
     } else {
         appIcon()
-        Spacer(modifier = Modifier.width(16.dp))
+        Spacer(modifier = Modifier.width(AureoleDS.spacings.medium))
         appLabel()
     }
 }
@@ -232,7 +232,7 @@ private fun FavoriteMenuItem(
         MaterialTheme.colorScheme.onSurface.copy(alpha = FAVORITE_INACTIVE_ALPHA)
     }
     DropdownMenuItem(
-        text = { Text(if (isFavorite) "Remove from Favorites" else "Add to Favorites") },
+        text = { AureoleText(if (isFavorite) "Remove from Favorites" else "Add to Favorites") },
         leadingIcon = {
             Icon(
                 imageVector = Icons.Default.Star,
@@ -249,7 +249,7 @@ private fun EditFavoritesMenuItem(
     onClick: () -> Unit
 ) {
     DropdownMenuItem(
-        text = { Text("Editar Favoritos") },
+        text = { AureoleText("Editar Favoritos") },
         leadingIcon = {
             Icon(
                 imageVector = Icons.Default.Edit,
@@ -266,7 +266,7 @@ private fun AppInfoMenuItem(
     onClick: () -> Unit
 ) {
     DropdownMenuItem(
-        text = { Text("App Info") },
+        text = { AureoleText("App Info") },
         leadingIcon = {
             Icon(
                 imageVector = Icons.Default.Info,

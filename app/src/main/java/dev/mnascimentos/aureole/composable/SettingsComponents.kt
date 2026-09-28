@@ -16,7 +16,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -24,6 +23,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleTheme
 
 @Composable
@@ -32,24 +33,24 @@ fun AdvancedIcon(
     tint: Color = AureoleTheme.colors.onSurfaceMedium
 ) {
     Row(
-        horizontalArrangement = Arrangement.spacedBy(3.dp),
+        horizontalArrangement = Arrangement.spacedBy(AureoleDS.spacings.xxxSmall),
         verticalAlignment = Alignment.CenterVertically,
         modifier = modifier.size(20.dp)
     ) {
-        Box(Modifier.size(4.dp).background(tint, CircleShape))
-        Box(Modifier.size(4.dp).background(tint, CircleShape))
-        Box(Modifier.size(4.dp).background(tint, CircleShape))
+        Box(Modifier.size(AureoleDS.spacings.xxSmall).background(tint, CircleShape))
+        Box(Modifier.size(AureoleDS.spacings.xxSmall).background(tint, CircleShape))
+        Box(Modifier.size(AureoleDS.spacings.xxSmall).background(tint, CircleShape))
     }
 }
 
 @Composable
 fun SettingsHugeTitle(text: String, modifier: Modifier = Modifier) {
-    Text(
+    AureoleText(
         text = text,
         style = AureoleTheme.typography.displayMedium,
         fontWeight = FontWeight.Bold,
         color = AureoleTheme.colors.onSurfaceHigh,
-        modifier = modifier.padding(vertical = 16.dp)
+        modifier = modifier.padding(vertical = AureoleDS.spacings.medium)
     )
 }
 
@@ -66,12 +67,12 @@ fun SettingsMenuItem(
             .fillMaxWidth()
             .clip(RoundedCornerShape(16.dp))
             .clickable { onClick() }
-            .padding(vertical = 8.dp, horizontal = 12.dp),
+            .padding(vertical = AureoleDS.spacings.xSmall, horizontal = AureoleDS.spacings.small),
         verticalAlignment = Alignment.CenterVertically
     ) {
         if (leadingContent != null) {
             Box(
-                modifier = Modifier.padding(end = 20.dp).size(20.dp),
+                modifier = Modifier.padding(end = AureoleDS.spacings.large).size(20.dp),
                 contentAlignment = Alignment.Center
             ) {
                 leadingContent()
@@ -79,15 +80,15 @@ fun SettingsMenuItem(
         }
 
         Column(modifier = Modifier.weight(1f)) {
-            Text(
+            AureoleText(
                 text = title,
                 style = AureoleTheme.typography.bodyLarge,
                 fontWeight = FontWeight.Normal,
                 color = AureoleTheme.colors.onSurfaceMedium
             )
             if (subtitle != null) {
-                Spacer(modifier = Modifier.height(2.dp))
-                Text(
+                Spacer(modifier = Modifier.height(AureoleDS.spacings.xxxSmall))
+                AureoleText(
                     text = subtitle,
                     style = AureoleTheme.typography.bodySmall,
                     color = AureoleTheme.colors.onSurfaceLow
@@ -110,12 +111,12 @@ fun SettingsToggleItem(
             .fillMaxWidth()
             .clip(RoundedCornerShape(16.dp))
             .clickable { onCheckedChange(!checked) }
-            .padding(vertical = 8.dp, horizontal = 12.dp),
+            .padding(vertical = AureoleDS.spacings.xSmall, horizontal = AureoleDS.spacings.small),
         verticalAlignment = Alignment.CenterVertically
     ) {
         if (leadingContent != null) {
             Box(
-                modifier = Modifier.padding(end = 20.dp).size(20.dp),
+                modifier = Modifier.padding(end = AureoleDS.spacings.large).size(20.dp),
                 contentAlignment = Alignment.Center
             ) {
                 leadingContent()
@@ -123,7 +124,7 @@ fun SettingsToggleItem(
         }
 
         Column(modifier = Modifier.weight(1f)) {
-            Text(
+            AureoleText(
                 text = title,
                 style = AureoleTheme.typography.bodyLarge,
                 fontWeight = FontWeight.Normal,
@@ -131,7 +132,7 @@ fun SettingsToggleItem(
             )
         }
 
-        Spacer(modifier = Modifier.width(16.dp))
+        Spacer(modifier = Modifier.width(AureoleDS.spacings.medium))
         Switch(
             checked = checked,
             onCheckedChange = onCheckedChange,
@@ -159,18 +160,18 @@ fun SettingsActionItem(
             .fillMaxWidth()
             .clip(RoundedCornerShape(16.dp))
             .clickable { onClick() }
-            .padding(vertical = 8.dp, horizontal = 12.dp),
+            .padding(vertical = AureoleDS.spacings.xSmall, horizontal = AureoleDS.spacings.small),
         verticalAlignment = Alignment.CenterVertically
     ) {
         if (leadingContent != null) {
             Box(
-                modifier = Modifier.padding(end = 20.dp).size(20.dp),
+                modifier = Modifier.padding(end = AureoleDS.spacings.large).size(20.dp),
                 contentAlignment = Alignment.Center
             ) {
                 leadingContent()
             }
         }
-        Text(
+        AureoleText(
             text = title,
             style = AureoleTheme.typography.bodyLarge,
             fontWeight = FontWeight.Normal,

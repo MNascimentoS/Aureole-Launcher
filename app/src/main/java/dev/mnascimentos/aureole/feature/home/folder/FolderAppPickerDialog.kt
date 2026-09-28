@@ -2,6 +2,7 @@ package dev.mnascimentos.aureole.feature.home.folder
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -20,7 +21,7 @@ import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Text
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
@@ -37,6 +38,8 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import dev.mnascimentos.aureole.core.data.model.AppFolder
 import dev.mnascimentos.aureole.core.data.model.AppInfo
+import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleTheme
 import dev.mnascimentos.aureole.feature.home.folder.model.FolderAppPickerBodyParams
 import dev.mnascimentos.aureole.feature.home.folder.model.FolderAppRowItemParams
 import dev.mnascimentos.aureole.feature.home.folder.model.FolderSectionParams
@@ -62,8 +65,13 @@ fun FolderAppPickerDialog(
             modifier = Modifier
                 .fillMaxWidth(DIALOG_WIDTH_FRACTION)
                 .heightIn(max = 620.dp)
-                .clip(RoundedCornerShape(24.dp))
-                .background(MaterialTheme.colorScheme.surface)
+                .clip(RoundedCornerShape(22.dp))
+                .border(
+                    width = 0.5.dp,
+                    color = AureoleTheme.colors.outline,
+                    shape = RoundedCornerShape(22.dp)
+                )
+                .background(AureoleTheme.colors.surface)
                 .padding(20.dp)
         ) {
             FolderAppPickerDialogContent(
@@ -158,19 +166,9 @@ private fun FolderAppPickerDialogBody(
         FolderAppPickerHeader(folderName = params.folderName, onDismiss = onDismiss)
         Spacer(modifier = Modifier.height(12.dp))
 
-        OutlinedTextField(
-            value = params.searchQuery,
-            onValueChange = onSearchQueryChange,
-            placeholder = { Text("Buscar aplicativo...") },
-            leadingIcon = {
-                Icon(
-                    imageVector = Icons.Default.Search,
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-            },
-            singleLine = true,
-            modifier = Modifier.fillMaxWidth()
+        FolderAppPickerSearchInput(
+            query = params.searchQuery,
+            onQueryChange = onSearchQueryChange
         )
 
         Spacer(modifier = Modifier.height(12.dp))
@@ -222,9 +220,9 @@ private fun LazyListScope.selectedFolderAppSection(
     val totalSelectedCount = params.totalSelectedCount
 
     item {
-        Text(
+        AureoleText(
             text = "Apps Selecionados (${filteredSelected.size})",
-            style = MaterialTheme.typography.titleSmall,
+            style = AureoleTheme.typography.titleSmall,
             fontWeight = FontWeight.Bold,
             color = MaterialTheme.colorScheme.primary,
             modifier = Modifier.padding(vertical = 4.dp)
@@ -238,10 +236,10 @@ private fun LazyListScope.selectedFolderAppSection(
             } else {
                 "Nenhum aplicativo encontrado."
             }
-            Text(
+            AureoleText(
                 text = emptyText,
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                style = AureoleTheme.typography.bodyMedium,
+                color = AureoleTheme.colors.onSurfaceMedium,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(vertical = 12.dp),
@@ -277,11 +275,11 @@ private fun LazyListScope.remainingFolderAppSection(
 ) {
     item {
         Spacer(modifier = Modifier.height(8.dp))
-        Text(
+        AureoleText(
             text = "Outros Aplicativos (${filteredRemaining.size})",
-            style = MaterialTheme.typography.titleSmall,
+            style = AureoleTheme.typography.titleSmall,
             fontWeight = FontWeight.Bold,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            color = AureoleTheme.colors.onSurfaceMedium,
             modifier = Modifier.padding(vertical = 4.dp)
         )
     }
@@ -293,10 +291,10 @@ private fun LazyListScope.remainingFolderAppSection(
             } else {
                 "Nenhum outro aplicativo encontrado."
             }
-            Text(
+            AureoleText(
                 text = emptyText,
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                style = AureoleTheme.typography.bodyMedium,
+                color = AureoleTheme.colors.onSurfaceMedium,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(vertical = 12.dp),
@@ -329,16 +327,16 @@ private fun SelectedFolderAppRow(
         modifier = modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(12.dp))
-            .background(MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.3f))
+            .background(AureoleTheme.colors.surfaceVariant.copy(alpha = 0.5f))
             .padding(horizontal = 12.dp, vertical = 6.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        Text(
+        AureoleText(
             text = params.app.label,
-            style = MaterialTheme.typography.bodyMedium,
+            style = AureoleTheme.typography.bodyMedium,
             fontWeight = FontWeight.SemiBold,
-            color = MaterialTheme.colorScheme.onSurface,
+            color = AureoleTheme.colors.onSurfaceHigh,
             modifier = Modifier.weight(1f)
         )
 
@@ -349,4 +347,31 @@ private fun SelectedFolderAppRow(
             onToggleSelect = onToggleSelect
         )
     }
+}
+
+@Composable
+private fun FolderAppPickerSearchInput(
+    query: String,
+    onQueryChange: (String) -> Unit
+) {
+    OutlinedTextField(
+        value = query,
+        onValueChange = onQueryChange,
+        placeholder = { AureoleText("Buscar aplicativo...", color = AureoleTheme.colors.onSurfaceLow) },
+        leadingIcon = {
+            Icon(
+                imageVector = Icons.Default.Search,
+                contentDescription = null,
+                tint = AureoleTheme.colors.onSurfaceMedium
+            )
+        },
+        singleLine = true,
+        colors = OutlinedTextFieldDefaults.colors(
+            focusedBorderColor = MaterialTheme.colorScheme.primary,
+            unfocusedBorderColor = AureoleTheme.colors.outline,
+            focusedTextColor = AureoleTheme.colors.onSurfaceHigh,
+            unfocusedTextColor = AureoleTheme.colors.onSurfaceHigh
+        ),
+        modifier = Modifier.fillMaxWidth()
+    )
 }

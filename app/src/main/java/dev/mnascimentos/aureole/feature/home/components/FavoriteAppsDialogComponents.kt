@@ -21,7 +21,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Switch
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -31,6 +30,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.core.data.model.AppInfo
+import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.feature.home.components.model.FavoriteAppRowParams
 
 @Composable
@@ -48,9 +49,9 @@ fun FavoriteAppsDialogHeader(
         } else {
             "Editar Favoritos da Tela Inicial"
         }
-        Text(
+        AureoleText(
             text = titleText,
-            style = MaterialTheme.typography.titleMedium,
+            style = AureoleDS.typography.titleMedium,
             fontWeight = FontWeight.Bold,
             color = MaterialTheme.colorScheme.onSurface
         )
@@ -74,20 +75,20 @@ fun FavoriteAppsShowAllSwitchRow(
             .fillMaxWidth()
             .clip(RoundedCornerShape(12.dp))
             .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f))
-            .padding(horizontal = 12.dp, vertical = 8.dp),
+            .padding(horizontal = AureoleDS.spacings.small, vertical = AureoleDS.spacings.xSmall),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
         Column(modifier = Modifier.weight(1f)) {
-            Text(
+            AureoleText(
                 text = "Mostrar todos os apps na Home",
-                style = MaterialTheme.typography.bodyMedium,
+                style = AureoleDS.typography.bodyMedium,
                 fontWeight = FontWeight.SemiBold,
                 color = MaterialTheme.colorScheme.onSurface
             )
-            Text(
+            AureoleText(
                 text = "Se desativado, exibe apenas os aplicativos favoritados",
-                style = MaterialTheme.typography.bodySmall,
+                style = AureoleDS.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
         }
@@ -103,7 +104,7 @@ fun FavoriteAppRowInfo(app: AppInfo, modifier: Modifier = Modifier) {
     val iconBitmap = remember(app.packageName) { app.getIconBitmap() }
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        modifier = modifier.padding(end = 8.dp)
+        modifier = modifier.padding(end = AureoleDS.spacings.xSmall)
     ) {
         Icon(
             imageVector = Icons.Default.Star,
@@ -111,7 +112,7 @@ fun FavoriteAppRowInfo(app: AppInfo, modifier: Modifier = Modifier) {
             tint = MaterialTheme.colorScheme.primary,
             modifier = Modifier.size(20.dp)
         )
-        Spacer(modifier = Modifier.width(8.dp))
+        Spacer(modifier = Modifier.width(AureoleDS.spacings.xSmall))
         Image(
             bitmap = iconBitmap,
             contentDescription = app.label,
@@ -119,10 +120,10 @@ fun FavoriteAppRowInfo(app: AppInfo, modifier: Modifier = Modifier) {
                 .size(32.dp)
                 .clip(RoundedCornerShape(8.dp))
         )
-        Spacer(modifier = Modifier.width(8.dp))
-        Text(
+        Spacer(modifier = Modifier.width(AureoleDS.spacings.xSmall))
+        AureoleText(
             text = app.label,
-            style = MaterialTheme.typography.bodyMedium,
+            style = AureoleDS.typography.bodyMedium,
             fontWeight = FontWeight.SemiBold,
             color = MaterialTheme.colorScheme.onSurface,
             maxLines = 1,
@@ -200,7 +201,7 @@ fun RemainingAppRow(
             .fillMaxWidth()
             .clip(RoundedCornerShape(12.dp))
             .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f))
-            .padding(horizontal = 12.dp, vertical = 6.dp),
+            .padding(horizontal = AureoleDS.spacings.small, vertical = AureoleDS.spacings.xxSmall),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
@@ -208,7 +209,7 @@ fun RemainingAppRow(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
                 .weight(1f)
-                .padding(end = 8.dp)
+                .padding(end = AureoleDS.spacings.xSmall)
         ) {
             Image(
                 bitmap = iconBitmap,
@@ -217,10 +218,10 @@ fun RemainingAppRow(
                     .size(32.dp)
                     .clip(RoundedCornerShape(8.dp))
             )
-            Spacer(modifier = Modifier.width(8.dp))
-            Text(
+            Spacer(modifier = Modifier.width(AureoleDS.spacings.xSmall))
+            AureoleText(
                 text = app.label,
-                style = MaterialTheme.typography.bodyMedium,
+                style = AureoleDS.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurface,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis

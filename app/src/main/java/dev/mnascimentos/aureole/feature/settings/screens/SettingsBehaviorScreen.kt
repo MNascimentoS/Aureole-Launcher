@@ -25,7 +25,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
@@ -37,6 +36,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import dev.mnascimentos.aureole.composable.SettingsToggleItem
+import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.icons.AlignRight
 import dev.mnascimentos.aureole.core.designsystem.icons.Dots
 import dev.mnascimentos.aureole.core.designsystem.icons.Header
@@ -79,7 +79,7 @@ fun SettingsBehaviorScreen(
             ) {
                 Spacer(modifier = Modifier.height(topSpacerHeight))
 
-                Text(
+                AureoleText(
                     text = "Behavior",
                     style = AureoleTheme.typography.titleLarge,
                     fontWeight = FontWeight.Medium,
@@ -151,7 +151,7 @@ private fun HeaderOffsetPickerRow(
             modifier = Modifier.padding(end = 20.dp).size(20.dp)
         )
 
-        Text(
+        AureoleText(
             text = "Header offset",
             style = AureoleTheme.typography.bodyLarge,
             fontWeight = FontWeight.Normal,
@@ -214,7 +214,7 @@ private fun HeaderOffsetWheelPicker(
                         .height(itemHeightDp),
                     contentAlignment = Alignment.Center
                 ) {
-                    Text(
+                    AureoleText(
                         text = "$itemValue%",
                         style = AureoleTheme.typography.bodyLarge,
                         fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,

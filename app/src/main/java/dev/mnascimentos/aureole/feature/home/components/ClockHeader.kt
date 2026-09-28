@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -30,6 +29,7 @@ import dev.chrisbanes.haze.HazeState
 import dev.chrisbanes.haze.HazeStyle
 import dev.chrisbanes.haze.HazeTint
 import dev.chrisbanes.haze.hazeEffect
+import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
@@ -208,9 +208,9 @@ private fun ClockGreeting(greeting: String) {
         modifier = Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Text(
+        AureoleText(
             text = greeting,
-            style = MaterialTheme.typography.titleMedium,
+            style = AureoleDS.typography.titleMedium,
             fontWeight = FontWeight.SemiBold,
             color = MaterialTheme.colorScheme.primary
         )
@@ -231,10 +231,8 @@ private fun ClockTimeDisplay(colorPrimary: Int, textSizePx: Float) {
             }
         },
         update = { view ->
-            if (view is TextClock) {
-                view.textSize = textSizePx
-                view.setTextColor(colorPrimary)
-            }
+            view.textSize = textSizePx
+            view.setTextColor(colorPrimary)
         },
         modifier = Modifier.padding(vertical = 1.dp)
     )
@@ -254,10 +252,8 @@ private fun ClockDateDisplay(colorPrimary: Int, textSizePx: Float) {
             }
         },
         update = { view ->
-            if (view is TextClock) {
-                view.textSize = textSizePx
-                view.setTextColor(colorPrimary)
-            }
+            view.textSize = textSizePx
+            view.setTextColor(colorPrimary)
         }
     )
 }

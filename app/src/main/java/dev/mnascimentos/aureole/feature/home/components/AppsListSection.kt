@@ -41,7 +41,6 @@ import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
@@ -64,6 +63,7 @@ import dev.chrisbanes.haze.HazeStyle
 import dev.chrisbanes.haze.HazeTint
 import dev.chrisbanes.haze.hazeEffect
 import dev.mnascimentos.aureole.core.data.model.AppInfo
+import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.icons.Settings
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
@@ -255,10 +255,10 @@ private fun FloatingSearchBubble(
                             value = query,
                             onValueChange = onQueryChange,
                             placeholder = {
-                                Text(
+                                AureoleText(
                                     text = "Search apps",
                                     color = AureoleDS.colors.onSurfaceLow,
-                                    style = MaterialTheme.typography.bodyLarge
+                                    style = AureoleDS.typography.bodyLarge
                                 )
                             },
                             singleLine = true,
@@ -319,18 +319,21 @@ fun LazyListScope.appsListItems(
     uiState: MainUiState,
     actions: HomeScreenActions,
 ) {
+    val filteredApps = uiState.filteredApps
+    val isSearchQueryBlank = uiState.searchQuery.isBlank()
+
     itemsIndexed(
-        items = uiState.filteredApps,
-        key = { _, app -> app.packageName }
+        items = filteredApps,
+        key = { _, app -> app.packageName },
+        contentType = { _, _ -> "app_item" }
     ) { index, app ->
         val currentLetter = app.firstLetter
+        val isFirstOfLetter = (index == 0) || (filteredApps[index - 1].firstLetter != currentLetter)
 
-        val isFirstOfLetter = (index == 0) || (uiState.filteredApps[index - 1].firstLetter != currentLetter)
-
-        if (isFirstOfLetter && uiState.searchQuery.isBlank()) {
-            Text(
+        if (isFirstOfLetter && isSearchQueryBlank) {
+            AureoleText(
                 text = currentLetter.toString(),
-                style = MaterialTheme.typography.headlineLarge,
+                style = AureoleDS.typography.titleLarge,
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.primary,
                 modifier = Modifier.padding(
@@ -346,7 +349,7 @@ fun LazyListScope.appsListItems(
         )
     }
 
-    item(key = "aureole_settings_item") {
+    item(key = "aureole_settings_item", contentType = "settings_item") {
         Spacer(modifier = Modifier.height(16.dp))
         Row(
             modifier = Modifier
@@ -371,9 +374,9 @@ fun LazyListScope.appsListItems(
 
             Spacer(modifier = Modifier.width(16.dp))
 
-            Text(
+            AureoleText(
                 text = "Aureole Settings",
-                style = MaterialTheme.typography.bodyLarge,
+                style = AureoleDS.typography.bodyLarge,
                 fontWeight = FontWeight.SemiBold,
                 color = AureoleDS.colors.onSurfaceHigh
             )

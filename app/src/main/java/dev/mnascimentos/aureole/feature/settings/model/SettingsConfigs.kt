@@ -30,6 +30,7 @@ data class SettingsScreenActions(
     val onOpenColorPickerDialog: () -> Unit = {},
     val onSelectManualSeedColor: (Int) -> Unit = {},
     val onSelectTheme: (String) -> Unit = {},
+    val onSelectFont: (String) -> Unit = {},
     val onDismissColorPickerDialog: () -> Unit = {},
     val onChangeWallpaperClick: () -> Unit = {},
     val onRestoreDefaultWallpaperClick: () -> Unit = {},

@@ -12,7 +12,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -25,6 +24,7 @@ import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.composable.ColorPickerDialog
 import dev.mnascimentos.aureole.composable.SettingsActionItem
 import dev.mnascimentos.aureole.composable.SettingsMenuItem
+import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.icons.Check
 import dev.mnascimentos.aureole.core.designsystem.icons.Delete
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
@@ -222,7 +222,7 @@ private fun HazeOpacityDialog(
     AlertDialog(
         onDismissRequest = onDismiss,
         title = {
-            Text(
+            AureoleText(
                 text = "Blur Opacity",
                 style = AureoleTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold,
@@ -246,7 +246,7 @@ private fun HazeOpacityDialog(
                             onClick = { onOpacitySelected(value) }
                         )
                         Spacer(modifier = Modifier.width(12.dp))
-                        Text(
+                        AureoleText(
                             text = label,
                             style = AureoleTheme.typography.bodyLarge,
                             color = AureoleTheme.colors.onSurfaceHigh
@@ -257,7 +257,7 @@ private fun HazeOpacityDialog(
         },
         confirmButton = {
             TextButton(onClick = onDismiss) {
-                Text("Cancel", color = AureoleTheme.colors.onSurfaceHigh)
+                AureoleText("Cancel", color = AureoleTheme.colors.onSurfaceHigh)
             }
         }
     )

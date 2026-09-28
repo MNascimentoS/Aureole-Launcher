@@ -20,7 +20,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -28,6 +27,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.core.data.model.AppInfo
+import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.feature.home.folder.model.FolderAppRowItemParams
 
 @Composable
@@ -40,9 +41,9 @@ fun FolderAppPickerHeader(
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Text(
+        AureoleText(
             text = "Apps na Pasta: $folderName",
-            style = MaterialTheme.typography.titleMedium,
+            style = AureoleDS.typography.titleMedium,
             fontWeight = FontWeight.Bold,
             color = MaterialTheme.colorScheme.onSurface
         )
@@ -67,11 +68,11 @@ fun FolderAppPickerFooter(
         verticalAlignment = Alignment.CenterVertically
     ) {
         OutlinedButton(onClick = onDismiss) {
-            Text("Cancelar")
+            AureoleText("Cancelar")
         }
         Spacer(modifier = Modifier.width(8.dp))
         Button(onClick = onSave) {
-            Text("Salvar")
+            AureoleText("Salvar")
         }
     }
 }
@@ -148,9 +149,9 @@ fun RemainingFolderAppRow(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        Text(
+        AureoleText(
             text = app.label,
-            style = MaterialTheme.typography.bodyMedium,
+            style = AureoleDS.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurface,
             modifier = Modifier.weight(1f)
         )

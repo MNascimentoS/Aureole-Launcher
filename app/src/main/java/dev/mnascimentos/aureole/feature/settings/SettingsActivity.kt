@@ -46,7 +46,8 @@ class SettingsActivity : ComponentActivity() {
             AureoleLauncherTheme(
                 darkTheme = isDarkTheme,
                 isDynamicWallpaperEnabled = uiState.isDynamicWallpaperEnabled,
-                aureoleColors = palette.colors
+                aureoleColors = palette.colors,
+                aureoleFontName = uiState.selectedFontName
             ) {
                 LaunchedEffect(uiState.shouldFinishActivity) {
                     if (uiState.shouldFinishActivity) {
@@ -103,6 +104,9 @@ class SettingsActivity : ComponentActivity() {
             },
             onSelectTheme = { themeName ->
                 viewModel.setSettingValue(SettingValue.SelectedTheme(themeName))
+            },
+            onSelectFont = { fontName ->
+                viewModel.setSettingValue(SettingValue.SelectedFont(fontName))
             },
             onHazeOpacitySelected = { opacity ->
                 viewModel.setSettingValue(SettingValue.HazeOpacity(opacity))
