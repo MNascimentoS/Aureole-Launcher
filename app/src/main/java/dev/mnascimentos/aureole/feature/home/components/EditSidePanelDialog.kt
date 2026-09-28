@@ -47,29 +47,11 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import dev.mnascimentos.aureole.core.data.model.AppFolder
 import dev.mnascimentos.aureole.core.data.model.SidePanelModel
+import dev.mnascimentos.aureole.feature.home.components.model.EditSidePanelFormCallbacks
+import dev.mnascimentos.aureole.feature.home.components.model.EditSidePanelFormState
 import dev.mnascimentos.aureole.feature.home.folder.FolderIconRegistry
 
 private const val DIALOG_WIDTH_FRACTION = 0.92f
-
-data class EditSidePanelFormState(
-    val title: String,
-    val position: String,
-    val isBackgroundEnabled: Boolean,
-    val isExpandCell: Boolean,
-    val showAddFolderButton: Boolean,
-    val showFolderLabels: Boolean,
-    val isGridFolderEnabled: Boolean
-)
-
-data class EditSidePanelFormCallbacks(
-    val onTitleChange: (String) -> Unit,
-    val onPositionChange: (String) -> Unit,
-    val onBgChange: (Boolean) -> Unit,
-    val onExpandChange: (Boolean) -> Unit,
-    val onAddFolderBtnChange: (Boolean) -> Unit,
-    val onFolderLabelsChange: (Boolean) -> Unit,
-    val onGridFolderChange: (Boolean) -> Unit
-)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

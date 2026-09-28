@@ -10,7 +10,7 @@ import androidx.compose.ui.layout.ContentScale
 import coil.compose.AsyncImage
 import dev.chrisbanes.haze.HazeState
 import dev.chrisbanes.haze.hazeSource
-import dev.mnascimentos.aureole.R
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import java.io.File
 
 @Composable
@@ -20,12 +20,6 @@ fun WallpaperBackground(
     hazeState: HazeState,
     isHazeEnabled: Boolean
 ) {
-    val model: Any = if (isCustomWallpaperSet && !customWallpaperPath.isNullOrEmpty()) {
-        File(customWallpaperPath)
-    } else {
-        R.drawable.default_wallpaper
-    }
-
     val hazeModifier = if (isHazeEnabled) {
         Modifier.hazeSource(state = hazeState)
     } else {
@@ -33,16 +27,24 @@ fun WallpaperBackground(
     }
 
     Box(modifier = Modifier.fillMaxSize().then(hazeModifier)) {
-        AsyncImage(
-            model = model,
-            contentDescription = null,
-            contentScale = ContentScale.Crop,
-            modifier = Modifier.fillMaxSize()
-        )
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(Color.Black.copy(alpha = 0.3f))
-        )
+        if (isCustomWallpaperSet && !customWallpaperPath.isNullOrEmpty()) {
+            AsyncImage(
+                model = File(customWallpaperPath),
+                contentDescription = null,
+                contentScale = ContentScale.Crop,
+                modifier = Modifier.fillMaxSize()
+            )
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color.Black.copy(alpha = 0.3f))
+            )
+        } else {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(AureoleDS.colors.background)
+            )
+        }
     }
 }

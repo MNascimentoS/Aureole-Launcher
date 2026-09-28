@@ -40,6 +40,7 @@ data class MainUiState(
     val customWallpaperPath: String? = null,
     val isDynamicWallpaperEnabled: Boolean = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S,
     val manualSeedColor: Int = SettingsRepository.DEFAULT_SEED_COLOR,
+    val selectedThemeName: String = "Frostbite",
     val isHazeEnabled: Boolean = true,
     val isHazeSupported: Boolean = true,
     val hazeOpacity: Float = 0.5f,
@@ -50,6 +51,7 @@ data class MainUiState(
     val settingsButtonPosition: String = "Right",
     val showSearchBarInAllApps: Boolean = true,
     val searchIconPosition: String = "Left",
+    val headerOffsetPercent: Int = 22,
     val showUpdateAvailableDialog: Boolean = false,
     val showUpdateDownloadedDialog: Boolean = false,
 

@@ -30,7 +30,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
-import dev.mnascimentos.aureole.core.designsystem.theme.AureolePreview
+import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 
 @Composable
 fun CreateFolderDialog(

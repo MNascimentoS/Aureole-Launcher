@@ -19,12 +19,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
-import dev.mnascimentos.aureole.core.designsystem.theme.LocalHazeState
+import dev.mnascimentos.aureole.core.designsystem.utils.LocalHazeState
 import dev.mnascimentos.aureole.feature.home.components.FavoriteAppsDialog
-import dev.mnascimentos.aureole.feature.home.components.FavoriteAppsDialogActions
-import dev.mnascimentos.aureole.feature.home.components.FavoriteAppsDialogConfig
 import dev.mnascimentos.aureole.feature.home.components.UpdateAvailableDialog
 import dev.mnascimentos.aureole.feature.home.components.UpdateDownloadedDialog
+import dev.mnascimentos.aureole.feature.home.components.model.FavoriteAppsDialogActions
+import dev.mnascimentos.aureole.feature.home.components.model.FavoriteAppsDialogConfig
 import dev.mnascimentos.aureole.feature.home.extensions.closeWidgetPopup
 import dev.mnascimentos.aureole.feature.home.extensions.setShowFavoritePicker
 import dev.mnascimentos.aureole.feature.home.extensions.setShowWidgetPicker

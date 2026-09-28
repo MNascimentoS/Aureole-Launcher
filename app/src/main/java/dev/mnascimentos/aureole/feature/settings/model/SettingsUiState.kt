@@ -8,6 +8,7 @@ sealed interface SettingValue {
     data class SidePanelPosition(val position: String) : SettingValue
     data class HazeOpacity(val opacity: Float) : SettingValue
     data class ManualSeedColor(val color: Int) : SettingValue
+    data class SelectedTheme(val themeName: String) : SettingValue
     data class SettingsButtonPosition(val position: String) : SettingValue
     data class SearchIconPosition(val position: String) : SettingValue
 }
@@ -38,10 +39,12 @@ data class SettingsUiState(
     val showCreateFolderDialog: Boolean = false,
     val isDynamicWallpaperEnabled: Boolean = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S,
     val manualSeedColor: Int = SettingsRepository.DEFAULT_SEED_COLOR,
+    val selectedThemeName: String = "Frostbite",
     val isHazeEnabled: Boolean = true,
     val isHazeSupported: Boolean = true,
     val hazeOpacity: Float = 0.5f,
     val isInAppUpdateEnabled: Boolean = true,
+    val headerOffsetPercent: Int = 22,
     val isThemedAppIconsEnabled: Boolean = false,
     val isAlphabetScrubberDisabled: Boolean = false,
     val showSettingsButtonInAllApps: Boolean = true,

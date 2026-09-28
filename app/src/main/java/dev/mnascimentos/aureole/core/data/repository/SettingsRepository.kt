@@ -3,7 +3,7 @@ package dev.mnascimentos.aureole.core.data.repository
 import android.content.Context
 import android.os.Build
 import androidx.core.content.edit
-import dev.mnascimentos.aureole.core.designsystem.theme.HazeUtils
+import dev.mnascimentos.aureole.core.designsystem.utils.HazeUtils
 import java.io.File
 
 class SettingsRepository(private val context: Context) {
@@ -67,6 +67,13 @@ class SettingsRepository(private val context: Context) {
         get() = prefs.getBoolean(KEY_IN_APP_UPDATE_ENABLED, true)
         set(value) = prefs.edit { putBoolean(KEY_IN_APP_UPDATE_ENABLED, value) }
 
+    var headerOffsetPercent: Int
+        get() = prefs.getInt(KEY_HEADER_OFFSET_PERCENT, DEFAULT_HEADER_OFFSET)
+            .coerceIn(MIN_HEADER_OFFSET, MAX_HEADER_OFFSET)
+        set(value) = prefs.edit {
+            putInt(KEY_HEADER_OFFSET_PERCENT, value.coerceIn(MIN_HEADER_OFFSET, MAX_HEADER_OFFSET))
+        }
+
     var isThemedAppIconsEnabled: Boolean
         get() = prefs.getBoolean(KEY_USE_THEMED_APP_ICONS, false)
         set(value) = prefs.edit { putBoolean(KEY_USE_THEMED_APP_ICONS, value) }
@@ -112,6 +119,10 @@ class SettingsRepository(private val context: Context) {
     var manualSeedColor: Int
         get() = prefs.getInt(KEY_MANUAL_SEED_COLOR, DEFAULT_SEED_COLOR)
         set(value) = prefs.edit { putInt(KEY_MANUAL_SEED_COLOR, value) }
+
+    var selectedThemeName: String
+        get() = prefs.getString(KEY_SELECTED_THEME, "Frostbite") ?: "Frostbite"
+        set(value) = prefs.edit { putString(KEY_SELECTED_THEME, value) }
 
     var isCustomWallpaperSet: Boolean
         get() {
@@ -164,13 +175,18 @@ class SettingsRepository(private val context: Context) {
         private const val KEY_HAZE_OPACITY = "haze_opacity"
         private const val KEY_SHOW_WIDGET_DOTS = "show_widget_dots"
         private const val KEY_IN_APP_UPDATE_ENABLED = "in_app_update_enabled"
+        private const val KEY_HEADER_OFFSET_PERCENT = "header_offset_percent"
         private const val KEY_USE_THEMED_APP_ICONS = "use_themed_app_icons"
         private const val KEY_DISABLE_ALPHABET_SCRUBBER = "disable_alphabet_scrubber"
         private const val KEY_SHOW_SETTINGS_BUTTON_IN_ALL_APPS = "show_settings_button_in_all_apps"
         private const val KEY_SETTINGS_BUTTON_POSITION = "settings_button_position"
         private const val KEY_SHOW_SEARCH_BAR_IN_ALL_APPS = "show_search_bar_in_all_apps"
         private const val KEY_SEARCH_ICON_POSITION = "search_icon_position"
+        private const val KEY_SELECTED_THEME = "selected_theme"
         private const val DEFAULT_HAZE_OPACITY = 0.5f
-        const val DEFAULT_SEED_COLOR = 0xFF6650A4.toInt()
+        private const val DEFAULT_HEADER_OFFSET = 22
+        private const val MIN_HEADER_OFFSET = 10
+        private const val MAX_HEADER_OFFSET = 60
+        const val DEFAULT_SEED_COLOR = 0xFF4A5D6B.toInt()
     }
 }

@@ -43,16 +43,19 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import dev.chrisbanes.haze.HazeState
 import dev.chrisbanes.haze.HazeStyle
 import dev.chrisbanes.haze.HazeTint
 import dev.chrisbanes.haze.hazeEffect
 import dev.mnascimentos.aureole.core.data.model.AppFolder
 import dev.mnascimentos.aureole.core.data.model.AppInfo
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
-import dev.mnascimentos.aureole.core.designsystem.theme.AureolePreview
+import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.LocalHomeUiState
 import dev.mnascimentos.aureole.feature.home.folder.model.FolderPopupActions
+import dev.mnascimentos.aureole.feature.home.folder.model.GridFolderPopupParams
+import dev.mnascimentos.aureole.feature.home.folder.model.OpenedFolderPopupConfig
+import dev.mnascimentos.aureole.feature.home.folder.model.OpenedFolderPopupContentParams
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
 
 private const val HAZE_ALPHA_MULTIPLIER = 0.8f
@@ -62,21 +65,6 @@ private const val OPAQUE_ALPHA = 1f
 private const val GRID_MAX_3 = 3
 private const val GRID_MAX_6 = 6
 private const val GRID_COLS = 3
-
-data class OpenedFolderPopupConfig(
-    val folder: AppFolder,
-    val allApps: List<AppInfo>,
-    val actions: FolderPopupActions,
-    val isGridFolderEnabled: Boolean = false,
-    val hazeState: HazeState? = null
-)
-
-data class OpenedFolderPopupContentParams(
-    val folderName: String,
-    val appsInFolder: List<AppInfo>,
-    val isActionsVisible: Boolean,
-    val isGridMode: Boolean
-)
 
 @Composable
 fun OpenedFolderPopup(
@@ -132,12 +120,14 @@ private fun StandardFolderPopupBox(
     val isHazeEnabled = uiState.isHazeEnabled
     val hazeOpacity = uiState.hazeOpacity
 
+    val surfaceColor = AureoleDS.colors.surfaceVariant
+
     val hazeModifier = if (isHazeEnabled && (config.hazeState != null)) {
         Modifier.hazeEffect(
             state = config.hazeState,
             style = HazeStyle(
                 blurRadius = 24.dp,
-                tint = HazeTint(MaterialTheme.colorScheme.surfaceContainerHigh.copy(alpha = hazeOpacity))
+                tint = HazeTint(surfaceColor.copy(alpha = hazeOpacity))
             )
         ) {
             blurEnabled = true
@@ -158,7 +148,7 @@ private fun StandardFolderPopupBox(
             .heightIn(max = 380.dp)
             .clip(RoundedCornerShape(18.dp))
             .then(hazeModifier)
-            .background(MaterialTheme.colorScheme.surfaceContainerHigh.copy(alpha = backgroundAlpha))
+            .background(surfaceColor.copy(alpha = backgroundAlpha))
             .padding(12.dp)
     ) {
         OpenedFolderPopupContent(

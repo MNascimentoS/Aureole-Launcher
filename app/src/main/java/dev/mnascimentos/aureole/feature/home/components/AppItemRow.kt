@@ -39,8 +39,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.core.data.model.AppInfo
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
-import dev.mnascimentos.aureole.core.designsystem.theme.AureolePreview
+import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.LocalHomeUiState
 import dev.mnascimentos.aureole.feature.home.components.model.AppItemRowActions
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
@@ -106,14 +107,14 @@ private fun RowScope.AppItemRowContent(
     isThemedAppIconsEnabled: Boolean,
     isLeftHandedMode: Boolean
 ) {
-    val onPrimaryContainerColor = MaterialTheme.colorScheme.onPrimaryContainer
-    val displayBitmap = remember(app.packageName, isThemedAppIconsEnabled, onPrimaryContainerColor) {
+    val iconColor = AureoleDS.colors.onSurfaceHigh
+    val displayBitmap = remember(app.packageName, isThemedAppIconsEnabled, iconColor) {
         if (isThemedAppIconsEnabled) {
             val argb = Color.argb(
-                (onPrimaryContainerColor.alpha * COLOR_MAX_FACTOR).toInt(),
-                (onPrimaryContainerColor.red * COLOR_MAX_FACTOR).toInt(),
-                (onPrimaryContainerColor.green * COLOR_MAX_FACTOR).toInt(),
-                (onPrimaryContainerColor.blue * COLOR_MAX_FACTOR).toInt()
+                (iconColor.alpha * COLOR_MAX_FACTOR).toInt(),
+                (iconColor.red * COLOR_MAX_FACTOR).toInt(),
+                (iconColor.green * COLOR_MAX_FACTOR).toInt(),
+                (iconColor.blue * COLOR_MAX_FACTOR).toInt()
             )
             app.getThemedIconBitmap(argb)
         } else {
@@ -125,7 +126,7 @@ private fun RowScope.AppItemRowContent(
         Text(
             text = app.label,
             style = MaterialTheme.typography.bodyLarge,
-            color = MaterialTheme.colorScheme.onBackground,
+            color = AureoleDS.colors.onSurfaceHigh,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
             textAlign = if (isLeftHandedMode) TextAlign.End else TextAlign.Start,
@@ -159,7 +160,7 @@ private fun AppItemIcon(
             modifier = Modifier
                 .size(ICON_OUTER_SIZE)
                 .clip(RoundedCornerShape(ICON_CORNER_RADIUS))
-                .background(MaterialTheme.colorScheme.primaryContainer)
+                .background(AureoleDS.colors.surface)
                 .padding(ICON_PADDING),
             contentAlignment = Alignment.Center
         ) {

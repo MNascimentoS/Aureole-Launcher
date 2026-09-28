@@ -7,6 +7,7 @@ import com.android.tools.screenshot.PreviewTest
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.feature.settings.model.SettingsScreenActions
 import dev.mnascimentos.aureole.feature.settings.model.SettingsUiState
+import dev.mnascimentos.aureole.feature.settings.screens.SettingsScreen
 
 @PreviewTest
 @Preview(name = "Light Mode", showBackground = true)

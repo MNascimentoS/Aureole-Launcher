@@ -2,48 +2,102 @@
 
 Este documento define as regras fundamentais de arquitetura, organização de pastas e qualidade de código para o nosso projeto Android utilizando Jetpack Compose. O objetivo é garantir manutenibilidade, facilidade de leitura e escalabilidade.
 
+---
+
 ## 🏗️ Estrutura Obrigatória por Tela (Feature)
 
-Cada nova funcionalidade ou tela do aplicativo deve ser dividida na seguinte estrutura de responsabilidades. Não é permitido misturar regras de negócio, dados e UI no mesmo arquivo.
+Cada funcionalidade ou tela do aplicativo deve ser dividida em camadas bem definidas. É proibido misturar regras de negócio, dados e UI no mesmo arquivo.
 
-### Activity (`*Activity.kt`)
-- Atua apenas como o ponto de entrada da tela no sistema Android.
-- Sua única responsabilidade é inicializar o tema, instanciar o ViewModel (via injeção de dependência) e chamar a Screen principal.
-- **Proibido:** Lógica de negócio, chamadas de rede ou gerenciamento de estado complexo.
+### 1. Activity (`*Activity.kt`)
+- Atua exclusivamente como o ponto de entrada da funcionalidade no sistema Android.
+- **Responsabilidade Única:** Inicializar o tema visual, instanciar o ViewModel e invocar a Screen principal no `setContent`.
+- **Isolamento de Ciclo de Vida:** Serviços e APIs do sistema atrelados ao ciclo de vida (ex: gerenciamento de Widgets do Android, In-App Update, BroadcastReceivers) **devem ser desacoplados em `DefaultLifecycleObserver`** armazenados em `core/lifecycle/` e apenas registrados no `onCreate` da Activity.
+- **Proibido:** Lógica de negócio, chamadas de rede, gerenciamento de estado complexo ou sobrescrever métodos de ciclo de vida (`onStart`, `onResume`, `onStop`, `onDestroy`) para lógica que possa residir em um Observer.
 
-### Screen (`*Screen.kt`)
-- O arquivo principal de UI da funcionalidade utilizando Jetpack Compose.
-- Deve ser *stateless* (sempre que possível), recebendo o estado do ViewModel e repassando eventos (callbacks) de volta para ele.
-- **Regra de Ouro da UI:** Todo componente visual utilizado na Screen (Botões, Cards, TextFields, etc.) deve ser importado da nossa pasta compartilhada `composable/` (nosso Design System interno). Não crie componentes genéricos isolados dentro da feature.
-- **Proibido `data class` em arquivos de View:** Arquivos de UI / Screen ou componentes visuais não devem conter declarações de `data class`. Todos os modelos de dados e estados devem ser definidos em arquivos de modelo dedicados.
+### 2. Screen e Views (`*Screen.kt`, `*Dialog.kt`)
+- O arquivo principal de interface utilizando Jetpack Compose.
+- **Stateless:** A UI deve ser desacoplada de estado mutável direto. Ela deve receber um `UiState` imutável e repassar eventos de interação do usuário através de callbacks/ações.
+- **Fluxo Unidirecional de Dados (UDF):** O fluxo de dados deve ser estritamente unidirecional (ViewModel -> UiState -> UI -> Actions -> ViewModel).
+- **Proibido `data class` em arquivos de View:** É **estritamente proibido** declarar `data class`, `enum` ou interfaces de parâmetros dentro de arquivos `.kt` de UI. Todos os modelos de dados e estados de tela devem residir na pasta `model/`.
 
-### ViewModel (`*ViewModel.kt`)
-- Gerencia o estado da Screen (`StateFlow`/`LiveData`) e reage às ações do usuário.
-- Comunica-se exclusivamente com o Repository.
-- **Proibido:** Importar referências do framework Android (ex: `Context`, `View`).
+### 3. ViewModel (`*ViewModel.kt`)
+- Gerencia o estado da tela exposto em um `StateFlow` imutável e responde às ações enviadas pela UI.
+- Comunica-se exclusivamente com a camada de Repositório (`Repository`).
+- **Proibido:** Importar referências de UI ou do framework Android (ex: `Context`, `View`, `Activity`).
 
-### Repository (`*Repository.kt` / `*RepositoryImpl.kt`)
-- Ponto único de verdade para os dados da feature.
-- Oculte a origem dos dados (se vem da API, do banco local ou cache) do ViewModel.
-- Retorne dados estruturados (geralmente encapsulados em `Result`/`Flow`).
+### 4. Repository (`*Repository.kt` / `*RepositoryImpl.kt`)
+- Ponto único de verdade (Single Source of Truth) para os dados da feature.
+- Oculte do ViewModel a origem real dos dados (API remota, banco de dados local Room, SharedPreferences, DataStore ou cache).
+- Retorne dados estruturados em tipos de domínio (geralmente encapsulados em `Result` ou `Flow`).
 
-### Data Layer (Camada de Dados)
-- Onde residem os modelos de dados locais, DTOs (Data Transfer Objects), DAOs e chamadas de API (Retrofit/Ktor) exclusivas da feature.
-- Faça o mapeamento (Mappers) dos dados brutos para os modelos de domínio antes de enviá-los ao repositório.
+### 5. Data Layer (Camada de Dados)
+- Onde residem os modelos de dados locais (Entities), DTOs (Data Transfer Objects), DAOs e chamadas de API (Retrofit/Ktor).
+- Realize o mapeamento (Mappers) dos dados brutos para os modelos de domínio antes de enviá-los ao repositório.
 
-## 🧩 Componentes Reutilizáveis (`/composable`)
+---
 
-- A pasta `composable` atua como o nosso Design System.
-- Antes de criar um componente visual na sua Screen, verifique se ele já existe na pasta `composable`.
-- Se você criar um componente que pode ser usado em mais de uma tela, ele deve ser extraído e movido para a pasta `composable`.
+## 📂 Convenção de Estrutura de Pacotes por Feature
 
-## 📏 Qualidade de Código e Detekt
+Toda funcionalidade em `feature/<nome_da_feature>/` deve obrigatoriamente seguir a seguinte estrutura de subpacotes:
 
-O código deve ser pequeno, simples e direto. A leitura deve ser natural.
+```text
+feature/<nome_da_feature>/
+├── screens/         # Composables de telas inteiras (ex: SettingsScreen.kt, HomeScreen.kt)
+├── components/      # Componentes visuais e diálogos exclusivos da feature (ex: EditSidePanelDialog.kt)
+├── extensions/      # Extensões do ViewModel e gerenciadores auxiliares de estado
+├── model/           # UiStates, Actions, Params e Data Classes exclusivas da feature
+├── <Feature>Activity.kt
+└── <Feature>ViewModel.kt
+```
 
-- **Tamanho Máximo de Arquivos (Limite Estrito):** Classes e arquivos devem ser extremamente concisos. **O tamanho máximo permitido para um arquivo é de 300-400 linhas.** Se um arquivo ultrapassar esse limite, ele está fazendo coisas demais e deve ser imediatamente refatorado e dividido.
-- **Funções Limpas:** Funções devem fazer apenas uma coisa. Evite aninhamentos complexos (`if` dentro de `if` dentro de `for`).
-- **Detekt:** O código sempre deve estar de acordo com o detekt. O build falhará se houver violações (`maxIssues: 0`). Não utilize `@Suppress` sem uma justificativa arquitetural documentada e revisada. **Atenção:** Os arquivos de configuração do Detekt (como `detekt.yml`) nunca devem ser editados ou alterados.
-- **Nomenclatura:** Variáveis e funções devem dizer exatamente o que fazem (ex: `fetchUserPreferences()` em vez de `getData()`).
+---
+
+## 🎨 Aureole Design System e Componentes Reutilizáveis (`/composable`)
+
+- **Referência do Design System:** As diretrizes completas de UI/UX, integração com Figma, tokens de cor (`AureoleColors`), tipografia (`AureoleTypography`) e catálogo de ícones (`AureoleDS.icons`) estão documentadas em `.gemini/aureoleo_design_system.md`.
+- **Design Tokens:** É proibido utilizar valores numéricos de dimensões ou cores em código hexadecimal brutos nas telas. Utilize sempre os tokens do tema via `AureoleTheme.colors` (ex: `AureoleTheme.colors.onSurfaceHigh`, `AureoleTheme.colors.surfaceVariant`) e ícones de `AureoleDS.icons`.
+- **Pacote `composable/`:** O pacote raiz `composable/` atua como o nosso repositório de componentes visuais do Design System interno.
+- **Estrutura de `core/designsystem/`:** Organizado nos seguintes subpacotes:
+  - `theme/`: Configuração base do tema Compose (`AureoleTheme.kt`, `AureoleColor.kt`, `AureoleTypography.kt`)
+  - `palette/`: Catálogo unificado de paletas de cores (`ThemePaletteBase.kt` com supressão explícita para o catálogo)
+  - `icons/`: Catálogo unificado de ícones (`AureoleIcons.kt`)
+  - `utils/`: Utilitários visuais e anotações de preview (`HazeUtils.kt`, `AureolePreview.kt`)
+- **Regra de Ouro:** Qualquer componente visual genérico ou compartilhado por mais de uma tela (botões customizados, seletores, toggles, dialogs reutilizáveis) **deve residir obrigatoriamente no pacote `composable/`**.
+- **Assinatura de Componentes:** Todo Composable público reutilizável do Design System deve aceitar `modifier: Modifier = Modifier` logo após os parâmetros de conteúdo obrigatórios e ser estritamente *stateless*.
+
+---
+
+## 🔄 Gerenciamento do Ciclo de Vida (`core/lifecycle/`)
+
+- Lógicas do ecossistema Android que dependem dos eventos de ciclo de vida da Activity (start, stop, resume, destroy) devem ser encapsuladas como implementações de `DefaultLifecycleObserver`.
+- Devem ser localizadas no pacote `core/lifecycle/`.
+- Exemplos: `WidgetLifecycleObserver.kt`, `UpdateLifecycleObserver.kt`.
+
+---
+
+## 📏 Qualidade de Código e Restrições do Detekt
+
+O código deve ser pequeno, conciso, simples e direto. A leitura deve ser natural.
+
+- **Tamanho Máximo de Arquivos (Limite Estrito):** Arquivos devem ser extremamente concisos. **O tamanho máximo permitido para qualquer arquivo é de 300 a 400 linhas** (com exceção explicita de catálogos unificados do Design System como `AureoleIcons.kt` e `ThemePaletteBase.kt`, que contêm supressão documentada). Se um arquivo ultrapassar 300-400 linhas, ele deve ser imediatamente refatorado e dividido em subcomponentes ou arquivos utilitários.
+- **Funções Limpas:** Funções devem ter apenas uma responsabilidade clara. Evite aninhamentos profundos (`if` dentro de `if` dentro de `for`).
+- **Zero Detekt Issues (`maxIssues: 0`):** O código deve estar 100% em conformidade com do Detekt. O build falhará se houver violações.
+- **Proibição de `@Suppress` Sem Justificativa:** Não utilize `@Suppress` sem uma justificativa arquitetural explícita, revisada e documentada.
+- **Proteção das Configurações do Detekt:** Arquivos de configuração do Detekt (como `detekt.yml`) **nunca** devem ser alterados para ignorar erros.
+- **Nomenclatura Expressiva:** Variáveis e funções devem declarar explicitamente o que fazem (ex: `fetchUserPreferences()` em vez de `getData()`).
+
+---
+
+## 📝 Histórico de Refatoração
+
+**[Recente] Conformidade Estrita com a Arquitetura**
+O projeto passou por uma grande refatoração para garantir 100% de adequação a estas diretrizes:
+1. **Separação de Modelos e UI:** Todas as `data classes` (configurações, params, etc.) foram removidas dos arquivos de View (`*Screen.kt`, `*Dialog.kt`) e transferidas para pacotes `model/` dedicados (ex: `FolderModels.kt`, `EditSidePanelModels.kt`).
+2. **Criação do pacote `/composable`:** Componentes visuais compartilhados (como `SettingsComponents` e `ColorPickerDialog`) foram realocados de pacotes específicos (`feature/settings` e `core/designsystem`) para o pacote compartilhado centralizado `composable/`.
+3. **Redução do Tamanho de Arquivos:** Arquivos que infligiam a regra de limite de 300-400 linhas foram divididos logicamente (`ThemePalette.kt`, `DynamicGridContainer.kt`, e `WidgetPickerBottomSheet.kt`).
+4. **Limpeza da MainActivity:** Lógicas de ciclo de vida (como o gerenciador de Widgets e as verificações do *In-App Update*) foram completamente isoladas em observadores (`WidgetLifecycleObserver` e `UpdateLifecycleObserver` dentro da pasta `core/lifecycle/`), tornando a Activity restrita apenas à inicialização do Tema e da UI.
+5. **Organização da Feature `settings`:** A pasta `feature/settings` foi reorganizada em subpacotes lógicos e padronizados (`screens/`, `components/`, `extensions/`, e `model/`), igualando a estrutura modular da feature `home`.
+6. **Padronização do `core/designsystem/theme`:** Reorganizado em subpacotes e renomeados os arquivos de tema para utilizar o prefixo do projeto (`AureoleColor.kt`, `AureoleTheme.kt`, `AureoleTypography.kt`).
+7. **Catálogo Unificado de Paletas:** Unificadas todas as paletas de cores em `ThemePaletteBase.kt` com supressão explícita do Detekt para o registro do Design System.
 
 Siga estas regras para garantir que o projeto escale com saúde e sem acúmulo de débito técnico!

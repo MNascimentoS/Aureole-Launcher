@@ -53,29 +53,23 @@ internal fun HomeViewModel.updateAppsState(apps: List<AppInfo>) {
 }
 
 private fun computeAlphabetAndIndexMap(apps: List<AppInfo>): Pair<List<Char>, Map<Char, Int>> {
-    val fullAlphabet = listOf('#') + ('A'..'Z').toList()
-
     val firstOccurrenceMap = mutableMapOf<Char, Int>()
     apps.forEachIndexed { index, app ->
-        val letter = app.firstLetter.uppercaseChar()
+        val letter = if (app.firstLetter.uppercaseChar() in 'A'..'Z') {
+            app.firstLetter.uppercaseChar()
+        } else {
+            '#'
+        }
         firstOccurrenceMap.putIfAbsent(letter, index)
     }
 
-    val indexMap = fullAlphabet.associateWith { char ->
-        getAlphabetCharIndex(char, apps, firstOccurrenceMap)
+    val presentAlphabet = (listOf('#') + ('A'..'Z').toList()).filter { char ->
+        firstOccurrenceMap.containsKey(char)
     }
 
-    return Pair(fullAlphabet, indexMap)
-}
-
-private fun getAlphabetCharIndex(
-    char: Char,
-    apps: List<AppInfo>,
-    firstOccurrenceMap: Map<Char, Int>
-): Int {
-    val exactIndex = if (char == '☆' || char == '#') 0 else firstOccurrenceMap[char]
-    return exactIndex ?: run {
-        val nextIndex = apps.indexOfFirst { it.firstLetter.uppercaseChar() > char }
-        if (nextIndex != -1) nextIndex else (apps.size - 1).coerceAtLeast(0)
+    val indexMap = presentAlphabet.associateWith { char ->
+        firstOccurrenceMap[char] ?: 0
     }
+
+    return Pair(presentAlphabet, indexMap)
 }

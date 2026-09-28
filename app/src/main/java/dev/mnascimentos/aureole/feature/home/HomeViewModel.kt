@@ -96,6 +96,7 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
                     customWallpaperPath = settingsRepository.customWallpaperPath,
                     isDynamicWallpaperEnabled = settingsRepository.isDynamicWallpaperEnabled,
                     manualSeedColor = settingsRepository.manualSeedColor,
+                    selectedThemeName = settingsRepository.selectedThemeName,
                     isHazeEnabled = settingsRepository.isHazeEnabled,
                     isHazeSupported = settingsRepository.isHazeSupported,
                     hazeOpacity = settingsRepository.hazeOpacity,
@@ -105,7 +106,8 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
                     showSettingsButtonInAllApps = settingsRepository.showSettingsButtonInAllApps,
                     settingsButtonPosition = settingsRepository.settingsButtonPosition,
                     showSearchBarInAllApps = settingsRepository.showSearchBarInAllApps,
-                    searchIconPosition = settingsRepository.searchIconPosition
+                    searchIconPosition = settingsRepository.searchIconPosition,
+                    headerOffsetPercent = settingsRepository.headerOffsetPercent
                 )
             }
         }

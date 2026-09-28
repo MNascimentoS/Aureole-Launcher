@@ -28,6 +28,7 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import dev.chrisbanes.haze.HazeState
+import dev.chrisbanes.haze.hazeSource
 import dev.chrisbanes.haze.rememberHazeState
 import dev.mnascimentos.aureole.core.data.model.LauncherItemState
 import dev.mnascimentos.aureole.core.data.model.LauncherItemType
@@ -139,23 +140,37 @@ private fun HomeScreenExclusionModifier(isAllAppsDrawerOpen: Boolean): Modifier 
 private fun BoxScope.HomeScreenBody(
     config: HomeScreenBodyConfig
 ) {
-    WallpaperBackground(
-        isCustomWallpaperSet = config.uiState.isCustomWallpaperSet,
-        customWallpaperPath = config.uiState.customWallpaperPath,
-        hazeState = config.hazeState,
-        isHazeEnabled = config.uiState.isHazeEnabled
-    )
+    val homeContentHazeModifier = if (config.uiState.isHazeEnabled) {
+        Modifier.hazeSource(state = config.hazeState)
+    } else {
+        Modifier
+    }
+
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .then(homeContentHazeModifier)
+    ) {
+        WallpaperBackground(
+            isCustomWallpaperSet = config.uiState.isCustomWallpaperSet,
+            customWallpaperPath = config.uiState.customWallpaperPath,
+            hazeState = config.hazeState,
+            isHazeEnabled = false
+        )
+
+        if (!config.uiState.isLoading) {
+            MainHomeLayout(
+                appWidgetHost = config.appWidgetHost,
+                currentHeightPx = config.currentHeightPx,
+                favListState = config.favListState,
+                hazeState = config.hazeState,
+            )
+        }
+    }
 
     if (config.uiState.isLoading) {
         CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
     } else {
-        MainHomeLayout(
-            appWidgetHost = config.appWidgetHost,
-            currentHeightPx = config.currentHeightPx,
-            favListState = config.favListState,
-            hazeState = config.hazeState,
-        )
-
         val overlaysConfig = HomeOverlaysConfig(
             uiState = config.uiState,
             actions = config.actions,
