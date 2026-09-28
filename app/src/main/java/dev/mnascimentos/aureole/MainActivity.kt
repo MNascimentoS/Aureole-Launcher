@@ -16,6 +16,7 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -151,8 +152,10 @@ class MainActivity : ComponentActivity() {
                     }
                 }
 
-                val palette = getPaletteByName(uiState.selectedThemeName)
+                val isDarkTheme = isSystemInDarkTheme()
+                val palette = getPaletteByName(uiState.selectedThemeName, isDarkTheme)
                 AureoleLauncherTheme(
+                    darkTheme = isDarkTheme,
                     isDynamicWallpaperEnabled = uiState.isDynamicWallpaperEnabled,
                     aureoleColors = palette.colors
                 ) {

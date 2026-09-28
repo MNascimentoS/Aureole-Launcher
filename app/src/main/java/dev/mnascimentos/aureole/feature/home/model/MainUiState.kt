@@ -51,7 +51,7 @@ data class MainUiState(
     val settingsButtonPosition: String = "Right",
     val showSearchBarInAllApps: Boolean = true,
     val searchIconPosition: String = "Left",
-    val headerOffsetPercent: Int = 22,
+    val headerOffsetPercent: Int = 10,
     val showUpdateAvailableDialog: Boolean = false,
     val showUpdateDownloadedDialog: Boolean = false,
 

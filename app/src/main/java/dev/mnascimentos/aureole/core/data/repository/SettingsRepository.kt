@@ -184,7 +184,7 @@ class SettingsRepository(private val context: Context) {
         private const val KEY_SEARCH_ICON_POSITION = "search_icon_position"
         private const val KEY_SELECTED_THEME = "selected_theme"
         private const val DEFAULT_HAZE_OPACITY = 0.5f
-        private const val DEFAULT_HEADER_OFFSET = 22
+        private const val DEFAULT_HEADER_OFFSET = 10
         private const val MIN_HEADER_OFFSET = 10
         private const val MAX_HEADER_OFFSET = 60
         const val DEFAULT_SEED_COLOR = 0xFF4A5D6B.toInt()

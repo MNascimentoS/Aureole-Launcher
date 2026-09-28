@@ -44,7 +44,7 @@ data class SettingsUiState(
     val isHazeSupported: Boolean = true,
     val hazeOpacity: Float = 0.5f,
     val isInAppUpdateEnabled: Boolean = true,
-    val headerOffsetPercent: Int = 22,
+    val headerOffsetPercent: Int = 10,
     val isThemedAppIconsEnabled: Boolean = false,
     val isAlphabetScrubberDisabled: Boolean = false,
     val showSettingsButtonInAllApps: Boolean = true,
