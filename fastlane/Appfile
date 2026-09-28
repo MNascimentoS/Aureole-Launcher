@@ -1,0 +1,2 @@
+json_key_file(ENV["PLAY_STORE_JSON_KEY_PATH"] || "./play_store_key.json")
+package_name("dev.mnascimentos.aureole")

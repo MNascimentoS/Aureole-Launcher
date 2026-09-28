@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
+    android:width="360dp"
+    android:height="640dp"
+    android:viewportWidth="1080"
+    android:viewportHeight="1920">
+
+    <!-- Dark Deep Space Background -->
+    <path
+        android:pathData="M0,0h1080v1920h-1080z">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:type="linear"
+                android:startX="540"
+                android:startY="0"
+                android:endX="540"
+                android:endY="1920">
+                <item android:color="#FF060814" android:offset="0.0" />
+                <item android:color="#FF0A0E23" android:offset="0.3" />
+                <item android:color="#FF111736" android:offset="0.5" />
+                <item android:color="#FF090B19" android:offset="0.8" />
+                <item android:color="#FF04050D" android:offset="1.0" />
+            </gradient>
+        </aapt:attr>
+    </path>
+
+    <!-- Cosmic Glow Background Disk -->
+    <path
+        android:pathData="M540,960m-500,0a500,500 0,1 1,1000 0a500,500 0,1 1,-1000 0">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:type="radial"
+                android:centerX="540"
+                android:centerY="960"
+                android:gradientRadius="500">
+                <item android:color="#354B70E2" android:offset="0.0" />
+                <item android:color="#206B3BA5" android:offset="0.4" />
+                <item android:color="#00000000" android:offset="1.0" />
+            </gradient>
+        </aapt:attr>
+    </path>
+
+    <!-- Outer Accretion Disk / Nebula Aura -->
+    <path
+        android:pathData="M540,960m-380,0a380,380 0,1 1,760 0a380,380 0,1 1,-760 0">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:type="radial"
+                android:centerX="540"
+                android:centerY="960"
+                android:gradientRadius="380">
+                <item android:color="#80387BFF" android:offset="0.0" />
+                <item android:color="#508C3BFF" android:offset="0.3" />
+                <item android:color="#25FF5C8A" android:offset="0.7" />
+                <item android:color="#00000000" android:offset="1.0" />
+            </gradient>
+        </aapt:attr>
+    </path>
+
+    <!-- Swirling Jet Beams (Top-Left to Bottom-Right) -->
+    <path
+        android:pathData="M200,200 L880,1720 L840,1740 L160,220 Z">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:type="linear"
+                android:startX="200"
+                android:startY="200"
+                android:endX="880"
+                android:endY="1720">
+                <item android:color="#00000000" android:offset="0.0" />
+                <item android:color="#607CB8FF" android:offset="0.4" />
+                <item android:color="#90FFFFFF" android:offset="0.5" />
+                <item android:color="#607CB8FF" android:offset="0.6" />
+                <item android:color="#00000000" android:offset="1.0" />
+            </gradient>
+        </aapt:attr>
+    </path>
+
+    <!-- Swirling Jet Beams (Top-Right to Bottom-Left) -->
+    <path
+        android:pathData="M880,200 L200,1720 L160,1700 L840,180 Z">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:type="linear"
+                android:startX="880"
+                android:startY="200"
+                android:endX="200"
+                android:endY="1720">
+                <item android:color="#00000000" android:offset="0.0" />
+                <item android:color="#40FF6B9D" android:offset="0.4" />
+                <item android:color="#70FFFFFF" android:offset="0.5" />
+                <item android:color="#40FF6B9D" android:offset="0.6" />
+                <item android:color="#00000000" android:offset="1.0" />
+            </gradient>
+        </aapt:attr>
+    </path>
+
+    <!-- Inner Bright Accretion Ring -->
+    <path
+        android:pathData="M540,960m-220,0a220,220 0,1 1,440 0a220,220 0,1 1,-440 0">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:type="radial"
+                android:centerX="540"
+                android:centerY="960"
+                android:gradientRadius="220">
+                <item android:color="#FF639BFF" android:offset="0.0" />
+                <item android:color="#D0C070FF" android:offset="0.5" />
+                <item android:color="#80FF5588" android:offset="0.85" />
+                <item android:color="#00000000" android:offset="1.0" />
+            </gradient>
+        </aapt:attr>
+    </path>
+
+    <!-- Event Horizon / Black Hole Core -->
+    <path
+        android:fillColor="#FF03040A"
+        android:pathData="M540,960m-130,0a130,130 0,1 1,260 0a130,130 0,1 1,-260 0" />
+
+    <!-- Photon Sphere Ring -->
+    <path
+        android:pathData="M540,960m-132,0a132,132 0,1 1,264 0a132,132 0,1 1,-264 0"
+        android:strokeWidth="3"
+        android:strokeColor="#EEFFFFFF" />
+
+    <!-- Distant Stars (Bright Points) -->
+    <path android:fillColor="#FFFFFFFF" android:pathData="M180,320m-3,0a3,3 0,1 1,6 0a3,3 0,1 1,-6 0" />
+    <path android:fillColor="#B0FFFFFF" android:pathData="M820,280m-2,0a2,2 0,1 1,4 0a2,2 0,1 1,-4 0" />
+    <path android:fillColor="#FFFFFFFF" android:pathData="M920,540m-3,0a3,3 0,1 1,6 0a3,3 0,1 1,-6 0" />
+    <path android:fillColor="#A07CB8FF" android:pathData="M140,780m-4,0a4,4 0,1 1,8 0a4,4 0,1 1,-8 0" />
+    <path android:fillColor="#FFFFFFFF" android:pathData="M260,1380m-2,0a2,2 0,1 1,4 0a2,2 0,1 1,-4 0" />
+    <path android:fillColor="#B0FF9EAF" android:pathData="M780,1420m-3,0a3,3 0,1 1,6 0a3,3 0,1 1,-6 0" />
+    <path android:fillColor="#FFFFFFFF" android:pathData="M880,1650m-2,0a2,2 0,1 1,4 0a2,2 0,1 1,-4 0" />
+    <path android:fillColor="#D0FFFFFF" android:pathData="M320,1680m-3,0a3,3 0,1 1,6 0a3,3 0,1 1,-6 0" />
+
+</vector>
