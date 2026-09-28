@@ -3,6 +3,7 @@ package dev.mnascimentos.aureole.feature.settings.components
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -31,6 +32,7 @@ import dev.mnascimentos.aureole.core.designsystem.icons.Edit
 import dev.mnascimentos.aureole.core.designsystem.icons.StrokeColor
 import dev.mnascimentos.aureole.core.designsystem.palette.ThemePalette
 import dev.mnascimentos.aureole.core.designsystem.palette.allPalettes
+import dev.mnascimentos.aureole.core.designsystem.palette.toLight
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleTheme
 
@@ -76,6 +78,9 @@ fun PickPaletteBottomSheet(
     onPaletteSelected: (ThemePalette) -> Unit,
     onDismissRequest: () -> Unit
 ) {
+    val isDarkTheme = isSystemInDarkTheme()
+    val cleanSelectedName = selectedPaletteName.removeSuffix(" Light").trim()
+
     SettingsBottomSheet(
         title = "Pick a palette",
         onDismissRequest = onDismissRequest
@@ -86,12 +91,14 @@ fun PickPaletteBottomSheet(
                 .fillMaxWidth()
                 .heightIn(max = PALETTE_MAX_HEIGHT_DP.dp)
         ) {
-            items(allPalettes) { palette ->
-                val isSelected = palette.name.equals(selectedPaletteName, ignoreCase = true)
+            items(allPalettes) { basePalette ->
+                val isSelected = basePalette.name.equals(cleanSelectedName, ignoreCase = true)
+                val activePalette = if (isDarkTheme) basePalette else basePalette.toLight()
                 PaletteRowItem(
-                    palette = palette,
+                    palette = activePalette,
+                    displayName = basePalette.name,
                     isSelected = isSelected,
-                    onSelect = { onPaletteSelected(palette) }
+                    onSelect = { onPaletteSelected(basePalette) }
                 )
             }
         }
@@ -101,6 +108,7 @@ fun PickPaletteBottomSheet(
 @Composable
 private fun PaletteRowItem(
     palette: ThemePalette,
+    displayName: String,
     isSelected: Boolean,
     onSelect: () -> Unit
 ) {
@@ -125,7 +133,7 @@ private fun PaletteRowItem(
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
-            text = palette.name,
+            text = displayName,
             style = AureoleTheme.typography.titleMedium,
             fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium,
             color = textColor,

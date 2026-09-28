@@ -13,6 +13,7 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -40,8 +41,10 @@ class SettingsActivity : ComponentActivity() {
         setContent {
             val uiState by viewModel.uiState.collectAsState()
 
-            val palette = getPaletteByName(uiState.selectedThemeName)
+            val isDarkTheme = isSystemInDarkTheme()
+            val palette = getPaletteByName(uiState.selectedThemeName, isDarkTheme)
             AureoleLauncherTheme(
+                darkTheme = isDarkTheme,
                 isDynamicWallpaperEnabled = uiState.isDynamicWallpaperEnabled,
                 aureoleColors = palette.colors
             ) {
