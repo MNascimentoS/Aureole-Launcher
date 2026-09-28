@@ -173,7 +173,7 @@ private fun getVersionName(context: Context): String {
             context.packageManager.getPackageInfo(context.packageName, 0)
         }
         packageInfo.versionName ?: "1.0.0"
-    } catch (_: PackageManager.NameNotFoundException) {
+    } catch (_: Throwable) {
         "1.0.0"
     }
 }
