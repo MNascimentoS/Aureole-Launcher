@@ -54,25 +54,15 @@ import dev.chrisbanes.haze.HazeState
 import dev.chrisbanes.haze.HazeStyle
 import dev.chrisbanes.haze.HazeTint
 import dev.chrisbanes.haze.hazeEffect
-import dev.mnascimentos.aureole.core.data.model.AppFolder
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.feature.home.folder.model.FolderPopupActions
+import dev.mnascimentos.aureole.feature.home.folder.model.GridFolderPopupParams
 
 private const val GRID_MAX_3 = 3
 private const val GRID_MAX_6 = 6
 private const val GRID_MAX_9 = 9
 private const val GRID_COLUMNS = 3
 private const val GRID_WIDTH_FRACTION = 0.88f
-
-data class GridFolderPopupParams(
-    val folder: AppFolder,
-    val appsInFolder: List<AppInfo>,
-    val actions: FolderPopupActions,
-    val isActionsVisible: Boolean,
-    val onToggleActions: () -> Unit,
-    val hazeState: HazeState?,
-    val isHazeEnabled: Boolean
-)
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -163,6 +153,12 @@ private fun GridFolderContainer(
         Modifier
     }
 
+    val containerBgColor = if (isHazeEnabled) {
+        MaterialTheme.colorScheme.surfaceContainerHigh.copy(alpha = 0.88f)
+    } else {
+        MaterialTheme.colorScheme.surfaceContainerHigh
+    }
+
     val gridMaxHeight = calculateGridMaxHeight(appsInFolder.size)
 
     Box(
@@ -171,7 +167,7 @@ private fun GridFolderContainer(
             .heightIn(min = 120.dp, max = gridMaxHeight)
             .clip(RoundedCornerShape(32.dp))
             .then(hazeModifier)
-            .background(MaterialTheme.colorScheme.surfaceContainerHigh.copy(alpha = 0.88f))
+            .background(containerBgColor)
             .padding(16.dp)
     ) {
         if (appsInFolder.isEmpty()) {

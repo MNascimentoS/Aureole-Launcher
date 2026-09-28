@@ -37,7 +37,6 @@ import kotlin.math.abs
 
 private const val DRAG_THRESHOLD_PX = 15
 private const val EDGE_EXCLUSION_WIDTH_DP = 60
-private const val TOP_PADDING_DP = 64
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
@@ -57,9 +56,9 @@ fun BoxScope.HomeOverlaysContent(
 
     if (!config.uiState.isAlphabetScrubberDisabled && !WindowInsets.isImeVisible) {
         val scrubberAlign = if (config.uiState.isLeftHandedMode) {
-            Alignment.CenterStart
+            Alignment.BottomStart
         } else {
-            Alignment.CenterEnd
+            Alignment.BottomEnd
         }
 
         ScrubberOverlay(
@@ -174,8 +173,8 @@ fun Modifier.homeDragGestures(
             }
 
             if (dragStartedOnEdge) {
-                val topPaddingPx = with(params.density) { TOP_PADDING_DP.dp.toPx() }
-                params.onExternalTouchYChange(offset.y - topPaddingPx)
+                val scrubberTopYPx = params.screenHeightPx * (1f / 3f)
+                params.onExternalTouchYChange(offset.y - scrubberTopYPx)
                 if (!params.isAllAppsDrawerOpen) {
                     params.onAllAppsDrawerOpen()
                 }
@@ -192,8 +191,8 @@ fun Modifier.homeDragGestures(
         onDrag = { change, dragAmount ->
             if (dragStartedOnEdge) {
                 change.consume()
-                val topPaddingPx = with(params.density) { TOP_PADDING_DP.dp.toPx() }
-                params.onExternalTouchYChange(change.position.y - topPaddingPx)
+                val scrubberTopYPx = params.screenHeightPx * (1f / 3f)
+                params.onExternalTouchYChange(change.position.y - scrubberTopYPx)
                 return@detectDragGestures
             }
 

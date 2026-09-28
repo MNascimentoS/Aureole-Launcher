@@ -20,22 +20,23 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.graphics.Color
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsControllerCompat
+import androidx.lifecycle.DefaultLifecycleObserver
+import androidx.lifecycle.LifecycleOwner
 import com.google.android.play.core.appupdate.AppUpdateInfo
 import com.google.android.play.core.appupdate.AppUpdateManager
 import com.google.android.play.core.appupdate.AppUpdateManagerFactory
-import com.google.android.play.core.install.InstallStateUpdatedListener
-import com.google.android.play.core.install.model.InstallStatus
 import dev.chrisbanes.haze.rememberHazeState
+import dev.mnascimentos.aureole.core.designsystem.palette.getPaletteByName
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
-import dev.mnascimentos.aureole.core.designsystem.theme.LocalHazeState
+import dev.mnascimentos.aureole.core.designsystem.utils.LocalHazeState
+import dev.mnascimentos.aureole.core.lifecycle.UpdateLifecycleObserver
+import dev.mnascimentos.aureole.core.lifecycle.WidgetLifecycleObserver
 import dev.mnascimentos.aureole.feature.home.HomeViewModel
 import dev.mnascimentos.aureole.feature.home.LocalHomeActions
 import dev.mnascimentos.aureole.feature.home.LocalHomeUiState
 import dev.mnascimentos.aureole.feature.home.MainScaffold
-import dev.mnascimentos.aureole.feature.home.extensions.checkAppUpdate
 import dev.mnascimentos.aureole.feature.home.extensions.handleBackNavigation
 import dev.mnascimentos.aureole.feature.home.extensions.loadGridItems
 import dev.mnascimentos.aureole.feature.home.extensions.setAllAppsDrawerOpen
@@ -65,12 +66,6 @@ class MainActivity : ComponentActivity() {
             }
         }
 
-    private val installStateUpdatedListener = InstallStateUpdatedListener { state ->
-        if (state.installStatus() == InstallStatus.DOWNLOADED) {
-            viewModel.setShowUpdateDownloadedDialog(visible = true)
-        }
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -80,7 +75,17 @@ class MainActivity : ComponentActivity() {
         widgetHostManager = WidgetHostManager(this, viewModel, appWidgetHost, appWidgetManager)
 
         appUpdateManager = AppUpdateManagerFactory.create(this)
-        appUpdateManager.registerListener(installStateUpdatedListener)
+
+        lifecycle.addObserver(UpdateLifecycleObserver(appUpdateManager, viewModel) { cachedAppUpdateInfo = it })
+        lifecycle.addObserver(WidgetLifecycleObserver(appWidgetHost) { wasInBackground = it })
+        lifecycle.addObserver(object : DefaultLifecycleObserver {
+            override fun onResume(owner: LifecycleOwner) {
+                viewModel.loadSettings()
+                viewModel.loadApps()
+                viewModel.loadGridItems()
+                wasInBackground = false
+            }
+        })
 
         setupWindowAndBackHandling()
         setupContent()
@@ -146,9 +151,10 @@ class MainActivity : ComponentActivity() {
                     }
                 }
 
+                val palette = getPaletteByName(uiState.selectedThemeName)
                 AureoleLauncherTheme(
                     isDynamicWallpaperEnabled = uiState.isDynamicWallpaperEnabled,
-                    seedColor = Color(uiState.manualSeedColor),
+                    aureoleColors = palette.colors
                 ) {
                     BackHandler(enabled = isOverlayActive) {
                         handleBackNavigation(uiState, viewModel)
@@ -188,33 +194,6 @@ class MainActivity : ComponentActivity() {
                 viewModel.setAllAppsDrawerOpen(false)
             }
         }
-    }
-
-    override fun onStart() {
-        super.onStart()
-        appWidgetHost.startListening()
-    }
-
-    override fun onStop() {
-        super.onStop()
-        wasInBackground = true
-        appWidgetHost.stopListening()
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        if (::appUpdateManager.isInitialized) {
-            appUpdateManager.unregisterListener(installStateUpdatedListener)
-        }
-    }
-
-    override fun onResume() {
-        super.onResume()
-        viewModel.loadSettings()
-        viewModel.loadApps()
-        viewModel.loadGridItems()
-        checkAppUpdate(appUpdateManager, viewModel) { cachedAppUpdateInfo = it }
-        wasInBackground = false
     }
 
     @Deprecated("Deprecated in Java")

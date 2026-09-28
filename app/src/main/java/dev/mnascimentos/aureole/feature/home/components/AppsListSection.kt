@@ -1,20 +1,31 @@
+@file:Suppress("MagicNumber")
+
 package dev.mnascimentos.aureole.feature.home.components
 
 import android.content.ComponentName
 import android.graphics.drawable.ColorDrawable
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
@@ -22,20 +33,29 @@ import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -44,18 +64,19 @@ import dev.chrisbanes.haze.HazeStyle
 import dev.chrisbanes.haze.HazeTint
 import dev.chrisbanes.haze.hazeEffect
 import dev.mnascimentos.aureole.core.data.model.AppInfo
+import dev.mnascimentos.aureole.core.designsystem.icons.Settings
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
-import dev.mnascimentos.aureole.core.designsystem.theme.AureolePreview
-import dev.mnascimentos.aureole.core.designsystem.theme.fadingEdges
+import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
+import dev.mnascimentos.aureole.core.designsystem.utils.fadingEdges
 import dev.mnascimentos.aureole.feature.home.LocalHomeActions
 import dev.mnascimentos.aureole.feature.home.LocalHomeUiState
 import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
 
-private const val SEARCH_BAR_HAZE_ALPHA_MULTIPLIER = 0.7f
-private const val SEARCH_BAR_MIN_ALPHA = 0.2f
-private const val SEARCH_BAR_MAX_ALPHA = 0.95f
-private const val SEARCH_BAR_DEFAULT_ALPHA = 0.9f
+private const val DRAWER_HAZE_TINT_FACTOR = 0.5f
+private const val DRAWER_HAZE_MIN_ALPHA = 0.15f
+private const val DRAWER_HAZE_MAX_ALPHA = 0.65f
 
 @Composable
 fun AppsListDrawer(
@@ -68,26 +89,12 @@ fun AppsListDrawer(
     val startPadding = if (uiState.isLeftHandedMode) 72.dp else 24.dp
     val endPadding = if (uiState.isLeftHandedMode) 24.dp else 72.dp
 
-    val hazeModifier = if (uiState.isHazeEnabled && (hazeState != null)) {
-        Modifier.hazeEffect(
-            state = hazeState,
-            style = HazeStyle(
-                blurRadius = 24.dp,
-                tint = HazeTint(MaterialTheme.colorScheme.background.copy(alpha = uiState.hazeOpacity))
-            )
-        ) {
-            blurEnabled = uiState.isHazeEnabled
-        }
-    } else {
-        Modifier
-    }
-    val drawerBgColor = if (uiState.isHazeEnabled && (hazeState != null)) {
-        MaterialTheme.colorScheme.background.copy(alpha = uiState.hazeOpacity)
-    } else {
-        MaterialTheme.colorScheme.background
-    }
+    val baseBgColor = AureoleDS.colors.background
+    val hasHaze = uiState.isHazeEnabled && (hazeState != null)
+    val hazeModifier = Modifier.buildDrawerHaze(hasHaze, hazeState, baseBgColor, uiState.hazeOpacity)
+    val drawerBgColor = if (hasHaze) Color.Transparent else baseBgColor
 
-    Column(
+    BoxWithConstraints(
         modifier = modifier
             .fillMaxHeight()
             .fillMaxWidth()
@@ -95,29 +102,36 @@ fun AppsListDrawer(
             .background(drawerBgColor)
             .statusBarsPadding()
     ) {
-        LazyColumn(
-            state = listState,
-            contentPadding = PaddingValues(
-                start = startPadding,
-                top = 24.dp,
-                end = endPadding,
-                bottom = 100.dp
-            ),
-            modifier = Modifier
-                .weight(1f)
-                .fadingEdges(listState)
+        val topOffsetDp = (maxHeight * (uiState.headerOffsetPercent / 100f)).coerceAtLeast(16.dp)
+
+        Column(
+            modifier = Modifier.fillMaxSize()
         ) {
-            appsListItems(uiState, actions)
+            Spacer(modifier = Modifier.height(topOffsetDp))
+
+            LazyColumn(
+                state = listState,
+                contentPadding = PaddingValues(
+                    start = startPadding,
+                    top = 16.dp,
+                    end = endPadding,
+                    bottom = 120.dp
+                ),
+                modifier = Modifier
+                    .weight(1f)
+                    .fadingEdges(listState)
+            ) {
+                appsListItems(uiState, actions)
+            }
         }
 
-        if (uiState.showSearchBarInAllApps || uiState.showSettingsButtonInAllApps) {
-            BottomSearchBar(
+        if (uiState.showSearchBarInAllApps) {
+            FloatingSearchBubble(
                 query = uiState.searchQuery,
                 onQueryChange = actions.onSearchQueryChanged,
-                onSettingsClick = actions.onSettingsClick,
                 hazeState = hazeState,
                 modifier = Modifier
-                    .fillMaxWidth()
+                    .align(Alignment.BottomCenter)
                     .navigationBarsPadding()
                     .imePadding()
             )
@@ -126,22 +140,59 @@ fun AppsListDrawer(
 }
 
 @Composable
-private fun BottomSearchBar(
+private fun Modifier.buildDrawerHaze(
+    hasHaze: Boolean,
+    hazeState: HazeState?,
+    baseBgColor: Color,
+    hazeOpacity: Float
+): Modifier {
+    if (!hasHaze || hazeState == null) return this
+    val tintAlpha = (hazeOpacity * DRAWER_HAZE_TINT_FACTOR).coerceIn(DRAWER_HAZE_MIN_ALPHA, DRAWER_HAZE_MAX_ALPHA)
+    return this.then(
+        Modifier.hazeEffect(
+            state = hazeState,
+            style = HazeStyle(
+                blurRadius = 24.dp,
+                tint = HazeTint(baseBgColor.copy(alpha = tintAlpha))
+            )
+        ) {
+            blurEnabled = true
+        }
+    )
+}
+
+@Suppress("LongMethod")
+@Composable
+private fun FloatingSearchBubble(
     query: String,
     onQueryChange: (String) -> Unit,
-    onSettingsClick: () -> Unit,
     modifier: Modifier = Modifier,
     hazeState: HazeState? = null,
 ) {
     val uiState = LocalHomeUiState.current
-    if (!uiState.showSearchBarInAllApps && !uiState.showSettingsButtonInAllApps) return
+    if (!uiState.showSearchBarInAllApps) return
+
+    var isExpanded by remember { mutableStateOf(query.isNotEmpty()) }
+    val focusRequester = remember { FocusRequester() }
+
+    LaunchedEffect(query) {
+        if (query.isNotEmpty()) {
+            isExpanded = true
+        }
+    }
+
+    LaunchedEffect(isExpanded) {
+        if (isExpanded) {
+            focusRequester.requestFocus()
+        }
+    }
 
     val searchBarHazeModifier = if (uiState.isHazeEnabled && (hazeState != null)) {
         Modifier.hazeEffect(
             state = hazeState,
             style = HazeStyle(
-                blurRadius = 20.dp,
-                tint = HazeTint(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = uiState.hazeOpacity))
+                blurRadius = 24.dp,
+                tint = HazeTint(AureoleDS.colors.surfaceVariant.copy(alpha = uiState.hazeOpacity))
             )
         ) {
             blurEnabled = uiState.isHazeEnabled
@@ -150,129 +201,117 @@ private fun BottomSearchBar(
         Modifier
     }
 
-    val searchBarAlpha = if (uiState.isHazeEnabled) {
-        (uiState.hazeOpacity * SEARCH_BAR_HAZE_ALPHA_MULTIPLIER)
-            .coerceIn(SEARCH_BAR_MIN_ALPHA, SEARCH_BAR_MAX_ALPHA)
+    val bubbleBgColor = if (uiState.isHazeEnabled) {
+        AureoleDS.colors.surfaceVariant.copy(alpha = (uiState.hazeOpacity * 0.85f).coerceIn(0.3f, 0.95f))
     } else {
-        SEARCH_BAR_DEFAULT_ALPHA
+        AureoleDS.colors.surfaceVariant
+    }
+
+    val containerAlign = if (isExpanded) {
+        Alignment.BottomCenter
+    } else if (uiState.isLeftHandedMode) {
+        Alignment.BottomStart
+    } else {
+        Alignment.BottomEnd
     }
 
     Box(
         modifier = modifier
-            .then(searchBarHazeModifier)
-            .background(
-                MaterialTheme.colorScheme.surfaceVariant.copy(alpha = searchBarAlpha)
-            )
-            .padding(16.dp)
+            .fillMaxWidth()
+            .padding(horizontal = 24.dp, vertical = 16.dp),
+        contentAlignment = containerAlign
     ) {
-        BottomSearchRowContent(
-            query = query,
-            onQueryChange = onQueryChange,
-            onSettingsClick = onSettingsClick
-        )
-    }
-}
+        AnimatedContent(
+            targetState = isExpanded,
+            transitionSpec = {
+                (fadeIn() + scaleIn()).togetherWith(fadeOut() + scaleOut())
+            },
+            label = "search_bubble_anim"
+        ) { expanded ->
+            if (expanded) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(56.dp)
+                        .clip(CircleShape)
+                        .then(searchBarHazeModifier)
+                        .background(bubbleBgColor)
+                        .padding(horizontal = 16.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Search,
+                            contentDescription = "Search",
+                            tint = AureoleDS.colors.onSurfaceMedium,
+                            modifier = Modifier.size(20.dp)
+                        )
+                        Spacer(modifier = Modifier.width(8.dp))
 
-@Composable
-private fun BottomSearchRowContent(
-    query: String,
-    onQueryChange: (String) -> Unit,
-    onSettingsClick: () -> Unit
-) {
-    val uiState = LocalHomeUiState.current
-    val showSettings = uiState.showSettingsButtonInAllApps
-    val showSearch = uiState.showSearchBarInAllApps
-    val settingsOnLeft = uiState.settingsButtonPosition == "Left"
+                        TextField(
+                            value = query,
+                            onValueChange = onQueryChange,
+                            placeholder = {
+                                Text(
+                                    text = "Search apps",
+                                    color = AureoleDS.colors.onSurfaceLow,
+                                    style = MaterialTheme.typography.bodyLarge
+                                )
+                            },
+                            singleLine = true,
+                            colors = TextFieldDefaults.colors(
+                                focusedContainerColor = Color.Transparent,
+                                unfocusedContainerColor = Color.Transparent,
+                                disabledContainerColor = Color.Transparent,
+                                focusedIndicatorColor = Color.Transparent,
+                                unfocusedIndicatorColor = Color.Transparent,
+                                disabledIndicatorColor = Color.Transparent,
+                                focusedTextColor = AureoleDS.colors.onSurfaceHigh,
+                                unfocusedTextColor = AureoleDS.colors.onSurfaceHigh
+                            ),
+                            modifier = Modifier
+                                .weight(1f)
+                                .focusRequester(focusRequester)
+                        )
 
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        if (showSettings && showSearch && settingsOnLeft) {
-            SettingsButton(onClick = onSettingsClick)
-            Spacer(modifier = Modifier.width(16.dp))
-            SearchField(
-                query = query,
-                onQueryChange = onQueryChange,
-                iconPosition = uiState.searchIconPosition,
-                modifier = Modifier.weight(1f)
-            )
-        } else if (showSettings && showSearch) {
-            SearchField(
-                query = query,
-                onQueryChange = onQueryChange,
-                iconPosition = uiState.searchIconPosition,
-                modifier = Modifier.weight(1f)
-            )
-            Spacer(modifier = Modifier.width(16.dp))
-            SettingsButton(onClick = onSettingsClick)
-        } else if (showSettings) {
-            Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
-                SettingsButton(onClick = onSettingsClick)
+                        IconButton(
+                            onClick = {
+                                onQueryChange("")
+                                isExpanded = false
+                            },
+                            modifier = Modifier.size(32.dp)
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Close,
+                                contentDescription = "Close search",
+                                tint = AureoleDS.colors.onSurfaceMedium,
+                                modifier = Modifier.size(20.dp)
+                            )
+                        }
+                    }
+                }
+            } else {
+                Box(
+                    modifier = Modifier
+                        .size(56.dp)
+                        .clip(CircleShape)
+                        .then(searchBarHazeModifier)
+                        .background(bubbleBgColor)
+                        .clickable { isExpanded = true },
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Search,
+                        contentDescription = "Search",
+                        tint = AureoleDS.colors.onSurfaceHigh,
+                        modifier = Modifier.size(24.dp)
+                    )
+                }
             }
-        } else {
-            SearchField(
-                query = query,
-                onQueryChange = onQueryChange,
-                iconPosition = uiState.searchIconPosition,
-                modifier = Modifier.fillMaxWidth()
-            )
         }
-    }
-}
-
-@Composable
-private fun SearchField(
-    query: String,
-    onQueryChange: (String) -> Unit,
-    iconPosition: String,
-    modifier: Modifier = Modifier
-) {
-    val leadingIcon: (@Composable () -> Unit)? = if (iconPosition == "Left") {
-        { Icon(Icons.Default.Search, contentDescription = "Search") }
-    } else {
-        null
-    }
-
-    val trailingIcon: (@Composable () -> Unit)? = if (iconPosition == "Right") {
-        { Icon(Icons.Default.Search, contentDescription = "Search") }
-    } else {
-        null
-    }
-
-    TextField(
-        value = query,
-        onValueChange = onQueryChange,
-        placeholder = { Text("Search apps") },
-        leadingIcon = leadingIcon,
-        trailingIcon = trailingIcon,
-        singleLine = true,
-        shape = RoundedCornerShape(24.dp),
-        colors = TextFieldDefaults.colors(
-            focusedIndicatorColor = Color.Transparent,
-            unfocusedIndicatorColor = Color.Transparent,
-            disabledIndicatorColor = Color.Transparent
-        ),
-        modifier = modifier.height(56.dp)
-    )
-}
-
-@Composable
-private fun SettingsButton(onClick: () -> Unit) {
-    Box(
-        modifier = Modifier
-            .height(56.dp)
-            .width(56.dp)
-            .clip(RoundedCornerShape(24.dp))
-            .background(MaterialTheme.colorScheme.primaryContainer)
-            .clickable(onClick = onClick),
-        contentAlignment = Alignment.Center
-    ) {
-        Icon(
-            imageVector = Icons.Default.Settings,
-            contentDescription = "Settings",
-            tint = MaterialTheme.colorScheme.onPrimaryContainer
-        )
     }
 }
 
@@ -305,6 +344,40 @@ fun LazyListScope.appsListItems(
             app = app,
             onClick = { actions.onAppClick(app) }
         )
+    }
+
+    item(key = "aureole_settings_item") {
+        Spacer(modifier = Modifier.height(16.dp))
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(12.dp))
+                .clickable { actions.onSettingsClick() }
+                .padding(horizontal = 12.dp, vertical = 12.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Box(
+                modifier = Modifier
+                    .size(40.dp)
+                    .clip(CircleShape)
+                    .background(AureoleDS.colors.surfaceVariant),
+                contentAlignment = Alignment.Center
+            ) {
+                AureoleDS.icons.Settings(
+                    tint = AureoleDS.colors.onSurfaceHigh,
+                    modifier = Modifier.size(22.dp)
+                )
+            }
+
+            Spacer(modifier = Modifier.width(16.dp))
+
+            Text(
+                text = "Aureole Settings",
+                style = MaterialTheme.typography.bodyLarge,
+                fontWeight = FontWeight.SemiBold,
+                color = AureoleDS.colors.onSurfaceHigh
+            )
+        }
     }
 }
 

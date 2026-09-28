@@ -16,17 +16,18 @@ import androidx.activity.viewModels
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.graphics.Color
+import dev.mnascimentos.aureole.core.designsystem.palette.getPaletteByName
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.feature.home.components.FavoriteAppsDialog
-import dev.mnascimentos.aureole.feature.home.components.FavoriteAppsDialogActions
-import dev.mnascimentos.aureole.feature.home.components.FavoriteAppsDialogConfig
-import dev.mnascimentos.aureole.feature.settings.ext.checkDefaultLauncher
-import dev.mnascimentos.aureole.feature.settings.ext.performFactoryReset
-import dev.mnascimentos.aureole.feature.settings.ext.resetGridLayout
-import dev.mnascimentos.aureole.feature.settings.ext.restoreDefaultWallpaper
+import dev.mnascimentos.aureole.feature.home.components.model.FavoriteAppsDialogActions
+import dev.mnascimentos.aureole.feature.home.components.model.FavoriteAppsDialogConfig
+import dev.mnascimentos.aureole.feature.settings.extensions.checkDefaultLauncher
+import dev.mnascimentos.aureole.feature.settings.extensions.performFactoryReset
+import dev.mnascimentos.aureole.feature.settings.extensions.resetGridLayout
+import dev.mnascimentos.aureole.feature.settings.extensions.restoreDefaultWallpaper
 import dev.mnascimentos.aureole.feature.settings.model.SettingValue
 import dev.mnascimentos.aureole.feature.settings.model.SettingsScreenActions
+import dev.mnascimentos.aureole.feature.settings.screens.SettingsScreen
 
 class SettingsActivity : ComponentActivity() {
 
@@ -39,9 +40,10 @@ class SettingsActivity : ComponentActivity() {
         setContent {
             val uiState by viewModel.uiState.collectAsState()
 
+            val palette = getPaletteByName(uiState.selectedThemeName)
             AureoleLauncherTheme(
                 isDynamicWallpaperEnabled = uiState.isDynamicWallpaperEnabled,
-                seedColor = Color(uiState.manualSeedColor),
+                aureoleColors = palette.colors
             ) {
                 LaunchedEffect(uiState.shouldFinishActivity) {
                     if (uiState.shouldFinishActivity) {
@@ -96,9 +98,13 @@ class SettingsActivity : ComponentActivity() {
             onSelectManualSeedColor = { color ->
                 viewModel.setSettingValue(SettingValue.ManualSeedColor(color))
             },
+            onSelectTheme = { themeName ->
+                viewModel.setSettingValue(SettingValue.SelectedTheme(themeName))
+            },
             onHazeOpacitySelected = { opacity ->
                 viewModel.setSettingValue(SettingValue.HazeOpacity(opacity))
             },
+            onHeaderOffsetChanged = viewModel::setHeaderOffsetPercent,
             onConfirmResetGrid = { viewModel.resetGridLayout() },
         )
         return applyTogglesAndDialogs(baseActions)

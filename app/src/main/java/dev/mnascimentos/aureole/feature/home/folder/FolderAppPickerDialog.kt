@@ -37,29 +37,11 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import dev.mnascimentos.aureole.core.data.model.AppFolder
 import dev.mnascimentos.aureole.core.data.model.AppInfo
+import dev.mnascimentos.aureole.feature.home.folder.model.FolderAppPickerBodyParams
+import dev.mnascimentos.aureole.feature.home.folder.model.FolderAppRowItemParams
+import dev.mnascimentos.aureole.feature.home.folder.model.FolderSectionParams
 
 private const val DIALOG_WIDTH_FRACTION = 0.92f
-
-data class FolderAppRowItemParams(
-    val app: AppInfo,
-    val index: Int,
-    val totalCount: Int,
-    val canReorder: Boolean
-)
-
-data class FolderSectionParams(
-    val filteredSelected: List<AppInfo>,
-    val searchQuery: String,
-    val totalSelectedCount: Int
-)
-
-data class FolderAppPickerBodyParams(
-    val folderName: String,
-    val searchQuery: String,
-    val filteredSelected: List<AppInfo>,
-    val filteredRemaining: List<AppInfo>,
-    val selectedPackages: MutableList<String>
-)
 
 @Composable
 fun FolderAppPickerDialog(

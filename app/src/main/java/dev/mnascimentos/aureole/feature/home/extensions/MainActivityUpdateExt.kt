@@ -6,10 +6,9 @@ import com.google.android.play.core.appupdate.AppUpdateManager
 import com.google.android.play.core.install.model.AppUpdateType
 import com.google.android.play.core.install.model.InstallStatus
 import com.google.android.play.core.install.model.UpdateAvailability
-import dev.mnascimentos.aureole.MainActivity
 import dev.mnascimentos.aureole.feature.home.HomeViewModel
 
-fun MainActivity.checkAppUpdate(
+fun checkAppUpdate(
     appUpdateManager: AppUpdateManager,
     viewModel: HomeViewModel,
     onAppUpdateInfoRetrieved: (AppUpdateInfo) -> Unit,

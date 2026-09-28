@@ -29,9 +29,12 @@ import dev.chrisbanes.haze.HazeStyle
 import dev.chrisbanes.haze.HazeTint
 import dev.chrisbanes.haze.hazeEffect
 import dev.mnascimentos.aureole.core.data.model.AppFolder
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.feature.home.LocalHomeActions
 import dev.mnascimentos.aureole.feature.home.LocalHomeUiState
 import dev.mnascimentos.aureole.feature.home.folder.model.FolderPopupActions
+import dev.mnascimentos.aureole.feature.home.folder.model.OpenedFolderOverlayParams
+import dev.mnascimentos.aureole.feature.home.folder.model.OpenedFolderPopupConfig
 import dev.mnascimentos.aureole.feature.home.model.FolderViewIntent
 import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
@@ -40,14 +43,6 @@ private const val POPUP_MAX_OFFSET_SUBTRAHEND = 300
 private const val POPUP_MIN_OFFSET_DP = 16f
 private const val FADE_ANIM_DURATION_MS = 180
 private val SIDE_PADDING_DP = 76.dp
-
-data class OpenedFolderOverlayParams(
-    val uiState: MainUiState,
-    val folderToDisplay: AppFolder,
-    val screenHeightPx: Float,
-    val screenDensity: Float,
-    val hazeState: HazeState
-)
 
 @Composable
 fun HomeScreenFolderOverlays(
@@ -155,11 +150,17 @@ private fun OpenedFolderOverlayContent(
         Modifier
     }
 
+    val overlayBgColor = if (uiState.isHazeEnabled) {
+        Color.Black.copy(alpha = 0.2f)
+    } else {
+        AureoleDS.colors.background.copy(alpha = 0.85f)
+    }
+
     Box(
         modifier = Modifier
             .fillMaxSize()
             .then(fullScreenBlurModifier)
-            .background(Color.Black.copy(alpha = 0.2f))
+            .background(overlayBgColor)
             .pointerInput(Unit) {
                 detectTapGestures(onTap = { actions.onFolderIntent(FolderViewIntent.CloseFolder) })
             }

@@ -38,7 +38,7 @@ import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
-import dev.mnascimentos.aureole.core.designsystem.theme.AureolePreview
+import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.LocalHomeUiState
 import dev.mnascimentos.aureole.feature.home.components.model.ScrubberCallbacks
 import dev.mnascimentos.aureole.feature.home.components.model.ScrubberOptions
@@ -53,9 +53,10 @@ private val SCRUBBER_WIDTH = 48.dp
 private val BADGE_SIZE = 48.dp
 private val BADGE_MARGIN = 28.dp
 
-private val SCRUBBER_PADDING_TOP = 24.dp
-private val SCRUBBER_PADDING_BOTTOM = 96.dp
+private val SCRUBBER_PADDING_TOP = 0.dp
+private val SCRUBBER_PADDING_BOTTOM = 108.dp
 private val SCRUBBER_PADDING_HORIZONTAL = 16.dp
+private const val SCRUBBER_HEIGHT_FRACTION = 0.66f
 private const val GAUSSIAN_HALF_FACTOR = 0.5f
 
 private const val SCRUBBER_ANIMATION_DURATION = 150
@@ -164,7 +165,7 @@ private fun Modifier.scrubberBaseModifier(
     isLeftHandedMode: Boolean,
     onHeightChanged: (Float) -> Unit
 ): Modifier = this
-    .fillMaxHeight()
+    .fillMaxHeight(SCRUBBER_HEIGHT_FRACTION)
     .padding(
         top = SCRUBBER_PADDING_TOP,
         bottom = SCRUBBER_PADDING_BOTTOM,

@@ -30,9 +30,10 @@ import dev.chrisbanes.haze.HazeState
 import dev.chrisbanes.haze.HazeStyle
 import dev.chrisbanes.haze.HazeTint
 import dev.chrisbanes.haze.hazeEffect
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
-import dev.mnascimentos.aureole.core.designsystem.theme.AureolePreview
-import dev.mnascimentos.aureole.core.designsystem.theme.LocalHazeState
+import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
+import dev.mnascimentos.aureole.core.designsystem.utils.LocalHazeState
 import dev.mnascimentos.aureole.feature.home.LocalHomeUiState
 import java.util.Calendar
 
@@ -116,7 +117,8 @@ private fun Modifier.buildClockHazeModifier(
     hazeState: HazeState?,
     hazeOpacity: Float
 ): Modifier {
-    val surfaceTint = MaterialTheme.colorScheme.surfaceContainerHigh.copy(alpha = hazeOpacity)
+    val surfaceColor = AureoleDS.colors.surfaceVariant
+    val surfaceTint = surfaceColor.copy(alpha = hazeOpacity)
     return if (hasHaze && hazeState != null) {
         this.then(
             Modifier.hazeEffect(
@@ -133,13 +135,14 @@ private fun Modifier.buildClockHazeModifier(
 
 @Composable
 private fun getClockBackgroundColor(isBgEnabled: Boolean, hasHaze: Boolean, hazeOpacity: Float): Color {
+    val surfaceColor = AureoleDS.colors.surfaceVariant
     return if (isBgEnabled) {
         if (hasHaze) {
             val backgroundAlpha = (hazeOpacity * HAZE_ALPHA_MULTIPLIER)
                 .coerceIn(HAZE_MIN_ALPHA, HAZE_MAX_ALPHA)
-            MaterialTheme.colorScheme.surfaceContainerHigh.copy(alpha = backgroundAlpha)
+            surfaceColor.copy(alpha = backgroundAlpha)
         } else {
-            MaterialTheme.colorScheme.surfaceContainerHigh.copy(alpha = 0.95f)
+            surfaceColor.copy(alpha = 0.95f)
         }
     } else {
         Color.Transparent

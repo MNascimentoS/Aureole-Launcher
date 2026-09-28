@@ -28,7 +28,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInWindow
 import androidx.compose.ui.text.font.FontWeight
@@ -37,20 +36,15 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.core.data.model.AppFolder
 import dev.mnascimentos.aureole.core.data.model.AppInfo
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.feature.home.LocalHomeUiState
+import dev.mnascimentos.aureole.feature.home.components.model.SidePanelFolderButtonParams
 import dev.mnascimentos.aureole.feature.home.folder.FolderIconRegistry
 
 private const val MAX_PREVIEW_APPS = 9
 private const val GRID_ROWS = 3
 private const val GRID_COLS = 3
-private const val FOLDER_BG_INACTIVE_ALPHA = 0.7f
-
-data class SidePanelFolderButtonParams(
-    val folder: AppFolder,
-    val isGridFolderEnabled: Boolean,
-    val containerColor: Color,
-    val textColor: Color
-)
+private const val FOLDER_BG_INACTIVE_ALPHA = 0.85f
 
 @Composable
 fun SidePanelAddFolderButton(
@@ -61,14 +55,14 @@ fun SidePanelAddFolderButton(
             .padding(vertical = 4.dp)
             .size(48.dp)
             .clip(RoundedCornerShape(14.dp))
-            .background(MaterialTheme.colorScheme.primaryContainer.copy(alpha = FOLDER_BG_INACTIVE_ALPHA))
+            .background(AureoleDS.colors.surfaceVariant.copy(alpha = FOLDER_BG_INACTIVE_ALPHA))
             .clickable(onClick = onClick),
         contentAlignment = Alignment.Center
     ) {
         Icon(
             imageVector = Icons.Default.Add,
             contentDescription = "Criar Pasta",
-            tint = MaterialTheme.colorScheme.onPrimaryContainer,
+            tint = AureoleDS.colors.onSurfaceMedium,
             modifier = Modifier.size(24.dp)
         )
     }
@@ -86,16 +80,16 @@ fun SidePanelFolderItem(
 
     val containerColor by animateColorAsState(
         targetValue = if (isOpened) {
-            MaterialTheme.colorScheme.primary
+            AureoleDS.colors.onSurfaceHigh
         } else {
-            MaterialTheme.colorScheme.primaryContainer.copy(alpha = FOLDER_BG_INACTIVE_ALPHA)
+            AureoleDS.colors.surfaceVariant.copy(alpha = FOLDER_BG_INACTIVE_ALPHA)
         },
         label = "folder_bg"
     )
     val textColor = if (isOpened) {
-        MaterialTheme.colorScheme.onPrimary
+        AureoleDS.colors.surface
     } else {
-        MaterialTheme.colorScheme.onPrimaryContainer
+        AureoleDS.colors.onSurfaceMedium
     }
 
     Column(
@@ -183,7 +177,7 @@ fun FolderMiniGridPreview(
         modifier = modifier
             .size(48.dp)
             .clip(RoundedCornerShape(14.dp))
-            .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.85f))
+            .background(AureoleDS.colors.surfaceVariant.copy(alpha = 0.85f))
             .padding(3.dp),
         contentAlignment = Alignment.Center
     ) {
@@ -202,13 +196,13 @@ private fun EmptyFolderMiniGridPreview(folder: AppFolder) {
         Icon(
             imageVector = iconVector,
             contentDescription = folder.name,
-            tint = MaterialTheme.colorScheme.onSurfaceVariant,
+            tint = AureoleDS.colors.onSurfaceMedium,
             modifier = Modifier.size(24.dp)
         )
     } else {
         Text(
             text = folder.name.take(1).uppercase(),
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            color = AureoleDS.colors.onSurfaceMedium,
             style = MaterialTheme.typography.titleMedium,
             fontWeight = FontWeight.Bold
         )
@@ -252,7 +246,7 @@ fun SidePanelFolderLabel(name: String) {
     Spacer(modifier = Modifier.height(2.dp))
     Text(
         text = name,
-        color = MaterialTheme.colorScheme.onSurface,
+        color = AureoleDS.colors.onSurfaceHigh,
         style = MaterialTheme.typography.labelSmall,
         fontWeight = FontWeight.Medium,
         maxLines = 1,

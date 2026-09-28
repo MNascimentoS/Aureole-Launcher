@@ -12,7 +12,9 @@ import dev.mnascimentos.aureole.core.data.model.AppFolder
 import dev.mnascimentos.aureole.core.data.repository.AppRepository
 import dev.mnascimentos.aureole.core.data.repository.FolderRepository
 import dev.mnascimentos.aureole.core.data.repository.SettingsRepository
-import dev.mnascimentos.aureole.feature.settings.ext.checkDefaultLauncher
+import dev.mnascimentos.aureole.feature.settings.extensions.SettingsToggleManager
+import dev.mnascimentos.aureole.feature.settings.extensions.applySettingValue
+import dev.mnascimentos.aureole.feature.settings.extensions.checkDefaultLauncher
 import dev.mnascimentos.aureole.feature.settings.model.SettingValue
 import dev.mnascimentos.aureole.feature.settings.model.SettingsUiState
 import kotlinx.coroutines.Dispatchers
@@ -60,6 +62,7 @@ enum class SettingsDialog {
     SEARCH_ICON_POSITION
 }
 
+@Suppress("TooManyFunctions")
 class SettingsViewModel(application: Application) : AndroidViewModel(application) {
 
     internal val settingsRepository = SettingsRepository(application)
@@ -103,6 +106,7 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
                 customWallpaperPath = settingsRepository.customWallpaperPath,
                 isDynamicWallpaperEnabled = settingsRepository.isDynamicWallpaperEnabled,
                 manualSeedColor = settingsRepository.manualSeedColor,
+                selectedThemeName = settingsRepository.selectedThemeName,
                 isHazeEnabled = settingsRepository.isHazeEnabled,
                 isHazeSupported = settingsRepository.isHazeSupported,
                 hazeOpacity = settingsRepository.hazeOpacity,
@@ -113,6 +117,7 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
                 settingsButtonPosition = settingsRepository.settingsButtonPosition,
                 showSearchBarInAllApps = settingsRepository.showSearchBarInAllApps,
                 searchIconPosition = settingsRepository.searchIconPosition,
+                headerOffsetPercent = settingsRepository.headerOffsetPercent,
             )
         }
     }
@@ -139,57 +144,14 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
     }
 
     fun setSettingValue(value: SettingValue) {
-        when (value) {
-            is SettingValue.SidePanelPosition -> {
-                settingsRepository.sidePanelPosition = value.position
-                _uiState.update {
-                    it.copy(
-                        sidePanelPosition = value.position,
-                        showSidePanelPositionDialog = false
-                    )
-                }
-            }
+        applySettingValue(value)
+    }
 
-            is SettingValue.HazeOpacity -> {
-                settingsRepository.hazeOpacity = value.opacity
-                _uiState.update {
-                    it.copy(
-                        hazeOpacity = value.opacity,
-                        showHazeOpacityDialog = false
-                    )
-                }
-            }
-
-            is SettingValue.ManualSeedColor -> {
-                settingsRepository.manualSeedColor = value.color
-                _uiState.update {
-                    it.copy(
-                        manualSeedColor = value.color,
-                        showColorPickerDialog = false
-                    )
-                }
-            }
-
-            is SettingValue.SettingsButtonPosition -> {
-                settingsRepository.settingsButtonPosition = value.position
-                _uiState.update {
-                    it.copy(
-                        settingsButtonPosition = value.position,
-                        showSettingsButtonPositionDialog = false
-                    )
-                }
-            }
-
-            is SettingValue.SearchIconPosition -> {
-                settingsRepository.searchIconPosition = value.position
-                _uiState.update {
-                    it.copy(
-                        searchIconPosition = value.position,
-                        showSearchIconPositionDialog = false
-                    )
-                }
-            }
-        }
+    @Suppress("MagicNumber")
+    fun setHeaderOffsetPercent(percent: Int) {
+        val clamped = percent.coerceIn(10, 60)
+        settingsRepository.headerOffsetPercent = clamped
+        _uiState.update { it.copy(headerOffsetPercent = clamped) }
     }
 
     fun toggleFavorite(packageName: String) {

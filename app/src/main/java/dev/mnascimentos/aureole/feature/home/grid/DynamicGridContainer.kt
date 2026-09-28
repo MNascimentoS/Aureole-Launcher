@@ -1,12 +1,7 @@
 package dev.mnascimentos.aureole.feature.home.grid
 
 import androidx.compose.animation.core.Animatable
-import androidx.compose.animation.core.AnimationVector2D
-import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.VectorConverter
-import androidx.compose.animation.core.spring
-import androidx.compose.foundation.border
-import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -14,8 +9,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
@@ -25,7 +18,6 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
@@ -41,15 +33,12 @@ import dev.mnascimentos.aureole.feature.home.grid.model.CornerResizeCallbacks
 import dev.mnascimentos.aureole.feature.home.grid.model.DragTargetSlot
 import dev.mnascimentos.aureole.feature.home.grid.model.GridCellParams
 import dev.mnascimentos.aureole.feature.home.grid.model.GridEditConfig
-import dev.mnascimentos.aureole.feature.home.grid.model.GridEditModifierParams
 import dev.mnascimentos.aureole.feature.home.grid.model.GridItemEditCallbacks
 import dev.mnascimentos.aureole.feature.home.grid.model.GridMetricsTuple
 import dev.mnascimentos.aureole.feature.home.grid.model.ResizeHandleCallbacks
 import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
 
-private val BORDER_CORNER_RADIUS = 16.dp
+internal val BORDER_CORNER_RADIUS = 16.dp
 private const val LIFTED_Z_INDEX = 10f
 private const val LIFTED_SCALE = 1.02f
 
@@ -158,20 +147,6 @@ private fun DynamicGridItemsList(
     }
 }
 
-data class GridEditModifierArgs(
-    val params: GridCellParams,
-    val isDragging: Boolean,
-    val isResizing: Boolean,
-    val onDraggingChange: (Boolean) -> Unit,
-    val dragOffset: Offset,
-    val onDragOffsetChange: (Offset) -> Unit,
-    val animatableOffset: Animatable<Offset, AnimationVector2D>,
-    val coroutineScope: CoroutineScope,
-    val currentParams: GridCellParams,
-    val currentActions: HomeScreenActions,
-    val currentOnDragTargetChange: (DragTargetSlot?) -> Unit
-)
-
 @Composable
 private fun GridItemCell(
     params: GridCellParams,
@@ -260,153 +235,6 @@ private fun rememberCellCallbacks(
 }
 
 @Composable
-private fun rememberGridCellEditModifier(args: GridEditModifierArgs): Modifier {
-    val item = args.params.item
-    val editParams = GridEditModifierParams(
-        isEditMode = args.params.isEditMode,
-        itemId = item.id,
-        isDragging = args.isDragging,
-        isResizing = args.isResizing,
-        onDragStart = {
-            args.onDraggingChange(true)
-            args.onDragOffsetChange(Offset.Zero)
-            args.coroutineScope.launch { args.animatableOffset.snapTo(Offset.Zero) }
-        },
-        onDragEnd = {
-            handleDragEnd(
-                dragParams = DragEndParams(
-                    params = args.currentParams,
-                    dragOffsetX = args.dragOffset.x,
-                    dragOffsetY = args.dragOffset.y,
-                    coroutineScope = args.coroutineScope,
-                    animatableOffset = args.animatableOffset
-                ),
-                onMoveItem = { id, c, r -> args.currentActions.onMoveGridItem(id, c, r) },
-                onFinishDrag = {
-                    args.onDraggingChange(false)
-                    args.onDragOffsetChange(Offset.Zero)
-                    args.currentOnDragTargetChange(null)
-                }
-            )
-        },
-        onDragCancel = {
-            args.onDraggingChange(false)
-            args.onDragOffsetChange(Offset.Zero)
-            args.currentOnDragTargetChange(null)
-        },
-        onDrag = { _, amount ->
-            val newX = args.dragOffset.x + amount.x
-            val newY = args.dragOffset.y + amount.y
-            args.onDragOffsetChange(Offset(newX, newY))
-            updateDragTargetSlot(args.currentParams, newX, newY, args.currentOnDragTargetChange)
-        }
-    )
-    return Modifier.gridCellEditModifier(editParams)
-}
-
-data class DragEndParams(
-    val params: GridCellParams,
-    val dragOffsetX: Float,
-    val dragOffsetY: Float,
-    val coroutineScope: CoroutineScope,
-    val animatableOffset: Animatable<Offset, AnimationVector2D>
-)
-
-private fun handleDragEnd(
-    dragParams: DragEndParams,
-    onMoveItem: (String, Int, Int) -> Unit,
-    onFinishDrag: () -> Unit
-) {
-    val params = dragParams.params
-    val dragOffsetX = dragParams.dragOffsetX
-    val dragOffsetY = dragParams.dragOffsetY
-    val coroutineScope = dragParams.coroutineScope
-    val animatableOffset = dragParams.animatableOffset
-
-    val activeItem = params.item
-    val currentX = (activeItem.col * params.cellWidthPx) + dragOffsetX
-    val currentY = (activeItem.row * params.cellHeightPx) + dragOffsetY
-
-    val snap = GridEngineUtils.calculateSnapCell(
-        params = SnapParams(
-            currentX,
-            currentY,
-            params.cellWidthPx,
-            params.cellHeightPx,
-            activeItem.colSpan,
-            activeItem.rowSpan
-        ),
-        limits = params.limits
-    )
-
-    val validSlot = GridEngineUtils.findNearestValidSlot(
-        targetCol = snap.first,
-        targetRow = snap.second,
-        item = activeItem,
-        items = params.items,
-        limits = params.limits
-    )
-
-    onFinishDrag()
-
-    if (validSlot != null && (validSlot.first != activeItem.col || validSlot.second != activeItem.row)) {
-        coroutineScope.launch { animatableOffset.snapTo(Offset.Zero) }
-        onMoveItem(activeItem.id, validSlot.first, validSlot.second)
-    } else {
-        val finalOffset = Offset(dragOffsetX, dragOffsetY)
-        coroutineScope.launch {
-            animatableOffset.snapTo(finalOffset)
-            animatableOffset.animateTo(
-                targetValue = Offset.Zero,
-                animationSpec = spring(dampingRatio = Spring.DampingRatioMediumBouncy, stiffness = Spring.StiffnessLow)
-            )
-        }
-    }
-}
-
-private fun updateDragTargetSlot(
-    params: GridCellParams,
-    dragOffsetX: Float,
-    dragOffsetY: Float,
-    onDragTargetChange: (DragTargetSlot?) -> Unit
-) {
-    val activeItem = params.item
-    val currentX = (activeItem.col * params.cellWidthPx) + dragOffsetX
-    val currentY = (activeItem.row * params.cellHeightPx) + dragOffsetY
-
-    val snap = GridEngineUtils.calculateSnapCell(
-        params = SnapParams(
-            currentX,
-            currentY,
-            params.cellWidthPx,
-            params.cellHeightPx,
-            activeItem.colSpan,
-            activeItem.rowSpan
-        ),
-        limits = params.limits
-    )
-
-    val validSlot = GridEngineUtils.findNearestValidSlot(
-        targetCol = snap.first,
-        targetRow = snap.second,
-        item = activeItem,
-        items = params.items,
-        limits = params.limits
-    )
-
-    onDragTargetChange(
-        DragTargetSlot(
-            itemId = activeItem.id,
-            col = validSlot?.first ?: snap.first,
-            row = validSlot?.second ?: snap.second,
-            colSpan = activeItem.colSpan,
-            rowSpan = activeItem.rowSpan,
-            isValid = validSlot != null
-        )
-    )
-}
-
-@Composable
 private fun GridItemCellBox(config: CellBoxConfig) {
     val metrics = config.metrics
     val params = config.params
@@ -445,37 +273,6 @@ private fun GridItemCellBox(config: CellBoxConfig) {
                 )
             )
         }
-    }
-}
-
-@Composable
-private fun Modifier.gridCellEditModifier(params: GridEditModifierParams): Modifier {
-    val currentParams by rememberUpdatedState(params)
-    return if (params.isEditMode) {
-        this
-            .border(
-                width = 2.dp,
-                color = if (params.isDragging || params.isResizing) {
-                    MaterialTheme.colorScheme.primary
-                } else {
-                    MaterialTheme.colorScheme.outline.copy(alpha = 0.5f)
-                },
-                shape = RoundedCornerShape(BORDER_CORNER_RADIUS)
-            )
-            .clip(RoundedCornerShape(BORDER_CORNER_RADIUS))
-            .pointerInput(params.itemId) {
-                detectDragGestures(
-                    onDragStart = { currentParams.onDragStart() },
-                    onDragEnd = { currentParams.onDragEnd() },
-                    onDragCancel = { currentParams.onDragCancel() },
-                    onDrag = { change, amount ->
-                        change.consume()
-                        currentParams.onDrag(change, amount)
-                    }
-                )
-            }
-    } else {
-        this
     }
 }
 
