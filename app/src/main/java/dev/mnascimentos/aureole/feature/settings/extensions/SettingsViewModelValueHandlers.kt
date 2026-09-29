@@ -14,6 +14,7 @@ internal fun SettingsViewModel.applySettingValue(value: SettingValue) {
         is SettingValue.SelectedFont -> handleSelectedFont(value.fontName)
         is SettingValue.SettingsButtonPosition -> handleSettingsButtonPosition(value.position)
         is SettingValue.SearchIconPosition -> handleSearchIconPosition(value.position)
+        is SettingValue.WallpaperScaleType -> handleWallpaperScaleType(value.scaleType)
     }
 }
 
@@ -29,10 +30,12 @@ private fun SettingsViewModel.handleHazeOpacity(opacity: Float) {
 
 private fun SettingsViewModel.handleManualSeedColor(color: Int) {
     settingsRepository.manualSeedColor = color
+    settingsRepository.selectedThemeName = "Custom"
     settingsRepository.clearCustomWallpaper()
     updateUiState {
         it.copy(
             manualSeedColor = color,
+            selectedThemeName = "Custom",
             isCustomWallpaperSet = false,
             customWallpaperPath = null,
             showColorPickerDialog = false
@@ -66,4 +69,9 @@ private fun SettingsViewModel.handleSettingsButtonPosition(position: String) {
 private fun SettingsViewModel.handleSearchIconPosition(position: String) {
     settingsRepository.searchIconPosition = position
     updateUiState { it.copy(searchIconPosition = position, showSearchIconPositionDialog = false) }
+}
+
+private fun SettingsViewModel.handleWallpaperScaleType(scaleType: String) {
+    settingsRepository.wallpaperScaleType = scaleType
+    updateUiState { it.copy(wallpaperScaleType = scaleType) }
 }

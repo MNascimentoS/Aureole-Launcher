@@ -52,6 +52,7 @@ fun MainScaffold(
     val uiState = LocalHomeUiState.current
     Scaffold(
         modifier = Modifier.fillMaxSize(),
+        containerColor = Color.Transparent,
         contentWindowInsets = WindowInsets(0, 0, 0, 0)
     ) { padding ->
         HomeScreen(

@@ -42,6 +42,7 @@ import dev.mnascimentos.aureole.core.designsystem.icons.ColorFill
 import dev.mnascimentos.aureole.core.designsystem.icons.Corners
 import dev.mnascimentos.aureole.core.designsystem.icons.Edit
 import dev.mnascimentos.aureole.core.designsystem.icons.Glass
+import dev.mnascimentos.aureole.core.designsystem.icons.Layout
 import dev.mnascimentos.aureole.core.designsystem.icons.StrokeColor
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleTheme
@@ -147,6 +148,13 @@ private fun AppearanceMenuItems(
             onClick = onShowSetBackgroundDialog
         )
 
+        if (uiState.isCustomWallpaperSet) {
+            WallpaperScaleTypeRow(
+                scaleType = uiState.wallpaperScaleType,
+                onSelectScaleType = actions.onSelectWallpaperScaleType
+            )
+        }
+
         ShortcutRow()
 
         MenuColorRow(
@@ -176,6 +184,44 @@ private fun AppearanceMenuItems(
             title = "Fonts",
             leadingContent = { AureoleDS.icons.Edit() },
             onClick = onShowFontDialog
+        )
+    }
+}
+
+@Composable
+private fun WallpaperScaleTypeRow(
+    scaleType: String,
+    onSelectScaleType: (String) -> Unit
+) {
+    val nextScaleType = when (scaleType) {
+        "Crop" -> "Fit"
+        "Fit" -> "Fill"
+        else -> "Crop"
+    }
+
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(16.dp))
+            .clickable { onSelectScaleType(nextScaleType) }
+            .padding(vertical = 8.dp, horizontal = 12.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        AureoleDS.icons.Layout(
+            tint = AureoleTheme.colors.onSurfaceMedium,
+            modifier = Modifier.padding(end = 20.dp).size(20.dp)
+        )
+        AureoleText(
+            text = "Image scale",
+            style = AureoleTheme.typography.bodyLarge,
+            fontWeight = FontWeight.Normal,
+            color = AureoleTheme.colors.onSurfaceMedium,
+            modifier = Modifier.weight(1f)
+        )
+        AureoleText(
+            text = scaleType,
+            style = AureoleTheme.typography.bodyLarge,
+            color = AureoleTheme.colors.onSurfaceLow
         )
     }
 }

@@ -12,6 +12,7 @@ sealed interface SettingValue {
     data class SelectedFont(val fontName: String) : SettingValue
     data class SettingsButtonPosition(val position: String) : SettingValue
     data class SearchIconPosition(val position: String) : SettingValue
+    data class WallpaperScaleType(val scaleType: String) : SettingValue
 }
 
 data class SettingsUiState(
@@ -34,6 +35,7 @@ data class SettingsUiState(
     val showSidePanelPositionDialog: Boolean = false,
     val isCustomWallpaperSet: Boolean = false,
     val customWallpaperPath: String? = null,
+    val wallpaperScaleType: String = "Crop",
     val showRestoreWallpaperDialog: Boolean = false,
     val showResetGridDialog: Boolean = false,
     val showFactoryResetDialog: Boolean = false,
