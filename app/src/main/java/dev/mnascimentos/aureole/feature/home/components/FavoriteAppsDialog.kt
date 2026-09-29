@@ -1,3 +1,5 @@
+@file:Suppress("TooManyFunctions")
+
 package dev.mnascimentos.aureole.feature.home.components
 
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -6,6 +8,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -23,6 +26,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -139,17 +143,27 @@ private fun FavoriteAppsDialogBody(
     val handleMoveUp = { index: Int -> moveFavoriteItem(config, actions, index, delta = -1) }
     val handleMoveDown = { index: Int -> moveFavoriteItem(config, actions, index, delta = 1) }
 
+    val handleActivateAll = {
+        val toAdd = params.filteredRemaining.map { it.packageName }
+        val newFavs = (config.favoriteAppPackages + toAdd).distinct()
+        actions.onUpdateFavoritePackages(config.containerId, newFavs)
+    }
+
+    val handleDeactivateAll = {
+        val toRemove = params.filteredFavorites.map { it.packageName }.toSet()
+        val newFavs = config.favoriteAppPackages.filter { it !in toRemove }
+        actions.onUpdateFavoritePackages(config.containerId, newFavs)
+    }
+
     Column(modifier = Modifier.fillMaxWidth()) {
         FavoriteAppsDialogHeader(onDismiss = actions.onDismiss, containerId = config.containerId)
         Spacer(modifier = Modifier.height(12.dp))
 
-        if (config.containerId == null) {
-            FavoriteAppsShowAllSwitchRow(
-                showAllAppsOnHome = config.showAllAppsOnHome,
-                onToggleShowAllAppsOnHome = actions.onToggleShowAllAppsOnHome
-            )
-            Spacer(modifier = Modifier.height(12.dp))
-        }
+        FavoriteAppsShowAllSwitchRow(
+            showAllAppsOnHome = config.showAllAppsOnHome,
+            onToggleShowAllAppsOnHome = actions.onToggleShowAllAppsOnHome
+        )
+        Spacer(modifier = Modifier.height(12.dp))
 
         FavoriteAppsSearchInput(
             query = params.searchQuery,
@@ -159,7 +173,9 @@ private fun FavoriteAppsDialogBody(
         Spacer(modifier = Modifier.height(12.dp))
 
         LazyColumn(
-            modifier = Modifier.weight(1f).fillMaxWidth(),
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxWidth(),
             verticalArrangement = Arrangement.spacedBy(4.dp)
         ) {
             favoriteSectionItems(
@@ -170,13 +186,15 @@ private fun FavoriteAppsDialogBody(
                 ),
                 onMoveUp = handleMoveUp,
                 onMoveDown = handleMoveDown,
-                onToggleFavorite = { pkg -> actions.onToggleFavorite(pkg) }
+                onToggleFavorite = { pkg -> actions.onToggleFavorite(pkg) },
+                onDeactivateAll = handleDeactivateAll
             )
 
             remainingSectionItems(
                 filteredRemaining = params.filteredRemaining,
                 searchQuery = params.searchQuery,
-                onToggleFavorite = { pkg -> actions.onToggleFavorite(pkg) }
+                onToggleFavorite = { pkg -> actions.onToggleFavorite(pkg) },
+                onActivateAll = handleActivateAll
             )
         }
 
@@ -202,24 +220,90 @@ private fun moveFavoriteItem(
     }
 }
 
+@Composable
+private fun FavoriteSectionHeader(
+    count: Int,
+    onDeactivateAll: () -> Unit
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 4.dp),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        AureoleText(
+            text = "Favoritos ($count)",
+            style = AureoleTheme.typography.titleSmall,
+            fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colorScheme.primary
+        )
+        if (count > 0) {
+            TextButton(
+                onClick = onDeactivateAll,
+                contentPadding = PaddingValues(horizontal = 8.dp, vertical = 0.dp)
+            ) {
+                AureoleText(
+                    text = "Desativar todos",
+                    style = AureoleTheme.typography.labelMedium,
+                    fontWeight = FontWeight.SemiBold,
+                    color = MaterialTheme.colorScheme.error
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun RemainingSectionHeader(
+    count: Int,
+    onActivateAll: () -> Unit
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 4.dp),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        AureoleText(
+            text = "Outros Aplicativos ($count)",
+            style = AureoleTheme.typography.titleSmall,
+            fontWeight = FontWeight.Bold,
+            color = AureoleTheme.colors.onSurfaceMedium
+        )
+        if (count > 0) {
+            TextButton(
+                onClick = onActivateAll,
+                contentPadding = PaddingValues(horizontal = 8.dp, vertical = 0.dp)
+            ) {
+                AureoleText(
+                    text = "Ativar todos",
+                    style = AureoleTheme.typography.labelMedium,
+                    fontWeight = FontWeight.SemiBold,
+                    color = MaterialTheme.colorScheme.primary
+                )
+            }
+        }
+    }
+}
+
 @OptIn(ExperimentalFoundationApi::class)
 private fun LazyListScope.favoriteSectionItems(
     params: FavoriteSectionParams,
     onMoveUp: (Int) -> Unit,
     onMoveDown: (Int) -> Unit,
-    onToggleFavorite: (String) -> Unit
+    onToggleFavorite: (String) -> Unit,
+    onDeactivateAll: () -> Unit
 ) {
     val filteredFavorites = params.filteredFavorites
     val searchQuery = params.searchQuery
     val favoriteCount = params.favoriteCount
 
     item {
-        AureoleText(
-            text = "Favoritos (${filteredFavorites.size})",
-            style = AureoleTheme.typography.titleSmall,
-            fontWeight = FontWeight.Bold,
-            color = MaterialTheme.colorScheme.primary,
-            modifier = Modifier.padding(vertical = 4.dp)
+        FavoriteSectionHeader(
+            count = filteredFavorites.size,
+            onDeactivateAll = onDeactivateAll
         )
     }
 
@@ -265,16 +349,14 @@ private fun LazyListScope.favoriteSectionItems(
 private fun LazyListScope.remainingSectionItems(
     filteredRemaining: List<AppInfo>,
     searchQuery: String,
-    onToggleFavorite: (String) -> Unit
+    onToggleFavorite: (String) -> Unit,
+    onActivateAll: () -> Unit
 ) {
     item {
         Spacer(modifier = Modifier.height(8.dp))
-        AureoleText(
-            text = "Outros Aplicativos (${filteredRemaining.size})",
-            style = AureoleTheme.typography.titleSmall,
-            fontWeight = FontWeight.Bold,
-            color = AureoleTheme.colors.onSurfaceMedium,
-            modifier = Modifier.padding(vertical = 4.dp)
+        RemainingSectionHeader(
+            count = filteredRemaining.size,
+            onActivateAll = onActivateAll
         )
     }
 
@@ -345,7 +427,12 @@ private fun FavoriteAppsSearchInput(
     OutlinedTextField(
         value = query,
         onValueChange = onQueryChange,
-        placeholder = { AureoleText("Buscar aplicativo...", color = AureoleTheme.colors.onSurfaceLow) },
+        placeholder = {
+            AureoleText(
+                "Buscar aplicativo...",
+                color = AureoleTheme.colors.onSurfaceLow
+            )
+        },
         leadingIcon = {
             Icon(
                 imageVector = Icons.Default.Search,

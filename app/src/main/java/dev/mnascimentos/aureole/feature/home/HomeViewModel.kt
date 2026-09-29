@@ -94,6 +94,7 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
                     folders = savedFolders,
                     isCustomWallpaperSet = settingsRepository.isCustomWallpaperSet,
                     customWallpaperPath = settingsRepository.customWallpaperPath,
+                    wallpaperScaleType = settingsRepository.wallpaperScaleType,
                     isDynamicWallpaperEnabled = settingsRepository.isDynamicWallpaperEnabled,
                     manualSeedColor = settingsRepository.manualSeedColor,
                     selectedThemeName = settingsRepository.selectedThemeName,

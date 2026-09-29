@@ -140,6 +140,10 @@ class SettingsRepository(private val context: Context) {
         get() = prefs.getString(KEY_CUSTOM_WALLPAPER_PATH, null)
         set(value) = prefs.edit { putString(KEY_CUSTOM_WALLPAPER_PATH, value) }
 
+    var wallpaperScaleType: String
+        get() = prefs.getString(KEY_WALLPAPER_SCALE_TYPE, "Crop") ?: "Crop"
+        set(value) = prefs.edit { putString(KEY_WALLPAPER_SCALE_TYPE, value) }
+
     fun clearCustomWallpaper() {
         val path = customWallpaperPath
         if (!path.isNullOrEmpty()) {
@@ -173,6 +177,7 @@ class SettingsRepository(private val context: Context) {
         private const val KEY_WIDGET_ROW_ENABLED = "widget_row_enabled"
         private const val KEY_IS_CUSTOM_WALLPAPER_SET = "is_custom_wallpaper_set"
         private const val KEY_CUSTOM_WALLPAPER_PATH = "custom_wallpaper_path"
+        private const val KEY_WALLPAPER_SCALE_TYPE = "wallpaper_scale_type"
         private const val KEY_USE_WALLPAPER_COLORS = "use_wallpaper_colors"
         private const val KEY_MANUAL_SEED_COLOR = "manual_seed_color"
         private const val KEY_HAZE_ENABLED = "haze_enabled"

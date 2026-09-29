@@ -38,6 +38,7 @@ import androidx.compose.ui.unit.sp
 import dev.mnascimentos.aureole.composable.SettingsToggleItem
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.icons.AlignRight
+import dev.mnascimentos.aureole.core.designsystem.icons.AppSelect
 import dev.mnascimentos.aureole.core.designsystem.icons.Dots
 import dev.mnascimentos.aureole.core.designsystem.icons.Header
 import dev.mnascimentos.aureole.core.designsystem.icons.Press
@@ -112,6 +113,13 @@ private fun BehaviorMenuItems(
             checked = uiState.homeButtonOpensAllApps,
             onCheckedChange = { actions.onToggleHomeButtonOpensAllApps() },
             leadingContent = { AureoleDS.icons.Press() }
+        )
+
+        SettingsToggleItem(
+            title = "Show all apps on home",
+            checked = uiState.showAllAppsOnHome,
+            onCheckedChange = { actions.onToggleShowAllAppsOnHome() },
+            leadingContent = { AureoleDS.icons.AppSelect() }
         )
 
         SettingsToggleItem(

@@ -35,7 +35,6 @@ import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -98,21 +97,6 @@ fun GridStyleExpandedFolderPopup(
                         onLongClick = params.onToggleActions
                     )
             )
-
-            IconButton(
-                onClick = actions.onAddAppsClick,
-                modifier = Modifier
-                    .align(Alignment.CenterEnd)
-                    .size(38.dp)
-                    .background(Color.White.copy(alpha = 0.2f), CircleShape)
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Add,
-                    contentDescription = "Adicionar Apps",
-                    tint = Color.White,
-                    modifier = Modifier.size(22.dp)
-                )
-            }
         }
 
         Spacer(modifier = Modifier.height(12.dp))

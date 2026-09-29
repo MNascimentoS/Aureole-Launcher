@@ -63,4 +63,5 @@ data class SettingsScreenActions(
     val onOpenSearchIconPositionDialog: () -> Unit = {},
     val onDismissSearchIconPositionDialog: () -> Unit = {},
     val onSearchIconPositionSelected: (String) -> Unit = {},
+    val onSelectWallpaperScaleType: (String) -> Unit = {},
 )

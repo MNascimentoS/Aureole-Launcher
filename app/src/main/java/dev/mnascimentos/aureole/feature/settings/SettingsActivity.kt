@@ -42,7 +42,7 @@ class SettingsActivity : ComponentActivity() {
             val uiState by viewModel.uiState.collectAsState()
 
             val isDarkTheme = isSystemInDarkTheme()
-            val palette = getPaletteByName(uiState.selectedThemeName, isDarkTheme)
+            val palette = getPaletteByName(uiState.selectedThemeName, isDarkTheme, uiState.manualSeedColor)
             AureoleLauncherTheme(
                 darkTheme = isDarkTheme,
                 isDynamicWallpaperEnabled = uiState.isDynamicWallpaperEnabled,
@@ -110,6 +110,9 @@ class SettingsActivity : ComponentActivity() {
             },
             onHazeOpacitySelected = { opacity ->
                 viewModel.setSettingValue(SettingValue.HazeOpacity(opacity))
+            },
+            onSelectWallpaperScaleType = { scaleType ->
+                viewModel.setSettingValue(SettingValue.WallpaperScaleType(scaleType))
             },
             onHeaderOffsetChanged = viewModel::setHeaderOffsetPercent,
             onConfirmResetGrid = { viewModel.resetGridLayout() },

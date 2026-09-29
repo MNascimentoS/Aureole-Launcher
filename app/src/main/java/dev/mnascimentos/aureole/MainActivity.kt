@@ -153,7 +153,7 @@ class MainActivity : ComponentActivity() {
                 }
 
                 val isDarkTheme = isSystemInDarkTheme()
-                val palette = getPaletteByName(uiState.selectedThemeName, isDarkTheme)
+                val palette = getPaletteByName(uiState.selectedThemeName, isDarkTheme, uiState.manualSeedColor)
                 AureoleLauncherTheme(
                     darkTheme = isDarkTheme,
                     isDynamicWallpaperEnabled = uiState.isDynamicWallpaperEnabled,

@@ -38,6 +38,7 @@ data class MainUiState(
     val showAllAppsOnHome: Boolean = true,
     val isCustomWallpaperSet: Boolean = false,
     val customWallpaperPath: String? = null,
+    val wallpaperScaleType: String = "Crop",
     val isDynamicWallpaperEnabled: Boolean = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S,
     val manualSeedColor: Int = SettingsRepository.DEFAULT_SEED_COLOR,
     val selectedThemeName: String = "Frostbite",
