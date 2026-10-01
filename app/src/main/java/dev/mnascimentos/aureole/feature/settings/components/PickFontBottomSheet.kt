@@ -40,16 +40,16 @@ fun PickFontBottomSheet(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(bottom = 24.dp)
+                .padding(bottom = AureoleDS.dimens.xLarge)
         ) {
             AureoleText(
                 text = "Pick Font",
                 style = AureoleTheme.typography.titleMedium,
                 color = AureoleTheme.colors.onSurfaceHigh,
-                modifier = Modifier.padding(horizontal = 24.dp)
+                modifier = Modifier.padding(horizontal = AureoleDS.dimens.xLarge)
             )
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(AureoleDS.dimens.medium))
 
             LazyColumn {
                 items(AvailableFonts.keys.toList()) { fontName ->
@@ -58,7 +58,7 @@ fun PickFontBottomSheet(
                         modifier = Modifier
                             .fillMaxWidth()
                             .clickable { onFontSelected(fontName) }
-                            .padding(horizontal = 24.dp, vertical = 16.dp),
+                            .padding(horizontal = AureoleDS.dimens.xLarge, vertical = AureoleDS.dimens.medium),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         AureoleText(

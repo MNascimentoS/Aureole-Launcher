@@ -21,7 +21,7 @@ fun AureoleLauncherTheme(
     aureoleColors: AureoleColors = frostbiteColors,
     aureoleFontName: String = "Istok Web",
     aureoleIcons: AureoleIcons = AureoleIcons(),
-    aureoleSpacing: AureoleSpacing = AureoleSpacing(),
+    aureoleDimens: AureoleDimens = AureoleDimens(),
     content: @Composable () -> Unit,
 ) {
     val context = LocalContext.current
@@ -39,7 +39,7 @@ fun AureoleLauncherTheme(
         LocalAureoleColors provides aureoleColors,
         LocalAureoleIcons provides aureoleIcons,
         LocalAureoleTypography provides aureoleTypography,
-        LocalAureoleSpacing provides aureoleSpacing,
+        LocalAureoleDimens provides aureoleDimens,
     ) {
         MaterialTheme(
             colorScheme = colorScheme,
@@ -109,9 +109,14 @@ object AureoleDS {
         @Composable
         get() = LocalAureoleTypography.current
 
-    val spacings: AureoleSpacing
+    val dimens: AureoleDimens
         @Composable
-        get() = LocalAureoleSpacing.current
+        get() = LocalAureoleDimens.current
+
+    @Deprecated("Use AureoleDS.dimens instead", ReplaceWith("AureoleDS.dimens"))
+    val spacings: AureoleDimens
+        @Composable
+        get() = LocalAureoleDimens.current
 }
 
 // Kept for backwards compatibility with existing screens
@@ -124,7 +129,12 @@ object AureoleTheme {
         @Composable
         get() = LocalAureoleTypography.current
 
-    val spacings: AureoleSpacing
+    val dimens: AureoleDimens
         @Composable
-        get() = LocalAureoleSpacing.current
+        get() = LocalAureoleDimens.current
+
+    @Deprecated("Use AureoleTheme.dimens instead", ReplaceWith("AureoleTheme.dimens"))
+    val spacings: AureoleDimens
+        @Composable
+        get() = LocalAureoleDimens.current
 }

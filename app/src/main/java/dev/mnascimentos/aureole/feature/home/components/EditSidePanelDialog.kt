@@ -84,7 +84,7 @@ fun EditSidePanelDialog(
                     shape = RoundedCornerShape(22.dp)
                 )
                 .background(AureoleTheme.colors.surface)
-                .padding(AureoleDS.spacings.large)
+                .padding(AureoleDS.dimens.large)
         ) {
             EditSidePanelDialogContent(
                 panel = panel,
@@ -113,11 +113,11 @@ private fun EditSidePanelDialogContent(
 
     Column(modifier = Modifier.fillMaxWidth()) {
         EditSidePanelHeader(onDismiss = onDismiss)
-        Spacer(modifier = Modifier.height(AureoleDS.spacings.small))
+        Spacer(modifier = Modifier.height(AureoleDS.dimens.small))
 
         LazyColumn(
             modifier = Modifier.weight(1f).fillMaxWidth(),
-            verticalArrangement = Arrangement.spacedBy(AureoleDS.spacings.small)
+            verticalArrangement = Arrangement.spacedBy(AureoleDS.dimens.small)
         ) {
             editSidePanelFormItems(
                 state = EditSidePanelFormState(
@@ -142,7 +142,7 @@ private fun EditSidePanelDialogContent(
             )
         }
 
-        Spacer(modifier = Modifier.height(12.dp))
+        Spacer(modifier = Modifier.height(AureoleDS.dimens.small))
         EditSidePanelFooter(
             onDelete = { onDeletePanel(panel.id) },
             onSave = {
@@ -325,7 +325,7 @@ private fun EditSidePanelFolderRow(folder: AppFolder) {
             .fillMaxWidth()
             .clip(RoundedCornerShape(8.dp))
             .background(AureoleTheme.colors.surfaceVariant.copy(alpha = 0.5f))
-            .padding(horizontal = AureoleDS.spacings.small, vertical = AureoleDS.spacings.xSmall),
+            .padding(horizontal = AureoleDS.dimens.small, vertical = AureoleDS.dimens.xSmall),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Icon(
@@ -333,7 +333,7 @@ private fun EditSidePanelFolderRow(folder: AppFolder) {
             contentDescription = null,
             tint = MaterialTheme.colorScheme.primary
         )
-        Spacer(modifier = Modifier.width(AureoleDS.spacings.xSmall))
+        Spacer(modifier = Modifier.width(AureoleDS.dimens.xSmall))
         AureoleText(
             text = folder.name,
             style = AureoleTheme.typography.bodyMedium,
@@ -363,7 +363,7 @@ private fun EditSidePanelFooter(
                 imageVector = Icons.Default.Delete,
                 contentDescription = "Excluir Painel"
             )
-            Spacer(modifier = Modifier.width(AureoleDS.spacings.xxSmall))
+            Spacer(modifier = Modifier.width(AureoleDS.dimens.xxSmall))
             AureoleText("Excluir")
         }
 

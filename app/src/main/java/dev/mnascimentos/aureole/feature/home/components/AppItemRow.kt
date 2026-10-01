@@ -1,7 +1,6 @@
 package dev.mnascimentos.aureole.feature.home.components
 
 import android.content.ComponentName
-import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
@@ -16,13 +15,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material.icons.filled.Info
-import androidx.compose.material.icons.filled.Star
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.Icon
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -34,6 +27,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -44,10 +38,8 @@ import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.LocalHomeUiState
 import dev.mnascimentos.aureole.feature.home.components.model.AppItemRowActions
+import dev.mnascimentos.aureole.feature.home.components.model.AppItemRowConfig
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
-
-private const val FAVORITE_INACTIVE_ALPHA = 0.4f
-private const val COLOR_MAX_FACTOR = 255
 private val ICON_OUTER_SIZE = 42.dp
 private val ICON_INNER_SIZE = 26.dp
 private val ICON_CORNER_RADIUS = 12.dp
@@ -59,7 +51,7 @@ fun AppItemRow(
     app: AppInfo,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
-    isFavorite: Boolean = false,
+    config: AppItemRowConfig = AppItemRowConfig(),
     actions: AppItemRowActions = AppItemRowActions()
 ) {
     val uiState = LocalHomeUiState.current
@@ -79,7 +71,7 @@ fun AppItemRow(
                     onClick = onClick,
                     onLongClick = { showMenu = true }
                 )
-                .padding(horizontal = AureoleDS.spacings.medium, vertical = AureoleDS.spacings.small),
+                .padding(horizontal = AureoleDS.dimens.medium, vertical = AureoleDS.dimens.small),
             verticalAlignment = Alignment.CenterVertically
         ) {
             AppItemRowContent(
@@ -93,7 +85,7 @@ fun AppItemRow(
         AppItemRowDropdownMenu(
             app = app,
             showMenu = showMenu,
-            isFavorite = isFavorite,
+            config = config,
             actions = actions,
             onDismiss = { showMenu = false }
         )
@@ -107,15 +99,10 @@ private fun RowScope.AppItemRowContent(
     isThemedAppIconsEnabled: Boolean,
     isLeftHandedMode: Boolean
 ) {
-    val iconColor = AureoleDS.colors.onSurfaceHigh
+    val iconColor = AureoleDS.colors.onSurfaceMedium
     val displayBitmap = remember(app.packageName, isThemedAppIconsEnabled, iconColor) {
         if (isThemedAppIconsEnabled) {
-            val argb = Color.argb(
-                (iconColor.alpha * COLOR_MAX_FACTOR).toInt(),
-                (iconColor.red * COLOR_MAX_FACTOR).toInt(),
-                (iconColor.green * COLOR_MAX_FACTOR).toInt(),
-                (iconColor.blue * COLOR_MAX_FACTOR).toInt()
-            )
+            val argb = iconColor.toArgb()
             app.getThemedIconBitmap(argb)
         } else {
             iconBitmap
@@ -126,7 +113,7 @@ private fun RowScope.AppItemRowContent(
         AureoleText(
             text = app.label,
             style = AureoleDS.typography.bodyLarge,
-            color = AureoleDS.colors.onSurfaceHigh,
+            color = AureoleDS.colors.onSurfaceMedium,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
             textAlign = if (isLeftHandedMode) TextAlign.End else TextAlign.Start,
@@ -140,11 +127,11 @@ private fun RowScope.AppItemRowContent(
 
     if (isLeftHandedMode) {
         appLabel()
-        Spacer(modifier = Modifier.width(AureoleDS.spacings.medium))
+        Spacer(modifier = Modifier.width(AureoleDS.dimens.medium))
         appIcon()
     } else {
         appIcon()
-        Spacer(modifier = Modifier.width(AureoleDS.spacings.medium))
+        Spacer(modifier = Modifier.width(AureoleDS.dimens.medium))
         appLabel()
     }
 }
@@ -160,7 +147,7 @@ private fun AppItemIcon(
             modifier = Modifier
                 .size(ICON_OUTER_SIZE)
                 .clip(RoundedCornerShape(ICON_CORNER_RADIUS))
-                .background(AureoleDS.colors.surface)
+                .background(AureoleDS.colors.surfaceVariant.copy(alpha = 0.85f))
                 .padding(ICON_PADDING),
             contentAlignment = Alignment.Center
         ) {
@@ -179,103 +166,22 @@ private fun AppItemIcon(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun AppItemRowDropdownMenu(
     app: AppInfo,
     showMenu: Boolean,
-    isFavorite: Boolean,
+    config: AppItemRowConfig,
     actions: AppItemRowActions,
     onDismiss: () -> Unit
 ) {
-    DropdownMenu(
-        expanded = showMenu,
-        onDismissRequest = onDismiss
-    ) {
-        if (actions.onToggleFavorite != null) {
-            FavoriteMenuItem(
-                isFavorite = isFavorite,
-                onClick = {
-                    actions.onToggleFavorite.invoke(app.packageName)
-                    onDismiss()
-                }
-            )
-        }
-
-        if (actions.onEditFavoritesClick != null) {
-            EditFavoritesMenuItem(
-                onClick = {
-                    actions.onEditFavoritesClick.invoke()
-                    onDismiss()
-                }
-            )
-        }
-
-        if (actions.onAppInfoClick != null) {
-            AppInfoMenuItem(
-                onClick = {
-                    actions.onAppInfoClick.invoke(app)
-                    onDismiss()
-                }
-            )
+    if (showMenu) {
+        if (config.useActionSheet) {
+            AppItemBottomSheet(app, config.isFavorite, actions, onDismiss)
+        } else {
+            AppItemPopup(app, config.isFavorite, actions, onDismiss)
         }
     }
-}
-
-@Composable
-private fun FavoriteMenuItem(
-    isFavorite: Boolean,
-    onClick: () -> Unit
-) {
-    val favTint = if (isFavorite) {
-        MaterialTheme.colorScheme.primary
-    } else {
-        MaterialTheme.colorScheme.onSurface.copy(alpha = FAVORITE_INACTIVE_ALPHA)
-    }
-    DropdownMenuItem(
-        text = { AureoleText(if (isFavorite) "Remove from Favorites" else "Add to Favorites") },
-        leadingIcon = {
-            Icon(
-                imageVector = Icons.Default.Star,
-                contentDescription = null,
-                tint = favTint
-            )
-        },
-        onClick = onClick
-    )
-}
-
-@Composable
-private fun EditFavoritesMenuItem(
-    onClick: () -> Unit
-) {
-    DropdownMenuItem(
-        text = { AureoleText("Editar Favoritos") },
-        leadingIcon = {
-            Icon(
-                imageVector = Icons.Default.Edit,
-                contentDescription = null,
-                tint = MaterialTheme.colorScheme.onSurface
-            )
-        },
-        onClick = onClick
-    )
-}
-
-@Composable
-private fun AppInfoMenuItem(
-    onClick: () -> Unit
-) {
-    DropdownMenuItem(
-        text = { AureoleText("App Info") },
-        leadingIcon = {
-            Icon(
-                imageVector = Icons.Default.Info,
-                contentDescription = null,
-                tint = MaterialTheme.colorScheme.onSurface
-            )
-        },
-        onClick = onClick
-    )
 }
 
 @AureolePreview
@@ -297,7 +203,7 @@ fun AppItemRowPreview() {
             AppItemRow(
                 app = mockApp,
                 onClick = {},
-                isFavorite = true
+                config = AppItemRowConfig(isFavorite = true)
             )
         }
     }

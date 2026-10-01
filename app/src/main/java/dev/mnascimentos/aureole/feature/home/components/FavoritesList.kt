@@ -43,6 +43,7 @@ import dev.mnascimentos.aureole.core.designsystem.utils.fadingEdges
 import dev.mnascimentos.aureole.feature.home.LocalHomeActions
 import dev.mnascimentos.aureole.feature.home.LocalHomeUiState
 import dev.mnascimentos.aureole.feature.home.components.model.AppItemRowActions
+import dev.mnascimentos.aureole.feature.home.components.model.AppItemRowConfig
 import dev.mnascimentos.aureole.feature.home.components.model.FavoritesListOptions
 import dev.mnascimentos.aureole.feature.home.components.model.NonScrollableFavoritesParams
 import dev.mnascimentos.aureole.feature.home.components.model.ScrollableFavoritesParams
@@ -192,11 +193,12 @@ private fun NonScrollableFavoritesList(
                 AppItemRow(
                     app = app,
                     onClick = { actions.onAppClick(app) },
-                    isFavorite = true,
+                    config = AppItemRowConfig(isFavorite = true, useActionSheet = true),
                     actions = AppItemRowActions(
                         onToggleFavorite = { actions.onToggleFavorite(it) },
                         onEditFavoritesClick = { actions.onOpenFavoritePicker(containerId) },
-                        onAppInfoClick = { actions.onAppInfoClick(it) }
+                        onAppInfoClick = { actions.onAppInfoClick(it) },
+                        onUninstallClick = { actions.onUninstallAppClick(it) }
                     )
                 )
             }
@@ -212,11 +214,12 @@ private fun NonScrollableFavoritesList(
                 AppItemRow(
                     app = app,
                     onClick = { actions.onAppClick(app) },
-                    isFavorite = isFav,
+                    config = AppItemRowConfig(isFavorite = isFav, useActionSheet = true),
                     actions = AppItemRowActions(
                         onToggleFavorite = { actions.onToggleFavorite(it) },
                         onEditFavoritesClick = { actions.onOpenFavoritePicker(containerId) },
-                        onAppInfoClick = { actions.onAppInfoClick(it) }
+                        onAppInfoClick = { actions.onAppInfoClick(it) },
+                        onUninstallClick = { actions.onUninstallAppClick(it) }
                     )
                 )
             }
@@ -239,11 +242,12 @@ private fun LazyListScope.favoriteAppsSection(
             AppItemRow(
                 app = app,
                 onClick = { actions.onAppClick(app) },
-                isFavorite = true,
+                config = AppItemRowConfig(isFavorite = true, useActionSheet = true),
                 actions = AppItemRowActions(
                     onToggleFavorite = { actions.onToggleFavorite(it) },
                     onEditFavoritesClick = { actions.onOpenFavoritePicker(containerId) },
-                    onAppInfoClick = { actions.onAppInfoClick(it) }
+                    onAppInfoClick = { actions.onAppInfoClick(it) },
+                    onUninstallClick = { actions.onUninstallAppClick(it) }
                 )
             )
         }
@@ -275,11 +279,12 @@ private fun LazyListScope.allAppsSection(
             AppItemRow(
                 app = app,
                 onClick = { actions.onAppClick(app) },
-                isFavorite = isFav,
+                config = AppItemRowConfig(isFavorite = isFav, useActionSheet = true),
                 actions = AppItemRowActions(
                     onToggleFavorite = { actions.onToggleFavorite(it) },
                     onEditFavoritesClick = { actions.onOpenFavoritePicker(containerId) },
-                    onAppInfoClick = { actions.onAppInfoClick(it) }
+                    onAppInfoClick = { actions.onAppInfoClick(it) },
+                    onUninstallClick = { actions.onUninstallAppClick(it) }
                 )
             )
         }

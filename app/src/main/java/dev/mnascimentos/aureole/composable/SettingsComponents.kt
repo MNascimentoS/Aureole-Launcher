@@ -33,13 +33,13 @@ fun AdvancedIcon(
     tint: Color = AureoleTheme.colors.onSurfaceMedium
 ) {
     Row(
-        horizontalArrangement = Arrangement.spacedBy(AureoleDS.spacings.xxxSmall),
+        horizontalArrangement = Arrangement.spacedBy(AureoleDS.dimens.xxxSmall),
         verticalAlignment = Alignment.CenterVertically,
         modifier = modifier.size(20.dp)
     ) {
-        Box(Modifier.size(AureoleDS.spacings.xxSmall).background(tint, CircleShape))
-        Box(Modifier.size(AureoleDS.spacings.xxSmall).background(tint, CircleShape))
-        Box(Modifier.size(AureoleDS.spacings.xxSmall).background(tint, CircleShape))
+        Box(Modifier.size(AureoleDS.dimens.xxSmall).background(tint, CircleShape))
+        Box(Modifier.size(AureoleDS.dimens.xxSmall).background(tint, CircleShape))
+        Box(Modifier.size(AureoleDS.dimens.xxSmall).background(tint, CircleShape))
     }
 }
 
@@ -50,7 +50,7 @@ fun SettingsHugeTitle(text: String, modifier: Modifier = Modifier) {
         style = AureoleTheme.typography.displayMedium,
         fontWeight = FontWeight.Bold,
         color = AureoleTheme.colors.onSurfaceHigh,
-        modifier = modifier.padding(vertical = AureoleDS.spacings.medium)
+        modifier = modifier.padding(vertical = AureoleDS.dimens.medium)
     )
 }
 
@@ -67,12 +67,12 @@ fun SettingsMenuItem(
             .fillMaxWidth()
             .clip(RoundedCornerShape(16.dp))
             .clickable { onClick() }
-            .padding(vertical = AureoleDS.spacings.xSmall, horizontal = AureoleDS.spacings.small),
+            .padding(vertical = AureoleDS.dimens.xSmall, horizontal = AureoleDS.dimens.small),
         verticalAlignment = Alignment.CenterVertically
     ) {
         if (leadingContent != null) {
             Box(
-                modifier = Modifier.padding(end = AureoleDS.spacings.large).size(20.dp),
+                modifier = Modifier.padding(end = AureoleDS.dimens.large).size(20.dp),
                 contentAlignment = Alignment.Center
             ) {
                 leadingContent()
@@ -87,7 +87,7 @@ fun SettingsMenuItem(
                 color = AureoleTheme.colors.onSurfaceMedium
             )
             if (subtitle != null) {
-                Spacer(modifier = Modifier.height(AureoleDS.spacings.xxxSmall))
+                Spacer(modifier = Modifier.height(AureoleDS.dimens.xxxSmall))
                 AureoleText(
                     text = subtitle,
                     style = AureoleTheme.typography.bodySmall,
@@ -111,12 +111,12 @@ fun SettingsToggleItem(
             .fillMaxWidth()
             .clip(RoundedCornerShape(16.dp))
             .clickable { onCheckedChange(!checked) }
-            .padding(vertical = AureoleDS.spacings.xSmall, horizontal = AureoleDS.spacings.small),
+            .padding(vertical = AureoleDS.dimens.xSmall, horizontal = AureoleDS.dimens.small),
         verticalAlignment = Alignment.CenterVertically
     ) {
         if (leadingContent != null) {
             Box(
-                modifier = Modifier.padding(end = AureoleDS.spacings.large).size(20.dp),
+                modifier = Modifier.padding(end = AureoleDS.dimens.large).size(20.dp),
                 contentAlignment = Alignment.Center
             ) {
                 leadingContent()
@@ -132,7 +132,7 @@ fun SettingsToggleItem(
             )
         }
 
-        Spacer(modifier = Modifier.width(AureoleDS.spacings.medium))
+        Spacer(modifier = Modifier.width(AureoleDS.dimens.medium))
         Switch(
             checked = checked,
             onCheckedChange = onCheckedChange,
@@ -160,12 +160,12 @@ fun SettingsActionItem(
             .fillMaxWidth()
             .clip(RoundedCornerShape(16.dp))
             .clickable { onClick() }
-            .padding(vertical = AureoleDS.spacings.xSmall, horizontal = AureoleDS.spacings.small),
+            .padding(vertical = AureoleDS.dimens.xSmall, horizontal = AureoleDS.dimens.small),
         verticalAlignment = Alignment.CenterVertically
     ) {
         if (leadingContent != null) {
             Box(
-                modifier = Modifier.padding(end = AureoleDS.spacings.large).size(20.dp),
+                modifier = Modifier.padding(end = AureoleDS.dimens.large).size(20.dp),
                 contentAlignment = Alignment.Center
             ) {
                 leadingContent()

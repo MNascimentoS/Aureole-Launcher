@@ -17,7 +17,9 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.core.designsystem.palette.getPaletteByName
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDimens
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.feature.home.components.FavoriteAppsDialog
 import dev.mnascimentos.aureole.feature.home.components.model.FavoriteAppsDialogActions
@@ -47,7 +49,8 @@ class SettingsActivity : ComponentActivity() {
                 darkTheme = isDarkTheme,
                 isDynamicWallpaperEnabled = uiState.isDynamicWallpaperEnabled,
                 aureoleColors = palette.colors,
-                aureoleFontName = uiState.selectedFontName
+                aureoleFontName = uiState.selectedFontName,
+                aureoleDimens = AureoleDimens(cornerRadius = uiState.cornerRadiusDp.dp)
             ) {
                 LaunchedEffect(uiState.shouldFinishActivity) {
                     if (uiState.shouldFinishActivity) {
@@ -113,6 +116,9 @@ class SettingsActivity : ComponentActivity() {
             },
             onSelectWallpaperScaleType = { scaleType ->
                 viewModel.setSettingValue(SettingValue.WallpaperScaleType(scaleType))
+            },
+            onSelectCornerRadius = { radiusDp ->
+                viewModel.setSettingValue(SettingValue.CornerRadius(radiusDp))
             },
             onHeaderOffsetChanged = viewModel::setHeaderOffsetPercent,
             onConfirmResetGrid = { viewModel.resetGridLayout() },

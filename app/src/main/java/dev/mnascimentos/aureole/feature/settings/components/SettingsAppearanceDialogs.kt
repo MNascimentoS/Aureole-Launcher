@@ -54,7 +54,7 @@ fun SetBackgroundBottomSheet(
         onDismissRequest = onDismissRequest
     ) {
         Column(
-            verticalArrangement = Arrangement.spacedBy(AureoleDS.spacings.xSmall),
+            verticalArrangement = Arrangement.spacedBy(AureoleDS.dimens.xSmall),
             modifier = Modifier.fillMaxWidth()
         ) {
             SettingsMenuItem(
@@ -86,7 +86,7 @@ fun PickPaletteBottomSheet(
         onDismissRequest = onDismissRequest
     ) {
         LazyColumn(
-            verticalArrangement = Arrangement.spacedBy(10.dp),
+            verticalArrangement = Arrangement.spacedBy(AureoleDS.dimens.small),
             modifier = Modifier
                 .fillMaxWidth()
                 .heightIn(max = PALETTE_MAX_HEIGHT_DP.dp)
@@ -129,7 +129,7 @@ private fun PaletteRowItem(
             .clip(RoundedCornerShape(12.dp))
             .background(rowBg)
             .clickable(onClick = onSelect)
-            .padding(vertical = 10.dp, horizontal = 8.dp),
+            .padding(vertical = AureoleDS.dimens.small, horizontal = AureoleDS.dimens.xSmall),
         verticalAlignment = Alignment.CenterVertically
     ) {
         AureoleText(
@@ -192,7 +192,7 @@ fun BlurBottomSheet(
         onDismissRequest = onDismissRequest
     ) {
         Column(
-            verticalArrangement = Arrangement.spacedBy(AureoleDS.spacings.xSmall),
+            verticalArrangement = Arrangement.spacedBy(AureoleDS.dimens.xSmall),
             modifier = Modifier.fillMaxWidth()
         ) {
             options.forEach { (opacity, enableHaze, label) ->
@@ -235,7 +235,7 @@ private fun BlurOptionRow(
             .clip(RoundedCornerShape(12.dp))
             .background(rowBg)
             .clickable(onClick = onSelect)
-            .padding(vertical = AureoleDS.spacings.small, horizontal = AureoleDS.spacings.small),
+            .padding(vertical = AureoleDS.dimens.small, horizontal = AureoleDS.dimens.small),
         verticalAlignment = Alignment.CenterVertically
     ) {
         AureoleText(

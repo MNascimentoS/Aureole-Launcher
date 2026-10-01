@@ -69,8 +69,8 @@ AureoleDS.colors.onSurfaceHigh
 AureoleDS.colors.surfaceVariant
 ```
 
-### Design Tokens de Espaçamento (AureoleSpacing)
-Os tokens de espaçamento do Aureole Launcher seguem a escala baseada nas regras do Figma (grade de 4dp/8dp) para garantir consistência visual em margens, preenchimentos (padding) e arranjos entre componentes:
+### Design Tokens de Dimensões e Espaçamento (AureoleDimens)
+Os tokens de dimensões e espaçamento do Aureole Launcher seguem a escala baseada nas regras do Figma (grade de 4dp/8dp) para garantir consistência visual em margens, preenchimentos (padding) e arranjos entre componentes:
 
 - `none`: `0.dp`
 - `xxxSmall`: `2.dp`
@@ -84,10 +84,10 @@ Os tokens de espaçamento do Aureole Launcher seguem a escala baseada nas regras
 - `xxxLarge`: `48.dp`
 - `huge`: `64.dp`
 
-Esses espaçamentos podem ser acessados via Compose utilizando:
+Essas dimensões podem ser acessadas via Compose utilizando:
 ```kotlin
-AureoleDS.spacings.medium // 16.dp
-AureoleDS.spacings.xSmall // 8.dp
+AureoleDS.dimens.medium // 16.dp
+AureoleDS.dimens.xSmall // 8.dp
 ```
 
 ### Tema Padrão: Frostbite

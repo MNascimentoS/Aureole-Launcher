@@ -109,7 +109,8 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
                     settingsButtonPosition = settingsRepository.settingsButtonPosition,
                     showSearchBarInAllApps = settingsRepository.showSearchBarInAllApps,
                     searchIconPosition = settingsRepository.searchIconPosition,
-                    headerOffsetPercent = settingsRepository.headerOffsetPercent
+                    headerOffsetPercent = settingsRepository.headerOffsetPercent,
+                    cornerRadiusDp = settingsRepository.cornerRadiusDp
                 )
             }
         }

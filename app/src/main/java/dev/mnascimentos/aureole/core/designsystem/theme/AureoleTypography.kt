@@ -49,91 +49,38 @@ data class AureoleTypography(
         letterSpacing = 0.sp
     ),
 
-    // Fallbacks for Material3 interoperability
+    // Fallbacks for Material3 interoperability mapped directly to Aureole DS tokens
     val displayLarge: TextStyle = TextStyle(
         fontFamily = fontFamily,
-        fontWeight = FontWeight.Normal,
+        fontWeight = FontWeight.Bold,
         fontSize = 57.sp,
         lineHeight = 64.sp,
         letterSpacing = (-0.25).sp
     ),
     val displayMedium: TextStyle = TextStyle(
         fontFamily = fontFamily,
-        fontWeight = FontWeight.Normal,
+        fontWeight = FontWeight.Bold,
         fontSize = 45.sp,
         lineHeight = 52.sp,
         letterSpacing = 0.sp
     ),
     val displaySmall: TextStyle = TextStyle(
         fontFamily = fontFamily,
-        fontWeight = FontWeight.Normal,
+        fontWeight = FontWeight.Bold,
         fontSize = 36.sp,
         lineHeight = 44.sp,
         letterSpacing = 0.sp
     ),
-    val titleLarge: TextStyle = TextStyle(
-        fontFamily = fontFamily,
-        fontWeight = FontWeight.Bold,
-        fontSize = 22.sp,
-        lineHeight = 28.sp,
-        letterSpacing = 0.sp
-    ),
-    val titleMedium: TextStyle = TextStyle(
-        fontFamily = fontFamily,
-        fontWeight = FontWeight.Bold,
-        fontSize = 18.sp,
-        lineHeight = 24.sp,
-        letterSpacing = 0.15.sp
-    ),
-    val titleSmall: TextStyle = TextStyle(
-        fontFamily = fontFamily,
-        fontWeight = FontWeight.Medium,
-        fontSize = 14.sp,
-        lineHeight = 20.sp,
-        letterSpacing = 0.1.sp
-    ),
-    val bodyLarge: TextStyle = TextStyle(
-        fontFamily = fontFamily,
-        fontWeight = FontWeight.Normal,
-        fontSize = 16.sp,
-        lineHeight = 24.sp,
-        letterSpacing = 0.5.sp
-    ),
-    val bodyMedium: TextStyle = TextStyle(
-        fontFamily = fontFamily,
-        fontWeight = FontWeight.Normal,
-        fontSize = 14.sp,
-        lineHeight = 20.sp,
-        letterSpacing = 0.25.sp
-    ),
-    val bodySmall: TextStyle = TextStyle(
-        fontFamily = fontFamily,
-        fontWeight = FontWeight.Normal,
-        fontSize = 12.sp,
-        lineHeight = 16.sp,
-        letterSpacing = 0.4.sp
-    ),
-    val labelLarge: TextStyle = TextStyle(
-        fontFamily = fontFamily,
-        fontWeight = FontWeight.Medium,
-        fontSize = 14.sp,
-        lineHeight = 20.sp,
-        letterSpacing = 0.1.sp
-    ),
-    val labelMedium: TextStyle = TextStyle(
-        fontFamily = fontFamily,
-        fontWeight = FontWeight.Medium,
-        fontSize = 12.sp,
-        lineHeight = 16.sp,
-        letterSpacing = 0.5.sp
-    ),
-    val labelSmall: TextStyle = TextStyle(
-        fontFamily = fontFamily,
-        fontWeight = FontWeight.Medium,
-        fontSize = 11.sp,
-        lineHeight = 16.sp,
-        letterSpacing = 0.5.sp
-    )
+    val titleLarge: TextStyle = hugeTitle,
+    val titleMedium: TextStyle = midTitle,
+    val titleSmall: TextStyle = smallTitle,
+    val bodyLarge: TextStyle = text,
+    val bodyMedium: TextStyle = text,
+    val bodySmall: TextStyle = smallText,
+    val labelLarge: TextStyle = midTitle,
+    val labelMedium: TextStyle = smallTitle,
+    val labelSmall: TextStyle = smallText
+
 )
 
 val LocalAureoleTypography = staticCompositionLocalOf { AureoleTypography() }

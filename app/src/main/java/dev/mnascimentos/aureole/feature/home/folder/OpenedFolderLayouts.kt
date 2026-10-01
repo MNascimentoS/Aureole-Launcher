@@ -32,9 +32,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.outlined.Edit
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -54,6 +51,7 @@ import dev.chrisbanes.haze.HazeStyle
 import dev.chrisbanes.haze.HazeTint
 import dev.chrisbanes.haze.hazeEffect
 import dev.mnascimentos.aureole.core.data.model.AppInfo
+import dev.mnascimentos.aureole.core.designsystem.components.AureolePopupMenuItem
 import dev.mnascimentos.aureole.feature.home.folder.model.FolderPopupActions
 import dev.mnascimentos.aureole.feature.home.folder.model.GridFolderPopupParams
 
@@ -110,8 +108,8 @@ fun GridStyleExpandedFolderPopup(
         GridFolderContainer(
             appsInFolder = appsInFolder,
             actions = actions,
-            hazeState = params.hazeState,
-            isHazeEnabled = params.isHazeEnabled
+            hazeState = null,
+            isHazeEnabled = false
         )
     }
 }
@@ -258,53 +256,22 @@ fun OpenedFolderActions(
         enter = fadeIn() + expandVertically(),
         exit = fadeOut() + shrinkVertically()
     ) {
-        Row(
+        Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(bottom = 8.dp),
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
+                .padding(bottom = 8.dp)
         ) {
-            Button(
-                onClick = onEditFolderClick,
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = MaterialTheme.colorScheme.surfaceVariant
-                ),
-                contentPadding = PaddingValues(horizontal = 8.dp, vertical = 4.dp),
-                shape = RoundedCornerShape(10.dp),
-                modifier = Modifier.height(34.dp)
-            ) {
-                Icon(
-                    imageVector = Icons.Outlined.Edit,
-                    contentDescription = "Edit Folder",
-                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                    modifier = Modifier.size(16.dp)
-                )
-            }
+            AureolePopupMenuItem(
+                title = "Add Apps",
+                icon = Icons.Default.Add,
+                onClick = onAddAppsClick
+            )
 
-            Button(
-                onClick = onAddAppsClick,
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = MaterialTheme.colorScheme.primaryContainer
-                ),
-                contentPadding = PaddingValues(horizontal = 12.dp, vertical = 4.dp),
-                shape = RoundedCornerShape(10.dp),
-                modifier = Modifier
-                    .weight(1f)
-                    .height(34.dp)
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Add,
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.onPrimaryContainer,
-                    modifier = Modifier.size(16.dp)
-                )
-                Spacer(modifier = Modifier.width(4.dp))
-                Text(
-                    text = "Add Apps",
-                    style = MaterialTheme.typography.labelMedium,
-                    color = MaterialTheme.colorScheme.onPrimaryContainer
-                )
-            }
+            AureolePopupMenuItem(
+                title = "Edit Folder",
+                icon = Icons.Outlined.Edit,
+                onClick = onEditFolderClick
+            )
         }
     }
 }

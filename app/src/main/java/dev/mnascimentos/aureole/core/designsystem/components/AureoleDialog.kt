@@ -71,7 +71,7 @@ fun AureoleDialog(
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(AureoleDS.spacings.large)
+                        .padding(AureoleDS.dimens.large)
                 ) {
                     content()
                 }
@@ -96,7 +96,7 @@ fun AureoleDialogHeader(
                 width = 0.5.dp,
                 color = AureoleTheme.colors.outline
             )
-            .padding(horizontal = AureoleDS.spacings.medium),
+            .padding(horizontal = AureoleDS.dimens.medium),
         contentAlignment = Alignment.CenterStart
     ) {
         Row(
@@ -106,7 +106,7 @@ fun AureoleDialogHeader(
         ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(AureoleDS.spacings.xSmall)
+                horizontalArrangement = Arrangement.spacedBy(AureoleDS.dimens.xSmall)
             ) {
                 if (icon != null) {
                     Icon(

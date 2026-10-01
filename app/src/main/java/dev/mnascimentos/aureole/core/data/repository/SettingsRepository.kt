@@ -74,6 +74,10 @@ class SettingsRepository(private val context: Context) {
             putInt(KEY_HEADER_OFFSET_PERCENT, value.coerceIn(MIN_HEADER_OFFSET, MAX_HEADER_OFFSET))
         }
 
+    var cornerRadiusDp: Int
+        get() = prefs.getInt(KEY_CORNER_RADIUS_DP, DEFAULT_CORNER_RADIUS_DP)
+        set(value) = prefs.edit { putInt(KEY_CORNER_RADIUS_DP, value) }
+
     var isThemedAppIconsEnabled: Boolean
         get() = prefs.getBoolean(KEY_USE_THEMED_APP_ICONS, false)
         set(value) = prefs.edit { putBoolean(KEY_USE_THEMED_APP_ICONS, value) }
@@ -185,6 +189,7 @@ class SettingsRepository(private val context: Context) {
         private const val KEY_SHOW_WIDGET_DOTS = "show_widget_dots"
         private const val KEY_IN_APP_UPDATE_ENABLED = "in_app_update_enabled"
         private const val KEY_HEADER_OFFSET_PERCENT = "header_offset_percent"
+        private const val KEY_CORNER_RADIUS_DP = "corner_radius_dp"
         private const val KEY_USE_THEMED_APP_ICONS = "use_themed_app_icons"
         private const val KEY_DISABLE_ALPHABET_SCRUBBER = "disable_alphabet_scrubber"
         private const val KEY_SHOW_SETTINGS_BUTTON_IN_ALL_APPS = "show_settings_button_in_all_apps"
@@ -197,6 +202,7 @@ class SettingsRepository(private val context: Context) {
         private const val DEFAULT_HEADER_OFFSET = 10
         private const val MIN_HEADER_OFFSET = 10
         private const val MAX_HEADER_OFFSET = 60
+        const val DEFAULT_CORNER_RADIUS_DP = 20
         const val DEFAULT_SEED_COLOR = 0xFF4A5D6B.toInt()
     }
 }
