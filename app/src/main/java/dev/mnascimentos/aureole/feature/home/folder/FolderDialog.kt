@@ -1,9 +1,8 @@
 package dev.mnascimentos.aureole.feature.home.folder
 
 import android.content.ComponentName
+import android.content.Intent
 import android.graphics.drawable.ColorDrawable
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -16,18 +15,17 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import dev.mnascimentos.aureole.core.data.model.AppFolder
 import dev.mnascimentos.aureole.core.data.model.AppInfo
+import dev.mnascimentos.aureole.core.designsystem.components.AureoleHeaderBanner
+import dev.mnascimentos.aureole.core.designsystem.components.AureolePopupBox
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleTheme
@@ -35,6 +33,7 @@ import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.LocalHomeUiState
 import dev.mnascimentos.aureole.feature.home.components.AppItemRow
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
+import dev.mnascimentos.aureole.feature.settings.SettingsActivity
 
 @Composable
 fun FolderDialog(
@@ -46,6 +45,7 @@ fun FolderDialog(
     val appsInFolder = folder.appPackageNames.mapNotNull { pkgName ->
         allApps.find { it.packageName == pkgName }
     }.sortedBy { it.label.lowercase() }
+    val context = LocalContext.current
 
     Dialog(
         onDismissRequest = onDismiss,
@@ -54,30 +54,23 @@ fun FolderDialog(
             dismissOnClickOutside = true
         )
     ) {
-        Box(
-            modifier = Modifier
-                .widthIn(max = 320.dp)
-                .clip(RoundedCornerShape(22.dp))
-                .border(
-                    width = 0.5.dp,
-                    color = AureoleTheme.colors.outline,
-                    shape = RoundedCornerShape(22.dp)
-                )
-                .background(AureoleTheme.colors.surface)
-                .padding(24.dp)
+        AureolePopupBox(
+            contentPadding = PaddingValues(0.dp),
+            modifier = Modifier.widthIn(min = 280.dp, max = 340.dp)
         ) {
-            Column(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                AureoleText(
-                    text = folder.name,
-                    style = AureoleTheme.typography.titleLarge,
-                    fontWeight = FontWeight.Bold,
-                    color = AureoleTheme.colors.onSurfaceHigh,
-                    modifier = Modifier.padding(bottom = 16.dp)
-                )
+            AureoleHeaderBanner(
+                title = folder.name,
+                onLogoClick = {
+                    onDismiss()
+                    context.startActivity(Intent(context, SettingsActivity::class.java))
+                }
+            )
 
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 14.dp, vertical = 12.dp)
+            ) {
                 FolderDialogContent(
                     folder = folder,
                     appsInFolder = appsInFolder,

@@ -69,14 +69,14 @@ fun SettingsRootScreen(
                 modifier = Modifier
                     .fillMaxSize()
                     .verticalScroll(rememberScrollState())
-                    .padding(horizontal = AureoleDS.spacings.xLarge),
+                    .padding(horizontal = AureoleDS.dimens.xLarge),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Spacer(modifier = Modifier.height(topSpacerHeight))
 
                 SettingsHeader(versionName = versionName)
 
-                Spacer(modifier = Modifier.height(36.dp))
+                Spacer(modifier = Modifier.height(AureoleDS.dimens.xxLarge))
 
                 SettingsNavigationList(
                     onNavigateToBehavior = onNavigateToBehavior,
@@ -90,7 +90,7 @@ fun SettingsRootScreen(
                     text = "Thank you!",
                     style = AureoleTheme.typography.bodyMedium,
                     color = AureoleTheme.colors.onSurfaceMedium,
-                    modifier = Modifier.padding(bottom = AureoleDS.spacings.xxLarge),
+                    modifier = Modifier.padding(bottom = AureoleDS.dimens.xxLarge),
                     textAlign = TextAlign.Center
                 )
             }
@@ -101,7 +101,7 @@ fun SettingsRootScreen(
 @Composable
 private fun SettingsHeader(versionName: String) {
     Box(
-        modifier = Modifier.padding(AureoleDS.spacings.medium),
+        modifier = Modifier.padding(AureoleDS.dimens.medium),
         contentAlignment = Alignment.Center
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
@@ -109,14 +109,14 @@ private fun SettingsHeader(versionName: String) {
                 modifier = Modifier.size(120.dp, 68.dp),
                 tint = AureoleTheme.colors.onSurfaceHigh
             )
-            Spacer(modifier = Modifier.height(AureoleDS.spacings.xLarge))
+            Spacer(modifier = Modifier.height(AureoleDS.dimens.xLarge))
             AureoleText(
                 text = "Aureole",
                 style = AureoleTheme.typography.displaySmall,
                 fontWeight = FontWeight.Bold,
                 color = AureoleTheme.colors.onSurfaceHigh
             )
-            Spacer(modifier = Modifier.height(AureoleDS.spacings.xxSmall))
+            Spacer(modifier = Modifier.height(AureoleDS.dimens.xxSmall))
             AureoleText(
                 text = "Version $versionName",
                 style = AureoleTheme.typography.bodyMedium,
@@ -133,8 +133,8 @@ private fun SettingsNavigationList(
     onNavigateToAdvanced: () -> Unit
 ) {
     Column(
-        verticalArrangement = Arrangement.spacedBy(AureoleDS.spacings.medium),
-        modifier = Modifier.fillMaxWidth().padding(horizontal = AureoleDS.spacings.xSmall)
+        verticalArrangement = Arrangement.spacedBy(AureoleDS.dimens.medium),
+        modifier = Modifier.fillMaxWidth().padding(horizontal = AureoleDS.dimens.xSmall)
     ) {
         SettingsMenuItem(
             title = "Behavior",

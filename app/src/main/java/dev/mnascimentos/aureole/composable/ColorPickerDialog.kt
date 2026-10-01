@@ -85,7 +85,7 @@ fun ColorPickerDialog(
         text = {
             Column(
                 modifier = Modifier.fillMaxWidth(),
-                verticalArrangement = Arrangement.spacedBy(AureoleDS.spacings.medium),
+                verticalArrangement = Arrangement.spacedBy(AureoleDS.dimens.medium),
             ) {
                 PresetColorsSection(
                     selectedColor = selectedColor,
@@ -97,7 +97,7 @@ fun ColorPickerDialog(
                     }
                 )
 
-                Spacer(modifier = Modifier.height(AureoleDS.spacings.xxSmall))
+                Spacer(modifier = Modifier.height(AureoleDS.dimens.xxSmall))
 
                 CustomHueSection(
                     selectedColor = selectedColor,
@@ -131,7 +131,7 @@ private fun PresetColorsSection(
     selectedColor: Int,
     onSelectPreset: (Int) -> Unit
 ) {
-    Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
+    Column(verticalArrangement = Arrangement.spacedBy(AureoleDS.dimens.medium)) {
         AureoleText(
             text = "Cores Recomendadas",
             style = MaterialTheme.typography.labelMedium,
@@ -140,8 +140,8 @@ private fun PresetColorsSection(
 
         FlowRow(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(12.dp, Alignment.CenterHorizontally),
-            verticalArrangement = Arrangement.spacedBy(12.dp),
+            horizontalArrangement = Arrangement.spacedBy(AureoleDS.dimens.small, Alignment.CenterHorizontally),
+            verticalArrangement = Arrangement.spacedBy(AureoleDS.dimens.small),
         ) {
             PresetColors.forEach { colorInt ->
                 val isSelected = selectedColor == colorInt
@@ -187,7 +187,7 @@ private fun CustomHueSection(
 
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(12.dp),
+            horizontalArrangement = Arrangement.spacedBy(AureoleDS.dimens.small),
         ) {
             Box(
                 modifier = Modifier

@@ -54,6 +54,7 @@ data class MainUiState(
     val showSearchBarInAllApps: Boolean = true,
     val searchIconPosition: String = "Left",
     val headerOffsetPercent: Int = 10,
+    val cornerRadiusDp: Int = SettingsRepository.DEFAULT_CORNER_RADIUS_DP,
     val showUpdateAvailableDialog: Boolean = false,
     val showUpdateDownloadedDialog: Boolean = false,
 

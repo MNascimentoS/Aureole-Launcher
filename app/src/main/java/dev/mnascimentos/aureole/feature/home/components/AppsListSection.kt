@@ -71,6 +71,8 @@ import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.core.designsystem.utils.fadingEdges
 import dev.mnascimentos.aureole.feature.home.LocalHomeActions
 import dev.mnascimentos.aureole.feature.home.LocalHomeUiState
+import dev.mnascimentos.aureole.feature.home.components.model.AppItemRowActions
+import dev.mnascimentos.aureole.feature.home.components.model.AppItemRowConfig
 import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
 
@@ -91,7 +93,8 @@ fun AppsListDrawer(
 
     val baseBgColor = AureoleDS.colors.background
     val hasHaze = uiState.isHazeEnabled && (hazeState != null)
-    val hazeModifier = Modifier.buildDrawerHaze(hasHaze, hazeState, baseBgColor, uiState.hazeOpacity)
+    val hazeModifier =
+        Modifier.buildDrawerHaze(hasHaze, hazeState, baseBgColor, uiState.hazeOpacity)
     val drawerBgColor = if (hasHaze) Color.Transparent else baseBgColor
 
     BoxWithConstraints(
@@ -147,7 +150,10 @@ private fun Modifier.buildDrawerHaze(
     hazeOpacity: Float
 ): Modifier {
     if (!hasHaze || hazeState == null) return this
-    val tintAlpha = (hazeOpacity * DRAWER_HAZE_TINT_FACTOR).coerceIn(DRAWER_HAZE_MIN_ALPHA, DRAWER_HAZE_MAX_ALPHA)
+    val tintAlpha = (hazeOpacity * DRAWER_HAZE_TINT_FACTOR).coerceIn(
+        DRAWER_HAZE_MIN_ALPHA,
+        DRAWER_HAZE_MAX_ALPHA
+    )
     return this.then(
         Modifier.hazeEffect(
             state = hazeState,
@@ -202,7 +208,12 @@ private fun FloatingSearchBubble(
     }
 
     val bubbleBgColor = if (uiState.isHazeEnabled) {
-        AureoleDS.colors.surfaceVariant.copy(alpha = (uiState.hazeOpacity * 0.85f).coerceIn(0.3f, 0.95f))
+        AureoleDS.colors.surfaceVariant.copy(
+            alpha = (uiState.hazeOpacity * 0.85f).coerceIn(
+                0.3f,
+                0.95f
+            )
+        )
     } else {
         AureoleDS.colors.surfaceVariant
     }
@@ -343,12 +354,24 @@ fun LazyListScope.appsListItems(
             )
         }
 
+        val isFav = uiState.favoriteAppPackages.contains(app.packageName)
         AppItemRow(
             app = app,
-            onClick = { actions.onAppClick(app) }
+            onClick = { actions.onAppClick(app) },
+            config = AppItemRowConfig(isFavorite = isFav),
+            actions = AppItemRowActions(
+                onToggleFavorite = { actions.onToggleFavorite(it) },
+                onEditFavoritesClick = { actions.onOpenFavoritePicker(null) },
+                onAppInfoClick = { actions.onAppInfoClick(it) },
+                onUninstallClick = { actions.onUninstallAppClick(it) }
+            )
         )
     }
 
+    settingsListItem(actions)
+}
+
+private fun LazyListScope.settingsListItem(actions: HomeScreenActions) {
     item(key = "aureole_settings_item", contentType = "settings_item") {
         Spacer(modifier = Modifier.height(16.dp))
         Row(
@@ -356,31 +379,31 @@ fun LazyListScope.appsListItems(
                 .fillMaxWidth()
                 .clip(RoundedCornerShape(12.dp))
                 .clickable { actions.onSettingsClick() }
-                .padding(horizontal = 12.dp, vertical = 12.dp),
+                .padding(horizontal = AureoleDS.dimens.medium, vertical = AureoleDS.dimens.small),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Box(
                 modifier = Modifier
-                    .size(40.dp)
+                    .size(42.dp)
                     .clip(CircleShape)
                     .background(AureoleDS.colors.surfaceVariant),
                 contentAlignment = Alignment.Center
             ) {
                 AureoleDS.icons.Settings(
                     tint = AureoleDS.colors.onSurfaceHigh,
-                    modifier = Modifier.size(22.dp)
+                    modifier = Modifier.size(24.dp)
                 )
             }
 
-            Spacer(modifier = Modifier.width(16.dp))
+            Spacer(modifier = Modifier.width(AureoleDS.dimens.medium))
 
             AureoleText(
                 text = "Aureole Settings",
                 style = AureoleDS.typography.bodyLarge,
-                fontWeight = FontWeight.SemiBold,
-                color = AureoleDS.colors.onSurfaceHigh
+                color = AureoleDS.colors.onSurfaceMedium
             )
         }
+        Spacer(modifier = Modifier.height(80.dp))
     }
 }
 

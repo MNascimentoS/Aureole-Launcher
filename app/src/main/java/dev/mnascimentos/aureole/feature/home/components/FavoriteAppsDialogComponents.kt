@@ -75,7 +75,7 @@ fun FavoriteAppsShowAllSwitchRow(
             .fillMaxWidth()
             .clip(RoundedCornerShape(12.dp))
             .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f))
-            .padding(horizontal = AureoleDS.spacings.small, vertical = AureoleDS.spacings.xSmall),
+            .padding(horizontal = AureoleDS.dimens.small, vertical = AureoleDS.dimens.xSmall),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -104,7 +104,7 @@ fun FavoriteAppRowInfo(app: AppInfo, modifier: Modifier = Modifier) {
     val iconBitmap = remember(app.packageName) { app.getIconBitmap() }
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        modifier = modifier.padding(end = AureoleDS.spacings.xSmall)
+        modifier = modifier.padding(end = AureoleDS.dimens.xSmall)
     ) {
         Icon(
             imageVector = Icons.Default.Star,
@@ -112,7 +112,7 @@ fun FavoriteAppRowInfo(app: AppInfo, modifier: Modifier = Modifier) {
             tint = MaterialTheme.colorScheme.primary,
             modifier = Modifier.size(20.dp)
         )
-        Spacer(modifier = Modifier.width(AureoleDS.spacings.xSmall))
+        Spacer(modifier = Modifier.width(AureoleDS.dimens.xSmall))
         Image(
             bitmap = iconBitmap,
             contentDescription = app.label,
@@ -120,7 +120,7 @@ fun FavoriteAppRowInfo(app: AppInfo, modifier: Modifier = Modifier) {
                 .size(32.dp)
                 .clip(RoundedCornerShape(8.dp))
         )
-        Spacer(modifier = Modifier.width(AureoleDS.spacings.xSmall))
+        Spacer(modifier = Modifier.width(AureoleDS.dimens.xSmall))
         AureoleText(
             text = app.label,
             style = AureoleDS.typography.bodyMedium,
@@ -201,7 +201,7 @@ fun RemainingAppRow(
             .fillMaxWidth()
             .clip(RoundedCornerShape(12.dp))
             .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f))
-            .padding(horizontal = AureoleDS.spacings.small, vertical = AureoleDS.spacings.xxSmall),
+            .padding(horizontal = AureoleDS.dimens.small, vertical = AureoleDS.dimens.xxSmall),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
@@ -209,7 +209,7 @@ fun RemainingAppRow(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
                 .weight(1f)
-                .padding(end = AureoleDS.spacings.xSmall)
+                .padding(end = AureoleDS.dimens.xSmall)
         ) {
             Image(
                 bitmap = iconBitmap,
@@ -218,7 +218,7 @@ fun RemainingAppRow(
                     .size(32.dp)
                     .clip(RoundedCornerShape(8.dp))
             )
-            Spacer(modifier = Modifier.width(AureoleDS.spacings.xSmall))
+            Spacer(modifier = Modifier.width(AureoleDS.dimens.xSmall))
             AureoleText(
                 text = app.label,
                 style = AureoleDS.typography.bodyMedium,

@@ -13,6 +13,7 @@ sealed interface SettingValue {
     data class SettingsButtonPosition(val position: String) : SettingValue
     data class SearchIconPosition(val position: String) : SettingValue
     data class WallpaperScaleType(val scaleType: String) : SettingValue
+    data class CornerRadius(val radiusDp: Int) : SettingValue
 }
 
 data class SettingsUiState(
@@ -49,6 +50,7 @@ data class SettingsUiState(
     val hazeOpacity: Float = 0.5f,
     val isInAppUpdateEnabled: Boolean = true,
     val headerOffsetPercent: Int = 10,
+    val cornerRadiusDp: Int = SettingsRepository.DEFAULT_CORNER_RADIUS_DP,
     val isThemedAppIconsEnabled: Boolean = false,
     val isAlphabetScrubberDisabled: Boolean = false,
     val showSettingsButtonInAllApps: Boolean = true,

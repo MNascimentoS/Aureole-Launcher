@@ -301,6 +301,36 @@ fun AureoleIcons.VerticalContainer(
 ) { AureoleIcon(R.drawable.ic_aureole_vertical_contaner, modifier, tint) }
 
 @Composable
+fun AureoleIcons.CheckSelected(
+    modifier: Modifier = Modifier,
+    tint: Color? = null
+) { AureoleIcon(R.drawable.ic_aureole_check_selected, modifier, tint) }
+
+@Composable
+fun AureoleIcons.CheckUnselected(
+    modifier: Modifier = Modifier,
+    tint: Color? = null
+) { AureoleIcon(R.drawable.ic_aureole_check_unselected, modifier, tint) }
+
+@Composable
+fun AureoleIcons.MultipleView(
+    modifier: Modifier = Modifier,
+    tint: Color? = null
+) { AureoleIcon(R.drawable.ic_aureole_multiple_view, modifier, tint) }
+
+@Composable
+fun AureoleIcons.RoundCheck(
+    modifier: Modifier = Modifier,
+    tint: Color? = null
+) { AureoleIcon(R.drawable.ic_aureole_round_check, modifier, tint) }
+
+@Composable
+fun AureoleIcons.Unchecked(
+    modifier: Modifier = Modifier,
+    tint: Color? = null
+) { AureoleIcon(R.drawable.ic_aureole_unchecked, modifier, tint) }
+
+@Composable
 internal fun AureoleIcon(
     iconResId: Int,
     modifier: Modifier = Modifier,

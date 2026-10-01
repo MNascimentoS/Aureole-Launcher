@@ -15,6 +15,7 @@ internal fun SettingsViewModel.applySettingValue(value: SettingValue) {
         is SettingValue.SettingsButtonPosition -> handleSettingsButtonPosition(value.position)
         is SettingValue.SearchIconPosition -> handleSearchIconPosition(value.position)
         is SettingValue.WallpaperScaleType -> handleWallpaperScaleType(value.scaleType)
+        is SettingValue.CornerRadius -> handleCornerRadius(value.radiusDp)
     }
 }
 
@@ -74,4 +75,9 @@ private fun SettingsViewModel.handleSearchIconPosition(position: String) {
 private fun SettingsViewModel.handleWallpaperScaleType(scaleType: String) {
     settingsRepository.wallpaperScaleType = scaleType
     updateUiState { it.copy(wallpaperScaleType = scaleType) }
+}
+
+private fun SettingsViewModel.handleCornerRadius(radiusDp: Int) {
+    settingsRepository.cornerRadiusDp = radiusDp
+    updateUiState { it.copy(cornerRadiusDp = radiusDp) }
 }

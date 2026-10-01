@@ -53,14 +53,14 @@ internal fun SettingsButtonPositionDialog(
                             .fillMaxWidth()
                             .clip(RoundedCornerShape(12.dp))
                             .clickable { onPositionSelected(value) }
-                            .padding(vertical = AureoleDS.spacings.xSmall, horizontal = AureoleDS.spacings.xSmall),
+                            .padding(vertical = AureoleDS.dimens.xSmall, horizontal = AureoleDS.dimens.xSmall),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         RadioButton(
                             selected = (currentPosition == value),
                             onClick = { onPositionSelected(value) }
                         )
-                        Spacer(modifier = Modifier.width(AureoleDS.spacings.small))
+                        Spacer(modifier = Modifier.width(AureoleDS.dimens.small))
                         AureoleText(
                             text = label,
                             style = AureoleTheme.typography.bodyLarge,
@@ -114,14 +114,14 @@ internal fun SearchIconPositionDialog(
                             .fillMaxWidth()
                             .clip(RoundedCornerShape(12.dp))
                             .clickable { onPositionSelected(value) }
-                            .padding(vertical = AureoleDS.spacings.xSmall, horizontal = AureoleDS.spacings.xSmall),
+                            .padding(vertical = AureoleDS.dimens.xSmall, horizontal = AureoleDS.dimens.xSmall),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         RadioButton(
                             selected = (currentPosition == value),
                             onClick = { onPositionSelected(value) }
                         )
-                        Spacer(modifier = Modifier.width(AureoleDS.spacings.small))
+                        Spacer(modifier = Modifier.width(AureoleDS.dimens.small))
                         AureoleText(
                             text = label,
                             style = AureoleTheme.typography.bodyLarge,
@@ -178,14 +178,14 @@ internal fun SidePanelPositionDialog(
                             .fillMaxWidth()
                             .clip(RoundedCornerShape(12.dp))
                             .clickable { onPositionSelected(value) }
-                            .padding(vertical = AureoleDS.spacings.xSmall, horizontal = AureoleDS.spacings.xSmall),
+                            .padding(vertical = AureoleDS.dimens.xSmall, horizontal = AureoleDS.dimens.xSmall),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         RadioButton(
                             selected = (currentPosition == value),
                             onClick = { onPositionSelected(value) }
                         )
-                        Spacer(modifier = Modifier.width(AureoleDS.spacings.small))
+                        Spacer(modifier = Modifier.width(AureoleDS.dimens.small))
                         AureoleText(
                             text = label,
                             style = AureoleTheme.typography.bodyLarge,

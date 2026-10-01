@@ -1,17 +1,14 @@
 package dev.mnascimentos.aureole.feature.home.folder
 
 import android.content.ComponentName
+import android.content.Intent
 import android.graphics.drawable.ColorDrawable
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -24,10 +21,6 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Close
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -39,29 +32,23 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import dev.chrisbanes.haze.HazeStyle
-import dev.chrisbanes.haze.HazeTint
-import dev.chrisbanes.haze.hazeEffect
 import dev.mnascimentos.aureole.core.data.model.AppFolder
 import dev.mnascimentos.aureole.core.data.model.AppInfo
-import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
+import dev.mnascimentos.aureole.core.designsystem.components.AureoleHeaderBanner
+import dev.mnascimentos.aureole.core.designsystem.components.AureolePopupBox
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.LocalHomeUiState
 import dev.mnascimentos.aureole.feature.home.folder.model.FolderPopupActions
 import dev.mnascimentos.aureole.feature.home.folder.model.GridFolderPopupParams
 import dev.mnascimentos.aureole.feature.home.folder.model.OpenedFolderPopupConfig
-import dev.mnascimentos.aureole.feature.home.folder.model.OpenedFolderPopupContentParams
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
+import dev.mnascimentos.aureole.feature.settings.SettingsActivity
 
-private const val HAZE_ALPHA_MULTIPLIER = 0.8f
-private const val HAZE_MIN_ALPHA = 0.25f
-private const val HAZE_MAX_ALPHA = 0.95f
-private const val OPAQUE_ALPHA = 1f
 private const val GRID_MAX_3 = 3
 private const val GRID_MAX_6 = 6
 private const val GRID_COLS = 3
@@ -113,90 +100,49 @@ private fun StandardFolderPopupBox(
     config: OpenedFolderPopupConfig,
     appsInFolder: List<AppInfo>,
     isActionsVisible: Boolean,
-    onToggleActions: () -> Unit,
+    @Suppress("UNUSED_PARAMETER") onToggleActions: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val uiState = LocalHomeUiState.current
-    val isHazeEnabled = uiState.isHazeEnabled
-    val hazeOpacity = uiState.hazeOpacity
+    val context = LocalContext.current
 
-    val surfaceColor = AureoleDS.colors.surfaceVariant
-
-    val hazeModifier = if (isHazeEnabled && (config.hazeState != null)) {
-        Modifier.hazeEffect(
-            state = config.hazeState,
-            style = HazeStyle(
-                blurRadius = 24.dp,
-                tint = HazeTint(surfaceColor.copy(alpha = hazeOpacity))
-            )
-        ) {
-            blurEnabled = true
-        }
-    } else {
-        Modifier
-    }
-
-    val backgroundAlpha = if (isHazeEnabled) {
-        (hazeOpacity * HAZE_ALPHA_MULTIPLIER).coerceIn(HAZE_MIN_ALPHA, HAZE_MAX_ALPHA)
-    } else {
-        OPAQUE_ALPHA
-    }
-
-    Box(
+    AureolePopupBox(
+        hazeState = null,
+        contentPadding = PaddingValues(0.dp),
         modifier = modifier
-            .widthIn(min = 210.dp, max = 250.dp)
-            .heightIn(max = 380.dp)
-            .clip(RoundedCornerShape(18.dp))
-            .then(hazeModifier)
-            .background(surfaceColor.copy(alpha = backgroundAlpha))
-            .padding(12.dp)
+            .widthIn(min = 230.dp, max = 270.dp)
+            .heightIn(max = 400.dp)
     ) {
-        OpenedFolderPopupContent(
-            params = OpenedFolderPopupContentParams(
-                folderName = config.folder.name,
-                appsInFolder = appsInFolder,
-                isActionsVisible = isActionsVisible,
-                isGridMode = false
-            ),
-            actions = config.actions,
-            onToggleActions = onToggleActions
-        )
-    }
-}
-
-@Composable
-private fun OpenedFolderPopupContent(
-    params: OpenedFolderPopupContentParams,
-    actions: FolderPopupActions,
-    onToggleActions: () -> Unit
-) {
-    val isLeftHandedMode = LocalHomeUiState.current.isLeftHandedMode
-    Column(modifier = Modifier.fillMaxWidth()) {
-        OpenedFolderHeader(
-            title = params.folderName,
-            onDismiss = actions.onDismiss,
-            onToggleActions = onToggleActions
+        AureoleHeaderBanner(
+            title = config.folder.name,
+            onLogoClick = {
+                context.startActivity(Intent(context, SettingsActivity::class.java))
+            }
         )
 
-        Spacer(modifier = Modifier.height(8.dp))
-
-        OpenedFolderActions(
-            isVisible = params.isActionsVisible,
-            onAddAppsClick = actions.onAddAppsClick,
-            onEditFolderClick = actions.onEditFolderClick
-        )
-
-        if (params.isGridMode) {
-            OpenedFolderGrid(
-                appsInFolder = params.appsInFolder,
-                onAppClick = actions.onAppClick
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 12.dp, vertical = 10.dp)
+        ) {
+            OpenedFolderActions(
+                isVisible = isActionsVisible,
+                onAddAppsClick = config.actions.onAddAppsClick,
+                onEditFolderClick = config.actions.onEditFolderClick
             )
-        } else {
-            OpenedFolderAppList(
-                appsInFolder = params.appsInFolder,
-                isLeftHandedMode = isLeftHandedMode,
-                onAppClick = actions.onAppClick
-            )
+
+            if (config.folder.displayAsGrid) {
+                OpenedFolderGrid(
+                    appsInFolder = appsInFolder,
+                    onAppClick = config.actions.onAppClick
+                )
+            } else {
+                OpenedFolderAppList(
+                    appsInFolder = appsInFolder,
+                    isLeftHandedMode = uiState.isLeftHandedMode,
+                    onAppClick = config.actions.onAppClick
+                )
+            }
         }
     }
 }
@@ -278,49 +224,6 @@ private fun OpenedFolderGridAppItem(
             textAlign = TextAlign.Center,
             modifier = Modifier.fillMaxWidth()
         )
-    }
-}
-
-@OptIn(ExperimentalFoundationApi::class)
-@Composable
-private fun OpenedFolderHeader(
-    title: String,
-    onDismiss: () -> Unit,
-    onToggleActions: () -> Unit
-) {
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween
-    ) {
-        Text(
-            text = title,
-            style = MaterialTheme.typography.titleMedium,
-            fontWeight = FontWeight.Bold,
-            color = MaterialTheme.colorScheme.onSurface,
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis,
-            modifier = Modifier
-                .weight(1f)
-                .clip(RoundedCornerShape(8.dp))
-                .combinedClickable(
-                    onClick = {},
-                    onLongClick = onToggleActions
-                )
-                .padding(vertical = 4.dp, horizontal = 4.dp)
-        )
-
-        IconButton(
-            onClick = onDismiss,
-            modifier = Modifier.size(28.dp)
-        ) {
-            Icon(
-                imageVector = Icons.Default.Close,
-                contentDescription = "Close Folder",
-                tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.size(18.dp)
-            )
-        }
     }
 }
 

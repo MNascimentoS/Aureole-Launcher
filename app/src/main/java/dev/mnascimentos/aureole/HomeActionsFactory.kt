@@ -76,6 +76,7 @@ class HomeActionsFactory(
             onUpdateFavoritePackages = { cId, pkgs -> handleUpdateFavoritePackages(cId, pkgs) },
             onToggleShowAllAppsOnHome = { viewModel.toggleShowAllAppsOnHome() },
             onAppInfoClick = { app -> IntentUtils.openAppInfo(activity, app.packageName) },
+            onUninstallAppClick = { app -> IntentUtils.uninstallApp(activity, app.packageName) },
             onOpenFavoritePicker = { containerId -> viewModel.setShowFavoritePicker(true, containerId) },
             onOpenWidgetPopup = { widgetId, topY -> viewModel.openWidgetPopup(widgetId, topY) },
             onCloseWidgetPopup = { viewModel.closeWidgetPopup() },

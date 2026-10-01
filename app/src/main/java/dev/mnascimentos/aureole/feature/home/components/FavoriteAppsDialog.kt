@@ -76,7 +76,7 @@ fun FavoriteAppsDialog(
                     shape = RoundedCornerShape(22.dp)
                 )
                 .background(AureoleTheme.colors.surface)
-                .padding(AureoleDS.spacings.large)
+                .padding(AureoleDS.dimens.large)
         ) {
             FavoriteAppsDialogContent(config = config, actions = actions)
         }
@@ -404,7 +404,7 @@ private fun FavoriteAppRow(
             .fillMaxWidth()
             .clip(RoundedCornerShape(12.dp))
             .background(AureoleTheme.colors.surfaceVariant.copy(alpha = 0.5f))
-            .padding(horizontal = AureoleDS.spacings.small, vertical = AureoleDS.spacings.xxSmall),
+            .padding(horizontal = AureoleDS.dimens.small, vertical = AureoleDS.dimens.xxSmall),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {

@@ -25,6 +25,29 @@ object IntentUtils {
         }
     }
 
+    fun uninstallApp(context: Context, packageName: String) {
+        try {
+            val intent = Intent(Intent.ACTION_DELETE).apply {
+                data = Uri.fromParts("package", packageName, null)
+                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            }
+            context.startActivity(intent)
+        } catch (e: ActivityNotFoundException) {
+            try {
+                @Suppress("DEPRECATION")
+                val fallbackIntent = Intent(Intent.ACTION_UNINSTALL_PACKAGE).apply {
+                    data = Uri.fromParts("package", packageName, null)
+                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                }
+                context.startActivity(fallbackIntent)
+            } catch (e2: ActivityNotFoundException) {
+                Log.e(TAG, "Failed to uninstall app $packageName", e2)
+            } catch (e2: SecurityException) {
+                Log.e(TAG, "Failed to uninstall app $packageName due to security", e2)
+            }
+        }
+    }
+
     fun expandNotificationShade(context: Context) {
         try {
             val statusBarService = context.getSystemService("statusbar")
