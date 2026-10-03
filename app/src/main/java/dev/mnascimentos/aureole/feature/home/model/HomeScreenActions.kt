@@ -1,11 +1,12 @@
 package dev.mnascimentos.aureole.feature.home.model
 
 import androidx.compose.ui.unit.Dp
+import dev.mnascimentos.aureole.core.data.model.AppFolder
 import dev.mnascimentos.aureole.core.data.model.AppInfo
+import dev.mnascimentos.aureole.core.data.model.ContainerModel
 import dev.mnascimentos.aureole.core.data.model.LauncherItemState
 import dev.mnascimentos.aureole.core.data.model.LauncherItemType
 import dev.mnascimentos.aureole.core.data.model.ScrollOrientation
-import dev.mnascimentos.aureole.core.data.model.SidePanelModel
 
 data class HomeScreenActions(
     val onWidgetRowHeightChanged: (Dp) -> Unit,
@@ -46,8 +47,8 @@ data class HomeScreenActions(
     val onOpenAddContainerDialog: () -> Unit = {},
     val onCloseAddContainerDialog: () -> Unit = {},
     val onAddGridItem: (LauncherItemType, Int?) -> Unit = { _, _ -> },
-    val onOpenEditContainerDialog: (LauncherItemState) -> Unit = {},
-    val onCloseEditContainerDialog: () -> Unit = {},
+    val onOpenEditGridItemDialog: (LauncherItemState) -> Unit = {},
+    val onCloseEditGridItemDialog: () -> Unit = {},
     val onDeleteGridItem: (String) -> Unit = {},
     val onDismissGridError: () -> Unit = {},
     val onSetIsAddingSingleWidget: (Boolean) -> Unit = {},
@@ -57,8 +58,22 @@ data class HomeScreenActions(
     val onOpenAddContainerForParent: (String) -> Unit = {},
 
     // Side Panel Actions
-    val onOpenEditSidePanelDialog: (String) -> Unit = {},
-    val onCloseEditSidePanelDialog: () -> Unit = {},
-    val onSaveSidePanelModel: (SidePanelModel) -> Unit = {},
-    val onDeleteSidePanelInstance: (String) -> Unit = {},
+    val onOpenEditContainerDialog: (String) -> Unit = {},
+    val onCloseEditContainerDialog: () -> Unit = {},
+    val onSaveContainerModel: (ContainerModel) -> Unit = {},
+    val onDeleteContainerInstance: (String) -> Unit = {},
+
+    // Contextual Bottom Sheets Actions
+    val onOpenContainerAppBottomSheet: (AppInfo, String) -> Unit = { _, _ -> },
+    val onCloseContainerAppBottomSheet: () -> Unit = {},
+    val onOpenContainerFolderBottomSheet: (AppFolder, String) -> Unit = { _, _ -> },
+    val onCloseContainerFolderBottomSheet: () -> Unit = {},
+    val onOpenFolderAppBottomSheet: (AppInfo, AppFolder) -> Unit = { _, _ -> },
+    val onCloseFolderAppBottomSheet: () -> Unit = {},
+    val onOpenWidgetStackBottomSheet: (Int?, String) -> Unit = { _, _ -> },
+    val onCloseWidgetStackBottomSheet: () -> Unit = {},
+    val onToggleWidgetStackDots: (String) -> Unit = {},
+    val onRemoveAppFromContainer: (String, String) -> Unit = { _, _ -> },
+    val onRemoveAppFromFolder: (String, String) -> Unit = { _, _ -> },
+    val onOpenEditFolderForFolder: (AppFolder) -> Unit = {},
 )

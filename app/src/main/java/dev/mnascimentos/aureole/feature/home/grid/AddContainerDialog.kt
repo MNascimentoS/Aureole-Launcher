@@ -73,7 +73,7 @@ private fun AddContainerOptionList(
         AddContainerOptionItem(
             title = "Barra de Atalhos (Side Panel)",
             icon = Icons.Default.Menu,
-            onClick = { onSelectType(LauncherItemType.SHORTCUTS_SIDE_PANEL) }
+            onClick = { onSelectType(LauncherItemType.SHORTCUTS_CONTAINER) }
         )
         AddContainerOptionItem(
             title = "Widget Individual do Android",

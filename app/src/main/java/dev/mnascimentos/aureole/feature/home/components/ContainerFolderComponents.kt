@@ -1,14 +1,17 @@
 package dev.mnascimentos.aureole.feature.home.components
 
 import androidx.compose.animation.animateColorAsState
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -38,7 +41,7 @@ import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.feature.home.LocalHomeUiState
-import dev.mnascimentos.aureole.feature.home.components.model.SidePanelFolderButtonParams
+import dev.mnascimentos.aureole.feature.home.components.model.ContainerFolderButtonParams
 import dev.mnascimentos.aureole.feature.home.folder.FolderIconRegistry
 
 private const val MAX_PREVIEW_APPS = 9
@@ -47,14 +50,19 @@ private const val GRID_COLS = 3
 private const val FOLDER_BG_INACTIVE_ALPHA = 0.85f
 
 @Composable
-fun SidePanelAddFolderButton(
-    onClick: () -> Unit
+fun ContainerAddFolderButton(
+    onClick: () -> Unit,
+    isBackgroundEnabled: Boolean = true
 ) {
+    val buttonSize = if (isBackgroundEnabled) 52.dp else 60.dp
+    val iconSize = if (isBackgroundEnabled) 28.dp else 34.dp
+    val cornerRadius = if (isBackgroundEnabled) 15.dp else 18.dp
+
     Box(
         modifier = Modifier
             .padding(vertical = 4.dp)
-            .size(48.dp)
-            .clip(RoundedCornerShape(14.dp))
+            .size(buttonSize)
+            .clip(RoundedCornerShape(cornerRadius))
             .background(AureoleDS.colors.surfaceVariant.copy(alpha = FOLDER_BG_INACTIVE_ALPHA))
             .clickable(onClick = onClick),
         contentAlignment = Alignment.Center
@@ -63,18 +71,20 @@ fun SidePanelAddFolderButton(
             imageVector = Icons.Default.Add,
             contentDescription = "Criar Pasta",
             tint = AureoleDS.colors.onSurfaceMedium,
-            modifier = Modifier.size(24.dp)
+            modifier = Modifier.size(iconSize)
         )
     }
 }
 
 @Composable
-fun SidePanelFolderItem(
+fun ContainerFolderItem(
     folder: AppFolder,
     isOpened: Boolean,
     showFolderLabels: Boolean,
     isGridFolderEnabled: Boolean,
+    isBackgroundEnabled: Boolean = true,
     onFolderClick: (AppFolder, Float) -> Unit,
+    onLongClick: (() -> Unit)? = null,
 ) {
     var itemYInWindow by remember { mutableFloatStateOf(0f) }
 
@@ -96,49 +106,67 @@ fun SidePanelFolderItem(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
             .padding(vertical = 4.dp)
-            .widthIn(max = 60.dp),
+            .widthIn(max = 68.dp),
     ) {
-        SidePanelFolderButton(
-            params = SidePanelFolderButtonParams(
+        ContainerFolderButton(
+            params = ContainerFolderButtonParams(
                 folder = folder,
                 isGridFolderEnabled = isGridFolderEnabled,
                 containerColor = containerColor,
                 textColor = textColor
             ),
+            isBackgroundEnabled = isBackgroundEnabled,
             onPositionedY = { y -> itemYInWindow = y },
-            onClick = { onFolderClick(folder, itemYInWindow) }
+            onClick = { onFolderClick(folder, itemYInWindow) },
+            onLongClick = onLongClick
         )
 
         if (showFolderLabels) {
-            SidePanelFolderLabel(name = folder.name)
+            ContainerFolderLabel(name = folder.name)
         }
     }
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun SidePanelFolderButton(
-    params: SidePanelFolderButtonParams,
+fun ContainerFolderButton(
+    params: ContainerFolderButtonParams,
     onPositionedY: (Float) -> Unit,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    onLongClick: (() -> Unit)? = null,
+    isBackgroundEnabled: Boolean = true
 ) {
     val uiState = LocalHomeUiState.current
     val showGridPreview = params.isGridFolderEnabled || params.folder.displayAsGrid
+    val buttonSize = if (isBackgroundEnabled) 52.dp else 60.dp
+    val iconSize = if (isBackgroundEnabled) 28.dp else 34.dp
+    val cornerRadius = if (isBackgroundEnabled) 15.dp else 18.dp
+
+    val clickModifier = if (onLongClick != null) {
+        Modifier.combinedClickable(
+            onClick = onClick,
+            onLongClick = onLongClick
+        )
+    } else {
+        Modifier.clickable(onClick = onClick)
+    }
 
     Box(
         modifier = Modifier
-            .size(48.dp)
-            .clip(RoundedCornerShape(14.dp))
+            .size(buttonSize)
+            .clip(RoundedCornerShape(cornerRadius))
             .background(params.containerColor)
             .onGloballyPositioned { coordinates ->
                 onPositionedY(coordinates.positionInWindow().y)
             }
-            .clickable(onClick = onClick),
+            .then(clickModifier),
         contentAlignment = Alignment.Center
     ) {
         if (showGridPreview) {
             FolderMiniGridPreview(
                 folder = params.folder,
-                allApps = uiState.apps
+                allApps = uiState.apps,
+                modifier = Modifier.size(buttonSize)
             )
         } else {
             val iconVector = FolderIconRegistry.getIcon(params.folder.icon)
@@ -147,13 +175,13 @@ fun SidePanelFolderButton(
                     imageVector = iconVector,
                     contentDescription = params.folder.name,
                     tint = params.textColor,
-                    modifier = Modifier.size(24.dp)
+                    modifier = Modifier.size(iconSize)
                 )
             } else {
                 AureoleText(
                     text = params.folder.name.take(1).uppercase(),
                     color = params.textColor,
-                    style = MaterialTheme.typography.titleMedium,
+                    style = if (isBackgroundEnabled) MaterialTheme.typography.headlineSmall else MaterialTheme.typography.headlineMedium,
                     fontWeight = FontWeight.Bold
                 )
             }
@@ -175,8 +203,8 @@ fun FolderMiniGridPreview(
 
     Box(
         modifier = modifier
-            .size(48.dp)
-            .clip(RoundedCornerShape(14.dp))
+            .size(52.dp)
+            .clip(RoundedCornerShape(15.dp))
             .background(AureoleDS.colors.surfaceVariant.copy(alpha = 0.85f))
             .padding(3.dp),
         contentAlignment = Alignment.Center
@@ -242,7 +270,7 @@ private fun PopulatedFolderMiniGrid(folderApps: List<AppInfo>) {
 }
 
 @Composable
-fun SidePanelFolderLabel(name: String) {
+fun ContainerFolderLabel(name: String) {
     Spacer(modifier = Modifier.height(2.dp))
     AureoleText(
         text = name,
@@ -254,4 +282,49 @@ fun SidePanelFolderLabel(name: String) {
         textAlign = TextAlign.Center,
         modifier = Modifier.widthIn(max = 56.dp)
     )
+}
+
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+fun ContainerAppItem(
+    app: AppInfo,
+    showLabels: Boolean,
+    isBackgroundEnabled: Boolean = true,
+    onAppClick: (AppInfo) -> Unit,
+    onLongClick: () -> Unit
+) {
+    val bitmap = remember(app.packageName) { app.getIconBitmap() }
+    val buttonSize = if (isBackgroundEnabled) 52.dp else 60.dp
+    val cornerRadius = if (isBackgroundEnabled) 15.dp else 18.dp
+    val imgPadding = if (isBackgroundEnabled) 3.dp else 2.dp
+
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier
+            .padding(vertical = 4.dp)
+            .widthIn(max = 68.dp),
+    ) {
+        Box(
+            modifier = Modifier
+                .size(buttonSize)
+                .clip(RoundedCornerShape(cornerRadius))
+                .background(AureoleDS.colors.surfaceVariant.copy(alpha = FOLDER_BG_INACTIVE_ALPHA))
+                .combinedClickable(
+                    onClick = { onAppClick(app) },
+                    onLongClick = onLongClick
+                )
+                .padding(imgPadding),
+            contentAlignment = Alignment.Center
+        ) {
+            Image(
+                bitmap = bitmap,
+                contentDescription = app.label,
+                modifier = Modifier.fillMaxSize()
+            )
+        }
+
+        if (showLabels) {
+            ContainerFolderLabel(name = app.label)
+        }
+    }
 }

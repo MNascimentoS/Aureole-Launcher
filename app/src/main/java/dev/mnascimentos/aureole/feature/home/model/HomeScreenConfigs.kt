@@ -7,12 +7,13 @@ import androidx.compose.ui.unit.Density
 import dev.chrisbanes.haze.HazeState
 import dev.mnascimentos.aureole.core.data.model.LauncherItemState
 import dev.mnascimentos.aureole.feature.home.components.FavoritesListConfig
-import dev.mnascimentos.aureole.feature.home.components.model.SidePanelConfig
+import dev.mnascimentos.aureole.feature.home.components.model.ContainerConfig
 import dev.mnascimentos.aureole.feature.home.widget.model.StackedWidgetConfig
 import kotlinx.coroutines.CoroutineScope
 
 data class HomeDragParams(
     val isLeftHandedMode: Boolean,
+    val isAlphabetScrubberDisabled: Boolean = false,
     val screenHeightPx: Float,
     val screenWidthPx: Float,
     val isAllAppsDrawerOpen: Boolean,
@@ -70,7 +71,7 @@ data class GridItemContentParams(
     val favConfig: FavoritesListConfig,
     val appWidgetHost: AppWidgetHost,
     val stackedWidgetConfig: StackedWidgetConfig,
-    val sidePanelConfig: SidePanelConfig,
+    val containerConfig: ContainerConfig,
     val isInScrollView: Boolean = false
 )
 
@@ -79,7 +80,7 @@ data class VerticalScrollViewContentParams(
     val favConfig: FavoritesListConfig,
     val appWidgetHost: AppWidgetHost,
     val stackedWidgetConfig: StackedWidgetConfig,
-    val sidePanelConfig: SidePanelConfig,
+    val containerConfig: ContainerConfig,
     val scrollState: ScrollState
 )
 
@@ -88,7 +89,7 @@ data class ScrollViewContentParams(
     val favConfig: FavoritesListConfig,
     val appWidgetHost: AppWidgetHost,
     val stackedWidgetConfig: StackedWidgetConfig,
-    val sidePanelConfig: SidePanelConfig,
+    val containerConfig: ContainerConfig,
     val scrollState: ScrollState? = null
 )
 
@@ -98,6 +99,6 @@ data class ScrollViewChildItemParams(
     val favConfig: FavoritesListConfig,
     val appWidgetHost: AppWidgetHost,
     val stackedWidgetConfig: StackedWidgetConfig,
-    val sidePanelConfig: SidePanelConfig,
+    val containerConfig: ContainerConfig,
     val isVertical: Boolean
 )

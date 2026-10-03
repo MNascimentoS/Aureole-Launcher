@@ -12,29 +12,29 @@ class SettingsRepository(private val context: Context) {
         get() = prefs.getBoolean(KEY_LEFT_HANDED_MODE, false)
         set(value) = prefs.edit { putBoolean(KEY_LEFT_HANDED_MODE, value) }
 
-    var isSidePanelEnabled: Boolean
-        get() = prefs.getBoolean(KEY_SIDE_PANEL_ENABLED, true)
-        set(value) = prefs.edit { putBoolean(KEY_SIDE_PANEL_ENABLED, value) }
+    var isContainerEnabled: Boolean
+        get() = prefs.getBoolean(KEY_CONTAINER_ENABLED, true)
+        set(value) = prefs.edit { putBoolean(KEY_CONTAINER_ENABLED, value) }
 
-    var isSidePanelBackgroundEnabled: Boolean
-        get() = prefs.getBoolean(KEY_SIDE_PANEL_BACKGROUND_ENABLED, true)
-        set(value) = prefs.edit { putBoolean(KEY_SIDE_PANEL_BACKGROUND_ENABLED, value) }
+    var isContainerBackgroundEnabled: Boolean
+        get() = prefs.getBoolean(KEY_CONTAINER_BACKGROUND_ENABLED, true)
+        set(value) = prefs.edit { putBoolean(KEY_CONTAINER_BACKGROUND_ENABLED, value) }
 
-    var isSidePanelExpandCell: Boolean
-        get() = prefs.getBoolean(KEY_SIDE_PANEL_EXPAND_CELL, false)
-        set(value) = prefs.edit { putBoolean(KEY_SIDE_PANEL_EXPAND_CELL, value) }
+    var isContainerExpandCell: Boolean
+        get() = prefs.getBoolean(KEY_CONTAINER_EXPAND_CELL, false)
+        set(value) = prefs.edit { putBoolean(KEY_CONTAINER_EXPAND_CELL, value) }
 
     var isClockBackgroundEnabled: Boolean
         get() = prefs.getBoolean(KEY_CLOCK_BACKGROUND_ENABLED, true)
         set(value) = prefs.edit { putBoolean(KEY_CLOCK_BACKGROUND_ENABLED, value) }
 
-    var showSidePanelAddFolderButton: Boolean
-        get() = prefs.getBoolean(KEY_SHOW_SIDE_PANEL_ADD_FOLDER_BUTTON, true)
-        set(value) = prefs.edit { putBoolean(KEY_SHOW_SIDE_PANEL_ADD_FOLDER_BUTTON, value) }
+    var showContainerAddFolderButton: Boolean
+        get() = prefs.getBoolean(KEY_SHOW_CONTAINER_ADD_FOLDER_BUTTON, true)
+        set(value) = prefs.edit { putBoolean(KEY_SHOW_CONTAINER_ADD_FOLDER_BUTTON, value) }
 
-    var sidePanelPosition: String
-        get() = prefs.getString(KEY_SIDE_PANEL_POSITION, "Center") ?: "Center"
-        set(value) = prefs.edit { putString(KEY_SIDE_PANEL_POSITION, value) }
+    var containerPosition: String
+        get() = prefs.getString(KEY_CONTAINER_POSITION, "Center") ?: "Center"
+        set(value) = prefs.edit { putString(KEY_CONTAINER_POSITION, value) }
 
     var showFolderLabels: Boolean
         get() = prefs.getBoolean(KEY_SHOW_FOLDER_LABELS, false)
@@ -168,12 +168,12 @@ class SettingsRepository(private val context: Context) {
     companion object {
         private const val PREFS_NAME = "aureole_settings_prefs"
         private const val KEY_LEFT_HANDED_MODE = "left_handed_mode"
-        private const val KEY_SIDE_PANEL_ENABLED = "side_panel_enabled"
-        private const val KEY_SIDE_PANEL_BACKGROUND_ENABLED = "side_panel_background_enabled"
-        private const val KEY_SIDE_PANEL_EXPAND_CELL = "side_panel_expand_cell"
+        private const val KEY_CONTAINER_ENABLED = "container_enabled"
+        private const val KEY_CONTAINER_BACKGROUND_ENABLED = "container_background_enabled"
+        private const val KEY_CONTAINER_EXPAND_CELL = "container_expand_cell"
         private const val KEY_CLOCK_BACKGROUND_ENABLED = "clock_background_enabled"
-        private const val KEY_SHOW_SIDE_PANEL_ADD_FOLDER_BUTTON = "show_side_panel_add_folder_button"
-        private const val KEY_SIDE_PANEL_POSITION = "side_panel_position"
+        private const val KEY_SHOW_CONTAINER_ADD_FOLDER_BUTTON = "show_container_add_folder_button"
+        private const val KEY_CONTAINER_POSITION = "container_position"
         private const val KEY_SHOW_FOLDER_LABELS = "show_folder_labels"
         private const val KEY_FAVORITE_APPS = "favorite_apps"
         private const val KEY_HOME_OPENS_ALL_APPS = "home_opens_all_apps"
@@ -200,7 +200,7 @@ class SettingsRepository(private val context: Context) {
         private const val KEY_SELECTED_FONT = "selected_font"
         private const val DEFAULT_HAZE_OPACITY = 0.5f
         private const val DEFAULT_HEADER_OFFSET = 10
-        private const val MIN_HEADER_OFFSET = 10
+        private const val MIN_HEADER_OFFSET = 0
         private const val MAX_HEADER_OFFSET = 60
         const val DEFAULT_CORNER_RADIUS_DP = 20
         const val DEFAULT_SEED_COLOR = 0xFF4A5D6B.toInt()

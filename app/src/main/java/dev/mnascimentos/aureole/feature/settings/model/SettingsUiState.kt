@@ -5,7 +5,7 @@ import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.data.repository.SettingsRepository
 
 sealed interface SettingValue {
-    data class SidePanelPosition(val position: String) : SettingValue
+    data class ContainerPosition(val position: String) : SettingValue
     data class HazeOpacity(val opacity: Float) : SettingValue
     data class ManualSeedColor(val color: Int) : SettingValue
     data class SelectedTheme(val themeName: String) : SettingValue
@@ -18,12 +18,12 @@ sealed interface SettingValue {
 
 data class SettingsUiState(
     val isLeftHandedMode: Boolean = false,
-    val isSidePanelEnabled: Boolean = true,
-    val isSidePanelBackgroundEnabled: Boolean = true,
-    val isSidePanelExpandCell: Boolean = false,
+    val isContainerEnabled: Boolean = true,
+    val isContainerBackgroundEnabled: Boolean = true,
+    val isContainerExpandCell: Boolean = false,
     val isClockBackgroundEnabled: Boolean = true,
-    val showSidePanelAddFolderButton: Boolean = true,
-    val sidePanelPosition: String = "Space Between",
+    val showContainerAddFolderButton: Boolean = true,
+    val containerPosition: String = "Space Between",
     val showFolderLabels: Boolean = false,
     val homeButtonOpensAllApps: Boolean = true,
     val showAllAppsOnHome: Boolean = true,
@@ -33,7 +33,7 @@ data class SettingsUiState(
     val allApps: List<AppInfo> = emptyList(),
     val isDefaultLauncher: Boolean = false,
     val showFavoritePickerDialog: Boolean = false,
-    val showSidePanelPositionDialog: Boolean = false,
+    val showContainerPositionDialog: Boolean = false,
     val isCustomWallpaperSet: Boolean = false,
     val customWallpaperPath: String? = null,
     val wallpaperScaleType: String = "Crop",

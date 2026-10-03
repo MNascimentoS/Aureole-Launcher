@@ -145,7 +145,7 @@ internal fun SearchIconPositionDialog(
 }
 
 @Composable
-internal fun SidePanelPositionDialog(
+internal fun ContainerPositionDialog(
     currentPosition: String,
     onPositionSelected: (String) -> Unit,
     onDismiss: () -> Unit

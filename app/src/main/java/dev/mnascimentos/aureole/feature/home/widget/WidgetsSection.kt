@@ -35,19 +35,13 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableFloatStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.input.pointer.PointerEventPass
 import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.layout.onGloballyPositioned
-import androidx.compose.ui.layout.positionInWindow
 import androidx.compose.ui.platform.rememberNestedScrollInteropConnection
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -60,7 +54,6 @@ import dev.mnascimentos.aureole.feature.home.LocalHomeActions
 import dev.mnascimentos.aureole.feature.home.LocalHomeUiState
 import dev.mnascimentos.aureole.feature.home.widget.model.PagerContentParams
 import dev.mnascimentos.aureole.feature.home.widget.model.StackedWidgetConfig
-import dev.mnascimentos.aureole.feature.home.widget.model.WidgetItemActions
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -79,17 +72,20 @@ private const val WIDGET_NOT_AVAILABLE_TEXT = "Widget não disponível (Remova e
 fun StackedWidgetSection(
     config: StackedWidgetConfig,
     appWidgetHost: AppWidgetHost,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    stackId: String = "top_widgets"
 ) {
     val uiState = LocalHomeUiState.current
     val showAddButton = config.topWidgetIds.size < MAX_WIDGETS
     val pageCount = config.topWidgetIds.size + if (showAddButton) 1 else 0
     val pagerState = rememberPagerState(pageCount = { pageCount })
 
+    val showDotsForStack = uiState.widgetStackDots[stackId] ?: config.showWidgetDots
+
     val hasFillMaxSize = modifier.toString().contains("fillMaxSize") || modifier == Modifier.fillMaxSize()
     val (startPad, endPad) = calculateWidgetSectionPadding(
         hasFillMaxSize = hasFillMaxSize,
-        isSidePanelEnabled = uiState.isSidePanelEnabled,
+        isContainerEnabled = uiState.isContainerEnabled,
         isLeftHandedMode = uiState.isLeftHandedMode
     )
 
@@ -108,6 +104,7 @@ fun StackedWidgetSection(
         StackedWidgetPagerContent(
             config = config,
             appWidgetHost = appWidgetHost,
+            stackId = stackId,
             params = PagerContentParams(
                 showAddButton = showAddButton,
                 pageCount = pageCount,
@@ -116,7 +113,7 @@ fun StackedWidgetSection(
             )
         )
 
-        if (pageCount > 1 && config.showWidgetDots) {
+        if (pageCount > 1 && showDotsForStack) {
             PagerIndicatorDots(pageCount = pageCount, currentPage = pagerState.currentPage)
         }
     }
@@ -124,19 +121,19 @@ fun StackedWidgetSection(
 
 private fun calculateWidgetSectionPadding(
     hasFillMaxSize: Boolean,
-    isSidePanelEnabled: Boolean,
+    isContainerEnabled: Boolean,
     isLeftHandedMode: Boolean
 ): Pair<Dp, Dp> {
     val startPad = if (hasFillMaxSize) {
         0.dp
-    } else if (isSidePanelEnabled) {
+    } else if (isContainerEnabled) {
         if (isLeftHandedMode) 8.dp else 16.dp
     } else {
         16.dp
     }
     val endPad = if (hasFillMaxSize) {
         0.dp
-    } else if (isSidePanelEnabled) {
+    } else if (isContainerEnabled) {
         if (isLeftHandedMode) 16.dp else 8.dp
     } else {
         16.dp
@@ -148,6 +145,7 @@ private fun calculateWidgetSectionPadding(
 private fun StackedWidgetPagerContent(
     config: StackedWidgetConfig,
     appWidgetHost: AppWidgetHost,
+    stackId: String,
     params: PagerContentParams
 ) {
     val uiState = LocalHomeUiState.current
@@ -170,11 +168,8 @@ private fun StackedWidgetPagerContent(
                 val widgetId = config.topWidgetIds[page]
                 WidgetHostItem(
                     widgetId = widgetId,
+                    stackId = stackId,
                     appWidgetHost = appWidgetHost,
-                    itemActions = WidgetItemActions(
-                        onOpenWidgetPopup = { id, topY -> actions.onOpenWidgetPopup(id, topY) },
-                        onRemoveClick = { id -> actions.onRemoveWidgetClick(id) }
-                    ),
                     modifier = Modifier.fillMaxSize()
                 )
             } else if (showAddButton) {
@@ -224,36 +219,33 @@ private fun PagerIndicatorDots(
 @Composable
 private fun WidgetHostItem(
     widgetId: Int,
+    stackId: String,
     appWidgetHost: AppWidgetHost,
-    itemActions: WidgetItemActions,
     modifier: Modifier = Modifier
 ) {
-    var itemYInWindow by remember { mutableFloatStateOf(0f) }
+    val actions = LocalHomeActions.current
     val coroutineScope = rememberCoroutineScope()
 
     Box(
         modifier = modifier
             .fillMaxHeight()
             .clip(MaterialTheme.shapes.large)
-            .onGloballyPositioned { coordinates ->
-                itemYInWindow = coordinates.positionInWindow().y
-            }
-            .pointerInput(widgetId) {
+            .pointerInput(widgetId, stackId) {
                 awaitEachGesture {
-                    val down = awaitFirstDown(pass = PointerEventPass.Main)
+                    awaitFirstDown(pass = PointerEventPass.Main)
                     var isLongPressTriggered = false
 
                     val job = coroutineScope.launch {
                         delay(LONG_PRESS_DURATION_MS)
                         isLongPressTriggered = true
-                        itemActions.onOpenWidgetPopup(widgetId, itemYInWindow)
+                        actions.onOpenWidgetStackBottomSheet(widgetId, stackId)
                     }
 
                     try {
-                        waitForUpOrCancellation(pass = PointerEventPass.Main)
+                        val up = waitForUpOrCancellation(pass = PointerEventPass.Main)
                         job.cancel()
                         if (isLongPressTriggered) {
-                            down.consume()
+                            up?.consume()
                         }
                     } catch (e: IllegalArgumentException) {
                         Log.e("WidgetHostItem", "Gesture error", e)

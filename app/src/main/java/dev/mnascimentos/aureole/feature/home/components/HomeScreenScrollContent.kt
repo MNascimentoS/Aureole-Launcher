@@ -46,7 +46,7 @@ import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.utils.fadingEdges
 import dev.mnascimentos.aureole.feature.home.LocalHomeActions
 import dev.mnascimentos.aureole.feature.home.LocalHomeUiState
-import dev.mnascimentos.aureole.feature.home.components.model.SidePanelConfig
+import dev.mnascimentos.aureole.feature.home.components.model.ContainerConfig
 import dev.mnascimentos.aureole.feature.home.model.GridItemContentParams
 import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
 import dev.mnascimentos.aureole.feature.home.model.ScrollViewChildItemParams
@@ -65,7 +65,7 @@ fun ScrollViewContainerContent(
     favConfig: FavoritesListConfig,
     appWidgetHost: AppWidgetHost,
     stackedWidgetConfig: StackedWidgetConfig,
-    sidePanelConfig: SidePanelConfig
+    containerConfig: ContainerConfig
 ) {
     val isVertical = item.safeScrollOrientation == ScrollOrientation.VERTICAL
     val scrollState = rememberScrollState()
@@ -86,7 +86,7 @@ fun ScrollViewContainerContent(
                     favConfig = favConfig,
                     appWidgetHost = appWidgetHost,
                     stackedWidgetConfig = stackedWidgetConfig,
-                    sidePanelConfig = sidePanelConfig,
+                    containerConfig = containerConfig,
                     scrollState = scrollState
                 )
             )
@@ -97,7 +97,7 @@ fun ScrollViewContainerContent(
                     favConfig = favConfig,
                     appWidgetHost = appWidgetHost,
                     stackedWidgetConfig = stackedWidgetConfig,
-                    sidePanelConfig = sidePanelConfig
+                    containerConfig = containerConfig
                 )
             )
         }
@@ -156,7 +156,7 @@ private fun VerticalScrollViewContent(params: VerticalScrollViewContentParams) {
                     favConfig = params.favConfig,
                     appWidgetHost = params.appWidgetHost,
                     stackedWidgetConfig = params.stackedWidgetConfig,
-                    sidePanelConfig = params.sidePanelConfig,
+                    containerConfig = params.containerConfig,
                     isVertical = true
                 )
             )
@@ -188,7 +188,7 @@ private fun HorizontalScrollViewContent(params: ScrollViewContentParams) {
                     favConfig = params.favConfig,
                     appWidgetHost = params.appWidgetHost,
                     stackedWidgetConfig = params.stackedWidgetConfig,
-                    sidePanelConfig = params.sidePanelConfig,
+                    containerConfig = params.containerConfig,
                     isVertical = false
                 )
             )
@@ -225,7 +225,7 @@ private fun ScrollViewChildItem(params: ScrollViewChildItemParams) {
                 favConfig = params.favConfig,
                 appWidgetHost = params.appWidgetHost,
                 stackedWidgetConfig = params.stackedWidgetConfig,
-                sidePanelConfig = params.sidePanelConfig,
+                containerConfig = params.containerConfig,
                 isInScrollView = true
             )
         )
