@@ -17,9 +17,16 @@ fun checkAppUpdate(
 
     appUpdateManager.appUpdateInfo.addOnSuccessListener { appUpdateInfo ->
         onAppUpdateInfoRetrieved(appUpdateInfo)
-        if (appUpdateInfo.installStatus() == InstallStatus.DOWNLOADED) {
+
+        val installStatus = appUpdateInfo.installStatus()
+        val isDownloadingOrPending = (installStatus == InstallStatus.DOWNLOADING) ||
+            (installStatus == InstallStatus.PENDING)
+
+        if (installStatus == InstallStatus.DOWNLOADED) {
             viewModel.setShowUpdateDownloadedDialog(visible = true)
-        } else if (appUpdateInfo.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE &&
+        } else if (
+            (appUpdateInfo.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE) &&
+            !isDownloadingOrPending &&
             (
                 appUpdateInfo.isUpdateTypeAllowed(AppUpdateType.FLEXIBLE) ||
                     appUpdateInfo.isUpdateTypeAllowed(AppUpdateType.IMMEDIATE)

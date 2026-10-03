@@ -27,6 +27,8 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -49,7 +51,7 @@ import dev.mnascimentos.aureole.feature.settings.model.SettingsUiState
 import kotlin.math.roundToInt
 
 private const val BOTTOM_SPACER_RATIO = 0.15f
-private const val MIN_OFFSET_PERCENT = 10
+private const val MIN_OFFSET_PERCENT = 0
 private const val MAX_OFFSET_PERCENT = 60
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -193,14 +195,24 @@ private fun HeaderOffsetWheelPicker(
     val listState = rememberLazyListState(initialFirstVisibleItemIndex = initialIndex)
     val snapFlingBehavior = rememberSnapFlingBehavior(lazyListState = listState)
 
-    LaunchedEffect(listState.isScrollInProgress) {
-        if (!listState.isScrollInProgress) {
-            val centerIndex = (listState.firstVisibleItemIndex + (listState.firstVisibleItemScrollOffset / itemHeightPx).roundToInt())
-                .coerceIn(0, items.size - 1)
-            val selectedValue = items[centerIndex]
-            if (selectedValue != value) {
-                onValueChange(selectedValue)
+    val currentCenteredIndex by remember {
+        derivedStateOf {
+            if (itemHeightPx <= 0f) {
+                0
+            } else {
+                (listState.firstVisibleItemIndex + (listState.firstVisibleItemScrollOffset / itemHeightPx).roundToInt())
+                    .coerceIn(0, items.size - 1)
             }
+        }
+    }
+
+    val currentCenteredValue = remember(currentCenteredIndex, items) {
+        items.getOrElse(currentCenteredIndex) { value }
+    }
+
+    LaunchedEffect(currentCenteredValue) {
+        if (currentCenteredValue != value) {
+            onValueChange(currentCenteredValue)
         }
     }
 
@@ -215,7 +227,7 @@ private fun HeaderOffsetWheelPicker(
             modifier = Modifier.fillMaxSize()
         ) {
             itemsIndexed(items) { _, itemValue ->
-                val isSelected = itemValue == value
+                val isSelected = (itemValue == currentCenteredValue)
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()

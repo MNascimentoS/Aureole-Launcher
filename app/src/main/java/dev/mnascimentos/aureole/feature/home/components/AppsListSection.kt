@@ -14,7 +14,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -26,7 +25,6 @@ import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
@@ -103,29 +101,22 @@ fun AppsListDrawer(
             .fillMaxWidth()
             .then(hazeModifier)
             .background(drawerBgColor)
-            .statusBarsPadding()
     ) {
         val topOffsetDp = (maxHeight * (uiState.headerOffsetPercent / 100f)).coerceAtLeast(16.dp)
 
-        Column(
-            modifier = Modifier.fillMaxSize()
+        LazyColumn(
+            state = listState,
+            contentPadding = PaddingValues(
+                start = startPadding,
+                top = topOffsetDp,
+                end = endPadding,
+                bottom = 120.dp
+            ),
+            modifier = Modifier
+                .fillMaxSize()
+                .fadingEdges(listState)
         ) {
-            Spacer(modifier = Modifier.height(topOffsetDp))
-
-            LazyColumn(
-                state = listState,
-                contentPadding = PaddingValues(
-                    start = startPadding,
-                    top = 16.dp,
-                    end = endPadding,
-                    bottom = 120.dp
-                ),
-                modifier = Modifier
-                    .weight(1f)
-                    .fadingEdges(listState)
-            ) {
-                appsListItems(uiState, actions)
-            }
+            appsListItems(uiState, actions)
         }
 
         if (uiState.showSearchBarInAllApps) {

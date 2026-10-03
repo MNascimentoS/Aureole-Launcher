@@ -4,11 +4,11 @@ import android.content.ContentValues
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
-import dev.mnascimentos.aureole.core.data.model.SidePanelEntity
-import dev.mnascimentos.aureole.core.data.model.SidePanelItemEntity
-import dev.mnascimentos.aureole.core.data.model.SidePanelItemType
+import dev.mnascimentos.aureole.core.data.model.ContainerEntity
+import dev.mnascimentos.aureole.core.data.model.ContainerItemEntity
+import dev.mnascimentos.aureole.core.data.model.ContainerItemType
 
-class SidePanelDatabaseHelper(context: Context) : SQLiteOpenHelper(
+class ContainerDatabaseHelper(context: Context) : SQLiteOpenHelper(
     context,
     DATABASE_NAME,
     null,
@@ -18,7 +18,7 @@ class SidePanelDatabaseHelper(context: Context) : SQLiteOpenHelper(
     override fun onCreate(db: SQLiteDatabase) {
         db.execSQL(
             """
-            CREATE TABLE IF NOT EXISTS side_panels (
+            CREATE TABLE IF NOT EXISTS containers (
                 id TEXT PRIMARY KEY NOT NULL,
                 title TEXT NOT NULL,
                 position TEXT NOT NULL DEFAULT 'Space Between',
@@ -34,24 +34,24 @@ class SidePanelDatabaseHelper(context: Context) : SQLiteOpenHelper(
 
         db.execSQL(
             """
-            CREATE TABLE IF NOT EXISTS side_panel_items (
+            CREATE TABLE IF NOT EXISTS container_items (
                 id TEXT PRIMARY KEY NOT NULL,
                 panel_id TEXT NOT NULL,
                 item_type TEXT NOT NULL,
                 package_name TEXT,
                 folder_id TEXT,
                 order_index INTEGER NOT NULL DEFAULT 0,
-                FOREIGN KEY(panel_id) REFERENCES side_panels(id) ON DELETE CASCADE
+                FOREIGN KEY(panel_id) REFERENCES containers(id) ON DELETE CASCADE
             )
             """.trimIndent()
         )
 
-        db.execSQL("CREATE INDEX IF NOT EXISTS idx_side_panel_items_panel_id ON side_panel_items(panel_id)")
+        db.execSQL("CREATE INDEX IF NOT EXISTS idx_container_items_panel_id ON container_items(panel_id)")
     }
 
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
-        db.execSQL("DROP TABLE IF EXISTS side_panel_items")
-        db.execSQL("DROP TABLE IF EXISTS side_panels")
+        db.execSQL("DROP TABLE IF EXISTS container_items")
+        db.execSQL("DROP TABLE IF EXISTS containers")
         onCreate(db)
     }
 
@@ -60,12 +60,12 @@ class SidePanelDatabaseHelper(context: Context) : SQLiteOpenHelper(
         db.setForeignKeyConstraintsEnabled(true)
     }
 
-    fun getAllSidePanels(): List<SidePanelEntity> {
-        val result = mutableListOf<SidePanelEntity>()
+    fun getAllContainers(): List<ContainerEntity> {
+        val result = mutableListOf<ContainerEntity>()
         val db = readableDatabase
 
         val cursor = db.query(
-            "side_panels",
+            "containers",
             null,
             null,
             null,
@@ -87,7 +87,7 @@ class SidePanelDatabaseHelper(context: Context) : SQLiteOpenHelper(
                 val createdAt = c.getLong(c.getColumnIndexOrThrow("created_at"))
 
                 result.add(
-                    SidePanelEntity(
+                    ContainerEntity(
                         id = id,
                         title = title,
                         position = position,
@@ -104,10 +104,10 @@ class SidePanelDatabaseHelper(context: Context) : SQLiteOpenHelper(
         return result
     }
 
-    fun getSidePanel(panelId: String): SidePanelEntity? {
+    fun getContainer(panelId: String): ContainerEntity? {
         val db = readableDatabase
         val cursor = db.query(
-            "side_panels",
+            "containers",
             null,
             "id = ?",
             arrayOf(panelId),
@@ -128,7 +128,7 @@ class SidePanelDatabaseHelper(context: Context) : SQLiteOpenHelper(
                 val isGridFolderEnabled = c.getInt(c.getColumnIndexOrThrow("is_grid_folder_enabled")) == 1
                 val createdAt = c.getLong(c.getColumnIndexOrThrow("created_at"))
 
-                return SidePanelEntity(
+                return ContainerEntity(
                     id = id,
                     title = title,
                     position = position,
@@ -144,7 +144,7 @@ class SidePanelDatabaseHelper(context: Context) : SQLiteOpenHelper(
         return null
     }
 
-    fun insertOrUpdateSidePanel(panel: SidePanelEntity) {
+    fun insertOrUpdateContainer(panel: ContainerEntity) {
         val db = writableDatabase
         val values = ContentValues().apply {
             put("id", panel.id)
@@ -157,20 +157,20 @@ class SidePanelDatabaseHelper(context: Context) : SQLiteOpenHelper(
             put("is_grid_folder_enabled", if (panel.isGridFolderEnabled) 1 else 0)
             put("created_at", panel.createdAt)
         }
-        db.insertWithOnConflict("side_panels", null, values, SQLiteDatabase.CONFLICT_REPLACE)
+        db.insertWithOnConflict("containers", null, values, SQLiteDatabase.CONFLICT_REPLACE)
     }
 
-    fun deleteSidePanel(panelId: String) {
+    fun deleteContainer(panelId: String) {
         val db = writableDatabase
-        db.delete("side_panels", "id = ?", arrayOf(panelId))
+        db.delete("containers", "id = ?", arrayOf(panelId))
     }
 
-    fun getItemsForPanel(panelId: String): List<SidePanelItemEntity> {
+    fun getItemsForPanel(panelId: String): List<ContainerItemEntity> {
         val db = readableDatabase
-        val result = mutableListOf<SidePanelItemEntity>()
+        val result = mutableListOf<ContainerItemEntity>()
 
         val cursor = db.query(
-            "side_panel_items",
+            "container_items",
             null,
             "panel_id = ?",
             arrayOf(panelId),
@@ -188,10 +188,10 @@ class SidePanelDatabaseHelper(context: Context) : SQLiteOpenHelper(
                 val folderId = c.getString(c.getColumnIndexOrThrow("folder_id"))
                 val orderIndex = c.getInt(c.getColumnIndexOrThrow("order_index"))
 
-                val itemType = SidePanelItemType.entries.find { it.name == itemTypeStr } ?: SidePanelItemType.APP
+                val itemType = ContainerItemType.entries.find { it.name == itemTypeStr } ?: ContainerItemType.APP
 
                 result.add(
-                    SidePanelItemEntity(
+                    ContainerItemEntity(
                         id = id,
                         panelId = pId,
                         itemType = itemType,
@@ -205,11 +205,11 @@ class SidePanelDatabaseHelper(context: Context) : SQLiteOpenHelper(
         return result
     }
 
-    fun updatePanelItems(panelId: String, items: List<SidePanelItemEntity>) {
+    fun updatePanelItems(panelId: String, items: List<ContainerItemEntity>) {
         val db = writableDatabase
         db.beginTransaction()
         try {
-            db.delete("side_panel_items", "panel_id = ?", arrayOf(panelId))
+            db.delete("container_items", "panel_id = ?", arrayOf(panelId))
             items.forEachIndexed { index, item ->
                 val values = ContentValues().apply {
                     put("id", item.id)
@@ -219,7 +219,7 @@ class SidePanelDatabaseHelper(context: Context) : SQLiteOpenHelper(
                     put("folder_id", item.folderId)
                     put("order_index", index)
                 }
-                db.insert("side_panel_items", null, values)
+                db.insert("container_items", null, values)
             }
             db.setTransactionSuccessful()
         } finally {
@@ -228,7 +228,7 @@ class SidePanelDatabaseHelper(context: Context) : SQLiteOpenHelper(
     }
 
     companion object {
-        private const val DATABASE_NAME = "aureole_launcher_side_panels.db"
+        private const val DATABASE_NAME = "aureole_launcher_containers.db"
         private const val DATABASE_VERSION = 1
     }
 }

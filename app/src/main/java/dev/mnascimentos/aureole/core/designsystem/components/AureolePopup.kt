@@ -3,7 +3,6 @@ package dev.mnascimentos.aureole.core.designsystem.components
 import android.content.Intent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -17,6 +16,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
@@ -62,7 +62,6 @@ fun AureolePopupBox(
     content: @Composable ColumnScope.() -> Unit,
 ) {
     val surfaceColor = AureoleDS.colors.surface
-    val outlineColor = AureoleDS.colors.outline
 
     val hazeModifier = if (hazeState != null) {
         Modifier.hazeEffect(
@@ -83,11 +82,6 @@ fun AureolePopupBox(
     Box(
         modifier = modifier
             .clip(RoundedCornerShape(cornerRadius))
-            .border(
-                width = 0.5.dp,
-                color = outlineColor,
-                shape = RoundedCornerShape(cornerRadius),
-            )
             .then(hazeModifier)
             .background(surfaceColor.copy(alpha = bgAlpha))
             .padding(contentPadding)
@@ -129,8 +123,7 @@ fun AureoleHeaderBanner(
                     topEnd = AureoleTheme.dimens.cornerRadius,
                 )
             )
-            .background(AureoleDS.colors.surfaceVariant)
-            .clickable(onClick = handleSettingsClick),
+            .background(AureoleDS.colors.surfaceVariant),
         contentAlignment = Alignment.Center,
     ) {
         AureoleText(
@@ -150,7 +143,8 @@ fun AureoleHeaderBanner(
             modifier = Modifier
                 .align(Alignment.TopEnd)
                 .padding(top = 4.dp, end = 4.dp)
-                .size(28.dp)
+                .size(36.dp)
+                .clip(CircleShape)
                 .clickable(onClick = handleSettingsClick),
             contentAlignment = Alignment.Center,
         ) {
@@ -370,7 +364,7 @@ fun AureolePopupMenuItem(
             }
 
             if (icon != null || customIcon != null) {
-                Spacer(modifier = Modifier.width(10.dp))
+                Spacer(modifier = Modifier.width(20.dp))
             }
 
             AureoleText(

@@ -1,7 +1,6 @@
 package dev.mnascimentos.aureole.feature.home.components.model
 
-data class EditSidePanelFormState(
-    val title: String,
+data class EditContainerFormState(
     val position: String,
     val isBackgroundEnabled: Boolean,
     val isExpandCell: Boolean,
@@ -10,8 +9,7 @@ data class EditSidePanelFormState(
     val isGridFolderEnabled: Boolean
 )
 
-data class EditSidePanelFormCallbacks(
-    val onTitleChange: (String) -> Unit,
+data class EditContainerFormCallbacks(
     val onPositionChange: (String) -> Unit,
     val onBgChange: (Boolean) -> Unit,
     val onExpandChange: (Boolean) -> Unit,

@@ -36,8 +36,8 @@ private suspend fun HomeViewModel.handleFolderIntent(intent: FolderViewIntent) {
 
 private fun HomeViewModel.openFolder(intent: FolderViewIntent.OpenFolder) {
     val targetFolder = uiState.value.folders.find { it.id == intent.folderId }
-    val panel = targetFolder?.panelId?.let { uiState.value.sidePanels[it] }
-    val isAnyGridPanel = uiState.value.sidePanels.values.any { it.isGridFolderEnabled }
+    val panel = targetFolder?.panelId?.let { uiState.value.containers[it] }
+    val isAnyGridPanel = uiState.value.containers.values.any { it.isGridFolderEnabled }
     val active = targetFolder?.copy(
         displayAsGrid = isAnyGridPanel || (panel?.isGridFolderEnabled == true) || targetFolder.displayAsGrid
     ) ?: targetFolder
@@ -78,11 +78,11 @@ private suspend fun HomeViewModel.deleteFolder(folderId: String) {
 
 internal suspend fun HomeViewModel.refreshFoldersAndOpen(folderId: String) {
     val updatedFolders = folderRepository.getFolders()
-    val updatedPanels = sidePanelRepository.getAllSidePanels().associateBy { it.id }
+    val updatedPanels = containerRepository.getAllContainers().associateBy { it.id }
     val active = updatedFolders.find { it.id == folderId }
     updateUiState {
         it.copy(
-            sidePanels = updatedPanels,
+            containers = updatedPanels,
             folders = updatedFolders,
             openedFolderId = active?.id,
             activeFolder = active
@@ -92,11 +92,20 @@ internal suspend fun HomeViewModel.refreshFoldersAndOpen(folderId: String) {
 
 private suspend fun HomeViewModel.refreshFolders() {
     val updatedFolders = folderRepository.getFolders()
-    val updatedPanels = sidePanelRepository.getAllSidePanels().associateBy { it.id }
+    val updatedPanels = containerRepository.getAllContainers().associateBy { it.id }
     updateUiState {
         it.copy(
-            sidePanels = updatedPanels,
+            containers = updatedPanels,
             folders = updatedFolders
         )
+    }
+}
+
+fun HomeViewModel.removeAppFromFolder(folderId: String, packageName: String) {
+    viewModelScope.launch {
+        val folder = uiState.value.folders.find { it.id == folderId } ?: return@launch
+        val newAppPackages = folder.appPackageNames.filterNot { it == packageName }
+        folderRepository.updateFolderApps(folderId, newAppPackages)
+        refreshFoldersAndOpen(folderId)
     }
 }

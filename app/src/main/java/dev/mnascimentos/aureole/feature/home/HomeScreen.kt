@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -27,23 +28,24 @@ import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.unit.dp
 import dev.chrisbanes.haze.HazeState
 import dev.chrisbanes.haze.hazeSource
 import dev.chrisbanes.haze.rememberHazeState
+import dev.mnascimentos.aureole.core.data.model.ContainerModel
 import dev.mnascimentos.aureole.core.data.model.LauncherItemState
 import dev.mnascimentos.aureole.core.data.model.LauncherItemType
-import dev.mnascimentos.aureole.core.data.model.SidePanelModel
-import dev.mnascimentos.aureole.feature.home.components.EditSidePanelDialog
+import dev.mnascimentos.aureole.feature.home.components.EditContainerBottomSheet
 import dev.mnascimentos.aureole.feature.home.components.FavoritesListConfig
 import dev.mnascimentos.aureole.feature.home.components.GridItemContent
 import dev.mnascimentos.aureole.feature.home.components.HomeOverlaysContent
 import dev.mnascimentos.aureole.feature.home.components.WallpaperBackground
 import dev.mnascimentos.aureole.feature.home.components.homeDragGestures
-import dev.mnascimentos.aureole.feature.home.components.model.SidePanelConfig
+import dev.mnascimentos.aureole.feature.home.components.model.ContainerConfig
 import dev.mnascimentos.aureole.feature.home.folder.HomeScreenFolderOverlays
 import dev.mnascimentos.aureole.feature.home.grid.AddContainerDialog
 import dev.mnascimentos.aureole.feature.home.grid.DynamicGridContainer
-import dev.mnascimentos.aureole.feature.home.grid.EditContainerDialog
+import dev.mnascimentos.aureole.feature.home.grid.EditGridItemDialog
 import dev.mnascimentos.aureole.feature.home.grid.GridEngineUtils
 import dev.mnascimentos.aureole.feature.home.grid.GridLimits
 import dev.mnascimentos.aureole.feature.home.grid.model.GridEditConfig
@@ -83,6 +85,7 @@ fun HomeScreen(
     val dragModifier = Modifier.homeDragGestures(
         HomeDragParams(
             isLeftHandedMode = uiState.isLeftHandedMode,
+            isAlphabetScrubberDisabled = uiState.isAlphabetScrubberDisabled,
             screenHeightPx = screenHeightPx,
             screenWidthPx = screenWidthPx,
             isAllAppsDrawerOpen = uiState.isAllAppsDrawerOpen,
@@ -95,6 +98,8 @@ fun HomeScreen(
 
     val hazeState = rememberHazeState()
 
+    val isSystemBackActive = uiState.isAllAppsDrawerOpen || uiState.isGridEditMode
+
     Box(
         modifier = modifier
             .fillMaxSize()
@@ -102,7 +107,7 @@ fun HomeScreen(
                 screenHeightPx = it.size.height.toFloat()
                 screenWidthPx = it.size.width.toFloat()
             }
-            .then(HomeScreenExclusionModifier(uiState.isAllAppsDrawerOpen))
+            .then(HomeScreenExclusionModifier(isSystemBackActive))
             .then(if (uiState.isGridEditMode) Modifier else dragModifier)
     ) {
         HomeScreenBody(
@@ -124,8 +129,8 @@ fun HomeScreen(
 }
 
 @Composable
-private fun HomeScreenExclusionModifier(isAllAppsDrawerOpen: Boolean): Modifier {
-    return if (!isAllAppsDrawerOpen) {
+private fun HomeScreenExclusionModifier(isSystemBackActive: Boolean): Modifier {
+    return if (!isSystemBackActive) {
         Modifier.systemGestureExclusion {
             val heightPx = it.size.height.toFloat()
             val widthPx = it.size.width.toFloat()
@@ -217,21 +222,22 @@ private fun HomeOverlaysDialogsAndErrors(config: HomeOverlaysConfig) {
     }
 
     config.uiState.editingGridItem?.let { editingItem ->
-        EditContainerDialog(
+        EditGridItemDialog(
             item = editingItem,
-            onDismissRequest = config.actions.onCloseEditContainerDialog,
+            onDismissRequest = config.actions.onCloseEditGridItemDialog,
             onDeleteConfirm = { id -> config.actions.onDeleteGridItem(id) }
         )
     }
 
-    if (config.uiState.isEditSidePanelDialogVisible && config.uiState.editingSidePanelId != null) {
-        val editingPanel = config.uiState.sidePanels[config.uiState.editingSidePanelId]
-            ?: SidePanelModel(id = config.uiState.editingSidePanelId)
-        EditSidePanelDialog(
+    if (config.uiState.isEditContainerDialogVisible && config.uiState.editingContainerId != null) {
+        val editingPanel = config.uiState.containers[config.uiState.editingContainerId]
+            ?: ContainerModel(id = config.uiState.editingContainerId)
+        EditContainerBottomSheet(
             panel = editingPanel,
-            onDismiss = config.actions.onCloseEditSidePanelDialog,
-            onSave = config.actions.onSaveSidePanelModel,
-            onDeletePanel = config.actions.onDeleteSidePanelInstance
+            allApps = config.uiState.apps,
+            onDismiss = config.actions.onCloseEditContainerDialog,
+            onSave = config.actions.onSaveContainerModel,
+            onDeletePanel = config.actions.onDeleteContainerInstance
         )
     }
 
@@ -317,8 +323,10 @@ private fun MainHomeLayout(
             .fillMaxSize()
             .statusBarsPadding()
             .navigationBarsPadding()
+            .padding(horizontal = 8.dp)
+            .padding(top = 24.dp, bottom = 8.dp)
     ) { item ->
-        val currentSidePanelConfig = buildSidePanelConfig(item, uiState, hazeState)
+        val currentContainerConfig = buildContainerConfig(item, uiState, hazeState)
 
         GridItemContent(
             GridItemContentParams(
@@ -326,22 +334,23 @@ private fun MainHomeLayout(
                 favConfig = favConfig,
                 appWidgetHost = appWidgetHost,
                 stackedWidgetConfig = stackedWidgetConfig,
-                sidePanelConfig = currentSidePanelConfig
+                containerConfig = currentContainerConfig
             )
         )
     }
 }
 
-private fun buildSidePanelConfig(
+private fun buildContainerConfig(
     item: LauncherItemState,
     uiState: MainUiState,
     hazeState: HazeState
-): SidePanelConfig {
-    val panelModel = uiState.sidePanels[item.id]
-    return if (item.safeType == LauncherItemType.SHORTCUTS_SIDE_PANEL && panelModel != null) {
-        SidePanelConfig(
+): ContainerConfig {
+    val panelModel = uiState.containers[item.id]
+    return if (item.safeType == LauncherItemType.SHORTCUTS_CONTAINER && panelModel != null) {
+        ContainerConfig(
             panelId = panelModel.id,
             title = panelModel.title,
+            items = panelModel.items,
             folders = panelModel.folders,
             appPackageNames = panelModel.appPackageNames,
             openedFolderId = uiState.openedFolderId,
@@ -354,15 +363,15 @@ private fun buildSidePanelConfig(
             hazeState = hazeState
         )
     } else {
-        SidePanelConfig(
+        ContainerConfig(
             panelId = item.id,
             folders = emptyList(),
             openedFolderId = uiState.openedFolderId,
-            position = uiState.sidePanelPosition,
+            position = uiState.containerPosition,
             showFolderLabels = uiState.showFolderLabels,
-            showAddFolderButton = uiState.showSidePanelAddFolderButton,
-            isBackgroundEnabled = uiState.isSidePanelBackgroundEnabled,
-            isExpandCell = uiState.isSidePanelExpandCell,
+            showAddFolderButton = uiState.showContainerAddFolderButton,
+            isBackgroundEnabled = uiState.isContainerBackgroundEnabled,
+            isExpandCell = uiState.isContainerExpandCell,
             hazeState = hazeState
         )
     }

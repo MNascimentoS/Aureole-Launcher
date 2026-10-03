@@ -31,11 +31,11 @@ enum class SettingToggle {
     SHOW_WIDGET_DOTS,
     HAZE,
     LEFT_HANDED_MODE,
-    SIDE_PANEL,
-    SIDE_PANEL_BACKGROUND,
-    SIDE_PANEL_EXPAND_CELL,
+    CONTAINER,
+    CONTAINER_BACKGROUND,
+    CONTAINER_EXPAND_CELL,
     CLOCK_BACKGROUND,
-    SHOW_SIDE_PANEL_ADD_FOLDER_BUTTON,
+    SHOW_CONTAINER_ADD_FOLDER_BUTTON,
     SHOW_FOLDER_LABELS,
     HOME_OPENS_ALL_APPS,
     SHOW_ALL_APPS_ON_HOME,
@@ -50,7 +50,7 @@ enum class SettingToggle {
 
 enum class SettingsDialog {
     FAVORITE_PICKER,
-    SIDE_PANEL_POSITION,
+    CONTAINER_POSITION,
     HAZE_OPACITY,
     COLOR_PICKER,
     RESTORE_WALLPAPER,
@@ -89,12 +89,12 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
         _uiState.update {
             it.copy(
                 isLeftHandedMode = settingsRepository.isLeftHandedMode,
-                isSidePanelEnabled = settingsRepository.isSidePanelEnabled,
-                isSidePanelBackgroundEnabled = settingsRepository.isSidePanelBackgroundEnabled,
-                isSidePanelExpandCell = settingsRepository.isSidePanelExpandCell,
+                isContainerEnabled = settingsRepository.isContainerEnabled,
+                isContainerBackgroundEnabled = settingsRepository.isContainerBackgroundEnabled,
+                isContainerExpandCell = settingsRepository.isContainerExpandCell,
                 isClockBackgroundEnabled = settingsRepository.isClockBackgroundEnabled,
-                showSidePanelAddFolderButton = settingsRepository.showSidePanelAddFolderButton,
-                sidePanelPosition = settingsRepository.sidePanelPosition,
+                showContainerAddFolderButton = settingsRepository.showContainerAddFolderButton,
+                containerPosition = settingsRepository.containerPosition,
                 showFolderLabels = settingsRepository.showFolderLabels,
                 homeButtonOpensAllApps = settingsRepository.homeButtonOpensAllApps,
                 showAllAppsOnHome = settingsRepository.showAllAppsOnHome,
@@ -131,7 +131,7 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
         _uiState.update {
             when (dialog) {
                 SettingsDialog.FAVORITE_PICKER -> it.copy(showFavoritePickerDialog = visible)
-                SettingsDialog.SIDE_PANEL_POSITION -> it.copy(showSidePanelPositionDialog = visible)
+                SettingsDialog.CONTAINER_POSITION -> it.copy(showContainerPositionDialog = visible)
                 SettingsDialog.HAZE_OPACITY -> it.copy(showHazeOpacityDialog = visible)
                 SettingsDialog.COLOR_PICKER -> it.copy(showColorPickerDialog = visible)
                 SettingsDialog.RESTORE_WALLPAPER -> it.copy(showRestoreWallpaperDialog = visible)
@@ -150,7 +150,7 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
 
     @Suppress("MagicNumber")
     fun setHeaderOffsetPercent(percent: Int) {
-        val clamped = percent.coerceIn(10, 60)
+        val clamped = percent.coerceIn(0, 60)
         settingsRepository.headerOffsetPercent = clamped
         _uiState.update { it.copy(headerOffsetPercent = clamped) }
     }

@@ -11,24 +11,26 @@ import dev.mnascimentos.aureole.feature.home.HomeViewModel
 import dev.mnascimentos.aureole.feature.home.extensions.GridItemSpec
 import dev.mnascimentos.aureole.feature.home.extensions.addGridItem
 import dev.mnascimentos.aureole.feature.home.extensions.cancelGridEditMode
-import dev.mnascimentos.aureole.feature.home.extensions.closeEditSidePanelDialog
+import dev.mnascimentos.aureole.feature.home.extensions.closeEditContainerDialog
 import dev.mnascimentos.aureole.feature.home.extensions.closeWidgetPopup
+import dev.mnascimentos.aureole.feature.home.extensions.deleteContainerInstance
 import dev.mnascimentos.aureole.feature.home.extensions.deleteGridItem
-import dev.mnascimentos.aureole.feature.home.extensions.deleteSidePanelInstance
 import dev.mnascimentos.aureole.feature.home.extensions.dismissGridError
 import dev.mnascimentos.aureole.feature.home.extensions.enterGridEditMode
 import dev.mnascimentos.aureole.feature.home.extensions.moveGridItem
 import dev.mnascimentos.aureole.feature.home.extensions.onFolderIntent
 import dev.mnascimentos.aureole.feature.home.extensions.onSearchQueryChanged
 import dev.mnascimentos.aureole.feature.home.extensions.openAddContainerForParent
-import dev.mnascimentos.aureole.feature.home.extensions.openEditSidePanelDialog
+import dev.mnascimentos.aureole.feature.home.extensions.openEditContainerDialog
 import dev.mnascimentos.aureole.feature.home.extensions.openWidgetPopup
+import dev.mnascimentos.aureole.feature.home.extensions.removeAppFromContainer
+import dev.mnascimentos.aureole.feature.home.extensions.removeAppFromFolder
 import dev.mnascimentos.aureole.feature.home.extensions.removeChildFromScrollView
 import dev.mnascimentos.aureole.feature.home.extensions.resetGridItems
 import dev.mnascimentos.aureole.feature.home.extensions.resizeChildInScrollView
 import dev.mnascimentos.aureole.feature.home.extensions.resizeGridItem
+import dev.mnascimentos.aureole.feature.home.extensions.saveContainerModel
 import dev.mnascimentos.aureole.feature.home.extensions.saveGridEditMode
-import dev.mnascimentos.aureole.feature.home.extensions.saveSidePanelModel
 import dev.mnascimentos.aureole.feature.home.extensions.setAddAppToFolderDialogVisible
 import dev.mnascimentos.aureole.feature.home.extensions.setAllAppsDrawerOpen
 import dev.mnascimentos.aureole.feature.home.extensions.setEditingGridItem
@@ -102,8 +104,8 @@ class HomeActionsFactory(
             onOpenAddContainerDialog = { viewModel.setShowAddContainerDialog(true) },
             onCloseAddContainerDialog = { viewModel.setShowAddContainerDialog(false) },
             onAddGridItem = { type, widgetId -> viewModel.addGridItem(GridItemSpec(type = type, widgetId = widgetId)) },
-            onOpenEditContainerDialog = { item -> viewModel.setEditingGridItem(item) },
-            onCloseEditContainerDialog = { viewModel.setEditingGridItem(null) },
+            onOpenEditGridItemDialog = { item -> viewModel.setEditingGridItem(item) },
+            onCloseEditGridItemDialog = { viewModel.setEditingGridItem(null) },
             onDeleteGridItem = { id -> viewModel.deleteGridItem(id) },
             onDismissGridError = { viewModel.dismissGridError() },
             onSetIsAddingSingleWidget = { viewModel.setIsAddingSingleWidget(it) },
@@ -118,10 +120,34 @@ class HomeActionsFactory(
                 )
             },
             onOpenAddContainerForParent = { pId -> viewModel.openAddContainerForParent(pId) },
-            onOpenEditSidePanelDialog = { id -> viewModel.openEditSidePanelDialog(id) },
-            onCloseEditSidePanelDialog = { viewModel.closeEditSidePanelDialog() },
-            onSaveSidePanelModel = { model -> viewModel.saveSidePanelModel(model) },
-            onDeleteSidePanelInstance = { id -> viewModel.deleteSidePanelInstance(id) }
+            onOpenEditContainerDialog = { id -> viewModel.openEditContainerDialog(id) },
+            onCloseEditContainerDialog = { viewModel.closeEditContainerDialog() },
+            onSaveContainerModel = { model -> viewModel.saveContainerModel(model) },
+            onDeleteContainerInstance = { id -> viewModel.deleteContainerInstance(id) },
+
+            // Contextual Bottom Sheets
+            onOpenContainerAppBottomSheet = { app, panelId -> viewModel.openContainerAppBottomSheet(app, panelId) },
+            onCloseContainerAppBottomSheet = { viewModel.closeContainerAppBottomSheet() },
+            onOpenContainerFolderBottomSheet = { folder, panelId ->
+                viewModel.openContainerFolderBottomSheet(
+                    folder,
+                    panelId
+                )
+            },
+            onCloseContainerFolderBottomSheet = { viewModel.closeContainerFolderBottomSheet() },
+            onOpenFolderAppBottomSheet = { app, folder -> viewModel.openFolderAppBottomSheet(app, folder) },
+            onCloseFolderAppBottomSheet = { viewModel.closeFolderAppBottomSheet() },
+            onOpenWidgetStackBottomSheet = { widgetId, stackId ->
+                viewModel.openWidgetStackBottomSheet(
+                    widgetId,
+                    stackId
+                )
+            },
+            onCloseWidgetStackBottomSheet = { viewModel.closeWidgetStackBottomSheet() },
+            onToggleWidgetStackDots = { stackId -> viewModel.toggleWidgetStackDots(stackId) },
+            onRemoveAppFromContainer = { panelId, pkg -> viewModel.removeAppFromContainer(panelId, pkg) },
+            onRemoveAppFromFolder = { folderId, pkg -> viewModel.removeAppFromFolder(folderId, pkg) },
+            onOpenEditFolderForFolder = { folder -> viewModel.openEditFolderForFolder(folder) }
         )
     }
 

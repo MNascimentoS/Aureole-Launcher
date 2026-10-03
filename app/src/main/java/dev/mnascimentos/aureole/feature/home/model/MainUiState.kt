@@ -5,8 +5,8 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.core.data.model.AppFolder
 import dev.mnascimentos.aureole.core.data.model.AppInfo
+import dev.mnascimentos.aureole.core.data.model.ContainerModel
 import dev.mnascimentos.aureole.core.data.model.LauncherItemState
-import dev.mnascimentos.aureole.core.data.model.SidePanelModel
 import dev.mnascimentos.aureole.core.data.repository.SettingsRepository
 import dev.mnascimentos.aureole.feature.home.grid.GridLimits
 
@@ -27,12 +27,12 @@ data class MainUiState(
 
     // Settings
     val isLeftHandedMode: Boolean = false,
-    val isSidePanelEnabled: Boolean = true,
-    val isSidePanelBackgroundEnabled: Boolean = true,
-    val isSidePanelExpandCell: Boolean = false,
+    val isContainerEnabled: Boolean = true,
+    val isContainerBackgroundEnabled: Boolean = true,
+    val isContainerExpandCell: Boolean = false,
     val isClockBackgroundEnabled: Boolean = true,
-    val showSidePanelAddFolderButton: Boolean = true,
-    val sidePanelPosition: String = "Center",
+    val showContainerAddFolderButton: Boolean = true,
+    val containerPosition: String = "Center",
     val showFolderLabels: Boolean = false,
     val homeButtonOpensAllApps: Boolean = true,
     val showAllAppsOnHome: Boolean = true,
@@ -100,7 +100,34 @@ data class MainUiState(
     val isAddingSingleWidget: Boolean = false,
 
     // Side Panels
-    val sidePanels: Map<String, SidePanelModel> = emptyMap(),
-    val editingSidePanelId: String? = null,
-    val isEditSidePanelDialogVisible: Boolean = false,
+    val containers: Map<String, ContainerModel> = emptyMap(),
+    val editingContainerId: String? = null,
+    val isEditContainerDialogVisible: Boolean = false,
+
+    // Contextual Bottom Sheets
+    val activeContainerAppBottomSheet: ContainerAppBottomSheetState? = null,
+    val activeContainerFolderBottomSheet: ContainerFolderBottomSheetState? = null,
+    val activeFolderAppBottomSheet: FolderAppBottomSheetState? = null,
+    val activeWidgetStackBottomSheet: WidgetStackBottomSheetState? = null,
+    val widgetStackDots: Map<String, Boolean> = emptyMap()
+)
+
+data class ContainerAppBottomSheetState(
+    val app: AppInfo,
+    val panelId: String
+)
+
+data class ContainerFolderBottomSheetState(
+    val folder: AppFolder,
+    val panelId: String
+)
+
+data class FolderAppBottomSheetState(
+    val app: AppInfo,
+    val folder: AppFolder
+)
+
+data class WidgetStackBottomSheetState(
+    val widgetId: Int?,
+    val stackId: String
 )

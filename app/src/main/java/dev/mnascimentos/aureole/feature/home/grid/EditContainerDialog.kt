@@ -37,7 +37,7 @@ import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
 
 @Composable
-fun EditContainerDialog(
+fun EditGridItemDialog(
     item: LauncherItemState,
     onDismissRequest: () -> Unit,
     onDeleteConfirm: (String) -> Unit,
@@ -116,10 +116,10 @@ private fun EditDialogTypeActionSection(
         }
     }
 
-    if (item.type == LauncherItemType.SHORTCUTS_SIDE_PANEL) {
+    if (item.type == LauncherItemType.SHORTCUTS_CONTAINER) {
         Button(
             onClick = {
-                actions.onOpenEditSidePanelDialog(item.id)
+                actions.onOpenEditContainerDialog(item.id)
                 onDismissRequest()
             },
             colors = ButtonDefaults.buttonColors(
@@ -147,7 +147,7 @@ internal fun getContainerTitle(type: LauncherItemType?): String {
     return when (type) {
         LauncherItemType.CLOCK -> "Relógio"
         LauncherItemType.APPS_LIST -> "Lista de Aplicativos"
-        LauncherItemType.SHORTCUTS_SIDE_PANEL -> "Barra de Atalhos"
+        LauncherItemType.SHORTCUTS_CONTAINER -> "Barra de Atalhos"
         LauncherItemType.SINGLE_APP_WIDGET -> "Widget Individual"
         LauncherItemType.WIDGET_LIST -> "Lista de Widgets"
         LauncherItemType.SCROLL_VIEW -> "Scroll View"

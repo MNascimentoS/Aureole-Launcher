@@ -1,32 +1,32 @@
 package dev.mnascimentos.aureole.core.data.repository
 
 import android.content.Context
+import dev.mnascimentos.aureole.core.data.db.ContainerDatabaseHelper
 import dev.mnascimentos.aureole.core.data.db.FolderDatabaseHelper
-import dev.mnascimentos.aureole.core.data.db.SidePanelDatabaseHelper
 import dev.mnascimentos.aureole.core.data.model.AppFolder
-import dev.mnascimentos.aureole.core.data.model.SidePanelEntity
-import dev.mnascimentos.aureole.core.data.model.SidePanelItemEntity
-import dev.mnascimentos.aureole.core.data.model.SidePanelItemType
-import dev.mnascimentos.aureole.core.data.model.SidePanelModel
+import dev.mnascimentos.aureole.core.data.model.ContainerEntity
+import dev.mnascimentos.aureole.core.data.model.ContainerItemEntity
+import dev.mnascimentos.aureole.core.data.model.ContainerItemType
+import dev.mnascimentos.aureole.core.data.model.ContainerModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.util.UUID
 
-class SidePanelRepository(context: Context) {
-    private val dbHelper = SidePanelDatabaseHelper(context)
+class ContainerRepository(context: Context) {
+    private val dbHelper = ContainerDatabaseHelper(context)
     private val folderDbHelper = FolderDatabaseHelper(context)
 
-    suspend fun getAllSidePanels(): List<SidePanelModel> = withContext(Dispatchers.IO) {
-        val entities = dbHelper.getAllSidePanels()
+    suspend fun getAllContainers(): List<ContainerModel> = withContext(Dispatchers.IO) {
+        val entities = dbHelper.getAllContainers()
         val allFolders = folderDbHelper.getAllFoldersWithItems().map { it.toAppFolder() }
 
         entities.map { entity ->
             val items = dbHelper.getItemsForPanel(entity.id)
             val panelFolders = allFolders.filter { it.panelId == entity.id }
-            val appPackageNames = items.filter { it.itemType == SidePanelItemType.APP && it.packageName != null }
+            val appPackageNames = items.filter { it.itemType == ContainerItemType.APP && it.packageName != null }
                 .mapNotNull { it.packageName }
 
-            SidePanelModel(
+            ContainerModel(
                 id = entity.id,
                 title = entity.title,
                 position = entity.position,
@@ -42,15 +42,15 @@ class SidePanelRepository(context: Context) {
         }
     }
 
-    suspend fun getSidePanel(panelId: String): SidePanelModel? = withContext(Dispatchers.IO) {
-        val entity = dbHelper.getSidePanel(panelId) ?: return@withContext null
+    suspend fun getContainer(panelId: String): ContainerModel? = withContext(Dispatchers.IO) {
+        val entity = dbHelper.getContainer(panelId) ?: return@withContext null
         val items = dbHelper.getItemsForPanel(panelId)
         val allFolders = folderDbHelper.getAllFoldersWithItems().map { it.toAppFolder() }
         val panelFolders = allFolders.filter { it.panelId == panelId }
-        val appPackageNames = items.filter { it.itemType == SidePanelItemType.APP && it.packageName != null }
+        val appPackageNames = items.filter { it.itemType == ContainerItemType.APP && it.packageName != null }
             .mapNotNull { it.packageName }
 
-        SidePanelModel(
+        ContainerModel(
             id = entity.id,
             title = entity.title,
             position = entity.position,
@@ -65,22 +65,22 @@ class SidePanelRepository(context: Context) {
         )
     }
 
-    suspend fun ensureSidePanelExists(panelId: String, defaultTitle: String = "Painel Lateral"): SidePanelModel =
+    suspend fun ensureContainerExists(panelId: String, defaultTitle: String = "Painel Lateral"): ContainerModel =
         withContext(Dispatchers.IO) {
-            val existing = getSidePanel(panelId)
+            val existing = getContainer(panelId)
             if (existing != null) return@withContext existing
 
-            val newEntity = SidePanelEntity(
+            val newEntity = ContainerEntity(
                 id = panelId,
                 title = defaultTitle
             )
-            dbHelper.insertOrUpdateSidePanel(newEntity)
+            dbHelper.insertOrUpdateContainer(newEntity)
 
-            getSidePanel(panelId) ?: SidePanelModel(id = panelId, title = defaultTitle)
+            getContainer(panelId) ?: ContainerModel(id = panelId, title = defaultTitle)
         }
 
-    suspend fun saveSidePanel(panel: SidePanelModel) = withContext(Dispatchers.IO) {
-        val entity = SidePanelEntity(
+    suspend fun saveContainer(panel: ContainerModel) = withContext(Dispatchers.IO) {
+        val entity = ContainerEntity(
             id = panel.id,
             title = panel.title,
             position = panel.position,
@@ -90,43 +90,51 @@ class SidePanelRepository(context: Context) {
             showFolderLabels = panel.showFolderLabels,
             isGridFolderEnabled = panel.isGridFolderEnabled
         )
-        dbHelper.insertOrUpdateSidePanel(entity)
+        dbHelper.insertOrUpdateContainer(entity)
 
-        val itemEntities = mutableListOf<SidePanelItemEntity>()
-        var orderIndex = 0
+        val itemEntities = mutableListOf<ContainerItemEntity>()
 
-        panel.appPackageNames.forEach { pkg ->
-            itemEntities.add(
-                SidePanelItemEntity(
-                    id = UUID.randomUUID().toString(),
-                    panelId = panel.id,
-                    itemType = SidePanelItemType.APP,
-                    packageName = pkg,
-                    orderIndex = orderIndex++
+        if (panel.items.isNotEmpty()) {
+            panel.items.forEachIndexed { index, item ->
+                itemEntities.add(item.copy(orderIndex = index))
+            }
+        } else {
+            var orderIndex = 0
+            panel.folders.forEach { folder ->
+                itemEntities.add(
+                    ContainerItemEntity(
+                        id = UUID.randomUUID().toString(),
+                        panelId = panel.id,
+                        itemType = ContainerItemType.FOLDER,
+                        folderId = folder.id,
+                        orderIndex = orderIndex++
+                    )
                 )
-            )
+            }
+
+            panel.appPackageNames.forEach { pkg ->
+                itemEntities.add(
+                    ContainerItemEntity(
+                        id = UUID.randomUUID().toString(),
+                        panelId = panel.id,
+                        itemType = ContainerItemType.APP,
+                        packageName = pkg,
+                        orderIndex = orderIndex++
+                    )
+                )
+            }
         }
 
         panel.folders.forEach { folder ->
             val folderWithPanelId = folder.copy(panelId = panel.id, displayAsGrid = panel.isGridFolderEnabled)
             folderDbHelper.insertFolder(folderWithPanelId)
-
-            itemEntities.add(
-                SidePanelItemEntity(
-                    id = UUID.randomUUID().toString(),
-                    panelId = panel.id,
-                    itemType = SidePanelItemType.FOLDER,
-                    folderId = folder.id,
-                    orderIndex = orderIndex++
-                )
-            )
         }
 
         dbHelper.updatePanelItems(panel.id, itemEntities)
     }
 
-    suspend fun deleteSidePanel(panelId: String) = withContext(Dispatchers.IO) {
-        dbHelper.deleteSidePanel(panelId)
+    suspend fun deleteContainer(panelId: String) = withContext(Dispatchers.IO) {
+        dbHelper.deleteContainer(panelId)
         val allFolders = folderDbHelper.getAllFoldersWithItems().map { it.toAppFolder() }
         allFolders.filter { it.panelId == panelId }.forEach { folder ->
             folderDbHelper.deleteFolder(folder.id)
@@ -134,32 +142,32 @@ class SidePanelRepository(context: Context) {
     }
 
     suspend fun addAppToPanel(panelId: String, packageName: String) = withContext(Dispatchers.IO) {
-        val current = getSidePanel(panelId) ?: ensureSidePanelExists(panelId)
+        val current = getContainer(panelId) ?: ensureContainerExists(panelId)
         if (!current.appPackageNames.contains(packageName)) {
             val updatedApps = current.appPackageNames + packageName
-            saveSidePanel(current.copy(appPackageNames = updatedApps))
+            saveContainer(current.copy(appPackageNames = updatedApps))
         }
     }
 
     suspend fun removeAppFromPanel(panelId: String, packageName: String) = withContext(Dispatchers.IO) {
-        val current = getSidePanel(panelId) ?: return@withContext
+        val current = getContainer(panelId) ?: return@withContext
         val updatedApps = current.appPackageNames - packageName
-        saveSidePanel(current.copy(appPackageNames = updatedApps))
+        saveContainer(current.copy(appPackageNames = updatedApps))
     }
 
     suspend fun addFolderToPanel(panelId: String, folder: AppFolder) = withContext(Dispatchers.IO) {
-        val current = getSidePanel(panelId) ?: ensureSidePanelExists(panelId)
+        val current = getContainer(panelId) ?: ensureContainerExists(panelId)
         val folderWithPanelId = folder.copy(panelId = panelId)
         folderDbHelper.insertFolder(folderWithPanelId)
 
         val updatedFolders = current.folders.filter { it.id != folder.id } + folderWithPanelId
-        saveSidePanel(current.copy(folders = updatedFolders))
+        saveContainer(current.copy(folders = updatedFolders))
     }
 
     suspend fun deleteFolderFromPanel(panelId: String, folderId: String) = withContext(Dispatchers.IO) {
         folderDbHelper.deleteFolder(folderId)
-        val current = getSidePanel(panelId) ?: return@withContext
+        val current = getContainer(panelId) ?: return@withContext
         val updatedFolders = current.folders.filter { it.id != folderId }
-        saveSidePanel(current.copy(folders = updatedFolders))
+        saveContainer(current.copy(folders = updatedFolders))
     }
 }

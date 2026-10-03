@@ -177,9 +177,9 @@ private fun AppItemRowDropdownMenu(
 ) {
     if (showMenu) {
         if (config.useActionSheet) {
-            AppItemBottomSheet(app, config.isFavorite, actions, onDismiss)
+            AppItemBottomSheet(app = app, isFavorite = config.isFavorite, actions = actions, onDismiss = onDismiss)
         } else {
-            AppItemPopup(app, config.isFavorite, actions, onDismiss)
+            AppItemPopup(app = app, isFavorite = config.isFavorite, actions = actions, onDismiss = onDismiss)
         }
     }
 }

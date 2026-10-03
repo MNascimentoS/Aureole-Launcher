@@ -38,11 +38,11 @@ data class SlotSearchParams(
 
 object GridEngineUtils {
 
-    const val PORTRAIT_MAX_COLS = 10
-    const val PORTRAIT_MAX_ROWS = 20
+    const val PORTRAIT_MAX_COLS = 20
+    const val PORTRAIT_MAX_ROWS = 30
 
-    const val LANDSCAPE_MAX_COLS = 20
-    const val LANDSCAPE_MAX_ROWS = 10
+    const val LANDSCAPE_MAX_COLS = 30
+    const val LANDSCAPE_MAX_ROWS = 20
 
     const val DEFAULT_MAX_COLS = PORTRAIT_MAX_COLS
     const val DEFAULT_MAX_ROWS = PORTRAIT_MAX_ROWS

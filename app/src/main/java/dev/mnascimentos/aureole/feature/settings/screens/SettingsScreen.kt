@@ -33,10 +33,10 @@ import dev.mnascimentos.aureole.core.designsystem.theme.AureoleTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.folder.CreateFolderDialog
 import dev.mnascimentos.aureole.feature.settings.SettingsNavGraph
+import dev.mnascimentos.aureole.feature.settings.components.ContainerPositionDialog
 import dev.mnascimentos.aureole.feature.settings.components.SearchIconPositionDialog
 import dev.mnascimentos.aureole.feature.settings.components.SettingsBottomSheet
 import dev.mnascimentos.aureole.feature.settings.components.SettingsButtonPositionDialog
-import dev.mnascimentos.aureole.feature.settings.components.SidePanelPositionDialog
 import dev.mnascimentos.aureole.feature.settings.model.SettingsScreenActions
 import dev.mnascimentos.aureole.feature.settings.model.SettingsUiState
 
@@ -121,14 +121,14 @@ private fun SettingsDialogsSecondary(
     uiState: SettingsUiState,
     actions: SettingsScreenActions
 ) {
-    if (uiState.showSidePanelPositionDialog) {
-        SidePanelPositionDialog(
-            currentPosition = uiState.sidePanelPosition,
+    if (uiState.showContainerPositionDialog) {
+        ContainerPositionDialog(
+            currentPosition = uiState.containerPosition,
             onPositionSelected = { pos ->
-                actions.onSidePanelPositionSelected(pos)
-                actions.onDismissSidePanelPositionDialog()
+                actions.onContainerPositionSelected(pos)
+                actions.onDismissContainerPositionDialog()
             },
-            onDismiss = actions.onDismissSidePanelPositionDialog
+            onDismiss = actions.onDismissContainerPositionDialog
         )
     }
 

@@ -137,18 +137,18 @@ private fun SettingsNavigationList(
         modifier = Modifier.fillMaxWidth().padding(horizontal = AureoleDS.dimens.xSmall)
     ) {
         SettingsMenuItem(
-            title = "Behavior",
-            subtitle = "Gestures, buttons, and controls",
-            leadingContent = { AureoleDS.icons.Star() },
-            onClick = onNavigateToBehavior,
-            modifier = Modifier.background(Color.Transparent)
-        )
-
-        SettingsMenuItem(
             title = "Appearance",
             subtitle = "Colors, themes, and layout",
             leadingContent = { AureoleDS.icons.Edit() },
             onClick = onNavigateToAppearance,
+            modifier = Modifier.background(Color.Transparent)
+        )
+
+        SettingsMenuItem(
+            title = "Behavior",
+            subtitle = "Gestures, buttons, and controls",
+            leadingContent = { AureoleDS.icons.Star() },
+            onClick = onNavigateToBehavior,
             modifier = Modifier.background(Color.Transparent)
         )
 

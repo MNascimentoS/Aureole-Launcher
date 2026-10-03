@@ -16,8 +16,8 @@ import dev.mnascimentos.aureole.feature.settings.screens.SettingsScreen
 fun SettingsScreenScreenshotTest() {
     val mockUiState = SettingsUiState(
         favoriteAppPackages = listOf("com.example.camera", "com.example.gallery"),
-        isSidePanelEnabled = true,
-        sidePanelPosition = "Center",
+        isContainerEnabled = true,
+        containerPosition = "Center",
         isLeftHandedMode = false,
         isHazeSupported = true,
         isHazeEnabled = true,

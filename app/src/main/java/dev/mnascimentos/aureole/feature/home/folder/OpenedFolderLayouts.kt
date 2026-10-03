@@ -8,7 +8,6 @@ import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -52,6 +51,7 @@ import dev.chrisbanes.haze.HazeTint
 import dev.chrisbanes.haze.hazeEffect
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.designsystem.components.AureolePopupMenuItem
+import dev.mnascimentos.aureole.feature.home.LocalHomeActions
 import dev.mnascimentos.aureole.feature.home.folder.model.FolderPopupActions
 import dev.mnascimentos.aureole.feature.home.folder.model.GridFolderPopupParams
 
@@ -59,7 +59,7 @@ private const val GRID_MAX_3 = 3
 private const val GRID_MAX_6 = 6
 private const val GRID_MAX_9 = 9
 private const val GRID_COLUMNS = 3
-private const val GRID_WIDTH_FRACTION = 0.88f
+private const val GRID_WIDTH_FRACTION = 0.75f
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -106,6 +106,7 @@ fun GridStyleExpandedFolderPopup(
         )
 
         GridFolderContainer(
+            params = params,
             appsInFolder = appsInFolder,
             actions = actions,
             hazeState = null,
@@ -116,6 +117,7 @@ fun GridStyleExpandedFolderPopup(
 
 @Composable
 private fun GridFolderContainer(
+    params: GridFolderPopupParams,
     appsInFolder: List<AppInfo>,
     actions: FolderPopupActions,
     hazeState: HazeState?,
@@ -155,7 +157,7 @@ private fun GridFolderContainer(
         if (appsInFolder.isEmpty()) {
             EmptyFolderGridHint()
         } else {
-            PopulatedFolderGrid(appsInFolder = appsInFolder, actions = actions)
+            PopulatedFolderGrid(params = params, appsInFolder = appsInFolder, actions = actions)
         }
     }
 }
@@ -188,9 +190,11 @@ private fun EmptyFolderGridHint() {
 
 @Composable
 private fun PopulatedFolderGrid(
+    params: GridFolderPopupParams,
     appsInFolder: List<AppInfo>,
     actions: FolderPopupActions
 ) {
+    val homeActions = LocalHomeActions.current
     LazyVerticalGrid(
         columns = GridCells.Fixed(GRID_COLUMNS),
         contentPadding = PaddingValues(8.dp),
@@ -201,16 +205,19 @@ private fun PopulatedFolderGrid(
         items(appsInFolder, key = { it.packageName }) { app ->
             OpenedFolderSamsungGridAppItem(
                 app = app,
-                onClick = { actions.onAppClick(app) }
+                onClick = { actions.onAppClick(app) },
+                onLongClick = { homeActions.onOpenFolderAppBottomSheet(app, params.folder) }
             )
         }
     }
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun OpenedFolderSamsungGridAppItem(
     app: AppInfo,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    onLongClick: () -> Unit = {}
 ) {
     val iconBitmap: ImageBitmap = remember(app.packageName) {
         app.getIconBitmap()
@@ -222,7 +229,10 @@ private fun OpenedFolderSamsungGridAppItem(
         modifier = Modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(16.dp))
-            .clickable(onClick = onClick)
+            .combinedClickable(
+                onClick = onClick,
+                onLongClick = onLongClick
+            )
             .padding(vertical = 6.dp)
     ) {
         Image(
@@ -280,7 +290,8 @@ fun OpenedFolderActions(
 fun OpenedFolderAppList(
     appsInFolder: List<AppInfo>,
     isLeftHandedMode: Boolean,
-    onAppClick: (AppInfo) -> Unit
+    onAppClick: (AppInfo) -> Unit,
+    onAppLongClick: ((AppInfo) -> Unit)? = null
 ) {
     if (appsInFolder.isEmpty()) {
         Box(
@@ -304,18 +315,21 @@ fun OpenedFolderAppList(
                 OpenedFolderAppItemRow(
                     app = app,
                     isLeftHandedMode = isLeftHandedMode,
-                    onClick = { onAppClick(app) }
+                    onClick = { onAppClick(app) },
+                    onLongClick = { onAppLongClick?.invoke(app) }
                 )
             }
         }
     }
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun OpenedFolderAppItemRow(
     app: AppInfo,
     isLeftHandedMode: Boolean,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    onLongClick: () -> Unit = {}
 ) {
     val iconBitmap: ImageBitmap = remember(app.packageName) {
         app.getIconBitmap()
@@ -325,7 +339,10 @@ private fun OpenedFolderAppItemRow(
         modifier = Modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(10.dp))
-            .clickable(onClick = onClick)
+            .combinedClickable(
+                onClick = onClick,
+                onLongClick = onLongClick
+            )
             .padding(horizontal = 8.dp, vertical = 8.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {

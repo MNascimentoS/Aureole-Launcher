@@ -154,7 +154,7 @@ private fun EditFolderDialogContent(
 }
 
 @Composable
-private fun FolderIconPreview(
+fun FolderIconPreview(
     folderName: String,
     selectedIcon: String?
 ) {
@@ -185,7 +185,7 @@ private fun FolderIconPreview(
 }
 
 @Composable
-private fun IconSelectionRow(
+fun IconSelectionRow(
     selectedIcon: String?,
     onIconSelected: (String?) -> Unit,
     folderName: String

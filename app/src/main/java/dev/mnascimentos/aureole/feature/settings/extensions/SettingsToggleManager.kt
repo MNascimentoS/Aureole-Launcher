@@ -9,11 +9,11 @@ internal object SettingsToggleManager {
             SettingToggle.SHOW_WIDGET_DOTS,
             SettingToggle.HAZE,
             SettingToggle.LEFT_HANDED_MODE,
-            SettingToggle.SIDE_PANEL_BACKGROUND,
-            SettingToggle.SIDE_PANEL_EXPAND_CELL,
+            SettingToggle.CONTAINER_BACKGROUND,
+            SettingToggle.CONTAINER_EXPAND_CELL,
             SettingToggle.CLOCK_BACKGROUND,
-            SettingToggle.SHOW_SIDE_PANEL_ADD_FOLDER_BUTTON,
-            SettingToggle.SIDE_PANEL -> toggleGroupOne(vm, toggle)
+            SettingToggle.SHOW_CONTAINER_ADD_FOLDER_BUTTON,
+            SettingToggle.CONTAINER -> toggleGroupOne(vm, toggle)
             SettingToggle.SHOW_FOLDER_LABELS,
             SettingToggle.HOME_OPENS_ALL_APPS,
             SettingToggle.SHOW_ALL_APPS_ON_HOME,
@@ -45,30 +45,30 @@ internal object SettingsToggleManager {
                 vm.settingsRepository.isLeftHandedMode = newValue
                 vm.updateUiState { it.copy(isLeftHandedMode = newValue) }
             }
-            SettingToggle.SIDE_PANEL_BACKGROUND -> {
-                val newValue = !vm.uiState.value.isSidePanelBackgroundEnabled
-                vm.settingsRepository.isSidePanelBackgroundEnabled = newValue
-                vm.updateUiState { it.copy(isSidePanelBackgroundEnabled = newValue) }
+            SettingToggle.CONTAINER_BACKGROUND -> {
+                val newValue = !vm.uiState.value.isContainerBackgroundEnabled
+                vm.settingsRepository.isContainerBackgroundEnabled = newValue
+                vm.updateUiState { it.copy(isContainerBackgroundEnabled = newValue) }
             }
-            SettingToggle.SIDE_PANEL_EXPAND_CELL -> {
-                val newValue = !vm.uiState.value.isSidePanelExpandCell
-                vm.settingsRepository.isSidePanelExpandCell = newValue
-                vm.updateUiState { it.copy(isSidePanelExpandCell = newValue) }
+            SettingToggle.CONTAINER_EXPAND_CELL -> {
+                val newValue = !vm.uiState.value.isContainerExpandCell
+                vm.settingsRepository.isContainerExpandCell = newValue
+                vm.updateUiState { it.copy(isContainerExpandCell = newValue) }
             }
             SettingToggle.CLOCK_BACKGROUND -> {
                 val newValue = !vm.uiState.value.isClockBackgroundEnabled
                 vm.settingsRepository.isClockBackgroundEnabled = newValue
                 vm.updateUiState { it.copy(isClockBackgroundEnabled = newValue) }
             }
-            SettingToggle.SIDE_PANEL -> {
-                val newValue = !vm.uiState.value.isSidePanelEnabled
-                vm.settingsRepository.isSidePanelEnabled = newValue
-                vm.updateUiState { it.copy(isSidePanelEnabled = newValue) }
+            SettingToggle.CONTAINER -> {
+                val newValue = !vm.uiState.value.isContainerEnabled
+                vm.settingsRepository.isContainerEnabled = newValue
+                vm.updateUiState { it.copy(isContainerEnabled = newValue) }
             }
-            SettingToggle.SHOW_SIDE_PANEL_ADD_FOLDER_BUTTON -> {
-                val newValue = !vm.uiState.value.showSidePanelAddFolderButton
-                vm.settingsRepository.showSidePanelAddFolderButton = newValue
-                vm.updateUiState { it.copy(showSidePanelAddFolderButton = newValue) }
+            SettingToggle.SHOW_CONTAINER_ADD_FOLDER_BUTTON -> {
+                val newValue = !vm.uiState.value.showContainerAddFolderButton
+                vm.settingsRepository.showContainerAddFolderButton = newValue
+                vm.updateUiState { it.copy(showContainerAddFolderButton = newValue) }
             }
             else -> {}
         }

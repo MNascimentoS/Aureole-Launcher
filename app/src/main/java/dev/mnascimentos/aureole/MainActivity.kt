@@ -231,7 +231,8 @@ class MainActivity : ComponentActivity() {
 
 private fun checkOverlayActive(uiState: MainUiState): Boolean {
     return (
-        uiState.isAllAppsDrawerOpen ||
+        uiState.isGridEditMode ||
+            uiState.isAllAppsDrawerOpen ||
             uiState.activeFolder != null ||
             uiState.isCreateFolderDialogVisible ||
             uiState.isAddAppToFolderDialogVisible ||
@@ -240,7 +241,10 @@ private fun checkOverlayActive(uiState: MainUiState): Boolean {
             uiState.showWidgetPicker ||
             uiState.showFavoritePickerDialog ||
             uiState.showWidgetPopup ||
-            uiState.showWidgetResizeDialog
+            uiState.showWidgetResizeDialog ||
+            uiState.showAddContainerDialog ||
+            uiState.editingGridItem != null ||
+            uiState.isEditContainerDialogVisible
         )
 }
 

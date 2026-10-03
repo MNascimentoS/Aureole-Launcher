@@ -3,28 +3,28 @@ package dev.mnascimentos.aureole.feature.home.grid
 import dev.mnascimentos.aureole.core.data.model.LauncherItemState
 import dev.mnascimentos.aureole.core.data.model.LauncherItemType
 
-private const val DEFAULT_CLOCK_SPAN_X = 10
-private const val DEFAULT_CLOCK_SPAN_Y = 6
-private const val DEFAULT_PANEL_COL = 7
-private const val DEFAULT_PANEL_ROW = 7
-private const val DEFAULT_PANEL_SPAN_X = 3
-private const val DEFAULT_PANEL_SPAN_Y = 7
-private const val DEFAULT_APPS_ROW = 9
-private const val DEFAULT_APPS_SPAN_X = 7
-private const val DEFAULT_APPS_SPAN_Y = 11
+private const val DEFAULT_CLOCK_SPAN_X = 20
+private const val DEFAULT_CLOCK_SPAN_Y = 9
+private const val DEFAULT_PANEL_COL = 14
+private const val DEFAULT_PANEL_ROW = 9
+private const val DEFAULT_PANEL_SPAN_X = 6
+private const val DEFAULT_PANEL_SPAN_Y = 11
+private const val DEFAULT_APPS_ROW = 13
+private const val DEFAULT_APPS_SPAN_X = 14
+private const val DEFAULT_APPS_SPAN_Y = 17
 
-private const val CLOCK_DEFAULT_COL_SPAN = 10
-private const val CLOCK_DEFAULT_ROW_SPAN = 6
-private const val APPS_DEFAULT_COL_SPAN = 7
-private const val APPS_DEFAULT_ROW_SPAN = 11
-private const val SIDE_PANEL_DEFAULT_COL_SPAN = 3
-private const val SIDE_PANEL_DEFAULT_ROW_SPAN = 7
-private const val WIDGET_DEFAULT_COL_SPAN = 2
-private const val WIDGET_DEFAULT_ROW_SPAN = 2
-private const val WIDGET_LIST_DEFAULT_COL_SPAN = 3
-private const val WIDGET_LIST_DEFAULT_ROW_SPAN = 2
-private const val SCROLL_VIEW_DEFAULT_COL_SPAN = 7
-private const val SCROLL_VIEW_DEFAULT_ROW_SPAN = 6
+private const val CLOCK_DEFAULT_COL_SPAN = 20
+private const val CLOCK_DEFAULT_ROW_SPAN = 9
+private const val APPS_DEFAULT_COL_SPAN = 14
+private const val APPS_DEFAULT_ROW_SPAN = 17
+private const val CONTAINER_DEFAULT_COL_SPAN = 6
+private const val CONTAINER_DEFAULT_ROW_SPAN = 11
+private const val WIDGET_DEFAULT_COL_SPAN = 14
+private const val WIDGET_DEFAULT_ROW_SPAN = 6
+private const val WIDGET_LIST_DEFAULT_COL_SPAN = 14
+private const val WIDGET_LIST_DEFAULT_ROW_SPAN = 6
+private const val SCROLL_VIEW_DEFAULT_COL_SPAN = 14
+private const val SCROLL_VIEW_DEFAULT_ROW_SPAN = 9
 private const val DEFAULT_MIN_COL_SPAN = 1
 private const val DEFAULT_MIN_ROW_SPAN = 1
 
@@ -39,8 +39,8 @@ object GridDefaults {
                 Pair(APPS_DEFAULT_COL_SPAN, APPS_DEFAULT_ROW_SPAN),
                 Pair(DEFAULT_MIN_COL_SPAN, DEFAULT_MIN_ROW_SPAN)
             )
-            LauncherItemType.SHORTCUTS_SIDE_PANEL -> Pair(
-                Pair(SIDE_PANEL_DEFAULT_COL_SPAN, SIDE_PANEL_DEFAULT_ROW_SPAN),
+            LauncherItemType.SHORTCUTS_CONTAINER -> Pair(
+                Pair(CONTAINER_DEFAULT_COL_SPAN, CONTAINER_DEFAULT_ROW_SPAN),
                 Pair(DEFAULT_MIN_COL_SPAN, DEFAULT_MIN_ROW_SPAN)
             )
             LauncherItemType.SINGLE_APP_WIDGET -> Pair(
@@ -73,18 +73,18 @@ object GridDefaults {
                 type = LauncherItemType.CLOCK,
                 col = 0,
                 row = 0,
-                colSpan = 10,
-                rowSpan = 4,
+                colSpan = 20,
+                rowSpan = 6,
                 minColSpan = 1,
                 minRowSpan = 1
             ),
             LauncherItemState(
-                id = "side_panel_item",
-                type = LauncherItemType.SHORTCUTS_SIDE_PANEL,
-                col = 17,
+                id = "container_item",
+                type = LauncherItemType.SHORTCUTS_CONTAINER,
+                col = 24,
                 row = 0,
-                colSpan = 3,
-                rowSpan = 10,
+                colSpan = 6,
+                rowSpan = 20,
                 minColSpan = 1,
                 minRowSpan = 1
             ),
@@ -92,9 +92,9 @@ object GridDefaults {
                 id = "apps_list_item",
                 type = LauncherItemType.APPS_LIST,
                 col = 0,
-                row = 4,
-                colSpan = 16,
-                rowSpan = 6,
+                row = 6,
+                colSpan = 24,
+                rowSpan = 14,
                 minColSpan = 1,
                 minRowSpan = 1
             )
@@ -114,8 +114,8 @@ object GridDefaults {
                 minRowSpan = 1
             ),
             LauncherItemState(
-                id = "side_panel_item",
-                type = LauncherItemType.SHORTCUTS_SIDE_PANEL,
+                id = "container_item",
+                type = LauncherItemType.SHORTCUTS_CONTAINER,
                 col = DEFAULT_PANEL_COL,
                 row = DEFAULT_PANEL_ROW,
                 colSpan = DEFAULT_PANEL_SPAN_X,

@@ -7,7 +7,7 @@ import dev.mnascimentos.aureole.feature.settings.model.SettingValue
 
 internal fun SettingsViewModel.applySettingValue(value: SettingValue) {
     when (value) {
-        is SettingValue.SidePanelPosition -> handleSidePanelPosition(value.position)
+        is SettingValue.ContainerPosition -> handleContainerPosition(value.position)
         is SettingValue.HazeOpacity -> handleHazeOpacity(value.opacity)
         is SettingValue.ManualSeedColor -> handleManualSeedColor(value.color)
         is SettingValue.SelectedTheme -> handleSelectedTheme(value.themeName)
@@ -19,9 +19,9 @@ internal fun SettingsViewModel.applySettingValue(value: SettingValue) {
     }
 }
 
-private fun SettingsViewModel.handleSidePanelPosition(position: String) {
-    settingsRepository.sidePanelPosition = position
-    updateUiState { it.copy(sidePanelPosition = position, showSidePanelPositionDialog = false) }
+private fun SettingsViewModel.handleContainerPosition(position: String) {
+    settingsRepository.containerPosition = position
+    updateUiState { it.copy(containerPosition = position, showContainerPositionDialog = false) }
 }
 
 private fun SettingsViewModel.handleHazeOpacity(opacity: Float) {

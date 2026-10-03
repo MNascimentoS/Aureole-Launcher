@@ -5,7 +5,7 @@ package dev.mnascimentos.aureole.feature.home.components.model
 import androidx.compose.ui.graphics.Color
 import dev.mnascimentos.aureole.core.data.model.AppFolder
 
-data class SidePanelFolderButtonParams(
+data class ContainerFolderButtonParams(
     val folder: AppFolder,
     val isGridFolderEnabled: Boolean,
     val containerColor: Color,

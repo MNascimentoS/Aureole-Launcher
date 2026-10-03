@@ -3,8 +3,9 @@ package dev.mnascimentos.aureole.feature.home.folder
 import android.content.ComponentName
 import android.content.Intent
 import android.graphics.drawable.ColorDrawable
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -42,6 +43,7 @@ import dev.mnascimentos.aureole.core.designsystem.components.AureoleHeaderBanner
 import dev.mnascimentos.aureole.core.designsystem.components.AureolePopupBox
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
+import dev.mnascimentos.aureole.feature.home.LocalHomeActions
 import dev.mnascimentos.aureole.feature.home.LocalHomeUiState
 import dev.mnascimentos.aureole.feature.home.folder.model.FolderPopupActions
 import dev.mnascimentos.aureole.feature.home.folder.model.GridFolderPopupParams
@@ -104,13 +106,14 @@ private fun StandardFolderPopupBox(
     modifier: Modifier = Modifier
 ) {
     val uiState = LocalHomeUiState.current
+    val homeActions = LocalHomeActions.current
     val context = LocalContext.current
 
     AureolePopupBox(
         hazeState = null,
         contentPadding = PaddingValues(0.dp),
         modifier = modifier
-            .widthIn(min = 230.dp, max = 270.dp)
+            .widthIn(min = 180.dp, max = 210.dp)
             .heightIn(max = 400.dp)
     ) {
         AureoleHeaderBanner(
@@ -133,6 +136,7 @@ private fun StandardFolderPopupBox(
 
             if (config.folder.displayAsGrid) {
                 OpenedFolderGrid(
+                    folder = config.folder,
                     appsInFolder = appsInFolder,
                     onAppClick = config.actions.onAppClick
                 )
@@ -140,7 +144,8 @@ private fun StandardFolderPopupBox(
                 OpenedFolderAppList(
                     appsInFolder = appsInFolder,
                     isLeftHandedMode = uiState.isLeftHandedMode,
-                    onAppClick = config.actions.onAppClick
+                    onAppClick = config.actions.onAppClick,
+                    onAppLongClick = { app -> homeActions.onOpenFolderAppBottomSheet(app, config.folder) }
                 )
             }
         }
@@ -149,9 +154,11 @@ private fun StandardFolderPopupBox(
 
 @Composable
 private fun OpenedFolderGrid(
+    folder: AppFolder,
     appsInFolder: List<AppInfo>,
     onAppClick: (AppInfo) -> Unit
 ) {
+    val homeActions = LocalHomeActions.current
     if (appsInFolder.isEmpty()) {
         Box(
             modifier = Modifier
@@ -184,17 +191,20 @@ private fun OpenedFolderGrid(
             items(appsInFolder, key = { it.packageName }) { app ->
                 OpenedFolderGridAppItem(
                     app = app,
-                    onClick = { onAppClick(app) }
+                    onClick = { onAppClick(app) },
+                    onLongClick = { homeActions.onOpenFolderAppBottomSheet(app, folder) }
                 )
             }
         }
     }
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun OpenedFolderGridAppItem(
     app: AppInfo,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    onLongClick: () -> Unit = {}
 ) {
     val iconBitmap = remember(app.packageName) { app.getIconBitmap() }
 
@@ -204,7 +214,10 @@ private fun OpenedFolderGridAppItem(
         modifier = Modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(14.dp))
-            .clickable(onClick = onClick)
+            .combinedClickable(
+                onClick = onClick,
+                onLongClick = onLongClick
+            )
             .padding(vertical = 6.dp, horizontal = 2.dp)
     ) {
         Image(

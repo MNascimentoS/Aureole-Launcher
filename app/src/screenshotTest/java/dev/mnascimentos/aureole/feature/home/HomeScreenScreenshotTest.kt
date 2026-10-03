@@ -71,7 +71,7 @@ fun HomeScreenScreenshotTest() {
         alphabet = listOf('B', 'C', 'M', 'P', 'S'),
         isLoading = false,
         isHazeEnabled = false,
-        isSidePanelEnabled = true,
+        isContainerEnabled = true,
         showFolderLabels = true,
         showAllAppsOnHome = true
     )

@@ -2,7 +2,7 @@ package dev.mnascimentos.aureole.core.data.model
 
 import java.util.UUID
 
-data class SidePanelEntity(
+data class ContainerEntity(
     val id: String = UUID.randomUUID().toString(),
     val title: String = "Painel Lateral",
     val position: String = "Space Between",
