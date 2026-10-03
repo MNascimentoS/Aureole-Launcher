@@ -25,7 +25,6 @@ import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.remember
@@ -36,12 +35,15 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.core.data.model.AppInfo
+import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.core.designsystem.utils.fadingEdges
 import dev.mnascimentos.aureole.feature.home.LocalHomeActions
 import dev.mnascimentos.aureole.feature.home.LocalHomeUiState
 import dev.mnascimentos.aureole.feature.home.components.model.AppItemRowActions
+import dev.mnascimentos.aureole.feature.home.components.model.AppItemRowConfig
 import dev.mnascimentos.aureole.feature.home.components.model.FavoritesListOptions
 import dev.mnascimentos.aureole.feature.home.components.model.NonScrollableFavoritesParams
 import dev.mnascimentos.aureole.feature.home.components.model.ScrollableFavoritesParams
@@ -191,11 +193,12 @@ private fun NonScrollableFavoritesList(
                 AppItemRow(
                     app = app,
                     onClick = { actions.onAppClick(app) },
-                    isFavorite = true,
+                    config = AppItemRowConfig(isFavorite = true, useActionSheet = true),
                     actions = AppItemRowActions(
                         onToggleFavorite = { actions.onToggleFavorite(it) },
                         onEditFavoritesClick = { actions.onOpenFavoritePicker(containerId) },
-                        onAppInfoClick = { actions.onAppInfoClick(it) }
+                        onAppInfoClick = { actions.onAppInfoClick(it) },
+                        onUninstallClick = { actions.onUninstallAppClick(it) }
                     )
                 )
             }
@@ -211,11 +214,12 @@ private fun NonScrollableFavoritesList(
                 AppItemRow(
                     app = app,
                     onClick = { actions.onAppClick(app) },
-                    isFavorite = isFav,
+                    config = AppItemRowConfig(isFavorite = isFav, useActionSheet = true),
                     actions = AppItemRowActions(
                         onToggleFavorite = { actions.onToggleFavorite(it) },
                         onEditFavoritesClick = { actions.onOpenFavoritePicker(containerId) },
-                        onAppInfoClick = { actions.onAppInfoClick(it) }
+                        onAppInfoClick = { actions.onAppInfoClick(it) },
+                        onUninstallClick = { actions.onUninstallAppClick(it) }
                     )
                 )
             }
@@ -230,20 +234,25 @@ private fun LazyListScope.favoriteAppsSection(
     onEmptyClick: () -> Unit
 ) {
     if (favoriteApps.isNotEmpty()) {
-        items(favoriteApps, key = { "fav_${it.packageName}" }) { app ->
+        items(
+            items = favoriteApps,
+            key = { "fav_${it.packageName}" },
+            contentType = { "app_row" }
+        ) { app ->
             AppItemRow(
                 app = app,
                 onClick = { actions.onAppClick(app) },
-                isFavorite = true,
+                config = AppItemRowConfig(isFavorite = true, useActionSheet = true),
                 actions = AppItemRowActions(
                     onToggleFavorite = { actions.onToggleFavorite(it) },
                     onEditFavoritesClick = { actions.onOpenFavoritePicker(containerId) },
-                    onAppInfoClick = { actions.onAppInfoClick(it) }
+                    onAppInfoClick = { actions.onAppInfoClick(it) },
+                    onUninstallClick = { actions.onUninstallAppClick(it) }
                 )
             )
         }
     } else {
-        item(key = "favorites_empty_hint") {
+        item(key = "favorites_empty_hint", contentType = "empty_hint") {
             FavoritesEmptyHint(onClick = onEmptyClick)
         }
     }
@@ -257,20 +266,25 @@ private fun LazyListScope.allAppsSection(
     containerId: String? = null
 ) {
     if (showAllApps) {
-        item(key = "all_apps_divider") {
+        item(key = "all_apps_divider", contentType = "divider") {
             AllAppsDivider()
         }
 
-        items(apps, key = { "all_${it.packageName}" }) { app ->
+        items(
+            items = apps,
+            key = { "all_${it.packageName}" },
+            contentType = { "app_row" }
+        ) { app ->
             val isFav = favoritePackages.contains(app.packageName)
             AppItemRow(
                 app = app,
                 onClick = { actions.onAppClick(app) },
-                isFavorite = isFav,
+                config = AppItemRowConfig(isFavorite = isFav, useActionSheet = true),
                 actions = AppItemRowActions(
                     onToggleFavorite = { actions.onToggleFavorite(it) },
                     onEditFavoritesClick = { actions.onOpenFavoritePicker(containerId) },
-                    onAppInfoClick = { actions.onAppInfoClick(it) }
+                    onAppInfoClick = { actions.onAppInfoClick(it) },
+                    onUninstallClick = { actions.onUninstallAppClick(it) }
                 )
             )
         }
@@ -316,9 +330,9 @@ private fun FavoritesEmptyHint(onClick: () -> Unit) {
                 modifier = Modifier.size(18.dp)
             )
             Spacer(modifier = Modifier.width(8.dp))
-            Text(
+            AureoleText(
                 text = "Tap to select Favorites",
-                style = MaterialTheme.typography.bodyMedium,
+                style = AureoleDS.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
         }
@@ -337,9 +351,9 @@ private fun AllAppsDivider() {
             modifier = Modifier.weight(1f),
             color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f)
         )
-        Text(
+        AureoleText(
             text = " ALL APPS ",
-            style = MaterialTheme.typography.labelSmall,
+            style = AureoleDS.typography.labelSmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f),
             modifier = Modifier.padding(horizontal = 8.dp)
         )

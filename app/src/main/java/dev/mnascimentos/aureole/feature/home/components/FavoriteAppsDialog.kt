@@ -1,10 +1,14 @@
+@file:Suppress("TooManyFunctions")
+
 package dev.mnascimentos.aureole.feature.home.components
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -21,7 +25,8 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Text
+import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -36,6 +41,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import dev.mnascimentos.aureole.core.data.model.AppInfo
+import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleTheme
 import dev.mnascimentos.aureole.feature.home.components.model.FavoriteAppRowParams
 import dev.mnascimentos.aureole.feature.home.components.model.FavoriteAppsBodyParams
 import dev.mnascimentos.aureole.feature.home.components.model.FavoriteAppsDialogActions
@@ -61,9 +69,14 @@ fun FavoriteAppsDialog(
             modifier = Modifier
                 .fillMaxWidth(DIALOG_WIDTH_FRACTION)
                 .heightIn(max = 620.dp)
-                .clip(RoundedCornerShape(24.dp))
-                .background(MaterialTheme.colorScheme.surface)
-                .padding(20.dp)
+                .clip(RoundedCornerShape(22.dp))
+                .border(
+                    width = 0.5.dp,
+                    color = AureoleTheme.colors.outline,
+                    shape = RoundedCornerShape(22.dp)
+                )
+                .background(AureoleTheme.colors.surface)
+                .padding(AureoleDS.dimens.large)
         ) {
             FavoriteAppsDialogContent(config = config, actions = actions)
         }
@@ -130,37 +143,39 @@ private fun FavoriteAppsDialogBody(
     val handleMoveUp = { index: Int -> moveFavoriteItem(config, actions, index, delta = -1) }
     val handleMoveDown = { index: Int -> moveFavoriteItem(config, actions, index, delta = 1) }
 
+    val handleActivateAll = {
+        val toAdd = params.filteredRemaining.map { it.packageName }
+        val newFavs = (config.favoriteAppPackages + toAdd).distinct()
+        actions.onUpdateFavoritePackages(config.containerId, newFavs)
+    }
+
+    val handleDeactivateAll = {
+        val toRemove = params.filteredFavorites.map { it.packageName }.toSet()
+        val newFavs = config.favoriteAppPackages.filter { it !in toRemove }
+        actions.onUpdateFavoritePackages(config.containerId, newFavs)
+    }
+
     Column(modifier = Modifier.fillMaxWidth()) {
         FavoriteAppsDialogHeader(onDismiss = actions.onDismiss, containerId = config.containerId)
         Spacer(modifier = Modifier.height(12.dp))
 
-        if (config.containerId == null) {
-            FavoriteAppsShowAllSwitchRow(
-                showAllAppsOnHome = config.showAllAppsOnHome,
-                onToggleShowAllAppsOnHome = actions.onToggleShowAllAppsOnHome
-            )
-            Spacer(modifier = Modifier.height(12.dp))
-        }
+        FavoriteAppsShowAllSwitchRow(
+            showAllAppsOnHome = config.showAllAppsOnHome,
+            onToggleShowAllAppsOnHome = actions.onToggleShowAllAppsOnHome
+        )
+        Spacer(modifier = Modifier.height(12.dp))
 
-        OutlinedTextField(
-            value = params.searchQuery,
-            onValueChange = onSearchQueryChange,
-            placeholder = { Text("Buscar aplicativo...") },
-            leadingIcon = {
-                Icon(
-                    imageVector = Icons.Default.Search,
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-            },
-            singleLine = true,
-            modifier = Modifier.fillMaxWidth()
+        FavoriteAppsSearchInput(
+            query = params.searchQuery,
+            onQueryChange = onSearchQueryChange
         )
 
         Spacer(modifier = Modifier.height(12.dp))
 
         LazyColumn(
-            modifier = Modifier.weight(1f).fillMaxWidth(),
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxWidth(),
             verticalArrangement = Arrangement.spacedBy(4.dp)
         ) {
             favoriteSectionItems(
@@ -171,19 +186,21 @@ private fun FavoriteAppsDialogBody(
                 ),
                 onMoveUp = handleMoveUp,
                 onMoveDown = handleMoveDown,
-                onToggleFavorite = { pkg -> actions.onToggleFavorite(pkg) }
+                onToggleFavorite = { pkg -> actions.onToggleFavorite(pkg) },
+                onDeactivateAll = handleDeactivateAll
             )
 
             remainingSectionItems(
                 filteredRemaining = params.filteredRemaining,
                 searchQuery = params.searchQuery,
-                onToggleFavorite = { pkg -> actions.onToggleFavorite(pkg) }
+                onToggleFavorite = { pkg -> actions.onToggleFavorite(pkg) },
+                onActivateAll = handleActivateAll
             )
         }
 
         Spacer(modifier = Modifier.height(12.dp))
         Button(onClick = actions.onDismiss, modifier = Modifier.align(Alignment.End)) {
-            Text("Concluído")
+            AureoleText("Concluído")
         }
     }
 }
@@ -203,24 +220,90 @@ private fun moveFavoriteItem(
     }
 }
 
+@Composable
+private fun FavoriteSectionHeader(
+    count: Int,
+    onDeactivateAll: () -> Unit
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 4.dp),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        AureoleText(
+            text = "Favoritos ($count)",
+            style = AureoleTheme.typography.titleSmall,
+            fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colorScheme.primary
+        )
+        if (count > 0) {
+            TextButton(
+                onClick = onDeactivateAll,
+                contentPadding = PaddingValues(horizontal = 8.dp, vertical = 0.dp)
+            ) {
+                AureoleText(
+                    text = "Desativar todos",
+                    style = AureoleTheme.typography.labelMedium,
+                    fontWeight = FontWeight.SemiBold,
+                    color = MaterialTheme.colorScheme.error
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun RemainingSectionHeader(
+    count: Int,
+    onActivateAll: () -> Unit
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 4.dp),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        AureoleText(
+            text = "Outros Aplicativos ($count)",
+            style = AureoleTheme.typography.titleSmall,
+            fontWeight = FontWeight.Bold,
+            color = AureoleTheme.colors.onSurfaceMedium
+        )
+        if (count > 0) {
+            TextButton(
+                onClick = onActivateAll,
+                contentPadding = PaddingValues(horizontal = 8.dp, vertical = 0.dp)
+            ) {
+                AureoleText(
+                    text = "Ativar todos",
+                    style = AureoleTheme.typography.labelMedium,
+                    fontWeight = FontWeight.SemiBold,
+                    color = MaterialTheme.colorScheme.primary
+                )
+            }
+        }
+    }
+}
+
 @OptIn(ExperimentalFoundationApi::class)
 private fun LazyListScope.favoriteSectionItems(
     params: FavoriteSectionParams,
     onMoveUp: (Int) -> Unit,
     onMoveDown: (Int) -> Unit,
-    onToggleFavorite: (String) -> Unit
+    onToggleFavorite: (String) -> Unit,
+    onDeactivateAll: () -> Unit
 ) {
     val filteredFavorites = params.filteredFavorites
     val searchQuery = params.searchQuery
     val favoriteCount = params.favoriteCount
 
     item {
-        Text(
-            text = "Favoritos (${filteredFavorites.size})",
-            style = MaterialTheme.typography.titleSmall,
-            fontWeight = FontWeight.Bold,
-            color = MaterialTheme.colorScheme.primary,
-            modifier = Modifier.padding(vertical = 4.dp)
+        FavoriteSectionHeader(
+            count = filteredFavorites.size,
+            onDeactivateAll = onDeactivateAll
         )
     }
 
@@ -231,10 +314,10 @@ private fun LazyListScope.favoriteSectionItems(
             } else {
                 "Nenhum favorito encontrado."
             }
-            Text(
+            AureoleText(
                 text = emptyMsg,
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                style = AureoleTheme.typography.bodyMedium,
+                color = AureoleTheme.colors.onSurfaceMedium,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(vertical = 12.dp),
@@ -266,16 +349,14 @@ private fun LazyListScope.favoriteSectionItems(
 private fun LazyListScope.remainingSectionItems(
     filteredRemaining: List<AppInfo>,
     searchQuery: String,
-    onToggleFavorite: (String) -> Unit
+    onToggleFavorite: (String) -> Unit,
+    onActivateAll: () -> Unit
 ) {
     item {
         Spacer(modifier = Modifier.height(8.dp))
-        Text(
-            text = "Outros Aplicativos (${filteredRemaining.size})",
-            style = MaterialTheme.typography.titleSmall,
-            fontWeight = FontWeight.Bold,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            modifier = Modifier.padding(vertical = 4.dp)
+        RemainingSectionHeader(
+            count = filteredRemaining.size,
+            onActivateAll = onActivateAll
         )
     }
 
@@ -286,10 +367,10 @@ private fun LazyListScope.remainingSectionItems(
             } else {
                 "Nenhum outro aplicativo encontrado."
             }
-            Text(
+            AureoleText(
                 text = emptyMsg,
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                style = AureoleTheme.typography.bodyMedium,
+                color = AureoleTheme.colors.onSurfaceMedium,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(vertical = 12.dp),
@@ -322,8 +403,8 @@ private fun FavoriteAppRow(
         modifier = modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(12.dp))
-            .background(MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.3f))
-            .padding(horizontal = 12.dp, vertical = 6.dp),
+            .background(AureoleTheme.colors.surfaceVariant.copy(alpha = 0.5f))
+            .padding(horizontal = AureoleDS.dimens.small, vertical = AureoleDS.dimens.xxSmall),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
@@ -336,4 +417,36 @@ private fun FavoriteAppRow(
             onToggleFavorite = onToggleFavorite
         )
     }
+}
+
+@Composable
+private fun FavoriteAppsSearchInput(
+    query: String,
+    onQueryChange: (String) -> Unit
+) {
+    OutlinedTextField(
+        value = query,
+        onValueChange = onQueryChange,
+        placeholder = {
+            AureoleText(
+                "Buscar aplicativo...",
+                color = AureoleTheme.colors.onSurfaceLow
+            )
+        },
+        leadingIcon = {
+            Icon(
+                imageVector = Icons.Default.Search,
+                contentDescription = null,
+                tint = AureoleTheme.colors.onSurfaceMedium
+            )
+        },
+        singleLine = true,
+        colors = OutlinedTextFieldDefaults.colors(
+            focusedBorderColor = MaterialTheme.colorScheme.primary,
+            unfocusedBorderColor = AureoleTheme.colors.outline,
+            focusedTextColor = AureoleTheme.colors.onSurfaceHigh,
+            unfocusedTextColor = AureoleTheme.colors.onSurfaceHigh
+        ),
+        modifier = Modifier.fillMaxWidth()
+    )
 }

@@ -19,7 +19,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
@@ -36,6 +35,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.core.data.model.AppFolder
 import dev.mnascimentos.aureole.core.data.model.AppInfo
+import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.feature.home.LocalHomeUiState
 import dev.mnascimentos.aureole.feature.home.components.model.SidePanelFolderButtonParams
@@ -150,7 +150,7 @@ fun SidePanelFolderButton(
                     modifier = Modifier.size(24.dp)
                 )
             } else {
-                Text(
+                AureoleText(
                     text = params.folder.name.take(1).uppercase(),
                     color = params.textColor,
                     style = MaterialTheme.typography.titleMedium,
@@ -200,7 +200,7 @@ private fun EmptyFolderMiniGridPreview(folder: AppFolder) {
             modifier = Modifier.size(24.dp)
         )
     } else {
-        Text(
+        AureoleText(
             text = folder.name.take(1).uppercase(),
             color = AureoleDS.colors.onSurfaceMedium,
             style = MaterialTheme.typography.titleMedium,
@@ -244,7 +244,7 @@ private fun PopulatedFolderMiniGrid(folderApps: List<AppInfo>) {
 @Composable
 fun SidePanelFolderLabel(name: String) {
     Spacer(modifier = Modifier.height(2.dp))
-    Text(
+    AureoleText(
         text = name,
         color = AureoleDS.colors.onSurfaceHigh,
         style = MaterialTheme.typography.labelSmall,

@@ -1,11 +1,16 @@
 package dev.mnascimentos.aureole.feature.home.components
 
+import androidx.compose.foundation.border
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleTheme
 
 @Composable
 fun UpdateAvailableDialog(
@@ -14,32 +19,42 @@ fun UpdateAvailableDialog(
 ) {
     AlertDialog(
         onDismissRequest = onDismiss,
+        containerColor = AureoleTheme.colors.surface,
+        shape = RoundedCornerShape(22.dp),
         title = {
-            Text(
+            AureoleText(
                 text = "Nova atualização disponível",
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Bold
+                style = AureoleTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold,
+                color = AureoleTheme.colors.onSurfaceHigh
             )
         },
         text = {
-            Text(
+            AureoleText(
                 text = "Uma nova versão do Aureole Launcher está disponível na Google Play. Deseja atualizar agora?",
-                style = MaterialTheme.typography.bodyMedium
+                style = AureoleTheme.typography.bodyMedium,
+                color = AureoleTheme.colors.onSurfaceMedium
             )
         },
         confirmButton = {
             TextButton(onClick = onConfirmUpdate) {
-                Text(
+                AureoleText(
                     text = "Atualizar agora",
-                    fontWeight = FontWeight.SemiBold
+                    fontWeight = FontWeight.SemiBold,
+                    color = MaterialTheme.colorScheme.primary
                 )
             }
         },
         dismissButton = {
             TextButton(onClick = onDismiss) {
-                Text(text = "Agora não")
+                AureoleText(text = "Agora não", color = AureoleTheme.colors.onSurfaceMedium)
             }
-        }
+        },
+        modifier = Modifier.border(
+            width = 0.5.dp,
+            color = AureoleTheme.colors.outline,
+            shape = RoundedCornerShape(22.dp)
+        )
     )
 }
 
@@ -50,31 +65,41 @@ fun UpdateDownloadedDialog(
 ) {
     AlertDialog(
         onDismissRequest = onDismiss,
+        containerColor = AureoleTheme.colors.surface,
+        shape = RoundedCornerShape(22.dp),
         title = {
-            Text(
+            AureoleText(
                 text = "Atualização pronta",
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Bold
+                style = AureoleTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold,
+                color = AureoleTheme.colors.onSurfaceHigh
             )
         },
         text = {
-            Text(
+            AureoleText(
                 text = "A nova versão foi baixada com sucesso. Reinicie o aplicativo para concluir a instalação.",
-                style = MaterialTheme.typography.bodyMedium
+                style = AureoleTheme.typography.bodyMedium,
+                color = AureoleTheme.colors.onSurfaceMedium
             )
         },
         confirmButton = {
             TextButton(onClick = onConfirmRestart) {
-                Text(
+                AureoleText(
                     text = "Reiniciar agora",
-                    fontWeight = FontWeight.SemiBold
+                    fontWeight = FontWeight.SemiBold,
+                    color = MaterialTheme.colorScheme.primary
                 )
             }
         },
         dismissButton = {
             TextButton(onClick = onDismiss) {
-                Text(text = "Depois")
+                AureoleText(text = "Depois", color = AureoleTheme.colors.onSurfaceMedium)
             }
-        }
+        },
+        modifier = Modifier.border(
+            width = 0.5.dp,
+            color = AureoleTheme.colors.outline,
+            shape = RoundedCornerShape(22.dp)
+        )
     )
 }

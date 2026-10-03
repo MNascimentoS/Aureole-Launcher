@@ -1,5 +1,6 @@
 package dev.mnascimentos.aureole.feature.settings.components
 
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -10,7 +11,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.RadioButton
-import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -18,6 +18,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleTheme
 
 @Composable
@@ -33,15 +35,16 @@ internal fun SettingsButtonPositionDialog(
 
     AlertDialog(
         onDismissRequest = onDismiss,
+        containerColor = AureoleTheme.colors.surface,
+        shape = RoundedCornerShape(22.dp),
         title = {
-            Text(
+            AureoleText(
                 text = "Posição do Botão de Configurações",
                 style = AureoleTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold,
                 color = AureoleTheme.colors.onSurfaceHigh
             )
         },
-        containerColor = AureoleTheme.colors.surface,
         text = {
             Column {
                 options.forEach { (value, label) ->
@@ -50,15 +53,15 @@ internal fun SettingsButtonPositionDialog(
                             .fillMaxWidth()
                             .clip(RoundedCornerShape(12.dp))
                             .clickable { onPositionSelected(value) }
-                            .padding(vertical = 8.dp, horizontal = 8.dp),
+                            .padding(vertical = AureoleDS.dimens.xSmall, horizontal = AureoleDS.dimens.xSmall),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         RadioButton(
                             selected = (currentPosition == value),
                             onClick = { onPositionSelected(value) }
                         )
-                        Spacer(modifier = Modifier.width(12.dp))
-                        Text(
+                        Spacer(modifier = Modifier.width(AureoleDS.dimens.small))
+                        AureoleText(
                             text = label,
                             style = AureoleTheme.typography.bodyLarge,
                             color = AureoleTheme.colors.onSurfaceHigh
@@ -69,9 +72,14 @@ internal fun SettingsButtonPositionDialog(
         },
         confirmButton = {
             TextButton(onClick = onDismiss) {
-                Text("Cancelar", color = AureoleTheme.colors.onSurfaceHigh)
+                AureoleText("Cancelar", color = AureoleTheme.colors.onSurfaceHigh)
             }
-        }
+        },
+        modifier = Modifier.border(
+            width = 0.5.dp,
+            color = AureoleTheme.colors.outline,
+            shape = RoundedCornerShape(22.dp)
+        )
     )
 }
 
@@ -88,15 +96,16 @@ internal fun SearchIconPositionDialog(
 
     AlertDialog(
         onDismissRequest = onDismiss,
+        containerColor = AureoleTheme.colors.surface,
+        shape = RoundedCornerShape(22.dp),
         title = {
-            Text(
+            AureoleText(
                 text = "Posição do Ícone de Busca",
                 style = AureoleTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold,
                 color = AureoleTheme.colors.onSurfaceHigh
             )
         },
-        containerColor = AureoleTheme.colors.surface,
         text = {
             Column {
                 options.forEach { (value, label) ->
@@ -105,15 +114,15 @@ internal fun SearchIconPositionDialog(
                             .fillMaxWidth()
                             .clip(RoundedCornerShape(12.dp))
                             .clickable { onPositionSelected(value) }
-                            .padding(vertical = 8.dp, horizontal = 8.dp),
+                            .padding(vertical = AureoleDS.dimens.xSmall, horizontal = AureoleDS.dimens.xSmall),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         RadioButton(
                             selected = (currentPosition == value),
                             onClick = { onPositionSelected(value) }
                         )
-                        Spacer(modifier = Modifier.width(12.dp))
-                        Text(
+                        Spacer(modifier = Modifier.width(AureoleDS.dimens.small))
+                        AureoleText(
                             text = label,
                             style = AureoleTheme.typography.bodyLarge,
                             color = AureoleTheme.colors.onSurfaceHigh
@@ -124,9 +133,14 @@ internal fun SearchIconPositionDialog(
         },
         confirmButton = {
             TextButton(onClick = onDismiss) {
-                Text("Cancelar", color = AureoleTheme.colors.onSurfaceHigh)
+                AureoleText("Cancelar", color = AureoleTheme.colors.onSurfaceHigh)
             }
-        }
+        },
+        modifier = Modifier.border(
+            width = 0.5.dp,
+            color = AureoleTheme.colors.outline,
+            shape = RoundedCornerShape(22.dp)
+        )
     )
 }
 
@@ -146,15 +160,16 @@ internal fun SidePanelPositionDialog(
 
     AlertDialog(
         onDismissRequest = onDismiss,
+        containerColor = AureoleTheme.colors.surface,
+        shape = RoundedCornerShape(22.dp),
         title = {
-            Text(
+            AureoleText(
                 text = "Alinhamento do Painel Lateral",
                 style = AureoleTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold,
                 color = AureoleTheme.colors.onSurfaceHigh
             )
         },
-        containerColor = AureoleTheme.colors.surface,
         text = {
             Column {
                 options.forEach { (value, label) ->
@@ -163,15 +178,15 @@ internal fun SidePanelPositionDialog(
                             .fillMaxWidth()
                             .clip(RoundedCornerShape(12.dp))
                             .clickable { onPositionSelected(value) }
-                            .padding(vertical = 8.dp, horizontal = 8.dp),
+                            .padding(vertical = AureoleDS.dimens.xSmall, horizontal = AureoleDS.dimens.xSmall),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         RadioButton(
                             selected = (currentPosition == value),
                             onClick = { onPositionSelected(value) }
                         )
-                        Spacer(modifier = Modifier.width(12.dp))
-                        Text(
+                        Spacer(modifier = Modifier.width(AureoleDS.dimens.small))
+                        AureoleText(
                             text = label,
                             style = AureoleTheme.typography.bodyLarge,
                             color = AureoleTheme.colors.onSurfaceHigh
@@ -182,8 +197,13 @@ internal fun SidePanelPositionDialog(
         },
         confirmButton = {
             TextButton(onClick = onDismiss) {
-                Text("Cancelar", color = AureoleTheme.colors.onSurfaceHigh)
+                AureoleText("Cancelar", color = AureoleTheme.colors.onSurfaceHigh)
             }
-        }
+        },
+        modifier = Modifier.border(
+            width = 0.5.dp,
+            color = AureoleTheme.colors.outline,
+            shape = RoundedCornerShape(22.dp)
+        )
     )
 }

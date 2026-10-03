@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
@@ -37,6 +36,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
+import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.LocalHomeUiState
@@ -251,20 +252,12 @@ private fun BoxScope.ScrubberAlphabetItems(
 
     alphabet.forEachIndexed { index, char ->
         val itemCenterY = (index + GAUSSIAN_HALF_FACTOR) * itemHeightPx
-
-        val offsetXPx = if (params.isDragging && params.touchYPx >= 0f) {
-            val dy = itemCenterY - params.touchYPx
-            val magnitude = amplitudePx * exp(-(dy * dy) / (2f * sigmaPx * sigmaPx))
-            if (isLeftHandedMode) magnitude else -magnitude
-        } else {
-            0f
-        }
-
         val isActive = params.isDragging && index == params.selectedIndex
+        val charStr = remember(char) { char.toString() }
 
-        Text(
-            text = char.toString(),
-            style = MaterialTheme.typography.labelSmall,
+        AureoleText(
+            text = charStr,
+            style = AureoleDS.typography.labelSmall,
             fontWeight = if (isActive) FontWeight.ExtraBold else FontWeight.Medium,
             color = if (isActive) {
                 MaterialTheme.colorScheme.primary
@@ -274,6 +267,15 @@ private fun BoxScope.ScrubberAlphabetItems(
             modifier = Modifier
                 .align(params.alignment)
                 .graphicsLayer {
+                    val currentTouchY = params.touchYPx
+                    val isDrag = params.isDragging
+                    val offsetXPx = if (isDrag && currentTouchY >= 0f) {
+                        val dy = itemCenterY - currentTouchY
+                        val magnitude = amplitudePx * exp(-(dy * dy) / (2f * sigmaPx * sigmaPx))
+                        if (isLeftHandedMode) magnitude else -magnitude
+                    } else {
+                        0f
+                    }
                     translationX = offsetXPx
                     translationY = itemCenterY - (size.height / 2f)
                     alpha = params.scrubberAlpha
@@ -300,9 +302,9 @@ private fun BoxScope.ScrubberSelectedBadge(
             .offset { IntOffset(badgeXPx.roundToInt(), badgeYPx.roundToInt()) }
     ) {
         Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
-            Text(
+            AureoleText(
                 text = selectedChar.toString(),
-                style = MaterialTheme.typography.titleLarge,
+                style = AureoleDS.typography.titleLarge,
                 fontWeight = FontWeight.Bold
             )
         }

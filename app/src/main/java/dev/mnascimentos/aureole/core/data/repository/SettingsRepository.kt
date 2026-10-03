@@ -74,6 +74,10 @@ class SettingsRepository(private val context: Context) {
             putInt(KEY_HEADER_OFFSET_PERCENT, value.coerceIn(MIN_HEADER_OFFSET, MAX_HEADER_OFFSET))
         }
 
+    var cornerRadiusDp: Int
+        get() = prefs.getInt(KEY_CORNER_RADIUS_DP, DEFAULT_CORNER_RADIUS_DP)
+        set(value) = prefs.edit { putInt(KEY_CORNER_RADIUS_DP, value) }
+
     var isThemedAppIconsEnabled: Boolean
         get() = prefs.getBoolean(KEY_USE_THEMED_APP_ICONS, false)
         set(value) = prefs.edit { putBoolean(KEY_USE_THEMED_APP_ICONS, value) }
@@ -124,6 +128,10 @@ class SettingsRepository(private val context: Context) {
         get() = prefs.getString(KEY_SELECTED_THEME, "Frostbite") ?: "Frostbite"
         set(value) = prefs.edit { putString(KEY_SELECTED_THEME, value) }
 
+    var selectedFontName: String
+        get() = prefs.getString(KEY_SELECTED_FONT, "Istok Web") ?: "Istok Web"
+        set(value) = prefs.edit { putString(KEY_SELECTED_FONT, value) }
+
     var isCustomWallpaperSet: Boolean
         get() {
             val isSet = prefs.getBoolean(KEY_IS_CUSTOM_WALLPAPER_SET, false)
@@ -135,6 +143,10 @@ class SettingsRepository(private val context: Context) {
     var customWallpaperPath: String?
         get() = prefs.getString(KEY_CUSTOM_WALLPAPER_PATH, null)
         set(value) = prefs.edit { putString(KEY_CUSTOM_WALLPAPER_PATH, value) }
+
+    var wallpaperScaleType: String
+        get() = prefs.getString(KEY_WALLPAPER_SCALE_TYPE, "Crop") ?: "Crop"
+        set(value) = prefs.edit { putString(KEY_WALLPAPER_SCALE_TYPE, value) }
 
     fun clearCustomWallpaper() {
         val path = customWallpaperPath
@@ -169,6 +181,7 @@ class SettingsRepository(private val context: Context) {
         private const val KEY_WIDGET_ROW_ENABLED = "widget_row_enabled"
         private const val KEY_IS_CUSTOM_WALLPAPER_SET = "is_custom_wallpaper_set"
         private const val KEY_CUSTOM_WALLPAPER_PATH = "custom_wallpaper_path"
+        private const val KEY_WALLPAPER_SCALE_TYPE = "wallpaper_scale_type"
         private const val KEY_USE_WALLPAPER_COLORS = "use_wallpaper_colors"
         private const val KEY_MANUAL_SEED_COLOR = "manual_seed_color"
         private const val KEY_HAZE_ENABLED = "haze_enabled"
@@ -176,6 +189,7 @@ class SettingsRepository(private val context: Context) {
         private const val KEY_SHOW_WIDGET_DOTS = "show_widget_dots"
         private const val KEY_IN_APP_UPDATE_ENABLED = "in_app_update_enabled"
         private const val KEY_HEADER_OFFSET_PERCENT = "header_offset_percent"
+        private const val KEY_CORNER_RADIUS_DP = "corner_radius_dp"
         private const val KEY_USE_THEMED_APP_ICONS = "use_themed_app_icons"
         private const val KEY_DISABLE_ALPHABET_SCRUBBER = "disable_alphabet_scrubber"
         private const val KEY_SHOW_SETTINGS_BUTTON_IN_ALL_APPS = "show_settings_button_in_all_apps"
@@ -183,10 +197,12 @@ class SettingsRepository(private val context: Context) {
         private const val KEY_SHOW_SEARCH_BAR_IN_ALL_APPS = "show_search_bar_in_all_apps"
         private const val KEY_SEARCH_ICON_POSITION = "search_icon_position"
         private const val KEY_SELECTED_THEME = "selected_theme"
+        private const val KEY_SELECTED_FONT = "selected_font"
         private const val DEFAULT_HAZE_OPACITY = 0.5f
         private const val DEFAULT_HEADER_OFFSET = 10
         private const val MIN_HEADER_OFFSET = 10
         private const val MAX_HEADER_OFFSET = 60
+        const val DEFAULT_CORNER_RADIUS_DP = 20
         const val DEFAULT_SEED_COLOR = 0xFF4A5D6B.toInt()
     }
 }

@@ -20,7 +20,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -31,6 +30,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.composable.SettingsMenuItem
+import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.icons.Advanced
 import dev.mnascimentos.aureole.core.designsystem.icons.Edit
 import dev.mnascimentos.aureole.core.designsystem.icons.Logo
@@ -69,14 +69,14 @@ fun SettingsRootScreen(
                 modifier = Modifier
                     .fillMaxSize()
                     .verticalScroll(rememberScrollState())
-                    .padding(horizontal = 24.dp),
+                    .padding(horizontal = AureoleDS.dimens.xLarge),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Spacer(modifier = Modifier.height(topSpacerHeight))
 
                 SettingsHeader(versionName = versionName)
 
-                Spacer(modifier = Modifier.height(36.dp))
+                Spacer(modifier = Modifier.height(AureoleDS.dimens.xxLarge))
 
                 SettingsNavigationList(
                     onNavigateToBehavior = onNavigateToBehavior,
@@ -86,11 +86,11 @@ fun SettingsRootScreen(
 
                 Spacer(modifier = Modifier.height(bottomSpacerHeight))
 
-                Text(
+                AureoleText(
                     text = "Thank you!",
                     style = AureoleTheme.typography.bodyMedium,
                     color = AureoleTheme.colors.onSurfaceMedium,
-                    modifier = Modifier.padding(bottom = 32.dp),
+                    modifier = Modifier.padding(bottom = AureoleDS.dimens.xxLarge),
                     textAlign = TextAlign.Center
                 )
             }
@@ -101,7 +101,7 @@ fun SettingsRootScreen(
 @Composable
 private fun SettingsHeader(versionName: String) {
     Box(
-        modifier = Modifier.padding(16.dp),
+        modifier = Modifier.padding(AureoleDS.dimens.medium),
         contentAlignment = Alignment.Center
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
@@ -109,15 +109,15 @@ private fun SettingsHeader(versionName: String) {
                 modifier = Modifier.size(120.dp, 68.dp),
                 tint = AureoleTheme.colors.onSurfaceHigh
             )
-            Spacer(modifier = Modifier.height(24.dp))
-            Text(
+            Spacer(modifier = Modifier.height(AureoleDS.dimens.xLarge))
+            AureoleText(
                 text = "Aureole",
                 style = AureoleTheme.typography.displaySmall,
                 fontWeight = FontWeight.Bold,
                 color = AureoleTheme.colors.onSurfaceHigh
             )
-            Spacer(modifier = Modifier.height(4.dp))
-            Text(
+            Spacer(modifier = Modifier.height(AureoleDS.dimens.xxSmall))
+            AureoleText(
                 text = "Version $versionName",
                 style = AureoleTheme.typography.bodyMedium,
                 color = AureoleTheme.colors.outline
@@ -133,8 +133,8 @@ private fun SettingsNavigationList(
     onNavigateToAdvanced: () -> Unit
 ) {
     Column(
-        verticalArrangement = Arrangement.spacedBy(16.dp),
-        modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp)
+        verticalArrangement = Arrangement.spacedBy(AureoleDS.dimens.medium),
+        modifier = Modifier.fillMaxWidth().padding(horizontal = AureoleDS.dimens.xSmall)
     ) {
         SettingsMenuItem(
             title = "Behavior",

@@ -15,21 +15,22 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
-import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.core.data.model.LauncherItemState
 import dev.mnascimentos.aureole.core.data.model.LauncherItemType
 import dev.mnascimentos.aureole.core.data.model.ScrollOrientation
+import dev.mnascimentos.aureole.core.designsystem.components.AureoleDialog
+import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleTheme
 import dev.mnascimentos.aureole.feature.home.LocalHomeActions
 import dev.mnascimentos.aureole.feature.home.LocalHomeUiState
 import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
@@ -46,48 +47,41 @@ fun EditContainerDialog(
     val actions = LocalHomeActions.current
     val title = getContainerTitle(item.type)
 
-    AlertDialog(
+    AureoleDialog(
         onDismissRequest = onDismissRequest,
-        title = { Text(text = "Configurar $title") },
-        text = {
-            Column(
-                modifier = Modifier.verticalScroll(rememberScrollState())
-            ) {
-                Text(
-                    text = "Tamanho atual: ${item.colSpan} x ${item.rowSpan} células",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    modifier = Modifier.padding(bottom = 12.dp)
-                )
-
-                EditDialogTypeActionSection(
-                    item = item,
-                    actions = actions,
-                    onDismissRequest = onDismissRequest
-                )
-
-                EditDialogWidgetListSection(item = item, uiState = uiState, actions = actions)
-
-                if (item.type == LauncherItemType.SCROLL_VIEW) {
-                    EditDialogScrollViewSection(item = item, actions = actions, onDismissRequest = onDismissRequest)
-                }
-
-                EditDialogDeleteButtonRow(
-                    onDelete = {
-                        onDeleteConfirm(item.id)
-                        onDismissRequest()
-                    }
-                )
-            }
-        },
-        confirmButton = {},
-        dismissButton = {
-            TextButton(onClick = onDismissRequest) {
-                Text(text = "Fechar")
-            }
-        },
+        title = "Configurar $title",
         modifier = modifier
-    )
+    ) {
+        Column(
+            modifier = Modifier.verticalScroll(rememberScrollState())
+        ) {
+            AureoleText(
+                text = "Tamanho atual: ${item.colSpan} x ${item.rowSpan} células",
+                style = AureoleTheme.typography.bodyMedium,
+                color = AureoleTheme.colors.onSurfaceMedium,
+                modifier = Modifier.padding(bottom = AureoleDS.dimens.small)
+            )
+
+            EditDialogTypeActionSection(
+                item = item,
+                actions = actions,
+                onDismissRequest = onDismissRequest
+            )
+
+            EditDialogWidgetListSection(item = item, uiState = uiState, actions = actions)
+
+            if (item.type == LauncherItemType.SCROLL_VIEW) {
+                EditDialogScrollViewSection(item = item, actions = actions, onDismissRequest = onDismissRequest)
+            }
+
+            EditDialogDeleteButtonRow(
+                onDelete = {
+                    onDeleteConfirm(item.id)
+                    onDismissRequest()
+                }
+            )
+        }
+    }
 }
 
 @Composable
@@ -103,19 +97,22 @@ private fun EditDialogTypeActionSection(
                 onDismissRequest()
             },
             colors = ButtonDefaults.buttonColors(
-                containerColor = MaterialTheme.colorScheme.primaryContainer,
-                contentColor = MaterialTheme.colorScheme.onPrimaryContainer
+                containerColor = AureoleTheme.colors.surfaceVariant,
+                contentColor = AureoleTheme.colors.onSurfaceHigh
             ),
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(bottom = 12.dp)
+                .padding(bottom = AureoleDS.dimens.small)
         ) {
             Icon(
                 imageVector = Icons.Default.Edit,
                 contentDescription = "Editar Favoritos",
-                modifier = Modifier.padding(end = 8.dp)
+                modifier = Modifier.padding(end = AureoleDS.dimens.xSmall)
             )
-            Text(text = "Editar Favoritos e Configurações")
+            AureoleText(
+                text = "Editar Favoritos e Configurações",
+                color = AureoleTheme.colors.onSurfaceHigh
+            )
         }
     }
 
@@ -126,19 +123,22 @@ private fun EditDialogTypeActionSection(
                 onDismissRequest()
             },
             colors = ButtonDefaults.buttonColors(
-                containerColor = MaterialTheme.colorScheme.primaryContainer,
-                contentColor = MaterialTheme.colorScheme.onPrimaryContainer
+                containerColor = AureoleTheme.colors.surfaceVariant,
+                contentColor = AureoleTheme.colors.onSurfaceHigh
             ),
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(bottom = 12.dp)
+                .padding(bottom = AureoleDS.dimens.small)
         ) {
             Icon(
                 imageVector = Icons.Default.Edit,
                 contentDescription = "Editar Painel Lateral",
-                modifier = Modifier.padding(end = 8.dp)
+                modifier = Modifier.padding(end = AureoleDS.dimens.xSmall)
             )
-            Text(text = "Editar Configurações do Painel Lateral")
+            AureoleText(
+                text = "Editar Configurações do Painel Lateral",
+                color = AureoleTheme.colors.onSurfaceHigh
+            )
         }
     }
 }
@@ -162,26 +162,31 @@ private fun EditDialogWidgetListSection(
     actions: HomeScreenActions
 ) {
     if (item.type == LauncherItemType.WIDGET_LIST && uiState.topWidgetIds.isNotEmpty()) {
-        Text(
+        AureoleText(
             text = "Widgets na lista (${uiState.topWidgetIds.size}):",
-            style = MaterialTheme.typography.labelMedium,
-            modifier = Modifier.padding(bottom = 4.dp)
+            style = AureoleTheme.typography.labelMedium,
+            color = AureoleTheme.colors.onSurfaceMedium,
+            modifier = Modifier.padding(bottom = AureoleDS.dimens.xxSmall)
         )
         uiState.topWidgetIds.forEach { widgetId ->
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(vertical = 4.dp),
+                    .padding(vertical = AureoleDS.dimens.xxSmall),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                Text(text = "Widget ID: $widgetId", style = MaterialTheme.typography.bodySmall)
+                AureoleText(
+                    text = "Widget ID: $widgetId",
+                    style = AureoleTheme.typography.bodySmall,
+                    color = AureoleTheme.colors.onSurfaceHigh
+                )
                 TextButton(onClick = { actions.onRemoveWidgetClick(widgetId) }) {
-                    Text(text = "Remover Widget", color = MaterialTheme.colorScheme.error)
+                    AureoleText(text = "Remover Widget", color = MaterialTheme.colorScheme.error)
                 }
             }
         }
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(AureoleDS.dimens.xSmall))
     }
 }
 
@@ -193,19 +198,19 @@ private fun EditDialogScrollViewSection(
 ) {
     ScrollViewOrientationSelector(item = item, actions = actions)
 
-    Text(
+    AureoleText(
         text = "Componentes Filhos (${item.safeChildren.size}):",
-        style = MaterialTheme.typography.labelLarge,
-        color = MaterialTheme.colorScheme.onSurface,
-        modifier = Modifier.padding(bottom = 4.dp)
+        style = AureoleTheme.typography.labelLarge,
+        color = AureoleTheme.colors.onSurfaceHigh,
+        modifier = Modifier.padding(bottom = AureoleDS.dimens.xxSmall)
     )
 
     if (item.safeChildren.isEmpty()) {
-        Text(
+        AureoleText(
             text = "Nenhum componente adicionado ainda.",
-            style = MaterialTheme.typography.bodySmall,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            modifier = Modifier.padding(bottom = 8.dp)
+            style = AureoleTheme.typography.bodySmall,
+            color = AureoleTheme.colors.onSurfaceMedium,
+            modifier = Modifier.padding(bottom = AureoleDS.dimens.xSmall)
         )
     } else {
         val isVertical = item.safeScrollOrientation == ScrollOrientation.VERTICAL
@@ -223,22 +228,22 @@ private fun EditDialogScrollViewSection(
     Button(
         onClick = { actions.onOpenAddContainerForParent(item.id) },
         colors = ButtonDefaults.buttonColors(
-            containerColor = MaterialTheme.colorScheme.primaryContainer,
-            contentColor = MaterialTheme.colorScheme.onPrimaryContainer
+            containerColor = AureoleTheme.colors.surfaceVariant,
+            contentColor = AureoleTheme.colors.onSurfaceHigh
         ),
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 8.dp)
+            .padding(vertical = AureoleDS.dimens.xSmall)
     ) {
         Icon(
             imageVector = Icons.Default.Add,
             contentDescription = "Adicionar Componente",
-            modifier = Modifier.padding(end = 8.dp)
+            modifier = Modifier.padding(end = AureoleDS.dimens.xSmall)
         )
-        Text(text = "Adicionar Componente")
+        AureoleText(text = "Adicionar Componente", color = AureoleTheme.colors.onSurfaceHigh)
     }
 
-    Spacer(modifier = Modifier.height(8.dp))
+    Spacer(modifier = Modifier.height(AureoleDS.dimens.xSmall))
 }
 
 @Composable
@@ -246,17 +251,17 @@ private fun ScrollViewOrientationSelector(
     item: LauncherItemState,
     actions: HomeScreenActions
 ) {
-    Text(
+    AureoleText(
         text = "Orientação do Scroll:",
-        style = MaterialTheme.typography.labelLarge,
-        color = MaterialTheme.colorScheme.onSurface,
-        modifier = Modifier.padding(bottom = 4.dp)
+        style = AureoleTheme.typography.labelLarge,
+        color = AureoleTheme.colors.onSurfaceHigh,
+        modifier = Modifier.padding(bottom = AureoleDS.dimens.xxSmall)
     )
 
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(bottom = 12.dp),
+            .padding(bottom = AureoleDS.dimens.small),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Start
     ) {
@@ -264,14 +269,18 @@ private fun ScrollViewOrientationSelector(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
                 .clickable { actions.onUpdateScrollViewOrientation(item.id, ScrollOrientation.VERTICAL) }
-                .padding(end = 16.dp)
+                .padding(end = AureoleDS.dimens.medium)
         ) {
             RadioButton(
                 selected = item.safeScrollOrientation == ScrollOrientation.VERTICAL,
                 onClick = { actions.onUpdateScrollViewOrientation(item.id, ScrollOrientation.VERTICAL) }
             )
-            Spacer(modifier = Modifier.width(4.dp))
-            Text(text = "Vertical", style = MaterialTheme.typography.bodyMedium)
+            Spacer(modifier = Modifier.width(AureoleDS.dimens.xxSmall))
+            AureoleText(
+                text = "Vertical",
+                style = AureoleTheme.typography.bodyMedium,
+                color = AureoleTheme.colors.onSurfaceHigh
+            )
         }
 
         Row(
@@ -284,8 +293,12 @@ private fun ScrollViewOrientationSelector(
                 selected = item.safeScrollOrientation == ScrollOrientation.HORIZONTAL,
                 onClick = { actions.onUpdateScrollViewOrientation(item.id, ScrollOrientation.HORIZONTAL) }
             )
-            Spacer(modifier = Modifier.width(4.dp))
-            Text(text = "Horizontal", style = MaterialTheme.typography.bodyMedium)
+            Spacer(modifier = Modifier.width(AureoleDS.dimens.xxSmall))
+            AureoleText(
+                text = "Horizontal",
+                style = AureoleTheme.typography.bodyMedium,
+                color = AureoleTheme.colors.onSurfaceHigh
+            )
         }
     }
 }
@@ -296,7 +309,7 @@ private fun EditDialogDeleteButtonRow(onDelete: () -> Unit) {
         modifier = Modifier
             .fillMaxWidth()
             .clickable(onClick = onDelete)
-            .padding(vertical = 12.dp, horizontal = 8.dp),
+            .padding(vertical = AureoleDS.dimens.small, horizontal = AureoleDS.dimens.xSmall),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Icon(
@@ -304,10 +317,10 @@ private fun EditDialogDeleteButtonRow(onDelete: () -> Unit) {
             contentDescription = "Remover Container",
             tint = MaterialTheme.colorScheme.error
         )
-        Spacer(modifier = Modifier.width(16.dp))
-        Text(
+        Spacer(modifier = Modifier.width(AureoleDS.dimens.medium))
+        AureoleText(
             text = "Remover Container",
-            style = MaterialTheme.typography.bodyLarge,
+            style = AureoleTheme.typography.bodyLarge,
             color = MaterialTheme.colorScheme.error
         )
     }

@@ -22,7 +22,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
-import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -39,7 +38,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import dev.mnascimentos.aureole.core.data.model.AppFolder
+import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 
 @Composable
@@ -59,8 +60,13 @@ fun EditFolderDialog(
         Box(
             modifier = Modifier
                 .widthIn(min = 280.dp, max = 360.dp)
-                .clip(RoundedCornerShape(24.dp))
-                .background(MaterialTheme.colorScheme.surfaceContainerHigh)
+                .clip(RoundedCornerShape(22.dp))
+                .border(
+                    width = 0.5.dp,
+                    color = AureoleTheme.colors.outline,
+                    shape = RoundedCornerShape(22.dp)
+                )
+                .background(AureoleTheme.colors.surface)
                 .padding(24.dp)
         ) {
             EditFolderDialogContent(
@@ -89,11 +95,11 @@ private fun EditFolderDialogContent(
         modifier = Modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(
+        AureoleText(
             text = "Edit Folder",
-            style = MaterialTheme.typography.titleLarge,
+            style = AureoleTheme.typography.titleLarge,
             fontWeight = FontWeight.Bold,
-            color = MaterialTheme.colorScheme.onSurface,
+            color = AureoleTheme.colors.onSurfaceHigh,
             modifier = Modifier.padding(bottom = 16.dp)
         )
 
@@ -104,22 +110,24 @@ private fun EditFolderDialogContent(
         OutlinedTextField(
             value = folderName,
             onValueChange = { folderName = it },
-            label = { Text("Folder Name") },
+            label = { AureoleText("Folder Name", color = AureoleTheme.colors.onSurfaceMedium) },
             singleLine = true,
             colors = OutlinedTextFieldDefaults.colors(
                 focusedBorderColor = MaterialTheme.colorScheme.primary,
-                unfocusedBorderColor = MaterialTheme.colorScheme.outline
+                unfocusedBorderColor = AureoleTheme.colors.outline,
+                focusedTextColor = AureoleTheme.colors.onSurfaceHigh,
+                unfocusedTextColor = AureoleTheme.colors.onSurfaceHigh
             ),
             modifier = Modifier.fillMaxWidth()
         )
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        Text(
+        AureoleText(
             text = "Ícone da Pasta",
-            style = MaterialTheme.typography.labelMedium,
+            style = AureoleTheme.typography.labelMedium,
             fontWeight = FontWeight.SemiBold,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            color = AureoleTheme.colors.onSurfaceMedium,
             modifier = Modifier.align(Alignment.Start)
         )
 
@@ -154,7 +162,7 @@ private fun FolderIconPreview(
         modifier = Modifier
             .size(52.dp)
             .clip(RoundedCornerShape(14.dp))
-            .background(MaterialTheme.colorScheme.primaryContainer),
+            .background(AureoleTheme.colors.surfaceVariant),
         contentAlignment = Alignment.Center
     ) {
         val iconVector = FolderIconRegistry.getIcon(selectedIcon)
@@ -162,14 +170,14 @@ private fun FolderIconPreview(
             Icon(
                 imageVector = iconVector,
                 contentDescription = null,
-                tint = MaterialTheme.colorScheme.onPrimaryContainer,
+                tint = AureoleTheme.colors.onSurfaceHigh,
                 modifier = Modifier.size(26.dp)
             )
         } else {
-            Text(
+            AureoleText(
                 text = folderName.take(1).uppercase().ifEmpty { "?" },
-                color = MaterialTheme.colorScheme.onPrimaryContainer,
-                style = MaterialTheme.typography.titleLarge,
+                color = AureoleTheme.colors.onSurfaceHigh,
+                style = AureoleTheme.typography.titleLarge,
                 fontWeight = FontWeight.Bold
             )
         }
@@ -218,12 +226,12 @@ private fun DefaultLetterOptionChip(
     val borderColor = if (isSelected) {
         MaterialTheme.colorScheme.primary
     } else {
-        MaterialTheme.colorScheme.outline
+        AureoleTheme.colors.outline
     }
     val textColor = if (isSelected) {
-        MaterialTheme.colorScheme.onPrimary
+        AureoleTheme.colors.onSurfaceHigh
     } else {
-        MaterialTheme.colorScheme.onSurfaceVariant
+        AureoleTheme.colors.onSurfaceMedium
     }
 
     Box(
@@ -231,19 +239,19 @@ private fun DefaultLetterOptionChip(
             .size(40.dp)
             .clip(CircleShape)
             .background(
-                if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surfaceVariant
+                if (isSelected) MaterialTheme.colorScheme.primary else AureoleTheme.colors.surfaceVariant
             )
             .border(
-                width = if (isSelected) 2.dp else 1.dp,
+                width = if (isSelected) 2.dp else 0.5.dp,
                 color = borderColor,
                 shape = CircleShape
             )
             .clickable(onClick = onClick),
         contentAlignment = Alignment.Center
     ) {
-        Text(
+        AureoleText(
             text = letter,
-            style = MaterialTheme.typography.labelLarge,
+            style = AureoleTheme.typography.labelLarge,
             fontWeight = FontWeight.Bold,
             color = textColor
         )
@@ -260,12 +268,12 @@ private fun IconOptionChip(
     val borderColor = if (isSelected) {
         MaterialTheme.colorScheme.primary
     } else {
-        MaterialTheme.colorScheme.outline
+        AureoleTheme.colors.outline
     }
     val iconTint: Color = if (isSelected) {
-        MaterialTheme.colorScheme.onPrimary
+        AureoleTheme.colors.onSurfaceHigh
     } else {
-        MaterialTheme.colorScheme.onSurfaceVariant
+        AureoleTheme.colors.onSurfaceMedium
     }
 
     Box(
@@ -273,10 +281,10 @@ private fun IconOptionChip(
             .size(40.dp)
             .clip(CircleShape)
             .background(
-                if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surfaceVariant
+                if (isSelected) MaterialTheme.colorScheme.primary else AureoleTheme.colors.surfaceVariant
             )
             .border(
-                width = if (isSelected) 2.dp else 1.dp,
+                width = if (isSelected) 2.dp else 0.5.dp,
                 color = borderColor,
                 shape = CircleShape
             )
@@ -304,16 +312,16 @@ private fun EditFolderButtons(
         verticalAlignment = Alignment.CenterVertically
     ) {
         TextButton(onClick = onDelete) {
-            Text("Delete", color = MaterialTheme.colorScheme.error)
+            AureoleText("Delete", color = MaterialTheme.colorScheme.error)
         }
 
         Row {
             TextButton(onClick = onDismiss) {
-                Text("Cancel", color = MaterialTheme.colorScheme.onSurfaceVariant)
+                AureoleText("Cancel", color = AureoleTheme.colors.onSurfaceMedium)
             }
             Spacer(modifier = Modifier.width(8.dp))
             TextButton(onClick = onSave) {
-                Text("Save", fontWeight = FontWeight.Bold)
+                AureoleText("Save", fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary)
             }
         }
     }

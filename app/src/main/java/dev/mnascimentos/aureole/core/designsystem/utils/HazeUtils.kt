@@ -24,13 +24,19 @@ fun Modifier.fadingEdges(
     topLength: Dp = 24.dp,
     bottomLength: Dp = 24.dp
 ): Modifier = this.graphicsLayer {
-    compositingStrategy = CompositingStrategy.Offscreen
-}.drawWithContent {
-    drawContent()
-    val topPx = topLength.toPx()
-    val bottomPx = bottomLength.toPx()
     val showTopFade = scrollState.canScrollBackward
     val showBottomFade = scrollState.canScrollForward
+    compositingStrategy = if (showTopFade || showBottomFade) {
+        CompositingStrategy.Offscreen
+    } else {
+        CompositingStrategy.Auto
+    }
+}.drawWithContent {
+    drawContent()
+    val showTopFade = scrollState.canScrollBackward
+    val showBottomFade = scrollState.canScrollForward
+    val topPx = topLength.toPx()
+    val bottomPx = bottomLength.toPx()
 
     if (showTopFade && topPx > 0f) {
         drawRect(
@@ -60,7 +66,13 @@ fun Modifier.fadingEdges(
     edgeLength: Dp = 24.dp,
     isHorizontal: Boolean = false
 ): Modifier = this.graphicsLayer {
-    compositingStrategy = CompositingStrategy.Offscreen
+    val showStartFade = scrollState.canScrollBackward
+    val showEndFade = scrollState.canScrollForward
+    compositingStrategy = if (showStartFade || showEndFade) {
+        CompositingStrategy.Offscreen
+    } else {
+        CompositingStrategy.Auto
+    }
 }.drawWithContent {
     drawContent()
     val edgePx = edgeLength.toPx()

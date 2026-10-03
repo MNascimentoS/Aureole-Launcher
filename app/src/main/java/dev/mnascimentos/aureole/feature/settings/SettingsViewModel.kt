@@ -1,7 +1,6 @@
 package dev.mnascimentos.aureole.feature.settings
 
 import android.app.Application
-import android.app.WallpaperManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
@@ -104,6 +103,7 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
                 favoriteAppPackages = settingsRepository.favoriteAppPackages,
                 isCustomWallpaperSet = settingsRepository.isCustomWallpaperSet,
                 customWallpaperPath = settingsRepository.customWallpaperPath,
+                wallpaperScaleType = settingsRepository.wallpaperScaleType,
                 isDynamicWallpaperEnabled = settingsRepository.isDynamicWallpaperEnabled,
                 manualSeedColor = settingsRepository.manualSeedColor,
                 selectedThemeName = settingsRepository.selectedThemeName,
@@ -118,6 +118,7 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
                 showSearchBarInAllApps = settingsRepository.showSearchBarInAllApps,
                 searchIconPosition = settingsRepository.searchIconPosition,
                 headerOffsetPercent = settingsRepository.headerOffsetPercent,
+                cornerRadiusDp = settingsRepository.cornerRadiusDp,
             )
         }
     }
@@ -183,18 +184,6 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
 
                     settingsRepository.customWallpaperPath = file.absolutePath
                     settingsRepository.isCustomWallpaperSet = true
-
-                    try {
-                        val wallpaperManager = WallpaperManager.getInstance(app)
-                        wallpaperManager.setBitmap(bitmap)
-                    } catch (e: IOException) {
-                        Log.w(TAG, "Failed to set system wallpaper bitmap", e)
-                    } catch (e: SecurityException) {
-                        Log.w(TAG, "SecurityException setting system wallpaper", e)
-                    } catch (e: IllegalArgumentException) {
-                        Log.w(TAG, "IllegalArgumentException setting system wallpaper", e)
-                    }
-
                     true
                 } catch (e: IOException) {
                     Log.w(TAG, "IOException in setCustomWallpaper", e)

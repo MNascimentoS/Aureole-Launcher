@@ -30,6 +30,7 @@ data class SettingsScreenActions(
     val onOpenColorPickerDialog: () -> Unit = {},
     val onSelectManualSeedColor: (Int) -> Unit = {},
     val onSelectTheme: (String) -> Unit = {},
+    val onSelectFont: (String) -> Unit = {},
     val onDismissColorPickerDialog: () -> Unit = {},
     val onChangeWallpaperClick: () -> Unit = {},
     val onRestoreDefaultWallpaperClick: () -> Unit = {},
@@ -62,4 +63,6 @@ data class SettingsScreenActions(
     val onOpenSearchIconPositionDialog: () -> Unit = {},
     val onDismissSearchIconPositionDialog: () -> Unit = {},
     val onSearchIconPositionSelected: (String) -> Unit = {},
+    val onSelectWallpaperScaleType: (String) -> Unit = {},
+    val onSelectCornerRadius: (Int) -> Unit = {},
 )

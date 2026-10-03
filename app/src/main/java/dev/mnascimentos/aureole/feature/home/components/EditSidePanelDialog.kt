@@ -1,6 +1,7 @@
 package dev.mnascimentos.aureole.feature.home.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -31,8 +32,8 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Switch
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -47,6 +48,9 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import dev.mnascimentos.aureole.core.data.model.AppFolder
 import dev.mnascimentos.aureole.core.data.model.SidePanelModel
+import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleTheme
 import dev.mnascimentos.aureole.feature.home.components.model.EditSidePanelFormCallbacks
 import dev.mnascimentos.aureole.feature.home.components.model.EditSidePanelFormState
 import dev.mnascimentos.aureole.feature.home.folder.FolderIconRegistry
@@ -73,9 +77,14 @@ fun EditSidePanelDialog(
             modifier = Modifier
                 .fillMaxWidth(DIALOG_WIDTH_FRACTION)
                 .heightIn(max = 600.dp)
-                .clip(RoundedCornerShape(24.dp))
-                .background(MaterialTheme.colorScheme.surface)
-                .padding(20.dp)
+                .clip(RoundedCornerShape(22.dp))
+                .border(
+                    width = 0.5.dp,
+                    color = AureoleTheme.colors.outline,
+                    shape = RoundedCornerShape(22.dp)
+                )
+                .background(AureoleTheme.colors.surface)
+                .padding(AureoleDS.dimens.large)
         ) {
             EditSidePanelDialogContent(
                 panel = panel,
@@ -104,11 +113,11 @@ private fun EditSidePanelDialogContent(
 
     Column(modifier = Modifier.fillMaxWidth()) {
         EditSidePanelHeader(onDismiss = onDismiss)
-        Spacer(modifier = Modifier.height(12.dp))
+        Spacer(modifier = Modifier.height(AureoleDS.dimens.small))
 
         LazyColumn(
             modifier = Modifier.weight(1f).fillMaxWidth(),
-            verticalArrangement = Arrangement.spacedBy(12.dp)
+            verticalArrangement = Arrangement.spacedBy(AureoleDS.dimens.small)
         ) {
             editSidePanelFormItems(
                 state = EditSidePanelFormState(
@@ -133,7 +142,7 @@ private fun EditSidePanelDialogContent(
             )
         }
 
-        Spacer(modifier = Modifier.height(12.dp))
+        Spacer(modifier = Modifier.height(AureoleDS.dimens.small))
         EditSidePanelFooter(
             onDelete = { onDeletePanel(panel.id) },
             onSave = {
@@ -161,8 +170,14 @@ private fun LazyListScope.editSidePanelFormItems(
         OutlinedTextField(
             value = state.title,
             onValueChange = callbacks.onTitleChange,
-            label = { Text("Nome do Painel") },
+            label = { AureoleText("Nome do Painel", color = AureoleTheme.colors.onSurfaceMedium) },
             singleLine = true,
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedBorderColor = MaterialTheme.colorScheme.primary,
+                unfocusedBorderColor = AureoleTheme.colors.outline,
+                focusedTextColor = AureoleTheme.colors.onSurfaceHigh,
+                unfocusedTextColor = AureoleTheme.colors.onSurfaceHigh
+            ),
             modifier = Modifier.fillMaxWidth()
         )
     }
@@ -212,18 +227,18 @@ private fun LazyListScope.editSidePanelFormItems(
 private fun LazyListScope.editSidePanelFoldersSection(folders: List<AppFolder>) {
     item {
         Spacer(modifier = Modifier.height(8.dp))
-        Text(
+        AureoleText(
             text = "Conteúdo do Painel",
-            style = MaterialTheme.typography.titleSmall,
+            style = AureoleTheme.typography.titleSmall,
             fontWeight = FontWeight.Bold,
             color = MaterialTheme.colorScheme.primary
         )
     }
     item {
-        Text(
+        AureoleText(
             text = "Pastas (${folders.size})",
-            style = MaterialTheme.typography.labelMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
+            style = AureoleTheme.typography.labelMedium,
+            color = AureoleTheme.colors.onSurfaceMedium
         )
     }
     items(folders, key = { it.id }) { folder ->
@@ -238,17 +253,17 @@ private fun EditSidePanelHeader(onDismiss: () -> Unit) {
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Text(
+        AureoleText(
             text = "Editar Painel Lateral",
-            style = MaterialTheme.typography.titleMedium,
+            style = AureoleTheme.typography.titleMedium,
             fontWeight = FontWeight.Bold,
-            color = MaterialTheme.colorScheme.onSurface
+            color = AureoleTheme.colors.onSurfaceHigh
         )
         IconButton(onClick = onDismiss) {
             Icon(
                 imageVector = Icons.Default.Close,
                 contentDescription = "Fechar",
-                tint = MaterialTheme.colorScheme.onSurfaceVariant
+                tint = AureoleTheme.colors.onSurfaceMedium
             )
         }
     }
@@ -263,10 +278,10 @@ private fun EditSidePanelAlignmentSelector(
     var isDropdownExpanded by remember { mutableStateOf(false) }
     val positionOptions = listOf("Space Between", "Top", "Center", "Bottom", "Space Evenly")
 
-    Text(
+    AureoleText(
         text = "Alinhamento Vertical",
-        style = MaterialTheme.typography.labelMedium,
-        color = MaterialTheme.colorScheme.onSurfaceVariant,
+        style = AureoleTheme.typography.labelMedium,
+        color = AureoleTheme.colors.onSurfaceMedium,
         modifier = Modifier.padding(bottom = 4.dp)
     )
     ExposedDropdownMenuBox(
@@ -278,6 +293,12 @@ private fun EditSidePanelAlignmentSelector(
             onValueChange = {},
             readOnly = true,
             trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = isDropdownExpanded) },
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedBorderColor = MaterialTheme.colorScheme.primary,
+                unfocusedBorderColor = AureoleTheme.colors.outline,
+                focusedTextColor = AureoleTheme.colors.onSurfaceHigh,
+                unfocusedTextColor = AureoleTheme.colors.onSurfaceHigh
+            ),
             modifier = Modifier.menuAnchor(ExposedDropdownMenuAnchorType.PrimaryNotEditable).fillMaxWidth()
         )
         ExposedDropdownMenu(
@@ -286,7 +307,7 @@ private fun EditSidePanelAlignmentSelector(
         ) {
             positionOptions.forEach { option ->
                 DropdownMenuItem(
-                    text = { Text(option) },
+                    text = { AureoleText(option, color = AureoleTheme.colors.onSurfaceHigh) },
                     onClick = {
                         onPositionSelected(option)
                         isDropdownExpanded = false
@@ -303,8 +324,8 @@ private fun EditSidePanelFolderRow(folder: AppFolder) {
         modifier = Modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(8.dp))
-            .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f))
-            .padding(horizontal = 12.dp, vertical = 8.dp),
+            .background(AureoleTheme.colors.surfaceVariant.copy(alpha = 0.5f))
+            .padding(horizontal = AureoleDS.dimens.small, vertical = AureoleDS.dimens.xSmall),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Icon(
@@ -312,10 +333,11 @@ private fun EditSidePanelFolderRow(folder: AppFolder) {
             contentDescription = null,
             tint = MaterialTheme.colorScheme.primary
         )
-        Spacer(modifier = Modifier.width(8.dp))
-        Text(
+        Spacer(modifier = Modifier.width(AureoleDS.dimens.xSmall))
+        AureoleText(
             text = folder.name,
-            style = MaterialTheme.typography.bodyMedium,
+            style = AureoleTheme.typography.bodyMedium,
+            color = AureoleTheme.colors.onSurfaceHigh,
             modifier = Modifier.weight(1f)
         )
     }
@@ -341,12 +363,12 @@ private fun EditSidePanelFooter(
                 imageVector = Icons.Default.Delete,
                 contentDescription = "Excluir Painel"
             )
-            Spacer(modifier = Modifier.width(4.dp))
-            Text("Excluir")
+            Spacer(modifier = Modifier.width(AureoleDS.dimens.xxSmall))
+            AureoleText("Excluir")
         }
 
         Button(onClick = onSave) {
-            Text("Salvar")
+            AureoleText("Salvar")
         }
     }
 }
@@ -364,10 +386,10 @@ private fun SettingSwitchRow(
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Text(
+        AureoleText(
             text = label,
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurface
+            style = AureoleTheme.typography.bodyMedium,
+            color = AureoleTheme.colors.onSurfaceHigh
         )
         Switch(
             checked = checked,

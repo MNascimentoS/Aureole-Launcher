@@ -20,7 +20,6 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Slider
-import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -35,6 +34,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.core.graphics.ColorUtils
+import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 
@@ -75,7 +76,7 @@ fun ColorPickerDialog(
     AlertDialog(
         onDismissRequest = onDismiss,
         title = {
-            Text(
+            AureoleText(
                 text = "Escolher Cor Primária",
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold,
@@ -84,7 +85,7 @@ fun ColorPickerDialog(
         text = {
             Column(
                 modifier = Modifier.fillMaxWidth(),
-                verticalArrangement = Arrangement.spacedBy(16.dp),
+                verticalArrangement = Arrangement.spacedBy(AureoleDS.dimens.medium),
             ) {
                 PresetColorsSection(
                     selectedColor = selectedColor,
@@ -96,7 +97,7 @@ fun ColorPickerDialog(
                     }
                 )
 
-                Spacer(modifier = Modifier.height(4.dp))
+                Spacer(modifier = Modifier.height(AureoleDS.dimens.xxSmall))
 
                 CustomHueSection(
                     selectedColor = selectedColor,
@@ -113,12 +114,12 @@ fun ColorPickerDialog(
         },
         confirmButton = {
             TextButton(onClick = { onColorSelected(selectedColor) }) {
-                Text("Confirmar")
+                AureoleText("Confirmar")
             }
         },
         dismissButton = {
             TextButton(onClick = onDismiss) {
-                Text("Cancelar")
+                AureoleText("Cancelar")
             }
         },
     )
@@ -130,8 +131,8 @@ private fun PresetColorsSection(
     selectedColor: Int,
     onSelectPreset: (Int) -> Unit
 ) {
-    Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
-        Text(
+    Column(verticalArrangement = Arrangement.spacedBy(AureoleDS.dimens.medium)) {
+        AureoleText(
             text = "Cores Recomendadas",
             style = MaterialTheme.typography.labelMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -139,8 +140,8 @@ private fun PresetColorsSection(
 
         FlowRow(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(12.dp, Alignment.CenterHorizontally),
-            verticalArrangement = Arrangement.spacedBy(12.dp),
+            horizontalArrangement = Arrangement.spacedBy(AureoleDS.dimens.small, Alignment.CenterHorizontally),
+            verticalArrangement = Arrangement.spacedBy(AureoleDS.dimens.small),
         ) {
             PresetColors.forEach { colorInt ->
                 val isSelected = selectedColor == colorInt
@@ -178,7 +179,7 @@ private fun CustomHueSection(
     onHueChanged: (Float) -> Unit
 ) {
     Column {
-        Text(
+        AureoleText(
             text = "Ajuste Personalizado (Matiz)",
             style = MaterialTheme.typography.labelMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -186,7 +187,7 @@ private fun CustomHueSection(
 
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(12.dp),
+            horizontalArrangement = Arrangement.spacedBy(AureoleDS.dimens.small),
         ) {
             Box(
                 modifier = Modifier

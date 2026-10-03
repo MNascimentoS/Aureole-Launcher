@@ -68,8 +68,8 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
     buildFeatures {
         compose = true
@@ -96,10 +96,12 @@ detekt {
 }
 
 tasks.withType<Detekt>().configureEach {
-    jvmTarget = "11"
+    jvmTarget = "17"
     reports {
         txt.required.set(true)
+        txt.outputLocation.set(layout.buildDirectory.file("reports/detekt/detekt.txt"))
         html.required.set(true)
+        html.outputLocation.set(layout.buildDirectory.file("reports/detekt/detekt.html"))
     }
 }
 

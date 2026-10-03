@@ -5,5 +5,6 @@ import dev.mnascimentos.aureole.core.data.model.AppInfo
 data class AppItemRowActions(
     val onToggleFavorite: ((String) -> Unit)? = null,
     val onEditFavoritesClick: (() -> Unit)? = null,
-    val onAppInfoClick: ((AppInfo) -> Unit)? = null
+    val onAppInfoClick: ((AppInfo) -> Unit)? = null,
+    val onUninstallClick: ((AppInfo) -> Unit)? = null
 )

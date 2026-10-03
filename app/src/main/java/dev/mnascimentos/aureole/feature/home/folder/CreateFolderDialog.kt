@@ -1,6 +1,7 @@
 package dev.mnascimentos.aureole.feature.home.folder
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -15,7 +16,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
-import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -29,7 +29,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 
 @Composable
@@ -49,8 +51,13 @@ fun CreateFolderDialog(
         Box(
             modifier = Modifier
                 .widthIn(min = 280.dp, max = 340.dp)
-                .clip(RoundedCornerShape(24.dp))
-                .background(MaterialTheme.colorScheme.surfaceContainerHigh)
+                .clip(RoundedCornerShape(22.dp))
+                .border(
+                    width = 0.5.dp,
+                    color = AureoleTheme.colors.outline,
+                    shape = RoundedCornerShape(22.dp)
+                )
+                .background(AureoleTheme.colors.surface)
                 .padding(24.dp)
         ) {
             Column(
@@ -62,12 +69,14 @@ fun CreateFolderDialog(
                 OutlinedTextField(
                     value = folderName,
                     onValueChange = { folderName = it },
-                    label = { Text("Folder Name") },
-                    placeholder = { Text("New Folder") },
+                    label = { AureoleText("Folder Name", color = AureoleTheme.colors.onSurfaceMedium) },
+                    placeholder = { AureoleText("New Folder", color = AureoleTheme.colors.onSurfaceLow) },
                     singleLine = true,
                     colors = OutlinedTextFieldDefaults.colors(
                         focusedBorderColor = MaterialTheme.colorScheme.primary,
-                        unfocusedBorderColor = MaterialTheme.colorScheme.outline
+                        unfocusedBorderColor = AureoleTheme.colors.outline,
+                        focusedTextColor = AureoleTheme.colors.onSurfaceHigh,
+                        unfocusedTextColor = AureoleTheme.colors.onSurfaceHigh
                     ),
                     modifier = Modifier.fillMaxWidth()
                 )
@@ -89,18 +98,18 @@ fun CreateFolderDialog(
 @Composable
 private fun CreateFolderHeader() {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-        Text(
+        AureoleText(
             text = "New Folder",
-            style = MaterialTheme.typography.titleLarge,
+            style = AureoleTheme.typography.titleLarge,
             fontWeight = FontWeight.Bold,
-            color = MaterialTheme.colorScheme.onSurface,
+            color = AureoleTheme.colors.onSurfaceHigh,
             modifier = Modifier.padding(bottom = 12.dp)
         )
 
-        Text(
+        AureoleText(
             text = "Folder is empty",
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f),
+            style = AureoleTheme.typography.bodyMedium,
+            color = AureoleTheme.colors.onSurfaceMedium,
             modifier = Modifier.padding(bottom = 16.dp)
         )
     }
@@ -116,11 +125,11 @@ private fun CreateFolderButtons(
         horizontalArrangement = Arrangement.End
     ) {
         TextButton(onClick = onDismiss) {
-            Text("Cancel", color = MaterialTheme.colorScheme.onSurfaceVariant)
+            AureoleText("Cancel", color = AureoleTheme.colors.onSurfaceMedium)
         }
         Spacer(modifier = Modifier.width(8.dp))
         TextButton(onClick = onSubmit) {
-            Text("Create", fontWeight = FontWeight.Bold)
+            AureoleText("Create", fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary)
         }
     }
 }

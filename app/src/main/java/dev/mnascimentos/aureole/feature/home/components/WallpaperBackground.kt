@@ -18,7 +18,8 @@ fun WallpaperBackground(
     isCustomWallpaperSet: Boolean,
     customWallpaperPath: String?,
     hazeState: HazeState,
-    isHazeEnabled: Boolean
+    isHazeEnabled: Boolean,
+    wallpaperScaleType: String = "Crop"
 ) {
     val hazeModifier = if (isHazeEnabled) {
         Modifier.hazeSource(state = hazeState)
@@ -26,12 +27,18 @@ fun WallpaperBackground(
         Modifier
     }
 
+    val contentScale = when (wallpaperScaleType) {
+        "Fit" -> ContentScale.Fit
+        "Fill" -> ContentScale.FillBounds
+        else -> ContentScale.Crop
+    }
+
     Box(modifier = Modifier.fillMaxSize().then(hazeModifier)) {
         if (isCustomWallpaperSet && !customWallpaperPath.isNullOrEmpty()) {
             AsyncImage(
                 model = File(customWallpaperPath),
                 contentDescription = null,
-                contentScale = ContentScale.Crop,
+                contentScale = contentScale,
                 modifier = Modifier.fillMaxSize()
             )
             Box(

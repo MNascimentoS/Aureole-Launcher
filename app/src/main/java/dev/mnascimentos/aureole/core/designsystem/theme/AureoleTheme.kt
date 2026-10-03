@@ -13,12 +13,15 @@ import androidx.compose.ui.platform.LocalContext
 import dev.mnascimentos.aureole.core.designsystem.icons.AureoleIcons
 import dev.mnascimentos.aureole.core.designsystem.icons.LocalAureoleIcons
 
+@Suppress("LongParameterList") // Theme entry point accepts configuration parameters for custom themes
 @Composable
 fun AureoleLauncherTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     isDynamicWallpaperEnabled: Boolean = false,
     aureoleColors: AureoleColors = frostbiteColors,
+    aureoleFontName: String = "Istok Web",
     aureoleIcons: AureoleIcons = AureoleIcons(),
+    aureoleDimens: AureoleDimens = AureoleDimens(),
     content: @Composable () -> Unit,
 ) {
     val context = LocalContext.current
@@ -30,13 +33,17 @@ fun AureoleLauncherTheme(
         else -> buildLightColorScheme(aureoleColors)
     }
 
+    val aureoleTypography = AureoleTypography(fontFamily = AvailableFonts[aureoleFontName] ?: IstokWebFontFamily)
+
     CompositionLocalProvider(
         LocalAureoleColors provides aureoleColors,
         LocalAureoleIcons provides aureoleIcons,
+        LocalAureoleTypography provides aureoleTypography,
+        LocalAureoleDimens provides aureoleDimens,
     ) {
         MaterialTheme(
             colorScheme = colorScheme,
-            typography = AureoleTypography,
+            typography = aureoleTypography.toMaterialTypography(),
             content = content,
         )
     }
@@ -98,9 +105,18 @@ object AureoleDS {
         @Composable
         get() = LocalAureoleIcons.current
 
-    val typography: androidx.compose.material3.Typography
+    val typography: AureoleTypography
         @Composable
-        get() = MaterialTheme.typography
+        get() = LocalAureoleTypography.current
+
+    val dimens: AureoleDimens
+        @Composable
+        get() = LocalAureoleDimens.current
+
+    @Deprecated("Use AureoleDS.dimens instead", ReplaceWith("AureoleDS.dimens"))
+    val spacings: AureoleDimens
+        @Composable
+        get() = LocalAureoleDimens.current
 }
 
 // Kept for backwards compatibility with existing screens
@@ -109,7 +125,16 @@ object AureoleTheme {
         @Composable
         get() = LocalAureoleColors.current
 
-    val typography: androidx.compose.material3.Typography
+    val typography: AureoleTypography
         @Composable
-        get() = MaterialTheme.typography
+        get() = LocalAureoleTypography.current
+
+    val dimens: AureoleDimens
+        @Composable
+        get() = LocalAureoleDimens.current
+
+    @Deprecated("Use AureoleTheme.dimens instead", ReplaceWith("AureoleTheme.dimens"))
+    val spacings: AureoleDimens
+        @Composable
+        get() = LocalAureoleDimens.current
 }

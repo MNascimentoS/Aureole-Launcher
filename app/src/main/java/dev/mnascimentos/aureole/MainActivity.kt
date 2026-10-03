@@ -21,6 +21,7 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.unit.dp
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.lifecycle.DefaultLifecycleObserver
@@ -30,6 +31,7 @@ import com.google.android.play.core.appupdate.AppUpdateManager
 import com.google.android.play.core.appupdate.AppUpdateManagerFactory
 import dev.chrisbanes.haze.rememberHazeState
 import dev.mnascimentos.aureole.core.designsystem.palette.getPaletteByName
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDimens
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.LocalHazeState
 import dev.mnascimentos.aureole.core.lifecycle.UpdateLifecycleObserver
@@ -153,11 +155,13 @@ class MainActivity : ComponentActivity() {
                 }
 
                 val isDarkTheme = isSystemInDarkTheme()
-                val palette = getPaletteByName(uiState.selectedThemeName, isDarkTheme)
+                val palette = getPaletteByName(uiState.selectedThemeName, isDarkTheme, uiState.manualSeedColor)
                 AureoleLauncherTheme(
                     darkTheme = isDarkTheme,
                     isDynamicWallpaperEnabled = uiState.isDynamicWallpaperEnabled,
-                    aureoleColors = palette.colors
+                    aureoleColors = palette.colors,
+                    aureoleFontName = uiState.selectedFontName,
+                    aureoleDimens = AureoleDimens(cornerRadius = uiState.cornerRadiusDp.dp)
                 ) {
                     BackHandler(enabled = isOverlayActive) {
                         handleBackNavigation(uiState, viewModel)

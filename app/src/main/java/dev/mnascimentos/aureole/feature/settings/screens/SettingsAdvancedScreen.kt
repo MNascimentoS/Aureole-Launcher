@@ -21,7 +21,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -35,6 +34,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.composable.SettingsActionItem
 import dev.mnascimentos.aureole.composable.SettingsToggleItem
+import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.icons.Delete
 import dev.mnascimentos.aureole.core.designsystem.icons.Home
 import dev.mnascimentos.aureole.core.designsystem.icons.Info
@@ -81,7 +81,7 @@ fun SettingsAdvancedScreen(
             ) {
                 Spacer(modifier = Modifier.height(topSpacerHeight))
 
-                Text(
+                AureoleText(
                     text = "Advanced",
                     style = AureoleTheme.typography.titleLarge,
                     fontWeight = FontWeight.Medium,
@@ -174,35 +174,35 @@ private fun AdvancedLinksGroup(onNavigateToContributors: () -> Unit) {
             .padding(start = 44.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        Text(
+        AureoleText(
             text = "Contributors",
             style = AureoleTheme.typography.bodyLarge,
             fontWeight = FontWeight.Normal,
             color = AureoleTheme.colors.onSurfaceMedium,
             modifier = Modifier.clickable { onNavigateToContributors() }
         )
-        Text(
+        AureoleText(
             text = "Privacy policy",
             style = AureoleTheme.typography.bodyLarge,
             fontWeight = FontWeight.Normal,
             color = AureoleTheme.colors.onSurfaceMedium,
             modifier = Modifier.clickable { }
         )
-        Text(
+        AureoleText(
             text = "Terms of service",
             style = AureoleTheme.typography.bodyLarge,
             fontWeight = FontWeight.Normal,
             color = AureoleTheme.colors.onSurfaceMedium,
             modifier = Modifier.clickable { }
         )
-        Text(
+        AureoleText(
             text = "Privacy settings",
             style = AureoleTheme.typography.bodyLarge,
             fontWeight = FontWeight.Normal,
             color = AureoleTheme.colors.onSurfaceMedium,
             modifier = Modifier.clickable { }
         )
-        Text(
+        AureoleText(
             text = "Open source e license",
             style = AureoleTheme.typography.bodyLarge,
             fontWeight = FontWeight.Normal,

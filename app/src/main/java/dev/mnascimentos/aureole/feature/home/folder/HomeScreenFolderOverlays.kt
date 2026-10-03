@@ -29,7 +29,6 @@ import dev.chrisbanes.haze.HazeStyle
 import dev.chrisbanes.haze.HazeTint
 import dev.chrisbanes.haze.hazeEffect
 import dev.mnascimentos.aureole.core.data.model.AppFolder
-import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.feature.home.LocalHomeActions
 import dev.mnascimentos.aureole.feature.home.LocalHomeUiState
 import dev.mnascimentos.aureole.feature.home.folder.model.FolderPopupActions
@@ -135,8 +134,9 @@ private fun OpenedFolderOverlayContent(
 ) {
     val uiState = params.uiState
     val folderToDisplay = params.folderToDisplay
+    val isGridFolderEnabled = isGridFolderMode(uiState, folderToDisplay)
 
-    val fullScreenBlurModifier = if (uiState.isHazeEnabled) {
+    val fullScreenBlurModifier = if (uiState.isHazeEnabled && isGridFolderEnabled) {
         Modifier.hazeEffect(
             state = params.hazeState,
             style = HazeStyle(
@@ -150,10 +150,10 @@ private fun OpenedFolderOverlayContent(
         Modifier
     }
 
-    val overlayBgColor = if (uiState.isHazeEnabled) {
+    val overlayBgColor = if (uiState.isHazeEnabled && isGridFolderEnabled) {
         Color.Black.copy(alpha = 0.2f)
     } else {
-        AureoleDS.colors.background.copy(alpha = 0.85f)
+        Color.Black.copy(alpha = 0.45f)
     }
 
     Box(
@@ -173,7 +173,6 @@ private fun OpenedFolderOverlayContent(
             topInsetDp = topInsetDp
         )
 
-        val isGridFolderEnabled = isGridFolderMode(uiState, folderToDisplay)
         val align = resolvePopupAlignment(isGridFolderEnabled, uiState.isLeftHandedMode)
         val popupPadding = calculatePopupPaddingModifier(isGridFolderEnabled, uiState.isLeftHandedMode, clampedTopDp)
 
@@ -188,7 +187,7 @@ private fun OpenedFolderOverlayContent(
                     onEditFolderClick = { actions.onSetRenameFolderDialogVisible(true) }
                 ),
                 isGridFolderEnabled = isGridFolderEnabled,
-                hazeState = params.hazeState
+                hazeState = if (isGridFolderEnabled) params.hazeState else null
             ),
             modifier = Modifier.align(align).then(popupPadding)
         )

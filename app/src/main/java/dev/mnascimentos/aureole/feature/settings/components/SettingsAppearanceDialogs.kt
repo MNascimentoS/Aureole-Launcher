@@ -18,7 +18,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -27,6 +26,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.composable.SettingsMenuItem
+import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.icons.Check
 import dev.mnascimentos.aureole.core.designsystem.icons.Edit
 import dev.mnascimentos.aureole.core.designsystem.icons.StrokeColor
@@ -54,7 +54,7 @@ fun SetBackgroundBottomSheet(
         onDismissRequest = onDismissRequest
     ) {
         Column(
-            verticalArrangement = Arrangement.spacedBy(8.dp),
+            verticalArrangement = Arrangement.spacedBy(AureoleDS.dimens.xSmall),
             modifier = Modifier.fillMaxWidth()
         ) {
             SettingsMenuItem(
@@ -86,7 +86,7 @@ fun PickPaletteBottomSheet(
         onDismissRequest = onDismissRequest
     ) {
         LazyColumn(
-            verticalArrangement = Arrangement.spacedBy(10.dp),
+            verticalArrangement = Arrangement.spacedBy(AureoleDS.dimens.small),
             modifier = Modifier
                 .fillMaxWidth()
                 .heightIn(max = PALETTE_MAX_HEIGHT_DP.dp)
@@ -129,10 +129,10 @@ private fun PaletteRowItem(
             .clip(RoundedCornerShape(12.dp))
             .background(rowBg)
             .clickable(onClick = onSelect)
-            .padding(vertical = 10.dp, horizontal = 8.dp),
+            .padding(vertical = AureoleDS.dimens.small, horizontal = AureoleDS.dimens.xSmall),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Text(
+        AureoleText(
             text = displayName,
             style = AureoleTheme.typography.titleMedium,
             fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium,
@@ -192,7 +192,7 @@ fun BlurBottomSheet(
         onDismissRequest = onDismissRequest
     ) {
         Column(
-            verticalArrangement = Arrangement.spacedBy(8.dp),
+            verticalArrangement = Arrangement.spacedBy(AureoleDS.dimens.xSmall),
             modifier = Modifier.fillMaxWidth()
         ) {
             options.forEach { (opacity, enableHaze, label) ->
@@ -235,10 +235,10 @@ private fun BlurOptionRow(
             .clip(RoundedCornerShape(12.dp))
             .background(rowBg)
             .clickable(onClick = onSelect)
-            .padding(vertical = 12.dp, horizontal = 12.dp),
+            .padding(vertical = AureoleDS.dimens.small, horizontal = AureoleDS.dimens.small),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Text(
+        AureoleText(
             text = label,
             style = AureoleTheme.typography.bodyLarge,
             fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,

@@ -21,14 +21,32 @@ data class AppInfo(
     val componentName: ComponentName,
     val icon: Drawable,
 ) {
+    @Transient
+    private var cachedIconBitmap: ImageBitmap? = null
+
+    @Transient
+    private var cachedThemedBitmap: ImageBitmap? = null
+
+    @Transient
+    private var cachedThemedColor: Int? = null
+
     val firstLetter: Char
         get() = label.trimStart().firstOrNull()?.uppercaseChar() ?: '#'
 
     fun getIconBitmap(): ImageBitmap {
-        return icon.toImageBitmap()
+        val existing = cachedIconBitmap
+        if (existing != null) return existing
+        val bitmap = icon.toImageBitmap()
+        cachedIconBitmap = bitmap
+        return bitmap
     }
 
     fun getThemedIconBitmap(tintColor: Int): ImageBitmap {
+        if (cachedThemedColor == tintColor) {
+            val existing = cachedThemedBitmap
+            if (existing != null) return existing
+        }
+
         val originalBitmap = when (val drawable = icon) {
             is BitmapDrawable -> drawable.bitmap
             else -> {
@@ -68,7 +86,10 @@ data class AppInfo(
         }
 
         output.setPixels(pixels, 0, width, 0, 0, width, height)
-        return output.asImageBitmap()
+        val themed = output.asImageBitmap()
+        cachedThemedColor = tintColor
+        cachedThemedBitmap = themed
+        return themed
     }
 }
 

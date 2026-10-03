@@ -17,7 +17,9 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.core.designsystem.palette.getPaletteByName
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDimens
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.feature.home.components.FavoriteAppsDialog
 import dev.mnascimentos.aureole.feature.home.components.model.FavoriteAppsDialogActions
@@ -42,11 +44,13 @@ class SettingsActivity : ComponentActivity() {
             val uiState by viewModel.uiState.collectAsState()
 
             val isDarkTheme = isSystemInDarkTheme()
-            val palette = getPaletteByName(uiState.selectedThemeName, isDarkTheme)
+            val palette = getPaletteByName(uiState.selectedThemeName, isDarkTheme, uiState.manualSeedColor)
             AureoleLauncherTheme(
                 darkTheme = isDarkTheme,
                 isDynamicWallpaperEnabled = uiState.isDynamicWallpaperEnabled,
-                aureoleColors = palette.colors
+                aureoleColors = palette.colors,
+                aureoleFontName = uiState.selectedFontName,
+                aureoleDimens = AureoleDimens(cornerRadius = uiState.cornerRadiusDp.dp)
             ) {
                 LaunchedEffect(uiState.shouldFinishActivity) {
                     if (uiState.shouldFinishActivity) {
@@ -104,8 +108,17 @@ class SettingsActivity : ComponentActivity() {
             onSelectTheme = { themeName ->
                 viewModel.setSettingValue(SettingValue.SelectedTheme(themeName))
             },
+            onSelectFont = { fontName ->
+                viewModel.setSettingValue(SettingValue.SelectedFont(fontName))
+            },
             onHazeOpacitySelected = { opacity ->
                 viewModel.setSettingValue(SettingValue.HazeOpacity(opacity))
+            },
+            onSelectWallpaperScaleType = { scaleType ->
+                viewModel.setSettingValue(SettingValue.WallpaperScaleType(scaleType))
+            },
+            onSelectCornerRadius = { radiusDp ->
+                viewModel.setSettingValue(SettingValue.CornerRadius(radiusDp))
             },
             onHeaderOffsetChanged = viewModel::setHeaderOffsetPercent,
             onConfirmResetGrid = { viewModel.resetGridLayout() },
