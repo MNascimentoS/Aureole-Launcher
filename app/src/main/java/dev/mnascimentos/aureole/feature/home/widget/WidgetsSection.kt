@@ -58,7 +58,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 private const val MAX_WIDGETS = 3
-private const val LONG_PRESS_DURATION_MS = 1000L
 private const val HAZE_MIN_ALPHA_ADD_BUTTON = 0.2f
 private const val HAZE_MAX_ALPHA_ADD_BUTTON = 0.95f
 private const val DEFAULT_HAZE_OPACITY = 0.5f
@@ -231,18 +230,20 @@ private fun WidgetHostItem(
             .fillMaxHeight()
             .clip(MaterialTheme.shapes.large)
             .pointerInput(widgetId, stackId) {
+                val longPressTimeout = viewConfiguration.longPressTimeoutMillis
                 awaitEachGesture {
-                    awaitFirstDown(pass = PointerEventPass.Main)
+                    val down = awaitFirstDown(pass = PointerEventPass.Initial)
                     var isLongPressTriggered = false
 
                     val job = coroutineScope.launch {
-                        delay(LONG_PRESS_DURATION_MS)
+                        delay((longPressTimeout - 50L).coerceAtLeast(200L))
                         isLongPressTriggered = true
+                        down.consume()
                         actions.onOpenWidgetStackBottomSheet(widgetId, stackId)
                     }
 
                     try {
-                        val up = waitForUpOrCancellation(pass = PointerEventPass.Main)
+                        val up = waitForUpOrCancellation(pass = PointerEventPass.Initial)
                         job.cancel()
                         if (isLongPressTriggered) {
                             up?.consume()

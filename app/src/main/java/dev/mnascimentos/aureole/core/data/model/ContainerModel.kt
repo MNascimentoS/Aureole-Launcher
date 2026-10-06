@@ -6,6 +6,7 @@ data class ContainerModel(
     val id: String = UUID.randomUUID().toString(),
     val title: String = "Container",
     val position: String = "Space Between",
+    val orientation: String = "Vertical",
     val isBackgroundEnabled: Boolean = true,
     val isExpandCell: Boolean = false,
     val showAddFolderButton: Boolean = true,

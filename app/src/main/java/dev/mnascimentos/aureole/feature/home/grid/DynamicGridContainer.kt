@@ -79,7 +79,7 @@ fun DynamicGridContainer(
                             actions.onSaveGridEditMode()
                         }
                     },
-                    onLongPress = { if (!isEditMode) actions.onEnterGridEditMode() }
+                    onLongPress = { if (!isEditMode) actions.onOpenCustomizeBottomSheet() }
                 )
             }
     ) {

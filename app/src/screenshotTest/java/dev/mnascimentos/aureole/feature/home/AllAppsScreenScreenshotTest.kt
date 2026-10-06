@@ -14,6 +14,21 @@ import dev.mnascimentos.aureole.feature.home.components.AppsListDrawer
 import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
 
+internal fun createMockHomeScreenActions(): HomeScreenActions = HomeScreenActions(
+    onWidgetRowHeightChanged = {},
+    onAddWidgetClick = {},
+    onRemoveWidgetClick = {},
+    onAppClick = {},
+    onExpandNotificationShade = {},
+    onFolderIntent = {},
+    onSetAddAppToFolderDialogVisible = {},
+    onSetRenameFolderDialogVisible = {},
+    onSearchQueryChanged = {},
+    onSettingsClick = {},
+    onAllAppsDrawerClose = {},
+    onAllAppsDrawerOpen = {}
+)
+
 @PreviewTest
 @Preview(name = "Light Mode", showBackground = true)
 @Preview(name = "Dark Mode", uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
@@ -48,25 +63,10 @@ fun AllAppsScreenScreenshotTest() {
         isHazeEnabled = false
     )
 
-    val mockActions = HomeScreenActions(
-        onWidgetRowHeightChanged = {},
-        onAddWidgetClick = {},
-        onRemoveWidgetClick = {},
-        onAppClick = {},
-        onExpandNotificationShade = {},
-        onFolderIntent = {},
-        onSetAddAppToFolderDialogVisible = {},
-        onSetRenameFolderDialogVisible = {},
-        onSearchQueryChanged = {},
-        onSettingsClick = {},
-        onAllAppsDrawerClose = {},
-        onAllAppsDrawerOpen = {}
-    )
-
     AureoleLauncherTheme {
         CompositionLocalProvider(
             LocalHomeUiState provides mockUiState,
-            LocalHomeActions provides mockActions
+            LocalHomeActions provides createMockHomeScreenActions()
         ) {
             AppsListDrawer(
                 listState = rememberLazyListState()
@@ -76,7 +76,7 @@ fun AllAppsScreenScreenshotTest() {
 }
 
 @PreviewTest
-@Preview(name = "Search Filtered", showBackground = true)
+@Preview(name = "Search Filtered Flow", showBackground = true)
 @Composable
 fun AllAppsScreenWithSearchQueryScreenshotTest() {
     val sampleApp = AppInfo(
@@ -95,25 +95,35 @@ fun AllAppsScreenWithSearchQueryScreenshotTest() {
         isHazeEnabled = false
     )
 
-    val mockActions = HomeScreenActions(
-        onWidgetRowHeightChanged = {},
-        onAddWidgetClick = {},
-        onRemoveWidgetClick = {},
-        onAppClick = {},
-        onExpandNotificationShade = {},
-        onFolderIntent = {},
-        onSetAddAppToFolderDialogVisible = {},
-        onSetRenameFolderDialogVisible = {},
-        onSearchQueryChanged = {},
-        onSettingsClick = {},
-        onAllAppsDrawerClose = {},
-        onAllAppsDrawerOpen = {}
+    AureoleLauncherTheme {
+        CompositionLocalProvider(
+            LocalHomeUiState provides mockUiState,
+            LocalHomeActions provides createMockHomeScreenActions()
+        ) {
+            AppsListDrawer(
+                listState = rememberLazyListState()
+            )
+        }
+    }
+}
+
+@PreviewTest
+@Preview(name = "Search Empty Results Flow", showBackground = true)
+@Composable
+fun AllAppsScreenWithEmptySearchQueryScreenshotTest() {
+    val mockUiState = MainUiState(
+        apps = emptyList(),
+        filteredApps = emptyList(),
+        searchQuery = "XYZNonExistent",
+        alphabet = emptyList(),
+        isLoading = false,
+        isHazeEnabled = false
     )
 
     AureoleLauncherTheme {
         CompositionLocalProvider(
             LocalHomeUiState provides mockUiState,
-            LocalHomeActions provides mockActions
+            LocalHomeActions provides createMockHomeScreenActions()
         ) {
             AppsListDrawer(
                 listState = rememberLazyListState()

@@ -35,6 +35,7 @@ import dev.chrisbanes.haze.rememberHazeState
 import dev.mnascimentos.aureole.core.data.model.ContainerModel
 import dev.mnascimentos.aureole.core.data.model.LauncherItemState
 import dev.mnascimentos.aureole.core.data.model.LauncherItemType
+import dev.mnascimentos.aureole.feature.home.components.CustomizeBottomSheet
 import dev.mnascimentos.aureole.feature.home.components.EditContainerBottomSheet
 import dev.mnascimentos.aureole.feature.home.components.FavoritesListConfig
 import dev.mnascimentos.aureole.feature.home.components.GridItemContent
@@ -205,6 +206,13 @@ private fun BoxScope.HomeScreenBody(
 
 @Composable
 private fun HomeOverlaysDialogsAndErrors(config: HomeOverlaysConfig) {
+    if (config.uiState.showCustomizeBottomSheet) {
+        CustomizeBottomSheet(
+            actions = config.actions,
+            onDismissRequest = config.actions.onCloseCustomizeBottomSheet
+        )
+    }
+
     if (config.uiState.showAddContainerDialog) {
         AddContainerDialog(
             onDismissRequest = config.actions.onCloseAddContainerDialog,
@@ -214,7 +222,7 @@ private fun HomeOverlaysDialogsAndErrors(config: HomeOverlaysConfig) {
                     config.actions.onAddWidgetClick()
                     config.actions.onCloseAddContainerDialog()
                 } else {
-                    config.actions.onAddGridItem(type, null)
+                    config.actions.onAddGridItem(type, null, null)
                 }
             },
             isNested = (config.uiState.targetParentContainerId != null)
@@ -355,6 +363,7 @@ private fun buildContainerConfig(
             appPackageNames = panelModel.appPackageNames,
             openedFolderId = uiState.openedFolderId,
             position = panelModel.position,
+            orientation = panelModel.orientation,
             showFolderLabels = panelModel.showFolderLabels,
             showAddFolderButton = panelModel.showAddFolderButton,
             isBackgroundEnabled = panelModel.isBackgroundEnabled,
@@ -368,6 +377,7 @@ private fun buildContainerConfig(
             folders = emptyList(),
             openedFolderId = uiState.openedFolderId,
             position = uiState.containerPosition,
+            orientation = "Vertical",
             showFolderLabels = uiState.showFolderLabels,
             showAddFolderButton = uiState.showContainerAddFolderButton,
             isBackgroundEnabled = uiState.isContainerBackgroundEnabled,

@@ -37,6 +37,7 @@ import dev.mnascimentos.aureole.feature.home.extensions.setEditingGridItem
 import dev.mnascimentos.aureole.feature.home.extensions.setIsAddingSingleWidget
 import dev.mnascimentos.aureole.feature.home.extensions.setRenameFolderDialogVisible
 import dev.mnascimentos.aureole.feature.home.extensions.setShowAddContainerDialog
+import dev.mnascimentos.aureole.feature.home.extensions.setShowCustomizeBottomSheet
 import dev.mnascimentos.aureole.feature.home.extensions.setShowFavoritePicker
 import dev.mnascimentos.aureole.feature.home.extensions.setShowWidgetPicker
 import dev.mnascimentos.aureole.feature.home.extensions.setShowWidgetResizeDialog
@@ -103,7 +104,9 @@ class HomeActionsFactory(
             onResetGridItems = { viewModel.resetGridItems() },
             onOpenAddContainerDialog = { viewModel.setShowAddContainerDialog(true) },
             onCloseAddContainerDialog = { viewModel.setShowAddContainerDialog(false) },
-            onAddGridItem = { type, widgetId -> viewModel.addGridItem(GridItemSpec(type = type, widgetId = widgetId)) },
+            onAddGridItem = { type, widgetId, orientation -> 
+                viewModel.addGridItem(GridItemSpec(type = type, widgetId = widgetId, scrollOrientation = orientation)) 
+            },
             onOpenEditGridItemDialog = { item -> viewModel.setEditingGridItem(item) },
             onCloseEditGridItemDialog = { viewModel.setEditingGridItem(null) },
             onDeleteGridItem = { id -> viewModel.deleteGridItem(id) },
@@ -147,7 +150,9 @@ class HomeActionsFactory(
             onToggleWidgetStackDots = { stackId -> viewModel.toggleWidgetStackDots(stackId) },
             onRemoveAppFromContainer = { panelId, pkg -> viewModel.removeAppFromContainer(panelId, pkg) },
             onRemoveAppFromFolder = { folderId, pkg -> viewModel.removeAppFromFolder(folderId, pkg) },
-            onOpenEditFolderForFolder = { folder -> viewModel.openEditFolderForFolder(folder) }
+            onOpenEditFolderForFolder = { folder -> viewModel.openEditFolderForFolder(folder) },
+            onOpenCustomizeBottomSheet = { viewModel.setShowCustomizeBottomSheet(true) },
+            onCloseCustomizeBottomSheet = { viewModel.setShowCustomizeBottomSheet(false) }
         )
     }
 

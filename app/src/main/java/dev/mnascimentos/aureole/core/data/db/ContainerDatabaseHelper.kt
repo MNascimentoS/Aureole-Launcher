@@ -22,6 +22,7 @@ class ContainerDatabaseHelper(context: Context) : SQLiteOpenHelper(
                 id TEXT PRIMARY KEY NOT NULL,
                 title TEXT NOT NULL,
                 position TEXT NOT NULL DEFAULT 'Space Between',
+                orientation TEXT NOT NULL DEFAULT 'Vertical',
                 is_background_enabled INTEGER NOT NULL DEFAULT 1,
                 is_expand_cell INTEGER NOT NULL DEFAULT 0,
                 show_add_folder_button INTEGER NOT NULL DEFAULT 1,
@@ -50,9 +51,19 @@ class ContainerDatabaseHelper(context: Context) : SQLiteOpenHelper(
     }
 
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
-        db.execSQL("DROP TABLE IF EXISTS container_items")
-        db.execSQL("DROP TABLE IF EXISTS containers")
-        onCreate(db)
+        if (oldVersion < 2) {
+            try {
+                db.execSQL("ALTER TABLE containers ADD COLUMN orientation TEXT NOT NULL DEFAULT 'Vertical'")
+            } catch (_: Exception) {
+                db.execSQL("DROP TABLE IF EXISTS container_items")
+                db.execSQL("DROP TABLE IF EXISTS containers")
+                onCreate(db)
+            }
+        } else {
+            db.execSQL("DROP TABLE IF EXISTS container_items")
+            db.execSQL("DROP TABLE IF EXISTS containers")
+            onCreate(db)
+        }
     }
 
     override fun onConfigure(db: SQLiteDatabase) {
@@ -79,6 +90,8 @@ class ContainerDatabaseHelper(context: Context) : SQLiteOpenHelper(
                 val id = c.getString(c.getColumnIndexOrThrow("id"))
                 val title = c.getString(c.getColumnIndexOrThrow("title"))
                 val position = c.getString(c.getColumnIndexOrThrow("position"))
+                val orientationIdx = c.getColumnIndex("orientation")
+                val orientation = if (orientationIdx != -1) c.getString(orientationIdx) else "Vertical"
                 val isBackgroundEnabled = c.getInt(c.getColumnIndexOrThrow("is_background_enabled")) == 1
                 val isExpandCell = c.getInt(c.getColumnIndexOrThrow("is_expand_cell")) == 1
                 val showAddFolderButton = c.getInt(c.getColumnIndexOrThrow("show_add_folder_button")) == 1
@@ -91,6 +104,7 @@ class ContainerDatabaseHelper(context: Context) : SQLiteOpenHelper(
                         id = id,
                         title = title,
                         position = position,
+                        orientation = orientation,
                         isBackgroundEnabled = isBackgroundEnabled,
                         isExpandCell = isExpandCell,
                         showAddFolderButton = showAddFolderButton,
@@ -121,6 +135,8 @@ class ContainerDatabaseHelper(context: Context) : SQLiteOpenHelper(
                 val id = c.getString(c.getColumnIndexOrThrow("id"))
                 val title = c.getString(c.getColumnIndexOrThrow("title"))
                 val position = c.getString(c.getColumnIndexOrThrow("position"))
+                val orientationIdx = c.getColumnIndex("orientation")
+                val orientation = if (orientationIdx != -1) c.getString(orientationIdx) else "Vertical"
                 val isBackgroundEnabled = c.getInt(c.getColumnIndexOrThrow("is_background_enabled")) == 1
                 val isExpandCell = c.getInt(c.getColumnIndexOrThrow("is_expand_cell")) == 1
                 val showAddFolderButton = c.getInt(c.getColumnIndexOrThrow("show_add_folder_button")) == 1
@@ -132,6 +148,7 @@ class ContainerDatabaseHelper(context: Context) : SQLiteOpenHelper(
                     id = id,
                     title = title,
                     position = position,
+                    orientation = orientation,
                     isBackgroundEnabled = isBackgroundEnabled,
                     isExpandCell = isExpandCell,
                     showAddFolderButton = showAddFolderButton,
@@ -150,6 +167,7 @@ class ContainerDatabaseHelper(context: Context) : SQLiteOpenHelper(
             put("id", panel.id)
             put("title", panel.title)
             put("position", panel.position)
+            put("orientation", panel.orientation)
             put("is_background_enabled", if (panel.isBackgroundEnabled) 1 else 0)
             put("is_expand_cell", if (panel.isExpandCell) 1 else 0)
             put("show_add_folder_button", if (panel.showAddFolderButton) 1 else 0)
@@ -229,6 +247,6 @@ class ContainerDatabaseHelper(context: Context) : SQLiteOpenHelper(
 
     companion object {
         private const val DATABASE_NAME = "aureole_launcher_containers.db"
-        private const val DATABASE_VERSION = 1
+        private const val DATABASE_VERSION = 2
     }
 }

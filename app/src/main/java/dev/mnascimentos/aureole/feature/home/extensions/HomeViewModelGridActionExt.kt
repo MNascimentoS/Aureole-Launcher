@@ -18,7 +18,8 @@ data class GridItemSpec(
     val targetColSpan: Int? = null,
     val targetRowSpan: Int? = null,
     val minColSpan: Int? = null,
-    val minRowSpan: Int? = null
+    val minRowSpan: Int? = null,
+    val scrollOrientation: ScrollOrientation? = null
 )
 
 fun HomeViewModel.setShowAddContainerDialog(show: Boolean) {
@@ -204,7 +205,8 @@ fun HomeViewModel.addGridItem(spec: GridItemSpec) {
                 rowSpan = actualRowSpan,
                 minColSpan = reqMinColSpan,
                 minRowSpan = reqMinRowSpan,
-                widgetId = spec.widgetId
+                widgetId = spec.widgetId,
+                scrollOrientation = spec.scrollOrientation
             )
             val updatedList = currentItems + newItem
             if (!state.isGridEditMode) {

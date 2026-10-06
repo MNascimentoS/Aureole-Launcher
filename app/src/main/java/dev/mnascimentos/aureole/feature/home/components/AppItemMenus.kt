@@ -320,8 +320,12 @@ internal fun WidgetStackBottomSheet(
 
     val widgetAppPackage = remember(widgetId) {
         if (widgetId != null && widgetId != -1) {
-            val appWidgetManager = AppWidgetManager.getInstance(context)
-            appWidgetManager.getAppWidgetInfo(widgetId)?.provider?.packageName
+            try {
+                val appWidgetManager = AppWidgetManager.getInstance(context)
+                appWidgetManager.getAppWidgetInfo(widgetId)?.provider?.packageName
+            } catch (_: Throwable) {
+                null
+            }
         } else {
             null
         }

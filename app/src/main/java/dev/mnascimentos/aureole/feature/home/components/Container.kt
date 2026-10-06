@@ -3,14 +3,17 @@ package dev.mnascimentos.aureole.feature.home.components
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -97,6 +100,16 @@ private fun getVerticalArrangement(position: String): Arrangement.Vertical {
     }
 }
 
+private fun getHorizontalArrangement(position: String): Arrangement.Horizontal {
+    return when (position) {
+        "Top", "Left" -> Arrangement.Start
+        "Center" -> Arrangement.Center
+        "Bottom", "Right" -> Arrangement.End
+        "Space Evenly" -> Arrangement.SpaceEvenly
+        else -> Arrangement.SpaceBetween
+    }
+}
+
 @Composable
 fun Container(
     config: ContainerConfig,
@@ -109,8 +122,6 @@ fun Container(
 
     val hazeModifier = Modifier.hazeModifier(hasHaze, config.hazeState, uiState.hazeOpacity, surfaceColor)
     val backgroundColor = getBackgroundColor(config.isBackgroundEnabled, hasHaze, uiState.hazeOpacity, surfaceColor)
-    val verticalArrangement = getVerticalArrangement(config.position)
-
     val shouldExpand = config.isExpandCell
 
     val boxModifier = modifier.then(if (shouldExpand) Modifier.fillMaxSize() else Modifier)
@@ -118,14 +129,27 @@ fun Container(
     Box(
         modifier = boxModifier
     ) {
-        ContainerColumn(
-            config = config,
-            backgroundColor = backgroundColor,
-            verticalArrangement = verticalArrangement,
-            onFolderClick = onFolderClick,
-            modifier = if (config.isBackgroundEnabled) hazeModifier else Modifier,
-            shouldExpand = shouldExpand
-        )
+        if (config.orientation.equals("Horizontal", ignoreCase = true)) {
+            val horizontalArrangement = getHorizontalArrangement(config.position)
+            ContainerRow(
+                config = config,
+                backgroundColor = backgroundColor,
+                horizontalArrangement = horizontalArrangement,
+                onFolderClick = onFolderClick,
+                modifier = if (config.isBackgroundEnabled) hazeModifier else Modifier,
+                shouldExpand = shouldExpand
+            )
+        } else {
+            val verticalArrangement = getVerticalArrangement(config.position)
+            ContainerColumn(
+                config = config,
+                backgroundColor = backgroundColor,
+                verticalArrangement = verticalArrangement,
+                onFolderClick = onFolderClick,
+                modifier = if (config.isBackgroundEnabled) hazeModifier else Modifier,
+                shouldExpand = shouldExpand
+            )
+        }
     }
 }
 
@@ -235,6 +259,120 @@ private fun ContainerColumn(
             }
             if (config.showAddFolderButton) {
                 Spacer(modifier = Modifier.height(4.dp))
+                ContainerAddFolderButton(
+                    onClick = { actions.onFolderIntent(FolderViewIntent.OpenCreateFolderDialog(config.panelId)) },
+                    isBackgroundEnabled = config.isBackgroundEnabled
+                )
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+private fun ContainerRow(
+    config: ContainerConfig,
+    backgroundColor: Color,
+    horizontalArrangement: Arrangement.Horizontal,
+    onFolderClick: (AppFolder, Float) -> Unit,
+    modifier: Modifier = Modifier,
+    shouldExpand: Boolean = false
+) {
+    val actions = LocalHomeActions.current
+    val uiState = LocalHomeUiState.current
+    val scrollState = rememberScrollState()
+
+    val renderItems = remember(config.items, config.folders, config.appPackageNames, uiState.apps) {
+        if (config.items.isNotEmpty()) {
+            config.items.mapNotNull { item ->
+                when (item.itemType) {
+                    ContainerItemType.FOLDER -> {
+                        config.folders.find { it.id == item.folderId }?.let { ContainerRenderItem.Folder(it) }
+                    }
+                    ContainerItemType.APP -> {
+                        uiState.apps.find { it.packageName == item.packageName }?.let { ContainerRenderItem.App(it) }
+                    }
+                }
+            }
+        } else {
+            val folderItems = config.folders.map { ContainerRenderItem.Folder(it) }
+            val appItems = config.appPackageNames.mapNotNull { pkg ->
+                uiState.apps.find { it.packageName == pkg }?.let { ContainerRenderItem.App(it) }
+            }
+            folderItems + appItems
+        }
+    }
+
+    val paddingHorizontal = if (config.isBackgroundEnabled) 8.dp else 4.dp
+    val paddingVertical = if (config.isBackgroundEnabled) 10.dp else 2.dp
+
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = horizontalArrangement,
+        modifier = Modifier
+            .clip(RoundedCornerShape(AureoleTheme.dimens.cornerRadius))
+            .then(if (shouldExpand) Modifier.fillMaxSize() else Modifier)
+            .then(modifier)
+            .background(backgroundColor)
+            .combinedClickable(
+                interactionSource = remember { MutableInteractionSource() },
+                indication = null,
+                onClick = {},
+                onLongClick = { actions.onOpenEditContainerDialog(config.panelId) }
+            )
+            .fadingEdges(scrollState, edgeLength = 16.dp)
+            .horizontalScroll(scrollState)
+            .padding(horizontal = paddingHorizontal, vertical = paddingVertical)
+    ) {
+        if (renderItems.isEmpty()) {
+            if (config.showAddFolderButton) {
+                ContainerAddFolderButton(
+                    onClick = { actions.onOpenEditContainerDialog(config.panelId) },
+                    isBackgroundEnabled = config.isBackgroundEnabled
+                )
+            }
+        } else {
+            renderItems.forEach { renderItem ->
+                when (renderItem) {
+                    is ContainerRenderItem.Folder -> {
+                        Box(modifier = Modifier.padding(horizontal = 4.dp)) {
+                            ContainerFolderItem(
+                                folder = renderItem.folder,
+                                isOpened = renderItem.folder.id == config.openedFolderId,
+                                showFolderLabels = config.showFolderLabels,
+                                isGridFolderEnabled = config.isGridFolderEnabled,
+                                isBackgroundEnabled = config.isBackgroundEnabled,
+                                onFolderClick = { f, y ->
+                                    val updatedFolder = f.copy(
+                                        panelId = config.panelId,
+                                        displayAsGrid = config.isGridFolderEnabled || f.displayAsGrid
+                                    )
+                                    onFolderClick(updatedFolder, y)
+                                },
+                                onLongClick = {
+                                    actions.onOpenContainerFolderBottomSheet(
+                                        renderItem.folder,
+                                        config.panelId
+                                    )
+                                }
+                            )
+                        }
+                    }
+                    is ContainerRenderItem.App -> {
+                        Box(modifier = Modifier.padding(horizontal = 4.dp)) {
+                            ContainerAppItem(
+                                app = renderItem.appInfo,
+                                showLabels = config.showFolderLabels,
+                                isBackgroundEnabled = config.isBackgroundEnabled,
+                                onAppClick = { appInfo -> actions.onAppClick(appInfo) },
+                                onLongClick = { actions.onOpenContainerAppBottomSheet(renderItem.appInfo, config.panelId) }
+                            )
+                        }
+                    }
+                }
+            }
+            if (config.showAddFolderButton) {
+                Spacer(modifier = Modifier.width(4.dp))
                 ContainerAddFolderButton(
                     onClick = { actions.onFolderIntent(FolderViewIntent.OpenCreateFolderDialog(config.panelId)) },
                     isBackgroundEnabled = config.isBackgroundEnabled
