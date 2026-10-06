@@ -53,3 +53,7 @@ fun HomeViewModel.setAllAppsDrawerOpen(open: Boolean, fromHomeButton: Boolean = 
         applySearchFilter("")
     }
 }
+
+fun HomeViewModel.setShowCustomizeBottomSheet(show: Boolean) {
+    updateUiState { it.copy(showCustomizeBottomSheet = show) }
+}

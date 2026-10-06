@@ -1,7 +1,13 @@
 package dev.mnascimentos.aureole.feature.home.components
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -139,6 +145,7 @@ private fun rememberEditContainerState(panel: ContainerModel): EditContainerStat
         EditContainerState(
             panel = panel,
             position = panel.position,
+            orientation = panel.orientation,
             isBackgroundEnabled = panel.isBackgroundEnabled,
             isExpandCell = panel.isExpandCell,
             showAddFolderButton = panel.showAddFolderButton,
@@ -153,6 +160,7 @@ private fun rememberEditContainerState(panel: ContainerModel): EditContainerStat
 private class EditContainerState(
     val panel: ContainerModel,
     position: String,
+    orientation: String,
     isBackgroundEnabled: Boolean,
     isExpandCell: Boolean,
     showAddFolderButton: Boolean,
@@ -162,6 +170,7 @@ private class EditContainerState(
     folders: List<AppFolder>
 ) {
     var position by mutableStateOf(position)
+    var orientation by mutableStateOf(orientation)
     var isBackgroundEnabled by mutableStateOf(isBackgroundEnabled)
     var isExpandCell by mutableStateOf(isExpandCell)
     var showAddFolderButton by mutableStateOf(showAddFolderButton)
@@ -258,6 +267,7 @@ private fun EditContainerBottomSheetContent(
             editContainerFormItems(
                 formState = EditContainerFormState(
                     position = state.position,
+                    orientation = state.orientation,
                     isBackgroundEnabled = state.isBackgroundEnabled,
                     isExpandCell = state.isExpandCell,
                     showAddFolderButton = state.showAddFolderButton,
@@ -266,6 +276,7 @@ private fun EditContainerBottomSheetContent(
                 ),
                 callbacks = EditContainerFormCallbacks(
                     onPositionChange = { state.position = it },
+                    onOrientationChange = { state.orientation = it },
                     onBgChange = { state.isBackgroundEnabled = it },
                     onExpandChange = { state.isExpandCell = it },
                     onAddFolderBtnChange = { state.showAddFolderButton = it },
@@ -290,6 +301,7 @@ private fun EditContainerBottomSheetContent(
                 val updatedApps = state.itemsList.filter { it.itemType == ContainerItemType.APP }.mapNotNull { it.packageName }
                 val updated = panel.copy(
                     position = state.position,
+                    orientation = state.orientation,
                     isBackgroundEnabled = state.isBackgroundEnabled,
                     isExpandCell = state.isExpandCell,
                     showAddFolderButton = state.showAddFolderButton,
@@ -318,105 +330,15 @@ private fun LazyListScope.editContainerFormItems(
     onRemoveItem: (Int) -> Unit
 ) {
     item {
-        EditContainerAlignmentSelector(position = formState.position, onPositionSelected = callbacks.onPositionChange)
-    }
-    item {
-        SettingSwitchRow(
-            label = "Fundo do Container",
-            checked = formState.isBackgroundEnabled,
-            onCheckedChange = callbacks.onBgChange
-        )
-    }
-    item {
-        SettingSwitchRow(
-            label = "Expandir Célula",
-            checked = formState.isExpandCell,
-            onCheckedChange = callbacks.onExpandChange
-        )
-    }
-    item {
-        SettingSwitchRow(
-            label = "Botão de Criar Pasta",
-            checked = formState.showAddFolderButton,
-            onCheckedChange = callbacks.onAddFolderBtnChange
-        )
-    }
-    item {
-        SettingSwitchRow(
-            label = "Exibir Rótulos das Pastas",
-            checked = formState.showFolderLabels,
-            onCheckedChange = callbacks.onFolderLabelsChange
-        )
-    }
-    item {
-        SettingSwitchRow(
-            label = "Modo de Pasta Expansiva (Grid)",
-            checked = formState.isGridFolderEnabled,
-            onCheckedChange = callbacks.onGridFolderChange
-        )
-    }
-    editContainerItemsSection(
-        itemsList = itemsList,
-        folders = folders,
-        allApps = allApps,
-        onMoveUp = onMoveUp,
-        onMoveDown = onMoveDown,
-        onRemoveItem = onRemoveItem,
-        onAddApp = onAddApp,
-        onAddFolder = onAddFolder
-    )
-}
-
-private fun LazyListScope.editContainerItemsSection(
-    itemsList: List<ContainerItemEntity>,
-    folders: List<AppFolder>,
-    allApps: List<AppInfo>,
-    onMoveUp: (Int) -> Unit,
-    onMoveDown: (Int) -> Unit,
-    onRemoveItem: (Int) -> Unit,
-    onAddApp: (String) -> Unit,
-    onAddFolder: () -> Unit
-) {
-    item {
-        Spacer(modifier = Modifier.height(8.dp))
         AureoleText(
-            text = "Conteúdo do Container (${itemsList.size})",
+            text = "Adicionar ao Container",
             style = AureoleTheme.typography.titleSmall,
             fontWeight = FontWeight.Bold,
-            color = MaterialTheme.colorScheme.primary
+            color = MaterialTheme.colorScheme.primary,
+            modifier = Modifier.padding(bottom = 4.dp)
         )
-    }
-
-    itemsIndexed(itemsList, key = { _, item -> item.id }) { index, item ->
-        val title: String
-        val iconVector: ImageVector
-        val isFolder = item.itemType == ContainerItemType.FOLDER
-
-        if (isFolder) {
-            val folder = folders.find { it.id == item.folderId }
-            title = folder?.name ?: "Pasta"
-            iconVector = FolderIconRegistry.getIcon(folder?.icon) ?: Icons.Default.Menu
-        } else {
-            val appInfo = allApps.find { it.packageName == item.packageName }
-            title = appInfo?.label ?: item.packageName ?: "App"
-            iconVector = Icons.Default.Menu
-        }
-
-        EditContainerItemRow(
-            title = title,
-            iconVector = iconVector,
-            isFolder = isFolder,
-            canMoveUp = index > 0,
-            canMoveDown = index < itemsList.size - 1,
-            onMoveUp = { onMoveUp(index) },
-            onMoveDown = { onMoveDown(index) },
-            onRemove = { onRemoveItem(index) }
-        )
-    }
-
-    item {
         Row(
-            modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
+            modifier = Modifier.fillMaxWidth().padding(bottom = AureoleDS.dimens.small),
             horizontalArrangement = Arrangement.spacedBy(8.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -430,6 +352,155 @@ private fun LazyListScope.editContainerItemsSection(
                 Icon(Icons.Default.Add, contentDescription = null, modifier = Modifier.size(20.dp))
                 Spacer(modifier = Modifier.width(4.dp))
                 AureoleText("Pasta")
+            }
+        }
+    }
+
+    item {
+        AureoleText(
+            text = "Itens e Ordem (${itemsList.size})",
+            style = AureoleTheme.typography.titleSmall,
+            fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colorScheme.primary,
+            modifier = Modifier.padding(top = 4.dp, bottom = 4.dp)
+        )
+    }
+
+    if (itemsList.isEmpty()) {
+        item {
+            AureoleText(
+                text = "Nenhum item adicionado ainda.",
+                style = AureoleTheme.typography.bodyMedium,
+                color = AureoleTheme.colors.onSurfaceMedium,
+                modifier = Modifier.padding(vertical = 8.dp)
+            )
+        }
+    } else {
+        itemsIndexed(itemsList, key = { _, item -> item.id }) { index, item ->
+            val title: String
+            val iconVector: ImageVector
+            val isFolder = item.itemType == ContainerItemType.FOLDER
+
+            if (isFolder) {
+                val folder = folders.find { it.id == item.folderId }
+                title = folder?.name ?: "Pasta"
+                iconVector = FolderIconRegistry.getIcon(folder?.icon) ?: Icons.Default.Menu
+            } else {
+                val appInfo = allApps.find { it.packageName == item.packageName }
+                title = appInfo?.label ?: item.packageName ?: "App"
+                iconVector = Icons.Default.Menu
+            }
+
+            EditContainerItemRow(
+                title = title,
+                iconVector = iconVector,
+                isFolder = isFolder,
+                canMoveUp = index > 0,
+                canMoveDown = index < itemsList.size - 1,
+                onMoveUp = { onMoveUp(index) },
+                onMoveDown = { onMoveDown(index) },
+                onRemove = { onRemoveItem(index) }
+            )
+        }
+    }
+
+    item {
+        Spacer(modifier = Modifier.height(8.dp))
+        EditContainerOptionsExpandableSection(
+            formState = formState,
+            callbacks = callbacks
+        )
+    }
+}
+
+@Composable
+private fun EditContainerOptionsExpandableSection(
+    formState: EditContainerFormState,
+    callbacks: EditContainerFormCallbacks
+) {
+    var isExpanded by remember { mutableStateOf(false) }
+
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(AureoleTheme.dimens.cornerRadius))
+            .background(AureoleTheme.colors.surfaceVariant.copy(alpha = 0.3f))
+            .padding(horizontal = AureoleDS.dimens.medium, vertical = AureoleDS.dimens.small)
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clickable { isExpanded = !isExpanded }
+                .padding(vertical = 4.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            AureoleText(
+                text = "Opções de Aparência e Comportamento",
+                style = AureoleTheme.typography.titleSmall,
+                fontWeight = FontWeight.Bold,
+                color = AureoleTheme.colors.onSurfaceHigh
+            )
+            IconButton(
+                onClick = { isExpanded = !isExpanded },
+                modifier = Modifier.size(32.dp)
+            ) {
+                Icon(
+                    imageVector = if (isExpanded) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,
+                    contentDescription = if (isExpanded) "Recolher" else "Expandir",
+                    tint = AureoleTheme.colors.onSurfaceMedium
+                )
+            }
+        }
+
+        AnimatedVisibility(
+            visible = isExpanded,
+            enter = fadeIn() + expandVertically(),
+            exit = fadeOut() + shrinkVertically()
+        ) {
+            Column(
+                verticalArrangement = Arrangement.spacedBy(AureoleDS.dimens.small),
+                modifier = Modifier.padding(top = AureoleDS.dimens.small)
+            ) {
+                EditContainerOrientationSelector(
+                    orientation = formState.orientation,
+                    onOrientationSelected = callbacks.onOrientationChange
+                )
+
+                EditContainerAlignmentSelector(
+                    position = formState.position,
+                    onPositionSelected = callbacks.onPositionChange
+                )
+
+                SettingSwitchRow(
+                    label = "Fundo do Container",
+                    checked = formState.isBackgroundEnabled,
+                    onCheckedChange = callbacks.onBgChange
+                )
+
+                SettingSwitchRow(
+                    label = "Expandir Célula",
+                    checked = formState.isExpandCell,
+                    onCheckedChange = callbacks.onExpandChange
+                )
+
+                SettingSwitchRow(
+                    label = "Botão de Criar Pasta",
+                    checked = formState.showAddFolderButton,
+                    onCheckedChange = callbacks.onAddFolderBtnChange
+                )
+
+                SettingSwitchRow(
+                    label = "Exibir Rótulos das Pastas",
+                    checked = formState.showFolderLabels,
+                    onCheckedChange = callbacks.onFolderLabelsChange
+                )
+
+                SettingSwitchRow(
+                    label = "Modo de Pasta Expansiva (Grid)",
+                    checked = formState.isGridFolderEnabled,
+                    onCheckedChange = callbacks.onGridFolderChange
+                )
             }
         }
     }
@@ -458,6 +529,83 @@ private fun EditContainerHeader(onDismiss: () -> Unit) {
     }
 }
 
+@Composable
+private fun EditContainerOrientationSelector(
+    orientation: String,
+    onOrientationSelected: (String) -> Unit
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = AureoleDS.dimens.xSmall)
+    ) {
+        AureoleText(
+            text = "Orientação do Container",
+            style = AureoleTheme.typography.labelMedium,
+            fontWeight = FontWeight.Bold,
+            color = AureoleTheme.colors.onSurfaceHigh
+        )
+
+        Spacer(modifier = Modifier.height(AureoleDS.dimens.xxSmall))
+
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(AureoleDS.dimens.small)
+        ) {
+            val isVertical = orientation.equals("Vertical", ignoreCase = true)
+            val isHorizontal = orientation.equals("Horizontal", ignoreCase = true)
+
+            if (isVertical) {
+                Button(
+                    onClick = { onOrientationSelected("Vertical") },
+                    modifier = Modifier.weight(1f),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.primary,
+                        contentColor = MaterialTheme.colorScheme.onPrimary
+                    )
+                ) {
+                    AureoleText(text = "Vertical")
+                }
+            } else {
+                OutlinedButton(
+                    onClick = { onOrientationSelected("Vertical") },
+                    modifier = Modifier.weight(1f)
+                ) {
+                    AureoleText(text = "Vertical", color = AureoleTheme.colors.onSurfaceHigh)
+                }
+            }
+
+            if (isHorizontal) {
+                Button(
+                    onClick = { onOrientationSelected("Horizontal") },
+                    modifier = Modifier.weight(1f),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.primary,
+                        contentColor = MaterialTheme.colorScheme.onPrimary
+                    )
+                ) {
+                    AureoleText(text = "Horizontal")
+                }
+            } else {
+                OutlinedButton(
+                    onClick = { onOrientationSelected("Horizontal") },
+                    modifier = Modifier.weight(1f)
+                ) {
+                    AureoleText(text = "Horizontal", color = AureoleTheme.colors.onSurfaceHigh)
+                }
+            }
+        }
+    }
+}
+
+private val positionOptionsMap = listOf(
+    "Space Between" to "Espaçamento Entre (Separados)",
+    "Space Evenly" to "Espaçamento Igual (Igualitário)",
+    "Top" to "Início (Topo / Esquerda)",
+    "Center" to "Centro",
+    "Bottom" to "Fim (Base / Direita)"
+)
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun EditContainerAlignmentSelector(
@@ -465,12 +613,13 @@ private fun EditContainerAlignmentSelector(
     onPositionSelected: (String) -> Unit
 ) {
     var isDropdownExpanded by remember { mutableStateOf(false) }
-    val positionOptions = listOf("Space Between", "Top", "Center", "Bottom", "Space Evenly")
+    val displayValue = positionOptionsMap.find { it.first == position }?.second ?: position
 
     AureoleText(
-        text = "Alinhamento Vertical",
+        text = "Alinhamento dos Itens",
         style = AureoleTheme.typography.labelMedium,
-        color = AureoleTheme.colors.onSurfaceMedium,
+        fontWeight = FontWeight.Bold,
+        color = AureoleTheme.colors.onSurfaceHigh,
         modifier = Modifier.padding(bottom = 4.dp)
     )
     ExposedDropdownMenuBox(
@@ -478,7 +627,7 @@ private fun EditContainerAlignmentSelector(
         onExpandedChange = { isDropdownExpanded = !isDropdownExpanded }
     ) {
         OutlinedTextField(
-            value = position,
+            value = displayValue,
             onValueChange = {},
             readOnly = true,
             trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = isDropdownExpanded) },
@@ -494,11 +643,11 @@ private fun EditContainerAlignmentSelector(
             expanded = isDropdownExpanded,
             onDismissRequest = { isDropdownExpanded = false }
         ) {
-            positionOptions.forEach { option ->
+            positionOptionsMap.forEach { (key, label) ->
                 DropdownMenuItem(
-                    text = { AureoleText(option, color = AureoleTheme.colors.onSurfaceHigh) },
+                    text = { AureoleText(label, color = AureoleTheme.colors.onSurfaceHigh) },
                     onClick = {
-                        onPositionSelected(option)
+                        onPositionSelected(key)
                         isDropdownExpanded = false
                     }
                 )

@@ -46,7 +46,7 @@ data class HomeScreenActions(
     val onResetGridItems: () -> Unit = {},
     val onOpenAddContainerDialog: () -> Unit = {},
     val onCloseAddContainerDialog: () -> Unit = {},
-    val onAddGridItem: (LauncherItemType, Int?) -> Unit = { _, _ -> },
+    val onAddGridItem: (LauncherItemType, Int?, ScrollOrientation?) -> Unit = { _, _, _ -> },
     val onOpenEditGridItemDialog: (LauncherItemState) -> Unit = {},
     val onCloseEditGridItemDialog: () -> Unit = {},
     val onDeleteGridItem: (String) -> Unit = {},
@@ -63,7 +63,8 @@ data class HomeScreenActions(
     val onSaveContainerModel: (ContainerModel) -> Unit = {},
     val onDeleteContainerInstance: (String) -> Unit = {},
 
-    // Contextual Bottom Sheets Actions
+    val onOpenCustomizeBottomSheet: () -> Unit = {},
+    val onCloseCustomizeBottomSheet: () -> Unit = {},
     val onOpenContainerAppBottomSheet: (AppInfo, String) -> Unit = { _, _ -> },
     val onCloseContainerAppBottomSheet: () -> Unit = {},
     val onOpenContainerFolderBottomSheet: (AppFolder, String) -> Unit = { _, _ -> },

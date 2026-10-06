@@ -12,6 +12,7 @@ data class ContainerConfig(
     val appPackageNames: List<String> = emptyList(),
     val openedFolderId: String? = null,
     val position: String = "Space Between",
+    val orientation: String = "Vertical",
     val showFolderLabels: Boolean = false,
     val showAddFolderButton: Boolean = true,
     val isBackgroundEnabled: Boolean = true,

@@ -95,6 +95,7 @@ data class MainUiState(
     val isGridEditMode: Boolean = false,
     val editingGridItem: LauncherItemState? = null,
     val showAddContainerDialog: Boolean = false,
+    val showCustomizeBottomSheet: Boolean = false,
     val targetParentContainerId: String? = null,
     val gridErrorMessage: String? = null,
     val isAddingSingleWidget: Boolean = false,

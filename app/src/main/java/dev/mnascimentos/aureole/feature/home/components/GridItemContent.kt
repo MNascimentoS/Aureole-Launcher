@@ -152,18 +152,20 @@ fun SingleAppWidgetContent(
         modifier = Modifier
             .fillMaxSize()
             .pointerInput(item.widgetId, item.id) {
+                val longPressTimeout = viewConfiguration.longPressTimeoutMillis
                 awaitEachGesture {
-                    awaitFirstDown(pass = PointerEventPass.Main)
+                    val down = awaitFirstDown(pass = PointerEventPass.Initial)
                     var isLongPressTriggered = false
 
                     val job = coroutineScope.launch {
-                        delay(1000L)
+                        delay((longPressTimeout - 50L).coerceAtLeast(200L))
                         isLongPressTriggered = true
+                        down.consume()
                         actions.onOpenWidgetStackBottomSheet(item.widgetId, item.id)
                     }
 
                     try {
-                        val up = waitForUpOrCancellation(pass = PointerEventPass.Main)
+                        val up = waitForUpOrCancellation(pass = PointerEventPass.Initial)
                         job.cancel()
                         if (isLongPressTriggered) {
                             up?.consume()

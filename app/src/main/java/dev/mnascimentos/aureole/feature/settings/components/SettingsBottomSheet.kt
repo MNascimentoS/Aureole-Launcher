@@ -23,6 +23,7 @@ import dev.mnascimentos.aureole.core.designsystem.theme.AureoleTheme
 fun SettingsBottomSheet(
     title: String,
     onDismissRequest: () -> Unit,
+    dragHandle: (@Composable () -> Unit)? = null,
     content: @Composable () -> Unit
 ) {
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
@@ -30,6 +31,7 @@ fun SettingsBottomSheet(
     ModalBottomSheet(
         onDismissRequest = onDismissRequest,
         sheetState = sheetState,
+        dragHandle = dragHandle,
         shape = RoundedCornerShape(
             topStart = AureoleTheme.dimens.cornerRadius,
             topEnd = AureoleTheme.dimens.cornerRadius
