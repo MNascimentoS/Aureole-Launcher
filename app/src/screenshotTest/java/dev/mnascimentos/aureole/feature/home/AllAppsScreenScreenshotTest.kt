@@ -30,7 +30,6 @@ internal fun createMockHomeScreenActions(): HomeScreenActions = HomeScreenAction
 )
 
 @PreviewTest
-@Preview(name = "Light Mode", showBackground = true)
 @Preview(name = "Dark Mode", uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
 @Composable
 fun AllAppsScreenScreenshotTest() {
@@ -76,7 +75,7 @@ fun AllAppsScreenScreenshotTest() {
 }
 
 @PreviewTest
-@Preview(name = "Search Filtered Flow", showBackground = true)
+@Preview(name = "Search Filtered Flow", uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
 @Composable
 fun AllAppsScreenWithSearchQueryScreenshotTest() {
     val sampleApp = AppInfo(
@@ -108,9 +107,10 @@ fun AllAppsScreenWithSearchQueryScreenshotTest() {
 }
 
 @PreviewTest
-@Preview(name = "Search Empty Results Flow", showBackground = true)
+@Preview(name = "Search Empty Results Flow", uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
 @Composable
 fun AllAppsScreenWithEmptySearchQueryScreenshotTest() {
+
     val mockUiState = MainUiState(
         apps = emptyList(),
         filteredApps = emptyList(),

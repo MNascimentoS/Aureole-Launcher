@@ -1,5 +1,6 @@
 package dev.mnascimentos.aureole.feature.settings
 
+import android.content.res.Configuration
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 import com.android.tools.screenshot.PreviewTest
@@ -17,7 +18,7 @@ import dev.mnascimentos.aureole.feature.settings.components.SettingsBottomSheet
 import dev.mnascimentos.aureole.feature.settings.components.SettingsButtonPositionDialog
 
 @PreviewTest
-@Preview(name = "Color Picker Dialog Flow", showBackground = true)
+@Preview(name = "Color Picker Dialog Flow", uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
 @Composable
 fun ColorPickerDialogScreenshotTest() {
     AureoleLauncherTheme {
@@ -30,7 +31,7 @@ fun ColorPickerDialogScreenshotTest() {
 }
 
 @PreviewTest
-@Preview(name = "Container Position Dialog Flow", showBackground = true)
+@Preview(name = "Container Position Dialog Flow", uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
 @Composable
 fun ContainerPositionDialogScreenshotTest() {
     AureoleLauncherTheme {
@@ -43,7 +44,7 @@ fun ContainerPositionDialogScreenshotTest() {
 }
 
 @PreviewTest
-@Preview(name = "Settings Button Position Dialog Flow", showBackground = true)
+@Preview(name = "Settings Button Position Dialog Flow", uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
 @Composable
 fun SettingsButtonPositionDialogScreenshotTest() {
     AureoleLauncherTheme {
@@ -56,7 +57,7 @@ fun SettingsButtonPositionDialogScreenshotTest() {
 }
 
 @PreviewTest
-@Preview(name = "Search Icon Position Dialog Flow", showBackground = true)
+@Preview(name = "Search Icon Position Dialog Flow", uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
 @Composable
 fun SearchIconPositionDialogScreenshotTest() {
     AureoleLauncherTheme {
@@ -69,7 +70,7 @@ fun SearchIconPositionDialogScreenshotTest() {
 }
 
 @PreviewTest
-@Preview(name = "Pick Palette Bottom Sheet Flow", showBackground = true)
+@Preview(name = "Pick Palette Bottom Sheet Flow", uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
 @Composable
 fun PickPaletteBottomSheetScreenshotTest() {
     AureoleLauncherTheme {
@@ -82,7 +83,7 @@ fun PickPaletteBottomSheetScreenshotTest() {
 }
 
 @PreviewTest
-@Preview(name = "Pick Font Bottom Sheet Flow", showBackground = true)
+@Preview(name = "Pick Font Bottom Sheet Flow", uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
 @Composable
 fun PickFontBottomSheetScreenshotTest() {
     AureoleLauncherTheme {
@@ -95,7 +96,7 @@ fun PickFontBottomSheetScreenshotTest() {
 }
 
 @PreviewTest
-@Preview(name = "Pick Border Radius Bottom Sheet Flow", showBackground = true)
+@Preview(name = "Pick Border Radius Bottom Sheet Flow", uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
 @Composable
 fun PickBorderRadiusBottomSheetScreenshotTest() {
     AureoleLauncherTheme {
@@ -108,7 +109,7 @@ fun PickBorderRadiusBottomSheetScreenshotTest() {
 }
 
 @PreviewTest
-@Preview(name = "Set Background Bottom Sheet Flow", showBackground = true)
+@Preview(name = "Set Background Bottom Sheet Flow", uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
 @Composable
 fun SetBackgroundBottomSheetScreenshotTest() {
     AureoleLauncherTheme {
@@ -121,7 +122,7 @@ fun SetBackgroundBottomSheetScreenshotTest() {
 }
 
 @PreviewTest
-@Preview(name = "Blur Bottom Sheet Flow", showBackground = true)
+@Preview(name = "Blur Bottom Sheet Flow", uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
 @Composable
 fun BlurBottomSheetScreenshotTest() {
     AureoleLauncherTheme {
@@ -135,7 +136,7 @@ fun BlurBottomSheetScreenshotTest() {
 }
 
 @PreviewTest
-@Preview(name = "Settings Bottom Sheet Flow", showBackground = true)
+@Preview(name = "Settings Bottom Sheet Flow", uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
 @Composable
 fun SettingsBottomSheetScreenshotTest() {
     AureoleLauncherTheme {
@@ -147,4 +148,5 @@ fun SettingsBottomSheetScreenshotTest() {
         }
     }
 }
+
 

@@ -20,7 +20,6 @@ import dev.mnascimentos.aureole.feature.home.model.MainUiState
 import dev.mnascimentos.aureole.feature.home.model.WidgetStackBottomSheetState
 
 @PreviewTest
-@Preview(name = "Light Mode", showBackground = true)
 @Preview(name = "Dark Mode", uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
 @Composable
 fun HomeScreenScreenshotTest() {
@@ -38,7 +37,7 @@ fun HomeScreenScreenshotTest() {
 }
 
 @PreviewTest
-@Preview(name = "Opened Folder Grid Mode Flow", showBackground = true)
+@Preview(name = "Opened Folder Grid Mode Flow", uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
 @Composable
 fun HomeScreenOpenedFolderGridModeScreenshotTest() {
     val context = LocalContext.current
@@ -62,7 +61,7 @@ fun HomeScreenOpenedFolderGridModeScreenshotTest() {
 }
 
 @PreviewTest
-@Preview(name = "Opened Folder Popup Mode Flow", showBackground = true)
+@Preview(name = "Opened Folder Popup Mode Flow", uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
 @Composable
 fun HomeScreenOpenedFolderPopupModeScreenshotTest() {
     val context = LocalContext.current
@@ -86,7 +85,7 @@ fun HomeScreenOpenedFolderPopupModeScreenshotTest() {
 }
 
 @PreviewTest
-@Preview(name = "Grid Edit Mode Flow", showBackground = true)
+@Preview(name = "Grid Edit Mode Flow", uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
 @Composable
 fun HomeScreenGridEditModeScreenshotTest() {
     val context = LocalContext.current
@@ -107,7 +106,7 @@ fun HomeScreenGridEditModeScreenshotTest() {
 }
 
 @PreviewTest
-@Preview(name = "App Item Bottom Sheet Flow", showBackground = true)
+@Preview(name = "App Item Bottom Sheet Flow", uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
 @Composable
 fun HomeScreenAppItemBottomSheetScreenshotTest() {
     val context = LocalContext.current
@@ -131,7 +130,7 @@ fun HomeScreenAppItemBottomSheetScreenshotTest() {
 }
 
 @PreviewTest
-@Preview(name = "Container Folder Bottom Sheet Flow", showBackground = true)
+@Preview(name = "Container Folder Bottom Sheet Flow", uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
 @Composable
 fun HomeScreenContainerFolderBottomSheetScreenshotTest() {
     val context = LocalContext.current
@@ -155,9 +154,10 @@ fun HomeScreenContainerFolderBottomSheetScreenshotTest() {
 }
 
 @PreviewTest
-@Preview(name = "Widget Stack Bottom Sheet Flow", showBackground = true)
+@Preview(name = "Widget Stack Bottom Sheet Flow", uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
 @Composable
 fun HomeScreenWidgetStackBottomSheetScreenshotTest() {
+
     val context = LocalContext.current
     val sampleData = createSampleHomeData()
 
