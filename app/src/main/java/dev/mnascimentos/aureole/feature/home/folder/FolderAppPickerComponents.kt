@@ -1,5 +1,6 @@
 package dev.mnascimentos.aureole.feature.home.folder
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -9,18 +10,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.KeyboardArrowDown
-import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material3.Button
-import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -28,6 +23,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
+import dev.mnascimentos.aureole.core.designsystem.icons.*
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.feature.home.folder.model.FolderAppRowItemParams
 
@@ -48,9 +44,7 @@ fun FolderAppPickerHeader(
             color = MaterialTheme.colorScheme.onSurface
         )
         IconButton(onClick = onDismiss) {
-            Icon(
-                imageVector = Icons.Default.Close,
-                contentDescription = "Fechar",
+            AureoleDS.icons.Close(
                 tint = MaterialTheme.colorScheme.onSurfaceVariant
             )
         }
@@ -96,9 +90,7 @@ fun SelectedFolderAppRowActionButtons(
                 enabled = params.index > 0,
                 modifier = Modifier.size(32.dp)
             ) {
-                Icon(
-                    imageVector = Icons.Default.KeyboardArrowUp,
-                    contentDescription = "Mover para cima",
+                AureoleDS.icons.ArrowUp(
                     tint = upTint
                 )
             }
@@ -113,9 +105,7 @@ fun SelectedFolderAppRowActionButtons(
                 enabled = params.index < params.totalCount - 1,
                 modifier = Modifier.size(32.dp)
             ) {
-                Icon(
-                    imageVector = Icons.Default.KeyboardArrowDown,
-                    contentDescription = "Mover para baixo",
+                AureoleDS.icons.ArrowDown(
                     tint = downTint
                 )
             }
@@ -125,9 +115,7 @@ fun SelectedFolderAppRowActionButtons(
             onClick = onToggleSelect,
             modifier = Modifier.size(32.dp)
         ) {
-            Icon(
-                imageVector = Icons.Default.Delete,
-                contentDescription = "Remover da pasta",
+            AureoleDS.icons.Delete(
                 tint = MaterialTheme.colorScheme.error
             )
         }
@@ -140,6 +128,7 @@ fun RemainingFolderAppRow(
     onToggleSelect: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val iconBitmap = remember(app.packageName) { app.getIconBitmap() }
     Row(
         modifier = modifier
             .fillMaxWidth()
@@ -149,20 +138,30 @@ fun RemainingFolderAppRow(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        AureoleText(
-            text = app.label,
-            style = AureoleDS.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurface,
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.weight(1f)
-        )
+        ) {
+            Image(
+                bitmap = iconBitmap,
+                contentDescription = app.label,
+                modifier = Modifier
+                    .size(32.dp)
+                    .clip(RoundedCornerShape(8.dp))
+            )
+            Spacer(modifier = Modifier.width(8.dp))
+            AureoleText(
+                text = app.label,
+                style = AureoleDS.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurface,
+            )
+        }
 
         IconButton(
             onClick = onToggleSelect,
             modifier = Modifier.size(32.dp)
         ) {
-            Icon(
-                imageVector = Icons.Default.Add,
-                contentDescription = "Adicionar à pasta",
+            AureoleDS.icons.Add(
                 tint = MaterialTheme.colorScheme.primary
             )
         }

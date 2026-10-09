@@ -11,23 +11,18 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.List
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Menu
-import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.vector.ImageVector
 import dev.mnascimentos.aureole.core.data.model.LauncherItemType
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleDialog
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
+import dev.mnascimentos.aureole.core.designsystem.icons.*
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleTheme
+import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 
 @Composable
 fun AddContainerDialog(
@@ -62,33 +57,33 @@ private fun AddContainerOptionList(
     ) {
         AddContainerOptionItem(
             title = "Relógio",
-            icon = Icons.Default.Add,
+            icon = { m -> AureoleDS.icons.Add(m) },
             onClick = { onSelectType(LauncherItemType.CLOCK) }
         )
         AddContainerOptionItem(
             title = "Lista de Aplicativos",
-            icon = Icons.AutoMirrored.Filled.List,
+            icon = { m -> AureoleDS.icons.HorizontalContainer(m) },
             onClick = { onSelectType(LauncherItemType.APPS_LIST) }
         )
         AddContainerOptionItem(
             title = "Barra de Atalhos (Side Panel)",
-            icon = Icons.Default.Menu,
+            icon = { m -> AureoleDS.icons.MenuIcon(m) },
             onClick = { onSelectType(LauncherItemType.SHORTCUTS_CONTAINER) }
         )
         AddContainerOptionItem(
             title = "Widget Individual do Android",
-            icon = Icons.Default.Settings,
+            icon = { m -> AureoleDS.icons.Settings(m) },
             onClick = { onSelectType(LauncherItemType.SINGLE_APP_WIDGET) }
         )
         AddContainerOptionItem(
             title = "Lista de Widgets do Android",
-            icon = Icons.Default.Add,
+            icon = { m -> AureoleDS.icons.Add(m) },
             onClick = { onSelectType(LauncherItemType.WIDGET_LIST) }
         )
         if (!isNested) {
             AddContainerOptionItem(
                 title = "Container Scroll View",
-                icon = Icons.AutoMirrored.Filled.List,
+                icon = { m -> AureoleDS.icons.VerticalContainer(m) },
                 onClick = { onSelectType(LauncherItemType.SCROLL_VIEW) }
             )
         }
@@ -98,7 +93,7 @@ private fun AddContainerOptionList(
 @Composable
 private fun AddContainerOptionItem(
     title: String,
-    icon: ImageVector,
+    icon: @Composable (Modifier) -> Unit,
     onClick: () -> Unit
 ) {
     Row(
@@ -110,16 +105,23 @@ private fun AddContainerOptionItem(
             .padding(vertical = AureoleDS.dimens.small, horizontal = AureoleDS.dimens.small),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Icon(
-            imageVector = icon,
-            contentDescription = title,
-            tint = MaterialTheme.colorScheme.primary
-        )
+        icon(Modifier)
         Spacer(modifier = Modifier.width(AureoleDS.dimens.medium))
         AureoleText(
             text = title,
             style = AureoleTheme.typography.bodyLarge,
             color = AureoleTheme.colors.onSurfaceHigh
+        )
+    }
+}
+
+@AureolePreview
+@Composable
+fun AddContainerDialogPreview() {
+    AureoleLauncherTheme {
+        AddContainerDialog(
+            onDismissRequest = {},
+            onSelectType = {}
         )
     }
 }

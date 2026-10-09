@@ -4,13 +4,16 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 import com.android.tools.screenshot.PreviewTest
 import dev.mnascimentos.aureole.composable.ColorPickerDialog
+import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
+import dev.mnascimentos.aureole.feature.settings.components.BlurBottomSheet
 import dev.mnascimentos.aureole.feature.settings.components.ContainerPositionDialog
 import dev.mnascimentos.aureole.feature.settings.components.PickBorderRadiusBottomSheet
 import dev.mnascimentos.aureole.feature.settings.components.PickFontBottomSheet
 import dev.mnascimentos.aureole.feature.settings.components.PickPaletteBottomSheet
 import dev.mnascimentos.aureole.feature.settings.components.SearchIconPositionDialog
 import dev.mnascimentos.aureole.feature.settings.components.SetBackgroundBottomSheet
+import dev.mnascimentos.aureole.feature.settings.components.SettingsBottomSheet
 import dev.mnascimentos.aureole.feature.settings.components.SettingsButtonPositionDialog
 
 @PreviewTest
@@ -116,3 +119,32 @@ fun SetBackgroundBottomSheetScreenshotTest() {
         )
     }
 }
+
+@PreviewTest
+@Preview(name = "Blur Bottom Sheet Flow", showBackground = true)
+@Composable
+fun BlurBottomSheetScreenshotTest() {
+    AureoleLauncherTheme {
+        BlurBottomSheet(
+            currentOpacity = 0.5f,
+            isHazeEnabled = true,
+            onOptionSelected = { _, _ -> },
+            onDismissRequest = {}
+        )
+    }
+}
+
+@PreviewTest
+@Preview(name = "Settings Bottom Sheet Flow", showBackground = true)
+@Composable
+fun SettingsBottomSheetScreenshotTest() {
+    AureoleLauncherTheme {
+        SettingsBottomSheet(
+            title = "Settings Bottom Sheet",
+            onDismissRequest = {}
+        ) {
+            AureoleText("Sample Content")
+        }
+    }
+}
+

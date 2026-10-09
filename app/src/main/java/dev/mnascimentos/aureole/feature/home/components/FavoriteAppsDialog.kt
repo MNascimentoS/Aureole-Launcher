@@ -4,29 +4,31 @@ package dev.mnascimentos.aureole.feature.home.components
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBars
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Button
-import androidx.compose.material3.Icon
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -38,45 +40,44 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.Dialog
-import androidx.compose.ui.window.DialogProperties
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
+import dev.mnascimentos.aureole.core.designsystem.icons.*
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleTheme
+import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.components.model.FavoriteAppRowParams
 import dev.mnascimentos.aureole.feature.home.components.model.FavoriteAppsBodyParams
 import dev.mnascimentos.aureole.feature.home.components.model.FavoriteAppsDialogActions
 import dev.mnascimentos.aureole.feature.home.components.model.FavoriteAppsDialogConfig
 import dev.mnascimentos.aureole.feature.home.components.model.FavoriteSectionParams
 
-private const val DIALOG_WIDTH_FRACTION = 0.92f
-
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FavoriteAppsDialog(
     config: FavoriteAppsDialogConfig,
     actions: FavoriteAppsDialogActions
 ) {
-    Dialog(
+    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+
+    ModalBottomSheet(
         onDismissRequest = actions.onDismiss,
-        properties = DialogProperties(
-            dismissOnBackPress = true,
-            dismissOnClickOutside = true,
-            usePlatformDefaultWidth = false
-        )
+        sheetState = sheetState,
+        dragHandle = null,
+        shape = RoundedCornerShape(
+            topStart = AureoleTheme.dimens.cornerRadius,
+            topEnd = AureoleTheme.dimens.cornerRadius
+        ),
+        containerColor = AureoleTheme.colors.surface,
+        contentColor = AureoleTheme.colors.onSurfaceMedium,
+        modifier = Modifier.windowInsetsPadding(WindowInsets.statusBars)
     ) {
         Box(
             modifier = Modifier
-                .fillMaxWidth(DIALOG_WIDTH_FRACTION)
-                .heightIn(max = 620.dp)
-                .clip(RoundedCornerShape(22.dp))
-                .border(
-                    width = 0.5.dp,
-                    color = AureoleTheme.colors.outline,
-                    shape = RoundedCornerShape(22.dp)
-                )
-                .background(AureoleTheme.colors.surface)
-                .padding(AureoleDS.dimens.large)
+                .fillMaxSize()
+                .padding(horizontal = AureoleDS.dimens.large)
+                .padding(top = AureoleDS.dimens.large, bottom = AureoleDS.dimens.large)
         ) {
             FavoriteAppsDialogContent(config = config, actions = actions)
         }
@@ -434,9 +435,7 @@ private fun FavoriteAppsSearchInput(
             )
         },
         leadingIcon = {
-            Icon(
-                imageVector = Icons.Default.Search,
-                contentDescription = null,
+            AureoleDS.icons.Search(
                 tint = AureoleTheme.colors.onSurfaceMedium
             )
         },
@@ -449,4 +448,17 @@ private fun FavoriteAppsSearchInput(
         ),
         modifier = Modifier.fillMaxWidth()
     )
+}
+
+@AureolePreview
+@Composable
+fun FavoriteAppsDialogPreview() {
+    val config = FavoriteAppsDialogConfig(
+        allApps = emptyList(),
+        favoriteAppPackages = emptyList()
+    )
+    val actions = FavoriteAppsDialogActions(onDismiss = {})
+    AureoleLauncherTheme {
+        FavoriteAppsDialog(config = config, actions = actions)
+    }
 }

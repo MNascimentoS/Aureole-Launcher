@@ -12,20 +12,17 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Close
-import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import dev.mnascimentos.aureole.core.designsystem.icons.*
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleTheme
 
@@ -36,7 +33,7 @@ fun AureoleDialog(
     onDismissRequest: () -> Unit,
     modifier: Modifier = Modifier,
     title: String? = null,
-    icon: ImageVector? = null,
+    icon: @Composable ((Modifier) -> Unit)? = null,
     content: @Composable ColumnScope.() -> Unit
 ) {
     Dialog(
@@ -84,7 +81,7 @@ fun AureoleDialog(
 fun AureoleDialogHeader(
     title: String,
     modifier: Modifier = Modifier,
-    icon: ImageVector? = null,
+    icon: @Composable ((Modifier) -> Unit)? = null,
     onDismiss: (() -> Unit)? = null
 ) {
     Box(
@@ -109,12 +106,7 @@ fun AureoleDialogHeader(
                 horizontalArrangement = Arrangement.spacedBy(AureoleDS.dimens.xSmall)
             ) {
                 if (icon != null) {
-                    Icon(
-                        imageVector = icon,
-                        contentDescription = null,
-                        tint = AureoleTheme.colors.onSurfaceHigh,
-                        modifier = Modifier.size(20.dp)
-                    )
+                    icon(Modifier.size(20.dp))
                 }
                 AureoleText(
                     text = title,
@@ -128,9 +120,7 @@ fun AureoleDialogHeader(
                     onClick = onDismiss,
                     modifier = Modifier.size(28.dp)
                 ) {
-                    Icon(
-                        imageVector = Icons.Default.Close,
-                        contentDescription = "Close",
+                    AureoleDS.icons.Close(
                         tint = AureoleTheme.colors.onSurfaceMedium,
                         modifier = Modifier.size(18.dp)
                     )

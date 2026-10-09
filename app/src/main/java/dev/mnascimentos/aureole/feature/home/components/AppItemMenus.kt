@@ -19,14 +19,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material.icons.filled.Info
-import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
@@ -36,8 +29,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -359,7 +352,7 @@ internal fun WidgetStackBottomSheet(
                 if (widgetAppPackage != null) {
                     AureolePopupMenuItem(
                         title = "Configurações do App",
-                        icon = Icons.Default.Info,
+                        icon = { m -> AureoleDS.icons.Info(m) },
                         onClick = {
                             IntentUtils.openAppInfo(context, widgetAppPackage)
                             onDismiss()
@@ -369,7 +362,7 @@ internal fun WidgetStackBottomSheet(
 
                 AureolePopupMenuItem(
                     title = "Editar Pilha",
-                    icon = Icons.Default.Edit,
+                    icon = { m -> AureoleDS.icons.Edit(m) },
                     onClick = {
                         onEditStack()
                         onDismiss()
@@ -392,7 +385,7 @@ internal fun WidgetStackBottomSheet(
 
                 AureolePopupMenuItem(
                     title = "Remover",
-                    icon = Icons.Default.Delete,
+                    icon = { m -> AureoleDS.icons.Delete(m) },
                     isDestructive = true,
                     onClick = {
                         onRemoveStack()
@@ -521,7 +514,7 @@ internal fun AppActionSheetContent(
 
         AureolePopupMenuItem(
             title = "App Info",
-            icon = Icons.Default.Info,
+            icon = { m -> AureoleDS.icons.Info(m) },
             onClick = {
                 if (actions.onAppInfoClick != null) {
                     actions.onAppInfoClick.invoke(app)
@@ -534,7 +527,7 @@ internal fun AppActionSheetContent(
 
         AureolePopupMenuItem(
             title = "Desinstalar",
-            icon = Icons.Default.Delete,
+            icon = { m -> AureoleDS.icons.Delete(m) },
             isDestructive = true,
             onClick = {
                 if (actions.onUninstallClick != null) {
@@ -549,7 +542,7 @@ internal fun AppActionSheetContent(
         if (onRemoveFromContainer != null) {
             AureolePopupMenuItem(
                 title = "Remover do Container",
-                icon = Icons.Default.Delete,
+                icon = { m -> AureoleDS.icons.Delete(m) },
                 isDestructive = true,
                 onClick = {
                     onRemoveFromContainer.invoke()
@@ -561,7 +554,7 @@ internal fun AppActionSheetContent(
         if (onOpenContainerSettings != null) {
             AureolePopupMenuItem(
                 title = "Configurações do Container",
-                icon = Icons.Default.Settings,
+                icon = { m -> AureoleDS.icons.Settings(m) },
                 onClick = {
                     onOpenContainerSettings.invoke()
                     onDismiss()
@@ -572,7 +565,7 @@ internal fun AppActionSheetContent(
         if (onRemoveFromFolder != null) {
             AureolePopupMenuItem(
                 title = "Remover da Pasta",
-                icon = Icons.Default.Delete,
+                icon = { m -> AureoleDS.icons.Delete(m) },
                 isDestructive = true,
                 onClick = {
                     onRemoveFromFolder.invoke()
@@ -600,7 +593,7 @@ internal fun AppActionSheetContent(
         if (actions.onToggleFavorite != null) {
             AureolePopupMenuItem(
                 title = if (isFavorite) "Remove from favorites" else "Add to favorites",
-                icon = Icons.Default.Star,
+                icon = { m -> AureoleDS.icons.Star(m) },
                 onClick = {
                     actions.onToggleFavorite.invoke(app.packageName)
                     onDismiss()
@@ -611,7 +604,7 @@ internal fun AppActionSheetContent(
         if (actions.onEditFavoritesClick != null) {
             AureolePopupMenuItem(
                 title = "Quick panel settings",
-                icon = Icons.Default.Settings,
+                icon = { m -> AureoleDS.icons.Settings(m) },
                 onClick = {
                     actions.onEditFavoritesClick.invoke()
                     onDismiss()
@@ -677,7 +670,7 @@ internal fun AppPopupHorizontalActionsRow(
     ) {
         if (actions.onAppInfoClick != null) {
             AppPopupButton(
-                icon = Icons.Default.Info,
+                icon = { m, t -> AureoleDS.icons.Info(m, t) },
                 label = "App",
                 onClick = {
                     actions.onAppInfoClick.invoke(app)
@@ -688,7 +681,7 @@ internal fun AppPopupHorizontalActionsRow(
 
         if (actions.onToggleFavorite != null) {
             AppPopupButton(
-                icon = Icons.Default.Delete,
+                icon = { m, t -> AureoleDS.icons.Delete(m, t) },
                 label = if (isFavorite) "Remove" else "Add",
                 isDestructive = isFavorite,
                 onClick = {
@@ -700,7 +693,7 @@ internal fun AppPopupHorizontalActionsRow(
 
         if (actions.onEditFavoritesClick != null) {
             AppPopupButton(
-                icon = Icons.Default.Settings,
+                icon = { m, t -> AureoleDS.icons.Settings(m, t) },
                 label = "Settings",
                 onClick = {
                     actions.onEditFavoritesClick.invoke()
@@ -713,7 +706,7 @@ internal fun AppPopupHorizontalActionsRow(
 
 @Composable
 private fun AppPopupButton(
-    icon: ImageVector,
+    icon: @Composable (Modifier, Color) -> Unit,
     label: String,
     onClick: () -> Unit,
     isDestructive: Boolean = false
@@ -729,12 +722,7 @@ private fun AppPopupButton(
             .clickable(onClick = onClick)
             .padding(vertical = 6.dp)
     ) {
-        Icon(
-            imageVector = icon,
-            contentDescription = label,
-            tint = contentColor,
-            modifier = Modifier.size(22.dp)
-        )
+        icon(Modifier.size(22.dp), contentColor)
         Spacer(modifier = Modifier.height(4.dp))
         AureoleText(
             text = label,

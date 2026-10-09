@@ -365,7 +365,12 @@ private fun ContainerRow(
                                 showLabels = config.showFolderLabels,
                                 isBackgroundEnabled = config.isBackgroundEnabled,
                                 onAppClick = { appInfo -> actions.onAppClick(appInfo) },
-                                onLongClick = { actions.onOpenContainerAppBottomSheet(renderItem.appInfo, config.panelId) }
+                                onLongClick = {
+                                    actions.onOpenContainerAppBottomSheet(
+                                        renderItem.appInfo,
+                                        config.panelId
+                                    )
+                                }
                             )
                         }
                     }

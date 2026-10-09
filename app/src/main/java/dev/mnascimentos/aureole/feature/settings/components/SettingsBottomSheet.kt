@@ -1,5 +1,6 @@
 package dev.mnascimentos.aureole.feature.settings.components
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -16,7 +17,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleTheme
+import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -56,9 +59,24 @@ fun SettingsBottomSheet(
 
             Spacer(modifier = Modifier.height(AureoleDS.dimens.large))
 
-            content()
+            Box(modifier = Modifier.weight(1f, fill = false)) {
+                content()
+            }
 
             Spacer(modifier = Modifier.height(AureoleDS.dimens.xxLarge))
+        }
+    }
+}
+
+@AureolePreview
+@Composable
+fun SettingsBottomSheetPreview() {
+    AureoleLauncherTheme {
+        SettingsBottomSheet(
+            title = "Preview Title",
+            onDismissRequest = {}
+        ) {
+            AureoleText("Content preview")
         }
     }
 }

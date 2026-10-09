@@ -21,6 +21,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.core.designsystem.utils.LocalHazeState
 import dev.mnascimentos.aureole.feature.home.components.FavoriteAppsDialog
+import dev.mnascimentos.aureole.feature.home.components.ReleaseNotesBottomSheet
 import dev.mnascimentos.aureole.feature.home.components.UpdateAvailableDialog
 import dev.mnascimentos.aureole.feature.home.components.UpdateDownloadedDialog
 import dev.mnascimentos.aureole.feature.home.components.model.FavoriteAppsDialogActions
@@ -86,6 +87,11 @@ fun MainScaffold(
         InAppUpdateOverlay(
             uiState = uiState,
             actions = LocalHomeActions.current
+        )
+
+        ReleaseNotesOverlay(
+            uiState = uiState,
+            viewModel = viewModel
         )
     }
 }
@@ -229,6 +235,18 @@ private fun InAppUpdateOverlay(
         UpdateDownloadedDialog(
             onConfirmRestart = actions.onCompleteInAppUpdate,
             onDismiss = actions.onDismissUpdateDialog
+        )
+    }
+}
+
+@Composable
+private fun ReleaseNotesOverlay(
+    uiState: MainUiState,
+    viewModel: HomeViewModel
+) {
+    if (uiState.showReleaseNotesBottomSheet) {
+        ReleaseNotesBottomSheet(
+            onDismissRequest = { viewModel.dismissReleaseNotes() }
         )
     }
 }

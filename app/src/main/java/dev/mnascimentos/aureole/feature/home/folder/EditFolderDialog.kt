@@ -18,7 +18,6 @@ import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
@@ -32,7 +31,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
@@ -165,11 +163,9 @@ fun FolderIconPreview(
             .background(AureoleTheme.colors.surfaceVariant),
         contentAlignment = Alignment.Center
     ) {
-        val iconVector = FolderIconRegistry.getIcon(selectedIcon)
-        if (iconVector != null) {
-            Icon(
-                imageVector = iconVector,
-                contentDescription = null,
+        if (selectedIcon != null) {
+            FolderIconRegistry.RenderIcon(
+                name = selectedIcon,
                 tint = AureoleTheme.colors.onSurfaceHigh,
                 modifier = Modifier.size(26.dp)
             )
@@ -206,11 +202,10 @@ fun IconSelectionRow(
             onClick = { onIconSelected(null) }
         )
 
-        FolderIconRegistry.icons.forEach { (iconKey, imageVector) ->
+        FolderIconRegistry.icons.keys.forEach { iconKey ->
             IconOptionChip(
                 isSelected = selectedIcon == iconKey,
                 iconKey = iconKey,
-                imageVector = imageVector,
                 onClick = { onIconSelected(iconKey) }
             )
         }
@@ -262,7 +257,6 @@ private fun DefaultLetterOptionChip(
 private fun IconOptionChip(
     isSelected: Boolean,
     iconKey: String,
-    imageVector: ImageVector,
     onClick: () -> Unit
 ) {
     val borderColor = if (isSelected) {
@@ -291,9 +285,8 @@ private fun IconOptionChip(
             .clickable(onClick = onClick),
         contentAlignment = Alignment.Center
     ) {
-        Icon(
-            imageVector = imageVector,
-            contentDescription = iconKey,
+        FolderIconRegistry.RenderIcon(
+            name = iconKey,
             tint = iconTint,
             modifier = Modifier.size(20.dp)
         )

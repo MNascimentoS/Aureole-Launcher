@@ -20,7 +20,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleTheme
+import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 
 @Composable
 internal fun SettingsButtonPositionDialog(
@@ -206,4 +208,40 @@ internal fun ContainerPositionDialog(
             shape = RoundedCornerShape(22.dp)
         )
     )
+}
+
+@AureolePreview
+@Composable
+fun ContainerPositionDialogPreview() {
+    AureoleLauncherTheme {
+        ContainerPositionDialog(
+            currentPosition = "Center",
+            onPositionSelected = {},
+            onDismiss = {}
+        )
+    }
+}
+
+@AureolePreview
+@Composable
+fun SettingsButtonPositionDialogPreview() {
+    AureoleLauncherTheme {
+        SettingsButtonPositionDialog(
+            currentPosition = "Right",
+            onPositionSelected = {},
+            onDismiss = {}
+        )
+    }
+}
+
+@AureolePreview
+@Composable
+fun SearchIconPositionDialogPreview() {
+    AureoleLauncherTheme {
+        SearchIconPositionDialog(
+            currentPosition = "Left",
+            onPositionSelected = {},
+            onDismiss = {}
+        )
+    }
 }

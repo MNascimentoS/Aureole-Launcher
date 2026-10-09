@@ -88,6 +88,14 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
                     isContainerBackgroundEnabled = settingsRepository.isContainerBackgroundEnabled,
                     isContainerExpandCell = settingsRepository.isContainerExpandCell,
                     isClockBackgroundEnabled = settingsRepository.isClockBackgroundEnabled,
+                    clockStyle = settingsRepository.clockStyle,
+                    clockCustomGreeting = settingsRepository.clockCustomGreeting,
+                    clockAlignment = settingsRepository.clockAlignment,
+                    clockFontFamily = settingsRepository.clockFontFamily,
+                    clockTimeFormat = settingsRepository.clockTimeFormat,
+                    clockDateFormat = settingsRepository.clockDateFormat,
+                    clockTextColor = settingsRepository.clockTextColor,
+                    clockBackgroundColor = settingsRepository.clockBackgroundColor,
                     showContainerAddFolderButton = settingsRepository.showContainerAddFolderButton,
                     containerPosition = settingsRepository.containerPosition,
                     showFolderLabels = settingsRepository.showFolderLabels,
@@ -128,6 +136,32 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
 
     fun setShowUpdateDownloadedDialog(visible: Boolean) {
         _uiState.update { it.copy(showUpdateDownloadedDialog = visible) }
+    }
+
+    internal var activeVersionCode: Int = 0
+
+    fun checkReleaseNotes(currentVersionCode: Int, versionName: String, isDebug: Boolean = false) {
+        activeVersionCode = currentVersionCode
+        val lastSeen = settingsRepository.lastSeenVersionCode
+        _uiState.update { it.copy(currentVersionName = versionName) }
+        if (isDebug) {
+            _uiState.update { it.copy(showReleaseNotesBottomSheet = true) }
+        } else if (lastSeen == 0) {
+            settingsRepository.lastSeenVersionCode = currentVersionCode
+        } else if (currentVersionCode > lastSeen) {
+            _uiState.update { it.copy(showReleaseNotesBottomSheet = true) }
+        }
+    }
+
+    fun dismissReleaseNotes(versionCode: Int = activeVersionCode) {
+        if (versionCode > 0) {
+            settingsRepository.lastSeenVersionCode = versionCode
+        }
+        _uiState.update { it.copy(showReleaseNotesBottomSheet = false) }
+    }
+
+    fun openReleaseNotes() {
+        _uiState.update { it.copy(showReleaseNotesBottomSheet = true) }
     }
 
     fun openContainerAppBottomSheet(app: AppInfo, panelId: String) {

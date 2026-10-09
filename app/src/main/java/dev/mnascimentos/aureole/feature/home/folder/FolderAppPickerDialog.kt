@@ -1,27 +1,32 @@
 package dev.mnascimentos.aureole.feature.home.folder
 
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBars
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Search
-import androidx.compose.material3.Icon
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
@@ -34,18 +39,19 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.Dialog
-import androidx.compose.ui.window.DialogProperties
 import dev.mnascimentos.aureole.core.data.model.AppFolder
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
+import dev.mnascimentos.aureole.core.designsystem.icons.*
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleTheme
+import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.folder.model.FolderAppPickerBodyParams
 import dev.mnascimentos.aureole.feature.home.folder.model.FolderAppRowItemParams
 import dev.mnascimentos.aureole.feature.home.folder.model.FolderSectionParams
 
-private const val DIALOG_WIDTH_FRACTION = 0.92f
-
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FolderAppPickerDialog(
     folder: AppFolder,
@@ -53,26 +59,25 @@ fun FolderAppPickerDialog(
     onDismiss: () -> Unit,
     onSave: (List<String>) -> Unit
 ) {
-    Dialog(
+    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+
+    ModalBottomSheet(
         onDismissRequest = onDismiss,
-        properties = DialogProperties(
-            dismissOnBackPress = true,
-            dismissOnClickOutside = true,
-            usePlatformDefaultWidth = false
-        )
+        sheetState = sheetState,
+        dragHandle = null,
+        shape = RoundedCornerShape(
+            topStart = AureoleTheme.dimens.cornerRadius,
+            topEnd = AureoleTheme.dimens.cornerRadius
+        ),
+        containerColor = AureoleTheme.colors.surface,
+        contentColor = AureoleTheme.colors.onSurfaceMedium,
+        modifier = Modifier.windowInsetsPadding(WindowInsets.statusBars)
     ) {
         Box(
             modifier = Modifier
-                .fillMaxWidth(DIALOG_WIDTH_FRACTION)
-                .heightIn(max = 620.dp)
-                .clip(RoundedCornerShape(22.dp))
-                .border(
-                    width = 0.5.dp,
-                    color = AureoleTheme.colors.outline,
-                    shape = RoundedCornerShape(22.dp)
-                )
-                .background(AureoleTheme.colors.surface)
-                .padding(20.dp)
+                .fillMaxSize()
+                .padding(horizontal = 20.dp)
+                .padding(bottom = 20.dp)
         ) {
             FolderAppPickerDialogContent(
                 folder = folder,
@@ -323,6 +328,7 @@ private fun SelectedFolderAppRow(
     onToggleSelect: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val iconBitmap = remember(params.app.packageName) { params.app.getIconBitmap() }
     Row(
         modifier = modifier
             .fillMaxWidth()
@@ -332,13 +338,25 @@ private fun SelectedFolderAppRow(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        AureoleText(
-            text = params.app.label,
-            style = AureoleTheme.typography.bodyMedium,
-            fontWeight = FontWeight.SemiBold,
-            color = AureoleTheme.colors.onSurfaceHigh,
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.weight(1f)
-        )
+        ) {
+            Image(
+                bitmap = iconBitmap,
+                contentDescription = params.app.label,
+                modifier = Modifier
+                    .size(32.dp)
+                    .clip(RoundedCornerShape(8.dp))
+            )
+            Spacer(modifier = Modifier.width(8.dp))
+            AureoleText(
+                text = params.app.label,
+                style = AureoleTheme.typography.bodyMedium,
+                fontWeight = FontWeight.SemiBold,
+                color = AureoleTheme.colors.onSurfaceHigh
+            )
+        }
 
         SelectedFolderAppRowActionButtons(
             params = params,
@@ -359,9 +377,7 @@ private fun FolderAppPickerSearchInput(
         onValueChange = onQueryChange,
         placeholder = { AureoleText("Buscar aplicativo...", color = AureoleTheme.colors.onSurfaceLow) },
         leadingIcon = {
-            Icon(
-                imageVector = Icons.Default.Search,
-                contentDescription = null,
+            AureoleDS.icons.Search(
                 tint = AureoleTheme.colors.onSurfaceMedium
             )
         },
@@ -374,4 +390,18 @@ private fun FolderAppPickerSearchInput(
         ),
         modifier = Modifier.fillMaxWidth()
     )
+}
+
+@AureolePreview
+@Composable
+fun FolderAppPickerDialogPreview() {
+    val mockFolder = AppFolder(id = "1", name = "Social")
+    AureoleLauncherTheme {
+        FolderAppPickerDialog(
+            folder = mockFolder,
+            allApps = emptyList(),
+            onDismiss = {},
+            onSave = {}
+        )
+    }
 }

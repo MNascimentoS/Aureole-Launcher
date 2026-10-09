@@ -20,8 +20,10 @@ import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.icons.Check
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleTheme
 import dev.mnascimentos.aureole.core.designsystem.theme.AvailableFonts
+import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -35,12 +37,13 @@ fun PickFontBottomSheet(
     ModalBottomSheet(
         onDismissRequest = onDismissRequest,
         sheetState = bottomSheetState,
+        dragHandle = null,
         containerColor = AureoleDS.colors.surface
     ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(bottom = AureoleDS.dimens.xLarge)
+                .padding(top = AureoleDS.dimens.large, bottom = AureoleDS.dimens.xLarge)
         ) {
             AureoleText(
                 text = "Pick Font",
@@ -78,5 +81,17 @@ fun PickFontBottomSheet(
                 }
             }
         }
+    }
+}
+
+@AureolePreview
+@Composable
+fun PickFontBottomSheetPreview() {
+    AureoleLauncherTheme {
+        PickFontBottomSheet(
+            selectedFontName = "Istok Web",
+            onFontSelected = {},
+            onDismissRequest = {}
+        )
     }
 }

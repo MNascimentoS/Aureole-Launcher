@@ -4,10 +4,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -18,6 +14,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.core.data.model.LauncherItemState
 import dev.mnascimentos.aureole.core.data.model.LauncherItemType
+import dev.mnascimentos.aureole.core.designsystem.icons.*
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
 
 @Composable
@@ -73,18 +71,14 @@ private fun ScrollViewChildControls(args: ScrollViewChildArgs) {
                     args.onDismissRequest()
                 }
             ) {
-                Icon(
-                    imageVector = Icons.Default.Edit,
-                    contentDescription = "Editar Favoritos",
+                AureoleDS.icons.Edit(
                     tint = MaterialTheme.colorScheme.primary
                 )
             }
         }
 
         IconButton(onClick = { args.actions.onRemoveChildFromScrollView(args.parentId, args.child.id) }) {
-            Icon(
-                imageVector = Icons.Default.Delete,
-                contentDescription = "Remover",
+            AureoleDS.icons.Delete(
                 tint = MaterialTheme.colorScheme.error
             )
         }

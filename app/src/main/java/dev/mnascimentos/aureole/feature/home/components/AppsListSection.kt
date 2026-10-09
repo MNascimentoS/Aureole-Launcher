@@ -25,6 +25,7 @@ import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
@@ -33,10 +34,6 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.Search
-import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.TextField
@@ -62,6 +59,7 @@ import dev.chrisbanes.haze.HazeTint
 import dev.chrisbanes.haze.hazeEffect
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
+import dev.mnascimentos.aureole.core.designsystem.icons.*
 import dev.mnascimentos.aureole.core.designsystem.icons.Settings
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
@@ -95,6 +93,8 @@ fun AppsListDrawer(
         Modifier.buildDrawerHaze(hasHaze, hazeState, baseBgColor, uiState.hazeOpacity)
     val drawerBgColor = if (hasHaze) Color.Transparent else baseBgColor
 
+    var isSearchExpanded by remember { mutableStateOf(uiState.searchQuery.isNotEmpty()) }
+
     BoxWithConstraints(
         modifier = modifier
             .fillMaxHeight()
@@ -103,12 +103,13 @@ fun AppsListDrawer(
             .background(drawerBgColor)
     ) {
         val topOffsetDp = (maxHeight * (uiState.headerOffsetPercent / 100f)).coerceAtLeast(16.dp)
+        val extraTopPadding = if (uiState.showSearchBarInAllApps && isSearchExpanded) 88.dp else 0.dp
 
         LazyColumn(
             state = listState,
             contentPadding = PaddingValues(
                 start = startPadding,
-                top = topOffsetDp,
+                top = topOffsetDp + extraTopPadding,
                 end = endPadding,
                 bottom = 120.dp
             ),
@@ -120,14 +121,25 @@ fun AppsListDrawer(
         }
 
         if (uiState.showSearchBarInAllApps) {
+            val alignModifier = if (isSearchExpanded) {
+                Modifier
+                    .align(Alignment.TopCenter)
+                    .statusBarsPadding()
+            } else {
+                val align = if (uiState.isLeftHandedMode) Alignment.BottomStart else Alignment.BottomEnd
+                Modifier
+                    .align(align)
+                    .navigationBarsPadding()
+                    .imePadding()
+            }
+
             FloatingSearchBubble(
                 query = uiState.searchQuery,
                 onQueryChange = actions.onSearchQueryChanged,
+                isExpanded = isSearchExpanded,
+                onExpandedChange = { isSearchExpanded = it },
                 hazeState = hazeState,
-                modifier = Modifier
-                    .align(Alignment.BottomCenter)
-                    .navigationBarsPadding()
-                    .imePadding()
+                modifier = alignModifier
             )
         }
     }
@@ -163,18 +175,19 @@ private fun Modifier.buildDrawerHaze(
 private fun FloatingSearchBubble(
     query: String,
     onQueryChange: (String) -> Unit,
+    isExpanded: Boolean,
+    onExpandedChange: (Boolean) -> Unit,
     modifier: Modifier = Modifier,
     hazeState: HazeState? = null,
 ) {
     val uiState = LocalHomeUiState.current
     if (!uiState.showSearchBarInAllApps) return
 
-    var isExpanded by remember { mutableStateOf(query.isNotEmpty()) }
     val focusRequester = remember { FocusRequester() }
 
     LaunchedEffect(query) {
-        if (query.isNotEmpty()) {
-            isExpanded = true
+        if (query.isNotEmpty() && !isExpanded) {
+            onExpandedChange(true)
         }
     }
 
@@ -209,19 +222,11 @@ private fun FloatingSearchBubble(
         AureoleDS.colors.surfaceVariant
     }
 
-    val containerAlign = if (isExpanded) {
-        Alignment.BottomCenter
-    } else if (uiState.isLeftHandedMode) {
-        Alignment.BottomStart
-    } else {
-        Alignment.BottomEnd
-    }
-
     Box(
         modifier = modifier
             .fillMaxWidth()
             .padding(horizontal = 24.dp, vertical = 16.dp),
-        contentAlignment = containerAlign
+        contentAlignment = if (isExpanded) Alignment.TopCenter else if (uiState.isLeftHandedMode) Alignment.BottomStart else Alignment.BottomEnd
     ) {
         AnimatedContent(
             targetState = isExpanded,
@@ -245,9 +250,7 @@ private fun FloatingSearchBubble(
                         verticalAlignment = Alignment.CenterVertically,
                         modifier = Modifier.fillMaxWidth()
                     ) {
-                        Icon(
-                            imageVector = Icons.Default.Search,
-                            contentDescription = "Search",
+                        AureoleDS.icons.Search(
                             tint = AureoleDS.colors.onSurfaceMedium,
                             modifier = Modifier.size(20.dp)
                         )
@@ -282,13 +285,11 @@ private fun FloatingSearchBubble(
                         IconButton(
                             onClick = {
                                 onQueryChange("")
-                                isExpanded = false
+                                onExpandedChange(false)
                             },
                             modifier = Modifier.size(32.dp)
                         ) {
-                            Icon(
-                                imageVector = Icons.Default.Close,
-                                contentDescription = "Close search",
+                            AureoleDS.icons.Close(
                                 tint = AureoleDS.colors.onSurfaceMedium,
                                 modifier = Modifier.size(20.dp)
                             )
@@ -302,12 +303,10 @@ private fun FloatingSearchBubble(
                         .clip(CircleShape)
                         .then(searchBarHazeModifier)
                         .background(bubbleBgColor)
-                        .clickable { isExpanded = true },
+                        .clickable { onExpandedChange(true) },
                     contentAlignment = Alignment.Center
                 ) {
-                    Icon(
-                        imageVector = Icons.Default.Search,
-                        contentDescription = "Search",
+                    AureoleDS.icons.Search(
                         tint = AureoleDS.colors.onSurfaceHigh,
                         modifier = Modifier.size(24.dp)
                     )

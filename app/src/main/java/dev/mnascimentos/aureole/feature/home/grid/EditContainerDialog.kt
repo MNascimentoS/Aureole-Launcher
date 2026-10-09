@@ -11,17 +11,13 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import dev.mnascimentos.aureole.core.data.model.LauncherItemState
@@ -29,8 +25,11 @@ import dev.mnascimentos.aureole.core.data.model.LauncherItemType
 import dev.mnascimentos.aureole.core.data.model.ScrollOrientation
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleDialog
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
+import dev.mnascimentos.aureole.core.designsystem.icons.*
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleTheme
+import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.LocalHomeActions
 import dev.mnascimentos.aureole.feature.home.LocalHomeUiState
 import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
@@ -90,6 +89,30 @@ private fun EditDialogTypeActionSection(
     actions: HomeScreenActions,
     onDismissRequest: () -> Unit
 ) {
+    if (item.type == LauncherItemType.CLOCK) {
+        Button(
+            onClick = {
+                actions.onOpenEditClockBottomSheet()
+                onDismissRequest()
+            },
+            colors = ButtonDefaults.buttonColors(
+                containerColor = AureoleTheme.colors.surfaceVariant,
+                contentColor = AureoleTheme.colors.onSurfaceHigh
+            ),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = AureoleDS.dimens.small)
+        ) {
+            AureoleDS.icons.Edit(
+                modifier = Modifier.padding(end = AureoleDS.dimens.xSmall)
+            )
+            AureoleText(
+                text = "Personalizar Relógio",
+                color = AureoleTheme.colors.onSurfaceHigh
+            )
+        }
+    }
+
     if (item.type == LauncherItemType.APPS_LIST) {
         Button(
             onClick = {
@@ -104,9 +127,7 @@ private fun EditDialogTypeActionSection(
                 .fillMaxWidth()
                 .padding(bottom = AureoleDS.dimens.small)
         ) {
-            Icon(
-                imageVector = Icons.Default.Edit,
-                contentDescription = "Editar Favoritos",
+            AureoleDS.icons.Edit(
                 modifier = Modifier.padding(end = AureoleDS.dimens.xSmall)
             )
             AureoleText(
@@ -130,9 +151,7 @@ private fun EditDialogTypeActionSection(
                 .fillMaxWidth()
                 .padding(bottom = AureoleDS.dimens.small)
         ) {
-            Icon(
-                imageVector = Icons.Default.Edit,
-                contentDescription = "Editar Painel Lateral",
+            AureoleDS.icons.Edit(
                 modifier = Modifier.padding(end = AureoleDS.dimens.xSmall)
             )
             AureoleText(
@@ -235,9 +254,7 @@ private fun EditDialogScrollViewSection(
             .fillMaxWidth()
             .padding(vertical = AureoleDS.dimens.xSmall)
     ) {
-        Icon(
-            imageVector = Icons.Default.Add,
-            contentDescription = "Adicionar Componente",
+        AureoleDS.icons.Add(
             modifier = Modifier.padding(end = AureoleDS.dimens.xSmall)
         )
         AureoleText(text = "Adicionar Componente", color = AureoleTheme.colors.onSurfaceHigh)
@@ -312,9 +329,7 @@ private fun EditDialogDeleteButtonRow(onDelete: () -> Unit) {
             .padding(vertical = AureoleDS.dimens.small, horizontal = AureoleDS.dimens.xSmall),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Icon(
-            imageVector = Icons.Default.Delete,
-            contentDescription = "Remover Container",
+        AureoleDS.icons.Delete(
             tint = MaterialTheme.colorScheme.error
         )
         Spacer(modifier = Modifier.width(AureoleDS.dimens.medium))
@@ -323,5 +338,46 @@ private fun EditDialogDeleteButtonRow(onDelete: () -> Unit) {
             style = AureoleTheme.typography.bodyLarge,
             color = MaterialTheme.colorScheme.error
         )
+    }
+}
+
+@AureolePreview
+@Composable
+fun EditGridItemDialogPreview() {
+    val sampleItem = LauncherItemState(
+        id = "item_1",
+        type = LauncherItemType.APPS_LIST,
+        col = 0,
+        row = 0,
+        colSpan = 2,
+        rowSpan = 2
+    )
+    AureoleLauncherTheme {
+        CompositionLocalProvider(
+            LocalHomeUiState provides MainUiState(),
+            LocalHomeActions provides HomeScreenActions(
+                onWidgetRowHeightChanged = {},
+                onAddWidgetClick = {},
+                onRemoveWidgetClick = {},
+                onAppClick = {},
+                onExpandNotificationShade = {},
+                onFolderIntent = {},
+                onSetAddAppToFolderDialogVisible = {},
+                onSetRenameFolderDialogVisible = {},
+                onSearchQueryChanged = {},
+                onSettingsClick = {},
+                onAllAppsDrawerClose = {},
+                onAllAppsDrawerOpen = {},
+                onEnterGridEditMode = {},
+                onCancelGridEditMode = {},
+                onSaveGridEditMode = {}
+            )
+        ) {
+            EditGridItemDialog(
+                item = sampleItem,
+                onDismissRequest = {},
+                onDeleteConfirm = {}
+            )
+        }
     }
 }

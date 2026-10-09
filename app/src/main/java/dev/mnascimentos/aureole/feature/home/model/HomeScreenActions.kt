@@ -65,6 +65,21 @@ data class HomeScreenActions(
 
     val onOpenCustomizeBottomSheet: () -> Unit = {},
     val onCloseCustomizeBottomSheet: () -> Unit = {},
+
+    // Clock Customization Actions
+    val onOpenEditClockBottomSheet: () -> Unit = {},
+    val onCloseEditClockBottomSheet: () -> Unit = {},
+    val onUpdateClockStyle: (String) -> Unit = {},
+    val onUpdateClockCustomGreeting: (String) -> Unit = {},
+    val onUpdateClockAlignment: (String) -> Unit = {},
+    val onUpdateClockFontFamily: (String) -> Unit = {},
+    val onUpdateClockTimeFormat: (String) -> Unit = {},
+    val onUpdateClockDateFormat: (String) -> Unit = {},
+    val onUpdateClockTextColor: (Int) -> Unit = {},
+    val onUpdateClockBackgroundColor: (Int) -> Unit = {},
+    val onToggleClockBackground: () -> Unit = {},
+    val onResetClockSettings: () -> Unit = {},
+
     val onOpenContainerAppBottomSheet: (AppInfo, String) -> Unit = { _, _ -> },
     val onCloseContainerAppBottomSheet: () -> Unit = {},
     val onOpenContainerFolderBottomSheet: (AppFolder, String) -> Unit = { _, _ -> },

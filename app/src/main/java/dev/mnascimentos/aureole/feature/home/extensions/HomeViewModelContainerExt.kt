@@ -11,7 +11,6 @@ fun HomeViewModel.loadContainers() {
         val allPanels = containerRepository.getAllContainers()
         val panelsMap = allPanels.associateBy { it.id }.toMutableMap()
 
-        // Garante que todo item de painel no grid tenha uma entrada no banco
         uiState.value.gridItems.filter { it.safeType == LauncherItemType.SHORTCUTS_CONTAINER }
             .forEach { item ->
                 if (!panelsMap.containsKey(item.id)) {

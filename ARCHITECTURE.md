@@ -14,11 +14,14 @@ Cada funcionalidade ou tela do aplicativo deve ser dividida em camadas bem defin
 - **Isolamento de Ciclo de Vida:** Serviços e APIs do sistema atrelados ao ciclo de vida (ex: gerenciamento de Widgets do Android, In-App Update, BroadcastReceivers) **devem ser desacoplados em `DefaultLifecycleObserver`** armazenados em `core/lifecycle/` e apenas registrados no `onCreate` da Activity.
 - **Proibido:** Lógica de negócio, chamadas de rede, gerenciamento de estado complexo ou sobrescrever métodos de ciclo de vida (`onStart`, `onResume`, `onStop`, `onDestroy`) para lógica que possa residir em um Observer.
 
-### 2. Screen e Views (`*Screen.kt`, `*Dialog.kt`)
+### 2. Screen e Views (`*Screen.kt`, `*Dialog.kt`, `*BottomSheet.kt`, `*Popup.kt`)
 - O arquivo principal de interface utilizando Jetpack Compose.
 - **Stateless:** A UI deve ser desacoplada de estado mutável direto. Ela deve receber um `UiState` imutável e repassar eventos de interação do usuário através de callbacks/ações.
 - **Fluxo Unidirecional de Dados (UDF):** O fluxo de dados deve ser estritamente unidirecional (ViewModel -> UiState -> UI -> Actions -> ViewModel).
 - **Proibido `data class` em arquivos de View:** É **estritamente proibido** declarar `data class`, `enum` ou interfaces de parâmetros dentro de arquivos `.kt` de UI. Todos os modelos de dados e estados de tela devem residir na pasta `model/`.
+- **Regra Obrigatória para Bottom Views e Popups:** Qualquer bottom sheet (`*BottomSheet.kt`), diálogo (`*Dialog.kt`) ou popup (`*Popup.kt`) deve obrigatoriamente:
+  1. Conter funções de `@Preview` (utilizando `@AureolePreview`) do componente principal diretamente no próprio arquivo onde o componente é declarado.
+  2. Possuir um teste de screenshot correspondente (anotado com `@PreviewTest`) na suíte de testes de screenshot (`app/src/screenshotTest`).
 
 ### 3. ViewModel (`*ViewModel.kt`)
 - Gerencia o estado da tela exposto em um `StateFlow` imutável e responde às ações enviadas pela UI.

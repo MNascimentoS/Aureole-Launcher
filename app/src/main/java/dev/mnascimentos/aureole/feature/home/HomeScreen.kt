@@ -36,6 +36,7 @@ import dev.mnascimentos.aureole.core.data.model.ContainerModel
 import dev.mnascimentos.aureole.core.data.model.LauncherItemState
 import dev.mnascimentos.aureole.core.data.model.LauncherItemType
 import dev.mnascimentos.aureole.feature.home.components.CustomizeBottomSheet
+import dev.mnascimentos.aureole.feature.home.components.EditClockBottomSheet
 import dev.mnascimentos.aureole.feature.home.components.EditContainerBottomSheet
 import dev.mnascimentos.aureole.feature.home.components.FavoritesListConfig
 import dev.mnascimentos.aureole.feature.home.components.GridItemContent
@@ -210,6 +211,14 @@ private fun HomeOverlaysDialogsAndErrors(config: HomeOverlaysConfig) {
         CustomizeBottomSheet(
             actions = config.actions,
             onDismissRequest = config.actions.onCloseCustomizeBottomSheet
+        )
+    }
+
+    if (config.uiState.showEditClockBottomSheet) {
+        EditClockBottomSheet(
+            uiState = config.uiState,
+            actions = config.actions,
+            onDismissRequest = config.actions.onCloseEditClockBottomSheet
         )
     }
 

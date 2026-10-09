@@ -10,7 +10,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleTheme
+import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 
 @Composable
 fun UpdateAvailableDialog(
@@ -102,4 +104,20 @@ fun UpdateDownloadedDialog(
             shape = RoundedCornerShape(22.dp)
         )
     )
+}
+
+@AureolePreview
+@Composable
+fun UpdateAvailableDialogPreview() {
+    AureoleLauncherTheme {
+        UpdateAvailableDialog(onConfirmUpdate = {}, onDismiss = {})
+    }
+}
+
+@AureolePreview
+@Composable
+fun UpdateDownloadedDialogPreview() {
+    AureoleLauncherTheme {
+        UpdateDownloadedDialog(onConfirmRestart = {}, onDismiss = {})
+    }
 }

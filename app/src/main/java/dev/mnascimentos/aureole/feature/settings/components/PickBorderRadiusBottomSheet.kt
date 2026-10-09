@@ -27,7 +27,9 @@ import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.icons.Check
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleTheme
+import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 
 private const val RADIUS_NONE = 0
 private const val RADIUS_COMPACT = 8
@@ -55,6 +57,7 @@ fun PickBorderRadiusBottomSheet(
     ModalBottomSheet(
         onDismissRequest = onDismissRequest,
         sheetState = bottomSheetState,
+        dragHandle = null,
         containerColor = AureoleDS.colors.surface,
         shape = RoundedCornerShape(
             topStart = AureoleTheme.dimens.cornerRadius,
@@ -64,7 +67,7 @@ fun PickBorderRadiusBottomSheet(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(bottom = AureoleDS.dimens.xLarge),
+                .padding(top = AureoleDS.dimens.large, bottom = AureoleDS.dimens.xLarge),
         ) {
             AureoleText(
                 text = "Change Border",
@@ -139,5 +142,17 @@ private fun BorderRadiusOptionItem(
                 modifier = Modifier.size(24.dp),
             )
         }
+    }
+}
+
+@AureolePreview
+@Composable
+fun PickBorderRadiusBottomSheetPreview() {
+    AureoleLauncherTheme {
+        PickBorderRadiusBottomSheet(
+            selectedRadiusDp = 16,
+            onRadiusSelected = {},
+            onDismissRequest = {}
+        )
     }
 }
