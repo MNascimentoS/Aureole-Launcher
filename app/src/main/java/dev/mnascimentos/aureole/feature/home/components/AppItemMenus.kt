@@ -23,6 +23,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.Surface
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -32,6 +33,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -66,19 +68,8 @@ internal fun AppItemBottomSheet(
     onOpenFolderSettings: (() -> Unit)? = null,
     onDismiss: () -> Unit
 ) {
-    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val context = LocalContext.current
-    ModalBottomSheet(
-        onDismissRequest = onDismiss,
-        sheetState = sheetState,
-        shape = RoundedCornerShape(
-            topStart = AureoleTheme.dimens.cornerRadius,
-            topEnd = AureoleTheme.dimens.cornerRadius
-        ),
-        containerColor = AureoleTheme.colors.surface,
-        contentColor = AureoleTheme.colors.onSurfaceMedium,
-        dragHandle = null
-    ) {
+    val sheetContent = @Composable {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -102,7 +93,37 @@ internal fun AppItemBottomSheet(
             )
         }
     }
+
+    if (LocalInspectionMode.current) {
+        Surface(
+            shape = RoundedCornerShape(
+                topStart = AureoleTheme.dimens.cornerRadius,
+                topEnd = AureoleTheme.dimens.cornerRadius
+            ),
+            color = AureoleTheme.colors.surface,
+            contentColor = AureoleTheme.colors.onSurfaceMedium,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            sheetContent()
+        }
+    } else {
+        val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+        ModalBottomSheet(
+            onDismissRequest = onDismiss,
+            sheetState = sheetState,
+            shape = RoundedCornerShape(
+                topStart = AureoleTheme.dimens.cornerRadius,
+                topEnd = AureoleTheme.dimens.cornerRadius
+            ),
+            containerColor = AureoleTheme.colors.surface,
+            contentColor = AureoleTheme.colors.onSurfaceMedium,
+            dragHandle = null
+        ) {
+            sheetContent()
+        }
+    }
 }
+
 
 @Composable
 private fun AppItemBottomSheetHeader(app: AppInfo, iconBitmap: ImageBitmap, context: Context) {
@@ -175,18 +196,7 @@ internal fun ContainerFolderBottomSheet(
     onOpenContainerSettings: () -> Unit,
     onDismiss: () -> Unit
 ) {
-    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
-    ModalBottomSheet(
-        onDismissRequest = onDismiss,
-        sheetState = sheetState,
-        shape = RoundedCornerShape(
-            topStart = AureoleTheme.dimens.cornerRadius,
-            topEnd = AureoleTheme.dimens.cornerRadius
-        ),
-        containerColor = AureoleTheme.colors.surface,
-        contentColor = AureoleTheme.colors.onSurfaceMedium,
-        dragHandle = null
-    ) {
+    val sheetContent = @Composable {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -259,7 +269,37 @@ internal fun ContainerFolderBottomSheet(
             }
         }
     }
+
+    if (LocalInspectionMode.current) {
+        Surface(
+            shape = RoundedCornerShape(
+                topStart = AureoleTheme.dimens.cornerRadius,
+                topEnd = AureoleTheme.dimens.cornerRadius
+            ),
+            color = AureoleTheme.colors.surface,
+            contentColor = AureoleTheme.colors.onSurfaceMedium,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            sheetContent()
+        }
+    } else {
+        val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+        ModalBottomSheet(
+            onDismissRequest = onDismiss,
+            sheetState = sheetState,
+            shape = RoundedCornerShape(
+                topStart = AureoleTheme.dimens.cornerRadius,
+                topEnd = AureoleTheme.dimens.cornerRadius
+            ),
+            containerColor = AureoleTheme.colors.surface,
+            contentColor = AureoleTheme.colors.onSurfaceMedium,
+            dragHandle = null
+        ) {
+            sheetContent()
+        }
+    }
 }
+
 
 @Composable
 private fun ContainerFolderBottomSheetHeader() {
@@ -308,7 +348,6 @@ internal fun WidgetStackBottomSheet(
     onRemoveStack: () -> Unit,
     onDismiss: () -> Unit
 ) {
-    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val context = LocalContext.current
 
     val widgetAppPackage = remember(widgetId) {
@@ -324,17 +363,7 @@ internal fun WidgetStackBottomSheet(
         }
     }
 
-    ModalBottomSheet(
-        onDismissRequest = onDismiss,
-        sheetState = sheetState,
-        shape = RoundedCornerShape(
-            topStart = AureoleTheme.dimens.cornerRadius,
-            topEnd = AureoleTheme.dimens.cornerRadius
-        ),
-        containerColor = AureoleTheme.colors.surface,
-        contentColor = AureoleTheme.colors.onSurfaceMedium,
-        dragHandle = null
-    ) {
+    val sheetContent = @Composable {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -395,7 +424,37 @@ internal fun WidgetStackBottomSheet(
             }
         }
     }
+
+    if (LocalInspectionMode.current) {
+        Surface(
+            shape = RoundedCornerShape(
+                topStart = AureoleTheme.dimens.cornerRadius,
+                topEnd = AureoleTheme.dimens.cornerRadius
+            ),
+            color = AureoleTheme.colors.surface,
+            contentColor = AureoleTheme.colors.onSurfaceMedium,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            sheetContent()
+        }
+    } else {
+        val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+        ModalBottomSheet(
+            onDismissRequest = onDismiss,
+            sheetState = sheetState,
+            shape = RoundedCornerShape(
+                topStart = AureoleTheme.dimens.cornerRadius,
+                topEnd = AureoleTheme.dimens.cornerRadius
+            ),
+            containerColor = AureoleTheme.colors.surface,
+            contentColor = AureoleTheme.colors.onSurfaceMedium,
+            dragHandle = null
+        ) {
+            sheetContent()
+        }
+    }
 }
+
 
 @Composable
 private fun WidgetStackBottomSheetHeader(context: Context) {

@@ -27,6 +27,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material3.Surface
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
@@ -37,6 +38,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -59,20 +61,7 @@ fun FavoriteAppsDialog(
     config: FavoriteAppsDialogConfig,
     actions: FavoriteAppsDialogActions
 ) {
-    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
-
-    ModalBottomSheet(
-        onDismissRequest = actions.onDismiss,
-        sheetState = sheetState,
-        dragHandle = null,
-        shape = RoundedCornerShape(
-            topStart = AureoleTheme.dimens.cornerRadius,
-            topEnd = AureoleTheme.dimens.cornerRadius
-        ),
-        containerColor = AureoleTheme.colors.surface,
-        contentColor = AureoleTheme.colors.onSurfaceMedium,
-        modifier = Modifier.windowInsetsPadding(WindowInsets.statusBars)
-    ) {
+    val sheetContent = @Composable {
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -82,7 +71,39 @@ fun FavoriteAppsDialog(
             FavoriteAppsDialogContent(config = config, actions = actions)
         }
     }
+
+    if (LocalInspectionMode.current) {
+        Surface(
+            shape = RoundedCornerShape(
+                topStart = AureoleTheme.dimens.cornerRadius,
+                topEnd = AureoleTheme.dimens.cornerRadius
+            ),
+            color = AureoleTheme.colors.surface,
+            contentColor = AureoleTheme.colors.onSurfaceMedium,
+            modifier = Modifier.fillMaxSize()
+        ) {
+            sheetContent()
+        }
+    } else {
+        val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+
+        ModalBottomSheet(
+            onDismissRequest = actions.onDismiss,
+            sheetState = sheetState,
+            dragHandle = null,
+            shape = RoundedCornerShape(
+                topStart = AureoleTheme.dimens.cornerRadius,
+                topEnd = AureoleTheme.dimens.cornerRadius
+            ),
+            containerColor = AureoleTheme.colors.surface,
+            contentColor = AureoleTheme.colors.onSurfaceMedium,
+            modifier = Modifier.windowInsetsPadding(WindowInsets.statusBars)
+        ) {
+            sheetContent()
+        }
+    }
 }
+
 
 @Composable
 private fun FavoriteAppsDialogContent(

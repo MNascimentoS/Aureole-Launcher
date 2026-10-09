@@ -18,11 +18,13 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.Surface
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.icons.Check
@@ -52,18 +54,7 @@ fun PickBorderRadiusBottomSheet(
     onRadiusSelected: (Int) -> Unit,
     onDismissRequest: () -> Unit,
 ) {
-    val bottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
-
-    ModalBottomSheet(
-        onDismissRequest = onDismissRequest,
-        sheetState = bottomSheetState,
-        dragHandle = null,
-        containerColor = AureoleDS.colors.surface,
-        shape = RoundedCornerShape(
-            topStart = AureoleTheme.dimens.cornerRadius,
-            topEnd = AureoleTheme.dimens.cornerRadius,
-        ),
-    ) {
+    val sheetContent = @Composable {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -89,7 +80,36 @@ fun PickBorderRadiusBottomSheet(
             }
         }
     }
+
+    if (LocalInspectionMode.current) {
+        Surface(
+            shape = RoundedCornerShape(
+                topStart = AureoleTheme.dimens.cornerRadius,
+                topEnd = AureoleTheme.dimens.cornerRadius,
+            ),
+            color = AureoleDS.colors.surface,
+            modifier = Modifier.fillMaxWidth(),
+        ) {
+            sheetContent()
+        }
+    } else {
+        val bottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+
+        ModalBottomSheet(
+            onDismissRequest = onDismissRequest,
+            sheetState = bottomSheetState,
+            dragHandle = null,
+            containerColor = AureoleDS.colors.surface,
+            shape = RoundedCornerShape(
+                topStart = AureoleTheme.dimens.cornerRadius,
+                topEnd = AureoleTheme.dimens.cornerRadius,
+            ),
+        ) {
+            sheetContent()
+        }
+    }
 }
+
 
 @Composable
 private fun BorderRadiusOptionItem(
