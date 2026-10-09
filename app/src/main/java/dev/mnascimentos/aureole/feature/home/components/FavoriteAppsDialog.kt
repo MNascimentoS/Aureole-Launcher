@@ -73,16 +73,21 @@ fun FavoriteAppsDialog(
     }
 
     if (LocalInspectionMode.current) {
-        Surface(
-            shape = RoundedCornerShape(
-                topStart = AureoleTheme.dimens.cornerRadius,
-                topEnd = AureoleTheme.dimens.cornerRadius
-            ),
-            color = AureoleTheme.colors.surface,
-            contentColor = AureoleTheme.colors.onSurfaceMedium,
-            modifier = Modifier.fillMaxSize()
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.BottomCenter
         ) {
-            sheetContent()
+            Surface(
+                shape = RoundedCornerShape(
+                    topStart = AureoleTheme.dimens.cornerRadius,
+                    topEnd = AureoleTheme.dimens.cornerRadius
+                ),
+                color = AureoleTheme.colors.surface,
+                contentColor = AureoleTheme.colors.onSurfaceMedium,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                sheetContent()
+            }
         }
     } else {
         val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)

@@ -196,14 +196,19 @@ fun WidgetPickerBottomSheet(
     }
 
     if (LocalInspectionMode.current) {
-        Surface(
-            modifier = Modifier.fillMaxSize()
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.BottomCenter
         ) {
-            WidgetSelectorScreen(
-                state = state,
-                onIntent = { viewModel.processIntent(it) },
-                onWidgetSelected = onWidgetSelected
-            )
+            Surface(
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                WidgetSelectorScreen(
+                    state = state,
+                    onIntent = { viewModel.processIntent(it) },
+                    onWidgetSelected = onWidgetSelected
+                )
+            }
         }
     } else {
         ModalBottomSheet(

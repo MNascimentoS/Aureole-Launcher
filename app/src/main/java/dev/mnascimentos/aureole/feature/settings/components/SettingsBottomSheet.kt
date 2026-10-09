@@ -3,6 +3,7 @@ package dev.mnascimentos.aureole.feature.settings.components
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -58,16 +59,21 @@ fun SettingsBottomSheet(
     }
 
     if (LocalInspectionMode.current) {
-        Surface(
-            shape = RoundedCornerShape(
-                topStart = AureoleTheme.dimens.cornerRadius,
-                topEnd = AureoleTheme.dimens.cornerRadius
-            ),
-            color = AureoleTheme.colors.surface,
-            contentColor = AureoleTheme.colors.onSurfaceMedium,
-            modifier = Modifier.fillMaxWidth()
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.BottomCenter
         ) {
-            sheetContent()
+            Surface(
+                shape = RoundedCornerShape(
+                    topStart = AureoleTheme.dimens.cornerRadius,
+                    topEnd = AureoleTheme.dimens.cornerRadius
+                ),
+                color = AureoleTheme.colors.surface,
+                contentColor = AureoleTheme.colors.onSurfaceMedium,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                sheetContent()
+            }
         }
     } else {
         val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
