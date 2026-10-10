@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -40,7 +39,6 @@ import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 
-private const val PALETTE_MAX_HEIGHT_DP = 420
 private const val BLUR_SWATCH_WIDTH_DP = 140
 private const val BLUR_SWATCH_HEIGHT_DP = 22
 private const val BLUR_LOW_OPACITY = 0.2f
@@ -92,8 +90,7 @@ fun PickPaletteBottomSheet(
         LazyColumn(
             verticalArrangement = Arrangement.spacedBy(AureoleDS.dimens.small),
             modifier = Modifier
-                .fillMaxWidth()
-                .heightIn(max = PALETTE_MAX_HEIGHT_DP.dp)
+                .fillMaxSize()
         ) {
             items(allPalettes) { basePalette ->
                 val isSelected = basePalette.name.equals(cleanSelectedName, ignoreCase = true)

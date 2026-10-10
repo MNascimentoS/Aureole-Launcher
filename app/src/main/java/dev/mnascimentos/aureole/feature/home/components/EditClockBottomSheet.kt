@@ -1,5 +1,6 @@
 package dev.mnascimentos.aureole.feature.home.components
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -428,11 +429,20 @@ private fun LayoutChip(
         selected = selected,
         onClick = onClick,
         label = { AureoleText(label) },
+        shape = RoundedCornerShape(16.dp),
+        border = FilterChipDefaults.filterChipBorder(
+            enabled = true,
+            selected = selected,
+            selectedBorderColor = MaterialTheme.colorScheme.primary,
+            borderColor = AureoleTheme.colors.onSurfaceMedium.copy(alpha = 0.3f),
+            selectedBorderWidth = 1.5.dp,
+            borderWidth = 1.dp
+        ),
         colors = FilterChipDefaults.filterChipColors(
             selectedContainerColor = MaterialTheme.colorScheme.primary,
             selectedLabelColor = MaterialTheme.colorScheme.onPrimary,
-            containerColor = AureoleTheme.colors.surfaceVariant,
-            labelColor = AureoleTheme.colors.onSurfaceMedium
+            containerColor = AureoleTheme.colors.surfaceVariant.copy(alpha = 0.6f),
+            labelColor = AureoleTheme.colors.onSurfaceHigh
         )
     )
 }
@@ -448,6 +458,7 @@ private fun ChoiceButton(
         Button(
             onClick = onClick,
             modifier = modifier,
+            shape = RoundedCornerShape(16.dp),
             contentPadding = PaddingValues(horizontal = 4.dp, vertical = 8.dp),
             colors = ButtonDefaults.buttonColors(
                 containerColor = MaterialTheme.colorScheme.primary,
@@ -465,7 +476,13 @@ private fun ChoiceButton(
         OutlinedButton(
             onClick = onClick,
             modifier = modifier,
-            contentPadding = PaddingValues(horizontal = 4.dp, vertical = 8.dp)
+            shape = RoundedCornerShape(16.dp),
+            border = BorderStroke(1.dp, AureoleTheme.colors.onSurfaceMedium.copy(alpha = 0.3f)),
+            contentPadding = PaddingValues(horizontal = 4.dp, vertical = 8.dp),
+            colors = ButtonDefaults.outlinedButtonColors(
+                containerColor = AureoleTheme.colors.surfaceVariant.copy(alpha = 0.6f),
+                contentColor = AureoleTheme.colors.onSurfaceHigh
+            )
         ) {
             AureoleText(
                 text = text,
