@@ -1,7 +1,6 @@
 package dev.mnascimentos.aureole.core.data.repository
 
 import android.content.Context
-import android.os.Build
 import androidx.core.content.edit
 import dev.mnascimentos.aureole.core.designsystem.utils.HazeUtils
 import java.io.File
@@ -163,7 +162,7 @@ class SettingsRepository(private val context: Context) {
         set(value) = prefs.edit { putFloat(KEY_HAZE_OPACITY, value) }
 
     var isDynamicWallpaperEnabled: Boolean
-        get() = prefs.getBoolean(KEY_USE_WALLPAPER_COLORS, Build.VERSION.SDK_INT >= Build.VERSION_CODES.S)
+        get() = prefs.getBoolean(KEY_USE_WALLPAPER_COLORS, false)
         set(value) = prefs.edit { putBoolean(KEY_USE_WALLPAPER_COLORS, value) }
 
     var manualSeedColor: Int

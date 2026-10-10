@@ -157,27 +157,46 @@ jacoco {
 }
 
 tasks.register<JacocoReport>("jacocoTestReport") {
+    description = "Generates JaCoCo code coverage report for unit tests."
+    group = "Reporting"
     dependsOn("testDebugUnitTest")
+
     reports {
         xml.required.set(true)
         html.required.set(true)
     }
-    val fileFilter = listOf(
-        "**/R.class", "**/R$*.class", "**/BuildConfig.*", "**/Manifest*.*",
-        "**/*Test*.*", "android/**/*.*", "**/*_Impl*.*", "**/*Dao*.*",
-        "**/*Database*.*", "dev/mnascimentos/aureole/data/db/*"
-    )
-    val debugTree = fileTree("$projectDir/build/intermediates/javac/debug/classes") {
-        exclude(fileFilter)
-    }
-    val kotlinDebugTree = fileTree("$projectDir/build/tmp/kotlin-classes/debug") {
-        exclude(fileFilter)
-    }
-    val mainSrc = "$projectDir/src/main/java"
 
-    classDirectories.setFrom(files(debugTree, kotlinDebugTree))
-    sourceDirectories.setFrom(files(mainSrc))
-    executionData.setFrom(fileTree(projectDir) {
-        include("build/outputs/unit_test_code_coverage/debugUnitTest/testDebugUnitTest.exec", "build/jacoco/testDebugUnitTest.exec")
-    })
+    val fileFilter = listOf(
+        "**/R.class",
+        "**/R$*.class",
+        "**/BuildConfig.*",
+        "**/Manifest*.*",
+        "**/*Test*.*",
+        "android/**/*.*",
+        "**/*_Impl*.*",
+        "**/*Dao*.*",
+        "**/*Database*.*",
+        "dev/mnascimentos/aureole/data/db/*"
+    )
+
+    val javaClasses = fileTree(layout.buildDirectory.dir("intermediates/javac/debug/compileDebugJavaWithJavac/classes")) {
+        exclude(fileFilter)
+    }
+    val kotlinClasses = fileTree(layout.buildDirectory.dir("intermediates/built_in_kotlinc/debug/compileDebugKotlin/classes")) {
+        exclude(fileFilter)
+    }
+    val legacyKotlinClasses = fileTree(layout.buildDirectory.dir("tmp/kotlin-classes/debug")) {
+        exclude(fileFilter)
+    }
+
+    classDirectories.setFrom(files(javaClasses, kotlinClasses, legacyKotlinClasses))
+    sourceDirectories.setFrom(files("$projectDir/src/main/java", "$projectDir/src/main/kotlin"))
+    executionData.setFrom(
+        fileTree(layout.buildDirectory) {
+            include(
+                "outputs/unit_test_code_coverage/debugUnitTest/testDebugUnitTest.exec",
+                "jacoco/testDebugUnitTest.exec"
+            )
+        }
+    )
 }

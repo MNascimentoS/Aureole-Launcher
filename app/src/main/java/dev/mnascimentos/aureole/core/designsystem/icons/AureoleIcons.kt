@@ -58,6 +58,12 @@ fun AureoleIcons.Add(
 ) { AureoleIcon(R.drawable.ic_aureole_add, modifier, tint) }
 
 @Composable
+fun AureoleIcons.Plus(
+    modifier: Modifier = Modifier,
+    tint: Color? = null
+) { AureoleIcon(R.drawable.ic_aureole_plus, modifier, tint) }
+
+@Composable
 fun AureoleIcons.Advanced(
     modifier: Modifier = Modifier,
     tint: Color? = null
@@ -68,6 +74,9 @@ fun AureoleIcons.AlignRight(
     modifier: Modifier = Modifier,
     tint: Color? = null
 ) { AureoleIcon(R.drawable.ic_aureole_align_right, modifier, tint) }
+
+private const val ARROW_DOWN_ROTATION_DEGREES = 180f
+private const val CLOSE_SQUARE_ROTATION_DEGREES = 45f
 
 // Set A
 @Composable
@@ -80,7 +89,7 @@ fun AureoleIcons.AppSelect(
 fun AureoleIcons.ArrowDown(
     modifier: Modifier = Modifier,
     tint: Color? = null
-) { AureoleIcon(R.drawable.ic_aureole_arrow_up, modifier.rotate(180f), tint) }
+) { AureoleIcon(R.drawable.ic_aureole_arrow_up, modifier.rotate(ARROW_DOWN_ROTATION_DEGREES), tint) }
 
 @Composable
 fun AureoleIcons.ArrowUp(
@@ -89,10 +98,16 @@ fun AureoleIcons.ArrowUp(
 ) { AureoleIcon(R.drawable.ic_aureole_arrow_up, modifier, tint) }
 
 @Composable
+fun AureoleIcons.CloseSquare(
+    modifier: Modifier = Modifier,
+    tint: Color? = null
+) { AureoleIcon(R.drawable.ic_aureole_add, modifier.rotate(CLOSE_SQUARE_ROTATION_DEGREES), tint) }
+
+@Composable
 fun AureoleIcons.Close(
     modifier: Modifier = Modifier,
     tint: Color? = null
-) { AureoleIcon(R.drawable.ic_aureole_add, modifier.rotate(45f), tint) }
+) { AureoleIcon(R.drawable.ic_aureole_close, modifier, tint) }
 
 @Composable
 fun AureoleIcons.Check(

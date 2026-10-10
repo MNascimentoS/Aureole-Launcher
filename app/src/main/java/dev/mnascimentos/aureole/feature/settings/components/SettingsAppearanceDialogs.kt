@@ -127,7 +127,7 @@ private fun PaletteRowItem(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(12.dp))
+            .clip(RoundedCornerShape(AureoleDS.dimens.radiusSmall))
             .background(rowBg)
             .clickable(onClick = onSelect)
             .padding(vertical = AureoleDS.dimens.small, horizontal = AureoleDS.dimens.xSmall),
@@ -152,7 +152,7 @@ private fun PaletteColorSwatches(palette: ThemePalette) {
             .width(BLUR_SWATCH_WIDTH_DP.dp)
             .height(BLUR_SWATCH_HEIGHT_DP.dp)
             .clip(RoundedCornerShape(6.dp))
-            .border(1.dp, AureoleTheme.colors.outline, RoundedCornerShape(6.dp))
+            .border(AureoleDS.dimens.borderMinimal, AureoleTheme.colors.outline, RoundedCornerShape(6.dp))
     ) {
         val colorList = listOf(
             palette.colors.background,
@@ -233,7 +233,7 @@ private fun BlurOptionRow(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(12.dp))
+            .clip(RoundedCornerShape(AureoleDS.dimens.radiusSmall))
             .background(rowBg)
             .clickable(onClick = onSelect)
             .padding(vertical = AureoleDS.dimens.small, horizontal = AureoleDS.dimens.small),
@@ -249,7 +249,7 @@ private fun BlurOptionRow(
         if (isSelected) {
             AureoleDS.icons.Check(
                 tint = AureoleTheme.colors.onSurfaceHigh,
-                modifier = Modifier.size(20.dp)
+                modifier = Modifier.size(AureoleDS.dimens.iconMedium)
             )
         }
     }

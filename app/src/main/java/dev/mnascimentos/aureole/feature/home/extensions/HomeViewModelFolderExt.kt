@@ -21,7 +21,7 @@ private suspend fun HomeViewModel.handleFolderIntent(intent: FolderViewIntent) {
                 )
             }
         }
-        is FolderViewIntent.SubmitFolderName -> createNewFolder(intent.name)
+        is FolderViewIntent.SubmitFolderName -> createNewFolder(intent.name, intent.icon)
         is FolderViewIntent.OpenFolder -> openFolder(intent)
         is FolderViewIntent.CloseFolder -> closeFolder()
         is FolderViewIntent.LaunchApp -> launchAppFromFolder(intent.packageName)

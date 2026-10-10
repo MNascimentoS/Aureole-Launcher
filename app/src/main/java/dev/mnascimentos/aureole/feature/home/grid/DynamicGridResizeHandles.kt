@@ -20,6 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.core.data.model.LauncherItemState
+import dev.mnascimentos.aureole.core.designsystem.icons.Delete
 import dev.mnascimentos.aureole.core.designsystem.icons.Edit
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.feature.home.grid.model.CornerResizeCallbacks
@@ -217,5 +218,30 @@ private fun handleCornerDragEnd(
     val rowSpanChanged = targetRowSpan != item.rowSpan
     if (!hasCollision && (colSpanChanged || rowSpanChanged)) {
         callbacks.onResizeItem(item.id, targetColSpan, targetRowSpan)
+    }
+}
+
+@Composable
+fun BoxScope.DeleteActionHandle(
+    itemId: String,
+    onDeleteItem: () -> Unit
+) {
+    val currentOnDelete by rememberUpdatedState(onDeleteItem)
+
+    Box(
+        modifier = Modifier
+            .align(Alignment.TopEnd)
+            .size(CORNER_TOUCH_SIZE)
+            .background(
+                color = MaterialTheme.colorScheme.errorContainer,
+                shape = RoundedCornerShape(bottomStart = CORNER_HANDLE_RADIUS)
+            )
+            .pointerInput(itemId + "_delete") { detectTapGestures(onTap = { currentOnDelete() }) },
+        contentAlignment = Alignment.Center
+    ) {
+        AureoleDS.icons.Delete(
+            tint = MaterialTheme.colorScheme.onErrorContainer,
+            modifier = Modifier.size(20.dp)
+        )
     }
 }

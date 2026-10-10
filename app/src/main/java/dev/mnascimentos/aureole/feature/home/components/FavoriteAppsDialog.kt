@@ -182,7 +182,7 @@ private fun FavoriteAppsDialogBody(
     }
 
     Column(modifier = Modifier.fillMaxWidth()) {
-        FavoriteAppsDialogHeader(containerId = config.containerId)
+        FavoriteAppsDialogHeader()
         Spacer(modifier = Modifier.height(12.dp))
 
         FavoriteAppsShowAllSwitchRow(

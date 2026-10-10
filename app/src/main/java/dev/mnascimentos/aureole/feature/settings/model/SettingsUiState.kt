@@ -1,6 +1,5 @@
 package dev.mnascimentos.aureole.feature.settings.model
 
-import android.os.Build
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.data.repository.SettingsRepository
 
@@ -41,7 +40,7 @@ data class SettingsUiState(
     val showResetGridDialog: Boolean = false,
     val showFactoryResetDialog: Boolean = false,
     val showCreateFolderDialog: Boolean = false,
-    val isDynamicWallpaperEnabled: Boolean = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S,
+    val isDynamicWallpaperEnabled: Boolean = false,
     val manualSeedColor: Int = SettingsRepository.DEFAULT_SEED_COLOR,
     val selectedThemeName: String = "Frostbite",
     val selectedFontName: String = "Istok Web",

@@ -42,8 +42,6 @@ import dev.mnascimentos.aureole.feature.home.components.model.AppItemRowConfig
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
 private val ICON_OUTER_SIZE = 42.dp
 private val ICON_INNER_SIZE = 26.dp
-private val ICON_CORNER_RADIUS = 12.dp
-private val ICON_PADDING = 8.dp
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -146,9 +144,9 @@ private fun AppItemIcon(
         Box(
             modifier = Modifier
                 .size(ICON_OUTER_SIZE)
-                .clip(RoundedCornerShape(ICON_CORNER_RADIUS))
+                .clip(RoundedCornerShape(AureoleDS.dimens.radiusSmall))
                 .background(AureoleDS.colors.surfaceVariant.copy(alpha = 0.85f))
-                .padding(ICON_PADDING),
+                .padding(AureoleDS.dimens.xSmall),
             contentAlignment = Alignment.Center
         ) {
             Image(
@@ -177,7 +175,14 @@ private fun AppItemRowDropdownMenu(
 ) {
     if (showMenu) {
         if (config.useActionSheet) {
-            AppItemBottomSheet(app = app, isFavorite = config.isFavorite, actions = actions, onDismiss = onDismiss)
+            AppItemBottomSheet(
+                params = AppItemBottomSheetParams(
+                    app = app,
+                    isFavorite = config.isFavorite,
+                    actions = actions
+                ),
+                onDismiss = onDismiss
+            )
         } else {
             AppItemPopup(app = app, isFavorite = config.isFavorite, actions = actions, onDismiss = onDismiss)
         }

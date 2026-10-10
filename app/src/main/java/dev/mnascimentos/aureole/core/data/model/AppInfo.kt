@@ -7,9 +7,7 @@ import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffColorFilter
-import android.graphics.Rect
 import android.graphics.drawable.AdaptiveIconDrawable
-import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.os.Build
 import androidx.compose.runtime.Composable
@@ -19,12 +17,10 @@ import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.toArgb
 import androidx.core.graphics.createBitmap
 import androidx.core.graphics.drawable.toBitmap
+import kotlin.math.sqrt
 import androidx.compose.ui.graphics.Color as ComposeColor
 
-private const val DEFAULT_ICON_SIZE = 96
-private const val BACKGROUND_WHITE_THRESHOLD = 235
-private const val BACKGROUND_ALPHA_THRESHOLD = 180
-private const val MIN_ALPHA_THRESHOLD = 10
+private const val DEFAULT_TINT_COLOR_INT = 0xFFE2E2E2.toInt()
 
 data class AppInfo(
     val label: String,
@@ -45,9 +41,8 @@ data class AppInfo(
         get() = label.trimStart().firstOrNull()?.uppercaseChar() ?: '#'
 
     fun getIconBitmap(): ImageBitmap {
-        val existing = cachedIconBitmap
-        if (existing != null) return existing
-        val bitmap = icon.toImageBitmap()
+        cachedIconBitmap?.let { return it }
+        val bitmap = AppIconHelper.drawableToImageBitmap(icon)
         cachedIconBitmap = bitmap
         return bitmap
     }
@@ -55,7 +50,7 @@ data class AppInfo(
     @Composable
     fun getDisplayIconBitmap(
         isThemed: Boolean,
-        tintColor: ComposeColor = ComposeColor(0xFFE2E2E2)
+        tintColor: ComposeColor = ComposeColor(DEFAULT_TINT_COLOR_INT)
     ): ImageBitmap {
         val argb = tintColor.toArgb()
         return remember(packageName, isThemed, argb) {
@@ -68,187 +63,169 @@ data class AppInfo(
     }
 
     fun getThemedIconBitmap(tintColor: Int): ImageBitmap {
-        if (cachedThemedColor == tintColor) {
-            val existing = cachedThemedBitmap
-            if (existing != null) return existing
-        }
+        val cached = if (cachedThemedColor == tintColor) cachedThemedBitmap else null
+        if (cached != null) return cached
 
-        val isAdaptive = icon is AdaptiveIconDrawable
-
-        var drawableToRender: Drawable? = null
-        if (isAdaptive && Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            val adaptive = icon
-            if (adaptive.monochrome != null) {
-                drawableToRender = adaptive.monochrome
-            }
-        }
-
-        val isOfficialMonochrome = drawableToRender != null
-
-        if (drawableToRender == null) {
-            drawableToRender = if (isAdaptive) {
-                (icon as AdaptiveIconDrawable).foreground
-            } else {
-                icon
-            }
-        }
-
+        val (drawableToRender, isOfficialMonochrome) = resolveDrawableToRender(icon)
         val origW = if (drawableToRender.intrinsicWidth > 0) drawableToRender.intrinsicWidth else DEFAULT_ICON_SIZE
         val origH = if (drawableToRender.intrinsicHeight > 0) drawableToRender.intrinsicHeight else DEFAULT_ICON_SIZE
 
-        val rawBitmap = createBitmap(origW, origH)
-        val rawCanvas = Canvas(rawBitmap)
-        drawableToRender.setBounds(0, 0, origW, origH)
+        val rawBitmap = renderRawBitmap(drawableToRender, origW, origH, isOfficialMonochrome, tintColor)
+        val croppedBitmap = cropRawBitmapIfNeeded(rawBitmap, origW, origH)
 
-        if (isOfficialMonochrome) {
-            val paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-                colorFilter = PorterDuffColorFilter(tintColor, PorterDuff.Mode.SRC_IN)
-            }
-            rawCanvas.drawBitmap(drawableToRender.toBitmap(origW, origH), 0f, 0f, paint)
+        val imageBitmap = if (isOfficialMonochrome) {
+            croppedBitmap.asImageBitmap()
         } else {
-            drawableToRender.draw(rawCanvas)
+            applyTintToBitmap(croppedBitmap, tintColor, icon is AdaptiveIconDrawable).asImageBitmap()
         }
 
-        val rawPixels = IntArray(origW * origH)
-        rawBitmap.getPixels(rawPixels, 0, origW, 0, 0, origW, origH)
+        return cacheThemedBitmap(imageBitmap, tintColor)
+    }
 
-        var minX = origW
-        var minY = origH
-        var maxX = -1
-        var maxY = -1
-
-        for (y in 0 until origH) {
-            for (x in 0 until origW) {
-                val a = Color.alpha(rawPixels[y * origW + x])
-                if (a > MIN_ALPHA_THRESHOLD) {
-                    if (x < minX) minX = x
-                    if (x > maxX) maxX = x
-                    if (y < minY) minY = y
-                    if (y > maxY) maxY = y
-                }
-            }
-        }
-
-        val croppedBitmap: Bitmap = if (maxX >= minX && maxY >= minY) {
-            val cropW = maxX - minX + 1
-            val cropH = maxY - minY + 1
-            if (cropW > 0 && cropH > 0 && (cropW < origW * 0.85f || cropH < origH * 0.85f)) {
-                val cropped = Bitmap.createBitmap(rawBitmap, minX, minY, cropW, cropH)
-                val targetSize = DEFAULT_ICON_SIZE
-                val scaled = Bitmap.createBitmap(targetSize, targetSize, Bitmap.Config.ARGB_8888)
-                val scaledCanvas = Canvas(scaled)
-
-                val padding = (targetSize * 0.08f).toInt()
-                val drawSize = targetSize - (padding * 2)
-
-                val srcRect = Rect(0, 0, cropW, cropH)
-                val dstRect = Rect(padding, padding, padding + drawSize, padding + drawSize)
-                val paint = Paint(Paint.ANTI_ALIAS_FLAG or Paint.FILTER_BITMAP_FLAG)
-                scaledCanvas.drawBitmap(cropped, srcRect, dstRect, paint)
-                scaled
-            } else {
-                rawBitmap
-            }
-        } else {
-            rawBitmap
-        }
-
-        val width = croppedBitmap.width
-        val height = croppedBitmap.height
-        val pixels = IntArray(width * height)
-        croppedBitmap.getPixels(pixels, 0, width, 0, 0, width, height)
-
-        if (isOfficialMonochrome) {
-            val themed = croppedBitmap.asImageBitmap()
-            cachedThemedColor = tintColor
-            cachedThemedBitmap = themed
-            return themed
-        }
-
-        val corners = intArrayOf(
-            pixels[0],
-            pixels[width - 1],
-            pixels[(height - 1) * width],
-            pixels[(height - 1) * width + width - 1]
-        )
-        val cornersAreSolid = corners.count { Color.alpha(it) > 200 } >= 3
-
-        val tr = Color.red(tintColor)
-        val tg = Color.green(tintColor)
-        val tb = Color.blue(tintColor)
-
-        if (isAdaptive && !cornersAreSolid) {
-            for (i in pixels.indices) {
-                val p = pixels[i]
-                val a = Color.alpha(p)
-                if (a <= MIN_ALPHA_THRESHOLD) {
-                    pixels[i] = 0
-                } else {
-                    val r = Color.red(p)
-                    val g = Color.green(p)
-                    val b = Color.blue(p)
-                    val lum = (0.299f * r + 0.587f * g + 0.114f * b) / 255f
-                    val finalAlpha = (a * (0.4f + 0.6f * lum)).toInt().coerceIn(0, 255)
-                    pixels[i] = Color.argb(finalAlpha, tr, tg, tb)
-                }
-            }
-        } else {
-            val bgR = corners.map { Color.red(it) }.average()
-            val bgG = corners.map { Color.green(it) }.average()
-            val bgB = corners.map { Color.blue(it) }.average()
-
-            for (i in pixels.indices) {
-                val p = pixels[i]
-                val a = Color.alpha(p)
-                if (a <= MIN_ALPHA_THRESHOLD) {
-                    pixels[i] = 0
-                    continue
-                }
-
-                val r = Color.red(p)
-                val g = Color.green(p)
-                val b = Color.blue(p)
-
-                val dr = r - bgR
-                val dg = g - bgG
-                val db = b - bgB
-                val dist = Math.sqrt(dr * dr + dg * dg + db * db)
-
-                if (cornersAreSolid && (dist < 45.0 || isNearWhiteBackground(r, g, b, a))) {
-                    pixels[i] = 0
-                } else {
-                    val lum = (0.299f * r + 0.587f * g + 0.114f * b) / 255f
-                    val finalAlpha = (a * (0.4f + 0.6f * lum)).toInt().coerceIn(0, 255)
-                    pixels[i] = Color.argb(finalAlpha, tr, tg, tb)
-                }
-            }
-        }
-
-        val output = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
-        output.setPixels(pixels, 0, width, 0, 0, width, height)
-        val themed = output.asImageBitmap()
+    private fun cacheThemedBitmap(bitmap: ImageBitmap, tintColor: Int): ImageBitmap {
         cachedThemedColor = tintColor
-        cachedThemedBitmap = themed
-        return themed
+        cachedThemedBitmap = bitmap
+        return bitmap
     }
 }
 
-private fun isNearWhiteBackground(red: Int, green: Int, blue: Int, alpha: Int): Boolean {
-    val isWhite = red > BACKGROUND_WHITE_THRESHOLD &&
-        green > BACKGROUND_WHITE_THRESHOLD &&
-        blue > BACKGROUND_WHITE_THRESHOLD
-    return isWhite && alpha > BACKGROUND_ALPHA_THRESHOLD
+private fun resolveDrawableToRender(icon: Drawable): Pair<Drawable, Boolean> {
+    val isAdaptive = icon is AdaptiveIconDrawable
+    var drawableToRender: Drawable? = null
+
+    if (isAdaptive && Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+        drawableToRender = (icon as AdaptiveIconDrawable).monochrome
+    }
+
+    val isOfficialMonochrome = drawableToRender != null
+    if (drawableToRender == null) {
+        drawableToRender = if (isAdaptive) {
+            (icon as AdaptiveIconDrawable).foreground
+        } else {
+            icon
+        }
+    }
+
+    return Pair(drawableToRender, isOfficialMonochrome)
 }
 
-private fun Drawable.toImageBitmap(): ImageBitmap {
-    if ((this is BitmapDrawable) && (this.bitmap != null)) {
-        return this.bitmap.asImageBitmap()
+private fun renderRawBitmap(
+    drawable: Drawable,
+    width: Int,
+    height: Int,
+    isOfficialMonochrome: Boolean,
+    tintColor: Int
+): Bitmap {
+    val rawBitmap = createBitmap(width, height)
+    val rawCanvas = Canvas(rawBitmap)
+    drawable.setBounds(0, 0, width, height)
+
+    if (isOfficialMonochrome) {
+        val paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+            colorFilter = PorterDuffColorFilter(tintColor, PorterDuff.Mode.SRC_IN)
+        }
+        rawCanvas.drawBitmap(drawable.toBitmap(width, height), 0f, 0f, paint)
+    } else {
+        drawable.draw(rawCanvas)
     }
-    val width = if (intrinsicWidth > 0) intrinsicWidth else DEFAULT_ICON_SIZE
-    val height = if (intrinsicHeight > 0) intrinsicHeight else DEFAULT_ICON_SIZE
-    val bitmap = createBitmap(width, height)
-    val canvas = Canvas(bitmap)
-    setBounds(0, 0, canvas.width, canvas.height)
-    draw(canvas)
-    return bitmap.asImageBitmap()
+
+    return rawBitmap
+}
+
+private fun cropRawBitmapIfNeeded(rawBitmap: Bitmap, origW: Int, origH: Int): Bitmap {
+    val rawPixels = IntArray(origW * origH)
+    rawBitmap.getPixels(rawPixels, 0, origW, 0, 0, origW, origH)
+
+    val bounds = AppIconHelper.findPixelBounds(rawPixels, origW, origH)
+    var resultBitmap = rawBitmap
+
+    if (bounds != null) {
+        val cropW = bounds.third - bounds.first + 1
+        val cropH = bounds.fourth - bounds.second + 1
+        val shouldCrop = AppIconHelper.isDimensionCropped(cropW, origW) ||
+            AppIconHelper.isDimensionCropped(cropH, origH)
+        if (shouldCrop) {
+            resultBitmap = AppIconHelper.scaleCroppedBitmap(rawBitmap, bounds.first, bounds.second, cropW, cropH)
+        }
+    }
+
+    return resultBitmap
+}
+
+private fun applyTintToBitmap(bitmap: Bitmap, tintColor: Int, isAdaptive: Boolean): Bitmap {
+    val width = bitmap.width
+    val height = bitmap.height
+    val pixels = IntArray(width * height)
+    bitmap.getPixels(pixels, 0, width, 0, 0, width, height)
+
+    val corners = intArrayOf(
+        pixels[0],
+        pixels[width - 1],
+        pixels[(height - 1) * width],
+        pixels[(height - 1) * width + width - 1]
+    )
+    val cornersAreSolid = corners.count { Color.alpha(it) > ALPHA_CORNER_THRESHOLD } >= SOLID_CORNERS_MIN_COUNT
+
+    if (isAdaptive && !cornersAreSolid) {
+        recolorAdaptivePixels(pixels, tintColor)
+    } else {
+        recolorStandardPixels(pixels, corners, cornersAreSolid, tintColor)
+    }
+
+    val output = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
+    output.setPixels(pixels, 0, width, 0, 0, width, height)
+    return output
+}
+
+private fun recolorAdaptivePixels(pixels: IntArray, tintColor: Int) {
+    val tr = Color.red(tintColor)
+    val tg = Color.green(tintColor)
+    val tb = Color.blue(tintColor)
+
+    for (i in pixels.indices) {
+        val p = pixels[i]
+        val a = Color.alpha(p)
+        if (a <= MIN_ALPHA_THRESHOLD) {
+            pixels[i] = 0
+        } else {
+            val lum = AppIconHelper.computeLuminance(Color.red(p), Color.green(p), Color.blue(p))
+            val finalAlpha = (a * (ALPHA_BASE_RATIO + ALPHA_LUM_RATIO * lum)).toInt().coerceIn(0, COLOR_MAX_INT)
+            pixels[i] = Color.argb(finalAlpha, tr, tg, tb)
+        }
+    }
+}
+
+private fun recolorStandardPixels(pixels: IntArray, corners: IntArray, cornersAreSolid: Boolean, tintColor: Int) {
+    val tr = Color.red(tintColor)
+    val tg = Color.green(tintColor)
+    val tb = Color.blue(tintColor)
+    val bgR = corners.fold(0) { acc, c -> acc + Color.red(c) } / corners.size.toDouble()
+    val bgG = corners.fold(0) { acc, c -> acc + Color.green(c) } / corners.size.toDouble()
+    val bgB = corners.fold(0) { acc, c -> acc + Color.blue(c) } / corners.size.toDouble()
+
+    for (i in pixels.indices) {
+        val p = pixels[i]
+        val a = Color.alpha(p)
+        if (a <= MIN_ALPHA_THRESHOLD) {
+            pixels[i] = 0
+            continue
+        }
+
+        val r = Color.red(p)
+        val g = Color.green(p)
+        val b = Color.blue(p)
+
+        val dr = r - bgR
+        val dg = g - bgG
+        val db = b - bgB
+        val dist = sqrt(dr * dr + dg * dg + db * db)
+
+        if (cornersAreSolid && (dist < BG_DIST_THRESHOLD || AppIconHelper.isNearWhiteBackground(r, g, b, a))) {
+            pixels[i] = 0
+        } else {
+            val lum = AppIconHelper.computeLuminance(r, g, b)
+            val finalAlpha = (a * (ALPHA_BASE_RATIO + ALPHA_LUM_RATIO * lum)).toInt().coerceIn(0, COLOR_MAX_INT)
+            pixels[i] = Color.argb(finalAlpha, tr, tg, tb)
+        }
+    }
 }

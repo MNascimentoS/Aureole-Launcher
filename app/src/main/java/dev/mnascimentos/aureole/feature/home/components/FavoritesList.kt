@@ -33,7 +33,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
-import dev.mnascimentos.aureole.core.designsystem.icons.*
+import dev.mnascimentos.aureole.core.designsystem.icons.Star
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
@@ -132,10 +132,12 @@ private fun ScrollableFavoritesList(
         if (showHeadersAndWidgets) {
             item(key = "clock_header") {
                 ClockHeader(
-                    hazeState = config.hazeState,
-                    isHazeEnabled = uiState.isHazeEnabled,
-                    hazeOpacity = uiState.hazeOpacity,
-                    isBackgroundEnabled = uiState.isClockBackgroundEnabled,
+                    hazeConfig = ClockHazeConfig(
+                        hazeState = config.hazeState,
+                        isHazeEnabled = uiState.isHazeEnabled,
+                        hazeOpacity = uiState.hazeOpacity,
+                        isBackgroundEnabled = uiState.isClockBackgroundEnabled
+                    ),
                     onLongClick = { actions.onOpenEditClockBottomSheet() }
                 )
             }
