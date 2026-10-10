@@ -250,40 +250,38 @@ private fun WidgetHostItem(
 }
 
 private fun updateWidgetHostView(view: View, widgetId: Int) {
-    if (view is AppWidgetHostView) {
-        val appWidgetManager = AppWidgetManager.getInstance(view.context)
-        val appWidgetInfo = appWidgetManager.getAppWidgetInfo(widgetId)
-        if (appWidgetInfo != null) {
-            val density = view.context.resources.displayMetrics.density
-            val measuredWidthDp = if (view.width > 0) {
-                (view.width / density).toInt()
-            } else {
-                (view.context.resources.configuration.screenWidthDp)
-            }
-            val measuredHeightDp = if (view.height > 0) {
-                (view.height / density).toInt()
-            } else {
-                appWidgetInfo.minHeight
-            }
-            val tagKey = "${measuredWidthDp}x$measuredHeightDp"
-            if (view.tag != tagKey) {
-                view.tag = tagKey
-                val options = Bundle().apply {
-                    putInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH, appWidgetInfo.minWidth)
-                    putInt(AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT, appWidgetInfo.minHeight)
-                    putInt(
-                        AppWidgetManager.OPTION_APPWIDGET_MAX_WIDTH,
-                        measuredWidthDp.coerceAtLeast(appWidgetInfo.minWidth)
-                    )
-                    putInt(
-                        AppWidgetManager.OPTION_APPWIDGET_MAX_HEIGHT,
-                        measuredHeightDp.coerceAtLeast(appWidgetInfo.minHeight)
-                    )
-                }
-                appWidgetManager.updateAppWidgetOptions(widgetId, options)
-            }
-        }
+    if (view !is AppWidgetHostView) return
+    val appWidgetManager = AppWidgetManager.getInstance(view.context)
+    val appWidgetInfo = appWidgetManager.getAppWidgetInfo(widgetId) ?: return
+
+    val density = view.context.resources.displayMetrics.density
+    val measuredWidthDp = if (view.width > 0) {
+        (view.width / density).toInt()
+    } else {
+        view.context.resources.configuration.screenWidthDp
     }
+    val measuredHeightDp = if (view.height > 0) {
+        (view.height / density).toInt()
+    } else {
+        appWidgetInfo.minHeight
+    }
+    val tagKey = "${measuredWidthDp}x$measuredHeightDp"
+    if (view.tag == tagKey) return
+
+    view.tag = tagKey
+    val options = Bundle().apply {
+        putInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH, appWidgetInfo.minWidth)
+        putInt(AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT, appWidgetInfo.minHeight)
+        putInt(
+            AppWidgetManager.OPTION_APPWIDGET_MAX_WIDTH,
+            measuredWidthDp.coerceAtLeast(appWidgetInfo.minWidth)
+        )
+        putInt(
+            AppWidgetManager.OPTION_APPWIDGET_MAX_HEIGHT,
+            measuredHeightDp.coerceAtLeast(appWidgetInfo.minHeight)
+        )
+    }
+    appWidgetManager.updateAppWidgetOptions(widgetId, options)
 }
 
 private fun createWidgetHostView(

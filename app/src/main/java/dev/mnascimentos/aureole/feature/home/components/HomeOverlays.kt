@@ -40,6 +40,8 @@ import kotlin.math.abs
 private const val EDGE_GESTURE_START_WIDTH_DP = 32
 private const val EDGE_INTENT_THRESHOLD_DP = 28
 private const val VERTICAL_INTENT_THRESHOLD_DP = 36
+private const val SCRUBBER_TOP_RATIO = 1f / 3f
+private const val VERTICAL_GESTURE_RATIO = 1.5f
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
@@ -251,7 +253,7 @@ private fun handleEdgeDrag(
 
     if (triggered) {
         change.consume()
-        val scrubberTopYPx = params.screenHeightPx * (1f / 3f)
+        val scrubberTopYPx = params.screenHeightPx * SCRUBBER_TOP_RATIO
         params.onExternalTouchYChange(change.position.y - scrubberTopYPx)
     }
     return triggered
@@ -264,25 +266,28 @@ private fun handleVerticalGesture(
     hasTriggered: Boolean,
     params: HomeDragParams
 ): Boolean {
-    if (params.isAllAppsDrawerOpen || change.isConsumed) return hasTriggered
+    if (params.isAllAppsDrawerOpen || change.isConsumed) {
+        return hasTriggered
+    }
 
-    if (!hasTriggered) {
+    var triggered = hasTriggered
+    if (!triggered) {
         val verticalIntentThresholdPx = with(params.density) { VERTICAL_INTENT_THRESHOLD_DP.dp.toPx() }
         val absX = abs(totalDx)
         val absY = abs(totalDy)
 
-        if (absY > verticalIntentThresholdPx && absY > 1.5f * absX) {
+        if (absY > verticalIntentThresholdPx && absY > VERTICAL_GESTURE_RATIO * absX) {
+            triggered = true
             change.consume()
             if (totalDy > 0) {
                 params.onExpandNotificationShade()
             } else {
                 params.onAllAppsDrawerOpen()
             }
-            return true
         }
-        return false
+    } else {
+        change.consume()
     }
 
-    change.consume()
-    return true
+    return triggered
 }

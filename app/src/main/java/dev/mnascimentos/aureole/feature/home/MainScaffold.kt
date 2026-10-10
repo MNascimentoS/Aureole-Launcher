@@ -27,6 +27,7 @@ import dev.mnascimentos.aureole.feature.home.components.UpdateDownloadedDialog
 import dev.mnascimentos.aureole.feature.home.components.model.FavoriteAppsDialogActions
 import dev.mnascimentos.aureole.feature.home.components.model.FavoriteAppsDialogConfig
 import dev.mnascimentos.aureole.feature.home.extensions.closeWidgetPopup
+import dev.mnascimentos.aureole.feature.home.extensions.dismissReleaseNotes
 import dev.mnascimentos.aureole.feature.home.extensions.setShowFavoritePicker
 import dev.mnascimentos.aureole.feature.home.extensions.setShowWidgetPicker
 import dev.mnascimentos.aureole.feature.home.extensions.setShowWidgetResizeDialog

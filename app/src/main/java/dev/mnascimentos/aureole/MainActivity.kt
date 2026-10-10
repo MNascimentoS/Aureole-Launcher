@@ -43,6 +43,7 @@ import dev.mnascimentos.aureole.feature.home.HomeViewModel
 import dev.mnascimentos.aureole.feature.home.LocalHomeActions
 import dev.mnascimentos.aureole.feature.home.LocalHomeUiState
 import dev.mnascimentos.aureole.feature.home.MainScaffold
+import dev.mnascimentos.aureole.feature.home.extensions.checkReleaseNotes
 import dev.mnascimentos.aureole.feature.home.extensions.handleBackNavigation
 import dev.mnascimentos.aureole.feature.home.extensions.loadGridItems
 import dev.mnascimentos.aureole.feature.home.extensions.setAllAppsDrawerOpen

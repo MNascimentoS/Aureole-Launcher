@@ -57,6 +57,13 @@ private const val GREETING_SIZE_NORMAL = 14f
 private const val DATE_SIZE_COMPACT = 11f
 private const val DATE_SIZE_NORMAL = 13f
 
+private const val MORNING_HOUR_START = 5
+private const val MORNING_HOUR_END = 11
+private const val AFTERNOON_HOUR_START = 12
+private const val AFTERNOON_HOUR_END = 17
+private const val DEFAULT_NOON_HOUR = 12
+private const val GREETING_CROSSFADE_DURATION_MS = 500
+
 data class ClockHazeConfig(
     val hazeState: HazeState? = null,
     val isHazeEnabled: Boolean = false,
@@ -191,11 +198,36 @@ fun ClockHeader(
 }
 
 private fun getGreetingForCurrentHour(): String {
-    val hour = SimpleDateFormat("H", Locale.getDefault()).format(Date()).toIntOrNull() ?: 12
+    val hour = SimpleDateFormat("H", Locale.getDefault()).format(Date()).toIntOrNull() ?: DEFAULT_NOON_HOUR
     return when (hour) {
-        in 5..11 -> "Bom dia"
-        in 12..17 -> "Boa tarde"
+        in MORNING_HOUR_START..MORNING_HOUR_END -> "Bom dia"
+        in AFTERNOON_HOUR_START..AFTERNOON_HOUR_END -> "Boa tarde"
         else -> "Boa noite"
+    }
+}
+
+private fun resolveClockTimeFormats(timeFormat: String): Pair<String, String> {
+    return when (timeFormat.uppercase()) {
+        "12H" -> Pair("hh:mm", "hh:mm")
+        "24H" -> Pair("HH:mm", "HH:mm")
+        else -> Pair("hh:mm", "HH:mm")
+    }
+}
+
+private fun resolveClockDatePattern(dateFormat: String): String {
+    return when (dateFormat.uppercase()) {
+        "SHORT" -> "EEE, d MMM"
+        "NUMERIC" -> "dd/MM/yyyy"
+        "ISO" -> "yyyy-MM-dd"
+        else -> "EEEE, d 'de' MMMM"
+    }
+}
+
+private fun resolveClockAlignments(alignment: String): Pair<Alignment.Horizontal, TextAlign> {
+    return when (alignment.uppercase()) {
+        "CENTER" -> Pair(Alignment.CenterHorizontally, TextAlign.Center)
+        "END", "RIGHT" -> Pair(Alignment.End, TextAlign.End)
+        else -> Pair(Alignment.Start, TextAlign.Start)
     }
 }
 
@@ -211,17 +243,7 @@ private fun resolveClockTypeface(fontFamily: String): Typeface {
 
 @Composable
 private fun ClockHeaderContent(params: ClockHeaderContentParams) {
-    val horizontalAlignment = when (params.alignment.uppercase()) {
-        "CENTER" -> Alignment.CenterHorizontally
-        "END", "RIGHT" -> Alignment.End
-        else -> Alignment.Start
-    }
-
-    val textAlign = when (params.alignment.uppercase()) {
-        "CENTER" -> TextAlign.Center
-        "END", "RIGHT" -> TextAlign.End
-        else -> TextAlign.Start
-    }
+    val (horizontalAlignment, textAlign) = resolveClockAlignments(params.alignment)
 
     val showGreeting = when (params.clockStyle) {
         "TIME_ONLY", "DATE_ON_TOP" -> false
@@ -240,19 +262,8 @@ private fun ClockHeaderContent(params: ClockHeaderContentParams) {
     }
 
     val typeface = resolveClockTypeface(params.fontFamily)
-
-    val (format12, format24) = when (params.timeFormat.uppercase()) {
-        "12H" -> Pair("hh:mm", "hh:mm")
-        "24H" -> Pair("HH:mm", "HH:mm")
-        else -> Pair("hh:mm", "HH:mm")
-    }
-
-    val datePattern = when (params.dateFormat.uppercase()) {
-        "SHORT" -> "EEE, d MMM"
-        "NUMERIC" -> "dd/MM/yyyy"
-        "ISO" -> "yyyy-MM-dd"
-        else -> "EEEE, d 'de' MMMM"
-    }
+    val (format12, format24) = resolveClockTimeFormats(params.timeFormat)
+    val datePattern = resolveClockDatePattern(params.dateFormat)
 
     Column(
         modifier = Modifier.fillMaxWidth(),
@@ -270,7 +281,7 @@ private fun ClockHeaderContent(params: ClockHeaderContentParams) {
         if (showGreeting) {
             Crossfade(
                 targetState = params.greeting,
-                animationSpec = tween(500),
+                animationSpec = tween(GREETING_CROSSFADE_DURATION_MS),
                 label = "greeting_fade"
             ) { currentGreeting ->
                 AureoleText(

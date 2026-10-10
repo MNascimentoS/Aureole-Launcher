@@ -11,9 +11,13 @@ import dev.mnascimentos.aureole.feature.home.HomeViewModel
 import dev.mnascimentos.aureole.feature.home.extensions.GridItemSpec
 import dev.mnascimentos.aureole.feature.home.extensions.addGridItem
 import dev.mnascimentos.aureole.feature.home.extensions.cancelGridEditMode
+import dev.mnascimentos.aureole.feature.home.extensions.closeContainerAppBottomSheet
+import dev.mnascimentos.aureole.feature.home.extensions.closeContainerFolderBottomSheet
 import dev.mnascimentos.aureole.feature.home.extensions.closeEditClockBottomSheet
 import dev.mnascimentos.aureole.feature.home.extensions.closeEditContainerDialog
+import dev.mnascimentos.aureole.feature.home.extensions.closeFolderAppBottomSheet
 import dev.mnascimentos.aureole.feature.home.extensions.closeWidgetPopup
+import dev.mnascimentos.aureole.feature.home.extensions.closeWidgetStackBottomSheet
 import dev.mnascimentos.aureole.feature.home.extensions.deleteContainerInstance
 import dev.mnascimentos.aureole.feature.home.extensions.deleteGridItem
 import dev.mnascimentos.aureole.feature.home.extensions.dismissGridError
@@ -23,9 +27,14 @@ import dev.mnascimentos.aureole.feature.home.extensions.moveGridItem
 import dev.mnascimentos.aureole.feature.home.extensions.onFolderIntent
 import dev.mnascimentos.aureole.feature.home.extensions.onSearchQueryChanged
 import dev.mnascimentos.aureole.feature.home.extensions.openAddContainerForParent
+import dev.mnascimentos.aureole.feature.home.extensions.openContainerAppBottomSheet
+import dev.mnascimentos.aureole.feature.home.extensions.openContainerFolderBottomSheet
 import dev.mnascimentos.aureole.feature.home.extensions.openEditClockBottomSheet
 import dev.mnascimentos.aureole.feature.home.extensions.openEditContainerDialog
+import dev.mnascimentos.aureole.feature.home.extensions.openEditFolderForFolder
+import dev.mnascimentos.aureole.feature.home.extensions.openFolderAppBottomSheet
 import dev.mnascimentos.aureole.feature.home.extensions.openWidgetPopup
+import dev.mnascimentos.aureole.feature.home.extensions.openWidgetStackBottomSheet
 import dev.mnascimentos.aureole.feature.home.extensions.removeAppFromContainer
 import dev.mnascimentos.aureole.feature.home.extensions.removeAppFromFolder
 import dev.mnascimentos.aureole.feature.home.extensions.removeChildFromScrollView
@@ -49,6 +58,7 @@ import dev.mnascimentos.aureole.feature.home.extensions.setWidgetRowHeight
 import dev.mnascimentos.aureole.feature.home.extensions.toggleClockBackground
 import dev.mnascimentos.aureole.feature.home.extensions.toggleFavorite
 import dev.mnascimentos.aureole.feature.home.extensions.toggleShowAllAppsOnHome
+import dev.mnascimentos.aureole.feature.home.extensions.toggleWidgetStackDots
 import dev.mnascimentos.aureole.feature.home.extensions.updateClockAlignment
 import dev.mnascimentos.aureole.feature.home.extensions.updateClockBackgroundColor
 import dev.mnascimentos.aureole.feature.home.extensions.updateClockCustomGreeting
