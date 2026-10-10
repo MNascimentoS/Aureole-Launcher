@@ -11,13 +11,14 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -34,9 +35,10 @@ import dev.mnascimentos.aureole.core.designsystem.palette.ThemePalette
 import dev.mnascimentos.aureole.core.designsystem.palette.allPalettes
 import dev.mnascimentos.aureole.core.designsystem.palette.toLight
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleTheme
+import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 
-private const val PALETTE_MAX_HEIGHT_DP = 420
 private const val BLUR_SWATCH_WIDTH_DP = 140
 private const val BLUR_SWATCH_HEIGHT_DP = 22
 private const val BLUR_LOW_OPACITY = 0.2f
@@ -55,7 +57,7 @@ fun SetBackgroundBottomSheet(
     ) {
         Column(
             verticalArrangement = Arrangement.spacedBy(AureoleDS.dimens.xSmall),
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth().verticalScroll(rememberScrollState())
         ) {
             SettingsMenuItem(
                 title = "Solid color",
@@ -88,8 +90,7 @@ fun PickPaletteBottomSheet(
         LazyColumn(
             verticalArrangement = Arrangement.spacedBy(AureoleDS.dimens.small),
             modifier = Modifier
-                .fillMaxWidth()
-                .heightIn(max = PALETTE_MAX_HEIGHT_DP.dp)
+                .fillMaxSize()
         ) {
             items(allPalettes) { basePalette ->
                 val isSelected = basePalette.name.equals(cleanSelectedName, ignoreCase = true)
@@ -193,7 +194,7 @@ fun BlurBottomSheet(
     ) {
         Column(
             verticalArrangement = Arrangement.spacedBy(AureoleDS.dimens.xSmall),
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth().verticalScroll(rememberScrollState())
         ) {
             options.forEach { (opacity, enableHaze, label) ->
                 val isSelected = if (!enableHaze || opacity == 0f) {
@@ -251,5 +252,42 @@ private fun BlurOptionRow(
                 modifier = Modifier.size(20.dp)
             )
         }
+    }
+}
+
+@AureolePreview
+@Composable
+fun SetBackgroundBottomSheetPreview() {
+    AureoleLauncherTheme {
+        SetBackgroundBottomSheet(
+            onSolidColorClick = {},
+            onCustomImageClick = {},
+            onDismissRequest = {}
+        )
+    }
+}
+
+@AureolePreview
+@Composable
+fun PickPaletteBottomSheetPreview() {
+    AureoleLauncherTheme {
+        PickPaletteBottomSheet(
+            selectedPaletteName = "Frostbite",
+            onPaletteSelected = {},
+            onDismissRequest = {}
+        )
+    }
+}
+
+@AureolePreview
+@Composable
+fun BlurBottomSheetPreview() {
+    AureoleLauncherTheme {
+        BlurBottomSheet(
+            currentOpacity = BLUR_MED_OPACITY,
+            isHazeEnabled = true,
+            onOptionSelected = { _, _ -> },
+            onDismissRequest = {}
+        )
     }
 }

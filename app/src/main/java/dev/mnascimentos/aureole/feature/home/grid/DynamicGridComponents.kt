@@ -5,10 +5,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.FloatingActionButton
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -19,6 +16,8 @@ import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
+import dev.mnascimentos.aureole.core.designsystem.icons.Add
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.feature.home.grid.model.DragTargetSlot
 
 private const val GRID_OFFSET_PX = 8f
@@ -40,16 +39,14 @@ fun GridBottomEditControls(
         shape = RoundedCornerShape(20.dp),
         modifier = modifier.zIndex(TOP_BAR_Z_INDEX)
     ) {
-        Icon(
-            imageVector = Icons.Default.Add,
-            contentDescription = "Adicionar Container"
+        AureoleDS.icons.Add(
+            tint = MaterialTheme.colorScheme.onPrimary
         )
     }
 }
 
 @Composable
 fun GridBackgroundOverlay(
-    limits: GridLimits,
     cellWidthPx: Float,
     cellHeightPx: Float,
     activeDragTarget: DragTargetSlot?,

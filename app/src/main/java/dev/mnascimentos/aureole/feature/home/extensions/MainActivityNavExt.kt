@@ -6,6 +6,7 @@ import dev.mnascimentos.aureole.feature.home.model.MainUiState
 
 fun handleBackNavigation(uiState: MainUiState, viewModel: HomeViewModel) {
     when {
+        uiState.showReleaseNotesBottomSheet -> viewModel.dismissReleaseNotes()
         uiState.showWidgetPopup || uiState.showWidgetResizeDialog -> viewModel.closeWidgetPopup()
         uiState.isCreateFolderDialogVisible ||
             uiState.isAddAppToFolderDialogVisible ||

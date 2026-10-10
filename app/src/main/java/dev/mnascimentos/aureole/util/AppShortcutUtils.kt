@@ -29,7 +29,12 @@ object AppShortcutUtils {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N_MR1) return emptyList()
 
         return try {
-            val launcherApps = context.getSystemService(Context.LAUNCHER_APPS_SERVICE) as? LauncherApps
+            val launcherApps = try {
+                context.getSystemService(Context.LAUNCHER_APPS_SERVICE) as? LauncherApps
+            } catch (e: AssertionError) {
+                Log.w(TAG, "Unsupported service in preview", e)
+                null
+            }
             if (launcherApps?.hasShortcutHostPermission() != true) {
                 emptyList()
             } else {
@@ -64,7 +69,13 @@ object AppShortcutUtils {
                     )
                 }
             }
-        } catch (e: Throwable) {
+        } catch (e: SecurityException) {
+            Log.w(TAG, "Error fetching app shortcuts", e)
+            emptyList()
+        } catch (e: IllegalStateException) {
+            Log.w(TAG, "Error fetching app shortcuts", e)
+            emptyList()
+        } catch (e: IllegalArgumentException) {
             Log.w(TAG, "Error fetching app shortcuts", e)
             emptyList()
         }

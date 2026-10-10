@@ -14,14 +14,9 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
@@ -37,6 +32,10 @@ import androidx.compose.ui.unit.dp
 import dev.chrisbanes.haze.HazeStyle
 import dev.chrisbanes.haze.HazeTint
 import dev.chrisbanes.haze.hazeEffect
+import dev.mnascimentos.aureole.core.designsystem.icons.Close
+import dev.mnascimentos.aureole.core.designsystem.icons.Delete
+import dev.mnascimentos.aureole.core.designsystem.icons.Edit
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.feature.home.widget.model.OpenedWidgetPopupConfig
 
 private const val HAZE_MIN_ALPHA_POPUP = 0.25f
@@ -104,9 +103,7 @@ private fun OpenedWidgetPopupHeader(onDismiss: () -> Unit) {
             color = MaterialTheme.colorScheme.onSurface
         )
         IconButton(onClick = onDismiss, modifier = Modifier.size(28.dp)) {
-            Icon(
-                imageVector = Icons.Default.Close,
-                contentDescription = "Close",
+            AureoleDS.icons.Close(
                 tint = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.size(18.dp)
             )
@@ -129,9 +126,7 @@ private fun OpenedWidgetPopupActions(
             .height(40.dp),
         shape = RoundedCornerShape(10.dp)
     ) {
-        Icon(
-            imageVector = Icons.Default.Edit,
-            contentDescription = null,
+        AureoleDS.icons.Edit(
             tint = MaterialTheme.colorScheme.onSurfaceVariant,
             modifier = Modifier.size(16.dp)
         )
@@ -155,9 +150,7 @@ private fun OpenedWidgetPopupActions(
             .height(40.dp),
         shape = RoundedCornerShape(10.dp)
     ) {
-        Icon(
-            imageVector = Icons.Default.Delete,
-            contentDescription = null,
+        AureoleDS.icons.Delete(
             tint = MaterialTheme.colorScheme.onErrorContainer,
             modifier = Modifier.size(16.dp)
         )

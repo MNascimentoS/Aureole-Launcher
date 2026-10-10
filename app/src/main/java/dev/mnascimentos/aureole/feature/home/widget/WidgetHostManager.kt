@@ -108,7 +108,7 @@ class WidgetHostManager(
         provider: AppWidgetProviderInfo?
     ) {
         updateWidgetOptions(widgetId, provider)
-        viewModel.addWidgetId(widgetId, provider)
+        viewModel.addWidgetId(widgetId)
         viewModel.setPendingWidgetId(-1)
     }
 

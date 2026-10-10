@@ -54,6 +54,7 @@ data class HomeScreenActions(
     val onSetIsAddingSingleWidget: (Boolean) -> Unit = {},
     val onUpdateScrollViewOrientation: (String, ScrollOrientation) -> Unit = { _, _ -> },
     val onRemoveChildFromScrollView: (String, String) -> Unit = { _, _ -> },
+    val onMoveChildInScrollView: (String, String, Boolean) -> Unit = { _, _, _ -> },
     val onResizeChildInScrollView: (String, String, Int, Int) -> Unit = { _, _, _, _ -> },
     val onOpenAddContainerForParent: (String) -> Unit = {},
 
@@ -65,6 +66,21 @@ data class HomeScreenActions(
 
     val onOpenCustomizeBottomSheet: () -> Unit = {},
     val onCloseCustomizeBottomSheet: () -> Unit = {},
+
+    // Clock Customization Actions
+    val onOpenEditClockBottomSheet: () -> Unit = {},
+    val onCloseEditClockBottomSheet: () -> Unit = {},
+    val onUpdateClockStyle: (String) -> Unit = {},
+    val onUpdateClockCustomGreeting: (String) -> Unit = {},
+    val onUpdateClockAlignment: (String) -> Unit = {},
+    val onUpdateClockFontFamily: (String) -> Unit = {},
+    val onUpdateClockTimeFormat: (String) -> Unit = {},
+    val onUpdateClockDateFormat: (String) -> Unit = {},
+    val onUpdateClockTextColor: (Int) -> Unit = {},
+    val onUpdateClockBackgroundColor: (Int) -> Unit = {},
+    val onToggleClockBackground: () -> Unit = {},
+    val onResetClockSettings: () -> Unit = {},
+
     val onOpenContainerAppBottomSheet: (AppInfo, String) -> Unit = { _, _ -> },
     val onCloseContainerAppBottomSheet: () -> Unit = {},
     val onOpenContainerFolderBottomSheet: (AppFolder, String) -> Unit = { _, _ -> },

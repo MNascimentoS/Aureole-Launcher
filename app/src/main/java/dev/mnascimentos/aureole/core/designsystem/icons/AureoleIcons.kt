@@ -8,6 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import dev.mnascimentos.aureole.R
@@ -79,13 +80,19 @@ fun AureoleIcons.AppSelect(
 fun AureoleIcons.ArrowDown(
     modifier: Modifier = Modifier,
     tint: Color? = null
-) { AureoleIcon(R.drawable.ic_aureole_arrow_down, modifier, tint) }
+) { AureoleIcon(R.drawable.ic_aureole_arrow_up, modifier.rotate(180f), tint) }
 
 @Composable
 fun AureoleIcons.ArrowUp(
     modifier: Modifier = Modifier,
     tint: Color? = null
 ) { AureoleIcon(R.drawable.ic_aureole_arrow_up, modifier, tint) }
+
+@Composable
+fun AureoleIcons.Close(
+    modifier: Modifier = Modifier,
+    tint: Color? = null
+) { AureoleIcon(R.drawable.ic_aureole_add, modifier.rotate(45f), tint) }
 
 @Composable
 fun AureoleIcons.Check(

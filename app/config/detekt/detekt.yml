@@ -56,6 +56,12 @@ formatting:
   TrailingCommaOnDeclarationSite:
     active: false
 
+style:
+  ForbiddenImport:
+    active: true
+    imports:
+      - 'androidx.compose.material.icons.*'
+
 naming:
   FunctionNaming:
     active: true

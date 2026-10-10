@@ -42,8 +42,9 @@ Ao inspecionar componentes no Figma (via MCP ou API REST):
    - As cores, tipografias e formas extraídas do Figma devem residir nos arquivos de tema do projeto (`Color.kt`, `Type.kt`, `Shape.kt`, `Theme.kt`).
    - Evitar valores numéricos e hexadecimais *hardcoded* diretamente nas telas; utilizar sempre tokens do tema (`MaterialTheme.colorScheme`, `MaterialTheme.typography`).
 
-3. **Previews e Documentação**:
+3. **Previews, Bottom Views/Popups e Testes de Screenshot**:
    - Fornecer sempre funções `@Preview` mostrando o componente em Light Theme e Dark Theme.
+   - **Regra Estrita de Bottom Views e Popups:** Todas as bottom views (bottom sheets) e popups (dialogs e popups customizados) devem obrigatoriamente contar com preview do componente principal no próprio arquivo e teste de screenshot correspondente (`@PreviewTest`).
 
 4. **Qualidade e Detekt**:
    - O código gerado deve atender aos limites de linhas (<300 linhas por arquivo) e passar no Detekt sem warnings (`./gradlew detekt`).

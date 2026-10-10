@@ -18,10 +18,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -29,7 +25,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.ImageBitmap
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -40,7 +35,9 @@ import dev.chrisbanes.haze.HazeState
 import dev.chrisbanes.haze.HazeStyle
 import dev.chrisbanes.haze.HazeTint
 import dev.chrisbanes.haze.hazeEffect
+import dev.mnascimentos.aureole.core.designsystem.icons.Close
 import dev.mnascimentos.aureole.core.designsystem.icons.Logo
+import dev.mnascimentos.aureole.core.designsystem.icons.Settings
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleTheme
@@ -167,7 +164,7 @@ fun AureolePopupHeader(
     title: String,
     modifier: Modifier = Modifier,
     sessionTitle: String? = null,
-    iconVector: ImageVector? = null,
+    iconVector: @Composable ((Modifier) -> Unit)? = null,
     iconBitmap: ImageBitmap? = null,
     customIcon: (@Composable () -> Unit)? = null,
     showAureoleLogo: Boolean = true,
@@ -215,11 +212,8 @@ fun AureolePopupHeader(
                         contentDescription = title,
                         modifier = Modifier.size(22.dp),
                     )
-                    iconVector != null -> Icon(
-                        imageVector = iconVector,
-                        contentDescription = title,
-                        tint = AureoleDS.colors.onSurfaceHigh,
-                        modifier = Modifier.size(20.dp),
+                    iconVector != null -> iconVector(
+                        Modifier.size(20.dp)
                     )
                     else -> AureoleText(
                         text = title.take(1).uppercase(),
@@ -274,9 +268,7 @@ fun AureolePopupHeader(
                     onClick = onSettingsClick,
                     modifier = Modifier.size(26.dp),
                 ) {
-                    Icon(
-                        imageVector = Icons.Default.Settings,
-                        contentDescription = "Settings",
+                    AureoleDS.icons.Settings(
                         tint = AureoleDS.colors.onSurfaceHigh,
                         modifier = Modifier.size(18.dp),
                     )
@@ -286,9 +278,7 @@ fun AureolePopupHeader(
                     onClick = onCloseClick,
                     modifier = Modifier.size(26.dp),
                 ) {
-                    Icon(
-                        imageVector = Icons.Default.Close,
-                        contentDescription = "Close",
+                    AureoleDS.icons.Close(
                         tint = AureoleDS.colors.onSurfaceHigh,
                         modifier = Modifier.size(18.dp),
                     )
@@ -329,15 +319,14 @@ fun AureolePopupMenuItem(
     title: String,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
-    icon: ImageVector? = null,
+    icon: @Composable ((Modifier) -> Unit)? = null,
     customIcon: (@Composable () -> Unit)? = null,
     badge: String? = null,
-    trailingIcon: ImageVector? = null,
+    trailingIcon: @Composable ((Modifier) -> Unit)? = null,
     onTrailingClick: (() -> Unit)? = null,
     isDestructive: Boolean = false,
 ) {
     val textColor = if (isDestructive) MaterialTheme.colorScheme.error else AureoleDS.colors.onSurfaceHigh
-    val iconTint = if (isDestructive) MaterialTheme.colorScheme.error else AureoleDS.colors.onSurfaceMedium
 
     Row(
         modifier = modifier
@@ -355,12 +344,7 @@ fun AureolePopupMenuItem(
         ) {
             when {
                 customIcon != null -> customIcon()
-                icon != null -> Icon(
-                    imageVector = icon,
-                    contentDescription = title,
-                    tint = iconTint,
-                    modifier = Modifier.size(20.dp),
-                )
+                icon != null -> icon(Modifier.size(20.dp))
             }
 
             if (icon != null || customIcon != null) {
@@ -394,12 +378,7 @@ fun AureolePopupMenuItem(
                     onClick = { (onTrailingClick ?: onClick).invoke() },
                     modifier = Modifier.size(28.dp),
                 ) {
-                    Icon(
-                        imageVector = trailingIcon,
-                        contentDescription = null,
-                        tint = AureoleDS.colors.onSurfaceMedium,
-                        modifier = Modifier.size(16.dp),
-                    )
+                    trailingIcon(Modifier.size(16.dp))
                 }
             }
         }
@@ -424,7 +403,7 @@ fun AureolePopupPreview() {
 
             AureolePopupMenuItem(
                 title = "Add folder",
-                icon = Icons.Default.Settings,
+                icon = { modifier -> AureoleDS.icons.Settings(modifier, AureoleDS.colors.onSurfaceHigh) },
                 badge = "12",
                 onClick = {},
             )

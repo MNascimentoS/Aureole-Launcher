@@ -44,7 +44,7 @@ fun FolderDialog(
 ) {
     val appsInFolder = folder.appPackageNames.mapNotNull { pkgName ->
         allApps.find { it.packageName == pkgName }
-    }.sortedBy { it.label.lowercase() }
+    }
     val context = LocalContext.current
 
     Dialog(

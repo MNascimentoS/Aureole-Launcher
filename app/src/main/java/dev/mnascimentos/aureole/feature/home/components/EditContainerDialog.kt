@@ -5,14 +5,17 @@ import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkVertically
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -22,13 +25,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.KeyboardArrowDown
-import androidx.compose.material.icons.filled.KeyboardArrowUp
-import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DropdownMenuItem
@@ -36,13 +32,13 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuAnchorType
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
-import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
@@ -53,8 +49,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.core.data.model.AppFolder
 import dev.mnascimentos.aureole.core.data.model.AppInfo
@@ -62,8 +59,15 @@ import dev.mnascimentos.aureole.core.data.model.ContainerItemEntity
 import dev.mnascimentos.aureole.core.data.model.ContainerItemType
 import dev.mnascimentos.aureole.core.data.model.ContainerModel
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
+import dev.mnascimentos.aureole.core.designsystem.icons.Add
+import dev.mnascimentos.aureole.core.designsystem.icons.ArrowDown
+import dev.mnascimentos.aureole.core.designsystem.icons.ArrowUp
+import dev.mnascimentos.aureole.core.designsystem.icons.Delete
+import dev.mnascimentos.aureole.core.designsystem.icons.Search
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleTheme
+import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.components.model.EditContainerFormCallbacks
 import dev.mnascimentos.aureole.feature.home.components.model.EditContainerFormState
 import dev.mnascimentos.aureole.feature.home.folder.CreateFolderDialog
@@ -79,19 +83,7 @@ fun EditContainerBottomSheet(
     onSave: (ContainerModel) -> Unit,
     onDeletePanel: (String) -> Unit
 ) {
-    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
-
-    ModalBottomSheet(
-        onDismissRequest = onDismiss,
-        sheetState = sheetState,
-        shape = RoundedCornerShape(
-            topStart = AureoleTheme.dimens.cornerRadius,
-            topEnd = AureoleTheme.dimens.cornerRadius
-        ),
-        containerColor = AureoleTheme.colors.surface,
-        contentColor = AureoleTheme.colors.onSurfaceMedium,
-        dragHandle = null
-    ) {
+    val sheetContent = @Composable {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -101,10 +93,44 @@ fun EditContainerBottomSheet(
             EditContainerBottomSheetContent(
                 panel = panel,
                 allApps = allApps,
-                onDismiss = onDismiss,
                 onSave = onSave,
                 onDeletePanel = onDeletePanel
             )
+        }
+    }
+
+    if (LocalInspectionMode.current) {
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.BottomCenter
+        ) {
+            Surface(
+                shape = RoundedCornerShape(
+                    topStart = AureoleTheme.dimens.cornerRadius,
+                    topEnd = AureoleTheme.dimens.cornerRadius
+                ),
+                color = AureoleTheme.colors.surface,
+                contentColor = AureoleTheme.colors.onSurfaceMedium,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                sheetContent()
+            }
+        }
+    } else {
+        val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+
+        ModalBottomSheet(
+            onDismissRequest = onDismiss,
+            sheetState = sheetState,
+            shape = RoundedCornerShape(
+                topStart = AureoleTheme.dimens.cornerRadius,
+                topEnd = AureoleTheme.dimens.cornerRadius
+            ),
+            containerColor = AureoleTheme.colors.surface,
+            contentColor = AureoleTheme.colors.onSurfaceMedium,
+            dragHandle = null
+        ) {
+            sheetContent()
         }
     }
 }
@@ -239,7 +265,6 @@ private class EditContainerState(
 private fun EditContainerBottomSheetContent(
     panel: ContainerModel,
     allApps: List<AppInfo>,
-    onDismiss: () -> Unit,
     onSave: (ContainerModel) -> Unit,
     onDeletePanel: (String) -> Unit
 ) {
@@ -257,7 +282,7 @@ private fun EditContainerBottomSheetContent(
     }
 
     Column(modifier = Modifier.fillMaxWidth()) {
-        EditContainerHeader(onDismiss = onDismiss)
+        EditContainerHeader()
         Spacer(modifier = Modifier.height(AureoleDS.dimens.small))
 
         LazyColumn(
@@ -298,7 +323,9 @@ private fun EditContainerBottomSheetContent(
         EditContainerFooter(
             onDelete = { onDeletePanel(panel.id) },
             onSave = {
-                val updatedApps = state.itemsList.filter { it.itemType == ContainerItemType.APP }.mapNotNull { it.packageName }
+                val updatedApps = state.itemsList
+                    .filter { it.itemType == ContainerItemType.APP }
+                    .mapNotNull { it.packageName }
                 val updated = panel.copy(
                     position = state.position,
                     orientation = state.orientation,
@@ -338,20 +365,31 @@ private fun LazyListScope.editContainerFormItems(
             modifier = Modifier.padding(bottom = 4.dp)
         )
         Row(
-            modifier = Modifier.fillMaxWidth().padding(bottom = AureoleDS.dimens.small),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = AureoleDS.dimens.small),
             horizontalArrangement = Arrangement.spacedBy(8.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Box(modifier = Modifier.weight(1f)) {
                 EditContainerAddAppDropdown(allApps = allApps, onAppSelected = onAddApp)
             }
-            Button(
+            OutlinedButton(
                 onClick = onAddFolder,
-                modifier = Modifier.height(56.dp)
+                shape = RoundedCornerShape(12.dp),
+                border = BorderStroke(1.dp, AureoleTheme.colors.outline.copy(alpha = 0.5f)),
+                colors = ButtonDefaults.outlinedButtonColors(
+                    contentColor = MaterialTheme.colorScheme.primary
+                ),
+                contentPadding = PaddingValues(horizontal = 12.dp),
+                modifier = Modifier.height(48.dp)
             ) {
-                Icon(Icons.Default.Add, contentDescription = null, modifier = Modifier.size(20.dp))
-                Spacer(modifier = Modifier.width(4.dp))
-                AureoleText("Pasta")
+                AureoleDS.icons.Add(
+                    tint = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.size(18.dp)
+                )
+                Spacer(modifier = Modifier.width(6.dp))
+                AureoleText("Pasta", style = AureoleTheme.typography.labelLarge)
             }
         }
     }
@@ -378,22 +416,22 @@ private fun LazyListScope.editContainerFormItems(
     } else {
         itemsIndexed(itemsList, key = { _, item -> item.id }) { index, item ->
             val title: String
-            val iconVector: ImageVector
+            val iconName: String?
             val isFolder = item.itemType == ContainerItemType.FOLDER
 
             if (isFolder) {
                 val folder = folders.find { it.id == item.folderId }
                 title = folder?.name ?: "Pasta"
-                iconVector = FolderIconRegistry.getIcon(folder?.icon) ?: Icons.Default.Menu
+                iconName = folder?.icon ?: "menu"
             } else {
                 val appInfo = allApps.find { it.packageName == item.packageName }
                 title = appInfo?.label ?: item.packageName ?: "App"
-                iconVector = Icons.Default.Menu
+                iconName = "menu"
             }
 
             EditContainerItemRow(
                 title = title,
-                iconVector = iconVector,
+                iconName = iconName,
                 isFolder = isFolder,
                 canMoveUp = index > 0,
                 canMoveDown = index < itemsList.size - 1,
@@ -445,11 +483,15 @@ private fun EditContainerOptionsExpandableSection(
                 onClick = { isExpanded = !isExpanded },
                 modifier = Modifier.size(32.dp)
             ) {
-                Icon(
-                    imageVector = if (isExpanded) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,
-                    contentDescription = if (isExpanded) "Recolher" else "Expandir",
-                    tint = AureoleTheme.colors.onSurfaceMedium
-                )
+                if (isExpanded) {
+                    AureoleDS.icons.ArrowUp(
+                        tint = AureoleTheme.colors.onSurfaceMedium
+                    )
+                } else {
+                    AureoleDS.icons.ArrowDown(
+                        tint = AureoleTheme.colors.onSurfaceMedium
+                    )
+                }
             }
         }
 
@@ -507,25 +549,18 @@ private fun EditContainerOptionsExpandableSection(
 }
 
 @Composable
-private fun EditContainerHeader(onDismiss: () -> Unit) {
-    Row(
+private fun EditContainerHeader() {
+    Box(
         modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
+        contentAlignment = Alignment.Center
     ) {
         AureoleText(
             text = "Editar Container",
             style = AureoleTheme.typography.titleMedium,
             fontWeight = FontWeight.Bold,
-            color = AureoleTheme.colors.onSurfaceHigh
+            color = AureoleTheme.colors.onSurfaceHigh,
+            textAlign = TextAlign.Center
         )
-        IconButton(onClick = onDismiss) {
-            Icon(
-                imageVector = Icons.Default.Close,
-                contentDescription = "Fechar",
-                tint = AureoleTheme.colors.onSurfaceMedium
-            )
-        }
     }
 }
 
@@ -659,7 +694,7 @@ private fun EditContainerAlignmentSelector(
 @Composable
 private fun EditContainerItemRow(
     title: String,
-    iconVector: ImageVector,
+    iconName: String?,
     isFolder: Boolean,
     canMoveUp: Boolean,
     canMoveDown: Boolean,
@@ -681,9 +716,7 @@ private fun EditContainerItemRow(
                 enabled = canMoveUp,
                 modifier = Modifier.size(28.dp)
             ) {
-                Icon(
-                    imageVector = Icons.Default.KeyboardArrowUp,
-                    contentDescription = "Mover para cima",
+                AureoleDS.icons.ArrowUp(
                     tint = if (canMoveUp) {
                         AureoleTheme.colors.onSurfaceHigh
                     } else {
@@ -698,9 +731,7 @@ private fun EditContainerItemRow(
                 enabled = canMoveDown,
                 modifier = Modifier.size(28.dp)
             ) {
-                Icon(
-                    imageVector = Icons.Default.KeyboardArrowDown,
-                    contentDescription = "Mover para baixo",
+                AureoleDS.icons.ArrowDown(
                     tint = if (canMoveDown) {
                         AureoleTheme.colors.onSurfaceHigh
                     } else {
@@ -714,9 +745,8 @@ private fun EditContainerItemRow(
 
         Spacer(modifier = Modifier.width(4.dp))
 
-        Icon(
-            imageVector = iconVector,
-            contentDescription = null,
+        FolderIconRegistry.RenderIcon(
+            name = iconName,
             tint = MaterialTheme.colorScheme.primary,
             modifier = Modifier.size(20.dp)
         )
@@ -738,9 +768,7 @@ private fun EditContainerItemRow(
         )
 
         IconButton(onClick = onRemove, modifier = Modifier.size(28.dp)) {
-            Icon(
-                imageVector = Icons.Default.Delete,
-                contentDescription = "Remover",
+            AureoleDS.icons.Delete(
                 tint = MaterialTheme.colorScheme.error,
                 modifier = Modifier.size(18.dp)
             )
@@ -776,12 +804,32 @@ private fun EditContainerAddAppDropdown(
                 searchQuery = it
                 isExpanded = true
             },
-            placeholder = { AureoleText("Buscar app para adicionar...") },
+            placeholder = {
+                AureoleText(
+                    text = "Buscar app...",
+                    style = AureoleTheme.typography.bodyMedium,
+                    color = AureoleTheme.colors.onSurfaceLow,
+                    maxLines = 1
+                )
+            },
+            leadingIcon = {
+                AureoleDS.icons.Search(
+                    tint = AureoleTheme.colors.onSurfaceMedium,
+                    modifier = Modifier.size(18.dp)
+                )
+            },
             trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = isExpanded) },
-            modifier = Modifier.menuAnchor(ExposedDropdownMenuAnchorType.PrimaryNotEditable).fillMaxWidth(),
+            singleLine = true,
+            shape = RoundedCornerShape(12.dp),
+            modifier = Modifier
+                .menuAnchor(ExposedDropdownMenuAnchorType.PrimaryNotEditable)
+                .fillMaxWidth()
+                .height(48.dp),
             colors = OutlinedTextFieldDefaults.colors(
                 focusedBorderColor = MaterialTheme.colorScheme.primary,
-                unfocusedBorderColor = AureoleTheme.colors.outline,
+                unfocusedBorderColor = AureoleTheme.colors.outline.copy(alpha = 0.5f),
+                focusedContainerColor = AureoleTheme.colors.surfaceVariant.copy(alpha = 0.3f),
+                unfocusedContainerColor = AureoleTheme.colors.surfaceVariant.copy(alpha = 0.3f),
                 focusedTextColor = AureoleTheme.colors.onSurfaceHigh,
                 unfocusedTextColor = AureoleTheme.colors.onSurfaceHigh
             )
@@ -831,9 +879,8 @@ private fun EditContainerFooter(
                 contentColor = MaterialTheme.colorScheme.error
             )
         ) {
-            Icon(
-                imageVector = Icons.Default.Delete,
-                contentDescription = "Excluir Container"
+            AureoleDS.icons.Delete(
+                tint = MaterialTheme.colorScheme.error
             )
             Spacer(modifier = Modifier.width(AureoleDS.dimens.xxSmall))
             AureoleText("Excluir")
@@ -866,6 +913,21 @@ private fun SettingSwitchRow(
         Switch(
             checked = checked,
             onCheckedChange = onCheckedChange
+        )
+    }
+}
+
+@AureolePreview
+@Composable
+fun EditContainerBottomSheetPreview() {
+    val samplePanel = ContainerModel(id = "1")
+    AureoleLauncherTheme {
+        EditContainerBottomSheet(
+            panel = samplePanel,
+            allApps = emptyList(),
+            onDismiss = {},
+            onSave = {},
+            onDeletePanel = {}
         )
     }
 }

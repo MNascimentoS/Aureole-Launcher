@@ -67,7 +67,7 @@ fun OpenedFolderPopup(
     val appsInFolder = remember(folder, config.allApps) {
         folder.appPackageNames.mapNotNull { pkgName ->
             config.allApps.find { it.packageName == pkgName }
-        }.sortedBy { it.label.lowercase() }
+        }
     }
 
     var showActionsByLongPress by remember { mutableStateOf(false) }

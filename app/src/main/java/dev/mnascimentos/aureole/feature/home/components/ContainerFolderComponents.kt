@@ -18,9 +18,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -39,6 +36,7 @@ import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.core.data.model.AppFolder
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
+import dev.mnascimentos.aureole.core.designsystem.icons.Add
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.feature.home.LocalHomeUiState
 import dev.mnascimentos.aureole.feature.home.components.model.ContainerFolderButtonParams
@@ -67,9 +65,7 @@ fun ContainerAddFolderButton(
             .clickable(onClick = onClick),
         contentAlignment = Alignment.Center
     ) {
-        Icon(
-            imageVector = Icons.Default.Add,
-            contentDescription = "Criar Pasta",
+        AureoleDS.icons.Add(
             tint = AureoleDS.colors.onSurfaceMedium,
             modifier = Modifier.size(iconSize)
         )
@@ -169,19 +165,21 @@ fun ContainerFolderButton(
                 modifier = Modifier.size(buttonSize)
             )
         } else {
-            val iconVector = FolderIconRegistry.getIcon(params.folder.icon)
-            if (iconVector != null) {
-                Icon(
-                    imageVector = iconVector,
-                    contentDescription = params.folder.name,
-                    tint = params.textColor,
-                    modifier = Modifier.size(iconSize)
+            if (params.folder.icon != null) {
+                FolderIconRegistry.RenderIcon(
+                    name = params.folder.icon,
+                    modifier = Modifier.size(iconSize),
+                    tint = params.textColor
                 )
             } else {
                 AureoleText(
                     text = params.folder.name.take(1).uppercase(),
                     color = params.textColor,
-                    style = if (isBackgroundEnabled) MaterialTheme.typography.headlineSmall else MaterialTheme.typography.headlineMedium,
+                    style = if (isBackgroundEnabled) {
+                        MaterialTheme.typography.headlineSmall
+                    } else {
+                        MaterialTheme.typography.headlineMedium
+                    },
                     fontWeight = FontWeight.Bold
                 )
             }
@@ -219,13 +217,11 @@ fun FolderMiniGridPreview(
 
 @Composable
 private fun EmptyFolderMiniGridPreview(folder: AppFolder) {
-    val iconVector = FolderIconRegistry.getIcon(folder.icon)
-    if (iconVector != null) {
-        Icon(
-            imageVector = iconVector,
-            contentDescription = folder.name,
-            tint = AureoleDS.colors.onSurfaceMedium,
-            modifier = Modifier.size(24.dp)
+    if (folder.icon != null) {
+        FolderIconRegistry.RenderIcon(
+            name = folder.icon,
+            modifier = Modifier.size(24.dp),
+            tint = AureoleDS.colors.onSurfaceMedium
         )
     } else {
         AureoleText(
@@ -293,7 +289,11 @@ fun ContainerAppItem(
     onAppClick: (AppInfo) -> Unit,
     onLongClick: () -> Unit
 ) {
-    val bitmap = remember(app.packageName) { app.getIconBitmap() }
+    val uiState = LocalHomeUiState.current
+    val bitmap = app.getDisplayIconBitmap(
+        isThemed = uiState.isThemedAppIconsEnabled,
+        tintColor = AureoleDS.colors.onSurfaceMedium
+    )
     val buttonSize = if (isBackgroundEnabled) 52.dp else 60.dp
     val cornerRadius = if (isBackgroundEnabled) 15.dp else 18.dp
     val imgPadding = if (isBackgroundEnabled) 3.dp else 2.dp

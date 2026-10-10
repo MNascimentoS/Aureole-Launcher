@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Build
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -21,7 +22,10 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -37,6 +41,7 @@ import dev.mnascimentos.aureole.core.designsystem.icons.Logo
 import dev.mnascimentos.aureole.core.designsystem.icons.Star
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleTheme
+import dev.mnascimentos.aureole.feature.home.components.ReleaseNotesBottomSheet
 import dev.mnascimentos.aureole.feature.settings.model.SettingsScreenActions
 import dev.mnascimentos.aureole.feature.settings.model.SettingsUiState
 
@@ -53,6 +58,7 @@ fun SettingsRootScreen(
 ) {
     val context = LocalContext.current
     val versionName = remember(context) { getVersionName(context) }
+    var showReleaseNotes by remember { mutableStateOf(false) }
 
     Scaffold(
         containerColor = AureoleDS.colors.surface
@@ -74,7 +80,10 @@ fun SettingsRootScreen(
             ) {
                 Spacer(modifier = Modifier.height(topSpacerHeight))
 
-                SettingsHeader(versionName = versionName)
+                SettingsHeader(
+                    versionName = versionName,
+                    onClick = { showReleaseNotes = true }
+                )
 
                 Spacer(modifier = Modifier.height(AureoleDS.dimens.xxLarge))
 
@@ -95,13 +104,24 @@ fun SettingsRootScreen(
                 )
             }
         }
+
+        if (showReleaseNotes) {
+            ReleaseNotesBottomSheet(
+                onDismissRequest = { showReleaseNotes = false }
+            )
+        }
     }
 }
 
 @Composable
-private fun SettingsHeader(versionName: String) {
+private fun SettingsHeader(
+    versionName: String,
+    onClick: () -> Unit
+) {
     Box(
-        modifier = Modifier.padding(AureoleDS.dimens.medium),
+        modifier = Modifier
+            .clickable { onClick() }
+            .padding(AureoleDS.dimens.medium),
         contentAlignment = Alignment.Center
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {

@@ -28,6 +28,52 @@ class SettingsRepository(private val context: Context) {
         get() = prefs.getBoolean(KEY_CLOCK_BACKGROUND_ENABLED, true)
         set(value) = prefs.edit { putBoolean(KEY_CLOCK_BACKGROUND_ENABLED, value) }
 
+    var clockStyle: String
+        get() = prefs.getString(KEY_CLOCK_STYLE, DEFAULT_CLOCK_STYLE) ?: DEFAULT_CLOCK_STYLE
+        set(value) = prefs.edit { putString(KEY_CLOCK_STYLE, value) }
+
+    var clockCustomGreeting: String
+        get() = prefs.getString(KEY_CLOCK_CUSTOM_GREETING, "") ?: ""
+        set(value) = prefs.edit { putString(KEY_CLOCK_CUSTOM_GREETING, value) }
+
+    var clockAlignment: String
+        get() = prefs.getString(KEY_CLOCK_ALIGNMENT, DEFAULT_CLOCK_ALIGNMENT) ?: DEFAULT_CLOCK_ALIGNMENT
+        set(value) = prefs.edit { putString(KEY_CLOCK_ALIGNMENT, value) }
+
+    var clockFontFamily: String
+        get() = prefs.getString(KEY_CLOCK_FONT_FAMILY, DEFAULT_CLOCK_FONT_FAMILY) ?: DEFAULT_CLOCK_FONT_FAMILY
+        set(value) = prefs.edit { putString(KEY_CLOCK_FONT_FAMILY, value) }
+
+    var clockTimeFormat: String
+        get() = prefs.getString(KEY_CLOCK_TIME_FORMAT, DEFAULT_CLOCK_TIME_FORMAT) ?: DEFAULT_CLOCK_TIME_FORMAT
+        set(value) = prefs.edit { putString(KEY_CLOCK_TIME_FORMAT, value) }
+
+    var clockDateFormat: String
+        get() = prefs.getString(KEY_CLOCK_DATE_FORMAT, DEFAULT_CLOCK_DATE_FORMAT) ?: DEFAULT_CLOCK_DATE_FORMAT
+        set(value) = prefs.edit { putString(KEY_CLOCK_DATE_FORMAT, value) }
+
+    var clockTextColor: Int
+        get() = prefs.getInt(KEY_CLOCK_TEXT_COLOR, 0)
+        set(value) = prefs.edit { putInt(KEY_CLOCK_TEXT_COLOR, value) }
+
+    var clockBackgroundColor: Int
+        get() = prefs.getInt(KEY_CLOCK_BACKGROUND_COLOR, 0)
+        set(value) = prefs.edit { putInt(KEY_CLOCK_BACKGROUND_COLOR, value) }
+
+    fun resetClockSettings() {
+        prefs.edit {
+            putBoolean(KEY_CLOCK_BACKGROUND_ENABLED, true)
+            putString(KEY_CLOCK_STYLE, DEFAULT_CLOCK_STYLE)
+            putString(KEY_CLOCK_CUSTOM_GREETING, "")
+            putString(KEY_CLOCK_ALIGNMENT, DEFAULT_CLOCK_ALIGNMENT)
+            putString(KEY_CLOCK_FONT_FAMILY, DEFAULT_CLOCK_FONT_FAMILY)
+            putString(KEY_CLOCK_TIME_FORMAT, DEFAULT_CLOCK_TIME_FORMAT)
+            putString(KEY_CLOCK_DATE_FORMAT, DEFAULT_CLOCK_DATE_FORMAT)
+            putInt(KEY_CLOCK_TEXT_COLOR, 0)
+            putInt(KEY_CLOCK_BACKGROUND_COLOR, 0)
+        }
+    }
+
     var showContainerAddFolderButton: Boolean
         get() = prefs.getBoolean(KEY_SHOW_CONTAINER_ADD_FOLDER_BUTTON, true)
         set(value) = prefs.edit { putBoolean(KEY_SHOW_CONTAINER_ADD_FOLDER_BUTTON, value) }
@@ -148,6 +194,10 @@ class SettingsRepository(private val context: Context) {
         get() = prefs.getString(KEY_WALLPAPER_SCALE_TYPE, "Crop") ?: "Crop"
         set(value) = prefs.edit { putString(KEY_WALLPAPER_SCALE_TYPE, value) }
 
+    var lastSeenVersionCode: Int
+        get() = prefs.getInt(KEY_LAST_SEEN_VERSION_CODE, 0)
+        set(value) = prefs.edit { putInt(KEY_LAST_SEEN_VERSION_CODE, value) }
+
     fun clearCustomWallpaper() {
         val path = customWallpaperPath
         if (!path.isNullOrEmpty()) {
@@ -172,6 +222,20 @@ class SettingsRepository(private val context: Context) {
         private const val KEY_CONTAINER_BACKGROUND_ENABLED = "container_background_enabled"
         private const val KEY_CONTAINER_EXPAND_CELL = "container_expand_cell"
         private const val KEY_CLOCK_BACKGROUND_ENABLED = "clock_background_enabled"
+        private const val KEY_CLOCK_STYLE = "clock_style"
+        private const val KEY_CLOCK_CUSTOM_GREETING = "clock_custom_greeting"
+        private const val KEY_CLOCK_ALIGNMENT = "clock_alignment"
+        private const val KEY_CLOCK_FONT_FAMILY = "clock_font_family"
+        private const val KEY_CLOCK_TIME_FORMAT = "clock_time_format"
+        private const val KEY_CLOCK_DATE_FORMAT = "clock_date_format"
+        private const val KEY_CLOCK_TEXT_COLOR = "clock_text_color"
+        private const val KEY_CLOCK_BACKGROUND_COLOR = "clock_background_color"
+
+        const val DEFAULT_CLOCK_STYLE = "DYNAMIC_GREETING"
+        const val DEFAULT_CLOCK_ALIGNMENT = "START"
+        const val DEFAULT_CLOCK_FONT_FAMILY = "SANS_SERIF"
+        const val DEFAULT_CLOCK_TIME_FORMAT = "SYSTEM"
+        const val DEFAULT_CLOCK_DATE_FORMAT = "DEFAULT"
         private const val KEY_SHOW_CONTAINER_ADD_FOLDER_BUTTON = "show_container_add_folder_button"
         private const val KEY_CONTAINER_POSITION = "container_position"
         private const val KEY_SHOW_FOLDER_LABELS = "show_folder_labels"
@@ -198,6 +262,7 @@ class SettingsRepository(private val context: Context) {
         private const val KEY_SEARCH_ICON_POSITION = "search_icon_position"
         private const val KEY_SELECTED_THEME = "selected_theme"
         private const val KEY_SELECTED_FONT = "selected_font"
+        private const val KEY_LAST_SEEN_VERSION_CODE = "last_seen_version_code"
         private const val DEFAULT_HAZE_OPACITY = 0.5f
         private const val DEFAULT_HEADER_OFFSET = 10
         private const val MIN_HEADER_OFFSET = 0

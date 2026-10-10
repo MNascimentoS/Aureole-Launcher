@@ -9,7 +9,14 @@ import android.os.Bundle
 import android.util.Log
 import android.view.Gravity
 import android.view.View
+import android.view.ViewGroup
+import android.widget.FrameLayout
 import android.widget.TextView
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.spring
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.awaitEachGesture
@@ -25,16 +32,14 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -43,13 +48,14 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.input.pointer.PointerEventPass
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.rememberNestedScrollInteropConnection
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import dev.chrisbanes.haze.HazeState
 import dev.chrisbanes.haze.HazeStyle
 import dev.chrisbanes.haze.HazeTint
 import dev.chrisbanes.haze.hazeEffect
+import dev.mnascimentos.aureole.core.designsystem.icons.Add
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.feature.home.LocalHomeActions
 import dev.mnascimentos.aureole.feature.home.LocalHomeUiState
 import dev.mnascimentos.aureole.feature.home.widget.model.PagerContentParams
@@ -57,14 +63,12 @@ import dev.mnascimentos.aureole.feature.home.widget.model.StackedWidgetConfig
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-private const val MAX_WIDGETS = 3
+private const val MAX_WIDGETS = 5
 private const val HAZE_MIN_ALPHA_ADD_BUTTON = 0.2f
 private const val HAZE_MAX_ALPHA_ADD_BUTTON = 0.95f
 private const val DEFAULT_HAZE_OPACITY = 0.5f
 private const val ADD_BUTTON_ALPHA = 0.4f
 private const val ADD_BUTTON_HAZE_ALPHA_FACTOR = 0.7f
-private const val WIDGET_MIN_WIDTH = 100
-private const val WIDGET_MAX_HEIGHT = 360
 private const val WIDGET_NOT_AVAILABLE_TEXT = "Widget não disponível (Remova e adicione novamente)"
 
 @Composable
@@ -81,22 +85,8 @@ fun StackedWidgetSection(
 
     val showDotsForStack = uiState.widgetStackDots[stackId] ?: config.showWidgetDots
 
-    val hasFillMaxSize = modifier.toString().contains("fillMaxSize") || modifier == Modifier.fillMaxSize()
-    val (startPad, endPad) = calculateWidgetSectionPadding(
-        hasFillMaxSize = hasFillMaxSize,
-        isContainerEnabled = uiState.isContainerEnabled,
-        isLeftHandedMode = uiState.isLeftHandedMode
-    )
-
     Column(
-        modifier = modifier
-            .then(
-                if (hasFillMaxSize) {
-                    Modifier.fillMaxSize()
-                } else {
-                    Modifier.fillMaxWidth().padding(start = startPad, end = endPad, top = 4.dp, bottom = 4.dp)
-                }
-            ),
+        modifier = modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
@@ -108,36 +98,20 @@ fun StackedWidgetSection(
                 showAddButton = showAddButton,
                 pageCount = pageCount,
                 pagerState = pagerState,
-                hasFillMaxSize = hasFillMaxSize
-            )
+                hasFillMaxSize = true
+            ),
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(1f)
         )
 
-        if (pageCount > 1 && showDotsForStack) {
-            PagerIndicatorDots(pageCount = pageCount, currentPage = pagerState.currentPage)
+        if (pageCount >= 1 && showDotsForStack) {
+            WidgetPositionIndicatorBar(
+                pageCount = pageCount,
+                currentPage = pagerState.currentPage
+            )
         }
     }
-}
-
-private fun calculateWidgetSectionPadding(
-    hasFillMaxSize: Boolean,
-    isContainerEnabled: Boolean,
-    isLeftHandedMode: Boolean
-): Pair<Dp, Dp> {
-    val startPad = if (hasFillMaxSize) {
-        0.dp
-    } else if (isContainerEnabled) {
-        if (isLeftHandedMode) 8.dp else 16.dp
-    } else {
-        16.dp
-    }
-    val endPad = if (hasFillMaxSize) {
-        0.dp
-    } else if (isContainerEnabled) {
-        if (isLeftHandedMode) 16.dp else 8.dp
-    } else {
-        16.dp
-    }
-    return Pair(startPad, endPad)
 }
 
 @Composable
@@ -145,23 +119,18 @@ private fun StackedWidgetPagerContent(
     config: StackedWidgetConfig,
     appWidgetHost: AppWidgetHost,
     stackId: String,
-    params: PagerContentParams
+    params: PagerContentParams,
+    modifier: Modifier = Modifier
 ) {
     val uiState = LocalHomeUiState.current
     val actions = LocalHomeActions.current
     val pageCount = params.pageCount
     val showAddButton = params.showAddButton
-    val hasFillMaxSize = params.hasFillMaxSize
 
     if (pageCount > 0) {
-        val pagerModifier = if (hasFillMaxSize) {
-            Modifier.fillMaxSize()
-        } else {
-            Modifier.fillMaxWidth().height(config.currentHeightDp)
-        }
         HorizontalPager(
             state = params.pagerState,
-            modifier = pagerModifier
+            modifier = modifier
         ) { page ->
             if (page < config.topWidgetIds.size) {
                 val widgetId = config.topWidgetIds[page]
@@ -187,29 +156,42 @@ private fun StackedWidgetPagerContent(
 }
 
 @Composable
-private fun PagerIndicatorDots(
+fun WidgetPositionIndicatorBar(
     pageCount: Int,
-    currentPage: Int
+    currentPage: Int,
+    modifier: Modifier = Modifier
 ) {
     Row(
-        modifier = Modifier
-            .padding(top = 2.dp, bottom = 4.dp)
+        modifier = modifier
+            .padding(top = 4.dp, bottom = 4.dp)
             .fillMaxWidth(),
-        horizontalArrangement = Arrangement.Center
+        horizontalArrangement = Arrangement.Center,
+        verticalAlignment = Alignment.CenterVertically
     ) {
-        repeat(pageCount) { iteration ->
-            val color = if (currentPage == iteration) {
-                MaterialTheme.colorScheme.primary
-            } else {
-                MaterialTheme.colorScheme.primary.copy(alpha = DEFAULT_HAZE_OPACITY)
-            }
+        repeat(pageCount) { index ->
+            val isSelected = (index == currentPage)
+            val animatedWidth by animateDpAsState(
+                targetValue = if (isSelected) 22.dp else 8.dp,
+                animationSpec = spring(stiffness = Spring.StiffnessMediumLow),
+                label = "indicator_width"
+            )
+            val animatedColor by animateColorAsState(
+                targetValue = if (isSelected) {
+                    MaterialTheme.colorScheme.primary
+                } else {
+                    MaterialTheme.colorScheme.onSurface.copy(alpha = 0.25f)
+                },
+                animationSpec = tween(150),
+                label = "indicator_color"
+            )
 
             Box(
                 modifier = Modifier
-                    .padding(2.dp)
+                    .padding(horizontal = 3.dp)
+                    .height(5.dp)
+                    .width(animatedWidth)
                     .clip(CircleShape)
-                    .background(color)
-                    .size(6.dp)
+                    .background(animatedColor)
             )
         }
     }
@@ -227,7 +209,7 @@ private fun WidgetHostItem(
 
     Box(
         modifier = modifier
-            .fillMaxHeight()
+            .fillMaxSize()
             .clip(MaterialTheme.shapes.large)
             .pointerInput(widgetId, stackId) {
                 val longPressTimeout = viewConfiguration.longPressTimeoutMillis
@@ -258,19 +240,38 @@ private fun WidgetHostItem(
         AndroidView(
             factory = { context -> createWidgetHostView(context, appWidgetHost, widgetId) },
             update = { view ->
-                val widthDp = view.context.resources.configuration.screenWidthDp
-                if (view is AppWidgetHostView && view.tag != widthDp) {
-                    view.tag = widthDp
+                if (view is AppWidgetHostView) {
                     val appWidgetManager = AppWidgetManager.getInstance(view.context)
                     val appWidgetInfo = appWidgetManager.getAppWidgetInfo(widgetId)
                     if (appWidgetInfo != null) {
-                        val options = Bundle().apply {
-                            putInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH, appWidgetInfo.minWidth)
-                            putInt(AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT, appWidgetInfo.minHeight)
-                            putInt(AppWidgetManager.OPTION_APPWIDGET_MAX_WIDTH, widthDp.coerceAtLeast(WIDGET_MIN_WIDTH))
-                            putInt(AppWidgetManager.OPTION_APPWIDGET_MAX_HEIGHT, WIDGET_MAX_HEIGHT)
+                        val density = view.context.resources.displayMetrics.density
+                        val measuredWidthDp = if (view.width > 0) {
+                            (view.width / density).toInt()
+                        } else {
+                            (view.context.resources.configuration.screenWidthDp)
                         }
-                        appWidgetManager.updateAppWidgetOptions(widgetId, options)
+                        val measuredHeightDp = if (view.height > 0) {
+                            (view.height / density).toInt()
+                        } else {
+                            appWidgetInfo.minHeight
+                        }
+                        val tagKey = "${measuredWidthDp}x$measuredHeightDp"
+                        if (view.tag != tagKey) {
+                            view.tag = tagKey
+                            val options = Bundle().apply {
+                                putInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH, appWidgetInfo.minWidth)
+                                putInt(AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT, appWidgetInfo.minHeight)
+                                putInt(
+                                    AppWidgetManager.OPTION_APPWIDGET_MAX_WIDTH,
+                                    measuredWidthDp.coerceAtLeast(appWidgetInfo.minWidth)
+                                )
+                                putInt(
+                                    AppWidgetManager.OPTION_APPWIDGET_MAX_HEIGHT,
+                                    measuredHeightDp.coerceAtLeast(appWidgetInfo.minHeight)
+                                )
+                            }
+                            appWidgetManager.updateAppWidgetOptions(widgetId, options)
+                        }
                     }
                 }
             },
@@ -288,22 +289,33 @@ private fun createWidgetHostView(
     val appWidgetInfo = appWidgetManager.getAppWidgetInfo(widgetId)
     return if (appWidgetInfo != null) {
         try {
-            val widthDp = (context.resources.configuration.screenWidthDp).coerceAtLeast(WIDGET_MIN_WIDTH)
+            val displayMetrics = context.resources.displayMetrics
+            val widthDp = (displayMetrics.widthPixels / displayMetrics.density).toInt().coerceAtLeast(
+                appWidgetInfo.minWidth
+            )
+            val heightDp = (displayMetrics.heightPixels / displayMetrics.density).toInt().coerceAtLeast(
+                appWidgetInfo.minHeight
+            )
             val options = Bundle().apply {
                 putInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH, appWidgetInfo.minWidth)
                 putInt(AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT, appWidgetInfo.minHeight)
                 putInt(AppWidgetManager.OPTION_APPWIDGET_MAX_WIDTH, widthDp)
-                putInt(AppWidgetManager.OPTION_APPWIDGET_MAX_HEIGHT, WIDGET_MAX_HEIGHT)
+                putInt(AppWidgetManager.OPTION_APPWIDGET_MAX_HEIGHT, heightDp)
             }
             appWidgetManager.updateAppWidgetOptions(widgetId, options)
-            appWidgetHost.createView(context, widgetId, appWidgetInfo)
+            val hostView = appWidgetHost.createView(context, widgetId, appWidgetInfo)
+            hostView.layoutParams = FrameLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT
+            )
+            hostView
+        } catch (e: SecurityException) {
+            Log.e("WidgetHostItem", "Error creating widget view", e)
+            createErrorWidgetView(context, "Toque para reconfigurar widget")
         } catch (e: IllegalArgumentException) {
             Log.e("WidgetHostItem", "Error creating widget view", e)
             createErrorWidgetView(context, "Toque para reconfigurar widget")
         } catch (e: IllegalStateException) {
-            Log.e("WidgetHostItem", "Error creating widget view", e)
-            createErrorWidgetView(context, "Toque para reconfigurar widget")
-        } catch (e: SecurityException) {
             Log.e("WidgetHostItem", "Error creating widget view", e)
             createErrorWidgetView(context, "Toque para reconfigurar widget")
         }
@@ -361,14 +373,12 @@ private fun AddWidgetButton(
         contentAlignment = Alignment.Center
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            Icon(
-                imageVector = Icons.Default.Add,
-                contentDescription = "Add Widget",
+            AureoleDS.icons.Add(
                 tint = MaterialTheme.colorScheme.primary,
                 modifier = Modifier.padding(bottom = 8.dp)
             )
             Text(
-                text = "Add Widget",
+                text = "Adicionar Widget",
                 color = MaterialTheme.colorScheme.primary,
                 style = MaterialTheme.typography.labelLarge
             )

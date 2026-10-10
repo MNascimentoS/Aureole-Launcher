@@ -1,62 +1,58 @@
 package dev.mnascimentos.aureole.feature.home.folder
 
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Build
-import androidx.compose.material.icons.filled.Check
-import androidx.compose.material.icons.filled.Create
-import androidx.compose.material.icons.filled.DateRange
-import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Info
-import androidx.compose.material.icons.filled.LocationOn
-import androidx.compose.material.icons.filled.Lock
-import androidx.compose.material.icons.filled.Menu
-import androidx.compose.material.icons.filled.MoreVert
-import androidx.compose.material.icons.filled.Notifications
-import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.Place
-import androidx.compose.material.icons.filled.PlayArrow
-import androidx.compose.material.icons.filled.Refresh
-import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material.icons.filled.Share
-import androidx.compose.material.icons.filled.ShoppingCart
-import androidx.compose.material.icons.filled.Star
-import androidx.compose.material.icons.filled.ThumbUp
-import androidx.compose.material.icons.filled.Warning
-import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import dev.mnascimentos.aureole.core.designsystem.icons.Add
+import dev.mnascimentos.aureole.core.designsystem.icons.Advanced
+import dev.mnascimentos.aureole.core.designsystem.icons.Calendar
+import dev.mnascimentos.aureole.core.designsystem.icons.Check
+import dev.mnascimentos.aureole.core.designsystem.icons.Delete
+import dev.mnascimentos.aureole.core.designsystem.icons.Dots
+import dev.mnascimentos.aureole.core.designsystem.icons.DragMenu
+import dev.mnascimentos.aureole.core.designsystem.icons.Edit
+import dev.mnascimentos.aureole.core.designsystem.icons.EyeOff
+import dev.mnascimentos.aureole.core.designsystem.icons.Folder
+import dev.mnascimentos.aureole.core.designsystem.icons.Home
+import dev.mnascimentos.aureole.core.designsystem.icons.Info
+import dev.mnascimentos.aureole.core.designsystem.icons.MenuIcon
+import dev.mnascimentos.aureole.core.designsystem.icons.RefreshCcw
+import dev.mnascimentos.aureole.core.designsystem.icons.RightDown
+import dev.mnascimentos.aureole.core.designsystem.icons.Search
+import dev.mnascimentos.aureole.core.designsystem.icons.Settings
+import dev.mnascimentos.aureole.core.designsystem.icons.Smile
+import dev.mnascimentos.aureole.core.designsystem.icons.Star
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 
 object FolderIconRegistry {
-    internal val icons: Map<String, ImageVector> = mapOf(
-        "star" to Icons.Default.Star,
-        "home" to Icons.Default.Home,
-        "favorite" to Icons.Default.Favorite,
-        "person" to Icons.Default.Person,
-        "settings" to Icons.Default.Settings,
-        "info" to Icons.Default.Info,
-        "lock" to Icons.Default.Lock,
-        "place" to Icons.Default.Place,
-        "thumb_up" to Icons.Default.ThumbUp,
-        "warning" to Icons.Default.Warning,
-        "notifications" to Icons.Default.Notifications,
-        "edit" to Icons.Default.Edit,
-        "check" to Icons.Default.Check,
-        "add" to Icons.Default.Add,
-        "delete" to Icons.Default.Delete,
-        "search" to Icons.Default.Search,
-        "share" to Icons.Default.Share,
-        "refresh" to Icons.Default.Refresh,
-        "menu" to Icons.Default.Menu,
-        "more_vert" to Icons.Default.MoreVert,
-        "location_on" to Icons.Default.LocationOn,
-        "create" to Icons.Default.Create,
-        "date_range" to Icons.Default.DateRange,
-        "play" to Icons.Default.PlayArrow,
-        "cart" to Icons.Default.ShoppingCart,
-        "build" to Icons.Default.Build,
+    // We map keys directly to the AureoleDS.icons function using a Composable lambda
+    internal val icons: Map<String, @Composable (Modifier, Color?) -> Unit> = mapOf(
+        "star" to { m, t -> AureoleDS.icons.Star(m, t) },
+        "home" to { m, t -> AureoleDS.icons.Home(m, t) },
+        "favorite" to { m, t -> AureoleDS.icons.Star(m, t) }, // Fallback from Favorite to Star
+        "person" to { m, t -> AureoleDS.icons.Smile(m, t) }, // Fallback from Person to Smile
+        "settings" to { m, t -> AureoleDS.icons.Settings(m, t) },
+        "info" to { m, t -> AureoleDS.icons.Info(m, t) },
+        "lock" to { m, t -> AureoleDS.icons.EyeOff(m, t) }, // Fallback from Lock to EyeOff
+        "place" to { m, t -> AureoleDS.icons.Home(m, t) }, // Fallback from Place to Home
+        "thumb_up" to { m, t -> AureoleDS.icons.Check(m, t) }, // Fallback from ThumbUp to Check
+        "warning" to { m, t -> AureoleDS.icons.Info(m, t) }, // Fallback from Warning to Info
+        "notifications" to { m, t -> AureoleDS.icons.Star(m, t) }, // Fallback
+        "edit" to { m, t -> AureoleDS.icons.Edit(m, t) },
+        "check" to { m, t -> AureoleDS.icons.Check(m, t) },
+        "add" to { m, t -> AureoleDS.icons.Add(m, t) },
+        "delete" to { m, t -> AureoleDS.icons.Delete(m, t) },
+        "search" to { m, t -> AureoleDS.icons.Search(m, t) },
+        "share" to { m, t -> AureoleDS.icons.DragMenu(m, t) }, // Fallback
+        "refresh" to { m, t -> AureoleDS.icons.RefreshCcw(m, t) },
+        "menu" to { m, t -> AureoleDS.icons.MenuIcon(m, t) },
+        "more_vert" to { m, t -> AureoleDS.icons.Dots(m, t) }, // Fallback from MoreVert to Dots
+        "location_on" to { m, t -> AureoleDS.icons.Home(m, t) }, // Fallback
+        "create" to { m, t -> AureoleDS.icons.Edit(m, t) }, // Fallback from Create to Edit
+        "date_range" to { m, t -> AureoleDS.icons.Calendar(m, t) },
+        "play" to { m, t -> AureoleDS.icons.RightDown(m, t) }, // Fallback
+        "cart" to { m, t -> AureoleDS.icons.Folder(m, t) }, // Fallback
+        "build" to { m, t -> AureoleDS.icons.Advanced(m, t) }, // Fallback from Build to Advanced
     )
 
     private val aliases: Map<String, String> = mapOf(
@@ -79,10 +75,19 @@ object FolderIconRegistry {
         "social" to "favorite"
     )
 
-    fun getIcon(name: String?): ImageVector? {
-        if (name == null) return null
-        val lower = name.lowercase().trim()
+    @Composable
+    fun RenderIcon(
+        name: String?,
+        modifier: Modifier = Modifier,
+        tint: Color? = null
+    ) {
+        val lower = name?.lowercase()?.trim() ?: ""
         val key = aliases[lower] ?: aliases[lower.replace(" ", "_")] ?: lower
-        return icons[key] ?: icons[key.replace(" ", "_")]
+        val iconComposable = icons[key] ?: icons[key.replace(" ", "_")] ?: icons["folder"]
+        if (iconComposable != null) {
+            iconComposable(modifier, tint)
+        } else {
+            AureoleDS.icons.Folder(modifier, tint)
+        }
     }
 }

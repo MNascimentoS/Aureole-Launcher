@@ -43,6 +43,7 @@ import dev.mnascimentos.aureole.core.designsystem.icons.Smile
 import dev.mnascimentos.aureole.core.designsystem.icons.Undo
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleTheme
+import dev.mnascimentos.aureole.feature.home.components.ReleaseNotesBottomSheet
 import dev.mnascimentos.aureole.feature.settings.components.SettingsBottomSheet
 import dev.mnascimentos.aureole.feature.settings.model.SettingsScreenActions
 import dev.mnascimentos.aureole.feature.settings.model.SettingsUiState
@@ -59,6 +60,7 @@ fun SettingsAdvancedScreen(
 ) {
     val context = LocalContext.current
     var showUninstallDialog by remember { mutableStateOf(false) }
+    var showReleaseNotesDialog by remember { mutableStateOf(false) }
 
     Scaffold(
         containerColor = AureoleDS.colors.surface
@@ -96,7 +98,8 @@ fun SettingsAdvancedScreen(
                     uiState = uiState,
                     actions = actions,
                     context = context,
-                    onOpenUninstallDialog = { showUninstallDialog = true }
+                    onOpenUninstallDialog = { showUninstallDialog = true },
+                    onOpenReleaseNotesDialog = { showReleaseNotesDialog = true }
                 )
 
                 Spacer(modifier = Modifier.height(20.dp))
@@ -113,6 +116,12 @@ fun SettingsAdvancedScreen(
                 onDismiss = { showUninstallDialog = false }
             )
         }
+
+        if (showReleaseNotesDialog) {
+            ReleaseNotesBottomSheet(
+                onDismissRequest = { showReleaseNotesDialog = false }
+            )
+        }
     }
 }
 
@@ -121,12 +130,19 @@ private fun AdvancedItemsGroup(
     uiState: SettingsUiState,
     actions: SettingsScreenActions,
     context: Context,
-    onOpenUninstallDialog: () -> Unit
+    onOpenUninstallDialog: () -> Unit,
+    onOpenReleaseNotesDialog: () -> Unit
 ) {
     Column(
         verticalArrangement = Arrangement.spacedBy(8.dp),
         modifier = Modifier.fillMaxWidth()
     ) {
+        SettingsActionItem(
+            title = "What's new (Release notes)",
+            leadingContent = { AureoleDS.icons.Smile() },
+            onClick = onOpenReleaseNotesDialog
+        )
+
         SettingsActionItem(
             title = "Set as default launcher",
             leadingContent = { AureoleDS.icons.Home() },

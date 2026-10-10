@@ -163,8 +163,25 @@ class ContainerRepository(context: Context) {
         val folderWithPanelId = folder.copy(panelId = panelId)
         folderDbHelper.insertFolder(folderWithPanelId)
 
+        val newFolderItem = ContainerItemEntity(
+            id = UUID.randomUUID().toString(),
+            panelId = panelId,
+            itemType = ContainerItemType.FOLDER,
+            folderId = folderWithPanelId.id,
+            orderIndex = current.items.size
+        )
+
         val updatedFolders = current.folders.filter { it.id != folder.id } + folderWithPanelId
-        saveContainer(current.copy(folders = updatedFolders))
+        val updatedItems = if (current.items.none {
+                it.itemType == ContainerItemType.FOLDER && it.folderId == folderWithPanelId.id
+            }
+        ) {
+            current.items + newFolderItem
+        } else {
+            current.items
+        }
+
+        saveContainer(current.copy(folders = updatedFolders, items = updatedItems))
     }
 
     suspend fun deleteFolderFromPanel(panelId: String, folderId: String) = withContext(Dispatchers.IO) {

@@ -28,13 +28,9 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -51,7 +47,11 @@ import dev.chrisbanes.haze.HazeTint
 import dev.chrisbanes.haze.hazeEffect
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.designsystem.components.AureolePopupMenuItem
+import dev.mnascimentos.aureole.core.designsystem.icons.Add
+import dev.mnascimentos.aureole.core.designsystem.icons.Edit
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.feature.home.LocalHomeActions
+import dev.mnascimentos.aureole.feature.home.LocalHomeUiState
 import dev.mnascimentos.aureole.feature.home.folder.model.FolderPopupActions
 import dev.mnascimentos.aureole.feature.home.folder.model.GridFolderPopupParams
 
@@ -219,9 +219,11 @@ private fun OpenedFolderSamsungGridAppItem(
     onClick: () -> Unit,
     onLongClick: () -> Unit = {}
 ) {
-    val iconBitmap: ImageBitmap = remember(app.packageName) {
-        app.getIconBitmap()
-    }
+    val uiState = LocalHomeUiState.current
+    val iconBitmap: ImageBitmap = app.getDisplayIconBitmap(
+        isThemed = uiState.isThemedAppIconsEnabled,
+        tintColor = AureoleDS.colors.onSurfaceMedium
+    )
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -273,13 +275,13 @@ fun OpenedFolderActions(
         ) {
             AureolePopupMenuItem(
                 title = "Add Apps",
-                icon = Icons.Default.Add,
+                icon = { m -> AureoleDS.icons.Add(m) },
                 onClick = onAddAppsClick
             )
 
             AureolePopupMenuItem(
                 title = "Edit Folder",
-                icon = Icons.Outlined.Edit,
+                icon = { m -> AureoleDS.icons.Edit(m) },
                 onClick = onEditFolderClick
             )
         }
@@ -331,9 +333,11 @@ private fun OpenedFolderAppItemRow(
     onClick: () -> Unit,
     onLongClick: () -> Unit = {}
 ) {
-    val iconBitmap: ImageBitmap = remember(app.packageName) {
-        app.getIconBitmap()
-    }
+    val uiState = LocalHomeUiState.current
+    val iconBitmap: ImageBitmap = app.getDisplayIconBitmap(
+        isThemed = uiState.isThemedAppIconsEnabled,
+        tintColor = AureoleDS.colors.onSurfaceMedium
+    )
 
     Row(
         modifier = Modifier

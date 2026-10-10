@@ -1,6 +1,5 @@
 package dev.mnascimentos.aureole.feature.settings.components
 
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -20,7 +19,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleTheme
+import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 
 @Composable
 internal fun SettingsButtonPositionDialog(
@@ -74,12 +75,7 @@ internal fun SettingsButtonPositionDialog(
             TextButton(onClick = onDismiss) {
                 AureoleText("Cancelar", color = AureoleTheme.colors.onSurfaceHigh)
             }
-        },
-        modifier = Modifier.border(
-            width = 0.5.dp,
-            color = AureoleTheme.colors.outline,
-            shape = RoundedCornerShape(22.dp)
-        )
+        }
     )
 }
 
@@ -135,12 +131,7 @@ internal fun SearchIconPositionDialog(
             TextButton(onClick = onDismiss) {
                 AureoleText("Cancelar", color = AureoleTheme.colors.onSurfaceHigh)
             }
-        },
-        modifier = Modifier.border(
-            width = 0.5.dp,
-            color = AureoleTheme.colors.outline,
-            shape = RoundedCornerShape(22.dp)
-        )
+        }
     )
 }
 
@@ -199,11 +190,42 @@ internal fun ContainerPositionDialog(
             TextButton(onClick = onDismiss) {
                 AureoleText("Cancelar", color = AureoleTheme.colors.onSurfaceHigh)
             }
-        },
-        modifier = Modifier.border(
-            width = 0.5.dp,
-            color = AureoleTheme.colors.outline,
-            shape = RoundedCornerShape(22.dp)
-        )
+        }
     )
+}
+
+@AureolePreview
+@Composable
+fun ContainerPositionDialogPreview() {
+    AureoleLauncherTheme {
+        ContainerPositionDialog(
+            currentPosition = "Center",
+            onPositionSelected = {},
+            onDismiss = {}
+        )
+    }
+}
+
+@AureolePreview
+@Composable
+fun SettingsButtonPositionDialogPreview() {
+    AureoleLauncherTheme {
+        SettingsButtonPositionDialog(
+            currentPosition = "Right",
+            onPositionSelected = {},
+            onDismiss = {}
+        )
+    }
+}
+
+@AureolePreview
+@Composable
+fun SearchIconPositionDialogPreview() {
+    AureoleLauncherTheme {
+        SearchIconPositionDialog(
+            currentPosition = "Left",
+            onPositionSelected = {},
+            onDismiss = {}
+        )
+    }
 }

@@ -99,7 +99,6 @@ private fun HomeScreenBottomSheetOverlays(
 
     uiState.activeContainerFolderBottomSheet?.let { state ->
         ContainerFolderBottomSheet(
-            folder = state.folder,
             onEditShortcuts = {
                 actions.onCloseContainerFolderBottomSheet()
                 actions.onFolderIntent(FolderViewIntent.AddAppToFolder(state.folder.id))

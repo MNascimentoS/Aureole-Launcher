@@ -43,12 +43,14 @@ private const val DEFAULT_WIDGET_MAX_HEIGHT = 360
 
 @Composable
 fun GridClockContent(containerConfig: ContainerConfig, uiState: MainUiState) {
+    val actions = LocalHomeActions.current
     Box(modifier = Modifier.fillMaxSize()) {
         ClockHeader(
             hazeState = containerConfig.hazeState,
             isHazeEnabled = uiState.isHazeEnabled,
             hazeOpacity = uiState.hazeOpacity,
-            isBackgroundEnabled = uiState.isClockBackgroundEnabled
+            isBackgroundEnabled = uiState.isClockBackgroundEnabled,
+            onLongClick = { actions.onOpenEditClockBottomSheet() }
         )
     }
 }

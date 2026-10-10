@@ -14,7 +14,6 @@ import dev.mnascimentos.aureole.feature.settings.screens.SettingsContributorsScr
 import dev.mnascimentos.aureole.feature.settings.screens.SettingsRootScreen
 
 @PreviewTest
-@Preview(name = "Root - Light Mode", showBackground = true)
 @Preview(name = "Root - Dark Mode", uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
 @Composable
 fun SettingsRootScreenScreenshotTest() {
@@ -30,7 +29,6 @@ fun SettingsRootScreenScreenshotTest() {
 }
 
 @PreviewTest
-@Preview(name = "Appearance - Light Mode", showBackground = true)
 @Preview(name = "Appearance - Dark Mode", uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
 @Composable
 fun SettingsAppearanceScreenScreenshotTest() {
@@ -44,7 +42,6 @@ fun SettingsAppearanceScreenScreenshotTest() {
 }
 
 @PreviewTest
-@Preview(name = "Behavior - Light Mode", showBackground = true)
 @Preview(name = "Behavior - Dark Mode", uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
 @Composable
 fun SettingsBehaviorScreenScreenshotTest() {
@@ -58,7 +55,6 @@ fun SettingsBehaviorScreenScreenshotTest() {
 }
 
 @PreviewTest
-@Preview(name = "Advanced - Light Mode", showBackground = true)
 @Preview(name = "Advanced - Dark Mode", uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
 @Composable
 fun SettingsAdvancedScreenScreenshotTest() {
@@ -73,7 +69,6 @@ fun SettingsAdvancedScreenScreenshotTest() {
 }
 
 @PreviewTest
-@Preview(name = "Contributors - Light Mode", showBackground = true)
 @Preview(name = "Contributors - Dark Mode", uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
 @Composable
 fun SettingsContributorsScreenScreenshotTest() {
@@ -83,3 +78,4 @@ fun SettingsContributorsScreenScreenshotTest() {
         )
     }
 }
+
