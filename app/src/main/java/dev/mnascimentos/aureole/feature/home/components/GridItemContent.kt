@@ -5,7 +5,6 @@ import android.appwidget.AppWidgetHostView
 import android.appwidget.AppWidgetManager
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.TextView
 import androidx.compose.foundation.gestures.awaitEachGesture
@@ -47,13 +46,11 @@ fun GridClockContent(containerConfig: ContainerConfig, uiState: MainUiState) {
     val actions = LocalHomeActions.current
     Box(modifier = Modifier.fillMaxSize()) {
         ClockHeader(
-            config = ClockHeaderConfig(
-                hazeState = containerConfig.hazeState,
-                isHazeEnabled = uiState.isHazeEnabled,
-                hazeOpacity = uiState.hazeOpacity,
-                isBackgroundEnabled = uiState.isClockBackgroundEnabled,
-                onLongClick = { actions.onOpenEditClockBottomSheet() }
-            )
+            hazeState = containerConfig.hazeState,
+            isHazeEnabled = uiState.isHazeEnabled,
+            hazeOpacity = uiState.hazeOpacity,
+            isBackgroundEnabled = uiState.isClockBackgroundEnabled,
+            onLongClick = { actions.onOpenEditClockBottomSheet() }
         )
     }
 }
@@ -110,8 +107,7 @@ fun GridWidgetListContent(params: GridItemContentParams) {
                 params.stackedWidgetConfig
             },
             appWidgetHost = params.appWidgetHost,
-            stackId = params.item.id,
-            modifier = Modifier.fillMaxSize()
+            stackId = params.item.id
         )
     }
 }
@@ -131,7 +127,11 @@ fun GridItemContent(params: GridItemContentParams) {
             params.isInScrollView
         )
 
-        LauncherItemType.SINGLE_APP_WIDGET,
+        LauncherItemType.SINGLE_APP_WIDGET -> SingleAppWidgetContent(
+            item = item,
+            appWidgetHost = params.appWidgetHost
+        )
+
         LauncherItemType.WIDGET_LIST -> GridWidgetListContent(params)
         LauncherItemType.SCROLL_VIEW -> ScrollViewContainerContent(
             item = item,
@@ -173,7 +173,6 @@ fun SingleAppWidgetContent(
                             up?.consume()
                         }
                     } catch (e: IllegalArgumentException) {
-                        Log.d("GridItemContent", "Gesture cancelled", e)
                         job.cancel()
                     }
                 }

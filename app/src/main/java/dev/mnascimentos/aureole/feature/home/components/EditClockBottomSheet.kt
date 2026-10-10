@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -40,6 +41,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
@@ -106,18 +108,16 @@ fun EditClockBottomSheet(
                     .padding(8.dp)
             ) {
                 ClockHeader(
-                    config = ClockHeaderConfig(
-                        isHazeEnabled = false,
-                        isBackgroundEnabled = uiState.isClockBackgroundEnabled,
-                        clockStyle = uiState.clockStyle,
-                        clockCustomGreeting = tempCustomGreeting,
-                        clockAlignment = uiState.clockAlignment,
-                        clockFontFamily = uiState.clockFontFamily,
-                        clockTimeFormat = uiState.clockTimeFormat,
-                        clockDateFormat = uiState.clockDateFormat,
-                        clockTextColor = uiState.clockTextColor,
-                        clockBackgroundColor = uiState.clockBackgroundColor
-                    )
+                    isHazeEnabled = false,
+                    isBackgroundEnabled = uiState.isClockBackgroundEnabled,
+                    clockStyle = uiState.clockStyle,
+                    clockCustomGreeting = tempCustomGreeting,
+                    clockAlignment = uiState.clockAlignment,
+                    clockFontFamily = uiState.clockFontFamily,
+                    clockTimeFormat = uiState.clockTimeFormat,
+                    clockDateFormat = uiState.clockDateFormat,
+                    clockTextColor = uiState.clockTextColor,
+                    clockBackgroundColor = uiState.clockBackgroundColor
                 )
             }
 
@@ -448,19 +448,31 @@ private fun ChoiceButton(
         Button(
             onClick = onClick,
             modifier = modifier,
+            contentPadding = PaddingValues(horizontal = 4.dp, vertical = 8.dp),
             colors = ButtonDefaults.buttonColors(
                 containerColor = MaterialTheme.colorScheme.primary,
                 contentColor = MaterialTheme.colorScheme.onPrimary
             )
         ) {
-            AureoleText(text, color = MaterialTheme.colorScheme.onPrimary)
+            AureoleText(
+                text = text,
+                color = MaterialTheme.colorScheme.onPrimary,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
         }
     } else {
         OutlinedButton(
             onClick = onClick,
-            modifier = modifier
+            modifier = modifier,
+            contentPadding = PaddingValues(horizontal = 4.dp, vertical = 8.dp)
         ) {
-            AureoleText(text, color = AureoleTheme.colors.onSurfaceMedium)
+            AureoleText(
+                text = text,
+                color = AureoleTheme.colors.onSurfaceMedium,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
         }
     }
 }
