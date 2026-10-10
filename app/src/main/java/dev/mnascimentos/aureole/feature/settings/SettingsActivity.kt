@@ -137,11 +137,11 @@ class SettingsActivity : ComponentActivity() {
             onToggleHomeButtonOpensAllApps = { viewModel.toggleSetting(SettingToggle.HOME_OPENS_ALL_APPS) },
             onToggleWidgetRow = { viewModel.toggleSetting(SettingToggle.WIDGET_ROW) },
             onToggleShowWidgetDots = { viewModel.toggleSetting(SettingToggle.SHOW_WIDGET_DOTS) },
-            onToggleSidePanelBackground = { viewModel.toggleSetting(SettingToggle.SIDE_PANEL_BACKGROUND) },
-            onToggleSidePanelExpandCell = { viewModel.toggleSetting(SettingToggle.SIDE_PANEL_EXPAND_CELL) },
+            onToggleContainerBackground = { viewModel.toggleSetting(SettingToggle.CONTAINER_BACKGROUND) },
+            onToggleContainerExpandCell = { viewModel.toggleSetting(SettingToggle.CONTAINER_EXPAND_CELL) },
             onToggleClockBackground = { viewModel.toggleSetting(SettingToggle.CLOCK_BACKGROUND) },
-            onToggleShowSidePanelAddFolderButton = {
-                viewModel.toggleSetting(SettingToggle.SHOW_SIDE_PANEL_ADD_FOLDER_BUTTON)
+            onToggleShowContainerAddFolderButton = {
+                viewModel.toggleSetting(SettingToggle.SHOW_CONTAINER_ADD_FOLDER_BUTTON)
             },
             onToggleShowFolderLabels = { viewModel.toggleSetting(SettingToggle.SHOW_FOLDER_LABELS) },
             onToggleLeftHandedMode = { viewModel.toggleSetting(SettingToggle.LEFT_HANDED_MODE) },
@@ -161,14 +161,14 @@ class SettingsActivity : ComponentActivity() {
 
     private fun applyDialogActions(base: SettingsScreenActions): SettingsScreenActions {
         return base.copy(
-            onOpenSidePanelPositionDialog = { viewModel.setDialogVisible(SettingsDialog.SIDE_PANEL_POSITION, true) },
-            onDismissSidePanelPositionDialog = {
+            onOpenContainerPositionDialog = { viewModel.setDialogVisible(SettingsDialog.CONTAINER_POSITION, true) },
+            onDismissContainerPositionDialog = {
                 viewModel.setDialogVisible(
-                    SettingsDialog.SIDE_PANEL_POSITION,
+                    SettingsDialog.CONTAINER_POSITION,
                     false
                 )
             },
-            onSidePanelPositionSelected = { pos -> viewModel.setSettingValue(SettingValue.SidePanelPosition(pos)) },
+            onContainerPositionSelected = { pos -> viewModel.setSettingValue(SettingValue.ContainerPosition(pos)) },
             onOpenResetGridDialog = { viewModel.setDialogVisible(SettingsDialog.RESET_GRID, true) },
             onDismissResetGridDialog = { viewModel.setDialogVisible(SettingsDialog.RESET_GRID, false) },
             onOpenFactoryResetDialog = { viewModel.setDialogVisible(SettingsDialog.FACTORY_RESET, true) },

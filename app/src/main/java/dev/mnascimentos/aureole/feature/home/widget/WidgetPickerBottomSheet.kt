@@ -13,14 +13,12 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.rememberModalBottomSheetState
@@ -32,9 +30,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import dev.mnascimentos.aureole.core.designsystem.icons.Search
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
+import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.widget.model.WidgetAppGroup
 import dev.mnascimentos.aureole.feature.home.widget.model.WidgetSelectorIntent
 import dev.mnascimentos.aureole.feature.home.widget.model.WidgetSelectorState
@@ -192,15 +195,33 @@ fun WidgetPickerBottomSheet(
         viewModel.processIntent(WidgetSelectorIntent.LoadWidgets, context, appWidgetManager)
     }
 
-    ModalBottomSheet(
-        onDismissRequest = onDismiss,
-        sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
-    ) {
-        WidgetSelectorScreen(
-            state = state,
-            onIntent = { viewModel.processIntent(it) },
-            onWidgetSelected = onWidgetSelected
-        )
+    if (LocalInspectionMode.current) {
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.BottomCenter
+        ) {
+            Surface(
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                WidgetSelectorScreen(
+                    state = state,
+                    onIntent = { viewModel.processIntent(it) },
+                    onWidgetSelected = onWidgetSelected
+                )
+            }
+        }
+    } else {
+        ModalBottomSheet(
+            onDismissRequest = onDismiss,
+            sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
+            dragHandle = null
+        ) {
+            WidgetSelectorScreen(
+                state = state,
+                onIntent = { viewModel.processIntent(it) },
+                onWidgetSelected = onWidgetSelected
+            )
+        }
     }
 }
 
@@ -245,7 +266,7 @@ private fun WidgetSearchBar(
             .fillMaxWidth()
             .padding(16.dp),
         placeholder = { Text("Pesquisar widgets...") },
-        leadingIcon = { Icon(Icons.Default.Search, contentDescription = null) },
+        leadingIcon = { AureoleDS.icons.Search() },
         shape = RoundedCornerShape(24.dp),
         singleLine = true,
         colors = TextFieldDefaults.colors(
@@ -253,4 +274,21 @@ private fun WidgetSearchBar(
             unfocusedContainerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f)
         )
     )
+}
+
+@AureolePreview
+@Composable
+fun WidgetSelectorScreenPreview() {
+    val sampleState = WidgetSelectorState(
+        isLoading = false,
+        searchQuery = "",
+        widgetGroups = emptyList()
+    )
+    AureoleLauncherTheme {
+        WidgetSelectorScreen(
+            state = sampleState,
+            onIntent = {},
+            onWidgetSelected = {}
+        )
+    }
 }

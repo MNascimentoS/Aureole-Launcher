@@ -27,9 +27,14 @@ object AppShortcutUtils {
 
     fun getAppShortcuts(context: Context, packageName: String): List<AureoleShortcutItem> {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N_MR1) return emptyList()
-        val launcherApps = context.getSystemService(Context.LAUNCHER_APPS_SERVICE) as? LauncherApps
 
         return try {
+            val launcherApps = try {
+                context.getSystemService(Context.LAUNCHER_APPS_SERVICE) as? LauncherApps
+            } catch (e: AssertionError) {
+                Log.w(TAG, "Unsupported service in preview", e)
+                null
+            }
             if (launcherApps?.hasShortcutHostPermission() != true) {
                 emptyList()
             } else {
@@ -65,10 +70,13 @@ object AppShortcutUtils {
                 }
             }
         } catch (e: SecurityException) {
-            Log.w(TAG, "No shortcut host permission or security exception", e)
+            Log.w(TAG, "Error fetching app shortcuts", e)
             emptyList()
         } catch (e: IllegalStateException) {
-            Log.w(TAG, "Illegal state fetching app shortcuts", e)
+            Log.w(TAG, "Error fetching app shortcuts", e)
+            emptyList()
+        } catch (e: IllegalArgumentException) {
+            Log.w(TAG, "Error fetching app shortcuts", e)
             emptyList()
         }
     }

@@ -13,16 +13,179 @@ import dev.mnascimentos.aureole.core.data.model.AppFolder
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.feature.home.grid.GridDefaults
+import dev.mnascimentos.aureole.feature.home.model.ContainerAppBottomSheetState
+import dev.mnascimentos.aureole.feature.home.model.ContainerFolderBottomSheetState
 import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
+import dev.mnascimentos.aureole.feature.home.model.WidgetStackBottomSheetState
 
 @PreviewTest
-@Preview(name = "Light Mode", showBackground = true)
 @Preview(name = "Dark Mode", uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
 @Composable
 fun HomeScreenScreenshotTest() {
     val context = LocalContext.current
+    val sampleData = createSampleHomeData()
 
+    AureoleLauncherTheme {
+        CompositionLocalProvider(
+            LocalHomeUiState provides sampleData.uiState,
+            LocalHomeActions provides sampleData.actions
+        ) {
+            HomeScreen(appWidgetHost = AppWidgetHost(context, 1024))
+        }
+    }
+}
+
+@PreviewTest
+@Preview(name = "Opened Folder Grid Mode Flow", uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
+@Composable
+fun HomeScreenOpenedFolderGridModeScreenshotTest() {
+    val context = LocalContext.current
+    val sampleData = createSampleHomeData()
+    val folder = sampleData.folders.first().copy(displayAsGrid = true)
+
+    val customUiState = sampleData.uiState.copy(
+        openedFolderId = folder.id,
+        activeFolder = folder,
+        activeFolderTopYPx = 150f
+    )
+
+    AureoleLauncherTheme {
+        CompositionLocalProvider(
+            LocalHomeUiState provides customUiState,
+            LocalHomeActions provides sampleData.actions
+        ) {
+            HomeScreen(appWidgetHost = AppWidgetHost(context, 1024))
+        }
+    }
+}
+
+@PreviewTest
+@Preview(name = "Opened Folder Popup Mode Flow", uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
+@Composable
+fun HomeScreenOpenedFolderPopupModeScreenshotTest() {
+    val context = LocalContext.current
+    val sampleData = createSampleHomeData()
+    val folder = sampleData.folders.first().copy(displayAsGrid = false)
+
+    val customUiState = sampleData.uiState.copy(
+        openedFolderId = folder.id,
+        activeFolder = folder,
+        activeFolderTopYPx = 250f
+    )
+
+    AureoleLauncherTheme {
+        CompositionLocalProvider(
+            LocalHomeUiState provides customUiState,
+            LocalHomeActions provides sampleData.actions
+        ) {
+            HomeScreen(appWidgetHost = AppWidgetHost(context, 1024))
+        }
+    }
+}
+
+@PreviewTest
+@Preview(name = "Grid Edit Mode Flow", uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
+@Composable
+fun HomeScreenGridEditModeScreenshotTest() {
+    val context = LocalContext.current
+    val sampleData = createSampleHomeData()
+
+    val customUiState = sampleData.uiState.copy(
+        isGridEditMode = true
+    )
+
+    AureoleLauncherTheme {
+        CompositionLocalProvider(
+            LocalHomeUiState provides customUiState,
+            LocalHomeActions provides sampleData.actions
+        ) {
+            HomeScreen(appWidgetHost = AppWidgetHost(context, 1024))
+        }
+    }
+}
+
+@PreviewTest
+@Preview(name = "App Item Bottom Sheet Flow", uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
+@Composable
+fun HomeScreenAppItemBottomSheetScreenshotTest() {
+    val context = LocalContext.current
+    val sampleData = createSampleHomeData()
+
+    val customUiState = sampleData.uiState.copy(
+        activeContainerAppBottomSheet = ContainerAppBottomSheetState(
+            app = sampleData.apps.first(),
+            panelId = "panel_1"
+        )
+    )
+
+    AureoleLauncherTheme {
+        CompositionLocalProvider(
+            LocalHomeUiState provides customUiState,
+            LocalHomeActions provides sampleData.actions
+        ) {
+            HomeScreen(appWidgetHost = AppWidgetHost(context, 1024))
+        }
+    }
+}
+
+@PreviewTest
+@Preview(name = "Container Folder Bottom Sheet Flow", uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
+@Composable
+fun HomeScreenContainerFolderBottomSheetScreenshotTest() {
+    val context = LocalContext.current
+    val sampleData = createSampleHomeData()
+
+    val customUiState = sampleData.uiState.copy(
+        activeContainerFolderBottomSheet = ContainerFolderBottomSheetState(
+            folder = sampleData.folders.first(),
+            panelId = "panel_1"
+        )
+    )
+
+    AureoleLauncherTheme {
+        CompositionLocalProvider(
+            LocalHomeUiState provides customUiState,
+            LocalHomeActions provides sampleData.actions
+        ) {
+            HomeScreen(appWidgetHost = AppWidgetHost(context, 1024))
+        }
+    }
+}
+
+@PreviewTest
+@Preview(name = "Widget Stack Bottom Sheet Flow", uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
+@Composable
+fun HomeScreenWidgetStackBottomSheetScreenshotTest() {
+
+    val context = LocalContext.current
+    val sampleData = createSampleHomeData()
+
+    val customUiState = sampleData.uiState.copy(
+        activeWidgetStackBottomSheet = WidgetStackBottomSheetState(
+            widgetId = 101,
+            stackId = "widget_stack_1"
+        )
+    )
+
+    AureoleLauncherTheme {
+        CompositionLocalProvider(
+            LocalHomeUiState provides customUiState,
+            LocalHomeActions provides sampleData.actions
+        ) {
+            HomeScreen(appWidgetHost = AppWidgetHost(context, 1024))
+        }
+    }
+}
+
+internal data class SampleHomeData(
+    val apps: List<AppInfo>,
+    val folders: List<AppFolder>,
+    val uiState: MainUiState,
+    val actions: HomeScreenActions
+)
+
+internal fun createSampleHomeData(): SampleHomeData {
     val cameraApp = AppInfo(
         label = "Camera",
         packageName = "com.example.camera",
@@ -62,7 +225,7 @@ fun HomeScreenScreenshotTest() {
         AppFolder(id = "folder_social", name = "Social", icon = "message")
     )
 
-    val firstInstallationUiState = MainUiState(
+    val uiState = MainUiState(
         apps = sampleApps,
         favoriteApps = favoriteApps,
         favoriteAppPackages = favoriteApps.map { it.packageName },
@@ -71,12 +234,12 @@ fun HomeScreenScreenshotTest() {
         alphabet = listOf('B', 'C', 'M', 'P', 'S'),
         isLoading = false,
         isHazeEnabled = false,
-        isSidePanelEnabled = true,
+        isContainerEnabled = true,
         showFolderLabels = true,
         showAllAppsOnHome = true
     )
 
-    val mockActions = HomeScreenActions(
+    val actions = HomeScreenActions(
         onWidgetRowHeightChanged = {},
         onAddWidgetClick = {},
         onRemoveWidgetClick = {},
@@ -94,14 +257,5 @@ fun HomeScreenScreenshotTest() {
         onSaveGridEditMode = {}
     )
 
-    AureoleLauncherTheme {
-        CompositionLocalProvider(
-            LocalHomeUiState provides firstInstallationUiState,
-            LocalHomeActions provides mockActions
-        ) {
-            HomeScreen(
-                appWidgetHost = AppWidgetHost(context, 1024)
-            )
-        }
-    }
+    return SampleHomeData(sampleApps, sampleFolders, uiState, actions)
 }

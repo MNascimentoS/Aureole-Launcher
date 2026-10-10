@@ -71,7 +71,7 @@ class GridEngineUtilsTest {
             ),
             LauncherItemState(
                 id = "b",
-                type = LauncherItemType.SHORTCUTS_SIDE_PANEL,
+                type = LauncherItemType.SHORTCUTS_CONTAINER,
                 col = 3,
                 row = 0,
                 colSpan = 1,
@@ -159,7 +159,7 @@ class GridEngineUtilsTest {
         val items = listOf(
             LauncherItemState(
                 id = "a",
-                type = LauncherItemType.SHORTCUTS_SIDE_PANEL,
+                type = LauncherItemType.SHORTCUTS_CONTAINER,
                 col = 0,
                 row = 0,
                 colSpan = 4,
@@ -281,7 +281,7 @@ class GridEngineUtilsTest {
     @Test
     fun `getDefaultSpanForType returns correct default span for SCROLL_VIEW`() {
         val (spans, minSpans) = GridDefaults.getDefaultSpanForType(LauncherItemType.SCROLL_VIEW)
-        assertEquals(Pair(7, 6), spans)
+        assertEquals(Pair(14, 9), spans)
         assertEquals(Pair(1, 1), minSpans)
     }
 

@@ -7,29 +7,75 @@ import com.android.tools.screenshot.PreviewTest
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.feature.settings.model.SettingsScreenActions
 import dev.mnascimentos.aureole.feature.settings.model.SettingsUiState
-import dev.mnascimentos.aureole.feature.settings.screens.SettingsScreen
+import dev.mnascimentos.aureole.feature.settings.screens.SettingsAdvancedScreen
+import dev.mnascimentos.aureole.feature.settings.screens.SettingsAppearanceScreen
+import dev.mnascimentos.aureole.feature.settings.screens.SettingsBehaviorScreen
+import dev.mnascimentos.aureole.feature.settings.screens.SettingsContributorsScreen
+import dev.mnascimentos.aureole.feature.settings.screens.SettingsRootScreen
 
 @PreviewTest
-@Preview(name = "Light Mode", showBackground = true)
-@Preview(name = "Dark Mode", uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
+@Preview(name = "Root - Dark Mode", uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
 @Composable
-fun SettingsScreenScreenshotTest() {
-    val mockUiState = SettingsUiState(
-        favoriteAppPackages = listOf("com.example.camera", "com.example.gallery"),
-        isSidePanelEnabled = true,
-        sidePanelPosition = "Center",
-        isLeftHandedMode = false,
-        isHazeSupported = true,
-        isHazeEnabled = true,
-        hazeOpacity = 0.5f
-    )
-
-    val mockActions = SettingsScreenActions()
-
+fun SettingsRootScreenScreenshotTest() {
     AureoleLauncherTheme {
-        SettingsScreen(
-            uiState = mockUiState,
-            actions = mockActions
+        SettingsRootScreen(
+            uiState = SettingsUiState(),
+            actions = SettingsScreenActions(),
+            onNavigateToBehavior = {},
+            onNavigateToAppearance = {},
+            onNavigateToAdvanced = {}
         )
     }
 }
+
+@PreviewTest
+@Preview(name = "Appearance - Dark Mode", uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
+@Composable
+fun SettingsAppearanceScreenScreenshotTest() {
+    AureoleLauncherTheme {
+        SettingsAppearanceScreen(
+            uiState = SettingsUiState(),
+            actions = SettingsScreenActions(),
+            onNavigateBack = {}
+        )
+    }
+}
+
+@PreviewTest
+@Preview(name = "Behavior - Dark Mode", uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
+@Composable
+fun SettingsBehaviorScreenScreenshotTest() {
+    AureoleLauncherTheme {
+        SettingsBehaviorScreen(
+            uiState = SettingsUiState(),
+            actions = SettingsScreenActions(),
+            onNavigateBack = {}
+        )
+    }
+}
+
+@PreviewTest
+@Preview(name = "Advanced - Dark Mode", uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
+@Composable
+fun SettingsAdvancedScreenScreenshotTest() {
+    AureoleLauncherTheme {
+        SettingsAdvancedScreen(
+            uiState = SettingsUiState(),
+            actions = SettingsScreenActions(),
+            onNavigateToContributors = {},
+            onNavigateBack = {}
+        )
+    }
+}
+
+@PreviewTest
+@Preview(name = "Contributors - Dark Mode", uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
+@Composable
+fun SettingsContributorsScreenScreenshotTest() {
+    AureoleLauncherTheme {
+        SettingsContributorsScreen(
+            onNavigateBack = {}
+        )
+    }
+}
+

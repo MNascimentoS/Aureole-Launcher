@@ -73,9 +73,12 @@ dev.mnascimentos.aureole/
 - **Isolamento de Ciclo de Vida:** Lógicas atreladas a eventos de ciclo de vida do sistema (gerenciamento de Widgets, In-App Updates, Receivers) **devem ser isoladas em `DefaultLifecycleObserver`** na pasta `core/lifecycle/` e registradas no `onCreate` da Activity.
 - **Proibido:** Manipular estados complexos, fazer chamadas de rede ou sobrescrever métodos como `onStart`, `onResume`, `onStop`, `onDestroy` para lógicas que podem residir em Observers.
 
-### 3.2 `*Screen.kt` (UI Declarativa e Stateless)
+### 3.2 `*Screen.kt` / `*BottomSheet.kt` / `*Dialog.kt` (UI Declarativa e Stateless)
 - A UI deve ser *stateless* e seguir o **Fluxo Unidirecional de Dados (UDF)**: recebe um `UiState` imutável e emite intenções do usuário através de um objeto de ações (`*Actions` ou `*Intent`).
 - **Listas Performáticas:** Em `LazyColumn`, `LazyRow` e `LazyVerticalGrid`, forneça sempre uma `key` estável e `contentType`.
+- **Regra Obrigatória para Bottom Views e Popups:** Toda bottom view (bottom sheet) e popup (dialog ou popup customizado) precisa obrigatoriamente ter:
+  1. Previews no próprio arquivo do componente principal (utilizando `@AureolePreview` ou `@Preview`).
+  2. Testes de screenshot (`@PreviewTest`) correspondentes na pasta de testes de screenshot (`app/src/screenshotTest`).
 
 ### 3.3 `*ViewModel.kt` (Orquestrador)
 - Expõe um `StateFlow<UiState>` público e mantém um `MutableStateFlow` privado.

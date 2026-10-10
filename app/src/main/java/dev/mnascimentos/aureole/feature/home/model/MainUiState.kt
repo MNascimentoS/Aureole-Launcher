@@ -5,8 +5,8 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.core.data.model.AppFolder
 import dev.mnascimentos.aureole.core.data.model.AppInfo
+import dev.mnascimentos.aureole.core.data.model.ContainerModel
 import dev.mnascimentos.aureole.core.data.model.LauncherItemState
-import dev.mnascimentos.aureole.core.data.model.SidePanelModel
 import dev.mnascimentos.aureole.core.data.repository.SettingsRepository
 import dev.mnascimentos.aureole.feature.home.grid.GridLimits
 
@@ -27,12 +27,20 @@ data class MainUiState(
 
     // Settings
     val isLeftHandedMode: Boolean = false,
-    val isSidePanelEnabled: Boolean = true,
-    val isSidePanelBackgroundEnabled: Boolean = true,
-    val isSidePanelExpandCell: Boolean = false,
+    val isContainerEnabled: Boolean = true,
+    val isContainerBackgroundEnabled: Boolean = true,
+    val isContainerExpandCell: Boolean = false,
     val isClockBackgroundEnabled: Boolean = true,
-    val showSidePanelAddFolderButton: Boolean = true,
-    val sidePanelPosition: String = "Center",
+    val clockStyle: String = SettingsRepository.DEFAULT_CLOCK_STYLE,
+    val clockCustomGreeting: String = "",
+    val clockAlignment: String = SettingsRepository.DEFAULT_CLOCK_ALIGNMENT,
+    val clockFontFamily: String = SettingsRepository.DEFAULT_CLOCK_FONT_FAMILY,
+    val clockTimeFormat: String = SettingsRepository.DEFAULT_CLOCK_TIME_FORMAT,
+    val clockDateFormat: String = SettingsRepository.DEFAULT_CLOCK_DATE_FORMAT,
+    val clockTextColor: Int = 0,
+    val clockBackgroundColor: Int = 0,
+    val showContainerAddFolderButton: Boolean = true,
+    val containerPosition: String = "Center",
     val showFolderLabels: Boolean = false,
     val homeButtonOpensAllApps: Boolean = true,
     val showAllAppsOnHome: Boolean = true,
@@ -57,6 +65,8 @@ data class MainUiState(
     val cornerRadiusDp: Int = SettingsRepository.DEFAULT_CORNER_RADIUS_DP,
     val showUpdateAvailableDialog: Boolean = false,
     val showUpdateDownloadedDialog: Boolean = false,
+    val showReleaseNotesBottomSheet: Boolean = false,
+    val currentVersionName: String = "0.3.13",
 
     // Favorites & Folders
     val favoriteAppPackages: List<String> = emptyList(),
@@ -95,12 +105,41 @@ data class MainUiState(
     val isGridEditMode: Boolean = false,
     val editingGridItem: LauncherItemState? = null,
     val showAddContainerDialog: Boolean = false,
+    val showCustomizeBottomSheet: Boolean = false,
+    val showEditClockBottomSheet: Boolean = false,
     val targetParentContainerId: String? = null,
     val gridErrorMessage: String? = null,
     val isAddingSingleWidget: Boolean = false,
 
     // Side Panels
-    val sidePanels: Map<String, SidePanelModel> = emptyMap(),
-    val editingSidePanelId: String? = null,
-    val isEditSidePanelDialogVisible: Boolean = false,
+    val containers: Map<String, ContainerModel> = emptyMap(),
+    val editingContainerId: String? = null,
+    val isEditContainerDialogVisible: Boolean = false,
+
+    // Contextual Bottom Sheets
+    val activeContainerAppBottomSheet: ContainerAppBottomSheetState? = null,
+    val activeContainerFolderBottomSheet: ContainerFolderBottomSheetState? = null,
+    val activeFolderAppBottomSheet: FolderAppBottomSheetState? = null,
+    val activeWidgetStackBottomSheet: WidgetStackBottomSheetState? = null,
+    val widgetStackDots: Map<String, Boolean> = emptyMap()
+)
+
+data class ContainerAppBottomSheetState(
+    val app: AppInfo,
+    val panelId: String
+)
+
+data class ContainerFolderBottomSheetState(
+    val folder: AppFolder,
+    val panelId: String
+)
+
+data class FolderAppBottomSheetState(
+    val app: AppInfo,
+    val folder: AppFolder
+)
+
+data class WidgetStackBottomSheetState(
+    val widgetId: Int?,
+    val stackId: String
 )

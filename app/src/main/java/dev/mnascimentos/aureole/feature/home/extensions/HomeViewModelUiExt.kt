@@ -1,6 +1,7 @@
 package dev.mnascimentos.aureole.feature.home.extensions
 
 import dev.mnascimentos.aureole.feature.home.HomeViewModel
+import dev.mnascimentos.aureole.feature.home.model.FolderViewIntent
 
 // --- Settings & Side Panel Actions ---
 
@@ -10,15 +11,15 @@ fun HomeViewModel.toggleLeftHandedMode() {
     updateUiState { it.copy(isLeftHandedMode = newValue) }
 }
 
-fun HomeViewModel.toggleSidePanel() {
-    val newValue = !uiState.value.isSidePanelEnabled
-    settingsRepository.isSidePanelEnabled = newValue
-    updateUiState { it.copy(isSidePanelEnabled = newValue) }
+fun HomeViewModel.toggleContainer() {
+    val newValue = !uiState.value.isContainerEnabled
+    settingsRepository.isContainerEnabled = newValue
+    updateUiState { it.copy(isContainerEnabled = newValue) }
 }
 
-fun HomeViewModel.setSidePanelPosition(position: String) {
-    settingsRepository.sidePanelPosition = position
-    updateUiState { it.copy(sidePanelPosition = position) }
+fun HomeViewModel.setContainerPosition(position: String) {
+    settingsRepository.containerPosition = position
+    updateUiState { it.copy(containerPosition = position) }
 }
 
 fun HomeViewModel.toggleHomeOpensAllApps() {
@@ -38,6 +39,9 @@ fun HomeViewModel.setShowSettingsDialog(show: Boolean) {
 }
 
 fun HomeViewModel.setAllAppsDrawerOpen(open: Boolean, fromHomeButton: Boolean = false) {
+    if (open) {
+        onFolderIntent(FolderViewIntent.CloseFolder)
+    }
     updateUiState {
         it.copy(
             isAllAppsDrawerOpen = open,
@@ -48,4 +52,8 @@ fun HomeViewModel.setAllAppsDrawerOpen(open: Boolean, fromHomeButton: Boolean = 
         updateUiState { it.copy(searchQuery = "") }
         applySearchFilter("")
     }
+}
+
+fun HomeViewModel.setShowCustomizeBottomSheet(show: Boolean) {
+    updateUiState { it.copy(showCustomizeBottomSheet = show) }
 }

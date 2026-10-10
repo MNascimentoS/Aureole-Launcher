@@ -17,17 +17,17 @@ internal suspend fun HomeViewModel.createNewFolder(name: String) {
     val newFolder = AppFolder(name = name, panelId = targetPanelId)
 
     if (targetPanelId != null) {
-        sidePanelRepository.addFolderToPanel(targetPanelId, newFolder)
+        containerRepository.addFolderToPanel(targetPanelId, newFolder)
     } else {
         folderRepository.addFolder(newFolder)
     }
 
-    val updatedPanels = sidePanelRepository.getAllSidePanels().associateBy { it.id }
+    val updatedPanels = containerRepository.getAllContainers().associateBy { it.id }
     val updatedFolders = folderRepository.getFolders()
 
     updateUiState {
         it.copy(
-            sidePanels = updatedPanels,
+            containers = updatedPanels,
             folders = updatedFolders,
             isCreateFolderDialogVisible = false,
             targetPanelIdForFolder = null,

@@ -3,7 +3,7 @@ package dev.mnascimentos.aureole.core.data.model
 enum class LauncherItemType {
     CLOCK,
     APPS_LIST,
-    SHORTCUTS_SIDE_PANEL,
+    SHORTCUTS_CONTAINER,
     SINGLE_APP_WIDGET,
     WIDGET_LIST,
     SCROLL_VIEW

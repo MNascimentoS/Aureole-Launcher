@@ -7,14 +7,20 @@ import android.content.Context
 import android.os.Bundle
 import android.view.View
 import android.widget.TextView
+import androidx.compose.foundation.gestures.awaitEachGesture
+import androidx.compose.foundation.gestures.awaitFirstDown
+import androidx.compose.foundation.gestures.waitForUpOrCancellation
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.input.pointer.PointerEventPass
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.rememberNestedScrollInteropConnection
 import androidx.compose.ui.viewinterop.AndroidView
 import dev.mnascimentos.aureole.core.data.model.LauncherItemState
@@ -22,25 +28,29 @@ import dev.mnascimentos.aureole.core.data.model.LauncherItemType
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.feature.home.LocalHomeActions
 import dev.mnascimentos.aureole.feature.home.LocalHomeUiState
+import dev.mnascimentos.aureole.feature.home.components.model.ContainerConfig
 import dev.mnascimentos.aureole.feature.home.components.model.FavoritesListOptions
-import dev.mnascimentos.aureole.feature.home.components.model.SidePanelConfig
 import dev.mnascimentos.aureole.feature.home.model.FolderViewIntent
 import dev.mnascimentos.aureole.feature.home.model.GridItemContentParams
 import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
 import dev.mnascimentos.aureole.feature.home.widget.StackedWidgetSection
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 private const val DEFAULT_WIDGET_MIN_WIDTH = 100
 private const val DEFAULT_WIDGET_MAX_HEIGHT = 360
 
 @Composable
-fun GridClockContent(sidePanelConfig: SidePanelConfig, uiState: MainUiState) {
+fun GridClockContent(containerConfig: ContainerConfig, uiState: MainUiState) {
+    val actions = LocalHomeActions.current
     Box(modifier = Modifier.fillMaxSize()) {
         ClockHeader(
-            hazeState = sidePanelConfig.hazeState,
+            hazeState = containerConfig.hazeState,
             isHazeEnabled = uiState.isHazeEnabled,
             hazeOpacity = uiState.hazeOpacity,
-            isBackgroundEnabled = uiState.isClockBackgroundEnabled
+            isBackgroundEnabled = uiState.isClockBackgroundEnabled,
+            onLongClick = { actions.onOpenEditClockBottomSheet() }
         )
     }
 }
@@ -63,18 +73,18 @@ fun GridAppsListContent(params: GridItemContentParams) {
 }
 
 @Composable
-fun GridSidePanelContent(
-    sidePanelConfig: SidePanelConfig,
+fun GridContainerContent(
+    containerConfig: ContainerConfig,
     uiState: MainUiState,
     actions: HomeScreenActions,
     isInScrollView: Boolean = false
 ) {
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-        SidePanel(
+        Container(
             config = if (isInScrollView) {
-                sidePanelConfig.copy(hazeState = null)
+                containerConfig.copy(hazeState = null)
             } else {
-                sidePanelConfig
+                containerConfig
             },
             onFolderClick = { folder, topYPx ->
                 if (uiState.openedFolderId == folder.id) {
@@ -96,7 +106,8 @@ fun GridWidgetListContent(params: GridItemContentParams) {
             } else {
                 params.stackedWidgetConfig
             },
-            appWidgetHost = params.appWidgetHost
+            appWidgetHost = params.appWidgetHost,
+            stackId = params.item.id
         )
     }
 }
@@ -107,10 +118,10 @@ fun GridItemContent(params: GridItemContentParams) {
     val uiState = LocalHomeUiState.current
     val actions = LocalHomeActions.current
     when (item.safeType) {
-        LauncherItemType.CLOCK -> GridClockContent(params.sidePanelConfig, uiState)
+        LauncherItemType.CLOCK -> GridClockContent(params.containerConfig, uiState)
         LauncherItemType.APPS_LIST -> GridAppsListContent(params)
-        LauncherItemType.SHORTCUTS_SIDE_PANEL -> GridSidePanelContent(
-            params.sidePanelConfig,
+        LauncherItemType.SHORTCUTS_CONTAINER -> GridContainerContent(
+            params.containerConfig,
             uiState,
             actions,
             params.isInScrollView
@@ -127,7 +138,7 @@ fun GridItemContent(params: GridItemContentParams) {
             favConfig = params.favConfig,
             appWidgetHost = params.appWidgetHost,
             stackedWidgetConfig = params.stackedWidgetConfig,
-            sidePanelConfig = params.sidePanelConfig
+            containerConfig = params.containerConfig
         )
     }
 }
@@ -137,7 +148,36 @@ fun SingleAppWidgetContent(
     item: LauncherItemState,
     appWidgetHost: AppWidgetHost
 ) {
-    Box(modifier = Modifier.fillMaxSize()) {
+    val actions = LocalHomeActions.current
+    val coroutineScope = rememberCoroutineScope()
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .pointerInput(item.widgetId, item.id) {
+                val longPressTimeout = viewConfiguration.longPressTimeoutMillis
+                awaitEachGesture {
+                    val down = awaitFirstDown(pass = PointerEventPass.Initial)
+                    var isLongPressTriggered = false
+
+                    val job = coroutineScope.launch {
+                        delay((longPressTimeout - 50L).coerceAtLeast(200L))
+                        isLongPressTriggered = true
+                        down.consume()
+                        actions.onOpenWidgetStackBottomSheet(item.widgetId, item.id)
+                    }
+
+                    try {
+                        val up = waitForUpOrCancellation(pass = PointerEventPass.Initial)
+                        job.cancel()
+                        if (isLongPressTriggered) {
+                            up?.consume()
+                        }
+                    } catch (e: IllegalArgumentException) {
+                        job.cancel()
+                    }
+                }
+            }
+    ) {
         if (item.widgetId != null && item.widgetId != -1) {
             AndroidView(
                 factory = { context -> createSingleWidgetView(context, item.widgetId, appWidgetHost) },

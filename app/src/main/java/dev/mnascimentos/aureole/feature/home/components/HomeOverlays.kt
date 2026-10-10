@@ -23,6 +23,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.dp
@@ -35,8 +36,9 @@ import dev.mnascimentos.aureole.feature.home.model.ScrubberOverlayConfig
 import kotlinx.coroutines.launch
 import kotlin.math.abs
 
-private const val DRAG_THRESHOLD_PX = 15
-private const val EDGE_EXCLUSION_WIDTH_DP = 60
+private const val EDGE_GESTURE_START_WIDTH_DP = 32
+private const val EDGE_INTENT_THRESHOLD_DP = 28
+private const val VERTICAL_INTENT_THRESHOLD_DP = 36
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
@@ -161,54 +163,86 @@ fun ScrubberOverlay(
 
 fun Modifier.homeDragGestures(
     params: HomeDragParams
-): Modifier = pointerInput(params.isLeftHandedMode, params.screenHeightPx, params.screenWidthPx) {
+): Modifier = pointerInput(
+    params.isLeftHandedMode,
+    params.isAlphabetScrubberDisabled,
+    params.screenHeightPx,
+    params.screenWidthPx
+) {
     var dragStartedOnEdge = false
+    var hasTriggeredGesture = false
+    var totalDragOffset = Offset.Zero
+
     detectDragGestures(
         onDragStart = { offset ->
-            val edgeThreshold = with(params.density) { EDGE_EXCLUSION_WIDTH_DP.dp.toPx() }
-            dragStartedOnEdge = if (params.isLeftHandedMode) {
-                offset.x < edgeThreshold
-            } else {
-                offset.x > params.screenWidthPx - edgeThreshold
-            }
+            totalDragOffset = Offset.Zero
+            hasTriggeredGesture = false
 
-            if (dragStartedOnEdge) {
-                val scrubberTopYPx = params.screenHeightPx * (1f / 3f)
-                params.onExternalTouchYChange(offset.y - scrubberTopYPx)
-                if (!params.isAllAppsDrawerOpen) {
-                    params.onAllAppsDrawerOpen()
+            if (!params.isAlphabetScrubberDisabled) {
+                val edgeThreshold = with(params.density) { EDGE_GESTURE_START_WIDTH_DP.dp.toPx() }
+                dragStartedOnEdge = if (params.isLeftHandedMode) {
+                    offset.x < edgeThreshold
+                } else {
+                    offset.x > params.screenWidthPx - edgeThreshold
                 }
+            } else {
+                dragStartedOnEdge = false
             }
         },
         onDragEnd = {
             params.onExternalTouchYChange(-1f)
             dragStartedOnEdge = false
+            hasTriggeredGesture = false
         },
         onDragCancel = {
             params.onExternalTouchYChange(-1f)
             dragStartedOnEdge = false
+            hasTriggeredGesture = false
         },
         onDrag = { change, dragAmount ->
+            totalDragOffset += dragAmount
+            val totalDx = totalDragOffset.x
+            val totalDy = totalDragOffset.y
+
             if (dragStartedOnEdge) {
-                change.consume()
-                val scrubberTopYPx = params.screenHeightPx * (1f / 3f)
-                params.onExternalTouchYChange(change.position.y - scrubberTopYPx)
+                if (!hasTriggeredGesture) {
+                    val inwardDrag = if (params.isLeftHandedMode) totalDx else -totalDx
+                    val edgeIntentThresholdPx = with(params.density) { EDGE_INTENT_THRESHOLD_DP.dp.toPx() }
+
+                    if (inwardDrag > edgeIntentThresholdPx || abs(totalDy) > edgeIntentThresholdPx) {
+                        hasTriggeredGesture = true
+                        if (!params.isAllAppsDrawerOpen) {
+                            params.onAllAppsDrawerOpen()
+                        }
+                    }
+                }
+
+                if (hasTriggeredGesture) {
+                    change.consume()
+                    val scrubberTopYPx = params.screenHeightPx * (1f / 3f)
+                    params.onExternalTouchYChange(change.position.y - scrubberTopYPx)
+                }
                 return@detectDragGestures
             }
 
             if (params.isAllAppsDrawerOpen || change.isConsumed) return@detectDragGestures
 
-            val absX = abs(dragAmount.x)
-            val absY = abs(dragAmount.y)
-            val isVertical = absY > DRAG_THRESHOLD_PX && absY > absX
+            if (!hasTriggeredGesture) {
+                val verticalIntentThresholdPx = with(params.density) { VERTICAL_INTENT_THRESHOLD_DP.dp.toPx() }
+                val absX = abs(totalDx)
+                val absY = abs(totalDy)
 
-            if (isVertical) {
-                change.consume()
-                if (dragAmount.y > 0) {
-                    params.onExpandNotificationShade()
-                } else {
-                    params.onAllAppsDrawerOpen()
+                if (absY > verticalIntentThresholdPx && absY > 1.5f * absX) {
+                    hasTriggeredGesture = true
+                    change.consume()
+                    if (totalDy > 0) {
+                        params.onExpandNotificationShade()
+                    } else {
+                        params.onAllAppsDrawerOpen()
+                    }
                 }
+            } else {
+                change.consume()
             }
         }
     )

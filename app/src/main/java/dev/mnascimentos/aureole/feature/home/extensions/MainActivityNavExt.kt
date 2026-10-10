@@ -6,6 +6,7 @@ import dev.mnascimentos.aureole.feature.home.model.MainUiState
 
 fun handleBackNavigation(uiState: MainUiState, viewModel: HomeViewModel) {
     when {
+        uiState.showReleaseNotesBottomSheet -> viewModel.dismissReleaseNotes()
         uiState.showWidgetPopup || uiState.showWidgetResizeDialog -> viewModel.closeWidgetPopup()
         uiState.isCreateFolderDialogVisible ||
             uiState.isAddAppToFolderDialogVisible ||
@@ -15,5 +16,9 @@ fun handleBackNavigation(uiState: MainUiState, viewModel: HomeViewModel) {
         uiState.searchQuery.isNotEmpty() -> viewModel.onSearchQueryChanged("")
         uiState.showWidgetPicker -> viewModel.setShowWidgetPicker(show = false)
         uiState.showFavoritePickerDialog -> viewModel.setShowFavoritePicker(show = false)
+        uiState.showAddContainerDialog -> viewModel.setShowAddContainerDialog(false)
+        uiState.editingGridItem != null -> viewModel.setEditingGridItem(null)
+        uiState.isEditContainerDialogVisible -> viewModel.closeEditContainerDialog()
+        uiState.isGridEditMode -> viewModel.saveGridEditMode()
     }
 }

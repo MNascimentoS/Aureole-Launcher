@@ -1,11 +1,13 @@
 package dev.mnascimentos.aureole.feature.home.grid
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.VectorConverter
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -17,6 +19,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.graphicsLayer
@@ -62,30 +65,37 @@ fun DynamicGridContainer(
     val limits = config.limits
     var activeDragTarget by remember { mutableStateOf<DragTargetSlot?>(null) }
 
+    BackHandler(enabled = isEditMode) {
+        actions.onSaveGridEditMode()
+    }
+
     BoxWithConstraints(
         modifier = modifier
             .fillMaxSize()
             .pointerInput(isEditMode) {
                 detectTapGestures(
-                    onLongPress = { if (!isEditMode) actions.onEnterGridEditMode() }
+                    onTap = {
+                        if (isEditMode) {
+                            actions.onSaveGridEditMode()
+                        }
+                    },
+                    onLongPress = { if (!isEditMode) actions.onOpenCustomizeBottomSheet() }
                 )
             }
     ) {
         val density = LocalDensity.current
-        val editTopPaddingDp = if (isEditMode) 52.dp else 0.dp
 
-        val metrics = remember(constraints.maxWidth, constraints.maxHeight, editTopPaddingDp, limits) {
+        val metrics = remember(constraints.maxWidth, constraints.maxHeight, limits) {
             val wPx = with(density) { constraints.maxWidth.toDp().toPx() }
-            val hPx = with(density) { (constraints.maxHeight.toDp() - editTopPaddingDp).toPx() }
+            val hPx = with(density) { constraints.maxHeight.toDp().toPx() }
             val cWidthPx = wPx / limits.maxCols
             val cHeightPx = hPx / limits.maxRows
             GridMetricsTuple(cWidthPx, cHeightPx, with(density) { cWidthPx.toDp() }, with(density) { cHeightPx.toDp() })
         }
 
         if (isEditMode) {
-            Box(modifier = Modifier.fillMaxSize().offset(y = editTopPaddingDp)) {
+            Box(modifier = Modifier.fillMaxSize()) {
                 GridBackgroundOverlay(
-                    limits = limits,
                     cellWidthPx = metrics.cellWidthPx,
                     cellHeightPx = metrics.cellHeightPx,
                     activeDragTarget = activeDragTarget
@@ -93,7 +103,7 @@ fun DynamicGridContainer(
             }
         }
 
-        Box(modifier = Modifier.fillMaxSize().offset(y = editTopPaddingDp)) {
+        Box(modifier = Modifier.fillMaxSize()) {
             DynamicGridItemsList(
                 params = DynamicGridItemsParams(
                     items = items,
@@ -108,11 +118,12 @@ fun DynamicGridContainer(
         }
 
         if (isEditMode) {
-            GridTopEditBar(
-                onSave = actions.onSaveGridEditMode,
-                onCancel = actions.onCancelGridEditMode,
+            GridBottomEditControls(
                 onAddContainer = actions.onOpenAddContainerDialog,
-                onSettings = actions.onSettingsClick
+                modifier = Modifier
+                    .align(Alignment.BottomEnd)
+                    .navigationBarsPadding()
+                    .padding(24.dp)
             )
         }
     }
@@ -269,7 +280,7 @@ private fun GridItemCellBox(config: CellBoxConfig) {
                     onResetHeightExtra = config.callbacks.onResetHeight,
                     onResetAllExtra = config.callbacks.onResetAll,
                     onResizeItem = config.actions.onResizeGridItem,
-                    onEditItem = { config.actions.onOpenEditContainerDialog(item) }
+                    onEditItem = { config.actions.onOpenEditGridItemDialog(item) }
                 )
             )
         }

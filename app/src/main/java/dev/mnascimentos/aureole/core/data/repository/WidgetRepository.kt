@@ -28,10 +28,22 @@ class WidgetRepository(private val context: Context) {
         }
     }
 
+    fun getWidgetDotsState(stackId: String): Boolean {
+        val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+        return prefs.getBoolean("${KEY_WIDGET_DOTS_PREFIX}_$stackId", true)
+    }
+
+    fun setWidgetDotsState(stackId: String, showDots: Boolean) {
+        context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE).edit {
+            putBoolean("${KEY_WIDGET_DOTS_PREFIX}_$stackId", showDots)
+        }
+    }
+
     companion object {
         private const val PREFS_NAME = "aureole_prefs"
         private const val KEY_TOP_WIDGET_IDS = "top_widget_ids_list"
         private const val KEY_WIDGET_ROW_HEIGHT = "widget_row_height"
+        private const val KEY_WIDGET_DOTS_PREFIX = "widget_dots_stack"
         private const val DEFAULT_WIDGET_ROW_HEIGHT = 160f
     }
 }

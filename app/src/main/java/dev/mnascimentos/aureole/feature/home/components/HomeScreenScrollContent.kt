@@ -21,9 +21,6 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -42,11 +39,12 @@ import dev.mnascimentos.aureole.core.data.model.LauncherItemState
 import dev.mnascimentos.aureole.core.data.model.LauncherItemType
 import dev.mnascimentos.aureole.core.data.model.ScrollOrientation
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
+import dev.mnascimentos.aureole.core.designsystem.icons.Add
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.utils.fadingEdges
 import dev.mnascimentos.aureole.feature.home.LocalHomeActions
 import dev.mnascimentos.aureole.feature.home.LocalHomeUiState
-import dev.mnascimentos.aureole.feature.home.components.model.SidePanelConfig
+import dev.mnascimentos.aureole.feature.home.components.model.ContainerConfig
 import dev.mnascimentos.aureole.feature.home.model.GridItemContentParams
 import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
 import dev.mnascimentos.aureole.feature.home.model.ScrollViewChildItemParams
@@ -65,7 +63,7 @@ fun ScrollViewContainerContent(
     favConfig: FavoritesListConfig,
     appWidgetHost: AppWidgetHost,
     stackedWidgetConfig: StackedWidgetConfig,
-    sidePanelConfig: SidePanelConfig
+    containerConfig: ContainerConfig
 ) {
     val isVertical = item.safeScrollOrientation == ScrollOrientation.VERTICAL
     val scrollState = rememberScrollState()
@@ -86,7 +84,7 @@ fun ScrollViewContainerContent(
                     favConfig = favConfig,
                     appWidgetHost = appWidgetHost,
                     stackedWidgetConfig = stackedWidgetConfig,
-                    sidePanelConfig = sidePanelConfig,
+                    containerConfig = containerConfig,
                     scrollState = scrollState
                 )
             )
@@ -97,7 +95,7 @@ fun ScrollViewContainerContent(
                     favConfig = favConfig,
                     appWidgetHost = appWidgetHost,
                     stackedWidgetConfig = stackedWidgetConfig,
-                    sidePanelConfig = sidePanelConfig
+                    containerConfig = containerConfig
                 )
             )
         }
@@ -156,7 +154,7 @@ private fun VerticalScrollViewContent(params: VerticalScrollViewContentParams) {
                     favConfig = params.favConfig,
                     appWidgetHost = params.appWidgetHost,
                     stackedWidgetConfig = params.stackedWidgetConfig,
-                    sidePanelConfig = params.sidePanelConfig,
+                    containerConfig = params.containerConfig,
                     isVertical = true
                 )
             )
@@ -188,7 +186,7 @@ private fun HorizontalScrollViewContent(params: ScrollViewContentParams) {
                     favConfig = params.favConfig,
                     appWidgetHost = params.appWidgetHost,
                     stackedWidgetConfig = params.stackedWidgetConfig,
-                    sidePanelConfig = params.sidePanelConfig,
+                    containerConfig = params.containerConfig,
                     isVertical = false
                 )
             )
@@ -225,7 +223,7 @@ private fun ScrollViewChildItem(params: ScrollViewChildItemParams) {
                 favConfig = params.favConfig,
                 appWidgetHost = params.appWidgetHost,
                 stackedWidgetConfig = params.stackedWidgetConfig,
-                sidePanelConfig = params.sidePanelConfig,
+                containerConfig = params.containerConfig,
                 isInScrollView = true
             )
         )
@@ -250,9 +248,7 @@ private fun ScrollViewAddComponentButton(parentId: String, actions: HomeScreenAc
         contentAlignment = Alignment.Center
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
-            Icon(
-                imageVector = Icons.Default.Add,
-                contentDescription = "Adicionar ao Scroll View",
+            AureoleDS.icons.Add(
                 tint = MaterialTheme.colorScheme.onPrimaryContainer,
                 modifier = Modifier.size(18.dp)
             )

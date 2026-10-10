@@ -8,7 +8,6 @@ import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -29,13 +28,9 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -52,6 +47,11 @@ import dev.chrisbanes.haze.HazeTint
 import dev.chrisbanes.haze.hazeEffect
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.designsystem.components.AureolePopupMenuItem
+import dev.mnascimentos.aureole.core.designsystem.icons.Add
+import dev.mnascimentos.aureole.core.designsystem.icons.Edit
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
+import dev.mnascimentos.aureole.feature.home.LocalHomeActions
+import dev.mnascimentos.aureole.feature.home.LocalHomeUiState
 import dev.mnascimentos.aureole.feature.home.folder.model.FolderPopupActions
 import dev.mnascimentos.aureole.feature.home.folder.model.GridFolderPopupParams
 
@@ -59,7 +59,7 @@ private const val GRID_MAX_3 = 3
 private const val GRID_MAX_6 = 6
 private const val GRID_MAX_9 = 9
 private const val GRID_COLUMNS = 3
-private const val GRID_WIDTH_FRACTION = 0.88f
+private const val GRID_WIDTH_FRACTION = 0.75f
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -106,6 +106,7 @@ fun GridStyleExpandedFolderPopup(
         )
 
         GridFolderContainer(
+            params = params,
             appsInFolder = appsInFolder,
             actions = actions,
             hazeState = null,
@@ -116,6 +117,7 @@ fun GridStyleExpandedFolderPopup(
 
 @Composable
 private fun GridFolderContainer(
+    params: GridFolderPopupParams,
     appsInFolder: List<AppInfo>,
     actions: FolderPopupActions,
     hazeState: HazeState?,
@@ -155,7 +157,7 @@ private fun GridFolderContainer(
         if (appsInFolder.isEmpty()) {
             EmptyFolderGridHint()
         } else {
-            PopulatedFolderGrid(appsInFolder = appsInFolder, actions = actions)
+            PopulatedFolderGrid(params = params, appsInFolder = appsInFolder, actions = actions)
         }
     }
 }
@@ -188,9 +190,11 @@ private fun EmptyFolderGridHint() {
 
 @Composable
 private fun PopulatedFolderGrid(
+    params: GridFolderPopupParams,
     appsInFolder: List<AppInfo>,
     actions: FolderPopupActions
 ) {
+    val homeActions = LocalHomeActions.current
     LazyVerticalGrid(
         columns = GridCells.Fixed(GRID_COLUMNS),
         contentPadding = PaddingValues(8.dp),
@@ -201,20 +205,25 @@ private fun PopulatedFolderGrid(
         items(appsInFolder, key = { it.packageName }) { app ->
             OpenedFolderSamsungGridAppItem(
                 app = app,
-                onClick = { actions.onAppClick(app) }
+                onClick = { actions.onAppClick(app) },
+                onLongClick = { homeActions.onOpenFolderAppBottomSheet(app, params.folder) }
             )
         }
     }
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun OpenedFolderSamsungGridAppItem(
     app: AppInfo,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    onLongClick: () -> Unit = {}
 ) {
-    val iconBitmap: ImageBitmap = remember(app.packageName) {
-        app.getIconBitmap()
-    }
+    val uiState = LocalHomeUiState.current
+    val iconBitmap: ImageBitmap = app.getDisplayIconBitmap(
+        isThemed = uiState.isThemedAppIconsEnabled,
+        tintColor = AureoleDS.colors.onSurfaceMedium
+    )
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -222,7 +231,10 @@ private fun OpenedFolderSamsungGridAppItem(
         modifier = Modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(16.dp))
-            .clickable(onClick = onClick)
+            .combinedClickable(
+                onClick = onClick,
+                onLongClick = onLongClick
+            )
             .padding(vertical = 6.dp)
     ) {
         Image(
@@ -263,13 +275,13 @@ fun OpenedFolderActions(
         ) {
             AureolePopupMenuItem(
                 title = "Add Apps",
-                icon = Icons.Default.Add,
+                icon = { m -> AureoleDS.icons.Add(m) },
                 onClick = onAddAppsClick
             )
 
             AureolePopupMenuItem(
                 title = "Edit Folder",
-                icon = Icons.Outlined.Edit,
+                icon = { m -> AureoleDS.icons.Edit(m) },
                 onClick = onEditFolderClick
             )
         }
@@ -280,7 +292,8 @@ fun OpenedFolderActions(
 fun OpenedFolderAppList(
     appsInFolder: List<AppInfo>,
     isLeftHandedMode: Boolean,
-    onAppClick: (AppInfo) -> Unit
+    onAppClick: (AppInfo) -> Unit,
+    onAppLongClick: ((AppInfo) -> Unit)? = null
 ) {
     if (appsInFolder.isEmpty()) {
         Box(
@@ -304,28 +317,36 @@ fun OpenedFolderAppList(
                 OpenedFolderAppItemRow(
                     app = app,
                     isLeftHandedMode = isLeftHandedMode,
-                    onClick = { onAppClick(app) }
+                    onClick = { onAppClick(app) },
+                    onLongClick = { onAppLongClick?.invoke(app) }
                 )
             }
         }
     }
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun OpenedFolderAppItemRow(
     app: AppInfo,
     isLeftHandedMode: Boolean,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    onLongClick: () -> Unit = {}
 ) {
-    val iconBitmap: ImageBitmap = remember(app.packageName) {
-        app.getIconBitmap()
-    }
+    val uiState = LocalHomeUiState.current
+    val iconBitmap: ImageBitmap = app.getDisplayIconBitmap(
+        isThemed = uiState.isThemedAppIconsEnabled,
+        tintColor = AureoleDS.colors.onSurfaceMedium
+    )
 
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(10.dp))
-            .clickable(onClick = onClick)
+            .combinedClickable(
+                onClick = onClick,
+                onLongClick = onLongClick
+            )
             .padding(horizontal = 8.dp, vertical = 8.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {

@@ -1,9 +1,6 @@
 package dev.mnascimentos.aureole.feature.home.folder
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -11,8 +8,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.widthIn
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
@@ -24,11 +19,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.Dialog
-import androidx.compose.ui.window.DialogProperties
+import dev.mnascimentos.aureole.core.designsystem.components.AureoleDialog
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleTheme
@@ -41,77 +34,46 @@ fun CreateFolderDialog(
 ) {
     var folderName by remember { mutableStateOf("") }
 
-    Dialog(
+    AureoleDialog(
         onDismissRequest = onDismiss,
-        properties = DialogProperties(
-            dismissOnBackPress = true,
-            dismissOnClickOutside = true
-        )
+        title = "New Folder"
     ) {
-        Box(
-            modifier = Modifier
-                .widthIn(min = 280.dp, max = 340.dp)
-                .clip(RoundedCornerShape(22.dp))
-                .border(
-                    width = 0.5.dp,
-                    color = AureoleTheme.colors.outline,
-                    shape = RoundedCornerShape(22.dp)
-                )
-                .background(AureoleTheme.colors.surface)
-                .padding(24.dp)
+        Column(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Column(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                CreateFolderHeader()
+            AureoleText(
+                text = "Folder is empty",
+                style = AureoleTheme.typography.bodyMedium,
+                color = AureoleTheme.colors.onSurfaceMedium,
+                modifier = Modifier.padding(bottom = 16.dp)
+            )
 
-                OutlinedTextField(
-                    value = folderName,
-                    onValueChange = { folderName = it },
-                    label = { AureoleText("Folder Name", color = AureoleTheme.colors.onSurfaceMedium) },
-                    placeholder = { AureoleText("New Folder", color = AureoleTheme.colors.onSurfaceLow) },
-                    singleLine = true,
-                    colors = OutlinedTextFieldDefaults.colors(
-                        focusedBorderColor = MaterialTheme.colorScheme.primary,
-                        unfocusedBorderColor = AureoleTheme.colors.outline,
-                        focusedTextColor = AureoleTheme.colors.onSurfaceHigh,
-                        unfocusedTextColor = AureoleTheme.colors.onSurfaceHigh
-                    ),
-                    modifier = Modifier.fillMaxWidth()
-                )
+            OutlinedTextField(
+                value = folderName,
+                onValueChange = { folderName = it },
+                label = { AureoleText("Folder Name", color = AureoleTheme.colors.onSurfaceMedium) },
+                placeholder = { AureoleText("New Folder", color = AureoleTheme.colors.onSurfaceLow) },
+                singleLine = true,
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedBorderColor = MaterialTheme.colorScheme.primary,
+                    unfocusedBorderColor = AureoleTheme.colors.outline,
+                    focusedTextColor = AureoleTheme.colors.onSurfaceHigh,
+                    unfocusedTextColor = AureoleTheme.colors.onSurfaceHigh
+                ),
+                modifier = Modifier.fillMaxWidth()
+            )
 
-                Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(24.dp))
 
-                CreateFolderButtons(
-                    onDismiss = onDismiss,
-                    onSubmit = {
-                        val finalName = folderName.ifBlank { "New Folder" }
-                        onSubmit(finalName)
-                    }
-                )
-            }
+            CreateFolderButtons(
+                onDismiss = onDismiss,
+                onSubmit = {
+                    val finalName = folderName.ifBlank { "New Folder" }
+                    onSubmit(finalName)
+                }
+            )
         }
-    }
-}
-
-@Composable
-private fun CreateFolderHeader() {
-    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-        AureoleText(
-            text = "New Folder",
-            style = AureoleTheme.typography.titleLarge,
-            fontWeight = FontWeight.Bold,
-            color = AureoleTheme.colors.onSurfaceHigh,
-            modifier = Modifier.padding(bottom = 12.dp)
-        )
-
-        AureoleText(
-            text = "Folder is empty",
-            style = AureoleTheme.typography.bodyMedium,
-            color = AureoleTheme.colors.onSurfaceMedium,
-            modifier = Modifier.padding(bottom = 16.dp)
-        )
     }
 }
 

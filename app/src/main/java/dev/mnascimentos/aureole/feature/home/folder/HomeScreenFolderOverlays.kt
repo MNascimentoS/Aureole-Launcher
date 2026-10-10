@@ -31,6 +31,9 @@ import dev.chrisbanes.haze.hazeEffect
 import dev.mnascimentos.aureole.core.data.model.AppFolder
 import dev.mnascimentos.aureole.feature.home.LocalHomeActions
 import dev.mnascimentos.aureole.feature.home.LocalHomeUiState
+import dev.mnascimentos.aureole.feature.home.components.AppItemBottomSheet
+import dev.mnascimentos.aureole.feature.home.components.ContainerFolderBottomSheet
+import dev.mnascimentos.aureole.feature.home.components.WidgetStackBottomSheet
 import dev.mnascimentos.aureole.feature.home.folder.model.FolderPopupActions
 import dev.mnascimentos.aureole.feature.home.folder.model.OpenedFolderOverlayParams
 import dev.mnascimentos.aureole.feature.home.folder.model.OpenedFolderPopupConfig
@@ -41,7 +44,7 @@ import dev.mnascimentos.aureole.feature.home.model.MainUiState
 private const val POPUP_MAX_OFFSET_SUBTRAHEND = 300
 private const val POPUP_MIN_OFFSET_DP = 16f
 private const val FADE_ANIM_DURATION_MS = 180
-private val SIDE_PADDING_DP = 76.dp
+private val SIDE_PADDING_DP = 88.dp
 
 @Composable
 fun HomeScreenFolderOverlays(
@@ -73,6 +76,78 @@ fun HomeScreenFolderOverlays(
         uiState = uiState,
         actions = actions
     )
+
+    HomeScreenBottomSheetOverlays(
+        uiState = uiState,
+        actions = actions
+    )
+}
+
+@Composable
+private fun HomeScreenBottomSheetOverlays(
+    uiState: MainUiState,
+    actions: HomeScreenActions
+) {
+    uiState.activeContainerAppBottomSheet?.let { state ->
+        AppItemBottomSheet(
+            app = state.app,
+            onRemoveFromContainer = { actions.onRemoveAppFromContainer(state.panelId, state.app.packageName) },
+            onOpenContainerSettings = { actions.onOpenEditContainerDialog(state.panelId) },
+            onDismiss = actions.onCloseContainerAppBottomSheet
+        )
+    }
+
+    uiState.activeContainerFolderBottomSheet?.let { state ->
+        ContainerFolderBottomSheet(
+            onEditShortcuts = {
+                actions.onCloseContainerFolderBottomSheet()
+                actions.onFolderIntent(FolderViewIntent.AddAppToFolder(state.folder.id))
+            },
+            onRename = {
+                actions.onCloseContainerFolderBottomSheet()
+                actions.onOpenEditFolderForFolder(state.folder)
+            },
+            onIcon = {
+                actions.onCloseContainerFolderBottomSheet()
+                actions.onOpenEditFolderForFolder(state.folder)
+            },
+            onRemoveFolder = {
+                actions.onCloseContainerFolderBottomSheet()
+                actions.onFolderIntent(FolderViewIntent.DeleteFolder(state.folder.id))
+            },
+            onOpenContainerSettings = {
+                actions.onCloseContainerFolderBottomSheet()
+                actions.onOpenEditContainerDialog(state.panelId)
+            },
+            onDismiss = actions.onCloseContainerFolderBottomSheet
+        )
+    }
+
+    uiState.activeFolderAppBottomSheet?.let { state ->
+        AppItemBottomSheet(
+            app = state.app,
+            onRemoveFromFolder = { actions.onRemoveAppFromFolder(state.folder.id, state.app.packageName) },
+            onOpenFolderSettings = { actions.onOpenEditFolderForFolder(state.folder) },
+            onDismiss = actions.onCloseFolderAppBottomSheet
+        )
+    }
+
+    uiState.activeWidgetStackBottomSheet?.let { state ->
+        WidgetStackBottomSheet(
+            widgetId = state.widgetId,
+            stackId = state.stackId,
+            onEditStack = { actions.onOpenWidgetResizeDialog() },
+            onToggleDots = { sId -> actions.onToggleWidgetStackDots(sId) },
+            onRemoveStack = {
+                if (state.widgetId != null && state.widgetId != -1) {
+                    actions.onRemoveWidgetClick(state.widgetId)
+                } else {
+                    actions.onDeleteGridItem(state.stackId)
+                }
+            },
+            onDismiss = actions.onCloseWidgetStackBottomSheet
+        )
+    }
 }
 
 @Composable
@@ -104,7 +179,10 @@ private fun OpenedFolderOverlay(
         lastFolder = activeFolder
     }
 
-    val isVisible = activeFolder != null && !uiState.isCreateFolderDialogVisible
+    val isVisible = activeFolder != null &&
+        !uiState.isCreateFolderDialogVisible &&
+        !uiState.isRenameFolderDialogVisible &&
+        !uiState.isAddAppToFolderDialogVisible
     val folderToDisplay = activeFolder ?: lastFolder
 
     AnimatedVisibility(
@@ -243,10 +321,8 @@ private fun calculateClampedTopDp(
 
 private fun isGridFolderMode(uiState: MainUiState, folder: AppFolder): Boolean {
     val panelId = folder.panelId
-    val activePanel = if (panelId != null) uiState.sidePanels[panelId] else null
-    return folder.displayAsGrid ||
-        (activePanel?.isGridFolderEnabled == true) ||
-        uiState.sidePanels.values.any { it.isGridFolderEnabled }
+    val activePanel = if (panelId != null) uiState.containers[panelId] else null
+    return folder.displayAsGrid || (activePanel?.isGridFolderEnabled == true)
 }
 
 @Composable
