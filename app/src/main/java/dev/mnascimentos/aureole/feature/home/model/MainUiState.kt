@@ -1,6 +1,5 @@
 package dev.mnascimentos.aureole.feature.home.model
 
-import android.os.Build
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.core.data.model.AppFolder
@@ -47,7 +46,7 @@ data class MainUiState(
     val isCustomWallpaperSet: Boolean = false,
     val customWallpaperPath: String? = null,
     val wallpaperScaleType: String = "Crop",
-    val isDynamicWallpaperEnabled: Boolean = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S,
+    val isDynamicWallpaperEnabled: Boolean = false,
     val manualSeedColor: Int = SettingsRepository.DEFAULT_SEED_COLOR,
     val selectedThemeName: String = "Frostbite",
     val selectedFontName: String = "Istok Web",
