@@ -107,7 +107,7 @@ object GridDefaults {
                 id = "clock_item",
                 type = LauncherItemType.CLOCK,
                 col = 0,
-                row = 1,
+                row = 0,
                 colSpan = DEFAULT_CLOCK_SPAN_X,
                 rowSpan = DEFAULT_CLOCK_SPAN_Y,
                 minColSpan = 1,

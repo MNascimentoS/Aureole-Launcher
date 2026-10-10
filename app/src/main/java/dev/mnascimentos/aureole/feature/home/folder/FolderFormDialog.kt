@@ -1,0 +1,337 @@
+package dev.mnascimentos.aureole.feature.home.folder
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material3.TextButton
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import dev.mnascimentos.aureole.core.data.model.AppFolder
+import dev.mnascimentos.aureole.core.designsystem.components.AureoleDialog
+import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleTheme
+import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
+
+@Composable
+fun FolderFormDialog(
+    folder: AppFolder? = null,
+    onDismiss: () -> Unit,
+    onSave: (name: String, icon: String?) -> Unit,
+    onDelete: (() -> Unit)? = null
+) {
+    val isEditing = folder != null
+    val title = if (isEditing) "Edit Folder" else "New Folder"
+    val submitText = if (isEditing) "Save" else "Create"
+
+    AureoleDialog(
+        onDismissRequest = onDismiss,
+        title = title
+    ) {
+        FolderFormDialogContent(
+            initialName = folder?.name.orEmpty(),
+            initialIcon = folder?.icon,
+            isEditing = isEditing,
+            submitText = submitText,
+            onDismiss = onDismiss,
+            onSave = onSave,
+            onDelete = onDelete
+        )
+    }
+}
+
+@Composable
+private fun FolderFormDialogContent(
+    initialName: String,
+    initialIcon: String?,
+    isEditing: Boolean,
+    submitText: String,
+    onDismiss: () -> Unit,
+    onSave: (name: String, icon: String?) -> Unit,
+    onDelete: (() -> Unit)?
+) {
+    var folderName by remember { mutableStateOf(initialName) }
+    var selectedIcon by remember { mutableStateOf(initialIcon) }
+
+    Column(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        FolderIconPreview(folderName = folderName, selectedIcon = selectedIcon)
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        OutlinedTextField(
+            value = folderName,
+            onValueChange = { folderName = it },
+            label = { AureoleText("Folder Name", color = AureoleTheme.colors.onSurfaceMedium) },
+            placeholder = { AureoleText("New Folder", color = AureoleTheme.colors.onSurfaceLow) },
+            singleLine = true,
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedBorderColor = MaterialTheme.colorScheme.primary,
+                unfocusedBorderColor = AureoleTheme.colors.outline,
+                focusedTextColor = AureoleTheme.colors.onSurfaceHigh,
+                unfocusedTextColor = AureoleTheme.colors.onSurfaceHigh
+            ),
+            modifier = Modifier.fillMaxWidth()
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        AureoleText(
+            text = "Ícone da Pasta",
+            style = AureoleTheme.typography.labelMedium,
+            fontWeight = FontWeight.SemiBold,
+            color = AureoleTheme.colors.onSurfaceMedium,
+            modifier = Modifier.align(Alignment.Start)
+        )
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        IconSelectionRow(
+            selectedIcon = selectedIcon,
+            onIconSelected = { selectedIcon = it },
+            folderName = folderName
+        )
+
+        Spacer(modifier = Modifier.height(24.dp))
+
+        FolderFormButtons(
+            isEditing = isEditing,
+            submitText = submitText,
+            onDelete = onDelete,
+            onDismiss = onDismiss,
+            onSave = {
+                val finalName = folderName.ifBlank { "New Folder" }
+                onSave(finalName.trim(), selectedIcon)
+            }
+        )
+    }
+}
+
+@Composable
+fun FolderIconPreview(
+    folderName: String,
+    selectedIcon: String?
+) {
+    Box(
+        modifier = Modifier
+            .size(52.dp)
+            .clip(RoundedCornerShape(14.dp))
+            .background(AureoleTheme.colors.surfaceVariant),
+        contentAlignment = Alignment.Center
+    ) {
+        if (selectedIcon != null) {
+            FolderIconRegistry.RenderIcon(
+                name = selectedIcon,
+                tint = AureoleTheme.colors.onSurfaceHigh,
+                modifier = Modifier.size(26.dp)
+            )
+        } else {
+            AureoleText(
+                text = folderName.take(1).uppercase().ifEmpty { "?" },
+                color = AureoleTheme.colors.onSurfaceHigh,
+                style = AureoleTheme.typography.titleLarge,
+                fontWeight = FontWeight.Bold
+            )
+        }
+    }
+}
+
+@Composable
+fun IconSelectionRow(
+    selectedIcon: String?,
+    onIconSelected: (String?) -> Unit,
+    folderName: String
+) {
+    val scrollState = rememberScrollState()
+
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .horizontalScroll(scrollState)
+            .padding(vertical = 4.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        DefaultLetterOptionChip(
+            isSelected = selectedIcon == null,
+            letter = folderName.take(1).uppercase().ifEmpty { "A" },
+            onClick = { onIconSelected(null) }
+        )
+
+        FolderIconRegistry.icons.keys.forEach { iconKey ->
+            IconOptionChip(
+                isSelected = selectedIcon == iconKey,
+                iconKey = iconKey,
+                onClick = { onIconSelected(iconKey) }
+            )
+        }
+    }
+}
+
+@Composable
+private fun DefaultLetterOptionChip(
+    isSelected: Boolean,
+    letter: String,
+    onClick: () -> Unit
+) {
+    val borderColor = if (isSelected) {
+        MaterialTheme.colorScheme.primary
+    } else {
+        AureoleTheme.colors.outline
+    }
+    val textColor = if (isSelected) {
+        AureoleTheme.colors.onSurfaceHigh
+    } else {
+        AureoleTheme.colors.onSurfaceMedium
+    }
+
+    Box(
+        modifier = Modifier
+            .size(40.dp)
+            .clip(CircleShape)
+            .background(
+                if (isSelected) MaterialTheme.colorScheme.primary else AureoleTheme.colors.surfaceVariant
+            )
+            .border(
+                width = if (isSelected) 2.dp else 0.5.dp,
+                color = borderColor,
+                shape = CircleShape
+            )
+            .clickable(onClick = onClick),
+        contentAlignment = Alignment.Center
+    ) {
+        AureoleText(
+            text = letter,
+            style = AureoleTheme.typography.labelLarge,
+            fontWeight = FontWeight.Bold,
+            color = textColor
+        )
+    }
+}
+
+@Composable
+private fun IconOptionChip(
+    isSelected: Boolean,
+    iconKey: String,
+    onClick: () -> Unit
+) {
+    val borderColor = if (isSelected) {
+        MaterialTheme.colorScheme.primary
+    } else {
+        AureoleTheme.colors.outline
+    }
+    val iconTint: Color = if (isSelected) {
+        AureoleTheme.colors.onSurfaceHigh
+    } else {
+        AureoleTheme.colors.onSurfaceMedium
+    }
+
+    Box(
+        modifier = Modifier
+            .size(40.dp)
+            .clip(CircleShape)
+            .background(
+                if (isSelected) MaterialTheme.colorScheme.primary else AureoleTheme.colors.surfaceVariant
+            )
+            .border(
+                width = if (isSelected) 2.dp else 0.5.dp,
+                color = borderColor,
+                shape = CircleShape
+            )
+            .clickable(onClick = onClick),
+        contentAlignment = Alignment.Center
+    ) {
+        FolderIconRegistry.RenderIcon(
+            name = iconKey,
+            tint = iconTint,
+            modifier = Modifier.size(20.dp)
+        )
+    }
+}
+
+@Composable
+private fun FolderFormButtons(
+    isEditing: Boolean,
+    submitText: String,
+    onDelete: (() -> Unit)?,
+    onDismiss: () -> Unit,
+    onSave: () -> Unit
+) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        if (isEditing && onDelete != null) {
+            TextButton(onClick = onDelete) {
+                AureoleText("Delete", color = MaterialTheme.colorScheme.error)
+            }
+        } else {
+            Spacer(modifier = Modifier.width(1.dp))
+        }
+
+        Row {
+            TextButton(onClick = onDismiss) {
+                AureoleText("Cancel", color = AureoleTheme.colors.onSurfaceMedium)
+            }
+            Spacer(modifier = Modifier.width(8.dp))
+            TextButton(onClick = onSave) {
+                AureoleText(submitText, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary)
+            }
+        }
+    }
+}
+
+@AureolePreview
+@Composable
+fun FolderFormDialogNewPreview() {
+    AureoleLauncherTheme {
+        FolderFormDialog(
+            folder = null,
+            onDismiss = {},
+            onSave = { _, _ -> }
+        )
+    }
+}
+
+@AureolePreview
+@Composable
+fun FolderFormDialogEditPreview() {
+    val mockFolder = AppFolder(id = "1", name = "Tools")
+    AureoleLauncherTheme {
+        FolderFormDialog(
+            folder = mockFolder,
+            onDismiss = {},
+            onSave = { _, _ -> },
+            onDelete = {}
+        )
+    }
+}

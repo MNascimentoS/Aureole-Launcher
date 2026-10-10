@@ -58,6 +58,12 @@ fun AureoleIcons.Add(
 ) { AureoleIcon(R.drawable.ic_aureole_add, modifier, tint) }
 
 @Composable
+fun AureoleIcons.Plus(
+    modifier: Modifier = Modifier,
+    tint: Color? = null
+) { AureoleIcon(R.drawable.ic_aureole_plus, modifier, tint) }
+
+@Composable
 fun AureoleIcons.Advanced(
     modifier: Modifier = Modifier,
     tint: Color? = null
@@ -89,10 +95,16 @@ fun AureoleIcons.ArrowUp(
 ) { AureoleIcon(R.drawable.ic_aureole_arrow_up, modifier, tint) }
 
 @Composable
-fun AureoleIcons.Close(
+fun AureoleIcons.CloseSquare(
     modifier: Modifier = Modifier,
     tint: Color? = null
 ) { AureoleIcon(R.drawable.ic_aureole_add, modifier.rotate(45f), tint) }
+
+@Composable
+fun AureoleIcons.Close(
+    modifier: Modifier = Modifier,
+    tint: Color? = null
+) { AureoleIcon(R.drawable.ic_aureole_close, modifier, tint) }
 
 @Composable
 fun AureoleIcons.Check(

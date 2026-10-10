@@ -357,12 +357,19 @@ private fun LazyListScope.editContainerFormItems(
     onRemoveItem: (Int) -> Unit
 ) {
     item {
+        EditContainerOptionsExpandableSection(
+            formState = formState,
+            callbacks = callbacks
+        )
+    }
+
+    item {
         AureoleText(
             text = "Adicionar ao Container",
             style = AureoleTheme.typography.titleSmall,
             fontWeight = FontWeight.Bold,
             color = MaterialTheme.colorScheme.primary,
-            modifier = Modifier.padding(bottom = 4.dp)
+            modifier = Modifier.padding(top = 4.dp, bottom = 4.dp)
         )
         Row(
             modifier = Modifier
@@ -381,8 +388,7 @@ private fun LazyListScope.editContainerFormItems(
                 colors = ButtonDefaults.outlinedButtonColors(
                     contentColor = MaterialTheme.colorScheme.primary
                 ),
-                contentPadding = PaddingValues(horizontal = 12.dp),
-                modifier = Modifier.height(48.dp)
+                contentPadding = PaddingValues(horizontal = 12.dp)
             ) {
                 AureoleDS.icons.Add(
                     tint = MaterialTheme.colorScheme.primary,
@@ -441,14 +447,6 @@ private fun LazyListScope.editContainerFormItems(
             )
         }
     }
-
-    item {
-        Spacer(modifier = Modifier.height(8.dp))
-        EditContainerOptionsExpandableSection(
-            formState = formState,
-            callbacks = callbacks
-        )
-    }
 }
 
 @Composable
@@ -475,21 +473,24 @@ private fun EditContainerOptionsExpandableSection(
         ) {
             AureoleText(
                 text = "Opções de Aparência e Comportamento",
-                style = AureoleTheme.typography.titleSmall,
-                fontWeight = FontWeight.Bold,
-                color = AureoleTheme.colors.onSurfaceHigh
+                style = AureoleTheme.typography.bodyMedium,
+                fontWeight = FontWeight.SemiBold,
+                color = AureoleTheme.colors.onSurfaceHigh,
+                modifier = Modifier.weight(1f)
             )
             IconButton(
                 onClick = { isExpanded = !isExpanded },
-                modifier = Modifier.size(32.dp)
+                modifier = Modifier.size(28.dp)
             ) {
                 if (isExpanded) {
                     AureoleDS.icons.ArrowUp(
-                        tint = AureoleTheme.colors.onSurfaceMedium
+                        tint = AureoleTheme.colors.onSurfaceMedium,
+                        modifier = Modifier.size(16.dp)
                     )
                 } else {
                     AureoleDS.icons.ArrowDown(
-                        tint = AureoleTheme.colors.onSurfaceMedium
+                        tint = AureoleTheme.colors.onSurfaceMedium,
+                        modifier = Modifier.size(16.dp)
                     )
                 }
             }
@@ -604,7 +605,8 @@ private fun EditContainerOrientationSelector(
             } else {
                 OutlinedButton(
                     onClick = { onOrientationSelected("Vertical") },
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier.weight(1f),
+                    border = BorderStroke(1.dp, AureoleTheme.colors.outline.copy(alpha = 0.5f))
                 ) {
                     AureoleText(text = "Vertical", color = AureoleTheme.colors.onSurfaceHigh)
                 }
@@ -624,7 +626,8 @@ private fun EditContainerOrientationSelector(
             } else {
                 OutlinedButton(
                     onClick = { onOrientationSelected("Horizontal") },
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier.weight(1f),
+                    border = BorderStroke(1.dp, AureoleTheme.colors.outline.copy(alpha = 0.5f))
                 ) {
                     AureoleText(text = "Horizontal", color = AureoleTheme.colors.onSurfaceHigh)
                 }
@@ -723,7 +726,8 @@ private fun EditContainerItemRow(
                         AureoleTheme.colors.onSurfaceMedium.copy(
                             alpha = 0.3f
                         )
-                    }
+                    },
+                    modifier = Modifier.size(16.dp)
                 )
             }
             IconButton(
@@ -738,7 +742,8 @@ private fun EditContainerItemRow(
                         AureoleTheme.colors.onSurfaceMedium.copy(
                             alpha = 0.3f
                         )
-                    }
+                    },
+                    modifier = Modifier.size(16.dp)
                 )
             }
         }
@@ -818,13 +823,11 @@ private fun EditContainerAddAppDropdown(
                     modifier = Modifier.size(18.dp)
                 )
             },
-            trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = isExpanded) },
             singleLine = true,
             shape = RoundedCornerShape(12.dp),
             modifier = Modifier
                 .menuAnchor(ExposedDropdownMenuAnchorType.PrimaryNotEditable)
-                .fillMaxWidth()
-                .height(48.dp),
+                .fillMaxWidth(),
             colors = OutlinedTextFieldDefaults.colors(
                 focusedBorderColor = MaterialTheme.colorScheme.primary,
                 unfocusedBorderColor = AureoleTheme.colors.outline.copy(alpha = 0.5f),
@@ -875,6 +878,7 @@ private fun EditContainerFooter(
     ) {
         OutlinedButton(
             onClick = onDelete,
+            border = BorderStroke(1.dp, MaterialTheme.colorScheme.error.copy(alpha = 0.5f)),
             colors = ButtonDefaults.outlinedButtonColors(
                 contentColor = MaterialTheme.colorScheme.error
             )

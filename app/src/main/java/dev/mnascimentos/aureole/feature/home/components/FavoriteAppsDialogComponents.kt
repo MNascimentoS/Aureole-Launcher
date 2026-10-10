@@ -26,31 +26,24 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
-import dev.mnascimentos.aureole.core.designsystem.icons.Add
 import dev.mnascimentos.aureole.core.designsystem.icons.ArrowDown
 import dev.mnascimentos.aureole.core.designsystem.icons.ArrowUp
-import dev.mnascimentos.aureole.core.designsystem.icons.Close
+import dev.mnascimentos.aureole.core.designsystem.icons.Delete
+import dev.mnascimentos.aureole.core.designsystem.icons.Plus
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.feature.home.components.model.FavoriteAppRowParams
 
 @Composable
-fun FavoriteAppsDialogHeader(
-    containerId: String?
-) {
+fun FavoriteAppsDialogHeader() {
     Box(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier.fillMaxWidth().padding(bottom = 12.dp),
         contentAlignment = Alignment.Center
     ) {
-        val titleText = if (containerId != null) {
-            "Editar Favoritos do Container"
-        } else {
-            "Editar Favoritos da Tela Inicial"
-        }
         AureoleText(
-            text = titleText,
+            text = "Lista de Aplicativos",
             style = AureoleDS.typography.titleMedium,
             fontWeight = FontWeight.Bold,
-            color = MaterialTheme.colorScheme.onSurface,
+            color = AureoleDS.colors.onSurfaceMedium,
             textAlign = TextAlign.Center
         )
     }
@@ -133,10 +126,11 @@ fun FavoriteAppRowActionButtons(
             IconButton(
                 onClick = onMoveUp,
                 enabled = params.index > 0,
-                modifier = Modifier.size(32.dp)
+                modifier = Modifier.size(28.dp)
             ) {
                 AureoleDS.icons.ArrowUp(
-                    tint = upTint
+                    tint = upTint,
+                    modifier = Modifier.size(16.dp)
                 )
             }
 
@@ -148,20 +142,22 @@ fun FavoriteAppRowActionButtons(
             IconButton(
                 onClick = onMoveDown,
                 enabled = params.index < params.totalCount - 1,
-                modifier = Modifier.size(32.dp)
+                modifier = Modifier.size(28.dp)
             ) {
                 AureoleDS.icons.ArrowDown(
-                    tint = downTint
+                    tint = downTint,
+                    modifier = Modifier.size(16.dp)
                 )
             }
         }
 
         IconButton(
             onClick = onToggleFavorite,
-            modifier = Modifier.size(32.dp)
+            modifier = Modifier.size(28.dp).padding(start = 4.dp)
         ) {
-            AureoleDS.icons.Close(
-                tint = MaterialTheme.colorScheme.error
+            AureoleDS.icons.Delete(
+                tint = MaterialTheme.colorScheme.error,
+                modifier = Modifier.size(20.dp)
             )
         }
     }
@@ -208,10 +204,11 @@ fun RemainingAppRow(
 
         IconButton(
             onClick = onToggleFavorite,
-            modifier = Modifier.size(32.dp)
+            modifier = Modifier.size(28.dp)
         ) {
-            AureoleDS.icons.Add(
-                tint = MaterialTheme.colorScheme.primary
+            AureoleDS.icons.Plus(
+                tint = MaterialTheme.colorScheme.primary,
+                modifier = Modifier.size(20.dp)
             )
         }
     }

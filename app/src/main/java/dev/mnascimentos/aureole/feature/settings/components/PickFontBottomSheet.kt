@@ -51,28 +51,30 @@ fun PickFontBottomSheet(
 
             Spacer(modifier = Modifier.height(AureoleDS.dimens.medium))
 
-            LazyColumn {
-                items(AvailableFonts.keys.toList()) { fontName ->
-                    val font = AvailableFonts[fontName]
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .clickable { onFontSelected(fontName) }
-                            .padding(horizontal = AureoleDS.dimens.xLarge, vertical = AureoleDS.dimens.medium),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        AureoleText(
-                            text = fontName,
-                            style = AureoleTheme.typography.bodyLarge,
-                            fontFamily = font,
-                            color = AureoleTheme.colors.onSurfaceMedium,
-                            modifier = Modifier.weight(1f)
-                        )
-                        if (fontName == selectedFontName) {
-                            AureoleDS.icons.Check(
-                                tint = AureoleTheme.colors.onSurfaceHigh,
-                                modifier = Modifier.size(24.dp)
+            Box(modifier = Modifier.weight(1f, fill = false)) {
+                LazyColumn {
+                    items(AvailableFonts.keys.toList()) { fontName ->
+                        val font = AvailableFonts[fontName]
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clickable { onFontSelected(fontName) }
+                                .padding(horizontal = AureoleDS.dimens.xLarge, vertical = AureoleDS.dimens.medium),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            AureoleText(
+                                text = fontName,
+                                style = AureoleTheme.typography.bodyLarge,
+                                fontFamily = font,
+                                color = AureoleTheme.colors.onSurfaceMedium,
+                                modifier = Modifier.weight(1f)
                             )
+                            if (fontName == selectedFontName) {
+                                AureoleDS.icons.Check(
+                                    tint = AureoleTheme.colors.onSurfaceHigh,
+                                    modifier = Modifier.size(24.dp)
+                                )
+                            }
                         }
                     }
                 }
