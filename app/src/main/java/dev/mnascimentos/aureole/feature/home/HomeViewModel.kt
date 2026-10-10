@@ -42,6 +42,9 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
 
     internal var activeVersionCode: Int = 0
 
+    var isUpdateInProgressOrDismissed: Boolean = false
+        internal set
+
     init {
         loadSettings()
         observeAppsFlow()

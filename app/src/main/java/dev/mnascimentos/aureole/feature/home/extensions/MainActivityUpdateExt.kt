@@ -19,17 +19,25 @@ fun checkAppUpdate(
         onAppUpdateInfoRetrieved(appUpdateInfo)
 
         val installStatus = appUpdateInfo.installStatus()
-        val isDownloadingOrPending = (installStatus == InstallStatus.DOWNLOADING) ||
-            (installStatus == InstallStatus.PENDING)
+        val isUpdateInProgress = installStatus == InstallStatus.DOWNLOADING ||
+            installStatus == InstallStatus.PENDING ||
+            installStatus == InstallStatus.INSTALLING ||
+            appUpdateInfo.updateAvailability() == UpdateAvailability.DEVELOPER_TRIGGERED_UPDATE_IN_PROGRESS
 
         val isUpdateAvailable = appUpdateInfo.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE
         val isAllowedType = appUpdateInfo.isUpdateTypeAllowed(AppUpdateType.FLEXIBLE) ||
             appUpdateInfo.isUpdateTypeAllowed(AppUpdateType.IMMEDIATE)
 
         if (installStatus == InstallStatus.DOWNLOADED) {
+            viewModel.setShowUpdateAvailableDialog(visible = false)
             viewModel.setShowUpdateDownloadedDialog(visible = true)
-        } else if (isUpdateAvailable && isAllowedType && !isDownloadingOrPending) {
-            viewModel.setShowUpdateAvailableDialog(visible = true)
+        } else if (isUpdateInProgress) {
+            viewModel.isUpdateInProgressOrDismissed = true
+            viewModel.setShowUpdateAvailableDialog(visible = false)
+        } else if (isUpdateAvailable && isAllowedType) {
+            if (!viewModel.isUpdateInProgressOrDismissed) {
+                viewModel.setShowUpdateAvailableDialog(visible = true)
+            }
         }
     }.addOnFailureListener { e ->
         Log.w("MainActivity", "Failed to check for app update", e)

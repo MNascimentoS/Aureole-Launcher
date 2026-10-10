@@ -199,11 +199,13 @@ class HomeActionsFactory(
     }
 
     private fun handleDismissUpdateDialog() {
+        viewModel.isUpdateInProgressOrDismissed = true
         viewModel.setShowUpdateAvailableDialog(visible = false)
         viewModel.setShowUpdateDownloadedDialog(visible = false)
     }
 
     private fun createStartUpdateAction(): () -> Unit = {
+        viewModel.isUpdateInProgressOrDismissed = true
         viewModel.setShowUpdateAvailableDialog(visible = false)
         cachedAppUpdateInfo?.let { appUpdateInfo ->
             val updateType = if (appUpdateInfo.isUpdateTypeAllowed(AppUpdateType.FLEXIBLE)) {
