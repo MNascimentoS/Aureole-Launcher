@@ -65,6 +65,12 @@ object ReleaseNotesRepository {
                 description = "Maior consistência ao aplicar novos temas e gerenciamento " +
                     "do papel de parede dinâmico.",
                 type = ReleaseNoteType.IMPROVEMENT
+            ),
+            ReleaseNoteItem(
+                title = "Refatoração de Código e Estabilidade",
+                description = "Melhorias estruturais na arquitetura do código e refatoração de " +
+                    "componentes para melhor manutenibilidade.",
+                type = ReleaseNoteType.IMPROVEMENT
             )
         )
     )
