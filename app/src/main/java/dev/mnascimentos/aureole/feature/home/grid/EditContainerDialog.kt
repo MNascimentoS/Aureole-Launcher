@@ -316,11 +316,13 @@ private fun EditDialogScrollViewSection(
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 item.safeChildren.forEachIndexed { index, child ->
                     ScrollViewChildItemCard(
-                        parentId = item.id,
-                        child = child,
-                        childIndex = index,
-                        totalChildren = totalChildren,
-                        isVertical = isVertical,
+                        params = ScrollViewChildParams(
+                            parentId = item.id,
+                            child = child,
+                            childIndex = index,
+                            totalChildren = totalChildren,
+                            isVertical = isVertical
+                        ),
                         actions = actions,
                         onDismissRequest = onDismissRequest
                     )

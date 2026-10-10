@@ -72,16 +72,23 @@ fun ContainerAddFolderButton(
     }
 }
 
+data class ContainerFolderConfig(
+    val showFolderLabels: Boolean,
+    val isGridFolderEnabled: Boolean,
+    val isBackgroundEnabled: Boolean = true,
+)
+
 @Composable
 fun ContainerFolderItem(
     folder: AppFolder,
     isOpened: Boolean,
-    showFolderLabels: Boolean,
-    isGridFolderEnabled: Boolean,
-    isBackgroundEnabled: Boolean = true,
+    config: ContainerFolderConfig,
     onFolderClick: (AppFolder, Float) -> Unit,
     onLongClick: (() -> Unit)? = null,
 ) {
+    val showFolderLabels = config.showFolderLabels
+    val isGridFolderEnabled = config.isGridFolderEnabled
+    val isBackgroundEnabled = config.isBackgroundEnabled
     var itemYInWindow by remember { mutableFloatStateOf(0f) }
 
     val containerColor by animateColorAsState(

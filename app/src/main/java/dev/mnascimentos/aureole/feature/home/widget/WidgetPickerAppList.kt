@@ -53,6 +53,8 @@ import dev.mnascimentos.aureole.feature.home.widget.model.WidgetSelectorIntent
 import dev.mnascimentos.aureole.feature.home.widget.model.WidgetSelectorState
 import dev.mnascimentos.aureole.feature.home.widget.model.WidgetVariant
 
+private const val WIDGET_PREVIEW_ASPECT_RATIO = 1.2f
+
 private const val TAG = "WidgetPickerAppList"
 
 @Composable
@@ -190,7 +192,7 @@ fun WidgetPreviewCard(
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .aspectRatio(1.2f)
+                .aspectRatio(WIDGET_PREVIEW_ASPECT_RATIO)
                 .clip(RoundedCornerShape(18.dp))
                 .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)),
             contentAlignment = Alignment.Center

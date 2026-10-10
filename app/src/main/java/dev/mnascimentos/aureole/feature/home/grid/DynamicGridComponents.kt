@@ -19,7 +19,6 @@ private const val GRID_MARGIN_PX = 16f
 private const val GRID_LINE_WIDTH = 2f
 private const val GRID_CORNER_RADIUS = 24f
 private const val DASH_LENGTH_PX = 10f
-private const val TOP_BAR_Z_INDEX = 100f
 
 @Composable
 fun GridBackgroundOverlay(
