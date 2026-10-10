@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.IconButton
@@ -610,29 +611,33 @@ private fun AppShortcutsMenu(
     context: Context
 ) {
     shortcuts.forEach { shortcut ->
+        val iconBitmap = remember(shortcut.id) {
+            shortcut.icon?.toImageBitmap()
+        }
         AureolePopupMenuItem(
             title = shortcut.label,
             customIcon = {
-                val iconBitmap = remember(shortcut.id) {
-                    shortcut.icon?.toImageBitmap()
-                }
                 if (iconBitmap != null) {
                     Image(
                         bitmap = iconBitmap,
                         contentDescription = shortcut.label,
-                        modifier = Modifier.size(20.dp)
+                        modifier = Modifier
+                            .size(22.dp)
+                            .clip(CircleShape)
                     )
                 } else {
                     Box(
                         modifier = Modifier
-                            .size(18.dp)
-                            .border(
-                                1.5.dp,
-                                AureoleDS.colors.onSurfaceMedium,
-                                RoundedCornerShape(AureoleDS.dimens.borderMax)
-                            )
-                            .background(AureoleDS.colors.onSurfaceMedium.copy(alpha = 0.15f))
-                    )
+                            .size(22.dp)
+                            .clip(CircleShape)
+                            .background(AureoleDS.colors.surfaceVariant),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        AureoleDS.icons.Smile(
+                            tint = AureoleDS.colors.onSurfaceMedium,
+                            modifier = Modifier.size(14.dp)
+                        )
+                    }
                 }
             },
             onClick = {

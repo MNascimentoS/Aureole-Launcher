@@ -36,35 +36,11 @@ object AppShortcutUtils {
                 null
             } ?: return emptyList()
 
-            val queryFlags = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                LauncherApps.ShortcutQuery.FLAG_MATCH_DYNAMIC or
-                    LauncherApps.ShortcutQuery.FLAG_MATCH_MANIFEST or
-                    LauncherApps.ShortcutQuery.FLAG_MATCH_PINNED or
-                    LauncherApps.ShortcutQuery.FLAG_MATCH_CACHED
-            } else {
-                LauncherApps.ShortcutQuery.FLAG_MATCH_DYNAMIC or
-                    LauncherApps.ShortcutQuery.FLAG_MATCH_MANIFEST or
-                    LauncherApps.ShortcutQuery.FLAG_MATCH_PINNED
-            }
-
-            val query = LauncherApps.ShortcutQuery().apply {
-                setQueryFlags(queryFlags)
-                setPackage(packageName)
-            }
-
-            val shortcuts = try {
-                launcherApps.getShortcuts(query, Process.myUserHandle())
-            } catch (e: SecurityException) {
-                Log.w(TAG, "Security exception fetching shortcuts for $packageName", e)
-                null
-            } catch (e: IllegalStateException) {
-                Log.w(TAG, "Illegal state fetching shortcuts for $packageName", e)
-                null
-            } ?: emptyList()
+            val shortcuts = queryShortcutsForPackage(launcherApps, packageName)
+            val density = context.resources.displayMetrics.densityDpi
 
             shortcuts.take(MAX_SHORTCUTS).map { shortcut ->
                 val label = (shortcut.shortLabel ?: shortcut.longLabel ?: shortcut.id).toString()
-                val density = context.resources.displayMetrics.densityDpi
                 val iconDrawable = try {
                     launcherApps.getShortcutIconDrawable(shortcut, density)
                 } catch (e: SecurityException) {
@@ -83,13 +59,49 @@ object AppShortcutUtils {
                 )
             }
         } catch (e: SecurityException) {
-            Log.w(TAG, "Error fetching app shortcuts", e)
+            Log.w(TAG, "Error fetching app shortcuts for $packageName (security)", e)
             emptyList()
-        } catch (e: IllegalStateException) {
-            Log.w(TAG, "Error fetching app shortcuts", e)
+        } catch (e: Exception) {
+            Log.w(TAG, "Error fetching app shortcuts for $packageName", e)
             emptyList()
-        } catch (e: IllegalArgumentException) {
-            Log.w(TAG, "Error fetching app shortcuts", e)
+        }
+    }
+
+    private fun queryShortcutsForPackage(
+        launcherApps: LauncherApps,
+        packageName: String
+    ): List<ShortcutInfo> {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            try {
+                val cachedQuery = LauncherApps.ShortcutQuery().apply {
+                    setQueryFlags(
+                        LauncherApps.ShortcutQuery.FLAG_MATCH_DYNAMIC or
+                            LauncherApps.ShortcutQuery.FLAG_MATCH_MANIFEST or
+                            LauncherApps.ShortcutQuery.FLAG_MATCH_PINNED or
+                            LauncherApps.ShortcutQuery.FLAG_MATCH_CACHED
+                    )
+                    setPackage(packageName)
+                }
+                val results = launcherApps.getShortcuts(cachedQuery, Process.myUserHandle())
+                if (!results.isNullOrEmpty()) return results
+            } catch (e: Exception) {
+                Log.w(TAG, "Failed cached query for $packageName, falling back to standard query", e)
+            }
+        }
+
+        val standardQuery = LauncherApps.ShortcutQuery().apply {
+            setQueryFlags(
+                LauncherApps.ShortcutQuery.FLAG_MATCH_DYNAMIC or
+                    LauncherApps.ShortcutQuery.FLAG_MATCH_MANIFEST or
+                    LauncherApps.ShortcutQuery.FLAG_MATCH_PINNED
+            )
+            setPackage(packageName)
+        }
+
+        return try {
+            launcherApps.getShortcuts(standardQuery, Process.myUserHandle()) ?: emptyList()
+        } catch (e: Exception) {
+            Log.w(TAG, "Standard query failed for $packageName", e)
             emptyList()
         }
     }
