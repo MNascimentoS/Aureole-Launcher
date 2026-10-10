@@ -22,16 +22,13 @@ fun checkAppUpdate(
         val isDownloadingOrPending = (installStatus == InstallStatus.DOWNLOADING) ||
             (installStatus == InstallStatus.PENDING)
 
+        val isUpdateAvailable = appUpdateInfo.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE
+        val isAllowedType = appUpdateInfo.isUpdateTypeAllowed(AppUpdateType.FLEXIBLE) ||
+            appUpdateInfo.isUpdateTypeAllowed(AppUpdateType.IMMEDIATE)
+
         if (installStatus == InstallStatus.DOWNLOADED) {
             viewModel.setShowUpdateDownloadedDialog(visible = true)
-        } else if (
-            (appUpdateInfo.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE) &&
-            !isDownloadingOrPending &&
-            (
-                appUpdateInfo.isUpdateTypeAllowed(AppUpdateType.FLEXIBLE) ||
-                    appUpdateInfo.isUpdateTypeAllowed(AppUpdateType.IMMEDIATE)
-                )
-        ) {
+        } else if (isUpdateAvailable && isAllowedType && !isDownloadingOrPending) {
             viewModel.setShowUpdateAvailableDialog(visible = true)
         }
     }.addOnFailureListener { e ->

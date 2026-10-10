@@ -55,10 +55,12 @@ fun FolderFormDialog(
         title = title
     ) {
         FolderFormDialogContent(
-            initialName = folder?.name.orEmpty(),
-            initialIcon = folder?.icon,
-            isEditing = isEditing,
-            submitText = submitText,
+            config = FolderFormConfig(
+                initialName = folder?.name.orEmpty(),
+                initialIcon = folder?.icon,
+                isEditing = isEditing,
+                submitText = submitText
+            ),
             onDismiss = onDismiss,
             onSave = onSave,
             onDelete = onDelete
@@ -66,18 +68,22 @@ fun FolderFormDialog(
     }
 }
 
+data class FolderFormConfig(
+    val initialName: String,
+    val initialIcon: String?,
+    val isEditing: Boolean,
+    val submitText: String
+)
+
 @Composable
 private fun FolderFormDialogContent(
-    initialName: String,
-    initialIcon: String?,
-    isEditing: Boolean,
-    submitText: String,
+    config: FolderFormConfig,
     onDismiss: () -> Unit,
     onSave: (name: String, icon: String?) -> Unit,
     onDelete: (() -> Unit)?
 ) {
-    var folderName by remember { mutableStateOf(initialName) }
-    var selectedIcon by remember { mutableStateOf(initialIcon) }
+    var folderName by remember { mutableStateOf(config.initialName) }
+    var selectedIcon by remember { mutableStateOf(config.initialIcon) }
 
     Column(
         modifier = Modifier.fillMaxWidth(),
@@ -123,8 +129,8 @@ private fun FolderFormDialogContent(
         Spacer(modifier = Modifier.height(24.dp))
 
         FolderFormButtons(
-            isEditing = isEditing,
-            submitText = submitText,
+            isEditing = config.isEditing,
+            submitText = config.submitText,
             onDelete = onDelete,
             onDismiss = onDismiss,
             onSave = {

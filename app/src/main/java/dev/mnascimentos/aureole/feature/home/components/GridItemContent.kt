@@ -5,6 +5,7 @@ import android.appwidget.AppWidgetHostView
 import android.appwidget.AppWidgetManager
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.TextView
 import androidx.compose.foundation.gestures.awaitEachGesture
@@ -38,6 +39,8 @@ import dev.mnascimentos.aureole.feature.home.widget.StackedWidgetSection
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
+private const val LONG_PRESS_MARGIN_MS = 50L
+private const val MIN_LONG_PRESS_TIMEOUT_MS = 200L
 private const val DEFAULT_WIDGET_MIN_WIDTH = 100
 private const val DEFAULT_WIDGET_MAX_HEIGHT = 360
 
@@ -46,10 +49,12 @@ fun GridClockContent(containerConfig: ContainerConfig, uiState: MainUiState) {
     val actions = LocalHomeActions.current
     Box(modifier = Modifier.fillMaxSize()) {
         ClockHeader(
-            hazeState = containerConfig.hazeState,
-            isHazeEnabled = uiState.isHazeEnabled,
-            hazeOpacity = uiState.hazeOpacity,
-            isBackgroundEnabled = uiState.isClockBackgroundEnabled,
+            hazeConfig = ClockHazeConfig(
+                hazeState = containerConfig.hazeState,
+                isHazeEnabled = uiState.isHazeEnabled,
+                hazeOpacity = uiState.hazeOpacity,
+                isBackgroundEnabled = uiState.isClockBackgroundEnabled
+            ),
             onLongClick = { actions.onOpenEditClockBottomSheet() }
         )
     }
@@ -160,7 +165,7 @@ fun SingleAppWidgetContent(
                     var isLongPressTriggered = false
 
                     val job = coroutineScope.launch {
-                        delay((longPressTimeout - 50L).coerceAtLeast(200L))
+                        delay((longPressTimeout - LONG_PRESS_MARGIN_MS).coerceAtLeast(MIN_LONG_PRESS_TIMEOUT_MS))
                         isLongPressTriggered = true
                         down.consume()
                         actions.onOpenWidgetStackBottomSheet(item.widgetId, item.id)
@@ -173,6 +178,7 @@ fun SingleAppWidgetContent(
                             up?.consume()
                         }
                     } catch (e: IllegalArgumentException) {
+                        Log.d("GridItemContent", "Pointer gesture wait interrupted", e)
                         job.cancel()
                     }
                 }

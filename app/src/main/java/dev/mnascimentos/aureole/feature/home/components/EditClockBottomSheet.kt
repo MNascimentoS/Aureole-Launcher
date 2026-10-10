@@ -72,7 +72,9 @@ private val PRESET_BG_COLORS = listOf(
     Pair("Verde Escuro", 0xFF1B5E20.toInt())
 )
 
-@OptIn(ExperimentalLayoutApi::class)
+private val CHIP_HORIZONTAL_SPACING = 8.dp
+private val CHIP_VERTICAL_SPACING = (-8).dp
+
 @Composable
 fun EditClockBottomSheet(
     uiState: MainUiState,
@@ -92,318 +94,408 @@ fun EditClockBottomSheet(
                 .fillMaxWidth()
                 .verticalScroll(rememberScrollState())
         ) {
-            // Live Preview Card
-            AureoleText(
-                text = "Pré-visualização ao vivo",
-                style = AureoleTheme.typography.labelLarge,
-                color = AureoleTheme.colors.onSurfaceMedium,
-                modifier = Modifier.padding(bottom = 8.dp)
-            )
-
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(140.dp)
-                    .clip(RoundedCornerShape(16.dp))
-                    .background(AureoleTheme.colors.surfaceVariant.copy(alpha = 0.5f))
-                    .padding(8.dp)
-            ) {
-                ClockHeader(
-                    isHazeEnabled = false,
-                    isBackgroundEnabled = uiState.isClockBackgroundEnabled,
-                    clockStyle = uiState.clockStyle,
-                    clockCustomGreeting = tempCustomGreeting,
-                    clockAlignment = uiState.clockAlignment,
-                    clockFontFamily = uiState.clockFontFamily,
-                    clockTimeFormat = uiState.clockTimeFormat,
-                    clockDateFormat = uiState.clockDateFormat,
-                    clockTextColor = uiState.clockTextColor,
-                    clockBackgroundColor = uiState.clockBackgroundColor
-                )
-            }
+            EditClockPreviewCard(uiState = uiState, tempCustomGreeting = tempCustomGreeting)
 
             Spacer(modifier = Modifier.height(10.dp))
 
-            // 1. Clock Layout / Style
-            SectionHeader(title = "Estilo do Layout")
-            FlowRow(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                verticalArrangement = Arrangement.spacedBy((-8).dp)
-            ) {
-                LayoutChip(
-                    label = "Saudação Diária",
-                    selected = uiState.clockStyle == "DYNAMIC_GREETING",
-                    onClick = { actions.onUpdateClockStyle("DYNAMIC_GREETING") }
-                )
-                LayoutChip(
-                    label = "Data no Topo",
-                    selected = uiState.clockStyle == "DATE_ON_TOP",
-                    onClick = { actions.onUpdateClockStyle("DATE_ON_TOP") }
-                )
-                LayoutChip(
-                    label = "Saudação + Data",
-                    selected = uiState.clockStyle == "GREETING_AND_DATE",
-                    onClick = { actions.onUpdateClockStyle("GREETING_AND_DATE") }
-                )
-                LayoutChip(
-                    label = "Texto Personalizado",
-                    selected = uiState.clockStyle == "CUSTOM_GREETING",
-                    onClick = { actions.onUpdateClockStyle("CUSTOM_GREETING") }
-                )
-                LayoutChip(
-                    label = "Apenas Horário",
-                    selected = uiState.clockStyle == "TIME_ONLY",
-                    onClick = { actions.onUpdateClockStyle("TIME_ONLY") }
-                )
-            }
-
-            // Custom Greeting Input Field
-            if (uiState.clockStyle == "CUSTOM_GREETING") {
-                Spacer(modifier = Modifier.height(12.dp))
-                OutlinedTextField(
-                    value = tempCustomGreeting,
-                    onValueChange = {
-                        tempCustomGreeting = it
-                        actions.onUpdateClockCustomGreeting(it)
-                    },
-                    label = { AureoleText("Texto da Saudação") },
-                    placeholder = { AureoleText("Ex: Bem-vindo(a) de volta!") },
-                    singleLine = true,
-                    colors = OutlinedTextFieldDefaults.colors(
-                        focusedTextColor = AureoleTheme.colors.onSurfaceHigh,
-                        unfocusedTextColor = AureoleTheme.colors.onSurfaceHigh
-                    ),
-                    modifier = Modifier.fillMaxWidth()
-                )
-            }
-
-            Spacer(modifier = Modifier.height(10.dp))
-
-            // 2. Alignment
-            SectionHeader(title = "Alinhamento")
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                ChoiceButton(
-                    text = "Esquerda",
-                    selected = uiState.clockAlignment == "START",
-                    onClick = { actions.onUpdateClockAlignment("START") },
-                    modifier = Modifier.weight(1f)
-                )
-                ChoiceButton(
-                    text = "Centro",
-                    selected = uiState.clockAlignment == "CENTER",
-                    onClick = { actions.onUpdateClockAlignment("CENTER") },
-                    modifier = Modifier.weight(1f)
-                )
-                ChoiceButton(
-                    text = "Direita",
-                    selected = uiState.clockAlignment == "END",
-                    onClick = { actions.onUpdateClockAlignment("END") },
-                    modifier = Modifier.weight(1f)
-                )
-            }
-
-            Spacer(modifier = Modifier.height(10.dp))
-
-            // 3. Text Color
-            SectionHeader(title = "Cor do Texto")
-            FlowRow(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(10.dp),
-                verticalArrangement = Arrangement.spacedBy(10.dp)
-            ) {
-                PRESET_TEXT_COLORS.forEach { (name, colorValue) ->
-                    ColorSwatchItem(
-                        name = name,
-                        colorValue = colorValue,
-                        isSelected = uiState.clockTextColor == colorValue,
-                        onClick = { actions.onUpdateClockTextColor(colorValue) }
-                    )
+            EditClockStyleSection(
+                uiState = uiState,
+                actions = actions,
+                tempCustomGreeting = tempCustomGreeting,
+                onGreetingChange = {
+                    tempCustomGreeting = it
+                    actions.onUpdateClockCustomGreeting(it)
                 }
-            }
-
-            Spacer(modifier = Modifier.height(10.dp))
-
-            // 4. Font Style
-            SectionHeader(title = "Estilo da Fonte")
-            FlowRow(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                verticalArrangement = Arrangement.spacedBy((-8).dp)
-            ) {
-                LayoutChip(
-                    label = "Padrão",
-                    selected = uiState.clockFontFamily == "SANS_SERIF",
-                    onClick = { actions.onUpdateClockFontFamily("SANS_SERIF") }
-                )
-                LayoutChip(
-                    label = "Negrito",
-                    selected = uiState.clockFontFamily == "BOLD",
-                    onClick = { actions.onUpdateClockFontFamily("BOLD") }
-                )
-                LayoutChip(
-                    label = "Serifada",
-                    selected = uiState.clockFontFamily == "SERIF",
-                    onClick = { actions.onUpdateClockFontFamily("SERIF") }
-                )
-                LayoutChip(
-                    label = "Monospaced",
-                    selected = uiState.clockFontFamily == "MONOSPACE",
-                    onClick = { actions.onUpdateClockFontFamily("MONOSPACE") }
-                )
-                LayoutChip(
-                    label = "Arredondada",
-                    selected = uiState.clockFontFamily == "ROUNDED",
-                    onClick = { actions.onUpdateClockFontFamily("ROUNDED") }
-                )
-            }
-
-            Spacer(modifier = Modifier.height(10.dp))
-
-            // 5. Time & Date Format
-            SectionHeader(title = "Formato de Hora e Data")
-            AureoleText(
-                text = "Formato de Hora:",
-                style = AureoleTheme.typography.bodySmall,
-                color = AureoleTheme.colors.onSurfaceMedium,
-                modifier = Modifier.padding(bottom = 6.dp)
             )
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                ChoiceButton(
-                    text = "Sistema",
-                    selected = uiState.clockTimeFormat == "SYSTEM",
-                    onClick = { actions.onUpdateClockTimeFormat("SYSTEM") },
-                    modifier = Modifier.weight(1f)
-                )
-                ChoiceButton(
-                    text = "12 Horas",
-                    selected = uiState.clockTimeFormat == "12H",
-                    onClick = { actions.onUpdateClockTimeFormat("12H") },
-                    modifier = Modifier.weight(1f)
-                )
-                ChoiceButton(
-                    text = "24 Horas",
-                    selected = uiState.clockTimeFormat == "24H",
-                    onClick = { actions.onUpdateClockTimeFormat("24H") },
-                    modifier = Modifier.weight(1f)
-                )
-            }
 
             Spacer(modifier = Modifier.height(10.dp))
 
-            AureoleText(
-                text = "Formato de Data:",
-                style = AureoleTheme.typography.bodySmall,
-                color = AureoleTheme.colors.onSurfaceMedium,
-                modifier = Modifier.padding(bottom = 6.dp)
-            )
-            FlowRow(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                verticalArrangement = Arrangement.spacedBy((-8).dp)
-            ) {
-                LayoutChip(
-                    label = "Completo (sexta, 9 out)",
-                    selected = uiState.clockDateFormat == "DEFAULT",
-                    onClick = { actions.onUpdateClockDateFormat("DEFAULT") }
-                )
-                LayoutChip(
-                    label = "Curto (Tue, 22 Sep)",
-                    selected = uiState.clockDateFormat == "SHORT",
-                    onClick = { actions.onUpdateClockDateFormat("SHORT") }
-                )
-                LayoutChip(
-                    label = "Médio (9 de outubro)",
-                    selected = uiState.clockDateFormat == "MEDIUM",
-                    onClick = { actions.onUpdateClockDateFormat("MEDIUM") }
-                )
-                LayoutChip(
-                    label = "Numérico (09/10/2026)",
-                    selected = uiState.clockDateFormat == "NUMERIC",
-                    onClick = { actions.onUpdateClockDateFormat("NUMERIC") }
-                )
-            }
+            EditClockAlignmentSection(uiState = uiState, actions = actions)
 
             Spacer(modifier = Modifier.height(10.dp))
 
-            // 6. Background Options
-            SectionHeader(title = "Fundo do Cartão")
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                AureoleText(
-                    text = "Mostrar cartão de fundo",
-                    style = AureoleTheme.typography.bodyMedium,
-                    color = AureoleTheme.colors.onSurfaceHigh
-                )
-                Switch(
-                    checked = uiState.isClockBackgroundEnabled,
-                    onCheckedChange = { actions.onToggleClockBackground() }
-                )
-            }
+            EditClockTextColorSection(uiState = uiState, actions = actions)
 
-            if (uiState.isClockBackgroundEnabled) {
-                Spacer(modifier = Modifier.height(8.dp))
-                AureoleText(
-                    text = "Cor de Fundo Personalizada:",
-                    style = AureoleTheme.typography.bodySmall,
-                    color = AureoleTheme.colors.onSurfaceMedium,
-                    modifier = Modifier.padding(bottom = 6.dp)
-                )
-                FlowRow(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(10.dp),
-                    verticalArrangement = Arrangement.spacedBy(10.dp)
-                ) {
-                    PRESET_BG_COLORS.forEach { (name, colorValue) ->
-                        ColorSwatchItem(
-                            name = name,
-                            colorValue = colorValue,
-                            isSelected = uiState.clockBackgroundColor == colorValue,
-                            onClick = { actions.onUpdateClockBackgroundColor(colorValue) }
-                        )
-                    }
-                }
-            }
+            Spacer(modifier = Modifier.height(10.dp))
+
+            EditClockFontSection(uiState = uiState, actions = actions)
+
+            Spacer(modifier = Modifier.height(10.dp))
+
+            EditClockFormatSection(uiState = uiState, actions = actions)
+
+            Spacer(modifier = Modifier.height(10.dp))
+
+            EditClockBackgroundSection(uiState = uiState, actions = actions)
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            // Action Buttons
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                TextButton(
-                    onClick = {
-                        actions.onResetClockSettings()
-                        tempCustomGreeting = ""
-                    }
-                ) {
-                    AureoleText(
-                        text = "Redefinir Padrões",
-                        color = MaterialTheme.colorScheme.error
-                    )
-                }
+            EditClockActionButtons(
+                actions = actions,
+                onDismissRequest = onDismissRequest,
+                onResetGreeting = { tempCustomGreeting = "" }
+            )
+        }
+    }
+}
 
-                Button(
-                    onClick = onDismissRequest,
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.colorScheme.primary,
-                        contentColor = MaterialTheme.colorScheme.onPrimary
-                    )
-                ) {
-                    AureoleText("Concluído", color = MaterialTheme.colorScheme.onPrimary)
-                }
+@Composable
+private fun EditClockPreviewCard(
+    uiState: MainUiState,
+    tempCustomGreeting: String
+) {
+    AureoleText(
+        text = "Pré-visualização ao vivo",
+        style = AureoleTheme.typography.labelLarge,
+        color = AureoleTheme.colors.onSurfaceMedium,
+        modifier = Modifier.padding(bottom = 8.dp)
+    )
+
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(140.dp)
+            .clip(RoundedCornerShape(16.dp))
+            .background(AureoleTheme.colors.surfaceVariant.copy(alpha = 0.5f))
+            .padding(8.dp)
+    ) {
+        ClockHeader(
+            hazeConfig = ClockHazeConfig(
+                isHazeEnabled = false,
+                isBackgroundEnabled = uiState.isClockBackgroundEnabled
+            ),
+            config = ClockHeaderConfig(
+                style = uiState.clockStyle,
+                customGreeting = tempCustomGreeting,
+                alignment = uiState.clockAlignment,
+                fontFamily = uiState.clockFontFamily,
+                timeFormat = uiState.clockTimeFormat,
+                dateFormat = uiState.clockDateFormat,
+                textColor = uiState.clockTextColor,
+                backgroundColor = uiState.clockBackgroundColor
+            )
+        )
+    }
+}
+
+@OptIn(ExperimentalLayoutApi::class)
+@Composable
+private fun EditClockStyleSection(
+    uiState: MainUiState,
+    actions: HomeScreenActions,
+    tempCustomGreeting: String,
+    onGreetingChange: (String) -> Unit
+) {
+    SectionHeader(title = "Estilo do Layout")
+    FlowRow(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.spacedBy(CHIP_HORIZONTAL_SPACING),
+        verticalArrangement = Arrangement.spacedBy(CHIP_VERTICAL_SPACING)
+    ) {
+        LayoutChip(
+            label = "Saudação Diária",
+            selected = uiState.clockStyle == "DYNAMIC_GREETING",
+            onClick = { actions.onUpdateClockStyle("DYNAMIC_GREETING") }
+        )
+        LayoutChip(
+            label = "Data no Topo",
+            selected = uiState.clockStyle == "DATE_ON_TOP",
+            onClick = { actions.onUpdateClockStyle("DATE_ON_TOP") }
+        )
+        LayoutChip(
+            label = "Saudação + Data",
+            selected = uiState.clockStyle == "GREETING_AND_DATE",
+            onClick = { actions.onUpdateClockStyle("GREETING_AND_DATE") }
+        )
+        LayoutChip(
+            label = "Texto Personalizado",
+            selected = uiState.clockStyle == "CUSTOM_GREETING",
+            onClick = { actions.onUpdateClockStyle("CUSTOM_GREETING") }
+        )
+        LayoutChip(
+            label = "Apenas Horário",
+            selected = uiState.clockStyle == "TIME_ONLY",
+            onClick = { actions.onUpdateClockStyle("TIME_ONLY") }
+        )
+    }
+
+    if (uiState.clockStyle == "CUSTOM_GREETING") {
+        Spacer(modifier = Modifier.height(12.dp))
+        OutlinedTextField(
+            value = tempCustomGreeting,
+            onValueChange = onGreetingChange,
+            label = { AureoleText("Texto da Saudação") },
+            placeholder = { AureoleText("Ex: Bem-vindo(a) de volta!") },
+            singleLine = true,
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedTextColor = AureoleTheme.colors.onSurfaceHigh,
+                unfocusedTextColor = AureoleTheme.colors.onSurfaceHigh
+            ),
+            modifier = Modifier.fillMaxWidth()
+        )
+    }
+}
+
+@Composable
+private fun EditClockAlignmentSection(
+    uiState: MainUiState,
+    actions: HomeScreenActions
+) {
+    SectionHeader(title = "Alinhamento")
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.spacedBy(CHIP_HORIZONTAL_SPACING)
+    ) {
+        ChoiceButton(
+            text = "Esquerda",
+            selected = uiState.clockAlignment == "START",
+            onClick = { actions.onUpdateClockAlignment("START") },
+            modifier = Modifier.weight(1f)
+        )
+        ChoiceButton(
+            text = "Centro",
+            selected = uiState.clockAlignment == "CENTER",
+            onClick = { actions.onUpdateClockAlignment("CENTER") },
+            modifier = Modifier.weight(1f)
+        )
+        ChoiceButton(
+            text = "Direita",
+            selected = uiState.clockAlignment == "END",
+            onClick = { actions.onUpdateClockAlignment("END") },
+            modifier = Modifier.weight(1f)
+        )
+    }
+}
+
+@OptIn(ExperimentalLayoutApi::class)
+@Composable
+private fun EditClockTextColorSection(
+    uiState: MainUiState,
+    actions: HomeScreenActions
+) {
+    SectionHeader(title = "Cor do Texto")
+    FlowRow(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.spacedBy(10.dp),
+        verticalArrangement = Arrangement.spacedBy(10.dp)
+    ) {
+        PRESET_TEXT_COLORS.forEach { (name, colorValue) ->
+            ColorSwatchItem(
+                name = name,
+                colorValue = colorValue,
+                isSelected = uiState.clockTextColor == colorValue,
+                onClick = { actions.onUpdateClockTextColor(colorValue) }
+            )
+        }
+    }
+}
+
+@OptIn(ExperimentalLayoutApi::class)
+@Composable
+private fun EditClockFontSection(
+    uiState: MainUiState,
+    actions: HomeScreenActions
+) {
+    SectionHeader(title = "Estilo da Fonte")
+    FlowRow(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.spacedBy(CHIP_HORIZONTAL_SPACING),
+        verticalArrangement = Arrangement.spacedBy(CHIP_VERTICAL_SPACING)
+    ) {
+        LayoutChip(
+            label = "Padrão",
+            selected = uiState.clockFontFamily == "SANS_SERIF",
+            onClick = { actions.onUpdateClockFontFamily("SANS_SERIF") }
+        )
+        LayoutChip(
+            label = "Negrito",
+            selected = uiState.clockFontFamily == "BOLD",
+            onClick = { actions.onUpdateClockFontFamily("BOLD") }
+        )
+        LayoutChip(
+            label = "Serifada",
+            selected = uiState.clockFontFamily == "SERIF",
+            onClick = { actions.onUpdateClockFontFamily("SERIF") }
+        )
+        LayoutChip(
+            label = "Monospaced",
+            selected = uiState.clockFontFamily == "MONOSPACE",
+            onClick = { actions.onUpdateClockFontFamily("MONOSPACE") }
+        )
+        LayoutChip(
+            label = "Arredondada",
+            selected = uiState.clockFontFamily == "ROUNDED",
+            onClick = { actions.onUpdateClockFontFamily("ROUNDED") }
+        )
+    }
+}
+
+@Composable
+private fun EditClockFormatSection(
+    uiState: MainUiState,
+    actions: HomeScreenActions
+) {
+    SectionHeader(title = "Formato de Hora e Data")
+    EditClockTimeFormatSubSection(uiState = uiState, actions = actions)
+    Spacer(modifier = Modifier.height(10.dp))
+    EditClockDateFormatSubSection(uiState = uiState, actions = actions)
+}
+
+@Composable
+private fun EditClockTimeFormatSubSection(
+    uiState: MainUiState,
+    actions: HomeScreenActions
+) {
+    AureoleText(
+        text = "Formato de Hora:",
+        style = AureoleTheme.typography.bodySmall,
+        color = AureoleTheme.colors.onSurfaceMedium,
+        modifier = Modifier.padding(bottom = 6.dp)
+    )
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.spacedBy(CHIP_HORIZONTAL_SPACING)
+    ) {
+        ChoiceButton(
+            text = "Sistema",
+            selected = uiState.clockTimeFormat == "SYSTEM",
+            onClick = { actions.onUpdateClockTimeFormat("SYSTEM") },
+            modifier = Modifier.weight(1f)
+        )
+        ChoiceButton(
+            text = "12 Horas",
+            selected = uiState.clockTimeFormat == "12H",
+            onClick = { actions.onUpdateClockTimeFormat("12H") },
+            modifier = Modifier.weight(1f)
+        )
+        ChoiceButton(
+            text = "24 Horas",
+            selected = uiState.clockTimeFormat == "24H",
+            onClick = { actions.onUpdateClockTimeFormat("24H") },
+            modifier = Modifier.weight(1f)
+        )
+    }
+}
+
+@OptIn(ExperimentalLayoutApi::class)
+@Composable
+private fun EditClockDateFormatSubSection(
+    uiState: MainUiState,
+    actions: HomeScreenActions
+) {
+    AureoleText(
+        text = "Formato de Data:",
+        style = AureoleTheme.typography.bodySmall,
+        color = AureoleTheme.colors.onSurfaceMedium,
+        modifier = Modifier.padding(bottom = 6.dp)
+    )
+    FlowRow(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.spacedBy(CHIP_HORIZONTAL_SPACING),
+        verticalArrangement = Arrangement.spacedBy(CHIP_VERTICAL_SPACING)
+    ) {
+        LayoutChip(
+            label = "Completo (sexta, 9 out)",
+            selected = uiState.clockDateFormat == "DEFAULT",
+            onClick = { actions.onUpdateClockDateFormat("DEFAULT") }
+        )
+        LayoutChip(
+            label = "Curto (Tue, 22 Sep)",
+            selected = uiState.clockDateFormat == "SHORT",
+            onClick = { actions.onUpdateClockDateFormat("SHORT") }
+        )
+        LayoutChip(
+            label = "Médio (9 de outubro)",
+            selected = uiState.clockDateFormat == "MEDIUM",
+            onClick = { actions.onUpdateClockDateFormat("MEDIUM") }
+        )
+        LayoutChip(
+            label = "Numérico (09/10/2026)",
+            selected = uiState.clockDateFormat == "NUMERIC",
+            onClick = { actions.onUpdateClockDateFormat("NUMERIC") }
+        )
+    }
+}
+
+@OptIn(ExperimentalLayoutApi::class)
+@Composable
+private fun EditClockBackgroundSection(
+    uiState: MainUiState,
+    actions: HomeScreenActions
+) {
+    SectionHeader(title = "Fundo do Cartão")
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        AureoleText(
+            text = "Mostrar cartão de fundo",
+            style = AureoleTheme.typography.bodyMedium,
+            color = AureoleTheme.colors.onSurfaceHigh
+        )
+        Switch(
+            checked = uiState.isClockBackgroundEnabled,
+            onCheckedChange = { actions.onToggleClockBackground() }
+        )
+    }
+
+    if (uiState.isClockBackgroundEnabled) {
+        Spacer(modifier = Modifier.height(8.dp))
+        AureoleText(
+            text = "Cor de Fundo Personalizada:",
+            style = AureoleTheme.typography.bodySmall,
+            color = AureoleTheme.colors.onSurfaceMedium,
+            modifier = Modifier.padding(bottom = 6.dp)
+        )
+        FlowRow(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(10.dp),
+            verticalArrangement = Arrangement.spacedBy(10.dp)
+        ) {
+            PRESET_BG_COLORS.forEach { (name, colorValue) ->
+                ColorSwatchItem(
+                    name = name,
+                    colorValue = colorValue,
+                    isSelected = uiState.clockBackgroundColor == colorValue,
+                    onClick = { actions.onUpdateClockBackgroundColor(colorValue) }
+                )
             }
+        }
+    }
+}
+
+@Composable
+private fun EditClockActionButtons(
+    actions: HomeScreenActions,
+    onDismissRequest: () -> Unit,
+    onResetGreeting: () -> Unit
+) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        TextButton(
+            onClick = {
+                actions.onResetClockSettings()
+                onResetGreeting()
+            }
+        ) {
+            AureoleText(
+                text = "Redefinir Padrões",
+                color = MaterialTheme.colorScheme.error
+            )
+        }
+
+        Button(
+            onClick = onDismissRequest,
+            colors = ButtonDefaults.buttonColors(
+                containerColor = MaterialTheme.colorScheme.primary,
+                contentColor = MaterialTheme.colorScheme.onPrimary
+            )
+        ) {
+            AureoleText("Concluído", color = MaterialTheme.colorScheme.onPrimary)
         }
     }
 }

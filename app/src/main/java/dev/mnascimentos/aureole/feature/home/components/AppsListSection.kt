@@ -135,10 +135,12 @@ fun AppsListDrawer(
             }
 
             FloatingSearchBubble(
-                query = uiState.searchQuery,
-                onQueryChange = actions.onSearchQueryChanged,
-                isExpanded = isSearchExpanded,
-                onExpandedChange = { isSearchExpanded = it },
+                state = SearchBubbleState(
+                    query = uiState.searchQuery,
+                    onQueryChange = actions.onSearchQueryChanged,
+                    isExpanded = isSearchExpanded,
+                    onExpandedChange = { isSearchExpanded = it },
+                ),
                 hazeState = hazeState,
                 modifier = alignModifier
             )
@@ -171,13 +173,16 @@ private fun Modifier.buildDrawerHaze(
     )
 }
 
-@Suppress("LongMethod")
+data class SearchBubbleState(
+    val query: String,
+    val onQueryChange: (String) -> Unit,
+    val isExpanded: Boolean,
+    val onExpandedChange: (Boolean) -> Unit,
+)
+
 @Composable
 private fun FloatingSearchBubble(
-    query: String,
-    onQueryChange: (String) -> Unit,
-    isExpanded: Boolean,
-    onExpandedChange: (Boolean) -> Unit,
+    state: SearchBubbleState,
     modifier: Modifier = Modifier,
     hazeState: HazeState? = null,
 ) {
@@ -186,14 +191,14 @@ private fun FloatingSearchBubble(
 
     val focusRequester = remember { FocusRequester() }
 
-    LaunchedEffect(query) {
-        if (query.isNotEmpty() && !isExpanded) {
-            onExpandedChange(true)
+    LaunchedEffect(state.query) {
+        if (state.query.isNotEmpty() && !state.isExpanded) {
+            state.onExpandedChange(true)
         }
     }
 
-    LaunchedEffect(isExpanded) {
-        if (isExpanded) {
+    LaunchedEffect(state.isExpanded) {
+        if (state.isExpanded) {
             focusRequester.requestFocus()
         }
     }
@@ -214,10 +219,7 @@ private fun FloatingSearchBubble(
 
     val bubbleBgColor = if (uiState.isHazeEnabled) {
         AureoleDS.colors.surfaceVariant.copy(
-            alpha = (uiState.hazeOpacity * 0.85f).coerceIn(
-                0.3f,
-                0.95f
-            )
+            alpha = (uiState.hazeOpacity * 0.85f).coerceIn(0.3f, 0.95f)
         )
     } else {
         AureoleDS.colors.surfaceVariant
@@ -228,96 +230,124 @@ private fun FloatingSearchBubble(
             .fillMaxWidth()
             .padding(horizontal = 24.dp, vertical = 16.dp),
         contentAlignment = when {
-            isExpanded -> Alignment.TopCenter
+            state.isExpanded -> Alignment.TopCenter
             uiState.isLeftHandedMode -> Alignment.BottomStart
             else -> Alignment.BottomEnd
         }
     ) {
         AnimatedContent(
-            targetState = isExpanded,
+            targetState = state.isExpanded,
             transitionSpec = {
                 (fadeIn() + scaleIn()).togetherWith(fadeOut() + scaleOut())
             },
             label = "search_bubble_anim"
         ) { expanded ->
             if (expanded) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(56.dp)
-                        .clip(CircleShape)
-                        .then(searchBarHazeModifier)
-                        .background(bubbleBgColor)
-                        .padding(horizontal = 16.dp),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        AureoleDS.icons.Search(
-                            tint = AureoleDS.colors.onSurfaceMedium,
-                            modifier = Modifier.size(20.dp)
-                        )
-                        Spacer(modifier = Modifier.width(8.dp))
-
-                        TextField(
-                            value = query,
-                            onValueChange = onQueryChange,
-                            placeholder = {
-                                AureoleText(
-                                    text = "Search apps",
-                                    color = AureoleDS.colors.onSurfaceLow,
-                                    style = AureoleDS.typography.bodyLarge
-                                )
-                            },
-                            singleLine = true,
-                            colors = TextFieldDefaults.colors(
-                                focusedContainerColor = Color.Transparent,
-                                unfocusedContainerColor = Color.Transparent,
-                                disabledContainerColor = Color.Transparent,
-                                focusedIndicatorColor = Color.Transparent,
-                                unfocusedIndicatorColor = Color.Transparent,
-                                disabledIndicatorColor = Color.Transparent,
-                                focusedTextColor = AureoleDS.colors.onSurfaceHigh,
-                                unfocusedTextColor = AureoleDS.colors.onSurfaceHigh
-                            ),
-                            modifier = Modifier
-                                .weight(1f)
-                                .focusRequester(focusRequester)
-                        )
-
-                        IconButton(
-                            onClick = {
-                                onQueryChange("")
-                                onExpandedChange(false)
-                            },
-                            modifier = Modifier.size(32.dp)
-                        ) {
-                            AureoleDS.icons.Close(
-                                tint = AureoleDS.colors.onSurfaceMedium,
-                                modifier = Modifier.size(20.dp)
-                            )
-                        }
-                    }
-                }
+                ExpandedSearchBubbleBar(
+                    state = state,
+                    focusRequester = focusRequester,
+                    hazeModifier = searchBarHazeModifier,
+                    bubbleBgColor = bubbleBgColor
+                )
             } else {
-                Box(
-                    modifier = Modifier
-                        .size(56.dp)
-                        .clip(CircleShape)
-                        .then(searchBarHazeModifier)
-                        .background(bubbleBgColor)
-                        .clickable { onExpandedChange(true) },
-                    contentAlignment = Alignment.Center
-                ) {
-                    AureoleDS.icons.Search(
-                        tint = AureoleDS.colors.onSurfaceHigh,
-                        modifier = Modifier.size(24.dp)
-                    )
-                }
+                CollapsedSearchBubbleIcon(
+                    onExpandedChange = state.onExpandedChange,
+                    hazeModifier = searchBarHazeModifier,
+                    bubbleBgColor = bubbleBgColor
+                )
             }
         }
+    }
+}
+
+@Composable
+private fun ExpandedSearchBubbleBar(
+    state: SearchBubbleState,
+    focusRequester: FocusRequester,
+    hazeModifier: Modifier,
+    bubbleBgColor: Color
+) {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(56.dp)
+            .clip(CircleShape)
+            .then(hazeModifier)
+            .background(bubbleBgColor)
+            .padding(horizontal = 16.dp),
+        contentAlignment = Alignment.Center
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            AureoleDS.icons.Search(
+                tint = AureoleDS.colors.onSurfaceMedium,
+                modifier = Modifier.size(20.dp)
+            )
+            Spacer(modifier = Modifier.width(8.dp))
+
+            TextField(
+                value = state.query,
+                onValueChange = state.onQueryChange,
+                placeholder = {
+                    AureoleText(
+                        text = "Search apps",
+                        color = AureoleDS.colors.onSurfaceLow,
+                        style = AureoleDS.typography.bodyLarge
+                    )
+                },
+                singleLine = true,
+                colors = TextFieldDefaults.colors(
+                    focusedContainerColor = Color.Transparent,
+                    unfocusedContainerColor = Color.Transparent,
+                    disabledContainerColor = Color.Transparent,
+                    focusedIndicatorColor = Color.Transparent,
+                    unfocusedIndicatorColor = Color.Transparent,
+                    disabledIndicatorColor = Color.Transparent,
+                    focusedTextColor = AureoleDS.colors.onSurfaceHigh,
+                    unfocusedTextColor = AureoleDS.colors.onSurfaceHigh
+                ),
+                modifier = Modifier
+                    .weight(1f)
+                    .focusRequester(focusRequester)
+            )
+
+            IconButton(
+                onClick = {
+                    state.onQueryChange("")
+                    state.onExpandedChange(false)
+                },
+                modifier = Modifier.size(32.dp)
+            ) {
+                AureoleDS.icons.Close(
+                    tint = AureoleDS.colors.onSurfaceMedium,
+                    modifier = Modifier.size(20.dp)
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun CollapsedSearchBubbleIcon(
+    onExpandedChange: (Boolean) -> Unit,
+    hazeModifier: Modifier,
+    bubbleBgColor: Color
+) {
+    Box(
+        modifier = Modifier
+            .size(56.dp)
+            .clip(CircleShape)
+            .then(hazeModifier)
+            .background(bubbleBgColor)
+            .clickable { onExpandedChange(true) },
+        contentAlignment = Alignment.Center
+    ) {
+        AureoleDS.icons.Search(
+            tint = AureoleDS.colors.onSurfaceHigh,
+            modifier = Modifier.size(24.dp)
+        )
     }
 }
 

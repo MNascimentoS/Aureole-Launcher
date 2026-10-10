@@ -148,7 +148,7 @@ private fun BorderRadiusOptionItem(
                     .clip(shape)
                     .background(bgColor)
                     .border(
-                        width = if (isSelected) 2.dp else 1.dp,
+                        width = if (isSelected) 2.dp else AureoleDS.dimens.borderMinimal,
                         color = borderColor,
                         shape = shape,
                     ),
@@ -159,14 +159,14 @@ private fun BorderRadiusOptionItem(
                 text = option.label,
                 style = AureoleTheme.typography.bodyLarge,
                 color = textColor,
-                modifier = Modifier.padding(start = 16.dp),
+                modifier = Modifier.padding(start = AureoleDS.dimens.medium),
             )
         }
 
         if (isSelected) {
             AureoleDS.icons.Check(
                 tint = AureoleTheme.colors.onSurfaceHigh,
-                modifier = Modifier.size(24.dp),
+                modifier = Modifier.size(AureoleDS.dimens.iconLarge),
             )
         }
     }

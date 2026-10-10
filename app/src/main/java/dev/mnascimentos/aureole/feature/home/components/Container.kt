@@ -38,6 +38,7 @@ import dev.mnascimentos.aureole.feature.home.LocalHomeActions
 import dev.mnascimentos.aureole.feature.home.LocalHomeUiState
 import dev.mnascimentos.aureole.feature.home.components.model.ContainerConfig
 import dev.mnascimentos.aureole.feature.home.model.FolderViewIntent
+import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
 
 private const val CONTAINER_HAZE_ALPHA_MULTIPLIER = 0.7f
 private const val CONTAINER_MIN_ALPHA = 0.2f
@@ -172,6 +173,29 @@ private sealed class ContainerRenderItem {
     data class App(val appInfo: AppInfo) : ContainerRenderItem()
 }
 
+private fun resolveContainerRenderItems(
+    config: ContainerConfig,
+    allApps: List<AppInfo>
+): List<ContainerRenderItem> {
+    if (config.items.isNotEmpty()) {
+        return config.items.mapNotNull { item ->
+            when (item.itemType) {
+                ContainerItemType.FOLDER -> {
+                    config.folders.find { it.id == item.folderId }?.let { ContainerRenderItem.Folder(it) }
+                }
+                ContainerItemType.APP -> {
+                    allApps.find { it.packageName == item.packageName }?.let { ContainerRenderItem.App(it) }
+                }
+            }
+        }
+    }
+    val folderItems = config.folders.map { ContainerRenderItem.Folder(it) }
+    val appItems = config.appPackageNames.mapNotNull { pkg ->
+        allApps.find { it.packageName == pkg }?.let { ContainerRenderItem.App(it) }
+    }
+    return folderItems + appItems
+}
+
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun ContainerColumn(
@@ -184,24 +208,7 @@ private fun ContainerColumn(
     val scrollState = rememberScrollState()
 
     val renderItems = remember(config.items, config.folders, config.appPackageNames, uiState.apps) {
-        if (config.items.isNotEmpty()) {
-            config.items.mapNotNull { item ->
-                when (item.itemType) {
-                    ContainerItemType.FOLDER -> {
-                        config.folders.find { it.id == item.folderId }?.let { ContainerRenderItem.Folder(it) }
-                    }
-                    ContainerItemType.APP -> {
-                        uiState.apps.find { it.packageName == item.packageName }?.let { ContainerRenderItem.App(it) }
-                    }
-                }
-            }
-        } else {
-            val folderItems = config.folders.map { ContainerRenderItem.Folder(it) }
-            val appItems = config.appPackageNames.mapNotNull { pkg ->
-                uiState.apps.find { it.packageName == pkg }?.let { ContainerRenderItem.App(it) }
-            }
-            folderItems + appItems
-        }
+        resolveContainerRenderItems(config, uiState.apps)
     }
 
     val paddingHorizontal = if (config.isBackgroundEnabled) 10.dp else 2.dp
@@ -234,39 +241,7 @@ private fun ContainerColumn(
             }
         } else {
             renderItems.forEach { renderItem ->
-                when (renderItem) {
-                    is ContainerRenderItem.Folder -> {
-                        ContainerFolderItem(
-                            folder = renderItem.folder,
-                            isOpened = renderItem.folder.id == config.openedFolderId,
-                            showFolderLabels = config.showFolderLabels,
-                            isGridFolderEnabled = config.isGridFolderEnabled,
-                            isBackgroundEnabled = config.isBackgroundEnabled,
-                            onFolderClick = { f, y ->
-                                val updatedFolder = f.copy(
-                                    panelId = config.panelId,
-                                    displayAsGrid = config.isGridFolderEnabled || f.displayAsGrid
-                                )
-                                columnConfig.onFolderClick(updatedFolder, y)
-                            },
-                            onLongClick = {
-                                actions.onOpenContainerFolderBottomSheet(
-                                    renderItem.folder,
-                                    config.panelId
-                                )
-                            }
-                        )
-                    }
-                    is ContainerRenderItem.App -> {
-                        ContainerAppItem(
-                            app = renderItem.appInfo,
-                            showLabels = config.showFolderLabels,
-                            isBackgroundEnabled = config.isBackgroundEnabled,
-                            onAppClick = { appInfo -> actions.onAppClick(appInfo) },
-                            onLongClick = { actions.onOpenContainerAppBottomSheet(renderItem.appInfo, config.panelId) }
-                        )
-                    }
-                }
+                ColumnRenderItem(renderItem, config, columnConfig)
             }
             if (config.showAddFolderButton) {
                 Spacer(modifier = Modifier.height(4.dp))
@@ -275,6 +250,50 @@ private fun ContainerColumn(
                     isBackgroundEnabled = config.isBackgroundEnabled
                 )
             }
+        }
+    }
+}
+
+@Composable
+private fun ColumnRenderItem(
+    renderItem: ContainerRenderItem,
+    config: ContainerConfig,
+    columnConfig: ContainerColumnConfig,
+    actions: HomeScreenActions
+) {
+    when (renderItem) {
+        is ContainerRenderItem.Folder -> {
+            ContainerFolderItem(
+                folder = renderItem.folder,
+                isOpened = renderItem.folder.id == config.openedFolderId,
+                config = ContainerFolderConfig(
+                    showFolderLabels = config.showFolderLabels,
+                    isGridFolderEnabled = config.isGridFolderEnabled,
+                    isBackgroundEnabled = config.isBackgroundEnabled
+                ),
+                onFolderClick = { f, y ->
+                    val updatedFolder = f.copy(
+                        panelId = config.panelId,
+                        displayAsGrid = config.isGridFolderEnabled || f.displayAsGrid
+                    )
+                    columnConfig.onFolderClick(updatedFolder, y)
+                },
+                onLongClick = {
+                    actions.onOpenContainerFolderBottomSheet(
+                        renderItem.folder,
+                        config.panelId
+                    )
+                }
+            )
+        }
+        is ContainerRenderItem.App -> {
+            ContainerAppItem(
+                app = renderItem.appInfo,
+                showLabels = config.showFolderLabels,
+                isBackgroundEnabled = config.isBackgroundEnabled,
+                onAppClick = { appInfo -> actions.onAppClick(appInfo) },
+                onLongClick = { actions.onOpenContainerAppBottomSheet(renderItem.appInfo, config.panelId) }
+            )
         }
     }
 }
@@ -291,24 +310,7 @@ private fun ContainerRow(
     val scrollState = rememberScrollState()
 
     val renderItems = remember(config.items, config.folders, config.appPackageNames, uiState.apps) {
-        if (config.items.isNotEmpty()) {
-            config.items.mapNotNull { item ->
-                when (item.itemType) {
-                    ContainerItemType.FOLDER -> {
-                        config.folders.find { it.id == item.folderId }?.let { ContainerRenderItem.Folder(it) }
-                    }
-                    ContainerItemType.APP -> {
-                        uiState.apps.find { it.packageName == item.packageName }?.let { ContainerRenderItem.App(it) }
-                    }
-                }
-            }
-        } else {
-            val folderItems = config.folders.map { ContainerRenderItem.Folder(it) }
-            val appItems = config.appPackageNames.mapNotNull { pkg ->
-                uiState.apps.find { it.packageName == pkg }?.let { ContainerRenderItem.App(it) }
-            }
-            folderItems + appItems
-        }
+        resolveContainerRenderItems(config, uiState.apps)
     }
 
     val paddingHorizontal = if (config.isBackgroundEnabled) 8.dp else 4.dp
@@ -341,54 +343,110 @@ private fun ContainerRow(
             }
         } else {
             renderItems.forEach { renderItem ->
-                when (renderItem) {
-                    is ContainerRenderItem.Folder -> {
-                        Box(modifier = Modifier.padding(horizontal = 4.dp)) {
-                            ContainerFolderItem(
-                                folder = renderItem.folder,
-                                isOpened = renderItem.folder.id == config.openedFolderId,
-                                showFolderLabels = config.showFolderLabels,
-                                isGridFolderEnabled = config.isGridFolderEnabled,
-                                isBackgroundEnabled = config.isBackgroundEnabled,
-                                onFolderClick = { f, y ->
-                                    val updatedFolder = f.copy(
-                                        panelId = config.panelId,
-                                        displayAsGrid = config.isGridFolderEnabled || f.displayAsGrid
-                                    )
-                                    rowConfig.onFolderClick(updatedFolder, y)
-                                },
-                                onLongClick = {
-                                    actions.onOpenContainerFolderBottomSheet(
-                                        renderItem.folder,
-                                        config.panelId
-                                    )
-                                }
-                            )
-                        }
-                    }
-                    is ContainerRenderItem.App -> {
-                        Box(modifier = Modifier.padding(horizontal = 4.dp)) {
-                            ContainerAppItem(
-                                app = renderItem.appInfo,
-                                showLabels = config.showFolderLabels,
-                                isBackgroundEnabled = config.isBackgroundEnabled,
-                                onAppClick = { appInfo -> actions.onAppClick(appInfo) },
-                                onLongClick = {
-                                    actions.onOpenContainerAppBottomSheet(
-                                        renderItem.appInfo,
-                                        config.panelId
-                                    )
-                                }
-                            )
-                        }
-                    }
-                }
+                RowRenderItem(renderItem, config, rowConfig)
             }
             if (config.showAddFolderButton) {
                 Spacer(modifier = Modifier.width(4.dp))
                 ContainerAddFolderButton(
                     onClick = { actions.onFolderIntent(FolderViewIntent.OpenCreateFolderDialog(config.panelId)) },
                     isBackgroundEnabled = config.isBackgroundEnabled
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun ColumnRenderItem(
+    renderItem: ContainerRenderItem,
+    config: ContainerConfig,
+    columnConfig: ContainerColumnConfig
+) {
+    val actions = LocalHomeActions.current
+    when (renderItem) {
+        is ContainerRenderItem.Folder -> {
+            ContainerFolderItem(
+                folder = renderItem.folder,
+                isOpened = renderItem.folder.id == config.openedFolderId,
+                config = ContainerFolderConfig(
+                    showFolderLabels = config.showFolderLabels,
+                    isGridFolderEnabled = config.isGridFolderEnabled,
+                    isBackgroundEnabled = config.isBackgroundEnabled
+                ),
+                onFolderClick = { f, y ->
+                    val updatedFolder = f.copy(
+                        panelId = config.panelId,
+                        displayAsGrid = config.isGridFolderEnabled || f.displayAsGrid
+                    )
+                    columnConfig.onFolderClick(updatedFolder, y)
+                },
+                onLongClick = {
+                    actions.onOpenContainerFolderBottomSheet(
+                        renderItem.folder,
+                        config.panelId
+                    )
+                }
+            )
+        }
+        is ContainerRenderItem.App -> {
+            ContainerAppItem(
+                app = renderItem.appInfo,
+                showLabels = config.showFolderLabels,
+                isBackgroundEnabled = config.isBackgroundEnabled,
+                onAppClick = { appInfo -> actions.onAppClick(appInfo) },
+                onLongClick = { actions.onOpenContainerAppBottomSheet(renderItem.appInfo, config.panelId) }
+            )
+        }
+    }
+}
+
+@Composable
+private fun RowRenderItem(
+    renderItem: ContainerRenderItem,
+    config: ContainerConfig,
+    rowConfig: ContainerRowConfig
+) {
+    val actions = LocalHomeActions.current
+    when (renderItem) {
+        is ContainerRenderItem.Folder -> {
+            Box(modifier = Modifier.padding(horizontal = 4.dp)) {
+                ContainerFolderItem(
+                    folder = renderItem.folder,
+                    isOpened = renderItem.folder.id == config.openedFolderId,
+                    config = ContainerFolderConfig(
+                        showFolderLabels = config.showFolderLabels,
+                        isGridFolderEnabled = config.isGridFolderEnabled,
+                        isBackgroundEnabled = config.isBackgroundEnabled
+                    ),
+                    onFolderClick = { f, y ->
+                        val updatedFolder = f.copy(
+                            panelId = config.panelId,
+                            displayAsGrid = config.isGridFolderEnabled || f.displayAsGrid
+                        )
+                        rowConfig.onFolderClick(updatedFolder, y)
+                    },
+                    onLongClick = {
+                        actions.onOpenContainerFolderBottomSheet(
+                            renderItem.folder,
+                            config.panelId
+                        )
+                    }
+                )
+            }
+        }
+        is ContainerRenderItem.App -> {
+            Box(modifier = Modifier.padding(horizontal = 4.dp)) {
+                ContainerAppItem(
+                    app = renderItem.appInfo,
+                    showLabels = config.showFolderLabels,
+                    isBackgroundEnabled = config.isBackgroundEnabled,
+                    onAppClick = { appInfo -> actions.onAppClick(appInfo) },
+                    onLongClick = {
+                        actions.onOpenContainerAppBottomSheet(
+                            renderItem.appInfo,
+                            config.panelId
+                        )
+                    }
                 )
             }
         }

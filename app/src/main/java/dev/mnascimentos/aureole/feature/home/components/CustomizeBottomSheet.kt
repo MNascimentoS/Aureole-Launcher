@@ -42,99 +42,115 @@ fun CustomizeBottomSheet(
         onDismissRequest = onDismissRequest
     ) {
         Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
-            CustomizeOptionItem(
-                title = "Add clock",
-                icon = {
-                    AureoleDS.icons.Add(
-                        modifier = Modifier.size(24.dp),
-                        tint = AureoleTheme.colors.onSurfaceMedium
-                    )
-                },
-                onClick = {
-                    actions.onAddGridItem(LauncherItemType.CLOCK, null, null)
-                    onDismissRequest()
-                }
-            )
-            CustomizeOptionItem(
-                title = "Add container",
-                icon = {
-                    AureoleDS.icons.Star(
-                        modifier = Modifier.size(24.dp),
-                        tint = AureoleTheme.colors.onSurfaceMedium
-                    )
-                },
-                onClick = {
-                    actions.onAddGridItem(LauncherItemType.SHORTCUTS_CONTAINER, null, null)
-                    onDismissRequest()
-                }
-            )
-            CustomizeOptionItem(
-                title = "Add scrollview container",
-                icon = {
-                    AureoleDS.icons.VerticalContainer(
-                        modifier = Modifier.size(24.dp),
-                        tint = AureoleTheme.colors.onSurfaceMedium
-                    )
-                },
-                onClick = {
-                    actions.onAddGridItem(LauncherItemType.SCROLL_VIEW, null, ScrollOrientation.VERTICAL)
-                    onDismissRequest()
-                }
-            )
-            CustomizeOptionItem(
-                title = "Add widget group",
-                icon = {
-                    AureoleDS.icons.MultipleView(
-                        modifier = Modifier.size(24.dp),
-                        tint = AureoleTheme.colors.onSurfaceMedium
-                    )
-                },
-                onClick = {
-                    actions.onAddGridItem(LauncherItemType.WIDGET_LIST, null, null)
-                    onDismissRequest()
-                }
-            )
-            CustomizeOptionItem(
-                title = "Adjust layout",
-                icon = {
-                    AureoleDS.icons.Layout(
-                        modifier = Modifier.size(24.dp),
-                        tint = AureoleTheme.colors.onSurfaceMedium
-                    )
-                },
-                onClick = {
-                    actions.onEnterGridEditMode()
-                    onDismissRequest()
-                }
-            )
-            CustomizeOptionItem(
-                title = "Set Background",
-                icon = {
-                    AureoleDS.icons.Placeholder(
-                        modifier = Modifier.size(24.dp),
-                        tint = AureoleTheme.colors.onSurfaceMedium
-                    )
-                },
-                onClick = {
-                    actions.onSettingsClick()
-                    onDismissRequest()
-                }
-            )
-            CustomizeOptionItem(
-                title = "Aureole settings",
-                icon = {
-                    AureoleDS.icons.Icon(
-                        modifier = Modifier.size(24.dp),
-                        tint = AureoleTheme.colors.onSurfaceMedium
-                    )
-                },
-                onClick = {
-                    actions.onSettingsClick()
-                    onDismissRequest()
-                }
-            )
+            CustomizeAddItemOptions(actions = actions, onDismissRequest = onDismissRequest)
+            CustomizeSystemOptions(actions = actions, onDismissRequest = onDismissRequest)
         }
     }
+}
+
+@Composable
+private fun CustomizeAddItemOptions(
+    actions: HomeScreenActions,
+    onDismissRequest: () -> Unit
+) {
+    CustomizeOptionItem(
+        title = "Add clock",
+        icon = {
+            AureoleDS.icons.Add(
+                modifier = Modifier.size(24.dp),
+                tint = AureoleTheme.colors.onSurfaceMedium
+            )
+        },
+        onClick = {
+            actions.onAddGridItem(LauncherItemType.CLOCK, null, null)
+            onDismissRequest()
+        }
+    )
+    CustomizeOptionItem(
+        title = "Add container",
+        icon = {
+            AureoleDS.icons.Star(
+                modifier = Modifier.size(24.dp),
+                tint = AureoleTheme.colors.onSurfaceMedium
+            )
+        },
+        onClick = {
+            actions.onAddGridItem(LauncherItemType.SHORTCUTS_CONTAINER, null, null)
+            onDismissRequest()
+        }
+    )
+    CustomizeOptionItem(
+        title = "Add scrollview container",
+        icon = {
+            AureoleDS.icons.VerticalContainer(
+                modifier = Modifier.size(24.dp),
+                tint = AureoleTheme.colors.onSurfaceMedium
+            )
+        },
+        onClick = {
+            actions.onAddGridItem(LauncherItemType.SCROLL_VIEW, null, ScrollOrientation.VERTICAL)
+            onDismissRequest()
+        }
+    )
+    CustomizeOptionItem(
+        title = "Add widget group",
+        icon = {
+            AureoleDS.icons.MultipleView(
+                modifier = Modifier.size(24.dp),
+                tint = AureoleTheme.colors.onSurfaceMedium
+            )
+        },
+        onClick = {
+            actions.onAddGridItem(LauncherItemType.WIDGET_LIST, null, null)
+            onDismissRequest()
+        }
+    )
+}
+
+@Composable
+private fun CustomizeSystemOptions(
+    actions: HomeScreenActions,
+    onDismissRequest: () -> Unit
+) {
+    CustomizeOptionItem(
+        title = "Adjust layout",
+        icon = {
+            AureoleDS.icons.Layout(
+                modifier = Modifier.size(24.dp),
+                tint = AureoleTheme.colors.onSurfaceMedium
+            )
+        },
+        onClick = {
+            actions.onEnterGridEditMode()
+            onDismissRequest()
+        }
+    )
+    CustomizeOptionItem(
+        title = "Set Background",
+        icon = {
+            AureoleDS.icons.Placeholder(
+                modifier = Modifier.size(24.dp),
+                tint = AureoleTheme.colors.onSurfaceMedium
+            )
+        },
+        onClick = {
+            actions.onSettingsClick()
+            onDismissRequest()
+        }
+    )
+    CustomizeOptionItem(
+        title = "Aureole settings",
+        icon = {
+            AureoleDS.icons.Icon(
+                modifier = Modifier.size(24.dp),
+                tint = AureoleTheme.colors.onSurfaceMedium
+            )
+        },
+        onClick = {
+            actions.onSettingsClick()
+            onDismissRequest()
+        }
+    )
 }
 
 @Composable

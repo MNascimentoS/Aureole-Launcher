@@ -20,7 +20,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalInspectionMode
-import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.icons.Check
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
@@ -72,7 +71,7 @@ fun PickFontBottomSheet(
                             if (fontName == selectedFontName) {
                                 AureoleDS.icons.Check(
                                     tint = AureoleTheme.colors.onSurfaceHigh,
-                                    modifier = Modifier.size(24.dp)
+                                    modifier = Modifier.size(AureoleDS.dimens.iconLarge)
                                 )
                             }
                         }

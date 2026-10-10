@@ -48,8 +48,8 @@ fun AureoleDialog(
         Surface(
             modifier = modifier
                 .fillMaxWidth(DIALOG_WIDTH_FRACTION)
-                .clip(RoundedCornerShape(22.dp)),
-            shape = RoundedCornerShape(22.dp),
+                .clip(RoundedCornerShape(AureoleDS.dimens.radiusLarge)),
+            shape = RoundedCornerShape(AureoleDS.dimens.radiusLarge),
             color = AureoleTheme.colors.surface,
             contentColor = AureoleTheme.colors.onSurfaceHigh
         ) {
@@ -94,7 +94,7 @@ fun AureoleDialogHeader(
             horizontalArrangement = Arrangement.Center
         ) {
             if (icon != null) {
-                icon(Modifier.size(20.dp))
+                icon(Modifier.size(AureoleDS.dimens.iconMedium))
                 Spacer(modifier = Modifier.width(AureoleDS.dimens.xSmall))
             }
             AureoleText(
@@ -111,13 +111,13 @@ fun AureoleDialogHeader(
         Box(
             modifier = Modifier
                 .align(Alignment.CenterEnd)
-                .padding(end = 8.dp)
-                .size(32.dp),
+                .padding(end = AureoleDS.dimens.xSmall)
+                .size(AureoleDS.dimens.xLarge),
             contentAlignment = Alignment.Center
         ) {
             AureoleDS.icons.Logo(
                 tint = AureoleTheme.colors.onSurfaceHigh,
-                modifier = Modifier.size(18.dp)
+                modifier = Modifier.size(AureoleDS.dimens.iconSmall)
             )
         }
     }

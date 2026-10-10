@@ -40,7 +40,6 @@ import dev.mnascimentos.aureole.core.designsystem.icons.Logo
 import dev.mnascimentos.aureole.core.designsystem.icons.Settings
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
-import dev.mnascimentos.aureole.core.designsystem.theme.AureoleTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.settings.SettingsActivity
 
@@ -53,9 +52,9 @@ private const val OPAQUE_ALPHA = 1f
 @Composable
 fun AureolePopupBox(
     modifier: Modifier = Modifier,
-    cornerRadius: Dp = AureoleTheme.dimens.cornerRadius,
+    cornerRadius: Dp = AureoleDS.dimens.radiusMedium,
     hazeState: HazeState? = null,
-    contentPadding: PaddingValues = PaddingValues(14.dp),
+    contentPadding: PaddingValues = PaddingValues(AureoleDS.dimens.small),
     content: @Composable ColumnScope.() -> Unit,
 ) {
     val surfaceColor = AureoleDS.colors.surface
@@ -116,8 +115,8 @@ fun AureoleHeaderBanner(
             .height(48.dp)
             .clip(
                 RoundedCornerShape(
-                    topStart = AureoleTheme.dimens.cornerRadius,
-                    topEnd = AureoleTheme.dimens.cornerRadius,
+                    topStart = AureoleDS.dimens.radiusMedium,
+                    topEnd = AureoleDS.dimens.radiusMedium,
                 )
             )
             .background(AureoleDS.colors.surfaceVariant),
@@ -139,15 +138,15 @@ fun AureoleHeaderBanner(
         Box(
             modifier = Modifier
                 .align(Alignment.TopEnd)
-                .padding(top = 4.dp, end = 4.dp)
-                .size(36.dp)
+                .padding(top = AureoleDS.dimens.xxSmall, end = AureoleDS.dimens.xxSmall)
+                .size(AureoleDS.dimens.iconXLarge)
                 .clip(CircleShape)
                 .clickable(onClick = handleSettingsClick),
             contentAlignment = Alignment.Center,
         ) {
             AureoleDS.icons.Logo(
                 tint = AureoleDS.colors.onSurfaceHigh,
-                modifier = Modifier.size(18.dp),
+                modifier = Modifier.size(AureoleDS.dimens.iconSmall),
             )
         }
     }
@@ -185,23 +184,23 @@ fun AureolePopupHeader(
             .fillMaxWidth()
             .clip(
                 RoundedCornerShape(
-                    topStart = AureoleTheme.dimens.cornerRadius,
-                    topEnd = AureoleTheme.dimens.cornerRadius,
+                    topStart = AureoleDS.dimens.radiusMedium,
+                    topEnd = AureoleDS.dimens.radiusMedium,
                 )
             )
             .background(AureoleDS.colors.surfaceVariant)
-            .padding(horizontal = 10.dp, vertical = 8.dp)
+            .padding(horizontal = AureoleDS.dimens.xSmall, vertical = AureoleDS.dimens.xSmall)
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(end = 28.dp),
+                .padding(end = AureoleDS.dimens.large),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Box(
                 modifier = Modifier
-                    .size(36.dp)
-                    .clip(RoundedCornerShape(10.dp))
+                    .size(AureoleDS.dimens.iconXLarge)
+                    .clip(RoundedCornerShape(AureoleDS.dimens.radiusXSmall))
                     .background(AureoleDS.colors.surface),
                 contentAlignment = Alignment.Center,
             ) {
@@ -210,10 +209,10 @@ fun AureolePopupHeader(
                     iconBitmap != null -> Image(
                         bitmap = iconBitmap,
                         contentDescription = title,
-                        modifier = Modifier.size(22.dp),
+                        modifier = Modifier.size(AureoleDS.dimens.iconLarge),
                     )
                     iconVector != null -> iconVector(
-                        Modifier.size(20.dp)
+                        Modifier.size(AureoleDS.dimens.iconMedium)
                     )
                     else -> AureoleText(
                         text = title.take(1).uppercase(),
@@ -224,7 +223,7 @@ fun AureolePopupHeader(
                 }
             }
 
-            Spacer(modifier = Modifier.width(10.dp))
+            Spacer(modifier = Modifier.width(AureoleDS.dimens.xSmall))
 
             Column(modifier = Modifier.weight(1f)) {
                 AureoleText(
@@ -251,36 +250,36 @@ fun AureolePopupHeader(
         Box(
             modifier = Modifier
                 .align(Alignment.TopEnd)
-                .padding(top = 4.dp, end = 4.dp),
+                .padding(top = AureoleDS.dimens.xxSmall, end = AureoleDS.dimens.xxSmall),
         ) {
             if (showAureoleLogo) {
                 IconButton(
                     onClick = handleOpenSettings,
-                    modifier = Modifier.size(26.dp),
+                    modifier = Modifier.size(AureoleDS.dimens.iconLarge),
                 ) {
                     AureoleDS.icons.Logo(
                         tint = AureoleDS.colors.onSurfaceHigh,
-                        modifier = Modifier.size(18.dp),
+                        modifier = Modifier.size(AureoleDS.dimens.iconSmall),
                     )
                 }
             } else if (onSettingsClick != null) {
                 IconButton(
                     onClick = onSettingsClick,
-                    modifier = Modifier.size(26.dp),
+                    modifier = Modifier.size(AureoleDS.dimens.iconLarge),
                 ) {
                     AureoleDS.icons.Settings(
                         tint = AureoleDS.colors.onSurfaceHigh,
-                        modifier = Modifier.size(18.dp),
+                        modifier = Modifier.size(AureoleDS.dimens.iconSmall),
                     )
                 }
             } else if (onCloseClick != null) {
                 IconButton(
                     onClick = onCloseClick,
-                    modifier = Modifier.size(26.dp),
+                    modifier = Modifier.size(AureoleDS.dimens.iconLarge),
                 ) {
                     AureoleDS.icons.Close(
                         tint = AureoleDS.colors.onSurfaceHigh,
-                        modifier = Modifier.size(18.dp),
+                        modifier = Modifier.size(AureoleDS.dimens.iconSmall),
                     )
                 }
             }
@@ -299,7 +298,12 @@ fun AureolePopupMenuSection(
     Box(
         modifier = modifier
             .fillMaxWidth()
-            .padding(top = 8.dp, bottom = 4.dp, start = 4.dp, end = 4.dp),
+            .padding(
+                top = AureoleDS.dimens.xSmall,
+                bottom = AureoleDS.dimens.xxSmall,
+                start = AureoleDS.dimens.xxSmall,
+                end = AureoleDS.dimens.xxSmall
+            ),
     ) {
         AureoleText(
             text = title,
@@ -332,9 +336,9 @@ fun AureolePopupMenuItem(
         modifier = modifier
             .fillMaxWidth()
             .height(42.dp)
-            .clip(RoundedCornerShape(10.dp))
+            .clip(RoundedCornerShape(AureoleDS.dimens.radiusXSmall))
             .clickable(onClick = onClick)
-            .padding(horizontal = 8.dp),
+            .padding(horizontal = AureoleDS.dimens.xSmall),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween,
     ) {
@@ -344,11 +348,11 @@ fun AureolePopupMenuItem(
         ) {
             when {
                 customIcon != null -> customIcon()
-                icon != null -> icon(Modifier.size(20.dp))
+                icon != null -> icon(Modifier.size(AureoleDS.dimens.iconMedium))
             }
 
             if (icon != null || customIcon != null) {
-                Spacer(modifier = Modifier.width(20.dp))
+                Spacer(modifier = Modifier.width(AureoleDS.dimens.iconMedium))
             }
 
             AureoleText(
@@ -363,7 +367,7 @@ fun AureolePopupMenuItem(
 
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(4.dp),
+            horizontalArrangement = Arrangement.spacedBy(AureoleDS.dimens.xxSmall),
         ) {
             if (!badge.isNullOrBlank()) {
                 AureoleText(
@@ -376,9 +380,9 @@ fun AureolePopupMenuItem(
             if (trailingIcon != null) {
                 IconButton(
                     onClick = { (onTrailingClick ?: onClick).invoke() },
-                    modifier = Modifier.size(28.dp),
+                    modifier = Modifier.size(AureoleDS.dimens.iconLarge),
                 ) {
-                    trailingIcon(Modifier.size(16.dp))
+                    trailingIcon(Modifier.size(AureoleDS.dimens.iconSmall))
                 }
             }
         }

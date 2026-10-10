@@ -63,6 +63,10 @@ import dev.mnascimentos.aureole.feature.home.widget.model.StackedWidgetConfig
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
+private const val COLOR_ANIMATION_DURATION_MS = 150
+private const val LONG_PRESS_MARGIN_MS = 50L
+private const val MIN_LONG_PRESS_TIMEOUT_MS = 200L
+
 private const val MAX_WIDGETS = 5
 private const val HAZE_MIN_ALPHA_ADD_BUTTON = 0.2f
 private const val HAZE_MAX_ALPHA_ADD_BUTTON = 0.95f
@@ -181,7 +185,7 @@ fun WidgetPositionIndicatorBar(
                 } else {
                     MaterialTheme.colorScheme.onSurface.copy(alpha = 0.25f)
                 },
-                animationSpec = tween(150),
+                animationSpec = tween(COLOR_ANIMATION_DURATION_MS),
                 label = "indicator_color"
             )
 
@@ -218,7 +222,7 @@ private fun WidgetHostItem(
                     var isLongPressTriggered = false
 
                     val job = coroutineScope.launch {
-                        delay((longPressTimeout - 50L).coerceAtLeast(200L))
+                        delay((longPressTimeout - LONG_PRESS_MARGIN_MS).coerceAtLeast(MIN_LONG_PRESS_TIMEOUT_MS))
                         isLongPressTriggered = true
                         down.consume()
                         actions.onOpenWidgetStackBottomSheet(widgetId, stackId)
@@ -239,44 +243,46 @@ private fun WidgetHostItem(
     ) {
         AndroidView(
             factory = { context -> createWidgetHostView(context, appWidgetHost, widgetId) },
-            update = { view ->
-                if (view is AppWidgetHostView) {
-                    val appWidgetManager = AppWidgetManager.getInstance(view.context)
-                    val appWidgetInfo = appWidgetManager.getAppWidgetInfo(widgetId)
-                    if (appWidgetInfo != null) {
-                        val density = view.context.resources.displayMetrics.density
-                        val measuredWidthDp = if (view.width > 0) {
-                            (view.width / density).toInt()
-                        } else {
-                            (view.context.resources.configuration.screenWidthDp)
-                        }
-                        val measuredHeightDp = if (view.height > 0) {
-                            (view.height / density).toInt()
-                        } else {
-                            appWidgetInfo.minHeight
-                        }
-                        val tagKey = "${measuredWidthDp}x$measuredHeightDp"
-                        if (view.tag != tagKey) {
-                            view.tag = tagKey
-                            val options = Bundle().apply {
-                                putInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH, appWidgetInfo.minWidth)
-                                putInt(AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT, appWidgetInfo.minHeight)
-                                putInt(
-                                    AppWidgetManager.OPTION_APPWIDGET_MAX_WIDTH,
-                                    measuredWidthDp.coerceAtLeast(appWidgetInfo.minWidth)
-                                )
-                                putInt(
-                                    AppWidgetManager.OPTION_APPWIDGET_MAX_HEIGHT,
-                                    measuredHeightDp.coerceAtLeast(appWidgetInfo.minHeight)
-                                )
-                            }
-                            appWidgetManager.updateAppWidgetOptions(widgetId, options)
-                        }
-                    }
-                }
-            },
+            update = { view -> updateWidgetHostView(view, widgetId) },
             modifier = Modifier.fillMaxSize().nestedScroll(rememberNestedScrollInteropConnection())
         )
+    }
+}
+
+private fun updateWidgetHostView(view: View, widgetId: Int) {
+    if (view is AppWidgetHostView) {
+        val appWidgetManager = AppWidgetManager.getInstance(view.context)
+        val appWidgetInfo = appWidgetManager.getAppWidgetInfo(widgetId)
+        if (appWidgetInfo != null) {
+            val density = view.context.resources.displayMetrics.density
+            val measuredWidthDp = if (view.width > 0) {
+                (view.width / density).toInt()
+            } else {
+                (view.context.resources.configuration.screenWidthDp)
+            }
+            val measuredHeightDp = if (view.height > 0) {
+                (view.height / density).toInt()
+            } else {
+                appWidgetInfo.minHeight
+            }
+            val tagKey = "${measuredWidthDp}x$measuredHeightDp"
+            if (view.tag != tagKey) {
+                view.tag = tagKey
+                val options = Bundle().apply {
+                    putInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH, appWidgetInfo.minWidth)
+                    putInt(AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT, appWidgetInfo.minHeight)
+                    putInt(
+                        AppWidgetManager.OPTION_APPWIDGET_MAX_WIDTH,
+                        measuredWidthDp.coerceAtLeast(appWidgetInfo.minWidth)
+                    )
+                    putInt(
+                        AppWidgetManager.OPTION_APPWIDGET_MAX_HEIGHT,
+                        measuredHeightDp.coerceAtLeast(appWidgetInfo.minHeight)
+                    )
+                }
+                appWidgetManager.updateAppWidgetOptions(widgetId, options)
+            }
+        }
     }
 }
 

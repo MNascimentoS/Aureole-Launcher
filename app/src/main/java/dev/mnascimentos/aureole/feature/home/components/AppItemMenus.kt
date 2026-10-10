@@ -6,11 +6,8 @@ import android.content.Intent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -31,19 +28,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.Popup
-import androidx.compose.ui.window.PopupProperties
 import dev.mnascimentos.aureole.core.data.model.AppInfo
-import dev.mnascimentos.aureole.core.designsystem.components.AureolePopupBox
-import dev.mnascimentos.aureole.core.designsystem.components.AureolePopupHeader
 import dev.mnascimentos.aureole.core.designsystem.components.AureolePopupMenuItem
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.icons.Delete
@@ -65,16 +56,36 @@ import dev.mnascimentos.aureole.util.AureoleShortcutItem
 import dev.mnascimentos.aureole.util.IntentUtils
 import dev.mnascimentos.aureole.util.toImageBitmap
 
+data class AppItemBottomSheetParams(
+    val app: AppInfo,
+    val isFavorite: Boolean = false,
+    val actions: AppItemRowActions = AppItemRowActions(),
+    val onRemoveFromContainer: (() -> Unit)? = null,
+    val onOpenContainerSettings: (() -> Unit)? = null,
+    val onRemoveFromFolder: (() -> Unit)? = null,
+    val onOpenFolderSettings: (() -> Unit)? = null,
+)
+
+data class ContainerFolderBottomSheetParams(
+    val onEditShortcuts: () -> Unit,
+    val onRename: () -> Unit,
+    val onIcon: () -> Unit,
+    val onRemoveFolder: () -> Unit,
+    val onOpenContainerSettings: () -> Unit,
+)
+
+data class WidgetStackBottomSheetParams(
+    val widgetId: Int?,
+    val stackId: String,
+    val onEditStack: () -> Unit,
+    val onToggleDots: (String) -> Unit,
+    val onRemoveStack: () -> Unit,
+)
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun AppItemBottomSheet(
-    app: AppInfo,
-    isFavorite: Boolean = false,
-    actions: AppItemRowActions = AppItemRowActions(),
-    onRemoveFromContainer: (() -> Unit)? = null,
-    onOpenContainerSettings: (() -> Unit)? = null,
-    onRemoveFromFolder: (() -> Unit)? = null,
-    onOpenFolderSettings: (() -> Unit)? = null,
+    params: AppItemBottomSheetParams,
     onDismiss: () -> Unit
 ) {
     val context = LocalContext.current
@@ -82,27 +93,29 @@ internal fun AppItemBottomSheet(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(bottom = 32.dp)
+                .padding(bottom = AureoleDS.dimens.xLarge)
         ) {
-            val iconBitmap = remember(app.packageName) { app.getIconBitmap() }
+            val iconBitmap = remember(params.app.packageName) { params.app.getIconBitmap() }
 
-            AppItemBottomSheetHeader(app, iconBitmap, context)
+            AppItemBottomSheetHeader(params.app, iconBitmap, context)
 
-            Spacer(modifier = Modifier.height(4.dp))
+            Spacer(modifier = Modifier.height(AureoleDS.dimens.xxSmall))
 
             AppActionSheetContent(
-                app = app,
-                isFavorite = isFavorite,
-                actions = actions,
-                onRemoveFromContainer = onRemoveFromContainer,
-                onOpenContainerSettings = onOpenContainerSettings,
-                onRemoveFromFolder = onRemoveFromFolder,
-                onOpenFolderSettings = onOpenFolderSettings,
+                params = params,
                 onDismiss = onDismiss
             )
         }
     }
 
+    RenderModalBottomSheetOrInspection(sheetContent, onDismiss)
+}
+
+@Composable
+private fun RenderModalBottomSheetOrInspection(
+    sheetContent: @Composable () -> Unit,
+    onDismiss: () -> Unit
+) {
     if (LocalInspectionMode.current) {
         Box(
             modifier = Modifier.fillMaxSize(),
@@ -121,7 +134,9 @@ internal fun AppItemBottomSheet(
             }
         }
     } else {
+        @OptIn(ExperimentalMaterial3Api::class)
         val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+        @OptIn(ExperimentalMaterial3Api::class)
         ModalBottomSheet(
             onDismissRequest = onDismiss,
             sheetState = sheetState,
@@ -143,17 +158,17 @@ private fun AppItemBottomSheetHeader(app: AppInfo, iconBitmap: ImageBitmap, cont
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 12.dp)
+            .padding(horizontal = AureoleDS.dimens.medium, vertical = AureoleDS.dimens.small)
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(start = 8.dp, top = 8.dp, end = 32.dp),
+                .padding(start = AureoleDS.dimens.xSmall, top = AureoleDS.dimens.xSmall, end = AureoleDS.dimens.xLarge),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Box(
                 modifier = Modifier
-                    .size(36.dp)
+                    .size(AureoleDS.dimens.iconXLarge)
                     .clip(RoundedCornerShape(10.dp))
                     .background(AureoleDS.colors.surfaceVariant),
                 contentAlignment = Alignment.Center
@@ -181,7 +196,7 @@ private fun AppItemBottomSheetHeader(app: AppInfo, iconBitmap: ImageBitmap, cont
         Box(
             modifier = Modifier
                 .align(Alignment.TopEnd)
-                .padding(top = 4.dp, end = 4.dp)
+                .padding(top = AureoleDS.dimens.xxSmall, end = AureoleDS.dimens.xxSmall)
         ) {
             IconButton(
                 onClick = {
@@ -198,40 +213,35 @@ private fun AppItemBottomSheetHeader(app: AppInfo, iconBitmap: ImageBitmap, cont
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun ContainerFolderBottomSheet(
-    onEditShortcuts: () -> Unit,
-    onRename: () -> Unit,
-    onIcon: () -> Unit,
-    onRemoveFolder: () -> Unit,
-    onOpenContainerSettings: () -> Unit,
+    params: ContainerFolderBottomSheetParams,
     onDismiss: () -> Unit
 ) {
     val sheetContent = @Composable {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(bottom = 32.dp)
+                .padding(bottom = AureoleDS.dimens.xLarge)
         ) {
             ContainerFolderBottomSheetHeader()
 
-            Spacer(modifier = Modifier.height(4.dp))
+            Spacer(modifier = Modifier.height(AureoleDS.dimens.xxSmall))
 
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 6.dp)
+                    .padding(horizontal = AureoleDS.dimens.medium, vertical = 6.dp)
             ) {
                 AureolePopupMenuItem(
                     title = "Editar atalhos",
                     customIcon = {
                         AureoleDS.icons.Star(
                             tint = AureoleDS.colors.onSurfaceMedium,
-                            modifier = Modifier.size(20.dp)
+                            modifier = Modifier.size(AureoleDS.dimens.iconMedium)
                         )
                     },
-                    onClick = onEditShortcuts
+                    onClick = params.onEditShortcuts
                 )
 
                 AureolePopupMenuItem(
@@ -239,10 +249,10 @@ internal fun ContainerFolderBottomSheet(
                     customIcon = {
                         AureoleDS.icons.Edit(
                             tint = AureoleDS.colors.onSurfaceMedium,
-                            modifier = Modifier.size(20.dp)
+                            modifier = Modifier.size(AureoleDS.dimens.iconMedium)
                         )
                     },
-                    onClick = onRename
+                    onClick = params.onRename
                 )
 
                 AureolePopupMenuItem(
@@ -250,10 +260,10 @@ internal fun ContainerFolderBottomSheet(
                     customIcon = {
                         AureoleDS.icons.Smile(
                             tint = AureoleDS.colors.onSurfaceMedium,
-                            modifier = Modifier.size(20.dp)
+                            modifier = Modifier.size(AureoleDS.dimens.iconMedium)
                         )
                     },
-                    onClick = onIcon
+                    onClick = params.onIcon
                 )
 
                 AureolePopupMenuItem(
@@ -261,11 +271,11 @@ internal fun ContainerFolderBottomSheet(
                     customIcon = {
                         AureoleDS.icons.Delete(
                             tint = MaterialTheme.colorScheme.error,
-                            modifier = Modifier.size(20.dp)
+                            modifier = Modifier.size(AureoleDS.dimens.iconMedium)
                         )
                     },
                     isDestructive = true,
-                    onClick = onRemoveFolder
+                    onClick = params.onRemoveFolder
                 )
 
                 AureolePopupMenuItem(
@@ -273,48 +283,16 @@ internal fun ContainerFolderBottomSheet(
                     customIcon = {
                         AureoleDS.icons.Settings(
                             tint = AureoleDS.colors.onSurfaceMedium,
-                            modifier = Modifier.size(20.dp)
+                            modifier = Modifier.size(AureoleDS.dimens.iconMedium)
                         )
                     },
-                    onClick = onOpenContainerSettings
+                    onClick = params.onOpenContainerSettings
                 )
             }
         }
     }
 
-    if (LocalInspectionMode.current) {
-        Box(
-            modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.BottomCenter
-        ) {
-            Surface(
-                shape = RoundedCornerShape(
-                    topStart = AureoleTheme.dimens.cornerRadius,
-                    topEnd = AureoleTheme.dimens.cornerRadius
-                ),
-                color = AureoleTheme.colors.surface,
-                contentColor = AureoleTheme.colors.onSurfaceMedium,
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                sheetContent()
-            }
-        }
-    } else {
-        val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
-        ModalBottomSheet(
-            onDismissRequest = onDismiss,
-            sheetState = sheetState,
-            shape = RoundedCornerShape(
-                topStart = AureoleTheme.dimens.cornerRadius,
-                topEnd = AureoleTheme.dimens.cornerRadius
-            ),
-            containerColor = AureoleTheme.colors.surface,
-            contentColor = AureoleTheme.colors.onSurfaceMedium,
-            dragHandle = null
-        ) {
-            sheetContent()
-        }
-    }
+    RenderModalBottomSheetOrInspection(sheetContent, onDismiss)
 }
 
 @Composable
@@ -323,7 +301,7 @@ private fun ContainerFolderBottomSheetHeader() {
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp)
+            .padding(horizontal = AureoleDS.dimens.medium)
     ) {
         AureoleText(
             text = "Folder settings",
@@ -334,7 +312,7 @@ private fun ContainerFolderBottomSheetHeader() {
             overflow = TextOverflow.Ellipsis,
             modifier = Modifier
                 .align(Alignment.Center)
-                .padding(top = 16.dp, bottom = 12.dp)
+                .padding(top = AureoleDS.dimens.medium, bottom = AureoleDS.dimens.small)
         )
 
         IconButton(
@@ -354,23 +332,18 @@ private fun ContainerFolderBottomSheetHeader() {
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun WidgetStackBottomSheet(
-    widgetId: Int?,
-    stackId: String,
-    onEditStack: () -> Unit,
-    onToggleDots: (String) -> Unit,
-    onRemoveStack: () -> Unit,
+    params: WidgetStackBottomSheetParams,
     onDismiss: () -> Unit
 ) {
     val context = LocalContext.current
 
-    val widgetAppPackage = remember(widgetId) {
-        if (widgetId != null && widgetId != -1) {
+    val widgetAppPackage = remember(params.widgetId) {
+        if (params.widgetId != null && params.widgetId != -1) {
             try {
                 val appWidgetManager = AppWidgetManager.getInstance(context)
-                appWidgetManager.getAppWidgetInfo(widgetId)?.provider?.packageName
+                appWidgetManager.getAppWidgetInfo(params.widgetId)?.provider?.packageName
             } catch (_: Throwable) {
                 null
             }
@@ -383,16 +356,16 @@ internal fun WidgetStackBottomSheet(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(bottom = 32.dp)
+                .padding(bottom = AureoleDS.dimens.xLarge)
         ) {
             WidgetStackBottomSheetHeader(context)
 
-            Spacer(modifier = Modifier.height(4.dp))
+            Spacer(modifier = Modifier.height(AureoleDS.dimens.xxSmall))
 
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 6.dp)
+                    .padding(horizontal = AureoleDS.dimens.medium, vertical = 6.dp)
             ) {
                 if (widgetAppPackage != null) {
                     AureolePopupMenuItem(
@@ -409,7 +382,7 @@ internal fun WidgetStackBottomSheet(
                     title = "Redimensionar Grupo",
                     icon = { m -> AureoleDS.icons.Edit(m) },
                     onClick = {
-                        onEditStack()
+                        params.onEditStack()
                         onDismiss()
                     }
                 )
@@ -419,11 +392,11 @@ internal fun WidgetStackBottomSheet(
                     customIcon = {
                         AureoleDS.icons.Dots(
                             tint = AureoleDS.colors.onSurfaceMedium,
-                            modifier = Modifier.size(20.dp)
+                            modifier = Modifier.size(AureoleDS.dimens.iconMedium)
                         )
                     },
                     onClick = {
-                        onToggleDots(stackId)
+                        params.onToggleDots(params.stackId)
                         onDismiss()
                     }
                 )
@@ -433,7 +406,7 @@ internal fun WidgetStackBottomSheet(
                     icon = { m -> AureoleDS.icons.Delete(m) },
                     isDestructive = true,
                     onClick = {
-                        onRemoveStack()
+                        params.onRemoveStack()
                         onDismiss()
                     }
                 )
@@ -441,39 +414,7 @@ internal fun WidgetStackBottomSheet(
         }
     }
 
-    if (LocalInspectionMode.current) {
-        Box(
-            modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.BottomCenter
-        ) {
-            Surface(
-                shape = RoundedCornerShape(
-                    topStart = AureoleTheme.dimens.cornerRadius,
-                    topEnd = AureoleTheme.dimens.cornerRadius
-                ),
-                color = AureoleTheme.colors.surface,
-                contentColor = AureoleTheme.colors.onSurfaceMedium,
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                sheetContent()
-            }
-        }
-    } else {
-        val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
-        ModalBottomSheet(
-            onDismissRequest = onDismiss,
-            sheetState = sheetState,
-            shape = RoundedCornerShape(
-                topStart = AureoleTheme.dimens.cornerRadius,
-                topEnd = AureoleTheme.dimens.cornerRadius
-            ),
-            containerColor = AureoleTheme.colors.surface,
-            contentColor = AureoleTheme.colors.onSurfaceMedium,
-            dragHandle = null
-        ) {
-            sheetContent()
-        }
-    }
+    RenderModalBottomSheetOrInspection(sheetContent, onDismiss)
 }
 
 @Composable
@@ -481,17 +422,17 @@ private fun WidgetStackBottomSheetHeader(context: Context) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 12.dp)
+            .padding(horizontal = AureoleDS.dimens.medium, vertical = AureoleDS.dimens.small)
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(start = 8.dp, top = 8.dp, end = 32.dp),
+                .padding(start = AureoleDS.dimens.xSmall, top = AureoleDS.dimens.xSmall, end = AureoleDS.dimens.xLarge),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Box(
                 modifier = Modifier
-                    .size(36.dp)
+                    .size(AureoleDS.dimens.iconXLarge)
                     .clip(RoundedCornerShape(10.dp))
                     .background(AureoleDS.colors.surfaceVariant),
                 contentAlignment = Alignment.Center
@@ -518,7 +459,7 @@ private fun WidgetStackBottomSheetHeader(context: Context) {
         Box(
             modifier = Modifier
                 .align(Alignment.TopEnd)
-                .padding(top = 4.dp, end = 4.dp)
+                .padding(top = AureoleDS.dimens.xxSmall, end = AureoleDS.dimens.xxSmall)
         ) {
             IconButton(
                 onClick = {
@@ -536,52 +477,13 @@ private fun WidgetStackBottomSheetHeader(context: Context) {
 }
 
 @Composable
-internal fun AppItemPopup(
-    app: AppInfo,
-    isFavorite: Boolean,
-    actions: AppItemRowActions,
-    onDismiss: () -> Unit
-) {
-    Popup(
-        onDismissRequest = onDismiss,
-        properties = PopupProperties(focusable = true)
-    ) {
-        AureolePopupBox(
-            contentPadding = PaddingValues(0.dp),
-            modifier = Modifier.width(230.dp)
-        ) {
-            val iconBitmap = remember(app.packageName) { app.getIconBitmap() }
-
-            AureolePopupHeader(
-                title = app.label,
-                iconBitmap = iconBitmap,
-                showAureoleLogo = true
-            )
-
-            AppPopupHorizontalActionsRow(
-                app = app,
-                isFavorite = isFavorite,
-                actions = actions,
-                onDismiss = onDismiss
-            )
-        }
-    }
-}
-
-@Composable
 internal fun AppActionSheetContent(
-    app: AppInfo,
-    isFavorite: Boolean = false,
-    actions: AppItemRowActions = AppItemRowActions(),
-    onRemoveFromContainer: (() -> Unit)? = null,
-    onOpenContainerSettings: (() -> Unit)? = null,
-    onRemoveFromFolder: (() -> Unit)? = null,
-    onOpenFolderSettings: (() -> Unit)? = null,
+    params: AppItemBottomSheetParams,
     onDismiss: () -> Unit
 ) {
     val context = LocalContext.current
-    val shortcuts = remember(app.packageName) {
-        AppShortcutUtils.getAppShortcuts(context, app.packageName)
+    val shortcuts = remember(params.app.packageName) {
+        AppShortcutUtils.getAppShortcuts(context, params.app.packageName)
     }
 
     Column(
@@ -595,10 +497,10 @@ internal fun AppActionSheetContent(
             title = "App Info",
             icon = { m -> AureoleDS.icons.Info(m) },
             onClick = {
-                if (actions.onAppInfoClick != null) {
-                    actions.onAppInfoClick.invoke(app)
+                if (params.actions.onAppInfoClick != null) {
+                    params.actions.onAppInfoClick.invoke(params.app)
                 } else {
-                    IntentUtils.openAppInfo(context, app.packageName)
+                    IntentUtils.openAppInfo(context, params.app.packageName)
                 }
                 onDismiss()
             }
@@ -609,87 +511,95 @@ internal fun AppActionSheetContent(
             icon = { m -> AureoleDS.icons.Delete(m) },
             isDestructive = true,
             onClick = {
-                if (actions.onUninstallClick != null) {
-                    actions.onUninstallClick.invoke(app)
+                if (params.actions.onUninstallClick != null) {
+                    params.actions.onUninstallClick.invoke(params.app)
                 } else {
-                    IntentUtils.uninstallApp(context, app.packageName)
+                    IntentUtils.uninstallApp(context, params.app.packageName)
                 }
                 onDismiss()
             }
         )
 
-        if (onRemoveFromContainer != null) {
-            AureolePopupMenuItem(
-                title = "Remover do Container",
-                icon = { m -> AureoleDS.icons.Delete(m) },
-                isDestructive = true,
-                onClick = {
-                    onRemoveFromContainer.invoke()
-                    onDismiss()
-                }
-            )
-        }
+        AppActionSheetAdditionalItems(params, onDismiss)
+    }
+}
 
-        if (onOpenContainerSettings != null) {
-            AureolePopupMenuItem(
-                title = "Configurações do Container",
-                icon = { m -> AureoleDS.icons.Settings(m) },
-                onClick = {
-                    onOpenContainerSettings.invoke()
-                    onDismiss()
-                }
-            )
-        }
+@Composable
+private fun AppActionSheetAdditionalItems(
+    params: AppItemBottomSheetParams,
+    onDismiss: () -> Unit
+) {
+    if (params.onRemoveFromContainer != null) {
+        AureolePopupMenuItem(
+            title = "Remover do Container",
+            icon = { m -> AureoleDS.icons.Delete(m) },
+            isDestructive = true,
+            onClick = {
+                params.onRemoveFromContainer.invoke()
+                onDismiss()
+            }
+        )
+    }
 
-        if (onRemoveFromFolder != null) {
-            AureolePopupMenuItem(
-                title = "Remover da Pasta",
-                icon = { m -> AureoleDS.icons.Delete(m) },
-                isDestructive = true,
-                onClick = {
-                    onRemoveFromFolder.invoke()
-                    onDismiss()
-                }
-            )
-        }
+    if (params.onOpenContainerSettings != null) {
+        AureolePopupMenuItem(
+            title = "Configurações do Container",
+            icon = { m -> AureoleDS.icons.Settings(m) },
+            onClick = {
+                params.onOpenContainerSettings.invoke()
+                onDismiss()
+            }
+        )
+    }
 
-        if (onOpenFolderSettings != null) {
-            AureolePopupMenuItem(
-                title = "Configurações da Pasta",
-                customIcon = {
-                    AureoleDS.icons.Folder(
-                        tint = AureoleDS.colors.onSurfaceMedium,
-                        modifier = Modifier.size(20.dp)
-                    )
-                },
-                onClick = {
-                    onOpenFolderSettings.invoke()
-                    onDismiss()
-                }
-            )
-        }
+    if (params.onRemoveFromFolder != null) {
+        AureolePopupMenuItem(
+            title = "Remover da Pasta",
+            icon = { m -> AureoleDS.icons.Delete(m) },
+            isDestructive = true,
+            onClick = {
+                params.onRemoveFromFolder.invoke()
+                onDismiss()
+            }
+        )
+    }
 
-        if (actions.onToggleFavorite != null) {
-            AureolePopupMenuItem(
-                title = if (isFavorite) "Remove from favorites" else "Add to favorites",
-                icon = { m -> AureoleDS.icons.Star(m) },
-                onClick = {
-                    actions.onToggleFavorite.invoke(app.packageName)
-                    onDismiss()
-                }
-            )
-        }
+    if (params.onOpenFolderSettings != null) {
+        AureolePopupMenuItem(
+            title = "Configurações da Pasta",
+            customIcon = {
+                AureoleDS.icons.Folder(
+                    tint = AureoleDS.colors.onSurfaceMedium,
+                    modifier = Modifier.size(20.dp)
+                )
+            },
+            onClick = {
+                params.onOpenFolderSettings.invoke()
+                onDismiss()
+            }
+        )
+    }
 
-        if (actions.onEditFavoritesClick != null) {
-            AureolePopupMenuItem(
-                title = "Quick panel settings",
-                icon = { m -> AureoleDS.icons.Settings(m) },
-                onClick = {
-                    actions.onEditFavoritesClick.invoke()
-                    onDismiss()
-                }
-            )
-        }
+    if (params.actions.onToggleFavorite != null) {
+        AureolePopupMenuItem(
+            title = if (params.isFavorite) "Remove from favorites" else "Add to favorites",
+            icon = { m -> AureoleDS.icons.Star(m) },
+            onClick = {
+                params.actions.onToggleFavorite.invoke(params.app.packageName)
+                onDismiss()
+            }
+        )
+    }
+
+    if (params.actions.onEditFavoritesClick != null) {
+        AureolePopupMenuItem(
+            title = "Quick panel settings",
+            icon = { m -> AureoleDS.icons.Settings(m) },
+            onClick = {
+                params.actions.onEditFavoritesClick.invoke()
+                onDismiss()
+            }
+        )
     }
 }
 
@@ -719,7 +629,7 @@ private fun AppShortcutsMenu(
                             .border(
                                 1.5.dp,
                                 AureoleDS.colors.onSurfaceMedium,
-                                RoundedCornerShape(3.dp)
+                                RoundedCornerShape(AureoleDS.dimens.borderMax)
                             )
                             .background(AureoleDS.colors.onSurfaceMedium.copy(alpha = 0.15f))
                     )
@@ -729,86 +639,6 @@ private fun AppShortcutsMenu(
                 AppShortcutUtils.launchShortcut(context, shortcut)
                 onDismiss()
             }
-        )
-    }
-}
-
-@Composable
-internal fun AppPopupHorizontalActionsRow(
-    app: AppInfo,
-    isFavorite: Boolean,
-    actions: AppItemRowActions,
-    onDismiss: () -> Unit
-) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(start = 14.dp, end = 14.dp, top = 12.dp, bottom = 12.dp),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        if (actions.onAppInfoClick != null) {
-            AppPopupButton(
-                icon = { m, t -> AureoleDS.icons.Info(m, t) },
-                label = "App",
-                onClick = {
-                    actions.onAppInfoClick.invoke(app)
-                    onDismiss()
-                }
-            )
-        }
-
-        if (actions.onToggleFavorite != null) {
-            AppPopupButton(
-                icon = { m, t -> AureoleDS.icons.Delete(m, t) },
-                label = if (isFavorite) "Remove" else "Add",
-                isDestructive = isFavorite,
-                onClick = {
-                    actions.onToggleFavorite.invoke(app.packageName)
-                    onDismiss()
-                }
-            )
-        }
-
-        if (actions.onEditFavoritesClick != null) {
-            AppPopupButton(
-                icon = { m, t -> AureoleDS.icons.Settings(m, t) },
-                label = "Settings",
-                onClick = {
-                    actions.onEditFavoritesClick.invoke()
-                    onDismiss()
-                }
-            )
-        }
-    }
-}
-
-@Composable
-private fun AppPopupButton(
-    icon: @Composable (Modifier, Color) -> Unit,
-    label: String,
-    onClick: () -> Unit,
-    isDestructive: Boolean = false
-) {
-    val contentColor = if (isDestructive) MaterialTheme.colorScheme.error else AureoleDS.colors.onSurfaceHigh
-
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center,
-        modifier = Modifier
-            .width(54.dp)
-            .clip(RoundedCornerShape(12.dp))
-            .clickable(onClick = onClick)
-            .padding(vertical = 6.dp)
-    ) {
-        icon(Modifier.size(22.dp), contentColor)
-        Spacer(modifier = Modifier.height(4.dp))
-        AureoleText(
-            text = label,
-            style = AureoleDS.typography.bodySmall,
-            fontWeight = FontWeight.Medium,
-            color = contentColor,
-            textAlign = TextAlign.Center
         )
     }
 }

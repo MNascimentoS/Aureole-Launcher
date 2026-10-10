@@ -29,7 +29,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
 import androidx.core.graphics.ColorUtils
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.icons.Check
@@ -145,11 +144,11 @@ private fun PresetColorsSection(
                 val isSelected = selectedColor == colorInt
                 Box(
                     modifier = Modifier
-                        .size(40.dp)
+                        .size(AureoleDS.dimens.xxLarge)
                         .clip(CircleShape)
                         .background(Color(colorInt))
                         .border(
-                            width = if (isSelected) 3.dp else 1.dp,
+                            width = if (isSelected) AureoleDS.dimens.borderMax else AureoleDS.dimens.borderMinimal,
                             color = if (isSelected) MaterialTheme.colorScheme.primary else Color.Transparent,
                             shape = CircleShape,
                         )
@@ -159,7 +158,7 @@ private fun PresetColorsSection(
                     if (isSelected) {
                         AureoleDS.icons.Check(
                             tint = Color.White,
-                            modifier = Modifier.size(20.dp),
+                            modifier = Modifier.size(AureoleDS.dimens.iconMedium),
                         )
                     }
                 }
@@ -187,10 +186,10 @@ private fun CustomHueSection(
         ) {
             Box(
                 modifier = Modifier
-                    .size(36.dp)
+                    .size(AureoleDS.dimens.iconXLarge)
                     .clip(CircleShape)
                     .background(Color(selectedColor))
-                    .border(1.dp, MaterialTheme.colorScheme.outline, CircleShape),
+                    .border(AureoleDS.dimens.borderMinimal, MaterialTheme.colorScheme.outline, CircleShape),
             )
 
             Slider(
