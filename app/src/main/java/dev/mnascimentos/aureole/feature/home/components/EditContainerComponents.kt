@@ -122,47 +122,47 @@ internal fun EditContainerOrientationSelector(
             val isVertical = orientation.equals("Vertical", ignoreCase = true)
             val isHorizontal = orientation.equals("Horizontal", ignoreCase = true)
 
-            if (isVertical) {
-                Button(
-                    onClick = { onOrientationSelected("Vertical") },
-                    modifier = Modifier.weight(1f),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.colorScheme.primary,
-                        contentColor = MaterialTheme.colorScheme.onPrimary
-                    )
-                ) {
-                    AureoleText(text = "Vertical")
-                }
-            } else {
-                OutlinedButton(
-                    onClick = { onOrientationSelected("Vertical") },
-                    modifier = Modifier.weight(1f),
-                    border = BorderStroke(1.dp, AureoleTheme.colors.outline.copy(alpha = 0.5f))
-                ) {
-                    AureoleText(text = "Vertical", color = AureoleTheme.colors.onSurfaceHigh)
-                }
-            }
+            OrientationChoiceButton(
+                text = "Vertical",
+                isSelected = isVertical,
+                onClick = { onOrientationSelected("Vertical") },
+                modifier = Modifier.weight(1f)
+            )
+            OrientationChoiceButton(
+                text = "Horizontal",
+                isSelected = isHorizontal,
+                onClick = { onOrientationSelected("Horizontal") },
+                modifier = Modifier.weight(1f)
+            )
+        }
+    }
+}
 
-            if (isHorizontal) {
-                Button(
-                    onClick = { onOrientationSelected("Horizontal") },
-                    modifier = Modifier.weight(1f),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.colorScheme.primary,
-                        contentColor = MaterialTheme.colorScheme.onPrimary
-                    )
-                ) {
-                    AureoleText(text = "Horizontal")
-                }
-            } else {
-                OutlinedButton(
-                    onClick = { onOrientationSelected("Horizontal") },
-                    modifier = Modifier.weight(1f),
-                    border = BorderStroke(1.dp, AureoleTheme.colors.outline.copy(alpha = 0.5f))
-                ) {
-                    AureoleText(text = "Horizontal", color = AureoleTheme.colors.onSurfaceHigh)
-                }
-            }
+@Composable
+private fun OrientationChoiceButton(
+    text: String,
+    isSelected: Boolean,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    if (isSelected) {
+        Button(
+            onClick = onClick,
+            modifier = modifier,
+            colors = ButtonDefaults.buttonColors(
+                containerColor = MaterialTheme.colorScheme.primary,
+                contentColor = MaterialTheme.colorScheme.onPrimary
+            )
+        ) {
+            AureoleText(text = text)
+        }
+    } else {
+        OutlinedButton(
+            onClick = onClick,
+            modifier = modifier,
+            border = BorderStroke(1.dp, AureoleTheme.colors.outline.copy(alpha = 0.5f))
+        ) {
+            AureoleText(text = text, color = AureoleTheme.colors.onSurfaceHigh)
         }
     }
 }
@@ -277,51 +277,59 @@ internal fun EditContainerOptionsExpandableSection(
             enter = fadeIn() + expandVertically(),
             exit = fadeOut() + shrinkVertically()
         ) {
-            Column(
-                verticalArrangement = Arrangement.spacedBy(AureoleDS.dimens.small),
-                modifier = Modifier.padding(top = AureoleDS.dimens.small)
-            ) {
-                EditContainerOrientationSelector(
-                    orientation = formState.orientation,
-                    onOrientationSelected = callbacks.onOrientationChange
-                )
-
-                EditContainerAlignmentSelector(
-                    position = formState.position,
-                    onPositionSelected = callbacks.onPositionChange
-                )
-
-                SettingSwitchRow(
-                    label = "Fundo do Container",
-                    checked = formState.isBackgroundEnabled,
-                    onCheckedChange = callbacks.onBgChange
-                )
-
-                SettingSwitchRow(
-                    label = "Expandir Célula",
-                    checked = formState.isExpandCell,
-                    onCheckedChange = callbacks.onExpandChange
-                )
-
-                SettingSwitchRow(
-                    label = "Botão de Criar Pasta",
-                    checked = formState.showAddFolderButton,
-                    onCheckedChange = callbacks.onAddFolderBtnChange
-                )
-
-                SettingSwitchRow(
-                    label = "Exibir Rótulos das Pastas",
-                    checked = formState.showFolderLabels,
-                    onCheckedChange = callbacks.onFolderLabelsChange
-                )
-
-                SettingSwitchRow(
-                    label = "Modo de Pasta Expansiva (Grid)",
-                    checked = formState.isGridFolderEnabled,
-                    onCheckedChange = callbacks.onGridFolderChange
-                )
-            }
+            EditContainerSwitchesColumn(formState = formState, callbacks = callbacks)
         }
+    }
+}
+
+@Composable
+private fun EditContainerSwitchesColumn(
+    formState: EditContainerFormState,
+    callbacks: EditContainerFormCallbacks
+) {
+    Column(
+        verticalArrangement = Arrangement.spacedBy(AureoleDS.dimens.small),
+        modifier = Modifier.padding(top = AureoleDS.dimens.small)
+    ) {
+        EditContainerOrientationSelector(
+            orientation = formState.orientation,
+            onOrientationSelected = callbacks.onOrientationChange
+        )
+
+        EditContainerAlignmentSelector(
+            position = formState.position,
+            onPositionSelected = callbacks.onPositionChange
+        )
+
+        SettingSwitchRow(
+            label = "Fundo do Container",
+            checked = formState.isBackgroundEnabled,
+            onCheckedChange = callbacks.onBgChange
+        )
+
+        SettingSwitchRow(
+            label = "Expandir Célula",
+            checked = formState.isExpandCell,
+            onCheckedChange = callbacks.onExpandChange
+        )
+
+        SettingSwitchRow(
+            label = "Botão de Criar Pasta",
+            checked = formState.showAddFolderButton,
+            onCheckedChange = callbacks.onAddFolderBtnChange
+        )
+
+        SettingSwitchRow(
+            label = "Exibir Rótulos das Pastas",
+            checked = formState.showFolderLabels,
+            onCheckedChange = callbacks.onFolderLabelsChange
+        )
+
+        SettingSwitchRow(
+            label = "Modo de Pasta Expansiva (Grid)",
+            checked = formState.isGridFolderEnabled,
+            onCheckedChange = callbacks.onGridFolderChange
+        )
     }
 }
 
@@ -363,36 +371,7 @@ internal fun EditContainerItemRow(
             .padding(horizontal = AureoleDS.dimens.small, vertical = 4.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Row {
-            IconButton(
-                onClick = actions.onMoveUp,
-                enabled = params.canMoveUp,
-                modifier = Modifier.size(28.dp)
-            ) {
-                AureoleDS.icons.ArrowUp(
-                    tint = if (params.canMoveUp) {
-                        AureoleTheme.colors.onSurfaceHigh
-                    } else {
-                        AureoleTheme.colors.onSurfaceMedium.copy(alpha = 0.3f)
-                    },
-                    modifier = Modifier.size(16.dp)
-                )
-            }
-            IconButton(
-                onClick = actions.onMoveDown,
-                enabled = params.canMoveDown,
-                modifier = Modifier.size(28.dp)
-            ) {
-                AureoleDS.icons.ArrowDown(
-                    tint = if (params.canMoveDown) {
-                        AureoleTheme.colors.onSurfaceHigh
-                    } else {
-                        AureoleTheme.colors.onSurfaceMedium.copy(alpha = 0.3f)
-                    },
-                    modifier = Modifier.size(16.dp)
-                )
-            }
-        }
+        EditContainerItemMoveButtons(params = params, actions = actions)
 
         Spacer(modifier = Modifier.width(4.dp))
 
@@ -422,6 +401,43 @@ internal fun EditContainerItemRow(
             AureoleDS.icons.Delete(
                 tint = MaterialTheme.colorScheme.error,
                 modifier = Modifier.size(18.dp)
+            )
+        }
+    }
+}
+
+@Composable
+private fun EditContainerItemMoveButtons(
+    params: EditContainerItemRowParams,
+    actions: EditContainerItemRowActions
+) {
+    Row {
+        IconButton(
+            onClick = actions.onMoveUp,
+            enabled = params.canMoveUp,
+            modifier = Modifier.size(28.dp)
+        ) {
+            AureoleDS.icons.ArrowUp(
+                tint = if (params.canMoveUp) {
+                    AureoleTheme.colors.onSurfaceHigh
+                } else {
+                    AureoleTheme.colors.onSurfaceMedium.copy(alpha = 0.3f)
+                },
+                modifier = Modifier.size(16.dp)
+            )
+        }
+        IconButton(
+            onClick = actions.onMoveDown,
+            enabled = params.canMoveDown,
+            modifier = Modifier.size(28.dp)
+        ) {
+            AureoleDS.icons.ArrowDown(
+                tint = if (params.canMoveDown) {
+                    AureoleTheme.colors.onSurfaceHigh
+                } else {
+                    AureoleTheme.colors.onSurfaceMedium.copy(alpha = 0.3f)
+                },
+                modifier = Modifier.size(16.dp)
             )
         }
     }

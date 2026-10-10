@@ -36,49 +36,7 @@ fun PickFontBottomSheet(
     onDismissRequest: () -> Unit
 ) {
     val sheetContent = @Composable {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = AureoleDS.dimens.large, bottom = AureoleDS.dimens.xLarge)
-        ) {
-            AureoleText(
-                text = "Pick Font",
-                style = AureoleTheme.typography.titleMedium,
-                color = AureoleTheme.colors.onSurfaceHigh,
-                modifier = Modifier.padding(horizontal = AureoleDS.dimens.xLarge)
-            )
-
-            Spacer(modifier = Modifier.height(AureoleDS.dimens.medium))
-
-            Box(modifier = Modifier.weight(1f, fill = false)) {
-                LazyColumn {
-                    items(AvailableFonts.keys.toList()) { fontName ->
-                        val font = AvailableFonts[fontName]
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .clickable { onFontSelected(fontName) }
-                                .padding(horizontal = AureoleDS.dimens.xLarge, vertical = AureoleDS.dimens.medium),
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            AureoleText(
-                                text = fontName,
-                                style = AureoleTheme.typography.bodyLarge,
-                                fontFamily = font,
-                                color = AureoleTheme.colors.onSurfaceMedium,
-                                modifier = Modifier.weight(1f)
-                            )
-                            if (fontName == selectedFontName) {
-                                AureoleDS.icons.Check(
-                                    tint = AureoleTheme.colors.onSurfaceHigh,
-                                    modifier = Modifier.size(AureoleDS.dimens.iconLarge)
-                                )
-                            }
-                        }
-                    }
-                }
-            }
-        }
+        PickFontSheetContent(selectedFontName = selectedFontName, onFontSelected = onFontSelected)
     }
 
     if (LocalInspectionMode.current) {
@@ -103,6 +61,69 @@ fun PickFontBottomSheet(
             containerColor = AureoleDS.colors.surface
         ) {
             sheetContent()
+        }
+    }
+}
+
+@Composable
+private fun PickFontSheetContent(
+    selectedFontName: String,
+    onFontSelected: (String) -> Unit
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = AureoleDS.dimens.large, bottom = AureoleDS.dimens.xLarge)
+    ) {
+        AureoleText(
+            text = "Pick Font",
+            style = AureoleTheme.typography.titleMedium,
+            color = AureoleTheme.colors.onSurfaceHigh,
+            modifier = Modifier.padding(horizontal = AureoleDS.dimens.xLarge)
+        )
+
+        Spacer(modifier = Modifier.height(AureoleDS.dimens.medium))
+
+        Box(modifier = Modifier.weight(1f, fill = false)) {
+            LazyColumn {
+                items(AvailableFonts.keys.toList()) { fontName ->
+                    FontOptionItem(
+                        fontName = fontName,
+                        isSelected = fontName == selectedFontName,
+                        onFontSelected = onFontSelected
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun FontOptionItem(
+    fontName: String,
+    isSelected: Boolean,
+    onFontSelected: (String) -> Unit
+) {
+    val font = AvailableFonts[fontName]
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable { onFontSelected(fontName) }
+            .padding(horizontal = AureoleDS.dimens.xLarge, vertical = AureoleDS.dimens.medium),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        AureoleText(
+            text = fontName,
+            style = AureoleTheme.typography.bodyLarge,
+            fontFamily = font,
+            color = AureoleTheme.colors.onSurfaceMedium,
+            modifier = Modifier.weight(1f)
+        )
+        if (isSelected) {
+            AureoleDS.icons.Check(
+                tint = AureoleTheme.colors.onSurfaceHigh,
+                modifier = Modifier.size(AureoleDS.dimens.iconLarge)
+            )
         }
     }
 }

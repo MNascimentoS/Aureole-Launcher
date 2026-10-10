@@ -117,7 +117,7 @@ class HomeActionsFactory(
     }
 
     private fun attachGridActions(base: HomeScreenActions): HomeScreenActions {
-        return base.copy(
+        val gridBase = base.copy(
             onEnterGridEditMode = { viewModel.enterGridEditMode() },
             onCancelGridEditMode = { viewModel.cancelGridEditMode() },
             onSaveGridEditMode = { viewModel.saveGridEditMode() },
@@ -139,36 +139,29 @@ class HomeActionsFactory(
             onRemoveChildFromScrollView = { pId, cId -> viewModel.removeChildFromScrollView(pId, cId) },
             onMoveChildInScrollView = { pId, cId, moveUp -> viewModel.moveChildInScrollView(pId, cId, moveUp) },
             onResizeChildInScrollView = { pId, cId, cSpan, rSpan ->
-                viewModel.resizeChildInScrollView(
-                    pId,
-                    cId,
-                    cSpan,
-                    rSpan
-                )
+                viewModel.resizeChildInScrollView(pId, cId, cSpan, rSpan)
             },
             onOpenAddContainerForParent = { pId -> viewModel.openAddContainerForParent(pId) },
             onOpenEditContainerDialog = { id -> viewModel.openEditContainerDialog(id) },
             onCloseEditContainerDialog = { viewModel.closeEditContainerDialog() },
             onSaveContainerModel = { model -> viewModel.saveContainerModel(model) },
-            onDeleteContainerInstance = { id -> viewModel.deleteContainerInstance(id) },
+            onDeleteContainerInstance = { id -> viewModel.deleteContainerInstance(id) }
+        )
+        return attachContainerAndSheetActions(gridBase)
+    }
 
-            // Contextual Bottom Sheets
+    private fun attachContainerAndSheetActions(base: HomeScreenActions): HomeScreenActions {
+        return base.copy(
             onOpenContainerAppBottomSheet = { app, panelId -> viewModel.openContainerAppBottomSheet(app, panelId) },
             onCloseContainerAppBottomSheet = { viewModel.closeContainerAppBottomSheet() },
             onOpenContainerFolderBottomSheet = { folder, panelId ->
-                viewModel.openContainerFolderBottomSheet(
-                    folder,
-                    panelId
-                )
+                viewModel.openContainerFolderBottomSheet(folder, panelId)
             },
             onCloseContainerFolderBottomSheet = { viewModel.closeContainerFolderBottomSheet() },
             onOpenFolderAppBottomSheet = { app, folder -> viewModel.openFolderAppBottomSheet(app, folder) },
             onCloseFolderAppBottomSheet = { viewModel.closeFolderAppBottomSheet() },
             onOpenWidgetStackBottomSheet = { widgetId, stackId ->
-                viewModel.openWidgetStackBottomSheet(
-                    widgetId,
-                    stackId
-                )
+                viewModel.openWidgetStackBottomSheet(widgetId, stackId)
             },
             onCloseWidgetStackBottomSheet = { viewModel.closeWidgetStackBottomSheet() },
             onToggleWidgetStackDots = { stackId -> viewModel.toggleWidgetStackDots(stackId) },
@@ -177,8 +170,6 @@ class HomeActionsFactory(
             onOpenEditFolderForFolder = { folder -> viewModel.openEditFolderForFolder(folder) },
             onOpenCustomizeBottomSheet = { viewModel.setShowCustomizeBottomSheet(true) },
             onCloseCustomizeBottomSheet = { viewModel.setShowCustomizeBottomSheet(false) },
-
-            // Clock Customization Actions
             onOpenEditClockBottomSheet = { viewModel.openEditClockBottomSheet() },
             onCloseEditClockBottomSheet = { viewModel.closeEditClockBottomSheet() },
             onUpdateClockStyle = { style -> viewModel.updateClockStyle(style) },

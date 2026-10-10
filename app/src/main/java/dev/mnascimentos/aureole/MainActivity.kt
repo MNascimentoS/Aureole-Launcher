@@ -237,23 +237,31 @@ class MainActivity : ComponentActivity() {
 }
 
 private fun checkOverlayActive(uiState: MainUiState): Boolean {
-    return (
-        uiState.showReleaseNotesBottomSheet ||
-            uiState.isGridEditMode ||
-            uiState.isAllAppsDrawerOpen ||
-            uiState.activeFolder != null ||
-            uiState.isCreateFolderDialogVisible ||
-            uiState.isAddAppToFolderDialogVisible ||
-            uiState.isRenameFolderDialogVisible ||
-            uiState.searchQuery.isNotEmpty() ||
-            uiState.showWidgetPicker ||
-            uiState.showFavoritePickerDialog ||
-            uiState.showWidgetPopup ||
-            uiState.showWidgetResizeDialog ||
-            uiState.showAddContainerDialog ||
-            uiState.editingGridItem != null ||
-            uiState.isEditContainerDialogVisible
-        )
+    return checkFolderOrSheetActive(uiState) || checkEditOrPickerActive(uiState)
+}
+
+private fun checkFolderOrSheetActive(uiState: MainUiState): Boolean {
+    val isFolderActive = uiState.activeFolder != null ||
+        uiState.isCreateFolderDialogVisible ||
+        uiState.isAddAppToFolderDialogVisible ||
+        uiState.isRenameFolderDialogVisible
+    return uiState.showReleaseNotesBottomSheet ||
+        uiState.isAllAppsDrawerOpen ||
+        uiState.searchQuery.isNotEmpty() ||
+        isFolderActive
+}
+
+private fun checkEditOrPickerActive(uiState: MainUiState): Boolean {
+    val isWidgetActive = uiState.showWidgetPicker ||
+        uiState.showWidgetPopup ||
+        uiState.showWidgetResizeDialog
+    val isContainerActive = uiState.showAddContainerDialog ||
+        uiState.editingGridItem != null ||
+        uiState.isEditContainerDialogVisible
+    return uiState.isGridEditMode ||
+        uiState.showFavoritePickerDialog ||
+        isWidgetActive ||
+        isContainerActive
 }
 
 private fun MainActivity.createHomeActions(): HomeScreenActions {

@@ -5,9 +5,9 @@ import android.view.View
 import android.widget.TextClock
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -15,13 +15,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
-import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -35,22 +32,21 @@ import dev.chrisbanes.haze.HazeTint
 import dev.chrisbanes.haze.hazeEffect
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
-import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleTheme
-import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.core.designsystem.utils.LocalHazeState
 import dev.mnascimentos.aureole.feature.home.LocalHomeUiState
+import dev.mnascimentos.aureole.feature.home.model.MainUiState
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
-private val MIN_GREETING_HEIGHT_DP = 140.dp
-private val COMPACT_CONTAINER_HEIGHT_DP = 100.dp
-private val MAX_CONTAINER_HEIGHT_DP = 220.dp
-private const val CLOCK_TEXT_SIZE_SMALL_PX = 32f
-private const val CLOCK_TEXT_SIZE_NORMAL_PX = 42f
-private const val CLOCK_TEXT_SIZE_LARGE_PX = 56f
-private const val DEFAULT_HAZE_OPACITY = 0.5f
+private const val MIN_GREETING_HEIGHT_DP = 100
+private const val COMPACT_CONTAINER_HEIGHT_DP = 90
+private const val MAX_CONTAINER_HEIGHT_DP = 140
+
+private const val CLOCK_TEXT_SIZE_SMALL_PX = 42f
+private const val CLOCK_TEXT_SIZE_NORMAL_PX = 56f
+private const val CLOCK_TEXT_SIZE_LARGE_PX = 68f
 
 private const val GREETING_SIZE_COMPACT = 12f
 private const val GREETING_SIZE_NORMAL = 14f
@@ -67,8 +63,8 @@ private const val GREETING_CROSSFADE_DURATION_MS = 500
 data class ClockHazeConfig(
     val hazeState: HazeState? = null,
     val isHazeEnabled: Boolean = false,
-    val hazeOpacity: Float = DEFAULT_HAZE_OPACITY,
-    val isBackgroundEnabled: Boolean = true,
+    val hazeOpacity: Float = 0.5f,
+    val isBackgroundEnabled: Boolean = true
 )
 
 data class ClockHeaderConfig(
@@ -79,12 +75,11 @@ data class ClockHeaderConfig(
     val timeFormat: String? = null,
     val dateFormat: String? = null,
     val textColor: Int? = null,
-    val backgroundColor: Int? = null,
+    val backgroundColor: Int? = null
 )
 
 private data class ClockHeaderContentParams(
     val maxHeight: Dp,
-    val maxWidth: Dp,
     val colorPrimary: Int,
     val composeTextColor: Color,
     val greeting: String,
@@ -104,69 +99,55 @@ private data class ClockTimeDisplayParams(
     val alignment: String
 )
 
+private data class ResolvedClockConfig(
+    val style: String,
+    val customGreeting: String,
+    val alignment: String,
+    val fontFamily: String,
+    val timeFormat: String,
+    val dateFormat: String,
+    val textColor: Int,
+    val backgroundColor: Int
+)
+
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ClockHeader(
     modifier: Modifier = Modifier,
     hazeConfig: ClockHazeConfig = ClockHazeConfig(),
     config: ClockHeaderConfig = ClockHeaderConfig(),
+    onClick: (() -> Unit)? = null,
     onLongClick: (() -> Unit)? = null
 ) {
     val uiState = LocalHomeUiState.current
+    val resolvedConfig = resolveClockConfig(config, uiState)
     val hazeStateRef = hazeConfig.hazeState ?: LocalHazeState.current
-    val actualIsHazeEnabled = hazeConfig.isHazeEnabled || uiState.isHazeEnabled
-    val actualHazeOpacity = if (hazeConfig.isHazeEnabled) hazeConfig.hazeOpacity else uiState.hazeOpacity
-    val actualIsBgEnabled = hazeConfig.isBackgroundEnabled && uiState.isClockBackgroundEnabled
-
-    val actualClockStyle = config.style ?: uiState.clockStyle
-    val actualCustomGreeting = config.customGreeting ?: uiState.clockCustomGreeting
-    val actualAlignment = config.alignment ?: uiState.clockAlignment
-    val actualFontFamily = config.fontFamily ?: uiState.clockFontFamily
-    val actualTimeFormat = config.timeFormat ?: uiState.clockTimeFormat
-    val actualDateFormat = config.dateFormat ?: uiState.clockDateFormat
-    val actualTextColor = config.textColor ?: uiState.clockTextColor
-    val actualBgColor = config.backgroundColor ?: uiState.clockBackgroundColor
+    val isHazeEnabled = hazeConfig.isHazeEnabled || uiState.isHazeEnabled
+    val hazeOpacity = if (hazeConfig.isHazeEnabled) hazeConfig.hazeOpacity else uiState.hazeOpacity
+    val isBgEnabled = hazeConfig.isBackgroundEnabled && uiState.isClockBackgroundEnabled
 
     val defaultTextColor = MaterialTheme.colorScheme.onSurface.toArgb()
-    val defaultComposeTextColor = MaterialTheme.colorScheme.primary
-    val colorPrimaryInt = if (actualTextColor != 0) actualTextColor else defaultTextColor
-    val colorPrimaryCompose = if (actualTextColor != 0) Color(actualTextColor) else defaultComposeTextColor
-
-    val greeting = when {
-        actualClockStyle == "CUSTOM_GREETING" && actualCustomGreeting.isNotBlank() -> actualCustomGreeting
-        else -> getGreetingForCurrentHour()
-    }
-
-    val hazeModifier = if (actualIsHazeEnabled && hazeStateRef != null) {
-        Modifier.hazeEffect(
-            state = hazeStateRef,
-            style = HazeStyle(
-                blurRadius = 24.dp,
-                tint = HazeTint(AureoleDS.colors.surfaceVariant.copy(alpha = actualHazeOpacity))
-            )
-        ) {
-            blurEnabled = actualIsHazeEnabled
-        }
+    val colorPrimaryInt = if (resolvedConfig.textColor != 0) resolvedConfig.textColor else defaultTextColor
+    val colorPrimaryCompose = if (resolvedConfig.textColor != 0) {
+        Color(resolvedConfig.textColor)
     } else {
-        Modifier
+        MaterialTheme.colorScheme.primary
     }
 
-    val baseBgColor = if (actualBgColor != 0) {
-        Color(actualBgColor)
+    val greeting = if (resolvedConfig.style == "CUSTOM_GREETING" && resolvedConfig.customGreeting.isNotBlank()) {
+        resolvedConfig.customGreeting
     } else {
-        AureoleDS.colors.surface
+        getGreetingForCurrentHour()
     }
 
-    val containerBgColor = when {
-        !actualIsBgEnabled -> Color.Transparent
-        actualIsHazeEnabled -> baseBgColor.copy(alpha = actualHazeOpacity)
-        else -> baseBgColor
-    }
-
-    val clickModifier = if (onLongClick != null) {
-        Modifier.clickable { onLongClick() }
-    } else {
-        Modifier
-    }
+    val hazeModifier = resolveClockHazeModifier(isHazeEnabled, hazeStateRef, hazeOpacity)
+    val containerBgColor = resolveClockBgColor(
+        isBgEnabled = isBgEnabled,
+        isHazeEnabled = isHazeEnabled,
+        bgColorInt = resolvedConfig.backgroundColor,
+        hazeOpacity = hazeOpacity
+    )
+    val clickModifier = resolveClockClickModifier(onClick, onLongClick)
 
     BoxWithConstraints(
         modifier = modifier
@@ -175,26 +156,70 @@ fun ClockHeader(
             .then(hazeModifier)
             .background(containerBgColor)
             .then(clickModifier)
-            .padding(
-                horizontal = AureoleDS.dimens.medium,
-                vertical = AureoleDS.dimens.medium
-            )
+            .padding(horizontal = AureoleDS.dimens.medium, vertical = AureoleDS.dimens.xSmall)
     ) {
         ClockHeaderContent(
             params = ClockHeaderContentParams(
                 maxHeight = maxHeight,
-                maxWidth = maxWidth,
                 colorPrimary = colorPrimaryInt,
                 composeTextColor = colorPrimaryCompose,
                 greeting = greeting,
-                clockStyle = actualClockStyle,
-                alignment = actualAlignment,
-                fontFamily = actualFontFamily,
-                timeFormat = actualTimeFormat,
-                dateFormat = actualDateFormat
+                clockStyle = resolvedConfig.style,
+                alignment = resolvedConfig.alignment,
+                fontFamily = resolvedConfig.fontFamily,
+                timeFormat = resolvedConfig.timeFormat,
+                dateFormat = resolvedConfig.dateFormat
             )
         )
     }
+}
+
+private fun resolveClockConfig(config: ClockHeaderConfig, uiState: MainUiState): ResolvedClockConfig {
+    return ResolvedClockConfig(
+        style = config.style ?: uiState.clockStyle,
+        customGreeting = config.customGreeting ?: uiState.clockCustomGreeting,
+        alignment = config.alignment ?: uiState.clockAlignment,
+        fontFamily = config.fontFamily ?: uiState.clockFontFamily,
+        timeFormat = config.timeFormat ?: uiState.clockTimeFormat,
+        dateFormat = config.dateFormat ?: uiState.clockDateFormat,
+        textColor = config.textColor ?: uiState.clockTextColor,
+        backgroundColor = config.backgroundColor ?: uiState.clockBackgroundColor
+    )
+}
+
+@Composable
+private fun resolveClockHazeModifier(isHazeEnabled: Boolean, hazeStateRef: HazeState?, hazeOpacity: Float): Modifier {
+    if (!isHazeEnabled || hazeStateRef == null) return Modifier
+    return Modifier.hazeEffect(
+        state = hazeStateRef,
+        style = HazeStyle(
+            blurRadius = 24.dp,
+            tint = HazeTint(AureoleDS.colors.surfaceVariant.copy(alpha = hazeOpacity))
+        )
+    ) {
+        blurEnabled = isHazeEnabled
+    }
+}
+
+@Composable
+private fun resolveClockBgColor(
+    isBgEnabled: Boolean,
+    isHazeEnabled: Boolean,
+    bgColorInt: Int,
+    hazeOpacity: Float
+): Color {
+    if (!isBgEnabled) return Color.Transparent
+    val baseBgColor = if (bgColorInt != 0) Color(bgColorInt) else AureoleDS.colors.surface
+    return if (isHazeEnabled) baseBgColor.copy(alpha = hazeOpacity) else baseBgColor
+}
+
+@OptIn(ExperimentalFoundationApi::class)
+private fun resolveClockClickModifier(onClick: (() -> Unit)?, onLongClick: (() -> Unit)?): Modifier {
+    if (onClick == null && onLongClick == null) return Modifier
+    return Modifier.combinedClickable(
+        onClick = { onClick?.invoke() },
+        onLongClick = onLongClick
+    )
 }
 
 private fun getGreetingForCurrentHour(): String {
@@ -206,64 +231,29 @@ private fun getGreetingForCurrentHour(): String {
     }
 }
 
-private fun resolveClockTimeFormats(timeFormat: String): Pair<String, String> {
-    return when (timeFormat.uppercase()) {
-        "12H" -> Pair("hh:mm", "hh:mm")
-        "24H" -> Pair("HH:mm", "HH:mm")
-        else -> Pair("hh:mm", "HH:mm")
-    }
-}
-
-private fun resolveClockDatePattern(dateFormat: String): String {
-    return when (dateFormat.uppercase()) {
-        "SHORT" -> "EEE, d MMM"
-        "NUMERIC" -> "dd/MM/yyyy"
-        "ISO" -> "yyyy-MM-dd"
-        else -> "EEEE, d 'de' MMMM"
-    }
-}
-
-private fun resolveClockAlignments(alignment: String): Pair<Alignment.Horizontal, TextAlign> {
-    return when (alignment.uppercase()) {
-        "CENTER" -> Pair(Alignment.CenterHorizontally, TextAlign.Center)
-        "END", "RIGHT" -> Pair(Alignment.End, TextAlign.End)
-        else -> Pair(Alignment.Start, TextAlign.Start)
-    }
-}
-
-private fun resolveClockTypeface(fontFamily: String): Typeface {
-    return when (fontFamily.uppercase()) {
-        "BOLD" -> Typeface.create(Typeface.DEFAULT_BOLD, Typeface.BOLD)
-        "SERIF" -> Typeface.create(Typeface.SERIF, Typeface.BOLD)
-        "MONOSPACE" -> Typeface.create(Typeface.MONOSPACE, Typeface.BOLD)
-        "ROUNDED" -> Typeface.create("sans-serif-rounded", Typeface.BOLD)
-        else -> Typeface.create("sans-serif-medium", Typeface.BOLD)
-    }
-}
-
 @Composable
 private fun ClockHeaderContent(params: ClockHeaderContentParams) {
-    val (horizontalAlignment, textAlign) = resolveClockAlignments(params.alignment)
+    val (horizontalAlignment, textAlign) = ClockHeaderUtils.resolveClockAlignments(params.alignment)
 
     val showGreeting = when (params.clockStyle) {
         "TIME_ONLY", "DATE_ON_TOP" -> false
         "GREETING_AND_DATE", "CUSTOM_GREETING" -> true
-        else -> params.maxHeight >= MIN_GREETING_HEIGHT_DP
+        else -> params.maxHeight >= MIN_GREETING_HEIGHT_DP.dp
     }
 
-    val isCompact = params.maxHeight < COMPACT_CONTAINER_HEIGHT_DP
+    val isCompact = params.maxHeight < COMPACT_CONTAINER_HEIGHT_DP.dp
     val greetingSize = if (isCompact) GREETING_SIZE_COMPACT else GREETING_SIZE_NORMAL
     val dateSize = if (isCompact) DATE_SIZE_COMPACT else DATE_SIZE_NORMAL
 
     val clockTextSizePx = when {
-        params.maxHeight < COMPACT_CONTAINER_HEIGHT_DP -> CLOCK_TEXT_SIZE_SMALL_PX
-        params.maxHeight > MAX_CONTAINER_HEIGHT_DP -> CLOCK_TEXT_SIZE_LARGE_PX
+        params.maxHeight < COMPACT_CONTAINER_HEIGHT_DP.dp -> CLOCK_TEXT_SIZE_SMALL_PX
+        params.maxHeight > MAX_CONTAINER_HEIGHT_DP.dp -> CLOCK_TEXT_SIZE_LARGE_PX
         else -> CLOCK_TEXT_SIZE_NORMAL_PX
     }
 
-    val typeface = resolveClockTypeface(params.fontFamily)
-    val (format12, format24) = resolveClockTimeFormats(params.timeFormat)
-    val datePattern = resolveClockDatePattern(params.dateFormat)
+    val typeface = ClockHeaderUtils.resolveClockTypeface(params.fontFamily)
+    val (format12, format24) = ClockHeaderUtils.resolveClockTimeFormats(params.timeFormat)
+    val datePattern = ClockHeaderUtils.resolveClockDatePattern(params.dateFormat)
 
     Column(
         modifier = Modifier.fillMaxWidth(),
@@ -279,21 +269,12 @@ private fun ClockHeaderContent(params: ClockHeaderContentParams) {
         }
 
         if (showGreeting) {
-            Crossfade(
-                targetState = params.greeting,
-                animationSpec = tween(GREETING_CROSSFADE_DURATION_MS),
-                label = "greeting_fade"
-            ) { currentGreeting ->
-                AureoleText(
-                    text = currentGreeting,
-                    fontSize = greetingSize.sp,
-                    fontWeight = FontWeight.Medium,
-                    color = params.composeTextColor,
-                    textAlign = textAlign,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
-                )
-            }
+            ClockGreetingDisplay(
+                greeting = params.greeting,
+                greetingSizeSp = greetingSize,
+                textColor = params.composeTextColor,
+                textAlign = textAlign
+            )
         }
 
         ClockTimeDisplay(
@@ -319,81 +300,90 @@ private fun ClockHeaderContent(params: ClockHeaderContentParams) {
 }
 
 @Composable
+private fun ClockGreetingDisplay(
+    greeting: String,
+    greetingSizeSp: Float,
+    textColor: Color,
+    textAlign: TextAlign
+) {
+    Crossfade(
+        targetState = greeting,
+        animationSpec = tween(GREETING_CROSSFADE_DURATION_MS),
+        label = "greeting_fade"
+    ) { currentGreeting ->
+        AureoleText(
+            text = currentGreeting,
+            fontSize = greetingSizeSp.sp,
+            fontWeight = FontWeight.Medium,
+            color = textColor,
+            textAlign = textAlign,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis
+        )
+    }
+}
+
+@Composable
 private fun ClockDateDisplay(
     datePattern: String,
     dateSizeSp: Float,
     textColor: Color,
     textAlign: TextAlign
 ) {
-    val dateText = remember(datePattern) {
-        try {
-            SimpleDateFormat(datePattern, Locale.getDefault()).format(Date())
-        } catch (_: Exception) {
-            SimpleDateFormat("EEEE, d 'de' MMMM", Locale.getDefault()).format(Date())
+    AndroidView(
+        factory = { ctx ->
+            TextClock(ctx).apply {
+                format12Hour = datePattern
+                format24Hour = datePattern
+                textSize = dateSizeSp
+                setTextColor(textColor.toArgb())
+                textAlignment = when (textAlign) {
+                    TextAlign.Center -> View.TEXT_ALIGNMENT_CENTER
+                    TextAlign.End, TextAlign.Right -> View.TEXT_ALIGNMENT_TEXT_END
+                    else -> View.TEXT_ALIGNMENT_TEXT_START
+                }
+            }
+        },
+        update = { clock ->
+            clock.format12Hour = datePattern
+            clock.format24Hour = datePattern
+            clock.textSize = dateSizeSp
+            clock.setTextColor(textColor.toArgb())
+            clock.textAlignment = when (textAlign) {
+                TextAlign.Center -> View.TEXT_ALIGNMENT_CENTER
+                TextAlign.End, TextAlign.Right -> View.TEXT_ALIGNMENT_TEXT_END
+                else -> View.TEXT_ALIGNMENT_TEXT_START
+            }
         }
-    }
-
-    AureoleText(
-        text = dateText,
-        fontSize = dateSizeSp.sp,
-        fontWeight = FontWeight.SemiBold,
-        color = textColor,
-        textAlign = textAlign
     )
 }
 
 @Composable
 private fun ClockTimeDisplay(params: ClockTimeDisplayParams) {
-    val textAlignmentView = when (params.alignment.uppercase()) {
+    val textClockAlignment = when (params.alignment.uppercase()) {
         "CENTER" -> View.TEXT_ALIGNMENT_CENTER
         "END", "RIGHT" -> View.TEXT_ALIGNMENT_TEXT_END
         else -> View.TEXT_ALIGNMENT_TEXT_START
     }
 
-    if (LocalInspectionMode.current) {
-        val sampleTime = remember(params.format24) {
-            try {
-                SimpleDateFormat("HH:mm", Locale.getDefault()).format(Date())
-            } catch (_: Exception) {
-                "12:00"
+    AndroidView(
+        factory = { ctx ->
+            TextClock(ctx).apply {
+                format12Hour = params.format12
+                format24Hour = params.format24
+                textSize = params.textSizePx
+                setTextColor(params.colorPrimary)
+                typeface = params.typeface
+                textAlignment = textClockAlignment
             }
+        },
+        update = { clock ->
+            clock.format12Hour = params.format12
+            clock.format24Hour = params.format24
+            clock.textSize = params.textSizePx
+            clock.setTextColor(params.colorPrimary)
+            clock.typeface = params.typeface
+            clock.textAlignment = textClockAlignment
         }
-        AureoleText(
-            text = sampleTime,
-            fontSize = (params.textSizePx / 2.5f).sp,
-            fontWeight = FontWeight.Bold,
-            color = Color(params.colorPrimary)
-        )
-    } else {
-        AndroidView(
-            factory = { context ->
-                TextClock(context).apply {
-                    format12Hour = params.format12
-                    format24Hour = params.format24
-                    textSize = params.textSizePx
-                    setTextColor(params.colorPrimary)
-                    this.typeface = params.typeface
-                    this.textAlignment = textAlignmentView
-                }
-            },
-            update = { clockView ->
-                clockView.format12Hour = params.format12
-                clockView.format24Hour = params.format24
-                clockView.textSize = params.textSizePx
-                clockView.setTextColor(params.colorPrimary)
-                clockView.typeface = params.typeface
-                clockView.textAlignment = textAlignmentView
-            }
-        )
-    }
-}
-
-@AureolePreview
-@Composable
-fun ClockHeaderPreview() {
-    AureoleLauncherTheme {
-        Box(modifier = Modifier.padding(16.dp)) {
-            ClockHeader()
-        }
-    }
+    )
 }

@@ -38,7 +38,6 @@ import dev.mnascimentos.aureole.feature.home.LocalHomeActions
 import dev.mnascimentos.aureole.feature.home.LocalHomeUiState
 import dev.mnascimentos.aureole.feature.home.components.model.ContainerConfig
 import dev.mnascimentos.aureole.feature.home.model.FolderViewIntent
-import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
 
 private const val CONTAINER_HAZE_ALPHA_MULTIPLIER = 0.7f
 private const val CONTAINER_MIN_ALPHA = 0.2f
@@ -258,9 +257,9 @@ private fun ContainerColumn(
 private fun ColumnRenderItem(
     renderItem: ContainerRenderItem,
     config: ContainerConfig,
-    columnConfig: ContainerColumnConfig,
-    actions: HomeScreenActions
+    columnConfig: ContainerColumnConfig
 ) {
+    val actions = LocalHomeActions.current
     when (renderItem) {
         is ContainerRenderItem.Folder -> {
             ContainerFolderItem(
@@ -352,50 +351,6 @@ private fun ContainerRow(
                     isBackgroundEnabled = config.isBackgroundEnabled
                 )
             }
-        }
-    }
-}
-
-@Composable
-private fun ColumnRenderItem(
-    renderItem: ContainerRenderItem,
-    config: ContainerConfig,
-    columnConfig: ContainerColumnConfig
-) {
-    val actions = LocalHomeActions.current
-    when (renderItem) {
-        is ContainerRenderItem.Folder -> {
-            ContainerFolderItem(
-                folder = renderItem.folder,
-                isOpened = renderItem.folder.id == config.openedFolderId,
-                config = ContainerFolderConfig(
-                    showFolderLabels = config.showFolderLabels,
-                    isGridFolderEnabled = config.isGridFolderEnabled,
-                    isBackgroundEnabled = config.isBackgroundEnabled
-                ),
-                onFolderClick = { f, y ->
-                    val updatedFolder = f.copy(
-                        panelId = config.panelId,
-                        displayAsGrid = config.isGridFolderEnabled || f.displayAsGrid
-                    )
-                    columnConfig.onFolderClick(updatedFolder, y)
-                },
-                onLongClick = {
-                    actions.onOpenContainerFolderBottomSheet(
-                        renderItem.folder,
-                        config.panelId
-                    )
-                }
-            )
-        }
-        is ContainerRenderItem.App -> {
-            ContainerAppItem(
-                app = renderItem.appInfo,
-                showLabels = config.showFolderLabels,
-                isBackgroundEnabled = config.isBackgroundEnabled,
-                onAppClick = { appInfo -> actions.onAppClick(appInfo) },
-                onLongClick = { actions.onOpenContainerAppBottomSheet(renderItem.appInfo, config.panelId) }
-            )
         }
     }
 }

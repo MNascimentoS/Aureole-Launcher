@@ -318,22 +318,14 @@ private fun EditClockFontSection(
     }
 }
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun EditClockFormatSection(
     uiState: MainUiState,
     actions: HomeScreenActions
 ) {
     EditClockSectionHeader(title = "Formato de Hora e Data")
-    EditClockTimeFormatSubSection(uiState = uiState, actions = actions)
-    Spacer(modifier = Modifier.height(10.dp))
-    EditClockDateFormatSubSection(uiState = uiState, actions = actions)
-}
 
-@Composable
-private fun EditClockTimeFormatSubSection(
-    uiState: MainUiState,
-    actions: HomeScreenActions
-) {
     AureoleText(
         text = "Formato de Hora:",
         style = AureoleTheme.typography.bodySmall,
@@ -363,14 +355,9 @@ private fun EditClockTimeFormatSubSection(
             modifier = Modifier.weight(1f)
         )
     }
-}
 
-@OptIn(ExperimentalLayoutApi::class)
-@Composable
-private fun EditClockDateFormatSubSection(
-    uiState: MainUiState,
-    actions: HomeScreenActions
-) {
+    Spacer(modifier = Modifier.height(10.dp))
+
     AureoleText(
         text = "Formato de Data:",
         style = AureoleTheme.typography.bodySmall,

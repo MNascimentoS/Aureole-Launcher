@@ -7,9 +7,7 @@ import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffColorFilter
-import android.graphics.Rect
 import android.graphics.drawable.AdaptiveIconDrawable
-import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.os.Build
 import androidx.compose.runtime.Composable
@@ -22,23 +20,7 @@ import androidx.core.graphics.drawable.toBitmap
 import kotlin.math.sqrt
 import androidx.compose.ui.graphics.Color as ComposeColor
 
-private const val DEFAULT_ICON_SIZE = 96
-private const val BACKGROUND_WHITE_THRESHOLD = 235
-private const val BACKGROUND_ALPHA_THRESHOLD = 180
-private const val MIN_ALPHA_THRESHOLD = 10
 private const val DEFAULT_TINT_COLOR_INT = 0xFFE2E2E2.toInt()
-private const val CROP_THRESHOLD_RATIO = 0.85f
-private const val CROP_PADDING_RATIO = 0.08f
-private const val ALPHA_CORNER_THRESHOLD = 200
-private const val SOLID_CORNERS_MIN_COUNT = 3
-private const val LUM_RED_WEIGHT = 0.299f
-private const val LUM_GREEN_WEIGHT = 0.587f
-private const val LUM_BLUE_WEIGHT = 0.114f
-private const val COLOR_MAX_VALUE = 255f
-private const val ALPHA_BASE_RATIO = 0.4f
-private const val ALPHA_LUM_RATIO = 0.6f
-private const val COLOR_MAX_INT = 255
-private const val BG_DIST_THRESHOLD = 45.0
 
 data class AppInfo(
     val label: String,
@@ -60,7 +42,7 @@ data class AppInfo(
 
     fun getIconBitmap(): ImageBitmap {
         cachedIconBitmap?.let { return it }
-        val bitmap = icon.toImageBitmap()
+        val bitmap = AppIconHelper.drawableToImageBitmap(icon)
         cachedIconBitmap = bitmap
         return bitmap
     }
@@ -154,64 +136,20 @@ private fun cropRawBitmapIfNeeded(rawBitmap: Bitmap, origW: Int, origH: Int): Bi
     val rawPixels = IntArray(origW * origH)
     rawBitmap.getPixels(rawPixels, 0, origW, 0, 0, origW, origH)
 
-    val bounds = findPixelBounds(rawPixels, origW, origH)
-    if (bounds == null) return rawBitmap
+    val bounds = AppIconHelper.findPixelBounds(rawPixels, origW, origH)
+    var resultBitmap = rawBitmap
 
-    val cropW = bounds.third - bounds.first + 1
-    val cropH = bounds.fourth - bounds.second + 1
-
-    val isWidthSmaller = cropW < origW * CROP_THRESHOLD_RATIO
-    val isHeightSmaller = cropH < origH * CROP_THRESHOLD_RATIO
-    return if (cropW > 0 && cropH > 0 && (isWidthSmaller || isHeightSmaller)) {
-        scaleCroppedBitmap(rawBitmap, bounds.first, bounds.second, cropW, cropH)
-    } else {
-        rawBitmap
-    }
-}
-
-private fun findPixelBounds(pixels: IntArray, width: Int, height: Int): Quad<Int, Int, Int, Int>? {
-    var minX = width
-    var minY = height
-    var maxX = -1
-    var maxY = -1
-
-    for (y in 0 until height) {
-        val yOffset = y * width
-        val rowBounds = findRowBounds(pixels, yOffset, width) ?: continue
-        if (rowBounds.first < minX) minX = rowBounds.first
-        if (rowBounds.second > maxX) maxX = rowBounds.second
-        if (y < minY) minY = y
-        if (y > maxY) maxY = y
-    }
-
-    return if (maxX >= minX && maxY >= minY) Quad(minX, minY, maxX, maxY) else null
-}
-
-private fun findRowBounds(pixels: IntArray, yOffset: Int, width: Int): Pair<Int, Int>? {
-    var rowMinX = width
-    var rowMaxX = -1
-    for (x in 0 until width) {
-        if (Color.alpha(pixels[yOffset + x]) > MIN_ALPHA_THRESHOLD) {
-            if (x < rowMinX) rowMinX = x
-            if (x > rowMaxX) rowMaxX = x
+    if (bounds != null) {
+        val cropW = bounds.third - bounds.first + 1
+        val cropH = bounds.fourth - bounds.second + 1
+        val shouldCrop = AppIconHelper.isDimensionCropped(cropW, origW) ||
+            AppIconHelper.isDimensionCropped(cropH, origH)
+        if (shouldCrop) {
+            resultBitmap = AppIconHelper.scaleCroppedBitmap(rawBitmap, bounds.first, bounds.second, cropW, cropH)
         }
     }
-    return if (rowMaxX >= rowMinX) Pair(rowMinX, rowMaxX) else null
-}
 
-private fun scaleCroppedBitmap(srcBitmap: Bitmap, minX: Int, minY: Int, cropW: Int, cropH: Int): Bitmap {
-    val cropped = Bitmap.createBitmap(srcBitmap, minX, minY, cropW, cropH)
-    val scaled = Bitmap.createBitmap(DEFAULT_ICON_SIZE, DEFAULT_ICON_SIZE, Bitmap.Config.ARGB_8888)
-    val scaledCanvas = Canvas(scaled)
-
-    val padding = (DEFAULT_ICON_SIZE * CROP_PADDING_RATIO).toInt()
-    val drawSize = DEFAULT_ICON_SIZE - (padding * 2)
-
-    val srcRect = Rect(0, 0, cropW, cropH)
-    val dstRect = Rect(padding, padding, padding + drawSize, padding + drawSize)
-    val paint = Paint(Paint.ANTI_ALIAS_FLAG or Paint.FILTER_BITMAP_FLAG)
-    scaledCanvas.drawBitmap(cropped, srcRect, dstRect, paint)
-    return scaled
+    return resultBitmap
 }
 
 private fun applyTintToBitmap(bitmap: Bitmap, tintColor: Int, isAdaptive: Boolean): Bitmap {
@@ -250,7 +188,7 @@ private fun recolorAdaptivePixels(pixels: IntArray, tintColor: Int) {
         if (a <= MIN_ALPHA_THRESHOLD) {
             pixels[i] = 0
         } else {
-            val lum = computeLuminance(Color.red(p), Color.green(p), Color.blue(p))
+            val lum = AppIconHelper.computeLuminance(Color.red(p), Color.green(p), Color.blue(p))
             val finalAlpha = (a * (ALPHA_BASE_RATIO + ALPHA_LUM_RATIO * lum)).toInt().coerceIn(0, COLOR_MAX_INT)
             pixels[i] = Color.argb(finalAlpha, tr, tg, tb)
         }
@@ -282,38 +220,12 @@ private fun recolorStandardPixels(pixels: IntArray, corners: IntArray, cornersAr
         val db = b - bgB
         val dist = sqrt(dr * dr + dg * dg + db * db)
 
-        if (cornersAreSolid && (dist < BG_DIST_THRESHOLD || isNearWhiteBackground(r, g, b, a))) {
+        if (cornersAreSolid && (dist < BG_DIST_THRESHOLD || AppIconHelper.isNearWhiteBackground(r, g, b, a))) {
             pixels[i] = 0
         } else {
-            val lum = computeLuminance(r, g, b)
+            val lum = AppIconHelper.computeLuminance(r, g, b)
             val finalAlpha = (a * (ALPHA_BASE_RATIO + ALPHA_LUM_RATIO * lum)).toInt().coerceIn(0, COLOR_MAX_INT)
             pixels[i] = Color.argb(finalAlpha, tr, tg, tb)
         }
     }
-}
-
-private fun computeLuminance(red: Int, green: Int, blue: Int): Float {
-    return (LUM_RED_WEIGHT * red + LUM_GREEN_WEIGHT * green + LUM_BLUE_WEIGHT * blue) / COLOR_MAX_VALUE
-}
-
-private data class Quad<A, B, C, D>(val first: A, val second: B, val third: C, val fourth: D)
-
-private fun isNearWhiteBackground(red: Int, green: Int, blue: Int, alpha: Int): Boolean {
-    val isWhite = red > BACKGROUND_WHITE_THRESHOLD &&
-        green > BACKGROUND_WHITE_THRESHOLD &&
-        blue > BACKGROUND_WHITE_THRESHOLD
-    return isWhite && alpha > BACKGROUND_ALPHA_THRESHOLD
-}
-
-private fun Drawable.toImageBitmap(): ImageBitmap {
-    if ((this is BitmapDrawable) && (this.bitmap != null)) {
-        return this.bitmap.asImageBitmap()
-    }
-    val width = if (intrinsicWidth > 0) intrinsicWidth else DEFAULT_ICON_SIZE
-    val height = if (intrinsicHeight > 0) intrinsicHeight else DEFAULT_ICON_SIZE
-    val bitmap = createBitmap(width, height)
-    val canvas = Canvas(bitmap)
-    setBounds(0, 0, canvas.width, canvas.height)
-    draw(canvas)
-    return bitmap.asImageBitmap()
 }

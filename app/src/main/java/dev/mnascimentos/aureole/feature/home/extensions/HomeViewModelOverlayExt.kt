@@ -8,27 +8,6 @@ import dev.mnascimentos.aureole.feature.home.model.ContainerFolderBottomSheetSta
 import dev.mnascimentos.aureole.feature.home.model.FolderAppBottomSheetState
 import dev.mnascimentos.aureole.feature.home.model.WidgetStackBottomSheetState
 
-fun HomeViewModel.checkReleaseNotes(currentVersionCode: Int, versionName: String) {
-    activeVersionCode = currentVersionCode
-    val lastSeen = settingsRepository.lastSeenVersionCode
-    updateUiState { it.copy(currentVersionName = versionName) }
-    if (lastSeen < currentVersionCode) {
-        updateUiState { it.copy(showReleaseNotesBottomSheet = true) }
-        settingsRepository.lastSeenVersionCode = currentVersionCode
-    }
-}
-
-fun HomeViewModel.dismissReleaseNotes(versionCode: Int = activeVersionCode) {
-    if (versionCode > 0) {
-        settingsRepository.lastSeenVersionCode = versionCode
-    }
-    updateUiState { it.copy(showReleaseNotesBottomSheet = false) }
-}
-
-fun HomeViewModel.openReleaseNotes() {
-    updateUiState { it.copy(showReleaseNotesBottomSheet = true) }
-}
-
 fun HomeViewModel.openContainerAppBottomSheet(app: AppInfo, panelId: String) {
     updateUiState { it.copy(activeContainerAppBottomSheet = ContainerAppBottomSheetState(app, panelId)) }
 }
@@ -72,12 +51,4 @@ fun HomeViewModel.toggleWidgetStackDots(stackId: String) {
 
 fun HomeViewModel.openEditFolderForFolder(folder: AppFolder) {
     updateUiState { it.copy(activeFolder = folder, isRenameFolderDialogVisible = true) }
-}
-
-fun HomeViewModel.openEditClockBottomSheet() {
-    updateUiState { it.copy(showEditClockBottomSheet = true) }
-}
-
-fun HomeViewModel.closeEditClockBottomSheet() {
-    updateUiState { it.copy(showEditClockBottomSheet = false) }
 }
