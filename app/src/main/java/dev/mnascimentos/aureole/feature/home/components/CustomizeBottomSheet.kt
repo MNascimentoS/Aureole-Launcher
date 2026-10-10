@@ -18,7 +18,7 @@ import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.core.data.model.LauncherItemType
 import dev.mnascimentos.aureole.core.data.model.ScrollOrientation
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
-import dev.mnascimentos.aureole.core.designsystem.icons.HorizontalContainer
+import dev.mnascimentos.aureole.core.designsystem.icons.Add
 import dev.mnascimentos.aureole.core.designsystem.icons.Icon
 import dev.mnascimentos.aureole.core.designsystem.icons.Layout
 import dev.mnascimentos.aureole.core.designsystem.icons.MultipleView
@@ -43,7 +43,20 @@ fun CustomizeBottomSheet(
     ) {
         Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
             CustomizeOptionItem(
-                title = "Add quick panel",
+                title = "Add clock",
+                icon = {
+                    AureoleDS.icons.Add(
+                        modifier = Modifier.size(24.dp),
+                        tint = AureoleTheme.colors.onSurfaceMedium
+                    )
+                },
+                onClick = {
+                    actions.onAddGridItem(LauncherItemType.CLOCK, null, null)
+                    onDismissRequest()
+                }
+            )
+            CustomizeOptionItem(
+                title = "Add container",
                 icon = {
                     AureoleDS.icons.Star(
                         modifier = Modifier.size(24.dp),
@@ -56,7 +69,7 @@ fun CustomizeBottomSheet(
                 }
             )
             CustomizeOptionItem(
-                title = "Add vertical container",
+                title = "Add scrollview container",
                 icon = {
                     AureoleDS.icons.VerticalContainer(
                         modifier = Modifier.size(24.dp),
@@ -69,20 +82,7 @@ fun CustomizeBottomSheet(
                 }
             )
             CustomizeOptionItem(
-                title = "Add horizontal container",
-                icon = {
-                    AureoleDS.icons.HorizontalContainer(
-                        modifier = Modifier.size(24.dp),
-                        tint = AureoleTheme.colors.onSurfaceMedium
-                    )
-                },
-                onClick = {
-                    actions.onAddGridItem(LauncherItemType.SCROLL_VIEW, null, ScrollOrientation.HORIZONTAL)
-                    onDismissRequest()
-                }
-            )
-            CustomizeOptionItem(
-                title = "Add custom widget steak",
+                title = "Add widget group",
                 icon = {
                     AureoleDS.icons.MultipleView(
                         modifier = Modifier.size(24.dp),

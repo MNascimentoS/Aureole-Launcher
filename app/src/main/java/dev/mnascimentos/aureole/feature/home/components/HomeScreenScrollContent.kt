@@ -39,7 +39,7 @@ import dev.mnascimentos.aureole.core.data.model.LauncherItemState
 import dev.mnascimentos.aureole.core.data.model.LauncherItemType
 import dev.mnascimentos.aureole.core.data.model.ScrollOrientation
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
-import dev.mnascimentos.aureole.core.designsystem.icons.*
+import dev.mnascimentos.aureole.core.designsystem.icons.Add
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.utils.fadingEdges
 import dev.mnascimentos.aureole.feature.home.LocalHomeActions

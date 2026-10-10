@@ -39,12 +39,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import coil.compose.AsyncImage
-import dev.mnascimentos.aureole.core.designsystem.icons.*
+import dev.mnascimentos.aureole.core.designsystem.icons.ArrowDown
+import dev.mnascimentos.aureole.core.designsystem.icons.ArrowUp
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.feature.home.widget.model.WidgetAppGroup
 import dev.mnascimentos.aureole.feature.home.widget.model.WidgetSelectorIntent
@@ -113,13 +115,13 @@ fun AppGroupHeader(
             AsyncImage(
                 model = group.appIcon,
                 contentDescription = group.appName,
-                modifier = Modifier.size(32.dp)
+                modifier = Modifier.size(36.dp)
             )
         } else {
             Box(
                 modifier = Modifier
-                    .size(32.dp)
-                    .background(MaterialTheme.colorScheme.surfaceVariant, RoundedCornerShape(8.dp))
+                    .size(36.dp)
+                    .background(MaterialTheme.colorScheme.surfaceVariant, RoundedCornerShape(10.dp))
             )
         }
 
@@ -128,16 +130,27 @@ fun AppGroupHeader(
         Text(
             text = group.appName,
             style = MaterialTheme.typography.titleMedium,
+            fontWeight = FontWeight.SemiBold,
             color = MaterialTheme.colorScheme.onBackground,
             modifier = Modifier.weight(1f)
         )
 
-        Text(
-            text = group.availableWidgets.size.toString(),
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            modifier = Modifier.padding(end = 8.dp)
-        )
+        Box(
+            modifier = Modifier
+                .padding(end = 8.dp)
+                .background(
+                    MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.6f),
+                    RoundedCornerShape(12.dp)
+                )
+                .padding(horizontal = 10.dp, vertical = 4.dp)
+        ) {
+            Text(
+                text = "${group.availableWidgets.size} widget${if (group.availableWidgets.size > 1) "s" else ""}",
+                style = MaterialTheme.typography.labelSmall,
+                fontWeight = FontWeight.Medium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+        }
 
         if (isExpanded) {
             AureoleDS.icons.ArrowUp(
@@ -170,16 +183,16 @@ fun WidgetPreviewCard(
 
     Column(
         modifier = Modifier
-            .width(140.dp)
+            .width(160.dp)
             .clickable(onClick = onClick),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .aspectRatio(1f)
-                .clip(RoundedCornerShape(16.dp))
-                .background(MaterialTheme.colorScheme.surfaceVariant),
+                .aspectRatio(1.2f)
+                .clip(RoundedCornerShape(18.dp))
+                .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)),
             contentAlignment = Alignment.Center
         ) {
             WidgetPreviewContent(widget = widget, appIcon = appIcon)
@@ -191,7 +204,8 @@ fun WidgetPreviewCard(
 
         Text(
             text = widget.title,
-            style = MaterialTheme.typography.bodySmall,
+            style = MaterialTheme.typography.bodyMedium,
+            fontWeight = FontWeight.Medium,
             color = MaterialTheme.colorScheme.onBackground,
             textAlign = TextAlign.Center,
             maxLines = 2,
@@ -270,14 +284,15 @@ private fun WidgetSpanBadge(spanX: Int, spanY: Int) {
         Box(
             modifier = Modifier
                 .background(
-                    MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.8f),
-                    RoundedCornerShape(4.dp)
+                    MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.9f),
+                    RoundedCornerShape(6.dp)
                 )
-                .padding(horizontal = 4.dp, vertical = 2.dp)
+                .padding(horizontal = 6.dp, vertical = 2.dp)
         ) {
             Text(
                 text = "${spanX}x$spanY",
                 style = MaterialTheme.typography.labelSmall,
+                fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.onPrimaryContainer
             )
         }

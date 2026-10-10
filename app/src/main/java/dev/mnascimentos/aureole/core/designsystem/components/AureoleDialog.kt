@@ -1,28 +1,30 @@
 package dev.mnascimentos.aureole.core.designsystem.components
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
-import dev.mnascimentos.aureole.core.designsystem.icons.*
+import dev.mnascimentos.aureole.core.designsystem.icons.Logo
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleTheme
 
@@ -46,12 +48,7 @@ fun AureoleDialog(
         Surface(
             modifier = modifier
                 .fillMaxWidth(DIALOG_WIDTH_FRACTION)
-                .clip(RoundedCornerShape(22.dp))
-                .border(
-                    width = 0.5.dp,
-                    color = AureoleTheme.colors.outline,
-                    shape = RoundedCornerShape(22.dp)
-                ),
+                .clip(RoundedCornerShape(22.dp)),
             shape = RoundedCornerShape(22.dp),
             color = AureoleTheme.colors.surface,
             contentColor = AureoleTheme.colors.onSurfaceHigh
@@ -61,8 +58,7 @@ fun AureoleDialog(
                     AureoleDialogHeader(
                         title = title,
                         modifier = Modifier,
-                        icon = icon,
-                        onDismiss = onDismissRequest
+                        icon = icon
                     )
                 }
                 Column(
@@ -81,51 +77,48 @@ fun AureoleDialog(
 fun AureoleDialogHeader(
     title: String,
     modifier: Modifier = Modifier,
-    icon: @Composable ((Modifier) -> Unit)? = null,
-    onDismiss: (() -> Unit)? = null
+    icon: @Composable ((Modifier) -> Unit)? = null
 ) {
     Box(
         modifier = modifier
             .fillMaxWidth()
-            .height(56.dp)
-            .background(AureoleTheme.colors.surfaceVariant)
-            .border(
-                width = 0.5.dp,
-                color = AureoleTheme.colors.outline
-            )
-            .padding(horizontal = AureoleDS.dimens.medium),
-        contentAlignment = Alignment.CenterStart
+            .height(52.dp)
+            .background(AureoleTheme.colors.surfaceVariant),
+        contentAlignment = Alignment.Center
     ) {
         Row(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .align(Alignment.Center)
+                .padding(horizontal = 28.dp),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
+            horizontalArrangement = Arrangement.Center
         ) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(AureoleDS.dimens.xSmall)
-            ) {
-                if (icon != null) {
-                    icon(Modifier.size(20.dp))
-                }
-                AureoleText(
-                    text = title,
-                    style = AureoleTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold,
-                    color = AureoleTheme.colors.onSurfaceHigh
-                )
+            if (icon != null) {
+                icon(Modifier.size(20.dp))
+                Spacer(modifier = Modifier.width(AureoleDS.dimens.xSmall))
             }
-            if (onDismiss != null) {
-                IconButton(
-                    onClick = onDismiss,
-                    modifier = Modifier.size(28.dp)
-                ) {
-                    AureoleDS.icons.Close(
-                        tint = AureoleTheme.colors.onSurfaceMedium,
-                        modifier = Modifier.size(18.dp)
-                    )
-                }
-            }
+            AureoleText(
+                text = title,
+                style = AureoleTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold,
+                color = AureoleTheme.colors.onSurfaceHigh,
+                textAlign = TextAlign.Center,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
+        }
+
+        Box(
+            modifier = Modifier
+                .align(Alignment.CenterEnd)
+                .padding(end = 8.dp)
+                .size(32.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            AureoleDS.icons.Logo(
+                tint = AureoleTheme.colors.onSurfaceHigh,
+                modifier = Modifier.size(18.dp)
+            )
         }
     }
 }

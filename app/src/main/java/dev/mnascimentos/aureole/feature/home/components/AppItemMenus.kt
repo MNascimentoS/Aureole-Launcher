@@ -41,13 +41,21 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Popup
 import androidx.compose.ui.window.PopupProperties
-import dev.mnascimentos.aureole.core.data.model.AppFolder
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.designsystem.components.AureolePopupBox
 import dev.mnascimentos.aureole.core.designsystem.components.AureolePopupHeader
 import dev.mnascimentos.aureole.core.designsystem.components.AureolePopupMenuItem
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
-import dev.mnascimentos.aureole.core.designsystem.icons.*
+import dev.mnascimentos.aureole.core.designsystem.icons.Delete
+import dev.mnascimentos.aureole.core.designsystem.icons.Dots
+import dev.mnascimentos.aureole.core.designsystem.icons.Edit
+import dev.mnascimentos.aureole.core.designsystem.icons.Folder
+import dev.mnascimentos.aureole.core.designsystem.icons.Info
+import dev.mnascimentos.aureole.core.designsystem.icons.Layout
+import dev.mnascimentos.aureole.core.designsystem.icons.Logo
+import dev.mnascimentos.aureole.core.designsystem.icons.Settings
+import dev.mnascimentos.aureole.core.designsystem.icons.Smile
+import dev.mnascimentos.aureole.core.designsystem.icons.Star
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleTheme
 import dev.mnascimentos.aureole.feature.home.components.model.AppItemRowActions
@@ -130,7 +138,6 @@ internal fun AppItemBottomSheet(
     }
 }
 
-
 @Composable
 private fun AppItemBottomSheetHeader(app: AppInfo, iconBitmap: ImageBitmap, context: Context) {
     Box(
@@ -194,7 +201,6 @@ private fun AppItemBottomSheetHeader(app: AppInfo, iconBitmap: ImageBitmap, cont
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun ContainerFolderBottomSheet(
-    folder: AppFolder,
     onEditShortcuts: () -> Unit,
     onRename: () -> Unit,
     onIcon: () -> Unit,
@@ -311,7 +317,6 @@ internal fun ContainerFolderBottomSheet(
     }
 }
 
-
 @Composable
 private fun ContainerFolderBottomSheetHeader() {
     val context = LocalContext.current
@@ -401,7 +406,7 @@ internal fun WidgetStackBottomSheet(
                 }
 
                 AureolePopupMenuItem(
-                    title = "Editar Pilha",
+                    title = "Redimensionar Grupo",
                     icon = { m -> AureoleDS.icons.Edit(m) },
                     onClick = {
                         onEditStack()
@@ -410,7 +415,7 @@ internal fun WidgetStackBottomSheet(
                 )
 
                 AureolePopupMenuItem(
-                    title = "Alternar Indicador",
+                    title = "Alternar Indicador de Posição",
                     customIcon = {
                         AureoleDS.icons.Dots(
                             tint = AureoleDS.colors.onSurfaceMedium,
@@ -471,7 +476,6 @@ internal fun WidgetStackBottomSheet(
     }
 }
 
-
 @Composable
 private fun WidgetStackBottomSheetHeader(context: Context) {
     Box(
@@ -501,7 +505,7 @@ private fun WidgetStackBottomSheetHeader(context: Context) {
             Spacer(modifier = Modifier.width(10.dp))
 
             AureoleText(
-                text = "Pilha de Widgets",
+                text = "Grupo de Widgets",
                 style = AureoleDS.typography.titleMedium,
                 fontWeight = FontWeight.Bold,
                 color = AureoleDS.colors.onSurfaceHigh,

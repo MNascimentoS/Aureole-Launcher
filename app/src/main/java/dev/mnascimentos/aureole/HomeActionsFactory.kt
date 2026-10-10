@@ -18,6 +18,7 @@ import dev.mnascimentos.aureole.feature.home.extensions.deleteContainerInstance
 import dev.mnascimentos.aureole.feature.home.extensions.deleteGridItem
 import dev.mnascimentos.aureole.feature.home.extensions.dismissGridError
 import dev.mnascimentos.aureole.feature.home.extensions.enterGridEditMode
+import dev.mnascimentos.aureole.feature.home.extensions.moveChildInScrollView
 import dev.mnascimentos.aureole.feature.home.extensions.moveGridItem
 import dev.mnascimentos.aureole.feature.home.extensions.onFolderIntent
 import dev.mnascimentos.aureole.feature.home.extensions.onSearchQueryChanged
@@ -126,6 +127,7 @@ class HomeActionsFactory(
             onSetIsAddingSingleWidget = { viewModel.setIsAddingSingleWidget(it) },
             onUpdateScrollViewOrientation = { id, o -> viewModel.updateScrollViewOrientation(id, o) },
             onRemoveChildFromScrollView = { pId, cId -> viewModel.removeChildFromScrollView(pId, cId) },
+            onMoveChildInScrollView = { pId, cId, moveUp -> viewModel.moveChildInScrollView(pId, cId, moveUp) },
             onResizeChildInScrollView = { pId, cId, cSpan, rSpan ->
                 viewModel.resizeChildInScrollView(
                     pId,

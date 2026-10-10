@@ -16,7 +16,7 @@ import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
-import dev.mnascimentos.aureole.core.designsystem.icons.*
+import dev.mnascimentos.aureole.core.designsystem.icons.Add
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.feature.home.grid.model.DragTargetSlot
 
@@ -47,7 +47,6 @@ fun GridBottomEditControls(
 
 @Composable
 fun GridBackgroundOverlay(
-    limits: GridLimits,
     cellWidthPx: Float,
     cellHeightPx: Float,
     activeDragTarget: DragTargetSlot?,

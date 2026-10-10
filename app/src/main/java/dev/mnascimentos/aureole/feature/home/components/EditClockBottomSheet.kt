@@ -106,16 +106,18 @@ fun EditClockBottomSheet(
                     .padding(8.dp)
             ) {
                 ClockHeader(
-                    isHazeEnabled = false,
-                    isBackgroundEnabled = uiState.isClockBackgroundEnabled,
-                    clockStyle = uiState.clockStyle,
-                    clockCustomGreeting = tempCustomGreeting,
-                    clockAlignment = uiState.clockAlignment,
-                    clockFontFamily = uiState.clockFontFamily,
-                    clockTimeFormat = uiState.clockTimeFormat,
-                    clockDateFormat = uiState.clockDateFormat,
-                    clockTextColor = uiState.clockTextColor,
-                    clockBackgroundColor = uiState.clockBackgroundColor
+                    config = ClockHeaderConfig(
+                        isHazeEnabled = false,
+                        isBackgroundEnabled = uiState.isClockBackgroundEnabled,
+                        clockStyle = uiState.clockStyle,
+                        clockCustomGreeting = tempCustomGreeting,
+                        clockAlignment = uiState.clockAlignment,
+                        clockFontFamily = uiState.clockFontFamily,
+                        clockTimeFormat = uiState.clockTimeFormat,
+                        clockDateFormat = uiState.clockDateFormat,
+                        clockTextColor = uiState.clockTextColor,
+                        clockBackgroundColor = uiState.clockBackgroundColor
+                    )
                 )
             }
 
@@ -529,4 +531,3 @@ fun EditClockBottomSheetPreview() {
         }
     }
 }
-

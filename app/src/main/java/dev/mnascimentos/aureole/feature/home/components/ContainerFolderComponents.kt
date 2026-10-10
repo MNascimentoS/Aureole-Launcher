@@ -36,7 +36,7 @@ import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.core.data.model.AppFolder
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
-import dev.mnascimentos.aureole.core.designsystem.icons.*
+import dev.mnascimentos.aureole.core.designsystem.icons.Add
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.feature.home.LocalHomeUiState
 import dev.mnascimentos.aureole.feature.home.components.model.ContainerFolderButtonParams
@@ -175,7 +175,11 @@ fun ContainerFolderButton(
                 AureoleText(
                     text = params.folder.name.take(1).uppercase(),
                     color = params.textColor,
-                    style = if (isBackgroundEnabled) MaterialTheme.typography.headlineSmall else MaterialTheme.typography.headlineMedium,
+                    style = if (isBackgroundEnabled) {
+                        MaterialTheme.typography.headlineSmall
+                    } else {
+                        MaterialTheme.typography.headlineMedium
+                    },
                     fontWeight = FontWeight.Bold
                 )
             }

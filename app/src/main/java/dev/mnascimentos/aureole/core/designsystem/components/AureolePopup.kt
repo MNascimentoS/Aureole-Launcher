@@ -35,7 +35,9 @@ import dev.chrisbanes.haze.HazeState
 import dev.chrisbanes.haze.HazeStyle
 import dev.chrisbanes.haze.HazeTint
 import dev.chrisbanes.haze.hazeEffect
-import dev.mnascimentos.aureole.core.designsystem.icons.*
+import dev.mnascimentos.aureole.core.designsystem.icons.Close
+import dev.mnascimentos.aureole.core.designsystem.icons.Logo
+import dev.mnascimentos.aureole.core.designsystem.icons.Settings
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleTheme
@@ -325,7 +327,6 @@ fun AureolePopupMenuItem(
     isDestructive: Boolean = false,
 ) {
     val textColor = if (isDestructive) MaterialTheme.colorScheme.error else AureoleDS.colors.onSurfaceHigh
-    val iconTint = if (isDestructive) MaterialTheme.colorScheme.error else AureoleDS.colors.onSurfaceMedium
 
     Row(
         modifier = modifier

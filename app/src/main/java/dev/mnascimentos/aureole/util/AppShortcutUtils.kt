@@ -64,7 +64,13 @@ object AppShortcutUtils {
                     )
                 }
             }
-        } catch (e: Throwable) {
+        } catch (e: SecurityException) {
+            Log.w(TAG, "Error fetching app shortcuts", e)
+            emptyList()
+        } catch (e: IllegalStateException) {
+            Log.w(TAG, "Error fetching app shortcuts", e)
+            emptyList()
+        } catch (e: IllegalArgumentException) {
             Log.w(TAG, "Error fetching app shortcuts", e)
             emptyList()
         }

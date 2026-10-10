@@ -96,7 +96,6 @@ fun DynamicGridContainer(
         if (isEditMode) {
             Box(modifier = Modifier.fillMaxSize()) {
                 GridBackgroundOverlay(
-                    limits = limits,
                     cellWidthPx = metrics.cellWidthPx,
                     cellHeightPx = metrics.cellHeightPx,
                     activeDragTarget = activeDragTarget

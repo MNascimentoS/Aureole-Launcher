@@ -140,16 +140,13 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
 
     internal var activeVersionCode: Int = 0
 
-    fun checkReleaseNotes(currentVersionCode: Int, versionName: String, isDebug: Boolean = false) {
+    fun checkReleaseNotes(currentVersionCode: Int, versionName: String) {
         activeVersionCode = currentVersionCode
         val lastSeen = settingsRepository.lastSeenVersionCode
         _uiState.update { it.copy(currentVersionName = versionName) }
-        if (isDebug) {
+        if (lastSeen < currentVersionCode) {
             _uiState.update { it.copy(showReleaseNotesBottomSheet = true) }
-        } else if (lastSeen == 0) {
             settingsRepository.lastSeenVersionCode = currentVersionCode
-        } else if (currentVersionCode > lastSeen) {
-            _uiState.update { it.copy(showReleaseNotesBottomSheet = true) }
         }
     }
 

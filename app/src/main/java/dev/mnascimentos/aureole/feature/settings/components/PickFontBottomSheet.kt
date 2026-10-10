@@ -106,7 +106,6 @@ fun PickFontBottomSheet(
     }
 }
 
-
 @AureolePreview
 @Composable
 fun PickFontBottomSheetPreview() {

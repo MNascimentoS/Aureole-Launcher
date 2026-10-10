@@ -59,7 +59,8 @@ import dev.chrisbanes.haze.HazeTint
 import dev.chrisbanes.haze.hazeEffect
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
-import dev.mnascimentos.aureole.core.designsystem.icons.*
+import dev.mnascimentos.aureole.core.designsystem.icons.Close
+import dev.mnascimentos.aureole.core.designsystem.icons.Search
 import dev.mnascimentos.aureole.core.designsystem.icons.Settings
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
@@ -226,7 +227,11 @@ private fun FloatingSearchBubble(
         modifier = modifier
             .fillMaxWidth()
             .padding(horizontal = 24.dp, vertical = 16.dp),
-        contentAlignment = if (isExpanded) Alignment.TopCenter else if (uiState.isLeftHandedMode) Alignment.BottomStart else Alignment.BottomEnd
+        contentAlignment = when {
+            isExpanded -> Alignment.TopCenter
+            uiState.isLeftHandedMode -> Alignment.BottomStart
+            else -> Alignment.BottomEnd
+        }
     ) {
         AnimatedContent(
             targetState = isExpanded,

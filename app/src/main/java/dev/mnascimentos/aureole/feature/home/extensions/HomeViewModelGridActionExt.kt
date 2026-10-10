@@ -166,6 +166,41 @@ fun HomeViewModel.removeChildFromScrollView(parentId: String, childId: String) {
     }
 }
 
+fun HomeViewModel.moveChildInScrollView(parentId: String, childId: String, moveUp: Boolean) {
+    updateUiState { state ->
+        val parent = state.gridItems.find { it.id == parentId }
+            ?: state.editingGridItem
+            ?: return@updateUiState state
+
+        val children = parent.safeChildren.toMutableList()
+        val index = children.indexOfFirst { it.id == childId }
+        if (index == -1) return@updateUiState state
+
+        val newIndex = if (moveUp) index - 1 else index + 1
+        if (newIndex !in 0 until children.size) return@updateUiState state
+
+        val itemToMove = children.removeAt(index)
+        children.add(newIndex, itemToMove)
+
+        val updatedItems = state.gridItems.map { item ->
+            if (item.id == parentId) {
+                item.copy(children = children)
+            } else {
+                item
+            }
+        }
+        if (!state.isGridEditMode) {
+            getGridRepository().saveGridItems(updatedItems, state.isLandscape)
+        }
+        val updatedEditingItem = if (state.editingGridItem?.id == parentId) {
+            state.editingGridItem.copy(children = children)
+        } else {
+            state.editingGridItem
+        }
+        updateActiveGridItemsInState(state, updatedItems).copy(editingGridItem = updatedEditingItem)
+    }
+}
+
 fun HomeViewModel.addGridItem(spec: GridItemSpec) {
     val currentParentId = uiState.value.targetParentContainerId
     if (currentParentId != null) {
@@ -209,13 +244,22 @@ fun HomeViewModel.addGridItem(spec: GridItemSpec) {
                 scrollOrientation = spec.scrollOrientation
             )
             val updatedList = currentItems + newItem
-            if (!state.isGridEditMode) {
-                getGridRepository().saveGridItems(updatedList, state.isLandscape)
-            }
-            updateActiveGridItemsInState(state, updatedList).copy(
+            val wasInEditMode = state.isGridEditMode
+            val newStateWithGrid = updateActiveGridItemsInState(state, updatedList).copy(
                 showAddContainerDialog = false,
-                targetParentContainerId = null
+                targetParentContainerId = null,
+                isGridEditMode = true
             )
+
+            if (!wasInEditMode) {
+                newStateWithGrid.copy(
+                    cachedPortraitGridItems = state.portraitGridItems,
+                    cachedLandscapeGridItems = state.landscapeGridItems,
+                    cachedGridItems = state.gridItems
+                )
+            } else {
+                newStateWithGrid
+            }
         }
     }
 }

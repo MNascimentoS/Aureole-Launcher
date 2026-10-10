@@ -54,6 +54,7 @@ data class HomeScreenActions(
     val onSetIsAddingSingleWidget: (Boolean) -> Unit = {},
     val onUpdateScrollViewOrientation: (String, ScrollOrientation) -> Unit = { _, _ -> },
     val onRemoveChildFromScrollView: (String, String) -> Unit = { _, _ -> },
+    val onMoveChildInScrollView: (String, String, Boolean) -> Unit = { _, _, _ -> },
     val onResizeChildInScrollView: (String, String, Int, Int) -> Unit = { _, _, _, _ -> },
     val onOpenAddContainerForParent: (String) -> Unit = {},
 

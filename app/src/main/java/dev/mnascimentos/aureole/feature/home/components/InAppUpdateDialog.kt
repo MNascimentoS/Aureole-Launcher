@@ -1,12 +1,10 @@
 package dev.mnascimentos.aureole.feature.home.components
 
-import androidx.compose.foundation.border
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
@@ -51,12 +49,7 @@ fun UpdateAvailableDialog(
             TextButton(onClick = onDismiss) {
                 AureoleText(text = "Agora não", color = AureoleTheme.colors.onSurfaceMedium)
             }
-        },
-        modifier = Modifier.border(
-            width = 0.5.dp,
-            color = AureoleTheme.colors.outline,
-            shape = RoundedCornerShape(22.dp)
-        )
+        }
     )
 }
 
@@ -97,12 +90,7 @@ fun UpdateDownloadedDialog(
             TextButton(onClick = onDismiss) {
                 AureoleText(text = "Depois", color = AureoleTheme.colors.onSurfaceMedium)
             }
-        },
-        modifier = Modifier.border(
-            width = 0.5.dp,
-            color = AureoleTheme.colors.outline,
-            shape = RoundedCornerShape(22.dp)
-        )
+        }
     )
 }
 

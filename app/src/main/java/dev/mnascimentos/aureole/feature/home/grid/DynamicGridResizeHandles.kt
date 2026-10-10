@@ -20,7 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.core.data.model.LauncherItemState
-import dev.mnascimentos.aureole.core.designsystem.icons.*
+import dev.mnascimentos.aureole.core.designsystem.icons.Edit
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.feature.home.grid.model.CornerResizeCallbacks
 import dev.mnascimentos.aureole.feature.home.grid.model.GridCellParams

@@ -34,7 +34,7 @@ import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import dev.mnascimentos.aureole.core.designsystem.icons.*
+import dev.mnascimentos.aureole.core.designsystem.icons.Search
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview

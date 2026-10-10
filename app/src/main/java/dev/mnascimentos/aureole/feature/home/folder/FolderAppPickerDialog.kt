@@ -44,7 +44,7 @@ import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.core.data.model.AppFolder
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
-import dev.mnascimentos.aureole.core.designsystem.icons.*
+import dev.mnascimentos.aureole.core.designsystem.icons.Search
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleTheme
@@ -113,7 +113,6 @@ fun FolderAppPickerDialog(
         }
     }
 }
-
 
 @Composable
 private fun FolderAppPickerDialogContent(

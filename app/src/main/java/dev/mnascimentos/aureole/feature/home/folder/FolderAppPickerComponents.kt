@@ -23,7 +23,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
-import dev.mnascimentos.aureole.core.designsystem.icons.*
+import dev.mnascimentos.aureole.core.designsystem.icons.Add
+import dev.mnascimentos.aureole.core.designsystem.icons.ArrowDown
+import dev.mnascimentos.aureole.core.designsystem.icons.ArrowUp
+import dev.mnascimentos.aureole.core.designsystem.icons.Close
+import dev.mnascimentos.aureole.core.designsystem.icons.Delete
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.feature.home.folder.model.FolderAppRowItemParams
 

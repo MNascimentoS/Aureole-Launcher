@@ -4,7 +4,6 @@ import android.appwidget.AppWidgetHost
 import android.appwidget.AppWidgetManager
 import android.content.Context
 import android.content.Intent
-import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
 import android.graphics.Rect
 import android.os.Build
@@ -92,8 +91,7 @@ class MainActivity : ComponentActivity() {
                 viewModel.loadGridItems()
                 val versionCode = getAppVersionCode(this@MainActivity)
                 val versionName = getAppVersionName(this@MainActivity)
-                val isDebug = (applicationInfo.flags and ApplicationInfo.FLAG_DEBUGGABLE) != 0
-                viewModel.checkReleaseNotes(versionCode, versionName, isDebug = isDebug)
+                viewModel.checkReleaseNotes(versionCode, versionName)
                 wasInBackground = false
             }
         })

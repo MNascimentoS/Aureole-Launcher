@@ -44,8 +44,14 @@ internal fun HomeViewModel.applySearchFilter(query: String) {
             "mensagem" to listOf("whatsapp", "telegram", "messenger", "chat", "sms", "zap"),
             "foto" to listOf("gallery", "galeria", "photos", "fotos", "camera"),
             "galeria" to listOf("gallery", "galeria", "photos", "fotos"),
-            "banco" to listOf("bank", "nubank", "itau", "bradesco", "caixa", "inter", "pagbank", "picpay", "c6", "mercado pago"),
-            "bank" to listOf("banco", "nubank", "itau", "bradesco", "caixa", "inter", "pagbank", "picpay", "c6", "mercado pago")
+            "banco" to listOf(
+                "bank", "nubank", "itau", "bradesco", "caixa", "inter",
+                "pagbank", "picpay", "c6", "mercado pago"
+            ),
+            "bank" to listOf(
+                "banco", "nubank", "itau", "bradesco", "caixa", "inter",
+                "pagbank", "picpay", "c6", "mercado pago"
+            )
         )
 
         val expandedTerms = queryTerms.flatMap { term ->

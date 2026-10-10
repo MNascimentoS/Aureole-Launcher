@@ -94,7 +94,6 @@ fun SettingsBottomSheet(
     }
 }
 
-
 @AureolePreview
 @Composable
 fun SettingsBottomSheetPreview() {

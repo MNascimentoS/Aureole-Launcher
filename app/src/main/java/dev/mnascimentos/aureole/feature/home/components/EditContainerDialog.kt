@@ -59,7 +59,11 @@ import dev.mnascimentos.aureole.core.data.model.ContainerItemEntity
 import dev.mnascimentos.aureole.core.data.model.ContainerItemType
 import dev.mnascimentos.aureole.core.data.model.ContainerModel
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
-import dev.mnascimentos.aureole.core.designsystem.icons.*
+import dev.mnascimentos.aureole.core.designsystem.icons.Add
+import dev.mnascimentos.aureole.core.designsystem.icons.ArrowDown
+import dev.mnascimentos.aureole.core.designsystem.icons.ArrowUp
+import dev.mnascimentos.aureole.core.designsystem.icons.Delete
+import dev.mnascimentos.aureole.core.designsystem.icons.Search
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleTheme
@@ -89,7 +93,6 @@ fun EditContainerBottomSheet(
             EditContainerBottomSheetContent(
                 panel = panel,
                 allApps = allApps,
-                onDismiss = onDismiss,
                 onSave = onSave,
                 onDeletePanel = onDeletePanel
             )
@@ -131,7 +134,6 @@ fun EditContainerBottomSheet(
         }
     }
 }
-
 
 @Composable
 private fun rememberEditContainerState(panel: ContainerModel): EditContainerState {
@@ -263,7 +265,6 @@ private class EditContainerState(
 private fun EditContainerBottomSheetContent(
     panel: ContainerModel,
     allApps: List<AppInfo>,
-    onDismiss: () -> Unit,
     onSave: (ContainerModel) -> Unit,
     onDeletePanel: (String) -> Unit
 ) {
@@ -281,7 +282,7 @@ private fun EditContainerBottomSheetContent(
     }
 
     Column(modifier = Modifier.fillMaxWidth()) {
-        EditContainerHeader(onDismiss = onDismiss)
+        EditContainerHeader()
         Spacer(modifier = Modifier.height(AureoleDS.dimens.small))
 
         LazyColumn(
@@ -322,7 +323,9 @@ private fun EditContainerBottomSheetContent(
         EditContainerFooter(
             onDelete = { onDeletePanel(panel.id) },
             onSave = {
-                val updatedApps = state.itemsList.filter { it.itemType == ContainerItemType.APP }.mapNotNull { it.packageName }
+                val updatedApps = state.itemsList
+                    .filter { it.itemType == ContainerItemType.APP }
+                    .mapNotNull { it.packageName }
                 val updated = panel.copy(
                     position = state.position,
                     orientation = state.orientation,
@@ -546,7 +549,7 @@ private fun EditContainerOptionsExpandableSection(
 }
 
 @Composable
-private fun EditContainerHeader(onDismiss: () -> Unit) {
+private fun EditContainerHeader() {
     Box(
         modifier = Modifier.fillMaxWidth(),
         contentAlignment = Alignment.Center

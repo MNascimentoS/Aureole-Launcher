@@ -3,7 +3,25 @@ package dev.mnascimentos.aureole.feature.home.folder
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import dev.mnascimentos.aureole.core.designsystem.icons.*
+import dev.mnascimentos.aureole.core.designsystem.icons.Add
+import dev.mnascimentos.aureole.core.designsystem.icons.Advanced
+import dev.mnascimentos.aureole.core.designsystem.icons.Calendar
+import dev.mnascimentos.aureole.core.designsystem.icons.Check
+import dev.mnascimentos.aureole.core.designsystem.icons.Delete
+import dev.mnascimentos.aureole.core.designsystem.icons.Dots
+import dev.mnascimentos.aureole.core.designsystem.icons.DragMenu
+import dev.mnascimentos.aureole.core.designsystem.icons.Edit
+import dev.mnascimentos.aureole.core.designsystem.icons.EyeOff
+import dev.mnascimentos.aureole.core.designsystem.icons.Folder
+import dev.mnascimentos.aureole.core.designsystem.icons.Home
+import dev.mnascimentos.aureole.core.designsystem.icons.Info
+import dev.mnascimentos.aureole.core.designsystem.icons.MenuIcon
+import dev.mnascimentos.aureole.core.designsystem.icons.RefreshCcw
+import dev.mnascimentos.aureole.core.designsystem.icons.RightDown
+import dev.mnascimentos.aureole.core.designsystem.icons.Search
+import dev.mnascimentos.aureole.core.designsystem.icons.Settings
+import dev.mnascimentos.aureole.core.designsystem.icons.Smile
+import dev.mnascimentos.aureole.core.designsystem.icons.Star
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 
 object FolderIconRegistry {

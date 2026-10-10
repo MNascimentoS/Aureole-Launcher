@@ -32,7 +32,9 @@ import androidx.compose.ui.unit.dp
 import dev.chrisbanes.haze.HazeStyle
 import dev.chrisbanes.haze.HazeTint
 import dev.chrisbanes.haze.hazeEffect
-import dev.mnascimentos.aureole.core.designsystem.icons.*
+import dev.mnascimentos.aureole.core.designsystem.icons.Close
+import dev.mnascimentos.aureole.core.designsystem.icons.Delete
+import dev.mnascimentos.aureole.core.designsystem.icons.Edit
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.feature.home.widget.model.OpenedWidgetPopupConfig
 

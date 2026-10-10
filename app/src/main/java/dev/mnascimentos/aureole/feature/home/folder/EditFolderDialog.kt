@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -33,9 +32,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.Dialog
-import androidx.compose.ui.window.DialogProperties
 import dev.mnascimentos.aureole.core.data.model.AppFolder
+import dev.mnascimentos.aureole.core.designsystem.components.AureoleDialog
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleTheme
@@ -48,33 +46,17 @@ fun EditFolderDialog(
     onSave: (name: String, icon: String?) -> Unit,
     onDelete: () -> Unit
 ) {
-    Dialog(
+    AureoleDialog(
         onDismissRequest = onDismiss,
-        properties = DialogProperties(
-            dismissOnBackPress = true,
-            dismissOnClickOutside = true
-        )
+        title = "Edit Folder"
     ) {
-        Box(
-            modifier = Modifier
-                .widthIn(min = 280.dp, max = 360.dp)
-                .clip(RoundedCornerShape(22.dp))
-                .border(
-                    width = 0.5.dp,
-                    color = AureoleTheme.colors.outline,
-                    shape = RoundedCornerShape(22.dp)
-                )
-                .background(AureoleTheme.colors.surface)
-                .padding(24.dp)
-        ) {
-            EditFolderDialogContent(
-                initialName = folder.name,
-                initialIcon = folder.icon,
-                onDismiss = onDismiss,
-                onSave = onSave,
-                onDelete = onDelete
-            )
-        }
+        EditFolderDialogContent(
+            initialName = folder.name,
+            initialIcon = folder.icon,
+            onDismiss = onDismiss,
+            onSave = onSave,
+            onDelete = onDelete
+        )
     }
 }
 
@@ -93,14 +75,6 @@ private fun EditFolderDialogContent(
         modifier = Modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        AureoleText(
-            text = "Edit Folder",
-            style = AureoleTheme.typography.titleLarge,
-            fontWeight = FontWeight.Bold,
-            color = AureoleTheme.colors.onSurfaceHigh,
-            modifier = Modifier.padding(bottom = 16.dp)
-        )
-
         FolderIconPreview(folderName = folderName, selectedIcon = selectedIcon)
 
         Spacer(modifier = Modifier.height(16.dp))

@@ -18,7 +18,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -33,20 +32,31 @@ import dev.mnascimentos.aureole.core.data.model.AppFolder
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.data.model.ContainerItemType
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
-import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleTheme
-import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.core.designsystem.utils.fadingEdges
 import dev.mnascimentos.aureole.feature.home.LocalHomeActions
 import dev.mnascimentos.aureole.feature.home.LocalHomeUiState
 import dev.mnascimentos.aureole.feature.home.components.model.ContainerConfig
 import dev.mnascimentos.aureole.feature.home.model.FolderViewIntent
-import dev.mnascimentos.aureole.feature.home.model.MainUiState
 
 private const val CONTAINER_HAZE_ALPHA_MULTIPLIER = 0.7f
 private const val CONTAINER_MIN_ALPHA = 0.2f
 private const val CONTAINER_MAX_ALPHA = 0.95f
 private const val CONTAINER_DEFAULT_ALPHA = 0.95f
+
+data class ContainerColumnConfig(
+    val backgroundColor: Color,
+    val verticalArrangement: Arrangement.Vertical,
+    val onFolderClick: (AppFolder, Float) -> Unit,
+    val shouldExpand: Boolean = false
+)
+
+data class ContainerRowConfig(
+    val backgroundColor: Color,
+    val horizontalArrangement: Arrangement.Horizontal,
+    val onFolderClick: (AppFolder, Float) -> Unit,
+    val shouldExpand: Boolean = false
+)
 
 private fun Modifier.hazeModifier(
     hasHaze: Boolean,
@@ -133,21 +143,25 @@ fun Container(
             val horizontalArrangement = getHorizontalArrangement(config.position)
             ContainerRow(
                 config = config,
-                backgroundColor = backgroundColor,
-                horizontalArrangement = horizontalArrangement,
-                onFolderClick = onFolderClick,
-                modifier = if (config.isBackgroundEnabled) hazeModifier else Modifier,
-                shouldExpand = shouldExpand
+                rowConfig = ContainerRowConfig(
+                    backgroundColor = backgroundColor,
+                    horizontalArrangement = horizontalArrangement,
+                    onFolderClick = onFolderClick,
+                    shouldExpand = shouldExpand
+                ),
+                modifier = if (config.isBackgroundEnabled) hazeModifier else Modifier
             )
         } else {
             val verticalArrangement = getVerticalArrangement(config.position)
             ContainerColumn(
                 config = config,
-                backgroundColor = backgroundColor,
-                verticalArrangement = verticalArrangement,
-                onFolderClick = onFolderClick,
-                modifier = if (config.isBackgroundEnabled) hazeModifier else Modifier,
-                shouldExpand = shouldExpand
+                columnConfig = ContainerColumnConfig(
+                    backgroundColor = backgroundColor,
+                    verticalArrangement = verticalArrangement,
+                    onFolderClick = onFolderClick,
+                    shouldExpand = shouldExpand
+                ),
+                modifier = if (config.isBackgroundEnabled) hazeModifier else Modifier
             )
         }
     }
@@ -162,11 +176,8 @@ private sealed class ContainerRenderItem {
 @Composable
 private fun ContainerColumn(
     config: ContainerConfig,
-    backgroundColor: Color,
-    verticalArrangement: Arrangement.Vertical,
-    onFolderClick: (AppFolder, Float) -> Unit,
-    modifier: Modifier = Modifier,
-    shouldExpand: Boolean = false
+    columnConfig: ContainerColumnConfig,
+    modifier: Modifier = Modifier
 ) {
     val actions = LocalHomeActions.current
     val uiState = LocalHomeUiState.current
@@ -198,12 +209,12 @@ private fun ContainerColumn(
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = verticalArrangement,
+        verticalArrangement = columnConfig.verticalArrangement,
         modifier = Modifier
             .clip(RoundedCornerShape(AureoleTheme.dimens.cornerRadius))
-            .then(if (shouldExpand) Modifier.fillMaxSize() else Modifier)
+            .then(if (columnConfig.shouldExpand) Modifier.fillMaxSize() else Modifier)
             .then(modifier)
-            .background(backgroundColor)
+            .background(columnConfig.backgroundColor)
             .combinedClickable(
                 interactionSource = remember { MutableInteractionSource() },
                 indication = null,
@@ -236,7 +247,7 @@ private fun ContainerColumn(
                                     panelId = config.panelId,
                                     displayAsGrid = config.isGridFolderEnabled || f.displayAsGrid
                                 )
-                                onFolderClick(updatedFolder, y)
+                                columnConfig.onFolderClick(updatedFolder, y)
                             },
                             onLongClick = {
                                 actions.onOpenContainerFolderBottomSheet(
@@ -272,11 +283,8 @@ private fun ContainerColumn(
 @Composable
 private fun ContainerRow(
     config: ContainerConfig,
-    backgroundColor: Color,
-    horizontalArrangement: Arrangement.Horizontal,
-    onFolderClick: (AppFolder, Float) -> Unit,
-    modifier: Modifier = Modifier,
-    shouldExpand: Boolean = false
+    rowConfig: ContainerRowConfig,
+    modifier: Modifier = Modifier
 ) {
     val actions = LocalHomeActions.current
     val uiState = LocalHomeUiState.current
@@ -308,12 +316,12 @@ private fun ContainerRow(
 
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = horizontalArrangement,
+        horizontalArrangement = rowConfig.horizontalArrangement,
         modifier = Modifier
             .clip(RoundedCornerShape(AureoleTheme.dimens.cornerRadius))
-            .then(if (shouldExpand) Modifier.fillMaxSize() else Modifier)
+            .then(if (rowConfig.shouldExpand) Modifier.fillMaxSize() else Modifier)
             .then(modifier)
-            .background(backgroundColor)
+            .background(rowConfig.backgroundColor)
             .combinedClickable(
                 interactionSource = remember { MutableInteractionSource() },
                 indication = null,
@@ -347,7 +355,7 @@ private fun ContainerRow(
                                         panelId = config.panelId,
                                         displayAsGrid = config.isGridFolderEnabled || f.displayAsGrid
                                     )
-                                    onFolderClick(updatedFolder, y)
+                                    rowConfig.onFolderClick(updatedFolder, y)
                                 },
                                 onLongClick = {
                                     actions.onOpenContainerFolderBottomSheet(
@@ -383,25 +391,6 @@ private fun ContainerRow(
                     isBackgroundEnabled = config.isBackgroundEnabled
                 )
             }
-        }
-    }
-}
-
-@AureolePreview
-@Composable
-fun ContainerPreview() {
-    val mockFolder = AppFolder(id = "1", name = "Social")
-    val config = ContainerConfig(
-        folders = listOf(mockFolder),
-        openedFolderId = null,
-        showFolderLabels = true
-    )
-    AureoleLauncherTheme {
-        CompositionLocalProvider(LocalHomeUiState provides MainUiState()) {
-            Container(
-                config = config,
-                onFolderClick = { _, _ -> }
-            )
         }
     }
 }
