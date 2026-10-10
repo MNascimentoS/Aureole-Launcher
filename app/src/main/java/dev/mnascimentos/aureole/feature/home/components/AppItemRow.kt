@@ -177,7 +177,9 @@ private fun AppItemRowDropdownMenu(
         if (config.useActionSheet) {
             AppItemBottomSheet(
                 params = AppItemBottomSheetParams(
-                    app = app
+                    app = app,
+                    isFavorite = config.isFavorite,
+                    actions = actions
                 ),
                 onDismiss = onDismiss
             )
