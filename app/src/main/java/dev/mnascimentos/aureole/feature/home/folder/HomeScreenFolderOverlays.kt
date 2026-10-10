@@ -57,7 +57,11 @@ fun HomeScreenFolderOverlays(
     CreateFolderOverlay(
         isVisible = uiState.isCreateFolderDialogVisible,
         onCloseFolder = { actions.onFolderIntent(FolderViewIntent.CloseFolder) },
-        onSubmitName = { folderName -> actions.onFolderIntent(FolderViewIntent.SubmitFolderName(folderName)) }
+        onSubmitName = { folderName, icon ->
+            actions.onFolderIntent(
+                FolderViewIntent.SubmitFolderName(folderName, icon)
+            )
+        }
     )
 
     OpenedFolderOverlay(
@@ -154,7 +158,7 @@ private fun HomeScreenBottomSheetOverlays(
 private fun CreateFolderOverlay(
     isVisible: Boolean,
     onCloseFolder: () -> Unit,
-    onSubmitName: (String) -> Unit
+    onSubmitName: (String, String?) -> Unit
 ) {
     if (isVisible) {
         CreateFolderDialog(

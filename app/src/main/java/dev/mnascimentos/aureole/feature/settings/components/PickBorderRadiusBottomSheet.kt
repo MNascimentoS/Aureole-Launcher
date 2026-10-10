@@ -70,13 +70,15 @@ fun PickBorderRadiusBottomSheet(
 
             Spacer(modifier = Modifier.height(AureoleDS.dimens.medium))
 
-            LazyColumn {
-                items(BORDER_RADIUS_OPTIONS) { option ->
-                    BorderRadiusOptionItem(
-                        option = option,
-                        isSelected = option.radiusDp == selectedRadiusDp,
-                        onSelected = { onRadiusSelected(option.radiusDp) },
-                    )
+            Box(modifier = Modifier.weight(1f, fill = false)) {
+                LazyColumn {
+                    items(BORDER_RADIUS_OPTIONS) { option ->
+                        BorderRadiusOptionItem(
+                            option = option,
+                            isSelected = option.radiusDp == selectedRadiusDp,
+                            onSelected = { onRadiusSelected(option.radiusDp) },
+                        )
+                    }
                 }
             }
         }

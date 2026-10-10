@@ -13,9 +13,71 @@ object ReleaseNotesRepository {
 
     fun getReleaseNotes(): List<ReleaseNoteVersion> {
         return listOf(
+            getVersion0513(),
             getVersion0313(),
             getVersion0213(),
             getVersion0113()
+        )
+    }
+
+    private fun getVersion0513(): ReleaseNoteVersion {
+        return ReleaseNoteVersion(
+            versionName = "0.5.13",
+            releaseDate = "Março 2025",
+            isCurrent = true,
+            sections = listOf(
+                ReleaseNoteSection(
+                    title = "Novidades & Recursos",
+                    items = listOf(
+                        ReleaseNoteItem(
+                            title = "Novo Diálogo de Gerenciamento de Pastas",
+                            description = "Formulário renovado para criação e edição de pastas, " +
+                                "com interface mais limpa e suporte a ícones atualizados.",
+                            type = ReleaseNoteType.FEATURE
+                        )
+                    )
+                ),
+                ReleaseNoteSection(
+                    title = "Melhorias de Interface & Experiência",
+                    items = listOf(
+                        ReleaseNoteItem(
+                            title = "Navegação e Scroll Fluido em Bottom Sheets",
+                            description = "Aprimoramento no scroll aninhado e remoção de travamentos " +
+                                "nas telas de seleção de fonte, bordas e paletas.",
+                            type = ReleaseNoteType.IMPROVEMENT
+                        ),
+                        ReleaseNoteItem(
+                            title = "Ajustes de Layout e Botões de Escolha",
+                            description = "Melhorias no espaçamento, padding e quebra de texto " +
+                                "nos botões do painel de edição do relógio.",
+                            type = ReleaseNoteType.IMPROVEMENT
+                        ),
+                        ReleaseNoteItem(
+                            title = "Preservação da Paleta de Cores do Tema",
+                            description = "Maior consistência ao aplicar novos temas e gerenciamento " +
+                                "do papel de parede dinâmico.",
+                            type = ReleaseNoteType.IMPROVEMENT
+                        )
+                    )
+                ),
+                ReleaseNoteSection(
+                    title = "Correções & Estabilidade",
+                    items = listOf(
+                        ReleaseNoteItem(
+                            title = "Correção no Scroll Aninhado",
+                            description = "Eliminação do travamento de gestos entre o conteúdo interno " +
+                                "e o encerramento das Bottom Sheets.",
+                            type = ReleaseNoteType.FIX
+                        ),
+                        ReleaseNoteItem(
+                            title = "Formatadores do Relógio",
+                            description = "Restauração da formatação correta de hora e minutos " +
+                                "no componente de relógio.",
+                            type = ReleaseNoteType.FIX
+                        )
+                    )
+                )
+            )
         )
     }
 
@@ -23,7 +85,7 @@ object ReleaseNotesRepository {
         return ReleaseNoteVersion(
             versionName = "0.3.13",
             releaseDate = "Março 2025",
-            isCurrent = true,
+            isCurrent = false,
             sections = listOf(
                 ReleaseNoteSection(
                     title = "Novidades & Recursos",

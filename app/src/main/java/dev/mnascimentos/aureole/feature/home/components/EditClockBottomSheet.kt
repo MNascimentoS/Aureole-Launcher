@@ -122,14 +122,14 @@ fun EditClockBottomSheet(
                 )
             }
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(10.dp))
 
             // 1. Clock Layout / Style
             SectionHeader(title = "Estilo do Layout")
             FlowRow(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp)
+                verticalArrangement = Arrangement.spacedBy((-8).dp)
             ) {
                 LayoutChip(
                     label = "Saudação Diária",
@@ -178,7 +178,7 @@ fun EditClockBottomSheet(
                 )
             }
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(10.dp))
 
             // 2. Alignment
             SectionHeader(title = "Alinhamento")
@@ -206,7 +206,7 @@ fun EditClockBottomSheet(
                 )
             }
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(10.dp))
 
             // 3. Text Color
             SectionHeader(title = "Cor do Texto")
@@ -225,14 +225,14 @@ fun EditClockBottomSheet(
                 }
             }
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(10.dp))
 
             // 4. Font Style
             SectionHeader(title = "Estilo da Fonte")
             FlowRow(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp)
+                verticalArrangement = Arrangement.spacedBy((-8).dp)
             ) {
                 LayoutChip(
                     label = "Padrão",
@@ -261,7 +261,7 @@ fun EditClockBottomSheet(
                 )
             }
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(10.dp))
 
             // 5. Time & Date Format
             SectionHeader(title = "Formato de Hora e Data")
@@ -306,7 +306,7 @@ fun EditClockBottomSheet(
             FlowRow(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp)
+                verticalArrangement = Arrangement.spacedBy((-8).dp)
             ) {
                 LayoutChip(
                     label = "Completo (sexta, 9 out)",
@@ -330,7 +330,7 @@ fun EditClockBottomSheet(
                 )
             }
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(10.dp))
 
             // 6. Background Options
             SectionHeader(title = "Fundo do Cartão")
@@ -415,7 +415,7 @@ private fun SectionHeader(title: String) {
         style = AureoleTheme.typography.titleMedium,
         fontWeight = FontWeight.SemiBold,
         color = AureoleTheme.colors.onSurfaceHigh,
-        modifier = Modifier.padding(bottom = 8.dp)
+        modifier = Modifier.padding(bottom = 4.dp)
     )
 }
 

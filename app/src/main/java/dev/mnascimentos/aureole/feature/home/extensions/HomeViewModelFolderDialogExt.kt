@@ -12,9 +12,9 @@ fun HomeViewModel.setAddAppToFolderDialogVisible(visible: Boolean) {
     updateUiState { it.copy(isAddAppToFolderDialogVisible = visible) }
 }
 
-internal suspend fun HomeViewModel.createNewFolder(name: String) {
+internal suspend fun HomeViewModel.createNewFolder(name: String, icon: String? = null) {
     val targetPanelId = uiState.value.targetPanelIdForFolder
-    val newFolder = AppFolder(name = name, panelId = targetPanelId)
+    val newFolder = AppFolder(name = name, icon = icon, panelId = targetPanelId)
 
     if (targetPanelId != null) {
         containerRepository.addFolderToPanel(targetPanelId, newFolder)

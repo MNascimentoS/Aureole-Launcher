@@ -3,7 +3,6 @@ package dev.mnascimentos.aureole.feature.settings.components
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -37,14 +36,13 @@ fun SettingsBottomSheet(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .fillMaxHeight(0.85f)
                 .padding(horizontal = AureoleDS.dimens.xLarge, vertical = AureoleDS.dimens.medium),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             AureoleText(
                 text = title,
-                style = AureoleTheme.typography.titleLarge,
-                fontWeight = FontWeight.Medium,
+                style = AureoleTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold,
                 color = AureoleTheme.colors.onSurfaceMedium,
                 textAlign = TextAlign.Center,
                 modifier = Modifier.fillMaxWidth()
@@ -55,7 +53,7 @@ fun SettingsBottomSheet(
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .weight(1f)
+                    .weight(1f, fill = false)
             ) {
                 content()
             }
