@@ -50,13 +50,22 @@ fun FavoriteAppsDialogScreenshotTest() {
 @Composable
 fun EditContainerDialogScreenshotTest() {
     val sampleData = createSampleHomeData()
-    val item = LauncherItemState(
-        id = "item_1",
+    val childItem = LauncherItemState(
+        id = "child_1",
         type = LauncherItemType.APPS_LIST,
         col = 0,
         row = 0,
         colSpan = 2,
         rowSpan = 2
+    )
+    val item = LauncherItemState(
+        id = "item_1",
+        type = LauncherItemType.SCROLL_VIEW,
+        col = 0,
+        row = 0,
+        colSpan = 4,
+        rowSpan = 4,
+        children = listOf(childItem)
     )
     AureoleLauncherTheme {
         CompositionLocalProvider(

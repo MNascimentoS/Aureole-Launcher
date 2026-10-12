@@ -11,9 +11,13 @@ import dev.mnascimentos.aureole.feature.home.HomeViewModel
 import dev.mnascimentos.aureole.feature.home.extensions.GridItemSpec
 import dev.mnascimentos.aureole.feature.home.extensions.addGridItem
 import dev.mnascimentos.aureole.feature.home.extensions.cancelGridEditMode
+import dev.mnascimentos.aureole.feature.home.extensions.closeContainerAppBottomSheet
+import dev.mnascimentos.aureole.feature.home.extensions.closeContainerFolderBottomSheet
 import dev.mnascimentos.aureole.feature.home.extensions.closeEditClockBottomSheet
 import dev.mnascimentos.aureole.feature.home.extensions.closeEditContainerDialog
+import dev.mnascimentos.aureole.feature.home.extensions.closeFolderAppBottomSheet
 import dev.mnascimentos.aureole.feature.home.extensions.closeWidgetPopup
+import dev.mnascimentos.aureole.feature.home.extensions.closeWidgetStackBottomSheet
 import dev.mnascimentos.aureole.feature.home.extensions.deleteContainerInstance
 import dev.mnascimentos.aureole.feature.home.extensions.deleteGridItem
 import dev.mnascimentos.aureole.feature.home.extensions.dismissGridError
@@ -23,9 +27,14 @@ import dev.mnascimentos.aureole.feature.home.extensions.moveGridItem
 import dev.mnascimentos.aureole.feature.home.extensions.onFolderIntent
 import dev.mnascimentos.aureole.feature.home.extensions.onSearchQueryChanged
 import dev.mnascimentos.aureole.feature.home.extensions.openAddContainerForParent
+import dev.mnascimentos.aureole.feature.home.extensions.openContainerAppBottomSheet
+import dev.mnascimentos.aureole.feature.home.extensions.openContainerFolderBottomSheet
 import dev.mnascimentos.aureole.feature.home.extensions.openEditClockBottomSheet
 import dev.mnascimentos.aureole.feature.home.extensions.openEditContainerDialog
+import dev.mnascimentos.aureole.feature.home.extensions.openEditFolderForFolder
+import dev.mnascimentos.aureole.feature.home.extensions.openFolderAppBottomSheet
 import dev.mnascimentos.aureole.feature.home.extensions.openWidgetPopup
+import dev.mnascimentos.aureole.feature.home.extensions.openWidgetStackBottomSheet
 import dev.mnascimentos.aureole.feature.home.extensions.removeAppFromContainer
 import dev.mnascimentos.aureole.feature.home.extensions.removeAppFromFolder
 import dev.mnascimentos.aureole.feature.home.extensions.removeChildFromScrollView
@@ -49,6 +58,7 @@ import dev.mnascimentos.aureole.feature.home.extensions.setWidgetRowHeight
 import dev.mnascimentos.aureole.feature.home.extensions.toggleClockBackground
 import dev.mnascimentos.aureole.feature.home.extensions.toggleFavorite
 import dev.mnascimentos.aureole.feature.home.extensions.toggleShowAllAppsOnHome
+import dev.mnascimentos.aureole.feature.home.extensions.toggleWidgetStackDots
 import dev.mnascimentos.aureole.feature.home.extensions.updateClockAlignment
 import dev.mnascimentos.aureole.feature.home.extensions.updateClockBackgroundColor
 import dev.mnascimentos.aureole.feature.home.extensions.updateClockCustomGreeting
@@ -107,7 +117,7 @@ class HomeActionsFactory(
     }
 
     private fun attachGridActions(base: HomeScreenActions): HomeScreenActions {
-        return base.copy(
+        val gridBase = base.copy(
             onEnterGridEditMode = { viewModel.enterGridEditMode() },
             onCancelGridEditMode = { viewModel.cancelGridEditMode() },
             onSaveGridEditMode = { viewModel.saveGridEditMode() },
@@ -129,36 +139,29 @@ class HomeActionsFactory(
             onRemoveChildFromScrollView = { pId, cId -> viewModel.removeChildFromScrollView(pId, cId) },
             onMoveChildInScrollView = { pId, cId, moveUp -> viewModel.moveChildInScrollView(pId, cId, moveUp) },
             onResizeChildInScrollView = { pId, cId, cSpan, rSpan ->
-                viewModel.resizeChildInScrollView(
-                    pId,
-                    cId,
-                    cSpan,
-                    rSpan
-                )
+                viewModel.resizeChildInScrollView(pId, cId, cSpan, rSpan)
             },
             onOpenAddContainerForParent = { pId -> viewModel.openAddContainerForParent(pId) },
             onOpenEditContainerDialog = { id -> viewModel.openEditContainerDialog(id) },
             onCloseEditContainerDialog = { viewModel.closeEditContainerDialog() },
             onSaveContainerModel = { model -> viewModel.saveContainerModel(model) },
-            onDeleteContainerInstance = { id -> viewModel.deleteContainerInstance(id) },
+            onDeleteContainerInstance = { id -> viewModel.deleteContainerInstance(id) }
+        )
+        return attachContainerAndSheetActions(gridBase)
+    }
 
-            // Contextual Bottom Sheets
+    private fun attachContainerAndSheetActions(base: HomeScreenActions): HomeScreenActions {
+        return base.copy(
             onOpenContainerAppBottomSheet = { app, panelId -> viewModel.openContainerAppBottomSheet(app, panelId) },
             onCloseContainerAppBottomSheet = { viewModel.closeContainerAppBottomSheet() },
             onOpenContainerFolderBottomSheet = { folder, panelId ->
-                viewModel.openContainerFolderBottomSheet(
-                    folder,
-                    panelId
-                )
+                viewModel.openContainerFolderBottomSheet(folder, panelId)
             },
             onCloseContainerFolderBottomSheet = { viewModel.closeContainerFolderBottomSheet() },
             onOpenFolderAppBottomSheet = { app, folder -> viewModel.openFolderAppBottomSheet(app, folder) },
             onCloseFolderAppBottomSheet = { viewModel.closeFolderAppBottomSheet() },
             onOpenWidgetStackBottomSheet = { widgetId, stackId ->
-                viewModel.openWidgetStackBottomSheet(
-                    widgetId,
-                    stackId
-                )
+                viewModel.openWidgetStackBottomSheet(widgetId, stackId)
             },
             onCloseWidgetStackBottomSheet = { viewModel.closeWidgetStackBottomSheet() },
             onToggleWidgetStackDots = { stackId -> viewModel.toggleWidgetStackDots(stackId) },
@@ -167,8 +170,6 @@ class HomeActionsFactory(
             onOpenEditFolderForFolder = { folder -> viewModel.openEditFolderForFolder(folder) },
             onOpenCustomizeBottomSheet = { viewModel.setShowCustomizeBottomSheet(true) },
             onCloseCustomizeBottomSheet = { viewModel.setShowCustomizeBottomSheet(false) },
-
-            // Clock Customization Actions
             onOpenEditClockBottomSheet = { viewModel.openEditClockBottomSheet() },
             onCloseEditClockBottomSheet = { viewModel.closeEditClockBottomSheet() },
             onUpdateClockStyle = { style -> viewModel.updateClockStyle(style) },
@@ -198,11 +199,13 @@ class HomeActionsFactory(
     }
 
     private fun handleDismissUpdateDialog() {
+        viewModel.isUpdateInProgressOrDismissed = true
         viewModel.setShowUpdateAvailableDialog(visible = false)
         viewModel.setShowUpdateDownloadedDialog(visible = false)
     }
 
     private fun createStartUpdateAction(): () -> Unit = {
+        viewModel.isUpdateInProgressOrDismissed = true
         viewModel.setShowUpdateAvailableDialog(visible = false)
         cachedAppUpdateInfo?.let { appUpdateInfo ->
             val updateType = if (appUpdateInfo.isUpdateTypeAllowed(AppUpdateType.FLEXIBLE)) {

@@ -16,7 +16,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
@@ -37,7 +36,7 @@ internal fun SettingsButtonPositionDialog(
     AlertDialog(
         onDismissRequest = onDismiss,
         containerColor = AureoleTheme.colors.surface,
-        shape = RoundedCornerShape(22.dp),
+        shape = RoundedCornerShape(AureoleDS.dimens.radiusLarge),
         title = {
             AureoleText(
                 text = "Posição do Botão de Configurações",
@@ -52,7 +51,7 @@ internal fun SettingsButtonPositionDialog(
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .clip(RoundedCornerShape(12.dp))
+                            .clip(RoundedCornerShape(AureoleDS.dimens.radiusSmall))
                             .clickable { onPositionSelected(value) }
                             .padding(vertical = AureoleDS.dimens.xSmall, horizontal = AureoleDS.dimens.xSmall),
                         verticalAlignment = Alignment.CenterVertically
@@ -93,7 +92,7 @@ internal fun SearchIconPositionDialog(
     AlertDialog(
         onDismissRequest = onDismiss,
         containerColor = AureoleTheme.colors.surface,
-        shape = RoundedCornerShape(22.dp),
+        shape = RoundedCornerShape(AureoleDS.dimens.radiusLarge),
         title = {
             AureoleText(
                 text = "Posição do Ícone de Busca",
@@ -108,7 +107,7 @@ internal fun SearchIconPositionDialog(
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .clip(RoundedCornerShape(12.dp))
+                            .clip(RoundedCornerShape(AureoleDS.dimens.radiusSmall))
                             .clickable { onPositionSelected(value) }
                             .padding(vertical = AureoleDS.dimens.xSmall, horizontal = AureoleDS.dimens.xSmall),
                         verticalAlignment = Alignment.CenterVertically
@@ -152,7 +151,7 @@ internal fun ContainerPositionDialog(
     AlertDialog(
         onDismissRequest = onDismiss,
         containerColor = AureoleTheme.colors.surface,
-        shape = RoundedCornerShape(22.dp),
+        shape = RoundedCornerShape(AureoleDS.dimens.radiusLarge),
         title = {
             AureoleText(
                 text = "Alinhamento do Painel Lateral",
@@ -167,7 +166,7 @@ internal fun ContainerPositionDialog(
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .clip(RoundedCornerShape(12.dp))
+                            .clip(RoundedCornerShape(AureoleDS.dimens.radiusSmall))
                             .clickable { onPositionSelected(value) }
                             .padding(vertical = AureoleDS.dimens.xSmall, horizontal = AureoleDS.dimens.xSmall),
                         verticalAlignment = Alignment.CenterVertically

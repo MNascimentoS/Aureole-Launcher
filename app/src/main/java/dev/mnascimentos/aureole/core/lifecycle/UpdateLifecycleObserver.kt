@@ -16,8 +16,18 @@ class UpdateLifecycleObserver(
 ) : DefaultLifecycleObserver {
 
     private val installStateUpdatedListener = InstallStateUpdatedListener { state ->
-        if (state.installStatus() == InstallStatus.DOWNLOADED) {
-            viewModel.setShowUpdateDownloadedDialog(visible = true)
+        when (state.installStatus()) {
+            InstallStatus.DOWNLOADING,
+            InstallStatus.PENDING,
+            InstallStatus.INSTALLING -> {
+                viewModel.isUpdateInProgressOrDismissed = true
+                viewModel.setShowUpdateAvailableDialog(visible = false)
+            }
+            InstallStatus.DOWNLOADED -> {
+                viewModel.setShowUpdateAvailableDialog(visible = false)
+                viewModel.setShowUpdateDownloadedDialog(visible = true)
+            }
+            else -> {}
         }
     }
 

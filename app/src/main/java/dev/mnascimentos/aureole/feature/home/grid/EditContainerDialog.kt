@@ -63,7 +63,7 @@ fun EditGridItemDialog(
             modifier = modifier
                 .fillMaxWidth()
                 .verticalScroll(rememberScrollState()),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+            verticalArrangement = Arrangement.spacedBy(10.dp)
         ) {
             Box(
                 modifier = Modifier
@@ -92,8 +92,6 @@ fun EditGridItemDialog(
             if (item.type == LauncherItemType.SCROLL_VIEW) {
                 EditDialogScrollViewSection(item = item, actions = actions, onDismissRequest = onDismissRequest)
             }
-
-            Spacer(modifier = Modifier.height(4.dp))
 
             EditDialogDeleteButtonRow(
                 onDelete = {
@@ -282,83 +280,88 @@ private fun EditDialogScrollViewSection(
     actions: HomeScreenActions,
     onDismissRequest: () -> Unit
 ) {
-    ScrollViewOrientationSelector(item = item, actions = actions)
-
-    Spacer(modifier = Modifier.height(10.dp))
-
-    AureoleText(
-        text = "Componentes Filhos (${item.safeChildren.size})",
-        style = AureoleTheme.typography.titleMedium,
-        fontWeight = FontWeight.SemiBold,
-        color = AureoleTheme.colors.onSurfaceHigh
-    )
-
-    Spacer(modifier = Modifier.height(8.dp))
-
-    if (item.safeChildren.isEmpty()) {
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .clip(RoundedCornerShape(14.dp))
-                .background(AureoleTheme.colors.surfaceVariant.copy(alpha = 0.25f))
-                .padding(16.dp),
-            contentAlignment = Alignment.Center
-        ) {
-            AureoleText(
-                text = "Nenhum componente adicionado ainda.",
-                style = AureoleTheme.typography.bodyMedium,
-                color = AureoleTheme.colors.onSurfaceMedium
-            )
-        }
-    } else {
-        val isVertical = item.safeScrollOrientation == ScrollOrientation.VERTICAL
-        val totalChildren = item.safeChildren.size
-        Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
-            item.safeChildren.forEachIndexed { index, child ->
-                ScrollViewChildItemCard(
-                    parentId = item.id,
-                    child = child,
-                    childIndex = index,
-                    totalChildren = totalChildren,
-                    isVertical = isVertical,
-                    actions = actions,
-                    onDismissRequest = onDismissRequest
-                )
-            }
-        }
-    }
-
-    Spacer(modifier = Modifier.height(10.dp))
-
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clip(RoundedCornerShape(14.dp))
-            .background(AureoleTheme.colors.surfaceVariant)
-            .clickable { actions.onOpenAddContainerForParent(item.id) }
-            .padding(horizontal = 14.dp, vertical = 12.dp),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.Center
+    Column(
+        modifier = Modifier.fillMaxWidth(),
+        verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        Box(
-            modifier = Modifier
-                .size(32.dp)
-                .clip(RoundedCornerShape(8.dp))
-                .background(AureoleTheme.colors.surface.copy(alpha = 0.6f)),
-            contentAlignment = Alignment.Center
-        ) {
-            AureoleDS.icons.Add(
-                tint = AureoleTheme.colors.onSurfaceHigh,
-                modifier = Modifier.size(18.dp)
-            )
-        }
-        Spacer(modifier = Modifier.width(10.dp))
+        ScrollViewOrientationSelector(item = item, actions = actions)
+
+        Spacer(modifier = Modifier.height(2.dp))
+
         AureoleText(
-            text = "Adicionar Componente",
-            style = AureoleTheme.typography.bodyLarge,
+            text = "Componentes Filhos (${item.safeChildren.size})",
+            style = AureoleTheme.typography.titleMedium,
             fontWeight = FontWeight.SemiBold,
             color = AureoleTheme.colors.onSurfaceHigh
         )
+
+        if (item.safeChildren.isEmpty()) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(14.dp))
+                    .background(AureoleTheme.colors.surfaceVariant.copy(alpha = 0.25f))
+                    .padding(16.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                AureoleText(
+                    text = "Nenhum componente adicionado ainda.",
+                    style = AureoleTheme.typography.bodyMedium,
+                    color = AureoleTheme.colors.onSurfaceMedium
+                )
+            }
+        } else {
+            val isVertical = item.safeScrollOrientation == ScrollOrientation.VERTICAL
+            val totalChildren = item.safeChildren.size
+            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                item.safeChildren.forEachIndexed { index, child ->
+                    ScrollViewChildItemCard(
+                        params = ScrollViewChildParams(
+                            parentId = item.id,
+                            child = child,
+                            childIndex = index,
+                            totalChildren = totalChildren,
+                            isVertical = isVertical
+                        ),
+                        actions = actions,
+                        onDismissRequest = onDismissRequest
+                    )
+                }
+            }
+        }
+
+        Spacer(modifier = Modifier.height(2.dp))
+
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(14.dp))
+                .background(AureoleTheme.colors.surfaceVariant)
+                .clickable { actions.onOpenAddContainerForParent(item.id) }
+                .padding(horizontal = 14.dp, vertical = 12.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Center
+        ) {
+            Box(
+                modifier = Modifier
+                    .size(32.dp)
+                    .clip(RoundedCornerShape(8.dp))
+                    .background(AureoleTheme.colors.surface.copy(alpha = 0.6f)),
+                contentAlignment = Alignment.Center
+            ) {
+                AureoleDS.icons.Add(
+                    tint = AureoleTheme.colors.onSurfaceHigh,
+                    modifier = Modifier.size(18.dp)
+                )
+            }
+            Spacer(modifier = Modifier.width(10.dp))
+            AureoleText(
+                text = "Adicionar Componente",
+                style = AureoleTheme.typography.bodyLarge,
+                fontWeight = FontWeight.SemiBold,
+                color = AureoleTheme.colors.onSurfaceHigh
+            )
+        }
     }
 }
 
@@ -420,20 +423,22 @@ private fun OrientationOptionCard(
             .clip(RoundedCornerShape(12.dp))
             .background(bgColor)
             .clickable(onClick = onClick)
-            .padding(horizontal = 12.dp, vertical = 12.dp),
+            .padding(horizontal = 8.dp, vertical = 10.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center
     ) {
         RadioButton(
             selected = isSelected,
-            onClick = onClick
+            onClick = null
         )
-        Spacer(modifier = Modifier.width(6.dp))
+        Spacer(modifier = Modifier.width(2.dp))
         AureoleText(
             text = title,
-            style = AureoleTheme.typography.bodyMedium,
+            style = AureoleTheme.typography.labelLarge,
             fontWeight = FontWeight.SemiBold,
-            color = contentColor
+            color = contentColor,
+            maxLines = 1,
+            softWrap = false
         )
     }
 }

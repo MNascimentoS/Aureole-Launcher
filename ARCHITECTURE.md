@@ -58,7 +58,7 @@ feature/<nome_da_feature>/
 ## 🎨 Aureole Design System e Componentes Reutilizáveis (`/composable`)
 
 - **Referência do Design System:** As diretrizes completas de UI/UX, integração com Figma, tokens de cor (`AureoleColors`), tipografia (`AureoleTypography`), dimensões (`AureoleDimens`) e catálogo de ícones (`AureoleDS.icons`) estão documentadas em `.gemini/aureoleo_design_system.md`.
-- **Design Tokens:** É proibido utilizar valores numéricos de dimensões ou cores em código hexadecimal brutos nas telas. Utilize sempre os tokens do tema via `AureoleDS.colors`, `AureoleDS.dimens` (ex: `AureoleDS.dimens.medium`, `AureoleDS.dimens.xSmall`) e ícones de `AureoleDS.icons`.
+- **Design Tokens:** É proibido utilizar valores numéricos de dimensões ou cores em código hexadecimal brutos nas telas. Utilize sempre os tokens do tema via `AureoleDS.colors`, `AureoleDS.dimens` (ex: `AureoleDS.dimens.medium`, `AureoleDS.dimens.xSmall`, `AureoleDS.dimens.iconMedium`, `AureoleDS.dimens.radiusSmall`) e ícones de `AureoleDS.icons`. Valores hardcoded em `dp` só são permitidos para animações, offsets, elevations, ou dimensões restritas de layout que não se enquadram nas escalas semânticas de Spacing/Icons/Radius.
 - **Pacote `composable/`:** O pacote raiz `composable/` atua como o nosso repositório de componentes visuais do Design System interno.
 - **Estrutura de `core/designsystem/`:** Organizado nos seguintes subpacotes:
   - `theme/`: Configuração base do tema Compose (`AureoleTheme.kt`, `AureoleColor.kt`, `AureoleTypography.kt`, `AureoleDimens.kt`)

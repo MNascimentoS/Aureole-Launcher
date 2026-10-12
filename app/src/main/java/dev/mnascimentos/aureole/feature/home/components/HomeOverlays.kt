@@ -25,6 +25,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.PointerInputChange
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.feature.home.components.model.ScrubberCallbacks
@@ -39,6 +40,8 @@ import kotlin.math.abs
 private const val EDGE_GESTURE_START_WIDTH_DP = 32
 private const val EDGE_INTENT_THRESHOLD_DP = 28
 private const val VERTICAL_INTENT_THRESHOLD_DP = 36
+private const val SCRUBBER_TOP_RATIO = 1f / 3f
+private const val VERTICAL_GESTURE_RATIO = 1.5f
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
@@ -177,17 +180,7 @@ fun Modifier.homeDragGestures(
         onDragStart = { offset ->
             totalDragOffset = Offset.Zero
             hasTriggeredGesture = false
-
-            if (!params.isAlphabetScrubberDisabled) {
-                val edgeThreshold = with(params.density) { EDGE_GESTURE_START_WIDTH_DP.dp.toPx() }
-                dragStartedOnEdge = if (params.isLeftHandedMode) {
-                    offset.x < edgeThreshold
-                } else {
-                    offset.x > params.screenWidthPx - edgeThreshold
-                }
-            } else {
-                dragStartedOnEdge = false
-            }
+            dragStartedOnEdge = handleEdgeDragStart(offset, params)
         },
         onDragEnd = {
             params.onExternalTouchYChange(-1f)
@@ -205,45 +198,96 @@ fun Modifier.homeDragGestures(
             val totalDy = totalDragOffset.y
 
             if (dragStartedOnEdge) {
-                if (!hasTriggeredGesture) {
-                    val inwardDrag = if (params.isLeftHandedMode) totalDx else -totalDx
-                    val edgeIntentThresholdPx = with(params.density) { EDGE_INTENT_THRESHOLD_DP.dp.toPx() }
-
-                    if (inwardDrag > edgeIntentThresholdPx || abs(totalDy) > edgeIntentThresholdPx) {
-                        hasTriggeredGesture = true
-                        if (!params.isAllAppsDrawerOpen) {
-                            params.onAllAppsDrawerOpen()
-                        }
-                    }
-                }
-
-                if (hasTriggeredGesture) {
-                    change.consume()
-                    val scrubberTopYPx = params.screenHeightPx * (1f / 3f)
-                    params.onExternalTouchYChange(change.position.y - scrubberTopYPx)
-                }
-                return@detectDragGestures
-            }
-
-            if (params.isAllAppsDrawerOpen || change.isConsumed) return@detectDragGestures
-
-            if (!hasTriggeredGesture) {
-                val verticalIntentThresholdPx = with(params.density) { VERTICAL_INTENT_THRESHOLD_DP.dp.toPx() }
-                val absX = abs(totalDx)
-                val absY = abs(totalDy)
-
-                if (absY > verticalIntentThresholdPx && absY > 1.5f * absX) {
-                    hasTriggeredGesture = true
-                    change.consume()
-                    if (totalDy > 0) {
-                        params.onExpandNotificationShade()
-                    } else {
-                        params.onAllAppsDrawerOpen()
-                    }
-                }
+                hasTriggeredGesture = handleEdgeDrag(
+                    change = change,
+                    totalDx = totalDx,
+                    totalDy = totalDy,
+                    hasTriggered = hasTriggeredGesture,
+                    params = params
+                )
             } else {
-                change.consume()
+                hasTriggeredGesture = handleVerticalGesture(
+                    change = change,
+                    totalDx = totalDx,
+                    totalDy = totalDy,
+                    hasTriggered = hasTriggeredGesture,
+                    params = params
+                )
             }
         }
     )
+}
+
+private fun handleEdgeDragStart(
+    offset: Offset,
+    params: HomeDragParams
+): Boolean {
+    if (params.isAlphabetScrubberDisabled) return false
+    val edgeThreshold = with(params.density) { EDGE_GESTURE_START_WIDTH_DP.dp.toPx() }
+    return if (params.isLeftHandedMode) {
+        offset.x < edgeThreshold
+    } else {
+        offset.x > params.screenWidthPx - edgeThreshold
+    }
+}
+
+private fun handleEdgeDrag(
+    change: PointerInputChange,
+    totalDx: Float,
+    totalDy: Float,
+    hasTriggered: Boolean,
+    params: HomeDragParams
+): Boolean {
+    var triggered = hasTriggered
+    if (!triggered) {
+        val inwardDrag = if (params.isLeftHandedMode) totalDx else -totalDx
+        val edgeIntentThresholdPx = with(params.density) { EDGE_INTENT_THRESHOLD_DP.dp.toPx() }
+
+        if (inwardDrag > edgeIntentThresholdPx || abs(totalDy) > edgeIntentThresholdPx) {
+            triggered = true
+            if (!params.isAllAppsDrawerOpen) {
+                params.onAllAppsDrawerOpen()
+            }
+        }
+    }
+
+    if (triggered) {
+        change.consume()
+        val scrubberTopYPx = params.screenHeightPx * SCRUBBER_TOP_RATIO
+        params.onExternalTouchYChange(change.position.y - scrubberTopYPx)
+    }
+    return triggered
+}
+
+private fun handleVerticalGesture(
+    change: PointerInputChange,
+    totalDx: Float,
+    totalDy: Float,
+    hasTriggered: Boolean,
+    params: HomeDragParams
+): Boolean {
+    if (params.isAllAppsDrawerOpen || change.isConsumed) {
+        return hasTriggered
+    }
+
+    var triggered = hasTriggered
+    if (!triggered) {
+        val verticalIntentThresholdPx = with(params.density) { VERTICAL_INTENT_THRESHOLD_DP.dp.toPx() }
+        val absX = abs(totalDx)
+        val absY = abs(totalDy)
+
+        if (absY > verticalIntentThresholdPx && absY > VERTICAL_GESTURE_RATIO * absX) {
+            triggered = true
+            change.consume()
+            if (totalDy > 0) {
+                params.onExpandNotificationShade()
+            } else {
+                params.onAllAppsDrawerOpen()
+            }
+        }
+    } else {
+        change.consume()
+    }
+
+    return triggered
 }

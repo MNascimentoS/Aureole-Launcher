@@ -4,8 +4,6 @@ import android.app.Application
 import android.content.ComponentName
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import dev.mnascimentos.aureole.core.data.model.AppFolder
-import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.data.repository.AppRepository
 import dev.mnascimentos.aureole.core.data.repository.ContainerRepository
 import dev.mnascimentos.aureole.core.data.repository.FavoriteContainerRepository
@@ -16,11 +14,7 @@ import dev.mnascimentos.aureole.feature.home.extensions.loadContainers
 import dev.mnascimentos.aureole.feature.home.extensions.loadGridItems
 import dev.mnascimentos.aureole.feature.home.extensions.loadWidgetSettings
 import dev.mnascimentos.aureole.feature.home.extensions.updateAppsState
-import dev.mnascimentos.aureole.feature.home.model.ContainerAppBottomSheetState
-import dev.mnascimentos.aureole.feature.home.model.ContainerFolderBottomSheetState
-import dev.mnascimentos.aureole.feature.home.model.FolderAppBottomSheetState
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
-import dev.mnascimentos.aureole.feature.home.model.WidgetStackBottomSheetState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -45,6 +39,11 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
 
     val pendingWidgetId: Int
         get() = _uiState.value.pendingWidgetId
+
+    internal var activeVersionCode: Int = 0
+
+    var isUpdateInProgressOrDismissed: Boolean = false
+        internal set
 
     init {
         loadSettings()
@@ -136,73 +135,5 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
 
     fun setShowUpdateDownloadedDialog(visible: Boolean) {
         _uiState.update { it.copy(showUpdateDownloadedDialog = visible) }
-    }
-
-    internal var activeVersionCode: Int = 0
-
-    fun checkReleaseNotes(currentVersionCode: Int, versionName: String) {
-        activeVersionCode = currentVersionCode
-        val lastSeen = settingsRepository.lastSeenVersionCode
-        _uiState.update { it.copy(currentVersionName = versionName) }
-        if (lastSeen < currentVersionCode) {
-            _uiState.update { it.copy(showReleaseNotesBottomSheet = true) }
-            settingsRepository.lastSeenVersionCode = currentVersionCode
-        }
-    }
-
-    fun dismissReleaseNotes(versionCode: Int = activeVersionCode) {
-        if (versionCode > 0) {
-            settingsRepository.lastSeenVersionCode = versionCode
-        }
-        _uiState.update { it.copy(showReleaseNotesBottomSheet = false) }
-    }
-
-    fun openReleaseNotes() {
-        _uiState.update { it.copy(showReleaseNotesBottomSheet = true) }
-    }
-
-    fun openContainerAppBottomSheet(app: AppInfo, panelId: String) {
-        _uiState.update { it.copy(activeContainerAppBottomSheet = ContainerAppBottomSheetState(app, panelId)) }
-    }
-
-    fun closeContainerAppBottomSheet() {
-        _uiState.update { it.copy(activeContainerAppBottomSheet = null) }
-    }
-
-    fun openContainerFolderBottomSheet(folder: AppFolder, panelId: String) {
-        _uiState.update { it.copy(activeContainerFolderBottomSheet = ContainerFolderBottomSheetState(folder, panelId)) }
-    }
-
-    fun closeContainerFolderBottomSheet() {
-        _uiState.update { it.copy(activeContainerFolderBottomSheet = null) }
-    }
-
-    fun openFolderAppBottomSheet(app: AppInfo, folder: AppFolder) {
-        _uiState.update { it.copy(activeFolderAppBottomSheet = FolderAppBottomSheetState(app, folder)) }
-    }
-
-    fun closeFolderAppBottomSheet() {
-        _uiState.update { it.copy(activeFolderAppBottomSheet = null) }
-    }
-
-    fun openWidgetStackBottomSheet(widgetId: Int?, stackId: String) {
-        _uiState.update { it.copy(activeWidgetStackBottomSheet = WidgetStackBottomSheetState(widgetId, stackId)) }
-    }
-
-    fun closeWidgetStackBottomSheet() {
-        _uiState.update { it.copy(activeWidgetStackBottomSheet = null) }
-    }
-
-    fun toggleWidgetStackDots(stackId: String) {
-        val currentMap = _uiState.value.widgetStackDots
-        val currentVal = currentMap[stackId] ?: widgetRepository.getWidgetDotsState(stackId)
-        val newVal = !currentVal
-        val updatedMap = currentMap + (stackId to newVal)
-        _uiState.update { it.copy(widgetStackDots = updatedMap) }
-        widgetRepository.setWidgetDotsState(stackId, newVal)
-    }
-
-    fun openEditFolderForFolder(folder: AppFolder) {
-        _uiState.update { it.copy(activeFolder = folder, isRenameFolderDialogVisible = true) }
     }
 }

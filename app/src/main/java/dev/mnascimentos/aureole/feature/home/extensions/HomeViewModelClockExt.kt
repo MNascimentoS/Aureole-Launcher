@@ -2,14 +2,6 @@ package dev.mnascimentos.aureole.feature.home.extensions
 
 import dev.mnascimentos.aureole.feature.home.HomeViewModel
 
-fun HomeViewModel.openEditClockBottomSheet() {
-    updateUiState { it.copy(showEditClockBottomSheet = true) }
-}
-
-fun HomeViewModel.closeEditClockBottomSheet() {
-    updateUiState { it.copy(showEditClockBottomSheet = false) }
-}
-
 fun HomeViewModel.updateClockStyle(style: String) {
     settingsRepository.clockStyle = style
     updateUiState { it.copy(clockStyle = style) }

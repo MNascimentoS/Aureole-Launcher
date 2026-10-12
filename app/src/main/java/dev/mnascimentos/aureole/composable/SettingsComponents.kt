@@ -22,7 +22,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleTheme
@@ -35,7 +34,7 @@ fun AdvancedIcon(
     Row(
         horizontalArrangement = Arrangement.spacedBy(AureoleDS.dimens.xxxSmall),
         verticalAlignment = Alignment.CenterVertically,
-        modifier = modifier.size(20.dp)
+        modifier = modifier.size(AureoleDS.dimens.iconMedium)
     ) {
         Box(Modifier.size(AureoleDS.dimens.xxSmall).background(tint, CircleShape))
         Box(Modifier.size(AureoleDS.dimens.xxSmall).background(tint, CircleShape))
@@ -65,14 +64,16 @@ fun SettingsMenuItem(
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(16.dp))
+            .clip(RoundedCornerShape(AureoleDS.dimens.radiusMedium))
             .clickable { onClick() }
             .padding(vertical = AureoleDS.dimens.xSmall, horizontal = AureoleDS.dimens.small),
         verticalAlignment = Alignment.CenterVertically
     ) {
         if (leadingContent != null) {
             Box(
-                modifier = Modifier.padding(end = AureoleDS.dimens.large).size(20.dp),
+                modifier = Modifier
+                    .padding(end = AureoleDS.dimens.large)
+                    .size(AureoleDS.dimens.iconMedium),
                 contentAlignment = Alignment.Center
             ) {
                 leadingContent()
@@ -109,14 +110,16 @@ fun SettingsToggleItem(
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(16.dp))
+            .clip(RoundedCornerShape(AureoleDS.dimens.radiusMedium))
             .clickable { onCheckedChange(!checked) }
             .padding(vertical = AureoleDS.dimens.xSmall, horizontal = AureoleDS.dimens.small),
         verticalAlignment = Alignment.CenterVertically
     ) {
         if (leadingContent != null) {
             Box(
-                modifier = Modifier.padding(end = AureoleDS.dimens.large).size(20.dp),
+                modifier = Modifier
+                    .padding(end = AureoleDS.dimens.large)
+                    .size(AureoleDS.dimens.iconMedium),
                 contentAlignment = Alignment.Center
             ) {
                 leadingContent()
@@ -158,14 +161,16 @@ fun SettingsActionItem(
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(16.dp))
+            .clip(RoundedCornerShape(AureoleDS.dimens.radiusMedium))
             .clickable { onClick() }
             .padding(vertical = AureoleDS.dimens.xSmall, horizontal = AureoleDS.dimens.small),
         verticalAlignment = Alignment.CenterVertically
     ) {
         if (leadingContent != null) {
             Box(
-                modifier = Modifier.padding(end = AureoleDS.dimens.large).size(20.dp),
+                modifier = Modifier
+                    .padding(end = AureoleDS.dimens.large)
+                    .size(AureoleDS.dimens.iconMedium),
                 contentAlignment = Alignment.Center
             ) {
                 leadingContent()

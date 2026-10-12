@@ -71,24 +71,44 @@ AureoleDS.colors.surfaceVariant
 ```
 
 ### Design Tokens de Dimensões e Espaçamento (AureoleDimens)
-Os tokens de dimensões e espaçamento do Aureole Launcher seguem a escala baseada nas regras do Figma (grade de 4dp/8dp) para garantir consistência visual em margens, preenchimentos (padding) e arranjos entre componentes:
+Os tokens de dimensões e espaçamento do Aureole Launcher seguem a escala baseada nas regras do Figma para garantir consistência visual em margens, preenchimentos (padding) e arranjos entre componentes:
 
-- `none`: `0.dp`
-- `xxxSmall`: `2.dp`
+**01 & 02. Principais e Composição (Spacings)**
+- `minimal`: `2.dp`
 - `xxSmall`: `4.dp`
 - `xSmall`: `8.dp`
 - `small`: `12.dp`
 - `medium`: `16.dp`
-- `large`: `20.dp`
-- `xLarge`: `24.dp`
-- `xxLarge`: `32.dp`
-- `xxxLarge`: `48.dp`
-- `huge`: `64.dp`
+- `large`: `24.dp`
+- `xLarge`: `32.dp`
+- `xxLarge`: `40.dp`
+
+**03. Ícones**
+- `iconXSmall`: `12.dp`
+- `iconSmall`: `16.dp`
+- `iconMedium`: `20.dp`
+- `iconLarge`: `24.dp`
+- `iconXLarge`: `36.dp`
+- `iconHuge`: `40.dp`
+
+**04. Radius and Borders**
+- `borderMinimal`: `1.dp`
+- `borderMax`: `3.dp`
+- `radiusMinimal`: `4.dp`
+- `radiusXSmall`: `8.dp`
+- `radiusSmall`: `12.dp`
+- `radiusMedium`: `16.dp`
+- `radiusLarge`: `24.dp`
+- `radiusFull`: `100.dp`
+
+> **Regra Obrigatória:** All spacings, paddings, icon sizes, and corner/border radii in Composables MUST reference `AureoleDS.dimens` tokens where semantically appropriate. Hardcoding `dp` values for these properties is prohibited when a matching token exists. Do NOT replace `dp` values if they are used for animation specs, offsets, elevations, blur radii, physics properties, or arbitrary math calculations where a Design System spacing/radius token does not make semantic sense.
 
 Essas dimensões podem ser acessadas via Compose utilizando:
 ```kotlin
 AureoleDS.dimens.medium // 16.dp
 AureoleDS.dimens.xSmall // 8.dp
+AureoleDS.dimens.iconMedium // 20.dp
+AureoleDS.dimens.radiusSmall // 12.dp
 ```
 
 ### Tema Padrão: Frostbite

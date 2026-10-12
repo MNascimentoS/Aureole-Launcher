@@ -7,7 +7,6 @@ import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -19,7 +18,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.graphicsLayer
@@ -114,16 +112,6 @@ fun DynamicGridContainer(
                 ),
                 onDragTargetChange = { activeDragTarget = it },
                 itemContent = itemContent
-            )
-        }
-
-        if (isEditMode) {
-            GridBottomEditControls(
-                onAddContainer = actions.onOpenAddContainerDialog,
-                modifier = Modifier
-                    .align(Alignment.BottomEnd)
-                    .navigationBarsPadding()
-                    .padding(24.dp)
             )
         }
     }
@@ -280,7 +268,25 @@ private fun GridItemCellBox(config: CellBoxConfig) {
                     onResetHeightExtra = config.callbacks.onResetHeight,
                     onResetAllExtra = config.callbacks.onResetAll,
                     onResizeItem = config.actions.onResizeGridItem,
-                    onEditItem = { config.actions.onOpenEditGridItemDialog(item) }
+                    onEditItem = {
+                        when (item.safeType) {
+                            LauncherItemType.CLOCK -> {
+                                config.actions.onOpenEditClockBottomSheet()
+                            }
+                            LauncherItemType.APPS_LIST -> {
+                                config.actions.onOpenFavoritePicker(item.id)
+                            }
+                            LauncherItemType.SHORTCUTS_CONTAINER -> {
+                                config.actions.onOpenEditContainerDialog(item.id)
+                            }
+                            else -> {
+                                config.actions.onOpenEditGridItemDialog(item)
+                            }
+                        }
+                    },
+                    onDeleteItem = {
+                        config.actions.onDeleteGridItem(item.id)
+                    }
                 )
             )
         }
@@ -301,6 +307,11 @@ private fun GridItemEditOverlay(
     Box(
         modifier = Modifier.fillMaxSize().then(blockerModifier)
     ) {
+        DeleteActionHandle(
+            itemId = item.id,
+            onDeleteItem = callbacks.onDeleteItem
+        )
+
         RightEdgeResizeHandle(
             params = params,
             callbacks = ResizeHandleCallbacks(

@@ -54,7 +54,8 @@ data class GridItemEditCallbacks(
     val onResetHeightExtra: () -> Unit,
     val onResetAllExtra: () -> Unit,
     val onResizeItem: (String, Int, Int) -> Unit,
-    val onEditItem: () -> Unit
+    val onEditItem: () -> Unit,
+    val onDeleteItem: () -> Unit
 )
 
 data class GridEditModifierParams(

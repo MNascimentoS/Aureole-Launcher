@@ -3,7 +3,6 @@ package dev.mnascimentos.aureole.feature.settings.components
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -34,34 +33,7 @@ fun SettingsBottomSheet(
     content: @Composable () -> Unit
 ) {
     val sheetContent = @Composable {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .fillMaxHeight(0.85f)
-                .padding(horizontal = AureoleDS.dimens.xLarge, vertical = AureoleDS.dimens.medium),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            AureoleText(
-                text = title,
-                style = AureoleTheme.typography.titleLarge,
-                fontWeight = FontWeight.Medium,
-                color = AureoleTheme.colors.onSurfaceMedium,
-                textAlign = TextAlign.Center,
-                modifier = Modifier.fillMaxWidth()
-            )
-
-            Spacer(modifier = Modifier.height(AureoleDS.dimens.large))
-
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .weight(1f)
-            ) {
-                content()
-            }
-
-            Spacer(modifier = Modifier.height(AureoleDS.dimens.xxLarge))
-        }
+        SettingsBottomSheetLayout(title = title, content = content)
     }
 
     if (LocalInspectionMode.current) {
@@ -97,6 +69,40 @@ fun SettingsBottomSheet(
         ) {
             sheetContent()
         }
+    }
+}
+
+@Composable
+private fun SettingsBottomSheetLayout(
+    title: String,
+    content: @Composable () -> Unit
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = AureoleDS.dimens.xLarge, vertical = AureoleDS.dimens.medium),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        AureoleText(
+            text = title,
+            style = AureoleTheme.typography.titleMedium,
+            fontWeight = FontWeight.Bold,
+            color = AureoleTheme.colors.onSurfaceMedium,
+            textAlign = TextAlign.Center,
+            modifier = Modifier.fillMaxWidth()
+        )
+
+        Spacer(modifier = Modifier.height(AureoleDS.dimens.large))
+
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(1f, fill = false)
+        ) {
+            content()
+        }
+
+        Spacer(modifier = Modifier.height(AureoleDS.dimens.xxLarge))
     }
 }
 
