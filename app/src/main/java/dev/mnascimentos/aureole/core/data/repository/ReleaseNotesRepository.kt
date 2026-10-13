@@ -13,6 +13,7 @@ object ReleaseNotesRepository {
 
     fun getReleaseNotes(): List<ReleaseNoteVersion> {
         return listOf(
+            getVersion0613(),
             getVersion0513(),
             getVersion0313(),
             getVersion0213(),
@@ -20,11 +21,24 @@ object ReleaseNotesRepository {
         )
     }
 
+    private fun getVersion0613(): ReleaseNoteVersion {
+        return ReleaseNoteVersion(
+            versionName = "0.6.13",
+            releaseDate = "Março 2025",
+            isCurrent = true,
+            sections = listOf(
+                createSection0613Features(),
+                createSection0613Improvements(),
+                createSection0613Fixes()
+            )
+        )
+    }
+
     private fun getVersion0513(): ReleaseNoteVersion {
         return ReleaseNoteVersion(
             versionName = "0.5.13",
             releaseDate = "Março 2025",
-            isCurrent = true,
+            isCurrent = false,
             sections = listOf(
                 createSection0513Features(),
                 createSection0513Improvements(),
@@ -111,6 +125,59 @@ object ReleaseNotesRepository {
         )
     }
 }
+
+private fun createSection0613Features() = ReleaseNoteSection(
+    title = "Novidades & Recursos",
+    items = listOf(
+        ReleaseNoteItem(
+            title = "Nova Tela de Edição de Container",
+            description = "Interface de personalização em tela cheia com pré-visualização em tempo real e seções dedicadas para Aparência, Comportamento e Componentes.",
+            type = ReleaseNoteType.FEATURE
+        ),
+        ReleaseNoteItem(
+            title = "Modo de Pastas em Grade (Grid Folders)",
+            description = "Suporte para exibir miniaturas de ícones 2x2 no container e abrir o menu expansível de pastas em formato de grade.",
+            type = ReleaseNoteType.FEATURE
+        )
+    )
+)
+
+private fun createSection0613Improvements() = ReleaseNoteSection(
+    title = "Melhorias de Interface & Experiência",
+    items = listOf(
+        ReleaseNoteItem(
+            title = "Gestos de Navegação do Sistema (Samsung)",
+            description = "Compatibilidade com gestos do sistema em overlays, garantindo o funcionamento perfeito da seta de voltar.",
+            type = ReleaseNoteType.IMPROVEMENT
+        ),
+        ReleaseNoteItem(
+            title = "Ajuste Dinâmico no Container",
+            description = "O botão de adição (+) oculta-se em containers com itens e reaparece automaticamente quando o container fica vazio.",
+            type = ReleaseNoteType.IMPROVEMENT
+        ),
+        ReleaseNoteItem(
+            title = "Novos Ícones & Scrubber Alfabético Otimizado",
+            description = "Ícones temáticos exclusivos para cada menu de configuração e posicionamento aprimorado da barra alfabética lateral.",
+            type = ReleaseNoteType.IMPROVEMENT
+        )
+    )
+)
+
+private fun createSection0613Fixes() = ReleaseNoteSection(
+    title = "Correções & Estabilidade",
+    items = listOf(
+        ReleaseNoteItem(
+            title = "Efeito de Desfoque (Blur) Seletivo",
+            description = "Aplicação do desfoque de fundo exclusivamente no modo de pasta em grade, mantendo o modo padrão limpo e sem blur.",
+            type = ReleaseNoteType.FIX
+        ),
+        ReleaseNoteItem(
+            title = "Persistência do Banco de Dados",
+            description = "Atualização do banco de dados local para salvar e sincronizar preferências do container e componentes filhos.",
+            type = ReleaseNoteType.FIX
+        )
+    )
+)
 
 private fun createSection0513Features() = ReleaseNoteSection(
     title = "Novidades & Recursos",

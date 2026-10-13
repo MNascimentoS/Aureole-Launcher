@@ -8,10 +8,12 @@ import dev.mnascimentos.aureole.feature.home.HomeViewModel
 internal fun HomeViewModel.loadWidgetSettings() {
     val savedIds = widgetRepository.getSavedWidgetIds()
     val savedHeight = widgetRepository.getSavedWidgetRowHeight()
+    val topDots = widgetRepository.getWidgetDotsState("top_widgets")
     updateUiState {
         it.copy(
             topWidgetIds = savedIds,
             widgetRowHeight = savedHeight.dp,
+            widgetStackDots = mapOf("top_widgets" to topDots)
         )
     }
 }
@@ -44,6 +46,7 @@ fun HomeViewModel.addWidgetId(
     }
     if (!hasWidgetContainer) {
         addGridItem(GridItemSpec(type = LauncherItemType.WIDGET_LIST))
+        dismissGridError()
     }
     setIsAddingSingleWidget(false)
 }

@@ -6,18 +6,18 @@ import android.graphics.drawable.Drawable
 data class WidgetAppGroup(
     val appId: String,
     val appName: String,
-    val appIcon: Drawable?,
-    val availableWidgets: List<WidgetVariant>
+    val appIcon: Drawable? = null,
+    val availableWidgets: List<WidgetVariant> = emptyList()
 )
 
 data class WidgetVariant(
     val widgetId: String,
     val title: String,
-    val previewImage: Drawable?,
+    val previewImage: Drawable? = null,
     val previewLayoutRes: Int = 0,
-    val minSpanX: Int,
-    val minSpanY: Int,
-    val providerInfo: AppWidgetProviderInfo
+    val minSpanX: Int = 2,
+    val minSpanY: Int = 2,
+    val providerInfo: AppWidgetProviderInfo? = null
 )
 
 data class WidgetSelectorState(

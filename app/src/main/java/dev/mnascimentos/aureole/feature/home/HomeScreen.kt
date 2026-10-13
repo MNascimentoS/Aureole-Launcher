@@ -35,9 +35,10 @@ import dev.chrisbanes.haze.rememberHazeState
 import dev.mnascimentos.aureole.core.data.model.ContainerModel
 import dev.mnascimentos.aureole.core.data.model.LauncherItemState
 import dev.mnascimentos.aureole.core.data.model.LauncherItemType
+import dev.mnascimentos.aureole.core.designsystem.utils.LocalHazeState
 import dev.mnascimentos.aureole.feature.home.components.CustomizeBottomSheet
 import dev.mnascimentos.aureole.feature.home.components.EditClockBottomSheet
-import dev.mnascimentos.aureole.feature.home.components.EditContainerBottomSheet
+import dev.mnascimentos.aureole.feature.home.components.EditContainerScreen
 import dev.mnascimentos.aureole.feature.home.components.FavoritesListConfig
 import dev.mnascimentos.aureole.feature.home.components.GridItemContent
 import dev.mnascimentos.aureole.feature.home.components.HomeOverlaysContent
@@ -57,7 +58,8 @@ import dev.mnascimentos.aureole.feature.home.model.HomeOverlaysConfig
 import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
 import dev.mnascimentos.aureole.feature.home.model.HomeScreenBodyConfig
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
-import dev.mnascimentos.aureole.feature.home.widget.HomeScreenWidgetOverlays
+import dev.mnascimentos.aureole.feature.home.model.isOverlayActive
+import dev.mnascimentos.aureole.feature.home.widget.EditWidgetGroupScreen
 import dev.mnascimentos.aureole.feature.home.widget.model.StackedWidgetConfig
 
 val LocalHomeUiState = staticCompositionLocalOf<MainUiState> { error("No MainUiState provided") }
@@ -98,9 +100,9 @@ fun HomeScreen(
         )
     )
 
-    val hazeState = rememberHazeState()
+    val hazeState = LocalHazeState.current ?: rememberHazeState()
 
-    val isSystemBackActive = uiState.isAllAppsDrawerOpen || uiState.isGridEditMode
+    val isSystemBackActive = uiState.isOverlayActive
 
     Box(
         modifier = modifier
@@ -147,11 +149,7 @@ private fun HomeScreenExclusionModifier(isSystemBackActive: Boolean): Modifier {
 private fun BoxScope.HomeScreenBody(
     config: HomeScreenBodyConfig
 ) {
-    val homeContentHazeModifier = if (config.uiState.isHazeEnabled) {
-        Modifier.hazeSource(state = config.hazeState)
-    } else {
-        Modifier
-    }
+    val homeContentHazeModifier = Modifier.hazeSource(state = config.hazeState)
 
     Box(
         modifier = Modifier
@@ -187,6 +185,7 @@ private fun BoxScope.HomeScreenBody(
             externalTouchY = config.externalTouchY,
             coroutineScope = config.coroutineScope,
             screenHeightPx = config.screenHeightPx,
+            appWidgetHost = config.appWidgetHost,
             onExternalTouchYReset = config.onExternalTouchYReset
         )
 
@@ -195,10 +194,7 @@ private fun BoxScope.HomeScreenBody(
         HomeScreenFolderOverlays(
             screenHeightPx = config.screenHeightPx,
             hazeState = config.hazeState,
-        )
-
-        HomeScreenWidgetOverlays(
-            hazeState = config.hazeState,
+            appWidgetHost = config.appWidgetHost
         )
 
         HomeOverlaysDialogsAndErrors(config = overlaysConfig)
@@ -239,19 +235,38 @@ private fun HomeOverlaysDialogsAndErrors(config: HomeOverlaysConfig) {
     }
 
     config.uiState.editingGridItem?.let { editingItem ->
-        EditGridItemDialog(
-            item = editingItem,
-            onDismissRequest = config.actions.onCloseEditGridItemDialog,
-            onDeleteConfirm = { id -> config.actions.onDeleteGridItem(id) }
-        )
+        if (editingItem.type == LauncherItemType.WIDGET_LIST || editingItem.type == LauncherItemType.SINGLE_APP_WIDGET) {
+            EditWidgetGroupScreen(
+                item = editingItem,
+                widgets = config.uiState.topWidgetIds,
+                appWidgetHost = config.appWidgetHost,
+                isIndicatorEnabled = config.uiState.widgetStackDots[editingItem.id] ?: true,
+                onToggleIndicator = { config.actions.onToggleWidgetStackDots(editingItem.id) },
+                onRemoveWidget = { config.actions.onRemoveWidgetClick(it) },
+                onAddWidgetClick = { config.actions.onAddWidgetClick() },
+                onDismissRequest = config.actions.onCloseEditGridItemDialog,
+                onDeleteConfirm = { id -> config.actions.onDeleteGridItem(id) },
+                isBlurEnabled = config.uiState.isHazeEnabled,
+                hazeState = config.hazeState
+            )
+        } else {
+            EditGridItemDialog(
+                item = editingItem,
+                onDismissRequest = config.actions.onCloseEditGridItemDialog,
+                onDeleteConfirm = { id -> config.actions.onDeleteGridItem(id) }
+            )
+        }
     }
 
     if (config.uiState.isEditContainerDialogVisible && config.uiState.editingContainerId != null) {
         val editingPanel = config.uiState.containers[config.uiState.editingContainerId]
             ?: ContainerModel(id = config.uiState.editingContainerId)
-        EditContainerBottomSheet(
+
+        EditContainerScreen(
             panel = editingPanel,
             allApps = config.uiState.apps,
+            isBlurEnabled = config.uiState.isHazeEnabled,
+            hazeState = config.hazeState,
             onDismiss = config.actions.onCloseEditContainerDialog,
             onSave = config.actions.onSaveContainerModel,
             onDeletePanel = config.actions.onDeleteContainerInstance
@@ -378,6 +393,15 @@ private fun buildContainerConfig(
             isBackgroundEnabled = panelModel.isBackgroundEnabled,
             isExpandCell = panelModel.isExpandCell,
             isGridFolderEnabled = panelModel.isGridFolderEnabled,
+            hideText = panelModel.hideText,
+            textColor = panelModel.textColor,
+            backgroundColor = panelModel.backgroundColor,
+            strokeEnabled = panelModel.strokeEnabled,
+            strokeColor = panelModel.strokeColor,
+            folderColor = panelModel.folderColor,
+            folderStrokeEnabled = panelModel.folderStrokeEnabled,
+            scrollUpShortcut = panelModel.scrollUpShortcut,
+            scrollDownShortcut = panelModel.scrollDownShortcut,
             hazeState = hazeState
         )
     } else {

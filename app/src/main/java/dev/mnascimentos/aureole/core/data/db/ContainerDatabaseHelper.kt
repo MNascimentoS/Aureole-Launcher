@@ -28,6 +28,15 @@ class ContainerDatabaseHelper(context: Context) : SQLiteOpenHelper(
                 show_add_folder_button INTEGER NOT NULL DEFAULT 1,
                 show_folder_labels INTEGER NOT NULL DEFAULT 0,
                 is_grid_folder_enabled INTEGER NOT NULL DEFAULT 0,
+                hide_text INTEGER NOT NULL DEFAULT 0,
+                text_color INTEGER,
+                background_color INTEGER,
+                stroke_enabled INTEGER NOT NULL DEFAULT 0,
+                stroke_color INTEGER,
+                folder_color INTEGER,
+                folder_stroke_enabled INTEGER NOT NULL DEFAULT 0,
+                scroll_up_shortcut TEXT,
+                scroll_down_shortcut TEXT,
                 created_at INTEGER NOT NULL
             )
             """.trimIndent()
@@ -58,11 +67,26 @@ class ContainerDatabaseHelper(context: Context) : SQLiteOpenHelper(
                 db.execSQL("DROP TABLE IF EXISTS container_items")
                 db.execSQL("DROP TABLE IF EXISTS containers")
                 onCreate(db)
+                return
             }
-        } else {
-            db.execSQL("DROP TABLE IF EXISTS container_items")
-            db.execSQL("DROP TABLE IF EXISTS containers")
-            onCreate(db)
+        }
+        if (oldVersion < 3) {
+            try {
+                db.execSQL("ALTER TABLE containers ADD COLUMN hide_text INTEGER NOT NULL DEFAULT 0")
+                db.execSQL("ALTER TABLE containers ADD COLUMN text_color INTEGER")
+                db.execSQL("ALTER TABLE containers ADD COLUMN background_color INTEGER")
+                db.execSQL("ALTER TABLE containers ADD COLUMN stroke_enabled INTEGER NOT NULL DEFAULT 0")
+                db.execSQL("ALTER TABLE containers ADD COLUMN stroke_color INTEGER")
+                db.execSQL("ALTER TABLE containers ADD COLUMN folder_color INTEGER")
+                db.execSQL("ALTER TABLE containers ADD COLUMN folder_stroke_enabled INTEGER NOT NULL DEFAULT 0")
+                db.execSQL("ALTER TABLE containers ADD COLUMN scroll_up_shortcut TEXT")
+                db.execSQL("ALTER TABLE containers ADD COLUMN scroll_down_shortcut TEXT")
+            } catch (_: Exception) {
+                db.execSQL("DROP TABLE IF EXISTS container_items")
+                db.execSQL("DROP TABLE IF EXISTS containers")
+                onCreate(db)
+                return
+            }
         }
     }
 
@@ -97,6 +121,58 @@ class ContainerDatabaseHelper(context: Context) : SQLiteOpenHelper(
                 val showAddFolderButton = c.getInt(c.getColumnIndexOrThrow("show_add_folder_button")) == 1
                 val showFolderLabels = c.getInt(c.getColumnIndexOrThrow("show_folder_labels")) == 1
                 val isGridFolderEnabled = c.getInt(c.getColumnIndexOrThrow("is_grid_folder_enabled")) == 1
+
+                val hideTextIdx = c.getColumnIndex("hide_text")
+                val hideText = if (hideTextIdx != -1) c.getInt(hideTextIdx) == 1 else false
+
+                val textColorIdx = c.getColumnIndex("text_color")
+                val textColor = if (textColorIdx != -1 && !c.isNull(textColorIdx)) c.getLong(textColorIdx) else null
+
+                val bgColorIdx = c.getColumnIndex("background_color")
+                val backgroundColor = if (bgColorIdx != -1 && !c.isNull(bgColorIdx)) c.getLong(bgColorIdx) else null
+
+                val strokeEnabledIdx = c.getColumnIndex("stroke_enabled")
+                val strokeEnabled = if (strokeEnabledIdx != -1) c.getInt(strokeEnabledIdx) == 1 else false
+
+                val strokeColorIdx = c.getColumnIndex("stroke_color")
+                val strokeColor = if (strokeColorIdx != -1 && !c.isNull(strokeColorIdx)) {
+                    c.getLong(
+                        strokeColorIdx
+                    )
+                } else {
+                    null
+                }
+
+                val folderColorIdx = c.getColumnIndex("folder_color")
+                val folderColor = if (folderColorIdx != -1 && !c.isNull(folderColorIdx)) {
+                    c.getLong(
+                        folderColorIdx
+                    )
+                } else {
+                    null
+                }
+
+                val folderStrokeEnabledIdx = c.getColumnIndex("folder_stroke_enabled")
+                val folderStrokeEnabled = if (folderStrokeEnabledIdx != -1) c.getInt(folderStrokeEnabledIdx) == 1 else false
+
+                val scrollUpShortcutIdx = c.getColumnIndex("scroll_up_shortcut")
+                val scrollUpShortcut = if (scrollUpShortcutIdx != -1 && !c.isNull(scrollUpShortcutIdx)) {
+                    c.getString(
+                        scrollUpShortcutIdx
+                    )
+                } else {
+                    null
+                }
+
+                val scrollDownShortcutIdx = c.getColumnIndex("scroll_down_shortcut")
+                val scrollDownShortcut = if (scrollDownShortcutIdx != -1 && !c.isNull(scrollDownShortcutIdx)) {
+                    c.getString(
+                        scrollDownShortcutIdx
+                    )
+                } else {
+                    null
+                }
+
                 val createdAt = c.getLong(c.getColumnIndexOrThrow("created_at"))
 
                 result.add(
@@ -110,6 +186,15 @@ class ContainerDatabaseHelper(context: Context) : SQLiteOpenHelper(
                         showAddFolderButton = showAddFolderButton,
                         showFolderLabels = showFolderLabels,
                         isGridFolderEnabled = isGridFolderEnabled,
+                        hideText = hideText,
+                        textColor = textColor,
+                        backgroundColor = backgroundColor,
+                        strokeEnabled = strokeEnabled,
+                        strokeColor = strokeColor,
+                        folderColor = folderColor,
+                        folderStrokeEnabled = folderStrokeEnabled,
+                        scrollUpShortcut = scrollUpShortcut,
+                        scrollDownShortcut = scrollDownShortcut,
                         createdAt = createdAt
                     )
                 )
@@ -142,6 +227,58 @@ class ContainerDatabaseHelper(context: Context) : SQLiteOpenHelper(
                 val showAddFolderButton = c.getInt(c.getColumnIndexOrThrow("show_add_folder_button")) == 1
                 val showFolderLabels = c.getInt(c.getColumnIndexOrThrow("show_folder_labels")) == 1
                 val isGridFolderEnabled = c.getInt(c.getColumnIndexOrThrow("is_grid_folder_enabled")) == 1
+
+                val hideTextIdx = c.getColumnIndex("hide_text")
+                val hideText = if (hideTextIdx != -1) c.getInt(hideTextIdx) == 1 else false
+
+                val textColorIdx = c.getColumnIndex("text_color")
+                val textColor = if (textColorIdx != -1 && !c.isNull(textColorIdx)) c.getLong(textColorIdx) else null
+
+                val bgColorIdx = c.getColumnIndex("background_color")
+                val backgroundColor = if (bgColorIdx != -1 && !c.isNull(bgColorIdx)) c.getLong(bgColorIdx) else null
+
+                val strokeEnabledIdx = c.getColumnIndex("stroke_enabled")
+                val strokeEnabled = if (strokeEnabledIdx != -1) c.getInt(strokeEnabledIdx) == 1 else false
+
+                val strokeColorIdx = c.getColumnIndex("stroke_color")
+                val strokeColor = if (strokeColorIdx != -1 && !c.isNull(strokeColorIdx)) {
+                    c.getLong(
+                        strokeColorIdx
+                    )
+                } else {
+                    null
+                }
+
+                val folderColorIdx = c.getColumnIndex("folder_color")
+                val folderColor = if (folderColorIdx != -1 && !c.isNull(folderColorIdx)) {
+                    c.getLong(
+                        folderColorIdx
+                    )
+                } else {
+                    null
+                }
+
+                val folderStrokeEnabledIdx = c.getColumnIndex("folder_stroke_enabled")
+                val folderStrokeEnabled = if (folderStrokeEnabledIdx != -1) c.getInt(folderStrokeEnabledIdx) == 1 else false
+
+                val scrollUpShortcutIdx = c.getColumnIndex("scroll_up_shortcut")
+                val scrollUpShortcut = if (scrollUpShortcutIdx != -1 && !c.isNull(scrollUpShortcutIdx)) {
+                    c.getString(
+                        scrollUpShortcutIdx
+                    )
+                } else {
+                    null
+                }
+
+                val scrollDownShortcutIdx = c.getColumnIndex("scroll_down_shortcut")
+                val scrollDownShortcut = if (scrollDownShortcutIdx != -1 && !c.isNull(scrollDownShortcutIdx)) {
+                    c.getString(
+                        scrollDownShortcutIdx
+                    )
+                } else {
+                    null
+                }
+
                 val createdAt = c.getLong(c.getColumnIndexOrThrow("created_at"))
 
                 return ContainerEntity(
@@ -154,6 +291,15 @@ class ContainerDatabaseHelper(context: Context) : SQLiteOpenHelper(
                     showAddFolderButton = showAddFolderButton,
                     showFolderLabels = showFolderLabels,
                     isGridFolderEnabled = isGridFolderEnabled,
+                    hideText = hideText,
+                    textColor = textColor,
+                    backgroundColor = backgroundColor,
+                    strokeEnabled = strokeEnabled,
+                    strokeColor = strokeColor,
+                    folderColor = folderColor,
+                    folderStrokeEnabled = folderStrokeEnabled,
+                    scrollUpShortcut = scrollUpShortcut,
+                    scrollDownShortcut = scrollDownShortcut,
                     createdAt = createdAt
                 )
             }
@@ -173,6 +319,15 @@ class ContainerDatabaseHelper(context: Context) : SQLiteOpenHelper(
             put("show_add_folder_button", if (panel.showAddFolderButton) 1 else 0)
             put("show_folder_labels", if (panel.showFolderLabels) 1 else 0)
             put("is_grid_folder_enabled", if (panel.isGridFolderEnabled) 1 else 0)
+            put("hide_text", if (panel.hideText) 1 else 0)
+            panel.textColor?.let { put("text_color", it) } ?: putNull("text_color")
+            panel.backgroundColor?.let { put("background_color", it) } ?: putNull("background_color")
+            put("stroke_enabled", if (panel.strokeEnabled) 1 else 0)
+            panel.strokeColor?.let { put("stroke_color", it) } ?: putNull("stroke_color")
+            panel.folderColor?.let { put("folder_color", it) } ?: putNull("folder_color")
+            put("folder_stroke_enabled", if (panel.folderStrokeEnabled) 1 else 0)
+            panel.scrollUpShortcut?.let { put("scroll_up_shortcut", it) } ?: putNull("scroll_up_shortcut")
+            panel.scrollDownShortcut?.let { put("scroll_down_shortcut", it) } ?: putNull("scroll_down_shortcut")
             put("created_at", panel.createdAt)
         }
         db.insertWithOnConflict("containers", null, values, SQLiteDatabase.CONFLICT_REPLACE)
@@ -247,6 +402,6 @@ class ContainerDatabaseHelper(context: Context) : SQLiteOpenHelper(
 
     companion object {
         private const val DATABASE_NAME = "aureole_launcher_containers.db"
-        private const val DATABASE_VERSION = 2
+        private const val DATABASE_VERSION = 3
     }
 }

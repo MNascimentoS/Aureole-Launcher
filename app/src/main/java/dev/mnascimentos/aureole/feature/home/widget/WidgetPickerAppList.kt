@@ -7,7 +7,14 @@ import android.util.Log
 import android.view.InflateException
 import android.widget.ImageView
 import android.widget.RemoteViews
+import androidx.activity.compose.BackHandler
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -26,34 +33,46 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import coil.compose.AsyncImage
-import dev.mnascimentos.aureole.core.designsystem.icons.ArrowDown
-import dev.mnascimentos.aureole.core.designsystem.icons.ArrowUp
+import dev.mnascimentos.aureole.core.designsystem.icons.Search
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleTheme
+import dev.mnascimentos.aureole.feature.home.components.CurvedAlphabetScrubber
+import dev.mnascimentos.aureole.feature.home.components.model.ScrubberCallbacks
+import dev.mnascimentos.aureole.feature.home.components.model.ScrubberOptions
 import dev.mnascimentos.aureole.feature.home.widget.model.WidgetAppGroup
 import dev.mnascimentos.aureole.feature.home.widget.model.WidgetSelectorIntent
 import dev.mnascimentos.aureole.feature.home.widget.model.WidgetSelectorState
 import dev.mnascimentos.aureole.feature.home.widget.model.WidgetVariant
-
-private const val WIDGET_PREVIEW_ASPECT_RATIO = 1.2f
+import kotlinx.coroutines.launch
 
 private const val TAG = "WidgetPickerAppList"
 
@@ -61,38 +80,220 @@ private const val TAG = "WidgetPickerAppList"
 fun WidgetGroupList(
     state: WidgetSelectorState,
     onIntent: (WidgetSelectorIntent) -> Unit,
-    onWidgetSelected: (AppWidgetProviderInfo) -> Unit
+    onWidgetSelected: (AppWidgetProviderInfo) -> Unit,
+    onDismiss: () -> Unit
 ) {
-    LazyColumn(
-        modifier = Modifier.fillMaxSize(),
-        contentPadding = PaddingValues(bottom = 32.dp)
-    ) {
-        items(
-            items = state.widgetGroups,
-            key = { it.appId }
-        ) { group ->
-            val isExpanded = state.expandedAppIds.contains(group.appId)
+    val listState = rememberLazyListState()
+    val coroutineScope = rememberCoroutineScope()
+    var lastScrolledIndex by remember { mutableIntStateOf(-1) }
+    var isSearchExpanded by remember { mutableStateOf(state.searchQuery.isNotEmpty()) }
+    val focusRequester = remember { FocusRequester() }
 
-            AppGroupHeader(
-                group = group,
-                isExpanded = isExpanded,
-                onClick = { onIntent(WidgetSelectorIntent.ToggleAppGroup(group.appId)) }
+    BackHandler(enabled = true) {
+        if (state.searchQuery.isNotEmpty()) {
+            onIntent(WidgetSelectorIntent.SearchQueryChanged(""))
+        } else if (isSearchExpanded) {
+            isSearchExpanded = false
+        } else {
+            onDismiss()
+        }
+    }
+
+    LaunchedEffect(state.searchQuery) {
+        if (state.searchQuery.isNotEmpty() && !isSearchExpanded) {
+            isSearchExpanded = true
+        }
+    }
+
+    LaunchedEffect(isSearchExpanded) {
+        if (isSearchExpanded) {
+            focusRequester.requestFocus()
+        }
+    }
+
+    // Group apps by starting letter
+    val groupedApps = remember(state.widgetGroups) {
+        state.widgetGroups
+            .groupBy { it.appName.firstOrNull()?.uppercaseChar() ?: '#' }
+            .toSortedMap()
+    }
+
+    // Alphabet ONLY contains letters that actually have widgets
+    val alphabet = remember(groupedApps) {
+        groupedApps.keys.toList()
+    }
+
+    val letterIndexMap = remember(groupedApps) {
+        val map = mutableMapOf<Char, Int>()
+        var currentIndex = 0
+        groupedApps.forEach { (letter, apps) ->
+            map[letter] = currentIndex
+            currentIndex += apps.size + 1 // +1 for the header
+        }
+        map
+    }
+
+    val topPadding = if (isSearchExpanded) 80.dp else 16.dp
+
+    Box(modifier = Modifier.fillMaxSize()) {
+        LazyColumn(
+            state = listState,
+            modifier = Modifier.fillMaxSize().padding(end = 40.dp), // space for scrubber
+            contentPadding = PaddingValues(bottom = 120.dp, top = topPadding)
+        ) {
+            groupedApps.forEach { (letter, groups) ->
+                item(key = "header_$letter") {
+                    Text(
+                        text = letter.toString(),
+                        style = AureoleTheme.typography.titleLarge,
+                        fontWeight = FontWeight.Bold,
+                        color = AureoleTheme.colors.onSurfaceMedium,
+                        modifier = Modifier.padding(start = 24.dp, top = 16.dp, bottom = 8.dp)
+                    )
+                }
+
+                items(
+                    items = groups,
+                    key = { it.appId }
+                ) { group ->
+                    val isExpanded = state.expandedAppIds.contains(group.appId)
+
+                    AppGroupHeader(
+                        group = group,
+                        isExpanded = isExpanded,
+                        onClick = { onIntent(WidgetSelectorIntent.ToggleAppGroup(group.appId)) }
+                    )
+
+                    if (isExpanded) {
+                        LazyRow(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(vertical = 12.dp),
+                            contentPadding = PaddingValues(horizontal = 24.dp),
+                            horizontalArrangement = Arrangement.spacedBy(16.dp)
+                        ) {
+                            items(group.availableWidgets, key = { it.widgetId }) { widget ->
+                                WidgetPreviewCard(
+                                    widget = widget,
+                                    onClick = { widget.providerInfo?.let { onWidgetSelected(it) } }
+                                )
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        // Alphabet Scrubber (hidden when search is active)
+        if (!isSearchExpanded && state.searchQuery.isEmpty()) {
+            CurvedAlphabetScrubber(
+                alphabet = alphabet,
+                options = ScrubberOptions(
+                    isAlwaysVisible = true,
+                    isGestureEnabled = true,
+                    externalTouchY = -1f
+                ),
+                callbacks = ScrubberCallbacks(
+                    onLetterSelected = { letter ->
+                        letterIndexMap[letter]?.let { targetIndex ->
+                            if (targetIndex != lastScrolledIndex) {
+                                lastScrolledIndex = targetIndex
+                                coroutineScope.launch {
+                                    listState.scrollToItem(targetIndex)
+                                }
+                            }
+                        }
+                    }
+                ),
+                modifier = Modifier.align(Alignment.BottomEnd)
             )
+        }
 
-            if (isExpanded) {
-                LazyRow(
+        // Search Bar or Search FAB
+        AnimatedContent(
+            targetState = isSearchExpanded,
+            transitionSpec = {
+                (fadeIn() + scaleIn()).togetherWith(fadeOut() + scaleOut())
+            },
+            label = "search_widget_anim",
+            modifier = if (isSearchExpanded) {
+                Modifier
+                    .align(Alignment.TopCenter)
+                    .fillMaxWidth()
+                    .padding(start = 24.dp, end = 24.dp, top = 16.dp)
+            } else {
+                Modifier
+                    .align(Alignment.BottomEnd)
+                    .padding(end = 24.dp, bottom = 24.dp)
+            }
+        ) { expanded ->
+            if (expanded) {
+                Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(top = 8.dp, bottom = 16.dp),
-                    contentPadding = PaddingValues(horizontal = 16.dp),
-                    horizontalArrangement = Arrangement.spacedBy(16.dp)
+                        .height(52.dp)
+                        .clip(RoundedCornerShape(26.dp))
+                        .background(AureoleTheme.colors.surfaceVariant)
+                        .padding(horizontal = 16.dp),
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    items(group.availableWidgets, key = { it.widgetId }) { widget ->
-                        WidgetPreviewCard(
-                            widget = widget,
-                            onClick = { onWidgetSelected(widget.providerInfo) }
+                    AureoleDS.icons.Search(
+                        tint = AureoleTheme.colors.onSurfaceMedium,
+                        modifier = Modifier.size(20.dp)
+                    )
+                    Spacer(modifier = Modifier.width(12.dp))
+                    BasicTextField(
+                        value = state.searchQuery,
+                        onValueChange = { onIntent(WidgetSelectorIntent.SearchQueryChanged(it)) },
+                        modifier = Modifier
+                            .weight(1f)
+                            .focusRequester(focusRequester),
+                        singleLine = true,
+                        textStyle = AureoleTheme.typography.bodyLarge.copy(color = Color.White),
+                        decorationBox = { innerTextField ->
+                            if (state.searchQuery.isEmpty()) {
+                                Text(
+                                    text = "Pesquisar widgets...",
+                                    style = AureoleTheme.typography.bodyLarge,
+                                    color = AureoleTheme.colors.onSurfaceMedium
+                                )
+                            }
+                            innerTextField()
+                        }
+                    )
+                    Box(
+                        modifier = Modifier
+                            .size(28.dp)
+                            .clip(CircleShape)
+                            .clickable {
+                                if (state.searchQuery.isNotEmpty()) {
+                                    onIntent(WidgetSelectorIntent.SearchQueryChanged(""))
+                                } else {
+                                    isSearchExpanded = false
+                                }
+                            },
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = "✕",
+                            color = AureoleTheme.colors.onSurfaceMedium,
+                            fontSize = 14.sp
                         )
                     }
+                }
+            } else {
+                Box(
+                    modifier = Modifier
+                        .size(60.dp)
+                        .clip(CircleShape)
+                        .background(AureoleTheme.colors.surfaceVariant)
+                        .clickable { isSearchExpanded = true },
+                    contentAlignment = Alignment.Center
+                ) {
+                    AureoleDS.icons.Search(
+                        tint = AureoleTheme.colors.onSurfaceHigh,
+                        modifier = Modifier.size(28.dp)
+                    )
                 }
             }
         }
@@ -109,7 +310,7 @@ fun AppGroupHeader(
         modifier = Modifier
             .fillMaxWidth()
             .clickable(onClick = onClick)
-            .padding(horizontal = 16.dp, vertical = 12.dp)
+            .padding(horizontal = 24.dp, vertical = 12.dp)
             .animateContentSize(),
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -117,50 +318,29 @@ fun AppGroupHeader(
             AsyncImage(
                 model = group.appIcon,
                 contentDescription = group.appName,
-                modifier = Modifier.size(36.dp)
+                modifier = Modifier.size(42.dp)
             )
         } else {
             Box(
                 modifier = Modifier
-                    .size(36.dp)
+                    .size(42.dp)
                     .background(MaterialTheme.colorScheme.surfaceVariant, RoundedCornerShape(10.dp))
             )
         }
 
         Spacer(modifier = Modifier.width(16.dp))
 
-        Text(
-            text = group.appName,
-            style = MaterialTheme.typography.titleMedium,
-            fontWeight = FontWeight.SemiBold,
-            color = MaterialTheme.colorScheme.onBackground,
-            modifier = Modifier.weight(1f)
-        )
-
-        Box(
-            modifier = Modifier
-                .padding(end = 8.dp)
-                .background(
-                    MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.6f),
-                    RoundedCornerShape(12.dp)
-                )
-                .padding(horizontal = 10.dp, vertical = 4.dp)
-        ) {
+        Column(modifier = Modifier.weight(1f)) {
             Text(
-                text = "${group.availableWidgets.size} widget${if (group.availableWidgets.size > 1) "s" else ""}",
-                style = MaterialTheme.typography.labelSmall,
+                text = group.appName,
+                style = AureoleTheme.typography.titleMedium,
                 fontWeight = FontWeight.Medium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
+                color = Color.White
             )
-        }
-
-        if (isExpanded) {
-            AureoleDS.icons.ArrowUp(
-                tint = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-        } else {
-            AureoleDS.icons.ArrowDown(
-                tint = MaterialTheme.colorScheme.onSurfaceVariant
+            Text(
+                text = "${group.availableWidgets.size} Widget${if (group.availableWidgets.size > 1) "s" else ""}",
+                style = AureoleTheme.typography.bodySmall,
+                color = AureoleTheme.colors.onSurfaceMedium
             )
         }
     }
@@ -174,43 +354,56 @@ fun WidgetPreviewCard(
     val context = LocalContext.current
 
     val appIcon = remember(widget.providerInfo) {
-        try {
-            widget.providerInfo.loadIcon(context, 0)
-                ?: context.packageManager.getApplicationIcon(widget.providerInfo.provider.packageName)
-        } catch (e: PackageManager.NameNotFoundException) {
-            Log.e(TAG, "App icon not found for ${widget.providerInfo.provider.packageName}", e)
+        val info = widget.providerInfo
+        if (info != null) {
+            try {
+                info.loadIcon(context, 0)
+                    ?: context.packageManager.getApplicationIcon(info.provider.packageName)
+            } catch (e: PackageManager.NameNotFoundException) {
+                Log.e(TAG, "App icon not found for ${info.provider.packageName}", e)
+                null
+            }
+        } else {
             null
         }
     }
 
     Column(
         modifier = Modifier
-            .width(160.dp)
-            .clickable(onClick = onClick),
+            .width(220.dp)
+            .background(AureoleTheme.colors.surfaceVariant.copy(alpha = 0.6f), RoundedCornerShape(24.dp))
+            .clickable(onClick = onClick)
+            .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .aspectRatio(WIDGET_PREVIEW_ASPECT_RATIO)
-                .clip(RoundedCornerShape(18.dp))
-                .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)),
+                .aspectRatio(1.2f)
+                .clip(RoundedCornerShape(16.dp))
+                .background(AureoleTheme.colors.surface.copy(alpha = 0.5f)),
             contentAlignment = Alignment.Center
         ) {
             WidgetPreviewContent(widget = widget, appIcon = appIcon)
-
-            WidgetSpanBadge(spanX = widget.minSpanX, spanY = widget.minSpanY)
         }
 
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(12.dp))
 
         Text(
             text = widget.title,
-            style = MaterialTheme.typography.bodyMedium,
+            style = AureoleTheme.typography.bodyLarge,
             fontWeight = FontWeight.Medium,
-            color = MaterialTheme.colorScheme.onBackground,
+            color = AureoleTheme.colors.onSurfaceHigh,
             textAlign = TextAlign.Center,
-            maxLines = 2,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis
+        )
+        Text(
+            text = "About the widget here",
+            style = AureoleTheme.typography.bodyMedium,
+            color = AureoleTheme.colors.onSurfaceMedium,
+            textAlign = TextAlign.Center,
+            maxLines = 1,
             overflow = TextOverflow.Ellipsis
         )
     }
@@ -232,12 +425,13 @@ private fun WidgetPreviewContent(
                 .padding(8.dp)
                 .fillMaxSize()
         )
-    } else if (widget.previewLayoutRes != 0 && !previewFailed) {
+    } else if (widget.previewLayoutRes != 0 && !previewFailed && widget.providerInfo != null) {
+        val info = widget.providerInfo
         AndroidView(
             factory = { ctx ->
                 try {
                     val rv = RemoteViews(
-                        widget.providerInfo.provider.packageName,
+                        info.provider.packageName,
                         widget.previewLayoutRes
                     )
                     rv.apply(ctx, null)
@@ -266,37 +460,11 @@ private fun WidgetPreviewContent(
         )
     } else {
         Text(
-            text = widget.title,
-            style = MaterialTheme.typography.labelSmall,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            textAlign = TextAlign.Center,
-            modifier = Modifier.padding(8.dp)
+            text = "Widget",
+            style = AureoleTheme.typography.titleLarge,
+            fontWeight = FontWeight.Bold,
+            color = Color.White,
+            textAlign = TextAlign.Center
         )
-    }
-}
-
-@Composable
-private fun WidgetSpanBadge(spanX: Int, spanY: Int) {
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(8.dp),
-        contentAlignment = Alignment.TopEnd
-    ) {
-        Box(
-            modifier = Modifier
-                .background(
-                    MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.9f),
-                    RoundedCornerShape(6.dp)
-                )
-                .padding(horizontal = 6.dp, vertical = 2.dp)
-        ) {
-            Text(
-                text = "${spanX}x$spanY",
-                style = MaterialTheme.typography.labelSmall,
-                fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.onPrimaryContainer
-            )
-        }
     }
 }

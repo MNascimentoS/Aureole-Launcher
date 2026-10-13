@@ -12,7 +12,6 @@ import dev.mnascimentos.aureole.feature.home.LocalHomeActions
 import dev.mnascimentos.aureole.feature.home.LocalHomeUiState
 import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
-import dev.mnascimentos.aureole.feature.home.widget.model.OpenedWidgetPopupConfig
 import dev.mnascimentos.aureole.feature.home.widget.model.StackedWidgetConfig
 
 private const val PREVIEW_APPWIDGET_HOST_ID = 1024
@@ -52,31 +51,5 @@ fun StackedWidgetSectionPreview() {
                 appWidgetHost = remember { AppWidgetHost(context, PREVIEW_APPWIDGET_HOST_ID) }
             )
         }
-    }
-}
-
-@AureolePreview
-@Composable
-fun WidgetResizeDialogPreview() {
-    AureoleLauncherTheme {
-        WidgetResizeDialog(
-            currentHeightDp = 160.dp,
-            onHeightSelected = {},
-            onDismiss = {}
-        )
-    }
-}
-
-@AureolePreview
-@Composable
-fun OpenedWidgetPopupPreview() {
-    AureoleLauncherTheme {
-        OpenedWidgetPopup(
-            config = OpenedWidgetPopupConfig(
-                onDismiss = {},
-                onResizeClick = {},
-                onRemoveClick = {}
-            )
-        )
     }
 }

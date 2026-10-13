@@ -21,11 +21,7 @@ fun WallpaperBackground(
     isHazeEnabled: Boolean,
     wallpaperScaleType: String = "Crop"
 ) {
-    val hazeModifier = if (isHazeEnabled) {
-        Modifier.hazeSource(state = hazeState)
-    } else {
-        Modifier
-    }
+    val hazeModifier = Modifier.hazeSource(state = hazeState)
 
     val contentScale = when (wallpaperScaleType) {
         "Fit" -> ContentScale.Fit

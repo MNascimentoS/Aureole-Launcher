@@ -55,9 +55,9 @@ private val BADGE_SIZE = 48.dp
 private val BADGE_MARGIN = 28.dp
 
 private val SCRUBBER_PADDING_TOP = 0.dp
-private val SCRUBBER_PADDING_BOTTOM = 108.dp
-private val SCRUBBER_PADDING_HORIZONTAL = 16.dp
-private const val SCRUBBER_HEIGHT_FRACTION = 0.66f
+private val SCRUBBER_PADDING_BOTTOM = 88.dp
+private val SCRUBBER_PADDING_HORIZONTAL = 12.dp
+private const val SCRUBBER_HEIGHT_FRACTION = 0.55f
 private const val GAUSSIAN_HALF_FACTOR = 0.5f
 
 private const val SCRUBBER_ANIMATION_DURATION = 150

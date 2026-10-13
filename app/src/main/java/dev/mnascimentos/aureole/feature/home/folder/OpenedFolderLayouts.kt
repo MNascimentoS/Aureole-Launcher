@@ -50,6 +50,7 @@ import dev.mnascimentos.aureole.core.designsystem.components.AureolePopupMenuIte
 import dev.mnascimentos.aureole.core.designsystem.icons.Add
 import dev.mnascimentos.aureole.core.designsystem.icons.Edit
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
+import dev.mnascimentos.aureole.core.designsystem.utils.LocalHazeState
 import dev.mnascimentos.aureole.feature.home.LocalHomeActions
 import dev.mnascimentos.aureole.feature.home.LocalHomeUiState
 import dev.mnascimentos.aureole.feature.home.folder.model.FolderPopupActions
@@ -109,8 +110,8 @@ fun GridStyleExpandedFolderPopup(
             params = params,
             appsInFolder = appsInFolder,
             actions = actions,
-            hazeState = null,
-            isHazeEnabled = false
+            hazeState = params.hazeState ?: LocalHazeState.current,
+            isHazeEnabled = true
         )
     }
 }
@@ -121,14 +122,17 @@ private fun GridFolderContainer(
     appsInFolder: List<AppInfo>,
     actions: FolderPopupActions,
     hazeState: HazeState?,
-    isHazeEnabled: Boolean
+    @Suppress("UNUSED_PARAMETER") isHazeEnabled: Boolean
 ) {
-    val hazeModifier = if (isHazeEnabled && hazeState != null) {
+    val effectiveHazeState = hazeState ?: LocalHazeState.current
+    val hasHaze = effectiveHazeState != null
+
+    val hazeModifier = if (effectiveHazeState != null) {
         Modifier.hazeEffect(
-            state = hazeState,
+            state = effectiveHazeState,
             style = HazeStyle(
                 blurRadius = 32.dp,
-                tint = HazeTint(MaterialTheme.colorScheme.surfaceContainerHigh.copy(alpha = 0.85f))
+                tint = HazeTint(MaterialTheme.colorScheme.surfaceContainerHigh.copy(alpha = 0.55f))
             )
         ) {
             blurEnabled = true
@@ -137,8 +141,8 @@ private fun GridFolderContainer(
         Modifier
     }
 
-    val containerBgColor = if (isHazeEnabled) {
-        MaterialTheme.colorScheme.surfaceContainerHigh.copy(alpha = 0.88f)
+    val containerBgColor = if (hasHaze) {
+        MaterialTheme.colorScheme.surfaceContainerHigh.copy(alpha = 0.55f)
     } else {
         MaterialTheme.colorScheme.surfaceContainerHigh
     }

@@ -82,7 +82,7 @@ fun OpenedFolderPopup(
                 isActionsVisible = isActionsVisible,
                 onToggleActions = { showActionsByLongPress = !showActionsByLongPress },
                 hazeState = config.hazeState,
-                isHazeEnabled = uiState.isHazeEnabled
+                isHazeEnabled = true
             ),
             modifier = modifier
         )

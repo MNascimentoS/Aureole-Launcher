@@ -3,22 +3,13 @@ package dev.mnascimentos.aureole.feature.home
 import android.appwidget.AppWidgetHost
 import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProviderInfo
-import androidx.compose.foundation.background
-import androidx.compose.foundation.gestures.detectTapGestures
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.statusBars
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.core.designsystem.utils.LocalHazeState
 import dev.mnascimentos.aureole.feature.home.components.FavoriteAppsDialog
 import dev.mnascimentos.aureole.feature.home.components.ReleaseNotesBottomSheet
@@ -26,22 +17,16 @@ import dev.mnascimentos.aureole.feature.home.components.UpdateAvailableDialog
 import dev.mnascimentos.aureole.feature.home.components.UpdateDownloadedDialog
 import dev.mnascimentos.aureole.feature.home.components.model.FavoriteAppsDialogActions
 import dev.mnascimentos.aureole.feature.home.components.model.FavoriteAppsDialogConfig
-import dev.mnascimentos.aureole.feature.home.extensions.closeWidgetPopup
 import dev.mnascimentos.aureole.feature.home.extensions.dismissReleaseNotes
 import dev.mnascimentos.aureole.feature.home.extensions.setShowFavoritePicker
 import dev.mnascimentos.aureole.feature.home.extensions.setShowWidgetPicker
-import dev.mnascimentos.aureole.feature.home.extensions.setShowWidgetResizeDialog
-import dev.mnascimentos.aureole.feature.home.extensions.setWidgetRowHeight
 import dev.mnascimentos.aureole.feature.home.extensions.toggleFavorite
 import dev.mnascimentos.aureole.feature.home.extensions.toggleShowAllAppsOnHome
 import dev.mnascimentos.aureole.feature.home.extensions.updateContainerFavorites
 import dev.mnascimentos.aureole.feature.home.extensions.updateFavoritePackages
 import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
-import dev.mnascimentos.aureole.feature.home.widget.OpenedWidgetPopup
-import dev.mnascimentos.aureole.feature.home.widget.WidgetPickerBottomSheet
-import dev.mnascimentos.aureole.feature.home.widget.WidgetResizeDialog
-import dev.mnascimentos.aureole.feature.home.widget.model.OpenedWidgetPopupConfig
+import dev.mnascimentos.aureole.feature.home.widget.WidgetPickerScreen
 
 @Composable
 fun MainScaffold(
@@ -105,8 +90,10 @@ private fun WidgetPickerOverlay(
     onWidgetSelected: (AppWidgetProviderInfo) -> Unit
 ) {
     if (uiState.showWidgetPicker) {
-        WidgetPickerBottomSheet(
+        WidgetPickerScreen(
             appWidgetManager = appWidgetManager,
+            isBlurEnabled = uiState.isHazeEnabled,
+            hazeState = LocalHazeState.current,
             onWidgetSelected = { provider ->
                 viewModel.setShowWidgetPicker(false)
                 onWidgetSelected(provider)
@@ -158,49 +145,6 @@ private fun WidgetPopupOverlay(
     viewModel: HomeViewModel,
     onRemoveWidget: (Int) -> Unit
 ) {
-    if (uiState.showWidgetPopup && uiState.activeWidgetId != null) {
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(Color.Transparent)
-                .pointerInput(Unit) {
-                    detectTapGestures(onTap = { viewModel.closeWidgetPopup() })
-                }
-        ) {
-            val popupAlign = if (uiState.isLeftHandedMode) Alignment.TopStart else Alignment.TopEnd
-            val sidePadding = 76.dp
-            val screenDensity = LocalDensity.current.density
-            val topInsetDp = WindowInsets.statusBars.asPaddingValues().calculateTopPadding()
-
-            val rawTopDp = if (uiState.activeWidgetTopYPx > 0f) {
-                (uiState.activeWidgetTopYPx / screenDensity).dp - topInsetDp
-            } else {
-                40.dp
-            }
-            val clampedTopDp = rawTopDp.coerceIn(8.dp, 500.dp)
-
-            OpenedWidgetPopup(
-                config = OpenedWidgetPopupConfig(
-                    onDismiss = { viewModel.closeWidgetPopup() },
-                    onResizeClick = { viewModel.setShowWidgetResizeDialog(true) },
-                    onRemoveClick = {
-                        onRemoveWidget(uiState.activeWidgetId)
-                        viewModel.closeWidgetPopup()
-                    },
-                    hazeState = LocalHazeState.current,
-                    isHazeEnabled = uiState.isHazeEnabled,
-                    hazeOpacity = uiState.hazeOpacity,
-                ),
-                modifier = Modifier
-                    .align(popupAlign)
-                    .padding(
-                        start = if (uiState.isLeftHandedMode) sidePadding else 0.dp,
-                        end = if (!uiState.isLeftHandedMode) sidePadding else 0.dp,
-                        top = clampedTopDp
-                    )
-            )
-        }
-    }
 }
 
 @Composable
@@ -208,16 +152,6 @@ private fun WidgetResizeOverlay(
     uiState: MainUiState,
     viewModel: HomeViewModel
 ) {
-    if (uiState.showWidgetResizeDialog) {
-        WidgetResizeDialog(
-            currentHeightDp = uiState.widgetRowHeight,
-            onHeightSelected = { newHeight ->
-                viewModel.setWidgetRowHeight(newHeight)
-                viewModel.closeWidgetPopup()
-            },
-            onDismiss = { viewModel.closeWidgetPopup() }
-        )
-    }
 }
 
 @Composable
