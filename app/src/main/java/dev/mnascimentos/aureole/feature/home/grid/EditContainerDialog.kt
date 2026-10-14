@@ -42,6 +42,7 @@ import dev.mnascimentos.aureole.feature.home.LocalHomeActions
 import dev.mnascimentos.aureole.feature.home.LocalHomeUiState
 import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
+import dev.mnascimentos.aureole.feature.home.model.getWidgetIdsForStack
 import dev.mnascimentos.aureole.feature.settings.components.SettingsBottomSheet
 
 @Composable
@@ -53,7 +54,15 @@ fun EditGridItemDialog(
 ) {
     val uiState = LocalHomeUiState.current
     val actions = LocalHomeActions.current
-    val title = getContainerTitle(item.type)
+    val title = when (item.type) {
+        LauncherItemType.CLOCK -> "Relógio"
+        LauncherItemType.APPS_LIST -> "Favoritos"
+        LauncherItemType.SHORTCUTS_CONTAINER -> "Shortcuts"
+        LauncherItemType.SINGLE_APP_WIDGET -> "Widget"
+        LauncherItemType.WIDGET_LIST -> "Grupo de Widgets"
+        LauncherItemType.SCROLL_VIEW -> "Componente Rolar"
+        else -> "Container"
+    }
 
     SettingsBottomSheet(
         title = "Configurar $title",
@@ -93,13 +102,53 @@ fun EditGridItemDialog(
                 EditDialogScrollViewSection(item = item, actions = actions, onDismissRequest = onDismissRequest)
             }
 
-            EditDialogDeleteButtonRow(
-                onDelete = {
-                    onDeleteConfirm(item.id)
-                    onDismissRequest()
-                }
+            EditDialogDeleteRow(
+                itemId = item.id,
+                onDeleteConfirm = onDeleteConfirm,
+                onDismissRequest = onDismissRequest
             )
         }
+    }
+}
+
+@Composable
+private fun EditDialogDeleteRow(
+    itemId: String,
+    onDeleteConfirm: (String) -> Unit,
+    onDismissRequest: () -> Unit
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(14.dp))
+            .background(MaterialTheme.colorScheme.errorContainer.copy(alpha = 0.12f))
+            .clickable {
+                onDeleteConfirm(itemId)
+                onDismissRequest()
+            }
+            .padding(horizontal = 14.dp, vertical = 12.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.Center
+    ) {
+        Box(
+            modifier = Modifier
+                .size(32.dp)
+                .clip(RoundedCornerShape(8.dp))
+                .background(MaterialTheme.colorScheme.errorContainer.copy(alpha = 0.3f)),
+            contentAlignment = Alignment.Center
+        ) {
+            AureoleDS.icons.Delete(
+                tint = MaterialTheme.colorScheme.error,
+                modifier = Modifier.size(18.dp)
+            )
+        }
+        Spacer(modifier = Modifier.width(10.dp))
+        AureoleText(
+            text = "Remover Componente",
+            style = AureoleTheme.typography.labelLarge,
+            fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colorScheme.error
+        )
     }
 }
 
@@ -159,18 +208,6 @@ private fun EditDialogTypeActionSection(
     }
 }
 
-internal fun getContainerTitle(type: LauncherItemType?): String {
-    return when (type) {
-        LauncherItemType.CLOCK -> "Relógio"
-        LauncherItemType.APPS_LIST -> "Lista de Aplicativos"
-        LauncherItemType.SHORTCUTS_CONTAINER -> "Container"
-        LauncherItemType.SINGLE_APP_WIDGET,
-        LauncherItemType.WIDGET_LIST -> "Grupo de Widgets"
-        LauncherItemType.SCROLL_VIEW -> "Scroll View"
-        null -> "Container"
-    }
-}
-
 @Composable
 private fun EditDialogWidgetListSection(
     item: LauncherItemState,
@@ -178,7 +215,7 @@ private fun EditDialogWidgetListSection(
     actions: HomeScreenActions
 ) {
     if (item.type == LauncherItemType.WIDGET_LIST || item.type == LauncherItemType.SINGLE_APP_WIDGET) {
-        val widgets = uiState.topWidgetIds
+        val widgets = uiState.getWidgetIdsForStack(item.id)
         val isIndicatorEnabled = uiState.widgetStackDots[item.id] ?: true
 
         AureoleText(
@@ -189,51 +226,12 @@ private fun EditDialogWidgetListSection(
             modifier = Modifier.padding(bottom = 6.dp)
         )
 
-        if (widgets.isEmpty()) {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clip(RoundedCornerShape(14.dp))
-                    .background(AureoleTheme.colors.surfaceVariant.copy(alpha = 0.25f))
-                    .padding(14.dp),
-                contentAlignment = Alignment.Center
-            ) {
-                AureoleText(
-                    text = "Nenhum widget adicionado ao grupo ainda.",
-                    style = AureoleTheme.typography.bodyMedium,
-                    color = AureoleTheme.colors.onSurfaceMedium
-                )
-            }
-        } else {
-            widgets.forEachIndexed { index, widgetId ->
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .clip(RoundedCornerShape(12.dp))
-                        .background(AureoleTheme.colors.surfaceVariant.copy(alpha = 0.35f))
-                        .padding(horizontal = 12.dp, vertical = 8.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    AureoleText(
-                        text = "Widget #${index + 1} (ID: $widgetId)",
-                        style = AureoleTheme.typography.bodyMedium,
-                        fontWeight = FontWeight.Medium,
-                        color = AureoleTheme.colors.onSurfaceHigh,
-                        modifier = Modifier.weight(1f)
-                    )
-                    TextButton(onClick = { actions.onRemoveWidgetClick(widgetId) }) {
-                        AureoleText(text = "Remover", color = MaterialTheme.colorScheme.error)
-                    }
-                }
-                Spacer(modifier = Modifier.height(6.dp))
-            }
-        }
+        EditDialogWidgetListRows(widgets = widgets, stackId = item.id, actions = actions)
 
         Spacer(modifier = Modifier.height(6.dp))
 
         Button(
-            onClick = { actions.onAddWidgetClick() },
+            onClick = { actions.onAddWidgetClick(item.id) },
             colors = ButtonDefaults.buttonColors(
                 containerColor = AureoleTheme.colors.surfaceVariant,
                 contentColor = AureoleTheme.colors.onSurfaceHigh
@@ -275,6 +273,54 @@ private fun EditDialogWidgetListSection(
 }
 
 @Composable
+private fun EditDialogWidgetListRows(
+    widgets: List<Int>,
+    stackId: String,
+    actions: HomeScreenActions
+) {
+    if (widgets.isEmpty()) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(14.dp))
+                .background(AureoleTheme.colors.surfaceVariant.copy(alpha = 0.25f))
+                .padding(14.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            AureoleText(
+                text = "Nenhum widget adicionado ao grupo ainda.",
+                style = AureoleTheme.typography.bodyMedium,
+                color = AureoleTheme.colors.onSurfaceMedium
+            )
+        }
+    } else {
+        widgets.forEachIndexed { index, widgetId ->
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(12.dp))
+                    .background(AureoleTheme.colors.surfaceVariant.copy(alpha = 0.35f))
+                    .padding(horizontal = 12.dp, vertical = 8.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                AureoleText(
+                    text = "Widget #${index + 1} (ID: $widgetId)",
+                    style = AureoleTheme.typography.bodyMedium,
+                    fontWeight = FontWeight.Medium,
+                    color = AureoleTheme.colors.onSurfaceHigh,
+                    modifier = Modifier.weight(1f)
+                )
+                TextButton(onClick = { actions.onRemoveWidgetClick(widgetId, stackId) }) {
+                    AureoleText(text = "Remover", color = MaterialTheme.colorScheme.error)
+                }
+            }
+            Spacer(modifier = Modifier.height(6.dp))
+        }
+    }
+}
+
+@Composable
 private fun EditDialogScrollViewSection(
     item: LauncherItemState,
     actions: HomeScreenActions,
@@ -295,40 +341,7 @@ private fun EditDialogScrollViewSection(
             color = AureoleTheme.colors.onSurfaceHigh
         )
 
-        if (item.safeChildren.isEmpty()) {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clip(RoundedCornerShape(14.dp))
-                    .background(AureoleTheme.colors.surfaceVariant.copy(alpha = 0.25f))
-                    .padding(16.dp),
-                contentAlignment = Alignment.Center
-            ) {
-                AureoleText(
-                    text = "Nenhum componente adicionado ainda.",
-                    style = AureoleTheme.typography.bodyMedium,
-                    color = AureoleTheme.colors.onSurfaceMedium
-                )
-            }
-        } else {
-            val isVertical = item.safeScrollOrientation == ScrollOrientation.VERTICAL
-            val totalChildren = item.safeChildren.size
-            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                item.safeChildren.forEachIndexed { index, child ->
-                    ScrollViewChildItemCard(
-                        params = ScrollViewChildParams(
-                            parentId = item.id,
-                            child = child,
-                            childIndex = index,
-                            totalChildren = totalChildren,
-                            isVertical = isVertical
-                        ),
-                        actions = actions,
-                        onDismissRequest = onDismissRequest
-                    )
-                }
-            }
-        }
+        EditDialogChildrenListSection(item = item, actions = actions, onDismissRequest = onDismissRequest)
 
         Spacer(modifier = Modifier.height(2.dp))
 
@@ -361,6 +374,48 @@ private fun EditDialogScrollViewSection(
                 fontWeight = FontWeight.SemiBold,
                 color = AureoleTheme.colors.onSurfaceHigh
             )
+        }
+    }
+}
+
+@Composable
+private fun EditDialogChildrenListSection(
+    item: LauncherItemState,
+    actions: HomeScreenActions,
+    onDismissRequest: () -> Unit
+) {
+    if (item.safeChildren.isEmpty()) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(14.dp))
+                .background(AureoleTheme.colors.surfaceVariant.copy(alpha = 0.25f))
+                .padding(16.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            AureoleText(
+                text = "Nenhum componente adicionado ainda.",
+                style = AureoleTheme.typography.bodyMedium,
+                color = AureoleTheme.colors.onSurfaceMedium
+            )
+        }
+    } else {
+        val isVertical = item.safeScrollOrientation == ScrollOrientation.VERTICAL
+        val totalChildren = item.safeChildren.size
+        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            item.safeChildren.forEachIndexed { index, child ->
+                ScrollViewChildItemCard(
+                    params = ScrollViewChildParams(
+                        parentId = item.id,
+                        child = child,
+                        childIndex = index,
+                        totalChildren = totalChildren,
+                        isVertical = isVertical
+                    ),
+                    actions = actions,
+                    onDismissRequest = onDismissRequest
+                )
+            }
         }
     }
 }
@@ -443,40 +498,6 @@ private fun OrientationOptionCard(
     }
 }
 
-@Composable
-private fun EditDialogDeleteButtonRow(onDelete: () -> Unit) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clip(RoundedCornerShape(14.dp))
-            .background(MaterialTheme.colorScheme.errorContainer.copy(alpha = 0.12f))
-            .clickable(onClick = onDelete)
-            .padding(horizontal = 14.dp, vertical = 12.dp),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.Center
-    ) {
-        Box(
-            modifier = Modifier
-                .size(32.dp)
-                .clip(RoundedCornerShape(8.dp))
-                .background(MaterialTheme.colorScheme.errorContainer.copy(alpha = 0.3f)),
-            contentAlignment = Alignment.Center
-        ) {
-            AureoleDS.icons.Delete(
-                tint = MaterialTheme.colorScheme.error,
-                modifier = Modifier.size(18.dp)
-            )
-        }
-        Spacer(modifier = Modifier.width(10.dp))
-        AureoleText(
-            text = "Remover Container",
-            style = AureoleTheme.typography.bodyLarge,
-            fontWeight = FontWeight.SemiBold,
-            color = MaterialTheme.colorScheme.error
-        )
-    }
-}
-
 @AureolePreview
 @Composable
 fun EditGridItemDialogPreview() {
@@ -494,7 +515,7 @@ fun EditGridItemDialogPreview() {
             LocalHomeActions provides HomeScreenActions(
                 onWidgetRowHeightChanged = {},
                 onAddWidgetClick = {},
-                onRemoveWidgetClick = {},
+                onRemoveWidgetClick = { _, _ -> },
                 onAppClick = {},
                 onExpandNotificationShade = {},
                 onFolderIntent = {},

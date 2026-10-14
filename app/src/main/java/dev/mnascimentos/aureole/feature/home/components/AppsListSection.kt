@@ -203,8 +203,25 @@ private fun FloatingSearchBubble(
         }
     }
 
-    val searchBarHazeModifier = buildSearchBubbleHazeModifier(uiState, hazeState)
-    val bubbleBgColor = computeSearchBubbleBgColor(uiState)
+    val searchBarHazeModifier = if (uiState.isHazeEnabled && hazeState != null) {
+        Modifier.hazeEffect(
+            state = hazeState,
+            style = HazeStyle(
+                blurRadius = 24.dp,
+                tint = HazeTint(AureoleDS.colors.surfaceVariant.copy(alpha = uiState.hazeOpacity))
+            )
+        ) {
+            blurEnabled = true
+        }
+    } else {
+        Modifier
+    }
+
+    val bubbleBgColor = if (!uiState.isHazeEnabled) {
+        AureoleDS.colors.surfaceVariant
+    } else {
+        AureoleDS.colors.surfaceVariant.copy(alpha = (uiState.hazeOpacity * 0.85f).coerceIn(0.3f, 0.95f))
+    }
 
     Box(
         modifier = modifier
@@ -216,50 +233,44 @@ private fun FloatingSearchBubble(
             else -> Alignment.BottomEnd
         }
     ) {
-        AnimatedContent(
-            targetState = state.isExpanded,
-            transitionSpec = {
-                (fadeIn() + scaleIn()).togetherWith(fadeOut() + scaleOut())
-            },
-            label = "search_bubble_anim"
-        ) { expanded ->
-            if (expanded) {
-                ExpandedSearchBubbleBar(
-                    state = state,
-                    focusRequester = focusRequester,
-                    hazeModifier = searchBarHazeModifier,
-                    bubbleBgColor = bubbleBgColor
-                )
-            } else {
-                CollapsedSearchBubbleIcon(
-                    onExpandedChange = state.onExpandedChange,
-                    hazeModifier = searchBarHazeModifier,
-                    bubbleBgColor = bubbleBgColor
-                )
-            }
+        SearchBubbleAnimatedContent(
+            state = state,
+            focusRequester = focusRequester,
+            hazeModifier = searchBarHazeModifier,
+            bubbleBgColor = bubbleBgColor
+        )
+    }
+}
+
+@Composable
+private fun SearchBubbleAnimatedContent(
+    state: SearchBubbleState,
+    focusRequester: FocusRequester,
+    hazeModifier: Modifier,
+    bubbleBgColor: Color
+) {
+    AnimatedContent(
+        targetState = state.isExpanded,
+        transitionSpec = {
+            (fadeIn() + scaleIn()).togetherWith(fadeOut() + scaleOut())
+        },
+        label = "search_bubble_anim"
+    ) { expanded ->
+        if (expanded) {
+            ExpandedSearchBubbleBar(
+                state = state,
+                focusRequester = focusRequester,
+                hazeModifier = hazeModifier,
+                bubbleBgColor = bubbleBgColor
+            )
+        } else {
+            CollapsedSearchBubbleIcon(
+                onExpandedChange = state.onExpandedChange,
+                hazeModifier = hazeModifier,
+                bubbleBgColor = bubbleBgColor
+            )
         }
     }
-}
-
-@Composable
-private fun buildSearchBubbleHazeModifier(uiState: MainUiState, hazeState: HazeState?): Modifier {
-    if (!uiState.isHazeEnabled || hazeState == null) return Modifier
-    return Modifier.hazeEffect(
-        state = hazeState,
-        style = HazeStyle(
-            blurRadius = 24.dp,
-            tint = HazeTint(AureoleDS.colors.surfaceVariant.copy(alpha = uiState.hazeOpacity))
-        )
-    ) {
-        blurEnabled = uiState.isHazeEnabled
-    }
-}
-
-@Composable
-private fun computeSearchBubbleBgColor(uiState: MainUiState): Color {
-    if (!uiState.isHazeEnabled) return AureoleDS.colors.surfaceVariant
-    val alphaVal = (uiState.hazeOpacity * 0.85f).coerceIn(0.3f, 0.95f)
-    return AureoleDS.colors.surfaceVariant.copy(alpha = alphaVal)
 }
 
 @Composable
@@ -459,7 +470,7 @@ fun AppsListDrawerPreview() {
     val mockActions = HomeScreenActions(
         onWidgetRowHeightChanged = {},
         onAddWidgetClick = {},
-        onRemoveWidgetClick = {},
+        onRemoveWidgetClick = { _, _ -> },
         onAppClick = {},
         onExpandNotificationShade = {},
         onFolderIntent = {},

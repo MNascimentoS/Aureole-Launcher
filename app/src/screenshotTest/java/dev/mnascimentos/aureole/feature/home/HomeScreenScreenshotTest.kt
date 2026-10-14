@@ -242,7 +242,7 @@ internal fun createSampleHomeData(): SampleHomeData {
     val actions = HomeScreenActions(
         onWidgetRowHeightChanged = {},
         onAddWidgetClick = {},
-        onRemoveWidgetClick = {},
+        onRemoveWidgetClick = { _, _ -> },
         onAppClick = {},
         onExpandNotificationShade = {},
         onFolderIntent = {},

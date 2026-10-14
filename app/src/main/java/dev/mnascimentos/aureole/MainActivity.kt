@@ -17,7 +17,6 @@ import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.activity.viewModels
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
@@ -53,10 +52,11 @@ import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
 import dev.mnascimentos.aureole.feature.home.model.isOverlayActive
 import dev.mnascimentos.aureole.feature.home.widget.WidgetHostManager
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MainActivity : ComponentActivity() {
 
-    internal val viewModel: HomeViewModel by viewModels()
+    internal val viewModel: HomeViewModel by viewModel()
 
     // Widget System
     internal lateinit var appWidgetManager: AppWidgetManager
@@ -185,8 +185,7 @@ class MainActivity : ComponentActivity() {
                             appWidgetHost = appWidgetHost,
                             appWidgetManager = appWidgetManager,
                             viewModel = viewModel,
-                            onWidgetSelected = { widgetHostManager.handleWidgetSelected(it) },
-                            onRemoveWidget = { widgetHostManager.removeWidget(it) }
+                            onWidgetSelected = { widgetHostManager.handleWidgetSelected(it) }
                         )
                     }
                 }

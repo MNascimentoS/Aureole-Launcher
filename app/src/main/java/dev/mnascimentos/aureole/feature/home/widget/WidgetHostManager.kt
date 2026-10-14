@@ -131,8 +131,8 @@ class WidgetHostManager(
         }
     }
 
-    fun removeWidget(widgetId: Int) {
+    fun removeWidget(widgetId: Int, targetStackId: String? = null) {
         appWidgetHost.deleteAppWidgetId(widgetId)
-        viewModel.removeWidgetId(widgetId)
+        viewModel.removeWidgetId(widgetId, targetStackId)
     }
 }

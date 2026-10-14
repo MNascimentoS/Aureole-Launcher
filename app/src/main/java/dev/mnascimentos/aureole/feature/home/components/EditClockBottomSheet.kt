@@ -16,6 +16,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
@@ -23,22 +24,25 @@ import androidx.compose.material3.Switch
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import kotlinx.coroutines.delay
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
+import dev.chrisbanes.haze.HazeState
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
+import dev.mnascimentos.aureole.core.designsystem.components.bottomsheet.AureoleEditOverlay
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.LocalHomeUiState
 import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
-import dev.mnascimentos.aureole.feature.settings.components.SettingsBottomSheet
 
 private val PRESET_TEXT_COLORS = listOf(
     Pair("Padrão", 0),
@@ -63,29 +67,56 @@ private val CHIP_HORIZONTAL_SPACING = 8.dp
 private const val NEGATIVE_SPACING_INT = -8
 private val CHIP_VERTICAL_SPACING = NEGATIVE_SPACING_INT.dp
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EditClockBottomSheet(
     uiState: MainUiState,
     actions: HomeScreenActions,
+    hazeState: HazeState? = null,
     onDismissRequest: () -> Unit
 ) {
+    var isVisible by remember { mutableStateOf(true) }
+
+    if (!isVisible) {
+        LaunchedEffect(isVisible) {
+            delay(300L)
+            onDismissRequest()
+        }
+    }
+
     var tempCustomGreeting by remember(uiState.clockCustomGreeting) {
         mutableStateOf(uiState.clockCustomGreeting)
     }
 
-    SettingsBottomSheet(
+    val effectiveHazeState = if (uiState.isHazeEnabled) hazeState else null
+
+    AureoleEditOverlay(
+        onDismissRequest = { isVisible = false },
         title = "Personalizar Relógio",
-        onDismissRequest = onDismissRequest
+        hazeState = effectiveHazeState,
+        isVisible = isVisible,
+        animated = true,
+        maxSheetHeightFraction = 0.65f,
+        previewContent = {
+            EditClockPreviewCard(
+                uiState = uiState,
+                tempCustomGreeting = tempCustomGreeting,
+                hazeState = effectiveHazeState
+            )
+        },
+        bottomBarContent = {
+            EditClockActionButtons(
+                actions = actions,
+                onDismissRequest = { isVisible = false },
+                onResetGreeting = { tempCustomGreeting = "" }
+            )
+        }
     ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
                 .verticalScroll(rememberScrollState())
         ) {
-            EditClockPreviewCard(uiState = uiState, tempCustomGreeting = tempCustomGreeting)
-
-            Spacer(modifier = Modifier.height(10.dp))
-
             EditClockStyleSection(
                 uiState = uiState,
                 actions = actions,
@@ -96,33 +127,27 @@ fun EditClockBottomSheet(
                 }
             )
 
-            Spacer(modifier = Modifier.height(10.dp))
+            Spacer(modifier = Modifier.height(16.dp))
 
             EditClockAlignmentSection(uiState = uiState, actions = actions)
 
-            Spacer(modifier = Modifier.height(10.dp))
+            Spacer(modifier = Modifier.height(16.dp))
 
             EditClockTextColorSection(uiState = uiState, actions = actions)
 
-            Spacer(modifier = Modifier.height(10.dp))
+            Spacer(modifier = Modifier.height(16.dp))
 
             EditClockFontSection(uiState = uiState, actions = actions)
 
-            Spacer(modifier = Modifier.height(10.dp))
+            Spacer(modifier = Modifier.height(16.dp))
 
             EditClockFormatSection(uiState = uiState, actions = actions)
 
-            Spacer(modifier = Modifier.height(10.dp))
+            Spacer(modifier = Modifier.height(16.dp))
 
             EditClockBackgroundSection(uiState = uiState, actions = actions)
 
-            Spacer(modifier = Modifier.height(24.dp))
-
-            EditClockActionButtons(
-                actions = actions,
-                onDismissRequest = onDismissRequest,
-                onResetGreeting = { tempCustomGreeting = "" }
-            )
+            Spacer(modifier = Modifier.height(16.dp))
         }
     }
 }
@@ -130,26 +155,21 @@ fun EditClockBottomSheet(
 @Composable
 private fun EditClockPreviewCard(
     uiState: MainUiState,
-    tempCustomGreeting: String
+    tempCustomGreeting: String,
+    hazeState: HazeState? = null
 ) {
-    AureoleText(
-        text = "Pré-visualização ao vivo",
-        style = AureoleTheme.typography.labelLarge,
-        color = AureoleTheme.colors.onSurfaceMedium,
-        modifier = Modifier.padding(bottom = 8.dp)
-    )
-
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .height(140.dp)
-            .clip(RoundedCornerShape(16.dp))
-            .background(AureoleTheme.colors.surfaceVariant.copy(alpha = 0.5f))
-            .padding(8.dp)
+            .clip(RoundedCornerShape(20.dp))
+            .background(AureoleTheme.colors.surfaceVariant.copy(alpha = 0.85f))
+            .padding(16.dp),
+        contentAlignment = Alignment.Center
     ) {
         ClockHeader(
             hazeConfig = ClockHazeConfig(
-                isHazeEnabled = false,
+                isHazeEnabled = uiState.isHazeEnabled,
+                hazeState = hazeState,
                 isBackgroundEnabled = uiState.isClockBackgroundEnabled
             ),
             config = ClockHeaderConfig(
@@ -369,26 +389,18 @@ private fun EditClockFormatSection(
         horizontalArrangement = Arrangement.spacedBy(CHIP_HORIZONTAL_SPACING),
         verticalArrangement = Arrangement.spacedBy(CHIP_VERTICAL_SPACING)
     ) {
-        EditClockLayoutChip(
-            label = "Completo (sexta, 9 out)",
-            selected = uiState.clockDateFormat == "DEFAULT",
-            onClick = { actions.onUpdateClockDateFormat("DEFAULT") }
-        )
-        EditClockLayoutChip(
-            label = "Curto (Tue, 22 Sep)",
-            selected = uiState.clockDateFormat == "SHORT",
-            onClick = { actions.onUpdateClockDateFormat("SHORT") }
-        )
-        EditClockLayoutChip(
-            label = "Médio (9 de outubro)",
-            selected = uiState.clockDateFormat == "MEDIUM",
-            onClick = { actions.onUpdateClockDateFormat("MEDIUM") }
-        )
-        EditClockLayoutChip(
-            label = "Numérico (09/10/2026)",
-            selected = uiState.clockDateFormat == "NUMERIC",
-            onClick = { actions.onUpdateClockDateFormat("NUMERIC") }
-        )
+        EditClockLayoutChip("Completo (sexta, 9 out)", uiState.clockDateFormat == "DEFAULT") {
+            actions.onUpdateClockDateFormat("DEFAULT")
+        }
+        EditClockLayoutChip("Curto (Tue, 22 Sep)", uiState.clockDateFormat == "SHORT") {
+            actions.onUpdateClockDateFormat("SHORT")
+        }
+        EditClockLayoutChip("Médio (9 de outubro)", uiState.clockDateFormat == "MEDIUM") {
+            actions.onUpdateClockDateFormat("MEDIUM")
+        }
+        EditClockLayoutChip("Numérico (09/10/2026)", uiState.clockDateFormat == "NUMERIC") {
+            actions.onUpdateClockDateFormat("NUMERIC")
+        }
     }
 }
 
@@ -470,7 +482,7 @@ private fun EditClockActionButtons(
                 contentColor = MaterialTheme.colorScheme.onPrimary
             )
         ) {
-            AureoleText("Concluído", color = MaterialTheme.colorScheme.onPrimary)
+            AureoleText("Salvar", color = MaterialTheme.colorScheme.onPrimary)
         }
     }
 }
@@ -482,7 +494,7 @@ fun EditClockBottomSheetPreview() {
     val actions = HomeScreenActions(
         onWidgetRowHeightChanged = {},
         onAddWidgetClick = {},
-        onRemoveWidgetClick = {},
+        onRemoveWidgetClick = { _, _ -> },
         onAppClick = {},
         onExpandNotificationShade = {},
         onFolderIntent = {},

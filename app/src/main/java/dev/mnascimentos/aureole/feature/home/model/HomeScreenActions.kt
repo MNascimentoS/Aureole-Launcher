@@ -10,8 +10,8 @@ import dev.mnascimentos.aureole.core.data.model.ScrollOrientation
 
 data class HomeScreenActions(
     val onWidgetRowHeightChanged: (Dp) -> Unit,
-    val onAddWidgetClick: () -> Unit,
-    val onRemoveWidgetClick: (Int) -> Unit,
+    val onAddWidgetClick: (String?) -> Unit = {},
+    val onRemoveWidgetClick: (Int, String?) -> Unit = { _, _ -> },
     val onAppClick: (AppInfo) -> Unit,
     val onExpandNotificationShade: () -> Unit,
     val onFolderIntent: (FolderViewIntent) -> Unit,

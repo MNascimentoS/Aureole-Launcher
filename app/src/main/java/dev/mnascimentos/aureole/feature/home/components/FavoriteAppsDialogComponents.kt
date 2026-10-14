@@ -2,6 +2,7 @@ package dev.mnascimentos.aureole.feature.home.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -12,7 +13,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Switch
 import androidx.compose.runtime.Composable
@@ -31,6 +31,7 @@ import dev.mnascimentos.aureole.core.designsystem.icons.ArrowUp
 import dev.mnascimentos.aureole.core.designsystem.icons.Delete
 import dev.mnascimentos.aureole.core.designsystem.icons.Plus
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleTheme
 import dev.mnascimentos.aureole.feature.home.components.model.FavoriteAppRowParams
 
 @Composable
@@ -116,48 +117,57 @@ fun FavoriteAppRowActionButtons(
     onMoveDown: () -> Unit,
     onToggleFavorite: () -> Unit
 ) {
-    Row(verticalAlignment = Alignment.CenterVertically) {
-        if (params.canReorder) {
-            val upTint = if (params.index > 0) {
-                MaterialTheme.colorScheme.onSurface
-            } else {
-                MaterialTheme.colorScheme.outline.copy(alpha = 0.3f)
-            }
-            IconButton(
-                onClick = onMoveUp,
-                enabled = params.index > 0,
-                modifier = Modifier.size(28.dp)
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        if (params.canReorder && params.index > 0) {
+            Box(
+                modifier = Modifier
+                    .size(28.dp)
+                    .background(
+                        color = AureoleTheme.colors.surfaceVariant.copy(alpha = 0.5f),
+                        shape = RoundedCornerShape(8.dp)
+                    )
+                    .clickable { onMoveUp() },
+                contentAlignment = Alignment.Center
             ) {
                 AureoleDS.icons.ArrowUp(
-                    tint = upTint,
-                    modifier = Modifier.size(16.dp)
-                )
-            }
-
-            val downTint = if (params.index < params.totalCount - 1) {
-                MaterialTheme.colorScheme.onSurface
-            } else {
-                MaterialTheme.colorScheme.outline.copy(alpha = 0.3f)
-            }
-            IconButton(
-                onClick = onMoveDown,
-                enabled = params.index < params.totalCount - 1,
-                modifier = Modifier.size(28.dp)
-            ) {
-                AureoleDS.icons.ArrowDown(
-                    tint = downTint,
+                    tint = AureoleTheme.colors.onSurfaceHigh,
                     modifier = Modifier.size(16.dp)
                 )
             }
         }
-
-        IconButton(
-            onClick = onToggleFavorite,
-            modifier = Modifier.size(28.dp).padding(start = 4.dp)
+        if (params.canReorder && params.index < params.totalCount - 1) {
+            Box(
+                modifier = Modifier
+                    .size(28.dp)
+                    .background(
+                        color = AureoleTheme.colors.surfaceVariant.copy(alpha = 0.5f),
+                        shape = RoundedCornerShape(8.dp)
+                    )
+                    .clickable { onMoveDown() },
+                contentAlignment = Alignment.Center
+            ) {
+                AureoleDS.icons.ArrowDown(
+                    tint = AureoleTheme.colors.onSurfaceHigh,
+                    modifier = Modifier.size(16.dp)
+                )
+            }
+        }
+        Box(
+            modifier = Modifier
+                .size(28.dp)
+                .background(
+                    color = MaterialTheme.colorScheme.errorContainer,
+                    shape = RoundedCornerShape(8.dp)
+                )
+                .clickable { onToggleFavorite() },
+            contentAlignment = Alignment.Center
         ) {
             AureoleDS.icons.Delete(
-                tint = MaterialTheme.colorScheme.error,
-                modifier = Modifier.size(20.dp)
+                tint = MaterialTheme.colorScheme.onErrorContainer,
+                modifier = Modifier.size(16.dp)
             )
         }
     }
@@ -174,16 +184,14 @@ fun RemainingAppRow(
         modifier = modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(12.dp))
-            .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f))
-            .padding(horizontal = AureoleDS.dimens.small, vertical = AureoleDS.dimens.xxSmall),
+            .background(AureoleTheme.colors.surfaceVariant.copy(alpha = 0.3f))
+            .padding(horizontal = 12.dp, vertical = 10.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier
-                .weight(1f)
-                .padding(end = AureoleDS.dimens.xSmall)
+            modifier = Modifier.weight(1f)
         ) {
             Image(
                 bitmap = iconBitmap,
@@ -192,23 +200,30 @@ fun RemainingAppRow(
                     .size(32.dp)
                     .clip(RoundedCornerShape(8.dp))
             )
-            Spacer(modifier = Modifier.width(AureoleDS.dimens.xSmall))
+            Spacer(modifier = Modifier.width(12.dp))
             AureoleText(
                 text = app.label,
-                style = AureoleDS.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurface,
+                style = AureoleTheme.typography.bodyMedium,
+                fontWeight = FontWeight.Medium,
+                color = AureoleTheme.colors.onSurfaceHigh,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )
         }
 
-        IconButton(
-            onClick = onToggleFavorite,
-            modifier = Modifier.size(28.dp)
+        Box(
+            modifier = Modifier
+                .size(28.dp)
+                .background(
+                    color = MaterialTheme.colorScheme.primaryContainer,
+                    shape = RoundedCornerShape(8.dp)
+                )
+                .clickable { onToggleFavorite() },
+            contentAlignment = Alignment.Center
         ) {
             AureoleDS.icons.Plus(
-                tint = MaterialTheme.colorScheme.primary,
-                modifier = Modifier.size(20.dp)
+                tint = MaterialTheme.colorScheme.onPrimaryContainer,
+                modifier = Modifier.size(16.dp)
             )
         }
     }

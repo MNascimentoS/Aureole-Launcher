@@ -17,6 +17,27 @@ class WidgetRepository(private val context: Context) {
         }
     }
 
+    fun getWidgetIdsForStack(stackId: String): List<Int> {
+        val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+        val savedIds = prefs.getString("${KEY_WIDGET_IDS_PREFIX}_$stackId", null)
+        if (savedIds != null) {
+            return savedIds.split(",").mapNotNull { it.toIntOrNull() }
+        }
+        if (stackId == "top_widgets") {
+            return getSavedWidgetIds()
+        }
+        return emptyList()
+    }
+
+    fun saveWidgetIdsForStack(stackId: String, ids: List<Int>) {
+        context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE).edit {
+            putString("${KEY_WIDGET_IDS_PREFIX}_$stackId", ids.joinToString(","))
+            if (stackId == "top_widgets") {
+                putString(KEY_TOP_WIDGET_IDS, ids.joinToString(","))
+            }
+        }
+    }
+
     fun getSavedWidgetRowHeight(): Float {
         val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
         return prefs.getFloat(KEY_WIDGET_ROW_HEIGHT, DEFAULT_WIDGET_ROW_HEIGHT)
@@ -42,6 +63,7 @@ class WidgetRepository(private val context: Context) {
     companion object {
         private const val PREFS_NAME = "aureole_prefs"
         private const val KEY_TOP_WIDGET_IDS = "top_widget_ids_list"
+        private const val KEY_WIDGET_IDS_PREFIX = "widget_ids_stack"
         private const val KEY_WIDGET_ROW_HEIGHT = "widget_row_height"
         private const val KEY_WIDGET_DOTS_PREFIX = "widget_dots_stack"
         private const val DEFAULT_WIDGET_ROW_HEIGHT = 160f

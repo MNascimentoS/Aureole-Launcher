@@ -13,7 +13,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.TextView
+import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.animateColorAsState
+import dev.mnascimentos.aureole.core.designsystem.utils.LocalAnimatedVisibilityScope
+import dev.mnascimentos.aureole.core.designsystem.utils.LocalSharedTransitionScope
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.spring
@@ -59,6 +62,7 @@ import dev.mnascimentos.aureole.core.designsystem.icons.Add
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.feature.home.LocalHomeActions
 import dev.mnascimentos.aureole.feature.home.LocalHomeUiState
+import dev.mnascimentos.aureole.feature.home.model.getWidgetIdsForStack
 import dev.mnascimentos.aureole.feature.home.widget.model.PagerContentParams
 import dev.mnascimentos.aureole.feature.home.widget.model.StackedWidgetConfig
 import kotlinx.coroutines.delay
@@ -68,7 +72,6 @@ private const val COLOR_ANIMATION_DURATION_MS = 150
 private const val LONG_PRESS_MARGIN_MS = 50L
 private const val MIN_LONG_PRESS_TIMEOUT_MS = 200L
 
-private const val MAX_WIDGETS = 5
 private const val HAZE_MIN_ALPHA_ADD_BUTTON = 0.2f
 private const val HAZE_MAX_ALPHA_ADD_BUTTON = 0.95f
 private const val DEFAULT_HAZE_OPACITY = 0.5f
@@ -84,8 +87,9 @@ fun StackedWidgetSection(
     stackId: String = "top_widgets"
 ) {
     val uiState = LocalHomeUiState.current
+    val widgetIds = uiState.getWidgetIdsForStack(stackId)
     val showAddButton = false
-    val pageCount = config.topWidgetIds.size
+    val pageCount = widgetIds.size
     val pagerState = rememberPagerState(pageCount = { pageCount })
 
     val showDotsForStack = uiState.widgetStackDots[stackId] ?: true
@@ -97,6 +101,7 @@ fun StackedWidgetSection(
     ) {
         StackedWidgetPagerContent(
             config = config,
+            widgetIds = widgetIds,
             appWidgetHost = appWidgetHost,
             stackId = stackId,
             params = PagerContentParams(
@@ -122,6 +127,7 @@ fun StackedWidgetSection(
 @Composable
 private fun StackedWidgetPagerContent(
     config: StackedWidgetConfig,
+    widgetIds: List<Int>,
     appWidgetHost: AppWidgetHost,
     stackId: String,
     params: PagerContentParams,
@@ -137,8 +143,8 @@ private fun StackedWidgetPagerContent(
             state = params.pagerState,
             modifier = modifier
         ) { page ->
-            if (page < config.topWidgetIds.size) {
-                val widgetId = config.topWidgetIds[page]
+            if (page < widgetIds.size) {
+                val widgetId = widgetIds[page]
                 WidgetHostItem(
                     widgetId = widgetId,
                     stackId = stackId,
@@ -147,7 +153,7 @@ private fun StackedWidgetPagerContent(
                 )
             } else if (showAddButton) {
                 AddWidgetButton(
-                    onClick = actions.onAddWidgetClick,
+                    onClick = { actions.onAddWidgetClick(stackId) },
                     modifier = Modifier.fillMaxSize(),
                     hazeState = config.hazeState,
                     isHazeEnabled = uiState.isHazeEnabled,
@@ -202,6 +208,7 @@ fun WidgetPositionIndicatorBar(
     }
 }
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 private fun WidgetHostItem(
     widgetId: Int,
@@ -212,10 +219,25 @@ private fun WidgetHostItem(
     val actions = LocalHomeActions.current
     val coroutineScope = rememberCoroutineScope()
 
+    val sharedTransitionScope = LocalSharedTransitionScope.current
+    val animatedVisibilityScope = LocalAnimatedVisibilityScope.current
+
+    val sharedModifier = if (sharedTransitionScope != null && animatedVisibilityScope != null) {
+        with(sharedTransitionScope) {
+            Modifier.sharedElement(
+                sharedContentState = rememberSharedContentState(key = "widget_$widgetId"),
+                animatedVisibilityScope = animatedVisibilityScope
+            )
+        }
+    } else {
+        Modifier
+    }
+
     Box(
         modifier = modifier
             .fillMaxSize()
             .clip(MaterialTheme.shapes.large)
+            .then(sharedModifier)
             .pointerInput(widgetId, stackId) {
                 val longPressTimeout = viewConfiguration.longPressTimeoutMillis
                 awaitEachGesture {

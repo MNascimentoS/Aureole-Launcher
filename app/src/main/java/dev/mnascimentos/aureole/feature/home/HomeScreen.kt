@@ -3,6 +3,8 @@ package dev.mnascimentos.aureole.feature.home
 import android.appwidget.AppWidgetHost
 import android.content.res.Configuration
 import android.widget.Toast
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionLayout
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.fillMaxSize
@@ -14,7 +16,9 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.systemGestureExclusion
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
+import dev.mnascimentos.aureole.core.designsystem.utils.LocalSharedTransitionScope
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.remember
@@ -58,13 +62,28 @@ import dev.mnascimentos.aureole.feature.home.model.HomeOverlaysConfig
 import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
 import dev.mnascimentos.aureole.feature.home.model.HomeScreenBodyConfig
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
+import dev.mnascimentos.aureole.feature.home.model.getWidgetIdsForStack
 import dev.mnascimentos.aureole.feature.home.model.isOverlayActive
+import dev.mnascimentos.aureole.feature.home.widget.EditWidgetGroupActions
+import dev.mnascimentos.aureole.feature.home.widget.EditWidgetGroupParams
 import dev.mnascimentos.aureole.feature.home.widget.EditWidgetGroupScreen
 import dev.mnascimentos.aureole.feature.home.widget.model.StackedWidgetConfig
 
-val LocalHomeUiState = staticCompositionLocalOf<MainUiState> { error("No MainUiState provided") }
-val LocalHomeActions =
-    staticCompositionLocalOf<HomeScreenActions> { error("No HomeScreenActions provided") }
+val LocalHomeUiState = staticCompositionLocalOf<MainUiState> { MainUiState() }
+val LocalHomeActions = staticCompositionLocalOf<HomeScreenActions> { createDefaultHomeScreenActions() }
+
+fun createDefaultHomeScreenActions(): HomeScreenActions = HomeScreenActions(
+    onWidgetRowHeightChanged = {},
+    onAppClick = {},
+    onExpandNotificationShade = {},
+    onFolderIntent = {},
+    onSetAddAppToFolderDialogVisible = {},
+    onSetRenameFolderDialogVisible = {},
+    onSearchQueryChanged = {},
+    onSettingsClick = {},
+    onAllAppsDrawerClose = {},
+    onAllAppsDrawerOpen = {}
+)
 
 @Composable
 fun HomeScreen(
@@ -104,31 +123,36 @@ fun HomeScreen(
 
     val isSystemBackActive = uiState.isOverlayActive
 
-    Box(
-        modifier = modifier
-            .fillMaxSize()
-            .onGloballyPositioned {
-                screenHeightPx = it.size.height.toFloat()
-                screenWidthPx = it.size.width.toFloat()
+    @OptIn(ExperimentalSharedTransitionApi::class)
+    SharedTransitionLayout {
+        CompositionLocalProvider(LocalSharedTransitionScope provides this) {
+            Box(
+                modifier = modifier
+                    .fillMaxSize()
+                    .onGloballyPositioned {
+                        screenHeightPx = it.size.height.toFloat()
+                        screenWidthPx = it.size.width.toFloat()
+                    }
+                    .then(HomeScreenExclusionModifier(isSystemBackActive))
+                    .then(if (uiState.isGridEditMode) Modifier else dragModifier)
+            ) {
+                HomeScreenBody(
+                    HomeScreenBodyConfig(
+                        uiState = uiState,
+                        actions = actions,
+                        appWidgetHost = appWidgetHost,
+                        currentHeightPx = currentHeightPx,
+                        favListState = favListState,
+                        listState = listState,
+                        hazeState = hazeState,
+                        externalTouchY = externalTouchY,
+                        coroutineScope = coroutineScope,
+                        screenHeightPx = screenHeightPx,
+                        onExternalTouchYReset = { externalTouchY = -1f }
+                    )
+                )
             }
-            .then(HomeScreenExclusionModifier(isSystemBackActive))
-            .then(if (uiState.isGridEditMode) Modifier else dragModifier)
-    ) {
-        HomeScreenBody(
-            HomeScreenBodyConfig(
-                uiState = uiState,
-                actions = actions,
-                appWidgetHost = appWidgetHost,
-                currentHeightPx = currentHeightPx,
-                favListState = favListState,
-                listState = listState,
-                hazeState = hazeState,
-                externalTouchY = externalTouchY,
-                coroutineScope = coroutineScope,
-                screenHeightPx = screenHeightPx,
-                onExternalTouchYReset = { externalTouchY = -1f }
-            )
-        )
+        }
     }
 }
 
@@ -160,8 +184,7 @@ private fun BoxScope.HomeScreenBody(
             isCustomWallpaperSet = config.uiState.isCustomWallpaperSet,
             customWallpaperPath = config.uiState.customWallpaperPath,
             wallpaperScaleType = config.uiState.wallpaperScaleType,
-            hazeState = config.hazeState,
-            isHazeEnabled = false
+            hazeState = config.hazeState
         )
 
         if (!config.uiState.isLoading) {
@@ -214,6 +237,7 @@ private fun HomeOverlaysDialogsAndErrors(config: HomeOverlaysConfig) {
         EditClockBottomSheet(
             uiState = config.uiState,
             actions = config.actions,
+            hazeState = if (config.uiState.isHazeEnabled) config.hazeState else null,
             onDismissRequest = config.actions.onCloseEditClockBottomSheet
         )
     }
@@ -224,7 +248,7 @@ private fun HomeOverlaysDialogsAndErrors(config: HomeOverlaysConfig) {
             onSelectType = { type ->
                 if (type == LauncherItemType.SINGLE_APP_WIDGET) {
                     config.actions.onSetIsAddingSingleWidget(true)
-                    config.actions.onAddWidgetClick()
+                    config.actions.onAddWidgetClick(null)
                     config.actions.onCloseAddContainerDialog()
                 } else {
                     config.actions.onAddGridItem(type, null, null)
@@ -234,20 +258,38 @@ private fun HomeOverlaysDialogsAndErrors(config: HomeOverlaysConfig) {
         )
     }
 
+    HomeEditGridItemOverlay(config = config)
+    HomeEditContainerOverlay(config = config)
+
+    val context = LocalContext.current
+    config.uiState.gridErrorMessage?.let { message ->
+        LaunchedEffect(message) {
+            Toast.makeText(context, message, Toast.LENGTH_LONG).show()
+            config.actions.onDismissGridError()
+        }
+    }
+}
+
+@Composable
+private fun HomeEditGridItemOverlay(config: HomeOverlaysConfig) {
     config.uiState.editingGridItem?.let { editingItem ->
-        if (editingItem.type == LauncherItemType.WIDGET_LIST || editingItem.type == LauncherItemType.SINGLE_APP_WIDGET) {
+        val isWidgetType = editingItem.type == LauncherItemType.WIDGET_LIST ||
+            editingItem.type == LauncherItemType.SINGLE_APP_WIDGET
+        if (isWidgetType) {
             EditWidgetGroupScreen(
-                item = editingItem,
-                widgets = config.uiState.topWidgetIds,
-                appWidgetHost = config.appWidgetHost,
-                isIndicatorEnabled = config.uiState.widgetStackDots[editingItem.id] ?: true,
-                onToggleIndicator = { config.actions.onToggleWidgetStackDots(editingItem.id) },
-                onRemoveWidget = { config.actions.onRemoveWidgetClick(it) },
-                onAddWidgetClick = { config.actions.onAddWidgetClick() },
-                onDismissRequest = config.actions.onCloseEditGridItemDialog,
-                onDeleteConfirm = { id -> config.actions.onDeleteGridItem(id) },
-                isBlurEnabled = config.uiState.isHazeEnabled,
-                hazeState = config.hazeState
+                params = EditWidgetGroupParams(
+                    item = editingItem,
+                    widgets = config.uiState.getWidgetIdsForStack(editingItem.id),
+                    appWidgetHost = config.appWidgetHost,
+                    isIndicatorEnabled = config.uiState.widgetStackDots[editingItem.id] ?: true,
+                    hazeState = if (config.uiState.isHazeEnabled) config.hazeState else null
+                ),
+                actions = EditWidgetGroupActions(
+                    onToggleIndicator = { config.actions.onToggleWidgetStackDots(editingItem.id) },
+                    onRemoveWidget = { config.actions.onRemoveWidgetClick(it, editingItem.id) },
+                    onAddWidgetClick = { config.actions.onAddWidgetClick(editingItem.id) },
+                    onDismissRequest = config.actions.onCloseEditGridItemDialog
+                )
             )
         } else {
             EditGridItemDialog(
@@ -257,7 +299,10 @@ private fun HomeOverlaysDialogsAndErrors(config: HomeOverlaysConfig) {
             )
         }
     }
+}
 
+@Composable
+private fun HomeEditContainerOverlay(config: HomeOverlaysConfig) {
     if (config.uiState.isEditContainerDialogVisible && config.uiState.editingContainerId != null) {
         val editingPanel = config.uiState.containers[config.uiState.editingContainerId]
             ?: ContainerModel(id = config.uiState.editingContainerId)
@@ -265,20 +310,10 @@ private fun HomeOverlaysDialogsAndErrors(config: HomeOverlaysConfig) {
         EditContainerScreen(
             panel = editingPanel,
             allApps = config.uiState.apps,
-            isBlurEnabled = config.uiState.isHazeEnabled,
-            hazeState = config.hazeState,
+            hazeState = if (config.uiState.isHazeEnabled) config.hazeState else null,
             onDismiss = config.actions.onCloseEditContainerDialog,
-            onSave = config.actions.onSaveContainerModel,
-            onDeletePanel = config.actions.onDeleteContainerInstance
+            onSave = config.actions.onSaveContainerModel
         )
-    }
-
-    val context = LocalContext.current
-    config.uiState.gridErrorMessage?.let { message ->
-        LaunchedEffect(message) {
-            Toast.makeText(context, message, Toast.LENGTH_LONG).show()
-            config.actions.onDismissGridError()
-        }
     }
 }
 
@@ -295,15 +330,6 @@ private fun getGridLimits(orientation: Int): GridLimits {
     }
     return GridLimits(maxCols, maxRows)
 }
-
-@Composable
-private fun GridOrientationEffect(orientation: Int, actions: HomeScreenActions) {
-    LaunchedEffect(orientation) {
-        val limits = getGridLimits(orientation)
-        actions.onUpdateGridOrientation(limits.maxCols, limits.maxRows)
-    }
-}
-
 private fun getGridItemsForOrientation(isLandscape: Boolean, uiState: MainUiState): List<LauncherItemState> {
     return if (isLandscape) {
         uiState.landscapeGridItems.ifEmpty { uiState.gridItems }
@@ -326,7 +352,10 @@ private fun MainHomeLayout(
 
     val currentHeightDp = with(density) { currentHeightPx.toDp() }
 
-    GridOrientationEffect(configuration.orientation, actions)
+    LaunchedEffect(configuration.orientation) {
+        val limits = getGridLimits(configuration.orientation)
+        actions.onUpdateGridOrientation(limits.maxCols, limits.maxRows)
+    }
 
     val favConfig = FavoritesListConfig(
         currentHeightDp = currentHeightDp,

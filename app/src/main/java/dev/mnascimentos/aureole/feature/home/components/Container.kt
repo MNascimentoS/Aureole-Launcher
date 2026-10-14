@@ -202,9 +202,7 @@ private fun ContainerColumn(
     val uiState = LocalHomeUiState.current
     val scrollState = rememberScrollState()
 
-    val renderItems = remember(config.items, config.folders, config.appPackageNames, uiState.apps) {
-        resolveContainerRenderItems(config, uiState.apps)
-    }
+    val renderItems = resolveContainerRenderItems(config, uiState.apps)
 
     val paddingHorizontal = if (config.isBackgroundEnabled) 10.dp else 2.dp
     val paddingVertical = if (config.isBackgroundEnabled) 8.dp else 4.dp
@@ -297,9 +295,7 @@ private fun ContainerRow(
     val uiState = LocalHomeUiState.current
     val scrollState = rememberScrollState()
 
-    val renderItems = remember(config.items, config.folders, config.appPackageNames, uiState.apps) {
-        resolveContainerRenderItems(config, uiState.apps)
-    }
+    val renderItems = resolveContainerRenderItems(config, uiState.apps)
 
     val paddingHorizontal = if (config.isBackgroundEnabled) 8.dp else 4.dp
     val paddingVertical = if (config.isBackgroundEnabled) 10.dp else 2.dp

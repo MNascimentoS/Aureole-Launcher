@@ -33,8 +33,7 @@ fun MainScaffold(
     appWidgetHost: AppWidgetHost,
     appWidgetManager: AppWidgetManager,
     viewModel: HomeViewModel,
-    onWidgetSelected: (AppWidgetProviderInfo) -> Unit,
-    onRemoveWidget: (Int) -> Unit
+    onWidgetSelected: (AppWidgetProviderInfo) -> Unit
 ) {
     val uiState = LocalHomeUiState.current
     Scaffold(
@@ -55,17 +54,6 @@ fun MainScaffold(
         )
 
         FavoritePickerOverlay(
-            uiState = uiState,
-            viewModel = viewModel
-        )
-
-        WidgetPopupOverlay(
-            uiState = uiState,
-            viewModel = viewModel,
-            onRemoveWidget = onRemoveWidget
-        )
-
-        WidgetResizeOverlay(
             uiState = uiState,
             viewModel = viewModel
         )
@@ -137,21 +125,6 @@ private fun FavoritePickerOverlay(
             )
         )
     }
-}
-
-@Composable
-private fun WidgetPopupOverlay(
-    uiState: MainUiState,
-    viewModel: HomeViewModel,
-    onRemoveWidget: (Int) -> Unit
-) {
-}
-
-@Composable
-private fun WidgetResizeOverlay(
-    uiState: MainUiState,
-    viewModel: HomeViewModel
-) {
 }
 
 @Composable

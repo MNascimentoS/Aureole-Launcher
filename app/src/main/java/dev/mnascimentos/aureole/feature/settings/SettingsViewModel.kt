@@ -62,11 +62,12 @@ enum class SettingsDialog {
 }
 
 @Suppress("TooManyFunctions")
-class SettingsViewModel(application: Application) : AndroidViewModel(application) {
-
-    internal val settingsRepository = SettingsRepository(application)
-    private val appRepository = AppRepository(application)
-    private val folderRepository = FolderRepository(application)
+class SettingsViewModel(
+    application: Application,
+    internal val settingsRepository: SettingsRepository,
+    private val appRepository: AppRepository,
+    private val folderRepository: FolderRepository
+) : AndroidViewModel(application) {
 
     private val _uiState = MutableStateFlow(SettingsUiState())
     val uiState: StateFlow<SettingsUiState> = _uiState.asStateFlow()

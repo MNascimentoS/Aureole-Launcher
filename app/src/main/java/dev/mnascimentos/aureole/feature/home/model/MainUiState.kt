@@ -18,6 +18,8 @@ data class MainUiState(
 
     // Widgets
     val topWidgetIds: List<Int> = emptyList(),
+    val widgetStacks: Map<String, List<Int>> = emptyMap(),
+    val targetWidgetStackId: String? = null,
     val widgetRowHeight: Dp = 160.dp,
     val isWidgetRowEnabled: Boolean = true,
     val showWidgetDots: Boolean = true,
@@ -142,6 +144,11 @@ data class WidgetStackBottomSheetState(
     val widgetId: Int?,
     val stackId: String
 )
+
+fun MainUiState.getWidgetIdsForStack(stackId: String): List<Int> {
+    return widgetStacks[stackId]
+        ?: if (stackId == "top_widgets") topWidgetIds else emptyList()
+}
 
 val MainUiState.isOverlayActive: Boolean
     get() {

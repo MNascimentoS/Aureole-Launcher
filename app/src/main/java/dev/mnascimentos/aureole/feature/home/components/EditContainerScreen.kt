@@ -1,12 +1,7 @@
 package dev.mnascimentos.aureole.feature.home.components
 
-import androidx.activity.compose.BackHandler
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.scaleIn
-import androidx.compose.animation.scaleOut
+import android.content.ComponentName
+import android.graphics.drawable.ColorDrawable
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -18,14 +13,20 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -36,37 +37,50 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.onGloballyPositioned
-import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import dev.chrisbanes.haze.HazeState
-import dev.chrisbanes.haze.HazeStyle
-import dev.chrisbanes.haze.HazeTint
-import dev.chrisbanes.haze.hazeEffect
 import dev.mnascimentos.aureole.core.data.model.AppFolder
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.data.model.ContainerItemEntity
 import dev.mnascimentos.aureole.core.data.model.ContainerItemType
 import dev.mnascimentos.aureole.core.data.model.ContainerModel
+import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
+import dev.mnascimentos.aureole.core.designsystem.components.bottomsheet.AureoleEditOverlay
 import dev.mnascimentos.aureole.core.designsystem.icons.Add
+import dev.mnascimentos.aureole.core.designsystem.icons.ArrowDown
+import dev.mnascimentos.aureole.core.designsystem.icons.ArrowUp
+import dev.mnascimentos.aureole.core.designsystem.icons.Check
 import dev.mnascimentos.aureole.core.designsystem.icons.Click
 import dev.mnascimentos.aureole.core.designsystem.icons.ColorFill
+import dev.mnascimentos.aureole.core.designsystem.icons.Delete
 import dev.mnascimentos.aureole.core.designsystem.icons.DragMenu
+import dev.mnascimentos.aureole.core.designsystem.icons.Edit
+import dev.mnascimentos.aureole.core.designsystem.icons.Star
+import dev.mnascimentos.aureole.core.designsystem.icons.Undo
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleTheme
+import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
+import dev.mnascimentos.aureole.feature.home.LocalHomeUiState
+import dev.mnascimentos.aureole.feature.home.LocalHomeActions
 import dev.mnascimentos.aureole.feature.home.components.model.ContainerConfig
 import dev.mnascimentos.aureole.feature.home.folder.CreateFolderDialog
+import dev.mnascimentos.aureole.feature.home.widget.WidgetPositionIndicatorBar
 import kotlinx.coroutines.delay
 import java.util.UUID
 
@@ -74,29 +88,20 @@ enum class EditContainerScreenMode {
     MAIN, APPEARANCE, BEHAVIOR, MANAGE_ITEMS
 }
 
+private const val ANIMATION_DURATION_MS = 300
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EditContainerScreen(
     panel: ContainerModel,
     allApps: List<AppInfo>,
-    isBlurEnabled: Boolean = true,
     hazeState: HazeState? = null,
     onDismiss: () -> Unit,
-    onSave: (ContainerModel) -> Unit,
-    onDeletePanel: (String) -> Unit
+    onSave: (ContainerModel) -> Unit
 ) {
     val state = rememberEditContainerState(panel)
     var currentMode by remember { mutableStateOf(EditContainerScreenMode.MAIN) }
     var isVisible by remember { mutableStateOf(true) }
-
-    BackHandler(enabled = isVisible) {
-        if (currentMode != EditContainerScreenMode.MAIN) {
-            currentMode = EditContainerScreenMode.MAIN
-        } else {
-            onSave(state.toModel())
-            isVisible = false
-        }
-    }
 
     val config = ContainerConfig(
         panelId = panel.id,
@@ -121,135 +126,84 @@ fun EditContainerScreen(
         scrollDownShortcut = state.scrollDownShortcut
     )
 
-    AnimatedVisibility(
-        visible = isVisible,
-        enter = fadeIn(animationSpec = tween(300)) + scaleIn(
-            initialScale = 0.8f,
-            animationSpec = tween(300)
-        ),
-        exit = fadeOut(animationSpec = tween(300)) + scaleOut(
-            targetScale = 0.8f,
-            animationSpec = tween(300)
-        )
-    ) {
-        val hazeModifier = if (isBlurEnabled && hazeState != null) {
-            Modifier.hazeEffect(
-                state = hazeState,
-                style = HazeStyle(
-                    blurRadius = 32.dp,
-                    tint = HazeTint(Color.Black.copy(alpha = 0.55f))
-                )
-            ) {
-                blurEnabled = true
+    val currentUiState = LocalHomeUiState.current
+    val effectiveUiState = if (currentUiState.apps.isEmpty()) currentUiState.copy(apps = allApps) else currentUiState
+
+    CompositionLocalProvider(LocalHomeUiState provides effectiveUiState) {
+        if (!isVisible) {
+            LaunchedEffect(isVisible) {
+                delay(ANIMATION_DURATION_MS.toLong())
+                onDismiss()
             }
+        }
+
+        val isHorizontal = state.orientation.equals("Horizontal", ignoreCase = true)
+        val previewModifier = if (isHorizontal) {
+            Modifier
+                .wrapContentWidth(Alignment.CenterHorizontally)
+                .heightIn(min = 60.dp, max = 120.dp)
         } else {
             Modifier
+                .wrapContentHeight(Alignment.Bottom)
+                .widthIn(min = 60.dp, max = 120.dp)
         }
 
-        val backgroundColor = if (isBlurEnabled && hazeState != null) {
-            Color.Transparent
-        } else {
-            Color.Black
+        val titleText = when (currentMode) {
+            EditContainerScreenMode.MAIN -> "Container settings"
+            EditContainerScreenMode.APPEARANCE -> "Aparência"
+            EditContainerScreenMode.BEHAVIOR -> "Comportamento"
+            EditContainerScreenMode.MANAGE_ITEMS -> "Gerenciar Itens"
         }
 
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .then(hazeModifier)
-                .background(backgroundColor)
-                .clickable(
-                    interactionSource = remember { MutableInteractionSource() },
-                    indication = null,
-                    onClick = {
-                        onSave(state.toModel())
-                        isVisible = false
-                    }
-                )
-        ) {
-            var bottomSheetHeight by remember { mutableStateOf(0) }
-            val density = LocalDensity.current
+        val homeActions = LocalHomeActions.current
 
-            // Bottom Sheet Surface (fills width, consumes clicks)
-            Surface(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .align(Alignment.BottomCenter)
-                    .onGloballyPositioned { coordinates ->
-                        bottomSheetHeight = coordinates.size.height
-                    }
-                    .clickable(
-                        interactionSource = remember { MutableInteractionSource() },
-                        indication = null,
-                        onClick = {} // Consume clicks on bottom sheet
-                    ),
-                shape = RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp),
-                color = AureoleTheme.colors.surface,
-                contentColor = AureoleTheme.colors.onSurfaceMedium
-            ) {
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(24.dp)
-                ) {
-                    when (currentMode) {
-                        EditContainerScreenMode.MAIN -> {
-                            MainSettingsContent(
-                                state = state,
-                                onAppearanceClick = { currentMode = EditContainerScreenMode.APPEARANCE },
-                                onBehaviorClick = { currentMode = EditContainerScreenMode.BEHAVIOR },
-                                onManageItemsClick = { currentMode = EditContainerScreenMode.MANAGE_ITEMS },
-                                onSave = { onSave(state.toModel()) }
-                            )
-                        }
-                        EditContainerScreenMode.APPEARANCE -> {
-                            AppearanceSettingsContent(
-                                state = state,
-                                onBack = { currentMode = EditContainerScreenMode.MAIN }
-                            )
-                        }
-                        EditContainerScreenMode.BEHAVIOR -> {
-                            BehaviorSettingsContent(
-                                state = state,
-                                onBack = { currentMode = EditContainerScreenMode.MAIN }
-                            )
-                        }
-                        EditContainerScreenMode.MANAGE_ITEMS -> {
-                            ManageItemsContent(
-                                state = state,
-                                allApps = allApps,
-                                onBack = { currentMode = EditContainerScreenMode.MAIN }
-                            )
-                        }
-                    }
+        AureoleEditOverlay(
+            onDismissRequest = {
+                onSave(state.toModel())
+                isVisible = false
+            },
+            title = titleText,
+            onSettingsClick = { homeActions.onSettingsClick() },
+            hazeState = hazeState,
+            isVisible = isVisible,
+            animated = true,
+            onBackPress = {
+                if (currentMode != EditContainerScreenMode.MAIN) {
+                    currentMode = EditContainerScreenMode.MAIN
+                } else {
+                    onSave(state.toModel())
+                    isVisible = false
                 }
+            },
+            previewContent = {
+                Container(config = config, onFolderClick = { _, _ -> }, modifier = previewModifier)
             }
-
-            // Preview Container positioned dynamically right above bottom sheet, leaving sides clickable
-            val bottomSheetHeightDp = if (bottomSheetHeight == 0) 280.dp else with(density) { bottomSheetHeight.toDp() }
-            val previewModifier = if (state.orientation.equals("Horizontal", ignoreCase = true)) {
-                Modifier
-                    .align(Alignment.BottomCenter)
-                    .padding(bottom = bottomSheetHeightDp + 12.dp)
-                    .fillMaxWidth(0.85f)
-                    .height(90.dp)
-            } else {
-                Modifier
-                    .align(Alignment.BottomCenter)
-                    .padding(bottom = bottomSheetHeightDp + 12.dp)
-                    .width(80.dp)
-                    .height(240.dp)
-            }
-
-            Container(
-                config = config,
-                onFolderClick = { _, _ -> },
-                modifier = previewModifier
-            )
-
-            if (!isVisible) {
-                LaunchedEffect(isVisible) {
-                    delay(300)
-                    onDismiss()
+        ) {
+            when (currentMode) {
+                EditContainerScreenMode.MAIN -> {
+                    MainSettingsContent(
+                        onAppearanceClick = { currentMode = EditContainerScreenMode.APPEARANCE },
+                        onBehaviorClick = { currentMode = EditContainerScreenMode.BEHAVIOR },
+                        onManageItemsClick = { currentMode = EditContainerScreenMode.MANAGE_ITEMS },
+                        onSave = {
+                            onSave(state.toModel())
+                            isVisible = false
+                        }
+                    )
+                }
+                EditContainerScreenMode.APPEARANCE, EditContainerScreenMode.BEHAVIOR -> {
+                    AppearanceSettingsContent(
+                        state = state,
+                        isBehaviorMode = currentMode == EditContainerScreenMode.BEHAVIOR,
+                        onBack = { currentMode = EditContainerScreenMode.MAIN }
+                    )
+                }
+                EditContainerScreenMode.MANAGE_ITEMS -> {
+                    ManageItemsContent(
+                        state = state,
+                        allApps = allApps,
+                        onBack = { currentMode = EditContainerScreenMode.MAIN }
+                    )
                 }
             }
         }
@@ -258,7 +212,6 @@ fun EditContainerScreen(
 
 @Composable
 private fun MainSettingsContent(
-    state: EditContainerState,
     onAppearanceClick: () -> Unit,
     onBehaviorClick: () -> Unit,
     onManageItemsClick: () -> Unit,
@@ -273,31 +226,47 @@ private fun MainSettingsContent(
         textAlign = TextAlign.Center
     )
 
-    MenuItem(
-        title = "Appearance",
-        icon = {
-            AureoleDS.icons.ColorFill(
-                tint = AureoleTheme.colors.onSurfaceMedium,
-                modifier = Modifier.size(24.dp)
-            )
-        },
-        onClick = onAppearanceClick
-    )
-    MenuItem(
-        title = "Behavior",
-        icon = { AureoleDS.icons.Click(tint = AureoleTheme.colors.onSurfaceMedium, modifier = Modifier.size(24.dp)) },
-        onClick = onBehaviorClick
-    )
-    MenuItem(
-        title = "Manage Items",
-        icon = {
-            AureoleDS.icons.DragMenu(
-                tint = AureoleTheme.colors.onSurfaceMedium,
-                modifier = Modifier.size(24.dp)
-            )
-        },
-        onClick = onManageItemsClick
-    )
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable(onClick = onAppearanceClick)
+            .padding(vertical = 16.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        AureoleDS.icons.ColorFill(
+            tint = AureoleTheme.colors.onSurfaceMedium,
+            modifier = Modifier.size(24.dp)
+        )
+        Spacer(modifier = Modifier.width(16.dp))
+        Text(text = "Appearance", color = AureoleTheme.colors.onSurfaceHigh)
+    }
+
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable(onClick = onBehaviorClick)
+            .padding(vertical = 16.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        AureoleDS.icons.Click(tint = AureoleTheme.colors.onSurfaceMedium, modifier = Modifier.size(24.dp))
+        Spacer(modifier = Modifier.width(16.dp))
+        Text(text = "Behavior", color = AureoleTheme.colors.onSurfaceHigh)
+    }
+
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable(onClick = onManageItemsClick)
+            .padding(vertical = 16.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        AureoleDS.icons.DragMenu(
+            tint = AureoleTheme.colors.onSurfaceMedium,
+            modifier = Modifier.size(24.dp)
+        )
+        Spacer(modifier = Modifier.width(16.dp))
+        Text(text = "Manage Items", color = AureoleTheme.colors.onSurfaceHigh)
+    }
 
     Spacer(modifier = Modifier.height(24.dp))
     Button(
@@ -311,10 +280,11 @@ private fun MainSettingsContent(
 @Composable
 private fun AppearanceSettingsContent(
     state: EditContainerState,
+    isBehaviorMode: Boolean,
     onBack: () -> Unit
 ) {
     Text(
-        text = "Appearance",
+        text = if (isBehaviorMode) "Container behavior" else "Appearance",
         style = AureoleTheme.typography.titleMedium,
         fontWeight = FontWeight.Bold,
         modifier = Modifier.padding(bottom = 16.dp).fillMaxWidth(),
@@ -322,89 +292,48 @@ private fun AppearanceSettingsContent(
         textAlign = TextAlign.Center
     )
 
-    EditContainerOrientationSelector(
-        orientation = state.orientation,
-        onOrientationSelected = { state.orientation = it }
-    )
-
-    Row(
-        modifier = Modifier.fillMaxWidth().padding(vertical = 12.dp),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Text("Background enabled", color = AureoleTheme.colors.onSurfaceMedium)
-        Switch(
-            checked = state.isBackgroundEnabled,
-            onCheckedChange = { state.isBackgroundEnabled = it }
+    if (isBehaviorMode) {
+        Row(
+            modifier = Modifier.fillMaxWidth().padding(vertical = 12.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text("Expand cells", color = AureoleTheme.colors.onSurfaceMedium)
+            Switch(checked = state.isExpandCell, onCheckedChange = { state.isExpandCell = it })
+        }
+        Row(
+            modifier = Modifier.fillMaxWidth().padding(vertical = 12.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text("Grid folders", color = AureoleTheme.colors.onSurfaceMedium)
+            Switch(checked = state.isGridFolderEnabled, onCheckedChange = { state.isGridFolderEnabled = it })
+        }
+    } else {
+        EditContainerOrientationSelector(
+            orientation = state.orientation,
+            onOrientationSelected = { state.orientation = it }
         )
-    }
-
-    Row(
-        modifier = Modifier.fillMaxWidth().padding(vertical = 12.dp),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Text("Show folder labels", color = AureoleTheme.colors.onSurfaceMedium)
-        Switch(
-            checked = state.showFolderLabels,
-            onCheckedChange = { state.showFolderLabels = it }
-        )
+        Row(
+            modifier = Modifier.fillMaxWidth().padding(vertical = 12.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text("Background enabled", color = AureoleTheme.colors.onSurfaceMedium)
+            Switch(checked = state.isBackgroundEnabled, onCheckedChange = { state.isBackgroundEnabled = it })
+        }
+        Row(
+            modifier = Modifier.fillMaxWidth().padding(vertical = 12.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text("Show folder labels", color = AureoleTheme.colors.onSurfaceMedium)
+            Switch(checked = state.showFolderLabels, onCheckedChange = { state.showFolderLabels = it })
+        }
     }
 
     Spacer(modifier = Modifier.height(24.dp))
-    Button(
-        onClick = onBack,
-        modifier = Modifier.fillMaxWidth()
-    ) {
-        Text("Voltar")
-    }
-}
-
-@Composable
-private fun BehaviorSettingsContent(
-    state: EditContainerState,
-    onBack: () -> Unit
-) {
-    Text(
-        text = "Container behavior",
-        style = AureoleTheme.typography.titleMedium,
-        fontWeight = FontWeight.Bold,
-        modifier = Modifier.padding(bottom = 16.dp).fillMaxWidth(),
-        color = AureoleTheme.colors.onSurfaceHigh,
-        textAlign = TextAlign.Center
-    )
-
-    Row(
-        modifier = Modifier.fillMaxWidth().padding(vertical = 12.dp),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Text("Expand cells", color = AureoleTheme.colors.onSurfaceMedium)
-        Switch(
-            checked = state.isExpandCell,
-            onCheckedChange = { state.isExpandCell = it }
-        )
-    }
-
-    Row(
-        modifier = Modifier.fillMaxWidth().padding(vertical = 12.dp),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Text("Grid folders", color = AureoleTheme.colors.onSurfaceMedium)
-        Switch(
-            checked = state.isGridFolderEnabled,
-            onCheckedChange = { state.isGridFolderEnabled = it }
-        )
-    }
-
-    // TODO: Behavior configs (Scroll up/down)
-
-    Spacer(modifier = Modifier.height(24.dp))
-    Button(
-        onClick = onBack,
-        modifier = Modifier.fillMaxWidth()
-    ) {
+    Button(onClick = onBack, modifier = Modifier.fillMaxWidth()) {
         Text("Voltar")
     }
 }
@@ -468,6 +397,22 @@ private fun ManageItemsContent(
         }
     }
 
+    ManageItemsListSection(state = state, allApps = allApps)
+
+    Spacer(modifier = Modifier.height(24.dp))
+    Button(
+        onClick = onBack,
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        Text("Voltar")
+    }
+}
+
+@Composable
+private fun ManageItemsListSection(
+    state: EditContainerState,
+    allApps: List<AppInfo>
+) {
     if (state.itemsList.isEmpty()) {
         Box(
             modifier = Modifier
@@ -491,147 +436,157 @@ private fun ManageItemsContent(
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             itemsIndexed(state.itemsList, key = { _, item -> item.id }) { index, item ->
-                val title: String
-                val isFolder = item.itemType == ContainerItemType.FOLDER
-
-                if (isFolder) {
-                    val folder = state.folders.find { it.id == item.folderId }
-                    title = folder?.name ?: "Pasta"
-                } else {
-                    val appInfo = allApps.find { it.packageName == item.packageName }
-                    title = appInfo?.label ?: item.packageName ?: "App"
-                }
-
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .background(
-                            AureoleTheme.colors.surfaceVariant.copy(alpha = 0.3f),
-                            RoundedCornerShape(12.dp)
-                        )
-                        .padding(horizontal = 12.dp, vertical = 12.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    // Icon placeholder
-                    Box(
-                        modifier = Modifier
-                            .size(32.dp)
-                            .background(
-                                AureoleTheme.colors.surfaceVariant.copy(alpha = 0.8f),
-                                RoundedCornerShape(8.dp)
-                            ),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Text(
-                            text = "A", // Just a placeholder
-                            style = AureoleTheme.typography.labelMedium,
-                            color = AureoleTheme.colors.onSurfaceHigh
-                        )
-                    }
-
-                    Spacer(modifier = Modifier.width(12.dp))
-
-                    Text(
-                        text = title,
-                        style = AureoleTheme.typography.bodyMedium,
-                        color = AureoleTheme.colors.onSurfaceHigh,
-                        modifier = Modifier.weight(1f)
+                ManageItemRow(
+                    params = ManageItemRowParams(
+                        index = index,
+                        item = item,
+                        totalItems = state.itemsList.size,
+                        folders = state.folders,
+                        allApps = allApps
+                    ),
+                    actions = ManageItemRowActions(
+                        onMoveUp = { state.moveItemUp(it) },
+                        onMoveDown = { state.moveItemDown(it) },
+                        onRemove = { state.removeItem(it) }
                     )
-
-                    // Actions
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(8.dp)
-                    ) {
-                        // Up
-                        if (index > 0) {
-                            Box(
-                                modifier = Modifier
-                                    .size(24.dp)
-                                    .background(
-                                        AureoleTheme.colors.surfaceVariant.copy(alpha = 0.5f),
-                                        RoundedCornerShape(6.dp)
-                                    )
-                                    .clickable { state.moveItemUp(index) },
-                                contentAlignment = Alignment.Center
-                            ) {
-                                Text(
-                                    text = "↑",
-                                    color = AureoleTheme.colors.onSurfaceHigh,
-                                    fontSize = 12.sp
-                                )
-                            }
-                        }
-
-                        // Down
-                        if (index < state.itemsList.size - 1) {
-                            Box(
-                                modifier = Modifier
-                                    .size(24.dp)
-                                    .background(
-                                        AureoleTheme.colors.surfaceVariant.copy(alpha = 0.5f),
-                                        RoundedCornerShape(6.dp)
-                                    )
-                                    .clickable { state.moveItemDown(index) },
-                                contentAlignment = Alignment.Center
-                            ) {
-                                Text(
-                                    text = "↓",
-                                    color = AureoleTheme.colors.onSurfaceHigh,
-                                    fontSize = 12.sp
-                                )
-                            }
-                        }
-
-                        // Remove
-                        Box(
-                            modifier = Modifier
-                                .size(24.dp)
-                                .background(
-                                    MaterialTheme.colorScheme.errorContainer.copy(alpha = 0.3f),
-                                    RoundedCornerShape(6.dp)
-                                )
-                                .clickable { state.removeItem(index) },
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Text(
-                                text = "X",
-                                color = MaterialTheme.colorScheme.error,
-                                fontSize = 10.sp,
-                                fontWeight = FontWeight.Bold
-                            )
-                        }
-                    }
-                }
+                )
             }
         }
     }
+}
 
-    Spacer(modifier = Modifier.height(24.dp))
-    Button(
-        onClick = onBack,
-        modifier = Modifier.fillMaxWidth()
+private data class ManageItemRowParams(
+    val index: Int,
+    val item: ContainerItemEntity,
+    val totalItems: Int,
+    val folders: List<AppFolder>,
+    val allApps: List<AppInfo>
+)
+
+private data class ManageItemRowActions(
+    val onMoveUp: (Int) -> Unit,
+    val onMoveDown: (Int) -> Unit,
+    val onRemove: (Int) -> Unit
+)
+
+@Composable
+private fun ManageItemRow(
+    params: ManageItemRowParams,
+    actions: ManageItemRowActions
+) {
+    val index = params.index
+    val item = params.item
+    val title = if (item.itemType == ContainerItemType.FOLDER) {
+        params.folders.find { it.id == item.folderId }?.name ?: "Pasta"
+    } else {
+        params.allApps.find { it.packageName == item.packageName }?.label ?: item.packageName ?: "App"
+    }
+
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(
+                color = AureoleTheme.colors.surfaceVariant.copy(alpha = 0.3f),
+                shape = RoundedCornerShape(12.dp)
+            )
+            .padding(horizontal = 12.dp, vertical = 12.dp),
+        verticalAlignment = Alignment.CenterVertically
     ) {
-        Text("Voltar")
+        Box(
+            modifier = Modifier
+                .size(32.dp)
+                .background(
+                    color = AureoleTheme.colors.surfaceVariant.copy(alpha = 0.8f),
+                    shape = RoundedCornerShape(8.dp)
+                ),
+            contentAlignment = Alignment.Center
+        ) {
+            Text(
+                text = "A",
+                style = AureoleTheme.typography.labelMedium,
+                color = AureoleTheme.colors.onSurfaceHigh
+            )
+        }
+
+        Spacer(modifier = Modifier.width(12.dp))
+
+        Text(
+            text = title,
+            style = AureoleTheme.typography.bodyMedium,
+            color = AureoleTheme.colors.onSurfaceHigh,
+            modifier = Modifier.weight(1f)
+        )
+
+        ManageItemRowActionButtons(
+            index = index,
+            totalItems = params.totalItems,
+            actions = actions
+        )
     }
 }
 
 @Composable
-private fun MenuItem(
-    title: String,
-    icon: @Composable () -> Unit,
-    onClick: () -> Unit
+private fun ManageItemRowActionButtons(
+    index: Int,
+    totalItems: Int,
+    actions: ManageItemRowActions
 ) {
     Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable(onClick = onClick)
-            .padding(vertical = 16.dp),
-        verticalAlignment = Alignment.CenterVertically
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        icon()
-        Spacer(modifier = Modifier.width(16.dp))
-        Text(text = title, color = AureoleTheme.colors.onSurfaceHigh)
+        if (index > 0) {
+            Box(
+                modifier = Modifier
+                    .size(24.dp)
+                    .background(
+                        color = AureoleTheme.colors.surfaceVariant.copy(alpha = 0.5f),
+                        shape = RoundedCornerShape(6.dp)
+                    )
+                    .clickable { actions.onMoveUp(index) },
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = "↑",
+                    color = AureoleTheme.colors.onSurfaceHigh,
+                    fontSize = 12.sp
+                )
+            }
+        }
+        if (index < totalItems - 1) {
+            Box(
+                modifier = Modifier
+                    .size(24.dp)
+                    .background(
+                        color = AureoleTheme.colors.surfaceVariant.copy(alpha = 0.5f),
+                        shape = RoundedCornerShape(6.dp)
+                    )
+                    .clickable { actions.onMoveDown(index) },
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = "↓",
+                    color = AureoleTheme.colors.onSurfaceHigh,
+                    fontSize = 12.sp
+                )
+            }
+        }
+        Box(
+            modifier = Modifier
+                .size(24.dp)
+                .background(
+                    color = MaterialTheme.colorScheme.errorContainer,
+                    shape = RoundedCornerShape(6.dp)
+                )
+                .clickable { actions.onRemove(index) },
+            contentAlignment = Alignment.Center
+        ) {
+            Text(
+                text = "✕",
+                color = MaterialTheme.colorScheme.onErrorContainer,
+                fontSize = 12.sp
+            )
+        }
     }
 }
 
@@ -657,6 +612,8 @@ private class EditContainerState(
     var folderStrokeEnabled by mutableStateOf(options.folderStrokeEnabled)
     var scrollUpShortcut by mutableStateOf(options.scrollUpShortcut)
     var scrollDownShortcut by mutableStateOf(options.scrollDownShortcut)
+    var resetOnWakeUp by mutableStateOf(false)
+    var resetOnUsage by mutableStateOf(false)
     var itemsList by mutableStateOf(itemsList)
     var folders by mutableStateOf(folders)
 
@@ -830,3 +787,132 @@ data class ContainerOptionsState(
     val scrollUpShortcut: String?,
     val scrollDownShortcut: String?
 )
+
+@AureolePreview
+@Composable
+fun EditContainerScreenPreview() {
+    val sampleApps = listOf(
+        AppInfo(
+            label = "App 1",
+            packageName = "com.example.app1",
+            componentName = ComponentName("com.example.app1", "MainActivity"),
+            icon = ColorDrawable(0xFF1B65C0.toInt())
+        ),
+        AppInfo(
+            label = "App 2",
+            packageName = "com.example.app2",
+            componentName = ComponentName("com.example.app2", "MainActivity"),
+            icon = ColorDrawable(0xFF2E7D32.toInt())
+        ),
+        AppInfo(
+            label = "App 3",
+            packageName = "com.example.app3",
+            componentName = ComponentName("com.example.app3", "MainActivity"),
+            icon = ColorDrawable(0xFFF57C00.toInt())
+        )
+    )
+    val sampleFolders = listOf(
+        AppFolder(id = "folder_1", name = "Social", icon = "folder", appPackageNames = listOf("com.example.app1"))
+    )
+    val panel = ContainerModel(
+        id = "panel_1",
+        title = "Favoritos",
+        orientation = "Vertical",
+        isBackgroundEnabled = true,
+        isGridFolderEnabled = true,
+        folders = sampleFolders,
+        appPackageNames = sampleApps.map { it.packageName },
+        items = listOf(
+            ContainerItemEntity(
+                id = "item_f1",
+                panelId = "panel_1",
+                itemType = ContainerItemType.FOLDER,
+                folderId = sampleFolders.first().id,
+                orderIndex = 0
+            ),
+            ContainerItemEntity(
+                id = "item_a1",
+                panelId = "panel_1",
+                itemType = ContainerItemType.APP,
+                packageName = sampleApps.first().packageName,
+                orderIndex = 1
+            )
+        )
+    )
+    AureoleLauncherTheme {
+        EditContainerScreen(
+            panel = panel,
+            allApps = sampleApps,
+            onDismiss = {},
+            onSave = {}
+        )
+    }
+}
+
+@AureolePreview
+@Composable
+fun EditContainerScreenHorizontalPreview() {
+    val sampleApps = listOf(
+        AppInfo(
+            label = "App 1",
+            packageName = "com.example.app1",
+            componentName = ComponentName("com.example.app1", "MainActivity"),
+            icon = ColorDrawable(0xFF1B65C0.toInt())
+        ),
+        AppInfo(
+            label = "App 2",
+            packageName = "com.example.app2",
+            componentName = ComponentName("com.example.app2", "MainActivity"),
+            icon = ColorDrawable(0xFF2E7D32.toInt())
+        ),
+        AppInfo(
+            label = "App 3",
+            packageName = "com.example.app3",
+            componentName = ComponentName("com.example.app3", "MainActivity"),
+            icon = ColorDrawable(0xFFF57C00.toInt())
+        )
+    )
+    val sampleFolders = listOf(
+        AppFolder(id = "folder_1", name = "Social", icon = "folder", appPackageNames = listOf("com.example.app1"))
+    )
+    val panel = ContainerModel(
+        id = "panel_2",
+        title = "Favoritos Horizontal",
+        orientation = "Horizontal",
+        isBackgroundEnabled = true,
+        isGridFolderEnabled = true,
+        folders = sampleFolders,
+        appPackageNames = sampleApps.map { it.packageName },
+        items = listOf(
+            ContainerItemEntity(
+                id = "item_f1",
+                panelId = "panel_2",
+                itemType = ContainerItemType.FOLDER,
+                folderId = sampleFolders.first().id,
+                orderIndex = 0
+            ),
+            ContainerItemEntity(
+                id = "item_a1",
+                panelId = "panel_2",
+                itemType = ContainerItemType.APP,
+                packageName = sampleApps.first().packageName,
+                orderIndex = 1
+            ),
+            ContainerItemEntity(
+                id = "item_a2",
+                panelId = "panel_2",
+                itemType = ContainerItemType.APP,
+                packageName = sampleApps[1].packageName,
+                orderIndex = 2
+            )
+        )
+    )
+    AureoleLauncherTheme {
+        EditContainerScreen(
+            panel = panel,
+            allApps = sampleApps,
+            onDismiss = {},
+            onSave = {}
+        )
+    }
+}

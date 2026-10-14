@@ -13,12 +13,12 @@ Adote rigorosamente a convenção **Package-by-Feature** combinada com **Clean A
 ```text
 dev.mnascimentos.aureole/
 │
+├── AureoleApplication.kt               # Application Class (Inicializa Koin)
 ├── composable/                         # Design System interno (Componentes visuais reutilizáveis)
 │   ├── SettingsComponents.kt
 │   └── ColorPickerDialog.kt
 │
 ├── core/                               # Recursos globais e compartilhados
-│   ├── analytics/                      # Auxiliares de analytics e métricas
 │   ├── data/                           # Repositórios globais, banco de dados Room e cache
 │   │   ├── cache/                      # IconCache, etc.
 │   │   ├── db/                         # Room AppDatabase, DAOs e Entities globais
@@ -31,6 +31,9 @@ dev.mnascimentos.aureole/
 │   └── lifecycle/                      # Observadores de ciclo de vida desacoplados (DefaultLifecycleObserver)
 │       ├── WidgetLifecycleObserver.kt
 │       └── UpdateLifecycleObserver.kt
+│
+├── di/                                 # Módulos de Injeção de Dependência (Koin)
+│   └── AppModule.kt
 │
 └── feature/                            # Módulos de funcionalidades/telas
     └── [feature_name]/                 # Ex: feature/home, feature/settings
@@ -82,6 +85,7 @@ dev.mnascimentos.aureole/
 
 ### 3.3 `*ViewModel.kt` (Orquestrador)
 - Expõe um `StateFlow<UiState>` público e mantém um `MutableStateFlow` privado.
+- **Injeção de Dependência com Koin:** Todo ViewModel deve obrigatoriamente receber seus repositórios e serviços através do construtor. É **estritamente proibido instanciar repositórios diretamente** (`Repository(context)`) dentro do ViewModel.
 - **Proibição Absoluta:** Nenhuma classe do pacote `android.*` (como `Context`, `View`, `Activity`) deve ser importada no ViewModel.
 
 ---

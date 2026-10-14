@@ -26,6 +26,7 @@ Cada funcionalidade ou tela do aplicativo deve ser dividida em camadas bem defin
 ### 3. ViewModel (`*ViewModel.kt`)
 - Gerencia o estado da tela exposto em um `StateFlow` imutável e responde às ações enviadas pela UI.
 - Comunica-se exclusivamente com a camada de Repositório (`Repository`).
+- **Injeção de Dependência (Koin):** Deve receber todas as dependências (Repositórios e serviços) obrigatoriamente via construtor. É **estritamente proibido** instanciar Repositórios (`Repository(context)`) diretamente no corpo ou `init` do ViewModel.
 - **Proibido:** Importar referências de UI ou do framework Android (ex: `Context`, `View`, `Activity`).
 
 ### 4. Repository (`*Repository.kt` / `*RepositoryImpl.kt`)
@@ -78,6 +79,16 @@ feature/<nome_da_feature>/
 
 ---
 
+## 💉 Injeção de Dependência com Koin (`di/`)
+
+- Toda a configuração de Injeção de Dependência com Koin reside no pacote `di/` (ex: `di/AppModule.kt`).
+- Repositórios e fontes de dados são registrados como `single` (Singletons).
+- ViewModels são registrados via `viewModel` (ex: `viewModelOf(::HomeViewModel)`).
+- A inicialização do Koin é feita centralizadamente em `AureoleApplication.kt` no método `onCreate()`.
+- Nas Activities, a obtenção de ViewModels é feita estritamente via delegador do Koin `by viewModel()`.
+
+---
+
 ## 📏 Qualidade de Código e Restrições do Detekt
 
 O código deve ser pequeno, conciso, simples e direto. A leitura deve ser natural.
@@ -102,5 +113,6 @@ O projeto passou por uma grande refatoração para garantir 100% de adequação 
 5. **Organização da Feature `settings`:** A pasta `feature/settings` foi reorganizada em subpacotes lógicos e padronizados (`screens/`, `components/`, `extensions/`, e `model/`), igualando a estrutura modular da feature `home`.
 6. **Padronização do `core/designsystem/theme`:** Reorganizado em subpacotes e renomeados os arquivos de tema para utilizar o prefixo do projeto (`AureoleColor.kt`, `AureoleTheme.kt`, `AureoleTypography.kt`).
 7. **Catálogo Unificado de Paletas:** Unificadas todas as paletas de cores em `ThemePaletteBase.kt` com supressão explícita do Detekt para o registro do Design System.
+8. **Injeção de Dependências com Koin & Remoção do Analytics:** Integração completa do Koin para injeção de repositórios em ViewModels, permitindo testes unitários isolados (`AppModuleTest`), e remoção total do Firebase Analytics por razões de privacidade (LGPD e políticas da Play Store).
 
 Siga estas regras para garantir que o projeto escale com saúde e sem acúmulo de débito técnico!

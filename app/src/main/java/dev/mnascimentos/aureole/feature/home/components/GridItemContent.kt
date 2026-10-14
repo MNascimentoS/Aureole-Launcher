@@ -8,7 +8,10 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.TextView
+import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.foundation.gestures.awaitEachGesture
+import dev.mnascimentos.aureole.core.designsystem.utils.LocalAnimatedVisibilityScope
+import dev.mnascimentos.aureole.core.designsystem.utils.LocalSharedTransitionScope
 import androidx.compose.foundation.gestures.awaitFirstDown
 import androidx.compose.foundation.gestures.waitForUpOrCancellation
 import androidx.compose.foundation.layout.Box
@@ -148,6 +151,7 @@ fun GridItemContent(params: GridItemContentParams) {
     }
 }
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 fun SingleAppWidgetContent(
     item: LauncherItemState,
@@ -155,9 +159,25 @@ fun SingleAppWidgetContent(
 ) {
     val actions = LocalHomeActions.current
     val coroutineScope = rememberCoroutineScope()
+
+    val sharedTransitionScope = LocalSharedTransitionScope.current
+    val animatedVisibilityScope = LocalAnimatedVisibilityScope.current
+
+    val sharedModifier = if (sharedTransitionScope != null && animatedVisibilityScope != null && item.widgetId != null) {
+        with(sharedTransitionScope) {
+            Modifier.sharedElement(
+                sharedContentState = rememberSharedContentState(key = "widget_${item.widgetId}"),
+                animatedVisibilityScope = animatedVisibilityScope
+            )
+        }
+    } else {
+        Modifier
+    }
+
     Box(
         modifier = Modifier
             .fillMaxSize()
+            .then(sharedModifier)
             .pointerInput(item.widgetId, item.id) {
                 val longPressTimeout = viewConfiguration.longPressTimeoutMillis
                 awaitEachGesture {

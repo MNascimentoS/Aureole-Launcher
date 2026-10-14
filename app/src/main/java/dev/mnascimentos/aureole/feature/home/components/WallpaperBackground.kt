@@ -18,7 +18,6 @@ fun WallpaperBackground(
     isCustomWallpaperSet: Boolean,
     customWallpaperPath: String?,
     hazeState: HazeState,
-    isHazeEnabled: Boolean,
     wallpaperScaleType: String = "Crop"
 ) {
     val hazeModifier = Modifier.hazeSource(state = hazeState)

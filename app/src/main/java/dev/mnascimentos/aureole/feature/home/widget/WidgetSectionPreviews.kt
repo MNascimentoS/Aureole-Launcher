@@ -25,7 +25,7 @@ fun StackedWidgetSectionPreview() {
     val mockActions = HomeScreenActions(
         onWidgetRowHeightChanged = {},
         onAddWidgetClick = {},
-        onRemoveWidgetClick = {},
+        onRemoveWidgetClick = { _, _ -> },
         onAppClick = {},
         onExpandNotificationShade = {},
         onFolderIntent = {},

@@ -7,17 +7,12 @@ import android.view.Gravity
 import android.view.View
 import android.widget.FrameLayout
 import android.widget.TextView
-import androidx.activity.compose.BackHandler
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.scaleIn
-import androidx.compose.animation.scaleOut
+import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.foundation.background
+import dev.mnascimentos.aureole.core.designsystem.utils.LocalAnimatedVisibilityScope
+import dev.mnascimentos.aureole.core.designsystem.utils.LocalSharedTransitionScope
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -30,6 +25,7 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -37,7 +33,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -50,11 +45,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.onGloballyPositioned
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import dev.chrisbanes.haze.HazeState
@@ -62,217 +55,168 @@ import dev.chrisbanes.haze.HazeStyle
 import dev.chrisbanes.haze.HazeTint
 import dev.chrisbanes.haze.hazeEffect
 import dev.mnascimentos.aureole.core.data.model.LauncherItemState
+import dev.mnascimentos.aureole.core.designsystem.components.bottomsheet.AureoleEditOverlay
 import dev.mnascimentos.aureole.core.designsystem.icons.Add
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleTheme
 import kotlinx.coroutines.delay
 import android.graphics.Color as AndroidColor
 
+private const val ANIMATION_DURATION_MS = 300
+
+data class EditWidgetGroupParams(
+    val item: LauncherItemState,
+    val widgets: List<Int>,
+    val appWidgetHost: AppWidgetHost? = null,
+    val isIndicatorEnabled: Boolean = true,
+    val hazeState: HazeState? = null
+)
+
+data class EditWidgetGroupActions(
+    val onToggleIndicator: () -> Unit,
+    val onRemoveWidget: (Int) -> Unit,
+    val onAddWidgetClick: () -> Unit,
+    val onDismissRequest: () -> Unit
+)
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EditWidgetGroupScreen(
-    item: LauncherItemState,
-    widgets: List<Int>,
-    appWidgetHost: AppWidgetHost? = null,
-    isIndicatorEnabled: Boolean,
-    onToggleIndicator: () -> Unit,
-    onRemoveWidget: (Int) -> Unit,
-    onAddWidgetClick: () -> Unit,
-    onDismissRequest: () -> Unit,
-    onDeleteConfirm: (String) -> Unit,
-    isBlurEnabled: Boolean = true,
-    hazeState: HazeState? = null
+    params: EditWidgetGroupParams,
+    actions: EditWidgetGroupActions
 ) {
+    val widgets = params.widgets
     var isVisible by remember { mutableStateOf(true) }
     var currentWidgets by remember(widgets) { mutableStateOf(widgets) }
+
     val listState = rememberLazyListState()
     val currentPage by remember { derivedStateOf { listState.firstVisibleItemIndex } }
 
-    BackHandler(enabled = isVisible) {
-        isVisible = false
+    if (!isVisible) {
+        LaunchedEffect(isVisible) {
+            delay(ANIMATION_DURATION_MS.toLong())
+            actions.onDismissRequest()
+        }
     }
 
-    LaunchedEffect(Unit) {
-        isVisible = true
-    }
-
-    AnimatedVisibility(
-        visible = isVisible,
-        enter = fadeIn(animationSpec = tween(300)) + scaleIn(
-            initialScale = 0.8f,
-            animationSpec = tween(300)
-        ),
-        exit = fadeOut(animationSpec = tween(300)) + scaleOut(
-            targetScale = 0.8f,
-            animationSpec = tween(300)
-        )
+    AureoleEditOverlay(
+        onDismissRequest = { isVisible = false },
+        title = "Widget Stack",
+        hazeState = params.hazeState,
+        isVisible = isVisible,
+        animated = true,
+        previewContent = {
+            EditWidgetGroupPreviewCarousel(
+                currentWidgets = currentWidgets,
+                appWidgetHost = params.appWidgetHost,
+                listState = listState,
+                currentPage = currentPage,
+                isIndicatorEnabled = params.isIndicatorEnabled,
+                onRemoveWidget = { widgetId ->
+                    currentWidgets = currentWidgets.filter { id -> id != widgetId }
+                    actions.onRemoveWidget(widgetId)
+                },
+                onAddWidgetClick = actions.onAddWidgetClick
+            )
+        },
+        bottomBarContent = {
+            Button(
+                onClick = { isVisible = false },
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text("Salvar")
+            }
+        }
     ) {
-        val hazeModifier = if (isBlurEnabled && hazeState != null) {
-            Modifier.hazeEffect(
-                state = hazeState,
-                style = HazeStyle(
-                    blurRadius = 32.dp,
-                    tint = HazeTint(Color.Black.copy(alpha = 0.55f))
-                )
-            ) {
-                blurEnabled = true
-            }
-        } else {
-            Modifier
-        }
-
-        val backgroundColor = if (isBlurEnabled && hazeState != null) {
-            Color.Transparent
-        } else {
-            Color.Black
-        }
-
-        Box(
+        Row(
             modifier = Modifier
-                .fillMaxSize()
-                .then(hazeModifier)
-                .background(backgroundColor)
-                .clickable(
-                    interactionSource = remember { MutableInteractionSource() },
-                    indication = null,
-                    onClick = {
-                        isVisible = false
-                    }
-                )
+                .fillMaxWidth()
+                .padding(vertical = 12.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            var bottomSheetHeight by remember { mutableStateOf(0) }
-            val density = LocalDensity.current
-
-            // Bottom Sheet Surface
-            Surface(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .align(Alignment.BottomCenter)
-                    .onGloballyPositioned { coordinates ->
-                        bottomSheetHeight = coordinates.size.height
-                    }
-                    .clickable(
-                        interactionSource = remember { MutableInteractionSource() },
-                        indication = null,
-                        onClick = {} // Consume clicks on bottom sheet
-                    ),
-                shape = RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp),
-                color = AureoleTheme.colors.surface,
-                contentColor = AureoleTheme.colors.onSurfaceMedium
-            ) {
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(24.dp)
-                ) {
-                    Text(
-                        text = "Widget Stack",
-                        style = AureoleTheme.typography.titleMedium,
-                        fontWeight = FontWeight.Bold,
-                        modifier = Modifier.padding(bottom = 20.dp).fillMaxWidth(),
-                        color = AureoleTheme.colors.onSurfaceHigh,
-                        textAlign = TextAlign.Center
-                    )
-
-                    Row(
-                        modifier = Modifier.fillMaxWidth().padding(vertical = 12.dp),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                            Text(
-                                text = "•••",
-                                color = AureoleTheme.colors.onSurfaceMedium,
-                                style = AureoleTheme.typography.bodyLarge,
-                                fontWeight = FontWeight.Bold
-                            )
-                            Spacer(modifier = Modifier.width(16.dp))
-                            Text("Show widget indicator", color = AureoleTheme.colors.onSurfaceMedium)
-                        }
-                        Switch(
-                            checked = isIndicatorEnabled,
-                            onCheckedChange = { onToggleIndicator() }
-                        )
-                    }
-
-                    Spacer(modifier = Modifier.height(16.dp))
-
-                    Button(
-                        onClick = { isVisible = false },
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        Text("Salvar")
-                    }
-                }
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(
+                    text = "•••",
+                    color = AureoleTheme.colors.onSurfaceMedium,
+                    style = AureoleTheme.typography.bodyLarge,
+                    fontWeight = FontWeight.Bold
+                )
+                Spacer(modifier = Modifier.width(16.dp))
+                Text("Show widget indicator", color = AureoleTheme.colors.onSurfaceMedium)
             }
-
-            val bottomSheetHeightDp = if (bottomSheetHeight == 0) 280.dp else with(density) { bottomSheetHeight.toDp() }
-
-            // Preview Carousel positioned dynamically right above bottom sheet
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .align(Alignment.BottomCenter)
-                    .padding(bottom = bottomSheetHeightDp + 16.dp),
-                contentAlignment = Alignment.Center
-            ) {
-                Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    LazyRow(
-                        state = listState,
-                        horizontalArrangement = Arrangement.spacedBy(12.dp),
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        item {
-                            Spacer(modifier = Modifier.width(16.dp))
-                        }
-                        items(currentWidgets, key = { it }) { widgetId ->
-                            WidgetPreviewItem(
-                                widgetId = widgetId,
-                                appWidgetHost = appWidgetHost,
-                                onRemoveClick = {
-                                    currentWidgets = currentWidgets.filter { id -> id != widgetId }
-                                    onRemoveWidget(widgetId)
-                                }
-                            )
-                        }
-                        item {
-                            AddWidgetCard(onClick = {
-                                onAddWidgetClick()
-                            })
-                        }
-                        item {
-                            Spacer(modifier = Modifier.width(28.dp))
-                        }
-                    }
-
-                    Spacer(modifier = Modifier.height(16.dp))
-
-                    // Dots indicator matching Home screen
-                    if (currentWidgets.isNotEmpty() && isIndicatorEnabled) {
-                        WidgetPositionIndicatorBar(
-                            pageCount = currentWidgets.size,
-                            currentPage = currentPage.coerceIn(0, (currentWidgets.size - 1).coerceAtLeast(0))
-                        )
-                    }
-                }
-            }
-
-            if (!isVisible) {
-                LaunchedEffect(isVisible) {
-                    delay(300)
-                    onDismissRequest()
-                }
-            }
+            Switch(
+                checked = params.isIndicatorEnabled,
+                onCheckedChange = { actions.onToggleIndicator() }
+            )
         }
     }
 }
 
+@Composable
+private fun EditWidgetGroupPreviewCarousel(
+    currentWidgets: List<Int>,
+    appWidgetHost: AppWidgetHost?,
+    listState: LazyListState,
+    currentPage: Int,
+    isIndicatorEnabled: Boolean,
+    onRemoveWidget: (Int) -> Unit,
+    onAddWidgetClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Column(
+        modifier = modifier,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        LazyRow(
+            state = listState,
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            item { Spacer(modifier = Modifier.width(16.dp)) }
+            items(currentWidgets, key = { it }) { widgetId ->
+                WidgetPreviewItem(
+                    widgetId = widgetId,
+                    appWidgetHost = appWidgetHost,
+                    onRemoveClick = { onRemoveWidget(widgetId) }
+                )
+            }
+            item { AddWidgetCard(onClick = onAddWidgetClick) }
+            item { Spacer(modifier = Modifier.width(28.dp)) }
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        if (currentWidgets.isNotEmpty() && isIndicatorEnabled) {
+            WidgetPositionIndicatorBar(
+                pageCount = currentWidgets.size,
+                currentPage = currentPage.coerceIn(0, (currentWidgets.size - 1).coerceAtLeast(0))
+            )
+        }
+    }
+}
+
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 private fun WidgetPreviewItem(
     widgetId: Int,
     appWidgetHost: AppWidgetHost?,
     onRemoveClick: () -> Unit
 ) {
+    val sharedTransitionScope = LocalSharedTransitionScope.current
+    val animatedVisibilityScope = LocalAnimatedVisibilityScope.current
+
+    val sharedModifier = if (sharedTransitionScope != null && animatedVisibilityScope != null) {
+        with(sharedTransitionScope) {
+            Modifier.sharedElement(
+                sharedContentState = rememberSharedContentState(key = "widget_$widgetId"),
+                animatedVisibilityScope = animatedVisibilityScope
+            )
+        }
+    } else {
+        Modifier
+    }
+
     Box(
         modifier = Modifier.padding(top = 10.dp, start = 10.dp)
     ) {
@@ -291,6 +235,7 @@ private fun WidgetPreviewItem(
                 modifier = Modifier
                     .size(150.dp, 150.dp)
                     .clip(RoundedCornerShape(22.dp))
+                    .then(sharedModifier)
                     .background(AureoleTheme.colors.surfaceVariant.copy(alpha = 0.6f)),
                 contentAlignment = Alignment.Center
             ) {

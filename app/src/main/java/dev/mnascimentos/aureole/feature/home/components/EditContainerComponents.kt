@@ -10,7 +10,6 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -43,14 +42,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import dev.mnascimentos.aureole.core.data.model.AppFolder
 import dev.mnascimentos.aureole.core.data.model.AppInfo
-import dev.mnascimentos.aureole.core.data.model.ContainerItemEntity
-import dev.mnascimentos.aureole.core.data.model.LauncherItemState
-import dev.mnascimentos.aureole.core.data.model.LauncherItemType
-import dev.mnascimentos.aureole.core.data.model.ScrollOrientation
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
-import dev.mnascimentos.aureole.core.designsystem.icons.Add
 import dev.mnascimentos.aureole.core.designsystem.icons.ArrowDown
 import dev.mnascimentos.aureole.core.designsystem.icons.ArrowUp
 import dev.mnascimentos.aureole.core.designsystem.icons.Delete
@@ -60,13 +53,8 @@ import dev.mnascimentos.aureole.core.designsystem.theme.AureoleTheme
 import dev.mnascimentos.aureole.feature.home.components.model.EditContainerFormCallbacks
 import dev.mnascimentos.aureole.feature.home.components.model.EditContainerFormState
 import dev.mnascimentos.aureole.feature.home.folder.FolderIconRegistry
-import dev.mnascimentos.aureole.feature.home.grid.ScrollViewChildItemCard
-import dev.mnascimentos.aureole.feature.home.grid.ScrollViewChildParams
-import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
-import dev.mnascimentos.aureole.feature.home.model.MainUiState
 
 private const val MAX_DROPDOWN_APP_RESULTS = 10
-private const val SPACING_10 = 10
 
 data class EditContainerItemRowParams(
     val title: String,
@@ -80,20 +68,6 @@ data class EditContainerItemRowActions(
     val onMoveUp: () -> Unit,
     val onMoveDown: () -> Unit,
     val onRemove: () -> Unit,
-)
-
-data class EditContainerListData(
-    val itemsList: List<ContainerItemEntity>,
-    val folders: List<AppFolder>,
-    val allApps: List<AppInfo>,
-)
-
-data class EditContainerListCallbacks(
-    val onAddApp: (String) -> Unit,
-    val onAddFolder: () -> Unit,
-    val onMoveUp: (Int) -> Unit,
-    val onMoveDown: (Int) -> Unit,
-    val onRemoveItem: (Int) -> Unit,
 )
 
 @Composable
@@ -122,47 +96,30 @@ internal fun EditContainerOrientationSelector(
             val isVertical = orientation.equals("Vertical", ignoreCase = true)
             val isHorizontal = orientation.equals("Horizontal", ignoreCase = true)
 
-            OrientationChoiceButton(
-                text = "Vertical",
-                isSelected = isVertical,
-                onClick = { onOrientationSelected("Vertical") },
-                modifier = Modifier.weight(1f)
-            )
-            OrientationChoiceButton(
-                text = "Horizontal",
-                isSelected = isHorizontal,
-                onClick = { onOrientationSelected("Horizontal") },
-                modifier = Modifier.weight(1f)
-            )
-        }
-    }
-}
-
-@Composable
-private fun OrientationChoiceButton(
-    text: String,
-    isSelected: Boolean,
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    if (isSelected) {
-        Button(
-            onClick = onClick,
-            modifier = modifier,
-            colors = ButtonDefaults.buttonColors(
-                containerColor = MaterialTheme.colorScheme.primary,
-                contentColor = MaterialTheme.colorScheme.onPrimary
-            )
-        ) {
-            AureoleText(text = text)
-        }
-    } else {
-        OutlinedButton(
-            onClick = onClick,
-            modifier = modifier,
-            border = BorderStroke(1.dp, AureoleTheme.colors.outline.copy(alpha = 0.5f))
-        ) {
-            AureoleText(text = text, color = AureoleTheme.colors.onSurfaceHigh)
+            listOf("Vertical" to isVertical, "Horizontal" to isHorizontal).forEach { (optText, isSelected) ->
+                val onClick = { onOrientationSelected(optText) }
+                val modifier = Modifier.weight(1f)
+                if (isSelected) {
+                    Button(
+                        onClick = onClick,
+                        modifier = modifier,
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = MaterialTheme.colorScheme.primary,
+                            contentColor = MaterialTheme.colorScheme.onPrimary
+                        )
+                    ) {
+                        AureoleText(text = optText)
+                    }
+                } else {
+                    OutlinedButton(
+                        onClick = onClick,
+                        modifier = modifier,
+                        border = BorderStroke(1.dp, AureoleTheme.colors.outline.copy(alpha = 0.5f))
+                    ) {
+                        AureoleText(text = optText, color = AureoleTheme.colors.onSurfaceHigh)
+                    }
+                }
+            }
         }
     }
 }
@@ -494,18 +451,10 @@ internal fun EditContainerAddAppDropdown(
             onDismissRequest = { isExpanded = false }
         ) {
             filteredApps.forEach { app ->
-                val iconBitmap = remember(app.packageName) { app.getIconBitmap() }
-                DropdownMenuItem(
-                    text = { AureoleText(app.label, color = AureoleTheme.colors.onSurfaceHigh) },
-                    leadingIcon = {
-                        Image(
-                            bitmap = iconBitmap,
-                            contentDescription = app.label,
-                            modifier = Modifier.size(20.dp)
-                        )
-                    },
-                    onClick = {
-                        onAppSelected(app.packageName)
+                DropdownAppItem(
+                    app = app,
+                    onAppSelected = {
+                        onAppSelected(it)
                         searchQuery = ""
                         isExpanded = false
                     }
@@ -516,153 +465,20 @@ internal fun EditContainerAddAppDropdown(
 }
 
 @Composable
-internal fun EditDialogWidgetListSection(
-    item: LauncherItemState,
-    uiState: MainUiState,
-    actions: HomeScreenActions
+private fun DropdownAppItem(
+    app: AppInfo,
+    onAppSelected: (String) -> Unit
 ) {
-    if (item.type == LauncherItemType.WIDGET_LIST || item.type == LauncherItemType.SINGLE_APP_WIDGET) {
-        val widgets = uiState.topWidgetIds
-
-        AureoleText(
-            text = "Widgets no Grupo (${widgets.size})",
-            style = AureoleTheme.typography.titleMedium,
-            fontWeight = FontWeight.SemiBold,
-            color = AureoleTheme.colors.onSurfaceHigh,
-            modifier = Modifier.padding(bottom = 6.dp)
-        )
-
-        if (widgets.isEmpty()) {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clip(RoundedCornerShape(14.dp))
-                    .background(AureoleTheme.colors.surfaceVariant.copy(alpha = 0.25f))
-                    .padding(14.dp),
-                contentAlignment = Alignment.Center
-            ) {
-                AureoleText(
-                    text = "Nenhum widget adicionado ao grupo ainda.",
-                    style = AureoleTheme.typography.bodyMedium,
-                    color = AureoleTheme.colors.onSurfaceMedium
-                )
-            }
-        } else {
-            widgets.forEachIndexed { index, widgetId ->
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .clip(RoundedCornerShape(12.dp))
-                        .background(AureoleTheme.colors.surfaceVariant.copy(alpha = 0.35f))
-                        .padding(horizontal = 12.dp, vertical = 8.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    AureoleText(
-                        text = "Widget #${index + 1} (ID: $widgetId)",
-                        style = AureoleTheme.typography.bodyMedium,
-                        fontWeight = FontWeight.Medium,
-                        color = AureoleTheme.colors.onSurfaceHigh
-                    )
-
-                    IconButton(
-                        onClick = { actions.onRemoveWidgetClick(widgetId) },
-                        modifier = Modifier.size(28.dp)
-                    ) {
-                        AureoleDS.icons.Delete(
-                            tint = MaterialTheme.colorScheme.error,
-                            modifier = Modifier.size(18.dp)
-                        )
-                    }
-                }
-            }
-        }
-    }
-}
-
-@Composable
-internal fun EditDialogScrollViewSection(
-    item: LauncherItemState,
-    actions: HomeScreenActions,
-    onDismissRequest: () -> Unit
-) {
-    if (item.type == LauncherItemType.SCROLL_VIEW) {
-        Column(modifier = Modifier.fillMaxWidth()) {
-            AureoleText(
-                text = "Itens no Scroll View (${item.safeChildren.size})",
-                style = AureoleTheme.typography.titleMedium,
-                fontWeight = FontWeight.SemiBold,
-                color = AureoleTheme.colors.onSurfaceHigh,
-                modifier = Modifier.padding(bottom = 6.dp)
+    val iconBitmap = remember(app.packageName) { app.getIconBitmap() }
+    DropdownMenuItem(
+        text = { AureoleText(app.label, color = AureoleTheme.colors.onSurfaceHigh) },
+        leadingIcon = {
+            Image(
+                bitmap = iconBitmap,
+                contentDescription = app.label,
+                modifier = Modifier.size(20.dp)
             )
-
-            if (item.safeChildren.isEmpty()) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .clip(RoundedCornerShape(14.dp))
-                        .background(AureoleTheme.colors.surfaceVariant.copy(alpha = 0.25f))
-                        .padding(14.dp),
-                    contentAlignment = Alignment.Center
-                ) {
-                    AureoleText(
-                        text = "Nenhum componente dentro do Scroll View.",
-                        style = AureoleTheme.typography.bodyMedium,
-                        color = AureoleTheme.colors.onSurfaceMedium
-                    )
-                }
-            } else {
-                val isVertical = item.safeScrollOrientation == ScrollOrientation.VERTICAL
-                val totalChildren = item.safeChildren.size
-                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                    item.safeChildren.forEachIndexed { index, child ->
-                        ScrollViewChildItemCard(
-                            params = ScrollViewChildParams(
-                                parentId = item.id,
-                                child = child,
-                                childIndex = index,
-                                totalChildren = totalChildren,
-                                isVertical = isVertical
-                            ),
-                            actions = actions,
-                            onDismissRequest = onDismissRequest
-                        )
-                    }
-                }
-            }
-
-            Spacer(modifier = Modifier.height(2.dp))
-
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clip(RoundedCornerShape(14.dp))
-                    .background(AureoleTheme.colors.surfaceVariant)
-                    .clickable { actions.onOpenAddContainerForParent(item.id) }
-                    .padding(horizontal = 14.dp, vertical = 12.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Center
-            ) {
-                Box(
-                    modifier = Modifier
-                        .size(32.dp)
-                        .clip(RoundedCornerShape(SPACING_10.dp))
-                        .background(AureoleTheme.colors.surface.copy(alpha = 0.6f)),
-                    contentAlignment = Alignment.Center
-                ) {
-                    AureoleDS.icons.Add(
-                        tint = AureoleTheme.colors.onSurfaceHigh,
-                        modifier = Modifier.size(18.dp)
-                    )
-                }
-                Spacer(modifier = Modifier.width(SPACING_10.dp))
-                AureoleText(
-                    text = "Adicionar Componente",
-                    style = AureoleTheme.typography.bodyLarge,
-                    fontWeight = FontWeight.SemiBold,
-                    color = AureoleTheme.colors.onSurfaceHigh
-                )
-            }
-        }
-    }
+        },
+        onClick = { onAppSelected(app.packageName) }
+    )
 }

@@ -232,66 +232,71 @@ internal fun ContainerFolderBottomSheet(
                     .fillMaxWidth()
                     .padding(horizontal = AureoleDS.dimens.medium, vertical = 6.dp)
             ) {
-                AureolePopupMenuItem(
-                    title = "Editar atalhos",
-                    customIcon = {
-                        AureoleDS.icons.Star(
-                            tint = AureoleDS.colors.onSurfaceMedium,
-                            modifier = Modifier.size(AureoleDS.dimens.iconMedium)
-                        )
-                    },
-                    onClick = params.onEditShortcuts
-                )
-
-                AureolePopupMenuItem(
-                    title = "Renomear",
-                    customIcon = {
-                        AureoleDS.icons.Edit(
-                            tint = AureoleDS.colors.onSurfaceMedium,
-                            modifier = Modifier.size(AureoleDS.dimens.iconMedium)
-                        )
-                    },
-                    onClick = params.onRename
-                )
-
-                AureolePopupMenuItem(
-                    title = "Ícone",
-                    customIcon = {
-                        AureoleDS.icons.Smile(
-                            tint = AureoleDS.colors.onSurfaceMedium,
-                            modifier = Modifier.size(AureoleDS.dimens.iconMedium)
-                        )
-                    },
-                    onClick = params.onIcon
-                )
-
-                AureolePopupMenuItem(
-                    title = "Remover pasta",
-                    customIcon = {
-                        AureoleDS.icons.Delete(
-                            tint = MaterialTheme.colorScheme.error,
-                            modifier = Modifier.size(AureoleDS.dimens.iconMedium)
-                        )
-                    },
-                    isDestructive = true,
-                    onClick = params.onRemoveFolder
-                )
-
-                AureolePopupMenuItem(
-                    title = "Configurações do Container",
-                    customIcon = {
-                        AureoleDS.icons.Settings(
-                            tint = AureoleDS.colors.onSurfaceMedium,
-                            modifier = Modifier.size(AureoleDS.dimens.iconMedium)
-                        )
-                    },
-                    onClick = params.onOpenContainerSettings
-                )
+                ContainerFolderMenuItems(params)
             }
         }
     }
 
     RenderModalBottomSheetOrInspection(sheetContent, onDismiss)
+}
+
+@Composable
+private fun ContainerFolderMenuItems(params: ContainerFolderBottomSheetParams) {
+    AureolePopupMenuItem(
+        title = "Editar atalhos",
+        customIcon = {
+            AureoleDS.icons.Star(
+                tint = AureoleDS.colors.onSurfaceMedium,
+                modifier = Modifier.size(AureoleDS.dimens.iconMedium)
+            )
+        },
+        onClick = params.onEditShortcuts
+    )
+
+    AureolePopupMenuItem(
+        title = "Renomear",
+        customIcon = {
+            AureoleDS.icons.Edit(
+                tint = AureoleDS.colors.onSurfaceMedium,
+                modifier = Modifier.size(AureoleDS.dimens.iconMedium)
+            )
+        },
+        onClick = params.onRename
+    )
+
+    AureolePopupMenuItem(
+        title = "Ícone",
+        customIcon = {
+            AureoleDS.icons.Smile(
+                tint = AureoleDS.colors.onSurfaceMedium,
+                modifier = Modifier.size(AureoleDS.dimens.iconMedium)
+            )
+        },
+        onClick = params.onIcon
+    )
+
+    AureolePopupMenuItem(
+        title = "Remover pasta",
+        customIcon = {
+            AureoleDS.icons.Delete(
+                tint = MaterialTheme.colorScheme.error,
+                modifier = Modifier.size(AureoleDS.dimens.iconMedium)
+            )
+        },
+        isDestructive = true,
+        onClick = params.onRemoveFolder
+    )
+
+    AureolePopupMenuItem(
+        title = "Configurações do Container",
+        customIcon = {
+            AureoleDS.icons.Settings(
+                tint = AureoleDS.colors.onSurfaceMedium,
+                modifier = Modifier.size(AureoleDS.dimens.iconMedium)
+            )
+        },
+        onClick = params.onOpenContainerSettings
+    )
 }
 
 @Composable
@@ -528,6 +533,15 @@ private fun AppActionSheetAdditionalItems(
     params: AppItemBottomSheetParams,
     onDismiss: () -> Unit
 ) {
+    AppActionSheetContainerItems(params, onDismiss)
+    AppActionSheetFolderItems(params, onDismiss)
+}
+
+@Composable
+private fun AppActionSheetContainerItems(
+    params: AppItemBottomSheetParams,
+    onDismiss: () -> Unit
+) {
     if (params.onRemoveFromContainer != null) {
         AureolePopupMenuItem(
             title = "Remover do Container",
@@ -550,7 +564,13 @@ private fun AppActionSheetAdditionalItems(
             }
         )
     }
+}
 
+@Composable
+private fun AppActionSheetFolderItems(
+    params: AppItemBottomSheetParams,
+    onDismiss: () -> Unit
+) {
     if (params.onRemoveFromFolder != null) {
         AureolePopupMenuItem(
             title = "Remover da Pasta",

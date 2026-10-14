@@ -307,11 +307,6 @@ private fun GridItemEditOverlay(
     Box(
         modifier = Modifier.fillMaxSize().then(blockerModifier)
     ) {
-        DeleteActionHandle(
-            itemId = item.id,
-            onDeleteItem = callbacks.onDeleteItem
-        )
-
         RightEdgeResizeHandle(
             params = params,
             callbacks = ResizeHandleCallbacks(
@@ -341,6 +336,11 @@ private fun GridItemEditOverlay(
                 onResizeItem = callbacks.onResizeItem,
                 onEditItem = callbacks.onEditItem
             )
+        )
+
+        DeleteActionHandle(
+            itemId = item.id,
+            onDeleteItem = callbacks.onDeleteItem
         )
     }
 }
