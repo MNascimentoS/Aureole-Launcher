@@ -12,6 +12,17 @@ data class ContainerModel(
     val showAddFolderButton: Boolean = true,
     val showFolderLabels: Boolean = false,
     val isGridFolderEnabled: Boolean = true,
+
+    val hideText: Boolean = false,
+    val textColor: Long? = null,
+    val backgroundColor: Long? = null,
+    val strokeEnabled: Boolean = false,
+    val strokeColor: Long? = null,
+    val folderColor: Long? = null,
+    val folderStrokeEnabled: Boolean = false,
+    val scrollUpShortcut: String? = null,
+    val scrollDownShortcut: String? = null,
+
     val items: List<ContainerItemEntity> = emptyList(),
     val folders: List<AppFolder> = emptyList(),
     val appPackageNames: List<String> = emptyList()

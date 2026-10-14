@@ -6,13 +6,15 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.tooling.preview.Preview
 import com.android.tools.screenshot.PreviewTest
 import dev.mnascimentos.aureole.core.data.model.AppFolder
+import dev.mnascimentos.aureole.core.data.model.ContainerItemEntity
+import dev.mnascimentos.aureole.core.data.model.ContainerItemType
 import dev.mnascimentos.aureole.core.data.model.ContainerModel
 import dev.mnascimentos.aureole.core.data.model.LauncherItemState
 import dev.mnascimentos.aureole.core.data.model.LauncherItemType
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.feature.home.components.CustomizeBottomSheet
 import dev.mnascimentos.aureole.feature.home.components.EditClockBottomSheet
-import dev.mnascimentos.aureole.feature.home.components.EditContainerBottomSheet
+import dev.mnascimentos.aureole.feature.home.components.EditContainerScreen
 import dev.mnascimentos.aureole.feature.home.components.FavoriteAppsDialog
 import dev.mnascimentos.aureole.feature.home.components.ReleaseNotesBottomSheet
 import dev.mnascimentos.aureole.feature.home.components.UpdateAvailableDialog
@@ -25,8 +27,11 @@ import dev.mnascimentos.aureole.feature.home.folder.FolderAppPickerDialog
 import dev.mnascimentos.aureole.feature.home.folder.FolderDialog
 import dev.mnascimentos.aureole.feature.home.grid.AddContainerDialog
 import dev.mnascimentos.aureole.feature.home.grid.EditGridItemDialog
+import dev.mnascimentos.aureole.feature.home.widget.EditWidgetGroupScreen
 import dev.mnascimentos.aureole.feature.home.widget.WidgetSelectorScreen
+import dev.mnascimentos.aureole.feature.home.widget.model.WidgetAppGroup
 import dev.mnascimentos.aureole.feature.home.widget.model.WidgetSelectorState
+import dev.mnascimentos.aureole.feature.home.widget.model.WidgetVariant
 
 @PreviewTest
 @Preview(name = "Favorite Apps Dialog Flow", uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
@@ -201,17 +206,40 @@ fun EditClockBottomSheetScreenshotTest() {
 @Preview(name = "Widget Picker Bottom Sheet Flow", uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
 @Composable
 fun WidgetPickerBottomSheetScreenshotTest() {
+    val sampleData = createSampleHomeData()
+    val sampleWidgetGroup = WidgetAppGroup(
+        appId = "com.example.calendar",
+        appName = "Calendar",
+        availableWidgets = listOf(
+            WidgetVariant(
+                widgetId = "calendar_1",
+                title = "Month View",
+                minSpanX = 2,
+                minSpanY = 2
+            ),
+            WidgetVariant(
+                widgetId = "calendar_2",
+                title = "Agenda View",
+                minSpanX = 4,
+                minSpanY = 2
+            )
+        )
+    )
     val sampleState = WidgetSelectorState(
         isLoading = false,
         searchQuery = "",
-        widgetGroups = emptyList()
+        widgetGroups = listOf(sampleWidgetGroup),
+        expandedAppIds = setOf("com.example.calendar")
     )
     AureoleLauncherTheme {
-        WidgetSelectorScreen(
-            state = sampleState,
-            onIntent = {},
-            onWidgetSelected = {}
-        )
+        CompositionLocalProvider(LocalHomeUiState provides sampleData.uiState) {
+            WidgetSelectorScreen(
+                state = sampleState,
+                onIntent = {},
+                onWidgetSelected = {},
+                onDismiss = {}
+            )
+        }
     }
 }
 
@@ -233,20 +261,77 @@ fun FolderDialogScreenshotTest() {
 }
 
 @PreviewTest
-@Preview(name = "Edit Container Bottom Sheet Flow", uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
+@Preview(name = "Edit Container Screen Flow", uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
 @Composable
-fun EditContainerBottomSheetScreenshotTest() {
+fun EditContainerScreenScreenshotTest() {
     val sampleData = createSampleHomeData()
-    val panel = ContainerModel(id = "panel_1")
+    val panel = ContainerModel(
+        id = "panel_1",
+        title = "Favoritos",
+        orientation = "Vertical",
+        isBackgroundEnabled = true,
+        isGridFolderEnabled = true,
+        folders = sampleData.folders,
+        appPackageNames = sampleData.apps.take(3).map { it.packageName },
+        items = listOf(
+            ContainerItemEntity(
+                id = "item_f1",
+                panelId = "panel_1",
+                itemType = ContainerItemType.FOLDER,
+                folderId = sampleData.folders.first().id,
+                orderIndex = 0
+            ),
+            ContainerItemEntity(
+                id = "item_a1",
+                panelId = "panel_1",
+                itemType = ContainerItemType.APP,
+                packageName = sampleData.apps.first().packageName,
+                orderIndex = 1
+            )
+        )
+    )
     AureoleLauncherTheme {
-        EditContainerBottomSheet(
-            panel = panel,
-            allApps = sampleData.apps,
-            onDismiss = {},
-            onSave = {},
-            onDeletePanel = {}
+        CompositionLocalProvider(
+            LocalHomeUiState provides sampleData.uiState,
+            LocalHomeActions provides sampleData.actions
+        ) {
+            EditContainerScreen(
+                panel = panel,
+                allApps = sampleData.apps,
+                onDismiss = {},
+                onSave = {},
+                onDeletePanel = {}
+            )
+        }
+    }
+}
+
+@PreviewTest
+@Preview(name = "Edit Widget Group Screen Flow", uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
+@Composable
+fun EditWidgetGroupScreenScreenshotTest() {
+    val item = LauncherItemState(
+        id = "widget_group_1",
+        type = LauncherItemType.WIDGET_LIST,
+        col = 0,
+        row = 0,
+        colSpan = 2,
+        rowSpan = 2
+    )
+    AureoleLauncherTheme {
+        EditWidgetGroupScreen(
+            item = item,
+            widgets = listOf(1, 2),
+            appWidgetHost = null,
+            isIndicatorEnabled = true,
+            onToggleIndicator = {},
+            onRemoveWidget = {},
+            onAddWidgetClick = {},
+            onDismissRequest = {},
+            onDeleteConfirm = {}
         )
     }
 }
+
 
 

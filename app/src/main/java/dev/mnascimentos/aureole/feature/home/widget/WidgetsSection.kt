@@ -84,11 +84,11 @@ fun StackedWidgetSection(
     stackId: String = "top_widgets"
 ) {
     val uiState = LocalHomeUiState.current
-    val showAddButton = config.topWidgetIds.size < MAX_WIDGETS
-    val pageCount = config.topWidgetIds.size + if (showAddButton) 1 else 0
+    val showAddButton = false
+    val pageCount = config.topWidgetIds.size
     val pagerState = rememberPagerState(pageCount = { pageCount })
 
-    val showDotsForStack = uiState.widgetStackDots[stackId] ?: config.showWidgetDots
+    val showDotsForStack = uiState.widgetStackDots[stackId] ?: true
 
     Column(
         modifier = modifier.fillMaxSize(),

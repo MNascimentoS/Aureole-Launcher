@@ -1,5 +1,6 @@
 package dev.mnascimentos.aureole.feature.home.folder
 
+import android.appwidget.AppWidgetHost
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
@@ -26,30 +27,33 @@ import dev.chrisbanes.haze.HazeStyle
 import dev.chrisbanes.haze.HazeTint
 import dev.chrisbanes.haze.hazeEffect
 import dev.mnascimentos.aureole.core.data.model.AppFolder
+import dev.mnascimentos.aureole.core.data.model.LauncherItemState
+import dev.mnascimentos.aureole.core.data.model.LauncherItemType
 import dev.mnascimentos.aureole.feature.home.components.AppItemBottomSheet
 import dev.mnascimentos.aureole.feature.home.components.AppItemBottomSheetParams
 import dev.mnascimentos.aureole.feature.home.components.ContainerFolderBottomSheet
 import dev.mnascimentos.aureole.feature.home.components.ContainerFolderBottomSheetParams
-import dev.mnascimentos.aureole.feature.home.components.WidgetStackBottomSheet
-import dev.mnascimentos.aureole.feature.home.components.WidgetStackBottomSheetParams
 import dev.mnascimentos.aureole.feature.home.folder.model.FolderPopupActions
 import dev.mnascimentos.aureole.feature.home.folder.model.OpenedFolderOverlayParams
 import dev.mnascimentos.aureole.feature.home.folder.model.OpenedFolderPopupConfig
 import dev.mnascimentos.aureole.feature.home.model.FolderViewIntent
 import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
+import dev.mnascimentos.aureole.feature.home.widget.EditWidgetGroupScreen
 
 private const val FADE_ANIM_DURATION_MS = 180
 
 @Composable
 internal fun HomeScreenBottomSheetOverlays(
     uiState: MainUiState,
-    actions: HomeScreenActions
+    actions: HomeScreenActions,
+    appWidgetHost: AppWidgetHost? = null,
+    hazeState: HazeState? = null
 ) {
     ContainerAppOverlay(uiState = uiState, actions = actions)
     ContainerFolderOverlay(uiState = uiState, actions = actions)
     FolderAppOverlay(uiState = uiState, actions = actions)
-    WidgetStackOverlay(uiState = uiState, actions = actions)
+    WidgetStackOverlay(uiState = uiState, actions = actions, appWidgetHost = appWidgetHost, hazeState = hazeState)
 }
 
 @Composable
@@ -123,24 +127,38 @@ private fun FolderAppOverlay(
 @Composable
 private fun WidgetStackOverlay(
     uiState: MainUiState,
-    actions: HomeScreenActions
+    actions: HomeScreenActions,
+    appWidgetHost: AppWidgetHost? = null,
+    hazeState: HazeState? = null
 ) {
     uiState.activeWidgetStackBottomSheet?.let { state ->
-        WidgetStackBottomSheet(
-            params = WidgetStackBottomSheetParams(
-                widgetId = state.widgetId,
-                stackId = state.stackId,
-                onEditStack = { actions.onOpenWidgetResizeDialog() },
-                onToggleDots = { sId -> actions.onToggleWidgetStackDots(sId) },
-                onRemoveStack = {
-                    if (state.widgetId != null && state.widgetId != -1) {
-                        actions.onRemoveWidgetClick(state.widgetId)
-                    } else {
-                        actions.onDeleteGridItem(state.stackId)
-                    }
+        val item = LauncherItemState(
+            id = state.stackId,
+            type = LauncherItemType.WIDGET_LIST,
+            col = 0,
+            row = 0,
+            colSpan = 2,
+            rowSpan = 2
+        )
+        EditWidgetGroupScreen(
+            item = item,
+            widgets = uiState.topWidgetIds,
+            appWidgetHost = appWidgetHost,
+            isIndicatorEnabled = uiState.widgetStackDots[state.stackId] ?: true,
+            onToggleIndicator = { actions.onToggleWidgetStackDots(state.stackId) },
+            onRemoveWidget = { actions.onRemoveWidgetClick(it) },
+            onAddWidgetClick = { actions.onAddWidgetClick() },
+            onDismissRequest = actions.onCloseWidgetStackBottomSheet,
+            onDeleteConfirm = { id ->
+                if (state.widgetId != null && state.widgetId != -1) {
+                    actions.onRemoveWidgetClick(state.widgetId)
+                } else {
+                    actions.onDeleteGridItem(id)
                 }
-            ),
-            onDismiss = actions.onCloseWidgetStackBottomSheet
+                actions.onCloseWidgetStackBottomSheet()
+            },
+            isBlurEnabled = uiState.isHazeEnabled,
+            hazeState = hazeState
         )
     }
 }
@@ -208,8 +226,9 @@ private fun OpenedFolderOverlayContent(
     val uiState = params.uiState
     val folderToDisplay = params.folderToDisplay
     val isGridFolderEnabled = OpenedFolderOverlayUtils.isGridFolderMode(uiState, folderToDisplay)
+    val shouldApplyBlur = isGridFolderEnabled
 
-    val fullScreenBlurModifier = if (uiState.isHazeEnabled && isGridFolderEnabled) {
+    val fullScreenBlurModifier = if (shouldApplyBlur) {
         Modifier.hazeEffect(
             state = params.hazeState,
             style = HazeStyle(
@@ -223,7 +242,7 @@ private fun OpenedFolderOverlayContent(
         Modifier
     }
 
-    val overlayBgColor = if (uiState.isHazeEnabled && isGridFolderEnabled) {
+    val overlayBgColor = if (shouldApplyBlur) {
         Color.Black.copy(alpha = 0.2f)
     } else {
         Color.Black.copy(alpha = 0.45f)

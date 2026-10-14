@@ -300,6 +300,15 @@ private fun handleEditChildClick(
             actions.onOpenEditContainerDialog(child.id)
             onDismissRequest()
         }
+        LauncherItemType.WIDGET_LIST,
+        LauncherItemType.SINGLE_APP_WIDGET -> {
+            actions.onOpenWidgetStackBottomSheet(null, child.id)
+            onDismissRequest()
+        }
+        LauncherItemType.APPS_LIST -> {
+            actions.onOpenFavoritePicker(child.id)
+            onDismissRequest()
+        }
         else -> {}
     }
 }

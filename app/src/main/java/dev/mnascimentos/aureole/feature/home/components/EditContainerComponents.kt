@@ -447,7 +447,8 @@ private fun EditContainerItemMoveButtons(
 @Composable
 internal fun EditContainerAddAppDropdown(
     allApps: List<AppInfo>,
-    onAppSelected: (String) -> Unit
+    onAppSelected: (String) -> Unit,
+    label: String = "Adicionar App..."
 ) {
     var isExpanded by remember { mutableStateOf(false) }
     var searchQuery by remember { mutableStateOf("") }
@@ -471,7 +472,7 @@ internal fun EditContainerAddAppDropdown(
                 searchQuery = it
                 isExpanded = true
             },
-            placeholder = { AureoleText("Adicionar App...") },
+            placeholder = { AureoleText(label) },
             leadingIcon = {
                 AureoleDS.icons.Search(
                     tint = AureoleTheme.colors.onSurfaceMedium,

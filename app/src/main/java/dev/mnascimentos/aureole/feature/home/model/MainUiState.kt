@@ -142,3 +142,30 @@ data class WidgetStackBottomSheetState(
     val widgetId: Int?,
     val stackId: String
 )
+
+val MainUiState.isOverlayActive: Boolean
+    get() {
+        val isFolderActive = activeFolder != null ||
+            isCreateFolderDialogVisible ||
+            isAddAppToFolderDialogVisible ||
+            isRenameFolderDialogVisible
+        val isFolderOrSheetActive = showReleaseNotesBottomSheet ||
+            isAllAppsDrawerOpen ||
+            searchQuery.isNotEmpty() ||
+            isFolderActive
+        val isWidgetActive = showWidgetPicker ||
+            showWidgetPopup ||
+            showWidgetResizeDialog ||
+            activeWidgetStackBottomSheet != null
+        val isContainerActive = showAddContainerDialog ||
+            editingGridItem != null ||
+            isEditContainerDialogVisible ||
+            activeContainerAppBottomSheet != null ||
+            activeContainerFolderBottomSheet != null ||
+            activeFolderAppBottomSheet != null
+        return isGridEditMode ||
+            showFavoritePickerDialog ||
+            isWidgetActive ||
+            isContainerActive ||
+            isFolderOrSheetActive
+    }

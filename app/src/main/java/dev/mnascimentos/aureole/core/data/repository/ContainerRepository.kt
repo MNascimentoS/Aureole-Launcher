@@ -36,6 +36,15 @@ class ContainerRepository(context: Context) {
                 showAddFolderButton = entity.showAddFolderButton,
                 showFolderLabels = entity.showFolderLabels,
                 isGridFolderEnabled = entity.isGridFolderEnabled,
+                hideText = entity.hideText,
+                textColor = entity.textColor,
+                backgroundColor = entity.backgroundColor,
+                strokeEnabled = entity.strokeEnabled,
+                strokeColor = entity.strokeColor,
+                folderColor = entity.folderColor,
+                folderStrokeEnabled = entity.folderStrokeEnabled,
+                scrollUpShortcut = entity.scrollUpShortcut,
+                scrollDownShortcut = entity.scrollDownShortcut,
                 items = items,
                 folders = panelFolders,
                 appPackageNames = appPackageNames
@@ -61,6 +70,15 @@ class ContainerRepository(context: Context) {
             showAddFolderButton = entity.showAddFolderButton,
             showFolderLabels = entity.showFolderLabels,
             isGridFolderEnabled = entity.isGridFolderEnabled,
+            hideText = entity.hideText,
+            textColor = entity.textColor,
+            backgroundColor = entity.backgroundColor,
+            strokeEnabled = entity.strokeEnabled,
+            strokeColor = entity.strokeColor,
+            folderColor = entity.folderColor,
+            folderStrokeEnabled = entity.folderStrokeEnabled,
+            scrollUpShortcut = entity.scrollUpShortcut,
+            scrollDownShortcut = entity.scrollDownShortcut,
             items = items,
             folders = panelFolders,
             appPackageNames = appPackageNames
@@ -91,7 +109,16 @@ class ContainerRepository(context: Context) {
             isExpandCell = panel.isExpandCell,
             showAddFolderButton = panel.showAddFolderButton,
             showFolderLabels = panel.showFolderLabels,
-            isGridFolderEnabled = panel.isGridFolderEnabled
+            isGridFolderEnabled = panel.isGridFolderEnabled,
+            hideText = panel.hideText,
+            textColor = panel.textColor,
+            backgroundColor = panel.backgroundColor,
+            strokeEnabled = panel.strokeEnabled,
+            strokeColor = panel.strokeColor,
+            folderColor = panel.folderColor,
+            folderStrokeEnabled = panel.folderStrokeEnabled,
+            scrollUpShortcut = panel.scrollUpShortcut,
+            scrollDownShortcut = panel.scrollDownShortcut
         )
         dbHelper.insertOrUpdateContainer(entity)
 

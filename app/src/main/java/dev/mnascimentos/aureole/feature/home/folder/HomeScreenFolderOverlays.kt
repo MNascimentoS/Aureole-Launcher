@@ -1,5 +1,6 @@
 package dev.mnascimentos.aureole.feature.home.folder
 
+import android.appwidget.AppWidgetHost
 import androidx.compose.runtime.Composable
 import dev.chrisbanes.haze.HazeState
 import dev.mnascimentos.aureole.feature.home.LocalHomeActions
@@ -9,7 +10,8 @@ import dev.mnascimentos.aureole.feature.home.model.FolderViewIntent
 @Composable
 fun HomeScreenFolderOverlays(
     screenHeightPx: Float,
-    hazeState: HazeState
+    hazeState: HazeState,
+    appWidgetHost: AppWidgetHost? = null
 ) {
     val uiState = LocalHomeUiState.current
     val actions = LocalHomeActions.current
@@ -43,6 +45,8 @@ fun HomeScreenFolderOverlays(
 
     HomeScreenBottomSheetOverlays(
         uiState = uiState,
-        actions = actions
+        actions = actions,
+        appWidgetHost = appWidgetHost,
+        hazeState = hazeState
     )
 }

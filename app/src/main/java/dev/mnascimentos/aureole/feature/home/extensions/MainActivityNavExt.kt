@@ -7,6 +7,8 @@ import dev.mnascimentos.aureole.feature.home.model.MainUiState
 fun handleBackNavigation(uiState: MainUiState, viewModel: HomeViewModel) {
     if (uiState.showReleaseNotesBottomSheet) {
         viewModel.dismissReleaseNotes()
+    } else if (uiState.showWidgetPicker) {
+        viewModel.setShowWidgetPicker(show = false)
     } else if (handleWidgetBackNavigation(uiState, viewModel)) {
         return
     } else if (handleFolderBackNavigation(uiState, viewModel)) {
@@ -15,8 +17,8 @@ fun handleBackNavigation(uiState: MainUiState, viewModel: HomeViewModel) {
         viewModel.setAllAppsDrawerOpen(open = false)
     } else if (uiState.searchQuery.isNotEmpty()) {
         viewModel.onSearchQueryChanged("")
-    } else if (uiState.showWidgetPicker) {
-        viewModel.setShowWidgetPicker(show = false)
+    } else if (uiState.activeWidgetStackBottomSheet != null) {
+        viewModel.closeWidgetStackBottomSheet()
     } else if (uiState.showFavoritePickerDialog) {
         viewModel.setShowFavoritePicker(show = false)
     } else if (uiState.showAddContainerDialog) {

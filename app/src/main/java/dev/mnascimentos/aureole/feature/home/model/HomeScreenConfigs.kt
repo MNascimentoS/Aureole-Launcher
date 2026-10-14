@@ -40,6 +40,7 @@ data class HomeOverlaysConfig(
     val externalTouchY: Float,
     val coroutineScope: CoroutineScope,
     val screenHeightPx: Float,
+    val appWidgetHost: AppWidgetHost? = null,
     val onExternalTouchYReset: () -> Unit
 )
 

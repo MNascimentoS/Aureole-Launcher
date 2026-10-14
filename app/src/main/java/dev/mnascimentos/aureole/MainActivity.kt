@@ -51,6 +51,7 @@ import dev.mnascimentos.aureole.feature.home.extensions.setIsAddingSingleWidget
 import dev.mnascimentos.aureole.feature.home.extensions.setPendingWidgetId
 import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
+import dev.mnascimentos.aureole.feature.home.model.isOverlayActive
 import dev.mnascimentos.aureole.feature.home.widget.WidgetHostManager
 
 class MainActivity : ComponentActivity() {
@@ -237,31 +238,7 @@ class MainActivity : ComponentActivity() {
 }
 
 private fun checkOverlayActive(uiState: MainUiState): Boolean {
-    return checkFolderOrSheetActive(uiState) || checkEditOrPickerActive(uiState)
-}
-
-private fun checkFolderOrSheetActive(uiState: MainUiState): Boolean {
-    val isFolderActive = uiState.activeFolder != null ||
-        uiState.isCreateFolderDialogVisible ||
-        uiState.isAddAppToFolderDialogVisible ||
-        uiState.isRenameFolderDialogVisible
-    return uiState.showReleaseNotesBottomSheet ||
-        uiState.isAllAppsDrawerOpen ||
-        uiState.searchQuery.isNotEmpty() ||
-        isFolderActive
-}
-
-private fun checkEditOrPickerActive(uiState: MainUiState): Boolean {
-    val isWidgetActive = uiState.showWidgetPicker ||
-        uiState.showWidgetPopup ||
-        uiState.showWidgetResizeDialog
-    val isContainerActive = uiState.showAddContainerDialog ||
-        uiState.editingGridItem != null ||
-        uiState.isEditContainerDialogVisible
-    return uiState.isGridEditMode ||
-        uiState.showFavoritePickerDialog ||
-        isWidgetActive ||
-        isContainerActive
+    return uiState.isOverlayActive
 }
 
 private fun MainActivity.createHomeActions(): HomeScreenActions {
