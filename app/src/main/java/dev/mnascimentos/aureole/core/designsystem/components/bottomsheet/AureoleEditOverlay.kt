@@ -98,17 +98,20 @@ fun AureoleEditOverlay(
     bottomBarContent: (@Composable ColumnScope.() -> Unit)? = null,
     sheetContent: @Composable ColumnScope.() -> Unit
 ) {
+    val isInspection = LocalInspectionMode.current
+    val effectiveAnimated = animated && !isInspection
+
     var internalVisible by remember { mutableStateOf(true) }
 
-    val visibleState = remember {
-        MutableTransitionState(if (animated) false else isVisible)
+    val visibleState = remember(effectiveAnimated) {
+        MutableTransitionState(if (effectiveAnimated) false else isVisible)
     }.apply {
-        targetState = if (animated) isVisible && internalVisible else isVisible
+        targetState = if (effectiveAnimated) isVisible && internalVisible else isVisible
     }
 
-    val triggerDismiss = remember(animated, onBackPress, onDismissRequest) {
+    val triggerDismiss = remember(effectiveAnimated, onBackPress, onDismissRequest) {
         {
-            if (animated) {
+            if (effectiveAnimated) {
                 internalVisible = false
             } else {
                 if (onBackPress != null) {
@@ -121,7 +124,7 @@ fun AureoleEditOverlay(
     }
 
     LaunchedEffect(visibleState.currentState, visibleState.isIdle, internalVisible) {
-        if (animated && visibleState.isIdle && !visibleState.currentState && !internalVisible) {
+        if (effectiveAnimated && visibleState.isIdle && !visibleState.currentState && !internalVisible) {
             if (onBackPress != null) {
                 onBackPress()
             } else {
@@ -130,7 +133,6 @@ fun AureoleEditOverlay(
         }
     }
 
-    val isInspection = LocalInspectionMode.current
     if (!isInspection) {
         BackHandler(enabled = isVisible && internalVisible) {
             triggerDismiss()
@@ -192,7 +194,7 @@ fun AureoleEditOverlay(
                         modifier = Modifier.fillMaxSize()
                     ) {
                         // Live preview area occupying remaining space above the bottom sheet
-                        val previewModifier = if (animated) {
+                        val previewModifier = if (effectiveAnimated) {
                             Modifier.animateEnterExit(
                                 enter = fadeIn(tween(ANIMATION_DURATION_MS)) +
                                     scaleIn(
@@ -226,7 +228,7 @@ fun AureoleEditOverlay(
                         }
 
                         // Bottom Sheet Surface with slide animation
-                        val sheetModifier = if (animated) {
+                        val sheetModifier = if (effectiveAnimated) {
                             Modifier.animateEnterExit(
                                 enter = slideInVertically(
                                     initialOffsetY = { it },

@@ -138,6 +138,13 @@ private fun BehaviorMenuItems(
             leadingContent = { AureoleDS.icons.Dots() }
         )
 
+        SettingsToggleItem(
+            title = "Disable alphabet scrubber",
+            checked = uiState.isAlphabetScrubberDisabled,
+            onCheckedChange = { actions.onToggleDisableAlphabetScrubber() },
+            leadingContent = { AureoleDS.icons.AlignRight() }
+        )
+
         HeaderOffsetPickerRow(
             headerOffsetPercent = uiState.headerOffsetPercent,
             onOffsetChanged = actions.onHeaderOffsetChanged
