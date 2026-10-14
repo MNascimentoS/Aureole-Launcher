@@ -18,7 +18,6 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
-import dev.mnascimentos.aureole.core.designsystem.utils.LocalSharedTransitionScope
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.remember
@@ -40,6 +39,7 @@ import dev.mnascimentos.aureole.core.data.model.ContainerModel
 import dev.mnascimentos.aureole.core.data.model.LauncherItemState
 import dev.mnascimentos.aureole.core.data.model.LauncherItemType
 import dev.mnascimentos.aureole.core.designsystem.utils.LocalHazeState
+import dev.mnascimentos.aureole.core.designsystem.utils.LocalSharedTransitionScope
 import dev.mnascimentos.aureole.feature.home.components.CustomizeBottomSheet
 import dev.mnascimentos.aureole.feature.home.components.EditClockBottomSheet
 import dev.mnascimentos.aureole.feature.home.components.EditContainerScreen

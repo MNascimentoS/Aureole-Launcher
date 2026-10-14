@@ -9,8 +9,6 @@ import android.widget.FrameLayout
 import android.widget.TextView
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.foundation.background
-import dev.mnascimentos.aureole.core.designsystem.utils.LocalAnimatedVisibilityScope
-import dev.mnascimentos.aureole.core.designsystem.utils.LocalSharedTransitionScope
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -46,19 +44,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import dev.chrisbanes.haze.HazeState
-import dev.chrisbanes.haze.HazeStyle
-import dev.chrisbanes.haze.HazeTint
-import dev.chrisbanes.haze.hazeEffect
 import dev.mnascimentos.aureole.core.data.model.LauncherItemState
 import dev.mnascimentos.aureole.core.designsystem.components.bottomsheet.AureoleEditOverlay
 import dev.mnascimentos.aureole.core.designsystem.icons.Add
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleTheme
+import dev.mnascimentos.aureole.core.designsystem.utils.LocalAnimatedVisibilityScope
+import dev.mnascimentos.aureole.core.designsystem.utils.LocalSharedTransitionScope
 import kotlinx.coroutines.delay
 import android.graphics.Color as AndroidColor
 

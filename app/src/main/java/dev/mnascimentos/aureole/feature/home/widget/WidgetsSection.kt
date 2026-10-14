@@ -15,8 +15,6 @@ import android.widget.FrameLayout
 import android.widget.TextView
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.animateColorAsState
-import dev.mnascimentos.aureole.core.designsystem.utils.LocalAnimatedVisibilityScope
-import dev.mnascimentos.aureole.core.designsystem.utils.LocalSharedTransitionScope
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.spring
@@ -60,6 +58,8 @@ import dev.chrisbanes.haze.HazeTint
 import dev.chrisbanes.haze.hazeEffect
 import dev.mnascimentos.aureole.core.designsystem.icons.Add
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
+import dev.mnascimentos.aureole.core.designsystem.utils.LocalAnimatedVisibilityScope
+import dev.mnascimentos.aureole.core.designsystem.utils.LocalSharedTransitionScope
 import dev.mnascimentos.aureole.feature.home.LocalHomeActions
 import dev.mnascimentos.aureole.feature.home.LocalHomeUiState
 import dev.mnascimentos.aureole.feature.home.model.getWidgetIdsForStack

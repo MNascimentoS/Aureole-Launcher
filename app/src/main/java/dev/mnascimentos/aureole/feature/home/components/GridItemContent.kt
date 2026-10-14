@@ -10,8 +10,6 @@ import android.view.View
 import android.widget.TextView
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.foundation.gestures.awaitEachGesture
-import dev.mnascimentos.aureole.core.designsystem.utils.LocalAnimatedVisibilityScope
-import dev.mnascimentos.aureole.core.designsystem.utils.LocalSharedTransitionScope
 import androidx.compose.foundation.gestures.awaitFirstDown
 import androidx.compose.foundation.gestures.waitForUpOrCancellation
 import androidx.compose.foundation.layout.Box
@@ -30,6 +28,8 @@ import androidx.compose.ui.viewinterop.AndroidView
 import dev.mnascimentos.aureole.core.data.model.LauncherItemState
 import dev.mnascimentos.aureole.core.data.model.LauncherItemType
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
+import dev.mnascimentos.aureole.core.designsystem.utils.LocalAnimatedVisibilityScope
+import dev.mnascimentos.aureole.core.designsystem.utils.LocalSharedTransitionScope
 import dev.mnascimentos.aureole.feature.home.LocalHomeActions
 import dev.mnascimentos.aureole.feature.home.LocalHomeUiState
 import dev.mnascimentos.aureole.feature.home.components.model.ContainerConfig

@@ -29,14 +29,12 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import dev.mnascimentos.aureole.core.designsystem.icons.Search
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import kotlinx.coroutines.delay
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -47,6 +45,7 @@ import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.components.bottomsheet.AureoleEditOverlay
 import dev.mnascimentos.aureole.core.designsystem.icons.Edit
+import dev.mnascimentos.aureole.core.designsystem.icons.Search
 import dev.mnascimentos.aureole.core.designsystem.icons.Star
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleTheme
@@ -55,6 +54,7 @@ import dev.mnascimentos.aureole.feature.home.components.model.FavoriteAppsBodyPa
 import dev.mnascimentos.aureole.feature.home.components.model.FavoriteAppsDialogActions
 import dev.mnascimentos.aureole.feature.home.components.model.FavoriteAppsDialogConfig
 import dev.mnascimentos.aureole.feature.home.components.model.FavoriteSectionParams
+import kotlinx.coroutines.delay
 
 enum class FavoriteAppsScreenMode {
     MAIN, EDIT_SHORTCUTS, APPEARANCE

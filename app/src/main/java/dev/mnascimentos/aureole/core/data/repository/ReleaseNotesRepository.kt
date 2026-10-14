@@ -168,6 +168,12 @@ private fun createSection0713Improvements() = ReleaseNoteSection(
             type = ReleaseNoteType.IMPROVEMENT
         ),
         ReleaseNoteItem(
+            title = "Opção para Desativar Barra Alfabética",
+            description = "Nova chave de controle nas Configurações -> Comportamento para ocultar " +
+                "a barra alfabética lateral de todas as listas.",
+            type = ReleaseNoteType.IMPROVEMENT
+        ),
+        ReleaseNoteItem(
             title = "Arrasto e Expansão da Bottom Sheet",
             description = "Ajuste na navegação por gesto para permitir expandir a folha inferior " +
                 "deslizando até o topo do preview.",

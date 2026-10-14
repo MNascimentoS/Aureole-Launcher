@@ -271,7 +271,10 @@ fun AureoleEditOverlay(
                                     indication = null,
                                     onClick = {}
                                 ),
-                            shape = RoundedCornerShape(topStart = AureoleDS.dimens.radiusLarge, topEnd = AureoleDS.dimens.radiusLarge),
+                            shape = RoundedCornerShape(
+                                topStart = AureoleDS.dimens.radiusLarge,
+                                topEnd = AureoleDS.dimens.radiusLarge
+                            ),
                             color = AureoleTheme.colors.surface,
                             contentColor = AureoleTheme.colors.onSurfaceMedium
                         ) {
