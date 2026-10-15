@@ -14,16 +14,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
-import androidx.compose.material3.Switch
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -36,10 +30,7 @@ import androidx.compose.ui.unit.dp
 import dev.chrisbanes.haze.HazeState
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.components.bottomsheet.AureoleEditOverlay
-import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleTheme
-import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
-import dev.mnascimentos.aureole.feature.home.LocalHomeUiState
 import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
 import kotlinx.coroutines.delay
@@ -54,7 +45,7 @@ private val PRESET_TEXT_COLORS = listOf(
     Pair("Coral", 0xFFFFAB91.toInt())
 )
 
-private val PRESET_BG_COLORS = listOf(
+internal val PRESET_BG_COLORS = listOf(
     Pair("Padrão", 0),
     Pair("Escuro Slate", 0xFF1E2124.toInt()),
     Pair("Roxo Profundo", 0xFF281C74.toInt()),
@@ -67,6 +58,9 @@ private val CHIP_HORIZONTAL_SPACING = 8.dp
 private const val NEGATIVE_SPACING_INT = -8
 private val CHIP_VERTICAL_SPACING = NEGATIVE_SPACING_INT.dp
 
+private const val DISMISS_DELAY_MS = 300L
+
+@Suppress("LongMethod") // Bottom sheet composable initializing clock greeting state
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EditClockBottomSheet(
@@ -79,7 +73,7 @@ fun EditClockBottomSheet(
 
     if (!isVisible) {
         LaunchedEffect(isVisible) {
-            delay(300L)
+            delay(DISMISS_DELAY_MS)
             onDismissRequest()
         }
     }
@@ -400,121 +394,6 @@ private fun EditClockFormatSection(
         }
         EditClockLayoutChip("Numérico (09/10/2026)", uiState.clockDateFormat == "NUMERIC") {
             actions.onUpdateClockDateFormat("NUMERIC")
-        }
-    }
-}
-
-@OptIn(ExperimentalLayoutApi::class)
-@Composable
-private fun EditClockBackgroundSection(
-    uiState: MainUiState,
-    actions: HomeScreenActions
-) {
-    EditClockSectionHeader(title = "Fundo do Cartão")
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween
-    ) {
-        AureoleText(
-            text = "Mostrar cartão de fundo",
-            style = AureoleTheme.typography.bodyMedium,
-            color = AureoleTheme.colors.onSurfaceHigh
-        )
-        Switch(
-            checked = uiState.isClockBackgroundEnabled,
-            onCheckedChange = { actions.onToggleClockBackground() }
-        )
-    }
-
-    if (uiState.isClockBackgroundEnabled) {
-        Spacer(modifier = Modifier.height(8.dp))
-        AureoleText(
-            text = "Cor de Fundo Personalizada:",
-            style = AureoleTheme.typography.bodySmall,
-            color = AureoleTheme.colors.onSurfaceMedium,
-            modifier = Modifier.padding(bottom = 6.dp)
-        )
-        FlowRow(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(10.dp),
-            verticalArrangement = Arrangement.spacedBy(10.dp)
-        ) {
-            PRESET_BG_COLORS.forEach { (name, colorValue) ->
-                EditClockColorSwatchItem(
-                    name = name,
-                    colorValue = colorValue,
-                    isSelected = uiState.clockBackgroundColor == colorValue,
-                    onClick = { actions.onUpdateClockBackgroundColor(colorValue) }
-                )
-            }
-        }
-    }
-}
-
-@Composable
-private fun EditClockActionButtons(
-    actions: HomeScreenActions,
-    onDismissRequest: () -> Unit,
-    onResetGreeting: () -> Unit
-) {
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        TextButton(
-            onClick = {
-                actions.onResetClockSettings()
-                onResetGreeting()
-            }
-        ) {
-            AureoleText(
-                text = "Redefinir Padrões",
-                color = MaterialTheme.colorScheme.error
-            )
-        }
-
-        Button(
-            onClick = onDismissRequest,
-            colors = ButtonDefaults.buttonColors(
-                containerColor = MaterialTheme.colorScheme.primary,
-                contentColor = MaterialTheme.colorScheme.onPrimary
-            )
-        ) {
-            AureoleText("Salvar", color = MaterialTheme.colorScheme.onPrimary)
-        }
-    }
-}
-
-@AureolePreview
-@Composable
-fun EditClockBottomSheetPreview() {
-    val uiState = MainUiState()
-    val actions = HomeScreenActions(
-        onWidgetRowHeightChanged = {},
-        onAddWidgetClick = {},
-        onRemoveWidgetClick = { _, _ -> },
-        onAppClick = {},
-        onExpandNotificationShade = {},
-        onFolderIntent = {},
-        onSetAddAppToFolderDialogVisible = {},
-        onSetRenameFolderDialogVisible = {},
-        onSearchQueryChanged = {},
-        onSettingsClick = {},
-        onAllAppsDrawerClose = {},
-        onAllAppsDrawerOpen = {},
-        onEnterGridEditMode = {},
-        onCancelGridEditMode = {},
-        onSaveGridEditMode = {}
-    )
-    AureoleLauncherTheme {
-        CompositionLocalProvider(LocalHomeUiState provides uiState) {
-            EditClockBottomSheet(
-                uiState = uiState,
-                actions = actions,
-                onDismissRequest = {}
-            )
         }
     }
 }

@@ -19,13 +19,17 @@ internal fun HomeViewModel.loadWidgetSettings() {
 
     val allItems = uiState.value.portraitGridItems + uiState.value.landscapeGridItems
     allItems.forEach { item ->
-        if (item.safeType == LauncherItemType.WIDGET_LIST || item.safeType == LauncherItemType.SINGLE_APP_WIDGET) {
+        val isWidgetType = item.safeType == LauncherItemType.WIDGET_LIST ||
+            item.safeType == LauncherItemType.SINGLE_APP_WIDGET
+        if (isWidgetType) {
             val stackId = item.id
             widgetMap[stackId] = widgetRepository.getWidgetIdsForStack(stackId)
             dotsMap[stackId] = widgetRepository.getWidgetDotsState(stackId)
         }
         item.safeChildren.forEach { child ->
-            if (child.safeType == LauncherItemType.WIDGET_LIST || child.safeType == LauncherItemType.SINGLE_APP_WIDGET) {
+            val isChildWidget = child.safeType == LauncherItemType.WIDGET_LIST ||
+                child.safeType == LauncherItemType.SINGLE_APP_WIDGET
+            if (isChildWidget) {
                 val stackId = child.id
                 widgetMap[stackId] = widgetRepository.getWidgetIdsForStack(stackId)
                 dotsMap[stackId] = widgetRepository.getWidgetDotsState(stackId)

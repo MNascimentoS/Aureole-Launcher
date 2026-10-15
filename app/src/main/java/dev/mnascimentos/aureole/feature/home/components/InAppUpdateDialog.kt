@@ -31,93 +31,42 @@ fun UpdateAvailableDialog(
     onConfirmUpdate: () -> Unit,
     onDismiss: () -> Unit,
 ) {
-    if (LocalInspectionMode.current) {
-        Box(
-            modifier = Modifier.fillMaxSize().padding(16.dp),
-            contentAlignment = Alignment.Center
-        ) {
-            Surface(
-                shape = RoundedCornerShape(22.dp),
-                color = AureoleTheme.colors.surface,
-                contentColor = AureoleTheme.colors.onSurfaceHigh
-            ) {
-                Column(
-                    modifier = Modifier.padding(24.dp)
-                ) {
-                    AureoleText(
-                        text = "Nova atualização disponível",
-                        style = AureoleTheme.typography.titleMedium,
-                        fontWeight = FontWeight.Bold,
-                        color = AureoleTheme.colors.onSurfaceHigh
-                    )
-                    Spacer(modifier = Modifier.height(16.dp))
-                    AureoleText(
-                        text = "Uma nova versão do Aureole Launcher está disponível na Google Play. Deseja atualizar agora?",
-                        style = AureoleTheme.typography.bodyMedium,
-                        color = AureoleTheme.colors.onSurfaceMedium
-                    )
-                    Spacer(modifier = Modifier.height(24.dp))
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.End
-                    ) {
-                        TextButton(onClick = onDismiss) {
-                            AureoleText(text = "Agora não", color = AureoleTheme.colors.onSurfaceMedium)
-                        }
-                        Spacer(modifier = Modifier.width(8.dp))
-                        TextButton(onClick = onConfirmUpdate) {
-                            AureoleText(
-                                text = "Atualizar agora",
-                                fontWeight = FontWeight.SemiBold,
-                                color = MaterialTheme.colorScheme.primary
-                            )
-                        }
-                    }
-                }
-            }
-        }
-    } else {
-        AlertDialog(
-            onDismissRequest = onDismiss,
-            containerColor = AureoleTheme.colors.surface,
-            shape = RoundedCornerShape(22.dp),
-            title = {
-                AureoleText(
-                    text = "Nova atualização disponível",
-                    style = AureoleTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold,
-                    color = AureoleTheme.colors.onSurfaceHigh
-                )
-            },
-            text = {
-                AureoleText(
-                    text = "Uma nova versão do Aureole Launcher está disponível na Google Play. Deseja atualizar agora?",
-                    style = AureoleTheme.typography.bodyMedium,
-                    color = AureoleTheme.colors.onSurfaceMedium
-                )
-            },
-            confirmButton = {
-                TextButton(onClick = onConfirmUpdate) {
-                    AureoleText(
-                        text = "Atualizar agora",
-                        fontWeight = FontWeight.SemiBold,
-                        color = MaterialTheme.colorScheme.primary
-                    )
-                }
-            },
-            dismissButton = {
-                TextButton(onClick = onDismiss) {
-                    AureoleText(text = "Agora não", color = AureoleTheme.colors.onSurfaceMedium)
-                }
-            }
-        )
-    }
+    UpdateDialogContent(
+        title = "Nova atualização disponível",
+        body = "Uma nova versão do Aureole Launcher está disponível na Google Play. " +
+            "Deseja atualizar agora?",
+        confirmLabel = "Atualizar agora",
+        dismissLabel = "Agora não",
+        onConfirm = onConfirmUpdate,
+        onDismiss = onDismiss
+    )
 }
 
 @Composable
 fun UpdateDownloadedDialog(
     onConfirmRestart: () -> Unit,
     onDismiss: () -> Unit,
+) {
+    UpdateDialogContent(
+        title = "Atualização pronta",
+        body = "A nova versão foi baixada com sucesso. " +
+            "Reinicie o aplicativo para concluir a instalação.",
+        confirmLabel = "Reiniciar agora",
+        dismissLabel = "Depois",
+        onConfirm = onConfirmRestart,
+        onDismiss = onDismiss
+    )
+}
+
+@Suppress("LongParameterList", "LongMethod") // Update dialog content requiring title, body and action callbacks
+@Composable
+private fun UpdateDialogContent(
+    title: String,
+    body: String,
+    confirmLabel: String,
+    dismissLabel: String,
+    onConfirm: () -> Unit,
+    onDismiss: () -> Unit
 ) {
     if (LocalInspectionMode.current) {
         Box(
@@ -129,18 +78,16 @@ fun UpdateDownloadedDialog(
                 color = AureoleTheme.colors.surface,
                 contentColor = AureoleTheme.colors.onSurfaceHigh
             ) {
-                Column(
-                    modifier = Modifier.padding(24.dp)
-                ) {
+                Column(modifier = Modifier.padding(24.dp)) {
                     AureoleText(
-                        text = "Atualização pronta",
+                        text = title,
                         style = AureoleTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold,
                         color = AureoleTheme.colors.onSurfaceHigh
                     )
                     Spacer(modifier = Modifier.height(16.dp))
                     AureoleText(
-                        text = "A nova versão foi baixada com sucesso. Reinicie o aplicativo para concluir a instalação.",
+                        text = body,
                         style = AureoleTheme.typography.bodyMedium,
                         color = AureoleTheme.colors.onSurfaceMedium
                     )
@@ -150,12 +97,12 @@ fun UpdateDownloadedDialog(
                         horizontalArrangement = Arrangement.End
                     ) {
                         TextButton(onClick = onDismiss) {
-                            AureoleText(text = "Depois", color = AureoleTheme.colors.onSurfaceMedium)
+                            AureoleText(text = dismissLabel, color = AureoleTheme.colors.onSurfaceMedium)
                         }
                         Spacer(modifier = Modifier.width(8.dp))
-                        TextButton(onClick = onConfirmRestart) {
+                        TextButton(onClick = onConfirm) {
                             AureoleText(
-                                text = "Reiniciar agora",
+                                text = confirmLabel,
                                 fontWeight = FontWeight.SemiBold,
                                 color = MaterialTheme.colorScheme.primary
                             )
@@ -171,7 +118,7 @@ fun UpdateDownloadedDialog(
             shape = RoundedCornerShape(22.dp),
             title = {
                 AureoleText(
-                    text = "Atualização pronta",
+                    text = title,
                     style = AureoleTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
                     color = AureoleTheme.colors.onSurfaceHigh
@@ -179,15 +126,15 @@ fun UpdateDownloadedDialog(
             },
             text = {
                 AureoleText(
-                    text = "A nova versão foi baixada com sucesso. Reinicie o aplicativo para concluir a instalação.",
+                    text = body,
                     style = AureoleTheme.typography.bodyMedium,
                     color = AureoleTheme.colors.onSurfaceMedium
                 )
             },
             confirmButton = {
-                TextButton(onClick = onConfirmRestart) {
+                TextButton(onClick = onConfirm) {
                     AureoleText(
-                        text = "Reiniciar agora",
+                        text = confirmLabel,
                         fontWeight = FontWeight.SemiBold,
                         color = MaterialTheme.colorScheme.primary
                     )
@@ -195,7 +142,7 @@ fun UpdateDownloadedDialog(
             },
             dismissButton = {
                 TextButton(onClick = onDismiss) {
-                    AureoleText(text = "Depois", color = AureoleTheme.colors.onSurfaceMedium)
+                    AureoleText(text = dismissLabel, color = AureoleTheme.colors.onSurfaceMedium)
                 }
             }
         )

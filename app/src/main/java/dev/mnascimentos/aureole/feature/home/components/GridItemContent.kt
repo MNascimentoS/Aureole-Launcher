@@ -32,9 +32,10 @@ import dev.mnascimentos.aureole.core.designsystem.utils.LocalAnimatedVisibilityS
 import dev.mnascimentos.aureole.core.designsystem.utils.LocalSharedTransitionScope
 import dev.mnascimentos.aureole.feature.home.LocalHomeActions
 import dev.mnascimentos.aureole.feature.home.LocalHomeUiState
-import dev.mnascimentos.aureole.feature.home.components.model.ContainerConfig
+import dev.mnascimentos.aureole.feature.home.components.containers.Container
+import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.FolderViewIntent
+import dev.mnascimentos.aureole.feature.home.components.containers.model.ContainerConfig
 import dev.mnascimentos.aureole.feature.home.components.model.FavoritesListOptions
-import dev.mnascimentos.aureole.feature.home.model.FolderViewIntent
 import dev.mnascimentos.aureole.feature.home.model.GridItemContentParams
 import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
@@ -163,7 +164,10 @@ fun SingleAppWidgetContent(
     val sharedTransitionScope = LocalSharedTransitionScope.current
     val animatedVisibilityScope = LocalAnimatedVisibilityScope.current
 
-    val sharedModifier = if (sharedTransitionScope != null && animatedVisibilityScope != null && item.widgetId != null) {
+    val isSharedTransitionActive = sharedTransitionScope != null &&
+        animatedVisibilityScope != null &&
+        item.widgetId != null
+    val sharedModifier = if (isSharedTransitionActive) {
         with(sharedTransitionScope) {
             Modifier.sharedElement(
                 sharedContentState = rememberSharedContentState(key = "widget_${item.widgetId}"),

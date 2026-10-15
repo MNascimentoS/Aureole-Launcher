@@ -24,7 +24,7 @@ class ClockSettingsRepositoryTest {
     }
 
     @Test
-    fun testDefaultClockSettings() {
+    fun `when initialized, should load default clock settings`() {
         assertTrue(repository.isClockBackgroundEnabled)
         assertEquals(SettingsRepository.DEFAULT_CLOCK_STYLE, repository.clockStyle)
         assertEquals("", repository.clockCustomGreeting)
@@ -37,7 +37,7 @@ class ClockSettingsRepositoryTest {
     }
 
     @Test
-    fun testUpdateAndPersistClockSettings() {
+    fun `when updating clock settings, should persist updated values`() {
         repository.isClockBackgroundEnabled = false
         repository.clockStyle = "DATE_ON_TOP"
         repository.clockCustomGreeting = "Boa tarde"
@@ -60,7 +60,7 @@ class ClockSettingsRepositoryTest {
     }
 
     @Test
-    fun testResetClockSettings() {
+    fun `when resetting clock settings, should restore default values`() {
         repository.clockStyle = "GREETING_AND_DATE"
         repository.clockTextColor = 0xFFE1BEE7.toInt()
         repository.isClockBackgroundEnabled = false

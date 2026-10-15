@@ -139,15 +139,4 @@ class AppRepository(private val context: Context) {
         }
         context.startActivity(intent)
     }
-
-    companion object {
-        @Volatile
-        private var instance: AppRepository? = null
-
-        fun getInstance(context: Context): AppRepository {
-            return instance ?: synchronized(this) {
-                instance ?: AppRepository(context.applicationContext).also { instance = it }
-            }
-        }
-    }
 }

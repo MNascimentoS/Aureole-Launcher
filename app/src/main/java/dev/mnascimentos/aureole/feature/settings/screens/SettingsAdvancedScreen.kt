@@ -56,7 +56,8 @@ fun SettingsAdvancedScreen(
     uiState: SettingsUiState,
     actions: SettingsScreenActions,
     onNavigateToContributors: () -> Unit,
-    @Suppress("UNUSED_PARAMETER") onNavigateBack: () -> Unit
+    @Suppress("UNUSED_PARAMETER") // Parameter reserved for navigation contract
+    onNavigateBack: () -> Unit
 ) {
     val context = LocalContext.current
     var showUninstallDialog by remember { mutableStateOf(false) }

@@ -20,13 +20,11 @@ class WidgetRepository(private val context: Context) {
     fun getWidgetIdsForStack(stackId: String): List<Int> {
         val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
         val savedIds = prefs.getString("${KEY_WIDGET_IDS_PREFIX}_$stackId", null)
-        if (savedIds != null) {
-            return savedIds.split(",").mapNotNull { it.toIntOrNull() }
+        return when {
+            savedIds != null -> savedIds.split(",").mapNotNull { it.toIntOrNull() }
+            stackId == "top_widgets" -> getSavedWidgetIds()
+            else -> emptyList()
         }
-        if (stackId == "top_widgets") {
-            return getSavedWidgetIds()
-        }
-        return emptyList()
     }
 
     fun saveWidgetIdsForStack(stackId: String, ids: List<Int>) {

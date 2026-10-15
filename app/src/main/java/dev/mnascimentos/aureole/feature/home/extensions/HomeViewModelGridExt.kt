@@ -8,7 +8,7 @@ import dev.mnascimentos.aureole.feature.home.grid.GridLimits
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
 
 internal fun HomeViewModel.getGridRepository(): GridRepository {
-    return GridRepository(getApplication())
+    return gridRepository
 }
 
 fun HomeViewModel.loadGridItems(isLandscape: Boolean = false) {

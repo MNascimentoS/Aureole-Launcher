@@ -42,7 +42,6 @@ import dev.mnascimentos.aureole.core.designsystem.icons.Star
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleTheme
 import dev.mnascimentos.aureole.feature.home.components.ReleaseNotesBottomSheet
-import dev.mnascimentos.aureole.feature.settings.model.SettingsScreenActions
 import dev.mnascimentos.aureole.feature.settings.model.SettingsUiState
 
 private const val BOTTOM_SPACER_PERCENT = 0.1f
@@ -51,7 +50,6 @@ private const val BOTTOM_SPACER_PERCENT = 0.1f
 @Composable
 fun SettingsRootScreen(
     uiState: SettingsUiState,
-    @Suppress("UNUSED_PARAMETER") actions: SettingsScreenActions,
     onNavigateToBehavior: () -> Unit,
     onNavigateToAppearance: () -> Unit,
     onNavigateToAdvanced: () -> Unit,

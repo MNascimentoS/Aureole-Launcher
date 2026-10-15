@@ -7,7 +7,7 @@ import kotlinx.coroutines.withContext
 
 class FavoriteContainerRepository(
     context: Context,
-    private val settingsRepository: SettingsRepository = SettingsRepository(context)
+    private val settingsRepository: SettingsRepository,
 ) {
     private val dbHelper = FavoriteContainerDatabaseHelper(context)
 

@@ -20,7 +20,6 @@ fun SettingsRootScreenScreenshotTest() {
     AureoleLauncherTheme {
         SettingsRootScreen(
             uiState = SettingsUiState(),
-            actions = SettingsScreenActions(),
             onNavigateToBehavior = {},
             onNavigateToAppearance = {},
             onNavigateToAdvanced = {}

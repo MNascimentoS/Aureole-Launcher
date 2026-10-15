@@ -46,7 +46,7 @@ class AppModuleTest : KoinTest {
     }
 
     @Test
-    fun testRepositoriesAreResolved() {
+    fun `when resolving repositories from koin, should inject non-null instances`() {
         assertNotNull(get<AppRepository>())
         assertNotNull(get<WidgetRepository>())
         assertNotNull(get<SettingsRepository>())
@@ -57,7 +57,7 @@ class AppModuleTest : KoinTest {
     }
 
     @Test
-    fun testViewModelsAreResolved() {
+    fun `when resolving viewmodels from koin, should inject non-null instances`() {
         assertNotNull(get<HomeViewModel>())
         assertNotNull(get<SettingsViewModel>())
     }

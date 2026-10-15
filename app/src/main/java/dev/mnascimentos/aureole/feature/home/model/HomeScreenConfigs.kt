@@ -7,7 +7,7 @@ import androidx.compose.ui.unit.Density
 import dev.chrisbanes.haze.HazeState
 import dev.mnascimentos.aureole.core.data.model.LauncherItemState
 import dev.mnascimentos.aureole.feature.home.components.FavoritesListConfig
-import dev.mnascimentos.aureole.feature.home.components.model.ContainerConfig
+import dev.mnascimentos.aureole.feature.home.components.containers.model.ContainerConfig
 import dev.mnascimentos.aureole.feature.home.widget.model.StackedWidgetConfig
 import kotlinx.coroutines.CoroutineScope
 

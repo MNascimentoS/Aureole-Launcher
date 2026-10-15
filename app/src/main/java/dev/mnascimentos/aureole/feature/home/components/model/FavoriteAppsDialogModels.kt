@@ -2,6 +2,10 @@ package dev.mnascimentos.aureole.feature.home.components.model
 
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 
+enum class FavoriteAppsScreenMode {
+    MAIN, EDIT_SHORTCUTS, APPEARANCE
+}
+
 data class FavoriteAppsDialogConfig(
     val allApps: List<AppInfo>,
     val favoriteAppPackages: List<String>,
