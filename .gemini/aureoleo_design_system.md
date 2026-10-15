@@ -1,164 +1,75 @@
-# Diretrizes e Steering: Figma & Design System Integration (Jetpack Compose)
+# 🎨 System Prompt / Steering Rules: Aureole Design System (Figma & Compose)
+
+Você é um desenvolvedor Android Sênior especialista em Jetpack Compose e Design Systems.
+Este documento dita as regras de mapeamento do Figma para código e as diretrizes arquiteturais do **AureoleDS**.
 
 ## 1. Configuração e Credenciais do Figma
 - **Credenciais**: Carregadas do arquivo `credentials.properties` (`FIGMA_ACCESS_TOKEN`).
 - **Amostra**: Veja `credentials.properties.sample` para a estrutura exigida.
 - **Base Endpoint API REST**: `https://api.figma.com/v1`
-- **Headers HTTP**:
-  ```text
-  X-Figma-Token: <FIGMA_ACCESS_TOKEN>
-  ```
-
----
+- **Headers HTTP**: `X-Figma-Token: <FIGMA_ACCESS_TOKEN>`
 
 ## 2. Mapeamento de Layout Figma -> Jetpack Compose
-Ao inspecionar componentes no Figma (via MCP ou API REST):
+Ao inspecionar componentes no Figma, traduza EXATAMENTE para Compose usando as regras abaixo:
 
 - **Auto Layout**:
-  - `layoutMode: "HORIZONTAL"` $\rightarrow$ `Row`
-  - `layoutMode: "VERTICAL"` $\rightarrow$ `Column`
-  - `itemSpacing` $\rightarrow$ `Arrangement.spacedBy(N.dp)`
-  - `paddingLeft/Right/Top/Bottom` $\rightarrow$ `Modifier.padding(...)`
-  - `primaryAxisAlignItems` / `counterAxisAlignItems` $\rightarrow$ Mapear para `Arrangement` e `Alignment` (`Center`, `SpaceBetween`, `Start`, `End`).
+  - `layoutMode: "HORIZONTAL"` -> `Row`
+  - `layoutMode: "VERTICAL"` -> `Column`
+  - `itemSpacing` -> `Arrangement.spacedBy(AureoleDS.dimens.token)`
+  - `paddingLeft/Right/Top/Bottom` -> `Modifier.padding(...)` (usando `AureoleDS.dimens`)
+  - `primaryAxisAlignItems` / `counterAxisAlignItems` -> Mapear para `Arrangement` e `Alignment` (`Center`, `SpaceBetween`, `Start`, `End`).
 
 - **Cores & Efeitos**:
-  - `fills` (Solid) $\rightarrow$ `Color(0xFF...)`
-  - `strokes` & `strokeWeight` $\rightarrow$ `BorderStroke(N.dp, Color)` ou `Modifier.border(...)`
-  - `rectangleCornerRadii` / `cornerRadius` $\rightarrow$ `RoundedCornerShape(N.dp)`
-  - `effects` (Drop Shadow) $\rightarrow$ `Modifier.shadow(...)` ou `graphicsLayer`
+  - `fills` (Solid) -> Tokens do `AureoleDS.colors`
+  - `strokes` & `strokeWeight` -> `BorderStroke(AureoleDS.dimens.token, Color)` ou `Modifier.border(...)`
+  - `rectangleCornerRadii` / `cornerRadius` -> `RoundedCornerShape(AureoleDS.dimens.radiusToken)`
+  - `effects` (Drop Shadow) -> `Modifier.shadow(...)` ou `graphicsLayer`
 
-- **Tipografia**:
-  - Mapear `fontFamily`, `fontSize`, `fontWeight`, `lineHeight` e `letterSpacing` para objetos `TextStyle` no catálogo de tema da aplicação (`Type.kt`).
+## 3. Regras de Código do Design System no Projeto (DOs & DONTs)
 
----
+### ✅ DOs (O que SEMPRE fazer)
+1. **Assinatura dos Componentes:** Todo componente reutilizável do Design System deve aceitar `modifier: Modifier = Modifier` como o primeiro parâmetro opcional (após parâmetros obrigatórios de conteúdo).
+2. **Componentes Stateless:** Eleve o estado (State Hoisting). A lógica de negócios deve ser isolada, recebendo estados brutos e expondo eventos via lambdas de callback.
+3. **Acessibilidade (A11y):**
+   - Garanta uma área de toque mínima usando `Modifier.minimumInteractiveComponentSize()` (padrão 48.dp) para todo componente interativo/clicável.
+   - Componentes visuais devem expor o parâmetro `contentDescription`. Se for puramente decorativo, passe `contentDescription = null` de forma explícita.
+   - Use `Modifier.semantics` para agrupar informações em componentes compostos (ex: cards de configuração).
+4. **Previews & Testes:** Forneça SEMPRE funções `@Preview` combinadas (Light/Dark Theme) usando `@AureolePreview`. Bottom views (bottom sheets) e popups (dialogs) devem obrigatoriamente contar com preview isolada e teste de screenshot correspondente (`@PreviewTest`).
+5. **Design Tokens Unificados:** Utilize EXCLUSIVAMENTE os tokens injetados via `CompositionLocal`: `AureoleDS.colors`, `AureoleDS.dimens` e `AureoleDS.typography`.
 
-## 3. Regras de Código do Design System no Projeto
+### 🚫 DONTs (O que NUNCA fazer)
+1. **Hardcode de Valores Numéricos:** É PROIBIDO usar valores em `dp` ou `sp` brutos nas telas para paddings, margens ou fontes. Use sempre tokens (`AureoleDS.dimens`).
+2. **Hardcode de Cores:** É PROIBIDO instanciar cores brutas (`Color(0xFF...)`) fora da definição de temas. Use sempre a paleta `AureoleDS.colors`.
+3. **Dependência do MaterialTheme:** Evite utilizar `MaterialTheme.typography` ou `MaterialTheme.colorScheme` nas telas de feature proprietárias; garanta a independência usando o `AureoleDS`.
+4. **Mau uso de Tokens (Regra Crítica de Motion/Física):** NUNCA substitua valores numéricos absolutos por tokens do `AureoleDS.dimens` se o valor estiver sendo usado para specs de animação (springs, durations), offsets matemáticos, blur radii (Haze) ou física de gestos. Tokens de dimensão são estritamente para estruturação de layout estático.
 
-1. **Assinatura dos Componentes**:
-   - Todo componente reutilizável do Design System deve aceitar `modifier: Modifier = Modifier` após os parâmetros obrigatórios de conteúdo.
-   - Componentes devem ser **Stateless** (receber estados brutos e lambdas de callback).
+## 4. O Ecossistema AureoleDS
+O aplicativo suporta múltiplos temas definidos pelo usuário (ex: Frostbite), todos acessíveis de forma tipada e segura através do objeto global `AureoleDS`.
 
-2. **Design Tokens Unificados**:
-   - As cores, tipografias e formas extraídas do Figma devem residir nos arquivos de tema do projeto (`Color.kt`, `Type.kt`, `Shape.kt`, `Theme.kt`).
-   - Evitar valores numéricos e hexadecimais *hardcoded* diretamente nas telas; utilizar sempre tokens do tema (`MaterialTheme.colorScheme`, `MaterialTheme.typography`).
-
-3. **Previews, Bottom Views/Popups e Testes de Screenshot**:
-   - Fornecer sempre funções `@Preview` mostrando o componente em Light Theme e Dark Theme.
-   - **Regra Estrita de Bottom Views e Popups:** Todas as bottom views (bottom sheets) e popups (dialogs e popups customizados) devem obrigatoriamente contar com preview do componente principal no próprio arquivo e teste de screenshot correspondente (`@PreviewTest`).
-
-4. **Qualidade e Detekt**:
-   - O código gerado deve atender aos limites de linhas (<300 linhas por arquivo) e passar no Detekt sem warnings (`./gradlew detekt`).
-
----
-
-## 4. Estrutura do Tema Base e Cores (Aureole Colors)
-O aplicativo suporta múltiplos temas definidos pelo usuário (ex: Frostbite, etc.), cada um com o mesmo conjunto de tokens base. O sistema de cores foi criado sob o objeto `AureoleColors`.
-
-### Design Tokens Base (Composition Local)
-Os seguintes design tokens formam a base da paleta de todos os temas do app:
-- `onSurfaceHigh`
-- `onSurfaceMedium`
-- `onSurfaceLow`
-- `outline`
-- `surfaceVariant`
-- `surface`
-- `background`
-
-Essas cores podem ser acessadas no Compose utilizando:
-```kotlin
-AureoleDS.colors.onSurfaceHigh
-AureoleDS.colors.surfaceVariant
-```
-
-### Design Tokens de Dimensões e Espaçamento (AureoleDimens)
-Os tokens de dimensões e espaçamento do Aureole Launcher seguem a escala baseada nas regras do Figma para garantir consistência visual em margens, preenchimentos (padding) e arranjos entre componentes:
-
-**01 & 02. Principais e Composição (Spacings)**
-- `minimal`: `2.dp`
-- `xxSmall`: `4.dp`
-- `xSmall`: `8.dp`
-- `small`: `12.dp`
-- `medium`: `16.dp`
-- `large`: `24.dp`
-- `xLarge`: `32.dp`
-- `xxLarge`: `40.dp`
-
-**03. Ícones**
-- `iconXSmall`: `12.dp`
-- `iconSmall`: `16.dp`
-- `iconMedium`: `20.dp`
-- `iconLarge`: `24.dp`
-- `iconXLarge`: `36.dp`
-- `iconHuge`: `40.dp`
-
-**04. Radius and Borders**
-- `borderMinimal`: `1.dp`
-- `borderMax`: `3.dp`
-- `radiusMinimal`: `4.dp`
-- `radiusXSmall`: `8.dp`
-- `radiusSmall`: `12.dp`
-- `radiusMedium`: `16.dp`
-- `radiusLarge`: `24.dp`
-- `radiusFull`: `100.dp`
-
-> **Regra Obrigatória:** All spacings, paddings, icon sizes, and corner/border radii in Composables MUST reference `AureoleDS.dimens` tokens where semantically appropriate. Hardcoding `dp` values for these properties is prohibited when a matching token exists. Do NOT replace `dp` values if they are used for animation specs, offsets, elevations, blur radii, physics properties, or arbitrary math calculations where a Design System spacing/radius token does not make semantic sense.
-
-Essas dimensões podem ser acessadas via Compose utilizando:
-```kotlin
-AureoleDS.dimens.medium // 16.dp
-AureoleDS.dimens.xSmall // 8.dp
-AureoleDS.dimens.iconMedium // 20.dp
-AureoleDS.dimens.radiusSmall // 12.dp
-```
-
-### Tema Padrão: Frostbite
-Os valores *default* em desenvolvimento são mapeados pelo tema Frostbite:
+### 4.1 Cores (`AureoleDS.colors`)
+Os design tokens que formam a base da paleta (Exemplo Tema Frostbite):
+- `surface`: `#2B373E`
+- `surfaceVariant`: `#4A5D6B`
+- `background`: `#12181D`
 - `onSurfaceHigh`: `#FFFFFF`
 - `onSurfaceMedium`: `#C5D8E8`
 - `onSurfaceLow`: `#9BB4C8`
 - `outline`: `#7D96AA`
-- `surfaceVariant`: `#4A5D6B`
-- `surface`: `#2B373E`
-- `background`: `#12181D`
 
-A implementação está consolidada nos arquivos `AureoleColors.kt`, `Color.kt` e injetada no `AureoleLauncherTheme` (via `Theme.kt`). Use sempre as variáveis de `AureoleTheme.colors` nas composables locais em vez de hexadecimais brutos.
+### 4.2 Dimensões e Espaçamentos (`AureoleDS.dimens`)
+Valores diretos em dp são proibidos onde um token semântico existir:
+- **Spacings (Margens e Paddings):** `minimal: 2.dp` | `xxSmall: 4.dp` | `xSmall: 8.dp` | `small: 12.dp` | `medium: 16.dp` | `large: 24.dp` | `xLarge: 32.dp` | `xxLarge: 40.dp`
+- **Ícones (Bounding box):** `iconXSmall: 12.dp` | `iconSmall: 16.dp` | `iconMedium: 20.dp` | `iconLarge: 24.dp` | `iconXLarge: 36.dp` | `iconHuge: 40.dp`
+- **Radius and Borders:** `borderMinimal: 1.dp` | `borderMax: 3.dp` | `radiusMinimal: 4.dp` | `radiusXSmall: 8.dp` | `radiusSmall: 12.dp` | `radiusMedium: 16.dp` | `radiusLarge: 24.dp` | `radiusFull: 100.dp`
 
----
+### 4.3 Tipografia (`AureoleDS.typography`)
+O mapeamento do Figma (fontFamily, fontSize, fontWeight, lineHeight, letterSpacing) deve ser centralizado no objeto `AureoleTypography` e consumido através do `AureoleDS.typography` (ex: `AureoleDS.typography.titleLarge`, `bodyMedium`).
 
-## 5. Catálogo de Ícones do Aureole (Figma Node 108:1697)
-A biblioteca de ícones oficial do Aureole no Figma está mapeada e estruturada para uso nos componentes do app (`SettingsCustomComponents.kt`, `OpenedFolderLayouts.kt`, etc.):
+## 5. Catálogo de Ícones (Figma Node 108:1697)
+Os ícones oficiais devem ser exportados como vetores (`ImageVector`) e consumidos no código através do objeto `AureoleIcons` (ex: `Icon(imageVector = AureoleIcons.Home, ...)`).
 
-### NAVEGAÇÃO E CONTROLES
-- `Home`: Ícone de página inicial / launcher padrão.
-- `Menu` / `Tiny Menu` / `Drag Menu`: Linhas horizontais de menu/gaveta lateral.
-- `Arrow Up` / `Arrow Down` / `Left Up` / `Right Down`: Setas de navegação e gestos.
-- `Align right`: Alinhamento e orientação de painel.
-
-### AÇÕES E EDIÇÃO
-- `Edit`: Ícone de lápis para alteração de papéis de parede e textos.
-- `Add`: Sinal de mais para adição de pastas e atalhos.
-- `Delete`: Ícone de lixeira para remoção e desinstalação.
-- `Search`: Ícone de lupa para barra de busca.
-- `Undo`: Seta de rotação anti-horária para desfazer/restaurar layout.
-- `Refresh ccw`: Seta dupla de atualização para verificação de updates e redefinição.
-- `Check`: Marca de seleção para confirmações e estados ativos.
-- `Corners` / `Press` / `Click`: Indicadores visuais de bordas e atalhos.
-
-### TEMA, CORES E EFEITOS
-- `Color Fill` (`format_color_fill`): Preenchimento de cor de menu.
-- `Text Color` (`format_color_text`): Modificadores de cor de texto.
-- `Droplet` / `Folder Stroke Color`: Gota/paleta de cores primárias e contornos de pasta.
-- `Glass`: Linhas paralelas (`//`) indicando efeito de desfoque/vidro fosco (Haze/Blur).
-- `Layout`: Mapeamento visual de grades e coleções.
-
-### SISTEMA E UTILITÁRIOS
-- `Settings`: Ícone de engrenagem para preferências gerais.
-- `Advanced`: Ícone de ferramentas / três pontos (`...`) para opções avançadas.
-- `Info`: Círculo de informação (`i`) para dados do aplicativo.
-- `Calendar`: Ícone de calendário.
-- `Keyboard`: Ícone de teclado.
-- `Mail`: Ícone de e-mail/suporte.
-- `Eye off`: Ícone de visibilidade (ocultar itens/scrubber).
-- `Star`: Ícone de estrela.
-- `Smile`: Ícone de avaliação/colaboradores.
-
+- **Navegação e Controles:** `Home`, `Menu`, `TinyMenu`, `DragMenu`, `ArrowUp`, `ArrowDown`, `LeftUp`, `RightDown`, `AlignRight`
+- **Ações e Edição:** `Edit`, `Add`, `Delete`, `Search`, `Undo`, `RefreshCcw`, `Check`
+- **Gestos/Estados:** `Corners`, `Press`, `Click`
+- **Tema, Cores e Efeitos:** `ColorFill`, `TextColor`, `Droplet`, `FolderStrokeColor`, `Glass` (Haze/Blur), `Layout`
+- **Sistema e Utilitários:** `Settings`, `Advanced`, `Info`, `Calendar`, `Keyboard`, `Mail`, `EyeOff`, `Star`, `Smile`

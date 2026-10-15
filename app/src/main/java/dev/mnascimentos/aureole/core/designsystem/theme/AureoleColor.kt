@@ -1,4 +1,4 @@
-@file:Suppress("MatchingDeclarationName")
+@file:Suppress("MatchingDeclarationName") // Class name AureoleColors matches module domain color design system
 
 package dev.mnascimentos.aureole.core.designsystem.theme
 

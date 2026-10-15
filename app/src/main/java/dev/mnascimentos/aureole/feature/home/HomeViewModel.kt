@@ -8,6 +8,7 @@ import dev.mnascimentos.aureole.core.data.repository.AppRepository
 import dev.mnascimentos.aureole.core.data.repository.ContainerRepository
 import dev.mnascimentos.aureole.core.data.repository.FavoriteContainerRepository
 import dev.mnascimentos.aureole.core.data.repository.FolderRepository
+import dev.mnascimentos.aureole.core.data.repository.GridRepository
 import dev.mnascimentos.aureole.core.data.repository.SettingsRepository
 import dev.mnascimentos.aureole.core.data.repository.WidgetRepository
 import dev.mnascimentos.aureole.feature.home.extensions.loadContainers
@@ -21,7 +22,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-@Suppress("LongParameterList")
+@Suppress("LongParameterList") // Primary ViewModel requiring dependencies for launcher state management
 class HomeViewModel(
     application: Application,
     internal val appRepository: AppRepository,
@@ -29,7 +30,8 @@ class HomeViewModel(
     internal val settingsRepository: SettingsRepository,
     internal val folderRepository: FolderRepository,
     internal val favoriteContainerRepository: FavoriteContainerRepository,
-    internal val containerRepository: ContainerRepository
+    internal val containerRepository: ContainerRepository,
+    internal val gridRepository: GridRepository,
 ) : AndroidViewModel(application) {
 
     private val _uiState = MutableStateFlow(MainUiState())

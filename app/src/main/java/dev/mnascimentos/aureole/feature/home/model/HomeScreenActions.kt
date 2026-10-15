@@ -7,6 +7,7 @@ import dev.mnascimentos.aureole.core.data.model.ContainerModel
 import dev.mnascimentos.aureole.core.data.model.LauncherItemState
 import dev.mnascimentos.aureole.core.data.model.LauncherItemType
 import dev.mnascimentos.aureole.core.data.model.ScrollOrientation
+import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.FolderViewIntent
 
 data class HomeScreenActions(
     val onWidgetRowHeightChanged: (Dp) -> Unit,

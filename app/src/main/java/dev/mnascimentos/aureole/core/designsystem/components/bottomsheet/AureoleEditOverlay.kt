@@ -59,30 +59,21 @@ import dev.mnascimentos.aureole.core.designsystem.utils.LocalHazeState
 import dev.mnascimentos.aureole.feature.home.LocalHomeActions
 
 private const val ANIMATION_DURATION_MS = 300
+private const val DISMISS_DRAG_THRESHOLD_PX = 50f
+private const val DISMISS_VELOCITY_THRESHOLD = 1000f
+private const val EXPAND_VELOCITY_THRESHOLD = -500f
+private const val COLLAPSE_VELOCITY_THRESHOLD = 500f
 
 /**
  * Base Design System component for editor screens (Clock, Container, Widgets, etc.).
  *
- * Provides a unified overlay layout featuring:
- * - Backdrop with option for Haze blur or semi-transparent background and dismiss on tap.
- * - System back handler integration.
- * - Fade entrance/exit animations for backdrop and slide entrance/exit animations for sheet.
- * - Flexible layout where [previewContent] occupies the space above the bottom sheet
- *   and [sheetContent] is rendered inside a draggable bottom sheet Surface.
- *
- * @param onDismissRequest Action triggered when backdrop or system back button is pressed.
- * @param modifier Custom modifier applied to the overlay container.
- * @param title Optional title displayed at the top of the bottom sheet.
- * @param hazeState Active [HazeState] for background blur, or null if haze is disabled.
- * @param isVisible Visibility flag, used for visibility and animations.
- * @param animated Whether to animate entrance and exit of the overlay using fade and slide.
- * @param onBackPress Custom back button handler. If null, [onDismissRequest] is invoked.
- * @param onSettingsClick Optional click handler for the Aureole icon in the sheet header.
- * @param maxSheetHeightFraction Maximum height fraction of the screen that the bottom sheet can occupy in collapsed mode.
- * @param previewContent Composable slot for the live preview component floating above the bottom sheet.
- * @param bottomBarContent Optional composable slot for action buttons (e.g. Save, Reset) at the bottom of the sheet.
- * @param sheetContent Composable slot for options/controls inside the bottom sheet.
+ * Provides a unified overlay layout featuring backdrop, sheet surface, animations, and preview slot.
  */
+@Suppress(
+    "LongParameterList",
+    "LongMethod",
+    "CyclomaticComplexMethod"
+) // Reusable edit overlay component managing transition states, drag gestures and layout slots
 @Composable
 fun AureoleEditOverlay(
     onDismissRequest: () -> Unit,
@@ -114,22 +105,15 @@ fun AureoleEditOverlay(
             if (effectiveAnimated) {
                 internalVisible = false
             } else {
-                if (onBackPress != null) {
-                    onBackPress()
-                } else {
-                    onDismissRequest()
-                }
+                onBackPress?.invoke() ?: onDismissRequest()
             }
         }
     }
 
     LaunchedEffect(visibleState.currentState, visibleState.isIdle, internalVisible) {
-        if (effectiveAnimated && visibleState.isIdle && !visibleState.currentState && !internalVisible) {
-            if (onBackPress != null) {
-                onBackPress()
-            } else {
-                onDismissRequest()
-            }
+        val isHidden = !visibleState.currentState && !internalVisible
+        if (effectiveAnimated && visibleState.isIdle && isHidden) {
+            onBackPress?.invoke() ?: onDismissRequest()
         }
     }
 
@@ -142,200 +126,217 @@ fun AureoleEditOverlay(
     val localHaze = LocalHazeState.current
     val effectiveHazeState = hazeState ?: localHaze
 
-    val overlayContent = @Composable {
-        val hazeModifier = if (effectiveHazeState != null) {
-            Modifier.hazeEffect(
-                state = effectiveHazeState,
-                style = HazeStyle(
-                    blurRadius = 32.dp,
-                    tint = HazeTint(Color.Black.copy(alpha = 0.55f))
-                )
-            ) { blurEnabled = true }
-        } else {
-            Modifier
-        }
-        val backgroundColor = if (effectiveHazeState != null) Color.Transparent else Color.Black
+    val hazeModifier = if (effectiveHazeState != null) {
+        Modifier.hazeEffect(
+            state = effectiveHazeState,
+            style = HazeStyle(
+                blurRadius = 32.dp,
+                tint = HazeTint(Color.Black.copy(alpha = 0.55f))
+            )
+        ) { blurEnabled = true }
+    } else {
+        Modifier
+    }
+    val backgroundColor = if (effectiveHazeState != null) Color.Transparent else Color.Black
 
-        AnimatedVisibility(
-            visibleState = visibleState,
-            enter = fadeIn(animationSpec = tween(ANIMATION_DURATION_MS)),
-            exit = fadeOut(animationSpec = tween(ANIMATION_DURATION_MS)),
-            modifier = modifier.fillMaxSize()
-        ) {
-            CompositionLocalProvider(LocalAnimatedVisibilityScope provides this) {
-                BoxWithConstraints(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .then(hazeModifier)
-                        .background(backgroundColor)
-                        .clickable(
-                            interactionSource = remember { MutableInteractionSource() },
-                            indication = null,
-                            onClick = triggerDismiss
-                        )
+    AnimatedVisibility(
+        visibleState = visibleState,
+        enter = fadeIn(animationSpec = tween(ANIMATION_DURATION_MS)),
+        exit = fadeOut(animationSpec = tween(ANIMATION_DURATION_MS)),
+        modifier = modifier.fillMaxSize()
+    ) {
+        CompositionLocalProvider(LocalAnimatedVisibilityScope provides this) {
+            BoxWithConstraints(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .then(hazeModifier)
+                    .background(backgroundColor)
+                    .clickable(
+                        interactionSource = remember { MutableInteractionSource() },
+                        indication = null,
+                        onClick = triggerDismiss
+                    )
+            ) {
+                val maxSheetHeight = maxHeight * maxSheetHeightFraction
+                val sheetMaxExpandedHeight = maxHeight - AureoleDS.dimens.large
+                val maxExpansionAllowed = (sheetMaxExpandedHeight - maxSheetHeight).coerceAtLeast(0.dp)
+
+                var dragExpansion by remember { mutableFloatStateOf(0f) }
+
+                val draggableState = rememberDraggableState { delta ->
+                    dragExpansion = (dragExpansion - delta).coerceIn(0f, maxExpansionAllowed.value)
+
+                    if (dragExpansion <= 0f && delta > DISMISS_DRAG_THRESHOLD_PX) {
+                        triggerDismiss()
+                    }
+                }
+
+                val currentMaxSheetHeight = maxSheetHeight + dragExpansion.dp
+
+                Column(
+                    modifier = Modifier.fillMaxSize()
                 ) {
-                    val maxSheetHeight = maxHeight * maxSheetHeightFraction
-                    val sheetMaxExpandedHeight = maxHeight - AureoleDS.dimens.large
-                    val maxExpansionAllowed = (sheetMaxExpandedHeight - maxSheetHeight).coerceAtLeast(0.dp)
-
-                    var dragExpansion by remember { mutableFloatStateOf(0f) }
-
-                    val draggableState = rememberDraggableState { delta ->
-                        dragExpansion = (dragExpansion - delta).coerceIn(0f, maxExpansionAllowed.value)
-
-                        if (dragExpansion <= 0f && delta > 50f) {
-                            triggerDismiss()
-                        }
+                    val previewModifier = if (effectiveAnimated) {
+                        Modifier.animateEnterExit(
+                            enter = fadeIn(tween(ANIMATION_DURATION_MS)) +
+                                scaleIn(
+                                    initialScale = 0.75f,
+                                    animationSpec = tween(ANIMATION_DURATION_MS)
+                                ),
+                            exit = fadeOut(tween(ANIMATION_DURATION_MS)) +
+                                scaleOut(
+                                    targetScale = 0.75f,
+                                    animationSpec = tween(ANIMATION_DURATION_MS)
+                                )
+                        )
+                    } else {
+                        Modifier
                     }
 
-                    val currentMaxSheetHeight = maxSheetHeight + dragExpansion.dp
-
-                    Column(
-                        modifier = Modifier.fillMaxSize()
-                    ) {
-                        // Live preview area occupying remaining space above the bottom sheet
-                        val previewModifier = if (effectiveAnimated) {
-                            Modifier.animateEnterExit(
-                                enter = fadeIn(tween(ANIMATION_DURATION_MS)) +
-                                    scaleIn(
-                                        initialScale = 0.75f,
-                                        animationSpec = tween(ANIMATION_DURATION_MS)
-                                    ),
-                                exit = fadeOut(tween(ANIMATION_DURATION_MS)) +
-                                    scaleOut(
-                                        targetScale = 0.75f,
-                                        animationSpec = tween(ANIMATION_DURATION_MS)
-                                    )
-                            )
-                        } else {
-                            Modifier
-                        }
-
-                        Box(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .weight(1f)
-                                .then(previewModifier)
-                                .padding(
-                                    start = AureoleDS.dimens.medium,
-                                    end = AureoleDS.dimens.medium,
-                                    top = AureoleDS.dimens.large,
-                                    bottom = AureoleDS.dimens.medium
-                                ),
-                            contentAlignment = Alignment.BottomCenter
-                        ) {
-                            previewContent()
-                        }
-
-                        // Bottom Sheet Surface with slide animation
-                        val sheetModifier = if (effectiveAnimated) {
-                            Modifier.animateEnterExit(
-                                enter = slideInVertically(
-                                    initialOffsetY = { it },
-                                    animationSpec = tween(ANIMATION_DURATION_MS)
-                                ),
-                                exit = slideOutVertically(
-                                    targetOffsetY = { it },
-                                    animationSpec = tween(ANIMATION_DURATION_MS)
-                                )
-                            )
-                        } else {
-                            Modifier
-                        }
-
-                        Surface(
-                            modifier = sheetModifier
-                                .fillMaxWidth()
-                                .heightIn(max = currentMaxSheetHeight)
-                                .draggable(
-                                    state = draggableState,
-                                    orientation = Orientation.Vertical,
-                                    onDragStopped = { velocity ->
-                                        if (velocity > 1000f && dragExpansion == 0f) {
-                                            triggerDismiss()
-                                        } else if (velocity < -500f) {
-                                            dragExpansion = maxExpansionAllowed.value
-                                        } else if (velocity > 500f) {
-                                            dragExpansion = 0f
-                                        } else {
-                                            if (dragExpansion > maxExpansionAllowed.value / 2) {
-                                                dragExpansion = maxExpansionAllowed.value
-                                            } else {
-                                                dragExpansion = 0f
-                                            }
-                                        }
-                                    }
-                                )
-                                .clickable(
-                                    interactionSource = remember { MutableInteractionSource() },
-                                    indication = null,
-                                    onClick = {}
-                                ),
-                            shape = RoundedCornerShape(
-                                topStart = AureoleDS.dimens.radiusLarge,
-                                topEnd = AureoleDS.dimens.radiusLarge
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .weight(1f)
+                            .then(previewModifier)
+                            .padding(
+                                start = AureoleDS.dimens.medium,
+                                end = AureoleDS.dimens.medium,
+                                top = AureoleDS.dimens.large,
+                                bottom = AureoleDS.dimens.medium
                             ),
-                            color = AureoleTheme.colors.surface,
-                            contentColor = AureoleTheme.colors.onSurfaceMedium
-                        ) {
-                            Column(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(horizontal = 24.dp, vertical = 20.dp)
-                            ) {
-                                if (title != null) {
-                                    val homeActions = LocalHomeActions.current
-                                    val effectiveSettingsClick = onSettingsClick ?: { homeActions.onSettingsClick() }
+                        contentAlignment = Alignment.BottomCenter
+                    ) {
+                        previewContent()
+                    }
 
-                                    Box(
-                                        modifier = Modifier
-                                            .fillMaxWidth()
-                                            .padding(bottom = 16.dp),
-                                        contentAlignment = Alignment.Center
-                                    ) {
-                                        Text(
-                                            text = title,
-                                            style = AureoleTheme.typography.titleMedium,
-                                            fontWeight = FontWeight.Bold,
-                                            color = AureoleTheme.colors.onSurfaceHigh,
-                                            textAlign = TextAlign.Center
-                                        )
+                    val sheetModifier = if (effectiveAnimated) {
+                        Modifier.animateEnterExit(
+                            enter = slideInVertically(
+                                initialOffsetY = { it },
+                                animationSpec = tween(ANIMATION_DURATION_MS)
+                            ),
+                            exit = slideOutVertically(
+                                targetOffsetY = { it },
+                                animationSpec = tween(ANIMATION_DURATION_MS)
+                            )
+                        )
+                    } else {
+                        Modifier
+                    }
 
-                                        Box(
-                                            modifier = Modifier
-                                                .align(Alignment.CenterEnd)
-                                                .size(AureoleDS.dimens.xLarge)
-                                                .clip(RoundedCornerShape(AureoleDS.dimens.radiusMedium))
-                                                .clickable { effectiveSettingsClick() },
-                                            contentAlignment = Alignment.Center
-                                        ) {
-                                            AureoleDS.icons.Logo(
-                                                tint = AureoleTheme.colors.onSurfaceHigh,
-                                                modifier = Modifier.size(AureoleDS.dimens.iconSmall)
-                                            )
+                    Surface(
+                        modifier = sheetModifier
+                            .fillMaxWidth()
+                            .heightIn(max = currentMaxSheetHeight)
+                            .draggable(
+                                state = draggableState,
+                                orientation = Orientation.Vertical,
+                                onDragStopped = { velocity ->
+                                    if (velocity > DISMISS_VELOCITY_THRESHOLD && dragExpansion == 0f) {
+                                        triggerDismiss()
+                                    } else if (velocity < EXPAND_VELOCITY_THRESHOLD) {
+                                        dragExpansion = maxExpansionAllowed.value
+                                    } else if (velocity > COLLAPSE_VELOCITY_THRESHOLD) {
+                                        dragExpansion = 0f
+                                    } else {
+                                        dragExpansion = if (dragExpansion > maxExpansionAllowed.value / 2) {
+                                            maxExpansionAllowed.value
+                                        } else {
+                                            0f
                                         }
                                     }
                                 }
-
-                                Column(
-                                    modifier = Modifier
-                                        .weight(1f, fill = false)
-                                        .fillMaxWidth()
-                                ) {
-                                    sheetContent()
-                                }
-
-                                if (bottomBarContent != null) {
-                                    Spacer(modifier = Modifier.height(12.dp))
-                                    bottomBarContent()
-                                }
-                            }
-                        }
+                            )
+                            .clickable(
+                                interactionSource = remember { MutableInteractionSource() },
+                                indication = null,
+                                onClick = {}
+                            ),
+                        shape = RoundedCornerShape(
+                            topStart = AureoleDS.dimens.radiusLarge,
+                            topEnd = AureoleDS.dimens.radiusLarge
+                        ),
+                        color = AureoleTheme.colors.surface,
+                        contentColor = AureoleTheme.colors.onSurfaceMedium
+                    ) {
+                        OverlaySheetBody(
+                            title = title,
+                            onSettingsClick = onSettingsClick,
+                            bottomBarContent = bottomBarContent,
+                            sheetContent = sheetContent
+                        )
                     }
                 }
             }
         }
     }
+}
 
-    overlayContent()
+@Composable
+private fun OverlaySheetBody(
+    title: String?,
+    onSettingsClick: (() -> Unit)?,
+    bottomBarContent: (@Composable ColumnScope.() -> Unit)?,
+    sheetContent: @Composable ColumnScope.() -> Unit
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 24.dp, vertical = 20.dp)
+    ) {
+        if (title != null) {
+            OverlaySheetHeader(title = title, onSettingsClick = onSettingsClick)
+        }
+
+        Column(
+            modifier = Modifier
+                .weight(1f, fill = false)
+                .fillMaxWidth()
+        ) {
+            sheetContent()
+        }
+
+        if (bottomBarContent != null) {
+            Spacer(modifier = Modifier.height(12.dp))
+            bottomBarContent()
+        }
+    }
+}
+
+@Composable
+private fun OverlaySheetHeader(
+    title: String,
+    onSettingsClick: (() -> Unit)?
+) {
+    val homeActions = LocalHomeActions.current
+    val effectiveSettingsClick = onSettingsClick ?: { homeActions.onSettingsClick() }
+
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(bottom = 16.dp),
+        contentAlignment = Alignment.Center
+    ) {
+        Text(
+            text = title,
+            style = AureoleTheme.typography.titleMedium,
+            fontWeight = FontWeight.Bold,
+            color = AureoleTheme.colors.onSurfaceHigh,
+            textAlign = TextAlign.Center
+        )
+
+        Box(
+            modifier = Modifier
+                .align(Alignment.CenterEnd)
+                .size(AureoleDS.dimens.xLarge)
+                .clip(RoundedCornerShape(AureoleDS.dimens.radiusMedium))
+                .clickable { effectiveSettingsClick() },
+            contentAlignment = Alignment.Center
+        ) {
+            AureoleDS.icons.Logo(
+                tint = AureoleTheme.colors.onSurfaceHigh,
+                modifier = Modifier.size(AureoleDS.dimens.iconSmall)
+            )
+        }
+    }
 }

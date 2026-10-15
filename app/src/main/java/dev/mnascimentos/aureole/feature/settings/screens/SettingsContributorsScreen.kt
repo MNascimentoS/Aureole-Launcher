@@ -21,7 +21,8 @@ import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsContributorsScreen(
-    @Suppress("UNUSED_PARAMETER") onNavigateBack: () -> Unit
+    @Suppress("UNUSED_PARAMETER") // Parameter reserved for navigation contract
+    onNavigateBack: () -> Unit
 ) {
     Scaffold(
         containerColor = AureoleDS.colors.surface

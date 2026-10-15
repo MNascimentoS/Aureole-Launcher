@@ -59,7 +59,8 @@ private const val MAX_OFFSET_PERCENT = 60
 fun SettingsBehaviorScreen(
     uiState: SettingsUiState,
     actions: SettingsScreenActions,
-    @Suppress("UNUSED_PARAMETER") onNavigateBack: () -> Unit
+    @Suppress("UNUSED_PARAMETER") // Parameter reserved for navigation contract
+    onNavigateBack: () -> Unit
 ) {
     Scaffold(
         containerColor = AureoleDS.colors.surface

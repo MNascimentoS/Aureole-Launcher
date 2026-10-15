@@ -7,8 +7,12 @@ import dev.mnascimentos.aureole.core.data.repository.AppRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 
-class PackageReceiver : BroadcastReceiver() {
+class PackageReceiver : BroadcastReceiver(), KoinComponent {
+
+    private val appRepository: AppRepository by inject()
 
     override fun onReceive(context: Context, intent: Intent) {
         val packageName = intent.data?.schemeSpecificPart
@@ -20,7 +24,6 @@ class PackageReceiver : BroadcastReceiver() {
         val pendingResult = goAsync()
         CoroutineScope(Dispatchers.IO).launch {
             try {
-                val appRepository = AppRepository.getInstance(context)
                 when (action) {
                     Intent.ACTION_PACKAGE_REMOVED -> {
                         val isReplacing = intent.getBooleanExtra(Intent.EXTRA_REPLACING, false)

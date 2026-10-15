@@ -1,12 +1,6 @@
 package dev.mnascimentos.aureole.feature.home.widget
 
 import android.appwidget.AppWidgetHost
-import android.appwidget.AppWidgetManager
-import android.content.Context
-import android.view.Gravity
-import android.view.View
-import android.widget.FrameLayout
-import android.widget.TextView
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -55,7 +49,6 @@ import dev.mnascimentos.aureole.core.designsystem.theme.AureoleTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.LocalAnimatedVisibilityScope
 import dev.mnascimentos.aureole.core.designsystem.utils.LocalSharedTransitionScope
 import kotlinx.coroutines.delay
-import android.graphics.Color as AndroidColor
 
 private const val ANIMATION_DURATION_MS = 300
 
@@ -74,6 +67,7 @@ data class EditWidgetGroupActions(
     val onDismissRequest: () -> Unit
 )
 
+@Suppress("LongMethod") // Screen composable managing widget group editing layout and preview carousel
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EditWidgetGroupScreen(
@@ -148,6 +142,9 @@ fun EditWidgetGroupScreen(
     }
 }
 
+@Suppress(
+    "LongParameterList"
+) // Carousel composable requires widgets list, host, lazy list state, page indicator and action callbacks
 @Composable
 private fun EditWidgetGroupPreviewCarousel(
     currentWidgets: List<Int>,
@@ -191,6 +188,7 @@ private fun EditWidgetGroupPreviewCarousel(
     }
 }
 
+@Suppress("LongMethod") // Preview item composable rendering shared element transitions and remove badge
 @OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 private fun WidgetPreviewItem(
@@ -297,37 +295,6 @@ private fun AddWidgetCard(
                 tint = AureoleTheme.colors.onSurfaceMedium,
                 modifier = Modifier.size(32.dp)
             )
-        }
-    }
-}
-
-private fun createWidgetHostView(
-    context: Context,
-    appWidgetHost: AppWidgetHost,
-    widgetId: Int
-): View {
-    val appWidgetManager = AppWidgetManager.getInstance(context)
-    val appWidgetInfo = appWidgetManager.getAppWidgetInfo(widgetId)
-    return if (appWidgetInfo != null) {
-        try {
-            val hostView = appWidgetHost.createView(context, widgetId, appWidgetInfo)
-            hostView.layoutParams = FrameLayout.LayoutParams(
-                FrameLayout.LayoutParams.MATCH_PARENT,
-                FrameLayout.LayoutParams.MATCH_PARENT
-            )
-            hostView
-        } catch (_: Exception) {
-            TextView(context).apply {
-                text = "Widget"
-                gravity = Gravity.CENTER
-                setTextColor(AndroidColor.WHITE)
-            }
-        }
-    } else {
-        TextView(context).apply {
-            text = "Widget"
-            gravity = Gravity.CENTER
-            setTextColor(AndroidColor.WHITE)
         }
     }
 }

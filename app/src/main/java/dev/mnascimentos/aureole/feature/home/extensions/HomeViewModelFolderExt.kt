@@ -2,7 +2,7 @@ package dev.mnascimentos.aureole.feature.home.extensions
 
 import androidx.lifecycle.viewModelScope
 import dev.mnascimentos.aureole.feature.home.HomeViewModel
-import dev.mnascimentos.aureole.feature.home.model.FolderViewIntent
+import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.FolderViewIntent
 import kotlinx.coroutines.launch
 
 fun HomeViewModel.onFolderIntent(intent: FolderViewIntent) {

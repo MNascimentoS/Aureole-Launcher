@@ -1,3 +1,5 @@
+@file:Suppress("TooManyFunctions") // Static release notes repository containing version note definitions
+
 package dev.mnascimentos.aureole.core.data.repository
 
 import dev.mnascimentos.aureole.core.data.model.ReleaseNoteItem
@@ -177,6 +179,12 @@ private fun createSection0713Improvements() = ReleaseNoteSection(
             title = "Arrasto e Expansão da Bottom Sheet",
             description = "Ajuste na navegação por gesto para permitir expandir a folha inferior " +
                 "deslizando até o topo do preview.",
+            type = ReleaseNoteType.IMPROVEMENT
+        ),
+        ReleaseNoteItem(
+            title = "Modularização & Arquitetura Limpa",
+            description = "Refatoração e decomposição dos componentes de UI na Home, editores e " +
+                "Configurações para maior desempenho e manutenibilidade.",
             type = ReleaseNoteType.IMPROVEMENT
         )
     )
