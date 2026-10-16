@@ -37,15 +37,6 @@ data class AureoleDimens(
     val radiusMedium: Dp = 16.dp,
     val radiusLarge: Dp = 24.dp,
     val radiusFull: Dp = 100.dp,
-
-    // Backwards Compatibility Aliases
-    @Deprecated("Use minimal instead", ReplaceWith("minimal"))
-    val xxxSmall: Dp = 2.dp,
-    @Deprecated("Use radiusLarge instead", ReplaceWith("radiusLarge"))
-    val cornerRadius: Dp = 24.dp,
 )
 
 val LocalAureoleDimens = staticCompositionLocalOf { AureoleDimens() }
-
-@Deprecated("Use AureoleDimens instead", ReplaceWith("AureoleDimens"))
-typealias AureoleSpacing = AureoleDimens

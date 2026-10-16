@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -26,6 +25,16 @@ import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 
 /**
  * Standard Popup Menu Action Row Item with icon, title, optional badge, or trailing action button.
+ *
+ * @param title The title of the menu item.
+ * @param onClick Executes when the item is clicked.
+ * @param modifier The modifier to be applied to the layout.
+ * @param icon The icon of the menu item.
+ * @param customIcon Custom content for the icon slot.
+ * @param badge The badge text to display.
+ * @param trailingIcon The trailing icon of the menu item.
+ * @param onTrailingClick Executes when the trailing icon is clicked.
+ * @param isDestructive Whether the action is destructive, which applies error coloring.
  */
 @Suppress(
     "LongParameterList",
@@ -43,7 +52,7 @@ fun AureolePopupMenuItem(
     onTrailingClick: (() -> Unit)? = null,
     isDestructive: Boolean = false,
 ) {
-    val textColor = if (isDestructive) MaterialTheme.colorScheme.error else AureoleDS.colors.onSurfaceHigh
+    val textColor = if (isDestructive) AureoleDS.colors.error else AureoleDS.colors.onSurfaceHigh
 
     Row(
         modifier = modifier

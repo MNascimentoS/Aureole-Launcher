@@ -40,8 +40,7 @@ import dev.mnascimentos.aureole.core.designsystem.icons.Edit
 import dev.mnascimentos.aureole.core.designsystem.icons.Logo
 import dev.mnascimentos.aureole.core.designsystem.icons.Star
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
-import dev.mnascimentos.aureole.core.designsystem.theme.AureoleTheme
-import dev.mnascimentos.aureole.feature.home.components.ReleaseNotesBottomSheet
+import dev.mnascimentos.aureole.feature.home.components.overlays.ReleaseNotesBottomSheet
 import dev.mnascimentos.aureole.feature.settings.model.SettingsUiState
 
 private const val BOTTOM_SPACER_PERCENT = 0.1f
@@ -95,8 +94,8 @@ fun SettingsRootScreen(
 
                 AureoleText(
                     text = "Thank you!",
-                    style = AureoleTheme.typography.bodyMedium,
-                    color = AureoleTheme.colors.onSurfaceMedium,
+                    style = AureoleDS.typography.bodyMedium,
+                    color = AureoleDS.colors.onSurfaceMedium,
                     modifier = Modifier.padding(bottom = AureoleDS.dimens.xxLarge),
                     textAlign = TextAlign.Center
                 )
@@ -125,20 +124,20 @@ private fun SettingsHeader(
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             AureoleDS.icons.Logo(
                 modifier = Modifier.size(120.dp, 68.dp),
-                tint = AureoleTheme.colors.onSurfaceHigh
+                tint = AureoleDS.colors.onSurfaceHigh
             )
             Spacer(modifier = Modifier.height(AureoleDS.dimens.xLarge))
             AureoleText(
                 text = "Aureole",
-                style = AureoleTheme.typography.displaySmall,
+                style = AureoleDS.typography.displaySmall,
                 fontWeight = FontWeight.Bold,
-                color = AureoleTheme.colors.onSurfaceHigh
+                color = AureoleDS.colors.onSurfaceHigh
             )
             Spacer(modifier = Modifier.height(AureoleDS.dimens.xxSmall))
             AureoleText(
                 text = "Version $versionName",
-                style = AureoleTheme.typography.bodyMedium,
-                color = AureoleTheme.colors.outline
+                style = AureoleDS.typography.bodyMedium,
+                color = AureoleDS.colors.outline
             )
         }
     }

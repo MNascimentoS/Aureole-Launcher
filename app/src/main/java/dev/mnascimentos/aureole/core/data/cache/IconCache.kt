@@ -28,26 +28,28 @@ class IconCache(private val context: Context) {
 
     fun getIcon(packageName: String, componentName: ComponentName): Drawable {
         val cached = memoryCache[packageName]
-        if (cached != null) return cached
+        if (cached != null) return cached // Guard clause
 
-        val diskFile = getIconFile(packageName)
-        var drawable: Drawable? = null
-        if (diskFile.exists()) {
-            try {
-                val bitmap = BitmapFactory.decodeFile(diskFile.absolutePath)
-                if (bitmap != null) {
-                    drawable = BitmapDrawable(context.resources, bitmap)
-                }
-            } catch (_: Exception) {
-                diskFile.delete()
-            }
-        }
+        val drawable = loadDrawableFromDisk(packageName)
 
         val finalDrawable = drawable ?: loadFromPackageManager(packageName, componentName).also {
             saveIconToDisk(packageName, it)
         }
         memoryCache.put(packageName, finalDrawable)
         return finalDrawable
+    }
+
+    private fun loadDrawableFromDisk(packageName: String): Drawable? {
+        val diskFile = getIconFile(packageName)
+        if (!diskFile.exists()) return null // Guard clause
+
+        return try {
+            val bitmap = BitmapFactory.decodeFile(diskFile.absolutePath)
+            if (bitmap != null) BitmapDrawable(context.resources, bitmap) else null
+        } catch (_: Exception) {
+            diskFile.delete()
+            null
+        }
     }
 
     fun cacheIcon(packageName: String, drawable: Drawable) {

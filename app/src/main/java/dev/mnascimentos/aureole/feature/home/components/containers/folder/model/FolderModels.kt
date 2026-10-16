@@ -5,6 +5,13 @@ import dev.mnascimentos.aureole.core.data.model.AppFolder
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
 
+data class FolderFormConfig(
+    val initialName: String,
+    val initialIcon: String?,
+    val isEditing: Boolean,
+    val submitText: String
+)
+
 data class FolderAppRowItemParams(
     val app: AppInfo,
     val index: Int,

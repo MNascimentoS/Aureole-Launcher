@@ -29,7 +29,6 @@ import dev.mnascimentos.aureole.core.designsystem.icons.MenuIcon
 import dev.mnascimentos.aureole.core.designsystem.icons.VerticalContainer
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
-import dev.mnascimentos.aureole.core.designsystem.theme.AureoleTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 
 @Composable
@@ -104,7 +103,7 @@ private fun AddContainerOptionItem(
         modifier = Modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(14.dp))
-            .background(AureoleTheme.colors.surfaceVariant.copy(alpha = 0.45f))
+            .background(AureoleDS.colors.surfaceVariant.copy(alpha = 0.45f))
             .clickable { onClick() }
             .padding(horizontal = 12.dp, vertical = 10.dp),
         verticalAlignment = Alignment.CenterVertically
@@ -113,7 +112,7 @@ private fun AddContainerOptionItem(
             modifier = Modifier
                 .size(36.dp)
                 .clip(RoundedCornerShape(10.dp))
-                .background(AureoleTheme.colors.surface.copy(alpha = 0.5f)),
+                .background(AureoleDS.colors.surface.copy(alpha = 0.5f)),
             contentAlignment = Alignment.Center
         ) {
             icon(Modifier.size(20.dp))
@@ -121,9 +120,9 @@ private fun AddContainerOptionItem(
         Spacer(modifier = Modifier.width(12.dp))
         AureoleText(
             text = title,
-            style = AureoleTheme.typography.bodyMedium,
+            style = AureoleDS.typography.bodyMedium,
             fontWeight = FontWeight.SemiBold,
-            color = AureoleTheme.colors.onSurfaceHigh
+            color = AureoleDS.colors.onSurfaceHigh
         )
     }
 }

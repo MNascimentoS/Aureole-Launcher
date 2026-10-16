@@ -34,14 +34,14 @@ A IA deve tratar a acessibilidade como requisito crítico, não como "bônus".
 - **Valores Estáveis (`@Stable`, `@Immutable`):** Certifique-se de que os inputs do componente sejam estáveis para que o Compose possa "pular" (skip) a recomposição. Se precisar passar uma lista, use classes wrappers imutáveis (como a biblioteca `kotlinx.collections.immutable`) ou evite passar `List` nativa instável como parâmetro de alta frequência.
 - **Deferimento de Leitura (Lazy Reading):** Se um componente recebe um estado que muda com extrema frequência (ex: offset de scroll, cor em transição), prefira receber um lambda provider `() -> Type` ou `State<Type>` para adiar a leitura até a fase de Draw/Layout, evitando recomposições de árvore.
 
-## 5. Previews e Catálogo de Variações
-A criação de um componente só está finalizada quando todos os seus possíveis estados visuais estiverem cobertos por `@Preview`.
-- **Variantes Obrigatórias:** Sempre providencie previews para:
+## 5. Previews, Testes Unitários e Testes de Screenshot
+A criação de um componente do Design System em `core/designsystem/components` só está finalizada quando contar obrigatoriamente com **Previews**, **Testes Unitários** e **Testes de Screenshot**:
+- **Previews Obrigatórias:** Todo componente deve possuir funções `@Preview` / `@AureolePreview` cobrindo seus possíveis estados visuais:
   1. Estado Padrão (Default)
-  2. Estado Desabilitado (Disabled)
-  3. Estado de Carregamento (Loading) - *se aplicável*
-  4. Estado de Erro / Foco - *se aplicável*
-- Agrupe esses previews em uma única função anotada ou crie uma classe provedora (`PreviewParameterProvider`) para injetar as variações.
+  2. Variantes e Estados Desabilitados/Ativos/Hover (quando aplicável)
+  3. Composição de Conteúdo e Slots
+- **Testes Unitários (`app/src/test/java/dev/mnascimentos/aureole/core/designsystem/components/`):** Todo componente deve ter uma suíte de testes Robolectric/Compose UI Test validando comportamento, emissão de callbacks e acessibilidade seguindo a convenção `when [Condition] _ should [Expected Outcome]`.
+- **Testes de Screenshot (`app/src/screenshotTest/java/dev/mnascimentos/aureole/core/designsystem/components/`):** Todo componente deve ter testes anotados com `@PreviewTest` validando a regressão visual das variações do componente.
 
 ## 6. DOs & DONTs - Revisão Estrita
 

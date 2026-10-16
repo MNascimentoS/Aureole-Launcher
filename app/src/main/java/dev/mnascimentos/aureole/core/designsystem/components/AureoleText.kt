@@ -1,5 +1,6 @@
 package dev.mnascimentos.aureole.core.designsystem.components
 
+import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -14,6 +15,8 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.TextUnit
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
+import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 
 /**
  * High level text component for Aureole Design System.
@@ -24,6 +27,19 @@ import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
  * @param text The text to be displayed.
  * @param modifier The modifier to be applied to the layout.
  * @param color Color to apply to the text.
+ * @param fontSize The size of glyphs to use when painting the text.
+ * @param fontStyle The typeface variant to use when drawing the letters (e.g., italic).
+ * @param fontWeight The typeface thickness to use when painting the text (e.g., [FontWeight.Bold]).
+ * @param fontFamily The font family to be used when rendering the text.
+ * @param letterSpacing The amount of space to add between each letter.
+ * @param textDecoration The decorations to paint on the text (e.g., an underline).
+ * @param textAlign The alignment of the text within the lines of the paragraph.
+ * @param lineHeight Line height for the paragraph in [TextUnit] unit, e.g. SP or EM.
+ * @param overflow How visual overflow should be handled.
+ * @param softWrap Whether the text should break at soft line breaks.
+ * @param maxLines An optional maximum number of lines for the text to span, wrapping if necessary.
+ * @param minLines The minimum height in terms of minimum number of visible lines.
+ * @param onTextLayout Callback that is executed when a new text layout is calculated.
  * @param style Style configuration for the text, defaults to [AureoleDS.typography.text].
  */
 @Suppress("LongParameterList") // Wrapper for Material3 Text component mirroring standard Text parameters
@@ -66,4 +82,28 @@ fun AureoleText(
         onTextLayout = onTextLayout,
         style = style,
     )
+}
+
+@AureolePreview
+@Composable
+fun AureoleTextPreview() {
+    AureoleLauncherTheme {
+        Column {
+            AureoleText(
+                text = "Title Medium Text",
+                style = AureoleDS.typography.titleMedium,
+                color = AureoleDS.colors.onSurfaceHigh
+            )
+            AureoleText(
+                text = "Body Medium Text",
+                style = AureoleDS.typography.bodyMedium,
+                color = AureoleDS.colors.onSurfaceMedium
+            )
+            AureoleText(
+                text = "Label Small Text",
+                style = AureoleDS.typography.labelSmall,
+                color = AureoleDS.colors.onSurfaceLow
+            )
+        }
+    }
 }

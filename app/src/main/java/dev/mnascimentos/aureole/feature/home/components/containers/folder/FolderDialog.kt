@@ -30,11 +30,11 @@ import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleHeaderBanner
 import dev.mnascimentos.aureole.core.designsystem.components.AureolePopupBox
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
-import dev.mnascimentos.aureole.core.designsystem.theme.AureoleTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.LocalHomeUiState
-import dev.mnascimentos.aureole.feature.home.components.AppItemRow
+import dev.mnascimentos.aureole.feature.home.components.appsdrawer.appitem.AppItemRow
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
 import dev.mnascimentos.aureole.feature.settings.SettingsActivity
 
@@ -52,7 +52,6 @@ fun FolderDialog(
 
     val dialogContent = @Composable {
         AureolePopupBox(
-            contentPadding = PaddingValues(0.dp),
             modifier = Modifier.widthIn(min = 280.dp, max = 340.dp)
         ) {
             AureoleHeaderBanner(
@@ -108,8 +107,8 @@ private fun FolderDialogContent(
     if (appsInFolder.isEmpty()) {
         AureoleText(
             text = "Folder is empty",
-            style = AureoleTheme.typography.bodyMedium,
-            color = AureoleTheme.colors.onSurfaceMedium,
+            style = AureoleDS.typography.bodyMedium,
+            color = AureoleDS.colors.onSurfaceMedium,
             modifier = Modifier.padding(vertical = 32.dp)
         )
     } else if (folder.displayAsGrid) {
@@ -119,9 +118,13 @@ private fun FolderDialogContent(
             horizontalArrangement = Arrangement.spacedBy(8.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            items(appsInFolder, key = { it.packageName }) { app ->
+            items(
+                items = appsInFolder,
+                key = { it.packageName },
+                contentType = { "folder_app_grid" }
+            ) { app ->
                 Box(modifier = Modifier.padding(4.dp)) {
-                    AureoleText(app.label.take(1), color = AureoleTheme.colors.onSurfaceHigh)
+                    AureoleText(app.label.take(1), color = AureoleDS.colors.onSurfaceHigh)
                 }
             }
         }
@@ -129,7 +132,11 @@ private fun FolderDialogContent(
         LazyColumn(
             contentPadding = PaddingValues(vertical = 8.dp)
         ) {
-            items(appsInFolder, key = { it.packageName }) { app ->
+            items(
+                items = appsInFolder,
+                key = { it.packageName },
+                contentType = { "folder_app_row" }
+            ) { app ->
                 AppItemRow(
                     app = app,
                     onClick = { onAppClick(app) },

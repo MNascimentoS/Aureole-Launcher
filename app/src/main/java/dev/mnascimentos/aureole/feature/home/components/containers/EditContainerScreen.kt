@@ -20,7 +20,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
@@ -41,23 +40,20 @@ import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.data.model.ContainerItemEntity
 import dev.mnascimentos.aureole.core.data.model.ContainerItemType
 import dev.mnascimentos.aureole.core.data.model.ContainerModel
-import dev.mnascimentos.aureole.core.designsystem.components.bottomsheet.AureoleEditOverlay
+import dev.mnascimentos.aureole.core.designsystem.components.AureoleEditOverlay
 import dev.mnascimentos.aureole.core.designsystem.icons.Add
 import dev.mnascimentos.aureole.core.designsystem.icons.Click
 import dev.mnascimentos.aureole.core.designsystem.icons.ColorFill
 import dev.mnascimentos.aureole.core.designsystem.icons.DragMenu
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
-import dev.mnascimentos.aureole.core.designsystem.theme.AureoleTheme
 import dev.mnascimentos.aureole.feature.home.LocalHomeActions
 import dev.mnascimentos.aureole.feature.home.LocalHomeUiState
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.CreateFolderDialog
 import dev.mnascimentos.aureole.feature.home.components.containers.model.ContainerConfig
+import dev.mnascimentos.aureole.feature.home.components.containers.model.ContainerOptionsState
+import dev.mnascimentos.aureole.feature.home.components.containers.model.EditContainerScreenMode
 import kotlinx.coroutines.delay
 import java.util.UUID
-
-enum class EditContainerScreenMode {
-    MAIN, APPEARANCE, BEHAVIOR, MANAGE_ITEMS
-}
 
 private const val ANIMATION_DURATION_MS = 300
 
@@ -197,11 +193,11 @@ private fun MainSettingsContent(
         verticalAlignment = Alignment.CenterVertically
     ) {
         AureoleDS.icons.ColorFill(
-            tint = AureoleTheme.colors.onSurfaceMedium,
+            tint = AureoleDS.colors.onSurfaceMedium,
             modifier = Modifier.size(24.dp)
         )
         Spacer(modifier = Modifier.width(16.dp))
-        Text(text = "Appearance", color = AureoleTheme.colors.onSurfaceHigh)
+        Text(text = "Appearance", color = AureoleDS.colors.onSurfaceHigh)
     }
 
     Row(
@@ -211,9 +207,9 @@ private fun MainSettingsContent(
             .padding(vertical = 16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        AureoleDS.icons.Click(tint = AureoleTheme.colors.onSurfaceMedium, modifier = Modifier.size(24.dp))
+        AureoleDS.icons.Click(tint = AureoleDS.colors.onSurfaceMedium, modifier = Modifier.size(24.dp))
         Spacer(modifier = Modifier.width(16.dp))
-        Text(text = "Behavior", color = AureoleTheme.colors.onSurfaceHigh)
+        Text(text = "Behavior", color = AureoleDS.colors.onSurfaceHigh)
     }
 
     Row(
@@ -224,11 +220,11 @@ private fun MainSettingsContent(
         verticalAlignment = Alignment.CenterVertically
     ) {
         AureoleDS.icons.DragMenu(
-            tint = AureoleTheme.colors.onSurfaceMedium,
+            tint = AureoleDS.colors.onSurfaceMedium,
             modifier = Modifier.size(24.dp)
         )
         Spacer(modifier = Modifier.width(16.dp))
-        Text(text = "Manage Items", color = AureoleTheme.colors.onSurfaceHigh)
+        Text(text = "Manage Items", color = AureoleDS.colors.onSurfaceHigh)
     }
 
     Spacer(modifier = Modifier.height(24.dp))
@@ -252,7 +248,7 @@ private fun AppearanceSettingsContent(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text("Expand cells", color = AureoleTheme.colors.onSurfaceMedium)
+            Text("Expand cells", color = AureoleDS.colors.onSurfaceMedium)
             Switch(checked = state.isExpandCell, onCheckedChange = { state.isExpandCell = it })
         }
         Row(
@@ -260,7 +256,7 @@ private fun AppearanceSettingsContent(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text("Grid folders", color = AureoleTheme.colors.onSurfaceMedium)
+            Text("Grid folders", color = AureoleDS.colors.onSurfaceMedium)
             Switch(checked = state.isGridFolderEnabled, onCheckedChange = { state.isGridFolderEnabled = it })
         }
     } else {
@@ -273,7 +269,7 @@ private fun AppearanceSettingsContent(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text("Background enabled", color = AureoleTheme.colors.onSurfaceMedium)
+            Text("Background enabled", color = AureoleDS.colors.onSurfaceMedium)
             Switch(checked = state.isBackgroundEnabled, onCheckedChange = { state.isBackgroundEnabled = it })
         }
         Row(
@@ -281,7 +277,7 @@ private fun AppearanceSettingsContent(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text("Show folder labels", color = AureoleTheme.colors.onSurfaceMedium)
+            Text("Show folder labels", color = AureoleDS.colors.onSurfaceMedium)
             Switch(checked = state.showFolderLabels, onCheckedChange = { state.showFolderLabels = it })
         }
     }
@@ -312,10 +308,10 @@ private fun ManageItemsContent(
 
     Text(
         text = "Componentes Filhos (${state.itemsList.size})",
-        style = AureoleTheme.typography.titleMedium,
+        style = AureoleDS.typography.titleMedium,
         fontWeight = FontWeight.Bold,
         modifier = Modifier.padding(bottom = 16.dp).fillMaxWidth(),
-        color = AureoleTheme.colors.onSurfaceHigh
+        color = AureoleDS.colors.onSurfaceHigh
     )
 
     Row(
@@ -335,19 +331,19 @@ private fun ManageItemsContent(
         OutlinedButton(
             onClick = { isCreateFolderDialogVisible = true },
             shape = RoundedCornerShape(12.dp),
-            border = BorderStroke(1.dp, AureoleTheme.colors.outline.copy(alpha = 0.5f)),
+            border = BorderStroke(1.dp, AureoleDS.colors.outline.copy(alpha = 0.5f)),
             colors = ButtonDefaults.outlinedButtonColors(
-                contentColor = MaterialTheme.colorScheme.primary
+                contentColor = AureoleDS.colors.onSurfaceHigh
             ),
             contentPadding = PaddingValues(horizontal = 12.dp),
             modifier = Modifier.height(52.dp)
         ) {
             AureoleDS.icons.Add(
-                tint = MaterialTheme.colorScheme.primary,
+                tint = AureoleDS.colors.onSurfaceHigh,
                 modifier = Modifier.size(18.dp)
             )
             Spacer(modifier = Modifier.width(6.dp))
-            Text("Pasta", style = AureoleTheme.typography.labelLarge)
+            Text("Pasta", style = AureoleDS.typography.labelLarge)
         }
     }
 
@@ -540,22 +536,3 @@ private fun rememberEditContainerState(panel: ContainerModel): EditContainerStat
         )
     }
 }
-
-data class ContainerOptionsState(
-    val position: String,
-    val orientation: String,
-    val isBackgroundEnabled: Boolean,
-    val isExpandCell: Boolean,
-    val showAddFolderButton: Boolean,
-    val showFolderLabels: Boolean,
-    val isGridFolderEnabled: Boolean,
-    val hideText: Boolean,
-    val textColor: Long?,
-    val backgroundColor: Long?,
-    val strokeEnabled: Boolean,
-    val strokeColor: Long?,
-    val folderColor: Long?,
-    val folderStrokeEnabled: Boolean,
-    val scrollUpShortcut: String?,
-    val scrollDownShortcut: String?
-)

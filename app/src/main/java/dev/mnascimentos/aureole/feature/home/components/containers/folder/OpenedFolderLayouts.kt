@@ -28,7 +28,6 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -85,7 +84,7 @@ fun GridStyleExpandedFolderPopup(
         ) {
             Text(
                 text = folder.name,
-                style = MaterialTheme.typography.headlineMedium,
+                style = AureoleDS.typography.titleLarge,
                 fontWeight = FontWeight.Bold,
                 color = Color.White,
                 textAlign = TextAlign.Center,
@@ -133,7 +132,7 @@ private fun GridFolderContainer(
             state = effectiveHazeState,
             style = HazeStyle(
                 blurRadius = 32.dp,
-                tint = HazeTint(MaterialTheme.colorScheme.surfaceContainerHigh.copy(alpha = 0.55f))
+                tint = HazeTint(AureoleDS.colors.surfaceVariant.copy(alpha = 0.55f))
             )
         ) {
             blurEnabled = true
@@ -143,9 +142,9 @@ private fun GridFolderContainer(
     }
 
     val containerBgColor = if (hasHaze) {
-        MaterialTheme.colorScheme.surfaceContainerHigh.copy(alpha = 0.55f)
+        AureoleDS.colors.surfaceVariant.copy(alpha = 0.55f)
     } else {
-        MaterialTheme.colorScheme.surfaceContainerHigh
+        AureoleDS.colors.surfaceVariant
     }
 
     val gridMaxHeight = calculateGridMaxHeight(appsInFolder.size)
@@ -187,8 +186,8 @@ private fun EmptyFolderGridHint() {
     ) {
         Text(
             text = "Nenhum aplicativo na pasta",
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
+            style = AureoleDS.typography.bodyMedium,
+            color = AureoleDS.colors.onSurfaceMedium
         )
     }
 }
@@ -207,7 +206,11 @@ private fun PopulatedFolderGrid(
         verticalArrangement = Arrangement.spacedBy(18.dp),
         modifier = Modifier.fillMaxWidth()
     ) {
-        items(appsInFolder, key = { it.packageName }) { app ->
+        items(
+            items = appsInFolder,
+            key = { it.packageName },
+            contentType = { "opened_folder_app_grid" }
+        ) { app ->
             OpenedFolderSamsungGridAppItem(
                 app = app,
                 onClick = { actions.onAppClick(app) },
@@ -252,7 +255,7 @@ private fun OpenedFolderSamsungGridAppItem(
         Spacer(modifier = Modifier.height(6.dp))
         Text(
             text = app.label,
-            style = MaterialTheme.typography.labelSmall,
+            style = AureoleDS.typography.labelSmall,
             color = Color.White,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
@@ -309,8 +312,8 @@ fun OpenedFolderAppList(
         ) {
             Text(
                 text = "No apps in folder",
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
+                style = AureoleDS.typography.bodySmall,
+                color = AureoleDS.colors.onSurfaceMedium
             )
         }
     } else {
@@ -318,7 +321,11 @@ fun OpenedFolderAppList(
             contentPadding = PaddingValues(vertical = 2.dp),
             modifier = Modifier.fillMaxWidth()
         ) {
-            items(appsInFolder, key = { it.packageName }) { app ->
+            items(
+                items = appsInFolder,
+                key = { it.packageName },
+                contentType = { "opened_folder_app_row" }
+            ) { app ->
                 OpenedFolderAppItemRow(
                     app = app,
                     isLeftHandedMode = isLeftHandedMode,
@@ -358,8 +365,8 @@ private fun OpenedFolderAppItemRow(
         if (isLeftHandedMode) {
             Text(
                 text = app.label,
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurface,
+                style = AureoleDS.typography.bodyMedium,
+                color = AureoleDS.colors.onSurfaceHigh,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
                 modifier = Modifier.weight(1f)
@@ -383,8 +390,8 @@ private fun OpenedFolderAppItemRow(
             Spacer(modifier = Modifier.width(10.dp))
             Text(
                 text = app.label,
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurface,
+                style = AureoleDS.typography.bodyMedium,
+                color = AureoleDS.colors.onSurfaceHigh,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
                 modifier = Modifier.weight(1f)

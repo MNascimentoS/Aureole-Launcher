@@ -45,7 +45,6 @@ import dev.mnascimentos.aureole.core.designsystem.icons.Dots
 import dev.mnascimentos.aureole.core.designsystem.icons.Header
 import dev.mnascimentos.aureole.core.designsystem.icons.Press
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
-import dev.mnascimentos.aureole.core.designsystem.theme.AureoleTheme
 import dev.mnascimentos.aureole.feature.settings.model.SettingsScreenActions
 import dev.mnascimentos.aureole.feature.settings.model.SettingsUiState
 import kotlin.math.roundToInt
@@ -85,9 +84,9 @@ fun SettingsBehaviorScreen(
 
                 AureoleText(
                     text = "Behavior",
-                    style = AureoleTheme.typography.titleLarge,
+                    style = AureoleDS.typography.titleLarge,
                     fontWeight = FontWeight.Medium,
-                    color = AureoleTheme.colors.onSurfaceMedium,
+                    color = AureoleDS.colors.onSurfaceMedium,
                     textAlign = TextAlign.Center,
                     modifier = Modifier.fillMaxWidth()
                 )
@@ -165,15 +164,15 @@ private fun HeaderOffsetPickerRow(
         verticalAlignment = Alignment.CenterVertically
     ) {
         AureoleDS.icons.Header(
-            tint = AureoleTheme.colors.onSurfaceMedium,
+            tint = AureoleDS.colors.onSurfaceMedium,
             modifier = Modifier.padding(end = 20.dp).size(20.dp)
         )
 
         AureoleText(
             text = "Header offset",
-            style = AureoleTheme.typography.bodyLarge,
+            style = AureoleDS.typography.bodyLarge,
             fontWeight = FontWeight.Normal,
-            color = AureoleTheme.colors.onSurfaceMedium,
+            color = AureoleDS.colors.onSurfaceMedium,
             modifier = Modifier.weight(1f)
         )
 
@@ -234,7 +233,11 @@ private fun HeaderOffsetWheelPicker(
             contentPadding = PaddingValues(vertical = itemHeightDp),
             modifier = Modifier.fillMaxSize()
         ) {
-            itemsIndexed(items) { _, itemValue ->
+            itemsIndexed(
+                items = items,
+                key = { _, itemValue -> itemValue },
+                contentType = { _, _ -> "offset_wheel_item" }
+            ) { _, itemValue ->
                 val isSelected = (itemValue == currentCenteredValue)
                 Box(
                     modifier = Modifier
@@ -244,12 +247,12 @@ private fun HeaderOffsetWheelPicker(
                 ) {
                     AureoleText(
                         text = "$itemValue%",
-                        style = AureoleTheme.typography.bodyLarge,
+                        style = AureoleDS.typography.bodyLarge,
                         fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
                         color = if (isSelected) {
-                            AureoleTheme.colors.onSurfaceHigh
+                            AureoleDS.colors.onSurfaceHigh
                         } else {
-                            AureoleTheme.colors.onSurfaceLow.copy(alpha = 0.35f)
+                            AureoleDS.colors.onSurfaceLow.copy(alpha = 0.35f)
                         },
                         fontSize = if (isSelected) 15.sp else 12.sp
                     )

@@ -117,22 +117,24 @@ object GridEngineUtils {
         limits: GridLimits = GridLimits()
     ): Pair<Int, Int>? {
         val dummyId = "temp_find_slot"
-        for (r in 0..(limits.maxRows - rowSpan)) {
-            for (c in 0..(limits.maxCols - colSpan)) {
-                val candidate = LauncherItemState(
-                    id = dummyId,
-                    type = LauncherItemType.CLOCK,
-                    col = c,
-                    row = r,
-                    colSpan = colSpan,
-                    rowSpan = rowSpan
-                )
-                if (!checkCollisionWithOthers(candidate, items) && isWithinBounds(c, r, colSpan, rowSpan, limits)) {
-                    return Pair(c, r)
+
+        return sequence {
+            for (r in 0..(limits.maxRows - rowSpan)) {
+                for (c in 0..(limits.maxCols - colSpan)) {
+                    yield(Pair(c, r))
                 }
             }
+        }.firstOrNull { (c, r) ->
+            val candidate = LauncherItemState(
+                id = dummyId,
+                type = LauncherItemType.CLOCK,
+                col = c,
+                row = r,
+                colSpan = colSpan,
+                rowSpan = rowSpan
+            )
+            !checkCollisionWithOthers(candidate, items) && isWithinBounds(c, r, colSpan, rowSpan, limits)
         }
-        return null
     }
 
     fun findLargestAvailableSlot(

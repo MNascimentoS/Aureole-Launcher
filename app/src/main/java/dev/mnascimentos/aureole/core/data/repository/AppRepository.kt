@@ -131,6 +131,11 @@ class AppRepository(private val context: Context) {
         dao.deleteApp(packageName)
     }
 
+    fun launchApp(packageName: String, activityName: String) {
+        val componentName = ComponentName(packageName, activityName)
+        launchApp(componentName)
+    }
+
     fun launchApp(componentName: ComponentName) {
         val intent = Intent(Intent.ACTION_MAIN).apply {
             addCategory(Intent.CATEGORY_LAUNCHER)

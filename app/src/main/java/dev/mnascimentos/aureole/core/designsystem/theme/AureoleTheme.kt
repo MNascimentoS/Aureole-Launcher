@@ -112,11 +112,6 @@ object AureoleDS {
     val dimens: AureoleDimens
         @Composable
         get() = LocalAureoleDimens.current
-
-    @Deprecated("Use AureoleDS.dimens instead", ReplaceWith("AureoleDS.dimens"))
-    val spacings: AureoleDimens
-        @Composable
-        get() = LocalAureoleDimens.current
 }
 
 // Kept for backwards compatibility with existing screens
@@ -130,11 +125,6 @@ object AureoleTheme {
         get() = LocalAureoleTypography.current
 
     val dimens: AureoleDimens
-        @Composable
-        get() = LocalAureoleDimens.current
-
-    @Deprecated("Use AureoleTheme.dimens instead", ReplaceWith("AureoleTheme.dimens"))
-    val spacings: AureoleDimens
         @Composable
         get() = LocalAureoleDimens.current
 }

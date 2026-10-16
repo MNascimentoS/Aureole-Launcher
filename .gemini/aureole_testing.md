@@ -12,12 +12,14 @@ O projeto possui duas pastas de teste principais no módulo `app/`:
 ```text
 app/src/
 ├── screenshotTest/java/dev/mnascimentos/aureole/
+│   ├── core/designsystem/components/ # Screenshot tests dos componentes do Design System
 │   └── feature/
 │       ├── home/                  # Screenshot tests da Home (ex: HomeScreenScreenshotTest.kt)
 │       └── settings/              # Screenshot tests de Configurações
 │
 └── test/java/dev/mnascimentos/aureole/
-    ├── core/                      # Testes unitários de Repositories, DAOs, Modelos e Utils
+    ├── core/                      # Testes unitários de Repositories, DAOs, Modelos, Utils e DS Components
+    │   └── designsystem/components/ # Testes unitários de comportamento de DS Components
     ├── di/                        # Testes de validação da árvore de injeção de dependência Koin
     └── feature/                   # Testes unitários de ViewModels e lógicas de Feature
 ```
@@ -26,6 +28,7 @@ app/src/
 
 | Alvo do Teste | Tipo de Teste | Local do Arquivo | Tecnologia / Runner |
 | :--- | :--- | :--- | :--- |
+| **Componentes do DS (`core/designsystem/components`)** | Unit Test + Screenshot Test | `test/.../core/designsystem/components/` & `screenshotTest/.../core/designsystem/components/` | Robolectric / Compose UI Test & `@PreviewTest` |
 | **Telas (*Screen), Dialogs, BottomSheets, Components** | Screenshot Test | `app/src/screenshotTest/` | `@PreviewTest`, Compose Preview |
 | **Lógica pura (Engine, Utils, Math, Mappers)** | Unit Test JVM Puro | `app/src/test/` | JUnit 4 / Kotlin Test (Sem Runner) |
 | **ViewModels, StateFlow, Reducers, UDF Actions** | Unit Test de ViewModel | `app/src/test/feature/` | `runTest`, `MainDispatcherRule`, Turbine |

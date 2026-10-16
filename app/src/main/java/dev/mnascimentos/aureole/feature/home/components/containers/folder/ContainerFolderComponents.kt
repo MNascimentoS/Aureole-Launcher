@@ -18,7 +18,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
@@ -182,9 +181,9 @@ fun ContainerFolderButton(
                     text = params.folder.name.take(1).uppercase(),
                     color = params.textColor,
                     style = if (isBackgroundEnabled) {
-                        MaterialTheme.typography.headlineSmall
+                        AureoleDS.typography.titleLarge
                     } else {
-                        MaterialTheme.typography.headlineMedium
+                        AureoleDS.typography.titleLarge
                     },
                     fontWeight = FontWeight.Bold
                 )
@@ -233,7 +232,7 @@ private fun EmptyFolderMiniGridPreview(folder: AppFolder) {
         AureoleText(
             text = folder.name.take(1).uppercase(),
             color = AureoleDS.colors.onSurfaceMedium,
-            style = MaterialTheme.typography.titleMedium,
+            style = AureoleDS.typography.titleMedium,
             fontWeight = FontWeight.Bold
         )
     }
@@ -277,7 +276,7 @@ fun ContainerFolderLabel(name: String) {
     AureoleText(
         text = name,
         color = AureoleDS.colors.onSurfaceHigh,
-        style = MaterialTheme.typography.labelSmall,
+        style = AureoleDS.typography.labelSmall,
         fontWeight = FontWeight.Medium,
         maxLines = 1,
         overflow = TextOverflow.Ellipsis,

@@ -5,6 +5,7 @@ import android.appwidget.AppWidgetManager
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.content.res.Configuration
 import android.graphics.Rect
 import android.os.Build
 import android.os.Bundle
@@ -42,16 +43,16 @@ import dev.mnascimentos.aureole.feature.home.HomeViewModel
 import dev.mnascimentos.aureole.feature.home.LocalHomeActions
 import dev.mnascimentos.aureole.feature.home.LocalHomeUiState
 import dev.mnascimentos.aureole.feature.home.MainScaffold
-import dev.mnascimentos.aureole.feature.home.extensions.checkReleaseNotes
+import dev.mnascimentos.aureole.feature.home.components.overlays.extensions.checkReleaseNotes
+import dev.mnascimentos.aureole.feature.home.components.widgets.WidgetHostManager
+import dev.mnascimentos.aureole.feature.home.components.widgets.extensions.setIsAddingSingleWidget
+import dev.mnascimentos.aureole.feature.home.components.widgets.extensions.setPendingWidgetId
 import dev.mnascimentos.aureole.feature.home.extensions.handleBackNavigation
-import dev.mnascimentos.aureole.feature.home.extensions.loadGridItems
 import dev.mnascimentos.aureole.feature.home.extensions.setAllAppsDrawerOpen
-import dev.mnascimentos.aureole.feature.home.extensions.setIsAddingSingleWidget
-import dev.mnascimentos.aureole.feature.home.extensions.setPendingWidgetId
+import dev.mnascimentos.aureole.feature.home.grid.extensions.loadGridItems
 import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
 import dev.mnascimentos.aureole.feature.home.model.isOverlayActive
-import dev.mnascimentos.aureole.feature.home.widget.WidgetHostManager
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MainActivity : ComponentActivity() {
@@ -74,13 +75,43 @@ class MainActivity : ComponentActivity() {
             }
         }
 
+    internal val widgetConfigureLauncher: ActivityResultLauncher<Intent> =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            handleWidgetActivityResult(result.resultCode)
+        }
+
+    internal val widgetBindLauncher: ActivityResultLauncher<Intent> =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            handleWidgetActivityResult(result.resultCode)
+        }
+
+    private fun handleWidgetActivityResult(resultCode: Int) {
+        val pendingWidgetId = viewModel.pendingWidgetId
+        if (pendingWidgetId != -1) {
+            if (resultCode == RESULT_OK) {
+                val appWidgetInfo = appWidgetManager.getAppWidgetInfo(pendingWidgetId)
+                widgetHostManager.completeWidgetConfiguration(pendingWidgetId, appWidgetInfo)
+            } else {
+                appWidgetHost.deleteAppWidgetId(pendingWidgetId)
+                viewModel.setPendingWidgetId(-1)
+                viewModel.setIsAddingSingleWidget(false)
+            }
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
         appWidgetManager = AppWidgetManager.getInstance(this)
         appWidgetHost = AppWidgetHost(this, APPWIDGET_HOST_ID)
-        widgetHostManager = WidgetHostManager(this, viewModel, appWidgetHost, appWidgetManager)
+        widgetHostManager = WidgetHostManager(
+            viewModel = viewModel,
+            appWidgetHost = appWidgetHost,
+            appWidgetManager = appWidgetManager,
+            launchWidgetConfigure = { intent -> widgetConfigureLauncher.launch(intent) },
+            launchWidgetBind = { intent -> widgetBindLauncher.launch(intent) }
+        )
 
         appUpdateManager = AppUpdateManagerFactory.create(this)
 
@@ -90,7 +121,8 @@ class MainActivity : ComponentActivity() {
             override fun onResume(owner: LifecycleOwner) {
                 viewModel.loadSettings()
                 viewModel.loadApps()
-                viewModel.loadGridItems()
+                val isLandscape = resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
+                viewModel.loadGridItems(isLandscape = isLandscape)
                 val versionCode = getAppVersionCode(this@MainActivity)
                 val versionName = getAppVersionName(this@MainActivity)
                 viewModel.checkReleaseNotes(versionCode, versionName)
@@ -169,7 +201,7 @@ class MainActivity : ComponentActivity() {
                     isDynamicWallpaperEnabled = uiState.isDynamicWallpaperEnabled,
                     aureoleColors = palette.colors,
                     aureoleFontName = uiState.selectedFontName,
-                    aureoleDimens = AureoleDimens(cornerRadius = uiState.cornerRadiusDp.dp)
+                    aureoleDimens = AureoleDimens(radiusLarge = uiState.cornerRadiusDp.dp)
                 ) {
                     BackHandler(enabled = isOverlayActive) {
                         handleBackNavigation(uiState, viewModel)
@@ -206,26 +238,6 @@ class MainActivity : ComponentActivity() {
                 viewModel.setAllAppsDrawerOpen(!state.isAllAppsDrawerOpen, fromHomeButton = true)
             } else {
                 viewModel.setAllAppsDrawerOpen(false)
-            }
-        }
-    }
-
-    @Deprecated("Deprecated in Java")
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == WidgetHostManager.REQUEST_PICK_APPWIDGET ||
-            requestCode == WidgetHostManager.REQUEST_BIND_APPWIDGET
-        ) {
-            val pendingWidgetId = viewModel.pendingWidgetId
-            if (pendingWidgetId != -1) {
-                if (resultCode == RESULT_OK) {
-                    val appWidgetInfo = appWidgetManager.getAppWidgetInfo(pendingWidgetId)
-                    widgetHostManager.completeWidgetConfiguration(pendingWidgetId, appWidgetInfo)
-                } else {
-                    appWidgetHost.deleteAppWidgetId(pendingWidgetId)
-                    viewModel.setPendingWidgetId(-1)
-                    viewModel.setIsAddingSingleWidget(false)
-                }
             }
         }
     }
