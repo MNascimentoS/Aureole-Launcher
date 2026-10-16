@@ -7,7 +7,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -37,6 +36,8 @@ import dev.mnascimentos.aureole.core.designsystem.icons.Close
 import dev.mnascimentos.aureole.core.designsystem.icons.Logo
 import dev.mnascimentos.aureole.core.designsystem.icons.Settings
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
+import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.settings.SettingsActivity
 
 private const val HAZE_ALPHA = 0.85f
@@ -50,7 +51,6 @@ fun AureolePopupBox(
     modifier: Modifier = Modifier,
     cornerRadius: Dp = AureoleDS.dimens.radiusMedium,
     hazeState: HazeState? = null,
-    contentPadding: PaddingValues = PaddingValues(AureoleDS.dimens.small),
     content: @Composable ColumnScope.() -> Unit,
 ) {
     val surfaceColor = AureoleDS.colors.surface
@@ -76,7 +76,6 @@ fun AureolePopupBox(
             .clip(RoundedCornerShape(cornerRadius))
             .then(hazeModifier)
             .background(surfaceColor.copy(alpha = bgAlpha))
-            .padding(contentPadding)
     ) {
         Column(modifier = Modifier.fillMaxWidth()) {
             content()
@@ -249,12 +248,11 @@ fun AureolePopupHeader(
         Box(
             modifier = Modifier
                 .align(Alignment.TopEnd)
-                .padding(top = AureoleDS.dimens.xxSmall, end = AureoleDS.dimens.xxSmall),
         ) {
             if (showAureoleLogo) {
                 IconButton(
                     onClick = handleOpenSettings,
-                    modifier = Modifier.size(AureoleDS.dimens.iconLarge),
+                    modifier = Modifier.size(AureoleDS.dimens.iconXLarge),
                 ) {
                     AureoleDS.icons.Logo(
                         tint = AureoleDS.colors.onSurfaceHigh,
@@ -264,21 +262,21 @@ fun AureolePopupHeader(
             } else if (onSettingsClick != null) {
                 IconButton(
                     onClick = onSettingsClick,
-                    modifier = Modifier.size(AureoleDS.dimens.iconLarge),
+                    modifier = Modifier.size(AureoleDS.dimens.iconXLarge),
                 ) {
                     AureoleDS.icons.Settings(
                         tint = AureoleDS.colors.onSurfaceHigh,
-                        modifier = Modifier.size(AureoleDS.dimens.iconSmall),
+                        modifier = Modifier.size(AureoleDS.dimens.iconMedium),
                     )
                 }
             } else if (onCloseClick != null) {
                 IconButton(
                     onClick = onCloseClick,
-                    modifier = Modifier.size(AureoleDS.dimens.iconLarge),
+                    modifier = Modifier.size(AureoleDS.dimens.iconXLarge),
                 ) {
                     AureoleDS.icons.Close(
                         tint = AureoleDS.colors.onSurfaceHigh,
-                        modifier = Modifier.size(AureoleDS.dimens.iconSmall),
+                        modifier = Modifier.size(AureoleDS.dimens.iconMedium),
                     )
                 }
             }
@@ -310,5 +308,28 @@ fun AureolePopupMenuSection(
             fontWeight = FontWeight.SemiBold,
             color = AureoleDS.colors.onSurfaceMedium,
         )
+    }
+}
+
+@AureolePreview
+@Composable
+fun AureolePopupBoxPreview() {
+    AureoleLauncherTheme {
+        AureolePopupBox(
+            modifier = Modifier.width(260.dp),
+        ) {
+            AureolePopupHeader(
+                title = "Folder Name",
+                sessionTitle = "Session Subtitle",
+                onSettingsClick = {},
+            )
+            AureolePopupMenuSection(title = "Section Header")
+            AureoleText(
+                text = "Popup Body Content",
+                style = AureoleDS.typography.bodyMedium,
+                color = AureoleDS.colors.onSurfaceHigh,
+                modifier = Modifier.padding(AureoleDS.dimens.small),
+            )
+        }
     }
 }

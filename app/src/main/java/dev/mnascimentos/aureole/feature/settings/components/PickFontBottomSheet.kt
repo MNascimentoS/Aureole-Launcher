@@ -86,7 +86,11 @@ private fun PickFontSheetContent(
 
         Box(modifier = Modifier.weight(1f, fill = false)) {
             LazyColumn {
-                items(AvailableFonts.keys.toList()) { fontName ->
+                items(
+                    items = AvailableFonts.keys.toList(),
+                    key = { it },
+                    contentType = { "font_option" }
+                ) { fontName ->
                     FontOptionItem(
                         fontName = fontName,
                         isSelected = fontName == selectedFontName,

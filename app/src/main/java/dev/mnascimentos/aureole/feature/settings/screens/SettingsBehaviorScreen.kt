@@ -234,7 +234,11 @@ private fun HeaderOffsetWheelPicker(
             contentPadding = PaddingValues(vertical = itemHeightDp),
             modifier = Modifier.fillMaxSize()
         ) {
-            itemsIndexed(items) { _, itemValue ->
+            itemsIndexed(
+                items = items,
+                key = { _, itemValue -> itemValue },
+                contentType = { _, _ -> "offset_wheel_item" }
+            ) { _, itemValue ->
                 val isSelected = (itemValue == currentCenteredValue)
                 Box(
                     modifier = Modifier

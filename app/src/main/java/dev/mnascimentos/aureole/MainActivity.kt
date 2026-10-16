@@ -42,6 +42,7 @@ import dev.mnascimentos.aureole.feature.home.HomeViewModel
 import dev.mnascimentos.aureole.feature.home.LocalHomeActions
 import dev.mnascimentos.aureole.feature.home.LocalHomeUiState
 import dev.mnascimentos.aureole.feature.home.MainScaffold
+import dev.mnascimentos.aureole.feature.home.components.widgets.WidgetHostManager
 import dev.mnascimentos.aureole.feature.home.extensions.checkReleaseNotes
 import dev.mnascimentos.aureole.feature.home.extensions.handleBackNavigation
 import dev.mnascimentos.aureole.feature.home.extensions.loadGridItems
@@ -51,7 +52,6 @@ import dev.mnascimentos.aureole.feature.home.extensions.setPendingWidgetId
 import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
 import dev.mnascimentos.aureole.feature.home.model.isOverlayActive
-import dev.mnascimentos.aureole.feature.home.widget.WidgetHostManager
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MainActivity : ComponentActivity() {

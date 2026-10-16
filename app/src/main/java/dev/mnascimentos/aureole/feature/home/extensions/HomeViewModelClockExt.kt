@@ -48,6 +48,14 @@ fun HomeViewModel.toggleClockBackground() {
     updateUiState { it.copy(isClockBackgroundEnabled = newValue) }
 }
 
+fun HomeViewModel.openEditClockBottomSheet() {
+    updateUiState { it.copy(showEditClockBottomSheet = true) }
+}
+
+fun HomeViewModel.closeEditClockBottomSheet() {
+    updateUiState { it.copy(showEditClockBottomSheet = false) }
+}
+
 fun HomeViewModel.resetClockSettings() {
     settingsRepository.resetClockSettings()
     updateUiState {

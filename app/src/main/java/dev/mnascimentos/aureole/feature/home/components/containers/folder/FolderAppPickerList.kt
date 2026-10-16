@@ -75,7 +75,8 @@ internal fun LazyListScope.selectedFolderAppSection(
     } else {
         itemsIndexed(
             items = filteredSelected,
-            key = { _, app -> "sel_${app.packageName}" }
+            key = { _, app -> "sel_${app.packageName}" },
+            contentType = { _, _ -> "selected_app_row" }
         ) { index, app ->
             SelectedFolderAppRow(
                 params = FolderAppRowItemParams(
@@ -130,7 +131,8 @@ internal fun LazyListScope.remainingFolderAppSection(
     } else {
         itemsIndexed(
             items = filteredRemaining,
-            key = { _, app -> "rem_${app.packageName}" }
+            key = { _, app -> "rem_${app.packageName}" },
+            contentType = { _, _ -> "rem_app_row" }
         ) { _, app ->
             RemainingFolderAppRow(
                 app = app,

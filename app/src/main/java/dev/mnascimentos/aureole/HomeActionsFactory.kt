@@ -8,6 +8,7 @@ import com.google.android.play.core.appupdate.AppUpdateManager
 import com.google.android.play.core.appupdate.AppUpdateOptions
 import com.google.android.play.core.install.model.AppUpdateType
 import dev.mnascimentos.aureole.feature.home.HomeViewModel
+import dev.mnascimentos.aureole.feature.home.components.widgets.WidgetHostManager
 import dev.mnascimentos.aureole.feature.home.extensions.GridItemSpec
 import dev.mnascimentos.aureole.feature.home.extensions.addGridItem
 import dev.mnascimentos.aureole.feature.home.extensions.cancelGridEditMode
@@ -73,7 +74,6 @@ import dev.mnascimentos.aureole.feature.home.extensions.updateFavoritePackages
 import dev.mnascimentos.aureole.feature.home.extensions.updateGridItemsOrientation
 import dev.mnascimentos.aureole.feature.home.extensions.updateScrollViewOrientation
 import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
-import dev.mnascimentos.aureole.feature.home.widget.WidgetHostManager
 import dev.mnascimentos.aureole.feature.settings.SettingsActivity
 import dev.mnascimentos.aureole.util.IntentUtils
 

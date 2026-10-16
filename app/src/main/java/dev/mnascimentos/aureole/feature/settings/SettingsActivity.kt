@@ -20,9 +20,9 @@ import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.core.designsystem.palette.getPaletteByName
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDimens
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
-import dev.mnascimentos.aureole.feature.home.components.FavoriteAppsDialog
-import dev.mnascimentos.aureole.feature.home.components.model.FavoriteAppsDialogActions
-import dev.mnascimentos.aureole.feature.home.components.model.FavoriteAppsDialogConfig
+import dev.mnascimentos.aureole.feature.home.components.favorites.FavoriteAppsDialog
+import dev.mnascimentos.aureole.feature.home.components.favorites.model.FavoriteAppsDialogActions
+import dev.mnascimentos.aureole.feature.home.components.favorites.model.FavoriteAppsDialogConfig
 import dev.mnascimentos.aureole.feature.settings.extensions.checkDefaultLauncher
 import dev.mnascimentos.aureole.feature.settings.extensions.performFactoryReset
 import dev.mnascimentos.aureole.feature.settings.extensions.resetGridLayout

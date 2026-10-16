@@ -92,7 +92,11 @@ fun PickPaletteBottomSheet(
             modifier = Modifier
                 .fillMaxSize()
         ) {
-            items(allPalettes) { basePalette ->
+            items(
+                items = allPalettes,
+                key = { it.name },
+                contentType = { "palette_row" }
+            ) { basePalette ->
                 val isSelected = basePalette.name.equals(cleanSelectedName, ignoreCase = true)
                 val activePalette = if (isDarkTheme) basePalette else basePalette.toLight()
                 PaletteRowItem(

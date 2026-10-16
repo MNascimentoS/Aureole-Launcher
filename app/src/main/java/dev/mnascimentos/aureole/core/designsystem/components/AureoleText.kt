@@ -1,5 +1,6 @@
 package dev.mnascimentos.aureole.core.designsystem.components
 
+import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -14,6 +15,8 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.TextUnit
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
+import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 
 /**
  * High level text component for Aureole Design System.
@@ -66,4 +69,28 @@ fun AureoleText(
         onTextLayout = onTextLayout,
         style = style,
     )
+}
+
+@AureolePreview
+@Composable
+fun AureoleTextPreview() {
+    AureoleLauncherTheme {
+        Column {
+            AureoleText(
+                text = "Title Medium Text",
+                style = AureoleDS.typography.titleMedium,
+                color = AureoleDS.colors.onSurfaceHigh
+            )
+            AureoleText(
+                text = "Body Medium Text",
+                style = AureoleDS.typography.bodyMedium,
+                color = AureoleDS.colors.onSurfaceMedium
+            )
+            AureoleText(
+                text = "Label Small Text",
+                style = AureoleDS.typography.labelSmall,
+                color = AureoleDS.colors.onSurfaceLow
+            )
+        }
+    }
 }

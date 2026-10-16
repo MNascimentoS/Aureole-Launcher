@@ -29,19 +29,19 @@ import dev.chrisbanes.haze.hazeEffect
 import dev.mnascimentos.aureole.core.data.model.AppFolder
 import dev.mnascimentos.aureole.core.data.model.LauncherItemState
 import dev.mnascimentos.aureole.core.data.model.LauncherItemType
-import dev.mnascimentos.aureole.feature.home.components.AppItemBottomSheet
+import dev.mnascimentos.aureole.feature.home.components.appsdrawer.appitem.AppItemBottomSheet
+import dev.mnascimentos.aureole.feature.home.components.appsdrawer.appitem.model.AppItemBottomSheetParams
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.ContainerFolderBottomSheetParams
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.FolderPopupActions
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.FolderViewIntent
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.OpenedFolderOverlayParams
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.OpenedFolderPopupConfig
-import dev.mnascimentos.aureole.feature.home.components.model.AppItemBottomSheetParams
+import dev.mnascimentos.aureole.feature.home.components.widgets.EditWidgetGroupActions
+import dev.mnascimentos.aureole.feature.home.components.widgets.EditWidgetGroupParams
+import dev.mnascimentos.aureole.feature.home.components.widgets.EditWidgetGroupScreen
 import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
 import dev.mnascimentos.aureole.feature.home.model.getWidgetIdsForStack
-import dev.mnascimentos.aureole.feature.home.widget.EditWidgetGroupActions
-import dev.mnascimentos.aureole.feature.home.widget.EditWidgetGroupParams
-import dev.mnascimentos.aureole.feature.home.widget.EditWidgetGroupScreen
 
 private const val FADE_ANIM_DURATION_MS = 180
 

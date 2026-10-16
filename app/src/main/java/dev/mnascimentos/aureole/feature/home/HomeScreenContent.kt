@@ -17,16 +17,16 @@ import dev.chrisbanes.haze.HazeState
 import dev.mnascimentos.aureole.core.data.model.AppFolder
 import dev.mnascimentos.aureole.core.data.model.LauncherItemState
 import dev.mnascimentos.aureole.core.data.model.LauncherItemType
-import dev.mnascimentos.aureole.feature.home.components.FavoritesListConfig
-import dev.mnascimentos.aureole.feature.home.components.GridItemContent
 import dev.mnascimentos.aureole.feature.home.components.containers.model.ContainerConfig
+import dev.mnascimentos.aureole.feature.home.components.content.GridItemContent
+import dev.mnascimentos.aureole.feature.home.components.favorites.FavoritesListConfig
+import dev.mnascimentos.aureole.feature.home.components.widgets.model.StackedWidgetConfig
 import dev.mnascimentos.aureole.feature.home.grid.DynamicGridContainer
 import dev.mnascimentos.aureole.feature.home.grid.GridEngineUtils
 import dev.mnascimentos.aureole.feature.home.grid.GridLimits
 import dev.mnascimentos.aureole.feature.home.grid.model.GridEditConfig
 import dev.mnascimentos.aureole.feature.home.model.GridItemContentParams
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
-import dev.mnascimentos.aureole.feature.home.widget.model.StackedWidgetConfig
 
 internal fun getGridLimits(orientation: Int): GridLimits {
     val maxCols = if (orientation == Configuration.ORIENTATION_LANDSCAPE) {

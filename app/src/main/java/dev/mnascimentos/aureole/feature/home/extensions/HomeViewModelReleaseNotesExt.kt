@@ -22,11 +22,3 @@ fun HomeViewModel.dismissReleaseNotes(versionCode: Int = activeVersionCode) {
 fun HomeViewModel.openReleaseNotes() {
     updateUiState { it.copy(showReleaseNotesBottomSheet = true) }
 }
-
-fun HomeViewModel.openEditClockBottomSheet() {
-    updateUiState { it.copy(showEditClockBottomSheet = true) }
-}
-
-fun HomeViewModel.closeEditClockBottomSheet() {
-    updateUiState { it.copy(showEditClockBottomSheet = false) }
-}

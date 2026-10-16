@@ -54,7 +54,8 @@ private const val BOTTOM_SPACER_RATIO = 0.15f
 fun SettingsAppearanceScreen(
     uiState: SettingsUiState,
     actions: SettingsScreenActions,
-    @Suppress("UNUSED_PARAMETER") onNavigateBack: () -> Unit
+    @Suppress("UNUSED_PARAMETER") // unused but kept for interface matching
+    onNavigateBack: () -> Unit
 ) {
     var flags by remember {
         mutableStateOf(

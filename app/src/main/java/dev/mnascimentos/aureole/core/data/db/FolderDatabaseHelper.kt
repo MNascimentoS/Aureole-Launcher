@@ -68,6 +68,8 @@ class FolderDatabaseHelper(context: Context) : SQLiteOpenHelper(
         db.setForeignKeyConstraintsEnabled(true)
     }
 
+    // Note: simplify cursor iteration
+    @Suppress("NestedBlockDepth")
     fun getAllFoldersWithItems(): List<FolderWithItems> {
         val result = mutableListOf<FolderWithItems>()
         val db = readableDatabase

@@ -29,7 +29,9 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import dev.mnascimentos.aureole.core.designsystem.icons.Logo
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleTheme
+import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.LocalHomeActions
 
 private const val DIALOG_WIDTH_FRACTION = 0.92f
@@ -138,6 +140,22 @@ fun AureoleDialogHeader(
             AureoleDS.icons.Logo(
                 tint = AureoleTheme.colors.onSurfaceHigh,
                 modifier = Modifier.size(AureoleDS.dimens.iconSmall)
+            )
+        }
+    }
+}
+
+@AureolePreview
+@Composable
+fun AureoleDialogPreview() {
+    AureoleLauncherTheme {
+        AureoleDialog(
+            onDismissRequest = {},
+            title = "Sample Dialog Title"
+        ) {
+            AureoleText(
+                text = "This is sample content inside AureoleDialog.",
+                style = AureoleTheme.typography.bodyMedium
             )
         }
     }

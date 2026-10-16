@@ -72,7 +72,11 @@ fun PickBorderRadiusBottomSheet(
 
             Box(modifier = Modifier.weight(1f, fill = false)) {
                 LazyColumn {
-                    items(BORDER_RADIUS_OPTIONS) { option ->
+                    items(
+                        items = BORDER_RADIUS_OPTIONS,
+                        key = { it.radiusDp },
+                        contentType = { "border_radius_option" }
+                    ) { option ->
                         BorderRadiusOptionItem(
                             option = option,
                             isSelected = option.radiusDp == selectedRadiusDp,

@@ -112,7 +112,6 @@ private fun StandardFolderPopupBox(
 
     AureolePopupBox(
         hazeState = null,
-        contentPadding = PaddingValues(0.dp),
         modifier = modifier
             .widthIn(min = 180.dp, max = 210.dp)
             .heightIn(max = 400.dp)
@@ -189,7 +188,11 @@ private fun OpenedFolderGrid(
                 .fillMaxWidth()
                 .heightIn(max = gridHeight)
         ) {
-            items(appsInFolder, key = { it.packageName }) { app ->
+            items(
+                items = appsInFolder,
+                key = { it.packageName },
+                contentType = { "opened_folder_popup_app_grid" }
+            ) { app ->
                 OpenedFolderGridAppItem(
                     app = app,
                     onClick = { onAppClick(app) },

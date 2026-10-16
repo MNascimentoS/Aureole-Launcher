@@ -207,7 +207,11 @@ private fun PopulatedFolderGrid(
         verticalArrangement = Arrangement.spacedBy(18.dp),
         modifier = Modifier.fillMaxWidth()
     ) {
-        items(appsInFolder, key = { it.packageName }) { app ->
+        items(
+            items = appsInFolder,
+            key = { it.packageName },
+            contentType = { "opened_folder_app_grid" }
+        ) { app ->
             OpenedFolderSamsungGridAppItem(
                 app = app,
                 onClick = { actions.onAppClick(app) },
@@ -318,7 +322,11 @@ fun OpenedFolderAppList(
             contentPadding = PaddingValues(vertical = 2.dp),
             modifier = Modifier.fillMaxWidth()
         ) {
-            items(appsInFolder, key = { it.packageName }) { app ->
+            items(
+                items = appsInFolder,
+                key = { it.packageName },
+                contentType = { "opened_folder_app_row" }
+            ) { app ->
                 OpenedFolderAppItemRow(
                     app = app,
                     isLeftHandedMode = isLeftHandedMode,

@@ -54,6 +54,8 @@ internal object AppIconHelper {
         return if (maxX >= minX && maxY >= minY) Quad(minX, minY, maxX, maxY) else null
     }
 
+    // Note: simplify bounds calculation
+    @Suppress("NestedBlockDepth")
     private fun findRowBounds(pixels: IntArray, yOffset: Int, width: Int): Pair<Int, Int>? {
         var rowMinX = width
         var rowMaxX = -1

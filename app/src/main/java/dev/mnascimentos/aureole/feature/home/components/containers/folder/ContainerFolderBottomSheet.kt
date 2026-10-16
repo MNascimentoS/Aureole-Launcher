@@ -26,7 +26,7 @@ import dev.mnascimentos.aureole.core.designsystem.icons.Settings
 import dev.mnascimentos.aureole.core.designsystem.icons.Smile
 import dev.mnascimentos.aureole.core.designsystem.icons.Star
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
-import dev.mnascimentos.aureole.feature.home.components.RenderModalBottomSheetOrInspection
+import dev.mnascimentos.aureole.feature.home.components.common.RenderModalBottomSheetOrInspection
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.ContainerFolderBottomSheetParams
 import dev.mnascimentos.aureole.feature.settings.SettingsActivity
 

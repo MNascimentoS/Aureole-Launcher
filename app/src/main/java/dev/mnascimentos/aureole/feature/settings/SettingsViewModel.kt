@@ -62,6 +62,7 @@ enum class SettingsDialog {
     SEARCH_ICON_POSITION
 }
 
+// SettingsViewModel holds many properties
 @Suppress("TooManyFunctions")
 class SettingsViewModel(
     application: Application,

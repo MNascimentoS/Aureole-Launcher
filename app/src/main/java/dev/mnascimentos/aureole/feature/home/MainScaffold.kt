@@ -11,12 +11,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import dev.mnascimentos.aureole.core.designsystem.utils.LocalHazeState
-import dev.mnascimentos.aureole.feature.home.components.FavoriteAppsDialog
-import dev.mnascimentos.aureole.feature.home.components.ReleaseNotesBottomSheet
-import dev.mnascimentos.aureole.feature.home.components.UpdateAvailableDialog
-import dev.mnascimentos.aureole.feature.home.components.UpdateDownloadedDialog
-import dev.mnascimentos.aureole.feature.home.components.model.FavoriteAppsDialogActions
-import dev.mnascimentos.aureole.feature.home.components.model.FavoriteAppsDialogConfig
+import dev.mnascimentos.aureole.feature.home.components.favorites.FavoriteAppsDialog
+import dev.mnascimentos.aureole.feature.home.components.favorites.model.FavoriteAppsDialogActions
+import dev.mnascimentos.aureole.feature.home.components.favorites.model.FavoriteAppsDialogConfig
+import dev.mnascimentos.aureole.feature.home.components.overlays.ReleaseNotesBottomSheet
+import dev.mnascimentos.aureole.feature.home.components.overlays.UpdateAvailableDialog
+import dev.mnascimentos.aureole.feature.home.components.overlays.UpdateDownloadedDialog
+import dev.mnascimentos.aureole.feature.home.components.widgets.WidgetPickerScreen
 import dev.mnascimentos.aureole.feature.home.extensions.dismissReleaseNotes
 import dev.mnascimentos.aureole.feature.home.extensions.setShowFavoritePicker
 import dev.mnascimentos.aureole.feature.home.extensions.setShowWidgetPicker
@@ -26,7 +27,6 @@ import dev.mnascimentos.aureole.feature.home.extensions.updateContainerFavorites
 import dev.mnascimentos.aureole.feature.home.extensions.updateFavoritePackages
 import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
-import dev.mnascimentos.aureole.feature.home.widget.WidgetPickerScreen
 
 @Composable
 fun MainScaffold(

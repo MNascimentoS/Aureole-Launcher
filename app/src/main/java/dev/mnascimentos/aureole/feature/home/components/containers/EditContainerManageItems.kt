@@ -54,7 +54,11 @@ internal fun ManageItemsListSection(
             modifier = Modifier.heightIn(max = 300.dp).fillMaxWidth(),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            itemsIndexed(state.itemsList, key = { _, item -> item.id }) { index, item ->
+            itemsIndexed(
+                items = state.itemsList,
+                key = { _, item -> item.id },
+                contentType = { _, _ -> "manage_item_row" }
+            ) { index, item ->
                 ManageItemRow(
                     params = ManageItemRowParams(
                         index = index,
