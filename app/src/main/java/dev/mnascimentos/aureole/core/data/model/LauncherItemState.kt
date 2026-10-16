@@ -1,5 +1,7 @@
 package dev.mnascimentos.aureole.core.data.model
 
+import java.util.UUID
+
 enum class LauncherItemType {
     CLOCK,
     APPS_LIST,
@@ -15,18 +17,21 @@ enum class ScrollOrientation {
 }
 
 data class LauncherItemState(
-    val id: String,
+    val id: String = "",
     val type: LauncherItemType? = null,
-    val col: Int,
-    val row: Int,
-    val colSpan: Int,
-    val rowSpan: Int,
+    val col: Int = 0,
+    val row: Int = 0,
+    val colSpan: Int = 1,
+    val rowSpan: Int = 1,
     val minColSpan: Int = 1,
     val minRowSpan: Int = 1,
     val widgetId: Int? = null,
     val scrollOrientation: ScrollOrientation? = ScrollOrientation.VERTICAL,
     val children: List<LauncherItemState>? = emptyList()
 ) {
+    val safeId: String
+        get() = if (id.isBlank()) "item_${UUID.randomUUID()}" else id
+
     val safeType: LauncherItemType
         get() = type ?: LauncherItemType.APPS_LIST
 
@@ -34,5 +39,5 @@ data class LauncherItemState(
         get() = scrollOrientation ?: ScrollOrientation.VERTICAL
 
     val safeChildren: List<LauncherItemState>
-        get() = children ?: emptyList()
+        get() = children?.filterNotNull() ?: emptyList()
 }

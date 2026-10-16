@@ -4,7 +4,6 @@ import android.content.Context
 import android.util.Log
 import androidx.core.content.edit
 import com.google.gson.Gson
-import com.google.gson.JsonSyntaxException
 import com.google.gson.reflect.TypeToken
 import dev.mnascimentos.aureole.core.data.model.LauncherItemState
 import dev.mnascimentos.aureole.feature.home.grid.GridDefaults
@@ -23,7 +22,7 @@ class GridRepository(private val context: Context) {
         if (json == null && !isLandscape) {
             json = prefs.getString(KEY_GRID_ITEMS, null)
         }
-        if (json == null) {
+        if (json.isNullOrBlank()) {
             return GridDefaults.getDefaultGridItems(isLandscape)
         }
         return try {
@@ -32,7 +31,7 @@ class GridRepository(private val context: Context) {
             if (items.isNullOrEmpty()) {
                 GridDefaults.getDefaultGridItems(isLandscape)
             } else {
-                items.map { item ->
+                items.filterNotNull().map { item ->
                     val sanitizedChildren = item.safeChildren.map { child ->
                         child.copy(
                             type = child.safeType,
@@ -45,13 +44,10 @@ class GridRepository(private val context: Context) {
                         scrollOrientation = item.safeScrollOrientation,
                         children = sanitizedChildren
                     )
-                }
+                }.ifEmpty { GridDefaults.getDefaultGridItems(isLandscape) }
             }
-        } catch (e: JsonSyntaxException) {
-            Log.w(TAG, "Failed to parse grid items JSON", e)
-            GridDefaults.getDefaultGridItems(isLandscape)
-        } catch (e: IllegalStateException) {
-            Log.w(TAG, "Illegal state while parsing grid items JSON", e)
+        } catch (e: Exception) {
+            Log.w(TAG, "Failed to parse or sanitize grid items JSON", e)
             GridDefaults.getDefaultGridItems(isLandscape)
         }
     }
