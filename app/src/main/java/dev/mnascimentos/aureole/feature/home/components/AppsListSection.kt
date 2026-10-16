@@ -1,9 +1,7 @@
-@file:Suppress("MagicNumber")
+@file:Suppress("MagicNumber") // Suppressed for animation, padding, and size constants in launcher apps list
 
 package dev.mnascimentos.aureole.feature.home.components
 
-import android.content.ComponentName
-import android.graphics.drawable.ColorDrawable
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -28,18 +26,12 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.LazyListState
-import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -51,27 +43,18 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import dev.chrisbanes.haze.HazeState
 import dev.chrisbanes.haze.HazeStyle
 import dev.chrisbanes.haze.HazeTint
 import dev.chrisbanes.haze.hazeEffect
-import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.icons.Close
 import dev.mnascimentos.aureole.core.designsystem.icons.Search
-import dev.mnascimentos.aureole.core.designsystem.icons.Settings
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
-import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
-import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.core.designsystem.utils.fadingEdges
 import dev.mnascimentos.aureole.feature.home.LocalHomeActions
 import dev.mnascimentos.aureole.feature.home.LocalHomeUiState
-import dev.mnascimentos.aureole.feature.home.components.model.AppItemRowActions
-import dev.mnascimentos.aureole.feature.home.components.model.AppItemRowConfig
-import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
-import dev.mnascimentos.aureole.feature.home.model.MainUiState
 
 private const val DRAWER_HAZE_TINT_FACTOR = 0.5f
 private const val DRAWER_HAZE_MIN_ALPHA = 0.15f
@@ -203,8 +186,25 @@ private fun FloatingSearchBubble(
         }
     }
 
-    val searchBarHazeModifier = buildSearchBubbleHazeModifier(uiState, hazeState)
-    val bubbleBgColor = computeSearchBubbleBgColor(uiState)
+    val searchBarHazeModifier = if (uiState.isHazeEnabled && hazeState != null) {
+        Modifier.hazeEffect(
+            state = hazeState,
+            style = HazeStyle(
+                blurRadius = 24.dp,
+                tint = HazeTint(AureoleDS.colors.surfaceVariant.copy(alpha = uiState.hazeOpacity))
+            )
+        ) {
+            blurEnabled = true
+        }
+    } else {
+        Modifier
+    }
+
+    val bubbleBgColor = if (!uiState.isHazeEnabled) {
+        AureoleDS.colors.surfaceVariant
+    } else {
+        AureoleDS.colors.surfaceVariant.copy(alpha = (uiState.hazeOpacity * 0.85f).coerceIn(0.3f, 0.95f))
+    }
 
     Box(
         modifier = modifier
@@ -216,50 +216,44 @@ private fun FloatingSearchBubble(
             else -> Alignment.BottomEnd
         }
     ) {
-        AnimatedContent(
-            targetState = state.isExpanded,
-            transitionSpec = {
-                (fadeIn() + scaleIn()).togetherWith(fadeOut() + scaleOut())
-            },
-            label = "search_bubble_anim"
-        ) { expanded ->
-            if (expanded) {
-                ExpandedSearchBubbleBar(
-                    state = state,
-                    focusRequester = focusRequester,
-                    hazeModifier = searchBarHazeModifier,
-                    bubbleBgColor = bubbleBgColor
-                )
-            } else {
-                CollapsedSearchBubbleIcon(
-                    onExpandedChange = state.onExpandedChange,
-                    hazeModifier = searchBarHazeModifier,
-                    bubbleBgColor = bubbleBgColor
-                )
-            }
+        SearchBubbleAnimatedContent(
+            state = state,
+            focusRequester = focusRequester,
+            hazeModifier = searchBarHazeModifier,
+            bubbleBgColor = bubbleBgColor
+        )
+    }
+}
+
+@Composable
+private fun SearchBubbleAnimatedContent(
+    state: SearchBubbleState,
+    focusRequester: FocusRequester,
+    hazeModifier: Modifier,
+    bubbleBgColor: Color
+) {
+    AnimatedContent(
+        targetState = state.isExpanded,
+        transitionSpec = {
+            (fadeIn() + scaleIn()).togetherWith(fadeOut() + scaleOut())
+        },
+        label = "search_bubble_anim"
+    ) { expanded ->
+        if (expanded) {
+            ExpandedSearchBubbleBar(
+                state = state,
+                focusRequester = focusRequester,
+                hazeModifier = hazeModifier,
+                bubbleBgColor = bubbleBgColor
+            )
+        } else {
+            CollapsedSearchBubbleIcon(
+                onExpandedChange = state.onExpandedChange,
+                hazeModifier = hazeModifier,
+                bubbleBgColor = bubbleBgColor
+            )
         }
     }
-}
-
-@Composable
-private fun buildSearchBubbleHazeModifier(uiState: MainUiState, hazeState: HazeState?): Modifier {
-    if (!uiState.isHazeEnabled || hazeState == null) return Modifier
-    return Modifier.hazeEffect(
-        state = hazeState,
-        style = HazeStyle(
-            blurRadius = 24.dp,
-            tint = HazeTint(AureoleDS.colors.surfaceVariant.copy(alpha = uiState.hazeOpacity))
-        )
-    ) {
-        blurEnabled = uiState.isHazeEnabled
-    }
-}
-
-@Composable
-private fun computeSearchBubbleBgColor(uiState: MainUiState): Color {
-    if (!uiState.isHazeEnabled) return AureoleDS.colors.surfaceVariant
-    val alphaVal = (uiState.hazeOpacity * 0.85f).coerceIn(0.3f, 0.95f)
-    return AureoleDS.colors.surfaceVariant.copy(alpha = alphaVal)
 }
 
 @Composable
@@ -358,127 +352,5 @@ private fun CollapsedSearchBubbleIcon(
             tint = AureoleDS.colors.onSurfaceHigh,
             modifier = Modifier.size(24.dp)
         )
-    }
-}
-
-fun LazyListScope.appsListItems(
-    uiState: MainUiState,
-    actions: HomeScreenActions,
-) {
-    val filteredApps = uiState.filteredApps
-    val isSearchQueryBlank = uiState.searchQuery.isBlank()
-
-    itemsIndexed(
-        items = filteredApps,
-        key = { _, app -> app.packageName },
-        contentType = { _, _ -> "app_item" }
-    ) { index, app ->
-        val currentLetter = app.firstLetter
-        val isFirstOfLetter = (index == 0) || (filteredApps[index - 1].firstLetter != currentLetter)
-
-        if (isFirstOfLetter && isSearchQueryBlank) {
-            AureoleText(
-                text = currentLetter.toString(),
-                style = AureoleDS.typography.titleLarge,
-                fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.primary,
-                modifier = Modifier.padding(
-                    top = 20.dp,
-                    bottom = 8.dp
-                )
-            )
-        }
-
-        val isFav = uiState.favoriteAppPackages.contains(app.packageName)
-        AppItemRow(
-            app = app,
-            onClick = { actions.onAppClick(app) },
-            config = AppItemRowConfig(isFavorite = isFav),
-            actions = AppItemRowActions(
-                onToggleFavorite = { actions.onToggleFavorite(it) },
-                onEditFavoritesClick = { actions.onOpenFavoritePicker(null) },
-                onAppInfoClick = { actions.onAppInfoClick(it) },
-                onUninstallClick = { actions.onUninstallAppClick(it) }
-            )
-        )
-    }
-
-    settingsListItem(actions)
-}
-
-private fun LazyListScope.settingsListItem(actions: HomeScreenActions) {
-    item(key = "aureole_settings_item", contentType = "settings_item") {
-        Spacer(modifier = Modifier.height(16.dp))
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .clip(RoundedCornerShape(12.dp))
-                .clickable { actions.onSettingsClick() }
-                .padding(horizontal = AureoleDS.dimens.medium, vertical = AureoleDS.dimens.small),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Box(
-                modifier = Modifier
-                    .size(42.dp)
-                    .clip(CircleShape)
-                    .background(AureoleDS.colors.surfaceVariant),
-                contentAlignment = Alignment.Center
-            ) {
-                AureoleDS.icons.Settings(
-                    tint = AureoleDS.colors.onSurfaceHigh,
-                    modifier = Modifier.size(24.dp)
-                )
-            }
-
-            Spacer(modifier = Modifier.width(AureoleDS.dimens.medium))
-
-            AureoleText(
-                text = "Aureole Settings",
-                style = AureoleDS.typography.bodyLarge,
-                color = AureoleDS.colors.onSurfaceMedium
-            )
-        }
-        Spacer(modifier = Modifier.height(80.dp))
-    }
-}
-
-@AureolePreview
-@Composable
-fun AppsListDrawerPreview() {
-    val mockApp = AppInfo(
-        label = "Gallery",
-        packageName = "com.example.gallery",
-        componentName = ComponentName("com.example.gallery", "MainActivity"),
-        icon = ColorDrawable(0xFF1B65C0.toInt())
-    )
-    val mockUiState = MainUiState(
-        apps = listOf(mockApp),
-        filteredApps = listOf(mockApp),
-        isHazeEnabled = false
-    )
-    val mockActions = HomeScreenActions(
-        onWidgetRowHeightChanged = {},
-        onAddWidgetClick = {},
-        onRemoveWidgetClick = {},
-        onAppClick = {},
-        onExpandNotificationShade = {},
-        onFolderIntent = {},
-        onSetAddAppToFolderDialogVisible = {},
-        onSetRenameFolderDialogVisible = {},
-        onSearchQueryChanged = {},
-        onSettingsClick = {},
-        onAllAppsDrawerClose = {},
-        onAllAppsDrawerOpen = {}
-    )
-
-    AureoleLauncherTheme {
-        CompositionLocalProvider(
-            LocalHomeUiState provides mockUiState,
-            LocalHomeActions provides mockActions
-        ) {
-            AppsListDrawer(
-                listState = rememberLazyListState()
-            )
-        }
     }
 }

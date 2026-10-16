@@ -34,7 +34,6 @@ fun SettingsNavGraph(
         composable(SettingsRoute.Root.route) {
             SettingsRootScreen(
                 uiState = uiState,
-                actions = actions,
                 onNavigateToBehavior = { navController.navigate(SettingsRoute.Behavior.route) },
                 onNavigateToAppearance = { navController.navigate(SettingsRoute.Appearance.route) },
                 onNavigateToAdvanced = { navController.navigate(SettingsRoute.Advanced.route) }

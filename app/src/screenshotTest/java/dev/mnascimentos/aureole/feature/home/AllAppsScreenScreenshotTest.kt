@@ -17,7 +17,7 @@ import dev.mnascimentos.aureole.feature.home.model.MainUiState
 internal fun createMockHomeScreenActions(): HomeScreenActions = HomeScreenActions(
     onWidgetRowHeightChanged = {},
     onAddWidgetClick = {},
-    onRemoveWidgetClick = {},
+    onRemoveWidgetClick = { _, _ -> },
     onAppClick = {},
     onExpandNotificationShade = {},
     onFolderIntent = {},

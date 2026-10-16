@@ -3,7 +3,6 @@ package dev.mnascimentos.aureole.core.data.repository
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
-import dev.mnascimentos.aureole.core.analytics.AnalyticsHelper
 import dev.mnascimentos.aureole.core.data.cache.IconCache
 import dev.mnascimentos.aureole.core.data.db.AppDatabase
 import dev.mnascimentos.aureole.core.data.db.AppInfoEntity
@@ -133,25 +132,11 @@ class AppRepository(private val context: Context) {
     }
 
     fun launchApp(componentName: ComponentName) {
-        val analyticsHelper = AnalyticsHelper(context)
-        analyticsHelper.logAppLaunch(componentName.packageName)
-
         val intent = Intent(Intent.ACTION_MAIN).apply {
             addCategory(Intent.CATEGORY_LAUNCHER)
             component = componentName
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED
         }
         context.startActivity(intent)
-    }
-
-    companion object {
-        @Volatile
-        private var instance: AppRepository? = null
-
-        fun getInstance(context: Context): AppRepository {
-            return instance ?: synchronized(this) {
-                instance ?: AppRepository(context.applicationContext).also { instance = it }
-            }
-        }
     }
 }

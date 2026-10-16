@@ -17,7 +17,6 @@ import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.activity.viewModels
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
@@ -53,10 +52,11 @@ import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
 import dev.mnascimentos.aureole.feature.home.model.isOverlayActive
 import dev.mnascimentos.aureole.feature.home.widget.WidgetHostManager
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MainActivity : ComponentActivity() {
 
-    internal val viewModel: HomeViewModel by viewModels()
+    internal val viewModel: HomeViewModel by viewModel()
 
     // Widget System
     internal lateinit var appWidgetManager: AppWidgetManager
@@ -185,8 +185,7 @@ class MainActivity : ComponentActivity() {
                             appWidgetHost = appWidgetHost,
                             appWidgetManager = appWidgetManager,
                             viewModel = viewModel,
-                            onWidgetSelected = { widgetHostManager.handleWidgetSelected(it) },
-                            onRemoveWidget = { widgetHostManager.removeWidget(it) }
+                            onWidgetSelected = { widgetHostManager.handleWidgetSelected(it) }
                         )
                     }
                 }
@@ -257,7 +256,7 @@ private fun getAppVersionCode(context: Context): Int {
         val packageInfo = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             context.packageManager.getPackageInfo(context.packageName, PackageManager.PackageInfoFlags.of(0))
         } else {
-            @Suppress("DEPRECATION")
+            @Suppress("DEPRECATION") // Legacy getPackageInfo call required for API < 33
             context.packageManager.getPackageInfo(context.packageName, 0)
         }
         PackageInfoCompat.getLongVersionCode(packageInfo).toInt()
@@ -271,7 +270,7 @@ private fun getAppVersionName(context: Context): String {
         val packageInfo = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             context.packageManager.getPackageInfo(context.packageName, PackageManager.PackageInfoFlags.of(0))
         } else {
-            @Suppress("DEPRECATION")
+            @Suppress("DEPRECATION") // Legacy getPackageInfo call required for API < 33
             context.packageManager.getPackageInfo(context.packageName, 0)
         }
         packageInfo.versionName ?: "0.3.13"

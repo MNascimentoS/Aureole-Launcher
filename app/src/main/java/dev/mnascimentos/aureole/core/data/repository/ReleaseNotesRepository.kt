@@ -1,3 +1,5 @@
+@file:Suppress("TooManyFunctions") // Static release notes repository containing version note definitions
+
 package dev.mnascimentos.aureole.core.data.repository
 
 import dev.mnascimentos.aureole.core.data.model.ReleaseNoteItem
@@ -13,6 +15,7 @@ object ReleaseNotesRepository {
 
     fun getReleaseNotes(): List<ReleaseNoteVersion> {
         return listOf(
+            getVersion0713(),
             getVersion0613(),
             getVersion0513(),
             getVersion0313(),
@@ -21,11 +24,24 @@ object ReleaseNotesRepository {
         )
     }
 
+    private fun getVersion0713(): ReleaseNoteVersion {
+        return ReleaseNoteVersion(
+            versionName = "0.7.13",
+            releaseDate = "Março 2025",
+            isCurrent = true,
+            sections = listOf(
+                createSection0713Features(),
+                createSection0713Improvements(),
+                createSection0713Fixes()
+            )
+        )
+    }
+
     private fun getVersion0613(): ReleaseNoteVersion {
         return ReleaseNoteVersion(
             versionName = "0.6.13",
             releaseDate = "Março 2025",
-            isCurrent = true,
+            isCurrent = false,
             sections = listOf(
                 createSection0613Features(),
                 createSection0613Improvements(),
@@ -126,17 +142,79 @@ object ReleaseNotesRepository {
     }
 }
 
+private fun createSection0713Features() = ReleaseNoteSection(
+    title = "Novidades & Recursos",
+    items = listOf(
+        ReleaseNoteItem(
+            title = "Animações Fluídas em Overlays de Edição",
+            description = "Suporte a animação de entrada e saída deslizando a partir do fundo da tela " +
+                "nas telas de edição de Relógio, Container, Aplicativos e Widgets.",
+            type = ReleaseNoteType.FEATURE
+        ),
+        ReleaseNoteItem(
+            title = "Acesso Rápido às Configurações",
+            description = "Atalho para as configurações do aplicativo diretamente pelo ícone " +
+                "Aureole no cabeçalho das telas de edição.",
+            type = ReleaseNoteType.FEATURE
+        )
+    )
+)
+
+private fun createSection0713Improvements() = ReleaseNoteSection(
+    title = "Melhorias de Interface & Experiência",
+    items = listOf(
+        ReleaseNoteItem(
+            title = "Transição Compartilhada (Shared Elements)",
+            description = "Animação contínua entre os componentes da Home e a área de preview " +
+                "nas telas de personalização.",
+            type = ReleaseNoteType.IMPROVEMENT
+        ),
+        ReleaseNoteItem(
+            title = "Opção para Desativar Barra Alfabética",
+            description = "Nova chave de controle nas Configurações -> Comportamento para ocultar " +
+                "a barra alfabética lateral de todas as listas.",
+            type = ReleaseNoteType.IMPROVEMENT
+        ),
+        ReleaseNoteItem(
+            title = "Arrasto e Expansão da Bottom Sheet",
+            description = "Ajuste na navegação por gesto para permitir expandir a folha inferior " +
+                "deslizando até o topo do preview.",
+            type = ReleaseNoteType.IMPROVEMENT
+        ),
+        ReleaseNoteItem(
+            title = "Modularização & Arquitetura Limpa",
+            description = "Refatoração e decomposição dos componentes de UI na Home, editores e " +
+                "Configurações para maior desempenho e manutenibilidade.",
+            type = ReleaseNoteType.IMPROVEMENT
+        )
+    )
+)
+
+private fun createSection0713Fixes() = ReleaseNoteSection(
+    title = "Correções & Estabilidade",
+    items = listOf(
+        ReleaseNoteItem(
+            title = "Animação de Encerramento ao Salvar",
+            description = "Garantia de execução completa da animação de saída ao clicar em 'Salvar' " +
+                "ou 'Concluído' no relógio e na lista de favoritos.",
+            type = ReleaseNoteType.FIX
+        )
+    )
+)
+
 private fun createSection0613Features() = ReleaseNoteSection(
     title = "Novidades & Recursos",
     items = listOf(
         ReleaseNoteItem(
             title = "Nova Tela de Edição de Container",
-            description = "Interface de personalização em tela cheia com pré-visualização em tempo real e seções dedicadas para Aparência, Comportamento e Componentes.",
+            description = "Interface de personalização em tela cheia com pré-visualização em tempo real " +
+                "e seções dedicadas para Aparência, Comportamento e Componentes.",
             type = ReleaseNoteType.FEATURE
         ),
         ReleaseNoteItem(
             title = "Modo de Pastas em Grade (Grid Folders)",
-            description = "Suporte para exibir miniaturas de ícones 2x2 no container e abrir o menu expansível de pastas em formato de grade.",
+            description = "Suporte para exibir miniaturas de ícones 2x2 no container e abrir o menu expansível " +
+                "de pastas em formato de grade.",
             type = ReleaseNoteType.FEATURE
         )
     )
@@ -147,17 +225,20 @@ private fun createSection0613Improvements() = ReleaseNoteSection(
     items = listOf(
         ReleaseNoteItem(
             title = "Gestos de Navegação do Sistema (Samsung)",
-            description = "Compatibilidade com gestos do sistema em overlays, garantindo o funcionamento perfeito da seta de voltar.",
+            description = "Compatibilidade com gestos do sistema em overlays, garantindo o funcionamento " +
+                "perfeito da seta de voltar.",
             type = ReleaseNoteType.IMPROVEMENT
         ),
         ReleaseNoteItem(
             title = "Ajuste Dinâmico no Container",
-            description = "O botão de adição (+) oculta-se em containers com itens e reaparece automaticamente quando o container fica vazio.",
+            description = "O botão de adição (+) oculta-se em containers com itens e reaparece " +
+                "automaticamente quando o container fica vazio.",
             type = ReleaseNoteType.IMPROVEMENT
         ),
         ReleaseNoteItem(
             title = "Novos Ícones & Scrubber Alfabético Otimizado",
-            description = "Ícones temáticos exclusivos para cada menu de configuração e posicionamento aprimorado da barra alfabética lateral.",
+            description = "Ícones temáticos exclusivos para cada menu de configuração e posicionamento " +
+                "aprimorado da barra alfabética lateral.",
             type = ReleaseNoteType.IMPROVEMENT
         )
     )
@@ -168,12 +249,14 @@ private fun createSection0613Fixes() = ReleaseNoteSection(
     items = listOf(
         ReleaseNoteItem(
             title = "Efeito de Desfoque (Blur) Seletivo",
-            description = "Aplicação do desfoque de fundo exclusivamente no modo de pasta em grade, mantendo o modo padrão limpo e sem blur.",
+            description = "Aplicação do desfoque de fundo exclusivamente no modo de pasta em grade, " +
+                "mantendo o modo padrão limpo e sem blur.",
             type = ReleaseNoteType.FIX
         ),
         ReleaseNoteItem(
             title = "Persistência do Banco de Dados",
-            description = "Atualização do banco de dados local para salvar e sincronizar preferências do container e componentes filhos.",
+            description = "Atualização do banco de dados local para salvar e sincronizar preferências " +
+                "do container e componentes filhos.",
             type = ReleaseNoteType.FIX
         )
     )

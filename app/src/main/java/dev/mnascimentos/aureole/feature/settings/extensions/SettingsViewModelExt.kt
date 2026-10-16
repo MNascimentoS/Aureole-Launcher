@@ -11,7 +11,6 @@ import android.os.Build
 import android.util.Log
 import androidx.lifecycle.viewModelScope
 import dev.mnascimentos.aureole.core.data.db.AppDatabase
-import dev.mnascimentos.aureole.core.data.repository.GridRepository
 import dev.mnascimentos.aureole.feature.settings.SettingsViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -60,7 +59,7 @@ fun SettingsViewModel.restoreDefaultWallpaper() {
 
 fun SettingsViewModel.resetGridLayout() {
     viewModelScope.launch {
-        GridRepository(getApplication()).resetToDefault()
+        gridRepository.resetToDefault()
         updateUiState {
             it.copy(
                 showResetGridDialog = false,

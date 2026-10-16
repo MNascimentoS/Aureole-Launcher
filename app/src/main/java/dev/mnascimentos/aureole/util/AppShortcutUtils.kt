@@ -26,44 +26,34 @@ object AppShortcutUtils {
     private const val MAX_SHORTCUTS = 6
 
     fun getAppShortcuts(context: Context, packageName: String): List<AureoleShortcutItem> {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N_MR1) return emptyList()
+        val launcherApps = try {
+            context.getSystemService(Context.LAUNCHER_APPS_SERVICE) as? LauncherApps
+        } catch (e: AssertionError) {
+            Log.w(TAG, "Unsupported service in preview", e)
+            null
+        } ?: return emptyList()
 
-        return try {
-            val launcherApps = try {
-                context.getSystemService(Context.LAUNCHER_APPS_SERVICE) as? LauncherApps
-            } catch (e: AssertionError) {
-                Log.w(TAG, "Unsupported service in preview", e)
+        val shortcuts = queryShortcutsForPackage(launcherApps, packageName)
+        val density = context.resources.displayMetrics.densityDpi
+
+        return shortcuts.take(MAX_SHORTCUTS).map { shortcut ->
+            val label = (shortcut.shortLabel ?: shortcut.longLabel ?: shortcut.id).toString()
+            val iconDrawable = try {
+                launcherApps.getShortcutIconDrawable(shortcut, density)
+            } catch (e: SecurityException) {
+                Log.w(TAG, "Security exception fetching shortcut icon", e)
                 null
-            } ?: return emptyList()
-
-            val shortcuts = queryShortcutsForPackage(launcherApps, packageName)
-            val density = context.resources.displayMetrics.densityDpi
-
-            shortcuts.take(MAX_SHORTCUTS).map { shortcut ->
-                val label = (shortcut.shortLabel ?: shortcut.longLabel ?: shortcut.id).toString()
-                val iconDrawable = try {
-                    launcherApps.getShortcutIconDrawable(shortcut, density)
-                } catch (e: SecurityException) {
-                    Log.w(TAG, "Security exception fetching shortcut icon", e)
-                    null
-                } catch (e: IllegalStateException) {
-                    Log.w(TAG, "Illegal state fetching shortcut icon", e)
-                    null
-                }
-
-                AureoleShortcutItem(
-                    id = shortcut.id,
-                    label = label,
-                    icon = iconDrawable,
-                    shortcutInfo = shortcut
-                )
+            } catch (e: IllegalStateException) {
+                Log.w(TAG, "Illegal state fetching shortcut icon", e)
+                null
             }
-        } catch (e: SecurityException) {
-            Log.w(TAG, "Error fetching app shortcuts for $packageName (security)", e)
-            emptyList()
-        } catch (e: Exception) {
-            Log.w(TAG, "Error fetching app shortcuts for $packageName", e)
-            emptyList()
+
+            AureoleShortcutItem(
+                id = shortcut.id,
+                label = label,
+                icon = iconDrawable,
+                shortcutInfo = shortcut
+            )
         }
     }
 
@@ -84,8 +74,12 @@ object AppShortcutUtils {
                 }
                 val results = launcherApps.getShortcuts(cachedQuery, Process.myUserHandle())
                 if (!results.isNullOrEmpty()) return results
-            } catch (e: Exception) {
-                Log.w(TAG, "Failed cached query for $packageName, falling back to standard query", e)
+            } catch (e: SecurityException) {
+                Log.w(TAG, "Security error in cached query for $packageName", e)
+            } catch (e: IllegalStateException) {
+                Log.w(TAG, "Illegal state in cached query for $packageName", e)
+            } catch (e: IllegalArgumentException) {
+                Log.w(TAG, "Illegal argument in cached query for $packageName", e)
             }
         }
 
@@ -100,14 +94,19 @@ object AppShortcutUtils {
 
         return try {
             launcherApps.getShortcuts(standardQuery, Process.myUserHandle()) ?: emptyList()
-        } catch (e: Exception) {
-            Log.w(TAG, "Standard query failed for $packageName", e)
+        } catch (e: SecurityException) {
+            Log.w(TAG, "Security error in standard query for $packageName", e)
+            emptyList()
+        } catch (e: IllegalStateException) {
+            Log.w(TAG, "Illegal state in standard query for $packageName", e)
+            emptyList()
+        } catch (e: IllegalArgumentException) {
+            Log.w(TAG, "Illegal argument in standard query for $packageName", e)
             emptyList()
         }
     }
 
     fun launchShortcut(context: Context, shortcut: AureoleShortcutItem) {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N_MR1) return
         val launcherApps =
             context.getSystemService(Context.LAUNCHER_APPS_SERVICE) as? LauncherApps ?: return
         try {
@@ -124,8 +123,12 @@ object AppShortcutUtils {
                     null,
                     shortcut.shortcutInfo.userHandle
                 )
-            } catch (e2: Throwable) {
-                Log.e(TAG, "Fallback launchShortcut failed: ${shortcut.id}", e2)
+            } catch (e2: SecurityException) {
+                Log.e(TAG, "Fallback launchShortcut security failed: ${shortcut.id}", e2)
+            } catch (e2: IllegalStateException) {
+                Log.e(TAG, "Fallback launchShortcut illegal state failed: ${shortcut.id}", e2)
+            } catch (e2: ActivityNotFoundException) {
+                Log.e(TAG, "Fallback launchShortcut not found: ${shortcut.id}", e2)
             }
         }
     }

@@ -59,7 +59,8 @@ private const val MAX_OFFSET_PERCENT = 60
 fun SettingsBehaviorScreen(
     uiState: SettingsUiState,
     actions: SettingsScreenActions,
-    @Suppress("UNUSED_PARAMETER") onNavigateBack: () -> Unit
+    @Suppress("UNUSED_PARAMETER") // Parameter reserved for navigation contract
+    onNavigateBack: () -> Unit
 ) {
     Scaffold(
         containerColor = AureoleDS.colors.surface
@@ -136,6 +137,13 @@ private fun BehaviorMenuItems(
             checked = uiState.showWidgetDots,
             onCheckedChange = { actions.onToggleShowWidgetDots() },
             leadingContent = { AureoleDS.icons.Dots() }
+        )
+
+        SettingsToggleItem(
+            title = "Disable alphabet scrubber",
+            checked = uiState.isAlphabetScrubberDisabled,
+            onCheckedChange = { actions.onToggleDisableAlphabetScrubber() },
+            leadingContent = { AureoleDS.icons.AlignRight() }
         )
 
         HeaderOffsetPickerRow(

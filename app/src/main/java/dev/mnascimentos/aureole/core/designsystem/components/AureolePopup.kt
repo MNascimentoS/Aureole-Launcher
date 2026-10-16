@@ -4,7 +4,6 @@ import android.content.Intent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
@@ -19,7 +18,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -39,8 +37,6 @@ import dev.mnascimentos.aureole.core.designsystem.icons.Close
 import dev.mnascimentos.aureole.core.designsystem.icons.Logo
 import dev.mnascimentos.aureole.core.designsystem.icons.Settings
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
-import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
-import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.settings.SettingsActivity
 
 private const val HAZE_ALPHA = 0.85f
@@ -157,7 +153,10 @@ fun AureoleHeaderBanner(
  * app/folder icon badge, main title, and top-right Aureole logo icon aligned to TopEnd (4dp margin).
  * Clipped to top corner radius.
  */
-@Suppress("LongParameterList", "LongMethod")
+@Suppress(
+    "LongParameterList",
+    "LongMethod"
+) // AureolePopupHeader provides structured header with logo, title, and slots
 @Composable
 fun AureolePopupHeader(
     title: String,
@@ -311,118 +310,5 @@ fun AureolePopupMenuSection(
             fontWeight = FontWeight.SemiBold,
             color = AureoleDS.colors.onSurfaceMedium,
         )
-    }
-}
-
-/**
- * Standard Popup Menu Action Row Item with icon, title, optional badge, or trailing action button.
- */
-@Suppress("LongParameterList", "LongMethod")
-@Composable
-fun AureolePopupMenuItem(
-    title: String,
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier,
-    icon: @Composable ((Modifier) -> Unit)? = null,
-    customIcon: (@Composable () -> Unit)? = null,
-    badge: String? = null,
-    trailingIcon: @Composable ((Modifier) -> Unit)? = null,
-    onTrailingClick: (() -> Unit)? = null,
-    isDestructive: Boolean = false,
-) {
-    val textColor = if (isDestructive) MaterialTheme.colorScheme.error else AureoleDS.colors.onSurfaceHigh
-
-    Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .height(42.dp)
-            .clip(RoundedCornerShape(AureoleDS.dimens.radiusXSmall))
-            .clickable(onClick = onClick)
-            .padding(horizontal = AureoleDS.dimens.xSmall),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween,
-    ) {
-        Row(
-            modifier = Modifier.weight(1f),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            when {
-                customIcon != null -> customIcon()
-                icon != null -> icon(Modifier.size(AureoleDS.dimens.iconMedium))
-            }
-
-            if (icon != null || customIcon != null) {
-                Spacer(modifier = Modifier.width(AureoleDS.dimens.iconMedium))
-            }
-
-            AureoleText(
-                text = title,
-                style = AureoleDS.typography.bodyMedium,
-                fontWeight = FontWeight.Medium,
-                color = textColor,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-            )
-        }
-
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(AureoleDS.dimens.xxSmall),
-        ) {
-            if (!badge.isNullOrBlank()) {
-                AureoleText(
-                    text = badge,
-                    style = AureoleDS.typography.labelMedium,
-                    color = AureoleDS.colors.onSurfaceLow,
-                )
-            }
-
-            if (trailingIcon != null) {
-                IconButton(
-                    onClick = { (onTrailingClick ?: onClick).invoke() },
-                    modifier = Modifier.size(AureoleDS.dimens.iconLarge),
-                ) {
-                    trailingIcon(Modifier.size(AureoleDS.dimens.iconSmall))
-                }
-            }
-        }
-    }
-}
-
-@AureolePreview
-@Composable
-fun AureolePopupPreview() {
-    AureoleLauncherTheme {
-        AureolePopupBox(
-            modifier = Modifier.width(260.dp),
-        ) {
-            AureolePopupHeader(
-                title = "Folder name",
-                sessionTitle = "Folder actions",
-                onSettingsClick = {},
-                onCloseClick = {},
-            )
-
-            AureolePopupMenuSection(title = "Titulo de sessão")
-
-            AureolePopupMenuItem(
-                title = "Add folder",
-                icon = { modifier -> AureoleDS.icons.Settings(modifier, AureoleDS.colors.onSurfaceHigh) },
-                badge = "12",
-                onClick = {},
-            )
-
-            AureolePopupMenuItem(
-                title = "Create stack",
-                badge = "36",
-                onClick = {},
-            )
-
-            AureolePopupMenuItem(
-                title = "Remove",
-                isDestructive = true,
-                onClick = {},
-            )
-        }
     }
 }

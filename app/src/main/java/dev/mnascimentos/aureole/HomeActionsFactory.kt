@@ -54,6 +54,7 @@ import dev.mnascimentos.aureole.feature.home.extensions.setShowCustomizeBottomSh
 import dev.mnascimentos.aureole.feature.home.extensions.setShowFavoritePicker
 import dev.mnascimentos.aureole.feature.home.extensions.setShowWidgetPicker
 import dev.mnascimentos.aureole.feature.home.extensions.setShowWidgetResizeDialog
+import dev.mnascimentos.aureole.feature.home.extensions.setTargetWidgetStackId
 import dev.mnascimentos.aureole.feature.home.extensions.setWidgetRowHeight
 import dev.mnascimentos.aureole.feature.home.extensions.toggleClockBackground
 import dev.mnascimentos.aureole.feature.home.extensions.toggleFavorite
@@ -87,8 +88,13 @@ class HomeActionsFactory(
     fun createHomeActions(): HomeScreenActions {
         val actions = HomeScreenActions(
             onWidgetRowHeightChanged = { viewModel.setWidgetRowHeight(it) },
-            onAddWidgetClick = { viewModel.setShowWidgetPicker(true) },
-            onRemoveWidgetClick = { widgetId -> widgetHostManager.removeWidget(widgetId) },
+            onAddWidgetClick = { stackId ->
+                if (stackId != null) {
+                    viewModel.setTargetWidgetStackId(stackId)
+                }
+                viewModel.setShowWidgetPicker(true)
+            },
+            onRemoveWidgetClick = { widgetId, stackId -> widgetHostManager.removeWidget(widgetId, stackId) },
             onAppClick = { appInfo -> viewModel.launchApp(appInfo.componentName) },
             onExpandNotificationShade = { IntentUtils.expandNotificationShade(activity) },
             onFolderIntent = { intent -> viewModel.onFolderIntent(intent) },

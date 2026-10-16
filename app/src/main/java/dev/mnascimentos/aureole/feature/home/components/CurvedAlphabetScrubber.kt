@@ -55,8 +55,8 @@ private val BADGE_SIZE = 48.dp
 private val BADGE_MARGIN = 28.dp
 
 private val SCRUBBER_PADDING_TOP = 0.dp
-private val SCRUBBER_PADDING_BOTTOM = 88.dp
-private val SCRUBBER_PADDING_HORIZONTAL = 12.dp
+private val SCRUBBER_PADDING_BOTTOM = 112.dp
+private val SCRUBBER_PADDING_HORIZONTAL = 8.dp
 private const val SCRUBBER_HEIGHT_FRACTION = 0.55f
 private const val GAUSSIAN_HALF_FACTOR = 0.5f
 
@@ -71,6 +71,9 @@ fun CurvedAlphabetScrubber(
     callbacks: ScrubberCallbacks,
     modifier: Modifier = Modifier,
 ) {
+    val uiState = LocalHomeUiState.current
+    if (uiState.isAlphabetScrubberDisabled) return
+
     val configuration = LocalConfiguration.current
     val isLandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
 
@@ -266,6 +269,10 @@ private fun BoxScope.ScrubberAlphabetItems(
             },
             modifier = Modifier
                 .align(params.alignment)
+                .padding(
+                    start = if (isLeftHandedMode) 14.dp else 0.dp,
+                    end = if (isLeftHandedMode) 0.dp else 14.dp
+                )
                 .graphicsLayer {
                     val currentTouchY = params.touchYPx
                     val isDrag = params.isDragging

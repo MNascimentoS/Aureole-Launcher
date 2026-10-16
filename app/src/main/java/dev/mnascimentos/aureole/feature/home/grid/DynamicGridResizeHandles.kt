@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -45,6 +46,7 @@ fun BoxScope.RightEdgeResizeHandle(
         modifier = Modifier
             .align(Alignment.CenterEnd)
             .fillMaxHeight()
+            .padding(top = CORNER_TOUCH_SIZE, bottom = CORNER_TOUCH_SIZE)
             .width(HANDLE_TOUCH_SIZE)
             .pointerInput(params.item.id) {
                 var totalDragX = 0f
@@ -96,6 +98,7 @@ fun BoxScope.BottomEdgeResizeHandle(
         modifier = Modifier
             .align(Alignment.BottomCenter)
             .fillMaxWidth()
+            .padding(start = CORNER_TOUCH_SIZE, end = CORNER_TOUCH_SIZE)
             .height(HANDLE_TOUCH_SIZE)
             .pointerInput(params.item.id) {
                 var totalDragY = 0f

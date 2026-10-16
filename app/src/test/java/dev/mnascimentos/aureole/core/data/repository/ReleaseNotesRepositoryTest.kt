@@ -10,29 +10,30 @@ import org.junit.Test
 class ReleaseNotesRepositoryTest {
 
     @Test
-    fun getReleaseNotesReturnsNonEmptyListWithCurrentVersionFirst() {
+    fun `when fetching release notes, should return non empty list with current version first`() {
         val notes = ReleaseNotesRepository.getReleaseNotes()
         assertTrue(notes.isNotEmpty())
 
         val current = notes.first()
         assertTrue(current.isCurrent)
-        assertEquals("0.6.13", current.versionName)
+        assertEquals("0.7.13", current.versionName)
     }
 
     @Test
-    fun getLatestVersionNotesReturnsCurrentVersion() {
+    fun `when fetching latest version notes, should return current version details`() {
         val latest = ReleaseNotesRepository.getLatestVersionNotes()
         assertTrue(latest.isCurrent)
-        assertEquals("0.6.13", latest.versionName)
+        assertEquals("0.7.13", latest.versionName)
         assertTrue(latest.sections.isNotEmpty())
     }
 
     @Test
-    fun getReleaseNotesContainsMappedSectionsAndItems() {
+    fun `when querying specific version, should contain mapped sections and items`() {
         val notes = ReleaseNotesRepository.getReleaseNotes()
-        val latest = notes.first { it.versionName == "0.3.13" }
+        val version0313 = notes.find { it.versionName == "0.3.13" }
 
-        val novidadesSection = latest.sections.find { it.title == "Novidades & Recursos" }
+        assertNotNull(version0313)
+        val novidadesSection = version0313!!.sections.find { it.title == "Novidades & Recursos" }
         assertNotNull(novidadesSection)
         assertTrue(novidadesSection!!.items.any { it.title == "Menu de Personalização Rápida" })
 

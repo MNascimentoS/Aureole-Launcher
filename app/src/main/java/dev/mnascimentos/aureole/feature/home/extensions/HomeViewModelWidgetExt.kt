@@ -4,16 +4,45 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.core.data.model.LauncherItemType
 import dev.mnascimentos.aureole.feature.home.HomeViewModel
+import dev.mnascimentos.aureole.feature.home.model.getWidgetIdsForStack
 
 internal fun HomeViewModel.loadWidgetSettings() {
-    val savedIds = widgetRepository.getSavedWidgetIds()
+    val topIds = widgetRepository.getWidgetIdsForStack("top_widgets")
     val savedHeight = widgetRepository.getSavedWidgetRowHeight()
     val topDots = widgetRepository.getWidgetDotsState("top_widgets")
+
+    val widgetMap = mutableMapOf<String, List<Int>>()
+    widgetMap["top_widgets"] = topIds
+
+    val dotsMap = mutableMapOf<String, Boolean>()
+    dotsMap["top_widgets"] = topDots
+
+    val allItems = uiState.value.portraitGridItems + uiState.value.landscapeGridItems
+    allItems.forEach { item ->
+        val isWidgetType = item.safeType == LauncherItemType.WIDGET_LIST ||
+            item.safeType == LauncherItemType.SINGLE_APP_WIDGET
+        if (isWidgetType) {
+            val stackId = item.id
+            widgetMap[stackId] = widgetRepository.getWidgetIdsForStack(stackId)
+            dotsMap[stackId] = widgetRepository.getWidgetDotsState(stackId)
+        }
+        item.safeChildren.forEach { child ->
+            val isChildWidget = child.safeType == LauncherItemType.WIDGET_LIST ||
+                child.safeType == LauncherItemType.SINGLE_APP_WIDGET
+            if (isChildWidget) {
+                val stackId = child.id
+                widgetMap[stackId] = widgetRepository.getWidgetIdsForStack(stackId)
+                dotsMap[stackId] = widgetRepository.getWidgetDotsState(stackId)
+            }
+        }
+    }
+
     updateUiState {
         it.copy(
-            topWidgetIds = savedIds,
+            topWidgetIds = topIds,
+            widgetStacks = widgetMap,
             widgetRowHeight = savedHeight.dp,
-            widgetStackDots = mapOf("top_widgets" to topDots)
+            widgetStackDots = dotsMap
         )
     }
 }
@@ -31,14 +60,36 @@ fun HomeViewModel.setIsAddingSingleWidget(isAdding: Boolean) {
     updateUiState { it.copy(isAddingSingleWidget = isAdding) }
 }
 
+fun HomeViewModel.setTargetWidgetStackId(stackId: String?) {
+    updateUiState { it.copy(targetWidgetStackId = stackId) }
+}
+
+private fun HomeViewModel.resolveTargetStackId(targetStackId: String?): String {
+    return targetStackId
+        ?: uiState.value.targetWidgetStackId
+        ?: uiState.value.activeWidgetStackBottomSheet?.stackId
+        ?: uiState.value.editingGridItem?.id
+        ?: "top_widgets"
+}
+
 fun HomeViewModel.addWidgetId(
-    widgetId: Int
+    widgetId: Int,
+    targetStackId: String? = null
 ) {
-    val currentList = uiState.value.topWidgetIds
+    val stackId = resolveTargetStackId(targetStackId)
+    val currentMap = uiState.value.widgetStacks
+    val currentList = currentMap[stackId] ?: uiState.value.getWidgetIdsForStack(stackId)
     if (!currentList.contains(widgetId)) {
         val newList = currentList + widgetId
-        updateUiState { it.copy(topWidgetIds = newList) }
-        widgetRepository.saveWidgetIds(newList)
+        val updatedMap = currentMap + (stackId to newList)
+        updateUiState {
+            it.copy(
+                widgetStacks = updatedMap,
+                topWidgetIds = if (stackId == "top_widgets") newList else it.topWidgetIds,
+                targetWidgetStackId = null
+            )
+        }
+        widgetRepository.saveWidgetIdsForStack(stackId, newList)
     }
 
     val hasWidgetContainer = uiState.value.gridItems.any {
@@ -51,9 +102,20 @@ fun HomeViewModel.addWidgetId(
     setIsAddingSingleWidget(false)
 }
 
-fun HomeViewModel.removeWidgetId(widgetId: Int) {
-    val currentList = uiState.value.topWidgetIds
+fun HomeViewModel.removeWidgetId(
+    widgetId: Int,
+    targetStackId: String? = null
+) {
+    val stackId = resolveTargetStackId(targetStackId)
+    val currentMap = uiState.value.widgetStacks
+    val currentList = currentMap[stackId] ?: uiState.value.getWidgetIdsForStack(stackId)
     val newList = currentList - widgetId
-    updateUiState { it.copy(topWidgetIds = newList) }
-    widgetRepository.saveWidgetIds(newList)
+    val updatedMap = currentMap + (stackId to newList)
+    updateUiState {
+        it.copy(
+            widgetStacks = updatedMap,
+            topWidgetIds = if (stackId == "top_widgets") newList else it.topWidgetIds
+        )
+    }
+    widgetRepository.saveWidgetIdsForStack(stackId, newList)
 }

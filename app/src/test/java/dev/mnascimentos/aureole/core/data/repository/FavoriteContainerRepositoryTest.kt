@@ -19,11 +19,11 @@ class FavoriteContainerRepositoryTest {
     @Before
     fun setUp() {
         context = RuntimeEnvironment.getApplication()
-        repository = FavoriteContainerRepository(context)
+        repository = FavoriteContainerRepository(context, SettingsRepository(context))
     }
 
     @Test
-    fun testIndependentFavoriteContainers() = runBlocking {
+    fun `when updating multiple containers, should maintain independent favorite lists`() = runBlocking {
         val containerA = "container_a"
         val containerB = "container_b"
 
@@ -41,7 +41,7 @@ class FavoriteContainerRepositoryTest {
     }
 
     @Test
-    fun testReorderContainerFavoritesIsIsolated() = runBlocking {
+    fun `when reordering favorites in container, should isolate changes to target container`() = runBlocking {
         val containerA = "container_a"
         val containerB = "container_b"
 
@@ -60,7 +60,7 @@ class FavoriteContainerRepositoryTest {
     }
 
     @Test
-    fun testDeleteContainer() = runBlocking {
+    fun `when deleting container, should clear all stored favorites`() = runBlocking {
         val containerId = "container_to_delete"
         val apps = listOf("com.example.app1")
 

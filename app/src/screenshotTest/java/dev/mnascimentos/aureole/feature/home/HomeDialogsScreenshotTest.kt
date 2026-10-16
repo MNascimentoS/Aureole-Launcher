@@ -11,22 +11,28 @@ import dev.mnascimentos.aureole.core.data.model.ContainerItemType
 import dev.mnascimentos.aureole.core.data.model.ContainerModel
 import dev.mnascimentos.aureole.core.data.model.LauncherItemState
 import dev.mnascimentos.aureole.core.data.model.LauncherItemType
+import dev.mnascimentos.aureole.core.data.model.ReleaseNoteItem
+import dev.mnascimentos.aureole.core.data.model.ReleaseNoteSection
+import dev.mnascimentos.aureole.core.data.model.ReleaseNoteType
+import dev.mnascimentos.aureole.core.data.model.ReleaseNoteVersion
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.feature.home.components.CustomizeBottomSheet
 import dev.mnascimentos.aureole.feature.home.components.EditClockBottomSheet
-import dev.mnascimentos.aureole.feature.home.components.EditContainerScreen
 import dev.mnascimentos.aureole.feature.home.components.FavoriteAppsDialog
 import dev.mnascimentos.aureole.feature.home.components.ReleaseNotesBottomSheet
 import dev.mnascimentos.aureole.feature.home.components.UpdateAvailableDialog
 import dev.mnascimentos.aureole.feature.home.components.UpdateDownloadedDialog
+import dev.mnascimentos.aureole.feature.home.components.containers.EditContainerScreen
 import dev.mnascimentos.aureole.feature.home.components.model.FavoriteAppsDialogActions
 import dev.mnascimentos.aureole.feature.home.components.model.FavoriteAppsDialogConfig
-import dev.mnascimentos.aureole.feature.home.folder.CreateFolderDialog
-import dev.mnascimentos.aureole.feature.home.folder.EditFolderDialog
-import dev.mnascimentos.aureole.feature.home.folder.FolderAppPickerDialog
-import dev.mnascimentos.aureole.feature.home.folder.FolderDialog
+import dev.mnascimentos.aureole.feature.home.components.containers.folder.CreateFolderDialog
+import dev.mnascimentos.aureole.feature.home.components.containers.folder.EditFolderDialog
+import dev.mnascimentos.aureole.feature.home.components.containers.folder.FolderAppPickerDialog
+import dev.mnascimentos.aureole.feature.home.components.containers.folder.FolderDialog
 import dev.mnascimentos.aureole.feature.home.grid.AddContainerDialog
 import dev.mnascimentos.aureole.feature.home.grid.EditGridItemDialog
+import dev.mnascimentos.aureole.feature.home.widget.EditWidgetGroupActions
+import dev.mnascimentos.aureole.feature.home.widget.EditWidgetGroupParams
 import dev.mnascimentos.aureole.feature.home.widget.EditWidgetGroupScreen
 import dev.mnascimentos.aureole.feature.home.widget.WidgetSelectorScreen
 import dev.mnascimentos.aureole.feature.home.widget.model.WidgetAppGroup
@@ -46,7 +52,9 @@ fun FavoriteAppsDialogScreenshotTest() {
         onDismiss = {}
     )
     AureoleLauncherTheme {
-        FavoriteAppsDialog(config = config, actions = actions)
+        CompositionLocalProvider(LocalHomeUiState provides sampleData.uiState) {
+            FavoriteAppsDialog(config = config, actions = actions)
+        }
     }
 }
 
@@ -168,8 +176,48 @@ fun UpdateDownloadedDialogScreenshotTest() {
 @Preview(name = "Release Notes Bottom Sheet Flow", uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
 @Composable
 fun ReleaseNotesBottomSheetScreenshotTest() {
+    val sampleReleaseNoteVersion = ReleaseNoteVersion(
+        versionName = "0.6.13",
+        releaseDate = "14/10/2026",
+        isCurrent = true,
+        sections = listOf(
+            ReleaseNoteSection(
+                title = "Novidades & Recursos",
+                items = listOf(
+                    ReleaseNoteItem(
+                        title = "Nova Tela de Edição de Container",
+                        description = "Interface de personalização em tela cheia com pré-visualização em tempo real e seções dedicadas para Aparência, Comportamento e Componentes.",
+                        type = ReleaseNoteType.FEATURE
+                    ),
+                    ReleaseNoteItem(
+                        title = "Modo de Pastas em Grade (Grid Folders)",
+                        description = "Suporte para exibir miniaturas de ícones 2x2 no container e abrir o menu expansível de pastas em formato de grade.",
+                        type = ReleaseNoteType.FEATURE
+                    )
+                )
+            ),
+            ReleaseNoteSection(
+                title = "Melhorias de Interface & Experiência",
+                items = listOf(
+                    ReleaseNoteItem(
+                        title = "Melhorias de Performance",
+                        description = "Otimizações gerais no carregamento da tela inicial.",
+                        type = ReleaseNoteType.IMPROVEMENT
+                    )
+                )
+            )
+        )
+    )
+
     AureoleLauncherTheme {
-        ReleaseNotesBottomSheet(onDismissRequest = {})
+        ReleaseNotesBottomSheet(
+            onDismissRequest = {},
+            allVersions = listOf(
+                sampleReleaseNoteVersion,
+                sampleReleaseNoteVersion.copy(versionName = "0.5.13", isCurrent = false),
+                sampleReleaseNoteVersion.copy(versionName = "0.3.13", isCurrent = false)
+            )
+        )
     }
 }
 
@@ -299,8 +347,59 @@ fun EditContainerScreenScreenshotTest() {
                 panel = panel,
                 allApps = sampleData.apps,
                 onDismiss = {},
-                onSave = {},
-                onDeletePanel = {}
+                onSave = {}
+            )
+        }
+    }
+}
+
+@PreviewTest
+@Preview(name = "Edit Container Horizontal Screen Flow", uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
+@Composable
+fun EditContainerHorizontalScreenScreenshotTest() {
+    val sampleData = createSampleHomeData()
+    val panel = ContainerModel(
+        id = "panel_horizontal_1",
+        title = "Favoritos Horizontal",
+        orientation = "Horizontal",
+        isBackgroundEnabled = true,
+        isGridFolderEnabled = true,
+        folders = sampleData.folders,
+        appPackageNames = sampleData.apps.take(3).map { it.packageName },
+        items = listOf(
+            ContainerItemEntity(
+                id = "item_f1",
+                panelId = "panel_horizontal_1",
+                itemType = ContainerItemType.FOLDER,
+                folderId = sampleData.folders.first().id,
+                orderIndex = 0
+            ),
+            ContainerItemEntity(
+                id = "item_a1",
+                panelId = "panel_horizontal_1",
+                itemType = ContainerItemType.APP,
+                packageName = sampleData.apps.first().packageName,
+                orderIndex = 1
+            ),
+            ContainerItemEntity(
+                id = "item_a2",
+                panelId = "panel_horizontal_1",
+                itemType = ContainerItemType.APP,
+                packageName = sampleData.apps.getOrNull(1)?.packageName ?: sampleData.apps.first().packageName,
+                orderIndex = 2
+            )
+        )
+    )
+    AureoleLauncherTheme {
+        CompositionLocalProvider(
+            LocalHomeUiState provides sampleData.uiState,
+            LocalHomeActions provides sampleData.actions
+        ) {
+            EditContainerScreen(
+                panel = panel,
+                allApps = sampleData.apps,
+                onDismiss = {},
+                onSave = {}
             )
         }
     }
@@ -310,6 +409,7 @@ fun EditContainerScreenScreenshotTest() {
 @Preview(name = "Edit Widget Group Screen Flow", uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
 @Composable
 fun EditWidgetGroupScreenScreenshotTest() {
+    val sampleData = createSampleHomeData()
     val item = LauncherItemState(
         id = "widget_group_1",
         type = LauncherItemType.WIDGET_LIST,
@@ -319,17 +419,22 @@ fun EditWidgetGroupScreenScreenshotTest() {
         rowSpan = 2
     )
     AureoleLauncherTheme {
-        EditWidgetGroupScreen(
-            item = item,
-            widgets = listOf(1, 2),
-            appWidgetHost = null,
-            isIndicatorEnabled = true,
-            onToggleIndicator = {},
-            onRemoveWidget = {},
-            onAddWidgetClick = {},
-            onDismissRequest = {},
-            onDeleteConfirm = {}
-        )
+        CompositionLocalProvider(LocalHomeUiState provides sampleData.uiState) {
+            EditWidgetGroupScreen(
+                params = EditWidgetGroupParams(
+                    item = item,
+                    widgets = listOf(1, 2),
+                    appWidgetHost = null,
+                    isIndicatorEnabled = true
+                ),
+                actions = EditWidgetGroupActions(
+                    onToggleIndicator = {},
+                    onRemoveWidget = {},
+                    onAddWidgetClick = {},
+                    onDismissRequest = {}
+                )
+            )
+        }
     }
 }
 

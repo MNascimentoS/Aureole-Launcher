@@ -3,23 +3,15 @@ package dev.mnascimentos.aureole.feature.home.widget
 import android.appwidget.AppWidgetHost
 import android.appwidget.AppWidgetHostView
 import android.appwidget.AppWidgetManager
-import android.appwidget.AppWidgetProviderInfo
-import android.content.Context
-import android.graphics.Color
-import android.os.Bundle
 import android.util.Log
-import android.view.Gravity
 import android.view.View
-import android.view.ViewGroup
-import android.widget.FrameLayout
-import android.widget.TextView
+import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.awaitEachGesture
 import androidx.compose.foundation.gestures.awaitFirstDown
 import androidx.compose.foundation.gestures.waitForUpOrCancellation
@@ -28,7 +20,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -38,7 +29,6 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
@@ -51,14 +41,11 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.rememberNestedScrollInteropConnection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
-import dev.chrisbanes.haze.HazeState
-import dev.chrisbanes.haze.HazeStyle
-import dev.chrisbanes.haze.HazeTint
-import dev.chrisbanes.haze.hazeEffect
-import dev.mnascimentos.aureole.core.designsystem.icons.Add
-import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
+import dev.mnascimentos.aureole.core.designsystem.utils.LocalAnimatedVisibilityScope
+import dev.mnascimentos.aureole.core.designsystem.utils.LocalSharedTransitionScope
 import dev.mnascimentos.aureole.feature.home.LocalHomeActions
 import dev.mnascimentos.aureole.feature.home.LocalHomeUiState
+import dev.mnascimentos.aureole.feature.home.model.getWidgetIdsForStack
 import dev.mnascimentos.aureole.feature.home.widget.model.PagerContentParams
 import dev.mnascimentos.aureole.feature.home.widget.model.StackedWidgetConfig
 import kotlinx.coroutines.delay
@@ -68,14 +55,6 @@ private const val COLOR_ANIMATION_DURATION_MS = 150
 private const val LONG_PRESS_MARGIN_MS = 50L
 private const val MIN_LONG_PRESS_TIMEOUT_MS = 200L
 
-private const val MAX_WIDGETS = 5
-private const val HAZE_MIN_ALPHA_ADD_BUTTON = 0.2f
-private const val HAZE_MAX_ALPHA_ADD_BUTTON = 0.95f
-private const val DEFAULT_HAZE_OPACITY = 0.5f
-private const val ADD_BUTTON_ALPHA = 0.4f
-private const val ADD_BUTTON_HAZE_ALPHA_FACTOR = 0.7f
-private const val WIDGET_NOT_AVAILABLE_TEXT = "Widget não disponível (Remova e adicione novamente)"
-
 @Composable
 fun StackedWidgetSection(
     config: StackedWidgetConfig,
@@ -84,8 +63,9 @@ fun StackedWidgetSection(
     stackId: String = "top_widgets"
 ) {
     val uiState = LocalHomeUiState.current
+    val widgetIds = uiState.getWidgetIdsForStack(stackId)
     val showAddButton = false
-    val pageCount = config.topWidgetIds.size
+    val pageCount = widgetIds.size
     val pagerState = rememberPagerState(pageCount = { pageCount })
 
     val showDotsForStack = uiState.widgetStackDots[stackId] ?: true
@@ -97,6 +77,7 @@ fun StackedWidgetSection(
     ) {
         StackedWidgetPagerContent(
             config = config,
+            widgetIds = widgetIds,
             appWidgetHost = appWidgetHost,
             stackId = stackId,
             params = PagerContentParams(
@@ -119,9 +100,11 @@ fun StackedWidgetSection(
     }
 }
 
+@Suppress("LongParameterList") // Reusable widget stack pager requires widget host, stack state and sizing parameters
 @Composable
 private fun StackedWidgetPagerContent(
     config: StackedWidgetConfig,
+    widgetIds: List<Int>,
     appWidgetHost: AppWidgetHost,
     stackId: String,
     params: PagerContentParams,
@@ -137,8 +120,8 @@ private fun StackedWidgetPagerContent(
             state = params.pagerState,
             modifier = modifier
         ) { page ->
-            if (page < config.topWidgetIds.size) {
-                val widgetId = config.topWidgetIds[page]
+            if (page < widgetIds.size) {
+                val widgetId = widgetIds[page]
                 WidgetHostItem(
                     widgetId = widgetId,
                     stackId = stackId,
@@ -147,7 +130,7 @@ private fun StackedWidgetPagerContent(
                 )
             } else if (showAddButton) {
                 AddWidgetButton(
-                    onClick = actions.onAddWidgetClick,
+                    onClick = { actions.onAddWidgetClick(stackId) },
                     modifier = Modifier.fillMaxSize(),
                     hazeState = config.hazeState,
                     isHazeEnabled = uiState.isHazeEnabled,
@@ -202,6 +185,7 @@ fun WidgetPositionIndicatorBar(
     }
 }
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 private fun WidgetHostItem(
     widgetId: Int,
@@ -212,10 +196,25 @@ private fun WidgetHostItem(
     val actions = LocalHomeActions.current
     val coroutineScope = rememberCoroutineScope()
 
+    val sharedTransitionScope = LocalSharedTransitionScope.current
+    val animatedVisibilityScope = LocalAnimatedVisibilityScope.current
+
+    val sharedModifier = if (sharedTransitionScope != null && animatedVisibilityScope != null) {
+        with(sharedTransitionScope) {
+            Modifier.sharedElement(
+                sharedContentState = rememberSharedContentState(key = "widget_$widgetId"),
+                animatedVisibilityScope = animatedVisibilityScope
+            )
+        }
+    } else {
+        Modifier
+    }
+
     Box(
         modifier = modifier
             .fillMaxSize()
             .clip(MaterialTheme.shapes.large)
+            .then(sharedModifier)
             .pointerInput(widgetId, stackId) {
                 val longPressTimeout = viewConfiguration.longPressTimeoutMillis
                 awaitEachGesture {
@@ -256,148 +255,6 @@ private fun updateWidgetHostView(view: View, widgetId: Int) {
         val appWidgetInfo = appWidgetManager.getAppWidgetInfo(widgetId)
         if (appWidgetInfo != null) {
             applyWidgetOptionsIfNeeded(view, widgetId, appWidgetManager, appWidgetInfo)
-        }
-    }
-}
-
-private fun applyWidgetOptionsIfNeeded(
-    view: AppWidgetHostView,
-    widgetId: Int,
-    appWidgetManager: AppWidgetManager,
-    appWidgetInfo: AppWidgetProviderInfo
-) {
-    val density = view.context.resources.displayMetrics.density
-    val measuredWidthDp = if (view.width > 0) {
-        (view.width / density).toInt()
-    } else {
-        view.context.resources.configuration.screenWidthDp
-    }
-    val measuredHeightDp = if (view.height > 0) {
-        (view.height / density).toInt()
-    } else {
-        appWidgetInfo.minHeight
-    }
-    val tagKey = "${measuredWidthDp}x$measuredHeightDp"
-    if (view.tag != tagKey) {
-        view.tag = tagKey
-        val options = Bundle().apply {
-            putInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH, appWidgetInfo.minWidth)
-            putInt(AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT, appWidgetInfo.minHeight)
-            putInt(
-                AppWidgetManager.OPTION_APPWIDGET_MAX_WIDTH,
-                measuredWidthDp.coerceAtLeast(appWidgetInfo.minWidth)
-            )
-            putInt(
-                AppWidgetManager.OPTION_APPWIDGET_MAX_HEIGHT,
-                measuredHeightDp.coerceAtLeast(appWidgetInfo.minHeight)
-            )
-        }
-        appWidgetManager.updateAppWidgetOptions(widgetId, options)
-    }
-}
-
-private fun createWidgetHostView(
-    context: Context,
-    appWidgetHost: AppWidgetHost,
-    widgetId: Int
-): View {
-    val appWidgetManager = AppWidgetManager.getInstance(context)
-    val appWidgetInfo = appWidgetManager.getAppWidgetInfo(widgetId)
-    return if (appWidgetInfo != null) {
-        try {
-            val displayMetrics = context.resources.displayMetrics
-            val widthDp = (displayMetrics.widthPixels / displayMetrics.density).toInt().coerceAtLeast(
-                appWidgetInfo.minWidth
-            )
-            val heightDp = (displayMetrics.heightPixels / displayMetrics.density).toInt().coerceAtLeast(
-                appWidgetInfo.minHeight
-            )
-            val options = Bundle().apply {
-                putInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH, appWidgetInfo.minWidth)
-                putInt(AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT, appWidgetInfo.minHeight)
-                putInt(AppWidgetManager.OPTION_APPWIDGET_MAX_WIDTH, widthDp)
-                putInt(AppWidgetManager.OPTION_APPWIDGET_MAX_HEIGHT, heightDp)
-            }
-            appWidgetManager.updateAppWidgetOptions(widgetId, options)
-            val hostView = appWidgetHost.createView(context, widgetId, appWidgetInfo)
-            hostView.layoutParams = FrameLayout.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.MATCH_PARENT
-            )
-            hostView
-        } catch (e: SecurityException) {
-            Log.e("WidgetHostItem", "Error creating widget view", e)
-            createErrorWidgetView(context, "Toque para reconfigurar widget")
-        } catch (e: IllegalArgumentException) {
-            Log.e("WidgetHostItem", "Error creating widget view", e)
-            createErrorWidgetView(context, "Toque para reconfigurar widget")
-        } catch (e: IllegalStateException) {
-            Log.e("WidgetHostItem", "Error creating widget view", e)
-            createErrorWidgetView(context, "Toque para reconfigurar widget")
-        }
-    } else {
-        createErrorWidgetView(context, WIDGET_NOT_AVAILABLE_TEXT)
-    }
-}
-
-private fun createErrorWidgetView(context: Context, message: String): TextView {
-    return TextView(context).apply {
-        text = message
-        setTextColor(Color.WHITE)
-        gravity = Gravity.CENTER
-    }
-}
-
-@Composable
-private fun AddWidgetButton(
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier,
-    hazeState: HazeState? = null,
-    isHazeEnabled: Boolean = false,
-    hazeOpacity: Float = DEFAULT_HAZE_OPACITY
-) {
-    val hazeModifier = if (isHazeEnabled && (hazeState != null)) {
-        Modifier.hazeEffect(
-            state = hazeState,
-            style = HazeStyle(
-                blurRadius = 24.dp,
-                tint = HazeTint(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = hazeOpacity))
-            )
-        ) {
-            blurEnabled = isHazeEnabled
-        }
-    } else {
-        Modifier
-    }
-
-    val buttonAlpha = if (isHazeEnabled) {
-        (hazeOpacity * ADD_BUTTON_HAZE_ALPHA_FACTOR).coerceIn(
-            HAZE_MIN_ALPHA_ADD_BUTTON,
-            HAZE_MAX_ALPHA_ADD_BUTTON
-        )
-    } else {
-        ADD_BUTTON_ALPHA
-    }
-
-    Box(
-        modifier = modifier
-            .fillMaxHeight()
-            .clip(MaterialTheme.shapes.large)
-            .then(hazeModifier)
-            .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = buttonAlpha))
-            .clickable(onClick = onClick),
-        contentAlignment = Alignment.Center
-    ) {
-        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            AureoleDS.icons.Add(
-                tint = MaterialTheme.colorScheme.primary,
-                modifier = Modifier.padding(bottom = 8.dp)
-            )
-            Text(
-                text = "Adicionar Widget",
-                color = MaterialTheme.colorScheme.primary,
-                style = MaterialTheme.typography.labelLarge
-            )
         }
     }
 }

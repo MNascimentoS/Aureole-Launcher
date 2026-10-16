@@ -2,6 +2,7 @@ package dev.mnascimentos.aureole.core.data.db
 
 import android.content.ContentValues
 import android.content.Context
+import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import dev.mnascimentos.aureole.core.data.model.ContainerEntity
@@ -70,7 +71,7 @@ class ContainerDatabaseHelper(context: Context) : SQLiteOpenHelper(
                 return
             }
         }
-        if (oldVersion < 3) {
+        if (oldVersion < DATABASE_VERSION) {
             try {
                 db.execSQL("ALTER TABLE containers ADD COLUMN hide_text INTEGER NOT NULL DEFAULT 0")
                 db.execSQL("ALTER TABLE containers ADD COLUMN text_color INTEGER")
@@ -98,106 +99,9 @@ class ContainerDatabaseHelper(context: Context) : SQLiteOpenHelper(
     fun getAllContainers(): List<ContainerEntity> {
         val result = mutableListOf<ContainerEntity>()
         val db = readableDatabase
-
-        val cursor = db.query(
-            "containers",
-            null,
-            null,
-            null,
-            null,
-            null,
-            "created_at ASC"
-        )
-
-        cursor.use { c ->
+        db.query("containers", null, null, null, null, null, "created_at ASC").use { c ->
             while (c.moveToNext()) {
-                val id = c.getString(c.getColumnIndexOrThrow("id"))
-                val title = c.getString(c.getColumnIndexOrThrow("title"))
-                val position = c.getString(c.getColumnIndexOrThrow("position"))
-                val orientationIdx = c.getColumnIndex("orientation")
-                val orientation = if (orientationIdx != -1) c.getString(orientationIdx) else "Vertical"
-                val isBackgroundEnabled = c.getInt(c.getColumnIndexOrThrow("is_background_enabled")) == 1
-                val isExpandCell = c.getInt(c.getColumnIndexOrThrow("is_expand_cell")) == 1
-                val showAddFolderButton = c.getInt(c.getColumnIndexOrThrow("show_add_folder_button")) == 1
-                val showFolderLabels = c.getInt(c.getColumnIndexOrThrow("show_folder_labels")) == 1
-                val isGridFolderEnabled = c.getInt(c.getColumnIndexOrThrow("is_grid_folder_enabled")) == 1
-
-                val hideTextIdx = c.getColumnIndex("hide_text")
-                val hideText = if (hideTextIdx != -1) c.getInt(hideTextIdx) == 1 else false
-
-                val textColorIdx = c.getColumnIndex("text_color")
-                val textColor = if (textColorIdx != -1 && !c.isNull(textColorIdx)) c.getLong(textColorIdx) else null
-
-                val bgColorIdx = c.getColumnIndex("background_color")
-                val backgroundColor = if (bgColorIdx != -1 && !c.isNull(bgColorIdx)) c.getLong(bgColorIdx) else null
-
-                val strokeEnabledIdx = c.getColumnIndex("stroke_enabled")
-                val strokeEnabled = if (strokeEnabledIdx != -1) c.getInt(strokeEnabledIdx) == 1 else false
-
-                val strokeColorIdx = c.getColumnIndex("stroke_color")
-                val strokeColor = if (strokeColorIdx != -1 && !c.isNull(strokeColorIdx)) {
-                    c.getLong(
-                        strokeColorIdx
-                    )
-                } else {
-                    null
-                }
-
-                val folderColorIdx = c.getColumnIndex("folder_color")
-                val folderColor = if (folderColorIdx != -1 && !c.isNull(folderColorIdx)) {
-                    c.getLong(
-                        folderColorIdx
-                    )
-                } else {
-                    null
-                }
-
-                val folderStrokeEnabledIdx = c.getColumnIndex("folder_stroke_enabled")
-                val folderStrokeEnabled = if (folderStrokeEnabledIdx != -1) c.getInt(folderStrokeEnabledIdx) == 1 else false
-
-                val scrollUpShortcutIdx = c.getColumnIndex("scroll_up_shortcut")
-                val scrollUpShortcut = if (scrollUpShortcutIdx != -1 && !c.isNull(scrollUpShortcutIdx)) {
-                    c.getString(
-                        scrollUpShortcutIdx
-                    )
-                } else {
-                    null
-                }
-
-                val scrollDownShortcutIdx = c.getColumnIndex("scroll_down_shortcut")
-                val scrollDownShortcut = if (scrollDownShortcutIdx != -1 && !c.isNull(scrollDownShortcutIdx)) {
-                    c.getString(
-                        scrollDownShortcutIdx
-                    )
-                } else {
-                    null
-                }
-
-                val createdAt = c.getLong(c.getColumnIndexOrThrow("created_at"))
-
-                result.add(
-                    ContainerEntity(
-                        id = id,
-                        title = title,
-                        position = position,
-                        orientation = orientation,
-                        isBackgroundEnabled = isBackgroundEnabled,
-                        isExpandCell = isExpandCell,
-                        showAddFolderButton = showAddFolderButton,
-                        showFolderLabels = showFolderLabels,
-                        isGridFolderEnabled = isGridFolderEnabled,
-                        hideText = hideText,
-                        textColor = textColor,
-                        backgroundColor = backgroundColor,
-                        strokeEnabled = strokeEnabled,
-                        strokeColor = strokeColor,
-                        folderColor = folderColor,
-                        folderStrokeEnabled = folderStrokeEnabled,
-                        scrollUpShortcut = scrollUpShortcut,
-                        scrollDownShortcut = scrollDownShortcut,
-                        createdAt = createdAt
-                    )
-                )
+                result.add(c.readContainerEntity())
             }
         }
         return result
@@ -205,103 +109,9 @@ class ContainerDatabaseHelper(context: Context) : SQLiteOpenHelper(
 
     fun getContainer(panelId: String): ContainerEntity? {
         val db = readableDatabase
-        val cursor = db.query(
-            "containers",
-            null,
-            "id = ?",
-            arrayOf(panelId),
-            null,
-            null,
-            null
-        )
-
-        cursor.use { c ->
+        db.query("containers", null, "id = ?", arrayOf(panelId), null, null, null).use { c ->
             if (c.moveToFirst()) {
-                val id = c.getString(c.getColumnIndexOrThrow("id"))
-                val title = c.getString(c.getColumnIndexOrThrow("title"))
-                val position = c.getString(c.getColumnIndexOrThrow("position"))
-                val orientationIdx = c.getColumnIndex("orientation")
-                val orientation = if (orientationIdx != -1) c.getString(orientationIdx) else "Vertical"
-                val isBackgroundEnabled = c.getInt(c.getColumnIndexOrThrow("is_background_enabled")) == 1
-                val isExpandCell = c.getInt(c.getColumnIndexOrThrow("is_expand_cell")) == 1
-                val showAddFolderButton = c.getInt(c.getColumnIndexOrThrow("show_add_folder_button")) == 1
-                val showFolderLabels = c.getInt(c.getColumnIndexOrThrow("show_folder_labels")) == 1
-                val isGridFolderEnabled = c.getInt(c.getColumnIndexOrThrow("is_grid_folder_enabled")) == 1
-
-                val hideTextIdx = c.getColumnIndex("hide_text")
-                val hideText = if (hideTextIdx != -1) c.getInt(hideTextIdx) == 1 else false
-
-                val textColorIdx = c.getColumnIndex("text_color")
-                val textColor = if (textColorIdx != -1 && !c.isNull(textColorIdx)) c.getLong(textColorIdx) else null
-
-                val bgColorIdx = c.getColumnIndex("background_color")
-                val backgroundColor = if (bgColorIdx != -1 && !c.isNull(bgColorIdx)) c.getLong(bgColorIdx) else null
-
-                val strokeEnabledIdx = c.getColumnIndex("stroke_enabled")
-                val strokeEnabled = if (strokeEnabledIdx != -1) c.getInt(strokeEnabledIdx) == 1 else false
-
-                val strokeColorIdx = c.getColumnIndex("stroke_color")
-                val strokeColor = if (strokeColorIdx != -1 && !c.isNull(strokeColorIdx)) {
-                    c.getLong(
-                        strokeColorIdx
-                    )
-                } else {
-                    null
-                }
-
-                val folderColorIdx = c.getColumnIndex("folder_color")
-                val folderColor = if (folderColorIdx != -1 && !c.isNull(folderColorIdx)) {
-                    c.getLong(
-                        folderColorIdx
-                    )
-                } else {
-                    null
-                }
-
-                val folderStrokeEnabledIdx = c.getColumnIndex("folder_stroke_enabled")
-                val folderStrokeEnabled = if (folderStrokeEnabledIdx != -1) c.getInt(folderStrokeEnabledIdx) == 1 else false
-
-                val scrollUpShortcutIdx = c.getColumnIndex("scroll_up_shortcut")
-                val scrollUpShortcut = if (scrollUpShortcutIdx != -1 && !c.isNull(scrollUpShortcutIdx)) {
-                    c.getString(
-                        scrollUpShortcutIdx
-                    )
-                } else {
-                    null
-                }
-
-                val scrollDownShortcutIdx = c.getColumnIndex("scroll_down_shortcut")
-                val scrollDownShortcut = if (scrollDownShortcutIdx != -1 && !c.isNull(scrollDownShortcutIdx)) {
-                    c.getString(
-                        scrollDownShortcutIdx
-                    )
-                } else {
-                    null
-                }
-
-                val createdAt = c.getLong(c.getColumnIndexOrThrow("created_at"))
-
-                return ContainerEntity(
-                    id = id,
-                    title = title,
-                    position = position,
-                    orientation = orientation,
-                    isBackgroundEnabled = isBackgroundEnabled,
-                    isExpandCell = isExpandCell,
-                    showAddFolderButton = showAddFolderButton,
-                    showFolderLabels = showFolderLabels,
-                    isGridFolderEnabled = isGridFolderEnabled,
-                    hideText = hideText,
-                    textColor = textColor,
-                    backgroundColor = backgroundColor,
-                    strokeEnabled = strokeEnabled,
-                    strokeColor = strokeColor,
-                    folderColor = folderColor,
-                    folderStrokeEnabled = folderStrokeEnabled,
-                    scrollUpShortcut = scrollUpShortcut,
-                    scrollDownShortcut = scrollDownShortcut,
-                    createdAt = createdAt
-                )
+                return c.readContainerEntity()
             }
         }
         return null
@@ -309,28 +119,7 @@ class ContainerDatabaseHelper(context: Context) : SQLiteOpenHelper(
 
     fun insertOrUpdateContainer(panel: ContainerEntity) {
         val db = writableDatabase
-        val values = ContentValues().apply {
-            put("id", panel.id)
-            put("title", panel.title)
-            put("position", panel.position)
-            put("orientation", panel.orientation)
-            put("is_background_enabled", if (panel.isBackgroundEnabled) 1 else 0)
-            put("is_expand_cell", if (panel.isExpandCell) 1 else 0)
-            put("show_add_folder_button", if (panel.showAddFolderButton) 1 else 0)
-            put("show_folder_labels", if (panel.showFolderLabels) 1 else 0)
-            put("is_grid_folder_enabled", if (panel.isGridFolderEnabled) 1 else 0)
-            put("hide_text", if (panel.hideText) 1 else 0)
-            panel.textColor?.let { put("text_color", it) } ?: putNull("text_color")
-            panel.backgroundColor?.let { put("background_color", it) } ?: putNull("background_color")
-            put("stroke_enabled", if (panel.strokeEnabled) 1 else 0)
-            panel.strokeColor?.let { put("stroke_color", it) } ?: putNull("stroke_color")
-            panel.folderColor?.let { put("folder_color", it) } ?: putNull("folder_color")
-            put("folder_stroke_enabled", if (panel.folderStrokeEnabled) 1 else 0)
-            panel.scrollUpShortcut?.let { put("scroll_up_shortcut", it) } ?: putNull("scroll_up_shortcut")
-            panel.scrollDownShortcut?.let { put("scroll_down_shortcut", it) } ?: putNull("scroll_down_shortcut")
-            put("created_at", panel.createdAt)
-        }
-        db.insertWithOnConflict("containers", null, values, SQLiteDatabase.CONFLICT_REPLACE)
+        db.insertWithOnConflict("containers", null, panel.toContentValues(), SQLiteDatabase.CONFLICT_REPLACE)
     }
 
     fun deleteContainer(panelId: String) {
@@ -405,3 +194,68 @@ class ContainerDatabaseHelper(context: Context) : SQLiteOpenHelper(
         private const val DATABASE_VERSION = 3
     }
 }
+
+private fun Cursor.readContainerEntity(): ContainerEntity {
+    return ContainerEntity(
+        id = getString(getColumnIndexOrThrow("id")),
+        title = getString(getColumnIndexOrThrow("title")),
+        position = getString(getColumnIndexOrThrow("position")),
+        orientation = optString("orientation") ?: "Vertical",
+        isBackgroundEnabled = optBoolean("is_background_enabled", true),
+        isExpandCell = optBoolean("is_expand_cell"),
+        showAddFolderButton = optBoolean("show_add_folder_button", true),
+        showFolderLabels = optBoolean("show_folder_labels"),
+        isGridFolderEnabled = optBoolean("is_grid_folder_enabled"),
+        hideText = optBoolean("hide_text"),
+        textColor = optLong("text_color"),
+        backgroundColor = optLong("background_color"),
+        strokeEnabled = optBoolean("stroke_enabled"),
+        strokeColor = optLong("stroke_color"),
+        folderColor = optLong("folder_color"),
+        folderStrokeEnabled = optBoolean("folder_stroke_enabled"),
+        scrollUpShortcut = optString("scroll_up_shortcut"),
+        scrollDownShortcut = optString("scroll_down_shortcut"),
+        createdAt = getLong(getColumnIndexOrThrow("created_at"))
+    )
+}
+
+private fun Cursor.optBoolean(column: String, default: Boolean = false): Boolean {
+    val idx = getColumnIndex(column)
+    return if (idx != -1) getInt(idx) == 1 else default
+}
+
+private fun Cursor.optLong(column: String): Long? {
+    val idx = getColumnIndex(column)
+    return if (idx != -1 && !isNull(idx)) getLong(idx) else null
+}
+
+private fun Cursor.optString(column: String): String? {
+    val idx = getColumnIndex(column)
+    return if (idx != -1 && !isNull(idx)) getString(idx) else null
+}
+
+private fun ContainerEntity.toContentValues(): ContentValues {
+    return ContentValues().apply {
+        put("id", id)
+        put("title", title)
+        put("position", position)
+        put("orientation", orientation)
+        put("is_background_enabled", isBackgroundEnabled.toBit())
+        put("is_expand_cell", isExpandCell.toBit())
+        put("show_add_folder_button", showAddFolderButton.toBit())
+        put("show_folder_labels", showFolderLabels.toBit())
+        put("is_grid_folder_enabled", isGridFolderEnabled.toBit())
+        put("hide_text", hideText.toBit())
+        put("stroke_enabled", strokeEnabled.toBit())
+        put("folder_stroke_enabled", folderStrokeEnabled.toBit())
+        put("created_at", createdAt)
+        textColor?.let { put("text_color", it) } ?: putNull("text_color")
+        backgroundColor?.let { put("background_color", it) } ?: putNull("background_color")
+        strokeColor?.let { put("stroke_color", it) } ?: putNull("stroke_color")
+        folderColor?.let { put("folder_color", it) } ?: putNull("folder_color")
+        scrollUpShortcut?.let { put("scroll_up_shortcut", it) } ?: putNull("scroll_up_shortcut")
+        scrollDownShortcut?.let { put("scroll_down_shortcut", it) } ?: putNull("scroll_down_shortcut")
+    }
+}
+
+private fun Boolean.toBit(): Int = if (this) 1 else 0

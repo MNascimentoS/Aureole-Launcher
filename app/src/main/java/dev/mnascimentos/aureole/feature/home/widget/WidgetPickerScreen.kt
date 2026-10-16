@@ -12,16 +12,12 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -37,11 +33,11 @@ import dev.chrisbanes.haze.HazeState
 import dev.chrisbanes.haze.HazeStyle
 import dev.chrisbanes.haze.HazeTint
 import dev.chrisbanes.haze.hazeEffect
-import dev.mnascimentos.aureole.core.designsystem.icons.Search
-import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
+import dev.mnascimentos.aureole.feature.home.LocalHomeUiState
+import dev.mnascimentos.aureole.feature.home.model.MainUiState
 import dev.mnascimentos.aureole.feature.home.widget.model.WidgetAppGroup
 import dev.mnascimentos.aureole.feature.home.widget.model.WidgetSelectorIntent
 import dev.mnascimentos.aureole.feature.home.widget.model.WidgetSelectorState
@@ -203,8 +199,7 @@ fun WidgetPickerScreen(
 
     WidgetSelectorScreen(
         state = state,
-        isBlurEnabled = isBlurEnabled,
-        hazeState = hazeState,
+        hazeState = if (isBlurEnabled) hazeState else null,
         onIntent = { viewModel.processIntent(it) },
         onWidgetSelected = onWidgetSelected,
         onDismiss = onDismiss
@@ -215,13 +210,12 @@ fun WidgetPickerScreen(
 @Composable
 fun WidgetSelectorScreen(
     state: WidgetSelectorState,
-    isBlurEnabled: Boolean = true,
     hazeState: HazeState? = null,
     onIntent: (WidgetSelectorIntent) -> Unit,
     onWidgetSelected: (AppWidgetProviderInfo) -> Unit,
     onDismiss: () -> Unit
 ) {
-    val hazeModifier = if (isBlurEnabled && hazeState != null) {
+    val hazeModifier = if (hazeState != null) {
         Modifier.hazeEffect(
             state = hazeState,
             style = HazeStyle(
@@ -235,7 +229,7 @@ fun WidgetSelectorScreen(
         Modifier
     }
 
-    val backgroundColor = if (isBlurEnabled && hazeState != null) {
+    val backgroundColor = if (hazeState != null) {
         Color.Transparent
     } else {
         AureoleTheme.colors.background
@@ -280,43 +274,41 @@ fun WidgetSelectorScreen(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-private fun WidgetSearchBar(
-    state: WidgetSelectorState,
-    onIntent: (WidgetSelectorIntent) -> Unit
-) {
-    OutlinedTextField(
-        value = state.searchQuery,
-        onValueChange = { onIntent(WidgetSelectorIntent.SearchQueryChanged(it)) },
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(16.dp),
-        placeholder = { Text("Pesquisar widgets...") },
-        leadingIcon = { AureoleDS.icons.Search() },
-        shape = RoundedCornerShape(24.dp),
-        singleLine = true,
-        colors = TextFieldDefaults.colors(
-            unfocusedIndicatorColor = MaterialTheme.colorScheme.outline.copy(alpha = 0.3f),
-            unfocusedContainerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f)
-        )
-    )
-}
-
 @AureolePreview
 @Composable
 fun WidgetSelectorScreenPreview() {
+    val sampleWidgetGroup = WidgetAppGroup(
+        appId = "com.example.calendar",
+        appName = "Calendar",
+        availableWidgets = listOf(
+            WidgetVariant(
+                widgetId = "calendar_1",
+                title = "Month View",
+                minSpanX = 2,
+                minSpanY = 2
+            ),
+            WidgetVariant(
+                widgetId = "calendar_2",
+                title = "Agenda View",
+                minSpanX = 4,
+                minSpanY = 2
+            )
+        )
+    )
     val sampleState = WidgetSelectorState(
         isLoading = false,
         searchQuery = "",
-        widgetGroups = emptyList()
+        widgetGroups = listOf(sampleWidgetGroup),
+        expandedAppIds = setOf("com.example.calendar")
     )
     AureoleLauncherTheme {
-        WidgetSelectorScreen(
-            state = sampleState,
-            onIntent = {},
-            onWidgetSelected = {},
-            onDismiss = {}
-        )
+        CompositionLocalProvider(LocalHomeUiState provides MainUiState()) {
+            WidgetSelectorScreen(
+                state = sampleState,
+                onIntent = {},
+                onWidgetSelected = {},
+                onDismiss = {}
+            )
+        }
     }
 }

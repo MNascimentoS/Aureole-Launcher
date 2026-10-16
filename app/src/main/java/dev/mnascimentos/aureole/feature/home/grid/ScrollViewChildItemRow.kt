@@ -156,59 +156,52 @@ private fun ScrollViewChildReorderAndResizeControls(
     params: ScrollViewChildParams,
     actions: HomeScreenActions
 ) {
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween
-    ) {
-        ScrollViewChildReorderControls(params = params, actions = actions)
-        ScrollViewChildResizeControls(params = params, actions = actions)
-    }
-}
-
-@Composable
-private fun ScrollViewChildReorderControls(
-    params: ScrollViewChildParams,
-    actions: HomeScreenActions
-) {
     val childIndex = params.childIndex
     val totalChildren = params.totalChildren
     val child = params.child
     val parentId = params.parentId
 
     Row(
+        modifier = Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(4.dp)
+        horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        IconButton(
-            onClick = { actions.onMoveChildInScrollView(parentId, child.id, true) },
-            enabled = (childIndex > 0),
-            modifier = Modifier.size(28.dp)
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(4.dp)
         ) {
-            AureoleDS.icons.ArrowUp(
-                tint = if (childIndex > 0) {
-                    AureoleTheme.colors.onSurfaceHigh
-                } else {
-                    AureoleTheme.colors.onSurfaceMedium.copy(alpha = 0.4f)
-                },
-                modifier = Modifier.size(16.dp)
-            )
+            IconButton(
+                onClick = { actions.onMoveChildInScrollView(parentId, child.id, true) },
+                enabled = (childIndex > 0),
+                modifier = Modifier.size(28.dp)
+            ) {
+                AureoleDS.icons.ArrowUp(
+                    tint = if (childIndex > 0) {
+                        AureoleTheme.colors.onSurfaceHigh
+                    } else {
+                        AureoleTheme.colors.onSurfaceMedium.copy(alpha = 0.4f)
+                    },
+                    modifier = Modifier.size(16.dp)
+                )
+            }
+
+            IconButton(
+                onClick = { actions.onMoveChildInScrollView(parentId, child.id, false) },
+                enabled = (childIndex < totalChildren - 1),
+                modifier = Modifier.size(28.dp)
+            ) {
+                AureoleDS.icons.ArrowDown(
+                    tint = if (childIndex < totalChildren - 1) {
+                        AureoleTheme.colors.onSurfaceHigh
+                    } else {
+                        AureoleTheme.colors.onSurfaceMedium.copy(alpha = 0.4f)
+                    },
+                    modifier = Modifier.size(16.dp)
+                )
+            }
         }
 
-        IconButton(
-            onClick = { actions.onMoveChildInScrollView(parentId, child.id, false) },
-            enabled = (childIndex < totalChildren - 1),
-            modifier = Modifier.size(28.dp)
-        ) {
-            AureoleDS.icons.ArrowDown(
-                tint = if (childIndex < totalChildren - 1) {
-                    AureoleTheme.colors.onSurfaceHigh
-                } else {
-                    AureoleTheme.colors.onSurfaceMedium.copy(alpha = 0.4f)
-                },
-                modifier = Modifier.size(16.dp)
-            )
-        }
+        ScrollViewChildResizeControls(params = params, actions = actions)
     }
 }
 
@@ -218,7 +211,6 @@ private fun ScrollViewChildResizeControls(
     actions: HomeScreenActions
 ) {
     val child = params.child
-    val parentId = params.parentId
     val isVertical = params.isVertical
     val spanVal = if (isVertical) child.rowSpan else child.colSpan
 
@@ -230,23 +222,7 @@ private fun ScrollViewChildResizeControls(
             .padding(horizontal = 6.dp, vertical = 2.dp)
     ) {
         IconButton(
-            onClick = {
-                if (isVertical) {
-                    actions.onResizeChildInScrollView(
-                        parentId,
-                        child.id,
-                        child.colSpan,
-                        (child.rowSpan - 1).coerceAtLeast(1)
-                    )
-                } else {
-                    actions.onResizeChildInScrollView(
-                        parentId,
-                        child.id,
-                        (child.colSpan - 1).coerceAtLeast(1),
-                        child.rowSpan
-                    )
-                }
-            },
+            onClick = { adjustChildSpan(params, actions, -1) },
             modifier = Modifier.size(28.dp)
         ) {
             AureoleText(
@@ -266,13 +242,7 @@ private fun ScrollViewChildResizeControls(
         )
 
         IconButton(
-            onClick = {
-                if (isVertical) {
-                    actions.onResizeChildInScrollView(parentId, child.id, child.colSpan, child.rowSpan + 1)
-                } else {
-                    actions.onResizeChildInScrollView(parentId, child.id, child.colSpan + 1, child.rowSpan)
-                }
-            },
+            onClick = { adjustChildSpan(params, actions, 1) },
             modifier = Modifier.size(28.dp)
         ) {
             AureoleText(
@@ -282,6 +252,18 @@ private fun ScrollViewChildResizeControls(
                 color = AureoleTheme.colors.onSurfaceHigh
             )
         }
+    }
+}
+
+private fun adjustChildSpan(params: ScrollViewChildParams, actions: HomeScreenActions, delta: Int) {
+    val child = params.child
+    val parentId = params.parentId
+    if (params.isVertical) {
+        val newSpan = (child.rowSpan + delta).coerceAtLeast(1)
+        actions.onResizeChildInScrollView(parentId, child.id, child.colSpan, newSpan)
+    } else {
+        val newSpan = (child.colSpan + delta).coerceAtLeast(1)
+        actions.onResizeChildInScrollView(parentId, child.id, newSpan, child.rowSpan)
     }
 }
 

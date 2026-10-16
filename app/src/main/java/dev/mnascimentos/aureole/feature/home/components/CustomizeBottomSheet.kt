@@ -187,7 +187,7 @@ fun CustomizeBottomSheetPreview() {
     val actions = HomeScreenActions(
         onWidgetRowHeightChanged = {},
         onAddWidgetClick = {},
-        onRemoveWidgetClick = {},
+        onRemoveWidgetClick = { _, _ -> },
         onAppClick = {},
         onExpandNotificationShade = {},
         onFolderIntent = {},

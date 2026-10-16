@@ -1,12 +1,14 @@
 package dev.mnascimentos.aureole.core.designsystem.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -18,6 +20,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -27,6 +30,7 @@ import androidx.compose.ui.window.DialogProperties
 import dev.mnascimentos.aureole.core.designsystem.icons.Logo
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleTheme
+import dev.mnascimentos.aureole.feature.home.LocalHomeActions
 
 private const val DIALOG_WIDTH_FRACTION = 0.92f
 
@@ -38,13 +42,7 @@ fun AureoleDialog(
     icon: @Composable ((Modifier) -> Unit)? = null,
     content: @Composable ColumnScope.() -> Unit
 ) {
-    Dialog(
-        onDismissRequest = onDismissRequest,
-        properties = DialogProperties(
-            dismissOnBackPress = true,
-            dismissOnClickOutside = true
-        )
-    ) {
+    val dialogContent = @Composable {
         Surface(
             modifier = modifier
                 .fillMaxWidth(DIALOG_WIDTH_FRACTION)
@@ -69,6 +67,25 @@ fun AureoleDialog(
                     content()
                 }
             }
+        }
+    }
+
+    if (LocalInspectionMode.current) {
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ) {
+            dialogContent()
+        }
+    } else {
+        Dialog(
+            onDismissRequest = onDismissRequest,
+            properties = DialogProperties(
+                dismissOnBackPress = true,
+                dismissOnClickOutside = true
+            )
+        ) {
+            dialogContent()
         }
     }
 }
@@ -108,11 +125,14 @@ fun AureoleDialogHeader(
             )
         }
 
+        val homeActions = LocalHomeActions.current
         Box(
             modifier = Modifier
                 .align(Alignment.CenterEnd)
                 .padding(end = AureoleDS.dimens.xSmall)
-                .size(AureoleDS.dimens.xLarge),
+                .size(AureoleDS.dimens.xLarge)
+                .clip(RoundedCornerShape(AureoleDS.dimens.radiusMedium))
+                .clickable { homeActions.onSettingsClick() },
             contentAlignment = Alignment.Center
         ) {
             AureoleDS.icons.Logo(

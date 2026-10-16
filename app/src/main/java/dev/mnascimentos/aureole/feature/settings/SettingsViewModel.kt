@@ -10,6 +10,7 @@ import androidx.lifecycle.viewModelScope
 import dev.mnascimentos.aureole.core.data.model.AppFolder
 import dev.mnascimentos.aureole.core.data.repository.AppRepository
 import dev.mnascimentos.aureole.core.data.repository.FolderRepository
+import dev.mnascimentos.aureole.core.data.repository.GridRepository
 import dev.mnascimentos.aureole.core.data.repository.SettingsRepository
 import dev.mnascimentos.aureole.feature.settings.extensions.SettingsToggleManager
 import dev.mnascimentos.aureole.feature.settings.extensions.applySettingValue
@@ -62,11 +63,13 @@ enum class SettingsDialog {
 }
 
 @Suppress("TooManyFunctions")
-class SettingsViewModel(application: Application) : AndroidViewModel(application) {
-
-    internal val settingsRepository = SettingsRepository(application)
-    private val appRepository = AppRepository(application)
-    private val folderRepository = FolderRepository(application)
+class SettingsViewModel(
+    application: Application,
+    internal val settingsRepository: SettingsRepository,
+    private val appRepository: AppRepository,
+    private val folderRepository: FolderRepository,
+    internal val gridRepository: GridRepository,
+) : AndroidViewModel(application) {
 
     private val _uiState = MutableStateFlow(SettingsUiState())
     val uiState: StateFlow<SettingsUiState> = _uiState.asStateFlow()
@@ -148,7 +151,7 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
         applySettingValue(value)
     }
 
-    @Suppress("MagicNumber")
+    @Suppress("MagicNumber") // Header offset clamping limit of 60 percent
     fun setHeaderOffsetPercent(percent: Int) {
         val clamped = percent.coerceIn(0, 60)
         settingsRepository.headerOffsetPercent = clamped

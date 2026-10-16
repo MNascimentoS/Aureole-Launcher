@@ -8,6 +8,7 @@ import dev.mnascimentos.aureole.core.data.repository.AppRepository
 import dev.mnascimentos.aureole.core.data.repository.ContainerRepository
 import dev.mnascimentos.aureole.core.data.repository.FavoriteContainerRepository
 import dev.mnascimentos.aureole.core.data.repository.FolderRepository
+import dev.mnascimentos.aureole.core.data.repository.GridRepository
 import dev.mnascimentos.aureole.core.data.repository.SettingsRepository
 import dev.mnascimentos.aureole.core.data.repository.WidgetRepository
 import dev.mnascimentos.aureole.feature.home.extensions.loadContainers
@@ -21,14 +22,17 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class HomeViewModel(application: Application) : AndroidViewModel(application) {
-
-    internal val appRepository = AppRepository(application)
-    internal val widgetRepository = WidgetRepository(application)
-    internal val settingsRepository = SettingsRepository(application)
-    internal val folderRepository = FolderRepository(application)
-    internal val favoriteContainerRepository = FavoriteContainerRepository(application)
-    internal val containerRepository = ContainerRepository(application)
+@Suppress("LongParameterList") // Primary ViewModel requiring dependencies for launcher state management
+class HomeViewModel(
+    application: Application,
+    internal val appRepository: AppRepository,
+    internal val widgetRepository: WidgetRepository,
+    internal val settingsRepository: SettingsRepository,
+    internal val folderRepository: FolderRepository,
+    internal val favoriteContainerRepository: FavoriteContainerRepository,
+    internal val containerRepository: ContainerRepository,
+    internal val gridRepository: GridRepository,
+) : AndroidViewModel(application) {
 
     private val _uiState = MutableStateFlow(MainUiState())
     val uiState: StateFlow<MainUiState> = _uiState.asStateFlow()
@@ -48,9 +52,9 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
     init {
         loadSettings()
         observeAppsFlow()
-        loadWidgetSettings()
         loadGridItems()
         loadContainers()
+        loadWidgetSettings()
         syncApps()
     }
 

@@ -12,8 +12,8 @@ Um launcher Android moderno, fluido e personalizável desenvolvido 100% em **Jet
 - ⚡ **Painéis Laterais & Organização**: Painéis laterais de acesso rápido com pastas integradas, ícones de pasta personalizados, exibição em lista ou grade, e posicionamento flexível à esquerda ou direita.
 - 🔤 **Gaveta de Apps & Seletor Curvo**: Gaveta de aplicativos rápida com busca instantânea e barra alfabética curva para navegação ágil entre os aplicativos instalados.
 - 🧩 **Sistema de Widgets**: Host `AppWidget` nativo do Android totalmente integrado, com seletor de widgets, redimensionamento, suporte a pilha de widgets e menus pop-up.
-- ⚙️ **Configurações Extensas**: Personalização detalhada sobre comportamento, aparência, gestos, listas de apps, papéis de parede dinâmicos e opções de privacidade/analytics.
-- 🔄 **In-App Updates**: Suporte integrado para In-App Updates da Google Play e integração com Firebase Crashlytics e Analytics.
+- ⚙️ **Configurações Extensas**: Personalização detalhada sobre comportamento, aparência, gestos, listas de apps e papéis de parede dinâmicos.
+- 🔄 **In-App Updates**: Suporte integrado para In-App Updates da Google Play e integração com Firebase Crashlytics.
 
 ---
 
@@ -26,6 +26,7 @@ Um launcher Android moderno, fluido e personalizável desenvolvido 100% em **Jet
 - **Programação Assíncrona:** Kotlin Coroutines & `StateFlow` / `SharedFlow`
 - **Efeitos Visuais & Blur:** [Haze](https://github.com/chrisbanes/haze) & Haze Materials
 - **Carregamento de Imagens:** [Coil](https://coil-kt.github.io/coil/)
+- **Injeção de Dependência:** [Koin](https://insert-koin.io/) (v4.x)
 - **Qualidade de Código & Análise Estática:** [Detekt](https://detekt.dev/) (`maxIssues: 0` obrigatório)
 - **Testes:** JUnit, Robolectric, Compose UI Test, Compose Screenshot Testing, JaCoCo
 - **CI/CD:** GitHub Actions & Fastlane (Distribuição Interna na Google Play)
@@ -49,14 +50,15 @@ Para regras detalhadas sobre a arquitetura, consulte o arquivo [ARCHITECTURE.md]
 
 ```text
 dev.mnascimentos.aureole/
+├── AureoleApplication.kt          # Application customizada & inicialização do Koin
 ├── MainActivity.kt                # Activity principal & inicialização do ciclo de vida
 ├── HomeActionsFactory.kt          # Fábrica de ações da UI para a tela principal
 ├── composable/                    # Componentes reutilizáveis do Design System
 ├── core/
-│   ├── analytics/                 # Auxiliares do Firebase / Analytics
 │   ├── data/                      # Room DB, DAOs, entidades, receivers e repositórios
 │   ├── designsystem/              # Temas (AureoleTheme), paletas, ícones e utilitários Haze
 │   └── lifecycle/                 # Observadores de ciclo de vida (Widgets e Updates)
+├── di/                            # Módulos de Injeção de Dependência (Koin)
 └── feature/
     ├── home/                      # Tela inicial, engine de grade, painéis laterais, pastas e widgets
     └── settings/                  # Preferências do launcher (Aparência, Comportamento, Avançado)

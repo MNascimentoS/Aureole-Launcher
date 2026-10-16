@@ -34,7 +34,7 @@ object IntentUtils {
             context.startActivity(intent)
         } catch (e: ActivityNotFoundException) {
             try {
-                @Suppress("DEPRECATION")
+                @Suppress("DEPRECATION") // ACTION_UNINSTALL_PACKAGE required as fallback for older Android versions
                 val fallbackIntent = Intent(Intent.ACTION_UNINSTALL_PACKAGE).apply {
                     data = Uri.fromParts("package", packageName, null)
                     addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
