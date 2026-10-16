@@ -15,7 +15,6 @@ import androidx.compose.foundation.gestures.waitForUpOrCancellation
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -28,6 +27,7 @@ import androidx.compose.ui.viewinterop.AndroidView
 import dev.mnascimentos.aureole.core.data.model.LauncherItemState
 import dev.mnascimentos.aureole.core.data.model.LauncherItemType
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.utils.LocalAnimatedVisibilityScope
 import dev.mnascimentos.aureole.core.designsystem.utils.LocalSharedTransitionScope
 import dev.mnascimentos.aureole.feature.home.LocalHomeActions
@@ -266,7 +266,7 @@ private fun UnconfiguredWidgetPlaceholder() {
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
         AureoleText(
             text = "Widget não configurado",
-            color = MaterialTheme.colorScheme.onSurface
+            color = AureoleDS.colors.onSurfaceHigh
         )
     }
 }

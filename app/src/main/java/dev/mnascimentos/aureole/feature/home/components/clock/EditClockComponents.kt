@@ -17,7 +17,6 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FilterChipDefaults
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -28,6 +27,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleTheme
 
 @Composable
@@ -55,14 +55,14 @@ internal fun EditClockLayoutChip(
         border = FilterChipDefaults.filterChipBorder(
             enabled = true,
             selected = selected,
-            selectedBorderColor = MaterialTheme.colorScheme.primary,
+            selectedBorderColor = AureoleDS.colors.onSurfaceHigh,
             borderColor = AureoleTheme.colors.onSurfaceMedium.copy(alpha = 0.3f),
             selectedBorderWidth = 1.5.dp,
             borderWidth = 1.dp
         ),
         colors = FilterChipDefaults.filterChipColors(
-            selectedContainerColor = MaterialTheme.colorScheme.primary,
-            selectedLabelColor = MaterialTheme.colorScheme.onPrimary,
+            selectedContainerColor = AureoleDS.colors.onSurfaceHigh,
+            selectedLabelColor = AureoleDS.colors.surface,
             containerColor = AureoleTheme.colors.surfaceVariant.copy(alpha = 0.6f),
             labelColor = AureoleTheme.colors.onSurfaceHigh
         )
@@ -83,13 +83,13 @@ internal fun EditClockChoiceButton(
             shape = RoundedCornerShape(16.dp),
             contentPadding = PaddingValues(horizontal = 4.dp, vertical = 8.dp),
             colors = ButtonDefaults.buttonColors(
-                containerColor = MaterialTheme.colorScheme.primary,
-                contentColor = MaterialTheme.colorScheme.onPrimary
+                containerColor = AureoleDS.colors.onSurfaceHigh,
+                contentColor = AureoleDS.colors.surface
             )
         ) {
             AureoleText(
                 text = text,
-                color = MaterialTheme.colorScheme.onPrimary,
+                color = AureoleDS.colors.surface,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )
@@ -123,8 +123,8 @@ internal fun EditClockColorSwatchItem(
     isSelected: Boolean,
     onClick: () -> Unit
 ) {
-    val displayColor = if (colorValue == 0) MaterialTheme.colorScheme.surfaceVariant else Color(colorValue)
-    val borderColor = if (isSelected) MaterialTheme.colorScheme.primary else Color.Transparent
+    val displayColor = if (colorValue == 0) AureoleDS.colors.surfaceVariant else Color(colorValue)
+    val borderColor = if (isSelected) AureoleDS.colors.onSurfaceHigh else Color.Transparent
 
     Row(
         modifier = Modifier
@@ -146,7 +146,7 @@ internal fun EditClockColorSwatchItem(
         AureoleText(
             text = name,
             style = AureoleTheme.typography.bodySmall,
-            color = if (isSelected) MaterialTheme.colorScheme.primary else AureoleTheme.colors.onSurfaceMedium
+            color = if (isSelected) AureoleDS.colors.onSurfaceHigh else AureoleTheme.colors.onSurfaceMedium
         )
     }
 }

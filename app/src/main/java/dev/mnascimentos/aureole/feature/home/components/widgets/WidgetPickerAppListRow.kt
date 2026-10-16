@@ -21,7 +21,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -40,6 +39,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import coil.compose.AsyncImage
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleTheme
 import dev.mnascimentos.aureole.feature.home.components.widgets.model.WidgetAppGroup
 import dev.mnascimentos.aureole.feature.home.components.widgets.model.WidgetVariant
@@ -70,7 +70,7 @@ internal fun AppGroupHeader(
             Box(
                 modifier = Modifier
                     .size(42.dp)
-                    .background(MaterialTheme.colorScheme.surfaceVariant, RoundedCornerShape(10.dp))
+                    .background(AureoleDS.colors.surfaceVariant, RoundedCornerShape(10.dp))
             )
         }
 

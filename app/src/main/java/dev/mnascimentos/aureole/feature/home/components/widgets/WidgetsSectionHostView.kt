@@ -19,7 +19,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.MaterialTheme
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -143,7 +143,7 @@ internal fun AddWidgetButton(
             state = hazeState,
             style = HazeStyle(
                 blurRadius = 24.dp,
-                tint = HazeTint(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = hazeOpacity))
+                tint = HazeTint(AureoleDS.colors.surfaceVariant.copy(alpha = hazeOpacity))
             )
         ) {
             blurEnabled = isHazeEnabled
@@ -164,21 +164,21 @@ internal fun AddWidgetButton(
     Box(
         modifier = modifier
             .fillMaxHeight()
-            .clip(MaterialTheme.shapes.large)
+            .clip(RoundedCornerShape(AureoleDS.dimens.radiusLarge))
             .then(hazeModifier)
-            .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = buttonAlpha))
+            .background(AureoleDS.colors.surfaceVariant.copy(alpha = buttonAlpha))
             .clickable(onClick = onClick),
         contentAlignment = Alignment.Center
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             AureoleDS.icons.Add(
-                tint = MaterialTheme.colorScheme.primary,
+                tint = AureoleDS.colors.onSurfaceHigh,
                 modifier = Modifier.padding(bottom = 8.dp)
             )
             Text(
                 text = "Adicionar Widget",
-                color = MaterialTheme.colorScheme.primary,
-                style = MaterialTheme.typography.labelLarge
+                color = AureoleDS.colors.onSurfaceHigh,
+                style = AureoleDS.typography.labelLarge
             )
         }
     }

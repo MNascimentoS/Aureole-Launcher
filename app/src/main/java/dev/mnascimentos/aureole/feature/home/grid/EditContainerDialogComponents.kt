@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -24,6 +23,7 @@ import dev.mnascimentos.aureole.core.data.model.LauncherItemState
 import dev.mnascimentos.aureole.core.data.model.LauncherItemType
 import dev.mnascimentos.aureole.core.data.model.ScrollOrientation
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
@@ -117,12 +117,12 @@ private fun OrientationOptionCard(
     modifier: Modifier = Modifier
 ) {
     val bgColor = if (isSelected) {
-        MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.6f)
+        AureoleDS.colors.surfaceVariant.copy(alpha = 0.6f)
     } else {
         AureoleTheme.colors.surfaceVariant.copy(alpha = 0.35f)
     }
     val contentColor = if (isSelected) {
-        MaterialTheme.colorScheme.onPrimaryContainer
+        AureoleDS.colors.onSurfaceHigh
     } else {
         AureoleTheme.colors.onSurfaceMedium
     }

@@ -6,6 +6,11 @@ import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
 
+private const val ERROR_HEX = 0xFFCF6679
+private const val ON_ERROR_HEX = 0xFFFFFFFF
+private const val BADGE_CONTAINER_HEX = 0xFF4CAF50
+private const val BADGE_TEXT_HEX = 0xFF81C784
+
 @Immutable
 data class AureoleColors(
     val onSurfaceHigh: Color,
@@ -14,7 +19,11 @@ data class AureoleColors(
     val outline: Color,
     val surfaceVariant: Color,
     val surface: Color,
-    val background: Color
+    val background: Color,
+    val error: Color = Color(ERROR_HEX),
+    val onError: Color = Color(ON_ERROR_HEX),
+    val badgeContainer: Color = Color(BADGE_CONTAINER_HEX),
+    val badgeText: Color = Color(BADGE_TEXT_HEX)
 )
 
 val LocalAureoleColors = staticCompositionLocalOf {
@@ -25,7 +34,11 @@ val LocalAureoleColors = staticCompositionLocalOf {
         outline = Color.Unspecified,
         surfaceVariant = Color.Unspecified,
         surface = Color.Unspecified,
-        background = Color.Unspecified
+        background = Color.Unspecified,
+        error = Color.Unspecified,
+        onError = Color.Unspecified,
+        badgeContainer = Color.Unspecified,
+        badgeText = Color.Unspecified
     )
 }
 
@@ -53,5 +66,9 @@ val frostbiteColors = AureoleColors(
     outline = FrostbiteOutline,
     surfaceVariant = FrostbiteSurfaceVariant,
     surface = FrostbiteSurface,
-    background = FrostbiteBackground
+    background = FrostbiteBackground,
+    error = Color(ERROR_HEX),
+    onError = Color(ON_ERROR_HEX),
+    badgeContainer = Color(BADGE_CONTAINER_HEX),
+    badgeText = Color(BADGE_TEXT_HEX)
 )

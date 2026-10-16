@@ -17,7 +17,6 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
@@ -57,7 +56,7 @@ fun LazyListScope.appsListItems(
         if (isFirstOfLetter && isSearchQueryBlank) {
             AureoleSectionHeader(
                 title = currentLetter.toString(),
-                color = MaterialTheme.colorScheme.primary,
+                color = AureoleDS.colors.onSurfaceHigh,
                 modifier = Modifier.padding(
                     top = 20.dp,
                     bottom = 8.dp

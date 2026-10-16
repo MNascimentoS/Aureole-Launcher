@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Switch
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -59,7 +58,7 @@ fun FavoriteAppsShowAllSwitchRow(
         modifier = Modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(12.dp))
-            .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f))
+            .background(AureoleDS.colors.surfaceVariant.copy(alpha = 0.5f))
             .padding(horizontal = AureoleDS.dimens.small, vertical = AureoleDS.dimens.xSmall),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
@@ -69,12 +68,12 @@ fun FavoriteAppsShowAllSwitchRow(
                 text = "Mostrar todos os apps na Home",
                 style = AureoleDS.typography.bodyMedium,
                 fontWeight = FontWeight.SemiBold,
-                color = MaterialTheme.colorScheme.onSurface
+                color = AureoleDS.colors.onSurfaceHigh
             )
             AureoleText(
                 text = "Se desativado, exibe apenas os aplicativos favoritados",
                 style = AureoleDS.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
+                color = AureoleDS.colors.onSurfaceMedium
             )
         }
         Switch(
@@ -103,7 +102,7 @@ fun FavoriteAppRowInfo(app: AppInfo, modifier: Modifier = Modifier) {
             text = app.label,
             style = AureoleDS.typography.bodyMedium,
             fontWeight = FontWeight.SemiBold,
-            color = MaterialTheme.colorScheme.onSurface,
+            color = AureoleDS.colors.onSurfaceHigh,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis
         )
@@ -159,14 +158,14 @@ fun FavoriteAppRowActionButtons(
             modifier = Modifier
                 .size(28.dp)
                 .background(
-                    color = MaterialTheme.colorScheme.errorContainer,
+                    color = AureoleDS.colors.error,
                     shape = RoundedCornerShape(8.dp)
                 )
                 .clickable { onToggleFavorite() },
             contentAlignment = Alignment.Center
         ) {
             AureoleDS.icons.Delete(
-                tint = MaterialTheme.colorScheme.onErrorContainer,
+                tint = AureoleDS.colors.onError,
                 modifier = Modifier.size(16.dp)
             )
         }
@@ -215,14 +214,14 @@ fun RemainingAppRow(
             modifier = Modifier
                 .size(28.dp)
                 .background(
-                    color = MaterialTheme.colorScheme.primaryContainer,
+                    color = AureoleDS.colors.surfaceVariant,
                     shape = RoundedCornerShape(8.dp)
                 )
                 .clickable { onToggleFavorite() },
             contentAlignment = Alignment.Center
         ) {
             AureoleDS.icons.Plus(
-                tint = MaterialTheme.colorScheme.onPrimaryContainer,
+                tint = AureoleDS.colors.onSurfaceHigh,
                 modifier = Modifier.size(16.dp)
             )
         }

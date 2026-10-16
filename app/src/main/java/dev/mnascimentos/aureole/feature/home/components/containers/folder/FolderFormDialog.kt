@@ -17,7 +17,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.TextButton
@@ -35,6 +34,7 @@ import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.core.data.model.AppFolder
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleDialog
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
@@ -100,7 +100,7 @@ private fun FolderFormDialogContent(
             placeholder = { AureoleText("New Folder", color = AureoleTheme.colors.onSurfaceLow) },
             singleLine = true,
             colors = OutlinedTextFieldDefaults.colors(
-                focusedBorderColor = MaterialTheme.colorScheme.primary,
+                focusedBorderColor = AureoleTheme.colors.onSurfaceHigh,
                 unfocusedBorderColor = AureoleTheme.colors.outline,
                 focusedTextColor = AureoleTheme.colors.onSurfaceHigh,
                 unfocusedTextColor = AureoleTheme.colors.onSurfaceHigh
@@ -209,7 +209,7 @@ private fun DefaultLetterOptionChip(
     onClick: () -> Unit
 ) {
     val borderColor = if (isSelected) {
-        MaterialTheme.colorScheme.primary
+        AureoleTheme.colors.onSurfaceHigh
     } else {
         AureoleTheme.colors.outline
     }
@@ -224,7 +224,7 @@ private fun DefaultLetterOptionChip(
             .size(40.dp)
             .clip(CircleShape)
             .background(
-                if (isSelected) MaterialTheme.colorScheme.primary else AureoleTheme.colors.surfaceVariant
+                if (isSelected) AureoleTheme.colors.onSurfaceHigh else AureoleTheme.colors.surfaceVariant
             )
             .border(
                 width = if (isSelected) 2.dp else 0.5.dp,
@@ -250,7 +250,7 @@ private fun IconOptionChip(
     onClick: () -> Unit
 ) {
     val borderColor = if (isSelected) {
-        MaterialTheme.colorScheme.primary
+        AureoleTheme.colors.onSurfaceHigh
     } else {
         AureoleTheme.colors.outline
     }
@@ -265,7 +265,7 @@ private fun IconOptionChip(
             .size(40.dp)
             .clip(CircleShape)
             .background(
-                if (isSelected) MaterialTheme.colorScheme.primary else AureoleTheme.colors.surfaceVariant
+                if (isSelected) AureoleTheme.colors.onSurfaceHigh else AureoleTheme.colors.surfaceVariant
             )
             .border(
                 width = if (isSelected) 2.dp else 0.5.dp,
@@ -298,7 +298,7 @@ private fun FolderFormButtons(
     ) {
         if (isEditing && onDelete != null) {
             TextButton(onClick = onDelete) {
-                AureoleText("Delete", color = MaterialTheme.colorScheme.error)
+                AureoleText("Delete", color = AureoleDS.colors.error)
             }
         } else {
             Spacer(modifier = Modifier.width(1.dp))
@@ -310,7 +310,7 @@ private fun FolderFormButtons(
             }
             Spacer(modifier = Modifier.width(8.dp))
             TextButton(onClick = onSave) {
-                AureoleText(submitText, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary)
+                AureoleText(submitText, fontWeight = FontWeight.Bold, color = AureoleTheme.colors.onSurfaceHigh)
             }
         }
     }

@@ -25,7 +25,6 @@ import androidx.compose.material3.ExposedDropdownMenuAnchorType
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
@@ -96,8 +95,8 @@ internal fun EditContainerOrientationSelector(
                         onClick = onClick,
                         modifier = modifier,
                         colors = ButtonDefaults.buttonColors(
-                            containerColor = MaterialTheme.colorScheme.primary,
-                            contentColor = MaterialTheme.colorScheme.onPrimary
+                            containerColor = AureoleDS.colors.onSurfaceHigh,
+                            contentColor = AureoleDS.colors.surface
                         )
                     ) {
                         AureoleText(text = optText)
@@ -150,7 +149,7 @@ internal fun EditContainerAlignmentSelector(
             readOnly = true,
             trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = isDropdownExpanded) },
             colors = OutlinedTextFieldDefaults.colors(
-                focusedBorderColor = MaterialTheme.colorScheme.primary,
+                focusedBorderColor = AureoleDS.colors.onSurfaceHigh,
                 unfocusedBorderColor = AureoleTheme.colors.outline,
                 focusedTextColor = AureoleTheme.colors.onSurfaceHigh,
                 unfocusedTextColor = AureoleTheme.colors.onSurfaceHigh
