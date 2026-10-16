@@ -26,8 +26,8 @@ internal fun RenderModalBottomSheetOrInspection(
         ) {
             Surface(
                 shape = RoundedCornerShape(
-                    topStart = AureoleTheme.dimens.cornerRadius,
-                    topEnd = AureoleTheme.dimens.cornerRadius
+                    topStart = AureoleTheme.dimens.radiusLarge,
+                    topEnd = AureoleTheme.dimens.radiusLarge
                 ),
                 color = AureoleTheme.colors.surface,
                 contentColor = AureoleTheme.colors.onSurfaceMedium,
@@ -44,8 +44,8 @@ internal fun RenderModalBottomSheetOrInspection(
             onDismissRequest = onDismiss,
             sheetState = sheetState,
             shape = RoundedCornerShape(
-                topStart = AureoleTheme.dimens.cornerRadius,
-                topEnd = AureoleTheme.dimens.cornerRadius
+                topStart = AureoleTheme.dimens.radiusLarge,
+                topEnd = AureoleTheme.dimens.radiusLarge
             ),
             containerColor = AureoleTheme.colors.surface,
             contentColor = AureoleTheme.colors.onSurfaceMedium,

@@ -1,6 +1,5 @@
 package dev.mnascimentos.aureole.feature.home.components.widgets
 
-import android.app.Activity
 import android.appwidget.AppWidgetHost
 import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProviderInfo
@@ -18,7 +17,9 @@ class WidgetHostManager(
     private val context: Context,
     private val viewModel: HomeViewModel,
     private val appWidgetHost: AppWidgetHost,
-    private val appWidgetManager: AppWidgetManager
+    private val appWidgetManager: AppWidgetManager,
+    private val launchWidgetConfigure: (Intent) -> Unit = {},
+    private val launchWidgetBind: (Intent) -> Unit = {}
 ) {
     companion object {
         private const val TAG = "WidgetHostManager"
@@ -65,12 +66,7 @@ class WidgetHostManager(
             putExtra(AppWidgetManager.EXTRA_APPWIDGET_PROVIDER, provider.provider)
         }
         try {
-            if (context is Activity) {
-                context.startActivityForResult(intent, REQUEST_BIND_APPWIDGET)
-            } else {
-                appWidgetHost.deleteAppWidgetId(appWidgetId)
-                viewModel.setPendingWidgetId(-1)
-            }
+            launchWidgetBind(intent)
         } catch (e: ActivityNotFoundException) {
             Log.e(TAG, "Activity not found for widget bind intent for id $appWidgetId", e)
             appWidgetHost.deleteAppWidgetId(appWidgetId)
@@ -91,9 +87,7 @@ class WidgetHostManager(
             putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
         }
         try {
-            if (context is Activity) {
-                context.startActivityForResult(intent, REQUEST_PICK_APPWIDGET)
-            }
+            launchWidgetConfigure(intent)
         } catch (e: ActivityNotFoundException) {
             Log.e(TAG, "Activity not found for widget configure", e)
             completeWidgetConfiguration(appWidgetId, provider)

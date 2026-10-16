@@ -7,6 +7,7 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import dev.mnascimentos.aureole.core.data.model.LauncherItemState
 import dev.mnascimentos.aureole.feature.home.grid.GridDefaults
+import java.util.UUID
 
 private const val TAG = "GridRepository"
 
@@ -31,25 +32,25 @@ class GridRepository(private val context: Context) {
             if (items.isNullOrEmpty()) {
                 GridDefaults.getDefaultGridItems(isLandscape)
             } else {
-                items.filterNotNull().map { item ->
-                    val sanitizedChildren = item.safeChildren.map { child ->
-                        child.copy(
-                            type = child.safeType,
-                            scrollOrientation = child.safeScrollOrientation,
-                            children = child.safeChildren
-                        )
-                    }
-                    item.copy(
-                        type = item.safeType,
-                        scrollOrientation = item.safeScrollOrientation,
-                        children = sanitizedChildren
-                    )
-                }.ifEmpty { GridDefaults.getDefaultGridItems(isLandscape) }
+                items.filterNotNull().map { item -> sanitizeItem(item) }
+                    .ifEmpty { GridDefaults.getDefaultGridItems(isLandscape) }
             }
         } catch (e: Exception) {
             Log.w(TAG, "Failed to parse or sanitize grid items JSON", e)
             GridDefaults.getDefaultGridItems(isLandscape)
         }
+    }
+
+    private fun sanitizeItem(item: LauncherItemState): LauncherItemState {
+        val sanitizedChildren = item.safeChildren.map { child -> sanitizeItem(child) }
+        val rawId = item.id as String?
+        val finalId = if (rawId.isNullOrBlank()) "item_${UUID.randomUUID()}" else rawId
+        return item.copy(
+            id = finalId,
+            type = item.safeType,
+            scrollOrientation = item.safeScrollOrientation,
+            children = sanitizedChildren
+        )
     }
 
     fun saveGridItems(items: List<LauncherItemState>, isLandscape: Boolean = false) {

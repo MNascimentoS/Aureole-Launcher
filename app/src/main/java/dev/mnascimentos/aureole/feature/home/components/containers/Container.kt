@@ -215,7 +215,7 @@ private fun ContainerColumn(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = columnConfig.verticalArrangement,
         modifier = Modifier
-            .clip(RoundedCornerShape(AureoleTheme.dimens.cornerRadius))
+            .clip(RoundedCornerShape(AureoleTheme.dimens.radiusLarge))
             .then(if (columnConfig.shouldExpand) Modifier.fillMaxSize() else Modifier)
             .then(modifier)
             .background(columnConfig.backgroundColor)
@@ -308,7 +308,7 @@ private fun ContainerRow(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = rowConfig.horizontalArrangement,
         modifier = Modifier
-            .clip(RoundedCornerShape(AureoleTheme.dimens.cornerRadius))
+            .clip(RoundedCornerShape(AureoleTheme.dimens.radiusLarge))
             .then(if (rowConfig.shouldExpand) Modifier.fillMaxSize() else Modifier)
             .then(modifier)
             .background(rowConfig.backgroundColor)

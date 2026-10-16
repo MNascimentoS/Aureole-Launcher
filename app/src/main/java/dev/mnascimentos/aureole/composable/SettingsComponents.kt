@@ -32,7 +32,7 @@ fun AdvancedIcon(
     tint: Color = AureoleTheme.colors.onSurfaceMedium
 ) {
     Row(
-        horizontalArrangement = Arrangement.spacedBy(AureoleDS.dimens.xxxSmall),
+        horizontalArrangement = Arrangement.spacedBy(AureoleDS.dimens.minimal),
         verticalAlignment = Alignment.CenterVertically,
         modifier = modifier.size(AureoleDS.dimens.iconMedium)
     ) {
@@ -88,7 +88,7 @@ fun SettingsMenuItem(
                 color = AureoleTheme.colors.onSurfaceMedium
             )
             if (subtitle != null) {
-                Spacer(modifier = Modifier.height(AureoleDS.dimens.xxxSmall))
+                Spacer(modifier = Modifier.height(AureoleDS.dimens.minimal))
                 AureoleText(
                     text = subtitle,
                     style = AureoleTheme.typography.bodySmall,

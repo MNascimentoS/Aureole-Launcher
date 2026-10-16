@@ -2,6 +2,7 @@ package dev.mnascimentos.aureole.feature.home.extensions
 
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import dev.mnascimentos.aureole.core.data.model.LauncherItemState
 import dev.mnascimentos.aureole.core.data.model.LauncherItemType
 import dev.mnascimentos.aureole.feature.home.HomeViewModel
 import dev.mnascimentos.aureole.feature.home.model.getWidgetIdsForStack
@@ -18,24 +19,17 @@ internal fun HomeViewModel.loadWidgetSettings() {
     dotsMap["top_widgets"] = topDots
 
     val allItems = uiState.value.portraitGridItems + uiState.value.landscapeGridItems
-    allItems.forEach { item ->
+    fun processItem(item: LauncherItemState) {
         val isWidgetType = item.safeType == LauncherItemType.WIDGET_LIST ||
             item.safeType == LauncherItemType.SINGLE_APP_WIDGET
         if (isWidgetType) {
-            val stackId = item.id
+            val stackId = item.safeId
             widgetMap[stackId] = widgetRepository.getWidgetIdsForStack(stackId)
             dotsMap[stackId] = widgetRepository.getWidgetDotsState(stackId)
         }
-        item.safeChildren.forEach { child ->
-            val isChildWidget = child.safeType == LauncherItemType.WIDGET_LIST ||
-                child.safeType == LauncherItemType.SINGLE_APP_WIDGET
-            if (isChildWidget) {
-                val stackId = child.id
-                widgetMap[stackId] = widgetRepository.getWidgetIdsForStack(stackId)
-                dotsMap[stackId] = widgetRepository.getWidgetDotsState(stackId)
-            }
-        }
+        item.safeChildren.forEach { child -> processItem(child) }
     }
+    allItems.forEach { item -> processItem(item) }
 
     updateUiState {
         it.copy(
@@ -92,8 +86,14 @@ fun HomeViewModel.addWidgetId(
         widgetRepository.saveWidgetIdsForStack(stackId, newList)
     }
 
-    val hasWidgetContainer = uiState.value.gridItems.any {
-        it.safeType == LauncherItemType.WIDGET_LIST || it.safeType == LauncherItemType.SINGLE_APP_WIDGET
+    val hasWidgetContainer = uiState.value.gridItems.any { item ->
+        val isSelfWidget = item.safeType == LauncherItemType.WIDGET_LIST ||
+            item.safeType == LauncherItemType.SINGLE_APP_WIDGET
+        val hasChildWidget = item.safeChildren.any { child ->
+            child.safeType == LauncherItemType.WIDGET_LIST ||
+                child.safeType == LauncherItemType.SINGLE_APP_WIDGET
+        }
+        isSelfWidget || hasChildWidget
     }
     if (!hasWidgetContainer) {
         addGridItem(GridItemSpec(type = LauncherItemType.WIDGET_LIST))

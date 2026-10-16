@@ -30,7 +30,10 @@ data class LauncherItemState(
     val children: List<LauncherItemState>? = emptyList()
 ) {
     val safeId: String
-        get() = if (id.isBlank()) "item_${UUID.randomUUID()}" else id
+        get() {
+            val rawId = id as String?
+            return if (rawId.isNullOrBlank()) "item_${UUID.randomUUID()}" else rawId
+        }
 
     val safeType: LauncherItemType
         get() = type ?: LauncherItemType.APPS_LIST

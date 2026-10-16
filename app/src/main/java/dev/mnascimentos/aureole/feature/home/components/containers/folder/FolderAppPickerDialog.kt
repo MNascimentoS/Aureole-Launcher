@@ -63,8 +63,8 @@ fun FolderAppPickerDialog(
         ) {
             Surface(
                 shape = RoundedCornerShape(
-                    topStart = AureoleTheme.dimens.cornerRadius,
-                    topEnd = AureoleTheme.dimens.cornerRadius
+                    topStart = AureoleTheme.dimens.radiusLarge,
+                    topEnd = AureoleTheme.dimens.radiusLarge
                 ),
                 color = AureoleTheme.colors.surface,
                 contentColor = AureoleTheme.colors.onSurfaceMedium,
@@ -81,8 +81,8 @@ fun FolderAppPickerDialog(
             sheetState = sheetState,
             dragHandle = null,
             shape = RoundedCornerShape(
-                topStart = AureoleTheme.dimens.cornerRadius,
-                topEnd = AureoleTheme.dimens.cornerRadius
+                topStart = AureoleTheme.dimens.radiusLarge,
+                topEnd = AureoleTheme.dimens.radiusLarge
             ),
             containerColor = AureoleTheme.colors.surface,
             contentColor = AureoleTheme.colors.onSurfaceMedium,

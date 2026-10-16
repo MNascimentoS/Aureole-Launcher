@@ -43,8 +43,8 @@ fun SettingsBottomSheet(
         ) {
             Surface(
                 shape = RoundedCornerShape(
-                    topStart = AureoleTheme.dimens.cornerRadius,
-                    topEnd = AureoleTheme.dimens.cornerRadius
+                    topStart = AureoleTheme.dimens.radiusLarge,
+                    topEnd = AureoleTheme.dimens.radiusLarge
                 ),
                 color = AureoleTheme.colors.surface,
                 contentColor = AureoleTheme.colors.onSurfaceMedium,
@@ -61,8 +61,8 @@ fun SettingsBottomSheet(
             sheetState = sheetState,
             dragHandle = dragHandle,
             shape = RoundedCornerShape(
-                topStart = AureoleTheme.dimens.cornerRadius,
-                topEnd = AureoleTheme.dimens.cornerRadius
+                topStart = AureoleTheme.dimens.radiusLarge,
+                topEnd = AureoleTheme.dimens.radiusLarge
             ),
             containerColor = AureoleTheme.colors.surface,
             contentColor = AureoleTheme.colors.onSurfaceMedium

@@ -151,7 +151,7 @@ fun ClockHeader(
     BoxWithConstraints(
         modifier = modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(AureoleTheme.dimens.cornerRadius))
+            .clip(RoundedCornerShape(AureoleTheme.dimens.radiusLarge))
             .then(hazeModifier)
             .background(containerBgColor)
             .then(clickModifier)

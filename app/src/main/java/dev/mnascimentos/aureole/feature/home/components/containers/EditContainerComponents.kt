@@ -183,7 +183,7 @@ internal fun EditContainerOptionsExpandableSection(
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(AureoleTheme.dimens.cornerRadius))
+            .clip(RoundedCornerShape(AureoleTheme.dimens.radiusLarge))
             .background(AureoleTheme.colors.surfaceVariant.copy(alpha = 0.3f))
             .padding(horizontal = AureoleDS.dimens.medium, vertical = AureoleDS.dimens.small)
     ) {

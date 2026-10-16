@@ -95,8 +95,8 @@ fun PickBorderRadiusBottomSheet(
         ) {
             Surface(
                 shape = RoundedCornerShape(
-                    topStart = AureoleTheme.dimens.cornerRadius,
-                    topEnd = AureoleTheme.dimens.cornerRadius,
+                    topStart = AureoleTheme.dimens.radiusLarge,
+                    topEnd = AureoleTheme.dimens.radiusLarge,
                 ),
                 color = AureoleDS.colors.surface,
                 modifier = Modifier.fillMaxWidth(),
@@ -113,8 +113,8 @@ fun PickBorderRadiusBottomSheet(
             dragHandle = null,
             containerColor = AureoleDS.colors.surface,
             shape = RoundedCornerShape(
-                topStart = AureoleTheme.dimens.cornerRadius,
-                topEnd = AureoleTheme.dimens.cornerRadius,
+                topStart = AureoleTheme.dimens.radiusLarge,
+                topEnd = AureoleTheme.dimens.radiusLarge,
             ),
         ) {
             sheetContent()

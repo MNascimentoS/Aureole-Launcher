@@ -50,7 +50,7 @@ class SettingsActivity : ComponentActivity() {
                 isDynamicWallpaperEnabled = uiState.isDynamicWallpaperEnabled,
                 aureoleColors = palette.colors,
                 aureoleFontName = uiState.selectedFontName,
-                aureoleDimens = AureoleDimens(cornerRadius = uiState.cornerRadiusDp.dp)
+                aureoleDimens = AureoleDimens(radiusLarge = uiState.cornerRadiusDp.dp)
             ) {
                 LaunchedEffect(uiState.shouldFinishActivity) {
                     if (uiState.shouldFinishActivity) {
