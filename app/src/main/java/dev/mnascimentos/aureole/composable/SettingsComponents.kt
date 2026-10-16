@@ -24,12 +24,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
-import dev.mnascimentos.aureole.core.designsystem.theme.AureoleTheme
 
 @Composable
 fun AdvancedIcon(
     modifier: Modifier = Modifier,
-    tint: Color = AureoleTheme.colors.onSurfaceMedium
+    tint: Color = AureoleDS.colors.onSurfaceMedium
 ) {
     Row(
         horizontalArrangement = Arrangement.spacedBy(AureoleDS.dimens.minimal),
@@ -46,9 +45,9 @@ fun AdvancedIcon(
 fun SettingsHugeTitle(text: String, modifier: Modifier = Modifier) {
     AureoleText(
         text = text,
-        style = AureoleTheme.typography.displayMedium,
+        style = AureoleDS.typography.displayMedium,
         fontWeight = FontWeight.Bold,
-        color = AureoleTheme.colors.onSurfaceHigh,
+        color = AureoleDS.colors.onSurfaceHigh,
         modifier = modifier.padding(vertical = AureoleDS.dimens.medium)
     )
 }
@@ -83,16 +82,16 @@ fun SettingsMenuItem(
         Column(modifier = Modifier.weight(1f)) {
             AureoleText(
                 text = title,
-                style = AureoleTheme.typography.bodyLarge,
+                style = AureoleDS.typography.bodyLarge,
                 fontWeight = FontWeight.Normal,
-                color = AureoleTheme.colors.onSurfaceMedium
+                color = AureoleDS.colors.onSurfaceMedium
             )
             if (subtitle != null) {
                 Spacer(modifier = Modifier.height(AureoleDS.dimens.minimal))
                 AureoleText(
                     text = subtitle,
-                    style = AureoleTheme.typography.bodySmall,
-                    color = AureoleTheme.colors.onSurfaceLow
+                    style = AureoleDS.typography.bodySmall,
+                    color = AureoleDS.colors.onSurfaceLow
                 )
             }
         }
@@ -129,9 +128,9 @@ fun SettingsToggleItem(
         Column(modifier = Modifier.weight(1f)) {
             AureoleText(
                 text = title,
-                style = AureoleTheme.typography.bodyLarge,
+                style = AureoleDS.typography.bodyLarge,
                 fontWeight = FontWeight.Normal,
-                color = AureoleTheme.colors.onSurfaceMedium
+                color = AureoleDS.colors.onSurfaceMedium
             )
         }
 
@@ -140,10 +139,10 @@ fun SettingsToggleItem(
             checked = checked,
             onCheckedChange = onCheckedChange,
             colors = SwitchDefaults.colors(
-                checkedThumbColor = AureoleTheme.colors.surface,
-                checkedTrackColor = AureoleTheme.colors.onSurfaceMedium,
-                uncheckedThumbColor = AureoleTheme.colors.outline,
-                uncheckedTrackColor = AureoleTheme.colors.surfaceVariant.copy(alpha = 0.5f),
+                checkedThumbColor = AureoleDS.colors.surface,
+                checkedTrackColor = AureoleDS.colors.onSurfaceMedium,
+                uncheckedThumbColor = AureoleDS.colors.outline,
+                uncheckedTrackColor = AureoleDS.colors.surfaceVariant.copy(alpha = 0.5f),
                 uncheckedBorderColor = Color.Transparent,
                 checkedBorderColor = Color.Transparent
             )
@@ -178,9 +177,9 @@ fun SettingsActionItem(
         }
         AureoleText(
             text = title,
-            style = AureoleTheme.typography.bodyLarge,
+            style = AureoleDS.typography.bodyLarge,
             fontWeight = FontWeight.Normal,
-            color = AureoleTheme.colors.onSurfaceMedium,
+            color = AureoleDS.colors.onSurfaceMedium,
             modifier = Modifier.weight(1f)
         )
     }

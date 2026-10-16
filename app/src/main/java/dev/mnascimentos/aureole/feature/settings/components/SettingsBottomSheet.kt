@@ -21,7 +21,6 @@ import androidx.compose.ui.text.style.TextAlign
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
-import dev.mnascimentos.aureole.core.designsystem.theme.AureoleTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -43,11 +42,11 @@ fun SettingsBottomSheet(
         ) {
             Surface(
                 shape = RoundedCornerShape(
-                    topStart = AureoleTheme.dimens.radiusLarge,
-                    topEnd = AureoleTheme.dimens.radiusLarge
+                    topStart = AureoleDS.dimens.radiusLarge,
+                    topEnd = AureoleDS.dimens.radiusLarge
                 ),
-                color = AureoleTheme.colors.surface,
-                contentColor = AureoleTheme.colors.onSurfaceMedium,
+                color = AureoleDS.colors.surface,
+                contentColor = AureoleDS.colors.onSurfaceMedium,
                 modifier = Modifier.fillMaxWidth()
             ) {
                 sheetContent()
@@ -61,11 +60,11 @@ fun SettingsBottomSheet(
             sheetState = sheetState,
             dragHandle = dragHandle,
             shape = RoundedCornerShape(
-                topStart = AureoleTheme.dimens.radiusLarge,
-                topEnd = AureoleTheme.dimens.radiusLarge
+                topStart = AureoleDS.dimens.radiusLarge,
+                topEnd = AureoleDS.dimens.radiusLarge
             ),
-            containerColor = AureoleTheme.colors.surface,
-            contentColor = AureoleTheme.colors.onSurfaceMedium
+            containerColor = AureoleDS.colors.surface,
+            contentColor = AureoleDS.colors.onSurfaceMedium
         ) {
             sheetContent()
         }
@@ -85,9 +84,9 @@ private fun SettingsBottomSheetLayout(
     ) {
         AureoleText(
             text = title,
-            style = AureoleTheme.typography.titleMedium,
+            style = AureoleDS.typography.titleMedium,
             fontWeight = FontWeight.Bold,
-            color = AureoleTheme.colors.onSurfaceMedium,
+            color = AureoleDS.colors.onSurfaceMedium,
             textAlign = TextAlign.Center,
             modifier = Modifier.fillMaxWidth()
         )

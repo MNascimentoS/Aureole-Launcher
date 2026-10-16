@@ -106,7 +106,6 @@ class MainActivity : ComponentActivity() {
         appWidgetManager = AppWidgetManager.getInstance(this)
         appWidgetHost = AppWidgetHost(this, APPWIDGET_HOST_ID)
         widgetHostManager = WidgetHostManager(
-            context = this,
             viewModel = viewModel,
             appWidgetHost = appWidgetHost,
             appWidgetManager = appWidgetManager,
@@ -228,7 +227,6 @@ class MainActivity : ComponentActivity() {
 
     private var wasInBackground = false
 
-    @Deprecated("Deprecated in Java")
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
         if (intent.action == Intent.ACTION_MAIN && intent.hasCategory(Intent.CATEGORY_HOME)) {

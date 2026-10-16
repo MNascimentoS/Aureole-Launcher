@@ -29,7 +29,7 @@ import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.core.data.model.AppFolder
 import dev.mnascimentos.aureole.core.data.model.AppInfo
-import dev.mnascimentos.aureole.core.designsystem.theme.AureoleTheme
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.FolderAppPickerBodyParams
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -63,11 +63,11 @@ fun FolderAppPickerDialog(
         ) {
             Surface(
                 shape = RoundedCornerShape(
-                    topStart = AureoleTheme.dimens.radiusLarge,
-                    topEnd = AureoleTheme.dimens.radiusLarge
+                    topStart = AureoleDS.dimens.radiusLarge,
+                    topEnd = AureoleDS.dimens.radiusLarge
                 ),
-                color = AureoleTheme.colors.surface,
-                contentColor = AureoleTheme.colors.onSurfaceMedium,
+                color = AureoleDS.colors.surface,
+                contentColor = AureoleDS.colors.onSurfaceMedium,
                 modifier = Modifier.fillMaxWidth()
             ) {
                 sheetContent()
@@ -81,11 +81,11 @@ fun FolderAppPickerDialog(
             sheetState = sheetState,
             dragHandle = null,
             shape = RoundedCornerShape(
-                topStart = AureoleTheme.dimens.radiusLarge,
-                topEnd = AureoleTheme.dimens.radiusLarge
+                topStart = AureoleDS.dimens.radiusLarge,
+                topEnd = AureoleDS.dimens.radiusLarge
             ),
-            containerColor = AureoleTheme.colors.surface,
-            contentColor = AureoleTheme.colors.onSurfaceMedium,
+            containerColor = AureoleDS.colors.surface,
+            contentColor = AureoleDS.colors.onSurfaceMedium,
             modifier = Modifier.windowInsetsPadding(WindowInsets.statusBars)
         ) {
             sheetContent()

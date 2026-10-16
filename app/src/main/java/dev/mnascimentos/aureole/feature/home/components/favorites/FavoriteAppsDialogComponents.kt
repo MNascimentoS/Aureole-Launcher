@@ -30,7 +30,6 @@ import dev.mnascimentos.aureole.core.designsystem.icons.ArrowUp
 import dev.mnascimentos.aureole.core.designsystem.icons.Delete
 import dev.mnascimentos.aureole.core.designsystem.icons.Plus
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
-import dev.mnascimentos.aureole.core.designsystem.theme.AureoleTheme
 import dev.mnascimentos.aureole.feature.home.components.favorites.model.FavoriteAppRowParams
 
 @Composable
@@ -125,14 +124,14 @@ fun FavoriteAppRowActionButtons(
                 modifier = Modifier
                     .size(28.dp)
                     .background(
-                        color = AureoleTheme.colors.surfaceVariant.copy(alpha = 0.5f),
+                        color = AureoleDS.colors.surfaceVariant.copy(alpha = 0.5f),
                         shape = RoundedCornerShape(8.dp)
                     )
                     .clickable { onMoveUp() },
                 contentAlignment = Alignment.Center
             ) {
                 AureoleDS.icons.ArrowUp(
-                    tint = AureoleTheme.colors.onSurfaceHigh,
+                    tint = AureoleDS.colors.onSurfaceHigh,
                     modifier = Modifier.size(16.dp)
                 )
             }
@@ -142,14 +141,14 @@ fun FavoriteAppRowActionButtons(
                 modifier = Modifier
                     .size(28.dp)
                     .background(
-                        color = AureoleTheme.colors.surfaceVariant.copy(alpha = 0.5f),
+                        color = AureoleDS.colors.surfaceVariant.copy(alpha = 0.5f),
                         shape = RoundedCornerShape(8.dp)
                     )
                     .clickable { onMoveDown() },
                 contentAlignment = Alignment.Center
             ) {
                 AureoleDS.icons.ArrowDown(
-                    tint = AureoleTheme.colors.onSurfaceHigh,
+                    tint = AureoleDS.colors.onSurfaceHigh,
                     modifier = Modifier.size(16.dp)
                 )
             }
@@ -183,7 +182,7 @@ fun RemainingAppRow(
         modifier = modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(12.dp))
-            .background(AureoleTheme.colors.surfaceVariant.copy(alpha = 0.3f))
+            .background(AureoleDS.colors.surfaceVariant.copy(alpha = 0.3f))
             .padding(horizontal = 12.dp, vertical = 10.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
@@ -202,9 +201,9 @@ fun RemainingAppRow(
             Spacer(modifier = Modifier.width(12.dp))
             AureoleText(
                 text = app.label,
-                style = AureoleTheme.typography.bodyMedium,
+                style = AureoleDS.typography.bodyMedium,
                 fontWeight = FontWeight.Medium,
-                color = AureoleTheme.colors.onSurfaceHigh,
+                color = AureoleDS.colors.onSurfaceHigh,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )

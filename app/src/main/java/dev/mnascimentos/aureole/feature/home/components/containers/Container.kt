@@ -29,7 +29,6 @@ import dev.mnascimentos.aureole.core.data.model.AppFolder
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.data.model.ContainerItemType
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
-import dev.mnascimentos.aureole.core.designsystem.theme.AureoleTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.fadingEdges
 import dev.mnascimentos.aureole.feature.home.LocalHomeActions
 import dev.mnascimentos.aureole.feature.home.LocalHomeUiState
@@ -215,7 +214,7 @@ private fun ContainerColumn(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = columnConfig.verticalArrangement,
         modifier = Modifier
-            .clip(RoundedCornerShape(AureoleTheme.dimens.radiusLarge))
+            .clip(RoundedCornerShape(AureoleDS.dimens.radiusLarge))
             .then(if (columnConfig.shouldExpand) Modifier.fillMaxSize() else Modifier)
             .then(modifier)
             .background(columnConfig.backgroundColor)
@@ -308,7 +307,7 @@ private fun ContainerRow(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = rowConfig.horizontalArrangement,
         modifier = Modifier
-            .clip(RoundedCornerShape(AureoleTheme.dimens.radiusLarge))
+            .clip(RoundedCornerShape(AureoleDS.dimens.radiusLarge))
             .then(if (rowConfig.shouldExpand) Modifier.fillMaxSize() else Modifier)
             .then(modifier)
             .background(rowConfig.backgroundColor)

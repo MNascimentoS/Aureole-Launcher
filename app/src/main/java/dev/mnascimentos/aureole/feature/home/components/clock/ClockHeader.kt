@@ -31,7 +31,6 @@ import dev.chrisbanes.haze.HazeTint
 import dev.chrisbanes.haze.hazeEffect
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
-import dev.mnascimentos.aureole.core.designsystem.theme.AureoleTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.LocalHazeState
 import dev.mnascimentos.aureole.feature.home.LocalHomeUiState
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
@@ -151,7 +150,7 @@ fun ClockHeader(
     BoxWithConstraints(
         modifier = modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(AureoleTheme.dimens.radiusLarge))
+            .clip(RoundedCornerShape(AureoleDS.dimens.radiusLarge))
             .then(hazeModifier)
             .background(containerBgColor)
             .then(clickModifier)

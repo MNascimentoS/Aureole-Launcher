@@ -44,12 +44,45 @@ import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 
 /**
+ * Configuration for the haze effect applied to the Aureole floating search bar.
+ *
+ * @property state The state of the haze effect.
+ * @property isEnabled Whether the haze effect is enabled.
+ * @property opacity The opacity of the haze effect.
+ */
+data class AureoleSearchBarHazeConfig(
+    val state: HazeState? = null,
+    val isEnabled: Boolean = false,
+    val opacity: Float = 0.5f,
+)
+
+/**
+ * Sizing configuration for the Aureole floating search bar.
+ *
+ * @property barHeight The height of the search bar when expanded.
+ * @property collapsedSize The size of the floating action button when collapsed.
+ */
+data class AureoleSearchBarSizes(
+    val barHeight: Dp = 56.dp,
+    val collapsedSize: Dp = 56.dp,
+)
+
+/**
  * Reusable floating search bar / bubble design system component for Aureole Launcher.
  *
  * Expands from a floating action bubble into a search input bar.
+ *
+ * @param query The current search query.
+ * @param onQueryChange Callback invoked when the search query changes.
+ * @param isExpanded Whether the search bar is currently expanded.
+ * @param onExpandedChange Callback invoked when the expanded state changes.
+ * @param modifier The modifier to be applied to this composable.
+ * @param placeholder The text to display when the query is empty.
+ * @param focusRequester The focus requester for the search input field.
+ * @param hazeConfig The configuration for the haze effect on the search bar.
+ * @param sizes The sizing configuration for the search bar.
  */
-// Note: Refactor components to reduce complexity and parameters
-@Suppress("LongParameterList", "LongMethod", "MagicNumber")
+@Suppress("LongMethod", "MagicNumber", "LongParameterList")
 @Composable
 fun AureoleFloatingSearchBar(
     query: String,
@@ -59,11 +92,8 @@ fun AureoleFloatingSearchBar(
     modifier: Modifier = Modifier,
     placeholder: String = "Search",
     focusRequester: FocusRequester = remember { FocusRequester() },
-    hazeState: HazeState? = null,
-    isHazeEnabled: Boolean = false,
-    hazeOpacity: Float = 0.5f,
-    barHeight: Dp = 56.dp,
-    collapsedSize: Dp = 56.dp,
+    hazeConfig: AureoleSearchBarHazeConfig = AureoleSearchBarHazeConfig(),
+    sizes: AureoleSearchBarSizes = AureoleSearchBarSizes(),
 ) {
     LaunchedEffect(query) {
         if (query.isNotEmpty() && !isExpanded) {
@@ -77,12 +107,12 @@ fun AureoleFloatingSearchBar(
         }
     }
 
-    val hazeModifier = if (isHazeEnabled && (hazeState != null)) {
+    val hazeModifier = if (hazeConfig.isEnabled && (hazeConfig.state != null)) {
         Modifier.hazeEffect(
-            state = hazeState,
+            state = hazeConfig.state,
             style = HazeStyle(
                 blurRadius = 24.dp,
-                tint = HazeTint(AureoleDS.colors.surfaceVariant.copy(alpha = hazeOpacity)),
+                tint = HazeTint(AureoleDS.colors.surfaceVariant.copy(alpha = hazeConfig.opacity)),
             ),
         ) {
             blurEnabled = true
@@ -91,10 +121,10 @@ fun AureoleFloatingSearchBar(
         Modifier
     }
 
-    val bubbleBgColor = if (!isHazeEnabled) {
+    val bubbleBgColor = if (!hazeConfig.isEnabled) {
         AureoleDS.colors.surfaceVariant
     } else {
-        AureoleDS.colors.surfaceVariant.copy(alpha = (hazeOpacity * 0.85f).coerceIn(0.3f, 0.95f))
+        AureoleDS.colors.surfaceVariant.copy(alpha = (hazeConfig.opacity * 0.85f).coerceIn(0.3f, 0.95f))
     }
 
     AnimatedContent(
@@ -103,7 +133,7 @@ fun AureoleFloatingSearchBar(
             (fadeIn() + scaleIn()).togetherWith(fadeOut() + scaleOut())
         },
         label = "aureole_floating_search_anim",
-        modifier = modifier
+        modifier = modifier,
     ) { expanded ->
         if (expanded) {
             ExpandedSearchRow(
@@ -115,35 +145,34 @@ fun AureoleFloatingSearchBar(
                     }
                     onExpandedChange(false)
                 },
+                backgroundColor = bubbleBgColor,
+                barHeight = sizes.barHeight,
+                modifier = hazeModifier,
                 placeholder = placeholder,
                 focusRequester = focusRequester,
-                modifier = hazeModifier,
-                backgroundColor = bubbleBgColor,
-                barHeight = barHeight,
             )
         } else {
             CollapsedSearchIcon(
                 onExpandedChange = onExpandedChange,
-                modifier = hazeModifier,
                 backgroundColor = bubbleBgColor,
-                collapsedSize = collapsedSize,
+                collapsedSize = sizes.collapsedSize,
+                modifier = hazeModifier,
             )
         }
     }
 }
 
-// Note: simplify parameter list
 @Suppress("LongParameterList")
 @Composable
 private fun ExpandedSearchRow(
     query: String,
     onQueryChange: (String) -> Unit,
     onCloseClick: () -> Unit,
-    placeholder: String,
-    focusRequester: FocusRequester,
     backgroundColor: Color,
     barHeight: Dp,
     modifier: Modifier = Modifier,
+    placeholder: String = "Search",
+    focusRequester: FocusRequester = remember { FocusRequester() },
 ) {
     Box(
         modifier = Modifier

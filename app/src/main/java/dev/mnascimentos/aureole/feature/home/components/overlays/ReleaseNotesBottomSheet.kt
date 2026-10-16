@@ -38,7 +38,6 @@ import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.icons.Logo
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
-import dev.mnascimentos.aureole.core.designsystem.theme.AureoleTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.settings.components.SettingsBottomSheet
 
@@ -95,7 +94,7 @@ fun ReleaseNotesBottomSheet(
             ) {
                 AureoleText(
                     text = "Entendido",
-                    style = AureoleTheme.typography.titleSmall,
+                    style = AureoleDS.typography.titleSmall,
                     fontWeight = FontWeight.Bold,
                     color = AureoleDS.colors.surface
                 )
@@ -112,27 +111,27 @@ private fun HeaderSection(versionName: String) {
     ) {
         AureoleDS.icons.Logo(
             modifier = Modifier.size(64.dp, 36.dp),
-            tint = AureoleTheme.colors.onSurfaceHigh
+            tint = AureoleDS.colors.onSurfaceHigh
         )
         Spacer(modifier = Modifier.height(AureoleDS.dimens.small))
         AureoleText(
             text = "O que há de novo",
-            style = AureoleTheme.typography.titleLarge,
+            style = AureoleDS.typography.titleLarge,
             fontWeight = FontWeight.Bold,
-            color = AureoleTheme.colors.onSurfaceHigh
+            color = AureoleDS.colors.onSurfaceHigh
         )
         Spacer(modifier = Modifier.height(AureoleDS.dimens.xxSmall))
         Box(
             modifier = Modifier
                 .clip(RoundedCornerShape(12.dp))
-                .background(AureoleTheme.colors.outline.copy(alpha = OUTLINE_ALPHA))
+                .background(AureoleDS.colors.outline.copy(alpha = OUTLINE_ALPHA))
                 .padding(horizontal = AureoleDS.dimens.medium, vertical = AureoleDS.dimens.xxSmall)
         ) {
             AureoleText(
                 text = "Versão $versionName",
-                style = AureoleTheme.typography.labelSmall,
+                style = AureoleDS.typography.labelSmall,
                 fontWeight = FontWeight.SemiBold,
-                color = AureoleTheme.colors.onSurfaceMedium
+                color = AureoleDS.colors.onSurfaceMedium
             )
         }
     }
@@ -157,12 +156,12 @@ private fun VersionChipsRow(
             val bg = if (isSelected) {
                 AureoleDS.colors.onSurfaceHigh
             } else {
-                AureoleTheme.colors.outline.copy(alpha = CHIP_OUTLINE_ALPHA)
+                AureoleDS.colors.outline.copy(alpha = CHIP_OUTLINE_ALPHA)
             }
             val textColor = if (isSelected) {
                 AureoleDS.colors.surface
             } else {
-                AureoleTheme.colors.onSurfaceMedium
+                AureoleDS.colors.onSurfaceMedium
             }
 
             Box(
@@ -174,7 +173,7 @@ private fun VersionChipsRow(
             ) {
                 AureoleText(
                     text = if (version.isCurrent) "v${version.versionName} (Atual)" else "v${version.versionName}",
-                    style = AureoleTheme.typography.labelMedium,
+                    style = AureoleDS.typography.labelMedium,
                     fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium,
                     color = textColor
                 )
@@ -188,9 +187,9 @@ private fun ReleaseNoteSectionView(section: ReleaseNoteSection) {
     Column(modifier = Modifier.fillMaxWidth()) {
         AureoleText(
             text = section.title,
-            style = AureoleTheme.typography.titleMedium,
+            style = AureoleDS.typography.titleMedium,
             fontWeight = FontWeight.Bold,
-            color = AureoleTheme.colors.onSurfaceHigh,
+            color = AureoleDS.colors.onSurfaceHigh,
             modifier = Modifier.padding(bottom = AureoleDS.dimens.small)
         )
 
@@ -207,7 +206,7 @@ private fun ReleaseNoteItemCard(item: ReleaseNoteItem) {
         modifier = Modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(16.dp))
-            .background(AureoleTheme.colors.outline.copy(alpha = CARD_OUTLINE_ALPHA))
+            .background(AureoleDS.colors.outline.copy(alpha = CARD_OUTLINE_ALPHA))
             .padding(AureoleDS.dimens.medium)
     ) {
         Row(
@@ -218,17 +217,17 @@ private fun ReleaseNoteItemCard(item: ReleaseNoteItem) {
             Spacer(modifier = Modifier.width(AureoleDS.dimens.small))
             AureoleText(
                 text = item.title,
-                style = AureoleTheme.typography.titleSmall,
+                style = AureoleDS.typography.titleSmall,
                 fontWeight = FontWeight.SemiBold,
-                color = AureoleTheme.colors.onSurfaceHigh,
+                color = AureoleDS.colors.onSurfaceHigh,
                 modifier = Modifier.weight(1f)
             )
         }
         Spacer(modifier = Modifier.height(AureoleDS.dimens.xSmall))
         AureoleText(
             text = item.description,
-            style = AureoleTheme.typography.bodyMedium,
-            color = AureoleTheme.colors.onSurfaceMedium
+            style = AureoleDS.typography.bodyMedium,
+            color = AureoleDS.colors.onSurfaceMedium
         )
     }
 }
@@ -248,8 +247,8 @@ private fun TypeBadge(type: ReleaseNoteType) {
         )
         ReleaseNoteType.IMPROVEMENT -> Triple(
             "Melhoria",
-            AureoleTheme.colors.outline.copy(alpha = BADGE_ALPHA),
-            AureoleTheme.colors.onSurfaceHigh
+            AureoleDS.colors.outline.copy(alpha = BADGE_ALPHA),
+            AureoleDS.colors.onSurfaceHigh
         )
         ReleaseNoteType.FIX -> Triple(
             "Correção",
@@ -266,7 +265,7 @@ private fun TypeBadge(type: ReleaseNoteType) {
     ) {
         AureoleText(
             text = label,
-            style = AureoleTheme.typography.labelSmall,
+            style = AureoleDS.typography.labelSmall,
             fontWeight = FontWeight.Bold,
             color = textColor
         )

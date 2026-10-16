@@ -4,7 +4,6 @@ import android.appwidget.AppWidgetHost
 import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProviderInfo
 import android.content.ActivityNotFoundException
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -14,7 +13,6 @@ import dev.mnascimentos.aureole.feature.home.extensions.removeWidgetId
 import dev.mnascimentos.aureole.feature.home.extensions.setPendingWidgetId
 
 class WidgetHostManager(
-    private val context: Context,
     private val viewModel: HomeViewModel,
     private val appWidgetHost: AppWidgetHost,
     private val appWidgetManager: AppWidgetManager,

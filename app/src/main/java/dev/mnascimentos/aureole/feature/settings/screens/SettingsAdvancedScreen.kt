@@ -42,7 +42,6 @@ import dev.mnascimentos.aureole.core.designsystem.icons.RefreshCcw
 import dev.mnascimentos.aureole.core.designsystem.icons.Smile
 import dev.mnascimentos.aureole.core.designsystem.icons.Undo
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
-import dev.mnascimentos.aureole.core.designsystem.theme.AureoleTheme
 import dev.mnascimentos.aureole.feature.home.components.overlays.ReleaseNotesBottomSheet
 import dev.mnascimentos.aureole.feature.settings.components.SettingsBottomSheet
 import dev.mnascimentos.aureole.feature.settings.model.SettingsScreenActions
@@ -86,9 +85,9 @@ fun SettingsAdvancedScreen(
 
                 AureoleText(
                     text = "Advanced",
-                    style = AureoleTheme.typography.titleLarge,
+                    style = AureoleDS.typography.titleLarge,
                     fontWeight = FontWeight.Medium,
-                    color = AureoleTheme.colors.onSurfaceMedium,
+                    color = AureoleDS.colors.onSurfaceMedium,
                     textAlign = TextAlign.Center,
                     modifier = Modifier.fillMaxWidth()
                 )
@@ -193,37 +192,37 @@ private fun AdvancedLinksGroup(onNavigateToContributors: () -> Unit) {
     ) {
         AureoleText(
             text = "Contributors",
-            style = AureoleTheme.typography.bodyLarge,
+            style = AureoleDS.typography.bodyLarge,
             fontWeight = FontWeight.Normal,
-            color = AureoleTheme.colors.onSurfaceMedium,
+            color = AureoleDS.colors.onSurfaceMedium,
             modifier = Modifier.clickable { onNavigateToContributors() }
         )
         AureoleText(
             text = "Privacy policy",
-            style = AureoleTheme.typography.bodyLarge,
+            style = AureoleDS.typography.bodyLarge,
             fontWeight = FontWeight.Normal,
-            color = AureoleTheme.colors.onSurfaceMedium,
+            color = AureoleDS.colors.onSurfaceMedium,
             modifier = Modifier.clickable { }
         )
         AureoleText(
             text = "Terms of service",
-            style = AureoleTheme.typography.bodyLarge,
+            style = AureoleDS.typography.bodyLarge,
             fontWeight = FontWeight.Normal,
-            color = AureoleTheme.colors.onSurfaceMedium,
+            color = AureoleDS.colors.onSurfaceMedium,
             modifier = Modifier.clickable { }
         )
         AureoleText(
             text = "Privacy settings",
-            style = AureoleTheme.typography.bodyLarge,
+            style = AureoleDS.typography.bodyLarge,
             fontWeight = FontWeight.Normal,
-            color = AureoleTheme.colors.onSurfaceMedium,
+            color = AureoleDS.colors.onSurfaceMedium,
             modifier = Modifier.clickable { }
         )
         AureoleText(
             text = "Open source e license",
-            style = AureoleTheme.typography.bodyLarge,
+            style = AureoleDS.typography.bodyLarge,
             fontWeight = FontWeight.Normal,
-            color = AureoleTheme.colors.onSurfaceMedium,
+            color = AureoleDS.colors.onSurfaceMedium,
             modifier = Modifier.clickable { }
         )
     }

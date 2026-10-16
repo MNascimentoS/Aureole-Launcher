@@ -27,7 +27,6 @@ import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.icons.Search
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
-import dev.mnascimentos.aureole.core.designsystem.theme.AureoleTheme
 import dev.mnascimentos.aureole.feature.home.components.favorites.model.FavoriteAppRowParams
 import dev.mnascimentos.aureole.feature.home.components.favorites.model.FavoriteSectionParams
 
@@ -45,9 +44,9 @@ internal fun FavoriteSectionHeader(
     ) {
         AureoleText(
             text = "Favoritos ($count)",
-            style = AureoleTheme.typography.titleSmall,
+            style = AureoleDS.typography.titleSmall,
             fontWeight = FontWeight.Bold,
-            color = AureoleTheme.colors.onSurfaceHigh
+            color = AureoleDS.colors.onSurfaceHigh
         )
         if (count > 0) {
             TextButton(
@@ -56,7 +55,7 @@ internal fun FavoriteSectionHeader(
             ) {
                 AureoleText(
                     text = "Desativar todos",
-                    style = AureoleTheme.typography.labelMedium,
+                    style = AureoleDS.typography.labelMedium,
                     fontWeight = FontWeight.SemiBold,
                     color = AureoleDS.colors.error
                 )
@@ -79,9 +78,9 @@ internal fun RemainingSectionHeader(
     ) {
         AureoleText(
             text = "Outros Aplicativos ($count)",
-            style = AureoleTheme.typography.titleSmall,
+            style = AureoleDS.typography.titleSmall,
             fontWeight = FontWeight.Bold,
-            color = AureoleTheme.colors.onSurfaceMedium
+            color = AureoleDS.colors.onSurfaceMedium
         )
         if (count > 0) {
             TextButton(
@@ -90,9 +89,9 @@ internal fun RemainingSectionHeader(
             ) {
                 AureoleText(
                     text = "Ativar todos",
-                    style = AureoleTheme.typography.labelMedium,
+                    style = AureoleDS.typography.labelMedium,
                     fontWeight = FontWeight.SemiBold,
-                    color = AureoleTheme.colors.onSurfaceHigh
+                    color = AureoleDS.colors.onSurfaceHigh
                 )
             }
         }
@@ -127,8 +126,8 @@ internal fun LazyListScope.favoriteSectionItems(
             }
             AureoleText(
                 text = emptyMsg,
-                style = AureoleTheme.typography.bodyMedium,
-                color = AureoleTheme.colors.onSurfaceMedium,
+                style = AureoleDS.typography.bodyMedium,
+                color = AureoleDS.colors.onSurfaceMedium,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(vertical = 12.dp),
@@ -181,8 +180,8 @@ internal fun LazyListScope.remainingSectionItems(
             }
             AureoleText(
                 text = emptyMsg,
-                style = AureoleTheme.typography.bodyMedium,
-                color = AureoleTheme.colors.onSurfaceMedium,
+                style = AureoleDS.typography.bodyMedium,
+                color = AureoleDS.colors.onSurfaceMedium,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(vertical = 12.dp),
@@ -216,7 +215,7 @@ internal fun FavoriteAppRow(
         modifier = modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(12.dp))
-            .background(AureoleTheme.colors.surfaceVariant.copy(alpha = 0.3f))
+            .background(AureoleDS.colors.surfaceVariant.copy(alpha = 0.3f))
             .padding(horizontal = 12.dp, vertical = 10.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
@@ -243,16 +242,16 @@ internal fun FavoriteAppsSearchInput(
         placeholder = { AureoleText("Buscar aplicativo...") },
         leadingIcon = {
             AureoleDS.icons.Search(
-                tint = AureoleTheme.colors.onSurfaceMedium,
+                tint = AureoleDS.colors.onSurfaceMedium,
                 modifier = Modifier.size(20.dp)
             )
         },
         singleLine = true,
         colors = OutlinedTextFieldDefaults.colors(
-            focusedBorderColor = AureoleTheme.colors.onSurfaceHigh,
-            unfocusedBorderColor = AureoleTheme.colors.outline.copy(alpha = 0.5f),
-            focusedTextColor = AureoleTheme.colors.onSurfaceHigh,
-            unfocusedTextColor = AureoleTheme.colors.onSurfaceHigh
+            focusedBorderColor = AureoleDS.colors.onSurfaceHigh,
+            unfocusedBorderColor = AureoleDS.colors.outline.copy(alpha = 0.5f),
+            focusedTextColor = AureoleDS.colors.onSurfaceHigh,
+            unfocusedTextColor = AureoleDS.colors.onSurfaceHigh
         ),
         shape = RoundedCornerShape(12.dp),
         modifier = Modifier.fillMaxWidth()

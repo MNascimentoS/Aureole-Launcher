@@ -21,7 +21,6 @@ import dev.mnascimentos.aureole.core.designsystem.icons.ColorFill
 import dev.mnascimentos.aureole.core.designsystem.icons.Corners
 import dev.mnascimentos.aureole.core.designsystem.icons.Glass
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
-import dev.mnascimentos.aureole.core.designsystem.theme.AureoleTheme
 import dev.mnascimentos.aureole.feature.settings.components.BlurBottomSheet
 import dev.mnascimentos.aureole.feature.settings.components.PickBorderRadiusBottomSheet
 import dev.mnascimentos.aureole.feature.settings.components.PickFontBottomSheet
@@ -49,14 +48,14 @@ internal fun MenuColorRow(
         verticalAlignment = Alignment.CenterVertically
     ) {
         AureoleDS.icons.ColorFill(
-            tint = AureoleTheme.colors.onSurfaceMedium,
+            tint = AureoleDS.colors.onSurfaceMedium,
             modifier = Modifier.padding(end = 20.dp).size(20.dp)
         )
         AureoleText(
             text = "Menu background color",
-            style = AureoleTheme.typography.bodyLarge,
+            style = AureoleDS.typography.bodyLarge,
             fontWeight = FontWeight.Normal,
-            color = AureoleTheme.colors.onSurfaceMedium,
+            color = AureoleDS.colors.onSurfaceMedium,
             modifier = Modifier.weight(1f)
         )
         Box(
@@ -82,14 +81,14 @@ internal fun GlassAndBlurRow(
         verticalAlignment = Alignment.CenterVertically
     ) {
         AureoleDS.icons.Glass(
-            tint = AureoleTheme.colors.onSurfaceMedium,
+            tint = AureoleDS.colors.onSurfaceMedium,
             modifier = Modifier.padding(end = 20.dp).size(20.dp)
         )
         AureoleText(
             text = "Glass effect",
-            style = AureoleTheme.typography.bodyLarge,
+            style = AureoleDS.typography.bodyLarge,
             fontWeight = FontWeight.Normal,
-            color = AureoleTheme.colors.onSurfaceMedium,
+            color = AureoleDS.colors.onSurfaceMedium,
             modifier = Modifier.weight(1f)
         )
         val opacityText = when {
@@ -100,8 +99,8 @@ internal fun GlassAndBlurRow(
         }
         AureoleText(
             text = opacityText,
-            style = AureoleTheme.typography.bodyLarge,
-            color = AureoleTheme.colors.onSurfaceLow
+            style = AureoleDS.typography.bodyLarge,
+            color = AureoleDS.colors.onSurfaceLow
         )
     }
 }
@@ -120,20 +119,20 @@ internal fun ChangeBorderRow(
         verticalAlignment = Alignment.CenterVertically
     ) {
         AureoleDS.icons.Corners(
-            tint = AureoleTheme.colors.onSurfaceMedium,
+            tint = AureoleDS.colors.onSurfaceMedium,
             modifier = Modifier.padding(end = 20.dp).size(20.dp)
         )
         AureoleText(
             text = "Change Border",
-            style = AureoleTheme.typography.bodyLarge,
+            style = AureoleDS.typography.bodyLarge,
             fontWeight = FontWeight.Normal,
-            color = AureoleTheme.colors.onSurfaceMedium,
+            color = AureoleDS.colors.onSurfaceMedium,
             modifier = Modifier.weight(1f)
         )
         AureoleText(
             text = "$cornerRadiusDp dp",
-            style = AureoleTheme.typography.bodyLarge,
-            color = AureoleTheme.colors.onSurfaceLow
+            style = AureoleDS.typography.bodyLarge,
+            color = AureoleDS.colors.onSurfaceLow
         )
     }
 }

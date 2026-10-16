@@ -27,6 +27,7 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleFloatingSearchBar
+import dev.mnascimentos.aureole.core.designsystem.components.AureoleSearchBarSizes
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleSectionHeader
 import dev.mnascimentos.aureole.feature.home.components.scrubber.CurvedAlphabetScrubber
 import dev.mnascimentos.aureole.feature.home.components.scrubber.model.ScrubberCallbacks
@@ -116,8 +117,10 @@ fun WidgetGroupList(
                 modifier = searchBarModifier,
                 placeholder = "Pesquisar widgets...",
                 focusRequester = focusRequester,
-                collapsedSize = 60.dp,
-                barHeight = 52.dp
+                sizes = AureoleSearchBarSizes(
+                    collapsedSize = 60.dp,
+                    barHeight = 52.dp
+                )
             )
         }
     }
@@ -235,6 +238,7 @@ private fun WidgetGroupListColumn(
                         ) { widget ->
                             WidgetPreviewCard(
                                 widget = widget,
+                                fallbackAppIcon = group.appIcon,
                                 onClick = { widget.providerInfo?.let { onWidgetSelected(it) } }
                             )
                         }

@@ -45,6 +45,11 @@ private const val OPAQUE_ALPHA = 1f
 
 /**
  * Standard Popup Container for Aureole Launcher popups, matching Figma specifications.
+ *
+ * @param modifier The modifier to be applied to the layout.
+ * @param cornerRadius The corner radius of the popup.
+ * @param hazeState The haze state for the background blur effect.
+ * @param content The content of the popup.
  */
 @Composable
 fun AureolePopupBox(
@@ -88,6 +93,10 @@ fun AureolePopupBox(
  * Filled top banner with height (48dp), centered title, and Aureole logo icon
  * aligned to top right with 4dp margin. Clipped to top corner radius.
  * Clicking the Aureole logo (or header banner) navigates to Aureole Settings screen.
+ *
+ * @param title The title of the banner.
+ * @param modifier The modifier to be applied to the layout.
+ * @param onLogoClick Executes when the user clicks the logo.
  */
 @Composable
 fun AureoleHeaderBanner(
@@ -151,6 +160,16 @@ fun AureoleHeaderBanner(
  * Standard Popup Header with distinct header background bar (surfaceVariant),
  * app/folder icon badge, main title, and top-right Aureole logo icon aligned to TopEnd (4dp margin).
  * Clipped to top corner radius.
+ *
+ * @param title The main title of the header.
+ * @param modifier The modifier to be applied to the layout.
+ * @param sessionTitle The optional subtitle of the header.
+ * @param iconVector The vector icon to be displayed.
+ * @param iconBitmap The bitmap icon to be displayed.
+ * @param customIcon The custom icon content.
+ * @param showAureoleLogo Whether to show the Aureole logo.
+ * @param onSettingsClick Executes when the user clicks the settings icon.
+ * @param onCloseClick Executes when the user clicks the close icon.
  */
 @Suppress(
     "LongParameterList",
@@ -286,6 +305,9 @@ fun AureolePopupHeader(
 
 /**
  * Section Title divider row inside popups (e.g. "Titulo de sessão", "Folder actions", "App actions").
+ *
+ * @param title The title of the section.
+ * @param modifier The modifier to be applied to the layout.
  */
 @Composable
 fun AureolePopupMenuSection(

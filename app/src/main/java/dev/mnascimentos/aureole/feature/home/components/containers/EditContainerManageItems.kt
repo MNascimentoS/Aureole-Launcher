@@ -25,7 +25,6 @@ import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.data.model.ContainerItemEntity
 import dev.mnascimentos.aureole.core.data.model.ContainerItemType
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
-import dev.mnascimentos.aureole.core.designsystem.theme.AureoleTheme
 
 @Composable
 internal fun ManageItemsListSection(
@@ -37,7 +36,7 @@ internal fun ManageItemsListSection(
             modifier = Modifier
                 .fillMaxWidth()
                 .background(
-                    AureoleTheme.colors.surfaceVariant.copy(alpha = 0.25f),
+                    AureoleDS.colors.surfaceVariant.copy(alpha = 0.25f),
                     RoundedCornerShape(14.dp)
                 )
                 .padding(16.dp),
@@ -45,8 +44,8 @@ internal fun ManageItemsListSection(
         ) {
             Text(
                 text = "Nenhum componente adicionado ainda.",
-                style = AureoleTheme.typography.bodyMedium,
-                color = AureoleTheme.colors.onSurfaceMedium
+                style = AureoleDS.typography.bodyMedium,
+                color = AureoleDS.colors.onSurfaceMedium
             )
         }
     } else {
@@ -109,7 +108,7 @@ private fun ManageItemRow(
         modifier = Modifier
             .fillMaxWidth()
             .background(
-                color = AureoleTheme.colors.surfaceVariant.copy(alpha = 0.3f),
+                color = AureoleDS.colors.surfaceVariant.copy(alpha = 0.3f),
                 shape = RoundedCornerShape(12.dp)
             )
             .padding(horizontal = 12.dp, vertical = 12.dp),
@@ -119,15 +118,15 @@ private fun ManageItemRow(
             modifier = Modifier
                 .size(32.dp)
                 .background(
-                    color = AureoleTheme.colors.surfaceVariant.copy(alpha = 0.8f),
+                    color = AureoleDS.colors.surfaceVariant.copy(alpha = 0.8f),
                     shape = RoundedCornerShape(8.dp)
                 ),
             contentAlignment = Alignment.Center
         ) {
             Text(
                 text = "A",
-                style = AureoleTheme.typography.labelMedium,
-                color = AureoleTheme.colors.onSurfaceHigh
+                style = AureoleDS.typography.labelMedium,
+                color = AureoleDS.colors.onSurfaceHigh
             )
         }
 
@@ -135,8 +134,8 @@ private fun ManageItemRow(
 
         Text(
             text = title,
-            style = AureoleTheme.typography.bodyMedium,
-            color = AureoleTheme.colors.onSurfaceHigh,
+            style = AureoleDS.typography.bodyMedium,
+            color = AureoleDS.colors.onSurfaceHigh,
             modifier = Modifier.weight(1f)
         )
 
@@ -163,7 +162,7 @@ private fun ManageItemRowActionButtons(
                 modifier = Modifier
                     .size(24.dp)
                     .background(
-                        color = AureoleTheme.colors.surfaceVariant.copy(alpha = 0.5f),
+                        color = AureoleDS.colors.surfaceVariant.copy(alpha = 0.5f),
                         shape = RoundedCornerShape(6.dp)
                     )
                     .clickable { actions.onMoveUp(index) },
@@ -171,7 +170,7 @@ private fun ManageItemRowActionButtons(
             ) {
                 Text(
                     text = "↑",
-                    color = AureoleTheme.colors.onSurfaceHigh,
+                    color = AureoleDS.colors.onSurfaceHigh,
                     fontSize = 12.sp
                 )
             }
@@ -181,7 +180,7 @@ private fun ManageItemRowActionButtons(
                 modifier = Modifier
                     .size(24.dp)
                     .background(
-                        color = AureoleTheme.colors.surfaceVariant.copy(alpha = 0.5f),
+                        color = AureoleDS.colors.surfaceVariant.copy(alpha = 0.5f),
                         shape = RoundedCornerShape(6.dp)
                     )
                     .clickable { actions.onMoveDown(index) },
@@ -189,7 +188,7 @@ private fun ManageItemRowActionButtons(
             ) {
                 Text(
                     text = "↓",
-                    color = AureoleTheme.colors.onSurfaceHigh,
+                    color = AureoleDS.colors.onSurfaceHigh,
                     fontSize = 12.sp
                 )
             }

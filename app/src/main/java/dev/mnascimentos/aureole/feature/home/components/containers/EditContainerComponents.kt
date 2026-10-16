@@ -43,7 +43,6 @@ import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.icons.ArrowDown
 import dev.mnascimentos.aureole.core.designsystem.icons.ArrowUp
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
-import dev.mnascimentos.aureole.core.designsystem.theme.AureoleTheme
 import dev.mnascimentos.aureole.feature.home.components.containers.model.EditContainerFormCallbacks
 import dev.mnascimentos.aureole.feature.home.components.containers.model.EditContainerFormState
 
@@ -73,9 +72,9 @@ internal fun EditContainerOrientationSelector(
     ) {
         AureoleText(
             text = "Orientação do Container",
-            style = AureoleTheme.typography.labelMedium,
+            style = AureoleDS.typography.labelMedium,
             fontWeight = FontWeight.Bold,
-            color = AureoleTheme.colors.onSurfaceHigh
+            color = AureoleDS.colors.onSurfaceHigh
         )
 
         Spacer(modifier = Modifier.height(AureoleDS.dimens.xxSmall))
@@ -105,9 +104,9 @@ internal fun EditContainerOrientationSelector(
                     OutlinedButton(
                         onClick = onClick,
                         modifier = modifier,
-                        border = BorderStroke(1.dp, AureoleTheme.colors.outline.copy(alpha = 0.5f))
+                        border = BorderStroke(1.dp, AureoleDS.colors.outline.copy(alpha = 0.5f))
                     ) {
-                        AureoleText(text = optText, color = AureoleTheme.colors.onSurfaceHigh)
+                        AureoleText(text = optText, color = AureoleDS.colors.onSurfaceHigh)
                     }
                 }
             }
@@ -134,9 +133,9 @@ internal fun EditContainerAlignmentSelector(
 
     AureoleText(
         text = "Alinhamento dos Itens",
-        style = AureoleTheme.typography.labelMedium,
+        style = AureoleDS.typography.labelMedium,
         fontWeight = FontWeight.Bold,
-        color = AureoleTheme.colors.onSurfaceHigh,
+        color = AureoleDS.colors.onSurfaceHigh,
         modifier = Modifier.padding(bottom = 4.dp)
     )
     ExposedDropdownMenuBox(
@@ -150,9 +149,9 @@ internal fun EditContainerAlignmentSelector(
             trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = isDropdownExpanded) },
             colors = OutlinedTextFieldDefaults.colors(
                 focusedBorderColor = AureoleDS.colors.onSurfaceHigh,
-                unfocusedBorderColor = AureoleTheme.colors.outline,
-                focusedTextColor = AureoleTheme.colors.onSurfaceHigh,
-                unfocusedTextColor = AureoleTheme.colors.onSurfaceHigh
+                unfocusedBorderColor = AureoleDS.colors.outline,
+                focusedTextColor = AureoleDS.colors.onSurfaceHigh,
+                unfocusedTextColor = AureoleDS.colors.onSurfaceHigh
             ),
             modifier = Modifier.menuAnchor(ExposedDropdownMenuAnchorType.PrimaryNotEditable).fillMaxWidth()
         )
@@ -162,7 +161,7 @@ internal fun EditContainerAlignmentSelector(
         ) {
             positionOptionsMap.forEach { (key, label) ->
                 DropdownMenuItem(
-                    text = { AureoleText(label, color = AureoleTheme.colors.onSurfaceHigh) },
+                    text = { AureoleText(label, color = AureoleDS.colors.onSurfaceHigh) },
                     onClick = {
                         onPositionSelected(key)
                         isDropdownExpanded = false
@@ -183,8 +182,8 @@ internal fun EditContainerOptionsExpandableSection(
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(AureoleTheme.dimens.radiusLarge))
-            .background(AureoleTheme.colors.surfaceVariant.copy(alpha = 0.3f))
+            .clip(RoundedCornerShape(AureoleDS.dimens.radiusLarge))
+            .background(AureoleDS.colors.surfaceVariant.copy(alpha = 0.3f))
             .padding(horizontal = AureoleDS.dimens.medium, vertical = AureoleDS.dimens.small)
     ) {
         Row(
@@ -197,9 +196,9 @@ internal fun EditContainerOptionsExpandableSection(
         ) {
             AureoleText(
                 text = "Opções de Aparência e Comportamento",
-                style = AureoleTheme.typography.bodyMedium,
+                style = AureoleDS.typography.bodyMedium,
                 fontWeight = FontWeight.SemiBold,
-                color = AureoleTheme.colors.onSurfaceHigh,
+                color = AureoleDS.colors.onSurfaceHigh,
                 modifier = Modifier.weight(1f)
             )
             IconButton(
@@ -208,12 +207,12 @@ internal fun EditContainerOptionsExpandableSection(
             ) {
                 if (isExpanded) {
                     AureoleDS.icons.ArrowUp(
-                        tint = AureoleTheme.colors.onSurfaceMedium,
+                        tint = AureoleDS.colors.onSurfaceMedium,
                         modifier = Modifier.size(16.dp)
                     )
                 } else {
                     AureoleDS.icons.ArrowDown(
-                        tint = AureoleTheme.colors.onSurfaceMedium,
+                        tint = AureoleDS.colors.onSurfaceMedium,
                         modifier = Modifier.size(16.dp)
                     )
                 }
@@ -296,8 +295,8 @@ internal fun SettingSwitchRow(
     ) {
         AureoleText(
             text = label,
-            style = AureoleTheme.typography.bodyMedium,
-            color = AureoleTheme.colors.onSurfaceHigh
+            style = AureoleDS.typography.bodyMedium,
+            color = AureoleDS.colors.onSurfaceHigh
         )
         Switch(
             checked = checked,

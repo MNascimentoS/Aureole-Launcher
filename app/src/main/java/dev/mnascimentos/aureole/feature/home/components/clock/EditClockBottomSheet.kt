@@ -30,7 +30,7 @@ import androidx.compose.ui.unit.dp
 import dev.chrisbanes.haze.HazeState
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleEditOverlay
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
-import dev.mnascimentos.aureole.core.designsystem.theme.AureoleTheme
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
 import kotlinx.coroutines.delay
@@ -156,7 +156,7 @@ private fun EditClockPreviewCard(
         modifier = Modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(20.dp))
-            .background(AureoleTheme.colors.surfaceVariant.copy(alpha = 0.85f))
+            .background(AureoleDS.colors.surfaceVariant.copy(alpha = 0.85f))
             .padding(16.dp),
         contentAlignment = Alignment.Center
     ) {
@@ -230,8 +230,8 @@ private fun EditClockStyleSection(
             placeholder = { AureoleText("Ex: Bem-vindo(a) de volta!") },
             singleLine = true,
             colors = OutlinedTextFieldDefaults.colors(
-                focusedTextColor = AureoleTheme.colors.onSurfaceHigh,
-                unfocusedTextColor = AureoleTheme.colors.onSurfaceHigh
+                focusedTextColor = AureoleDS.colors.onSurfaceHigh,
+                unfocusedTextColor = AureoleDS.colors.onSurfaceHigh
             ),
             modifier = Modifier.fillMaxWidth()
         )
@@ -342,8 +342,8 @@ private fun EditClockFormatSection(
 
     AureoleText(
         text = "Formato de Hora:",
-        style = AureoleTheme.typography.bodySmall,
-        color = AureoleTheme.colors.onSurfaceMedium,
+        style = AureoleDS.typography.bodySmall,
+        color = AureoleDS.colors.onSurfaceMedium,
         modifier = Modifier.padding(bottom = 6.dp)
     )
     Row(
@@ -374,8 +374,8 @@ private fun EditClockFormatSection(
 
     AureoleText(
         text = "Formato de Data:",
-        style = AureoleTheme.typography.bodySmall,
-        color = AureoleTheme.colors.onSurfaceMedium,
+        style = AureoleDS.typography.bodySmall,
+        color = AureoleDS.colors.onSurfaceMedium,
         modifier = Modifier.padding(bottom = 6.dp)
     )
     FlowRow(

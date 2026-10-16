@@ -1,8 +1,6 @@
 package dev.mnascimentos.aureole.feature.home
 
-import android.app.Application
-import android.content.ComponentName
-import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dev.mnascimentos.aureole.core.data.repository.AppRepository
 import dev.mnascimentos.aureole.core.data.repository.ContainerRepository
@@ -24,7 +22,6 @@ import kotlinx.coroutines.launch
 
 @Suppress("LongParameterList") // Primary ViewModel requiring dependencies for launcher state management
 class HomeViewModel(
-    application: Application,
     internal val appRepository: AppRepository,
     internal val widgetRepository: WidgetRepository,
     internal val settingsRepository: SettingsRepository,
@@ -32,7 +29,7 @@ class HomeViewModel(
     internal val favoriteContainerRepository: FavoriteContainerRepository,
     internal val containerRepository: ContainerRepository,
     internal val gridRepository: GridRepository,
-) : AndroidViewModel(application) {
+) : ViewModel() {
 
     private val _uiState = MutableStateFlow(MainUiState())
     val uiState: StateFlow<MainUiState> = _uiState.asStateFlow()
@@ -76,8 +73,8 @@ class HomeViewModel(
         }
     }
 
-    fun launchApp(componentName: ComponentName) {
-        appRepository.launchApp(componentName)
+    fun launchApp(packageName: String, activityName: String) {
+        appRepository.launchApp(packageName, activityName)
     }
 
     fun loadSettings() {

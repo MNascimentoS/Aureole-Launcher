@@ -27,7 +27,6 @@ import dev.mnascimentos.aureole.core.designsystem.icons.Star
 import dev.mnascimentos.aureole.core.designsystem.icons.VerticalContainer
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
-import dev.mnascimentos.aureole.core.designsystem.theme.AureoleTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
 import dev.mnascimentos.aureole.feature.settings.components.SettingsBottomSheet
@@ -58,7 +57,7 @@ private fun CustomizeAddItemOptions(
         icon = {
             AureoleDS.icons.Add(
                 modifier = Modifier.size(24.dp),
-                tint = AureoleTheme.colors.onSurfaceMedium
+                tint = AureoleDS.colors.onSurfaceMedium
             )
         },
         onClick = {
@@ -71,7 +70,7 @@ private fun CustomizeAddItemOptions(
         icon = {
             AureoleDS.icons.Star(
                 modifier = Modifier.size(24.dp),
-                tint = AureoleTheme.colors.onSurfaceMedium
+                tint = AureoleDS.colors.onSurfaceMedium
             )
         },
         onClick = {
@@ -84,7 +83,7 @@ private fun CustomizeAddItemOptions(
         icon = {
             AureoleDS.icons.VerticalContainer(
                 modifier = Modifier.size(24.dp),
-                tint = AureoleTheme.colors.onSurfaceMedium
+                tint = AureoleDS.colors.onSurfaceMedium
             )
         },
         onClick = {
@@ -97,7 +96,7 @@ private fun CustomizeAddItemOptions(
         icon = {
             AureoleDS.icons.MultipleView(
                 modifier = Modifier.size(24.dp),
-                tint = AureoleTheme.colors.onSurfaceMedium
+                tint = AureoleDS.colors.onSurfaceMedium
             )
         },
         onClick = {
@@ -117,7 +116,7 @@ private fun CustomizeSystemOptions(
         icon = {
             AureoleDS.icons.Layout(
                 modifier = Modifier.size(24.dp),
-                tint = AureoleTheme.colors.onSurfaceMedium
+                tint = AureoleDS.colors.onSurfaceMedium
             )
         },
         onClick = {
@@ -130,7 +129,7 @@ private fun CustomizeSystemOptions(
         icon = {
             AureoleDS.icons.Placeholder(
                 modifier = Modifier.size(24.dp),
-                tint = AureoleTheme.colors.onSurfaceMedium
+                tint = AureoleDS.colors.onSurfaceMedium
             )
         },
         onClick = {
@@ -143,7 +142,7 @@ private fun CustomizeSystemOptions(
         icon = {
             AureoleDS.icons.Icon(
                 modifier = Modifier.size(24.dp),
-                tint = AureoleTheme.colors.onSurfaceMedium
+                tint = AureoleDS.colors.onSurfaceMedium
             )
         },
         onClick = {
@@ -175,8 +174,8 @@ private fun CustomizeOptionItem(
         Spacer(modifier = Modifier.width(AureoleDS.dimens.medium))
         AureoleText(
             text = title,
-            style = AureoleTheme.typography.bodyLarge,
-            color = AureoleTheme.colors.onSurfaceMedium
+            style = AureoleDS.typography.bodyLarge,
+            color = AureoleDS.colors.onSurfaceMedium
         )
     }
 }

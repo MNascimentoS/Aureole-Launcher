@@ -33,7 +33,6 @@ import dev.mnascimentos.aureole.core.designsystem.icons.ArrowUp
 import dev.mnascimentos.aureole.core.designsystem.icons.Delete
 import dev.mnascimentos.aureole.core.designsystem.icons.Search
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
-import dev.mnascimentos.aureole.core.designsystem.theme.AureoleTheme
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.FolderIconRegistry
 
 private const val MAX_DROPDOWN_APP_RESULTS = 8
@@ -47,7 +46,7 @@ internal fun EditContainerItemRow(
         modifier = Modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(8.dp))
-            .background(AureoleTheme.colors.surfaceVariant.copy(alpha = 0.5f))
+            .background(AureoleDS.colors.surfaceVariant.copy(alpha = 0.5f))
             .padding(horizontal = AureoleDS.dimens.small, vertical = 4.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -65,15 +64,15 @@ internal fun EditContainerItemRow(
 
         AureoleText(
             text = params.title,
-            style = AureoleTheme.typography.bodyMedium,
-            color = AureoleTheme.colors.onSurfaceHigh,
+            style = AureoleDS.typography.bodyMedium,
+            color = AureoleDS.colors.onSurfaceHigh,
             modifier = Modifier.weight(1f)
         )
 
         AureoleText(
             text = if (params.isFolder) "Pasta" else "App",
-            style = AureoleTheme.typography.labelSmall,
-            color = AureoleTheme.colors.onSurfaceMedium,
+            style = AureoleDS.typography.labelSmall,
+            color = AureoleDS.colors.onSurfaceMedium,
             modifier = Modifier.padding(end = 4.dp)
         )
 
@@ -99,9 +98,9 @@ private fun EditContainerItemMoveButtons(
         ) {
             AureoleDS.icons.ArrowUp(
                 tint = if (params.canMoveUp) {
-                    AureoleTheme.colors.onSurfaceHigh
+                    AureoleDS.colors.onSurfaceHigh
                 } else {
-                    AureoleTheme.colors.onSurfaceMedium.copy(alpha = 0.3f)
+                    AureoleDS.colors.onSurfaceMedium.copy(alpha = 0.3f)
                 },
                 modifier = Modifier.size(16.dp)
             )
@@ -113,9 +112,9 @@ private fun EditContainerItemMoveButtons(
         ) {
             AureoleDS.icons.ArrowDown(
                 tint = if (params.canMoveDown) {
-                    AureoleTheme.colors.onSurfaceHigh
+                    AureoleDS.colors.onSurfaceHigh
                 } else {
-                    AureoleTheme.colors.onSurfaceMedium.copy(alpha = 0.3f)
+                    AureoleDS.colors.onSurfaceMedium.copy(alpha = 0.3f)
                 },
                 modifier = Modifier.size(16.dp)
             )
@@ -155,16 +154,16 @@ internal fun EditContainerAddAppDropdown(
             placeholder = { AureoleText(label) },
             leadingIcon = {
                 AureoleDS.icons.Search(
-                    tint = AureoleTheme.colors.onSurfaceMedium,
+                    tint = AureoleDS.colors.onSurfaceMedium,
                     modifier = Modifier.size(18.dp)
                 )
             },
             trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = isExpanded) },
             colors = OutlinedTextFieldDefaults.colors(
                 focusedBorderColor = AureoleDS.colors.onSurfaceHigh,
-                unfocusedBorderColor = AureoleTheme.colors.outline,
-                focusedTextColor = AureoleTheme.colors.onSurfaceHigh,
-                unfocusedTextColor = AureoleTheme.colors.onSurfaceHigh
+                unfocusedBorderColor = AureoleDS.colors.outline,
+                focusedTextColor = AureoleDS.colors.onSurfaceHigh,
+                unfocusedTextColor = AureoleDS.colors.onSurfaceHigh
             ),
             modifier = Modifier.menuAnchor(ExposedDropdownMenuAnchorType.PrimaryEditable).fillMaxWidth()
         )
@@ -194,7 +193,7 @@ private fun DropdownAppItem(
 ) {
     val iconBitmap = remember(app.packageName) { app.getIconBitmap() }
     DropdownMenuItem(
-        text = { AureoleText(app.label, color = AureoleTheme.colors.onSurfaceHigh) },
+        text = { AureoleText(app.label, color = AureoleDS.colors.onSurfaceHigh) },
         leadingIcon = {
             Image(
                 bitmap = iconBitmap,

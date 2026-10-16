@@ -66,7 +66,7 @@ private fun HomeViewModel.closeFolder() {
 
 private fun HomeViewModel.launchAppFromFolder(packageName: String) {
     val appInfo = uiState.value.apps.find { it.packageName == packageName }
-    appInfo?.let { launchApp(it.componentName) }
+    appInfo?.let { launchApp(it.packageName, it.componentName.className) }
     closeFolder()
 }
 

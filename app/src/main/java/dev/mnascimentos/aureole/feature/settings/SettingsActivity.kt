@@ -62,7 +62,7 @@ class SettingsActivity : ComponentActivity() {
                 val photoPickerLauncher = rememberLauncherForActivityResult(
                     contract = ActivityResultContracts.PickVisualMedia(),
                 ) { uri ->
-                    uri?.let { viewModel.setCustomWallpaper(it) }
+                    uri?.let { viewModel.setCustomWallpaper(it.toString()) }
                 }
 
                 SettingsScreen(

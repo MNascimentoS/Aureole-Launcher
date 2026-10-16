@@ -29,6 +29,7 @@ import dev.chrisbanes.haze.HazeStyle
 import dev.chrisbanes.haze.HazeTint
 import dev.chrisbanes.haze.hazeEffect
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleFloatingSearchBar
+import dev.mnascimentos.aureole.core.designsystem.components.AureoleSearchBarHazeConfig
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.utils.fadingEdges
 import dev.mnascimentos.aureole.feature.home.LocalHomeActions
@@ -111,9 +112,11 @@ fun AppsListDrawer(
                     isExpanded = isSearchExpanded,
                     onExpandedChange = { isSearchExpanded = it },
                     placeholder = "Search apps",
-                    hazeState = hazeState,
-                    isHazeEnabled = uiState.isHazeEnabled,
-                    hazeOpacity = uiState.hazeOpacity
+                    hazeConfig = AureoleSearchBarHazeConfig(
+                        state = hazeState,
+                        isEnabled = uiState.isHazeEnabled,
+                        opacity = uiState.hazeOpacity
+                    )
                 )
             }
         }

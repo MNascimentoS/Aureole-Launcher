@@ -12,7 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalInspectionMode
-import dev.mnascimentos.aureole.core.designsystem.theme.AureoleTheme
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 
 @Composable
 internal fun RenderModalBottomSheetOrInspection(
@@ -26,11 +26,11 @@ internal fun RenderModalBottomSheetOrInspection(
         ) {
             Surface(
                 shape = RoundedCornerShape(
-                    topStart = AureoleTheme.dimens.radiusLarge,
-                    topEnd = AureoleTheme.dimens.radiusLarge
+                    topStart = AureoleDS.dimens.radiusLarge,
+                    topEnd = AureoleDS.dimens.radiusLarge
                 ),
-                color = AureoleTheme.colors.surface,
-                contentColor = AureoleTheme.colors.onSurfaceMedium,
+                color = AureoleDS.colors.surface,
+                contentColor = AureoleDS.colors.onSurfaceMedium,
                 modifier = Modifier.fillMaxWidth()
             ) {
                 sheetContent()
@@ -44,11 +44,11 @@ internal fun RenderModalBottomSheetOrInspection(
             onDismissRequest = onDismiss,
             sheetState = sheetState,
             shape = RoundedCornerShape(
-                topStart = AureoleTheme.dimens.radiusLarge,
-                topEnd = AureoleTheme.dimens.radiusLarge
+                topStart = AureoleDS.dimens.radiusLarge,
+                topEnd = AureoleDS.dimens.radiusLarge
             ),
-            containerColor = AureoleTheme.colors.surface,
-            contentColor = AureoleTheme.colors.onSurfaceMedium,
+            containerColor = AureoleDS.colors.surface,
+            contentColor = AureoleDS.colors.onSurfaceMedium,
             dragHandle = null
         ) {
             sheetContent()

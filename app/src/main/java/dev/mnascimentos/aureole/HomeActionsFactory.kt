@@ -95,7 +95,7 @@ class HomeActionsFactory(
                 viewModel.setShowWidgetPicker(true)
             },
             onRemoveWidgetClick = { widgetId, stackId -> widgetHostManager.removeWidget(widgetId, stackId) },
-            onAppClick = { appInfo -> viewModel.launchApp(appInfo.componentName) },
+            onAppClick = { appInfo -> viewModel.launchApp(appInfo.packageName, appInfo.componentName.className) },
             onExpandNotificationShade = { IntentUtils.expandNotificationShade(activity) },
             onFolderIntent = { intent -> viewModel.onFolderIntent(intent) },
             onSetAddAppToFolderDialogVisible = { visible -> viewModel.setAddAppToFolderDialogVisible(visible) },

@@ -28,15 +28,14 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
-import dev.mnascimentos.aureole.core.designsystem.theme.AureoleTheme
 
 @Composable
 internal fun EditClockSectionHeader(title: String) {
     AureoleText(
         text = title,
-        style = AureoleTheme.typography.titleMedium,
+        style = AureoleDS.typography.titleMedium,
         fontWeight = FontWeight.SemiBold,
-        color = AureoleTheme.colors.onSurfaceHigh,
+        color = AureoleDS.colors.onSurfaceHigh,
         modifier = Modifier.padding(bottom = 4.dp)
     )
 }
@@ -56,15 +55,15 @@ internal fun EditClockLayoutChip(
             enabled = true,
             selected = selected,
             selectedBorderColor = AureoleDS.colors.onSurfaceHigh,
-            borderColor = AureoleTheme.colors.onSurfaceMedium.copy(alpha = 0.3f),
+            borderColor = AureoleDS.colors.onSurfaceMedium.copy(alpha = 0.3f),
             selectedBorderWidth = 1.5.dp,
             borderWidth = 1.dp
         ),
         colors = FilterChipDefaults.filterChipColors(
             selectedContainerColor = AureoleDS.colors.onSurfaceHigh,
             selectedLabelColor = AureoleDS.colors.surface,
-            containerColor = AureoleTheme.colors.surfaceVariant.copy(alpha = 0.6f),
-            labelColor = AureoleTheme.colors.onSurfaceHigh
+            containerColor = AureoleDS.colors.surfaceVariant.copy(alpha = 0.6f),
+            labelColor = AureoleDS.colors.onSurfaceHigh
         )
     )
 }
@@ -99,16 +98,16 @@ internal fun EditClockChoiceButton(
             onClick = onClick,
             modifier = modifier,
             shape = RoundedCornerShape(16.dp),
-            border = BorderStroke(1.dp, AureoleTheme.colors.onSurfaceMedium.copy(alpha = 0.3f)),
+            border = BorderStroke(1.dp, AureoleDS.colors.onSurfaceMedium.copy(alpha = 0.3f)),
             contentPadding = PaddingValues(horizontal = 4.dp, vertical = 8.dp),
             colors = ButtonDefaults.outlinedButtonColors(
-                containerColor = AureoleTheme.colors.surfaceVariant.copy(alpha = 0.6f),
-                contentColor = AureoleTheme.colors.onSurfaceHigh
+                containerColor = AureoleDS.colors.surfaceVariant.copy(alpha = 0.6f),
+                contentColor = AureoleDS.colors.onSurfaceHigh
             )
         ) {
             AureoleText(
                 text = text,
-                color = AureoleTheme.colors.onSurfaceMedium,
+                color = AureoleDS.colors.onSurfaceMedium,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )
@@ -131,7 +130,7 @@ internal fun EditClockColorSwatchItem(
             .clip(CircleShape)
             .border(2.dp, borderColor, CircleShape)
             .clickable(onClick = onClick)
-            .background(AureoleTheme.colors.surfaceVariant.copy(alpha = 0.6f))
+            .background(AureoleDS.colors.surfaceVariant.copy(alpha = 0.6f))
             .padding(horizontal = 10.dp, vertical = 6.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -145,8 +144,8 @@ internal fun EditClockColorSwatchItem(
         Spacer(modifier = Modifier.width(6.dp))
         AureoleText(
             text = name,
-            style = AureoleTheme.typography.bodySmall,
-            color = if (isSelected) AureoleDS.colors.onSurfaceHigh else AureoleTheme.colors.onSurfaceMedium
+            style = AureoleDS.typography.bodySmall,
+            color = if (isSelected) AureoleDS.colors.onSurfaceHigh else AureoleDS.colors.onSurfaceMedium
         )
     }
 }

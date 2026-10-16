@@ -38,7 +38,6 @@ import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.icons.Edit
 import dev.mnascimentos.aureole.core.designsystem.icons.Star
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
-import dev.mnascimentos.aureole.core.designsystem.theme.AureoleTheme
 import dev.mnascimentos.aureole.feature.home.components.appsdrawer.appitem.AppItemRow
 import dev.mnascimentos.aureole.feature.home.components.favorites.model.FavoriteAppsBodyParams
 import dev.mnascimentos.aureole.feature.home.components.favorites.model.FavoriteAppsDialogActions
@@ -100,10 +99,10 @@ fun FavoriteAppsDialog(
                 modifier = Modifier
                     .fillMaxWidth(PREVIEW_WIDTH_FRACTION)
                     .clip(RoundedCornerShape(AureoleDS.dimens.radiusLarge))
-                    .background(AureoleTheme.colors.surfaceVariant.copy(alpha = 0.35f))
+                    .background(AureoleDS.colors.surfaceVariant.copy(alpha = 0.35f))
                     .border(
                         width = AureoleDS.dimens.borderMinimal,
-                        color = AureoleTheme.colors.outline.copy(alpha = 0.25f),
+                        color = AureoleDS.colors.outline.copy(alpha = 0.25f),
                         shape = RoundedCornerShape(AureoleDS.dimens.radiusLarge)
                     )
                     .padding(vertical = AureoleDS.dimens.xSmall, horizontal = AureoleDS.dimens.xxSmall),
@@ -112,8 +111,8 @@ fun FavoriteAppsDialog(
                 if (previewFavoriteApps.isEmpty()) {
                     AureoleText(
                         text = "Nenhum favorito selecionado",
-                        style = AureoleTheme.typography.bodyMedium,
-                        color = AureoleTheme.colors.onSurfaceMedium,
+                        style = AureoleDS.typography.bodyMedium,
+                        color = AureoleDS.colors.onSurfaceMedium,
                         modifier = Modifier.padding(AureoleDS.dimens.medium)
                     )
                 } else {
@@ -183,21 +182,21 @@ private fun MainFavoritesContent(
         verticalAlignment = Alignment.CenterVertically
     ) {
         AureoleDS.icons.Star(
-            tint = AureoleTheme.colors.onSurfaceMedium,
+            tint = AureoleDS.colors.onSurfaceMedium,
             modifier = Modifier.size(24.dp)
         )
         Spacer(modifier = Modifier.width(16.dp))
         Column(modifier = Modifier.weight(1f)) {
             Text(
                 text = "Edit shortcuts",
-                style = AureoleTheme.typography.titleMedium,
+                style = AureoleDS.typography.titleMedium,
                 fontWeight = FontWeight.Bold,
-                color = AureoleTheme.colors.onSurfaceHigh
+                color = AureoleDS.colors.onSurfaceHigh
             )
             Text(
                 text = "Gerenciar aplicativos e ordem",
-                style = AureoleTheme.typography.bodySmall,
-                color = AureoleTheme.colors.onSurfaceMedium
+                style = AureoleDS.typography.bodySmall,
+                color = AureoleDS.colors.onSurfaceMedium
             )
         }
     }
@@ -210,21 +209,21 @@ private fun MainFavoritesContent(
         verticalAlignment = Alignment.CenterVertically
     ) {
         AureoleDS.icons.Edit(
-            tint = AureoleTheme.colors.onSurfaceMedium,
+            tint = AureoleDS.colors.onSurfaceMedium,
             modifier = Modifier.size(24.dp)
         )
         Spacer(modifier = Modifier.width(16.dp))
         Column(modifier = Modifier.weight(1f)) {
             Text(
                 text = "Appearance",
-                style = AureoleTheme.typography.titleMedium,
+                style = AureoleDS.typography.titleMedium,
                 fontWeight = FontWeight.Bold,
-                color = AureoleTheme.colors.onSurfaceHigh
+                color = AureoleDS.colors.onSurfaceHigh
             )
             Text(
                 text = "Exibição dos apps na Home",
-                style = AureoleTheme.typography.bodySmall,
-                color = AureoleTheme.colors.onSurfaceMedium
+                style = AureoleDS.typography.bodySmall,
+                color = AureoleDS.colors.onSurfaceMedium
             )
         }
     }

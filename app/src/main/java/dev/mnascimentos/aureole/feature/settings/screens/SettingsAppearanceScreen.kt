@@ -42,7 +42,6 @@ import dev.mnascimentos.aureole.core.designsystem.icons.Layout
 import dev.mnascimentos.aureole.core.designsystem.icons.StrokeColor
 import dev.mnascimentos.aureole.core.designsystem.icons.Text
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
-import dev.mnascimentos.aureole.core.designsystem.theme.AureoleTheme
 import dev.mnascimentos.aureole.feature.settings.model.AppearanceDialogFlags
 import dev.mnascimentos.aureole.feature.settings.model.SettingsScreenActions
 import dev.mnascimentos.aureole.feature.settings.model.SettingsUiState
@@ -119,9 +118,9 @@ private fun SettingsAppearanceContent(
 
             AureoleText(
                 text = "Appearance",
-                style = AureoleTheme.typography.titleLarge,
+                style = AureoleDS.typography.titleLarge,
                 fontWeight = FontWeight.Medium,
-                color = AureoleTheme.colors.onSurfaceMedium,
+                color = AureoleDS.colors.onSurfaceMedium,
                 textAlign = TextAlign.Center,
                 modifier = Modifier.fillMaxWidth()
             )
@@ -244,20 +243,20 @@ private fun WallpaperScaleTypeRow(
         verticalAlignment = Alignment.CenterVertically
     ) {
         AureoleDS.icons.Layout(
-            tint = AureoleTheme.colors.onSurfaceMedium,
+            tint = AureoleDS.colors.onSurfaceMedium,
             modifier = Modifier.padding(end = 20.dp).size(20.dp)
         )
         AureoleText(
             text = "Image scale",
-            style = AureoleTheme.typography.bodyLarge,
+            style = AureoleDS.typography.bodyLarge,
             fontWeight = FontWeight.Normal,
-            color = AureoleTheme.colors.onSurfaceMedium,
+            color = AureoleDS.colors.onSurfaceMedium,
             modifier = Modifier.weight(1f)
         )
         AureoleText(
             text = scaleType,
-            style = AureoleTheme.typography.bodyLarge,
-            color = AureoleTheme.colors.onSurfaceLow
+            style = AureoleDS.typography.bodyLarge,
+            color = AureoleDS.colors.onSurfaceLow
         )
     }
 }
@@ -273,20 +272,20 @@ private fun ShortcutRow() {
         verticalAlignment = Alignment.CenterVertically
     ) {
         AureoleDS.icons.Corners(
-            tint = AureoleTheme.colors.onSurfaceMedium,
+            tint = AureoleDS.colors.onSurfaceMedium,
             modifier = Modifier.padding(end = 20.dp).size(20.dp)
         )
         AureoleText(
             text = "Press shortcut",
-            style = AureoleTheme.typography.bodyLarge,
+            style = AureoleDS.typography.bodyLarge,
             fontWeight = FontWeight.Normal,
-            color = AureoleTheme.colors.onSurfaceMedium,
+            color = AureoleDS.colors.onSurfaceMedium,
             modifier = Modifier.weight(1f)
         )
         AureoleText(
             text = "Rounded",
-            style = AureoleTheme.typography.bodyLarge,
-            color = AureoleTheme.colors.onSurfaceLow
+            style = AureoleDS.typography.bodyLarge,
+            color = AureoleDS.colors.onSurfaceLow
         )
     }
 }

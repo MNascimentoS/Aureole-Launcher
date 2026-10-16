@@ -1,6 +1,5 @@
 package dev.mnascimentos.aureole.feature.home.components.widgets
 
-import android.content.pm.PackageManager
 import android.graphics.drawable.Drawable
 import android.util.Log
 import android.view.InflateException
@@ -32,7 +31,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -40,7 +38,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import coil.compose.AsyncImage
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
-import dev.mnascimentos.aureole.core.designsystem.theme.AureoleTheme
 import dev.mnascimentos.aureole.feature.home.components.widgets.model.WidgetAppGroup
 import dev.mnascimentos.aureole.feature.home.components.widgets.model.WidgetVariant
 
@@ -79,14 +76,14 @@ internal fun AppGroupHeader(
         Column(modifier = Modifier.weight(1f)) {
             Text(
                 text = group.appName,
-                style = AureoleTheme.typography.titleMedium,
+                style = AureoleDS.typography.titleMedium,
                 fontWeight = FontWeight.Medium,
                 color = Color.White
             )
             Text(
                 text = "${group.availableWidgets.size} Widget${if (group.availableWidgets.size > 1) "s" else ""}",
-                style = AureoleTheme.typography.bodySmall,
-                color = AureoleTheme.colors.onSurfaceMedium
+                style = AureoleDS.typography.bodySmall,
+                color = AureoleDS.colors.onSurfaceMedium
             )
         }
     }
@@ -95,29 +92,13 @@ internal fun AppGroupHeader(
 @Composable
 internal fun WidgetPreviewCard(
     widget: WidgetVariant,
+    fallbackAppIcon: Drawable?,
     onClick: () -> Unit
 ) {
-    val context = LocalContext.current
-
-    val appIcon = remember(widget.providerInfo) {
-        val info = widget.providerInfo
-        if (info != null) {
-            try {
-                info.loadIcon(context, 0)
-                    ?: context.packageManager.getApplicationIcon(info.provider.packageName)
-            } catch (e: PackageManager.NameNotFoundException) {
-                Log.e(TAG, "App icon not found for ${info.provider.packageName}", e)
-                null
-            }
-        } else {
-            null
-        }
-    }
-
     Column(
         modifier = Modifier
             .width(220.dp)
-            .background(AureoleTheme.colors.surfaceVariant.copy(alpha = 0.6f), RoundedCornerShape(24.dp))
+            .background(AureoleDS.colors.surfaceVariant.copy(alpha = 0.6f), RoundedCornerShape(24.dp))
             .clickable(onClick = onClick)
             .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
@@ -127,27 +108,27 @@ internal fun WidgetPreviewCard(
                 .fillMaxWidth()
                 .aspectRatio(WIDGET_PREVIEW_ASPECT_RATIO)
                 .clip(RoundedCornerShape(16.dp))
-                .background(AureoleTheme.colors.surface.copy(alpha = 0.5f)),
+                .background(AureoleDS.colors.surface.copy(alpha = 0.5f)),
             contentAlignment = Alignment.Center
         ) {
-            WidgetPreviewContent(widget = widget, appIcon = appIcon)
+            WidgetPreviewContent(widget = widget, fallbackAppIcon = fallbackAppIcon)
         }
 
         Spacer(modifier = Modifier.height(12.dp))
 
         Text(
             text = widget.title,
-            style = AureoleTheme.typography.bodyLarge,
+            style = AureoleDS.typography.bodyLarge,
             fontWeight = FontWeight.Medium,
-            color = AureoleTheme.colors.onSurfaceHigh,
+            color = AureoleDS.colors.onSurfaceHigh,
             textAlign = TextAlign.Center,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis
         )
         Text(
             text = "About the widget here",
-            style = AureoleTheme.typography.bodyMedium,
-            color = AureoleTheme.colors.onSurfaceMedium,
+            style = AureoleDS.typography.bodyMedium,
+            color = AureoleDS.colors.onSurfaceMedium,
             textAlign = TextAlign.Center,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis
@@ -158,7 +139,7 @@ internal fun WidgetPreviewCard(
 @Composable
 private fun WidgetPreviewContent(
     widget: WidgetVariant,
-    appIcon: Drawable?
+    fallbackAppIcon: Drawable?
 ) {
     var previewFailed by remember(widget.widgetId) { mutableStateOf(false) }
 
@@ -184,20 +165,20 @@ private fun WidgetPreviewContent(
                 } catch (e: InflateException) {
                     Log.e(TAG, "Failed to inflate previewLayout for ${widget.title}", e)
                     previewFailed = true
-                    ImageView(ctx).apply { if (appIcon != null) setImageDrawable(appIcon) }
+                    ImageView(ctx).apply { if (fallbackAppIcon != null) setImageDrawable(fallbackAppIcon) }
                 } catch (e: IllegalArgumentException) {
                     Log.e(TAG, "Invalid previewLayout for ${widget.title}", e)
                     previewFailed = true
-                    ImageView(ctx).apply { if (appIcon != null) setImageDrawable(appIcon) }
+                    ImageView(ctx).apply { if (fallbackAppIcon != null) setImageDrawable(fallbackAppIcon) }
                 }
             },
             modifier = Modifier
                 .padding(8.dp)
                 .fillMaxSize()
         )
-    } else if (appIcon != null) {
+    } else if (fallbackAppIcon != null) {
         AsyncImage(
-            model = appIcon,
+            model = fallbackAppIcon,
             contentDescription = widget.title,
             contentScale = ContentScale.Fit,
             modifier = Modifier
@@ -207,7 +188,7 @@ private fun WidgetPreviewContent(
     } else {
         Text(
             text = "Widget",
-            style = AureoleTheme.typography.titleLarge,
+            style = AureoleDS.typography.titleLarge,
             fontWeight = FontWeight.Bold,
             color = Color.White,
             textAlign = TextAlign.Center

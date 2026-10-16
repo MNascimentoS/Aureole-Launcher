@@ -10,6 +10,10 @@ import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 
 /**
  * Design system header component for list sections (e.g. alphabet headers).
+ *
+ * @param title The title of the section.
+ * @param modifier The modifier to be applied to the layout.
+ * @param color The color of the text.
  */
 @Composable
 fun AureoleSectionHeader(

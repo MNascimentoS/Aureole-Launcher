@@ -59,7 +59,7 @@ class AureoleFloatingSearchBarTest {
                     onQueryChange = { queryStr = it },
                     isExpanded = expandedStr,
                     onExpandedChange = { expandedStr = it },
-                    isHazeEnabled = true
+                    hazeConfig = AureoleSearchBarHazeConfig(isEnabled = true)
                 )
             }
         }

@@ -21,8 +21,8 @@ import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
-import dev.mnascimentos.aureole.core.designsystem.theme.AureoleTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 
 @Composable
@@ -74,21 +74,21 @@ private fun UpdateDialogContent(
         ) {
             Surface(
                 shape = RoundedCornerShape(22.dp),
-                color = AureoleTheme.colors.surface,
-                contentColor = AureoleTheme.colors.onSurfaceHigh
+                color = AureoleDS.colors.surface,
+                contentColor = AureoleDS.colors.onSurfaceHigh
             ) {
                 Column(modifier = Modifier.padding(24.dp)) {
                     AureoleText(
                         text = title,
-                        style = AureoleTheme.typography.titleMedium,
+                        style = AureoleDS.typography.titleMedium,
                         fontWeight = FontWeight.Bold,
-                        color = AureoleTheme.colors.onSurfaceHigh
+                        color = AureoleDS.colors.onSurfaceHigh
                     )
                     Spacer(modifier = Modifier.height(16.dp))
                     AureoleText(
                         text = body,
-                        style = AureoleTheme.typography.bodyMedium,
-                        color = AureoleTheme.colors.onSurfaceMedium
+                        style = AureoleDS.typography.bodyMedium,
+                        color = AureoleDS.colors.onSurfaceMedium
                     )
                     Spacer(modifier = Modifier.height(24.dp))
                     Row(
@@ -96,14 +96,14 @@ private fun UpdateDialogContent(
                         horizontalArrangement = Arrangement.End
                     ) {
                         TextButton(onClick = onDismiss) {
-                            AureoleText(text = dismissLabel, color = AureoleTheme.colors.onSurfaceMedium)
+                            AureoleText(text = dismissLabel, color = AureoleDS.colors.onSurfaceMedium)
                         }
                         Spacer(modifier = Modifier.width(8.dp))
                         TextButton(onClick = onConfirm) {
                             AureoleText(
                                 text = confirmLabel,
                                 fontWeight = FontWeight.SemiBold,
-                                color = AureoleTheme.colors.onSurfaceHigh
+                                color = AureoleDS.colors.onSurfaceHigh
                             )
                         }
                     }
@@ -113,21 +113,21 @@ private fun UpdateDialogContent(
     } else {
         AlertDialog(
             onDismissRequest = onDismiss,
-            containerColor = AureoleTheme.colors.surface,
+            containerColor = AureoleDS.colors.surface,
             shape = RoundedCornerShape(22.dp),
             title = {
                 AureoleText(
                     text = title,
-                    style = AureoleTheme.typography.titleMedium,
+                    style = AureoleDS.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
-                    color = AureoleTheme.colors.onSurfaceHigh
+                    color = AureoleDS.colors.onSurfaceHigh
                 )
             },
             text = {
                 AureoleText(
                     text = body,
-                    style = AureoleTheme.typography.bodyMedium,
-                    color = AureoleTheme.colors.onSurfaceMedium
+                    style = AureoleDS.typography.bodyMedium,
+                    color = AureoleDS.colors.onSurfaceMedium
                 )
             },
             confirmButton = {
@@ -135,13 +135,13 @@ private fun UpdateDialogContent(
                     AureoleText(
                         text = confirmLabel,
                         fontWeight = FontWeight.SemiBold,
-                        color = AureoleTheme.colors.onSurfaceHigh
+                        color = AureoleDS.colors.onSurfaceHigh
                     )
                 }
             },
             dismissButton = {
                 TextButton(onClick = onDismiss) {
-                    AureoleText(text = dismissLabel, color = AureoleTheme.colors.onSurfaceMedium)
+                    AureoleText(text = dismissLabel, color = AureoleDS.colors.onSurfaceMedium)
                 }
             }
         )

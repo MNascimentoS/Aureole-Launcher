@@ -48,7 +48,6 @@ fun MainScaffold(
 
         WidgetPickerOverlay(
             uiState = uiState,
-            appWidgetManager = appWidgetManager,
             viewModel = viewModel,
             onWidgetSelected = onWidgetSelected
         )
@@ -73,13 +72,11 @@ fun MainScaffold(
 @Composable
 private fun WidgetPickerOverlay(
     uiState: MainUiState,
-    appWidgetManager: AppWidgetManager,
     viewModel: HomeViewModel,
     onWidgetSelected: (AppWidgetProviderInfo) -> Unit
 ) {
     if (uiState.showWidgetPicker) {
         WidgetPickerScreen(
-            appWidgetManager = appWidgetManager,
             isBlurEnabled = uiState.isHazeEnabled,
             hazeState = LocalHazeState.current,
             onWidgetSelected = { provider ->

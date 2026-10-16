@@ -24,7 +24,6 @@ import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.icons.Check
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
-import dev.mnascimentos.aureole.core.designsystem.theme.AureoleTheme
 import dev.mnascimentos.aureole.core.designsystem.theme.AvailableFonts
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 
@@ -77,8 +76,8 @@ private fun PickFontSheetContent(
     ) {
         AureoleText(
             text = "Pick Font",
-            style = AureoleTheme.typography.titleMedium,
-            color = AureoleTheme.colors.onSurfaceHigh,
+            style = AureoleDS.typography.titleMedium,
+            color = AureoleDS.colors.onSurfaceHigh,
             modifier = Modifier.padding(horizontal = AureoleDS.dimens.xLarge)
         )
 
@@ -118,14 +117,14 @@ private fun FontOptionItem(
     ) {
         AureoleText(
             text = fontName,
-            style = AureoleTheme.typography.bodyLarge,
+            style = AureoleDS.typography.bodyLarge,
             fontFamily = font,
-            color = AureoleTheme.colors.onSurfaceMedium,
+            color = AureoleDS.colors.onSurfaceMedium,
             modifier = Modifier.weight(1f)
         )
         if (isSelected) {
             AureoleDS.icons.Check(
-                tint = AureoleTheme.colors.onSurfaceHigh,
+                tint = AureoleDS.colors.onSurfaceHigh,
                 modifier = Modifier.size(AureoleDS.dimens.iconLarge)
             )
         }

@@ -45,7 +45,6 @@ import dev.mnascimentos.aureole.core.data.model.LauncherItemState
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleEditOverlay
 import dev.mnascimentos.aureole.core.designsystem.icons.Add
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
-import dev.mnascimentos.aureole.core.designsystem.theme.AureoleTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.LocalAnimatedVisibilityScope
 import dev.mnascimentos.aureole.core.designsystem.utils.LocalSharedTransitionScope
 import kotlinx.coroutines.delay
@@ -127,12 +126,12 @@ fun EditWidgetGroupScreen(
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(
                     text = "•••",
-                    color = AureoleTheme.colors.onSurfaceMedium,
-                    style = AureoleTheme.typography.bodyLarge,
+                    color = AureoleDS.colors.onSurfaceMedium,
+                    style = AureoleDS.typography.bodyLarge,
                     fontWeight = FontWeight.Bold
                 )
                 Spacer(modifier = Modifier.width(16.dp))
-                Text("Show widget indicator", color = AureoleTheme.colors.onSurfaceMedium)
+                Text("Show widget indicator", color = AureoleDS.colors.onSurfaceMedium)
             }
             Switch(
                 checked = params.isIndicatorEnabled,
@@ -222,7 +221,7 @@ private fun WidgetPreviewItem(
             modifier = Modifier
                 .border(
                     width = 1.dp,
-                    color = AureoleTheme.colors.onSurfaceMedium.copy(alpha = 0.4f),
+                    color = AureoleDS.colors.onSurfaceMedium.copy(alpha = 0.4f),
                     shape = RoundedCornerShape(28.dp)
                 )
                 .padding(6.dp)
@@ -233,7 +232,7 @@ private fun WidgetPreviewItem(
                     .size(150.dp, 150.dp)
                     .clip(RoundedCornerShape(22.dp))
                     .then(sharedModifier)
-                    .background(AureoleTheme.colors.surfaceVariant.copy(alpha = 0.6f)),
+                    .background(AureoleDS.colors.surfaceVariant.copy(alpha = 0.6f)),
                 contentAlignment = Alignment.Center
             ) {
                 if (appWidgetHost != null) {
@@ -246,9 +245,9 @@ private fun WidgetPreviewItem(
                 } else {
                     Text(
                         text = "Widget",
-                        style = AureoleTheme.typography.titleMedium,
+                        style = AureoleDS.typography.titleMedium,
                         fontWeight = FontWeight.Bold,
-                        color = AureoleTheme.colors.onSurfaceHigh
+                        color = AureoleDS.colors.onSurfaceHigh
                     )
                 }
             }
@@ -260,16 +259,16 @@ private fun WidgetPreviewItem(
                 .offset(x = (-6).dp, y = (-6).dp)
                 .size(28.dp)
                 .clip(CircleShape)
-                .background(AureoleTheme.colors.surfaceVariant)
-                .border(1.dp, AureoleTheme.colors.outline.copy(alpha = 0.3f), CircleShape)
+                .background(AureoleDS.colors.surfaceVariant)
+                .border(1.dp, AureoleDS.colors.outline.copy(alpha = 0.3f), CircleShape)
                 .clickable { onRemoveClick() },
             contentAlignment = Alignment.Center
         ) {
             Text(
                 text = "–",
-                color = AureoleTheme.colors.onSurfaceHigh,
+                color = AureoleDS.colors.onSurfaceHigh,
                 fontWeight = FontWeight.Bold,
-                style = AureoleTheme.typography.titleMedium
+                style = AureoleDS.typography.titleMedium
             )
         }
     }
@@ -286,17 +285,17 @@ private fun AddWidgetCard(
             modifier = Modifier
                 .size(164.dp, 164.dp)
                 .clip(RoundedCornerShape(28.dp))
-                .background(AureoleTheme.colors.surfaceVariant.copy(alpha = 0.35f))
+                .background(AureoleDS.colors.surfaceVariant.copy(alpha = 0.35f))
                 .border(
                     width = 1.dp,
-                    color = AureoleTheme.colors.outline.copy(alpha = 0.2f),
+                    color = AureoleDS.colors.outline.copy(alpha = 0.2f),
                     shape = RoundedCornerShape(28.dp)
                 )
                 .clickable { onClick() },
             contentAlignment = Alignment.Center
         ) {
             AureoleDS.icons.Add(
-                tint = AureoleTheme.colors.onSurfaceMedium,
+                tint = AureoleDS.colors.onSurfaceMedium,
                 modifier = Modifier.size(32.dp)
             )
         }

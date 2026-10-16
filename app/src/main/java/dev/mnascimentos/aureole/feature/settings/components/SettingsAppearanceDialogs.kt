@@ -36,7 +36,6 @@ import dev.mnascimentos.aureole.core.designsystem.palette.allPalettes
 import dev.mnascimentos.aureole.core.designsystem.palette.toLight
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
-import dev.mnascimentos.aureole.core.designsystem.theme.AureoleTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 
 private const val BLUR_SWATCH_WIDTH_DP = 140
@@ -118,14 +117,14 @@ private fun PaletteRowItem(
     onSelect: () -> Unit
 ) {
     val rowBg = if (isSelected) {
-        AureoleTheme.colors.surfaceVariant.copy(alpha = 0.5f)
+        AureoleDS.colors.surfaceVariant.copy(alpha = 0.5f)
     } else {
         Color.Transparent
     }
     val textColor = if (isSelected) {
-        AureoleTheme.colors.onSurfaceHigh
+        AureoleDS.colors.onSurfaceHigh
     } else {
-        AureoleTheme.colors.onSurfaceMedium
+        AureoleDS.colors.onSurfaceMedium
     }
 
     Row(
@@ -139,7 +138,7 @@ private fun PaletteRowItem(
     ) {
         AureoleText(
             text = displayName,
-            style = AureoleTheme.typography.titleMedium,
+            style = AureoleDS.typography.titleMedium,
             fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium,
             color = textColor,
             modifier = Modifier.weight(1f)
@@ -156,7 +155,7 @@ private fun PaletteColorSwatches(palette: ThemePalette) {
             .width(BLUR_SWATCH_WIDTH_DP.dp)
             .height(BLUR_SWATCH_HEIGHT_DP.dp)
             .clip(RoundedCornerShape(6.dp))
-            .border(AureoleDS.dimens.borderMinimal, AureoleTheme.colors.outline, RoundedCornerShape(6.dp))
+            .border(AureoleDS.dimens.borderMinimal, AureoleDS.colors.outline, RoundedCornerShape(6.dp))
     ) {
         val colorList = listOf(
             palette.colors.background,
@@ -224,14 +223,14 @@ private fun BlurOptionRow(
     onSelect: () -> Unit
 ) {
     val rowBg = if (isSelected) {
-        AureoleTheme.colors.surfaceVariant.copy(alpha = 0.5f)
+        AureoleDS.colors.surfaceVariant.copy(alpha = 0.5f)
     } else {
         Color.Transparent
     }
     val textColor = if (isSelected) {
-        AureoleTheme.colors.onSurfaceHigh
+        AureoleDS.colors.onSurfaceHigh
     } else {
-        AureoleTheme.colors.onSurfaceMedium
+        AureoleDS.colors.onSurfaceMedium
     }
 
     Row(
@@ -245,14 +244,14 @@ private fun BlurOptionRow(
     ) {
         AureoleText(
             text = label,
-            style = AureoleTheme.typography.bodyLarge,
+            style = AureoleDS.typography.bodyLarge,
             fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
             color = textColor,
             modifier = Modifier.weight(1f)
         )
         if (isSelected) {
             AureoleDS.icons.Check(
-                tint = AureoleTheme.colors.onSurfaceHigh,
+                tint = AureoleDS.colors.onSurfaceHigh,
                 modifier = Modifier.size(AureoleDS.dimens.iconMedium)
             )
         }
