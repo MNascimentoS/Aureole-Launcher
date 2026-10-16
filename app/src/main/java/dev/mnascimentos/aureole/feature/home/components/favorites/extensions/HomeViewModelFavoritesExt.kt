@@ -1,7 +1,8 @@
-package dev.mnascimentos.aureole.feature.home.extensions
+package dev.mnascimentos.aureole.feature.home.components.favorites.extensions
 
 import androidx.lifecycle.viewModelScope
 import dev.mnascimentos.aureole.feature.home.HomeViewModel
+import dev.mnascimentos.aureole.feature.home.components.appsdrawer.extensions.updateAppsState
 import kotlinx.coroutines.launch
 
 fun HomeViewModel.setShowFavoritePicker(show: Boolean, containerId: String? = null) {

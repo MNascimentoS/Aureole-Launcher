@@ -1,4 +1,4 @@
-package dev.mnascimentos.aureole.feature.home.extensions
+package dev.mnascimentos.aureole.feature.home.components.appsdrawer.extensions
 
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.feature.home.HomeViewModel
@@ -88,7 +88,7 @@ private fun filterAppsByQuery(allApps: List<AppInfo>, query: String): List<AppIn
     }
 }
 
-internal fun HomeViewModel.updateAppsState(apps: List<AppInfo>) {
+fun HomeViewModel.updateAppsState(apps: List<AppInfo>) {
     val (alphabet, indexMap) = computeAlphabetAndIndexMap(apps)
 
     val favoritePackages = uiState.value.favoriteAppPackages

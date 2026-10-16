@@ -1,7 +1,10 @@
 package dev.mnascimentos.aureole.feature.home.components.appsdrawer.appitem
 
+import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -37,7 +40,10 @@ import dev.mnascimentos.aureole.core.designsystem.icons.Settings
 import dev.mnascimentos.aureole.core.designsystem.icons.Smile
 import dev.mnascimentos.aureole.core.designsystem.icons.Star
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
+import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.components.appsdrawer.appitem.model.AppItemBottomSheetParams
+import dev.mnascimentos.aureole.feature.home.components.appsdrawer.appitem.model.AppItemRowActions
 import dev.mnascimentos.aureole.feature.home.components.common.RenderModalBottomSheetOrInspection
 import dev.mnascimentos.aureole.feature.settings.SettingsActivity
 import dev.mnascimentos.aureole.util.AppShortcutUtils
@@ -46,7 +52,7 @@ import dev.mnascimentos.aureole.util.IntentUtils
 import dev.mnascimentos.aureole.util.toImageBitmap
 
 @Composable
-internal fun AppItemBottomSheet(
+fun AppItemBottomSheet(
     params: AppItemBottomSheetParams,
     onDismiss: () -> Unit
 ) {
@@ -315,6 +321,28 @@ private fun AppShortcutsMenu(
                 AppShortcutUtils.launchShortcut(context, shortcut)
                 onDismiss()
             }
+        )
+    }
+}
+
+@AureolePreview
+@Composable
+internal fun AppItemBottomSheetPreview() {
+    val sampleApp = AppInfo(
+        label = "Browser",
+        packageName = "com.example.browser",
+        componentName = ComponentName("com.example.browser", "MainActivity"),
+        icon = ColorDrawable(Color.BLUE)
+    )
+    val params = AppItemBottomSheetParams(
+        app = sampleApp,
+        isFavorite = false,
+        actions = AppItemRowActions()
+    )
+    AureoleLauncherTheme {
+        AppItemBottomSheet(
+            params = params,
+            onDismiss = {}
         )
     }
 }

@@ -1,10 +1,27 @@
 package dev.mnascimentos.aureole.feature.home.components.widgets.model
 
+import android.appwidget.AppWidgetHost
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.ui.unit.Dp
 import dev.chrisbanes.haze.HazeState
+import dev.mnascimentos.aureole.core.data.model.LauncherItemState
 
 private const val DEFAULT_HAZE_OPACITY = 0.5f
+
+data class EditWidgetGroupParams(
+    val item: LauncherItemState,
+    val widgets: List<Int>,
+    val appWidgetHost: AppWidgetHost? = null,
+    val isIndicatorEnabled: Boolean = true,
+    val hazeState: HazeState? = null
+)
+
+data class EditWidgetGroupActions(
+    val onToggleIndicator: () -> Unit,
+    val onRemoveWidget: (Int) -> Unit,
+    val onAddWidgetClick: () -> Unit,
+    val onDismissRequest: () -> Unit
+)
 
 data class StackedWidgetConfig(
     val topWidgetIds: List<Int>,

@@ -9,10 +9,10 @@ import dev.mnascimentos.aureole.core.data.repository.FolderRepository
 import dev.mnascimentos.aureole.core.data.repository.GridRepository
 import dev.mnascimentos.aureole.core.data.repository.SettingsRepository
 import dev.mnascimentos.aureole.core.data.repository.WidgetRepository
-import dev.mnascimentos.aureole.feature.home.extensions.loadContainers
-import dev.mnascimentos.aureole.feature.home.extensions.loadGridItems
-import dev.mnascimentos.aureole.feature.home.extensions.loadWidgetSettings
-import dev.mnascimentos.aureole.feature.home.extensions.updateAppsState
+import dev.mnascimentos.aureole.feature.home.components.appsdrawer.extensions.updateAppsState
+import dev.mnascimentos.aureole.feature.home.components.containers.extensions.loadContainers
+import dev.mnascimentos.aureole.feature.home.components.widgets.extensions.loadWidgetSettings
+import dev.mnascimentos.aureole.feature.home.grid.extensions.loadGridItems
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

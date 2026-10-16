@@ -8,71 +8,71 @@ import com.google.android.play.core.appupdate.AppUpdateManager
 import com.google.android.play.core.appupdate.AppUpdateOptions
 import com.google.android.play.core.install.model.AppUpdateType
 import dev.mnascimentos.aureole.feature.home.HomeViewModel
+import dev.mnascimentos.aureole.feature.home.components.appsdrawer.extensions.onSearchQueryChanged
+import dev.mnascimentos.aureole.feature.home.components.clock.extensions.closeEditClockBottomSheet
+import dev.mnascimentos.aureole.feature.home.components.clock.extensions.openEditClockBottomSheet
+import dev.mnascimentos.aureole.feature.home.components.clock.extensions.resetClockSettings
+import dev.mnascimentos.aureole.feature.home.components.clock.extensions.toggleClockBackground
+import dev.mnascimentos.aureole.feature.home.components.clock.extensions.updateClockAlignment
+import dev.mnascimentos.aureole.feature.home.components.clock.extensions.updateClockBackgroundColor
+import dev.mnascimentos.aureole.feature.home.components.clock.extensions.updateClockCustomGreeting
+import dev.mnascimentos.aureole.feature.home.components.clock.extensions.updateClockDateFormat
+import dev.mnascimentos.aureole.feature.home.components.clock.extensions.updateClockFontFamily
+import dev.mnascimentos.aureole.feature.home.components.clock.extensions.updateClockStyle
+import dev.mnascimentos.aureole.feature.home.components.clock.extensions.updateClockTextColor
+import dev.mnascimentos.aureole.feature.home.components.clock.extensions.updateClockTimeFormat
+import dev.mnascimentos.aureole.feature.home.components.containers.extensions.closeEditContainerDialog
+import dev.mnascimentos.aureole.feature.home.components.containers.extensions.deleteContainerInstance
+import dev.mnascimentos.aureole.feature.home.components.containers.extensions.openEditContainerDialog
+import dev.mnascimentos.aureole.feature.home.components.containers.extensions.removeAppFromContainer
+import dev.mnascimentos.aureole.feature.home.components.containers.extensions.saveContainerModel
+import dev.mnascimentos.aureole.feature.home.components.containers.folder.extensions.onFolderIntent
+import dev.mnascimentos.aureole.feature.home.components.containers.folder.extensions.removeAppFromFolder
+import dev.mnascimentos.aureole.feature.home.components.containers.folder.extensions.setAddAppToFolderDialogVisible
+import dev.mnascimentos.aureole.feature.home.components.containers.folder.extensions.setRenameFolderDialogVisible
+import dev.mnascimentos.aureole.feature.home.components.favorites.extensions.setShowFavoritePicker
+import dev.mnascimentos.aureole.feature.home.components.favorites.extensions.toggleFavorite
+import dev.mnascimentos.aureole.feature.home.components.favorites.extensions.updateContainerFavorites
+import dev.mnascimentos.aureole.feature.home.components.favorites.extensions.updateFavoritePackages
+import dev.mnascimentos.aureole.feature.home.components.overlays.extensions.closeContainerAppBottomSheet
+import dev.mnascimentos.aureole.feature.home.components.overlays.extensions.closeContainerFolderBottomSheet
+import dev.mnascimentos.aureole.feature.home.components.overlays.extensions.closeFolderAppBottomSheet
+import dev.mnascimentos.aureole.feature.home.components.overlays.extensions.closeWidgetStackBottomSheet
+import dev.mnascimentos.aureole.feature.home.components.overlays.extensions.openContainerAppBottomSheet
+import dev.mnascimentos.aureole.feature.home.components.overlays.extensions.openContainerFolderBottomSheet
+import dev.mnascimentos.aureole.feature.home.components.overlays.extensions.openEditFolderForFolder
+import dev.mnascimentos.aureole.feature.home.components.overlays.extensions.openFolderAppBottomSheet
+import dev.mnascimentos.aureole.feature.home.components.overlays.extensions.openWidgetStackBottomSheet
+import dev.mnascimentos.aureole.feature.home.components.overlays.extensions.toggleWidgetStackDots
 import dev.mnascimentos.aureole.feature.home.components.widgets.WidgetHostManager
-import dev.mnascimentos.aureole.feature.home.extensions.GridItemSpec
-import dev.mnascimentos.aureole.feature.home.extensions.addGridItem
-import dev.mnascimentos.aureole.feature.home.extensions.cancelGridEditMode
-import dev.mnascimentos.aureole.feature.home.extensions.closeContainerAppBottomSheet
-import dev.mnascimentos.aureole.feature.home.extensions.closeContainerFolderBottomSheet
-import dev.mnascimentos.aureole.feature.home.extensions.closeEditClockBottomSheet
-import dev.mnascimentos.aureole.feature.home.extensions.closeEditContainerDialog
-import dev.mnascimentos.aureole.feature.home.extensions.closeFolderAppBottomSheet
-import dev.mnascimentos.aureole.feature.home.extensions.closeWidgetPopup
-import dev.mnascimentos.aureole.feature.home.extensions.closeWidgetStackBottomSheet
-import dev.mnascimentos.aureole.feature.home.extensions.deleteContainerInstance
-import dev.mnascimentos.aureole.feature.home.extensions.deleteGridItem
-import dev.mnascimentos.aureole.feature.home.extensions.dismissGridError
-import dev.mnascimentos.aureole.feature.home.extensions.enterGridEditMode
-import dev.mnascimentos.aureole.feature.home.extensions.moveChildInScrollView
-import dev.mnascimentos.aureole.feature.home.extensions.moveGridItem
-import dev.mnascimentos.aureole.feature.home.extensions.onFolderIntent
-import dev.mnascimentos.aureole.feature.home.extensions.onSearchQueryChanged
-import dev.mnascimentos.aureole.feature.home.extensions.openAddContainerForParent
-import dev.mnascimentos.aureole.feature.home.extensions.openContainerAppBottomSheet
-import dev.mnascimentos.aureole.feature.home.extensions.openContainerFolderBottomSheet
-import dev.mnascimentos.aureole.feature.home.extensions.openEditClockBottomSheet
-import dev.mnascimentos.aureole.feature.home.extensions.openEditContainerDialog
-import dev.mnascimentos.aureole.feature.home.extensions.openEditFolderForFolder
-import dev.mnascimentos.aureole.feature.home.extensions.openFolderAppBottomSheet
-import dev.mnascimentos.aureole.feature.home.extensions.openWidgetPopup
-import dev.mnascimentos.aureole.feature.home.extensions.openWidgetStackBottomSheet
-import dev.mnascimentos.aureole.feature.home.extensions.removeAppFromContainer
-import dev.mnascimentos.aureole.feature.home.extensions.removeAppFromFolder
-import dev.mnascimentos.aureole.feature.home.extensions.removeChildFromScrollView
-import dev.mnascimentos.aureole.feature.home.extensions.resetClockSettings
-import dev.mnascimentos.aureole.feature.home.extensions.resetGridItems
-import dev.mnascimentos.aureole.feature.home.extensions.resizeChildInScrollView
-import dev.mnascimentos.aureole.feature.home.extensions.resizeGridItem
-import dev.mnascimentos.aureole.feature.home.extensions.saveContainerModel
-import dev.mnascimentos.aureole.feature.home.extensions.saveGridEditMode
-import dev.mnascimentos.aureole.feature.home.extensions.setAddAppToFolderDialogVisible
+import dev.mnascimentos.aureole.feature.home.components.widgets.extensions.closeWidgetPopup
+import dev.mnascimentos.aureole.feature.home.components.widgets.extensions.openWidgetPopup
+import dev.mnascimentos.aureole.feature.home.components.widgets.extensions.setIsAddingSingleWidget
+import dev.mnascimentos.aureole.feature.home.components.widgets.extensions.setShowWidgetPicker
+import dev.mnascimentos.aureole.feature.home.components.widgets.extensions.setShowWidgetResizeDialog
+import dev.mnascimentos.aureole.feature.home.components.widgets.extensions.setTargetWidgetStackId
+import dev.mnascimentos.aureole.feature.home.components.widgets.extensions.setWidgetRowHeight
 import dev.mnascimentos.aureole.feature.home.extensions.setAllAppsDrawerOpen
-import dev.mnascimentos.aureole.feature.home.extensions.setEditingGridItem
-import dev.mnascimentos.aureole.feature.home.extensions.setIsAddingSingleWidget
-import dev.mnascimentos.aureole.feature.home.extensions.setRenameFolderDialogVisible
-import dev.mnascimentos.aureole.feature.home.extensions.setShowAddContainerDialog
 import dev.mnascimentos.aureole.feature.home.extensions.setShowCustomizeBottomSheet
-import dev.mnascimentos.aureole.feature.home.extensions.setShowFavoritePicker
-import dev.mnascimentos.aureole.feature.home.extensions.setShowWidgetPicker
-import dev.mnascimentos.aureole.feature.home.extensions.setShowWidgetResizeDialog
-import dev.mnascimentos.aureole.feature.home.extensions.setTargetWidgetStackId
-import dev.mnascimentos.aureole.feature.home.extensions.setWidgetRowHeight
-import dev.mnascimentos.aureole.feature.home.extensions.toggleClockBackground
-import dev.mnascimentos.aureole.feature.home.extensions.toggleFavorite
 import dev.mnascimentos.aureole.feature.home.extensions.toggleShowAllAppsOnHome
-import dev.mnascimentos.aureole.feature.home.extensions.toggleWidgetStackDots
-import dev.mnascimentos.aureole.feature.home.extensions.updateClockAlignment
-import dev.mnascimentos.aureole.feature.home.extensions.updateClockBackgroundColor
-import dev.mnascimentos.aureole.feature.home.extensions.updateClockCustomGreeting
-import dev.mnascimentos.aureole.feature.home.extensions.updateClockDateFormat
-import dev.mnascimentos.aureole.feature.home.extensions.updateClockFontFamily
-import dev.mnascimentos.aureole.feature.home.extensions.updateClockStyle
-import dev.mnascimentos.aureole.feature.home.extensions.updateClockTextColor
-import dev.mnascimentos.aureole.feature.home.extensions.updateClockTimeFormat
-import dev.mnascimentos.aureole.feature.home.extensions.updateContainerFavorites
-import dev.mnascimentos.aureole.feature.home.extensions.updateFavoritePackages
-import dev.mnascimentos.aureole.feature.home.extensions.updateGridItemsOrientation
-import dev.mnascimentos.aureole.feature.home.extensions.updateScrollViewOrientation
+import dev.mnascimentos.aureole.feature.home.grid.extensions.GridItemSpec
+import dev.mnascimentos.aureole.feature.home.grid.extensions.addGridItem
+import dev.mnascimentos.aureole.feature.home.grid.extensions.cancelGridEditMode
+import dev.mnascimentos.aureole.feature.home.grid.extensions.deleteGridItem
+import dev.mnascimentos.aureole.feature.home.grid.extensions.dismissGridError
+import dev.mnascimentos.aureole.feature.home.grid.extensions.enterGridEditMode
+import dev.mnascimentos.aureole.feature.home.grid.extensions.moveChildInScrollView
+import dev.mnascimentos.aureole.feature.home.grid.extensions.moveGridItem
+import dev.mnascimentos.aureole.feature.home.grid.extensions.openAddContainerForParent
+import dev.mnascimentos.aureole.feature.home.grid.extensions.removeChildFromScrollView
+import dev.mnascimentos.aureole.feature.home.grid.extensions.resetGridItems
+import dev.mnascimentos.aureole.feature.home.grid.extensions.resizeChildInScrollView
+import dev.mnascimentos.aureole.feature.home.grid.extensions.resizeGridItem
+import dev.mnascimentos.aureole.feature.home.grid.extensions.saveGridEditMode
+import dev.mnascimentos.aureole.feature.home.grid.extensions.setEditingGridItem
+import dev.mnascimentos.aureole.feature.home.grid.extensions.setShowAddContainerDialog
+import dev.mnascimentos.aureole.feature.home.grid.extensions.updateGridItemsOrientation
+import dev.mnascimentos.aureole.feature.home.grid.extensions.updateScrollViewOrientation
 import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
 import dev.mnascimentos.aureole.feature.settings.SettingsActivity
 import dev.mnascimentos.aureole.util.IntentUtils
@@ -83,43 +83,49 @@ class HomeActionsFactory(
     private val widgetHostManager: WidgetHostManager,
     private val appUpdateManager: AppUpdateManager,
     private val updateActivityResultLauncher: ActivityResultLauncher<IntentSenderRequest>,
-    private val cachedAppUpdateInfo: AppUpdateInfo?
+    private val cachedAppUpdateInfo: AppUpdateInfo? = null,
 ) {
     fun createHomeActions(): HomeScreenActions {
-        val actions = HomeScreenActions(
+        val baseActions = HomeScreenActions(
             onWidgetRowHeightChanged = { viewModel.setWidgetRowHeight(it) },
             onAddWidgetClick = { stackId ->
-                if (stackId != null) {
-                    viewModel.setTargetWidgetStackId(stackId)
-                }
+                viewModel.setTargetWidgetStackId(stackId)
                 viewModel.setShowWidgetPicker(true)
             },
-            onRemoveWidgetClick = { widgetId, stackId -> widgetHostManager.removeWidget(widgetId, stackId) },
-            onAppClick = { appInfo -> viewModel.launchApp(appInfo.packageName, appInfo.componentName.className) },
+            onAppClick = { appInfo ->
+                activity.packageManager.getLaunchIntentForPackage(appInfo.packageName)?.let { launchIntent ->
+                    activity.startActivity(launchIntent)
+                }
+            },
             onExpandNotificationShade = { IntentUtils.expandNotificationShade(activity) },
-            onFolderIntent = { intent -> viewModel.onFolderIntent(intent) },
-            onSetAddAppToFolderDialogVisible = { visible -> viewModel.setAddAppToFolderDialogVisible(visible) },
-            onSetRenameFolderDialogVisible = { visible -> viewModel.setRenameFolderDialogVisible(visible) },
-            onSearchQueryChanged = { query -> viewModel.onSearchQueryChanged(query) },
-            onSettingsClick = { activity.startActivity(Intent(activity, SettingsActivity::class.java)) },
+            onFolderIntent = { viewModel.onFolderIntent(it) },
+            onSetAddAppToFolderDialogVisible = { viewModel.setAddAppToFolderDialogVisible(it) },
+            onSetRenameFolderDialogVisible = { viewModel.setRenameFolderDialogVisible(it) },
+            onSearchQueryChanged = { viewModel.onSearchQueryChanged(it) },
+            onSettingsClick = {
+                val intent = Intent(activity, SettingsActivity::class.java)
+                activity.startActivity(intent)
+            },
             onAllAppsDrawerClose = { viewModel.setAllAppsDrawerOpen(false) },
             onAllAppsDrawerOpen = { viewModel.setAllAppsDrawerOpen(true) },
             onToggleFavorite = { pkg -> viewModel.toggleFavorite(pkg) },
-            onUpdateFavoritePackages = { cId, pkgs -> handleUpdateFavoritePackages(cId, pkgs) },
+            onUpdateFavoritePackages = { containerId, pkgs -> handleUpdateFavoritePackages(containerId, pkgs) },
             onToggleShowAllAppsOnHome = { viewModel.toggleShowAllAppsOnHome() },
             onAppInfoClick = { app -> IntentUtils.openAppInfo(activity, app.packageName) },
             onUninstallAppClick = { app -> IntentUtils.uninstallApp(activity, app.packageName) },
             onOpenFavoritePicker = { containerId -> viewModel.setShowFavoritePicker(true, containerId) },
-            onOpenWidgetPopup = { widgetId, topY -> viewModel.openWidgetPopup(widgetId, topY) },
+            onOpenWidgetPopup = { id, y -> viewModel.openWidgetPopup(id, y) },
             onCloseWidgetPopup = { viewModel.closeWidgetPopup() },
             onOpenWidgetResizeDialog = { viewModel.setShowWidgetResizeDialog(true) },
             onCloseWidgetResizeDialog = { viewModel.closeWidgetPopup() },
-            onResizeWidgetHeight = { height -> viewModel.setWidgetRowHeight(height) },
+            onResizeWidgetHeight = { viewModel.setWidgetRowHeight(it) },
             onStartInAppUpdate = createStartUpdateAction(),
             onCompleteInAppUpdate = { handleCompleteInAppUpdate() },
             onDismissUpdateDialog = { handleDismissUpdateDialog() }
         )
-        return attachGridActions(actions)
+
+        val gridBase = attachGridActions(baseActions)
+        return gridBase
     }
 
     private fun attachGridActions(base: HomeScreenActions): HomeScreenActions {

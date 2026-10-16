@@ -1,6 +1,8 @@
 package dev.mnascimentos.aureole.feature.home.extensions
 
 import dev.mnascimentos.aureole.feature.home.HomeViewModel
+import dev.mnascimentos.aureole.feature.home.components.appsdrawer.extensions.applySearchFilter
+import dev.mnascimentos.aureole.feature.home.components.containers.folder.extensions.onFolderIntent
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.FolderViewIntent
 
 // --- Settings & Side Panel Actions ---

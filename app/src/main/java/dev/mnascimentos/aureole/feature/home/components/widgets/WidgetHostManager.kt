@@ -8,9 +8,9 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import dev.mnascimentos.aureole.feature.home.HomeViewModel
-import dev.mnascimentos.aureole.feature.home.extensions.addWidgetId
-import dev.mnascimentos.aureole.feature.home.extensions.removeWidgetId
-import dev.mnascimentos.aureole.feature.home.extensions.setPendingWidgetId
+import dev.mnascimentos.aureole.feature.home.components.widgets.extensions.addWidgetId
+import dev.mnascimentos.aureole.feature.home.components.widgets.extensions.removeWidgetId
+import dev.mnascimentos.aureole.feature.home.components.widgets.extensions.setPendingWidgetId
 
 class WidgetHostManager(
     private val viewModel: HomeViewModel,

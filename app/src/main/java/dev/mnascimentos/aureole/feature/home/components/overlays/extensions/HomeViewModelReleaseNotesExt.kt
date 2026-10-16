@@ -1,4 +1,4 @@
-package dev.mnascimentos.aureole.feature.home.extensions
+package dev.mnascimentos.aureole.feature.home.components.overlays.extensions
 
 import dev.mnascimentos.aureole.feature.home.HomeViewModel
 

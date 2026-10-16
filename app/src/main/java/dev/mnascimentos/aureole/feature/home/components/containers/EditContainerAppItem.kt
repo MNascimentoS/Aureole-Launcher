@@ -33,6 +33,8 @@ import dev.mnascimentos.aureole.core.designsystem.icons.ArrowUp
 import dev.mnascimentos.aureole.core.designsystem.icons.Delete
 import dev.mnascimentos.aureole.core.designsystem.icons.Search
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
+import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.FolderIconRegistry
 
 private const val MAX_DROPDOWN_APP_RESULTS = 8
@@ -203,4 +205,25 @@ private fun DropdownAppItem(
         },
         onClick = { onAppSelected(app.packageName) }
     )
+}
+
+@AureolePreview
+@Composable
+internal fun EditContainerItemRowPreview() {
+    AureoleLauncherTheme {
+        EditContainerItemRow(
+            params = EditContainerItemRowParams(
+                title = "Work Folder",
+                iconName = "briefcase",
+                isFolder = true,
+                canMoveUp = false,
+                canMoveDown = true
+            ),
+            actions = EditContainerItemRowActions(
+                onMoveUp = {},
+                onMoveDown = {},
+                onRemove = {}
+            )
+        )
+    }
 }

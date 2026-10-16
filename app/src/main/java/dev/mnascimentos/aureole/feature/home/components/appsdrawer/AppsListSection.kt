@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -31,6 +32,8 @@ import dev.chrisbanes.haze.hazeEffect
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleFloatingSearchBar
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleSearchBarHazeConfig
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
+import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.core.designsystem.utils.fadingEdges
 import dev.mnascimentos.aureole.feature.home.LocalHomeActions
 import dev.mnascimentos.aureole.feature.home.LocalHomeUiState
@@ -146,4 +149,14 @@ private fun Modifier.buildDrawerHaze(
             blurEnabled = true
         }
     )
+}
+
+@AureolePreview
+@Composable
+internal fun AppsListSectionDrawerPreview() {
+    AureoleLauncherTheme {
+        AppsListDrawer(
+            listState = rememberLazyListState()
+        )
+    }
 }

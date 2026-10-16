@@ -31,6 +31,8 @@ import dev.chrisbanes.haze.HazeState
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleEditOverlay
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
+import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
 import kotlinx.coroutines.delay
@@ -395,5 +397,29 @@ private fun EditClockFormatSection(
         EditClockLayoutChip("Numérico (09/10/2026)", uiState.clockDateFormat == "NUMERIC") {
             actions.onUpdateClockDateFormat("NUMERIC")
         }
+    }
+}
+
+@AureolePreview
+@Composable
+internal fun EditClockBottomSheetContentPreview() {
+    val dummyActions = HomeScreenActions(
+        onWidgetRowHeightChanged = {},
+        onAppClick = {},
+        onExpandNotificationShade = {},
+        onFolderIntent = {},
+        onSetAddAppToFolderDialogVisible = {},
+        onSetRenameFolderDialogVisible = {},
+        onSearchQueryChanged = {},
+        onSettingsClick = {},
+        onAllAppsDrawerClose = {},
+        onAllAppsDrawerOpen = {}
+    )
+    AureoleLauncherTheme {
+        EditClockBottomSheet(
+            uiState = MainUiState(),
+            actions = dummyActions,
+            onDismissRequest = {}
+        )
     }
 }

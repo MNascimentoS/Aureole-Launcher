@@ -26,12 +26,16 @@ import dev.mnascimentos.aureole.feature.home.components.containers.folder.Create
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.EditFolderDialog
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.FolderAppPickerDialog
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.FolderDialog
+import dev.mnascimentos.aureole.feature.home.components.containers.folder.ContainerFolderBottomSheet
+import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.ContainerFolderBottomSheetParams
+import dev.mnascimentos.aureole.feature.home.components.widgets.WidgetStackBottomSheet
+import dev.mnascimentos.aureole.feature.home.components.widgets.model.WidgetStackBottomSheetParams
 import dev.mnascimentos.aureole.feature.home.components.favorites.FavoriteAppsDialog
 import dev.mnascimentos.aureole.feature.home.components.favorites.model.FavoriteAppsDialogActions
 import dev.mnascimentos.aureole.feature.home.components.favorites.model.FavoriteAppsDialogConfig
-import dev.mnascimentos.aureole.feature.home.components.widgets.EditWidgetGroupActions
-import dev.mnascimentos.aureole.feature.home.components.widgets.EditWidgetGroupParams
 import dev.mnascimentos.aureole.feature.home.components.widgets.EditWidgetGroupScreen
+import dev.mnascimentos.aureole.feature.home.components.widgets.model.EditWidgetGroupActions
+import dev.mnascimentos.aureole.feature.home.components.widgets.model.EditWidgetGroupParams
 import dev.mnascimentos.aureole.feature.home.components.widgets.WidgetSelectorScreen
 import dev.mnascimentos.aureole.feature.home.components.widgets.model.WidgetAppGroup
 import dev.mnascimentos.aureole.feature.home.components.widgets.model.WidgetSelectorState
@@ -438,5 +442,40 @@ fun EditWidgetGroupScreenScreenshotTest() {
     }
 }
 
+@PreviewTest
+@Preview(name = "Container Folder Bottom Sheet Flow", uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
+@Composable
+fun ContainerFolderBottomSheetScreenshotTest() {
+    val params = ContainerFolderBottomSheetParams(
+        onEditShortcuts = {},
+        onRename = {},
+        onIcon = {},
+        onRemoveFolder = {},
+        onOpenContainerSettings = {}
+    )
+    AureoleLauncherTheme {
+        ContainerFolderBottomSheet(
+            params = params,
+            onDismiss = {}
+        )
+    }
+}
 
-
+@PreviewTest
+@Preview(name = "Widget Stack Bottom Sheet Flow", uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
+@Composable
+fun WidgetStackBottomSheetScreenshotTest() {
+    val params = WidgetStackBottomSheetParams(
+        stackId = "widget_stack_1",
+        widgetId = 1,
+        onEditStack = {},
+        onToggleDots = {},
+        onRemoveStack = {}
+    )
+    AureoleLauncherTheme {
+        WidgetStackBottomSheet(
+            params = params,
+            onDismiss = {}
+        )
+    }
+}

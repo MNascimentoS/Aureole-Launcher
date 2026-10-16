@@ -36,9 +36,9 @@ import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.FolderViewIntent
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.OpenedFolderOverlayParams
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.OpenedFolderPopupConfig
-import dev.mnascimentos.aureole.feature.home.components.widgets.EditWidgetGroupActions
-import dev.mnascimentos.aureole.feature.home.components.widgets.EditWidgetGroupParams
 import dev.mnascimentos.aureole.feature.home.components.widgets.EditWidgetGroupScreen
+import dev.mnascimentos.aureole.feature.home.components.widgets.model.EditWidgetGroupActions
+import dev.mnascimentos.aureole.feature.home.components.widgets.model.EditWidgetGroupParams
 import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
 import dev.mnascimentos.aureole.feature.home.model.getWidgetIdsForStack

@@ -43,6 +43,8 @@ import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.icons.ArrowDown
 import dev.mnascimentos.aureole.core.designsystem.icons.ArrowUp
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
+import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.components.containers.model.EditContainerFormCallbacks
 import dev.mnascimentos.aureole.feature.home.components.containers.model.EditContainerFormState
 
@@ -301,6 +303,17 @@ internal fun SettingSwitchRow(
         Switch(
             checked = checked,
             onCheckedChange = onCheckedChange
+        )
+    }
+}
+
+@AureolePreview
+@Composable
+internal fun EditContainerOrientationSelectorPreview() {
+    AureoleLauncherTheme {
+        EditContainerOrientationSelector(
+            orientation = "Vertical",
+            onOrientationSelected = {}
         )
     }
 }

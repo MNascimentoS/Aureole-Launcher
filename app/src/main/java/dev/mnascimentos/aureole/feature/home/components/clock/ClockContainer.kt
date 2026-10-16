@@ -4,6 +4,8 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import dev.chrisbanes.haze.HazeState
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
+import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.LocalHomeActions
 import dev.mnascimentos.aureole.feature.home.LocalHomeUiState
 import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
@@ -31,5 +33,13 @@ fun ClockContainer(
             onClick = onClick,
             onLongClick = onLongClick
         )
+    }
+}
+
+@AureolePreview
+@Composable
+internal fun ClockContainerPreview() {
+    AureoleLauncherTheme {
+        ClockContainer()
     }
 }

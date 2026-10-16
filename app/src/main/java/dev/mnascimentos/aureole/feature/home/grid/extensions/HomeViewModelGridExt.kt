@@ -1,4 +1,4 @@
-package dev.mnascimentos.aureole.feature.home.extensions
+package dev.mnascimentos.aureole.feature.home.grid.extensions
 
 import dev.mnascimentos.aureole.core.data.model.LauncherItemState
 import dev.mnascimentos.aureole.core.data.repository.GridRepository

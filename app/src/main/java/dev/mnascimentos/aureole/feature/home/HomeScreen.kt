@@ -40,9 +40,9 @@ import dev.mnascimentos.aureole.feature.home.components.containers.folder.HomeSc
 import dev.mnascimentos.aureole.feature.home.components.overlays.CustomizeBottomSheet
 import dev.mnascimentos.aureole.feature.home.components.overlays.HomeOverlaysContent
 import dev.mnascimentos.aureole.feature.home.components.overlays.homeDragGestures
-import dev.mnascimentos.aureole.feature.home.components.widgets.EditWidgetGroupActions
-import dev.mnascimentos.aureole.feature.home.components.widgets.EditWidgetGroupParams
 import dev.mnascimentos.aureole.feature.home.components.widgets.EditWidgetGroupScreen
+import dev.mnascimentos.aureole.feature.home.components.widgets.model.EditWidgetGroupActions
+import dev.mnascimentos.aureole.feature.home.components.widgets.model.EditWidgetGroupParams
 import dev.mnascimentos.aureole.feature.home.grid.AddContainerDialog
 import dev.mnascimentos.aureole.feature.home.grid.EditGridItemDialog
 import dev.mnascimentos.aureole.feature.home.model.HomeDragParams

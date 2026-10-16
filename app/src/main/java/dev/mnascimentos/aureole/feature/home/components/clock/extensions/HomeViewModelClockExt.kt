@@ -1,4 +1,6 @@
-package dev.mnascimentos.aureole.feature.home.extensions
+@file:Suppress("TooManyFunctions")
+
+package dev.mnascimentos.aureole.feature.home.components.clock.extensions
 
 import dev.mnascimentos.aureole.feature.home.HomeViewModel
 

@@ -1,3 +1,5 @@
+@file:Suppress("TooManyFunctions")
+
 package dev.mnascimentos.aureole.feature.home.components.containers
 
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -29,6 +31,8 @@ import dev.mnascimentos.aureole.core.data.model.AppFolder
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.data.model.ContainerItemType
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
+import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.core.designsystem.utils.fadingEdges
 import dev.mnascimentos.aureole.feature.home.LocalHomeActions
 import dev.mnascimentos.aureole.feature.home.LocalHomeUiState
@@ -386,5 +390,19 @@ private fun RowRenderItem(
                 )
             }
         }
+    }
+}
+
+@AureolePreview
+@Composable
+internal fun ContainerPreview() {
+    AureoleLauncherTheme {
+        Container(
+            config = ContainerConfig(
+                panelId = "panel_1",
+                orientation = "Vertical"
+            ),
+            onFolderClick = { _, _ -> }
+        )
     }
 }

@@ -1,5 +1,7 @@
 package dev.mnascimentos.aureole.feature.home.components.appsdrawer.appitem
 
+import android.content.ComponentName
+import android.graphics.drawable.ColorDrawable
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -30,10 +32,12 @@ import dev.mnascimentos.aureole.core.designsystem.icons.Delete
 import dev.mnascimentos.aureole.core.designsystem.icons.Info
 import dev.mnascimentos.aureole.core.designsystem.icons.Settings
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
+import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.components.appsdrawer.appitem.model.AppItemRowActions
 
 @Composable
-internal fun AppItemPopup(
+fun AppItemPopup(
     app: AppInfo,
     isFavorite: Boolean,
     actions: AppItemRowActions,
@@ -141,5 +145,30 @@ private fun AppPopupButton(
             color = contentColor,
             textAlign = TextAlign.Center
         )
+    }
+}
+
+@AureolePreview
+@Composable
+internal fun AppItemPopupPreview() {
+    val sampleApp = AppInfo(
+        label = "Browser",
+        packageName = "com.example.browser",
+        componentName = ComponentName("com.example.browser", "MainActivity"),
+        icon = ColorDrawable(android.graphics.Color.BLUE)
+    )
+    AureoleLauncherTheme {
+        AureolePopupBox(modifier = Modifier.width(230.dp)) {
+            AppPopupHorizontalActionsRow(
+                app = sampleApp,
+                isFavorite = false,
+                actions = AppItemRowActions(
+                    onAppInfoClick = {},
+                    onToggleFavorite = {},
+                    onEditFavoritesClick = {}
+                ),
+                onDismiss = {}
+            )
+        }
     }
 }

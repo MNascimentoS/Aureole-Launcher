@@ -12,7 +12,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalInspectionMode
+import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
+import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 
 @Composable
 internal fun RenderModalBottomSheetOrInspection(
@@ -53,5 +56,16 @@ internal fun RenderModalBottomSheetOrInspection(
         ) {
             sheetContent()
         }
+    }
+}
+
+@AureolePreview
+@Composable
+internal fun RenderModalBottomSheetOrInspectionPreview() {
+    AureoleLauncherTheme {
+        RenderModalBottomSheetOrInspection(
+            sheetContent = { AureoleText("Sample Sheet Content") },
+            onDismiss = {}
+        )
     }
 }

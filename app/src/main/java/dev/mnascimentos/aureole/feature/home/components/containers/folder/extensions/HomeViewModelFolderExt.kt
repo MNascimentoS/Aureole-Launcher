@@ -1,4 +1,4 @@
-package dev.mnascimentos.aureole.feature.home.extensions
+package dev.mnascimentos.aureole.feature.home.components.containers.folder.extensions
 
 import androidx.lifecycle.viewModelScope
 import dev.mnascimentos.aureole.feature.home.HomeViewModel

@@ -1,13 +1,16 @@
-package dev.mnascimentos.aureole.feature.home.extensions
+package dev.mnascimentos.aureole.feature.home.components.widgets.extensions
 
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.core.data.model.LauncherItemState
 import dev.mnascimentos.aureole.core.data.model.LauncherItemType
 import dev.mnascimentos.aureole.feature.home.HomeViewModel
+import dev.mnascimentos.aureole.feature.home.grid.extensions.GridItemSpec
+import dev.mnascimentos.aureole.feature.home.grid.extensions.addGridItem
+import dev.mnascimentos.aureole.feature.home.grid.extensions.dismissGridError
 import dev.mnascimentos.aureole.feature.home.model.getWidgetIdsForStack
 
-internal fun HomeViewModel.loadWidgetSettings() {
+fun HomeViewModel.loadWidgetSettings() {
     val topIds = widgetRepository.getWidgetIdsForStack("top_widgets")
     val savedHeight = widgetRepository.getSavedWidgetRowHeight()
     val topDots = widgetRepository.getWidgetDotsState("top_widgets")

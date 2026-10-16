@@ -50,12 +50,10 @@ import dev.mnascimentos.aureole.feature.home.LocalHomeActions
 import dev.mnascimentos.aureole.feature.home.LocalHomeUiState
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.CreateFolderDialog
 import dev.mnascimentos.aureole.feature.home.components.containers.model.ContainerConfig
+import dev.mnascimentos.aureole.feature.home.components.containers.model.ContainerOptionsState
+import dev.mnascimentos.aureole.feature.home.components.containers.model.EditContainerScreenMode
 import kotlinx.coroutines.delay
 import java.util.UUID
-
-enum class EditContainerScreenMode {
-    MAIN, APPEARANCE, BEHAVIOR, MANAGE_ITEMS
-}
 
 private const val ANIMATION_DURATION_MS = 300
 
@@ -538,22 +536,3 @@ private fun rememberEditContainerState(panel: ContainerModel): EditContainerStat
         )
     }
 }
-
-data class ContainerOptionsState(
-    val position: String,
-    val orientation: String,
-    val isBackgroundEnabled: Boolean,
-    val isExpandCell: Boolean,
-    val showAddFolderButton: Boolean,
-    val showFolderLabels: Boolean,
-    val isGridFolderEnabled: Boolean,
-    val hideText: Boolean,
-    val textColor: Long?,
-    val backgroundColor: Long?,
-    val strokeEnabled: Boolean,
-    val strokeColor: Long?,
-    val folderColor: Long?,
-    val folderStrokeEnabled: Boolean,
-    val scrollUpShortcut: String?,
-    val scrollDownShortcut: String?
-)

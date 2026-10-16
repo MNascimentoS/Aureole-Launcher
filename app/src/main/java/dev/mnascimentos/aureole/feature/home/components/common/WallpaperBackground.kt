@@ -11,6 +11,8 @@ import coil.compose.AsyncImage
 import dev.chrisbanes.haze.HazeState
 import dev.chrisbanes.haze.hazeSource
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
+import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import java.io.File
 
 @Composable
@@ -48,5 +50,17 @@ fun WallpaperBackground(
                     .background(AureoleDS.colors.background)
             )
         }
+    }
+}
+
+@AureolePreview
+@Composable
+internal fun WallpaperBackgroundPreview() {
+    AureoleLauncherTheme {
+        WallpaperBackground(
+            isCustomWallpaperSet = false,
+            customWallpaperPath = null,
+            hazeState = HazeState()
+        )
     }
 }

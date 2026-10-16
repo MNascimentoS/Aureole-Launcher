@@ -40,31 +40,16 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
-import dev.chrisbanes.haze.HazeState
-import dev.mnascimentos.aureole.core.data.model.LauncherItemState
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleEditOverlay
 import dev.mnascimentos.aureole.core.designsystem.icons.Add
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.utils.LocalAnimatedVisibilityScope
 import dev.mnascimentos.aureole.core.designsystem.utils.LocalSharedTransitionScope
+import dev.mnascimentos.aureole.feature.home.components.widgets.model.EditWidgetGroupActions
+import dev.mnascimentos.aureole.feature.home.components.widgets.model.EditWidgetGroupParams
 import kotlinx.coroutines.delay
 
 private const val ANIMATION_DURATION_MS = 300
-
-data class EditWidgetGroupParams(
-    val item: LauncherItemState,
-    val widgets: List<Int>,
-    val appWidgetHost: AppWidgetHost? = null,
-    val isIndicatorEnabled: Boolean = true,
-    val hazeState: HazeState? = null
-)
-
-data class EditWidgetGroupActions(
-    val onToggleIndicator: () -> Unit,
-    val onRemoveWidget: (Int) -> Unit,
-    val onAddWidgetClick: () -> Unit,
-    val onDismissRequest: () -> Unit
-)
 
 @Suppress("LongMethod") // Screen composable managing widget group editing layout and preview carousel
 @OptIn(ExperimentalMaterial3Api::class)

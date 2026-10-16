@@ -37,6 +37,7 @@ import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
+import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.FolderFormConfig
 
 @Composable
 fun FolderFormDialog(
@@ -66,13 +67,6 @@ fun FolderFormDialog(
         )
     }
 }
-
-data class FolderFormConfig(
-    val initialName: String,
-    val initialIcon: String?,
-    val isEditing: Boolean,
-    val submitText: String
-)
 
 @Composable
 private fun FolderFormDialogContent(

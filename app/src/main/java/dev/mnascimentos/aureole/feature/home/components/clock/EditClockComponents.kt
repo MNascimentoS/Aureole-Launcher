@@ -28,6 +28,8 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
+import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 
 @Composable
 internal fun EditClockSectionHeader(title: String) {
@@ -147,5 +149,13 @@ internal fun EditClockColorSwatchItem(
             style = AureoleDS.typography.bodySmall,
             color = if (isSelected) AureoleDS.colors.onSurfaceHigh else AureoleDS.colors.onSurfaceMedium
         )
+    }
+}
+
+@AureolePreview
+@Composable
+private fun EditClockSectionHeaderPreview() {
+    AureoleLauncherTheme {
+        EditClockSectionHeader(title = "Estilo do Relógio")
     }
 }
