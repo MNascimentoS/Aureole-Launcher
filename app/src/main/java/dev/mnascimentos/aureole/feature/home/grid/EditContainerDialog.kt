@@ -17,7 +17,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -116,7 +115,7 @@ private fun EditDialogDeleteRow(
         modifier = Modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(14.dp))
-            .background(MaterialTheme.colorScheme.errorContainer.copy(alpha = 0.12f))
+            .background(AureoleDS.colors.error.copy(alpha = 0.12f))
             .clickable {
                 onDeleteConfirm(itemId)
                 onDismissRequest()
@@ -129,11 +128,11 @@ private fun EditDialogDeleteRow(
             modifier = Modifier
                 .size(32.dp)
                 .clip(RoundedCornerShape(8.dp))
-                .background(MaterialTheme.colorScheme.errorContainer.copy(alpha = 0.3f)),
+                .background(AureoleDS.colors.error.copy(alpha = 0.3f)),
             contentAlignment = Alignment.Center
         ) {
             AureoleDS.icons.Delete(
-                tint = MaterialTheme.colorScheme.error,
+                tint = AureoleDS.colors.error,
                 modifier = Modifier.size(18.dp)
             )
         }
@@ -142,7 +141,7 @@ private fun EditDialogDeleteRow(
             text = "Remover Componente",
             style = AureoleTheme.typography.labelLarge,
             fontWeight = FontWeight.Bold,
-            color = MaterialTheme.colorScheme.error
+            color = AureoleDS.colors.error
         )
     }
 }
@@ -258,7 +257,7 @@ private fun EditDialogWidgetListSection(
                 style = AureoleTheme.typography.labelLarge,
                 fontWeight = FontWeight.Bold,
                 color = if (isIndicatorEnabled) {
-                    MaterialTheme.colorScheme.primary
+                    AureoleDS.colors.onSurfaceHigh
                 } else {
                     AureoleTheme.colors.onSurfaceMedium
                 }
@@ -307,7 +306,7 @@ private fun EditDialogWidgetListRows(
                     modifier = Modifier.weight(1f)
                 )
                 TextButton(onClick = { actions.onRemoveWidgetClick(widgetId, stackId) }) {
-                    AureoleText(text = "Remover", color = MaterialTheme.colorScheme.error)
+                    AureoleText(text = "Remover", color = AureoleDS.colors.error)
                 }
             }
             Spacer(modifier = Modifier.height(6.dp))

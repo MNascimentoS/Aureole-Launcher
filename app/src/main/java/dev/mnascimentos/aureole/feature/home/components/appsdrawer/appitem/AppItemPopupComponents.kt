@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -122,7 +121,7 @@ private fun AppPopupButton(
     onClick: () -> Unit,
     isDestructive: Boolean = false
 ) {
-    val contentColor = if (isDestructive) MaterialTheme.colorScheme.error else AureoleDS.colors.onSurfaceHigh
+    val contentColor = if (isDestructive) AureoleDS.colors.error else AureoleDS.colors.onSurfaceHigh
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,

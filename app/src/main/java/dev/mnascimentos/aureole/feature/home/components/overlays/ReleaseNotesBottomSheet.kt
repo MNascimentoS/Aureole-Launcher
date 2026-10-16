@@ -19,7 +19,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -28,7 +27,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.core.data.model.ReleaseNoteItem
@@ -91,15 +89,15 @@ fun ReleaseNotesBottomSheet(
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(16.dp),
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = MaterialTheme.colorScheme.primary,
-                    contentColor = MaterialTheme.colorScheme.onPrimary
+                    containerColor = AureoleDS.colors.onSurfaceHigh,
+                    contentColor = AureoleDS.colors.surface
                 )
             ) {
                 AureoleText(
                     text = "Entendido",
                     style = AureoleTheme.typography.titleSmall,
                     fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.onPrimary
+                    color = AureoleDS.colors.surface
                 )
             }
         }
@@ -157,12 +155,12 @@ private fun VersionChipsRow(
         ) { version ->
             val isSelected = (version.versionName == selectedVersion.versionName)
             val bg = if (isSelected) {
-                MaterialTheme.colorScheme.primary
+                AureoleDS.colors.onSurfaceHigh
             } else {
                 AureoleTheme.colors.outline.copy(alpha = CHIP_OUTLINE_ALPHA)
             }
             val textColor = if (isSelected) {
-                MaterialTheme.colorScheme.onPrimary
+                AureoleDS.colors.surface
             } else {
                 AureoleTheme.colors.onSurfaceMedium
             }
@@ -235,8 +233,6 @@ private fun ReleaseNoteItemCard(item: ReleaseNoteItem) {
     }
 }
 
-private const val FIX_BADGE_CONTAINER_COLOR = 0xFF4CAF50
-private const val FIX_BADGE_TEXT_COLOR = 0xFF81C784
 private const val BADGE_ALPHA = 0.2f
 private const val OUTLINE_ALPHA = 0.15f
 private const val CHIP_OUTLINE_ALPHA = 0.12f
@@ -247,8 +243,8 @@ private fun TypeBadge(type: ReleaseNoteType) {
     val (label, containerColor, textColor) = when (type) {
         ReleaseNoteType.FEATURE -> Triple(
             "Novo",
-            MaterialTheme.colorScheme.primary.copy(alpha = BADGE_ALPHA),
-            MaterialTheme.colorScheme.primary
+            AureoleDS.colors.onSurfaceHigh.copy(alpha = BADGE_ALPHA),
+            AureoleDS.colors.onSurfaceHigh
         )
         ReleaseNoteType.IMPROVEMENT -> Triple(
             "Melhoria",
@@ -257,8 +253,8 @@ private fun TypeBadge(type: ReleaseNoteType) {
         )
         ReleaseNoteType.FIX -> Triple(
             "Correção",
-            Color(FIX_BADGE_CONTAINER_COLOR).copy(alpha = BADGE_ALPHA),
-            Color(FIX_BADGE_TEXT_COLOR)
+            AureoleDS.colors.badgeContainer.copy(alpha = BADGE_ALPHA),
+            AureoleDS.colors.badgeText
         )
     }
 

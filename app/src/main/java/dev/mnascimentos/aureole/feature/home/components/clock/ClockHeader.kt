@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -126,12 +125,12 @@ fun ClockHeader(
     val hazeOpacity = if (hazeConfig.isHazeEnabled) hazeConfig.hazeOpacity else uiState.hazeOpacity
     val isBgEnabled = hazeConfig.isBackgroundEnabled && uiState.isClockBackgroundEnabled
 
-    val defaultTextColor = MaterialTheme.colorScheme.onSurface.toArgb()
+    val defaultTextColor = AureoleDS.colors.onSurfaceHigh.toArgb()
     val colorPrimaryInt = if (resolvedConfig.textColor != 0) resolvedConfig.textColor else defaultTextColor
     val colorPrimaryCompose = if (resolvedConfig.textColor != 0) {
         Color(resolvedConfig.textColor)
     } else {
-        MaterialTheme.colorScheme.primary
+        AureoleDS.colors.onSurfaceHigh
     }
 
     val greeting = if (resolvedConfig.style == "CUSTOM_GREETING" && resolvedConfig.customGreeting.isNotBlank()) {

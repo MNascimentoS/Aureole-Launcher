@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -104,7 +103,7 @@ private fun UpdateDialogContent(
                             AureoleText(
                                 text = confirmLabel,
                                 fontWeight = FontWeight.SemiBold,
-                                color = MaterialTheme.colorScheme.primary
+                                color = AureoleTheme.colors.onSurfaceHigh
                             )
                         }
                     }
@@ -136,7 +135,7 @@ private fun UpdateDialogContent(
                     AureoleText(
                         text = confirmLabel,
                         fontWeight = FontWeight.SemiBold,
-                        color = MaterialTheme.colorScheme.primary
+                        color = AureoleTheme.colors.onSurfaceHigh
                     )
                 }
             },

@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.runtime.Composable
@@ -50,7 +49,7 @@ internal fun LazyListScope.selectedFolderAppSection(
             text = "Selecionados ($totalSelectedCount)",
             style = AureoleTheme.typography.titleSmall,
             fontWeight = FontWeight.Bold,
-            color = MaterialTheme.colorScheme.primary,
+            color = AureoleTheme.colors.onSurfaceHigh,
             modifier = Modifier.padding(vertical = 4.dp)
         )
     }
@@ -206,7 +205,7 @@ internal fun FolderAppPickerSearchInput(
         },
         singleLine = true,
         colors = OutlinedTextFieldDefaults.colors(
-            focusedBorderColor = MaterialTheme.colorScheme.primary,
+            focusedBorderColor = AureoleTheme.colors.onSurfaceHigh,
             unfocusedBorderColor = AureoleTheme.colors.outline,
             focusedTextColor = AureoleTheme.colors.onSurfaceHigh,
             unfocusedTextColor = AureoleTheme.colors.onSurfaceHigh

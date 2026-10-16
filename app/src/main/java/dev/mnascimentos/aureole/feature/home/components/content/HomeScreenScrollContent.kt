@@ -21,7 +21,6 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -237,7 +236,7 @@ private fun ScrollViewAddComponentButton(parentId: String, actions: HomeScreenAc
         modifier = Modifier
             .padding(vertical = 12.dp)
             .clip(RoundedCornerShape(20.dp))
-            .background(MaterialTheme.colorScheme.primaryContainer)
+            .background(AureoleDS.colors.surfaceVariant)
             .pointerInput("add_btn_" + parentId) {
                 detectTapGestures(
                     onTap = {
@@ -250,14 +249,14 @@ private fun ScrollViewAddComponentButton(parentId: String, actions: HomeScreenAc
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             AureoleDS.icons.Add(
-                tint = MaterialTheme.colorScheme.onPrimaryContainer,
+                tint = AureoleDS.colors.onSurfaceHigh,
                 modifier = Modifier.size(18.dp)
             )
             Spacer(modifier = Modifier.width(6.dp))
             AureoleText(
                 text = "Componente",
                 style = AureoleDS.typography.labelMedium,
-                color = MaterialTheme.colorScheme.onPrimaryContainer,
+                color = AureoleDS.colors.onSurfaceHigh,
                 fontWeight = FontWeight.SemiBold
             )
         }

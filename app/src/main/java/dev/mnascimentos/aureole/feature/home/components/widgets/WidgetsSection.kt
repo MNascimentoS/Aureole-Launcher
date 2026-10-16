@@ -28,7 +28,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.MaterialTheme
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
@@ -41,6 +41,7 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.rememberNestedScrollInteropConnection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.utils.LocalAnimatedVisibilityScope
 import dev.mnascimentos.aureole.core.designsystem.utils.LocalSharedTransitionScope
 import dev.mnascimentos.aureole.feature.home.LocalHomeActions
@@ -165,9 +166,9 @@ fun WidgetPositionIndicatorBar(
             )
             val animatedColor by animateColorAsState(
                 targetValue = if (isSelected) {
-                    MaterialTheme.colorScheme.primary
+                    AureoleDS.colors.onSurfaceHigh
                 } else {
-                    MaterialTheme.colorScheme.onSurface.copy(alpha = 0.25f)
+                    AureoleDS.colors.onSurfaceHigh.copy(alpha = 0.25f)
                 },
                 animationSpec = tween(COLOR_ANIMATION_DURATION_MS),
                 label = "indicator_color"
@@ -213,7 +214,7 @@ private fun WidgetHostItem(
     Box(
         modifier = modifier
             .fillMaxSize()
-            .clip(MaterialTheme.shapes.large)
+            .clip(RoundedCornerShape(AureoleDS.dimens.radiusLarge))
             .then(sharedModifier)
             .pointerInput(widgetId, stackId) {
                 val longPressTimeout = viewConfiguration.longPressTimeoutMillis

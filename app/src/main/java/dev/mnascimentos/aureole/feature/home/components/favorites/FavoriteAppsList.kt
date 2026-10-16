@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.TextButton
@@ -48,7 +47,7 @@ internal fun FavoriteSectionHeader(
             text = "Favoritos ($count)",
             style = AureoleTheme.typography.titleSmall,
             fontWeight = FontWeight.Bold,
-            color = MaterialTheme.colorScheme.primary
+            color = AureoleTheme.colors.onSurfaceHigh
         )
         if (count > 0) {
             TextButton(
@@ -59,7 +58,7 @@ internal fun FavoriteSectionHeader(
                     text = "Desativar todos",
                     style = AureoleTheme.typography.labelMedium,
                     fontWeight = FontWeight.SemiBold,
-                    color = MaterialTheme.colorScheme.error
+                    color = AureoleDS.colors.error
                 )
             }
         }
@@ -93,7 +92,7 @@ internal fun RemainingSectionHeader(
                     text = "Ativar todos",
                     style = AureoleTheme.typography.labelMedium,
                     fontWeight = FontWeight.SemiBold,
-                    color = MaterialTheme.colorScheme.primary
+                    color = AureoleTheme.colors.onSurfaceHigh
                 )
             }
         }
@@ -250,7 +249,7 @@ internal fun FavoriteAppsSearchInput(
         },
         singleLine = true,
         colors = OutlinedTextFieldDefaults.colors(
-            focusedBorderColor = MaterialTheme.colorScheme.primary,
+            focusedBorderColor = AureoleTheme.colors.onSurfaceHigh,
             unfocusedBorderColor = AureoleTheme.colors.outline.copy(alpha = 0.5f),
             focusedTextColor = AureoleTheme.colors.onSurfaceHigh,
             unfocusedTextColor = AureoleTheme.colors.onSurfaceHigh

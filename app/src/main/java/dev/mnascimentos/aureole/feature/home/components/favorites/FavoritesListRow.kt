@@ -13,8 +13,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.remember
@@ -42,22 +42,22 @@ internal fun FavoritesEmptyHint(onClick: () -> Unit) {
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp, vertical = 8.dp)
-            .clip(MaterialTheme.shapes.medium)
-            .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f))
+            .clip(RoundedCornerShape(AureoleDS.dimens.radiusMedium))
+            .background(AureoleDS.colors.surfaceVariant.copy(alpha = 0.3f))
             .clickable(onClick = onClick)
             .padding(12.dp),
         contentAlignment = Alignment.Center
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             AureoleDS.icons.Star(
-                tint = MaterialTheme.colorScheme.primary,
+                tint = AureoleDS.colors.onSurfaceHigh,
                 modifier = Modifier.size(18.dp)
             )
             Spacer(modifier = Modifier.width(8.dp))
             AureoleText(
                 text = "Tap to select Favorites",
                 style = AureoleDS.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
+                color = AureoleDS.colors.onSurfaceMedium
             )
         }
     }
@@ -73,17 +73,17 @@ internal fun AllAppsDivider() {
     ) {
         HorizontalDivider(
             modifier = Modifier.weight(1f),
-            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f)
+            color = AureoleDS.colors.onSurfaceHigh.copy(alpha = 0.12f)
         )
         AureoleText(
             text = " ALL APPS ",
             style = AureoleDS.typography.labelSmall,
-            color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f),
+            color = AureoleDS.colors.onSurfaceMedium.copy(alpha = 0.6f),
             modifier = Modifier.padding(horizontal = 8.dp)
         )
         HorizontalDivider(
             modifier = Modifier.weight(1f),
-            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f)
+            color = AureoleDS.colors.onSurfaceHigh.copy(alpha = 0.12f)
         )
     }
 }
