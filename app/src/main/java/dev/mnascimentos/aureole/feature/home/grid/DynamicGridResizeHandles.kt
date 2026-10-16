@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberUpdatedState
@@ -182,7 +181,7 @@ fun BoxScope.CornerResizeHandle(
             .align(Alignment.BottomEnd)
             .size(CORNER_TOUCH_SIZE)
             .background(
-                color = MaterialTheme.colorScheme.primaryContainer,
+                color = AureoleDS.colors.surfaceVariant,
                 shape = RoundedCornerShape(topStart = CORNER_HANDLE_RADIUS)
             )
             .pointerInput(params.item.id) { detectTapGestures(onTap = { currentCallbacks.onEditItem() }) }
@@ -190,7 +189,7 @@ fun BoxScope.CornerResizeHandle(
         contentAlignment = Alignment.Center
     ) {
         AureoleDS.icons.Edit(
-            tint = MaterialTheme.colorScheme.onPrimaryContainer,
+            tint = AureoleDS.colors.onSurfaceHigh,
             modifier = Modifier.size(20.dp)
         )
     }
@@ -236,14 +235,14 @@ fun BoxScope.DeleteActionHandle(
             .align(Alignment.TopEnd)
             .size(CORNER_TOUCH_SIZE)
             .background(
-                color = MaterialTheme.colorScheme.errorContainer,
+                color = AureoleDS.colors.error,
                 shape = RoundedCornerShape(bottomStart = CORNER_HANDLE_RADIUS)
             )
             .pointerInput(itemId + "_delete") { detectTapGestures(onTap = { currentOnDelete() }) },
         contentAlignment = Alignment.Center
     ) {
         AureoleDS.icons.Delete(
-            tint = MaterialTheme.colorScheme.onErrorContainer,
+            tint = AureoleDS.colors.onError,
             modifier = Modifier.size(20.dp)
         )
     }

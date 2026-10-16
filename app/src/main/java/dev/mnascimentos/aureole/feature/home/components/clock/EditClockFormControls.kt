@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Switch
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -19,6 +18,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
@@ -93,18 +93,18 @@ internal fun EditClockActionButtons(
         ) {
             AureoleText(
                 text = "Redefinir Padrões",
-                color = MaterialTheme.colorScheme.error
+                color = AureoleDS.colors.error
             )
         }
 
         Button(
             onClick = onDismissRequest,
             colors = ButtonDefaults.buttonColors(
-                containerColor = MaterialTheme.colorScheme.primary,
-                contentColor = MaterialTheme.colorScheme.onPrimary
+                containerColor = AureoleDS.colors.onSurfaceHigh,
+                contentColor = AureoleDS.colors.surface
             )
         ) {
-            AureoleText("Salvar", color = MaterialTheme.colorScheme.onPrimary)
+            AureoleText("Salvar", color = AureoleDS.colors.surface)
         }
     }
 }

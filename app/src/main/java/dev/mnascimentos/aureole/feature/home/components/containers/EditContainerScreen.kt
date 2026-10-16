@@ -20,7 +20,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
@@ -337,13 +336,13 @@ private fun ManageItemsContent(
             shape = RoundedCornerShape(12.dp),
             border = BorderStroke(1.dp, AureoleTheme.colors.outline.copy(alpha = 0.5f)),
             colors = ButtonDefaults.outlinedButtonColors(
-                contentColor = MaterialTheme.colorScheme.primary
+                contentColor = AureoleDS.colors.onSurfaceHigh
             ),
             contentPadding = PaddingValues(horizontal = 12.dp),
             modifier = Modifier.height(52.dp)
         ) {
             AureoleDS.icons.Add(
-                tint = MaterialTheme.colorScheme.primary,
+                tint = AureoleDS.colors.onSurfaceHigh,
                 modifier = Modifier.size(18.dp)
             )
             Spacer(modifier = Modifier.width(6.dp))

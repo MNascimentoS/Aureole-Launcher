@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -144,7 +143,7 @@ private fun ScrollViewChildHeaderRow(
             modifier = Modifier.size(32.dp)
         ) {
             AureoleDS.icons.Delete(
-                tint = MaterialTheme.colorScheme.error,
+                tint = AureoleDS.colors.error,
                 modifier = Modifier.size(18.dp)
             )
         }

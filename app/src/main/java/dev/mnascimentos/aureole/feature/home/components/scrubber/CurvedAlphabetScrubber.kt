@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -263,9 +262,9 @@ private fun BoxScope.ScrubberAlphabetItems(
             style = AureoleDS.typography.labelSmall,
             fontWeight = if (isActive) FontWeight.ExtraBold else FontWeight.Medium,
             color = if (isActive) {
-                MaterialTheme.colorScheme.primary
+                AureoleDS.colors.onSurfaceHigh
             } else {
-                MaterialTheme.colorScheme.onBackground.copy(alpha = INACTIVE_LETTER_ALPHA)
+                AureoleDS.colors.onSurfaceHigh.copy(alpha = INACTIVE_LETTER_ALPHA)
             },
             modifier = Modifier
                 .align(params.alignment)
@@ -300,8 +299,8 @@ private fun BoxScope.ScrubberSelectedBadge(
 ) {
     Surface(
         shape = CircleShape,
-        color = MaterialTheme.colorScheme.primary,
-        contentColor = MaterialTheme.colorScheme.onPrimary,
+        color = AureoleDS.colors.onSurfaceHigh,
+        contentColor = AureoleDS.colors.surface,
         shadowElevation = BADGE_ELEVATION,
         modifier = Modifier
             .size(BADGE_SIZE)

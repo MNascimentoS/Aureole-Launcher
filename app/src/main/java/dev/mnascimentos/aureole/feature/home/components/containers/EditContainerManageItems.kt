@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -25,6 +24,7 @@ import dev.mnascimentos.aureole.core.data.model.AppFolder
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.data.model.ContainerItemEntity
 import dev.mnascimentos.aureole.core.data.model.ContainerItemType
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleTheme
 
 @Composable
@@ -198,7 +198,7 @@ private fun ManageItemRowActionButtons(
             modifier = Modifier
                 .size(24.dp)
                 .background(
-                    color = MaterialTheme.colorScheme.error.copy(alpha = 0.15f),
+                    color = AureoleDS.colors.error.copy(alpha = 0.15f),
                     shape = RoundedCornerShape(6.dp)
                 )
                 .clickable { actions.onRemove(index) },
@@ -206,7 +206,7 @@ private fun ManageItemRowActionButtons(
         ) {
             Text(
                 text = "✕",
-                color = MaterialTheme.colorScheme.error,
+                color = AureoleDS.colors.error,
                 fontSize = 12.sp
             )
         }

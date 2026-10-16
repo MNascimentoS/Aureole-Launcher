@@ -15,7 +15,6 @@ import androidx.compose.material3.ExposedDropdownMenuAnchorType
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.runtime.Composable
@@ -58,7 +57,7 @@ internal fun EditContainerItemRow(
 
         FolderIconRegistry.RenderIcon(
             name = params.iconName,
-            tint = MaterialTheme.colorScheme.primary,
+            tint = AureoleDS.colors.onSurfaceHigh,
             modifier = Modifier.size(20.dp)
         )
 
@@ -80,7 +79,7 @@ internal fun EditContainerItemRow(
 
         IconButton(onClick = actions.onRemove, modifier = Modifier.size(28.dp)) {
             AureoleDS.icons.Delete(
-                tint = MaterialTheme.colorScheme.error,
+                tint = AureoleDS.colors.error,
                 modifier = Modifier.size(18.dp)
             )
         }
@@ -162,7 +161,7 @@ internal fun EditContainerAddAppDropdown(
             },
             trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = isExpanded) },
             colors = OutlinedTextFieldDefaults.colors(
-                focusedBorderColor = MaterialTheme.colorScheme.primary,
+                focusedBorderColor = AureoleDS.colors.onSurfaceHigh,
                 unfocusedBorderColor = AureoleTheme.colors.outline,
                 focusedTextColor = AureoleTheme.colors.onSurfaceHigh,
                 unfocusedTextColor = AureoleTheme.colors.onSurfaceHigh
