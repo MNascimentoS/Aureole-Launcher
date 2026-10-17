@@ -59,9 +59,11 @@ fun SettingsBehaviorScreen(
     uiState: SettingsUiState,
     actions: SettingsScreenActions,
     @Suppress("UNUSED_PARAMETER") // Parameter reserved for navigation contract
-    onNavigateBack: () -> Unit
+    onNavigateBack: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     Scaffold(
+        modifier = modifier,
         containerColor = AureoleDS.colors.surface
     ) { innerPadding ->
         BoxWithConstraints(

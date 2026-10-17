@@ -153,7 +153,7 @@ private fun OrientationOptionCard(
 
 @AureolePreview
 @Composable
-fun EditGridItemDialogPreview() {
+private fun EditGridItemDialogPreview() {
     val sampleItem = LauncherItemState(
         id = "item_1",
         type = LauncherItemType.APPS_LIST,

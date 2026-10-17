@@ -7,10 +7,10 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.net.Uri
 import android.os.Build
 import android.util.Log
 import androidx.core.content.edit
+import androidx.core.net.toUri
 import dev.mnascimentos.aureole.core.data.db.AppDatabase
 import dev.mnascimentos.aureole.core.designsystem.utils.HazeUtils
 import java.io.File
@@ -226,7 +226,7 @@ class SettingsRepository(private val context: Context) {
     @Suppress("ReturnCount", "TooGenericExceptionCaught")
     fun saveCustomWallpaper(uriString: String): Boolean {
         return try {
-            val uri = Uri.parse(uriString)
+            val uri = uriString.toUri()
             val inputStream = context.contentResolver.openInputStream(uri) ?: return false
             val bitmap = inputStream.use { BitmapFactory.decodeStream(it) } ?: return false
             val file = File(context.filesDir, "custom_wallpaper.jpg")
@@ -282,7 +282,7 @@ class SettingsRepository(private val context: Context) {
                 "aureole_widget_prefs",
                 "${context.packageName}_preferences"
             ).forEach { prefName ->
-                context.getSharedPreferences(prefName, Context.MODE_PRIVATE).edit().clear().commit()
+                context.getSharedPreferences(prefName, Context.MODE_PRIVATE).edit(commit = true) { clear() }
             }
 
             context.cacheDir.deleteRecursively()

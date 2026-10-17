@@ -150,7 +150,7 @@ private fun UpdateDialogContent(
 
 @AureolePreview
 @Composable
-fun UpdateAvailableDialogPreview() {
+private fun UpdateAvailableDialogPreview() {
     AureoleLauncherTheme {
         UpdateAvailableDialog(onConfirmUpdate = {}, onDismiss = {})
     }
@@ -158,7 +158,7 @@ fun UpdateAvailableDialogPreview() {
 
 @AureolePreview
 @Composable
-fun UpdateDownloadedDialogPreview() {
+private fun UpdateDownloadedDialogPreview() {
     AureoleLauncherTheme {
         UpdateDownloadedDialog(onConfirmRestart = {}, onDismiss = {})
     }

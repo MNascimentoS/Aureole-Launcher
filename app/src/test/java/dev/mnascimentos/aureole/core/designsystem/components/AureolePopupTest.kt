@@ -75,7 +75,16 @@ class AureolePopupTest {
     @Test
     fun `when rendering preview, should display complete popup box`() {
         composeTestRule.setContent {
-            AureolePopupBoxPreview()
+            AureoleLauncherTheme {
+                AureolePopupBox {
+                    AureolePopupHeader(
+                        title = "Folder Name",
+                        sessionTitle = "Session Subtitle"
+                    )
+                    AureolePopupMenuSection(title = "Section Header")
+                    Text("Popup Body Content")
+                }
+            }
         }
 
         composeTestRule.onNodeWithText("Folder Name").assertIsDisplayed()

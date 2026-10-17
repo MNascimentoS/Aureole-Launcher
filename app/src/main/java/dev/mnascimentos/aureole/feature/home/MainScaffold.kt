@@ -34,11 +34,14 @@ fun MainScaffold(
     appWidgetHost: AppWidgetHost,
     appWidgetManager: AppWidgetManager,
     viewModel: HomeViewModel,
-    onWidgetSelected: (AppWidgetProviderInfo) -> Unit
+    onWidgetSelected: (AppWidgetProviderInfo) -> Unit,
+    modifier: Modifier = Modifier
 ) {
     val uiState = LocalHomeUiState.current
+    val actions = LocalHomeActions.current
+
     Scaffold(
-        modifier = Modifier.fillMaxSize(),
+        modifier = modifier.fillMaxSize(),
         containerColor = Color.Transparent,
         contentWindowInsets = WindowInsets(0, 0, 0, 0)
     ) { padding ->
@@ -49,23 +52,32 @@ fun MainScaffold(
 
         WidgetPickerOverlay(
             uiState = uiState,
-            viewModel = viewModel,
+            onDismiss = { viewModel.setShowWidgetPicker(false) },
             onWidgetSelected = onWidgetSelected
         )
 
         FavoritePickerOverlay(
             uiState = uiState,
-            viewModel = viewModel
+            onToggleFavorite = { pkg, containerId -> viewModel.toggleFavorite(pkg, containerId) },
+            onUpdateFavorites = { cId, pkgs ->
+                if (cId != null) {
+                    viewModel.updateContainerFavorites(cId, pkgs)
+                } else {
+                    viewModel.updateFavoritePackages(pkgs)
+                }
+            },
+            onToggleShowAllAppsOnHome = { viewModel.toggleShowAllAppsOnHome() },
+            onDismiss = { viewModel.setShowFavoritePicker(false) }
         )
 
         InAppUpdateOverlay(
             uiState = uiState,
-            actions = LocalHomeActions.current
+            actions = actions
         )
 
         ReleaseNotesOverlay(
             uiState = uiState,
-            viewModel = viewModel
+            onDismiss = { viewModel.dismissReleaseNotes() }
         )
     }
 }
@@ -73,7 +85,7 @@ fun MainScaffold(
 @Composable
 private fun WidgetPickerOverlay(
     uiState: MainUiState,
-    viewModel: HomeViewModel,
+    onDismiss: () -> Unit,
     onWidgetSelected: (AppWidgetProviderInfo) -> Unit
 ) {
     if (uiState.showWidgetPicker) {
@@ -81,10 +93,10 @@ private fun WidgetPickerOverlay(
             isBlurEnabled = uiState.isHazeEnabled,
             hazeState = LocalHazeState.current,
             onWidgetSelected = { provider ->
-                viewModel.setShowWidgetPicker(false)
+                onDismiss()
                 onWidgetSelected(provider)
             },
-            onDismiss = { viewModel.setShowWidgetPicker(false) }
+            onDismiss = onDismiss
         )
     }
 }
@@ -92,7 +104,10 @@ private fun WidgetPickerOverlay(
 @Composable
 private fun FavoritePickerOverlay(
     uiState: MainUiState,
-    viewModel: HomeViewModel
+    onToggleFavorite: (String, String?) -> Unit,
+    onUpdateFavorites: (String?, List<String>) -> Unit,
+    onToggleShowAllAppsOnHome: () -> Unit,
+    onDismiss: () -> Unit
 ) {
     if (uiState.showFavoritePickerDialog) {
         val containerId = uiState.activeFavoriteContainerId
@@ -110,16 +125,10 @@ private fun FavoritePickerOverlay(
                 showAllAppsOnHome = uiState.showAllAppsOnHome
             ),
             actions = FavoriteAppsDialogActions(
-                onToggleFavorite = { pkg -> viewModel.toggleFavorite(pkg, containerId) },
-                onUpdateFavoritePackages = { cId, pkgs ->
-                    if (cId != null) {
-                        viewModel.updateContainerFavorites(cId, pkgs)
-                    } else {
-                        viewModel.updateFavoritePackages(pkgs)
-                    }
-                },
-                onToggleShowAllAppsOnHome = { viewModel.toggleShowAllAppsOnHome() },
-                onDismiss = { viewModel.setShowFavoritePicker(false) }
+                onToggleFavorite = { pkg -> onToggleFavorite(pkg, containerId) },
+                onUpdateFavoritePackages = { cId, pkgs -> onUpdateFavorites(cId, pkgs) },
+                onToggleShowAllAppsOnHome = onToggleShowAllAppsOnHome,
+                onDismiss = onDismiss
             )
         )
     }
@@ -148,11 +157,11 @@ private fun InAppUpdateOverlay(
 @Composable
 private fun ReleaseNotesOverlay(
     uiState: MainUiState,
-    viewModel: HomeViewModel
+    onDismiss: () -> Unit
 ) {
     if (uiState.showReleaseNotesBottomSheet) {
         ReleaseNotesBottomSheet(
-            onDismissRequest = { viewModel.dismissReleaseNotes() }
+            onDismissRequest = onDismiss
         )
     }
 }

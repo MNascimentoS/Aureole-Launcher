@@ -126,7 +126,6 @@ fun AppsListDrawer(
     }
 }
 
-@Composable
 private fun Modifier.buildDrawerHaze(
     hasHaze: Boolean,
     hazeState: HazeState?,
@@ -153,7 +152,7 @@ private fun Modifier.buildDrawerHaze(
 
 @AureolePreview
 @Composable
-internal fun AppsListSectionDrawerPreview() {
+private fun AppsListSectionDrawerPreview() {
     AureoleLauncherTheme {
         AppsListDrawer(
             listState = rememberLazyListState()

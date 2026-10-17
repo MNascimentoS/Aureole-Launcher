@@ -68,8 +68,9 @@ private const val DISMISS_DELAY_MS = 300L
 fun EditClockBottomSheet(
     uiState: MainUiState,
     actions: HomeScreenActions,
-    hazeState: HazeState? = null,
-    onDismissRequest: () -> Unit
+    onDismissRequest: () -> Unit,
+    modifier: Modifier = Modifier,
+    hazeState: HazeState? = null
 ) {
     var isVisible by remember { mutableStateOf(true) }
 
@@ -88,6 +89,7 @@ fun EditClockBottomSheet(
 
     AureoleEditOverlay(
         onDismissRequest = { isVisible = false },
+        modifier = modifier,
         title = "Personalizar Relógio",
         hazeState = effectiveHazeState,
         isVisible = isVisible,
@@ -340,69 +342,71 @@ private fun EditClockFormatSection(
     uiState: MainUiState,
     actions: HomeScreenActions
 ) {
-    EditClockSectionHeader(title = "Formato de Hora e Data")
+    Column {
+        EditClockSectionHeader(title = "Formato de Hora e Data")
 
-    AureoleText(
-        text = "Formato de Hora:",
-        style = AureoleDS.typography.bodySmall,
-        color = AureoleDS.colors.onSurfaceMedium,
-        modifier = Modifier.padding(bottom = 6.dp)
-    )
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(CHIP_HORIZONTAL_SPACING)
-    ) {
-        EditClockChoiceButton(
-            text = "Sistema",
-            selected = uiState.clockTimeFormat == "SYSTEM",
-            onClick = { actions.onUpdateClockTimeFormat("SYSTEM") },
-            modifier = Modifier.weight(1f)
+        AureoleText(
+            text = "Formato de Hora:",
+            style = AureoleDS.typography.bodySmall,
+            color = AureoleDS.colors.onSurfaceMedium,
+            modifier = Modifier.padding(bottom = 6.dp)
         )
-        EditClockChoiceButton(
-            text = "12 Horas",
-            selected = uiState.clockTimeFormat == "12H",
-            onClick = { actions.onUpdateClockTimeFormat("12H") },
-            modifier = Modifier.weight(1f)
-        )
-        EditClockChoiceButton(
-            text = "24 Horas",
-            selected = uiState.clockTimeFormat == "24H",
-            onClick = { actions.onUpdateClockTimeFormat("24H") },
-            modifier = Modifier.weight(1f)
-        )
-    }
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(CHIP_HORIZONTAL_SPACING)
+        ) {
+            EditClockChoiceButton(
+                text = "Sistema",
+                selected = uiState.clockTimeFormat == "SYSTEM",
+                onClick = { actions.onUpdateClockTimeFormat("SYSTEM") },
+                modifier = Modifier.weight(1f)
+            )
+            EditClockChoiceButton(
+                text = "12 Horas",
+                selected = uiState.clockTimeFormat == "12H",
+                onClick = { actions.onUpdateClockTimeFormat("12H") },
+                modifier = Modifier.weight(1f)
+            )
+            EditClockChoiceButton(
+                text = "24 Horas",
+                selected = uiState.clockTimeFormat == "24H",
+                onClick = { actions.onUpdateClockTimeFormat("24H") },
+                modifier = Modifier.weight(1f)
+            )
+        }
 
-    Spacer(modifier = Modifier.height(10.dp))
+        Spacer(modifier = Modifier.height(10.dp))
 
-    AureoleText(
-        text = "Formato de Data:",
-        style = AureoleDS.typography.bodySmall,
-        color = AureoleDS.colors.onSurfaceMedium,
-        modifier = Modifier.padding(bottom = 6.dp)
-    )
-    FlowRow(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(CHIP_HORIZONTAL_SPACING),
-        verticalArrangement = Arrangement.spacedBy(CHIP_VERTICAL_SPACING)
-    ) {
-        EditClockLayoutChip("Completo (sexta, 9 out)", uiState.clockDateFormat == "DEFAULT") {
-            actions.onUpdateClockDateFormat("DEFAULT")
-        }
-        EditClockLayoutChip("Curto (Tue, 22 Sep)", uiState.clockDateFormat == "SHORT") {
-            actions.onUpdateClockDateFormat("SHORT")
-        }
-        EditClockLayoutChip("Médio (9 de outubro)", uiState.clockDateFormat == "MEDIUM") {
-            actions.onUpdateClockDateFormat("MEDIUM")
-        }
-        EditClockLayoutChip("Numérico (09/10/2026)", uiState.clockDateFormat == "NUMERIC") {
-            actions.onUpdateClockDateFormat("NUMERIC")
+        AureoleText(
+            text = "Formato de Data:",
+            style = AureoleDS.typography.bodySmall,
+            color = AureoleDS.colors.onSurfaceMedium,
+            modifier = Modifier.padding(bottom = 6.dp)
+        )
+        FlowRow(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(CHIP_HORIZONTAL_SPACING),
+            verticalArrangement = Arrangement.spacedBy(CHIP_VERTICAL_SPACING)
+        ) {
+            EditClockLayoutChip("Completo (sexta, 9 out)", uiState.clockDateFormat == "DEFAULT") {
+                actions.onUpdateClockDateFormat("DEFAULT")
+            }
+            EditClockLayoutChip("Curto (Tue, 22 Sep)", uiState.clockDateFormat == "SHORT") {
+                actions.onUpdateClockDateFormat("SHORT")
+            }
+            EditClockLayoutChip("Médio (9 de outubro)", uiState.clockDateFormat == "MEDIUM") {
+                actions.onUpdateClockDateFormat("MEDIUM")
+            }
+            EditClockLayoutChip("Numérico (09/10/2026)", uiState.clockDateFormat == "NUMERIC") {
+                actions.onUpdateClockDateFormat("NUMERIC")
+            }
         }
     }
 }
 
 @AureolePreview
 @Composable
-internal fun EditClockBottomSheetContentPreview() {
+private fun EditClockBottomSheetContentPreview() {
     val dummyActions = HomeScreenActions(
         onWidgetRowHeightChanged = {},
         onAppClick = {},

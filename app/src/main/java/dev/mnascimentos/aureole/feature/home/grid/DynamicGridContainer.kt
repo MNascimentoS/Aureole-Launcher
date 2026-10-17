@@ -165,7 +165,7 @@ private fun GridItemCell(
     val animOffset = remember { Animatable(Offset.Zero, Offset.VectorConverter) }
     val wDp = (params.cellWidthDp * item.colSpan) + with(LocalDensity.current) { resizeExtra.x.toDp() }
     val hDp = (params.cellHeightDp * item.rowSpan) + with(LocalDensity.current) { resizeExtra.y.toDp() }
-    val editModifier = rememberGridCellEditModifier(
+    val editModifier = Modifier.rememberGridCellEditModifier(
         GridEditModifierArgs(
             params = params,
             isDragging = isDragging,

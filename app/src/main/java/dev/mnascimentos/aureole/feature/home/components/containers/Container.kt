@@ -395,7 +395,7 @@ private fun RowRenderItem(
 
 @AureolePreview
 @Composable
-internal fun ContainerPreview() {
+private fun ContainerPreview() {
     AureoleLauncherTheme {
         Container(
             config = ContainerConfig(

@@ -1,5 +1,6 @@
 package dev.mnascimentos.aureole.feature.home.components.containers.folder
 
+import android.content.ComponentName
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -27,9 +28,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.unit.dp
+import androidx.core.graphics.drawable.toDrawable
 import dev.mnascimentos.aureole.core.data.model.AppFolder
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
+import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.FolderAppPickerBodyParams
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -38,7 +42,8 @@ fun FolderAppPickerDialog(
     folder: AppFolder,
     allApps: List<AppInfo>,
     onDismiss: () -> Unit,
-    onSave: (List<String>) -> Unit
+    onSave: (List<String>) -> Unit,
+    modifier: Modifier = Modifier
 ) {
     val sheetContent = @Composable {
         Box(
@@ -58,7 +63,7 @@ fun FolderAppPickerDialog(
 
     if (LocalInspectionMode.current) {
         Box(
-            modifier = Modifier.fillMaxSize(),
+            modifier = modifier.fillMaxSize(),
             contentAlignment = Alignment.BottomCenter
         ) {
             Surface(
@@ -86,7 +91,7 @@ fun FolderAppPickerDialog(
             ),
             containerColor = AureoleDS.colors.surface,
             contentColor = AureoleDS.colors.onSurfaceMedium,
-            modifier = Modifier.windowInsetsPadding(WindowInsets.statusBars)
+            modifier = modifier.windowInsetsPadding(WindowInsets.statusBars)
         ) {
             sheetContent()
         }
@@ -212,5 +217,27 @@ private fun togglePackageSelection(selectedPackages: MutableList<String>, pkg: S
         selectedPackages.remove(pkg)
     } else {
         selectedPackages.add(pkg)
+    }
+}
+
+@AureolePreview
+@Composable
+private fun FolderAppPickerDialogPreview() {
+    val sampleFolder = AppFolder(id = "f1", name = "Tools", appPackageNames = listOf("com.example.camera"))
+    val sampleApps = listOf(
+        AppInfo(
+            label = "Camera",
+            packageName = "com.example.camera",
+            componentName = ComponentName("com.example.camera", "MainActivity"),
+            icon = 0xFF2E7D32.toInt().toDrawable()
+        )
+    )
+    AureoleLauncherTheme {
+        FolderAppPickerDialog(
+            folder = sampleFolder,
+            allApps = sampleApps,
+            onDismiss = {},
+            onSave = {}
+        )
     }
 }

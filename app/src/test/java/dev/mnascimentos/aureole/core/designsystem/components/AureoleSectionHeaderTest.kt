@@ -32,7 +32,9 @@ class AureoleSectionHeaderTest {
     @Test
     fun `when section header preview rendered, should display title`() {
         composeTestRule.setContent {
-            AureoleSectionHeaderPreview()
+            AureoleLauncherTheme {
+                AureoleSectionHeader(title = "A")
+            }
         }
 
         composeTestRule.onNodeWithText("A").assertIsDisplayed()

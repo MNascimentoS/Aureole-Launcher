@@ -110,7 +110,7 @@ internal fun EditClockActionButtons(
 
 @AureolePreview
 @Composable
-fun EditClockBottomSheetPreview() {
+private fun EditClockBottomSheetPreview() {
     val uiState = MainUiState()
     val actions = HomeScreenActions(
         onWidgetRowHeightChanged = {},

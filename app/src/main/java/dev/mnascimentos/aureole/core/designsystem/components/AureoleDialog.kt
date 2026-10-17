@@ -162,7 +162,7 @@ fun AureoleDialogHeader(
 
 @AureolePreview
 @Composable
-fun AureoleDialogPreview() {
+private fun AureoleDialogPreview() {
     AureoleLauncherTheme {
         AureoleDialog(
             onDismissRequest = {},

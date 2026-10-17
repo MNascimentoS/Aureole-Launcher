@@ -20,11 +20,12 @@ import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 @Composable
 internal fun RenderModalBottomSheetOrInspection(
     sheetContent: @Composable () -> Unit,
-    onDismiss: () -> Unit
+    onDismiss: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     if (LocalInspectionMode.current) {
         Box(
-            modifier = Modifier.fillMaxSize(),
+            modifier = modifier.fillMaxSize(),
             contentAlignment = Alignment.BottomCenter
         ) {
             Surface(
@@ -52,7 +53,8 @@ internal fun RenderModalBottomSheetOrInspection(
             ),
             containerColor = AureoleDS.colors.surface,
             contentColor = AureoleDS.colors.onSurfaceMedium,
-            dragHandle = null
+            dragHandle = null,
+            modifier = modifier
         ) {
             sheetContent()
         }
@@ -61,7 +63,7 @@ internal fun RenderModalBottomSheetOrInspection(
 
 @AureolePreview
 @Composable
-internal fun RenderModalBottomSheetOrInspectionPreview() {
+private fun RenderModalBottomSheetOrInspectionPreview() {
     AureoleLauncherTheme {
         RenderModalBottomSheetOrInspection(
             sheetContent = { AureoleText("Sample Sheet Content") },

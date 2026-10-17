@@ -41,9 +41,10 @@ import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.
 
 @Composable
 fun FolderFormDialog(
-    folder: AppFolder? = null,
     onDismiss: () -> Unit,
     onSave: (name: String, icon: String?) -> Unit,
+    modifier: Modifier = Modifier,
+    folder: AppFolder? = null,
     onDelete: (() -> Unit)? = null
 ) {
     val isEditing = folder != null
@@ -52,7 +53,8 @@ fun FolderFormDialog(
 
     AureoleDialog(
         onDismissRequest = onDismiss,
-        title = title
+        title = title,
+        modifier = modifier
     ) {
         FolderFormDialogContent(
             config = FolderFormConfig(
@@ -137,10 +139,11 @@ private fun FolderFormDialogContent(
 @Composable
 fun FolderIconPreview(
     folderName: String,
-    selectedIcon: String?
+    selectedIcon: String?,
+    modifier: Modifier = Modifier
 ) {
     Box(
-        modifier = Modifier
+        modifier = modifier
             .size(52.dp)
             .clip(RoundedCornerShape(14.dp))
             .background(AureoleDS.colors.surfaceVariant),
@@ -167,12 +170,13 @@ fun FolderIconPreview(
 fun IconSelectionRow(
     selectedIcon: String?,
     onIconSelected: (String?) -> Unit,
-    folderName: String
+    folderName: String,
+    modifier: Modifier = Modifier
 ) {
     val scrollState = rememberScrollState()
 
     Row(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .horizontalScroll(scrollState)
             .padding(vertical = 4.dp),
@@ -311,7 +315,7 @@ private fun FolderFormButtons(
 
 @AureolePreview
 @Composable
-fun FolderFormDialogNewPreview() {
+private fun FolderFormDialogNewPreview() {
     AureoleLauncherTheme {
         FolderFormDialog(
             folder = null,
@@ -323,7 +327,7 @@ fun FolderFormDialogNewPreview() {
 
 @AureolePreview
 @Composable
-fun FolderFormDialogEditPreview() {
+private fun FolderFormDialogEditPreview() {
     val mockFolder = AppFolder(id = "1", name = "Tools")
     AureoleLauncherTheme {
         FolderFormDialog(

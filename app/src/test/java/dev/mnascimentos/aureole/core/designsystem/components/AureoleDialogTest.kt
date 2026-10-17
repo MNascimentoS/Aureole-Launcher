@@ -65,7 +65,14 @@ class AureoleDialogTest {
     @Test
     fun `when rendering preview, should display preview content`() {
         composeTestRule.setContent {
-            AureoleDialogPreview()
+            AureoleLauncherTheme {
+                AureoleDialog(
+                    onDismissRequest = {},
+                    title = "Sample Dialog Title"
+                ) {
+                    Text("This is sample content inside AureoleDialog.")
+                }
+            }
         }
         composeTestRule.onNodeWithText("Sample Dialog Title").assertIsDisplayed()
         composeTestRule.onNodeWithText("This is sample content inside AureoleDialog.").assertIsDisplayed()

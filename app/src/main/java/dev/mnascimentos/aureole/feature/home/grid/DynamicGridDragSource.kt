@@ -50,7 +50,7 @@ data class GridCellDragEndParams(
 )
 
 @Composable
-internal fun rememberGridCellEditModifier(args: GridEditModifierArgs): Modifier {
+internal fun Modifier.rememberGridCellEditModifier(args: GridEditModifierArgs): Modifier {
     val item = args.params.item
     val editParams = GridEditModifierParams(
         isEditMode = args.params.isEditMode,
@@ -91,7 +91,7 @@ internal fun rememberGridCellEditModifier(args: GridEditModifierArgs): Modifier 
             updateDragTargetSlot(args.currentParams, newX, newY, args.currentOnDragTargetChange)
         }
     )
-    return Modifier.gridCellEditModifier(editParams)
+    return this.then(Modifier.gridCellEditModifier(editParams))
 }
 
 internal fun handleDragEnd(

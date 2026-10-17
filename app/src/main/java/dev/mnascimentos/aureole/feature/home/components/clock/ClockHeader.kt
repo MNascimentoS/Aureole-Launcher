@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -142,22 +143,20 @@ fun ClockHeader(
         getGreetingForCurrentHour()
     }
 
-    val hazeModifier = resolveClockHazeModifier(isHazeEnabled, hazeStateRef, hazeOpacity)
     val containerBgColor = resolveClockBgColor(
         isBgEnabled = isBgEnabled,
         isHazeEnabled = isHazeEnabled,
         bgColorInt = resolvedConfig.backgroundColor,
         hazeOpacity = hazeOpacity
     )
-    val clickModifier = resolveClockClickModifier(onClick, onLongClick)
 
     BoxWithConstraints(
         modifier = modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(AureoleDS.dimens.radiusLarge))
-            .then(hazeModifier)
+            .clockHazeEffect(isHazeEnabled, hazeStateRef, hazeOpacity)
             .background(containerBgColor)
-            .then(clickModifier)
+            .clockClickable(onClick, onLongClick)
             .padding(horizontal = AureoleDS.dimens.medium, vertical = AureoleDS.dimens.xSmall)
     ) {
         ClockHeaderContent(
@@ -189,10 +188,11 @@ private fun resolveClockConfig(config: ClockHeaderConfig, uiState: MainUiState):
     )
 }
 
+@ReadOnlyComposable
 @Composable
-private fun resolveClockHazeModifier(isHazeEnabled: Boolean, hazeStateRef: HazeState?, hazeOpacity: Float): Modifier {
-    if (!isHazeEnabled || hazeStateRef == null) return Modifier
-    return Modifier.hazeEffect(
+private fun Modifier.clockHazeEffect(isHazeEnabled: Boolean, hazeStateRef: HazeState?, hazeOpacity: Float): Modifier {
+    if (!isHazeEnabled || hazeStateRef == null) return this
+    return this.hazeEffect(
         state = hazeStateRef,
         style = HazeStyle(
             blurRadius = 24.dp,
@@ -203,6 +203,7 @@ private fun resolveClockHazeModifier(isHazeEnabled: Boolean, hazeStateRef: HazeS
     }
 }
 
+@ReadOnlyComposable
 @Composable
 private fun resolveClockBgColor(
     isBgEnabled: Boolean,
@@ -216,9 +217,9 @@ private fun resolveClockBgColor(
 }
 
 @OptIn(ExperimentalFoundationApi::class)
-private fun resolveClockClickModifier(onClick: (() -> Unit)?, onLongClick: (() -> Unit)?): Modifier {
-    if (onClick == null && onLongClick == null) return Modifier
-    return Modifier.combinedClickable(
+private fun Modifier.clockClickable(onClick: (() -> Unit)?, onLongClick: (() -> Unit)?): Modifier {
+    if (onClick == null && onLongClick == null) return this
+    return this.combinedClickable(
         onClick = { onClick?.invoke() },
         onLongClick = onLongClick
     )
@@ -392,7 +393,7 @@ private fun ClockTimeDisplay(params: ClockTimeDisplayParams) {
 
 @AureolePreview
 @Composable
-internal fun ClockHeaderPreview() {
+private fun ClockHeaderPreview() {
     AureoleLauncherTheme {
         ClockHeader()
     }

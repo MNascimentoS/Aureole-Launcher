@@ -52,12 +52,14 @@ fun SettingsRootScreen(
     onNavigateToBehavior: () -> Unit,
     onNavigateToAppearance: () -> Unit,
     onNavigateToAdvanced: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
     val versionName = remember(context) { getVersionName(context) }
     var showReleaseNotes by remember { mutableStateOf(false) }
 
     Scaffold(
+        modifier = modifier,
         containerColor = AureoleDS.colors.surface
     ) { innerPadding ->
         BoxWithConstraints(

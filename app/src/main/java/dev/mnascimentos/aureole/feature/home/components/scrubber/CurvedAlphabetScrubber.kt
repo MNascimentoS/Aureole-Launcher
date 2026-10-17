@@ -66,9 +66,9 @@ private val BADGE_ELEVATION = 6.dp
 @Composable
 fun CurvedAlphabetScrubber(
     alphabet: List<Char>,
-    options: ScrubberOptions = ScrubberOptions(),
     callbacks: ScrubberCallbacks,
     modifier: Modifier = Modifier,
+    options: ScrubberOptions = ScrubberOptions(),
 ) {
     val uiState = LocalHomeUiState.current
     if (uiState.isAlphabetScrubberDisabled) return
@@ -319,7 +319,7 @@ private fun BoxScope.ScrubberSelectedBadge(
 
 @AureolePreview
 @Composable
-fun CurvedAlphabetScrubberPreview() {
+private fun CurvedAlphabetScrubberPreview() {
     AureoleLauncherTheme {
         CompositionLocalProvider(LocalHomeUiState provides MainUiState()) {
             CurvedAlphabetScrubber(

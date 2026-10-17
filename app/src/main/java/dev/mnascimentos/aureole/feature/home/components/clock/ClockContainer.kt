@@ -38,7 +38,7 @@ fun ClockContainer(
 
 @AureolePreview
 @Composable
-internal fun ClockContainerPreview() {
+private fun ClockContainerPreview() {
     AureoleLauncherTheme {
         ClockContainer()
     }

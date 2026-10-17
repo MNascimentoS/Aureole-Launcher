@@ -194,7 +194,7 @@ internal fun ContainerPositionDialog(
 
 @AureolePreview
 @Composable
-fun ContainerPositionDialogPreview() {
+private fun ContainerPositionDialogPreview() {
     AureoleLauncherTheme {
         ContainerPositionDialog(
             currentPosition = "Center",
@@ -206,7 +206,7 @@ fun ContainerPositionDialogPreview() {
 
 @AureolePreview
 @Composable
-fun SettingsButtonPositionDialogPreview() {
+private fun SettingsButtonPositionDialogPreview() {
     AureoleLauncherTheme {
         SettingsButtonPositionDialog(
             currentPosition = "Right",
@@ -218,7 +218,7 @@ fun SettingsButtonPositionDialogPreview() {
 
 @AureolePreview
 @Composable
-fun SearchIconPositionDialogPreview() {
+private fun SearchIconPositionDialogPreview() {
     AureoleLauncherTheme {
         SearchIconPositionDialog(
             currentPosition = "Left",

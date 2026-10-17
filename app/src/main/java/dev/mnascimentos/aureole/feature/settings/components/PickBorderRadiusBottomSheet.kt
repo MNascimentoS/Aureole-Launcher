@@ -47,12 +47,14 @@ private val BORDER_RADIUS_OPTIONS = listOf(
     BorderRadiusOption(RADIUS_LARGE, "Large (24 dp)"),
 )
 
+@Suppress("LongMethod")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PickBorderRadiusBottomSheet(
     selectedRadiusDp: Int,
     onRadiusSelected: (Int) -> Unit,
     onDismissRequest: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     val sheetContent = @Composable {
         Column(
@@ -89,7 +91,7 @@ fun PickBorderRadiusBottomSheet(
 
     if (LocalInspectionMode.current) {
         Box(
-            modifier = Modifier.fillMaxSize(),
+            modifier = modifier.fillMaxSize(),
             contentAlignment = Alignment.BottomCenter
         ) {
             Surface(
@@ -109,6 +111,7 @@ fun PickBorderRadiusBottomSheet(
         ModalBottomSheet(
             onDismissRequest = onDismissRequest,
             sheetState = bottomSheetState,
+            modifier = modifier,
             dragHandle = null,
             containerColor = AureoleDS.colors.surface,
             shape = RoundedCornerShape(
@@ -177,7 +180,7 @@ private fun BorderRadiusOptionItem(
 
 @AureolePreview
 @Composable
-fun PickBorderRadiusBottomSheetPreview() {
+private fun PickBorderRadiusBottomSheetPreview() {
     AureoleLauncherTheme {
         PickBorderRadiusBottomSheet(
             selectedRadiusDp = 16,

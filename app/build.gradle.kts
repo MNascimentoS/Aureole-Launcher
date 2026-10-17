@@ -1,4 +1,5 @@
 import io.gitlab.arturbosch.detekt.Detekt
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     alias(libs.plugins.android.application)
@@ -11,6 +12,7 @@ plugins {
     jacoco
 }
 
+// Region: Versioning Configuration
 val gitCommitCount = providers.exec {
     commandLine("git", "rev-list", "--count", "HEAD")
 }.standardOutput.asText.map { it.trim().toIntOrNull() ?: 1 }.orElse(1).get()
@@ -18,6 +20,7 @@ val gitCommitCount = providers.exec {
 val customVersionCode = providers.gradleProperty("VERSION_CODE").orNull?.toIntOrNull()
 val customVersionName = providers.gradleProperty("VERSION_NAME").orNull
 
+// Region: Android Configuration
 android {
     namespace = "dev.mnascimentos.aureole"
     compileSdk {
@@ -70,26 +73,40 @@ android {
             )
         }
     }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
+
     buildFeatures {
         compose = true
     }
+
     experimentalProperties["android.experimental.enableScreenshotTest"] = true
+
     testOptions {
         unitTests {
             isIncludeAndroidResources = true
         }
     }
+
     lint {
         checkReleaseBuilds = false
         abortOnError = false
         disable += "InvalidFragmentVersionForActivityResult"
+        lintConfig = file("lint.xml")
     }
 }
 
+// Region: Kotlin Compilation
+tasks.withType<KotlinCompile>().configureEach {
+    compilerOptions {
+        freeCompilerArgs.add("-Xskip-metadata-version-check")
+    }
+}
+
+// Region: Code Quality Configuration (Detekt & Jacoco)
 detekt {
     buildUponDefaultConfig = true
     autoCorrect = true
@@ -106,58 +123,6 @@ tasks.withType<Detekt>().configureEach {
         html.required.set(true)
         html.outputLocation.set(layout.buildDirectory.file("reports/detekt/detekt.html"))
     }
-}
-
-dependencies {
-    detektPlugins(libs.detekt.formatting)
-
-    val composeBom = platform(libs.androidx.compose.bom)
-
-    implementation(composeBom)
-    implementation(libs.gson)
-    implementation(libs.androidx.activity.compose)
-    implementation(libs.androidx.navigation.compose)
-    implementation(libs.androidx.compose.material3)
-    implementation(libs.androidx.compose.material.icons.core)
-    implementation(libs.androidx.compose.ui)
-    implementation(libs.androidx.compose.ui.graphics)
-    implementation(libs.androidx.compose.ui.tooling.preview)
-    implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.fragment.ktx)
-    implementation(libs.androidx.lifecycle.runtime.ktx)
-    implementation(libs.coil.compose)
-    implementation(libs.haze)
-    implementation(libs.haze.materials)
-
-    implementation(libs.androidx.room.runtime)
-    implementation(libs.androidx.room.ktx)
-    ksp(libs.androidx.room.compiler)
-
-    implementation(libs.playAppUpdate)
-    implementation(libs.playAppUpdateKtx)
-
-    val firebaseBom = platform(libs.firebase.bom)
-    implementation(firebaseBom)
-    implementation(libs.firebase.crashlytics)
-
-    implementation(libs.koin.android)
-    implementation(libs.koin.androidx.compose)
-
-    testImplementation(libs.junit)
-    testImplementation(libs.robolectric)
-    testImplementation(libs.koin.test)
-    testImplementation(composeBom)
-    testImplementation(libs.androidx.compose.ui.test.junit4)
-    androidTestImplementation(composeBom)
-    androidTestImplementation(libs.androidx.compose.ui.test.junit4)
-    androidTestImplementation(libs.androidx.espresso.core)
-    androidTestImplementation(libs.androidx.junit)
-
-    screenshotTestImplementation(libs.screenshot.validation.api)
-    screenshotTestImplementation(libs.androidx.compose.ui.tooling)
-
-    debugImplementation(libs.androidx.compose.ui.test.manifest)
-    debugImplementation(libs.androidx.compose.ui.tooling)
 }
 
 jacoco {
@@ -200,11 +165,8 @@ tasks.register<JacocoReport>("jacocoTestReport") {
     val kotlinClasses = fileTree(layout.buildDirectory.dir("intermediates/built_in_kotlinc/debug/compileDebugKotlin/classes")) {
         exclude(fileFilter)
     }
-    val legacyKotlinClasses = fileTree(layout.buildDirectory.dir("tmp/kotlin-classes/debug")) {
-        exclude(fileFilter)
-    }
 
-    classDirectories.setFrom(files(javaClasses, kotlinClasses, legacyKotlinClasses))
+    classDirectories.setFrom(files(javaClasses, kotlinClasses))
     sourceDirectories.setFrom(files("$projectDir/src/main/java", "$projectDir/src/main/kotlin"))
     executionData.setFrom(
         fileTree(layout.buildDirectory) {
@@ -214,4 +176,70 @@ tasks.register<JacocoReport>("jacocoTestReport") {
             )
         }
     )
+}
+
+// Region: Dependencies
+dependencies {
+    // Quality & Lint Plugins
+    lintChecks(libs.compose.lint.checks)
+    detektPlugins(libs.detekt.formatting)
+
+    // Jetpack Compose
+    val composeBom = platform(libs.androidx.compose.bom)
+    implementation(composeBom)
+    implementation(libs.androidx.activity.compose)
+    implementation(libs.androidx.navigation.compose)
+    implementation(libs.androidx.compose.material3)
+    implementation(libs.androidx.compose.material.icons.core)
+    implementation(libs.androidx.compose.ui)
+    implementation(libs.androidx.compose.ui.graphics)
+    implementation(libs.androidx.compose.ui.tooling.preview)
+
+    // AndroidX Core & Lifecycle
+    implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.fragment.ktx)
+    implementation(libs.androidx.lifecycle.runtime.ktx)
+
+    // Database (Room)
+    implementation(libs.androidx.room.runtime)
+    implementation(libs.androidx.room.ktx)
+    ksp(libs.androidx.room.compiler)
+
+    // Dependency Injection (Koin)
+    implementation(libs.koin.android)
+    implementation(libs.koin.androidx.compose)
+
+    // UI & Utility Libraries
+    implementation(libs.gson)
+    implementation(libs.coil.compose)
+    implementation(libs.haze)
+    implementation(libs.haze.materials)
+
+    // Play Services & Firebase
+    implementation(libs.playAppUpdate)
+    implementation(libs.playAppUpdateKtx)
+    val firebaseBom = platform(libs.firebase.bom)
+    implementation(firebaseBom)
+    implementation(libs.firebase.crashlytics)
+
+    // Testing - Unit Tests
+    testImplementation(libs.junit)
+    testImplementation(libs.robolectric)
+    testImplementation(libs.koin.test)
+    testImplementation(composeBom)
+    testImplementation(libs.androidx.compose.ui.test.junit4)
+
+    // Testing - Instrumentation Tests
+    androidTestImplementation(composeBom)
+    androidTestImplementation(libs.androidx.compose.ui.test.junit4)
+    androidTestImplementation(libs.androidx.espresso.core)
+    androidTestImplementation(libs.androidx.junit)
+
+    // Testing - Screenshot Tests
+    screenshotTestImplementation(libs.screenshot.validation.api)
+    screenshotTestImplementation(libs.androidx.compose.ui.tooling)
+
+    // Debugging Tools
+    debugImplementation(libs.androidx.compose.ui.test.manifest)
+    debugImplementation(libs.androidx.compose.ui.tooling)
 }

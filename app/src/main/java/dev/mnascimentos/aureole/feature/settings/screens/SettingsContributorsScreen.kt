@@ -22,9 +22,11 @@ import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 @Composable
 fun SettingsContributorsScreen(
     @Suppress("UNUSED_PARAMETER") // Parameter reserved for navigation contract
-    onNavigateBack: () -> Unit
+    onNavigateBack: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     Scaffold(
+        modifier = modifier,
         containerColor = AureoleDS.colors.surface
     ) { innerPadding ->
         Column(

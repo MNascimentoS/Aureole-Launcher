@@ -140,7 +140,7 @@ private fun StackedWidgetPagerContent(
             }
         }
     } else {
-        Spacer(modifier = Modifier.height(config.currentHeightDp))
+        Spacer(modifier = modifier.height(config.currentHeightDp))
     }
 }
 

@@ -36,14 +36,16 @@ import dev.mnascimentos.aureole.feature.home.components.widgets.model.WidgetVari
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
 import org.koin.androidx.compose.koinViewModel
 
+@Suppress("LongParameterList")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun WidgetPickerScreen(
+    onWidgetSelected: (AppWidgetProviderInfo) -> Unit,
+    onDismiss: () -> Unit,
+    modifier: Modifier = Modifier,
     isBlurEnabled: Boolean = true,
     hazeState: HazeState? = null,
-    viewModel: WidgetPickerViewModel = koinViewModel(),
-    onWidgetSelected: (AppWidgetProviderInfo) -> Unit,
-    onDismiss: () -> Unit
+    viewModel: WidgetPickerViewModel = koinViewModel()
 ) {
     val state by viewModel.state.collectAsState()
 
@@ -56,18 +58,21 @@ fun WidgetPickerScreen(
         hazeState = if (isBlurEnabled) hazeState else null,
         onIntent = { viewModel.processIntent(it) },
         onWidgetSelected = onWidgetSelected,
-        onDismiss = onDismiss
+        onDismiss = onDismiss,
+        modifier = modifier
     )
 }
 
+@Suppress("LongParameterList")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun WidgetSelectorScreen(
     state: WidgetSelectorState,
-    hazeState: HazeState? = null,
     onIntent: (WidgetSelectorIntent) -> Unit,
     onWidgetSelected: (AppWidgetProviderInfo) -> Unit,
-    onDismiss: () -> Unit
+    onDismiss: () -> Unit,
+    modifier: Modifier = Modifier,
+    hazeState: HazeState? = null
 ) {
     val hazeModifier = if (hazeState != null) {
         Modifier.hazeEffect(
@@ -90,7 +95,7 @@ fun WidgetSelectorScreen(
     }
 
     Box(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
             .then(hazeModifier)
             .background(backgroundColor)
@@ -130,7 +135,7 @@ fun WidgetSelectorScreen(
 
 @AureolePreview
 @Composable
-fun WidgetSelectorScreenPreview() {
+private fun WidgetSelectorScreenPreview() {
     val sampleWidgetGroup = WidgetAppGroup(
         appId = "com.example.calendar",
         appName = "Calendar",

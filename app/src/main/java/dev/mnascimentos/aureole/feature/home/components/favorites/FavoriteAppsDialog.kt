@@ -54,7 +54,8 @@ private const val PREVIEW_WIDTH_FRACTION = 0.88f
 @Composable
 fun FavoriteAppsDialog(
     config: FavoriteAppsDialogConfig,
-    actions: FavoriteAppsDialogActions
+    actions: FavoriteAppsDialogActions,
+    modifier: Modifier = Modifier
 ) {
     var isVisible by remember { mutableStateOf(true) }
 
@@ -83,6 +84,7 @@ fun FavoriteAppsDialog(
 
     AureoleEditOverlay(
         onDismissRequest = { isVisible = false },
+        modifier = modifier,
         title = titleText,
         isVisible = isVisible,
         animated = true,
@@ -172,59 +174,62 @@ fun FavoriteAppsDialog(
 @Composable
 private fun MainFavoritesContent(
     onEditShortcutsClick: () -> Unit,
-    onAppearanceClick: () -> Unit
+    onAppearanceClick: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable(onClick = onEditShortcutsClick)
-            .padding(vertical = 14.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        AureoleDS.icons.Star(
-            tint = AureoleDS.colors.onSurfaceMedium,
-            modifier = Modifier.size(24.dp)
-        )
-        Spacer(modifier = Modifier.width(16.dp))
-        Column(modifier = Modifier.weight(1f)) {
-            Text(
-                text = "Edit shortcuts",
-                style = AureoleDS.typography.titleMedium,
-                fontWeight = FontWeight.Bold,
-                color = AureoleDS.colors.onSurfaceHigh
+    Column(modifier = modifier) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clickable(onClick = onEditShortcutsClick)
+                .padding(vertical = 14.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            AureoleDS.icons.Star(
+                tint = AureoleDS.colors.onSurfaceMedium,
+                modifier = Modifier.size(24.dp)
             )
-            Text(
-                text = "Gerenciar aplicativos e ordem",
-                style = AureoleDS.typography.bodySmall,
-                color = AureoleDS.colors.onSurfaceMedium
-            )
+            Spacer(modifier = Modifier.width(16.dp))
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    text = "Edit shortcuts",
+                    style = AureoleDS.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    color = AureoleDS.colors.onSurfaceHigh
+                )
+                Text(
+                    text = "Gerenciar aplicativos e ordem",
+                    style = AureoleDS.typography.bodySmall,
+                    color = AureoleDS.colors.onSurfaceMedium
+                )
+            }
         }
-    }
 
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable(onClick = onAppearanceClick)
-            .padding(vertical = 14.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        AureoleDS.icons.Edit(
-            tint = AureoleDS.colors.onSurfaceMedium,
-            modifier = Modifier.size(24.dp)
-        )
-        Spacer(modifier = Modifier.width(16.dp))
-        Column(modifier = Modifier.weight(1f)) {
-            Text(
-                text = "Appearance",
-                style = AureoleDS.typography.titleMedium,
-                fontWeight = FontWeight.Bold,
-                color = AureoleDS.colors.onSurfaceHigh
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clickable(onClick = onAppearanceClick)
+                .padding(vertical = 14.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            AureoleDS.icons.Edit(
+                tint = AureoleDS.colors.onSurfaceMedium,
+                modifier = Modifier.size(24.dp)
             )
-            Text(
-                text = "Exibição dos apps na Home",
-                style = AureoleDS.typography.bodySmall,
-                color = AureoleDS.colors.onSurfaceMedium
-            )
+            Spacer(modifier = Modifier.width(16.dp))
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    text = "Appearance",
+                    style = AureoleDS.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    color = AureoleDS.colors.onSurfaceHigh
+                )
+                Text(
+                    text = "Exibição dos apps na Home",
+                    style = AureoleDS.typography.bodySmall,
+                    color = AureoleDS.colors.onSurfaceMedium
+                )
+            }
         }
     }
 }

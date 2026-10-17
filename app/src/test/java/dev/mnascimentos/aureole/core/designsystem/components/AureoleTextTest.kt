@@ -66,7 +66,20 @@ class AureoleTextTest {
     @Test
     fun `when rendering text preview, should display text previews`() {
         composeTestRule.setContent {
-            AureoleTextPreview()
+            AureoleLauncherTheme {
+                AureoleText(
+                    text = "Title Medium Text",
+                    style = AureoleDS.typography.titleMedium
+                )
+                AureoleText(
+                    text = "Body Medium Text",
+                    style = AureoleDS.typography.bodyMedium
+                )
+                AureoleText(
+                    text = "Label Small Text",
+                    style = AureoleDS.typography.labelSmall
+                )
+            }
         }
 
         composeTestRule.onNodeWithText("Title Medium Text").assertIsDisplayed()

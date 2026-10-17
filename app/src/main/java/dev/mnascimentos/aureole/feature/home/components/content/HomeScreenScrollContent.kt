@@ -40,6 +40,8 @@ import dev.mnascimentos.aureole.core.data.model.ScrollOrientation
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.icons.Add
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
+import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.core.designsystem.utils.fadingEdges
 import dev.mnascimentos.aureole.feature.home.LocalHomeActions
 import dev.mnascimentos.aureole.feature.home.LocalHomeUiState
@@ -57,13 +59,15 @@ private const val SCROLL_CHILD_MIN_WIDTH = 100
 private const val SCROLL_CHILD_ROW_HEIGHT = 60
 private const val SCROLL_CHILD_COL_WIDTH = 70
 
+@Suppress("LongParameterList")
 @Composable
 fun ScrollViewContainerContent(
     item: LauncherItemState,
     favConfig: FavoritesListConfig,
     appWidgetHost: AppWidgetHost,
     stackedWidgetConfig: StackedWidgetConfig,
-    containerConfig: ContainerConfig
+    containerConfig: ContainerConfig,
+    modifier: Modifier = Modifier
 ) {
     val isVertical = item.safeScrollOrientation == ScrollOrientation.VERTICAL
     val scrollState = rememberScrollState()
@@ -71,7 +75,7 @@ fun ScrollViewContainerContent(
     val parentNestedScrollConnection = rememberScrollViewNestedConnection(scrollState, isVertical)
 
     Box(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
             .fadingEdges(scrollState, isHorizontal = !isVertical)
             .nestedScroll(parentNestedScrollConnection)
@@ -260,5 +264,25 @@ private fun ScrollViewAddComponentButton(parentId: String, actions: HomeScreenAc
                 fontWeight = FontWeight.SemiBold
             )
         }
+    }
+}
+
+@AureolePreview
+@Composable
+private fun ScrollViewAddComponentButtonPreview() {
+    val mockActions = HomeScreenActions(
+        onWidgetRowHeightChanged = {},
+        onAppClick = {},
+        onExpandNotificationShade = {},
+        onFolderIntent = {},
+        onSetAddAppToFolderDialogVisible = {},
+        onSetRenameFolderDialogVisible = {},
+        onSearchQueryChanged = {},
+        onSettingsClick = {},
+        onAllAppsDrawerClose = {},
+        onAllAppsDrawerOpen = {}
+    )
+    AureoleLauncherTheme {
+        ScrollViewAddComponentButton(parentId = "p1", actions = mockActions)
     }
 }

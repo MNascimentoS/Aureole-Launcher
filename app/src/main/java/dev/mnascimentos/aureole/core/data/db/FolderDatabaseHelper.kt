@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteException
 import android.database.sqlite.SQLiteOpenHelper
 import android.util.Log
+import androidx.core.database.sqlite.transaction
 import dev.mnascimentos.aureole.core.data.model.AppFolder
 import dev.mnascimentos.aureole.core.data.model.FolderEntity
 import dev.mnascimentos.aureole.core.data.model.FolderItemEntity
@@ -159,9 +160,7 @@ class FolderDatabaseHelper(context: Context) : SQLiteOpenHelper(
     }
 
     fun insertFolder(folder: AppFolder) {
-        val db = writableDatabase
-        db.beginTransaction()
-        try {
+        writableDatabase.transaction {
             val folderValues = ContentValues().apply {
                 put("id", folder.id)
                 put("panel_id", folder.panelId)
@@ -171,7 +170,7 @@ class FolderDatabaseHelper(context: Context) : SQLiteOpenHelper(
                 put("display_as_grid", if (folder.displayAsGrid) 1 else 0)
                 put("created_at", System.currentTimeMillis())
             }
-            db.insertWithOnConflict("folders", null, folderValues, SQLiteDatabase.CONFLICT_REPLACE)
+            insertWithOnConflict("folders", null, folderValues, SQLiteDatabase.CONFLICT_REPLACE)
 
             folder.appPackageNames.forEachIndexed { index, pkg ->
                 val itemValues = ContentValues().apply {
@@ -179,12 +178,8 @@ class FolderDatabaseHelper(context: Context) : SQLiteOpenHelper(
                     put("package_name", pkg)
                     put("item_order", index)
                 }
-                db.insert("folder_items", null, itemValues)
+                insert("folder_items", null, itemValues)
             }
-
-            db.setTransactionSuccessful()
-        } finally {
-            db.endTransaction()
         }
     }
 
@@ -198,21 +193,16 @@ class FolderDatabaseHelper(context: Context) : SQLiteOpenHelper(
     }
 
     fun updateFolderItems(folderId: String, packageNames: List<String>) {
-        val db = writableDatabase
-        db.beginTransaction()
-        try {
-            db.delete("folder_items", "folder_id = ?", arrayOf(folderId))
+        writableDatabase.transaction {
+            delete("folder_items", "folder_id = ?", arrayOf(folderId))
             packageNames.forEachIndexed { index, pkg ->
                 val itemValues = ContentValues().apply {
                     put("folder_id", folderId)
                     put("package_name", pkg)
                     put("item_order", index)
                 }
-                db.insert("folder_items", null, itemValues)
+                insert("folder_items", null, itemValues)
             }
-            db.setTransactionSuccessful()
-        } finally {
-            db.endTransaction()
         }
     }
 

@@ -29,6 +29,8 @@ import dev.chrisbanes.haze.hazeEffect
 import dev.mnascimentos.aureole.core.data.model.AppFolder
 import dev.mnascimentos.aureole.core.data.model.LauncherItemState
 import dev.mnascimentos.aureole.core.data.model.LauncherItemType
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
+import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.components.appsdrawer.appitem.AppItemBottomSheet
 import dev.mnascimentos.aureole.feature.home.components.appsdrawer.appitem.model.AppItemBottomSheetParams
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.ContainerFolderBottomSheetParams
@@ -231,11 +233,13 @@ private fun OpenedFolderOverlayContent(
         )
 
         val align = OpenedFolderOverlayUtils.resolvePopupAlignment(isGridFolderEnabled, uiState.isLeftHandedMode)
-        val popupPadding = OpenedFolderOverlayUtils.calculatePopupPaddingModifier(
-            isGridFolderEnabled = isGridFolderEnabled,
-            isLeftHandedMode = uiState.isLeftHandedMode,
-            clampedTopDp = clampedTopDp
-        )
+        val popupPadding = with(OpenedFolderOverlayUtils) {
+            Modifier.popupPadding(
+                isGridFolderEnabled = isGridFolderEnabled,
+                isLeftHandedMode = uiState.isLeftHandedMode,
+                clampedTopDp = clampedTopDp
+            )
+        }
 
         OpenedFolderPopup(
             config = OpenedFolderPopupConfig(
@@ -296,6 +300,18 @@ internal fun RenameFolderOverlay(
                 )
             },
             onDelete = { actions.onFolderIntent(FolderViewIntent.DeleteFolder(uiState.activeFolder.id)) }
+        )
+    }
+}
+
+@AureolePreview
+@Composable
+private fun CreateFolderOverlayPreview() {
+    AureoleLauncherTheme {
+        CreateFolderOverlay(
+            isVisible = true,
+            onCloseFolder = {},
+            onSubmitName = { _, _ -> }
         )
     }
 }

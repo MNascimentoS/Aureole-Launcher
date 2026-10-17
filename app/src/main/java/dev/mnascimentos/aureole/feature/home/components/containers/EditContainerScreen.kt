@@ -4,6 +4,7 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -57,15 +58,16 @@ import java.util.UUID
 
 private const val ANIMATION_DURATION_MS = 300
 
-@Suppress("LongMethod") // Screen composable managing container options and items state
+@Suppress("LongMethod", "LongParameterList") // Screen composable managing container options and items state
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EditContainerScreen(
     panel: ContainerModel,
     allApps: List<AppInfo>,
-    hazeState: HazeState? = null,
     onDismiss: () -> Unit,
-    onSave: (ContainerModel) -> Unit
+    onSave: (ContainerModel) -> Unit,
+    modifier: Modifier = Modifier,
+    hazeState: HazeState? = null
 ) {
     val state = rememberEditContainerState(panel)
     var currentMode by remember { mutableStateOf(EditContainerScreenMode.MAIN) }
@@ -130,6 +132,7 @@ fun EditContainerScreen(
                 onSave(state.toModel())
                 isVisible = false
             },
+            modifier = modifier,
             title = titleText,
             onSettingsClick = { homeActions.onSettingsClick() },
             hazeState = hazeState,
@@ -183,56 +186,59 @@ private fun MainSettingsContent(
     onAppearanceClick: () -> Unit,
     onBehaviorClick: () -> Unit,
     onManageItemsClick: () -> Unit,
-    onSave: () -> Unit
+    onSave: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable(onClick = onAppearanceClick)
-            .padding(vertical = 16.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        AureoleDS.icons.ColorFill(
-            tint = AureoleDS.colors.onSurfaceMedium,
-            modifier = Modifier.size(24.dp)
-        )
-        Spacer(modifier = Modifier.width(16.dp))
-        Text(text = "Appearance", color = AureoleDS.colors.onSurfaceHigh)
-    }
+    Column(modifier = modifier) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clickable(onClick = onAppearanceClick)
+                .padding(vertical = 16.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            AureoleDS.icons.ColorFill(
+                tint = AureoleDS.colors.onSurfaceMedium,
+                modifier = Modifier.size(24.dp)
+            )
+            Spacer(modifier = Modifier.width(16.dp))
+            Text(text = "Appearance", color = AureoleDS.colors.onSurfaceHigh)
+        }
 
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable(onClick = onBehaviorClick)
-            .padding(vertical = 16.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        AureoleDS.icons.Click(tint = AureoleDS.colors.onSurfaceMedium, modifier = Modifier.size(24.dp))
-        Spacer(modifier = Modifier.width(16.dp))
-        Text(text = "Behavior", color = AureoleDS.colors.onSurfaceHigh)
-    }
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clickable(onClick = onBehaviorClick)
+                .padding(vertical = 16.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            AureoleDS.icons.Click(tint = AureoleDS.colors.onSurfaceMedium, modifier = Modifier.size(24.dp))
+            Spacer(modifier = Modifier.width(16.dp))
+            Text(text = "Behavior", color = AureoleDS.colors.onSurfaceHigh)
+        }
 
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable(onClick = onManageItemsClick)
-            .padding(vertical = 16.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        AureoleDS.icons.DragMenu(
-            tint = AureoleDS.colors.onSurfaceMedium,
-            modifier = Modifier.size(24.dp)
-        )
-        Spacer(modifier = Modifier.width(16.dp))
-        Text(text = "Manage Items", color = AureoleDS.colors.onSurfaceHigh)
-    }
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clickable(onClick = onManageItemsClick)
+                .padding(vertical = 16.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            AureoleDS.icons.DragMenu(
+                tint = AureoleDS.colors.onSurfaceMedium,
+                modifier = Modifier.size(24.dp)
+            )
+            Spacer(modifier = Modifier.width(16.dp))
+            Text(text = "Manage Items", color = AureoleDS.colors.onSurfaceHigh)
+        }
 
-    Spacer(modifier = Modifier.height(24.dp))
-    Button(
-        onClick = onSave,
-        modifier = Modifier.fillMaxWidth()
-    ) {
-        Text("Salvar")
+        Spacer(modifier = Modifier.height(24.dp))
+        Button(
+            onClick = onSave,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text("Salvar")
+        }
     }
 }
 
@@ -240,121 +246,128 @@ private fun MainSettingsContent(
 private fun AppearanceSettingsContent(
     state: EditContainerState,
     isBehaviorMode: Boolean,
-    onBack: () -> Unit
+    onBack: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
-    if (isBehaviorMode) {
-        Row(
-            modifier = Modifier.fillMaxWidth().padding(vertical = 12.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text("Expand cells", color = AureoleDS.colors.onSurfaceMedium)
-            Switch(checked = state.isExpandCell, onCheckedChange = { state.isExpandCell = it })
+    Column(modifier = modifier) {
+        if (isBehaviorMode) {
+            Row(
+                modifier = Modifier.fillMaxWidth().padding(vertical = 12.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text("Expand cells", color = AureoleDS.colors.onSurfaceMedium)
+                Switch(checked = state.isExpandCell, onCheckedChange = { state.isExpandCell = it })
+            }
+            Row(
+                modifier = Modifier.fillMaxWidth().padding(vertical = 12.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text("Grid folders", color = AureoleDS.colors.onSurfaceMedium)
+                Switch(checked = state.isGridFolderEnabled, onCheckedChange = { state.isGridFolderEnabled = it })
+            }
+        } else {
+            EditContainerOrientationSelector(
+                orientation = state.orientation,
+                onOrientationSelected = { state.orientation = it }
+            )
+            Row(
+                modifier = Modifier.fillMaxWidth().padding(vertical = 12.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text("Background enabled", color = AureoleDS.colors.onSurfaceMedium)
+                Switch(checked = state.isBackgroundEnabled, onCheckedChange = { state.isBackgroundEnabled = it })
+            }
+            Row(
+                modifier = Modifier.fillMaxWidth().padding(vertical = 12.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text("Show folder labels", color = AureoleDS.colors.onSurfaceMedium)
+                Switch(checked = state.showFolderLabels, onCheckedChange = { state.showFolderLabels = it })
+            }
         }
-        Row(
-            modifier = Modifier.fillMaxWidth().padding(vertical = 12.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text("Grid folders", color = AureoleDS.colors.onSurfaceMedium)
-            Switch(checked = state.isGridFolderEnabled, onCheckedChange = { state.isGridFolderEnabled = it })
-        }
-    } else {
-        EditContainerOrientationSelector(
-            orientation = state.orientation,
-            onOrientationSelected = { state.orientation = it }
-        )
-        Row(
-            modifier = Modifier.fillMaxWidth().padding(vertical = 12.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text("Background enabled", color = AureoleDS.colors.onSurfaceMedium)
-            Switch(checked = state.isBackgroundEnabled, onCheckedChange = { state.isBackgroundEnabled = it })
-        }
-        Row(
-            modifier = Modifier.fillMaxWidth().padding(vertical = 12.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text("Show folder labels", color = AureoleDS.colors.onSurfaceMedium)
-            Switch(checked = state.showFolderLabels, onCheckedChange = { state.showFolderLabels = it })
-        }
-    }
 
-    Spacer(modifier = Modifier.height(24.dp))
-    Button(onClick = onBack, modifier = Modifier.fillMaxWidth()) {
-        Text("Voltar")
+        Spacer(modifier = Modifier.height(24.dp))
+        Button(onClick = onBack, modifier = Modifier.fillMaxWidth()) {
+            Text("Voltar")
+        }
     }
 }
 
+@Suppress("LongMethod")
 @Composable
 private fun ManageItemsContent(
     state: EditContainerState,
     allApps: List<AppInfo>,
-    onBack: () -> Unit
+    onBack: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     var isCreateFolderDialogVisible by remember { mutableStateOf(false) }
 
-    if (isCreateFolderDialogVisible) {
-        CreateFolderDialog(
-            onDismiss = { isCreateFolderDialogVisible = false },
-            onSubmit = { name ->
-                state.addFolder(name)
-                isCreateFolderDialogVisible = false
-            }
+    Column(modifier = modifier) {
+        if (isCreateFolderDialogVisible) {
+            CreateFolderDialog(
+                onDismiss = { isCreateFolderDialogVisible = false },
+                onSubmit = { name ->
+                    state.addFolder(name)
+                    isCreateFolderDialogVisible = false
+                }
+            )
+        }
+
+        Text(
+            text = "Componentes Filhos (${state.itemsList.size})",
+            style = AureoleDS.typography.titleMedium,
+            fontWeight = FontWeight.Bold,
+            modifier = Modifier.padding(bottom = 16.dp).fillMaxWidth(),
+            color = AureoleDS.colors.onSurfaceHigh
         )
-    }
 
-    Text(
-        text = "Componentes Filhos (${state.itemsList.size})",
-        style = AureoleDS.typography.titleMedium,
-        fontWeight = FontWeight.Bold,
-        modifier = Modifier.padding(bottom = 16.dp).fillMaxWidth(),
-        color = AureoleDS.colors.onSurfaceHigh
-    )
-
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(bottom = AureoleDS.dimens.small),
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Box(modifier = Modifier.weight(1f)) {
-            EditContainerAddAppDropdown(
-                allApps = allApps,
-                onAppSelected = { state.addApp(it) },
-                label = "App..."
-            )
-        }
-        OutlinedButton(
-            onClick = { isCreateFolderDialogVisible = true },
-            shape = RoundedCornerShape(12.dp),
-            border = BorderStroke(1.dp, AureoleDS.colors.outline.copy(alpha = 0.5f)),
-            colors = ButtonDefaults.outlinedButtonColors(
-                contentColor = AureoleDS.colors.onSurfaceHigh
-            ),
-            contentPadding = PaddingValues(horizontal = 12.dp),
-            modifier = Modifier.height(52.dp)
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = AureoleDS.dimens.small),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            AureoleDS.icons.Add(
-                tint = AureoleDS.colors.onSurfaceHigh,
-                modifier = Modifier.size(18.dp)
-            )
-            Spacer(modifier = Modifier.width(6.dp))
-            Text("Pasta", style = AureoleDS.typography.labelLarge)
+            Box(modifier = Modifier.weight(1f)) {
+                EditContainerAddAppDropdown(
+                    allApps = allApps,
+                    onAppSelected = { state.addApp(it) },
+                    label = "App..."
+                )
+            }
+            OutlinedButton(
+                onClick = { isCreateFolderDialogVisible = true },
+                shape = RoundedCornerShape(12.dp),
+                border = BorderStroke(1.dp, AureoleDS.colors.outline.copy(alpha = 0.5f)),
+                colors = ButtonDefaults.outlinedButtonColors(
+                    contentColor = AureoleDS.colors.onSurfaceHigh
+                ),
+                contentPadding = PaddingValues(horizontal = 12.dp),
+                modifier = Modifier.height(52.dp)
+            ) {
+                AureoleDS.icons.Add(
+                    tint = AureoleDS.colors.onSurfaceHigh,
+                    modifier = Modifier.size(18.dp)
+                )
+                Spacer(modifier = Modifier.width(6.dp))
+                Text("Pasta", style = AureoleDS.typography.labelLarge)
+            }
         }
-    }
 
-    ManageItemsListSection(state = state, allApps = allApps)
+        ManageItemsListSection(state = state, allApps = allApps)
 
-    Spacer(modifier = Modifier.height(24.dp))
-    Button(
-        onClick = onBack,
-        modifier = Modifier.fillMaxWidth()
-    ) {
-        Text("Voltar")
+        Spacer(modifier = Modifier.height(24.dp))
+        Button(
+            onClick = onBack,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text("Voltar")
+        }
     }
 }
 

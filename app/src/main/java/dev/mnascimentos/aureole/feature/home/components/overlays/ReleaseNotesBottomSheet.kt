@@ -44,6 +44,7 @@ import dev.mnascimentos.aureole.feature.settings.components.SettingsBottomSheet
 @Composable
 fun ReleaseNotesBottomSheet(
     onDismissRequest: () -> Unit,
+    modifier: Modifier = Modifier,
     allVersions: List<ReleaseNoteVersion> = remember { ReleaseNotesRepository.getReleaseNotes() }
 ) {
     var selectedVersion by remember {
@@ -52,7 +53,8 @@ fun ReleaseNotesBottomSheet(
 
     SettingsBottomSheet(
         title = "",
-        onDismissRequest = onDismissRequest
+        onDismissRequest = onDismissRequest,
+        modifier = modifier
     ) {
         Column(
             modifier = Modifier.fillMaxWidth()
@@ -274,7 +276,7 @@ private fun TypeBadge(type: ReleaseNoteType) {
 
 @AureolePreview
 @Composable
-fun ReleaseNotesBottomSheetPreview() {
+private fun ReleaseNotesBottomSheetPreview() {
     AureoleLauncherTheme {
         ReleaseNotesBottomSheet(onDismissRequest = {})
     }

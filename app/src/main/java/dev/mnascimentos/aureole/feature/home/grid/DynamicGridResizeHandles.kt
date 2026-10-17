@@ -35,14 +35,15 @@ private val CORNER_HANDLE_RADIUS = 12.dp
 @Composable
 fun BoxScope.RightEdgeResizeHandle(
     params: GridCellParams,
-    callbacks: ResizeHandleCallbacks
+    callbacks: ResizeHandleCallbacks,
+    modifier: Modifier = Modifier
 ) {
     val currentItem by rememberUpdatedState(params.item)
     val currentParams by rememberUpdatedState(params)
     val currentCallbacks by rememberUpdatedState(callbacks)
 
     Box(
-        modifier = Modifier
+        modifier = modifier
             .align(Alignment.CenterEnd)
             .fillMaxHeight()
             .padding(top = CORNER_TOUCH_SIZE, bottom = CORNER_TOUCH_SIZE)
@@ -87,14 +88,15 @@ fun BoxScope.RightEdgeResizeHandle(
 @Composable
 fun BoxScope.BottomEdgeResizeHandle(
     params: GridCellParams,
-    callbacks: ResizeHandleCallbacks
+    callbacks: ResizeHandleCallbacks,
+    modifier: Modifier = Modifier
 ) {
     val currentItem by rememberUpdatedState(params.item)
     val currentParams by rememberUpdatedState(params)
     val currentCallbacks by rememberUpdatedState(callbacks)
 
     Box(
-        modifier = Modifier
+        modifier = modifier
             .align(Alignment.BottomCenter)
             .fillMaxWidth()
             .padding(start = CORNER_TOUCH_SIZE, end = CORNER_TOUCH_SIZE)
@@ -139,7 +141,8 @@ fun BoxScope.BottomEdgeResizeHandle(
 @Composable
 fun BoxScope.CornerResizeHandle(
     params: GridCellParams,
-    callbacks: CornerResizeCallbacks
+    callbacks: CornerResizeCallbacks,
+    modifier: Modifier = Modifier
 ) {
     val currentItem by rememberUpdatedState(params.item)
     val currentParams by rememberUpdatedState(params)
@@ -177,7 +180,7 @@ fun BoxScope.CornerResizeHandle(
     }
 
     Box(
-        modifier = Modifier
+        modifier = modifier
             .align(Alignment.BottomEnd)
             .size(CORNER_TOUCH_SIZE)
             .background(
@@ -226,12 +229,13 @@ private fun handleCornerDragEnd(
 @Composable
 fun BoxScope.DeleteActionHandle(
     itemId: String,
-    onDeleteItem: () -> Unit
+    onDeleteItem: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     val currentOnDelete by rememberUpdatedState(onDeleteItem)
 
     Box(
-        modifier = Modifier
+        modifier = modifier
             .align(Alignment.TopEnd)
             .size(CORNER_TOUCH_SIZE)
             .background(

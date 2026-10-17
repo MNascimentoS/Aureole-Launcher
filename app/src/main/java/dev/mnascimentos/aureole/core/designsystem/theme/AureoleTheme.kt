@@ -9,6 +9,7 @@ import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.ui.platform.LocalContext
 import dev.mnascimentos.aureole.core.designsystem.icons.AureoleIcons
 import dev.mnascimentos.aureole.core.designsystem.icons.LocalAureoleIcons
@@ -98,18 +99,22 @@ private fun buildLightColorScheme(aureoleColors: AureoleColors) = lightColorSche
 // Global Design System Accessor
 object AureoleDS {
     val colors: AureoleColors
+        @ReadOnlyComposable
         @Composable
         get() = LocalAureoleColors.current
 
     val icons: AureoleIcons
+        @ReadOnlyComposable
         @Composable
         get() = LocalAureoleIcons.current
 
     val typography: AureoleTypography
+        @ReadOnlyComposable
         @Composable
         get() = LocalAureoleTypography.current
 
     val dimens: AureoleDimens
+        @ReadOnlyComposable
         @Composable
         get() = LocalAureoleDimens.current
 }
@@ -117,14 +122,17 @@ object AureoleDS {
 // Kept for backwards compatibility with existing screens
 object AureoleTheme {
     val colors: AureoleColors
+        @ReadOnlyComposable
         @Composable
         get() = LocalAureoleColors.current
 
     val typography: AureoleTypography
+        @ReadOnlyComposable
         @Composable
         get() = LocalAureoleTypography.current
 
     val dimens: AureoleDimens
+        @ReadOnlyComposable
         @Composable
         get() = LocalAureoleDimens.current
 }

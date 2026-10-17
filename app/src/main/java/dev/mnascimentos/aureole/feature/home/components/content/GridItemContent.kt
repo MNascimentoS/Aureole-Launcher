@@ -1,5 +1,6 @@
 package dev.mnascimentos.aureole.feature.home.components.content
 
+import android.annotation.SuppressLint
 import android.appwidget.AppWidgetHost
 import android.appwidget.AppWidgetHostView
 import android.appwidget.AppWidgetManager
@@ -28,6 +29,8 @@ import dev.mnascimentos.aureole.core.data.model.LauncherItemState
 import dev.mnascimentos.aureole.core.data.model.LauncherItemType
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
+import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.core.designsystem.utils.LocalAnimatedVisibilityScope
 import dev.mnascimentos.aureole.core.designsystem.utils.LocalSharedTransitionScope
 import dev.mnascimentos.aureole.feature.home.LocalHomeActions
@@ -51,18 +54,25 @@ private const val DEFAULT_WIDGET_MIN_WIDTH = 100
 private const val DEFAULT_WIDGET_MAX_HEIGHT = 360
 
 @Composable
-fun GridClockContent(containerConfig: ContainerConfig, uiState: MainUiState) {
+fun GridClockContent(
+    containerConfig: ContainerConfig,
+    uiState: MainUiState,
+    modifier: Modifier = Modifier
+) {
     ClockContainer(
-        modifier = Modifier.fillMaxSize(),
+        modifier = modifier.fillMaxSize(),
         hazeState = containerConfig.hazeState,
         uiState = uiState
     )
 }
 
 @Composable
-fun GridAppsListContent(params: GridItemContentParams) {
+fun GridAppsListContent(
+    params: GridItemContentParams,
+    modifier: Modifier = Modifier
+) {
     val isInScrollView = params.isInScrollView
-    Box(modifier = if (isInScrollView) Modifier.fillMaxWidth() else Modifier.fillMaxSize()) {
+    Box(modifier = modifier.then(if (isInScrollView) Modifier.fillMaxWidth() else Modifier.fillMaxSize())) {
         FavoritesList(
             config = if (isInScrollView) params.favConfig.copy(hazeState = null) else params.favConfig,
             appWidgetHost = params.appWidgetHost,
@@ -81,9 +91,10 @@ fun GridContainerContent(
     containerConfig: ContainerConfig,
     uiState: MainUiState,
     actions: HomeScreenActions,
+    modifier: Modifier = Modifier,
     isInScrollView: Boolean = false
 ) {
-    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+    Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
         Container(
             config = if (isInScrollView) {
                 containerConfig.copy(hazeState = null)
@@ -102,8 +113,11 @@ fun GridContainerContent(
 }
 
 @Composable
-fun GridWidgetListContent(params: GridItemContentParams) {
-    Box(modifier = Modifier.fillMaxSize()) {
+fun GridWidgetListContent(
+    params: GridItemContentParams,
+    modifier: Modifier = Modifier
+) {
+    Box(modifier = modifier.fillMaxSize()) {
         StackedWidgetSection(
             config = if (params.isInScrollView) {
                 params.stackedWidgetConfig.copy(hazeState = null)
@@ -128,7 +142,7 @@ fun GridItemContent(params: GridItemContentParams) {
             params.containerConfig,
             uiState,
             actions,
-            params.isInScrollView
+            isInScrollView = params.isInScrollView
         )
 
         LauncherItemType.SINGLE_APP_WIDGET -> SingleAppWidgetContent(
@@ -151,7 +165,8 @@ fun GridItemContent(params: GridItemContentParams) {
 @Composable
 fun SingleAppWidgetContent(
     item: LauncherItemState,
-    appWidgetHost: AppWidgetHost
+    appWidgetHost: AppWidgetHost,
+    modifier: Modifier = Modifier
 ) {
     val actions = LocalHomeActions.current
     val coroutineScope = rememberCoroutineScope()
@@ -174,7 +189,7 @@ fun SingleAppWidgetContent(
     }
 
     Box(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
             .then(sharedModifier)
             .pointerInput(item.widgetId, item.id) {
@@ -217,6 +232,7 @@ fun SingleAppWidgetContent(
     }
 }
 
+@SuppressLint("SetTextI18n")
 private fun createSingleWidgetView(
     context: Context,
     widgetId: Int,
@@ -268,5 +284,13 @@ private fun UnconfiguredWidgetPlaceholder() {
             text = "Widget não configurado",
             color = AureoleDS.colors.onSurfaceHigh
         )
+    }
+}
+
+@AureolePreview
+@Composable
+private fun UnconfiguredWidgetPlaceholderPreview() {
+    AureoleLauncherTheme {
+        UnconfiguredWidgetPlaceholder()
     }
 }

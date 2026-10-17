@@ -76,7 +76,17 @@ class AureolePopupItemTest {
     @Test
     fun `when rendering preview, should display all variations`() {
         composeTestRule.setContent {
-            AureolePopupPreview()
+            AureoleLauncherTheme {
+                AureolePopupBox {
+                    AureolePopupHeader(
+                        title = "Folder name",
+                        sessionTitle = "Titulo de sessão"
+                    )
+                    AureolePopupMenuItem(title = "Add folder", onClick = {})
+                    AureolePopupMenuItem(title = "Create stack", onClick = {})
+                    AureolePopupMenuItem(title = "Remove", isDestructive = true, onClick = {})
+                }
+            }
         }
 
         composeTestRule.onNodeWithText("Folder name").assertIsDisplayed()

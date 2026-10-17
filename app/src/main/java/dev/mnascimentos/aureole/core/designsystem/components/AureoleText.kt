@@ -3,6 +3,7 @@ package dev.mnascimentos.aureole.core.designsystem.components
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.NonRestartableComposable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextLayoutResult
@@ -43,6 +44,7 @@ import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
  * @param style Style configuration for the text, defaults to [AureoleDS.typography.text].
  */
 @Suppress("LongParameterList") // Wrapper for Material3 Text component mirroring standard Text parameters
+@NonRestartableComposable
 @Composable
 fun AureoleText(
     text: String,
@@ -86,7 +88,7 @@ fun AureoleText(
 
 @AureolePreview
 @Composable
-fun AureoleTextPreview() {
+private fun AureoleTextPreview() {
     AureoleLauncherTheme {
         Column {
             AureoleText(

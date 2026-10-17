@@ -5,6 +5,7 @@ import android.content.Context
 import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
+import androidx.core.database.sqlite.transaction
 import dev.mnascimentos.aureole.core.data.model.ContainerEntity
 import dev.mnascimentos.aureole.core.data.model.ContainerItemEntity
 import dev.mnascimentos.aureole.core.data.model.ContainerItemType
@@ -168,10 +169,8 @@ class ContainerDatabaseHelper(context: Context) : SQLiteOpenHelper(
     }
 
     fun updatePanelItems(panelId: String, items: List<ContainerItemEntity>) {
-        val db = writableDatabase
-        db.beginTransaction()
-        try {
-            db.delete("container_items", "panel_id = ?", arrayOf(panelId))
+        writableDatabase.transaction {
+            delete("container_items", "panel_id = ?", arrayOf(panelId))
             items.forEachIndexed { index, item ->
                 val values = ContentValues().apply {
                     put("id", item.id)
@@ -181,11 +180,8 @@ class ContainerDatabaseHelper(context: Context) : SQLiteOpenHelper(
                     put("folder_id", item.folderId)
                     put("order_index", index)
                 }
-                db.insert("container_items", null, values)
+                insert("container_items", null, values)
             }
-            db.setTransactionSuccessful()
-        } finally {
-            db.endTransaction()
         }
     }
 

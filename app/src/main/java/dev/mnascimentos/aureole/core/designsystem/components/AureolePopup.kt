@@ -164,12 +164,12 @@ fun AureoleHeaderBanner(
  * @param title The main title of the header.
  * @param modifier The modifier to be applied to the layout.
  * @param sessionTitle The optional subtitle of the header.
- * @param iconVector The vector icon to be displayed.
  * @param iconBitmap The bitmap icon to be displayed.
- * @param customIcon The custom icon content.
  * @param showAureoleLogo Whether to show the Aureole logo.
  * @param onSettingsClick Executes when the user clicks the settings icon.
  * @param onCloseClick Executes when the user clicks the close icon.
+ * @param iconVector The vector icon slot to be displayed.
+ * @param customIcon The custom icon slot content.
  */
 @Suppress(
     "LongParameterList",
@@ -180,12 +180,12 @@ fun AureolePopupHeader(
     title: String,
     modifier: Modifier = Modifier,
     sessionTitle: String? = null,
-    iconVector: @Composable ((Modifier) -> Unit)? = null,
     iconBitmap: ImageBitmap? = null,
-    customIcon: (@Composable () -> Unit)? = null,
     showAureoleLogo: Boolean = true,
     onSettingsClick: (() -> Unit)? = null,
     onCloseClick: (() -> Unit)? = null,
+    iconVector: @Composable ((Modifier) -> Unit)? = null,
+    customIcon: (@Composable () -> Unit)? = null,
 ) {
     val context = LocalContext.current
     val handleOpenSettings = {
@@ -335,7 +335,7 @@ fun AureolePopupMenuSection(
 
 @AureolePreview
 @Composable
-fun AureolePopupBoxPreview() {
+private fun AureolePopupBoxPreview() {
     AureoleLauncherTheme {
         AureolePopupBox(
             modifier = Modifier.width(260.dp),

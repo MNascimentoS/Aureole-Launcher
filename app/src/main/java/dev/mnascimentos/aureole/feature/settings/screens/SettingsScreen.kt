@@ -286,7 +286,7 @@ private fun RestoreWallpaperDialog(
 
 @AureolePreview
 @Composable
-fun SettingsScreenPreview() {
+private fun SettingsScreenPreview() {
     AureoleLauncherTheme {
         SettingsScreen(
             uiState = SettingsUiState(),

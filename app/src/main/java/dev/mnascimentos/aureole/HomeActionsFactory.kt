@@ -77,6 +77,7 @@ import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
 import dev.mnascimentos.aureole.feature.settings.SettingsActivity
 import dev.mnascimentos.aureole.util.IntentUtils
 
+@Suppress("UnusedPrivateProperty")
 class HomeActionsFactory(
     private val activity: MainActivity,
     private val viewModel: HomeViewModel,

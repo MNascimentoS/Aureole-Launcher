@@ -11,6 +11,8 @@ import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 @Composable
 fun AureoleSectionHeaderScreenshotTest() {
     AureoleLauncherTheme {
-        AureoleSectionHeaderPreview()
+        AureoleSectionHeader(
+            title = "A"
+        )
     }
 }

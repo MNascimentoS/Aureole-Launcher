@@ -2,7 +2,6 @@ package dev.mnascimentos.aureole.feature.home.components.containers.folder
 
 import android.content.ComponentName
 import android.content.Intent
-import android.graphics.drawable.ColorDrawable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -25,6 +24,7 @@ import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import androidx.core.graphics.drawable.toDrawable
 import dev.mnascimentos.aureole.core.data.model.AppFolder
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleHeaderBanner
@@ -44,6 +44,7 @@ fun FolderDialog(
     allApps: List<AppInfo>,
     onDismiss: () -> Unit,
     onAppClick: (AppInfo) -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     val appsInFolder = folder.appPackageNames.mapNotNull { pkgName ->
         allApps.find { it.packageName == pkgName }
@@ -52,7 +53,7 @@ fun FolderDialog(
 
     val dialogContent = @Composable {
         AureolePopupBox(
-            modifier = Modifier.widthIn(min = 280.dp, max = 340.dp)
+            modifier = modifier.widthIn(min = 280.dp, max = 340.dp)
         ) {
             AureoleHeaderBanner(
                 title = folder.name,
@@ -148,12 +149,12 @@ private fun FolderDialogContent(
 
 @AureolePreview
 @Composable
-fun FolderDialogPreview() {
+private fun FolderDialogPreview() {
     val mockApp = AppInfo(
         label = "Camera",
         packageName = "com.example.camera",
         componentName = ComponentName("com.example.camera", "MainActivity"),
-        icon = ColorDrawable(0xFF1B65C0.toInt())
+        icon = 0xFF1B65C0.toInt().toDrawable()
     )
     val mockFolder = AppFolder(
         id = "1",

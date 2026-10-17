@@ -28,6 +28,7 @@ import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 fun SettingsBottomSheet(
     title: String,
     onDismissRequest: () -> Unit,
+    modifier: Modifier = Modifier,
     dragHandle: (@Composable () -> Unit)? = null,
     content: @Composable () -> Unit
 ) {
@@ -37,7 +38,7 @@ fun SettingsBottomSheet(
 
     if (LocalInspectionMode.current) {
         Box(
-            modifier = Modifier.fillMaxSize(),
+            modifier = modifier.fillMaxSize(),
             contentAlignment = Alignment.BottomCenter
         ) {
             Surface(
@@ -58,6 +59,7 @@ fun SettingsBottomSheet(
         ModalBottomSheet(
             onDismissRequest = onDismissRequest,
             sheetState = sheetState,
+            modifier = modifier,
             dragHandle = dragHandle,
             shape = RoundedCornerShape(
                 topStart = AureoleDS.dimens.radiusLarge,
@@ -107,7 +109,7 @@ private fun SettingsBottomSheetLayout(
 
 @AureolePreview
 @Composable
-fun SettingsBottomSheetPreview() {
+private fun SettingsBottomSheetPreview() {
     AureoleLauncherTheme {
         SettingsBottomSheet(
             title = "Preview Title",

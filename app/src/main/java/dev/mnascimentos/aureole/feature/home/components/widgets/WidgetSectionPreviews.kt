@@ -19,7 +19,7 @@ private const val PREVIEW_HEIGHT_PX = 400f
 
 @AureolePreview
 @Composable
-fun StackedWidgetSectionPreview() {
+private fun StackedWidgetSectionPreview() {
     val context = LocalContext.current
     val mockUiState = MainUiState()
     val mockActions = HomeScreenActions(

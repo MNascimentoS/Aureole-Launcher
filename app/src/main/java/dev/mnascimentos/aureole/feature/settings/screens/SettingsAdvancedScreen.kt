@@ -32,6 +32,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.core.net.toUri
 import dev.mnascimentos.aureole.composable.SettingsActionItem
 import dev.mnascimentos.aureole.composable.SettingsToggleItem
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
@@ -56,13 +57,15 @@ fun SettingsAdvancedScreen(
     actions: SettingsScreenActions,
     onNavigateToContributors: () -> Unit,
     @Suppress("UNUSED_PARAMETER") // Parameter reserved for navigation contract
-    onNavigateBack: () -> Unit
+    onNavigateBack: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
     var showUninstallDialog by remember { mutableStateOf(false) }
     var showReleaseNotesDialog by remember { mutableStateOf(false) }
 
     Scaffold(
+        modifier = modifier,
         containerColor = AureoleDS.colors.surface
     ) { innerPadding ->
         BoxWithConstraints(
@@ -244,7 +247,7 @@ private fun UninstallBottomSheet(
                 onClick = {
                     onDismiss()
                     val intent = Intent(Intent.ACTION_SENDTO).apply {
-                        data = Uri.parse("mailto:aureole@mnascimentos.dev")
+                        data = "mailto:aureole@mnascimentos.dev".toUri()
                     }
                     context.startActivity(intent)
                 }
@@ -265,7 +268,7 @@ private fun tryUninstall(context: Context) {
     try {
         val intent = Intent(
             Intent.ACTION_VIEW,
-            Uri.parse("market://details?id=${context.packageName}")
+            "market://details?id=${context.packageName}".toUri()
         ).apply {
             addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         }
@@ -273,7 +276,7 @@ private fun tryUninstall(context: Context) {
     } catch (_: ActivityNotFoundException) {
         val intent = Intent(
             Intent.ACTION_VIEW,
-            Uri.parse("https://play.google.com/store/apps/details?id=${context.packageName}")
+            "https://play.google.com/store/apps/details?id=${context.packageName}".toUri()
         ).apply {
             addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         }

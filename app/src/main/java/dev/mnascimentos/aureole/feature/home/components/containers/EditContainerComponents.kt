@@ -133,42 +133,44 @@ internal fun EditContainerAlignmentSelector(
     var isDropdownExpanded by remember { mutableStateOf(false) }
     val displayValue = positionOptionsMap.find { it.first == position }?.second ?: position
 
-    AureoleText(
-        text = "Alinhamento dos Itens",
-        style = AureoleDS.typography.labelMedium,
-        fontWeight = FontWeight.Bold,
-        color = AureoleDS.colors.onSurfaceHigh,
-        modifier = Modifier.padding(bottom = 4.dp)
-    )
-    ExposedDropdownMenuBox(
-        expanded = isDropdownExpanded,
-        onExpandedChange = { isDropdownExpanded = !isDropdownExpanded }
-    ) {
-        OutlinedTextField(
-            value = displayValue,
-            onValueChange = {},
-            readOnly = true,
-            trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = isDropdownExpanded) },
-            colors = OutlinedTextFieldDefaults.colors(
-                focusedBorderColor = AureoleDS.colors.onSurfaceHigh,
-                unfocusedBorderColor = AureoleDS.colors.outline,
-                focusedTextColor = AureoleDS.colors.onSurfaceHigh,
-                unfocusedTextColor = AureoleDS.colors.onSurfaceHigh
-            ),
-            modifier = Modifier.menuAnchor(ExposedDropdownMenuAnchorType.PrimaryNotEditable).fillMaxWidth()
+    Column {
+        AureoleText(
+            text = "Alinhamento dos Itens",
+            style = AureoleDS.typography.labelMedium,
+            fontWeight = FontWeight.Bold,
+            color = AureoleDS.colors.onSurfaceHigh,
+            modifier = Modifier.padding(bottom = 4.dp)
         )
-        ExposedDropdownMenu(
+        ExposedDropdownMenuBox(
             expanded = isDropdownExpanded,
-            onDismissRequest = { isDropdownExpanded = false }
+            onExpandedChange = { isDropdownExpanded = !isDropdownExpanded }
         ) {
-            positionOptionsMap.forEach { (key, label) ->
-                DropdownMenuItem(
-                    text = { AureoleText(label, color = AureoleDS.colors.onSurfaceHigh) },
-                    onClick = {
-                        onPositionSelected(key)
-                        isDropdownExpanded = false
-                    }
-                )
+            OutlinedTextField(
+                value = displayValue,
+                onValueChange = {},
+                readOnly = true,
+                trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = isDropdownExpanded) },
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedBorderColor = AureoleDS.colors.onSurfaceHigh,
+                    unfocusedBorderColor = AureoleDS.colors.outline,
+                    focusedTextColor = AureoleDS.colors.onSurfaceHigh,
+                    unfocusedTextColor = AureoleDS.colors.onSurfaceHigh
+                ),
+                modifier = Modifier.menuAnchor(ExposedDropdownMenuAnchorType.PrimaryNotEditable).fillMaxWidth()
+            )
+            ExposedDropdownMenu(
+                expanded = isDropdownExpanded,
+                onDismissRequest = { isDropdownExpanded = false }
+            ) {
+                positionOptionsMap.forEach { (key, label) ->
+                    DropdownMenuItem(
+                        text = { AureoleText(label, color = AureoleDS.colors.onSurfaceHigh) },
+                        onClick = {
+                            onPositionSelected(key)
+                            isDropdownExpanded = false
+                        }
+                    )
+                }
             }
         }
     }
@@ -309,7 +311,7 @@ internal fun SettingSwitchRow(
 
 @AureolePreview
 @Composable
-internal fun EditContainerOrientationSelectorPreview() {
+private fun EditContainerOrientationSelectorPreview() {
     AureoleLauncherTheme {
         EditContainerOrientationSelector(
             orientation = "Vertical",

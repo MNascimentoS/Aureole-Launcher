@@ -32,7 +32,7 @@ fun AureoleSectionHeader(
 
 @AureolePreview
 @Composable
-fun AureoleSectionHeaderPreview() {
+private fun AureoleSectionHeaderPreview() {
     AureoleLauncherTheme {
         AureoleSectionHeader(
             title = "A"

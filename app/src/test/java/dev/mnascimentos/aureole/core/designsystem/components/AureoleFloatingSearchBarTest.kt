@@ -73,7 +73,14 @@ class AureoleFloatingSearchBarTest {
     @Test
     fun `when rendering preview, should display both collapsed and expanded states`() {
         composeTestRule.setContent {
-            AureoleFloatingSearchBarPreview()
+            AureoleLauncherTheme {
+                AureoleFloatingSearchBar(
+                    query = "Search query",
+                    onQueryChange = {},
+                    isExpanded = true,
+                    onExpandedChange = {}
+                )
+            }
         }
 
         composeTestRule.onNodeWithText("Search query").assertIsDisplayed()

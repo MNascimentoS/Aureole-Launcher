@@ -1,7 +1,6 @@
 package dev.mnascimentos.aureole.feature.home.components.appsdrawer.appitem
 
 import android.content.ComponentName
-import android.graphics.drawable.ColorDrawable
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -24,6 +23,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Popup
 import androidx.compose.ui.window.PopupProperties
+import androidx.core.graphics.drawable.toDrawable
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.designsystem.components.AureolePopupBox
 import dev.mnascimentos.aureole.core.designsystem.components.AureolePopupHeader
@@ -41,14 +41,15 @@ fun AppItemPopup(
     app: AppInfo,
     isFavorite: Boolean,
     actions: AppItemRowActions,
-    onDismiss: () -> Unit
+    onDismiss: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     Popup(
         onDismissRequest = onDismiss,
         properties = PopupProperties(focusable = true)
     ) {
         AureolePopupBox(
-            modifier = Modifier.width(230.dp)
+            modifier = modifier.width(230.dp)
         ) {
             val iconBitmap = remember(app.packageName) { app.getIconBitmap() }
 
@@ -150,12 +151,12 @@ private fun AppPopupButton(
 
 @AureolePreview
 @Composable
-internal fun AppItemPopupPreview() {
+private fun AppItemPopupPreview() {
     val sampleApp = AppInfo(
         label = "Browser",
         packageName = "com.example.browser",
         componentName = ComponentName("com.example.browser", "MainActivity"),
-        icon = ColorDrawable(android.graphics.Color.BLUE)
+        icon = android.graphics.Color.BLUE.toDrawable()
     )
     AureoleLauncherTheme {
         AureolePopupBox(modifier = Modifier.width(230.dp)) {

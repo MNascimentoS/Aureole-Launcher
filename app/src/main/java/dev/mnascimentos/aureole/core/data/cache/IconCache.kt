@@ -9,6 +9,7 @@ import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.util.LruCache
 import androidx.core.graphics.createBitmap
+import androidx.core.graphics.drawable.toDrawable
 import java.io.File
 import java.io.FileOutputStream
 
@@ -45,7 +46,7 @@ class IconCache(private val context: Context) {
 
         return try {
             val bitmap = BitmapFactory.decodeFile(diskFile.absolutePath)
-            if (bitmap != null) BitmapDrawable(context.resources, bitmap) else null
+            bitmap?.toDrawable(context.resources)
         } catch (_: Exception) {
             diskFile.delete()
             null

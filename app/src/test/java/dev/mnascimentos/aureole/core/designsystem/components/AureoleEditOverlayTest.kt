@@ -39,7 +39,16 @@ class AureoleEditOverlayTest {
     @Test
     fun `when rendering preview, should display overlay content`() {
         composeTestRule.setContent {
-            AureoleEditOverlayPreview()
+            AureoleLauncherTheme {
+                AureoleEditOverlay(
+                    onDismissRequest = {},
+                    title = "Edit Section",
+                    animated = false,
+                    previewContent = { Text("Preview Slot") }
+                ) {
+                    Text("Sheet Content")
+                }
+            }
         }
 
         composeTestRule.onNodeWithText("Edit Section").assertIsDisplayed()

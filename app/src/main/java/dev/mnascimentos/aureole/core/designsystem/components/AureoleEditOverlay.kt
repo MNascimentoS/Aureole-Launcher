@@ -69,19 +69,6 @@ private const val COLLAPSE_VELOCITY_THRESHOLD = 500f
  * Base Design System component for editor screens (Clock, Container, Widgets, etc.).
  *
  * Provides a unified overlay layout featuring backdrop, sheet surface, animations, and preview slot.
- *
- * @param onDismissRequest Executes when the user tries to dismiss the overlay.
- * @param modifier The modifier to be applied to the layout.
- * @param title The title of the overlay.
- * @param hazeState The haze state for the background blur effect.
- * @param isVisible Whether the overlay is visible.
- * @param animated Whether the overlay should animate in and out.
- * @param onBackPress Executes when the user presses the back button.
- * @param onSettingsClick Executes when the user clicks the settings icon.
- * @param maxSheetHeightFraction The maximum height fraction of the sheet compared to the screen height.
- * @param previewContent The content to be displayed in the preview slot.
- * @param bottomBarContent The content to be displayed in the bottom bar slot.
- * @param sheetContent The content to be displayed in the sheet.
  */
 @Suppress(
     "LongParameterList",
@@ -91,7 +78,7 @@ private const val COLLAPSE_VELOCITY_THRESHOLD = 500f
 @Composable
 fun AureoleEditOverlay(
     onDismissRequest: () -> Unit,
-    modifier: Modifier = Modifier,
+    modifier: Modifier = Modifier.Companion,
     title: String? = null,
     hazeState: HazeState? = null,
     isVisible: Boolean = true,
@@ -272,8 +259,8 @@ fun AureoleEditOverlay(
                             topStart = AureoleDS.dimens.radiusLarge,
                             topEnd = AureoleDS.dimens.radiusLarge
                         ),
-                        color = AureoleDS.colors.surface,
-                        contentColor = AureoleDS.colors.onSurfaceMedium
+                        color = AureoleTheme.colors.surface,
+                        contentColor = AureoleTheme.colors.onSurfaceMedium
                     ) {
                         OverlaySheetBody(
                             title = title,
@@ -335,9 +322,9 @@ private fun OverlaySheetHeader(
     ) {
         Text(
             text = title,
-            style = AureoleDS.typography.titleMedium,
+            style = AureoleTheme.typography.titleMedium,
             fontWeight = FontWeight.Bold,
-            color = AureoleDS.colors.onSurfaceHigh,
+            color = AureoleTheme.colors.onSurfaceHigh,
             textAlign = TextAlign.Center
         )
 
@@ -350,7 +337,7 @@ private fun OverlaySheetHeader(
             contentAlignment = Alignment.Center
         ) {
             AureoleDS.icons.Logo(
-                tint = AureoleDS.colors.onSurfaceHigh,
+                tint = AureoleTheme.colors.onSurfaceHigh,
                 modifier = Modifier.size(AureoleDS.dimens.iconSmall)
             )
         }
@@ -374,7 +361,7 @@ fun AureoleEditOverlayPreview() {
         ) {
             Text(
                 text = "Sheet Content",
-                color = AureoleDS.colors.onSurfaceHigh
+                color = AureoleTheme.colors.onSurfaceHigh
             )
         }
     }

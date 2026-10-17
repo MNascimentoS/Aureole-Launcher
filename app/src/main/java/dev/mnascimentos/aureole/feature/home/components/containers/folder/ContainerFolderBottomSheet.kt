@@ -25,6 +25,8 @@ import dev.mnascimentos.aureole.core.designsystem.icons.Settings
 import dev.mnascimentos.aureole.core.designsystem.icons.Smile
 import dev.mnascimentos.aureole.core.designsystem.icons.Star
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
+import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.components.common.RenderModalBottomSheetOrInspection
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.ContainerFolderBottomSheetParams
 import dev.mnascimentos.aureole.feature.settings.SettingsActivity
@@ -150,5 +152,23 @@ private fun ContainerFolderBottomSheetHeader() {
                 modifier = Modifier.size(18.dp)
             )
         }
+    }
+}
+
+@AureolePreview
+@Composable
+private fun ContainerFolderBottomSheetPreview() {
+    val sampleParams = ContainerFolderBottomSheetParams(
+        onEditShortcuts = {},
+        onRename = {},
+        onIcon = {},
+        onRemoveFolder = {},
+        onOpenContainerSettings = {}
+    )
+    AureoleLauncherTheme {
+        ContainerFolderBottomSheet(
+            params = sampleParams,
+            onDismiss = {}
+        )
     }
 }

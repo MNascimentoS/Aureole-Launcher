@@ -4,6 +4,7 @@ import android.content.res.Configuration
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 import com.android.tools.screenshot.PreviewTest
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 
 @PreviewTest
@@ -11,6 +12,14 @@ import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 @Composable
 fun AureoleDialogScreenshotTest() {
     AureoleLauncherTheme {
-        AureoleDialogPreview()
+        AureoleDialog(
+            onDismissRequest = {},
+            title = "Sample Dialog Title"
+        ) {
+            AureoleText(
+                text = "This is sample content inside AureoleDialog.",
+                style = AureoleDS.typography.bodyMedium
+            )
+        }
     }
 }

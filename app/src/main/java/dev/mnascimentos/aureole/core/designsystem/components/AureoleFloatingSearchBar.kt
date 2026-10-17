@@ -253,7 +253,7 @@ private fun CollapsedSearchIcon(
 
 @AureolePreview
 @Composable
-fun AureoleFloatingSearchBarPreview() {
+private fun AureoleFloatingSearchBarPreview() {
     AureoleLauncherTheme {
         Column(
             verticalArrangement = Arrangement.spacedBy(16.dp)

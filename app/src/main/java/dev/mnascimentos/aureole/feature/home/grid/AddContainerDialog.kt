@@ -35,8 +35,8 @@ import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 fun AddContainerDialog(
     onDismissRequest: () -> Unit,
     onSelectType: (LauncherItemType) -> Unit,
-    isNested: Boolean = false,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    isNested: Boolean = false
 ) {
     val titleText = if (isNested) "Adicionar ao Scroll View" else "Adicionar Container"
     AureoleDialog(
@@ -129,7 +129,7 @@ private fun AddContainerOptionItem(
 
 @AureolePreview
 @Composable
-fun AddContainerDialogPreview() {
+private fun AddContainerDialogPreview() {
     AureoleLauncherTheme {
         AddContainerDialog(
             onDismissRequest = {},

@@ -1,7 +1,6 @@
 package dev.mnascimentos.aureole.feature.home.components.appsdrawer
 
 import android.content.ComponentName
-import android.graphics.drawable.ColorDrawable
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -23,6 +22,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
+import androidx.core.graphics.drawable.toDrawable
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleSectionHeader
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
@@ -119,12 +119,12 @@ private fun LazyListScope.settingsListItem(actions: HomeScreenActions) {
 
 @AureolePreview
 @Composable
-fun AppsListDrawerPreview() {
+private fun AppsListDrawerPreview() {
     val mockApp = AppInfo(
         label = "Gallery",
         packageName = "com.example.gallery",
         componentName = ComponentName("com.example.gallery", "MainActivity"),
-        icon = ColorDrawable(0xFF1B65C0.toInt())
+        icon = 0xFF1B65C0.toInt().toDrawable()
     )
     val mockUiState = MainUiState(
         apps = listOf(mockApp),

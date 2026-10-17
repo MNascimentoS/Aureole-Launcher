@@ -153,9 +153,9 @@ fun SettingsToggleItem(
 @Composable
 fun SettingsActionItem(
     title: String,
-    leadingContent: (@Composable () -> Unit)? = null,
-    modifier: Modifier = Modifier,
     onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    leadingContent: (@Composable () -> Unit)? = null,
 ) {
     Row(
         modifier = modifier

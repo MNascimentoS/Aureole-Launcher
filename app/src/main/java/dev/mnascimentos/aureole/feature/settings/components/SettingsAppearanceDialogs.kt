@@ -48,11 +48,13 @@ private const val BLUR_MAX_OPACITY = 0.9f
 fun SetBackgroundBottomSheet(
     onSolidColorClick: () -> Unit,
     onCustomImageClick: () -> Unit,
-    onDismissRequest: () -> Unit
+    onDismissRequest: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     SettingsBottomSheet(
         title = "Set background",
-        onDismissRequest = onDismissRequest
+        onDismissRequest = onDismissRequest,
+        modifier = modifier
     ) {
         Column(
             verticalArrangement = Arrangement.spacedBy(AureoleDS.dimens.xSmall),
@@ -77,14 +79,16 @@ fun SetBackgroundBottomSheet(
 fun PickPaletteBottomSheet(
     selectedPaletteName: String,
     onPaletteSelected: (ThemePalette) -> Unit,
-    onDismissRequest: () -> Unit
+    onDismissRequest: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     val isDarkTheme = isSystemInDarkTheme()
     val cleanSelectedName = selectedPaletteName.removeSuffix(" Light").trim()
 
     SettingsBottomSheet(
         title = "Pick a palette",
-        onDismissRequest = onDismissRequest
+        onDismissRequest = onDismissRequest,
+        modifier = modifier
     ) {
         LazyColumn(
             verticalArrangement = Arrangement.spacedBy(AureoleDS.dimens.small),
@@ -182,7 +186,8 @@ fun BlurBottomSheet(
     currentOpacity: Float,
     isHazeEnabled: Boolean,
     onOptionSelected: (Float, Boolean) -> Unit,
-    onDismissRequest: () -> Unit
+    onDismissRequest: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     val options = listOf(
         Triple(0.0f, false, "None"),
@@ -193,7 +198,8 @@ fun BlurBottomSheet(
 
     SettingsBottomSheet(
         title = "Glass & Blur",
-        onDismissRequest = onDismissRequest
+        onDismissRequest = onDismissRequest,
+        modifier = modifier
     ) {
         Column(
             verticalArrangement = Arrangement.spacedBy(AureoleDS.dimens.xSmall),
@@ -260,7 +266,7 @@ private fun BlurOptionRow(
 
 @AureolePreview
 @Composable
-fun SetBackgroundBottomSheetPreview() {
+private fun SetBackgroundBottomSheetPreview() {
     AureoleLauncherTheme {
         SetBackgroundBottomSheet(
             onSolidColorClick = {},
@@ -272,7 +278,7 @@ fun SetBackgroundBottomSheetPreview() {
 
 @AureolePreview
 @Composable
-fun PickPaletteBottomSheetPreview() {
+private fun PickPaletteBottomSheetPreview() {
     AureoleLauncherTheme {
         PickPaletteBottomSheet(
             selectedPaletteName = "Frostbite",
@@ -284,7 +290,7 @@ fun PickPaletteBottomSheetPreview() {
 
 @AureolePreview
 @Composable
-fun BlurBottomSheetPreview() {
+private fun BlurBottomSheetPreview() {
     AureoleLauncherTheme {
         BlurBottomSheet(
             currentOpacity = BLUR_MED_OPACITY,

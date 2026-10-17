@@ -54,7 +54,8 @@ fun SettingsAppearanceScreen(
     uiState: SettingsUiState,
     actions: SettingsScreenActions,
     @Suppress("UNUSED_PARAMETER") // unused but kept for interface matching
-    onNavigateBack: () -> Unit
+    onNavigateBack: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     var flags by remember {
         mutableStateOf(
@@ -69,6 +70,7 @@ fun SettingsAppearanceScreen(
     }
 
     Scaffold(
+        modifier = modifier,
         containerColor = AureoleDS.colors.surface
     ) { innerPadding ->
         SettingsAppearanceContent(

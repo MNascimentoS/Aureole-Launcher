@@ -56,7 +56,8 @@ private const val ANIMATION_DURATION_MS = 300
 @Composable
 fun EditWidgetGroupScreen(
     params: EditWidgetGroupParams,
-    actions: EditWidgetGroupActions
+    actions: EditWidgetGroupActions,
+    modifier: Modifier = Modifier
 ) {
     val widgets = params.widgets
     var isVisible by remember { mutableStateOf(true) }
@@ -74,6 +75,7 @@ fun EditWidgetGroupScreen(
 
     AureoleEditOverlay(
         onDismissRequest = { isVisible = false },
+        modifier = modifier,
         title = "Widget Stack",
         hazeState = params.hazeState,
         isVisible = isVisible,

@@ -215,7 +215,7 @@ internal fun FolderAppPickerSearchInput(
 
 @AureolePreview
 @Composable
-fun FolderAppPickerDialogPreview() {
+private fun FolderAppPickerDialogPreview() {
     val mockFolder = AppFolder(id = "1", name = "Social")
     AureoleLauncherTheme {
         FolderAppPickerDialog(

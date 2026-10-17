@@ -28,15 +28,18 @@ import dev.mnascimentos.aureole.core.designsystem.icons.Close
 import dev.mnascimentos.aureole.core.designsystem.icons.Delete
 import dev.mnascimentos.aureole.core.designsystem.icons.Plus
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
+import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.FolderAppRowItemParams
 
 @Composable
 fun FolderAppPickerHeader(
     folderName: String,
-    onDismiss: () -> Unit
+    onDismiss: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     Row(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -57,10 +60,11 @@ fun FolderAppPickerHeader(
 @Composable
 fun FolderAppPickerFooter(
     onDismiss: () -> Unit,
-    onSave: () -> Unit
+    onSave: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     Row(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.End,
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -79,9 +83,13 @@ fun SelectedFolderAppRowActionButtons(
     params: FolderAppRowItemParams,
     onMoveUp: () -> Unit,
     onMoveDown: () -> Unit,
-    onToggleSelect: () -> Unit
+    onToggleSelect: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
-    Row(verticalAlignment = Alignment.CenterVertically) {
+    Row(
+        modifier = modifier,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
         if (params.canReorder) {
             val upTint = if (params.index > 0) {
                 AureoleDS.colors.onSurfaceHigh
@@ -169,5 +177,16 @@ fun RemainingFolderAppRow(
                 modifier = Modifier.size(20.dp)
             )
         }
+    }
+}
+
+@AureolePreview
+@Composable
+private fun FolderAppPickerHeaderPreview() {
+    AureoleLauncherTheme {
+        FolderAppPickerHeader(
+            folderName = "Social",
+            onDismiss = {}
+        )
     }
 }

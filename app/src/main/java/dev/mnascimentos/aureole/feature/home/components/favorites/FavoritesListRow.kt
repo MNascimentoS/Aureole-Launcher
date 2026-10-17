@@ -2,7 +2,6 @@ package dev.mnascimentos.aureole.feature.home.components.favorites
 
 import android.appwidget.AppWidgetHost
 import android.content.ComponentName
-import android.graphics.drawable.ColorDrawable
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -23,6 +22,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.core.graphics.drawable.toDrawable
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.icons.Star
@@ -90,13 +90,13 @@ internal fun AllAppsDivider() {
 
 @AureolePreview
 @Composable
-fun FavoritesListPreview() {
+private fun FavoritesListPreview() {
     val context = LocalContext.current
     val mockApp = AppInfo(
         label = "Phone",
         packageName = "com.example.phone",
         componentName = ComponentName("com.example.phone", "MainActivity"),
-        icon = ColorDrawable(0xFF1B65C0.toInt())
+        icon = 0xFF1B65C0.toInt().toDrawable()
     )
     val mockUiState = MainUiState(
         favoriteApps = listOf(mockApp),

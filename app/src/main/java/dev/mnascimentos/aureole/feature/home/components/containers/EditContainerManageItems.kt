@@ -1,5 +1,6 @@
 package dev.mnascimentos.aureole.feature.home.components.containers
 
+import android.content.ComponentName
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -20,11 +21,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.graphics.drawable.toDrawable
 import dev.mnascimentos.aureole.core.data.model.AppFolder
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.data.model.ContainerItemEntity
 import dev.mnascimentos.aureole.core.data.model.ContainerItemType
+import dev.mnascimentos.aureole.core.data.model.ContainerModel
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
+import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
+import dev.mnascimentos.aureole.feature.home.components.containers.model.ContainerOptionsState
 
 @Composable
 internal fun ManageItemsListSection(
@@ -209,5 +215,52 @@ private fun ManageItemRowActionButtons(
                 fontSize = 12.sp
             )
         }
+    }
+}
+
+@AureolePreview
+@Composable
+private fun ManageItemsListSectionPreview() {
+    val sampleApps = listOf(
+        AppInfo(
+            label = "Camera",
+            packageName = "com.example.camera",
+            componentName = ComponentName("com.example.camera", "MainActivity"),
+            icon = 0xFF2E7D32.toInt().toDrawable()
+        )
+    )
+    val samplePanel = ContainerModel(id = "p1", title = "Panel")
+    val state = EditContainerState(
+        panel = samplePanel,
+        options = ContainerOptionsState(
+            position = "Center",
+            orientation = "Vertical",
+            isBackgroundEnabled = true,
+            isExpandCell = false,
+            showAddFolderButton = true,
+            showFolderLabels = true,
+            isGridFolderEnabled = true,
+            hideText = false,
+            textColor = null,
+            backgroundColor = null,
+            strokeEnabled = false,
+            strokeColor = null,
+            folderColor = null,
+            folderStrokeEnabled = false,
+            scrollUpShortcut = null,
+            scrollDownShortcut = null
+        ),
+        itemsList = listOf(
+            ContainerItemEntity(
+                id = "1",
+                panelId = "p1",
+                itemType = ContainerItemType.APP,
+                packageName = "com.example.camera"
+            )
+        ),
+        folders = emptyList()
+    )
+    AureoleLauncherTheme {
+        ManageItemsListSection(state = state, allApps = sampleApps)
     }
 }

@@ -209,7 +209,7 @@ private fun DropdownAppItem(
 
 @AureolePreview
 @Composable
-internal fun EditContainerItemRowPreview() {
+private fun EditContainerItemRowPreview() {
     AureoleLauncherTheme {
         EditContainerItemRow(
             params = EditContainerItemRowParams(

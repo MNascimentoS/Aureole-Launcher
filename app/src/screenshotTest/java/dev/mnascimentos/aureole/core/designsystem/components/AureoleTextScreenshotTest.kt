@@ -1,9 +1,11 @@
 package dev.mnascimentos.aureole.core.designsystem.components
 
 import android.content.res.Configuration
+import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 import com.android.tools.screenshot.PreviewTest
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 
 @PreviewTest
@@ -11,6 +13,17 @@ import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 @Composable
 fun AureoleTextScreenshotTest() {
     AureoleLauncherTheme {
-        AureoleTextPreview()
+        Column {
+            AureoleText(
+                text = "Title Medium Text",
+                style = AureoleDS.typography.titleMedium,
+                color = AureoleDS.colors.onSurfaceHigh
+            )
+            AureoleText(
+                text = "Body Medium Text",
+                style = AureoleDS.typography.bodyMedium,
+                color = AureoleDS.colors.onSurfaceMedium
+            )
+        }
     }
 }

@@ -48,7 +48,8 @@ private const val VERTICAL_GESTURE_RATIO = 1.5f
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun BoxScope.HomeOverlaysContent(
-    config: HomeOverlaysConfig
+    config: HomeOverlaysConfig,
+    modifier: Modifier = Modifier
 ) {
     AppsDrawerOverlay(
         config = AppsDrawerOverlayConfig(
@@ -59,6 +60,7 @@ fun BoxScope.HomeOverlaysContent(
             hazeState = config.hazeState,
             onClose = config.actions.onAllAppsDrawerClose,
         ),
+        modifier = modifier
     )
 
     if (!config.uiState.isAlphabetScrubberDisabled && !WindowInsets.isImeVisible) {
@@ -85,6 +87,7 @@ fun BoxScope.HomeOverlaysContent(
 @Composable
 fun AppsDrawerOverlay(
     config: AppsDrawerOverlayConfig,
+    modifier: Modifier = Modifier,
 ) {
     val enterTransition = if (config.isOpenedFromBottom) {
         fadeIn() + slideInVertically { it }
@@ -102,7 +105,7 @@ fun AppsDrawerOverlay(
         visible = config.isAllAppsDrawerOpen,
         enter = enterTransition,
         exit = exitTransition,
-        modifier = Modifier.fillMaxSize(),
+        modifier = modifier.fillMaxSize(),
     ) {
         Box(
             modifier = Modifier

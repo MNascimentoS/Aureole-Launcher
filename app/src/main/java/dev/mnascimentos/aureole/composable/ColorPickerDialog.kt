@@ -203,7 +203,7 @@ private fun CustomHueSection(
 
 @AureolePreview
 @Composable
-fun ColorPickerDialogPreview() {
+private fun ColorPickerDialogPreview() {
     AureoleLauncherTheme {
         ColorPickerDialog(
             initialColor = DEFAULT_PRESET_COLOR,

@@ -29,12 +29,12 @@ import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
  * @param title The title of the menu item.
  * @param onClick Executes when the item is clicked.
  * @param modifier The modifier to be applied to the layout.
- * @param icon The icon of the menu item.
- * @param customIcon Custom content for the icon slot.
  * @param badge The badge text to display.
- * @param trailingIcon The trailing icon of the menu item.
  * @param onTrailingClick Executes when the trailing icon is clicked.
  * @param isDestructive Whether the action is destructive, which applies error coloring.
+ * @param icon The icon slot of the menu item.
+ * @param customIcon Custom content slot for the icon.
+ * @param trailingIcon The trailing icon slot of the menu item.
  */
 @Suppress(
     "LongParameterList",
@@ -45,12 +45,12 @@ fun AureolePopupMenuItem(
     title: String,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
-    icon: @Composable ((Modifier) -> Unit)? = null,
-    customIcon: (@Composable () -> Unit)? = null,
     badge: String? = null,
-    trailingIcon: @Composable ((Modifier) -> Unit)? = null,
     onTrailingClick: (() -> Unit)? = null,
     isDestructive: Boolean = false,
+    icon: @Composable ((Modifier) -> Unit)? = null,
+    customIcon: (@Composable () -> Unit)? = null,
+    trailingIcon: @Composable ((Modifier) -> Unit)? = null,
 ) {
     val textColor = if (isDestructive) AureoleDS.colors.error else AureoleDS.colors.onSurfaceHigh
 
@@ -113,7 +113,7 @@ fun AureolePopupMenuItem(
 
 @AureolePreview
 @Composable
-fun AureolePopupPreview() {
+private fun AureolePopupPreview() {
     AureoleLauncherTheme {
         AureolePopupBox(
             modifier = Modifier.width(260.dp),

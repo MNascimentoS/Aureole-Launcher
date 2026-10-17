@@ -44,7 +44,8 @@ fun WidgetGroupList(
     state: WidgetSelectorState,
     onIntent: (WidgetSelectorIntent) -> Unit,
     onWidgetSelected: (AppWidgetProviderInfo) -> Unit,
-    onDismiss: () -> Unit
+    onDismiss: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     val listState = rememberLazyListState()
     var lastScrolledIndex by remember { mutableIntStateOf(-1) }
@@ -76,7 +77,7 @@ fun WidgetGroupList(
     val groupedData = rememberGroupedAppsData(state.widgetGroups)
     val topPadding = if (isSearchExpanded) 80.dp else 16.dp
 
-    Box(modifier = Modifier.fillMaxSize()) {
+    Box(modifier = modifier.fillMaxSize()) {
         WidgetGroupListColumn(
             params = WidgetGroupListColumnParams(
                 groupedApps = groupedData.groupedApps,

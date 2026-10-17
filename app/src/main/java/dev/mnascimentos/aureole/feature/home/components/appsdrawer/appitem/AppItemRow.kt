@@ -1,7 +1,6 @@
 package dev.mnascimentos.aureole.feature.home.components.appsdrawer.appitem
 
 import android.content.ComponentName
-import android.graphics.drawable.ColorDrawable
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -30,6 +29,7 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.core.graphics.drawable.toDrawable
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
@@ -191,12 +191,12 @@ private fun AppItemRowDropdownMenu(
 
 @AureolePreview
 @Composable
-fun AppItemRowPreview() {
+private fun AppItemRowPreview() {
     val mockApp = AppInfo(
         label = "Camera",
         packageName = "com.example.camera",
         componentName = ComponentName("com.example.camera", "MainActivity"),
-        icon = ColorDrawable(0xFF1B65C0.toInt())
+        icon = 0xFF1B65C0.toInt().toDrawable()
     )
     val mockUiState = MainUiState(
         apps = listOf(mockApp),

@@ -4,7 +4,6 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -29,6 +28,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.core.graphics.drawable.toDrawable
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.designsystem.components.AureolePopupMenuItem
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
@@ -54,7 +54,8 @@ import dev.mnascimentos.aureole.util.toImageBitmap
 @Composable
 fun AppItemBottomSheet(
     params: AppItemBottomSheetParams,
-    onDismiss: () -> Unit
+    onDismiss: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
     val sheetContent = @Composable {
@@ -76,7 +77,7 @@ fun AppItemBottomSheet(
         }
     }
 
-    RenderModalBottomSheetOrInspection(sheetContent, onDismiss)
+    RenderModalBottomSheetOrInspection(sheetContent, onDismiss, modifier = modifier)
 }
 
 @Composable
@@ -327,12 +328,12 @@ private fun AppShortcutsMenu(
 
 @AureolePreview
 @Composable
-internal fun AppItemBottomSheetPreview() {
+private fun AppItemBottomSheetPreview() {
     val sampleApp = AppInfo(
         label = "Browser",
         packageName = "com.example.browser",
         componentName = ComponentName("com.example.browser", "MainActivity"),
-        icon = ColorDrawable(Color.BLUE)
+        icon = Color.BLUE.toDrawable()
     )
     val params = AppItemBottomSheetParams(
         app = sampleApp,

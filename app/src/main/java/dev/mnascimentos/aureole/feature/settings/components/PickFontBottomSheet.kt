@@ -32,7 +32,8 @@ import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 fun PickFontBottomSheet(
     selectedFontName: String,
     onFontSelected: (String) -> Unit,
-    onDismissRequest: () -> Unit
+    onDismissRequest: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     val sheetContent = @Composable {
         PickFontSheetContent(selectedFontName = selectedFontName, onFontSelected = onFontSelected)
@@ -40,7 +41,7 @@ fun PickFontBottomSheet(
 
     if (LocalInspectionMode.current) {
         Box(
-            modifier = Modifier.fillMaxSize(),
+            modifier = modifier.fillMaxSize(),
             contentAlignment = Alignment.BottomCenter
         ) {
             Surface(
@@ -56,6 +57,7 @@ fun PickFontBottomSheet(
         ModalBottomSheet(
             onDismissRequest = onDismissRequest,
             sheetState = bottomSheetState,
+            modifier = modifier,
             dragHandle = null,
             containerColor = AureoleDS.colors.surface
         ) {
@@ -133,7 +135,7 @@ private fun FontOptionItem(
 
 @AureolePreview
 @Composable
-fun PickFontBottomSheetPreview() {
+private fun PickFontBottomSheetPreview() {
     AureoleLauncherTheme {
         PickFontBottomSheet(
             selectedFontName = "Istok Web",

@@ -33,9 +33,9 @@ import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.feature.home.components.favorites.model.FavoriteAppRowParams
 
 @Composable
-fun FavoriteAppsDialogHeader() {
+fun FavoriteAppsDialogHeader(modifier: Modifier = Modifier) {
     Box(
-        modifier = Modifier.fillMaxWidth().padding(bottom = 12.dp),
+        modifier = modifier.fillMaxWidth().padding(bottom = 12.dp),
         contentAlignment = Alignment.Center
     ) {
         AureoleText(
@@ -51,10 +51,11 @@ fun FavoriteAppsDialogHeader() {
 @Composable
 fun FavoriteAppsShowAllSwitchRow(
     showAllAppsOnHome: Boolean,
-    onToggleShowAllAppsOnHome: () -> Unit
+    onToggleShowAllAppsOnHome: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     Row(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(12.dp))
             .background(AureoleDS.colors.surfaceVariant.copy(alpha = 0.5f))
@@ -113,9 +114,11 @@ fun FavoriteAppRowActionButtons(
     params: FavoriteAppRowParams,
     onMoveUp: () -> Unit,
     onMoveDown: () -> Unit,
-    onToggleFavorite: () -> Unit
+    onToggleFavorite: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     Row(
+        modifier = modifier,
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {

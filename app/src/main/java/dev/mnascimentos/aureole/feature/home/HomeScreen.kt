@@ -118,7 +118,7 @@ fun HomeScreen(
                         screenHeightPx = it.size.height.toFloat()
                         screenWidthPx = it.size.width.toFloat()
                     }
-                    .then(HomeScreenExclusionModifier(isSystemBackActive))
+                    .homeScreenExclusion(isSystemBackActive)
                     .then(if (uiState.isGridEditMode) Modifier else dragModifier)
             ) {
                 HomeScreenBody(
@@ -141,16 +141,15 @@ fun HomeScreen(
     }
 }
 
-@Composable
-private fun HomeScreenExclusionModifier(isSystemBackActive: Boolean): Modifier {
+private fun Modifier.homeScreenExclusion(isSystemBackActive: Boolean): Modifier {
     return if (!isSystemBackActive) {
-        Modifier.systemGestureExclusion {
+        this.systemGestureExclusion {
             val heightPx = it.size.height.toFloat()
             val widthPx = it.size.width.toFloat()
             Rect(0f, 0f, widthPx, heightPx)
         }
     } else {
-        Modifier
+        this
     }
 }
 
