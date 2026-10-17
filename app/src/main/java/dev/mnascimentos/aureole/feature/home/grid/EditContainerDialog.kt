@@ -27,6 +27,7 @@ import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.core.data.model.LauncherItemState
 import dev.mnascimentos.aureole.core.data.model.LauncherItemType
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
+import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
 import dev.mnascimentos.aureole.core.designsystem.icons.Add
 import dev.mnascimentos.aureole.core.designsystem.icons.Delete
 import dev.mnascimentos.aureole.core.designsystem.icons.Edit
@@ -77,9 +78,11 @@ fun EditGridItemDialog(
             ) {
                 AureoleText(
                     text = "Tamanho atual: ${item.colSpan} x ${item.rowSpan} células",
-                    style = AureoleDS.typography.bodyMedium,
-                    fontWeight = FontWeight.Medium,
-                    color = AureoleDS.colors.onSurfaceMedium
+                    color = AureoleDS.colors.onSurfaceMedium,
+                    format = AureoleTextFormatParams(
+                        style = AureoleDS.typography.bodyMedium,
+                        fontWeight = FontWeight.Medium
+                    )
                 )
             }
 
@@ -138,9 +141,8 @@ private fun EditDialogDeleteRow(
         Spacer(modifier = Modifier.width(10.dp))
         AureoleText(
             text = "Remover Componente",
-            style = AureoleDS.typography.labelLarge,
-            fontWeight = FontWeight.Bold,
-            color = AureoleDS.colors.error
+            color = AureoleDS.colors.error,
+            format = AureoleTextFormatParams(style = AureoleDS.typography.labelLarge, fontWeight = FontWeight.Bold)
         )
     }
 }
@@ -192,10 +194,12 @@ private fun EditDialogTypeActionSection(
             Spacer(modifier = Modifier.width(12.dp))
             AureoleText(
                 text = text,
-                style = AureoleDS.typography.bodyMedium,
-                fontWeight = FontWeight.SemiBold,
                 color = AureoleDS.colors.onSurfaceHigh,
-                modifier = Modifier.weight(1f)
+                modifier = Modifier.weight(1f),
+                format = AureoleTextFormatParams(
+                    style = AureoleDS.typography.bodyMedium,
+                    fontWeight = FontWeight.SemiBold
+                )
             )
         }
     }
@@ -213,10 +217,9 @@ private fun EditDialogWidgetListSection(
 
         AureoleText(
             text = "Widgets no Grupo (${widgets.size})",
-            style = AureoleDS.typography.titleMedium,
-            fontWeight = FontWeight.SemiBold,
             color = AureoleDS.colors.onSurfaceHigh,
-            modifier = Modifier.padding(bottom = 6.dp)
+            modifier = Modifier.padding(bottom = 6.dp),
+            format = AureoleTextFormatParams(style = AureoleDS.typography.titleMedium, fontWeight = FontWeight.SemiBold)
         )
 
         EditDialogWidgetListRows(widgets = widgets, stackId = item.id, actions = actions)
@@ -248,18 +251,17 @@ private fun EditDialogWidgetListSection(
         ) {
             AureoleText(
                 text = "Mostrar Indicador de Posição",
-                style = AureoleDS.typography.bodyMedium,
-                color = AureoleDS.colors.onSurfaceHigh
+                color = AureoleDS.colors.onSurfaceHigh,
+                format = AureoleTextFormatParams(style = AureoleDS.typography.bodyMedium)
             )
             AureoleText(
                 text = if (isIndicatorEnabled) "Ativado" else "Desativado",
-                style = AureoleDS.typography.labelLarge,
-                fontWeight = FontWeight.Bold,
                 color = if (isIndicatorEnabled) {
                     AureoleDS.colors.onSurfaceHigh
                 } else {
                     AureoleDS.colors.onSurfaceMedium
-                }
+                },
+                format = AureoleTextFormatParams(style = AureoleDS.typography.labelLarge, fontWeight = FontWeight.Bold)
             )
         }
     }
@@ -282,8 +284,8 @@ private fun EditDialogWidgetListRows(
         ) {
             AureoleText(
                 text = "Nenhum widget adicionado ao grupo ainda.",
-                style = AureoleDS.typography.bodyMedium,
-                color = AureoleDS.colors.onSurfaceMedium
+                color = AureoleDS.colors.onSurfaceMedium,
+                format = AureoleTextFormatParams(style = AureoleDS.typography.bodyMedium)
             )
         }
     } else {
@@ -299,10 +301,12 @@ private fun EditDialogWidgetListRows(
             ) {
                 AureoleText(
                     text = "Widget #${index + 1} (ID: $widgetId)",
-                    style = AureoleDS.typography.bodyMedium,
-                    fontWeight = FontWeight.Medium,
                     color = AureoleDS.colors.onSurfaceHigh,
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier.weight(1f),
+                    format = AureoleTextFormatParams(
+                        style = AureoleDS.typography.bodyMedium,
+                        fontWeight = FontWeight.Medium
+                    )
                 )
                 TextButton(onClick = { actions.onRemoveWidgetClick(widgetId, stackId) }) {
                     AureoleText(text = "Remover", color = AureoleDS.colors.error)
@@ -329,9 +333,8 @@ private fun EditDialogScrollViewSection(
 
         AureoleText(
             text = "Componentes Filhos (${item.safeChildren.size})",
-            style = AureoleDS.typography.titleMedium,
-            fontWeight = FontWeight.SemiBold,
-            color = AureoleDS.colors.onSurfaceHigh
+            color = AureoleDS.colors.onSurfaceHigh,
+            format = AureoleTextFormatParams(style = AureoleDS.typography.titleMedium, fontWeight = FontWeight.SemiBold)
         )
 
         EditDialogChildrenListSection(item = item, actions = actions, onDismissRequest = onDismissRequest)
@@ -363,9 +366,11 @@ private fun EditDialogScrollViewSection(
             Spacer(modifier = Modifier.width(10.dp))
             AureoleText(
                 text = "Adicionar Componente",
-                style = AureoleDS.typography.bodyLarge,
-                fontWeight = FontWeight.SemiBold,
-                color = AureoleDS.colors.onSurfaceHigh
+                color = AureoleDS.colors.onSurfaceHigh,
+                format = AureoleTextFormatParams(
+                    style = AureoleDS.typography.bodyLarge,
+                    fontWeight = FontWeight.SemiBold
+                )
             )
         }
     }

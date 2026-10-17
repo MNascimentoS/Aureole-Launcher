@@ -25,6 +25,7 @@ import dev.mnascimentos.aureole.composable.ColorPickerDialog
 import dev.mnascimentos.aureole.composable.SettingsActionItem
 import dev.mnascimentos.aureole.composable.SettingsMenuItem
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
+import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
 import dev.mnascimentos.aureole.core.designsystem.icons.Check
 import dev.mnascimentos.aureole.core.designsystem.icons.Delete
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
@@ -223,9 +224,8 @@ private fun HazeOpacityDialog(
         title = {
             AureoleText(
                 text = "Blur Opacity",
-                style = AureoleDS.typography.titleMedium,
-                fontWeight = FontWeight.Bold,
-                color = AureoleDS.colors.onSurfaceHigh
+                color = AureoleDS.colors.onSurfaceHigh,
+                format = AureoleTextFormatParams(style = AureoleDS.typography.titleMedium, fontWeight = FontWeight.Bold)
             )
         },
         containerColor = AureoleDS.colors.surface,
@@ -247,8 +247,8 @@ private fun HazeOpacityDialog(
                         Spacer(modifier = Modifier.width(12.dp))
                         AureoleText(
                             text = label,
-                            style = AureoleDS.typography.bodyLarge,
-                            color = AureoleDS.colors.onSurfaceHigh
+                            color = AureoleDS.colors.onSurfaceHigh,
+                            format = AureoleTextFormatParams(style = AureoleDS.typography.bodyLarge)
                         )
                     }
                 }

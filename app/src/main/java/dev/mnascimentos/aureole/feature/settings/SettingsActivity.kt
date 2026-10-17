@@ -20,6 +20,7 @@ import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.core.designsystem.palette.getPaletteByName
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDimens
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleThemeConfig
 import dev.mnascimentos.aureole.feature.home.components.favorites.FavoriteAppsDialog
 import dev.mnascimentos.aureole.feature.home.components.favorites.model.FavoriteAppsDialogActions
 import dev.mnascimentos.aureole.feature.home.components.favorites.model.FavoriteAppsDialogConfig
@@ -46,11 +47,13 @@ class SettingsActivity : ComponentActivity() {
             val isDarkTheme = isSystemInDarkTheme()
             val palette = getPaletteByName(uiState.selectedThemeName, isDarkTheme, uiState.manualSeedColor)
             AureoleLauncherTheme(
-                darkTheme = isDarkTheme,
-                isDynamicWallpaperEnabled = uiState.isDynamicWallpaperEnabled,
-                aureoleColors = palette.colors,
-                aureoleFontName = uiState.selectedFontName,
-                aureoleDimens = AureoleDimens(radiusLarge = uiState.cornerRadiusDp.dp)
+                config = AureoleThemeConfig(
+                    darkTheme = isDarkTheme,
+                    isDynamicWallpaperEnabled = uiState.isDynamicWallpaperEnabled,
+                    aureoleColors = palette.colors,
+                    aureoleFontName = uiState.selectedFontName,
+                    aureoleDimens = AureoleDimens(radiusLarge = uiState.cornerRadiusDp.dp)
+                )
             ) {
                 LaunchedEffect(uiState.shouldFinishActivity) {
                     if (uiState.shouldFinishActivity) {

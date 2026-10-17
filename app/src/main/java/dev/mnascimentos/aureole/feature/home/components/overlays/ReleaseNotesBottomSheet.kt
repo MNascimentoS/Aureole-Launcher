@@ -35,6 +35,7 @@ import dev.mnascimentos.aureole.core.data.model.ReleaseNoteType
 import dev.mnascimentos.aureole.core.data.model.ReleaseNoteVersion
 import dev.mnascimentos.aureole.core.data.repository.ReleaseNotesRepository
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
+import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
 import dev.mnascimentos.aureole.core.designsystem.icons.Logo
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
@@ -96,9 +97,11 @@ fun ReleaseNotesBottomSheet(
             ) {
                 AureoleText(
                     text = "Entendido",
-                    style = AureoleDS.typography.titleSmall,
-                    fontWeight = FontWeight.Bold,
-                    color = AureoleDS.colors.surface
+                    color = AureoleDS.colors.surface,
+                    format = AureoleTextFormatParams(
+                        style = AureoleDS.typography.titleSmall,
+                        fontWeight = FontWeight.Bold
+                    )
                 )
             }
         }
@@ -118,9 +121,8 @@ private fun HeaderSection(versionName: String) {
         Spacer(modifier = Modifier.height(AureoleDS.dimens.small))
         AureoleText(
             text = "O que há de novo",
-            style = AureoleDS.typography.titleLarge,
-            fontWeight = FontWeight.Bold,
-            color = AureoleDS.colors.onSurfaceHigh
+            color = AureoleDS.colors.onSurfaceHigh,
+            format = AureoleTextFormatParams(style = AureoleDS.typography.titleLarge, fontWeight = FontWeight.Bold)
         )
         Spacer(modifier = Modifier.height(AureoleDS.dimens.xxSmall))
         Box(
@@ -131,9 +133,11 @@ private fun HeaderSection(versionName: String) {
         ) {
             AureoleText(
                 text = "Versão $versionName",
-                style = AureoleDS.typography.labelSmall,
-                fontWeight = FontWeight.SemiBold,
-                color = AureoleDS.colors.onSurfaceMedium
+                color = AureoleDS.colors.onSurfaceMedium,
+                format = AureoleTextFormatParams(
+                    style = AureoleDS.typography.labelSmall,
+                    fontWeight = FontWeight.SemiBold
+                )
             )
         }
     }
@@ -175,9 +179,11 @@ private fun VersionChipsRow(
             ) {
                 AureoleText(
                     text = if (version.isCurrent) "v${version.versionName} (Atual)" else "v${version.versionName}",
-                    style = AureoleDS.typography.labelMedium,
-                    fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium,
-                    color = textColor
+                    color = textColor,
+                    format = AureoleTextFormatParams(
+                        style = AureoleDS.typography.labelMedium,
+                        fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium
+                    )
                 )
             }
         }
@@ -189,10 +195,9 @@ private fun ReleaseNoteSectionView(section: ReleaseNoteSection) {
     Column(modifier = Modifier.fillMaxWidth()) {
         AureoleText(
             text = section.title,
-            style = AureoleDS.typography.titleMedium,
-            fontWeight = FontWeight.Bold,
             color = AureoleDS.colors.onSurfaceHigh,
-            modifier = Modifier.padding(bottom = AureoleDS.dimens.small)
+            modifier = Modifier.padding(bottom = AureoleDS.dimens.small),
+            format = AureoleTextFormatParams(style = AureoleDS.typography.titleMedium, fontWeight = FontWeight.Bold)
         )
 
         section.items.forEach { item ->
@@ -219,17 +224,19 @@ private fun ReleaseNoteItemCard(item: ReleaseNoteItem) {
             Spacer(modifier = Modifier.width(AureoleDS.dimens.small))
             AureoleText(
                 text = item.title,
-                style = AureoleDS.typography.titleSmall,
-                fontWeight = FontWeight.SemiBold,
                 color = AureoleDS.colors.onSurfaceHigh,
-                modifier = Modifier.weight(1f)
+                modifier = Modifier.weight(1f),
+                format = AureoleTextFormatParams(
+                    style = AureoleDS.typography.titleSmall,
+                    fontWeight = FontWeight.SemiBold
+                )
             )
         }
         Spacer(modifier = Modifier.height(AureoleDS.dimens.xSmall))
         AureoleText(
             text = item.description,
-            style = AureoleDS.typography.bodyMedium,
-            color = AureoleDS.colors.onSurfaceMedium
+            color = AureoleDS.colors.onSurfaceMedium,
+            format = AureoleTextFormatParams(style = AureoleDS.typography.bodyMedium)
         )
     }
 }
@@ -267,9 +274,8 @@ private fun TypeBadge(type: ReleaseNoteType) {
     ) {
         AureoleText(
             text = label,
-            style = AureoleDS.typography.labelSmall,
-            fontWeight = FontWeight.Bold,
-            color = textColor
+            color = textColor,
+            format = AureoleTextFormatParams(style = AureoleDS.typography.labelSmall, fontWeight = FontWeight.Bold)
         )
     }
 }

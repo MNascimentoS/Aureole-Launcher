@@ -18,7 +18,7 @@ fun AureoleDialogScreenshotTest() {
         ) {
             AureoleText(
                 text = "This is sample content inside AureoleDialog.",
-                style = AureoleDS.typography.bodyMedium
+                format = AureoleTextFormatParams(style = AureoleDS.typography.bodyMedium)
             )
         }
     }

@@ -28,83 +28,67 @@ import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
  * @param text The text to be displayed.
  * @param modifier The modifier to be applied to the layout.
  * @param color Color to apply to the text.
- * @param fontSize The size of glyphs to use when painting the text.
- * @param fontStyle The typeface variant to use when drawing the letters (e.g., italic).
- * @param fontWeight The typeface thickness to use when painting the text (e.g., [FontWeight.Bold]).
- * @param fontFamily The font family to be used when rendering the text.
- * @param letterSpacing The amount of space to add between each letter.
- * @param textDecoration The decorations to paint on the text (e.g., an underline).
- * @param textAlign The alignment of the text within the lines of the paragraph.
- * @param lineHeight Line height for the paragraph in [TextUnit] unit, e.g. SP or EM.
- * @param overflow How visual overflow should be handled.
- * @param softWrap Whether the text should break at soft line breaks.
- * @param maxLines An optional maximum number of lines for the text to span, wrapping if necessary.
- * @param minLines The minimum height in terms of minimum number of visible lines.
- * @param onTextLayout Callback that is executed when a new text layout is calculated.
- * @param style Style configuration for the text, defaults to [AureoleDS.typography.text].
+ * @param format Grouped text formatting parameters.
  */
-@Suppress("LongParameterList") // Wrapper for Material3 Text component mirroring standard Text parameters
 @NonRestartableComposable
 @Composable
 fun AureoleText(
     text: String,
     modifier: Modifier = Modifier,
     color: Color = Color.Unspecified,
-    fontSize: TextUnit = TextUnit.Unspecified,
-    fontStyle: FontStyle? = null,
-    fontWeight: FontWeight? = null,
-    fontFamily: FontFamily? = null,
-    letterSpacing: TextUnit = TextUnit.Unspecified,
-    textDecoration: TextDecoration? = null,
-    textAlign: TextAlign? = null,
-    lineHeight: TextUnit = TextUnit.Unspecified,
-    overflow: TextOverflow = TextOverflow.Clip,
-    softWrap: Boolean = true,
-    maxLines: Int = Int.MAX_VALUE,
-    minLines: Int = 1,
-    onTextLayout: ((TextLayoutResult) -> Unit)? = null,
-    style: TextStyle = AureoleDS.typography.text,
+    format: AureoleTextFormatParams = AureoleTextFormatParams(),
 ) {
     Text(
         text = text,
         modifier = modifier,
         color = color,
-        fontSize = fontSize,
-        fontStyle = fontStyle,
-        fontWeight = fontWeight,
-        fontFamily = fontFamily,
-        letterSpacing = letterSpacing,
-        textDecoration = textDecoration,
-        textAlign = textAlign,
-        lineHeight = lineHeight,
-        overflow = overflow,
-        softWrap = softWrap,
-        maxLines = maxLines,
-        minLines = minLines,
-        onTextLayout = onTextLayout,
-        style = style,
+        fontSize = format.fontSize,
+        fontStyle = format.fontStyle,
+        fontWeight = format.fontWeight,
+        fontFamily = format.fontFamily,
+        letterSpacing = format.letterSpacing,
+        textDecoration = format.textDecoration,
+        textAlign = format.textAlign,
+        lineHeight = format.lineHeight,
+        overflow = format.overflow,
+        softWrap = format.softWrap,
+        maxLines = format.maxLines,
+        minLines = format.minLines,
+        onTextLayout = format.onTextLayout,
+        style = format.style ?: AureoleDS.typography.text,
     )
 }
+
+data class AureoleTextFormatParams(
+    val fontSize: TextUnit = TextUnit.Unspecified,
+    val fontStyle: FontStyle? = null,
+    val fontWeight: FontWeight? = null,
+    val fontFamily: FontFamily? = null,
+    val letterSpacing: TextUnit = TextUnit.Unspecified,
+    val textDecoration: TextDecoration? = null,
+    val textAlign: TextAlign? = null,
+    val lineHeight: TextUnit = TextUnit.Unspecified,
+    val overflow: TextOverflow = TextOverflow.Clip,
+    val softWrap: Boolean = true,
+    val maxLines: Int = Int.MAX_VALUE,
+    val minLines: Int = 1,
+    val onTextLayout: ((TextLayoutResult) -> Unit)? = null,
+    val style: TextStyle? = null,
+)
 
 @AureolePreview
 @Composable
 private fun AureoleTextPreview() {
     AureoleLauncherTheme {
         Column {
+            AureoleText("Sample Text Body")
             AureoleText(
-                text = "Title Medium Text",
-                style = AureoleDS.typography.titleMedium,
-                color = AureoleDS.colors.onSurfaceHigh
+                text = "Sample Display Small",
+                format = AureoleTextFormatParams(style = AureoleDS.typography.displaySmall)
             )
             AureoleText(
-                text = "Body Medium Text",
-                style = AureoleDS.typography.bodyMedium,
-                color = AureoleDS.colors.onSurfaceMedium
-            )
-            AureoleText(
-                text = "Label Small Text",
-                style = AureoleDS.typography.labelSmall,
-                color = AureoleDS.colors.onSurfaceLow
+                text = "Sample Title Large",
+                format = AureoleTextFormatParams(style = AureoleDS.typography.titleLarge)
             )
         }
     }

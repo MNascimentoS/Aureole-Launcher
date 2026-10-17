@@ -16,13 +16,13 @@ fun AureoleTextScreenshotTest() {
         Column {
             AureoleText(
                 text = "Title Medium Text",
-                style = AureoleDS.typography.titleMedium,
-                color = AureoleDS.colors.onSurfaceHigh
+                color = AureoleDS.colors.onSurfaceHigh,
+                format = AureoleTextFormatParams(style = AureoleDS.typography.titleMedium)
             )
             AureoleText(
                 text = "Body Medium Text",
-                style = AureoleDS.typography.bodyMedium,
-                color = AureoleDS.colors.onSurfaceMedium
+                color = AureoleDS.colors.onSurfaceMedium,
+                format = AureoleTextFormatParams(style = AureoleDS.typography.bodyMedium)
             )
         }
     }

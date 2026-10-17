@@ -22,12 +22,15 @@ class AureoleEditOverlayTest {
             AureoleLauncherTheme {
                 AureoleEditOverlay(
                     onDismissRequest = {},
-                    title = "Edit Title",
-                    animated = false,
-                    previewContent = { Text("Overlay Preview Area") }
-                ) {
-                    Text("Overlay Sheet Body")
-                }
+                    params = AureoleEditOverlayParams(
+                        config = AureoleEditOverlayConfig(
+                            title = "Edit Title",
+                            animated = false
+                        ),
+                        previewContent = { Text("Overlay Preview Area") },
+                        sheetContent = { Text("Overlay Sheet Body") }
+                    )
+                )
             }
         }
 
@@ -42,12 +45,15 @@ class AureoleEditOverlayTest {
             AureoleLauncherTheme {
                 AureoleEditOverlay(
                     onDismissRequest = {},
-                    title = "Edit Section",
-                    animated = false,
-                    previewContent = { Text("Preview Slot") }
-                ) {
-                    Text("Sheet Content")
-                }
+                    params = AureoleEditOverlayParams(
+                        config = AureoleEditOverlayConfig(
+                            title = "Edit Section",
+                            animated = false
+                        ),
+                        previewContent = { Text("Preview Slot") },
+                        sheetContent = { Text("Sheet Content") }
+                    )
+                )
             }
         }
 
@@ -63,15 +69,18 @@ class AureoleEditOverlayTest {
             AureoleLauncherTheme {
                 AureoleEditOverlay(
                     onDismissRequest = {},
-                    animated = true,
-                    isVisible = true,
-                    onBackPress = { backPressed = true },
-                    onSettingsClick = {},
-                    bottomBarContent = { Text("Bottom Bar") },
-                    previewContent = { Text("Animated Preview Area") }
-                ) {
-                    Text("Animated Sheet Body")
-                }
+                    params = AureoleEditOverlayParams(
+                        config = AureoleEditOverlayConfig(
+                            animated = true,
+                            isVisible = true,
+                            onBackPress = { backPressed = true },
+                            onSettingsClick = {}
+                        ),
+                        bottomBarContent = { Text("Bottom Bar") },
+                        previewContent = { Text("Animated Preview Area") },
+                        sheetContent = { Text("Animated Sheet Body") }
+                    )
+                )
             }
         }
 

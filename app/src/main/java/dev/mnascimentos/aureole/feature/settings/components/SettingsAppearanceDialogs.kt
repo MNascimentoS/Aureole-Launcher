@@ -28,6 +28,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.composable.SettingsMenuItem
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
+import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
 import dev.mnascimentos.aureole.core.designsystem.icons.Check
 import dev.mnascimentos.aureole.core.designsystem.icons.Edit
 import dev.mnascimentos.aureole.core.designsystem.icons.StrokeColor
@@ -142,10 +143,12 @@ private fun PaletteRowItem(
     ) {
         AureoleText(
             text = displayName,
-            style = AureoleDS.typography.titleMedium,
-            fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium,
             color = textColor,
-            modifier = Modifier.weight(1f)
+            modifier = Modifier.weight(1f),
+            format = AureoleTextFormatParams(
+                style = AureoleDS.typography.titleMedium,
+                fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium
+            )
         )
 
         PaletteColorSwatches(palette = palette)
@@ -250,10 +253,12 @@ private fun BlurOptionRow(
     ) {
         AureoleText(
             text = label,
-            style = AureoleDS.typography.bodyLarge,
-            fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
             color = textColor,
-            modifier = Modifier.weight(1f)
+            modifier = Modifier.weight(1f),
+            format = AureoleTextFormatParams(
+                style = AureoleDS.typography.bodyLarge,
+                fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
+            )
         )
         if (isSelected) {
             AureoleDS.icons.Check(

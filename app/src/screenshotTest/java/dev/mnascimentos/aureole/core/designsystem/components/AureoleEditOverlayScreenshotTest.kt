@@ -17,19 +17,22 @@ fun AureoleEditOverlayScreenshotTest() {
     AureoleLauncherTheme {
         AureoleEditOverlay(
             onDismissRequest = {},
-            title = "Edit Section",
-            previewContent = {
-                Text(
-                    text = "Preview Slot",
-                    color = Color.White,
-                    modifier = Modifier.align(Alignment.Center)
-                )
-            }
-        ) {
-            Text(
-                text = "Sheet Content Slot",
-                color = Color.White
+            params = AureoleEditOverlayParams(
+                config = AureoleEditOverlayConfig(title = "Edit Section"),
+                previewContent = {
+                    Text(
+                        text = "Preview Slot",
+                        color = Color.White,
+                        modifier = Modifier.align(Alignment.Center)
+                    )
+                },
+                sheetContent = {
+                    Text(
+                        text = "Sheet Content Slot",
+                        color = Color.White
+                    )
+                }
             )
-        }
+        )
     }
 }

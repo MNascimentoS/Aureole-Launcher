@@ -41,6 +41,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleEditOverlay
+import dev.mnascimentos.aureole.core.designsystem.components.AureoleEditOverlayConfig
+import dev.mnascimentos.aureole.core.designsystem.components.AureoleEditOverlayParams
 import dev.mnascimentos.aureole.core.designsystem.icons.Add
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.utils.LocalAnimatedVisibilityScope
@@ -51,7 +53,7 @@ import kotlinx.coroutines.delay
 
 private const val ANIMATION_DURATION_MS = 300
 
-@Suppress("LongMethod") // Screen composable managing widget group editing layout and preview carousel
+@Suppress("LongMethod") // Screen composable managing widget group editing layout
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EditWidgetGroupScreen(
@@ -76,72 +78,87 @@ fun EditWidgetGroupScreen(
     AureoleEditOverlay(
         onDismissRequest = { isVisible = false },
         modifier = modifier,
-        title = "Widget Stack",
-        hazeState = params.hazeState,
-        isVisible = isVisible,
-        animated = true,
-        previewContent = {
-            EditWidgetGroupPreviewCarousel(
-                currentWidgets = currentWidgets,
-                appWidgetHost = params.appWidgetHost,
-                listState = listState,
-                currentPage = currentPage,
-                isIndicatorEnabled = params.isIndicatorEnabled,
-                onRemoveWidget = { widgetId ->
-                    currentWidgets = currentWidgets.filter { id -> id != widgetId }
-                    actions.onRemoveWidget(widgetId)
-                },
-                onAddWidgetClick = actions.onAddWidgetClick
-            )
-        },
-        bottomBarContent = {
-            Button(
-                onClick = { isVisible = false },
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Text("Salvar")
-            }
-        }
-    ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(vertical = 12.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Text(
-                    text = "•••",
-                    color = AureoleDS.colors.onSurfaceMedium,
-                    style = AureoleDS.typography.bodyLarge,
-                    fontWeight = FontWeight.Bold
+        params = AureoleEditOverlayParams(
+            config = AureoleEditOverlayConfig(
+                title = "Widget Stack",
+                hazeState = params.hazeState,
+                isVisible = isVisible,
+                animated = true
+            ),
+            previewContent = {
+                EditWidgetGroupPreviewCarousel(
+                    params = EditWidgetCarouselParams(
+                        currentWidgets = currentWidgets,
+                        appWidgetHost = params.appWidgetHost,
+                        listState = listState,
+                        currentPage = currentPage,
+                        isIndicatorEnabled = params.isIndicatorEnabled,
+                        onRemoveWidget = { widgetId ->
+                            currentWidgets = currentWidgets.filter { id -> id != widgetId }
+                            actions.onRemoveWidget(widgetId)
+                        },
+                        onAddWidgetClick = actions.onAddWidgetClick
+                    )
                 )
-                Spacer(modifier = Modifier.width(16.dp))
-                Text("Show widget indicator", color = AureoleDS.colors.onSurfaceMedium)
+            },
+            bottomBarContent = {
+                Button(
+                    onClick = { isVisible = false },
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text("Salvar")
+                }
+            },
+            sheetContent = {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 12.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Text(
+                            text = "•••",
+                            color = AureoleDS.colors.onSurfaceMedium,
+                            style = AureoleDS.typography.bodyLarge,
+                            fontWeight = FontWeight.Bold
+                        )
+                        Spacer(modifier = Modifier.width(16.dp))
+                        Text("Show widget indicator", color = AureoleDS.colors.onSurfaceMedium)
+                    }
+                    Switch(
+                        checked = params.isIndicatorEnabled,
+                        onCheckedChange = { actions.onToggleIndicator() }
+                    )
+                }
             }
-            Switch(
-                checked = params.isIndicatorEnabled,
-                onCheckedChange = { actions.onToggleIndicator() }
-            )
-        }
-    }
+        )
+    )
 }
 
-@Suppress(
-    "LongParameterList"
-) // Carousel composable requires widgets list, host, lazy list state, page indicator and action callbacks
+data class EditWidgetCarouselParams(
+    val currentWidgets: List<Int>,
+    val appWidgetHost: AppWidgetHost?,
+    val listState: LazyListState,
+    val currentPage: Int,
+    val isIndicatorEnabled: Boolean,
+    val onRemoveWidget: (Int) -> Unit,
+    val onAddWidgetClick: () -> Unit
+)
+
 @Composable
 private fun EditWidgetGroupPreviewCarousel(
-    currentWidgets: List<Int>,
-    appWidgetHost: AppWidgetHost?,
-    listState: LazyListState,
-    currentPage: Int,
-    isIndicatorEnabled: Boolean,
-    onRemoveWidget: (Int) -> Unit,
-    onAddWidgetClick: () -> Unit,
+    params: EditWidgetCarouselParams,
     modifier: Modifier = Modifier
 ) {
+    val currentWidgets = params.currentWidgets
+    val appWidgetHost = params.appWidgetHost
+    val listState = params.listState
+    val currentPage = params.currentPage
+    val isIndicatorEnabled = params.isIndicatorEnabled
+    val onRemoveWidget = params.onRemoveWidget
+    val onAddWidgetClick = params.onAddWidgetClick
     Column(
         modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally
@@ -178,7 +195,7 @@ private fun EditWidgetGroupPreviewCarousel(
     }
 }
 
-@Suppress("LongMethod") // Preview item composable rendering shared element transitions and remove badge
+@Suppress("LongMethod") // Preview item composable rendering shared element transitions
 @OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 private fun WidgetPreviewItem(

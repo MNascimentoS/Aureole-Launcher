@@ -25,6 +25,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
+import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
 import dev.mnascimentos.aureole.core.designsystem.icons.Search
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.feature.home.components.favorites.model.FavoriteAppRowParams
@@ -44,9 +45,8 @@ internal fun FavoriteSectionHeader(
     ) {
         AureoleText(
             text = "Favoritos ($count)",
-            style = AureoleDS.typography.titleSmall,
-            fontWeight = FontWeight.Bold,
-            color = AureoleDS.colors.onSurfaceHigh
+            color = AureoleDS.colors.onSurfaceHigh,
+            format = AureoleTextFormatParams(style = AureoleDS.typography.titleSmall, fontWeight = FontWeight.Bold)
         )
         if (count > 0) {
             TextButton(
@@ -55,9 +55,11 @@ internal fun FavoriteSectionHeader(
             ) {
                 AureoleText(
                     text = "Desativar todos",
-                    style = AureoleDS.typography.labelMedium,
-                    fontWeight = FontWeight.SemiBold,
-                    color = AureoleDS.colors.error
+                    color = AureoleDS.colors.error,
+                    format = AureoleTextFormatParams(
+                        style = AureoleDS.typography.labelMedium,
+                        fontWeight = FontWeight.SemiBold
+                    )
                 )
             }
         }
@@ -78,9 +80,8 @@ internal fun RemainingSectionHeader(
     ) {
         AureoleText(
             text = "Outros Aplicativos ($count)",
-            style = AureoleDS.typography.titleSmall,
-            fontWeight = FontWeight.Bold,
-            color = AureoleDS.colors.onSurfaceMedium
+            color = AureoleDS.colors.onSurfaceMedium,
+            format = AureoleTextFormatParams(style = AureoleDS.typography.titleSmall, fontWeight = FontWeight.Bold)
         )
         if (count > 0) {
             TextButton(
@@ -89,9 +90,11 @@ internal fun RemainingSectionHeader(
             ) {
                 AureoleText(
                     text = "Ativar todos",
-                    style = AureoleDS.typography.labelMedium,
-                    fontWeight = FontWeight.SemiBold,
-                    color = AureoleDS.colors.onSurfaceHigh
+                    color = AureoleDS.colors.onSurfaceHigh,
+                    format = AureoleTextFormatParams(
+                        style = AureoleDS.typography.labelMedium,
+                        fontWeight = FontWeight.SemiBold
+                    )
                 )
             }
         }
@@ -126,12 +129,11 @@ internal fun LazyListScope.favoriteSectionItems(
             }
             AureoleText(
                 text = emptyMsg,
-                style = AureoleDS.typography.bodyMedium,
                 color = AureoleDS.colors.onSurfaceMedium,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(vertical = 12.dp),
-                textAlign = TextAlign.Center
+                format = AureoleTextFormatParams(style = AureoleDS.typography.bodyMedium, textAlign = TextAlign.Center)
             )
         }
     } else {
@@ -180,12 +182,11 @@ internal fun LazyListScope.remainingSectionItems(
             }
             AureoleText(
                 text = emptyMsg,
-                style = AureoleDS.typography.bodyMedium,
                 color = AureoleDS.colors.onSurfaceMedium,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(vertical = 12.dp),
-                textAlign = TextAlign.Center
+                format = AureoleTextFormatParams(style = AureoleDS.typography.bodyMedium, textAlign = TextAlign.Center)
             )
         }
     } else {

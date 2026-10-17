@@ -30,6 +30,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.core.graphics.ColorUtils
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
+import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
 import dev.mnascimentos.aureole.core.designsystem.icons.Check
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
@@ -74,8 +75,7 @@ fun ColorPickerDialog(
         title = {
             AureoleText(
                 text = "Escolher Cor Primária",
-                style = AureoleDS.typography.titleMedium,
-                fontWeight = FontWeight.Bold,
+                format = AureoleTextFormatParams(style = AureoleDS.typography.titleMedium, fontWeight = FontWeight.Bold)
             )
         },
         text = {
@@ -130,8 +130,8 @@ private fun PresetColorsSection(
     Column(verticalArrangement = Arrangement.spacedBy(AureoleDS.dimens.medium)) {
         AureoleText(
             text = "Cores Recomendadas",
-            style = AureoleDS.typography.labelMedium,
             color = AureoleDS.colors.onSurfaceMedium,
+            format = AureoleTextFormatParams(style = AureoleDS.typography.labelMedium)
         )
 
         FlowRow(
@@ -175,8 +175,8 @@ private fun CustomHueSection(
     Column {
         AureoleText(
             text = "Ajuste Personalizado (Matiz)",
-            style = AureoleDS.typography.labelMedium,
             color = AureoleDS.colors.onSurfaceMedium,
+            format = AureoleTextFormatParams(style = AureoleDS.typography.labelMedium)
         )
 
         Row(

@@ -25,6 +25,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
+import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
 import dev.mnascimentos.aureole.core.designsystem.icons.ArrowDown
 import dev.mnascimentos.aureole.core.designsystem.icons.ArrowUp
 import dev.mnascimentos.aureole.core.designsystem.icons.Delete
@@ -40,10 +41,12 @@ fun FavoriteAppsDialogHeader(modifier: Modifier = Modifier) {
     ) {
         AureoleText(
             text = "Lista de Aplicativos",
-            style = AureoleDS.typography.titleMedium,
-            fontWeight = FontWeight.Bold,
             color = AureoleDS.colors.onSurfaceMedium,
-            textAlign = TextAlign.Center
+            format = AureoleTextFormatParams(
+                style = AureoleDS.typography.titleMedium,
+                fontWeight = FontWeight.Bold,
+                textAlign = TextAlign.Center
+            )
         )
     }
 }
@@ -66,14 +69,16 @@ fun FavoriteAppsShowAllSwitchRow(
         Column(modifier = Modifier.weight(1f)) {
             AureoleText(
                 text = "Mostrar todos os apps na Home",
-                style = AureoleDS.typography.bodyMedium,
-                fontWeight = FontWeight.SemiBold,
-                color = AureoleDS.colors.onSurfaceHigh
+                color = AureoleDS.colors.onSurfaceHigh,
+                format = AureoleTextFormatParams(
+                    style = AureoleDS.typography.bodyMedium,
+                    fontWeight = FontWeight.SemiBold
+                )
             )
             AureoleText(
                 text = "Se desativado, exibe apenas os aplicativos favoritados",
-                style = AureoleDS.typography.bodySmall,
-                color = AureoleDS.colors.onSurfaceMedium
+                color = AureoleDS.colors.onSurfaceMedium,
+                format = AureoleTextFormatParams(style = AureoleDS.typography.bodySmall)
             )
         }
         Switch(
@@ -100,11 +105,13 @@ fun FavoriteAppRowInfo(app: AppInfo, modifier: Modifier = Modifier) {
         Spacer(modifier = Modifier.width(AureoleDS.dimens.xSmall))
         AureoleText(
             text = app.label,
-            style = AureoleDS.typography.bodyMedium,
-            fontWeight = FontWeight.SemiBold,
             color = AureoleDS.colors.onSurfaceHigh,
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis
+            format = AureoleTextFormatParams(
+                style = AureoleDS.typography.bodyMedium,
+                fontWeight = FontWeight.SemiBold,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
         )
     }
 }
@@ -204,11 +211,13 @@ fun RemainingAppRow(
             Spacer(modifier = Modifier.width(12.dp))
             AureoleText(
                 text = app.label,
-                style = AureoleDS.typography.bodyMedium,
-                fontWeight = FontWeight.Medium,
                 color = AureoleDS.colors.onSurfaceHigh,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
+                format = AureoleTextFormatParams(
+                    style = AureoleDS.typography.bodyMedium,
+                    fontWeight = FontWeight.Medium,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
             )
         }
 

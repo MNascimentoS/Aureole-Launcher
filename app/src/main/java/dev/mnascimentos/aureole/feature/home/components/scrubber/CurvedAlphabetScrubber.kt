@@ -36,6 +36,7 @@ import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
+import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
@@ -259,8 +260,6 @@ private fun BoxScope.ScrubberAlphabetItems(
 
         AureoleText(
             text = charStr,
-            style = AureoleDS.typography.labelSmall,
-            fontWeight = if (isActive) FontWeight.ExtraBold else FontWeight.Medium,
             color = if (isActive) {
                 AureoleDS.colors.onSurfaceHigh
             } else {
@@ -285,7 +284,11 @@ private fun BoxScope.ScrubberAlphabetItems(
                     translationX = offsetXPx
                     translationY = itemCenterY - (size.height / 2f)
                     alpha = params.scrubberAlpha
-                }
+                },
+            format = AureoleTextFormatParams(
+                style = AureoleDS.typography.labelSmall,
+                fontWeight = if (isActive) FontWeight.ExtraBold else FontWeight.Medium
+            )
         )
     }
 }
@@ -310,8 +313,7 @@ private fun BoxScope.ScrubberSelectedBadge(
         Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
             AureoleText(
                 text = selectedChar.toString(),
-                style = AureoleDS.typography.titleLarge,
-                fontWeight = FontWeight.Bold
+                format = AureoleTextFormatParams(style = AureoleDS.typography.titleLarge, fontWeight = FontWeight.Bold)
             )
         }
     }

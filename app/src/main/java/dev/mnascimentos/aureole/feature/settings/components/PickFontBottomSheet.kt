@@ -21,6 +21,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalInspectionMode
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
+import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
 import dev.mnascimentos.aureole.core.designsystem.icons.Check
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
@@ -78,9 +79,9 @@ private fun PickFontSheetContent(
     ) {
         AureoleText(
             text = "Pick Font",
-            style = AureoleDS.typography.titleMedium,
             color = AureoleDS.colors.onSurfaceHigh,
-            modifier = Modifier.padding(horizontal = AureoleDS.dimens.xLarge)
+            modifier = Modifier.padding(horizontal = AureoleDS.dimens.xLarge),
+            format = AureoleTextFormatParams(style = AureoleDS.typography.titleMedium)
         )
 
         Spacer(modifier = Modifier.height(AureoleDS.dimens.medium))
@@ -119,10 +120,9 @@ private fun FontOptionItem(
     ) {
         AureoleText(
             text = fontName,
-            style = AureoleDS.typography.bodyLarge,
-            fontFamily = font,
             color = AureoleDS.colors.onSurfaceMedium,
-            modifier = Modifier.weight(1f)
+            modifier = Modifier.weight(1f),
+            format = AureoleTextFormatParams(style = AureoleDS.typography.bodyLarge, fontFamily = font)
         )
         if (isSelected) {
             AureoleDS.icons.Check(

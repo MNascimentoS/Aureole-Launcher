@@ -74,7 +74,7 @@ fun OpenedFolderPopup(
     val isActionsVisible = appsInFolder.isEmpty() || showActionsByLongPress
 
     if (isGridMode) {
-        GridStyleExpandedFolderPopup(
+        GridFolderPopup(
             params = GridFolderPopupParams(
                 folder = folder,
                 appsInFolder = appsInFolder,
@@ -91,7 +91,6 @@ fun OpenedFolderPopup(
             config = config,
             appsInFolder = appsInFolder,
             isActionsVisible = isActionsVisible,
-            onToggleActions = { showActionsByLongPress = !showActionsByLongPress },
             modifier = modifier
         )
     }
@@ -102,8 +101,6 @@ private fun StandardFolderPopupBox(
     config: OpenedFolderPopupConfig,
     appsInFolder: List<AppInfo>,
     isActionsVisible: Boolean,
-    @Suppress("UNUSED_PARAMETER") // Parameter reserved for future folder action toggle listener
-    onToggleActions: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val uiState = LocalHomeUiState.current

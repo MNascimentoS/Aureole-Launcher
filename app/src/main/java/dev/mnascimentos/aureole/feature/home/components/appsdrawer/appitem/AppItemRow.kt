@@ -32,6 +32,7 @@ import androidx.compose.ui.unit.dp
 import androidx.core.graphics.drawable.toDrawable
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
+import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
@@ -110,12 +111,14 @@ private fun RowScope.AppItemRowContent(
     val appLabel = @Composable {
         AureoleText(
             text = app.label,
-            style = AureoleDS.typography.bodyLarge,
             color = AureoleDS.colors.onSurfaceMedium,
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis,
-            textAlign = if (isLeftHandedMode) TextAlign.End else TextAlign.Start,
-            modifier = Modifier.weight(1f)
+            modifier = Modifier.weight(1f),
+            format = AureoleTextFormatParams(
+                style = AureoleDS.typography.bodyLarge,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                textAlign = if (isLeftHandedMode) TextAlign.End else TextAlign.Start
+            )
         )
     }
 

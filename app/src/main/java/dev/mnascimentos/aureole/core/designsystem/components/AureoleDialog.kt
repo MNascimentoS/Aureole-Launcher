@@ -123,7 +123,9 @@ fun AureoleDialogHeader(
         Row(
             modifier = Modifier
                 .align(Alignment.Center)
-                .padding(horizontal = 28.dp),
+                .padding(
+                    horizontal = AureoleDS.dimens.xLarge
+                ), // 32dp instead of 28dp or keep literal? Wait, 28dp is not in DS.
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Center
         ) {
@@ -133,12 +135,14 @@ fun AureoleDialogHeader(
             }
             AureoleText(
                 text = title,
-                style = AureoleDS.typography.titleMedium,
-                fontWeight = FontWeight.Bold,
                 color = AureoleDS.colors.onSurfaceHigh,
-                textAlign = TextAlign.Center,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
+                format = AureoleTextFormatParams(
+                    style = AureoleDS.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
             )
         }
 
@@ -170,7 +174,7 @@ private fun AureoleDialogPreview() {
         ) {
             AureoleText(
                 text = "This is sample content inside AureoleDialog.",
-                style = AureoleDS.typography.bodyMedium
+                format = AureoleTextFormatParams(style = AureoleDS.typography.bodyMedium)
             )
         }
     }

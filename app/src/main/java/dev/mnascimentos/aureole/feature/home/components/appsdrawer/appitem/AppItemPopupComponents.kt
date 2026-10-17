@@ -27,7 +27,9 @@ import androidx.core.graphics.drawable.toDrawable
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.designsystem.components.AureolePopupBox
 import dev.mnascimentos.aureole.core.designsystem.components.AureolePopupHeader
+import dev.mnascimentos.aureole.core.designsystem.components.AureolePopupHeaderParams
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
+import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
 import dev.mnascimentos.aureole.core.designsystem.icons.Delete
 import dev.mnascimentos.aureole.core.designsystem.icons.Info
 import dev.mnascimentos.aureole.core.designsystem.icons.Settings
@@ -55,8 +57,10 @@ fun AppItemPopup(
 
             AureolePopupHeader(
                 title = app.label,
-                iconBitmap = iconBitmap,
-                showAureoleLogo = true
+                params = AureolePopupHeaderParams(
+                    iconBitmap = iconBitmap,
+                    showAureoleLogo = true
+                )
             )
 
             AppPopupHorizontalActionsRow(
@@ -141,10 +145,12 @@ private fun AppPopupButton(
         Spacer(modifier = Modifier.height(AureoleDS.dimens.xxSmall))
         AureoleText(
             text = label,
-            style = AureoleDS.typography.bodySmall,
-            fontWeight = FontWeight.Medium,
             color = contentColor,
-            textAlign = TextAlign.Center
+            format = AureoleTextFormatParams(
+                style = AureoleDS.typography.bodySmall,
+                fontWeight = FontWeight.Medium,
+                textAlign = TextAlign.Center
+            )
         )
     }
 }

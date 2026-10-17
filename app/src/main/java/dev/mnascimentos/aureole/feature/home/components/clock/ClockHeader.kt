@@ -33,6 +33,7 @@ import dev.chrisbanes.haze.HazeStyle
 import dev.chrisbanes.haze.HazeTint
 import dev.chrisbanes.haze.hazeEffect
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
+import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
@@ -316,12 +317,14 @@ private fun ClockGreetingDisplay(
     ) { currentGreeting ->
         AureoleText(
             text = currentGreeting,
-            fontSize = greetingSizeSp.sp,
-            fontWeight = FontWeight.Medium,
             color = textColor,
-            textAlign = textAlign,
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis
+            format = AureoleTextFormatParams(
+                fontSize = greetingSizeSp.sp,
+                fontWeight = FontWeight.Medium,
+                textAlign = textAlign,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
         )
     }
 }

@@ -51,8 +51,10 @@ class AureolePopupTest {
             AureoleLauncherTheme {
                 AureolePopupHeader(
                     title = "Popup Title",
-                    sessionTitle = "Session Subtitle",
-                    showAureoleLogo = true
+                    params = AureolePopupHeaderParams(
+                        sessionTitle = "Session Subtitle",
+                        showAureoleLogo = true
+                    )
                 )
             }
         }
@@ -79,7 +81,9 @@ class AureolePopupTest {
                 AureolePopupBox {
                     AureolePopupHeader(
                         title = "Folder Name",
-                        sessionTitle = "Session Subtitle"
+                        params = AureolePopupHeaderParams(
+                            sessionTitle = "Session Subtitle"
+                        )
                     )
                     AureolePopupMenuSection(title = "Section Header")
                     Text("Popup Body Content")
@@ -111,9 +115,11 @@ class AureolePopupTest {
             AureoleLauncherTheme {
                 AureolePopupHeader(
                     title = "Custom Icon Header",
-                    showAureoleLogo = false,
-                    onSettingsClick = {},
-                    customIcon = { Text("CustomIcon") }
+                    params = AureolePopupHeaderParams(
+                        showAureoleLogo = false,
+                        onSettingsClick = {},
+                        customIcon = { Text("CustomIcon") }
+                    )
                 )
             }
         }
@@ -127,9 +133,11 @@ class AureolePopupTest {
             AureoleLauncherTheme {
                 AureolePopupHeader(
                     title = "Vector Icon Header",
-                    showAureoleLogo = false,
-                    onCloseClick = {},
-                    iconVector = { Text("VectorIcon") }
+                    params = AureolePopupHeaderParams(
+                        showAureoleLogo = false,
+                        onCloseClick = {},
+                        customIcon = { Text("VectorIcon") }
+                    )
                 )
             }
         }
@@ -143,7 +151,9 @@ class AureolePopupTest {
             AureoleLauncherTheme {
                 AureolePopupHeader(
                     title = "No Clicks Header",
-                    showAureoleLogo = false
+                    params = AureolePopupHeaderParams(
+                        showAureoleLogo = false
+                    )
                 )
             }
         }
@@ -156,9 +166,11 @@ class AureolePopupTest {
             AureoleLauncherTheme {
                 AureolePopupHeader(
                     title = "Settings Vector Header",
-                    showAureoleLogo = false,
-                    onSettingsClick = {},
-                    iconVector = { Text("VectorIcon2") }
+                    params = AureolePopupHeaderParams(
+                        showAureoleLogo = false,
+                        onSettingsClick = {},
+                        customIcon = { Text("VectorIcon2") }
+                    )
                 )
             }
         }

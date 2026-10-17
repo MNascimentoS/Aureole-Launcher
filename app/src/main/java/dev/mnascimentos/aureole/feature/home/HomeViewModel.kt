@@ -20,16 +20,26 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-@Suppress("LongParameterList") // Primary ViewModel requiring dependencies for launcher state management
+data class HomeRepositories(
+    val appRepository: AppRepository,
+    val widgetRepository: WidgetRepository,
+    val settingsRepository: SettingsRepository,
+    val folderRepository: FolderRepository,
+    val favoriteContainerRepository: FavoriteContainerRepository,
+    val containerRepository: ContainerRepository,
+    val gridRepository: GridRepository,
+)
+
 class HomeViewModel(
-    internal val appRepository: AppRepository,
-    internal val widgetRepository: WidgetRepository,
-    internal val settingsRepository: SettingsRepository,
-    internal val folderRepository: FolderRepository,
-    internal val favoriteContainerRepository: FavoriteContainerRepository,
-    internal val containerRepository: ContainerRepository,
-    internal val gridRepository: GridRepository,
+    repositories: HomeRepositories,
 ) : ViewModel() {
+    internal val appRepository: AppRepository = repositories.appRepository
+    internal val widgetRepository: WidgetRepository = repositories.widgetRepository
+    internal val settingsRepository: SettingsRepository = repositories.settingsRepository
+    internal val folderRepository: FolderRepository = repositories.folderRepository
+    internal val favoriteContainerRepository: FavoriteContainerRepository = repositories.favoriteContainerRepository
+    internal val containerRepository: ContainerRepository = repositories.containerRepository
+    internal val gridRepository: GridRepository = repositories.gridRepository
 
     private val _uiState = MutableStateFlow(MainUiState())
     val uiState: StateFlow<MainUiState> = _uiState.asStateFlow()

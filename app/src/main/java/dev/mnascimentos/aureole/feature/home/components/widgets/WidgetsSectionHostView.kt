@@ -76,8 +76,6 @@ internal fun applyWidgetOptionsIfNeeded(
     }
 }
 
-// Note: simplify view creation
-@Suppress("NestedBlockDepth")
 internal fun createWidgetHostView(
     context: Context,
     appWidgetHost: AppWidgetHost,

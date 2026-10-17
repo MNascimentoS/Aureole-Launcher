@@ -25,7 +25,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.core.designsystem.components.AureolePopupMenuItem
+import dev.mnascimentos.aureole.core.designsystem.components.AureolePopupMenuItemParams
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
+import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
 import dev.mnascimentos.aureole.core.designsystem.icons.Delete
 import dev.mnascimentos.aureole.core.designsystem.icons.Dots
 import dev.mnascimentos.aureole.core.designsystem.icons.Edit
@@ -59,71 +61,83 @@ internal fun WidgetStackBottomSheet(
         }
     }
 
-    val sheetContent = @Composable {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(bottom = AureoleDS.dimens.xLarge)
-        ) {
-            WidgetStackBottomSheetHeader(context)
-
-            Spacer(modifier = Modifier.height(AureoleDS.dimens.xxSmall))
-
+    val sheetContent =
+        @Suppress("LongMethod") // Bottom sheet composable rendering widget stack menu options
+        @Composable
+        {
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = AureoleDS.dimens.medium, vertical = 6.dp)
+                    .padding(bottom = AureoleDS.dimens.xLarge)
             ) {
-                if (widgetAppPackage != null) {
+                WidgetStackBottomSheetHeader(context)
+
+                Spacer(modifier = Modifier.height(AureoleDS.dimens.xxSmall))
+
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = AureoleDS.dimens.medium, vertical = 6.dp)
+                ) {
+                    if (widgetAppPackage != null) {
+                        AureolePopupMenuItem(
+                            title = "Configurações do App",
+                            params = AureolePopupMenuItemParams(
+                                icon = { m -> AureoleDS.icons.Info(m) }
+                            ),
+                            onClick = {
+                                IntentUtils.openAppInfo(context, widgetAppPackage)
+                                onDismiss()
+                            }
+                        )
+                    }
+
                     AureolePopupMenuItem(
-                        title = "Configurações do App",
-                        icon = { m -> AureoleDS.icons.Info(m) },
+                        title = "Redimensionar Grupo",
+                        params = AureolePopupMenuItemParams(
+                            icon = { m -> AureoleDS.icons.Edit(m) }
+                        ),
                         onClick = {
-                            IntentUtils.openAppInfo(context, widgetAppPackage)
+                            params.onEditStack()
+                            onDismiss()
+                        }
+                    )
+
+                    AureolePopupMenuItem(
+                        title = "Alternar Indicador de Posição",
+                        params = AureolePopupMenuItemParams(
+                            customIcon = {
+                                AureoleDS.icons.Dots(
+                                    tint = AureoleDS.colors.onSurfaceMedium,
+                                    modifier = Modifier.size(AureoleDS.dimens.iconMedium)
+                                )
+                            }
+                        ),
+                        onClick = {
+                            params.onToggleDots(params.stackId)
+                            onDismiss()
+                        }
+                    )
+
+                    AureolePopupMenuItem(
+                        title = "Remover",
+                        params = AureolePopupMenuItemParams(
+                            icon = { m -> AureoleDS.icons.Delete(m) },
+                            isDestructive = true
+                        ),
+                        onClick = {
+                            params.onRemoveStack()
                             onDismiss()
                         }
                     )
                 }
-
-                AureolePopupMenuItem(
-                    title = "Redimensionar Grupo",
-                    icon = { m -> AureoleDS.icons.Edit(m) },
-                    onClick = {
-                        params.onEditStack()
-                        onDismiss()
-                    }
-                )
-
-                AureolePopupMenuItem(
-                    title = "Alternar Indicador de Posição",
-                    customIcon = {
-                        AureoleDS.icons.Dots(
-                            tint = AureoleDS.colors.onSurfaceMedium,
-                            modifier = Modifier.size(AureoleDS.dimens.iconMedium)
-                        )
-                    },
-                    onClick = {
-                        params.onToggleDots(params.stackId)
-                        onDismiss()
-                    }
-                )
-
-                AureolePopupMenuItem(
-                    title = "Remover",
-                    icon = { m -> AureoleDS.icons.Delete(m) },
-                    isDestructive = true,
-                    onClick = {
-                        params.onRemoveStack()
-                        onDismiss()
-                    }
-                )
             }
         }
-    }
 
     RenderModalBottomSheetOrInspection(sheetContent, onDismiss)
 }
 
+@Suppress("LongMethod") // Bottom sheet composable rendering widget stack menu options
 @Composable
 private fun WidgetStackBottomSheetHeader(context: Context) {
     Box(
@@ -154,12 +168,14 @@ private fun WidgetStackBottomSheetHeader(context: Context) {
 
             AureoleText(
                 text = "Grupo de Widgets",
-                style = AureoleDS.typography.titleMedium,
-                fontWeight = FontWeight.Bold,
                 color = AureoleDS.colors.onSurfaceHigh,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-                modifier = Modifier.weight(1f)
+                modifier = Modifier.weight(1f),
+                format = AureoleTextFormatParams(
+                    style = AureoleDS.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
             )
         }
 

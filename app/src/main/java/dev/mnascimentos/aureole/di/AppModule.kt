@@ -7,9 +7,11 @@ import dev.mnascimentos.aureole.core.data.repository.FolderRepository
 import dev.mnascimentos.aureole.core.data.repository.GridRepository
 import dev.mnascimentos.aureole.core.data.repository.SettingsRepository
 import dev.mnascimentos.aureole.core.data.repository.WidgetRepository
+import dev.mnascimentos.aureole.feature.home.HomeRepositories
 import dev.mnascimentos.aureole.feature.home.HomeViewModel
 import dev.mnascimentos.aureole.feature.home.components.widgets.WidgetPickerViewModel
 import dev.mnascimentos.aureole.feature.settings.SettingsViewModel
+import org.koin.core.module.dsl.factoryOf
 import org.koin.core.module.dsl.singleOf
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
@@ -22,6 +24,7 @@ val appModule = module {
     singleOf(::FavoriteContainerRepository)
     singleOf(::ContainerRepository)
     singleOf(::GridRepository)
+    factoryOf(::HomeRepositories)
 
     viewModelOf(::HomeViewModel)
     viewModelOf(::SettingsViewModel)

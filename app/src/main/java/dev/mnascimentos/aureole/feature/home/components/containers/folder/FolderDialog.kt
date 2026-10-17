@@ -30,6 +30,7 @@ import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleHeaderBanner
 import dev.mnascimentos.aureole.core.designsystem.components.AureolePopupBox
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
+import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
@@ -108,9 +109,9 @@ private fun FolderDialogContent(
     if (appsInFolder.isEmpty()) {
         AureoleText(
             text = "Folder is empty",
-            style = AureoleDS.typography.bodyMedium,
             color = AureoleDS.colors.onSurfaceMedium,
-            modifier = Modifier.padding(vertical = 32.dp)
+            modifier = Modifier.padding(vertical = 32.dp),
+            format = AureoleTextFormatParams(style = AureoleDS.typography.bodyMedium)
         )
     } else if (folder.displayAsGrid) {
         LazyVerticalGrid(

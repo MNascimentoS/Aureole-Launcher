@@ -18,6 +18,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
+import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
@@ -39,8 +40,8 @@ internal fun EditClockBackgroundSection(
     ) {
         AureoleText(
             text = "Mostrar cartão de fundo",
-            style = AureoleDS.typography.bodyMedium,
-            color = AureoleDS.colors.onSurfaceHigh
+            color = AureoleDS.colors.onSurfaceHigh,
+            format = AureoleTextFormatParams(style = AureoleDS.typography.bodyMedium)
         )
         Switch(
             checked = uiState.isClockBackgroundEnabled,
@@ -52,9 +53,9 @@ internal fun EditClockBackgroundSection(
         Spacer(modifier = Modifier.height(8.dp))
         AureoleText(
             text = "Cor de Fundo Personalizada:",
-            style = AureoleDS.typography.bodySmall,
             color = AureoleDS.colors.onSurfaceMedium,
-            modifier = Modifier.padding(bottom = 6.dp)
+            modifier = Modifier.padding(bottom = 6.dp),
+            format = AureoleTextFormatParams(style = AureoleDS.typography.bodySmall)
         )
         FlowRow(
             modifier = Modifier.fillMaxWidth(),

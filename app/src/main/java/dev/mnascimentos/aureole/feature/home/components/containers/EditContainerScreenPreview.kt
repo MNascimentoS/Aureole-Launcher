@@ -11,6 +11,7 @@ import dev.mnascimentos.aureole.core.data.model.ContainerModel
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 
+@Suppress("LongMethod") // Compose preview rendering sample container horizontal layout
 @AureolePreview
 @Composable
 private fun EditContainerScreenPreview() {
@@ -64,15 +65,17 @@ private fun EditContainerScreenPreview() {
     )
     AureoleLauncherTheme {
         EditContainerScreen(
-            panel = panel,
-            allApps = sampleApps,
-            onDismiss = {},
-            onSave = {}
+            params = EditContainerScreenParams(
+                panel = panel,
+                allApps = sampleApps,
+                onDismiss = {},
+                onSave = {}
+            )
         )
     }
 }
 
-@Suppress("LongMethod") // Compose preview initializing sample container and app data
+@Suppress("LongMethod") // Compose preview rendering sample container horizontal layout
 @AureolePreview
 @Composable
 private fun EditContainerScreenHorizontalPreview() {
@@ -133,10 +136,12 @@ private fun EditContainerScreenHorizontalPreview() {
     )
     AureoleLauncherTheme {
         EditContainerScreen(
-            panel = panel,
-            allApps = sampleApps,
-            onDismiss = {},
-            onSave = {}
+            params = EditContainerScreenParams(
+                panel = panel,
+                allApps = sampleApps,
+                onDismiss = {},
+                onSave = {}
+            )
         )
     }
 }

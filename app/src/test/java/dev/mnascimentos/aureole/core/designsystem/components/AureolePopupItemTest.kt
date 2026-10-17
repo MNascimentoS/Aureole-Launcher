@@ -24,7 +24,7 @@ class AureolePopupItemTest {
             AureoleLauncherTheme {
                 AureolePopupMenuItem(
                     title = "Menu Item Title",
-                    badge = "99",
+                    params = AureolePopupMenuItemParams(badge = "99"),
                     onClick = {}
                 )
             }
@@ -59,9 +59,11 @@ class AureolePopupItemTest {
                 AureolePopupMenuItem(
                     title = "Menu Item Title",
                     onClick = {},
-                    customIcon = { Text("CustomIcon") },
-                    trailingIcon = { Text("TrailingIcon") },
-                    onTrailingClick = { trailingClicked = true }
+                    params = AureolePopupMenuItemParams(
+                        customIcon = { Text("CustomIcon") },
+                        trailingIcon = { Text("TrailingIcon") },
+                        onTrailingClick = { trailingClicked = true }
+                    )
                 )
             }
         }
@@ -80,11 +82,17 @@ class AureolePopupItemTest {
                 AureolePopupBox {
                     AureolePopupHeader(
                         title = "Folder name",
-                        sessionTitle = "Titulo de sessão"
+                        params = AureolePopupHeaderParams(
+                            sessionTitle = "Titulo de sessão"
+                        )
                     )
                     AureolePopupMenuItem(title = "Add folder", onClick = {})
                     AureolePopupMenuItem(title = "Create stack", onClick = {})
-                    AureolePopupMenuItem(title = "Remove", isDestructive = true, onClick = {})
+                    AureolePopupMenuItem(
+                        title = "Remove",
+                        params = AureolePopupMenuItemParams(isDestructive = true),
+                        onClick = {}
+                    )
                 }
             }
         }

@@ -17,6 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
+import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
@@ -39,9 +40,8 @@ internal fun SettingsButtonPositionDialog(
         title = {
             AureoleText(
                 text = "Posição do Botão de Configurações",
-                style = AureoleDS.typography.titleMedium,
-                fontWeight = FontWeight.Bold,
-                color = AureoleDS.colors.onSurfaceHigh
+                color = AureoleDS.colors.onSurfaceHigh,
+                format = AureoleTextFormatParams(style = AureoleDS.typography.titleMedium, fontWeight = FontWeight.Bold)
             )
         },
         text = {
@@ -62,8 +62,8 @@ internal fun SettingsButtonPositionDialog(
                         Spacer(modifier = Modifier.width(AureoleDS.dimens.small))
                         AureoleText(
                             text = label,
-                            style = AureoleDS.typography.bodyLarge,
-                            color = AureoleDS.colors.onSurfaceHigh
+                            color = AureoleDS.colors.onSurfaceHigh,
+                            format = AureoleTextFormatParams(style = AureoleDS.typography.bodyLarge)
                         )
                     }
                 }
@@ -95,9 +95,8 @@ internal fun SearchIconPositionDialog(
         title = {
             AureoleText(
                 text = "Posição do Ícone de Busca",
-                style = AureoleDS.typography.titleMedium,
-                fontWeight = FontWeight.Bold,
-                color = AureoleDS.colors.onSurfaceHigh
+                color = AureoleDS.colors.onSurfaceHigh,
+                format = AureoleTextFormatParams(style = AureoleDS.typography.titleMedium, fontWeight = FontWeight.Bold)
             )
         },
         text = {
@@ -118,8 +117,8 @@ internal fun SearchIconPositionDialog(
                         Spacer(modifier = Modifier.width(AureoleDS.dimens.small))
                         AureoleText(
                             text = label,
-                            style = AureoleDS.typography.bodyLarge,
-                            color = AureoleDS.colors.onSurfaceHigh
+                            color = AureoleDS.colors.onSurfaceHigh,
+                            format = AureoleTextFormatParams(style = AureoleDS.typography.bodyLarge)
                         )
                     }
                 }
@@ -154,9 +153,8 @@ internal fun ContainerPositionDialog(
         title = {
             AureoleText(
                 text = "Alinhamento do Painel Lateral",
-                style = AureoleDS.typography.titleMedium,
-                fontWeight = FontWeight.Bold,
-                color = AureoleDS.colors.onSurfaceHigh
+                color = AureoleDS.colors.onSurfaceHigh,
+                format = AureoleTextFormatParams(style = AureoleDS.typography.titleMedium, fontWeight = FontWeight.Bold)
             )
         },
         text = {
@@ -177,8 +175,8 @@ internal fun ContainerPositionDialog(
                         Spacer(modifier = Modifier.width(AureoleDS.dimens.small))
                         AureoleText(
                             text = label,
-                            style = AureoleDS.typography.bodyLarge,
-                            color = AureoleDS.colors.onSurfaceHigh
+                            color = AureoleDS.colors.onSurfaceHigh,
+                            format = AureoleTextFormatParams(style = AureoleDS.typography.bodyLarge)
                         )
                     }
                 }

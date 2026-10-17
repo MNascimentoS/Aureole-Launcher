@@ -23,6 +23,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
+import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 
 @Composable
@@ -45,10 +46,9 @@ fun AdvancedIcon(
 fun SettingsHugeTitle(text: String, modifier: Modifier = Modifier) {
     AureoleText(
         text = text,
-        style = AureoleDS.typography.displayMedium,
-        fontWeight = FontWeight.Bold,
         color = AureoleDS.colors.onSurfaceHigh,
-        modifier = modifier.padding(vertical = AureoleDS.dimens.medium)
+        modifier = modifier.padding(vertical = AureoleDS.dimens.medium),
+        format = AureoleTextFormatParams(style = AureoleDS.typography.displayMedium, fontWeight = FontWeight.Bold)
     )
 }
 
@@ -82,16 +82,15 @@ fun SettingsMenuItem(
         Column(modifier = Modifier.weight(1f)) {
             AureoleText(
                 text = title,
-                style = AureoleDS.typography.bodyLarge,
-                fontWeight = FontWeight.Normal,
-                color = AureoleDS.colors.onSurfaceMedium
+                color = AureoleDS.colors.onSurfaceMedium,
+                format = AureoleTextFormatParams(style = AureoleDS.typography.bodyLarge, fontWeight = FontWeight.Normal)
             )
             if (subtitle != null) {
                 Spacer(modifier = Modifier.height(AureoleDS.dimens.minimal))
                 AureoleText(
                     text = subtitle,
-                    style = AureoleDS.typography.bodySmall,
-                    color = AureoleDS.colors.onSurfaceLow
+                    color = AureoleDS.colors.onSurfaceLow,
+                    format = AureoleTextFormatParams(style = AureoleDS.typography.bodySmall)
                 )
             }
         }
@@ -128,9 +127,8 @@ fun SettingsToggleItem(
         Column(modifier = Modifier.weight(1f)) {
             AureoleText(
                 text = title,
-                style = AureoleDS.typography.bodyLarge,
-                fontWeight = FontWeight.Normal,
-                color = AureoleDS.colors.onSurfaceMedium
+                color = AureoleDS.colors.onSurfaceMedium,
+                format = AureoleTextFormatParams(style = AureoleDS.typography.bodyLarge, fontWeight = FontWeight.Normal)
             )
         }
 
@@ -177,10 +175,9 @@ fun SettingsActionItem(
         }
         AureoleText(
             text = title,
-            style = AureoleDS.typography.bodyLarge,
-            fontWeight = FontWeight.Normal,
             color = AureoleDS.colors.onSurfaceMedium,
-            modifier = Modifier.weight(1f)
+            modifier = Modifier.weight(1f),
+            format = AureoleTextFormatParams(style = AureoleDS.typography.bodyLarge, fontWeight = FontWeight.Normal)
         )
     }
 }

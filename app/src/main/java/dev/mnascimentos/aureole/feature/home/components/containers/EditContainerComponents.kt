@@ -40,6 +40,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
+import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
 import dev.mnascimentos.aureole.core.designsystem.icons.ArrowDown
 import dev.mnascimentos.aureole.core.designsystem.icons.ArrowUp
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
@@ -74,9 +75,8 @@ internal fun EditContainerOrientationSelector(
     ) {
         AureoleText(
             text = "Orientação do Container",
-            style = AureoleDS.typography.labelMedium,
-            fontWeight = FontWeight.Bold,
-            color = AureoleDS.colors.onSurfaceHigh
+            color = AureoleDS.colors.onSurfaceHigh,
+            format = AureoleTextFormatParams(style = AureoleDS.typography.labelMedium, fontWeight = FontWeight.Bold)
         )
 
         Spacer(modifier = Modifier.height(AureoleDS.dimens.xxSmall))
@@ -136,10 +136,9 @@ internal fun EditContainerAlignmentSelector(
     Column {
         AureoleText(
             text = "Alinhamento dos Itens",
-            style = AureoleDS.typography.labelMedium,
-            fontWeight = FontWeight.Bold,
             color = AureoleDS.colors.onSurfaceHigh,
-            modifier = Modifier.padding(bottom = 4.dp)
+            modifier = Modifier.padding(bottom = 4.dp),
+            format = AureoleTextFormatParams(style = AureoleDS.typography.labelMedium, fontWeight = FontWeight.Bold)
         )
         ExposedDropdownMenuBox(
             expanded = isDropdownExpanded,
@@ -200,10 +199,12 @@ internal fun EditContainerOptionsExpandableSection(
         ) {
             AureoleText(
                 text = "Opções de Aparência e Comportamento",
-                style = AureoleDS.typography.bodyMedium,
-                fontWeight = FontWeight.SemiBold,
                 color = AureoleDS.colors.onSurfaceHigh,
-                modifier = Modifier.weight(1f)
+                modifier = Modifier.weight(1f),
+                format = AureoleTextFormatParams(
+                    style = AureoleDS.typography.bodyMedium,
+                    fontWeight = FontWeight.SemiBold
+                )
             )
             IconButton(
                 onClick = { isExpanded = !isExpanded },
@@ -299,8 +300,8 @@ internal fun SettingSwitchRow(
     ) {
         AureoleText(
             text = label,
-            style = AureoleDS.typography.bodyMedium,
-            color = AureoleDS.colors.onSurfaceHigh
+            color = AureoleDS.colors.onSurfaceHigh,
+            format = AureoleTextFormatParams(style = AureoleDS.typography.bodyMedium)
         )
         Switch(
             checked = checked,

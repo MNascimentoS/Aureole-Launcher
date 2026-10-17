@@ -22,6 +22,7 @@ import dev.mnascimentos.aureole.feature.home.components.overlays.UpdateAvailable
 import dev.mnascimentos.aureole.feature.home.components.overlays.UpdateDownloadedDialog
 import dev.mnascimentos.aureole.feature.home.components.clock.EditClockBottomSheet
 import dev.mnascimentos.aureole.feature.home.components.containers.EditContainerScreen
+import dev.mnascimentos.aureole.feature.home.components.containers.EditContainerScreenParams
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.CreateFolderDialog
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.EditFolderDialog
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.FolderAppPickerDialog
@@ -37,6 +38,7 @@ import dev.mnascimentos.aureole.feature.home.components.widgets.EditWidgetGroupS
 import dev.mnascimentos.aureole.feature.home.components.widgets.model.EditWidgetGroupActions
 import dev.mnascimentos.aureole.feature.home.components.widgets.model.EditWidgetGroupParams
 import dev.mnascimentos.aureole.feature.home.components.widgets.WidgetSelectorScreen
+import dev.mnascimentos.aureole.feature.home.components.widgets.WidgetSelectorScreenParams
 import dev.mnascimentos.aureole.feature.home.components.widgets.model.WidgetAppGroup
 import dev.mnascimentos.aureole.feature.home.components.widgets.model.WidgetSelectorState
 import dev.mnascimentos.aureole.feature.home.components.widgets.model.WidgetVariant
@@ -286,10 +288,12 @@ fun WidgetPickerBottomSheetScreenshotTest() {
     AureoleLauncherTheme {
         CompositionLocalProvider(LocalHomeUiState provides sampleData.uiState) {
             WidgetSelectorScreen(
-                state = sampleState,
-                onIntent = {},
-                onWidgetSelected = {},
-                onDismiss = {}
+                params = WidgetSelectorScreenParams(
+                    state = sampleState,
+                    onIntent = {},
+                    onWidgetSelected = {},
+                    onDismiss = {}
+                )
             )
         }
     }
@@ -348,10 +352,12 @@ fun EditContainerScreenScreenshotTest() {
             LocalHomeActions provides sampleData.actions
         ) {
             EditContainerScreen(
-                panel = panel,
-                allApps = sampleData.apps,
-                onDismiss = {},
-                onSave = {}
+                params = EditContainerScreenParams(
+                    panel = panel,
+                    allApps = sampleData.apps,
+                    onDismiss = {},
+                    onSave = {}
+                )
             )
         }
     }
@@ -400,10 +406,12 @@ fun EditContainerHorizontalScreenScreenshotTest() {
             LocalHomeActions provides sampleData.actions
         ) {
             EditContainerScreen(
-                panel = panel,
-                allApps = sampleData.apps,
-                onDismiss = {},
-                onSave = {}
+                params = EditContainerScreenParams(
+                    panel = panel,
+                    allApps = sampleData.apps,
+                    onDismiss = {},
+                    onSave = {}
+                )
             )
         }
     }

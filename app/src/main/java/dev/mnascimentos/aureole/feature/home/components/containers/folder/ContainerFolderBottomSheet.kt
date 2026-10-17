@@ -17,7 +17,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.core.designsystem.components.AureolePopupMenuItem
+import dev.mnascimentos.aureole.core.designsystem.components.AureolePopupMenuItemParams
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
+import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
 import dev.mnascimentos.aureole.core.designsystem.icons.Delete
 import dev.mnascimentos.aureole.core.designsystem.icons.Edit
 import dev.mnascimentos.aureole.core.designsystem.icons.Logo
@@ -63,57 +65,72 @@ internal fun ContainerFolderBottomSheet(
 private fun ContainerFolderMenuItems(params: ContainerFolderBottomSheetParams) {
     AureolePopupMenuItem(
         title = "Editar atalhos",
-        customIcon = {
-            AureoleDS.icons.Star(
-                tint = AureoleDS.colors.onSurfaceMedium,
-                modifier = Modifier.size(AureoleDS.dimens.iconMedium)
-            )
-        },
+        params = AureolePopupMenuItemParams(
+            customIcon = {
+                AureoleDS.icons.Star(
+                    tint = AureoleDS.colors.onSurfaceMedium,
+                    modifier = Modifier.size(AureoleDS.dimens.iconMedium)
+                )
+            }
+        ),
         onClick = params.onEditShortcuts
     )
 
     AureolePopupMenuItem(
         title = "Renomear",
-        customIcon = {
-            AureoleDS.icons.Edit(
-                tint = AureoleDS.colors.onSurfaceMedium,
-                modifier = Modifier.size(AureoleDS.dimens.iconMedium)
-            )
-        },
+        params = AureolePopupMenuItemParams(
+            customIcon = {
+                AureoleDS.icons.Edit(
+                    tint = AureoleDS.colors.onSurfaceMedium,
+                    modifier = Modifier.size(AureoleDS.dimens.iconMedium)
+                )
+            }
+        ),
         onClick = params.onRename
     )
 
     AureolePopupMenuItem(
         title = "Ícone",
-        customIcon = {
-            AureoleDS.icons.Smile(
-                tint = AureoleDS.colors.onSurfaceMedium,
-                modifier = Modifier.size(AureoleDS.dimens.iconMedium)
-            )
-        },
+        params = AureolePopupMenuItemParams(
+            customIcon = {
+                AureoleDS.icons.Smile(
+                    tint = AureoleDS.colors.onSurfaceMedium,
+                    modifier = Modifier.size(AureoleDS.dimens.iconMedium)
+                )
+            }
+        ),
         onClick = params.onIcon
     )
 
+    SecondaryFolderMenuItems(params)
+}
+
+@Composable
+private fun SecondaryFolderMenuItems(params: ContainerFolderBottomSheetParams) {
     AureolePopupMenuItem(
         title = "Remover pasta",
-        customIcon = {
-            AureoleDS.icons.Delete(
-                tint = AureoleDS.colors.error,
-                modifier = Modifier.size(AureoleDS.dimens.iconMedium)
-            )
-        },
-        isDestructive = true,
+        params = AureolePopupMenuItemParams(
+            customIcon = {
+                AureoleDS.icons.Delete(
+                    tint = AureoleDS.colors.error,
+                    modifier = Modifier.size(AureoleDS.dimens.iconMedium)
+                )
+            },
+            isDestructive = true
+        ),
         onClick = params.onRemoveFolder
     )
 
     AureolePopupMenuItem(
         title = "Configurações do Container",
-        customIcon = {
-            AureoleDS.icons.Settings(
-                tint = AureoleDS.colors.onSurfaceMedium,
-                modifier = Modifier.size(AureoleDS.dimens.iconMedium)
-            )
-        },
+        params = AureolePopupMenuItemParams(
+            customIcon = {
+                AureoleDS.icons.Settings(
+                    tint = AureoleDS.colors.onSurfaceMedium,
+                    modifier = Modifier.size(AureoleDS.dimens.iconMedium)
+                )
+            }
+        ),
         onClick = params.onOpenContainerSettings
     )
 }
@@ -128,14 +145,16 @@ private fun ContainerFolderBottomSheetHeader() {
     ) {
         AureoleText(
             text = "Folder settings",
-            style = AureoleDS.typography.titleMedium,
-            fontWeight = FontWeight.Bold,
             color = AureoleDS.colors.onSurfaceHigh,
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis,
             modifier = Modifier
                 .align(Alignment.Center)
-                .padding(top = AureoleDS.dimens.medium, bottom = AureoleDS.dimens.small)
+                .padding(top = AureoleDS.dimens.medium, bottom = AureoleDS.dimens.small),
+            format = AureoleTextFormatParams(
+                style = AureoleDS.typography.titleMedium,
+                fontWeight = FontWeight.Bold,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
         )
 
         IconButton(

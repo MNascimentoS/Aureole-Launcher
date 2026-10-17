@@ -54,8 +54,7 @@ enum class SettingsDialog {
     SEARCH_ICON_POSITION
 }
 
-// SettingsViewModel holds many properties
-@Suppress("TooManyFunctions")
+@Suppress("TooManyFunctions") // Settings ViewModel manages multiple settings sections and state flows
 class SettingsViewModel(
     internal val settingsRepository: SettingsRepository,
     private val appRepository: AppRepository,

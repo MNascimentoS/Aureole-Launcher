@@ -44,7 +44,6 @@ import dev.mnascimentos.aureole.feature.home.components.overlays.extensions.open
 import dev.mnascimentos.aureole.feature.home.components.overlays.extensions.openFolderAppBottomSheet
 import dev.mnascimentos.aureole.feature.home.components.overlays.extensions.openWidgetStackBottomSheet
 import dev.mnascimentos.aureole.feature.home.components.overlays.extensions.toggleWidgetStackDots
-import dev.mnascimentos.aureole.feature.home.components.widgets.WidgetHostManager
 import dev.mnascimentos.aureole.feature.home.components.widgets.extensions.closeWidgetPopup
 import dev.mnascimentos.aureole.feature.home.components.widgets.extensions.openWidgetPopup
 import dev.mnascimentos.aureole.feature.home.components.widgets.extensions.setIsAddingSingleWidget
@@ -77,11 +76,9 @@ import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
 import dev.mnascimentos.aureole.feature.settings.SettingsActivity
 import dev.mnascimentos.aureole.util.IntentUtils
 
-@Suppress("UnusedPrivateProperty")
 class HomeActionsFactory(
     private val activity: MainActivity,
     private val viewModel: HomeViewModel,
-    private val widgetHostManager: WidgetHostManager,
     private val appUpdateManager: AppUpdateManager,
     private val updateActivityResultLauncher: ActivityResultLauncher<IntentSenderRequest>,
     private val cachedAppUpdateInfo: AppUpdateInfo? = null,

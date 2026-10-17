@@ -30,7 +30,9 @@ import dev.chrisbanes.haze.HazeStyle
 import dev.chrisbanes.haze.HazeTint
 import dev.chrisbanes.haze.hazeEffect
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleFloatingSearchBar
+import dev.mnascimentos.aureole.core.designsystem.components.AureoleFloatingSearchBarParams
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleSearchBarHazeConfig
+import dev.mnascimentos.aureole.core.designsystem.components.AureoleSearchBarState
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
@@ -110,15 +112,19 @@ fun AppsListDrawer(
                 }
             ) {
                 AureoleFloatingSearchBar(
-                    query = uiState.searchQuery,
-                    onQueryChange = actions.onSearchQueryChanged,
-                    isExpanded = isSearchExpanded,
-                    onExpandedChange = { isSearchExpanded = it },
-                    placeholder = "Search apps",
-                    hazeConfig = AureoleSearchBarHazeConfig(
-                        state = hazeState,
-                        isEnabled = uiState.isHazeEnabled,
-                        opacity = uiState.hazeOpacity
+                    state = AureoleSearchBarState(
+                        query = uiState.searchQuery,
+                        onQueryChange = actions.onSearchQueryChanged,
+                        isExpanded = isSearchExpanded,
+                        onExpandedChange = { isSearchExpanded = it }
+                    ),
+                    params = AureoleFloatingSearchBarParams(
+                        placeholder = "Search apps",
+                        hazeConfig = AureoleSearchBarHazeConfig(
+                            state = hazeState,
+                            isEnabled = uiState.isHazeEnabled,
+                            opacity = uiState.hazeOpacity
+                        )
                     )
                 )
             }

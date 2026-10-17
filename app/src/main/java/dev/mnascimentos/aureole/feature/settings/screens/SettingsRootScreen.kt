@@ -35,6 +35,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.composable.SettingsMenuItem
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
+import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
 import dev.mnascimentos.aureole.core.designsystem.icons.Advanced
 import dev.mnascimentos.aureole.core.designsystem.icons.Edit
 import dev.mnascimentos.aureole.core.designsystem.icons.Logo
@@ -96,10 +97,12 @@ fun SettingsRootScreen(
 
                 AureoleText(
                     text = "Thank you!",
-                    style = AureoleDS.typography.bodyMedium,
                     color = AureoleDS.colors.onSurfaceMedium,
                     modifier = Modifier.padding(bottom = AureoleDS.dimens.xxLarge),
-                    textAlign = TextAlign.Center
+                    format = AureoleTextFormatParams(
+                        style = AureoleDS.typography.bodyMedium,
+                        textAlign = TextAlign.Center
+                    )
                 )
             }
         }
@@ -131,15 +134,17 @@ private fun SettingsHeader(
             Spacer(modifier = Modifier.height(AureoleDS.dimens.xLarge))
             AureoleText(
                 text = "Aureole",
-                style = AureoleDS.typography.displaySmall,
-                fontWeight = FontWeight.Bold,
-                color = AureoleDS.colors.onSurfaceHigh
+                color = AureoleDS.colors.onSurfaceHigh,
+                format = AureoleTextFormatParams(
+                    style = AureoleDS.typography.displaySmall,
+                    fontWeight = FontWeight.Bold
+                )
             )
             Spacer(modifier = Modifier.height(AureoleDS.dimens.xxSmall))
             AureoleText(
                 text = "Version $versionName",
-                style = AureoleDS.typography.bodyMedium,
-                color = AureoleDS.colors.outline
+                color = AureoleDS.colors.outline,
+                format = AureoleTextFormatParams(style = AureoleDS.typography.bodyMedium)
             )
         }
     }

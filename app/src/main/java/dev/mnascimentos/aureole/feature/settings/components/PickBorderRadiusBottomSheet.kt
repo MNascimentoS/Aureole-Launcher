@@ -28,6 +28,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
+import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
 import dev.mnascimentos.aureole.core.designsystem.icons.Check
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
@@ -47,7 +48,7 @@ private val BORDER_RADIUS_OPTIONS = listOf(
     BorderRadiusOption(RADIUS_LARGE, "Large (24 dp)"),
 )
 
-@Suppress("LongMethod")
+@Suppress("LongMethod") // Bottom sheet composable for border radius slider and preset controls
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PickBorderRadiusBottomSheet(
@@ -64,9 +65,9 @@ fun PickBorderRadiusBottomSheet(
         ) {
             AureoleText(
                 text = "Change Border",
-                style = AureoleDS.typography.titleMedium,
                 color = AureoleDS.colors.onSurfaceHigh,
                 modifier = Modifier.padding(horizontal = AureoleDS.dimens.xLarge),
+                format = AureoleTextFormatParams(style = AureoleDS.typography.titleMedium)
             )
 
             Spacer(modifier = Modifier.height(AureoleDS.dimens.medium))
@@ -163,9 +164,9 @@ private fun BorderRadiusOptionItem(
             val textColor = if (isSelected) AureoleDS.colors.onSurfaceHigh else AureoleDS.colors.onSurfaceMedium
             AureoleText(
                 text = option.label,
-                style = AureoleDS.typography.bodyLarge,
                 color = textColor,
                 modifier = Modifier.padding(start = AureoleDS.dimens.medium),
+                format = AureoleTextFormatParams(style = AureoleDS.typography.bodyLarge)
             )
         }
 

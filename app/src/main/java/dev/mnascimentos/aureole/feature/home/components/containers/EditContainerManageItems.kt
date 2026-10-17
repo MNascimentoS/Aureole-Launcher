@@ -1,13 +1,15 @@
 package dev.mnascimentos.aureole.feature.home.components.containers
 
-import android.content.ComponentName
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -15,22 +17,100 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import androidx.core.graphics.drawable.toDrawable
 import dev.mnascimentos.aureole.core.data.model.AppFolder
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.data.model.ContainerItemEntity
 import dev.mnascimentos.aureole.core.data.model.ContainerItemType
-import dev.mnascimentos.aureole.core.data.model.ContainerModel
+import dev.mnascimentos.aureole.core.designsystem.icons.Add
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
-import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
-import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
-import dev.mnascimentos.aureole.feature.home.components.containers.model.ContainerOptionsState
+import dev.mnascimentos.aureole.feature.home.components.containers.folder.CreateFolderDialog
+
+@Suppress("LongMethod") // Layout managing container reordering and item deletion controls
+@Composable
+internal fun ManageItemsContent(
+    state: EditContainerState,
+    allApps: List<AppInfo>,
+    onBack: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    var isCreateFolderDialogVisible by remember { mutableStateOf(false) }
+
+    Column(modifier = modifier) {
+        if (isCreateFolderDialogVisible) {
+            CreateFolderDialog(
+                onDismiss = { isCreateFolderDialogVisible = false },
+                onSubmit = { name ->
+                    state.addFolder(name)
+                    isCreateFolderDialogVisible = false
+                }
+            )
+        }
+
+        Text(
+            text = "Componentes Filhos (${state.itemsList.size})",
+            style = AureoleDS.typography.titleMedium,
+            fontWeight = FontWeight.Bold,
+            modifier = Modifier.padding(bottom = 16.dp).fillMaxWidth(),
+            color = AureoleDS.colors.onSurfaceHigh
+        )
+
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = AureoleDS.dimens.small),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Box(modifier = Modifier.weight(1f)) {
+                EditContainerAddAppDropdown(
+                    allApps = allApps,
+                    onAppSelected = { state.addApp(it) },
+                    label = "App..."
+                )
+            }
+            OutlinedButton(
+                onClick = { isCreateFolderDialogVisible = true },
+                shape = RoundedCornerShape(12.dp),
+                border = BorderStroke(1.dp, AureoleDS.colors.outline.copy(alpha = 0.5f)),
+                colors = ButtonDefaults.outlinedButtonColors(
+                    contentColor = AureoleDS.colors.onSurfaceHigh
+                ),
+                contentPadding = PaddingValues(horizontal = 12.dp),
+                modifier = Modifier.height(52.dp)
+            ) {
+                AureoleDS.icons.Add(
+                    tint = AureoleDS.colors.onSurfaceHigh,
+                    modifier = Modifier.size(18.dp)
+                )
+                Spacer(modifier = Modifier.width(6.dp))
+                Text("Pasta", style = AureoleDS.typography.labelLarge)
+            }
+        }
+
+        ManageItemsListSection(state = state, allApps = allApps)
+
+        Spacer(modifier = Modifier.height(24.dp))
+        Button(
+            onClick = onBack,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text("Voltar")
+        }
+    }
+}
 
 @Composable
 internal fun ManageItemsListSection(
@@ -118,149 +198,44 @@ private fun ManageItemRow(
                 shape = RoundedCornerShape(12.dp)
             )
             .padding(horizontal = 12.dp, vertical = 12.dp),
+        horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Box(
-            modifier = Modifier
-                .size(32.dp)
-                .background(
-                    color = AureoleDS.colors.surfaceVariant.copy(alpha = 0.8f),
-                    shape = RoundedCornerShape(8.dp)
-                ),
-            contentAlignment = Alignment.Center
-        ) {
-            Text(
-                text = "A",
-                style = AureoleDS.typography.labelMedium,
-                color = AureoleDS.colors.onSurfaceHigh
-            )
-        }
-
-        Spacer(modifier = Modifier.width(12.dp))
-
         Text(
             text = title,
             style = AureoleDS.typography.bodyMedium,
+            fontWeight = FontWeight.SemiBold,
             color = AureoleDS.colors.onSurfaceHigh,
             modifier = Modifier.weight(1f)
         )
 
-        ManageItemRowActionButtons(
-            index = index,
-            totalItems = params.totalItems,
-            actions = actions
-        )
-    }
-}
-
-@Composable
-private fun ManageItemRowActionButtons(
-    index: Int,
-    totalItems: Int,
-    actions: ManageItemRowActions
-) {
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(8.dp)
-    ) {
-        if (index > 0) {
-            Box(
-                modifier = Modifier
-                    .size(24.dp)
-                    .background(
-                        color = AureoleDS.colors.surfaceVariant.copy(alpha = 0.5f),
-                        shape = RoundedCornerShape(6.dp)
-                    )
-                    .clickable { actions.onMoveUp(index) },
-                contentAlignment = Alignment.Center
+        Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+            if (index > 0) {
+                Button(
+                    onClick = { actions.onMoveUp(index) },
+                    contentPadding = PaddingValues(horizontal = 8.dp)
+                ) {
+                    Text("▲", style = AureoleDS.typography.labelSmall)
+                }
+            }
+            if (index < params.totalItems - 1) {
+                Button(
+                    onClick = { actions.onMoveDown(index) },
+                    contentPadding = PaddingValues(horizontal = 8.dp)
+                ) {
+                    Text("▼", style = AureoleDS.typography.labelSmall)
+                }
+            }
+            Button(
+                onClick = { actions.onRemove(index) },
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = AureoleDS.colors.error.copy(alpha = 0.2f),
+                    contentColor = AureoleDS.colors.error
+                ),
+                contentPadding = PaddingValues(horizontal = 8.dp)
             ) {
-                Text(
-                    text = "↑",
-                    color = AureoleDS.colors.onSurfaceHigh,
-                    fontSize = 12.sp
-                )
+                Text("✕", style = AureoleDS.typography.labelSmall)
             }
         }
-        if (index < totalItems - 1) {
-            Box(
-                modifier = Modifier
-                    .size(24.dp)
-                    .background(
-                        color = AureoleDS.colors.surfaceVariant.copy(alpha = 0.5f),
-                        shape = RoundedCornerShape(6.dp)
-                    )
-                    .clickable { actions.onMoveDown(index) },
-                contentAlignment = Alignment.Center
-            ) {
-                Text(
-                    text = "↓",
-                    color = AureoleDS.colors.onSurfaceHigh,
-                    fontSize = 12.sp
-                )
-            }
-        }
-        Box(
-            modifier = Modifier
-                .size(24.dp)
-                .background(
-                    color = AureoleDS.colors.error.copy(alpha = 0.15f),
-                    shape = RoundedCornerShape(6.dp)
-                )
-                .clickable { actions.onRemove(index) },
-            contentAlignment = Alignment.Center
-        ) {
-            Text(
-                text = "✕",
-                color = AureoleDS.colors.error,
-                fontSize = 12.sp
-            )
-        }
-    }
-}
-
-@AureolePreview
-@Composable
-private fun ManageItemsListSectionPreview() {
-    val sampleApps = listOf(
-        AppInfo(
-            label = "Camera",
-            packageName = "com.example.camera",
-            componentName = ComponentName("com.example.camera", "MainActivity"),
-            icon = 0xFF2E7D32.toInt().toDrawable()
-        )
-    )
-    val samplePanel = ContainerModel(id = "p1", title = "Panel")
-    val state = EditContainerState(
-        panel = samplePanel,
-        options = ContainerOptionsState(
-            position = "Center",
-            orientation = "Vertical",
-            isBackgroundEnabled = true,
-            isExpandCell = false,
-            showAddFolderButton = true,
-            showFolderLabels = true,
-            isGridFolderEnabled = true,
-            hideText = false,
-            textColor = null,
-            backgroundColor = null,
-            strokeEnabled = false,
-            strokeColor = null,
-            folderColor = null,
-            folderStrokeEnabled = false,
-            scrollUpShortcut = null,
-            scrollDownShortcut = null
-        ),
-        itemsList = listOf(
-            ContainerItemEntity(
-                id = "1",
-                panelId = "p1",
-                itemType = ContainerItemType.APP,
-                packageName = "com.example.camera"
-            )
-        ),
-        folders = emptyList()
-    )
-    AureoleLauncherTheme {
-        ManageItemsListSection(state = state, allApps = sampleApps)
     }
 }

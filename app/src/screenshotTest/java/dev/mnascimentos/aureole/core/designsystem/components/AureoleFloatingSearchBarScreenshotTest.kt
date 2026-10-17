@@ -18,16 +18,20 @@ fun AureoleFloatingSearchBarScreenshotTest() {
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             AureoleFloatingSearchBar(
-                query = "",
-                onQueryChange = {},
-                isExpanded = false,
-                onExpandedChange = {}
+                state = AureoleSearchBarState(
+                    query = "",
+                    onQueryChange = {},
+                    isExpanded = false,
+                    onExpandedChange = {}
+                )
             )
             AureoleFloatingSearchBar(
-                query = "Search text",
-                onQueryChange = {},
-                isExpanded = true,
-                onExpandedChange = {}
+                state = AureoleSearchBarState(
+                    query = "Search text",
+                    onQueryChange = {},
+                    isExpanded = true,
+                    onExpandedChange = {}
+                )
             )
         }
     }

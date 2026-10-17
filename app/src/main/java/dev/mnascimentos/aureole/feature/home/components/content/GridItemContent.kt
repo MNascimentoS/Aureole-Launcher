@@ -152,11 +152,13 @@ fun GridItemContent(params: GridItemContentParams) {
 
         LauncherItemType.WIDGET_LIST -> GridWidgetListContent(params)
         LauncherItemType.SCROLL_VIEW -> ScrollViewContainerContent(
-            item = item,
-            favConfig = params.favConfig,
-            appWidgetHost = params.appWidgetHost,
-            stackedWidgetConfig = params.stackedWidgetConfig,
-            containerConfig = params.containerConfig
+            ScrollViewContainerParams(
+                item = item,
+                favConfig = params.favConfig,
+                appWidgetHost = params.appWidgetHost,
+                stackedWidgetConfig = params.stackedWidgetConfig,
+                containerConfig = params.containerConfig
+            )
         )
     }
 }

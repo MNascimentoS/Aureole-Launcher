@@ -22,6 +22,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
+import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
 import dev.mnascimentos.aureole.core.designsystem.icons.ArrowDown
 import dev.mnascimentos.aureole.core.designsystem.icons.ArrowUp
 import dev.mnascimentos.aureole.core.designsystem.icons.Close
@@ -45,9 +46,8 @@ fun FolderAppPickerHeader(
     ) {
         AureoleText(
             text = "Apps na Pasta: $folderName",
-            style = AureoleDS.typography.titleMedium,
-            fontWeight = FontWeight.Bold,
-            color = AureoleDS.colors.onSurfaceHigh
+            color = AureoleDS.colors.onSurfaceHigh,
+            format = AureoleTextFormatParams(style = AureoleDS.typography.titleMedium, fontWeight = FontWeight.Bold)
         )
         IconButton(onClick = onDismiss) {
             AureoleDS.icons.Close(
@@ -163,8 +163,8 @@ fun RemainingFolderAppRow(
             Spacer(modifier = Modifier.width(8.dp))
             AureoleText(
                 text = app.label,
-                style = AureoleDS.typography.bodyMedium,
                 color = AureoleDS.colors.onSurfaceHigh,
+                format = AureoleTextFormatParams(style = AureoleDS.typography.bodyMedium)
             )
         }
 

@@ -23,7 +23,6 @@ import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -67,34 +66,56 @@ data class AureoleSearchBarSizes(
     val collapsedSize: Dp = 56.dp,
 )
 
+data class AureoleSearchBarState(
+    val query: String,
+    val onQueryChange: (String) -> Unit,
+    val isExpanded: Boolean,
+    val onExpandedChange: (Boolean) -> Unit,
+)
+
+class AureoleFloatingSearchBarParams(
+    val placeholder: String = "Search",
+    val focusRequester: FocusRequester = FocusRequester(),
+    val hazeConfig: AureoleSearchBarHazeConfig = AureoleSearchBarHazeConfig(),
+    val sizes: AureoleSearchBarSizes = AureoleSearchBarSizes()
+)
+
+data class ExpandedSearchRowParams(
+    val backgroundColor: Color,
+    val barHeight: Dp,
+    val placeholder: String = "Search",
+    val focusRequester: FocusRequester = FocusRequester()
+)
+
 /**
  * Reusable floating search bar / bubble design system component for Aureole Launcher.
  *
  * Expands from a floating action bubble into a search input bar.
  *
- * @param query The current search query.
- * @param onQueryChange Callback invoked when the search query changes.
- * @param isExpanded Whether the search bar is currently expanded.
- * @param onExpandedChange Callback invoked when the expanded state changes.
+ * @param state The search bar state (query, expansion, callbacks).
  * @param modifier The modifier to be applied to this composable.
- * @param placeholder The text to display when the query is empty.
- * @param focusRequester The focus requester for the search input field.
- * @param hazeConfig The configuration for the haze effect on the search bar.
- * @param sizes The sizing configuration for the search bar.
+ * @param params Additional parameters for the search bar.
  */
-@Suppress("LongMethod", "MagicNumber", "LongParameterList")
+@Suppress(
+    "LongMethod",
+    "MagicNumber"
+) // Component needs many states and handles custom UI dimensions
 @Composable
 fun AureoleFloatingSearchBar(
-    query: String,
-    onQueryChange: (String) -> Unit,
-    isExpanded: Boolean,
-    onExpandedChange: (Boolean) -> Unit,
+    state: AureoleSearchBarState,
     modifier: Modifier = Modifier,
-    placeholder: String = "Search",
-    focusRequester: FocusRequester = remember { FocusRequester() },
-    hazeConfig: AureoleSearchBarHazeConfig = AureoleSearchBarHazeConfig(),
-    sizes: AureoleSearchBarSizes = AureoleSearchBarSizes(),
+    params: AureoleFloatingSearchBarParams = AureoleFloatingSearchBarParams(),
 ) {
+    val query = state.query
+    val onQueryChange = state.onQueryChange
+    val isExpanded = state.isExpanded
+    val onExpandedChange = state.onExpandedChange
+
+    val placeholder = params.placeholder
+    val focusRequester = params.focusRequester
+    val hazeConfig = params.hazeConfig
+    val sizes = params.sizes
+
     LaunchedEffect(query) {
         if (query.isNotEmpty() && !isExpanded) {
             onExpandedChange(true)
@@ -145,11 +166,13 @@ fun AureoleFloatingSearchBar(
                     }
                     onExpandedChange(false)
                 },
-                backgroundColor = bubbleBgColor,
-                barHeight = sizes.barHeight,
+                params = ExpandedSearchRowParams(
+                    backgroundColor = bubbleBgColor,
+                    barHeight = sizes.barHeight,
+                    placeholder = placeholder,
+                    focusRequester = focusRequester
+                ),
                 modifier = hazeModifier,
-                placeholder = placeholder,
-                focusRequester = focusRequester,
             )
         } else {
             CollapsedSearchIcon(
@@ -162,18 +185,23 @@ fun AureoleFloatingSearchBar(
     }
 }
 
-@Suppress("LongParameterList")
+@Suppress(
+    "LongMethod",
+    "MagicNumber"
+) // Component needs many states and handles custom UI dimensions
 @Composable
 private fun ExpandedSearchRow(
     query: String,
     onQueryChange: (String) -> Unit,
     onCloseClick: () -> Unit,
-    backgroundColor: Color,
-    barHeight: Dp,
+    params: ExpandedSearchRowParams,
     modifier: Modifier = Modifier,
-    placeholder: String = "Search",
-    focusRequester: FocusRequester = remember { FocusRequester() },
 ) {
+    val backgroundColor = params.backgroundColor
+    val barHeight = params.barHeight
+    val placeholder = params.placeholder
+    val focusRequester = params.focusRequester
+
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -181,7 +209,7 @@ private fun ExpandedSearchRow(
             .clip(CircleShape)
             .then(modifier)
             .background(backgroundColor)
-            .padding(horizontal = 16.dp),
+            .padding(horizontal = AureoleDS.dimens.medium),
         contentAlignment = Alignment.Center
     ) {
         Row(
@@ -190,9 +218,9 @@ private fun ExpandedSearchRow(
         ) {
             AureoleDS.icons.Search(
                 tint = AureoleDS.colors.onSurfaceMedium,
-                modifier = Modifier.size(20.dp)
+                modifier = Modifier.size(AureoleDS.dimens.iconMedium)
             )
-            Spacer(modifier = Modifier.width(12.dp))
+            Spacer(modifier = Modifier.width(AureoleDS.dimens.small))
 
             BasicTextField(
                 value = query,
@@ -205,7 +233,7 @@ private fun ExpandedSearchRow(
                         AureoleText(
                             text = placeholder,
                             color = AureoleDS.colors.onSurfaceLow,
-                            style = AureoleDS.typography.bodyLarge
+                            format = AureoleTextFormatParams(style = AureoleDS.typography.bodyLarge)
                         )
                     }
                     innerTextField()
@@ -217,17 +245,21 @@ private fun ExpandedSearchRow(
 
             IconButton(
                 onClick = onCloseClick,
-                modifier = Modifier.size(32.dp)
+                modifier = Modifier.size(AureoleDS.dimens.xLarge)
             ) {
                 AureoleDS.icons.Close(
                     tint = AureoleDS.colors.onSurfaceMedium,
-                    modifier = Modifier.size(20.dp)
+                    modifier = Modifier.size(AureoleDS.dimens.iconMedium)
                 )
             }
         }
     }
 }
 
+@Suppress(
+    "LongMethod",
+    "MagicNumber"
+) // Component needs many states and handles custom UI dimensions
 @Composable
 private fun CollapsedSearchIcon(
     onExpandedChange: (Boolean) -> Unit,
@@ -246,29 +278,37 @@ private fun CollapsedSearchIcon(
     ) {
         AureoleDS.icons.Search(
             tint = AureoleDS.colors.onSurfaceHigh,
-            modifier = Modifier.size(24.dp)
+            modifier = Modifier.size(AureoleDS.dimens.iconLarge)
         )
     }
 }
 
 @AureolePreview
+@Suppress(
+    "LongMethod",
+    "MagicNumber"
+) // Component needs many states and handles custom UI dimensions
 @Composable
 private fun AureoleFloatingSearchBarPreview() {
     AureoleLauncherTheme {
         Column(
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+            verticalArrangement = Arrangement.spacedBy(AureoleDS.dimens.medium)
         ) {
             AureoleFloatingSearchBar(
-                query = "",
-                onQueryChange = {},
-                isExpanded = false,
-                onExpandedChange = {}
+                state = AureoleSearchBarState(
+                    query = "",
+                    onQueryChange = {},
+                    isExpanded = false,
+                    onExpandedChange = {}
+                )
             )
             AureoleFloatingSearchBar(
-                query = "Search query",
-                onQueryChange = {},
-                isExpanded = true,
-                onExpandedChange = {}
+                state = AureoleSearchBarState(
+                    query = "Search query",
+                    onQueryChange = {},
+                    isExpanded = true,
+                    onExpandedChange = {}
+                )
             )
         }
     }

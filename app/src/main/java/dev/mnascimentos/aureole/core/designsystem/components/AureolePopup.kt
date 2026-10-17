@@ -128,15 +128,17 @@ fun AureoleHeaderBanner(
     ) {
         AureoleText(
             text = title,
-            style = AureoleDS.typography.titleMedium,
-            fontWeight = FontWeight.Bold,
             color = AureoleDS.colors.onSurfaceHigh,
-            textAlign = TextAlign.Center,
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis,
             modifier = Modifier
                 .align(Alignment.Center)
-                .padding(horizontal = 36.dp),
+                .padding(horizontal = AureoleDS.dimens.iconXLarge),
+            format = AureoleTextFormatParams(
+                style = AureoleDS.typography.titleMedium,
+                fontWeight = FontWeight.Bold,
+                textAlign = TextAlign.Center,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
         )
 
         Box(
@@ -157,12 +159,8 @@ fun AureoleHeaderBanner(
 }
 
 /**
- * Standard Popup Header with distinct header background bar (surfaceVariant),
- * app/folder icon badge, main title, and top-right Aureole logo icon aligned to TopEnd (4dp margin).
- * Clipped to top corner radius.
+ * Parameters for [AureolePopupHeader].
  *
- * @param title The main title of the header.
- * @param modifier The modifier to be applied to the layout.
  * @param sessionTitle The optional subtitle of the header.
  * @param iconBitmap The bitmap icon to be displayed.
  * @param showAureoleLogo Whether to show the Aureole logo.
@@ -171,22 +169,37 @@ fun AureoleHeaderBanner(
  * @param iconVector The vector icon slot to be displayed.
  * @param customIcon The custom icon slot content.
  */
-@Suppress(
-    "LongParameterList",
-    "LongMethod"
-) // AureolePopupHeader provides structured header with logo, title, and slots
+class AureolePopupHeaderParams(
+    val sessionTitle: String? = null,
+    val iconBitmap: ImageBitmap? = null,
+    val showAureoleLogo: Boolean = true,
+    val onSettingsClick: (() -> Unit)? = null,
+    val onCloseClick: (() -> Unit)? = null,
+    val customIcon: (@Composable () -> Unit)? = null
+)
+
+/**
+ * Standard Popup Header with distinct header background bar (surfaceVariant),
+ * app/folder icon badge, main title, and top-right Aureole logo icon aligned to TopEnd (4dp margin).
+ * Clipped to top corner radius.
+ *
+ * @param title The main title of the header.
+ * @param modifier The modifier to be applied to the layout.
+ * @param params Additional parameters for configuring the header.
+ */
+@Suppress("LongMethod") // AureolePopupHeader provides structured header with logo, title, and slots
 @Composable
 fun AureolePopupHeader(
     title: String,
     modifier: Modifier = Modifier,
-    sessionTitle: String? = null,
-    iconBitmap: ImageBitmap? = null,
-    showAureoleLogo: Boolean = true,
-    onSettingsClick: (() -> Unit)? = null,
-    onCloseClick: (() -> Unit)? = null,
-    iconVector: @Composable ((Modifier) -> Unit)? = null,
-    customIcon: (@Composable () -> Unit)? = null,
+    params: AureolePopupHeaderParams = AureolePopupHeaderParams(),
 ) {
+    val sessionTitle = params.sessionTitle
+    val iconBitmap = params.iconBitmap
+    val showAureoleLogo = params.showAureoleLogo
+    val onSettingsClick = params.onSettingsClick
+    val onCloseClick = params.onCloseClick
+    val customIcon = params.customIcon
     val context = LocalContext.current
     val handleOpenSettings = {
         if (onSettingsClick != null) {
@@ -228,14 +241,13 @@ fun AureolePopupHeader(
                         contentDescription = title,
                         modifier = Modifier.size(AureoleDS.dimens.iconLarge),
                     )
-                    iconVector != null -> iconVector(
-                        Modifier.size(AureoleDS.dimens.iconMedium)
-                    )
                     else -> AureoleText(
                         text = title.take(1).uppercase(),
-                        style = AureoleDS.typography.titleMedium,
-                        fontWeight = FontWeight.Bold,
                         color = AureoleDS.colors.onSurfaceHigh,
+                        format = AureoleTextFormatParams(
+                            style = AureoleDS.typography.titleMedium,
+                            fontWeight = FontWeight.Bold
+                        )
                     )
                 }
             }
@@ -245,20 +257,24 @@ fun AureolePopupHeader(
             Column(modifier = Modifier.weight(1f)) {
                 AureoleText(
                     text = title,
-                    style = AureoleDS.typography.titleMedium,
-                    fontWeight = FontWeight.Bold,
                     color = AureoleDS.colors.onSurfaceHigh,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
+                    format = AureoleTextFormatParams(
+                        style = AureoleDS.typography.titleMedium,
+                        fontWeight = FontWeight.Bold,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
                 )
 
                 if (!sessionTitle.isNullOrBlank()) {
                     AureoleText(
                         text = sessionTitle,
-                        style = AureoleDS.typography.labelSmall,
                         color = AureoleDS.colors.onSurfaceMedium,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
+                        format = AureoleTextFormatParams(
+                            style = AureoleDS.typography.labelSmall,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
                     )
                 }
             }
@@ -326,9 +342,8 @@ fun AureolePopupMenuSection(
     ) {
         AureoleText(
             text = title,
-            style = AureoleDS.typography.labelSmall,
-            fontWeight = FontWeight.SemiBold,
             color = AureoleDS.colors.onSurfaceMedium,
+            format = AureoleTextFormatParams(style = AureoleDS.typography.labelSmall, fontWeight = FontWeight.SemiBold)
         )
     }
 }
@@ -342,15 +357,17 @@ private fun AureolePopupBoxPreview() {
         ) {
             AureolePopupHeader(
                 title = "Folder Name",
-                sessionTitle = "Session Subtitle",
-                onSettingsClick = {},
+                params = AureolePopupHeaderParams(
+                    sessionTitle = "Session Subtitle",
+                    onSettingsClick = {},
+                )
             )
             AureolePopupMenuSection(title = "Section Header")
             AureoleText(
                 text = "Popup Body Content",
-                style = AureoleDS.typography.bodyMedium,
                 color = AureoleDS.colors.onSurfaceHigh,
                 modifier = Modifier.padding(AureoleDS.dimens.small),
+                format = AureoleTextFormatParams(style = AureoleDS.typography.bodyMedium)
             )
         }
     }

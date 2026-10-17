@@ -19,7 +19,9 @@ fun AureolePopupScreenshotTest() {
         ) {
             AureolePopupHeader(
                 title = "Folder Name",
-                sessionTitle = "Session Subtitle"
+                params = AureolePopupHeaderParams(
+                    sessionTitle = "Session Subtitle"
+                )
             )
         }
     }

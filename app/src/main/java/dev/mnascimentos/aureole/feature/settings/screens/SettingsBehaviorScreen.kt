@@ -2,6 +2,7 @@
 
 package dev.mnascimentos.aureole.feature.settings.screens
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.gestures.snapping.rememberSnapFlingBehavior
 import androidx.compose.foundation.layout.Arrangement
@@ -39,6 +40,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import dev.mnascimentos.aureole.composable.SettingsToggleItem
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
+import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
 import dev.mnascimentos.aureole.core.designsystem.icons.AlignRight
 import dev.mnascimentos.aureole.core.designsystem.icons.AppSelect
 import dev.mnascimentos.aureole.core.designsystem.icons.Dots
@@ -58,10 +60,11 @@ private const val MAX_OFFSET_PERCENT = 60
 fun SettingsBehaviorScreen(
     uiState: SettingsUiState,
     actions: SettingsScreenActions,
-    @Suppress("UNUSED_PARAMETER") // Parameter reserved for navigation contract
     onNavigateBack: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    BackHandler(onBack = onNavigateBack)
+
     Scaffold(
         modifier = modifier,
         containerColor = AureoleDS.colors.surface
@@ -86,11 +89,13 @@ fun SettingsBehaviorScreen(
 
                 AureoleText(
                     text = "Behavior",
-                    style = AureoleDS.typography.titleLarge,
-                    fontWeight = FontWeight.Medium,
                     color = AureoleDS.colors.onSurfaceMedium,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
+                    format = AureoleTextFormatParams(
+                        style = AureoleDS.typography.titleLarge,
+                        fontWeight = FontWeight.Medium,
+                        textAlign = TextAlign.Center
+                    )
                 )
 
                 Spacer(modifier = Modifier.height(24.dp))
@@ -172,10 +177,9 @@ private fun HeaderOffsetPickerRow(
 
         AureoleText(
             text = "Header offset",
-            style = AureoleDS.typography.bodyLarge,
-            fontWeight = FontWeight.Normal,
             color = AureoleDS.colors.onSurfaceMedium,
-            modifier = Modifier.weight(1f)
+            modifier = Modifier.weight(1f),
+            format = AureoleTextFormatParams(style = AureoleDS.typography.bodyLarge, fontWeight = FontWeight.Normal)
         )
 
         HeaderOffsetWheelPicker(
@@ -249,14 +253,16 @@ private fun HeaderOffsetWheelPicker(
                 ) {
                     AureoleText(
                         text = "$itemValue%",
-                        style = AureoleDS.typography.bodyLarge,
-                        fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
                         color = if (isSelected) {
                             AureoleDS.colors.onSurfaceHigh
                         } else {
                             AureoleDS.colors.onSurfaceLow.copy(alpha = 0.35f)
                         },
-                        fontSize = if (isSelected) 15.sp else 12.sp
+                        format = AureoleTextFormatParams(
+                            style = AureoleDS.typography.bodyLarge,
+                            fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
+                            fontSize = if (isSelected) 15.sp else 12.sp
+                        )
                     )
                 }
             }

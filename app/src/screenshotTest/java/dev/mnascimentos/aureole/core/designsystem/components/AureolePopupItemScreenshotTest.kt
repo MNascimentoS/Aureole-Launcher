@@ -19,9 +19,11 @@ fun AureolePopupItemScreenshotTest() {
         ) {
             AureolePopupHeader(
                 title = "Folder name",
-                sessionTitle = "Folder actions",
-                onSettingsClick = {},
-                onCloseClick = {}
+                params = AureolePopupHeaderParams(
+                    sessionTitle = "Folder actions",
+                    onSettingsClick = {},
+                    onCloseClick = {}
+                )
             )
             AureolePopupMenuItem(
                 title = "Edit shortcuts",
@@ -29,7 +31,7 @@ fun AureolePopupItemScreenshotTest() {
             )
             AureolePopupMenuItem(
                 title = "Delete folder",
-                isDestructive = true,
+                params = AureolePopupMenuItemParams(isDestructive = true),
                 onClick = {}
             )
         }

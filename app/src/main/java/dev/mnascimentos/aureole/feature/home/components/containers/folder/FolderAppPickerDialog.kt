@@ -192,12 +192,14 @@ private fun FolderAppPickerDialogBody(
             verticalArrangement = Arrangement.spacedBy(4.dp)
         ) {
             selectedFolderAppSection(
-                filteredSelected = params.filteredSelected,
-                searchQuery = params.searchQuery,
-                totalSelectedCount = selectedPackages.size,
-                onMoveUp = handleMoveUp,
-                onMoveDown = handleMoveDown,
-                onToggleSelect = { pkg -> togglePackageSelection(selectedPackages, pkg) }
+                params = SelectedFolderAppSectionParams(
+                    filteredSelected = params.filteredSelected,
+                    searchQuery = params.searchQuery,
+                    totalSelectedCount = selectedPackages.size,
+                    onMoveUp = handleMoveUp,
+                    onMoveDown = handleMoveDown,
+                    onToggleSelect = { pkg -> togglePackageSelection(selectedPackages, pkg) }
+                )
             )
 
             remainingFolderAppSection(

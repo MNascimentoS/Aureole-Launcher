@@ -36,6 +36,7 @@ import dev.mnascimentos.aureole.core.designsystem.utils.LocalSharedTransitionSco
 import dev.mnascimentos.aureole.feature.home.components.clock.EditClockBottomSheet
 import dev.mnascimentos.aureole.feature.home.components.common.WallpaperBackground
 import dev.mnascimentos.aureole.feature.home.components.containers.EditContainerScreen
+import dev.mnascimentos.aureole.feature.home.components.containers.EditContainerScreenParams
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.HomeScreenFolderOverlays
 import dev.mnascimentos.aureole.feature.home.components.overlays.CustomizeBottomSheet
 import dev.mnascimentos.aureole.feature.home.components.overlays.HomeOverlaysContent
@@ -153,6 +154,7 @@ private fun Modifier.homeScreenExclusion(isSystemBackActive: Boolean): Modifier 
     }
 }
 
+@Suppress("LongMethod") // Root composable of home feature managing scaffolding and gesture states
 @Composable
 private fun BoxScope.HomeScreenBody(
     config: HomeScreenBodyConfig
@@ -208,6 +210,7 @@ private fun BoxScope.HomeScreenBody(
     }
 }
 
+@Suppress("LongMethod") // Root composable of home feature managing scaffolding and gesture states
 @Composable
 private fun HomeOverlaysDialogsAndErrors(config: HomeOverlaysConfig) {
     if (config.uiState.showCustomizeBottomSheet) {
@@ -254,6 +257,7 @@ private fun HomeOverlaysDialogsAndErrors(config: HomeOverlaysConfig) {
     }
 }
 
+@Suppress("LongMethod") // Root composable of home feature managing scaffolding and gesture states
 @Composable
 private fun HomeEditGridItemOverlay(config: HomeOverlaysConfig) {
     config.uiState.editingGridItem?.let { editingItem ->
@@ -285,6 +289,7 @@ private fun HomeEditGridItemOverlay(config: HomeOverlaysConfig) {
     }
 }
 
+@Suppress("LongMethod") // Root composable of home feature managing scaffolding and gesture states
 @Composable
 private fun HomeEditContainerOverlay(config: HomeOverlaysConfig) {
     if (config.uiState.isEditContainerDialogVisible && config.uiState.editingContainerId != null) {
@@ -292,11 +297,13 @@ private fun HomeEditContainerOverlay(config: HomeOverlaysConfig) {
             ?: ContainerModel(id = config.uiState.editingContainerId)
 
         EditContainerScreen(
-            panel = editingPanel,
-            allApps = config.uiState.apps,
-            hazeState = if (config.uiState.isHazeEnabled) config.hazeState else null,
-            onDismiss = config.actions.onCloseEditContainerDialog,
-            onSave = config.actions.onSaveContainerModel
+            params = EditContainerScreenParams(
+                panel = editingPanel,
+                allApps = config.uiState.apps,
+                hazeState = if (config.uiState.isHazeEnabled) config.hazeState else null,
+                onDismiss = config.actions.onCloseEditContainerDialog,
+                onSave = config.actions.onSaveContainerModel
+            )
         )
     }
 }

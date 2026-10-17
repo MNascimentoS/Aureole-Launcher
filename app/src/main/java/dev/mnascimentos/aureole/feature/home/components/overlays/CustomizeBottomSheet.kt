@@ -18,6 +18,7 @@ import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.core.data.model.LauncherItemType
 import dev.mnascimentos.aureole.core.data.model.ScrollOrientation
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
+import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
 import dev.mnascimentos.aureole.core.designsystem.icons.Add
 import dev.mnascimentos.aureole.core.designsystem.icons.Icon
 import dev.mnascimentos.aureole.core.designsystem.icons.Layout
@@ -180,8 +181,8 @@ private fun CustomizeOptionItem(
         Spacer(modifier = Modifier.width(AureoleDS.dimens.medium))
         AureoleText(
             text = title,
-            style = AureoleDS.typography.bodyLarge,
-            color = AureoleDS.colors.onSurfaceMedium
+            color = AureoleDS.colors.onSurfaceMedium,
+            format = AureoleTextFormatParams(style = AureoleDS.typography.bodyLarge)
         )
     }
 }

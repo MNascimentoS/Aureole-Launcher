@@ -34,6 +34,7 @@ import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.core.data.model.AppFolder
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleDialog
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
+import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
@@ -107,10 +108,9 @@ private fun FolderFormDialogContent(
 
         AureoleText(
             text = "Ícone da Pasta",
-            style = AureoleDS.typography.labelMedium,
-            fontWeight = FontWeight.SemiBold,
             color = AureoleDS.colors.onSurfaceMedium,
-            modifier = Modifier.align(Alignment.Start)
+            modifier = Modifier.align(Alignment.Start),
+            format = AureoleTextFormatParams(style = AureoleDS.typography.labelMedium, fontWeight = FontWeight.SemiBold)
         )
 
         Spacer(modifier = Modifier.height(8.dp))
@@ -159,8 +159,7 @@ fun FolderIconPreview(
             AureoleText(
                 text = folderName.take(1).uppercase().ifEmpty { "?" },
                 color = AureoleDS.colors.onSurfaceHigh,
-                style = AureoleDS.typography.titleLarge,
-                fontWeight = FontWeight.Bold
+                format = AureoleTextFormatParams(style = AureoleDS.typography.titleLarge, fontWeight = FontWeight.Bold)
             )
         }
     }
@@ -233,9 +232,8 @@ private fun DefaultLetterOptionChip(
     ) {
         AureoleText(
             text = letter,
-            style = AureoleDS.typography.labelLarge,
-            fontWeight = FontWeight.Bold,
-            color = textColor
+            color = textColor,
+            format = AureoleTextFormatParams(style = AureoleDS.typography.labelLarge, fontWeight = FontWeight.Bold)
         )
     }
 }
@@ -307,7 +305,11 @@ private fun FolderFormButtons(
             }
             Spacer(modifier = Modifier.width(8.dp))
             TextButton(onClick = onSave) {
-                AureoleText(submitText, fontWeight = FontWeight.Bold, color = AureoleDS.colors.onSurfaceHigh)
+                AureoleText(
+                    submitText,
+                    color = AureoleDS.colors.onSurfaceHigh,
+                    format = AureoleTextFormatParams(fontWeight = FontWeight.Bold)
+                )
             }
         }
     }

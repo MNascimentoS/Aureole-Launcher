@@ -27,29 +27,30 @@ import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.core.data.model.AppFolder
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
+import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
 import dev.mnascimentos.aureole.core.designsystem.icons.Search
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.FolderAppRowItemParams
 
-@Suppress("LongParameterList") // Folder app selection section requires state filters and list action callbacks
 @OptIn(ExperimentalFoundationApi::class)
 internal fun LazyListScope.selectedFolderAppSection(
-    filteredSelected: List<AppInfo>,
-    searchQuery: String,
-    totalSelectedCount: Int,
-    onMoveUp: (Int) -> Unit,
-    onMoveDown: (Int) -> Unit,
-    onToggleSelect: (String) -> Unit
+    params: SelectedFolderAppSectionParams
 ) {
+    val filteredSelected = params.filteredSelected
+    val searchQuery = params.searchQuery
+    val totalSelectedCount = params.totalSelectedCount
+    val onMoveUp = params.onMoveUp
+    val onMoveDown = params.onMoveDown
+    val onToggleSelect = params.onToggleSelect
+
     item {
         AureoleText(
             text = "Selecionados ($totalSelectedCount)",
-            style = AureoleDS.typography.titleSmall,
-            fontWeight = FontWeight.Bold,
             color = AureoleDS.colors.onSurfaceHigh,
-            modifier = Modifier.padding(vertical = 4.dp)
+            modifier = Modifier.padding(vertical = 4.dp),
+            format = AureoleTextFormatParams(style = AureoleDS.typography.titleSmall, fontWeight = FontWeight.Bold)
         )
     }
 
@@ -62,12 +63,11 @@ internal fun LazyListScope.selectedFolderAppSection(
             }
             AureoleText(
                 text = emptyText,
-                style = AureoleDS.typography.bodyMedium,
                 color = AureoleDS.colors.onSurfaceMedium,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(vertical = 12.dp),
-                textAlign = TextAlign.Center
+                format = AureoleTextFormatParams(style = AureoleDS.typography.bodyMedium, textAlign = TextAlign.Center)
             )
         }
     } else {
@@ -92,6 +92,15 @@ internal fun LazyListScope.selectedFolderAppSection(
     }
 }
 
+data class SelectedFolderAppSectionParams(
+    val filteredSelected: List<AppInfo>,
+    val searchQuery: String,
+    val totalSelectedCount: Int,
+    val onMoveUp: (Int) -> Unit,
+    val onMoveDown: (Int) -> Unit,
+    val onToggleSelect: (String) -> Unit
+)
+
 @OptIn(ExperimentalFoundationApi::class)
 internal fun LazyListScope.remainingFolderAppSection(
     filteredRemaining: List<AppInfo>,
@@ -102,10 +111,9 @@ internal fun LazyListScope.remainingFolderAppSection(
         Spacer(modifier = Modifier.height(8.dp))
         AureoleText(
             text = "Outros Aplicativos (${filteredRemaining.size})",
-            style = AureoleDS.typography.titleSmall,
-            fontWeight = FontWeight.Bold,
             color = AureoleDS.colors.onSurfaceMedium,
-            modifier = Modifier.padding(vertical = 4.dp)
+            modifier = Modifier.padding(vertical = 4.dp),
+            format = AureoleTextFormatParams(style = AureoleDS.typography.titleSmall, fontWeight = FontWeight.Bold)
         )
     }
 
@@ -118,12 +126,11 @@ internal fun LazyListScope.remainingFolderAppSection(
             }
             AureoleText(
                 text = emptyText,
-                style = AureoleDS.typography.bodyMedium,
                 color = AureoleDS.colors.onSurfaceMedium,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(vertical = 12.dp),
-                textAlign = TextAlign.Center
+                format = AureoleTextFormatParams(style = AureoleDS.typography.bodyMedium, textAlign = TextAlign.Center)
             )
         }
     } else {
@@ -173,9 +180,11 @@ internal fun SelectedFolderAppRow(
             Spacer(modifier = Modifier.width(8.dp))
             AureoleText(
                 text = params.app.label,
-                style = AureoleDS.typography.bodyMedium,
-                fontWeight = FontWeight.SemiBold,
-                color = AureoleDS.colors.onSurfaceHigh
+                color = AureoleDS.colors.onSurfaceHigh,
+                format = AureoleTextFormatParams(
+                    style = AureoleDS.typography.bodyMedium,
+                    fontWeight = FontWeight.SemiBold
+                )
             )
         }
 

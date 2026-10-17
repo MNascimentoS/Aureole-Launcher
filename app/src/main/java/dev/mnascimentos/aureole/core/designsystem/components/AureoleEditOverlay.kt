@@ -66,30 +66,66 @@ private const val EXPAND_VELOCITY_THRESHOLD = -500f
 private const val COLLAPSE_VELOCITY_THRESHOLD = 500f
 
 /**
+ * Parameters for [AureoleEditOverlay].
+ *
+ * @param title The optional title of the overlay.
+ * @param hazeState The haze state for the background blur effect.
+ * @param isVisible Whether the overlay is currently visible.
+ * @param animated Whether the overlay should animate its entrance and exit.
+ * @param onBackPress Executes when the user presses the back button.
+ * @param onSettingsClick Executes when the user clicks the settings icon.
+ * @param maxSheetHeightFraction The maximum height fraction of the screen the sheet can occupy.
+ * @param previewContent The content to be displayed in the preview slot.
+ * @param bottomBarContent The optional content to be displayed at the bottom of the sheet.
+ * @param sheetContent The main content of the sheet.
+ */
+data class AureoleEditOverlayConfig(
+    val title: String? = null,
+    val hazeState: HazeState? = null,
+    val isVisible: Boolean = true,
+    val animated: Boolean = true,
+    val maxSheetHeightFraction: Float = 0.70f,
+    val onBackPress: (() -> Unit)? = null,
+    val onSettingsClick: (() -> Unit)? = null,
+)
+
+class AureoleEditOverlayParams(
+    val config: AureoleEditOverlayConfig = AureoleEditOverlayConfig(),
+    val previewContent: (@Composable BoxScope.() -> Unit)? = null,
+    val bottomBarContent: (@Composable ColumnScope.() -> Unit)? = null,
+    val sheetContent: (@Composable ColumnScope.() -> Unit)? = null,
+)
+
+/**
  * Base Design System component for editor screens (Clock, Container, Widgets, etc.).
  *
  * Provides a unified overlay layout featuring backdrop, sheet surface, animations, and preview slot.
+ *
+ * @param onDismissRequest Executes when the user requests to dismiss the overlay.
+ * @param modifier The modifier to be applied to the layout.
+ * @param params The parameters for configuring the overlay.
  */
 @Suppress(
-    "LongParameterList",
     "LongMethod",
     "CyclomaticComplexMethod"
 ) // Reusable edit overlay component managing transition states, drag gestures and layout slots
 @Composable
 fun AureoleEditOverlay(
+    params: AureoleEditOverlayParams,
     onDismissRequest: () -> Unit,
-    modifier: Modifier = Modifier.Companion,
-    title: String? = null,
-    hazeState: HazeState? = null,
-    isVisible: Boolean = true,
-    animated: Boolean = true,
-    onBackPress: (() -> Unit)? = null,
-    onSettingsClick: (() -> Unit)? = null,
-    maxSheetHeightFraction: Float = 0.70f,
-    previewContent: @Composable BoxScope.() -> Unit,
-    bottomBarContent: (@Composable ColumnScope.() -> Unit)? = null,
-    sheetContent: @Composable ColumnScope.() -> Unit
+    modifier: Modifier = Modifier
 ) {
+    val title = params.config.title
+    val hazeState = params.config.hazeState
+    val isVisible = params.config.isVisible
+    val animated = params.config.animated
+    val onBackPress = params.config.onBackPress
+    val onSettingsClick = params.config.onSettingsClick
+    val maxSheetHeightFraction = params.config.maxSheetHeightFraction
+    val previewContent = params.previewContent
+    val bottomBarContent = params.bottomBarContent
+    val sheetContent = params.sheetContent
+
     val isInspection = LocalInspectionMode.current
     val effectiveAnimated = animated && !isInspection
 
@@ -208,7 +244,7 @@ fun AureoleEditOverlay(
                             ),
                         contentAlignment = Alignment.BottomCenter
                     ) {
-                        previewContent()
+                        previewContent?.invoke(this)
                     }
 
                     val sheetModifier = if (effectiveAnimated) {
@@ -280,32 +316,38 @@ private fun OverlaySheetBody(
     title: String?,
     onSettingsClick: (() -> Unit)?,
     bottomBarContent: (@Composable ColumnScope.() -> Unit)?,
-    sheetContent: @Composable ColumnScope.() -> Unit
+    sheetContent: (@Composable ColumnScope.() -> Unit)?
 ) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 24.dp, vertical = 20.dp)
+            .padding(horizontal = AureoleDS.dimens.large, vertical = AureoleDS.dimens.large)
     ) {
         if (title != null) {
             OverlaySheetHeader(title = title, onSettingsClick = onSettingsClick)
         }
 
-        Column(
-            modifier = Modifier
-                .weight(1f, fill = false)
-                .fillMaxWidth()
-        ) {
-            sheetContent()
+        if (sheetContent != null) {
+            Column(
+                modifier = Modifier
+                    .weight(1f, fill = false)
+                    .fillMaxWidth()
+            ) {
+                sheetContent()
+            }
         }
 
         if (bottomBarContent != null) {
-            Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.height(AureoleDS.dimens.small))
             bottomBarContent()
         }
     }
 }
 
+@Suppress(
+    "LongMethod",
+    "CyclomaticComplexMethod"
+) // Reusable edit overlay component managing transition states, drag gestures and layout slots
 @Composable
 private fun OverlaySheetHeader(
     title: String,
@@ -317,7 +359,7 @@ private fun OverlaySheetHeader(
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(bottom = 16.dp),
+            .padding(bottom = AureoleDS.dimens.medium),
         contentAlignment = Alignment.Center
     ) {
         Text(
@@ -345,24 +387,31 @@ private fun OverlaySheetHeader(
 }
 
 @AureolePreview
+@Suppress(
+    "LongMethod",
+    "CyclomaticComplexMethod"
+) // Reusable edit overlay component managing transition states, drag gestures and layout slots
 @Composable
 private fun AureoleEditOverlayPreview() {
     AureoleLauncherTheme {
         AureoleEditOverlay(
             onDismissRequest = {},
-            title = "Edit Section",
-            previewContent = {
-                Text(
-                    text = "Preview Slot",
-                    color = Color.White,
-                    modifier = Modifier.align(Alignment.Center)
-                )
-            }
-        ) {
-            Text(
-                text = "Sheet Content",
-                color = AureoleDS.colors.onSurfaceHigh
+            params = AureoleEditOverlayParams(
+                config = AureoleEditOverlayConfig(title = "Edit Section"),
+                previewContent = {
+                    Text(
+                        text = "Preview Slot",
+                        color = Color.White,
+                        modifier = Modifier.align(Alignment.Center)
+                    )
+                },
+                sheetContent = {
+                    Text(
+                        text = "Sheet Content",
+                        color = AureoleDS.colors.onSurfaceHigh
+                    )
+                }
             )
-        }
+        )
     }
 }

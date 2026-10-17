@@ -23,6 +23,7 @@ import dev.mnascimentos.aureole.core.data.model.LauncherItemState
 import dev.mnascimentos.aureole.core.data.model.LauncherItemType
 import dev.mnascimentos.aureole.core.data.model.ScrollOrientation
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
+import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
@@ -48,8 +49,8 @@ internal fun EditDialogChildrenListSection(
         ) {
             AureoleText(
                 text = "Nenhum componente adicionado ainda.",
-                style = AureoleDS.typography.bodyMedium,
-                color = AureoleDS.colors.onSurfaceMedium
+                color = AureoleDS.colors.onSurfaceMedium,
+                format = AureoleTextFormatParams(style = AureoleDS.typography.bodyMedium)
             )
         }
     } else {
@@ -81,10 +82,9 @@ internal fun ScrollViewOrientationSelector(
     Column(modifier = Modifier.fillMaxWidth()) {
         AureoleText(
             text = "Orientação do Scroll",
-            style = AureoleDS.typography.titleMedium,
-            fontWeight = FontWeight.SemiBold,
             color = AureoleDS.colors.onSurfaceHigh,
-            modifier = Modifier.padding(bottom = 10.dp)
+            modifier = Modifier.padding(bottom = 10.dp),
+            format = AureoleTextFormatParams(style = AureoleDS.typography.titleMedium, fontWeight = FontWeight.SemiBold)
         )
 
         Row(
@@ -142,11 +142,13 @@ private fun OrientationOptionCard(
         Spacer(modifier = Modifier.width(2.dp))
         AureoleText(
             text = title,
-            style = AureoleDS.typography.labelLarge,
-            fontWeight = FontWeight.SemiBold,
             color = contentColor,
-            maxLines = 1,
-            softWrap = false
+            format = AureoleTextFormatParams(
+                style = AureoleDS.typography.labelLarge,
+                fontWeight = FontWeight.SemiBold,
+                maxLines = 1,
+                softWrap = false
+            )
         )
     }
 }

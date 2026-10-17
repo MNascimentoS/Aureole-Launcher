@@ -17,6 +17,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
+import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
 import dev.mnascimentos.aureole.core.designsystem.icons.ColorFill
 import dev.mnascimentos.aureole.core.designsystem.icons.Corners
 import dev.mnascimentos.aureole.core.designsystem.icons.Glass
@@ -53,10 +54,9 @@ internal fun MenuColorRow(
         )
         AureoleText(
             text = "Menu background color",
-            style = AureoleDS.typography.bodyLarge,
-            fontWeight = FontWeight.Normal,
             color = AureoleDS.colors.onSurfaceMedium,
-            modifier = Modifier.weight(1f)
+            modifier = Modifier.weight(1f),
+            format = AureoleTextFormatParams(style = AureoleDS.typography.bodyLarge, fontWeight = FontWeight.Normal)
         )
         Box(
             modifier = Modifier
@@ -86,10 +86,9 @@ internal fun GlassAndBlurRow(
         )
         AureoleText(
             text = "Glass effect",
-            style = AureoleDS.typography.bodyLarge,
-            fontWeight = FontWeight.Normal,
             color = AureoleDS.colors.onSurfaceMedium,
-            modifier = Modifier.weight(1f)
+            modifier = Modifier.weight(1f),
+            format = AureoleTextFormatParams(style = AureoleDS.typography.bodyLarge, fontWeight = FontWeight.Normal)
         )
         val opacityText = when {
             (!uiState.isHazeEnabled || uiState.hazeOpacity <= OPACITY_NONE_THRESHOLD) -> "None"
@@ -99,8 +98,8 @@ internal fun GlassAndBlurRow(
         }
         AureoleText(
             text = opacityText,
-            style = AureoleDS.typography.bodyLarge,
-            color = AureoleDS.colors.onSurfaceLow
+            color = AureoleDS.colors.onSurfaceLow,
+            format = AureoleTextFormatParams(style = AureoleDS.typography.bodyLarge)
         )
     }
 }
@@ -124,15 +123,14 @@ internal fun ChangeBorderRow(
         )
         AureoleText(
             text = "Change Border",
-            style = AureoleDS.typography.bodyLarge,
-            fontWeight = FontWeight.Normal,
             color = AureoleDS.colors.onSurfaceMedium,
-            modifier = Modifier.weight(1f)
+            modifier = Modifier.weight(1f),
+            format = AureoleTextFormatParams(style = AureoleDS.typography.bodyLarge, fontWeight = FontWeight.Normal)
         )
         AureoleText(
             text = "$cornerRadiusDp dp",
-            style = AureoleDS.typography.bodyLarge,
-            color = AureoleDS.colors.onSurfaceLow
+            color = AureoleDS.colors.onSurfaceLow,
+            format = AureoleTextFormatParams(style = AureoleDS.typography.bodyLarge)
         )
     }
 }

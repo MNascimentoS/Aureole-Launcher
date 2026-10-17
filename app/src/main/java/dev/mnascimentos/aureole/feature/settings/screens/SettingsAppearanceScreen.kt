@@ -2,6 +2,7 @@
 
 package dev.mnascimentos.aureole.feature.settings.screens
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -34,6 +35,7 @@ import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.composable.SettingsMenuItem
 import dev.mnascimentos.aureole.composable.SettingsToggleItem
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
+import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
 import dev.mnascimentos.aureole.core.designsystem.icons.AppSelect
 import dev.mnascimentos.aureole.core.designsystem.icons.Corners
 import dev.mnascimentos.aureole.core.designsystem.icons.Dots
@@ -53,10 +55,11 @@ private const val BOTTOM_SPACER_RATIO = 0.15f
 fun SettingsAppearanceScreen(
     uiState: SettingsUiState,
     actions: SettingsScreenActions,
-    @Suppress("UNUSED_PARAMETER") // unused but kept for interface matching
     onNavigateBack: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    BackHandler(onBack = onNavigateBack)
+
     var flags by remember {
         mutableStateOf(
             AppearanceDialogFlags(
@@ -120,11 +123,13 @@ private fun SettingsAppearanceContent(
 
             AureoleText(
                 text = "Appearance",
-                style = AureoleDS.typography.titleLarge,
-                fontWeight = FontWeight.Medium,
                 color = AureoleDS.colors.onSurfaceMedium,
-                textAlign = TextAlign.Center,
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
+                format = AureoleTextFormatParams(
+                    style = AureoleDS.typography.titleLarge,
+                    fontWeight = FontWeight.Medium,
+                    textAlign = TextAlign.Center
+                )
             )
 
             Spacer(modifier = Modifier.height(24.dp))
@@ -132,11 +137,13 @@ private fun SettingsAppearanceContent(
             AppearanceMenuItems(
                 uiState = uiState,
                 actions = actions,
-                onShowSetBackgroundDialog = { onFlagsChanged(flags.copy(showSetBg = true)) },
-                onShowBlurDialog = { onFlagsChanged(flags.copy(showBlur = true)) },
-                onShowPaletteDialog = { onFlagsChanged(flags.copy(showPalette = true)) },
-                onShowFontDialog = { onFlagsChanged(flags.copy(showFont = true)) },
-                onShowBorderRadiusDialog = { onFlagsChanged(flags.copy(showBorderRadius = true)) }
+                dialogActions = AppearanceMenuDialogActions(
+                    onShowSetBackgroundDialog = { onFlagsChanged(flags.copy(showSetBg = true)) },
+                    onShowBlurDialog = { onFlagsChanged(flags.copy(showBlur = true)) },
+                    onShowPaletteDialog = { onFlagsChanged(flags.copy(showPalette = true)) },
+                    onShowFontDialog = { onFlagsChanged(flags.copy(showFont = true)) },
+                    onShowBorderRadiusDialog = { onFlagsChanged(flags.copy(showBorderRadius = true)) }
+                )
             )
 
             Spacer(modifier = Modifier.height(bottomSpacerHeight))
@@ -144,17 +151,25 @@ private fun SettingsAppearanceContent(
     }
 }
 
-@Suppress("LongParameterList") // Menu items composable requires multiple configuration slots
+data class AppearanceMenuDialogActions(
+    val onShowSetBackgroundDialog: () -> Unit,
+    val onShowBlurDialog: () -> Unit,
+    val onShowPaletteDialog: () -> Unit,
+    val onShowFontDialog: () -> Unit,
+    val onShowBorderRadiusDialog: () -> Unit
+)
+
 @Composable
 private fun AppearanceMenuItems(
     uiState: SettingsUiState,
     actions: SettingsScreenActions,
-    onShowSetBackgroundDialog: () -> Unit,
-    onShowBlurDialog: () -> Unit,
-    onShowPaletteDialog: () -> Unit,
-    onShowFontDialog: () -> Unit,
-    onShowBorderRadiusDialog: () -> Unit
+    dialogActions: AppearanceMenuDialogActions
 ) {
+    val onShowSetBackgroundDialog = dialogActions.onShowSetBackgroundDialog
+    val onShowBlurDialog = dialogActions.onShowBlurDialog
+    val onShowFontDialog = dialogActions.onShowFontDialog
+    val onShowPaletteDialog = dialogActions.onShowPaletteDialog
+    val onShowBorderRadiusDialog = dialogActions.onShowBorderRadiusDialog
     Column(
         verticalArrangement = Arrangement.spacedBy(8.dp),
         modifier = Modifier.fillMaxWidth()
@@ -250,15 +265,14 @@ private fun WallpaperScaleTypeRow(
         )
         AureoleText(
             text = "Image scale",
-            style = AureoleDS.typography.bodyLarge,
-            fontWeight = FontWeight.Normal,
             color = AureoleDS.colors.onSurfaceMedium,
-            modifier = Modifier.weight(1f)
+            modifier = Modifier.weight(1f),
+            format = AureoleTextFormatParams(style = AureoleDS.typography.bodyLarge, fontWeight = FontWeight.Normal)
         )
         AureoleText(
             text = scaleType,
-            style = AureoleDS.typography.bodyLarge,
-            color = AureoleDS.colors.onSurfaceLow
+            color = AureoleDS.colors.onSurfaceLow,
+            format = AureoleTextFormatParams(style = AureoleDS.typography.bodyLarge)
         )
     }
 }
@@ -279,15 +293,14 @@ private fun ShortcutRow() {
         )
         AureoleText(
             text = "Press shortcut",
-            style = AureoleDS.typography.bodyLarge,
-            fontWeight = FontWeight.Normal,
             color = AureoleDS.colors.onSurfaceMedium,
-            modifier = Modifier.weight(1f)
+            modifier = Modifier.weight(1f),
+            format = AureoleTextFormatParams(style = AureoleDS.typography.bodyLarge, fontWeight = FontWeight.Normal)
         )
         AureoleText(
             text = "Rounded",
-            style = AureoleDS.typography.bodyLarge,
-            color = AureoleDS.colors.onSurfaceLow
+            color = AureoleDS.colors.onSurfaceLow,
+            format = AureoleTextFormatParams(style = AureoleDS.typography.bodyLarge)
         )
     }
 }

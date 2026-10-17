@@ -36,6 +36,7 @@ import dev.chrisbanes.haze.rememberHazeState
 import dev.mnascimentos.aureole.core.designsystem.palette.getPaletteByName
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDimens
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleThemeConfig
 import dev.mnascimentos.aureole.core.designsystem.utils.LocalHazeState
 import dev.mnascimentos.aureole.core.lifecycle.UpdateLifecycleObserver
 import dev.mnascimentos.aureole.core.lifecycle.WidgetLifecycleObserver
@@ -197,11 +198,15 @@ class MainActivity : ComponentActivity() {
                 val isDarkTheme = isSystemInDarkTheme()
                 val palette = getPaletteByName(uiState.selectedThemeName, isDarkTheme, uiState.manualSeedColor)
                 AureoleLauncherTheme(
-                    darkTheme = isDarkTheme,
-                    isDynamicWallpaperEnabled = uiState.isDynamicWallpaperEnabled,
-                    aureoleColors = palette.colors,
-                    aureoleFontName = uiState.selectedFontName,
-                    aureoleDimens = AureoleDimens(radiusLarge = uiState.cornerRadiusDp.dp)
+                    config = AureoleThemeConfig(
+                        darkTheme = isDarkTheme,
+                        isDynamicWallpaperEnabled = uiState.isDynamicWallpaperEnabled,
+                        aureoleColors = palette.colors,
+                        aureoleFontName = uiState.selectedFontName,
+                        aureoleDimens = AureoleDimens(
+                            radiusLarge = uiState.cornerRadiusDp.dp
+                        )
+                    )
                 ) {
                     BackHandler(enabled = isOverlayActive) {
                         handleBackNavigation(uiState, viewModel)
@@ -215,7 +220,6 @@ class MainActivity : ComponentActivity() {
                     ) {
                         MainScaffold(
                             appWidgetHost = appWidgetHost,
-                            appWidgetManager = appWidgetManager,
                             viewModel = viewModel,
                             onWidgetSelected = { widgetHostManager.handleWidgetSelected(it) }
                         )
@@ -256,7 +260,6 @@ private fun MainActivity.createHomeActions(): HomeScreenActions {
     return HomeActionsFactory(
         activity = this,
         viewModel = viewModel,
-        widgetHostManager = widgetHostManager,
         appUpdateManager = appUpdateManager,
         updateActivityResultLauncher = updateActivityResultLauncher,
         cachedAppUpdateInfo = cachedAppUpdateInfo

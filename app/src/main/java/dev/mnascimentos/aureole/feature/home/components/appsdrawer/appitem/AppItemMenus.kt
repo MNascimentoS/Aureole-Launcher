@@ -31,7 +31,9 @@ import androidx.compose.ui.unit.dp
 import androidx.core.graphics.drawable.toDrawable
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.designsystem.components.AureolePopupMenuItem
+import dev.mnascimentos.aureole.core.designsystem.components.AureolePopupMenuItemParams
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
+import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
 import dev.mnascimentos.aureole.core.designsystem.icons.Delete
 import dev.mnascimentos.aureole.core.designsystem.icons.Folder
 import dev.mnascimentos.aureole.core.designsystem.icons.Info
@@ -111,12 +113,14 @@ private fun AppItemBottomSheetHeader(app: AppInfo, iconBitmap: ImageBitmap, cont
 
             AureoleText(
                 text = app.label,
-                style = AureoleDS.typography.titleMedium,
-                fontWeight = FontWeight.Bold,
                 color = AureoleDS.colors.onSurfaceHigh,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-                modifier = Modifier.weight(1f)
+                modifier = Modifier.weight(1f),
+                format = AureoleTextFormatParams(
+                    style = AureoleDS.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
             )
         }
 
@@ -159,7 +163,9 @@ internal fun AppActionSheetContent(
 
         AureolePopupMenuItem(
             title = "App Info",
-            icon = { m -> AureoleDS.icons.Info(m) },
+            params = AureolePopupMenuItemParams(
+                icon = { m -> AureoleDS.icons.Info(m) }
+            ),
             onClick = {
                 if (params.actions.onAppInfoClick != null) {
                     params.actions.onAppInfoClick.invoke(params.app)
@@ -172,8 +178,10 @@ internal fun AppActionSheetContent(
 
         AureolePopupMenuItem(
             title = "Desinstalar",
-            icon = { m -> AureoleDS.icons.Delete(m) },
-            isDestructive = true,
+            params = AureolePopupMenuItemParams(
+                icon = { m -> AureoleDS.icons.Delete(m) },
+                isDestructive = true
+            ),
             onClick = {
                 if (params.actions.onUninstallClick != null) {
                     params.actions.onUninstallClick.invoke(params.app)
@@ -205,8 +213,10 @@ private fun AppActionSheetContainerItems(
     if (params.onRemoveFromContainer != null) {
         AureolePopupMenuItem(
             title = "Remover do Container",
-            icon = { m -> AureoleDS.icons.Delete(m) },
-            isDestructive = true,
+            params = AureolePopupMenuItemParams(
+                icon = { m -> AureoleDS.icons.Delete(m) },
+                isDestructive = true
+            ),
             onClick = {
                 params.onRemoveFromContainer.invoke()
                 onDismiss()
@@ -217,7 +227,9 @@ private fun AppActionSheetContainerItems(
     if (params.onOpenContainerSettings != null) {
         AureolePopupMenuItem(
             title = "Configurações do Container",
-            icon = { m -> AureoleDS.icons.Settings(m) },
+            params = AureolePopupMenuItemParams(
+                icon = { m -> AureoleDS.icons.Settings(m) }
+            ),
             onClick = {
                 params.onOpenContainerSettings.invoke()
                 onDismiss()
@@ -234,8 +246,10 @@ private fun AppActionSheetFolderItems(
     if (params.onRemoveFromFolder != null) {
         AureolePopupMenuItem(
             title = "Remover da Pasta",
-            icon = { m -> AureoleDS.icons.Delete(m) },
-            isDestructive = true,
+            params = AureolePopupMenuItemParams(
+                icon = { m -> AureoleDS.icons.Delete(m) },
+                isDestructive = true
+            ),
             onClick = {
                 params.onRemoveFromFolder.invoke()
                 onDismiss()
@@ -246,12 +260,14 @@ private fun AppActionSheetFolderItems(
     if (params.onOpenFolderSettings != null) {
         AureolePopupMenuItem(
             title = "Configurações da Pasta",
-            customIcon = {
-                AureoleDS.icons.Folder(
-                    tint = AureoleDS.colors.onSurfaceMedium,
-                    modifier = Modifier.size(20.dp)
-                )
-            },
+            params = AureolePopupMenuItemParams(
+                customIcon = {
+                    AureoleDS.icons.Folder(
+                        tint = AureoleDS.colors.onSurfaceMedium,
+                        modifier = Modifier.size(20.dp)
+                    )
+                }
+            ),
             onClick = {
                 params.onOpenFolderSettings.invoke()
                 onDismiss()
@@ -262,7 +278,9 @@ private fun AppActionSheetFolderItems(
     if (params.actions.onToggleFavorite != null) {
         AureolePopupMenuItem(
             title = if (params.isFavorite) "Remove from favorites" else "Add to favorites",
-            icon = { m -> AureoleDS.icons.Star(m) },
+            params = AureolePopupMenuItemParams(
+                icon = { m -> AureoleDS.icons.Star(m) }
+            ),
             onClick = {
                 params.actions.onToggleFavorite.invoke(params.app.packageName)
                 onDismiss()
@@ -273,7 +291,9 @@ private fun AppActionSheetFolderItems(
     if (params.actions.onEditFavoritesClick != null) {
         AureolePopupMenuItem(
             title = "Quick panel settings",
-            icon = { m -> AureoleDS.icons.Settings(m) },
+            params = AureolePopupMenuItemParams(
+                icon = { m -> AureoleDS.icons.Settings(m) }
+            ),
             onClick = {
                 params.actions.onEditFavoritesClick.invoke()
                 onDismiss()
@@ -294,30 +314,32 @@ private fun AppShortcutsMenu(
         }
         AureolePopupMenuItem(
             title = shortcut.label,
-            customIcon = {
-                if (iconBitmap != null) {
-                    Image(
-                        bitmap = iconBitmap,
-                        contentDescription = shortcut.label,
-                        modifier = Modifier
-                            .size(22.dp)
-                            .clip(CircleShape)
-                    )
-                } else {
-                    Box(
-                        modifier = Modifier
-                            .size(22.dp)
-                            .clip(CircleShape)
-                            .background(AureoleDS.colors.surfaceVariant),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        AureoleDS.icons.Smile(
-                            tint = AureoleDS.colors.onSurfaceMedium,
-                            modifier = Modifier.size(14.dp)
+            params = AureolePopupMenuItemParams(
+                customIcon = {
+                    if (iconBitmap != null) {
+                        Image(
+                            bitmap = iconBitmap,
+                            contentDescription = shortcut.label,
+                            modifier = Modifier
+                                .size(22.dp)
+                                .clip(CircleShape)
                         )
+                    } else {
+                        Box(
+                            modifier = Modifier
+                                .size(22.dp)
+                                .clip(CircleShape)
+                                .background(AureoleDS.colors.surfaceVariant),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            AureoleDS.icons.Smile(
+                                tint = AureoleDS.colors.onSurfaceMedium,
+                                modifier = Modifier.size(14.dp)
+                            )
+                        }
                     }
                 }
-            },
+            ),
             onClick = {
                 AppShortcutUtils.launchShortcut(context, shortcut)
                 onDismiss()

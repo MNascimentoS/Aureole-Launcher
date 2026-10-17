@@ -44,13 +44,15 @@ class HomeViewModelTest {
         gridRepository = GridRepository(context)
 
         viewModel = HomeViewModel(
-            appRepository = appRepository,
-            widgetRepository = widgetRepository,
-            settingsRepository = settingsRepository,
-            folderRepository = folderRepository,
-            favoriteContainerRepository = favoriteContainerRepository,
-            containerRepository = containerRepository,
-            gridRepository = gridRepository
+            HomeRepositories(
+                appRepository = appRepository,
+                widgetRepository = widgetRepository,
+                settingsRepository = settingsRepository,
+                folderRepository = folderRepository,
+                favoriteContainerRepository = favoriteContainerRepository,
+                containerRepository = containerRepository,
+                gridRepository = gridRepository
+            )
         )
     }
 

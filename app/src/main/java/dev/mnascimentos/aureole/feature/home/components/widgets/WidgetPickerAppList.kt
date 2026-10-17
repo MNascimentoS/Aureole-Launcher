@@ -27,7 +27,9 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleFloatingSearchBar
+import dev.mnascimentos.aureole.core.designsystem.components.AureoleFloatingSearchBarParams
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleSearchBarSizes
+import dev.mnascimentos.aureole.core.designsystem.components.AureoleSearchBarState
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleSectionHeader
 import dev.mnascimentos.aureole.feature.home.components.scrubber.CurvedAlphabetScrubber
 import dev.mnascimentos.aureole.feature.home.components.scrubber.model.ScrubberCallbacks
@@ -37,8 +39,7 @@ import dev.mnascimentos.aureole.feature.home.components.widgets.model.WidgetSele
 import dev.mnascimentos.aureole.feature.home.components.widgets.model.WidgetSelectorState
 import kotlinx.coroutines.launch
 
-// Note: break down long method
-@Suppress("LongMethod")
+@Suppress("LongMethod") // Composable rendering list of app widgets and expand controls
 @Composable
 fun WidgetGroupList(
     state: WidgetSelectorState,
@@ -111,22 +112,27 @@ fun WidgetGroupList(
 
         Box(modifier = Modifier.align(searchBarAlign)) {
             AureoleFloatingSearchBar(
-                query = state.searchQuery,
-                onQueryChange = { onIntent(WidgetSelectorIntent.SearchQueryChanged(it)) },
-                isExpanded = isSearchExpanded,
-                onExpandedChange = { isSearchExpanded = it },
+                state = AureoleSearchBarState(
+                    query = state.searchQuery,
+                    onQueryChange = { onIntent(WidgetSelectorIntent.SearchQueryChanged(it)) },
+                    isExpanded = isSearchExpanded,
+                    onExpandedChange = { isSearchExpanded = it }
+                ),
                 modifier = searchBarModifier,
-                placeholder = "Pesquisar widgets...",
-                focusRequester = focusRequester,
-                sizes = AureoleSearchBarSizes(
-                    collapsedSize = 60.dp,
-                    barHeight = 52.dp
+                params = AureoleFloatingSearchBarParams(
+                    placeholder = "Pesquisar widgets...",
+                    focusRequester = focusRequester,
+                    sizes = AureoleSearchBarSizes(
+                        collapsedSize = 60.dp,
+                        barHeight = 52.dp
+                    )
                 )
             )
         }
     }
 }
 
+@Suppress("LongMethod") // Composable rendering list of app widgets and expand controls
 @Composable
 private fun WidgetScrubberOverlay(
     groupedData: GroupedAppsData,
@@ -165,6 +171,7 @@ private data class GroupedAppsData(
     val letterIndexMap: Map<Char, Int>
 )
 
+@Suppress("LongMethod") // Composable rendering list of app widgets and expand controls
 @Composable
 private fun rememberGroupedAppsData(widgetGroups: List<WidgetAppGroup>): GroupedAppsData {
     return remember(widgetGroups) {
@@ -189,6 +196,7 @@ private data class WidgetGroupListColumnParams(
     val topPadding: Dp
 )
 
+@Suppress("LongMethod") // Composable rendering list of app widgets and expand controls
 @Composable
 private fun WidgetGroupListColumn(
     params: WidgetGroupListColumnParams,

@@ -28,6 +28,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
+import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
 import dev.mnascimentos.aureole.core.designsystem.icons.ArrowDown
 import dev.mnascimentos.aureole.core.designsystem.icons.ArrowUp
 import dev.mnascimentos.aureole.core.designsystem.icons.Delete
@@ -66,16 +67,16 @@ internal fun EditContainerItemRow(
 
         AureoleText(
             text = params.title,
-            style = AureoleDS.typography.bodyMedium,
             color = AureoleDS.colors.onSurfaceHigh,
-            modifier = Modifier.weight(1f)
+            modifier = Modifier.weight(1f),
+            format = AureoleTextFormatParams(style = AureoleDS.typography.bodyMedium)
         )
 
         AureoleText(
             text = if (params.isFolder) "Pasta" else "App",
-            style = AureoleDS.typography.labelSmall,
             color = AureoleDS.colors.onSurfaceMedium,
-            modifier = Modifier.padding(end = 4.dp)
+            modifier = Modifier.padding(end = 4.dp),
+            format = AureoleTextFormatParams(style = AureoleDS.typography.labelSmall)
         )
 
         IconButton(onClick = actions.onRemove, modifier = Modifier.size(28.dp)) {

@@ -27,6 +27,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
+import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
@@ -35,10 +36,9 @@ import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 internal fun EditClockSectionHeader(title: String) {
     AureoleText(
         text = title,
-        style = AureoleDS.typography.titleMedium,
-        fontWeight = FontWeight.SemiBold,
         color = AureoleDS.colors.onSurfaceHigh,
-        modifier = Modifier.padding(bottom = 4.dp)
+        modifier = Modifier.padding(bottom = 4.dp),
+        format = AureoleTextFormatParams(style = AureoleDS.typography.titleMedium, fontWeight = FontWeight.SemiBold)
     )
 }
 
@@ -91,8 +91,7 @@ internal fun EditClockChoiceButton(
             AureoleText(
                 text = text,
                 color = AureoleDS.colors.surface,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
+                format = AureoleTextFormatParams(maxLines = 1, overflow = TextOverflow.Ellipsis)
             )
         }
     } else {
@@ -110,8 +109,7 @@ internal fun EditClockChoiceButton(
             AureoleText(
                 text = text,
                 color = AureoleDS.colors.onSurfaceMedium,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
+                format = AureoleTextFormatParams(maxLines = 1, overflow = TextOverflow.Ellipsis)
             )
         }
     }
@@ -146,8 +144,8 @@ internal fun EditClockColorSwatchItem(
         Spacer(modifier = Modifier.width(6.dp))
         AureoleText(
             text = name,
-            style = AureoleDS.typography.bodySmall,
-            color = if (isSelected) AureoleDS.colors.onSurfaceHigh else AureoleDS.colors.onSurfaceMedium
+            color = if (isSelected) AureoleDS.colors.onSurfaceHigh else AureoleDS.colors.onSurfaceMedium,
+            format = AureoleTextFormatParams(style = AureoleDS.typography.bodySmall)
         )
     }
 }

@@ -21,52 +21,68 @@ import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
+import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 
+@Suppress("LongMethod")
 @Composable
 fun UpdateAvailableDialog(
     onConfirmUpdate: () -> Unit,
     onDismiss: () -> Unit,
 ) {
     UpdateDialogContent(
-        title = "Nova atualização disponível",
-        body = "Uma nova versão do Aureole Launcher está disponível na Google Play. " +
-            "Deseja atualizar agora?",
-        confirmLabel = "Atualizar agora",
-        dismissLabel = "Agora não",
-        onConfirm = onConfirmUpdate,
-        onDismiss = onDismiss
+        UpdateDialogContentParams(
+            title = "Nova atualização disponível",
+            body = "Uma nova versão do Aureole Launcher está disponível na Google Play. " +
+                "Deseja atualizar agora?",
+            confirmLabel = "Atualizar agora",
+            dismissLabel = "Agora não",
+            onConfirm = onConfirmUpdate,
+            onDismiss = onDismiss
+        )
     )
 }
 
+data class UpdateDialogContentParams(
+    val title: String,
+    val body: String,
+    val confirmLabel: String,
+    val dismissLabel: String,
+    val onConfirm: () -> Unit,
+    val onDismiss: () -> Unit
+)
+
+@Suppress("LongMethod")
 @Composable
 fun UpdateDownloadedDialog(
     onConfirmRestart: () -> Unit,
     onDismiss: () -> Unit,
 ) {
     UpdateDialogContent(
-        title = "Atualização pronta",
-        body = "A nova versão foi baixada com sucesso. " +
-            "Reinicie o aplicativo para concluir a instalação.",
-        confirmLabel = "Reiniciar agora",
-        dismissLabel = "Depois",
-        onConfirm = onConfirmRestart,
-        onDismiss = onDismiss
+        UpdateDialogContentParams(
+            title = "Atualização pronta",
+            body = "A nova versão foi baixada com sucesso. " +
+                "Reinicie o aplicativo para concluir a instalação.",
+            confirmLabel = "Reiniciar agora",
+            dismissLabel = "Depois",
+            onConfirm = onConfirmRestart,
+            onDismiss = onDismiss
+        )
     )
 }
 
-@Suppress("LongParameterList", "LongMethod") // Update dialog content requiring title, body and action callbacks
+@Suppress("LongMethod")
 @Composable
-private fun UpdateDialogContent(
-    title: String,
-    body: String,
-    confirmLabel: String,
-    dismissLabel: String,
-    onConfirm: () -> Unit,
-    onDismiss: () -> Unit
-) {
+private fun UpdateDialogContent(params: UpdateDialogContentParams) {
+    val title = params.title
+    val body = params.body
+    val confirmLabel = params.confirmLabel
+    val dismissLabel = params.dismissLabel
+    val onConfirm = params.onConfirm
+    val onDismiss = params.onDismiss
+
     if (LocalInspectionMode.current) {
         Box(
             modifier = Modifier.fillMaxSize().padding(16.dp),
@@ -80,15 +96,17 @@ private fun UpdateDialogContent(
                 Column(modifier = Modifier.padding(24.dp)) {
                     AureoleText(
                         text = title,
-                        style = AureoleDS.typography.titleMedium,
-                        fontWeight = FontWeight.Bold,
-                        color = AureoleDS.colors.onSurfaceHigh
+                        color = AureoleDS.colors.onSurfaceHigh,
+                        format = AureoleTextFormatParams(
+                            style = AureoleDS.typography.titleMedium,
+                            fontWeight = FontWeight.Bold
+                        )
                     )
                     Spacer(modifier = Modifier.height(16.dp))
                     AureoleText(
                         text = body,
-                        style = AureoleDS.typography.bodyMedium,
-                        color = AureoleDS.colors.onSurfaceMedium
+                        color = AureoleDS.colors.onSurfaceMedium,
+                        format = AureoleTextFormatParams(style = AureoleDS.typography.bodyMedium)
                     )
                     Spacer(modifier = Modifier.height(24.dp))
                     Row(
@@ -102,8 +120,8 @@ private fun UpdateDialogContent(
                         TextButton(onClick = onConfirm) {
                             AureoleText(
                                 text = confirmLabel,
-                                fontWeight = FontWeight.SemiBold,
-                                color = AureoleDS.colors.onSurfaceHigh
+                                color = AureoleDS.colors.onSurfaceHigh,
+                                format = AureoleTextFormatParams(fontWeight = FontWeight.SemiBold)
                             )
                         }
                     }
@@ -118,24 +136,26 @@ private fun UpdateDialogContent(
             title = {
                 AureoleText(
                     text = title,
-                    style = AureoleDS.typography.titleMedium,
-                    fontWeight = FontWeight.Bold,
-                    color = AureoleDS.colors.onSurfaceHigh
+                    color = AureoleDS.colors.onSurfaceHigh,
+                    format = AureoleTextFormatParams(
+                        style = AureoleDS.typography.titleMedium,
+                        fontWeight = FontWeight.Bold
+                    )
                 )
             },
             text = {
                 AureoleText(
                     text = body,
-                    style = AureoleDS.typography.bodyMedium,
-                    color = AureoleDS.colors.onSurfaceMedium
+                    color = AureoleDS.colors.onSurfaceMedium,
+                    format = AureoleTextFormatParams(style = AureoleDS.typography.bodyMedium)
                 )
             },
             confirmButton = {
                 TextButton(onClick = onConfirm) {
                     AureoleText(
                         text = confirmLabel,
-                        fontWeight = FontWeight.SemiBold,
-                        color = AureoleDS.colors.onSurfaceHigh
+                        color = AureoleDS.colors.onSurfaceHigh,
+                        format = AureoleTextFormatParams(fontWeight = FontWeight.SemiBold)
                     )
                 }
             },
@@ -149,6 +169,7 @@ private fun UpdateDialogContent(
 }
 
 @AureolePreview
+@Suppress("LongMethod")
 @Composable
 private fun UpdateAvailableDialogPreview() {
     AureoleLauncherTheme {
@@ -157,6 +178,7 @@ private fun UpdateAvailableDialogPreview() {
 }
 
 @AureolePreview
+@Suppress("LongMethod")
 @Composable
 private fun UpdateDownloadedDialogPreview() {
     AureoleLauncherTheme {

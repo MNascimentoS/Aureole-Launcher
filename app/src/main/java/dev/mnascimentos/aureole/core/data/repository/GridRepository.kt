@@ -17,7 +17,7 @@ class GridRepository(private val context: Context) {
     private val prefs
         get() = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
 
-    @Suppress("TooGenericExceptionCaught")
+    @Suppress("TooGenericExceptionCaught") // Catching generic exceptions for SharedPreferences parsing
     fun getGridItems(isLandscape: Boolean = false): List<LauncherItemState> {
         val key = if (isLandscape) KEY_LANDSCAPE_GRID_ITEMS else KEY_PORTRAIT_GRID_ITEMS
         var json = prefs.getString(key, null)

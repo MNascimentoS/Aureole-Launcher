@@ -25,6 +25,7 @@ import androidx.compose.ui.unit.dp
 import androidx.core.graphics.drawable.toDrawable
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
+import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
 import dev.mnascimentos.aureole.core.designsystem.icons.Star
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
@@ -56,8 +57,8 @@ internal fun FavoritesEmptyHint(onClick: () -> Unit) {
             Spacer(modifier = Modifier.width(8.dp))
             AureoleText(
                 text = "Tap to select Favorites",
-                style = AureoleDS.typography.bodyMedium,
-                color = AureoleDS.colors.onSurfaceMedium
+                color = AureoleDS.colors.onSurfaceMedium,
+                format = AureoleTextFormatParams(style = AureoleDS.typography.bodyMedium)
             )
         }
     }
@@ -77,9 +78,9 @@ internal fun AllAppsDivider() {
         )
         AureoleText(
             text = " ALL APPS ",
-            style = AureoleDS.typography.labelSmall,
             color = AureoleDS.colors.onSurfaceMedium.copy(alpha = 0.6f),
-            modifier = Modifier.padding(horizontal = 8.dp)
+            modifier = Modifier.padding(horizontal = 8.dp),
+            format = AureoleTextFormatParams(style = AureoleDS.typography.labelSmall)
         )
         HorizontalDivider(
             modifier = Modifier.weight(1f),

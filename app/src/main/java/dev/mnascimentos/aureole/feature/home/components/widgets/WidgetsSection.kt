@@ -77,15 +77,17 @@ fun StackedWidgetSection(
         verticalArrangement = Arrangement.Center
     ) {
         StackedWidgetPagerContent(
-            config = config,
-            widgetIds = widgetIds,
-            appWidgetHost = appWidgetHost,
-            stackId = stackId,
-            params = PagerContentParams(
-                showAddButton = showAddButton,
-                pageCount = pageCount,
-                pagerState = pagerState,
-                hasFillMaxSize = true
+            pagerParams = StackedWidgetPagerParams(
+                config = config,
+                widgetIds = widgetIds,
+                appWidgetHost = appWidgetHost,
+                stackId = stackId,
+                params = PagerContentParams(
+                    showAddButton = showAddButton,
+                    pageCount = pageCount,
+                    pagerState = pagerState,
+                    hasFillMaxSize = true
+                )
             ),
             modifier = Modifier
                 .fillMaxWidth()
@@ -101,16 +103,25 @@ fun StackedWidgetSection(
     }
 }
 
-@Suppress("LongParameterList") // Reusable widget stack pager requires widget host, stack state and sizing parameters
+data class StackedWidgetPagerParams(
+    val config: StackedWidgetConfig,
+    val widgetIds: List<Int>,
+    val appWidgetHost: AppWidgetHost,
+    val stackId: String,
+    val params: PagerContentParams
+)
+
 @Composable
 private fun StackedWidgetPagerContent(
-    config: StackedWidgetConfig,
-    widgetIds: List<Int>,
-    appWidgetHost: AppWidgetHost,
-    stackId: String,
-    params: PagerContentParams,
+    pagerParams: StackedWidgetPagerParams,
     modifier: Modifier = Modifier
 ) {
+    val config = pagerParams.config
+    val widgetIds = pagerParams.widgetIds
+    val appWidgetHost = pagerParams.appWidgetHost
+    val stackId = pagerParams.stackId
+    val params = pagerParams.params
+
     val uiState = LocalHomeUiState.current
     val actions = LocalHomeActions.current
     val pageCount = params.pageCount

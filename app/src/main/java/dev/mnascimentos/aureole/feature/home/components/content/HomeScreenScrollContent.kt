@@ -38,6 +38,7 @@ import dev.mnascimentos.aureole.core.data.model.LauncherItemState
 import dev.mnascimentos.aureole.core.data.model.LauncherItemType
 import dev.mnascimentos.aureole.core.data.model.ScrollOrientation
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
+import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
 import dev.mnascimentos.aureole.core.designsystem.icons.Add
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
@@ -59,16 +60,24 @@ private const val SCROLL_CHILD_MIN_WIDTH = 100
 private const val SCROLL_CHILD_ROW_HEIGHT = 60
 private const val SCROLL_CHILD_COL_WIDTH = 70
 
-@Suppress("LongParameterList")
+data class ScrollViewContainerParams(
+    val item: LauncherItemState,
+    val favConfig: FavoritesListConfig,
+    val appWidgetHost: AppWidgetHost,
+    val stackedWidgetConfig: StackedWidgetConfig,
+    val containerConfig: ContainerConfig
+)
+
 @Composable
 fun ScrollViewContainerContent(
-    item: LauncherItemState,
-    favConfig: FavoritesListConfig,
-    appWidgetHost: AppWidgetHost,
-    stackedWidgetConfig: StackedWidgetConfig,
-    containerConfig: ContainerConfig,
+    params: ScrollViewContainerParams,
     modifier: Modifier = Modifier
 ) {
+    val item = params.item
+    val favConfig = params.favConfig
+    val appWidgetHost = params.appWidgetHost
+    val stackedWidgetConfig = params.stackedWidgetConfig
+    val containerConfig = params.containerConfig
     val isVertical = item.safeScrollOrientation == ScrollOrientation.VERTICAL
     val scrollState = rememberScrollState()
     val nestedScrollInterop = rememberNestedScrollInteropConnection()
@@ -259,9 +268,11 @@ private fun ScrollViewAddComponentButton(parentId: String, actions: HomeScreenAc
             Spacer(modifier = Modifier.width(6.dp))
             AureoleText(
                 text = "Componente",
-                style = AureoleDS.typography.labelMedium,
                 color = AureoleDS.colors.onSurfaceHigh,
-                fontWeight = FontWeight.SemiBold
+                format = AureoleTextFormatParams(
+                    style = AureoleDS.typography.labelMedium,
+                    fontWeight = FontWeight.SemiBold
+                )
             )
         }
     }

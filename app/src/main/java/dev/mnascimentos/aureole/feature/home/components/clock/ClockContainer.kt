@@ -11,8 +11,6 @@ import dev.mnascimentos.aureole.feature.home.LocalHomeUiState
 import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
 
-// Note: Reduce parameter count
-@Suppress("LongParameterList")
 @Composable
 fun ClockContainer(
     modifier: Modifier = Modifier,

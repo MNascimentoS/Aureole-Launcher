@@ -223,7 +223,7 @@ class SettingsRepository(private val context: Context) {
         }
     }
 
-    @Suppress("ReturnCount", "TooGenericExceptionCaught")
+    @Suppress("ReturnCount", "TooGenericExceptionCaught") // Catching generic exceptions for file read/write operations
     fun saveCustomWallpaper(uriString: String): Boolean {
         return try {
             val uri = uriString.toUri()

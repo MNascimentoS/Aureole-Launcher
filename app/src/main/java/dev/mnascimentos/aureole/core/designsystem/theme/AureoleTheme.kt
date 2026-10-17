@@ -14,33 +14,36 @@ import androidx.compose.ui.platform.LocalContext
 import dev.mnascimentos.aureole.core.designsystem.icons.AureoleIcons
 import dev.mnascimentos.aureole.core.designsystem.icons.LocalAureoleIcons
 
-@Suppress("LongParameterList") // Theme entry point accepts configuration parameters for custom themes
+data class AureoleThemeConfig(
+    val darkTheme: Boolean,
+    val isDynamicWallpaperEnabled: Boolean = false,
+    val aureoleColors: AureoleColors = frostbiteColors,
+    val aureoleFontName: String = "Istok Web",
+    val aureoleIcons: AureoleIcons = AureoleIcons(),
+    val aureoleDimens: AureoleDimens = AureoleDimens()
+)
+
 @Composable
 fun AureoleLauncherTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
-    isDynamicWallpaperEnabled: Boolean = false,
-    aureoleColors: AureoleColors = frostbiteColors,
-    aureoleFontName: String = "Istok Web",
-    aureoleIcons: AureoleIcons = AureoleIcons(),
-    aureoleDimens: AureoleDimens = AureoleDimens(),
+    config: AureoleThemeConfig = AureoleThemeConfig(darkTheme = isSystemInDarkTheme()),
     content: @Composable () -> Unit,
 ) {
     val context = LocalContext.current
     val colorScheme = when {
-        isDynamicWallpaperEnabled && (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) -> {
-            if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
+        config.isDynamicWallpaperEnabled && (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) -> {
+            if (config.darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
         }
-        darkTheme -> buildDarkColorScheme(aureoleColors)
-        else -> buildLightColorScheme(aureoleColors)
+        config.darkTheme -> buildDarkColorScheme(config.aureoleColors)
+        else -> buildLightColorScheme(config.aureoleColors)
     }
 
-    val aureoleTypography = AureoleTypography(fontFamily = AvailableFonts[aureoleFontName] ?: IstokWebFontFamily)
+    val aureoleTypography = AureoleTypography(fontFamily = AvailableFonts[config.aureoleFontName] ?: IstokWebFontFamily)
 
     CompositionLocalProvider(
-        LocalAureoleColors provides aureoleColors,
-        LocalAureoleIcons provides aureoleIcons,
+        LocalAureoleColors provides config.aureoleColors,
+        LocalAureoleIcons provides config.aureoleIcons,
         LocalAureoleTypography provides aureoleTypography,
-        LocalAureoleDimens provides aureoleDimens,
+        LocalAureoleDimens provides config.aureoleDimens,
     ) {
         MaterialTheme(
             colorScheme = colorScheme,
