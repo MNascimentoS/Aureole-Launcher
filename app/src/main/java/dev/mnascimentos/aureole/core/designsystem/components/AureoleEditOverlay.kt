@@ -259,8 +259,8 @@ fun AureoleEditOverlay(
                             topStart = AureoleDS.dimens.radiusLarge,
                             topEnd = AureoleDS.dimens.radiusLarge
                         ),
-                        color = AureoleTheme.colors.surface,
-                        contentColor = AureoleTheme.colors.onSurfaceMedium
+                        color = AureoleDS.colors.surface,
+                        contentColor = AureoleDS.colors.onSurfaceMedium
                     ) {
                         OverlaySheetBody(
                             title = title,
@@ -322,9 +322,9 @@ private fun OverlaySheetHeader(
     ) {
         Text(
             text = title,
-            style = AureoleTheme.typography.titleMedium,
+            style = AureoleDS.typography.titleMedium,
             fontWeight = FontWeight.Bold,
-            color = AureoleTheme.colors.onSurfaceHigh,
+            color = AureoleDS.colors.onSurfaceHigh,
             textAlign = TextAlign.Center
         )
 
@@ -337,7 +337,7 @@ private fun OverlaySheetHeader(
             contentAlignment = Alignment.Center
         ) {
             AureoleDS.icons.Logo(
-                tint = AureoleTheme.colors.onSurfaceHigh,
+                tint = AureoleDS.colors.onSurfaceHigh,
                 modifier = Modifier.size(AureoleDS.dimens.iconSmall)
             )
         }
@@ -346,7 +346,7 @@ private fun OverlaySheetHeader(
 
 @AureolePreview
 @Composable
-fun AureoleEditOverlayPreview() {
+private fun AureoleEditOverlayPreview() {
     AureoleLauncherTheme {
         AureoleEditOverlay(
             onDismissRequest = {},
@@ -361,7 +361,7 @@ fun AureoleEditOverlayPreview() {
         ) {
             Text(
                 text = "Sheet Content",
-                color = AureoleTheme.colors.onSurfaceHigh
+                color = AureoleDS.colors.onSurfaceHigh
             )
         }
     }
