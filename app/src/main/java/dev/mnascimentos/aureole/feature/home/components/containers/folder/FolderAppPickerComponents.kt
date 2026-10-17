@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -29,15 +28,18 @@ import dev.mnascimentos.aureole.core.designsystem.icons.Close
 import dev.mnascimentos.aureole.core.designsystem.icons.Delete
 import dev.mnascimentos.aureole.core.designsystem.icons.Plus
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
+import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.FolderAppRowItemParams
 
 @Composable
 fun FolderAppPickerHeader(
     folderName: String,
-    onDismiss: () -> Unit
+    onDismiss: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     Row(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -45,11 +47,11 @@ fun FolderAppPickerHeader(
             text = "Apps na Pasta: $folderName",
             style = AureoleDS.typography.titleMedium,
             fontWeight = FontWeight.Bold,
-            color = MaterialTheme.colorScheme.onSurface
+            color = AureoleDS.colors.onSurfaceHigh
         )
         IconButton(onClick = onDismiss) {
             AureoleDS.icons.Close(
-                tint = MaterialTheme.colorScheme.onSurfaceVariant
+                tint = AureoleDS.colors.onSurfaceMedium
             )
         }
     }
@@ -58,10 +60,11 @@ fun FolderAppPickerHeader(
 @Composable
 fun FolderAppPickerFooter(
     onDismiss: () -> Unit,
-    onSave: () -> Unit
+    onSave: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     Row(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.End,
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -80,14 +83,18 @@ fun SelectedFolderAppRowActionButtons(
     params: FolderAppRowItemParams,
     onMoveUp: () -> Unit,
     onMoveDown: () -> Unit,
-    onToggleSelect: () -> Unit
+    onToggleSelect: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
-    Row(verticalAlignment = Alignment.CenterVertically) {
+    Row(
+        modifier = modifier,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
         if (params.canReorder) {
             val upTint = if (params.index > 0) {
-                MaterialTheme.colorScheme.onSurface
+                AureoleDS.colors.onSurfaceHigh
             } else {
-                MaterialTheme.colorScheme.outline.copy(alpha = 0.3f)
+                AureoleDS.colors.outline.copy(alpha = 0.3f)
             }
             IconButton(
                 onClick = onMoveUp,
@@ -100,9 +107,9 @@ fun SelectedFolderAppRowActionButtons(
             }
 
             val downTint = if (params.index < params.totalCount - 1) {
-                MaterialTheme.colorScheme.onSurface
+                AureoleDS.colors.onSurfaceHigh
             } else {
-                MaterialTheme.colorScheme.outline.copy(alpha = 0.3f)
+                AureoleDS.colors.outline.copy(alpha = 0.3f)
             }
             IconButton(
                 onClick = onMoveDown,
@@ -120,7 +127,7 @@ fun SelectedFolderAppRowActionButtons(
             modifier = Modifier.size(32.dp)
         ) {
             AureoleDS.icons.Delete(
-                tint = MaterialTheme.colorScheme.error
+                tint = AureoleDS.colors.error
             )
         }
     }
@@ -137,7 +144,7 @@ fun RemainingFolderAppRow(
         modifier = modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(12.dp))
-            .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f))
+            .background(AureoleDS.colors.surfaceVariant.copy(alpha = 0.3f))
             .padding(horizontal = 12.dp, vertical = 6.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
@@ -157,7 +164,7 @@ fun RemainingFolderAppRow(
             AureoleText(
                 text = app.label,
                 style = AureoleDS.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurface,
+                color = AureoleDS.colors.onSurfaceHigh,
             )
         }
 
@@ -166,9 +173,20 @@ fun RemainingFolderAppRow(
             modifier = Modifier.size(28.dp)
         ) {
             AureoleDS.icons.Plus(
-                tint = MaterialTheme.colorScheme.primary,
+                tint = AureoleDS.colors.onSurfaceHigh,
                 modifier = Modifier.size(20.dp)
             )
         }
+    }
+}
+
+@AureolePreview
+@Composable
+private fun FolderAppPickerHeaderPreview() {
+    AureoleLauncherTheme {
+        FolderAppPickerHeader(
+            folderName = "Social",
+            onDismiss = {}
+        )
     }
 }

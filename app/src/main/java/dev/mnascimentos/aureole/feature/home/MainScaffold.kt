@@ -11,33 +11,37 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import dev.mnascimentos.aureole.core.designsystem.utils.LocalHazeState
-import dev.mnascimentos.aureole.feature.home.components.FavoriteAppsDialog
-import dev.mnascimentos.aureole.feature.home.components.ReleaseNotesBottomSheet
-import dev.mnascimentos.aureole.feature.home.components.UpdateAvailableDialog
-import dev.mnascimentos.aureole.feature.home.components.UpdateDownloadedDialog
-import dev.mnascimentos.aureole.feature.home.components.model.FavoriteAppsDialogActions
-import dev.mnascimentos.aureole.feature.home.components.model.FavoriteAppsDialogConfig
-import dev.mnascimentos.aureole.feature.home.extensions.dismissReleaseNotes
-import dev.mnascimentos.aureole.feature.home.extensions.setShowFavoritePicker
-import dev.mnascimentos.aureole.feature.home.extensions.setShowWidgetPicker
-import dev.mnascimentos.aureole.feature.home.extensions.toggleFavorite
+import dev.mnascimentos.aureole.feature.home.components.favorites.FavoriteAppsDialog
+import dev.mnascimentos.aureole.feature.home.components.favorites.extensions.setShowFavoritePicker
+import dev.mnascimentos.aureole.feature.home.components.favorites.extensions.toggleFavorite
+import dev.mnascimentos.aureole.feature.home.components.favorites.extensions.updateContainerFavorites
+import dev.mnascimentos.aureole.feature.home.components.favorites.extensions.updateFavoritePackages
+import dev.mnascimentos.aureole.feature.home.components.favorites.model.FavoriteAppsDialogActions
+import dev.mnascimentos.aureole.feature.home.components.favorites.model.FavoriteAppsDialogConfig
+import dev.mnascimentos.aureole.feature.home.components.overlays.ReleaseNotesBottomSheet
+import dev.mnascimentos.aureole.feature.home.components.overlays.UpdateAvailableDialog
+import dev.mnascimentos.aureole.feature.home.components.overlays.UpdateDownloadedDialog
+import dev.mnascimentos.aureole.feature.home.components.overlays.extensions.dismissReleaseNotes
+import dev.mnascimentos.aureole.feature.home.components.widgets.WidgetPickerScreen
+import dev.mnascimentos.aureole.feature.home.components.widgets.extensions.setShowWidgetPicker
 import dev.mnascimentos.aureole.feature.home.extensions.toggleShowAllAppsOnHome
-import dev.mnascimentos.aureole.feature.home.extensions.updateContainerFavorites
-import dev.mnascimentos.aureole.feature.home.extensions.updateFavoritePackages
 import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
-import dev.mnascimentos.aureole.feature.home.widget.WidgetPickerScreen
 
+@Suppress("UNUSED_PARAMETER")
 @Composable
 fun MainScaffold(
     appWidgetHost: AppWidgetHost,
     appWidgetManager: AppWidgetManager,
     viewModel: HomeViewModel,
-    onWidgetSelected: (AppWidgetProviderInfo) -> Unit
+    onWidgetSelected: (AppWidgetProviderInfo) -> Unit,
+    modifier: Modifier = Modifier
 ) {
     val uiState = LocalHomeUiState.current
+    val actions = LocalHomeActions.current
+
     Scaffold(
-        modifier = Modifier.fillMaxSize(),
+        modifier = modifier.fillMaxSize(),
         containerColor = Color.Transparent,
         contentWindowInsets = WindowInsets(0, 0, 0, 0)
     ) { padding ->
@@ -48,24 +52,32 @@ fun MainScaffold(
 
         WidgetPickerOverlay(
             uiState = uiState,
-            appWidgetManager = appWidgetManager,
-            viewModel = viewModel,
+            onDismiss = { viewModel.setShowWidgetPicker(false) },
             onWidgetSelected = onWidgetSelected
         )
 
         FavoritePickerOverlay(
             uiState = uiState,
-            viewModel = viewModel
+            onToggleFavorite = { pkg, containerId -> viewModel.toggleFavorite(pkg, containerId) },
+            onUpdateFavorites = { cId, pkgs ->
+                if (cId != null) {
+                    viewModel.updateContainerFavorites(cId, pkgs)
+                } else {
+                    viewModel.updateFavoritePackages(pkgs)
+                }
+            },
+            onToggleShowAllAppsOnHome = { viewModel.toggleShowAllAppsOnHome() },
+            onDismiss = { viewModel.setShowFavoritePicker(false) }
         )
 
         InAppUpdateOverlay(
             uiState = uiState,
-            actions = LocalHomeActions.current
+            actions = actions
         )
 
         ReleaseNotesOverlay(
             uiState = uiState,
-            viewModel = viewModel
+            onDismiss = { viewModel.dismissReleaseNotes() }
         )
     }
 }
@@ -73,20 +85,18 @@ fun MainScaffold(
 @Composable
 private fun WidgetPickerOverlay(
     uiState: MainUiState,
-    appWidgetManager: AppWidgetManager,
-    viewModel: HomeViewModel,
+    onDismiss: () -> Unit,
     onWidgetSelected: (AppWidgetProviderInfo) -> Unit
 ) {
     if (uiState.showWidgetPicker) {
         WidgetPickerScreen(
-            appWidgetManager = appWidgetManager,
             isBlurEnabled = uiState.isHazeEnabled,
             hazeState = LocalHazeState.current,
             onWidgetSelected = { provider ->
-                viewModel.setShowWidgetPicker(false)
+                onDismiss()
                 onWidgetSelected(provider)
             },
-            onDismiss = { viewModel.setShowWidgetPicker(false) }
+            onDismiss = onDismiss
         )
     }
 }
@@ -94,7 +104,10 @@ private fun WidgetPickerOverlay(
 @Composable
 private fun FavoritePickerOverlay(
     uiState: MainUiState,
-    viewModel: HomeViewModel
+    onToggleFavorite: (String, String?) -> Unit,
+    onUpdateFavorites: (String?, List<String>) -> Unit,
+    onToggleShowAllAppsOnHome: () -> Unit,
+    onDismiss: () -> Unit
 ) {
     if (uiState.showFavoritePickerDialog) {
         val containerId = uiState.activeFavoriteContainerId
@@ -112,16 +125,10 @@ private fun FavoritePickerOverlay(
                 showAllAppsOnHome = uiState.showAllAppsOnHome
             ),
             actions = FavoriteAppsDialogActions(
-                onToggleFavorite = { pkg -> viewModel.toggleFavorite(pkg, containerId) },
-                onUpdateFavoritePackages = { cId, pkgs ->
-                    if (cId != null) {
-                        viewModel.updateContainerFavorites(cId, pkgs)
-                    } else {
-                        viewModel.updateFavoritePackages(pkgs)
-                    }
-                },
-                onToggleShowAllAppsOnHome = { viewModel.toggleShowAllAppsOnHome() },
-                onDismiss = { viewModel.setShowFavoritePicker(false) }
+                onToggleFavorite = { pkg -> onToggleFavorite(pkg, containerId) },
+                onUpdateFavoritePackages = { cId, pkgs -> onUpdateFavorites(cId, pkgs) },
+                onToggleShowAllAppsOnHome = onToggleShowAllAppsOnHome,
+                onDismiss = onDismiss
             )
         )
     }
@@ -150,11 +157,11 @@ private fun InAppUpdateOverlay(
 @Composable
 private fun ReleaseNotesOverlay(
     uiState: MainUiState,
-    viewModel: HomeViewModel
+    onDismiss: () -> Unit
 ) {
     if (uiState.showReleaseNotesBottomSheet) {
         ReleaseNotesBottomSheet(
-            onDismissRequest = { viewModel.dismissReleaseNotes() }
+            onDismissRequest = onDismiss
         )
     }
 }

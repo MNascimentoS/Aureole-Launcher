@@ -32,6 +32,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.core.net.toUri
 import dev.mnascimentos.aureole.composable.SettingsActionItem
 import dev.mnascimentos.aureole.composable.SettingsToggleItem
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
@@ -42,8 +43,7 @@ import dev.mnascimentos.aureole.core.designsystem.icons.RefreshCcw
 import dev.mnascimentos.aureole.core.designsystem.icons.Smile
 import dev.mnascimentos.aureole.core.designsystem.icons.Undo
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
-import dev.mnascimentos.aureole.core.designsystem.theme.AureoleTheme
-import dev.mnascimentos.aureole.feature.home.components.ReleaseNotesBottomSheet
+import dev.mnascimentos.aureole.feature.home.components.overlays.ReleaseNotesBottomSheet
 import dev.mnascimentos.aureole.feature.settings.components.SettingsBottomSheet
 import dev.mnascimentos.aureole.feature.settings.model.SettingsScreenActions
 import dev.mnascimentos.aureole.feature.settings.model.SettingsUiState
@@ -57,13 +57,15 @@ fun SettingsAdvancedScreen(
     actions: SettingsScreenActions,
     onNavigateToContributors: () -> Unit,
     @Suppress("UNUSED_PARAMETER") // Parameter reserved for navigation contract
-    onNavigateBack: () -> Unit
+    onNavigateBack: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
     var showUninstallDialog by remember { mutableStateOf(false) }
     var showReleaseNotesDialog by remember { mutableStateOf(false) }
 
     Scaffold(
+        modifier = modifier,
         containerColor = AureoleDS.colors.surface
     ) { innerPadding ->
         BoxWithConstraints(
@@ -86,9 +88,9 @@ fun SettingsAdvancedScreen(
 
                 AureoleText(
                     text = "Advanced",
-                    style = AureoleTheme.typography.titleLarge,
+                    style = AureoleDS.typography.titleLarge,
                     fontWeight = FontWeight.Medium,
-                    color = AureoleTheme.colors.onSurfaceMedium,
+                    color = AureoleDS.colors.onSurfaceMedium,
                     textAlign = TextAlign.Center,
                     modifier = Modifier.fillMaxWidth()
                 )
@@ -193,37 +195,37 @@ private fun AdvancedLinksGroup(onNavigateToContributors: () -> Unit) {
     ) {
         AureoleText(
             text = "Contributors",
-            style = AureoleTheme.typography.bodyLarge,
+            style = AureoleDS.typography.bodyLarge,
             fontWeight = FontWeight.Normal,
-            color = AureoleTheme.colors.onSurfaceMedium,
+            color = AureoleDS.colors.onSurfaceMedium,
             modifier = Modifier.clickable { onNavigateToContributors() }
         )
         AureoleText(
             text = "Privacy policy",
-            style = AureoleTheme.typography.bodyLarge,
+            style = AureoleDS.typography.bodyLarge,
             fontWeight = FontWeight.Normal,
-            color = AureoleTheme.colors.onSurfaceMedium,
+            color = AureoleDS.colors.onSurfaceMedium,
             modifier = Modifier.clickable { }
         )
         AureoleText(
             text = "Terms of service",
-            style = AureoleTheme.typography.bodyLarge,
+            style = AureoleDS.typography.bodyLarge,
             fontWeight = FontWeight.Normal,
-            color = AureoleTheme.colors.onSurfaceMedium,
+            color = AureoleDS.colors.onSurfaceMedium,
             modifier = Modifier.clickable { }
         )
         AureoleText(
             text = "Privacy settings",
-            style = AureoleTheme.typography.bodyLarge,
+            style = AureoleDS.typography.bodyLarge,
             fontWeight = FontWeight.Normal,
-            color = AureoleTheme.colors.onSurfaceMedium,
+            color = AureoleDS.colors.onSurfaceMedium,
             modifier = Modifier.clickable { }
         )
         AureoleText(
             text = "Open source e license",
-            style = AureoleTheme.typography.bodyLarge,
+            style = AureoleDS.typography.bodyLarge,
             fontWeight = FontWeight.Normal,
-            color = AureoleTheme.colors.onSurfaceMedium,
+            color = AureoleDS.colors.onSurfaceMedium,
             modifier = Modifier.clickable { }
         )
     }
@@ -245,7 +247,7 @@ private fun UninstallBottomSheet(
                 onClick = {
                     onDismiss()
                     val intent = Intent(Intent.ACTION_SENDTO).apply {
-                        data = Uri.parse("mailto:aureole@mnascimentos.dev")
+                        data = "mailto:aureole@mnascimentos.dev".toUri()
                     }
                     context.startActivity(intent)
                 }
@@ -266,7 +268,7 @@ private fun tryUninstall(context: Context) {
     try {
         val intent = Intent(
             Intent.ACTION_VIEW,
-            Uri.parse("market://details?id=${context.packageName}")
+            "market://details?id=${context.packageName}".toUri()
         ).apply {
             addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         }
@@ -274,7 +276,7 @@ private fun tryUninstall(context: Context) {
     } catch (_: ActivityNotFoundException) {
         val intent = Intent(
             Intent.ACTION_VIEW,
-            Uri.parse("https://play.google.com/store/apps/details?id=${context.packageName}")
+            "https://play.google.com/store/apps/details?id=${context.packageName}".toUri()
         ).apply {
             addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         }

@@ -4,6 +4,7 @@ import android.content.ContentValues
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
+import androidx.core.database.sqlite.transaction
 
 class FavoriteContainerDatabaseHelper(context: Context) : SQLiteOpenHelper(
     context,
@@ -97,16 +98,14 @@ class FavoriteContainerDatabaseHelper(context: Context) : SQLiteOpenHelper(
     }
 
     fun updateContainerItems(containerId: String, packageNames: List<String>) {
-        val db = writableDatabase
-        db.beginTransaction()
-        try {
+        writableDatabase.transaction {
             val containerValues = ContentValues().apply {
                 put("id", containerId)
                 put("created_at", System.currentTimeMillis())
             }
-            db.insertWithOnConflict("favorite_containers", null, containerValues, SQLiteDatabase.CONFLICT_IGNORE)
+            insertWithOnConflict("favorite_containers", null, containerValues, SQLiteDatabase.CONFLICT_IGNORE)
 
-            db.delete("container_favorite_items", "container_id = ?", arrayOf(containerId))
+            delete("container_favorite_items", "container_id = ?", arrayOf(containerId))
 
             packageNames.forEachIndexed { index, pkg ->
                 val itemValues = ContentValues().apply {
@@ -114,12 +113,8 @@ class FavoriteContainerDatabaseHelper(context: Context) : SQLiteOpenHelper(
                     put("package_name", pkg)
                     put("item_order", index)
                 }
-                db.insert("container_favorite_items", null, itemValues)
+                insert("container_favorite_items", null, itemValues)
             }
-
-            db.setTransactionSuccessful()
-        } finally {
-            db.endTransaction()
         }
     }
 

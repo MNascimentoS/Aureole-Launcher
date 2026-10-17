@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.runtime.Composable
@@ -31,7 +30,6 @@ import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.icons.Search
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
-import dev.mnascimentos.aureole.core.designsystem.theme.AureoleTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.FolderAppRowItemParams
 
@@ -48,9 +46,9 @@ internal fun LazyListScope.selectedFolderAppSection(
     item {
         AureoleText(
             text = "Selecionados ($totalSelectedCount)",
-            style = AureoleTheme.typography.titleSmall,
+            style = AureoleDS.typography.titleSmall,
             fontWeight = FontWeight.Bold,
-            color = MaterialTheme.colorScheme.primary,
+            color = AureoleDS.colors.onSurfaceHigh,
             modifier = Modifier.padding(vertical = 4.dp)
         )
     }
@@ -64,8 +62,8 @@ internal fun LazyListScope.selectedFolderAppSection(
             }
             AureoleText(
                 text = emptyText,
-                style = AureoleTheme.typography.bodyMedium,
-                color = AureoleTheme.colors.onSurfaceMedium,
+                style = AureoleDS.typography.bodyMedium,
+                color = AureoleDS.colors.onSurfaceMedium,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(vertical = 12.dp),
@@ -75,7 +73,8 @@ internal fun LazyListScope.selectedFolderAppSection(
     } else {
         itemsIndexed(
             items = filteredSelected,
-            key = { _, app -> "sel_${app.packageName}" }
+            key = { _, app -> "sel_${app.packageName}" },
+            contentType = { _, _ -> "selected_app_row" }
         ) { index, app ->
             SelectedFolderAppRow(
                 params = FolderAppRowItemParams(
@@ -103,9 +102,9 @@ internal fun LazyListScope.remainingFolderAppSection(
         Spacer(modifier = Modifier.height(8.dp))
         AureoleText(
             text = "Outros Aplicativos (${filteredRemaining.size})",
-            style = AureoleTheme.typography.titleSmall,
+            style = AureoleDS.typography.titleSmall,
             fontWeight = FontWeight.Bold,
-            color = AureoleTheme.colors.onSurfaceMedium,
+            color = AureoleDS.colors.onSurfaceMedium,
             modifier = Modifier.padding(vertical = 4.dp)
         )
     }
@@ -119,8 +118,8 @@ internal fun LazyListScope.remainingFolderAppSection(
             }
             AureoleText(
                 text = emptyText,
-                style = AureoleTheme.typography.bodyMedium,
-                color = AureoleTheme.colors.onSurfaceMedium,
+                style = AureoleDS.typography.bodyMedium,
+                color = AureoleDS.colors.onSurfaceMedium,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(vertical = 12.dp),
@@ -130,7 +129,8 @@ internal fun LazyListScope.remainingFolderAppSection(
     } else {
         itemsIndexed(
             items = filteredRemaining,
-            key = { _, app -> "rem_${app.packageName}" }
+            key = { _, app -> "rem_${app.packageName}" },
+            contentType = { _, _ -> "rem_app_row" }
         ) { _, app ->
             RemainingFolderAppRow(
                 app = app,
@@ -154,7 +154,7 @@ internal fun SelectedFolderAppRow(
         modifier = modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(12.dp))
-            .background(AureoleTheme.colors.surfaceVariant.copy(alpha = 0.5f))
+            .background(AureoleDS.colors.surfaceVariant.copy(alpha = 0.5f))
             .padding(horizontal = 12.dp, vertical = 6.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
@@ -173,9 +173,9 @@ internal fun SelectedFolderAppRow(
             Spacer(modifier = Modifier.width(8.dp))
             AureoleText(
                 text = params.app.label,
-                style = AureoleTheme.typography.bodyMedium,
+                style = AureoleDS.typography.bodyMedium,
                 fontWeight = FontWeight.SemiBold,
-                color = AureoleTheme.colors.onSurfaceHigh
+                color = AureoleDS.colors.onSurfaceHigh
             )
         }
 
@@ -196,18 +196,18 @@ internal fun FolderAppPickerSearchInput(
     OutlinedTextField(
         value = query,
         onValueChange = onQueryChange,
-        placeholder = { AureoleText("Buscar aplicativo...", color = AureoleTheme.colors.onSurfaceLow) },
+        placeholder = { AureoleText("Buscar aplicativo...", color = AureoleDS.colors.onSurfaceLow) },
         leadingIcon = {
             AureoleDS.icons.Search(
-                tint = AureoleTheme.colors.onSurfaceMedium
+                tint = AureoleDS.colors.onSurfaceMedium
             )
         },
         singleLine = true,
         colors = OutlinedTextFieldDefaults.colors(
-            focusedBorderColor = MaterialTheme.colorScheme.primary,
-            unfocusedBorderColor = AureoleTheme.colors.outline,
-            focusedTextColor = AureoleTheme.colors.onSurfaceHigh,
-            unfocusedTextColor = AureoleTheme.colors.onSurfaceHigh
+            focusedBorderColor = AureoleDS.colors.onSurfaceHigh,
+            unfocusedBorderColor = AureoleDS.colors.outline,
+            focusedTextColor = AureoleDS.colors.onSurfaceHigh,
+            unfocusedTextColor = AureoleDS.colors.onSurfaceHigh
         ),
         modifier = Modifier.fillMaxWidth()
     )
@@ -215,7 +215,7 @@ internal fun FolderAppPickerSearchInput(
 
 @AureolePreview
 @Composable
-fun FolderAppPickerDialogPreview() {
+private fun FolderAppPickerDialogPreview() {
     val mockFolder = AppFolder(id = "1", name = "Social")
     AureoleLauncherTheme {
         FolderAppPickerDialog(

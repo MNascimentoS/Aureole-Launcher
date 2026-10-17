@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -24,8 +23,8 @@ import dev.mnascimentos.aureole.core.data.model.LauncherItemState
 import dev.mnascimentos.aureole.core.data.model.LauncherItemType
 import dev.mnascimentos.aureole.core.data.model.ScrollOrientation
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
-import dev.mnascimentos.aureole.core.designsystem.theme.AureoleTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.LocalHomeActions
 import dev.mnascimentos.aureole.feature.home.LocalHomeUiState
@@ -43,14 +42,14 @@ internal fun EditDialogChildrenListSection(
             modifier = Modifier
                 .fillMaxWidth()
                 .clip(RoundedCornerShape(14.dp))
-                .background(AureoleTheme.colors.surfaceVariant.copy(alpha = 0.25f))
+                .background(AureoleDS.colors.surfaceVariant.copy(alpha = 0.25f))
                 .padding(16.dp),
             contentAlignment = Alignment.Center
         ) {
             AureoleText(
                 text = "Nenhum componente adicionado ainda.",
-                style = AureoleTheme.typography.bodyMedium,
-                color = AureoleTheme.colors.onSurfaceMedium
+                style = AureoleDS.typography.bodyMedium,
+                color = AureoleDS.colors.onSurfaceMedium
             )
         }
     } else {
@@ -82,9 +81,9 @@ internal fun ScrollViewOrientationSelector(
     Column(modifier = Modifier.fillMaxWidth()) {
         AureoleText(
             text = "Orientação do Scroll",
-            style = AureoleTheme.typography.titleMedium,
+            style = AureoleDS.typography.titleMedium,
             fontWeight = FontWeight.SemiBold,
-            color = AureoleTheme.colors.onSurfaceHigh,
+            color = AureoleDS.colors.onSurfaceHigh,
             modifier = Modifier.padding(bottom = 10.dp)
         )
 
@@ -117,14 +116,14 @@ private fun OrientationOptionCard(
     modifier: Modifier = Modifier
 ) {
     val bgColor = if (isSelected) {
-        MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.6f)
+        AureoleDS.colors.surfaceVariant.copy(alpha = 0.6f)
     } else {
-        AureoleTheme.colors.surfaceVariant.copy(alpha = 0.35f)
+        AureoleDS.colors.surfaceVariant.copy(alpha = 0.35f)
     }
     val contentColor = if (isSelected) {
-        MaterialTheme.colorScheme.onPrimaryContainer
+        AureoleDS.colors.onSurfaceHigh
     } else {
-        AureoleTheme.colors.onSurfaceMedium
+        AureoleDS.colors.onSurfaceMedium
     }
 
     Row(
@@ -143,7 +142,7 @@ private fun OrientationOptionCard(
         Spacer(modifier = Modifier.width(2.dp))
         AureoleText(
             text = title,
-            style = AureoleTheme.typography.labelLarge,
+            style = AureoleDS.typography.labelLarge,
             fontWeight = FontWeight.SemiBold,
             color = contentColor,
             maxLines = 1,
@@ -154,7 +153,7 @@ private fun OrientationOptionCard(
 
 @AureolePreview
 @Composable
-fun EditGridItemDialogPreview() {
+private fun EditGridItemDialogPreview() {
     val sampleItem = LauncherItemState(
         id = "item_1",
         type = LauncherItemType.APPS_LIST,

@@ -12,13 +12,11 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
@@ -38,6 +36,8 @@ import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.icons.Add
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
+import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.LocalHomeUiState
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.ContainerFolderButtonParams
 
@@ -49,6 +49,7 @@ private const val FOLDER_BG_INACTIVE_ALPHA = 0.85f
 @Composable
 fun ContainerAddFolderButton(
     onClick: () -> Unit,
+    modifier: Modifier = Modifier,
     isBackgroundEnabled: Boolean = true
 ) {
     val buttonSize = if (isBackgroundEnabled) 52.dp else 60.dp
@@ -56,7 +57,7 @@ fun ContainerAddFolderButton(
     val cornerRadius = if (isBackgroundEnabled) 15.dp else 18.dp
 
     Box(
-        modifier = Modifier
+        modifier = modifier
             .padding(vertical = 4.dp)
             .size(buttonSize)
             .clip(RoundedCornerShape(cornerRadius))
@@ -77,12 +78,14 @@ data class ContainerFolderConfig(
     val isBackgroundEnabled: Boolean = true,
 )
 
+@Suppress("LongParameterList") // Folder item accepts folder data, state, callbacks and modifier
 @Composable
 fun ContainerFolderItem(
     folder: AppFolder,
     isOpened: Boolean,
     config: ContainerFolderConfig,
     onFolderClick: (AppFolder, Float) -> Unit,
+    modifier: Modifier = Modifier,
     onLongClick: (() -> Unit)? = null,
 ) {
     val showFolderLabels = config.showFolderLabels
@@ -106,7 +109,7 @@ fun ContainerFolderItem(
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier
+        modifier = modifier
             .padding(vertical = 4.dp)
             .widthIn(max = 68.dp),
     ) {
@@ -129,12 +132,14 @@ fun ContainerFolderItem(
     }
 }
 
+@Suppress("LongParameterList") // Folder button accepts button params, position callback, click handlers and modifier
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ContainerFolderButton(
     params: ContainerFolderButtonParams,
     onPositionedY: (Float) -> Unit,
     onClick: () -> Unit,
+    modifier: Modifier = Modifier,
     onLongClick: (() -> Unit)? = null,
     isBackgroundEnabled: Boolean = true
 ) {
@@ -154,7 +159,7 @@ fun ContainerFolderButton(
     }
 
     Box(
-        modifier = Modifier
+        modifier = modifier
             .size(buttonSize)
             .clip(RoundedCornerShape(cornerRadius))
             .background(params.containerColor)
@@ -182,9 +187,9 @@ fun ContainerFolderButton(
                     text = params.folder.name.take(1).uppercase(),
                     color = params.textColor,
                     style = if (isBackgroundEnabled) {
-                        MaterialTheme.typography.headlineSmall
+                        AureoleDS.typography.titleLarge
                     } else {
-                        MaterialTheme.typography.headlineMedium
+                        AureoleDS.typography.titleLarge
                     },
                     fontWeight = FontWeight.Bold
                 )
@@ -233,7 +238,7 @@ private fun EmptyFolderMiniGridPreview(folder: AppFolder) {
         AureoleText(
             text = folder.name.take(1).uppercase(),
             color = AureoleDS.colors.onSurfaceMedium,
-            style = MaterialTheme.typography.titleMedium,
+            style = AureoleDS.typography.titleMedium,
             fontWeight = FontWeight.Bold
         )
     }
@@ -272,27 +277,36 @@ private fun PopulatedFolderMiniGrid(folderApps: List<AppInfo>) {
 }
 
 @Composable
-fun ContainerFolderLabel(name: String) {
-    Spacer(modifier = Modifier.height(2.dp))
-    AureoleText(
-        text = name,
-        color = AureoleDS.colors.onSurfaceHigh,
-        style = MaterialTheme.typography.labelSmall,
-        fontWeight = FontWeight.Medium,
-        maxLines = 1,
-        overflow = TextOverflow.Ellipsis,
-        textAlign = TextAlign.Center,
-        modifier = Modifier.widthIn(max = 56.dp)
-    )
+fun ContainerFolderLabel(
+    name: String,
+    modifier: Modifier = Modifier
+) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = modifier.padding(top = 2.dp)
+    ) {
+        AureoleText(
+            text = name,
+            color = AureoleDS.colors.onSurfaceHigh,
+            style = AureoleDS.typography.labelSmall,
+            fontWeight = FontWeight.Medium,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+            textAlign = TextAlign.Center,
+            modifier = Modifier.widthIn(max = 56.dp)
+        )
+    }
 }
 
+@Suppress("LongParameterList")
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ContainerAppItem(
     app: AppInfo,
     showLabels: Boolean,
-    isBackgroundEnabled: Boolean = true,
     onAppClick: (AppInfo) -> Unit,
+    modifier: Modifier = Modifier,
+    isBackgroundEnabled: Boolean = true,
     onLongClick: () -> Unit
 ) {
     val uiState = LocalHomeUiState.current
@@ -306,7 +320,7 @@ fun ContainerAppItem(
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier
+        modifier = modifier
             .padding(vertical = 4.dp)
             .widthIn(max = 68.dp),
     ) {
@@ -332,5 +346,19 @@ fun ContainerAppItem(
         if (showLabels) {
             ContainerFolderLabel(name = app.label)
         }
+    }
+}
+
+@AureolePreview
+@Composable
+private fun ContainerFolderItemPreview() {
+    val sampleFolder = AppFolder(id = "f1", name = "Social")
+    AureoleLauncherTheme {
+        ContainerFolderItem(
+            folder = sampleFolder,
+            isOpened = false,
+            config = ContainerFolderConfig(showFolderLabels = true, isGridFolderEnabled = false),
+            onFolderClick = { _, _ -> }
+        )
     }
 }

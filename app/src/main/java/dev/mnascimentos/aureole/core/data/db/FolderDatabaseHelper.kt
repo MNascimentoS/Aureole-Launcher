@@ -2,10 +2,12 @@ package dev.mnascimentos.aureole.core.data.db
 
 import android.content.ContentValues
 import android.content.Context
+import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteException
 import android.database.sqlite.SQLiteOpenHelper
 import android.util.Log
+import androidx.core.database.sqlite.transaction
 import dev.mnascimentos.aureole.core.data.model.AppFolder
 import dev.mnascimentos.aureole.core.data.model.FolderEntity
 import dev.mnascimentos.aureole.core.data.model.FolderItemEntity
@@ -84,42 +86,45 @@ class FolderDatabaseHelper(context: Context) : SQLiteOpenHelper(
 
         cursor.use { folderCursor ->
             while (folderCursor.moveToNext()) {
-                val id = folderCursor.getString(folderCursor.getColumnIndexOrThrow("id"))
-                val panelIdIndex = folderCursor.getColumnIndex("panel_id")
-                val panelId = if (panelIdIndex != -1 && !folderCursor.isNull(panelIdIndex)) {
-                    folderCursor.getString(panelIdIndex)
-                } else {
-                    null
-                }
-                val name = folderCursor.getString(folderCursor.getColumnIndexOrThrow("name"))
-                val color = folderCursor.getString(folderCursor.getColumnIndexOrThrow("color"))
-                val iconFallback = folderCursor.getString(folderCursor.getColumnIndexOrThrow("icon_fallback"))
-                val iconIndex = folderCursor.getColumnIndex("icon")
-                val icon = if (iconIndex != -1 && !folderCursor.isNull(iconIndex)) {
-                    folderCursor.getString(iconIndex)
-                } else {
-                    null
-                }
-                val displayAsGrid = folderCursor.getInt(folderCursor.getColumnIndexOrThrow("display_as_grid")) == 1
-                val createdAt = folderCursor.getLong(folderCursor.getColumnIndexOrThrow("created_at"))
-
-                val folderEntity = FolderEntity(
-                    id = id,
-                    panelId = panelId,
-                    name = name,
-                    color = color,
-                    iconFallback = iconFallback,
-                    icon = icon,
-                    displayAsGrid = displayAsGrid,
-                    createdAt = createdAt
-                )
-
-                val items = getFolderItems(db, id)
+                val folderEntity = folderCursor.toFolderEntity()
+                val items = getFolderItems(db, folderEntity.id)
                 result.add(FolderWithItems(folderEntity, items))
             }
         }
 
         return result
+    }
+
+    private fun Cursor.toFolderEntity(): FolderEntity {
+        val id = getString(getColumnIndexOrThrow("id"))
+        val panelIdIndex = getColumnIndex("panel_id")
+        val panelId = if (panelIdIndex != -1 && !isNull(panelIdIndex)) {
+            getString(panelIdIndex)
+        } else {
+            null
+        }
+        val name = getString(getColumnIndexOrThrow("name"))
+        val color = getString(getColumnIndexOrThrow("color"))
+        val iconFallback = getString(getColumnIndexOrThrow("icon_fallback"))
+        val iconIndex = getColumnIndex("icon")
+        val icon = if (iconIndex != -1 && !isNull(iconIndex)) {
+            getString(iconIndex)
+        } else {
+            null
+        }
+        val displayAsGrid = getInt(getColumnIndexOrThrow("display_as_grid")) == 1
+        val createdAt = getLong(getColumnIndexOrThrow("created_at"))
+
+        return FolderEntity(
+            id = id,
+            panelId = panelId,
+            name = name,
+            color = color,
+            iconFallback = iconFallback,
+            icon = icon,
+            displayAsGrid = displayAsGrid,
+            createdAt = createdAt
+        )
     }
 
     private fun getFolderItems(db: SQLiteDatabase, folderId: String): List<FolderItemEntity> {
@@ -155,9 +160,7 @@ class FolderDatabaseHelper(context: Context) : SQLiteOpenHelper(
     }
 
     fun insertFolder(folder: AppFolder) {
-        val db = writableDatabase
-        db.beginTransaction()
-        try {
+        writableDatabase.transaction {
             val folderValues = ContentValues().apply {
                 put("id", folder.id)
                 put("panel_id", folder.panelId)
@@ -167,7 +170,7 @@ class FolderDatabaseHelper(context: Context) : SQLiteOpenHelper(
                 put("display_as_grid", if (folder.displayAsGrid) 1 else 0)
                 put("created_at", System.currentTimeMillis())
             }
-            db.insertWithOnConflict("folders", null, folderValues, SQLiteDatabase.CONFLICT_REPLACE)
+            insertWithOnConflict("folders", null, folderValues, SQLiteDatabase.CONFLICT_REPLACE)
 
             folder.appPackageNames.forEachIndexed { index, pkg ->
                 val itemValues = ContentValues().apply {
@@ -175,12 +178,8 @@ class FolderDatabaseHelper(context: Context) : SQLiteOpenHelper(
                     put("package_name", pkg)
                     put("item_order", index)
                 }
-                db.insert("folder_items", null, itemValues)
+                insert("folder_items", null, itemValues)
             }
-
-            db.setTransactionSuccessful()
-        } finally {
-            db.endTransaction()
         }
     }
 
@@ -194,21 +193,16 @@ class FolderDatabaseHelper(context: Context) : SQLiteOpenHelper(
     }
 
     fun updateFolderItems(folderId: String, packageNames: List<String>) {
-        val db = writableDatabase
-        db.beginTransaction()
-        try {
-            db.delete("folder_items", "folder_id = ?", arrayOf(folderId))
+        writableDatabase.transaction {
+            delete("folder_items", "folder_id = ?", arrayOf(folderId))
             packageNames.forEachIndexed { index, pkg ->
                 val itemValues = ContentValues().apply {
                     put("folder_id", folderId)
                     put("package_name", pkg)
                     put("item_order", index)
                 }
-                db.insert("folder_items", null, itemValues)
+                insert("folder_items", null, itemValues)
             }
-            db.setTransactionSuccessful()
-        } finally {
-            db.endTransaction()
         }
     }
 

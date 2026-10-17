@@ -2,7 +2,6 @@ package dev.mnascimentos.aureole.feature.home.components.containers.folder
 
 import android.content.ComponentName
 import android.content.Intent
-import android.graphics.drawable.ColorDrawable
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.combinedClickable
@@ -22,7 +21,6 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -37,10 +35,12 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.core.graphics.drawable.toDrawable
 import dev.mnascimentos.aureole.core.data.model.AppFolder
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleHeaderBanner
 import dev.mnascimentos.aureole.core.designsystem.components.AureolePopupBox
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.LocalHomeActions
@@ -112,7 +112,6 @@ private fun StandardFolderPopupBox(
 
     AureolePopupBox(
         hazeState = null,
-        contentPadding = PaddingValues(0.dp),
         modifier = modifier
             .widthIn(min = 180.dp, max = 210.dp)
             .heightIn(max = 400.dp)
@@ -169,8 +168,8 @@ private fun OpenedFolderGrid(
         ) {
             Text(
                 text = "Nenhum aplicativo na pasta",
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
+                style = AureoleDS.typography.bodySmall,
+                color = AureoleDS.colors.onSurfaceMedium
             )
         }
     } else {
@@ -189,7 +188,11 @@ private fun OpenedFolderGrid(
                 .fillMaxWidth()
                 .heightIn(max = gridHeight)
         ) {
-            items(appsInFolder, key = { it.packageName }) { app ->
+            items(
+                items = appsInFolder,
+                key = { it.packageName },
+                contentType = { "opened_folder_popup_app_grid" }
+            ) { app ->
                 OpenedFolderGridAppItem(
                     app = app,
                     onClick = { onAppClick(app) },
@@ -231,8 +234,8 @@ private fun OpenedFolderGridAppItem(
         Spacer(modifier = Modifier.height(6.dp))
         Text(
             text = app.label,
-            style = MaterialTheme.typography.labelSmall,
-            color = MaterialTheme.colorScheme.onSurface,
+            style = AureoleDS.typography.labelSmall,
+            color = AureoleDS.colors.onSurfaceHigh,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
             textAlign = TextAlign.Center,
@@ -243,12 +246,12 @@ private fun OpenedFolderGridAppItem(
 
 @AureolePreview
 @Composable
-fun OpenedFolderPopupPreview() {
+private fun OpenedFolderPopupPreview() {
     val mockApp = AppInfo(
         label = "Chat",
         packageName = "com.example.chat",
         componentName = ComponentName("com.example.chat", "MainActivity"),
-        icon = ColorDrawable(0xFF1B65C0.toInt())
+        icon = 0xFF1B65C0.toInt().toDrawable()
     )
     val mockFolder = AppFolder(
         id = "1",

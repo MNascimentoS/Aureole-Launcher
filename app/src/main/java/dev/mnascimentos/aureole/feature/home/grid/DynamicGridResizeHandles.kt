@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberUpdatedState
@@ -36,14 +35,15 @@ private val CORNER_HANDLE_RADIUS = 12.dp
 @Composable
 fun BoxScope.RightEdgeResizeHandle(
     params: GridCellParams,
-    callbacks: ResizeHandleCallbacks
+    callbacks: ResizeHandleCallbacks,
+    modifier: Modifier = Modifier
 ) {
     val currentItem by rememberUpdatedState(params.item)
     val currentParams by rememberUpdatedState(params)
     val currentCallbacks by rememberUpdatedState(callbacks)
 
     Box(
-        modifier = Modifier
+        modifier = modifier
             .align(Alignment.CenterEnd)
             .fillMaxHeight()
             .padding(top = CORNER_TOUCH_SIZE, bottom = CORNER_TOUCH_SIZE)
@@ -88,14 +88,15 @@ fun BoxScope.RightEdgeResizeHandle(
 @Composable
 fun BoxScope.BottomEdgeResizeHandle(
     params: GridCellParams,
-    callbacks: ResizeHandleCallbacks
+    callbacks: ResizeHandleCallbacks,
+    modifier: Modifier = Modifier
 ) {
     val currentItem by rememberUpdatedState(params.item)
     val currentParams by rememberUpdatedState(params)
     val currentCallbacks by rememberUpdatedState(callbacks)
 
     Box(
-        modifier = Modifier
+        modifier = modifier
             .align(Alignment.BottomCenter)
             .fillMaxWidth()
             .padding(start = CORNER_TOUCH_SIZE, end = CORNER_TOUCH_SIZE)
@@ -140,7 +141,8 @@ fun BoxScope.BottomEdgeResizeHandle(
 @Composable
 fun BoxScope.CornerResizeHandle(
     params: GridCellParams,
-    callbacks: CornerResizeCallbacks
+    callbacks: CornerResizeCallbacks,
+    modifier: Modifier = Modifier
 ) {
     val currentItem by rememberUpdatedState(params.item)
     val currentParams by rememberUpdatedState(params)
@@ -178,11 +180,11 @@ fun BoxScope.CornerResizeHandle(
     }
 
     Box(
-        modifier = Modifier
+        modifier = modifier
             .align(Alignment.BottomEnd)
             .size(CORNER_TOUCH_SIZE)
             .background(
-                color = MaterialTheme.colorScheme.primaryContainer,
+                color = AureoleDS.colors.surfaceVariant,
                 shape = RoundedCornerShape(topStart = CORNER_HANDLE_RADIUS)
             )
             .pointerInput(params.item.id) { detectTapGestures(onTap = { currentCallbacks.onEditItem() }) }
@@ -190,7 +192,7 @@ fun BoxScope.CornerResizeHandle(
         contentAlignment = Alignment.Center
     ) {
         AureoleDS.icons.Edit(
-            tint = MaterialTheme.colorScheme.onPrimaryContainer,
+            tint = AureoleDS.colors.onSurfaceHigh,
             modifier = Modifier.size(20.dp)
         )
     }
@@ -227,23 +229,24 @@ private fun handleCornerDragEnd(
 @Composable
 fun BoxScope.DeleteActionHandle(
     itemId: String,
-    onDeleteItem: () -> Unit
+    onDeleteItem: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     val currentOnDelete by rememberUpdatedState(onDeleteItem)
 
     Box(
-        modifier = Modifier
+        modifier = modifier
             .align(Alignment.TopEnd)
             .size(CORNER_TOUCH_SIZE)
             .background(
-                color = MaterialTheme.colorScheme.errorContainer,
+                color = AureoleDS.colors.error,
                 shape = RoundedCornerShape(bottomStart = CORNER_HANDLE_RADIUS)
             )
             .pointerInput(itemId + "_delete") { detectTapGestures(onTap = { currentOnDelete() }) },
         contentAlignment = Alignment.Center
     ) {
         AureoleDS.icons.Delete(
-            tint = MaterialTheme.colorScheme.onErrorContainer,
+            tint = AureoleDS.colors.onError,
             modifier = Modifier.size(20.dp)
         )
     }

@@ -1,5 +1,6 @@
 package dev.mnascimentos.aureole.feature.home.components.containers
 
+import android.content.ComponentName
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -14,18 +15,22 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.graphics.drawable.toDrawable
 import dev.mnascimentos.aureole.core.data.model.AppFolder
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.data.model.ContainerItemEntity
 import dev.mnascimentos.aureole.core.data.model.ContainerItemType
-import dev.mnascimentos.aureole.core.designsystem.theme.AureoleTheme
+import dev.mnascimentos.aureole.core.data.model.ContainerModel
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
+import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
+import dev.mnascimentos.aureole.feature.home.components.containers.model.ContainerOptionsState
 
 @Composable
 internal fun ManageItemsListSection(
@@ -37,7 +42,7 @@ internal fun ManageItemsListSection(
             modifier = Modifier
                 .fillMaxWidth()
                 .background(
-                    AureoleTheme.colors.surfaceVariant.copy(alpha = 0.25f),
+                    AureoleDS.colors.surfaceVariant.copy(alpha = 0.25f),
                     RoundedCornerShape(14.dp)
                 )
                 .padding(16.dp),
@@ -45,8 +50,8 @@ internal fun ManageItemsListSection(
         ) {
             Text(
                 text = "Nenhum componente adicionado ainda.",
-                style = AureoleTheme.typography.bodyMedium,
-                color = AureoleTheme.colors.onSurfaceMedium
+                style = AureoleDS.typography.bodyMedium,
+                color = AureoleDS.colors.onSurfaceMedium
             )
         }
     } else {
@@ -54,7 +59,11 @@ internal fun ManageItemsListSection(
             modifier = Modifier.heightIn(max = 300.dp).fillMaxWidth(),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            itemsIndexed(state.itemsList, key = { _, item -> item.id }) { index, item ->
+            itemsIndexed(
+                items = state.itemsList,
+                key = { _, item -> item.id },
+                contentType = { _, _ -> "manage_item_row" }
+            ) { index, item ->
                 ManageItemRow(
                     params = ManageItemRowParams(
                         index = index,
@@ -105,7 +114,7 @@ private fun ManageItemRow(
         modifier = Modifier
             .fillMaxWidth()
             .background(
-                color = AureoleTheme.colors.surfaceVariant.copy(alpha = 0.3f),
+                color = AureoleDS.colors.surfaceVariant.copy(alpha = 0.3f),
                 shape = RoundedCornerShape(12.dp)
             )
             .padding(horizontal = 12.dp, vertical = 12.dp),
@@ -115,15 +124,15 @@ private fun ManageItemRow(
             modifier = Modifier
                 .size(32.dp)
                 .background(
-                    color = AureoleTheme.colors.surfaceVariant.copy(alpha = 0.8f),
+                    color = AureoleDS.colors.surfaceVariant.copy(alpha = 0.8f),
                     shape = RoundedCornerShape(8.dp)
                 ),
             contentAlignment = Alignment.Center
         ) {
             Text(
                 text = "A",
-                style = AureoleTheme.typography.labelMedium,
-                color = AureoleTheme.colors.onSurfaceHigh
+                style = AureoleDS.typography.labelMedium,
+                color = AureoleDS.colors.onSurfaceHigh
             )
         }
 
@@ -131,8 +140,8 @@ private fun ManageItemRow(
 
         Text(
             text = title,
-            style = AureoleTheme.typography.bodyMedium,
-            color = AureoleTheme.colors.onSurfaceHigh,
+            style = AureoleDS.typography.bodyMedium,
+            color = AureoleDS.colors.onSurfaceHigh,
             modifier = Modifier.weight(1f)
         )
 
@@ -159,7 +168,7 @@ private fun ManageItemRowActionButtons(
                 modifier = Modifier
                     .size(24.dp)
                     .background(
-                        color = AureoleTheme.colors.surfaceVariant.copy(alpha = 0.5f),
+                        color = AureoleDS.colors.surfaceVariant.copy(alpha = 0.5f),
                         shape = RoundedCornerShape(6.dp)
                     )
                     .clickable { actions.onMoveUp(index) },
@@ -167,7 +176,7 @@ private fun ManageItemRowActionButtons(
             ) {
                 Text(
                     text = "↑",
-                    color = AureoleTheme.colors.onSurfaceHigh,
+                    color = AureoleDS.colors.onSurfaceHigh,
                     fontSize = 12.sp
                 )
             }
@@ -177,7 +186,7 @@ private fun ManageItemRowActionButtons(
                 modifier = Modifier
                     .size(24.dp)
                     .background(
-                        color = AureoleTheme.colors.surfaceVariant.copy(alpha = 0.5f),
+                        color = AureoleDS.colors.surfaceVariant.copy(alpha = 0.5f),
                         shape = RoundedCornerShape(6.dp)
                     )
                     .clickable { actions.onMoveDown(index) },
@@ -185,7 +194,7 @@ private fun ManageItemRowActionButtons(
             ) {
                 Text(
                     text = "↓",
-                    color = AureoleTheme.colors.onSurfaceHigh,
+                    color = AureoleDS.colors.onSurfaceHigh,
                     fontSize = 12.sp
                 )
             }
@@ -194,7 +203,7 @@ private fun ManageItemRowActionButtons(
             modifier = Modifier
                 .size(24.dp)
                 .background(
-                    color = MaterialTheme.colorScheme.error.copy(alpha = 0.15f),
+                    color = AureoleDS.colors.error.copy(alpha = 0.15f),
                     shape = RoundedCornerShape(6.dp)
                 )
                 .clickable { actions.onRemove(index) },
@@ -202,9 +211,56 @@ private fun ManageItemRowActionButtons(
         ) {
             Text(
                 text = "✕",
-                color = MaterialTheme.colorScheme.error,
+                color = AureoleDS.colors.error,
                 fontSize = 12.sp
             )
         }
+    }
+}
+
+@AureolePreview
+@Composable
+private fun ManageItemsListSectionPreview() {
+    val sampleApps = listOf(
+        AppInfo(
+            label = "Camera",
+            packageName = "com.example.camera",
+            componentName = ComponentName("com.example.camera", "MainActivity"),
+            icon = 0xFF2E7D32.toInt().toDrawable()
+        )
+    )
+    val samplePanel = ContainerModel(id = "p1", title = "Panel")
+    val state = EditContainerState(
+        panel = samplePanel,
+        options = ContainerOptionsState(
+            position = "Center",
+            orientation = "Vertical",
+            isBackgroundEnabled = true,
+            isExpandCell = false,
+            showAddFolderButton = true,
+            showFolderLabels = true,
+            isGridFolderEnabled = true,
+            hideText = false,
+            textColor = null,
+            backgroundColor = null,
+            strokeEnabled = false,
+            strokeColor = null,
+            folderColor = null,
+            folderStrokeEnabled = false,
+            scrollUpShortcut = null,
+            scrollDownShortcut = null
+        ),
+        itemsList = listOf(
+            ContainerItemEntity(
+                id = "1",
+                panelId = "p1",
+                itemType = ContainerItemType.APP,
+                packageName = "com.example.camera"
+            )
+        ),
+        folders = emptyList()
+    )
+    AureoleLauncherTheme {
+        ManageItemsListSection(state = state, allApps = sampleApps)
     }
 }

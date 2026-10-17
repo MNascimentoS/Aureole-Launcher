@@ -8,6 +8,7 @@ import dev.mnascimentos.aureole.core.data.repository.GridRepository
 import dev.mnascimentos.aureole.core.data.repository.SettingsRepository
 import dev.mnascimentos.aureole.core.data.repository.WidgetRepository
 import dev.mnascimentos.aureole.feature.home.HomeViewModel
+import dev.mnascimentos.aureole.feature.home.components.widgets.WidgetPickerViewModel
 import dev.mnascimentos.aureole.feature.settings.SettingsViewModel
 import org.koin.core.module.dsl.singleOf
 import org.koin.core.module.dsl.viewModelOf
@@ -24,4 +25,5 @@ val appModule = module {
 
     viewModelOf(::HomeViewModel)
     viewModelOf(::SettingsViewModel)
+    viewModelOf(::WidgetPickerViewModel)
 }

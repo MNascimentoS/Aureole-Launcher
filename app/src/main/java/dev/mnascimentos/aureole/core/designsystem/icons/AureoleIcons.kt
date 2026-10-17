@@ -326,7 +326,7 @@ fun AureoleIcons.VerticalContainer(
 fun AureoleIcons.CheckSelected(
     modifier: Modifier = Modifier,
     tint: Color? = null
-) { AureoleIcon(R.drawable.ic_aureole_check_selected, modifier, tint) }
+) { AureoleIcon(R.drawable.ic_aureole_app_select, modifier, tint) }
 
 @Composable
 fun AureoleIcons.CheckUnselected(
@@ -350,7 +350,7 @@ fun AureoleIcons.RoundCheck(
 fun AureoleIcons.Unchecked(
     modifier: Modifier = Modifier,
     tint: Color? = null
-) { AureoleIcon(R.drawable.ic_aureole_unchecked, modifier, tint) }
+) { AureoleIcon(R.drawable.ic_aureole_check_unselected, modifier, tint) }
 
 @Composable
 internal fun AureoleIcon(

@@ -36,7 +36,6 @@ import dev.mnascimentos.aureole.core.designsystem.palette.allPalettes
 import dev.mnascimentos.aureole.core.designsystem.palette.toLight
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
-import dev.mnascimentos.aureole.core.designsystem.theme.AureoleTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 
 private const val BLUR_SWATCH_WIDTH_DP = 140
@@ -49,11 +48,13 @@ private const val BLUR_MAX_OPACITY = 0.9f
 fun SetBackgroundBottomSheet(
     onSolidColorClick: () -> Unit,
     onCustomImageClick: () -> Unit,
-    onDismissRequest: () -> Unit
+    onDismissRequest: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     SettingsBottomSheet(
         title = "Set background",
-        onDismissRequest = onDismissRequest
+        onDismissRequest = onDismissRequest,
+        modifier = modifier
     ) {
         Column(
             verticalArrangement = Arrangement.spacedBy(AureoleDS.dimens.xSmall),
@@ -78,21 +79,27 @@ fun SetBackgroundBottomSheet(
 fun PickPaletteBottomSheet(
     selectedPaletteName: String,
     onPaletteSelected: (ThemePalette) -> Unit,
-    onDismissRequest: () -> Unit
+    onDismissRequest: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     val isDarkTheme = isSystemInDarkTheme()
     val cleanSelectedName = selectedPaletteName.removeSuffix(" Light").trim()
 
     SettingsBottomSheet(
         title = "Pick a palette",
-        onDismissRequest = onDismissRequest
+        onDismissRequest = onDismissRequest,
+        modifier = modifier
     ) {
         LazyColumn(
             verticalArrangement = Arrangement.spacedBy(AureoleDS.dimens.small),
             modifier = Modifier
                 .fillMaxSize()
         ) {
-            items(allPalettes) { basePalette ->
+            items(
+                items = allPalettes,
+                key = { it.name },
+                contentType = { "palette_row" }
+            ) { basePalette ->
                 val isSelected = basePalette.name.equals(cleanSelectedName, ignoreCase = true)
                 val activePalette = if (isDarkTheme) basePalette else basePalette.toLight()
                 PaletteRowItem(
@@ -114,14 +121,14 @@ private fun PaletteRowItem(
     onSelect: () -> Unit
 ) {
     val rowBg = if (isSelected) {
-        AureoleTheme.colors.surfaceVariant.copy(alpha = 0.5f)
+        AureoleDS.colors.surfaceVariant.copy(alpha = 0.5f)
     } else {
         Color.Transparent
     }
     val textColor = if (isSelected) {
-        AureoleTheme.colors.onSurfaceHigh
+        AureoleDS.colors.onSurfaceHigh
     } else {
-        AureoleTheme.colors.onSurfaceMedium
+        AureoleDS.colors.onSurfaceMedium
     }
 
     Row(
@@ -135,7 +142,7 @@ private fun PaletteRowItem(
     ) {
         AureoleText(
             text = displayName,
-            style = AureoleTheme.typography.titleMedium,
+            style = AureoleDS.typography.titleMedium,
             fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium,
             color = textColor,
             modifier = Modifier.weight(1f)
@@ -152,7 +159,7 @@ private fun PaletteColorSwatches(palette: ThemePalette) {
             .width(BLUR_SWATCH_WIDTH_DP.dp)
             .height(BLUR_SWATCH_HEIGHT_DP.dp)
             .clip(RoundedCornerShape(6.dp))
-            .border(AureoleDS.dimens.borderMinimal, AureoleTheme.colors.outline, RoundedCornerShape(6.dp))
+            .border(AureoleDS.dimens.borderMinimal, AureoleDS.colors.outline, RoundedCornerShape(6.dp))
     ) {
         val colorList = listOf(
             palette.colors.background,
@@ -179,7 +186,8 @@ fun BlurBottomSheet(
     currentOpacity: Float,
     isHazeEnabled: Boolean,
     onOptionSelected: (Float, Boolean) -> Unit,
-    onDismissRequest: () -> Unit
+    onDismissRequest: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     val options = listOf(
         Triple(0.0f, false, "None"),
@@ -190,7 +198,8 @@ fun BlurBottomSheet(
 
     SettingsBottomSheet(
         title = "Glass & Blur",
-        onDismissRequest = onDismissRequest
+        onDismissRequest = onDismissRequest,
+        modifier = modifier
     ) {
         Column(
             verticalArrangement = Arrangement.spacedBy(AureoleDS.dimens.xSmall),
@@ -220,14 +229,14 @@ private fun BlurOptionRow(
     onSelect: () -> Unit
 ) {
     val rowBg = if (isSelected) {
-        AureoleTheme.colors.surfaceVariant.copy(alpha = 0.5f)
+        AureoleDS.colors.surfaceVariant.copy(alpha = 0.5f)
     } else {
         Color.Transparent
     }
     val textColor = if (isSelected) {
-        AureoleTheme.colors.onSurfaceHigh
+        AureoleDS.colors.onSurfaceHigh
     } else {
-        AureoleTheme.colors.onSurfaceMedium
+        AureoleDS.colors.onSurfaceMedium
     }
 
     Row(
@@ -241,14 +250,14 @@ private fun BlurOptionRow(
     ) {
         AureoleText(
             text = label,
-            style = AureoleTheme.typography.bodyLarge,
+            style = AureoleDS.typography.bodyLarge,
             fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
             color = textColor,
             modifier = Modifier.weight(1f)
         )
         if (isSelected) {
             AureoleDS.icons.Check(
-                tint = AureoleTheme.colors.onSurfaceHigh,
+                tint = AureoleDS.colors.onSurfaceHigh,
                 modifier = Modifier.size(AureoleDS.dimens.iconMedium)
             )
         }
@@ -257,7 +266,7 @@ private fun BlurOptionRow(
 
 @AureolePreview
 @Composable
-fun SetBackgroundBottomSheetPreview() {
+private fun SetBackgroundBottomSheetPreview() {
     AureoleLauncherTheme {
         SetBackgroundBottomSheet(
             onSolidColorClick = {},
@@ -269,7 +278,7 @@ fun SetBackgroundBottomSheetPreview() {
 
 @AureolePreview
 @Composable
-fun PickPaletteBottomSheetPreview() {
+private fun PickPaletteBottomSheetPreview() {
     AureoleLauncherTheme {
         PickPaletteBottomSheet(
             selectedPaletteName = "Frostbite",
@@ -281,7 +290,7 @@ fun PickPaletteBottomSheetPreview() {
 
 @AureolePreview
 @Composable
-fun BlurBottomSheetPreview() {
+private fun BlurBottomSheetPreview() {
     AureoleLauncherTheme {
         BlurBottomSheet(
             currentOpacity = BLUR_MED_OPACITY,

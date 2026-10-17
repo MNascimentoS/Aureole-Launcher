@@ -1,5 +1,28 @@
 package dev.mnascimentos.aureole.feature.home.components.containers.model
 
+enum class EditContainerScreenMode {
+    MAIN, APPEARANCE, BEHAVIOR, MANAGE_ITEMS
+}
+
+data class ContainerOptionsState(
+    val position: String,
+    val orientation: String,
+    val isBackgroundEnabled: Boolean,
+    val isExpandCell: Boolean,
+    val showAddFolderButton: Boolean,
+    val showFolderLabels: Boolean,
+    val isGridFolderEnabled: Boolean,
+    val hideText: Boolean,
+    val textColor: Long?,
+    val backgroundColor: Long?,
+    val strokeEnabled: Boolean,
+    val strokeColor: Long?,
+    val folderColor: Long?,
+    val folderStrokeEnabled: Boolean,
+    val scrollUpShortcut: String?,
+    val scrollDownShortcut: String?
+)
+
 data class EditContainerFormState(
     val position: String,
     val orientation: String = "Vertical",

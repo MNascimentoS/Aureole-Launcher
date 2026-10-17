@@ -1,7 +1,18 @@
 package dev.mnascimentos.aureole.feature.home.extensions
 
 import dev.mnascimentos.aureole.feature.home.HomeViewModel
+import dev.mnascimentos.aureole.feature.home.components.appsdrawer.extensions.onSearchQueryChanged
+import dev.mnascimentos.aureole.feature.home.components.containers.extensions.closeEditContainerDialog
+import dev.mnascimentos.aureole.feature.home.components.containers.folder.extensions.onFolderIntent
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.FolderViewIntent
+import dev.mnascimentos.aureole.feature.home.components.favorites.extensions.setShowFavoritePicker
+import dev.mnascimentos.aureole.feature.home.components.overlays.extensions.closeWidgetStackBottomSheet
+import dev.mnascimentos.aureole.feature.home.components.overlays.extensions.dismissReleaseNotes
+import dev.mnascimentos.aureole.feature.home.components.widgets.extensions.closeWidgetPopup
+import dev.mnascimentos.aureole.feature.home.components.widgets.extensions.setShowWidgetPicker
+import dev.mnascimentos.aureole.feature.home.grid.extensions.saveGridEditMode
+import dev.mnascimentos.aureole.feature.home.grid.extensions.setEditingGridItem
+import dev.mnascimentos.aureole.feature.home.grid.extensions.setShowAddContainerDialog
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
 
 fun handleBackNavigation(uiState: MainUiState, viewModel: HomeViewModel) {

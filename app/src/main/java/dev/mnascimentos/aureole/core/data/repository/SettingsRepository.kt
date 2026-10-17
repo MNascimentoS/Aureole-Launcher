@@ -1,9 +1,21 @@
 package dev.mnascimentos.aureole.core.data.repository
 
+import android.app.WallpaperManager
+import android.app.role.RoleManager
 import android.content.Context
+import android.content.Intent
+import android.content.pm.PackageManager
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.os.Build
+import android.util.Log
 import androidx.core.content.edit
+import androidx.core.net.toUri
+import dev.mnascimentos.aureole.core.data.db.AppDatabase
 import dev.mnascimentos.aureole.core.designsystem.utils.HazeUtils
 import java.io.File
+import java.io.FileOutputStream
+import java.io.IOException
 
 class SettingsRepository(private val context: Context) {
 
@@ -211,10 +223,91 @@ class SettingsRepository(private val context: Context) {
         }
     }
 
+    @Suppress("ReturnCount", "TooGenericExceptionCaught")
+    fun saveCustomWallpaper(uriString: String): Boolean {
+        return try {
+            val uri = uriString.toUri()
+            val inputStream = context.contentResolver.openInputStream(uri) ?: return false
+            val bitmap = inputStream.use { BitmapFactory.decodeStream(it) } ?: return false
+            val file = File(context.filesDir, "custom_wallpaper.jpg")
+            FileOutputStream(file).use { out ->
+                bitmap.compress(Bitmap.CompressFormat.JPEG, JPEG_QUALITY, out)
+            }
+            customWallpaperPath = file.absolutePath
+            isCustomWallpaperSet = true
+            true
+        } catch (e: Exception) {
+            Log.w(TAG, "Error in saveCustomWallpaper", e)
+            false
+        }
+    }
+
+    fun checkDefaultLauncher(): Boolean {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            val roleManager = context.getSystemService(RoleManager::class.java)
+            roleManager?.isRoleHeld(RoleManager.ROLE_HOME) ?: false
+        } else {
+            val intent = Intent(Intent.ACTION_MAIN).apply { addCategory(Intent.CATEGORY_HOME) }
+            val resolveInfo = context.packageManager.resolveActivity(intent, PackageManager.MATCH_DEFAULT_ONLY)
+            resolveInfo?.activityInfo?.packageName == context.packageName
+        }
+    }
+
+    fun restoreDefaultWallpaper() {
+        clearCustomWallpaper()
+        try {
+            val wallpaperManager = WallpaperManager.getInstance(context)
+            wallpaperManager.clear()
+        } catch (e: IOException) {
+            Log.w(TAG, "IOException clearing wallpaper", e)
+        } catch (e: SecurityException) {
+            Log.w(TAG, "SecurityException clearing wallpaper", e)
+        }
+    }
+
+    @Suppress("TooGenericExceptionCaught") // Best effort reset cleanup
+    fun performFactoryReset() {
+        try {
+            try {
+                AppDatabase.getInstance(context).clearAllTables()
+            } catch (e: Exception) {
+                Log.w(TAG, "Error clearing Room database", e)
+            }
+            context.deleteDatabase("aureole_app_database.db")
+            context.deleteDatabase("aureole_folders.db")
+
+            listOf(
+                "aureole_grid_prefs",
+                "aureole_settings_prefs",
+                "aureole_widget_prefs",
+                "${context.packageName}_preferences"
+            ).forEach { prefName ->
+                context.getSharedPreferences(prefName, Context.MODE_PRIVATE).edit(commit = true) { clear() }
+            }
+
+            context.cacheDir.deleteRecursively()
+            File(context.filesDir, "custom_wallpaper.jpg").delete()
+        } catch (e: Exception) {
+            Log.w(TAG, "Error performing factory reset", e)
+        }
+
+        val intent = context.packageManager.getLaunchIntentForPackage(context.packageName)?.apply {
+            addFlags(
+                Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            )
+        }
+        if (intent != null) {
+            context.startActivity(intent)
+        }
+        Runtime.getRuntime().exit(0)
+    }
+
     private val prefs
         get() = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
 
     companion object {
+        private const val TAG = "SettingsRepository"
+        private const val JPEG_QUALITY = 90
         private const val PREFS_NAME = "aureole_settings_prefs"
         private const val KEY_LEFT_HANDED_MODE = "left_handed_mode"
         private const val KEY_CONTAINER_ENABLED = "container_enabled"

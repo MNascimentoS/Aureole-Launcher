@@ -172,7 +172,7 @@ private fun applyTintToBitmap(bitmap: Bitmap, tintColor: Int, isAdaptive: Boolea
         recolorStandardPixels(pixels, corners, cornersAreSolid, tintColor)
     }
 
-    val output = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
+    val output = createBitmap(width, height)
     output.setPixels(pixels, 0, width, 0, 0, width, height)
     return output
 }

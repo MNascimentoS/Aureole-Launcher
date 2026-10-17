@@ -1,5 +1,6 @@
 package dev.mnascimentos.aureole.feature.home.components.containers.folder
 
+import android.content.ComponentName
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
@@ -28,7 +29,6 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -41,6 +41,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.core.graphics.drawable.toDrawable
 import dev.chrisbanes.haze.HazeState
 import dev.chrisbanes.haze.HazeStyle
 import dev.chrisbanes.haze.HazeTint
@@ -50,6 +51,8 @@ import dev.mnascimentos.aureole.core.designsystem.components.AureolePopupMenuIte
 import dev.mnascimentos.aureole.core.designsystem.icons.Add
 import dev.mnascimentos.aureole.core.designsystem.icons.Edit
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
+import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.core.designsystem.utils.LocalHazeState
 import dev.mnascimentos.aureole.feature.home.LocalHomeActions
 import dev.mnascimentos.aureole.feature.home.LocalHomeUiState
@@ -85,7 +88,7 @@ fun GridStyleExpandedFolderPopup(
         ) {
             Text(
                 text = folder.name,
-                style = MaterialTheme.typography.headlineMedium,
+                style = AureoleDS.typography.titleLarge,
                 fontWeight = FontWeight.Bold,
                 color = Color.White,
                 textAlign = TextAlign.Center,
@@ -133,7 +136,7 @@ private fun GridFolderContainer(
             state = effectiveHazeState,
             style = HazeStyle(
                 blurRadius = 32.dp,
-                tint = HazeTint(MaterialTheme.colorScheme.surfaceContainerHigh.copy(alpha = 0.55f))
+                tint = HazeTint(AureoleDS.colors.surfaceVariant.copy(alpha = 0.55f))
             )
         ) {
             blurEnabled = true
@@ -143,9 +146,9 @@ private fun GridFolderContainer(
     }
 
     val containerBgColor = if (hasHaze) {
-        MaterialTheme.colorScheme.surfaceContainerHigh.copy(alpha = 0.55f)
+        AureoleDS.colors.surfaceVariant.copy(alpha = 0.55f)
     } else {
-        MaterialTheme.colorScheme.surfaceContainerHigh
+        AureoleDS.colors.surfaceVariant
     }
 
     val gridMaxHeight = calculateGridMaxHeight(appsInFolder.size)
@@ -187,8 +190,8 @@ private fun EmptyFolderGridHint() {
     ) {
         Text(
             text = "Nenhum aplicativo na pasta",
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
+            style = AureoleDS.typography.bodyMedium,
+            color = AureoleDS.colors.onSurfaceMedium
         )
     }
 }
@@ -207,7 +210,11 @@ private fun PopulatedFolderGrid(
         verticalArrangement = Arrangement.spacedBy(18.dp),
         modifier = Modifier.fillMaxWidth()
     ) {
-        items(appsInFolder, key = { it.packageName }) { app ->
+        items(
+            items = appsInFolder,
+            key = { it.packageName },
+            contentType = { "opened_folder_app_grid" }
+        ) { app ->
             OpenedFolderSamsungGridAppItem(
                 app = app,
                 onClick = { actions.onAppClick(app) },
@@ -252,7 +259,7 @@ private fun OpenedFolderSamsungGridAppItem(
         Spacer(modifier = Modifier.height(6.dp))
         Text(
             text = app.label,
-            style = MaterialTheme.typography.labelSmall,
+            style = AureoleDS.typography.labelSmall,
             color = Color.White,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
@@ -266,12 +273,14 @@ private fun OpenedFolderSamsungGridAppItem(
 fun OpenedFolderActions(
     isVisible: Boolean,
     onAddAppsClick: () -> Unit,
-    onEditFolderClick: () -> Unit
+    onEditFolderClick: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     AnimatedVisibility(
         visible = isVisible,
         enter = fadeIn() + expandVertically(),
-        exit = fadeOut() + shrinkVertically()
+        exit = fadeOut() + shrinkVertically(),
+        modifier = modifier
     ) {
         Column(
             modifier = Modifier
@@ -298,27 +307,32 @@ fun OpenedFolderAppList(
     appsInFolder: List<AppInfo>,
     isLeftHandedMode: Boolean,
     onAppClick: (AppInfo) -> Unit,
+    modifier: Modifier = Modifier,
     onAppLongClick: ((AppInfo) -> Unit)? = null
 ) {
     if (appsInFolder.isEmpty()) {
         Box(
-            modifier = Modifier
+            modifier = modifier
                 .fillMaxWidth()
                 .padding(vertical = 16.dp),
             contentAlignment = Alignment.Center
         ) {
             Text(
                 text = "No apps in folder",
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
+                style = AureoleDS.typography.bodySmall,
+                color = AureoleDS.colors.onSurfaceMedium
             )
         }
     } else {
         LazyColumn(
             contentPadding = PaddingValues(vertical = 2.dp),
-            modifier = Modifier.fillMaxWidth()
+            modifier = modifier.fillMaxWidth()
         ) {
-            items(appsInFolder, key = { it.packageName }) { app ->
+            items(
+                items = appsInFolder,
+                key = { it.packageName },
+                contentType = { "opened_folder_app_row" }
+            ) { app ->
                 OpenedFolderAppItemRow(
                     app = app,
                     isLeftHandedMode = isLeftHandedMode,
@@ -358,8 +372,8 @@ private fun OpenedFolderAppItemRow(
         if (isLeftHandedMode) {
             Text(
                 text = app.label,
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurface,
+                style = AureoleDS.typography.bodyMedium,
+                color = AureoleDS.colors.onSurfaceHigh,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
                 modifier = Modifier.weight(1f)
@@ -383,12 +397,32 @@ private fun OpenedFolderAppItemRow(
             Spacer(modifier = Modifier.width(10.dp))
             Text(
                 text = app.label,
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurface,
+                style = AureoleDS.typography.bodyMedium,
+                color = AureoleDS.colors.onSurfaceHigh,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
                 modifier = Modifier.weight(1f)
             )
         }
+    }
+}
+
+@AureolePreview
+@Composable
+private fun OpenedFolderAppListPreview() {
+    val sampleApps = listOf(
+        AppInfo(
+            label = "Camera",
+            packageName = "com.example.camera",
+            componentName = ComponentName("com.example.camera", "MainActivity"),
+            icon = 0xFF2E7D32.toInt().toDrawable()
+        )
+    )
+    AureoleLauncherTheme {
+        OpenedFolderAppList(
+            appsInFolder = sampleApps,
+            isLeftHandedMode = false,
+            onAppClick = {}
+        )
     }
 }

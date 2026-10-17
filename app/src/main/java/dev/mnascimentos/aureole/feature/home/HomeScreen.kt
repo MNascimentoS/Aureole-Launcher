@@ -33,13 +33,16 @@ import dev.mnascimentos.aureole.core.data.model.ContainerModel
 import dev.mnascimentos.aureole.core.data.model.LauncherItemType
 import dev.mnascimentos.aureole.core.designsystem.utils.LocalHazeState
 import dev.mnascimentos.aureole.core.designsystem.utils.LocalSharedTransitionScope
-import dev.mnascimentos.aureole.feature.home.components.CustomizeBottomSheet
-import dev.mnascimentos.aureole.feature.home.components.EditClockBottomSheet
-import dev.mnascimentos.aureole.feature.home.components.HomeOverlaysContent
-import dev.mnascimentos.aureole.feature.home.components.WallpaperBackground
+import dev.mnascimentos.aureole.feature.home.components.clock.EditClockBottomSheet
+import dev.mnascimentos.aureole.feature.home.components.common.WallpaperBackground
 import dev.mnascimentos.aureole.feature.home.components.containers.EditContainerScreen
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.HomeScreenFolderOverlays
-import dev.mnascimentos.aureole.feature.home.components.homeDragGestures
+import dev.mnascimentos.aureole.feature.home.components.overlays.CustomizeBottomSheet
+import dev.mnascimentos.aureole.feature.home.components.overlays.HomeOverlaysContent
+import dev.mnascimentos.aureole.feature.home.components.overlays.homeDragGestures
+import dev.mnascimentos.aureole.feature.home.components.widgets.EditWidgetGroupScreen
+import dev.mnascimentos.aureole.feature.home.components.widgets.model.EditWidgetGroupActions
+import dev.mnascimentos.aureole.feature.home.components.widgets.model.EditWidgetGroupParams
 import dev.mnascimentos.aureole.feature.home.grid.AddContainerDialog
 import dev.mnascimentos.aureole.feature.home.grid.EditGridItemDialog
 import dev.mnascimentos.aureole.feature.home.model.HomeDragParams
@@ -49,9 +52,6 @@ import dev.mnascimentos.aureole.feature.home.model.HomeScreenBodyConfig
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
 import dev.mnascimentos.aureole.feature.home.model.getWidgetIdsForStack
 import dev.mnascimentos.aureole.feature.home.model.isOverlayActive
-import dev.mnascimentos.aureole.feature.home.widget.EditWidgetGroupActions
-import dev.mnascimentos.aureole.feature.home.widget.EditWidgetGroupParams
-import dev.mnascimentos.aureole.feature.home.widget.EditWidgetGroupScreen
 
 val LocalHomeUiState = staticCompositionLocalOf<MainUiState> { MainUiState() }
 val LocalHomeActions = staticCompositionLocalOf<HomeScreenActions> { createDefaultHomeScreenActions() }
@@ -118,7 +118,7 @@ fun HomeScreen(
                         screenHeightPx = it.size.height.toFloat()
                         screenWidthPx = it.size.width.toFloat()
                     }
-                    .then(HomeScreenExclusionModifier(isSystemBackActive))
+                    .homeScreenExclusion(isSystemBackActive)
                     .then(if (uiState.isGridEditMode) Modifier else dragModifier)
             ) {
                 HomeScreenBody(
@@ -141,16 +141,15 @@ fun HomeScreen(
     }
 }
 
-@Composable
-private fun HomeScreenExclusionModifier(isSystemBackActive: Boolean): Modifier {
+private fun Modifier.homeScreenExclusion(isSystemBackActive: Boolean): Modifier {
     return if (!isSystemBackActive) {
-        Modifier.systemGestureExclusion {
+        this.systemGestureExclusion {
             val heightPx = it.size.height.toFloat()
             val widthPx = it.size.width.toFloat()
             Rect(0f, 0f, widthPx, heightPx)
         }
     } else {
-        Modifier
+        this
     }
 }
 
