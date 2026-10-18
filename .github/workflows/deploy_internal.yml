@@ -22,9 +22,9 @@ on:
         required: false
 
 jobs:
+  # Roda em todo evento (PR, push em release/* e disparo manual): o deploy só acontece se os testes passarem.
   pr_check:
     name: PR Validation Check
-    if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
 
     steps:
@@ -90,6 +90,7 @@ jobs:
 
   deploy_internal:
     name: Build & Deploy Internal Release
+    needs: pr_check
     if: github.event_name == 'workflow_dispatch' || (github.event_name == 'push' && startsWith(github.ref, 'refs/heads/release/'))
     runs-on: ubuntu-latest
 

@@ -140,6 +140,7 @@ tasks.register<JacocoReport>("jacocoTestReport") {
     description = "Generates JaCoCo code coverage report for unit tests."
     group = "Reporting"
     dependsOn("testDebugUnitTest")
+    dependsOn("compileDebugKotlin", "compileDebugJavaWithJavac")
 
     reports {
         xml.required.set(true)
