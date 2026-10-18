@@ -20,10 +20,11 @@ import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.core.designsystem.palette.getPaletteByName
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDimens
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
-import dev.mnascimentos.aureole.feature.home.components.FavoriteAppsDialog
-import dev.mnascimentos.aureole.feature.home.components.model.FavoriteAppsDialogActions
-import dev.mnascimentos.aureole.feature.home.components.model.FavoriteAppsDialogConfig
-import dev.mnascimentos.aureole.feature.settings.extensions.checkDefaultLauncher
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleThemeConfig
+import dev.mnascimentos.aureole.core.lifecycle.SettingsLifecycleObserver
+import dev.mnascimentos.aureole.feature.home.components.favorites.FavoriteAppsDialog
+import dev.mnascimentos.aureole.feature.home.components.favorites.model.FavoriteAppsDialogActions
+import dev.mnascimentos.aureole.feature.home.components.favorites.model.FavoriteAppsDialogConfig
 import dev.mnascimentos.aureole.feature.settings.extensions.performFactoryReset
 import dev.mnascimentos.aureole.feature.settings.extensions.resetGridLayout
 import dev.mnascimentos.aureole.feature.settings.extensions.restoreDefaultWallpaper
@@ -40,17 +41,21 @@ class SettingsActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
+        lifecycle.addObserver(SettingsLifecycleObserver(viewModel))
+
         setContent {
             val uiState by viewModel.uiState.collectAsState()
 
             val isDarkTheme = isSystemInDarkTheme()
             val palette = getPaletteByName(uiState.selectedThemeName, isDarkTheme, uiState.manualSeedColor)
             AureoleLauncherTheme(
-                darkTheme = isDarkTheme,
-                isDynamicWallpaperEnabled = uiState.isDynamicWallpaperEnabled,
-                aureoleColors = palette.colors,
-                aureoleFontName = uiState.selectedFontName,
-                aureoleDimens = AureoleDimens(cornerRadius = uiState.cornerRadiusDp.dp)
+                config = AureoleThemeConfig(
+                    darkTheme = isDarkTheme,
+                    isDynamicWallpaperEnabled = uiState.isDynamicWallpaperEnabled,
+                    aureoleColors = palette.colors,
+                    aureoleFontName = uiState.selectedFontName,
+                    aureoleDimens = AureoleDimens(radiusLarge = uiState.cornerRadiusDp.dp)
+                )
             ) {
                 LaunchedEffect(uiState.shouldFinishActivity) {
                     if (uiState.shouldFinishActivity) {
@@ -62,7 +67,7 @@ class SettingsActivity : ComponentActivity() {
                 val photoPickerLauncher = rememberLauncherForActivityResult(
                     contract = ActivityResultContracts.PickVisualMedia(),
                 ) { uri ->
-                    uri?.let { viewModel.setCustomWallpaper(it) }
+                    uri?.let { viewModel.setCustomWallpaper(it.toString()) }
                 }
 
                 SettingsScreen(
@@ -209,12 +214,6 @@ class SettingsActivity : ComponentActivity() {
             },
             onSearchIconPositionSelected = { pos -> viewModel.setSettingValue(SettingValue.SearchIconPosition(pos)) }
         )
-    }
-
-    override fun onResume() {
-        super.onResume()
-        viewModel.checkDefaultLauncher()
-        viewModel.loadSettings()
     }
 
     private fun openDefaultLauncherSettings() {

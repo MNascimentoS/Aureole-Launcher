@@ -1,9 +1,11 @@
 package dev.mnascimentos.aureole.feature.home.components.containers.folder
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.NonRestartableComposable
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 
+@NonRestartableComposable
 @Composable
 fun CreateFolderDialog(
     onDismiss: () -> Unit,
@@ -16,6 +18,7 @@ fun CreateFolderDialog(
     )
 }
 
+@NonRestartableComposable
 @Composable
 fun CreateFolderDialog(
     onDismiss: () -> Unit,
@@ -29,7 +32,7 @@ fun CreateFolderDialog(
 
 @AureolePreview
 @Composable
-fun CreateFolderDialogPreview() {
+private fun CreateFolderDialogPreview() {
     AureoleLauncherTheme {
         CreateFolderDialog(
             onDismiss = {},

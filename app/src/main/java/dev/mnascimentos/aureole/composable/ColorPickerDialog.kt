@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Slider
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -31,6 +30,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.core.graphics.ColorUtils
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
+import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
 import dev.mnascimentos.aureole.core.designsystem.icons.Check
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
@@ -75,8 +75,7 @@ fun ColorPickerDialog(
         title = {
             AureoleText(
                 text = "Escolher Cor Primária",
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Bold,
+                format = AureoleTextFormatParams(style = AureoleDS.typography.titleMedium, fontWeight = FontWeight.Bold)
             )
         },
         text = {
@@ -131,8 +130,8 @@ private fun PresetColorsSection(
     Column(verticalArrangement = Arrangement.spacedBy(AureoleDS.dimens.medium)) {
         AureoleText(
             text = "Cores Recomendadas",
-            style = MaterialTheme.typography.labelMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            color = AureoleDS.colors.onSurfaceMedium,
+            format = AureoleTextFormatParams(style = AureoleDS.typography.labelMedium)
         )
 
         FlowRow(
@@ -149,7 +148,7 @@ private fun PresetColorsSection(
                         .background(Color(colorInt))
                         .border(
                             width = if (isSelected) AureoleDS.dimens.borderMax else AureoleDS.dimens.borderMinimal,
-                            color = if (isSelected) MaterialTheme.colorScheme.primary else Color.Transparent,
+                            color = if (isSelected) AureoleDS.colors.onSurfaceHigh else Color.Transparent,
                             shape = CircleShape,
                         )
                         .clickable { onSelectPreset(colorInt) },
@@ -176,8 +175,8 @@ private fun CustomHueSection(
     Column {
         AureoleText(
             text = "Ajuste Personalizado (Matiz)",
-            style = MaterialTheme.typography.labelMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            color = AureoleDS.colors.onSurfaceMedium,
+            format = AureoleTextFormatParams(style = AureoleDS.typography.labelMedium)
         )
 
         Row(
@@ -189,7 +188,7 @@ private fun CustomHueSection(
                     .size(AureoleDS.dimens.iconXLarge)
                     .clip(CircleShape)
                     .background(Color(selectedColor))
-                    .border(AureoleDS.dimens.borderMinimal, MaterialTheme.colorScheme.outline, CircleShape),
+                    .border(AureoleDS.dimens.borderMinimal, AureoleDS.colors.outline, CircleShape),
             )
 
             Slider(
@@ -204,7 +203,7 @@ private fun CustomHueSection(
 
 @AureolePreview
 @Composable
-fun ColorPickerDialogPreview() {
+private fun ColorPickerDialogPreview() {
     AureoleLauncherTheme {
         ColorPickerDialog(
             initialColor = DEFAULT_PRESET_COLOR,

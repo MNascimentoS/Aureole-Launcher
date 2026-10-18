@@ -1,10 +1,12 @@
 package dev.mnascimentos.aureole.feature.home.components.containers.folder
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.NonRestartableComposable
 import dev.mnascimentos.aureole.core.data.model.AppFolder
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 
+@NonRestartableComposable
 @Composable
 fun EditFolderDialog(
     folder: AppFolder,
@@ -22,7 +24,7 @@ fun EditFolderDialog(
 
 @AureolePreview
 @Composable
-fun EditFolderDialogPreview() {
+private fun EditFolderDialogPreview() {
     val mockFolder = AppFolder(id = "1", name = "Tools")
     AureoleLauncherTheme {
         EditFolderDialog(

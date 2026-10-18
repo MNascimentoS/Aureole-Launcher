@@ -55,20 +55,28 @@ internal object AppIconHelper {
     }
 
     private fun findRowBounds(pixels: IntArray, yOffset: Int, width: Int): Pair<Int, Int>? {
-        var rowMinX = width
-        var rowMaxX = -1
+        var rowMinX = -1
         for (x in 0 until width) {
             if (Color.alpha(pixels[yOffset + x]) > MIN_ALPHA_THRESHOLD) {
-                if (x < rowMinX) rowMinX = x
-                if (x > rowMaxX) rowMaxX = x
+                rowMinX = x
+                break
             }
         }
-        return if (rowMaxX >= rowMinX) Pair(rowMinX, rowMaxX) else null
+        if (rowMinX == -1) return null
+
+        var rowMaxX = rowMinX
+        for (x in width - 1 downTo rowMinX) {
+            if (Color.alpha(pixels[yOffset + x]) > MIN_ALPHA_THRESHOLD) {
+                rowMaxX = x
+                break
+            }
+        }
+        return Pair(rowMinX, rowMaxX)
     }
 
     fun scaleCroppedBitmap(srcBitmap: Bitmap, minX: Int, minY: Int, cropW: Int, cropH: Int): Bitmap {
         val cropped = Bitmap.createBitmap(srcBitmap, minX, minY, cropW, cropH)
-        val scaled = Bitmap.createBitmap(DEFAULT_ICON_SIZE, DEFAULT_ICON_SIZE, Bitmap.Config.ARGB_8888)
+        val scaled = createBitmap(DEFAULT_ICON_SIZE, DEFAULT_ICON_SIZE)
         val scaledCanvas = Canvas(scaled)
 
         val padding = (DEFAULT_ICON_SIZE * CROP_PADDING_RATIO).toInt()

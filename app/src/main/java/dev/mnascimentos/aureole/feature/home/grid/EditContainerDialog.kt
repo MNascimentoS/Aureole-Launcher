@@ -17,7 +17,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -28,11 +27,11 @@ import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.core.data.model.LauncherItemState
 import dev.mnascimentos.aureole.core.data.model.LauncherItemType
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
+import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
 import dev.mnascimentos.aureole.core.designsystem.icons.Add
 import dev.mnascimentos.aureole.core.designsystem.icons.Delete
 import dev.mnascimentos.aureole.core.designsystem.icons.Edit
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
-import dev.mnascimentos.aureole.core.designsystem.theme.AureoleTheme
 import dev.mnascimentos.aureole.feature.home.LocalHomeActions
 import dev.mnascimentos.aureole.feature.home.LocalHomeUiState
 import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
@@ -73,15 +72,17 @@ fun EditGridItemDialog(
                 modifier = Modifier
                     .fillMaxWidth()
                     .clip(RoundedCornerShape(12.dp))
-                    .background(AureoleTheme.colors.surfaceVariant.copy(alpha = 0.35f))
+                    .background(AureoleDS.colors.surfaceVariant.copy(alpha = 0.35f))
                     .padding(horizontal = 14.dp, vertical = 10.dp),
                 contentAlignment = Alignment.Center
             ) {
                 AureoleText(
                     text = "Tamanho atual: ${item.colSpan} x ${item.rowSpan} células",
-                    style = AureoleTheme.typography.bodyMedium,
-                    fontWeight = FontWeight.Medium,
-                    color = AureoleTheme.colors.onSurfaceMedium
+                    color = AureoleDS.colors.onSurfaceMedium,
+                    format = AureoleTextFormatParams(
+                        style = AureoleDS.typography.bodyMedium,
+                        fontWeight = FontWeight.Medium
+                    )
                 )
             }
 
@@ -116,7 +117,7 @@ private fun EditDialogDeleteRow(
         modifier = Modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(14.dp))
-            .background(MaterialTheme.colorScheme.errorContainer.copy(alpha = 0.12f))
+            .background(AureoleDS.colors.error.copy(alpha = 0.12f))
             .clickable {
                 onDeleteConfirm(itemId)
                 onDismissRequest()
@@ -129,20 +130,19 @@ private fun EditDialogDeleteRow(
             modifier = Modifier
                 .size(32.dp)
                 .clip(RoundedCornerShape(8.dp))
-                .background(MaterialTheme.colorScheme.errorContainer.copy(alpha = 0.3f)),
+                .background(AureoleDS.colors.error.copy(alpha = 0.3f)),
             contentAlignment = Alignment.Center
         ) {
             AureoleDS.icons.Delete(
-                tint = MaterialTheme.colorScheme.error,
+                tint = AureoleDS.colors.error,
                 modifier = Modifier.size(18.dp)
             )
         }
         Spacer(modifier = Modifier.width(10.dp))
         AureoleText(
             text = "Remover Componente",
-            style = AureoleTheme.typography.labelLarge,
-            fontWeight = FontWeight.Bold,
-            color = MaterialTheme.colorScheme.error
+            color = AureoleDS.colors.error,
+            format = AureoleTextFormatParams(style = AureoleDS.typography.labelLarge, fontWeight = FontWeight.Bold)
         )
     }
 }
@@ -174,7 +174,7 @@ private fun EditDialogTypeActionSection(
             modifier = Modifier
                 .fillMaxWidth()
                 .clip(RoundedCornerShape(14.dp))
-                .background(AureoleTheme.colors.surfaceVariant.copy(alpha = 0.45f))
+                .background(AureoleDS.colors.surfaceVariant.copy(alpha = 0.45f))
                 .clickable(onClick = onClick)
                 .padding(horizontal = 14.dp, vertical = 12.dp),
             verticalAlignment = Alignment.CenterVertically
@@ -183,21 +183,23 @@ private fun EditDialogTypeActionSection(
                 modifier = Modifier
                     .size(36.dp)
                     .clip(RoundedCornerShape(10.dp))
-                    .background(AureoleTheme.colors.surface.copy(alpha = 0.5f)),
+                    .background(AureoleDS.colors.surface.copy(alpha = 0.5f)),
                 contentAlignment = Alignment.Center
             ) {
                 AureoleDS.icons.Edit(
-                    tint = AureoleTheme.colors.onSurfaceHigh,
+                    tint = AureoleDS.colors.onSurfaceHigh,
                     modifier = Modifier.size(20.dp)
                 )
             }
             Spacer(modifier = Modifier.width(12.dp))
             AureoleText(
                 text = text,
-                style = AureoleTheme.typography.bodyMedium,
-                fontWeight = FontWeight.SemiBold,
-                color = AureoleTheme.colors.onSurfaceHigh,
-                modifier = Modifier.weight(1f)
+                color = AureoleDS.colors.onSurfaceHigh,
+                modifier = Modifier.weight(1f),
+                format = AureoleTextFormatParams(
+                    style = AureoleDS.typography.bodyMedium,
+                    fontWeight = FontWeight.SemiBold
+                )
             )
         }
     }
@@ -215,10 +217,9 @@ private fun EditDialogWidgetListSection(
 
         AureoleText(
             text = "Widgets no Grupo (${widgets.size})",
-            style = AureoleTheme.typography.titleMedium,
-            fontWeight = FontWeight.SemiBold,
-            color = AureoleTheme.colors.onSurfaceHigh,
-            modifier = Modifier.padding(bottom = 6.dp)
+            color = AureoleDS.colors.onSurfaceHigh,
+            modifier = Modifier.padding(bottom = 6.dp),
+            format = AureoleTextFormatParams(style = AureoleDS.typography.titleMedium, fontWeight = FontWeight.SemiBold)
         )
 
         EditDialogWidgetListRows(widgets = widgets, stackId = item.id, actions = actions)
@@ -228,13 +229,13 @@ private fun EditDialogWidgetListSection(
         Button(
             onClick = { actions.onAddWidgetClick(item.id) },
             colors = ButtonDefaults.buttonColors(
-                containerColor = AureoleTheme.colors.surfaceVariant,
-                contentColor = AureoleTheme.colors.onSurfaceHigh
+                containerColor = AureoleDS.colors.surfaceVariant,
+                contentColor = AureoleDS.colors.onSurfaceHigh
             ),
             modifier = Modifier.fillMaxWidth()
         ) {
             AureoleDS.icons.Add(modifier = Modifier.padding(end = AureoleDS.dimens.xSmall))
-            AureoleText(text = "Adicionar Widget ao Grupo", color = AureoleTheme.colors.onSurfaceHigh)
+            AureoleText(text = "Adicionar Widget ao Grupo", color = AureoleDS.colors.onSurfaceHigh)
         }
 
         Spacer(modifier = Modifier.height(6.dp))
@@ -250,18 +251,17 @@ private fun EditDialogWidgetListSection(
         ) {
             AureoleText(
                 text = "Mostrar Indicador de Posição",
-                style = AureoleTheme.typography.bodyMedium,
-                color = AureoleTheme.colors.onSurfaceHigh
+                color = AureoleDS.colors.onSurfaceHigh,
+                format = AureoleTextFormatParams(style = AureoleDS.typography.bodyMedium)
             )
             AureoleText(
                 text = if (isIndicatorEnabled) "Ativado" else "Desativado",
-                style = AureoleTheme.typography.labelLarge,
-                fontWeight = FontWeight.Bold,
                 color = if (isIndicatorEnabled) {
-                    MaterialTheme.colorScheme.primary
+                    AureoleDS.colors.onSurfaceHigh
                 } else {
-                    AureoleTheme.colors.onSurfaceMedium
-                }
+                    AureoleDS.colors.onSurfaceMedium
+                },
+                format = AureoleTextFormatParams(style = AureoleDS.typography.labelLarge, fontWeight = FontWeight.Bold)
             )
         }
     }
@@ -278,14 +278,14 @@ private fun EditDialogWidgetListRows(
             modifier = Modifier
                 .fillMaxWidth()
                 .clip(RoundedCornerShape(14.dp))
-                .background(AureoleTheme.colors.surfaceVariant.copy(alpha = 0.25f))
+                .background(AureoleDS.colors.surfaceVariant.copy(alpha = 0.25f))
                 .padding(14.dp),
             contentAlignment = Alignment.Center
         ) {
             AureoleText(
                 text = "Nenhum widget adicionado ao grupo ainda.",
-                style = AureoleTheme.typography.bodyMedium,
-                color = AureoleTheme.colors.onSurfaceMedium
+                color = AureoleDS.colors.onSurfaceMedium,
+                format = AureoleTextFormatParams(style = AureoleDS.typography.bodyMedium)
             )
         }
     } else {
@@ -294,20 +294,22 @@ private fun EditDialogWidgetListRows(
                 modifier = Modifier
                     .fillMaxWidth()
                     .clip(RoundedCornerShape(12.dp))
-                    .background(AureoleTheme.colors.surfaceVariant.copy(alpha = 0.35f))
+                    .background(AureoleDS.colors.surfaceVariant.copy(alpha = 0.35f))
                     .padding(horizontal = 12.dp, vertical = 8.dp),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 AureoleText(
                     text = "Widget #${index + 1} (ID: $widgetId)",
-                    style = AureoleTheme.typography.bodyMedium,
-                    fontWeight = FontWeight.Medium,
-                    color = AureoleTheme.colors.onSurfaceHigh,
-                    modifier = Modifier.weight(1f)
+                    color = AureoleDS.colors.onSurfaceHigh,
+                    modifier = Modifier.weight(1f),
+                    format = AureoleTextFormatParams(
+                        style = AureoleDS.typography.bodyMedium,
+                        fontWeight = FontWeight.Medium
+                    )
                 )
                 TextButton(onClick = { actions.onRemoveWidgetClick(widgetId, stackId) }) {
-                    AureoleText(text = "Remover", color = MaterialTheme.colorScheme.error)
+                    AureoleText(text = "Remover", color = AureoleDS.colors.error)
                 }
             }
             Spacer(modifier = Modifier.height(6.dp))
@@ -331,9 +333,8 @@ private fun EditDialogScrollViewSection(
 
         AureoleText(
             text = "Componentes Filhos (${item.safeChildren.size})",
-            style = AureoleTheme.typography.titleMedium,
-            fontWeight = FontWeight.SemiBold,
-            color = AureoleTheme.colors.onSurfaceHigh
+            color = AureoleDS.colors.onSurfaceHigh,
+            format = AureoleTextFormatParams(style = AureoleDS.typography.titleMedium, fontWeight = FontWeight.SemiBold)
         )
 
         EditDialogChildrenListSection(item = item, actions = actions, onDismissRequest = onDismissRequest)
@@ -344,7 +345,7 @@ private fun EditDialogScrollViewSection(
             modifier = Modifier
                 .fillMaxWidth()
                 .clip(RoundedCornerShape(14.dp))
-                .background(AureoleTheme.colors.surfaceVariant)
+                .background(AureoleDS.colors.surfaceVariant)
                 .clickable { actions.onOpenAddContainerForParent(item.id) }
                 .padding(horizontal = 14.dp, vertical = 12.dp),
             verticalAlignment = Alignment.CenterVertically,
@@ -354,20 +355,22 @@ private fun EditDialogScrollViewSection(
                 modifier = Modifier
                     .size(32.dp)
                     .clip(RoundedCornerShape(8.dp))
-                    .background(AureoleTheme.colors.surface.copy(alpha = 0.6f)),
+                    .background(AureoleDS.colors.surface.copy(alpha = 0.6f)),
                 contentAlignment = Alignment.Center
             ) {
                 AureoleDS.icons.Add(
-                    tint = AureoleTheme.colors.onSurfaceHigh,
+                    tint = AureoleDS.colors.onSurfaceHigh,
                     modifier = Modifier.size(18.dp)
                 )
             }
             Spacer(modifier = Modifier.width(10.dp))
             AureoleText(
                 text = "Adicionar Componente",
-                style = AureoleTheme.typography.bodyLarge,
-                fontWeight = FontWeight.SemiBold,
-                color = AureoleTheme.colors.onSurfaceHigh
+                color = AureoleDS.colors.onSurfaceHigh,
+                format = AureoleTextFormatParams(
+                    style = AureoleDS.typography.bodyLarge,
+                    fontWeight = FontWeight.SemiBold
+                )
             )
         }
     }

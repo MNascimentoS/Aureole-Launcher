@@ -6,60 +6,68 @@ import androidx.core.content.edit
 import com.google.gson.Gson
 import com.google.gson.JsonSyntaxException
 import com.google.gson.reflect.TypeToken
-import dev.mnascimentos.aureole.core.data.db.FolderDatabaseHelper
+import dev.mnascimentos.aureole.core.data.db.AppDatabase
+import dev.mnascimentos.aureole.core.data.db.FolderDao
 import dev.mnascimentos.aureole.core.data.model.AppFolder
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-class FolderRepository(private val context: Context) {
-    private val dbHelper = FolderDatabaseHelper(context)
+class FolderRepository(
+    private val folderDao: FolderDao,
+    private val context: Context? = null
+) {
+    constructor(context: Context) : this(
+        AppDatabase.getInstance(context).folderDao(),
+        context
+    )
+
     private val gson = Gson()
 
     suspend fun getFolders(): List<AppFolder> = withContext(Dispatchers.IO) {
-        val dbFolders = dbHelper.getAllFoldersWithItems().map { it.toAppFolder() }
-        if (dbFolders.isEmpty()) {
-            val legacyFolders = getLegacyFolders()
+        val dbFolders = folderDao.getAllFoldersWithItems().map { it.toAppFolder() }
+        if (dbFolders.isEmpty() && context != null) {
+            val legacyFolders = getLegacyFolders(context)
             if (legacyFolders.isNotEmpty()) {
                 legacyFolders.forEach { folder ->
-                    dbHelper.insertFolder(folder)
+                    folderDao.insertFolder(folder)
                 }
                 context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE).edit {
                     remove(KEY_FOLDERS)
                 }
-                return@withContext dbHelper.getAllFoldersWithItems().map { it.toAppFolder() }
+                return@withContext folderDao.getAllFoldersWithItems().map { it.toAppFolder() }
             }
         }
         dbFolders
     }
 
     suspend fun addFolder(folder: AppFolder): AppFolder = withContext(Dispatchers.IO) {
-        dbHelper.insertFolder(folder)
+        folderDao.insertFolder(folder)
         folder
     }
 
     suspend fun updateFolder(folder: AppFolder) = withContext(Dispatchers.IO) {
-        dbHelper.updateFolderDetails(folder.id, folder.name, folder.icon)
-        dbHelper.updateFolderItems(folder.id, folder.appPackageNames)
+        folderDao.updateFolderDetails(folder.id, folder.name, folder.icon)
+        folderDao.updateFolderItems(folder.id, folder.appPackageNames)
     }
 
     suspend fun updateFolderDetails(folderId: String, newName: String, icon: String?) = withContext(Dispatchers.IO) {
-        dbHelper.updateFolderDetails(folderId, newName, icon)
+        folderDao.updateFolderDetails(folderId, newName, icon)
     }
 
     suspend fun renameFolder(folderId: String, newName: String) = withContext(Dispatchers.IO) {
-        dbHelper.updateFolderDetails(folderId, newName, null)
+        folderDao.updateFolderDetails(folderId, newName, null)
     }
 
     suspend fun updateFolderApps(folderId: String, packageNames: List<String>) = withContext(Dispatchers.IO) {
-        dbHelper.updateFolderItems(folderId, packageNames)
+        folderDao.updateFolderItems(folderId, packageNames)
     }
 
     suspend fun deleteFolder(folderId: String) = withContext(Dispatchers.IO) {
-        dbHelper.deleteFolder(folderId)
+        folderDao.deleteFolder(folderId)
     }
 
-    private fun getLegacyFolders(): List<AppFolder> {
-        val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+    private fun getLegacyFolders(ctx: Context): List<AppFolder> {
+        val prefs = ctx.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
         val json = prefs.getString(KEY_FOLDERS, null)
         if (json.isNullOrBlank()) return emptyList()
 

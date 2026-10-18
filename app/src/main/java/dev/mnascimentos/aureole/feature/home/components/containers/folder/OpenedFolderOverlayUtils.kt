@@ -24,15 +24,15 @@ internal object OpenedFolderOverlayUtils {
         }
     }
 
-    fun calculatePopupPaddingModifier(
+    fun Modifier.popupPadding(
         isGridFolderEnabled: Boolean,
         isLeftHandedMode: Boolean,
         clampedTopDp: Dp
     ): Modifier {
         return if (isGridFolderEnabled) {
-            Modifier
+            this
         } else {
-            Modifier.padding(
+            this.padding(
                 start = if (isLeftHandedMode) SIDE_PADDING_DP else 0.dp,
                 end = if (!isLeftHandedMode) SIDE_PADDING_DP else 0.dp,
                 top = clampedTopDp

@@ -17,9 +17,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
+import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
-import dev.mnascimentos.aureole.core.designsystem.theme.AureoleTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 
 @Composable
@@ -35,14 +35,13 @@ internal fun SettingsButtonPositionDialog(
 
     AlertDialog(
         onDismissRequest = onDismiss,
-        containerColor = AureoleTheme.colors.surface,
+        containerColor = AureoleDS.colors.surface,
         shape = RoundedCornerShape(AureoleDS.dimens.radiusLarge),
         title = {
             AureoleText(
                 text = "Posição do Botão de Configurações",
-                style = AureoleTheme.typography.titleMedium,
-                fontWeight = FontWeight.Bold,
-                color = AureoleTheme.colors.onSurfaceHigh
+                color = AureoleDS.colors.onSurfaceHigh,
+                format = AureoleTextFormatParams(style = AureoleDS.typography.titleMedium, fontWeight = FontWeight.Bold)
             )
         },
         text = {
@@ -63,8 +62,8 @@ internal fun SettingsButtonPositionDialog(
                         Spacer(modifier = Modifier.width(AureoleDS.dimens.small))
                         AureoleText(
                             text = label,
-                            style = AureoleTheme.typography.bodyLarge,
-                            color = AureoleTheme.colors.onSurfaceHigh
+                            color = AureoleDS.colors.onSurfaceHigh,
+                            format = AureoleTextFormatParams(style = AureoleDS.typography.bodyLarge)
                         )
                     }
                 }
@@ -72,7 +71,7 @@ internal fun SettingsButtonPositionDialog(
         },
         confirmButton = {
             TextButton(onClick = onDismiss) {
-                AureoleText("Cancelar", color = AureoleTheme.colors.onSurfaceHigh)
+                AureoleText("Cancelar", color = AureoleDS.colors.onSurfaceHigh)
             }
         }
     )
@@ -91,14 +90,13 @@ internal fun SearchIconPositionDialog(
 
     AlertDialog(
         onDismissRequest = onDismiss,
-        containerColor = AureoleTheme.colors.surface,
+        containerColor = AureoleDS.colors.surface,
         shape = RoundedCornerShape(AureoleDS.dimens.radiusLarge),
         title = {
             AureoleText(
                 text = "Posição do Ícone de Busca",
-                style = AureoleTheme.typography.titleMedium,
-                fontWeight = FontWeight.Bold,
-                color = AureoleTheme.colors.onSurfaceHigh
+                color = AureoleDS.colors.onSurfaceHigh,
+                format = AureoleTextFormatParams(style = AureoleDS.typography.titleMedium, fontWeight = FontWeight.Bold)
             )
         },
         text = {
@@ -119,8 +117,8 @@ internal fun SearchIconPositionDialog(
                         Spacer(modifier = Modifier.width(AureoleDS.dimens.small))
                         AureoleText(
                             text = label,
-                            style = AureoleTheme.typography.bodyLarge,
-                            color = AureoleTheme.colors.onSurfaceHigh
+                            color = AureoleDS.colors.onSurfaceHigh,
+                            format = AureoleTextFormatParams(style = AureoleDS.typography.bodyLarge)
                         )
                     }
                 }
@@ -128,7 +126,7 @@ internal fun SearchIconPositionDialog(
         },
         confirmButton = {
             TextButton(onClick = onDismiss) {
-                AureoleText("Cancelar", color = AureoleTheme.colors.onSurfaceHigh)
+                AureoleText("Cancelar", color = AureoleDS.colors.onSurfaceHigh)
             }
         }
     )
@@ -150,14 +148,13 @@ internal fun ContainerPositionDialog(
 
     AlertDialog(
         onDismissRequest = onDismiss,
-        containerColor = AureoleTheme.colors.surface,
+        containerColor = AureoleDS.colors.surface,
         shape = RoundedCornerShape(AureoleDS.dimens.radiusLarge),
         title = {
             AureoleText(
                 text = "Alinhamento do Painel Lateral",
-                style = AureoleTheme.typography.titleMedium,
-                fontWeight = FontWeight.Bold,
-                color = AureoleTheme.colors.onSurfaceHigh
+                color = AureoleDS.colors.onSurfaceHigh,
+                format = AureoleTextFormatParams(style = AureoleDS.typography.titleMedium, fontWeight = FontWeight.Bold)
             )
         },
         text = {
@@ -178,8 +175,8 @@ internal fun ContainerPositionDialog(
                         Spacer(modifier = Modifier.width(AureoleDS.dimens.small))
                         AureoleText(
                             text = label,
-                            style = AureoleTheme.typography.bodyLarge,
-                            color = AureoleTheme.colors.onSurfaceHigh
+                            color = AureoleDS.colors.onSurfaceHigh,
+                            format = AureoleTextFormatParams(style = AureoleDS.typography.bodyLarge)
                         )
                     }
                 }
@@ -187,7 +184,7 @@ internal fun ContainerPositionDialog(
         },
         confirmButton = {
             TextButton(onClick = onDismiss) {
-                AureoleText("Cancelar", color = AureoleTheme.colors.onSurfaceHigh)
+                AureoleText("Cancelar", color = AureoleDS.colors.onSurfaceHigh)
             }
         }
     )
@@ -195,7 +192,7 @@ internal fun ContainerPositionDialog(
 
 @AureolePreview
 @Composable
-fun ContainerPositionDialogPreview() {
+private fun ContainerPositionDialogPreview() {
     AureoleLauncherTheme {
         ContainerPositionDialog(
             currentPosition = "Center",
@@ -207,7 +204,7 @@ fun ContainerPositionDialogPreview() {
 
 @AureolePreview
 @Composable
-fun SettingsButtonPositionDialogPreview() {
+private fun SettingsButtonPositionDialogPreview() {
     AureoleLauncherTheme {
         SettingsButtonPositionDialog(
             currentPosition = "Right",
@@ -219,7 +216,7 @@ fun SettingsButtonPositionDialogPreview() {
 
 @AureolePreview
 @Composable
-fun SearchIconPositionDialogPreview() {
+private fun SearchIconPositionDialogPreview() {
     AureoleLauncherTheme {
         SearchIconPositionDialog(
             currentPosition = "Left",

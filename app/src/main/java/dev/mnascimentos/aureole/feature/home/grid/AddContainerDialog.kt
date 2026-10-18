@@ -23,21 +23,21 @@ import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.core.data.model.LauncherItemType
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleDialog
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
+import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
 import dev.mnascimentos.aureole.core.designsystem.icons.Add
 import dev.mnascimentos.aureole.core.designsystem.icons.HorizontalContainer
 import dev.mnascimentos.aureole.core.designsystem.icons.MenuIcon
 import dev.mnascimentos.aureole.core.designsystem.icons.VerticalContainer
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
-import dev.mnascimentos.aureole.core.designsystem.theme.AureoleTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 
 @Composable
 fun AddContainerDialog(
     onDismissRequest: () -> Unit,
     onSelectType: (LauncherItemType) -> Unit,
-    isNested: Boolean = false,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    isNested: Boolean = false
 ) {
     val titleText = if (isNested) "Adicionar ao Scroll View" else "Adicionar Container"
     AureoleDialog(
@@ -104,7 +104,7 @@ private fun AddContainerOptionItem(
         modifier = Modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(14.dp))
-            .background(AureoleTheme.colors.surfaceVariant.copy(alpha = 0.45f))
+            .background(AureoleDS.colors.surfaceVariant.copy(alpha = 0.45f))
             .clickable { onClick() }
             .padding(horizontal = 12.dp, vertical = 10.dp),
         verticalAlignment = Alignment.CenterVertically
@@ -113,7 +113,7 @@ private fun AddContainerOptionItem(
             modifier = Modifier
                 .size(36.dp)
                 .clip(RoundedCornerShape(10.dp))
-                .background(AureoleTheme.colors.surface.copy(alpha = 0.5f)),
+                .background(AureoleDS.colors.surface.copy(alpha = 0.5f)),
             contentAlignment = Alignment.Center
         ) {
             icon(Modifier.size(20.dp))
@@ -121,16 +121,15 @@ private fun AddContainerOptionItem(
         Spacer(modifier = Modifier.width(12.dp))
         AureoleText(
             text = title,
-            style = AureoleTheme.typography.bodyMedium,
-            fontWeight = FontWeight.SemiBold,
-            color = AureoleTheme.colors.onSurfaceHigh
+            color = AureoleDS.colors.onSurfaceHigh,
+            format = AureoleTextFormatParams(style = AureoleDS.typography.bodyMedium, fontWeight = FontWeight.SemiBold)
         )
     }
 }
 
 @AureolePreview
 @Composable
-fun AddContainerDialogPreview() {
+private fun AddContainerDialogPreview() {
     AureoleLauncherTheme {
         AddContainerDialog(
             onDismissRequest = {},

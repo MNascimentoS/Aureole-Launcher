@@ -23,6 +23,8 @@ import dev.mnascimentos.aureole.core.designsystem.icons.Settings
 import dev.mnascimentos.aureole.core.designsystem.icons.Smile
 import dev.mnascimentos.aureole.core.designsystem.icons.Star
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
+import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 
 object FolderIconRegistry {
     // We map keys directly to the AureoleDS.icons function using a Composable lambda
@@ -89,5 +91,13 @@ object FolderIconRegistry {
         } else {
             AureoleDS.icons.Folder(modifier, tint)
         }
+    }
+}
+
+@AureolePreview
+@Composable
+private fun FolderIconRegistryPreview() {
+    AureoleLauncherTheme {
+        FolderIconRegistry.RenderIcon(name = "star")
     }
 }

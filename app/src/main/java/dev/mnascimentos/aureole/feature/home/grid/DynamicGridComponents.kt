@@ -4,7 +4,6 @@ import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.CornerRadius
@@ -12,6 +11,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.drawscope.Stroke
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.feature.home.grid.model.DragTargetSlot
 
 private const val GRID_OFFSET_PX = 8f
@@ -27,8 +27,8 @@ fun GridBackgroundOverlay(
     activeDragTarget: DragTargetSlot?,
     modifier: Modifier = Modifier
 ) {
-    val primaryColor = MaterialTheme.colorScheme.primary
-    val errorColor = MaterialTheme.colorScheme.error
+    val primaryColor = AureoleDS.colors.onSurfaceHigh
+    val errorColor = AureoleDS.colors.error
 
     Canvas(modifier = modifier.fillMaxSize()) {
         val stroke = Stroke(

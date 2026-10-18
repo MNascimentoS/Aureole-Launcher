@@ -1,16 +1,15 @@
 package dev.mnascimentos.aureole.feature.home
 
 import android.content.ComponentName
-import android.content.res.Configuration
 import android.graphics.drawable.ColorDrawable
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.ui.tooling.preview.Preview
 import com.android.tools.screenshot.PreviewTest
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
-import dev.mnascimentos.aureole.feature.home.components.AppsListDrawer
+import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
+import dev.mnascimentos.aureole.feature.home.components.appsdrawer.AppsListDrawer
 import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
 
@@ -30,9 +29,9 @@ internal fun createMockHomeScreenActions(): HomeScreenActions = HomeScreenAction
 )
 
 @PreviewTest
-@Preview(name = "Dark Mode", uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
+@AureolePreview
 @Composable
-fun AllAppsScreenScreenshotTest() {
+private fun AllAppsScreenScreenshotTest() {
     val sampleApps = listOf(
         AppInfo(
             label = "Camera",
@@ -75,9 +74,9 @@ fun AllAppsScreenScreenshotTest() {
 }
 
 @PreviewTest
-@Preview(name = "Search Filtered Flow", uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
+@AureolePreview
 @Composable
-fun AllAppsScreenWithSearchQueryScreenshotTest() {
+private fun AllAppsScreenWithSearchQueryScreenshotTest() {
     val sampleApp = AppInfo(
         label = "Camera",
         packageName = "com.example.camera",
@@ -107,9 +106,9 @@ fun AllAppsScreenWithSearchQueryScreenshotTest() {
 }
 
 @PreviewTest
-@Preview(name = "Search Empty Results Flow", uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
+@AureolePreview
 @Composable
-fun AllAppsScreenWithEmptySearchQueryScreenshotTest() {
+private fun AllAppsScreenWithEmptySearchQueryScreenshotTest() {
 
     val mockUiState = MainUiState(
         apps = emptyList(),

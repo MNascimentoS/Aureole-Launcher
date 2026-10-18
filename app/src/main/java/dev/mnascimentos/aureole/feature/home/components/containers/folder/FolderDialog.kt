@@ -2,7 +2,6 @@ package dev.mnascimentos.aureole.feature.home.components.containers.folder
 
 import android.content.ComponentName
 import android.content.Intent
-import android.graphics.drawable.ColorDrawable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -25,16 +24,18 @@ import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import androidx.core.graphics.drawable.toDrawable
 import dev.mnascimentos.aureole.core.data.model.AppFolder
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleHeaderBanner
 import dev.mnascimentos.aureole.core.designsystem.components.AureolePopupBox
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
+import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
-import dev.mnascimentos.aureole.core.designsystem.theme.AureoleTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.LocalHomeUiState
-import dev.mnascimentos.aureole.feature.home.components.AppItemRow
+import dev.mnascimentos.aureole.feature.home.components.appsdrawer.appitem.AppItemRow
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
 import dev.mnascimentos.aureole.feature.settings.SettingsActivity
 
@@ -44,6 +45,7 @@ fun FolderDialog(
     allApps: List<AppInfo>,
     onDismiss: () -> Unit,
     onAppClick: (AppInfo) -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     val appsInFolder = folder.appPackageNames.mapNotNull { pkgName ->
         allApps.find { it.packageName == pkgName }
@@ -52,8 +54,7 @@ fun FolderDialog(
 
     val dialogContent = @Composable {
         AureolePopupBox(
-            contentPadding = PaddingValues(0.dp),
-            modifier = Modifier.widthIn(min = 280.dp, max = 340.dp)
+            modifier = modifier.widthIn(min = 280.dp, max = 340.dp)
         ) {
             AureoleHeaderBanner(
                 title = folder.name,
@@ -108,9 +109,9 @@ private fun FolderDialogContent(
     if (appsInFolder.isEmpty()) {
         AureoleText(
             text = "Folder is empty",
-            style = AureoleTheme.typography.bodyMedium,
-            color = AureoleTheme.colors.onSurfaceMedium,
-            modifier = Modifier.padding(vertical = 32.dp)
+            color = AureoleDS.colors.onSurfaceMedium,
+            modifier = Modifier.padding(vertical = 32.dp),
+            format = AureoleTextFormatParams(style = AureoleDS.typography.bodyMedium)
         )
     } else if (folder.displayAsGrid) {
         LazyVerticalGrid(
@@ -119,9 +120,13 @@ private fun FolderDialogContent(
             horizontalArrangement = Arrangement.spacedBy(8.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            items(appsInFolder, key = { it.packageName }) { app ->
+            items(
+                items = appsInFolder,
+                key = { it.packageName },
+                contentType = { "folder_app_grid" }
+            ) { app ->
                 Box(modifier = Modifier.padding(4.dp)) {
-                    AureoleText(app.label.take(1), color = AureoleTheme.colors.onSurfaceHigh)
+                    AureoleText(app.label.take(1), color = AureoleDS.colors.onSurfaceHigh)
                 }
             }
         }
@@ -129,7 +134,11 @@ private fun FolderDialogContent(
         LazyColumn(
             contentPadding = PaddingValues(vertical = 8.dp)
         ) {
-            items(appsInFolder, key = { it.packageName }) { app ->
+            items(
+                items = appsInFolder,
+                key = { it.packageName },
+                contentType = { "folder_app_row" }
+            ) { app ->
                 AppItemRow(
                     app = app,
                     onClick = { onAppClick(app) },
@@ -141,12 +150,12 @@ private fun FolderDialogContent(
 
 @AureolePreview
 @Composable
-fun FolderDialogPreview() {
+private fun FolderDialogPreview() {
     val mockApp = AppInfo(
         label = "Camera",
         packageName = "com.example.camera",
         componentName = ComponentName("com.example.camera", "MainActivity"),
-        icon = ColorDrawable(0xFF1B65C0.toInt())
+        icon = 0xFF1B65C0.toInt().toDrawable()
     )
     val mockFolder = AppFolder(
         id = "1",

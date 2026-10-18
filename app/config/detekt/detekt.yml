@@ -30,6 +30,10 @@ output-reports:
 
 comments:
   active: true
+  UndocumentedPublicFunction:
+    active: true
+    includes: ['**/core/designsystem/components/**']
+    ignoreAnnotated: ['Preview', 'AureolePreview']
 
 formatting:
   active: true
@@ -57,12 +61,31 @@ formatting:
     active: false
 
 style:
+  ForbiddenComment:
+    active: true
+  ReturnCount:
+    active: true
+    excludeGuardClauses: true
   ForbiddenImport:
     active: true
     imports:
       - 'androidx.compose.material.icons.*'
+      - 'androidx.compose.ui.tooling.preview.Preview'
+    excludes: ['**/AureolePreview.kt']
+  UnusedPrivateMember:
+    active: true
+    ignoreAnnotated: ['Preview', 'AureolePreview']
 
 naming:
   FunctionNaming:
     active: true
     ignoreAnnotated: ['Composable']
+
+complexity:
+  active: true
+  NestedBlockDepth:
+    active: true
+    threshold: 3
+  LargeClass:
+    active: true
+    threshold: 400

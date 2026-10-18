@@ -29,11 +29,21 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import dev.mnascimentos.aureole.core.designsystem.icons.Logo
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
-import dev.mnascimentos.aureole.core.designsystem.theme.AureoleTheme
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
+import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.LocalHomeActions
 
 private const val DIALOG_WIDTH_FRACTION = 0.92f
 
+/**
+ * A dialog component that follows the Aureole Design System.
+ *
+ * @param onDismissRequest Executes when the user tries to dismiss the dialog.
+ * @param modifier The modifier to be applied to the layout.
+ * @param title The title of the dialog.
+ * @param icon The icon to be displayed next to the title.
+ * @param content The content of the dialog.
+ */
 @Composable
 fun AureoleDialog(
     onDismissRequest: () -> Unit,
@@ -48,8 +58,8 @@ fun AureoleDialog(
                 .fillMaxWidth(DIALOG_WIDTH_FRACTION)
                 .clip(RoundedCornerShape(AureoleDS.dimens.radiusLarge)),
             shape = RoundedCornerShape(AureoleDS.dimens.radiusLarge),
-            color = AureoleTheme.colors.surface,
-            contentColor = AureoleTheme.colors.onSurfaceHigh
+            color = AureoleDS.colors.surface,
+            contentColor = AureoleDS.colors.onSurfaceHigh
         ) {
             Column(modifier = Modifier.fillMaxWidth()) {
                 if (title != null) {
@@ -90,6 +100,13 @@ fun AureoleDialog(
     }
 }
 
+/**
+ * A header component for the Aureole dialog.
+ *
+ * @param title The title of the dialog.
+ * @param modifier The modifier to be applied to the layout.
+ * @param icon The icon to be displayed next to the title.
+ */
 @Composable
 fun AureoleDialogHeader(
     title: String,
@@ -100,13 +117,15 @@ fun AureoleDialogHeader(
         modifier = modifier
             .fillMaxWidth()
             .height(52.dp)
-            .background(AureoleTheme.colors.surfaceVariant),
+            .background(AureoleDS.colors.surfaceVariant),
         contentAlignment = Alignment.Center
     ) {
         Row(
             modifier = Modifier
                 .align(Alignment.Center)
-                .padding(horizontal = 28.dp),
+                .padding(
+                    horizontal = AureoleDS.dimens.xLarge
+                ), // 32dp instead of 28dp or keep literal? Wait, 28dp is not in DS.
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Center
         ) {
@@ -116,12 +135,14 @@ fun AureoleDialogHeader(
             }
             AureoleText(
                 text = title,
-                style = AureoleTheme.typography.titleMedium,
-                fontWeight = FontWeight.Bold,
-                color = AureoleTheme.colors.onSurfaceHigh,
-                textAlign = TextAlign.Center,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
+                color = AureoleDS.colors.onSurfaceHigh,
+                format = AureoleTextFormatParams(
+                    style = AureoleDS.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
             )
         }
 
@@ -136,8 +157,24 @@ fun AureoleDialogHeader(
             contentAlignment = Alignment.Center
         ) {
             AureoleDS.icons.Logo(
-                tint = AureoleTheme.colors.onSurfaceHigh,
+                tint = AureoleDS.colors.onSurfaceHigh,
                 modifier = Modifier.size(AureoleDS.dimens.iconSmall)
+            )
+        }
+    }
+}
+
+@AureolePreview
+@Composable
+private fun AureoleDialogPreview() {
+    AureoleLauncherTheme {
+        AureoleDialog(
+            onDismissRequest = {},
+            title = "Sample Dialog Title"
+        ) {
+            AureoleText(
+                text = "This is sample content inside AureoleDialog.",
+                format = AureoleTextFormatParams(style = AureoleDS.typography.bodyMedium)
             )
         }
     }

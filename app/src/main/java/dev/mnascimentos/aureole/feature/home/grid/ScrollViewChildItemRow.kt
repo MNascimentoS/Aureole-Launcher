@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -23,6 +22,7 @@ import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.core.data.model.LauncherItemState
 import dev.mnascimentos.aureole.core.data.model.LauncherItemType
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
+import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
 import dev.mnascimentos.aureole.core.designsystem.icons.Add
 import dev.mnascimentos.aureole.core.designsystem.icons.ArrowDown
 import dev.mnascimentos.aureole.core.designsystem.icons.ArrowUp
@@ -32,7 +32,6 @@ import dev.mnascimentos.aureole.core.designsystem.icons.HorizontalContainer
 import dev.mnascimentos.aureole.core.designsystem.icons.MenuIcon
 import dev.mnascimentos.aureole.core.designsystem.icons.VerticalContainer
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
-import dev.mnascimentos.aureole.core.designsystem.theme.AureoleTheme
 import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
 
 @Composable
@@ -75,7 +74,7 @@ internal fun ScrollViewChildItemCard(
         modifier = modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(16.dp))
-            .background(AureoleTheme.colors.surfaceVariant.copy(alpha = 0.45f))
+            .background(AureoleDS.colors.surfaceVariant.copy(alpha = 0.45f))
             .padding(horizontal = 14.dp, vertical = 12.dp)
     ) {
         ScrollViewChildHeaderRow(
@@ -111,7 +110,7 @@ private fun ScrollViewChildHeaderRow(
             modifier = Modifier
                 .size(36.dp)
                 .clip(RoundedCornerShape(10.dp))
-                .background(AureoleTheme.colors.surface.copy(alpha = 0.6f)),
+                .background(AureoleDS.colors.surface.copy(alpha = 0.6f)),
             contentAlignment = Alignment.Center
         ) {
             ChildTypeIcon(child.type)
@@ -121,10 +120,9 @@ private fun ScrollViewChildHeaderRow(
 
         AureoleText(
             text = title,
-            style = AureoleTheme.typography.titleMedium,
-            fontWeight = FontWeight.SemiBold,
-            color = AureoleTheme.colors.onSurfaceHigh,
-            modifier = Modifier.weight(1f)
+            color = AureoleDS.colors.onSurfaceHigh,
+            modifier = Modifier.weight(1f),
+            format = AureoleTextFormatParams(style = AureoleDS.typography.titleMedium, fontWeight = FontWeight.SemiBold)
         )
 
         IconButton(
@@ -132,7 +130,7 @@ private fun ScrollViewChildHeaderRow(
             modifier = Modifier.size(32.dp)
         ) {
             AureoleDS.icons.Edit(
-                tint = AureoleTheme.colors.onSurfaceHigh,
+                tint = AureoleDS.colors.onSurfaceHigh,
                 modifier = Modifier.size(18.dp)
             )
         }
@@ -144,7 +142,7 @@ private fun ScrollViewChildHeaderRow(
             modifier = Modifier.size(32.dp)
         ) {
             AureoleDS.icons.Delete(
-                tint = MaterialTheme.colorScheme.error,
+                tint = AureoleDS.colors.error,
                 modifier = Modifier.size(18.dp)
             )
         }
@@ -177,9 +175,9 @@ private fun ScrollViewChildReorderAndResizeControls(
             ) {
                 AureoleDS.icons.ArrowUp(
                     tint = if (childIndex > 0) {
-                        AureoleTheme.colors.onSurfaceHigh
+                        AureoleDS.colors.onSurfaceHigh
                     } else {
-                        AureoleTheme.colors.onSurfaceMedium.copy(alpha = 0.4f)
+                        AureoleDS.colors.onSurfaceMedium.copy(alpha = 0.4f)
                     },
                     modifier = Modifier.size(16.dp)
                 )
@@ -192,9 +190,9 @@ private fun ScrollViewChildReorderAndResizeControls(
             ) {
                 AureoleDS.icons.ArrowDown(
                     tint = if (childIndex < totalChildren - 1) {
-                        AureoleTheme.colors.onSurfaceHigh
+                        AureoleDS.colors.onSurfaceHigh
                     } else {
-                        AureoleTheme.colors.onSurfaceMedium.copy(alpha = 0.4f)
+                        AureoleDS.colors.onSurfaceMedium.copy(alpha = 0.4f)
                     },
                     modifier = Modifier.size(16.dp)
                 )
@@ -218,7 +216,7 @@ private fun ScrollViewChildResizeControls(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
             .clip(RoundedCornerShape(10.dp))
-            .background(AureoleTheme.colors.surface.copy(alpha = 0.5f))
+            .background(AureoleDS.colors.surface.copy(alpha = 0.5f))
             .padding(horizontal = 6.dp, vertical = 2.dp)
     ) {
         IconButton(
@@ -227,18 +225,16 @@ private fun ScrollViewChildResizeControls(
         ) {
             AureoleText(
                 text = "-",
-                style = AureoleTheme.typography.titleMedium,
-                fontWeight = FontWeight.Bold,
-                color = AureoleTheme.colors.onSurfaceHigh
+                color = AureoleDS.colors.onSurfaceHigh,
+                format = AureoleTextFormatParams(style = AureoleDS.typography.titleMedium, fontWeight = FontWeight.Bold)
             )
         }
 
         AureoleText(
             text = "${spanVal}x",
-            style = AureoleTheme.typography.bodyMedium,
-            fontWeight = FontWeight.SemiBold,
-            color = AureoleTheme.colors.onSurfaceHigh,
-            modifier = Modifier.padding(horizontal = 6.dp)
+            color = AureoleDS.colors.onSurfaceHigh,
+            modifier = Modifier.padding(horizontal = 6.dp),
+            format = AureoleTextFormatParams(style = AureoleDS.typography.bodyMedium, fontWeight = FontWeight.SemiBold)
         )
 
         IconButton(
@@ -247,9 +243,8 @@ private fun ScrollViewChildResizeControls(
         ) {
             AureoleText(
                 text = "+",
-                style = AureoleTheme.typography.titleMedium,
-                fontWeight = FontWeight.Bold,
-                color = AureoleTheme.colors.onSurfaceHigh
+                color = AureoleDS.colors.onSurfaceHigh,
+                format = AureoleTextFormatParams(style = AureoleDS.typography.titleMedium, fontWeight = FontWeight.Bold)
             )
         }
     }

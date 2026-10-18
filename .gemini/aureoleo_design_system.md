@@ -34,7 +34,7 @@ Ao inspecionar componentes no Figma, traduza EXATAMENTE para Compose usando as r
    - Garanta uma área de toque mínima usando `Modifier.minimumInteractiveComponentSize()` (padrão 48.dp) para todo componente interativo/clicável.
    - Componentes visuais devem expor o parâmetro `contentDescription`. Se for puramente decorativo, passe `contentDescription = null` de forma explícita.
    - Use `Modifier.semantics` para agrupar informações em componentes compostos (ex: cards de configuração).
-4. **Previews & Testes:** Forneça SEMPRE funções `@Preview` combinadas (Light/Dark Theme) usando `@AureolePreview`. Bottom views (bottom sheets) e popups (dialogs) devem obrigatoriamente contar com preview isolada e teste de screenshot correspondente (`@PreviewTest`).
+4. **Previews & Testes:** Todo componente do Design System em `core/designsystem/components` DEVE possuir obrigatoriamente funções `@Preview` / `@AureolePreview` cobrindo seus estados visuais, testes unitários em `app/src/test/.../core/designsystem/components/` e testes de screenshot em `app/src/screenshotTest/.../core/designsystem/components/` com `@PreviewTest`.
 5. **Design Tokens Unificados:** Utilize EXCLUSIVAMENTE os tokens injetados via `CompositionLocal`: `AureoleDS.colors`, `AureoleDS.dimens` e `AureoleDS.typography`.
 
 ### 🚫 DONTs (O que NUNCA fazer)

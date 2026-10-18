@@ -17,11 +17,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
+import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
 import dev.mnascimentos.aureole.core.designsystem.icons.ColorFill
 import dev.mnascimentos.aureole.core.designsystem.icons.Corners
 import dev.mnascimentos.aureole.core.designsystem.icons.Glass
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
-import dev.mnascimentos.aureole.core.designsystem.theme.AureoleTheme
 import dev.mnascimentos.aureole.feature.settings.components.BlurBottomSheet
 import dev.mnascimentos.aureole.feature.settings.components.PickBorderRadiusBottomSheet
 import dev.mnascimentos.aureole.feature.settings.components.PickFontBottomSheet
@@ -49,15 +49,14 @@ internal fun MenuColorRow(
         verticalAlignment = Alignment.CenterVertically
     ) {
         AureoleDS.icons.ColorFill(
-            tint = AureoleTheme.colors.onSurfaceMedium,
+            tint = AureoleDS.colors.onSurfaceMedium,
             modifier = Modifier.padding(end = 20.dp).size(20.dp)
         )
         AureoleText(
             text = "Menu background color",
-            style = AureoleTheme.typography.bodyLarge,
-            fontWeight = FontWeight.Normal,
-            color = AureoleTheme.colors.onSurfaceMedium,
-            modifier = Modifier.weight(1f)
+            color = AureoleDS.colors.onSurfaceMedium,
+            modifier = Modifier.weight(1f),
+            format = AureoleTextFormatParams(style = AureoleDS.typography.bodyLarge, fontWeight = FontWeight.Normal)
         )
         Box(
             modifier = Modifier
@@ -82,15 +81,14 @@ internal fun GlassAndBlurRow(
         verticalAlignment = Alignment.CenterVertically
     ) {
         AureoleDS.icons.Glass(
-            tint = AureoleTheme.colors.onSurfaceMedium,
+            tint = AureoleDS.colors.onSurfaceMedium,
             modifier = Modifier.padding(end = 20.dp).size(20.dp)
         )
         AureoleText(
             text = "Glass effect",
-            style = AureoleTheme.typography.bodyLarge,
-            fontWeight = FontWeight.Normal,
-            color = AureoleTheme.colors.onSurfaceMedium,
-            modifier = Modifier.weight(1f)
+            color = AureoleDS.colors.onSurfaceMedium,
+            modifier = Modifier.weight(1f),
+            format = AureoleTextFormatParams(style = AureoleDS.typography.bodyLarge, fontWeight = FontWeight.Normal)
         )
         val opacityText = when {
             (!uiState.isHazeEnabled || uiState.hazeOpacity <= OPACITY_NONE_THRESHOLD) -> "None"
@@ -100,8 +98,8 @@ internal fun GlassAndBlurRow(
         }
         AureoleText(
             text = opacityText,
-            style = AureoleTheme.typography.bodyLarge,
-            color = AureoleTheme.colors.onSurfaceLow
+            color = AureoleDS.colors.onSurfaceLow,
+            format = AureoleTextFormatParams(style = AureoleDS.typography.bodyLarge)
         )
     }
 }
@@ -120,20 +118,19 @@ internal fun ChangeBorderRow(
         verticalAlignment = Alignment.CenterVertically
     ) {
         AureoleDS.icons.Corners(
-            tint = AureoleTheme.colors.onSurfaceMedium,
+            tint = AureoleDS.colors.onSurfaceMedium,
             modifier = Modifier.padding(end = 20.dp).size(20.dp)
         )
         AureoleText(
             text = "Change Border",
-            style = AureoleTheme.typography.bodyLarge,
-            fontWeight = FontWeight.Normal,
-            color = AureoleTheme.colors.onSurfaceMedium,
-            modifier = Modifier.weight(1f)
+            color = AureoleDS.colors.onSurfaceMedium,
+            modifier = Modifier.weight(1f),
+            format = AureoleTextFormatParams(style = AureoleDS.typography.bodyLarge, fontWeight = FontWeight.Normal)
         )
         AureoleText(
             text = "$cornerRadiusDp dp",
-            style = AureoleTheme.typography.bodyLarge,
-            color = AureoleTheme.colors.onSurfaceLow
+            color = AureoleDS.colors.onSurfaceLow,
+            format = AureoleTextFormatParams(style = AureoleDS.typography.bodyLarge)
         )
     }
 }

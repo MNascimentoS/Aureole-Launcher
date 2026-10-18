@@ -19,9 +19,9 @@ import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
+import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
-import dev.mnascimentos.aureole.core.designsystem.theme.AureoleTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -29,6 +29,7 @@ import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 fun SettingsBottomSheet(
     title: String,
     onDismissRequest: () -> Unit,
+    modifier: Modifier = Modifier,
     dragHandle: (@Composable () -> Unit)? = null,
     content: @Composable () -> Unit
 ) {
@@ -38,16 +39,16 @@ fun SettingsBottomSheet(
 
     if (LocalInspectionMode.current) {
         Box(
-            modifier = Modifier.fillMaxSize(),
+            modifier = modifier.fillMaxSize(),
             contentAlignment = Alignment.BottomCenter
         ) {
             Surface(
                 shape = RoundedCornerShape(
-                    topStart = AureoleTheme.dimens.cornerRadius,
-                    topEnd = AureoleTheme.dimens.cornerRadius
+                    topStart = AureoleDS.dimens.radiusLarge,
+                    topEnd = AureoleDS.dimens.radiusLarge
                 ),
-                color = AureoleTheme.colors.surface,
-                contentColor = AureoleTheme.colors.onSurfaceMedium,
+                color = AureoleDS.colors.surface,
+                contentColor = AureoleDS.colors.onSurfaceMedium,
                 modifier = Modifier.fillMaxWidth()
             ) {
                 sheetContent()
@@ -59,13 +60,14 @@ fun SettingsBottomSheet(
         ModalBottomSheet(
             onDismissRequest = onDismissRequest,
             sheetState = sheetState,
+            modifier = modifier,
             dragHandle = dragHandle,
             shape = RoundedCornerShape(
-                topStart = AureoleTheme.dimens.cornerRadius,
-                topEnd = AureoleTheme.dimens.cornerRadius
+                topStart = AureoleDS.dimens.radiusLarge,
+                topEnd = AureoleDS.dimens.radiusLarge
             ),
-            containerColor = AureoleTheme.colors.surface,
-            contentColor = AureoleTheme.colors.onSurfaceMedium
+            containerColor = AureoleDS.colors.surface,
+            contentColor = AureoleDS.colors.onSurfaceMedium
         ) {
             sheetContent()
         }
@@ -85,11 +87,13 @@ private fun SettingsBottomSheetLayout(
     ) {
         AureoleText(
             text = title,
-            style = AureoleTheme.typography.titleMedium,
-            fontWeight = FontWeight.Bold,
-            color = AureoleTheme.colors.onSurfaceMedium,
-            textAlign = TextAlign.Center,
-            modifier = Modifier.fillMaxWidth()
+            color = AureoleDS.colors.onSurfaceMedium,
+            modifier = Modifier.fillMaxWidth(),
+            format = AureoleTextFormatParams(
+                style = AureoleDS.typography.titleMedium,
+                fontWeight = FontWeight.Bold,
+                textAlign = TextAlign.Center
+            )
         )
 
         Spacer(modifier = Modifier.height(AureoleDS.dimens.large))
@@ -108,7 +112,7 @@ private fun SettingsBottomSheetLayout(
 
 @AureolePreview
 @Composable
-fun SettingsBottomSheetPreview() {
+private fun SettingsBottomSheetPreview() {
     AureoleLauncherTheme {
         SettingsBottomSheet(
             title = "Preview Title",

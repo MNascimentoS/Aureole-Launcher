@@ -4,11 +4,32 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.room.TypeConverters
+import dev.mnascimentos.aureole.core.data.model.ContainerEntity
+import dev.mnascimentos.aureole.core.data.model.ContainerItemEntity
+import dev.mnascimentos.aureole.core.data.model.FolderEntity
+import dev.mnascimentos.aureole.core.data.model.FolderItemEntity
 
-@Database(entities = [AppInfoEntity::class], version = 1, exportSchema = false)
+@Database(
+    entities = [
+        AppInfoEntity::class,
+        ContainerEntity::class,
+        ContainerItemEntity::class,
+        FavoriteContainerEntity::class,
+        ContainerFavoriteItemEntity::class,
+        FolderEntity::class,
+        FolderItemEntity::class
+    ],
+    version = 2,
+    exportSchema = false
+)
+@TypeConverters(RoomConverters::class)
 abstract class AppDatabase : RoomDatabase() {
 
     abstract fun appInfoDao(): AppInfoDao
+    abstract fun containerDao(): ContainerDao
+    abstract fun favoriteContainerDao(): FavoriteContainerDao
+    abstract fun folderDao(): FolderDao
 
     companion object {
         @Volatile
@@ -20,7 +41,9 @@ abstract class AppDatabase : RoomDatabase() {
                     context.applicationContext,
                     AppDatabase::class.java,
                     "aureole_app_database.db",
-                ).build().also { instance = it }
+                )
+                    .fallbackToDestructiveMigration(dropAllTables = true)
+                    .build().also { instance = it }
             }
         }
     }

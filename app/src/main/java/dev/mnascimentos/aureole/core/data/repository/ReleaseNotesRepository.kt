@@ -15,6 +15,7 @@ object ReleaseNotesRepository {
 
     fun getReleaseNotes(): List<ReleaseNoteVersion> {
         return listOf(
+            getVersion0728(),
             getVersion0713(),
             getVersion0613(),
             getVersion0513(),
@@ -24,11 +25,24 @@ object ReleaseNotesRepository {
         )
     }
 
+    private fun getVersion0728(): ReleaseNoteVersion {
+        return ReleaseNoteVersion(
+            versionName = "0.7.28",
+            releaseDate = "Março 2025",
+            isCurrent = true,
+            sections = listOf(
+                createSection0728Features(),
+                createSection0728Improvements(),
+                createSection0728Fixes()
+            )
+        )
+    }
+
     private fun getVersion0713(): ReleaseNoteVersion {
         return ReleaseNoteVersion(
             versionName = "0.7.13",
             releaseDate = "Março 2025",
-            isCurrent = true,
+            isCurrent = false,
             sections = listOf(
                 createSection0713Features(),
                 createSection0713Improvements(),
@@ -141,6 +155,54 @@ object ReleaseNotesRepository {
         )
     }
 }
+
+private fun createSection0728Features() = ReleaseNoteSection(
+    title = "Novidades & Recursos",
+    items = listOf(
+        ReleaseNoteItem(
+            title = "Migração Completa para Room DB",
+            description = "Sincronização e persistência de dados de Contêineres, Favoritos e Pastas " +
+                "migradas para Room ORM com suporte nativo a Coroutines e integridade relacional.",
+            type = ReleaseNoteType.FEATURE
+        ),
+        ReleaseNoteItem(
+            title = "Preservação de Modelos no R8/ProGuard",
+            description = "Inclusão de regras de preservação de código (@Keep) para modelos de dados, " +
+                "evitando perda de componentes e falhas de desserialização em builds de release.",
+            type = ReleaseNoteType.FEATURE
+        )
+    )
+)
+
+private fun createSection0728Improvements() = ReleaseNoteSection(
+    title = "Melhorias de Interface & Experiência",
+    items = listOf(
+        ReleaseNoteItem(
+            title = "Atualizações In-App Modernizadas",
+            description = "Interface e diálogo de atualização do aplicativo refinados " +
+                "para uma transição mais fluida ao verificar novas versões.",
+            type = ReleaseNoteType.IMPROVEMENT
+        ),
+        ReleaseNoteItem(
+            title = "Limpeza de Camada de Dados",
+            description = "Remoção de Helpers SQLite legados e unificação dos repositórios " +
+                "para uma arquitetura mais limpa e performática.",
+            type = ReleaseNoteType.IMPROVEMENT
+        )
+    )
+)
+
+private fun createSection0728Fixes() = ReleaseNoteSection(
+    title = "Correções & Estabilidade",
+    items = listOf(
+        ReleaseNoteItem(
+            title = "Redimensionamento e Rotação de Tela em Release",
+            description = "Correção do erro de desserialização que removia o ScrollView e " +
+                "componentes aninhados ao alterar a orientação do dispositivo.",
+            type = ReleaseNoteType.FIX
+        )
+    )
+)
 
 private fun createSection0713Features() = ReleaseNoteSection(
     title = "Novidades & Recursos",

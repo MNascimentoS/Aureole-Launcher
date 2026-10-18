@@ -1,5 +1,6 @@
 package dev.mnascimentos.aureole.feature.settings.screens
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -21,10 +22,13 @@ import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsContributorsScreen(
-    @Suppress("UNUSED_PARAMETER") // Parameter reserved for navigation contract
-    onNavigateBack: () -> Unit
+    onNavigateBack: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
+    BackHandler(onBack = onNavigateBack)
+
     Scaffold(
+        modifier = modifier,
         containerColor = AureoleDS.colors.surface
     ) { innerPadding ->
         Column(

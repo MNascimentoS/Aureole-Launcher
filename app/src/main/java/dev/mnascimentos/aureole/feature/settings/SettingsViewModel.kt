@@ -1,11 +1,6 @@
 package dev.mnascimentos.aureole.feature.settings
 
-import android.app.Application
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.net.Uri
-import android.util.Log
-import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dev.mnascimentos.aureole.core.data.model.AppFolder
 import dev.mnascimentos.aureole.core.data.repository.AppRepository
@@ -24,9 +19,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.io.File
-import java.io.FileOutputStream
-import java.io.IOException
 
 enum class SettingToggle {
     SHOW_WIDGET_DOTS,
@@ -62,14 +54,13 @@ enum class SettingsDialog {
     SEARCH_ICON_POSITION
 }
 
-@Suppress("TooManyFunctions")
+@Suppress("TooManyFunctions") // Settings ViewModel manages multiple settings sections and state flows
 class SettingsViewModel(
-    application: Application,
     internal val settingsRepository: SettingsRepository,
     private val appRepository: AppRepository,
     private val folderRepository: FolderRepository,
     internal val gridRepository: GridRepository,
-) : AndroidViewModel(application) {
+) : ViewModel() {
 
     private val _uiState = MutableStateFlow(SettingsUiState())
     val uiState: StateFlow<SettingsUiState> = _uiState.asStateFlow()
@@ -169,35 +160,10 @@ class SettingsViewModel(
         _uiState.update { it.copy(favoriteAppPackages = current) }
     }
 
-    fun setCustomWallpaper(uri: Uri) {
+    fun setCustomWallpaper(uriString: String) {
         viewModelScope.launch {
-            val app = getApplication<Application>()
             val success = withContext(Dispatchers.IO) {
-                try {
-                    val inputStream =
-                        app.contentResolver.openInputStream(uri) ?: return@withContext false
-                    val bitmap = BitmapFactory.decodeStream(inputStream)
-                    inputStream.close()
-                    if (bitmap == null) return@withContext false
-
-                    val file = File(app.filesDir, "custom_wallpaper.jpg")
-                    FileOutputStream(file).use { out ->
-                        bitmap.compress(Bitmap.CompressFormat.JPEG, JPEG_QUALITY, out)
-                    }
-
-                    settingsRepository.customWallpaperPath = file.absolutePath
-                    settingsRepository.isCustomWallpaperSet = true
-                    true
-                } catch (e: IOException) {
-                    Log.w(TAG, "IOException in setCustomWallpaper", e)
-                    false
-                } catch (e: SecurityException) {
-                    Log.w(TAG, "SecurityException in setCustomWallpaper", e)
-                    false
-                } catch (e: IllegalArgumentException) {
-                    Log.w(TAG, "IllegalArgumentException in setCustomWallpaper", e)
-                    false
-                }
+                settingsRepository.saveCustomWallpaper(uriString)
             }
 
             if (success) {
@@ -238,7 +204,6 @@ class SettingsViewModel(
     }
 
     companion object {
-        private const val TAG = "SettingsViewModel"
-        private const val JPEG_QUALITY = 90
+        // ViewModel state helpers
     }
 }

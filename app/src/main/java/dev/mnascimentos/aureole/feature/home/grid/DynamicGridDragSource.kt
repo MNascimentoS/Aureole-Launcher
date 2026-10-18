@@ -9,7 +9,6 @@ import androidx.compose.animation.core.spring
 import androidx.compose.foundation.border
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberUpdatedState
@@ -19,6 +18,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.core.data.model.LauncherItemState
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.feature.home.grid.model.DragTargetSlot
 import dev.mnascimentos.aureole.feature.home.grid.model.GridCellParams
 import dev.mnascimentos.aureole.feature.home.grid.model.GridEditModifierParams
@@ -50,7 +50,7 @@ data class GridCellDragEndParams(
 )
 
 @Composable
-internal fun rememberGridCellEditModifier(args: GridEditModifierArgs): Modifier {
+internal fun Modifier.rememberGridCellEditModifier(args: GridEditModifierArgs): Modifier {
     val item = args.params.item
     val editParams = GridEditModifierParams(
         isEditMode = args.params.isEditMode,
@@ -91,7 +91,7 @@ internal fun rememberGridCellEditModifier(args: GridEditModifierArgs): Modifier 
             updateDragTargetSlot(args.currentParams, newX, newY, args.currentOnDragTargetChange)
         }
     )
-    return Modifier.gridCellEditModifier(editParams)
+    return this.then(Modifier.gridCellEditModifier(editParams))
 }
 
 internal fun handleDragEnd(
@@ -176,9 +176,9 @@ internal fun Modifier.gridCellEditModifier(params: GridEditModifierParams): Modi
             .border(
                 width = 2.dp,
                 color = if (params.isDragging || params.isResizing) {
-                    MaterialTheme.colorScheme.primary
+                    AureoleDS.colors.onSurfaceHigh
                 } else {
-                    MaterialTheme.colorScheme.outline.copy(alpha = 0.5f)
+                    AureoleDS.colors.outline.copy(alpha = 0.5f)
                 },
                 shape = RoundedCornerShape(16.dp)
             )

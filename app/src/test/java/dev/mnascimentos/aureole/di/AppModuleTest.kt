@@ -9,6 +9,7 @@ import dev.mnascimentos.aureole.core.data.repository.GridRepository
 import dev.mnascimentos.aureole.core.data.repository.SettingsRepository
 import dev.mnascimentos.aureole.core.data.repository.WidgetRepository
 import dev.mnascimentos.aureole.feature.home.HomeViewModel
+import dev.mnascimentos.aureole.feature.home.components.widgets.WidgetPickerViewModel
 import dev.mnascimentos.aureole.feature.settings.SettingsViewModel
 import org.junit.After
 import org.junit.Assert.assertNotNull
@@ -60,5 +61,6 @@ class AppModuleTest : KoinTest {
     fun `when resolving viewmodels from koin, should inject non-null instances`() {
         assertNotNull(get<HomeViewModel>())
         assertNotNull(get<SettingsViewModel>())
+        assertNotNull(get<WidgetPickerViewModel>())
     }
 }

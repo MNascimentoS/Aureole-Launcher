@@ -12,12 +12,14 @@ O projeto possui duas pastas de teste principais no módulo `app/`:
 ```text
 app/src/
 ├── screenshotTest/java/dev/mnascimentos/aureole/
+│   ├── core/designsystem/components/ # Screenshot tests dos componentes do Design System
 │   └── feature/
 │       ├── home/                  # Screenshot tests da Home (ex: HomeScreenScreenshotTest.kt)
 │       └── settings/              # Screenshot tests de Configurações
 │
 └── test/java/dev/mnascimentos/aureole/
-    ├── core/                      # Testes unitários de Repositories, DAOs, Modelos e Utils
+    ├── core/                      # Testes unitários de Repositories, DAOs, Modelos, Utils e DS Components
+    │   └── designsystem/components/ # Testes unitários de comportamento de DS Components
     ├── di/                        # Testes de validação da árvore de injeção de dependência Koin
     └── feature/                   # Testes unitários de ViewModels e lógicas de Feature
 ```
@@ -26,6 +28,7 @@ app/src/
 
 | Alvo do Teste | Tipo de Teste | Local do Arquivo | Tecnologia / Runner |
 | :--- | :--- | :--- | :--- |
+| **Componentes do DS (`core/designsystem/components`)** | Unit Test + Screenshot Test | `test/.../core/designsystem/components/` & `screenshotTest/.../core/designsystem/components/` | Robolectric / Compose UI Test & `@PreviewTest` |
 | **Telas (*Screen), Dialogs, BottomSheets, Components** | Screenshot Test | `app/src/screenshotTest/` | `@PreviewTest`, Compose Preview |
 | **Lógica pura (Engine, Utils, Math, Mappers)** | Unit Test JVM Puro | `app/src/test/` | JUnit 4 / Kotlin Test (Sem Runner) |
 | **ViewModels, StateFlow, Reducers, UDF Actions** | Unit Test de ViewModel | `app/src/test/feature/` | `runTest`, `MainDispatcherRule`, Turbine |
@@ -105,14 +108,14 @@ fun `when updating container favorites, should isolate changes to target contain
 ## 4. Regras Estritas para Testes de Screenshot (`@PreviewTest`)
 
 ### 4.1. Anotações e Assinatura
-Toda função de teste de screenshot DEVE possuir:
+Toda função de teste de screenshot DEVE ter visibilidade privada (`private fun`) e possuir:
 1. Anotação `@PreviewTest` de `com.android.tools.screenshot.PreviewTest`.
-2. Anotação `@Preview` configurando tema escuro e plano de fundo visível:
+2. Anotação `@AureolePreview` de `dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview`:
    ```kotlin
    @PreviewTest
-   @Preview(name = "Dark Mode", uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
+   @AureolePreview
    @Composable
-   fun HomeScreenScreenshotTest() { ... }
+   private fun HomeScreenScreenshotTest() { ... }
    ```
 
 ### 4.2. Provedor de Tema e Contexto de Ações
@@ -120,9 +123,9 @@ Todo Composable testado DEVE ser envolvido pelo `AureoleLauncherTheme` e pelos `
 
 ```kotlin
 @PreviewTest
-@Preview(name = "App Item Bottom Sheet Flow", uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
+@AureolePreview
 @Composable
-fun HomeScreenAppItemBottomSheetScreenshotTest() {
+private fun HomeScreenAppItemBottomSheetScreenshotTest() {
     val context = LocalContext.current
     val sampleData = createSampleHomeData()
 

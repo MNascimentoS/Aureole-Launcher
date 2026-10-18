@@ -1,3 +1,5 @@
+@file:Suppress("TooManyFunctions")
+
 package dev.mnascimentos.aureole.feature.home.components.containers
 
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -29,7 +31,8 @@ import dev.mnascimentos.aureole.core.data.model.AppFolder
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.data.model.ContainerItemType
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
-import dev.mnascimentos.aureole.core.designsystem.theme.AureoleTheme
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
+import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.core.designsystem.utils.fadingEdges
 import dev.mnascimentos.aureole.feature.home.LocalHomeActions
 import dev.mnascimentos.aureole.feature.home.LocalHomeUiState
@@ -37,6 +40,8 @@ import dev.mnascimentos.aureole.feature.home.components.containers.folder.Contai
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.ContainerAppItem
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.ContainerFolderConfig
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.ContainerFolderItem
+import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.ContainerAppItemParams
+import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.ContainerFolderItemParams
 import dev.mnascimentos.aureole.feature.home.components.containers.model.ContainerConfig
 
 private const val CONTAINER_HAZE_ALPHA_MULTIPLIER = 0.7f
@@ -215,7 +220,7 @@ private fun ContainerColumn(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = columnConfig.verticalArrangement,
         modifier = Modifier
-            .clip(RoundedCornerShape(AureoleTheme.dimens.cornerRadius))
+            .clip(RoundedCornerShape(AureoleDS.dimens.radiusLarge))
             .then(if (columnConfig.shouldExpand) Modifier.fillMaxSize() else Modifier)
             .then(modifier)
             .background(columnConfig.backgroundColor)
@@ -254,35 +259,39 @@ private fun ColumnRenderItem(
     when (renderItem) {
         is ContainerRenderItem.Folder -> {
             ContainerFolderItem(
-                folder = renderItem.folder,
-                isOpened = renderItem.folder.id == config.openedFolderId,
-                config = ContainerFolderConfig(
-                    showFolderLabels = config.showFolderLabels,
-                    isGridFolderEnabled = config.isGridFolderEnabled,
-                    isBackgroundEnabled = config.isBackgroundEnabled
-                ),
-                onFolderClick = { f, y ->
-                    val updatedFolder = f.copy(
-                        panelId = config.panelId,
-                        displayAsGrid = config.isGridFolderEnabled || f.displayAsGrid
-                    )
-                    columnConfig.onFolderClick(updatedFolder, y)
-                },
-                onLongClick = {
-                    actions.onOpenContainerFolderBottomSheet(
-                        renderItem.folder,
-                        config.panelId
-                    )
-                }
+                params = ContainerFolderItemParams(
+                    folder = renderItem.folder,
+                    isOpened = renderItem.folder.id == config.openedFolderId,
+                    config = ContainerFolderConfig(
+                        showFolderLabels = config.showFolderLabels,
+                        isGridFolderEnabled = config.isGridFolderEnabled,
+                        isBackgroundEnabled = config.isBackgroundEnabled
+                    ),
+                    onFolderClick = { f, y ->
+                        val updatedFolder = f.copy(
+                            panelId = config.panelId,
+                            displayAsGrid = config.isGridFolderEnabled || f.displayAsGrid
+                        )
+                        columnConfig.onFolderClick(updatedFolder, y)
+                    },
+                    onLongClick = {
+                        actions.onOpenContainerFolderBottomSheet(
+                            renderItem.folder,
+                            config.panelId
+                        )
+                    }
+                )
             )
         }
         is ContainerRenderItem.App -> {
             ContainerAppItem(
-                app = renderItem.appInfo,
-                showLabels = config.showFolderLabels,
-                isBackgroundEnabled = config.isBackgroundEnabled,
-                onAppClick = { appInfo -> actions.onAppClick(appInfo) },
-                onLongClick = { actions.onOpenContainerAppBottomSheet(renderItem.appInfo, config.panelId) }
+                params = ContainerAppItemParams(
+                    app = renderItem.appInfo,
+                    showLabels = config.showFolderLabels,
+                    isBackgroundEnabled = config.isBackgroundEnabled,
+                    onAppClick = { appInfo -> actions.onAppClick(appInfo) },
+                    onLongClick = { actions.onOpenContainerAppBottomSheet(renderItem.appInfo, config.panelId) }
+                )
             )
         }
     }
@@ -308,7 +317,7 @@ private fun ContainerRow(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = rowConfig.horizontalArrangement,
         modifier = Modifier
-            .clip(RoundedCornerShape(AureoleTheme.dimens.cornerRadius))
+            .clip(RoundedCornerShape(AureoleDS.dimens.radiusLarge))
             .then(if (rowConfig.shouldExpand) Modifier.fillMaxSize() else Modifier)
             .then(modifier)
             .background(rowConfig.backgroundColor)
@@ -348,44 +357,70 @@ private fun RowRenderItem(
         is ContainerRenderItem.Folder -> {
             Box(modifier = Modifier.padding(horizontal = 4.dp)) {
                 ContainerFolderItem(
-                    folder = renderItem.folder,
-                    isOpened = renderItem.folder.id == config.openedFolderId,
-                    config = ContainerFolderConfig(
-                        showFolderLabels = config.showFolderLabels,
-                        isGridFolderEnabled = config.isGridFolderEnabled,
-                        isBackgroundEnabled = config.isBackgroundEnabled
-                    ),
-                    onFolderClick = { f, y ->
-                        val updatedFolder = f.copy(
-                            panelId = config.panelId,
-                            displayAsGrid = config.isGridFolderEnabled || f.displayAsGrid
-                        )
-                        rowConfig.onFolderClick(updatedFolder, y)
-                    },
-                    onLongClick = {
-                        actions.onOpenContainerFolderBottomSheet(
-                            renderItem.folder,
-                            config.panelId
-                        )
-                    }
+                    params = ContainerFolderItemParams(
+                        folder = renderItem.folder,
+                        isOpened = renderItem.folder.id == config.openedFolderId,
+                        config = ContainerFolderConfig(
+                            showFolderLabels = config.showFolderLabels,
+                            isGridFolderEnabled = config.isGridFolderEnabled,
+                            isBackgroundEnabled = config.isBackgroundEnabled
+                        ),
+                        onFolderClick = { f, y ->
+                            val updatedFolder = f.copy(
+                                panelId = config.panelId,
+                                displayAsGrid = config.isGridFolderEnabled || f.displayAsGrid
+                            )
+                            rowConfig.onFolderClick(updatedFolder, y)
+                        },
+                        onLongClick = {
+                            actions.onOpenContainerFolderBottomSheet(
+                                renderItem.folder,
+                                config.panelId
+                            )
+                        }
+                    )
                 )
             }
         }
         is ContainerRenderItem.App -> {
             Box(modifier = Modifier.padding(horizontal = 4.dp)) {
                 ContainerAppItem(
-                    app = renderItem.appInfo,
-                    showLabels = config.showFolderLabels,
-                    isBackgroundEnabled = config.isBackgroundEnabled,
-                    onAppClick = { appInfo -> actions.onAppClick(appInfo) },
-                    onLongClick = {
-                        actions.onOpenContainerAppBottomSheet(
-                            renderItem.appInfo,
-                            config.panelId
-                        )
-                    }
+                    params = ContainerAppItemParams(
+                        app = renderItem.appInfo,
+                        showLabels = config.showFolderLabels,
+                        isBackgroundEnabled = config.isBackgroundEnabled,
+                        onAppClick = { appInfo -> actions.onAppClick(appInfo) },
+                        onLongClick = {
+                            actions.onOpenContainerAppBottomSheet(
+                                renderItem.appInfo,
+                                config.panelId
+                            )
+                        }
+                    )
                 )
             }
+        }
+    }
+}
+
+@AureolePreview
+@Composable
+private fun ContainerPreview() {
+    AureoleLauncherTheme {
+        Box(
+            modifier = Modifier
+                .background(AureoleDS.colors.surface)
+                .padding(16.dp)
+        ) {
+            Container(
+                config = ContainerConfig(
+                    panelId = "preview_container",
+                    position = "Center",
+                    orientation = "Horizontal",
+                    isBackgroundEnabled = true
+                ),
+                onFolderClick = { _, _ -> }
+            )
         }
     }
 }

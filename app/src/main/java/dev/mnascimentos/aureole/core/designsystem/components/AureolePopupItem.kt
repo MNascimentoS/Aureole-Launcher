@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -26,24 +25,27 @@ import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 
 /**
  * Standard Popup Menu Action Row Item with icon, title, optional badge, or trailing action button.
+ *
+ * @param title The title of the menu item.
+ * @param modifier The modifier to be applied to the layout.
+ * @param params Additional parameters for configuring the menu item.
+ * @param onClick Executes when the item is clicked.
  */
-@Suppress(
-    "LongParameterList",
-    "LongMethod"
-) // AureolePopupMenuItem provides action menu item with custom icon, badge, and trailing slots
+@Suppress("LongMethod") // AureolePopupMenuItem provides action menu item with custom icon, badge, and trailing slots
 @Composable
 fun AureolePopupMenuItem(
     title: String,
-    onClick: () -> Unit,
     modifier: Modifier = Modifier,
-    icon: @Composable ((Modifier) -> Unit)? = null,
-    customIcon: (@Composable () -> Unit)? = null,
-    badge: String? = null,
-    trailingIcon: @Composable ((Modifier) -> Unit)? = null,
-    onTrailingClick: (() -> Unit)? = null,
-    isDestructive: Boolean = false,
+    params: AureolePopupMenuItemParams = AureolePopupMenuItemParams(),
+    onClick: () -> Unit = {},
 ) {
-    val textColor = if (isDestructive) MaterialTheme.colorScheme.error else AureoleDS.colors.onSurfaceHigh
+    val badge = params.badge
+    val onTrailingClick = params.onTrailingClick
+    val isDestructive = params.isDestructive
+    val icon = params.icon
+    val customIcon = params.customIcon
+    val trailingIcon = params.trailingIcon
+    val textColor = if (isDestructive) AureoleDS.colors.error else AureoleDS.colors.onSurfaceHigh
 
     Row(
         modifier = modifier
@@ -70,11 +72,13 @@ fun AureolePopupMenuItem(
 
             AureoleText(
                 text = title,
-                style = AureoleDS.typography.bodyMedium,
-                fontWeight = FontWeight.Medium,
                 color = textColor,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
+                format = AureoleTextFormatParams(
+                    style = AureoleDS.typography.bodyMedium,
+                    fontWeight = FontWeight.Medium,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
             )
         }
 
@@ -85,8 +89,8 @@ fun AureolePopupMenuItem(
             if (!badge.isNullOrBlank()) {
                 AureoleText(
                     text = badge,
-                    style = AureoleDS.typography.labelMedium,
                     color = AureoleDS.colors.onSurfaceLow,
+                    format = AureoleTextFormatParams(style = AureoleDS.typography.labelMedium)
                 )
             }
 
@@ -102,39 +106,68 @@ fun AureolePopupMenuItem(
     }
 }
 
+/**
+ * Parameters for [AureolePopupMenuItem].
+ *
+ * @param badge The badge text to display.
+ * @param onTrailingClick Executes when the trailing icon is clicked.
+ * @param isDestructive Whether the action is destructive, which applies error coloring.
+ * @param icon The icon slot of the menu item.
+ * @param customIcon Custom content slot for the icon.
+ * @param trailingIcon The trailing icon slot of the menu item.
+ */
+class AureolePopupMenuItemParams(
+    val badge: String? = null,
+    val onTrailingClick: (() -> Unit)? = null,
+    val isDestructive: Boolean = false,
+    val icon: @Composable ((Modifier) -> Unit)? = null,
+    val customIcon: (@Composable () -> Unit)? = null,
+    val trailingIcon: @Composable ((Modifier) -> Unit)? = null
+)
+
+private val PREVIEW_POPUP_WIDTH = 260.dp
+
 @AureolePreview
 @Composable
-fun AureolePopupPreview() {
+private fun AureolePopupPreview() {
     AureoleLauncherTheme {
         AureolePopupBox(
-            modifier = Modifier.width(260.dp),
+            modifier = Modifier.width(PREVIEW_POPUP_WIDTH),
         ) {
             AureolePopupHeader(
                 title = "Folder name",
-                sessionTitle = "Folder actions",
-                onSettingsClick = {},
-                onCloseClick = {},
+                params = AureolePopupHeaderParams(
+                    sessionTitle = "Folder actions",
+                    onSettingsClick = {},
+                    onCloseClick = {},
+                )
             )
 
             AureolePopupMenuSection(title = "Titulo de sessão")
 
             AureolePopupMenuItem(
                 title = "Add folder",
-                icon = { modifier -> AureoleDS.icons.Settings(modifier, AureoleDS.colors.onSurfaceHigh) },
-                badge = "12",
                 onClick = {},
+                params = AureolePopupMenuItemParams(
+                    icon = { modifier -> AureoleDS.icons.Settings(modifier, AureoleDS.colors.onSurfaceHigh) },
+                    badge = "12",
+                )
             )
 
             AureolePopupMenuItem(
                 title = "Create stack",
-                badge = "36",
                 onClick = {},
+                params = AureolePopupMenuItemParams(
+                    badge = "36",
+                )
             )
 
             AureolePopupMenuItem(
                 title = "Remove",
-                isDestructive = true,
                 onClick = {},
+                params = AureolePopupMenuItemParams(
+                    isDestructive = true,
+                )
             )
         }
     }

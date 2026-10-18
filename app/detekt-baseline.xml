@@ -1,0 +1,26 @@
+<?xml version="1.0" ?>
+<SmellBaseline>
+  <ManuallySuppressedIssues/>
+  <CurrentIssues>
+    <ID>Filename:AppItemMenusModels.kt$dev.mnascimentos.aureole.feature.home.components.appsdrawer.appitem.model.AppItemMenusModels.kt</ID>
+    <ID>LongMethod:AppsListSection.kt$@Composable fun AppsListDrawer( listState: LazyListState, modifier: Modifier = Modifier, hazeState: HazeState? = null, )</ID>
+    <ID>LongMethod:PickBorderRadiusBottomSheet.kt$@OptIn(ExperimentalMaterial3Api::class) @Composable fun PickBorderRadiusBottomSheet( selectedRadiusDp: Int, onRadiusSelected: (Int) -&gt; Unit, onDismissRequest: () -&gt; Unit, )</ID>
+    <ID>LongMethod:SettingsBehaviorScreen.kt$@OptIn(ExperimentalFoundationApi::class) @Composable private fun HeaderOffsetWheelPicker( value: Int, range: IntRange, onValueChange: (Int) -&gt; Unit, modifier: Modifier = Modifier )</ID>
+    <ID>LongMethod:WidgetPickerAppList.kt$@Composable fun WidgetGroupList( state: WidgetSelectorState, onIntent: (WidgetSelectorIntent) -&gt; Unit, onWidgetSelected: (AppWidgetProviderInfo) -&gt; Unit, onDismiss: () -&gt; Unit )</ID>
+    <ID>LongParameterList:ClockContainer.kt$( modifier: Modifier = Modifier, hazeState: HazeState? = null, uiState: MainUiState = LocalHomeUiState.current, actions: HomeScreenActions = LocalHomeActions.current, onClick: (() -&gt; Unit)? = null, onLongClick: (() -&gt; Unit)? = { actions.onOpenEditClockBottomSheet() } )</ID>
+    <ID>MatchingDeclarationName:AppItemMenusModels.kt$AppItemBottomSheetParams</ID>
+    <ID>NestedBlockDepth:AppIconHelper.kt$AppIconHelper$private fun findRowBounds(pixels: IntArray, yOffset: Int, width: Int): Pair&lt;Int, Int&gt;?</ID>
+    <ID>NestedBlockDepth:AppShortcutUtils.kt$AppShortcutUtils$private fun queryShortcutsForPackage( launcherApps: LauncherApps, packageName: String ): List&lt;ShortcutInfo&gt;</ID>
+    <ID>NestedBlockDepth:GridEngineUtils.kt$GridEngineUtils$fun findFirstAvailableSlot( colSpan: Int, rowSpan: Int, items: List&lt;LauncherItemState&gt;, limits: GridLimits = GridLimits() ): Pair&lt;Int, Int&gt;?</ID>
+    <ID>NestedBlockDepth:GridEngineUtils.kt$GridEngineUtils$private fun searchNearestSlot(params: SlotSearchParams): Pair&lt;Int, Int&gt;?</ID>
+    <ID>NestedBlockDepth:GridItemContent.kt$private fun updateSingleWidgetView(view: View, widgetId: Int)</ID>
+    <ID>NestedBlockDepth:HomeOverlays.kt$private fun handleEdgeDrag( change: PointerInputChange, totalDx: Float, totalDy: Float, hasTriggered: Boolean, params: HomeDragParams ): Boolean</ID>
+    <ID>NestedBlockDepth:HomeOverlays.kt$private fun handleVerticalGesture( change: PointerInputChange, totalDx: Float, totalDy: Float, hasTriggered: Boolean, params: HomeDragParams ): Boolean</ID>
+    <ID>NestedBlockDepth:HomeViewModelWidgetExt.kt$internal fun HomeViewModel.loadWidgetSettings()</ID>
+    <ID>NestedBlockDepth:IconCache.kt$IconCache$fun getIcon(packageName: String, componentName: ComponentName): Drawable</ID>
+    <ID>NestedBlockDepth:IntentUtils.kt$IntentUtils$fun uninstallApp(context: Context, packageName: String)</ID>
+    <ID>NestedBlockDepth:MainActivity.kt$MainActivity$@Deprecated("Deprecated in Java") override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?)</ID>
+    <ID>NestedBlockDepth:WidgetsSectionHostView.kt$internal fun createWidgetHostView( context: Context, appWidgetHost: AppWidgetHost, widgetId: Int ): View</ID>
+    <ID>TooManyFunctions:HomeViewModelClockExt.kt$dev.mnascimentos.aureole.feature.home.extensions.HomeViewModelClockExt.kt</ID>
+  </CurrentIssues>
+</SmellBaseline>

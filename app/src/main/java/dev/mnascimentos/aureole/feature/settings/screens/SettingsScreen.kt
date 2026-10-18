@@ -25,11 +25,11 @@ import dev.mnascimentos.aureole.composable.ColorPickerDialog
 import dev.mnascimentos.aureole.composable.SettingsActionItem
 import dev.mnascimentos.aureole.composable.SettingsMenuItem
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
+import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
 import dev.mnascimentos.aureole.core.designsystem.icons.Check
 import dev.mnascimentos.aureole.core.designsystem.icons.Delete
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
-import dev.mnascimentos.aureole.core.designsystem.theme.AureoleTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.CreateFolderDialog
 import dev.mnascimentos.aureole.feature.settings.SettingsNavGraph
@@ -224,12 +224,11 @@ private fun HazeOpacityDialog(
         title = {
             AureoleText(
                 text = "Blur Opacity",
-                style = AureoleTheme.typography.titleMedium,
-                fontWeight = FontWeight.Bold,
-                color = AureoleTheme.colors.onSurfaceHigh
+                color = AureoleDS.colors.onSurfaceHigh,
+                format = AureoleTextFormatParams(style = AureoleDS.typography.titleMedium, fontWeight = FontWeight.Bold)
             )
         },
-        containerColor = AureoleTheme.colors.surface,
+        containerColor = AureoleDS.colors.surface,
         text = {
             Column {
                 options.forEach { (value, label) ->
@@ -248,8 +247,8 @@ private fun HazeOpacityDialog(
                         Spacer(modifier = Modifier.width(12.dp))
                         AureoleText(
                             text = label,
-                            style = AureoleTheme.typography.bodyLarge,
-                            color = AureoleTheme.colors.onSurfaceHigh
+                            color = AureoleDS.colors.onSurfaceHigh,
+                            format = AureoleTextFormatParams(style = AureoleDS.typography.bodyLarge)
                         )
                     }
                 }
@@ -257,7 +256,7 @@ private fun HazeOpacityDialog(
         },
         confirmButton = {
             TextButton(onClick = onDismiss) {
-                AureoleText("Cancel", color = AureoleTheme.colors.onSurfaceHigh)
+                AureoleText("Cancel", color = AureoleDS.colors.onSurfaceHigh)
             }
         }
     )
@@ -287,7 +286,7 @@ private fun RestoreWallpaperDialog(
 
 @AureolePreview
 @Composable
-fun SettingsScreenPreview() {
+private fun SettingsScreenPreview() {
     AureoleLauncherTheme {
         SettingsScreen(
             uiState = SettingsUiState(),
