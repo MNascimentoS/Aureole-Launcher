@@ -1,8 +1,9 @@
 package dev.mnascimentos.aureole.core.data.repository
 
 import android.content.Context
-import dev.mnascimentos.aureole.core.data.db.ContainerDatabaseHelper
-import dev.mnascimentos.aureole.core.data.db.FolderDatabaseHelper
+import dev.mnascimentos.aureole.core.data.db.AppDatabase
+import dev.mnascimentos.aureole.core.data.db.ContainerDao
+import dev.mnascimentos.aureole.core.data.db.FolderDao
 import dev.mnascimentos.aureole.core.data.model.AppFolder
 import dev.mnascimentos.aureole.core.data.model.ContainerEntity
 import dev.mnascimentos.aureole.core.data.model.ContainerItemEntity
@@ -12,16 +13,21 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.util.UUID
 
-class ContainerRepository(context: Context) {
-    private val dbHelper = ContainerDatabaseHelper(context)
-    private val folderDbHelper = FolderDatabaseHelper(context)
+class ContainerRepository(
+    private val containerDao: ContainerDao,
+    private val folderDao: FolderDao
+) {
+    constructor(context: Context) : this(
+        AppDatabase.getInstance(context).containerDao(),
+        AppDatabase.getInstance(context).folderDao()
+    )
 
     suspend fun getAllContainers(): List<ContainerModel> = withContext(Dispatchers.IO) {
-        val entities = dbHelper.getAllContainers()
-        val allFolders = folderDbHelper.getAllFoldersWithItems().map { it.toAppFolder() }
+        val entities = containerDao.getAllContainers()
+        val allFolders = folderDao.getAllFoldersWithItems().map { it.toAppFolder() }
 
         entities.map { entity ->
-            val items = dbHelper.getItemsForPanel(entity.id)
+            val items = containerDao.getItemsForPanel(entity.id)
             val panelFolders = allFolders.filter { it.panelId == entity.id }
             val appPackageNames = items.filter { it.itemType == ContainerItemType.APP && it.packageName != null }
                 .mapNotNull { it.packageName }
@@ -53,9 +59,9 @@ class ContainerRepository(context: Context) {
     }
 
     suspend fun getContainer(panelId: String): ContainerModel? = withContext(Dispatchers.IO) {
-        val entity = dbHelper.getContainer(panelId) ?: return@withContext null
-        val items = dbHelper.getItemsForPanel(panelId)
-        val allFolders = folderDbHelper.getAllFoldersWithItems().map { it.toAppFolder() }
+        val entity = containerDao.getContainer(panelId) ?: return@withContext null
+        val items = containerDao.getItemsForPanel(panelId)
+        val allFolders = folderDao.getAllFoldersWithItems().map { it.toAppFolder() }
         val panelFolders = allFolders.filter { it.panelId == panelId }
         val appPackageNames = items.filter { it.itemType == ContainerItemType.APP && it.packageName != null }
             .mapNotNull { it.packageName }
@@ -94,7 +100,7 @@ class ContainerRepository(context: Context) {
                 id = panelId,
                 title = defaultTitle
             )
-            dbHelper.insertOrUpdateContainer(newEntity)
+            containerDao.insertOrUpdateContainer(newEntity)
 
             getContainer(panelId) ?: ContainerModel(id = panelId, title = defaultTitle)
         }
@@ -120,7 +126,7 @@ class ContainerRepository(context: Context) {
             scrollUpShortcut = panel.scrollUpShortcut,
             scrollDownShortcut = panel.scrollDownShortcut
         )
-        dbHelper.insertOrUpdateContainer(entity)
+        containerDao.insertOrUpdateContainer(entity)
 
         val itemEntities = mutableListOf<ContainerItemEntity>()
 
@@ -157,17 +163,17 @@ class ContainerRepository(context: Context) {
 
         panel.folders.forEach { folder ->
             val folderWithPanelId = folder.copy(panelId = panel.id, displayAsGrid = panel.isGridFolderEnabled)
-            folderDbHelper.insertFolder(folderWithPanelId)
+            folderDao.insertFolder(folderWithPanelId)
         }
 
-        dbHelper.updatePanelItems(panel.id, itemEntities)
+        containerDao.updatePanelItems(panel.id, itemEntities)
     }
 
     suspend fun deleteContainer(panelId: String) = withContext(Dispatchers.IO) {
-        dbHelper.deleteContainer(panelId)
-        val allFolders = folderDbHelper.getAllFoldersWithItems().map { it.toAppFolder() }
+        containerDao.deleteContainer(panelId)
+        val allFolders = folderDao.getAllFoldersWithItems().map { it.toAppFolder() }
         allFolders.filter { it.panelId == panelId }.forEach { folder ->
-            folderDbHelper.deleteFolder(folder.id)
+            folderDao.deleteFolder(folder.id)
         }
     }
 
@@ -188,7 +194,7 @@ class ContainerRepository(context: Context) {
     suspend fun addFolderToPanel(panelId: String, folder: AppFolder) = withContext(Dispatchers.IO) {
         val current = getContainer(panelId) ?: ensureContainerExists(panelId)
         val folderWithPanelId = folder.copy(panelId = panelId)
-        folderDbHelper.insertFolder(folderWithPanelId)
+        folderDao.insertFolder(folderWithPanelId)
 
         val newFolderItem = ContainerItemEntity(
             id = UUID.randomUUID().toString(),
@@ -212,7 +218,7 @@ class ContainerRepository(context: Context) {
     }
 
     suspend fun deleteFolderFromPanel(panelId: String, folderId: String) = withContext(Dispatchers.IO) {
-        folderDbHelper.deleteFolder(folderId)
+        folderDao.deleteFolder(folderId)
         val current = getContainer(panelId) ?: return@withContext
         val updatedFolders = current.folders.filter { it.id != folderId }
         saveContainer(current.copy(folders = updatedFolders))

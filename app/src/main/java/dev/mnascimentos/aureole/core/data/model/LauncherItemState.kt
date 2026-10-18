@@ -1,7 +1,9 @@
 package dev.mnascimentos.aureole.core.data.model
 
+import androidx.annotation.Keep
 import java.util.UUID
 
+@Keep
 enum class LauncherItemType {
     CLOCK,
     APPS_LIST,
@@ -11,11 +13,13 @@ enum class LauncherItemType {
     SCROLL_VIEW
 }
 
+@Keep
 enum class ScrollOrientation {
     HORIZONTAL,
     VERTICAL
 }
 
+@Keep
 data class LauncherItemState(
     val id: String = "",
     val type: LauncherItemType? = null,

@@ -31,6 +31,8 @@ import dev.mnascimentos.aureole.core.designsystem.icons.ArrowUp
 import dev.mnascimentos.aureole.core.designsystem.icons.Delete
 import dev.mnascimentos.aureole.core.designsystem.icons.Plus
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
+import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.components.favorites.model.FavoriteAppRowParams
 
 @Composable
@@ -234,6 +236,24 @@ fun RemainingAppRow(
             AureoleDS.icons.Plus(
                 tint = AureoleDS.colors.onSurfaceHigh,
                 modifier = Modifier.size(16.dp)
+            )
+        }
+    }
+}
+
+@AureolePreview
+@Composable
+private fun FavoriteAppsDialogComponentsPreview() {
+    AureoleLauncherTheme {
+        Column(
+            modifier = Modifier
+                .background(AureoleDS.colors.surface)
+                .padding(16.dp)
+        ) {
+            FavoriteAppsDialogHeader()
+            FavoriteAppsShowAllSwitchRow(
+                showAllAppsOnHome = true,
+                onToggleShowAllAppsOnHome = {}
             )
         }
     }

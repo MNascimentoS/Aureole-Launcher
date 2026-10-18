@@ -36,7 +36,7 @@ A IA deve tratar a acessibilidade como requisito crítico, não como "bônus".
 
 ## 5. Previews, Testes Unitários e Testes de Screenshot
 A criação de um componente do Design System em `core/designsystem/components` só está finalizada quando contar obrigatoriamente com **Previews**, **Testes Unitários** e **Testes de Screenshot**:
-- **Previews Obrigatórias:** Todo componente deve possuir funções `@Preview` / `@AureolePreview` cobrindo seus possíveis estados visuais:
+- **Previews Obrigatórias:** Todo componente deve possuir funções de preview estritamente privadas (`private fun`) anotadas com `@AureolePreview` (NUNCA `@Preview` diretamente) cobrindo seus possíveis estados visuais:
   1. Estado Padrão (Default)
   2. Variantes e Estados Desabilitados/Ativos/Hover (quando aplicável)
   3. Composição de Conteúdo e Slots

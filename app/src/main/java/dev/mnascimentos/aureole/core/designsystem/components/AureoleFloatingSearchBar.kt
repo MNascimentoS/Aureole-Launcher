@@ -23,6 +23,7 @@ import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -59,13 +60,21 @@ data class AureoleSearchBarHazeConfig(
  * Sizing configuration for the Aureole floating search bar.
  *
  * @property barHeight The height of the search bar when expanded.
- * @property collapsedSize The size of the floating action button when collapsed.
+ * @property collapsedSize The size of the floating action bubble when collapsed.
  */
 data class AureoleSearchBarSizes(
     val barHeight: Dp = 56.dp,
     val collapsedSize: Dp = 56.dp,
 )
 
+/**
+ * State holder for [AureoleFloatingSearchBar].
+ *
+ * @param query The current search text query.
+ * @param onQueryChange Callback invoked when the search text query changes.
+ * @param isExpanded Whether the search bar is expanded or collapsed into a bubble.
+ * @param onExpandedChange Callback invoked when the expanded state changes.
+ */
 data class AureoleSearchBarState(
     val query: String,
     val onQueryChange: (String) -> Unit,
@@ -73,6 +82,14 @@ data class AureoleSearchBarState(
     val onExpandedChange: (Boolean) -> Unit,
 )
 
+/**
+ * Parameters for configuring [AureoleFloatingSearchBar].
+ *
+ * @param placeholder The placeholder text displayed when the query is empty.
+ * @param focusRequester Focus requester used to control input focus when expanded.
+ * @param hazeConfig Configuration for the background haze/blur effect.
+ * @param sizes Sizing parameters for collapsed and expanded states.
+ */
 class AureoleFloatingSearchBarParams(
     val placeholder: String = "Search",
     val focusRequester: FocusRequester = FocusRequester(),
@@ -80,12 +97,25 @@ class AureoleFloatingSearchBarParams(
     val sizes: AureoleSearchBarSizes = AureoleSearchBarSizes()
 )
 
+/**
+ * Parameters for configuring internal expanded search row layout.
+ *
+ * @param backgroundColor Background color of the expanded search bar.
+ * @param barHeight Height of the expanded search bar.
+ * @param placeholder Placeholder text for search input.
+ * @param focusRequester Focus requester for search text input.
+ */
 data class ExpandedSearchRowParams(
     val backgroundColor: Color,
     val barHeight: Dp,
     val placeholder: String = "Search",
     val focusRequester: FocusRequester = FocusRequester()
 )
+
+private val SEARCH_BLUR_RADIUS = 24.dp
+private const val BUBBLE_ALPHA_SCALE = 0.85f
+private const val MIN_BUBBLE_ALPHA = 0.3f
+private const val MAX_BUBBLE_ALPHA = 0.95f
 
 /**
  * Reusable floating search bar / bubble design system component for Aureole Launcher.
@@ -96,10 +126,6 @@ data class ExpandedSearchRowParams(
  * @param modifier The modifier to be applied to this composable.
  * @param params Additional parameters for the search bar.
  */
-@Suppress(
-    "LongMethod",
-    "MagicNumber"
-) // Component needs many states and handles custom UI dimensions
 @Composable
 fun AureoleFloatingSearchBar(
     state: AureoleSearchBarState,
@@ -111,11 +137,6 @@ fun AureoleFloatingSearchBar(
     val isExpanded = state.isExpanded
     val onExpandedChange = state.onExpandedChange
 
-    val placeholder = params.placeholder
-    val focusRequester = params.focusRequester
-    val hazeConfig = params.hazeConfig
-    val sizes = params.sizes
-
     LaunchedEffect(query) {
         if (query.isNotEmpty() && !isExpanded) {
             onExpandedChange(true)
@@ -124,29 +145,12 @@ fun AureoleFloatingSearchBar(
 
     LaunchedEffect(isExpanded) {
         if (isExpanded) {
-            focusRequester.requestFocus()
+            params.focusRequester.requestFocus()
         }
     }
 
-    val hazeModifier = if (hazeConfig.isEnabled && (hazeConfig.state != null)) {
-        Modifier.hazeEffect(
-            state = hazeConfig.state,
-            style = HazeStyle(
-                blurRadius = 24.dp,
-                tint = HazeTint(AureoleDS.colors.surfaceVariant.copy(alpha = hazeConfig.opacity)),
-            ),
-        ) {
-            blurEnabled = true
-        }
-    } else {
-        Modifier
-    }
-
-    val bubbleBgColor = if (!hazeConfig.isEnabled) {
-        AureoleDS.colors.surfaceVariant
-    } else {
-        AureoleDS.colors.surfaceVariant.copy(alpha = (hazeConfig.opacity * 0.85f).coerceIn(0.3f, 0.95f))
-    }
+    val hazeModifier = Modifier.applyHazeConfig(params.hazeConfig)
+    val bubbleBgColor = computeBubbleBgColor(params.hazeConfig)
 
     AnimatedContent(
         targetState = isExpanded,
@@ -168,9 +172,9 @@ fun AureoleFloatingSearchBar(
                 },
                 params = ExpandedSearchRowParams(
                     backgroundColor = bubbleBgColor,
-                    barHeight = sizes.barHeight,
-                    placeholder = placeholder,
-                    focusRequester = focusRequester
+                    barHeight = params.sizes.barHeight,
+                    placeholder = params.placeholder,
+                    focusRequester = params.focusRequester
                 ),
                 modifier = hazeModifier,
             )
@@ -178,17 +182,43 @@ fun AureoleFloatingSearchBar(
             CollapsedSearchIcon(
                 onExpandedChange = onExpandedChange,
                 backgroundColor = bubbleBgColor,
-                collapsedSize = sizes.collapsedSize,
+                collapsedSize = params.sizes.collapsedSize,
                 modifier = hazeModifier,
             )
         }
     }
 }
 
-@Suppress(
-    "LongMethod",
-    "MagicNumber"
-) // Component needs many states and handles custom UI dimensions
+@Composable
+@ReadOnlyComposable
+private fun computeBubbleBgColor(hazeConfig: AureoleSearchBarHazeConfig): Color {
+    return if (!hazeConfig.isEnabled) {
+        AureoleDS.colors.surfaceVariant
+    } else {
+        AureoleDS.colors.surfaceVariant.copy(
+            alpha = (hazeConfig.opacity * BUBBLE_ALPHA_SCALE).coerceIn(MIN_BUBBLE_ALPHA, MAX_BUBBLE_ALPHA)
+        )
+    }
+}
+
+@Composable
+@ReadOnlyComposable
+private fun Modifier.applyHazeConfig(hazeConfig: AureoleSearchBarHazeConfig): Modifier {
+    return if (hazeConfig.isEnabled && (hazeConfig.state != null)) {
+        this.hazeEffect(
+            state = hazeConfig.state,
+            style = HazeStyle(
+                blurRadius = SEARCH_BLUR_RADIUS,
+                tint = HazeTint(AureoleDS.colors.surfaceVariant.copy(alpha = hazeConfig.opacity)),
+            ),
+        ) {
+            blurEnabled = true
+        }
+    } else {
+        this
+    }
+}
+
 @Composable
 private fun ExpandedSearchRow(
     query: String,
@@ -256,10 +286,6 @@ private fun ExpandedSearchRow(
     }
 }
 
-@Suppress(
-    "LongMethod",
-    "MagicNumber"
-) // Component needs many states and handles custom UI dimensions
 @Composable
 private fun CollapsedSearchIcon(
     onExpandedChange: (Boolean) -> Unit,
@@ -284,10 +310,6 @@ private fun CollapsedSearchIcon(
 }
 
 @AureolePreview
-@Suppress(
-    "LongMethod",
-    "MagicNumber"
-) // Component needs many states and handles custom UI dimensions
 @Composable
 private fun AureoleFloatingSearchBarPreview() {
     AureoleLauncherTheme {

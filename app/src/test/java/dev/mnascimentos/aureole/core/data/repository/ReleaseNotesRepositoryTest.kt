@@ -16,14 +16,14 @@ class ReleaseNotesRepositoryTest {
 
         val current = notes.first()
         assertTrue(current.isCurrent)
-        assertEquals("0.7.13", current.versionName)
+        assertEquals("0.7.28", current.versionName)
     }
 
     @Test
     fun `when fetching latest version notes, should return current version details`() {
         val latest = ReleaseNotesRepository.getLatestVersionNotes()
         assertTrue(latest.isCurrent)
-        assertEquals("0.7.13", latest.versionName)
+        assertEquals("0.7.28", latest.versionName)
         assertTrue(latest.sections.isNotEmpty())
     }
 

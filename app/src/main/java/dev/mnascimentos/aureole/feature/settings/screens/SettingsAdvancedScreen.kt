@@ -53,6 +53,12 @@ import dev.mnascimentos.aureole.feature.settings.model.SettingsUiState
 
 private const val BOTTOM_SPACER_PERCENT = 0.15f
 
+private data class SettingsAdvancedDialogActions(
+    val onNavigateToContributors: () -> Unit,
+    val onOpenUninstallDialog: () -> Unit,
+    val onOpenReleaseNotesDialog: () -> Unit
+)
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsAdvancedScreen(
@@ -77,9 +83,11 @@ fun SettingsAdvancedScreen(
             actions = actions,
             context = context,
             innerPadding = innerPadding,
-            onNavigateToContributors = onNavigateToContributors,
-            onOpenUninstallDialog = { showUninstallDialog = true },
-            onOpenReleaseNotesDialog = { showReleaseNotesDialog = true }
+            dialogActions = SettingsAdvancedDialogActions(
+                onNavigateToContributors = onNavigateToContributors,
+                onOpenUninstallDialog = { showUninstallDialog = true },
+                onOpenReleaseNotesDialog = { showReleaseNotesDialog = true }
+            )
         )
 
         if (showUninstallDialog) {
@@ -103,9 +111,7 @@ private fun SettingsAdvancedContent(
     actions: SettingsScreenActions,
     context: Context,
     innerPadding: PaddingValues,
-    onNavigateToContributors: () -> Unit,
-    onOpenUninstallDialog: () -> Unit,
-    onOpenReleaseNotesDialog: () -> Unit
+    dialogActions: SettingsAdvancedDialogActions
 ) {
     BoxWithConstraints(
         modifier = Modifier
@@ -142,13 +148,13 @@ private fun SettingsAdvancedContent(
                 uiState = uiState,
                 actions = actions,
                 context = context,
-                onOpenUninstallDialog = onOpenUninstallDialog,
-                onOpenReleaseNotesDialog = onOpenReleaseNotesDialog
+                onOpenUninstallDialog = dialogActions.onOpenUninstallDialog,
+                onOpenReleaseNotesDialog = dialogActions.onOpenReleaseNotesDialog
             )
 
             Spacer(modifier = Modifier.height(20.dp))
 
-            AdvancedLinksGroup(onNavigateToContributors = onNavigateToContributors)
+            AdvancedLinksGroup(onNavigateToContributors = dialogActions.onNavigateToContributors)
 
             Spacer(modifier = Modifier.height(bottomSpacerHeight))
         }

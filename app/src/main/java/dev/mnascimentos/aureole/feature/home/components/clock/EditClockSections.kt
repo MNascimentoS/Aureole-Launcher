@@ -1,5 +1,6 @@
 package dev.mnascimentos.aureole.feature.home.components.clock
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
@@ -17,6 +18,9 @@ import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
+import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
+import dev.mnascimentos.aureole.feature.home.createDefaultHomeScreenActions
 import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
 
@@ -240,6 +244,25 @@ internal fun EditClockFormatSection(
             EditClockLayoutChip("Numérico (09/10/2026)", uiState.clockDateFormat == "NUMERIC") {
                 actions.onUpdateClockDateFormat("NUMERIC")
             }
+        }
+    }
+}
+
+@AureolePreview
+@Composable
+private fun EditClockSectionsPreview() {
+    AureoleLauncherTheme {
+        Column(
+            modifier = Modifier
+                .background(AureoleDS.colors.surface)
+                .padding(16.dp)
+        ) {
+            EditClockStyleSection(
+                uiState = MainUiState(),
+                actions = createDefaultHomeScreenActions(),
+                tempCustomGreeting = "Bem-vindo",
+                onGreetingChange = {}
+            )
         }
     }
 }

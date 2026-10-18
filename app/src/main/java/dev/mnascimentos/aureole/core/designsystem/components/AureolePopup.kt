@@ -166,7 +166,6 @@ fun AureoleHeaderBanner(
  * @param showAureoleLogo Whether to show the Aureole logo.
  * @param onSettingsClick Executes when the user clicks the settings icon.
  * @param onCloseClick Executes when the user clicks the close icon.
- * @param iconVector The vector icon slot to be displayed.
  * @param customIcon The custom icon slot content.
  */
 class AureolePopupHeaderParams(

@@ -41,6 +41,8 @@ import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatPa
 import dev.mnascimentos.aureole.core.designsystem.icons.Edit
 import dev.mnascimentos.aureole.core.designsystem.icons.Star
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
+import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.components.appsdrawer.appitem.AppItemRow
 import dev.mnascimentos.aureole.feature.home.components.favorites.model.FavoriteAppsBodyParams
 import dev.mnascimentos.aureole.feature.home.components.favorites.model.FavoriteAppsDialogActions
@@ -373,5 +375,19 @@ private fun moveFavoriteItem(
         val item = list.removeAt(index)
         list.add(targetIndex, item)
         actions.onUpdateFavoritePackages(config.containerId, list)
+    }
+}
+
+@AureolePreview
+@Composable
+private fun FavoriteAppsDialogPreview() {
+    AureoleLauncherTheme {
+        FavoriteAppsDialog(
+            config = FavoriteAppsDialogConfig(
+                allApps = emptyList(),
+                favoriteAppPackages = emptyList()
+            ),
+            actions = FavoriteAppsDialogActions()
+        )
     }
 }

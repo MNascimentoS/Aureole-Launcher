@@ -4,13 +4,13 @@ import android.content.Context
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import dev.mnascimentos.aureole.core.data.repository.AppRepository
-import dev.mnascimentos.aureole.core.data.repository.ClockSettingsRepository
 import dev.mnascimentos.aureole.core.data.repository.ContainerRepository
 import dev.mnascimentos.aureole.core.data.repository.FavoriteContainerRepository
 import dev.mnascimentos.aureole.core.data.repository.FolderRepository
 import dev.mnascimentos.aureole.core.data.repository.GridRepository
-import dev.mnascimentos.aureole.core.data.repository.ReleaseNotesRepository
 import dev.mnascimentos.aureole.core.data.repository.SettingsRepository
+import dev.mnascimentos.aureole.core.data.repository.WidgetRepository
+import dev.mnascimentos.aureole.feature.home.HomeRepositories
 import dev.mnascimentos.aureole.feature.home.HomeViewModel
 import org.junit.Assert.assertTrue
 import org.junit.Before
@@ -32,22 +32,22 @@ class MainLifecycleObserverTest {
         context = RuntimeEnvironment.getApplication()
         val settingsRepository = SettingsRepository(context)
         val appRepository = AppRepository(context)
+        val widgetRepository = WidgetRepository(context)
         val containerRepository = ContainerRepository(context)
         val folderRepository = FolderRepository(context)
-        val favoriteContainerRepository = FavoriteContainerRepository(context)
+        val favoriteContainerRepository = FavoriteContainerRepository(context, settingsRepository)
         val gridRepository = GridRepository(context)
-        val clockSettingsRepository = ClockSettingsRepository(context)
-        val releaseNotesRepository = ReleaseNotesRepository(context)
 
         viewModel = HomeViewModel(
-            appRepository = appRepository,
-            settingsRepository = settingsRepository,
-            containerRepository = containerRepository,
-            folderRepository = folderRepository,
-            favoriteContainerRepository = favoriteContainerRepository,
-            gridRepository = gridRepository,
-            clockSettingsRepository = clockSettingsRepository,
-            releaseNotesRepository = releaseNotesRepository,
+            HomeRepositories(
+                appRepository = appRepository,
+                widgetRepository = widgetRepository,
+                settingsRepository = settingsRepository,
+                folderRepository = folderRepository,
+                favoriteContainerRepository = favoriteContainerRepository,
+                containerRepository = containerRepository,
+                gridRepository = gridRepository,
+            )
         )
 
         observer = MainLifecycleObserver(

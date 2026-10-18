@@ -34,8 +34,11 @@ import dev.mnascimentos.aureole.core.data.model.AppFolder
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.data.model.ContainerItemEntity
 import dev.mnascimentos.aureole.core.data.model.ContainerItemType
+import dev.mnascimentos.aureole.core.data.model.ContainerModel
 import dev.mnascimentos.aureole.core.designsystem.icons.Add
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
+import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.CreateFolderDialog
 
 @Suppress("LongMethod") // Layout managing container reordering and item deletion controls
@@ -236,6 +239,25 @@ private fun ManageItemRow(
             ) {
                 Text("✕", style = AureoleDS.typography.labelSmall)
             }
+        }
+    }
+}
+
+@AureolePreview
+@Composable
+private fun ManageItemsContentPreview() {
+    AureoleLauncherTheme {
+        Box(
+            modifier = Modifier
+                .background(AureoleDS.colors.surface)
+                .padding(16.dp)
+        ) {
+            val state = rememberEditContainerState(ContainerModel(id = "preview"))
+            ManageItemsContent(
+                state = state,
+                allApps = emptyList(),
+                onBack = {}
+            )
         }
     }
 }

@@ -1,10 +1,13 @@
 package dev.mnascimentos.aureole.feature.home.components.favorites
 
 import android.appwidget.AppWidgetHost
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.LazyListState
@@ -15,6 +18,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.core.data.model.AppInfo
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
+import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.core.designsystem.utils.fadingEdges
 import dev.mnascimentos.aureole.feature.home.LocalHomeActions
 import dev.mnascimentos.aureole.feature.home.LocalHomeUiState
@@ -28,7 +34,9 @@ import dev.mnascimentos.aureole.feature.home.components.favorites.model.NonScrol
 import dev.mnascimentos.aureole.feature.home.components.favorites.model.ScrollableFavoritesParams
 import dev.mnascimentos.aureole.feature.home.components.widgets.StackedWidgetSection
 import dev.mnascimentos.aureole.feature.home.components.widgets.model.StackedWidgetConfig
+import dev.mnascimentos.aureole.feature.home.createDefaultHomeScreenActions
 import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
+import dev.mnascimentos.aureole.feature.home.model.MainUiState
 
 private const val MAX_NON_SCROLLABLE_APPS = 20
 
@@ -288,4 +296,26 @@ fun FavoritesList(
         appWidgetHost = appWidgetHost,
         modifier = modifier
     )
+}
+
+@AureolePreview
+@Composable
+private fun FavoritesListPreview() {
+    AureoleLauncherTheme {
+        Box(
+            modifier = Modifier
+                .background(AureoleDS.colors.surface)
+                .padding(16.dp)
+        ) {
+            NonScrollableFavoritesList(
+                params = NonScrollableFavoritesParams(
+                    uiState = MainUiState(),
+                    favoriteApps = emptyList(),
+                    actions = createDefaultHomeScreenActions(),
+                    favoritePackages = emptySet(),
+                    containerId = null
+                )
+            )
+        }
+    }
 }

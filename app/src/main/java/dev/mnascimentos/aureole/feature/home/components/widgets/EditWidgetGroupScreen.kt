@@ -40,11 +40,14 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
+import dev.mnascimentos.aureole.core.data.model.LauncherItemState
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleEditOverlay
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleEditOverlayConfig
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleEditOverlayParams
 import dev.mnascimentos.aureole.core.designsystem.icons.Add
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
+import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.core.designsystem.utils.LocalAnimatedVisibilityScope
 import dev.mnascimentos.aureole.core.designsystem.utils.LocalSharedTransitionScope
 import dev.mnascimentos.aureole.feature.home.components.widgets.model.EditWidgetGroupActions
@@ -303,5 +306,24 @@ private fun AddWidgetCard(
                 modifier = Modifier.size(32.dp)
             )
         }
+    }
+}
+
+@AureolePreview
+@Composable
+private fun EditWidgetGroupScreenPreview() {
+    AureoleLauncherTheme {
+        EditWidgetGroupScreen(
+            params = EditWidgetGroupParams(
+                item = LauncherItemState(id = "preview"),
+                widgets = listOf(1, 2)
+            ),
+            actions = EditWidgetGroupActions(
+                onToggleIndicator = {},
+                onRemoveWidget = {},
+                onAddWidgetClick = {},
+                onDismissRequest = {}
+            )
+        )
     }
 }

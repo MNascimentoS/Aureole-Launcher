@@ -9,6 +9,8 @@ import dev.mnascimentos.aureole.core.data.model.AppFolder
 import dev.mnascimentos.aureole.core.data.model.ContainerItemEntity
 import dev.mnascimentos.aureole.core.data.model.ContainerItemType
 import dev.mnascimentos.aureole.core.data.model.ContainerModel
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
+import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.components.containers.model.ContainerOptionsState
 import java.util.UUID
 
@@ -186,5 +188,13 @@ internal fun rememberEditContainerState(panel: ContainerModel): EditContainerSta
             itemsList = initialItemsList,
             folders = panel.folders
         )
+    }
+}
+
+@AureolePreview
+@Composable
+private fun EditContainerStatePreview() {
+    AureoleLauncherTheme {
+        rememberEditContainerState(ContainerModel(id = "preview"))
     }
 }

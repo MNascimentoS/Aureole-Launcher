@@ -33,8 +33,11 @@ import androidx.compose.ui.unit.dp
 import dev.chrisbanes.haze.HazeStyle
 import dev.chrisbanes.haze.HazeTint
 import dev.chrisbanes.haze.hazeEffect
+import dev.mnascimentos.aureole.core.data.model.AppFolder
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
+import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.core.designsystem.utils.LocalHazeState
 import dev.mnascimentos.aureole.feature.home.LocalHomeActions
 import dev.mnascimentos.aureole.feature.home.LocalHomeUiState
@@ -189,6 +192,29 @@ private fun OpenedFolderSamsungGridAppItem(
             overflow = TextOverflow.Ellipsis,
             textAlign = TextAlign.Center,
             modifier = Modifier.fillMaxWidth()
+        )
+    }
+}
+
+@AureolePreview
+@Composable
+private fun GridFolderPopupPreview() {
+    AureoleLauncherTheme {
+        GridFolderPopup(
+            params = GridFolderPopupParams(
+                folder = AppFolder(id = "1", panelId = "1", name = "Preview Folder"),
+                appsInFolder = emptyList(),
+                actions = FolderPopupActions(
+                    onDismiss = {},
+                    onAppClick = {},
+                    onAddAppsClick = {},
+                    onEditFolderClick = {}
+                ),
+                isActionsVisible = false,
+                onToggleActions = {},
+                hazeState = null,
+                isHazeEnabled = false
+            )
         )
     }
 }

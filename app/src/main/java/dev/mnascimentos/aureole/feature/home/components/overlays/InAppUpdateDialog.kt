@@ -25,8 +25,13 @@ import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatPa
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
+import dev.mnascimentos.aureole.feature.home.components.overlays.model.UpdateDialogContentParams
 
-@Suppress("LongMethod")
+private val DIALOG_CORNER_RADIUS = 22.dp
+
+/**
+ * Dialog alerting the user that a new app update is available in Google Play.
+ */
 @Composable
 fun UpdateAvailableDialog(
     onConfirmUpdate: () -> Unit,
@@ -45,16 +50,9 @@ fun UpdateAvailableDialog(
     )
 }
 
-data class UpdateDialogContentParams(
-    val title: String,
-    val body: String,
-    val confirmLabel: String,
-    val dismissLabel: String,
-    val onConfirm: () -> Unit,
-    val onDismiss: () -> Unit
-)
-
-@Suppress("LongMethod")
+/**
+ * Dialog alerting the user that an app update has been downloaded and is ready to install.
+ */
 @Composable
 fun UpdateDownloadedDialog(
     onConfirmRestart: () -> Unit,
@@ -73,103 +71,106 @@ fun UpdateDownloadedDialog(
     )
 }
 
-@Suppress("LongMethod")
 @Composable
 private fun UpdateDialogContent(params: UpdateDialogContentParams) {
-    val title = params.title
-    val body = params.body
-    val confirmLabel = params.confirmLabel
-    val dismissLabel = params.dismissLabel
-    val onConfirm = params.onConfirm
-    val onDismiss = params.onDismiss
-
     if (LocalInspectionMode.current) {
-        Box(
-            modifier = Modifier.fillMaxSize().padding(16.dp),
-            contentAlignment = Alignment.Center
-        ) {
-            Surface(
-                shape = RoundedCornerShape(22.dp),
-                color = AureoleDS.colors.surface,
-                contentColor = AureoleDS.colors.onSurfaceHigh
-            ) {
-                Column(modifier = Modifier.padding(24.dp)) {
-                    AureoleText(
-                        text = title,
-                        color = AureoleDS.colors.onSurfaceHigh,
-                        format = AureoleTextFormatParams(
-                            style = AureoleDS.typography.titleMedium,
-                            fontWeight = FontWeight.Bold
-                        )
-                    )
-                    Spacer(modifier = Modifier.height(16.dp))
-                    AureoleText(
-                        text = body,
-                        color = AureoleDS.colors.onSurfaceMedium,
-                        format = AureoleTextFormatParams(style = AureoleDS.typography.bodyMedium)
-                    )
-                    Spacer(modifier = Modifier.height(24.dp))
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.End
-                    ) {
-                        TextButton(onClick = onDismiss) {
-                            AureoleText(text = dismissLabel, color = AureoleDS.colors.onSurfaceMedium)
-                        }
-                        Spacer(modifier = Modifier.width(8.dp))
-                        TextButton(onClick = onConfirm) {
-                            AureoleText(
-                                text = confirmLabel,
-                                color = AureoleDS.colors.onSurfaceHigh,
-                                format = AureoleTextFormatParams(fontWeight = FontWeight.SemiBold)
-                            )
-                        }
-                    }
-                }
-            }
-        }
+        InspectionUpdateDialogContent(params)
     } else {
-        AlertDialog(
-            onDismissRequest = onDismiss,
-            containerColor = AureoleDS.colors.surface,
-            shape = RoundedCornerShape(22.dp),
-            title = {
+        StandardUpdateAlertDialog(params)
+    }
+}
+
+@Composable
+private fun InspectionUpdateDialogContent(params: UpdateDialogContentParams) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp),
+        contentAlignment = Alignment.Center
+    ) {
+        Surface(
+            shape = RoundedCornerShape(DIALOG_CORNER_RADIUS),
+            color = AureoleDS.colors.surface,
+            contentColor = AureoleDS.colors.onSurfaceHigh
+        ) {
+            Column(modifier = Modifier.padding(24.dp)) {
                 AureoleText(
-                    text = title,
+                    text = params.title,
                     color = AureoleDS.colors.onSurfaceHigh,
                     format = AureoleTextFormatParams(
                         style = AureoleDS.typography.titleMedium,
                         fontWeight = FontWeight.Bold
                     )
                 )
-            },
-            text = {
+                Spacer(modifier = Modifier.height(16.dp))
                 AureoleText(
-                    text = body,
+                    text = params.body,
                     color = AureoleDS.colors.onSurfaceMedium,
                     format = AureoleTextFormatParams(style = AureoleDS.typography.bodyMedium)
                 )
-            },
-            confirmButton = {
-                TextButton(onClick = onConfirm) {
-                    AureoleText(
-                        text = confirmLabel,
-                        color = AureoleDS.colors.onSurfaceHigh,
-                        format = AureoleTextFormatParams(fontWeight = FontWeight.SemiBold)
-                    )
-                }
-            },
-            dismissButton = {
-                TextButton(onClick = onDismiss) {
-                    AureoleText(text = dismissLabel, color = AureoleDS.colors.onSurfaceMedium)
+                Spacer(modifier = Modifier.height(24.dp))
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.End
+                ) {
+                    TextButton(onClick = params.onDismiss) {
+                        AureoleText(text = params.dismissLabel, color = AureoleDS.colors.onSurfaceMedium)
+                    }
+                    Spacer(modifier = Modifier.width(8.dp))
+                    TextButton(onClick = params.onConfirm) {
+                        AureoleText(
+                            text = params.confirmLabel,
+                            color = AureoleDS.colors.onSurfaceHigh,
+                            format = AureoleTextFormatParams(fontWeight = FontWeight.SemiBold)
+                        )
+                    }
                 }
             }
-        )
+        }
     }
 }
 
+@Composable
+private fun StandardUpdateAlertDialog(params: UpdateDialogContentParams) {
+    AlertDialog(
+        onDismissRequest = params.onDismiss,
+        containerColor = AureoleDS.colors.surface,
+        shape = RoundedCornerShape(DIALOG_CORNER_RADIUS),
+        title = {
+            AureoleText(
+                text = params.title,
+                color = AureoleDS.colors.onSurfaceHigh,
+                format = AureoleTextFormatParams(
+                    style = AureoleDS.typography.titleMedium,
+                    fontWeight = FontWeight.Bold
+                )
+            )
+        },
+        text = {
+            AureoleText(
+                text = params.body,
+                color = AureoleDS.colors.onSurfaceMedium,
+                format = AureoleTextFormatParams(style = AureoleDS.typography.bodyMedium)
+            )
+        },
+        confirmButton = {
+            TextButton(onClick = params.onConfirm) {
+                AureoleText(
+                    text = params.confirmLabel,
+                    color = AureoleDS.colors.onSurfaceHigh,
+                    format = AureoleTextFormatParams(fontWeight = FontWeight.SemiBold)
+                )
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = params.onDismiss) {
+                AureoleText(text = params.dismissLabel, color = AureoleDS.colors.onSurfaceMedium)
+            }
+        }
+    )
+}
+
 @AureolePreview
-@Suppress("LongMethod")
 @Composable
 private fun UpdateAvailableDialogPreview() {
     AureoleLauncherTheme {
@@ -178,7 +179,6 @@ private fun UpdateAvailableDialogPreview() {
 }
 
 @AureolePreview
-@Suppress("LongMethod")
 @Composable
 private fun UpdateDownloadedDialogPreview() {
     AureoleLauncherTheme {

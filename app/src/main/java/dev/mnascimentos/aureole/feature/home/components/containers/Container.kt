@@ -31,6 +31,8 @@ import dev.mnascimentos.aureole.core.data.model.AppFolder
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.data.model.ContainerItemType
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
+import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.core.designsystem.utils.fadingEdges
 import dev.mnascimentos.aureole.feature.home.LocalHomeActions
 import dev.mnascimentos.aureole.feature.home.LocalHomeUiState
@@ -397,6 +399,28 @@ private fun RowRenderItem(
                     )
                 )
             }
+        }
+    }
+}
+
+@AureolePreview
+@Composable
+private fun ContainerPreview() {
+    AureoleLauncherTheme {
+        Box(
+            modifier = Modifier
+                .background(AureoleDS.colors.surface)
+                .padding(16.dp)
+        ) {
+            Container(
+                config = ContainerConfig(
+                    panelId = "preview_container",
+                    position = "Center",
+                    orientation = "Horizontal",
+                    isBackgroundEnabled = true
+                ),
+                onFolderClick = { _, _ -> }
+            )
         }
     }
 }

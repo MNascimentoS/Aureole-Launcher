@@ -21,10 +21,10 @@ import dev.mnascimentos.aureole.core.designsystem.palette.getPaletteByName
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDimens
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleThemeConfig
+import dev.mnascimentos.aureole.core.lifecycle.SettingsLifecycleObserver
 import dev.mnascimentos.aureole.feature.home.components.favorites.FavoriteAppsDialog
 import dev.mnascimentos.aureole.feature.home.components.favorites.model.FavoriteAppsDialogActions
 import dev.mnascimentos.aureole.feature.home.components.favorites.model.FavoriteAppsDialogConfig
-import dev.mnascimentos.aureole.core.lifecycle.SettingsLifecycleObserver
 import dev.mnascimentos.aureole.feature.settings.extensions.performFactoryReset
 import dev.mnascimentos.aureole.feature.settings.extensions.resetGridLayout
 import dev.mnascimentos.aureole.feature.settings.extensions.restoreDefaultWallpaper

@@ -27,17 +27,17 @@ import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
  * Standard Popup Menu Action Row Item with icon, title, optional badge, or trailing action button.
  *
  * @param title The title of the menu item.
- * @param onClick Executes when the item is clicked.
  * @param modifier The modifier to be applied to the layout.
  * @param params Additional parameters for configuring the menu item.
+ * @param onClick Executes when the item is clicked.
  */
 @Suppress("LongMethod") // AureolePopupMenuItem provides action menu item with custom icon, badge, and trailing slots
 @Composable
 fun AureolePopupMenuItem(
     title: String,
-    onClick: () -> Unit,
     modifier: Modifier = Modifier,
     params: AureolePopupMenuItemParams = AureolePopupMenuItemParams(),
+    onClick: () -> Unit = {},
 ) {
     val badge = params.badge
     val onTrailingClick = params.onTrailingClick

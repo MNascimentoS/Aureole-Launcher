@@ -108,14 +108,14 @@ fun `when updating container favorites, should isolate changes to target contain
 ## 4. Regras Estritas para Testes de Screenshot (`@PreviewTest`)
 
 ### 4.1. Anotações e Assinatura
-Toda função de teste de screenshot DEVE possuir:
+Toda função de teste de screenshot DEVE ter visibilidade privada (`private fun`) e possuir:
 1. Anotação `@PreviewTest` de `com.android.tools.screenshot.PreviewTest`.
-2. Anotação `@Preview` configurando tema escuro e plano de fundo visível:
+2. Anotação `@AureolePreview` de `dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview`:
    ```kotlin
    @PreviewTest
-   @Preview(name = "Dark Mode", uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
+   @AureolePreview
    @Composable
-   fun HomeScreenScreenshotTest() { ... }
+   private fun HomeScreenScreenshotTest() { ... }
    ```
 
 ### 4.2. Provedor de Tema e Contexto de Ações
@@ -123,9 +123,9 @@ Todo Composable testado DEVE ser envolvido pelo `AureoleLauncherTheme` e pelos `
 
 ```kotlin
 @PreviewTest
-@Preview(name = "App Item Bottom Sheet Flow", uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
+@AureolePreview
 @Composable
-fun HomeScreenAppItemBottomSheetScreenshotTest() {
+private fun HomeScreenAppItemBottomSheetScreenshotTest() {
     val context = LocalContext.current
     val sampleData = createSampleHomeData()
 

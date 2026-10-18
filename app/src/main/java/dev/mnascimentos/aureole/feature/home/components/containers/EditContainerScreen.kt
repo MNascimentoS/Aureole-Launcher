@@ -38,6 +38,8 @@ import dev.mnascimentos.aureole.core.designsystem.icons.Click
 import dev.mnascimentos.aureole.core.designsystem.icons.ColorFill
 import dev.mnascimentos.aureole.core.designsystem.icons.DragMenu
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
+import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.LocalHomeActions
 import dev.mnascimentos.aureole.feature.home.LocalHomeUiState
 import dev.mnascimentos.aureole.feature.home.components.containers.model.ContainerConfig
@@ -296,5 +298,20 @@ private fun AppearanceSettingsContent(
         Button(onClick = onBack, modifier = Modifier.fillMaxWidth()) {
             Text("Voltar")
         }
+    }
+}
+
+@AureolePreview
+@Composable
+private fun EditContainerScreenPreview() {
+    AureoleLauncherTheme {
+        EditContainerScreen(
+            params = EditContainerScreenParams(
+                panel = ContainerModel(id = "preview_container"),
+                allApps = emptyList(),
+                onDismiss = {},
+                onSave = {}
+            )
+        )
     }
 }

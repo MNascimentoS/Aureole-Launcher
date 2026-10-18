@@ -3,6 +3,7 @@ package dev.mnascimentos.aureole.feature.home.components.favorites
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -28,6 +29,8 @@ import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
 import dev.mnascimentos.aureole.core.designsystem.icons.Search
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
+import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.components.favorites.model.FavoriteAppRowParams
 import dev.mnascimentos.aureole.feature.home.components.favorites.model.FavoriteSectionParams
 
@@ -257,4 +260,19 @@ internal fun FavoriteAppsSearchInput(
         shape = RoundedCornerShape(12.dp),
         modifier = Modifier.fillMaxWidth()
     )
+}
+
+@AureolePreview
+@Composable
+private fun FavoriteAppsListPreview() {
+    AureoleLauncherTheme {
+        Column(
+            modifier = Modifier
+                .background(AureoleDS.colors.surface)
+                .padding(16.dp)
+        ) {
+            FavoriteSectionHeader(count = 3, onDeactivateAll = {})
+            FavoriteAppsSearchInput(query = "", onQueryChange = {})
+        }
+    }
 }

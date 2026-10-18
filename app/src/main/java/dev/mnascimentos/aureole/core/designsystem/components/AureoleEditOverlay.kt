@@ -2,6 +2,7 @@ package dev.mnascimentos.aureole.core.designsystem.components
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.animation.core.MutableTransitionState
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
@@ -46,6 +47,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import dev.chrisbanes.haze.HazeState
 import dev.chrisbanes.haze.HazeStyle
@@ -66,18 +68,15 @@ private const val EXPAND_VELOCITY_THRESHOLD = -500f
 private const val COLLAPSE_VELOCITY_THRESHOLD = 500f
 
 /**
- * Parameters for [AureoleEditOverlay].
+ * Configuration options for [AureoleEditOverlay].
  *
  * @param title The optional title of the overlay.
  * @param hazeState The haze state for the background blur effect.
  * @param isVisible Whether the overlay is currently visible.
  * @param animated Whether the overlay should animate its entrance and exit.
+ * @param maxSheetHeightFraction The maximum height fraction of the screen the sheet can occupy.
  * @param onBackPress Executes when the user presses the back button.
  * @param onSettingsClick Executes when the user clicks the settings icon.
- * @param maxSheetHeightFraction The maximum height fraction of the screen the sheet can occupy.
- * @param previewContent The content to be displayed in the preview slot.
- * @param bottomBarContent The optional content to be displayed at the bottom of the sheet.
- * @param sheetContent The main content of the sheet.
  */
 data class AureoleEditOverlayConfig(
     val title: String? = null,
@@ -89,6 +88,14 @@ data class AureoleEditOverlayConfig(
     val onSettingsClick: (() -> Unit)? = null,
 )
 
+/**
+ * Parameters for [AureoleEditOverlay].
+ *
+ * @param config The overlay configuration options.
+ * @param previewContent The content to be displayed in the preview slot.
+ * @param bottomBarContent The optional content to be displayed at the bottom of the sheet.
+ * @param sheetContent The main content of the sheet.
+ */
 class AureoleEditOverlayParams(
     val config: AureoleEditOverlayConfig = AureoleEditOverlayConfig(),
     val previewContent: (@Composable BoxScope.() -> Unit)? = null,
@@ -101,30 +108,20 @@ class AureoleEditOverlayParams(
  *
  * Provides a unified overlay layout featuring backdrop, sheet surface, animations, and preview slot.
  *
- * @param onDismissRequest Executes when the user requests to dismiss the overlay.
- * @param modifier The modifier to be applied to the layout.
  * @param params The parameters for configuring the overlay.
+ * @param modifier The modifier to be applied to the layout.
+ * @param onDismissRequest Executes when the user requests to dismiss the overlay.
  */
-@Suppress(
-    "LongMethod",
-    "CyclomaticComplexMethod"
-) // Reusable edit overlay component managing transition states, drag gestures and layout slots
 @Composable
 fun AureoleEditOverlay(
     params: AureoleEditOverlayParams,
-    onDismissRequest: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onDismissRequest: () -> Unit = {},
 ) {
-    val title = params.config.title
     val hazeState = params.config.hazeState
     val isVisible = params.config.isVisible
     val animated = params.config.animated
     val onBackPress = params.config.onBackPress
-    val onSettingsClick = params.config.onSettingsClick
-    val maxSheetHeightFraction = params.config.maxSheetHeightFraction
-    val previewContent = params.previewContent
-    val bottomBarContent = params.bottomBarContent
-    val sheetContent = params.sheetContent
 
     val isInspection = LocalInspectionMode.current
     val effectiveAnimated = animated && !isInspection
@@ -160,6 +157,32 @@ fun AureoleEditOverlay(
         }
     }
 
+    AnimatedVisibility(
+        visibleState = visibleState,
+        enter = fadeIn(animationSpec = tween(ANIMATION_DURATION_MS)),
+        exit = fadeOut(animationSpec = tween(ANIMATION_DURATION_MS)),
+        modifier = modifier.fillMaxSize()
+    ) {
+        CompositionLocalProvider(LocalAnimatedVisibilityScope provides this) {
+            OverlayContentBox(
+                params = params,
+                hazeState = hazeState,
+                effectiveAnimated = effectiveAnimated,
+                triggerDismiss = triggerDismiss,
+                animScope = this
+            )
+        }
+    }
+}
+
+@Composable
+private fun OverlayContentBox(
+    params: AureoleEditOverlayParams,
+    hazeState: HazeState?,
+    effectiveAnimated: Boolean,
+    triggerDismiss: () -> Unit,
+    animScope: AnimatedVisibilityScope
+) {
     val localHaze = LocalHazeState.current
     val effectiveHazeState = hazeState ?: localHaze
 
@@ -176,138 +199,183 @@ fun AureoleEditOverlay(
     }
     val backgroundColor = if (effectiveHazeState != null) Color.Transparent else Color.Black
 
-    AnimatedVisibility(
-        visibleState = visibleState,
-        enter = fadeIn(animationSpec = tween(ANIMATION_DURATION_MS)),
-        exit = fadeOut(animationSpec = tween(ANIMATION_DURATION_MS)),
-        modifier = modifier.fillMaxSize()
+    BoxWithConstraints(
+        modifier = Modifier
+            .fillMaxSize()
+            .then(hazeModifier)
+            .background(backgroundColor)
+            .clickable(
+                interactionSource = remember { MutableInteractionSource() },
+                indication = null,
+                onClick = triggerDismiss
+            )
     ) {
-        CompositionLocalProvider(LocalAnimatedVisibilityScope provides this) {
-            BoxWithConstraints(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .then(hazeModifier)
-                    .background(backgroundColor)
-                    .clickable(
-                        interactionSource = remember { MutableInteractionSource() },
-                        indication = null,
-                        onClick = triggerDismiss
-                    )
-            ) {
-                val maxSheetHeight = maxHeight * maxSheetHeightFraction
-                val sheetMaxExpandedHeight = maxHeight - AureoleDS.dimens.large
-                val maxExpansionAllowed =
-                    (sheetMaxExpandedHeight - maxSheetHeight).coerceAtLeast(0.dp)
+        val maxSheetHeight = maxHeight * params.config.maxSheetHeightFraction
+        val sheetMaxExpandedHeight = maxHeight - AureoleDS.dimens.large
+        val maxExpansionAllowed = (sheetMaxExpandedHeight - maxSheetHeight).coerceAtLeast(0.dp)
+        val bounds = SheetBounds(maxSheetHeight, maxExpansionAllowed)
 
-                var dragExpansion by remember { mutableFloatStateOf(0f) }
+        Column(modifier = Modifier.fillMaxSize()) {
+            PreviewSlot(
+                previewContent = params.previewContent,
+                effectiveAnimated = effectiveAnimated,
+                animScope = animScope
+            )
 
-                val draggableState = rememberDraggableState { delta ->
-                    dragExpansion = (dragExpansion - delta).coerceIn(0f, maxExpansionAllowed.value)
-
-                    if (dragExpansion <= 0f && delta > DISMISS_DRAG_THRESHOLD_PX) {
-                        triggerDismiss()
-                    }
-                }
-
-                val currentMaxSheetHeight = maxSheetHeight + dragExpansion.dp
-
-                Column(
-                    modifier = Modifier.fillMaxSize()
-                ) {
-                    val previewModifier = if (effectiveAnimated) {
-                        Modifier.animateEnterExit(
-                            enter = fadeIn(tween(ANIMATION_DURATION_MS)) +
-                                scaleIn(
-                                    initialScale = 0.75f,
-                                    animationSpec = tween(ANIMATION_DURATION_MS)
-                                ),
-                            exit = fadeOut(tween(ANIMATION_DURATION_MS)) +
-                                scaleOut(
-                                    targetScale = 0.75f,
-                                    animationSpec = tween(ANIMATION_DURATION_MS)
-                                )
-                        )
-                    } else {
-                        Modifier.Companion
-                    }
-
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .weight(1f)
-                            .then(previewModifier)
-                            .padding(
-                                start = AureoleDS.dimens.medium,
-                                end = AureoleDS.dimens.medium,
-                                top = AureoleDS.dimens.large,
-                                bottom = AureoleDS.dimens.medium
-                            ),
-                        contentAlignment = Alignment.BottomCenter
-                    ) {
-                        previewContent?.invoke(this)
-                    }
-
-                    val sheetModifier = if (effectiveAnimated) {
-                        Modifier.animateEnterExit(
-                            enter = slideInVertically(
-                                initialOffsetY = { it },
-                                animationSpec = tween(ANIMATION_DURATION_MS)
-                            ),
-                            exit = slideOutVertically(
-                                targetOffsetY = { it },
-                                animationSpec = tween(ANIMATION_DURATION_MS)
-                            )
-                        )
-                    } else {
-                        Modifier.Companion
-                    }
-
-                    Surface(
-                        modifier = sheetModifier
-                            .fillMaxWidth()
-                            .heightIn(max = currentMaxSheetHeight)
-                            .draggable(
-                                state = draggableState,
-                                orientation = Orientation.Vertical,
-                                onDragStopped = { velocity ->
-                                    if (velocity > DISMISS_VELOCITY_THRESHOLD && dragExpansion == 0f) {
-                                        triggerDismiss()
-                                    } else if (velocity < EXPAND_VELOCITY_THRESHOLD) {
-                                        dragExpansion = maxExpansionAllowed.value
-                                    } else if (velocity > COLLAPSE_VELOCITY_THRESHOLD) {
-                                        dragExpansion = 0f
-                                    } else {
-                                        dragExpansion =
-                                            if (dragExpansion > maxExpansionAllowed.value / 2) {
-                                                maxExpansionAllowed.value
-                                            } else {
-                                                0f
-                                            }
-                                    }
-                                }
-                            )
-                            .clickable(
-                                interactionSource = remember { MutableInteractionSource() },
-                                indication = null,
-                                onClick = {}
-                            ),
-                        shape = RoundedCornerShape(
-                            topStart = AureoleDS.dimens.radiusLarge,
-                            topEnd = AureoleDS.dimens.radiusLarge
-                        ),
-                        color = AureoleDS.colors.surface,
-                        contentColor = AureoleDS.colors.onSurfaceMedium
-                    ) {
-                        OverlaySheetBody(
-                            title = title,
-                            onSettingsClick = onSettingsClick,
-                            bottomBarContent = bottomBarContent,
-                            sheetContent = sheetContent
-                        )
-                    }
-                }
-            }
+            SheetSurface(
+                params = params,
+                bounds = bounds,
+                effectiveAnimated = effectiveAnimated,
+                triggerDismiss = triggerDismiss,
+                animScope = animScope
+            )
         }
+    }
+}
+
+@Composable
+private fun ColumnScope.PreviewSlot(
+    previewContent: (@Composable BoxScope.() -> Unit)?,
+    effectiveAnimated: Boolean,
+    animScope: AnimatedVisibilityScope
+) {
+    val previewModifier = if (effectiveAnimated) {
+        with(animScope) {
+            Modifier.animateEnterExit(
+                enter = fadeIn(tween(ANIMATION_DURATION_MS)) +
+                    scaleIn(
+                        initialScale = 0.75f,
+                        animationSpec = tween(ANIMATION_DURATION_MS)
+                    ),
+                exit = fadeOut(tween(ANIMATION_DURATION_MS)) +
+                    scaleOut(
+                        targetScale = 0.75f,
+                        animationSpec = tween(ANIMATION_DURATION_MS)
+                    )
+            )
+        }
+    } else {
+        Modifier.Companion
+    }
+
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .weight(1f)
+            .then(previewModifier)
+            .padding(
+                start = AureoleDS.dimens.medium,
+                end = AureoleDS.dimens.medium,
+                top = AureoleDS.dimens.large,
+                bottom = AureoleDS.dimens.medium
+            ),
+        contentAlignment = Alignment.BottomCenter
+    ) {
+        previewContent?.invoke(this)
+    }
+}
+
+private data class SheetBounds(
+    val maxHeight: Dp,
+    val maxExpansionAllowed: Dp
+)
+
+@Composable
+private fun SheetSurface(
+    params: AureoleEditOverlayParams,
+    bounds: SheetBounds,
+    effectiveAnimated: Boolean,
+    triggerDismiss: () -> Unit,
+    animScope: AnimatedVisibilityScope
+) {
+    var dragExpansion by remember { mutableFloatStateOf(0f) }
+
+    val draggableState = rememberDraggableState { delta ->
+        dragExpansion = (dragExpansion - delta).coerceIn(0f, bounds.maxExpansionAllowed.value)
+        if (dragExpansion <= 0f && delta > DISMISS_DRAG_THRESHOLD_PX) {
+            triggerDismiss()
+        }
+    }
+
+    val currentMaxSheetHeight = bounds.maxHeight + dragExpansion.dp
+
+    val sheetModifier = if (effectiveAnimated) {
+        with(animScope) {
+            Modifier.animateEnterExit(
+                enter = slideInVertically(
+                    initialOffsetY = { it },
+                    animationSpec = tween(ANIMATION_DURATION_MS)
+                ),
+                exit = slideOutVertically(
+                    targetOffsetY = { it },
+                    animationSpec = tween(ANIMATION_DURATION_MS)
+                )
+            )
+        }
+    } else {
+        Modifier.Companion
+    }
+
+    Surface(
+        modifier = sheetModifier
+            .fillMaxWidth()
+            .heightIn(max = currentMaxSheetHeight)
+            .draggable(
+                state = draggableState,
+                orientation = Orientation.Vertical,
+                onDragStopped = { velocity ->
+                    handleDragStopped(
+                        velocity,
+                        dragExpansion,
+                        bounds.maxExpansionAllowed,
+                        triggerDismiss
+                    ) { newExpansion ->
+                        dragExpansion = newExpansion
+                    }
+                }
+            )
+            .clickable(
+                interactionSource = remember { MutableInteractionSource() },
+                indication = null,
+                onClick = {}
+            ),
+        shape = RoundedCornerShape(
+            topStart = AureoleDS.dimens.radiusLarge,
+            topEnd = AureoleDS.dimens.radiusLarge
+        ),
+        color = AureoleDS.colors.surface,
+        contentColor = AureoleDS.colors.onSurfaceMedium
+    ) {
+        OverlaySheetBody(
+            title = params.config.title,
+            onSettingsClick = params.config.onSettingsClick,
+            bottomBarContent = params.bottomBarContent,
+            sheetContent = params.sheetContent
+        )
+    }
+}
+
+private fun handleDragStopped(
+    velocity: Float,
+    dragExpansion: Float,
+    maxExpansionAllowed: Dp,
+    triggerDismiss: () -> Unit,
+    onExpansionChanged: (Float) -> Unit
+) {
+    if (velocity > DISMISS_VELOCITY_THRESHOLD && dragExpansion == 0f) {
+        triggerDismiss()
+    } else if (velocity < EXPAND_VELOCITY_THRESHOLD) {
+        onExpansionChanged(maxExpansionAllowed.value)
+    } else if (velocity > COLLAPSE_VELOCITY_THRESHOLD) {
+        onExpansionChanged(0f)
+    } else {
+        onExpansionChanged(
+            if (dragExpansion > maxExpansionAllowed.value / 2) {
+                maxExpansionAllowed.value
+            } else {
+                0f
+            }
+        )
     }
 }
 
@@ -344,10 +412,6 @@ private fun OverlaySheetBody(
     }
 }
 
-@Suppress(
-    "LongMethod",
-    "CyclomaticComplexMethod"
-) // Reusable edit overlay component managing transition states, drag gestures and layout slots
 @Composable
 private fun OverlaySheetHeader(
     title: String,
@@ -387,10 +451,6 @@ private fun OverlaySheetHeader(
 }
 
 @AureolePreview
-@Suppress(
-    "LongMethod",
-    "CyclomaticComplexMethod"
-) // Reusable edit overlay component managing transition states, drag gestures and layout slots
 @Composable
 private fun AureoleEditOverlayPreview() {
     AureoleLauncherTheme {
