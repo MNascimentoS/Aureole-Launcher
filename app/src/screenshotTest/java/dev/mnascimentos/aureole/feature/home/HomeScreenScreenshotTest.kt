@@ -2,16 +2,15 @@ package dev.mnascimentos.aureole.feature.home
 
 import android.appwidget.AppWidgetHost
 import android.content.ComponentName
-import android.content.res.Configuration
 import android.graphics.drawable.ColorDrawable
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.tooling.preview.Preview
 import com.android.tools.screenshot.PreviewTest
 import dev.mnascimentos.aureole.core.data.model.AppFolder
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
+import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.grid.GridDefaults
 import dev.mnascimentos.aureole.feature.home.model.ContainerAppBottomSheetState
 import dev.mnascimentos.aureole.feature.home.model.ContainerFolderBottomSheetState
@@ -20,9 +19,9 @@ import dev.mnascimentos.aureole.feature.home.model.MainUiState
 import dev.mnascimentos.aureole.feature.home.model.WidgetStackBottomSheetState
 
 @PreviewTest
-@Preview(name = "Dark Mode", uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
+@AureolePreview
 @Composable
-fun HomeScreenScreenshotTest() {
+private fun HomeScreenScreenshotTest() {
     val context = LocalContext.current
     val sampleData = createSampleHomeData()
 
@@ -37,9 +36,9 @@ fun HomeScreenScreenshotTest() {
 }
 
 @PreviewTest
-@Preview(name = "Opened Folder Grid Mode Flow", uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
+@AureolePreview
 @Composable
-fun HomeScreenOpenedFolderGridModeScreenshotTest() {
+private fun HomeScreenOpenedFolderGridModeScreenshotTest() {
     val context = LocalContext.current
     val sampleData = createSampleHomeData()
     val folder = sampleData.folders.first().copy(displayAsGrid = true)
@@ -61,9 +60,9 @@ fun HomeScreenOpenedFolderGridModeScreenshotTest() {
 }
 
 @PreviewTest
-@Preview(name = "Opened Folder Popup Mode Flow", uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
+@AureolePreview
 @Composable
-fun HomeScreenOpenedFolderPopupModeScreenshotTest() {
+private fun HomeScreenOpenedFolderPopupModeScreenshotTest() {
     val context = LocalContext.current
     val sampleData = createSampleHomeData()
     val folder = sampleData.folders.first().copy(displayAsGrid = false)
@@ -85,9 +84,9 @@ fun HomeScreenOpenedFolderPopupModeScreenshotTest() {
 }
 
 @PreviewTest
-@Preview(name = "Grid Edit Mode Flow", uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
+@AureolePreview
 @Composable
-fun HomeScreenGridEditModeScreenshotTest() {
+private fun HomeScreenGridEditModeScreenshotTest() {
     val context = LocalContext.current
     val sampleData = createSampleHomeData()
 
@@ -106,9 +105,9 @@ fun HomeScreenGridEditModeScreenshotTest() {
 }
 
 @PreviewTest
-@Preview(name = "App Item Bottom Sheet Flow", uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
+@AureolePreview
 @Composable
-fun HomeScreenAppItemBottomSheetScreenshotTest() {
+private fun HomeScreenAppItemBottomSheetScreenshotTest() {
     val context = LocalContext.current
     val sampleData = createSampleHomeData()
 
@@ -130,9 +129,9 @@ fun HomeScreenAppItemBottomSheetScreenshotTest() {
 }
 
 @PreviewTest
-@Preview(name = "Container Folder Bottom Sheet Flow", uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
+@AureolePreview
 @Composable
-fun HomeScreenContainerFolderBottomSheetScreenshotTest() {
+private fun HomeScreenContainerFolderBottomSheetScreenshotTest() {
     val context = LocalContext.current
     val sampleData = createSampleHomeData()
 
@@ -154,9 +153,9 @@ fun HomeScreenContainerFolderBottomSheetScreenshotTest() {
 }
 
 @PreviewTest
-@Preview(name = "Widget Stack Bottom Sheet Flow", uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
+@AureolePreview
 @Composable
-fun HomeScreenWidgetStackBottomSheetScreenshotTest() {
+private fun HomeScreenWidgetStackBottomSheetScreenshotTest() {
 
     val context = LocalContext.current
     val sampleData = createSampleHomeData()

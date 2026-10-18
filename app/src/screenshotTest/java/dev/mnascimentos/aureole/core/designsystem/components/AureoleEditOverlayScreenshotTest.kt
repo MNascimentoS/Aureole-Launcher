@@ -1,19 +1,18 @@
 package dev.mnascimentos.aureole.core.designsystem.components
 
-import android.content.res.Configuration
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.tooling.preview.Preview
 import com.android.tools.screenshot.PreviewTest
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
+import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 
 @PreviewTest
-@Preview(name = "Dark Mode", uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
+@AureolePreview
 @Composable
-fun AureoleEditOverlayScreenshotTest() {
+private fun AureoleEditOverlayScreenshotTest() {
     AureoleLauncherTheme {
         AureoleEditOverlay(
             onDismissRequest = {},

@@ -70,6 +70,8 @@ style:
     active: true
     imports:
       - 'androidx.compose.material.icons.*'
+      - 'androidx.compose.ui.tooling.preview.Preview'
+    excludes: ['**/AureolePreview.kt']
   UnusedPrivateMember:
     active: true
     ignoreAnnotated: ['Preview', 'AureolePreview']

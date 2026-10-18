@@ -1,9 +1,7 @@
 package dev.mnascimentos.aureole.feature.home
 
-import android.content.res.Configuration
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.ui.tooling.preview.Preview
 import com.android.tools.screenshot.PreviewTest
 import dev.mnascimentos.aureole.core.data.model.AppFolder
 import dev.mnascimentos.aureole.core.data.model.ContainerItemEntity
@@ -16,39 +14,40 @@ import dev.mnascimentos.aureole.core.data.model.ReleaseNoteSection
 import dev.mnascimentos.aureole.core.data.model.ReleaseNoteType
 import dev.mnascimentos.aureole.core.data.model.ReleaseNoteVersion
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
-import dev.mnascimentos.aureole.feature.home.components.overlays.CustomizeBottomSheet
-import dev.mnascimentos.aureole.feature.home.components.overlays.ReleaseNotesBottomSheet
-import dev.mnascimentos.aureole.feature.home.components.overlays.UpdateAvailableDialog
-import dev.mnascimentos.aureole.feature.home.components.overlays.UpdateDownloadedDialog
+import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.components.clock.EditClockBottomSheet
 import dev.mnascimentos.aureole.feature.home.components.containers.EditContainerScreen
 import dev.mnascimentos.aureole.feature.home.components.containers.EditContainerScreenParams
+import dev.mnascimentos.aureole.feature.home.components.containers.folder.ContainerFolderBottomSheet
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.CreateFolderDialog
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.EditFolderDialog
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.FolderAppPickerDialog
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.FolderDialog
-import dev.mnascimentos.aureole.feature.home.components.containers.folder.ContainerFolderBottomSheet
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.ContainerFolderBottomSheetParams
-import dev.mnascimentos.aureole.feature.home.components.widgets.WidgetStackBottomSheet
-import dev.mnascimentos.aureole.feature.home.components.widgets.model.WidgetStackBottomSheetParams
 import dev.mnascimentos.aureole.feature.home.components.favorites.FavoriteAppsDialog
 import dev.mnascimentos.aureole.feature.home.components.favorites.model.FavoriteAppsDialogActions
 import dev.mnascimentos.aureole.feature.home.components.favorites.model.FavoriteAppsDialogConfig
+import dev.mnascimentos.aureole.feature.home.components.overlays.CustomizeBottomSheet
+import dev.mnascimentos.aureole.feature.home.components.overlays.ReleaseNotesBottomSheet
+import dev.mnascimentos.aureole.feature.home.components.overlays.UpdateAvailableDialog
+import dev.mnascimentos.aureole.feature.home.components.overlays.UpdateDownloadedDialog
 import dev.mnascimentos.aureole.feature.home.components.widgets.EditWidgetGroupScreen
-import dev.mnascimentos.aureole.feature.home.components.widgets.model.EditWidgetGroupActions
-import dev.mnascimentos.aureole.feature.home.components.widgets.model.EditWidgetGroupParams
 import dev.mnascimentos.aureole.feature.home.components.widgets.WidgetSelectorScreen
 import dev.mnascimentos.aureole.feature.home.components.widgets.WidgetSelectorScreenParams
+import dev.mnascimentos.aureole.feature.home.components.widgets.WidgetStackBottomSheet
+import dev.mnascimentos.aureole.feature.home.components.widgets.model.EditWidgetGroupActions
+import dev.mnascimentos.aureole.feature.home.components.widgets.model.EditWidgetGroupParams
 import dev.mnascimentos.aureole.feature.home.components.widgets.model.WidgetAppGroup
 import dev.mnascimentos.aureole.feature.home.components.widgets.model.WidgetSelectorState
+import dev.mnascimentos.aureole.feature.home.components.widgets.model.WidgetStackBottomSheetParams
 import dev.mnascimentos.aureole.feature.home.components.widgets.model.WidgetVariant
 import dev.mnascimentos.aureole.feature.home.grid.AddContainerDialog
 import dev.mnascimentos.aureole.feature.home.grid.EditGridItemDialog
 
 @PreviewTest
-@Preview(name = "Favorite Apps Dialog Flow", uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
+@AureolePreview
 @Composable
-fun FavoriteAppsDialogScreenshotTest() {
+private fun FavoriteAppsDialogScreenshotTest() {
     val sampleData = createSampleHomeData()
     val config = FavoriteAppsDialogConfig(
         allApps = sampleData.apps,
@@ -65,9 +64,9 @@ fun FavoriteAppsDialogScreenshotTest() {
 }
 
 @PreviewTest
-@Preview(name = "Edit Container Dialog Flow", uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
+@AureolePreview
 @Composable
-fun EditContainerDialogScreenshotTest() {
+private fun EditContainerDialogScreenshotTest() {
     val sampleData = createSampleHomeData()
     val childItem = LauncherItemState(
         id = "child_1",
@@ -101,9 +100,9 @@ fun EditContainerDialogScreenshotTest() {
 }
 
 @PreviewTest
-@Preview(name = "Add Container Dialog Flow", uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
+@AureolePreview
 @Composable
-fun AddContainerDialogScreenshotTest() {
+private fun AddContainerDialogScreenshotTest() {
     AureoleLauncherTheme {
         AddContainerDialog(
             onDismissRequest = {},
@@ -113,9 +112,9 @@ fun AddContainerDialogScreenshotTest() {
 }
 
 @PreviewTest
-@Preview(name = "Create Folder Dialog Flow", uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
+@AureolePreview
 @Composable
-fun CreateFolderDialogScreenshotTest() {
+private fun CreateFolderDialogScreenshotTest() {
     AureoleLauncherTheme {
         CreateFolderDialog(
             onDismiss = {},
@@ -125,9 +124,9 @@ fun CreateFolderDialogScreenshotTest() {
 }
 
 @PreviewTest
-@Preview(name = "Edit Folder Dialog Flow", uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
+@AureolePreview
 @Composable
-fun EditFolderDialogScreenshotTest() {
+private fun EditFolderDialogScreenshotTest() {
     val folder = AppFolder(id = "folder_work", name = "Work", icon = "briefcase")
     AureoleLauncherTheme {
         EditFolderDialog(
@@ -140,9 +139,9 @@ fun EditFolderDialogScreenshotTest() {
 }
 
 @PreviewTest
-@Preview(name = "Folder App Picker Dialog Flow", uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
+@AureolePreview
 @Composable
-fun FolderAppPickerDialogScreenshotTest() {
+private fun FolderAppPickerDialogScreenshotTest() {
     val sampleData = createSampleHomeData()
     AureoleLauncherTheme {
         FolderAppPickerDialog(
@@ -155,9 +154,9 @@ fun FolderAppPickerDialogScreenshotTest() {
 }
 
 @PreviewTest
-@Preview(name = "Update Available Dialog Flow", uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
+@AureolePreview
 @Composable
-fun UpdateAvailableDialogScreenshotTest() {
+private fun UpdateAvailableDialogScreenshotTest() {
     AureoleLauncherTheme {
         UpdateAvailableDialog(
             onConfirmUpdate = {},
@@ -167,9 +166,9 @@ fun UpdateAvailableDialogScreenshotTest() {
 }
 
 @PreviewTest
-@Preview(name = "Update Downloaded Dialog Flow", uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
+@AureolePreview
 @Composable
-fun UpdateDownloadedDialogScreenshotTest() {
+private fun UpdateDownloadedDialogScreenshotTest() {
     AureoleLauncherTheme {
         UpdateDownloadedDialog(
             onConfirmRestart = {},
@@ -179,9 +178,9 @@ fun UpdateDownloadedDialogScreenshotTest() {
 }
 
 @PreviewTest
-@Preview(name = "Release Notes Bottom Sheet Flow", uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
+@AureolePreview
 @Composable
-fun ReleaseNotesBottomSheetScreenshotTest() {
+private fun ReleaseNotesBottomSheetScreenshotTest() {
     val sampleReleaseNoteVersion = ReleaseNoteVersion(
         versionName = "0.6.13",
         releaseDate = "14/10/2026",
@@ -228,9 +227,9 @@ fun ReleaseNotesBottomSheetScreenshotTest() {
 }
 
 @PreviewTest
-@Preview(name = "Customize Bottom Sheet Flow", uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
+@AureolePreview
 @Composable
-fun CustomizeBottomSheetScreenshotTest() {
+private fun CustomizeBottomSheetScreenshotTest() {
     val sampleData = createSampleHomeData()
     AureoleLauncherTheme {
         CustomizeBottomSheet(
@@ -241,9 +240,9 @@ fun CustomizeBottomSheetScreenshotTest() {
 }
 
 @PreviewTest
-@Preview(name = "Edit Clock Bottom Sheet Flow", uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
+@AureolePreview
 @Composable
-fun EditClockBottomSheetScreenshotTest() {
+private fun EditClockBottomSheetScreenshotTest() {
     val sampleData = createSampleHomeData()
     AureoleLauncherTheme {
         CompositionLocalProvider(LocalHomeUiState provides sampleData.uiState) {
@@ -257,9 +256,9 @@ fun EditClockBottomSheetScreenshotTest() {
 }
 
 @PreviewTest
-@Preview(name = "Widget Picker Bottom Sheet Flow", uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
+@AureolePreview
 @Composable
-fun WidgetPickerBottomSheetScreenshotTest() {
+private fun WidgetPickerBottomSheetScreenshotTest() {
     val sampleData = createSampleHomeData()
     val sampleWidgetGroup = WidgetAppGroup(
         appId = "com.example.calendar",
@@ -300,9 +299,9 @@ fun WidgetPickerBottomSheetScreenshotTest() {
 }
 
 @PreviewTest
-@Preview(name = "Folder Dialog Flow", uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
+@AureolePreview
 @Composable
-fun FolderDialogScreenshotTest() {
+private fun FolderDialogScreenshotTest() {
     val sampleData = createSampleHomeData()
     AureoleLauncherTheme {
         CompositionLocalProvider(LocalHomeUiState provides sampleData.uiState) {
@@ -317,9 +316,9 @@ fun FolderDialogScreenshotTest() {
 }
 
 @PreviewTest
-@Preview(name = "Edit Container Screen Flow", uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
+@AureolePreview
 @Composable
-fun EditContainerScreenScreenshotTest() {
+private fun EditContainerScreenScreenshotTest() {
     val sampleData = createSampleHomeData()
     val panel = ContainerModel(
         id = "panel_1",
@@ -364,9 +363,9 @@ fun EditContainerScreenScreenshotTest() {
 }
 
 @PreviewTest
-@Preview(name = "Edit Container Horizontal Screen Flow", uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
+@AureolePreview
 @Composable
-fun EditContainerHorizontalScreenScreenshotTest() {
+private fun EditContainerHorizontalScreenScreenshotTest() {
     val sampleData = createSampleHomeData()
     val panel = ContainerModel(
         id = "panel_horizontal_1",
@@ -418,9 +417,9 @@ fun EditContainerHorizontalScreenScreenshotTest() {
 }
 
 @PreviewTest
-@Preview(name = "Edit Widget Group Screen Flow", uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
+@AureolePreview
 @Composable
-fun EditWidgetGroupScreenScreenshotTest() {
+private fun EditWidgetGroupScreenScreenshotTest() {
     val sampleData = createSampleHomeData()
     val item = LauncherItemState(
         id = "widget_group_1",
@@ -451,9 +450,9 @@ fun EditWidgetGroupScreenScreenshotTest() {
 }
 
 @PreviewTest
-@Preview(name = "Container Folder Bottom Sheet Flow", uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
+@AureolePreview
 @Composable
-fun ContainerFolderBottomSheetScreenshotTest() {
+private fun ContainerFolderBottomSheetScreenshotTest() {
     val params = ContainerFolderBottomSheetParams(
         onEditShortcuts = {},
         onRename = {},
@@ -470,9 +469,9 @@ fun ContainerFolderBottomSheetScreenshotTest() {
 }
 
 @PreviewTest
-@Preview(name = "Widget Stack Bottom Sheet Flow", uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
+@AureolePreview
 @Composable
-fun WidgetStackBottomSheetScreenshotTest() {
+private fun WidgetStackBottomSheetScreenshotTest() {
     val params = WidgetStackBottomSheetParams(
         stackId = "widget_stack_1",
         widgetId = 1,

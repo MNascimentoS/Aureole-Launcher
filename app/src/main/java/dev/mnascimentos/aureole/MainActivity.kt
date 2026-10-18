@@ -2,10 +2,7 @@ package dev.mnascimentos.aureole
 
 import android.appwidget.AppWidgetHost
 import android.appwidget.AppWidgetManager
-import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
-import android.content.res.Configuration
 import android.graphics.Rect
 import android.os.Build
 import android.os.Bundle
@@ -24,11 +21,8 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.unit.dp
-import androidx.core.content.pm.PackageInfoCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsControllerCompat
-import androidx.lifecycle.DefaultLifecycleObserver
-import androidx.lifecycle.LifecycleOwner
 import com.google.android.play.core.appupdate.AppUpdateInfo
 import com.google.android.play.core.appupdate.AppUpdateManager
 import com.google.android.play.core.appupdate.AppUpdateManagerFactory
@@ -38,19 +32,18 @@ import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDimens
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleThemeConfig
 import dev.mnascimentos.aureole.core.designsystem.utils.LocalHazeState
+import dev.mnascimentos.aureole.core.lifecycle.MainLifecycleObserver
 import dev.mnascimentos.aureole.core.lifecycle.UpdateLifecycleObserver
 import dev.mnascimentos.aureole.core.lifecycle.WidgetLifecycleObserver
 import dev.mnascimentos.aureole.feature.home.HomeViewModel
 import dev.mnascimentos.aureole.feature.home.LocalHomeActions
 import dev.mnascimentos.aureole.feature.home.LocalHomeUiState
 import dev.mnascimentos.aureole.feature.home.MainScaffold
-import dev.mnascimentos.aureole.feature.home.components.overlays.extensions.checkReleaseNotes
 import dev.mnascimentos.aureole.feature.home.components.widgets.WidgetHostManager
 import dev.mnascimentos.aureole.feature.home.components.widgets.extensions.setIsAddingSingleWidget
 import dev.mnascimentos.aureole.feature.home.components.widgets.extensions.setPendingWidgetId
 import dev.mnascimentos.aureole.feature.home.extensions.handleBackNavigation
 import dev.mnascimentos.aureole.feature.home.extensions.setAllAppsDrawerOpen
-import dev.mnascimentos.aureole.feature.home.grid.extensions.loadGridItems
 import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
 import dev.mnascimentos.aureole.feature.home.model.isOverlayActive
@@ -118,18 +111,7 @@ class MainActivity : ComponentActivity() {
 
         lifecycle.addObserver(UpdateLifecycleObserver(appUpdateManager, viewModel) { cachedAppUpdateInfo = it })
         lifecycle.addObserver(WidgetLifecycleObserver(appWidgetHost) { wasInBackground = it })
-        lifecycle.addObserver(object : DefaultLifecycleObserver {
-            override fun onResume(owner: LifecycleOwner) {
-                viewModel.loadSettings()
-                viewModel.loadApps()
-                val isLandscape = resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
-                viewModel.loadGridItems(isLandscape = isLandscape)
-                val versionCode = getAppVersionCode(this@MainActivity)
-                val versionName = getAppVersionName(this@MainActivity)
-                viewModel.checkReleaseNotes(versionCode, versionName)
-                wasInBackground = false
-            }
-        })
+        lifecycle.addObserver(MainLifecycleObserver(this, viewModel) { wasInBackground = false })
 
         setupWindowAndBackHandling()
         setupContent()
@@ -264,32 +246,4 @@ private fun MainActivity.createHomeActions(): HomeScreenActions {
         updateActivityResultLauncher = updateActivityResultLauncher,
         cachedAppUpdateInfo = cachedAppUpdateInfo
     ).createHomeActions()
-}
-
-private fun getAppVersionCode(context: Context): Int {
-    return try {
-        val packageInfo = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            context.packageManager.getPackageInfo(context.packageName, PackageManager.PackageInfoFlags.of(0))
-        } else {
-            @Suppress("DEPRECATION") // Legacy getPackageInfo call required for API < 33
-            context.packageManager.getPackageInfo(context.packageName, 0)
-        }
-        PackageInfoCompat.getLongVersionCode(packageInfo).toInt()
-    } catch (_: Exception) {
-        1
-    }
-}
-
-private fun getAppVersionName(context: Context): String {
-    return try {
-        val packageInfo = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            context.packageManager.getPackageInfo(context.packageName, PackageManager.PackageInfoFlags.of(0))
-        } else {
-            @Suppress("DEPRECATION") // Legacy getPackageInfo call required for API < 33
-            context.packageManager.getPackageInfo(context.packageName, 0)
-        }
-        packageInfo.versionName ?: "0.3.13"
-    } catch (_: Exception) {
-        "0.3.13"
-    }
 }

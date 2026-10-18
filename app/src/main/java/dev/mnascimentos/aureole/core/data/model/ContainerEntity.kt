@@ -1,8 +1,12 @@
 package dev.mnascimentos.aureole.core.data.model
 
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 import java.util.UUID
 
+@Entity(tableName = "containers")
 data class ContainerEntity(
+    @PrimaryKey
     val id: String = UUID.randomUUID().toString(),
     val title: String = "Painel Lateral",
     val position: String = "Space Between",

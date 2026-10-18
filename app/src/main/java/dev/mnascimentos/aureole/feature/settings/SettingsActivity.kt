@@ -24,7 +24,7 @@ import dev.mnascimentos.aureole.core.designsystem.theme.AureoleThemeConfig
 import dev.mnascimentos.aureole.feature.home.components.favorites.FavoriteAppsDialog
 import dev.mnascimentos.aureole.feature.home.components.favorites.model.FavoriteAppsDialogActions
 import dev.mnascimentos.aureole.feature.home.components.favorites.model.FavoriteAppsDialogConfig
-import dev.mnascimentos.aureole.feature.settings.extensions.checkDefaultLauncher
+import dev.mnascimentos.aureole.core.lifecycle.SettingsLifecycleObserver
 import dev.mnascimentos.aureole.feature.settings.extensions.performFactoryReset
 import dev.mnascimentos.aureole.feature.settings.extensions.resetGridLayout
 import dev.mnascimentos.aureole.feature.settings.extensions.restoreDefaultWallpaper
@@ -40,6 +40,8 @@ class SettingsActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+
+        lifecycle.addObserver(SettingsLifecycleObserver(viewModel))
 
         setContent {
             val uiState by viewModel.uiState.collectAsState()
@@ -212,12 +214,6 @@ class SettingsActivity : ComponentActivity() {
             },
             onSearchIconPositionSelected = { pos -> viewModel.setSettingValue(SettingValue.SearchIconPosition(pos)) }
         )
-    }
-
-    override fun onResume() {
-        super.onResume()
-        viewModel.checkDefaultLauncher()
-        viewModel.loadSettings()
     }
 
     private fun openDefaultLauncherSettings() {
