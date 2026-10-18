@@ -38,8 +38,8 @@ import dev.mnascimentos.aureole.feature.home.LocalHomeUiState
 import dev.mnascimentos.aureole.feature.home.components.clock.ClockContainer
 import dev.mnascimentos.aureole.feature.home.components.containers.Container
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.FolderViewIntent
-import dev.mnascimentos.aureole.feature.home.components.content.model.ScrollViewContainerParams
 import dev.mnascimentos.aureole.feature.home.components.containers.model.ContainerConfig
+import dev.mnascimentos.aureole.feature.home.components.content.model.ScrollViewContainerParams
 import dev.mnascimentos.aureole.feature.home.components.favorites.FavoritesList
 import dev.mnascimentos.aureole.feature.home.components.favorites.model.FavoritesListOptions
 import dev.mnascimentos.aureole.feature.home.components.widgets.StackedWidgetSection

@@ -1,6 +1,5 @@
 package dev.mnascimentos.aureole.feature.home.components.content
 
-import android.appwidget.AppWidgetHost
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
@@ -34,11 +33,9 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.rememberNestedScrollInteropConnection
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import dev.mnascimentos.aureole.core.data.model.LauncherItemState
 import dev.mnascimentos.aureole.core.data.model.LauncherItemType
 import dev.mnascimentos.aureole.core.data.model.ScrollOrientation
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
-import dev.mnascimentos.aureole.feature.home.components.content.model.ScrollViewContainerParams
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
 import dev.mnascimentos.aureole.core.designsystem.icons.Add
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
@@ -47,9 +44,7 @@ import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.core.designsystem.utils.fadingEdges
 import dev.mnascimentos.aureole.feature.home.LocalHomeActions
 import dev.mnascimentos.aureole.feature.home.LocalHomeUiState
-import dev.mnascimentos.aureole.feature.home.components.containers.model.ContainerConfig
-import dev.mnascimentos.aureole.feature.home.components.favorites.FavoritesListConfig
-import dev.mnascimentos.aureole.feature.home.components.widgets.model.StackedWidgetConfig
+import dev.mnascimentos.aureole.feature.home.components.content.model.ScrollViewContainerParams
 import dev.mnascimentos.aureole.feature.home.model.GridItemContentParams
 import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
 import dev.mnascimentos.aureole.feature.home.model.ScrollViewChildItemParams

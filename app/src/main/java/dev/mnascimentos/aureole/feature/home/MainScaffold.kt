@@ -22,8 +22,8 @@ import dev.mnascimentos.aureole.feature.home.components.overlays.UpdateAvailable
 import dev.mnascimentos.aureole.feature.home.components.overlays.UpdateDownloadedDialog
 import dev.mnascimentos.aureole.feature.home.components.overlays.extensions.dismissReleaseNotes
 import dev.mnascimentos.aureole.feature.home.components.widgets.WidgetPickerScreen
-import dev.mnascimentos.aureole.feature.home.components.widgets.model.WidgetPickerScreenParams
 import dev.mnascimentos.aureole.feature.home.components.widgets.extensions.setShowWidgetPicker
+import dev.mnascimentos.aureole.feature.home.components.widgets.model.WidgetPickerScreenParams
 import dev.mnascimentos.aureole.feature.home.extensions.toggleShowAllAppsOnHome
 import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
 import dev.mnascimentos.aureole.feature.home.model.MainUiState

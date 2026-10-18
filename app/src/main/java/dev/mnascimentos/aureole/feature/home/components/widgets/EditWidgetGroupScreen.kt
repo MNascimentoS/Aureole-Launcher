@@ -17,7 +17,6 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -43,7 +42,6 @@ import androidx.compose.ui.viewinterop.AndroidView
 import dev.mnascimentos.aureole.core.data.model.LauncherItemState
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleEditOverlay
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleEditOverlayConfig
-import dev.mnascimentos.aureole.feature.home.components.widgets.model.EditWidgetCarouselParams
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleEditOverlayParams
 import dev.mnascimentos.aureole.core.designsystem.icons.Add
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
@@ -51,6 +49,7 @@ import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.core.designsystem.utils.LocalAnimatedVisibilityScope
 import dev.mnascimentos.aureole.core.designsystem.utils.LocalSharedTransitionScope
+import dev.mnascimentos.aureole.feature.home.components.widgets.model.EditWidgetCarouselParams
 import dev.mnascimentos.aureole.feature.home.components.widgets.model.EditWidgetGroupActions
 import dev.mnascimentos.aureole.feature.home.components.widgets.model.EditWidgetGroupParams
 import kotlinx.coroutines.delay

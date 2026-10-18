@@ -38,8 +38,8 @@ import dev.mnascimentos.aureole.core.designsystem.utils.LocalSharedTransitionSco
 import dev.mnascimentos.aureole.feature.home.components.clock.EditClockBottomSheet
 import dev.mnascimentos.aureole.feature.home.components.common.WallpaperBackground
 import dev.mnascimentos.aureole.feature.home.components.containers.EditContainerScreen
-import dev.mnascimentos.aureole.feature.home.components.containers.model.EditContainerScreenParams
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.HomeScreenFolderOverlays
+import dev.mnascimentos.aureole.feature.home.components.containers.model.EditContainerScreenParams
 import dev.mnascimentos.aureole.feature.home.components.overlays.CustomizeBottomSheet
 import dev.mnascimentos.aureole.feature.home.components.overlays.HomeOverlaysContent
 import dev.mnascimentos.aureole.feature.home.components.overlays.homeDragGestures
