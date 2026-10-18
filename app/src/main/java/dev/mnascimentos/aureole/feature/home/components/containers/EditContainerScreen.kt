@@ -44,17 +44,10 @@ import dev.mnascimentos.aureole.feature.home.LocalHomeActions
 import dev.mnascimentos.aureole.feature.home.LocalHomeUiState
 import dev.mnascimentos.aureole.feature.home.components.containers.model.ContainerConfig
 import dev.mnascimentos.aureole.feature.home.components.containers.model.EditContainerScreenMode
+import dev.mnascimentos.aureole.feature.home.components.containers.model.EditContainerScreenParams
 import kotlinx.coroutines.delay
 
 private const val ANIMATION_DURATION_MS = 300
-
-data class EditContainerScreenParams(
-    val panel: ContainerModel,
-    val allApps: List<AppInfo>,
-    val onDismiss: () -> Unit,
-    val onSave: (ContainerModel) -> Unit,
-    val hazeState: HazeState? = null
-)
 
 @Suppress("LongMethod") // Screen composable managing container editor state and options
 @OptIn(ExperimentalMaterial3Api::class)
@@ -152,36 +145,53 @@ fun EditContainerScreen(
                     Container(config = config, onFolderClick = { _, _ -> }, modifier = previewModifier)
                 },
                 sheetContent = {
-                    when (currentMode) {
-                        EditContainerScreenMode.MAIN -> {
-                            MainSettingsContent(
-                                onAppearanceClick = { currentMode = EditContainerScreenMode.APPEARANCE },
-                                onBehaviorClick = { currentMode = EditContainerScreenMode.BEHAVIOR },
-                                onManageItemsClick = { currentMode = EditContainerScreenMode.MANAGE_ITEMS },
-                                onSave = {
-                                    onSave(state.toModel())
-                                    isVisible = false
-                                }
-                            )
+                    EditContainerSheetContent(
+                        currentMode = currentMode,
+                        state = state,
+                        allApps = allApps,
+                        onModeChange = { currentMode = it },
+                        onSaveAndClose = {
+                            onSave(state.toModel())
+                            isVisible = false
                         }
-                        EditContainerScreenMode.APPEARANCE, EditContainerScreenMode.BEHAVIOR -> {
-                            AppearanceSettingsContent(
-                                state = state,
-                                isBehaviorMode = currentMode == EditContainerScreenMode.BEHAVIOR,
-                                onBack = { currentMode = EditContainerScreenMode.MAIN }
-                            )
-                        }
-                        EditContainerScreenMode.MANAGE_ITEMS -> {
-                            ManageItemsContent(
-                                state = state,
-                                allApps = allApps,
-                                onBack = { currentMode = EditContainerScreenMode.MAIN }
-                            )
-                        }
-                    }
+                    )
                 }
             )
         )
+    }
+}
+
+@Composable
+private fun EditContainerSheetContent(
+    currentMode: EditContainerScreenMode,
+    state: EditContainerState,
+    allApps: List<AppInfo>,
+    onModeChange: (EditContainerScreenMode) -> Unit,
+    onSaveAndClose: () -> Unit
+) {
+    when (currentMode) {
+        EditContainerScreenMode.MAIN -> {
+            MainSettingsContent(
+                onAppearanceClick = { onModeChange(EditContainerScreenMode.APPEARANCE) },
+                onBehaviorClick = { onModeChange(EditContainerScreenMode.BEHAVIOR) },
+                onManageItemsClick = { onModeChange(EditContainerScreenMode.MANAGE_ITEMS) },
+                onSave = onSaveAndClose
+            )
+        }
+        EditContainerScreenMode.APPEARANCE, EditContainerScreenMode.BEHAVIOR -> {
+            AppearanceSettingsContent(
+                state = state,
+                isBehaviorMode = currentMode == EditContainerScreenMode.BEHAVIOR,
+                onBack = { onModeChange(EditContainerScreenMode.MAIN) }
+            )
+        }
+        EditContainerScreenMode.MANAGE_ITEMS -> {
+            ManageItemsContent(
+                state = state,
+                allApps = allApps,
+                onBack = { onModeChange(EditContainerScreenMode.MAIN) }
+            )
+        }
     }
 }
 

@@ -38,6 +38,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import coil.compose.AsyncImage
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
+import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.components.widgets.model.WidgetAppGroup
 import dev.mnascimentos.aureole.feature.home.components.widgets.model.WidgetVariant
 
@@ -193,5 +195,29 @@ private fun WidgetPreviewContent(
             color = Color.White,
             textAlign = TextAlign.Center
         )
+    }
+}
+
+@AureolePreview
+@Composable
+private fun WidgetPickerAppListRowPreview() {
+    val sampleGroup = WidgetAppGroup(
+        appId = "com.example.clock",
+        appName = "Relógio",
+        availableWidgets = listOf(
+            WidgetVariant(widgetId = "clock_1", title = "Relógio Analógico"),
+            WidgetVariant(widgetId = "clock_2", title = "Relógio Digital")
+        )
+    )
+    AureoleLauncherTheme {
+        Column {
+            AppGroupHeader(group = sampleGroup, onClick = {})
+            Spacer(modifier = Modifier.height(8.dp))
+            WidgetPreviewCard(
+                widget = WidgetVariant(widgetId = "clock_1", title = "Relógio Analógico"),
+                fallbackAppIcon = null,
+                onClick = {}
+            )
+        }
     }
 }

@@ -52,7 +52,7 @@ internal fun getGridItemsForOrientation(isLandscape: Boolean, uiState: MainUiSta
 
 @Composable
 internal fun MainHomeLayout(
-    appWidgetHost: AppWidgetHost,
+    appWidgetHost: AppWidgetHost?,
     currentHeightPx: Float,
     favListState: LazyListState,
     hazeState: HazeState

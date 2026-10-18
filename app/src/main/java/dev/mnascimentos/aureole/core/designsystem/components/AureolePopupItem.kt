@@ -24,12 +24,12 @@ import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 
 /**
- * Standard Popup Menu Action Row Item with icon, title, optional badge, or trailing action button.
+ * Standard Popup Menu Action Row Item with leading icon, action title, optional badge, or trailing action button.
  *
- * @param title The title of the menu item.
- * @param modifier The modifier to be applied to the layout.
- * @param params Additional parameters for configuring the menu item.
- * @param onClick Executes when the item is clicked.
+ * @param title The primary title text for the menu action item.
+ * @param modifier The [Modifier] applied to the item row layout. First optional parameter.
+ * @param params Additional configuration parameters provided via [AureolePopupMenuItemParams].
+ * @param onClick Action callback executed when the item row is clicked. Slot parameter placed last.
  */
 @Suppress("LongMethod") // AureolePopupMenuItem provides action menu item with custom icon, badge, and trailing slots
 @Composable
@@ -107,14 +107,14 @@ fun AureolePopupMenuItem(
 }
 
 /**
- * Parameters for [AureolePopupMenuItem].
+ * Configuration parameters for [AureolePopupMenuItem].
  *
- * @param badge The badge text to display.
- * @param onTrailingClick Executes when the trailing icon is clicked.
- * @param isDestructive Whether the action is destructive, which applies error coloring.
- * @param icon The icon slot of the menu item.
- * @param customIcon Custom content slot for the icon.
- * @param trailingIcon The trailing icon slot of the menu item.
+ * @property badge Optional text label displayed on the right side of the item.
+ * @property onTrailingClick Optional callback for clicking the trailing icon separately from item click.
+ * @property isDestructive When true, applies error tint styling to indicate destructive actions.
+ * @property icon Slot for rendering a standard icon provided with a [Modifier].
+ * @property customIcon Custom `@Composable` slot for rendering custom leading icon content.
+ * @property trailingIcon Slot for rendering a trailing icon provided with a [Modifier].
  */
 class AureolePopupMenuItemParams(
     val badge: String? = null,

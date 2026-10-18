@@ -105,80 +105,115 @@ fun FavoriteAppsDialog(
                 }
             ),
             previewContent = {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth(PREVIEW_WIDTH_FRACTION)
-                        .clip(RoundedCornerShape(AureoleDS.dimens.radiusLarge))
-                        .background(AureoleDS.colors.surfaceVariant.copy(alpha = 0.35f))
-                        .border(
-                            width = AureoleDS.dimens.borderMinimal,
-                            color = AureoleDS.colors.outline.copy(alpha = 0.25f),
-                            shape = RoundedCornerShape(AureoleDS.dimens.radiusLarge)
-                        )
-                        .padding(vertical = AureoleDS.dimens.xSmall, horizontal = AureoleDS.dimens.xxSmall),
-                    contentAlignment = Alignment.Center
-                ) {
-                    if (previewFavoriteApps.isEmpty()) {
-                        AureoleText(
-                            text = "Nenhum favorito selecionado",
-                            color = AureoleDS.colors.onSurfaceMedium,
-                            modifier = Modifier.padding(AureoleDS.dimens.medium),
-                            format = AureoleTextFormatParams(style = AureoleDS.typography.bodyMedium)
-                        )
-                    } else {
-                        LazyColumn(
-                            verticalArrangement = Arrangement.spacedBy(AureoleDS.dimens.minimal),
-                            modifier = Modifier.fillMaxWidth()
-                        ) {
-                            items(
-                                items = previewFavoriteApps,
-                                key = { app -> "preview_${app.packageName}" },
-                                contentType = { "preview_app_item" }
-                            ) { app ->
-                                AppItemRow(
-                                    app = app,
-                                    onClick = {}
-                                )
-                            }
-                        }
-                    }
-                }
+                FavoriteAppsPreviewContent(previewFavoriteApps = previewFavoriteApps)
             },
             bottomBarContent = {
-                Button(
-                    onClick = {
-                        if (currentMode != FavoriteAppsScreenMode.MAIN) {
-                            currentMode = FavoriteAppsScreenMode.MAIN
-                        } else {
-                            isVisible = false
-                        }
-                    },
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    AureoleText(if (currentMode == FavoriteAppsScreenMode.MAIN) "Concluído" else "Voltar")
-                }
+                FavoriteAppsBottomBar(
+                    currentMode = currentMode,
+                    onBack = { currentMode = FavoriteAppsScreenMode.MAIN },
+                    onClose = { isVisible = false }
+                )
             },
             sheetContent = {
-                when (currentMode) {
-                    FavoriteAppsScreenMode.MAIN -> {
-                        MainFavoritesContent(
-                            onEditShortcutsClick = { currentMode = FavoriteAppsScreenMode.EDIT_SHORTCUTS },
-                            onAppearanceClick = { currentMode = FavoriteAppsScreenMode.APPEARANCE }
-                        )
-                    }
-                    FavoriteAppsScreenMode.APPEARANCE -> {
-                        AppearanceFavoritesContent(
-                            config = config,
-                            actions = actions
-                        )
-                    }
-                    FavoriteAppsScreenMode.EDIT_SHORTCUTS -> {
-                        FavoriteAppsDialogContent(config = config, actions = actions)
-                    }
-                }
+                FavoriteAppsSheetContent(
+                    currentMode = currentMode,
+                    config = config,
+                    actions = actions,
+                    onEditShortcutsClick = { currentMode = FavoriteAppsScreenMode.EDIT_SHORTCUTS },
+                    onAppearanceClick = { currentMode = FavoriteAppsScreenMode.APPEARANCE }
+                )
             }
         )
     )
+}
+
+@Composable
+private fun FavoriteAppsPreviewContent(previewFavoriteApps: List<AppInfo>) {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth(PREVIEW_WIDTH_FRACTION)
+            .clip(RoundedCornerShape(AureoleDS.dimens.radiusLarge))
+            .background(AureoleDS.colors.surfaceVariant.copy(alpha = 0.35f))
+            .border(
+                width = AureoleDS.dimens.borderMinimal,
+                color = AureoleDS.colors.outline.copy(alpha = 0.25f),
+                shape = RoundedCornerShape(AureoleDS.dimens.radiusLarge)
+            )
+            .padding(vertical = AureoleDS.dimens.xSmall, horizontal = AureoleDS.dimens.xxSmall),
+        contentAlignment = Alignment.Center
+    ) {
+        if (previewFavoriteApps.isEmpty()) {
+            AureoleText(
+                text = "Nenhum favorito selecionado",
+                color = AureoleDS.colors.onSurfaceMedium,
+                modifier = Modifier.padding(AureoleDS.dimens.medium),
+                format = AureoleTextFormatParams(style = AureoleDS.typography.bodyMedium)
+            )
+        } else {
+            FavoriteAppsPreviewList(previewFavoriteApps = previewFavoriteApps)
+        }
+    }
+}
+
+@Composable
+private fun FavoriteAppsPreviewList(previewFavoriteApps: List<AppInfo>) {
+    LazyColumn(
+        verticalArrangement = Arrangement.spacedBy(AureoleDS.dimens.minimal),
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        items(
+            items = previewFavoriteApps,
+            key = { app -> "preview_${app.packageName}" },
+            contentType = { "preview_app_item" }
+        ) { app ->
+            AppItemRow(
+                app = app,
+                onClick = {}
+            )
+        }
+    }
+}
+
+@Composable
+private fun FavoriteAppsBottomBar(
+    currentMode: FavoriteAppsScreenMode,
+    onBack: () -> Unit,
+    onClose: () -> Unit
+) {
+    val isMain = currentMode == FavoriteAppsScreenMode.MAIN
+    Button(
+        onClick = if (isMain) onClose else onBack,
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        AureoleText(if (isMain) "Concluído" else "Voltar")
+    }
+}
+
+@Composable
+private fun FavoriteAppsSheetContent(
+    currentMode: FavoriteAppsScreenMode,
+    config: FavoriteAppsDialogConfig,
+    actions: FavoriteAppsDialogActions,
+    onEditShortcutsClick: () -> Unit,
+    onAppearanceClick: () -> Unit
+) {
+    when (currentMode) {
+        FavoriteAppsScreenMode.MAIN -> {
+            MainFavoritesContent(
+                onEditShortcutsClick = onEditShortcutsClick,
+                onAppearanceClick = onAppearanceClick
+            )
+        }
+        FavoriteAppsScreenMode.APPEARANCE -> {
+            AppearanceFavoritesContent(
+                config = config,
+                actions = actions
+            )
+        }
+        FavoriteAppsScreenMode.EDIT_SHORTCUTS -> {
+            FavoriteAppsDialogContent(config = config, actions = actions)
+        }
+    }
 }
 
 @Composable

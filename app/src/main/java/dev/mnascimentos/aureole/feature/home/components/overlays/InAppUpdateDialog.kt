@@ -131,7 +131,7 @@ private fun InspectionUpdateDialogContent(params: UpdateDialogContentParams) {
 }
 
 @Composable
-private fun StandardUpdateAlertDialog(params: UpdateDialogContentParams) {
+internal fun StandardUpdateAlertDialog(params: UpdateDialogContentParams) {
     AlertDialog(
         onDismissRequest = params.onDismiss,
         containerColor = AureoleDS.colors.surface,

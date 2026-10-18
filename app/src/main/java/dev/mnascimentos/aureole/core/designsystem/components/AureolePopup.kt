@@ -159,14 +159,14 @@ fun AureoleHeaderBanner(
 }
 
 /**
- * Parameters for [AureolePopupHeader].
+ * Configuration parameters for [AureolePopupHeader].
  *
- * @param sessionTitle The optional subtitle of the header.
- * @param iconBitmap The bitmap icon to be displayed.
- * @param showAureoleLogo Whether to show the Aureole logo.
- * @param onSettingsClick Executes when the user clicks the settings icon.
- * @param onCloseClick Executes when the user clicks the close icon.
- * @param customIcon The custom icon slot content.
+ * @property sessionTitle The optional subtitle or session name displayed under the main title.
+ * @property iconBitmap Optional bitmap image to be rendered as the header icon badge.
+ * @property showAureoleLogo Whether the top-right Aureole logo button should be shown.
+ * @property onSettingsClick Callback invoked when the settings icon is clicked.
+ * @property onCloseClick Callback invoked when the close icon is clicked.
+ * @property customIcon Optional custom `@Composable` slot for rendering a custom icon badge.
  */
 class AureolePopupHeaderParams(
     val sessionTitle: String? = null,
@@ -178,13 +178,12 @@ class AureolePopupHeaderParams(
 )
 
 /**
- * Standard Popup Header with distinct header background bar (surfaceVariant),
- * app/folder icon badge, main title, and top-right Aureole logo icon aligned to TopEnd (4dp margin).
- * Clipped to top corner radius.
+ * Standard Popup Header displaying a surfaceVariant top background bar, optional app/folder icon badge,
+ * main title, optional session subtitle, and top-right action icon (Settings/Logo/Close).
  *
- * @param title The main title of the header.
- * @param modifier The modifier to be applied to the layout.
- * @param params Additional parameters for configuring the header.
+ * @param title The primary title text of the popup header.
+ * @param modifier The [Modifier] applied to the header layout. First optional parameter.
+ * @param params Additional configuration options provided via [AureolePopupHeaderParams].
  */
 @Suppress("LongMethod") // AureolePopupHeader provides structured header with logo, title, and slots
 @Composable

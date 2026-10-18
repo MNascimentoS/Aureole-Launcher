@@ -44,7 +44,10 @@ import dev.mnascimentos.aureole.core.designsystem.icons.Layout
 import dev.mnascimentos.aureole.core.designsystem.icons.StrokeColor
 import dev.mnascimentos.aureole.core.designsystem.icons.Text
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
+import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.settings.model.AppearanceDialogFlags
+import dev.mnascimentos.aureole.feature.settings.model.AppearanceMenuDialogActions
 import dev.mnascimentos.aureole.feature.settings.model.SettingsScreenActions
 import dev.mnascimentos.aureole.feature.settings.model.SettingsUiState
 
@@ -150,14 +153,6 @@ private fun SettingsAppearanceContent(
         }
     }
 }
-
-data class AppearanceMenuDialogActions(
-    val onShowSetBackgroundDialog: () -> Unit,
-    val onShowBlurDialog: () -> Unit,
-    val onShowPaletteDialog: () -> Unit,
-    val onShowFontDialog: () -> Unit,
-    val onShowBorderRadiusDialog: () -> Unit
-)
 
 @Composable
 private fun AppearanceMenuItems(
@@ -301,6 +296,18 @@ private fun ShortcutRow() {
             text = "Rounded",
             color = AureoleDS.colors.onSurfaceLow,
             format = AureoleTextFormatParams(style = AureoleDS.typography.bodyLarge)
+        )
+    }
+}
+
+@AureolePreview
+@Composable
+private fun SettingsAppearanceScreenPreview() {
+    AureoleLauncherTheme {
+        SettingsAppearanceScreen(
+            uiState = SettingsUiState(),
+            actions = SettingsScreenActions(),
+            onNavigateBack = {}
         )
     }
 }

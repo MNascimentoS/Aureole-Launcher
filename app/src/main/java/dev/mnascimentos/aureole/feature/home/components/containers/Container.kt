@@ -29,6 +29,7 @@ import dev.chrisbanes.haze.HazeTint
 import dev.chrisbanes.haze.hazeEffect
 import dev.mnascimentos.aureole.core.data.model.AppFolder
 import dev.mnascimentos.aureole.core.data.model.AppInfo
+import dev.mnascimentos.aureole.core.data.model.ContainerItemEntity
 import dev.mnascimentos.aureole.core.data.model.ContainerItemType
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
@@ -182,22 +183,22 @@ private fun resolveContainerRenderItems(
     allApps: List<AppInfo>
 ): List<ContainerRenderItem> {
     if (config.items.isNotEmpty()) {
-        return config.items.mapNotNull { item ->
-            when (item.itemType) {
-                ContainerItemType.FOLDER -> {
-                    config.folders.find { it.id == item.folderId }?.let { ContainerRenderItem.Folder(it) }
-                }
-                ContainerItemType.APP -> {
-                    allApps.find { it.packageName == item.packageName }?.let { ContainerRenderItem.App(it) }
-                }
-            }
-        }
+        return config.items.mapNotNull { resolveConfigItem(it, config, allApps) }
     }
     val folderItems = config.folders.map { ContainerRenderItem.Folder(it) }
     val appItems = config.appPackageNames.mapNotNull { pkg ->
         allApps.find { it.packageName == pkg }?.let { ContainerRenderItem.App(it) }
     }
     return folderItems + appItems
+}
+
+private fun resolveConfigItem(
+    item: ContainerItemEntity,
+    config: ContainerConfig,
+    allApps: List<AppInfo>
+): ContainerRenderItem? = when (item.itemType) {
+    ContainerItemType.FOLDER -> config.folders.find { it.id == item.folderId }?.let { ContainerRenderItem.Folder(it) }
+    ContainerItemType.APP -> allApps.find { it.packageName == item.packageName }?.let { ContainerRenderItem.App(it) }
 }
 
 @OptIn(ExperimentalFoundationApi::class)

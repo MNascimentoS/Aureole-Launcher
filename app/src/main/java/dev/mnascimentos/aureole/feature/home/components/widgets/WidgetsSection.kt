@@ -42,6 +42,8 @@ import androidx.compose.ui.platform.rememberNestedScrollInteropConnection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
+import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.core.designsystem.utils.LocalAnimatedVisibilityScope
 import dev.mnascimentos.aureole.core.designsystem.utils.LocalSharedTransitionScope
 import dev.mnascimentos.aureole.feature.home.LocalHomeActions
@@ -59,8 +61,8 @@ private const val MIN_LONG_PRESS_TIMEOUT_MS = 200L
 @Composable
 fun StackedWidgetSection(
     config: StackedWidgetConfig,
-    appWidgetHost: AppWidgetHost,
     modifier: Modifier = Modifier,
+    appWidgetHost: AppWidgetHost? = null,
     stackId: String = "top_widgets"
 ) {
     val uiState = LocalHomeUiState.current
@@ -106,7 +108,7 @@ fun StackedWidgetSection(
 data class StackedWidgetPagerParams(
     val config: StackedWidgetConfig,
     val widgetIds: List<Int>,
-    val appWidgetHost: AppWidgetHost,
+    val appWidgetHost: AppWidgetHost? = null,
     val stackId: String,
     val params: PagerContentParams
 )
@@ -202,8 +204,8 @@ fun WidgetPositionIndicatorBar(
 private fun WidgetHostItem(
     widgetId: Int,
     stackId: String,
-    appWidgetHost: AppWidgetHost,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    appWidgetHost: AppWidgetHost? = null
 ) {
     val actions = LocalHomeActions.current
     val coroutineScope = rememberCoroutineScope()
@@ -268,5 +270,16 @@ private fun updateWidgetHostView(view: View, widgetId: Int) {
         if (appWidgetInfo != null) {
             applyWidgetOptionsIfNeeded(view, widgetId, appWidgetManager, appWidgetInfo)
         }
+    }
+}
+
+@AureolePreview
+@Composable
+private fun WidgetPositionIndicatorBarPreview() {
+    AureoleLauncherTheme {
+        WidgetPositionIndicatorBar(
+            pageCount = 4,
+            currentPage = 1
+        )
     }
 }

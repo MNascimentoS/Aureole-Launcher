@@ -11,7 +11,7 @@ data class ScrollableFavoritesParams(
     val uiState: MainUiState,
     val actions: HomeScreenActions,
     val favoritePackages: Set<String>,
-    val appWidgetHost: AppWidgetHost,
+    val appWidgetHost: AppWidgetHost? = null,
     val showHeadersAndWidgets: Boolean,
     val modifier: Modifier
 )

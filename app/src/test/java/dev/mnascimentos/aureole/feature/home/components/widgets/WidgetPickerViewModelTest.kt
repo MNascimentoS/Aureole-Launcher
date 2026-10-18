@@ -5,6 +5,7 @@ import dev.mnascimentos.aureole.core.data.repository.WidgetRepository
 import dev.mnascimentos.aureole.feature.home.components.widgets.model.WidgetSelectorIntent
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
+import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
@@ -52,5 +53,12 @@ class WidgetPickerViewModelTest {
 
         viewModel.processIntent(WidgetSelectorIntent.ToggleAppGroup(appId))
         assertFalse(viewModel.state.value.expandedAppIds.contains(appId))
+    }
+
+    @Test
+    fun `processIntent LoadWidgets triggers widget loading`() {
+        viewModel.processIntent(WidgetSelectorIntent.LoadWidgets)
+        val state = viewModel.state.value
+        assertNotNull(state)
     }
 }

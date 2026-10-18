@@ -35,6 +35,8 @@ import dev.mnascimentos.aureole.core.designsystem.icons.Info
 import dev.mnascimentos.aureole.core.designsystem.icons.Layout
 import dev.mnascimentos.aureole.core.designsystem.icons.Logo
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
+import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.components.common.RenderModalBottomSheetOrInspection
 import dev.mnascimentos.aureole.feature.home.components.widgets.model.WidgetStackBottomSheetParams
 import dev.mnascimentos.aureole.feature.settings.SettingsActivity
@@ -196,5 +198,22 @@ private fun WidgetStackBottomSheetHeader(context: Context) {
                 )
             }
         }
+    }
+}
+
+@AureolePreview
+@Composable
+private fun WidgetStackBottomSheetPreview() {
+    AureoleLauncherTheme {
+        WidgetStackBottomSheet(
+            params = WidgetStackBottomSheetParams(
+                stackId = "stack_1",
+                widgetId = 1,
+                onEditStack = {},
+                onToggleDots = {},
+                onRemoveStack = {}
+            ),
+            onDismiss = {}
+        )
     }
 }

@@ -43,8 +43,8 @@ private const val MAX_NON_SCROLLABLE_APPS = 20
 @Composable
 fun FavoritesList(
     config: FavoritesListConfig,
-    appWidgetHost: AppWidgetHost,
     modifier: Modifier = Modifier,
+    appWidgetHost: AppWidgetHost? = null,
     options: FavoritesListOptions = FavoritesListOptions()
 ) {
     val uiState = LocalHomeUiState.current
@@ -281,7 +281,7 @@ private fun LazyListScope.allAppsSection(
 
 @Composable
 fun FavoritesList(
-    appWidgetHost: AppWidgetHost,
+    appWidgetHost: AppWidgetHost?,
     currentHeightDp: Dp,
     currentHeightPx: Float,
     state: LazyListState,

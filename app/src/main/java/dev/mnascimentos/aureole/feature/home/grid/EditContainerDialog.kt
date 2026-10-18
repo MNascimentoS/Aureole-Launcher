@@ -32,6 +32,8 @@ import dev.mnascimentos.aureole.core.designsystem.icons.Add
 import dev.mnascimentos.aureole.core.designsystem.icons.Delete
 import dev.mnascimentos.aureole.core.designsystem.icons.Edit
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
+import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.LocalHomeActions
 import dev.mnascimentos.aureole.feature.home.LocalHomeUiState
 import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
@@ -373,5 +375,25 @@ private fun EditDialogScrollViewSection(
                 )
             )
         }
+    }
+}
+
+@AureolePreview
+@Composable
+private fun EditGridItemDialogPreview() {
+    val sampleItem = LauncherItemState(
+        id = "sample_item",
+        type = LauncherItemType.APPS_LIST,
+        col = 0,
+        row = 0,
+        colSpan = 2,
+        rowSpan = 2
+    )
+    AureoleLauncherTheme {
+        EditGridItemDialog(
+            item = sampleItem,
+            onDismissRequest = {},
+            onDeleteConfirm = {}
+        )
     }
 }

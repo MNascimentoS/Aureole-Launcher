@@ -32,6 +32,8 @@ import dev.chrisbanes.haze.HazeTint
 import dev.chrisbanes.haze.hazeEffect
 import dev.mnascimentos.aureole.core.designsystem.icons.Add
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
+import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 
 private const val WIDGET_NOT_AVAILABLE_TEXT = "Widget indisponível"
 private const val DEFAULT_HAZE_OPACITY = 0.5f
@@ -78,9 +80,12 @@ internal fun applyWidgetOptionsIfNeeded(
 
 internal fun createWidgetHostView(
     context: Context,
-    appWidgetHost: AppWidgetHost,
+    appWidgetHost: AppWidgetHost?,
     widgetId: Int
 ): View {
+    if (appWidgetHost == null) {
+        return createErrorWidgetView(context, WIDGET_NOT_AVAILABLE_TEXT)
+    }
     val appWidgetManager = AppWidgetManager.getInstance(context)
     val appWidgetInfo = appWidgetManager.getAppWidgetInfo(widgetId)
     return if (appWidgetInfo != null) {
@@ -179,5 +184,13 @@ internal fun AddWidgetButton(
                 style = AureoleDS.typography.labelLarge
             )
         }
+    }
+}
+
+@AureolePreview
+@Composable
+private fun AddWidgetButtonPreview() {
+    AureoleLauncherTheme {
+        AddWidgetButton(onClick = {})
     }
 }

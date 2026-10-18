@@ -16,6 +16,7 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -155,59 +156,73 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+    private fun updateGestureExclusion(isOverlayActive: Boolean) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) return
+        val view = window.decorView
+        val w = view.width
+        val h = view.height
+        if (w <= 0 || h <= 0) return
+        view.systemGestureExclusionRects = if (isOverlayActive) emptyList() else listOf(Rect(0, 0, w, h))
+    }
+
     private fun setupContent() {
         setContent {
             val uiState by viewModel.uiState.collectAsState()
             val isOverlayActive = checkOverlayActive(uiState)
-            val hazeState = rememberHazeState()
 
-            CompositionLocalProvider(LocalHazeState provides hazeState) {
-                LaunchedEffect(isOverlayActive) {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                        val view = window.decorView
-                        val w = view.width
-                        val h = view.height
-                        if (w > 0 && h > 0) {
-                            view.systemGestureExclusionRects = if (isOverlayActive) {
-                                emptyList()
-                            } else {
-                                listOf(Rect(0, 0, w, h))
-                            }
-                        }
-                    }
-                }
-
-                val isDarkTheme = isSystemInDarkTheme()
-                val palette = getPaletteByName(uiState.selectedThemeName, isDarkTheme, uiState.manualSeedColor)
-                AureoleLauncherTheme(
-                    config = AureoleThemeConfig(
-                        darkTheme = isDarkTheme,
-                        isDynamicWallpaperEnabled = uiState.isDynamicWallpaperEnabled,
-                        aureoleColors = palette.colors,
-                        aureoleFontName = uiState.selectedFontName,
-                        aureoleDimens = AureoleDimens(
-                            radiusLarge = uiState.cornerRadiusDp.dp
-                        )
-                    )
-                ) {
-                    BackHandler(enabled = isOverlayActive) {
-                        handleBackNavigation(uiState, viewModel)
-                    }
-
-                    val homeActions = createHomeActions()
-
-                    CompositionLocalProvider(
-                        LocalHomeUiState provides uiState,
-                        LocalHomeActions provides homeActions
-                    ) {
-                        MainScaffold(
-                            appWidgetHost = appWidgetHost,
-                            viewModel = viewModel,
-                            onWidgetSelected = { widgetHostManager.handleWidgetSelected(it) }
-                        )
-                    }
-                }
+            LaunchedEffect(isOverlayActive) {
+                updateGestureExclusion(isOverlayActive)
             }
+
+            MainActivityRootContent(
+                uiState = uiState,
+                isOverlayActive = isOverlayActive
+            )
+        }
+    }
+
+    @Composable
+    private fun MainActivityRootContent(
+        uiState: MainUiState,
+        isOverlayActive: Boolean
+    ) {
+        val hazeState = rememberHazeState()
+        val isDarkTheme = isSystemInDarkTheme()
+        val palette = getPaletteByName(uiState.selectedThemeName, isDarkTheme, uiState.manualSeedColor)
+
+        CompositionLocalProvider(LocalHazeState provides hazeState) {
+            AureoleLauncherTheme(
+                config = AureoleThemeConfig(
+                    darkTheme = isDarkTheme,
+                    isDynamicWallpaperEnabled = uiState.isDynamicWallpaperEnabled,
+                    aureoleColors = palette.colors,
+                    aureoleFontName = uiState.selectedFontName,
+                    aureoleDimens = AureoleDimens(radiusLarge = uiState.cornerRadiusDp.dp)
+                )
+            ) {
+                MainThemeContent(uiState = uiState, isOverlayActive = isOverlayActive)
+            }
+        }
+    }
+
+    @Composable
+    private fun MainThemeContent(
+        uiState: MainUiState,
+        isOverlayActive: Boolean
+    ) {
+        BackHandler(enabled = isOverlayActive) {
+            handleBackNavigation(uiState, viewModel)
+        }
+
+        CompositionLocalProvider(
+            LocalHomeUiState provides uiState,
+            LocalHomeActions provides createHomeActions()
+        ) {
+            MainScaffold(
+                appWidgetHost = appWidgetHost,
+                viewModel = viewModel,
+                onWidgetSelected = { widgetHostManager.handleWidgetSelected(it) }
+            )
         }
     }
 

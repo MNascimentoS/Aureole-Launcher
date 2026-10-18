@@ -38,6 +38,7 @@ import dev.mnascimentos.aureole.core.data.model.LauncherItemState
 import dev.mnascimentos.aureole.core.data.model.LauncherItemType
 import dev.mnascimentos.aureole.core.data.model.ScrollOrientation
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
+import dev.mnascimentos.aureole.feature.home.components.content.model.ScrollViewContainerParams
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
 import dev.mnascimentos.aureole.core.designsystem.icons.Add
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
@@ -59,14 +60,6 @@ private const val SCROLL_CHILD_MIN_HEIGHT = 70
 private const val SCROLL_CHILD_MIN_WIDTH = 100
 private const val SCROLL_CHILD_ROW_HEIGHT = 60
 private const val SCROLL_CHILD_COL_WIDTH = 70
-
-data class ScrollViewContainerParams(
-    val item: LauncherItemState,
-    val favConfig: FavoritesListConfig,
-    val appWidgetHost: AppWidgetHost,
-    val stackedWidgetConfig: StackedWidgetConfig,
-    val containerConfig: ContainerConfig
-)
 
 @Composable
 fun ScrollViewContainerContent(
@@ -127,23 +120,25 @@ private fun rememberScrollViewNestedConnection(
                 available: Offset,
                 source: NestedScrollSource
             ): Offset {
-                val delta = if (isVertical) {
-                    available.y
-                } else {
-                    available.x
-                }
-                if (delta != 0f && (scrollState.canScrollForward || scrollState.canScrollBackward)) {
-                    val consumedByParent = scrollState.dispatchRawDelta(-delta)
-                    return if (isVertical) {
-                        Offset(0f, -consumedByParent)
-                    } else {
-                        Offset(-consumedByParent, 0f)
-                    }
-                }
-                return Offset.Zero
+                return dispatchParentScroll(scrollState, available, isVertical)
             }
         }
     }
+}
+
+private fun dispatchParentScroll(
+    scrollState: ScrollState,
+    available: Offset,
+    isVertical: Boolean
+): Offset {
+    val delta = if (isVertical) available.y else available.x
+    val canScroll = scrollState.canScrollForward || scrollState.canScrollBackward
+    if (delta == 0f || !canScroll) {
+        return Offset.Zero
+    }
+
+    val consumedByParent = scrollState.dispatchRawDelta(-delta)
+    return if (isVertical) Offset(0f, -consumedByParent) else Offset(-consumedByParent, 0f)
 }
 
 @Composable

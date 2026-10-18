@@ -160,8 +160,8 @@ private fun SettingsDialogsSecondary(
 }
 
 @Composable
-private fun FactoryResetDialog(
-    actions: SettingsScreenActions
+internal fun FactoryResetDialog(
+    actions: SettingsScreenActions = SettingsScreenActions()
 ) {
     SettingsBottomSheet(
         title = "Reset launcher?",
@@ -181,8 +181,8 @@ private fun FactoryResetDialog(
 }
 
 @Composable
-private fun ResetGridDialog(
-    actions: SettingsScreenActions
+internal fun ResetGridDialog(
+    actions: SettingsScreenActions = SettingsScreenActions()
 ) {
     SettingsBottomSheet(
         title = "Reset Layout?",
@@ -207,10 +207,10 @@ private fun ResetGridDialog(
 }
 
 @Composable
-private fun HazeOpacityDialog(
-    currentOpacity: Float,
-    onOpacitySelected: (Float) -> Unit,
-    onDismiss: () -> Unit
+internal fun HazeOpacityDialog(
+    currentOpacity: Float = OPACITY_MEDIUM,
+    onOpacitySelected: (Float) -> Unit = {},
+    onDismiss: () -> Unit = {}
 ) {
     val options = listOf(
         OPACITY_LOW to "Low",
@@ -263,9 +263,9 @@ private fun HazeOpacityDialog(
 }
 
 @Composable
-private fun RestoreWallpaperDialog(
-    onConfirm: () -> Unit,
-    onDismiss: () -> Unit
+internal fun RestoreWallpaperDialog(
+    onConfirm: () -> Unit = {},
+    onDismiss: () -> Unit = {}
 ) {
     SettingsBottomSheet(
         title = "Restore default background?",
@@ -288,9 +288,11 @@ private fun RestoreWallpaperDialog(
 @Composable
 private fun SettingsScreenPreview() {
     AureoleLauncherTheme {
-        SettingsScreen(
+        SettingsRootScreen(
             uiState = SettingsUiState(),
-            actions = SettingsScreenActions()
+            onNavigateToBehavior = {},
+            onNavigateToAppearance = {},
+            onNavigateToAdvanced = {}
         )
     }
 }

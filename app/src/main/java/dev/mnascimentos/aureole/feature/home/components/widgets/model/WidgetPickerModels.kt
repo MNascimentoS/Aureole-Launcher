@@ -2,6 +2,28 @@ package dev.mnascimentos.aureole.feature.home.components.widgets.model
 
 import android.appwidget.AppWidgetProviderInfo
 import android.graphics.drawable.Drawable
+import dev.chrisbanes.haze.HazeState
+
+/**
+ * Parameters for [WidgetPickerScreen].
+ */
+data class WidgetPickerScreenParams(
+    val onWidgetSelected: (AppWidgetProviderInfo) -> Unit,
+    val onDismiss: () -> Unit,
+    val isBlurEnabled: Boolean = true,
+    val hazeState: HazeState? = null
+)
+
+/**
+ * Parameters for [WidgetSelectorScreen].
+ */
+data class WidgetSelectorScreenParams(
+    val state: WidgetSelectorState,
+    val onIntent: (WidgetSelectorIntent) -> Unit,
+    val onWidgetSelected: (AppWidgetProviderInfo) -> Unit,
+    val onDismiss: () -> Unit,
+    val hazeState: HazeState? = null
+)
 
 data class WidgetAppGroup(
     val appId: String,

@@ -22,6 +22,8 @@ import dev.mnascimentos.aureole.core.designsystem.icons.ColorFill
 import dev.mnascimentos.aureole.core.designsystem.icons.Corners
 import dev.mnascimentos.aureole.core.designsystem.icons.Glass
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
+import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.settings.components.BlurBottomSheet
 import dev.mnascimentos.aureole.feature.settings.components.PickBorderRadiusBottomSheet
 import dev.mnascimentos.aureole.feature.settings.components.PickFontBottomSheet
@@ -218,5 +220,16 @@ private fun handleBlurOptionSelected(
             actions.onToggleHaze()
         }
         actions.onHazeOpacitySelected(0.0f)
+    }
+}
+
+@AureolePreview
+@Composable
+private fun SettingsAppearanceControlsPreview() {
+    AureoleLauncherTheme {
+        MenuColorRow(
+            manualSeedColor = 0xFF1B65C0.toInt(),
+            onClick = {}
+        )
     }
 }

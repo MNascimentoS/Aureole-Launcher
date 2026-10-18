@@ -43,6 +43,7 @@ import androidx.compose.ui.viewinterop.AndroidView
 import dev.mnascimentos.aureole.core.data.model.LauncherItemState
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleEditOverlay
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleEditOverlayConfig
+import dev.mnascimentos.aureole.feature.home.components.widgets.model.EditWidgetCarouselParams
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleEditOverlayParams
 import dev.mnascimentos.aureole.core.designsystem.icons.Add
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
@@ -139,16 +140,6 @@ fun EditWidgetGroupScreen(
         )
     )
 }
-
-data class EditWidgetCarouselParams(
-    val currentWidgets: List<Int>,
-    val appWidgetHost: AppWidgetHost?,
-    val listState: LazyListState,
-    val currentPage: Int,
-    val isIndicatorEnabled: Boolean,
-    val onRemoveWidget: (Int) -> Unit,
-    val onAddWidgetClick: () -> Unit
-)
 
 @Composable
 private fun EditWidgetGroupPreviewCarousel(

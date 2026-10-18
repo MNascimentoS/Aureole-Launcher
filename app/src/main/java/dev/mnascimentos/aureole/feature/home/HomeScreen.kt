@@ -31,12 +31,14 @@ import dev.chrisbanes.haze.hazeSource
 import dev.chrisbanes.haze.rememberHazeState
 import dev.mnascimentos.aureole.core.data.model.ContainerModel
 import dev.mnascimentos.aureole.core.data.model.LauncherItemType
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
+import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.core.designsystem.utils.LocalHazeState
 import dev.mnascimentos.aureole.core.designsystem.utils.LocalSharedTransitionScope
 import dev.mnascimentos.aureole.feature.home.components.clock.EditClockBottomSheet
 import dev.mnascimentos.aureole.feature.home.components.common.WallpaperBackground
 import dev.mnascimentos.aureole.feature.home.components.containers.EditContainerScreen
-import dev.mnascimentos.aureole.feature.home.components.containers.EditContainerScreenParams
+import dev.mnascimentos.aureole.feature.home.components.containers.model.EditContainerScreenParams
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.HomeScreenFolderOverlays
 import dev.mnascimentos.aureole.feature.home.components.overlays.CustomizeBottomSheet
 import dev.mnascimentos.aureole.feature.home.components.overlays.HomeOverlaysContent
@@ -73,7 +75,7 @@ fun createDefaultHomeScreenActions(): HomeScreenActions = HomeScreenActions(
 @Suppress("LongMethod") // Root composable of home feature managing scaffolding and gesture states
 @Composable
 fun HomeScreen(
-    appWidgetHost: AppWidgetHost,
+    appWidgetHost: AppWidgetHost?,
     modifier: Modifier = Modifier,
 ) {
     val uiState = LocalHomeUiState.current
@@ -175,7 +177,7 @@ private fun BoxScope.HomeScreenBody(
 
         if (!config.uiState.isLoading) {
             MainHomeLayout(
-                appWidgetHost = config.appWidgetHost,
+                appWidgetHost = config.appWidgetHost ?: AppWidgetHost(LocalContext.current, 1024),
                 currentHeightPx = config.currentHeightPx,
                 favListState = config.favListState,
                 hazeState = config.hazeState,
@@ -305,5 +307,14 @@ private fun HomeEditContainerOverlay(config: HomeOverlaysConfig) {
                 onSave = config.actions.onSaveContainerModel
             )
         )
+    }
+}
+
+@AureolePreview
+@Composable
+private fun HomeScreenPreview() {
+    val context = LocalContext.current
+    AureoleLauncherTheme {
+        HomeScreen(appWidgetHost = AppWidgetHost(context, 1024))
     }
 }

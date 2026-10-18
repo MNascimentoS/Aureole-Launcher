@@ -256,29 +256,39 @@ private fun PopulatedFolderMiniGrid(folderApps: List<AppInfo>) {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         for (row in 0 until GRID_ROWS) {
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(2.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                for (col in 0 until GRID_COLS) {
-                    val index = row * GRID_COLS + col
-                    if (index < folderApps.size) {
-                        val app = folderApps[index]
-                        val bitmap = remember(app.packageName) { app.getIconBitmap() }
-                        Image(
-                            bitmap = bitmap,
-                            contentDescription = app.label,
-                            modifier = Modifier
-                                .size(10.dp)
-                                .clip(CircleShape)
-                        )
-                    } else {
-                        Spacer(modifier = Modifier.size(10.dp))
-                    }
-                }
-            }
+            FolderMiniGridRow(row = row, folderApps = folderApps)
         }
     }
+}
+
+@Composable
+private fun FolderMiniGridRow(row: Int, folderApps: List<AppInfo>) {
+    Row(
+        horizontalArrangement = Arrangement.spacedBy(2.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        for (col in 0 until GRID_COLS) {
+            val index = row * GRID_COLS + col
+            FolderMiniGridCell(app = folderApps.getOrNull(index))
+        }
+    }
+}
+
+@Composable
+private fun FolderMiniGridCell(app: AppInfo?) {
+    if (app == null) {
+        Spacer(modifier = Modifier.size(10.dp))
+        return
+    }
+
+    val bitmap = remember(app.packageName) { app.getIconBitmap() }
+    Image(
+        bitmap = bitmap,
+        contentDescription = app.label,
+        modifier = Modifier
+            .size(10.dp)
+            .clip(CircleShape)
+    )
 }
 
 @Composable

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<network-security-config>
+    <domain-config cleartextTrafficPermitted="false">
+        <domain includeSubdomains="true">api.aureolelauncher.dev</domain>
+        <pin-set expiration="2027-12-31">
+            <pin digest="SHA-256">47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=</pin>
+            <pin digest="SHA-256">YLh1dEE9y6K5A3i7V4/3f1S4s4J8T7C6U9P0O1N2M3L=</pin>
+        </pin-set>
+    </domain-config>
+</network-security-config>

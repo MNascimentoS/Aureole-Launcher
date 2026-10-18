@@ -5,6 +5,7 @@ import dev.mnascimentos.aureole.core.data.repository.AppRepository
 import dev.mnascimentos.aureole.core.data.repository.FolderRepository
 import dev.mnascimentos.aureole.core.data.repository.GridRepository
 import dev.mnascimentos.aureole.core.data.repository.SettingsRepository
+import dev.mnascimentos.aureole.feature.settings.model.SettingValue
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNull
@@ -114,5 +115,40 @@ class SettingsViewModelTest {
 
         viewModel.clearErrorMessage()
         assertNull(viewModel.uiState.value.errorMessage)
+    }
+
+    @Test
+    fun `setDialogVisible for all dialog types updates visibility correctly`() {
+        viewModel.setDialogVisible(SettingsDialog.CONTAINER_POSITION, true)
+        assertTrue(viewModel.uiState.value.showContainerPositionDialog)
+
+        viewModel.setDialogVisible(SettingsDialog.HAZE_OPACITY, true)
+        assertTrue(viewModel.uiState.value.showHazeOpacityDialog)
+
+        viewModel.setDialogVisible(SettingsDialog.COLOR_PICKER, true)
+        assertTrue(viewModel.uiState.value.showColorPickerDialog)
+
+        viewModel.setDialogVisible(SettingsDialog.RESET_GRID, true)
+        assertTrue(viewModel.uiState.value.showResetGridDialog)
+
+        viewModel.setDialogVisible(SettingsDialog.FACTORY_RESET, true)
+        assertTrue(viewModel.uiState.value.showFactoryResetDialog)
+    }
+
+    @Test
+    fun `toggleSetting for CONTAINER and HAZE toggles settings state`() {
+        val initialContainer = settingsRepository.isContainerEnabled
+        viewModel.toggleSetting(SettingToggle.CONTAINER)
+        assertEquals(!initialContainer, settingsRepository.isContainerEnabled)
+
+        val initialHaze = settingsRepository.isHazeEnabled
+        viewModel.toggleSetting(SettingToggle.HAZE)
+        assertEquals(!initialHaze, settingsRepository.isHazeEnabled)
+    }
+
+    @Test
+    fun `setSettingValue ContainerPosition updates container position`() {
+        viewModel.setSettingValue(SettingValue.ContainerPosition("Right"))
+        assertEquals("Right", viewModel.uiState.value.containerPosition)
     }
 }

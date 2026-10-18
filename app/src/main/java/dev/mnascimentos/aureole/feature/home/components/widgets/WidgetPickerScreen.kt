@@ -30,26 +30,13 @@ import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.LocalHomeUiState
 import dev.mnascimentos.aureole.feature.home.components.widgets.model.WidgetAppGroup
+import dev.mnascimentos.aureole.feature.home.components.widgets.model.WidgetPickerScreenParams
 import dev.mnascimentos.aureole.feature.home.components.widgets.model.WidgetSelectorIntent
+import dev.mnascimentos.aureole.feature.home.components.widgets.model.WidgetSelectorScreenParams
 import dev.mnascimentos.aureole.feature.home.components.widgets.model.WidgetSelectorState
 import dev.mnascimentos.aureole.feature.home.components.widgets.model.WidgetVariant
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
 import org.koin.androidx.compose.koinViewModel
-
-data class WidgetPickerScreenParams(
-    val onWidgetSelected: (AppWidgetProviderInfo) -> Unit,
-    val onDismiss: () -> Unit,
-    val isBlurEnabled: Boolean = true,
-    val hazeState: HazeState? = null
-)
-
-data class WidgetSelectorScreenParams(
-    val state: WidgetSelectorState,
-    val onIntent: (WidgetSelectorIntent) -> Unit,
-    val onWidgetSelected: (AppWidgetProviderInfo) -> Unit,
-    val onDismiss: () -> Unit,
-    val hazeState: HazeState? = null
-)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

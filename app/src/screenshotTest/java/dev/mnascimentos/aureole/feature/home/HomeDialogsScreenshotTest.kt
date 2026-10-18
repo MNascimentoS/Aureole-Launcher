@@ -17,27 +17,30 @@ import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.components.clock.EditClockBottomSheet
 import dev.mnascimentos.aureole.feature.home.components.containers.EditContainerScreen
-import dev.mnascimentos.aureole.feature.home.components.containers.EditContainerScreenParams
+import dev.mnascimentos.aureole.feature.home.components.containers.model.EditContainerScreenParams
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.ContainerFolderBottomSheet
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.CreateFolderDialog
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.EditFolderDialog
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.FolderAppPickerDialog
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.FolderDialog
+import dev.mnascimentos.aureole.feature.home.components.containers.folder.FolderFormDialog
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.ContainerFolderBottomSheetParams
 import dev.mnascimentos.aureole.feature.home.components.favorites.FavoriteAppsDialog
 import dev.mnascimentos.aureole.feature.home.components.favorites.model.FavoriteAppsDialogActions
 import dev.mnascimentos.aureole.feature.home.components.favorites.model.FavoriteAppsDialogConfig
 import dev.mnascimentos.aureole.feature.home.components.overlays.CustomizeBottomSheet
 import dev.mnascimentos.aureole.feature.home.components.overlays.ReleaseNotesBottomSheet
+import dev.mnascimentos.aureole.feature.home.components.overlays.StandardUpdateAlertDialog
 import dev.mnascimentos.aureole.feature.home.components.overlays.UpdateAvailableDialog
 import dev.mnascimentos.aureole.feature.home.components.overlays.UpdateDownloadedDialog
+import dev.mnascimentos.aureole.feature.home.components.overlays.model.UpdateDialogContentParams
 import dev.mnascimentos.aureole.feature.home.components.widgets.EditWidgetGroupScreen
 import dev.mnascimentos.aureole.feature.home.components.widgets.WidgetSelectorScreen
-import dev.mnascimentos.aureole.feature.home.components.widgets.WidgetSelectorScreenParams
 import dev.mnascimentos.aureole.feature.home.components.widgets.WidgetStackBottomSheet
 import dev.mnascimentos.aureole.feature.home.components.widgets.model.EditWidgetGroupActions
 import dev.mnascimentos.aureole.feature.home.components.widgets.model.EditWidgetGroupParams
 import dev.mnascimentos.aureole.feature.home.components.widgets.model.WidgetAppGroup
+import dev.mnascimentos.aureole.feature.home.components.widgets.model.WidgetSelectorScreenParams
 import dev.mnascimentos.aureole.feature.home.components.widgets.model.WidgetSelectorState
 import dev.mnascimentos.aureole.feature.home.components.widgets.model.WidgetStackBottomSheetParams
 import dev.mnascimentos.aureole.feature.home.components.widgets.model.WidgetVariant
@@ -484,5 +487,42 @@ private fun WidgetStackBottomSheetScreenshotTest() {
             params = params,
             onDismiss = {}
         )
+    }
+}
+
+@PreviewTest
+@AureolePreview
+@Composable
+private fun FolderFormDialogScreenshotTest() {
+    val sampleFolder = AppFolder(
+        id = "folder_1",
+        name = "Work Apps",
+        icon = null,
+        appPackageNames = listOf("com.example.work")
+    )
+    AureoleLauncherTheme {
+        FolderFormDialog(
+            folder = sampleFolder,
+            onDismiss = {},
+            onSave = { _, _ -> },
+            onDelete = {}
+        )
+    }
+}
+
+@PreviewTest
+@AureolePreview
+@Composable
+private fun StandardUpdateAlertDialogScreenshotTest() {
+    val params = UpdateDialogContentParams(
+        title = "Nova atualização disponível",
+        body = "Uma nova versão do Aureole Launcher está disponível com melhorias.",
+        confirmLabel = "Atualizar",
+        dismissLabel = "Cancelar",
+        onConfirm = {},
+        onDismiss = {}
+    )
+    AureoleLauncherTheme {
+        StandardUpdateAlertDialog(params = params)
     }
 }

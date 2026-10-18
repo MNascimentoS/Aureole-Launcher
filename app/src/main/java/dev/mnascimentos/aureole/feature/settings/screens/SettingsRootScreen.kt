@@ -41,6 +41,8 @@ import dev.mnascimentos.aureole.core.designsystem.icons.Edit
 import dev.mnascimentos.aureole.core.designsystem.icons.Logo
 import dev.mnascimentos.aureole.core.designsystem.icons.Star
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
+import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.components.overlays.ReleaseNotesBottomSheet
 import dev.mnascimentos.aureole.feature.settings.model.SettingsUiState
 
@@ -199,5 +201,18 @@ private fun getVersionName(context: Context): String {
         packageInfo.versionName ?: "1.0.0"
     } catch (_: Throwable) {
         "1.0.0"
+    }
+}
+
+@AureolePreview
+@Composable
+private fun SettingsRootScreenPreview() {
+    AureoleLauncherTheme {
+        SettingsRootScreen(
+            uiState = SettingsUiState(),
+            onNavigateToBehavior = {},
+            onNavigateToAppearance = {},
+            onNavigateToAdvanced = {}
+        )
     }
 }
