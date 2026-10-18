@@ -22,9 +22,12 @@ on:
         required: false
 
 jobs:
-  # Roda em todo evento (PR, push em release/* e disparo manual): o deploy só acontece se os testes passarem.
+  # Uma execução por commit de release: o push em release/* roda testes → Full Report → deploy.
+  # O PR vindo de release/* pula este job (o check do push no mesmo commit já aparece no PR, e job
+  # pulado conta como sucesso em status obrigatório). PRs de outras branches seguem rodando os testes.
   pr_check:
     name: PR Validation Check
+    if: ${{ !(github.event_name == 'pull_request' && startsWith(github.head_ref, 'release/')) }}
     runs-on: ubuntu-latest
 
     steps:
@@ -42,13 +45,13 @@ jobs:
         id: unit_tests
         run: ./gradlew testDebugUnitTest
 
-      # ---- Full Report (somente PR de release/*) ----
-      # Tudo abaixo é informativo: continue-on-error + timeout, então o status do PR continua
-      # dependendo só dos testes acima. Os arquivos viram o artefato full-report-<head sha>,
+      # ---- Full Report (somente push em release/*) ----
+      # Tudo abaixo é informativo: continue-on-error + timeout, então o status do check continua
+      # dependendo só dos testes acima. Os arquivos viram o artefato full-report-<sha>,
       # consumido pela análise do n8n (cobertura, testes, lint, detekt e APK release).
       - name: Full Report - Build, Coverage & Lint
         id: full_report
-        if: ${{ !cancelled() && startsWith(github.head_ref, 'release/') }}
+        if: ${{ !cancelled() && github.event_name == 'push' && startsWith(github.ref, 'refs/heads/release/') }}
         continue-on-error: true
         timeout-minutes: 25
         run: >
@@ -56,12 +59,12 @@ jobs:
           -x testDebugUnitTest --continue
 
       - name: Full Report - Metadata
-        if: ${{ !cancelled() && startsWith(github.head_ref, 'release/') }}
+        if: ${{ !cancelled() && github.event_name == 'push' && startsWith(github.ref, 'refs/heads/release/') }}
         continue-on-error: true
         env:
-          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
-          HEAD_REF: ${{ github.head_ref }}
-          PR_NUMBER: ${{ github.event.pull_request.number }}
+          HEAD_SHA: ${{ github.sha }}
+          HEAD_REF: ${{ github.ref_name }}
+          PR_NUMBER: ""
           TESTS: ${{ steps.unit_tests.outcome }}
           REPORTS: ${{ steps.full_report.outcome }}
         run: |
@@ -72,11 +75,11 @@ jobs:
             > app/build/full-report/meta.json
 
       - name: Full Report - Upload
-        if: ${{ !cancelled() && startsWith(github.head_ref, 'release/') }}
+        if: ${{ !cancelled() && github.event_name == 'push' && startsWith(github.ref, 'refs/heads/release/') }}
         continue-on-error: true
         uses: actions/upload-artifact@v4
         with:
-          name: full-report-${{ github.event.pull_request.head.sha }}
+          name: full-report-${{ github.sha }}
           retention-days: 90
           if-no-files-found: ignore
           overwrite: true
