@@ -27,7 +27,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.semantics
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.data.model.ContainerModel
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleEditOverlay
@@ -102,11 +103,11 @@ fun EditContainerScreen(
         val previewModifier = if (isHorizontal) {
             Modifier
                 .wrapContentWidth(Alignment.CenterHorizontally)
-                .heightIn(min = 60.dp, max = 120.dp)
+                .heightIn(min = AureoleDS.dimens.folderButtonMedium, max = AureoleDS.dimens.previewContainerMax)
         } else {
             Modifier
                 .wrapContentHeight(Alignment.Bottom)
-                .widthIn(min = 60.dp, max = 120.dp)
+                .widthIn(min = AureoleDS.dimens.folderButtonMedium, max = AureoleDS.dimens.previewContainerMax)
         }
 
         val titleText = when (currentMode) {
@@ -203,55 +204,69 @@ private fun MainSettingsContent(
     modifier: Modifier = Modifier
 ) {
     Column(modifier = modifier) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .clickable(onClick = onAppearanceClick)
-                .padding(vertical = 16.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            AureoleDS.icons.ColorFill(
-                tint = AureoleDS.colors.onSurfaceMedium,
-                modifier = Modifier.size(24.dp)
-            )
-            Spacer(modifier = Modifier.width(16.dp))
-            Text(text = "Appearance", color = AureoleDS.colors.onSurfaceHigh)
-        }
+        MainSettingsNavigationRow(
+            title = "Appearance",
+            onClick = onAppearanceClick,
+            icon = {
+                AureoleDS.icons.ColorFill(
+                    tint = AureoleDS.colors.onSurfaceMedium,
+                    modifier = Modifier.size(AureoleDS.dimens.iconLarge)
+                )
+            }
+        )
 
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .clickable(onClick = onBehaviorClick)
-                .padding(vertical = 16.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            AureoleDS.icons.Click(tint = AureoleDS.colors.onSurfaceMedium, modifier = Modifier.size(24.dp))
-            Spacer(modifier = Modifier.width(16.dp))
-            Text(text = "Behavior", color = AureoleDS.colors.onSurfaceHigh)
-        }
+        MainSettingsNavigationRow(
+            title = "Behavior",
+            onClick = onBehaviorClick,
+            icon = {
+                AureoleDS.icons.Click(
+                    tint = AureoleDS.colors.onSurfaceMedium,
+                    modifier = Modifier.size(AureoleDS.dimens.iconLarge)
+                )
+            }
+        )
 
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .clickable(onClick = onManageItemsClick)
-                .padding(vertical = 16.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            AureoleDS.icons.DragMenu(
-                tint = AureoleDS.colors.onSurfaceMedium,
-                modifier = Modifier.size(24.dp)
-            )
-            Spacer(modifier = Modifier.width(16.dp))
-            Text(text = "Manage Items", color = AureoleDS.colors.onSurfaceHigh)
-        }
+        MainSettingsNavigationRow(
+            title = "Manage Items",
+            onClick = onManageItemsClick,
+            icon = {
+                AureoleDS.icons.DragMenu(
+                    tint = AureoleDS.colors.onSurfaceMedium,
+                    modifier = Modifier.size(AureoleDS.dimens.iconLarge)
+                )
+            }
+        )
 
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier = Modifier.height(AureoleDS.dimens.large))
         Button(
             onClick = onSave,
             modifier = Modifier.fillMaxWidth()
         ) {
             Text("Salvar")
         }
+    }
+}
+
+@Composable
+private fun MainSettingsNavigationRow(
+    title: String,
+    onClick: () -> Unit,
+    icon: @Composable () -> Unit
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable(
+                onClick = onClick,
+                role = Role.Button
+            )
+            .semantics(mergeDescendants = true) {}
+            .padding(vertical = AureoleDS.dimens.medium),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        icon()
+        Spacer(modifier = Modifier.width(AureoleDS.dimens.medium))
+        Text(text = title, color = AureoleDS.colors.onSurfaceHigh)
     }
 }
 
@@ -265,7 +280,7 @@ private fun AppearanceSettingsContent(
     Column(modifier = modifier) {
         if (isBehaviorMode) {
             Row(
-                modifier = Modifier.fillMaxWidth().padding(vertical = 12.dp),
+                modifier = Modifier.fillMaxWidth().padding(vertical = AureoleDS.dimens.small),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -273,7 +288,7 @@ private fun AppearanceSettingsContent(
                 Switch(checked = state.isExpandCell, onCheckedChange = { state.isExpandCell = it })
             }
             Row(
-                modifier = Modifier.fillMaxWidth().padding(vertical = 12.dp),
+                modifier = Modifier.fillMaxWidth().padding(vertical = AureoleDS.dimens.small),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -286,7 +301,7 @@ private fun AppearanceSettingsContent(
                 onOrientationSelected = { state.orientation = it }
             )
             Row(
-                modifier = Modifier.fillMaxWidth().padding(vertical = 12.dp),
+                modifier = Modifier.fillMaxWidth().padding(vertical = AureoleDS.dimens.small),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -294,7 +309,7 @@ private fun AppearanceSettingsContent(
                 Switch(checked = state.isBackgroundEnabled, onCheckedChange = { state.isBackgroundEnabled = it })
             }
             Row(
-                modifier = Modifier.fillMaxWidth().padding(vertical = 12.dp),
+                modifier = Modifier.fillMaxWidth().padding(vertical = AureoleDS.dimens.small),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -303,7 +318,7 @@ private fun AppearanceSettingsContent(
             }
         }
 
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier = Modifier.height(AureoleDS.dimens.large))
         Button(onClick = onBack, modifier = Modifier.fillMaxWidth()) {
             Text("Voltar")
         }

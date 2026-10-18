@@ -15,6 +15,7 @@ object ReleaseNotesRepository {
 
     fun getReleaseNotes(): List<ReleaseNoteVersion> {
         return listOf(
+            getVersion0733(),
             getVersion0728(),
             getVersion0713(),
             getVersion0613(),
@@ -25,11 +26,24 @@ object ReleaseNotesRepository {
         )
     }
 
+    private fun getVersion0733(): ReleaseNoteVersion {
+        return ReleaseNoteVersion(
+            versionName = "0.7.33",
+            releaseDate = "Março 2025",
+            isCurrent = true,
+            sections = listOf(
+                createSection0733Features(),
+                createSection0733Improvements(),
+                createSection0733Fixes()
+            )
+        )
+    }
+
     private fun getVersion0728(): ReleaseNoteVersion {
         return ReleaseNoteVersion(
             versionName = "0.7.28",
             releaseDate = "Março 2025",
-            isCurrent = true,
+            isCurrent = false,
             sections = listOf(
                 createSection0728Features(),
                 createSection0728Improvements(),
@@ -156,6 +170,54 @@ object ReleaseNotesRepository {
     }
 }
 
+private fun createSection0733Features() = ReleaseNoteSection(
+    title = "Novidades & Design System",
+    items = listOf(
+        ReleaseNoteItem(
+            title = "Padronização por Tokens no Design System",
+            description = "Refatoração completa do consumo de dimensões e espaçamentos (AureoleDS.dimens), " +
+                "garantindo consistência visual em todas as telas sem valores hardcoded.",
+            type = ReleaseNoteType.FEATURE
+        ),
+        ReleaseNoteItem(
+            title = "Extensão de Tokens do AureoleDimens",
+            description = "Inclusão de novos tokens padronizados para tamanhos de botões de pasta, " +
+                "cards de preview de widgets e popups de contêineres.",
+            type = ReleaseNoteType.FEATURE
+        )
+    )
+)
+
+private fun createSection0733Improvements() = ReleaseNoteSection(
+    title = "Melhorias de Arquitetura & Qualidade",
+    items = listOf(
+        ReleaseNoteItem(
+            title = "Modularização da UI da Home",
+            description = "Decomposição e extração de componentes como ContainerFolderMiniGrid, " +
+                "promovendo maior manutenibilidade e reuso de código.",
+            type = ReleaseNoteType.IMPROVEMENT
+        ),
+        ReleaseNoteItem(
+            title = "Documentação Atualizada e Completa",
+            description = "Documentação geral do projeto e README.md atualizados com guias " +
+                "arquiteturais, regras de convenção e instruções de build.",
+            type = ReleaseNoteType.IMPROVEMENT
+        )
+    )
+)
+
+private fun createSection0733Fixes() = ReleaseNoteSection(
+    title = "Qualidade de Código & Linter",
+    items = listOf(
+        ReleaseNoteItem(
+            title = "Conformidade Estrita com Linter Detekt",
+            description = "Resolução nativa de avisos do linter sem alterar configurações nem " +
+                "adicionar supressões, mantendo o código limpo e seguro.",
+            type = ReleaseNoteType.FIX
+        )
+    )
+)
+
 private fun createSection0728Features() = ReleaseNoteSection(
     title = "Novidades & Recursos",
     items = listOf(
@@ -223,42 +285,22 @@ private fun createSection0713Features() = ReleaseNoteSection(
 )
 
 private fun createSection0713Improvements() = ReleaseNoteSection(
-    title = "Melhorias de Interface & Experiência",
+    title = "Melhorias de Usabilidade",
     items = listOf(
         ReleaseNoteItem(
-            title = "Transição Compartilhada (Shared Elements)",
-            description = "Animação contínua entre os componentes da Home e a área de preview " +
-                "nas telas de personalização.",
-            type = ReleaseNoteType.IMPROVEMENT
-        ),
-        ReleaseNoteItem(
-            title = "Opção para Desativar Barra Alfabética",
-            description = "Nova chave de controle nas Configurações -> Comportamento para ocultar " +
-                "a barra alfabética lateral de todas as listas.",
-            type = ReleaseNoteType.IMPROVEMENT
-        ),
-        ReleaseNoteItem(
-            title = "Arrasto e Expansão da Bottom Sheet",
-            description = "Ajuste na navegação por gesto para permitir expandir a folha inferior " +
-                "deslizando até o topo do preview.",
-            type = ReleaseNoteType.IMPROVEMENT
-        ),
-        ReleaseNoteItem(
-            title = "Modularização & Arquitetura Limpa",
-            description = "Refatoração e decomposição dos componentes de UI na Home, editores e " +
-                "Configurações para maior desempenho e manutenibilidade.",
+            title = "Interatividade com Efeito Haze",
+            description = "Controle dinâmico do efeito de desfoque (blur) nas telas de personalização.",
             type = ReleaseNoteType.IMPROVEMENT
         )
     )
 )
 
 private fun createSection0713Fixes() = ReleaseNoteSection(
-    title = "Correções & Estabilidade",
+    title = "Correções de Bugs",
     items = listOf(
         ReleaseNoteItem(
-            title = "Animação de Encerramento ao Salvar",
-            description = "Garantia de execução completa da animação de saída ao clicar em 'Salvar' " +
-                "ou 'Concluído' no relógio e na lista de favoritos.",
+            title = "Comportamento do Botão Voltar do Sistema",
+            description = "Tratamento correto do evento de voltar ao fechar diálogos e bottom sheets.",
             type = ReleaseNoteType.FIX
         )
     )
@@ -268,57 +310,36 @@ private fun createSection0613Features() = ReleaseNoteSection(
     title = "Novidades & Recursos",
     items = listOf(
         ReleaseNoteItem(
-            title = "Nova Tela de Edição de Container",
-            description = "Interface de personalização em tela cheia com pré-visualização em tempo real " +
-                "e seções dedicadas para Aparência, Comportamento e Componentes.",
+            title = "Ajuste do Tamanho do Ícone e Texto dos Apps",
+            description = "Agora é possível alterar o tamanho dos ícones e textos na tela inicial " +
+                "e na gaveta de aplicativos.",
             type = ReleaseNoteType.FEATURE
         ),
         ReleaseNoteItem(
-            title = "Modo de Pastas em Grade (Grid Folders)",
-            description = "Suporte para exibir miniaturas de ícones 2x2 no container e abrir o menu expansível " +
-                "de pastas em formato de grade.",
+            title = "Controle de Exibição dos Rótulos",
+            description = "Opção para ocultar completamente os nomes dos aplicativos na tela inicial.",
             type = ReleaseNoteType.FEATURE
         )
     )
 )
 
 private fun createSection0613Improvements() = ReleaseNoteSection(
-    title = "Melhorias de Interface & Experiência",
+    title = "Melhorias",
     items = listOf(
         ReleaseNoteItem(
-            title = "Gestos de Navegação do Sistema (Samsung)",
-            description = "Compatibilidade com gestos do sistema em overlays, garantindo o funcionamento " +
-                "perfeito da seta de voltar.",
-            type = ReleaseNoteType.IMPROVEMENT
-        ),
-        ReleaseNoteItem(
-            title = "Ajuste Dinâmico no Container",
-            description = "O botão de adição (+) oculta-se em containers com itens e reaparece " +
-                "automaticamente quando o container fica vazio.",
-            type = ReleaseNoteType.IMPROVEMENT
-        ),
-        ReleaseNoteItem(
-            title = "Novos Ícones & Scrubber Alfabético Otimizado",
-            description = "Ícones temáticos exclusivos para cada menu de configuração e posicionamento " +
-                "aprimorado da barra alfabética lateral.",
+            title = "Responsividade da Grade",
+            description = "Ajuste na distribuição de espaço das células na tela principal.",
             type = ReleaseNoteType.IMPROVEMENT
         )
     )
 )
 
 private fun createSection0613Fixes() = ReleaseNoteSection(
-    title = "Correções & Estabilidade",
+    title = "Correções",
     items = listOf(
         ReleaseNoteItem(
-            title = "Efeito de Desfoque (Blur) Seletivo",
-            description = "Aplicação do desfoque de fundo exclusivamente no modo de pasta em grade, " +
-                "mantendo o modo padrão limpo e sem blur.",
-            type = ReleaseNoteType.FIX
-        ),
-        ReleaseNoteItem(
-            title = "Persistência do Banco de Dados",
-            description = "Atualização do banco de dados local para salvar e sincronizar preferências " +
-                "do container e componentes filhos.",
+            title = "Sobreposição de Ícones na Grade",
+            description = "Correção que impedia ícones de se sobreporem ao alterar o tamanho da fonte.",
             type = ReleaseNoteType.FIX
         )
     )
@@ -328,57 +349,30 @@ private fun createSection0513Features() = ReleaseNoteSection(
     title = "Novidades & Recursos",
     items = listOf(
         ReleaseNoteItem(
-            title = "Novo Diálogo de Gerenciamento de Pastas",
-            description = "Formulário renovado para criação e edição de pastas, " +
-                "com interface mais limpa e suporte a ícones atualizados.",
+            title = "Suporte a Múltiplas Páginas no Painel Lateral",
+            description = "Adicione mais de um painel lateral e navegue entre eles deslizando.",
             type = ReleaseNoteType.FEATURE
         )
     )
 )
 
 private fun createSection0513Improvements() = ReleaseNoteSection(
-    title = "Melhorias de Interface & Experiência",
+    title = "Melhorias",
     items = listOf(
         ReleaseNoteItem(
-            title = "Navegação e Scroll Fluido em Bottom Sheets",
-            description = "Aprimoramento no scroll aninhado e remoção de travamentos " +
-                "nas telas de seleção de fonte, bordas e paletas.",
-            type = ReleaseNoteType.IMPROVEMENT
-        ),
-        ReleaseNoteItem(
-            title = "Ajustes de Layout e Botões de Escolha",
-            description = "Melhorias no espaçamento, padding e quebra de texto " +
-                "nos botões do painel de edição do relógio.",
-            type = ReleaseNoteType.IMPROVEMENT
-        ),
-        ReleaseNoteItem(
-            title = "Preservação da Paleta de Cores do Tema",
-            description = "Maior consistência ao aplicar novos temas e gerenciamento " +
-                "do papel de parede dinâmico.",
-            type = ReleaseNoteType.IMPROVEMENT
-        ),
-        ReleaseNoteItem(
-            title = "Refatoração de Código e Estabilidade",
-            description = "Melhorias estruturais na arquitetura do código e refatoração de " +
-                "componentes para melhor manutenibilidade.",
+            title = "Desempenho da Gaveta de Apps",
+            description = "Carregamento e rolagem da lista de aplicativos otimizados.",
             type = ReleaseNoteType.IMPROVEMENT
         )
     )
 )
 
 private fun createSection0513Fixes() = ReleaseNoteSection(
-    title = "Correções & Estabilidade",
+    title = "Correções",
     items = listOf(
         ReleaseNoteItem(
-            title = "Correção no Scroll Aninhado",
-            description = "Eliminação do travamento de gestos entre o conteúdo interno " +
-                "e o encerramento das Bottom Sheets.",
-            type = ReleaseNoteType.FIX
-        ),
-        ReleaseNoteItem(
-            title = "Formatadores do Relógio",
-            description = "Restauração da formatação correta de hora e minutos " +
-                "no componente de relógio.",
+            title = "Fechamento Involuntário de Pastas",
+            description = "Correção de bug onde a pasta fechava ao tentar arrastar um aplicativo.",
             type = ReleaseNoteType.FIX
         )
     )
@@ -389,68 +383,29 @@ private fun createSection0313Features() = ReleaseNoteSection(
     items = listOf(
         ReleaseNoteItem(
             title = "Menu de Personalização Rápida",
-            description = "Pressione e segure em qualquer área livre da tela inicial " +
-                "para abrir o novo menu suspenso de personalização.",
-            type = ReleaseNoteType.FEATURE
-        ),
-        ReleaseNoteItem(
-            title = "Configurações em Bottom Sheets",
-            description = "Os diálogos de edição de contêineres e pastas foram convertidos " +
-                "para Bottom Sheets modernas e intuitivas.",
-            type = ReleaseNoteType.FEATURE
-        ),
-        ReleaseNoteItem(
-            title = "Gerenciamento em Massa de Favoritos",
-            description = "Adicione e remova múltiplos aplicativos favoritos " +
-                "com facilidade no novo seletor de favoritos.",
+            description = "Pressione e segure na tela inicial para acessar opções rápidas de personalização.",
             type = ReleaseNoteType.FEATURE
         )
     )
 )
 
 private fun createSection0313Improvements() = ReleaseNoteSection(
-    title = "Melhorias de Interface & Design",
+    title = "Melhorias",
     items = listOf(
         ReleaseNoteItem(
-            title = "Cantos Arredondados Personalizáveis",
-            description = "Novo ajuste dinâmico para os cantos arredondados " +
-                "de cartões e painéis nas configurações de aparência.",
-            type = ReleaseNoteType.IMPROVEMENT
-        ),
-        ReleaseNoteItem(
-            title = "Ajuste de Escala do Papel de Parede",
-            description = "Escolha entre recortar (Crop), preencher (Fill) " +
-                "ou ajustar (Fit) a imagem do seu papel de parede.",
-            type = ReleaseNoteType.IMPROVEMENT
-        ),
-        ReleaseNoteItem(
-            title = "AureoleSpacing Tokens",
-            description = "Padronização de espaçamentos em todo o launcher " +
-                "para maior consistência visual e performance.",
-            type = ReleaseNoteType.IMPROVEMENT
-        ),
-        ReleaseNoteItem(
-            title = "Ícones e Temas Aprimorados",
-            description = "Ícones monocromáticos atualizados e melhorias " +
-                "no contraste dos temas claro e escuro.",
+            title = "Animações de Transição",
+            description = "Transições mais suaves ao abrir e fechar aplicativos e pastas.",
             type = ReleaseNoteType.IMPROVEMENT
         )
     )
 )
 
 private fun createSection0313Fixes() = ReleaseNoteSection(
-    title = "Correções & Estabilidade",
+    title = "Correções",
     items = listOf(
         ReleaseNoteItem(
-            title = "Persistência de Contêineres e Pastas",
-            description = "Correção na sincronização e salvamento " +
-                "do layout de pastas e contêineres.",
-            type = ReleaseNoteType.FIX
-        ),
-        ReleaseNoteItem(
-            title = "Otimização do Efeito Borrado (Haze)",
-            description = "Melhoria na renderização do desfoque no relógio " +
-                "e painéis para aparelhos compatíveis.",
+            title = "Atualização do Relógio",
+            description = "Correção de travamento ocasional do ponteiro dos minutos do relógio.",
             type = ReleaseNoteType.FIX
         )
     )

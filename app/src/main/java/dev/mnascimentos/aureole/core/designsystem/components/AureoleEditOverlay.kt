@@ -45,6 +45,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalInspectionMode
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
@@ -67,17 +68,6 @@ private const val DISMISS_VELOCITY_THRESHOLD = 1000f
 private const val EXPAND_VELOCITY_THRESHOLD = -500f
 private const val COLLAPSE_VELOCITY_THRESHOLD = 500f
 
-/**
- * Configuration options for [AureoleEditOverlay].
- *
- * @param title The optional title of the overlay.
- * @param hazeState The haze state for the background blur effect.
- * @param isVisible Whether the overlay is currently visible.
- * @param animated Whether the overlay should animate its entrance and exit.
- * @param maxSheetHeightFraction The maximum height fraction of the screen the sheet can occupy.
- * @param onBackPress Executes when the user presses the back button.
- * @param onSettingsClick Executes when the user clicks the settings icon.
- */
 data class AureoleEditOverlayConfig(
     val title: String? = null,
     val hazeState: HazeState? = null,
@@ -88,14 +78,6 @@ data class AureoleEditOverlayConfig(
     val onSettingsClick: (() -> Unit)? = null,
 )
 
-/**
- * Parameters for [AureoleEditOverlay].
- *
- * @param config The overlay configuration options.
- * @param previewContent The content to be displayed in the preview slot.
- * @param bottomBarContent The optional content to be displayed at the bottom of the sheet.
- * @param sheetContent The main content of the sheet.
- */
 class AureoleEditOverlayParams(
     val config: AureoleEditOverlayConfig = AureoleEditOverlayConfig(),
     val previewContent: (@Composable BoxScope.() -> Unit)? = null,
@@ -103,29 +85,60 @@ class AureoleEditOverlayParams(
     val sheetContent: (@Composable ColumnScope.() -> Unit)? = null,
 )
 
-/**
- * Base Design System component for editor screens (Clock, Container, Widgets, etc.).
- *
- * Provides a unified overlay layout featuring backdrop, sheet surface, animations, and preview slot.
- *
- * @param params The parameters for configuring the overlay.
- * @param modifier The modifier to be applied to the layout.
- * @param onDismissRequest Executes when the user requests to dismiss the overlay.
- */
 @Composable
 fun AureoleEditOverlay(
     params: AureoleEditOverlayParams,
     modifier: Modifier = Modifier,
     onDismissRequest: () -> Unit = {},
 ) {
-    val hazeState = params.config.hazeState
-    val isVisible = params.config.isVisible
-    val animated = params.config.animated
-    val onBackPress = params.config.onBackPress
-
+    val config = params.config
     val isInspection = LocalInspectionMode.current
-    val effectiveAnimated = animated && !isInspection
+    val effectiveAnimated = config.animated && !isInspection
 
+    val overlayState = rememberOverlayDismissState(
+        effectiveAnimated = effectiveAnimated,
+        isVisible = config.isVisible,
+        onBackPress = config.onBackPress,
+        onDismissRequest = onDismissRequest
+    )
+
+    if (!isInspection) {
+        BackHandler(enabled = config.isVisible && overlayState.internalVisible) {
+            overlayState.triggerDismiss()
+        }
+    }
+
+    AnimatedVisibility(
+        visibleState = overlayState.visibleState,
+        enter = fadeIn(animationSpec = tween(ANIMATION_DURATION_MS)),
+        exit = fadeOut(animationSpec = tween(ANIMATION_DURATION_MS)),
+        modifier = modifier.fillMaxSize()
+    ) {
+        CompositionLocalProvider(LocalAnimatedVisibilityScope provides this) {
+            OverlayContentBox(
+                params = params,
+                hazeState = config.hazeState,
+                effectiveAnimated = effectiveAnimated,
+                triggerDismiss = overlayState.triggerDismiss,
+                animScope = this
+            )
+        }
+    }
+}
+
+private class OverlayDismissState(
+    val visibleState: MutableTransitionState<Boolean>,
+    val internalVisible: Boolean,
+    val triggerDismiss: () -> Unit
+)
+
+@Composable
+private fun rememberOverlayDismissState(
+    effectiveAnimated: Boolean,
+    isVisible: Boolean,
+    onBackPress: (() -> Unit)?,
+    onDismissRequest: () -> Unit
+): OverlayDismissState {
     var internalVisible by remember { mutableStateOf(true) }
 
     val visibleState = remember(effectiveAnimated) {
@@ -151,27 +164,8 @@ fun AureoleEditOverlay(
         }
     }
 
-    if (!isInspection) {
-        BackHandler(enabled = isVisible && internalVisible) {
-            triggerDismiss()
-        }
-    }
-
-    AnimatedVisibility(
-        visibleState = visibleState,
-        enter = fadeIn(animationSpec = tween(ANIMATION_DURATION_MS)),
-        exit = fadeOut(animationSpec = tween(ANIMATION_DURATION_MS)),
-        modifier = modifier.fillMaxSize()
-    ) {
-        CompositionLocalProvider(LocalAnimatedVisibilityScope provides this) {
-            OverlayContentBox(
-                params = params,
-                hazeState = hazeState,
-                effectiveAnimated = effectiveAnimated,
-                triggerDismiss = triggerDismiss,
-                animScope = this
-            )
-        }
+    return remember(visibleState, internalVisible, triggerDismiss) {
+        OverlayDismissState(visibleState, internalVisible, triggerDismiss)
     }
 }
 
@@ -298,7 +292,6 @@ private fun SheetSurface(
     }
 
     val currentMaxSheetHeight = bounds.maxHeight + dragExpansion.dp
-
     val sheetModifier = if (effectiveAnimated) {
         with(animScope) {
             Modifier.animateEnterExit(
@@ -324,13 +317,8 @@ private fun SheetSurface(
                 state = draggableState,
                 orientation = Orientation.Vertical,
                 onDragStopped = { velocity ->
-                    handleDragStopped(
-                        velocity,
-                        dragExpansion,
-                        bounds.maxExpansionAllowed,
-                        triggerDismiss
-                    ) { newExpansion ->
-                        dragExpansion = newExpansion
+                    handleDragStopped(velocity, dragExpansion, bounds.maxExpansionAllowed, triggerDismiss) {
+                        dragExpansion = it
                     }
                 }
             )
@@ -437,9 +425,12 @@ private fun OverlaySheetHeader(
         Box(
             modifier = Modifier
                 .align(Alignment.CenterEnd)
-                .size(AureoleDS.dimens.xLarge)
-                .clip(androidx.compose.foundation.shape.RoundedCornerShape(AureoleDS.dimens.radiusMedium))
-                .clickable { effectiveSettingsClick() },
+                .size(AureoleDS.dimens.iconXLarge)
+                .clip(RoundedCornerShape(AureoleDS.dimens.radiusMedium))
+                .clickable(
+                    onClick = { effectiveSettingsClick() },
+                    role = Role.Button
+                ),
             contentAlignment = Alignment.Center
         ) {
             AureoleDS.icons.Logo(

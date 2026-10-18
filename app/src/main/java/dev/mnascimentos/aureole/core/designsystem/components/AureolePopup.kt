@@ -23,6 +23,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -147,7 +148,10 @@ fun AureoleHeaderBanner(
                 .padding(top = AureoleDS.dimens.xxSmall, end = AureoleDS.dimens.xxSmall)
                 .size(AureoleDS.dimens.iconXLarge)
                 .clip(CircleShape)
-                .clickable(onClick = handleSettingsClick),
+                .clickable(
+                    onClick = handleSettingsClick,
+                    role = Role.Button
+                ),
             contentAlignment = Alignment.Center,
         ) {
             AureoleDS.icons.Logo(

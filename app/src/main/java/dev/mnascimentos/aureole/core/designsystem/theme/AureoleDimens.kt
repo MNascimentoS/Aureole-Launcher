@@ -37,6 +37,18 @@ data class AureoleDimens(
     val radiusMedium: Dp = 16.dp,
     val radiusLarge: Dp = 24.dp,
     val radiusFull: Dp = 100.dp,
+
+    // 05. Containers & Controls
+    val folderButtonSmall: Dp = 52.dp,
+    val folderButtonMedium: Dp = 60.dp,
+    val folderContainerMaxWidth: Dp = 68.dp,
+    val folderLabelMaxWidth: Dp = 56.dp,
+    val widgetPreviewCardSize: Dp = 150.dp,
+    val widgetAddCardSize: Dp = 164.dp,
+    val previewContainerMax: Dp = 120.dp,
+    val popupWidthMin: Dp = 180.dp,
+    val popupWidthMax: Dp = 210.dp,
+    val popupHeightMax: Dp = 400.dp,
 )
 
 val LocalAureoleDimens = staticCompositionLocalOf { AureoleDimens() }

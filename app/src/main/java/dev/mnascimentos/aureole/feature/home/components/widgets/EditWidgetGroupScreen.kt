@@ -37,7 +37,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import dev.mnascimentos.aureole.core.data.model.LauncherItemState
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleEditOverlay
@@ -116,7 +115,7 @@ fun EditWidgetGroupScreen(
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(vertical = 12.dp),
+                        .padding(vertical = AureoleDS.dimens.small),
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
@@ -127,7 +126,7 @@ fun EditWidgetGroupScreen(
                             style = AureoleDS.typography.bodyLarge,
                             fontWeight = FontWeight.Bold
                         )
-                        Spacer(modifier = Modifier.width(16.dp))
+                        Spacer(modifier = Modifier.width(AureoleDS.dimens.medium))
                         Text("Show widget indicator", color = AureoleDS.colors.onSurfaceMedium)
                     }
                     Switch(
@@ -158,10 +157,10 @@ private fun EditWidgetGroupPreviewCarousel(
     ) {
         LazyRow(
             state = listState,
-            horizontalArrangement = Arrangement.spacedBy(12.dp),
+            horizontalArrangement = Arrangement.spacedBy(AureoleDS.dimens.small),
             modifier = Modifier.fillMaxWidth()
         ) {
-            item { Spacer(modifier = Modifier.width(16.dp)) }
+            item { Spacer(modifier = Modifier.width(AureoleDS.dimens.medium)) }
             items(
                 items = currentWidgets,
                 key = { it },
@@ -174,10 +173,10 @@ private fun EditWidgetGroupPreviewCarousel(
                 )
             }
             item { AddWidgetCard(onClick = onAddWidgetClick) }
-            item { Spacer(modifier = Modifier.width(28.dp)) }
+            item { Spacer(modifier = Modifier.width(AureoleDS.dimens.large)) }
         }
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(AureoleDS.dimens.medium))
 
         if (currentWidgets.isNotEmpty() && isIndicatorEnabled) {
             WidgetPositionIndicatorBar(
@@ -211,23 +210,23 @@ private fun WidgetPreviewItem(
     }
 
     Box(
-        modifier = Modifier.padding(top = 10.dp, start = 10.dp)
+        modifier = Modifier.padding(top = AureoleDS.dimens.xSmall, start = AureoleDS.dimens.xSmall)
     ) {
         // Outer border
         Box(
             modifier = Modifier
                 .border(
-                    width = 1.dp,
+                    width = AureoleDS.dimens.borderMinimal,
                     color = AureoleDS.colors.onSurfaceMedium.copy(alpha = 0.4f),
-                    shape = RoundedCornerShape(28.dp)
+                    shape = RoundedCornerShape(AureoleDS.dimens.radiusLarge)
                 )
-                .padding(6.dp)
+                .padding(AureoleDS.dimens.xxSmall)
         ) {
             // Inner card displaying widget
             Box(
                 modifier = Modifier
-                    .size(150.dp, 150.dp)
-                    .clip(RoundedCornerShape(22.dp))
+                    .size(AureoleDS.dimens.widgetPreviewCardSize)
+                    .clip(RoundedCornerShape(AureoleDS.dimens.radiusLarge))
                     .then(sharedModifier)
                     .background(AureoleDS.colors.surfaceVariant.copy(alpha = 0.6f)),
                 contentAlignment = Alignment.Center
@@ -253,11 +252,11 @@ private fun WidgetPreviewItem(
         // "-" badge positioned at top-left
         Box(
             modifier = Modifier
-                .offset(x = (-6).dp, y = (-6).dp)
-                .size(28.dp)
+                .offset(x = -AureoleDS.dimens.xxSmall, y = -AureoleDS.dimens.xxSmall)
+                .size(AureoleDS.dimens.large)
                 .clip(CircleShape)
                 .background(AureoleDS.colors.surfaceVariant)
-                .border(1.dp, AureoleDS.colors.outline.copy(alpha = 0.3f), CircleShape)
+                .border(AureoleDS.dimens.borderMinimal, AureoleDS.colors.outline.copy(alpha = 0.3f), CircleShape)
                 .clickable { onRemoveClick() },
             contentAlignment = Alignment.Center
         ) {
@@ -276,24 +275,24 @@ private fun AddWidgetCard(
     onClick: () -> Unit
 ) {
     Box(
-        modifier = Modifier.padding(top = 10.dp, start = 10.dp)
+        modifier = Modifier.padding(top = AureoleDS.dimens.xSmall, start = AureoleDS.dimens.xSmall)
     ) {
         Box(
             modifier = Modifier
-                .size(164.dp, 164.dp)
-                .clip(RoundedCornerShape(28.dp))
+                .size(AureoleDS.dimens.widgetAddCardSize)
+                .clip(RoundedCornerShape(AureoleDS.dimens.radiusLarge))
                 .background(AureoleDS.colors.surfaceVariant.copy(alpha = 0.35f))
                 .border(
-                    width = 1.dp,
+                    width = AureoleDS.dimens.borderMinimal,
                     color = AureoleDS.colors.outline.copy(alpha = 0.2f),
-                    shape = RoundedCornerShape(28.dp)
+                    shape = RoundedCornerShape(AureoleDS.dimens.radiusLarge)
                 )
                 .clickable { onClick() },
             contentAlignment = Alignment.Center
         ) {
             AureoleDS.icons.Add(
                 tint = AureoleDS.colors.onSurfaceMedium,
-                modifier = Modifier.size(32.dp)
+                modifier = Modifier.size(AureoleDS.dimens.xLarge)
             )
         }
     }

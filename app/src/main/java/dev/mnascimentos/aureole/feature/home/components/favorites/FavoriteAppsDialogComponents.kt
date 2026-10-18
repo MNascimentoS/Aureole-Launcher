@@ -22,7 +22,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
@@ -38,7 +37,7 @@ import dev.mnascimentos.aureole.feature.home.components.favorites.model.Favorite
 @Composable
 fun FavoriteAppsDialogHeader(modifier: Modifier = Modifier) {
     Box(
-        modifier = modifier.fillMaxWidth().padding(bottom = 12.dp),
+        modifier = modifier.fillMaxWidth().padding(bottom = AureoleDS.dimens.small),
         contentAlignment = Alignment.Center
     ) {
         AureoleText(
@@ -62,7 +61,7 @@ fun FavoriteAppsShowAllSwitchRow(
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(12.dp))
+            .clip(RoundedCornerShape(AureoleDS.dimens.radiusSmall))
             .background(AureoleDS.colors.surfaceVariant.copy(alpha = 0.5f))
             .padding(horizontal = AureoleDS.dimens.small, vertical = AureoleDS.dimens.xSmall),
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -101,8 +100,8 @@ fun FavoriteAppRowInfo(app: AppInfo, modifier: Modifier = Modifier) {
             bitmap = iconBitmap,
             contentDescription = app.label,
             modifier = Modifier
-                .size(32.dp)
-                .clip(RoundedCornerShape(8.dp))
+                .size(AureoleDS.dimens.xLarge)
+                .clip(RoundedCornerShape(AureoleDS.dimens.radiusXSmall))
         )
         Spacer(modifier = Modifier.width(AureoleDS.dimens.xSmall))
         AureoleText(
@@ -129,55 +128,55 @@ fun FavoriteAppRowActionButtons(
     Row(
         modifier = modifier,
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(8.dp)
+        horizontalArrangement = Arrangement.spacedBy(AureoleDS.dimens.xSmall)
     ) {
         if (params.canReorder && params.index > 0) {
             Box(
                 modifier = Modifier
-                    .size(28.dp)
+                    .size(AureoleDS.dimens.large)
                     .background(
                         color = AureoleDS.colors.surfaceVariant.copy(alpha = 0.5f),
-                        shape = RoundedCornerShape(8.dp)
+                        shape = RoundedCornerShape(AureoleDS.dimens.radiusXSmall)
                     )
                     .clickable { onMoveUp() },
                 contentAlignment = Alignment.Center
             ) {
                 AureoleDS.icons.ArrowUp(
                     tint = AureoleDS.colors.onSurfaceHigh,
-                    modifier = Modifier.size(16.dp)
+                    modifier = Modifier.size(AureoleDS.dimens.iconSmall)
                 )
             }
         }
         if (params.canReorder && params.index < params.totalCount - 1) {
             Box(
                 modifier = Modifier
-                    .size(28.dp)
+                    .size(AureoleDS.dimens.large)
                     .background(
                         color = AureoleDS.colors.surfaceVariant.copy(alpha = 0.5f),
-                        shape = RoundedCornerShape(8.dp)
+                        shape = RoundedCornerShape(AureoleDS.dimens.radiusXSmall)
                     )
                     .clickable { onMoveDown() },
                 contentAlignment = Alignment.Center
             ) {
                 AureoleDS.icons.ArrowDown(
                     tint = AureoleDS.colors.onSurfaceHigh,
-                    modifier = Modifier.size(16.dp)
+                    modifier = Modifier.size(AureoleDS.dimens.iconSmall)
                 )
             }
         }
         Box(
             modifier = Modifier
-                .size(28.dp)
+                .size(AureoleDS.dimens.large)
                 .background(
                     color = AureoleDS.colors.error,
-                    shape = RoundedCornerShape(8.dp)
+                    shape = RoundedCornerShape(AureoleDS.dimens.radiusXSmall)
                 )
                 .clickable { onToggleFavorite() },
             contentAlignment = Alignment.Center
         ) {
             AureoleDS.icons.Delete(
                 tint = AureoleDS.colors.onError,
-                modifier = Modifier.size(16.dp)
+                modifier = Modifier.size(AureoleDS.dimens.iconSmall)
             )
         }
     }
@@ -193,9 +192,9 @@ fun RemainingAppRow(
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(12.dp))
+            .clip(RoundedCornerShape(AureoleDS.dimens.radiusSmall))
             .background(AureoleDS.colors.surfaceVariant.copy(alpha = 0.3f))
-            .padding(horizontal = 12.dp, vertical = 10.dp),
+            .padding(horizontal = AureoleDS.dimens.small, vertical = AureoleDS.dimens.xSmall),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
@@ -207,10 +206,10 @@ fun RemainingAppRow(
                 bitmap = iconBitmap,
                 contentDescription = app.label,
                 modifier = Modifier
-                    .size(32.dp)
-                    .clip(RoundedCornerShape(8.dp))
+                    .size(AureoleDS.dimens.xLarge)
+                    .clip(RoundedCornerShape(AureoleDS.dimens.radiusXSmall))
             )
-            Spacer(modifier = Modifier.width(12.dp))
+            Spacer(modifier = Modifier.width(AureoleDS.dimens.small))
             AureoleText(
                 text = app.label,
                 color = AureoleDS.colors.onSurfaceHigh,
@@ -225,17 +224,17 @@ fun RemainingAppRow(
 
         Box(
             modifier = Modifier
-                .size(28.dp)
+                .size(AureoleDS.dimens.large)
                 .background(
                     color = AureoleDS.colors.surfaceVariant,
-                    shape = RoundedCornerShape(8.dp)
+                    shape = RoundedCornerShape(AureoleDS.dimens.radiusXSmall)
                 )
                 .clickable { onToggleFavorite() },
             contentAlignment = Alignment.Center
         ) {
             AureoleDS.icons.Plus(
                 tint = AureoleDS.colors.onSurfaceHigh,
-                modifier = Modifier.size(16.dp)
+                modifier = Modifier.size(AureoleDS.dimens.iconSmall)
             )
         }
     }
@@ -248,7 +247,7 @@ private fun FavoriteAppsDialogComponentsPreview() {
         Column(
             modifier = Modifier
                 .background(AureoleDS.colors.surface)
-                .padding(16.dp)
+                .padding(AureoleDS.dimens.medium)
         ) {
             FavoriteAppsDialogHeader()
             FavoriteAppsShowAllSwitchRow(

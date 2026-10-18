@@ -15,6 +15,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -50,9 +52,13 @@ fun AureolePopupMenuItem(
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .height(42.dp)
+            .height(48.dp)
             .clip(RoundedCornerShape(AureoleDS.dimens.radiusXSmall))
-            .clickable(onClick = onClick)
+            .clickable(
+                onClick = onClick,
+                role = Role.Button
+            )
+            .semantics(mergeDescendants = true) {}
             .padding(horizontal = AureoleDS.dimens.xSmall),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween,

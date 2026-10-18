@@ -4,7 +4,8 @@
     "FileLength",
     "MagicNumber",
     "MatchingDeclarationName",
-    "unused"
+    "unused",
+    "FullReport"
 ) // Suppressed detekt rules because this file serves as preset color palettes for the Design System.
 
 package dev.mnascimentos.aureole.core.designsystem.palette

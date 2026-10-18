@@ -23,7 +23,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.core.data.model.LauncherItemState
 import dev.mnascimentos.aureole.core.data.model.LauncherItemType
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
@@ -68,14 +67,14 @@ fun EditGridItemDialog(
             modifier = modifier
                 .fillMaxWidth()
                 .verticalScroll(rememberScrollState()),
-            verticalArrangement = Arrangement.spacedBy(10.dp)
+            verticalArrangement = Arrangement.spacedBy(AureoleDS.dimens.xSmall)
         ) {
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .clip(RoundedCornerShape(12.dp))
+                    .clip(RoundedCornerShape(AureoleDS.dimens.radiusSmall))
                     .background(AureoleDS.colors.surfaceVariant.copy(alpha = 0.35f))
-                    .padding(horizontal = 14.dp, vertical = 10.dp),
+                    .padding(horizontal = AureoleDS.dimens.medium, vertical = AureoleDS.dimens.xSmall),
                 contentAlignment = Alignment.Center
             ) {
                 AureoleText(
@@ -118,29 +117,29 @@ private fun EditDialogDeleteRow(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(14.dp))
+            .clip(RoundedCornerShape(AureoleDS.dimens.radiusMedium))
             .background(AureoleDS.colors.error.copy(alpha = 0.12f))
             .clickable {
                 onDeleteConfirm(itemId)
                 onDismissRequest()
             }
-            .padding(horizontal = 14.dp, vertical = 12.dp),
+            .padding(horizontal = AureoleDS.dimens.medium, vertical = AureoleDS.dimens.small),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center
     ) {
         Box(
             modifier = Modifier
-                .size(32.dp)
-                .clip(RoundedCornerShape(8.dp))
+                .size(AureoleDS.dimens.xLarge)
+                .clip(RoundedCornerShape(AureoleDS.dimens.radiusXSmall))
                 .background(AureoleDS.colors.error.copy(alpha = 0.3f)),
             contentAlignment = Alignment.Center
         ) {
             AureoleDS.icons.Delete(
                 tint = AureoleDS.colors.error,
-                modifier = Modifier.size(18.dp)
+                modifier = Modifier.size(AureoleDS.dimens.iconMedium)
             )
         }
-        Spacer(modifier = Modifier.width(10.dp))
+        Spacer(modifier = Modifier.width(AureoleDS.dimens.xSmall))
         AureoleText(
             text = "Remover Componente",
             color = AureoleDS.colors.error,
@@ -175,25 +174,25 @@ private fun EditDialogTypeActionSection(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .clip(RoundedCornerShape(14.dp))
+                .clip(RoundedCornerShape(AureoleDS.dimens.radiusMedium))
                 .background(AureoleDS.colors.surfaceVariant.copy(alpha = 0.45f))
                 .clickable(onClick = onClick)
-                .padding(horizontal = 14.dp, vertical = 12.dp),
+                .padding(horizontal = AureoleDS.dimens.medium, vertical = AureoleDS.dimens.small),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Box(
                 modifier = Modifier
-                    .size(36.dp)
-                    .clip(RoundedCornerShape(10.dp))
+                    .size(AureoleDS.dimens.iconXLarge)
+                    .clip(RoundedCornerShape(AureoleDS.dimens.radiusXSmall))
                     .background(AureoleDS.colors.surface.copy(alpha = 0.5f)),
                 contentAlignment = Alignment.Center
             ) {
                 AureoleDS.icons.Edit(
                     tint = AureoleDS.colors.onSurfaceHigh,
-                    modifier = Modifier.size(20.dp)
+                    modifier = Modifier.size(AureoleDS.dimens.iconMedium)
                 )
             }
-            Spacer(modifier = Modifier.width(12.dp))
+            Spacer(modifier = Modifier.width(AureoleDS.dimens.small))
             AureoleText(
                 text = text,
                 color = AureoleDS.colors.onSurfaceHigh,
@@ -220,13 +219,13 @@ private fun EditDialogWidgetListSection(
         AureoleText(
             text = "Widgets no Grupo (${widgets.size})",
             color = AureoleDS.colors.onSurfaceHigh,
-            modifier = Modifier.padding(bottom = 6.dp),
+            modifier = Modifier.padding(bottom = AureoleDS.dimens.xxSmall),
             format = AureoleTextFormatParams(style = AureoleDS.typography.titleMedium, fontWeight = FontWeight.SemiBold)
         )
 
         EditDialogWidgetListRows(widgets = widgets, stackId = item.id, actions = actions)
 
-        Spacer(modifier = Modifier.height(6.dp))
+        Spacer(modifier = Modifier.height(AureoleDS.dimens.xxSmall))
 
         Button(
             onClick = { actions.onAddWidgetClick(item.id) },
@@ -240,14 +239,14 @@ private fun EditDialogWidgetListSection(
             AureoleText(text = "Adicionar Widget ao Grupo", color = AureoleDS.colors.onSurfaceHigh)
         }
 
-        Spacer(modifier = Modifier.height(6.dp))
+        Spacer(modifier = Modifier.height(AureoleDS.dimens.xxSmall))
 
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .clip(RoundedCornerShape(12.dp))
+                .clip(RoundedCornerShape(AureoleDS.dimens.radiusSmall))
                 .clickable { actions.onToggleWidgetStackDots(item.id) }
-                .padding(horizontal = 12.dp, vertical = 10.dp),
+                .padding(horizontal = AureoleDS.dimens.small, vertical = AureoleDS.dimens.xSmall),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
@@ -279,9 +278,9 @@ private fun EditDialogWidgetListRows(
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .clip(RoundedCornerShape(14.dp))
+                .clip(RoundedCornerShape(AureoleDS.dimens.radiusMedium))
                 .background(AureoleDS.colors.surfaceVariant.copy(alpha = 0.25f))
-                .padding(14.dp),
+                .padding(AureoleDS.dimens.medium),
             contentAlignment = Alignment.Center
         ) {
             AureoleText(
@@ -295,9 +294,9 @@ private fun EditDialogWidgetListRows(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .clip(RoundedCornerShape(12.dp))
+                    .clip(RoundedCornerShape(AureoleDS.dimens.radiusSmall))
                     .background(AureoleDS.colors.surfaceVariant.copy(alpha = 0.35f))
-                    .padding(horizontal = 12.dp, vertical = 8.dp),
+                    .padding(horizontal = AureoleDS.dimens.small, vertical = AureoleDS.dimens.xSmall),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
@@ -314,7 +313,7 @@ private fun EditDialogWidgetListRows(
                     AureoleText(text = "Remover", color = AureoleDS.colors.error)
                 }
             }
-            Spacer(modifier = Modifier.height(6.dp))
+            Spacer(modifier = Modifier.height(AureoleDS.dimens.xxSmall))
         }
     }
 }
@@ -327,11 +326,11 @@ private fun EditDialogScrollViewSection(
 ) {
     Column(
         modifier = Modifier.fillMaxWidth(),
-        verticalArrangement = Arrangement.spacedBy(8.dp)
+        verticalArrangement = Arrangement.spacedBy(AureoleDS.dimens.xSmall)
     ) {
         ScrollViewOrientationSelector(item = item, actions = actions)
 
-        Spacer(modifier = Modifier.height(2.dp))
+        Spacer(modifier = Modifier.height(AureoleDS.dimens.minimal))
 
         AureoleText(
             text = "Componentes Filhos (${item.safeChildren.size})",
@@ -341,31 +340,31 @@ private fun EditDialogScrollViewSection(
 
         EditDialogChildrenListSection(item = item, actions = actions, onDismissRequest = onDismissRequest)
 
-        Spacer(modifier = Modifier.height(2.dp))
+        Spacer(modifier = Modifier.height(AureoleDS.dimens.minimal))
 
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .clip(RoundedCornerShape(14.dp))
+                .clip(RoundedCornerShape(AureoleDS.dimens.radiusMedium))
                 .background(AureoleDS.colors.surfaceVariant)
                 .clickable { actions.onOpenAddContainerForParent(item.id) }
-                .padding(horizontal = 14.dp, vertical = 12.dp),
+                .padding(horizontal = AureoleDS.dimens.medium, vertical = AureoleDS.dimens.small),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Center
         ) {
             Box(
                 modifier = Modifier
-                    .size(32.dp)
-                    .clip(RoundedCornerShape(8.dp))
+                    .size(AureoleDS.dimens.xLarge)
+                    .clip(RoundedCornerShape(AureoleDS.dimens.radiusXSmall))
                     .background(AureoleDS.colors.surface.copy(alpha = 0.6f)),
                 contentAlignment = Alignment.Center
             ) {
                 AureoleDS.icons.Add(
                     tint = AureoleDS.colors.onSurfaceHigh,
-                    modifier = Modifier.size(18.dp)
+                    modifier = Modifier.size(AureoleDS.dimens.iconMedium)
                 )
             }
-            Spacer(modifier = Modifier.width(10.dp))
+            Spacer(modifier = Modifier.width(AureoleDS.dimens.xSmall))
             AureoleText(
                 text = "Adicionar Componente",
                 color = AureoleDS.colors.onSurfaceHigh,

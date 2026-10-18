@@ -22,6 +22,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import dev.chrisbanes.haze.HazeState
 import dev.chrisbanes.haze.HazeStyle
@@ -231,6 +232,7 @@ private fun ContainerColumn(
                 onClick = {},
                 onLongClick = { actions.onOpenEditContainerDialog(config.panelId) }
             )
+            .semantics(mergeDescendants = true) {}
             .fadingEdges(scrollState, edgeLength = 16.dp)
             .verticalScroll(scrollState)
             .padding(horizontal = paddingHorizontal, vertical = paddingVertical)
@@ -328,6 +330,7 @@ private fun ContainerRow(
                 onClick = {},
                 onLongClick = { actions.onOpenEditContainerDialog(config.panelId) }
             )
+            .semantics(mergeDescendants = true) {}
             .fadingEdges(scrollState, edgeLength = 16.dp)
             .horizontalScroll(scrollState)
             .padding(horizontal = paddingHorizontal, vertical = paddingVertical)

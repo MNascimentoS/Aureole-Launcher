@@ -34,7 +34,6 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import coil.compose.AsyncImage
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
@@ -55,7 +54,12 @@ internal fun AppGroupHeader(
         modifier = Modifier
             .fillMaxWidth()
             .clickable(onClick = onClick)
-            .padding(start = 24.dp, end = 48.dp, top = 12.dp, bottom = 12.dp)
+            .padding(
+                start = AureoleDS.dimens.large,
+                end = AureoleDS.dimens.xxLarge + AureoleDS.dimens.xSmall,
+                top = AureoleDS.dimens.small,
+                bottom = AureoleDS.dimens.small
+            )
             .animateContentSize(),
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -63,17 +67,17 @@ internal fun AppGroupHeader(
             AsyncImage(
                 model = group.appIcon,
                 contentDescription = group.appName,
-                modifier = Modifier.size(42.dp)
+                modifier = Modifier.size(AureoleDS.dimens.xxLarge)
             )
         } else {
             Box(
                 modifier = Modifier
-                    .size(42.dp)
-                    .background(AureoleDS.colors.surfaceVariant, RoundedCornerShape(10.dp))
+                    .size(AureoleDS.dimens.xxLarge)
+                    .background(AureoleDS.colors.surfaceVariant, RoundedCornerShape(AureoleDS.dimens.radiusXSmall))
             )
         }
 
-        Spacer(modifier = Modifier.width(16.dp))
+        Spacer(modifier = Modifier.width(AureoleDS.dimens.medium))
 
         Column(modifier = Modifier.weight(1f)) {
             Text(
@@ -99,24 +103,27 @@ internal fun WidgetPreviewCard(
 ) {
     Column(
         modifier = Modifier
-            .width(220.dp)
-            .background(AureoleDS.colors.surfaceVariant.copy(alpha = 0.6f), RoundedCornerShape(24.dp))
+            .width(AureoleDS.dimens.popupWidthMax)
+            .background(
+                AureoleDS.colors.surfaceVariant.copy(alpha = 0.6f),
+                RoundedCornerShape(AureoleDS.dimens.radiusLarge)
+            )
             .clickable(onClick = onClick)
-            .padding(16.dp),
+            .padding(AureoleDS.dimens.medium),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Box(
             modifier = Modifier
                 .fillMaxWidth()
                 .aspectRatio(WIDGET_PREVIEW_ASPECT_RATIO)
-                .clip(RoundedCornerShape(16.dp))
+                .clip(RoundedCornerShape(AureoleDS.dimens.radiusMedium))
                 .background(AureoleDS.colors.surface.copy(alpha = 0.5f)),
             contentAlignment = Alignment.Center
         ) {
             WidgetPreviewContent(widget = widget, fallbackAppIcon = fallbackAppIcon)
         }
 
-        Spacer(modifier = Modifier.height(12.dp))
+        Spacer(modifier = Modifier.height(AureoleDS.dimens.small))
 
         Text(
             text = widget.title,
@@ -151,7 +158,7 @@ private fun WidgetPreviewContent(
             contentDescription = widget.title,
             contentScale = ContentScale.Fit,
             modifier = Modifier
-                .padding(8.dp)
+                .padding(AureoleDS.dimens.xSmall)
                 .fillMaxSize()
         )
     } else if (widget.previewLayoutRes != 0 && !previewFailed && widget.providerInfo != null) {
@@ -175,7 +182,7 @@ private fun WidgetPreviewContent(
                 }
             },
             modifier = Modifier
-                .padding(8.dp)
+                .padding(AureoleDS.dimens.xSmall)
                 .fillMaxSize()
         )
     } else if (fallbackAppIcon != null) {
@@ -184,7 +191,7 @@ private fun WidgetPreviewContent(
             contentDescription = widget.title,
             contentScale = ContentScale.Fit,
             modifier = Modifier
-                .padding(16.dp)
+                .padding(AureoleDS.dimens.medium)
                 .fillMaxSize()
         )
     } else {
@@ -212,7 +219,7 @@ private fun WidgetPickerAppListRowPreview() {
     AureoleLauncherTheme {
         Column {
             AppGroupHeader(group = sampleGroup, onClick = {})
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(AureoleDS.dimens.xSmall))
             WidgetPreviewCard(
                 widget = WidgetVariant(widgetId = "clock_1", title = "Relógio Analógico"),
                 fallbackAppIcon = null,

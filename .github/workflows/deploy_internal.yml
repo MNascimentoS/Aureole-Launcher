@@ -39,7 +39,54 @@ jobs:
           cache: 'gradle'
 
       - name: Run Unit Tests
+        id: unit_tests
         run: ./gradlew testDebugUnitTest
+
+      # ---- Full Report (somente PR de release/*) ----
+      # Tudo abaixo é informativo: continue-on-error + timeout, então o status do PR continua
+      # dependendo só dos testes acima. Os arquivos viram o artefato full-report-<head sha>,
+      # consumido pela análise do n8n (cobertura, testes, lint, detekt e APK release).
+      - name: Full Report - Build, Coverage & Lint
+        id: full_report
+        if: ${{ !cancelled() && startsWith(github.head_ref, 'release/') }}
+        continue-on-error: true
+        timeout-minutes: 25
+        run: >
+          ./gradlew assembleRelease jacocoTestReport lintDebug detekt
+          -x testDebugUnitTest --continue
+
+      - name: Full Report - Metadata
+        if: ${{ !cancelled() && startsWith(github.head_ref, 'release/') }}
+        continue-on-error: true
+        env:
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          HEAD_REF: ${{ github.head_ref }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          TESTS: ${{ steps.unit_tests.outcome }}
+          REPORTS: ${{ steps.full_report.outcome }}
+        run: |
+          mkdir -p app/build/full-report
+          jq -n --arg head_sha "$HEAD_SHA" --arg merge_sha "$GITHUB_SHA" --arg branch "$HEAD_REF" \
+            --arg pr "$PR_NUMBER" --arg tests "$TESTS" --arg reports "$REPORTS" --arg run_id "$GITHUB_RUN_ID" \
+            '{head_sha: $head_sha, merge_sha: $merge_sha, branch: $branch, pr: $pr, tests: $tests, reports: $reports, run_id: $run_id}' \
+            > app/build/full-report/meta.json
+
+      - name: Full Report - Upload
+        if: ${{ !cancelled() && startsWith(github.head_ref, 'release/') }}
+        continue-on-error: true
+        uses: actions/upload-artifact@v4
+        with:
+          name: full-report-${{ github.event.pull_request.head.sha }}
+          retention-days: 90
+          if-no-files-found: ignore
+          overwrite: true
+          path: |
+            app/build/full-report/meta.json
+            app/build/reports/jacoco/jacocoTestReport/jacocoTestReport.xml
+            app/build/test-results/testDebugUnitTest/*.xml
+            app/build/reports/lint-results-debug.xml
+            app/build/reports/detekt/detekt.txt
+            app/build/outputs/apk/release/*.apk
 
   deploy_internal:
     name: Build & Deploy Internal Release

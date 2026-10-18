@@ -66,7 +66,7 @@ internal fun ManageItemsContent(
             text = "Componentes Filhos (${state.itemsList.size})",
             style = AureoleDS.typography.titleMedium,
             fontWeight = FontWeight.Bold,
-            modifier = Modifier.padding(bottom = 16.dp).fillMaxWidth(),
+            modifier = Modifier.padding(bottom = AureoleDS.dimens.medium).fillMaxWidth(),
             color = AureoleDS.colors.onSurfaceHigh
         )
 
@@ -74,7 +74,7 @@ internal fun ManageItemsContent(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(bottom = AureoleDS.dimens.small),
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            horizontalArrangement = Arrangement.spacedBy(AureoleDS.dimens.xSmall),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Box(modifier = Modifier.weight(1f)) {
@@ -86,26 +86,26 @@ internal fun ManageItemsContent(
             }
             OutlinedButton(
                 onClick = { isCreateFolderDialogVisible = true },
-                shape = RoundedCornerShape(12.dp),
-                border = BorderStroke(1.dp, AureoleDS.colors.outline.copy(alpha = 0.5f)),
+                shape = RoundedCornerShape(AureoleDS.dimens.radiusSmall),
+                border = BorderStroke(AureoleDS.dimens.borderMinimal, AureoleDS.colors.outline.copy(alpha = 0.5f)),
                 colors = ButtonDefaults.outlinedButtonColors(
                     contentColor = AureoleDS.colors.onSurfaceHigh
                 ),
-                contentPadding = PaddingValues(horizontal = 12.dp),
-                modifier = Modifier.height(52.dp)
+                contentPadding = PaddingValues(horizontal = AureoleDS.dimens.small),
+                modifier = Modifier.height(AureoleDS.dimens.folderButtonSmall)
             ) {
                 AureoleDS.icons.Add(
                     tint = AureoleDS.colors.onSurfaceHigh,
-                    modifier = Modifier.size(18.dp)
+                    modifier = Modifier.size(AureoleDS.dimens.iconMedium)
                 )
-                Spacer(modifier = Modifier.width(6.dp))
+                Spacer(modifier = Modifier.width(AureoleDS.dimens.xxSmall))
                 Text("Pasta", style = AureoleDS.typography.labelLarge)
             }
         }
 
         ManageItemsListSection(state = state, allApps = allApps)
 
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier = Modifier.height(AureoleDS.dimens.large))
         Button(
             onClick = onBack,
             modifier = Modifier.fillMaxWidth()
@@ -126,9 +126,9 @@ internal fun ManageItemsListSection(
                 .fillMaxWidth()
                 .background(
                     AureoleDS.colors.surfaceVariant.copy(alpha = 0.25f),
-                    RoundedCornerShape(14.dp)
+                    RoundedCornerShape(AureoleDS.dimens.radiusMedium)
                 )
-                .padding(16.dp),
+                .padding(AureoleDS.dimens.medium),
             contentAlignment = Alignment.Center
         ) {
             Text(
@@ -140,7 +140,7 @@ internal fun ManageItemsListSection(
     } else {
         LazyColumn(
             modifier = Modifier.heightIn(max = 300.dp).fillMaxWidth(),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
+            verticalArrangement = Arrangement.spacedBy(AureoleDS.dimens.xSmall)
         ) {
             itemsIndexed(
                 items = state.itemsList,
@@ -198,9 +198,9 @@ private fun ManageItemRow(
             .fillMaxWidth()
             .background(
                 color = AureoleDS.colors.surfaceVariant.copy(alpha = 0.3f),
-                shape = RoundedCornerShape(12.dp)
+                shape = RoundedCornerShape(AureoleDS.dimens.radiusSmall)
             )
-            .padding(horizontal = 12.dp, vertical = 12.dp),
+            .padding(horizontal = AureoleDS.dimens.small, vertical = AureoleDS.dimens.small),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -212,11 +212,11 @@ private fun ManageItemRow(
             modifier = Modifier.weight(1f)
         )
 
-        Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+        Row(horizontalArrangement = Arrangement.spacedBy(AureoleDS.dimens.xxSmall)) {
             if (index > 0) {
                 Button(
                     onClick = { actions.onMoveUp(index) },
-                    contentPadding = PaddingValues(horizontal = 8.dp)
+                    contentPadding = PaddingValues(horizontal = AureoleDS.dimens.xSmall)
                 ) {
                     Text("▲", style = AureoleDS.typography.labelSmall)
                 }
@@ -224,7 +224,7 @@ private fun ManageItemRow(
             if (index < params.totalItems - 1) {
                 Button(
                     onClick = { actions.onMoveDown(index) },
-                    contentPadding = PaddingValues(horizontal = 8.dp)
+                    contentPadding = PaddingValues(horizontal = AureoleDS.dimens.xSmall)
                 ) {
                     Text("▼", style = AureoleDS.typography.labelSmall)
                 }
@@ -235,7 +235,7 @@ private fun ManageItemRow(
                     containerColor = AureoleDS.colors.error.copy(alpha = 0.2f),
                     contentColor = AureoleDS.colors.error
                 ),
-                contentPadding = PaddingValues(horizontal = 8.dp)
+                contentPadding = PaddingValues(horizontal = AureoleDS.dimens.xSmall)
             ) {
                 Text("✕", style = AureoleDS.typography.labelSmall)
             }
@@ -250,7 +250,7 @@ private fun ManageItemsContentPreview() {
         Box(
             modifier = Modifier
                 .background(AureoleDS.colors.surface)
-                .padding(16.dp)
+                .padding(AureoleDS.dimens.medium)
         ) {
             val state = rememberEditContainerState(ContainerModel(id = "preview"))
             ManageItemsContent(

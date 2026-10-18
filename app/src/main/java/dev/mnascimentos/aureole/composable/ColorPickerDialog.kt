@@ -27,6 +27,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.core.graphics.ColorUtils
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
@@ -166,7 +168,11 @@ private fun PresetColorItem(
                 color = if (isSelected) AureoleDS.colors.onSurfaceHigh else Color.Transparent,
                 shape = CircleShape,
             )
-            .clickable(onClick = onSelect),
+            .clickable(
+                onClick = onSelect,
+                role = Role.Button
+            )
+            .semantics(mergeDescendants = true) {},
         contentAlignment = Alignment.Center,
     ) {
         if (isSelected) {

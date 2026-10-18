@@ -6,16 +6,12 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -25,14 +21,16 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInWindow
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.Dp
 import dev.mnascimentos.aureole.core.data.model.AppFolder
-import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
 import dev.mnascimentos.aureole.core.designsystem.icons.Add
@@ -44,9 +42,6 @@ import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.ContainerFolderButtonParams
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.ContainerFolderItemParams
 
-private const val MAX_PREVIEW_APPS = 9
-private const val GRID_ROWS = 3
-private const val GRID_COLS = 3
 private const val FOLDER_BG_INACTIVE_ALPHA = 0.85f
 
 @Composable
@@ -55,17 +50,25 @@ fun ContainerAddFolderButton(
     modifier: Modifier = Modifier,
     isBackgroundEnabled: Boolean = true
 ) {
-    val buttonSize = if (isBackgroundEnabled) 52.dp else 60.dp
-    val iconSize = if (isBackgroundEnabled) 28.dp else 34.dp
-    val cornerRadius = if (isBackgroundEnabled) 15.dp else 18.dp
+    val buttonSize = if (isBackgroundEnabled) {
+        AureoleDS.dimens.folderButtonSmall
+    } else {
+        AureoleDS.dimens.folderButtonMedium
+    }
+    val iconSize = if (isBackgroundEnabled) AureoleDS.dimens.large else AureoleDS.dimens.iconXLarge
+    val cornerRadius = if (isBackgroundEnabled) AureoleDS.dimens.radiusMedium else AureoleDS.dimens.iconMedium
 
     Box(
         modifier = modifier
-            .padding(vertical = 4.dp)
+            .padding(vertical = AureoleDS.dimens.xxSmall)
             .size(buttonSize)
             .clip(RoundedCornerShape(cornerRadius))
             .background(AureoleDS.colors.surfaceVariant.copy(alpha = FOLDER_BG_INACTIVE_ALPHA))
-            .clickable(onClick = onClick),
+            .clickable(
+                onClick = onClick,
+                role = Role.Button
+            )
+            .semantics(mergeDescendants = true) {},
         contentAlignment = Alignment.Center
     ) {
         AureoleDS.icons.Add(
@@ -114,8 +117,8 @@ fun ContainerFolderItem(
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier
-            .padding(vertical = 4.dp)
-            .widthIn(max = 68.dp),
+            .padding(vertical = AureoleDS.dimens.xxSmall)
+            .widthIn(max = AureoleDS.dimens.folderContainerMaxWidth),
     ) {
         ContainerFolderButton(
             params = ContainerFolderButtonParams(
@@ -149,17 +152,25 @@ fun ContainerFolderButton(
     val onClick = params.onClick
     val onLongClick = params.onLongClick
 
-    val buttonSize = if (isBackgroundEnabled) 52.dp else 60.dp
-    val iconSize = if (isBackgroundEnabled) 28.dp else 34.dp
-    val cornerRadius = if (isBackgroundEnabled) 15.dp else 18.dp
+    val buttonSize = if (isBackgroundEnabled) {
+        AureoleDS.dimens.folderButtonSmall
+    } else {
+        AureoleDS.dimens.folderButtonMedium
+    }
+    val iconSize = if (isBackgroundEnabled) AureoleDS.dimens.large else AureoleDS.dimens.iconXLarge
+    val cornerRadius = if (isBackgroundEnabled) AureoleDS.dimens.radiusMedium else AureoleDS.dimens.iconMedium
 
     val clickModifier = if (onLongClick != null) {
         Modifier.combinedClickable(
             onClick = onClick,
-            onLongClick = onLongClick
-        )
+            onLongClick = onLongClick,
+            role = Role.Button
+        ).semantics(mergeDescendants = true) {}
     } else {
-        Modifier.clickable(onClick = onClick)
+        Modifier.clickable(
+            onClick = onClick,
+            role = Role.Button
+        ).semantics(mergeDescendants = true) {}
     }
 
     Box(
@@ -180,115 +191,37 @@ fun ContainerFolderButton(
                 modifier = Modifier.size(buttonSize)
             )
         } else {
-            if (params.folder.icon != null) {
-                FolderIconRegistry.RenderIcon(
-                    name = params.folder.icon,
-                    modifier = Modifier.size(iconSize),
-                    tint = params.textColor
-                )
-            } else {
-                AureoleText(
-                    text = params.folder.name.take(1).uppercase(),
-                    color = params.textColor,
-                    format = AureoleTextFormatParams(
-                        style = if (isBackgroundEnabled) {
-                            AureoleDS.typography.titleLarge
-                        } else {
-                            AureoleDS.typography.titleLarge
-                        },
-                        fontWeight = FontWeight.Bold
-                    )
-                )
-            }
+            FolderIconOrTextContent(
+                folder = params.folder,
+                iconSize = iconSize,
+                textColor = params.textColor
+            )
         }
     }
 }
 
 @Composable
-fun FolderMiniGridPreview(
+private fun FolderIconOrTextContent(
     folder: AppFolder,
-    allApps: List<AppInfo>,
-    modifier: Modifier = Modifier
+    iconSize: Dp,
+    textColor: Color
 ) {
-    val folderApps = remember(folder.appPackageNames, allApps) {
-        folder.appPackageNames.take(MAX_PREVIEW_APPS).mapNotNull { pkg ->
-            allApps.find { it.packageName == pkg }
-        }
-    }
-
-    Box(
-        modifier = modifier
-            .size(52.dp)
-            .clip(RoundedCornerShape(15.dp))
-            .background(AureoleDS.colors.surfaceVariant.copy(alpha = 0.85f))
-            .padding(3.dp),
-        contentAlignment = Alignment.Center
-    ) {
-        if (folderApps.isEmpty()) {
-            EmptyFolderMiniGridPreview(folder = folder)
-        } else {
-            PopulatedFolderMiniGrid(folderApps = folderApps)
-        }
-    }
-}
-
-@Composable
-private fun EmptyFolderMiniGridPreview(folder: AppFolder) {
     if (folder.icon != null) {
         FolderIconRegistry.RenderIcon(
             name = folder.icon,
-            modifier = Modifier.size(24.dp),
-            tint = AureoleDS.colors.onSurfaceMedium
+            modifier = Modifier.size(iconSize),
+            tint = textColor
         )
     } else {
         AureoleText(
             text = folder.name.take(1).uppercase(),
-            color = AureoleDS.colors.onSurfaceMedium,
-            format = AureoleTextFormatParams(style = AureoleDS.typography.titleMedium, fontWeight = FontWeight.Bold)
+            color = textColor,
+            format = AureoleTextFormatParams(
+                style = AureoleDS.typography.titleLarge,
+                fontWeight = FontWeight.Bold
+            )
         )
     }
-}
-
-@Composable
-private fun PopulatedFolderMiniGrid(folderApps: List<AppInfo>) {
-    Column(
-        verticalArrangement = Arrangement.spacedBy(2.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        for (row in 0 until GRID_ROWS) {
-            FolderMiniGridRow(row = row, folderApps = folderApps)
-        }
-    }
-}
-
-@Composable
-private fun FolderMiniGridRow(row: Int, folderApps: List<AppInfo>) {
-    Row(
-        horizontalArrangement = Arrangement.spacedBy(2.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        for (col in 0 until GRID_COLS) {
-            val index = row * GRID_COLS + col
-            FolderMiniGridCell(app = folderApps.getOrNull(index))
-        }
-    }
-}
-
-@Composable
-private fun FolderMiniGridCell(app: AppInfo?) {
-    if (app == null) {
-        Spacer(modifier = Modifier.size(10.dp))
-        return
-    }
-
-    val bitmap = remember(app.packageName) { app.getIconBitmap() }
-    Image(
-        bitmap = bitmap,
-        contentDescription = app.label,
-        modifier = Modifier
-            .size(10.dp)
-            .clip(CircleShape)
-    )
 }
 
 @Composable
@@ -298,12 +231,12 @@ fun ContainerFolderLabel(
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = modifier.padding(top = 2.dp)
+        modifier = modifier.padding(top = AureoleDS.dimens.minimal)
     ) {
         AureoleText(
             text = name,
             color = AureoleDS.colors.onSurfaceHigh,
-            modifier = Modifier.widthIn(max = 56.dp),
+            modifier = Modifier.widthIn(max = AureoleDS.dimens.folderLabelMaxWidth),
             format = AureoleTextFormatParams(
                 style = AureoleDS.typography.labelSmall,
                 fontWeight = FontWeight.Medium,
@@ -332,15 +265,19 @@ fun ContainerAppItem(
         isThemed = uiState.isThemedAppIconsEnabled,
         tintColor = AureoleDS.colors.onSurfaceMedium
     )
-    val buttonSize = if (isBackgroundEnabled) 52.dp else 60.dp
-    val cornerRadius = if (isBackgroundEnabled) 15.dp else 18.dp
-    val imgPadding = if (isBackgroundEnabled) 3.dp else 2.dp
+    val buttonSize = if (isBackgroundEnabled) {
+        AureoleDS.dimens.folderButtonSmall
+    } else {
+        AureoleDS.dimens.folderButtonMedium
+    }
+    val cornerRadius = if (isBackgroundEnabled) AureoleDS.dimens.radiusMedium else AureoleDS.dimens.iconMedium
+    val imgPadding = if (isBackgroundEnabled) AureoleDS.dimens.borderMax else AureoleDS.dimens.minimal
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier
-            .padding(vertical = 4.dp)
-            .widthIn(max = 68.dp),
+            .padding(vertical = AureoleDS.dimens.xxSmall)
+            .widthIn(max = AureoleDS.dimens.folderContainerMaxWidth),
     ) {
         Box(
             modifier = Modifier
@@ -349,8 +286,10 @@ fun ContainerAppItem(
                 .background(AureoleDS.colors.surfaceVariant.copy(alpha = FOLDER_BG_INACTIVE_ALPHA))
                 .combinedClickable(
                     onClick = { onAppClick(app) },
-                    onLongClick = onLongClick
+                    onLongClick = onLongClick,
+                    role = Role.Button
                 )
+                .semantics(mergeDescendants = true) {}
                 .padding(imgPadding),
             contentAlignment = Alignment.Center
         ) {

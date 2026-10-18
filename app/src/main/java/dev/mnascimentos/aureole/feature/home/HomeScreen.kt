@@ -56,6 +56,8 @@ import dev.mnascimentos.aureole.feature.home.model.MainUiState
 import dev.mnascimentos.aureole.feature.home.model.getWidgetIdsForStack
 import dev.mnascimentos.aureole.feature.home.model.isOverlayActive
 
+private const val DEFAULT_APP_WIDGET_HOST_ID = 1024
+
 val LocalHomeUiState = staticCompositionLocalOf<MainUiState> { MainUiState() }
 val LocalHomeActions = staticCompositionLocalOf<HomeScreenActions> { createDefaultHomeScreenActions() }
 
@@ -177,7 +179,7 @@ private fun BoxScope.HomeScreenBody(
 
         if (!config.uiState.isLoading) {
             MainHomeLayout(
-                appWidgetHost = config.appWidgetHost ?: AppWidgetHost(LocalContext.current, 1024),
+                appWidgetHost = config.appWidgetHost ?: AppWidgetHost(LocalContext.current, DEFAULT_APP_WIDGET_HOST_ID),
                 currentHeightPx = config.currentHeightPx,
                 favListState = config.favListState,
                 hazeState = config.hazeState,
@@ -315,6 +317,6 @@ private fun HomeEditContainerOverlay(config: HomeOverlaysConfig) {
 private fun HomeScreenPreview() {
     val context = LocalContext.current
     AureoleLauncherTheme {
-        HomeScreen(appWidgetHost = AppWidgetHost(context, 1024))
+        HomeScreen(appWidgetHost = AppWidgetHost(context, DEFAULT_APP_WIDGET_HOST_ID))
     }
 }

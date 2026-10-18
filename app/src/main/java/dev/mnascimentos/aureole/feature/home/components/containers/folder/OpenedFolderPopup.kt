@@ -34,7 +34,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.dp
 import androidx.core.graphics.drawable.toDrawable
 import dev.mnascimentos.aureole.core.data.model.AppFolder
 import dev.mnascimentos.aureole.core.data.model.AppInfo
@@ -61,7 +60,6 @@ fun OpenedFolderPopup(
     modifier: Modifier = Modifier
 ) {
     val folder = config.folder
-    val uiState = LocalHomeUiState.current
     val isGridMode = config.isGridFolderEnabled || folder.displayAsGrid
 
     val appsInFolder = remember(folder, config.allApps) {
@@ -110,8 +108,8 @@ private fun StandardFolderPopupBox(
     AureolePopupBox(
         hazeState = null,
         modifier = modifier
-            .widthIn(min = 180.dp, max = 210.dp)
-            .heightIn(max = 400.dp)
+            .widthIn(min = AureoleDS.dimens.popupWidthMin, max = AureoleDS.dimens.popupWidthMax)
+            .heightIn(max = AureoleDS.dimens.popupHeightMax)
     ) {
         AureoleHeaderBanner(
             title = config.folder.name,
@@ -123,7 +121,7 @@ private fun StandardFolderPopupBox(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 12.dp, vertical = 10.dp)
+                .padding(horizontal = AureoleDS.dimens.small, vertical = AureoleDS.dimens.xSmall)
         ) {
             OpenedFolderActions(
                 isVisible = isActionsVisible,
@@ -160,7 +158,7 @@ private fun OpenedFolderGrid(
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(vertical = 24.dp),
+                .padding(vertical = AureoleDS.dimens.large),
             contentAlignment = Alignment.Center
         ) {
             Text(
@@ -171,16 +169,16 @@ private fun OpenedFolderGrid(
         }
     } else {
         val gridHeight = when {
-            appsInFolder.size <= GRID_MAX_3 -> 110.dp
-            appsInFolder.size <= GRID_MAX_6 -> 210.dp
-            else -> 310.dp
+            appsInFolder.size <= GRID_MAX_3 -> AureoleDS.dimens.popupWidthMin / 2 + AureoleDS.dimens.xxLarge
+            appsInFolder.size <= GRID_MAX_6 -> AureoleDS.dimens.popupWidthMax
+            else -> AureoleDS.dimens.popupWidthMax + AureoleDS.dimens.radiusFull
         }
 
         LazyVerticalGrid(
             columns = GridCells.Fixed(GRID_COLS),
-            contentPadding = PaddingValues(horizontal = 4.dp, vertical = 8.dp),
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp),
+            contentPadding = PaddingValues(horizontal = AureoleDS.dimens.xxSmall, vertical = AureoleDS.dimens.xSmall),
+            horizontalArrangement = Arrangement.spacedBy(AureoleDS.dimens.xSmall),
+            verticalArrangement = Arrangement.spacedBy(AureoleDS.dimens.small),
             modifier = Modifier
                 .fillMaxWidth()
                 .heightIn(max = gridHeight)
@@ -214,21 +212,21 @@ private fun OpenedFolderGridAppItem(
         verticalArrangement = Arrangement.Center,
         modifier = Modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(14.dp))
+            .clip(RoundedCornerShape(AureoleDS.dimens.radiusMedium))
             .combinedClickable(
                 onClick = onClick,
                 onLongClick = onLongClick
             )
-            .padding(vertical = 6.dp, horizontal = 2.dp)
+            .padding(vertical = AureoleDS.dimens.xxSmall, horizontal = AureoleDS.dimens.minimal)
     ) {
         Image(
             bitmap = iconBitmap,
             contentDescription = app.label,
             modifier = Modifier
-                .size(46.dp)
+                .size(AureoleDS.dimens.xxLarge)
                 .clip(CircleShape)
         )
-        Spacer(modifier = Modifier.height(6.dp))
+        Spacer(modifier = Modifier.height(AureoleDS.dimens.xxSmall))
         Text(
             text = app.label,
             style = AureoleDS.typography.labelSmall,

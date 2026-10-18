@@ -21,6 +21,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -222,8 +224,9 @@ private fun Modifier.clockClickable(onClick: (() -> Unit)?, onLongClick: (() -> 
     if (onClick == null && onLongClick == null) return this
     return this.combinedClickable(
         onClick = { onClick?.invoke() },
-        onLongClick = onLongClick
-    )
+        onLongClick = onLongClick,
+        role = Role.Button
+    ).semantics(mergeDescendants = true) {}
 }
 
 private fun getGreetingForCurrentHour(): String {
