@@ -28,7 +28,7 @@ class WidgetPickerViewModelTest {
     }
 
     @Test
-    fun `when initialized, state is in loading state`() {
+    fun `when initialized, should set state to loading`() {
         val initialState = viewModel.state.value
         assertTrue(initialState.isLoading)
         assertTrue(initialState.widgetGroups.isEmpty())
@@ -37,7 +37,7 @@ class WidgetPickerViewModelTest {
     }
 
     @Test
-    fun `processIntent SearchQueryChanged updates searchQuery state`() {
+    fun `when SearchQueryChanged intent processed, should update searchQuery state`() {
         viewModel.processIntent(WidgetSelectorIntent.SearchQueryChanged("Calendar"))
 
         val state = viewModel.state.value
@@ -45,7 +45,7 @@ class WidgetPickerViewModelTest {
     }
 
     @Test
-    fun `processIntent ToggleAppGroup expands and collapses app group`() {
+    fun `when ToggleAppGroup intent processed, should expand and collapse app group`() {
         val appId = "com.example.app"
 
         viewModel.processIntent(WidgetSelectorIntent.ToggleAppGroup(appId))
@@ -56,7 +56,7 @@ class WidgetPickerViewModelTest {
     }
 
     @Test
-    fun `processIntent LoadWidgets triggers widget loading`() {
+    fun `when LoadWidgets intent processed, should trigger widget loading`() {
         viewModel.processIntent(WidgetSelectorIntent.LoadWidgets)
         val state = viewModel.state.value
         assertNotNull(state)

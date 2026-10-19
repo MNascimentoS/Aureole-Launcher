@@ -15,9 +15,9 @@ import dev.mnascimentos.aureole.core.network.ApiClient
 import dev.mnascimentos.aureole.core.network.SpkiPinValidator
 import dev.mnascimentos.aureole.core.telemetry.DefaultTelemetryLogger
 import dev.mnascimentos.aureole.core.telemetry.TelemetryLogger
-import dev.mnascimentos.aureole.feature.home.HomeRepositories
 import dev.mnascimentos.aureole.feature.home.HomeViewModel
 import dev.mnascimentos.aureole.feature.home.components.widgets.WidgetPickerViewModel
+import dev.mnascimentos.aureole.feature.home.model.HomeRepositories
 import dev.mnascimentos.aureole.feature.settings.SettingsViewModel
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.module.dsl.bind

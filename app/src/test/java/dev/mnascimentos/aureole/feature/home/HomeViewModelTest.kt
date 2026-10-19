@@ -18,6 +18,7 @@ import dev.mnascimentos.aureole.feature.home.extensions.toggleContainer
 import dev.mnascimentos.aureole.feature.home.extensions.toggleLeftHandedMode
 import dev.mnascimentos.aureole.feature.home.grid.extensions.cancelGridEditMode
 import dev.mnascimentos.aureole.feature.home.grid.extensions.enterGridEditMode
+import dev.mnascimentos.aureole.feature.home.model.HomeRepositories
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotNull
@@ -67,7 +68,7 @@ class HomeViewModelTest {
     }
 
     @Test
-    fun `when initialized, uiState is emitted with default settings`() {
+    fun `when initialized, should emit uiState with default settings`() {
         val state = viewModel.uiState.value
         assertNotNull(state)
         assertFalse(state.showUpdateAvailableDialog)
@@ -75,7 +76,7 @@ class HomeViewModelTest {
     }
 
     @Test
-    fun `updateUiState updates MainUiState emissions directly`() {
+    fun `when updating ui state, should emit updated MainUiState directly`() {
         viewModel.updateUiState {
             it.copy(
                 clockStyle = "DATE_ON_TOP",
@@ -91,7 +92,7 @@ class HomeViewModelTest {
     }
 
     @Test
-    fun `setShowUpdateAvailableDialog updates dialog visibility`() {
+    fun `when setting show update available dialog, should update dialog visibility`() {
         viewModel.setShowUpdateAvailableDialog(true)
         assertTrue(viewModel.uiState.value.showUpdateAvailableDialog)
 
@@ -100,7 +101,7 @@ class HomeViewModelTest {
     }
 
     @Test
-    fun `setShowUpdateDownloadedDialog updates dialog visibility`() {
+    fun `when setting show update downloaded dialog, should update dialog visibility`() {
         viewModel.setShowUpdateDownloadedDialog(true)
         assertTrue(viewModel.uiState.value.showUpdateDownloadedDialog)
 
@@ -109,7 +110,7 @@ class HomeViewModelTest {
     }
 
     @Test
-    fun `activeVersionCode and isUpdateInProgressOrDismissed properties can be set and read`() {
+    fun `when setting activeVersionCode and update status, should allow reading updated values`() {
         viewModel.activeVersionCode = 123
         viewModel.isUpdateInProgressOrDismissed = true
 

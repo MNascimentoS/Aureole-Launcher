@@ -28,7 +28,9 @@ import dev.mnascimentos.aureole.feature.home.components.favorites.model.Favorite
 import dev.mnascimentos.aureole.feature.settings.extensions.performFactoryReset
 import dev.mnascimentos.aureole.feature.settings.extensions.resetGridLayout
 import dev.mnascimentos.aureole.feature.settings.extensions.restoreDefaultWallpaper
+import dev.mnascimentos.aureole.feature.settings.model.SettingToggle
 import dev.mnascimentos.aureole.feature.settings.model.SettingValue
+import dev.mnascimentos.aureole.feature.settings.model.SettingsDialog
 import dev.mnascimentos.aureole.feature.settings.model.SettingsScreenActions
 import dev.mnascimentos.aureole.feature.settings.screens.SettingsScreen
 import org.koin.androidx.viewmodel.ext.android.viewModel

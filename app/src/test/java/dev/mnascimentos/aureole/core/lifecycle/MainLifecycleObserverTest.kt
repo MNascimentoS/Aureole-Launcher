@@ -10,8 +10,8 @@ import dev.mnascimentos.aureole.core.data.repository.FolderRepository
 import dev.mnascimentos.aureole.core.data.repository.GridRepository
 import dev.mnascimentos.aureole.core.data.repository.SettingsRepository
 import dev.mnascimentos.aureole.core.data.repository.WidgetRepository
-import dev.mnascimentos.aureole.feature.home.HomeRepositories
 import dev.mnascimentos.aureole.feature.home.HomeViewModel
+import dev.mnascimentos.aureole.feature.home.model.HomeRepositories
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
@@ -58,7 +58,7 @@ class MainLifecycleObserverTest {
     }
 
     @Test
-    fun `onResume triggers load and invokes onResumed callback`() {
+    fun `when onResume triggered, should load data and invoke onResumed callback`() {
         val dummyOwner = object : LifecycleOwner {
             override val lifecycle: Lifecycle
                 get() = error("Not needed")

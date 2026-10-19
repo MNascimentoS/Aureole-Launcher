@@ -115,12 +115,12 @@ fun AureolePopupMenuItem(
 /**
  * Configuration parameters for [AureolePopupMenuItem].
  *
- * @property badge Optional text label displayed on the right side of the item.
- * @property onTrailingClick Optional callback for clicking the trailing icon separately from item click.
- * @property isDestructive When true, applies error tint styling to indicate destructive actions.
- * @property icon Slot for rendering a standard icon provided with a [Modifier].
- * @property customIcon Custom `@Composable` slot for rendering custom leading icon content.
- * @property trailingIcon Slot for rendering a trailing icon provided with a [Modifier].
+ * @param badge Optional text label displayed on the right side of the item.
+ * @param onTrailingClick Optional callback for clicking the trailing icon separately from item click.
+ * @param isDestructive When true, applies error tint styling to indicate destructive actions.
+ * @param icon Slot for rendering a standard icon provided with a [Modifier].
+ * @param customIcon Custom `@Composable` slot for rendering custom leading icon content.
+ * @param trailingIcon Slot for rendering a trailing icon provided with a [Modifier].
  */
 class AureolePopupMenuItemParams(
     val badge: String? = null,

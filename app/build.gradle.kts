@@ -81,6 +81,7 @@ android {
 
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 
     experimentalProperties["android.experimental.enableScreenshotTest"] = true
@@ -215,6 +216,7 @@ dependencies {
     implementation(libs.coil.compose)
     implementation(libs.haze)
     implementation(libs.haze.materials)
+    implementation(libs.timber)
 
     // Play Services & Firebase
     implementation(libs.playAppUpdate)

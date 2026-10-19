@@ -6,7 +6,6 @@ import android.appwidget.AppWidgetHostView
 import android.appwidget.AppWidgetManager
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.TextView
 import androidx.compose.animation.ExperimentalSharedTransitionApi
@@ -48,6 +47,7 @@ import dev.mnascimentos.aureole.feature.home.model.LocalHomeUiState
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 private const val LONG_PRESS_MARGIN_MS = 50L
 private const val MIN_LONG_PRESS_TIMEOUT_MS = 200L
@@ -215,7 +215,7 @@ fun SingleAppWidgetContent(
                             up?.consume()
                         }
                     } catch (e: IllegalArgumentException) {
-                        Log.d("GridItemContent", "Pointer gesture wait interrupted", e)
+                        Timber.tag("GridItemContent").d(e, "Pointer gesture wait interrupted")
                         job.cancel()
                     }
                 }

@@ -44,7 +44,7 @@ class SettingsLifecycleObserverTest {
     }
 
     @Test
-    fun `onResume reloads settings`() {
+    fun `when onResume triggered, should reload settings`() {
         settingsRepository.isLeftHandedMode = true
         val dummyOwner = object : LifecycleOwner {
             override val lifecycle: Lifecycle

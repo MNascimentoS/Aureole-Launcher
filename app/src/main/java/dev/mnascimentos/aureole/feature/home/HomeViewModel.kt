@@ -13,22 +13,13 @@ import dev.mnascimentos.aureole.feature.home.components.appsdrawer.extensions.up
 import dev.mnascimentos.aureole.feature.home.components.containers.extensions.loadContainers
 import dev.mnascimentos.aureole.feature.home.components.widgets.extensions.loadWidgetSettings
 import dev.mnascimentos.aureole.feature.home.grid.extensions.loadGridItems
+import dev.mnascimentos.aureole.feature.home.model.HomeRepositories
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-
-data class HomeRepositories(
-    val appRepository: AppRepository,
-    val widgetRepository: WidgetRepository,
-    val settingsRepository: SettingsRepository,
-    val folderRepository: FolderRepository,
-    val favoriteContainerRepository: FavoriteContainerRepository,
-    val containerRepository: ContainerRepository,
-    val gridRepository: GridRepository,
-)
 
 class HomeViewModel(
     repositories: HomeRepositories,
