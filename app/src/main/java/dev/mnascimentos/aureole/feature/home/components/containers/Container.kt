@@ -22,6 +22,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import dev.chrisbanes.haze.HazeState
 import dev.chrisbanes.haze.HazeStyle
@@ -29,13 +30,12 @@ import dev.chrisbanes.haze.HazeTint
 import dev.chrisbanes.haze.hazeEffect
 import dev.mnascimentos.aureole.core.data.model.AppFolder
 import dev.mnascimentos.aureole.core.data.model.AppInfo
+import dev.mnascimentos.aureole.core.data.model.ContainerItemEntity
 import dev.mnascimentos.aureole.core.data.model.ContainerItemType
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.core.designsystem.utils.fadingEdges
-import dev.mnascimentos.aureole.feature.home.LocalHomeActions
-import dev.mnascimentos.aureole.feature.home.LocalHomeUiState
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.ContainerAddFolderButton
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.ContainerAppItem
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.ContainerFolderConfig
@@ -43,6 +43,8 @@ import dev.mnascimentos.aureole.feature.home.components.containers.folder.Contai
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.ContainerAppItemParams
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.ContainerFolderItemParams
 import dev.mnascimentos.aureole.feature.home.components.containers.model.ContainerConfig
+import dev.mnascimentos.aureole.feature.home.model.LocalHomeActions
+import dev.mnascimentos.aureole.feature.home.model.LocalHomeUiState
 
 private const val CONTAINER_HAZE_ALPHA_MULTIPLIER = 0.7f
 private const val CONTAINER_MIN_ALPHA = 0.2f
@@ -182,22 +184,22 @@ private fun resolveContainerRenderItems(
     allApps: List<AppInfo>
 ): List<ContainerRenderItem> {
     if (config.items.isNotEmpty()) {
-        return config.items.mapNotNull { item ->
-            when (item.itemType) {
-                ContainerItemType.FOLDER -> {
-                    config.folders.find { it.id == item.folderId }?.let { ContainerRenderItem.Folder(it) }
-                }
-                ContainerItemType.APP -> {
-                    allApps.find { it.packageName == item.packageName }?.let { ContainerRenderItem.App(it) }
-                }
-            }
-        }
+        return config.items.mapNotNull { resolveConfigItem(it, config, allApps) }
     }
     val folderItems = config.folders.map { ContainerRenderItem.Folder(it) }
     val appItems = config.appPackageNames.mapNotNull { pkg ->
         allApps.find { it.packageName == pkg }?.let { ContainerRenderItem.App(it) }
     }
     return folderItems + appItems
+}
+
+private fun resolveConfigItem(
+    item: ContainerItemEntity,
+    config: ContainerConfig,
+    allApps: List<AppInfo>
+): ContainerRenderItem? = when (item.itemType) {
+    ContainerItemType.FOLDER -> config.folders.find { it.id == item.folderId }?.let { ContainerRenderItem.Folder(it) }
+    ContainerItemType.APP -> allApps.find { it.packageName == item.packageName }?.let { ContainerRenderItem.App(it) }
 }
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -230,6 +232,7 @@ private fun ContainerColumn(
                 onClick = {},
                 onLongClick = { actions.onOpenEditContainerDialog(config.panelId) }
             )
+            .semantics(mergeDescendants = true) {}
             .fadingEdges(scrollState, edgeLength = 16.dp)
             .verticalScroll(scrollState)
             .padding(horizontal = paddingHorizontal, vertical = paddingVertical)
@@ -327,6 +330,7 @@ private fun ContainerRow(
                 onClick = {},
                 onLongClick = { actions.onOpenEditContainerDialog(config.panelId) }
             )
+            .semantics(mergeDescendants = true) {}
             .fadingEdges(scrollState, edgeLength = 16.dp)
             .horizontalScroll(scrollState)
             .padding(horizontal = paddingHorizontal, vertical = paddingVertical)

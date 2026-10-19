@@ -17,6 +17,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -25,6 +26,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
 import dev.chrisbanes.haze.HazeState
 import dev.chrisbanes.haze.HazeStyle
@@ -32,6 +34,8 @@ import dev.chrisbanes.haze.HazeTint
 import dev.chrisbanes.haze.hazeEffect
 import dev.mnascimentos.aureole.core.designsystem.icons.Add
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
+import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 
 private const val WIDGET_NOT_AVAILABLE_TEXT = "Widget indisponível"
 private const val DEFAULT_HAZE_OPACITY = 0.5f
@@ -78,9 +82,12 @@ internal fun applyWidgetOptionsIfNeeded(
 
 internal fun createWidgetHostView(
     context: Context,
-    appWidgetHost: AppWidgetHost,
+    appWidgetHost: AppWidgetHost?,
     widgetId: Int
 ): View {
+    if (appWidgetHost == null) {
+        return createErrorWidgetView(context, WIDGET_NOT_AVAILABLE_TEXT)
+    }
     val appWidgetManager = AppWidgetManager.getInstance(context)
     val appWidgetInfo = appWidgetManager.getAppWidgetInfo(widgetId)
     return if (appWidgetInfo != null) {
@@ -162,10 +169,14 @@ internal fun AddWidgetButton(
     Box(
         modifier = modifier
             .fillMaxHeight()
+            .defaultMinSize(minWidth = 48.dp, minHeight = 48.dp)
             .clip(RoundedCornerShape(AureoleDS.dimens.radiusLarge))
             .then(hazeModifier)
             .background(AureoleDS.colors.surfaceVariant.copy(alpha = buttonAlpha))
-            .clickable(onClick = onClick),
+            .clickable(
+                role = Role.Button,
+                onClick = onClick
+            ),
         contentAlignment = Alignment.Center
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
@@ -179,5 +190,13 @@ internal fun AddWidgetButton(
                 style = AureoleDS.typography.labelLarge
             )
         }
+    }
+}
+
+@AureolePreview
+@Composable
+private fun AddWidgetButtonPreview() {
+    AureoleLauncherTheme {
+        AddWidgetButton(onClick = {})
     }
 }

@@ -46,18 +46,15 @@ import dev.mnascimentos.aureole.core.designsystem.icons.RefreshCcw
 import dev.mnascimentos.aureole.core.designsystem.icons.Smile
 import dev.mnascimentos.aureole.core.designsystem.icons.Undo
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
+import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.components.overlays.ReleaseNotesBottomSheet
 import dev.mnascimentos.aureole.feature.settings.components.SettingsBottomSheet
+import dev.mnascimentos.aureole.feature.settings.model.SettingsAdvancedDialogActions
 import dev.mnascimentos.aureole.feature.settings.model.SettingsScreenActions
 import dev.mnascimentos.aureole.feature.settings.model.SettingsUiState
 
 private const val BOTTOM_SPACER_PERCENT = 0.15f
-
-private data class SettingsAdvancedDialogActions(
-    val onNavigateToContributors: () -> Unit,
-    val onOpenUninstallDialog: () -> Unit,
-    val onOpenReleaseNotesDialog: () -> Unit
-)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -309,5 +306,18 @@ private fun tryUninstall(context: Context) {
             addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         }
         context.startActivity(intent)
+    }
+}
+
+@AureolePreview
+@Composable
+private fun SettingsAdvancedScreenPreview() {
+    AureoleLauncherTheme {
+        SettingsAdvancedScreen(
+            uiState = SettingsUiState(),
+            actions = SettingsScreenActions(),
+            onNavigateToContributors = {},
+            onNavigateBack = {}
+        )
     }
 }

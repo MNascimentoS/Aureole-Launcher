@@ -20,7 +20,6 @@ import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Rect
@@ -31,13 +30,15 @@ import dev.chrisbanes.haze.hazeSource
 import dev.chrisbanes.haze.rememberHazeState
 import dev.mnascimentos.aureole.core.data.model.ContainerModel
 import dev.mnascimentos.aureole.core.data.model.LauncherItemType
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
+import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.core.designsystem.utils.LocalHazeState
 import dev.mnascimentos.aureole.core.designsystem.utils.LocalSharedTransitionScope
 import dev.mnascimentos.aureole.feature.home.components.clock.EditClockBottomSheet
 import dev.mnascimentos.aureole.feature.home.components.common.WallpaperBackground
 import dev.mnascimentos.aureole.feature.home.components.containers.EditContainerScreen
-import dev.mnascimentos.aureole.feature.home.components.containers.EditContainerScreenParams
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.HomeScreenFolderOverlays
+import dev.mnascimentos.aureole.feature.home.components.containers.model.EditContainerScreenParams
 import dev.mnascimentos.aureole.feature.home.components.overlays.CustomizeBottomSheet
 import dev.mnascimentos.aureole.feature.home.components.overlays.HomeOverlaysContent
 import dev.mnascimentos.aureole.feature.home.components.overlays.homeDragGestures
@@ -48,32 +49,18 @@ import dev.mnascimentos.aureole.feature.home.grid.AddContainerDialog
 import dev.mnascimentos.aureole.feature.home.grid.EditGridItemDialog
 import dev.mnascimentos.aureole.feature.home.model.HomeDragParams
 import dev.mnascimentos.aureole.feature.home.model.HomeOverlaysConfig
-import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
 import dev.mnascimentos.aureole.feature.home.model.HomeScreenBodyConfig
-import dev.mnascimentos.aureole.feature.home.model.MainUiState
+import dev.mnascimentos.aureole.feature.home.model.LocalHomeActions
+import dev.mnascimentos.aureole.feature.home.model.LocalHomeUiState
 import dev.mnascimentos.aureole.feature.home.model.getWidgetIdsForStack
 import dev.mnascimentos.aureole.feature.home.model.isOverlayActive
 
-val LocalHomeUiState = staticCompositionLocalOf<MainUiState> { MainUiState() }
-val LocalHomeActions = staticCompositionLocalOf<HomeScreenActions> { createDefaultHomeScreenActions() }
-
-fun createDefaultHomeScreenActions(): HomeScreenActions = HomeScreenActions(
-    onWidgetRowHeightChanged = {},
-    onAppClick = {},
-    onExpandNotificationShade = {},
-    onFolderIntent = {},
-    onSetAddAppToFolderDialogVisible = {},
-    onSetRenameFolderDialogVisible = {},
-    onSearchQueryChanged = {},
-    onSettingsClick = {},
-    onAllAppsDrawerClose = {},
-    onAllAppsDrawerOpen = {}
-)
+private const val DEFAULT_APP_WIDGET_HOST_ID = 1024
 
 @Suppress("LongMethod") // Root composable of home feature managing scaffolding and gesture states
 @Composable
 fun HomeScreen(
-    appWidgetHost: AppWidgetHost,
+    appWidgetHost: AppWidgetHost?,
     modifier: Modifier = Modifier,
 ) {
     val uiState = LocalHomeUiState.current
@@ -175,7 +162,7 @@ private fun BoxScope.HomeScreenBody(
 
         if (!config.uiState.isLoading) {
             MainHomeLayout(
-                appWidgetHost = config.appWidgetHost,
+                appWidgetHost = config.appWidgetHost ?: AppWidgetHost(LocalContext.current, DEFAULT_APP_WIDGET_HOST_ID),
                 currentHeightPx = config.currentHeightPx,
                 favListState = config.favListState,
                 hazeState = config.hazeState,
@@ -305,5 +292,14 @@ private fun HomeEditContainerOverlay(config: HomeOverlaysConfig) {
                 onSave = config.actions.onSaveContainerModel
             )
         )
+    }
+}
+
+@AureolePreview
+@Composable
+private fun HomeScreenPreview() {
+    val context = LocalContext.current
+    AureoleLauncherTheme {
+        HomeScreen(appWidgetHost = AppWidgetHost(context, DEFAULT_APP_WIDGET_HOST_ID))
     }
 }

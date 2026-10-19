@@ -15,6 +15,10 @@ import dev.mnascimentos.aureole.feature.settings.components.SearchIconPositionDi
 import dev.mnascimentos.aureole.feature.settings.components.SetBackgroundBottomSheet
 import dev.mnascimentos.aureole.feature.settings.components.SettingsBottomSheet
 import dev.mnascimentos.aureole.feature.settings.components.SettingsButtonPositionDialog
+import dev.mnascimentos.aureole.feature.settings.screens.FactoryResetDialog
+import dev.mnascimentos.aureole.feature.settings.screens.HazeOpacityDialog
+import dev.mnascimentos.aureole.feature.settings.screens.ResetGridDialog
+import dev.mnascimentos.aureole.feature.settings.screens.RestoreWallpaperDialog
 
 @PreviewTest
 @AureolePreview
@@ -145,5 +149,48 @@ private fun SettingsBottomSheetScreenshotTest() {
         ) {
             AureoleText("Sample Content")
         }
+    }
+}
+
+@PreviewTest
+@AureolePreview
+@Composable
+private fun FactoryResetDialogScreenshotTest() {
+    AureoleLauncherTheme {
+        FactoryResetDialog()
+    }
+}
+
+@PreviewTest
+@AureolePreview
+@Composable
+private fun ResetGridDialogScreenshotTest() {
+    AureoleLauncherTheme {
+        ResetGridDialog()
+    }
+}
+
+@PreviewTest
+@AureolePreview
+@Composable
+private fun HazeOpacityDialogScreenshotTest() {
+    AureoleLauncherTheme {
+        HazeOpacityDialog(
+            currentOpacity = 0.5f,
+            onOpacitySelected = {},
+            onDismiss = {}
+        )
+    }
+}
+
+@PreviewTest
+@AureolePreview
+@Composable
+private fun RestoreWallpaperDialogScreenshotTest() {
+    AureoleLauncherTheme {
+        RestoreWallpaperDialog(
+            onConfirm = {},
+            onDismiss = {}
+        )
     }
 }

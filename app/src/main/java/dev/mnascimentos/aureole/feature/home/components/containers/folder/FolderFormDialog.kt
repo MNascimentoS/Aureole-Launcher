@@ -29,8 +29,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.core.data.model.AppFolder
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleDialog
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
@@ -87,7 +88,7 @@ private fun FolderFormDialogContent(
     ) {
         FolderIconPreview(folderName = folderName, selectedIcon = selectedIcon)
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(AureoleDS.dimens.medium))
 
         OutlinedTextField(
             value = folderName,
@@ -104,7 +105,7 @@ private fun FolderFormDialogContent(
             modifier = Modifier.fillMaxWidth()
         )
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(AureoleDS.dimens.medium))
 
         AureoleText(
             text = "Ícone da Pasta",
@@ -113,7 +114,7 @@ private fun FolderFormDialogContent(
             format = AureoleTextFormatParams(style = AureoleDS.typography.labelMedium, fontWeight = FontWeight.SemiBold)
         )
 
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(AureoleDS.dimens.xSmall))
 
         IconSelectionRow(
             selectedIcon = selectedIcon,
@@ -121,7 +122,7 @@ private fun FolderFormDialogContent(
             folderName = folderName
         )
 
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier = Modifier.height(AureoleDS.dimens.large))
 
         FolderFormButtons(
             isEditing = config.isEditing,
@@ -144,8 +145,8 @@ fun FolderIconPreview(
 ) {
     Box(
         modifier = modifier
-            .size(52.dp)
-            .clip(RoundedCornerShape(14.dp))
+            .size(AureoleDS.dimens.folderButtonSmall)
+            .clip(RoundedCornerShape(AureoleDS.dimens.radiusMedium))
             .background(AureoleDS.colors.surfaceVariant),
         contentAlignment = Alignment.Center
     ) {
@@ -153,7 +154,7 @@ fun FolderIconPreview(
             FolderIconRegistry.RenderIcon(
                 name = selectedIcon,
                 tint = AureoleDS.colors.onSurfaceHigh,
-                modifier = Modifier.size(26.dp)
+                modifier = Modifier.size(AureoleDS.dimens.iconLarge)
             )
         } else {
             AureoleText(
@@ -178,8 +179,8 @@ fun IconSelectionRow(
         modifier = modifier
             .fillMaxWidth()
             .horizontalScroll(scrollState)
-            .padding(vertical = 4.dp),
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
+            .padding(vertical = AureoleDS.dimens.xxSmall),
+        horizontalArrangement = Arrangement.spacedBy(AureoleDS.dimens.xSmall),
         verticalAlignment = Alignment.CenterVertically
     ) {
         DefaultLetterOptionChip(
@@ -217,17 +218,21 @@ private fun DefaultLetterOptionChip(
 
     Box(
         modifier = Modifier
-            .size(40.dp)
+            .size(AureoleDS.dimens.xxLarge)
             .clip(CircleShape)
             .background(
                 if (isSelected) AureoleDS.colors.onSurfaceHigh else AureoleDS.colors.surfaceVariant
             )
             .border(
-                width = if (isSelected) 2.dp else 0.5.dp,
+                width = if (isSelected) AureoleDS.dimens.borderMax else AureoleDS.dimens.borderMinimal,
                 color = borderColor,
                 shape = CircleShape
             )
-            .clickable(onClick = onClick),
+            .clickable(
+                onClick = onClick,
+                role = Role.Button
+            )
+            .semantics(mergeDescendants = true) {},
         contentAlignment = Alignment.Center
     ) {
         AureoleText(
@@ -257,23 +262,27 @@ private fun IconOptionChip(
 
     Box(
         modifier = Modifier
-            .size(40.dp)
+            .size(AureoleDS.dimens.xxLarge)
             .clip(CircleShape)
             .background(
                 if (isSelected) AureoleDS.colors.onSurfaceHigh else AureoleDS.colors.surfaceVariant
             )
             .border(
-                width = if (isSelected) 2.dp else 0.5.dp,
+                width = if (isSelected) AureoleDS.dimens.borderMax else AureoleDS.dimens.borderMinimal,
                 color = borderColor,
                 shape = CircleShape
             )
-            .clickable(onClick = onClick),
+            .clickable(
+                onClick = onClick,
+                role = Role.Button
+            )
+            .semantics(mergeDescendants = true) {},
         contentAlignment = Alignment.Center
     ) {
         FolderIconRegistry.RenderIcon(
             name = iconKey,
             tint = iconTint,
-            modifier = Modifier.size(20.dp)
+            modifier = Modifier.size(AureoleDS.dimens.iconMedium)
         )
     }
 }
@@ -296,14 +305,14 @@ private fun FolderFormButtons(
                 AureoleText("Delete", color = AureoleDS.colors.error)
             }
         } else {
-            Spacer(modifier = Modifier.width(1.dp))
+            Spacer(modifier = Modifier.width(AureoleDS.dimens.borderMinimal))
         }
 
         Row {
             TextButton(onClick = onDismiss) {
                 AureoleText("Cancel", color = AureoleDS.colors.onSurfaceMedium)
             }
-            Spacer(modifier = Modifier.width(8.dp))
+            Spacer(modifier = Modifier.width(AureoleDS.dimens.xSmall))
             TextButton(onClick = onSave) {
                 AureoleText(
                     submitText,

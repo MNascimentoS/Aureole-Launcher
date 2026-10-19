@@ -10,6 +10,7 @@ import dev.mnascimentos.aureole.core.data.model.ContainerItemType
 import dev.mnascimentos.aureole.core.data.model.ContainerModel
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
+import dev.mnascimentos.aureole.feature.home.components.containers.model.EditContainerScreenParams
 
 @Suppress("LongMethod") // Compose preview rendering sample container horizontal layout
 @AureolePreview

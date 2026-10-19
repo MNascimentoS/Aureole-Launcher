@@ -20,36 +20,23 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
-import dev.chrisbanes.haze.HazeState
 import dev.chrisbanes.haze.HazeStyle
 import dev.chrisbanes.haze.HazeTint
 import dev.chrisbanes.haze.hazeEffect
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
-import dev.mnascimentos.aureole.feature.home.LocalHomeUiState
 import dev.mnascimentos.aureole.feature.home.components.widgets.model.WidgetAppGroup
+import dev.mnascimentos.aureole.feature.home.components.widgets.model.WidgetPickerScreenParams
 import dev.mnascimentos.aureole.feature.home.components.widgets.model.WidgetSelectorIntent
+import dev.mnascimentos.aureole.feature.home.components.widgets.model.WidgetSelectorScreenParams
 import dev.mnascimentos.aureole.feature.home.components.widgets.model.WidgetSelectorState
 import dev.mnascimentos.aureole.feature.home.components.widgets.model.WidgetVariant
+import dev.mnascimentos.aureole.feature.home.model.LocalHomeUiState
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
 import org.koin.androidx.compose.koinViewModel
-
-data class WidgetPickerScreenParams(
-    val onWidgetSelected: (AppWidgetProviderInfo) -> Unit,
-    val onDismiss: () -> Unit,
-    val isBlurEnabled: Boolean = true,
-    val hazeState: HazeState? = null
-)
-
-data class WidgetSelectorScreenParams(
-    val state: WidgetSelectorState,
-    val onIntent: (WidgetSelectorIntent) -> Unit,
-    val onWidgetSelected: (AppWidgetProviderInfo) -> Unit,
-    val onDismiss: () -> Unit,
-    val hazeState: HazeState? = null
-)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -116,6 +103,8 @@ fun WidgetSelectorScreen(
             .clickable(
                 interactionSource = remember { MutableInteractionSource() },
                 indication = null,
+                role = Role.Button,
+                onClickLabel = "Dismiss",
                 onClick = onDismiss
             )
     ) {

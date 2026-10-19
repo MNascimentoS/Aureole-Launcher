@@ -47,6 +47,8 @@ import dev.mnascimentos.aureole.core.designsystem.icons.Dots
 import dev.mnascimentos.aureole.core.designsystem.icons.Header
 import dev.mnascimentos.aureole.core.designsystem.icons.Press
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
+import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.settings.model.SettingsScreenActions
 import dev.mnascimentos.aureole.feature.settings.model.SettingsUiState
 import kotlin.math.roundToInt
@@ -267,5 +269,17 @@ private fun HeaderOffsetWheelPicker(
                 }
             }
         }
+    }
+}
+
+@AureolePreview
+@Composable
+private fun SettingsBehaviorScreenPreview() {
+    AureoleLauncherTheme {
+        SettingsBehaviorScreen(
+            uiState = SettingsUiState(),
+            actions = SettingsScreenActions(),
+            onNavigateBack = {}
+        )
     }
 }

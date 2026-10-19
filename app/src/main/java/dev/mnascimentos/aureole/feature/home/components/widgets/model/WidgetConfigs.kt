@@ -1,12 +1,26 @@
 package dev.mnascimentos.aureole.feature.home.components.widgets.model
 
 import android.appwidget.AppWidgetHost
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.ui.unit.Dp
 import dev.chrisbanes.haze.HazeState
 import dev.mnascimentos.aureole.core.data.model.LauncherItemState
 
 private const val DEFAULT_HAZE_OPACITY = 0.5f
+
+/**
+ * Parameters for the widget carousel preview in [EditWidgetGroupScreen].
+ */
+data class EditWidgetCarouselParams(
+    val currentWidgets: List<Int>,
+    val appWidgetHost: AppWidgetHost?,
+    val listState: LazyListState,
+    val currentPage: Int,
+    val isIndicatorEnabled: Boolean,
+    val onRemoveWidget: (Int) -> Unit,
+    val onAddWidgetClick: () -> Unit
+)
 
 data class EditWidgetGroupParams(
     val item: LauncherItemState,

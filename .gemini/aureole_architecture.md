@@ -34,7 +34,7 @@ Burlar Detekt: PROIBIDO alterar o detekt.yml para ignorar erros estruturais ou u
 Composables (UI): Devem ser stateless. Receba um UiState imutável e emita ações via callbacks ou objetos *Actions. Listas (LazyColumn, etc.) DEVEM usar key estável e contentType.
 ViewModels: Exponha um StateFlow público e modifique um MutableStateFlow privado.
 Bottom Sheets e Dialogs: OBRIGATÓRIO incluir funções de preview privadas (`private fun`) usando `@AureolePreview` no próprio arquivo e criar testes de screenshot correspondentes na pasta app/src/screenshotTest.
-Complexidade: Máximo de 2 níveis de indentação. Use Early Returns (Guard Clauses) no topo das funções.
+Complexidade: Máximo de 5 níveis de indentação. Use Early Returns (Guard Clauses) no topo das funções.
 
 ## 5. Checklist de Entrega
 Antes de concluir qualquer tarefa ou sugerir código final, verifique mentalmente se as validações abaixo passariam:

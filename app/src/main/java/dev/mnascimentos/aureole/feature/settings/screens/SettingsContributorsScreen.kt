@@ -18,6 +18,8 @@ import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.composable.SettingsHugeTitle
 import dev.mnascimentos.aureole.composable.SettingsMenuItem
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
+import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -63,5 +65,15 @@ fun SettingsContributorsScreen(
                 }
             }
         }
+    }
+}
+
+@AureolePreview
+@Composable
+private fun SettingsContributorsScreenPreview() {
+    AureoleLauncherTheme {
+        SettingsContributorsScreen(
+            onNavigateBack = {}
+        )
     }
 }

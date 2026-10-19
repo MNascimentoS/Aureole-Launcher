@@ -33,17 +33,18 @@ import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.core.designsystem.utils.LocalAnimatedVisibilityScope
 import dev.mnascimentos.aureole.core.designsystem.utils.LocalSharedTransitionScope
-import dev.mnascimentos.aureole.feature.home.LocalHomeActions
-import dev.mnascimentos.aureole.feature.home.LocalHomeUiState
 import dev.mnascimentos.aureole.feature.home.components.clock.ClockContainer
 import dev.mnascimentos.aureole.feature.home.components.containers.Container
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.FolderViewIntent
 import dev.mnascimentos.aureole.feature.home.components.containers.model.ContainerConfig
+import dev.mnascimentos.aureole.feature.home.components.content.model.ScrollViewContainerParams
 import dev.mnascimentos.aureole.feature.home.components.favorites.FavoritesList
 import dev.mnascimentos.aureole.feature.home.components.favorites.model.FavoritesListOptions
 import dev.mnascimentos.aureole.feature.home.components.widgets.StackedWidgetSection
 import dev.mnascimentos.aureole.feature.home.model.GridItemContentParams
 import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
+import dev.mnascimentos.aureole.feature.home.model.LocalHomeActions
+import dev.mnascimentos.aureole.feature.home.model.LocalHomeUiState
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -167,7 +168,7 @@ fun GridItemContent(params: GridItemContentParams) {
 @Composable
 fun SingleAppWidgetContent(
     item: LauncherItemState,
-    appWidgetHost: AppWidgetHost,
+    appWidgetHost: AppWidgetHost?,
     modifier: Modifier = Modifier
 ) {
     val actions = LocalHomeActions.current
@@ -238,8 +239,9 @@ fun SingleAppWidgetContent(
 private fun createSingleWidgetView(
     context: Context,
     widgetId: Int,
-    appWidgetHost: AppWidgetHost
+    appWidgetHost: AppWidgetHost?
 ): View {
+    if (appWidgetHost == null) return TextView(context).apply { text = "Widget" }
     val appWidgetManager = AppWidgetManager.getInstance(context)
     val appWidgetInfo = appWidgetManager.getAppWidgetInfo(widgetId)
     return if (appWidgetInfo != null) {

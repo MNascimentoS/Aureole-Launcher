@@ -25,6 +25,8 @@ import androidx.compose.ui.text.font.FontWeight
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
+import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 
 @Composable
 fun AdvancedIcon(
@@ -179,5 +181,18 @@ fun SettingsActionItem(
             modifier = Modifier.weight(1f),
             format = AureoleTextFormatParams(style = AureoleDS.typography.bodyLarge, fontWeight = FontWeight.Normal)
         )
+    }
+}
+
+@AureolePreview
+@Composable
+private fun SettingsComponentsPreview() {
+    AureoleLauncherTheme {
+        Column(modifier = Modifier.padding(AureoleDS.dimens.medium)) {
+            SettingsHugeTitle(text = "Settings")
+            SettingsMenuItem(title = "General", subtitle = "App preferences", onClick = {})
+            SettingsToggleItem(title = "Enable Feature", checked = true, onCheckedChange = {})
+            SettingsActionItem(title = "Reset All", onClick = {})
+        }
     }
 }

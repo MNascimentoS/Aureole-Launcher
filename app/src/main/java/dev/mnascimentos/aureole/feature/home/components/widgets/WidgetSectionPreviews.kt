@@ -8,10 +8,10 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
-import dev.mnascimentos.aureole.feature.home.LocalHomeActions
-import dev.mnascimentos.aureole.feature.home.LocalHomeUiState
 import dev.mnascimentos.aureole.feature.home.components.widgets.model.StackedWidgetConfig
 import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
+import dev.mnascimentos.aureole.feature.home.model.LocalHomeActions
+import dev.mnascimentos.aureole.feature.home.model.LocalHomeUiState
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
 
 private const val PREVIEW_APPWIDGET_HOST_ID = 1024

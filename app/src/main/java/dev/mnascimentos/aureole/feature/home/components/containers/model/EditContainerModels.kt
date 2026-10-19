@@ -1,5 +1,20 @@
 package dev.mnascimentos.aureole.feature.home.components.containers.model
 
+import dev.chrisbanes.haze.HazeState
+import dev.mnascimentos.aureole.core.data.model.AppInfo
+import dev.mnascimentos.aureole.core.data.model.ContainerModel
+
+/**
+ * Parameters for [EditContainerScreen].
+ */
+data class EditContainerScreenParams(
+    val panel: ContainerModel,
+    val allApps: List<AppInfo>,
+    val onDismiss: () -> Unit,
+    val onSave: (ContainerModel) -> Unit,
+    val hazeState: HazeState? = null
+)
+
 enum class EditContainerScreenMode {
     MAIN, APPEARANCE, BEHAVIOR, MANAGE_ITEMS
 }

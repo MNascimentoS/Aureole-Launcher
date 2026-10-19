@@ -24,25 +24,26 @@ class PackageReceiver : BroadcastReceiver(), KoinComponent {
         val pendingResult = goAsync()
         CoroutineScope(Dispatchers.IO).launch {
             try {
-                when (action) {
-                    Intent.ACTION_PACKAGE_REMOVED -> {
-                        val isReplacing = intent.getBooleanExtra(Intent.EXTRA_REPLACING, false)
-                        if (!isReplacing) {
-                            appRepository.removePackage(packageName)
-                        }
-                    }
-
-                    Intent.ACTION_PACKAGE_ADDED,
-                    Intent.ACTION_PACKAGE_CHANGED,
-                    Intent.ACTION_PACKAGE_REPLACED -> {
-                        appRepository.syncPackage(packageName)
-                    }
-
-                    else -> {}
-                }
+                handlePackageAction(action, packageName, intent)
             } finally {
                 pendingResult.finish()
             }
+        }
+    }
+
+    private suspend fun handlePackageAction(action: String, packageName: String, intent: Intent) {
+        when (action) {
+            Intent.ACTION_PACKAGE_REMOVED -> handlePackageRemoved(packageName, intent)
+            Intent.ACTION_PACKAGE_ADDED,
+            Intent.ACTION_PACKAGE_CHANGED,
+            Intent.ACTION_PACKAGE_REPLACED -> appRepository.syncPackage(packageName)
+        }
+    }
+
+    private suspend fun handlePackageRemoved(packageName: String, intent: Intent) {
+        val isReplacing = intent.getBooleanExtra(Intent.EXTRA_REPLACING, false)
+        if (!isReplacing) {
+            appRepository.removePackage(packageName)
         }
     }
 }

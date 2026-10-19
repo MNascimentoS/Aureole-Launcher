@@ -1,6 +1,7 @@
 package dev.mnascimentos.aureole.feature.home.components.widgets
 
 import android.appwidget.AppWidgetProviderInfo
+import android.graphics.drawable.Drawable
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -31,12 +32,15 @@ import dev.mnascimentos.aureole.core.designsystem.components.AureoleFloatingSear
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleSearchBarSizes
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleSearchBarState
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleSectionHeader
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
+import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.components.scrubber.CurvedAlphabetScrubber
 import dev.mnascimentos.aureole.feature.home.components.scrubber.model.ScrubberCallbacks
 import dev.mnascimentos.aureole.feature.home.components.scrubber.model.ScrubberOptions
 import dev.mnascimentos.aureole.feature.home.components.widgets.model.WidgetAppGroup
 import dev.mnascimentos.aureole.feature.home.components.widgets.model.WidgetSelectorIntent
 import dev.mnascimentos.aureole.feature.home.components.widgets.model.WidgetSelectorState
+import dev.mnascimentos.aureole.feature.home.components.widgets.model.WidgetVariant
 import kotlinx.coroutines.launch
 
 @Suppress("LongMethod") // Composable rendering list of app widgets and expand controls
@@ -225,35 +229,93 @@ private fun WidgetGroupListColumn(
                 key = { it.appId },
                 contentType = { "widget_app_group" }
             ) { group ->
-                val isExpanded = expandedAppIds.contains(group.appId)
-
-                AppGroupHeader(
+                WidgetAppGroupItem(
                     group = group,
-                    onClick = { onIntent(WidgetSelectorIntent.ToggleAppGroup(group.appId)) }
+                    isExpanded = expandedAppIds.contains(group.appId),
+                    onToggleExpand = { onIntent(WidgetSelectorIntent.ToggleAppGroup(group.appId)) },
+                    onWidgetSelected = onWidgetSelected
                 )
-
-                if (isExpanded) {
-                    LazyRow(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = 12.dp),
-                        contentPadding = PaddingValues(start = 24.dp, end = 48.dp),
-                        horizontalArrangement = Arrangement.spacedBy(16.dp)
-                    ) {
-                        items(
-                            items = group.availableWidgets,
-                            key = { it.widgetId },
-                            contentType = { "widget_preview_card" }
-                        ) { widget ->
-                            WidgetPreviewCard(
-                                widget = widget,
-                                fallbackAppIcon = group.appIcon,
-                                onClick = { widget.providerInfo?.let { onWidgetSelected(it) } }
-                            )
-                        }
-                    }
-                }
             }
         }
+    }
+}
+
+@Composable
+private fun WidgetAppGroupItem(
+    group: WidgetAppGroup,
+    isExpanded: Boolean,
+    onToggleExpand: () -> Unit,
+    onWidgetSelected: (AppWidgetProviderInfo) -> Unit
+) {
+    AppGroupHeader(
+        group = group,
+        onClick = onToggleExpand
+    )
+
+    if (isExpanded) {
+        WidgetPreviewRow(
+            widgets = group.availableWidgets,
+            fallbackAppIcon = group.appIcon,
+            onWidgetSelected = onWidgetSelected
+        )
+    }
+}
+
+@Composable
+private fun WidgetPreviewRow(
+    widgets: List<WidgetVariant>,
+    fallbackAppIcon: Drawable?,
+    onWidgetSelected: (AppWidgetProviderInfo) -> Unit
+) {
+    LazyRow(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 12.dp),
+        contentPadding = PaddingValues(start = 24.dp, end = 48.dp),
+        horizontalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        items(
+            items = widgets,
+            key = { it.widgetId },
+            contentType = { "widget_preview_card" }
+        ) { widget ->
+            WidgetPreviewCard(
+                widget = widget,
+                fallbackAppIcon = fallbackAppIcon,
+                onClick = { widget.providerInfo?.let(onWidgetSelected) }
+            )
+        }
+    }
+}
+
+@AureolePreview
+@Composable
+private fun WidgetGroupListPreview() {
+    val sampleState = WidgetSelectorState(
+        widgetGroups = listOf(
+            WidgetAppGroup(
+                appId = "com.example.clock",
+                appName = "Relógio",
+                availableWidgets = listOf(
+                    WidgetVariant(widgetId = "clock_1", title = "Relógio Analógico"),
+                    WidgetVariant(widgetId = "clock_2", title = "Relógio Digital")
+                )
+            ),
+            WidgetAppGroup(
+                appId = "com.example.weather",
+                appName = "Tempo",
+                availableWidgets = listOf(
+                    WidgetVariant(widgetId = "weather_1", title = "Previsão Diária")
+                )
+            )
+        )
+    )
+    AureoleLauncherTheme {
+        WidgetGroupList(
+            state = sampleState,
+            onIntent = {},
+            onWidgetSelected = {},
+            onDismiss = {}
+        )
     }
 }

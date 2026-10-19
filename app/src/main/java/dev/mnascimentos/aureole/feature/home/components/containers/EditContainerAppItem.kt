@@ -25,7 +25,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
@@ -48,19 +47,19 @@ internal fun EditContainerItemRow(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(8.dp))
+            .clip(RoundedCornerShape(AureoleDS.dimens.radiusXSmall))
             .background(AureoleDS.colors.surfaceVariant.copy(alpha = 0.5f))
-            .padding(horizontal = AureoleDS.dimens.small, vertical = 4.dp),
+            .padding(horizontal = AureoleDS.dimens.small, vertical = AureoleDS.dimens.xxSmall),
         verticalAlignment = Alignment.CenterVertically
     ) {
         EditContainerItemMoveButtons(params = params, actions = actions)
 
-        Spacer(modifier = Modifier.width(4.dp))
+        Spacer(modifier = Modifier.width(AureoleDS.dimens.xxSmall))
 
         FolderIconRegistry.RenderIcon(
             name = params.iconName,
             tint = AureoleDS.colors.onSurfaceHigh,
-            modifier = Modifier.size(20.dp)
+            modifier = Modifier.size(AureoleDS.dimens.iconMedium)
         )
 
         Spacer(modifier = Modifier.width(AureoleDS.dimens.xSmall))
@@ -75,14 +74,14 @@ internal fun EditContainerItemRow(
         AureoleText(
             text = if (params.isFolder) "Pasta" else "App",
             color = AureoleDS.colors.onSurfaceMedium,
-            modifier = Modifier.padding(end = 4.dp),
+            modifier = Modifier.padding(end = AureoleDS.dimens.xxSmall),
             format = AureoleTextFormatParams(style = AureoleDS.typography.labelSmall)
         )
 
-        IconButton(onClick = actions.onRemove, modifier = Modifier.size(28.dp)) {
+        IconButton(onClick = actions.onRemove, modifier = Modifier.size(AureoleDS.dimens.large)) {
             AureoleDS.icons.Delete(
                 tint = AureoleDS.colors.error,
-                modifier = Modifier.size(18.dp)
+                modifier = Modifier.size(AureoleDS.dimens.iconMedium)
             )
         }
     }
@@ -97,7 +96,7 @@ private fun EditContainerItemMoveButtons(
         IconButton(
             onClick = actions.onMoveUp,
             enabled = params.canMoveUp,
-            modifier = Modifier.size(28.dp)
+            modifier = Modifier.size(AureoleDS.dimens.large)
         ) {
             AureoleDS.icons.ArrowUp(
                 tint = if (params.canMoveUp) {
@@ -105,13 +104,13 @@ private fun EditContainerItemMoveButtons(
                 } else {
                     AureoleDS.colors.onSurfaceMedium.copy(alpha = 0.3f)
                 },
-                modifier = Modifier.size(16.dp)
+                modifier = Modifier.size(AureoleDS.dimens.iconSmall)
             )
         }
         IconButton(
             onClick = actions.onMoveDown,
             enabled = params.canMoveDown,
-            modifier = Modifier.size(28.dp)
+            modifier = Modifier.size(AureoleDS.dimens.large)
         ) {
             AureoleDS.icons.ArrowDown(
                 tint = if (params.canMoveDown) {
@@ -119,7 +118,7 @@ private fun EditContainerItemMoveButtons(
                 } else {
                     AureoleDS.colors.onSurfaceMedium.copy(alpha = 0.3f)
                 },
-                modifier = Modifier.size(16.dp)
+                modifier = Modifier.size(AureoleDS.dimens.iconSmall)
             )
         }
     }
@@ -158,7 +157,7 @@ internal fun EditContainerAddAppDropdown(
             leadingIcon = {
                 AureoleDS.icons.Search(
                     tint = AureoleDS.colors.onSurfaceMedium,
-                    modifier = Modifier.size(18.dp)
+                    modifier = Modifier.size(AureoleDS.dimens.iconMedium)
                 )
             },
             trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = isExpanded) },
@@ -201,7 +200,7 @@ private fun DropdownAppItem(
             Image(
                 bitmap = iconBitmap,
                 contentDescription = app.label,
-                modifier = Modifier.size(20.dp)
+                modifier = Modifier.size(AureoleDS.dimens.iconMedium)
             )
         },
         onClick = { onAppSelected(app.packageName) }

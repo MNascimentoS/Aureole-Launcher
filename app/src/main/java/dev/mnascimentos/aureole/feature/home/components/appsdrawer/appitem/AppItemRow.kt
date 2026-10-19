@@ -26,6 +26,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -36,10 +38,10 @@ import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatPa
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
-import dev.mnascimentos.aureole.feature.home.LocalHomeUiState
 import dev.mnascimentos.aureole.feature.home.components.appsdrawer.appitem.model.AppItemBottomSheetParams
 import dev.mnascimentos.aureole.feature.home.components.appsdrawer.appitem.model.AppItemRowActions
 import dev.mnascimentos.aureole.feature.home.components.appsdrawer.appitem.model.AppItemRowConfig
+import dev.mnascimentos.aureole.feature.home.model.LocalHomeUiState
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
 private val ICON_OUTER_SIZE = 42.dp
 private val ICON_INNER_SIZE = 26.dp
@@ -68,8 +70,10 @@ fun AppItemRow(
                 .clip(RoundedCornerShape(AureoleDS.dimens.radiusMedium))
                 .combinedClickable(
                     onClick = onClick,
-                    onLongClick = { showMenu = true }
+                    onLongClick = { showMenu = true },
+                    role = Role.Button
                 )
+                .semantics(mergeDescendants = true) {}
                 .padding(horizontal = AureoleDS.dimens.medium, vertical = AureoleDS.dimens.small),
             verticalAlignment = Alignment.CenterVertically
         ) {

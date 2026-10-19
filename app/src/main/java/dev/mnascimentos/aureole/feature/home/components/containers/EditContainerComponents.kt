@@ -23,6 +23,7 @@ import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuAnchorType
 import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.ExposedDropdownMenuBoxScope
 import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedButton
@@ -89,29 +90,42 @@ internal fun EditContainerOrientationSelector(
             val isHorizontal = orientation.equals("Horizontal", ignoreCase = true)
 
             listOf("Vertical" to isVertical, "Horizontal" to isHorizontal).forEach { (optText, isSelected) ->
-                val onClick = { onOrientationSelected(optText) }
-                val modifier = Modifier.weight(1f)
-                if (isSelected) {
-                    Button(
-                        onClick = onClick,
-                        modifier = modifier,
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = AureoleDS.colors.onSurfaceHigh,
-                            contentColor = AureoleDS.colors.surface
-                        )
-                    ) {
-                        AureoleText(text = optText)
-                    }
-                } else {
-                    OutlinedButton(
-                        onClick = onClick,
-                        modifier = modifier,
-                        border = BorderStroke(1.dp, AureoleDS.colors.outline.copy(alpha = 0.5f))
-                    ) {
-                        AureoleText(text = optText, color = AureoleDS.colors.onSurfaceHigh)
-                    }
-                }
+                OrientationOptionButton(
+                    optText = optText,
+                    isSelected = isSelected,
+                    onClick = { onOrientationSelected(optText) },
+                    modifier = Modifier.weight(1f)
+                )
             }
+        }
+    }
+}
+
+@Composable
+private fun OrientationOptionButton(
+    optText: String,
+    isSelected: Boolean,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    if (isSelected) {
+        Button(
+            onClick = onClick,
+            modifier = modifier,
+            colors = ButtonDefaults.buttonColors(
+                containerColor = AureoleDS.colors.onSurfaceHigh,
+                contentColor = AureoleDS.colors.surface
+            )
+        ) {
+            AureoleText(text = optText)
+        }
+    } else {
+        OutlinedButton(
+            onClick = onClick,
+            modifier = modifier,
+            border = BorderStroke(1.dp, AureoleDS.colors.outline.copy(alpha = 0.5f))
+        ) {
+            AureoleText(text = optText, color = AureoleDS.colors.onSurfaceHigh)
         }
     }
 }
@@ -157,20 +171,34 @@ internal fun EditContainerAlignmentSelector(
                 ),
                 modifier = Modifier.menuAnchor(ExposedDropdownMenuAnchorType.PrimaryNotEditable).fillMaxWidth()
             )
-            ExposedDropdownMenu(
+            AlignmentDropdownMenu(
                 expanded = isDropdownExpanded,
-                onDismissRequest = { isDropdownExpanded = false }
-            ) {
-                positionOptionsMap.forEach { (key, label) ->
-                    DropdownMenuItem(
-                        text = { AureoleText(label, color = AureoleDS.colors.onSurfaceHigh) },
-                        onClick = {
-                            onPositionSelected(key)
-                            isDropdownExpanded = false
-                        }
-                    )
+                onDismiss = { isDropdownExpanded = false },
+                onPositionSelected = onPositionSelected
+            )
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun ExposedDropdownMenuBoxScope.AlignmentDropdownMenu(
+    expanded: Boolean,
+    onDismiss: () -> Unit,
+    onPositionSelected: (String) -> Unit
+) {
+    ExposedDropdownMenu(
+        expanded = expanded,
+        onDismissRequest = onDismiss
+    ) {
+        positionOptionsMap.forEach { (key, label) ->
+            DropdownMenuItem(
+                text = { AureoleText(label, color = AureoleDS.colors.onSurfaceHigh) },
+                onClick = {
+                    onPositionSelected(key)
+                    onDismiss()
                 }
-            }
+            )
         }
     }
 }

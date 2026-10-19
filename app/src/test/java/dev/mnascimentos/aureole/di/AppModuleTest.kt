@@ -8,6 +8,9 @@ import dev.mnascimentos.aureole.core.data.repository.FolderRepository
 import dev.mnascimentos.aureole.core.data.repository.GridRepository
 import dev.mnascimentos.aureole.core.data.repository.SettingsRepository
 import dev.mnascimentos.aureole.core.data.repository.WidgetRepository
+import dev.mnascimentos.aureole.core.network.ApiClient
+import dev.mnascimentos.aureole.core.network.SpkiPinValidator
+import dev.mnascimentos.aureole.core.telemetry.TelemetryLogger
 import dev.mnascimentos.aureole.feature.home.HomeViewModel
 import dev.mnascimentos.aureole.feature.home.components.widgets.WidgetPickerViewModel
 import dev.mnascimentos.aureole.feature.settings.SettingsViewModel
@@ -62,5 +65,12 @@ class AppModuleTest : KoinTest {
         assertNotNull(get<HomeViewModel>())
         assertNotNull(get<SettingsViewModel>())
         assertNotNull(get<WidgetPickerViewModel>())
+    }
+
+    @Test
+    fun `when resolving network and telemetry services from koin, should inject non-null instances`() {
+        assertNotNull(get<TelemetryLogger>())
+        assertNotNull(get<SpkiPinValidator>())
+        assertNotNull(get<ApiClient>())
     }
 }

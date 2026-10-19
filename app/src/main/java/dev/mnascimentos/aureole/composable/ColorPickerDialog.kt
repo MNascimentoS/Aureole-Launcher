@@ -27,6 +27,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.core.graphics.ColorUtils
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
@@ -140,28 +142,44 @@ private fun PresetColorsSection(
             verticalArrangement = Arrangement.spacedBy(AureoleDS.dimens.small),
         ) {
             PresetColors.forEach { colorInt ->
-                val isSelected = selectedColor == colorInt
-                Box(
-                    modifier = Modifier
-                        .size(AureoleDS.dimens.xxLarge)
-                        .clip(CircleShape)
-                        .background(Color(colorInt))
-                        .border(
-                            width = if (isSelected) AureoleDS.dimens.borderMax else AureoleDS.dimens.borderMinimal,
-                            color = if (isSelected) AureoleDS.colors.onSurfaceHigh else Color.Transparent,
-                            shape = CircleShape,
-                        )
-                        .clickable { onSelectPreset(colorInt) },
-                    contentAlignment = Alignment.Center,
-                ) {
-                    if (isSelected) {
-                        AureoleDS.icons.Check(
-                            tint = Color.White,
-                            modifier = Modifier.size(AureoleDS.dimens.iconMedium),
-                        )
-                    }
-                }
+                PresetColorItem(
+                    colorInt = colorInt,
+                    isSelected = selectedColor == colorInt,
+                    onSelect = { onSelectPreset(colorInt) }
+                )
             }
+        }
+    }
+}
+
+@Composable
+private fun PresetColorItem(
+    colorInt: Int,
+    isSelected: Boolean,
+    onSelect: () -> Unit
+) {
+    Box(
+        modifier = Modifier
+            .size(AureoleDS.dimens.xxLarge)
+            .clip(CircleShape)
+            .background(Color(colorInt))
+            .border(
+                width = if (isSelected) AureoleDS.dimens.borderMax else AureoleDS.dimens.borderMinimal,
+                color = if (isSelected) AureoleDS.colors.onSurfaceHigh else Color.Transparent,
+                shape = CircleShape,
+            )
+            .clickable(
+                onClick = onSelect,
+                role = Role.Button
+            )
+            .semantics(mergeDescendants = true) {},
+        contentAlignment = Alignment.Center,
+    ) {
+        if (isSelected) {
+            AureoleDS.icons.Check(
+                tint = Color.White,
+                modifier = Modifier.size(AureoleDS.dimens.iconMedium),
+            )
         }
     }
 }

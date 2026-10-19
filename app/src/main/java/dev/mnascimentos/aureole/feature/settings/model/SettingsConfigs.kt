@@ -9,6 +9,15 @@ data class PreferenceItemConfig(
     val enabled: Boolean = true
 )
 
+/**
+ * Dialog actions for [SettingsAdvancedScreen].
+ */
+data class SettingsAdvancedDialogActions(
+    val onNavigateToContributors: () -> Unit,
+    val onOpenUninstallDialog: () -> Unit,
+    val onOpenReleaseNotesDialog: () -> Unit
+)
+
 data class SettingsScreenActions(
     val onBackClick: () -> Unit = {},
     val onSetDefaultLauncherClick: () -> Unit = {},

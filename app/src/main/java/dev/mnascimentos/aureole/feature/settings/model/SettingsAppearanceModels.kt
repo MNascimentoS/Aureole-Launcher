@@ -9,3 +9,14 @@ data class AppearanceDialogFlags(
     val showBlur: Boolean = false,
     val showBorderRadius: Boolean = false,
 )
+
+/**
+ * Dialog actions for appearance settings menu items.
+ */
+data class AppearanceMenuDialogActions(
+    val onShowSetBackgroundDialog: () -> Unit,
+    val onShowBlurDialog: () -> Unit,
+    val onShowPaletteDialog: () -> Unit,
+    val onShowFontDialog: () -> Unit,
+    val onShowBorderRadiusDialog: () -> Unit
+)

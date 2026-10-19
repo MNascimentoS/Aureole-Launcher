@@ -7,6 +7,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -21,6 +22,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
 import androidx.core.graphics.drawable.toDrawable
 import dev.mnascimentos.aureole.core.data.model.AppInfo
@@ -30,9 +32,9 @@ import dev.mnascimentos.aureole.core.designsystem.icons.Star
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
-import dev.mnascimentos.aureole.feature.home.LocalHomeActions
-import dev.mnascimentos.aureole.feature.home.LocalHomeUiState
 import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
+import dev.mnascimentos.aureole.feature.home.model.LocalHomeActions
+import dev.mnascimentos.aureole.feature.home.model.LocalHomeUiState
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
 
 private const val PREVIEW_APPWIDGET_HOST_ID = 1024
@@ -42,10 +44,14 @@ internal fun FavoritesEmptyHint(onClick: () -> Unit) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
+            .defaultMinSize(minHeight = 48.dp)
             .padding(horizontal = 16.dp, vertical = 8.dp)
             .clip(RoundedCornerShape(AureoleDS.dimens.radiusMedium))
             .background(AureoleDS.colors.surfaceVariant.copy(alpha = 0.3f))
-            .clickable(onClick = onClick)
+            .clickable(
+                role = Role.Button,
+                onClick = onClick
+            )
             .padding(12.dp),
         contentAlignment = Alignment.Center
     ) {

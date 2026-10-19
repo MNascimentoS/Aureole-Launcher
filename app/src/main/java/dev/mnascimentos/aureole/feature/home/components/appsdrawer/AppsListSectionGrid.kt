@@ -31,12 +31,12 @@ import dev.mnascimentos.aureole.core.designsystem.icons.Settings
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
-import dev.mnascimentos.aureole.feature.home.LocalHomeActions
-import dev.mnascimentos.aureole.feature.home.LocalHomeUiState
 import dev.mnascimentos.aureole.feature.home.components.appsdrawer.appitem.AppItemRow
 import dev.mnascimentos.aureole.feature.home.components.appsdrawer.appitem.model.AppItemRowActions
 import dev.mnascimentos.aureole.feature.home.components.appsdrawer.appitem.model.AppItemRowConfig
 import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
+import dev.mnascimentos.aureole.feature.home.model.LocalHomeActions
+import dev.mnascimentos.aureole.feature.home.model.LocalHomeUiState
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
 
 fun LazyListScope.appsListItems(

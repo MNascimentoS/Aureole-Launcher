@@ -22,8 +22,6 @@ import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.core.designsystem.utils.fadingEdges
-import dev.mnascimentos.aureole.feature.home.LocalHomeActions
-import dev.mnascimentos.aureole.feature.home.LocalHomeUiState
 import dev.mnascimentos.aureole.feature.home.components.appsdrawer.appitem.AppItemRow
 import dev.mnascimentos.aureole.feature.home.components.appsdrawer.appitem.model.AppItemRowActions
 import dev.mnascimentos.aureole.feature.home.components.appsdrawer.appitem.model.AppItemRowConfig
@@ -34,17 +32,19 @@ import dev.mnascimentos.aureole.feature.home.components.favorites.model.NonScrol
 import dev.mnascimentos.aureole.feature.home.components.favorites.model.ScrollableFavoritesParams
 import dev.mnascimentos.aureole.feature.home.components.widgets.StackedWidgetSection
 import dev.mnascimentos.aureole.feature.home.components.widgets.model.StackedWidgetConfig
-import dev.mnascimentos.aureole.feature.home.createDefaultHomeScreenActions
 import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
+import dev.mnascimentos.aureole.feature.home.model.LocalHomeActions
+import dev.mnascimentos.aureole.feature.home.model.LocalHomeUiState
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
+import dev.mnascimentos.aureole.feature.home.model.createDefaultHomeScreenActions
 
 private const val MAX_NON_SCROLLABLE_APPS = 20
 
 @Composable
 fun FavoritesList(
     config: FavoritesListConfig,
-    appWidgetHost: AppWidgetHost,
     modifier: Modifier = Modifier,
+    appWidgetHost: AppWidgetHost? = null,
     options: FavoritesListOptions = FavoritesListOptions()
 ) {
     val uiState = LocalHomeUiState.current
@@ -281,7 +281,7 @@ private fun LazyListScope.allAppsSection(
 
 @Composable
 fun FavoritesList(
-    appWidgetHost: AppWidgetHost,
+    appWidgetHost: AppWidgetHost?,
     currentHeightDp: Dp,
     currentHeightPx: Float,
     state: LazyListState,
