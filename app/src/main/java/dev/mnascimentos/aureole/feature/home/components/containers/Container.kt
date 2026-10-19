@@ -24,6 +24,7 @@ private const val CONTAINER_MIN_ALPHA = 0.2f
 private const val CONTAINER_MAX_ALPHA = 0.95f
 private const val CONTAINER_DEFAULT_ALPHA = 0.95f
 
+@Composable
 private fun Modifier.hazeModifier(
     hasHaze: Boolean,
     hazeState: HazeState?,

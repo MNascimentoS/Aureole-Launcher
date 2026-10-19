@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -122,7 +121,6 @@ private fun resolveClockConfig(config: ClockHeaderConfig, uiState: MainUiState):
     )
 }
 
-@ReadOnlyComposable
 @Composable
 private fun Modifier.clockHazeEffect(isHazeEnabled: Boolean, hazeStateRef: HazeState?, hazeOpacity: Float): Modifier {
     if (!isHazeEnabled || hazeStateRef == null) return this
@@ -137,7 +135,6 @@ private fun Modifier.clockHazeEffect(isHazeEnabled: Boolean, hazeStateRef: HazeS
     }
 }
 
-@ReadOnlyComposable
 @Composable
 private fun resolveClockBgColor(
     isBgEnabled: Boolean,

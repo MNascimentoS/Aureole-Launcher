@@ -23,7 +23,6 @@ import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -190,7 +189,6 @@ fun AureoleFloatingSearchBar(
 }
 
 @Composable
-@ReadOnlyComposable
 private fun computeBubbleBgColor(hazeConfig: AureoleSearchBarHazeConfig): Color {
     return if (!hazeConfig.isEnabled) {
         AureoleDS.colors.surfaceVariant
@@ -202,7 +200,6 @@ private fun computeBubbleBgColor(hazeConfig: AureoleSearchBarHazeConfig): Color 
 }
 
 @Composable
-@ReadOnlyComposable
 private fun Modifier.applyHazeConfig(hazeConfig: AureoleSearchBarHazeConfig): Modifier {
     return if (hazeConfig.isEnabled && (hazeConfig.state != null)) {
         this.hazeEffect(
