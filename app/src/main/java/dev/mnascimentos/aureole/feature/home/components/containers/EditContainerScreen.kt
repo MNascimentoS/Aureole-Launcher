@@ -40,11 +40,11 @@ import dev.mnascimentos.aureole.core.designsystem.icons.DragMenu
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
-import dev.mnascimentos.aureole.feature.home.LocalHomeActions
-import dev.mnascimentos.aureole.feature.home.LocalHomeUiState
 import dev.mnascimentos.aureole.feature.home.components.containers.model.ContainerConfig
 import dev.mnascimentos.aureole.feature.home.components.containers.model.EditContainerScreenMode
 import dev.mnascimentos.aureole.feature.home.components.containers.model.EditContainerScreenParams
+import dev.mnascimentos.aureole.feature.home.model.LocalHomeActions
+import dev.mnascimentos.aureole.feature.home.model.LocalHomeUiState
 import kotlinx.coroutines.delay
 
 private const val ANIMATION_DURATION_MS = 300

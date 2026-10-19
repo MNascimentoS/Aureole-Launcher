@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -31,9 +32,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import coil.compose.AsyncImage
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
@@ -53,7 +56,11 @@ internal fun AppGroupHeader(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable(onClick = onClick)
+            .defaultMinSize(minHeight = 48.dp)
+            .clickable(
+                role = Role.Button,
+                onClick = onClick
+            )
             .padding(
                 start = AureoleDS.dimens.large,
                 end = AureoleDS.dimens.xxLarge + AureoleDS.dimens.xSmall,
@@ -104,11 +111,15 @@ internal fun WidgetPreviewCard(
     Column(
         modifier = Modifier
             .width(AureoleDS.dimens.popupWidthMax)
+            .defaultMinSize(minWidth = 48.dp, minHeight = 48.dp)
             .background(
                 AureoleDS.colors.surfaceVariant.copy(alpha = 0.6f),
                 RoundedCornerShape(AureoleDS.dimens.radiusLarge)
             )
-            .clickable(onClick = onClick)
+            .clickable(
+                role = Role.Button,
+                onClick = onClick
+            )
             .padding(AureoleDS.dimens.medium),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {

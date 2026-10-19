@@ -16,6 +16,8 @@ import dev.mnascimentos.aureole.core.data.model.ReleaseNoteVersion
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.components.clock.EditClockBottomSheet
+import dev.mnascimentos.aureole.feature.home.model.LocalHomeActions
+import dev.mnascimentos.aureole.feature.home.model.LocalHomeUiState
 import dev.mnascimentos.aureole.feature.home.components.containers.EditContainerScreen
 import dev.mnascimentos.aureole.feature.home.components.containers.model.EditContainerScreenParams
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.ContainerFolderBottomSheet
@@ -24,6 +26,7 @@ import dev.mnascimentos.aureole.feature.home.components.containers.folder.EditFo
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.FolderAppPickerDialog
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.FolderDialog
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.FolderFormDialog
+import dev.mnascimentos.aureole.feature.home.components.containers.folder.FolderMiniGridPreview
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.ContainerFolderBottomSheetParams
 import dev.mnascimentos.aureole.feature.home.components.favorites.FavoriteAppsDialog
 import dev.mnascimentos.aureole.feature.home.components.favorites.model.FavoriteAppsDialogActions
@@ -524,5 +527,22 @@ private fun StandardUpdateAlertDialogScreenshotTest() {
     )
     AureoleLauncherTheme {
         StandardUpdateAlertDialog(params = params)
+    }
+}
+
+@PreviewTest
+@AureolePreview
+@Composable
+private fun FolderMiniGridScreenshotTest() {
+    val sampleFolder = AppFolder(
+        id = "folder_1",
+        name = "Social",
+        appPackageNames = listOf("com.example.app1")
+    )
+    AureoleLauncherTheme {
+        FolderMiniGridPreview(
+            folder = sampleFolder,
+            allApps = emptyList()
+        )
     }
 }

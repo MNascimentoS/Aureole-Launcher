@@ -20,7 +20,6 @@ import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Rect
@@ -50,29 +49,13 @@ import dev.mnascimentos.aureole.feature.home.grid.AddContainerDialog
 import dev.mnascimentos.aureole.feature.home.grid.EditGridItemDialog
 import dev.mnascimentos.aureole.feature.home.model.HomeDragParams
 import dev.mnascimentos.aureole.feature.home.model.HomeOverlaysConfig
-import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
 import dev.mnascimentos.aureole.feature.home.model.HomeScreenBodyConfig
-import dev.mnascimentos.aureole.feature.home.model.MainUiState
+import dev.mnascimentos.aureole.feature.home.model.LocalHomeActions
+import dev.mnascimentos.aureole.feature.home.model.LocalHomeUiState
 import dev.mnascimentos.aureole.feature.home.model.getWidgetIdsForStack
 import dev.mnascimentos.aureole.feature.home.model.isOverlayActive
 
 private const val DEFAULT_APP_WIDGET_HOST_ID = 1024
-
-val LocalHomeUiState = staticCompositionLocalOf<MainUiState> { MainUiState() }
-val LocalHomeActions = staticCompositionLocalOf<HomeScreenActions> { createDefaultHomeScreenActions() }
-
-fun createDefaultHomeScreenActions(): HomeScreenActions = HomeScreenActions(
-    onWidgetRowHeightChanged = {},
-    onAppClick = {},
-    onExpandNotificationShade = {},
-    onFolderIntent = {},
-    onSetAddAppToFolderDialogVisible = {},
-    onSetRenameFolderDialogVisible = {},
-    onSearchQueryChanged = {},
-    onSettingsClick = {},
-    onAllAppsDrawerClose = {},
-    onAllAppsDrawerOpen = {}
-)
 
 @Suppress("LongMethod") // Root composable of home feature managing scaffolding and gesture states
 @Composable

@@ -60,7 +60,7 @@ import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.core.designsystem.utils.LocalAnimatedVisibilityScope
 import dev.mnascimentos.aureole.core.designsystem.utils.LocalHazeState
-import dev.mnascimentos.aureole.feature.home.LocalHomeActions
+import dev.mnascimentos.aureole.feature.home.model.LocalHomeActions
 
 private const val ANIMATION_DURATION_MS = 300
 private const val DISMISS_DRAG_THRESHOLD_PX = 50f
@@ -68,6 +68,17 @@ private const val DISMISS_VELOCITY_THRESHOLD = 1000f
 private const val EXPAND_VELOCITY_THRESHOLD = -500f
 private const val COLLAPSE_VELOCITY_THRESHOLD = 500f
 
+/**
+ * Configuration options for [AureoleEditOverlay].
+ *
+ * @property title Title text displayed at the top of the overlay sheet.
+ * @property hazeState Blur effect state for background haze blurring.
+ * @property isVisible Controls visibility state of the overlay.
+ * @property animated Whether show/hide transition animations are enabled.
+ * @property maxSheetHeightFraction Maximum fraction of screen height occupied by the sheet.
+ * @property onBackPress Custom back key handler callback.
+ * @property onSettingsClick Settings icon click callback.
+ */
 data class AureoleEditOverlayConfig(
     val title: String? = null,
     val hazeState: HazeState? = null,
@@ -78,6 +89,14 @@ data class AureoleEditOverlayConfig(
     val onSettingsClick: (() -> Unit)? = null,
 )
 
+/**
+ * Content slots and configuration parameters for [AureoleEditOverlay].
+ *
+ * @property config Configuration options provided via [AureoleEditOverlayConfig].
+ * @property previewContent Optional preview slot displayed in the main screen area above the bottom sheet.
+ * @property bottomBarContent Optional action bottom bar slot anchored below the sheet.
+ * @property sheetContent Main sheet content slot.
+ */
 class AureoleEditOverlayParams(
     val config: AureoleEditOverlayConfig = AureoleEditOverlayConfig(),
     val previewContent: (@Composable BoxScope.() -> Unit)? = null,
@@ -85,10 +104,19 @@ class AureoleEditOverlayParams(
     val sheetContent: (@Composable ColumnScope.() -> Unit)? = null,
 )
 
+/**
+ * Fullscreen modal overlay sheet for edit mode features (such as container/clock/widget group editing).
+ *
+ * Supports background blur via Haze, swipe-down dismiss gestures, preview content area, bottom bar actions, and custom sheet layout.
+ *
+ * @param modifier The [Modifier] applied to the root overlay layout. First optional parameter.
+ * @param params Configuration and content slots provided via [AureoleEditOverlayParams].
+ * @param onDismissRequest Callback executed when overlay is dismissed via drag gesture or back press. Slot callback parameter placed last.
+ */
 @Composable
 fun AureoleEditOverlay(
-    params: AureoleEditOverlayParams,
     modifier: Modifier = Modifier,
+    params: AureoleEditOverlayParams = AureoleEditOverlayParams(),
     onDismissRequest: () -> Unit = {},
 ) {
     val config = params.config

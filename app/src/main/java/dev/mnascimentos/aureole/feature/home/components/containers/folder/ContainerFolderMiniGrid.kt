@@ -1,5 +1,6 @@
 package dev.mnascimentos.aureole.feature.home.components.containers.folder
 
+import android.content.ComponentName
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -17,11 +18,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
+import androidx.core.graphics.drawable.toDrawable
 import dev.mnascimentos.aureole.core.data.model.AppFolder
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
+import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 
 private const val MAX_PREVIEW_APPS = 9
 private const val GRID_ROWS = 3
@@ -112,4 +116,48 @@ private fun FolderMiniGridCell(app: AppInfo?) {
             .size(AureoleDS.dimens.xSmall)
             .clip(CircleShape)
     )
+}
+
+@AureolePreview
+@Composable
+private fun FolderMiniGridPreviewTest() {
+    val sampleApps = listOf(
+        AppInfo(
+            label = "App 1",
+            packageName = "com.example.app1",
+            componentName = ComponentName("com.example.app1", "MainActivity"),
+            icon = 0xFF1B65C0.toInt().toDrawable()
+        ),
+        AppInfo(
+            label = "App 2",
+            packageName = "com.example.app2",
+            componentName = ComponentName("com.example.app2", "MainActivity"),
+            icon = 0xFF2E7D32.toInt().toDrawable()
+        )
+    )
+    val populatedFolder = AppFolder(
+        id = "folder_1",
+        name = "Social",
+        appPackageNames = sampleApps.map { it.packageName }
+    )
+    val emptyFolder = AppFolder(
+        id = "folder_2",
+        name = "Work",
+        appPackageNames = emptyList()
+    )
+
+    AureoleLauncherTheme {
+        Column(
+            verticalArrangement = Arrangement.spacedBy(AureoleDS.dimens.medium)
+        ) {
+            FolderMiniGridPreview(
+                folder = populatedFolder,
+                allApps = sampleApps
+            )
+            FolderMiniGridPreview(
+                folder = emptyFolder,
+                allApps = sampleApps
+            )
+        }
+    }
 }

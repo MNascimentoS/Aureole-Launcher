@@ -36,8 +36,6 @@ import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.core.designsystem.utils.fadingEdges
-import dev.mnascimentos.aureole.feature.home.LocalHomeActions
-import dev.mnascimentos.aureole.feature.home.LocalHomeUiState
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.ContainerAddFolderButton
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.ContainerAppItem
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.ContainerFolderConfig
@@ -45,6 +43,8 @@ import dev.mnascimentos.aureole.feature.home.components.containers.folder.Contai
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.ContainerAppItemParams
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.ContainerFolderItemParams
 import dev.mnascimentos.aureole.feature.home.components.containers.model.ContainerConfig
+import dev.mnascimentos.aureole.feature.home.model.LocalHomeActions
+import dev.mnascimentos.aureole.feature.home.model.LocalHomeUiState
 
 private const val CONTAINER_HAZE_ALPHA_MULTIPLIER = 0.7f
 private const val CONTAINER_MIN_ALPHA = 0.2f

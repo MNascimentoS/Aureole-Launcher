@@ -37,8 +37,6 @@ import dev.mnascimentos.aureole.core.lifecycle.MainLifecycleObserver
 import dev.mnascimentos.aureole.core.lifecycle.UpdateLifecycleObserver
 import dev.mnascimentos.aureole.core.lifecycle.WidgetLifecycleObserver
 import dev.mnascimentos.aureole.feature.home.HomeViewModel
-import dev.mnascimentos.aureole.feature.home.LocalHomeActions
-import dev.mnascimentos.aureole.feature.home.LocalHomeUiState
 import dev.mnascimentos.aureole.feature.home.MainScaffold
 import dev.mnascimentos.aureole.feature.home.components.widgets.WidgetHostManager
 import dev.mnascimentos.aureole.feature.home.components.widgets.extensions.setIsAddingSingleWidget
@@ -46,6 +44,8 @@ import dev.mnascimentos.aureole.feature.home.components.widgets.extensions.setPe
 import dev.mnascimentos.aureole.feature.home.extensions.handleBackNavigation
 import dev.mnascimentos.aureole.feature.home.extensions.setAllAppsDrawerOpen
 import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
+import dev.mnascimentos.aureole.feature.home.model.LocalHomeActions
+import dev.mnascimentos.aureole.feature.home.model.LocalHomeUiState
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
 import dev.mnascimentos.aureole.feature.home.model.isOverlayActive
 import org.koin.androidx.viewmodel.ext.android.viewModel

@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -22,7 +23,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.core.data.model.LauncherItemState
 import dev.mnascimentos.aureole.core.data.model.LauncherItemType
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
@@ -33,9 +36,9 @@ import dev.mnascimentos.aureole.core.designsystem.icons.Edit
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
-import dev.mnascimentos.aureole.feature.home.LocalHomeActions
-import dev.mnascimentos.aureole.feature.home.LocalHomeUiState
 import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
+import dev.mnascimentos.aureole.feature.home.model.LocalHomeActions
+import dev.mnascimentos.aureole.feature.home.model.LocalHomeUiState
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
 import dev.mnascimentos.aureole.feature.home.model.getWidgetIdsForStack
 import dev.mnascimentos.aureole.feature.settings.components.SettingsBottomSheet
@@ -117,12 +120,16 @@ private fun EditDialogDeleteRow(
     Row(
         modifier = Modifier
             .fillMaxWidth()
+            .defaultMinSize(minHeight = 48.dp)
             .clip(RoundedCornerShape(AureoleDS.dimens.radiusMedium))
             .background(AureoleDS.colors.error.copy(alpha = 0.12f))
-            .clickable {
-                onDeleteConfirm(itemId)
-                onDismissRequest()
-            }
+            .clickable(
+                role = Role.Button,
+                onClick = {
+                    onDeleteConfirm(itemId)
+                    onDismissRequest()
+                }
+            )
             .padding(horizontal = AureoleDS.dimens.medium, vertical = AureoleDS.dimens.small),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center
@@ -174,9 +181,13 @@ private fun EditDialogTypeActionSection(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
+                .defaultMinSize(minHeight = 48.dp)
                 .clip(RoundedCornerShape(AureoleDS.dimens.radiusMedium))
                 .background(AureoleDS.colors.surfaceVariant.copy(alpha = 0.45f))
-                .clickable(onClick = onClick)
+                .clickable(
+                    role = Role.Button,
+                    onClick = onClick
+                )
                 .padding(horizontal = AureoleDS.dimens.medium, vertical = AureoleDS.dimens.small),
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -244,8 +255,12 @@ private fun EditDialogWidgetListSection(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
+                .defaultMinSize(minHeight = 48.dp)
                 .clip(RoundedCornerShape(AureoleDS.dimens.radiusSmall))
-                .clickable { actions.onToggleWidgetStackDots(item.id) }
+                .clickable(
+                    role = Role.Switch,
+                    onClick = { actions.onToggleWidgetStackDots(item.id) }
+                )
                 .padding(horizontal = AureoleDS.dimens.small, vertical = AureoleDS.dimens.xSmall),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
@@ -345,9 +360,13 @@ private fun EditDialogScrollViewSection(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
+                .defaultMinSize(minHeight = 48.dp)
                 .clip(RoundedCornerShape(AureoleDS.dimens.radiusMedium))
                 .background(AureoleDS.colors.surfaceVariant)
-                .clickable { actions.onOpenAddContainerForParent(item.id) }
+                .clickable(
+                    role = Role.Button,
+                    onClick = { actions.onOpenAddContainerForParent(item.id) }
+                )
                 .padding(horizontal = AureoleDS.dimens.medium, vertical = AureoleDS.dimens.small),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Center

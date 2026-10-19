@@ -31,7 +31,7 @@ import dev.mnascimentos.aureole.core.designsystem.icons.Logo
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
-import dev.mnascimentos.aureole.feature.home.LocalHomeActions
+import dev.mnascimentos.aureole.feature.home.model.LocalHomeActions
 
 private const val DIALOG_WIDTH_FRACTION = 0.92f
 

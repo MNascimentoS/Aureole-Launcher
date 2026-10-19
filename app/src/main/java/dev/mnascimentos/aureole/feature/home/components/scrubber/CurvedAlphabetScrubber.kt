@@ -40,10 +40,10 @@ import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatPa
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
-import dev.mnascimentos.aureole.feature.home.LocalHomeUiState
 import dev.mnascimentos.aureole.feature.home.components.scrubber.model.ScrubberCallbacks
 import dev.mnascimentos.aureole.feature.home.components.scrubber.model.ScrubberOptions
 import dev.mnascimentos.aureole.feature.home.components.scrubber.model.ScrubberRenderParams
+import dev.mnascimentos.aureole.feature.home.model.LocalHomeUiState
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
 import kotlin.math.exp
 import kotlin.math.roundToInt

@@ -59,6 +59,24 @@ fun AureoleText(
     )
 }
 
+/**
+ * Grouped formatting parameters for [AureoleText].
+ *
+ * @property fontSize Font size to apply to the text.
+ * @property fontStyle Font style (such as Italic) to apply to the text.
+ * @property fontWeight Font weight (such as Bold or Medium) to apply to the text.
+ * @property fontFamily Font family to use for rendering the text.
+ * @property letterSpacing Amount of space to add between characters.
+ * @property textDecoration Text decoration (such as Underline or LineThrough).
+ * @property textAlign Alignment of text inside its layout bounds.
+ * @property lineHeight Line height for multiline text layout.
+ * @property overflow Visual overflow handling when text exceeds layout bounds.
+ * @property softWrap Whether text should wrap soft line breaks.
+ * @property maxLines Maximum number of lines to render before truncating.
+ * @property minLines Minimum number of lines to reserve space for.
+ * @property onTextLayout Callback invoked when text layout calculation completes.
+ * @property style Base text style token from typography.
+ */
 data class AureoleTextFormatParams(
     val fontSize: TextUnit = TextUnit.Unspecified,
     val fontStyle: FontStyle? = null,
