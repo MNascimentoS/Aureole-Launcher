@@ -23,7 +23,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
@@ -42,7 +41,7 @@ internal fun FavoriteSectionHeader(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 4.dp),
+            .padding(vertical = AureoleDS.dimens.xxSmall),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -54,7 +53,7 @@ internal fun FavoriteSectionHeader(
         if (count > 0) {
             TextButton(
                 onClick = onDeactivateAll,
-                contentPadding = PaddingValues(horizontal = 8.dp, vertical = 0.dp)
+                contentPadding = PaddingValues(horizontal = AureoleDS.dimens.xSmall, vertical = AureoleDS.dimens.zero)
             ) {
                 AureoleText(
                     text = "Desativar todos",
@@ -77,7 +76,7 @@ internal fun RemainingSectionHeader(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 4.dp),
+            .padding(vertical = AureoleDS.dimens.xxSmall),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -89,7 +88,7 @@ internal fun RemainingSectionHeader(
         if (count > 0) {
             TextButton(
                 onClick = onActivateAll,
-                contentPadding = PaddingValues(horizontal = 8.dp, vertical = 0.dp)
+                contentPadding = PaddingValues(horizontal = AureoleDS.dimens.xSmall, vertical = AureoleDS.dimens.zero)
             ) {
                 AureoleText(
                     text = "Ativar todos",
@@ -135,7 +134,7 @@ internal fun LazyListScope.favoriteSectionItems(
                 color = AureoleDS.colors.onSurfaceMedium,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(vertical = 12.dp),
+                    .padding(vertical = AureoleDS.dimens.small),
                 format = AureoleTextFormatParams(style = AureoleDS.typography.bodyMedium, textAlign = TextAlign.Center)
             )
         }
@@ -169,7 +168,7 @@ internal fun LazyListScope.remainingSectionItems(
     onActivateAll: () -> Unit
 ) {
     item {
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(AureoleDS.dimens.xSmall))
         RemainingSectionHeader(
             count = filteredRemaining.size,
             onActivateAll = onActivateAll
@@ -188,7 +187,7 @@ internal fun LazyListScope.remainingSectionItems(
                 color = AureoleDS.colors.onSurfaceMedium,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(vertical = 12.dp),
+                    .padding(vertical = AureoleDS.dimens.small),
                 format = AureoleTextFormatParams(style = AureoleDS.typography.bodyMedium, textAlign = TextAlign.Center)
             )
         }
@@ -218,9 +217,9 @@ internal fun FavoriteAppRow(
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(12.dp))
+            .clip(RoundedCornerShape(AureoleDS.dimens.radiusSmall))
             .background(AureoleDS.colors.surfaceVariant.copy(alpha = 0.3f))
-            .padding(horizontal = 12.dp, vertical = 10.dp),
+            .padding(horizontal = AureoleDS.dimens.small, vertical = AureoleDS.dimens.favoriteRowPaddingVertical),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
@@ -247,7 +246,7 @@ internal fun FavoriteAppsSearchInput(
         leadingIcon = {
             AureoleDS.icons.Search(
                 tint = AureoleDS.colors.onSurfaceMedium,
-                modifier = Modifier.size(20.dp)
+                modifier = Modifier.size(AureoleDS.dimens.iconMedium)
             )
         },
         singleLine = true,
@@ -257,7 +256,7 @@ internal fun FavoriteAppsSearchInput(
             focusedTextColor = AureoleDS.colors.onSurfaceHigh,
             unfocusedTextColor = AureoleDS.colors.onSurfaceHigh
         ),
-        shape = RoundedCornerShape(12.dp),
+        shape = RoundedCornerShape(AureoleDS.dimens.radiusSmall),
         modifier = Modifier.fillMaxWidth()
     )
 }
@@ -269,7 +268,7 @@ private fun FavoriteAppsListPreview() {
         Column(
             modifier = Modifier
                 .background(AureoleDS.colors.surface)
-                .padding(16.dp)
+                .padding(AureoleDS.dimens.medium)
         ) {
             FavoriteSectionHeader(count = 3, onDeactivateAll = {})
             FavoriteAppsSearchInput(query = "", onQueryChange = {})

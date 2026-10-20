@@ -23,7 +23,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.core.data.model.AppFolder
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
@@ -33,6 +32,7 @@ import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.FolderAppRowItemParams
+import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.SelectedFolderAppSectionParams
 
 @OptIn(ExperimentalFoundationApi::class)
 internal fun LazyListScope.selectedFolderAppSection(
@@ -49,7 +49,7 @@ internal fun LazyListScope.selectedFolderAppSection(
         AureoleText(
             text = "Selecionados ($totalSelectedCount)",
             color = AureoleDS.colors.onSurfaceHigh,
-            modifier = Modifier.padding(vertical = 4.dp),
+            modifier = Modifier.padding(vertical = AureoleDS.dimens.xxSmall),
             format = AureoleTextFormatParams(style = AureoleDS.typography.titleSmall, fontWeight = FontWeight.Bold)
         )
     }
@@ -66,7 +66,7 @@ internal fun LazyListScope.selectedFolderAppSection(
                 color = AureoleDS.colors.onSurfaceMedium,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(vertical = 12.dp),
+                    .padding(vertical = AureoleDS.dimens.small),
                 format = AureoleTextFormatParams(style = AureoleDS.typography.bodyMedium, textAlign = TextAlign.Center)
             )
         }
@@ -92,15 +92,6 @@ internal fun LazyListScope.selectedFolderAppSection(
     }
 }
 
-data class SelectedFolderAppSectionParams(
-    val filteredSelected: List<AppInfo>,
-    val searchQuery: String,
-    val totalSelectedCount: Int,
-    val onMoveUp: (Int) -> Unit,
-    val onMoveDown: (Int) -> Unit,
-    val onToggleSelect: (String) -> Unit
-)
-
 @OptIn(ExperimentalFoundationApi::class)
 internal fun LazyListScope.remainingFolderAppSection(
     filteredRemaining: List<AppInfo>,
@@ -108,11 +99,11 @@ internal fun LazyListScope.remainingFolderAppSection(
     onToggleSelect: (String) -> Unit
 ) {
     item {
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(AureoleDS.dimens.xSmall))
         AureoleText(
             text = "Outros Aplicativos (${filteredRemaining.size})",
             color = AureoleDS.colors.onSurfaceMedium,
-            modifier = Modifier.padding(vertical = 4.dp),
+            modifier = Modifier.padding(vertical = AureoleDS.dimens.xxSmall),
             format = AureoleTextFormatParams(style = AureoleDS.typography.titleSmall, fontWeight = FontWeight.Bold)
         )
     }
@@ -129,7 +120,7 @@ internal fun LazyListScope.remainingFolderAppSection(
                 color = AureoleDS.colors.onSurfaceMedium,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(vertical = 12.dp),
+                    .padding(vertical = AureoleDS.dimens.small),
                 format = AureoleTextFormatParams(style = AureoleDS.typography.bodyMedium, textAlign = TextAlign.Center)
             )
         }
@@ -160,9 +151,9 @@ internal fun SelectedFolderAppRow(
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(12.dp))
+            .clip(RoundedCornerShape(AureoleDS.dimens.radiusSmall))
             .background(AureoleDS.colors.surfaceVariant.copy(alpha = 0.5f))
-            .padding(horizontal = 12.dp, vertical = 6.dp),
+            .padding(horizontal = AureoleDS.dimens.small, vertical = AureoleDS.dimens.appRowPaddingVertical),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
@@ -174,10 +165,10 @@ internal fun SelectedFolderAppRow(
                 bitmap = iconBitmap,
                 contentDescription = params.app.label,
                 modifier = Modifier
-                    .size(32.dp)
-                    .clip(RoundedCornerShape(8.dp))
+                    .size(AureoleDS.dimens.xLarge)
+                    .clip(RoundedCornerShape(AureoleDS.dimens.radiusXSmall))
             )
-            Spacer(modifier = Modifier.width(8.dp))
+            Spacer(modifier = Modifier.width(AureoleDS.dimens.xSmall))
             AureoleText(
                 text = params.app.label,
                 color = AureoleDS.colors.onSurfaceHigh,

@@ -2,39 +2,11 @@ package dev.mnascimentos.aureole.feature.home.grid
 
 import dev.mnascimentos.aureole.core.data.model.LauncherItemState
 import dev.mnascimentos.aureole.core.data.model.LauncherItemType
+import dev.mnascimentos.aureole.feature.home.grid.model.GridLimits
+import dev.mnascimentos.aureole.feature.home.grid.model.SlotSearchParams
+import dev.mnascimentos.aureole.feature.home.grid.model.SlotSearchRequest
+import dev.mnascimentos.aureole.feature.home.grid.model.SnapParams
 import kotlin.math.roundToInt
-
-data class GridLimits(
-    val maxCols: Int = GridEngineUtils.DEFAULT_MAX_COLS,
-    val maxRows: Int = GridEngineUtils.DEFAULT_MAX_ROWS
-)
-
-data class SnapParams(
-    val xPx: Float,
-    val yPx: Float,
-    val cellWidthPx: Float,
-    val cellHeightPx: Float,
-    val colSpan: Int,
-    val rowSpan: Int
-)
-
-data class SlotSearchRequest(
-    val targetColSpan: Int,
-    val targetRowSpan: Int,
-    val minColSpan: Int = 1,
-    val minRowSpan: Int = 1,
-    val limits: GridLimits = GridLimits()
-)
-
-data class SlotSearchParams(
-    val targetCol: Int,
-    val targetRow: Int,
-    val item: LauncherItemState,
-    val items: List<LauncherItemState>,
-    val limits: GridLimits,
-    val maxCol: Int,
-    val maxRow: Int
-)
 
 object GridEngineUtils {
 

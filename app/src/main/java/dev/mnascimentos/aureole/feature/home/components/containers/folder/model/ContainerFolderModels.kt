@@ -5,7 +5,12 @@ package dev.mnascimentos.aureole.feature.home.components.containers.folder.model
 import androidx.compose.ui.graphics.Color
 import dev.mnascimentos.aureole.core.data.model.AppFolder
 import dev.mnascimentos.aureole.core.data.model.AppInfo
-import dev.mnascimentos.aureole.feature.home.components.containers.folder.ContainerFolderConfig
+
+data class ContainerFolderConfig(
+    val showFolderLabels: Boolean,
+    val isGridFolderEnabled: Boolean,
+    val isBackgroundEnabled: Boolean = true,
+)
 
 data class ContainerFolderButtonParams(
     val folder: AppFolder,

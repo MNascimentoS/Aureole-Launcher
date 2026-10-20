@@ -1,4 +1,4 @@
-package dev.mnascimentos.aureole.core.lifecycle
+package dev.mnascimentos.aureole.feature.settings.lifecycle
 
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner

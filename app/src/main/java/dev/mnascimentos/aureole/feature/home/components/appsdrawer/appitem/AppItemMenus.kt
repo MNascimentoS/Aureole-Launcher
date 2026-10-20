@@ -27,7 +27,6 @@ import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.dp
 import androidx.core.graphics.drawable.toDrawable
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.designsystem.components.AureolePopupMenuItem
@@ -98,18 +97,18 @@ private fun AppItemBottomSheetHeader(app: AppInfo, iconBitmap: ImageBitmap, cont
             Box(
                 modifier = Modifier
                     .size(AureoleDS.dimens.iconXLarge)
-                    .clip(RoundedCornerShape(10.dp))
+                    .clip(RoundedCornerShape(AureoleDS.dimens.radiusSmallCompact))
                     .background(AureoleDS.colors.surfaceVariant),
                 contentAlignment = Alignment.Center
             ) {
                 Image(
                     bitmap = iconBitmap,
                     contentDescription = app.label,
-                    modifier = Modifier.size(22.dp)
+                    modifier = Modifier.size(AureoleDS.dimens.iconLargePlus)
                 )
             }
 
-            Spacer(modifier = Modifier.width(10.dp))
+            Spacer(modifier = Modifier.width(AureoleDS.dimens.smallCompact))
 
             AureoleText(
                 text = app.label,
@@ -133,11 +132,11 @@ private fun AppItemBottomSheetHeader(app: AppInfo, iconBitmap: ImageBitmap, cont
                 onClick = {
                     context.startActivity(Intent(context, SettingsActivity::class.java))
                 },
-                modifier = Modifier.size(26.dp)
+                modifier = Modifier.size(AureoleDS.dimens.iconXLargeSmall)
             ) {
                 AureoleDS.icons.Logo(
                     tint = AureoleDS.colors.onSurfaceHigh,
-                    modifier = Modifier.size(18.dp)
+                    modifier = Modifier.size(AureoleDS.dimens.iconMediumSmall)
                 )
             }
         }
@@ -157,7 +156,7 @@ internal fun AppActionSheetContent(
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 6.dp)
+            .padding(horizontal = AureoleDS.dimens.medium, vertical = AureoleDS.dimens.appRowPaddingVertical)
     ) {
         AppShortcutsMenu(shortcuts = shortcuts, onDismiss = onDismiss, context = context)
 
@@ -264,7 +263,7 @@ private fun AppActionSheetFolderItems(
                 customIcon = {
                     AureoleDS.icons.Folder(
                         tint = AureoleDS.colors.onSurfaceMedium,
-                        modifier = Modifier.size(20.dp)
+                        modifier = Modifier.size(AureoleDS.dimens.iconMedium)
                     )
                 }
             ),
@@ -321,20 +320,20 @@ private fun AppShortcutsMenu(
                             bitmap = iconBitmap,
                             contentDescription = shortcut.label,
                             modifier = Modifier
-                                .size(22.dp)
+                                .size(AureoleDS.dimens.iconLargePlus)
                                 .clip(CircleShape)
                         )
                     } else {
                         Box(
                             modifier = Modifier
-                                .size(22.dp)
+                                .size(AureoleDS.dimens.iconLargePlus)
                                 .clip(CircleShape)
                                 .background(AureoleDS.colors.surfaceVariant),
                             contentAlignment = Alignment.Center
                         ) {
                             AureoleDS.icons.Smile(
                                 tint = AureoleDS.colors.onSurfaceMedium,
-                                modifier = Modifier.size(14.dp)
+                                modifier = Modifier.size(AureoleDS.dimens.iconSmallCompact)
                             )
                         }
                     }

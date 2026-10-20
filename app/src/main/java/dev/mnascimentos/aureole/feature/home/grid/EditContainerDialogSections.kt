@@ -33,6 +33,8 @@ import dev.mnascimentos.aureole.core.designsystem.icons.Add
 import dev.mnascimentos.aureole.core.designsystem.icons.Delete
 import dev.mnascimentos.aureole.core.designsystem.icons.Edit
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
+import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
 import dev.mnascimentos.aureole.feature.home.model.getWidgetIdsForStack
@@ -104,44 +106,44 @@ internal fun EditDialogTypeActionSection(
         else -> null to null
     }
 
-    if (text != null && onClick != null) {
-        Row(
+    if (text == null || onClick == null) return
+
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .defaultMinSize(minHeight = 48.dp)
+            .clip(RoundedCornerShape(AureoleDS.dimens.radiusMedium))
+            .background(AureoleDS.colors.surfaceVariant.copy(alpha = 0.45f))
+            .clickable(
+                role = Role.Button,
+                onClick = onClick
+            )
+            .semantics(mergeDescendants = true) {}
+            .padding(horizontal = AureoleDS.dimens.medium, vertical = AureoleDS.dimens.small),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Box(
             modifier = Modifier
-                .fillMaxWidth()
-                .defaultMinSize(minHeight = 48.dp)
-                .clip(RoundedCornerShape(AureoleDS.dimens.radiusMedium))
-                .background(AureoleDS.colors.surfaceVariant.copy(alpha = 0.45f))
-                .clickable(
-                    role = Role.Button,
-                    onClick = onClick
-                )
-                .semantics(mergeDescendants = true) {}
-                .padding(horizontal = AureoleDS.dimens.medium, vertical = AureoleDS.dimens.small),
-            verticalAlignment = Alignment.CenterVertically
+                .size(AureoleDS.dimens.iconXLarge)
+                .clip(RoundedCornerShape(AureoleDS.dimens.radiusXSmall))
+                .background(AureoleDS.colors.surface.copy(alpha = 0.5f)),
+            contentAlignment = Alignment.Center
         ) {
-            Box(
-                modifier = Modifier
-                    .size(AureoleDS.dimens.iconXLarge)
-                    .clip(RoundedCornerShape(AureoleDS.dimens.radiusXSmall))
-                    .background(AureoleDS.colors.surface.copy(alpha = 0.5f)),
-                contentAlignment = Alignment.Center
-            ) {
-                AureoleDS.icons.Edit(
-                    tint = AureoleDS.colors.onSurfaceHigh,
-                    modifier = Modifier.size(AureoleDS.dimens.iconMedium)
-                )
-            }
-            Spacer(modifier = Modifier.width(AureoleDS.dimens.small))
-            AureoleText(
-                text = text,
-                color = AureoleDS.colors.onSurfaceHigh,
-                modifier = Modifier.weight(1f),
-                format = AureoleTextFormatParams(
-                    style = AureoleDS.typography.bodyMedium,
-                    fontWeight = FontWeight.SemiBold
-                )
+            AureoleDS.icons.Edit(
+                tint = AureoleDS.colors.onSurfaceHigh,
+                modifier = Modifier.size(AureoleDS.dimens.iconMedium)
             )
         }
+        Spacer(modifier = Modifier.width(AureoleDS.dimens.small))
+        AureoleText(
+            text = text,
+            color = AureoleDS.colors.onSurfaceHigh,
+            modifier = Modifier.weight(1f),
+            format = AureoleTextFormatParams(
+                style = AureoleDS.typography.bodyMedium,
+                fontWeight = FontWeight.SemiBold
+            )
+        )
     }
 }
 
@@ -151,10 +153,12 @@ internal fun EditDialogWidgetListSection(
     uiState: MainUiState,
     actions: HomeScreenActions
 ) {
-    if (item.type == LauncherItemType.WIDGET_LIST || item.type == LauncherItemType.SINGLE_APP_WIDGET) {
-        val widgets = uiState.getWidgetIdsForStack(item.id)
-        val isIndicatorEnabled = uiState.widgetStackDots[item.id] ?: true
+    if (item.type != LauncherItemType.WIDGET_LIST && item.type != LauncherItemType.SINGLE_APP_WIDGET) return
 
+    val widgets = uiState.getWidgetIdsForStack(item.id)
+    val isIndicatorEnabled = uiState.widgetStackDots[item.id] ?: true
+
+    Column(modifier = Modifier.fillMaxWidth()) {
         AureoleText(
             text = "Widgets no Grupo (${widgets.size})",
             color = AureoleDS.colors.onSurfaceHigh,
@@ -233,32 +237,33 @@ private fun EditDialogWidgetListRows(
                 format = AureoleTextFormatParams(style = AureoleDS.typography.bodyMedium)
             )
         }
-    } else {
-        widgets.forEachIndexed { index, widgetId ->
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clip(RoundedCornerShape(AureoleDS.dimens.radiusSmall))
-                    .background(AureoleDS.colors.surfaceVariant.copy(alpha = 0.35f))
-                    .padding(horizontal = AureoleDS.dimens.small, vertical = AureoleDS.dimens.xSmall),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                AureoleText(
-                    text = "Widget #${index + 1} (ID: $widgetId)",
-                    color = AureoleDS.colors.onSurfaceHigh,
-                    modifier = Modifier.weight(1f),
-                    format = AureoleTextFormatParams(
-                        style = AureoleDS.typography.bodyMedium,
-                        fontWeight = FontWeight.Medium
-                    )
+        return
+    }
+
+    widgets.forEachIndexed { index, widgetId ->
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(AureoleDS.dimens.radiusSmall))
+                .background(AureoleDS.colors.surfaceVariant.copy(alpha = 0.35f))
+                .padding(horizontal = AureoleDS.dimens.small, vertical = AureoleDS.dimens.xSmall),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            AureoleText(
+                text = "Widget #${index + 1} (ID: $widgetId)",
+                color = AureoleDS.colors.onSurfaceHigh,
+                modifier = Modifier.weight(1f),
+                format = AureoleTextFormatParams(
+                    style = AureoleDS.typography.bodyMedium,
+                    fontWeight = FontWeight.Medium
                 )
-                TextButton(onClick = { actions.onRemoveWidgetClick(widgetId, stackId) }) {
-                    AureoleText(text = "Remover", color = AureoleDS.colors.error)
-                }
+            )
+            TextButton(onClick = { actions.onRemoveWidgetClick(widgetId, stackId) }) {
+                AureoleText(text = "Remover", color = AureoleDS.colors.error)
             }
-            Spacer(modifier = Modifier.height(AureoleDS.dimens.xxSmall))
         }
+        Spacer(modifier = Modifier.height(AureoleDS.dimens.xxSmall))
     }
 }
 
@@ -323,5 +328,87 @@ internal fun EditDialogScrollViewSection(
                 )
             )
         }
+    }
+}
+
+private fun mockHomeScreenActions() = HomeScreenActions(
+    onWidgetRowHeightChanged = {},
+    onAppClick = {},
+    onExpandNotificationShade = {},
+    onFolderIntent = {},
+    onSetAddAppToFolderDialogVisible = {},
+    onSetRenameFolderDialogVisible = {},
+    onSearchQueryChanged = {},
+    onSettingsClick = {},
+    onAllAppsDrawerClose = {},
+    onAllAppsDrawerOpen = {}
+)
+
+@AureolePreview
+@Composable
+private fun EditDialogDeleteRowPreview() {
+    AureoleLauncherTheme {
+        EditDialogDeleteRow(
+            itemId = "preview_item",
+            onDeleteConfirm = {},
+            onDismissRequest = {}
+        )
+    }
+}
+
+@AureolePreview
+@Composable
+private fun EditDialogTypeActionSectionPreview() {
+    AureoleLauncherTheme {
+        EditDialogTypeActionSection(
+            item = LauncherItemState(
+                id = "clock_item",
+                type = LauncherItemType.CLOCK,
+                col = 0,
+                row = 0,
+                colSpan = 2,
+                rowSpan = 2
+            ),
+            actions = mockHomeScreenActions(),
+            onDismissRequest = {}
+        )
+    }
+}
+
+@AureolePreview
+@Composable
+private fun EditDialogWidgetListSectionPreview() {
+    AureoleLauncherTheme {
+        EditDialogWidgetListSection(
+            item = LauncherItemState(
+                id = "widget_item",
+                type = LauncherItemType.WIDGET_LIST,
+                col = 0,
+                row = 0,
+                colSpan = 2,
+                rowSpan = 2
+            ),
+            uiState = MainUiState(),
+            actions = mockHomeScreenActions()
+        )
+    }
+}
+
+@AureolePreview
+@Composable
+private fun EditDialogScrollViewSectionPreview() {
+    AureoleLauncherTheme {
+        EditDialogScrollViewSection(
+            item = LauncherItemState(
+                id = "scroll_view_item",
+                type = LauncherItemType.SCROLL_VIEW,
+                col = 0,
+                row = 0,
+                colSpan = 4,
+                rowSpan = 4
+            ),
+            actions = mockHomeScreenActions(),
+            onDismissRequest = {}
+        )
     }
 }

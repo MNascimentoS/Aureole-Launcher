@@ -19,7 +19,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
@@ -71,7 +70,7 @@ fun FolderAppPickerFooter(
         OutlinedButton(onClick = onDismiss) {
             AureoleText("Cancelar")
         }
-        Spacer(modifier = Modifier.width(8.dp))
+        Spacer(modifier = Modifier.width(AureoleDS.dimens.xSmall))
         Button(onClick = onSave) {
             AureoleText("Salvar")
         }
@@ -99,7 +98,7 @@ fun SelectedFolderAppRowActionButtons(
             IconButton(
                 onClick = onMoveUp,
                 enabled = params.index > 0,
-                modifier = Modifier.size(32.dp)
+                modifier = Modifier.size(AureoleDS.dimens.xLarge)
             ) {
                 AureoleDS.icons.ArrowUp(
                     tint = upTint
@@ -114,7 +113,7 @@ fun SelectedFolderAppRowActionButtons(
             IconButton(
                 onClick = onMoveDown,
                 enabled = params.index < params.totalCount - 1,
-                modifier = Modifier.size(32.dp)
+                modifier = Modifier.size(AureoleDS.dimens.xLarge)
             ) {
                 AureoleDS.icons.ArrowDown(
                     tint = downTint
@@ -124,7 +123,7 @@ fun SelectedFolderAppRowActionButtons(
 
         IconButton(
             onClick = onToggleSelect,
-            modifier = Modifier.size(32.dp)
+            modifier = Modifier.size(AureoleDS.dimens.xLarge)
         ) {
             AureoleDS.icons.Delete(
                 tint = AureoleDS.colors.error
@@ -143,9 +142,9 @@ fun RemainingFolderAppRow(
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(12.dp))
+            .clip(RoundedCornerShape(AureoleDS.dimens.radiusSmall))
             .background(AureoleDS.colors.surfaceVariant.copy(alpha = 0.3f))
-            .padding(horizontal = 12.dp, vertical = 6.dp),
+            .padding(horizontal = AureoleDS.dimens.small, vertical = AureoleDS.dimens.appRowPaddingVertical),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
@@ -157,10 +156,10 @@ fun RemainingFolderAppRow(
                 bitmap = iconBitmap,
                 contentDescription = app.label,
                 modifier = Modifier
-                    .size(32.dp)
-                    .clip(RoundedCornerShape(8.dp))
+                    .size(AureoleDS.dimens.xLarge)
+                    .clip(RoundedCornerShape(AureoleDS.dimens.radiusXSmall))
             )
-            Spacer(modifier = Modifier.width(8.dp))
+            Spacer(modifier = Modifier.width(AureoleDS.dimens.xSmall))
             AureoleText(
                 text = app.label,
                 color = AureoleDS.colors.onSurfaceHigh,
@@ -170,11 +169,11 @@ fun RemainingFolderAppRow(
 
         IconButton(
             onClick = onToggleSelect,
-            modifier = Modifier.size(28.dp)
+            modifier = Modifier.size(AureoleDS.dimens.iconXLargeMedium)
         ) {
             AureoleDS.icons.Plus(
                 tint = AureoleDS.colors.onSurfaceHigh,
-                modifier = Modifier.size(20.dp)
+                modifier = Modifier.size(AureoleDS.dimens.iconMedium)
             )
         }
     }

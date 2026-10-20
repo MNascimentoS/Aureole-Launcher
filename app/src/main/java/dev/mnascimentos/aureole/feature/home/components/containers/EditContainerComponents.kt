@@ -50,20 +50,6 @@ import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.components.containers.model.EditContainerFormCallbacks
 import dev.mnascimentos.aureole.feature.home.components.containers.model.EditContainerFormState
 
-data class EditContainerItemRowParams(
-    val title: String,
-    val iconName: String?,
-    val isFolder: Boolean,
-    val canMoveUp: Boolean,
-    val canMoveDown: Boolean,
-)
-
-data class EditContainerItemRowActions(
-    val onMoveUp: () -> Unit,
-    val onMoveDown: () -> Unit,
-    val onRemove: () -> Unit,
-)
-
 @Composable
 internal fun EditContainerOrientationSelector(
     orientation: String,

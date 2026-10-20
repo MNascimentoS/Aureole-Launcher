@@ -32,8 +32,8 @@ import androidx.compose.ui.semantics.semantics
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.data.model.ContainerModel
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleEditOverlay
-import dev.mnascimentos.aureole.core.designsystem.components.AureoleEditOverlayConfig
-import dev.mnascimentos.aureole.core.designsystem.components.AureoleEditOverlayParams
+import dev.mnascimentos.aureole.core.designsystem.components.model.AureoleEditOverlayConfig
+import dev.mnascimentos.aureole.core.designsystem.components.model.AureoleEditOverlayParams
 import dev.mnascimentos.aureole.core.designsystem.icons.Click
 import dev.mnascimentos.aureole.core.designsystem.icons.ColorFill
 import dev.mnascimentos.aureole.core.designsystem.icons.DragMenu

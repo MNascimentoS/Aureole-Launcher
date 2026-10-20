@@ -30,9 +30,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import dev.mnascimentos.aureole.core.data.model.AppFolder
 import dev.mnascimentos.aureole.core.data.model.AppInfo
-import dev.mnascimentos.aureole.core.data.model.ContainerItemEntity
 import dev.mnascimentos.aureole.core.data.model.ContainerItemType
 import dev.mnascimentos.aureole.core.data.model.ContainerModel
 import dev.mnascimentos.aureole.core.designsystem.icons.Add
@@ -40,6 +38,8 @@ import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.CreateFolderDialog
+import dev.mnascimentos.aureole.feature.home.components.containers.model.ManageItemRowActions
+import dev.mnascimentos.aureole.feature.home.components.containers.model.ManageItemRowParams
 
 @Suppress("LongMethod") // Layout managing container reordering and item deletion controls
 @Composable
@@ -165,20 +165,6 @@ internal fun ManageItemsListSection(
         }
     }
 }
-
-private data class ManageItemRowParams(
-    val index: Int,
-    val item: ContainerItemEntity,
-    val totalItems: Int,
-    val folders: List<AppFolder>,
-    val allApps: List<AppInfo>
-)
-
-private data class ManageItemRowActions(
-    val onMoveUp: (Int) -> Unit,
-    val onMoveDown: (Int) -> Unit,
-    val onRemove: (Int) -> Unit
-)
 
 @Composable
 private fun ManageItemRow(

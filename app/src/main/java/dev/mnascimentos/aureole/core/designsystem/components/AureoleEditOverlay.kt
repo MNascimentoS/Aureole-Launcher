@@ -6,8 +6,6 @@ import androidx.compose.animation.core.MutableTransitionState
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
-import androidx.compose.foundation.layout.BoxScope
-import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -21,49 +19,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalInspectionMode
-import dev.chrisbanes.haze.HazeState
+import dev.mnascimentos.aureole.core.designsystem.components.model.AureoleEditOverlayConfig
+import dev.mnascimentos.aureole.core.designsystem.components.model.AureoleEditOverlayParams
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.core.designsystem.utils.LocalAnimatedVisibilityScope
 
 private const val ANIMATION_DURATION_MS = 300
-
-/**
- * Configuration options for [AureoleEditOverlay].
- *
- * @property title Title text displayed at the top of the overlay sheet.
- * @property hazeState Blur effect state for background haze blurring.
- * @property isVisible Controls visibility state of the overlay.
- * @property animated Whether show/hide transition animations are enabled.
- * @property maxSheetHeightFraction Maximum fraction of screen height occupied by the sheet.
- * @property onBackPress Custom back key handler callback.
- * @property onSettingsClick Settings icon click callback.
- */
-data class AureoleEditOverlayConfig(
-    val title: String? = null,
-    val hazeState: HazeState? = null,
-    val isVisible: Boolean = true,
-    val animated: Boolean = true,
-    val maxSheetHeightFraction: Float = 0.70f,
-    val onBackPress: (() -> Unit)? = null,
-    val onSettingsClick: (() -> Unit)? = null,
-)
-
-/**
- * Content slots and configuration parameters for [AureoleEditOverlay].
- *
- * @param config Configuration options provided via [AureoleEditOverlayConfig].
- * @param previewContent Optional preview slot displayed in the main screen area above the bottom sheet.
- * @param bottomBarContent Optional action bottom bar slot anchored below the sheet.
- * @param sheetContent Main sheet content slot.
- */
-class AureoleEditOverlayParams(
-    val config: AureoleEditOverlayConfig = AureoleEditOverlayConfig(),
-    val previewContent: (@Composable BoxScope.() -> Unit)? = null,
-    val bottomBarContent: (@Composable ColumnScope.() -> Unit)? = null,
-    val sheetContent: (@Composable ColumnScope.() -> Unit)? = null,
-)
 
 /**
  * Fullscreen modal overlay sheet for edit mode features (such as container/clock/widget group editing).

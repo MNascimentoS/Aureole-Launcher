@@ -31,7 +31,6 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.dp
 import dev.chrisbanes.haze.HazeStyle
 import dev.chrisbanes.haze.HazeTint
 import dev.chrisbanes.haze.hazeEffect
@@ -47,7 +46,6 @@ import dev.mnascimentos.aureole.feature.home.model.LocalHomeActions
 import dev.mnascimentos.aureole.feature.home.model.LocalHomeUiState
 
 private const val GRID_COLUMNS = 4
-private val POPUP_HAZE_BLUR_RADIUS = 20.dp
 private const val POPUP_HAZE_ALPHA = 0.55f
 
 @NonRestartableComposable
@@ -73,7 +71,7 @@ private fun GridFolderContainer(
         Modifier.hazeEffect(
             state = effectiveHazeState,
             style = HazeStyle(
-                blurRadius = POPUP_HAZE_BLUR_RADIUS,
+                blurRadius = AureoleDS.dimens.popupHazeBlurRadius,
                 tint = HazeTint(Color.Black.copy(alpha = POPUP_HAZE_ALPHA))
             )
         ) { blurEnabled = true }
@@ -92,12 +90,12 @@ private fun GridFolderContainer(
             .padding(AureoleDS.dimens.medium)
     ) {
         if (params.appsInFolder.isEmpty()) {
-            EmptyFolderGridContent(maxListHeightDp = 400.dp)
+            EmptyFolderGridContent(maxListHeightDp = AureoleDS.dimens.popupHeightMax)
         } else {
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .heightIn(max = 400.dp)
+                    .heightIn(max = AureoleDS.dimens.popupHeightMax)
             ) {
                 PopulatedFolderGrid(
                     params = params,
@@ -134,9 +132,9 @@ private fun PopulatedFolderGrid(
     val homeActions = LocalHomeActions.current
     LazyVerticalGrid(
         columns = GridCells.Fixed(GRID_COLUMNS),
-        contentPadding = PaddingValues(8.dp),
-        horizontalArrangement = Arrangement.spacedBy(16.dp),
-        verticalArrangement = Arrangement.spacedBy(18.dp),
+        contentPadding = PaddingValues(AureoleDS.dimens.xSmall),
+        horizontalArrangement = Arrangement.spacedBy(AureoleDS.dimens.medium),
+        verticalArrangement = Arrangement.spacedBy(AureoleDS.dimens.folderGridGap),
         modifier = Modifier.fillMaxWidth()
     ) {
         items(
@@ -171,23 +169,23 @@ private fun OpenedFolderSamsungGridAppItem(
         verticalArrangement = Arrangement.Center,
         modifier = Modifier
             .fillMaxWidth()
-            .defaultMinSize(minWidth = 48.dp, minHeight = 48.dp)
-            .clip(RoundedCornerShape(16.dp))
+            .defaultMinSize(minWidth = AureoleDS.dimens.minTouchTarget, minHeight = AureoleDS.dimens.minTouchTarget)
+            .clip(RoundedCornerShape(AureoleDS.dimens.radiusMedium))
             .combinedClickable(
                 role = Role.Button,
                 onClick = onClick,
                 onLongClick = onLongClick
             )
-            .padding(vertical = 6.dp)
+            .padding(vertical = AureoleDS.dimens.appRowPaddingVertical)
     ) {
         Image(
             bitmap = iconBitmap,
             contentDescription = app.label,
             modifier = Modifier
-                .size(52.dp)
-                .clip(RoundedCornerShape(16.dp))
+                .size(AureoleDS.dimens.folderButtonSmall)
+                .clip(RoundedCornerShape(AureoleDS.dimens.radiusMedium))
         )
-        Spacer(modifier = Modifier.height(6.dp))
+        Spacer(modifier = Modifier.height(AureoleDS.dimens.appRowPaddingVertical))
         Text(
             text = app.label,
             style = AureoleDS.typography.labelSmall,

@@ -18,7 +18,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
 import dev.mnascimentos.aureole.core.designsystem.icons.ColorFill
@@ -49,18 +48,18 @@ internal fun MenuColorRow(
         modifier = Modifier
             .fillMaxWidth()
             .minimumInteractiveComponentSize()
-            .clip(RoundedCornerShape(16.dp))
+            .clip(RoundedCornerShape(AureoleDS.dimens.radiusMedium))
             .clickable(
                 onClick = onClick,
                 role = Role.Button
             )
             .semantics(mergeDescendants = true) {}
-            .padding(vertical = 8.dp, horizontal = 12.dp),
+            .padding(vertical = AureoleDS.dimens.xSmall, horizontal = AureoleDS.dimens.small),
         verticalAlignment = Alignment.CenterVertically
     ) {
         AureoleDS.icons.ColorFill(
             tint = AureoleDS.colors.onSurfaceMedium,
-            modifier = Modifier.padding(end = 20.dp).size(20.dp)
+            modifier = Modifier.padding(end = AureoleDS.dimens.iconMedium).size(AureoleDS.dimens.iconMedium)
         )
         AureoleText(
             text = "Menu background color",
@@ -70,7 +69,7 @@ internal fun MenuColorRow(
         )
         Box(
             modifier = Modifier
-                .size(24.dp)
+                .size(AureoleDS.dimens.iconLarge)
                 .clip(CircleShape)
                 .background(Color(manualSeedColor))
         )
@@ -86,18 +85,18 @@ internal fun GlassAndBlurRow(
         modifier = Modifier
             .fillMaxWidth()
             .minimumInteractiveComponentSize()
-            .clip(RoundedCornerShape(16.dp))
+            .clip(RoundedCornerShape(AureoleDS.dimens.radiusMedium))
             .clickable(
                 onClick = onClick,
                 role = Role.Button
             )
             .semantics(mergeDescendants = true) {}
-            .padding(vertical = 8.dp, horizontal = 12.dp),
+            .padding(vertical = AureoleDS.dimens.xSmall, horizontal = AureoleDS.dimens.small),
         verticalAlignment = Alignment.CenterVertically
     ) {
         AureoleDS.icons.Glass(
             tint = AureoleDS.colors.onSurfaceMedium,
-            modifier = Modifier.padding(end = 20.dp).size(20.dp)
+            modifier = Modifier.padding(end = AureoleDS.dimens.iconMedium).size(AureoleDS.dimens.iconMedium)
         )
         AureoleText(
             text = "Glass effect",
@@ -128,18 +127,18 @@ internal fun ChangeBorderRow(
         modifier = Modifier
             .fillMaxWidth()
             .minimumInteractiveComponentSize()
-            .clip(RoundedCornerShape(16.dp))
+            .clip(RoundedCornerShape(AureoleDS.dimens.radiusMedium))
             .clickable(
                 onClick = onClick,
                 role = Role.Button
             )
             .semantics(mergeDescendants = true) {}
-            .padding(vertical = 8.dp, horizontal = 12.dp),
+            .padding(vertical = AureoleDS.dimens.xSmall, horizontal = AureoleDS.dimens.small),
         verticalAlignment = Alignment.CenterVertically
     ) {
         AureoleDS.icons.Corners(
             tint = AureoleDS.colors.onSurfaceMedium,
-            modifier = Modifier.padding(end = 20.dp).size(20.dp)
+            modifier = Modifier.padding(end = AureoleDS.dimens.iconMedium).size(AureoleDS.dimens.iconMedium)
         )
         AureoleText(
             text = "Change Border",

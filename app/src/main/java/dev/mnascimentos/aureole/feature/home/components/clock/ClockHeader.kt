@@ -23,6 +23,10 @@ import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.core.designsystem.utils.LocalHazeState
+import dev.mnascimentos.aureole.feature.home.components.clock.model.ClockHazeConfig
+import dev.mnascimentos.aureole.feature.home.components.clock.model.ClockHeaderConfig
+import dev.mnascimentos.aureole.feature.home.components.clock.model.ClockHeaderContentParams
+import dev.mnascimentos.aureole.feature.home.components.clock.model.ResolvedClockConfig
 import dev.mnascimentos.aureole.feature.home.model.LocalHomeUiState
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
 import java.text.SimpleDateFormat
@@ -34,17 +38,6 @@ private const val MORNING_HOUR_END = 11
 private const val AFTERNOON_HOUR_START = 12
 private const val AFTERNOON_HOUR_END = 17
 private const val DEFAULT_NOON_HOUR = 12
-
-private data class ResolvedClockConfig(
-    val style: String,
-    val customGreeting: String,
-    val alignment: String,
-    val fontFamily: String,
-    val timeFormat: String,
-    val dateFormat: String,
-    val textColor: Int,
-    val backgroundColor: Int
-)
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable

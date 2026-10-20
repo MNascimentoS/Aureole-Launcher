@@ -2,6 +2,8 @@ package dev.mnascimentos.aureole.feature.home.grid
 
 import dev.mnascimentos.aureole.core.data.model.LauncherItemState
 import dev.mnascimentos.aureole.core.data.model.LauncherItemType
+import dev.mnascimentos.aureole.feature.home.grid.model.GridLimits
+import dev.mnascimentos.aureole.feature.home.grid.model.SnapParams
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue

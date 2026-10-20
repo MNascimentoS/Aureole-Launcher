@@ -4,7 +4,7 @@ import dev.mnascimentos.aureole.core.data.model.LauncherItemState
 import dev.mnascimentos.aureole.core.data.repository.GridRepository
 import dev.mnascimentos.aureole.feature.home.HomeViewModel
 import dev.mnascimentos.aureole.feature.home.grid.GridEngineUtils
-import dev.mnascimentos.aureole.feature.home.grid.GridLimits
+import dev.mnascimentos.aureole.feature.home.grid.model.GridLimits
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
 
 internal fun HomeViewModel.getGridRepository(): GridRepository {

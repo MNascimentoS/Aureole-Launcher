@@ -2,8 +2,6 @@
 
 package dev.mnascimentos.aureole.feature.home.grid
 
-import androidx.compose.animation.core.Animatable
-import androidx.compose.animation.core.AnimationVector2D
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
 import androidx.compose.foundation.border
@@ -20,34 +18,12 @@ import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.core.data.model.LauncherItemState
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.feature.home.grid.model.DragTargetSlot
+import dev.mnascimentos.aureole.feature.home.grid.model.GridCellDragEndParams
 import dev.mnascimentos.aureole.feature.home.grid.model.GridCellParams
+import dev.mnascimentos.aureole.feature.home.grid.model.GridEditModifierArgs
 import dev.mnascimentos.aureole.feature.home.grid.model.GridEditModifierParams
-import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
-
-data class GridEditModifierArgs(
-    val params: GridCellParams,
-    val isDragging: Boolean,
-    val isResizing: Boolean,
-    val onDraggingChange: (Boolean) -> Unit,
-    val dragOffset: Offset,
-    val onDragOffsetChange: (Offset) -> Unit,
-    val animatableOffset: Animatable<Offset, AnimationVector2D>,
-    val coroutineScope: CoroutineScope,
-    val currentParams: GridCellParams,
-    val currentActions: HomeScreenActions,
-    val currentOnDragTargetChange: (DragTargetSlot?) -> Unit
-)
-
-data class GridCellDragEndParams(
-    val params: GridCellParams,
-    val dragOffsetX: Float,
-    val dragOffsetY: Float,
-    val coroutineScope: CoroutineScope,
-    val animatableOffset: Animatable<Offset, AnimationVector2D>
-)
 
 @Composable
 internal fun Modifier.rememberGridCellEditModifier(args: GridEditModifierArgs): Modifier {

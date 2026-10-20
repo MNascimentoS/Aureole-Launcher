@@ -26,12 +26,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleFloatingSearchBar
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleFloatingSearchBarParams
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleSearchBarSizes
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleSearchBarState
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleSectionHeader
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.components.scrubber.CurvedAlphabetScrubber
@@ -80,7 +80,7 @@ fun WidgetGroupList(
     }
 
     val groupedData = rememberGroupedAppsData(state.widgetGroups)
-    val topPadding = if (isSearchExpanded) 80.dp else 16.dp
+    val topPadding = if (isSearchExpanded) AureoleDS.dimens.widgetSearchTopPaddingExpanded else AureoleDS.dimens.medium
 
     Box(modifier = modifier.fillMaxSize()) {
         WidgetGroupListColumn(
@@ -108,10 +108,10 @@ fun WidgetGroupList(
         val searchBarModifier = if (isSearchExpanded) {
             Modifier
                 .fillMaxWidth()
-                .padding(start = 24.dp, end = 24.dp, top = 16.dp)
+                .padding(start = AureoleDS.dimens.large, end = AureoleDS.dimens.large, top = AureoleDS.dimens.medium)
         } else {
             Modifier
-                .padding(end = 24.dp, bottom = 24.dp)
+                .padding(end = AureoleDS.dimens.large, bottom = AureoleDS.dimens.large)
         }
 
         Box(modifier = Modifier.align(searchBarAlign)) {
@@ -127,8 +127,8 @@ fun WidgetGroupList(
                     placeholder = "Pesquisar widgets...",
                     focusRequester = focusRequester,
                     sizes = AureoleSearchBarSizes(
-                        collapsedSize = 60.dp,
-                        barHeight = 52.dp
+                        collapsedSize = AureoleDS.dimens.folderButtonMedium,
+                        barHeight = AureoleDS.dimens.folderButtonSmall
                     )
                 )
             )
@@ -214,13 +214,17 @@ private fun WidgetGroupListColumn(
     LazyColumn(
         state = listState,
         modifier = Modifier.fillMaxSize(),
-        contentPadding = PaddingValues(bottom = 120.dp, top = topPadding)
+        contentPadding = PaddingValues(bottom = AureoleDS.dimens.widgetListBottomPadding, top = topPadding)
     ) {
         groupedApps.forEach { (letter, groups) ->
             item(key = "header_$letter") {
                 AureoleSectionHeader(
                     title = letter.toString(),
-                    modifier = Modifier.padding(start = 24.dp, top = 16.dp, bottom = 8.dp)
+                    modifier = Modifier.padding(
+                        start = AureoleDS.dimens.large,
+                        top = AureoleDS.dimens.medium,
+                        bottom = AureoleDS.dimens.xSmall
+                    )
                 )
             }
 
@@ -270,9 +274,9 @@ private fun WidgetPreviewRow(
     LazyRow(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 12.dp),
-        contentPadding = PaddingValues(start = 24.dp, end = 48.dp),
-        horizontalArrangement = Arrangement.spacedBy(16.dp)
+            .padding(vertical = AureoleDS.dimens.small),
+        contentPadding = PaddingValues(start = AureoleDS.dimens.large, end = AureoleDS.dimens.minTouchTarget),
+        horizontalArrangement = Arrangement.spacedBy(AureoleDS.dimens.medium)
     ) {
         items(
             items = widgets,

@@ -23,11 +23,13 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import dev.chrisbanes.haze.HazeState
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleEditOverlay
-import dev.mnascimentos.aureole.core.designsystem.components.AureoleEditOverlayConfig
-import dev.mnascimentos.aureole.core.designsystem.components.AureoleEditOverlayParams
+import dev.mnascimentos.aureole.core.designsystem.components.model.AureoleEditOverlayConfig
+import dev.mnascimentos.aureole.core.designsystem.components.model.AureoleEditOverlayParams
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
+import dev.mnascimentos.aureole.feature.home.components.clock.model.ClockHazeConfig
+import dev.mnascimentos.aureole.feature.home.components.clock.model.ClockHeaderConfig
 import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
 import kotlinx.coroutines.delay

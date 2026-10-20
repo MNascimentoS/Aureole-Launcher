@@ -19,43 +19,27 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
-import dev.mnascimentos.aureole.core.data.model.AppFolder
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.data.model.ContainerItemEntity
 import dev.mnascimentos.aureole.core.data.model.ContainerItemType
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
+import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.core.designsystem.utils.fadingEdges
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.ContainerAddFolderButton
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.ContainerAppItem
-import dev.mnascimentos.aureole.feature.home.components.containers.folder.ContainerFolderConfig
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.ContainerFolderItem
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.ContainerAppItemParams
+import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.ContainerFolderConfig
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.ContainerFolderItemParams
+import dev.mnascimentos.aureole.feature.home.components.containers.model.ContainerColumnConfig
 import dev.mnascimentos.aureole.feature.home.components.containers.model.ContainerConfig
+import dev.mnascimentos.aureole.feature.home.components.containers.model.ContainerRenderItem
+import dev.mnascimentos.aureole.feature.home.components.containers.model.ContainerRowConfig
 import dev.mnascimentos.aureole.feature.home.model.LocalHomeActions
 import dev.mnascimentos.aureole.feature.home.model.LocalHomeUiState
-
-internal data class ContainerColumnConfig(
-    val backgroundColor: Color,
-    val verticalArrangement: Arrangement.Vertical,
-    val onFolderClick: (AppFolder, Float) -> Unit,
-    val shouldExpand: Boolean = false
-)
-
-internal data class ContainerRowConfig(
-    val backgroundColor: Color,
-    val horizontalArrangement: Arrangement.Horizontal,
-    val onFolderClick: (AppFolder, Float) -> Unit,
-    val shouldExpand: Boolean = false
-)
-
-internal sealed class ContainerRenderItem {
-    data class Folder(val folder: AppFolder) : ContainerRenderItem()
-    data class App(val appInfo: AppInfo) : ContainerRenderItem()
-}
 
 internal fun resolveContainerRenderItems(
     config: ContainerConfig,
@@ -139,6 +123,10 @@ private fun ColumnRenderItem(
     val actions = LocalHomeActions.current
     when (renderItem) {
         is ContainerRenderItem.Folder -> {
+            val updatedFolder = renderItem.folder.copy(
+                panelId = config.panelId,
+                displayAsGrid = config.isGridFolderEnabled || renderItem.folder.displayAsGrid
+            )
             ContainerFolderItem(
                 params = ContainerFolderItemParams(
                     folder = renderItem.folder,
@@ -148,19 +136,8 @@ private fun ColumnRenderItem(
                         isGridFolderEnabled = config.isGridFolderEnabled,
                         isBackgroundEnabled = config.isBackgroundEnabled
                     ),
-                    onFolderClick = { f, y ->
-                        val updatedFolder = f.copy(
-                            panelId = config.panelId,
-                            displayAsGrid = config.isGridFolderEnabled || f.displayAsGrid
-                        )
-                        columnConfig.onFolderClick(updatedFolder, y)
-                    },
-                    onLongClick = {
-                        actions.onOpenContainerFolderBottomSheet(
-                            renderItem.folder,
-                            config.panelId
-                        )
-                    }
+                    onFolderClick = { _, y -> columnConfig.onFolderClick(updatedFolder, y) },
+                    onLongClick = { actions.onOpenContainerFolderBottomSheet(renderItem.folder, config.panelId) }
                 )
             )
         }
@@ -237,6 +214,10 @@ private fun RowRenderItem(
     val actions = LocalHomeActions.current
     when (renderItem) {
         is ContainerRenderItem.Folder -> {
+            val updatedFolder = renderItem.folder.copy(
+                panelId = config.panelId,
+                displayAsGrid = config.isGridFolderEnabled || renderItem.folder.displayAsGrid
+            )
             Box(modifier = Modifier.padding(horizontal = 4.dp)) {
                 ContainerFolderItem(
                     params = ContainerFolderItemParams(
@@ -247,19 +228,8 @@ private fun RowRenderItem(
                             isGridFolderEnabled = config.isGridFolderEnabled,
                             isBackgroundEnabled = config.isBackgroundEnabled
                         ),
-                        onFolderClick = { f, y ->
-                            val updatedFolder = f.copy(
-                                panelId = config.panelId,
-                                displayAsGrid = config.isGridFolderEnabled || f.displayAsGrid
-                            )
-                            rowConfig.onFolderClick(updatedFolder, y)
-                        },
-                        onLongClick = {
-                            actions.onOpenContainerFolderBottomSheet(
-                                renderItem.folder,
-                                config.panelId
-                            )
-                        }
+                        onFolderClick = { _, y -> rowConfig.onFolderClick(updatedFolder, y) },
+                        onLongClick = { actions.onOpenContainerFolderBottomSheet(renderItem.folder, config.panelId) }
                     )
                 )
             }
@@ -272,15 +242,48 @@ private fun RowRenderItem(
                         showLabels = config.showFolderLabels,
                         isBackgroundEnabled = config.isBackgroundEnabled,
                         onAppClick = { appInfo -> actions.onAppClick(appInfo) },
-                        onLongClick = {
-                            actions.onOpenContainerAppBottomSheet(
-                                renderItem.appInfo,
-                                config.panelId
-                            )
-                        }
+                        onLongClick = { actions.onOpenContainerAppBottomSheet(renderItem.appInfo, config.panelId) }
                     )
                 )
             }
         }
+    }
+}
+
+@AureolePreview
+@Composable
+private fun ContainerColumnPreview() {
+    AureoleLauncherTheme {
+        ContainerColumn(
+            config = ContainerConfig(
+                panelId = "preview_column",
+                isBackgroundEnabled = true,
+                showAddFolderButton = true
+            ),
+            columnConfig = ContainerColumnConfig(
+                backgroundColor = AureoleDS.colors.surface,
+                verticalArrangement = Arrangement.Center,
+                onFolderClick = { _, _ -> }
+            )
+        )
+    }
+}
+
+@AureolePreview
+@Composable
+private fun ContainerRowPreview() {
+    AureoleLauncherTheme {
+        ContainerRow(
+            config = ContainerConfig(
+                panelId = "preview_row",
+                isBackgroundEnabled = true,
+                showAddFolderButton = true
+            ),
+            rowConfig = ContainerRowConfig(
+                backgroundColor = AureoleDS.colors.surface,
+                horizontalArrangement = Arrangement.Center,
+                onFolderClick = { _, _ -> }
+            )
+        )
     }
 }

@@ -1,13 +1,97 @@
 package dev.mnascimentos.aureole.feature.home.grid.model
 
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.AnimationVector2D
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.input.pointer.PointerInputChange
 import androidx.compose.ui.unit.Dp
 import dev.mnascimentos.aureole.core.data.model.LauncherItemState
-import dev.mnascimentos.aureole.feature.home.grid.GridLimits
+import dev.mnascimentos.aureole.core.data.model.LauncherItemType
+import dev.mnascimentos.aureole.core.data.model.ScrollOrientation
 import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
+import kotlinx.coroutines.CoroutineScope
+
+data class GridLimits(
+    val maxCols: Int = 4,
+    val maxRows: Int = 8
+)
+
+data class SnapParams(
+    val xPx: Float,
+    val yPx: Float,
+    val cellWidthPx: Float,
+    val cellHeightPx: Float,
+    val colSpan: Int,
+    val rowSpan: Int
+)
+
+data class SlotSearchRequest(
+    val targetColSpan: Int,
+    val targetRowSpan: Int,
+    val minColSpan: Int = 1,
+    val minRowSpan: Int = 1,
+    val limits: GridLimits = GridLimits()
+)
+
+data class SlotSearchParams(
+    val targetCol: Int,
+    val targetRow: Int,
+    val item: LauncherItemState,
+    val items: List<LauncherItemState>,
+    val limits: GridLimits,
+    val maxCol: Int,
+    val maxRow: Int
+)
+
+data class DynamicGridItemsParams(
+    val items: List<LauncherItemState>,
+    val isEditMode: Boolean,
+    val metrics: GridMetricsTuple,
+    val limits: GridLimits,
+    val actions: HomeScreenActions
+)
+
+data class GridEditModifierArgs(
+    val params: GridCellParams,
+    val isDragging: Boolean,
+    val isResizing: Boolean,
+    val onDraggingChange: (Boolean) -> Unit,
+    val dragOffset: Offset,
+    val onDragOffsetChange: (Offset) -> Unit,
+    val animatableOffset: Animatable<Offset, AnimationVector2D>,
+    val coroutineScope: CoroutineScope,
+    val currentParams: GridCellParams,
+    val currentActions: HomeScreenActions,
+    val currentOnDragTargetChange: (DragTargetSlot?) -> Unit
+)
+
+data class GridCellDragEndParams(
+    val params: GridCellParams,
+    val dragOffsetX: Float,
+    val dragOffsetY: Float,
+    val coroutineScope: CoroutineScope,
+    val animatableOffset: Animatable<Offset, AnimationVector2D>
+)
+
+data class ScrollViewChildParams(
+    val parentId: String,
+    val child: LauncherItemState,
+    val childIndex: Int,
+    val totalChildren: Int,
+    val isVertical: Boolean,
+)
+
+data class GridItemSpec(
+    val type: LauncherItemType,
+    val widgetId: Int? = null,
+    val targetColSpan: Int? = null,
+    val targetRowSpan: Int? = null,
+    val minColSpan: Int? = null,
+    val minRowSpan: Int? = null,
+    val scrollOrientation: ScrollOrientation? = null
+)
 
 data class GridMetricsTuple(
     val cellWidthPx: Float,

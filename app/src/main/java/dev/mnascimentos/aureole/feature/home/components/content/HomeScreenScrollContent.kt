@@ -32,7 +32,6 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.rememberNestedScrollInteropConnection
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.core.data.model.LauncherItemType
 import dev.mnascimentos.aureole.core.data.model.ScrollOrientation
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
@@ -50,11 +49,6 @@ import dev.mnascimentos.aureole.feature.home.model.LocalHomeUiState
 import dev.mnascimentos.aureole.feature.home.model.ScrollViewChildItemParams
 import dev.mnascimentos.aureole.feature.home.model.ScrollViewContentParams
 import dev.mnascimentos.aureole.feature.home.model.VerticalScrollViewContentParams
-
-private const val SCROLL_CHILD_MIN_HEIGHT = 70
-private const val SCROLL_CHILD_MIN_WIDTH = 100
-private const val SCROLL_CHILD_ROW_HEIGHT = 60
-private const val SCROLL_CHILD_COL_WIDTH = 70
 
 @Composable
 fun ScrollViewContainerContent(
@@ -145,8 +139,8 @@ private fun VerticalScrollViewContent(params: VerticalScrollViewContentParams) {
         modifier = Modifier
             .fillMaxSize()
             .verticalScroll(params.scrollState)
-            .padding(horizontal = 4.dp, vertical = 4.dp),
-        verticalArrangement = Arrangement.spacedBy(4.dp),
+            .padding(horizontal = AureoleDS.dimens.xxSmall, vertical = AureoleDS.dimens.xxSmall),
+        verticalArrangement = Arrangement.spacedBy(AureoleDS.dimens.xxSmall),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         item.safeChildren.forEach { childItem ->
@@ -177,8 +171,8 @@ private fun HorizontalScrollViewContent(params: ScrollViewContentParams) {
         modifier = Modifier
             .fillMaxSize()
             .horizontalScroll(rememberScrollState())
-            .padding(8.dp),
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
+            .padding(AureoleDS.dimens.xSmall),
+        horizontalArrangement = Arrangement.spacedBy(AureoleDS.dimens.xSmall),
         verticalAlignment = Alignment.CenterVertically
     ) {
         item.safeChildren.forEach { childItem ->
@@ -208,13 +202,13 @@ private fun ScrollViewChildItem(params: ScrollViewChildItemParams) {
     val childModifier = when {
         isAppsList && isVertical -> Modifier.fillMaxWidth().wrapContentHeight()
         isVertical -> {
-            val childHeightDp = (childItem.rowSpan * SCROLL_CHILD_ROW_HEIGHT).dp
-                .coerceAtLeast(SCROLL_CHILD_MIN_HEIGHT.dp)
+            val childHeightDp = (AureoleDS.dimens.scrollChildRowHeight * childItem.rowSpan)
+                .coerceAtLeast(AureoleDS.dimens.scrollChildMinHeight)
             Modifier.fillMaxWidth().height(childHeightDp)
         }
         else -> {
-            val childWidthDp = (childItem.colSpan * SCROLL_CHILD_COL_WIDTH).dp
-                .coerceAtLeast(SCROLL_CHILD_MIN_WIDTH.dp)
+            val childWidthDp = (AureoleDS.dimens.scrollChildColWidth * childItem.colSpan)
+                .coerceAtLeast(AureoleDS.dimens.scrollChildMinWidth)
             Modifier.width(childWidthDp).fillMaxHeight()
         }
     }
@@ -237,8 +231,8 @@ private fun ScrollViewChildItem(params: ScrollViewChildItemParams) {
 private fun ScrollViewAddComponentButton(parentId: String, actions: HomeScreenActions) {
     Box(
         modifier = Modifier
-            .padding(vertical = 12.dp)
-            .clip(RoundedCornerShape(20.dp))
+            .padding(vertical = AureoleDS.dimens.small)
+            .clip(RoundedCornerShape(AureoleDS.dimens.radiusMediumLarge))
             .background(AureoleDS.colors.surfaceVariant)
             .pointerInput("add_btn_" + parentId) {
                 detectTapGestures(
@@ -247,15 +241,15 @@ private fun ScrollViewAddComponentButton(parentId: String, actions: HomeScreenAc
                     }
                 )
             }
-            .padding(horizontal = 16.dp, vertical = 8.dp),
+            .padding(horizontal = AureoleDS.dimens.medium, vertical = AureoleDS.dimens.xSmall),
         contentAlignment = Alignment.Center
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             AureoleDS.icons.Add(
                 tint = AureoleDS.colors.onSurfaceHigh,
-                modifier = Modifier.size(18.dp)
+                modifier = Modifier.size(AureoleDS.dimens.iconMediumSmall)
             )
-            Spacer(modifier = Modifier.width(6.dp))
+            Spacer(modifier = Modifier.width(AureoleDS.dimens.appRowPaddingVertical))
             AureoleText(
                 text = "Componente",
                 color = AureoleDS.colors.onSurfaceHigh,

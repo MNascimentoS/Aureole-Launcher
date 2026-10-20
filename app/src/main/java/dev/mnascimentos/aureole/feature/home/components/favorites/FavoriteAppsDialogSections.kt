@@ -24,12 +24,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.icons.Edit
 import dev.mnascimentos.aureole.core.designsystem.icons.Star
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
+import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.components.favorites.model.FavoriteAppsBodyParams
 import dev.mnascimentos.aureole.feature.home.components.favorites.model.FavoriteAppsDialogActions
 import dev.mnascimentos.aureole.feature.home.components.favorites.model.FavoriteAppsDialogConfig
@@ -95,20 +96,20 @@ private fun MainFavoritesEditShortcutsRow(onClick: () -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .defaultMinSize(minHeight = 48.dp)
+            .defaultMinSize(minHeight = AureoleDS.dimens.minTouchTarget)
             .clickable(
                 role = Role.Button,
                 onClick = onClick
             )
             .semantics(mergeDescendants = true) {}
-            .padding(vertical = 14.dp),
+            .padding(vertical = AureoleDS.dimens.favoriteSectionPaddingVertical),
         verticalAlignment = Alignment.CenterVertically
     ) {
         AureoleDS.icons.Star(
             tint = AureoleDS.colors.onSurfaceMedium,
-            modifier = Modifier.size(24.dp)
+            modifier = Modifier.size(AureoleDS.dimens.iconLarge)
         )
-        Spacer(modifier = Modifier.width(16.dp))
+        Spacer(modifier = Modifier.width(AureoleDS.dimens.medium))
         Column(modifier = Modifier.weight(1f)) {
             Text(
                 text = "Edit shortcuts",
@@ -130,20 +131,20 @@ private fun MainFavoritesAppearanceRow(onClick: () -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .defaultMinSize(minHeight = 48.dp)
+            .defaultMinSize(minHeight = AureoleDS.dimens.minTouchTarget)
             .clickable(
                 role = Role.Button,
                 onClick = onClick
             )
             .semantics(mergeDescendants = true) {}
-            .padding(vertical = 14.dp),
+            .padding(vertical = AureoleDS.dimens.favoriteSectionPaddingVertical),
         verticalAlignment = Alignment.CenterVertically
     ) {
         AureoleDS.icons.Edit(
             tint = AureoleDS.colors.onSurfaceMedium,
-            modifier = Modifier.size(24.dp)
+            modifier = Modifier.size(AureoleDS.dimens.iconLarge)
         )
-        Spacer(modifier = Modifier.width(16.dp))
+        Spacer(modifier = Modifier.width(AureoleDS.dimens.medium))
         Column(modifier = Modifier.weight(1f)) {
             Text(
                 text = "Appearance",
@@ -214,11 +215,8 @@ private fun FavoriteAppsDialogContent(
 }
 
 private fun filterAppsByQuery(apps: List<AppInfo>, query: String): List<AppInfo> {
-    return if (query.isBlank()) {
-        apps
-    } else {
-        apps.filter { it.label.contains(query, ignoreCase = true) }
-    }
+    if (query.isBlank()) return apps
+    return apps.filter { it.label.contains(query, ignoreCase = true) }
 }
 
 @Composable
@@ -249,13 +247,13 @@ private fun FavoriteAppsDialogBody(
             onQueryChange = onSearchQueryChange
         )
 
-        Spacer(modifier = Modifier.height(12.dp))
+        Spacer(modifier = Modifier.height(AureoleDS.dimens.small))
 
         LazyColumn(
             modifier = Modifier
                 .weight(1f)
                 .fillMaxWidth(),
-            verticalArrangement = Arrangement.spacedBy(6.dp)
+            verticalArrangement = Arrangement.spacedBy(AureoleDS.dimens.appRowPaddingVertical)
         ) {
             favoriteSectionItems(
                 params = FavoriteSectionParams(
@@ -286,10 +284,62 @@ private fun moveFavoriteItem(
     delta: Int
 ) {
     val targetIndex = index + delta
-    if (targetIndex in 0 until config.favoriteAppPackages.size) {
-        val list = config.favoriteAppPackages.toMutableList()
-        val item = list.removeAt(index)
-        list.add(targetIndex, item)
-        actions.onUpdateFavoritePackages(config.containerId, list)
+    if (targetIndex !in config.favoriteAppPackages.indices) return
+
+    val list = config.favoriteAppPackages.toMutableList()
+    val item = list.removeAt(index)
+    list.add(targetIndex, item)
+    actions.onUpdateFavoritePackages(config.containerId, list)
+}
+
+@AureolePreview
+@Composable
+private fun FavoriteAppsSheetContentMainPreview() {
+    AureoleLauncherTheme {
+        FavoriteAppsSheetContent(
+            currentMode = FavoriteAppsScreenMode.MAIN,
+            config = FavoriteAppsDialogConfig(
+                allApps = emptyList(),
+                favoriteAppPackages = emptyList()
+            ),
+            actions = FavoriteAppsDialogActions(),
+            onEditShortcutsClick = {},
+            onAppearanceClick = {}
+        )
+    }
+}
+
+@AureolePreview
+@Composable
+private fun FavoriteAppsSheetContentAppearancePreview() {
+    AureoleLauncherTheme {
+        FavoriteAppsSheetContent(
+            currentMode = FavoriteAppsScreenMode.APPEARANCE,
+            config = FavoriteAppsDialogConfig(
+                allApps = emptyList(),
+                favoriteAppPackages = emptyList(),
+                showAllAppsOnHome = true
+            ),
+            actions = FavoriteAppsDialogActions(),
+            onEditShortcutsClick = {},
+            onAppearanceClick = {}
+        )
+    }
+}
+
+@AureolePreview
+@Composable
+private fun FavoriteAppsSheetContentEditShortcutsPreview() {
+    AureoleLauncherTheme {
+        FavoriteAppsSheetContent(
+            currentMode = FavoriteAppsScreenMode.EDIT_SHORTCUTS,
+            config = FavoriteAppsDialogConfig(
+                allApps = emptyList(),
+                favoriteAppPackages = emptyList()
+            ),
+            actions = FavoriteAppsDialogActions(),
+            onEditShortcutsClick = {},
+            onAppearanceClick = {}
+        )
     }
 }

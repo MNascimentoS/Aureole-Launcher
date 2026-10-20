@@ -16,7 +16,9 @@ import dev.mnascimentos.aureole.core.data.model.AppFolder
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
+import dev.mnascimentos.aureole.feature.home.components.containers.model.ContainerColumnConfig
 import dev.mnascimentos.aureole.feature.home.components.containers.model.ContainerConfig
+import dev.mnascimentos.aureole.feature.home.components.containers.model.ContainerRowConfig
 import dev.mnascimentos.aureole.feature.home.model.LocalHomeUiState
 
 private const val CONTAINER_HAZE_ALPHA_MULTIPLIER = 0.7f

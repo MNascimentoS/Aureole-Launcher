@@ -25,6 +25,15 @@ data class FolderSectionParams(
     val totalSelectedCount: Int
 )
 
+data class SelectedFolderAppSectionParams(
+    val filteredSelected: List<AppInfo>,
+    val searchQuery: String,
+    val totalSelectedCount: Int,
+    val onMoveUp: (Int) -> Unit,
+    val onMoveDown: (Int) -> Unit,
+    val onToggleSelect: (String) -> Unit
+)
+
 data class FolderAppPickerBodyParams(
     val folderName: String,
     val searchQuery: String,

@@ -1,6 +1,5 @@
 package dev.mnascimentos.aureole.feature.home.components.clock
 
-import android.graphics.Typeface
 import android.view.View
 import android.widget.TextClock
 import androidx.compose.animation.Crossfade
@@ -14,13 +13,15 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
-import dev.chrisbanes.haze.HazeState
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
+import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
+import dev.mnascimentos.aureole.feature.home.components.clock.model.ClockHeaderContentParams
+import dev.mnascimentos.aureole.feature.home.components.clock.model.ClockTimeDisplayParams
 
 private const val MIN_GREETING_HEIGHT_DP = 100
 private const val COMPACT_CONTAINER_HEIGHT_DP = 90
@@ -36,45 +37,6 @@ private const val DATE_SIZE_COMPACT = 11f
 private const val DATE_SIZE_NORMAL = 13f
 
 private const val GREETING_CROSSFADE_DURATION_MS = 500
-
-data class ClockHazeConfig(
-    val hazeState: HazeState? = null,
-    val isHazeEnabled: Boolean = false,
-    val hazeOpacity: Float = 0.5f,
-    val isBackgroundEnabled: Boolean = true
-)
-
-data class ClockHeaderConfig(
-    val style: String? = null,
-    val customGreeting: String? = null,
-    val alignment: String? = null,
-    val fontFamily: String? = null,
-    val timeFormat: String? = null,
-    val dateFormat: String? = null,
-    val textColor: Int? = null,
-    val backgroundColor: Int? = null
-)
-
-internal data class ClockHeaderContentParams(
-    val maxHeight: Dp,
-    val colorPrimary: Int,
-    val composeTextColor: Color,
-    val greeting: String,
-    val clockStyle: String,
-    val alignment: String,
-    val fontFamily: String,
-    val timeFormat: String,
-    val dateFormat: String
-)
-
-internal data class ClockTimeDisplayParams(
-    val colorPrimary: Int,
-    val textSizePx: Float,
-    val format12: String,
-    val format24: String,
-    val typeface: Typeface,
-    val alignment: String
-)
 
 @Composable
 internal fun ClockHeaderContent(params: ClockHeaderContentParams) {
@@ -233,4 +195,44 @@ private fun ClockTimeDisplay(params: ClockTimeDisplayParams) {
             clock.textAlignment = textClockAlignment
         }
     )
+}
+
+@AureolePreview
+@Composable
+private fun ClockHeaderContentPreview() {
+    AureoleLauncherTheme {
+        ClockHeaderContent(
+            params = ClockHeaderContentParams(
+                maxHeight = 120.dp,
+                colorPrimary = android.graphics.Color.WHITE,
+                composeTextColor = Color.White,
+                greeting = "Boa tarde",
+                clockStyle = "STANDARD",
+                alignment = "CENTER",
+                fontFamily = "DEFAULT",
+                timeFormat = "12H",
+                dateFormat = "DEFAULT"
+            )
+        )
+    }
+}
+
+@AureolePreview
+@Composable
+private fun ClockHeaderContentDateOnTopPreview() {
+    AureoleLauncherTheme {
+        ClockHeaderContent(
+            params = ClockHeaderContentParams(
+                maxHeight = 120.dp,
+                colorPrimary = android.graphics.Color.WHITE,
+                composeTextColor = Color.White,
+                greeting = "Bom dia",
+                clockStyle = "DATE_ON_TOP",
+                alignment = "START",
+                fontFamily = "DEFAULT",
+                timeFormat = "24H",
+                dateFormat = "DEFAULT"
+            )
+        )
+    }
 }

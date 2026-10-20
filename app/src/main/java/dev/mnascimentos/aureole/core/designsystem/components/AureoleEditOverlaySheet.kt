@@ -47,10 +47,13 @@ import dev.chrisbanes.haze.HazeState
 import dev.chrisbanes.haze.HazeStyle
 import dev.chrisbanes.haze.HazeTint
 import dev.chrisbanes.haze.hazeEffect
+import dev.mnascimentos.aureole.core.designsystem.components.model.AureoleEditOverlayParams
+import dev.mnascimentos.aureole.core.designsystem.components.model.SheetBounds
 import dev.mnascimentos.aureole.core.designsystem.icons.Logo
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
+import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.core.designsystem.utils.LocalHazeState
-import dev.mnascimentos.aureole.feature.home.model.LocalHomeActions
 
 private const val ANIMATION_DURATION_MS = 300
 private const val DISMISS_DRAG_THRESHOLD_PX = 50f
@@ -158,11 +161,6 @@ private fun ColumnScope.PreviewSlot(
     }
 }
 
-internal data class SheetBounds(
-    val maxHeight: Dp,
-    val maxExpansionAllowed: Dp
-)
-
 @Composable
 private fun SheetSurface(
     params: AureoleEditOverlayParams,
@@ -241,23 +239,26 @@ private fun handleDragStopped(
 ) {
     if (velocity > DISMISS_VELOCITY_THRESHOLD && dragExpansion == 0f) {
         triggerDismiss()
-    } else if (velocity < EXPAND_VELOCITY_THRESHOLD) {
-        onExpansionChanged(maxExpansionAllowed.value)
-    } else if (velocity > COLLAPSE_VELOCITY_THRESHOLD) {
-        onExpansionChanged(0f)
-    } else {
-        onExpansionChanged(
-            if (dragExpansion > maxExpansionAllowed.value / 2) {
-                maxExpansionAllowed.value
-            } else {
-                0f
-            }
-        )
+        return
     }
+    if (velocity < EXPAND_VELOCITY_THRESHOLD) {
+        onExpansionChanged(maxExpansionAllowed.value)
+        return
+    }
+    if (velocity > COLLAPSE_VELOCITY_THRESHOLD) {
+        onExpansionChanged(0f)
+        return
+    }
+    val targetExpansion = if (dragExpansion > maxExpansionAllowed.value / 2) {
+        maxExpansionAllowed.value
+    } else {
+        0f
+    }
+    onExpansionChanged(targetExpansion)
 }
 
 @Composable
-private fun OverlaySheetBody(
+internal fun OverlaySheetBody(
     title: String?,
     onSettingsClick: (() -> Unit)?,
     bottomBarContent: (@Composable ColumnScope.() -> Unit)?,
@@ -294,9 +295,6 @@ private fun OverlaySheetHeader(
     title: String,
     onSettingsClick: (() -> Unit)?
 ) {
-    val homeActions = LocalHomeActions.current
-    val effectiveSettingsClick = onSettingsClick ?: { homeActions.onSettingsClick() }
-
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -317,7 +315,7 @@ private fun OverlaySheetHeader(
                 .size(AureoleDS.dimens.iconXLarge)
                 .clip(RoundedCornerShape(AureoleDS.dimens.radiusMedium))
                 .clickable(
-                    onClick = { effectiveSettingsClick() },
+                    onClick = { onSettingsClick?.invoke() },
                     role = Role.Button
                 ),
             contentAlignment = Alignment.Center
@@ -327,5 +325,46 @@ private fun OverlaySheetHeader(
                 modifier = Modifier.size(AureoleDS.dimens.iconSmall)
             )
         }
+    }
+}
+
+@AureolePreview
+@Composable
+private fun AureoleEditOverlaySheetPreview() {
+    AureoleLauncherTheme {
+        OverlaySheetBody(
+            title = "Preview Overlay Sheet",
+            onSettingsClick = {},
+            bottomBarContent = null,
+            sheetContent = {
+                Text(
+                    text = "Sheet Body Content",
+                    color = AureoleDS.colors.onSurfaceHigh
+                )
+            }
+        )
+    }
+}
+
+@AureolePreview
+@Composable
+private fun AureoleEditOverlaySheetWithBottomBarPreview() {
+    AureoleLauncherTheme {
+        OverlaySheetBody(
+            title = "Overlay Sheet with Bottom Bar",
+            onSettingsClick = {},
+            bottomBarContent = {
+                Text(
+                    text = "Bottom Bar Content",
+                    color = AureoleDS.colors.onSurfaceMedium
+                )
+            },
+            sheetContent = {
+                Text(
+                    text = "Sheet Body Content",
+                    color = AureoleDS.colors.onSurfaceHigh
+                )
+            }
+        )
     }
 }

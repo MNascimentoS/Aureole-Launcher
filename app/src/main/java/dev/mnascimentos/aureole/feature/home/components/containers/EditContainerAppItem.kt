@@ -36,6 +36,8 @@ import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.FolderIconRegistry
+import dev.mnascimentos.aureole.feature.home.components.containers.model.EditContainerItemRowActions
+import dev.mnascimentos.aureole.feature.home.components.containers.model.EditContainerItemRowParams
 
 private const val MAX_DROPDOWN_APP_RESULTS = 8
 
