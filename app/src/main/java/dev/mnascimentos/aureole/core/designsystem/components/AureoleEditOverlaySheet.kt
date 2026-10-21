@@ -30,10 +30,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -65,13 +62,19 @@ private const val DISMISS_VELOCITY_THRESHOLD = 1000f
 private const val EXPAND_VELOCITY_THRESHOLD = -500f
 private const val COLLAPSE_VELOCITY_THRESHOLD = 500f
 
+internal data class OverlaySheetStateData(
+    val dragExpansion: Float,
+    val onDragExpansionChanged: (Float) -> Unit,
+    val effectiveAnimated: Boolean,
+    val triggerDismiss: () -> Unit,
+    val animScope: AnimatedVisibilityScope
+)
+
 @Composable
 internal fun OverlayContentBox(
+    stateData: OverlaySheetStateData,
     params: AureoleEditOverlayParams,
-    hazeState: HazeState?,
-    effectiveAnimated: Boolean,
-    triggerDismiss: () -> Unit,
-    animScope: AnimatedVisibilityScope
+    hazeState: HazeState?
 ) {
     val localHaze = LocalHazeState.current
     val effectiveHazeState = hazeState ?: localHaze
@@ -98,7 +101,7 @@ internal fun OverlayContentBox(
                 interactionSource = remember { MutableInteractionSource() },
                 indication = null,
                 role = Role.Button,
-                onClick = triggerDismiss
+                onClick = stateData.triggerDismiss
             )
     ) {
         val maxSheetHeight = maxHeight * params.config.maxSheetHeightFraction
@@ -114,16 +117,14 @@ internal fun OverlayContentBox(
             PreviewSlot(
                 previewHeight = previewHeight,
                 previewContent = params.previewContent,
-                effectiveAnimated = effectiveAnimated,
-                animScope = animScope
+                effectiveAnimated = stateData.effectiveAnimated,
+                animScope = stateData.animScope
             )
 
             SheetSurface(
+                stateData = stateData,
                 params = params,
-                bounds = bounds,
-                effectiveAnimated = effectiveAnimated,
-                triggerDismiss = triggerDismiss,
-                animScope = animScope
+                bounds = bounds
             )
         }
     }
@@ -176,22 +177,25 @@ private fun BoxScope.PreviewSlot(
 @Suppress("LongMethod")
 @Composable
 private fun BoxScope.SheetSurface(
+    stateData: OverlaySheetStateData,
     params: AureoleEditOverlayParams,
-    bounds: SheetBounds,
-    effectiveAnimated: Boolean,
-    triggerDismiss: () -> Unit,
-    animScope: AnimatedVisibilityScope
+    bounds: SheetBounds
 ) {
-    var dragExpansion by remember { mutableFloatStateOf(0f) }
+    val dragExpansion = stateData.dragExpansion
+    val onDragExpansionChanged = stateData.onDragExpansionChanged
+    val effectiveAnimated = stateData.effectiveAnimated
+    val triggerDismiss = stateData.triggerDismiss
+    val animScope = stateData.animScope
 
-    val nestedScrollConnection = remember(bounds.maxExpansionAllowed) {
+    val nestedScrollConnection = remember(bounds.maxExpansionAllowed, dragExpansion, onDragExpansionChanged) {
         object : NestedScrollConnection {
             override fun onPreScroll(available: Offset, source: NestedScrollSource): Offset {
                 val delta = available.y
                 if (delta < 0 && dragExpansion < bounds.maxExpansionAllowed.value) {
                     val prevExpansion = dragExpansion
-                    dragExpansion = (dragExpansion - delta).coerceIn(0f, bounds.maxExpansionAllowed.value)
-                    val consumedY = dragExpansion - prevExpansion
+                    val newExpansion = (dragExpansion - delta).coerceIn(0f, bounds.maxExpansionAllowed.value)
+                    onDragExpansionChanged(newExpansion)
+                    val consumedY = newExpansion - prevExpansion
                     return Offset(0f, -consumedY)
                 }
                 return Offset.Zero
@@ -205,8 +209,9 @@ private fun BoxScope.SheetSurface(
                 val delta = available.y
                 if (delta > 0 && dragExpansion > 0f) {
                     val prevExpansion = dragExpansion
-                    dragExpansion = (dragExpansion - delta).coerceIn(0f, bounds.maxExpansionAllowed.value)
-                    val consumedY = prevExpansion - dragExpansion
+                    val newExpansion = (dragExpansion - delta).coerceIn(0f, bounds.maxExpansionAllowed.value)
+                    onDragExpansionChanged(newExpansion)
+                    val consumedY = prevExpansion - newExpansion
                     return Offset(0f, consumedY)
                 }
                 return Offset.Zero
@@ -215,8 +220,9 @@ private fun BoxScope.SheetSurface(
     }
 
     val draggableState = rememberDraggableState { delta ->
-        dragExpansion = (dragExpansion - delta).coerceIn(0f, bounds.maxExpansionAllowed.value)
-        if (dragExpansion <= 0f && delta > DISMISS_DRAG_THRESHOLD_PX) {
+        val newExpansion = (dragExpansion - delta).coerceIn(0f, bounds.maxExpansionAllowed.value)
+        onDragExpansionChanged(newExpansion)
+        if (newExpansion <= 0f && delta > DISMISS_DRAG_THRESHOLD_PX) {
             triggerDismiss()
         }
     }
@@ -249,9 +255,13 @@ private fun BoxScope.SheetSurface(
                 state = draggableState,
                 orientation = Orientation.Vertical,
                 onDragStopped = { velocity ->
-                    handleDragStopped(velocity, dragExpansion, bounds.maxExpansionAllowed, triggerDismiss) {
-                        dragExpansion = it
-                    }
+                    handleDragStopped(
+                        velocity,
+                        dragExpansion,
+                        bounds.maxExpansionAllowed,
+                        triggerDismiss,
+                        onDragExpansionChanged
+                    )
                 }
             )
             .clickable(

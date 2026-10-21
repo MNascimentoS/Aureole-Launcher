@@ -4,8 +4,43 @@ import androidx.compose.animation.core.MutableTransitionState
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.unit.Dp
 import dev.chrisbanes.haze.HazeState
+
+/**
+ * State holder for [dev.mnascimentos.aureole.core.designsystem.components.AureoleEditOverlay].
+ *
+ * @property internalVisible Whether the overlay is internally visible for exit animations.
+ * @property dragExpansion The vertical drag expansion offset of the sheet.
+ */
+class AureoleEditOverlayState(
+    initialInternalVisible: Boolean = true,
+    initialDragExpansion: Float = 0f,
+) {
+    var internalVisible by mutableStateOf(initialInternalVisible)
+    var dragExpansion by mutableFloatStateOf(initialDragExpansion)
+}
+
+/**
+ * Creates and remembers an [AureoleEditOverlayState].
+ */
+@Composable
+fun rememberAureoleEditOverlayState(
+    initialInternalVisible: Boolean = true,
+    initialDragExpansion: Float = 0f,
+): AureoleEditOverlayState {
+    return remember {
+        AureoleEditOverlayState(
+            initialInternalVisible = initialInternalVisible,
+            initialDragExpansion = initialDragExpansion,
+        )
+    }
+}
 
 /**
  * Configuration options for [dev.mnascimentos.aureole.core.designsystem.components.AureoleEditOverlay].
