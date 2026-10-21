@@ -128,8 +128,10 @@ private fun SettingsAdvancedContent(
             .fillMaxSize()
             .padding(innerPadding)
     ) {
-        val topSpacerHeight = (maxHeight * (uiState.headerOffsetPercent / 100f)).coerceAtLeast(AdvancedLayoutConstraints.MinTopSpacer)
-        val bottomSpacerHeight = (maxHeight * BOTTOM_SPACER_PERCENT).coerceAtLeast(AdvancedLayoutConstraints.MinBottomSpacer)
+        val topSpacerHeight = (maxHeight * (uiState.headerOffsetPercent / 100f))
+            .coerceAtLeast(AdvancedLayoutConstraints.MinTopSpacer)
+        val bottomSpacerHeight = (maxHeight * BOTTOM_SPACER_PERCENT)
+            .coerceAtLeast(AdvancedLayoutConstraints.MinBottomSpacer)
 
         Column(
             modifier = Modifier

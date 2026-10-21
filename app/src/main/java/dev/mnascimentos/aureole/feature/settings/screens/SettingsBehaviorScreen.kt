@@ -37,7 +37,6 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.composable.SettingsToggleItem
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
@@ -87,8 +86,10 @@ fun SettingsBehaviorScreen(
                 .fillMaxSize()
                 .padding(innerPadding)
         ) {
-            val topSpacerHeight = (maxHeight * (uiState.headerOffsetPercent / 100f)).coerceAtLeast(BehaviorLayoutConstraints.MinTopSpacer)
-            val bottomSpacerHeight = (maxHeight * BOTTOM_SPACER_RATIO).coerceAtLeast(BehaviorLayoutConstraints.MinBottomSpacer)
+            val topSpacerHeight = (maxHeight * (uiState.headerOffsetPercent / 100f))
+                .coerceAtLeast(BehaviorLayoutConstraints.MinTopSpacer)
+            val bottomSpacerHeight = (maxHeight * BOTTOM_SPACER_RATIO)
+                .coerceAtLeast(BehaviorLayoutConstraints.MinBottomSpacer)
 
             Column(
                 modifier = Modifier

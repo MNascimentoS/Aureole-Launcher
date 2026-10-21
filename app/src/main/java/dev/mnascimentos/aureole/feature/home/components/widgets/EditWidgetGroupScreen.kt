@@ -22,7 +22,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import dev.mnascimentos.aureole.feature.home.components.widgets.model.WidgetPickerMetrics
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Switch
@@ -52,6 +51,7 @@ import dev.mnascimentos.aureole.core.designsystem.utils.LocalSharedTransitionSco
 import dev.mnascimentos.aureole.feature.home.components.widgets.model.EditWidgetCarouselParams
 import dev.mnascimentos.aureole.feature.home.components.widgets.model.EditWidgetGroupActions
 import dev.mnascimentos.aureole.feature.home.components.widgets.model.EditWidgetGroupParams
+import dev.mnascimentos.aureole.feature.home.components.widgets.model.WidgetPickerMetrics
 import kotlinx.coroutines.delay
 
 private const val ANIMATION_DURATION_MS = 300

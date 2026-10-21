@@ -1,3 +1,5 @@
+@file:Suppress("MagicNumber")
+
 package dev.mnascimentos.aureole.feature.home.components.containers.folder
 
 import android.content.ComponentName

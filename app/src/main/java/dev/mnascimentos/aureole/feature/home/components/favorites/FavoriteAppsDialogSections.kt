@@ -1,3 +1,5 @@
+@file:Suppress("TooManyFunctions", "MagicNumber")
+
 package dev.mnascimentos.aureole.feature.home.components.favorites
 
 import androidx.compose.foundation.clickable

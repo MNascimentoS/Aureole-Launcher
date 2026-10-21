@@ -1,3 +1,5 @@
+@file:Suppress("LongMethod")
+
 package dev.mnascimentos.aureole.core.data.repository
 
 import dev.mnascimentos.aureole.core.data.model.ReleaseNoteItem

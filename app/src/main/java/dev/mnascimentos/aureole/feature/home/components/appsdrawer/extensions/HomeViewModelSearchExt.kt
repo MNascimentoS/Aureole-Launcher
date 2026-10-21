@@ -1,3 +1,5 @@
+@file:Suppress("MagicNumber")
+
 package dev.mnascimentos.aureole.feature.home.components.appsdrawer.extensions
 
 import androidx.lifecycle.viewModelScope
