@@ -2,13 +2,17 @@
 
 package dev.mnascimentos.aureole.feature.home.components.clock
 
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -16,9 +20,10 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuAnchorType
+import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.runtime.Composable
@@ -30,11 +35,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
 import dev.mnascimentos.aureole.core.designsystem.icons.ArrowDown
+import dev.mnascimentos.aureole.core.designsystem.icons.Check
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
@@ -69,12 +76,18 @@ internal fun EditClockDropdown(
     selectedKey: String,
     options: List<Pair<String, String>>,
     onOptionSelected: (String) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    initialExpanded: Boolean = false
 ) {
-    var isExpanded by remember { mutableStateOf(false) }
+    var isExpanded by remember { mutableStateOf(initialExpanded) }
     val currentDisplayLabel = remember(selectedKey, options) {
         options.find { it.first == selectedKey }?.second ?: selectedKey
     }
+    val arrowRotation by animateFloatAsState(
+        targetValue = if (isExpanded) 180f else 0f,
+        animationSpec = tween(durationMillis = 200),
+        label = "arrowRotation"
+    )
 
     Column(modifier = modifier.fillMaxWidth()) {
         if (label != null) {
@@ -86,65 +99,115 @@ internal fun EditClockDropdown(
             )
         }
 
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .clip(RoundedCornerShape(AureoleDS.dimens.radiusSmall))
-                .background(AureoleDS.colors.surfaceVariant.copy(alpha = 0.45f))
-                .clickable { isExpanded = true }
-                .padding(horizontal = AureoleDS.dimens.medium, vertical = AureoleDS.dimens.small),
-            contentAlignment = Alignment.CenterStart
+        ExposedDropdownMenuBox(
+            expanded = isExpanded,
+            onExpandedChange = { isExpanded = it },
+            modifier = Modifier.fillMaxWidth()
         ) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                AureoleText(
-                    text = currentDisplayLabel,
-                    color = AureoleDS.colors.onSurfaceHigh,
-                    format = AureoleTextFormatParams(
-                        style = AureoleDS.typography.bodyMedium,
-                        fontWeight = FontWeight.Medium
+            Box(
+                modifier = Modifier
+                    .menuAnchor(ExposedDropdownMenuAnchorType.PrimaryNotEditable)
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(AureoleDS.dimens.radiusSmall))
+                    .background(AureoleDS.colors.surfaceVariant.copy(alpha = 0.45f))
+                    .border(
+                        BorderStroke(
+                            width = AureoleDS.dimens.borderMinimal,
+                            color = if (isExpanded) {
+                                AureoleDS.colors.onSurfaceHigh.copy(alpha = 0.35f)
+                            } else {
+                                AureoleDS.colors.outline.copy(alpha = 0.2f)
+                            }
+                        ),
+                        shape = RoundedCornerShape(AureoleDS.dimens.radiusSmall)
                     )
-                )
-                AureoleDS.icons.ArrowDown(
-                    tint = AureoleDS.colors.onSurfaceMedium,
-                    modifier = Modifier.size(AureoleDS.dimens.iconSmall)
-                )
+                    .padding(horizontal = AureoleDS.dimens.medium, vertical = AureoleDS.dimens.small),
+                contentAlignment = Alignment.CenterStart
+            ) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    AureoleText(
+                        text = currentDisplayLabel,
+                        color = AureoleDS.colors.onSurfaceHigh,
+                        format = AureoleTextFormatParams(
+                            style = AureoleDS.typography.bodyMedium,
+                            fontWeight = FontWeight.Medium
+                        )
+                    )
+                    AureoleDS.icons.ArrowDown(
+                        tint = if (isExpanded) AureoleDS.colors.onSurfaceHigh else AureoleDS.colors.onSurfaceMedium,
+                        modifier = Modifier
+                            .size(AureoleDS.dimens.iconSmall)
+                            .graphicsLayer { rotationZ = arrowRotation }
+                    )
+                }
             }
 
-            DropdownMenu(
+            ExposedDropdownMenu(
                 expanded = isExpanded,
                 onDismissRequest = { isExpanded = false },
-                modifier = Modifier
-                    .fillMaxWidth(0.85f)
-                    .background(AureoleDS.colors.surfaceVariant)
+                shape = RoundedCornerShape(AureoleDS.dimens.radiusMedium),
+                containerColor = AureoleDS.colors.surfaceVariant,
+                border = BorderStroke(
+                    width = AureoleDS.dimens.borderMinimal,
+                    color = AureoleDS.colors.outline.copy(alpha = 0.3f)
+                ),
+                shadowElevation = 8.dp,
+                modifier = Modifier.padding(vertical = AureoleDS.dimens.xxSmall)
             ) {
                 options.forEach { (key, optionLabel) ->
                     val isSelected = (key == selectedKey)
                     DropdownMenuItem(
                         text = {
-                            AureoleText(
-                                text = optionLabel,
-                                color = if (isSelected) {
-                                    AureoleDS.colors.onSurfaceHigh
-                                } else {
-                                    AureoleDS.colors.onSurfaceMedium
-                                },
-                                format = AureoleTextFormatParams(
-                                    style = AureoleDS.typography.bodyMedium,
-                                    fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                AureoleText(
+                                    text = optionLabel,
+                                    color = if (isSelected) {
+                                        AureoleDS.colors.onSurfaceHigh
+                                    } else {
+                                        AureoleDS.colors.onSurfaceMedium
+                                    },
+                                    format = AureoleTextFormatParams(
+                                        style = AureoleDS.typography.bodyMedium,
+                                        fontWeight = if (isSelected) FontWeight.SemiBold else FontWeight.Normal
+                                    )
                                 )
-                            )
+                                if (isSelected) {
+                                    AureoleDS.icons.Check(
+                                        tint = AureoleDS.colors.onSurfaceHigh,
+                                        modifier = Modifier.size(AureoleDS.dimens.iconSmall)
+                                    )
+                                }
+                            }
                         },
                         onClick = {
                             onOptionSelected(key)
                             isExpanded = false
                         },
-                        modifier = Modifier.background(
-                            if (isSelected) AureoleDS.colors.onSurfaceHigh.copy(alpha = 0.1f) else Color.Transparent
-                        )
+                        contentPadding = PaddingValues(
+                            horizontal = AureoleDS.dimens.medium,
+                            vertical = AureoleDS.dimens.small
+                        ),
+                        modifier = Modifier
+                            .padding(
+                                horizontal = AureoleDS.dimens.xxSmall,
+                                vertical = 2.dp
+                            )
+                            .clip(RoundedCornerShape(AureoleDS.dimens.radiusXSmall))
+                            .background(
+                                if (isSelected) {
+                                    AureoleDS.colors.onSurfaceHigh.copy(alpha = 0.12f)
+                                } else {
+                                    Color.Transparent
+                                }
+                            )
                     )
                 }
             }
@@ -342,6 +405,26 @@ private fun EditClockSectionsPreview() {
                 actions = createDefaultHomeScreenActions(),
                 tempCustomGreeting = "Bem-vindo",
                 onGreetingChange = {}
+            )
+        }
+    }
+}
+
+@AureolePreview
+@Composable
+private fun EditClockDropdownOpenPreview() {
+    AureoleLauncherTheme {
+        Column(
+            modifier = Modifier
+                .background(AureoleDS.colors.surface)
+                .padding(AureoleDS.dimens.medium)
+        ) {
+            EditClockDropdown(
+                label = "Estilo do Layout",
+                selectedKey = "DATE_ON_TOP",
+                options = CLOCK_STYLE_OPTIONS,
+                onOptionSelected = {},
+                initialExpanded = true
             )
         }
     }

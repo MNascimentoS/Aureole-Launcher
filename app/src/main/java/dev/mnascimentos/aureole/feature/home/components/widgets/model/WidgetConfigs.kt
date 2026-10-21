@@ -27,7 +27,8 @@ data class EditWidgetCarouselParams(
     val currentPage: Int,
     val isIndicatorEnabled: Boolean,
     val onRemoveWidget: (Int) -> Unit,
-    val onAddWidgetClick: () -> Unit
+    val onAddWidgetClick: () -> Unit,
+    val onMoveWidget: ((Int, Int) -> Unit)? = null
 )
 
 data class EditWidgetGroupParams(
@@ -42,7 +43,8 @@ data class EditWidgetGroupActions(
     val onToggleIndicator: () -> Unit,
     val onRemoveWidget: (Int) -> Unit,
     val onAddWidgetClick: () -> Unit,
-    val onDismissRequest: () -> Unit
+    val onDismissRequest: () -> Unit,
+    val onReorderWidgets: (List<Int>) -> Unit = {}
 )
 
 data class StackedWidgetConfig(

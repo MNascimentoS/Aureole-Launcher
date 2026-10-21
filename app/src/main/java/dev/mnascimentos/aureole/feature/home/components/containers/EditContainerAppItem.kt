@@ -1,5 +1,6 @@
 package dev.mnascimentos.aureole.feature.home.components.containers
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Row
@@ -25,6 +26,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
@@ -174,7 +176,15 @@ internal fun EditContainerAddAppDropdown(
 
         ExposedDropdownMenu(
             expanded = isExpanded && filteredApps.isNotEmpty(),
-            onDismissRequest = { isExpanded = false }
+            onDismissRequest = { isExpanded = false },
+            shape = RoundedCornerShape(AureoleDS.dimens.radiusMedium),
+            containerColor = AureoleDS.colors.surfaceVariant,
+            border = BorderStroke(
+                width = AureoleDS.dimens.borderMinimal,
+                color = AureoleDS.colors.outline.copy(alpha = 0.3f)
+            ),
+            shadowElevation = 8.dp,
+            modifier = Modifier.padding(vertical = AureoleDS.dimens.xxSmall)
         ) {
             filteredApps.forEach { app ->
                 DropdownAppItem(
@@ -197,7 +207,13 @@ private fun DropdownAppItem(
 ) {
     val iconBitmap = remember(app.packageName) { app.getIconBitmap() }
     DropdownMenuItem(
-        text = { AureoleText(app.label, color = AureoleDS.colors.onSurfaceHigh) },
+        text = {
+            AureoleText(
+                text = app.label,
+                color = AureoleDS.colors.onSurfaceHigh,
+                format = AureoleTextFormatParams(style = AureoleDS.typography.bodyMedium)
+            )
+        },
         leadingIcon = {
             Image(
                 bitmap = iconBitmap,
@@ -205,7 +221,10 @@ private fun DropdownAppItem(
                 modifier = Modifier.size(AureoleDS.dimens.iconMedium)
             )
         },
-        onClick = { onAppSelected(app.packageName) }
+        onClick = { onAppSelected(app.packageName) },
+        modifier = Modifier
+            .padding(horizontal = AureoleDS.dimens.xxSmall, vertical = 2.dp)
+            .clip(RoundedCornerShape(AureoleDS.dimens.radiusXSmall))
     )
 }
 

@@ -17,6 +17,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
@@ -156,6 +157,7 @@ private fun ScrubberContainer(
 }
 
 @Composable
+@ReadOnlyComposable
 private fun Modifier.scrubberBaseModifier(
     isLeftHandedMode: Boolean,
     onHeightChanged: (Float) -> Unit

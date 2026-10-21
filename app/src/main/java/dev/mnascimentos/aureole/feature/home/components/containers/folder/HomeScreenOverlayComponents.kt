@@ -135,7 +135,8 @@ private fun WidgetStackOverlay(
                 onToggleIndicator = { actions.onToggleWidgetStackDots(state.stackId) },
                 onRemoveWidget = { actions.onRemoveWidgetClick(it, state.stackId) },
                 onAddWidgetClick = { actions.onAddWidgetClick(state.stackId) },
-                onDismissRequest = actions.onCloseWidgetStackBottomSheet
+                onDismissRequest = actions.onCloseWidgetStackBottomSheet,
+                onReorderWidgets = { actions.onReorderWidgets(it, state.stackId) }
             )
         )
     }

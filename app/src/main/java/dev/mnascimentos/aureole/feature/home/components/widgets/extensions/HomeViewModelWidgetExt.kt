@@ -122,3 +122,19 @@ fun HomeViewModel.removeWidgetId(
     }
     widgetRepository.saveWidgetIdsForStack(stackId, newList)
 }
+
+fun HomeViewModel.reorderWidgets(
+    newWidgetIds: List<Int>,
+    targetStackId: String? = null
+) {
+    val stackId = resolveTargetStackId(targetStackId)
+    val currentMap = uiState.value.widgetStacks
+    val updatedMap = currentMap + (stackId to newWidgetIds)
+    updateUiState {
+        it.copy(
+            widgetStacks = updatedMap,
+            topWidgetIds = if (stackId == "top_widgets") newWidgetIds else it.topWidgetIds
+        )
+    }
+    widgetRepository.saveWidgetIdsForStack(stackId, newWidgetIds)
+}

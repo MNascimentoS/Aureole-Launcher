@@ -7,7 +7,6 @@ import android.appwidget.AppWidgetProviderInfo
 import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
-import android.util.Log
 import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
@@ -36,6 +35,7 @@ import dev.mnascimentos.aureole.core.designsystem.icons.Add
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
+import timber.log.Timber
 
 private const val WIDGET_NOT_AVAILABLE_TEXT = "Widget indisponível"
 private const val DEFAULT_HAZE_OPACITY = 0.5f
@@ -113,13 +113,13 @@ internal fun createWidgetHostView(
             )
             hostView
         } catch (e: SecurityException) {
-            Log.e("WidgetHostItem", "Error creating widget view", e)
+            Timber.tag("WidgetHostItem").e(e, "Error creating widget view")
             createErrorWidgetView(context, "Toque para reconfigurar widget")
         } catch (e: IllegalArgumentException) {
-            Log.e("WidgetHostItem", "Error creating widget view", e)
+            Timber.tag("WidgetHostItem").e(e, "Error creating widget view")
             createErrorWidgetView(context, "Toque para reconfigurar widget")
         } catch (e: IllegalStateException) {
-            Log.e("WidgetHostItem", "Error creating widget view", e)
+            Timber.tag("WidgetHostItem").e(e, "Error creating widget view")
             createErrorWidgetView(context, "Toque para reconfigurar widget")
         }
     } else {

@@ -12,6 +12,7 @@ import dev.mnascimentos.aureole.feature.home.components.appsdrawer.extensions.on
 import dev.mnascimentos.aureole.feature.home.components.clock.extensions.closeEditClockBottomSheet
 import dev.mnascimentos.aureole.feature.home.components.clock.extensions.openEditClockBottomSheet
 import dev.mnascimentos.aureole.feature.home.components.clock.extensions.updateClockStyle
+import dev.mnascimentos.aureole.feature.home.components.widgets.extensions.reorderWidgets
 import dev.mnascimentos.aureole.feature.home.components.widgets.extensions.setShowWidgetPicker
 import dev.mnascimentos.aureole.feature.home.extensions.setContainerPosition
 import dev.mnascimentos.aureole.feature.home.extensions.toggleContainer
@@ -182,5 +183,16 @@ class HomeViewModelTest {
 
         viewModel.cancelGridEditMode()
         assertFalse(viewModel.uiState.value.isGridEditMode)
+    }
+
+    @Test
+    fun `when widgets reordered, should update widgetStacks in state and persist`() {
+        val stackId = "stack_1"
+        val reorderedList = listOf(102, 101, 103)
+
+        viewModel.reorderWidgets(reorderedList, stackId)
+
+        assertEquals(reorderedList, viewModel.uiState.value.widgetStacks[stackId])
+        assertEquals(reorderedList, widgetRepository.getWidgetIdsForStack(stackId))
     }
 }

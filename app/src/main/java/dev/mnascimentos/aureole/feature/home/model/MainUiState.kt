@@ -157,6 +157,8 @@ val MainUiState.isOverlayActive: Boolean
             isAddAppToFolderDialogVisible ||
             isRenameFolderDialogVisible
         val isFolderOrSheetActive = showReleaseNotesBottomSheet ||
+            showCustomizeBottomSheet ||
+            showEditClockBottomSheet ||
             isAllAppsDrawerOpen ||
             searchQuery.isNotEmpty() ||
             isFolderActive

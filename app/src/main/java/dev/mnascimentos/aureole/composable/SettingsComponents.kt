@@ -63,6 +63,7 @@ fun SettingsMenuItem(
     modifier: Modifier = Modifier,
     subtitle: String? = null,
     leadingContent: (@Composable () -> Unit)? = null,
+    trailingContent: (@Composable () -> Unit)? = null,
     onClick: () -> Unit,
 ) {
     Row(
@@ -103,6 +104,10 @@ fun SettingsMenuItem(
                     format = AureoleTextFormatParams(style = AureoleDS.typography.bodySmall)
                 )
             }
+        }
+
+        if (trailingContent != null) {
+            trailingContent()
         }
     }
 }

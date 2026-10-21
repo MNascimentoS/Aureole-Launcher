@@ -77,7 +77,7 @@ fun FavoriteAppsDialog(
                 title = titleText,
                 isVisible = isVisible,
                 animated = true,
-                maxSheetHeightFraction = 0.65f,
+                maxSheetHeightFraction = 0.35f,
                 onBackPress = {
                     if (currentMode != FavoriteAppsScreenMode.MAIN) {
                         currentMode = FavoriteAppsScreenMode.MAIN

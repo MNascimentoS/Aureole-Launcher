@@ -105,8 +105,13 @@ internal fun OverlayContentBox(
         val maxExpansionAllowed = (sheetMaxExpandedHeight - maxSheetHeight).coerceAtLeast(0.dp)
         val bounds = SheetBounds(maxSheetHeight, maxExpansionAllowed)
 
-        Column(modifier = Modifier.fillMaxSize()) {
+        // The preview height is fixed to the available unexpanded sheet space
+        // We use maxSheetHeight to determine the top available space, keeping the preview height constant
+        val previewHeight = maxHeight - maxSheetHeight
+
+        Box(modifier = Modifier.fillMaxSize()) {
             PreviewSlot(
+                previewHeight = previewHeight,
                 previewContent = params.previewContent,
                 effectiveAnimated = effectiveAnimated,
                 animScope = animScope
@@ -124,7 +129,8 @@ internal fun OverlayContentBox(
 }
 
 @Composable
-private fun ColumnScope.PreviewSlot(
+private fun BoxScope.PreviewSlot(
+    previewHeight: Dp,
     previewContent: (@Composable BoxScope.() -> Unit)?,
     effectiveAnimated: Boolean,
     animScope: AnimatedVisibilityScope
@@ -150,8 +156,9 @@ private fun ColumnScope.PreviewSlot(
 
     Box(
         modifier = Modifier
+            .align(Alignment.TopCenter)
             .fillMaxWidth()
-            .weight(1f)
+            .height(previewHeight)
             .then(previewModifier)
             .padding(
                 start = AureoleDS.dimens.medium,
@@ -167,7 +174,7 @@ private fun ColumnScope.PreviewSlot(
 
 @Suppress("LongMethod")
 @Composable
-private fun SheetSurface(
+private fun BoxScope.SheetSurface(
     params: AureoleEditOverlayParams,
     bounds: SheetBounds,
     effectiveAnimated: Boolean,
@@ -233,6 +240,7 @@ private fun SheetSurface(
 
     Surface(
         modifier = sheetModifier
+            .align(Alignment.BottomCenter)
             .fillMaxWidth()
             .heightIn(max = currentMaxSheetHeight)
             .nestedScroll(nestedScrollConnection)

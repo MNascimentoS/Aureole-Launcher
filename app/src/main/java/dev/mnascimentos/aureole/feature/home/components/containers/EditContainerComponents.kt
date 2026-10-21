@@ -38,11 +38,14 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
 import dev.mnascimentos.aureole.core.designsystem.icons.ArrowDown
 import dev.mnascimentos.aureole.core.designsystem.icons.ArrowUp
+import dev.mnascimentos.aureole.core.designsystem.icons.Check
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
@@ -158,6 +161,7 @@ internal fun EditContainerAlignmentSelector(
             )
             AlignmentDropdownMenu(
                 expanded = isDropdownExpanded,
+                selectedPosition = position,
                 onDismiss = { isDropdownExpanded = false },
                 onPositionSelected = onPositionSelected
             )
@@ -169,20 +173,57 @@ internal fun EditContainerAlignmentSelector(
 @Composable
 private fun ExposedDropdownMenuBoxScope.AlignmentDropdownMenu(
     expanded: Boolean,
+    selectedPosition: String,
     onDismiss: () -> Unit,
     onPositionSelected: (String) -> Unit
 ) {
     ExposedDropdownMenu(
         expanded = expanded,
-        onDismissRequest = onDismiss
+        onDismissRequest = onDismiss,
+        shape = RoundedCornerShape(AureoleDS.dimens.radiusMedium),
+        containerColor = AureoleDS.colors.surfaceVariant,
+        border = BorderStroke(
+            width = AureoleDS.dimens.borderMinimal,
+            color = AureoleDS.colors.outline.copy(alpha = 0.3f)
+        ),
+        shadowElevation = 8.dp,
+        modifier = Modifier.padding(vertical = AureoleDS.dimens.xxSmall)
     ) {
         positionOptionsMap.forEach { (key, label) ->
+            val isSelected = (key == selectedPosition)
             DropdownMenuItem(
-                text = { AureoleText(label, color = AureoleDS.colors.onSurfaceHigh) },
+                text = {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        AureoleText(
+                            text = label,
+                            color = if (isSelected) AureoleDS.colors.onSurfaceHigh else AureoleDS.colors.onSurfaceMedium,
+                            format = AureoleTextFormatParams(
+                                style = AureoleDS.typography.bodyMedium,
+                                fontWeight = if (isSelected) FontWeight.SemiBold else FontWeight.Normal
+                            )
+                        )
+                        if (isSelected) {
+                            AureoleDS.icons.Check(
+                                tint = AureoleDS.colors.onSurfaceHigh,
+                                modifier = Modifier.size(AureoleDS.dimens.iconSmall)
+                            )
+                        }
+                    }
+                },
                 onClick = {
                     onPositionSelected(key)
                     onDismiss()
-                }
+                },
+                modifier = Modifier
+                    .padding(horizontal = AureoleDS.dimens.xxSmall, vertical = 2.dp)
+                    .clip(RoundedCornerShape(AureoleDS.dimens.radiusXSmall))
+                    .background(
+                        if (isSelected) AureoleDS.colors.onSurfaceHigh.copy(alpha = 0.12f) else Color.Transparent
+                    )
             )
         }
     }

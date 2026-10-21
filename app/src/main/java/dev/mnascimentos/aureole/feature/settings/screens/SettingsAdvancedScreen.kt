@@ -36,13 +36,11 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
 import dev.mnascimentos.aureole.composable.SettingsActionItem
-import dev.mnascimentos.aureole.composable.SettingsToggleItem
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
 import dev.mnascimentos.aureole.core.designsystem.icons.Delete
 import dev.mnascimentos.aureole.core.designsystem.icons.Home
 import dev.mnascimentos.aureole.core.designsystem.icons.Info
-import dev.mnascimentos.aureole.core.designsystem.icons.RefreshCcw
 import dev.mnascimentos.aureole.core.designsystem.icons.Smile
 import dev.mnascimentos.aureole.core.designsystem.icons.Undo
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
@@ -157,7 +155,6 @@ private fun SettingsAdvancedContent(
             Spacer(modifier = Modifier.height(AureoleDS.dimens.large))
 
             AdvancedItemsGroup(
-                uiState = uiState,
                 actions = actions,
                 context = context,
                 onOpenUninstallDialog = dialogActions.onOpenUninstallDialog,
@@ -175,7 +172,6 @@ private fun SettingsAdvancedContent(
 
 @Composable
 private fun AdvancedItemsGroup(
-    uiState: SettingsUiState,
     actions: SettingsScreenActions,
     context: Context,
     onOpenUninstallDialog: () -> Unit,
@@ -185,12 +181,6 @@ private fun AdvancedItemsGroup(
         verticalArrangement = Arrangement.spacedBy(AureoleDS.dimens.xSmall),
         modifier = Modifier.fillMaxWidth()
     ) {
-        SettingsActionItem(
-            title = "What's new (Release notes)",
-            leadingContent = { AureoleDS.icons.Smile() },
-            onClick = onOpenReleaseNotesDialog
-        )
-
         SettingsActionItem(
             title = "Set as default launcher",
             leadingContent = { AureoleDS.icons.Home() },
@@ -209,11 +199,10 @@ private fun AdvancedItemsGroup(
             }
         )
 
-        SettingsToggleItem(
-            title = "Check for updates",
-            checked = uiState.isInAppUpdateEnabled,
-            onCheckedChange = { actions.onToggleInAppUpdate() },
-            leadingContent = { AureoleDS.icons.RefreshCcw() }
+        SettingsActionItem(
+            title = "What's new (Release notes)",
+            leadingContent = { AureoleDS.icons.Smile() },
+            onClick = onOpenReleaseNotesDialog
         )
 
         SettingsActionItem(
@@ -235,38 +224,38 @@ private fun AdvancedLinksGroup(onNavigateToContributors: () -> Unit) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(start = AdvancedLinkListLayout.IndentStart),
-        verticalArrangement = Arrangement.spacedBy(AureoleDS.dimens.medium)
+            .padding(start = AureoleDS.dimens.xSmall),
+        verticalArrangement = Arrangement.spacedBy(AureoleDS.dimens.xSmall)
     ) {
         AureoleText(
             text = "Contributors",
-            color = AureoleDS.colors.onSurfaceMedium,
+            color = AureoleDS.colors.onSurfaceLow,
             modifier = Modifier.clickable { onNavigateToContributors() },
-            format = AureoleTextFormatParams(style = AureoleDS.typography.bodyLarge, fontWeight = FontWeight.Normal)
+            format = AureoleTextFormatParams(style = AureoleDS.typography.bodySmall, fontWeight = FontWeight.Normal)
         )
         AureoleText(
             text = "Privacy policy",
-            color = AureoleDS.colors.onSurfaceMedium,
+            color = AureoleDS.colors.onSurfaceLow,
             modifier = Modifier.clickable { },
-            format = AureoleTextFormatParams(style = AureoleDS.typography.bodyLarge, fontWeight = FontWeight.Normal)
+            format = AureoleTextFormatParams(style = AureoleDS.typography.bodySmall, fontWeight = FontWeight.Normal)
         )
         AureoleText(
             text = "Terms of service",
-            color = AureoleDS.colors.onSurfaceMedium,
+            color = AureoleDS.colors.onSurfaceLow,
             modifier = Modifier.clickable { },
-            format = AureoleTextFormatParams(style = AureoleDS.typography.bodyLarge, fontWeight = FontWeight.Normal)
+            format = AureoleTextFormatParams(style = AureoleDS.typography.bodySmall, fontWeight = FontWeight.Normal)
         )
         AureoleText(
             text = "Privacy settings",
-            color = AureoleDS.colors.onSurfaceMedium,
+            color = AureoleDS.colors.onSurfaceLow,
             modifier = Modifier.clickable { },
-            format = AureoleTextFormatParams(style = AureoleDS.typography.bodyLarge, fontWeight = FontWeight.Normal)
+            format = AureoleTextFormatParams(style = AureoleDS.typography.bodySmall, fontWeight = FontWeight.Normal)
         )
         AureoleText(
-            text = "Open source e license",
-            color = AureoleDS.colors.onSurfaceMedium,
+            text = "Open source licenses",
+            color = AureoleDS.colors.onSurfaceLow,
             modifier = Modifier.clickable { },
-            format = AureoleTextFormatParams(style = AureoleDS.typography.bodyLarge, fontWeight = FontWeight.Normal)
+            format = AureoleTextFormatParams(style = AureoleDS.typography.bodySmall, fontWeight = FontWeight.Normal)
         )
     }
 }

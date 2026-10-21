@@ -19,6 +19,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -138,6 +140,7 @@ fun FavoriteAppRowActionButtons(
                         color = AureoleDS.colors.surfaceVariant.copy(alpha = 0.5f),
                         shape = RoundedCornerShape(AureoleDS.dimens.radiusXSmall)
                     )
+                    .semantics { contentDescription = "Arrow Up" }
                     .clickable { onMoveUp() },
                 contentAlignment = Alignment.Center
             ) {
@@ -155,6 +158,7 @@ fun FavoriteAppRowActionButtons(
                         color = AureoleDS.colors.surfaceVariant.copy(alpha = 0.5f),
                         shape = RoundedCornerShape(AureoleDS.dimens.radiusXSmall)
                     )
+                    .semantics { contentDescription = "Arrow Down" }
                     .clickable { onMoveDown() },
                 contentAlignment = Alignment.Center
             ) {
@@ -171,6 +175,7 @@ fun FavoriteAppRowActionButtons(
                     color = AureoleDS.colors.error,
                     shape = RoundedCornerShape(AureoleDS.dimens.radiusXSmall)
                 )
+                .semantics { contentDescription = "Delete" }
                 .clickable { onToggleFavorite() },
             contentAlignment = Alignment.Center
         ) {
@@ -229,6 +234,7 @@ fun RemainingAppRow(
                     color = AureoleDS.colors.surfaceVariant,
                     shape = RoundedCornerShape(AureoleDS.dimens.radiusXSmall)
                 )
+                .semantics { contentDescription = "Plus" }
                 .clickable { onToggleFavorite() },
             contentAlignment = Alignment.Center
         ) {

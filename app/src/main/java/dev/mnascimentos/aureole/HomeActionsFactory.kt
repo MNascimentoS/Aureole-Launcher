@@ -46,6 +46,8 @@ import dev.mnascimentos.aureole.feature.home.components.overlays.extensions.open
 import dev.mnascimentos.aureole.feature.home.components.overlays.extensions.toggleWidgetStackDots
 import dev.mnascimentos.aureole.feature.home.components.widgets.extensions.closeWidgetPopup
 import dev.mnascimentos.aureole.feature.home.components.widgets.extensions.openWidgetPopup
+import dev.mnascimentos.aureole.feature.home.components.widgets.extensions.removeWidgetId
+import dev.mnascimentos.aureole.feature.home.components.widgets.extensions.reorderWidgets
 import dev.mnascimentos.aureole.feature.home.components.widgets.extensions.setIsAddingSingleWidget
 import dev.mnascimentos.aureole.feature.home.components.widgets.extensions.setShowWidgetPicker
 import dev.mnascimentos.aureole.feature.home.components.widgets.extensions.setShowWidgetResizeDialog
@@ -89,6 +91,12 @@ class HomeActionsFactory(
             onAddWidgetClick = { stackId ->
                 viewModel.setTargetWidgetStackId(stackId)
                 viewModel.setShowWidgetPicker(true)
+            },
+            onRemoveWidgetClick = { widgetId, stackId ->
+                viewModel.removeWidgetId(widgetId, stackId)
+            },
+            onReorderWidgets = { newWidgets, stackId ->
+                viewModel.reorderWidgets(newWidgets, stackId)
             },
             onAppClick = { appInfo ->
                 activity.packageManager.getLaunchIntentForPackage(appInfo.packageName)?.let { launchIntent ->

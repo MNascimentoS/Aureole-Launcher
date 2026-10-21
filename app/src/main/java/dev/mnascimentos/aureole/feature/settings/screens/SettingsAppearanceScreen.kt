@@ -3,8 +3,10 @@
 package dev.mnascimentos.aureole.feature.settings.screens
 
 import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -17,6 +19,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -29,6 +32,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import dev.mnascimentos.aureole.composable.SettingsMenuItem
@@ -36,7 +40,6 @@ import dev.mnascimentos.aureole.composable.SettingsToggleItem
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
 import dev.mnascimentos.aureole.core.designsystem.icons.AppSelect
-import dev.mnascimentos.aureole.core.designsystem.icons.Corners
 import dev.mnascimentos.aureole.core.designsystem.icons.Dots
 import dev.mnascimentos.aureole.core.designsystem.icons.Edit
 import dev.mnascimentos.aureole.core.designsystem.icons.Layout
@@ -182,49 +185,48 @@ private fun AppearanceMenuItems(
             )
         }
 
-        // 2. Menu background color (placed BEFORE press shortcut!)
-        MenuColorRow(
-            manualSeedColor = uiState.manualSeedColor,
-            onClick = { actions.onOpenColorPickerDialog() }
-        )
-
-        // 3. Press shortcut
-        ShortcutRow()
-
-        // 4. Glass effect / Glass & Blur
+        // 2. Glass effect / Glass & Blur
         GlassAndBlurRow(
             uiState = uiState,
             onClick = onShowBlurDialog
         )
 
-        // 5. Change font
+        // 3. Change font
         SettingsMenuItem(
             title = "Change font",
             leadingContent = { AureoleDS.icons.Text() },
             onClick = onShowFontDialog
         )
 
-        // 6. Color palette
+        // 4. Color palette
         SettingsMenuItem(
             title = "Color palette",
             leadingContent = { AureoleDS.icons.Dots() },
             onClick = onShowPaletteDialog
         )
 
-        // 7. Custom colors
+        // 5. Custom colors
         SettingsMenuItem(
             title = "Custom colors",
             leadingContent = { AureoleDS.icons.StrokeColor() },
+            trailingContent = {
+                Box(
+                    modifier = Modifier
+                        .size(AureoleDS.dimens.iconLarge)
+                        .clip(CircleShape)
+                        .background(Color(uiState.manualSeedColor))
+                )
+            },
             onClick = { actions.onOpenColorPickerDialog() }
         )
 
-        // 8. Change Border (radius)
+        // 6. Change Border (radius)
         ChangeBorderRow(
             cornerRadiusDp = uiState.cornerRadiusDp,
             onClick = onShowBorderRadiusDialog
         )
 
-        // 9. Themed icons toggle
+        // 7. Themed icons toggle
         SettingsToggleItem(
             title = "Themed icons",
             checked = uiState.isThemedAppIconsEnabled,
@@ -265,34 +267,6 @@ private fun WallpaperScaleTypeRow(
         )
         AureoleText(
             text = scaleType,
-            color = AureoleDS.colors.onSurfaceLow,
-            format = AureoleTextFormatParams(style = AureoleDS.typography.bodyLarge)
-        )
-    }
-}
-
-@Composable
-private fun ShortcutRow() {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clip(RoundedCornerShape(AureoleDS.dimens.radiusMedium))
-            .clickable { }
-            .padding(vertical = AureoleDS.dimens.xSmall, horizontal = AureoleDS.dimens.small),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        AureoleDS.icons.Corners(
-            tint = AureoleDS.colors.onSurfaceMedium,
-            modifier = Modifier.padding(end = AureoleDS.dimens.iconMedium).size(AureoleDS.dimens.iconMedium)
-        )
-        AureoleText(
-            text = "Press shortcut",
-            color = AureoleDS.colors.onSurfaceMedium,
-            modifier = Modifier.weight(1f),
-            format = AureoleTextFormatParams(style = AureoleDS.typography.bodyLarge, fontWeight = FontWeight.Normal)
-        )
-        AureoleText(
-            text = "Rounded",
             color = AureoleDS.colors.onSurfaceLow,
             format = AureoleTextFormatParams(style = AureoleDS.typography.bodyLarge)
         )

@@ -13,14 +13,12 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -36,11 +34,14 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.viewinterop.AndroidView
 import dev.mnascimentos.aureole.core.data.model.LauncherItemState
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleEditOverlay
 import dev.mnascimentos.aureole.core.designsystem.icons.Add
+import dev.mnascimentos.aureole.core.designsystem.icons.ArrowUp
+import dev.mnascimentos.aureole.core.designsystem.icons.Delete
 import dev.mnascimentos.aureole.core.designsystem.model.AureoleEditOverlayConfig
 import dev.mnascimentos.aureole.core.designsystem.model.AureoleEditOverlayParams
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
@@ -71,6 +72,17 @@ fun EditWidgetGroupScreen(
     val listState = rememberLazyListState()
     val currentPage by remember { derivedStateOf { listState.firstVisibleItemIndex } }
 
+    val onMoveWidget = { fromIndex: Int, toIndex: Int ->
+        if (fromIndex in currentWidgets.indices && toIndex in currentWidgets.indices) {
+            val updated = currentWidgets.toMutableList().apply {
+                val item = removeAt(fromIndex)
+                add(toIndex, item)
+            }
+            currentWidgets = updated
+            actions.onReorderWidgets(updated)
+        }
+    }
+
     if (!isVisible) {
         LaunchedEffect(isVisible) {
             delay(ANIMATION_DURATION_MS.toLong())
@@ -85,8 +97,7 @@ fun EditWidgetGroupScreen(
             config = AureoleEditOverlayConfig(
                 title = "Widget Stack",
                 hazeState = params.hazeState,
-                isVisible = isVisible,
-                animated = true
+                maxSheetHeightFraction = 0.3f
             ),
             previewContent = {
                 EditWidgetGroupPreviewCarousel(
@@ -100,7 +111,8 @@ fun EditWidgetGroupScreen(
                             currentWidgets = currentWidgets.filter { id -> id != widgetId }
                             actions.onRemoveWidget(widgetId)
                         },
-                        onAddWidgetClick = actions.onAddWidgetClick
+                        onAddWidgetClick = actions.onAddWidgetClick,
+                        onMoveWidget = onMoveWidget
                     )
                 )
             },
@@ -152,6 +164,7 @@ private fun EditWidgetGroupPreviewCarousel(
     val isIndicatorEnabled = params.isIndicatorEnabled
     val onRemoveWidget = params.onRemoveWidget
     val onAddWidgetClick = params.onAddWidgetClick
+    val onMoveWidget = params.onMoveWidget
     Column(
         modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally
@@ -162,15 +175,25 @@ private fun EditWidgetGroupPreviewCarousel(
             modifier = Modifier.fillMaxWidth()
         ) {
             item { Spacer(modifier = Modifier.width(AureoleDS.dimens.medium)) }
-            items(
+            itemsIndexed(
                 items = currentWidgets,
-                key = { it },
-                contentType = { "widget_preview" }
-            ) { widgetId ->
+                key = { _, widgetId -> widgetId },
+                contentType = { _, _ -> "widget_preview" }
+            ) { index, widgetId ->
                 WidgetPreviewItem(
                     widgetId = widgetId,
                     appWidgetHost = appWidgetHost,
-                    onRemoveClick = { onRemoveWidget(widgetId) }
+                    onRemoveClick = { onRemoveWidget(widgetId) },
+                    onMoveLeft = if (index > 0) {
+                        { onMoveWidget?.invoke(index, index - 1) }
+                    } else {
+                        null
+                    },
+                    onMoveRight = if (index < currentWidgets.size - 1) {
+                        { onMoveWidget?.invoke(index, index + 1) }
+                    } else {
+                        null
+                    }
                 )
             }
             item { AddWidgetCard(onClick = onAddWidgetClick) }
@@ -194,7 +217,9 @@ private fun EditWidgetGroupPreviewCarousel(
 private fun WidgetPreviewItem(
     widgetId: Int,
     appWidgetHost: AppWidgetHost?,
-    onRemoveClick: () -> Unit
+    onRemoveClick: () -> Unit,
+    onMoveLeft: (() -> Unit)? = null,
+    onMoveRight: (() -> Unit)? = null
 ) {
     val sharedTransitionScope = LocalSharedTransitionScope.current
     val animatedVisibilityScope = LocalAnimatedVisibilityScope.current
@@ -210,8 +235,9 @@ private fun WidgetPreviewItem(
         Modifier
     }
 
-    Box(
-        modifier = Modifier.padding(top = AureoleDS.dimens.xSmall, start = AureoleDS.dimens.xSmall)
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(AureoleDS.dimens.xSmall)
     ) {
         // Outer border
         Box(
@@ -250,23 +276,66 @@ private fun WidgetPreviewItem(
             }
         }
 
-        // "-" badge positioned at top-left
-        Box(
-            modifier = Modifier
-                .offset(x = -AureoleDS.dimens.xxSmall, y = -AureoleDS.dimens.xxSmall)
-                .size(AureoleDS.dimens.large)
-                .clip(CircleShape)
-                .background(AureoleDS.colors.surfaceVariant)
-                .border(AureoleDS.dimens.borderMinimal, AureoleDS.colors.outline.copy(alpha = 0.3f), CircleShape)
-                .clickable { onRemoveClick() },
-            contentAlignment = Alignment.Center
+        // Action buttons row matching Edit Shortcuts style
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(AureoleDS.dimens.xSmall),
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(
-                text = "–",
-                color = AureoleDS.colors.onSurfaceHigh,
-                fontWeight = FontWeight.Bold,
-                style = AureoleDS.typography.titleMedium
-            )
+            if (onMoveLeft != null) {
+                Box(
+                    modifier = Modifier
+                        .size(AureoleDS.dimens.large)
+                        .background(
+                            color = AureoleDS.colors.surfaceVariant.copy(alpha = 0.5f),
+                            shape = RoundedCornerShape(AureoleDS.dimens.radiusXSmall)
+                        )
+                        .clickable { onMoveLeft() },
+                    contentAlignment = Alignment.Center
+                ) {
+                    AureoleDS.icons.ArrowUp(
+                        tint = AureoleDS.colors.onSurfaceHigh,
+                        modifier = Modifier
+                            .size(AureoleDS.dimens.iconSmall)
+                            .rotate(-90f)
+                    )
+                }
+            }
+
+            if (onMoveRight != null) {
+                Box(
+                    modifier = Modifier
+                        .size(AureoleDS.dimens.large)
+                        .background(
+                            color = AureoleDS.colors.surfaceVariant.copy(alpha = 0.5f),
+                            shape = RoundedCornerShape(AureoleDS.dimens.radiusXSmall)
+                        )
+                        .clickable { onMoveRight() },
+                    contentAlignment = Alignment.Center
+                ) {
+                    AureoleDS.icons.ArrowUp(
+                        tint = AureoleDS.colors.onSurfaceHigh,
+                        modifier = Modifier
+                            .size(AureoleDS.dimens.iconSmall)
+                            .rotate(90f)
+                    )
+                }
+            }
+
+            Box(
+                modifier = Modifier
+                    .size(AureoleDS.dimens.large)
+                    .background(
+                        color = AureoleDS.colors.error,
+                        shape = RoundedCornerShape(AureoleDS.dimens.radiusXSmall)
+                    )
+                    .clickable { onRemoveClick() },
+                contentAlignment = Alignment.Center
+            ) {
+                AureoleDS.icons.Delete(
+                    tint = AureoleDS.colors.onError,
+                    modifier = Modifier.size(AureoleDS.dimens.iconSmall)
+                )
+            }
         }
     }
 }
@@ -275,27 +344,34 @@ private fun WidgetPreviewItem(
 private fun AddWidgetCard(
     onClick: () -> Unit
 ) {
-    Box(
-        modifier = Modifier.padding(top = AureoleDS.dimens.xSmall, start = AureoleDS.dimens.xSmall)
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(AureoleDS.dimens.xSmall)
     ) {
         Box(
             modifier = Modifier
-                .size(WidgetPickerMetrics.AddCardSize)
-                .clip(RoundedCornerShape(AureoleDS.dimens.radiusLarge))
-                .background(AureoleDS.colors.surfaceVariant.copy(alpha = 0.35f))
                 .border(
                     width = AureoleDS.dimens.borderMinimal,
                     color = AureoleDS.colors.outline.copy(alpha = 0.2f),
                     shape = RoundedCornerShape(AureoleDS.dimens.radiusLarge)
                 )
-                .clickable { onClick() },
-            contentAlignment = Alignment.Center
+                .padding(AureoleDS.dimens.xxSmall)
         ) {
-            AureoleDS.icons.Add(
-                tint = AureoleDS.colors.onSurfaceMedium,
-                modifier = Modifier.size(AureoleDS.dimens.xLarge)
-            )
+            Box(
+                modifier = Modifier
+                    .size(WidgetPickerMetrics.PreviewCardSize)
+                    .clip(RoundedCornerShape(AureoleDS.dimens.radiusLarge))
+                    .background(AureoleDS.colors.surfaceVariant.copy(alpha = 0.35f))
+                    .clickable { onClick() },
+                contentAlignment = Alignment.Center
+            ) {
+                AureoleDS.icons.Add(
+                    tint = AureoleDS.colors.onSurfaceMedium,
+                    modifier = Modifier.size(AureoleDS.dimens.xLarge)
+                )
+            }
         }
+        Spacer(modifier = Modifier.height(AureoleDS.dimens.large))
     }
 }
 

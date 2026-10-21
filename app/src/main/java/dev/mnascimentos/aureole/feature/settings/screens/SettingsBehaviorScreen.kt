@@ -45,6 +45,7 @@ import dev.mnascimentos.aureole.core.designsystem.icons.AppSelect
 import dev.mnascimentos.aureole.core.designsystem.icons.Dots
 import dev.mnascimentos.aureole.core.designsystem.icons.Header
 import dev.mnascimentos.aureole.core.designsystem.icons.Press
+import dev.mnascimentos.aureole.core.designsystem.icons.RefreshCcw
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
@@ -164,6 +165,13 @@ private fun BehaviorMenuItems(
             checked = uiState.isAlphabetScrubberDisabled,
             onCheckedChange = { actions.onToggleDisableAlphabetScrubber() },
             leadingContent = { AureoleDS.icons.AlignRight() }
+        )
+
+        SettingsToggleItem(
+            title = "Check for updates",
+            checked = uiState.isInAppUpdateEnabled,
+            onCheckedChange = { actions.onToggleInAppUpdate() },
+            leadingContent = { AureoleDS.icons.RefreshCcw() }
         )
 
         HeaderOffsetPickerRow(

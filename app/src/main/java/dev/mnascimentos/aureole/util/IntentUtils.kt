@@ -5,7 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.provider.Settings
-import android.util.Log
+import timber.log.Timber
 import java.lang.reflect.InvocationTargetException
 
 object IntentUtils {
@@ -19,9 +19,9 @@ object IntentUtils {
             }
             context.startActivity(intent)
         } catch (e: ActivityNotFoundException) {
-            Log.w(TAG, "Activity not found for app info", e)
+            Timber.tag(TAG).w(e, "Activity not found for app info")
         } catch (e: SecurityException) {
-            Log.w(TAG, "Security exception for app info", e)
+            Timber.tag(TAG).w(e, "Security exception for app info")
         }
     }
 
@@ -41,9 +41,9 @@ object IntentUtils {
                 }
                 context.startActivity(fallbackIntent)
             } catch (e2: ActivityNotFoundException) {
-                Log.e(TAG, "Failed to uninstall app $packageName", e2)
+                Timber.tag(TAG).e(e2, "Failed to uninstall app $packageName")
             } catch (e2: SecurityException) {
-                Log.e(TAG, "Failed to uninstall app $packageName due to security", e2)
+                Timber.tag(TAG).e(e2, "Failed to uninstall app $packageName due to security")
             }
         }
     }
@@ -55,17 +55,17 @@ object IntentUtils {
             val expandMethod = statusBarManager.getMethod("expandNotificationsPanel")
             expandMethod.invoke(statusBarService)
         } catch (e: ClassNotFoundException) {
-            Log.w(TAG, "StatusBarManager class not found", e)
+            Timber.tag(TAG).w(e, "StatusBarManager class not found")
         } catch (e: NoSuchMethodException) {
-            Log.w(TAG, "expandNotificationsPanel method not found", e)
+            Timber.tag(TAG).w(e, "expandNotificationsPanel method not found")
         } catch (e: IllegalAccessException) {
-            Log.w(TAG, "Illegal access expanding notifications panel", e)
+            Timber.tag(TAG).w(e, "Illegal access expanding notifications panel")
         } catch (e: InvocationTargetException) {
-            Log.w(TAG, "Invocation target exception expanding notifications panel", e)
+            Timber.tag(TAG).w(e, "Invocation target exception expanding notifications panel")
         } catch (e: IllegalArgumentException) {
-            Log.w(TAG, "Illegal argument expanding notifications panel", e)
+            Timber.tag(TAG).w(e, "Illegal argument expanding notifications panel")
         } catch (e: SecurityException) {
-            Log.w(TAG, "Security exception expanding notifications panel", e)
+            Timber.tag(TAG).w(e, "Security exception expanding notifications panel")
         }
     }
 }

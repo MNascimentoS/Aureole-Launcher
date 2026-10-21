@@ -4,7 +4,6 @@ import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.os.Bundle
 import android.provider.Settings
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
@@ -34,6 +33,7 @@ import dev.mnascimentos.aureole.feature.settings.model.SettingsDialog
 import dev.mnascimentos.aureole.feature.settings.model.SettingsScreenActions
 import dev.mnascimentos.aureole.feature.settings.screens.SettingsScreen
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import timber.log.Timber
 
 class SettingsActivity : ComponentActivity() {
 
@@ -232,10 +232,10 @@ class SettingsActivity : ComponentActivity() {
             startActivity(intent)
             true
         } catch (e: ActivityNotFoundException) {
-            Log.w(TAG, "Activity not found for intent action: ${intent.action}", e)
+            Timber.tag(TAG).w(e, "Activity not found for intent action: ${intent.action}")
             false
         } catch (e: SecurityException) {
-            Log.w(TAG, "SecurityException launching intent action: ${intent.action}", e)
+            Timber.tag(TAG).w(e, "SecurityException launching intent action: ${intent.action}")
             false
         }
     }

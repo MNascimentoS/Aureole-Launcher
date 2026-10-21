@@ -3,7 +3,6 @@ package dev.mnascimentos.aureole.feature.home.components.widgets
 import android.appwidget.AppWidgetHost
 import android.appwidget.AppWidgetHostView
 import android.appwidget.AppWidgetManager
-import android.util.Log
 import android.view.View
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.animateColorAsState
@@ -53,6 +52,7 @@ import dev.mnascimentos.aureole.feature.home.model.LocalHomeUiState
 import dev.mnascimentos.aureole.feature.home.model.getWidgetIdsForStack
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 private const val COLOR_ANIMATION_DURATION_MS = 150
 private const val LONG_PRESS_MARGIN_MS = 50L
@@ -249,7 +249,7 @@ private fun WidgetHostItem(
                             up?.consume()
                         }
                     } catch (e: IllegalArgumentException) {
-                        Log.e("WidgetHostItem", "Gesture error", e)
+                        Timber.tag("WidgetHostItem").e(e, "Gesture error")
                         job.cancel()
                     }
                 }

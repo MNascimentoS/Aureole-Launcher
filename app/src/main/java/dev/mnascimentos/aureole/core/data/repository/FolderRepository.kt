@@ -1,7 +1,6 @@
 package dev.mnascimentos.aureole.core.data.repository
 
 import android.content.Context
-import android.util.Log
 import androidx.core.content.edit
 import com.google.gson.Gson
 import com.google.gson.JsonSyntaxException
@@ -11,6 +10,7 @@ import dev.mnascimentos.aureole.core.data.db.FolderDao
 import dev.mnascimentos.aureole.core.data.model.AppFolder
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import timber.log.Timber
 
 class FolderRepository(
     private val folderDao: FolderDao,
@@ -75,7 +75,7 @@ class FolderRepository(
             val type = object : TypeToken<List<AppFolder>>() {}.type
             gson.fromJson<List<AppFolder>>(json, type) ?: emptyList()
         } catch (e: JsonSyntaxException) {
-            Log.e("FolderRepository", "Failed to parse legacy folders JSON", e)
+            Timber.tag("FolderRepository").e(e, "Failed to parse legacy folders JSON")
             emptyList()
         }
     }

@@ -126,7 +126,7 @@ fun EditClockBottomSheet(
 
                     Spacer(modifier = Modifier.height(AureoleDS.dimens.medium))
 
-                    EditClockTextColorSection(uiState = uiState, actions = actions)
+                    EditClockFormatSection(uiState = uiState, actions = actions)
 
                     Spacer(modifier = Modifier.height(AureoleDS.dimens.medium))
 
@@ -134,7 +134,7 @@ fun EditClockBottomSheet(
 
                     Spacer(modifier = Modifier.height(AureoleDS.dimens.medium))
 
-                    EditClockFormatSection(uiState = uiState, actions = actions)
+                    EditClockTextColorSection(uiState = uiState, actions = actions)
 
                     Spacer(modifier = Modifier.height(AureoleDS.dimens.medium))
 

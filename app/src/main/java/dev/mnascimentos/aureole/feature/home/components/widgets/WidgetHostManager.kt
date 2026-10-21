@@ -6,11 +6,11 @@ import android.appwidget.AppWidgetProviderInfo
 import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import dev.mnascimentos.aureole.feature.home.HomeViewModel
 import dev.mnascimentos.aureole.feature.home.components.widgets.extensions.addWidgetId
 import dev.mnascimentos.aureole.feature.home.components.widgets.extensions.removeWidgetId
 import dev.mnascimentos.aureole.feature.home.components.widgets.extensions.setPendingWidgetId
+import timber.log.Timber
 
 class WidgetHostManager(
     private val viewModel: HomeViewModel,
@@ -38,13 +38,13 @@ class WidgetHostManager(
         val canBind = try {
             appWidgetManager.bindAppWidgetIdIfAllowed(appWidgetId, provider.provider)
         } catch (e: IllegalArgumentException) {
-            Log.w(TAG, "IllegalArgumentException checking bind for id $appWidgetId", e)
+            Timber.tag(TAG).w(e, "IllegalArgumentException checking bind for id $appWidgetId")
             false
         } catch (e: IllegalStateException) {
-            Log.w(TAG, "IllegalStateException checking bind for id $appWidgetId", e)
+            Timber.tag(TAG).w(e, "IllegalStateException checking bind for id $appWidgetId")
             false
         } catch (e: SecurityException) {
-            Log.w(TAG, "SecurityException checking bind for id $appWidgetId", e)
+            Timber.tag(TAG).w(e, "SecurityException checking bind for id $appWidgetId")
             false
         }
 
@@ -66,11 +66,11 @@ class WidgetHostManager(
         try {
             launchWidgetBind(intent)
         } catch (e: ActivityNotFoundException) {
-            Log.e(TAG, "Activity not found for widget bind intent for id $appWidgetId", e)
+            Timber.tag(TAG).e(e, "Activity not found for widget bind intent for id $appWidgetId")
             appWidgetHost.deleteAppWidgetId(appWidgetId)
             viewModel.setPendingWidgetId(-1)
         } catch (e: SecurityException) {
-            Log.e(TAG, "Security exception for widget bind intent for id $appWidgetId", e)
+            Timber.tag(TAG).e(e, "Security exception for widget bind intent for id $appWidgetId")
             appWidgetHost.deleteAppWidgetId(appWidgetId)
             viewModel.setPendingWidgetId(-1)
         }
@@ -87,10 +87,10 @@ class WidgetHostManager(
         try {
             launchWidgetConfigure(intent)
         } catch (e: ActivityNotFoundException) {
-            Log.e(TAG, "Activity not found for widget configure", e)
+            Timber.tag(TAG).e(e, "Activity not found for widget configure")
             completeWidgetConfiguration(appWidgetId, provider)
         } catch (e: SecurityException) {
-            Log.e(TAG, "Security exception for widget configure", e)
+            Timber.tag(TAG).e(e, "Security exception for widget configure")
             completeWidgetConfiguration(appWidgetId, provider)
         }
     }
@@ -115,11 +115,11 @@ class WidgetHostManager(
             }
             appWidgetManager.updateAppWidgetOptions(widgetId, options)
         } catch (e: IllegalArgumentException) {
-            Log.e(TAG, "Failed to update widget options for id $widgetId", e)
+            Timber.tag(TAG).e(e, "Failed to update widget options for id $widgetId")
         } catch (e: IllegalStateException) {
-            Log.e(TAG, "Failed to update widget options for id $widgetId", e)
+            Timber.tag(TAG).e(e, "Failed to update widget options for id $widgetId")
         } catch (e: SecurityException) {
-            Log.e(TAG, "Failed to update widget options for id $widgetId", e)
+            Timber.tag(TAG).e(e, "Failed to update widget options for id $widgetId")
         }
     }
 
