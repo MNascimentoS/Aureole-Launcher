@@ -31,7 +31,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.dp
 import androidx.core.graphics.drawable.toDrawable
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.designsystem.components.AureolePopupMenuItem
@@ -59,7 +58,7 @@ fun OpenedFolderActions(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(bottom = 8.dp)
+                .padding(bottom = AureoleDS.dimens.xSmall)
         ) {
             AureolePopupMenuItem(
                 title = "Add Apps",
@@ -92,7 +91,7 @@ fun OpenedFolderAppList(
         Box(
             modifier = modifier
                 .fillMaxWidth()
-                .padding(vertical = 16.dp),
+                .padding(vertical = AureoleDS.dimens.medium),
             contentAlignment = Alignment.Center
         ) {
             Text(
@@ -103,7 +102,7 @@ fun OpenedFolderAppList(
         }
     } else {
         LazyColumn(
-            contentPadding = PaddingValues(vertical = 2.dp),
+            contentPadding = PaddingValues(vertical = AureoleDS.dimens.minimal),
             modifier = modifier.fillMaxWidth()
         ) {
             items(
@@ -139,14 +138,14 @@ private fun OpenedFolderAppItemRow(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .defaultMinSize(minWidth = 48.dp, minHeight = 48.dp)
-            .clip(RoundedCornerShape(10.dp))
+            .defaultMinSize(minWidth = AureoleDS.dimens.minTouchTarget, minHeight = AureoleDS.dimens.minTouchTarget)
+            .clip(RoundedCornerShape(AureoleDS.dimens.radiusSmallCompact))
             .combinedClickable(
                 role = Role.Button,
                 onClick = onClick,
                 onLongClick = onLongClick
             )
-            .padding(horizontal = 8.dp, vertical = 8.dp),
+            .padding(horizontal = AureoleDS.dimens.xSmall, vertical = AureoleDS.dimens.xSmall),
         verticalAlignment = Alignment.CenterVertically
     ) {
         if (isLeftHandedMode) {
@@ -158,12 +157,12 @@ private fun OpenedFolderAppItemRow(
                 overflow = TextOverflow.Ellipsis,
                 modifier = Modifier.weight(1f)
             )
-            Spacer(modifier = Modifier.width(10.dp))
+            Spacer(modifier = Modifier.width(AureoleDS.dimens.smallCompact))
             Image(
                 bitmap = iconBitmap,
                 contentDescription = app.label,
                 modifier = Modifier
-                    .size(28.dp)
+                    .size(AureoleDS.dimens.iconXLargeMedium)
                     .clip(CircleShape)
             )
         } else {
@@ -171,10 +170,10 @@ private fun OpenedFolderAppItemRow(
                 bitmap = iconBitmap,
                 contentDescription = app.label,
                 modifier = Modifier
-                    .size(28.dp)
+                    .size(AureoleDS.dimens.iconXLargeMedium)
                     .clip(CircleShape)
             )
-            Spacer(modifier = Modifier.width(10.dp))
+            Spacer(modifier = Modifier.width(AureoleDS.dimens.smallCompact))
             Text(
                 text = app.label,
                 style = AureoleDS.typography.bodyMedium,

@@ -32,8 +32,10 @@ import dev.mnascimentos.aureole.feature.home.grid.model.CellBoxConfig
 import dev.mnascimentos.aureole.feature.home.grid.model.CellBoxMetrics
 import dev.mnascimentos.aureole.feature.home.grid.model.CornerResizeCallbacks
 import dev.mnascimentos.aureole.feature.home.grid.model.DragTargetSlot
+import dev.mnascimentos.aureole.feature.home.grid.model.DynamicGridItemsParams
 import dev.mnascimentos.aureole.feature.home.grid.model.GridCellParams
 import dev.mnascimentos.aureole.feature.home.grid.model.GridEditConfig
+import dev.mnascimentos.aureole.feature.home.grid.model.GridEditModifierArgs
 import dev.mnascimentos.aureole.feature.home.grid.model.GridItemEditCallbacks
 import dev.mnascimentos.aureole.feature.home.grid.model.GridMetricsTuple
 import dev.mnascimentos.aureole.feature.home.grid.model.ResizeHandleCallbacks
@@ -42,14 +44,6 @@ import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
 internal val BORDER_CORNER_RADIUS = 16.dp
 private const val LIFTED_Z_INDEX = 10f
 private const val LIFTED_SCALE = 1.02f
-
-data class DynamicGridItemsParams(
-    val items: List<LauncherItemState>,
-    val isEditMode: Boolean,
-    val metrics: GridMetricsTuple,
-    val limits: GridLimits,
-    val actions: HomeScreenActions
-)
 
 @Composable
 fun DynamicGridContainer(

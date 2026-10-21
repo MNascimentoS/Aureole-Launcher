@@ -2,6 +2,7 @@ package dev.mnascimentos.aureole.feature.home.components.containers
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -30,16 +31,19 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import dev.mnascimentos.aureole.core.data.model.AppFolder
 import dev.mnascimentos.aureole.core.data.model.AppInfo
-import dev.mnascimentos.aureole.core.data.model.ContainerItemEntity
 import dev.mnascimentos.aureole.core.data.model.ContainerItemType
 import dev.mnascimentos.aureole.core.data.model.ContainerModel
 import dev.mnascimentos.aureole.core.designsystem.icons.Add
+import dev.mnascimentos.aureole.core.designsystem.icons.ArrowDown
+import dev.mnascimentos.aureole.core.designsystem.icons.ArrowUp
+import dev.mnascimentos.aureole.core.designsystem.icons.Delete
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.CreateFolderDialog
+import dev.mnascimentos.aureole.feature.home.components.containers.model.ManageItemRowActions
+import dev.mnascimentos.aureole.feature.home.components.containers.model.ManageItemRowParams
 
 @Suppress("LongMethod") // Layout managing container reordering and item deletion controls
 @Composable
@@ -92,7 +96,7 @@ internal fun ManageItemsContent(
                     contentColor = AureoleDS.colors.onSurfaceHigh
                 ),
                 contentPadding = PaddingValues(horizontal = AureoleDS.dimens.small),
-                modifier = Modifier.height(AureoleDS.dimens.folderButtonSmall)
+                modifier = Modifier.height(52.dp)
             ) {
                 AureoleDS.icons.Add(
                     tint = AureoleDS.colors.onSurfaceHigh,
@@ -166,22 +170,8 @@ internal fun ManageItemsListSection(
     }
 }
 
-private data class ManageItemRowParams(
-    val index: Int,
-    val item: ContainerItemEntity,
-    val totalItems: Int,
-    val folders: List<AppFolder>,
-    val allApps: List<AppInfo>
-)
-
-private data class ManageItemRowActions(
-    val onMoveUp: (Int) -> Unit,
-    val onMoveDown: (Int) -> Unit,
-    val onRemove: (Int) -> Unit
-)
-
 @Composable
-private fun ManageItemRow(
+internal fun ManageItemRow(
     params: ManageItemRowParams,
     actions: ManageItemRowActions
 ) {
@@ -212,33 +202,68 @@ private fun ManageItemRow(
             modifier = Modifier.weight(1f)
         )
 
-        Row(horizontalArrangement = Arrangement.spacedBy(AureoleDS.dimens.xxSmall)) {
-            if (index > 0) {
-                Button(
-                    onClick = { actions.onMoveUp(index) },
-                    contentPadding = PaddingValues(horizontal = AureoleDS.dimens.xSmall)
-                ) {
-                    Text("▲", style = AureoleDS.typography.labelSmall)
-                }
-            }
-            if (index < params.totalItems - 1) {
-                Button(
-                    onClick = { actions.onMoveDown(index) },
-                    contentPadding = PaddingValues(horizontal = AureoleDS.dimens.xSmall)
-                ) {
-                    Text("▼", style = AureoleDS.typography.labelSmall)
-                }
-            }
-            Button(
-                onClick = { actions.onRemove(index) },
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = AureoleDS.colors.error.copy(alpha = 0.2f),
-                    contentColor = AureoleDS.colors.error
-                ),
-                contentPadding = PaddingValues(horizontal = AureoleDS.dimens.xSmall)
+        ManageItemRowActionButtons(index = index, totalItems = params.totalItems, actions = actions)
+    }
+}
+
+@Composable
+private fun ManageItemRowActionButtons(
+    index: Int,
+    totalItems: Int,
+    actions: ManageItemRowActions
+) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(AureoleDS.dimens.xSmall)
+    ) {
+        if (index > 0) {
+            Box(
+                modifier = Modifier
+                    .size(AureoleDS.dimens.large)
+                    .background(
+                        color = AureoleDS.colors.surfaceVariant.copy(alpha = 0.5f),
+                        shape = RoundedCornerShape(AureoleDS.dimens.radiusXSmall)
+                    )
+                    .clickable { actions.onMoveUp(index) },
+                contentAlignment = Alignment.Center
             ) {
-                Text("✕", style = AureoleDS.typography.labelSmall)
+                AureoleDS.icons.ArrowUp(
+                    tint = AureoleDS.colors.onSurfaceHigh,
+                    modifier = Modifier.size(AureoleDS.dimens.iconSmall)
+                )
             }
+        }
+        if (index < totalItems - 1) {
+            Box(
+                modifier = Modifier
+                    .size(AureoleDS.dimens.large)
+                    .background(
+                        color = AureoleDS.colors.surfaceVariant.copy(alpha = 0.5f),
+                        shape = RoundedCornerShape(AureoleDS.dimens.radiusXSmall)
+                    )
+                    .clickable { actions.onMoveDown(index) },
+                contentAlignment = Alignment.Center
+            ) {
+                AureoleDS.icons.ArrowDown(
+                    tint = AureoleDS.colors.onSurfaceHigh,
+                    modifier = Modifier.size(AureoleDS.dimens.iconSmall)
+                )
+            }
+        }
+        Box(
+            modifier = Modifier
+                .size(AureoleDS.dimens.large)
+                .background(
+                    color = AureoleDS.colors.error,
+                    shape = RoundedCornerShape(AureoleDS.dimens.radiusXSmall)
+                )
+                .clickable { actions.onRemove(index) },
+            contentAlignment = Alignment.Center
+        ) {
+            AureoleDS.icons.Delete(
+                tint = AureoleDS.colors.onError,
+                modifier = Modifier.size(AureoleDS.dimens.iconSmall)
+            )
         }
     }
 }

@@ -165,12 +165,12 @@ fun AureoleHeaderBanner(
 /**
  * Configuration parameters for [AureolePopupHeader].
  *
- * @property sessionTitle The optional subtitle or session name displayed under the main title.
- * @property iconBitmap Optional bitmap image to be rendered as the header icon badge.
- * @property showAureoleLogo Whether the top-right Aureole logo button should be shown.
- * @property onSettingsClick Callback invoked when the settings icon is clicked.
- * @property onCloseClick Callback invoked when the close icon is clicked.
- * @property customIcon Optional custom `@Composable` slot for rendering a custom icon badge.
+ * @param sessionTitle The optional subtitle or session name displayed under the main title.
+ * @param iconBitmap Optional bitmap image to be rendered as the header icon badge.
+ * @param showAureoleLogo Whether the top-right Aureole logo button should be shown.
+ * @param onSettingsClick Callback invoked when the settings icon is clicked.
+ * @param onCloseClick Callback invoked when the close icon is clicked.
+ * @param customIcon Optional custom `@Composable` slot for rendering a custom icon badge.
  */
 class AureolePopupHeaderParams(
     val sessionTitle: String? = null,

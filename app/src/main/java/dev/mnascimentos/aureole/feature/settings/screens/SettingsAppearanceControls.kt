@@ -1,24 +1,21 @@
 package dev.mnascimentos.aureole.feature.settings.screens
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.minimumInteractiveComponentSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
-import dev.mnascimentos.aureole.core.designsystem.icons.ColorFill
 import dev.mnascimentos.aureole.core.designsystem.icons.Corners
 import dev.mnascimentos.aureole.core.designsystem.icons.Glass
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
@@ -38,38 +35,6 @@ private const val OPACITY_LOW_THRESHOLD = 0.35f
 private const val OPACITY_MEDIUM_THRESHOLD = 0.70f
 
 @Composable
-internal fun MenuColorRow(
-    manualSeedColor: Int,
-    onClick: () -> Unit
-) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clip(RoundedCornerShape(16.dp))
-            .clickable(onClick = onClick)
-            .padding(vertical = 8.dp, horizontal = 12.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        AureoleDS.icons.ColorFill(
-            tint = AureoleDS.colors.onSurfaceMedium,
-            modifier = Modifier.padding(end = 20.dp).size(20.dp)
-        )
-        AureoleText(
-            text = "Menu background color",
-            color = AureoleDS.colors.onSurfaceMedium,
-            modifier = Modifier.weight(1f),
-            format = AureoleTextFormatParams(style = AureoleDS.typography.bodyLarge, fontWeight = FontWeight.Normal)
-        )
-        Box(
-            modifier = Modifier
-                .size(24.dp)
-                .clip(CircleShape)
-                .background(Color(manualSeedColor))
-        )
-    }
-}
-
-@Composable
 internal fun GlassAndBlurRow(
     uiState: SettingsUiState,
     onClick: () -> Unit
@@ -77,14 +42,19 @@ internal fun GlassAndBlurRow(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(16.dp))
-            .clickable(onClick = onClick)
-            .padding(vertical = 8.dp, horizontal = 12.dp),
+            .minimumInteractiveComponentSize()
+            .clip(RoundedCornerShape(AureoleDS.dimens.radiusMedium))
+            .clickable(
+                onClick = onClick,
+                role = Role.Button
+            )
+            .semantics(mergeDescendants = true) {}
+            .padding(vertical = AureoleDS.dimens.xSmall, horizontal = AureoleDS.dimens.small),
         verticalAlignment = Alignment.CenterVertically
     ) {
         AureoleDS.icons.Glass(
             tint = AureoleDS.colors.onSurfaceMedium,
-            modifier = Modifier.padding(end = 20.dp).size(20.dp)
+            modifier = Modifier.padding(end = AureoleDS.dimens.iconMedium).size(AureoleDS.dimens.iconMedium)
         )
         AureoleText(
             text = "Glass effect",
@@ -114,14 +84,19 @@ internal fun ChangeBorderRow(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(16.dp))
-            .clickable(onClick = onClick)
-            .padding(vertical = 8.dp, horizontal = 12.dp),
+            .minimumInteractiveComponentSize()
+            .clip(RoundedCornerShape(AureoleDS.dimens.radiusMedium))
+            .clickable(
+                onClick = onClick,
+                role = Role.Button
+            )
+            .semantics(mergeDescendants = true) {}
+            .padding(vertical = AureoleDS.dimens.xSmall, horizontal = AureoleDS.dimens.small),
         verticalAlignment = Alignment.CenterVertically
     ) {
         AureoleDS.icons.Corners(
             tint = AureoleDS.colors.onSurfaceMedium,
-            modifier = Modifier.padding(end = 20.dp).size(20.dp)
+            modifier = Modifier.padding(end = AureoleDS.dimens.iconMedium).size(AureoleDS.dimens.iconMedium)
         )
         AureoleText(
             text = "Change Border",
@@ -227,8 +202,8 @@ private fun handleBlurOptionSelected(
 @Composable
 private fun SettingsAppearanceControlsPreview() {
     AureoleLauncherTheme {
-        MenuColorRow(
-            manualSeedColor = 0xFF1B65C0.toInt(),
+        GlassAndBlurRow(
+            uiState = SettingsUiState(),
             onClick = {}
         )
     }

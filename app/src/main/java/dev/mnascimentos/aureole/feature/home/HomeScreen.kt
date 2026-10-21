@@ -107,7 +107,7 @@ fun HomeScreen(
                         screenWidthPx = it.size.width.toFloat()
                     }
                     .homeScreenExclusion(isSystemBackActive)
-                    .then(if (uiState.isGridEditMode) Modifier else dragModifier)
+                    .then(if (uiState.isOverlayActive) Modifier else dragModifier)
             ) {
                 HomeScreenBody(
                     HomeScreenBodyConfig(
@@ -263,7 +263,8 @@ private fun HomeEditGridItemOverlay(config: HomeOverlaysConfig) {
                     onToggleIndicator = { config.actions.onToggleWidgetStackDots(editingItem.id) },
                     onRemoveWidget = { config.actions.onRemoveWidgetClick(it, editingItem.id) },
                     onAddWidgetClick = { config.actions.onAddWidgetClick(editingItem.id) },
-                    onDismissRequest = config.actions.onCloseEditGridItemDialog
+                    onDismissRequest = config.actions.onCloseEditGridItemDialog,
+                    onReorderWidgets = { config.actions.onReorderWidgets(it, editingItem.id) }
                 )
             )
         } else {

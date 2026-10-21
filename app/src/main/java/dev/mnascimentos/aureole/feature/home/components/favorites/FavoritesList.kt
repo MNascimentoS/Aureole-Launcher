@@ -25,8 +25,9 @@ import dev.mnascimentos.aureole.core.designsystem.utils.fadingEdges
 import dev.mnascimentos.aureole.feature.home.components.appsdrawer.appitem.AppItemRow
 import dev.mnascimentos.aureole.feature.home.components.appsdrawer.appitem.model.AppItemRowActions
 import dev.mnascimentos.aureole.feature.home.components.appsdrawer.appitem.model.AppItemRowConfig
-import dev.mnascimentos.aureole.feature.home.components.clock.ClockHazeConfig
 import dev.mnascimentos.aureole.feature.home.components.clock.ClockHeader
+import dev.mnascimentos.aureole.feature.home.components.clock.model.ClockHazeConfig
+import dev.mnascimentos.aureole.feature.home.components.favorites.model.FavoritesListConfig
 import dev.mnascimentos.aureole.feature.home.components.favorites.model.FavoritesListOptions
 import dev.mnascimentos.aureole.feature.home.components.favorites.model.NonScrollableFavoritesParams
 import dev.mnascimentos.aureole.feature.home.components.favorites.model.ScrollableFavoritesParams

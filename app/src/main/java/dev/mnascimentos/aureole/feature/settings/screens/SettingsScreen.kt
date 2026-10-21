@@ -24,6 +24,7 @@ import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.composable.ColorPickerDialog
 import dev.mnascimentos.aureole.composable.SettingsActionItem
 import dev.mnascimentos.aureole.composable.SettingsMenuItem
+import dev.mnascimentos.aureole.composable.SettingsMenuParams
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
 import dev.mnascimentos.aureole.core.designsystem.icons.Check
@@ -169,12 +170,16 @@ internal fun FactoryResetDialog(
     ) {
         Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
             SettingsMenuItem(
-                title = "Yes",
-                onClick = { actions.onConfirmFactoryReset() }
+                SettingsMenuParams(
+                    title = "Yes",
+                    onClick = { actions.onConfirmFactoryReset() }
+                )
             )
             SettingsMenuItem(
-                title = "No",
-                onClick = { actions.onDismissFactoryResetDialog() }
+                SettingsMenuParams(
+                    title = "No",
+                    onClick = { actions.onDismissFactoryResetDialog() }
+                )
             )
         }
     }
@@ -273,12 +278,16 @@ internal fun RestoreWallpaperDialog(
     ) {
         Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
             SettingsMenuItem(
-                title = "Yes",
-                onClick = onConfirm
+                SettingsMenuParams(
+                    title = "Yes",
+                    onClick = onConfirm
+                )
             )
             SettingsMenuItem(
-                title = "No",
-                onClick = onDismiss
+                SettingsMenuParams(
+                    title = "No",
+                    onClick = onDismiss
+                )
             )
         }
     }

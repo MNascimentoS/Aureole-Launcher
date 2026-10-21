@@ -39,6 +39,7 @@ import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatPa
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
+import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.FolderButtonMetrics
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.FolderFormConfig
 
 @Composable
@@ -145,7 +146,7 @@ fun FolderIconPreview(
 ) {
     Box(
         modifier = modifier
-            .size(AureoleDS.dimens.folderButtonSmall)
+            .size(FolderButtonMetrics.SmallSize)
             .clip(RoundedCornerShape(AureoleDS.dimens.radiusMedium))
             .background(AureoleDS.colors.surfaceVariant),
         contentAlignment = Alignment.Center

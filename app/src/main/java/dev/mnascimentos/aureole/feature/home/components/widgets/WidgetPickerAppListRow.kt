@@ -1,7 +1,6 @@
 package dev.mnascimentos.aureole.feature.home.components.widgets
 
 import android.graphics.drawable.Drawable
-import android.util.Log
 import android.view.InflateException
 import android.widget.ImageView
 import android.widget.RemoteViews
@@ -42,8 +41,10 @@ import coil.compose.AsyncImage
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
+import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.FolderPopupMetrics
 import dev.mnascimentos.aureole.feature.home.components.widgets.model.WidgetAppGroup
 import dev.mnascimentos.aureole.feature.home.components.widgets.model.WidgetVariant
+import timber.log.Timber
 
 private const val TAG = "WidgetPickerAppListRow"
 private const val WIDGET_PREVIEW_ASPECT_RATIO = 1.2f
@@ -110,7 +111,7 @@ internal fun WidgetPreviewCard(
 ) {
     Column(
         modifier = Modifier
-            .width(AureoleDS.dimens.popupWidthMax)
+            .width(FolderPopupMetrics.WidthMax)
             .defaultMinSize(minWidth = 48.dp, minHeight = 48.dp)
             .background(
                 AureoleDS.colors.surfaceVariant.copy(alpha = 0.6f),
@@ -183,11 +184,11 @@ private fun WidgetPreviewContent(
                     )
                     rv.apply(ctx, null)
                 } catch (e: InflateException) {
-                    Log.e(TAG, "Failed to inflate previewLayout for ${widget.title}", e)
+                    Timber.tag(TAG).e(e, "Failed to inflate previewLayout for ${widget.title}")
                     previewFailed = true
                     ImageView(ctx).apply { if (fallbackAppIcon != null) setImageDrawable(fallbackAppIcon) }
                 } catch (e: IllegalArgumentException) {
-                    Log.e(TAG, "Invalid previewLayout for ${widget.title}", e)
+                    Timber.tag(TAG).e(e, "Invalid previewLayout for ${widget.title}")
                     previewFailed = true
                     ImageView(ctx).apply { if (fallbackAppIcon != null) setImageDrawable(fallbackAppIcon) }
                 }

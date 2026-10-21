@@ -4,6 +4,7 @@ import androidx.lifecycle.viewModelScope
 import dev.mnascimentos.aureole.feature.home.HomeViewModel
 import dev.mnascimentos.aureole.feature.home.components.appsdrawer.extensions.updateAppsState
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 fun HomeViewModel.setShowFavoritePicker(show: Boolean, containerId: String? = null) {
     updateUiState {
@@ -33,16 +34,21 @@ fun HomeViewModel.updateFavoritePackages(newFavorites: List<String>) {
 
 fun HomeViewModel.updateContainerFavorites(containerId: String, newFavorites: List<String>) {
     viewModelScope.launch {
-        favoriteContainerRepository.updateContainerFavorites(containerId, newFavorites)
-        val updatedMap = uiState.value.containerFavorites.toMutableMap()
-        updatedMap[containerId] = newFavorites
-        settingsRepository.favoriteAppPackages = newFavorites
-        updateUiState {
-            it.copy(
-                favoriteAppPackages = newFavorites,
-                containerFavorites = updatedMap
-            )
+        runCatching {
+            favoriteContainerRepository.updateContainerFavorites(containerId, newFavorites)
+            val updatedMap = uiState.value.containerFavorites.toMutableMap()
+            updatedMap[containerId] = newFavorites
+            settingsRepository.favoriteAppPackages = newFavorites
+            updateUiState {
+                it.copy(
+                    favoriteAppPackages = newFavorites,
+                    containerFavorites = updatedMap
+                )
+            }
+            updateAppsState(uiState.value.apps)
+        }.onFailure { e ->
+            e.printStackTrace()
+            Timber.e(e)
         }
-        updateAppsState(uiState.value.apps)
     }
 }

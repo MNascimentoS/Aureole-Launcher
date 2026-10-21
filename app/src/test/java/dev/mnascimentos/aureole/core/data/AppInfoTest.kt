@@ -7,7 +7,7 @@ import org.junit.Test
 class AppInfoTest {
 
     @Test
-    fun appInfoEntityCreation_isCorrect() {
+    fun `when creating AppInfo entity, should populate fields correctly`() {
         val entity = AppInfoEntity(
             packageName = "com.example.app",
             label = "Example App",

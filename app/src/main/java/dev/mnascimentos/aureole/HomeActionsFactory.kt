@@ -46,6 +46,8 @@ import dev.mnascimentos.aureole.feature.home.components.overlays.extensions.open
 import dev.mnascimentos.aureole.feature.home.components.overlays.extensions.toggleWidgetStackDots
 import dev.mnascimentos.aureole.feature.home.components.widgets.extensions.closeWidgetPopup
 import dev.mnascimentos.aureole.feature.home.components.widgets.extensions.openWidgetPopup
+import dev.mnascimentos.aureole.feature.home.components.widgets.extensions.removeWidgetId
+import dev.mnascimentos.aureole.feature.home.components.widgets.extensions.reorderWidgets
 import dev.mnascimentos.aureole.feature.home.components.widgets.extensions.setIsAddingSingleWidget
 import dev.mnascimentos.aureole.feature.home.components.widgets.extensions.setShowWidgetPicker
 import dev.mnascimentos.aureole.feature.home.components.widgets.extensions.setShowWidgetResizeDialog
@@ -54,7 +56,6 @@ import dev.mnascimentos.aureole.feature.home.components.widgets.extensions.setWi
 import dev.mnascimentos.aureole.feature.home.extensions.setAllAppsDrawerOpen
 import dev.mnascimentos.aureole.feature.home.extensions.setShowCustomizeBottomSheet
 import dev.mnascimentos.aureole.feature.home.extensions.toggleShowAllAppsOnHome
-import dev.mnascimentos.aureole.feature.home.grid.extensions.GridItemSpec
 import dev.mnascimentos.aureole.feature.home.grid.extensions.addGridItem
 import dev.mnascimentos.aureole.feature.home.grid.extensions.cancelGridEditMode
 import dev.mnascimentos.aureole.feature.home.grid.extensions.deleteGridItem
@@ -72,6 +73,7 @@ import dev.mnascimentos.aureole.feature.home.grid.extensions.setEditingGridItem
 import dev.mnascimentos.aureole.feature.home.grid.extensions.setShowAddContainerDialog
 import dev.mnascimentos.aureole.feature.home.grid.extensions.updateGridItemsOrientation
 import dev.mnascimentos.aureole.feature.home.grid.extensions.updateScrollViewOrientation
+import dev.mnascimentos.aureole.feature.home.grid.model.GridItemSpec
 import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
 import dev.mnascimentos.aureole.feature.settings.SettingsActivity
 import dev.mnascimentos.aureole.util.IntentUtils
@@ -89,6 +91,12 @@ class HomeActionsFactory(
             onAddWidgetClick = { stackId ->
                 viewModel.setTargetWidgetStackId(stackId)
                 viewModel.setShowWidgetPicker(true)
+            },
+            onRemoveWidgetClick = { widgetId, stackId ->
+                viewModel.removeWidgetId(widgetId, stackId)
+            },
+            onReorderWidgets = { newWidgets, stackId ->
+                viewModel.reorderWidgets(newWidgets, stackId)
             },
             onAppClick = { appInfo ->
                 activity.packageManager.getLaunchIntentForPackage(appInfo.packageName)?.let { launchIntent ->

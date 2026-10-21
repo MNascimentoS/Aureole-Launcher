@@ -31,6 +31,7 @@ import dev.mnascimentos.aureole.core.designsystem.icons.HorizontalContainer
 import dev.mnascimentos.aureole.core.designsystem.icons.MenuIcon
 import dev.mnascimentos.aureole.core.designsystem.icons.VerticalContainer
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
+import dev.mnascimentos.aureole.feature.home.grid.model.ScrollViewChildParams
 import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
 
 @Composable
@@ -53,14 +54,6 @@ fun SingleScrollViewChildRow(
         onDismissRequest = onDismissRequest
     )
 }
-
-data class ScrollViewChildParams(
-    val parentId: String,
-    val child: LauncherItemState,
-    val childIndex: Int,
-    val totalChildren: Int,
-    val isVertical: Boolean,
-)
 
 @Composable
 internal fun ScrollViewChildItemCard(

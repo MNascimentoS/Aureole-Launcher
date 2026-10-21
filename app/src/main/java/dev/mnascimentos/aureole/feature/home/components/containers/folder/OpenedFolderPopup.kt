@@ -46,6 +46,7 @@ import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.FolderPopupActions
+import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.FolderPopupMetrics
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.GridFolderPopupParams
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.OpenedFolderPopupConfig
 import dev.mnascimentos.aureole.feature.home.model.LocalHomeActions
@@ -111,8 +112,8 @@ private fun StandardFolderPopupBox(
     AureolePopupBox(
         hazeState = null,
         modifier = modifier
-            .widthIn(min = AureoleDS.dimens.popupWidthMin, max = AureoleDS.dimens.popupWidthMax)
-            .heightIn(max = AureoleDS.dimens.popupHeightMax)
+            .widthIn(min = FolderPopupMetrics.WidthMin, max = FolderPopupMetrics.WidthMax)
+            .heightIn(max = FolderPopupMetrics.HeightMax)
     ) {
         AureoleHeaderBanner(
             title = config.folder.name,
@@ -172,9 +173,9 @@ private fun OpenedFolderGrid(
         }
     } else {
         val gridHeight = when {
-            appsInFolder.size <= GRID_MAX_3 -> AureoleDS.dimens.popupWidthMin / 2 + AureoleDS.dimens.xxLarge
-            appsInFolder.size <= GRID_MAX_6 -> AureoleDS.dimens.popupWidthMax
-            else -> AureoleDS.dimens.popupWidthMax + AureoleDS.dimens.radiusFull
+            appsInFolder.size <= GRID_MAX_3 -> FolderPopupMetrics.WidthMin / 2 + AureoleDS.dimens.xxLarge
+            appsInFolder.size <= GRID_MAX_6 -> FolderPopupMetrics.WidthMax
+            else -> FolderPopupMetrics.WidthMax + AureoleDS.dimens.radiusFull
         }
 
         LazyVerticalGrid(

@@ -1,7 +1,7 @@
 package dev.mnascimentos.aureole.core.telemetry
 
-import android.util.Log
 import com.google.firebase.crashlytics.FirebaseCrashlytics
+import timber.log.Timber
 
 interface TelemetryLogger {
     fun logTlsPinningFailure(
@@ -26,7 +26,7 @@ class DefaultTelemetryLogger : TelemetryLogger {
         details: Map<String, String>
     ) {
         val message = "TLS Pinning Failure [domain=$domain, reason=$reason, pinsCount=${expectedPins.size}]"
-        Log.e(TAG, message)
+        Timber.tag(TAG).e(message)
 
         runCatching {
             val crashlytics = FirebaseCrashlytics.getInstance()
@@ -38,7 +38,7 @@ class DefaultTelemetryLogger : TelemetryLogger {
             }
             crashlytics.recordException(SecurityException(message))
         }.onFailure { e ->
-            Log.w(TAG, "Failed to record TLS failure event to Crashlytics", e)
+            Timber.tag(TAG).w(e, "Failed to record TLS failure event to Crashlytics")
         }
     }
 
@@ -47,7 +47,7 @@ class DefaultTelemetryLogger : TelemetryLogger {
         params: Map<String, String>
     ) {
         val message = "Security Event: $eventName $params"
-        Log.i(TAG, message)
+        Timber.tag(TAG).i(message)
 
         runCatching {
             val crashlytics = FirebaseCrashlytics.getInstance()
@@ -56,7 +56,7 @@ class DefaultTelemetryLogger : TelemetryLogger {
                 crashlytics.setCustomKey(key, value)
             }
         }.onFailure { e ->
-            Log.w(TAG, "Failed to record security event to Crashlytics", e)
+            Timber.tag(TAG).w(e, "Failed to record security event to Crashlytics")
         }
     }
 

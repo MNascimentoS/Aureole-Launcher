@@ -13,6 +13,7 @@ data class HomeScreenActions(
     val onWidgetRowHeightChanged: (Dp) -> Unit,
     val onAddWidgetClick: (String?) -> Unit = {},
     val onRemoveWidgetClick: (Int, String?) -> Unit = { _, _ -> },
+    val onReorderWidgets: (List<Int>, String?) -> Unit = { _, _ -> },
     val onAppClick: (AppInfo) -> Unit,
     val onExpandNotificationShade: () -> Unit,
     val onFolderIntent: (FolderViewIntent) -> Unit,

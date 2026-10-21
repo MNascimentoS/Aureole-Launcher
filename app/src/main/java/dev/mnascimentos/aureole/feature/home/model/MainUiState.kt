@@ -7,7 +7,7 @@ import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.data.model.ContainerModel
 import dev.mnascimentos.aureole.core.data.model.LauncherItemState
 import dev.mnascimentos.aureole.core.data.repository.SettingsRepository
-import dev.mnascimentos.aureole.feature.home.grid.GridLimits
+import dev.mnascimentos.aureole.feature.home.grid.model.GridLimits
 
 data class MainUiState(
     val apps: List<AppInfo> = emptyList(),
@@ -157,6 +157,8 @@ val MainUiState.isOverlayActive: Boolean
             isAddAppToFolderDialogVisible ||
             isRenameFolderDialogVisible
         val isFolderOrSheetActive = showReleaseNotesBottomSheet ||
+            showCustomizeBottomSheet ||
+            showEditClockBottomSheet ||
             isAllAppsDrawerOpen ||
             searchQuery.isNotEmpty() ||
             isFolderActive

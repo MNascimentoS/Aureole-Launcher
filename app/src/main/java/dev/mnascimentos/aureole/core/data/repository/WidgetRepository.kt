@@ -4,12 +4,12 @@ import android.appwidget.AppWidgetManager
 import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Build
-import android.util.Log
 import androidx.core.content.edit
 import dev.mnascimentos.aureole.feature.home.components.widgets.model.WidgetAppGroup
 import dev.mnascimentos.aureole.feature.home.components.widgets.model.WidgetVariant
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import timber.log.Timber
 
 class WidgetRepository(private val context: Context) {
 
@@ -119,7 +119,7 @@ class WidgetRepository(private val context: Context) {
                     availableWidgets = variants.sortedBy { it.title }
                 )
             } catch (e: PackageManager.NameNotFoundException) {
-                Log.e(TAG, "Failed to load app info for $packageName", e)
+                Timber.tag(TAG).e(e, "Failed to load app info for $packageName")
                 null
             }
         }.sortedBy { it.appName }

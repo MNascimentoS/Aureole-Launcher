@@ -3,8 +3,10 @@
 package dev.mnascimentos.aureole.feature.settings.screens
 
 import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -17,6 +19,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -29,15 +32,15 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.composable.SettingsMenuItem
+import dev.mnascimentos.aureole.composable.SettingsMenuParams
 import dev.mnascimentos.aureole.composable.SettingsToggleItem
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
 import dev.mnascimentos.aureole.core.designsystem.icons.AppSelect
-import dev.mnascimentos.aureole.core.designsystem.icons.Corners
 import dev.mnascimentos.aureole.core.designsystem.icons.Dots
 import dev.mnascimentos.aureole.core.designsystem.icons.Edit
 import dev.mnascimentos.aureole.core.designsystem.icons.Layout
@@ -111,15 +114,15 @@ private fun SettingsAppearanceContent(
             .fillMaxSize()
             .padding(innerPadding)
     ) {
-        val topSpacerHeight = (maxHeight * (uiState.headerOffsetPercent / 100f)).coerceAtLeast(16.dp)
-        val bottomSpacerHeight = (maxHeight * BOTTOM_SPACER_RATIO).coerceAtLeast(24.dp)
+        val topSpacerHeight = (maxHeight * (uiState.headerOffsetPercent / 100f)).coerceAtLeast(AureoleDS.dimens.medium)
+        val bottomSpacerHeight = (maxHeight * BOTTOM_SPACER_RATIO).coerceAtLeast(AureoleDS.dimens.large)
 
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .statusBarsPadding()
                 .verticalScroll(rememberScrollState())
-                .padding(horizontal = 28.dp),
+                .padding(horizontal = AureoleDS.dimens.iconXLargeMedium),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Spacer(modifier = Modifier.height(topSpacerHeight))
@@ -135,7 +138,7 @@ private fun SettingsAppearanceContent(
                 )
             )
 
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(AureoleDS.dimens.large))
 
             AppearanceMenuItems(
                 uiState = uiState,
@@ -160,72 +163,53 @@ private fun AppearanceMenuItems(
     actions: SettingsScreenActions,
     dialogActions: AppearanceMenuDialogActions
 ) {
-    val onShowSetBackgroundDialog = dialogActions.onShowSetBackgroundDialog
-    val onShowBlurDialog = dialogActions.onShowBlurDialog
-    val onShowFontDialog = dialogActions.onShowFontDialog
-    val onShowPaletteDialog = dialogActions.onShowPaletteDialog
-    val onShowBorderRadiusDialog = dialogActions.onShowBorderRadiusDialog
     Column(
-        verticalArrangement = Arrangement.spacedBy(8.dp),
+        verticalArrangement = Arrangement.spacedBy(AureoleDS.dimens.xSmall),
         modifier = Modifier.fillMaxWidth()
     ) {
-        // 1. Set Background
         SettingsMenuItem(
-            title = "Set Background",
-            leadingContent = { AureoleDS.icons.Edit() },
-            onClick = onShowSetBackgroundDialog
+            SettingsMenuParams(
+                title = "Set Background",
+                leadingContent = { AureoleDS.icons.Edit() },
+                onClick = dialogActions.onShowSetBackgroundDialog
+            )
         )
-
         if (uiState.isCustomWallpaperSet) {
             WallpaperScaleTypeRow(
                 scaleType = uiState.wallpaperScaleType,
                 onSelectScaleType = actions.onSelectWallpaperScaleType
             )
         }
-
-        // 2. Menu background color (placed BEFORE press shortcut!)
-        MenuColorRow(
-            manualSeedColor = uiState.manualSeedColor,
-            onClick = { actions.onOpenColorPickerDialog() }
-        )
-
-        // 3. Press shortcut
-        ShortcutRow()
-
-        // 4. Glass effect / Glass & Blur
-        GlassAndBlurRow(
-            uiState = uiState,
-            onClick = onShowBlurDialog
-        )
-
-        // 5. Change font
+        GlassAndBlurRow(uiState = uiState, onClick = dialogActions.onShowBlurDialog)
         SettingsMenuItem(
-            title = "Change font",
-            leadingContent = { AureoleDS.icons.Text() },
-            onClick = onShowFontDialog
+            SettingsMenuParams(
+                title = "Change font",
+                leadingContent = { AureoleDS.icons.Text() },
+                onClick = dialogActions.onShowFontDialog
+            )
         )
-
-        // 6. Color palette
         SettingsMenuItem(
-            title = "Color palette",
-            leadingContent = { AureoleDS.icons.Dots() },
-            onClick = onShowPaletteDialog
+            SettingsMenuParams(
+                title = "Color palette",
+                leadingContent = { AureoleDS.icons.Dots() },
+                onClick = dialogActions.onShowPaletteDialog
+            )
         )
-
-        // 7. Custom colors
         SettingsMenuItem(
-            title = "Custom colors",
-            leadingContent = { AureoleDS.icons.StrokeColor() },
-            onClick = { actions.onOpenColorPickerDialog() }
+            SettingsMenuParams(
+                title = "Custom colors",
+                leadingContent = { AureoleDS.icons.StrokeColor() },
+                trailingContent = {
+                    Box(
+                        modifier = Modifier.size(
+                            AureoleDS.dimens.iconLarge
+                        ).clip(CircleShape).background(Color(uiState.manualSeedColor))
+                    )
+                },
+                onClick = { actions.onOpenColorPickerDialog() }
+            )
         )
-
-        // 8. Change Border (radius)
-        ChangeBorderRow(
-            cornerRadiusDp = uiState.cornerRadiusDp,
-            onClick = onShowBorderRadiusDialog
-        )
-
-        // 9. Themed icons toggle
+        ChangeBorderRow(cornerRadiusDp = uiState.cornerRadiusDp, onClick = dialogActions.onShowBorderRadiusDialog)
         SettingsToggleItem(
             title = "Themed icons",
             checked = uiState.isThemedAppIconsEnabled,
@@ -249,14 +233,14 @@ private fun WallpaperScaleTypeRow(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(16.dp))
+            .clip(RoundedCornerShape(AureoleDS.dimens.radiusMedium))
             .clickable { onSelectScaleType(nextScaleType) }
-            .padding(vertical = 8.dp, horizontal = 12.dp),
+            .padding(vertical = AureoleDS.dimens.xSmall, horizontal = AureoleDS.dimens.small),
         verticalAlignment = Alignment.CenterVertically
     ) {
         AureoleDS.icons.Layout(
             tint = AureoleDS.colors.onSurfaceMedium,
-            modifier = Modifier.padding(end = 20.dp).size(20.dp)
+            modifier = Modifier.padding(end = AureoleDS.dimens.iconMedium).size(AureoleDS.dimens.iconMedium)
         )
         AureoleText(
             text = "Image scale",
@@ -266,34 +250,6 @@ private fun WallpaperScaleTypeRow(
         )
         AureoleText(
             text = scaleType,
-            color = AureoleDS.colors.onSurfaceLow,
-            format = AureoleTextFormatParams(style = AureoleDS.typography.bodyLarge)
-        )
-    }
-}
-
-@Composable
-private fun ShortcutRow() {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clip(RoundedCornerShape(16.dp))
-            .clickable { }
-            .padding(vertical = 8.dp, horizontal = 12.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        AureoleDS.icons.Corners(
-            tint = AureoleDS.colors.onSurfaceMedium,
-            modifier = Modifier.padding(end = 20.dp).size(20.dp)
-        )
-        AureoleText(
-            text = "Press shortcut",
-            color = AureoleDS.colors.onSurfaceMedium,
-            modifier = Modifier.weight(1f),
-            format = AureoleTextFormatParams(style = AureoleDS.typography.bodyLarge, fontWeight = FontWeight.Normal)
-        )
-        AureoleText(
-            text = "Rounded",
             color = AureoleDS.colors.onSurfaceLow,
             format = AureoleTextFormatParams(style = AureoleDS.typography.bodyLarge)
         )

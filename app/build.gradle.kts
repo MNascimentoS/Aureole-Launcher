@@ -81,6 +81,7 @@ android {
 
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 
     experimentalProperties["android.experimental.enableScreenshotTest"] = true
@@ -157,7 +158,9 @@ tasks.register<JacocoReport>("jacocoTestReport") {
         "**/*_Impl*.*",
         "**/*Dao*.*",
         "**/*Database*.*",
-        "dev/mnascimentos/aureole/data/db/*"
+        "dev/mnascimentos/aureole/data/db/*",
+        "**/ComposableSingletons*.*",
+        "**/*Preview*.*"
     )
 
     val javaClasses = fileTree(layout.buildDirectory.dir("intermediates/javac/debug/compileDebugJavaWithJavac/classes")) {
@@ -215,6 +218,7 @@ dependencies {
     implementation(libs.coil.compose)
     implementation(libs.haze)
     implementation(libs.haze.materials)
+    implementation(libs.timber)
 
     // Play Services & Firebase
     implementation(libs.playAppUpdate)

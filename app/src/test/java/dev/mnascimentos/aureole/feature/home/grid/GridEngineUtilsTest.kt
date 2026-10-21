@@ -2,6 +2,8 @@ package dev.mnascimentos.aureole.feature.home.grid
 
 import dev.mnascimentos.aureole.core.data.model.LauncherItemState
 import dev.mnascimentos.aureole.core.data.model.LauncherItemType
+import dev.mnascimentos.aureole.feature.home.grid.model.GridLimits
+import dev.mnascimentos.aureole.feature.home.grid.model.SnapParams
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
@@ -15,7 +17,7 @@ class GridEngineUtilsTest {
     private val testLimits = GridLimits(maxCols = TEST_GRID_COLS, maxRows = TEST_GRID_ROWS)
 
     @Test
-    fun `hasAABBCollision returns true when items overlap`() {
+    fun `when items overlap, should return true for AABB collision`() {
         val itemA = LauncherItemState(
             id = "a",
             type = LauncherItemType.CLOCK,
@@ -37,7 +39,7 @@ class GridEngineUtilsTest {
     }
 
     @Test
-    fun `hasAABBCollision returns false when items touch edges but do not overlap`() {
+    fun `when items touch edges but do not overlap, should return false for AABB collision`() {
         val itemA = LauncherItemState(
             id = "a",
             type = LauncherItemType.CLOCK,
@@ -59,7 +61,7 @@ class GridEngineUtilsTest {
     }
 
     @Test
-    fun `checkCollisionWithOthers detects overlap with existing item`() {
+    fun `when checking collision with existing items, should detect overlap`() {
         val items = listOf(
             LauncherItemState(
                 id = "a",
@@ -91,7 +93,7 @@ class GridEngineUtilsTest {
     }
 
     @Test
-    fun `isWithinBounds returns true when item fits within max cols and rows`() {
+    fun `when item fits within max cols and rows, should return true for isWithinBounds`() {
         assertTrue(
             GridEngineUtils.isWithinBounds(
                 col = 0,
@@ -113,7 +115,7 @@ class GridEngineUtilsTest {
     }
 
     @Test
-    fun `calculateSnapCell rounds correctly and stays within bounds`() {
+    fun `when calculating snap cell, should round correctly and stay within bounds`() {
         val cellWidth = 100f
         val cellHeight = 100f
 
@@ -134,7 +136,7 @@ class GridEngineUtilsTest {
     }
 
     @Test
-    fun `findFirstAvailableSlot finds first free slot`() {
+    fun `when searching for available slot, should return first free slot`() {
         val items = listOf(
             LauncherItemState(
                 id = "a",
@@ -155,7 +157,7 @@ class GridEngineUtilsTest {
     }
 
     @Test
-    fun `findFirstAvailableSlot returns null when grid is full`() {
+    fun `when grid is full, should return null for available slot`() {
         val items = listOf(
             LauncherItemState(
                 id = "a",
@@ -176,7 +178,7 @@ class GridEngineUtilsTest {
     }
 
     @Test
-    fun `findNearestValidSlot returns direct target slot when unoccupied`() {
+    fun `when target slot is unoccupied, should return direct target slot`() {
         val movingItem = LauncherItemState(
             id = "a",
             type = LauncherItemType.SINGLE_APP_WIDGET,
@@ -207,7 +209,7 @@ class GridEngineUtilsTest {
     }
 
     @Test
-    fun `findNearestValidSlot falls back to nearest valid slot when target is occupied`() {
+    fun `when target slot is occupied, should fall back to nearest valid slot`() {
         val movingItem = LauncherItemState(
             id = "a",
             type = LauncherItemType.SINGLE_APP_WIDGET,
@@ -239,7 +241,7 @@ class GridEngineUtilsTest {
     }
 
     @Test
-    fun `findNearestValidSlot works across distance greater than 3 cells`() {
+    fun `when target distance is greater than 3 cells, should find nearest valid slot`() {
         val movingItem = LauncherItemState(
             id = "a",
             type = LauncherItemType.SINGLE_APP_WIDGET,
@@ -279,14 +281,14 @@ class GridEngineUtilsTest {
     }
 
     @Test
-    fun `getDefaultSpanForType returns correct default span for SCROLL_VIEW`() {
+    fun `when getting default span for SCROLL_VIEW, should return correct default span`() {
         val (spans, minSpans) = GridDefaults.getDefaultSpanForType(LauncherItemType.SCROLL_VIEW)
         assertEquals(Pair(14, 9), spans)
         assertEquals(Pair(1, 1), minSpans)
     }
 
     @Test
-    fun `ScrollView LauncherItemState supports nested children and scroll orientation`() {
+    fun `when ScrollView LauncherItemState is configured, should support nested children and scroll orientation`() {
         val childClock = LauncherItemState(
             id = "child_clock",
             type = LauncherItemType.CLOCK,

@@ -1,27 +1,15 @@
-@file:Suppress("TooManyFunctions") // Suppressed because dialog components are modularized into helper composables
-
 package dev.mnascimentos.aureole.feature.home.components.favorites
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -31,32 +19,24 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.semantics.Role
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleEditOverlay
-import dev.mnascimentos.aureole.core.designsystem.components.AureoleEditOverlayConfig
-import dev.mnascimentos.aureole.core.designsystem.components.AureoleEditOverlayParams
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
-import dev.mnascimentos.aureole.core.designsystem.icons.Edit
-import dev.mnascimentos.aureole.core.designsystem.icons.Star
+import dev.mnascimentos.aureole.core.designsystem.model.AureoleEditOverlayConfig
+import dev.mnascimentos.aureole.core.designsystem.model.AureoleEditOverlayParams
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.components.appsdrawer.appitem.AppItemRow
-import dev.mnascimentos.aureole.feature.home.components.favorites.model.FavoriteAppsBodyParams
 import dev.mnascimentos.aureole.feature.home.components.favorites.model.FavoriteAppsDialogActions
 import dev.mnascimentos.aureole.feature.home.components.favorites.model.FavoriteAppsDialogConfig
 import dev.mnascimentos.aureole.feature.home.components.favorites.model.FavoriteAppsScreenMode
-import dev.mnascimentos.aureole.feature.home.components.favorites.model.FavoriteSectionParams
 import kotlinx.coroutines.delay
 
 private const val DISMISS_DELAY_MS = 300L
 private const val PREVIEW_WIDTH_FRACTION = 0.88f
 
-@Suppress("LongMethod") // Dialog composable initializing search filters and reactive favorite state
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FavoriteAppsDialog(
@@ -97,7 +77,7 @@ fun FavoriteAppsDialog(
                 title = titleText,
                 isVisible = isVisible,
                 animated = true,
-                maxSheetHeightFraction = 0.65f,
+                maxSheetHeightFraction = 0.35f,
                 onBackPress = {
                     if (currentMode != FavoriteAppsScreenMode.MAIN) {
                         currentMode = FavoriteAppsScreenMode.MAIN
@@ -173,253 +153,6 @@ private fun FavoriteAppsPreviewList(previewFavoriteApps: List<AppInfo>) {
                 onClick = {}
             )
         }
-    }
-}
-
-@Composable
-private fun FavoriteAppsBottomBar(
-    currentMode: FavoriteAppsScreenMode,
-    onBack: () -> Unit,
-    onClose: () -> Unit
-) {
-    val isMain = currentMode == FavoriteAppsScreenMode.MAIN
-    Button(
-        onClick = if (isMain) onClose else onBack,
-        modifier = Modifier.fillMaxWidth()
-    ) {
-        AureoleText(if (isMain) "Concluído" else "Voltar")
-    }
-}
-
-@Composable
-private fun FavoriteAppsSheetContent(
-    currentMode: FavoriteAppsScreenMode,
-    config: FavoriteAppsDialogConfig,
-    actions: FavoriteAppsDialogActions,
-    onEditShortcutsClick: () -> Unit,
-    onAppearanceClick: () -> Unit
-) {
-    when (currentMode) {
-        FavoriteAppsScreenMode.MAIN -> {
-            MainFavoritesContent(
-                onEditShortcutsClick = onEditShortcutsClick,
-                onAppearanceClick = onAppearanceClick
-            )
-        }
-        FavoriteAppsScreenMode.APPEARANCE -> {
-            AppearanceFavoritesContent(
-                config = config,
-                actions = actions
-            )
-        }
-        FavoriteAppsScreenMode.EDIT_SHORTCUTS -> {
-            FavoriteAppsDialogContent(config = config, actions = actions)
-        }
-    }
-}
-
-@Composable
-private fun MainFavoritesContent(
-    onEditShortcutsClick: () -> Unit,
-    onAppearanceClick: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    Column(modifier = modifier) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .defaultMinSize(minHeight = 48.dp)
-                .clickable(
-                    role = Role.Button,
-                    onClick = onEditShortcutsClick
-                )
-                .padding(vertical = 14.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            AureoleDS.icons.Star(
-                tint = AureoleDS.colors.onSurfaceMedium,
-                modifier = Modifier.size(24.dp)
-            )
-            Spacer(modifier = Modifier.width(16.dp))
-            Column(modifier = Modifier.weight(1f)) {
-                Text(
-                    text = "Edit shortcuts",
-                    style = AureoleDS.typography.titleMedium,
-                    fontWeight = FontWeight.Bold,
-                    color = AureoleDS.colors.onSurfaceHigh
-                )
-                Text(
-                    text = "Gerenciar aplicativos e ordem",
-                    style = AureoleDS.typography.bodySmall,
-                    color = AureoleDS.colors.onSurfaceMedium
-                )
-            }
-        }
-
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .defaultMinSize(minHeight = 48.dp)
-                .clickable(
-                    role = Role.Button,
-                    onClick = onAppearanceClick
-                )
-                .padding(vertical = 14.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            AureoleDS.icons.Edit(
-                tint = AureoleDS.colors.onSurfaceMedium,
-                modifier = Modifier.size(24.dp)
-            )
-            Spacer(modifier = Modifier.width(16.dp))
-            Column(modifier = Modifier.weight(1f)) {
-                Text(
-                    text = "Appearance",
-                    style = AureoleDS.typography.titleMedium,
-                    fontWeight = FontWeight.Bold,
-                    color = AureoleDS.colors.onSurfaceHigh
-                )
-                Text(
-                    text = "Exibição dos apps na Home",
-                    style = AureoleDS.typography.bodySmall,
-                    color = AureoleDS.colors.onSurfaceMedium
-                )
-            }
-        }
-    }
-}
-
-@Composable
-private fun AppearanceFavoritesContent(
-    config: FavoriteAppsDialogConfig,
-    actions: FavoriteAppsDialogActions
-) {
-    FavoriteAppsShowAllSwitchRow(
-        showAllAppsOnHome = config.showAllAppsOnHome,
-        onToggleShowAllAppsOnHome = actions.onToggleShowAllAppsOnHome
-    )
-}
-
-@Composable
-private fun FavoriteAppsDialogContent(
-    config: FavoriteAppsDialogConfig,
-    actions: FavoriteAppsDialogActions
-) {
-    var searchQuery by remember { mutableStateOf("") }
-
-    val appMap = remember(config.allApps) {
-        config.allApps.associateBy { it.packageName }
-    }
-
-    val favoriteApps = remember(config.favoriteAppPackages, appMap) {
-        config.favoriteAppPackages.mapNotNull { pkg -> appMap[pkg] }
-    }
-
-    val remainingApps = remember(config.allApps, config.favoriteAppPackages) {
-        val favSet = config.favoriteAppPackages.toSet()
-        config.allApps.filter { it.packageName !in favSet }
-            .sortedBy { it.label.lowercase() }
-    }
-
-    val filteredFavorites = remember(searchQuery, favoriteApps) {
-        filterAppsByQuery(favoriteApps, searchQuery)
-    }
-
-    val filteredRemaining = remember(searchQuery, remainingApps) {
-        filterAppsByQuery(remainingApps, searchQuery)
-    }
-
-    FavoriteAppsDialogBody(
-        params = FavoriteAppsBodyParams(
-            config = config,
-            actions = actions,
-            searchQuery = searchQuery,
-            favoriteCount = favoriteApps.size,
-            filteredFavorites = filteredFavorites,
-            filteredRemaining = filteredRemaining
-        ),
-        onSearchQueryChange = { searchQuery = it }
-    )
-}
-
-private fun filterAppsByQuery(apps: List<AppInfo>, query: String): List<AppInfo> {
-    return if (query.isBlank()) {
-        apps
-    } else {
-        apps.filter { it.label.contains(query, ignoreCase = true) }
-    }
-}
-
-@Composable
-private fun FavoriteAppsDialogBody(
-    params: FavoriteAppsBodyParams,
-    onSearchQueryChange: (String) -> Unit
-) {
-    val config = params.config
-    val actions = params.actions
-    val handleMoveUp = { index: Int -> moveFavoriteItem(config, actions, index, delta = -1) }
-    val handleMoveDown = { index: Int -> moveFavoriteItem(config, actions, index, delta = 1) }
-
-    val handleActivateAll = {
-        val toAdd = params.filteredRemaining.map { it.packageName }
-        val newFavs = (config.favoriteAppPackages + toAdd).distinct()
-        actions.onUpdateFavoritePackages(config.containerId, newFavs)
-    }
-
-    val handleDeactivateAll = {
-        val toRemove = params.filteredFavorites.map { it.packageName }.toSet()
-        val newFavs = config.favoriteAppPackages.filter { it !in toRemove }
-        actions.onUpdateFavoritePackages(config.containerId, newFavs)
-    }
-
-    Column(modifier = Modifier.fillMaxWidth()) {
-        FavoriteAppsSearchInput(
-            query = params.searchQuery,
-            onQueryChange = onSearchQueryChange
-        )
-
-        Spacer(modifier = Modifier.height(12.dp))
-
-        LazyColumn(
-            modifier = Modifier
-                .weight(1f)
-                .fillMaxWidth(),
-            verticalArrangement = Arrangement.spacedBy(6.dp)
-        ) {
-            favoriteSectionItems(
-                params = FavoriteSectionParams(
-                    filteredFavorites = params.filteredFavorites,
-                    searchQuery = params.searchQuery,
-                    favoriteCount = params.favoriteCount
-                ),
-                onMoveUp = handleMoveUp,
-                onMoveDown = handleMoveDown,
-                onToggleFavorite = { pkg -> actions.onToggleFavorite(pkg) },
-                onDeactivateAll = handleDeactivateAll
-            )
-
-            remainingSectionItems(
-                filteredRemaining = params.filteredRemaining,
-                searchQuery = params.searchQuery,
-                onToggleFavorite = { pkg -> actions.onToggleFavorite(pkg) },
-                onActivateAll = handleActivateAll
-            )
-        }
-    }
-}
-
-private fun moveFavoriteItem(
-    config: FavoriteAppsDialogConfig,
-    actions: FavoriteAppsDialogActions,
-    index: Int,
-    delta: Int
-) {
-    val targetIndex = index + delta
-    if (targetIndex in 0 until config.favoriteAppPackages.size) {
-        val list = config.favoriteAppPackages.toMutableList()
-        val item = list.removeAt(index)
-        list.add(targetIndex, item)
-        actions.onUpdateFavoritePackages(config.containerId, list)
     }
 }
 

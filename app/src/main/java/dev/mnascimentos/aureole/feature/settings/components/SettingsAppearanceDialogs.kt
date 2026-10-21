@@ -29,6 +29,7 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.composable.SettingsMenuItem
+import dev.mnascimentos.aureole.composable.SettingsMenuParams
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
 import dev.mnascimentos.aureole.core.designsystem.icons.Check
@@ -64,15 +65,19 @@ fun SetBackgroundBottomSheet(
             modifier = Modifier.fillMaxWidth().verticalScroll(rememberScrollState())
         ) {
             SettingsMenuItem(
-                title = "Solid color",
-                leadingContent = { AureoleDS.icons.StrokeColor() },
-                onClick = onSolidColorClick
+                SettingsMenuParams(
+                    title = "Solid color",
+                    leadingContent = { AureoleDS.icons.StrokeColor() },
+                    onClick = onSolidColorClick
+                )
             )
 
             SettingsMenuItem(
-                title = "Custom image",
-                leadingContent = { AureoleDS.icons.Edit() },
-                onClick = onCustomImageClick
+                SettingsMenuParams(
+                    title = "Custom image",
+                    leadingContent = { AureoleDS.icons.Edit() },
+                    onClick = onCustomImageClick
+                )
             )
         }
     }

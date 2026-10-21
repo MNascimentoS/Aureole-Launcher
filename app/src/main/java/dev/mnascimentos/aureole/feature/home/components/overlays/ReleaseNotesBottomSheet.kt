@@ -89,7 +89,7 @@ fun ReleaseNotesBottomSheet(
             Button(
                 onClick = onDismissRequest,
                 modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(16.dp),
+                shape = RoundedCornerShape(AureoleDS.dimens.radiusMedium),
                 colors = ButtonDefaults.buttonColors(
                     containerColor = AureoleDS.colors.onSurfaceHigh,
                     contentColor = AureoleDS.colors.surface
@@ -108,6 +108,11 @@ fun ReleaseNotesBottomSheet(
     }
 }
 
+private object LogoDimensions {
+    val Width = 64.dp
+    val Height = 36.dp
+}
+
 @Composable
 private fun HeaderSection(versionName: String) {
     Column(
@@ -115,7 +120,7 @@ private fun HeaderSection(versionName: String) {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         AureoleDS.icons.Logo(
-            modifier = Modifier.size(64.dp, 36.dp),
+            modifier = Modifier.size(LogoDimensions.Width, LogoDimensions.Height),
             tint = AureoleDS.colors.onSurfaceHigh
         )
         Spacer(modifier = Modifier.height(AureoleDS.dimens.small))
@@ -127,7 +132,7 @@ private fun HeaderSection(versionName: String) {
         Spacer(modifier = Modifier.height(AureoleDS.dimens.xxSmall))
         Box(
             modifier = Modifier
-                .clip(RoundedCornerShape(12.dp))
+                .clip(RoundedCornerShape(AureoleDS.dimens.radiusSmall))
                 .background(AureoleDS.colors.outline.copy(alpha = OUTLINE_ALPHA))
                 .padding(horizontal = AureoleDS.dimens.medium, vertical = AureoleDS.dimens.xxSmall)
         ) {
@@ -172,7 +177,7 @@ private fun VersionChipsRow(
 
             Box(
                 modifier = Modifier
-                    .clip(RoundedCornerShape(20.dp))
+                    .clip(RoundedCornerShape(AureoleDS.dimens.radiusMediumLarge))
                     .background(bg)
                     .clickable { onVersionSelected(version) }
                     .padding(horizontal = AureoleDS.dimens.medium, vertical = AureoleDS.dimens.xSmall)
@@ -212,7 +217,7 @@ private fun ReleaseNoteItemCard(item: ReleaseNoteItem) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(16.dp))
+            .clip(RoundedCornerShape(AureoleDS.dimens.radiusMedium))
             .background(AureoleDS.colors.outline.copy(alpha = CARD_OUTLINE_ALPHA))
             .padding(AureoleDS.dimens.medium)
     ) {
@@ -268,9 +273,9 @@ private fun TypeBadge(type: ReleaseNoteType) {
 
     Box(
         modifier = Modifier
-            .clip(RoundedCornerShape(8.dp))
+            .clip(RoundedCornerShape(AureoleDS.dimens.radiusXSmall))
             .background(containerColor)
-            .padding(horizontal = 8.dp, vertical = 2.dp)
+            .padding(horizontal = AureoleDS.dimens.xSmall, vertical = AureoleDS.dimens.minimal)
     ) {
         AureoleText(
             text = label,
