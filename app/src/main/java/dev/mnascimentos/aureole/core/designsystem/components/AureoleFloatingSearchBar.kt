@@ -31,6 +31,7 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import dev.chrisbanes.haze.HazeState
@@ -299,7 +300,7 @@ private fun CollapsedSearchIcon(
             .clip(CircleShape)
             .then(modifier)
             .background(backgroundColor)
-            .clickable { onExpandedChange(true) },
+            .clickable(role = Role.Button) { onExpandedChange(true) },
         contentAlignment = Alignment.Center
     ) {
         AureoleDS.icons.Search(

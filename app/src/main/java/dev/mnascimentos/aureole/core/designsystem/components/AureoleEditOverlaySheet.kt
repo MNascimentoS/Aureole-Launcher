@@ -97,6 +97,7 @@ internal fun OverlayContentBox(
             .clickable(
                 interactionSource = remember { MutableInteractionSource() },
                 indication = null,
+                role = Role.Button,
                 onClick = triggerDismiss
             )
     ) {
@@ -256,6 +257,7 @@ private fun BoxScope.SheetSurface(
             .clickable(
                 interactionSource = remember { MutableInteractionSource() },
                 indication = null,
+                role = Role.Button,
                 onClick = {}
             ),
         shape = RoundedCornerShape(

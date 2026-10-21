@@ -21,6 +21,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalInspectionMode
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -153,7 +154,7 @@ fun AureoleDialogHeader(
                 .padding(end = AureoleDS.dimens.xSmall)
                 .size(AureoleDS.dimens.xLarge)
                 .clip(RoundedCornerShape(AureoleDS.dimens.radiusMedium))
-                .clickable { homeActions.onSettingsClick() },
+                .clickable(role = Role.Button) { homeActions.onSettingsClick() },
             contentAlignment = Alignment.Center
         ) {
             AureoleDS.icons.Logo(
