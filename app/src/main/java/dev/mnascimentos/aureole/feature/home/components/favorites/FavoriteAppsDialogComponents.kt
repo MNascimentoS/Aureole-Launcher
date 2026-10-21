@@ -19,6 +19,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
@@ -132,18 +133,9 @@ fun FavoriteAppRowActionButtons(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(AureoleDS.dimens.xSmall)
     ) {
+        val bgVariant = AureoleDS.colors.surfaceVariant.copy(alpha = 0.5f)
         if (params.canReorder && params.index > 0) {
-            Box(
-                modifier = Modifier
-                    .size(AureoleDS.dimens.large)
-                    .background(
-                        color = AureoleDS.colors.surfaceVariant.copy(alpha = 0.5f),
-                        shape = RoundedCornerShape(AureoleDS.dimens.radiusXSmall)
-                    )
-                    .semantics { contentDescription = "Arrow Up" }
-                    .clickable { onMoveUp() },
-                contentAlignment = Alignment.Center
-            ) {
+            ActionIconButton("Arrow Up", bgVariant, onMoveUp) {
                 AureoleDS.icons.ArrowUp(
                     tint = AureoleDS.colors.onSurfaceHigh,
                     modifier = Modifier.size(AureoleDS.dimens.iconSmall)
@@ -151,39 +143,38 @@ fun FavoriteAppRowActionButtons(
             }
         }
         if (params.canReorder && params.index < params.totalCount - 1) {
-            Box(
-                modifier = Modifier
-                    .size(AureoleDS.dimens.large)
-                    .background(
-                        color = AureoleDS.colors.surfaceVariant.copy(alpha = 0.5f),
-                        shape = RoundedCornerShape(AureoleDS.dimens.radiusXSmall)
-                    )
-                    .semantics { contentDescription = "Arrow Down" }
-                    .clickable { onMoveDown() },
-                contentAlignment = Alignment.Center
-            ) {
+            ActionIconButton("Arrow Down", bgVariant, onMoveDown) {
                 AureoleDS.icons.ArrowDown(
                     tint = AureoleDS.colors.onSurfaceHigh,
                     modifier = Modifier.size(AureoleDS.dimens.iconSmall)
                 )
             }
         }
-        Box(
-            modifier = Modifier
-                .size(AureoleDS.dimens.large)
-                .background(
-                    color = AureoleDS.colors.error,
-                    shape = RoundedCornerShape(AureoleDS.dimens.radiusXSmall)
-                )
-                .semantics { contentDescription = "Delete" }
-                .clickable { onToggleFavorite() },
-            contentAlignment = Alignment.Center
-        ) {
+        ActionIconButton("Delete", AureoleDS.colors.error, onToggleFavorite) {
             AureoleDS.icons.Delete(
                 tint = AureoleDS.colors.onError,
                 modifier = Modifier.size(AureoleDS.dimens.iconSmall)
             )
         }
+    }
+}
+
+@Composable
+private fun ActionIconButton(
+    desc: String,
+    bgColor: Color,
+    onClick: () -> Unit,
+    iconContent: @Composable () -> Unit
+) {
+    Box(
+        modifier = Modifier
+            .size(AureoleDS.dimens.large)
+            .background(color = bgColor, shape = RoundedCornerShape(AureoleDS.dimens.radiusXSmall))
+            .semantics { contentDescription = desc }
+            .clickable(onClick = onClick),
+        contentAlignment = Alignment.Center
+    ) {
+        iconContent()
     }
 }
 

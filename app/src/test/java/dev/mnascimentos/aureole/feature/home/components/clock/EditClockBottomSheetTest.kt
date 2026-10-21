@@ -32,29 +32,32 @@ class EditClockBottomSheetTest {
     @get:Rule
     val composeTestRule = createComposeRule()
 
-    private fun createDefaultActions(
-        onResetClockSettings: () -> Unit = {},
-        onUpdateClockStyle: (String) -> Unit = {},
-        onUpdateClockCustomGreeting: (String) -> Unit = {},
-        onUpdateClockAlignment: (String) -> Unit = {},
-        onUpdateClockFontFamily: (String) -> Unit = {},
-        onUpdateClockTimeFormat: (String) -> Unit = {},
-        onUpdateClockDateFormat: (String) -> Unit = {},
-        onUpdateClockTextColor: (Int) -> Unit = {},
-        onUpdateClockBackgroundColor: (Int) -> Unit = {},
-        onToggleClockBackground: () -> Unit = {},
-    ): HomeScreenActions {
+    private data class ClockActionsConfig(
+        var onResetClockSettings: () -> Unit = {},
+        var onUpdateClockStyle: (String) -> Unit = {},
+        var onUpdateClockCustomGreeting: (String) -> Unit = {},
+        var onUpdateClockAlignment: (String) -> Unit = {},
+        var onUpdateClockFontFamily: (String) -> Unit = {},
+        var onUpdateClockTimeFormat: (String) -> Unit = {},
+        var onUpdateClockDateFormat: (String) -> Unit = {},
+        var onUpdateClockTextColor: (Int) -> Unit = {},
+        var onUpdateClockBackgroundColor: (Int) -> Unit = {},
+        var onToggleClockBackground: () -> Unit = {}
+    )
+
+    private fun createDefaultActions(configure: ClockActionsConfig.() -> Unit = {}): HomeScreenActions {
+        val config = ClockActionsConfig().apply(configure)
         return createDefaultHomeScreenActions().copy(
-            onResetClockSettings = onResetClockSettings,
-            onUpdateClockStyle = onUpdateClockStyle,
-            onUpdateClockCustomGreeting = onUpdateClockCustomGreeting,
-            onUpdateClockAlignment = onUpdateClockAlignment,
-            onUpdateClockFontFamily = onUpdateClockFontFamily,
-            onUpdateClockTimeFormat = onUpdateClockTimeFormat,
-            onUpdateClockDateFormat = onUpdateClockDateFormat,
-            onUpdateClockTextColor = onUpdateClockTextColor,
-            onUpdateClockBackgroundColor = onUpdateClockBackgroundColor,
-            onToggleClockBackground = onToggleClockBackground,
+            onResetClockSettings = config.onResetClockSettings,
+            onUpdateClockStyle = config.onUpdateClockStyle,
+            onUpdateClockCustomGreeting = config.onUpdateClockCustomGreeting,
+            onUpdateClockAlignment = config.onUpdateClockAlignment,
+            onUpdateClockFontFamily = config.onUpdateClockFontFamily,
+            onUpdateClockTimeFormat = config.onUpdateClockTimeFormat,
+            onUpdateClockDateFormat = config.onUpdateClockDateFormat,
+            onUpdateClockTextColor = config.onUpdateClockTextColor,
+            onUpdateClockBackgroundColor = config.onUpdateClockBackgroundColor,
+            onToggleClockBackground = config.onToggleClockBackground
         )
     }
 
@@ -102,9 +105,9 @@ class EditClockBottomSheetTest {
     fun `when clicking reset defaults, should invoke onResetClockSettings`() {
         // Arrange
         var resetCalled = false
-        val actions = createDefaultActions(
+        val actions = createDefaultActions {
             onResetClockSettings = { resetCalled = true }
-        )
+        }
 
         composeTestRule.setContent {
             AureoleLauncherTheme {
@@ -152,9 +155,9 @@ class EditClockBottomSheetTest {
     fun `when custom greeting style is selected, should show greeting text field`() {
         // Arrange
         var updatedGreeting = ""
-        val actions = createDefaultActions(
+        val actions = createDefaultActions {
             onUpdateClockCustomGreeting = { updatedGreeting = it }
-        )
+        }
 
         composeTestRule.setContent {
             AureoleLauncherTheme {
@@ -184,9 +187,9 @@ class EditClockBottomSheetTest {
     fun `when selecting alignment options, should invoke onUpdateClockAlignment`() {
         // Arrange
         var selectedAlignment = ""
-        val actions = createDefaultActions(
+        val actions = createDefaultActions {
             onUpdateClockAlignment = { selectedAlignment = it }
-        )
+        }
 
         composeTestRule.setContent {
             AureoleLauncherTheme {
@@ -208,9 +211,9 @@ class EditClockBottomSheetTest {
     fun `when selecting font style chips, should invoke onUpdateClockFontFamily`() {
         // Arrange
         var selectedFont = ""
-        val actions = createDefaultActions(
+        val actions = createDefaultActions {
             onUpdateClockFontFamily = { selectedFont = it }
-        )
+        }
 
         composeTestRule.setContent {
             AureoleLauncherTheme {
@@ -232,9 +235,9 @@ class EditClockBottomSheetTest {
     fun `when selecting time format choice buttons, should invoke onUpdateClockTimeFormat`() {
         // Arrange
         var selectedTimeFormat = ""
-        val actions = createDefaultActions(
+        val actions = createDefaultActions {
             onUpdateClockTimeFormat = { selectedTimeFormat = it }
-        )
+        }
 
         composeTestRule.setContent {
             AureoleLauncherTheme {
@@ -256,9 +259,9 @@ class EditClockBottomSheetTest {
     fun `when clicking text color swatch, should invoke onUpdateClockTextColor`() {
         // Arrange
         var selectedColor = -1
-        val actions = createDefaultActions(
+        val actions = createDefaultActions {
             onUpdateClockTextColor = { selectedColor = it }
-        )
+        }
 
         composeTestRule.setContent {
             AureoleLauncherTheme {
@@ -280,9 +283,9 @@ class EditClockBottomSheetTest {
     fun `when clock background is enabled, should display background color options`() {
         // Arrange
         var selectedBgColor = -1
-        val actions = createDefaultActions(
+        val actions = createDefaultActions {
             onUpdateClockBackgroundColor = { selectedBgColor = it }
-        )
+        }
 
         composeTestRule.setContent {
             AureoleLauncherTheme {
@@ -307,9 +310,9 @@ class EditClockBottomSheetTest {
     fun `when toggling clock background switch, should invoke onToggleClockBackground`() {
         // Arrange
         var toggled = false
-        val actions = createDefaultActions(
+        val actions = createDefaultActions {
             onToggleClockBackground = { toggled = true }
-        )
+        }
 
         composeTestRule.setContent {
             AureoleLauncherTheme {
@@ -331,9 +334,9 @@ class EditClockBottomSheetTest {
     fun `when dropdown item is selected, should invoke onOptionSelected`() {
         // Arrange
         var selectedStyle = ""
-        val actions = createDefaultActions(
+        val actions = createDefaultActions {
             onUpdateClockStyle = { selectedStyle = it }
-        )
+        }
 
         composeTestRule.setContent {
             AureoleLauncherTheme {
@@ -359,9 +362,9 @@ class EditClockBottomSheetTest {
     fun `when date format dropdown option is selected, should invoke onUpdateClockDateFormat`() {
         // Arrange
         var selectedDateFormat = ""
-        val actions = createDefaultActions(
+        val actions = createDefaultActions {
             onUpdateClockDateFormat = { selectedDateFormat = it }
-        )
+        }
 
         composeTestRule.setContent {
             AureoleLauncherTheme {

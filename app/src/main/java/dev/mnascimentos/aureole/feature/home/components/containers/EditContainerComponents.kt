@@ -200,7 +200,11 @@ private fun ExposedDropdownMenuBoxScope.AlignmentDropdownMenu(
                     ) {
                         AureoleText(
                             text = label,
-                            color = if (isSelected) AureoleDS.colors.onSurfaceHigh else AureoleDS.colors.onSurfaceMedium,
+                            color = if (isSelected) {
+                                AureoleDS.colors.onSurfaceHigh
+                            } else {
+                                AureoleDS.colors.onSurfaceMedium
+                            },
                             format = AureoleTextFormatParams(
                                 style = AureoleDS.typography.bodyMedium,
                                 fontWeight = if (isSelected) FontWeight.SemiBold else FontWeight.Normal

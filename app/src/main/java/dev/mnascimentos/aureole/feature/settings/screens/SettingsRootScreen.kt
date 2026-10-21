@@ -34,6 +34,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.composable.SettingsMenuItem
+import dev.mnascimentos.aureole.composable.SettingsMenuParams
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
 import dev.mnascimentos.aureole.core.designsystem.icons.Advanced
@@ -163,26 +164,32 @@ private fun SettingsNavigationList(
         modifier = Modifier.fillMaxWidth().padding(horizontal = AureoleDS.dimens.xSmall)
     ) {
         SettingsMenuItem(
-            title = "Appearance",
-            subtitle = "Colors, themes, and layout",
-            leadingContent = { AureoleDS.icons.Edit() },
-            onClick = onNavigateToAppearance,
+            params = SettingsMenuParams(
+                title = "Appearance",
+                subtitle = "Colors, themes, and layout",
+                leadingContent = { AureoleDS.icons.Edit() },
+                onClick = onNavigateToAppearance
+            ),
             modifier = Modifier.background(Color.Transparent)
         )
 
         SettingsMenuItem(
-            title = "Behavior",
-            subtitle = "Gestures, buttons, and controls",
-            leadingContent = { AureoleDS.icons.Star() },
-            onClick = onNavigateToBehavior,
+            params = SettingsMenuParams(
+                title = "Behavior",
+                subtitle = "Gestures, buttons, and controls",
+                leadingContent = { AureoleDS.icons.Star() },
+                onClick = onNavigateToBehavior
+            ),
             modifier = Modifier.background(Color.Transparent)
         )
 
         SettingsMenuItem(
-            title = "Advanced",
-            subtitle = "System tools and legal info",
-            leadingContent = { AureoleDS.icons.Advanced() },
-            onClick = onNavigateToAdvanced,
+            params = SettingsMenuParams(
+                title = "Advanced",
+                subtitle = "System tools and legal info",
+                leadingContent = { AureoleDS.icons.Advanced() },
+                onClick = onNavigateToAdvanced
+            ),
             modifier = Modifier.background(Color.Transparent)
         )
     }

@@ -70,7 +70,7 @@ class FavoriteAppsDialogComponentsTest {
     }
 
     @Test
-    fun `when rendering FavoriteAppRowActionButtons with reorder allowed, should render move buttons and handle clicks`() {
+    fun `when rendering action buttons with reorder allowed, should render move and handle clicks`() {
         var movedUp = false
         var movedDown = false
         var toggledFav = false

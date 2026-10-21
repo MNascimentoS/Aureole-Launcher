@@ -36,6 +36,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import dev.mnascimentos.aureole.composable.SettingsMenuItem
+import dev.mnascimentos.aureole.composable.SettingsMenuParams
 import dev.mnascimentos.aureole.composable.SettingsToggleItem
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
@@ -162,71 +163,53 @@ private fun AppearanceMenuItems(
     actions: SettingsScreenActions,
     dialogActions: AppearanceMenuDialogActions
 ) {
-    val onShowSetBackgroundDialog = dialogActions.onShowSetBackgroundDialog
-    val onShowBlurDialog = dialogActions.onShowBlurDialog
-    val onShowFontDialog = dialogActions.onShowFontDialog
-    val onShowPaletteDialog = dialogActions.onShowPaletteDialog
-    val onShowBorderRadiusDialog = dialogActions.onShowBorderRadiusDialog
     Column(
         verticalArrangement = Arrangement.spacedBy(AureoleDS.dimens.xSmall),
         modifier = Modifier.fillMaxWidth()
     ) {
-        // 1. Set Background
         SettingsMenuItem(
-            title = "Set Background",
-            leadingContent = { AureoleDS.icons.Edit() },
-            onClick = onShowSetBackgroundDialog
+            SettingsMenuParams(
+                title = "Set Background",
+                leadingContent = { AureoleDS.icons.Edit() },
+                onClick = dialogActions.onShowSetBackgroundDialog
+            )
         )
-
         if (uiState.isCustomWallpaperSet) {
             WallpaperScaleTypeRow(
                 scaleType = uiState.wallpaperScaleType,
                 onSelectScaleType = actions.onSelectWallpaperScaleType
             )
         }
-
-        // 2. Glass effect / Glass & Blur
-        GlassAndBlurRow(
-            uiState = uiState,
-            onClick = onShowBlurDialog
-        )
-
-        // 3. Change font
+        GlassAndBlurRow(uiState = uiState, onClick = dialogActions.onShowBlurDialog)
         SettingsMenuItem(
-            title = "Change font",
-            leadingContent = { AureoleDS.icons.Text() },
-            onClick = onShowFontDialog
+            SettingsMenuParams(
+                title = "Change font",
+                leadingContent = { AureoleDS.icons.Text() },
+                onClick = dialogActions.onShowFontDialog
+            )
         )
-
-        // 4. Color palette
         SettingsMenuItem(
-            title = "Color palette",
-            leadingContent = { AureoleDS.icons.Dots() },
-            onClick = onShowPaletteDialog
+            SettingsMenuParams(
+                title = "Color palette",
+                leadingContent = { AureoleDS.icons.Dots() },
+                onClick = dialogActions.onShowPaletteDialog
+            )
         )
-
-        // 5. Custom colors
         SettingsMenuItem(
-            title = "Custom colors",
-            leadingContent = { AureoleDS.icons.StrokeColor() },
-            trailingContent = {
-                Box(
-                    modifier = Modifier
-                        .size(AureoleDS.dimens.iconLarge)
-                        .clip(CircleShape)
-                        .background(Color(uiState.manualSeedColor))
-                )
-            },
-            onClick = { actions.onOpenColorPickerDialog() }
+            SettingsMenuParams(
+                title = "Custom colors",
+                leadingContent = { AureoleDS.icons.StrokeColor() },
+                trailingContent = {
+                    Box(
+                        modifier = Modifier.size(
+                            AureoleDS.dimens.iconLarge
+                        ).clip(CircleShape).background(Color(uiState.manualSeedColor))
+                    )
+                },
+                onClick = { actions.onOpenColorPickerDialog() }
+            )
         )
-
-        // 6. Change Border (radius)
-        ChangeBorderRow(
-            cornerRadiusDp = uiState.cornerRadiusDp,
-            onClick = onShowBorderRadiusDialog
-        )
-
-        // 7. Themed icons toggle
+        ChangeBorderRow(cornerRadiusDp = uiState.cornerRadiusDp, onClick = dialogActions.onShowBorderRadiusDialog)
         SettingsToggleItem(
             title = "Themed icons",
             checked = uiState.isThemedAppIconsEnabled,

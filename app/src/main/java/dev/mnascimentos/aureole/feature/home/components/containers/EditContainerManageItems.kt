@@ -202,59 +202,68 @@ internal fun ManageItemRow(
             modifier = Modifier.weight(1f)
         )
 
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(AureoleDS.dimens.xSmall)
-        ) {
-            if (index > 0) {
-                Box(
-                    modifier = Modifier
-                        .size(AureoleDS.dimens.large)
-                        .background(
-                            color = AureoleDS.colors.surfaceVariant.copy(alpha = 0.5f),
-                            shape = RoundedCornerShape(AureoleDS.dimens.radiusXSmall)
-                        )
-                        .clickable { actions.onMoveUp(index) },
-                    contentAlignment = Alignment.Center
-                ) {
-                    AureoleDS.icons.ArrowUp(
-                        tint = AureoleDS.colors.onSurfaceHigh,
-                        modifier = Modifier.size(AureoleDS.dimens.iconSmall)
-                    )
-                }
-            }
-            if (index < params.totalItems - 1) {
-                Box(
-                    modifier = Modifier
-                        .size(AureoleDS.dimens.large)
-                        .background(
-                            color = AureoleDS.colors.surfaceVariant.copy(alpha = 0.5f),
-                            shape = RoundedCornerShape(AureoleDS.dimens.radiusXSmall)
-                        )
-                        .clickable { actions.onMoveDown(index) },
-                    contentAlignment = Alignment.Center
-                ) {
-                    AureoleDS.icons.ArrowDown(
-                        tint = AureoleDS.colors.onSurfaceHigh,
-                        modifier = Modifier.size(AureoleDS.dimens.iconSmall)
-                    )
-                }
-            }
+        ManageItemRowActionButtons(index = index, totalItems = params.totalItems, actions = actions)
+    }
+}
+
+@Composable
+private fun ManageItemRowActionButtons(
+    index: Int,
+    totalItems: Int,
+    actions: ManageItemRowActions
+) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(AureoleDS.dimens.xSmall)
+    ) {
+        if (index > 0) {
             Box(
                 modifier = Modifier
                     .size(AureoleDS.dimens.large)
                     .background(
-                        color = AureoleDS.colors.error,
+                        color = AureoleDS.colors.surfaceVariant.copy(alpha = 0.5f),
                         shape = RoundedCornerShape(AureoleDS.dimens.radiusXSmall)
                     )
-                    .clickable { actions.onRemove(index) },
+                    .clickable { actions.onMoveUp(index) },
                 contentAlignment = Alignment.Center
             ) {
-                AureoleDS.icons.Delete(
-                    tint = AureoleDS.colors.onError,
+                AureoleDS.icons.ArrowUp(
+                    tint = AureoleDS.colors.onSurfaceHigh,
                     modifier = Modifier.size(AureoleDS.dimens.iconSmall)
                 )
             }
+        }
+        if (index < totalItems - 1) {
+            Box(
+                modifier = Modifier
+                    .size(AureoleDS.dimens.large)
+                    .background(
+                        color = AureoleDS.colors.surfaceVariant.copy(alpha = 0.5f),
+                        shape = RoundedCornerShape(AureoleDS.dimens.radiusXSmall)
+                    )
+                    .clickable { actions.onMoveDown(index) },
+                contentAlignment = Alignment.Center
+            ) {
+                AureoleDS.icons.ArrowDown(
+                    tint = AureoleDS.colors.onSurfaceHigh,
+                    modifier = Modifier.size(AureoleDS.dimens.iconSmall)
+                )
+            }
+        }
+        Box(
+            modifier = Modifier
+                .size(AureoleDS.dimens.large)
+                .background(
+                    color = AureoleDS.colors.error,
+                    shape = RoundedCornerShape(AureoleDS.dimens.radiusXSmall)
+                )
+                .clickable { actions.onRemove(index) },
+            contentAlignment = Alignment.Center
+        ) {
+            AureoleDS.icons.Delete(
+                tint = AureoleDS.colors.onError,
+                modifier = Modifier.size(AureoleDS.dimens.iconSmall)
+            )
         }
     }
 }

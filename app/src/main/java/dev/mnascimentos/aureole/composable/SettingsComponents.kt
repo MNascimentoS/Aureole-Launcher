@@ -57,14 +57,18 @@ fun SettingsHugeTitle(text: String, modifier: Modifier = Modifier) {
     )
 }
 
+data class SettingsMenuParams(
+    val title: String,
+    val subtitle: String? = null,
+    val leadingContent: (@Composable () -> Unit)? = null,
+    val trailingContent: (@Composable () -> Unit)? = null,
+    val onClick: () -> Unit
+)
+
 @Composable
 fun SettingsMenuItem(
-    title: String,
-    modifier: Modifier = Modifier,
-    subtitle: String? = null,
-    leadingContent: (@Composable () -> Unit)? = null,
-    trailingContent: (@Composable () -> Unit)? = null,
-    onClick: () -> Unit,
+    params: SettingsMenuParams,
+    modifier: Modifier = Modifier
 ) {
     Row(
         modifier = modifier
@@ -72,42 +76,42 @@ fun SettingsMenuItem(
             .minimumInteractiveComponentSize()
             .clip(RoundedCornerShape(AureoleDS.dimens.radiusMedium))
             .clickable(
-                onClick = onClick,
+                onClick = params.onClick,
                 role = Role.Button
             )
             .semantics(mergeDescendants = true) {}
             .padding(vertical = AureoleDS.dimens.xSmall, horizontal = AureoleDS.dimens.small),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        if (leadingContent != null) {
+        if (params.leadingContent != null) {
             Box(
                 modifier = Modifier
                     .padding(end = AureoleDS.dimens.large)
                     .size(AureoleDS.dimens.iconMedium),
                 contentAlignment = Alignment.Center
             ) {
-                leadingContent()
+                params.leadingContent()
             }
         }
 
         Column(modifier = Modifier.weight(1f)) {
             AureoleText(
-                text = title,
+                text = params.title,
                 color = AureoleDS.colors.onSurfaceMedium,
                 format = AureoleTextFormatParams(style = AureoleDS.typography.bodyLarge, fontWeight = FontWeight.Normal)
             )
-            if (subtitle != null) {
+            if (params.subtitle != null) {
                 Spacer(modifier = Modifier.height(AureoleDS.dimens.minimal))
                 AureoleText(
-                    text = subtitle,
+                    text = params.subtitle,
                     color = AureoleDS.colors.onSurfaceLow,
                     format = AureoleTextFormatParams(style = AureoleDS.typography.bodySmall)
                 )
             }
         }
 
-        if (trailingContent != null) {
-            trailingContent()
+        if (params.trailingContent != null) {
+            params.trailingContent()
         }
     }
 }
@@ -213,7 +217,7 @@ private fun SettingsComponentsPreview() {
     AureoleLauncherTheme {
         Column(modifier = Modifier.padding(AureoleDS.dimens.medium)) {
             SettingsHugeTitle(text = "Settings")
-            SettingsMenuItem(title = "General", subtitle = "App preferences", onClick = {})
+            SettingsMenuItem(SettingsMenuParams(title = "General", onClick = {}))
             SettingsToggleItem(title = "Enable Feature", checked = true, onCheckedChange = {})
             SettingsActionItem(title = "Reset All", onClick = {})
         }

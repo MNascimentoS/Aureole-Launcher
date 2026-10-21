@@ -55,6 +55,8 @@ import dev.mnascimentos.aureole.feature.home.components.widgets.model.EditWidget
 import dev.mnascimentos.aureole.feature.home.components.widgets.model.WidgetPickerMetrics
 import kotlinx.coroutines.delay
 
+private const val ROTATION_LEFT_DEGREES = -90f
+private const val ROTATION_RIGHT_DEGREES = 90f
 private const val ANIMATION_DURATION_MS = 300
 
 @Suppress("LongMethod") // Screen composable managing widget group editing layout
@@ -296,7 +298,7 @@ private fun WidgetPreviewItem(
                         tint = AureoleDS.colors.onSurfaceHigh,
                         modifier = Modifier
                             .size(AureoleDS.dimens.iconSmall)
-                            .rotate(-90f)
+                            .rotate(ROTATION_LEFT_DEGREES)
                     )
                 }
             }
@@ -316,7 +318,7 @@ private fun WidgetPreviewItem(
                         tint = AureoleDS.colors.onSurfaceHigh,
                         modifier = Modifier
                             .size(AureoleDS.dimens.iconSmall)
-                            .rotate(90f)
+                            .rotate(ROTATION_RIGHT_DEGREES)
                     )
                 }
             }

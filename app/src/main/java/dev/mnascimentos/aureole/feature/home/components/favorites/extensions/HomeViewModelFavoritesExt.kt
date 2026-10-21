@@ -34,7 +34,7 @@ fun HomeViewModel.updateFavoritePackages(newFavorites: List<String>) {
 
 fun HomeViewModel.updateContainerFavorites(containerId: String, newFavorites: List<String>) {
     viewModelScope.launch {
-        try {
+        runCatching {
             favoriteContainerRepository.updateContainerFavorites(containerId, newFavorites)
             val updatedMap = uiState.value.containerFavorites.toMutableMap()
             updatedMap[containerId] = newFavorites
@@ -46,7 +46,7 @@ fun HomeViewModel.updateContainerFavorites(containerId: String, newFavorites: Li
                 )
             }
             updateAppsState(uiState.value.apps)
-        } catch (e: Exception) {
+        }.onFailure { e ->
             e.printStackTrace()
             Timber.e(e)
         }

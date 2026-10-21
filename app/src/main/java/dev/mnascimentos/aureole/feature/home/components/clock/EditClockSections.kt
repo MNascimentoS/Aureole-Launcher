@@ -76,7 +76,6 @@ internal fun EditClockDropdown(
     selectedKey: String,
     options: List<Pair<String, String>>,
     onOptionSelected: (String) -> Unit,
-    modifier: Modifier = Modifier,
     initialExpanded: Boolean = false
 ) {
     var isExpanded by remember { mutableStateOf(initialExpanded) }
@@ -89,7 +88,7 @@ internal fun EditClockDropdown(
         label = "arrowRotation"
     )
 
-    Column(modifier = modifier.fillMaxWidth()) {
+    Column(modifier = Modifier.fillMaxWidth()) {
         if (label != null) {
             AureoleText(
                 text = label,

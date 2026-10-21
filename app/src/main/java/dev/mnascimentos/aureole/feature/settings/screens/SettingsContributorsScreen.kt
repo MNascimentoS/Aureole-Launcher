@@ -17,6 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.composable.SettingsHugeTitle
 import dev.mnascimentos.aureole.composable.SettingsMenuItem
+import dev.mnascimentos.aureole.composable.SettingsMenuParams
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
@@ -50,17 +51,21 @@ fun SettingsContributorsScreen(
             ) {
                 item {
                     SettingsMenuItem(
-                        title = "Name",
-                        subtitle = "Something something",
-                        onClick = {}
+                        SettingsMenuParams(
+                            title = "Name",
+                            subtitle = "Something something",
+                            onClick = {}
+                        )
                     )
                 }
 
                 item {
                     SettingsMenuItem(
-                        title = "Name",
-                        subtitle = "Something something",
-                        onClick = {}
+                        SettingsMenuParams(
+                            title = "Name",
+                            subtitle = "Something something",
+                            onClick = {}
+                        )
                     )
                 }
             }

@@ -137,7 +137,6 @@ internal fun EditContainerAddAppDropdown(
 ) {
     var isExpanded by remember { mutableStateOf(false) }
     var searchQuery by remember { mutableStateOf("") }
-
     val filteredApps = remember(searchQuery, allApps) {
         if (searchQuery.isBlank()) {
             allApps.take(MAX_DROPDOWN_APP_RESULTS)
@@ -187,14 +186,11 @@ internal fun EditContainerAddAppDropdown(
             modifier = Modifier.padding(vertical = AureoleDS.dimens.xxSmall)
         ) {
             filteredApps.forEach { app ->
-                DropdownAppItem(
-                    app = app,
-                    onAppSelected = {
-                        onAppSelected(it)
-                        searchQuery = ""
-                        isExpanded = false
-                    }
-                )
+                DropdownAppItem(app = app, onAppSelected = {
+                    onAppSelected(it)
+                    searchQuery = ""
+                    isExpanded = false
+                })
             }
         }
     }
