@@ -118,7 +118,7 @@ private fun SettingsAppearanceContent(
                 .fillMaxSize()
                 .statusBarsPadding()
                 .verticalScroll(rememberScrollState())
-                .padding(horizontal = AureoleDS.dimens.settingsPaddingHorizontal),
+                .padding(horizontal = AureoleDS.dimens.iconXLargeMedium),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Spacer(modifier = Modifier.height(topSpacerHeight))

@@ -38,6 +38,7 @@ import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.ContainerAppItemParams
+import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.FolderButtonMetrics
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.ContainerFolderButtonParams
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.ContainerFolderConfig
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.ContainerFolderItemParams
@@ -52,9 +53,9 @@ fun ContainerAddFolderButton(
     isBackgroundEnabled: Boolean = true
 ) {
     val buttonSize = if (isBackgroundEnabled) {
-        AureoleDS.dimens.folderButtonSmall
+        FolderButtonMetrics.SmallSize
     } else {
-        AureoleDS.dimens.folderButtonMedium
+        FolderButtonMetrics.MediumSize
     }
     val iconSize = if (isBackgroundEnabled) AureoleDS.dimens.large else AureoleDS.dimens.iconXLarge
     val cornerRadius = if (isBackgroundEnabled) AureoleDS.dimens.radiusMedium else AureoleDS.dimens.iconMedium
@@ -113,7 +114,7 @@ fun ContainerFolderItem(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier
             .padding(vertical = AureoleDS.dimens.xxSmall)
-            .widthIn(max = AureoleDS.dimens.folderContainerMaxWidth),
+            .widthIn(max = FolderButtonMetrics.ContainerMaxWidth),
     ) {
         ContainerFolderButton(
             params = ContainerFolderButtonParams(
@@ -148,9 +149,9 @@ fun ContainerFolderButton(
     val onLongClick = params.onLongClick
 
     val buttonSize = if (isBackgroundEnabled) {
-        AureoleDS.dimens.folderButtonSmall
+        FolderButtonMetrics.SmallSize
     } else {
-        AureoleDS.dimens.folderButtonMedium
+        FolderButtonMetrics.MediumSize
     }
     val iconSize = if (isBackgroundEnabled) AureoleDS.dimens.large else AureoleDS.dimens.iconXLarge
     val cornerRadius = if (isBackgroundEnabled) AureoleDS.dimens.radiusMedium else AureoleDS.dimens.iconMedium
@@ -231,7 +232,7 @@ fun ContainerFolderLabel(
         AureoleText(
             text = name,
             color = AureoleDS.colors.onSurfaceHigh,
-            modifier = Modifier.widthIn(max = AureoleDS.dimens.folderLabelMaxWidth),
+            modifier = Modifier.widthIn(max = FolderButtonMetrics.LabelMaxWidth),
             format = AureoleTextFormatParams(
                 style = AureoleDS.typography.labelSmall,
                 fontWeight = FontWeight.Medium,
@@ -261,9 +262,9 @@ fun ContainerAppItem(
         tintColor = AureoleDS.colors.onSurfaceMedium
     )
     val buttonSize = if (isBackgroundEnabled) {
-        AureoleDS.dimens.folderButtonSmall
+        FolderButtonMetrics.SmallSize
     } else {
-        AureoleDS.dimens.folderButtonMedium
+        FolderButtonMetrics.MediumSize
     }
     val cornerRadius = if (isBackgroundEnabled) AureoleDS.dimens.radiusMedium else AureoleDS.dimens.iconMedium
     val imgPadding = if (isBackgroundEnabled) AureoleDS.dimens.borderMax else AureoleDS.dimens.minimal
@@ -272,7 +273,7 @@ fun ContainerAppItem(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier
             .padding(vertical = AureoleDS.dimens.xxSmall)
-            .widthIn(max = AureoleDS.dimens.folderContainerMaxWidth),
+            .widthIn(max = FolderButtonMetrics.ContainerMaxWidth),
     ) {
         Box(
             modifier = Modifier

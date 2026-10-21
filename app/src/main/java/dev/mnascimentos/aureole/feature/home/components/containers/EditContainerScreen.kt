@@ -29,6 +29,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.data.model.ContainerModel
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleEditOverlay
@@ -46,6 +47,11 @@ import dev.mnascimentos.aureole.feature.home.components.containers.model.EditCon
 import dev.mnascimentos.aureole.feature.home.model.LocalHomeActions
 import dev.mnascimentos.aureole.feature.home.model.LocalHomeUiState
 import kotlinx.coroutines.delay
+
+private object ContainerPreviewMetrics {
+    val MinSize = 60.dp
+    val MaxSize = 120.dp
+}
 
 private const val ANIMATION_DURATION_MS = 300
 
@@ -103,11 +109,11 @@ fun EditContainerScreen(
         val previewModifier = if (isHorizontal) {
             Modifier
                 .wrapContentWidth(Alignment.CenterHorizontally)
-                .heightIn(min = AureoleDS.dimens.folderButtonMedium, max = AureoleDS.dimens.previewContainerMax)
+                .heightIn(min = ContainerPreviewMetrics.MinSize, max = ContainerPreviewMetrics.MaxSize)
         } else {
             Modifier
                 .wrapContentHeight(Alignment.Bottom)
-                .widthIn(min = AureoleDS.dimens.folderButtonMedium, max = AureoleDS.dimens.previewContainerMax)
+                .widthIn(min = ContainerPreviewMetrics.MinSize, max = ContainerPreviewMetrics.MaxSize)
         }
 
         val titleText = when (currentMode) {

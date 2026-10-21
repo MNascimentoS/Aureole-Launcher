@@ -33,6 +33,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.semantics.Role
+import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.FolderPopupMetrics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -110,7 +111,7 @@ internal fun WidgetPreviewCard(
 ) {
     Column(
         modifier = Modifier
-            .width(AureoleDS.dimens.popupWidthMax)
+            .width(FolderPopupMetrics.WidthMax)
             .defaultMinSize(minWidth = 48.dp, minHeight = 48.dp)
             .background(
                 AureoleDS.colors.surfaceVariant.copy(alpha = 0.6f),

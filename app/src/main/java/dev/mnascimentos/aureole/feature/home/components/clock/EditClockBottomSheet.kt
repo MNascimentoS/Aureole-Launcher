@@ -20,7 +20,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.unit.dp
 import dev.chrisbanes.haze.HazeState
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleEditOverlay
 import dev.mnascimentos.aureole.core.designsystem.model.AureoleEditOverlayConfig
@@ -121,27 +120,27 @@ fun EditClockBottomSheet(
                         }
                     )
 
-                    Spacer(modifier = Modifier.height(16.dp))
+                    Spacer(modifier = Modifier.height(AureoleDS.dimens.medium))
 
                     EditClockAlignmentSection(uiState = uiState, actions = actions)
 
-                    Spacer(modifier = Modifier.height(16.dp))
+                    Spacer(modifier = Modifier.height(AureoleDS.dimens.medium))
 
                     EditClockTextColorSection(uiState = uiState, actions = actions)
 
-                    Spacer(modifier = Modifier.height(16.dp))
+                    Spacer(modifier = Modifier.height(AureoleDS.dimens.medium))
 
                     EditClockFontSection(uiState = uiState, actions = actions)
 
-                    Spacer(modifier = Modifier.height(16.dp))
+                    Spacer(modifier = Modifier.height(AureoleDS.dimens.medium))
 
                     EditClockFormatSection(uiState = uiState, actions = actions)
 
-                    Spacer(modifier = Modifier.height(16.dp))
+                    Spacer(modifier = Modifier.height(AureoleDS.dimens.medium))
 
                     EditClockBackgroundSection(uiState = uiState, actions = actions)
 
-                    Spacer(modifier = Modifier.height(16.dp))
+                    Spacer(modifier = Modifier.height(AureoleDS.dimens.medium))
                 }
             }
         )
@@ -157,9 +156,9 @@ private fun EditClockPreviewCard(
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(20.dp))
+            .clip(RoundedCornerShape(AureoleDS.dimens.radiusMediumLarge))
             .background(AureoleDS.colors.surfaceVariant.copy(alpha = 0.85f))
-            .padding(16.dp),
+            .padding(AureoleDS.dimens.medium),
         contentAlignment = Alignment.Center
     ) {
         ClockHeader(

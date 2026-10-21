@@ -39,7 +39,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
 import dev.mnascimentos.aureole.core.designsystem.icons.ArrowDown
@@ -109,7 +108,7 @@ private fun OrientationOptionButton(
         OutlinedButton(
             onClick = onClick,
             modifier = modifier,
-            border = BorderStroke(1.dp, AureoleDS.colors.outline.copy(alpha = 0.5f))
+            border = BorderStroke(AureoleDS.dimens.borderMinimal, AureoleDS.colors.outline.copy(alpha = 0.5f))
         ) {
             AureoleText(text = optText, color = AureoleDS.colors.onSurfaceHigh)
         }
@@ -137,7 +136,7 @@ internal fun EditContainerAlignmentSelector(
         AureoleText(
             text = "Alinhamento dos Itens",
             color = AureoleDS.colors.onSurfaceHigh,
-            modifier = Modifier.padding(bottom = 4.dp),
+            modifier = Modifier.padding(bottom = AureoleDS.dimens.xxSmall),
             format = AureoleTextFormatParams(style = AureoleDS.typography.labelMedium, fontWeight = FontWeight.Bold)
         )
         ExposedDropdownMenuBox(
@@ -207,7 +206,7 @@ internal fun EditContainerOptionsExpandableSection(
             modifier = Modifier
                 .fillMaxWidth()
                 .clickable { isExpanded = !isExpanded }
-                .padding(vertical = 4.dp),
+                .padding(vertical = AureoleDS.dimens.xxSmall),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -222,17 +221,17 @@ internal fun EditContainerOptionsExpandableSection(
             )
             IconButton(
                 onClick = { isExpanded = !isExpanded },
-                modifier = Modifier.size(28.dp)
+                modifier = Modifier.size(AureoleDS.dimens.iconXLargeMedium)
             ) {
                 if (isExpanded) {
                     AureoleDS.icons.ArrowUp(
                         tint = AureoleDS.colors.onSurfaceMedium,
-                        modifier = Modifier.size(16.dp)
+                        modifier = Modifier.size(AureoleDS.dimens.iconSmall)
                     )
                 } else {
                     AureoleDS.icons.ArrowDown(
                         tint = AureoleDS.colors.onSurfaceMedium,
-                        modifier = Modifier.size(16.dp)
+                        modifier = Modifier.size(AureoleDS.dimens.iconSmall)
                     )
                 }
             }
@@ -308,7 +307,7 @@ internal fun SettingSwitchRow(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 4.dp),
+            .padding(vertical = AureoleDS.dimens.xxSmall),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {

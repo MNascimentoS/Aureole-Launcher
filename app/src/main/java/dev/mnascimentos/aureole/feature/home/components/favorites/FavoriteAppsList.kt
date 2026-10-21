@@ -219,7 +219,7 @@ internal fun FavoriteAppRow(
             .fillMaxWidth()
             .clip(RoundedCornerShape(AureoleDS.dimens.radiusSmall))
             .background(AureoleDS.colors.surfaceVariant.copy(alpha = 0.3f))
-            .padding(horizontal = AureoleDS.dimens.small, vertical = AureoleDS.dimens.favoriteRowPaddingVertical),
+            .padding(horizontal = AureoleDS.dimens.small, vertical = AureoleDS.dimens.smallCompact),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {

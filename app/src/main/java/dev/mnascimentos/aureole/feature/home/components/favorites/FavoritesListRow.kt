@@ -45,23 +45,23 @@ internal fun FavoritesEmptyHint(onClick: () -> Unit) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .defaultMinSize(minHeight = 48.dp)
-            .padding(horizontal = 16.dp, vertical = 8.dp)
+            .defaultMinSize(minHeight = AureoleDS.dimens.minTouchTarget)
+            .padding(horizontal = AureoleDS.dimens.medium, vertical = AureoleDS.dimens.xSmall)
             .clip(RoundedCornerShape(AureoleDS.dimens.radiusMedium))
             .background(AureoleDS.colors.surfaceVariant.copy(alpha = 0.3f))
             .clickable(
                 role = Role.Button,
                 onClick = onClick
             )
-            .padding(12.dp),
+            .padding(AureoleDS.dimens.small),
         contentAlignment = Alignment.Center
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             AureoleDS.icons.Star(
                 tint = AureoleDS.colors.onSurfaceHigh,
-                modifier = Modifier.size(18.dp)
+                modifier = Modifier.size(AureoleDS.dimens.iconMediumSmall)
             )
-            Spacer(modifier = Modifier.width(8.dp))
+            Spacer(modifier = Modifier.width(AureoleDS.dimens.xSmall))
             AureoleText(
                 text = "Tap to select Favorites",
                 color = AureoleDS.colors.onSurfaceMedium,
@@ -76,7 +76,7 @@ internal fun AllAppsDivider() {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 12.dp),
+            .padding(horizontal = AureoleDS.dimens.medium, vertical = AureoleDS.dimens.small),
         verticalAlignment = Alignment.CenterVertically
     ) {
         HorizontalDivider(
@@ -86,7 +86,7 @@ internal fun AllAppsDivider() {
         AureoleText(
             text = " ALL APPS ",
             color = AureoleDS.colors.onSurfaceMedium.copy(alpha = 0.6f),
-            modifier = Modifier.padding(horizontal = 8.dp),
+            modifier = Modifier.padding(horizontal = AureoleDS.dimens.xSmall),
             format = AureoleTextFormatParams(style = AureoleDS.typography.labelSmall)
         )
         HorizontalDivider(
@@ -94,6 +94,10 @@ internal fun AllAppsDivider() {
             color = AureoleDS.colors.onSurfaceHigh.copy(alpha = 0.12f)
         )
     }
+}
+
+private object FavoritesPreviewMetrics {
+    val DefaultHeight = 160.dp
 }
 
 @AureolePreview
@@ -133,7 +137,7 @@ private fun FavoritesListPreview() {
         ) {
             FavoritesList(
                 config = FavoritesListConfig(
-                    currentHeightDp = 160.dp,
+                    currentHeightDp = FavoritesPreviewMetrics.DefaultHeight,
                     currentHeightPx = 400f,
                     state = rememberLazyListState()
                 ),

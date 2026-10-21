@@ -14,7 +14,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.core.data.model.LauncherItemType
 import dev.mnascimentos.aureole.core.data.model.ScrollOrientation
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
@@ -60,7 +59,7 @@ private fun CustomizeAddItemOptions(
             title = "Add clock",
             icon = {
                 AureoleDS.icons.Add(
-                    modifier = Modifier.size(24.dp),
+                    modifier = Modifier.size(AureoleDS.dimens.iconLarge),
                     tint = AureoleDS.colors.onSurfaceMedium
                 )
             },
@@ -73,7 +72,7 @@ private fun CustomizeAddItemOptions(
             title = "Add container",
             icon = {
                 AureoleDS.icons.Star(
-                    modifier = Modifier.size(24.dp),
+                    modifier = Modifier.size(AureoleDS.dimens.iconLarge),
                     tint = AureoleDS.colors.onSurfaceMedium
                 )
             },
@@ -86,7 +85,7 @@ private fun CustomizeAddItemOptions(
             title = "Add scrollview container",
             icon = {
                 AureoleDS.icons.VerticalContainer(
-                    modifier = Modifier.size(24.dp),
+                    modifier = Modifier.size(AureoleDS.dimens.iconLarge),
                     tint = AureoleDS.colors.onSurfaceMedium
                 )
             },
@@ -99,7 +98,7 @@ private fun CustomizeAddItemOptions(
             title = "Add widget group",
             icon = {
                 AureoleDS.icons.MultipleView(
-                    modifier = Modifier.size(24.dp),
+                    modifier = Modifier.size(AureoleDS.dimens.iconLarge),
                     tint = AureoleDS.colors.onSurfaceMedium
                 )
             },
@@ -121,7 +120,7 @@ private fun CustomizeSystemOptions(
             title = "Adjust layout",
             icon = {
                 AureoleDS.icons.Layout(
-                    modifier = Modifier.size(24.dp),
+                    modifier = Modifier.size(AureoleDS.dimens.iconLarge),
                     tint = AureoleDS.colors.onSurfaceMedium
                 )
             },
@@ -134,7 +133,7 @@ private fun CustomizeSystemOptions(
             title = "Set Background",
             icon = {
                 AureoleDS.icons.Placeholder(
-                    modifier = Modifier.size(24.dp),
+                    modifier = Modifier.size(AureoleDS.dimens.iconLarge),
                     tint = AureoleDS.colors.onSurfaceMedium
                 )
             },
@@ -147,7 +146,7 @@ private fun CustomizeSystemOptions(
             title = "Aureole settings",
             icon = {
                 AureoleDS.icons.Icon(
-                    modifier = Modifier.size(24.dp),
+                    modifier = Modifier.size(AureoleDS.dimens.iconLarge),
                     tint = AureoleDS.colors.onSurfaceMedium
                 )
             },
@@ -173,7 +172,7 @@ private fun CustomizeOptionItem(
         verticalAlignment = Alignment.CenterVertically
     ) {
         Box(
-            modifier = Modifier.size(24.dp),
+            modifier = Modifier.size(AureoleDS.dimens.iconLarge),
             contentAlignment = Alignment.Center
         ) {
             icon()

@@ -104,7 +104,7 @@ private fun MainFavoritesEditShortcutsRow(onClick: () -> Unit) {
                 onClick = onClick
             )
             .semantics(mergeDescendants = true) {}
-            .padding(vertical = AureoleDS.dimens.favoriteSectionPaddingVertical),
+            .padding(vertical = AureoleDS.dimens.small),
         verticalAlignment = Alignment.CenterVertically
     ) {
         AureoleDS.icons.Star(
@@ -139,7 +139,7 @@ private fun MainFavoritesAppearanceRow(onClick: () -> Unit) {
                 onClick = onClick
             )
             .semantics(mergeDescendants = true) {}
-            .padding(vertical = AureoleDS.dimens.favoriteSectionPaddingVertical),
+            .padding(vertical = AureoleDS.dimens.small),
         verticalAlignment = Alignment.CenterVertically
     ) {
         AureoleDS.icons.Edit(
@@ -261,7 +261,7 @@ private fun FavoriteAppsDialogBody(
             modifier = Modifier
                 .weight(1f)
                 .fillMaxWidth(),
-            verticalArrangement = Arrangement.spacedBy(AureoleDS.dimens.appRowPaddingVertical)
+            verticalArrangement = Arrangement.spacedBy(AureoleDS.dimens.xSmall)
         ) {
             favoriteSectionItems(
                 params = FavoriteSectionParams(

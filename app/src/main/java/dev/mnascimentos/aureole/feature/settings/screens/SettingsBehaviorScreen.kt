@@ -37,7 +37,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.composable.SettingsToggleItem
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
@@ -56,6 +56,17 @@ import kotlin.math.roundToInt
 private const val BOTTOM_SPACER_RATIO = 0.15f
 private const val MIN_OFFSET_PERCENT = 0
 private const val MAX_OFFSET_PERCENT = 60
+
+private object BehaviorLayoutConstraints {
+    val MinTopSpacer = 16.dp
+    val MinBottomSpacer = 24.dp
+}
+
+private object PickerDimensions {
+    val Height = 72.dp
+    val Width = 60.dp
+    val ItemHeight = 24.dp
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -76,15 +87,15 @@ fun SettingsBehaviorScreen(
                 .fillMaxSize()
                 .padding(innerPadding)
         ) {
-            val topSpacerHeight = (maxHeight * (uiState.headerOffsetPercent / 100f)).coerceAtLeast(16.dp)
-            val bottomSpacerHeight = (maxHeight * BOTTOM_SPACER_RATIO).coerceAtLeast(24.dp)
+            val topSpacerHeight = (maxHeight * (uiState.headerOffsetPercent / 100f)).coerceAtLeast(BehaviorLayoutConstraints.MinTopSpacer)
+            val bottomSpacerHeight = (maxHeight * BOTTOM_SPACER_RATIO).coerceAtLeast(BehaviorLayoutConstraints.MinBottomSpacer)
 
             Column(
                 modifier = Modifier
                     .fillMaxSize()
                     .statusBarsPadding()
                     .verticalScroll(rememberScrollState())
-                    .padding(horizontal = 28.dp, vertical = 16.dp),
+                    .padding(horizontal = AureoleDS.dimens.iconXLargeMedium, vertical = AureoleDS.dimens.medium),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Spacer(modifier = Modifier.height(topSpacerHeight))
@@ -100,7 +111,7 @@ fun SettingsBehaviorScreen(
                     )
                 )
 
-                Spacer(modifier = Modifier.height(24.dp))
+                Spacer(modifier = Modifier.height(AureoleDS.dimens.large))
 
                 BehaviorMenuItems(uiState = uiState, actions = actions)
 
@@ -116,7 +127,7 @@ private fun BehaviorMenuItems(
     actions: SettingsScreenActions
 ) {
     Column(
-        verticalArrangement = Arrangement.spacedBy(8.dp),
+        verticalArrangement = Arrangement.spacedBy(AureoleDS.dimens.xSmall),
         modifier = Modifier.fillMaxWidth()
     ) {
         SettingsToggleItem(
@@ -169,12 +180,12 @@ private fun HeaderOffsetPickerRow(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 4.dp, horizontal = 12.dp),
+            .padding(vertical = AureoleDS.dimens.xxSmall, horizontal = AureoleDS.dimens.small),
         verticalAlignment = Alignment.CenterVertically
     ) {
         AureoleDS.icons.Header(
             tint = AureoleDS.colors.onSurfaceMedium,
-            modifier = Modifier.padding(end = 20.dp).size(20.dp)
+            modifier = Modifier.padding(end = AureoleDS.dimens.medium).size(AureoleDS.dimens.iconMedium)
         )
 
         AureoleText(
@@ -188,7 +199,7 @@ private fun HeaderOffsetPickerRow(
             value = headerOffsetPercent,
             range = MIN_OFFSET_PERCENT..MAX_OFFSET_PERCENT,
             onValueChange = onOffsetChanged,
-            modifier = Modifier.height(72.dp).width(60.dp)
+            modifier = Modifier.height(PickerDimensions.Height).width(PickerDimensions.Width)
         )
     }
 }
@@ -204,7 +215,7 @@ private fun HeaderOffsetWheelPicker(
     val items = remember(range) { range.toList() }
     val initialIndex = remember(value, items) { (value - range.first).coerceIn(0, items.size - 1) }
 
-    val itemHeightDp = 24.dp
+    val itemHeightDp = PickerDimensions.ItemHeight
     val itemHeightPx = with(LocalDensity.current) { itemHeightDp.toPx() }
 
     val listState = rememberLazyListState(initialFirstVisibleItemIndex = initialIndex)
@@ -261,9 +272,8 @@ private fun HeaderOffsetWheelPicker(
                             AureoleDS.colors.onSurfaceLow.copy(alpha = 0.35f)
                         },
                         format = AureoleTextFormatParams(
-                            style = AureoleDS.typography.bodyLarge,
-                            fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
-                            fontSize = if (isSelected) 15.sp else 12.sp
+                            style = if (isSelected) AureoleDS.typography.bodyLarge else AureoleDS.typography.bodySmall,
+                            fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
                         )
                     )
                 }

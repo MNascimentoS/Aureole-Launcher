@@ -32,6 +32,8 @@ import dev.mnascimentos.aureole.core.designsystem.components.AureoleSearchBarSiz
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleSearchBarState
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleSectionHeader
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
+import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.FolderButtonMetrics
+import dev.mnascimentos.aureole.feature.home.components.widgets.model.WidgetPickerMetrics
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.components.scrubber.CurvedAlphabetScrubber
@@ -80,7 +82,7 @@ fun WidgetGroupList(
     }
 
     val groupedData = rememberGroupedAppsData(state.widgetGroups)
-    val topPadding = if (isSearchExpanded) AureoleDS.dimens.widgetSearchTopPaddingExpanded else AureoleDS.dimens.medium
+    val topPadding = if (isSearchExpanded) WidgetPickerMetrics.SearchTopPaddingExpanded else AureoleDS.dimens.medium
 
     Box(modifier = modifier.fillMaxSize()) {
         WidgetGroupListColumn(
@@ -127,8 +129,8 @@ fun WidgetGroupList(
                     placeholder = "Pesquisar widgets...",
                     focusRequester = focusRequester,
                     sizes = AureoleSearchBarSizes(
-                        collapsedSize = AureoleDS.dimens.folderButtonMedium,
-                        barHeight = AureoleDS.dimens.folderButtonSmall
+                        collapsedSize = FolderButtonMetrics.MediumSize,
+                        barHeight = FolderButtonMetrics.SmallSize
                     )
                 )
             )
@@ -214,7 +216,7 @@ private fun WidgetGroupListColumn(
     LazyColumn(
         state = listState,
         modifier = Modifier.fillMaxSize(),
-        contentPadding = PaddingValues(bottom = AureoleDS.dimens.widgetListBottomPadding, top = topPadding)
+        contentPadding = PaddingValues(bottom = WidgetPickerMetrics.ListBottomPadding, top = topPadding)
     ) {
         groupedApps.forEach { (letter, groups) ->
             item(key = "header_$letter") {

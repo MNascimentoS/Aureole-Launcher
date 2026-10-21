@@ -144,7 +144,7 @@ fun RemainingFolderAppRow(
             .fillMaxWidth()
             .clip(RoundedCornerShape(AureoleDS.dimens.radiusSmall))
             .background(AureoleDS.colors.surfaceVariant.copy(alpha = 0.3f))
-            .padding(horizontal = AureoleDS.dimens.small, vertical = AureoleDS.dimens.appRowPaddingVertical),
+            .padding(horizontal = AureoleDS.dimens.small, vertical = AureoleDS.dimens.xSmall),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {

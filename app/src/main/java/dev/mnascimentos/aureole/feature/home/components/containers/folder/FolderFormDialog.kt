@@ -28,6 +28,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.FolderButtonMetrics
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.semantics
@@ -145,7 +146,7 @@ fun FolderIconPreview(
 ) {
     Box(
         modifier = modifier
-            .size(AureoleDS.dimens.folderButtonSmall)
+            .size(FolderButtonMetrics.SmallSize)
             .clip(RoundedCornerShape(AureoleDS.dimens.radiusMedium))
             .background(AureoleDS.colors.surfaceVariant),
         contentAlignment = Alignment.Center

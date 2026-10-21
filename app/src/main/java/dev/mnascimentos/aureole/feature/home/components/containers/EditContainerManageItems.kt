@@ -92,7 +92,7 @@ internal fun ManageItemsContent(
                     contentColor = AureoleDS.colors.onSurfaceHigh
                 ),
                 contentPadding = PaddingValues(horizontal = AureoleDS.dimens.small),
-                modifier = Modifier.height(AureoleDS.dimens.folderButtonSmall)
+                modifier = Modifier.height(52.dp)
             ) {
                 AureoleDS.icons.Add(
                     tint = AureoleDS.colors.onSurfaceHigh,

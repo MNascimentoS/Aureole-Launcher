@@ -39,6 +39,12 @@ import dev.mnascimentos.aureole.feature.home.model.LocalHomeActions
 import dev.mnascimentos.aureole.feature.home.model.LocalHomeUiState
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
 
+private object AppsListMetrics {
+    val SectionHeaderTopPadding = 20.dp
+    val SettingsIconContainerSize = 42.dp
+    val SettingsBottomSpacerHeight = 80.dp
+}
+
 fun LazyListScope.appsListItems(
     uiState: MainUiState,
     actions: HomeScreenActions,
@@ -59,8 +65,8 @@ fun LazyListScope.appsListItems(
                 title = currentLetter.toString(),
                 color = AureoleDS.colors.onSurfaceHigh,
                 modifier = Modifier.padding(
-                    top = 20.dp,
-                    bottom = 8.dp
+                    top = AppsListMetrics.SectionHeaderTopPadding,
+                    bottom = AureoleDS.dimens.xSmall
                 )
             )
         }
@@ -84,25 +90,25 @@ fun LazyListScope.appsListItems(
 
 private fun LazyListScope.settingsListItem(actions: HomeScreenActions) {
     item(key = "aureole_settings_item", contentType = "settings_item") {
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(AureoleDS.dimens.medium))
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .clip(RoundedCornerShape(12.dp))
+                .clip(RoundedCornerShape(AureoleDS.dimens.radiusSmall))
                 .clickable { actions.onSettingsClick() }
                 .padding(horizontal = AureoleDS.dimens.medium, vertical = AureoleDS.dimens.small),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Box(
                 modifier = Modifier
-                    .size(42.dp)
+                    .size(AppsListMetrics.SettingsIconContainerSize)
                     .clip(CircleShape)
                     .background(AureoleDS.colors.surfaceVariant),
                 contentAlignment = Alignment.Center
             ) {
                 AureoleDS.icons.Settings(
                     tint = AureoleDS.colors.onSurfaceHigh,
-                    modifier = Modifier.size(24.dp)
+                    modifier = Modifier.size(AureoleDS.dimens.iconLarge)
                 )
             }
 
@@ -114,7 +120,7 @@ private fun LazyListScope.settingsListItem(actions: HomeScreenActions) {
                 format = AureoleTextFormatParams(style = AureoleDS.typography.bodyLarge)
             )
         }
-        Spacer(modifier = Modifier.height(80.dp))
+        Spacer(modifier = Modifier.height(AppsListMetrics.SettingsBottomSpacerHeight))
     }
 }
 

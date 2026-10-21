@@ -24,9 +24,9 @@ import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
 import dev.mnascimentos.aureole.feature.home.model.createDefaultHomeScreenActions
 
-private val CHIP_HORIZONTAL_SPACING = 8.dp
-private const val NEGATIVE_SPACING_INT = -8
-private val CHIP_VERTICAL_SPACING = NEGATIVE_SPACING_INT.dp
+private object ClockSectionMetrics {
+    val NegativeChipVerticalSpacing = (-8).dp
+}
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
@@ -39,8 +39,8 @@ internal fun EditClockStyleSection(
     EditClockSectionHeader(title = "Estilo do Layout")
     FlowRow(
         modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(CHIP_HORIZONTAL_SPACING),
-        verticalArrangement = Arrangement.spacedBy(CHIP_VERTICAL_SPACING)
+        horizontalArrangement = Arrangement.spacedBy(AureoleDS.dimens.xSmall),
+        verticalArrangement = Arrangement.spacedBy(ClockSectionMetrics.NegativeChipVerticalSpacing)
     ) {
         EditClockLayoutChip(
             label = "Saudação Diária",
@@ -70,7 +70,7 @@ internal fun EditClockStyleSection(
     }
 
     if (uiState.clockStyle == "CUSTOM_GREETING") {
-        Spacer(modifier = Modifier.height(12.dp))
+        Spacer(modifier = Modifier.height(AureoleDS.dimens.small))
         OutlinedTextField(
             value = tempCustomGreeting,
             onValueChange = onGreetingChange,
@@ -94,7 +94,7 @@ internal fun EditClockAlignmentSection(
     EditClockSectionHeader(title = "Alinhamento")
     Row(
         modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(CHIP_HORIZONTAL_SPACING)
+        horizontalArrangement = Arrangement.spacedBy(AureoleDS.dimens.xSmall)
     ) {
         EditClockChoiceButton(
             text = "Esquerda",
@@ -126,8 +126,8 @@ internal fun EditClockTextColorSection(
     EditClockSectionHeader(title = "Cor do Texto")
     FlowRow(
         modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(10.dp),
-        verticalArrangement = Arrangement.spacedBy(10.dp)
+        horizontalArrangement = Arrangement.spacedBy(AureoleDS.dimens.smallCompact),
+        verticalArrangement = Arrangement.spacedBy(AureoleDS.dimens.smallCompact)
     ) {
         PRESET_TEXT_COLORS.forEach { (name, colorValue) ->
             EditClockColorSwatchItem(
@@ -149,8 +149,8 @@ internal fun EditClockFontSection(
     EditClockSectionHeader(title = "Estilo da Fonte")
     FlowRow(
         modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(CHIP_HORIZONTAL_SPACING),
-        verticalArrangement = Arrangement.spacedBy(CHIP_VERTICAL_SPACING)
+        horizontalArrangement = Arrangement.spacedBy(AureoleDS.dimens.xSmall),
+        verticalArrangement = Arrangement.spacedBy(ClockSectionMetrics.NegativeChipVerticalSpacing)
     ) {
         EditClockLayoutChip(
             label = "Padrão",
@@ -192,12 +192,12 @@ internal fun EditClockFormatSection(
         AureoleText(
             text = "Formato de Hora:",
             color = AureoleDS.colors.onSurfaceMedium,
-            modifier = Modifier.padding(bottom = 6.dp),
+            modifier = Modifier.padding(bottom = AureoleDS.dimens.xSmall),
             format = AureoleTextFormatParams(style = AureoleDS.typography.bodySmall)
         )
         Row(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(CHIP_HORIZONTAL_SPACING)
+            horizontalArrangement = Arrangement.spacedBy(AureoleDS.dimens.xSmall)
         ) {
             EditClockChoiceButton(
                 text = "Sistema",
@@ -219,18 +219,18 @@ internal fun EditClockFormatSection(
             )
         }
 
-        Spacer(modifier = Modifier.height(10.dp))
+        Spacer(modifier = Modifier.height(AureoleDS.dimens.smallCompact))
 
         AureoleText(
             text = "Formato de Data:",
             color = AureoleDS.colors.onSurfaceMedium,
-            modifier = Modifier.padding(bottom = 6.dp),
+            modifier = Modifier.padding(bottom = AureoleDS.dimens.xSmall),
             format = AureoleTextFormatParams(style = AureoleDS.typography.bodySmall)
         )
         FlowRow(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(CHIP_HORIZONTAL_SPACING),
-            verticalArrangement = Arrangement.spacedBy(CHIP_VERTICAL_SPACING)
+            horizontalArrangement = Arrangement.spacedBy(AureoleDS.dimens.xSmall),
+            verticalArrangement = Arrangement.spacedBy(ClockSectionMetrics.NegativeChipVerticalSpacing)
         ) {
             EditClockLayoutChip("Completo (sexta, 9 out)", uiState.clockDateFormat == "DEFAULT") {
                 actions.onUpdateClockDateFormat("DEFAULT")
@@ -255,7 +255,7 @@ private fun EditClockSectionsPreview() {
         Column(
             modifier = Modifier
                 .background(AureoleDS.colors.surface)
-                .padding(16.dp)
+                .padding(AureoleDS.dimens.medium)
         ) {
             EditClockStyleSection(
                 uiState = MainUiState(),

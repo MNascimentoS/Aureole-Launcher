@@ -153,7 +153,7 @@ internal fun SelectedFolderAppRow(
             .fillMaxWidth()
             .clip(RoundedCornerShape(AureoleDS.dimens.radiusSmall))
             .background(AureoleDS.colors.surfaceVariant.copy(alpha = 0.5f))
-            .padding(horizontal = AureoleDS.dimens.small, vertical = AureoleDS.dimens.appRowPaddingVertical),
+            .padding(horizontal = AureoleDS.dimens.small, vertical = AureoleDS.dimens.xSmall),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {

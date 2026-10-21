@@ -25,6 +25,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import dev.mnascimentos.aureole.feature.home.components.content.model.ScrollChildDimensions
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
 import androidx.compose.ui.input.nestedscroll.NestedScrollSource
@@ -202,13 +203,13 @@ private fun ScrollViewChildItem(params: ScrollViewChildItemParams) {
     val childModifier = when {
         isAppsList && isVertical -> Modifier.fillMaxWidth().wrapContentHeight()
         isVertical -> {
-            val childHeightDp = (AureoleDS.dimens.scrollChildRowHeight * childItem.rowSpan)
-                .coerceAtLeast(AureoleDS.dimens.scrollChildMinHeight)
+            val childHeightDp = (ScrollChildDimensions.RowHeight * childItem.rowSpan)
+                .coerceAtLeast(ScrollChildDimensions.MinHeight)
             Modifier.fillMaxWidth().height(childHeightDp)
         }
         else -> {
-            val childWidthDp = (AureoleDS.dimens.scrollChildColWidth * childItem.colSpan)
-                .coerceAtLeast(AureoleDS.dimens.scrollChildMinWidth)
+            val childWidthDp = (ScrollChildDimensions.ColWidth * childItem.colSpan)
+                .coerceAtLeast(ScrollChildDimensions.MinWidth)
             Modifier.width(childWidthDp).fillMaxHeight()
         }
     }
@@ -249,7 +250,7 @@ private fun ScrollViewAddComponentButton(parentId: String, actions: HomeScreenAc
                 tint = AureoleDS.colors.onSurfaceHigh,
                 modifier = Modifier.size(AureoleDS.dimens.iconMediumSmall)
             )
-            Spacer(modifier = Modifier.width(AureoleDS.dimens.appRowPaddingVertical))
+            Spacer(modifier = Modifier.width(AureoleDS.dimens.xxSmall))
             AureoleText(
                 text = "Componente",
                 color = AureoleDS.colors.onSurfaceHigh,

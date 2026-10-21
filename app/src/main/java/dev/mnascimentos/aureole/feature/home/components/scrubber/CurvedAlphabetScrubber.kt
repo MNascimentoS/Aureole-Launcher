@@ -37,6 +37,7 @@ import androidx.compose.ui.unit.IntOffset
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
+import dev.mnascimentos.aureole.feature.home.components.scrubber.model.ScrubberDimensions
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.components.scrubber.model.ScrubberCallbacks
@@ -164,7 +165,7 @@ private fun Modifier.scrubberBaseModifier(
         .fillMaxHeight(SCRUBBER_HEIGHT_FRACTION)
         .padding(
             top = dimens.zero,
-            bottom = dimens.scrubberPaddingBottom,
+            bottom = ScrubberDimensions.PaddingBottom,
             start = if (isLeftHandedMode) dimens.xSmall else dimens.zero,
             end = if (isLeftHandedMode) dimens.zero else dimens.xSmall
         )
@@ -221,7 +222,7 @@ private fun BoxScope.ScrubberContent(
     if (params.isDragging && params.selectedIndex in alphabet.indices) {
         val dimens = AureoleDS.dimens
         val badgeSizePx = with(density) { dimens.minTouchTarget.toPx() }
-        val badgeMarginPx = with(density) { dimens.scrubberBadgeMargin.toPx() }
+        val badgeMarginPx = with(density) { ScrubberDimensions.BadgeMargin.toPx() }
         val selectedChar = alphabet[params.selectedIndex]
         val badgeYPx = (params.selectedIndex + GAUSSIAN_HALF_FACTOR) * itemHeightPx - (badgeSizePx / 2f)
         val badgeXPx = if (uiState.isLeftHandedMode) badgeMarginPx else -badgeMarginPx - badgeSizePx
@@ -244,8 +245,8 @@ private fun BoxScope.ScrubberAlphabetItems(
 ) {
     val density = LocalDensity.current
     val dimens = AureoleDS.dimens
-    val amplitudePx = with(density) { dimens.scrubberBulgeMax.toPx() }
-    val sigmaPx = with(density) { dimens.scrubberSpread.toPx() }
+    val amplitudePx = with(density) { ScrubberDimensions.BulgeMax.toPx() }
+    val sigmaPx = with(density) { ScrubberDimensions.Spread.toPx() }
     val itemHeightPx = containerHeightPx / alphabet.size
 
     alphabet.forEachIndexed { index, char ->
@@ -263,8 +264,8 @@ private fun BoxScope.ScrubberAlphabetItems(
             modifier = Modifier
                 .align(params.alignment)
                 .padding(
-                    start = if (isLeftHandedMode) dimens.scrubberLabelOffset else dimens.zero,
-                    end = if (isLeftHandedMode) dimens.zero else dimens.scrubberLabelOffset
+                    start = if (isLeftHandedMode) ScrubberDimensions.LabelOffset else dimens.zero,
+                    end = if (isLeftHandedMode) dimens.zero else ScrubberDimensions.LabelOffset
                 )
                 .graphicsLayer {
                     val currentTouchY = params.touchYPx
@@ -300,7 +301,7 @@ private fun BoxScope.ScrubberSelectedBadge(
         shape = CircleShape,
         color = AureoleDS.colors.onSurfaceHigh,
         contentColor = AureoleDS.colors.surface,
-        shadowElevation = dimens.badgeElevation,
+        shadowElevation = ScrubberDimensions.BadgeElevation,
         modifier = Modifier
             .size(dimens.minTouchTarget)
             .align(alignment)

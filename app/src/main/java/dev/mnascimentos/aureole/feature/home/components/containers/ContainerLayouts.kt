@@ -41,6 +41,10 @@ import dev.mnascimentos.aureole.feature.home.components.containers.model.Contain
 import dev.mnascimentos.aureole.feature.home.model.LocalHomeActions
 import dev.mnascimentos.aureole.feature.home.model.LocalHomeUiState
 
+private object ContainerEffectMetrics {
+    val FadingEdgeLength = 16.dp
+}
+
 internal fun resolveContainerRenderItems(
     config: ContainerConfig,
     allApps: List<AppInfo>
@@ -77,8 +81,8 @@ internal fun ContainerColumn(
 
     val renderItems = resolveContainerRenderItems(config, uiState.apps)
 
-    val paddingHorizontal = if (config.isBackgroundEnabled) 10.dp else 2.dp
-    val paddingVertical = if (config.isBackgroundEnabled) 8.dp else 4.dp
+    val paddingHorizontal = if (config.isBackgroundEnabled) AureoleDS.dimens.smallCompact else AureoleDS.dimens.minimal
+    val paddingVertical = if (config.isBackgroundEnabled) AureoleDS.dimens.xSmall else AureoleDS.dimens.xxSmall
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -95,7 +99,7 @@ internal fun ContainerColumn(
                 onLongClick = { actions.onOpenEditContainerDialog(config.panelId) }
             )
             .semantics(mergeDescendants = true) {}
-            .fadingEdges(scrollState, edgeLength = 16.dp)
+            .fadingEdges(scrollState, edgeLength = ContainerEffectMetrics.FadingEdgeLength)
             .verticalScroll(scrollState)
             .padding(horizontal = paddingHorizontal, vertical = paddingVertical)
     ) {
@@ -168,8 +172,8 @@ internal fun ContainerRow(
 
     val renderItems = resolveContainerRenderItems(config, uiState.apps)
 
-    val paddingHorizontal = if (config.isBackgroundEnabled) 8.dp else 4.dp
-    val paddingVertical = if (config.isBackgroundEnabled) 10.dp else 2.dp
+    val paddingHorizontal = if (config.isBackgroundEnabled) AureoleDS.dimens.xSmall else AureoleDS.dimens.xxSmall
+    val paddingVertical = if (config.isBackgroundEnabled) AureoleDS.dimens.smallCompact else AureoleDS.dimens.minimal
 
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -186,7 +190,7 @@ internal fun ContainerRow(
                 onLongClick = { actions.onOpenEditContainerDialog(config.panelId) }
             )
             .semantics(mergeDescendants = true) {}
-            .fadingEdges(scrollState, edgeLength = 16.dp)
+            .fadingEdges(scrollState, edgeLength = ContainerEffectMetrics.FadingEdgeLength)
             .horizontalScroll(scrollState)
             .padding(horizontal = paddingHorizontal, vertical = paddingVertical)
     ) {
@@ -218,7 +222,7 @@ private fun RowRenderItem(
                 panelId = config.panelId,
                 displayAsGrid = config.isGridFolderEnabled || renderItem.folder.displayAsGrid
             )
-            Box(modifier = Modifier.padding(horizontal = 4.dp)) {
+            Box(modifier = Modifier.padding(horizontal = AureoleDS.dimens.xxSmall)) {
                 ContainerFolderItem(
                     params = ContainerFolderItemParams(
                         folder = renderItem.folder,
@@ -235,7 +239,7 @@ private fun RowRenderItem(
             }
         }
         is ContainerRenderItem.App -> {
-            Box(modifier = Modifier.padding(horizontal = 4.dp)) {
+            Box(modifier = Modifier.padding(horizontal = AureoleDS.dimens.xxSmall)) {
                 ContainerAppItem(
                     params = ContainerAppItemParams(
                         app = renderItem.appInfo,

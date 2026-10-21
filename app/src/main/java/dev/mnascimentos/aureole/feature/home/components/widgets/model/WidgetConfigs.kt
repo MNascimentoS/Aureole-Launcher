@@ -4,8 +4,16 @@ import android.appwidget.AppWidgetHost
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 import dev.chrisbanes.haze.HazeState
 import dev.mnascimentos.aureole.core.data.model.LauncherItemState
+
+object WidgetPickerMetrics {
+    val SearchTopPaddingExpanded = 80.dp
+    val ListBottomPadding = 120.dp
+    val PreviewCardSize = 150.dp
+    val AddCardSize = 164.dp
+}
 
 private const val DEFAULT_HAZE_OPACITY = 0.5f
 

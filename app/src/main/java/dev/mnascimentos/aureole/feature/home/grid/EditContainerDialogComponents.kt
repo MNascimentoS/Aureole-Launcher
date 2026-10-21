@@ -20,7 +20,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.core.data.model.LauncherItemState
 import dev.mnascimentos.aureole.core.data.model.LauncherItemType
 import dev.mnascimentos.aureole.core.data.model.ScrollOrientation
@@ -45,9 +44,9 @@ internal fun EditDialogChildrenListSection(
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .clip(RoundedCornerShape(14.dp))
+                .clip(RoundedCornerShape(AureoleDS.dimens.radiusMedium))
                 .background(AureoleDS.colors.surfaceVariant.copy(alpha = 0.25f))
-                .padding(16.dp),
+                .padding(AureoleDS.dimens.medium),
             contentAlignment = Alignment.Center
         ) {
             AureoleText(
@@ -59,7 +58,7 @@ internal fun EditDialogChildrenListSection(
     } else {
         val isVertical = item.safeScrollOrientation == ScrollOrientation.VERTICAL
         val totalChildren = item.safeChildren.size
-        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+        Column(verticalArrangement = Arrangement.spacedBy(AureoleDS.dimens.xSmall)) {
             item.safeChildren.forEachIndexed { index, child ->
                 ScrollViewChildItemCard(
                     params = ScrollViewChildParams(
@@ -86,13 +85,13 @@ internal fun ScrollViewOrientationSelector(
         AureoleText(
             text = "Orientação do Scroll",
             color = AureoleDS.colors.onSurfaceHigh,
-            modifier = Modifier.padding(bottom = 10.dp),
+            modifier = Modifier.padding(bottom = AureoleDS.dimens.smallCompact),
             format = AureoleTextFormatParams(style = AureoleDS.typography.titleMedium, fontWeight = FontWeight.SemiBold)
         )
 
         Row(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(12.dp)
+            horizontalArrangement = Arrangement.spacedBy(AureoleDS.dimens.small)
         ) {
             OrientationOptionCard(
                 title = "Vertical",
@@ -131,14 +130,14 @@ private fun OrientationOptionCard(
 
     Row(
         modifier = modifier
-            .defaultMinSize(minHeight = 48.dp)
-            .clip(RoundedCornerShape(12.dp))
+            .defaultMinSize(minHeight = AureoleDS.dimens.minTouchTarget)
+            .clip(RoundedCornerShape(AureoleDS.dimens.radiusSmall))
             .background(bgColor)
             .clickable(
                 role = Role.RadioButton,
                 onClick = onClick
             )
-            .padding(horizontal = 8.dp, vertical = 10.dp),
+            .padding(horizontal = AureoleDS.dimens.xSmall, vertical = AureoleDS.dimens.smallCompact),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center
     ) {
@@ -146,7 +145,7 @@ private fun OrientationOptionCard(
             selected = isSelected,
             onClick = null
         )
-        Spacer(modifier = Modifier.width(2.dp))
+        Spacer(modifier = Modifier.width(AureoleDS.dimens.minimal))
         AureoleText(
             text = title,
             color = contentColor,

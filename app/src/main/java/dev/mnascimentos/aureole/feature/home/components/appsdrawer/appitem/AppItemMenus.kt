@@ -156,7 +156,7 @@ internal fun AppActionSheetContent(
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = AureoleDS.dimens.medium, vertical = AureoleDS.dimens.appRowPaddingVertical)
+            .padding(horizontal = AureoleDS.dimens.medium, vertical = AureoleDS.dimens.xSmall)
     ) {
         AppShortcutsMenu(shortcuts = shortcuts, onDismiss = onDismiss, context = context)
 

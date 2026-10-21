@@ -22,6 +22,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import dev.mnascimentos.aureole.feature.home.components.widgets.model.WidgetPickerMetrics
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Switch
@@ -225,7 +226,7 @@ private fun WidgetPreviewItem(
             // Inner card displaying widget
             Box(
                 modifier = Modifier
-                    .size(AureoleDS.dimens.widgetPreviewCardSize)
+                    .size(WidgetPickerMetrics.PreviewCardSize)
                     .clip(RoundedCornerShape(AureoleDS.dimens.radiusLarge))
                     .then(sharedModifier)
                     .background(AureoleDS.colors.surfaceVariant.copy(alpha = 0.6f)),
@@ -279,7 +280,7 @@ private fun AddWidgetCard(
     ) {
         Box(
             modifier = Modifier
-                .size(AureoleDS.dimens.widgetAddCardSize)
+                .size(WidgetPickerMetrics.AddCardSize)
                 .clip(RoundedCornerShape(AureoleDS.dimens.radiusLarge))
                 .background(AureoleDS.colors.surfaceVariant.copy(alpha = 0.35f))
                 .border(
