@@ -37,7 +37,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
+import androidx.compose.ui.input.nestedscroll.NestedScrollSource
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -161,6 +165,7 @@ private fun ColumnScope.PreviewSlot(
     }
 }
 
+@Suppress("LongMethod")
 @Composable
 private fun SheetSurface(
     params: AureoleEditOverlayParams,
@@ -170,6 +175,36 @@ private fun SheetSurface(
     animScope: AnimatedVisibilityScope
 ) {
     var dragExpansion by remember { mutableFloatStateOf(0f) }
+
+    val nestedScrollConnection = remember(bounds.maxExpansionAllowed) {
+        object : NestedScrollConnection {
+            override fun onPreScroll(available: Offset, source: NestedScrollSource): Offset {
+                val delta = available.y
+                if (delta < 0 && dragExpansion < bounds.maxExpansionAllowed.value) {
+                    val prevExpansion = dragExpansion
+                    dragExpansion = (dragExpansion - delta).coerceIn(0f, bounds.maxExpansionAllowed.value)
+                    val consumedY = dragExpansion - prevExpansion
+                    return Offset(0f, -consumedY)
+                }
+                return Offset.Zero
+            }
+
+            override fun onPostScroll(
+                consumed: Offset,
+                available: Offset,
+                source: NestedScrollSource
+            ): Offset {
+                val delta = available.y
+                if (delta > 0 && dragExpansion > 0f) {
+                    val prevExpansion = dragExpansion
+                    dragExpansion = (dragExpansion - delta).coerceIn(0f, bounds.maxExpansionAllowed.value)
+                    val consumedY = prevExpansion - dragExpansion
+                    return Offset(0f, consumedY)
+                }
+                return Offset.Zero
+            }
+        }
+    }
 
     val draggableState = rememberDraggableState { delta ->
         dragExpansion = (dragExpansion - delta).coerceIn(0f, bounds.maxExpansionAllowed.value)
@@ -200,6 +235,7 @@ private fun SheetSurface(
         modifier = sheetModifier
             .fillMaxWidth()
             .heightIn(max = currentMaxSheetHeight)
+            .nestedScroll(nestedScrollConnection)
             .draggable(
                 state = draggableState,
                 orientation = Orientation.Vertical,

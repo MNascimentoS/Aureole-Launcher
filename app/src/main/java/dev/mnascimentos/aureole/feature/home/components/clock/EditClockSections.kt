@@ -3,7 +3,9 @@
 package dev.mnascimentos.aureole.feature.home.components.clock
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
@@ -12,13 +14,28 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuAnchorType
+import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
+import dev.mnascimentos.aureole.core.designsystem.icons.ArrowDown
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
@@ -30,7 +47,119 @@ private object ClockSectionMetrics {
     val NegativeChipVerticalSpacing = (-8).dp
 }
 
-@OptIn(ExperimentalLayoutApi::class)
+private val CLOCK_STYLE_OPTIONS = listOf(
+    Pair("DYNAMIC_GREETING", "Saudação Diária"),
+    Pair("DATE_ON_TOP", "Data no Topo"),
+    Pair("GREETING_AND_DATE", "Saudação + Data"),
+    Pair("CUSTOM_GREETING", "Texto Personalizado"),
+    Pair("TIME_ONLY", "Apenas Horário")
+)
+
+private val DATE_FORMAT_OPTIONS = listOf(
+    Pair("DEFAULT", "Completo (sexta, 9 out)"),
+    Pair("SHORT", "Curto (Tue, 22 Sep)"),
+    Pair("MEDIUM", "Médio (9 de outubro)"),
+    Pair("NUMERIC", "Numérico (09/10/2026)")
+)
+
+@Suppress("LongMethod")
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+internal fun EditClockDropdown(
+    label: String?,
+    selectedKey: String,
+    options: List<Pair<String, String>>,
+    onOptionSelected: (String) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    var isExpanded by remember { mutableStateOf(false) }
+    val currentDisplayLabel = remember(selectedKey, options) {
+        options.find { it.first == selectedKey }?.second ?: selectedKey
+    }
+
+    Column(modifier = modifier.fillMaxWidth()) {
+        if (label != null) {
+            AureoleText(
+                text = label,
+                color = AureoleDS.colors.onSurfaceMedium,
+                modifier = Modifier.padding(bottom = AureoleDS.dimens.xxSmall),
+                format = AureoleTextFormatParams(style = AureoleDS.typography.bodySmall)
+            )
+        }
+
+        ExposedDropdownMenuBox(
+            expanded = isExpanded,
+            onExpandedChange = { isExpanded = !isExpanded },
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Box(
+                modifier = Modifier
+                    .menuAnchor(ExposedDropdownMenuAnchorType.PrimaryNotEditable)
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(AureoleDS.dimens.radiusSmall))
+                    .background(AureoleDS.colors.surfaceVariant.copy(alpha = 0.45f))
+                    .clickable { isExpanded = !isExpanded }
+                    .padding(horizontal = AureoleDS.dimens.medium, vertical = AureoleDS.dimens.small),
+                contentAlignment = Alignment.CenterStart
+            ) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    AureoleText(
+                        text = currentDisplayLabel,
+                        color = AureoleDS.colors.onSurfaceHigh,
+                        format = AureoleTextFormatParams(
+                            style = AureoleDS.typography.bodyMedium,
+                            fontWeight = FontWeight.Medium
+                        )
+                    )
+                    AureoleDS.icons.ArrowDown(
+                        tint = AureoleDS.colors.onSurfaceMedium,
+                        modifier = Modifier.size(AureoleDS.dimens.iconSmall)
+                    )
+                }
+            }
+
+            ExposedDropdownMenu(
+                expanded = isExpanded,
+                onDismissRequest = { isExpanded = false },
+                modifier = Modifier
+                    .background(AureoleDS.colors.surfaceVariant)
+                    .clip(RoundedCornerShape(AureoleDS.dimens.radiusSmall))
+            ) {
+                options.forEach { (key, optionLabel) ->
+                    val isSelected = (key == selectedKey)
+                    DropdownMenuItem(
+                        text = {
+                            AureoleText(
+                                text = optionLabel,
+                                color = if (isSelected) {
+                                    AureoleDS.colors.onSurfaceHigh
+                                } else {
+                                    AureoleDS.colors.onSurfaceMedium
+                                },
+                                format = AureoleTextFormatParams(
+                                    style = AureoleDS.typography.bodyMedium,
+                                    fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
+                                )
+                            )
+                        },
+                        onClick = {
+                            onOptionSelected(key)
+                            isExpanded = false
+                        },
+                        modifier = Modifier.background(
+                            if (isSelected) AureoleDS.colors.onSurfaceHigh.copy(alpha = 0.1f) else Color.Transparent
+                        )
+                    )
+                }
+            }
+        }
+    }
+}
+
 @Composable
 internal fun EditClockStyleSection(
     uiState: MainUiState,
@@ -39,37 +168,12 @@ internal fun EditClockStyleSection(
     onGreetingChange: (String) -> Unit
 ) {
     EditClockSectionHeader(title = "Estilo do Layout")
-    FlowRow(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(AureoleDS.dimens.xSmall),
-        verticalArrangement = Arrangement.spacedBy(ClockSectionMetrics.NegativeChipVerticalSpacing)
-    ) {
-        EditClockLayoutChip(
-            label = "Saudação Diária",
-            selected = uiState.clockStyle == "DYNAMIC_GREETING",
-            onClick = { actions.onUpdateClockStyle("DYNAMIC_GREETING") }
-        )
-        EditClockLayoutChip(
-            label = "Data no Topo",
-            selected = uiState.clockStyle == "DATE_ON_TOP",
-            onClick = { actions.onUpdateClockStyle("DATE_ON_TOP") }
-        )
-        EditClockLayoutChip(
-            label = "Saudação + Data",
-            selected = uiState.clockStyle == "GREETING_AND_DATE",
-            onClick = { actions.onUpdateClockStyle("GREETING_AND_DATE") }
-        )
-        EditClockLayoutChip(
-            label = "Texto Personalizado",
-            selected = uiState.clockStyle == "CUSTOM_GREETING",
-            onClick = { actions.onUpdateClockStyle("CUSTOM_GREETING") }
-        )
-        EditClockLayoutChip(
-            label = "Apenas Horário",
-            selected = uiState.clockStyle == "TIME_ONLY",
-            onClick = { actions.onUpdateClockStyle("TIME_ONLY") }
-        )
-    }
+    EditClockDropdown(
+        label = null,
+        selectedKey = uiState.clockStyle,
+        options = CLOCK_STYLE_OPTIONS,
+        onOptionSelected = { actions.onUpdateClockStyle(it) }
+    )
 
     if (uiState.clockStyle == "CUSTOM_GREETING") {
         Spacer(modifier = Modifier.height(AureoleDS.dimens.small))
@@ -223,30 +327,12 @@ internal fun EditClockFormatSection(
 
         Spacer(modifier = Modifier.height(AureoleDS.dimens.smallCompact))
 
-        AureoleText(
-            text = "Formato de Data:",
-            color = AureoleDS.colors.onSurfaceMedium,
-            modifier = Modifier.padding(bottom = AureoleDS.dimens.xSmall),
-            format = AureoleTextFormatParams(style = AureoleDS.typography.bodySmall)
+        EditClockDropdown(
+            label = "Formato de Data:",
+            selectedKey = uiState.clockDateFormat,
+            options = DATE_FORMAT_OPTIONS,
+            onOptionSelected = { actions.onUpdateClockDateFormat(it) }
         )
-        FlowRow(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(AureoleDS.dimens.xSmall),
-            verticalArrangement = Arrangement.spacedBy(ClockSectionMetrics.NegativeChipVerticalSpacing)
-        ) {
-            EditClockLayoutChip("Completo (sexta, 9 out)", uiState.clockDateFormat == "DEFAULT") {
-                actions.onUpdateClockDateFormat("DEFAULT")
-            }
-            EditClockLayoutChip("Curto (Tue, 22 Sep)", uiState.clockDateFormat == "SHORT") {
-                actions.onUpdateClockDateFormat("SHORT")
-            }
-            EditClockLayoutChip("Médio (9 de outubro)", uiState.clockDateFormat == "MEDIUM") {
-                actions.onUpdateClockDateFormat("MEDIUM")
-            }
-            EditClockLayoutChip("Numérico (09/10/2026)", uiState.clockDateFormat == "NUMERIC") {
-                actions.onUpdateClockDateFormat("NUMERIC")
-            }
-        }
     }
 }
 
