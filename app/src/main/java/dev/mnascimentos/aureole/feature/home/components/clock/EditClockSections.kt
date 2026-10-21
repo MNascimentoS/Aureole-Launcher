@@ -16,10 +16,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ExposedDropdownMenuAnchorType
-import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.runtime.Composable
@@ -87,47 +86,40 @@ internal fun EditClockDropdown(
             )
         }
 
-        ExposedDropdownMenuBox(
-            expanded = isExpanded,
-            onExpandedChange = { isExpanded = !isExpanded },
-            modifier = Modifier.fillMaxWidth()
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(AureoleDS.dimens.radiusSmall))
+                .background(AureoleDS.colors.surfaceVariant.copy(alpha = 0.45f))
+                .clickable { isExpanded = true }
+                .padding(horizontal = AureoleDS.dimens.medium, vertical = AureoleDS.dimens.small),
+            contentAlignment = Alignment.CenterStart
         ) {
-            Box(
-                modifier = Modifier
-                    .menuAnchor(ExposedDropdownMenuAnchorType.PrimaryNotEditable)
-                    .fillMaxWidth()
-                    .clip(RoundedCornerShape(AureoleDS.dimens.radiusSmall))
-                    .background(AureoleDS.colors.surfaceVariant.copy(alpha = 0.45f))
-                    .clickable { isExpanded = !isExpanded }
-                    .padding(horizontal = AureoleDS.dimens.medium, vertical = AureoleDS.dimens.small),
-                contentAlignment = Alignment.CenterStart
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    AureoleText(
-                        text = currentDisplayLabel,
-                        color = AureoleDS.colors.onSurfaceHigh,
-                        format = AureoleTextFormatParams(
-                            style = AureoleDS.typography.bodyMedium,
-                            fontWeight = FontWeight.Medium
-                        )
+                AureoleText(
+                    text = currentDisplayLabel,
+                    color = AureoleDS.colors.onSurfaceHigh,
+                    format = AureoleTextFormatParams(
+                        style = AureoleDS.typography.bodyMedium,
+                        fontWeight = FontWeight.Medium
                     )
-                    AureoleDS.icons.ArrowDown(
-                        tint = AureoleDS.colors.onSurfaceMedium,
-                        modifier = Modifier.size(AureoleDS.dimens.iconSmall)
-                    )
-                }
+                )
+                AureoleDS.icons.ArrowDown(
+                    tint = AureoleDS.colors.onSurfaceMedium,
+                    modifier = Modifier.size(AureoleDS.dimens.iconSmall)
+                )
             }
 
-            ExposedDropdownMenu(
+            DropdownMenu(
                 expanded = isExpanded,
                 onDismissRequest = { isExpanded = false },
                 modifier = Modifier
+                    .fillMaxWidth(0.85f)
                     .background(AureoleDS.colors.surfaceVariant)
-                    .clip(RoundedCornerShape(AureoleDS.dimens.radiusSmall))
             ) {
                 options.forEach { (key, optionLabel) ->
                     val isSelected = (key == selectedKey)
