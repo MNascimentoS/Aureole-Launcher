@@ -15,6 +15,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -36,6 +37,7 @@ import dev.mnascimentos.aureole.feature.home.components.favorites.model.Favorite
 import dev.mnascimentos.aureole.feature.home.components.favorites.model.FavoriteAppsDialogConfig
 import dev.mnascimentos.aureole.feature.home.components.favorites.model.FavoriteAppsScreenMode
 import dev.mnascimentos.aureole.feature.home.components.favorites.model.FavoriteSectionParams
+import kotlinx.coroutines.delay
 
 @Composable
 internal fun FavoriteAppsBottomBar(
@@ -178,6 +180,12 @@ private fun FavoriteAppsDialogContent(
     actions: FavoriteAppsDialogActions
 ) {
     var searchQuery by remember { mutableStateOf("") }
+    var debouncedQuery by remember { mutableStateOf("") }
+
+    LaunchedEffect(searchQuery) {
+        delay(300)
+        debouncedQuery = searchQuery
+    }
 
     val appMap = remember(config.allApps) {
         config.allApps.associateBy { it.packageName }
@@ -193,12 +201,12 @@ private fun FavoriteAppsDialogContent(
             .sortedBy { it.label.lowercase() }
     }
 
-    val filteredFavorites = remember(searchQuery, favoriteApps) {
-        filterAppsByQuery(favoriteApps, searchQuery)
+    val filteredFavorites = remember(debouncedQuery, favoriteApps) {
+        filterAppsByQuery(favoriteApps, debouncedQuery)
     }
 
-    val filteredRemaining = remember(searchQuery, remainingApps) {
-        filterAppsByQuery(remainingApps, searchQuery)
+    val filteredRemaining = remember(debouncedQuery, remainingApps) {
+        filterAppsByQuery(remainingApps, debouncedQuery)
     }
 
     FavoriteAppsDialogBody(

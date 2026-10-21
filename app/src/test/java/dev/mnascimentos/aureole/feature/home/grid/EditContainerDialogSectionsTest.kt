@@ -1,19 +1,20 @@
 package dev.mnascimentos.aureole.feature.home.grid
 
 import androidx.compose.ui.test.assertIsDisplayed
-import androidx.compose.ui.test.junit4.v2.createComposeRule
+import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import dev.mnascimentos.aureole.core.data.model.LauncherItemState
 import dev.mnascimentos.aureole.core.data.model.LauncherItemType
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
-import dev.mnascimentos.aureole.feature.home.model.MainUiState
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
+import org.robolectric.annotation.Config
 
 @RunWith(RobolectricTestRunner::class)
+@Config(instrumentedPackages = ["androidx.loader.content"])
 class EditContainerDialogSectionsTest {
 
     @get:Rule
@@ -33,11 +34,11 @@ class EditContainerDialogSectionsTest {
     )
 
     @Test
-    fun `when rendering EditDialogDeleteRow, should display remove component label`() {
+    fun `when rendering EditDialogDeleteRow, should display text remover componente`() {
         composeTestRule.setContent {
             AureoleLauncherTheme {
                 EditDialogDeleteRow(
-                    itemId = "item_123",
+                    itemId = "item_1",
                     onDeleteConfirm = {},
                     onDismissRequest = {}
                 )
@@ -67,28 +68,6 @@ class EditContainerDialogSectionsTest {
         }
 
         composeTestRule.onNodeWithText("Personalizar Relógio").assertIsDisplayed()
-    }
-
-    @Test
-    fun `when rendering EditDialogWidgetListSection, should display widget list title`() {
-        composeTestRule.setContent {
-            AureoleLauncherTheme {
-                EditDialogWidgetListSection(
-                    item = LauncherItemState(
-                        id = "widget_1",
-                        type = LauncherItemType.WIDGET_LIST,
-                        col = 0,
-                        row = 0,
-                        colSpan = 2,
-                        rowSpan = 2
-                    ),
-                    uiState = MainUiState(),
-                    actions = mockHomeScreenActions()
-                )
-            }
-        }
-
-        composeTestRule.onNodeWithText("Widgets no Grupo (0)").assertIsDisplayed()
     }
 
     @Test

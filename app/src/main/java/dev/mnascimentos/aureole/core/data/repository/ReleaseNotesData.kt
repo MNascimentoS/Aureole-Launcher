@@ -4,6 +4,32 @@ import dev.mnascimentos.aureole.core.data.model.ReleaseNoteItem
 import dev.mnascimentos.aureole.core.data.model.ReleaseNoteSection
 import dev.mnascimentos.aureole.core.data.model.ReleaseNoteType
 
+internal fun getSectionsForVersion0741(): List<ReleaseNoteSection> = listOf(
+    ReleaseNoteSection(
+        title = "Conformidade Arquitetural & Modularização",
+        items = listOf(
+            ReleaseNoteItem(
+                title = "Centralização de Lifecycle Observers",
+                description = "Relocação de todos os observadores de ciclo de vida da aplicação " +
+                    "para o pacote core/lifecycle em conformidade com as diretrizes do projeto.",
+                type = ReleaseNoteType.IMPROVEMENT
+            ),
+            ReleaseNoteItem(
+                title = "Isolamento do Modelo do Design System",
+                description = "Separação de modelos de UI e classes de estado em relação aos componentes visuais, " +
+                    "garantindo responsabilidade única e desacoplamento.",
+                type = ReleaseNoteType.IMPROVEMENT
+            ),
+            ReleaseNoteItem(
+                title = "Divisão de Componentes Extensos & Testes BDD",
+                description = "Modularização de diálogos extensos e padronização declarativa BDD " +
+                    "nas suítes de testes unitários.",
+                type = ReleaseNoteType.FIX
+            )
+        )
+    )
+)
+
 internal fun getSectionsForVersion0740(): List<ReleaseNoteSection> = listOf(
     ReleaseNoteSection(
         title = "Arquitetura & Organização de Código",

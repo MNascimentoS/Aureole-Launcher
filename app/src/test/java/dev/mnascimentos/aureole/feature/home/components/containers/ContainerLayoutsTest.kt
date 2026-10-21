@@ -136,7 +136,7 @@ class ContainerLayoutsTest {
     }
 
     @Test
-    fun `resolveContainerRenderItems with empty items returns folders and apps`() {
+    fun `when resolving container render items with empty items should return folders and apps`() {
         val app = AppInfo(
             label = "App1",
             packageName = "com.example.app1",

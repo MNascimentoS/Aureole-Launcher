@@ -23,8 +23,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import dev.chrisbanes.haze.HazeState
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleEditOverlay
-import dev.mnascimentos.aureole.core.designsystem.components.model.AureoleEditOverlayConfig
-import dev.mnascimentos.aureole.core.designsystem.components.model.AureoleEditOverlayParams
+import dev.mnascimentos.aureole.core.designsystem.model.AureoleEditOverlayConfig
+import dev.mnascimentos.aureole.core.designsystem.model.AureoleEditOverlayParams
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview

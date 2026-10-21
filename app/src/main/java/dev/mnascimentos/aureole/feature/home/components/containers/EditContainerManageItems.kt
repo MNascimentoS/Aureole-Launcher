@@ -167,7 +167,7 @@ internal fun ManageItemsListSection(
 }
 
 @Composable
-private fun ManageItemRow(
+internal fun ManageItemRow(
     params: ManageItemRowParams,
     actions: ManageItemRowActions
 ) {

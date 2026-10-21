@@ -10,7 +10,6 @@ import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
-import dev.mnascimentos.aureole.feature.home.model.MainUiState
 
 private fun mockHomeScreenActions() = HomeScreenActions(
     onWidgetRowHeightChanged = {},
@@ -48,19 +47,6 @@ private fun EditContainerDialogSectionsScreenshotTest() {
                 ),
                 actions = mockHomeScreenActions(),
                 onDismissRequest = {}
-            )
-
-            EditDialogWidgetListSection(
-                item = LauncherItemState(
-                    id = "widget_item",
-                    type = LauncherItemType.WIDGET_LIST,
-                    col = 0,
-                    row = 0,
-                    colSpan = 2,
-                    rowSpan = 2
-                ),
-                uiState = MainUiState(),
-                actions = mockHomeScreenActions()
             )
 
             EditDialogScrollViewSection(

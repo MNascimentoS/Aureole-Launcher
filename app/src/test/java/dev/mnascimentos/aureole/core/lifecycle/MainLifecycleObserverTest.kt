@@ -1,4 +1,4 @@
-package dev.mnascimentos.aureole.feature.home.lifecycle
+package dev.mnascimentos.aureole.core.lifecycle
 
 import android.content.Context
 import androidx.lifecycle.Lifecycle

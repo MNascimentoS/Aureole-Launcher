@@ -19,8 +19,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalInspectionMode
-import dev.mnascimentos.aureole.core.designsystem.components.model.AureoleEditOverlayConfig
-import dev.mnascimentos.aureole.core.designsystem.components.model.AureoleEditOverlayParams
+import dev.mnascimentos.aureole.core.designsystem.model.AureoleEditOverlayConfig
+import dev.mnascimentos.aureole.core.designsystem.model.AureoleEditOverlayParams
+import dev.mnascimentos.aureole.core.designsystem.model.OverlayDismissState
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
@@ -78,12 +79,6 @@ fun AureoleEditOverlay(
         }
     }
 }
-
-private class OverlayDismissState(
-    val visibleState: MutableTransitionState<Boolean>,
-    val internalVisible: Boolean,
-    val triggerDismiss: () -> Unit
-)
 
 @Composable
 private fun rememberOverlayDismissState(

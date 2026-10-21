@@ -22,7 +22,6 @@ import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.model.LocalHomeActions
-import dev.mnascimentos.aureole.feature.home.model.LocalHomeUiState
 import dev.mnascimentos.aureole.feature.settings.components.SettingsBottomSheet
 
 @Composable
@@ -32,7 +31,6 @@ fun EditGridItemDialog(
     onDeleteConfirm: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val uiState = LocalHomeUiState.current
     val actions = LocalHomeActions.current
     val title = when (item.type) {
         LauncherItemType.CLOCK -> "Relógio"
@@ -77,8 +75,6 @@ fun EditGridItemDialog(
                 actions = actions,
                 onDismissRequest = onDismissRequest
             )
-
-            EditDialogWidgetListSection(item = item, uiState = uiState, actions = actions)
 
             if (item.type == LauncherItemType.SCROLL_VIEW) {
                 EditDialogScrollViewSection(item = item, actions = actions, onDismissRequest = onDismissRequest)

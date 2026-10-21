@@ -1,5 +1,6 @@
-package dev.mnascimentos.aureole.core.designsystem.components.model
+package dev.mnascimentos.aureole.core.designsystem.model
 
+import androidx.compose.animation.core.MutableTransitionState
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.runtime.Composable
@@ -22,13 +23,13 @@ data class AureoleEditOverlayConfig(
     val hazeState: HazeState? = null,
     val isVisible: Boolean = true,
     val animated: Boolean = true,
-    val maxSheetHeightFraction: Float = 0.70f,
+    val maxSheetHeightFraction: Float = 0.70f, // Magic number
     val onBackPress: (() -> Unit)? = null,
     val onSettingsClick: (() -> Unit)? = null,
 )
 
 /**
- * Content slots and configuration parameters for [dev.mnascimentos.aureole.core.designsystem.components.AureoleEditOverlay].
+ val maxSheetHeightFraction: Float = 0.70f,
  *
  * @param config Configuration options provided via [AureoleEditOverlayConfig].
  * @param previewContent Optional preview slot displayed in the main screen area above the bottom sheet.
@@ -45,4 +46,10 @@ class AureoleEditOverlayParams(
 internal data class SheetBounds(
     val maxHeight: Dp,
     val maxExpansionAllowed: Dp
+)
+
+internal class OverlayDismissState(
+    val visibleState: MutableTransitionState<Boolean>,
+    val internalVisible: Boolean,
+    val triggerDismiss: () -> Unit
 )

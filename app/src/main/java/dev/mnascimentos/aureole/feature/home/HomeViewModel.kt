@@ -15,6 +15,7 @@ import dev.mnascimentos.aureole.feature.home.components.widgets.extensions.loadW
 import dev.mnascimentos.aureole.feature.home.grid.extensions.loadGridItems
 import dev.mnascimentos.aureole.feature.home.model.HomeRepositories
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -43,6 +44,7 @@ class HomeViewModel(
         get() = _uiState.value.pendingWidgetId
 
     internal var activeVersionCode: Int = 0
+    internal var searchJob: Job? = null
 
     var isUpdateInProgressOrDismissed: Boolean = false
         internal set

@@ -6,8 +6,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import com.android.tools.screenshot.PreviewTest
-import dev.mnascimentos.aureole.core.designsystem.components.model.AureoleEditOverlayConfig
-import dev.mnascimentos.aureole.core.designsystem.components.model.AureoleEditOverlayParams
+import dev.mnascimentos.aureole.core.designsystem.model.AureoleEditOverlayConfig
+import dev.mnascimentos.aureole.core.designsystem.model.AureoleEditOverlayParams
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 

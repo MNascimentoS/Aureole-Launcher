@@ -1,12 +1,19 @@
 package dev.mnascimentos.aureole.feature.home.components.appsdrawer.extensions
 
+import androidx.lifecycle.viewModelScope
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.feature.home.HomeViewModel
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import java.text.Normalizer
 
 fun HomeViewModel.onSearchQueryChanged(query: String) {
     updateUiState { it.copy(searchQuery = query) }
-    applySearchFilter(query)
+    searchJob?.cancel()
+    searchJob = viewModelScope.launch {
+        delay(300) // Debounce delay
+        applySearchFilter(query)
+    }
 }
 
 private fun String.removeAccents(): String {

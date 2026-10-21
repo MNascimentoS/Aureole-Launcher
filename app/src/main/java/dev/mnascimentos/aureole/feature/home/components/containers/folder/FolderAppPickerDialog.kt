@@ -19,6 +19,7 @@ import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Surface
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -36,6 +37,7 @@ import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.FolderAppPickerBodyParams
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.SelectedFolderAppSectionParams
+import kotlinx.coroutines.delay
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -110,6 +112,12 @@ private fun FolderAppPickerDialogContent(
         mutableStateListOf<String>().apply { addAll(folder.appPackageNames) }
     }
     var searchQuery by remember { mutableStateOf("") }
+    var debouncedQuery by remember { mutableStateOf("") }
+
+    LaunchedEffect(searchQuery) {
+        delay(300)
+        debouncedQuery = searchQuery
+    }
 
     val appMap = remember(allApps) {
         allApps.associateBy { it.packageName }
@@ -125,12 +133,12 @@ private fun FolderAppPickerDialogContent(
             .sortedBy { it.label.lowercase() }
     }
 
-    val filteredSelected = remember(searchQuery, selectedApps) {
-        filterAppsBySearch(selectedApps, searchQuery)
+    val filteredSelected = remember(debouncedQuery, selectedApps) {
+        filterAppsBySearch(selectedApps, debouncedQuery)
     }
 
-    val filteredRemaining = remember(searchQuery, remainingApps) {
-        filterAppsBySearch(remainingApps, searchQuery)
+    val filteredRemaining = remember(debouncedQuery, remainingApps) {
+        filterAppsBySearch(remainingApps, debouncedQuery)
     }
 
     FolderAppPickerDialogBody(
