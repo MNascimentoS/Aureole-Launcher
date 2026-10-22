@@ -47,3 +47,4 @@ Antes de concluir qualquer tarefa ou sugerir código final, execute as validaç�
 2. `./gradlew testDebugUnitTest`
 3. `./gradlew validateDebugScreenshotTest` (Se falhar por divergências visuais: **PARAR**. Notifique o usuário e pergunte se deseja executar `./gradlew updateDebugScreenshotTest` para gerar as novas imagens em `app/src/screenshotTestDebug/reference/`, deixando claro que ele **DEVERÁ REVISAR E VALIDAR AS NOVAS IMAGENS MANUALMENTE** antes de commitar).
 4. `./gradlew assembleDebug`
+5. **Branch Protection Rules (GitHub):** É obrigatório manter ativa a regra "Require status checks to pass before merging" no GitHub para `PR Validation Check`, de modo que o botão de merge permaneça bloqueado enquanto os checks estiverem em andamento.
