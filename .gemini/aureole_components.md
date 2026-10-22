@@ -6,7 +6,8 @@ Seu objetivo é criar componentes que se comportem como os componentes nativos d
 
 ## 1. Convenção de Nomenclatura e Escopo
 - **Prefixo Oficial:** Todo componente core deve ser prefixado com `Aureole` para evitar conflito com componentes do Material Design ou fundação do Compose (ex: `AureoleButton`, `AureoleCard`, `AureoleTopBar`).
-- **Independência de Domínio:** Componentes NUNCA devem conhecer classes de domínio, banco de dados ou modelos de feature (ex: `User`, `SettingsEntity`). Eles aceitam apenas tipos primitivos (`String`, `Boolean`), lambdas ou estados criados ESPECIFICAMENTE para a UI local.
+- **Independência de Domínio:** Componentes NUNCA devem conhecer classes de domínio, banco de dados ou modelos de feature (ex: `User`, `SettingsEntity`). NUNCA importe pacotes de `dev.mnascimentos.aureole.feature.*` nem `CompositionLocal`s de features (ex: `LocalHomeActions`). Eles aceitam apenas tipos primitivos (`String`, `Boolean`), lambdas callback ou slots (`@Composable () -> Unit`).
+- **Zero Activities / Navigation Direct Calls:** Componentes em `core/designsystem/components` NUNCA devem disparar `startActivity` ou navegação direta. Eles devem expor callbacks lambdas (ex: `onSettingsClick: () -> Unit`).
 - **Zero ViewModels:** É **estritamente proibido** passar um `ViewModel` como parâmetro para um componente do Design System.
 
 ## 2. Anatomia do Componente e Slot API

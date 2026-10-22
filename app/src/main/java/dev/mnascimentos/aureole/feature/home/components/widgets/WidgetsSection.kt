@@ -47,6 +47,7 @@ import dev.mnascimentos.aureole.core.designsystem.utils.LocalAnimatedVisibilityS
 import dev.mnascimentos.aureole.core.designsystem.utils.LocalSharedTransitionScope
 import dev.mnascimentos.aureole.feature.home.components.widgets.model.PagerContentParams
 import dev.mnascimentos.aureole.feature.home.components.widgets.model.StackedWidgetConfig
+import dev.mnascimentos.aureole.feature.home.components.widgets.model.StackedWidgetPagerParams
 import dev.mnascimentos.aureole.feature.home.model.LocalHomeActions
 import dev.mnascimentos.aureole.feature.home.model.LocalHomeUiState
 import dev.mnascimentos.aureole.feature.home.model.getWidgetIdsForStack
@@ -57,6 +58,12 @@ import timber.log.Timber
 private const val COLOR_ANIMATION_DURATION_MS = 150
 private const val LONG_PRESS_MARGIN_MS = 50L
 private const val MIN_LONG_PRESS_TIMEOUT_MS = 200L
+
+private object IndicatorMetrics {
+    val SelectedWidth = 22.dp
+    val UnselectedWidth = 8.dp
+    val IndicatorHeight = 5.dp
+}
 
 @Composable
 fun StackedWidgetSection(
@@ -104,14 +111,6 @@ fun StackedWidgetSection(
         }
     }
 }
-
-data class StackedWidgetPagerParams(
-    val config: StackedWidgetConfig,
-    val widgetIds: List<Int>,
-    val appWidgetHost: AppWidgetHost? = null,
-    val stackId: String,
-    val params: PagerContentParams
-)
 
 @Composable
 private fun StackedWidgetPagerContent(
@@ -165,7 +164,7 @@ fun WidgetPositionIndicatorBar(
 ) {
     Row(
         modifier = modifier
-            .padding(top = 4.dp, bottom = 4.dp)
+            .padding(top = AureoleDS.dimens.xxSmall, bottom = AureoleDS.dimens.xxSmall)
             .fillMaxWidth(),
         horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically
@@ -173,7 +172,7 @@ fun WidgetPositionIndicatorBar(
         repeat(pageCount) { index ->
             val isSelected = (index == currentPage)
             val animatedWidth by animateDpAsState(
-                targetValue = if (isSelected) 22.dp else 8.dp,
+                targetValue = if (isSelected) IndicatorMetrics.SelectedWidth else IndicatorMetrics.UnselectedWidth,
                 animationSpec = spring(stiffness = Spring.StiffnessMediumLow),
                 label = "indicator_width"
             )
@@ -189,8 +188,8 @@ fun WidgetPositionIndicatorBar(
 
             Box(
                 modifier = Modifier
-                    .padding(horizontal = 3.dp)
-                    .height(5.dp)
+                    .padding(horizontal = AureoleDS.dimens.minimal)
+                    .height(IndicatorMetrics.IndicatorHeight)
                     .width(animatedWidth)
                     .clip(CircleShape)
                     .background(animatedColor)

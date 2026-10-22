@@ -4,6 +4,7 @@ import androidx.compose.material3.Text
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.v2.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
+import dev.mnascimentos.aureole.core.designsystem.model.AureoleDialogConfig
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import org.junit.Rule
 import org.junit.Test
@@ -52,8 +53,10 @@ class AureoleDialogTest {
             AureoleLauncherTheme {
                 AureoleDialog(
                     onDismissRequest = {},
-                    title = "Dialog Title Test",
-                    icon = { Text("DialogIcon") }
+                    config = AureoleDialogConfig(
+                        title = "Dialog Title Test",
+                        icon = { Text("DialogIcon") }
+                    )
                 ) {
                     Text("Dialog Body Test")
                 }

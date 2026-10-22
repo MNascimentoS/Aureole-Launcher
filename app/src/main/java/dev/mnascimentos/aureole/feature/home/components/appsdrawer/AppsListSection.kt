@@ -44,6 +44,12 @@ private const val DRAWER_HAZE_TINT_FACTOR = 0.5f
 private const val DRAWER_HAZE_MIN_ALPHA = 0.15f
 private const val DRAWER_HAZE_MAX_ALPHA = 0.65f
 
+private object AppsDrawerMetrics {
+    val HandedOffsetPadding = 72.dp
+    val ListBottomPadding = 120.dp
+    val SearchBarExtraTopPadding = 88.dp
+}
+
 @Composable
 fun AppsListDrawer(
     listState: LazyListState,
@@ -52,8 +58,8 @@ fun AppsListDrawer(
 ) {
     val uiState = LocalHomeUiState.current
     val actions = LocalHomeActions.current
-    val startPadding = if (uiState.isLeftHandedMode) 72.dp else 24.dp
-    val endPadding = if (uiState.isLeftHandedMode) 24.dp else 72.dp
+    val startPadding = if (uiState.isLeftHandedMode) AppsDrawerMetrics.HandedOffsetPadding else AureoleDS.dimens.large
+    val endPadding = if (uiState.isLeftHandedMode) AureoleDS.dimens.large else AppsDrawerMetrics.HandedOffsetPadding
 
     val baseBgColor = AureoleDS.colors.background
     val hasHaze = uiState.isHazeEnabled && (hazeState != null)
@@ -70,8 +76,12 @@ fun AppsListDrawer(
             .then(hazeModifier)
             .background(drawerBgColor)
     ) {
-        val topOffsetDp = (maxHeight * (uiState.headerOffsetPercent / 100f)).coerceAtLeast(16.dp)
-        val extraTopPadding = if (uiState.showSearchBarInAllApps && isSearchExpanded) 88.dp else 0.dp
+        val topOffsetDp = (maxHeight * (uiState.headerOffsetPercent / 100f)).coerceAtLeast(AureoleDS.dimens.medium)
+        val extraTopPadding = if (uiState.showSearchBarInAllApps && isSearchExpanded) {
+            AppsDrawerMetrics.SearchBarExtraTopPadding
+        } else {
+            0.dp
+        }
 
         LazyColumn(
             state = listState,
@@ -79,7 +89,7 @@ fun AppsListDrawer(
                 start = startPadding,
                 top = topOffsetDp + extraTopPadding,
                 end = endPadding,
-                bottom = 120.dp
+                bottom = AppsDrawerMetrics.ListBottomPadding
             ),
             modifier = Modifier
                 .fillMaxSize()
@@ -104,7 +114,7 @@ fun AppsListDrawer(
             Box(
                 modifier = alignModifier
                     .fillMaxWidth()
-                    .padding(horizontal = 24.dp, vertical = 16.dp),
+                    .padding(horizontal = AureoleDS.dimens.large, vertical = AureoleDS.dimens.medium),
                 contentAlignment = when {
                     isSearchExpanded -> Alignment.TopCenter
                     uiState.isLeftHandedMode -> Alignment.BottomStart

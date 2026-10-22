@@ -58,13 +58,13 @@ data class AureoleEditOverlayConfig(
     val hazeState: HazeState? = null,
     val isVisible: Boolean = true,
     val animated: Boolean = true,
-    val maxSheetHeightFraction: Float = 0.70f, // Magic number
+    val maxSheetHeightFraction: Float = 0.70f,
     val onBackPress: (() -> Unit)? = null,
     val onSettingsClick: (() -> Unit)? = null,
 )
 
 /**
- val maxSheetHeightFraction: Float = 0.70f,
+ * Parameter container for [dev.mnascimentos.aureole.core.designsystem.components.AureoleEditOverlay].
  *
  * @param config Configuration options provided via [AureoleEditOverlayConfig].
  * @param previewContent Optional preview slot displayed in the main screen area above the bottom sheet.

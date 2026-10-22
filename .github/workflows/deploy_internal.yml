@@ -7,6 +7,9 @@ concurrency:
 on:
   push:
     branches:
+      - 'main'
+      - 'master'
+      - 'develop'
       - 'release/**'
   pull_request:
     types: [opened, synchronize, reopened]
@@ -22,12 +25,8 @@ on:
         required: false
 
 jobs:
-  # Uma execução por commit de release: o push em release/* roda testes → Full Report → deploy.
-  # O PR vindo de release/* pula este job (o check do push no mesmo commit já aparece no PR, e job
-  # pulado conta como sucesso em status obrigatório). PRs de outras branches seguem rodando os testes.
   pr_check:
     name: PR Validation Check
-    if: ${{ !(github.event_name == 'pull_request' && startsWith(github.head_ref, 'release/')) }}
     runs-on: ubuntu-latest
 
     steps:
@@ -45,13 +44,10 @@ jobs:
         id: unit_tests
         run: ./gradlew testDebugUnitTest
 
-      # ---- Full Report (somente push em release/*) ----
-      # Tudo abaixo é informativo: continue-on-error + timeout, então o status do check continua
-      # dependendo só dos testes acima. Os arquivos viram o artefato full-report-<sha>,
-      # consumido pela análise do n8n (cobertura, testes, lint, detekt e APK release).
+      # ---- Full Report (para branch ou PR de release/*) ----
       - name: Full Report - Build, Coverage & Lint
         id: full_report
-        if: ${{ !cancelled() && github.event_name == 'push' && startsWith(github.ref, 'refs/heads/release/') }}
+        if: ${{ !cancelled() && ((github.event_name == 'push' && startsWith(github.ref, 'refs/heads/release/')) || (github.event_name == 'pull_request' && startsWith(github.head_ref, 'release/'))) }}
         continue-on-error: true
         timeout-minutes: 25
         run: >
@@ -59,12 +55,12 @@ jobs:
           -x testDebugUnitTest --continue
 
       - name: Full Report - Metadata
-        if: ${{ !cancelled() && github.event_name == 'push' && startsWith(github.ref, 'refs/heads/release/') }}
+        if: ${{ !cancelled() && ((github.event_name == 'push' && startsWith(github.ref, 'refs/heads/release/')) || (github.event_name == 'pull_request' && startsWith(github.head_ref, 'release/'))) }}
         continue-on-error: true
         env:
           HEAD_SHA: ${{ github.sha }}
-          HEAD_REF: ${{ github.ref_name }}
-          PR_NUMBER: ""
+          HEAD_REF: ${{ github.head_ref || github.ref_name }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
           TESTS: ${{ steps.unit_tests.outcome }}
           REPORTS: ${{ steps.full_report.outcome }}
         run: |
@@ -75,7 +71,7 @@ jobs:
             > app/build/full-report/meta.json
 
       - name: Full Report - Upload
-        if: ${{ !cancelled() && github.event_name == 'push' && startsWith(github.ref, 'refs/heads/release/') }}
+        if: ${{ !cancelled() && ((github.event_name == 'push' && startsWith(github.ref, 'refs/heads/release/')) || (github.event_name == 'pull_request' && startsWith(github.head_ref, 'release/'))) }}
         continue-on-error: true
         uses: actions/upload-artifact@v4
         with:
@@ -94,7 +90,7 @@ jobs:
   deploy_internal:
     name: Build & Deploy Internal Release
     needs: pr_check
-    if: github.event_name == 'workflow_dispatch' || (github.event_name == 'push' && startsWith(github.ref, 'refs/heads/release/'))
+    if: github.event_name == 'workflow_dispatch' || (github.event_name == 'pull_request' && startsWith(github.head_ref, 'release/'))
     runs-on: ubuntu-latest
 
     steps:
@@ -108,6 +104,9 @@ jobs:
         run: |
           if [ -n "${{ github.event.inputs.version_name }}" ]; then
             VERSION_NAME="${{ github.event.inputs.version_name }}"
+          elif [ -n "${GITHUB_HEAD_REF}" ]; then
+            BRANCH_NAME="${GITHUB_HEAD_REF}"
+            VERSION_NAME="${BRANCH_NAME#release/}"
           else
             BRANCH_NAME="${GITHUB_REF_NAME}"
             VERSION_NAME="${BRANCH_NAME#release/}"

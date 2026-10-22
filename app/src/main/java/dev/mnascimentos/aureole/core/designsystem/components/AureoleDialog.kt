@@ -29,10 +29,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import dev.mnascimentos.aureole.core.designsystem.icons.Logo
+import dev.mnascimentos.aureole.core.designsystem.model.AureoleDialogConfig
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
-import dev.mnascimentos.aureole.feature.home.model.LocalHomeActions
 
 private const val DIALOG_WIDTH_FRACTION = 0.92f
 
@@ -41,16 +41,14 @@ private const val DIALOG_WIDTH_FRACTION = 0.92f
  *
  * @param onDismissRequest Executes when the user tries to dismiss the dialog.
  * @param modifier The modifier to be applied to the layout.
- * @param title The title of the dialog.
- * @param icon The icon to be displayed next to the title.
+ * @param config Configuration parameters provided via [AureoleDialogConfig].
  * @param content The content of the dialog.
  */
 @Composable
 fun AureoleDialog(
     onDismissRequest: () -> Unit,
     modifier: Modifier = Modifier,
-    title: String? = null,
-    icon: @Composable ((Modifier) -> Unit)? = null,
+    config: AureoleDialogConfig = AureoleDialogConfig(),
     content: @Composable ColumnScope.() -> Unit
 ) {
     val dialogContent = @Composable {
@@ -63,11 +61,12 @@ fun AureoleDialog(
             contentColor = AureoleDS.colors.onSurfaceHigh
         ) {
             Column(modifier = Modifier.fillMaxWidth()) {
-                if (title != null) {
+                if (config.title != null) {
                     AureoleDialogHeader(
-                        title = title,
+                        title = config.title,
                         modifier = Modifier,
-                        icon = icon
+                        icon = config.icon,
+                        onLogoClick = config.onLogoClick
                     )
                 }
                 Column(
@@ -102,17 +101,37 @@ fun AureoleDialog(
 }
 
 /**
+ * Overload for [AureoleDialog] accepting a simple title string.
+ */
+@Composable
+fun AureoleDialog(
+    onDismissRequest: () -> Unit,
+    title: String?,
+    modifier: Modifier = Modifier,
+    content: @Composable ColumnScope.() -> Unit
+) {
+    AureoleDialog(
+        onDismissRequest = onDismissRequest,
+        modifier = modifier,
+        config = AureoleDialogConfig(title = title),
+        content = content
+    )
+}
+
+/**
  * A header component for the Aureole dialog.
  *
  * @param title The title of the dialog.
  * @param modifier The modifier to be applied to the layout.
  * @param icon The icon to be displayed next to the title.
+ * @param onLogoClick Optional callback triggered when the logo is clicked.
  */
 @Composable
 fun AureoleDialogHeader(
     title: String,
     modifier: Modifier = Modifier,
-    icon: @Composable ((Modifier) -> Unit)? = null
+    icon: @Composable ((Modifier) -> Unit)? = null,
+    onLogoClick: (() -> Unit)? = null
 ) {
     Box(
         modifier = modifier
@@ -124,9 +143,7 @@ fun AureoleDialogHeader(
         Row(
             modifier = Modifier
                 .align(Alignment.Center)
-                .padding(
-                    horizontal = AureoleDS.dimens.xLarge
-                ), // 32dp instead of 28dp or keep literal? Wait, 28dp is not in DS.
+                .padding(horizontal = AureoleDS.dimens.xLarge),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Center
         ) {
@@ -147,14 +164,19 @@ fun AureoleDialogHeader(
             )
         }
 
-        val homeActions = LocalHomeActions.current
         Box(
             modifier = Modifier
                 .align(Alignment.CenterEnd)
                 .padding(end = AureoleDS.dimens.xSmall)
                 .size(AureoleDS.dimens.xLarge)
                 .clip(RoundedCornerShape(AureoleDS.dimens.radiusMedium))
-                .clickable(role = Role.Button) { homeActions.onSettingsClick() },
+                .then(
+                    if (onLogoClick != null) {
+                        Modifier.clickable(role = Role.Button, onClick = onLogoClick)
+                    } else {
+                        Modifier
+                    }
+                ),
             contentAlignment = Alignment.Center
         ) {
             AureoleDS.icons.Logo(

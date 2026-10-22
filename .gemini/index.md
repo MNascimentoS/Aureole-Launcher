@@ -16,9 +16,11 @@ Este documento funciona como o **Índice Mestre de Regras** para Assistentes de 
 
 ---
 
-## ⚡ Regra de Ouro do Projeto
-Antes de concluir qualquer tarefa ou PR, garanta que o checklist de entrega passe sem erros:
-1. `./gradlew detekt --auto-correct` (Máximo de 5 issues)
-2. `./gradlew testDebugUnitTest`
-3. `./gradlew validateDebugScreenshotTest`
-4. `./gradlew assembleDebug`
+## ⚡ Regra de Ouro e Checklist de Entrega do Projeto
+Toda nova funcionalidade DEVE ser acompanhada de **Testes Unitários (`app/src/test/`)** e **Testes de Screenshot (`app/src/screenshotTest/`)**.
+
+Antes de concluir qualquer tarefa ou PR, garanta a execução e aprovação dos comandos abaixo:
+1. `./gradlew detekt --auto-correct` (Deve rodar com 0 a no máximo 5 issues).
+2. `./gradlew testDebugUnitTest` (Obrigatório: 100% de aprovação).
+3. `./gradlew validateDebugScreenshotTest` (Se falhar por divergência de imagens: executar `./gradlew updateDebugScreenshotTest` e **PARAR**. Notifique o usuário que novas imagens foram geradas em `app/src/screenshotTestDebug/reference/`, deixando claro que ele **DEVERÁ REVISAR E VALIDAR AS NOVAS IMAGENS MANUALMENTE** antes de realizar o commit).
+4. `./gradlew assembleDebug` (Compilação limpa).

@@ -40,6 +40,13 @@ import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.components.appsdrawer.appitem.model.AppItemRowActions
 
+private object AppItemPopupMetrics {
+    val PopupWidth = 230.dp
+    val RowHorizontalPadding = 14.dp
+    val ButtonWidth = 54.dp
+    val ButtonVerticalPadding = 6.dp
+}
+
 @Composable
 fun AppItemPopup(
     app: AppInfo,
@@ -53,7 +60,7 @@ fun AppItemPopup(
         properties = PopupProperties(focusable = true)
     ) {
         AureolePopupBox(
-            modifier = modifier.width(230.dp)
+            modifier = modifier.width(AppItemPopupMetrics.PopupWidth)
         ) {
             val iconBitmap = remember(app.packageName) { app.getIconBitmap() }
 
@@ -85,7 +92,12 @@ internal fun AppPopupHorizontalActionsRow(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(start = 14.dp, end = 14.dp, top = AureoleDS.dimens.small, bottom = AureoleDS.dimens.small),
+            .padding(
+                start = AppItemPopupMetrics.RowHorizontalPadding,
+                end = AppItemPopupMetrics.RowHorizontalPadding,
+                top = AureoleDS.dimens.small,
+                bottom = AureoleDS.dimens.small
+            ),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -138,16 +150,16 @@ private fun AppPopupButton(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
         modifier = Modifier
-            .width(54.dp)
+            .width(AppItemPopupMetrics.ButtonWidth)
             .clip(RoundedCornerShape(AureoleDS.dimens.radiusSmall))
             .clickable(
                 onClick = onClick,
                 role = Role.Button
             )
             .semantics(mergeDescendants = true) {}
-            .padding(vertical = 6.dp)
+            .padding(vertical = AppItemPopupMetrics.ButtonVerticalPadding)
     ) {
-        icon(Modifier.size(22.dp), contentColor)
+        icon(Modifier.size(AureoleDS.dimens.iconMedium), contentColor)
         Spacer(modifier = Modifier.height(AureoleDS.dimens.xxSmall))
         AureoleText(
             text = label,
@@ -171,7 +183,7 @@ private fun AppItemPopupPreview() {
         icon = android.graphics.Color.BLUE.toDrawable()
     )
     AureoleLauncherTheme {
-        AureolePopupBox(modifier = Modifier.width(230.dp)) {
+        AureolePopupBox(modifier = Modifier.width(AppItemPopupMetrics.PopupWidth)) {
             AppPopupHorizontalActionsRow(
                 app = sampleApp,
                 isFavorite = false,

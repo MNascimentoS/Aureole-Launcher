@@ -20,6 +20,7 @@ import dev.mnascimentos.aureole.core.designsystem.model.AureoleEditOverlayConfig
 import dev.mnascimentos.aureole.core.designsystem.model.AureoleEditOverlayParams
 import dev.mnascimentos.aureole.core.designsystem.model.AureoleEditOverlayState
 import dev.mnascimentos.aureole.core.designsystem.model.OverlayDismissState
+import dev.mnascimentos.aureole.core.designsystem.model.OverlaySheetStateData
 import dev.mnascimentos.aureole.core.designsystem.model.rememberAureoleEditOverlayState
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme

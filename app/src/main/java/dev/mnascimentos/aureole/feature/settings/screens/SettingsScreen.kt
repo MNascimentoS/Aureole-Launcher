@@ -20,7 +20,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.composable.ColorPickerDialog
 import dev.mnascimentos.aureole.composable.SettingsActionItem
 import dev.mnascimentos.aureole.composable.SettingsMenuItem
@@ -168,7 +167,7 @@ internal fun FactoryResetDialog(
         title = "Reset launcher?",
         onDismissRequest = actions.onDismissFactoryResetDialog
     ) {
-        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+        Column(verticalArrangement = Arrangement.spacedBy(AureoleDS.dimens.xSmall)) {
             SettingsMenuItem(
                 SettingsMenuParams(
                     title = "Yes",
@@ -193,7 +192,7 @@ internal fun ResetGridDialog(
         title = "Reset Layout?",
         onDismissRequest = actions.onDismissResetGridDialog
     ) {
-        Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+        Column(verticalArrangement = Arrangement.spacedBy(AureoleDS.dimens.small)) {
             SettingsActionItem(
                 title = "Restore",
                 leadingContent = { AureoleDS.icons.Check() },
@@ -240,16 +239,16 @@ internal fun HazeOpacityDialog(
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .clip(RoundedCornerShape(12.dp))
+                            .clip(RoundedCornerShape(AureoleDS.dimens.radiusSmall))
                             .clickable { onOpacitySelected(value) }
-                            .padding(vertical = 8.dp, horizontal = 8.dp),
+                            .padding(vertical = AureoleDS.dimens.xSmall, horizontal = AureoleDS.dimens.xSmall),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         RadioButton(
                             selected = (currentOpacity == value),
                             onClick = { onOpacitySelected(value) }
                         )
-                        Spacer(modifier = Modifier.width(12.dp))
+                        Spacer(modifier = Modifier.width(AureoleDS.dimens.small))
                         AureoleText(
                             text = label,
                             color = AureoleDS.colors.onSurfaceHigh,
@@ -276,7 +275,7 @@ internal fun RestoreWallpaperDialog(
         title = "Restore default background?",
         onDismissRequest = onDismiss
     ) {
-        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+        Column(verticalArrangement = Arrangement.spacedBy(AureoleDS.dimens.xSmall)) {
             SettingsMenuItem(
                 SettingsMenuParams(
                     title = "Yes",

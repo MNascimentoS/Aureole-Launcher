@@ -41,6 +41,10 @@ import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.SelectedFolderAppSectionParams
 import kotlinx.coroutines.delay
 
+private object FolderPickerMetrics {
+    val DialogContentPadding = 20.dp
+}
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FolderAppPickerDialog(
@@ -54,8 +58,8 @@ fun FolderAppPickerDialog(
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(horizontal = 20.dp)
-                .padding(bottom = 20.dp)
+                .padding(horizontal = FolderPickerMetrics.DialogContentPadding)
+                .padding(bottom = FolderPickerMetrics.DialogContentPadding)
         ) {
             FolderAppPickerDialogContent(
                 folder = folder,
@@ -189,18 +193,18 @@ private fun FolderAppPickerDialogBody(
 
     Column(modifier = Modifier.fillMaxWidth()) {
         FolderAppPickerHeader(folderName = params.folderName, onDismiss = onDismiss)
-        Spacer(modifier = Modifier.height(12.dp))
+        Spacer(modifier = Modifier.height(AureoleDS.dimens.small))
 
         FolderAppPickerSearchInput(
             query = params.searchQuery,
             onQueryChange = onSearchQueryChange
         )
 
-        Spacer(modifier = Modifier.height(12.dp))
+        Spacer(modifier = Modifier.height(AureoleDS.dimens.small))
 
         LazyColumn(
             modifier = Modifier.weight(1f).fillMaxWidth(),
-            verticalArrangement = Arrangement.spacedBy(4.dp)
+            verticalArrangement = Arrangement.spacedBy(AureoleDS.dimens.xxSmall)
         ) {
             selectedFolderAppSection(
                 params = SelectedFolderAppSectionParams(
@@ -220,7 +224,7 @@ private fun FolderAppPickerDialogBody(
             )
         }
 
-        Spacer(modifier = Modifier.height(12.dp))
+        Spacer(modifier = Modifier.height(AureoleDS.dimens.small))
         FolderAppPickerFooter(onDismiss = onDismiss, onSave = { onSave(selectedPackages.toList()) })
     }
 }

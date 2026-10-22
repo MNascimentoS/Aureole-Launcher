@@ -191,34 +191,6 @@ class AppItemMenusTest {
     }
 
     @Test
-    fun `when container callbacks provided, should display and invoke container items`() {
-        var removedFromContainer = false
-        var dismissed = false
-
-        val params = AppItemBottomSheetParams(
-            app = sampleApp,
-            onRemoveFromContainer = { removedFromContainer = true },
-            onOpenContainerSettings = {}
-        )
-
-        composeTestRule.setContent {
-            AureoleLauncherTheme {
-                AppItemBottomSheet(
-                    params = params,
-                    onDismiss = { dismissed = true }
-                )
-            }
-        }
-
-        composeTestRule.onNodeWithText("Remover do Container").assertIsDisplayed()
-        composeTestRule.onNodeWithText("Configurações do Container").assertIsDisplayed()
-
-        composeTestRule.onNodeWithText("Remover do Container").performClick()
-        assertTrue(removedFromContainer)
-        assertTrue(dismissed)
-    }
-
-    @Test
     fun `when opening container settings, should invoke callback and dismiss`() {
         var containerSettingsOpened = false
         var dismissed = false

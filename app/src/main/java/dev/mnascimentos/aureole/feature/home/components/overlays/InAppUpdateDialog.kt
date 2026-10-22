@@ -27,7 +27,9 @@ import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.components.overlays.model.UpdateDialogContentParams
 
-private val DIALOG_CORNER_RADIUS = 22.dp
+private object UpdateDialogMetrics {
+    val DialogCornerRadius = 22.dp
+}
 
 /**
  * Dialog alerting the user that a new app update is available in Google Play.
@@ -85,15 +87,15 @@ private fun InspectionUpdateDialogContent(params: UpdateDialogContentParams) {
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp),
+            .padding(AureoleDS.dimens.medium),
         contentAlignment = Alignment.Center
     ) {
         Surface(
-            shape = RoundedCornerShape(DIALOG_CORNER_RADIUS),
+            shape = RoundedCornerShape(UpdateDialogMetrics.DialogCornerRadius),
             color = AureoleDS.colors.surface,
             contentColor = AureoleDS.colors.onSurfaceHigh
         ) {
-            Column(modifier = Modifier.padding(24.dp)) {
+            Column(modifier = Modifier.padding(AureoleDS.dimens.large)) {
                 AureoleText(
                     text = params.title,
                     color = AureoleDS.colors.onSurfaceHigh,
@@ -102,13 +104,13 @@ private fun InspectionUpdateDialogContent(params: UpdateDialogContentParams) {
                         fontWeight = FontWeight.Bold
                     )
                 )
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(AureoleDS.dimens.medium))
                 AureoleText(
                     text = params.body,
                     color = AureoleDS.colors.onSurfaceMedium,
                     format = AureoleTextFormatParams(style = AureoleDS.typography.bodyMedium)
                 )
-                Spacer(modifier = Modifier.height(24.dp))
+                Spacer(modifier = Modifier.height(AureoleDS.dimens.large))
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.End
@@ -116,7 +118,7 @@ private fun InspectionUpdateDialogContent(params: UpdateDialogContentParams) {
                     TextButton(onClick = params.onDismiss) {
                         AureoleText(text = params.dismissLabel, color = AureoleDS.colors.onSurfaceMedium)
                     }
-                    Spacer(modifier = Modifier.width(8.dp))
+                    Spacer(modifier = Modifier.width(AureoleDS.dimens.xSmall))
                     TextButton(onClick = params.onConfirm) {
                         AureoleText(
                             text = params.confirmLabel,
@@ -135,7 +137,7 @@ internal fun StandardUpdateAlertDialog(params: UpdateDialogContentParams) {
     AlertDialog(
         onDismissRequest = params.onDismiss,
         containerColor = AureoleDS.colors.surface,
-        shape = RoundedCornerShape(DIALOG_CORNER_RADIUS),
+        shape = RoundedCornerShape(UpdateDialogMetrics.DialogCornerRadius),
         title = {
             AureoleText(
                 text = params.title,

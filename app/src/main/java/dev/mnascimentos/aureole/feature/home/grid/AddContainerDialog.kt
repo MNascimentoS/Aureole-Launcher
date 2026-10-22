@@ -32,6 +32,11 @@ import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 
+private object AddContainerDialogMetrics {
+    val ItemCornerRadius = 14.dp
+    val IconBadgeCornerRadius = 10.dp
+}
+
 @Composable
 fun AddContainerDialog(
     onDismissRequest: () -> Unit,
@@ -62,7 +67,7 @@ private fun AddContainerOptionList(
 ) {
     Column(
         modifier = Modifier.verticalScroll(rememberScrollState()),
-        verticalArrangement = Arrangement.spacedBy(10.dp)
+        verticalArrangement = Arrangement.spacedBy(AureoleDS.dimens.smallCompact)
     ) {
         AddContainerOptionItem(
             title = "Relógio",
@@ -103,22 +108,22 @@ private fun AddContainerOptionItem(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(14.dp))
+            .clip(RoundedCornerShape(AddContainerDialogMetrics.ItemCornerRadius))
             .background(AureoleDS.colors.surfaceVariant.copy(alpha = 0.45f))
             .clickable { onClick() }
-            .padding(horizontal = 12.dp, vertical = 10.dp),
+            .padding(horizontal = AureoleDS.dimens.small, vertical = AureoleDS.dimens.smallCompact),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Box(
             modifier = Modifier
-                .size(36.dp)
-                .clip(RoundedCornerShape(10.dp))
+                .size(AureoleDS.dimens.iconXLarge)
+                .clip(RoundedCornerShape(AddContainerDialogMetrics.IconBadgeCornerRadius))
                 .background(AureoleDS.colors.surface.copy(alpha = 0.5f)),
             contentAlignment = Alignment.Center
         ) {
-            icon(Modifier.size(20.dp))
+            icon(Modifier.size(AureoleDS.dimens.iconMedium))
         }
-        Spacer(modifier = Modifier.width(12.dp))
+        Spacer(modifier = Modifier.width(AureoleDS.dimens.small))
         AureoleText(
             text = title,
             color = AureoleDS.colors.onSurfaceHigh,

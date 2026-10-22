@@ -222,8 +222,18 @@ internal fun createSampleHomeData(): SampleHomeData {
     val favoriteApps = listOf(phoneApp, messagesApp, cameraApp, browserApp)
 
     val sampleFolders = listOf(
-        AppFolder(id = "folder_work", name = "Work", icon = "briefcase"),
-        AppFolder(id = "folder_social", name = "Social", icon = "message")
+        AppFolder(
+            id = "folder_work",
+            name = "Work",
+            icon = "briefcase",
+            appPackageNames = listOf(phoneApp.packageName, messagesApp.packageName, cameraApp.packageName, browserApp.packageName)
+        ),
+        AppFolder(
+            id = "folder_social",
+            name = "Social",
+            icon = "message",
+            appPackageNames = listOf(browserApp.packageName, cameraApp.packageName)
+        )
     )
 
     val uiState = MainUiState(

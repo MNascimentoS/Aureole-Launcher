@@ -6,13 +6,8 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
-import androidx.compose.animation.slideInVertically
-import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.gestures.Orientation
-import androidx.compose.foundation.gestures.draggable
-import androidx.compose.foundation.gestures.rememberDraggableState
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
@@ -23,22 +18,16 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
-import androidx.compose.ui.input.nestedscroll.NestedScrollSource
-import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -50,6 +39,7 @@ import dev.chrisbanes.haze.HazeTint
 import dev.chrisbanes.haze.hazeEffect
 import dev.mnascimentos.aureole.core.designsystem.icons.Logo
 import dev.mnascimentos.aureole.core.designsystem.model.AureoleEditOverlayParams
+import dev.mnascimentos.aureole.core.designsystem.model.OverlaySheetStateData
 import dev.mnascimentos.aureole.core.designsystem.model.SheetBounds
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
@@ -57,18 +47,6 @@ import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.core.designsystem.utils.LocalHazeState
 
 private const val ANIMATION_DURATION_MS = 300
-private const val DISMISS_DRAG_THRESHOLD_PX = 50f
-private const val DISMISS_VELOCITY_THRESHOLD = 1000f
-private const val EXPAND_VELOCITY_THRESHOLD = -500f
-private const val COLLAPSE_VELOCITY_THRESHOLD = 500f
-
-internal data class OverlaySheetStateData(
-    val dragExpansion: Float,
-    val onDragExpansionChanged: (Float) -> Unit,
-    val effectiveAnimated: Boolean,
-    val triggerDismiss: () -> Unit,
-    val animScope: AnimatedVisibilityScope
-)
 
 @Composable
 internal fun OverlayContentBox(
@@ -109,8 +87,6 @@ internal fun OverlayContentBox(
         val maxExpansionAllowed = (sheetMaxExpandedHeight - maxSheetHeight).coerceAtLeast(0.dp)
         val bounds = SheetBounds(maxSheetHeight, maxExpansionAllowed)
 
-        // The preview height is fixed to the available unexpanded sheet space
-        // We use maxSheetHeight to determine the top available space, keeping the preview height constant
         val previewHeight = maxHeight - maxSheetHeight
 
         Box(modifier = Modifier.fillMaxSize()) {
@@ -172,145 +148,6 @@ private fun BoxScope.PreviewSlot(
     ) {
         previewContent?.invoke(this)
     }
-}
-
-@Suppress("LongMethod")
-@Composable
-private fun BoxScope.SheetSurface(
-    stateData: OverlaySheetStateData,
-    params: AureoleEditOverlayParams,
-    bounds: SheetBounds
-) {
-    val dragExpansion = stateData.dragExpansion
-    val onDragExpansionChanged = stateData.onDragExpansionChanged
-    val effectiveAnimated = stateData.effectiveAnimated
-    val triggerDismiss = stateData.triggerDismiss
-    val animScope = stateData.animScope
-
-    val nestedScrollConnection = remember(bounds.maxExpansionAllowed, dragExpansion, onDragExpansionChanged) {
-        object : NestedScrollConnection {
-            override fun onPreScroll(available: Offset, source: NestedScrollSource): Offset {
-                val delta = available.y
-                if (delta < 0 && dragExpansion < bounds.maxExpansionAllowed.value) {
-                    val prevExpansion = dragExpansion
-                    val newExpansion = (dragExpansion - delta).coerceIn(0f, bounds.maxExpansionAllowed.value)
-                    onDragExpansionChanged(newExpansion)
-                    val consumedY = newExpansion - prevExpansion
-                    return Offset(0f, -consumedY)
-                }
-                return Offset.Zero
-            }
-
-            override fun onPostScroll(
-                consumed: Offset,
-                available: Offset,
-                source: NestedScrollSource
-            ): Offset {
-                val delta = available.y
-                if (delta > 0 && dragExpansion > 0f) {
-                    val prevExpansion = dragExpansion
-                    val newExpansion = (dragExpansion - delta).coerceIn(0f, bounds.maxExpansionAllowed.value)
-                    onDragExpansionChanged(newExpansion)
-                    val consumedY = prevExpansion - newExpansion
-                    return Offset(0f, consumedY)
-                }
-                return Offset.Zero
-            }
-        }
-    }
-
-    val draggableState = rememberDraggableState { delta ->
-        val newExpansion = (dragExpansion - delta).coerceIn(0f, bounds.maxExpansionAllowed.value)
-        onDragExpansionChanged(newExpansion)
-        if (newExpansion <= 0f && delta > DISMISS_DRAG_THRESHOLD_PX) {
-            triggerDismiss()
-        }
-    }
-
-    val currentMaxSheetHeight = bounds.maxHeight + dragExpansion.dp
-    val sheetModifier = if (effectiveAnimated) {
-        with(animScope) {
-            Modifier.animateEnterExit(
-                enter = slideInVertically(
-                    initialOffsetY = { it },
-                    animationSpec = tween(ANIMATION_DURATION_MS)
-                ),
-                exit = slideOutVertically(
-                    targetOffsetY = { it },
-                    animationSpec = tween(ANIMATION_DURATION_MS)
-                )
-            )
-        }
-    } else {
-        Modifier.Companion
-    }
-
-    Surface(
-        modifier = sheetModifier
-            .align(Alignment.BottomCenter)
-            .fillMaxWidth()
-            .heightIn(max = currentMaxSheetHeight)
-            .nestedScroll(nestedScrollConnection)
-            .draggable(
-                state = draggableState,
-                orientation = Orientation.Vertical,
-                onDragStopped = { velocity ->
-                    handleDragStopped(
-                        velocity,
-                        dragExpansion,
-                        bounds.maxExpansionAllowed,
-                        triggerDismiss,
-                        onDragExpansionChanged
-                    )
-                }
-            )
-            .clickable(
-                interactionSource = remember { MutableInteractionSource() },
-                indication = null,
-                role = Role.Button,
-                onClick = {}
-            ),
-        shape = RoundedCornerShape(
-            topStart = AureoleDS.dimens.radiusLarge,
-            topEnd = AureoleDS.dimens.radiusLarge
-        ),
-        color = AureoleDS.colors.surface,
-        contentColor = AureoleDS.colors.onSurfaceMedium
-    ) {
-        OverlaySheetBody(
-            title = params.config.title,
-            onSettingsClick = params.config.onSettingsClick,
-            bottomBarContent = params.bottomBarContent,
-            sheetContent = params.sheetContent
-        )
-    }
-}
-
-private fun handleDragStopped(
-    velocity: Float,
-    dragExpansion: Float,
-    maxExpansionAllowed: Dp,
-    triggerDismiss: () -> Unit,
-    onExpansionChanged: (Float) -> Unit
-) {
-    if (velocity > DISMISS_VELOCITY_THRESHOLD && dragExpansion == 0f) {
-        triggerDismiss()
-        return
-    }
-    if (velocity < EXPAND_VELOCITY_THRESHOLD) {
-        onExpansionChanged(maxExpansionAllowed.value)
-        return
-    }
-    if (velocity > COLLAPSE_VELOCITY_THRESHOLD) {
-        onExpansionChanged(0f)
-        return
-    }
-    val targetExpansion = if (dragExpansion > maxExpansionAllowed.value / 2) {
-        maxExpansionAllowed.value
-    } else {
-        0f
-    }
-    onExpansionChanged(targetExpansion)
 }
 
 @Composable
