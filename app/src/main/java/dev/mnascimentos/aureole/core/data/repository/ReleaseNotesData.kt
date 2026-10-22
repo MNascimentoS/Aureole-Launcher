@@ -4,130 +4,107 @@ import dev.mnascimentos.aureole.core.data.model.ReleaseNoteItem
 import dev.mnascimentos.aureole.core.data.model.ReleaseNoteSection
 import dev.mnascimentos.aureole.core.data.model.ReleaseNoteType
 
+internal fun getSectionsForVersion0816(): List<ReleaseNoteSection> = listOf(
+    ReleaseNoteSection(
+        title = "Novidades Visuais",
+        items = listOf(
+            ReleaseNoteItem(
+                title = "Novo Visual para Pastas Abertas",
+                description = "O nome da pasta fica destacado no topo de forma clara, " +
+                    "com cantos arredondados suavizados e margens de tela confortáveis.",
+                type = ReleaseNoteType.FEATURE
+            ),
+            ReleaseNoteItem(
+                title = "Cores Mais Suaves nos Menus",
+                description = "Ações nos menus e cartões agora utilizam " +
+                    "cores padronizadas para uma leitura visual mais agradável.",
+                type = ReleaseNoteType.FEATURE
+            )
+        )
+    ),
+    ReleaseNoteSection(
+        title = "Navegação & Usabilidade",
+        items = listOf(
+            ReleaseNoteItem(
+                title = "Menus Mais Simples",
+                description = "Opções redundantes foram removidas dos menus de aplicativos, " +
+                    "tornando as ações do dia a dia mais rápidas e diretas.",
+                type = ReleaseNoteType.IMPROVEMENT
+            ),
+            ReleaseNoteItem(
+                title = "Ajustes do Relógio Aprimorados",
+                description = "Opções de layout e formato de data ficaram mais simples e fáceis de escolher.",
+                type = ReleaseNoteType.IMPROVEMENT
+            )
+        )
+    ),
+    ReleaseNoteSection(
+        title = "Facilidade de Uso & Estabilidade",
+        items = listOf(
+            ReleaseNoteItem(
+                title = "Toque Mais Preciso",
+                description = "Áreas de clique ampliadas para facilitar a navegação em botões e itens.",
+                type = ReleaseNoteType.IMPROVEMENT
+            ),
+            ReleaseNoteItem(
+                title = "Maior Estabilidade",
+                description = "Otimizações na abertura da tela inicial e na lista de aplicativos para um uso mais fluido.",
+                type = ReleaseNoteType.FIX
+            )
+        )
+    )
+)
+
 internal fun getSectionsForVersion0813(): List<ReleaseNoteSection> = listOf(
-    getNovidadesArquiteturaSection(),
-    getMelhoriasExperienciaSection(),
-    getQualidadeEstabilidadeSection()
-)
-
-private fun getNovidadesArquiteturaSection() = ReleaseNoteSection(
-    title = "Novidades & Arquitetura",
-    items = listOf(
-        ReleaseNoteItem(
-            title = "Migração Completa para Room DB",
-            description = "Sincronização e persistência de dados de Contêineres, Favoritos e Pastas " +
-                "migradas para Room ORM com suporte nativo a Coroutines e integridade relacional.",
-            type = ReleaseNoteType.FEATURE
-        ),
-        ReleaseNoteItem(
-            title = "Padronização do Design System & Tokens",
-            description = "Refatoração completa do consumo de dimensões e espaçamentos (AureoleDS.dimens) " +
-                "garantindo consistência visual em todas as telas e inclusão de novos tokens.",
-            type = ReleaseNoteType.FEATURE
-        ),
-        ReleaseNoteItem(
-            title = "Modularização e Separação de Modelos",
-            description = "Mapeamento e extração de parâmetros e modelos para pacotes dedicados, " +
-                "incluindo isolamento dos modelos e estados do Design System.",
-            type = ReleaseNoteType.FEATURE
+    ReleaseNoteSection(
+        title = "Novidades & Experiência",
+        items = listOf(
+            ReleaseNoteItem(
+                title = "Salvamento de Dados Mais Confiável",
+                description = "Suas pastas, favoritos e atalhos agora são salvos com maior velocidade e segurança.",
+                type = ReleaseNoteType.FEATURE
+            ),
+            ReleaseNoteItem(
+                title = "Visual Mais Consistente",
+                description = "Ajustes de tamanhos e espaçamentos em todas as telas para um visual padronizado.",
+                type = ReleaseNoteType.FEATURE
+            )
         )
-    )
-)
-
-private fun getMelhoriasExperienciaSection() = ReleaseNoteSection(
-    title = "Melhorias & Experiência",
-    items = listOf(
-        ReleaseNoteItem(
-            title = "Preservação de Modelos no R8/ProGuard",
-            description = "Inclusão de regras de preservação de código (@Keep) para modelos de dados, " +
-                "evitando perda de componentes em builds de release.",
-            type = ReleaseNoteType.IMPROVEMENT
-        ),
-        ReleaseNoteItem(
-            title = "Melhorias de Acessibilidade (A11y)",
-            description = "Adicionados alvos de toque mínimos, roles e mesclagem de " +
-                "descrição semântica nos componentes interativos.",
-            type = ReleaseNoteType.IMPROVEMENT
-        ),
-        ReleaseNoteItem(
-            title = "Refatoração de Componentes e Ciclo de Vida",
-            description = "Centralização de Lifecycle Observers, decomposição da UI da Home " +
-                "e limpeza geral da camada de dados para uma arquitetura mais limpa.",
-            type = ReleaseNoteType.IMPROVEMENT
-        ),
-        ReleaseNoteItem(
-            title = "Atualizações In-App Modernizadas",
-            description = "Interface e diálogo de atualização do aplicativo refinados " +
-                "para uma transição mais fluida ao verificar novas versões.",
-            type = ReleaseNoteType.IMPROVEMENT
-        ),
-        ReleaseNoteItem(
-            title = "Documentação Atualizada e Completa",
-            description = "Documentação geral do projeto e README.md atualizados com guias " +
-                "arquiteturais, regras de convenção e instruções de build.",
-            type = ReleaseNoteType.IMPROVEMENT
+    ),
+    ReleaseNoteSection(
+        title = "Melhorias",
+        items = listOf(
+            ReleaseNoteItem(
+                title = "Toque Mais Fácil e Acessível",
+                description = "Botões e cartões interativos ficaram mais fáceis de tocar e usar.",
+                type = ReleaseNoteType.IMPROVEMENT
+            ),
+            ReleaseNoteItem(
+                title = "Aviso de Atualização do Aplicativo",
+                description = "Interface simplificada para avisar quando houver uma nova versão disponível.",
+                type = ReleaseNoteType.IMPROVEMENT
+            )
         )
-    )
-)
-
-private fun getQualidadeEstabilidadeSection() = ReleaseNoteSection(
-    title = "Qualidade & Estabilidade",
-    items = listOf(
-        ReleaseNoteItem(
-            title = "Testes BDD e Regressão Visual",
-            description = "Padronização declarativa BDD nas suítes de testes unitários e " +
-                "melhorias na estabilidade dos testes de regressão visual (Screenshots).",
-            type = ReleaseNoteType.FIX
-        ),
-        ReleaseNoteItem(
-            title = "Conformidade Estrita com Linter Detekt",
-            description = "Resolução nativa de avisos do linter e modularização de componentes " +
-                "extensos sem necessidade de supressões.",
-            type = ReleaseNoteType.FIX
-        ),
-        ReleaseNoteItem(
-            title = "Correção de Rotação de Tela em Release",
-            description = "Correção do erro de desserialização que removia componentes aninhados " +
-                "ao alterar a orientação do dispositivo.",
-            type = ReleaseNoteType.FIX
+    ),
+    ReleaseNoteSection(
+        title = "Estabilidade",
+        items = listOf(
+            ReleaseNoteItem(
+                title = "Melhorias de Desempenho",
+                description = "Ajustes gerais para evitar travamentos e deixar o aplicativo mais estável.",
+                type = ReleaseNoteType.FIX
+            )
         )
     )
 )
 
 internal fun getSectionsForVersion0713(): List<ReleaseNoteSection> = listOf(
     ReleaseNoteSection(
-        title = "Novidades & Recursos",
+        title = "Release 0.7.13",
         items = listOf(
             ReleaseNoteItem(
-                title = "Animações Fluídas em Overlays de Edição",
-                description = "Suporte a animação de entrada e saída deslizando a partir do fundo da tela " +
-                    "nas telas de edição de Relógio, Container, Aplicativos e Widgets.",
-                type = ReleaseNoteType.FEATURE
-            ),
-            ReleaseNoteItem(
-                title = "Acesso Rápido às Configurações",
-                description = "Atalho para as configurações do aplicativo diretamente pelo ícone " +
-                    "Aureole no cabeçalho das telas de edição.",
-                type = ReleaseNoteType.FEATURE
-            )
-        )
-    ),
-    ReleaseNoteSection(
-        title = "Melhorias de Usabilidade",
-        items = listOf(
-            ReleaseNoteItem(
-                title = "Interatividade com Efeito Haze",
-                description = "Controle dinâmico do efeito de desfoque (blur) nas telas de personalização.",
-                type = ReleaseNoteType.IMPROVEMENT
-            )
-        )
-    ),
-    ReleaseNoteSection(
-        title = "Correções de Bugs",
-        items = listOf(
-            ReleaseNoteItem(
-                title = "Comportamento do Botão Voltar do Sistema",
-                description = "Tratamento correto do evento de voltar ao fechar diálogos e bottom sheets.",
+                title = "Manutenção e Desempenho",
+                description = "Correções de estabilidade no carregamento de ícones e na lista de aplicativos.",
                 type = ReleaseNoteType.FIX
             )
         )
@@ -136,38 +113,12 @@ internal fun getSectionsForVersion0713(): List<ReleaseNoteSection> = listOf(
 
 internal fun getSectionsForVersion0613(): List<ReleaseNoteSection> = listOf(
     ReleaseNoteSection(
-        title = "Novidades & Recursos",
+        title = "Release 0.6.13",
         items = listOf(
             ReleaseNoteItem(
-                title = "Ajuste do Tamanho do Ícone e Texto dos Apps",
-                description = "Agora é possível alterar o tamanho dos ícones e textos na tela inicial " +
-                    "e na gaveta de aplicativos.",
-                type = ReleaseNoteType.FEATURE
-            ),
-            ReleaseNoteItem(
-                title = "Controle de Exibição dos Rótulos",
-                description = "Opção para ocultar completamente os nomes dos aplicativos na tela inicial.",
-                type = ReleaseNoteType.FEATURE
-            )
-        )
-    ),
-    ReleaseNoteSection(
-        title = "Melhorias",
-        items = listOf(
-            ReleaseNoteItem(
-                title = "Responsividade da Grade",
-                description = "Ajuste na distribuição de espaço das células na tela principal.",
+                title = "Organização da Tela",
+                description = "Melhorias nos gestos de redimensionamento e reordenamento de painéis.",
                 type = ReleaseNoteType.IMPROVEMENT
-            )
-        )
-    ),
-    ReleaseNoteSection(
-        title = "Correções",
-        items = listOf(
-            ReleaseNoteItem(
-                title = "Sobreposição de Ícones na Grade",
-                description = "Correção que impedia ícones de se sobreporem ao alterar o tamanho da fonte.",
-                type = ReleaseNoteType.FIX
             )
         )
     )
@@ -175,32 +126,12 @@ internal fun getSectionsForVersion0613(): List<ReleaseNoteSection> = listOf(
 
 internal fun getSectionsForVersion0513(): List<ReleaseNoteSection> = listOf(
     ReleaseNoteSection(
-        title = "Novidades & Recursos",
+        title = "Release 0.5.13",
         items = listOf(
             ReleaseNoteItem(
-                title = "Suporte a Múltiplas Páginas no Painel Lateral",
-                description = "Adicione mais de um painel lateral e navegue entre eles deslizando.",
+                title = "Suporte a Pastas",
+                description = "Criação, renomeação e suporte a exibição de ícones na tela inicial.",
                 type = ReleaseNoteType.FEATURE
-            )
-        )
-    ),
-    ReleaseNoteSection(
-        title = "Melhorias",
-        items = listOf(
-            ReleaseNoteItem(
-                title = "Desempenho da Gaveta de Apps",
-                description = "Carregamento e rolagem da lista de aplicativos otimizados.",
-                type = ReleaseNoteType.IMPROVEMENT
-            )
-        )
-    ),
-    ReleaseNoteSection(
-        title = "Correções",
-        items = listOf(
-            ReleaseNoteItem(
-                title = "Fechamento Involuntário de Pastas",
-                description = "Correção de bug onde a pasta fechava ao tentar arrastar um aplicativo.",
-                type = ReleaseNoteType.FIX
             )
         )
     )
@@ -208,32 +139,12 @@ internal fun getSectionsForVersion0513(): List<ReleaseNoteSection> = listOf(
 
 internal fun getSectionsForVersion0313(): List<ReleaseNoteSection> = listOf(
     ReleaseNoteSection(
-        title = "Novidades & Recursos",
+        title = "Release 0.3.13",
         items = listOf(
             ReleaseNoteItem(
-                title = "Menu de Personalização Rápida",
-                description = "Pressione e segure na tela inicial para acessar opções rápidas de personalização.",
+                title = "Widgets na Tela Inicial",
+                description = "Suporte a adicionar widgets e organizar grupos de widgets.",
                 type = ReleaseNoteType.FEATURE
-            )
-        )
-    ),
-    ReleaseNoteSection(
-        title = "Melhorias",
-        items = listOf(
-            ReleaseNoteItem(
-                title = "Animações de Transição",
-                description = "Transições mais suaves ao abrir e fechar aplicativos e pastas.",
-                type = ReleaseNoteType.IMPROVEMENT
-            )
-        )
-    ),
-    ReleaseNoteSection(
-        title = "Correções",
-        items = listOf(
-            ReleaseNoteItem(
-                title = "Atualização do Relógio",
-                description = "Correção de travamento ocasional do ponteiro dos minutos do relógio.",
-                type = ReleaseNoteType.FIX
             )
         )
     )

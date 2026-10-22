@@ -90,7 +90,9 @@ jobs:
   deploy_internal:
     name: Build & Deploy Internal Release
     needs: pr_check
-    if: github.event_name == 'workflow_dispatch' || (github.event_name == 'pull_request' && startsWith(github.head_ref, 'release/'))
+    if: |
+      needs.pr_check.result == 'success' &&
+      (github.event_name == 'workflow_dispatch' || (github.event_name == 'pull_request' && startsWith(github.head_ref, 'release/')))
     runs-on: ubuntu-latest
 
     steps:

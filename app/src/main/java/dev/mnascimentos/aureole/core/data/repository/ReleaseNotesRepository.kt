@@ -16,9 +16,15 @@ object ReleaseNotesRepository {
     fun getReleaseNotes(): List<ReleaseNoteVersion> {
         return listOf(
             ReleaseNoteVersion(
-                versionName = "0.8.13",
+                versionName = "0.8.16",
                 releaseDate = "Março 2025",
                 isCurrent = true,
+                sections = getSectionsForVersion0816()
+            ),
+            ReleaseNoteVersion(
+                versionName = "0.8.13",
+                releaseDate = "Março 2025",
+                isCurrent = false,
                 sections = getSectionsForVersion0813()
             ),
             ReleaseNoteVersion(

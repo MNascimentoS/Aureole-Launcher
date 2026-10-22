@@ -26,6 +26,7 @@ import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
@@ -148,29 +149,13 @@ private fun ExpandedSearchRow(
 
         Spacer(modifier = Modifier.width(AureoleDS.dimens.small))
 
-        Box(
-            modifier = Modifier.weight(1f),
-            contentAlignment = Alignment.CenterStart
-        ) {
-            if (state.query.isEmpty()) {
-                AureoleText(
-                    text = params.placeholder,
-                    color = AureoleDS.colors.onSurfaceLow,
-                    format = AureoleTextFormatParams(style = AureoleDS.typography.bodyMedium)
-                )
-            }
-
-            BasicTextField(
-                value = state.query,
-                onValueChange = state.onQueryChange,
-                singleLine = true,
-                textStyle = AureoleDS.typography.bodyMedium.copy(color = AureoleDS.colors.onSurfaceHigh),
-                cursorBrush = SolidColor(AureoleDS.colors.onSurfaceHigh),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .focusRequester(params.focusRequester)
-            )
-        }
+        ExpandedSearchInputField(
+            query = state.query,
+            onQueryChange = state.onQueryChange,
+            placeholder = params.placeholder,
+            focusRequester = params.focusRequester,
+            modifier = Modifier.weight(1f)
+        )
 
         Spacer(modifier = Modifier.width(AureoleDS.dimens.xSmall))
 
@@ -186,6 +171,39 @@ private fun ExpandedSearchRow(
                 modifier = Modifier.size(AureoleDS.dimens.iconMedium)
             )
         }
+    }
+}
+
+@Composable
+private fun ExpandedSearchInputField(
+    query: String,
+    onQueryChange: (String) -> Unit,
+    placeholder: String,
+    focusRequester: FocusRequester,
+    modifier: Modifier = Modifier
+) {
+    Box(
+        modifier = modifier,
+        contentAlignment = Alignment.CenterStart
+    ) {
+        if (query.isEmpty()) {
+            AureoleText(
+                text = placeholder,
+                color = AureoleDS.colors.onSurfaceLow,
+                format = AureoleTextFormatParams(style = AureoleDS.typography.bodyMedium)
+            )
+        }
+
+        BasicTextField(
+            value = query,
+            onValueChange = onQueryChange,
+            singleLine = true,
+            textStyle = AureoleDS.typography.bodyMedium.copy(color = AureoleDS.colors.onSurfaceHigh),
+            cursorBrush = SolidColor(AureoleDS.colors.onSurfaceHigh),
+            modifier = Modifier
+                .fillMaxWidth()
+                .focusRequester(focusRequester)
+        )
     }
 }
 
