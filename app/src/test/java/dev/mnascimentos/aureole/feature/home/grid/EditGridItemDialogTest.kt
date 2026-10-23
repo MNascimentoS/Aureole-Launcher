@@ -25,17 +25,8 @@ class EditGridItemDialogTest {
     @get:Rule
     val composeTestRule = createComposeRule()
 
-    private fun mockHomeScreenActions(
-        onOpenEditClockBottomSheet: () -> Unit = {},
-        onOpenFavoritePicker: (String?) -> Unit = {},
-        onOpenEditContainerDialog: (String) -> Unit = {},
-        onOpenQuickButtonSettings: (String) -> Unit = {},
-        onUpdateScrollViewOrientation: (String, ScrollOrientation) -> Unit = { _, _ -> },
-        onOpenAddContainerForParent: (String) -> Unit = {}
-    ) = HomeScreenActions(
+    private fun baseActions() = HomeScreenActions(
         onWidgetRowHeightChanged = {},
-        onAddWidgetClick = {},
-        onRemoveWidgetClick = { _, _ -> },
         onAppClick = {},
         onExpandNotificationShade = {},
         onFolderIntent = {},
@@ -44,16 +35,7 @@ class EditGridItemDialogTest {
         onSearchQueryChanged = {},
         onSettingsClick = {},
         onAllAppsDrawerClose = {},
-        onAllAppsDrawerOpen = {},
-        onEnterGridEditMode = {},
-        onCancelGridEditMode = {},
-        onSaveGridEditMode = {},
-        onOpenEditClockBottomSheet = onOpenEditClockBottomSheet,
-        onOpenFavoritePicker = onOpenFavoritePicker,
-        onOpenEditContainerDialog = onOpenEditContainerDialog,
-        onOpenQuickButtonSettings = onOpenQuickButtonSettings,
-        onUpdateScrollViewOrientation = onUpdateScrollViewOrientation,
-        onOpenAddContainerForParent = onOpenAddContainerForParent,
+        onAllAppsDrawerOpen = {}
     )
 
     @Test
@@ -71,7 +53,7 @@ class EditGridItemDialogTest {
             AureoleLauncherTheme {
                 CompositionLocalProvider(
                     LocalHomeUiState provides MainUiState(),
-                    LocalHomeActions provides mockHomeScreenActions()
+                    LocalHomeActions provides baseActions()
                 ) {
                     EditGridItemDialog(
                         item = item,
@@ -88,14 +70,20 @@ class EditGridItemDialogTest {
     @Test
     fun `when rendering clock, should show edit action and trigger callback`() {
         var actionTriggered = false
-        val item =
-            LauncherItemState(id = "clock", type = LauncherItemType.CLOCK, col = 0, row = 0, colSpan = 2, rowSpan = 2)
+        val item = LauncherItemState(
+            id = "clock",
+            type = LauncherItemType.CLOCK,
+            col = 0,
+            row = 0,
+            colSpan = 2,
+            rowSpan = 2
+        )
 
         composeTestRule.setContent {
             AureoleLauncherTheme {
                 CompositionLocalProvider(
                     LocalHomeUiState provides MainUiState(),
-                    LocalHomeActions provides mockHomeScreenActions(
+                    LocalHomeActions provides baseActions().copy(
                         onOpenEditClockBottomSheet = { actionTriggered = true }
                     )
                 ) {
@@ -130,7 +118,7 @@ class EditGridItemDialogTest {
             AureoleLauncherTheme {
                 CompositionLocalProvider(
                     LocalHomeUiState provides MainUiState(),
-                    LocalHomeActions provides mockHomeScreenActions(
+                    LocalHomeActions provides baseActions().copy(
                         onUpdateScrollViewOrientation = { _, o -> orientationTriggered = o },
                         onOpenAddContainerForParent = { _ -> addContainerTriggered = true }
                     )
@@ -155,21 +143,20 @@ class EditGridItemDialogTest {
     @Test
     fun `when deleting item, should call onDeleteConfirm`() {
         var deletedId: String? = null
-        val item =
-            LauncherItemState(
-                id = "del_item",
-                type = LauncherItemType.CLOCK,
-                col = 0,
-                row = 0,
-                colSpan = 2,
-                rowSpan = 2
-            )
+        val item = LauncherItemState(
+            id = "del_item",
+            type = LauncherItemType.CLOCK,
+            col = 0,
+            row = 0,
+            colSpan = 2,
+            rowSpan = 2
+        )
 
         composeTestRule.setContent {
             AureoleLauncherTheme {
                 CompositionLocalProvider(
                     LocalHomeUiState provides MainUiState(),
-                    LocalHomeActions provides mockHomeScreenActions()
+                    LocalHomeActions provides baseActions()
                 ) {
                     EditGridItemDialog(
                         item = item,
