@@ -4,6 +4,41 @@ import dev.mnascimentos.aureole.core.data.model.ReleaseNoteItem
 import dev.mnascimentos.aureole.core.data.model.ReleaseNoteSection
 import dev.mnascimentos.aureole.core.data.model.ReleaseNoteType
 
+internal fun getSectionsForVersion0818(): List<ReleaseNoteSection> = listOf(
+    ReleaseNoteSection(
+        title = "Novos Recursos",
+        items = listOf(
+            ReleaseNoteItem(
+                title = "Botão Rápido de Atalhos",
+                description = "Adicione um botão personalizável na sua tela inicial " +
+                    "para acionar ações rápidas, abrir apps ou atalhos do sistema.",
+                type = ReleaseNoteType.FEATURE
+            )
+        )
+    ),
+    ReleaseNoteSection(
+        title = "Personalização & Visual",
+        items = listOf(
+            ReleaseNoteItem(
+                title = "Aparência dos Botões",
+                description = "Escolha a cor de fundo, contorno e ícones para combinar " +
+                    "com o seu estilo na tela inicial.",
+                type = ReleaseNoteType.FEATURE
+            )
+        )
+    ),
+    ReleaseNoteSection(
+        title = "Estabilidade & Desempenho",
+        items = listOf(
+            ReleaseNoteItem(
+                title = "Melhorias Gerais",
+                description = "Otimizações na navegação e correções para uma experiência mais fluida.",
+                type = ReleaseNoteType.IMPROVEMENT
+            )
+        )
+    )
+)
+
 internal fun getSectionsForVersion0816(): List<ReleaseNoteSection> = listOf(
     ReleaseNoteSection(
         title = "Novidades Visuais",
@@ -48,7 +83,8 @@ internal fun getSectionsForVersion0816(): List<ReleaseNoteSection> = listOf(
             ),
             ReleaseNoteItem(
                 title = "Maior Estabilidade",
-                description = "Otimizações na abertura da tela inicial e na lista de aplicativos para um uso mais fluido.",
+                description = "Otimizações na abertura da tela inicial e na lista de aplicativos " +
+                    "para um uso mais fluido.",
                 type = ReleaseNoteType.FIX
             )
         )

@@ -155,7 +155,8 @@ internal fun OverlaySheetBody(
     title: String?,
     onSettingsClick: (() -> Unit)?,
     bottomBarContent: (@Composable ColumnScope.() -> Unit)?,
-    sheetContent: (@Composable ColumnScope.() -> Unit)?
+    sheetContent: (@Composable ColumnScope.() -> Unit)?,
+    headerIcon: (@Composable (Modifier) -> Unit)? = null
 ) {
     Column(
         modifier = Modifier
@@ -163,7 +164,11 @@ internal fun OverlaySheetBody(
             .padding(horizontal = AureoleDS.dimens.large, vertical = AureoleDS.dimens.large)
     ) {
         if (title != null) {
-            OverlaySheetHeader(title = title, onSettingsClick = onSettingsClick)
+            OverlaySheetHeader(
+                title = title,
+                onSettingsClick = onSettingsClick,
+                headerIcon = headerIcon
+            )
         }
 
         if (sheetContent != null) {
@@ -186,7 +191,8 @@ internal fun OverlaySheetBody(
 @Composable
 private fun OverlaySheetHeader(
     title: String,
-    onSettingsClick: (() -> Unit)?
+    onSettingsClick: (() -> Unit)?,
+    headerIcon: (@Composable (Modifier) -> Unit)? = null
 ) {
     Box(
         modifier = Modifier
@@ -202,21 +208,27 @@ private fun OverlaySheetHeader(
             textAlign = TextAlign.Center
         )
 
-        Box(
-            modifier = Modifier
-                .align(Alignment.CenterEnd)
-                .size(AureoleDS.dimens.iconXLarge)
-                .clip(RoundedCornerShape(AureoleDS.dimens.radiusMedium))
-                .clickable(
-                    onClick = { onSettingsClick?.invoke() },
-                    role = Role.Button
-                ),
-            contentAlignment = Alignment.Center
-        ) {
-            AureoleDS.icons.Logo(
-                tint = AureoleDS.colors.onSurfaceHigh,
-                modifier = Modifier.size(AureoleDS.dimens.iconSmall)
-            )
+        if (onSettingsClick != null || headerIcon != null) {
+            Box(
+                modifier = Modifier
+                    .align(Alignment.CenterEnd)
+                    .size(AureoleDS.dimens.iconXLarge)
+                    .clip(RoundedCornerShape(AureoleDS.dimens.radiusMedium))
+                    .clickable(
+                        onClick = { onSettingsClick?.invoke() },
+                        role = Role.Button
+                    ),
+                contentAlignment = Alignment.Center
+            ) {
+                if (headerIcon != null) {
+                    headerIcon(Modifier.size(AureoleDS.dimens.iconSmall))
+                } else {
+                    AureoleDS.icons.Logo(
+                        tint = AureoleDS.colors.onSurfaceHigh,
+                        modifier = Modifier.size(AureoleDS.dimens.iconSmall)
+                    )
+                }
+            }
         }
     }
 }

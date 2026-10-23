@@ -39,6 +39,7 @@ fun EditGridItemDialog(
         LauncherItemType.SINGLE_APP_WIDGET -> "Widget"
         LauncherItemType.WIDGET_LIST -> "Grupo de Widgets"
         LauncherItemType.SCROLL_VIEW -> "Componente Rolar"
+        LauncherItemType.QUICK_BUTTON -> "Botão Rápido"
         else -> "Container"
     }
 

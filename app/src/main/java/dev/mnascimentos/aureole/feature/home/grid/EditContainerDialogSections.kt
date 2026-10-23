@@ -98,6 +98,10 @@ internal fun EditDialogTypeActionSection(
             actions.onOpenEditContainerDialog(item.id)
             onDismissRequest()
         }
+        LauncherItemType.QUICK_BUTTON -> "Personalizar Botão Rápido" to {
+            actions.onOpenQuickButtonSettings(item.id)
+            onDismissRequest()
+        }
         else -> null to null
     }
 

@@ -10,7 +10,8 @@ enum class LauncherItemType {
     SHORTCUTS_CONTAINER,
     SINGLE_APP_WIDGET,
     WIDGET_LIST,
-    SCROLL_VIEW
+    SCROLL_VIEW,
+    QUICK_BUTTON
 }
 
 @Keep
@@ -31,6 +32,7 @@ data class LauncherItemState(
     val minRowSpan: Int = 1,
     val widgetId: Int? = null,
     val scrollOrientation: ScrollOrientation? = ScrollOrientation.VERTICAL,
+    val quickButtonModel: QuickButtonModel? = null,
     val children: List<LauncherItemState>? = emptyList()
 ) {
     val safeId: String

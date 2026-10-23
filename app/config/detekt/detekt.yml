@@ -88,4 +88,11 @@ complexity:
     threshold: 5
   LargeClass:
     active: true
-    threshold: 400
+    threshold: 300
+    excludes: ['**/AureoleIcons.kt']
+  LongMethod:
+    active: true
+    threshold: 60
+  CyclomaticComplexMethod:
+    active: true
+    threshold: 15

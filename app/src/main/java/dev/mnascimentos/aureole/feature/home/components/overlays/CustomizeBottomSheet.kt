@@ -19,6 +19,7 @@ import dev.mnascimentos.aureole.core.data.model.ScrollOrientation
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
 import dev.mnascimentos.aureole.core.designsystem.icons.Add
+import dev.mnascimentos.aureole.core.designsystem.icons.Click
 import dev.mnascimentos.aureole.core.designsystem.icons.Icon
 import dev.mnascimentos.aureole.core.designsystem.icons.Layout
 import dev.mnascimentos.aureole.core.designsystem.icons.MultipleView
@@ -35,7 +36,7 @@ import dev.mnascimentos.aureole.feature.settings.components.SettingsBottomSheet
 fun CustomizeBottomSheet(
     actions: HomeScreenActions,
     onDismissRequest: () -> Unit,
-    modifier: Modifier = Modifier,
+    modifier: Modifier = Modifier
 ) {
     SettingsBottomSheet(
         title = "Customize",
@@ -91,6 +92,19 @@ private fun CustomizeAddItemOptions(
             },
             onClick = {
                 actions.onAddGridItem(LauncherItemType.SCROLL_VIEW, null, ScrollOrientation.VERTICAL)
+                onDismissRequest()
+            }
+        )
+        CustomizeOptionItem(
+            title = "Add quick button",
+            icon = {
+                AureoleDS.icons.Click(
+                    modifier = Modifier.size(AureoleDS.dimens.iconLarge),
+                    tint = AureoleDS.colors.onSurfaceMedium
+                )
+            },
+            onClick = {
+                actions.onAddGridItem(LauncherItemType.QUICK_BUTTON, null, null)
                 onDismissRequest()
             }
         )

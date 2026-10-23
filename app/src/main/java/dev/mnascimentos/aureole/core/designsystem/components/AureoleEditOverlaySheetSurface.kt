@@ -88,6 +88,7 @@ internal fun BoxScope.SheetSurface(
         OverlaySheetBody(
             title = params.config.title,
             onSettingsClick = params.config.onSettingsClick,
+            headerIcon = params.config.headerIcon,
             bottomBarContent = params.bottomBarContent,
             sheetContent = params.sheetContent
         )

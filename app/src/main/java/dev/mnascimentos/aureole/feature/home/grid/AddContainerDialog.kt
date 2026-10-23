@@ -25,6 +25,7 @@ import dev.mnascimentos.aureole.core.designsystem.components.AureoleDialog
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
 import dev.mnascimentos.aureole.core.designsystem.icons.Add
+import dev.mnascimentos.aureole.core.designsystem.icons.Click
 import dev.mnascimentos.aureole.core.designsystem.icons.HorizontalContainer
 import dev.mnascimentos.aureole.core.designsystem.icons.MenuIcon
 import dev.mnascimentos.aureole.core.designsystem.icons.VerticalContainer
@@ -88,6 +89,11 @@ private fun AddContainerOptionList(
             title = "Grupo de Widgets do Android",
             icon = { m -> AureoleDS.icons.Add(m) },
             onClick = { onSelectType(LauncherItemType.WIDGET_LIST) }
+        )
+        AddContainerOptionItem(
+            title = "Botão Rápido",
+            icon = { m -> AureoleDS.icons.Click(m) },
+            onClick = { onSelectType(LauncherItemType.QUICK_BUTTON) }
         )
         if (!isNested) {
             AddContainerOptionItem(

@@ -9,6 +9,7 @@ import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.Dp
 import dev.chrisbanes.haze.HazeState
 
@@ -52,6 +53,7 @@ fun rememberAureoleEditOverlayState(
  * @property maxSheetHeightFraction Maximum fraction of screen height occupied by the sheet.
  * @property onBackPress Custom back key handler callback.
  * @property onSettingsClick Settings icon click callback.
+ * @property headerIcon Optional custom icon for sheet header end action.
  */
 data class AureoleEditOverlayConfig(
     val title: String? = null,
@@ -61,6 +63,7 @@ data class AureoleEditOverlayConfig(
     val maxSheetHeightFraction: Float = 0.70f,
     val onBackPress: (() -> Unit)? = null,
     val onSettingsClick: (() -> Unit)? = null,
+    val headerIcon: (@Composable (Modifier) -> Unit)? = null,
 )
 
 /**
