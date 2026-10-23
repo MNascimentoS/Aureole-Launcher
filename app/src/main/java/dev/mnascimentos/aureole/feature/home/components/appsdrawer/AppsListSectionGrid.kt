@@ -40,7 +40,6 @@ import dev.mnascimentos.aureole.feature.home.model.LocalHomeUiState
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
 
 private object AppsListMetrics {
-    val SectionHeaderTopPadding = 20.dp
     val SettingsIconContainerSize = 42.dp
     val SettingsBottomSpacerHeight = 80.dp
 }
@@ -65,7 +64,7 @@ fun LazyListScope.appsListItems(
                 title = currentLetter.toString(),
                 color = AureoleDS.colors.onSurfaceHigh,
                 modifier = Modifier.padding(
-                    top = AppsListMetrics.SectionHeaderTopPadding,
+                    top = AureoleDS.dimens.medium,
                     bottom = AureoleDS.dimens.xSmall
                 )
             )

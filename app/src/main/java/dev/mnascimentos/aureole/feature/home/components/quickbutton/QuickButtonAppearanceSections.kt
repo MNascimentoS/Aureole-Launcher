@@ -30,7 +30,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.data.model.QuickButtonIcon
 import dev.mnascimentos.aureole.core.data.model.QuickButtonModel
@@ -121,9 +120,9 @@ internal fun AppearanceColorRow(
         )
         Box(
             modifier = Modifier
-                .size(24.dp)
+                .size(AureoleDS.dimens.iconLarge)
                 .background(colorValue, CircleShape)
-                .border(2.dp, AureoleDS.colors.surfaceVariant, CircleShape)
+                .border(AureoleDS.dimens.minimal, AureoleDS.colors.surfaceVariant, CircleShape)
         )
     }
 }
@@ -153,17 +152,19 @@ internal fun AppearanceToggleRow(
         )
         Box(
             modifier = Modifier
-                .size(24.dp)
+                .size(AureoleDS.dimens.iconLarge)
                 .border(
-                    width = 2.dp,
+                    width = AureoleDS.dimens.minimal,
                     color = if (isChecked) AureoleDS.colors.onSurfaceHigh else AureoleDS.colors.onSurfaceLow,
-                    shape = RoundedCornerShape(4.dp)
+                    shape = RoundedCornerShape(AureoleDS.dimens.radiusMinimal)
                 ),
             contentAlignment = Alignment.Center
         ) {
             if (isChecked) {
                 Box(
-                    modifier = Modifier.size(14.dp).background(AureoleDS.colors.onSurfaceHigh, RoundedCornerShape(2.dp))
+                    modifier = Modifier.size(
+                        AureoleDS.dimens.iconSmallCompact
+                    ).background(AureoleDS.colors.onSurfaceHigh, RoundedCornerShape(AureoleDS.dimens.minimal))
                 )
             }
         }
@@ -195,13 +196,17 @@ internal fun AppearanceIconRow(
             modifier = Modifier.weight(1f)
         )
         if (appInfo != null) {
-            Image(bitmap = appInfo.getIconBitmap(), contentDescription = null, modifier = Modifier.size(24.dp))
+            Image(
+                bitmap = appInfo.getIconBitmap(),
+                contentDescription = null,
+                modifier = Modifier.size(AureoleDS.dimens.iconLarge)
+            )
         } else {
             Icon(
                 painter = painterResource(id = selectedIcon.iconRes),
                 contentDescription = null,
                 tint = AureoleDS.colors.onSurfaceHigh,
-                modifier = Modifier.size(24.dp)
+                modifier = Modifier.size(AureoleDS.dimens.iconLarge)
             )
         }
     }
@@ -248,11 +253,11 @@ private fun QuickButtonIconFlowRow(
             val borderCol = if (isSelected) AureoleDS.colors.onSurfaceHigh else AureoleDS.colors.outline
             Box(
                 modifier = Modifier
-                    .size(44.dp)
+                    .size(AureoleDS.dimens.xxLarge)
                     .clip(RoundedCornerShape(AureoleDS.dimens.radiusSmall))
                     .background(if (isSelected) AureoleDS.colors.surfaceVariant else Color.Transparent)
                     .border(
-                        width = if (isSelected) 2.dp else 1.dp,
+                        width = if (isSelected) AureoleDS.dimens.minimal else AureoleDS.dimens.borderMinimal,
                         color = borderCol,
                         shape = RoundedCornerShape(AureoleDS.dimens.radiusSmall)
                     )
@@ -260,7 +265,7 @@ private fun QuickButtonIconFlowRow(
                 contentAlignment = Alignment.Center
             ) {
                 Icon(
-                    painter = painterResource(id = iconItem.iconRes),
+                    painter = painterResource(id = selectedIcon.iconRes),
                     contentDescription = iconItem.name,
                     tint = AureoleDS.colors.onSurfaceHigh,
                     modifier = Modifier.size(AureoleDS.dimens.iconLarge)

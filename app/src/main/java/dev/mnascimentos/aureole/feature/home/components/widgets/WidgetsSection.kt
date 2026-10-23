@@ -60,8 +60,6 @@ private const val LONG_PRESS_MARGIN_MS = 50L
 private const val MIN_LONG_PRESS_TIMEOUT_MS = 200L
 
 private object IndicatorMetrics {
-    val SelectedWidth = 22.dp
-    val UnselectedWidth = 8.dp
     val IndicatorHeight = 5.dp
 }
 
@@ -172,7 +170,7 @@ fun WidgetPositionIndicatorBar(
         repeat(pageCount) { index ->
             val isSelected = (index == currentPage)
             val animatedWidth by animateDpAsState(
-                targetValue = if (isSelected) IndicatorMetrics.SelectedWidth else IndicatorMetrics.UnselectedWidth,
+                targetValue = if (isSelected) AureoleDS.dimens.iconLargePlus else AureoleDS.dimens.xSmall,
                 animationSpec = spring(stiffness = Spring.StiffnessMediumLow),
                 label = "indicator_width"
             )

@@ -42,9 +42,7 @@ import dev.mnascimentos.aureole.feature.home.components.appsdrawer.appitem.model
 
 private object AppItemPopupMetrics {
     val PopupWidth = 230.dp
-    val RowHorizontalPadding = 14.dp
     val ButtonWidth = 54.dp
-    val ButtonVerticalPadding = 6.dp
 }
 
 @Composable
@@ -93,8 +91,8 @@ internal fun AppPopupHorizontalActionsRow(
         modifier = Modifier
             .fillMaxWidth()
             .padding(
-                start = AppItemPopupMetrics.RowHorizontalPadding,
-                end = AppItemPopupMetrics.RowHorizontalPadding,
+                start = AureoleDS.dimens.small,
+                end = AureoleDS.dimens.small,
                 top = AureoleDS.dimens.small,
                 bottom = AureoleDS.dimens.small
             ),
@@ -157,7 +155,7 @@ private fun AppPopupButton(
                 role = Role.Button
             )
             .semantics(mergeDescendants = true) {}
-            .padding(vertical = AppItemPopupMetrics.ButtonVerticalPadding)
+            .padding(vertical = AureoleDS.dimens.xxSmall)
     ) {
         icon(Modifier.size(AureoleDS.dimens.iconMedium), contentColor)
         Spacer(modifier = Modifier.height(AureoleDS.dimens.xxSmall))

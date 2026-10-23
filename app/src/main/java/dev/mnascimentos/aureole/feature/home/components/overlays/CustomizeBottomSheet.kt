@@ -56,72 +56,112 @@ private fun CustomizeAddItemOptions(
     onDismissRequest: () -> Unit
 ) {
     Column {
-        CustomizeOptionItem(
-            title = "Add clock",
-            icon = {
-                AureoleDS.icons.Add(
-                    modifier = Modifier.size(AureoleDS.dimens.iconLarge),
-                    tint = AureoleDS.colors.onSurfaceMedium
-                )
-            },
-            onClick = {
-                actions.onAddGridItem(LauncherItemType.CLOCK, null, null)
-                onDismissRequest()
-            }
-        )
-        CustomizeOptionItem(
-            title = "Add container",
-            icon = {
-                AureoleDS.icons.Star(
-                    modifier = Modifier.size(AureoleDS.dimens.iconLarge),
-                    tint = AureoleDS.colors.onSurfaceMedium
-                )
-            },
-            onClick = {
-                actions.onAddGridItem(LauncherItemType.SHORTCUTS_CONTAINER, null, null)
-                onDismissRequest()
-            }
-        )
-        CustomizeOptionItem(
-            title = "Add scrollview container",
-            icon = {
-                AureoleDS.icons.VerticalContainer(
-                    modifier = Modifier.size(AureoleDS.dimens.iconLarge),
-                    tint = AureoleDS.colors.onSurfaceMedium
-                )
-            },
-            onClick = {
-                actions.onAddGridItem(LauncherItemType.SCROLL_VIEW, null, ScrollOrientation.VERTICAL)
-                onDismissRequest()
-            }
-        )
-        CustomizeOptionItem(
-            title = "Add quick button",
-            icon = {
-                AureoleDS.icons.Click(
-                    modifier = Modifier.size(AureoleDS.dimens.iconLarge),
-                    tint = AureoleDS.colors.onSurfaceMedium
-                )
-            },
-            onClick = {
-                actions.onAddGridItem(LauncherItemType.QUICK_BUTTON, null, null)
-                onDismissRequest()
-            }
-        )
-        CustomizeOptionItem(
-            title = "Add widget group",
-            icon = {
-                AureoleDS.icons.MultipleView(
-                    modifier = Modifier.size(AureoleDS.dimens.iconLarge),
-                    tint = AureoleDS.colors.onSurfaceMedium
-                )
-            },
-            onClick = {
-                actions.onAddGridItem(LauncherItemType.WIDGET_LIST, null, null)
-                onDismissRequest()
-            }
-        )
+        CustomizeClockOption(actions, onDismissRequest)
+        CustomizeContainerOption(actions, onDismissRequest)
+        CustomizeScrollViewOption(actions, onDismissRequest)
+        CustomizeQuickButtonOption(actions, onDismissRequest)
+        CustomizeWidgetGroupOption(actions, onDismissRequest)
     }
+}
+
+@Composable
+private fun CustomizeClockOption(
+    actions: HomeScreenActions,
+    onDismissRequest: () -> Unit
+) {
+    CustomizeOptionItem(
+        title = "Add clock",
+        icon = {
+            AureoleDS.icons.Add(
+                modifier = Modifier.size(AureoleDS.dimens.iconLarge),
+                tint = AureoleDS.colors.onSurfaceMedium
+            )
+        },
+        onClick = {
+            actions.onAddGridItem(LauncherItemType.CLOCK, null, null)
+            onDismissRequest()
+        }
+    )
+}
+
+@Composable
+private fun CustomizeContainerOption(
+    actions: HomeScreenActions,
+    onDismissRequest: () -> Unit
+) {
+    CustomizeOptionItem(
+        title = "Add container",
+        icon = {
+            AureoleDS.icons.Star(
+                modifier = Modifier.size(AureoleDS.dimens.iconLarge),
+                tint = AureoleDS.colors.onSurfaceMedium
+            )
+        },
+        onClick = {
+            actions.onAddGridItem(LauncherItemType.SHORTCUTS_CONTAINER, null, null)
+            onDismissRequest()
+        }
+    )
+}
+
+@Composable
+private fun CustomizeScrollViewOption(
+    actions: HomeScreenActions,
+    onDismissRequest: () -> Unit
+) {
+    CustomizeOptionItem(
+        title = "Add scrollview container",
+        icon = {
+            AureoleDS.icons.VerticalContainer(
+                modifier = Modifier.size(AureoleDS.dimens.iconLarge),
+                tint = AureoleDS.colors.onSurfaceMedium
+            )
+        },
+        onClick = {
+            actions.onAddGridItem(LauncherItemType.SCROLL_VIEW, null, ScrollOrientation.VERTICAL)
+            onDismissRequest()
+        }
+    )
+}
+
+@Composable
+private fun CustomizeQuickButtonOption(
+    actions: HomeScreenActions,
+    onDismissRequest: () -> Unit
+) {
+    CustomizeOptionItem(
+        title = "Add quick button",
+        icon = {
+            AureoleDS.icons.Click(
+                modifier = Modifier.size(AureoleDS.dimens.iconLarge),
+                tint = AureoleDS.colors.onSurfaceMedium
+            )
+        },
+        onClick = {
+            actions.onAddGridItem(LauncherItemType.QUICK_BUTTON, null, null)
+            onDismissRequest()
+        }
+    )
+}
+
+@Composable
+private fun CustomizeWidgetGroupOption(
+    actions: HomeScreenActions,
+    onDismissRequest: () -> Unit
+) {
+    CustomizeOptionItem(
+        title = "Add widget group",
+        icon = {
+            AureoleDS.icons.MultipleView(
+                modifier = Modifier.size(AureoleDS.dimens.iconLarge),
+                tint = AureoleDS.colors.onSurfaceMedium
+            )
+        },
+        onClick = {
+            actions.onAddGridItem(LauncherItemType.WIDGET_LIST, null, null)
+            onDismissRequest()
+        }
+    )
 }
 
 @Composable

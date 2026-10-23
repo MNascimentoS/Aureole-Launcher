@@ -4,6 +4,26 @@ import dev.mnascimentos.aureole.core.data.model.ReleaseNoteItem
 import dev.mnascimentos.aureole.core.data.model.ReleaseNoteSection
 import dev.mnascimentos.aureole.core.data.model.ReleaseNoteType
 
+internal fun getSectionsForVersion0820(): List<ReleaseNoteSection> = listOf(
+    ReleaseNoteSection(
+        title = "Melhorias de Visual e Organização",
+        items = listOf(
+            ReleaseNoteItem(
+                title = "Ajustes de Espaçamento e Formato",
+                description = "Telas e botões receberam ajustes cuidadosos para garantir que " +
+                    "cada elemento fique bem alinhado e agradável em qualquer aparelho.",
+                type = ReleaseNoteType.IMPROVEMENT
+            ),
+            ReleaseNoteItem(
+                title = "Navegação Mais Fluida",
+                description = "Melhorias internas para garantir respostas rápidas ao abrir janelas " +
+                    "e navegar pelas opções do aplicativo.",
+                type = ReleaseNoteType.IMPROVEMENT
+            )
+        )
+    )
+)
+
 internal fun getSectionsForVersion0818(): List<ReleaseNoteSection> = listOf(
     ReleaseNoteSection(
         title = "Novos Recursos",

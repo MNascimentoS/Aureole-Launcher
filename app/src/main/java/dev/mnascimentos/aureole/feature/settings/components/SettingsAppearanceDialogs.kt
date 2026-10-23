@@ -43,7 +43,6 @@ import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 
 private const val BLUR_SWATCH_WIDTH_DP = 140
-private const val BLUR_SWATCH_HEIGHT_DP = 22
 private const val BLUR_LOW_OPACITY = 0.2f
 private const val BLUR_MED_OPACITY = 0.5f
 private const val BLUR_MAX_OPACITY = 0.9f
@@ -142,7 +141,7 @@ private fun PaletteRowItem(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .defaultMinSize(minHeight = 48.dp)
+            .defaultMinSize(minHeight = AureoleDS.dimens.minTouchTarget)
             .clip(RoundedCornerShape(AureoleDS.dimens.radiusSmall))
             .background(rowBg)
             .clickable(
@@ -171,9 +170,13 @@ private fun PaletteColorSwatches(palette: ThemePalette) {
     Row(
         modifier = Modifier
             .width(BLUR_SWATCH_WIDTH_DP.dp)
-            .height(BLUR_SWATCH_HEIGHT_DP.dp)
-            .clip(RoundedCornerShape(6.dp))
-            .border(AureoleDS.dimens.borderMinimal, AureoleDS.colors.outline, RoundedCornerShape(6.dp))
+            .height(AureoleDS.dimens.iconLargePlus)
+            .clip(RoundedCornerShape(AureoleDS.dimens.radiusXSmall))
+            .border(
+                AureoleDS.dimens.borderMinimal,
+                AureoleDS.colors.outline,
+                RoundedCornerShape(AureoleDS.dimens.radiusXSmall)
+            )
     ) {
         val colorList = listOf(
             palette.colors.background,
@@ -256,7 +259,7 @@ private fun BlurOptionRow(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .defaultMinSize(minHeight = 48.dp)
+            .defaultMinSize(minHeight = AureoleDS.dimens.minTouchTarget)
             .clip(RoundedCornerShape(AureoleDS.dimens.radiusSmall))
             .background(rowBg)
             .clickable(

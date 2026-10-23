@@ -168,8 +168,11 @@ fun SingleAppWidgetContent(
     val sharedTransitionScope = LocalSharedTransitionScope.current
     val animatedVisibilityScope = LocalAnimatedVisibilityScope.current
 
-    val isSharedTransitionActive = sharedTransitionScope != null && animatedVisibilityScope != null && item.widgetId != null
-    val sharedModifier = if (isSharedTransitionActive && sharedTransitionScope != null && animatedVisibilityScope != null) {
+    val isSharedTransitionActive =
+        sharedTransitionScope != null && animatedVisibilityScope != null && item.widgetId != null
+    val sharedModifier = if (
+        isSharedTransitionActive && sharedTransitionScope != null && animatedVisibilityScope != null
+    ) {
         with(sharedTransitionScope) {
             Modifier.sharedElement(
                 sharedContentState = rememberSharedContentState(key = "widget_${item.widgetId}"),

@@ -14,7 +14,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.composable.SettingsHugeTitle
 import dev.mnascimentos.aureole.composable.SettingsMenuItem
 import dev.mnascimentos.aureole.composable.SettingsMenuParams
@@ -39,15 +38,15 @@ fun SettingsContributorsScreen(
                 .fillMaxSize()
                 .statusBarsPadding()
                 .padding(innerPadding)
-                .padding(horizontal = 24.dp, vertical = 16.dp)
+                .padding(horizontal = AureoleDS.dimens.large, vertical = AureoleDS.dimens.medium)
         ) {
             SettingsHugeTitle(text = "Contributors")
 
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(AureoleDS.dimens.large))
 
             LazyColumn(
-                verticalArrangement = Arrangement.spacedBy(16.dp),
-                contentPadding = PaddingValues(bottom = 80.dp)
+                verticalArrangement = Arrangement.spacedBy(AureoleDS.dimens.medium),
+                contentPadding = PaddingValues(bottom = AureoleDS.dimens.xxLarge * 2)
             ) {
                 item {
                     SettingsMenuItem(

@@ -80,7 +80,7 @@ fun AppsListDrawer(
         val extraTopPadding = if (uiState.showSearchBarInAllApps && isSearchExpanded) {
             AppsDrawerMetrics.SearchBarExtraTopPadding
         } else {
-            0.dp
+            AureoleDS.dimens.zero
         }
 
         LazyColumn(
