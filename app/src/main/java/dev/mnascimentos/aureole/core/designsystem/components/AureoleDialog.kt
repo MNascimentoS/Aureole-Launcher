@@ -43,6 +43,7 @@ private const val DIALOG_WIDTH_FRACTION = 0.92f
  * @param onDismissRequest Executes when the user tries to dismiss the dialog.
  * @param modifier The modifier to be applied to the layout.
  * @param config Configuration parameters provided via [AureoleDialogConfig].
+ * @param icon Optional leading icon composable for the header title.
  * @param content The content of the dialog.
  */
 @Composable
@@ -50,6 +51,7 @@ fun AureoleDialog(
     onDismissRequest: () -> Unit,
     modifier: Modifier = Modifier,
     config: AureoleDialogConfig = AureoleDialogConfig(),
+    icon: (@Composable (Modifier) -> Unit)? = null,
     content: @Composable ColumnScope.() -> Unit
 ) {
     val dialogContent = @Composable {
@@ -66,7 +68,7 @@ fun AureoleDialog(
                     AureoleDialogHeader(
                         title = config.title,
                         modifier = Modifier,
-                        icon = config.icon,
+                        icon = icon,
                         onLogoClick = config.onLogoClick
                     )
                 }
@@ -212,9 +214,9 @@ private fun AureoleDialogWithIconAndLogoPreview() {
             onDismissRequest = {},
             config = AureoleDialogConfig(
                 title = "Dialog With Icon",
-                icon = { m -> AureoleDS.icons.Smile(m) },
                 onLogoClick = {},
             ),
+            icon = { m -> AureoleDS.icons.Smile(m) },
         ) {
             AureoleText(
                 text = "Dialog content with leading icon and logo callback.",

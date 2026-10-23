@@ -34,9 +34,9 @@ private fun AureoleDialogWithIconAndLogoScreenshotTest() {
             onDismissRequest = {},
             config = AureoleDialogConfig(
                 title = "Dialog With Icon",
-                icon = { m -> AureoleDS.icons.Smile(m) },
                 onLogoClick = {},
             ),
+            icon = { m -> AureoleDS.icons.Smile(m) },
         ) {
             AureoleText(
                 text = "Dialog content with leading icon and logo callback.",

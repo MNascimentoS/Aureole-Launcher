@@ -24,6 +24,12 @@ internal fun getSectionsForVersion0818(): List<ReleaseNoteSection> = listOf(
                 description = "Escolha a cor de fundo, contorno e ícones para combinar " +
                     "com o seu estilo na tela inicial.",
                 type = ReleaseNoteType.FEATURE
+            ),
+            ReleaseNoteItem(
+                title = "Caixas de Diálogo Aprimoradas",
+                description = "Avisos e janelas na tela ganharam um visual mais limpo, " +
+                    "com cabeçalhos claros e ícones organizados.",
+                type = ReleaseNoteType.FEATURE
             )
         )
     ),

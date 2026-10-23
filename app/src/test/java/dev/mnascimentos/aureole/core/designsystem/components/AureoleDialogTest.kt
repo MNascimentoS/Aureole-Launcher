@@ -54,9 +54,9 @@ class AureoleDialogTest {
                 AureoleDialog(
                     onDismissRequest = {},
                     config = AureoleDialogConfig(
-                        title = "Dialog Title Test",
-                        icon = { Text("DialogIcon") }
-                    )
+                        title = "Dialog Title Test"
+                    ),
+                    icon = { Text("DialogIcon") }
                 ) {
                     Text("Dialog Body Test")
                 }
