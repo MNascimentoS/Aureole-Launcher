@@ -44,7 +44,8 @@ fun HomeViewModel.addGridItem(spec: GridItemSpec) {
                 targetColSpan = reqTargetColSpan,
                 targetRowSpan = reqTargetRowSpan,
                 minColSpan = reqMinColSpan,
-                minRowSpan = reqMinRowSpan
+                minRowSpan = reqMinRowSpan,
+                limits = state.gridLimits
             ),
             items = currentItems
         )

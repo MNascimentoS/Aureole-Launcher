@@ -6,18 +6,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.NonRestartableComposable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.TextLayoutResult
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontStyle
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextDecoration
-import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.TextUnit
+import dev.mnascimentos.aureole.core.designsystem.model.AureoleTextFormatParams
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
+
+typealias AureoleTextFormatParams = AureoleTextFormatParams
 
 /**
  * High level text component for Aureole Design System.
@@ -58,41 +52,6 @@ fun AureoleText(
         style = format.style ?: AureoleDS.typography.text,
     )
 }
-
-/**
- * Grouped formatting parameters for [AureoleText].
- *
- * @property fontSize Font size to apply to the text.
- * @property fontStyle Font style (such as Italic) to apply to the text.
- * @property fontWeight Font weight (such as Bold or Medium) to apply to the text.
- * @property fontFamily Font family to use for rendering the text.
- * @property letterSpacing Amount of space to add between characters.
- * @property textDecoration Text decoration (such as Underline or LineThrough).
- * @property textAlign Alignment of text inside its layout bounds.
- * @property lineHeight Line height for multiline text layout.
- * @property overflow Visual overflow handling when text exceeds layout bounds.
- * @property softWrap Whether text should wrap soft line breaks.
- * @property maxLines Maximum number of lines to render before truncating.
- * @property minLines Minimum number of lines to reserve space for.
- * @property onTextLayout Callback invoked when text layout calculation completes.
- * @property style Base text style token from typography.
- */
-data class AureoleTextFormatParams(
-    val fontSize: TextUnit = TextUnit.Unspecified,
-    val fontStyle: FontStyle? = null,
-    val fontWeight: FontWeight? = null,
-    val fontFamily: FontFamily? = null,
-    val letterSpacing: TextUnit = TextUnit.Unspecified,
-    val textDecoration: TextDecoration? = null,
-    val textAlign: TextAlign? = null,
-    val lineHeight: TextUnit = TextUnit.Unspecified,
-    val overflow: TextOverflow = TextOverflow.Clip,
-    val softWrap: Boolean = true,
-    val maxLines: Int = Int.MAX_VALUE,
-    val minLines: Int = 1,
-    val onTextLayout: ((TextLayoutResult) -> Unit)? = null,
-    val style: TextStyle? = null,
-)
 
 @AureolePreview
 @Composable

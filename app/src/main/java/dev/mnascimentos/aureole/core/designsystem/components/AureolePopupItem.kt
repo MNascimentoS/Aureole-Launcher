@@ -15,12 +15,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.core.designsystem.icons.Settings
+import dev.mnascimentos.aureole.core.designsystem.model.AureolePopupMenuItemParams
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
@@ -33,7 +35,6 @@ import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
  * @param params Additional configuration parameters provided via [AureolePopupMenuItemParams].
  * @param onClick Action callback executed when the item row is clicked. Slot parameter placed last.
  */
-@Suppress("LongMethod") // AureolePopupMenuItem provides action menu item with custom icon, badge, and trailing slots
 @Composable
 fun AureolePopupMenuItem(
     title: String,
@@ -41,13 +42,7 @@ fun AureolePopupMenuItem(
     params: AureolePopupMenuItemParams = AureolePopupMenuItemParams(),
     onClick: () -> Unit = {},
 ) {
-    val badge = params.badge
-    val onTrailingClick = params.onTrailingClick
-    val isDestructive = params.isDestructive
-    val icon = params.icon
-    val customIcon = params.customIcon
-    val trailingIcon = params.trailingIcon
-    val textColor = if (isDestructive) AureoleDS.colors.error else AureoleDS.colors.onSurfaceHigh
+    val textColor = if (params.isDestructive) AureoleDS.colors.error else AureoleDS.colors.onSurfaceHigh
 
     Row(
         modifier = modifier
@@ -63,73 +58,84 @@ fun AureolePopupMenuItem(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween,
     ) {
-        Row(
-            modifier = Modifier.weight(1f),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            when {
-                customIcon != null -> customIcon()
-                icon != null -> icon(Modifier.size(AureoleDS.dimens.iconMedium))
-            }
+        AureolePopupMenuItemLeading(
+            title = title,
+            textColor = textColor,
+            icon = params.icon,
+            customIcon = params.customIcon,
+            modifier = Modifier.weight(1f)
+        )
 
-            if (icon != null || customIcon != null) {
-                Spacer(modifier = Modifier.width(AureoleDS.dimens.iconMedium))
-            }
+        AureolePopupMenuItemTrailing(
+            badge = params.badge,
+            trailingIcon = params.trailingIcon,
+            onTrailingClick = params.onTrailingClick ?: onClick
+        )
+    }
+}
 
+@Composable
+private fun AureolePopupMenuItemLeading(
+    title: String,
+    textColor: Color,
+    icon: (@Composable (Modifier) -> Unit)?,
+    customIcon: (@Composable () -> Unit)?,
+    modifier: Modifier = Modifier,
+) {
+    Row(
+        modifier = modifier,
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        when {
+            customIcon != null -> customIcon()
+            icon != null -> icon(Modifier.size(AureoleDS.dimens.iconMedium))
+        }
+
+        if (icon != null || customIcon != null) {
+            Spacer(modifier = Modifier.width(AureoleDS.dimens.iconMedium))
+        }
+
+        AureoleText(
+            text = title,
+            color = textColor,
+            format = AureoleTextFormatParams(
+                style = AureoleDS.typography.bodyMedium,
+                fontWeight = FontWeight.Medium,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
+        )
+    }
+}
+
+@Composable
+private fun AureolePopupMenuItemTrailing(
+    badge: String?,
+    trailingIcon: (@Composable (Modifier) -> Unit)?,
+    onTrailingClick: () -> Unit,
+) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(AureoleDS.dimens.xxSmall),
+    ) {
+        if (!badge.isNullOrBlank()) {
             AureoleText(
-                text = title,
-                color = textColor,
-                format = AureoleTextFormatParams(
-                    style = AureoleDS.typography.bodyMedium,
-                    fontWeight = FontWeight.Medium,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
-                )
+                text = badge,
+                color = AureoleDS.colors.onSurfaceLow,
+                format = AureoleTextFormatParams(style = AureoleDS.typography.labelMedium)
             )
         }
 
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(AureoleDS.dimens.xxSmall),
-        ) {
-            if (!badge.isNullOrBlank()) {
-                AureoleText(
-                    text = badge,
-                    color = AureoleDS.colors.onSurfaceLow,
-                    format = AureoleTextFormatParams(style = AureoleDS.typography.labelMedium)
-                )
-            }
-
-            if (trailingIcon != null) {
-                IconButton(
-                    onClick = { (onTrailingClick ?: onClick).invoke() },
-                    modifier = Modifier.size(AureoleDS.dimens.iconLarge),
-                ) {
-                    trailingIcon(Modifier.size(AureoleDS.dimens.iconSmall))
-                }
+        if (trailingIcon != null) {
+            IconButton(
+                onClick = onTrailingClick,
+                modifier = Modifier.size(AureoleDS.dimens.iconLarge),
+            ) {
+                trailingIcon(Modifier.size(AureoleDS.dimens.iconSmall))
             }
         }
     }
 }
-
-/**
- * Configuration parameters for [AureolePopupMenuItem].
- *
- * @param badge Optional text label displayed on the right side of the item.
- * @param onTrailingClick Optional callback for clicking the trailing icon separately from item click.
- * @param isDestructive When true, applies error tint styling to indicate destructive actions.
- * @param icon Slot for rendering a standard icon provided with a [Modifier].
- * @param customIcon Custom `@Composable` slot for rendering custom leading icon content.
- * @param trailingIcon Slot for rendering a trailing icon provided with a [Modifier].
- */
-class AureolePopupMenuItemParams(
-    val badge: String? = null,
-    val onTrailingClick: (() -> Unit)? = null,
-    val isDestructive: Boolean = false,
-    val icon: @Composable ((Modifier) -> Unit)? = null,
-    val customIcon: (@Composable () -> Unit)? = null,
-    val trailingIcon: @Composable ((Modifier) -> Unit)? = null
-)
 
 private val PREVIEW_POPUP_WIDTH = 260.dp
 

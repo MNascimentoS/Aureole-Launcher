@@ -15,7 +15,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.core.designsystem.components.AureolePopupMenuItem
 import dev.mnascimentos.aureole.core.designsystem.components.AureolePopupMenuItemParams
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
@@ -51,7 +50,7 @@ internal fun ContainerFolderBottomSheet(
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = AureoleDS.dimens.medium, vertical = 6.dp)
+                    .padding(horizontal = AureoleDS.dimens.medium, vertical = AureoleDS.dimens.xxSmall)
             ) {
                 ContainerFolderMenuItems(params)
             }
@@ -112,11 +111,11 @@ private fun SecondaryFolderMenuItems(params: ContainerFolderBottomSheetParams) {
         params = AureolePopupMenuItemParams(
             customIcon = {
                 AureoleDS.icons.Delete(
-                    tint = AureoleDS.colors.error,
+                    tint = AureoleDS.colors.onSurfaceMedium,
                     modifier = Modifier.size(AureoleDS.dimens.iconMedium)
                 )
             },
-            isDestructive = true
+            isDestructive = false
         ),
         onClick = params.onRemoveFolder
     )
@@ -163,12 +162,12 @@ private fun ContainerFolderBottomSheetHeader() {
             },
             modifier = Modifier
                 .align(Alignment.TopEnd)
-                .padding(top = 6.dp)
-                .size(26.dp)
+                .padding(top = AureoleDS.dimens.xxSmall)
+                .size(AureoleDS.dimens.iconXLarge)
         ) {
             AureoleDS.icons.Logo(
                 tint = AureoleDS.colors.onSurfaceHigh,
-                modifier = Modifier.size(18.dp)
+                modifier = Modifier.size(AureoleDS.dimens.iconSmall)
             )
         }
     }

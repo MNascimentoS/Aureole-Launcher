@@ -4,8 +4,44 @@ import androidx.compose.animation.core.MutableTransitionState
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.Dp
 import dev.chrisbanes.haze.HazeState
+
+/**
+ * State holder for [dev.mnascimentos.aureole.core.designsystem.components.AureoleEditOverlay].
+ *
+ * @property internalVisible Whether the overlay is internally visible for exit animations.
+ * @property dragExpansion The vertical drag expansion offset of the sheet.
+ */
+class AureoleEditOverlayState(
+    initialInternalVisible: Boolean = true,
+    initialDragExpansion: Float = 0f,
+) {
+    var internalVisible by mutableStateOf(initialInternalVisible)
+    var dragExpansion by mutableFloatStateOf(initialDragExpansion)
+}
+
+/**
+ * Creates and remembers an [AureoleEditOverlayState].
+ */
+@Composable
+fun rememberAureoleEditOverlayState(
+    initialInternalVisible: Boolean = true,
+    initialDragExpansion: Float = 0f,
+): AureoleEditOverlayState {
+    return remember {
+        AureoleEditOverlayState(
+            initialInternalVisible = initialInternalVisible,
+            initialDragExpansion = initialDragExpansion,
+        )
+    }
+}
 
 /**
  * Configuration options for [dev.mnascimentos.aureole.core.designsystem.components.AureoleEditOverlay].
@@ -17,19 +53,21 @@ import dev.chrisbanes.haze.HazeState
  * @property maxSheetHeightFraction Maximum fraction of screen height occupied by the sheet.
  * @property onBackPress Custom back key handler callback.
  * @property onSettingsClick Settings icon click callback.
+ * @property headerIcon Optional custom icon for sheet header end action.
  */
 data class AureoleEditOverlayConfig(
     val title: String? = null,
     val hazeState: HazeState? = null,
     val isVisible: Boolean = true,
     val animated: Boolean = true,
-    val maxSheetHeightFraction: Float = 0.70f, // Magic number
+    val maxSheetHeightFraction: Float = 0.70f,
     val onBackPress: (() -> Unit)? = null,
     val onSettingsClick: (() -> Unit)? = null,
+    val headerIcon: (@Composable (Modifier) -> Unit)? = null,
 )
 
 /**
- val maxSheetHeightFraction: Float = 0.70f,
+ * Parameter container for [dev.mnascimentos.aureole.core.designsystem.components.AureoleEditOverlay].
  *
  * @param config Configuration options provided via [AureoleEditOverlayConfig].
  * @param previewContent Optional preview slot displayed in the main screen area above the bottom sheet.

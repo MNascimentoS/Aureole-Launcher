@@ -57,11 +57,6 @@ private const val BOTTOM_SPACER_RATIO = 0.15f
 private const val MIN_OFFSET_PERCENT = 0
 private const val MAX_OFFSET_PERCENT = 60
 
-private object BehaviorLayoutConstraints {
-    val MinTopSpacer = 16.dp
-    val MinBottomSpacer = 24.dp
-}
-
 private object PickerDimensions {
     val Height = 72.dp
     val Width = 60.dp
@@ -88,9 +83,9 @@ fun SettingsBehaviorScreen(
                 .padding(innerPadding)
         ) {
             val topSpacerHeight = (maxHeight * (uiState.headerOffsetPercent / 100f))
-                .coerceAtLeast(BehaviorLayoutConstraints.MinTopSpacer)
+                .coerceAtLeast(AureoleDS.dimens.medium)
             val bottomSpacerHeight = (maxHeight * BOTTOM_SPACER_RATIO)
-                .coerceAtLeast(BehaviorLayoutConstraints.MinBottomSpacer)
+                .coerceAtLeast(AureoleDS.dimens.large)
 
             Column(
                 modifier = Modifier
@@ -132,6 +127,11 @@ private fun BehaviorMenuItems(
         verticalArrangement = Arrangement.spacedBy(AureoleDS.dimens.xSmall),
         modifier = Modifier.fillMaxWidth()
     ) {
+        HeaderOffsetPickerRow(
+            headerOffsetPercent = uiState.headerOffsetPercent,
+            onOffsetChanged = actions.onHeaderOffsetChanged
+        )
+
         SettingsToggleItem(
             title = "Home opens all apps",
             checked = uiState.homeButtonOpensAllApps,
@@ -172,11 +172,6 @@ private fun BehaviorMenuItems(
             checked = uiState.isInAppUpdateEnabled,
             onCheckedChange = { actions.onToggleInAppUpdate() },
             leadingContent = { AureoleDS.icons.RefreshCcw() }
-        )
-
-        HeaderOffsetPickerRow(
-            headerOffsetPercent = uiState.headerOffsetPercent,
-            onOffsetChanged = actions.onHeaderOffsetChanged
         )
     }
 }

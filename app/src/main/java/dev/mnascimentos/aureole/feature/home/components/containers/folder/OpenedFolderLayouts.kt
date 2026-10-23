@@ -28,6 +28,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
@@ -56,10 +57,28 @@ fun GridFolderPopup(
     params: GridFolderPopupParams,
     modifier: Modifier = Modifier
 ) {
-    GridFolderContainer(
-        params = params,
-        modifier = modifier
-    )
+    Column(
+        modifier = modifier.fillMaxWidth(),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        if (params.folder.name.isNotBlank()) {
+            Text(
+                text = params.folder.name,
+                style = AureoleDS.typography.titleLarge,
+                fontWeight = FontWeight.Bold,
+                color = AureoleDS.colors.onSurfaceHigh,
+                textAlign = TextAlign.Center,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = AureoleDS.dimens.medium)
+            )
+        }
+
+        GridFolderContainer(
+            params = params,
+            modifier = Modifier.fillMaxWidth()
+        )
+    }
 }
 
 @Composable
@@ -68,6 +87,7 @@ private fun GridFolderContainer(
     modifier: Modifier = Modifier
 ) {
     val effectiveHazeState = params.hazeState ?: LocalHazeState.current
+    val containerShape = RoundedCornerShape(AureoleDS.dimens.radiusLarge)
 
     val hazeModifier = if (params.isHazeEnabled && effectiveHazeState != null) {
         Modifier.hazeEffect(
@@ -84,13 +104,21 @@ private fun GridFolderContainer(
     Column(
         modifier = modifier
             .fillMaxWidth()
+            .clip(containerShape)
             .then(hazeModifier)
             .background(
                 color = AureoleDS.colors.surface,
-                shape = RoundedCornerShape(AureoleDS.dimens.radiusLarge)
+                shape = containerShape
             )
-            .padding(AureoleDS.dimens.medium)
+            .padding(AureoleDS.dimens.medium),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        OpenedFolderActions(
+            isVisible = params.isActionsVisible,
+            onAddAppsClick = params.actions.onAddAppsClick,
+            onEditFolderClick = params.actions.onEditFolderClick
+        )
+
         if (params.appsInFolder.isEmpty()) {
             EmptyFolderGridContent(maxListHeightDp = FolderPopupMetrics.HeightMax)
         } else {

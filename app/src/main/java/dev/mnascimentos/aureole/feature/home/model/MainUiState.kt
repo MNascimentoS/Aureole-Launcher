@@ -6,6 +6,7 @@ import dev.mnascimentos.aureole.core.data.model.AppFolder
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.data.model.ContainerModel
 import dev.mnascimentos.aureole.core.data.model.LauncherItemState
+import dev.mnascimentos.aureole.core.data.model.QuickButtonModel
 import dev.mnascimentos.aureole.core.data.repository.SettingsRepository
 import dev.mnascimentos.aureole.feature.home.grid.model.GridLimits
 
@@ -108,6 +109,12 @@ data class MainUiState(
     val showAddContainerDialog: Boolean = false,
     val showCustomizeBottomSheet: Boolean = false,
     val showEditClockBottomSheet: Boolean = false,
+    val showQuickButtonSettingsBottomSheet: Boolean = false,
+    val showQuickButtonAppearanceBottomSheet: Boolean = false,
+    val showShortcutSelectionBottomSheet: Boolean = false,
+    val activeQuickButtonId: String? = null,
+    val activeQuickButtonModel: QuickButtonModel? = null,
+    val editingShortcutType: String? = null,
     val targetParentContainerId: String? = null,
     val gridErrorMessage: String? = null,
     val isAddingSingleWidget: Boolean = false,
@@ -159,6 +166,9 @@ val MainUiState.isOverlayActive: Boolean
         val isFolderOrSheetActive = showReleaseNotesBottomSheet ||
             showCustomizeBottomSheet ||
             showEditClockBottomSheet ||
+            showQuickButtonSettingsBottomSheet ||
+            showQuickButtonAppearanceBottomSheet ||
+            showShortcutSelectionBottomSheet ||
             isAllAppsDrawerOpen ||
             searchQuery.isNotEmpty() ||
             isFolderActive

@@ -11,7 +11,7 @@ fun HomeViewModel.onFolderIntent(intent: FolderViewIntent) {
     }
 }
 
-private suspend fun HomeViewModel.handleFolderIntent(intent: FolderViewIntent) {
+internal suspend fun HomeViewModel.handleFolderIntent(intent: FolderViewIntent) {
     when (intent) {
         is FolderViewIntent.OpenCreateFolderDialog -> {
             updateUiState {
@@ -70,7 +70,7 @@ private fun HomeViewModel.launchAppFromFolder(packageName: String) {
     closeFolder()
 }
 
-private suspend fun HomeViewModel.deleteFolder(folderId: String) {
+internal suspend fun HomeViewModel.deleteFolder(folderId: String) {
     folderRepository.deleteFolder(folderId)
     refreshFolders()
     closeFolder()

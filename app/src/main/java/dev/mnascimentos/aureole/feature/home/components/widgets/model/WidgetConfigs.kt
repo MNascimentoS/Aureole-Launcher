@@ -83,3 +83,11 @@ data class WidgetStackBottomSheetParams(
     val onToggleDots: (String) -> Unit,
     val onRemoveStack: () -> Unit,
 )
+
+data class StackedWidgetPagerParams(
+    val config: StackedWidgetConfig,
+    val widgetIds: List<Int>,
+    val appWidgetHost: AppWidgetHost? = null,
+    val stackId: String,
+    val params: PagerContentParams
+)

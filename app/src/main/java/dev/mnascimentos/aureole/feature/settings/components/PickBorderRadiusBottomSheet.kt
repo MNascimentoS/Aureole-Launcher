@@ -163,6 +163,11 @@ private fun PickBorderRadiusInspectionLayout(
     }
 }
 
+private object BorderRadiusSwatchMetrics {
+    val Width = 54.dp
+    val Height = 34.dp
+}
+
 @Composable
 private fun BorderRadiusOptionItem(
     option: BorderRadiusOption,
@@ -174,7 +179,7 @@ private fun BorderRadiusOptionItem(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .defaultMinSize(minHeight = 48.dp)
+            .defaultMinSize(minHeight = AureoleDS.dimens.minTouchTarget)
             .clickable(
                 role = Role.RadioButton,
                 onClick = onSelected
@@ -192,12 +197,12 @@ private fun BorderRadiusOptionItem(
 
             Box(
                 modifier = Modifier
-                    .width(54.dp)
-                    .height(34.dp)
+                    .width(BorderRadiusSwatchMetrics.Width)
+                    .height(BorderRadiusSwatchMetrics.Height)
                     .clip(shape)
                     .background(bgColor)
                     .border(
-                        width = if (isSelected) 2.dp else AureoleDS.dimens.borderMinimal,
+                        width = if (isSelected) AureoleDS.dimens.minimal else AureoleDS.dimens.borderMinimal,
                         color = borderColor,
                         shape = shape,
                     ),

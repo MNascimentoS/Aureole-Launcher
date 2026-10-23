@@ -14,7 +14,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.core.data.model.LauncherItemState
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.feature.home.grid.model.DragTargetSlot
@@ -150,15 +149,15 @@ internal fun Modifier.gridCellEditModifier(params: GridEditModifierParams): Modi
     return if (params.isEditMode) {
         this
             .border(
-                width = 2.dp,
+                width = AureoleDS.dimens.minimal,
                 color = if (params.isDragging || params.isResizing) {
                     AureoleDS.colors.onSurfaceHigh
                 } else {
                     AureoleDS.colors.outline.copy(alpha = 0.5f)
                 },
-                shape = RoundedCornerShape(16.dp)
+                shape = RoundedCornerShape(AureoleDS.dimens.radiusMedium)
             )
-            .clip(RoundedCornerShape(16.dp))
+            .clip(RoundedCornerShape(AureoleDS.dimens.radiusMedium))
             .pointerInput(params.itemId) {
                 detectDragGestures(
                     onDragStart = { currentParams.onDragStart() },

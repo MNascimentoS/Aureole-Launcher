@@ -179,7 +179,7 @@ internal fun AppActionSheetContent(
             title = "Desinstalar",
             params = AureolePopupMenuItemParams(
                 icon = { m -> AureoleDS.icons.Delete(m) },
-                isDestructive = true
+                isDestructive = false
             ),
             onClick = {
                 if (params.actions.onUninstallClick != null) {
@@ -209,20 +209,6 @@ private fun AppActionSheetContainerItems(
     params: AppItemBottomSheetParams,
     onDismiss: () -> Unit
 ) {
-    if (params.onRemoveFromContainer != null) {
-        AureolePopupMenuItem(
-            title = "Remover do Container",
-            params = AureolePopupMenuItemParams(
-                icon = { m -> AureoleDS.icons.Delete(m) },
-                isDestructive = true
-            ),
-            onClick = {
-                params.onRemoveFromContainer.invoke()
-                onDismiss()
-            }
-        )
-    }
-
     if (params.onOpenContainerSettings != null) {
         AureolePopupMenuItem(
             title = "Configurações do Container",
@@ -247,7 +233,7 @@ private fun AppActionSheetFolderItems(
             title = "Remover da Pasta",
             params = AureolePopupMenuItemParams(
                 icon = { m -> AureoleDS.icons.Delete(m) },
-                isDestructive = true
+                isDestructive = false
             ),
             onClick = {
                 params.onRemoveFromFolder.invoke()

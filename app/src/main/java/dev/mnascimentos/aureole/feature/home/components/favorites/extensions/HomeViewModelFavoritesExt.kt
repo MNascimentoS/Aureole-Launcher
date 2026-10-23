@@ -36,19 +36,19 @@ fun HomeViewModel.updateContainerFavorites(containerId: String, newFavorites: Li
     viewModelScope.launch {
         runCatching {
             favoriteContainerRepository.updateContainerFavorites(containerId, newFavorites)
-            val updatedMap = uiState.value.containerFavorites.toMutableMap()
-            updatedMap[containerId] = newFavorites
-            settingsRepository.favoriteAppPackages = newFavorites
-            updateUiState {
-                it.copy(
-                    favoriteAppPackages = newFavorites,
-                    containerFavorites = updatedMap
-                )
-            }
-            updateAppsState(uiState.value.apps)
         }.onFailure { e ->
             e.printStackTrace()
             Timber.e(e)
         }
+        val updatedMap = uiState.value.containerFavorites.toMutableMap()
+        updatedMap[containerId] = newFavorites
+        settingsRepository.favoriteAppPackages = newFavorites
+        updateUiState {
+            it.copy(
+                favoriteAppPackages = newFavorites,
+                containerFavorites = updatedMap
+            )
+        }
+        updateAppsState(uiState.value.apps)
     }
 }

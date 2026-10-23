@@ -5,6 +5,12 @@ Este documento estabelece as regras estritas para a escrita, manutenção, nomen
 
 ---
 
+> [!IMPORTANT]
+> **REGRA DE OURO DE COBERTURA DE TESTES PARA NOVAS FUNCIONALIDADES:**
+> NENHUMA nova funcionalidade, tela, diálogo, bottom sheet, componente do Design System, ViewModel ou repositório pode ser considerada concluída sem possuir obrigatoriamente:
+> 1. **Testes Unitários (`app/src/test/`)**: Cobrindo regras de negócio, fluxos do StateFlow, casos de borda e tratamento de erros.
+> 2. **Testes de Screenshot (`app/src/screenshotTest/`)**: Cobrindo todas as variações visuais, estados e modos (ex: Dark Mode) da interface.
+
 ## 1. Estrutura de Diretórios & Matriz de Decisão de Testes
 
 O projeto possui duas pastas de teste principais no módulo `app/`:
@@ -152,11 +158,21 @@ private fun HomeScreenAppItemBottomSheetScreenshotTest() {
 - Use `ColorDrawable` para mockar ícones de apps sem precisar de dependências externas de imagens reais.
 - Cubra todas as variações visuais: estados vazios (`Empty`), de carregamento (`Loading`), erros (`Error`), estados de edição (`EditMode`), bottom sheets e dialogs abertos.
 
-### 4.4. Validação e Atualização de Screenshots (Terminal Gradle)
-Sempre informe ou execute os comandos Gradle oficiais para screenshot tests:
+### 4.4. Protocolo Obrigatório de Falhas de Screenshot (`validateDebugScreenshotTest`)
+
+> [!CAUTION]
+> **REGRA CRÍTICA PARA A IA E DESENVOLVEDORES:**
+> Se o comando `./gradlew validateDebugScreenshotTest` falhar por divergência nas imagens renderizadas:
+> 1. **NÃO** atualize as imagens de referência (`./gradlew updateDebugScreenshotTest`) de forma automática ou silenciosa.
+> 2. **PARAR IMEDIATAMENTE** e reportar ao usuário quais componentes/telas apresentaram divergência visual.
+> 3. Pergunte ao usuário se ele deseja que seja executado `./gradlew updateDebugScreenshotTest` para gerar as novas imagens em `app/src/screenshotTestDebug/reference/` para visualização.
+> 4. **DEIXAR EXPLÍCITO:** O usuário **DEVERÁ REVISAR E VALIDAR MANUALMENTE AS NOVAS FOTOS** em `app/src/screenshotTestDebug/reference/` antes de realizar qualquer commit ou PR.
+> 5. Somente execute `./gradlew updateDebugScreenshotTest` após a confirmação do usuário.
+
+Comandos Gradle oficiais:
 - Para **validar** se houve regressão visual:
   `./gradlew validateDebugScreenshotTest`
-- Para **atualizar** os arquivos de imagem de referência (goldens) após uma alteração intencional de UI:
+- Para **atualizar** os arquivos de imagem de referência (goldens) após alteração visual intencional (requer validação do usuário):
   `./gradlew updateDebugScreenshotTest`
 
 ---

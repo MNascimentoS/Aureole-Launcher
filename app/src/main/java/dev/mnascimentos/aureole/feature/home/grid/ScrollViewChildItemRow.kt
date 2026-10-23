@@ -25,6 +25,7 @@ import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatPa
 import dev.mnascimentos.aureole.core.designsystem.icons.Add
 import dev.mnascimentos.aureole.core.designsystem.icons.ArrowDown
 import dev.mnascimentos.aureole.core.designsystem.icons.ArrowUp
+import dev.mnascimentos.aureole.core.designsystem.icons.Click
 import dev.mnascimentos.aureole.core.designsystem.icons.Delete
 import dev.mnascimentos.aureole.core.designsystem.icons.Edit
 import dev.mnascimentos.aureole.core.designsystem.icons.HorizontalContainer
@@ -278,6 +279,10 @@ private fun handleEditChildClick(
             actions.onOpenFavoritePicker(child.id)
             onDismissRequest()
         }
+        LauncherItemType.QUICK_BUTTON -> {
+            actions.onOpenQuickButtonSettings(child.id)
+            onDismissRequest()
+        }
         else -> {}
     }
 }
@@ -291,6 +296,7 @@ private fun ChildTypeIcon(type: LauncherItemType?) {
         LauncherItemType.SHORTCUTS_CONTAINER -> AureoleDS.icons.MenuIcon(iconModifier)
         LauncherItemType.WIDGET_LIST -> AureoleDS.icons.Add(iconModifier)
         LauncherItemType.SCROLL_VIEW -> AureoleDS.icons.VerticalContainer(iconModifier)
+        LauncherItemType.QUICK_BUTTON -> AureoleDS.icons.Click(iconModifier)
         else -> AureoleDS.icons.Add(iconModifier)
     }
 }
@@ -302,6 +308,7 @@ private fun getScrollViewChildTitle(type: LauncherItemType?): String {
         LauncherItemType.SHORTCUTS_CONTAINER -> "Container"
         LauncherItemType.WIDGET_LIST -> "Grupo de Widgets"
         LauncherItemType.SCROLL_VIEW -> "Container Scroll View"
+        LauncherItemType.QUICK_BUTTON -> "Botão Rápido"
         else -> "Componente"
     }
 }

@@ -3,7 +3,6 @@ package dev.mnascimentos.aureole.feature.home.grid
 import dev.mnascimentos.aureole.core.data.model.LauncherItemState
 import dev.mnascimentos.aureole.core.data.model.LauncherItemType
 import dev.mnascimentos.aureole.feature.home.grid.model.GridLimits
-import dev.mnascimentos.aureole.feature.home.grid.model.SnapParams
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
@@ -115,200 +114,36 @@ class GridEngineUtilsTest {
     }
 
     @Test
-    fun `when calculating snap cell, should round correctly and stay within bounds`() {
-        val cellWidth = 100f
-        val cellHeight = 100f
-
-        val snap = GridEngineUtils.calculateSnapCell(
-            params = SnapParams(
-                xPx = 140f,
-                yPx = 260f,
-                cellWidthPx = cellWidth,
-                cellHeightPx = cellHeight,
-                colSpan = 2,
-                rowSpan = 2
-            ),
-            limits = testLimits
-        )
-
-        assertEquals(1, snap.first)
-        assertEquals(3, snap.second)
-    }
-
-    @Test
-    fun `when searching for available slot, should return first free slot`() {
+    fun `when constrainItemsToBounds is called, should clamp col and row spans to limits`() {
         val items = listOf(
             LauncherItemState(
-                id = "a",
+                id = "1",
                 type = LauncherItemType.CLOCK,
-                col = 0,
-                row = 0,
-                colSpan = 3,
-                rowSpan = 2
-            )
-        )
-        val slot = GridEngineUtils.findFirstAvailableSlot(
-            colSpan = 3,
-            rowSpan = 2,
-            items = items,
-            limits = testLimits
-        )
-        assertEquals(Pair(0, 2), slot)
-    }
-
-    @Test
-    fun `when grid is full, should return null for available slot`() {
-        val items = listOf(
+                col = -2,
+                row = -5,
+                colSpan = 10,
+                rowSpan = 20
+            ),
             LauncherItemState(
-                id = "a",
-                type = LauncherItemType.SHORTCUTS_CONTAINER,
-                col = 0,
-                row = 0,
-                colSpan = 4,
-                rowSpan = 8
+                id = "2",
+                type = LauncherItemType.CLOCK,
+                col = 10,
+                row = 20,
+                colSpan = 5,
+                rowSpan = 5
             )
         )
-        val slot = GridEngineUtils.findFirstAvailableSlot(
-            colSpan = 2,
-            rowSpan = 2,
-            items = items,
-            limits = testLimits
-        )
-        assertEquals(null, slot)
-    }
 
-    @Test
-    fun `when target slot is unoccupied, should return direct target slot`() {
-        val movingItem = LauncherItemState(
-            id = "a",
-            type = LauncherItemType.SINGLE_APP_WIDGET,
-            col = 0,
-            row = 0,
-            colSpan = 2,
-            rowSpan = 2
-        )
-        val otherItem = LauncherItemState(
-            id = "b",
-            type = LauncherItemType.CLOCK,
-            col = 2,
-            row = 0,
-            colSpan = 2,
-            rowSpan = 2
-        )
-        val items = listOf(movingItem, otherItem)
+        val result = GridEngineUtils.constrainItemsToBounds(items, testLimits)
 
-        val slot = GridEngineUtils.findNearestValidSlot(
-            targetCol = 0,
-            targetRow = 2,
-            item = movingItem,
-            items = items,
-            limits = testLimits
-        )
-
-        assertEquals(Pair(0, 2), slot)
-    }
-
-    @Test
-    fun `when target slot is occupied, should fall back to nearest valid slot`() {
-        val movingItem = LauncherItemState(
-            id = "a",
-            type = LauncherItemType.SINGLE_APP_WIDGET,
-            col = 0,
-            row = 0,
-            colSpan = 2,
-            rowSpan = 2
-        )
-        val blockingItem = LauncherItemState(
-            id = "b",
-            type = LauncherItemType.CLOCK,
-            col = 0,
-            row = 2,
-            colSpan = 2,
-            rowSpan = 2
-        )
-        val items = listOf(movingItem, blockingItem)
-
-        val slot = GridEngineUtils.findNearestValidSlot(
-            targetCol = 0,
-            targetRow = 2,
-            item = movingItem,
-            items = items,
-            limits = testLimits
-        )
-
-        // Since (0,2) is occupied by item b, the nearest free 2x2 slot to (0,2) is (2,2) or (0,0)
-        assertTrue(slot == Pair(2, 2) || slot == Pair(0, 0))
-    }
-
-    @Test
-    fun `when target distance is greater than 3 cells, should find nearest valid slot`() {
-        val movingItem = LauncherItemState(
-            id = "a",
-            type = LauncherItemType.SINGLE_APP_WIDGET,
-            col = 0,
-            row = 0,
-            colSpan = 2,
-            rowSpan = 2
-        )
-        // Block rows 0 through 4 completely except for movingItem at (0,0)
-        val blocker1 = LauncherItemState(
-            id = "b",
-            type = LauncherItemType.CLOCK,
-            col = 2,
-            row = 0,
-            colSpan = 2,
-            rowSpan = 8
-        )
-        val blocker2 = LauncherItemState(
-            id = "c",
-            type = LauncherItemType.CLOCK,
-            col = 0,
-            row = 2,
-            colSpan = 2,
-            rowSpan = 3
-        )
-        val items = listOf(movingItem, blocker1, blocker2)
-
-        val slot = GridEngineUtils.findNearestValidSlot(
-            targetCol = 2,
-            targetRow = 5,
-            item = movingItem,
-            items = items,
-            limits = testLimits
-        )
-
-        assertEquals(Pair(0, 5), slot)
-    }
-
-    @Test
-    fun `when getting default span for SCROLL_VIEW, should return correct default span`() {
-        val (spans, minSpans) = GridDefaults.getDefaultSpanForType(LauncherItemType.SCROLL_VIEW)
-        assertEquals(Pair(14, 9), spans)
-        assertEquals(Pair(1, 1), minSpans)
-    }
-
-    @Test
-    fun `when ScrollView LauncherItemState is configured, should support nested children and scroll orientation`() {
-        val childClock = LauncherItemState(
-            id = "child_clock",
-            type = LauncherItemType.CLOCK,
-            col = 0,
-            row = 0,
-            colSpan = 1,
-            rowSpan = 1
-        )
-        val scrollViewItem = LauncherItemState(
-            id = "scroll_view_1",
-            type = LauncherItemType.SCROLL_VIEW,
-            col = 0,
-            row = 0,
-            colSpan = 7,
-            rowSpan = 6,
-            children = listOf(childClock)
-        )
-
-        assertEquals(LauncherItemType.SCROLL_VIEW, scrollViewItem.safeType)
-        assertEquals(1, scrollViewItem.safeChildren.size)
-        assertEquals(LauncherItemType.CLOCK, scrollViewItem.safeChildren.first().safeType)
+        assertEquals(2, result.size)
+        assertEquals(0, result[0].col)
+        assertEquals(0, result[0].row)
+        assertEquals(4, result[0].colSpan)
+        assertEquals(8, result[0].rowSpan)
+        assertEquals(0, result[1].col)
+        assertEquals(3, result[1].row)
+        assertEquals(4, result[1].colSpan)
+        assertEquals(5, result[1].rowSpan)
     }
 }

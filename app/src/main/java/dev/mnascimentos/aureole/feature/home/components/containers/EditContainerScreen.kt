@@ -28,7 +28,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.Role
-import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.data.model.ContainerModel
@@ -203,7 +202,7 @@ private fun EditContainerSheetContent(
 }
 
 @Composable
-private fun MainSettingsContent(
+internal fun MainSettingsContent(
     onAppearanceClick: () -> Unit,
     onBehaviorClick: () -> Unit,
     onManageItemsClick: () -> Unit,
@@ -267,7 +266,6 @@ private fun MainSettingsNavigationRow(
                 onClick = onClick,
                 role = Role.Button
             )
-            .semantics(mergeDescendants = true) {}
             .padding(vertical = AureoleDS.dimens.medium),
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -278,7 +276,7 @@ private fun MainSettingsNavigationRow(
 }
 
 @Composable
-private fun AppearanceSettingsContent(
+internal fun AppearanceSettingsContent(
     state: EditContainerState,
     isBehaviorMode: Boolean,
     onBack: () -> Unit,

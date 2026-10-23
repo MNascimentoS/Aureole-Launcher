@@ -16,7 +16,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
@@ -50,17 +49,17 @@ internal fun EditClockBackgroundSection(
     }
 
     if (uiState.isClockBackgroundEnabled) {
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(AureoleDS.dimens.xSmall))
         AureoleText(
             text = "Cor de Fundo Personalizada:",
             color = AureoleDS.colors.onSurfaceMedium,
-            modifier = Modifier.padding(bottom = 6.dp),
+            modifier = Modifier.padding(bottom = AureoleDS.dimens.xxSmall),
             format = AureoleTextFormatParams(style = AureoleDS.typography.bodySmall)
         )
         FlowRow(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(10.dp),
-            verticalArrangement = Arrangement.spacedBy(10.dp)
+            horizontalArrangement = Arrangement.spacedBy(AureoleDS.dimens.smallCompact),
+            verticalArrangement = Arrangement.spacedBy(AureoleDS.dimens.smallCompact)
         ) {
             PRESET_BG_COLORS.forEach { (name, colorValue) ->
                 EditClockColorSwatchItem(

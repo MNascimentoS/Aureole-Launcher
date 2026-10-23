@@ -44,6 +44,14 @@ import dev.mnascimentos.aureole.feature.home.components.overlays.extensions.open
 import dev.mnascimentos.aureole.feature.home.components.overlays.extensions.openFolderAppBottomSheet
 import dev.mnascimentos.aureole.feature.home.components.overlays.extensions.openWidgetStackBottomSheet
 import dev.mnascimentos.aureole.feature.home.components.overlays.extensions.toggleWidgetStackDots
+import dev.mnascimentos.aureole.feature.home.components.quickbutton.extensions.onCloseQuickButtonAppearance
+import dev.mnascimentos.aureole.feature.home.components.quickbutton.extensions.onCloseQuickButtonSettings
+import dev.mnascimentos.aureole.feature.home.components.quickbutton.extensions.onCloseShortcutSelection
+import dev.mnascimentos.aureole.feature.home.components.quickbutton.extensions.onOpenQuickButtonAppearance
+import dev.mnascimentos.aureole.feature.home.components.quickbutton.extensions.onOpenQuickButtonSettings
+import dev.mnascimentos.aureole.feature.home.components.quickbutton.extensions.onOpenShortcutSelection
+import dev.mnascimentos.aureole.feature.home.components.quickbutton.extensions.onUpdateQuickButtonAppearance
+import dev.mnascimentos.aureole.feature.home.components.quickbutton.extensions.onUpdateQuickButtonShortcuts
 import dev.mnascimentos.aureole.feature.home.components.widgets.extensions.closeWidgetPopup
 import dev.mnascimentos.aureole.feature.home.components.widgets.extensions.openWidgetPopup
 import dev.mnascimentos.aureole.feature.home.components.widgets.extensions.removeWidgetId
@@ -199,7 +207,15 @@ class HomeActionsFactory(
             onUpdateClockTextColor = { color -> viewModel.updateClockTextColor(color) },
             onUpdateClockBackgroundColor = { color -> viewModel.updateClockBackgroundColor(color) },
             onToggleClockBackground = { viewModel.toggleClockBackground() },
-            onResetClockSettings = { viewModel.resetClockSettings() }
+            onResetClockSettings = { viewModel.resetClockSettings() },
+            onOpenQuickButtonSettings = { id -> viewModel.onOpenQuickButtonSettings(id) },
+            onCloseQuickButtonSettings = { viewModel.onCloseQuickButtonSettings() },
+            onOpenQuickButtonAppearance = { viewModel.onOpenQuickButtonAppearance() },
+            onCloseQuickButtonAppearance = { viewModel.onCloseQuickButtonAppearance() },
+            onOpenShortcutSelection = { type -> viewModel.onOpenShortcutSelection(type) },
+            onCloseShortcutSelection = { viewModel.onCloseShortcutSelection() },
+            onUpdateQuickButtonAppearance = { app -> viewModel.onUpdateQuickButtonAppearance(app) },
+            onUpdateQuickButtonShortcuts = { shortcuts -> viewModel.onUpdateQuickButtonShortcuts(shortcuts) }
         )
     }
 

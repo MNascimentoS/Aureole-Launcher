@@ -49,7 +49,7 @@ fun HomeScreenFolderOverlays(
         actions = actions
     )
 
-    HomeScreenBottomSheetOverlays(
+    HomeScreenFolderBottomSheetOverlays(
         uiState = uiState,
         actions = actions,
         appWidgetHost = appWidgetHost,

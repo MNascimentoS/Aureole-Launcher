@@ -1,19 +1,25 @@
-<?xml version="1.0" encoding="utf-8"?><!--
-   Sample data extraction rules file; uncomment and customize as necessary.
-   See https://developer.android.com/about/versions/12/backup-restore#xml-changes
-   for details.
--->
+<?xml version="1.0" encoding="utf-8"?>
 <data-extraction-rules>
     <cloud-backup>
-        <!-- TODO: Use <include> and <exclude> to control what is backed up.
-        <include .../>
-        <exclude .../>
-        -->
+        <!-- Exclude local database files -->
+        <exclude domain="database" path="aureole_app_database.db"/>
+        <exclude domain="database" path="aureole_app_database.db-wal"/>
+        <exclude domain="database" path="aureole_app_database.db-shm"/>
+        <!-- Exclude application shared preferences -->
+        <exclude domain="sharedpref" path="aureole_folders_prefs.xml"/>
+        <exclude domain="sharedpref" path="aureole_grid_prefs.xml"/>
+        <exclude domain="sharedpref" path="aureole_settings_prefs.xml"/>
+        <exclude domain="sharedpref" path="aureole_prefs.xml"/>
     </cloud-backup>
-    <!--
     <device-transfer>
-        <include .../>
-        <exclude .../>
+        <!-- Exclude local database files -->
+        <exclude domain="database" path="aureole_app_database.db"/>
+        <exclude domain="database" path="aureole_app_database.db-wal"/>
+        <exclude domain="database" path="aureole_app_database.db-shm"/>
+        <!-- Exclude application shared preferences -->
+        <exclude domain="sharedpref" path="aureole_folders_prefs.xml"/>
+        <exclude domain="sharedpref" path="aureole_grid_prefs.xml"/>
+        <exclude domain="sharedpref" path="aureole_settings_prefs.xml"/>
+        <exclude domain="sharedpref" path="aureole_prefs.xml"/>
     </device-transfer>
-    -->
 </data-extraction-rules>

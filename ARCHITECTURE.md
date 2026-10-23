@@ -93,7 +93,7 @@ feature/<nome_da_feature>/
 
 O código deve ser pequeno, conciso, simples e direto. A leitura deve ser natural.
 
-- **Tamanho Máximo de Arquivos (Limite Estrito):** Arquivos devem ser extremamente concisos. **O tamanho máximo permitido para qualquer arquivo é de 300 a 400 linhas** (com exceção explicita de catálogos unificados do Design System como `AureoleIcons.kt` e `ThemePaletteBase.kt`, que contêm supressão documentada). Se um arquivo ultrapassar 300-400 linhas, ele deve ser imediatamente refatorado e dividido em subcomponentes ou arquivos utilitários.
+- **Tamanho Máximo de Arquivos (Limite Estrito):** Arquivos devem ser extremamente concisos. **O tamanho máximo permitido para qualquer arquivo é de 500 linhas** (com exceção explicita de catálogos unificados do Design System como `AureoleIcons.kt` e `ThemePaletteBase.kt`, que contêm supressão documentada). Se um arquivo ultrapassar 500 linhas, ele deve ser imediatamente refatorado e dividido em subcomponentes ou arquivos utilitários.
 - **Funções Limpas:** Funções devem ter apenas uma responsabilidade clara. Evite aninhamentos profundos (`if` dentro de `if` dentro de `for`).
 - **Zero Detekt Issues (`maxIssues: 0`):** O código deve estar 100% em conformidade com do Detekt. O build falhará se houver violações.
 - **Proibição de `@Suppress` Sem Justificativa:** Não utilize `@Suppress` sem uma justificativa arquitetural explícita, revisada e documentada.

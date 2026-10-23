@@ -38,10 +38,12 @@ Ao inspecionar componentes no Figma, traduza EXATAMENTE para Compose usando as r
 5. **Design Tokens Unificados:** Utilize EXCLUSIVAMENTE os tokens injetados via `CompositionLocal`: `AureoleDS.colors`, `AureoleDS.dimens` e `AureoleDS.typography`.
 
 ### 🚫 DONTs (O que NUNCA fazer)
-1. **Hardcode de Valores Numéricos:** É PROIBIDO usar valores em `dp` ou `sp` brutos nas telas para paddings, margens ou fontes. Use sempre tokens (`AureoleDS.dimens`).
+1. **Hardcode de Valores Numéricos de Layout Estático:** É PROIBIDO usar valores em `dp` ou `sp` brutos nas telas/diálogos para paddings, margens, tamanhos de ícones, larguras de bordas ou fontes. Use sempre tokens (`AureoleDS.dimens`).
 2. **Hardcode de Cores:** É PROIBIDO instanciar cores brutas (`Color(0xFF...)`) fora da definição de temas. Use sempre a paleta `AureoleDS.colors`.
 3. **Dependência do MaterialTheme:** Evite utilizar `MaterialTheme.typography` ou `MaterialTheme.colorScheme` nas telas de feature proprietárias; garanta a independência usando o `AureoleDS`.
-4. **Mau uso de Tokens (Regra Crítica de Motion/Física):** NUNCA substitua valores numéricos absolutos por tokens do `AureoleDS.dimens` se o valor estiver sendo usado para specs de animação (springs, durations), offsets matemáticos, blur radii (Haze) ou física de gestos. Tokens de dimensão são estritamente para estruturação de layout estático.
+4. **Mau uso de Tokens (Regra Crítica de Motion/Física/Blur):** NUNCA substitua valores numéricos absolutos por tokens do `AureoleDS.dimens` se o valor estiver sendo usado para specs de animação (springs, durations), offsets matemáticos, blur radii de bibliotecas como Haze (ex: `blurRadius = 24.dp`), dimensões de reordenamento/drag de gestos ou cálculos em canvas. Tokens de dimensão são estritamente para estruturação de layout estático.
+   - *Correto para Layout:* `Modifier.padding(AureoleDS.dimens.medium)`
+   - *Correto para Haze Blur Radius:* `HazeStyle(blurRadius = 24.dp)` (NÃO usar token de dimensão aqui!)
 
 ## 4. O Ecossistema AureoleDS
 O aplicativo suporta múltiplos temas definidos pelo usuário (ex: Frostbite), todos acessíveis de forma tipada e segura através do objeto global `AureoleDS`.

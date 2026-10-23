@@ -6,6 +6,8 @@ import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.data.model.ContainerModel
 import dev.mnascimentos.aureole.core.data.model.LauncherItemState
 import dev.mnascimentos.aureole.core.data.model.LauncherItemType
+import dev.mnascimentos.aureole.core.data.model.QuickButtonAppearance
+import dev.mnascimentos.aureole.core.data.model.QuickButtonShortcuts
 import dev.mnascimentos.aureole.core.data.model.ScrollOrientation
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.FolderViewIntent
 
@@ -82,6 +84,16 @@ data class HomeScreenActions(
     val onUpdateClockBackgroundColor: (Int) -> Unit = {},
     val onToggleClockBackground: () -> Unit = {},
     val onResetClockSettings: () -> Unit = {},
+
+    // Quick Button Customization Actions
+    val onOpenQuickButtonSettings: (String) -> Unit = {},
+    val onCloseQuickButtonSettings: () -> Unit = {},
+    val onOpenQuickButtonAppearance: () -> Unit = {},
+    val onCloseQuickButtonAppearance: () -> Unit = {},
+    val onOpenShortcutSelection: (String) -> Unit = {},
+    val onCloseShortcutSelection: () -> Unit = {},
+    val onUpdateQuickButtonAppearance: (QuickButtonAppearance) -> Unit = {},
+    val onUpdateQuickButtonShortcuts: (QuickButtonShortcuts) -> Unit = {},
 
     val onOpenContainerAppBottomSheet: (AppInfo, String) -> Unit = { _, _ -> },
     val onCloseContainerAppBottomSheet: () -> Unit = {},

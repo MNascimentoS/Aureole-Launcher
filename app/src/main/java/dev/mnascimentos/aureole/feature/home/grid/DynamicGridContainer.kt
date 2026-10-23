@@ -23,10 +23,10 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import dev.mnascimentos.aureole.core.data.model.LauncherItemState
 import dev.mnascimentos.aureole.core.data.model.LauncherItemType
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.feature.home.grid.model.CellBoxCallbacks
 import dev.mnascimentos.aureole.feature.home.grid.model.CellBoxConfig
 import dev.mnascimentos.aureole.feature.home.grid.model.CellBoxMetrics
@@ -41,7 +41,6 @@ import dev.mnascimentos.aureole.feature.home.grid.model.GridMetricsTuple
 import dev.mnascimentos.aureole.feature.home.grid.model.ResizeHandleCallbacks
 import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
 
-internal val BORDER_CORNER_RADIUS = 16.dp
 private const val LIFTED_Z_INDEX = 10f
 private const val LIFTED_SCALE = 1.02f
 
@@ -245,7 +244,7 @@ private fun GridItemCellBox(config: CellBoxConfig) {
                 scaleX = if (isLifted) LIFTED_SCALE else 1f
                 scaleY = if (isLifted) LIFTED_SCALE else 1f
             }
-            .padding(4.dp)
+            .padding(AureoleDS.dimens.xxSmall)
             .then(config.modifier)
     ) {
         config.content()

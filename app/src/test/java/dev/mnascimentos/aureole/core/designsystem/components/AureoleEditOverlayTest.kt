@@ -6,6 +6,7 @@ import androidx.compose.ui.test.junit4.v2.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import dev.mnascimentos.aureole.core.designsystem.model.AureoleEditOverlayConfig
 import dev.mnascimentos.aureole.core.designsystem.model.AureoleEditOverlayParams
+import dev.mnascimentos.aureole.core.designsystem.model.rememberAureoleEditOverlayState
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import org.junit.Rule
 import org.junit.Test
@@ -89,5 +90,28 @@ class AureoleEditOverlayTest {
         composeTestRule.onNodeWithText("Animated Preview Area").assertIsDisplayed()
         composeTestRule.onNodeWithText("Animated Sheet Body").assertIsDisplayed()
         composeTestRule.onNodeWithText("Bottom Bar").assertIsDisplayed()
+    }
+
+    @Test
+    fun `when using remembered edit overlay state, should display correctly`() {
+        composeTestRule.setContent {
+            val state = rememberAureoleEditOverlayState()
+            AureoleLauncherTheme {
+                AureoleEditOverlay(
+                    state = state,
+                    onDismissRequest = {},
+                    params = AureoleEditOverlayParams(
+                        config = AureoleEditOverlayConfig(
+                            title = "Stateful Overlay",
+                            animated = false
+                        ),
+                        sheetContent = { Text("Stateful Sheet Content") }
+                    )
+                )
+            }
+        }
+
+        composeTestRule.onNodeWithText("Stateful Overlay").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Stateful Sheet Content").assertIsDisplayed()
     }
 }

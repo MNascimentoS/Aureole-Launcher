@@ -15,8 +15,8 @@ import dev.mnascimentos.aureole.feature.home.components.favorites.extensions.upd
 import dev.mnascimentos.aureole.feature.home.model.HomeRepositories
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.StandardTestDispatcher
-import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
@@ -33,16 +33,17 @@ import org.robolectric.RuntimeEnvironment
 import org.robolectric.shadows.ShadowLooper
 
 @RunWith(RobolectricTestRunner::class)
+@OptIn(ExperimentalCoroutinesApi::class)
 class HomeViewModelFavoritesExtTest {
 
     private lateinit var context: Context
     private lateinit var settingsRepository: SettingsRepository
     private lateinit var viewModel: HomeViewModel
+    private val testDispatcher = StandardTestDispatcher()
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     @Before
     fun setUp() {
-        Dispatchers.setMain(StandardTestDispatcher())
+        Dispatchers.setMain(testDispatcher)
         context = RuntimeEnvironment.getApplication()
         settingsRepository = SettingsRepository(context)
 
@@ -61,7 +62,6 @@ class HomeViewModelFavoritesExtTest {
         ShadowLooper.idleMainLooper()
     }
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     @After
     fun tearDown() {
         Dispatchers.resetMain()
@@ -84,54 +84,34 @@ class HomeViewModelFavoritesExtTest {
         assertNull(viewModel.uiState.value.activeFavoriteContainerId)
     }
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     @Test
-    fun `when toggleFavorite is called for non-existing package, should add it`() = runTest {
+    fun `when toggleFavorite is called for non-existing package, should add it`() = runTest(testDispatcher) {
         val pkg = "com.example.app1"
         viewModel.toggleFavorite(pkg, "default_favorites")
-        var retries = 0
-        while (!viewModel.uiState.value.favoriteAppPackages.contains(pkg) && retries < 20) {
-            Thread.sleep(50)
-            advanceUntilIdle()
-            retries++
-        }
-        assertTrue(viewModel.uiState.value.favoriteAppPackages.contains(pkg))
+
+        val state = viewModel.uiState.first { it.favoriteAppPackages.contains(pkg) }
+        assertTrue(state.favoriteAppPackages.contains(pkg))
     }
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     @Test
-    fun `when toggleFavorite is called for existing package, should remove it`() = runTest {
+    fun `when toggleFavorite is called for existing package, should remove it`() = runTest(testDispatcher) {
         val pkg = "com.example.app1"
         viewModel.toggleFavorite(pkg, "default_favorites")
-        var retries = 0
-        while (!viewModel.uiState.value.favoriteAppPackages.contains(pkg) && retries < 20) {
-            Thread.sleep(50)
-            advanceUntilIdle()
-            retries++
-        }
-        assertTrue(viewModel.uiState.value.favoriteAppPackages.contains(pkg))
+
+        var state = viewModel.uiState.first { it.favoriteAppPackages.contains(pkg) }
+        assertTrue(state.favoriteAppPackages.contains(pkg))
 
         viewModel.toggleFavorite(pkg, "default_favorites")
-        retries = 0
-        while (viewModel.uiState.value.favoriteAppPackages.contains(pkg) && retries < 20) {
-            Thread.sleep(50)
-            advanceUntilIdle()
-            retries++
-        }
-        assertFalse(viewModel.uiState.value.favoriteAppPackages.contains(pkg))
+        state = viewModel.uiState.first { !it.favoriteAppPackages.contains(pkg) }
+        assertFalse(state.favoriteAppPackages.contains(pkg))
     }
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     @Test
-    fun `when updateFavoritePackages is called, should update active container favorites`() = runTest {
+    fun `when updateFavoritePackages is called, should update active container favorites`() = runTest(testDispatcher) {
         val newFavs = listOf("com.example.app1", "com.example.app2")
         viewModel.updateFavoritePackages(newFavs)
-        var retries = 0
-        while (viewModel.uiState.value.favoriteAppPackages != newFavs && retries < 20) {
-            Thread.sleep(50)
-            advanceUntilIdle()
-            retries++
-        }
-        assertEquals(newFavs, viewModel.uiState.value.favoriteAppPackages)
+
+        val state = viewModel.uiState.first { it.favoriteAppPackages == newFavs }
+        assertEquals(newFavs, state.favoriteAppPackages)
     }
 }
