@@ -2,7 +2,7 @@ name: Deploy site
 
 on:
   push:
-    branches: [release/0.8.20, main]
+    branches: [main]
     paths: ["docs/**"]
   workflow_dispatch:
 
