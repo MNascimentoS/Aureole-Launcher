@@ -29,6 +29,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import dev.mnascimentos.aureole.core.designsystem.icons.Logo
+import dev.mnascimentos.aureole.core.designsystem.icons.Smile
 import dev.mnascimentos.aureole.core.designsystem.model.AureoleDialogConfig
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
@@ -189,16 +190,48 @@ fun AureoleDialogHeader(
 
 @AureolePreview
 @Composable
-private fun AureoleDialogPreview() {
+private fun AureoleDialogDefaultPreview() {
     AureoleLauncherTheme {
         AureoleDialog(
             onDismissRequest = {},
-            title = "Sample Dialog Title"
+            title = "Sample Dialog Title",
         ) {
             AureoleText(
                 text = "This is sample content inside AureoleDialog.",
-                format = AureoleTextFormatParams(style = AureoleDS.typography.bodyMedium)
+                format = AureoleTextFormatParams(style = AureoleDS.typography.bodyMedium),
             )
         }
+    }
+}
+
+@AureolePreview
+@Composable
+private fun AureoleDialogWithIconAndLogoPreview() {
+    AureoleLauncherTheme {
+        AureoleDialog(
+            onDismissRequest = {},
+            config = AureoleDialogConfig(
+                title = "Dialog With Icon",
+                icon = { m -> AureoleDS.icons.Smile(m) },
+                onLogoClick = {},
+            ),
+        ) {
+            AureoleText(
+                text = "Dialog content with leading icon and logo callback.",
+                format = AureoleTextFormatParams(style = AureoleDS.typography.bodyMedium),
+            )
+        }
+    }
+}
+
+@AureolePreview
+@Composable
+private fun AureoleDialogHeaderSlotPreview() {
+    AureoleLauncherTheme {
+        AureoleDialogHeader(
+            title = "Header Composition Title",
+            icon = { m -> AureoleDS.icons.Smile(m) },
+            onLogoClick = {},
+        )
     }
 }

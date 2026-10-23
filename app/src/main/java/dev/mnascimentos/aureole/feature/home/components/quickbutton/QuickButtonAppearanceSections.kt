@@ -42,6 +42,8 @@ import dev.mnascimentos.aureole.core.designsystem.icons.SmileColor
 import dev.mnascimentos.aureole.core.designsystem.icons.Stroke
 import dev.mnascimentos.aureole.core.designsystem.icons.StrokeColor
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
+import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.components.quickbutton.model.QuickButtonColorPickerTarget
 import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
 
@@ -265,5 +267,86 @@ private fun QuickButtonIconFlowRow(
                 )
             }
         }
+    }
+}
+
+@AureolePreview
+@Composable
+private fun QuickButtonAppearanceSheetContentPreview() {
+    val dummyActions = HomeScreenActions(
+        onWidgetRowHeightChanged = {},
+        onAppClick = {},
+        onExpandNotificationShade = {},
+        onFolderIntent = {},
+        onSetAddAppToFolderDialogVisible = {},
+        onSetRenameFolderDialogVisible = {},
+        onSearchQueryChanged = {},
+        onSettingsClick = {},
+        onAllAppsDrawerClose = {},
+        onAllAppsDrawerOpen = {},
+    )
+    AureoleLauncherTheme {
+        QuickButtonAppearanceSheetContent(
+            activeModel = QuickButtonModel(),
+            activeAppInfo = null,
+            actions = dummyActions,
+            onPickColor = {},
+            onOpenIconPicker = {},
+        )
+    }
+}
+
+@AureolePreview
+@Composable
+private fun AppearanceRowsPreview() {
+    AureoleLauncherTheme {
+        Column {
+            AppearanceColorRow(
+                title = "Preview Color Row",
+                icon = { m -> AureoleDS.icons.ColorFill(m) },
+                colorValue = Color.Red,
+                onClick = {},
+            )
+            AppearanceIconRow(
+                title = "Preview Icon Row",
+                icon = { m -> AureoleDS.icons.Smile(m) },
+                selectedIcon = QuickButtonIcon.STAR,
+                appInfo = null,
+                onClick = {},
+            )
+        }
+    }
+}
+
+@AureolePreview
+@Composable
+private fun AppearanceToggleRowPreview() {
+    AureoleLauncherTheme {
+        Column {
+            AppearanceToggleRow(
+                title = "Preview Toggle Row Checked",
+                icon = { m -> AureoleDS.icons.Stroke(m) },
+                isChecked = true,
+                onToggle = {},
+            )
+            AppearanceToggleRow(
+                title = "Preview Toggle Row Unchecked",
+                icon = { m -> AureoleDS.icons.Stroke(m) },
+                isChecked = false,
+                onToggle = {},
+            )
+        }
+    }
+}
+
+@AureolePreview
+@Composable
+private fun QuickButtonIconPickerDialogPreview() {
+    AureoleLauncherTheme {
+        QuickButtonIconPickerDialog(
+            selectedIcon = QuickButtonIcon.STAR,
+            onIconSelected = {},
+            onDismiss = {},
+        )
     }
 }
