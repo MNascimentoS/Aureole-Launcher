@@ -1,12 +1,15 @@
 package dev.mnascimentos.aureole.core.designsystem.components
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.DraggableState
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.draggable
 import androidx.compose.foundation.gestures.rememberDraggableState
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -22,10 +25,13 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import dev.mnascimentos.aureole.core.designsystem.model.AureoleEditOverlayConfig
 import dev.mnascimentos.aureole.core.designsystem.model.AureoleEditOverlayParams
 import dev.mnascimentos.aureole.core.designsystem.model.OverlaySheetStateData
 import dev.mnascimentos.aureole.core.designsystem.model.SheetBounds
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
+import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 
 private const val DISMISS_DRAG_THRESHOLD_PX = 50f
 private const val DISMISS_VELOCITY_THRESHOLD = 1000f
@@ -170,4 +176,64 @@ private fun handleDragStopped(
         0f
     }
     onExpansionChanged(targetExpansion)
+}
+
+@AureolePreview
+@Composable
+private fun SheetSurfaceDefaultPreview() {
+    AureoleLauncherTheme {
+        Box(modifier = Modifier.fillMaxSize()) {
+            AnimatedVisibility(visible = true) {
+                SheetSurface(
+                    stateData = OverlaySheetStateData(
+                        dragExpansion = 0f,
+                        onDragExpansionChanged = {},
+                        triggerDismiss = {},
+                        effectiveAnimated = false,
+                        animScope = this
+                    ),
+                    params = AureoleEditOverlayParams(
+                        config = AureoleEditOverlayConfig(
+                            title = "Preview Title",
+                            onSettingsClick = {}
+                        ),
+                        previewContent = { AureoleText("Preview Content") },
+                        bottomBarContent = null,
+                        sheetContent = { AureoleText("Sheet Content") }
+                    ),
+                    bounds = SheetBounds(maxHeight = 300.dp, maxExpansionAllowed = 100.dp)
+                )
+            }
+        }
+    }
+}
+
+@AureolePreview
+@Composable
+private fun SheetSurfaceExpandedPreview() {
+    AureoleLauncherTheme {
+        Box(modifier = Modifier.fillMaxSize()) {
+            AnimatedVisibility(visible = true) {
+                SheetSurface(
+                    stateData = OverlaySheetStateData(
+                        dragExpansion = 100f,
+                        onDragExpansionChanged = {},
+                        triggerDismiss = {},
+                        effectiveAnimated = false,
+                        animScope = this
+                    ),
+                    params = AureoleEditOverlayParams(
+                        config = AureoleEditOverlayConfig(
+                            title = "Preview Title",
+                            onSettingsClick = {}
+                        ),
+                        previewContent = { AureoleText("Preview Content") },
+                        bottomBarContent = null,
+                        sheetContent = { AureoleText("Sheet Content") }
+                    ),
+                    bounds = SheetBounds(maxHeight = 300.dp, maxExpansionAllowed = 100.dp)
+                )
+            }
+        }
+    }
 }

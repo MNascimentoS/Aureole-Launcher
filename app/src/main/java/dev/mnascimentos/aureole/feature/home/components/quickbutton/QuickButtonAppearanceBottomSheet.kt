@@ -23,19 +23,13 @@ import dev.mnascimentos.aureole.core.designsystem.model.AureoleEditOverlayConfig
 import dev.mnascimentos.aureole.core.designsystem.model.AureoleEditOverlayParams
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
+import dev.mnascimentos.aureole.feature.home.components.quickbutton.model.AppearanceDialogState
 import dev.mnascimentos.aureole.feature.home.components.quickbutton.model.QuickButtonColorPickerTarget
 import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
 import kotlinx.coroutines.delay
 
 private const val DISMISS_DELAY_MS = 300L
-
-private data class AppearanceDialogState(
-    val colorPickerTarget: QuickButtonColorPickerTarget?,
-    val activeModel: QuickButtonModel,
-    val showIconPicker: Boolean,
-    val actions: HomeScreenActions
-)
 
 @Composable
 fun QuickButtonAppearanceBottomSheet(
@@ -193,6 +187,33 @@ private fun QuickButtonAppearanceBottomSheetPreview() {
         QuickButtonAppearanceBottomSheet(
             uiState = MainUiState(
                 activeQuickButtonModel = QuickButtonModel()
+            ),
+            actions = dummyActions,
+            onDismissRequest = {}
+        )
+    }
+}
+
+@AureolePreview
+@Composable
+private fun QuickButtonAppearanceBottomSheetHazeDisabledPreview() {
+    val dummyActions = HomeScreenActions(
+        onWidgetRowHeightChanged = {},
+        onAppClick = {},
+        onExpandNotificationShade = {},
+        onFolderIntent = {},
+        onSetAddAppToFolderDialogVisible = {},
+        onSetRenameFolderDialogVisible = {},
+        onSearchQueryChanged = {},
+        onSettingsClick = {},
+        onAllAppsDrawerClose = {},
+        onAllAppsDrawerOpen = {}
+    )
+    AureoleLauncherTheme {
+        QuickButtonAppearanceBottomSheet(
+            uiState = MainUiState(
+                activeQuickButtonModel = QuickButtonModel(),
+                isHazeEnabled = false
             ),
             actions = dummyActions,
             onDismissRequest = {}

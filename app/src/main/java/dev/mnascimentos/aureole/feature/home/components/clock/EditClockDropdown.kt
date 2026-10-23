@@ -1,5 +1,3 @@
-@file:Suppress("MagicNumber")
-
 package dev.mnascimentos.aureole.feature.home.components.clock
 
 import androidx.compose.animation.core.animateFloatAsState
@@ -37,7 +35,25 @@ import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatPa
 import dev.mnascimentos.aureole.core.designsystem.icons.ArrowDown
 import dev.mnascimentos.aureole.core.designsystem.icons.Check
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
+import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.components.clock.model.EditClockDropdownConfig
+
+private object Constants {
+    const val ROTATION_COLLAPSED = 0f
+    const val ROTATION_EXPANDED = 180f
+    const val ROTATION_ANIM_DURATION = 200
+
+    const val BG_ALPHA = 0.45f
+    const val BORDER_ALPHA_EXPANDED = 0.35f
+    const val BORDER_ALPHA_COLLAPSED = 0.2f
+    const val MENU_BORDER_ALPHA = 0.3f
+
+    val SHADOW_ELEVATION = 8.dp
+    val MENU_ITEM_VERTICAL_PADDING = 2.dp
+
+    const val SELECTED_BG_ALPHA = 0.12f
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -79,9 +95,9 @@ internal fun EditClockDropdown(
                 containerColor = AureoleDS.colors.surfaceVariant,
                 border = BorderStroke(
                     width = AureoleDS.dimens.borderMinimal,
-                    color = AureoleDS.colors.outline.copy(alpha = 0.3f)
+                    color = AureoleDS.colors.outline.copy(alpha = Constants.MENU_BORDER_ALPHA)
                 ),
-                shadowElevation = 8.dp,
+                shadowElevation = Constants.SHADOW_ELEVATION,
                 modifier = Modifier.padding(vertical = AureoleDS.dimens.xxSmall)
             ) {
                 config.options.forEach { (key, optionLabel) ->
@@ -125,8 +141,8 @@ private fun DropdownAnchorBox(
     modifier: Modifier = Modifier
 ) {
     val arrowRotation by animateFloatAsState(
-        targetValue = if (isExpanded) 180f else 0f,
-        animationSpec = tween(durationMillis = 200),
+        targetValue = if (isExpanded) Constants.ROTATION_EXPANDED else Constants.ROTATION_COLLAPSED,
+        animationSpec = tween(durationMillis = Constants.ROTATION_ANIM_DURATION),
         label = "arrowRotation"
     )
 
@@ -134,14 +150,14 @@ private fun DropdownAnchorBox(
         modifier = modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(AureoleDS.dimens.radiusSmall))
-            .background(AureoleDS.colors.surfaceVariant.copy(alpha = 0.45f))
+            .background(AureoleDS.colors.surfaceVariant.copy(alpha = Constants.BG_ALPHA))
             .border(
                 BorderStroke(
                     width = AureoleDS.dimens.borderMinimal,
                     color = if (isExpanded) {
-                        AureoleDS.colors.onSurfaceHigh.copy(alpha = 0.35f)
+                        AureoleDS.colors.onSurfaceHigh.copy(alpha = Constants.BORDER_ALPHA_EXPANDED)
                     } else {
-                        AureoleDS.colors.outline.copy(alpha = 0.2f)
+                        AureoleDS.colors.outline.copy(alpha = Constants.BORDER_ALPHA_COLLAPSED)
                     }
                 ),
                 shape = RoundedCornerShape(AureoleDS.dimens.radiusSmall)
@@ -209,11 +225,51 @@ private fun DropdownOptionMenuItem(
         modifier = Modifier
             .padding(
                 horizontal = AureoleDS.dimens.xxSmall,
-                vertical = 2.dp
+                vertical = Constants.MENU_ITEM_VERTICAL_PADDING
             )
             .clip(RoundedCornerShape(AureoleDS.dimens.radiusXSmall))
             .background(
-                if (isSelected) AureoleDS.colors.onSurfaceHigh.copy(alpha = 0.12f) else Color.Transparent
+                if (isSelected) {
+                    AureoleDS.colors.onSurfaceHigh.copy(
+                        alpha = Constants.SELECTED_BG_ALPHA
+                    )
+                } else {
+                    Color.Transparent
+                }
             )
     )
+}
+
+@AureolePreview
+@Composable
+private fun EditClockDropdownDefaultPreview() {
+    AureoleLauncherTheme {
+        EditClockDropdown(
+            label = "Preview Label",
+            selectedKey = "key1",
+            options = listOf(
+                "key1" to "Option 1",
+                "key2" to "Option 2"
+            ),
+            onOptionSelected = {},
+            initialExpanded = false
+        )
+    }
+}
+
+@AureolePreview
+@Composable
+private fun EditClockDropdownExpandedPreview() {
+    AureoleLauncherTheme {
+        EditClockDropdown(
+            label = "Preview Label",
+            selectedKey = "key1",
+            options = listOf(
+                "key1" to "Option 1",
+                "key2" to "Option 2"
+            ),
+            onOptionSelected = {},
+            initialExpanded = true
+        )
+    }
 }

@@ -1,5 +1,17 @@
 # 🤖 System Prompt / AI Project Instructions
 
+# 🛑 REGRA INVIOLÁVEL DE INICIALIZAÇÃO DE CHAT (STARTUP WORKFLOW)
+No PRIMEIRO turno de cada conversa (início de um novo chat), ANTES de responder à solicitação do usuário, planejar ou executar qualquer ação/código:
+1. Você DEVE ler e carregar o arquivo índice das steerings:
+   - `.gemini/index.md`
+2. Você DEVE ler e carregar o contexto de TODOS os arquivos de diretivas do projeto:
+   - `.gemini/aureole_architecture.md`
+   - `.gemini/aureole_providers.md`
+   - `.gemini/aureole_components.md`
+   - `.gemini/aureoleo_design_system.md`
+   - `.gemini/aureole_testing.md`
+3. Somente após concluir a leitura prévia de todas as steerings, prossiga com a tarefa solicitada pelo usuário.
+
 Antes de responder ou gerar código neste projeto, você DEVE ler e seguir estritamente as regras de arquitetura, design system, componentes, providers e testes definidas nos arquivos do diretório `.gemini/`:
 
 1. Índice Mestre: `.gemini/index.md`
