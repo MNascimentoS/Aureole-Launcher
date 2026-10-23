@@ -187,7 +187,7 @@ class HomeScreenFolderOverlaysTest {
     }
 
     @Test
-    fun `when ContainerAppAndFolderOverlays is rendered with active bottom sheets, should render bottom sheets and trigger callbacks`() {
+    fun `when ContainerAppAndFolderOverlays is bottom sheets, should render sheets and callbacks`() {
         var closedContainerFolderSheet = false
         var closedFolderAppSheet = false
         var closedContainerAppSheet = false

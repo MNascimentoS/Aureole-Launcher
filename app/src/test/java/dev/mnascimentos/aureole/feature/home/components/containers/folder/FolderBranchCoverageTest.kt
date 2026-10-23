@@ -165,7 +165,12 @@ class FolderBranchCoverageTest {
 
     @Test
     fun `when FolderMiniGridPreview rendered with folder having icon and empty apps, should render icon`() {
-        val folder = AppFolder(id = "f_ic", name = "IconFolder", icon = "home", appPackageNames = emptyList())
+        val folder = AppFolder(
+            id = "f_ic",
+            name = "IconFolder",
+            icon = "home",
+            appPackageNames = emptyList()
+        )
 
         composeTestRule.setContent {
             AureoleLauncherTheme {
@@ -182,7 +187,11 @@ class FolderBranchCoverageTest {
     @Test
     fun `when FolderMiniGridPreview rendered with 4 apps, should exercise grid cell rendering`() {
         val apps = listOf(app1, app2, app3, app4)
-        val folder = AppFolder(id = "f_4", name = "GridFolder", appPackageNames = apps.map { it.packageName })
+        val folder = AppFolder(
+            id = "f_4",
+            name = "GridFolder",
+            appPackageNames = apps.map { it.packageName }
+        )
 
         composeTestRule.setContent {
             AureoleLauncherTheme {
@@ -263,7 +272,11 @@ class FolderBranchCoverageTest {
 
     @Test
     fun `when FolderDialog rendered in InspectionMode, should render in Box layout`() {
-        val folder = AppFolder(id = "f1", name = "Inspection Folder", appPackageNames = listOf(app1.packageName))
+        val folder = AppFolder(
+            id = "f1",
+            name = "Inspection Folder",
+            appPackageNames = listOf(app1.packageName)
+        )
 
         composeTestRule.setContent {
             CompositionLocalProvider(
@@ -319,7 +332,8 @@ class FolderBranchCoverageTest {
 
     @Test
     fun `when FolderAppPickerDialog rendered in InspectionMode, should render Surface layout`() {
-        val folder = AppFolder(id = "f1", name = "App Picker", appPackageNames = listOf(app1.packageName))
+        val folder =
+            AppFolder(id = "f1", name = "App Picker", appPackageNames = listOf(app1.packageName))
 
         composeTestRule.setContent {
             CompositionLocalProvider(
@@ -340,7 +354,7 @@ class FolderBranchCoverageTest {
     }
 
     @Test
-    fun `when reordering apps with ArrowUp and ArrowDown in SelectedFolderAppRowActionButtons, should exercise reorder branches`() {
+    fun `when reordering apps with in SelectedFolderAppRowActionButtons, should reorder branches`() {
         var moveUpCalled = false
         var moveDownCalled = false
         var toggleCalled = false
@@ -449,7 +463,7 @@ class FolderBranchCoverageTest {
     // --- 7. HomeScreenFolderOverlayComponents Branches ---
 
     @Test
-    fun `when HomeScreenFolderBottomSheetOverlays is rendered with activeWidgetStackBottomSheet, should render EditWidgetGroupScreen`() {
+    fun `when  with activeWidgetStackBottomSheet, should render EditWidgetGroupScreen`() {
         val hazeState = HazeState()
         val actions = createDefaultHomeScreenActions()
 
@@ -482,7 +496,7 @@ class FolderBranchCoverageTest {
     // --- 8. OpenedFolderPopup & Grid Branches ---
 
     @Test
-    fun `when OpenedFolderPopup rendered in standard mode with folder displayAsGrid true, should render OpenedFolderGrid`() {
+    fun `when OpenedFolderPopup  with folder displayAsGrid true, should render OpenedFolderGrid`() {
         val gridFolder =
             AppFolder(
                 id = "f_grid",
@@ -490,7 +504,12 @@ class FolderBranchCoverageTest {
                 displayAsGrid = true,
                 appPackageNames = listOf(app1.packageName, app2.packageName)
             )
-        val actions = FolderPopupActions(onDismiss = {}, onAppClick = {}, onAddAppsClick = {}, onEditFolderClick = {})
+        val actions = FolderPopupActions(
+            onDismiss = {},
+            onAppClick = {},
+            onAddAppsClick = {},
+            onEditFolderClick = {}
+        )
 
         composeTestRule.setContent {
             CompositionLocalProvider(LocalHomeUiState provides MainUiState()) {
@@ -530,16 +549,29 @@ class FolderBranchCoverageTest {
                 appPackageNames = apps5.map { it.packageName }
             )
 
-        val actions = FolderPopupActions(onDismiss = {}, onAppClick = {}, onAddAppsClick = {}, onEditFolderClick = {})
+        val actions = FolderPopupActions(
+            onDismiss = {},
+            onAppClick = {},
+            onAddAppsClick = {},
+            onEditFolderClick = {}
+        )
 
         composeTestRule.setContent {
             CompositionLocalProvider(LocalHomeUiState provides MainUiState()) {
                 AureoleLauncherTheme {
                     OpenedFolderPopup(
-                        config = OpenedFolderPopupConfig(folder = folder2, allApps = apps2, actions = actions)
+                        config = OpenedFolderPopupConfig(
+                            folder = folder2,
+                            allApps = apps2,
+                            actions = actions
+                        )
                     )
                     OpenedFolderPopup(
-                        config = OpenedFolderPopupConfig(folder = folder5, allApps = apps5, actions = actions)
+                        config = OpenedFolderPopupConfig(
+                            folder = folder5,
+                            allApps = apps5,
+                            actions = actions
+                        )
                     )
                 }
             }
@@ -552,14 +584,28 @@ class FolderBranchCoverageTest {
     @Test
     fun `when OpenedFolderGrid is empty, should display empty popup message`() {
         val emptyFolder =
-            AppFolder(id = "fe", name = "Empty Grid Popup", displayAsGrid = true, appPackageNames = emptyList())
-        val actions = FolderPopupActions(onDismiss = {}, onAppClick = {}, onAddAppsClick = {}, onEditFolderClick = {})
+            AppFolder(
+                id = "fe",
+                name = "Empty Grid Popup",
+                displayAsGrid = true,
+                appPackageNames = emptyList()
+            )
+        val actions = FolderPopupActions(
+            onDismiss = {},
+            onAppClick = {},
+            onAddAppsClick = {},
+            onEditFolderClick = {}
+        )
 
         composeTestRule.setContent {
             CompositionLocalProvider(LocalHomeUiState provides MainUiState()) {
                 AureoleLauncherTheme {
                     OpenedFolderPopup(
-                        config = OpenedFolderPopupConfig(folder = emptyFolder, allApps = emptyList(), actions = actions)
+                        config = OpenedFolderPopupConfig(
+                            folder = emptyFolder,
+                            allApps = emptyList(),
+                            actions = actions
+                        )
                     )
                 }
             }
@@ -608,7 +654,11 @@ class FolderBranchCoverageTest {
 
     @Test
     fun `when FolderAppPickerDialog search produces no matches, should display empty search results message`() {
-        val folder = AppFolder(id = "f_srch", name = "SearchFolder", appPackageNames = listOf(app1.packageName))
+        val folder = AppFolder(
+            id = "f_srch",
+            name = "SearchFolder",
+            appPackageNames = listOf(app1.packageName)
+        )
 
         composeTestRule.setContent {
             AureoleLauncherTheme {
@@ -632,7 +682,11 @@ class FolderBranchCoverageTest {
 
     @Test
     fun `when clicking Plus and Delete in FolderAppPickerDialog, should toggle package selection`() {
-        val folder = AppFolder(id = "f_tgl", name = "ToggleFolder", appPackageNames = listOf(app1.packageName))
+        val folder = AppFolder(
+            id = "f_tgl",
+            name = "ToggleFolder",
+            appPackageNames = listOf(app1.packageName)
+        )
         var savedList = emptyList<String>()
 
         composeTestRule.setContent {
@@ -657,7 +711,7 @@ class FolderBranchCoverageTest {
     // --- 11. Overlays & BottomSheets Full Coverage ---
 
     @Test
-    fun `when OpenedFolderOverlay is rendered with activeFolder, gridFolder, and haze, should execute all overlay branches`() {
+    fun `when OpenedFolderOverlay is activeFolder, gridFolder, and haze, should overlay branches`() {
         val hazeState = HazeState()
         val actions = createDefaultHomeScreenActions()
 

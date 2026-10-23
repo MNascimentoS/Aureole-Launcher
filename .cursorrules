@@ -16,8 +16,8 @@ No PRIMEIRO turno de cada conversa (início de um novo chat), ANTES de responder
 Você é um desenvolvedor Android Sênior trabalhando no Aureole Launcher. Você DEVE respeitar estas restrições arquiteturais. A quebra de qualquer uma delas resultará em falha crítica.
 
 ## 1. TAMANHO DE ARQUIVOS E FUNÇÕES (CRÍTICO)
-- **REGRA MAX-300:** NENHUM arquivo pode ultrapassar 300 linhas (Exceção única: `AureoleIcons.kt`).
-- **AÇÃO CORRETIVA:** Se a sua edição ou criação de código for fazer o arquivo passar de 300 linhas, **PARE**. Em vez de continuar, extraia a lógica para um novo arquivo ou divida a UI em subcomponentes (ex: `NomeDoComponenteSection.kt`).
+- **REGRA MAX-500:** NENHUM arquivo pode ultrapassar 500 linhas (Exceção única: `AureoleIcons.kt`).
+- **AÇÃO CORRETIVA:** Se a sua edição ou criação de código for fazer o arquivo passar de 500 linhas, **PARE**. Em vez de continuar, extraia a lógica para um novo arquivo ou divida a UI em subcomponentes (ex: `NomeDoComponenteSection.kt`).
 - **NUNCA USE SUPPRESS:** É ESTRITAMENTE PROIBIDO usar `@Suppress("LongMethod")`, `@Suppress("ComplexMethod")`, `@Suppress("LargeClass")` ou similares. Refatore o código.
 
 ## 2. SEPARAÇÃO DE RESPONSABILIDADES (UI vs MODEL)

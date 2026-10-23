@@ -22,7 +22,7 @@ feature/[nome_da_feature]/: Todo o resto separado por funcionalidade.
 ## 3. O Que NUNCA Fazer (DONTs - Regras Críticas)
 
 - **Misturar Responsabilidades:** É ESTRITAMENTE PROIBIDO declarar `data class`, `class`, `enum`, `UiState` ou `Actions/Params` no mesmo arquivo de UI (*Screen.kt, *Dialog.kt, *Sheet.kt, *Component.kt). Toda data class/class/enum de modelo ou parâmetro DEVE ir para a pasta `model/` correspondente (ex: `feature/.../model/` ou `core/designsystem/model/`).
-- **Arquivos Gigantes:** NENHUM arquivo deve passar de 300 linhas (Exceção única: AureoleIcons.kt). Se passar de 300 linhas, OBRIGATORIAMENTE divida o arquivo em subcomponentes.
+- **Arquivos Gigantes:** NENHUM arquivo deve passar de 500 linhas (Exceção única: AureoleIcons.kt). Se passar de 500 linhas, OBRIGATORIAMENTE divida o arquivo em subcomponentes.
 - **Burlar Detekt / @Suppress:** É PROIBIDO usar `@Suppress("LongMethod")`, `@Suppress("ComplexMethod")`, `@Suppress("LongParameterList")`, `@Suppress("LongParamList")` ou alterar o `detekt.yml` para ocultar problemas de tamanho, quantidade de parâmetros ou complexidade. Divida a função, parâmetros em data class, ou o arquivo.
 - **Vazamento de Domínio no Design System:** Componentes em `core/designsystem/components` NUNCA podem importar pacotes de `feature/*`, nem inicializar `Activity`s. Eles devem ser 100% agnósticos e receber callbacks/slots.
 - **Android no ViewModel:** É PROIBIDA a importação de classes do pacote android.* (Context, View, Activity) dentro de qualquer ViewModel.

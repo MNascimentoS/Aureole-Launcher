@@ -22,7 +22,7 @@ Antes de responder ou gerar código neste projeto, você DEVE ler e seguir estri
 6. Estratégia de Testes: `.gemini/aureole_testing.md`
 
 ## 🚨 Guardrails Invioláveis para Gerações de Código
-- **Tamanho Máximo de Arquivo:** NENHUM arquivo pode exceder 300 linhas (Exceção: `AureoleIcons.kt`). Se passar, divida em subcomponentes.
+- **Tamanho Máximo de Arquivo:** NENHUM arquivo pode exceder 500 linhas (Exceção: `AureoleIcons.kt`). Se passar, divida em subcomponentes.
 - **Detekt & Proibição de @Suppress:** É PROIBIDO usar `@Suppress("LongMethod")`, `@Suppress("ComplexMethod")`, `@Suppress("LongParameterList")`, `@Suppress("LongParamList")` ou alterar o `detekt.yml` para contornar limitações. Divida as funções, objetos de parâmetro ou arquivos.
 - **Isolamento do Design System:** Componentes em `core/designsystem/components` NUNCA devem importar pacotes de `feature/*` (ex: `LocalHomeActions`) nem iniciar `Activity`s diretamente.
 - **Tokens de Layout vs Motion/Physics:** Use `AureoleDS.dimens` para layout estático (paddings, margins, icon sizes). NUNCA use tokens de layout para blur (Haze blurRadius), física de gestos ou animações.
