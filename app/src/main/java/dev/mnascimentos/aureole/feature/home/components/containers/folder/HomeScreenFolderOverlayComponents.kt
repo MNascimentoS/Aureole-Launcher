@@ -49,7 +49,7 @@ import dev.mnascimentos.aureole.feature.home.model.getWidgetIdsForStack
 private const val FADE_ANIM_DURATION_MS = 180
 
 @Composable
-internal fun HomeScreenBottomSheetOverlays(
+internal fun HomeScreenFolderBottomSheetOverlays(
     uiState: MainUiState,
     actions: HomeScreenActions,
     appWidgetHost: AppWidgetHost? = null,

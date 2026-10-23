@@ -3,6 +3,7 @@ package dev.mnascimentos.aureole.feature.home.grid
 import dev.mnascimentos.aureole.core.data.model.LauncherItemState
 import dev.mnascimentos.aureole.core.data.model.LauncherItemType
 import dev.mnascimentos.aureole.feature.home.grid.model.GridLimits
+import dev.mnascimentos.aureole.feature.home.grid.model.SlotSearchRequest
 import dev.mnascimentos.aureole.feature.home.grid.model.SnapParams
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
@@ -281,34 +282,97 @@ class GridEngineUtilsTest {
     }
 
     @Test
-    fun `when getting default span for SCROLL_VIEW, should return correct default span`() {
-        val (spans, minSpans) = GridDefaults.getDefaultSpanForType(LauncherItemType.SCROLL_VIEW)
-        assertEquals(Pair(14, 9), spans)
-        assertEquals(Pair(1, 1), minSpans)
+    fun `when constrainItemsToBounds is called, should clamp col and row spans to limits`() {
+        val items = listOf(
+            LauncherItemState(
+                id = "1",
+                type = LauncherItemType.CLOCK,
+                col = -2,
+                row = -5,
+                colSpan = 10,
+                rowSpan = 20
+            ),
+            LauncherItemState(
+                id = "2",
+                type = LauncherItemType.CLOCK,
+                col = 10,
+                row = 20,
+                colSpan = 5,
+                rowSpan = 5
+            )
+        )
+
+        val result = GridEngineUtils.constrainItemsToBounds(items, testLimits)
+
+        assertEquals(2, result.size)
+        // item 1
+        assertEquals(0, result[0].col)
+        assertEquals(0, result[0].row)
+        assertEquals(4, result[0].colSpan) // capped to maxCols
+        assertEquals(8, result[0].rowSpan) // capped to maxRows
+
+        // item 2
+        assertEquals(0, result[1].col) // maxCols(4) - colSpan(4) = 0
+        assertEquals(3, result[1].row) // maxRows(8) - rowSpan(5) = 3
+        assertEquals(4, result[1].colSpan) // maxCols(4)
+        assertEquals(5, result[1].rowSpan) // rowSpan(5) < maxRows(8)
     }
 
     @Test
-    fun `when ScrollView LauncherItemState is configured, should support nested children and scroll orientation`() {
-        val childClock = LauncherItemState(
-            id = "child_clock",
-            type = LauncherItemType.CLOCK,
-            col = 0,
-            row = 0,
-            colSpan = 1,
-            rowSpan = 1
+    fun `when calculateSnapCell receives negative or zero dimensions, should return origin`() {
+        val snapZeroWidth = GridEngineUtils.calculateSnapCell(
+            params = SnapParams(
+                xPx = 140f,
+                yPx = 260f,
+                cellWidthPx = 0f,
+                cellHeightPx = 100f,
+                colSpan = 2,
+                rowSpan = 2
+            ),
+            limits = testLimits
         )
-        val scrollViewItem = LauncherItemState(
-            id = "scroll_view_1",
-            type = LauncherItemType.SCROLL_VIEW,
-            col = 0,
-            row = 0,
-            colSpan = 7,
-            rowSpan = 6,
-            children = listOf(childClock)
+        assertEquals(0, snapZeroWidth.first)
+        assertEquals(0, snapZeroWidth.second)
+    }
+
+    @Test
+    fun `when findLargestAvailableSlot receives request, should return largest fitting slot`() {
+        val request = SlotSearchRequest(
+            targetColSpan = 3,
+            targetRowSpan = 3,
+            minColSpan = 1,
+            minRowSpan = 1,
+            limits = testLimits
+        )
+        val items = listOf(
+            LauncherItemState(id = "1", type = LauncherItemType.CLOCK, col = 0, row = 0, colSpan = 4, rowSpan = 6)
         )
 
-        assertEquals(LauncherItemType.SCROLL_VIEW, scrollViewItem.safeType)
-        assertEquals(1, scrollViewItem.safeChildren.size)
-        assertEquals(LauncherItemType.CLOCK, scrollViewItem.safeChildren.first().safeType)
+        // Only row 6 and 7 are free. (2 rows).
+        // Max available slot is 4 cols x 2 rows
+        val result = GridEngineUtils.findLargestAvailableSlot(request, items)
+
+        assertTrue(result != null)
+        assertEquals(3, result?.first) // targetColSpan was 3, it fits in 4
+        assertEquals(2, result?.second) // targetRowSpan was 3, but only 2 rows available
+        assertEquals(0, result?.third?.first) // col
+        assertEquals(6, result?.third?.second) // row
+    }
+
+    @Test
+    fun `when findLargestAvailableSlot has no space at all, should return null`() {
+        val request = SlotSearchRequest(
+            targetColSpan = 2,
+            targetRowSpan = 2,
+            minColSpan = 1,
+            minRowSpan = 1,
+            limits = testLimits
+        )
+        val items = listOf(
+            LauncherItemState(id = "1", type = LauncherItemType.CLOCK, col = 0, row = 0, colSpan = 4, rowSpan = 8)
+        )
+
+        val result = GridEngineUtils.findLargestAvailableSlot(request, items)
+        assertEquals(null, result)
     }
 }

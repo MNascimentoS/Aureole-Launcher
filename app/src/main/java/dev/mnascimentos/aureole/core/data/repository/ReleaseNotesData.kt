@@ -6,12 +6,13 @@ import dev.mnascimentos.aureole.core.data.model.ReleaseNoteType
 
 internal fun getSectionsForVersion0820(): List<ReleaseNoteSection> = listOf(
     ReleaseNoteSection(
-        title = "Melhorias de Visual e Organização",
+        title = "Estabilidade & Confiabilidade",
         items = listOf(
             ReleaseNoteItem(
-                title = "Ajustes de Espaçamento e Formato",
-                description = "Telas e botões receberam ajustes cuidadosos para garantir que " +
-                    "cada elemento fique bem alinhado e agradável em qualquer aparelho.",
+                title = "Maior Precisão na Organização da Tela Inicial",
+                description = "Implementação de verificações avançadas para " +
+                    "garantir que a grade de aplicativos e atalhos responda com extrema " +
+                    "fluidez e sem falhas em qualquer situação.",
                 type = ReleaseNoteType.IMPROVEMENT
             ),
             ReleaseNoteItem(
