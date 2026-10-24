@@ -38,7 +38,7 @@ class FavoriteAppsDialogComponentsTest {
             }
         }
 
-        composeTestRule.onNodeWithText("Lista de Aplicativos").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Apps List").assertIsDisplayed()
     }
 
     @Test
@@ -53,8 +53,8 @@ class FavoriteAppsDialogComponentsTest {
             }
         }
 
-        composeTestRule.onNodeWithText("Mostrar todos os apps na Home").assertIsDisplayed()
-        composeTestRule.onNodeWithText("Se desativado, exibe apenas os aplicativos favoritados").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Show all apps on Home").assertIsDisplayed()
+        composeTestRule.onNodeWithText("If disabled, shows only favorited apps").assertIsDisplayed()
     }
 
     @Test

@@ -20,12 +20,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
@@ -45,7 +47,7 @@ fun FavoriteAppsDialogHeader(modifier: Modifier = Modifier) {
         contentAlignment = Alignment.Center
     ) {
         AureoleText(
-            text = "Lista de Aplicativos",
+            text = stringResource(R.string.favorites_dialog_title),
             color = AureoleDS.colors.onSurfaceMedium,
             format = AureoleTextFormatParams(
                 style = AureoleDS.typography.titleMedium,
@@ -73,7 +75,7 @@ fun FavoriteAppsShowAllSwitchRow(
     ) {
         Column(modifier = Modifier.weight(1f)) {
             AureoleText(
-                text = "Mostrar todos os apps na Home",
+                text = stringResource(R.string.favorites_show_all_apps),
                 color = AureoleDS.colors.onSurfaceHigh,
                 format = AureoleTextFormatParams(
                     style = AureoleDS.typography.bodyMedium,
@@ -81,7 +83,7 @@ fun FavoriteAppsShowAllSwitchRow(
                 )
             )
             AureoleText(
-                text = "Se desativado, exibe apenas os aplicativos favoritados",
+                text = stringResource(R.string.favorites_show_all_apps_desc),
                 color = AureoleDS.colors.onSurfaceMedium,
                 format = AureoleTextFormatParams(style = AureoleDS.typography.bodySmall)
             )

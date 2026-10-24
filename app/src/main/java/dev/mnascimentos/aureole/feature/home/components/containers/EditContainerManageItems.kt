@@ -29,8 +29,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.data.model.ContainerItemType
 import dev.mnascimentos.aureole.core.data.model.ContainerModel
@@ -67,7 +69,7 @@ internal fun ManageItemsContent(
         }
 
         Text(
-            text = "Componentes Filhos (${state.itemsList.size})",
+            text = stringResource(R.string.edit_container_child_components, state.itemsList.size),
             style = AureoleDS.typography.titleMedium,
             fontWeight = FontWeight.Bold,
             modifier = Modifier.padding(bottom = AureoleDS.dimens.medium).fillMaxWidth(),
@@ -85,7 +87,7 @@ internal fun ManageItemsContent(
                 EditContainerAddAppDropdown(
                     allApps = allApps,
                     onAppSelected = { state.addApp(it) },
-                    label = "App..."
+                    label = stringResource(R.string.edit_container_add_app)
                 )
             }
             OutlinedButton(
@@ -103,7 +105,7 @@ internal fun ManageItemsContent(
                     modifier = Modifier.size(AureoleDS.dimens.iconMedium)
                 )
                 Spacer(modifier = Modifier.width(AureoleDS.dimens.xxSmall))
-                Text("Pasta", style = AureoleDS.typography.labelLarge)
+                Text(stringResource(R.string.edit_container_folder_label), style = AureoleDS.typography.labelLarge)
             }
         }
 
@@ -114,7 +116,7 @@ internal fun ManageItemsContent(
             onClick = onBack,
             modifier = Modifier.fillMaxWidth()
         ) {
-            Text("Voltar")
+            Text(stringResource(R.string.edit_container_back))
         }
     }
 }
@@ -136,7 +138,7 @@ internal fun ManageItemsListSection(
             contentAlignment = Alignment.Center
         ) {
             Text(
-                text = "Nenhum componente adicionado ainda.",
+                text = stringResource(R.string.edit_container_none_added),
                 style = AureoleDS.typography.bodyMedium,
                 color = AureoleDS.colors.onSurfaceMedium
             )
@@ -177,10 +179,12 @@ internal fun ManageItemRow(
 ) {
     val index = params.index
     val item = params.item
+    val defaultFolderLabel = stringResource(R.string.edit_container_folder_label)
+    val defaultAppLabel = stringResource(R.string.edit_container_app_label)
     val title = if (item.itemType == ContainerItemType.FOLDER) {
-        params.folders.find { it.id == item.folderId }?.name ?: "Pasta"
+        params.folders.find { it.id == item.folderId }?.name ?: defaultFolderLabel
     } else {
-        params.allApps.find { it.packageName == item.packageName }?.label ?: item.packageName ?: "App"
+        params.allApps.find { it.packageName == item.packageName }?.label ?: item.packageName ?: defaultAppLabel
     }
 
     Row(

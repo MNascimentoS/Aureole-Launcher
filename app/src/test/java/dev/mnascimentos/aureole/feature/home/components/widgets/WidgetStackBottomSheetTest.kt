@@ -41,10 +41,10 @@ class WidgetStackBottomSheetTest {
         }
         advanceAnimation()
 
-        composeTestRule.onNodeWithText("Grupo de Widgets").assertIsDisplayed()
-        composeTestRule.onNodeWithText("Redimensionar Grupo").assertIsDisplayed()
-        composeTestRule.onNodeWithText("Alternar Indicador de Posição").assertIsDisplayed()
-        composeTestRule.onNodeWithText("Remover").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Widget Group").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Resize Group").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Toggle Position Indicator").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Remove").assertIsDisplayed()
     }
 
     @Test
@@ -68,7 +68,7 @@ class WidgetStackBottomSheetTest {
         }
         advanceAnimation()
 
-        composeTestRule.onNodeWithText("Redimensionar Grupo").performClick()
+        composeTestRule.onNodeWithText("Resize Group").performClick()
 
         assertTrue(editCalled)
         assertTrue(dismissed)
@@ -95,7 +95,7 @@ class WidgetStackBottomSheetTest {
         }
         advanceAnimation()
 
-        composeTestRule.onNodeWithText("Alternar Indicador de Posição").performClick()
+        composeTestRule.onNodeWithText("Toggle Position Indicator").performClick()
 
         assertEquals("stack_abc", toggledStackId)
         assertTrue(dismissed)
@@ -122,7 +122,7 @@ class WidgetStackBottomSheetTest {
         }
         advanceAnimation()
 
-        composeTestRule.onNodeWithText("Remover").performClick()
+        composeTestRule.onNodeWithText("Remove").performClick()
 
         assertTrue(removeCalled)
         assertTrue(dismissed)

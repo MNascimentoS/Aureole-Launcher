@@ -25,12 +25,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
 import dev.chrisbanes.haze.HazeState
 import dev.chrisbanes.haze.HazeStyle
 import dev.chrisbanes.haze.HazeTint
 import dev.chrisbanes.haze.hazeEffect
+import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.core.designsystem.icons.Add
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
@@ -114,16 +116,16 @@ internal fun createWidgetHostView(
             hostView
         } catch (e: SecurityException) {
             Timber.tag("WidgetHostItem").e(e, "Error creating widget view")
-            createErrorWidgetView(context, "Toque para reconfigurar widget")
+            createErrorWidgetView(context, context.getString(R.string.widget_tap_to_configure))
         } catch (e: IllegalArgumentException) {
             Timber.tag("WidgetHostItem").e(e, "Error creating widget view")
-            createErrorWidgetView(context, "Toque para reconfigurar widget")
+            createErrorWidgetView(context, context.getString(R.string.widget_tap_to_configure))
         } catch (e: IllegalStateException) {
             Timber.tag("WidgetHostItem").e(e, "Error creating widget view")
-            createErrorWidgetView(context, "Toque para reconfigurar widget")
+            createErrorWidgetView(context, context.getString(R.string.widget_tap_to_configure))
         }
     } else {
-        createErrorWidgetView(context, WIDGET_NOT_AVAILABLE_TEXT)
+        createErrorWidgetView(context, context.getString(R.string.widget_unavailable))
     }
 }
 
@@ -185,7 +187,7 @@ internal fun AddWidgetButton(
                 modifier = Modifier.padding(bottom = 8.dp)
             )
             Text(
-                text = "Adicionar Widget",
+                text = stringResource(R.string.widget_add),
                 color = AureoleDS.colors.onSurfaceHigh,
                 style = AureoleDS.typography.labelLarge
             )

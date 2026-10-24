@@ -27,6 +27,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -35,6 +36,7 @@ import androidx.compose.ui.unit.Dp
 import dev.chrisbanes.haze.HazeStyle
 import dev.chrisbanes.haze.HazeTint
 import dev.chrisbanes.haze.hazeEffect
+import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.core.data.model.AppFolder
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
@@ -146,7 +148,7 @@ private fun EmptyFolderGridContent(maxListHeightDp: Dp) {
         contentAlignment = Alignment.Center
     ) {
         Text(
-            text = "Nenhum aplicativo na pasta",
+            text = stringResource(R.string.no_apps_in_folder),
             style = AureoleDS.typography.bodyMedium,
             color = AureoleDS.colors.onSurfaceMedium
         )

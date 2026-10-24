@@ -32,7 +32,7 @@ class EditContainerComponentsTest {
             }
         }
 
-        composeTestRule.onNodeWithText("Orientação do Container").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Container Orientation").assertIsDisplayed()
         composeTestRule.onNodeWithText("Vertical").assertIsDisplayed()
         composeTestRule.onNodeWithText("Horizontal").assertIsDisplayed().performClick()
 
@@ -52,10 +52,10 @@ class EditContainerComponentsTest {
             }
         }
 
-        composeTestRule.onNodeWithText("Alinhamento dos Itens").assertIsDisplayed()
-        composeTestRule.onNodeWithText("Espaçamento Entre (Separados)").assertIsDisplayed().performClick()
+        composeTestRule.onNodeWithText("Item Alignment").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Space Between").assertIsDisplayed().performClick()
 
-        composeTestRule.onNodeWithText("Centro").assertIsDisplayed().performClick()
+        composeTestRule.onNodeWithText("Center").assertIsDisplayed().performClick()
         assertEquals("Center", selectedPosition)
     }
 
@@ -90,12 +90,12 @@ class EditContainerComponentsTest {
             }
         }
 
-        val headerNode = composeTestRule.onNodeWithText("Opções de Aparência e Comportamento")
+        val headerNode = composeTestRule.onNodeWithText("Appearance and Behavior Options")
         headerNode.assertIsDisplayed()
 
         headerNode.performClick()
 
-        composeTestRule.onNodeWithText("Fundo do Container").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Container Background").assertIsDisplayed()
     }
 
     @Test

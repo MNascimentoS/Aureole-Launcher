@@ -21,8 +21,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
@@ -46,7 +48,7 @@ internal fun FavoriteSectionHeader(
         verticalAlignment = Alignment.CenterVertically
     ) {
         AureoleText(
-            text = "Favoritos ($count)",
+            text = stringResource(R.string.favorites_count, count),
             color = AureoleDS.colors.onSurfaceHigh,
             format = AureoleTextFormatParams(style = AureoleDS.typography.titleSmall, fontWeight = FontWeight.Bold)
         )
@@ -56,7 +58,7 @@ internal fun FavoriteSectionHeader(
                 contentPadding = PaddingValues(horizontal = AureoleDS.dimens.xSmall, vertical = AureoleDS.dimens.zero)
             ) {
                 AureoleText(
-                    text = "Desativar todos",
+                    text = stringResource(R.string.favorites_disable_all),
                     color = AureoleDS.colors.error,
                     format = AureoleTextFormatParams(
                         style = AureoleDS.typography.labelMedium,
@@ -81,7 +83,7 @@ internal fun RemainingSectionHeader(
         verticalAlignment = Alignment.CenterVertically
     ) {
         AureoleText(
-            text = "Outros Aplicativos ($count)",
+            text = stringResource(R.string.other_apps_count, count),
             color = AureoleDS.colors.onSurfaceMedium,
             format = AureoleTextFormatParams(style = AureoleDS.typography.titleSmall, fontWeight = FontWeight.Bold)
         )
@@ -91,7 +93,7 @@ internal fun RemainingSectionHeader(
                 contentPadding = PaddingValues(horizontal = AureoleDS.dimens.xSmall, vertical = AureoleDS.dimens.zero)
             ) {
                 AureoleText(
-                    text = "Ativar todos",
+                    text = stringResource(R.string.favorites_enable_all),
                     color = AureoleDS.colors.onSurfaceHigh,
                     format = AureoleTextFormatParams(
                         style = AureoleDS.typography.labelMedium,
@@ -125,9 +127,9 @@ internal fun LazyListScope.favoriteSectionItems(
     if (filteredFavorites.isEmpty()) {
         item {
             val emptyMsg = if (searchQuery.isBlank()) {
-                "Nenhum aplicativo favorito selecionado."
+                stringResource(R.string.favorites_none_selected)
             } else {
-                "Nenhum favorito encontrado."
+                stringResource(R.string.favorites_none_found)
             }
             AureoleText(
                 text = emptyMsg,
@@ -178,9 +180,9 @@ internal fun LazyListScope.remainingSectionItems(
     if (filteredRemaining.isEmpty()) {
         item {
             val emptyMsg = if (searchQuery.isBlank()) {
-                "Todos os aplicativos já estão nos favoritos."
+                stringResource(R.string.favorites_all_added)
             } else {
-                "Nenhum outro aplicativo encontrado."
+                stringResource(R.string.favorites_none_other_found)
             }
             AureoleText(
                 text = emptyMsg,
@@ -242,7 +244,7 @@ internal fun FavoriteAppsSearchInput(
     OutlinedTextField(
         value = query,
         onValueChange = onQueryChange,
-        placeholder = { AureoleText("Buscar aplicativo...") },
+        placeholder = { AureoleText(stringResource(R.string.favorites_search_placeholder)) },
         leadingIcon = {
             AureoleDS.icons.Search(
                 tint = AureoleDS.colors.onSurfaceMedium,

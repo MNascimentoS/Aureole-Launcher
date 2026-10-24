@@ -27,10 +27,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.core.graphics.ColorUtils
+import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
 import dev.mnascimentos.aureole.core.designsystem.icons.Check
@@ -76,7 +78,7 @@ fun ColorPickerDialog(
         onDismissRequest = onDismiss,
         title = {
             AureoleText(
-                text = "Escolher Cor Primária",
+                text = stringResource(R.string.color_picker_primary),
                 format = AureoleTextFormatParams(style = AureoleDS.typography.titleMedium, fontWeight = FontWeight.Bold)
             )
         },
@@ -112,12 +114,12 @@ fun ColorPickerDialog(
         },
         confirmButton = {
             TextButton(onClick = { onColorSelected(selectedColor) }) {
-                AureoleText("Confirmar")
+                AureoleText(stringResource(R.string.common_confirm))
             }
         },
         dismissButton = {
             TextButton(onClick = onDismiss) {
-                AureoleText("Cancelar")
+                AureoleText(stringResource(R.string.common_cancel))
             }
         },
     )
@@ -131,7 +133,7 @@ private fun PresetColorsSection(
 ) {
     Column(verticalArrangement = Arrangement.spacedBy(AureoleDS.dimens.medium)) {
         AureoleText(
-            text = "Cores Recomendadas",
+            text = stringResource(R.string.colors_recommended),
             color = AureoleDS.colors.onSurfaceMedium,
             format = AureoleTextFormatParams(style = AureoleDS.typography.labelMedium)
         )
@@ -192,7 +194,7 @@ private fun CustomHueSection(
 ) {
     Column {
         AureoleText(
-            text = "Ajuste Personalizado (Matiz)",
+            text = stringResource(R.string.color_picker_custom_hue),
             color = AureoleDS.colors.onSurfaceMedium,
             format = AureoleTextFormatParams(style = AureoleDS.typography.labelMedium)
         )

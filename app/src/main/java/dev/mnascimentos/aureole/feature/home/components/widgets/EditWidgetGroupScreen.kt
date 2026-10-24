@@ -35,8 +35,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.viewinterop.AndroidView
+import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.core.data.model.LauncherItemState
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleEditOverlay
 import dev.mnascimentos.aureole.core.designsystem.icons.Add
@@ -97,7 +99,7 @@ fun EditWidgetGroupScreen(
         modifier = modifier,
         params = AureoleEditOverlayParams(
             config = AureoleEditOverlayConfig(
-                title = "Widget Stack",
+                title = stringResource(R.string.widget_stack_title),
                 hazeState = params.hazeState,
                 maxSheetHeightFraction = 0.3f
             ),
@@ -123,7 +125,7 @@ fun EditWidgetGroupScreen(
                     onClick = { isVisible = false },
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    Text("Salvar")
+                    Text(stringResource(R.string.edit_container_save))
                 }
             },
             sheetContent = {
@@ -142,7 +144,7 @@ fun EditWidgetGroupScreen(
                             fontWeight = FontWeight.Bold
                         )
                         Spacer(modifier = Modifier.width(AureoleDS.dimens.medium))
-                        Text("Show widget indicator", color = AureoleDS.colors.onSurfaceMedium)
+                        Text(stringResource(R.string.widget_show_indicator), color = AureoleDS.colors.onSurfaceMedium)
                     }
                     Switch(
                         checked = params.isIndicatorEnabled,

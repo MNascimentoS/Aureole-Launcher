@@ -15,8 +15,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
@@ -30,19 +33,23 @@ private object ClockSectionMetrics {
     val NegativeChipVerticalSpacing = (-8).dp
 }
 
-private val CLOCK_STYLE_OPTIONS = listOf(
-    Pair("DYNAMIC_GREETING", "Saudação Diária"),
-    Pair("DATE_ON_TOP", "Data no Topo"),
-    Pair("GREETING_AND_DATE", "Saudação + Data"),
-    Pair("CUSTOM_GREETING", "Texto Personalizado"),
-    Pair("TIME_ONLY", "Apenas Horário")
+@Composable
+@ReadOnlyComposable
+private fun getClockStyleOptions(): List<Pair<String, String>> = listOf(
+    Pair("DYNAMIC_GREETING", stringResource(R.string.clock_daily_greeting)),
+    Pair("DATE_ON_TOP", stringResource(R.string.clock_date_on_top)),
+    Pair("GREETING_AND_DATE", stringResource(R.string.clock_greeting_and_date)),
+    Pair("CUSTOM_GREETING", stringResource(R.string.clock_custom_text)),
+    Pair("TIME_ONLY", stringResource(R.string.clock_time_only))
 )
 
-private val DATE_FORMAT_OPTIONS = listOf(
-    Pair("DEFAULT", "Completo (sexta, 9 out)"),
-    Pair("SHORT", "Curto (Tue, 22 Sep)"),
-    Pair("MEDIUM", "Médio (9 de outubro)"),
-    Pair("NUMERIC", "Numérico (09/10/2026)")
+@Composable
+@ReadOnlyComposable
+private fun getDateFormatOptions(): List<Pair<String, String>> = listOf(
+    Pair("DEFAULT", stringResource(R.string.clock_date_default)),
+    Pair("SHORT", stringResource(R.string.clock_date_short)),
+    Pair("MEDIUM", stringResource(R.string.clock_date_medium)),
+    Pair("NUMERIC", stringResource(R.string.clock_date_numeric))
 )
 
 @Composable
@@ -52,11 +59,11 @@ internal fun EditClockStyleSection(
     tempCustomGreeting: String,
     onGreetingChange: (String) -> Unit
 ) {
-    EditClockSectionHeader(title = "Estilo do Layout")
+    EditClockSectionHeader(title = stringResource(R.string.clock_layout_style))
     EditClockDropdown(
         label = null,
         selectedKey = uiState.clockStyle,
-        options = CLOCK_STYLE_OPTIONS,
+        options = getClockStyleOptions(),
         onOptionSelected = { actions.onUpdateClockStyle(it) }
     )
 
@@ -65,8 +72,8 @@ internal fun EditClockStyleSection(
         OutlinedTextField(
             value = tempCustomGreeting,
             onValueChange = onGreetingChange,
-            label = { AureoleText("Texto da Saudação") },
-            placeholder = { AureoleText("Ex: Bem-vindo(a) de volta!") },
+            label = { AureoleText(stringResource(R.string.clock_greeting_text)) },
+            placeholder = { AureoleText(stringResource(R.string.clock_greeting_placeholder)) },
             singleLine = true,
             colors = OutlinedTextFieldDefaults.colors(
                 focusedTextColor = AureoleDS.colors.onSurfaceHigh,
@@ -82,25 +89,25 @@ internal fun EditClockAlignmentSection(
     uiState: MainUiState,
     actions: HomeScreenActions
 ) {
-    EditClockSectionHeader(title = "Alinhamento")
+    EditClockSectionHeader(title = stringResource(R.string.clock_alignment))
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(AureoleDS.dimens.xSmall)
     ) {
         EditClockChoiceButton(
-            text = "Esquerda",
+            text = stringResource(R.string.clock_align_left),
             selected = uiState.clockAlignment == "START",
             onClick = { actions.onUpdateClockAlignment("START") },
             modifier = Modifier.weight(1f)
         )
         EditClockChoiceButton(
-            text = "Centro",
+            text = stringResource(R.string.clock_align_center),
             selected = uiState.clockAlignment == "CENTER",
             onClick = { actions.onUpdateClockAlignment("CENTER") },
             modifier = Modifier.weight(1f)
         )
         EditClockChoiceButton(
-            text = "Direita",
+            text = stringResource(R.string.clock_align_right),
             selected = uiState.clockAlignment == "END",
             onClick = { actions.onUpdateClockAlignment("END") },
             modifier = Modifier.weight(1f)
@@ -114,7 +121,7 @@ internal fun EditClockTextColorSection(
     uiState: MainUiState,
     actions: HomeScreenActions
 ) {
-    EditClockSectionHeader(title = "Cor do Texto")
+    EditClockSectionHeader(title = stringResource(R.string.clock_text_color))
     FlowRow(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(AureoleDS.dimens.smallCompact),
@@ -137,34 +144,34 @@ internal fun EditClockFontSection(
     uiState: MainUiState,
     actions: HomeScreenActions
 ) {
-    EditClockSectionHeader(title = "Estilo da Fonte")
+    EditClockSectionHeader(title = stringResource(R.string.clock_font_style))
     FlowRow(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(AureoleDS.dimens.xSmall),
         verticalArrangement = Arrangement.spacedBy(ClockSectionMetrics.NegativeChipVerticalSpacing)
     ) {
         EditClockLayoutChip(
-            label = "Padrão",
+            label = stringResource(R.string.clock_font_default),
             selected = uiState.clockFontFamily == "SANS_SERIF",
             onClick = { actions.onUpdateClockFontFamily("SANS_SERIF") }
         )
         EditClockLayoutChip(
-            label = "Negrito",
+            label = stringResource(R.string.clock_font_bold),
             selected = uiState.clockFontFamily == "BOLD",
             onClick = { actions.onUpdateClockFontFamily("BOLD") }
         )
         EditClockLayoutChip(
-            label = "Serifada",
+            label = stringResource(R.string.clock_font_serif),
             selected = uiState.clockFontFamily == "SERIF",
             onClick = { actions.onUpdateClockFontFamily("SERIF") }
         )
         EditClockLayoutChip(
-            label = "Monospaced",
+            label = stringResource(R.string.clock_font_monospaced),
             selected = uiState.clockFontFamily == "MONOSPACE",
             onClick = { actions.onUpdateClockFontFamily("MONOSPACE") }
         )
         EditClockLayoutChip(
-            label = "Arredondada",
+            label = stringResource(R.string.clock_font_rounded),
             selected = uiState.clockFontFamily == "ROUNDED",
             onClick = { actions.onUpdateClockFontFamily("ROUNDED") }
         )
@@ -178,10 +185,10 @@ internal fun EditClockFormatSection(
     actions: HomeScreenActions
 ) {
     Column {
-        EditClockSectionHeader(title = "Formato de Hora e Data")
+        EditClockSectionHeader(title = stringResource(R.string.clock_time_date_format))
 
         AureoleText(
-            text = "Formato de Hora:",
+            text = stringResource(R.string.clock_time_format),
             color = AureoleDS.colors.onSurfaceMedium,
             modifier = Modifier.padding(bottom = AureoleDS.dimens.xSmall),
             format = AureoleTextFormatParams(style = AureoleDS.typography.bodySmall)
@@ -191,19 +198,19 @@ internal fun EditClockFormatSection(
             horizontalArrangement = Arrangement.spacedBy(AureoleDS.dimens.xSmall)
         ) {
             EditClockChoiceButton(
-                text = "Sistema",
+                text = stringResource(R.string.clock_time_system),
                 selected = uiState.clockTimeFormat == "SYSTEM",
                 onClick = { actions.onUpdateClockTimeFormat("SYSTEM") },
                 modifier = Modifier.weight(1f)
             )
             EditClockChoiceButton(
-                text = "12 Horas",
+                text = stringResource(R.string.clock_time_12h),
                 selected = uiState.clockTimeFormat == "12H",
                 onClick = { actions.onUpdateClockTimeFormat("12H") },
                 modifier = Modifier.weight(1f)
             )
             EditClockChoiceButton(
-                text = "24 Horas",
+                text = stringResource(R.string.clock_time_24h),
                 selected = uiState.clockTimeFormat == "24H",
                 onClick = { actions.onUpdateClockTimeFormat("24H") },
                 modifier = Modifier.weight(1f)
@@ -213,9 +220,9 @@ internal fun EditClockFormatSection(
         Spacer(modifier = Modifier.height(AureoleDS.dimens.smallCompact))
 
         EditClockDropdown(
-            label = "Formato de Data:",
+            label = stringResource(R.string.clock_date_format_label),
             selectedKey = uiState.clockDateFormat,
-            options = DATE_FORMAT_OPTIONS,
+            options = getDateFormatOptions(),
             onOptionSelected = { actions.onUpdateClockDateFormat(it) }
         )
     }
@@ -252,7 +259,7 @@ private fun EditClockDropdownOpenPreview() {
             EditClockDropdown(
                 label = "Estilo do Layout",
                 selectedKey = "DATE_ON_TOP",
-                options = CLOCK_STYLE_OPTIONS,
+                options = getClockStyleOptions(),
                 onOptionSelected = {},
                 initialExpanded = true
             )

@@ -21,6 +21,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalInspectionMode
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
@@ -31,6 +32,7 @@ import dev.mnascimentos.aureole.core.designsystem.components.AureoleHeaderBanner
 import dev.mnascimentos.aureole.core.designsystem.components.AureolePopupBox
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
+import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
@@ -113,7 +115,7 @@ private fun FolderDialogContent(
 ) {
     if (appsInFolder.isEmpty()) {
         AureoleText(
-            text = "Folder is empty",
+            text = stringResource(R.string.folder_is_empty),
             color = AureoleDS.colors.onSurfaceMedium,
             modifier = Modifier.padding(vertical = AureoleDS.dimens.xLarge),
             format = AureoleTextFormatParams(style = AureoleDS.typography.bodyMedium)

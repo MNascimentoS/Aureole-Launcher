@@ -147,7 +147,7 @@ class EditContainerScreenTest {
         composeTestRule.onNodeWithText("Manage Items").assertIsDisplayed().performClick()
         assertTrue(manageItemsClicked)
 
-        composeTestRule.onNodeWithText("Salvar").assertIsDisplayed().performClick()
+        composeTestRule.onNodeWithText("Save").assertIsDisplayed().performClick()
         assertTrue(saveClicked)
     }
 
@@ -173,7 +173,7 @@ class EditContainerScreenTest {
 
         composeTestRule.onNodeWithText("Expand cells").assertIsDisplayed()
         composeTestRule.onNodeWithText("Grid folders").assertIsDisplayed()
-        composeTestRule.onNodeWithText("Voltar").assertIsDisplayed().performClick()
+        composeTestRule.onNodeWithText("Back").assertIsDisplayed().performClick()
         assertTrue(backClicked)
     }
 
@@ -199,7 +199,7 @@ class EditContainerScreenTest {
 
         composeTestRule.onNodeWithText("Background enabled").assertIsDisplayed()
         composeTestRule.onNodeWithText("Show folder labels").assertIsDisplayed()
-        composeTestRule.onNodeWithText("Voltar").assertIsDisplayed().performClick()
+        composeTestRule.onNodeWithText("Back").assertIsDisplayed().performClick()
         assertTrue(backClicked)
     }
 }

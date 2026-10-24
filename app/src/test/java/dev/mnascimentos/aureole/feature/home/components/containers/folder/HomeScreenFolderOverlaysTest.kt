@@ -12,6 +12,11 @@ import dev.chrisbanes.haze.HazeState
 import dev.mnascimentos.aureole.core.data.model.AppFolder
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
+import dev.mnascimentos.aureole.feature.home.components.common.AddAppToFolderOverlay
+import dev.mnascimentos.aureole.feature.home.components.common.CreateFolderOverlay
+import dev.mnascimentos.aureole.feature.home.components.common.HomeScreenFolderOverlays
+import dev.mnascimentos.aureole.feature.home.components.common.OpenedFolderOverlay
+import dev.mnascimentos.aureole.feature.home.components.common.RenameFolderOverlay
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.FolderViewIntent
 import dev.mnascimentos.aureole.feature.home.model.ContainerAppBottomSheetState
 import dev.mnascimentos.aureole.feature.home.model.ContainerFolderBottomSheetState
@@ -104,8 +109,8 @@ class HomeScreenFolderOverlaysTest {
             }
         }
 
-        composeTestRule.onNodeWithText("Apps na Pasta: Media").assertIsDisplayed()
-        composeTestRule.onNodeWithText("Cancelar").performClick()
+        composeTestRule.onNodeWithText("Apps in Folder: Media").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Cancel").performClick()
         assertTrue(addAppClosed)
     }
 
@@ -250,8 +255,8 @@ class HomeScreenFolderOverlaysTest {
             }
         }
 
-        composeTestRule.onNodeWithText("Remover da Pasta").assertIsDisplayed()
-        composeTestRule.onNodeWithText("Configurações da Pasta").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Remove from folder").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Folder settings").assertIsDisplayed()
     }
 
     @Test
@@ -283,6 +288,6 @@ class HomeScreenFolderOverlaysTest {
         }
 
         composeTestRule.onNodeWithText("App Info").assertIsDisplayed()
-        composeTestRule.onNodeWithText("Configurações do Container").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Container settings").assertIsDisplayed()
     }
 }

@@ -11,4 +11,8 @@
 ## 3. Previews (`@AureolePreview`)
 - **Prohibited:** Native `@Preview` annotation directly.
 - **Mandatory:** Always use `@AureolePreview` with strictly private functions (`private fun`).
-- Must cover: 1) Default State, 2) Variants/Disabled, 3) Slots/Content.
+## 4. Internationalization (i18n) & Strings
+- **Prohibited:** Hardcoding any user-facing text strings directly in `.kt` files.
+- **Mandatory:** All strings must be extracted to `res/values/strings.xml` and referenced using `stringResource(R.string.<key>)` or `AureoleDS.strings`.
+- **Mandatory:** Every new string added to `res/values/strings.xml` must have a corresponding translation in `res/values-pt-rBR/strings.xml`.
+- **Key Naming Convention:** Strings must follow the format `<feature>_<component>_<description>` (e.g., `customize_add_clock`, `edit_container_orientation`).

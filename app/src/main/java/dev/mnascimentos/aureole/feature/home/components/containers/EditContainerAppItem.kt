@@ -26,7 +26,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
@@ -76,7 +78,11 @@ internal fun EditContainerItemRow(
         )
 
         AureoleText(
-            text = if (params.isFolder) "Pasta" else "App",
+            text = if (params.isFolder) {
+                stringResource(R.string.edit_container_folder_label)
+            } else {
+                stringResource(R.string.edit_container_app_label)
+            },
             color = AureoleDS.colors.onSurfaceMedium,
             modifier = Modifier.padding(end = AureoleDS.dimens.xxSmall),
             format = AureoleTextFormatParams(style = AureoleDS.typography.labelSmall)
@@ -133,7 +139,7 @@ private fun EditContainerItemMoveButtons(
 internal fun EditContainerAddAppDropdown(
     allApps: List<AppInfo>,
     onAppSelected: (String) -> Unit,
-    label: String = "Adicionar App..."
+    label: String = stringResource(R.string.edit_container_add_app)
 ) {
     var isExpanded by remember { mutableStateOf(false) }
     var searchQuery by remember { mutableStateOf("") }

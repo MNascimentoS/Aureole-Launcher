@@ -104,7 +104,7 @@ class WidgetPickerScreenTest {
             }
         }
 
-        composeTestRule.onNodeWithText("Nenhum widget encontrado.").assertIsDisplayed()
+        composeTestRule.onNodeWithText("No widget found.").assertIsDisplayed()
     }
 
     @Test

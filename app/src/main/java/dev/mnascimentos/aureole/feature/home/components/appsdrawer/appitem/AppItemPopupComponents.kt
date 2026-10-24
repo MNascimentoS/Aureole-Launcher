@@ -18,6 +18,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
@@ -26,6 +27,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Popup
 import androidx.compose.ui.window.PopupProperties
 import androidx.core.graphics.drawable.toDrawable
+import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.designsystem.components.AureolePopupBox
 import dev.mnascimentos.aureole.core.designsystem.components.AureolePopupHeader
@@ -102,7 +104,7 @@ internal fun AppPopupHorizontalActionsRow(
         if (actions.onAppInfoClick != null) {
             AppPopupButton(
                 icon = { m, t -> AureoleDS.icons.Info(m, t) },
-                label = "App",
+                label = stringResource(R.string.edit_container_app_label),
                 onClick = {
                     actions.onAppInfoClick.invoke(app)
                     onDismiss()
@@ -113,7 +115,11 @@ internal fun AppPopupHorizontalActionsRow(
         if (actions.onToggleFavorite != null) {
             AppPopupButton(
                 icon = { m, t -> AureoleDS.icons.Delete(m, t) },
-                label = if (isFavorite) "Remove" else "Add",
+                label = if (isFavorite) {
+                    stringResource(R.string.widget_remove)
+                } else {
+                    stringResource(R.string.common_create)
+                },
                 isDestructive = isFavorite,
                 onClick = {
                     actions.onToggleFavorite.invoke(app.packageName)
@@ -125,7 +131,7 @@ internal fun AppPopupHorizontalActionsRow(
         if (actions.onEditFavoritesClick != null) {
             AppPopupButton(
                 icon = { m, t -> AureoleDS.icons.Settings(m, t) },
-                label = "Settings",
+                label = stringResource(R.string.settings_title),
                 onClick = {
                     actions.onEditFavoritesClick.invoke()
                     onDismiss()

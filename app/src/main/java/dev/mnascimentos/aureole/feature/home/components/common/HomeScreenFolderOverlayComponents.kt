@@ -1,4 +1,4 @@
-package dev.mnascimentos.aureole.feature.home.components.containers.folder
+package dev.mnascimentos.aureole.feature.home.components.common
 
 import android.appwidget.AppWidgetHost
 import androidx.compose.animation.AnimatedVisibility
@@ -33,6 +33,12 @@ import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.components.appsdrawer.appitem.AppItemBottomSheet
 import dev.mnascimentos.aureole.feature.home.components.appsdrawer.appitem.model.AppItemBottomSheetParams
+import dev.mnascimentos.aureole.feature.home.components.containers.folder.ContainerFolderBottomSheet
+import dev.mnascimentos.aureole.feature.home.components.containers.folder.CreateFolderDialog
+import dev.mnascimentos.aureole.feature.home.components.containers.folder.EditFolderDialog
+import dev.mnascimentos.aureole.feature.home.components.containers.folder.FolderAppPickerDialog
+import dev.mnascimentos.aureole.feature.home.components.containers.folder.OpenedFolderOverlayUtils
+import dev.mnascimentos.aureole.feature.home.components.containers.folder.OpenedFolderPopup
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.ContainerFolderBottomSheetParams
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.FolderPopupActions
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.FolderViewIntent
@@ -69,7 +75,12 @@ private fun ContainerAppAndFolderOverlays(
         AppItemBottomSheet(
             params = AppItemBottomSheetParams(
                 app = state.app,
-                onRemoveFromContainer = { actions.onRemoveAppFromContainer(state.panelId, state.app.packageName) },
+                onRemoveFromContainer = {
+                    actions.onRemoveAppFromContainer(
+                        state.panelId,
+                        state.app.packageName
+                    )
+                },
                 onOpenContainerSettings = { actions.onOpenEditContainerDialog(state.panelId) }
             ),
             onDismiss = actions.onCloseContainerAppBottomSheet
@@ -108,7 +119,12 @@ private fun ContainerAppAndFolderOverlays(
         AppItemBottomSheet(
             params = AppItemBottomSheetParams(
                 app = state.app,
-                onRemoveFromFolder = { actions.onRemoveAppFromFolder(state.folder.id, state.app.packageName) },
+                onRemoveFromFolder = {
+                    actions.onRemoveAppFromFolder(
+                        state.folder.id,
+                        state.app.packageName
+                    )
+                },
                 onOpenFolderSettings = { actions.onOpenEditFolderForFolder(state.folder) }
             ),
             onDismiss = actions.onCloseFolderAppBottomSheet
@@ -215,7 +231,7 @@ private fun OpenedFolderOverlayContent(
             blurEnabled = true
         }
     } else {
-        Modifier
+        Modifier.Companion
     }
     val overlayBgColor = if (isGridFolderEnabled) Color.Black.copy(alpha = 0.2f) else Color.Black.copy(alpha = 0.45f)
 
@@ -224,7 +240,13 @@ private fun OpenedFolderOverlayContent(
             .fillMaxSize()
             .then(blurModifier)
             .background(overlayBgColor)
-            .pointerInput(Unit) { detectTapGestures(onTap = { actions.onFolderIntent(FolderViewIntent.CloseFolder) }) }
+            .pointerInput(Unit) {
+                detectTapGestures(onTap = {
+                    actions.onFolderIntent(
+                        FolderViewIntent.CloseFolder
+                    )
+                })
+            }
     ) {
         val topInsetDp = WindowInsets.statusBars.asPaddingValues().calculateTopPadding()
         val clampedTopDp = OpenedFolderOverlayUtils.calculateClampedTopDp(
@@ -233,7 +255,10 @@ private fun OpenedFolderOverlayContent(
             params.screenDensity,
             topInsetDp
         )
-        val align = OpenedFolderOverlayUtils.resolvePopupAlignment(isGridFolderEnabled, uiState.isLeftHandedMode)
+        val align = OpenedFolderOverlayUtils.resolvePopupAlignment(
+            isGridFolderEnabled,
+            uiState.isLeftHandedMode
+        )
         val popupPadding = with(OpenedFolderOverlayUtils) {
             Modifier.popupPadding(isGridFolderEnabled, uiState.isLeftHandedMode, clampedTopDp)
         }
@@ -245,7 +270,13 @@ private fun OpenedFolderOverlayContent(
                 actions = FolderPopupActions(
                     onDismiss = { actions.onFolderIntent(FolderViewIntent.CloseFolder) },
                     onAppClick = { app -> actions.onFolderIntent(FolderViewIntent.LaunchApp(app.packageName)) },
-                    onAddAppsClick = { actions.onFolderIntent(FolderViewIntent.AddAppToFolder(folderToDisplay.id)) },
+                    onAddAppsClick = {
+                        actions.onFolderIntent(
+                            FolderViewIntent.AddAppToFolder(
+                                folderToDisplay.id
+                            )
+                        )
+                    },
                     onEditFolderClick = { actions.onSetRenameFolderDialogVisible(true) }
                 ),
                 isGridFolderEnabled = isGridFolderEnabled,
@@ -267,7 +298,12 @@ internal fun AddAppToFolderOverlay(
             allApps = uiState.apps,
             onDismiss = { actions.onSetAddAppToFolderDialogVisible(false) },
             onSave = { selectedPackages ->
-                actions.onFolderIntent(FolderViewIntent.SaveFolderApps(uiState.activeFolder.id, selectedPackages))
+                actions.onFolderIntent(
+                    FolderViewIntent.SaveFolderApps(
+                        uiState.activeFolder.id,
+                        selectedPackages
+                    )
+                )
             }
         )
     }
@@ -283,7 +319,13 @@ internal fun RenameFolderOverlay(
             folder = uiState.activeFolder,
             onDismiss = { actions.onSetRenameFolderDialogVisible(false) },
             onSave = { newName, icon ->
-                actions.onFolderIntent(FolderViewIntent.RenameFolder(uiState.activeFolder.id, newName, icon))
+                actions.onFolderIntent(
+                    FolderViewIntent.RenameFolder(
+                        uiState.activeFolder.id,
+                        newName,
+                        icon
+                    )
+                )
             },
             onDelete = { actions.onFolderIntent(FolderViewIntent.DeleteFolder(uiState.activeFolder.id)) }
         )

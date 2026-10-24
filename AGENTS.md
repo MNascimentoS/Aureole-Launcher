@@ -10,7 +10,7 @@ This project uses modular steering documentation located in the [`agents/`](file
 
 - **[Master Index](file:///home/mateus/Workpace/AndroidStudioProjects/AureoleLauncher/agents/index.md)**
 - **[Architecture & Package Structure](file:///home/mateus/Workpace/AndroidStudioProjects/AureoleLauncher/agents/aureole_architecture.md)** (Clean Architecture, MAX-500 rule, No `@Suppress`)
-- **[Components & UI Rules](file:///home/mateus/Workpace/AndroidStudioProjects/AureoleLauncher/agents/aureole_components.md)** (UI vs Model separation, `@Composable` only in views, shared `composable/`)
+- **[Components & UI Rules](file:///home/mateus/Workpace/AndroidStudioProjects/AureoleLauncher/agents/aureole_components.md)** (UI vs Model separation, `@Composable` only in views, shared `composable/`, Internationalization & strict prohibition of hardcoded strings)
 - **[Providers & DI](file:///home/mateus/Workpace/AndroidStudioProjects/AureoleLauncher/agents/aureole_providers.md)** (Koin DI, Lifecycle observers)
 - **[Testing & Quality Assurance](file:///home/mateus/Workpace/AndroidStudioProjects/AureoleLauncher/agents/aureole_testing.md)** (Unit tests, Screenshot tests, `@AureolePreview`)
 - **[Design System & Tokens](file:///home/mateus/Workpace/AndroidStudioProjects/AureoleLauncher/agents/aureole_design_system.md)** (`AureoleDS.colors`, `AureoleDS.dimens`, `AureoleIcons`)

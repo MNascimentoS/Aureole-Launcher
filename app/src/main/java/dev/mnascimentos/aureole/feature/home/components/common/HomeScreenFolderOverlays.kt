@@ -1,4 +1,4 @@
-package dev.mnascimentos.aureole.feature.home.components.containers.folder
+package dev.mnascimentos.aureole.feature.home.components.common
 
 import android.appwidget.AppWidgetHost
 import androidx.compose.runtime.Composable

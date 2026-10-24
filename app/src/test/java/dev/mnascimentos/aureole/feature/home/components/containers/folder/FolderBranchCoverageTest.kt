@@ -9,6 +9,7 @@ import androidx.compose.ui.test.hasClickAction
 import androidx.compose.ui.test.hasSetTextAction
 import androidx.compose.ui.test.junit4.v2.createComposeRule
 import androidx.compose.ui.test.onAllNodesWithText
+import androidx.compose.ui.test.onFirst
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTextInput
@@ -17,6 +18,8 @@ import dev.chrisbanes.haze.HazeState
 import dev.mnascimentos.aureole.core.data.model.AppFolder
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
+import dev.mnascimentos.aureole.feature.home.components.common.HomeScreenFolderBottomSheetOverlays
+import dev.mnascimentos.aureole.feature.home.components.common.OpenedFolderOverlay
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.ContainerAppItemParams
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.ContainerFolderBottomSheetParams
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.ContainerFolderButtonParams
@@ -350,7 +353,7 @@ class FolderBranchCoverageTest {
             }
         }
 
-        composeTestRule.onNodeWithText("Apps na Pasta: App Picker").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Apps in Folder: App Picker").assertIsDisplayed()
     }
 
     @Test
@@ -611,7 +614,7 @@ class FolderBranchCoverageTest {
             }
         }
 
-        composeTestRule.onNodeWithText("Nenhum aplicativo na pasta").assertIsDisplayed()
+        composeTestRule.onNodeWithText("No apps in the folder.").assertIsDisplayed()
     }
 
     // --- 9. FolderFormDialog & Icon Selection Branches ---
@@ -676,8 +679,7 @@ class FolderBranchCoverageTest {
         composeTestRule.mainClock.advanceTimeBy(400L)
         composeTestRule.waitForIdle()
 
-        composeTestRule.onNodeWithText("Nenhum aplicativo encontrado.").assertIsDisplayed()
-        composeTestRule.onNodeWithText("Nenhum outro aplicativo encontrado.").assertIsDisplayed()
+        composeTestRule.onAllNodesWithText("No apps found.").onFirst().assertIsDisplayed()
     }
 
     @Test
@@ -704,7 +706,7 @@ class FolderBranchCoverageTest {
         composeTestRule.onAllNodes(hasClickAction())[2].performClick()
 
         // Click Save
-        composeTestRule.onNodeWithText("Salvar").performClick()
+        composeTestRule.onNodeWithText("Save").performClick()
         assertTrue(savedList.contains(app1.packageName))
     }
 

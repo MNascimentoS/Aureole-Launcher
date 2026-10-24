@@ -29,7 +29,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
 import dev.mnascimentos.aureole.core.designsystem.icons.ArrowDown
@@ -48,9 +47,6 @@ private object Constants {
     const val BORDER_ALPHA_EXPANDED = 0.35f
     const val BORDER_ALPHA_COLLAPSED = 0.2f
     const val MENU_BORDER_ALPHA = 0.3f
-
-    val SHADOW_ELEVATION = 8.dp
-    val MENU_ITEM_VERTICAL_PADDING = 2.dp
 
     const val SELECTED_BG_ALPHA = 0.12f
 }
@@ -97,7 +93,7 @@ internal fun EditClockDropdown(
                     width = AureoleDS.dimens.borderMinimal,
                     color = AureoleDS.colors.outline.copy(alpha = Constants.MENU_BORDER_ALPHA)
                 ),
-                shadowElevation = Constants.SHADOW_ELEVATION,
+                shadowElevation = AureoleDS.dimens.xSmall,
                 modifier = Modifier.padding(vertical = AureoleDS.dimens.xxSmall)
             ) {
                 config.options.forEach { (key, optionLabel) ->
@@ -225,7 +221,7 @@ private fun DropdownOptionMenuItem(
         modifier = Modifier
             .padding(
                 horizontal = AureoleDS.dimens.xxSmall,
-                vertical = Constants.MENU_ITEM_VERTICAL_PADDING
+                vertical = AureoleDS.dimens.minimal
             )
             .clip(RoundedCornerShape(AureoleDS.dimens.radiusXSmall))
             .background(

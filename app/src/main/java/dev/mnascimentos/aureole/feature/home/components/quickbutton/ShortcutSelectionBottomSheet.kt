@@ -7,7 +7,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import dev.chrisbanes.haze.HazeState
+import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.core.data.model.QuickButtonModel
 import dev.mnascimentos.aureole.core.data.model.ShortcutAction
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleEditOverlay
@@ -96,7 +98,13 @@ fun ShortcutSelectionBottomSheet(
         modifier = modifier,
         params = AureoleEditOverlayParams(
             config = AureoleEditOverlayConfig(
-                title = if (isShowingAppPicker) "Select an app" else "Select a shortcut",
+                title = if (isShowingAppPicker) {
+                    stringResource(R.string.qb_select_app)
+                } else {
+                    stringResource(
+                        R.string.qb_select_shortcut
+                    )
+                },
                 hazeState = if (uiState.isHazeEnabled) hazeState else null,
                 isVisible = isVisible,
                 animated = true,

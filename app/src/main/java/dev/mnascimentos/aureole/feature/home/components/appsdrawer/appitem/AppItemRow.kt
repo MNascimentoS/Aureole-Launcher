@@ -43,8 +43,10 @@ import dev.mnascimentos.aureole.feature.home.components.appsdrawer.appitem.model
 import dev.mnascimentos.aureole.feature.home.components.appsdrawer.appitem.model.AppItemRowConfig
 import dev.mnascimentos.aureole.feature.home.model.LocalHomeUiState
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
-private val ICON_OUTER_SIZE = 42.dp
-private val ICON_INNER_SIZE = 26.dp
+private object AppItemRowMetrics {
+    val IconOuterSize = 42.dp
+    val IconInnerSize = 26.dp
+}
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -150,7 +152,7 @@ private fun AppItemIcon(
     if (isThemed) {
         Box(
             modifier = Modifier
-                .size(ICON_OUTER_SIZE)
+                .size(AppItemRowMetrics.IconOuterSize)
                 .clip(RoundedCornerShape(AureoleDS.dimens.radiusSmall))
                 .background(AureoleDS.colors.surfaceVariant.copy(alpha = 0.85f))
                 .padding(AureoleDS.dimens.xSmall),
@@ -159,14 +161,14 @@ private fun AppItemIcon(
             Image(
                 bitmap = bitmap,
                 contentDescription = label,
-                modifier = Modifier.size(ICON_INNER_SIZE)
+                modifier = Modifier.size(AppItemRowMetrics.IconInnerSize)
             )
         }
     } else {
         Image(
             bitmap = bitmap,
             contentDescription = label,
-            modifier = Modifier.size(ICON_OUTER_SIZE)
+            modifier = Modifier.size(AppItemRowMetrics.IconOuterSize)
         )
     }
 }

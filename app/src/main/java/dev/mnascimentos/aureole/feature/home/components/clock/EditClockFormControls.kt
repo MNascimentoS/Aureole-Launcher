@@ -16,6 +16,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
+import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
@@ -31,14 +33,14 @@ internal fun EditClockBackgroundSection(
     uiState: MainUiState,
     actions: HomeScreenActions
 ) {
-    EditClockSectionHeader(title = "Fundo do Cartão")
+    EditClockSectionHeader(title = stringResource(R.string.clock_card_background))
     Row(
         modifier = Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         AureoleText(
-            text = "Mostrar cartão de fundo",
+            text = stringResource(R.string.clock_show_background),
             color = AureoleDS.colors.onSurfaceHigh,
             format = AureoleTextFormatParams(style = AureoleDS.typography.bodyMedium)
         )
@@ -51,7 +53,7 @@ internal fun EditClockBackgroundSection(
     if (uiState.isClockBackgroundEnabled) {
         Spacer(modifier = Modifier.height(AureoleDS.dimens.xSmall))
         AureoleText(
-            text = "Cor de Fundo Personalizada:",
+            text = stringResource(R.string.clock_custom_bg_color),
             color = AureoleDS.colors.onSurfaceMedium,
             modifier = Modifier.padding(bottom = AureoleDS.dimens.xxSmall),
             format = AureoleTextFormatParams(style = AureoleDS.typography.bodySmall)
@@ -91,7 +93,7 @@ internal fun EditClockActionButtons(
             }
         ) {
             AureoleText(
-                text = "Redefinir Padrões",
+                text = stringResource(R.string.clock_reset_defaults),
                 color = AureoleDS.colors.error
             )
         }
@@ -103,7 +105,7 @@ internal fun EditClockActionButtons(
                 contentColor = AureoleDS.colors.surface
             )
         ) {
-            AureoleText("Salvar", color = AureoleDS.colors.surface)
+            AureoleText(stringResource(R.string.edit_container_save), color = AureoleDS.colors.surface)
         }
     }
 }
