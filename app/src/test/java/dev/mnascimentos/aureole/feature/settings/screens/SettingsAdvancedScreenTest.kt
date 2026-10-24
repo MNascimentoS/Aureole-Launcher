@@ -93,7 +93,7 @@ class SettingsAdvancedScreenTest {
         }
 
         composeTestRule.onNodeWithText("What's new (Release notes)").performScrollTo().performClick()
-        composeTestRule.onNodeWithText("Entendido").assertExists()
+        composeTestRule.onNodeWithText("Got it").assertExists()
     }
 
     @Test

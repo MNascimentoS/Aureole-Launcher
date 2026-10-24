@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <string name="app_name">Aureole Launcher</string>
+
+    <!-- Common -->
+    <string name="common_cancel">Cancelar</string>
+    <string name="common_save">Salvar</string>
+    <string name="common_delete">Excluir</string>
+    <string name="common_confirm">Confirmar</string>
+    <string name="common_create">Criar</string>
+    <string name="common_understood">Entendido</string>
+
+    <!-- Clock -->
+    <string name="clock_daily_greeting">Saudação Diária</string>
+    <string name="clock_date_on_top">Data no Topo</string>
+    <string name="clock_greeting_and_date">Saudação + Data</string>
+    <string name="clock_custom_text">Texto Personalizado</string>
+    <string name="clock_time_only">Apenas Horário</string>
+
+    <string name="clock_date_default">Completo (sexta, 9 out)</string>
+    <string name="clock_date_short">Curto (Tue, 22 Sep)</string>
+    <string name="clock_date_medium">Médio (9 de outubro)</string>
+    <string name="clock_date_numeric">Numérico (09/10/2026)</string>
+
+    <string name="clock_date_format_label">Formato de Data:</string>
+
+    <!-- Folders -->
+    <string name="folder_edit_title">Editar Pasta</string>
+    <string name="folder_new_title">Nova Pasta</string>
+    <string name="folder_name_label">Nome da Pasta</string>
+    <string name="folder_name_placeholder">Nova Pasta</string>
+    <string name="folder_icon">Ícone da Pasta</string>
+    <string name="apps_in_folder">Apps na Pasta: %1$s</string>
+    <string name="selected_apps_count">Selecionados (%1$d)</string>
+    <string name="no_apps_in_folder">Nenhum aplicativo na pasta.</string>
+    <string name="no_apps_found">Nenhum aplicativo encontrado.</string>
+    <string name="other_apps_count">Outros Aplicativos (%1$d)</string>
+    <string name="all_apps_added">Todos os aplicativos já foram adicionados.</string>
+    <string name="search_app_placeholder">Buscar aplicativo&#8230;</string>
+
+    <!-- Quick Buttons -->
+    <string name="qb_settings_title">Configurações do botão rápido</string>
+    <string name="qb_appearance">Aparência</string>
+    <string name="qb_open_app">Abrir App</string>
+    <string name="qb_open_app_name">Abrir App (%1$s)</string>
+    <string name="qb_click_shortcut">Atalho de clique</string>
+    <string name="qb_remove">Remover botão rápido</string>
+    <string name="qb_appearance_title">Aparência do botão rápido</string>
+    <string name="qb_select_app">Selecione um aplicativo</string>
+    <string name="qb_select_shortcut">Selecione um atalho</string>
+    <string name="qb_bg_color">Cor de fundo</string>
+    <string name="qb_stroke">Borda</string>
+    <string name="qb_stroke_color">Cor da borda</string>
+    <string name="qb_icon">Ícone</string>
+    <string name="qb_icon_color">Cor do ícone</string>
+    <string name="qb_select_icon">Selecionar Ícone</string>
+
+    <!-- Colors / Theming -->
+    <string name="colors_recommended">Cores Recomendadas</string>
+
+    <!-- Settings -->
+    <string name="settings_title">Configurações</string>
+    <string name="settings_general">Geral</string>
+
+    <!-- Apps Drawer -->
+    <string name="app_search_placeholder">Buscar aplicativos</string>
+
+    <!-- Favorites -->
+    <string name="favorites_title">Favoritos</string>
+
+    <!-- Overlays & Customization -->
+    <string name="customize_title">Personalizar</string>
+    <string name="customize_add_clock">Adicionar relógio</string>
+    <string name="customize_add_container">Adicionar container</string>
+    <string name="customize_add_scrollview">Adicionar container rolável</string>
+    <string name="customize_add_quick_button">Adicionar botão rápido</string>
+    <string name="customize_add_widget_group">Adicionar grupo de widgets</string>
+    <string name="customize_adjust_layout">Ajustar layout</string>
+    <string name="customize_set_background">Definir plano de fundo</string>
+    <string name="customize_aureole_settings">Configurações do Aureole</string>
+    <string name="update_new_available">Nova atualização disponível</string>
+    <string name="update_new_body">Uma nova versão do Aureole Launcher está disponível na Google Play. Deseja atualizar agora?</string>
+    <string name="update_now">Atualizar agora</string>
+    <string name="update_later">Agora não</string>
+    <string name="update_ready">Atualização pronta</string>
+    <string name="update_ready_body">A nova versão foi baixada com sucesso. Reinicie o aplicativo para concluir a instalação.</string>
+    <string name="update_restart_now">Reiniciar agora</string>
+    <string name="update_restart_later">Depois</string>
+    <string name="release_notes_whats_new">O que há de novo</string>
+    <string name="release_notes_version">Versão %1$s</string>
+    <string name="release_notes_version_current">v%1$s (Atual)</string>
+    <string name="release_notes_version_past">v%1$s</string>
+    <string name="release_notes_tag_new">Novo</string>
+    <string name="release_notes_tag_improvement">Melhoria</string>
+    <string name="release_notes_tag_fix">Correção</string>
+
+    <!-- App Item Menus -->
+    <string name="app_menu_info">Informações do App</string>
+    <string name="app_menu_uninstall">Desinstalar</string>
+    <string name="app_menu_remove_from_folder">Remover da pasta</string>
+    <string name="app_menu_add_to_favorites">Adicionar aos favoritos</string>
+    <string name="app_menu_remove_from_favorites">Remover dos favoritos</string>
+    <string name="app_menu_quick_panel_settings">Configurações do painel rápido</string>
+
+    <!-- Clock Customization -->
+    <string name="clock_customize_title">Personalizar Relógio</string>
+    <string name="clock_style">Estilo do Relógio</string>
+    <string name="clock_layout_style">Estilo do Layout</string>
+    <string name="clock_greeting_text">Texto da Saudação</string>
+    <string name="clock_greeting_placeholder">Ex: Bem-vindo(a) de volta!</string>
+    <string name="clock_alignment">Alinhamento</string>
+    <string name="clock_align_left">Esquerda</string>
+    <string name="clock_align_center">Centro</string>
+    <string name="clock_align_right">Direita</string>
+    <string name="clock_text_color">Cor do Texto</string>
+    <string name="clock_font_style">Estilo da Fonte</string>
+    <string name="clock_font_default">Padrão</string>
+    <string name="clock_font_bold">Negrito</string>
+    <string name="clock_font_serif">Serifada</string>
+    <string name="clock_font_monospaced">Monospaced</string>
+    <string name="clock_font_rounded">Arredondada</string>
+    <string name="clock_time_date_format">Formato de Hora e Data</string>
+    <string name="clock_time_format">Formato de Hora:</string>
+    <string name="clock_time_system">Sistema</string>
+    <string name="clock_time_12h">12 Horas</string>
+    <string name="clock_time_24h">24 Horas</string>
+    <string name="clock_card_background">Fundo do Cartão</string>
+    <string name="clock_show_background">Mostrar cartão de fundo</string>
+    <string name="clock_custom_bg_color">Cor de Fundo Personalizada:</string>
+    <string name="clock_reset_defaults">Redefinir Padrões</string>
+    <string name="clock_greeting_morning">Bom dia</string>
+    <string name="clock_greeting_afternoon">Boa tarde</string>
+    <string name="clock_greeting_evening">Boa noite</string>
+
+    <!-- Favorites Dialog -->
+    <string name="favorites_dialog_title">Lista de Aplicativos</string>
+    <string name="favorites_show_all_apps">Mostrar todos os apps na Home</string>
+    <string name="favorites_show_all_apps_desc">Se desativado, exibe apenas os aplicativos favoritados</string>
+    <string name="favorites_edit_shortcuts">Editar atalhos</string>
+    <string name="favorites_manage_apps_order">Gerenciar aplicativos e ordem</string>
+    <string name="favorites_appearance_desc">Exibição dos apps na Home</string>
+    <string name="favorites_count">Favoritos (%1$d)</string>
+    <string name="favorites_disable_all">Desativar todos</string>
+    <string name="favorites_enable_all">Ativar todos</string>
+    <string name="favorites_none_selected">Nenhum aplicativo favorito selecionado.</string>
+    <string name="favorites_none_found">Nenhum favorito encontrado.</string>
+    <string name="favorites_all_added">Todos os aplicativos já estão nos favoritos.</string>
+    <string name="favorites_none_other_found">Nenhum outro aplicativo encontrado.</string>
+    <string name="favorites_search_placeholder">Buscar aplicativo...</string>
+    <string name="favorites_tap_to_select">Toque para selecionar Favoritos</string>
+    <string name="favorites_all_apps_divider">\" TODOS OS APPS \"</string>
+    <string name="favorites_done">Concluído</string>
+    <string name="favorites_back">Voltar</string>
+
+    <!-- Widgets -->
+    <string name="widget_stack_title">Pilha de Widgets</string>
+    <string name="widget_show_indicator">Mostrar indicador de posição</string>
+    <string name="widget_picker_search_placeholder">Pesquisar widgets...</string>
+    <string name="widget_picker_none_found">Nenhum widget encontrado.</string>
+    <string name="widget_count_single">%1$d Widget</string>
+    <string name="widget_count_plural">%1$d Widgets</string>
+    <string name="widget_group">Grupo de Widgets</string>
+    <string name="widget_unavailable">Widget indisponível</string>
+    <string name="widget_tap_to_configure">Toque para reconfigurar widget</string>
+    <string name="widget_add">Adicionar Widget</string>
+    <string name="widget_app_settings">Configurações do App</string>
+    <string name="widget_resize_group">Redimensionar Grupo</string>
+    <string name="widget_toggle_indicator">Alternar Indicador de Posição</string>
+    <string name="widget_remove">Remover</string>
+
+    <!-- Edit Container -->
+    <string name="edit_container_title">Configurações do Container</string>
+    <string name="edit_container_appearance">Aparência</string>
+    <string name="edit_container_behavior">Comportamento</string>
+    <string name="edit_container_manage_items">Gerenciar Itens</string>
+    <string name="edit_container_save">Salvar</string>
+    <string name="edit_container_expand_cells">Expandir células</string>
+    <string name="edit_container_grid_folders">Pastas em grid</string>
+    <string name="edit_container_bg_enabled">Fundo ativado</string>
+    <string name="edit_container_show_folder_labels">Exibir rótulos das pastas</string>
+    <string name="edit_container_back">Voltar</string>
+    <string name="edit_container_orientation">Orientação do Container</string>
+    <string name="edit_container_space_between">Espaçamento Entre (Separados)</string>
+    <string name="edit_container_space_evenly">Espaçamento Igual (Igualitário)</string>
+    <string name="edit_container_align_start">Início (Topo / Esquerda)</string>
+    <string name="edit_container_align_center">Centro</string>
+    <string name="edit_container_align_end">Fim (Base / Direita)</string>
+    <string name="edit_container_item_alignment">Alinhamento dos Itens</string>
+    <string name="edit_container_appearance_behavior_options">Opções de Aparência e Comportamento</string>
+    <string name="edit_container_bg_label">Fundo do Container</string>
+    <string name="edit_container_expand_cell_label">Expandir Célula</string>
+    <string name="edit_container_create_folder_btn">Botão de Criar Pasta</string>
+    <string name="edit_container_folder_labels">Exibir Rótulos das Pastas</string>
+    <string name="edit_container_grid_folder_mode">Modo de Pasta Expansiva (Grid)</string>
+    <string name="edit_container_child_components">Componentes Filhos (%1$d)</string>
+    <string name="edit_container_none_added">Nenhum componente adicionado ainda.</string>
+    <string name="edit_container_app_label">App</string>
+    <string name="edit_container_folder_label">Pasta</string>
+    <string name="edit_container_add_app">Adicionar App...</string>
+
+    <!-- Folders (Additional) -->
+    <string name="folder_edit_shortcuts">Editar atalhos</string>
+    <string name="folder_rename">Renomear</string>
+    <string name="folder_icon_setting">Ícone</string>
+    <string name="folder_remove">Remover pasta</string>
+    <string name="folder_container_settings">Configurações do Container</string>
+    <string name="folder_settings">Configurações da Pasta</string>
+    <string name="folder_is_empty">A pasta está vazia</string>
+
+    <!-- Reusable -->
+    <string name="color_picker_primary">Escolher Cor Primária</string>
+    <string name="color_picker_custom_hue">Ajuste Personalizado (Matiz)</string>
+
+</resources>

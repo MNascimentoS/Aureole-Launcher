@@ -13,6 +13,7 @@ Um launcher Android moderno, fluido e altamente personalizável desenvolvido 100
 - 🔤 **Gaveta de Apps & Navegação Curva**: Gaveta de aplicativos de alta performance com busca instantânea e barra de depuração alfabética curva com resposta tátil/gestual para navegação rápida entre os apps instalados.
 - 🧩 **Sistema de Widgets Avançado**: Host `AppWidgetHost` nativo do Android com suporte a adição de widgets individuais ou pilhas de widgets (Widget Stack Carousel), indicação visual de posição, rotação e remoção intuitiva.
 - ⚙️ **Configurações Extensas & Gestos**: Controle refinado de gestos na Home (deslizar para baixo/cima), atalhos de sistema, visibilidade de rótulos de apps e preferências do sistema.
+- 🌐 **Internacionalização & Suporte Multilíngue**: Suporte completo a múltiplos idiomas (Inglês padrão e Português do Brasil pt-rBR) em todos os menus, diálogos e componentes com regras estritas de arquitetura impedindo textos *hardcoded*.
 - 🔄 **In-App Updates & Telemetria**: Suporte integrado para In-App Updates nativos da Google Play Store (via `PlayAppUpdateManager`) e tratamento de erros via Firebase Crashlytics.
 
 ---

@@ -19,6 +19,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.stringResource
+import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleEditOverlay
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
@@ -64,9 +66,9 @@ fun FavoriteAppsDialog(
     }
 
     val titleText = when (currentMode) {
-        FavoriteAppsScreenMode.MAIN -> "Lista de Aplicativos"
-        FavoriteAppsScreenMode.EDIT_SHORTCUTS -> "Edit shortcuts"
-        FavoriteAppsScreenMode.APPEARANCE -> "Aparência"
+        FavoriteAppsScreenMode.MAIN -> stringResource(R.string.favorites_dialog_title)
+        FavoriteAppsScreenMode.EDIT_SHORTCUTS -> stringResource(R.string.favorites_edit_shortcuts)
+        FavoriteAppsScreenMode.APPEARANCE -> stringResource(R.string.edit_container_appearance)
     }
 
     AureoleEditOverlay(
@@ -126,7 +128,7 @@ private fun FavoriteAppsPreviewContent(previewFavoriteApps: List<AppInfo>) {
     ) {
         if (previewFavoriteApps.isEmpty()) {
             AureoleText(
-                text = "Nenhum favorito selecionado",
+                text = stringResource(R.string.favorites_none_selected),
                 color = AureoleDS.colors.onSurfaceMedium,
                 modifier = Modifier.padding(AureoleDS.dimens.medium),
                 format = AureoleTextFormatParams(style = AureoleDS.typography.bodyMedium)

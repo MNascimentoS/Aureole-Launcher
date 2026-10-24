@@ -14,6 +14,8 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
+import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.core.data.model.LauncherItemType
 import dev.mnascimentos.aureole.core.data.model.ScrollOrientation
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
@@ -39,7 +41,7 @@ fun CustomizeBottomSheet(
     modifier: Modifier = Modifier
 ) {
     SettingsBottomSheet(
-        title = "Customize",
+        title = stringResource(R.string.customize_title),
         onDismissRequest = onDismissRequest,
         modifier = modifier
     ) {
@@ -70,7 +72,7 @@ private fun CustomizeClockOption(
     onDismissRequest: () -> Unit
 ) {
     CustomizeOptionItem(
-        title = "Add clock",
+        title = stringResource(R.string.customize_add_clock),
         icon = {
             AureoleDS.icons.Add(
                 modifier = Modifier.size(AureoleDS.dimens.iconLarge),
@@ -90,7 +92,7 @@ private fun CustomizeContainerOption(
     onDismissRequest: () -> Unit
 ) {
     CustomizeOptionItem(
-        title = "Add container",
+        title = stringResource(R.string.customize_add_container),
         icon = {
             AureoleDS.icons.Star(
                 modifier = Modifier.size(AureoleDS.dimens.iconLarge),
@@ -110,7 +112,7 @@ private fun CustomizeScrollViewOption(
     onDismissRequest: () -> Unit
 ) {
     CustomizeOptionItem(
-        title = "Add scrollview container",
+        title = stringResource(R.string.customize_add_scrollview),
         icon = {
             AureoleDS.icons.VerticalContainer(
                 modifier = Modifier.size(AureoleDS.dimens.iconLarge),
@@ -130,7 +132,7 @@ private fun CustomizeQuickButtonOption(
     onDismissRequest: () -> Unit
 ) {
     CustomizeOptionItem(
-        title = "Add quick button",
+        title = stringResource(R.string.customize_add_quick_button),
         icon = {
             AureoleDS.icons.Click(
                 modifier = Modifier.size(AureoleDS.dimens.iconLarge),
@@ -150,7 +152,7 @@ private fun CustomizeWidgetGroupOption(
     onDismissRequest: () -> Unit
 ) {
     CustomizeOptionItem(
-        title = "Add widget group",
+        title = stringResource(R.string.customize_add_widget_group),
         icon = {
             AureoleDS.icons.MultipleView(
                 modifier = Modifier.size(AureoleDS.dimens.iconLarge),
@@ -171,7 +173,7 @@ private fun CustomizeSystemOptions(
 ) {
     Column {
         CustomizeOptionItem(
-            title = "Adjust layout",
+            title = stringResource(R.string.customize_adjust_layout),
             icon = {
                 AureoleDS.icons.Layout(
                     modifier = Modifier.size(AureoleDS.dimens.iconLarge),
@@ -184,7 +186,7 @@ private fun CustomizeSystemOptions(
             }
         )
         CustomizeOptionItem(
-            title = "Set Background",
+            title = stringResource(R.string.customize_set_background),
             icon = {
                 AureoleDS.icons.Placeholder(
                     modifier = Modifier.size(AureoleDS.dimens.iconLarge),
@@ -197,7 +199,7 @@ private fun CustomizeSystemOptions(
             }
         )
         CustomizeOptionItem(
-            title = "Aureole settings",
+            title = stringResource(R.string.customize_aureole_settings),
             icon = {
                 AureoleDS.icons.Icon(
                     modifier = Modifier.size(AureoleDS.dimens.iconLarge),

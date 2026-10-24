@@ -24,9 +24,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
+import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.icons.Edit
@@ -52,7 +54,7 @@ internal fun FavoriteAppsBottomBar(
         onClick = if (isMain) onClose else onBack,
         modifier = Modifier.fillMaxWidth()
     ) {
-        AureoleText(if (isMain) "Concluído" else "Voltar")
+        AureoleText(if (isMain) stringResource(R.string.favorites_done) else stringResource(R.string.favorites_back))
     }
 }
 
@@ -116,13 +118,13 @@ private fun MainFavoritesEditShortcutsRow(onClick: () -> Unit) {
         Spacer(modifier = Modifier.width(AureoleDS.dimens.medium))
         Column(modifier = Modifier.weight(1f)) {
             Text(
-                text = "Edit shortcuts",
+                text = stringResource(R.string.favorites_edit_shortcuts),
                 style = AureoleDS.typography.titleMedium,
                 fontWeight = FontWeight.Bold,
                 color = AureoleDS.colors.onSurfaceHigh
             )
             Text(
-                text = "Gerenciar aplicativos e ordem",
+                text = stringResource(R.string.favorites_manage_apps_order),
                 style = AureoleDS.typography.bodySmall,
                 color = AureoleDS.colors.onSurfaceMedium
             )
@@ -151,13 +153,13 @@ private fun MainFavoritesAppearanceRow(onClick: () -> Unit) {
         Spacer(modifier = Modifier.width(AureoleDS.dimens.medium))
         Column(modifier = Modifier.weight(1f)) {
             Text(
-                text = "Appearance",
+                text = stringResource(R.string.edit_container_appearance),
                 style = AureoleDS.typography.titleMedium,
                 fontWeight = FontWeight.Bold,
                 color = AureoleDS.colors.onSurfaceHigh
             )
             Text(
-                text = "Exibição dos apps na Home",
+                text = stringResource(R.string.favorites_appearance_desc),
                 style = AureoleDS.typography.bodySmall,
                 color = AureoleDS.colors.onSurfaceMedium
             )

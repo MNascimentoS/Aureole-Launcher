@@ -21,8 +21,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
+import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.core.designsystem.components.AureolePopupMenuItem
 import dev.mnascimentos.aureole.core.designsystem.components.AureolePopupMenuItemParams
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
@@ -95,7 +97,7 @@ private fun WidgetStackMenuItems(
     ) {
         if (widgetAppPackage != null) {
             AureolePopupMenuItem(
-                title = "Configurações do App",
+                title = stringResource(R.string.widget_app_settings),
                 params = AureolePopupMenuItemParams(
                     icon = { m -> AureoleDS.icons.Info(m) }
                 ),
@@ -107,7 +109,7 @@ private fun WidgetStackMenuItems(
         }
 
         AureolePopupMenuItem(
-            title = "Redimensionar Grupo",
+            title = stringResource(R.string.widget_resize_group),
             params = AureolePopupMenuItemParams(
                 icon = { m -> AureoleDS.icons.Edit(m) }
             ),
@@ -118,7 +120,7 @@ private fun WidgetStackMenuItems(
         )
 
         AureolePopupMenuItem(
-            title = "Alternar Indicador de Posição",
+            title = stringResource(R.string.widget_toggle_indicator),
             params = AureolePopupMenuItemParams(
                 customIcon = {
                     AureoleDS.icons.Dots(
@@ -134,7 +136,7 @@ private fun WidgetStackMenuItems(
         )
 
         AureolePopupMenuItem(
-            title = "Remover",
+            title = stringResource(R.string.widget_remove),
             params = AureolePopupMenuItemParams(
                 icon = { m -> AureoleDS.icons.Delete(m) },
                 isDestructive = false
@@ -176,7 +178,7 @@ private fun WidgetStackBottomSheetHeader(context: Context) {
             Spacer(modifier = Modifier.width(AureoleDS.dimens.smallCompact))
 
             AureoleText(
-                text = "Grupo de Widgets",
+                text = stringResource(R.string.widget_group),
                 color = AureoleDS.colors.onSurfaceHigh,
                 modifier = Modifier.weight(1f),
                 format = AureoleTextFormatParams(

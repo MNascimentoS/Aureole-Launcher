@@ -33,7 +33,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
 import dev.mnascimentos.aureole.composable.SettingsActionItem
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
@@ -53,19 +52,6 @@ import dev.mnascimentos.aureole.feature.settings.model.SettingsScreenActions
 import dev.mnascimentos.aureole.feature.settings.model.SettingsUiState
 
 private const val BOTTOM_SPACER_PERCENT = 0.15f
-
-private object AdvancedLayoutConstraints {
-    val MinTopSpacer = 16.dp
-    val MinBottomSpacer = 24.dp
-}
-
-private object AdvancedSectionSpacing {
-    val BetweenGroups = 20.dp
-}
-
-private object AdvancedLinkListLayout {
-    val IndentStart = 44.dp
-}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -127,9 +113,9 @@ private fun SettingsAdvancedContent(
             .padding(innerPadding)
     ) {
         val topSpacerHeight = (maxHeight * (uiState.headerOffsetPercent / 100f))
-            .coerceAtLeast(AdvancedLayoutConstraints.MinTopSpacer)
+            .coerceAtLeast(AureoleDS.dimens.medium)
         val bottomSpacerHeight = (maxHeight * BOTTOM_SPACER_PERCENT)
-            .coerceAtLeast(AdvancedLayoutConstraints.MinBottomSpacer)
+            .coerceAtLeast(AureoleDS.dimens.large)
 
         Column(
             modifier = Modifier
@@ -161,7 +147,7 @@ private fun SettingsAdvancedContent(
                 onOpenReleaseNotesDialog = dialogActions.onOpenReleaseNotesDialog
             )
 
-            Spacer(modifier = Modifier.height(AdvancedSectionSpacing.BetweenGroups))
+            Spacer(modifier = Modifier.height(AureoleDS.dimens.large))
 
             AdvancedLinksGroup(onNavigateToContributors = dialogActions.onNavigateToContributors)
 
@@ -231,31 +217,46 @@ private fun AdvancedLinksGroup(onNavigateToContributors: () -> Unit) {
             text = "Contributors",
             color = AureoleDS.colors.onSurfaceLow,
             modifier = Modifier.clickable { onNavigateToContributors() },
-            format = AureoleTextFormatParams(style = AureoleDS.typography.bodySmall, fontWeight = FontWeight.Normal)
+            format = AureoleTextFormatParams(
+                style = AureoleDS.typography.bodySmall,
+                fontWeight = FontWeight.Normal
+            )
         )
         AureoleText(
             text = "Privacy policy",
             color = AureoleDS.colors.onSurfaceLow,
             modifier = Modifier.clickable { },
-            format = AureoleTextFormatParams(style = AureoleDS.typography.bodySmall, fontWeight = FontWeight.Normal)
+            format = AureoleTextFormatParams(
+                style = AureoleDS.typography.bodySmall,
+                fontWeight = FontWeight.Normal
+            )
         )
         AureoleText(
             text = "Terms of service",
             color = AureoleDS.colors.onSurfaceLow,
             modifier = Modifier.clickable { },
-            format = AureoleTextFormatParams(style = AureoleDS.typography.bodySmall, fontWeight = FontWeight.Normal)
+            format = AureoleTextFormatParams(
+                style = AureoleDS.typography.bodySmall,
+                fontWeight = FontWeight.Normal
+            )
         )
         AureoleText(
             text = "Privacy settings",
             color = AureoleDS.colors.onSurfaceLow,
             modifier = Modifier.clickable { },
-            format = AureoleTextFormatParams(style = AureoleDS.typography.bodySmall, fontWeight = FontWeight.Normal)
+            format = AureoleTextFormatParams(
+                style = AureoleDS.typography.bodySmall,
+                fontWeight = FontWeight.Normal
+            )
         )
         AureoleText(
             text = "Open source licenses",
             color = AureoleDS.colors.onSurfaceLow,
             modifier = Modifier.clickable { },
-            format = AureoleTextFormatParams(style = AureoleDS.typography.bodySmall, fontWeight = FontWeight.Normal)
+            format = AureoleTextFormatParams(
+                style = AureoleDS.typography.bodySmall,
+                fontWeight = FontWeight.Normal
+            )
         )
     }
 }

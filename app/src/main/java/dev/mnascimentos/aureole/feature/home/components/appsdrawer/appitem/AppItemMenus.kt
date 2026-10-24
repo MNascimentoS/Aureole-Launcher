@@ -25,9 +25,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.core.graphics.drawable.toDrawable
+import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.designsystem.components.AureolePopupMenuItem
 import dev.mnascimentos.aureole.core.designsystem.components.AureolePopupMenuItemParams
@@ -161,7 +163,7 @@ internal fun AppActionSheetContent(
         AppShortcutsMenu(shortcuts = shortcuts, onDismiss = onDismiss, context = context)
 
         AureolePopupMenuItem(
-            title = "App Info",
+            title = stringResource(R.string.app_menu_info),
             params = AureolePopupMenuItemParams(
                 icon = { m -> AureoleDS.icons.Info(m) }
             ),
@@ -176,7 +178,7 @@ internal fun AppActionSheetContent(
         )
 
         AureolePopupMenuItem(
-            title = "Desinstalar",
+            title = stringResource(R.string.app_menu_uninstall),
             params = AureolePopupMenuItemParams(
                 icon = { m -> AureoleDS.icons.Delete(m) },
                 isDestructive = false
@@ -211,7 +213,7 @@ private fun AppActionSheetContainerItems(
 ) {
     if (params.onOpenContainerSettings != null) {
         AureolePopupMenuItem(
-            title = "Configurações do Container",
+            title = stringResource(R.string.folder_container_settings),
             params = AureolePopupMenuItemParams(
                 icon = { m -> AureoleDS.icons.Settings(m) }
             ),
@@ -230,7 +232,7 @@ private fun AppActionSheetFolderItems(
 ) {
     if (params.onRemoveFromFolder != null) {
         AureolePopupMenuItem(
-            title = "Remover da Pasta",
+            title = stringResource(R.string.app_menu_remove_from_folder),
             params = AureolePopupMenuItemParams(
                 icon = { m -> AureoleDS.icons.Delete(m) },
                 isDestructive = false
@@ -244,7 +246,7 @@ private fun AppActionSheetFolderItems(
 
     if (params.onOpenFolderSettings != null) {
         AureolePopupMenuItem(
-            title = "Configurações da Pasta",
+            title = stringResource(R.string.folder_settings),
             params = AureolePopupMenuItemParams(
                 customIcon = {
                     AureoleDS.icons.Folder(
@@ -262,7 +264,11 @@ private fun AppActionSheetFolderItems(
 
     if (params.actions.onToggleFavorite != null) {
         AureolePopupMenuItem(
-            title = if (params.isFavorite) "Remove from favorites" else "Add to favorites",
+            title = if (params.isFavorite) {
+                stringResource(R.string.app_menu_remove_from_favorites)
+            } else {
+                stringResource(R.string.app_menu_add_to_favorites)
+            },
             params = AureolePopupMenuItemParams(
                 icon = { m -> AureoleDS.icons.Star(m) }
             ),
@@ -275,7 +281,7 @@ private fun AppActionSheetFolderItems(
 
     if (params.actions.onEditFavoritesClick != null) {
         AureolePopupMenuItem(
-            title = "Quick panel settings",
+            title = stringResource(R.string.app_menu_quick_panel_settings),
             params = AureolePopupMenuItemParams(
                 icon = { m -> AureoleDS.icons.Settings(m) }
             ),

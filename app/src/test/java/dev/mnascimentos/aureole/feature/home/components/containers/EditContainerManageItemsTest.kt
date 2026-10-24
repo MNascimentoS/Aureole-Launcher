@@ -80,8 +80,8 @@ class EditContainerManageItemsTest {
             }
         }
 
-        composeTestRule.onNodeWithText("Nenhum componente adicionado ainda.").assertIsDisplayed()
-        composeTestRule.onNodeWithText("Voltar").assertIsDisplayed().performClick()
+        composeTestRule.onNodeWithText("No component added yet.").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Back").assertIsDisplayed().performClick()
         assertTrue(backClicked)
     }
 
@@ -104,7 +104,7 @@ class EditContainerManageItemsTest {
             }
         }
 
-        composeTestRule.onNodeWithText("Pasta").assertIsDisplayed().performClick()
+        composeTestRule.onNodeWithText("Folder").assertIsDisplayed().performClick()
 
         composeTestRule.onAllNodesWithText("New Folder")[0].assertIsDisplayed()
     }

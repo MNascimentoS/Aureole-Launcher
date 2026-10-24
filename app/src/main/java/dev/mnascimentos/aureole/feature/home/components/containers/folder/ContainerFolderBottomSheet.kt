@@ -13,8 +13,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
+import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.core.designsystem.components.AureolePopupMenuItem
 import dev.mnascimentos.aureole.core.designsystem.components.AureolePopupMenuItemParams
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
@@ -63,7 +65,7 @@ internal fun ContainerFolderBottomSheet(
 @Composable
 private fun ContainerFolderMenuItems(params: ContainerFolderBottomSheetParams) {
     AureolePopupMenuItem(
-        title = "Editar atalhos",
+        title = stringResource(R.string.folder_edit_shortcuts),
         params = AureolePopupMenuItemParams(
             customIcon = {
                 AureoleDS.icons.Star(
@@ -76,7 +78,7 @@ private fun ContainerFolderMenuItems(params: ContainerFolderBottomSheetParams) {
     )
 
     AureolePopupMenuItem(
-        title = "Renomear",
+        title = stringResource(R.string.folder_rename),
         params = AureolePopupMenuItemParams(
             customIcon = {
                 AureoleDS.icons.Edit(
@@ -89,7 +91,7 @@ private fun ContainerFolderMenuItems(params: ContainerFolderBottomSheetParams) {
     )
 
     AureolePopupMenuItem(
-        title = "Ícone",
+        title = stringResource(R.string.folder_icon_setting),
         params = AureolePopupMenuItemParams(
             customIcon = {
                 AureoleDS.icons.Smile(
@@ -107,7 +109,7 @@ private fun ContainerFolderMenuItems(params: ContainerFolderBottomSheetParams) {
 @Composable
 private fun SecondaryFolderMenuItems(params: ContainerFolderBottomSheetParams) {
     AureolePopupMenuItem(
-        title = "Remover pasta",
+        title = stringResource(R.string.folder_remove),
         params = AureolePopupMenuItemParams(
             customIcon = {
                 AureoleDS.icons.Delete(
@@ -121,7 +123,7 @@ private fun SecondaryFolderMenuItems(params: ContainerFolderBottomSheetParams) {
     )
 
     AureolePopupMenuItem(
-        title = "Configurações do Container",
+        title = stringResource(R.string.folder_container_settings),
         params = AureolePopupMenuItemParams(
             customIcon = {
                 AureoleDS.icons.Settings(
@@ -143,7 +145,7 @@ private fun ContainerFolderBottomSheetHeader() {
             .padding(horizontal = AureoleDS.dimens.medium)
     ) {
         AureoleText(
-            text = "Folder settings",
+            text = stringResource(R.string.folder_settings),
             color = AureoleDS.colors.onSurfaceHigh,
             modifier = Modifier
                 .align(Alignment.Center)

@@ -25,7 +25,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
+import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleFloatingSearchBar
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleFloatingSearchBarParams
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleSearchBarSizes
@@ -126,7 +128,7 @@ fun WidgetGroupList(
                 ),
                 modifier = searchBarModifier,
                 params = AureoleFloatingSearchBarParams(
-                    placeholder = "Pesquisar widgets...",
+                    placeholder = stringResource(R.string.widget_picker_search_placeholder),
                     focusRequester = focusRequester,
                     sizes = AureoleSearchBarSizes(
                         collapsedSize = FolderButtonMetrics.MediumSize,

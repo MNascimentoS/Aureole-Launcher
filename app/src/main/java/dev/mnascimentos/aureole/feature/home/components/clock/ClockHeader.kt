@@ -13,6 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
@@ -20,6 +21,7 @@ import dev.chrisbanes.haze.HazeState
 import dev.chrisbanes.haze.HazeStyle
 import dev.chrisbanes.haze.HazeTint
 import dev.chrisbanes.haze.hazeEffect
+import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
@@ -153,12 +155,13 @@ private fun Modifier.clockClickable(onClick: (() -> Unit)?, onLongClick: (() -> 
     ).semantics(mergeDescendants = true) {}
 }
 
+@Composable
 private fun getGreetingForCurrentHour(): String {
     val hour = SimpleDateFormat("H", Locale.getDefault()).format(Date()).toIntOrNull() ?: DEFAULT_NOON_HOUR
     return when (hour) {
-        in MORNING_HOUR_START..MORNING_HOUR_END -> "Bom dia"
-        in AFTERNOON_HOUR_START..AFTERNOON_HOUR_END -> "Boa tarde"
-        else -> "Boa noite"
+        in MORNING_HOUR_START..MORNING_HOUR_END -> stringResource(R.string.clock_greeting_morning)
+        in AFTERNOON_HOUR_START..AFTERNOON_HOUR_END -> stringResource(R.string.clock_greeting_afternoon)
+        else -> stringResource(R.string.clock_greeting_evening)
     }
 }
 

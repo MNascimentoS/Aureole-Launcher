@@ -3,7 +3,6 @@ package dev.mnascimentos.aureole.feature.home.components.quickbutton
 import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
 import android.provider.MediaStore
 import android.provider.Settings
 import androidx.compose.foundation.layout.Box
@@ -14,6 +13,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.core.net.toUri
 import dev.mnascimentos.aureole.core.data.model.LauncherItemState
 import dev.mnascimentos.aureole.core.data.model.QuickButtonModel
 import dev.mnascimentos.aureole.core.data.model.ShortcutType
@@ -89,7 +89,7 @@ private fun launchAppPackage(context: Context, target: String) {
 
 private fun launchSystemIntent(context: Context, target: String) {
     val intent = when (target) {
-        "Browser" -> Intent(Intent.ACTION_VIEW, Uri.parse("http://www.google.com"))
+        "Browser" -> Intent(Intent.ACTION_VIEW, "http://www.google.com".toUri())
         "Camera" -> Intent(MediaStore.INTENT_ACTION_STILL_IMAGE_CAMERA)
         "Dialer" -> Intent(Intent.ACTION_DIAL)
         else -> Intent(Settings.ACTION_SETTINGS)

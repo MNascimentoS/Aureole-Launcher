@@ -50,8 +50,8 @@ class FavoriteAppsListTest {
             }
         }
 
-        composeTestRule.onNodeWithText("Favoritos (0)").assertIsDisplayed()
-        composeTestRule.onNodeWithText("Nenhum aplicativo favorito selecionado.").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Favorites (0)").assertIsDisplayed()
+        composeTestRule.onNodeWithText("No favorite app selected.").assertIsDisplayed()
     }
 
     @Test
@@ -76,7 +76,7 @@ class FavoriteAppsListTest {
             }
         }
 
-        composeTestRule.onNodeWithText("Nenhum favorito encontrado.").assertIsDisplayed()
+        composeTestRule.onNodeWithText("No favorite found.").assertIsDisplayed()
     }
 
     @Test
@@ -94,8 +94,8 @@ class FavoriteAppsListTest {
             }
         }
 
-        composeTestRule.onNodeWithText("Outros Aplicativos (0)").assertIsDisplayed()
-        composeTestRule.onNodeWithText("Todos os aplicativos já estão nos favoritos.").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Other Apps (0)").assertIsDisplayed()
+        composeTestRule.onNodeWithText("All apps are already in favorites.").assertIsDisplayed()
     }
 
     @Test
@@ -114,7 +114,7 @@ class FavoriteAppsListTest {
             }
         }
 
-        composeTestRule.onNodeWithText("Outros Aplicativos (1)").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Other Apps (1)").assertIsDisplayed()
         composeTestRule.onNodeWithText("Novo App").assertIsDisplayed()
     }
 }

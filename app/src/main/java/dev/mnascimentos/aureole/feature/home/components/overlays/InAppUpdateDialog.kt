@@ -18,8 +18,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalInspectionMode
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
@@ -41,11 +43,10 @@ fun UpdateAvailableDialog(
 ) {
     UpdateDialogContent(
         UpdateDialogContentParams(
-            title = "Nova atualização disponível",
-            body = "Uma nova versão do Aureole Launcher está disponível na Google Play. " +
-                "Deseja atualizar agora?",
-            confirmLabel = "Atualizar agora",
-            dismissLabel = "Agora não",
+            title = stringResource(R.string.update_new_available),
+            body = stringResource(R.string.update_new_body),
+            confirmLabel = stringResource(R.string.update_now),
+            dismissLabel = stringResource(R.string.update_later),
             onConfirm = onConfirmUpdate,
             onDismiss = onDismiss
         )
@@ -62,11 +63,10 @@ fun UpdateDownloadedDialog(
 ) {
     UpdateDialogContent(
         UpdateDialogContentParams(
-            title = "Atualização pronta",
-            body = "A nova versão foi baixada com sucesso. " +
-                "Reinicie o aplicativo para concluir a instalação.",
-            confirmLabel = "Reiniciar agora",
-            dismissLabel = "Depois",
+            title = stringResource(R.string.update_ready),
+            body = stringResource(R.string.update_ready_body),
+            confirmLabel = stringResource(R.string.update_restart_now),
+            dismissLabel = stringResource(R.string.update_restart_later),
             onConfirm = onConfirmRestart,
             onDismiss = onDismiss
         )

@@ -16,6 +16,7 @@ import dev.chrisbanes.haze.HazeState
 import dev.mnascimentos.aureole.core.data.model.AppFolder
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
+import dev.mnascimentos.aureole.feature.home.components.common.HomeScreenFolderOverlays
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.ContainerAppItemParams
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.ContainerFolderBottomSheetParams
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.ContainerFolderConfig
@@ -179,19 +180,19 @@ class FolderComponentsTest {
         }
 
         composeTestRule.onNodeWithText("Folder settings").assertIsDisplayed()
-        composeTestRule.onNodeWithText("Editar atalhos").assertIsDisplayed().performClick()
+        composeTestRule.onNodeWithText("Edit shortcuts").assertIsDisplayed().performClick()
         assertTrue(editShortcutsClicked)
 
-        composeTestRule.onNodeWithText("Renomear").assertIsDisplayed().performClick()
+        composeTestRule.onNodeWithText("Rename").assertIsDisplayed().performClick()
         assertTrue(renameClicked)
 
-        composeTestRule.onNodeWithText("Ícone").assertIsDisplayed().performClick()
+        composeTestRule.onNodeWithText("Icon").assertIsDisplayed().performClick()
         assertTrue(iconClicked)
 
-        composeTestRule.onNodeWithText("Remover pasta").assertIsDisplayed().performClick()
+        composeTestRule.onNodeWithText("Remove folder").assertIsDisplayed().performClick()
         assertTrue(removeFolderClicked)
 
-        composeTestRule.onNodeWithText("Configurações do Container").assertIsDisplayed().performClick()
+        composeTestRule.onNodeWithText("Container settings").assertIsDisplayed().performClick()
         assertTrue(openSettingsClicked)
     }
 
@@ -319,12 +320,12 @@ class FolderComponentsTest {
             }
         }
 
-        composeTestRule.onNodeWithText("Apps na Pasta: Social").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Apps in Folder: Social").assertIsDisplayed()
         composeTestRule.onNodeWithText("Test App").assertIsDisplayed()
         composeTestRule.onNodeWithText("Browser").assertIsDisplayed()
 
-        // Click Salvar
-        composeTestRule.onNodeWithText("Salvar").performClick()
+        // Click Save
+        composeTestRule.onNodeWithText("Save").performClick()
         assertEquals(listOf(sampleApp.packageName), savedPackages)
     }
 
@@ -485,8 +486,8 @@ class FolderComponentsTest {
             }
         }
 
-        composeTestRule.onNodeWithText("Nenhum aplicativo na pasta.").assertIsDisplayed()
-        composeTestRule.onNodeWithText("Todos os aplicativos já foram adicionados.").assertIsDisplayed()
+        composeTestRule.onNodeWithText("No apps in the folder.").assertIsDisplayed()
+        composeTestRule.onNodeWithText("All apps have been added.").assertIsDisplayed()
     }
 
     @Test
@@ -551,7 +552,7 @@ class FolderComponentsTest {
         }
 
         composeTestRule.onNodeWithText("Empty Grid").assertIsDisplayed()
-        composeTestRule.onNodeWithText("Nenhum aplicativo na pasta").assertIsDisplayed()
+        composeTestRule.onNodeWithText("No apps in the folder.").assertIsDisplayed()
     }
 
     @Test

@@ -79,6 +79,6 @@ class SettingsRootScreenTest {
         }
 
         composeTestRule.onNodeWithText("Aureole").performScrollTo().performClick()
-        composeTestRule.onNodeWithText("Entendido").assertExists()
+        composeTestRule.onNodeWithText("Got it").assertExists()
     }
 }

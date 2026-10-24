@@ -17,28 +17,10 @@ object ReleaseNotesRepository {
 
     private fun getRecentReleaseNotes(): List<ReleaseNoteVersion> = listOf(
         ReleaseNoteVersion(
-            versionName = "0.8.20",
+            versionName = "0.8.24",
             releaseDate = "Outubro 2026",
             isCurrent = true,
-            sections = getSectionsForVersion0820()
-        ),
-        ReleaseNoteVersion(
-            versionName = "0.8.18",
-            releaseDate = "Outubro 2026",
-            isCurrent = false,
-            sections = getSectionsForVersion0818()
-        ),
-        ReleaseNoteVersion(
-            versionName = "0.8.16",
-            releaseDate = "Outubro 2026",
-            isCurrent = false,
-            sections = getSectionsForVersion0816()
-        ),
-        ReleaseNoteVersion(
-            versionName = "0.8.13",
-            releaseDate = "Março 2025",
-            isCurrent = false,
-            sections = getSectionsForVersion0813()
+            sections = getSectionsForVersion0824()
         ),
         ReleaseNoteVersion(
             versionName = "0.7.13",

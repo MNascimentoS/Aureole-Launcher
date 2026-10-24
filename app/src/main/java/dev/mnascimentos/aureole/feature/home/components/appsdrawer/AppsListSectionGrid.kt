@@ -21,8 +21,10 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.core.graphics.drawable.toDrawable
+import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleSectionHeader
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
@@ -114,7 +116,7 @@ private fun LazyListScope.settingsListItem(actions: HomeScreenActions) {
             Spacer(modifier = Modifier.width(AureoleDS.dimens.medium))
 
             AureoleText(
-                text = "Aureole Settings",
+                text = stringResource(R.string.customize_aureole_settings),
                 color = AureoleDS.colors.onSurfaceMedium,
                 format = AureoleTextFormatParams(style = AureoleDS.typography.bodyLarge)
             )

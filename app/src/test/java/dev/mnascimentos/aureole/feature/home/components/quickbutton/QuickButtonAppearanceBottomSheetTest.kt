@@ -82,7 +82,7 @@ class QuickButtonAppearanceBottomSheetTest {
 
         // Assert
         composeTestRule.onNodeWithText("Background color").performClick()
-        composeTestRule.onNodeWithText("Escolher Cor Primária").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Choose Primary Color").assertIsDisplayed()
     }
 
     @Test

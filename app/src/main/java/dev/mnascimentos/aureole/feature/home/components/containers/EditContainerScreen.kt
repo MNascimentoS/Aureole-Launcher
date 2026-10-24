@@ -27,8 +27,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
+import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.data.model.ContainerModel
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleEditOverlay
@@ -116,10 +118,10 @@ fun EditContainerScreen(
         }
 
         val titleText = when (currentMode) {
-            EditContainerScreenMode.MAIN -> "Container settings"
-            EditContainerScreenMode.APPEARANCE -> "Aparência"
-            EditContainerScreenMode.BEHAVIOR -> "Comportamento"
-            EditContainerScreenMode.MANAGE_ITEMS -> "Gerenciar Itens"
+            EditContainerScreenMode.MAIN -> stringResource(R.string.edit_container_title)
+            EditContainerScreenMode.APPEARANCE -> stringResource(R.string.edit_container_appearance)
+            EditContainerScreenMode.BEHAVIOR -> stringResource(R.string.edit_container_behavior)
+            EditContainerScreenMode.MANAGE_ITEMS -> stringResource(R.string.edit_container_manage_items)
         }
 
         val homeActions = LocalHomeActions.current
@@ -211,7 +213,7 @@ internal fun MainSettingsContent(
 ) {
     Column(modifier = modifier) {
         MainSettingsNavigationRow(
-            title = "Appearance",
+            title = stringResource(R.string.edit_container_appearance),
             onClick = onAppearanceClick,
             icon = {
                 AureoleDS.icons.ColorFill(
@@ -222,7 +224,7 @@ internal fun MainSettingsContent(
         )
 
         MainSettingsNavigationRow(
-            title = "Behavior",
+            title = stringResource(R.string.edit_container_behavior),
             onClick = onBehaviorClick,
             icon = {
                 AureoleDS.icons.Click(
@@ -233,7 +235,7 @@ internal fun MainSettingsContent(
         )
 
         MainSettingsNavigationRow(
-            title = "Manage Items",
+            title = stringResource(R.string.edit_container_manage_items),
             onClick = onManageItemsClick,
             icon = {
                 AureoleDS.icons.DragMenu(
@@ -248,7 +250,7 @@ internal fun MainSettingsContent(
             onClick = onSave,
             modifier = Modifier.fillMaxWidth()
         ) {
-            Text("Salvar")
+            Text(stringResource(R.string.edit_container_save))
         }
     }
 }
@@ -289,7 +291,7 @@ internal fun AppearanceSettingsContent(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text("Expand cells", color = AureoleDS.colors.onSurfaceMedium)
+                Text(stringResource(R.string.edit_container_expand_cells), color = AureoleDS.colors.onSurfaceMedium)
                 Switch(checked = state.isExpandCell, onCheckedChange = { state.isExpandCell = it })
             }
             Row(
@@ -297,7 +299,7 @@ internal fun AppearanceSettingsContent(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text("Grid folders", color = AureoleDS.colors.onSurfaceMedium)
+                Text(stringResource(R.string.edit_container_grid_folders), color = AureoleDS.colors.onSurfaceMedium)
                 Switch(checked = state.isGridFolderEnabled, onCheckedChange = { state.isGridFolderEnabled = it })
             }
         } else {
@@ -310,7 +312,7 @@ internal fun AppearanceSettingsContent(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text("Background enabled", color = AureoleDS.colors.onSurfaceMedium)
+                Text(stringResource(R.string.edit_container_bg_enabled), color = AureoleDS.colors.onSurfaceMedium)
                 Switch(checked = state.isBackgroundEnabled, onCheckedChange = { state.isBackgroundEnabled = it })
             }
             Row(
@@ -318,14 +320,17 @@ internal fun AppearanceSettingsContent(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text("Show folder labels", color = AureoleDS.colors.onSurfaceMedium)
+                Text(
+                    stringResource(R.string.edit_container_show_folder_labels),
+                    color = AureoleDS.colors.onSurfaceMedium
+                )
                 Switch(checked = state.showFolderLabels, onCheckedChange = { state.showFolderLabels = it })
             }
         }
 
         Spacer(modifier = Modifier.height(AureoleDS.dimens.large))
         Button(onClick = onBack, modifier = Modifier.fillMaxWidth()) {
-            Text("Voltar")
+            Text(stringResource(R.string.edit_container_back))
         }
     }
 }

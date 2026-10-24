@@ -30,7 +30,7 @@ class FavoriteAppsDialogSectionsTest {
             }
         }
 
-        composeTestRule.onNodeWithText("Concluído").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Done").assertIsDisplayed()
     }
 
     @Test
@@ -45,7 +45,7 @@ class FavoriteAppsDialogSectionsTest {
             }
         }
 
-        composeTestRule.onNodeWithText("Voltar").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Back").assertIsDisplayed()
     }
 
     @Test

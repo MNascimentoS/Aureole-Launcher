@@ -49,7 +49,7 @@ class AppItemPopupComponentsTest {
 
         composeTestRule.onNodeWithText("Popup App Test").assertIsDisplayed()
         composeTestRule.onNodeWithText("App").assertIsDisplayed()
-        composeTestRule.onNodeWithText("Add").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Create").assertIsDisplayed()
         composeTestRule.onNodeWithText("Settings").assertIsDisplayed()
     }
 
@@ -103,8 +103,8 @@ class AppItemPopupComponentsTest {
             }
         }
 
-        composeTestRule.onNodeWithText("Add").assertIsDisplayed()
-        composeTestRule.onNodeWithText("Add").performClick()
+        composeTestRule.onNodeWithText("Create").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Create").performClick()
 
         assertEquals(sampleApp.packageName, toggledPkg)
         assertTrue(dismissed)
