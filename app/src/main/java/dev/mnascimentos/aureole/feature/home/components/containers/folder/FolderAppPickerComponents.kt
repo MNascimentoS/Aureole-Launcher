@@ -18,7 +18,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
@@ -44,7 +46,7 @@ fun FolderAppPickerHeader(
         verticalAlignment = Alignment.CenterVertically
     ) {
         AureoleText(
-            text = "Apps na Pasta: $folderName",
+            text = stringResource(R.string.apps_in_folder, folderName),
             color = AureoleDS.colors.onSurfaceHigh,
             format = AureoleTextFormatParams(style = AureoleDS.typography.titleMedium, fontWeight = FontWeight.Bold)
         )
@@ -68,11 +70,11 @@ fun FolderAppPickerFooter(
         verticalAlignment = Alignment.CenterVertically
     ) {
         OutlinedButton(onClick = onDismiss) {
-            AureoleText("Cancelar")
+            AureoleText(stringResource(R.string.common_cancel))
         }
         Spacer(modifier = Modifier.width(AureoleDS.dimens.xSmall))
         Button(onClick = onSave) {
-            AureoleText("Salvar")
+            AureoleText(stringResource(R.string.common_save))
         }
     }
 }

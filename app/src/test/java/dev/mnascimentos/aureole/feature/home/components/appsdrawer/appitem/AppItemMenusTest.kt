@@ -50,7 +50,7 @@ class AppItemMenusTest {
 
         composeTestRule.onNodeWithText("Test App Header").assertIsDisplayed()
         composeTestRule.onNodeWithText("App Info").assertIsDisplayed()
-        composeTestRule.onNodeWithText("Desinstalar").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Uninstall").assertIsDisplayed()
     }
 
     @Test
@@ -163,7 +163,7 @@ class AppItemMenusTest {
             }
         }
 
-        composeTestRule.onNodeWithText("Desinstalar").performClick()
+        composeTestRule.onNodeWithText("Uninstall").performClick()
         assertTrue(uninstallClicked)
         assertTrue(dismissed)
     }
@@ -186,7 +186,7 @@ class AppItemMenusTest {
             }
         }
 
-        composeTestRule.onNodeWithText("Desinstalar").performClick()
+        composeTestRule.onNodeWithText("Uninstall").performClick()
         assertTrue(dismissed)
     }
 
@@ -209,7 +209,7 @@ class AppItemMenusTest {
             }
         }
 
-        composeTestRule.onNodeWithText("Configurações do Container").performClick()
+        composeTestRule.onNodeWithText("Container settings").performClick()
         assertTrue(containerSettingsOpened)
         assertTrue(dismissed)
     }
@@ -234,10 +234,10 @@ class AppItemMenusTest {
             }
         }
 
-        composeTestRule.onNodeWithText("Remover da Pasta").assertIsDisplayed()
-        composeTestRule.onNodeWithText("Configurações da Pasta").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Remove from folder").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Folder settings").assertIsDisplayed()
 
-        composeTestRule.onNodeWithText("Remover da Pasta").performClick()
+        composeTestRule.onNodeWithText("Remove from folder").performClick()
         assertTrue(removedFromFolder)
         assertTrue(dismissed)
     }
@@ -261,7 +261,7 @@ class AppItemMenusTest {
             }
         }
 
-        composeTestRule.onNodeWithText("Configurações da Pasta").performClick()
+        composeTestRule.onNodeWithText("Folder settings").performClick()
         assertTrue(folderSettingsOpened)
         assertTrue(dismissed)
     }

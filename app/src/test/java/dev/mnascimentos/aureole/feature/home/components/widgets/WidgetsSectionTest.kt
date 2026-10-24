@@ -49,8 +49,8 @@ class WidgetsSectionTest {
             }
         }
 
-        composeTestRule.onNodeWithText("Adicionar Widget").assertIsDisplayed()
-        composeTestRule.onNodeWithText("Adicionar Widget").performClick()
+        composeTestRule.onNodeWithText("Add Widget").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Add Widget").performClick()
 
         assertTrue(clicked)
     }
@@ -68,7 +68,7 @@ class WidgetsSectionTest {
             }
         }
 
-        composeTestRule.onNodeWithText("Adicionar Widget").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Add Widget").assertIsDisplayed()
     }
 
     @Test

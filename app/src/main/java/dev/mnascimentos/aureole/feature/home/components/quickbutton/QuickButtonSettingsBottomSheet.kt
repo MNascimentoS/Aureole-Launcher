@@ -16,8 +16,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import dev.chrisbanes.haze.HazeState
+import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.core.data.model.QuickButtonModel
 import dev.mnascimentos.aureole.core.data.model.ShortcutType
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleEditOverlay
@@ -67,7 +69,7 @@ fun QuickButtonSettingsBottomSheet(
         modifier = modifier,
         params = AureoleEditOverlayParams(
             config = AureoleEditOverlayConfig(
-                title = "Quick button settings",
+                title = stringResource(R.string.qb_settings_title),
                 onSettingsClick = { actions.onSettingsClick() },
                 hazeState = effectiveHazeState,
                 isVisible = isVisible,
@@ -117,7 +119,7 @@ private fun QuickButtonSettingsSheetContent(
             .verticalScroll(rememberScrollState())
     ) {
         SettingsRow(
-            title = "Appearance",
+            title = stringResource(R.string.qb_appearance),
             icon = { m -> AureoleDS.icons.Edit(m) },
             onClick = { actions.onOpenQuickButtonAppearance() }
         )
@@ -126,13 +128,19 @@ private fun QuickButtonSettingsSheetContent(
             ShortcutType.OPEN_APP -> {
                 val pkg = activeModel.shortcuts.click.target
                 val appLabel = uiState.apps.find { it.packageName == pkg }?.label
-                if (appLabel != null) "Open App ($appLabel)" else "Open App"
+                if (appLabel != null) {
+                    stringResource(R.string.qb_open_app_name, appLabel)
+                } else {
+                    stringResource(
+                        R.string.qb_open_app
+                    )
+                }
             }
             else -> activeModel.shortcuts.click.displayName
         }
 
         SettingsRow(
-            title = "Click shortcut",
+            title = stringResource(R.string.qb_click_shortcut),
             value = clickValue,
             icon = { m -> AureoleDS.icons.Click(m) },
             onClick = { actions.onOpenShortcutSelection("click") }
@@ -141,7 +149,7 @@ private fun QuickButtonSettingsSheetContent(
         Spacer(modifier = Modifier.height(AureoleDS.dimens.medium))
 
         SettingsRow(
-            title = "Remove quick button",
+            title = stringResource(dev.mnascimentos.aureole.R.string.qb_remove),
             icon = { m -> AureoleDS.icons.Delete(m, tint = AureoleDS.colors.error) },
             textColor = AureoleDS.colors.error,
             onClick = {

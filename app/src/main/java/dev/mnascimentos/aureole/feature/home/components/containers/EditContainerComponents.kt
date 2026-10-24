@@ -39,8 +39,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
 import dev.mnascimentos.aureole.core.designsystem.icons.ArrowDown
@@ -63,7 +65,7 @@ internal fun EditContainerOrientationSelector(
             .padding(vertical = AureoleDS.dimens.xSmall)
     ) {
         AureoleText(
-            text = "Orientação do Container",
+            text = stringResource(R.string.edit_container_orientation),
             color = AureoleDS.colors.onSurfaceHigh,
             format = AureoleTextFormatParams(style = AureoleDS.typography.labelMedium, fontWeight = FontWeight.Bold)
         )
@@ -118,12 +120,13 @@ private fun OrientationOptionButton(
     }
 }
 
-private val positionOptionsMap = listOf(
-    "Space Between" to "Espaçamento Entre (Separados)",
-    "Space Evenly" to "Espaçamento Igual (Igualitário)",
-    "Top" to "Início (Topo / Esquerda)",
-    "Center" to "Centro",
-    "Bottom" to "Fim (Base / Direita)"
+@Composable
+private fun getPositionOptionsMap(): List<Pair<String, String>> = listOf(
+    "Space Between" to stringResource(R.string.edit_container_space_between),
+    "Space Evenly" to stringResource(R.string.edit_container_space_evenly),
+    "Top" to stringResource(R.string.edit_container_align_start),
+    "Center" to stringResource(R.string.edit_container_align_center),
+    "Bottom" to stringResource(R.string.edit_container_align_end)
 )
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -133,11 +136,12 @@ internal fun EditContainerAlignmentSelector(
     onPositionSelected: (String) -> Unit
 ) {
     var isDropdownExpanded by remember { mutableStateOf(false) }
+    val positionOptionsMap = getPositionOptionsMap()
     val displayValue = positionOptionsMap.find { it.first == position }?.second ?: position
 
     Column {
         AureoleText(
-            text = "Alinhamento dos Itens",
+            text = stringResource(R.string.edit_container_item_alignment),
             color = AureoleDS.colors.onSurfaceHigh,
             modifier = Modifier.padding(bottom = AureoleDS.dimens.xxSmall),
             format = AureoleTextFormatParams(style = AureoleDS.typography.labelMedium, fontWeight = FontWeight.Bold)
@@ -162,6 +166,7 @@ internal fun EditContainerAlignmentSelector(
             AlignmentDropdownMenu(
                 expanded = isDropdownExpanded,
                 selectedPosition = position,
+                optionsMap = positionOptionsMap,
                 onDismiss = { isDropdownExpanded = false },
                 onPositionSelected = onPositionSelected
             )
@@ -174,6 +179,7 @@ internal fun EditContainerAlignmentSelector(
 private fun ExposedDropdownMenuBoxScope.AlignmentDropdownMenu(
     expanded: Boolean,
     selectedPosition: String,
+    optionsMap: List<Pair<String, String>>,
     onDismiss: () -> Unit,
     onPositionSelected: (String) -> Unit
 ) {
@@ -189,7 +195,7 @@ private fun ExposedDropdownMenuBoxScope.AlignmentDropdownMenu(
         shadowElevation = 8.dp,
         modifier = Modifier.padding(vertical = AureoleDS.dimens.xxSmall)
     ) {
-        positionOptionsMap.forEach { (key, label) ->
+        optionsMap.forEach { (key, label) ->
             val isSelected = (key == selectedPosition)
             DropdownMenuItem(
                 text = {
@@ -256,7 +262,7 @@ internal fun EditContainerOptionsExpandableSection(
             verticalAlignment = Alignment.CenterVertically
         ) {
             AureoleText(
-                text = "Opções de Aparência e Comportamento",
+                text = stringResource(R.string.edit_container_appearance_behavior_options),
                 color = AureoleDS.colors.onSurfaceHigh,
                 modifier = Modifier.weight(1f),
                 format = AureoleTextFormatParams(
@@ -312,31 +318,31 @@ private fun EditContainerSwitchesColumn(
         )
 
         SettingSwitchRow(
-            label = "Fundo do Container",
+            label = stringResource(R.string.edit_container_bg_label),
             checked = formState.isBackgroundEnabled,
             onCheckedChange = callbacks.onBgChange
         )
 
         SettingSwitchRow(
-            label = "Expandir Célula",
+            label = stringResource(R.string.edit_container_expand_cell_label),
             checked = formState.isExpandCell,
             onCheckedChange = callbacks.onExpandChange
         )
 
         SettingSwitchRow(
-            label = "Botão de Criar Pasta",
+            label = stringResource(R.string.edit_container_create_folder_btn),
             checked = formState.showAddFolderButton,
             onCheckedChange = callbacks.onAddFolderBtnChange
         )
 
         SettingSwitchRow(
-            label = "Exibir Rótulos das Pastas",
+            label = stringResource(R.string.edit_container_folder_labels),
             checked = formState.showFolderLabels,
             onCheckedChange = callbacks.onFolderLabelsChange
         )
 
         SettingSwitchRow(
-            label = "Modo de Pasta Expansiva (Grid)",
+            label = stringResource(R.string.edit_container_grid_folder_mode),
             checked = formState.isGridFolderEnabled,
             onCheckedChange = callbacks.onGridFolderChange
         )

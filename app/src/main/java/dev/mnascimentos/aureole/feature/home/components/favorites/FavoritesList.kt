@@ -16,7 +16,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
@@ -115,7 +114,7 @@ private fun ScrollableFavoritesList(
         modifier = modifier
             .fillMaxHeight()
             .fadingEdges(config.state),
-        contentPadding = PaddingValues(vertical = 12.dp)
+        contentPadding = PaddingValues(vertical = AureoleDS.dimens.small)
     ) {
         if (showHeadersAndWidgets) {
             item(key = "clock_header") {
@@ -306,7 +305,7 @@ private fun FavoritesListPreview() {
         Box(
             modifier = Modifier
                 .background(AureoleDS.colors.surface)
-                .padding(16.dp)
+                .padding(AureoleDS.dimens.medium)
         ) {
             NonScrollableFavoritesList(
                 params = NonScrollableFavoritesParams(

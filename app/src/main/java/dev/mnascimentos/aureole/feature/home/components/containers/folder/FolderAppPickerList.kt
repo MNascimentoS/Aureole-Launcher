@@ -21,8 +21,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.core.data.model.AppFolder
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
@@ -47,7 +49,7 @@ internal fun LazyListScope.selectedFolderAppSection(
 
     item {
         AureoleText(
-            text = "Selecionados ($totalSelectedCount)",
+            text = stringResource(R.string.selected_apps_count, totalSelectedCount),
             color = AureoleDS.colors.onSurfaceHigh,
             modifier = Modifier.padding(vertical = AureoleDS.dimens.xxSmall),
             format = AureoleTextFormatParams(style = AureoleDS.typography.titleSmall, fontWeight = FontWeight.Bold)
@@ -57,9 +59,9 @@ internal fun LazyListScope.selectedFolderAppSection(
     if (filteredSelected.isEmpty()) {
         item {
             val emptyText = if (searchQuery.isBlank()) {
-                "Nenhum aplicativo na pasta."
+                stringResource(R.string.no_apps_in_folder)
             } else {
-                "Nenhum aplicativo encontrado."
+                stringResource(R.string.no_apps_found)
             }
             AureoleText(
                 text = emptyText,
@@ -101,7 +103,7 @@ internal fun LazyListScope.remainingFolderAppSection(
     item {
         Spacer(modifier = Modifier.height(AureoleDS.dimens.xSmall))
         AureoleText(
-            text = "Outros Aplicativos (${filteredRemaining.size})",
+            text = stringResource(R.string.other_apps_count, filteredRemaining.size),
             color = AureoleDS.colors.onSurfaceMedium,
             modifier = Modifier.padding(vertical = AureoleDS.dimens.xxSmall),
             format = AureoleTextFormatParams(style = AureoleDS.typography.titleSmall, fontWeight = FontWeight.Bold)
@@ -111,9 +113,9 @@ internal fun LazyListScope.remainingFolderAppSection(
     if (filteredRemaining.isEmpty()) {
         item {
             val emptyText = if (searchQuery.isBlank()) {
-                "Todos os aplicativos já foram adicionados."
+                stringResource(dev.mnascimentos.aureole.R.string.all_apps_added)
             } else {
-                "Nenhum outro aplicativo encontrado."
+                stringResource(R.string.no_apps_found)
             }
             AureoleText(
                 text = emptyText,
@@ -196,7 +198,12 @@ internal fun FolderAppPickerSearchInput(
     OutlinedTextField(
         value = query,
         onValueChange = onQueryChange,
-        placeholder = { AureoleText("Buscar aplicativo...", color = AureoleDS.colors.onSurfaceLow) },
+        placeholder = {
+            AureoleText(
+                stringResource(dev.mnascimentos.aureole.R.string.search_app_placeholder),
+                color = AureoleDS.colors.onSurfaceLow
+            )
+        },
         leadingIcon = {
             AureoleDS.icons.Search(
                 tint = AureoleDS.colors.onSurfaceMedium

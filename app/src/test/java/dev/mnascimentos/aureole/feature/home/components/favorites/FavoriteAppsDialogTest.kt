@@ -44,7 +44,7 @@ class FavoriteAppsDialogTest {
             }
         }
 
-        composeTestRule.onNodeWithText("Nenhum favorito selecionado").assertIsDisplayed()
+        composeTestRule.onNodeWithText("No favorite app selected.").assertIsDisplayed()
     }
 
     @Test

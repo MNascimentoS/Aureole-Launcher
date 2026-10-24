@@ -20,7 +20,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.stringResource
 import dev.chrisbanes.haze.HazeState
+import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleEditOverlay
 import dev.mnascimentos.aureole.core.designsystem.model.AureoleEditOverlayConfig
 import dev.mnascimentos.aureole.core.designsystem.model.AureoleEditOverlayParams
@@ -84,7 +86,7 @@ fun EditClockBottomSheet(
         modifier = modifier,
         params = AureoleEditOverlayParams(
             config = AureoleEditOverlayConfig(
-                title = "Personalizar Relógio",
+                title = stringResource(R.string.clock_customize_title),
                 hazeState = effectiveHazeState,
                 isVisible = isVisible,
                 animated = true,

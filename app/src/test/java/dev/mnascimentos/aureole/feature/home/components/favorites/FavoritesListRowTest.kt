@@ -39,6 +39,6 @@ class FavoritesListRowTest {
             }
         }
 
-        composeTestRule.onNodeWithText(" ALL APPS ").assertIsDisplayed()
+        composeTestRule.onNodeWithText("ALL APPS", substring = true).assertIsDisplayed()
     }
 }

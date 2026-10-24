@@ -48,7 +48,7 @@ class EditWidgetGroupScreenTest {
 
         composeTestRule.onNodeWithText("Widget Stack").assertIsDisplayed()
         composeTestRule.onNodeWithText("Show widget indicator").assertIsDisplayed()
-        composeTestRule.onNodeWithText("Salvar").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Save").assertIsDisplayed()
     }
 
     @Test
@@ -71,7 +71,7 @@ class EditWidgetGroupScreenTest {
         }
         advanceAnimation()
 
-        composeTestRule.onNodeWithText("Salvar").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Save").assertIsDisplayed()
     }
 
     @Test
@@ -96,7 +96,7 @@ class EditWidgetGroupScreenTest {
         }
         advanceAnimation()
 
-        composeTestRule.onNodeWithText("Salvar").performClick()
+        composeTestRule.onNodeWithText("Save").performClick()
         advanceAnimation()
 
         assertTrue(dismissCalled)

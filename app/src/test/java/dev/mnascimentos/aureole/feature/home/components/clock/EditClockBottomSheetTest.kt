@@ -88,17 +88,17 @@ class EditClockBottomSheetTest {
         advanceAnimation()
 
         // Assert
-        composeTestRule.onNodeWithText("Personalizar Relógio").assertIsDisplayed()
-        composeTestRule.onNodeWithText("Estilo do Layout").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Customize Clock").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Layout Style").assertIsDisplayed()
 
         scrollDownBottomSheet()
-        composeTestRule.onNodeWithText("Alinhamento").assertIsDisplayed()
-        composeTestRule.onNodeWithText("Formato de Hora e Data").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Alignment").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Time and Date Format").assertIsDisplayed()
 
         scrollDownBottomSheet()
-        composeTestRule.onNodeWithText("Estilo da Fonte").assertIsDisplayed()
-        composeTestRule.onNodeWithText("Cor do Texto").assertIsDisplayed()
-        composeTestRule.onNodeWithText("Fundo do Cartão").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Font Style").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Text Color").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Card Background").assertIsDisplayed()
     }
 
     @Test
@@ -121,7 +121,7 @@ class EditClockBottomSheetTest {
         advanceAnimation()
 
         // Act
-        composeTestRule.onNodeWithText("Redefinir Padrões").performClick()
+        composeTestRule.onNodeWithText("Reset Defaults").performClick()
 
         // Assert
         assertTrue(resetCalled)
@@ -144,7 +144,7 @@ class EditClockBottomSheetTest {
         advanceAnimation()
 
         // Act
-        composeTestRule.onNodeWithText("Salvar").performClick()
+        composeTestRule.onNodeWithText("Save").performClick()
         advanceAnimation()
 
         // Assert
@@ -174,7 +174,7 @@ class EditClockBottomSheetTest {
         advanceAnimation()
 
         // Assert field is shown
-        composeTestRule.onNodeWithText("Texto da Saudação").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Greeting Text").assertIsDisplayed()
 
         // Act - type in text field specifically using hasSetTextAction
         composeTestRule.onNode(hasSetTextAction()).performTextInput("Olá Amigo")
@@ -201,7 +201,7 @@ class EditClockBottomSheetTest {
         }
 
         // Act - click "Centro"
-        composeTestRule.onNodeWithText("Centro").performClick()
+        composeTestRule.onNodeWithText("Center").performClick()
 
         // Assert
         assertEquals("CENTER", selectedAlignment)
@@ -225,7 +225,7 @@ class EditClockBottomSheetTest {
         }
 
         // Act - click "Negrito"
-        composeTestRule.onNodeWithText("Negrito").performClick()
+        composeTestRule.onNodeWithText("Bold").performClick()
 
         // Assert
         assertEquals("BOLD", selectedFont)
@@ -249,7 +249,7 @@ class EditClockBottomSheetTest {
         }
 
         // Act - click "24 Horas"
-        composeTestRule.onNodeWithText("24 Horas").performClick()
+        composeTestRule.onNodeWithText("24 Hours").performClick()
 
         // Assert
         assertEquals("24H", selectedTimeFormat)
@@ -297,7 +297,7 @@ class EditClockBottomSheetTest {
         }
 
         // Assert
-        composeTestRule.onNodeWithText("Cor de Fundo Personalizada:").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Custom Background Color:").assertIsDisplayed()
 
         // Act - click "Escuro Slate"
         composeTestRule.onNodeWithText("Escuro Slate").performClick()
@@ -349,10 +349,10 @@ class EditClockBottomSheetTest {
             }
         }
 
-        // Act - click dropdown to expand and select "Data no Topo"
-        composeTestRule.onNodeWithText("Saudação Diária").performClick()
+        // Act - click dropdown to expand and select "Date on Top"
+        composeTestRule.onNodeWithText("Daily Greeting").performClick()
         advanceAnimation()
-        composeTestRule.onNodeWithText("Data no Topo").performClick()
+        composeTestRule.onNodeWithText("Date on Top").performClick()
 
         // Assert
         assertEquals("DATE_ON_TOP", selectedStyle)
@@ -381,10 +381,10 @@ class EditClockBottomSheetTest {
             }
         }
 
-        // Act - click currentDisplayLabel "Completo (sexta, 9 out)" to expand, then click option
-        composeTestRule.onNodeWithText("Completo (sexta, 9 out)").performClick()
+        // Act - click currentDisplayLabel "Full (Friday, Oct 9)" to expand, then click option
+        composeTestRule.onNodeWithText("Full (Friday, Oct 9)").performClick()
         advanceAnimation()
-        composeTestRule.onNodeWithText("Numérico (09/10/2026)").performScrollTo().performClick()
+        composeTestRule.onNodeWithText("Numeric (10/09/2026)").performScrollTo().performClick()
 
         // Assert
         assertEquals("NUMERIC", selectedDateFormat)

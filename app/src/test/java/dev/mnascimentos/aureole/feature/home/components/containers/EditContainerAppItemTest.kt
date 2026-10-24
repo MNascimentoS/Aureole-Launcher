@@ -59,7 +59,7 @@ class EditContainerAppItemTest {
         }
 
         composeTestRule.onNodeWithText("Work Folder").assertIsDisplayed()
-        composeTestRule.onNodeWithText("Pasta").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Folder").assertIsDisplayed()
     }
 
     @Test

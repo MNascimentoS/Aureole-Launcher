@@ -33,11 +33,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.core.graphics.drawable.toDrawable
+import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.core.data.model.AppFolder
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleHeaderBanner
@@ -166,7 +168,7 @@ private fun OpenedFolderGrid(
             contentAlignment = Alignment.Center
         ) {
             Text(
-                text = "Nenhum aplicativo na pasta",
+                text = stringResource(R.string.no_apps_in_folder),
                 style = AureoleDS.typography.bodySmall,
                 color = AureoleDS.colors.onSurfaceMedium
             )

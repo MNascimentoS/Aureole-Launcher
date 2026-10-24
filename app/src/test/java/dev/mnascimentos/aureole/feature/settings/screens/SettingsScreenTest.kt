@@ -73,8 +73,8 @@ class SettingsScreenTest {
             }
         }
 
-        composeTestRule.onNodeWithText("Escolher Cor Primária").assertIsDisplayed()
-        composeTestRule.onNodeWithText("Cancelar").performClick()
+        composeTestRule.onNodeWithText("Choose Primary Color").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Cancel").performClick()
         assertTrue(dismissCalled)
     }
 

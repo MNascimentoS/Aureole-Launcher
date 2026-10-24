@@ -29,9 +29,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
+import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.core.data.model.AppFolder
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleDialog
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
@@ -51,8 +53,10 @@ fun FolderFormDialog(
     onDelete: (() -> Unit)? = null
 ) {
     val isEditing = folder != null
-    val title = if (isEditing) "Edit Folder" else "New Folder"
-    val submitText = if (isEditing) "Save" else "Create"
+    val title =
+        if (isEditing) stringResource(R.string.folder_edit_title) else stringResource(R.string.folder_new_title)
+    val submitText =
+        if (isEditing) stringResource(R.string.common_save) else stringResource(R.string.common_create)
 
     AureoleDialog(
         onDismissRequest = onDismiss,
@@ -94,8 +98,18 @@ private fun FolderFormDialogContent(
         OutlinedTextField(
             value = folderName,
             onValueChange = { folderName = it },
-            label = { AureoleText("Folder Name", color = AureoleDS.colors.onSurfaceMedium) },
-            placeholder = { AureoleText("New Folder", color = AureoleDS.colors.onSurfaceLow) },
+            label = {
+                AureoleText(
+                    stringResource(R.string.folder_name_label),
+                    color = AureoleDS.colors.onSurfaceMedium
+                )
+            },
+            placeholder = {
+                AureoleText(
+                    stringResource(R.string.folder_name_placeholder),
+                    color = AureoleDS.colors.onSurfaceLow
+                )
+            },
             singleLine = true,
             colors = OutlinedTextFieldDefaults.colors(
                 focusedBorderColor = AureoleDS.colors.onSurfaceHigh,
@@ -109,10 +123,13 @@ private fun FolderFormDialogContent(
         Spacer(modifier = Modifier.height(AureoleDS.dimens.medium))
 
         AureoleText(
-            text = "Ícone da Pasta",
+            text = stringResource(dev.mnascimentos.aureole.R.string.folder_icon),
             color = AureoleDS.colors.onSurfaceMedium,
             modifier = Modifier.align(Alignment.Start),
-            format = AureoleTextFormatParams(style = AureoleDS.typography.labelMedium, fontWeight = FontWeight.SemiBold)
+            format = AureoleTextFormatParams(
+                style = AureoleDS.typography.labelMedium,
+                fontWeight = FontWeight.SemiBold
+            )
         )
 
         Spacer(modifier = Modifier.height(AureoleDS.dimens.xSmall))
@@ -125,13 +142,14 @@ private fun FolderFormDialogContent(
 
         Spacer(modifier = Modifier.height(AureoleDS.dimens.large))
 
+        val placeholderName = stringResource(R.string.folder_name_placeholder)
         FolderFormButtons(
             isEditing = config.isEditing,
             submitText = config.submitText,
             onDelete = onDelete,
             onDismiss = onDismiss,
             onSave = {
-                val finalName = folderName.ifBlank { "New Folder" }
+                val finalName = folderName.ifBlank { placeholderName }
                 onSave(finalName.trim(), selectedIcon)
             }
         )
@@ -161,7 +179,10 @@ fun FolderIconPreview(
             AureoleText(
                 text = folderName.take(1).uppercase().ifEmpty { "?" },
                 color = AureoleDS.colors.onSurfaceHigh,
-                format = AureoleTextFormatParams(style = AureoleDS.typography.titleLarge, fontWeight = FontWeight.Bold)
+                format = AureoleTextFormatParams(
+                    style = AureoleDS.typography.titleLarge,
+                    fontWeight = FontWeight.Bold
+                )
             )
         }
     }
@@ -239,7 +260,10 @@ private fun DefaultLetterOptionChip(
         AureoleText(
             text = letter,
             color = textColor,
-            format = AureoleTextFormatParams(style = AureoleDS.typography.labelLarge, fontWeight = FontWeight.Bold)
+            format = AureoleTextFormatParams(
+                style = AureoleDS.typography.labelLarge,
+                fontWeight = FontWeight.Bold
+            )
         )
     }
 }
@@ -303,7 +327,10 @@ private fun FolderFormButtons(
     ) {
         if (isEditing && onDelete != null) {
             TextButton(onClick = onDelete) {
-                AureoleText("Delete", color = AureoleDS.colors.error)
+                AureoleText(
+                    stringResource(dev.mnascimentos.aureole.R.string.common_delete),
+                    color = AureoleDS.colors.error
+                )
             }
         } else {
             Spacer(modifier = Modifier.width(AureoleDS.dimens.borderMinimal))
@@ -311,7 +338,10 @@ private fun FolderFormButtons(
 
         Row {
             TextButton(onClick = onDismiss) {
-                AureoleText("Cancel", color = AureoleDS.colors.onSurfaceMedium)
+                AureoleText(
+                    stringResource(dev.mnascimentos.aureole.R.string.common_cancel),
+                    color = AureoleDS.colors.onSurfaceMedium
+                )
             }
             Spacer(modifier = Modifier.width(AureoleDS.dimens.xSmall))
             TextButton(onClick = onSave) {

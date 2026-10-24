@@ -27,8 +27,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.core.data.model.ReleaseNoteItem
 import dev.mnascimentos.aureole.core.data.model.ReleaseNoteSection
 import dev.mnascimentos.aureole.core.data.model.ReleaseNoteType
@@ -96,7 +98,7 @@ fun ReleaseNotesBottomSheet(
                 )
             ) {
                 AureoleText(
-                    text = "Entendido",
+                    text = stringResource(R.string.common_understood),
                     color = AureoleDS.colors.surface,
                     format = AureoleTextFormatParams(
                         style = AureoleDS.typography.titleSmall,
@@ -125,7 +127,7 @@ private fun HeaderSection(versionName: String) {
         )
         Spacer(modifier = Modifier.height(AureoleDS.dimens.small))
         AureoleText(
-            text = "O que há de novo",
+            text = stringResource(R.string.release_notes_whats_new),
             color = AureoleDS.colors.onSurfaceHigh,
             format = AureoleTextFormatParams(style = AureoleDS.typography.titleLarge, fontWeight = FontWeight.Bold)
         )
@@ -137,7 +139,7 @@ private fun HeaderSection(versionName: String) {
                 .padding(horizontal = AureoleDS.dimens.medium, vertical = AureoleDS.dimens.xxSmall)
         ) {
             AureoleText(
-                text = "Versão $versionName",
+                text = stringResource(R.string.release_notes_version, versionName),
                 color = AureoleDS.colors.onSurfaceMedium,
                 format = AureoleTextFormatParams(
                     style = AureoleDS.typography.labelSmall,
@@ -183,7 +185,11 @@ private fun VersionChipsRow(
                     .padding(horizontal = AureoleDS.dimens.medium, vertical = AureoleDS.dimens.xSmall)
             ) {
                 AureoleText(
-                    text = if (version.isCurrent) "v${version.versionName} (Atual)" else "v${version.versionName}",
+                    text = if (version.isCurrent) {
+                        stringResource(R.string.release_notes_version_current, version.versionName)
+                    } else {
+                        stringResource(R.string.release_notes_version_past, version.versionName)
+                    },
                     color = textColor,
                     format = AureoleTextFormatParams(
                         style = AureoleDS.typography.labelMedium,
@@ -255,17 +261,17 @@ private const val CARD_OUTLINE_ALPHA = 0.08f
 private fun TypeBadge(type: ReleaseNoteType) {
     val (label, containerColor, textColor) = when (type) {
         ReleaseNoteType.FEATURE -> Triple(
-            "Novo",
+            stringResource(R.string.release_notes_tag_new),
             AureoleDS.colors.onSurfaceHigh.copy(alpha = BADGE_ALPHA),
             AureoleDS.colors.onSurfaceHigh
         )
         ReleaseNoteType.IMPROVEMENT -> Triple(
-            "Melhoria",
+            stringResource(R.string.release_notes_tag_improvement),
             AureoleDS.colors.outline.copy(alpha = BADGE_ALPHA),
             AureoleDS.colors.onSurfaceHigh
         )
         ReleaseNoteType.FIX -> Triple(
-            "Correção",
+            stringResource(R.string.release_notes_tag_fix),
             AureoleDS.colors.badgeContainer.copy(alpha = BADGE_ALPHA),
             AureoleDS.colors.badgeText
         )

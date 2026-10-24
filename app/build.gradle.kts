@@ -37,8 +37,6 @@ android {
         } else {
             "0.1.$gitCommitCount"
         }
-
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
     signingConfigs {
@@ -233,12 +231,6 @@ dependencies {
     testImplementation(libs.koin.test)
     testImplementation(composeBom)
     testImplementation(libs.androidx.compose.ui.test.junit4)
-
-    // Testing - Instrumentation Tests
-    androidTestImplementation(composeBom)
-    androidTestImplementation(libs.androidx.compose.ui.test.junit4)
-    androidTestImplementation(libs.androidx.espresso.core)
-    androidTestImplementation(libs.androidx.junit)
 
     // Testing - Screenshot Tests
     screenshotTestImplementation(libs.screenshot.validation.api)
