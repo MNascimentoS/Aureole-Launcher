@@ -33,6 +33,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.R
+import dev.mnascimentos.aureole.composable.dialogs.CreateFolderDialog
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.data.model.ContainerItemType
 import dev.mnascimentos.aureole.core.data.model.ContainerModel
@@ -43,7 +44,6 @@ import dev.mnascimentos.aureole.core.designsystem.icons.Delete
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
-import dev.mnascimentos.aureole.feature.home.components.containers.folder.CreateFolderDialog
 import dev.mnascimentos.aureole.feature.home.components.containers.model.ManageItemRowActions
 import dev.mnascimentos.aureole.feature.home.components.containers.model.ManageItemRowParams
 

@@ -35,6 +35,7 @@ import dev.mnascimentos.aureole.core.designsystem.icons.Check
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
+import dev.mnascimentos.aureole.feature.settings.components.model.BorderRadiusSwatchMetrics
 
 private const val RADIUS_NONE = 0
 private const val RADIUS_COMPACT = 8
@@ -161,11 +162,6 @@ private fun PickBorderRadiusInspectionLayout(
             content()
         }
     }
-}
-
-private object BorderRadiusSwatchMetrics {
-    val Width = 54.dp
-    val Height = 34.dp
 }
 
 @Composable

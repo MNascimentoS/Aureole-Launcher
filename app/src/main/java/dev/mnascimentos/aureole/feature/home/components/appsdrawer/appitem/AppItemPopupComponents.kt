@@ -23,7 +23,6 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Popup
 import androidx.compose.ui.window.PopupProperties
 import androidx.core.graphics.drawable.toDrawable
@@ -31,21 +30,17 @@ import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.designsystem.components.AureolePopupBox
 import dev.mnascimentos.aureole.core.designsystem.components.AureolePopupHeader
-import dev.mnascimentos.aureole.core.designsystem.components.AureolePopupHeaderParams
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
 import dev.mnascimentos.aureole.core.designsystem.icons.Delete
 import dev.mnascimentos.aureole.core.designsystem.icons.Info
 import dev.mnascimentos.aureole.core.designsystem.icons.Settings
+import dev.mnascimentos.aureole.core.designsystem.model.AureolePopupHeaderParams
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
+import dev.mnascimentos.aureole.feature.home.components.appsdrawer.appitem.model.AppItemPopupMetrics
 import dev.mnascimentos.aureole.feature.home.components.appsdrawer.appitem.model.AppItemRowActions
-
-private object AppItemPopupMetrics {
-    val PopupWidth = 230.dp
-    val ButtonWidth = 54.dp
-}
 
 @Composable
 fun AppItemPopup(

@@ -2,7 +2,6 @@
 
 package dev.mnascimentos.aureole.feature.settings.screens
 
-import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -35,6 +34,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.core.net.toUri
 import dev.mnascimentos.aureole.composable.SettingsActionItem
+import dev.mnascimentos.aureole.composable.sheets.ReleaseNotesBottomSheet
+import dev.mnascimentos.aureole.composable.sheets.SettingsBottomSheet
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
 import dev.mnascimentos.aureole.core.designsystem.icons.Delete
@@ -45,8 +46,7 @@ import dev.mnascimentos.aureole.core.designsystem.icons.Undo
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
-import dev.mnascimentos.aureole.feature.home.components.overlays.ReleaseNotesBottomSheet
-import dev.mnascimentos.aureole.feature.settings.components.SettingsBottomSheet
+import dev.mnascimentos.aureole.feature.settings.extensions.tryUninstall
 import dev.mnascimentos.aureole.feature.settings.model.SettingsAdvancedDialogActions
 import dev.mnascimentos.aureole.feature.settings.model.SettingsScreenActions
 import dev.mnascimentos.aureole.feature.settings.model.SettingsUiState
@@ -291,26 +291,6 @@ private fun UninstallBottomSheet(
                 }
             )
         }
-    }
-}
-
-private fun tryUninstall(context: Context) {
-    try {
-        val intent = Intent(
-            Intent.ACTION_VIEW,
-            "market://details?id=${context.packageName}".toUri()
-        ).apply {
-            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-        }
-        context.startActivity(intent)
-    } catch (_: ActivityNotFoundException) {
-        val intent = Intent(
-            Intent.ACTION_VIEW,
-            "https://play.google.com/store/apps/details?id=${context.packageName}".toUri()
-        ).apply {
-            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-        }
-        context.startActivity(intent)
     }
 }
 

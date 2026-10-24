@@ -1,5 +1,7 @@
 package dev.mnascimentos.aureole.core.designsystem.components
 
+import dev.mnascimentos.aureole.core.designsystem.model.AureolePopupHeaderParams
+
 import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier

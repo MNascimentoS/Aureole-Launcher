@@ -20,7 +20,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
@@ -28,10 +27,7 @@ import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.components.overlays.model.UpdateDialogContentParams
-
-private object UpdateDialogMetrics {
-    val DialogCornerRadius = 22.dp
-}
+import dev.mnascimentos.aureole.feature.home.components.overlays.model.UpdateDialogMetrics
 
 /**
  * Dialog alerting the user that a new app update is available in Google Play.

@@ -31,9 +31,8 @@ import dev.chrisbanes.haze.HazeState
 import dev.chrisbanes.haze.HazeStyle
 import dev.chrisbanes.haze.HazeTint
 import dev.chrisbanes.haze.hazeEffect
-import dev.mnascimentos.aureole.core.designsystem.icons.Close
 import dev.mnascimentos.aureole.core.designsystem.icons.Logo
-import dev.mnascimentos.aureole.core.designsystem.icons.Settings
+import dev.mnascimentos.aureole.core.designsystem.model.AureolePopupHeaderParams
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
@@ -153,25 +152,6 @@ fun AureoleHeaderBanner(
 }
 
 /**
- * Configuration parameters for [AureolePopupHeader].
- *
- * @param sessionTitle The optional subtitle or session name displayed under the main title.
- * @param iconBitmap Optional bitmap image to be rendered as the header icon badge.
- * @param showAureoleLogo Whether the top-right Aureole logo button should be shown.
- * @param onSettingsClick Callback invoked when the settings icon is clicked.
- * @param onCloseClick Callback invoked when the close icon is clicked.
- * @param customIcon Optional custom `@Composable` slot for rendering a custom icon badge.
- */
-class AureolePopupHeaderParams(
-    val sessionTitle: String? = null,
-    val iconBitmap: ImageBitmap? = null,
-    val showAureoleLogo: Boolean = true,
-    val onSettingsClick: (() -> Unit)? = null,
-    val onCloseClick: (() -> Unit)? = null,
-    val customIcon: (@Composable () -> Unit)? = null
-)
-
-/**
  * Standard Popup Header displaying a surfaceVariant top background bar, optional app/folder icon badge,
  * main title, optional session subtitle, and top-right action icon (Settings/Logo/Close).
  *
@@ -195,17 +175,25 @@ fun AureolePopupHeader(
                 )
             )
             .background(AureoleDS.colors.surfaceVariant)
-            .padding(horizontal = AureoleDS.dimens.xSmall, vertical = AureoleDS.dimens.xSmall)
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
+                .padding(horizontal = AureoleDS.dimens.xSmall, vertical = AureoleDS.dimens.xSmall)
                 .padding(end = AureoleDS.dimens.large),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            PopupHeaderIconBadge(title = title, iconBitmap = params.iconBitmap, customIcon = params.customIcon)
+            PopupHeaderIconBadge(
+                title = title,
+                iconBitmap = params.iconBitmap,
+                customIcon = params.customIcon
+            )
             Spacer(modifier = Modifier.width(AureoleDS.dimens.xSmall))
-            PopupHeaderTitleGroup(title = title, sessionTitle = params.sessionTitle, modifier = Modifier.weight(1f))
+            PopupHeaderTitleGroup(
+                title = title,
+                sessionTitle = params.sessionTitle,
+                modifier = Modifier.weight(1f)
+            )
         }
 
         PopupHeaderActions(params = params, modifier = Modifier.align(Alignment.TopEnd))
@@ -232,6 +220,7 @@ private fun PopupHeaderIconBadge(
                 contentDescription = title,
                 modifier = Modifier.size(AureoleDS.dimens.iconLarge),
             )
+
             else -> AureoleText(
                 text = title.take(1).uppercase(),
                 color = AureoleDS.colors.onSurfaceHigh,
@@ -282,36 +271,14 @@ private fun PopupHeaderActions(
     modifier: Modifier = Modifier
 ) {
     Box(modifier = modifier) {
-        if (params.showAureoleLogo) {
-            IconButton(
-                onClick = { params.onSettingsClick?.invoke() },
-                modifier = Modifier.size(AureoleDS.dimens.iconXLarge),
-            ) {
-                AureoleDS.icons.Logo(
-                    tint = AureoleDS.colors.onSurfaceHigh,
-                    modifier = Modifier.size(AureoleDS.dimens.iconSmall),
-                )
-            }
-        } else if (params.onSettingsClick != null) {
-            IconButton(
-                onClick = params.onSettingsClick,
-                modifier = Modifier.size(AureoleDS.dimens.iconXLarge),
-            ) {
-                AureoleDS.icons.Settings(
-                    tint = AureoleDS.colors.onSurfaceHigh,
-                    modifier = Modifier.size(AureoleDS.dimens.iconMedium),
-                )
-            }
-        } else if (params.onCloseClick != null) {
-            IconButton(
-                onClick = params.onCloseClick,
-                modifier = Modifier.size(AureoleDS.dimens.iconXLarge),
-            ) {
-                AureoleDS.icons.Close(
-                    tint = AureoleDS.colors.onSurfaceHigh,
-                    modifier = Modifier.size(AureoleDS.dimens.iconMedium),
-                )
-            }
+        IconButton(
+            onClick = { params.onSettingsClick?.invoke() },
+            modifier = Modifier.size(AureoleDS.dimens.iconXLarge),
+        ) {
+            AureoleDS.icons.Logo(
+                tint = AureoleDS.colors.onSurfaceHigh,
+                modifier = Modifier.size(AureoleDS.dimens.iconSmall),
+            )
         }
     }
 }
@@ -340,7 +307,10 @@ fun AureolePopupMenuSection(
         AureoleText(
             text = title,
             color = AureoleDS.colors.onSurfaceMedium,
-            format = AureoleTextFormatParams(style = AureoleDS.typography.labelSmall, fontWeight = FontWeight.SemiBold)
+            format = AureoleTextFormatParams(
+                style = AureoleDS.typography.labelSmall,
+                fontWeight = FontWeight.SemiBold
+            )
         )
     }
 }

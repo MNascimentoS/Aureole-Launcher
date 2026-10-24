@@ -36,7 +36,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.composable.SettingsToggleItem
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
@@ -49,6 +48,7 @@ import dev.mnascimentos.aureole.core.designsystem.icons.RefreshCcw
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
+import dev.mnascimentos.aureole.feature.settings.model.PickerDimensions
 import dev.mnascimentos.aureole.feature.settings.model.SettingsScreenActions
 import dev.mnascimentos.aureole.feature.settings.model.SettingsUiState
 import kotlin.math.roundToInt
@@ -56,12 +56,6 @@ import kotlin.math.roundToInt
 private const val BOTTOM_SPACER_RATIO = 0.15f
 private const val MIN_OFFSET_PERCENT = 0
 private const val MAX_OFFSET_PERCENT = 60
-
-private object PickerDimensions {
-    val Height = 72.dp
-    val Width = 60.dp
-    val ItemHeight = 24.dp
-}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

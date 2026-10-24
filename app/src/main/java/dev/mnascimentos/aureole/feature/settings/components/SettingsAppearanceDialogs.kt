@@ -30,6 +30,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.composable.SettingsMenuItem
 import dev.mnascimentos.aureole.composable.SettingsMenuParams
+import dev.mnascimentos.aureole.composable.sheets.SettingsBottomSheet
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
 import dev.mnascimentos.aureole.core.designsystem.icons.Check

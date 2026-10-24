@@ -30,7 +30,6 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.dp
 import androidx.core.graphics.drawable.toDrawable
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
@@ -41,12 +40,9 @@ import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.components.appsdrawer.appitem.model.AppItemBottomSheetParams
 import dev.mnascimentos.aureole.feature.home.components.appsdrawer.appitem.model.AppItemRowActions
 import dev.mnascimentos.aureole.feature.home.components.appsdrawer.appitem.model.AppItemRowConfig
+import dev.mnascimentos.aureole.feature.home.components.appsdrawer.appitem.model.AppItemRowMetrics
 import dev.mnascimentos.aureole.feature.home.model.LocalHomeUiState
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
-private object AppItemRowMetrics {
-    val IconOuterSize = 42.dp
-    val IconInnerSize = 26.dp
-}
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable

@@ -35,6 +35,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.composable.SettingsMenuItem
 import dev.mnascimentos.aureole.composable.SettingsMenuParams
+import dev.mnascimentos.aureole.composable.sheets.ReleaseNotesBottomSheet
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
 import dev.mnascimentos.aureole.core.designsystem.icons.Advanced
@@ -44,7 +45,6 @@ import dev.mnascimentos.aureole.core.designsystem.icons.Star
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
-import dev.mnascimentos.aureole.feature.home.components.overlays.ReleaseNotesBottomSheet
 import dev.mnascimentos.aureole.feature.settings.model.SettingsUiState
 
 private const val BOTTOM_SPACER_PERCENT = 0.1f

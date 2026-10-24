@@ -22,7 +22,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.core.graphics.drawable.toDrawable
@@ -37,14 +36,10 @@ import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.components.appsdrawer.appitem.AppItemRow
+import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.FolderDialogMetrics
 import dev.mnascimentos.aureole.feature.home.model.LocalHomeUiState
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
 import dev.mnascimentos.aureole.feature.settings.SettingsActivity
-
-private object FolderDialogMetrics {
-    val MinWidth = 280.dp
-    val MaxWidth = 340.dp
-}
 
 @Composable
 fun FolderDialog(

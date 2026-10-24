@@ -4,6 +4,49 @@ import dev.mnascimentos.aureole.core.data.model.ReleaseNoteItem
 import dev.mnascimentos.aureole.core.data.model.ReleaseNoteSection
 import dev.mnascimentos.aureole.core.data.model.ReleaseNoteType
 
+internal fun getSectionsForVersion0826(): List<ReleaseNoteSection> = listOf(
+    ReleaseNoteSection(
+        title = "Interface & Consistência",
+        items = listOf(
+            ReleaseNoteItem(
+                title = "Títulos Mais Diretos no Botão Rápido",
+                description = "As telas de configuração e de aparência do Botão Rápido " +
+                    "ganharam títulos curtos e fáceis de ler.",
+                type = ReleaseNoteType.IMPROVEMENT
+            ),
+            ReleaseNoteItem(
+                title = "Componentes Visuais Unificados",
+                description = "Favoritos, criação de pastas, novidades e configurações " +
+                    "passaram a usar os mesmos componentes visuais em todo o app.",
+                type = ReleaseNoteType.IMPROVEMENT
+            )
+        )
+    ),
+    ReleaseNoteSection(
+        title = "Qualidade & Estabilidade",
+        items = listOf(
+            ReleaseNoteItem(
+                title = "Mais de 800 Testes Automatizados",
+                description = "Cada versão agora é verificada por mais de 800 testes automáticos " +
+                    "cobrindo navegação, pastas, widgets, Botão Rápido e configurações.",
+                type = ReleaseNoteType.IMPROVEMENT
+            ),
+            ReleaseNoteItem(
+                title = "Cobertura Mínima Garantida",
+                description = "Nenhuma versão é publicada se os testes deixarem de cobrir " +
+                    "ao menos 85% do código do launcher.",
+                type = ReleaseNoteType.IMPROVEMENT
+            ),
+            ReleaseNoteItem(
+                title = "Testes Mais Confiáveis",
+                description = "Corrigidos problemas que faziam parte dos testes ser ignorada " +
+                    "ou falhar de forma intermitente.",
+                type = ReleaseNoteType.FIX
+            )
+        )
+    )
+)
+
 internal fun getSectionsForVersion0824(): List<ReleaseNoteSection> = listOf(
     ReleaseNoteSection(
         title = "Internacionalização & Suporte Multilíngue",

@@ -13,7 +13,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import dev.chrisbanes.haze.HazeState
 import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.composable.ColorPickerDialog
@@ -26,17 +25,13 @@ import dev.mnascimentos.aureole.core.designsystem.model.AureoleEditOverlayParams
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.components.quickbutton.model.AppearanceDialogState
+import dev.mnascimentos.aureole.feature.home.components.quickbutton.model.QuickButtonAppearanceMetrics
 import dev.mnascimentos.aureole.feature.home.components.quickbutton.model.QuickButtonColorPickerTarget
 import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
 import kotlinx.coroutines.delay
 
 private const val DISMISS_DELAY_MS = 300L
-
-private object QuickButtonAppearanceMetrics {
-    val PreviewBoxHeight = 140.dp
-    val PreviewItemSize = 72.dp
-}
 
 @Composable
 fun QuickButtonAppearanceBottomSheet(
@@ -76,7 +71,7 @@ fun QuickButtonAppearanceBottomSheet(
                 hazeState = if (uiState.isHazeEnabled) hazeState else null,
                 isVisible = isVisible,
                 animated = true,
-                maxSheetHeightFraction = 0.5f
+                maxSheetHeightFraction = 0.4f
             ),
             previewContent = {
                 QuickButtonPreviewBox(activeModel = activeModel, activeAppInfo = activeAppInfo)

@@ -39,13 +39,13 @@
     <string name="search_app_placeholder">Search app&#8230;</string>
 
     <!-- Quick Buttons -->
-    <string name="qb_settings_title">Quick button settings</string>
+    <string name="qb_settings_title">Quick button</string>
     <string name="qb_appearance">Appearance</string>
     <string name="qb_open_app">Open App</string>
     <string name="qb_open_app_name">Open App (%1$s)</string>
     <string name="qb_click_shortcut">Click shortcut</string>
     <string name="qb_remove">Remove quick button</string>
-    <string name="qb_appearance_title">Quick button appearance</string>
+    <string name="qb_appearance_title">Quick button</string>
     <string name="qb_select_app">Select an app</string>
     <string name="qb_select_shortcut">Select a shortcut</string>
     <string name="qb_bg_color">Background color</string>

@@ -30,20 +30,18 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalInspectionMode
-import androidx.compose.ui.unit.dp
 import androidx.core.graphics.drawable.toDrawable
 import dev.mnascimentos.aureole.core.data.model.AppFolder
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
+import dev.mnascimentos.aureole.feature.home.components.containers.folder.extensions.filterAppsBySearch
+import dev.mnascimentos.aureole.feature.home.components.containers.folder.extensions.togglePackageSelection
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.FolderAppPickerBodyParams
+import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.FolderPickerMetrics
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.SelectedFolderAppSectionParams
 import kotlinx.coroutines.delay
-
-private object FolderPickerMetrics {
-    val DialogContentPadding = 20.dp
-}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -161,14 +159,6 @@ private fun FolderAppPickerDialogContent(
     )
 }
 
-private fun filterAppsBySearch(apps: List<AppInfo>, query: String): List<AppInfo> {
-    return if (query.isBlank()) {
-        apps
-    } else {
-        apps.filter { it.label.contains(query, ignoreCase = true) }
-    }
-}
-
 @Composable
 private fun FolderAppPickerDialogBody(
     params: FolderAppPickerBodyParams,
@@ -226,14 +216,6 @@ private fun FolderAppPickerDialogBody(
 
         Spacer(modifier = Modifier.height(AureoleDS.dimens.small))
         FolderAppPickerFooter(onDismiss = onDismiss, onSave = { onSave(selectedPackages.toList()) })
-    }
-}
-
-private fun togglePackageSelection(selectedPackages: MutableList<String>, pkg: String) {
-    if (selectedPackages.contains(pkg)) {
-        selectedPackages.remove(pkg)
-    } else {
-        selectedPackages.add(pkg)
     }
 }
 

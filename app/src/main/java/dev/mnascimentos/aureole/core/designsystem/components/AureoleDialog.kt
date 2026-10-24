@@ -169,8 +169,11 @@ fun AureoleDialogHeader(
 
         Box(
             modifier = Modifier
-                .align(Alignment.CenterEnd)
-                .padding(end = AureoleDS.dimens.xSmall)
+                .align(Alignment.TopEnd)
+                .padding(
+                    top = AureoleDS.dimens.xxSmall,
+                    end = AureoleDS.dimens.xxSmall
+                )
                 .size(AureoleDS.dimens.xLarge)
                 .clip(RoundedCornerShape(AureoleDS.dimens.radiusMedium))
                 .then(

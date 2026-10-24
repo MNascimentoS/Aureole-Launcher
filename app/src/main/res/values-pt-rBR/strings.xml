@@ -39,13 +39,13 @@
     <string name="search_app_placeholder">Buscar aplicativo&#8230;</string>
 
     <!-- Quick Buttons -->
-    <string name="qb_settings_title">Configurações do botão rápido</string>
+    <string name="qb_settings_title">Botão rápido</string>
     <string name="qb_appearance">Aparência</string>
     <string name="qb_open_app">Abrir App</string>
     <string name="qb_open_app_name">Abrir App (%1$s)</string>
     <string name="qb_click_shortcut">Atalho de clique</string>
     <string name="qb_remove">Remover botão rápido</string>
-    <string name="qb_appearance_title">Aparência do botão rápido</string>
+    <string name="qb_appearance_title">Botão Rápido</string>
     <string name="qb_select_app">Selecione um aplicativo</string>
     <string name="qb_select_shortcut">Selecione um atalho</string>
     <string name="qb_bg_color">Cor de fundo</string>

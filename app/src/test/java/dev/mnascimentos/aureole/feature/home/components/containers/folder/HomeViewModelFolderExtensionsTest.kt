@@ -1,6 +1,7 @@
 package dev.mnascimentos.aureole.feature.home.components.containers.folder
 
 import android.content.Context
+import androidx.lifecycle.viewModelScope
 import dev.mnascimentos.aureole.core.data.model.AppFolder
 import dev.mnascimentos.aureole.core.data.repository.AppRepository
 import dev.mnascimentos.aureole.core.data.repository.ContainerRepository
@@ -20,6 +21,9 @@ import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.
 import dev.mnascimentos.aureole.feature.home.model.HomeRepositories
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.cancelAndJoin
+import kotlinx.coroutines.job
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.resetMain
@@ -74,6 +78,8 @@ class HomeViewModelFolderExtensionsTest {
 
     @After
     fun tearDown() {
+        // Let the init's background loads finish before Dispatchers.Main is swapped back.
+        runBlocking { viewModel.viewModelScope.coroutineContext.job.cancelAndJoin() }
         Dispatchers.resetMain()
     }
 

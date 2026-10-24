@@ -12,6 +12,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import dev.mnascimentos.aureole.composable.sheets.SettingsBottomSheet
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
 import dev.mnascimentos.aureole.core.designsystem.icons.Check

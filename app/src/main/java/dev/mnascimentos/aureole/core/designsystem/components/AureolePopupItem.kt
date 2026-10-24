@@ -22,6 +22,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.core.designsystem.icons.Settings
+import dev.mnascimentos.aureole.core.designsystem.model.AureolePopupHeaderParams
 import dev.mnascimentos.aureole.core.designsystem.model.AureolePopupMenuItemParams
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme

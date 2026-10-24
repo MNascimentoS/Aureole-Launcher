@@ -1,6 +1,7 @@
 package dev.mnascimentos.aureole.feature.home.components.favorites
 
 import android.content.Context
+import androidx.lifecycle.viewModelScope
 import dev.mnascimentos.aureole.core.data.repository.AppRepository
 import dev.mnascimentos.aureole.core.data.repository.ContainerRepository
 import dev.mnascimentos.aureole.core.data.repository.FavoriteContainerRepository
@@ -15,7 +16,9 @@ import dev.mnascimentos.aureole.feature.home.components.favorites.extensions.upd
 import dev.mnascimentos.aureole.feature.home.model.HomeRepositories
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.job
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
@@ -64,6 +67,15 @@ class HomeViewModelFavoritesExtTest {
 
     @After
     fun tearDown() {
+        // Let the init's background loads finish before Dispatchers.Main is swapped back: they resume
+        // on Main from IO threads, so drive the test scheduler until the cancelled scope completes.
+        val scope = viewModel.viewModelScope.coroutineContext.job
+        scope.cancel()
+        val deadline = System.currentTimeMillis() + VIEW_MODEL_SHUTDOWN_MS
+        while (!scope.isCompleted && System.currentTimeMillis() < deadline) {
+            testDispatcher.scheduler.advanceUntilIdle()
+            Thread.sleep(SHUTDOWN_POLL_MS)
+        }
         Dispatchers.resetMain()
     }
 
@@ -115,3 +127,6 @@ class HomeViewModelFavoritesExtTest {
         assertEquals(newFavs, state.favoriteAppPackages)
     }
 }
+
+private const val VIEW_MODEL_SHUTDOWN_MS = 2_000L
+private const val SHUTDOWN_POLL_MS = 5L

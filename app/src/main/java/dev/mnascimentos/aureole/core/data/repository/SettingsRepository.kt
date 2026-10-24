@@ -8,6 +8,7 @@ import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Build
+import androidx.annotation.VisibleForTesting
 import androidx.core.content.edit
 import androidx.core.net.toUri
 import dev.mnascimentos.aureole.core.data.db.AppDatabase
@@ -18,6 +19,13 @@ import java.io.FileOutputStream
 import java.io.IOException
 
 class SettingsRepository(private val context: Context) {
+
+    /**
+     * Ends the app process after a factory reset. Unit tests replace it so the reset
+     * does not terminate the test JVM.
+     */
+    @VisibleForTesting
+    internal var terminateProcess: () -> Unit = { Runtime.getRuntime().exit(0) }
 
     var isLeftHandedMode: Boolean
         get() = prefs.getBoolean(KEY_LEFT_HANDED_MODE, false)
@@ -299,7 +307,7 @@ class SettingsRepository(private val context: Context) {
         if (intent != null) {
             context.startActivity(intent)
         }
-        Runtime.getRuntime().exit(0)
+        terminateProcess()
     }
 
     private val prefs

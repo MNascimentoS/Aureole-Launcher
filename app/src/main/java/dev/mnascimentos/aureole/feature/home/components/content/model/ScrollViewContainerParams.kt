@@ -2,9 +2,9 @@ package dev.mnascimentos.aureole.feature.home.components.content.model
 
 import android.appwidget.AppWidgetHost
 import androidx.compose.ui.unit.dp
+import dev.mnascimentos.aureole.composable.favorites.model.FavoritesListConfig
 import dev.mnascimentos.aureole.core.data.model.LauncherItemState
 import dev.mnascimentos.aureole.feature.home.components.containers.model.ContainerConfig
-import dev.mnascimentos.aureole.feature.home.components.favorites.model.FavoritesListConfig
 import dev.mnascimentos.aureole.feature.home.components.widgets.model.StackedWidgetConfig
 
 object ScrollChildDimensions {

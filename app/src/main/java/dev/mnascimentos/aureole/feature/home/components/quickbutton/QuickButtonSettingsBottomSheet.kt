@@ -17,7 +17,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import dev.chrisbanes.haze.HazeState
 import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.core.data.model.QuickButtonModel
@@ -31,6 +30,7 @@ import dev.mnascimentos.aureole.core.designsystem.model.AureoleEditOverlayParams
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
+import dev.mnascimentos.aureole.feature.home.components.quickbutton.model.QuickButtonAppearanceMetrics
 import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
 import kotlinx.coroutines.delay
@@ -74,16 +74,16 @@ fun QuickButtonSettingsBottomSheet(
                 hazeState = effectiveHazeState,
                 isVisible = isVisible,
                 animated = true,
-                maxSheetHeightFraction = 0.4f
+                maxSheetHeightFraction = 0.3f
             ),
             previewContent = {
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(140.dp),
+                        .height(QuickButtonAppearanceMetrics.PreviewBoxHeight),
                     contentAlignment = Alignment.Center
                 ) {
-                    Box(modifier = Modifier.size(72.dp)) {
+                    Box(modifier = Modifier.size(QuickButtonAppearanceMetrics.PreviewItemSize)) {
                         QuickButtonGridItem(
                             model = activeModel,
                             appInfo = activeAppInfo,

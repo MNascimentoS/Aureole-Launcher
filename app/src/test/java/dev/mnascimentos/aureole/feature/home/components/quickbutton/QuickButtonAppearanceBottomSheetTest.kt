@@ -7,6 +7,7 @@ import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.v2.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.performScrollTo
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.data.model.QuickButtonModel
 import dev.mnascimentos.aureole.core.data.model.QuickButtonShortcuts
@@ -57,7 +58,7 @@ class QuickButtonAppearanceBottomSheetTest {
         }
 
         // Assert
-        composeTestRule.onNodeWithText("Quick button appearance").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Quick button").assertIsDisplayed()
         composeTestRule.onNodeWithText("Background color").assertIsDisplayed()
     }
 
@@ -104,7 +105,7 @@ class QuickButtonAppearanceBottomSheetTest {
         }
 
         // Assert
-        composeTestRule.onNodeWithText("Icon").performClick()
+        composeTestRule.onNodeWithText("Icon").performScrollTo().performClick()
         composeTestRule.onNodeWithText("Select Icon").assertIsDisplayed()
     }
 }

@@ -14,6 +14,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
+import dev.mnascimentos.aureole.composable.sheets.SettingsBottomSheet
 import dev.mnascimentos.aureole.core.data.model.LauncherItemState
 import dev.mnascimentos.aureole.core.data.model.LauncherItemType
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
@@ -22,7 +23,6 @@ import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.model.LocalHomeActions
-import dev.mnascimentos.aureole.feature.settings.components.SettingsBottomSheet
 
 @Composable
 fun EditGridItemDialog(

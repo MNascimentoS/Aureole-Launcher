@@ -13,13 +13,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
 import dev.chrisbanes.haze.HazeState
+import dev.mnascimentos.aureole.composable.favorites.model.FavoritesListConfig
 import dev.mnascimentos.aureole.core.data.model.AppFolder
 import dev.mnascimentos.aureole.core.data.model.LauncherItemState
 import dev.mnascimentos.aureole.core.data.model.LauncherItemType
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.feature.home.components.containers.model.ContainerConfig
 import dev.mnascimentos.aureole.feature.home.components.content.GridItemContent
-import dev.mnascimentos.aureole.feature.home.components.favorites.model.FavoritesListConfig
 import dev.mnascimentos.aureole.feature.home.components.widgets.model.StackedWidgetConfig
 import dev.mnascimentos.aureole.feature.home.grid.DynamicGridContainer
 import dev.mnascimentos.aureole.feature.home.grid.GridEngineUtils

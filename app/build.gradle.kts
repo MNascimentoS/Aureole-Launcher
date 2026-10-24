@@ -135,6 +135,82 @@ tasks.withType<Test>().configureEach {
     }
 }
 
+val coverageFileFilter = listOf(
+    "**/R.class",
+    "**/R$*.class",
+    "**/BuildConfig.*",
+    "**/Manifest*.*",
+    "**/*Test*.*",
+    "android/**/*.*",
+    "**/*_Impl*.*",
+    "**/*Dao*.*",
+    "**/*Database*.*",
+    "dev/mnascimentos/aureole/data/db/*",
+    "**/ComposableSingletons*.*",
+    "**/*Preview*.*"
+)
+
+val coverageClassDirectories = files(
+    fileTree(layout.buildDirectory.dir("intermediates/javac/debug/compileDebugJavaWithJavac/classes")) {
+        exclude(coverageFileFilter)
+    },
+    fileTree(layout.buildDirectory.dir("intermediates/built_in_kotlinc/debug/compileDebugKotlin/classes")) {
+        exclude(coverageFileFilter)
+    }
+)
+
+val coverageExecutionData = fileTree(layout.buildDirectory) {
+    include(
+        "outputs/unit_test_code_coverage/debugUnitTest/testDebugUnitTest.exec",
+        "jacoco/testDebugUnitTest.exec"
+    )
+}
+
+// Minimum unit test coverage (see agents/aureole_testing.md).
+val minimumInstructionCoverage = "0.70".toBigDecimal()
+val minimumLineCoverage = "0.85".toBigDecimal()
+val minimumLogicBranchCoverage = 0.70
+
+/**
+ * Branch coverage of the non-UI code: every method that does not take a Compose `Composer`.
+ * JaCoCo cannot filter methods itself, and @Composable functions are mostly branches the
+ * Compose compiler generates for recomposition skipping, so they are left out here.
+ */
+abstract class LogicBranchCoverageVerification : DefaultTask() {
+    @get:InputFile
+    abstract val reportXml: RegularFileProperty
+
+    @get:Input
+    abstract val minimum: Property<Double>
+
+    @TaskAction
+    fun verify() {
+        val factory = javax.xml.parsers.DocumentBuilderFactory.newInstance().apply {
+            setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false)
+        }
+        val methods = factory.newDocumentBuilder().parse(reportXml.get().asFile).getElementsByTagName("method")
+        var missed = 0
+        var covered = 0
+        for (i in 0 until methods.length) {
+            val method = methods.item(i) as org.w3c.dom.Element
+            if (method.getAttribute("desc").contains("Landroidx/compose/runtime/Composer;")) continue
+            val counters = method.getElementsByTagName("counter")
+            for (j in 0 until counters.length) {
+                val counter = counters.item(j) as org.w3c.dom.Element
+                if (counter.getAttribute("type") == "BRANCH") {
+                    missed += counter.getAttribute("missed").toInt()
+                    covered += counter.getAttribute("covered").toInt()
+                }
+            }
+        }
+        val ratio = if (missed + covered == 0) 1.0 else covered.toDouble() / (missed + covered)
+        val summary = "Logic branch coverage: %.2f%% (%d of %d), minimum %.0f%%"
+            .format(ratio * 100, covered, missed + covered, minimum.get() * 100)
+        logger.lifecycle(summary)
+        if (ratio < minimum.get()) throw GradleException(summary)
+    }
+}
+
 tasks.register<JacocoReport>("jacocoTestReport") {
     description = "Generates JaCoCo code coverage report for unit tests."
     group = "Reporting"
@@ -146,38 +222,42 @@ tasks.register<JacocoReport>("jacocoTestReport") {
         html.required.set(true)
     }
 
-    val fileFilter = listOf(
-        "**/R.class",
-        "**/R$*.class",
-        "**/BuildConfig.*",
-        "**/Manifest*.*",
-        "**/*Test*.*",
-        "android/**/*.*",
-        "**/*_Impl*.*",
-        "**/*Dao*.*",
-        "**/*Database*.*",
-        "dev/mnascimentos/aureole/data/db/*",
-        "**/ComposableSingletons*.*",
-        "**/*Preview*.*"
-    )
-
-    val javaClasses = fileTree(layout.buildDirectory.dir("intermediates/javac/debug/compileDebugJavaWithJavac/classes")) {
-        exclude(fileFilter)
-    }
-    val kotlinClasses = fileTree(layout.buildDirectory.dir("intermediates/built_in_kotlinc/debug/compileDebugKotlin/classes")) {
-        exclude(fileFilter)
-    }
-
-    classDirectories.setFrom(files(javaClasses, kotlinClasses))
+    classDirectories.setFrom(coverageClassDirectories)
     sourceDirectories.setFrom(files("$projectDir/src/main/java", "$projectDir/src/main/kotlin"))
-    executionData.setFrom(
-        fileTree(layout.buildDirectory) {
-            include(
-                "outputs/unit_test_code_coverage/debugUnitTest/testDebugUnitTest.exec",
-                "jacoco/testDebugUnitTest.exec"
-            )
+    executionData.setFrom(coverageExecutionData)
+}
+
+val logicBranchCoverageVerification = tasks.register<LogicBranchCoverageVerification>(
+    "jacocoLogicBranchCoverageVerification"
+) {
+    description = "Fails the build when branch coverage of non-Composable code is below the minimum."
+    group = "Verification"
+    dependsOn("jacocoTestReport")
+    reportXml.set(layout.buildDirectory.file("reports/jacoco/jacocoTestReport/jacocoTestReport.xml"))
+    minimum.set(minimumLogicBranchCoverage)
+}
+
+tasks.register<JacocoCoverageVerification>("jacocoTestCoverageVerification") {
+    description = "Fails the build when unit test coverage is below the project minimum."
+    group = "Verification"
+    dependsOn("jacocoTestReport", logicBranchCoverageVerification)
+
+    classDirectories.setFrom(coverageClassDirectories)
+    sourceDirectories.setFrom(files("$projectDir/src/main/java", "$projectDir/src/main/kotlin"))
+    executionData.setFrom(coverageExecutionData)
+
+    violationRules {
+        rule {
+            limit {
+                counter = "INSTRUCTION"
+                minimum = minimumInstructionCoverage
+            }
+            limit {
+                counter = "LINE"
+                minimum = minimumLineCoverage
+            }
         }
-    )
+    }
 }
 
 // Region: Dependencies

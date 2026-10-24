@@ -19,7 +19,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.core.data.model.LauncherItemType
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleDialog
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
@@ -32,11 +31,7 @@ import dev.mnascimentos.aureole.core.designsystem.icons.VerticalContainer
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
-
-private object AddContainerDialogMetrics {
-    val ItemCornerRadius = 14.dp
-    val IconBadgeCornerRadius = 10.dp
-}
+import dev.mnascimentos.aureole.feature.home.grid.model.AddContainerDialogMetrics
 
 @Composable
 fun AddContainerDialog(

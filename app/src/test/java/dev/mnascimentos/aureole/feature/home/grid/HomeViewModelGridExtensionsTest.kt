@@ -1,6 +1,7 @@
 package dev.mnascimentos.aureole.feature.home.grid
 
 import android.content.Context
+import androidx.lifecycle.viewModelScope
 import dev.mnascimentos.aureole.core.data.model.LauncherItemState
 import dev.mnascimentos.aureole.core.data.model.LauncherItemType
 import dev.mnascimentos.aureole.core.data.model.ScrollOrientation
@@ -35,6 +36,8 @@ import dev.mnascimentos.aureole.feature.home.grid.model.GridItemSpec
 import dev.mnascimentos.aureole.feature.home.model.HomeRepositories
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.job
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
@@ -95,6 +98,15 @@ class HomeViewModelGridExtensionsTest {
 
     @After
     fun tearDown() {
+        // Let the init's background loads finish before Dispatchers.Main is swapped back: they resume
+        // on Main from IO threads, so drive the test scheduler until the cancelled scope completes.
+        val scope = viewModel.viewModelScope.coroutineContext.job
+        scope.cancel()
+        val deadline = System.currentTimeMillis() + VIEW_MODEL_SHUTDOWN_MS
+        while (!scope.isCompleted && System.currentTimeMillis() < deadline) {
+            testDispatcher.scheduler.advanceUntilIdle()
+            Thread.sleep(SHUTDOWN_POLL_MS)
+        }
         Dispatchers.resetMain()
     }
 
@@ -339,3 +351,6 @@ class HomeViewModelGridExtensionsTest {
         assertTrue(viewModel.uiState.value.gridItems.isNotEmpty())
     }
 }
+
+private const val VIEW_MODEL_SHUTDOWN_MS = 2_000L
+private const val SHUTDOWN_POLL_MS = 5L
