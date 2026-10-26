@@ -1,4 +1,4 @@
-package dev.mnascimentos.aureole.feature.home.components.appsdrawer.appitem.model
+package dev.mnascimentos.aureole.composable.appitem.model
 
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp

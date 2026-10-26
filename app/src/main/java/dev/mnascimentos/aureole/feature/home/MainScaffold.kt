@@ -9,6 +9,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import dev.mnascimentos.aureole.composable.appitem.model.AppItemRowConfig
 import dev.mnascimentos.aureole.composable.favorites.FavoriteAppsDialog
 import dev.mnascimentos.aureole.composable.favorites.model.FavoriteAppsDialogActions
 import dev.mnascimentos.aureole.composable.favorites.model.FavoriteAppsDialogConfig
@@ -124,7 +125,11 @@ private fun FavoritePickerOverlay(
                 allApps = uiState.apps,
                 favoriteAppPackages = favPackages,
                 containerId = containerId,
-                showAllAppsOnHome = uiState.showAllAppsOnHome
+                showAllAppsOnHome = uiState.showAllAppsOnHome,
+                rowConfig = AppItemRowConfig(
+                    isThemedAppIconsEnabled = uiState.isThemedAppIconsEnabled,
+                    isLeftHandedMode = uiState.isLeftHandedMode
+                )
             ),
             actions = FavoriteAppsDialogActions(
                 onToggleFavorite = { pkg -> onToggleFavorite(pkg, containerId) },

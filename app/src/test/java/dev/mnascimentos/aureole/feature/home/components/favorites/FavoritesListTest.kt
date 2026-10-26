@@ -5,10 +5,9 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.test.junit4.v2.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.unit.dp
-import dev.mnascimentos.aureole.composable.favorites.FavoritesList
-import dev.mnascimentos.aureole.composable.favorites.model.FavoritesListConfig
-import dev.mnascimentos.aureole.composable.favorites.model.FavoritesListOptions
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
+import dev.mnascimentos.aureole.feature.home.components.favorites.model.FavoritesListConfig
+import dev.mnascimentos.aureole.feature.home.components.favorites.model.FavoritesListOptions
 import dev.mnascimentos.aureole.feature.home.model.LocalHomeActions
 import dev.mnascimentos.aureole.feature.home.model.LocalHomeUiState
 import dev.mnascimentos.aureole.feature.home.model.MainUiState

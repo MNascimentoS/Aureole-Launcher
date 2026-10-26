@@ -34,6 +34,8 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import dev.mnascimentos.aureole.R
+import dev.mnascimentos.aureole.composable.dialogs.model.FolderButtonMetrics
+import dev.mnascimentos.aureole.composable.dialogs.model.FolderFormConfig
 import dev.mnascimentos.aureole.core.data.model.AppFolder
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleDialog
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
@@ -41,9 +43,6 @@ import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatPa
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
-import dev.mnascimentos.aureole.feature.home.components.containers.folder.FolderIconRegistry
-import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.FolderButtonMetrics
-import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.FolderFormConfig
 
 @Composable
 fun FolderFormDialog(

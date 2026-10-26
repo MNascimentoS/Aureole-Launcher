@@ -1,4 +1,4 @@
-package dev.mnascimentos.aureole.feature.home.components.containers.folder
+package dev.mnascimentos.aureole.composable.dialogs
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier

@@ -1,6 +1,7 @@
 package dev.mnascimentos.aureole.feature.home.components.containers.folder
 
 import androidx.compose.ui.test.junit4.createComposeRule
+import dev.mnascimentos.aureole.composable.dialogs.FolderIconRegistry
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import org.junit.Rule
 import org.junit.Test

@@ -1,4 +1,4 @@
-package dev.mnascimentos.aureole.composable.favorites.model
+package dev.mnascimentos.aureole.feature.home.components.favorites.model
 
 import android.appwidget.AppWidgetHost
 import androidx.compose.ui.Modifier

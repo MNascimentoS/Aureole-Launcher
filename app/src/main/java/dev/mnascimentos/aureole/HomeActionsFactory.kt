@@ -1,5 +1,6 @@
 package dev.mnascimentos.aureole
 
+import android.content.Context
 import android.content.Intent
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.IntentSenderRequest
@@ -87,7 +88,7 @@ import dev.mnascimentos.aureole.feature.settings.SettingsActivity
 import dev.mnascimentos.aureole.util.IntentUtils
 
 class HomeActionsFactory(
-    private val activity: MainActivity,
+    private val context: Context,
     private val viewModel: HomeViewModel,
     private val appUpdateManager: AppUpdateManager,
     private val updateActivityResultLauncher: ActivityResultLauncher<IntentSenderRequest>,
@@ -107,26 +108,26 @@ class HomeActionsFactory(
                 viewModel.reorderWidgets(newWidgets, stackId)
             },
             onAppClick = { appInfo ->
-                activity.packageManager.getLaunchIntentForPackage(appInfo.packageName)?.let { launchIntent ->
-                    activity.startActivity(launchIntent)
+                context.packageManager.getLaunchIntentForPackage(appInfo.packageName)?.let { launchIntent ->
+                    context.startActivity(launchIntent)
                 }
             },
-            onExpandNotificationShade = { IntentUtils.expandNotificationShade(activity) },
+            onExpandNotificationShade = { IntentUtils.expandNotificationShade(context) },
             onFolderIntent = { viewModel.onFolderIntent(it) },
             onSetAddAppToFolderDialogVisible = { viewModel.setAddAppToFolderDialogVisible(it) },
             onSetRenameFolderDialogVisible = { viewModel.setRenameFolderDialogVisible(it) },
             onSearchQueryChanged = { viewModel.onSearchQueryChanged(it) },
             onSettingsClick = {
-                val intent = Intent(activity, SettingsActivity::class.java)
-                activity.startActivity(intent)
+                val intent = Intent(context, SettingsActivity::class.java)
+                context.startActivity(intent)
             },
             onAllAppsDrawerClose = { viewModel.setAllAppsDrawerOpen(false) },
             onAllAppsDrawerOpen = { viewModel.setAllAppsDrawerOpen(true) },
             onToggleFavorite = { pkg -> viewModel.toggleFavorite(pkg) },
             onUpdateFavoritePackages = { containerId, pkgs -> handleUpdateFavoritePackages(containerId, pkgs) },
             onToggleShowAllAppsOnHome = { viewModel.toggleShowAllAppsOnHome() },
-            onAppInfoClick = { app -> IntentUtils.openAppInfo(activity, app.packageName) },
-            onUninstallAppClick = { app -> IntentUtils.uninstallApp(activity, app.packageName) },
+            onAppInfoClick = { app -> IntentUtils.openAppInfo(context, app.packageName) },
+            onUninstallAppClick = { app -> IntentUtils.uninstallApp(context, app.packageName) },
             onOpenFavoritePicker = { containerId -> viewModel.setShowFavoritePicker(true, containerId) },
             onOpenWidgetPopup = { id, y -> viewModel.openWidgetPopup(id, y) },
             onCloseWidgetPopup = { viewModel.closeWidgetPopup() },

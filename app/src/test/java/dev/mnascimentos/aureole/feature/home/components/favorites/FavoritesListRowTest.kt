@@ -1,4 +1,4 @@
-package dev.mnascimentos.aureole.composable.favorites
+package dev.mnascimentos.aureole.feature.home.components.favorites
 
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.v2.createComposeRule

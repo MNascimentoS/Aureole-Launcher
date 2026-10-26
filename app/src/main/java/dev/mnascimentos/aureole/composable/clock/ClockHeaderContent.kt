@@ -16,13 +16,12 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
+import dev.mnascimentos.aureole.composable.clock.model.ClockHeaderContentParams
+import dev.mnascimentos.aureole.composable.clock.model.ClockTimeDisplayParams
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
-import dev.mnascimentos.aureole.feature.home.components.clock.ClockHeaderUtils
-import dev.mnascimentos.aureole.feature.home.components.clock.model.ClockHeaderContentParams
-import dev.mnascimentos.aureole.feature.home.components.clock.model.ClockTimeDisplayParams
 
 private const val MIN_GREETING_HEIGHT_DP = 100
 private const val COMPACT_CONTAINER_HEIGHT_DP = 90

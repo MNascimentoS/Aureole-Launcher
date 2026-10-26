@@ -1,5 +1,6 @@
 package dev.mnascimentos.aureole.composable.favorites.model
 
+import dev.mnascimentos.aureole.composable.appitem.model.AppItemRowConfig
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 
 enum class FavoriteAppsScreenMode {
@@ -10,7 +11,8 @@ data class FavoriteAppsDialogConfig(
     val allApps: List<AppInfo>,
     val favoriteAppPackages: List<String>,
     val containerId: String? = null,
-    val showAllAppsOnHome: Boolean = true
+    val showAllAppsOnHome: Boolean = true,
+    val rowConfig: AppItemRowConfig = AppItemRowConfig()
 )
 
 data class FavoriteAppsDialogActions(

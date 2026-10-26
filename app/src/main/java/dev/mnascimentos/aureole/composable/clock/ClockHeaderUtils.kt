@@ -1,4 +1,4 @@
-package dev.mnascimentos.aureole.feature.home.components.clock
+package dev.mnascimentos.aureole.composable.clock
 
 import android.graphics.Typeface
 import androidx.compose.ui.Alignment

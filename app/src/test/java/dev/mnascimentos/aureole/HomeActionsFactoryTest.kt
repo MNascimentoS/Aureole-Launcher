@@ -220,7 +220,7 @@ class HomeActionsFactoryTest {
     private fun actions(
         cachedInfo: com.google.android.play.core.appupdate.AppUpdateInfo? = null
     ): HomeScreenActions = HomeActionsFactory(
-        activity = activity,
+        context = activity,
         viewModel = viewModel,
         appUpdateManager = appUpdateManager,
         updateActivityResultLauncher = updateLauncher,

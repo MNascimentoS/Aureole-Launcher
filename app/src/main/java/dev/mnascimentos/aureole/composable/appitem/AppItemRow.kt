@@ -16,7 +16,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -31,18 +30,16 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.core.graphics.drawable.toDrawable
+import dev.mnascimentos.aureole.composable.appitem.model.AppItemBottomSheetParams
+import dev.mnascimentos.aureole.composable.appitem.model.AppItemRowActions
+import dev.mnascimentos.aureole.composable.appitem.model.AppItemRowConfig
+import dev.mnascimentos.aureole.composable.appitem.model.AppItemRowMetrics
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
-import dev.mnascimentos.aureole.feature.home.components.appsdrawer.appitem.model.AppItemBottomSheetParams
-import dev.mnascimentos.aureole.feature.home.components.appsdrawer.appitem.model.AppItemRowActions
-import dev.mnascimentos.aureole.feature.home.components.appsdrawer.appitem.model.AppItemRowConfig
-import dev.mnascimentos.aureole.feature.home.components.appsdrawer.appitem.model.AppItemRowMetrics
-import dev.mnascimentos.aureole.feature.home.model.LocalHomeUiState
-import dev.mnascimentos.aureole.feature.home.model.MainUiState
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -53,9 +50,6 @@ fun AppItemRow(
     config: AppItemRowConfig = AppItemRowConfig(),
     actions: AppItemRowActions = AppItemRowActions()
 ) {
-    val uiState = LocalHomeUiState.current
-    val isThemedAppIconsEnabled = uiState.isThemedAppIconsEnabled
-    val isLeftHandedMode = uiState.isLeftHandedMode
     var showMenu by remember { mutableStateOf(false) }
     val iconBitmap: ImageBitmap = remember(app.packageName) {
         app.getIconBitmap()
@@ -78,8 +72,8 @@ fun AppItemRow(
             AppItemRowContent(
                 app = app,
                 iconBitmap = iconBitmap,
-                isThemedAppIconsEnabled = isThemedAppIconsEnabled,
-                isLeftHandedMode = isLeftHandedMode
+                isThemedAppIconsEnabled = config.isThemedAppIconsEnabled,
+                isLeftHandedMode = config.isLeftHandedMode
             )
         }
 
@@ -203,18 +197,12 @@ private fun AppItemRowPreview() {
         componentName = ComponentName("com.example.camera", "MainActivity"),
         icon = 0xFF1B65C0.toInt().toDrawable()
     )
-    val mockUiState = MainUiState(
-        apps = listOf(mockApp),
-        favoriteApps = listOf(mockApp)
-    )
 
     AureoleLauncherTheme {
-        CompositionLocalProvider(LocalHomeUiState provides mockUiState) {
-            AppItemRow(
-                app = mockApp,
-                onClick = {},
-                config = AppItemRowConfig(isFavorite = true)
-            )
-        }
+        AppItemRow(
+            app = mockApp,
+            onClick = {},
+            config = AppItemRowConfig(isFavorite = true)
+        )
     }
 }

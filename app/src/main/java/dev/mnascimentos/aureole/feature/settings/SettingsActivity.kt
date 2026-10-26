@@ -1,39 +1,21 @@
 package dev.mnascimentos.aureole.feature.settings
 
-import android.content.ActivityNotFoundException
-import android.content.Intent
 import android.os.Bundle
-import android.provider.Settings
 import androidx.activity.ComponentActivity
-import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.activity.result.ActivityResultLauncher
-import androidx.activity.result.PickVisualMediaRequest
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.unit.dp
-import dev.mnascimentos.aureole.composable.favorites.FavoriteAppsDialog
-import dev.mnascimentos.aureole.composable.favorites.model.FavoriteAppsDialogActions
-import dev.mnascimentos.aureole.composable.favorites.model.FavoriteAppsDialogConfig
 import dev.mnascimentos.aureole.core.designsystem.palette.getPaletteByName
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDimens
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleThemeConfig
 import dev.mnascimentos.aureole.core.lifecycle.SettingsLifecycleObserver
-import dev.mnascimentos.aureole.feature.settings.extensions.performFactoryReset
-import dev.mnascimentos.aureole.feature.settings.extensions.resetGridLayout
-import dev.mnascimentos.aureole.feature.settings.extensions.restoreDefaultWallpaper
-import dev.mnascimentos.aureole.feature.settings.model.SettingToggle
-import dev.mnascimentos.aureole.feature.settings.model.SettingValue
-import dev.mnascimentos.aureole.feature.settings.model.SettingsDialog
-import dev.mnascimentos.aureole.feature.settings.model.SettingsScreenActions
-import dev.mnascimentos.aureole.feature.settings.screens.SettingsScreen
+import dev.mnascimentos.aureole.feature.settings.screens.SettingsRoute
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import timber.log.Timber
 
 class SettingsActivity : ComponentActivity() {
 
@@ -66,181 +48,12 @@ class SettingsActivity : ComponentActivity() {
                     }
                 }
 
-                val photoPickerLauncher = rememberLauncherForActivityResult(
-                    contract = ActivityResultContracts.PickVisualMedia(),
-                ) { uri ->
-                    uri?.let { viewModel.setCustomWallpaper(it.toString()) }
-                }
-
-                SettingsScreen(
+                SettingsRoute(
                     uiState = uiState,
-                    actions = buildSettingsScreenActions(photoPickerLauncher),
+                    viewModel = viewModel,
+                    onFinish = { finish() }
                 )
-
-                if (uiState.showFavoritePickerDialog) {
-                    FavoriteAppsDialog(
-                        config = FavoriteAppsDialogConfig(
-                            allApps = uiState.allApps,
-                            favoriteAppPackages = uiState.favoriteAppPackages
-                        ),
-                        actions = FavoriteAppsDialogActions(
-                            onToggleFavorite = { pkg -> viewModel.toggleFavorite(pkg) },
-                            onDismiss = {
-                                viewModel.setDialogVisible(SettingsDialog.FAVORITE_PICKER, visible = false)
-                            }
-                        )
-                    )
-                }
             }
         }
-    }
-
-    private fun buildSettingsScreenActions(
-        photoPickerLauncher: ActivityResultLauncher<PickVisualMediaRequest>
-    ): SettingsScreenActions {
-        val baseActions = SettingsScreenActions(
-            onBackClick = { finish() },
-            onSetDefaultLauncherClick = { openDefaultLauncherSettings() },
-            onChangeWallpaperClick = {
-                photoPickerLauncher.launch(
-                    PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly),
-                )
-            },
-            onSubmitCreateFolder = viewModel::createFolder,
-            onConfirmRestoreWallpaper = { viewModel.restoreDefaultWallpaper() },
-            onClearErrorMessage = { viewModel.clearErrorMessage() },
-            onSelectManualSeedColor = { color ->
-                viewModel.setSettingValue(SettingValue.ManualSeedColor(color))
-            },
-            onSelectTheme = { themeName ->
-                viewModel.setSettingValue(SettingValue.SelectedTheme(themeName))
-            },
-            onSelectFont = { fontName ->
-                viewModel.setSettingValue(SettingValue.SelectedFont(fontName))
-            },
-            onHazeOpacitySelected = { opacity ->
-                viewModel.setSettingValue(SettingValue.HazeOpacity(opacity))
-            },
-            onSelectWallpaperScaleType = { scaleType ->
-                viewModel.setSettingValue(SettingValue.WallpaperScaleType(scaleType))
-            },
-            onSelectCornerRadius = { radiusDp ->
-                viewModel.setSettingValue(SettingValue.CornerRadius(radiusDp))
-            },
-            onHeaderOffsetChanged = viewModel::setHeaderOffsetPercent,
-            onConfirmResetGrid = { viewModel.resetGridLayout() },
-        )
-        return applyTogglesAndDialogs(baseActions)
-    }
-
-    private fun applyTogglesAndDialogs(base: SettingsScreenActions): SettingsScreenActions {
-        val withToggles = applyToggleActions(base)
-        return applyDialogActions(withToggles)
-    }
-
-    private fun applyToggleActions(base: SettingsScreenActions): SettingsScreenActions {
-        return base.copy(
-            onToggleShowAllAppsOnHome = { viewModel.toggleSetting(SettingToggle.SHOW_ALL_APPS_ON_HOME) },
-            onToggleHomeButtonOpensAllApps = { viewModel.toggleSetting(SettingToggle.HOME_OPENS_ALL_APPS) },
-            onToggleWidgetRow = { viewModel.toggleSetting(SettingToggle.WIDGET_ROW) },
-            onToggleShowWidgetDots = { viewModel.toggleSetting(SettingToggle.SHOW_WIDGET_DOTS) },
-            onToggleContainerBackground = { viewModel.toggleSetting(SettingToggle.CONTAINER_BACKGROUND) },
-            onToggleContainerExpandCell = { viewModel.toggleSetting(SettingToggle.CONTAINER_EXPAND_CELL) },
-            onToggleClockBackground = { viewModel.toggleSetting(SettingToggle.CLOCK_BACKGROUND) },
-            onToggleShowContainerAddFolderButton = {
-                viewModel.toggleSetting(SettingToggle.SHOW_CONTAINER_ADD_FOLDER_BUTTON)
-            },
-            onToggleShowFolderLabels = { viewModel.toggleSetting(SettingToggle.SHOW_FOLDER_LABELS) },
-            onToggleLeftHandedMode = { viewModel.toggleSetting(SettingToggle.LEFT_HANDED_MODE) },
-            onToggleDynamicWallpaper = { viewModel.toggleSetting(SettingToggle.DYNAMIC_WALLPAPER) },
-            onToggleHaze = { viewModel.toggleSetting(SettingToggle.HAZE) },
-            onToggleInAppUpdate = { viewModel.toggleSetting(SettingToggle.IN_APP_UPDATE) },
-            onToggleThemedAppIcons = { viewModel.toggleSetting(SettingToggle.THEMED_APP_ICONS) },
-            onToggleDisableAlphabetScrubber = { viewModel.toggleSetting(SettingToggle.DISABLE_ALPHABET_SCRUBBER) },
-            onToggleShowSettingsButtonInAllApps = {
-                viewModel.toggleSetting(
-                    SettingToggle.SHOW_SETTINGS_BUTTON_IN_ALL_APPS
-                )
-            },
-            onToggleShowSearchBarInAllApps = { viewModel.toggleSetting(SettingToggle.SHOW_SEARCH_BAR_IN_ALL_APPS) }
-        )
-    }
-
-    private fun applyDialogActions(base: SettingsScreenActions): SettingsScreenActions {
-        return base.copy(
-            onOpenContainerPositionDialog = { viewModel.setDialogVisible(SettingsDialog.CONTAINER_POSITION, true) },
-            onDismissContainerPositionDialog = {
-                viewModel.setDialogVisible(
-                    SettingsDialog.CONTAINER_POSITION,
-                    false
-                )
-            },
-            onContainerPositionSelected = { pos -> viewModel.setSettingValue(SettingValue.ContainerPosition(pos)) },
-            onOpenResetGridDialog = { viewModel.setDialogVisible(SettingsDialog.RESET_GRID, true) },
-            onDismissResetGridDialog = { viewModel.setDialogVisible(SettingsDialog.RESET_GRID, false) },
-            onOpenFactoryResetDialog = { viewModel.setDialogVisible(SettingsDialog.FACTORY_RESET, true) },
-            onDismissFactoryResetDialog = { viewModel.setDialogVisible(SettingsDialog.FACTORY_RESET, false) },
-            onConfirmFactoryReset = { viewModel.performFactoryReset() },
-            onOpenFavoritePickerClick = { viewModel.setDialogVisible(SettingsDialog.FAVORITE_PICKER, true) },
-            onOpenColorPickerDialog = { viewModel.setDialogVisible(SettingsDialog.COLOR_PICKER, true) },
-            onDismissColorPickerDialog = { viewModel.setDialogVisible(SettingsDialog.COLOR_PICKER, false) },
-            onRestoreDefaultWallpaperClick = { viewModel.setDialogVisible(SettingsDialog.RESTORE_WALLPAPER, true) },
-            onDismissRestoreWallpaperDialog = { viewModel.setDialogVisible(SettingsDialog.RESTORE_WALLPAPER, false) },
-            onAddFolderClick = { viewModel.setDialogVisible(SettingsDialog.CREATE_FOLDER, true) },
-            onDismissCreateFolderDialog = { viewModel.setDialogVisible(SettingsDialog.CREATE_FOLDER, false) },
-            onOpenHazeOpacityDialog = { viewModel.setDialogVisible(SettingsDialog.HAZE_OPACITY, true) },
-            onDismissHazeOpacityDialog = { viewModel.setDialogVisible(SettingsDialog.HAZE_OPACITY, false) },
-            onOpenSettingsButtonPositionDialog = {
-                viewModel.setDialogVisible(
-                    SettingsDialog.SETTINGS_BUTTON_POSITION,
-                    true
-                )
-            },
-            onDismissSettingsButtonPositionDialog = {
-                viewModel.setDialogVisible(
-                    SettingsDialog.SETTINGS_BUTTON_POSITION,
-                    false
-                )
-            },
-            onSettingsButtonPositionSelected = { pos ->
-                viewModel.setSettingValue(
-                    SettingValue.SettingsButtonPosition(pos)
-                )
-            },
-            onOpenSearchIconPositionDialog = { viewModel.setDialogVisible(SettingsDialog.SEARCH_ICON_POSITION, true) },
-            onDismissSearchIconPositionDialog = {
-                viewModel.setDialogVisible(
-                    SettingsDialog.SEARCH_ICON_POSITION,
-                    false
-                )
-            },
-            onSearchIconPositionSelected = { pos -> viewModel.setSettingValue(SettingValue.SearchIconPosition(pos)) }
-        )
-    }
-
-    private fun openDefaultLauncherSettings() {
-        if (!tryLaunchIntent(Intent(Settings.ACTION_HOME_SETTINGS)) &&
-            !tryLaunchIntent(Intent("android.settings.MANAGE_DEFAULT_APPS_SETTINGS"))
-        ) {
-            tryLaunchIntent(Intent(Settings.ACTION_SETTINGS))
-        }
-    }
-
-    private fun tryLaunchIntent(intent: Intent): Boolean {
-        return try {
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-            startActivity(intent)
-            true
-        } catch (e: ActivityNotFoundException) {
-            Timber.tag(TAG).w(e, "Activity not found for intent action: ${intent.action}")
-            false
-        } catch (e: SecurityException) {
-            Timber.tag(TAG).w(e, "SecurityException launching intent action: ${intent.action}")
-            false
-        }
-    }
-
-    companion object {
-        private const val TAG = "SettingsActivity"
     }
 }

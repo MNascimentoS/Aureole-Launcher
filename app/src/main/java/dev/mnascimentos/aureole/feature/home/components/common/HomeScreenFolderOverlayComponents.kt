@@ -27,6 +27,8 @@ import dev.chrisbanes.haze.HazeStyle
 import dev.chrisbanes.haze.HazeTint
 import dev.chrisbanes.haze.hazeEffect
 import dev.mnascimentos.aureole.composable.appitem.AppItemBottomSheet
+import dev.mnascimentos.aureole.composable.appitem.model.AppItemBottomSheetParams
+import dev.mnascimentos.aureole.composable.appitem.model.AppItemRowActions
 import dev.mnascimentos.aureole.composable.dialogs.CreateFolderDialog
 import dev.mnascimentos.aureole.core.data.model.AppFolder
 import dev.mnascimentos.aureole.core.data.model.LauncherItemState
@@ -34,7 +36,6 @@ import dev.mnascimentos.aureole.core.data.model.LauncherItemType
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
-import dev.mnascimentos.aureole.feature.home.components.appsdrawer.appitem.model.AppItemBottomSheetParams
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.ContainerFolderBottomSheet
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.EditFolderDialog
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.FolderAppPickerDialog
@@ -76,13 +77,9 @@ private fun ContainerAppAndFolderOverlays(
         AppItemBottomSheet(
             params = AppItemBottomSheetParams(
                 app = state.app,
-                onRemoveFromContainer = {
-                    actions.onRemoveAppFromContainer(
-                        state.panelId,
-                        state.app.packageName
-                    )
-                },
-                onOpenContainerSettings = { actions.onOpenEditContainerDialog(state.panelId) }
+                onRemoveFromContainer = { actions.onRemoveAppFromContainer(state.panelId, state.app.packageName) },
+                onOpenContainerSettings = { actions.onOpenEditContainerDialog(state.panelId) },
+                actions = AppItemRowActions(onOpenSettings = actions.onSettingsClick)
             ),
             onDismiss = actions.onCloseContainerAppBottomSheet
         )
@@ -120,13 +117,9 @@ private fun ContainerAppAndFolderOverlays(
         AppItemBottomSheet(
             params = AppItemBottomSheetParams(
                 app = state.app,
-                onRemoveFromFolder = {
-                    actions.onRemoveAppFromFolder(
-                        state.folder.id,
-                        state.app.packageName
-                    )
-                },
-                onOpenFolderSettings = { actions.onOpenEditFolderForFolder(state.folder) }
+                onRemoveFromFolder = { actions.onRemoveAppFromFolder(state.folder.id, state.app.packageName) },
+                onOpenFolderSettings = { actions.onOpenEditFolderForFolder(state.folder) },
+                actions = AppItemRowActions(onOpenSettings = actions.onSettingsClick)
             ),
             onDismiss = actions.onCloseFolderAppBottomSheet
         )

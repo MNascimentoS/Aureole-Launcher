@@ -22,16 +22,14 @@ import dev.chrisbanes.haze.HazeStyle
 import dev.chrisbanes.haze.HazeTint
 import dev.chrisbanes.haze.hazeEffect
 import dev.mnascimentos.aureole.R
+import dev.mnascimentos.aureole.composable.clock.model.ClockHazeConfig
+import dev.mnascimentos.aureole.composable.clock.model.ClockHeaderContentParams
+import dev.mnascimentos.aureole.composable.clock.model.ResolvedClockConfig
+import dev.mnascimentos.aureole.core.data.repository.SettingsRepository
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.core.designsystem.utils.LocalHazeState
-import dev.mnascimentos.aureole.feature.home.components.clock.model.ClockHazeConfig
-import dev.mnascimentos.aureole.feature.home.components.clock.model.ClockHeaderConfig
-import dev.mnascimentos.aureole.feature.home.components.clock.model.ClockHeaderContentParams
-import dev.mnascimentos.aureole.feature.home.components.clock.model.ResolvedClockConfig
-import dev.mnascimentos.aureole.feature.home.model.LocalHomeUiState
-import dev.mnascimentos.aureole.feature.home.model.MainUiState
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -45,18 +43,16 @@ private const val DEFAULT_NOON_HOUR = 12
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ClockHeader(
+    resolvedConfig: ResolvedClockConfig,
     modifier: Modifier = Modifier,
     hazeConfig: ClockHazeConfig = ClockHazeConfig(),
-    config: ClockHeaderConfig = ClockHeaderConfig(),
     onClick: (() -> Unit)? = null,
     onLongClick: (() -> Unit)? = null
 ) {
-    val uiState = LocalHomeUiState.current
-    val resolvedConfig = resolveClockConfig(config, uiState)
     val hazeStateRef = hazeConfig.hazeState ?: LocalHazeState.current
-    val isHazeEnabled = hazeConfig.isHazeEnabled || uiState.isHazeEnabled
-    val hazeOpacity = if (hazeConfig.isHazeEnabled) hazeConfig.hazeOpacity else uiState.hazeOpacity
-    val isBgEnabled = hazeConfig.isBackgroundEnabled && uiState.isClockBackgroundEnabled
+    val isHazeEnabled = hazeConfig.isHazeEnabled
+    val hazeOpacity = hazeConfig.hazeOpacity
+    val isBgEnabled = hazeConfig.isBackgroundEnabled
 
     val defaultTextColor = AureoleDS.colors.onSurfaceHigh.toArgb()
     val colorPrimaryInt = if (resolvedConfig.textColor != 0) resolvedConfig.textColor else defaultTextColor
@@ -102,19 +98,6 @@ fun ClockHeader(
             )
         )
     }
-}
-
-private fun resolveClockConfig(config: ClockHeaderConfig, uiState: MainUiState): ResolvedClockConfig {
-    return ResolvedClockConfig(
-        style = config.style ?: uiState.clockStyle,
-        customGreeting = config.customGreeting ?: uiState.clockCustomGreeting,
-        alignment = config.alignment ?: uiState.clockAlignment,
-        fontFamily = config.fontFamily ?: uiState.clockFontFamily,
-        timeFormat = config.timeFormat ?: uiState.clockTimeFormat,
-        dateFormat = config.dateFormat ?: uiState.clockDateFormat,
-        textColor = config.textColor ?: uiState.clockTextColor,
-        backgroundColor = config.backgroundColor ?: uiState.clockBackgroundColor
-    )
 }
 
 @Composable
@@ -170,6 +153,17 @@ private fun getGreetingForCurrentHour(): String {
 @Composable
 private fun ClockHeaderPreview() {
     AureoleLauncherTheme {
-        ClockHeader()
+        ClockHeader(
+            resolvedConfig = ResolvedClockConfig(
+                style = SettingsRepository.DEFAULT_CLOCK_STYLE,
+                customGreeting = "",
+                alignment = SettingsRepository.DEFAULT_CLOCK_ALIGNMENT,
+                fontFamily = SettingsRepository.DEFAULT_CLOCK_FONT_FAMILY,
+                timeFormat = SettingsRepository.DEFAULT_CLOCK_TIME_FORMAT,
+                dateFormat = SettingsRepository.DEFAULT_CLOCK_DATE_FORMAT,
+                textColor = 0,
+                backgroundColor = 0
+            )
+        )
     }
 }

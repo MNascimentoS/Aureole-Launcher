@@ -1,4 +1,4 @@
-package dev.mnascimentos.aureole.feature.home.components.appsdrawer.appitem.model
+package dev.mnascimentos.aureole.composable.appitem.model
 
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 

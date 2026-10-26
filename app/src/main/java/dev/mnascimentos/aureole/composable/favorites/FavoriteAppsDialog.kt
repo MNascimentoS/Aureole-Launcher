@@ -22,6 +22,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.composable.appitem.AppItemRow
+import dev.mnascimentos.aureole.composable.appitem.model.AppItemRowConfig
 import dev.mnascimentos.aureole.composable.favorites.model.FavoriteAppsDialogActions
 import dev.mnascimentos.aureole.composable.favorites.model.FavoriteAppsDialogConfig
 import dev.mnascimentos.aureole.composable.favorites.model.FavoriteAppsScreenMode
@@ -89,7 +90,7 @@ fun FavoriteAppsDialog(
                 }
             ),
             previewContent = {
-                FavoriteAppsPreviewContent(previewFavoriteApps = previewFavoriteApps)
+                FavoriteAppsPreviewContent(previewFavoriteApps = previewFavoriteApps, rowConfig = config.rowConfig)
             },
             bottomBarContent = {
                 FavoriteAppsBottomBar(
@@ -112,7 +113,7 @@ fun FavoriteAppsDialog(
 }
 
 @Composable
-private fun FavoriteAppsPreviewContent(previewFavoriteApps: List<AppInfo>) {
+private fun FavoriteAppsPreviewContent(previewFavoriteApps: List<AppInfo>, rowConfig: AppItemRowConfig) {
     Box(
         modifier = Modifier
             .fillMaxWidth(PREVIEW_WIDTH_FRACTION)
@@ -134,13 +135,13 @@ private fun FavoriteAppsPreviewContent(previewFavoriteApps: List<AppInfo>) {
                 format = AureoleTextFormatParams(style = AureoleDS.typography.bodyMedium)
             )
         } else {
-            FavoriteAppsPreviewList(previewFavoriteApps = previewFavoriteApps)
+            FavoriteAppsPreviewList(previewFavoriteApps = previewFavoriteApps, rowConfig = rowConfig)
         }
     }
 }
 
 @Composable
-private fun FavoriteAppsPreviewList(previewFavoriteApps: List<AppInfo>) {
+private fun FavoriteAppsPreviewList(previewFavoriteApps: List<AppInfo>, rowConfig: AppItemRowConfig) {
     LazyColumn(
         verticalArrangement = Arrangement.spacedBy(AureoleDS.dimens.minimal),
         modifier = Modifier.fillMaxWidth()
@@ -152,7 +153,8 @@ private fun FavoriteAppsPreviewList(previewFavoriteApps: List<AppInfo>) {
         ) { app ->
             AppItemRow(
                 app = app,
-                onClick = {}
+                onClick = {},
+                config = rowConfig
             )
         }
     }

@@ -10,10 +10,10 @@ import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTouchInput
 import androidx.core.graphics.drawable.toDrawable
+import dev.mnascimentos.aureole.composable.appitem.model.AppItemRowActions
+import dev.mnascimentos.aureole.composable.appitem.model.AppItemRowConfig
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
-import dev.mnascimentos.aureole.feature.home.components.appsdrawer.appitem.model.AppItemRowActions
-import dev.mnascimentos.aureole.feature.home.components.appsdrawer.appitem.model.AppItemRowConfig
 import dev.mnascimentos.aureole.feature.home.model.LocalHomeUiState
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
 import org.junit.Assert.assertTrue
@@ -42,7 +42,7 @@ class AppItemRowTest {
         composeTestRule.setContent {
             AureoleLauncherTheme {
                 CompositionLocalProvider(LocalHomeUiState provides uiState) {
-                    AppItemRow(
+                    HomeAppItemRow(
                         app = sampleApp,
                         onClick = {}
                     )
@@ -60,7 +60,7 @@ class AppItemRowTest {
         composeTestRule.setContent {
             AureoleLauncherTheme {
                 CompositionLocalProvider(LocalHomeUiState provides uiState) {
-                    AppItemRow(
+                    HomeAppItemRow(
                         app = sampleApp,
                         onClick = {}
                     )
@@ -78,7 +78,7 @@ class AppItemRowTest {
         composeTestRule.setContent {
             AureoleLauncherTheme {
                 CompositionLocalProvider(LocalHomeUiState provides uiState) {
-                    AppItemRow(
+                    HomeAppItemRow(
                         app = sampleApp,
                         onClick = {}
                     )
@@ -97,7 +97,7 @@ class AppItemRowTest {
         composeTestRule.setContent {
             AureoleLauncherTheme {
                 CompositionLocalProvider(LocalHomeUiState provides uiState) {
-                    AppItemRow(
+                    HomeAppItemRow(
                         app = sampleApp,
                         onClick = { clicked = true }
                     )
@@ -122,7 +122,7 @@ class AppItemRowTest {
         composeTestRule.setContent {
             AureoleLauncherTheme {
                 CompositionLocalProvider(LocalHomeUiState provides uiState) {
-                    AppItemRow(
+                    HomeAppItemRow(
                         app = sampleApp,
                         onClick = {},
                         config = config,
@@ -153,7 +153,7 @@ class AppItemRowTest {
         composeTestRule.setContent {
             AureoleLauncherTheme {
                 CompositionLocalProvider(LocalHomeUiState provides uiState) {
-                    AppItemRow(
+                    HomeAppItemRow(
                         app = sampleApp,
                         onClick = {},
                         config = config,

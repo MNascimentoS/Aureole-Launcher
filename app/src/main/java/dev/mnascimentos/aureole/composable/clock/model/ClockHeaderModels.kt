@@ -1,4 +1,4 @@
-package dev.mnascimentos.aureole.feature.home.components.clock.model
+package dev.mnascimentos.aureole.composable.clock.model
 
 import android.graphics.Typeface
 import androidx.compose.ui.graphics.Color
@@ -44,7 +44,7 @@ internal data class ClockTimeDisplayParams(
     val alignment: String
 )
 
-internal data class ResolvedClockConfig(
+data class ResolvedClockConfig(
     val style: String,
     val customGreeting: String,
     val alignment: String,

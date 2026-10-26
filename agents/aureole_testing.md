@@ -4,6 +4,8 @@
 - Every UI component must have screenshot tests (`@PreviewTest`) in `app/src/screenshotTest`.
 - Every new feature or business logic change must include unit tests (`app/src/test/`).
 
+- Test files (`app/src/test/`, `app/src/screenshotTest/`, `app/src/androidTest/`) can have **at most 800 lines**. Above that, split the test class by behavior or component.
+
 ## 2. Previews and Verification
 - Every bottom sheet, dialog, popup, or screen must provide `@AureolePreview` (`private fun`) in the file.
 

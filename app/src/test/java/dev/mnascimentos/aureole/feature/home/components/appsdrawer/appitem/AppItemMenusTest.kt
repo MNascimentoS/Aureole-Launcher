@@ -7,16 +7,16 @@ import android.content.pm.ShortcutInfo
 import android.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.test.assertIsDisplayed
-import androidx.compose.ui.test.hasClickAction
 import androidx.compose.ui.test.junit4.v2.createComposeRule
+import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.core.graphics.drawable.toDrawable
 import dev.mnascimentos.aureole.composable.appitem.AppItemBottomSheet
+import dev.mnascimentos.aureole.composable.appitem.model.AppItemBottomSheetParams
+import dev.mnascimentos.aureole.composable.appitem.model.AppItemRowActions
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
-import dev.mnascimentos.aureole.feature.home.components.appsdrawer.appitem.model.AppItemBottomSheetParams
-import dev.mnascimentos.aureole.feature.home.components.appsdrawer.appitem.model.AppItemRowActions
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Rule
@@ -354,16 +354,33 @@ class AppItemMenusTest {
     }
 
     @Test
-    fun `when header logo icon button is clicked, should attempt to launch SettingsActivity`() {
+    fun `when header settings button is clicked, should invoke onOpenSettings`() {
+        var settingsOpened = false
         composeTestRule.setContent {
             AureoleLauncherTheme {
                 AppItemBottomSheet(
-                    params = AppItemBottomSheetParams(app = sampleApp),
+                    params = AppItemBottomSheetParams(
+                        app = sampleApp,
+                        actions = AppItemRowActions(onOpenSettings = { settingsOpened = true })
+                    ),
                     onDismiss = {}
                 )
             }
         }
 
-        composeTestRule.onAllNodes(hasClickAction())[0].performClick()
+        composeTestRule.onNodeWithContentDescription("Aureole settings").performClick()
+
+        assertTrue(settingsOpened)
+    }
+
+    @Test
+    fun `when onOpenSettings is null, should not show the header settings button`() {
+        composeTestRule.setContent {
+            AureoleLauncherTheme {
+                AppItemBottomSheet(params = AppItemBottomSheetParams(app = sampleApp), onDismiss = {})
+            }
+        }
+
+        composeTestRule.onNodeWithContentDescription("Aureole settings").assertDoesNotExist()
     }
 }

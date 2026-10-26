@@ -7,7 +7,7 @@ Welcome to the **Aureole Launcher** agent documentation hub. This index guides A
 1. **[Architecture & Package Structure](aureole_architecture.md)**
    - Clean Architecture, Package-by-Feature structure.
    - Strict separation of responsibilities (Activity vs Screen vs ViewModel vs Repository).
-   - **MAX-500 Rule** (strict file length limit) and prohibition of `@Suppress`.
+   - **MAX-500 Rule** (strict file length limit: 500 lines for production code, 800 for tests) and prohibition of `@Suppress`.
 
 2. **[Components & UI Rules](aureole_components.md)**
    - Rules for Jetpack Compose UI files (`*Screen.kt`, `*Component.kt`, `*Dialog.kt`, `*Sheet.kt`, `*Popup.kt`).

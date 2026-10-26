@@ -24,6 +24,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import androidx.core.graphics.drawable.toDrawable
 import dev.mnascimentos.aureole.R
+import dev.mnascimentos.aureole.composable.appitem.model.AppItemRowActions
+import dev.mnascimentos.aureole.composable.appitem.model.AppItemRowConfig
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleSectionHeader
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
@@ -32,9 +34,7 @@ import dev.mnascimentos.aureole.core.designsystem.icons.Settings
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
-import dev.mnascimentos.aureole.feature.home.components.appsdrawer.appitem.AppItemRow
-import dev.mnascimentos.aureole.feature.home.components.appsdrawer.appitem.model.AppItemRowActions
-import dev.mnascimentos.aureole.feature.home.components.appsdrawer.appitem.model.AppItemRowConfig
+import dev.mnascimentos.aureole.feature.home.components.appsdrawer.appitem.HomeAppItemRow
 import dev.mnascimentos.aureole.feature.home.components.appsdrawer.model.AppsListMetrics
 import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
 import dev.mnascimentos.aureole.feature.home.model.LocalHomeActions
@@ -68,7 +68,7 @@ fun LazyListScope.appsListItems(
         }
 
         val isFav = uiState.favoriteAppPackages.contains(app.packageName)
-        AppItemRow(
+        HomeAppItemRow(
             app = app,
             onClick = { actions.onAppClick(app) },
             config = AppItemRowConfig(isFavorite = isFav),

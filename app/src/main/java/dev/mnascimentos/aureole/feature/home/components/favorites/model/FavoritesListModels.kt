@@ -1,4 +1,4 @@
-package dev.mnascimentos.aureole.composable.favorites.model
+package dev.mnascimentos.aureole.feature.home.components.favorites.model
 
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.ui.unit.Dp

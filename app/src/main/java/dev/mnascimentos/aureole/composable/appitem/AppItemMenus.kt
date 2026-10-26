@@ -2,7 +2,6 @@ package dev.mnascimentos.aureole.composable.appitem
 
 import android.content.ComponentName
 import android.content.Context
-import android.content.Intent
 import android.graphics.Color
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -26,10 +25,14 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.core.graphics.drawable.toDrawable
 import dev.mnascimentos.aureole.R
+import dev.mnascimentos.aureole.composable.appitem.model.AppItemBottomSheetParams
+import dev.mnascimentos.aureole.composable.appitem.model.AppItemRowActions
 import dev.mnascimentos.aureole.composable.sheets.RenderModalBottomSheetOrInspection
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.designsystem.components.AureolePopupMenuItem
@@ -46,9 +49,6 @@ import dev.mnascimentos.aureole.core.designsystem.icons.Star
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
-import dev.mnascimentos.aureole.feature.home.components.appsdrawer.appitem.model.AppItemBottomSheetParams
-import dev.mnascimentos.aureole.feature.home.components.appsdrawer.appitem.model.AppItemRowActions
-import dev.mnascimentos.aureole.feature.settings.SettingsActivity
 import dev.mnascimentos.aureole.util.AppShortcutUtils
 import dev.mnascimentos.aureole.util.AureoleShortcutItem
 import dev.mnascimentos.aureole.util.IntentUtils
@@ -60,7 +60,6 @@ fun AppItemBottomSheet(
     onDismiss: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val context = LocalContext.current
     val sheetContent = @Composable {
         Column(
             modifier = Modifier
@@ -69,7 +68,7 @@ fun AppItemBottomSheet(
         ) {
             val iconBitmap = remember(params.app.packageName) { params.app.getIconBitmap() }
 
-            AppItemBottomSheetHeader(params.app, iconBitmap, context)
+            AppItemBottomSheetHeader(params.app, iconBitmap, params.actions.onOpenSettings)
 
             Spacer(modifier = Modifier.height(AureoleDS.dimens.xxSmall))
 
@@ -84,7 +83,7 @@ fun AppItemBottomSheet(
 }
 
 @Composable
-private fun AppItemBottomSheetHeader(app: AppInfo, iconBitmap: ImageBitmap, context: Context) {
+private fun AppItemBottomSheetHeader(app: AppInfo, iconBitmap: ImageBitmap, onOpenSettings: (() -> Unit)?) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -125,23 +124,30 @@ private fun AppItemBottomSheetHeader(app: AppInfo, iconBitmap: ImageBitmap, cont
             )
         }
 
-        Box(
-            modifier = Modifier
-                .align(Alignment.TopEnd)
-                .padding(top = AureoleDS.dimens.xxSmall, end = AureoleDS.dimens.xxSmall)
-        ) {
-            IconButton(
-                onClick = {
-                    context.startActivity(Intent(context, SettingsActivity::class.java))
-                },
-                modifier = Modifier.size(AureoleDS.dimens.iconXLargeSmall)
-            ) {
-                AureoleDS.icons.Logo(
-                    tint = AureoleDS.colors.onSurfaceHigh,
-                    modifier = Modifier.size(AureoleDS.dimens.iconMediumSmall)
-                )
-            }
+        if (onOpenSettings != null) {
+            AppItemSheetSettingsButton(
+                onClick = onOpenSettings,
+                modifier = Modifier
+                    .align(Alignment.TopEnd)
+                    .padding(top = AureoleDS.dimens.xxSmall, end = AureoleDS.dimens.xxSmall)
+            )
         }
+    }
+}
+
+@Composable
+private fun AppItemSheetSettingsButton(onClick: () -> Unit, modifier: Modifier = Modifier) {
+    val settingsLabel = stringResource(R.string.home_customize_aureole_settings)
+    IconButton(
+        onClick = onClick,
+        modifier = modifier
+            .size(AureoleDS.dimens.iconXLargeSmall)
+            .semantics { contentDescription = settingsLabel }
+    ) {
+        AureoleDS.icons.Logo(
+            tint = AureoleDS.colors.onSurfaceHigh,
+            modifier = Modifier.size(AureoleDS.dimens.iconMediumSmall)
+        )
     }
 }
 

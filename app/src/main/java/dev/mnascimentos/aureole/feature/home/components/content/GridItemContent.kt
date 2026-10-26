@@ -26,8 +26,6 @@ import androidx.compose.ui.platform.rememberNestedScrollInteropConnection
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.viewinterop.AndroidView
 import dev.mnascimentos.aureole.R
-import dev.mnascimentos.aureole.composable.favorites.FavoritesList
-import dev.mnascimentos.aureole.composable.favorites.model.FavoritesListOptions
 import dev.mnascimentos.aureole.core.data.model.LauncherItemState
 import dev.mnascimentos.aureole.core.data.model.LauncherItemType
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
@@ -41,6 +39,8 @@ import dev.mnascimentos.aureole.feature.home.components.containers.Container
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.FolderViewIntent
 import dev.mnascimentos.aureole.feature.home.components.containers.model.ContainerConfig
 import dev.mnascimentos.aureole.feature.home.components.content.model.ScrollViewContainerParams
+import dev.mnascimentos.aureole.feature.home.components.favorites.FavoritesList
+import dev.mnascimentos.aureole.feature.home.components.favorites.model.FavoritesListOptions
 import dev.mnascimentos.aureole.feature.home.components.quickbutton.GridQuickButtonContent
 import dev.mnascimentos.aureole.feature.home.components.widgets.StackedWidgetSection
 import dev.mnascimentos.aureole.feature.home.model.GridItemContentParams

@@ -35,7 +35,7 @@ import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatPa
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
-import dev.mnascimentos.aureole.feature.home.components.appsdrawer.appitem.AppItemRow
+import dev.mnascimentos.aureole.feature.home.components.appsdrawer.appitem.HomeAppItemRow
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.FolderDialogMetrics
 import dev.mnascimentos.aureole.feature.home.model.LocalHomeUiState
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
@@ -141,7 +141,7 @@ private fun FolderDialogContent(
                 key = { it.packageName },
                 contentType = { "folder_app_row" }
             ) { app ->
-                AppItemRow(
+                HomeAppItemRow(
                     app = app,
                     onClick = { onAppClick(app) },
                 )
