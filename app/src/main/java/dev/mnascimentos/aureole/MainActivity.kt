@@ -157,7 +157,6 @@ class MainActivity : ComponentActivity() {
     }
 
     companion object {
-        private const val TAG = "MainActivity"
         private const val APPWIDGET_HOST_ID = 1024
     }
 }
