@@ -27,8 +27,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalInspectionMode
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
+import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
 import dev.mnascimentos.aureole.core.designsystem.icons.Check
@@ -103,7 +105,7 @@ private fun BorderRadiusSheetContent(
             .padding(top = AureoleDS.dimens.large, bottom = AureoleDS.dimens.xLarge),
     ) {
         AureoleText(
-            text = "Change Border",
+            text = stringResource(R.string.settings_appearance_change_border),
             color = AureoleDS.colors.onSurfaceHigh,
             modifier = Modifier.padding(horizontal = AureoleDS.dimens.xLarge),
             format = AureoleTextFormatParams(style = AureoleDS.typography.titleMedium)

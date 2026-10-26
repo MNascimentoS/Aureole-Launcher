@@ -154,7 +154,7 @@ internal fun ContainerPositionDialog(
         shape = RoundedCornerShape(AureoleDS.dimens.radiusLarge),
         title = {
             AureoleText(
-                text = "Alinhamento do Painel Lateral",
+                text = stringResource(R.string.settings_dialogs_container_position_title),
                 color = AureoleDS.colors.onSurfaceHigh,
                 format = AureoleTextFormatParams(style = AureoleDS.typography.titleMedium, fontWeight = FontWeight.Bold)
             )

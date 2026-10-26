@@ -1,4 +1,4 @@
-package dev.mnascimentos.aureole.feature.home.components.common
+package dev.mnascimentos.aureole.composable.sheets
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -18,7 +18,7 @@ import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 
 @Composable
-internal fun RenderModalBottomSheetOrInspection(
+fun RenderModalBottomSheetOrInspection(
     sheetContent: @Composable () -> Unit,
     onDismiss: () -> Unit,
     modifier: Modifier = Modifier

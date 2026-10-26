@@ -102,6 +102,7 @@
     <string name="settings_appearance_title">Appearance</string>
     <string name="settings_appearance_set_background">Set Background</string>
     <string name="settings_appearance_change_font">Change font</string>
+    <string name="settings_appearance_pick_font">Pick Font</string>
     <string name="settings_appearance_color_palette">Color palette</string>
     <string name="settings_appearance_custom_colors">Custom colors</string>
     <string name="settings_appearance_themed_icons">Themed icons</string>
@@ -293,6 +294,7 @@
     <string name="settings_appearance_restore_background_title">Restore default background?</string>
     <string name="settings_dialogs_settings_button_position_title">Settings Button Position</string>
     <string name="settings_dialogs_search_icon_position_title">Search Icon Position</string>
+    <string name="settings_dialogs_container_position_title">Sidebar Alignment</string>
     <string name="settings_appearance_set_background_title">Set background</string>
     <string name="settings_appearance_solid_color">Solid color</string>
     <string name="settings_appearance_custom_image">Custom image</string>

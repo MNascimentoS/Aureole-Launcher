@@ -89,7 +89,9 @@ class SettingsDialogComponentsTest {
             }
         }
 
-        composeTestRule.onNodeWithText("Alinhamento do Painel Lateral").assertIsDisplayed()
+        composeTestRule.onNodeWithText(
+            context.getString(R.string.settings_dialogs_container_position_title)
+        ).assertIsDisplayed()
         composeTestRule.onNodeWithText("Superior (Top)").performClick()
         assertEquals("Top", selectedPosition)
 

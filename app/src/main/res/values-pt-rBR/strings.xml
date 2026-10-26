@@ -102,6 +102,7 @@
     <string name="settings_appearance_title">Aparência</string>
     <string name="settings_appearance_set_background">Definir plano de fundo</string>
     <string name="settings_appearance_change_font">Alterar fonte</string>
+    <string name="settings_appearance_pick_font">Escolher Fonte</string>
     <string name="settings_appearance_color_palette">Paleta de cores</string>
     <string name="settings_appearance_custom_colors">Cores personalizadas</string>
     <string name="settings_appearance_themed_icons">Ícones temáticos</string>
@@ -294,6 +295,7 @@
     <string name="settings_appearance_restore_background_title">Restaurar plano de fundo padrão?</string>
     <string name="settings_dialogs_settings_button_position_title">Posição do Botão de Configurações</string>
     <string name="settings_dialogs_search_icon_position_title">Posição do Ícone de Busca</string>
+    <string name="settings_dialogs_container_position_title">Alinhamento do Painel Lateral</string>
     <string name="settings_appearance_set_background_title">Definir plano de fundo</string>
     <string name="settings_appearance_solid_color">Cor sólida</string>
     <string name="settings_appearance_custom_image">Imagem personalizada</string>
