@@ -229,7 +229,7 @@ private fun ExposedDropdownMenuBoxScope.AlignmentDropdownMenu(
                     onDismiss()
                 },
                 modifier = Modifier
-                    .padding(horizontal = AureoleDS.dimens.xxSmall, vertical = 2.dp)
+                    .padding(horizontal = AureoleDS.dimens.xxSmall, vertical = AureoleDS.dimens.minimal)
                     .clip(RoundedCornerShape(AureoleDS.dimens.radiusXSmall))
                     .background(
                         if (isSelected) AureoleDS.colors.onSurfaceHigh.copy(alpha = 0.12f) else Color.Transparent

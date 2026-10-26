@@ -18,7 +18,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.core.data.model.LauncherItemType
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleDialog
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
@@ -40,7 +42,11 @@ fun AddContainerDialog(
     modifier: Modifier = Modifier,
     isNested: Boolean = false
 ) {
-    val titleText = if (isNested) "Adicionar ao Scroll View" else "Adicionar Container"
+    val titleText = if (isNested) {
+        stringResource(R.string.add_container_nested_title)
+    } else {
+        stringResource(R.string.add_container_title)
+    }
     AureoleDialog(
         onDismissRequest = onDismissRequest,
         title = titleText,
@@ -66,33 +72,33 @@ private fun AddContainerOptionList(
         verticalArrangement = Arrangement.spacedBy(AureoleDS.dimens.smallCompact)
     ) {
         AddContainerOptionItem(
-            title = "Relógio",
+            title = stringResource(R.string.add_container_clock),
             icon = { m -> AureoleDS.icons.Add(m) },
             onClick = { onSelectType(LauncherItemType.CLOCK) }
         )
         AddContainerOptionItem(
-            title = "Lista de Aplicativos",
+            title = stringResource(R.string.add_container_apps_list),
             icon = { m -> AureoleDS.icons.HorizontalContainer(m) },
             onClick = { onSelectType(LauncherItemType.APPS_LIST) }
         )
         AddContainerOptionItem(
-            title = "Container",
+            title = stringResource(R.string.add_container_shortcuts_container),
             icon = { m -> AureoleDS.icons.MenuIcon(m) },
             onClick = { onSelectType(LauncherItemType.SHORTCUTS_CONTAINER) }
         )
         AddContainerOptionItem(
-            title = "Grupo de Widgets do Android",
+            title = stringResource(R.string.add_container_widget_list),
             icon = { m -> AureoleDS.icons.Add(m) },
             onClick = { onSelectType(LauncherItemType.WIDGET_LIST) }
         )
         AddContainerOptionItem(
-            title = "Botão Rápido",
+            title = stringResource(R.string.add_container_quick_button),
             icon = { m -> AureoleDS.icons.Click(m) },
             onClick = { onSelectType(LauncherItemType.QUICK_BUTTON) }
         )
         if (!isNested) {
             AddContainerOptionItem(
-                title = "Container Scroll View",
+                title = stringResource(R.string.add_container_scroll_view),
                 icon = { m -> AureoleDS.icons.VerticalContainer(m) },
                 onClick = { onSelectType(LauncherItemType.SCROLL_VIEW) }
             )

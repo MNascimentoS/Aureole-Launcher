@@ -23,7 +23,9 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.input.pointer.PointerEventPass
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.rememberNestedScrollInteropConnection
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.viewinterop.AndroidView
+import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.composable.favorites.FavoritesList
 import dev.mnascimentos.aureole.composable.favorites.model.FavoritesListOptions
 import dev.mnascimentos.aureole.core.data.model.LauncherItemState
@@ -262,7 +264,7 @@ private fun updateSingleWidgetView(view: View, widgetId: Int) {
 @Composable
 private fun UnconfiguredWidgetPlaceholder() {
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-        AureoleText(text = "Widget não configurado", color = AureoleDS.colors.onSurfaceHigh)
+        AureoleText(text = stringResource(R.string.grid_widget_unconfigured), color = AureoleDS.colors.onSurfaceHigh)
     }
 }
 

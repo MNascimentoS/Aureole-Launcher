@@ -95,29 +95,9 @@ private fun FolderFormDialogContent(
 
         Spacer(modifier = Modifier.height(AureoleDS.dimens.medium))
 
-        OutlinedTextField(
-            value = folderName,
-            onValueChange = { folderName = it },
-            label = {
-                AureoleText(
-                    stringResource(R.string.folder_name_label),
-                    color = AureoleDS.colors.onSurfaceMedium
-                )
-            },
-            placeholder = {
-                AureoleText(
-                    stringResource(R.string.folder_name_placeholder),
-                    color = AureoleDS.colors.onSurfaceLow
-                )
-            },
-            singleLine = true,
-            colors = OutlinedTextFieldDefaults.colors(
-                focusedBorderColor = AureoleDS.colors.onSurfaceHigh,
-                unfocusedBorderColor = AureoleDS.colors.outline,
-                focusedTextColor = AureoleDS.colors.onSurfaceHigh,
-                unfocusedTextColor = AureoleDS.colors.onSurfaceHigh
-            ),
-            modifier = Modifier.fillMaxWidth()
+        FolderNameTextField(
+            folderName = folderName,
+            onFolderNameChange = { folderName = it }
         )
 
         Spacer(modifier = Modifier.height(AureoleDS.dimens.medium))
@@ -154,6 +134,37 @@ private fun FolderFormDialogContent(
             }
         )
     }
+}
+
+@Composable
+private fun FolderNameTextField(
+    folderName: String,
+    onFolderNameChange: (String) -> Unit
+) {
+    OutlinedTextField(
+        value = folderName,
+        onValueChange = onFolderNameChange,
+        label = {
+            AureoleText(
+                stringResource(R.string.folder_name_label),
+                color = AureoleDS.colors.onSurfaceMedium
+            )
+        },
+        placeholder = {
+            AureoleText(
+                stringResource(R.string.folder_name_placeholder),
+                color = AureoleDS.colors.onSurfaceLow
+            )
+        },
+        singleLine = true,
+        colors = OutlinedTextFieldDefaults.colors(
+            focusedBorderColor = AureoleDS.colors.onSurfaceHigh,
+            unfocusedBorderColor = AureoleDS.colors.outline,
+            focusedTextColor = AureoleDS.colors.onSurfaceHigh,
+            unfocusedTextColor = AureoleDS.colors.onSurfaceHigh
+        ),
+        modifier = Modifier.fillMaxWidth()
+    )
 }
 
 @Composable

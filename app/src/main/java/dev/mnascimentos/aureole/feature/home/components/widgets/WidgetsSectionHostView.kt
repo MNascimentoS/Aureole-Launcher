@@ -184,7 +184,7 @@ internal fun AddWidgetButton(
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             AureoleDS.icons.Add(
                 tint = AureoleDS.colors.onSurfaceHigh,
-                modifier = Modifier.padding(bottom = 8.dp)
+                modifier = Modifier.padding(bottom = AureoleDS.dimens.xSmall)
             )
             Text(
                 text = stringResource(R.string.widget_add),

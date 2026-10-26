@@ -1,5 +1,6 @@
 package dev.mnascimentos.aureole.feature.home.components.content
 
+import android.content.Context
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.test.assertIsDisplayed
@@ -7,6 +8,8 @@ import androidx.compose.ui.test.junit4.v2.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.unit.dp
+import androidx.test.core.app.ApplicationProvider
+import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.composable.favorites.model.FavoritesListConfig
 import dev.mnascimentos.aureole.core.data.model.AppFolder
 import dev.mnascimentos.aureole.core.data.model.LauncherItemState
@@ -210,7 +213,9 @@ class GridItemContentTest {
             }
         }
 
-        composeTestRule.onNodeWithText("Widget não configurado").assertIsDisplayed()
+        val unconfiguredText = ApplicationProvider.getApplicationContext<Context>()
+            .getString(R.string.grid_widget_unconfigured)
+        composeTestRule.onNodeWithText(unconfiguredText).assertIsDisplayed()
     }
 
     @Test
@@ -227,7 +232,9 @@ class GridItemContentTest {
             }
         }
 
-        composeTestRule.onNodeWithText("Widget não configurado").assertIsDisplayed()
+        val unconfiguredText = ApplicationProvider.getApplicationContext<Context>()
+            .getString(R.string.grid_widget_unconfigured)
+        composeTestRule.onNodeWithText(unconfiguredText).assertIsDisplayed()
     }
 
     @Test

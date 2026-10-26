@@ -30,9 +30,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.core.net.toUri
+import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.composable.SettingsActionItem
 import dev.mnascimentos.aureole.composable.sheets.ReleaseNotesBottomSheet
 import dev.mnascimentos.aureole.composable.sheets.SettingsBottomSheet
@@ -128,7 +130,7 @@ private fun SettingsAdvancedContent(
             Spacer(modifier = Modifier.height(topSpacerHeight))
 
             AureoleText(
-                text = "Advanced",
+                text = stringResource(R.string.settings_advanced_title),
                 color = AureoleDS.colors.onSurfaceMedium,
                 modifier = Modifier.fillMaxWidth(),
                 format = AureoleTextFormatParams(
@@ -168,13 +170,13 @@ private fun AdvancedItemsGroup(
         modifier = Modifier.fillMaxWidth()
     ) {
         SettingsActionItem(
-            title = "Set as default launcher",
+            title = stringResource(R.string.settings_advanced_set_default_launcher),
             leadingContent = { AureoleDS.icons.Home() },
             onClick = { actions.onSetDefaultLauncherClick() }
         )
 
         SettingsActionItem(
-            title = "App info",
+            title = stringResource(R.string.settings_advanced_app_info),
             leadingContent = { AureoleDS.icons.Info() },
             onClick = {
                 val intent = Intent(
@@ -186,19 +188,19 @@ private fun AdvancedItemsGroup(
         )
 
         SettingsActionItem(
-            title = "What's new (Release notes)",
+            title = stringResource(R.string.settings_advanced_whats_new),
             leadingContent = { AureoleDS.icons.Smile() },
             onClick = onOpenReleaseNotesDialog
         )
 
         SettingsActionItem(
-            title = "Reset launcher",
+            title = stringResource(R.string.settings_advanced_reset_launcher),
             leadingContent = { AureoleDS.icons.Undo() },
             onClick = { actions.onOpenFactoryResetDialog() }
         )
 
         SettingsActionItem(
-            title = "Uninstall launcher",
+            title = stringResource(R.string.settings_advanced_uninstall_launcher),
             leadingContent = { AureoleDS.icons.Delete() },
             onClick = onOpenUninstallDialog
         )
@@ -214,7 +216,7 @@ private fun AdvancedLinksGroup(onNavigateToContributors: () -> Unit) {
         verticalArrangement = Arrangement.spacedBy(AureoleDS.dimens.xSmall)
     ) {
         AureoleText(
-            text = "Contributors",
+            text = stringResource(R.string.settings_advanced_contributors),
             color = AureoleDS.colors.onSurfaceLow,
             modifier = Modifier.clickable { onNavigateToContributors() },
             format = AureoleTextFormatParams(
@@ -223,7 +225,7 @@ private fun AdvancedLinksGroup(onNavigateToContributors: () -> Unit) {
             )
         )
         AureoleText(
-            text = "Privacy policy",
+            text = stringResource(R.string.settings_advanced_privacy_policy),
             color = AureoleDS.colors.onSurfaceLow,
             modifier = Modifier.clickable { },
             format = AureoleTextFormatParams(
@@ -232,7 +234,7 @@ private fun AdvancedLinksGroup(onNavigateToContributors: () -> Unit) {
             )
         )
         AureoleText(
-            text = "Terms of service",
+            text = stringResource(R.string.settings_advanced_terms_of_service),
             color = AureoleDS.colors.onSurfaceLow,
             modifier = Modifier.clickable { },
             format = AureoleTextFormatParams(
@@ -241,7 +243,7 @@ private fun AdvancedLinksGroup(onNavigateToContributors: () -> Unit) {
             )
         )
         AureoleText(
-            text = "Privacy settings",
+            text = stringResource(R.string.settings_advanced_privacy_settings),
             color = AureoleDS.colors.onSurfaceLow,
             modifier = Modifier.clickable { },
             format = AureoleTextFormatParams(
@@ -250,7 +252,7 @@ private fun AdvancedLinksGroup(onNavigateToContributors: () -> Unit) {
             )
         )
         AureoleText(
-            text = "Open source licenses",
+            text = stringResource(R.string.settings_advanced_open_source_licenses),
             color = AureoleDS.colors.onSurfaceLow,
             modifier = Modifier.clickable { },
             format = AureoleTextFormatParams(
@@ -267,12 +269,12 @@ private fun UninstallBottomSheet(
     onDismiss: () -> Unit
 ) {
     SettingsBottomSheet(
-        title = "Uninstall launcher?",
+        title = stringResource(R.string.settings_advanced_uninstall_dialog_title),
         onDismissRequest = onDismiss
     ) {
         Column(verticalArrangement = Arrangement.spacedBy(AureoleDS.dimens.xSmall)) {
             SettingsActionItem(
-                title = "Contact us",
+                title = stringResource(R.string.settings_advanced_contact_us),
                 leadingContent = { AureoleDS.icons.Smile() },
                 onClick = {
                     onDismiss()
@@ -283,7 +285,7 @@ private fun UninstallBottomSheet(
                 }
             )
             SettingsActionItem(
-                title = "Uninstall",
+                title = stringResource(R.string.app_menu_uninstall),
                 leadingContent = { AureoleDS.icons.Delete() },
                 onClick = {
                     onDismiss()

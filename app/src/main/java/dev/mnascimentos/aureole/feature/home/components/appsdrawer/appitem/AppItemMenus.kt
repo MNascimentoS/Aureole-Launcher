@@ -262,6 +262,27 @@ private fun AppActionSheetFolderItems(
         )
     }
 
+    ToggleFavoriteMenuItem(params = params, onDismiss = onDismiss)
+
+    if (params.actions.onEditFavoritesClick != null) {
+        AureolePopupMenuItem(
+            title = stringResource(R.string.app_menu_quick_panel_settings),
+            params = AureolePopupMenuItemParams(
+                icon = { m -> AureoleDS.icons.Settings(m) }
+            ),
+            onClick = {
+                params.actions.onEditFavoritesClick.invoke()
+                onDismiss()
+            }
+        )
+    }
+}
+
+@Composable
+private fun ToggleFavoriteMenuItem(
+    params: AppItemBottomSheetParams,
+    onDismiss: () -> Unit
+) {
     if (params.actions.onToggleFavorite != null) {
         AureolePopupMenuItem(
             title = if (params.isFavorite) {
@@ -274,19 +295,6 @@ private fun AppActionSheetFolderItems(
             ),
             onClick = {
                 params.actions.onToggleFavorite.invoke(params.app.packageName)
-                onDismiss()
-            }
-        )
-    }
-
-    if (params.actions.onEditFavoritesClick != null) {
-        AureolePopupMenuItem(
-            title = stringResource(R.string.app_menu_quick_panel_settings),
-            params = AureolePopupMenuItemParams(
-                icon = { m -> AureoleDS.icons.Settings(m) }
-            ),
-            onClick = {
-                params.actions.onEditFavoritesClick.invoke()
                 onDismiss()
             }
         )

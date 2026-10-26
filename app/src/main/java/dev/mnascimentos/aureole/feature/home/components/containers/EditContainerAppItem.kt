@@ -225,7 +225,7 @@ private fun DropdownAppItem(
         },
         onClick = { onAppSelected(app.packageName) },
         modifier = Modifier
-            .padding(horizontal = AureoleDS.dimens.xxSmall, vertical = 2.dp)
+            .padding(horizontal = AureoleDS.dimens.xxSmall, vertical = AureoleDS.dimens.minimal)
             .clip(RoundedCornerShape(AureoleDS.dimens.radiusXSmall))
     )
 }

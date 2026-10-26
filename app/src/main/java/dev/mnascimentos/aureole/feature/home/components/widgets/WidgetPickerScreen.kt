@@ -129,7 +129,7 @@ private fun WidgetSelectorContent(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(top = 16.dp)
+            .padding(top = AureoleDS.dimens.medium)
             .clickable(enabled = false) {}
     ) {
         if (state.isLoading) {

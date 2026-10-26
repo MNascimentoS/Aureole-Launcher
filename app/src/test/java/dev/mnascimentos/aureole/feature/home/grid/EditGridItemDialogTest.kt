@@ -1,9 +1,12 @@
 package dev.mnascimentos.aureole.feature.home.grid
 
+import android.content.Context
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
+import androidx.test.core.app.ApplicationProvider
+import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.core.data.model.LauncherItemState
 import dev.mnascimentos.aureole.core.data.model.LauncherItemType
 import dev.mnascimentos.aureole.core.data.model.ScrollOrientation
@@ -102,6 +105,7 @@ class EditGridItemDialogTest {
 
     @Test
     fun `when rendering scroll view, should show orientation options and trigger add child`() {
+        val context = ApplicationProvider.getApplicationContext<Context>()
         var orientationTriggered: ScrollOrientation? = null
         var addContainerTriggered = false
         val item = LauncherItemState(
@@ -132,8 +136,8 @@ class EditGridItemDialogTest {
             }
         }
 
-        composeTestRule.onNodeWithText("Orientação do Scroll").assertExists()
-        composeTestRule.onNodeWithText("Horizontal").performClick()
+        composeTestRule.onNodeWithText(context.getString(R.string.edit_container_scroll_orientation)).assertExists()
+        composeTestRule.onNodeWithText(context.getString(R.string.edit_container_horizontal)).performClick()
         assertEquals(ScrollOrientation.HORIZONTAL, orientationTriggered)
 
         composeTestRule.onNodeWithText("Adicionar Componente").performClick()

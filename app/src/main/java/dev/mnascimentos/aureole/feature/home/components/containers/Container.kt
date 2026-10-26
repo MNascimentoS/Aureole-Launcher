@@ -141,7 +141,7 @@ private fun ContainerPreview() {
     AureoleLauncherTheme {
         Box(
             modifier = Modifier
-                .padding(16.dp)
+                .padding(AureoleDS.dimens.medium)
         ) {
             Container(
                 config = ContainerConfig(

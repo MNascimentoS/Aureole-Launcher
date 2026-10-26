@@ -62,6 +62,51 @@
     <string name="settings_title">Configurações</string>
     <string name="settings_general">Geral</string>
 
+    <!-- Settings Root -->
+    <string name="settings_root_thank_you">Muito obrigado!</string>
+    <string name="settings_root_title">Aureole</string>
+    <string name="settings_root_version">Versão %1$s</string>
+    <string name="settings_root_appearance_title">Aparência</string>
+    <string name="settings_root_appearance_subtitle">Cores, temas e layout</string>
+    <string name="settings_root_behavior_title">Comportamento</string>
+    <string name="settings_root_behavior_subtitle">Gestos, botões e controles</string>
+    <string name="settings_root_advanced_title">Avançado</string>
+    <string name="settings_root_advanced_subtitle">Ferramentas de sistema e informações legais</string>
+
+    <!-- Settings Advanced -->
+    <string name="settings_advanced_title">Avançado</string>
+    <string name="settings_advanced_set_default_launcher">Definir como launcher padrão</string>
+    <string name="settings_advanced_app_info">Informações do app</string>
+    <string name="settings_advanced_whats_new">O que há de novo (Notas da versão)</string>
+    <string name="settings_advanced_reset_launcher">Redefinir launcher</string>
+    <string name="settings_advanced_uninstall_launcher">Desinstalar launcher</string>
+    <string name="settings_advanced_contributors">Colaboradores</string>
+    <string name="settings_advanced_privacy_policy">Política de privacidade</string>
+    <string name="settings_advanced_terms_of_service">Termos de serviço</string>
+    <string name="settings_advanced_privacy_settings">Configurações de privacidade</string>
+    <string name="settings_advanced_open_source_licenses">Licenças de código aberto</string>
+    <string name="settings_advanced_uninstall_dialog_title">Desinstalar launcher?</string>
+    <string name="settings_advanced_contact_us">Fale conosco</string>
+
+    <!-- Settings Behavior -->
+    <string name="settings_behavior_title">Comportamento</string>
+    <string name="settings_behavior_home_opens_all_apps">Home abre todos os apps</string>
+    <string name="settings_behavior_show_all_apps_on_home">Exibir todos os apps na Home</string>
+    <string name="settings_behavior_all_apps_left_side">Todos os apps do lado esquerdo</string>
+    <string name="settings_behavior_show_widget_indicator">Exibir indicador de widgets</string>
+    <string name="settings_behavior_disable_alphabet_scrubber">Desativar rolagem alfabética</string>
+    <string name="settings_behavior_check_for_updates">Verificar atualizações</string>
+    <string name="settings_behavior_header_offset">Deslocamento do cabeçalho</string>
+
+    <!-- Settings Appearance -->
+    <string name="settings_appearance_title">Aparência</string>
+    <string name="settings_appearance_set_background">Definir plano de fundo</string>
+    <string name="settings_appearance_change_font">Alterar fonte</string>
+    <string name="settings_appearance_color_palette">Paleta de cores</string>
+    <string name="settings_appearance_custom_colors">Cores personalizadas</string>
+    <string name="settings_appearance_themed_icons">Ícones temáticos</string>
+    <string name="settings_appearance_image_scale">Escala da imagem</string>
+
     <!-- Apps Drawer -->
     <string name="app_search_placeholder">Buscar aplicativos</string>
 
@@ -210,5 +255,26 @@
     <!-- Reusable -->
     <string name="color_picker_primary">Escolher Cor Primária</string>
     <string name="color_picker_custom_hue">Ajuste Personalizado (Matiz)</string>
+
+    <!-- Grid & Containers -->
+    <string name="add_container_title">Adicionar Container</string>
+    <string name="add_container_nested_title">Adicionar ao Scroll View</string>
+    <string name="add_container_clock">Relógio</string>
+    <string name="add_container_apps_list">Lista de Aplicativos</string>
+    <string name="add_container_shortcuts_container">Container</string>
+    <string name="add_container_widget_list">Grupo de Widgets do Android</string>
+    <string name="add_container_quick_button">Botão Rápido</string>
+    <string name="add_container_scroll_view">Container Scroll View</string>
+
+    <string name="edit_container_scroll_orientation">Orientação do Scroll</string>
+    <string name="edit_container_vertical">Vertical</string>
+    <string name="edit_container_horizontal">Horizontal</string>
+
+    <string name="folder_opened_add_apps">Adicionar Apps</string>
+    <string name="folder_opened_edit">Editar Pasta</string>
+    <string name="folder_opened_empty">Nenhum app na pasta</string>
+
+    <string name="grid_widget_label">Widget</string>
+    <string name="grid_widget_unconfigured">Widget não configurado</string>
 
 </resources>

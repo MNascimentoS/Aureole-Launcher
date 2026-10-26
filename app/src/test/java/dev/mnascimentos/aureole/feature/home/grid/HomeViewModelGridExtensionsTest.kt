@@ -37,7 +37,9 @@ import dev.mnascimentos.aureole.feature.home.model.HomeRepositories
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.job
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
@@ -107,6 +109,7 @@ class HomeViewModelGridExtensionsTest {
             testDispatcher.scheduler.advanceUntilIdle()
             Thread.sleep(SHUTDOWN_POLL_MS)
         }
+        runBlocking { viewModel.viewModelScope.coroutineContext.job.cancelAndJoin() }
         Dispatchers.resetMain()
     }
 

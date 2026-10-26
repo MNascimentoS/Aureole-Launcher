@@ -33,8 +33,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.composable.SettingsMenuItem
 import dev.mnascimentos.aureole.composable.SettingsMenuParams
 import dev.mnascimentos.aureole.composable.SettingsToggleItem
@@ -128,7 +130,7 @@ private fun SettingsAppearanceContent(
             Spacer(modifier = Modifier.height(topSpacerHeight))
 
             AureoleText(
-                text = "Appearance",
+                text = stringResource(R.string.settings_appearance_title),
                 color = AureoleDS.colors.onSurfaceMedium,
                 modifier = Modifier.fillMaxWidth(),
                 format = AureoleTextFormatParams(
@@ -169,7 +171,7 @@ private fun AppearanceMenuItems(
     ) {
         SettingsMenuItem(
             SettingsMenuParams(
-                title = "Set Background",
+                title = stringResource(R.string.settings_appearance_set_background),
                 leadingContent = { AureoleDS.icons.Edit() },
                 onClick = dialogActions.onShowSetBackgroundDialog
             )
@@ -183,21 +185,21 @@ private fun AppearanceMenuItems(
         GlassAndBlurRow(uiState = uiState, onClick = dialogActions.onShowBlurDialog)
         SettingsMenuItem(
             SettingsMenuParams(
-                title = "Change font",
+                title = stringResource(R.string.settings_appearance_change_font),
                 leadingContent = { AureoleDS.icons.Text() },
                 onClick = dialogActions.onShowFontDialog
             )
         )
         SettingsMenuItem(
             SettingsMenuParams(
-                title = "Color palette",
+                title = stringResource(R.string.settings_appearance_color_palette),
                 leadingContent = { AureoleDS.icons.Dots() },
                 onClick = dialogActions.onShowPaletteDialog
             )
         )
         SettingsMenuItem(
             SettingsMenuParams(
-                title = "Custom colors",
+                title = stringResource(R.string.settings_appearance_custom_colors),
                 leadingContent = { AureoleDS.icons.StrokeColor() },
                 trailingContent = {
                     Box(
@@ -211,7 +213,7 @@ private fun AppearanceMenuItems(
         )
         ChangeBorderRow(cornerRadiusDp = uiState.cornerRadiusDp, onClick = dialogActions.onShowBorderRadiusDialog)
         SettingsToggleItem(
-            title = "Themed icons",
+            title = stringResource(R.string.settings_appearance_themed_icons),
             checked = uiState.isThemedAppIconsEnabled,
             onCheckedChange = { actions.onToggleThemedAppIcons() },
             leadingContent = { AureoleDS.icons.AppSelect() }
@@ -243,7 +245,7 @@ private fun WallpaperScaleTypeRow(
             modifier = Modifier.padding(end = AureoleDS.dimens.iconMedium).size(AureoleDS.dimens.iconMedium)
         )
         AureoleText(
-            text = "Image scale",
+            text = stringResource(R.string.settings_appearance_image_scale),
             color = AureoleDS.colors.onSurfaceMedium,
             modifier = Modifier.weight(1f),
             format = AureoleTextFormatParams(style = AureoleDS.typography.bodyLarge, fontWeight = FontWeight.Normal)

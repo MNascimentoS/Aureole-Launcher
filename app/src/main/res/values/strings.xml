@@ -62,6 +62,51 @@
     <string name="settings_title">Settings</string>
     <string name="settings_general">General</string>
 
+    <!-- Settings Root -->
+    <string name="settings_root_thank_you">Thank you!</string>
+    <string name="settings_root_title">Aureole</string>
+    <string name="settings_root_version">Version %1$s</string>
+    <string name="settings_root_appearance_title">Appearance</string>
+    <string name="settings_root_appearance_subtitle">Colors, themes, and layout</string>
+    <string name="settings_root_behavior_title">Behavior</string>
+    <string name="settings_root_behavior_subtitle">Gestures, buttons, and controls</string>
+    <string name="settings_root_advanced_title">Advanced</string>
+    <string name="settings_root_advanced_subtitle">System tools and legal info</string>
+
+    <!-- Settings Advanced -->
+    <string name="settings_advanced_title">Advanced</string>
+    <string name="settings_advanced_set_default_launcher">Set as default launcher</string>
+    <string name="settings_advanced_app_info">App info</string>
+    <string name="settings_advanced_whats_new">What\'s new (Release notes)</string>
+    <string name="settings_advanced_reset_launcher">Reset launcher</string>
+    <string name="settings_advanced_uninstall_launcher">Uninstall launcher</string>
+    <string name="settings_advanced_contributors">Contributors</string>
+    <string name="settings_advanced_privacy_policy">Privacy policy</string>
+    <string name="settings_advanced_terms_of_service">Terms of service</string>
+    <string name="settings_advanced_privacy_settings">Privacy settings</string>
+    <string name="settings_advanced_open_source_licenses">Open source licenses</string>
+    <string name="settings_advanced_uninstall_dialog_title">Uninstall launcher?</string>
+    <string name="settings_advanced_contact_us">Contact us</string>
+
+    <!-- Settings Behavior -->
+    <string name="settings_behavior_title">Behavior</string>
+    <string name="settings_behavior_home_opens_all_apps">Home opens all apps</string>
+    <string name="settings_behavior_show_all_apps_on_home">Show all apps on home</string>
+    <string name="settings_behavior_all_apps_left_side">All apps on left side</string>
+    <string name="settings_behavior_show_widget_indicator">Show widget indicator</string>
+    <string name="settings_behavior_disable_alphabet_scrubber">Disable alphabet scrubber</string>
+    <string name="settings_behavior_check_for_updates">Check for updates</string>
+    <string name="settings_behavior_header_offset">Header offset</string>
+
+    <!-- Settings Appearance -->
+    <string name="settings_appearance_title">Appearance</string>
+    <string name="settings_appearance_set_background">Set Background</string>
+    <string name="settings_appearance_change_font">Change font</string>
+    <string name="settings_appearance_color_palette">Color palette</string>
+    <string name="settings_appearance_custom_colors">Custom colors</string>
+    <string name="settings_appearance_themed_icons">Themed icons</string>
+    <string name="settings_appearance_image_scale">Image scale</string>
+
     <!-- Apps Drawer -->
     <string name="app_search_placeholder">Search</string>
 
@@ -210,5 +255,26 @@
     <!-- Reusable -->
     <string name="color_picker_primary">Choose Primary Color</string>
     <string name="color_picker_custom_hue">Custom Adjustment (Hue)</string>
+
+    <!-- Grid & Containers -->
+    <string name="add_container_title">Add Container</string>
+    <string name="add_container_nested_title">Add to Scroll View</string>
+    <string name="add_container_clock">Clock</string>
+    <string name="add_container_apps_list">Apps List</string>
+    <string name="add_container_shortcuts_container">Container</string>
+    <string name="add_container_widget_list">Android Widget Group</string>
+    <string name="add_container_quick_button">Quick Button</string>
+    <string name="add_container_scroll_view">Scroll View Container</string>
+
+    <string name="edit_container_scroll_orientation">Scroll Orientation</string>
+    <string name="edit_container_vertical">Vertical</string>
+    <string name="edit_container_horizontal">Horizontal</string>
+
+    <string name="folder_opened_add_apps">Add Apps</string>
+    <string name="folder_opened_edit">Edit Folder</string>
+    <string name="folder_opened_empty">No apps in folder</string>
+
+    <string name="grid_widget_label">Widget</string>
+    <string name="grid_widget_unconfigured">Widget not configured</string>
 
 </resources>
