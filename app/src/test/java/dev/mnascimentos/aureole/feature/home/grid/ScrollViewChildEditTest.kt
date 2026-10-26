@@ -69,25 +69,25 @@ class ScrollViewChildEditTest {
         val expected = linkedMapOf(
             LauncherItemType.CLOCK to (
                 context.getString(R.string.home_container_add_clock) to "clock"
-            ),
+                ),
             LauncherItemType.SHORTCUTS_CONTAINER to (
                 context.getString(R.string.home_grid_item_container) to "container:child"
-            ),
+                ),
             LauncherItemType.SCROLL_VIEW to (
                 context.getString(R.string.home_container_add_scroll_view) to "container:child"
-            ),
+                ),
             LauncherItemType.WIDGET_LIST to (
                 context.getString(R.string.home_grid_item_widget_group) to "widgets:child"
-            ),
+                ),
             LauncherItemType.SINGLE_APP_WIDGET to (
                 context.getString(R.string.home_grid_scroll_component) to "widgets:child"
-            ),
+                ),
             LauncherItemType.APPS_LIST to (
                 context.getString(R.string.home_container_add_apps_list) to "favorites:child"
-            ),
+                ),
             LauncherItemType.QUICK_BUTTON to (
                 context.getString(R.string.home_container_add_quick_button) to "quick:child"
-            ),
+                ),
         )
         showCard()
 
