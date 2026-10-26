@@ -200,10 +200,13 @@
     <!-- Widgets -->
     <string name="widget_stack_title">Pilha de Widgets</string>
     <string name="widget_show_indicator">Mostrar indicador de posição</string>
-    <string name="widget_picker_search_placeholder">Pesquisar widgets...</string>
+    <string name="widget_picker_search_placeholder">Pesquisar widgets&#8230;</string>
     <string name="widget_picker_none_found">Nenhum widget encontrado.</string>
-    <string name="widget_count_single">%1$d Widget</string>
-    <string name="widget_count_plural">%1$d Widgets</string>
+    <plurals name="widget_count">
+        <item quantity="one">%1$d Widget</item>
+        <item quantity="many">%1$d Widgets</item>
+        <item quantity="other">%1$d Widgets</item>
+    </plurals>
     <string name="widget_group">Grupo de Widgets</string>
     <string name="widget_unavailable">Widget indisponível</string>
     <string name="widget_tap_to_configure">Toque para reconfigurar widget</string>
@@ -241,7 +244,7 @@
     <string name="edit_container_none_added">Nenhum componente adicionado ainda.</string>
     <string name="edit_container_app_label">App</string>
     <string name="edit_container_folder_label">Pasta</string>
-    <string name="edit_container_add_app">Adicionar App...</string>
+    <string name="edit_container_add_app">Adicionar App&#8230;</string>
 
     <!-- Folders (Additional) -->
     <string name="folder_edit_shortcuts">Editar atalhos</string>

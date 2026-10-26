@@ -191,7 +191,7 @@
     <string name="favorites_none_found">No favorite found.</string>
     <string name="favorites_all_added">All apps are already in favorites.</string>
     <string name="favorites_none_other_found">No other app found.</string>
-    <string name="favorites_search_placeholder">Search app...</string>
+    <string name="favorites_search_placeholder">Search app&#8230;</string>
     <string name="favorites_tap_to_select">Tap to select Favorites</string>
     <string name="favorites_all_apps_divider">\" ALL APPS \"</string>
     <string name="favorites_done">Done</string>
@@ -202,8 +202,10 @@
     <string name="widget_show_indicator">Show widget indicator</string>
     <string name="widget_picker_search_placeholder">Search widgets&#8230;</string>
     <string name="widget_picker_none_found">No widget found.</string>
-    <string name="widget_count_single">%1$d Widget</string>
-    <string name="widget_count_plural">%1$d Widgets</string>
+    <plurals name="widget_count">
+        <item quantity="one">%1$d Widget</item>
+        <item quantity="other">%1$d Widgets</item>
+    </plurals>
     <string name="widget_group">Widget Group</string>
     <string name="widget_unavailable">Widget unavailable</string>
     <string name="widget_tap_to_configure">Tap to reconfigure widget</string>
