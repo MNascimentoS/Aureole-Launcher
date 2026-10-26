@@ -1,17 +1,17 @@
 package dev.mnascimentos.aureole.feature.home.grid
 
+import android.content.Context
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
+import androidx.test.core.app.ApplicationProvider
+import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.core.data.model.LauncherItemState
 import dev.mnascimentos.aureole.core.data.model.LauncherItemType
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.feature.home.grid.model.ScrollViewChildParams
 import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
 import org.junit.Assert.assertEquals
-import androidx.test.core.app.ApplicationProvider
-import android.content.Context
-import dev.mnascimentos.aureole.R
 import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test

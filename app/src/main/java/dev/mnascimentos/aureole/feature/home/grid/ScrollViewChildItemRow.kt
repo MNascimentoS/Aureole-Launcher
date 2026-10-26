@@ -17,7 +17,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.core.data.model.LauncherItemState
 import dev.mnascimentos.aureole.core.data.model.LauncherItemType
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
@@ -32,8 +34,6 @@ import dev.mnascimentos.aureole.core.designsystem.icons.HorizontalContainer
 import dev.mnascimentos.aureole.core.designsystem.icons.MenuIcon
 import dev.mnascimentos.aureole.core.designsystem.icons.VerticalContainer
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
-import androidx.compose.ui.res.stringResource
-import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.feature.home.grid.model.ScrollViewChildParams
 import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
 

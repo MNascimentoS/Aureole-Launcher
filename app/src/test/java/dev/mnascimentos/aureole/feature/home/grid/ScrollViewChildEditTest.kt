@@ -1,5 +1,6 @@
 package dev.mnascimentos.aureole.feature.home.grid
 
+import android.content.Context
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -7,6 +8,8 @@ import androidx.compose.ui.test.hasClickAction
 import androidx.compose.ui.test.junit4.v2.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
+import androidx.test.core.app.ApplicationProvider
+import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.core.data.model.LauncherItemState
 import dev.mnascimentos.aureole.core.data.model.LauncherItemType
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
@@ -14,9 +17,6 @@ import dev.mnascimentos.aureole.feature.home.grid.model.ScrollViewChildParams
 import dev.mnascimentos.aureole.feature.home.model.createDefaultHomeScreenActions
 import org.junit.Assert.assertEquals
 import org.junit.Rule
-import androidx.test.core.app.ApplicationProvider
-import android.content.Context
-import dev.mnascimentos.aureole.R
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
@@ -65,15 +65,29 @@ class ScrollViewChildEditTest {
 
     @Test
     fun `when editing each kind of child, should open its own editor and close the dialog`() {
-       val context = ApplicationProvider.getApplicationContext<Context>()
+        val context = ApplicationProvider.getApplicationContext<Context>()
         val expected = linkedMapOf(
-            LauncherItemType.CLOCK to (context.getString(R.string.home_container_add_clock) to "clock"),
-            LauncherItemType.SHORTCUTS_CONTAINER to (context.getString(R.string.home_grid_item_container) to "container:child"),
-            LauncherItemType.SCROLL_VIEW to (context.getString(R.string.home_container_add_scroll_view) to "container:child"),
-            LauncherItemType.WIDGET_LIST to (context.getString(R.string.home_grid_item_widget_group) to "widgets:child"),
-            LauncherItemType.SINGLE_APP_WIDGET to (context.getString(R.string.home_grid_scroll_component) to "widgets:child"),
-            LauncherItemType.APPS_LIST to (context.getString(R.string.home_container_add_apps_list) to "favorites:child"),
-            LauncherItemType.QUICK_BUTTON to (context.getString(R.string.home_container_add_quick_button) to "quick:child"),
+            LauncherItemType.CLOCK to (
+                context.getString(R.string.home_container_add_clock) to "clock"
+            ),
+            LauncherItemType.SHORTCUTS_CONTAINER to (
+                context.getString(R.string.home_grid_item_container) to "container:child"
+            ),
+            LauncherItemType.SCROLL_VIEW to (
+                context.getString(R.string.home_container_add_scroll_view) to "container:child"
+            ),
+            LauncherItemType.WIDGET_LIST to (
+                context.getString(R.string.home_grid_item_widget_group) to "widgets:child"
+            ),
+            LauncherItemType.SINGLE_APP_WIDGET to (
+                context.getString(R.string.home_grid_scroll_component) to "widgets:child"
+            ),
+            LauncherItemType.APPS_LIST to (
+                context.getString(R.string.home_container_add_apps_list) to "favorites:child"
+            ),
+            LauncherItemType.QUICK_BUTTON to (
+                context.getString(R.string.home_container_add_quick_button) to "quick:child"
+            ),
         )
         showCard()
 
@@ -91,7 +105,7 @@ class ScrollViewChildEditTest {
 
     @Test
     fun `when removing a child, should ask the parent to drop it`() {
-       val context = ApplicationProvider.getApplicationContext<Context>()
+        val context = ApplicationProvider.getApplicationContext<Context>()
         showCard()
 
         clickHeaderButton(1)

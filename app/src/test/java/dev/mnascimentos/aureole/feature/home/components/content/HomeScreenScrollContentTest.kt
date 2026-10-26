@@ -1,5 +1,6 @@
 package dev.mnascimentos.aureole.feature.home.components.content
 
+import android.content.Context
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.test.assertIsDisplayed
@@ -7,6 +8,8 @@ import androidx.compose.ui.test.junit4.v2.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.unit.dp
+import androidx.test.core.app.ApplicationProvider
+import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.composable.favorites.model.FavoritesListConfig
 import dev.mnascimentos.aureole.core.data.model.LauncherItemState
 import dev.mnascimentos.aureole.core.data.model.LauncherItemType
@@ -21,9 +24,6 @@ import dev.mnascimentos.aureole.feature.home.model.LocalHomeUiState
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
 import org.junit.Assert.assertEquals
 import org.junit.Rule
-import androidx.test.core.app.ApplicationProvider
-import android.content.Context
-import dev.mnascimentos.aureole.R
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
@@ -78,7 +78,7 @@ class HomeScreenScrollContentTest {
 
     @Test
     fun `when vertical scroll view in edit mode, should display add component button and handle click`() {
-       val context = ApplicationProvider.getApplicationContext<Context>()
+        val context = ApplicationProvider.getApplicationContext<Context>()
         var addedParentId: String? = null
         val actions = createDefaultActions().copy(
             onOpenAddContainerForParent = { id -> addedParentId = id }
@@ -104,7 +104,7 @@ class HomeScreenScrollContentTest {
 
     @Test
     fun `when vertical scroll view not in edit mode, should not display add component button`() {
-       val context = ApplicationProvider.getApplicationContext<Context>()
+        val context = ApplicationProvider.getApplicationContext<Context>()
         val child = LauncherItemState(id = "child_1", type = LauncherItemType.CLOCK)
         val params = createScrollViewParams(ScrollOrientation.VERTICAL, listOf(child))
 
@@ -124,7 +124,7 @@ class HomeScreenScrollContentTest {
 
     @Test
     fun `when horizontal scroll view in edit mode, should display add component button and handle click`() {
-       val context = ApplicationProvider.getApplicationContext<Context>()
+        val context = ApplicationProvider.getApplicationContext<Context>()
         var addedParentId: String? = null
         val actions = createDefaultActions().copy(
             onOpenAddContainerForParent = { id -> addedParentId = id }
@@ -150,7 +150,7 @@ class HomeScreenScrollContentTest {
 
     @Test
     fun `when horizontal scroll view not in edit mode, should not display add component button`() {
-       val context = ApplicationProvider.getApplicationContext<Context>()
+        val context = ApplicationProvider.getApplicationContext<Context>()
         val child = LauncherItemState(id = "child_1", type = LauncherItemType.QUICK_BUTTON)
         val params = createScrollViewParams(ScrollOrientation.HORIZONTAL, listOf(child))
 
@@ -170,7 +170,7 @@ class HomeScreenScrollContentTest {
 
     @Test
     fun `when vertical scroll view has apps list child, should render apps list child`() {
-       val context = ApplicationProvider.getApplicationContext<Context>()
+        val context = ApplicationProvider.getApplicationContext<Context>()
         val appsListChild = LauncherItemState(id = "apps_child", type = LauncherItemType.APPS_LIST)
         val params = createScrollViewParams(ScrollOrientation.VERTICAL, listOf(appsListChild))
 
@@ -188,7 +188,7 @@ class HomeScreenScrollContentTest {
 
     @Test
     fun `when vertical scroll view has custom rowSpan child, should render child content`() {
-       val context = ApplicationProvider.getApplicationContext<Context>()
+        val context = ApplicationProvider.getApplicationContext<Context>()
         val clockChild = LauncherItemState(
             id = "clock_child",
             type = LauncherItemType.CLOCK,
@@ -210,7 +210,7 @@ class HomeScreenScrollContentTest {
 
     @Test
     fun `when horizontal scroll view has custom colSpan child, should render child content`() {
-       val context = ApplicationProvider.getApplicationContext<Context>()
+        val context = ApplicationProvider.getApplicationContext<Context>()
         val containerChild = LauncherItemState(
             id = "container_child",
             type = LauncherItemType.SHORTCUTS_CONTAINER,

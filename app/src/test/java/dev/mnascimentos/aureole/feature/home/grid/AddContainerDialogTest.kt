@@ -36,7 +36,9 @@ class AddContainerDialogTest {
         composeTestRule.onNodeWithText(context.getString(R.string.home_container_add_title)).assertExists()
         composeTestRule.onNodeWithText(context.getString(R.string.home_container_add_clock)).assertExists()
         composeTestRule.onNodeWithText(context.getString(R.string.home_container_add_apps_list)).assertExists()
-        composeTestRule.onNodeWithText(context.getString(R.string.home_container_add_shortcuts_container)).assertExists()
+        composeTestRule.onNodeWithText(
+            context.getString(R.string.home_container_add_shortcuts_container)
+        ).assertExists()
         composeTestRule.onNodeWithText(context.getString(R.string.home_container_add_widget_list)).assertExists()
         composeTestRule.onNodeWithText(context.getString(R.string.home_container_add_quick_button)).assertExists()
         composeTestRule.onNodeWithText(context.getString(R.string.home_container_add_scroll_view)).assertExists()

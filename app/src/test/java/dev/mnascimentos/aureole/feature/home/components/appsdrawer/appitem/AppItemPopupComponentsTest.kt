@@ -7,10 +7,10 @@ import androidx.compose.ui.test.junit4.v2.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.core.graphics.drawable.toDrawable
-import dev.mnascimentos.aureole.core.data.model.AppInfo
-import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.composable.appitem.AppItemPopup
 import dev.mnascimentos.aureole.composable.appitem.AppPopupHorizontalActionsRow
+import dev.mnascimentos.aureole.core.data.model.AppInfo
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.feature.home.components.appsdrawer.appitem.model.AppItemRowActions
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue

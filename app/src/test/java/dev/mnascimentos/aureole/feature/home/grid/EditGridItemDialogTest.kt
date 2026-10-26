@@ -107,7 +107,7 @@ class EditGridItemDialogTest {
 
     @Test
     fun `when rendering scroll view, should show orientation options and trigger add child`() {
-       val context = ApplicationProvider.getApplicationContext<Context>()
+        val context = ApplicationProvider.getApplicationContext<Context>()
         var orientationTriggered: ScrollOrientation? = null
         var addContainerTriggered = false
         val item = LauncherItemState(
@@ -138,7 +138,9 @@ class EditGridItemDialogTest {
             }
         }
 
-        composeTestRule.onNodeWithText(context.getString(R.string.home_container_edit_scroll_orientation)).assertExists()
+        composeTestRule.onNodeWithText(
+            context.getString(R.string.home_container_edit_scroll_orientation)
+        ).assertExists()
         composeTestRule.onNodeWithText(context.getString(R.string.home_container_edit_horizontal)).performClick()
         assertEquals(ScrollOrientation.HORIZONTAL, orientationTriggered)
 
