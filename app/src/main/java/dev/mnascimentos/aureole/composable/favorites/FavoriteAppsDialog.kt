@@ -66,9 +66,9 @@ fun FavoriteAppsDialog(
     }
 
     val titleText = when (currentMode) {
-        FavoriteAppsScreenMode.MAIN -> stringResource(R.string.favorites_dialog_title)
-        FavoriteAppsScreenMode.EDIT_SHORTCUTS -> stringResource(R.string.favorites_edit_shortcuts)
-        FavoriteAppsScreenMode.APPEARANCE -> stringResource(R.string.edit_container_appearance)
+        FavoriteAppsScreenMode.MAIN -> stringResource(R.string.home_favorites_dialog_title)
+        FavoriteAppsScreenMode.EDIT_SHORTCUTS -> stringResource(R.string.home_favorites_edit_shortcuts)
+        FavoriteAppsScreenMode.APPEARANCE -> stringResource(R.string.home_container_edit_appearance)
     }
 
     AureoleEditOverlay(
@@ -128,7 +128,7 @@ private fun FavoriteAppsPreviewContent(previewFavoriteApps: List<AppInfo>) {
     ) {
         if (previewFavoriteApps.isEmpty()) {
             AureoleText(
-                text = stringResource(R.string.favorites_none_selected),
+                text = stringResource(R.string.home_favorites_none_selected),
                 color = AureoleDS.colors.onSurfaceMedium,
                 modifier = Modifier.padding(AureoleDS.dimens.medium),
                 format = AureoleTextFormatParams(style = AureoleDS.typography.bodyMedium)

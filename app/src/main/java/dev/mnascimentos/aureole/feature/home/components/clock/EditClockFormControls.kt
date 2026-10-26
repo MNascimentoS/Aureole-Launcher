@@ -33,14 +33,14 @@ internal fun EditClockBackgroundSection(
     uiState: MainUiState,
     actions: HomeScreenActions
 ) {
-    EditClockSectionHeader(title = stringResource(R.string.clock_card_background))
+    EditClockSectionHeader(title = stringResource(R.string.home_clock_card_background))
     Row(
         modifier = Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         AureoleText(
-            text = stringResource(R.string.clock_show_background),
+            text = stringResource(R.string.home_clock_show_background),
             color = AureoleDS.colors.onSurfaceHigh,
             format = AureoleTextFormatParams(style = AureoleDS.typography.bodyMedium)
         )
@@ -53,7 +53,7 @@ internal fun EditClockBackgroundSection(
     if (uiState.isClockBackgroundEnabled) {
         Spacer(modifier = Modifier.height(AureoleDS.dimens.xSmall))
         AureoleText(
-            text = stringResource(R.string.clock_custom_bg_color),
+            text = stringResource(R.string.home_clock_custom_bg_color),
             color = AureoleDS.colors.onSurfaceMedium,
             modifier = Modifier.padding(bottom = AureoleDS.dimens.xxSmall),
             format = AureoleTextFormatParams(style = AureoleDS.typography.bodySmall)
@@ -93,7 +93,7 @@ internal fun EditClockActionButtons(
             }
         ) {
             AureoleText(
-                text = stringResource(R.string.clock_reset_defaults),
+                text = stringResource(R.string.home_clock_reset_defaults),
                 color = AureoleDS.colors.error
             )
         }
@@ -105,7 +105,7 @@ internal fun EditClockActionButtons(
                 contentColor = AureoleDS.colors.surface
             )
         ) {
-            AureoleText(stringResource(R.string.edit_container_save), color = AureoleDS.colors.surface)
+            AureoleText(stringResource(R.string.home_container_edit_save), color = AureoleDS.colors.surface)
         }
     }
 }

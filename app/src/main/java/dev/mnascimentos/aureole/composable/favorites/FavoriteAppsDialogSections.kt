@@ -52,7 +52,9 @@ internal fun FavoriteAppsBottomBar(
         onClick = if (isMain) onClose else onBack,
         modifier = Modifier.fillMaxWidth()
     ) {
-        AureoleText(if (isMain) stringResource(R.string.favorites_done) else stringResource(R.string.favorites_back))
+        AureoleText(
+            if (isMain) stringResource(R.string.home_favorites_done) else stringResource(R.string.home_favorites_back)
+        )
     }
 }
 
@@ -116,13 +118,13 @@ private fun MainFavoritesEditShortcutsRow(onClick: () -> Unit) {
         Spacer(modifier = Modifier.width(AureoleDS.dimens.medium))
         Column(modifier = Modifier.weight(1f)) {
             Text(
-                text = stringResource(R.string.favorites_edit_shortcuts),
+                text = stringResource(R.string.home_favorites_edit_shortcuts),
                 style = AureoleDS.typography.titleMedium,
                 fontWeight = FontWeight.Bold,
                 color = AureoleDS.colors.onSurfaceHigh
             )
             Text(
-                text = stringResource(R.string.favorites_manage_apps_order),
+                text = stringResource(R.string.home_favorites_manage_apps_order),
                 style = AureoleDS.typography.bodySmall,
                 color = AureoleDS.colors.onSurfaceMedium
             )
@@ -151,13 +153,13 @@ private fun MainFavoritesAppearanceRow(onClick: () -> Unit) {
         Spacer(modifier = Modifier.width(AureoleDS.dimens.medium))
         Column(modifier = Modifier.weight(1f)) {
             Text(
-                text = stringResource(R.string.edit_container_appearance),
+                text = stringResource(R.string.home_container_edit_appearance),
                 style = AureoleDS.typography.titleMedium,
                 fontWeight = FontWeight.Bold,
                 color = AureoleDS.colors.onSurfaceHigh
             )
             Text(
-                text = stringResource(R.string.favorites_appearance_desc),
+                text = stringResource(R.string.home_favorites_appearance_desc),
                 style = AureoleDS.typography.bodySmall,
                 color = AureoleDS.colors.onSurfaceMedium
             )

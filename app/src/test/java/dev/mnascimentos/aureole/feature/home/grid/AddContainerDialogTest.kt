@@ -33,13 +33,13 @@ class AddContainerDialogTest {
             }
         }
 
-        composeTestRule.onNodeWithText(context.getString(R.string.add_container_title)).assertExists()
-        composeTestRule.onNodeWithText(context.getString(R.string.add_container_clock)).assertExists()
-        composeTestRule.onNodeWithText(context.getString(R.string.add_container_apps_list)).assertExists()
-        composeTestRule.onNodeWithText(context.getString(R.string.add_container_shortcuts_container)).assertExists()
-        composeTestRule.onNodeWithText(context.getString(R.string.add_container_widget_list)).assertExists()
-        composeTestRule.onNodeWithText(context.getString(R.string.add_container_quick_button)).assertExists()
-        composeTestRule.onNodeWithText(context.getString(R.string.add_container_scroll_view)).assertExists()
+        composeTestRule.onNodeWithText(context.getString(R.string.home_container_add_title)).assertExists()
+        composeTestRule.onNodeWithText(context.getString(R.string.home_container_add_clock)).assertExists()
+        composeTestRule.onNodeWithText(context.getString(R.string.home_container_add_apps_list)).assertExists()
+        composeTestRule.onNodeWithText(context.getString(R.string.home_container_add_shortcuts_container)).assertExists()
+        composeTestRule.onNodeWithText(context.getString(R.string.home_container_add_widget_list)).assertExists()
+        composeTestRule.onNodeWithText(context.getString(R.string.home_container_add_quick_button)).assertExists()
+        composeTestRule.onNodeWithText(context.getString(R.string.home_container_add_scroll_view)).assertExists()
     }
 
     @Test
@@ -55,8 +55,8 @@ class AddContainerDialogTest {
             }
         }
 
-        composeTestRule.onNodeWithText(context.getString(R.string.add_container_nested_title)).assertExists()
-        composeTestRule.onNodeWithText(context.getString(R.string.add_container_scroll_view)).assertDoesNotExist()
+        composeTestRule.onNodeWithText(context.getString(R.string.home_container_add_nested_title)).assertExists()
+        composeTestRule.onNodeWithText(context.getString(R.string.home_container_add_scroll_view)).assertDoesNotExist()
     }
 
     @Test
@@ -74,7 +74,7 @@ class AddContainerDialogTest {
             }
         }
 
-        composeTestRule.onNodeWithText(context.getString(R.string.add_container_apps_list)).performClick()
+        composeTestRule.onNodeWithText(context.getString(R.string.home_container_add_apps_list)).performClick()
 
         assertEquals(LauncherItemType.APPS_LIST, selectedType)
         assertTrue(dismissed)

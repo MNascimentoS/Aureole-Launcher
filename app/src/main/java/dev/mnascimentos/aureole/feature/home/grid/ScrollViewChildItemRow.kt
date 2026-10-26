@@ -32,6 +32,8 @@ import dev.mnascimentos.aureole.core.designsystem.icons.HorizontalContainer
 import dev.mnascimentos.aureole.core.designsystem.icons.MenuIcon
 import dev.mnascimentos.aureole.core.designsystem.icons.VerticalContainer
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
+import androidx.compose.ui.res.stringResource
+import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.feature.home.grid.model.ScrollViewChildParams
 import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
 
@@ -301,14 +303,15 @@ private fun ChildTypeIcon(type: LauncherItemType?) {
     }
 }
 
+@Composable
 private fun getScrollViewChildTitle(type: LauncherItemType?): String {
     return when (type) {
-        LauncherItemType.CLOCK -> "Relógio"
-        LauncherItemType.APPS_LIST -> "Lista de Aplicativos"
-        LauncherItemType.SHORTCUTS_CONTAINER -> "Container"
-        LauncherItemType.WIDGET_LIST -> "Grupo de Widgets"
-        LauncherItemType.SCROLL_VIEW -> "Container Scroll View"
-        LauncherItemType.QUICK_BUTTON -> "Botão Rápido"
-        else -> "Componente"
+        LauncherItemType.CLOCK -> stringResource(R.string.home_container_add_clock)
+        LauncherItemType.APPS_LIST -> stringResource(R.string.home_container_add_apps_list)
+        LauncherItemType.SHORTCUTS_CONTAINER -> stringResource(R.string.home_grid_item_container)
+        LauncherItemType.WIDGET_LIST -> stringResource(R.string.home_grid_item_widget_group)
+        LauncherItemType.SCROLL_VIEW -> stringResource(R.string.home_container_add_scroll_view)
+        LauncherItemType.QUICK_BUTTON -> stringResource(R.string.home_container_add_quick_button)
+        else -> stringResource(R.string.home_grid_scroll_component)
     }
 }

@@ -31,7 +31,9 @@ import androidx.compose.ui.input.nestedscroll.NestedScrollSource
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.rememberNestedScrollInteropConnection
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.core.data.model.LauncherItemType
 import dev.mnascimentos.aureole.core.data.model.ScrollOrientation
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
@@ -252,7 +254,7 @@ private fun ScrollViewAddComponentButton(parentId: String, actions: HomeScreenAc
             )
             Spacer(modifier = Modifier.width(AureoleDS.dimens.xxSmall))
             AureoleText(
-                text = "Componente",
+                text = stringResource(R.string.home_grid_scroll_component),
                 color = AureoleDS.colors.onSurfaceHigh,
                 format = AureoleTextFormatParams(
                     style = AureoleDS.typography.labelMedium,

@@ -66,7 +66,7 @@ fun QuickButtonAppearanceBottomSheet(
         modifier = modifier,
         params = AureoleEditOverlayParams(
             config = AureoleEditOverlayConfig(
-                title = stringResource(R.string.qb_appearance_title),
+                title = stringResource(R.string.home_quickbutton_appearance_title),
                 onSettingsClick = { actions.onSettingsClick() },
                 hazeState = if (uiState.isHazeEnabled) hazeState else null,
                 isVisible = isVisible,

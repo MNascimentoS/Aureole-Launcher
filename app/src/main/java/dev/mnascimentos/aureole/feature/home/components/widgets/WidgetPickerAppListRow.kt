@@ -32,6 +32,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.pluralStringResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -98,7 +99,7 @@ internal fun AppGroupHeader(
             )
             Text(
                 text = pluralStringResource(
-                    R.plurals.widget_count,
+                    R.plurals.home_widget_count,
                     group.availableWidgets.size,
                     group.availableWidgets.size
                 ),
@@ -153,7 +154,7 @@ internal fun WidgetPreviewCard(
             overflow = TextOverflow.Ellipsis
         )
         Text(
-            text = "About the widget here",
+            text = stringResource(R.string.home_widgets_about_placeholder),
             style = AureoleDS.typography.bodyMedium,
             color = AureoleDS.colors.onSurfaceMedium,
             textAlign = TextAlign.Center,
@@ -214,7 +215,7 @@ private fun WidgetPreviewContent(
         )
     } else {
         Text(
-            text = "Widget",
+            text = stringResource(R.string.home_widgets_default_title),
             style = AureoleDS.typography.titleLarge,
             fontWeight = FontWeight.Bold,
             color = Color.White,

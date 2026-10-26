@@ -66,7 +66,7 @@ internal fun EditContainerOrientationSelector(
             .padding(vertical = AureoleDS.dimens.xSmall)
     ) {
         AureoleText(
-            text = stringResource(R.string.edit_container_orientation),
+            text = stringResource(R.string.home_container_edit_orientation),
             color = AureoleDS.colors.onSurfaceHigh,
             format = AureoleTextFormatParams(style = AureoleDS.typography.labelMedium, fontWeight = FontWeight.Bold)
         )
@@ -124,11 +124,11 @@ private fun OrientationOptionButton(
 @Composable
 @ReadOnlyComposable
 private fun getPositionOptionsMap(): List<Pair<String, String>> = listOf(
-    "Space Between" to stringResource(R.string.edit_container_space_between),
-    "Space Evenly" to stringResource(R.string.edit_container_space_evenly),
-    "Top" to stringResource(R.string.edit_container_align_start),
-    "Center" to stringResource(R.string.edit_container_align_center),
-    "Bottom" to stringResource(R.string.edit_container_align_end)
+    "Space Between" to stringResource(R.string.home_container_edit_space_between),
+    "Space Evenly" to stringResource(R.string.home_container_edit_space_evenly),
+    "Top" to stringResource(R.string.home_container_edit_align_start),
+    "Center" to stringResource(R.string.home_container_edit_align_center),
+    "Bottom" to stringResource(R.string.home_container_edit_align_end)
 )
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -143,7 +143,7 @@ internal fun EditContainerAlignmentSelector(
 
     Column {
         AureoleText(
-            text = stringResource(R.string.edit_container_item_alignment),
+            text = stringResource(R.string.home_container_edit_item_alignment),
             color = AureoleDS.colors.onSurfaceHigh,
             modifier = Modifier.padding(bottom = AureoleDS.dimens.xxSmall),
             format = AureoleTextFormatParams(style = AureoleDS.typography.labelMedium, fontWeight = FontWeight.Bold)
@@ -264,7 +264,7 @@ internal fun EditContainerOptionsExpandableSection(
             verticalAlignment = Alignment.CenterVertically
         ) {
             AureoleText(
-                text = stringResource(R.string.edit_container_appearance_behavior_options),
+                text = stringResource(R.string.home_container_edit_appearance_behavior_options),
                 color = AureoleDS.colors.onSurfaceHigh,
                 modifier = Modifier.weight(1f),
                 format = AureoleTextFormatParams(
@@ -320,31 +320,31 @@ private fun EditContainerSwitchesColumn(
         )
 
         SettingSwitchRow(
-            label = stringResource(R.string.edit_container_bg_label),
+            label = stringResource(R.string.home_container_edit_bg_label),
             checked = formState.isBackgroundEnabled,
             onCheckedChange = callbacks.onBgChange
         )
 
         SettingSwitchRow(
-            label = stringResource(R.string.edit_container_expand_cell_label),
+            label = stringResource(R.string.home_container_edit_expand_cell_label),
             checked = formState.isExpandCell,
             onCheckedChange = callbacks.onExpandChange
         )
 
         SettingSwitchRow(
-            label = stringResource(R.string.edit_container_create_folder_btn),
+            label = stringResource(R.string.home_container_edit_create_folder_btn),
             checked = formState.showAddFolderButton,
             onCheckedChange = callbacks.onAddFolderBtnChange
         )
 
         SettingSwitchRow(
-            label = stringResource(R.string.edit_container_folder_labels),
+            label = stringResource(R.string.home_container_edit_folder_labels),
             checked = formState.showFolderLabels,
             onCheckedChange = callbacks.onFolderLabelsChange
         )
 
         SettingSwitchRow(
-            label = stringResource(R.string.edit_container_grid_folder_mode),
+            label = stringResource(R.string.home_container_edit_grid_folder_mode),
             checked = formState.isGridFolderEnabled,
             onCheckedChange = callbacks.onGridFolderChange
         )

@@ -110,7 +110,7 @@ private fun FolderDialogContent(
 ) {
     if (appsInFolder.isEmpty()) {
         AureoleText(
-            text = stringResource(R.string.folder_is_empty),
+            text = stringResource(R.string.home_folder_is_empty),
             color = AureoleDS.colors.onSurfaceMedium,
             modifier = Modifier.padding(vertical = AureoleDS.dimens.xLarge),
             format = AureoleTextFormatParams(style = AureoleDS.typography.bodyMedium)

@@ -38,8 +38,8 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.input.pointer.PointerEventPass
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.rememberNestedScrollInteropConnection
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
+import dev.mnascimentos.aureole.composable.widgets.AddWidgetButton
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
@@ -58,10 +58,6 @@ import timber.log.Timber
 private const val COLOR_ANIMATION_DURATION_MS = 150
 private const val LONG_PRESS_MARGIN_MS = 50L
 private const val MIN_LONG_PRESS_TIMEOUT_MS = 200L
-
-private object IndicatorMetrics {
-    val IndicatorHeight = 5.dp
-}
 
 @Composable
 fun StackedWidgetSection(
@@ -187,7 +183,7 @@ fun WidgetPositionIndicatorBar(
             Box(
                 modifier = Modifier
                     .padding(horizontal = AureoleDS.dimens.minimal)
-                    .height(IndicatorMetrics.IndicatorHeight)
+                    .height(AureoleDS.dimens.radiusSmall)
                     .width(animatedWidth)
                     .clip(CircleShape)
                     .background(animatedColor)

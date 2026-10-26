@@ -8,6 +8,9 @@ import dev.mnascimentos.aureole.core.data.model.LauncherItemType
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
 import org.junit.Rule
+import androidx.test.core.app.ApplicationProvider
+import android.content.Context
+import dev.mnascimentos.aureole.R
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
@@ -35,6 +38,7 @@ class EditContainerDialogSectionsTest {
 
     @Test
     fun `when rendering EditDialogDeleteRow, should display text remover componente`() {
+       val context = ApplicationProvider.getApplicationContext<Context>()
         composeTestRule.setContent {
             AureoleLauncherTheme {
                 EditDialogDeleteRow(
@@ -45,11 +49,12 @@ class EditContainerDialogSectionsTest {
             }
         }
 
-        composeTestRule.onNodeWithText("Remover Componente").assertIsDisplayed()
+        composeTestRule.onNodeWithText(context.getString(R.string.home_grid_remove_component)).assertIsDisplayed()
     }
 
     @Test
     fun `when rendering EditDialogTypeActionSection for CLOCK, should display personalize clock action`() {
+       val context = ApplicationProvider.getApplicationContext<Context>()
         composeTestRule.setContent {
             AureoleLauncherTheme {
                 EditDialogTypeActionSection(
@@ -67,11 +72,12 @@ class EditContainerDialogSectionsTest {
             }
         }
 
-        composeTestRule.onNodeWithText("Personalizar Relógio").assertIsDisplayed()
+        composeTestRule.onNodeWithText(context.getString(R.string.home_grid_customize_clock)).assertIsDisplayed()
     }
 
     @Test
     fun `when rendering EditDialogScrollViewSection, should display children section header`() {
+       val context = ApplicationProvider.getApplicationContext<Context>()
         composeTestRule.setContent {
             AureoleLauncherTheme {
                 EditDialogScrollViewSection(
@@ -89,6 +95,6 @@ class EditContainerDialogSectionsTest {
             }
         }
 
-        composeTestRule.onNodeWithText("Componentes Filhos (0)").assertIsDisplayed()
+        composeTestRule.onNodeWithText(context.getString(R.string.home_container_edit_child_components, 0)).assertIsDisplayed()
     }
 }

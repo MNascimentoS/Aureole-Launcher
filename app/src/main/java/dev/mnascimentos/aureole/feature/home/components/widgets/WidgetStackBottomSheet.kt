@@ -97,7 +97,7 @@ private fun WidgetStackMenuItems(
     ) {
         if (widgetAppPackage != null) {
             AureolePopupMenuItem(
-                title = stringResource(R.string.widget_app_settings),
+                title = stringResource(R.string.home_widget_app_settings),
                 params = AureolePopupMenuItemParams(
                     icon = { m -> AureoleDS.icons.Info(m) }
                 ),
@@ -109,7 +109,7 @@ private fun WidgetStackMenuItems(
         }
 
         AureolePopupMenuItem(
-            title = stringResource(R.string.widget_resize_group),
+            title = stringResource(R.string.home_widget_resize_group),
             params = AureolePopupMenuItemParams(
                 icon = { m -> AureoleDS.icons.Edit(m) }
             ),
@@ -120,7 +120,7 @@ private fun WidgetStackMenuItems(
         )
 
         AureolePopupMenuItem(
-            title = stringResource(R.string.widget_toggle_indicator),
+            title = stringResource(R.string.home_widget_toggle_indicator),
             params = AureolePopupMenuItemParams(
                 customIcon = {
                     AureoleDS.icons.Dots(
@@ -136,7 +136,7 @@ private fun WidgetStackMenuItems(
         )
 
         AureolePopupMenuItem(
-            title = stringResource(R.string.widget_remove),
+            title = stringResource(R.string.home_widget_remove),
             params = AureolePopupMenuItemParams(
                 icon = { m -> AureoleDS.icons.Delete(m) },
                 isDestructive = false
@@ -178,7 +178,7 @@ private fun WidgetStackBottomSheetHeader(context: Context) {
             Spacer(modifier = Modifier.width(AureoleDS.dimens.smallCompact))
 
             AureoleText(
-                text = stringResource(R.string.widget_group),
+                text = stringResource(R.string.home_widget_group),
                 color = AureoleDS.colors.onSurfaceHigh,
                 modifier = Modifier.weight(1f),
                 format = AureoleTextFormatParams(

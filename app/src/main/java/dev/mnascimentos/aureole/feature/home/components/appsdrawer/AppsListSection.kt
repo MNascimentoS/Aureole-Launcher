@@ -125,7 +125,7 @@ fun AppsListDrawer(
                         onExpandedChange = { isSearchExpanded = it }
                     ),
                     params = AureoleFloatingSearchBarParams(
-                        placeholder = stringResource(R.string.app_search_placeholder),
+                        placeholder = stringResource(R.string.home_apps_search_placeholder),
                         hazeConfig = AureoleSearchBarHazeConfig(
                             state = hazeState,
                             isEnabled = uiState.isHazeEnabled,

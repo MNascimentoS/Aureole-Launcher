@@ -1,4 +1,4 @@
-package dev.mnascimentos.aureole.feature.home.components.appsdrawer.appitem
+package dev.mnascimentos.aureole.composable.appitem
 
 import android.content.ComponentName
 import androidx.compose.foundation.clickable
@@ -99,7 +99,7 @@ internal fun AppPopupHorizontalActionsRow(
         if (actions.onAppInfoClick != null) {
             AppPopupButton(
                 icon = { m, t -> AureoleDS.icons.Info(m, t) },
-                label = stringResource(R.string.edit_container_app_label),
+                label = stringResource(R.string.home_container_edit_app_label),
                 onClick = {
                     actions.onAppInfoClick.invoke(app)
                     onDismiss()
@@ -111,9 +111,9 @@ internal fun AppPopupHorizontalActionsRow(
             AppPopupButton(
                 icon = { m, t -> AureoleDS.icons.Delete(m, t) },
                 label = if (isFavorite) {
-                    stringResource(R.string.widget_remove)
+                    stringResource(R.string.home_widget_remove)
                 } else {
-                    stringResource(R.string.common_create)
+                    stringResource(R.string.core_common_create)
                 },
                 isDestructive = isFavorite,
                 onClick = {
@@ -126,7 +126,7 @@ internal fun AppPopupHorizontalActionsRow(
         if (actions.onEditFavoritesClick != null) {
             AppPopupButton(
                 icon = { m, t -> AureoleDS.icons.Settings(m, t) },
-                label = stringResource(R.string.settings_title),
+                label = stringResource(R.string.settings_root_header),
                 onClick = {
                     actions.onEditFavoritesClick.invoke()
                     onDismiss()

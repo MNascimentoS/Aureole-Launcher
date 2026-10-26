@@ -1,4 +1,4 @@
-package dev.mnascimentos.aureole.feature.home.components.clock
+package dev.mnascimentos.aureole.composable.clock
 
 import android.view.View
 import android.widget.TextClock
@@ -20,6 +20,7 @@ import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
+import dev.mnascimentos.aureole.feature.home.components.clock.ClockHeaderUtils
 import dev.mnascimentos.aureole.feature.home.components.clock.model.ClockHeaderContentParams
 import dev.mnascimentos.aureole.feature.home.components.clock.model.ClockTimeDisplayParams
 

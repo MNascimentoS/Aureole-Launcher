@@ -41,7 +41,7 @@ fun CustomizeBottomSheet(
     modifier: Modifier = Modifier
 ) {
     SettingsBottomSheet(
-        title = stringResource(R.string.customize_title),
+        title = stringResource(R.string.home_customize_title),
         onDismissRequest = onDismissRequest,
         modifier = modifier
     ) {
@@ -72,7 +72,7 @@ private fun CustomizeClockOption(
     onDismissRequest: () -> Unit
 ) {
     CustomizeOptionItem(
-        title = stringResource(R.string.customize_add_clock),
+        title = stringResource(R.string.home_customize_add_clock),
         icon = {
             AureoleDS.icons.Add(
                 modifier = Modifier.size(AureoleDS.dimens.iconLarge),
@@ -92,7 +92,7 @@ private fun CustomizeContainerOption(
     onDismissRequest: () -> Unit
 ) {
     CustomizeOptionItem(
-        title = stringResource(R.string.customize_add_container),
+        title = stringResource(R.string.home_customize_add_container),
         icon = {
             AureoleDS.icons.Star(
                 modifier = Modifier.size(AureoleDS.dimens.iconLarge),
@@ -112,7 +112,7 @@ private fun CustomizeScrollViewOption(
     onDismissRequest: () -> Unit
 ) {
     CustomizeOptionItem(
-        title = stringResource(R.string.customize_add_scrollview),
+        title = stringResource(R.string.home_customize_add_scrollview),
         icon = {
             AureoleDS.icons.VerticalContainer(
                 modifier = Modifier.size(AureoleDS.dimens.iconLarge),
@@ -132,7 +132,7 @@ private fun CustomizeQuickButtonOption(
     onDismissRequest: () -> Unit
 ) {
     CustomizeOptionItem(
-        title = stringResource(R.string.customize_add_quick_button),
+        title = stringResource(R.string.home_customize_add_quick_button),
         icon = {
             AureoleDS.icons.Click(
                 modifier = Modifier.size(AureoleDS.dimens.iconLarge),
@@ -152,7 +152,7 @@ private fun CustomizeWidgetGroupOption(
     onDismissRequest: () -> Unit
 ) {
     CustomizeOptionItem(
-        title = stringResource(R.string.customize_add_widget_group),
+        title = stringResource(R.string.home_customize_add_widget_group),
         icon = {
             AureoleDS.icons.MultipleView(
                 modifier = Modifier.size(AureoleDS.dimens.iconLarge),
@@ -173,7 +173,7 @@ private fun CustomizeSystemOptions(
 ) {
     Column {
         CustomizeOptionItem(
-            title = stringResource(R.string.customize_adjust_layout),
+            title = stringResource(R.string.home_customize_adjust_layout),
             icon = {
                 AureoleDS.icons.Layout(
                     modifier = Modifier.size(AureoleDS.dimens.iconLarge),
@@ -186,7 +186,7 @@ private fun CustomizeSystemOptions(
             }
         )
         CustomizeOptionItem(
-            title = stringResource(R.string.customize_set_background),
+            title = stringResource(R.string.home_customize_set_background),
             icon = {
                 AureoleDS.icons.Placeholder(
                     modifier = Modifier.size(AureoleDS.dimens.iconLarge),
@@ -199,7 +199,7 @@ private fun CustomizeSystemOptions(
             }
         )
         CustomizeOptionItem(
-            title = stringResource(R.string.customize_aureole_settings),
+            title = stringResource(R.string.home_customize_aureole_settings),
             icon = {
                 AureoleDS.icons.Icon(
                     modifier = Modifier.size(AureoleDS.dimens.iconLarge),

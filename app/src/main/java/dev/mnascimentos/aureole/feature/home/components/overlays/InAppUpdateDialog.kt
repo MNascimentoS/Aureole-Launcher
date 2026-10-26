@@ -39,10 +39,10 @@ fun UpdateAvailableDialog(
 ) {
     UpdateDialogContent(
         UpdateDialogContentParams(
-            title = stringResource(R.string.update_new_available),
-            body = stringResource(R.string.update_new_body),
-            confirmLabel = stringResource(R.string.update_now),
-            dismissLabel = stringResource(R.string.update_later),
+            title = stringResource(R.string.settings_advanced_update_new_available),
+            body = stringResource(R.string.settings_advanced_update_new_body),
+            confirmLabel = stringResource(R.string.settings_advanced_update_now),
+            dismissLabel = stringResource(R.string.settings_advanced_update_later),
             onConfirm = onConfirmUpdate,
             onDismiss = onDismiss
         )
@@ -59,10 +59,10 @@ fun UpdateDownloadedDialog(
 ) {
     UpdateDialogContent(
         UpdateDialogContentParams(
-            title = stringResource(R.string.update_ready),
-            body = stringResource(R.string.update_ready_body),
-            confirmLabel = stringResource(R.string.update_restart_now),
-            dismissLabel = stringResource(R.string.update_restart_later),
+            title = stringResource(R.string.settings_advanced_update_ready),
+            body = stringResource(R.string.settings_advanced_update_ready_body),
+            confirmLabel = stringResource(R.string.settings_advanced_update_restart_now),
+            dismissLabel = stringResource(R.string.settings_advanced_update_restart_later),
             onConfirm = onConfirmRestart,
             onDismiss = onDismiss
         )

@@ -214,7 +214,7 @@ class GridItemContentTest {
         }
 
         val unconfiguredText = ApplicationProvider.getApplicationContext<Context>()
-            .getString(R.string.grid_widget_unconfigured)
+            .getString(R.string.home_grid_widget_unconfigured)
         composeTestRule.onNodeWithText(unconfiguredText).assertIsDisplayed()
     }
 
@@ -233,7 +233,7 @@ class GridItemContentTest {
         }
 
         val unconfiguredText = ApplicationProvider.getApplicationContext<Context>()
-            .getString(R.string.grid_widget_unconfigured)
+            .getString(R.string.home_grid_widget_unconfigured)
         composeTestRule.onNodeWithText(unconfiguredText).assertIsDisplayed()
     }
 

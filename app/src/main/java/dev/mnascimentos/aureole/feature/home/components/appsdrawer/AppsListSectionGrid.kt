@@ -111,7 +111,7 @@ private fun LazyListScope.settingsListItem(actions: HomeScreenActions) {
             Spacer(modifier = Modifier.width(AureoleDS.dimens.medium))
 
             AureoleText(
-                text = stringResource(R.string.customize_aureole_settings),
+                text = stringResource(R.string.home_customize_aureole_settings),
                 color = AureoleDS.colors.onSurfaceMedium,
                 format = AureoleTextFormatParams(style = AureoleDS.typography.bodyLarge)
             )

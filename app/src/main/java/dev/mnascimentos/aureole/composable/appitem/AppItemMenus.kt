@@ -1,4 +1,4 @@
-package dev.mnascimentos.aureole.feature.home.components.appsdrawer.appitem
+package dev.mnascimentos.aureole.composable.appitem
 
 import android.content.ComponentName
 import android.content.Context
@@ -163,7 +163,7 @@ internal fun AppActionSheetContent(
         AppShortcutsMenu(shortcuts = shortcuts, onDismiss = onDismiss, context = context)
 
         AureolePopupMenuItem(
-            title = stringResource(R.string.app_menu_info),
+            title = stringResource(R.string.home_app_menu_info),
             params = AureolePopupMenuItemParams(
                 icon = { m -> AureoleDS.icons.Info(m) }
             ),
@@ -178,7 +178,7 @@ internal fun AppActionSheetContent(
         )
 
         AureolePopupMenuItem(
-            title = stringResource(R.string.app_menu_uninstall),
+            title = stringResource(R.string.home_app_menu_uninstall),
             params = AureolePopupMenuItemParams(
                 icon = { m -> AureoleDS.icons.Delete(m) },
                 isDestructive = false
@@ -213,7 +213,7 @@ private fun AppActionSheetContainerItems(
 ) {
     if (params.onOpenContainerSettings != null) {
         AureolePopupMenuItem(
-            title = stringResource(R.string.folder_container_settings),
+            title = stringResource(R.string.home_folder_container_settings),
             params = AureolePopupMenuItemParams(
                 icon = { m -> AureoleDS.icons.Settings(m) }
             ),
@@ -232,7 +232,7 @@ private fun AppActionSheetFolderItems(
 ) {
     if (params.onRemoveFromFolder != null) {
         AureolePopupMenuItem(
-            title = stringResource(R.string.app_menu_remove_from_folder),
+            title = stringResource(R.string.home_app_menu_remove_from_folder),
             params = AureolePopupMenuItemParams(
                 icon = { m -> AureoleDS.icons.Delete(m) },
                 isDestructive = false
@@ -246,7 +246,7 @@ private fun AppActionSheetFolderItems(
 
     if (params.onOpenFolderSettings != null) {
         AureolePopupMenuItem(
-            title = stringResource(R.string.folder_settings),
+            title = stringResource(R.string.home_folder_settings),
             params = AureolePopupMenuItemParams(
                 customIcon = {
                     AureoleDS.icons.Folder(
@@ -266,7 +266,7 @@ private fun AppActionSheetFolderItems(
 
     if (params.actions.onEditFavoritesClick != null) {
         AureolePopupMenuItem(
-            title = stringResource(R.string.app_menu_quick_panel_settings),
+            title = stringResource(R.string.home_app_menu_quick_panel_settings),
             params = AureolePopupMenuItemParams(
                 icon = { m -> AureoleDS.icons.Settings(m) }
             ),
@@ -286,9 +286,9 @@ private fun ToggleFavoriteMenuItem(
     if (params.actions.onToggleFavorite != null) {
         AureolePopupMenuItem(
             title = if (params.isFavorite) {
-                stringResource(R.string.app_menu_remove_from_favorites)
+                stringResource(R.string.home_app_menu_remove_from_favorites)
             } else {
-                stringResource(R.string.app_menu_add_to_favorites)
+                stringResource(R.string.home_app_menu_add_to_favorites)
             },
             params = AureolePopupMenuItemParams(
                 icon = { m -> AureoleDS.icons.Star(m) }

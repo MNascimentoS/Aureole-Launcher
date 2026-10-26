@@ -86,7 +86,7 @@ fun EditClockBottomSheet(
         modifier = modifier,
         params = AureoleEditOverlayParams(
             config = AureoleEditOverlayConfig(
-                title = stringResource(R.string.clock_customize_title),
+                title = stringResource(R.string.home_clock_customize_title),
                 onSettingsClick = { actions.onSettingsClick() },
                 hazeState = effectiveHazeState,
                 isVisible = isVisible,

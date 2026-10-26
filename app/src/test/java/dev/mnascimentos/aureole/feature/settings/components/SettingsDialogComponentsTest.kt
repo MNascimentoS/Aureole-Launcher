@@ -8,6 +8,9 @@ import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Rule
+import androidx.test.core.app.ApplicationProvider
+import android.content.Context
+import dev.mnascimentos.aureole.R
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
@@ -20,6 +23,7 @@ class SettingsDialogComponentsTest {
 
     @Test
     fun `when rendering SettingsButtonPositionDialog, should select option and handle cancel`() {
+       val context = ApplicationProvider.getApplicationContext<Context>()
         var selectedPosition: String? = null
         var dismissCalled = false
 
@@ -33,16 +37,17 @@ class SettingsDialogComponentsTest {
             }
         }
 
-        composeTestRule.onNodeWithText("Posição do Botão de Configurações").assertIsDisplayed()
+        composeTestRule.onNodeWithText(context.getString(R.string.settings_dialogs_settings_button_position_title)).assertIsDisplayed()
         composeTestRule.onNodeWithText("Esquerda (Left)").performClick()
         assertEquals("Left", selectedPosition)
 
-        composeTestRule.onNodeWithText("Cancelar").performClick()
+        composeTestRule.onNodeWithText(context.getString(R.string.core_common_cancel)).performClick()
         assertTrue(dismissCalled)
     }
 
     @Test
     fun `when rendering SearchIconPositionDialog, should select option and handle cancel`() {
+       val context = ApplicationProvider.getApplicationContext<Context>()
         var selectedPosition: String? = null
         var dismissCalled = false
 
@@ -56,16 +61,17 @@ class SettingsDialogComponentsTest {
             }
         }
 
-        composeTestRule.onNodeWithText("Posição do Ícone de Busca").assertIsDisplayed()
+        composeTestRule.onNodeWithText(context.getString(R.string.settings_dialogs_search_icon_position_title)).assertIsDisplayed()
         composeTestRule.onNodeWithText("Direita (Right)").performClick()
         assertEquals("Right", selectedPosition)
 
-        composeTestRule.onNodeWithText("Cancelar").performClick()
+        composeTestRule.onNodeWithText(context.getString(R.string.core_common_cancel)).performClick()
         assertTrue(dismissCalled)
     }
 
     @Test
     fun `when rendering ContainerPositionDialog, should select position option`() {
+       val context = ApplicationProvider.getApplicationContext<Context>()
         var selectedPosition: String? = null
         var dismissCalled = false
 
@@ -83,7 +89,7 @@ class SettingsDialogComponentsTest {
         composeTestRule.onNodeWithText("Superior (Top)").performClick()
         assertEquals("Top", selectedPosition)
 
-        composeTestRule.onNodeWithText("Cancelar").performClick()
+        composeTestRule.onNodeWithText(context.getString(R.string.core_common_cancel)).performClick()
         assertTrue(dismissCalled)
     }
 }

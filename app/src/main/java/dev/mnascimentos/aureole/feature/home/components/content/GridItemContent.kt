@@ -225,7 +225,11 @@ fun SingleAppWidgetContent(
 
 @SuppressLint("SetTextI18n")
 private fun createSingleWidgetView(context: Context, widgetId: Int, appWidgetHost: AppWidgetHost?): View {
-    if (appWidgetHost == null) return TextView(context).apply { text = context.getString(R.string.grid_widget_label) }
+    if (appWidgetHost == null) {
+        return TextView(
+            context
+        ).apply { text = context.getString(R.string.home_grid_widget_label) }
+    }
     val appWidgetManager = AppWidgetManager.getInstance(context)
     val appWidgetInfo = appWidgetManager.getAppWidgetInfo(widgetId)
     return if (appWidgetInfo != null) {
@@ -239,7 +243,7 @@ private fun createSingleWidgetView(context: Context, widgetId: Int, appWidgetHos
         appWidgetManager.updateAppWidgetOptions(widgetId, options)
         appWidgetHost.createView(context, widgetId, appWidgetInfo)
     } else {
-        TextView(context).apply { text = context.getString(R.string.grid_widget_label) }
+        TextView(context).apply { text = context.getString(R.string.home_grid_widget_label) }
     }
 }
 
@@ -264,7 +268,10 @@ private fun updateSingleWidgetView(view: View, widgetId: Int) {
 @Composable
 private fun UnconfiguredWidgetPlaceholder() {
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-        AureoleText(text = stringResource(R.string.grid_widget_unconfigured), color = AureoleDS.colors.onSurfaceHigh)
+        AureoleText(
+            text = stringResource(R.string.home_grid_widget_unconfigured),
+            color = AureoleDS.colors.onSurfaceHigh
+        )
     }
 }
 

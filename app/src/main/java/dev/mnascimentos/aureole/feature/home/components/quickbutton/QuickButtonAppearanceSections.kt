@@ -58,13 +58,13 @@ internal fun QuickButtonAppearanceSheetContent(
 ) {
     Column(modifier = Modifier.fillMaxWidth().verticalScroll(rememberScrollState())) {
         AppearanceColorRow(
-            title = stringResource(R.string.qb_bg_color),
+            title = stringResource(R.string.home_quickbutton_bg_color),
             icon = { m -> AureoleDS.icons.ColorFill(m) },
             colorValue = Color(activeModel.appearance.backgroundColor),
             onClick = { onPickColor(QuickButtonColorPickerTarget.BACKGROUND) }
         )
         AppearanceToggleRow(
-            title = stringResource(R.string.qb_stroke),
+            title = stringResource(R.string.home_quickbutton_stroke),
             icon = { m -> AureoleDS.icons.Stroke(m) },
             isChecked = activeModel.appearance.strokeEnabled,
             onToggle = {
@@ -74,21 +74,21 @@ internal fun QuickButtonAppearanceSheetContent(
         )
         if (activeModel.appearance.strokeEnabled) {
             AppearanceColorRow(
-                title = stringResource(R.string.qb_stroke_color),
+                title = stringResource(R.string.home_quickbutton_stroke_color),
                 icon = { m -> AureoleDS.icons.StrokeColor(m) },
                 colorValue = Color(activeModel.appearance.strokeColor),
                 onClick = { onPickColor(QuickButtonColorPickerTarget.STROKE) }
             )
         }
         AppearanceIconRow(
-            title = stringResource(R.string.qb_icon),
+            title = stringResource(R.string.home_quickbutton_icon),
             icon = { m -> AureoleDS.icons.Smile(m) },
             selectedIcon = activeModel.appearance.icon,
             appInfo = activeAppInfo,
             onClick = onOpenIconPicker
         )
         AppearanceColorRow(
-            title = stringResource(dev.mnascimentos.aureole.R.string.qb_icon_color),
+            title = stringResource(dev.mnascimentos.aureole.R.string.home_quickbutton_icon_color),
             icon = { m -> AureoleDS.icons.SmileColor(m) },
             colorValue = Color(activeModel.appearance.iconColor),
             onClick = { onPickColor(QuickButtonColorPickerTarget.ICON) }
@@ -224,7 +224,7 @@ internal fun QuickButtonIconPickerDialog(
         onDismissRequest = onDismiss,
         title = {
             AureoleText(
-                text = stringResource(R.string.qb_select_icon),
+                text = stringResource(R.string.home_quickbutton_select_icon),
                 format = AureoleTextFormatParams(style = AureoleDS.typography.titleMedium, fontWeight = FontWeight.Bold)
             )
         },
@@ -234,7 +234,7 @@ internal fun QuickButtonIconPickerDialog(
             }
         },
         confirmButton = {
-            TextButton(onClick = onDismiss) { AureoleText(stringResource(R.string.common_cancel)) }
+            TextButton(onClick = onDismiss) { AureoleText(stringResource(R.string.core_common_cancel)) }
         }
     )
 }

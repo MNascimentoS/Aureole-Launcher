@@ -25,9 +25,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.composable.SettingsMenuItem
 import dev.mnascimentos.aureole.composable.SettingsMenuParams
 import dev.mnascimentos.aureole.composable.sheets.SettingsBottomSheet
@@ -56,7 +58,7 @@ fun SetBackgroundBottomSheet(
     modifier: Modifier = Modifier
 ) {
     SettingsBottomSheet(
-        title = "Set background",
+        title = stringResource(R.string.settings_appearance_set_background_title),
         onDismissRequest = onDismissRequest,
         modifier = modifier
     ) {
@@ -66,7 +68,7 @@ fun SetBackgroundBottomSheet(
         ) {
             SettingsMenuItem(
                 SettingsMenuParams(
-                    title = "Solid color",
+                    title = stringResource(R.string.settings_appearance_solid_color),
                     leadingContent = { AureoleDS.icons.StrokeColor() },
                     onClick = onSolidColorClick
                 )
@@ -74,7 +76,7 @@ fun SetBackgroundBottomSheet(
 
             SettingsMenuItem(
                 SettingsMenuParams(
-                    title = "Custom image",
+                    title = stringResource(R.string.settings_appearance_custom_image),
                     leadingContent = { AureoleDS.icons.Edit() },
                     onClick = onCustomImageClick
                 )
@@ -94,7 +96,7 @@ fun PickPaletteBottomSheet(
     val cleanSelectedName = selectedPaletteName.removeSuffix(" Light").trim()
 
     SettingsBottomSheet(
-        title = "Pick a palette",
+        title = stringResource(R.string.settings_appearance_pick_palette_title),
         onDismissRequest = onDismissRequest,
         modifier = modifier
     ) {
@@ -208,14 +210,14 @@ fun BlurBottomSheet(
     modifier: Modifier = Modifier
 ) {
     val options = listOf(
-        Triple(0.0f, false, "None"),
-        Triple(BLUR_LOW_OPACITY, true, "Low"),
-        Triple(BLUR_MED_OPACITY, true, "Medium"),
-        Triple(BLUR_MAX_OPACITY, true, "Max")
+        Triple(0.0f, false, stringResource(R.string.settings_appearance_blur_none)),
+        Triple(BLUR_LOW_OPACITY, true, stringResource(R.string.settings_appearance_blur_opacity_low)),
+        Triple(BLUR_MED_OPACITY, true, stringResource(R.string.settings_appearance_blur_opacity_medium)),
+        Triple(BLUR_MAX_OPACITY, true, stringResource(R.string.settings_appearance_blur_max))
     )
 
     SettingsBottomSheet(
-        title = "Glass & Blur",
+        title = stringResource(R.string.settings_appearance_glass_blur_title),
         onDismissRequest = onDismissRequest,
         modifier = modifier
     ) {

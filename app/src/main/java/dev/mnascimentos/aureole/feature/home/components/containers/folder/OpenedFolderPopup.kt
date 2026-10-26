@@ -168,7 +168,7 @@ private fun OpenedFolderGrid(
             contentAlignment = Alignment.Center
         ) {
             Text(
-                text = stringResource(R.string.no_apps_in_folder),
+                text = stringResource(R.string.home_folder_no_apps_in_folder),
                 style = AureoleDS.typography.bodySmall,
                 color = AureoleDS.colors.onSurfaceMedium
             )

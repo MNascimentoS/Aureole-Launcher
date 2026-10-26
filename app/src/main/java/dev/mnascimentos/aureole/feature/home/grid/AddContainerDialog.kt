@@ -43,9 +43,9 @@ fun AddContainerDialog(
     isNested: Boolean = false
 ) {
     val titleText = if (isNested) {
-        stringResource(R.string.add_container_nested_title)
+        stringResource(R.string.home_container_add_nested_title)
     } else {
-        stringResource(R.string.add_container_title)
+        stringResource(R.string.home_container_add_title)
     }
     AureoleDialog(
         onDismissRequest = onDismissRequest,
@@ -72,33 +72,33 @@ private fun AddContainerOptionList(
         verticalArrangement = Arrangement.spacedBy(AureoleDS.dimens.smallCompact)
     ) {
         AddContainerOptionItem(
-            title = stringResource(R.string.add_container_clock),
+            title = stringResource(R.string.home_container_add_clock),
             icon = { m -> AureoleDS.icons.Add(m) },
             onClick = { onSelectType(LauncherItemType.CLOCK) }
         )
         AddContainerOptionItem(
-            title = stringResource(R.string.add_container_apps_list),
+            title = stringResource(R.string.home_container_add_apps_list),
             icon = { m -> AureoleDS.icons.HorizontalContainer(m) },
             onClick = { onSelectType(LauncherItemType.APPS_LIST) }
         )
         AddContainerOptionItem(
-            title = stringResource(R.string.add_container_shortcuts_container),
+            title = stringResource(R.string.home_container_add_shortcuts_container),
             icon = { m -> AureoleDS.icons.MenuIcon(m) },
             onClick = { onSelectType(LauncherItemType.SHORTCUTS_CONTAINER) }
         )
         AddContainerOptionItem(
-            title = stringResource(R.string.add_container_widget_list),
+            title = stringResource(R.string.home_container_add_widget_list),
             icon = { m -> AureoleDS.icons.Add(m) },
             onClick = { onSelectType(LauncherItemType.WIDGET_LIST) }
         )
         AddContainerOptionItem(
-            title = stringResource(R.string.add_container_quick_button),
+            title = stringResource(R.string.home_container_add_quick_button),
             icon = { m -> AureoleDS.icons.Click(m) },
             onClick = { onSelectType(LauncherItemType.QUICK_BUTTON) }
         )
         if (!isNested) {
             AddContainerOptionItem(
-                title = stringResource(R.string.add_container_scroll_view),
+                title = stringResource(R.string.home_container_add_scroll_view),
                 icon = { m -> AureoleDS.icons.VerticalContainer(m) },
                 onClick = { onSelectType(LauncherItemType.SCROLL_VIEW) }
             )

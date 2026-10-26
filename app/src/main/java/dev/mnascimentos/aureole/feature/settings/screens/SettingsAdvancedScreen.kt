@@ -285,7 +285,7 @@ private fun UninstallBottomSheet(
                 }
             )
             SettingsActionItem(
-                title = stringResource(R.string.app_menu_uninstall),
+                title = stringResource(R.string.home_app_menu_uninstall),
                 leadingContent = { AureoleDS.icons.Delete() },
                 onClick = {
                     onDismiss()

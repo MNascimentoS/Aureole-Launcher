@@ -18,9 +18,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
+import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.core.data.model.LauncherItemState
 import dev.mnascimentos.aureole.core.data.model.LauncherItemType
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
@@ -71,7 +73,7 @@ internal fun EditDialogDeleteRow(
         }
         Spacer(modifier = Modifier.width(AureoleDS.dimens.xSmall))
         AureoleText(
-            text = "Remover Componente",
+            text = stringResource(R.string.home_grid_remove_component),
             color = AureoleDS.colors.error,
             format = AureoleTextFormatParams(style = AureoleDS.typography.labelLarge, fontWeight = FontWeight.Bold)
         )
@@ -85,19 +87,19 @@ internal fun EditDialogTypeActionSection(
     onDismissRequest: () -> Unit
 ) {
     val (text, onClick) = when (item.type) {
-        LauncherItemType.CLOCK -> "Personalizar Relógio" to {
+        LauncherItemType.CLOCK -> stringResource(R.string.home_grid_customize_clock) to {
             actions.onOpenEditClockBottomSheet()
             onDismissRequest()
         }
-        LauncherItemType.APPS_LIST -> "Editar Favoritos e Configurações" to {
+        LauncherItemType.APPS_LIST -> stringResource(R.string.home_grid_edit_favorites) to {
             actions.onOpenFavoritePicker(item.id)
             onDismissRequest()
         }
-        LauncherItemType.SHORTCUTS_CONTAINER -> "Editar Configurações do Painel Lateral" to {
+        LauncherItemType.SHORTCUTS_CONTAINER -> stringResource(R.string.home_grid_edit_sidebar) to {
             actions.onOpenEditContainerDialog(item.id)
             onDismissRequest()
         }
-        LauncherItemType.QUICK_BUTTON -> "Personalizar Botão Rápido" to {
+        LauncherItemType.QUICK_BUTTON -> stringResource(R.string.home_grid_customize_quick_button) to {
             actions.onOpenQuickButtonSettings(item.id)
             onDismissRequest()
         }
@@ -160,7 +162,7 @@ internal fun EditDialogScrollViewSection(
         Spacer(modifier = Modifier.height(AureoleDS.dimens.minimal))
 
         AureoleText(
-            text = "Componentes Filhos (${item.safeChildren.size})",
+            text = stringResource(R.string.home_container_edit_child_components, item.safeChildren.size),
             color = AureoleDS.colors.onSurfaceHigh,
             format = AureoleTextFormatParams(style = AureoleDS.typography.titleMedium, fontWeight = FontWeight.SemiBold)
         )
@@ -198,7 +200,7 @@ internal fun EditDialogScrollViewSection(
             }
             Spacer(modifier = Modifier.width(AureoleDS.dimens.xSmall))
             AureoleText(
-                text = "Adicionar Componente",
+                text = stringResource(R.string.home_grid_add_component),
                 color = AureoleDS.colors.onSurfaceHigh,
                 format = AureoleTextFormatParams(
                     style = AureoleDS.typography.bodyLarge,

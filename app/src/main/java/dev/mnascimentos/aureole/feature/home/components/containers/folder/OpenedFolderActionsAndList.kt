@@ -63,7 +63,7 @@ fun OpenedFolderActions(
                 .padding(bottom = AureoleDS.dimens.xSmall)
         ) {
             AureolePopupMenuItem(
-                title = stringResource(R.string.folder_opened_add_apps),
+                title = stringResource(R.string.home_folder_opened_add_apps),
                 params = AureolePopupMenuItemParams(
                     icon = { m -> AureoleDS.icons.Add(m) }
                 ),
@@ -71,7 +71,7 @@ fun OpenedFolderActions(
             )
 
             AureolePopupMenuItem(
-                title = stringResource(R.string.folder_opened_edit),
+                title = stringResource(R.string.home_folder_opened_edit),
                 params = AureolePopupMenuItemParams(
                     icon = { m -> AureoleDS.icons.Edit(m) }
                 ),
@@ -97,7 +97,7 @@ fun OpenedFolderAppList(
             contentAlignment = Alignment.Center
         ) {
             Text(
-                text = stringResource(R.string.folder_opened_empty),
+                text = stringResource(R.string.home_folder_opened_empty),
                 style = AureoleDS.typography.bodySmall,
                 color = AureoleDS.colors.onSurfaceMedium
             )

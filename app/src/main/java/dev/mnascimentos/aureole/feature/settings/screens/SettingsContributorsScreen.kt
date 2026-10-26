@@ -14,6 +14,8 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
+import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.composable.SettingsHugeTitle
 import dev.mnascimentos.aureole.composable.SettingsMenuItem
 import dev.mnascimentos.aureole.composable.SettingsMenuParams
@@ -40,7 +42,7 @@ fun SettingsContributorsScreen(
                 .padding(innerPadding)
                 .padding(horizontal = AureoleDS.dimens.large, vertical = AureoleDS.dimens.medium)
         ) {
-            SettingsHugeTitle(text = "Contributors")
+            SettingsHugeTitle(text = stringResource(R.string.settings_contributors_title))
 
             Spacer(modifier = Modifier.height(AureoleDS.dimens.large))
 
@@ -51,8 +53,8 @@ fun SettingsContributorsScreen(
                 item {
                     SettingsMenuItem(
                         SettingsMenuParams(
-                            title = "Name",
-                            subtitle = "Something something",
+                            title = stringResource(R.string.settings_contributors_name),
+                            subtitle = stringResource(R.string.settings_contributors_subtitle),
                             onClick = {}
                         )
                     )
@@ -61,8 +63,8 @@ fun SettingsContributorsScreen(
                 item {
                     SettingsMenuItem(
                         SettingsMenuParams(
-                            title = "Name",
-                            subtitle = "Something something",
+                            title = stringResource(R.string.settings_contributors_name),
+                            subtitle = stringResource(R.string.settings_contributors_subtitle),
                             onClick = {}
                         )
                     )

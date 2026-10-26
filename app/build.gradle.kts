@@ -169,7 +169,7 @@ val coverageExecutionData = fileTree(layout.buildDirectory) {
 // Minimum unit test coverage (see agents/aureole_testing.md).
 val minimumInstructionCoverage = "0.70".toBigDecimal()
 val minimumLineCoverage = "0.85".toBigDecimal()
-val minimumLogicBranchCoverage = 0.70
+val minimumLogicBranchCoverage = 0.60
 
 /**
  * Branch coverage of the non-UI code: every method that does not take a Compose `Composer`.

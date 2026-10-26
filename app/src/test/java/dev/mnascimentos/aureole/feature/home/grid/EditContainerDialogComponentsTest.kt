@@ -58,7 +58,7 @@ class EditContainerDialogComponentsTest {
             }
         }
 
-        composeTestRule.onNodeWithText(context.getString(R.string.edit_container_none_added)).assertExists()
+        composeTestRule.onNodeWithText(context.getString(R.string.home_container_edit_none_added)).assertExists()
     }
 
     @Test
@@ -93,7 +93,7 @@ class EditContainerDialogComponentsTest {
             }
         }
 
-        composeTestRule.onNodeWithText(context.getString(R.string.edit_container_horizontal)).performClick()
+        composeTestRule.onNodeWithText(context.getString(R.string.home_container_edit_horizontal)).performClick()
         assertTrue(actionTriggered)
     }
 }

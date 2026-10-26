@@ -3,64 +3,64 @@
     <string name="app_name">Aureole Launcher</string>
 
     <!-- Common -->
-    <string name="common_cancel">Cancelar</string>
-    <string name="common_save">Salvar</string>
-    <string name="common_delete">Excluir</string>
-    <string name="common_confirm">Confirmar</string>
-    <string name="common_create">Criar</string>
-    <string name="common_understood">Entendido</string>
+    <string name="core_common_cancel">Cancelar</string>
+    <string name="core_common_save">Salvar</string>
+    <string name="core_common_delete">Excluir</string>
+    <string name="core_common_confirm">Confirmar</string>
+    <string name="core_common_create">Criar</string>
+    <string name="core_common_understood">Entendido</string>
 
     <!-- Clock -->
-    <string name="clock_daily_greeting">Saudação Diária</string>
-    <string name="clock_date_on_top">Data no Topo</string>
-    <string name="clock_greeting_and_date">Saudação + Data</string>
-    <string name="clock_custom_text">Texto Personalizado</string>
-    <string name="clock_time_only">Apenas Horário</string>
+    <string name="home_clock_daily_greeting">Saudação Diária</string>
+    <string name="home_clock_date_on_top">Data no Topo</string>
+    <string name="home_clock_greeting_and_date">Saudação + Data</string>
+    <string name="home_clock_custom_text">Texto Personalizado</string>
+    <string name="home_clock_time_only">Apenas Horário</string>
 
-    <string name="clock_date_default">Completo (sexta, 9 out)</string>
-    <string name="clock_date_short">Curto (Tue, 22 Sep)</string>
-    <string name="clock_date_medium">Médio (9 de outubro)</string>
-    <string name="clock_date_numeric">Numérico (09/10/2026)</string>
+    <string name="home_clock_date_default">Completo (sexta, 9 out)</string>
+    <string name="home_clock_date_short">Curto (Tue, 22 Sep)</string>
+    <string name="home_clock_date_medium">Médio (9 de outubro)</string>
+    <string name="home_clock_date_numeric">Numérico (09/10/2026)</string>
 
-    <string name="clock_date_format_label">Formato de Data:</string>
+    <string name="home_clock_date_format_label">Formato de Data:</string>
 
     <!-- Folders -->
-    <string name="folder_edit_title">Editar Pasta</string>
-    <string name="folder_new_title">Nova Pasta</string>
-    <string name="folder_name_label">Nome da Pasta</string>
-    <string name="folder_name_placeholder">Nova Pasta</string>
-    <string name="folder_icon">Ícone da Pasta</string>
-    <string name="apps_in_folder">Apps na Pasta: %1$s</string>
-    <string name="selected_apps_count">Selecionados (%1$d)</string>
-    <string name="no_apps_in_folder">Nenhum aplicativo na pasta.</string>
-    <string name="no_apps_found">Nenhum aplicativo encontrado.</string>
-    <string name="other_apps_count">Outros Aplicativos (%1$d)</string>
-    <string name="all_apps_added">Todos os aplicativos já foram adicionados.</string>
-    <string name="search_app_placeholder">Buscar aplicativo&#8230;</string>
+    <string name="home_folder_edit_title">Editar Pasta</string>
+    <string name="home_folder_new_title">Nova Pasta</string>
+    <string name="home_folder_name_label">Nome da Pasta</string>
+    <string name="home_folder_name_placeholder">Nova Pasta</string>
+    <string name="home_folder_icon">Ícone da Pasta</string>
+    <string name="home_folder_apps_in_folder">Apps na Pasta: %1$s</string>
+    <string name="home_folder_selected_apps_count">Selecionados (%1$d)</string>
+    <string name="home_folder_no_apps_in_folder">Nenhum aplicativo na pasta.</string>
+    <string name="core_common_no_apps_found">Nenhum aplicativo encontrado.</string>
+    <string name="home_folder_other_apps_count">Outros Aplicativos (%1$d)</string>
+    <string name="home_folder_all_apps_added">Todos os aplicativos já foram adicionados.</string>
+    <string name="core_common_search_app_placeholder">Buscar aplicativo&#8230;</string>
 
     <!-- Quick Buttons -->
-    <string name="qb_settings_title">Botão rápido</string>
-    <string name="qb_appearance">Aparência</string>
-    <string name="qb_open_app">Abrir App</string>
-    <string name="qb_open_app_name">Abrir App (%1$s)</string>
-    <string name="qb_click_shortcut">Atalho de clique</string>
-    <string name="qb_remove">Remover botão rápido</string>
-    <string name="qb_appearance_title">Botão Rápido</string>
-    <string name="qb_select_app">Selecione um aplicativo</string>
-    <string name="qb_select_shortcut">Selecione um atalho</string>
-    <string name="qb_bg_color">Cor de fundo</string>
-    <string name="qb_stroke">Borda</string>
-    <string name="qb_stroke_color">Cor da borda</string>
-    <string name="qb_icon">Ícone</string>
-    <string name="qb_icon_color">Cor do ícone</string>
-    <string name="qb_select_icon">Selecionar Ícone</string>
+    <string name="home_quickbutton_settings_title">Botão rápido</string>
+    <string name="home_quickbutton_appearance">Aparência</string>
+    <string name="home_quickbutton_open_app">Abrir App</string>
+    <string name="home_quickbutton_open_app_name">Abrir App (%1$s)</string>
+    <string name="home_quickbutton_click_shortcut">Atalho de clique</string>
+    <string name="home_quickbutton_remove">Remover botão rápido</string>
+    <string name="home_quickbutton_appearance_title">Botão Rápido</string>
+    <string name="home_quickbutton_select_app">Selecione um aplicativo</string>
+    <string name="home_quickbutton_select_shortcut">Selecione um atalho</string>
+    <string name="home_quickbutton_bg_color">Cor de fundo</string>
+    <string name="home_quickbutton_stroke">Borda</string>
+    <string name="home_quickbutton_stroke_color">Cor da borda</string>
+    <string name="home_quickbutton_icon">Ícone</string>
+    <string name="home_quickbutton_icon_color">Cor do ícone</string>
+    <string name="home_quickbutton_select_icon">Selecionar Ícone</string>
 
     <!-- Colors / Theming -->
-    <string name="colors_recommended">Cores Recomendadas</string>
+    <string name="settings_appearance_colors_recommended">Cores Recomendadas</string>
 
     <!-- Settings -->
-    <string name="settings_title">Configurações</string>
-    <string name="settings_general">Geral</string>
+    <string name="settings_root_header">Configurações</string>
+    <string name="settings_root_general">Geral</string>
 
     <!-- Settings Root -->
     <string name="settings_root_thank_you">Muito obrigado!</string>
@@ -108,176 +108,229 @@
     <string name="settings_appearance_image_scale">Escala da imagem</string>
 
     <!-- Apps Drawer -->
-    <string name="app_search_placeholder">Buscar aplicativos</string>
+    <string name="home_apps_search_placeholder">Buscar aplicativos</string>
 
     <!-- Favorites -->
-    <string name="favorites_title">Favoritos</string>
+    <string name="home_favorites_title">Favoritos</string>
 
     <!-- Overlays & Customization -->
-    <string name="customize_title">Personalizar</string>
-    <string name="customize_add_clock">Adicionar relógio</string>
-    <string name="customize_add_container">Adicionar container</string>
-    <string name="customize_add_scrollview">Adicionar container rolável</string>
-    <string name="customize_add_quick_button">Adicionar botão rápido</string>
-    <string name="customize_add_widget_group">Adicionar grupo de widgets</string>
-    <string name="customize_adjust_layout">Ajustar layout</string>
-    <string name="customize_set_background">Definir plano de fundo</string>
-    <string name="customize_aureole_settings">Configurações do Aureole</string>
-    <string name="update_new_available">Nova atualização disponível</string>
-    <string name="update_new_body">Uma nova versão do Aureole Launcher está disponível na Google Play. Deseja atualizar agora?</string>
-    <string name="update_now">Atualizar agora</string>
-    <string name="update_later">Agora não</string>
-    <string name="update_ready">Atualização pronta</string>
-    <string name="update_ready_body">A nova versão foi baixada com sucesso. Reinicie o aplicativo para concluir a instalação.</string>
-    <string name="update_restart_now">Reiniciar agora</string>
-    <string name="update_restart_later">Depois</string>
-    <string name="release_notes_whats_new">O que há de novo</string>
-    <string name="release_notes_version">Versão %1$s</string>
-    <string name="release_notes_version_current">v%1$s (Atual)</string>
-    <string name="release_notes_version_past">v%1$s</string>
-    <string name="release_notes_tag_new">Novo</string>
-    <string name="release_notes_tag_improvement">Melhoria</string>
-    <string name="release_notes_tag_fix">Correção</string>
+    <string name="home_customize_title">Personalizar</string>
+    <string name="home_customize_add_clock">Adicionar relógio</string>
+    <string name="home_customize_add_container">Adicionar container</string>
+    <string name="home_customize_add_scrollview">Adicionar container rolável</string>
+    <string name="home_customize_add_quick_button">Adicionar botão rápido</string>
+    <string name="home_customize_add_widget_group">Adicionar grupo de widgets</string>
+    <string name="home_customize_adjust_layout">Ajustar layout</string>
+    <string name="home_customize_set_background">Definir plano de fundo</string>
+    <string name="home_customize_aureole_settings">Configurações do Aureole</string>
+    <string name="settings_advanced_update_new_available">Nova atualização disponível</string>
+    <string name="settings_advanced_update_new_body">Uma nova versão do Aureole Launcher está disponível na Google Play. Deseja atualizar agora?</string>
+    <string name="settings_advanced_update_now">Atualizar agora</string>
+    <string name="settings_advanced_update_later">Agora não</string>
+    <string name="settings_advanced_update_ready">Atualização pronta</string>
+    <string name="settings_advanced_update_ready_body">A nova versão foi baixada com sucesso. Reinicie o aplicativo para concluir a instalação.</string>
+    <string name="settings_advanced_update_restart_now">Reiniciar agora</string>
+    <string name="settings_advanced_update_restart_later">Depois</string>
+    <string name="settings_advanced_release_notes_whats_new">O que há de novo</string>
+    <string name="settings_advanced_release_notes_version">Versão %1$s</string>
+    <string name="settings_advanced_release_notes_version_current">v%1$s (Atual)</string>
+    <string name="settings_advanced_release_notes_version_past">v%1$s</string>
+    <string name="settings_advanced_release_notes_tag_new">Novo</string>
+    <string name="settings_advanced_release_notes_tag_improvement">Melhoria</string>
+    <string name="settings_advanced_release_notes_tag_fix">Correção</string>
 
     <!-- App Item Menus -->
-    <string name="app_menu_info">Informações do App</string>
-    <string name="app_menu_uninstall">Desinstalar</string>
-    <string name="app_menu_remove_from_folder">Remover da pasta</string>
-    <string name="app_menu_add_to_favorites">Adicionar aos favoritos</string>
-    <string name="app_menu_remove_from_favorites">Remover dos favoritos</string>
-    <string name="app_menu_quick_panel_settings">Configurações do painel rápido</string>
+    <string name="home_app_menu_info">Informações do App</string>
+    <string name="home_app_menu_uninstall">Desinstalar</string>
+    <string name="home_app_menu_remove_from_folder">Remover da pasta</string>
+    <string name="home_app_menu_add_to_favorites">Adicionar aos favoritos</string>
+    <string name="home_app_menu_remove_from_favorites">Remover dos favoritos</string>
+    <string name="home_app_menu_quick_panel_settings">Configurações do painel rápido</string>
 
     <!-- Clock Customization -->
-    <string name="clock_customize_title">Personalizar Relógio</string>
-    <string name="clock_style">Estilo do Relógio</string>
-    <string name="clock_layout_style">Estilo do Layout</string>
-    <string name="clock_greeting_text">Texto da Saudação</string>
-    <string name="clock_greeting_placeholder">Ex: Bem-vindo(a) de volta!</string>
-    <string name="clock_alignment">Alinhamento</string>
-    <string name="clock_align_left">Esquerda</string>
-    <string name="clock_align_center">Centro</string>
-    <string name="clock_align_right">Direita</string>
-    <string name="clock_text_color">Cor do Texto</string>
-    <string name="clock_font_style">Estilo da Fonte</string>
-    <string name="clock_font_default">Padrão</string>
-    <string name="clock_font_bold">Negrito</string>
-    <string name="clock_font_serif">Serifada</string>
-    <string name="clock_font_monospaced">Monospaced</string>
-    <string name="clock_font_rounded">Arredondada</string>
-    <string name="clock_time_date_format">Formato de Hora e Data</string>
-    <string name="clock_time_format">Formato de Hora:</string>
-    <string name="clock_time_system">Sistema</string>
-    <string name="clock_time_12h">12 Horas</string>
-    <string name="clock_time_24h">24 Horas</string>
-    <string name="clock_card_background">Fundo do Cartão</string>
-    <string name="clock_show_background">Mostrar cartão de fundo</string>
-    <string name="clock_custom_bg_color">Cor de Fundo Personalizada:</string>
-    <string name="clock_reset_defaults">Redefinir Padrões</string>
-    <string name="clock_greeting_morning">Bom dia</string>
-    <string name="clock_greeting_afternoon">Boa tarde</string>
-    <string name="clock_greeting_evening">Boa noite</string>
+    <string name="home_clock_customize_title">Personalizar Relógio</string>
+    <string name="home_clock_style">Estilo do Relógio</string>
+    <string name="home_clock_layout_style">Estilo do Layout</string>
+    <string name="home_clock_greeting_text">Texto da Saudação</string>
+    <string name="home_clock_greeting_placeholder">Ex: Bem-vindo(a) de volta!</string>
+    <string name="home_clock_alignment">Alinhamento</string>
+    <string name="home_clock_align_left">Esquerda</string>
+    <string name="home_clock_align_center">Centro</string>
+    <string name="home_clock_align_right">Direita</string>
+    <string name="home_clock_text_color">Cor do Texto</string>
+    <string name="home_clock_font_style">Estilo da Fonte</string>
+    <string name="home_clock_font_default">Padrão</string>
+    <string name="home_clock_font_bold">Negrito</string>
+    <string name="home_clock_font_serif">Serifada</string>
+    <string name="home_clock_font_monospaced">Monospaced</string>
+    <string name="home_clock_font_rounded">Arredondada</string>
+    <string name="home_clock_time_date_format">Formato de Hora e Data</string>
+    <string name="home_clock_time_format">Formato de Hora:</string>
+    <string name="home_clock_time_system">Sistema</string>
+    <string name="home_clock_time_12h">12 Horas</string>
+    <string name="home_clock_time_24h">24 Horas</string>
+    <string name="home_clock_card_background">Fundo do Cartão</string>
+    <string name="home_clock_show_background">Mostrar cartão de fundo</string>
+    <string name="home_clock_custom_bg_color">Cor de Fundo Personalizada:</string>
+    <string name="home_clock_reset_defaults">Redefinir Padrões</string>
+    <string name="home_clock_greeting_morning">Bom dia</string>
+    <string name="home_clock_greeting_afternoon">Boa tarde</string>
+    <string name="home_clock_greeting_evening">Boa noite</string>
 
     <!-- Favorites Dialog -->
-    <string name="favorites_dialog_title">Lista de Aplicativos</string>
-    <string name="favorites_show_all_apps">Mostrar todos os apps na Home</string>
-    <string name="favorites_show_all_apps_desc">Se desativado, exibe apenas os aplicativos favoritados</string>
-    <string name="favorites_edit_shortcuts">Editar atalhos</string>
-    <string name="favorites_manage_apps_order">Gerenciar aplicativos e ordem</string>
-    <string name="favorites_appearance_desc">Exibição dos apps na Home</string>
-    <string name="favorites_count">Favoritos (%1$d)</string>
-    <string name="favorites_disable_all">Desativar todos</string>
-    <string name="favorites_enable_all">Ativar todos</string>
-    <string name="favorites_none_selected">Nenhum aplicativo favorito selecionado.</string>
-    <string name="favorites_none_found">Nenhum favorito encontrado.</string>
-    <string name="favorites_all_added">Todos os aplicativos já estão nos favoritos.</string>
-    <string name="favorites_none_other_found">Nenhum outro aplicativo encontrado.</string>
-    <string name="favorites_search_placeholder">Buscar aplicativo&#8230;</string>
-    <string name="favorites_tap_to_select">Toque para selecionar Favoritos</string>
-    <string name="favorites_all_apps_divider">\" TODOS OS APPS \"</string>
-    <string name="favorites_done">Concluído</string>
-    <string name="favorites_back">Voltar</string>
+    <string name="home_favorites_dialog_title">Lista de Aplicativos</string>
+    <string name="home_favorites_show_all_apps">Mostrar todos os apps na Home</string>
+    <string name="home_favorites_show_all_apps_desc">Se desativado, exibe apenas os aplicativos favoritados</string>
+    <string name="home_favorites_edit_shortcuts">Editar atalhos</string>
+    <string name="home_favorites_manage_apps_order">Gerenciar aplicativos e ordem</string>
+    <string name="home_favorites_appearance_desc">Exibição dos apps na Home</string>
+    <string name="home_favorites_count">Favoritos (%1$d)</string>
+    <string name="home_favorites_disable_all">Desativar todos</string>
+    <string name="home_favorites_enable_all">Ativar todos</string>
+    <string name="home_favorites_none_selected">Nenhum aplicativo favorito selecionado.</string>
+    <string name="home_favorites_none_found">Nenhum favorito encontrado.</string>
+    <string name="home_favorites_all_added">Todos os aplicativos já estão nos favoritos.</string>
+    <string name="home_favorites_none_other_found">Nenhum outro aplicativo encontrado.</string>
+    <string name="home_favorites_search_placeholder">Buscar aplicativo&#8230;</string>
+    <string name="home_favorites_tap_to_select">Toque para selecionar Favoritos</string>
+    <string name="home_favorites_all_apps_divider">\" TODOS OS APPS \"</string>
+    <string name="home_favorites_done">Concluído</string>
+    <string name="home_favorites_back">Voltar</string>
 
     <!-- Widgets -->
-    <string name="widget_stack_title">Pilha de Widgets</string>
-    <string name="widget_show_indicator">Mostrar indicador de posição</string>
-    <string name="widget_picker_search_placeholder">Pesquisar widgets&#8230;</string>
-    <string name="widget_picker_none_found">Nenhum widget encontrado.</string>
-    <plurals name="widget_count">
+    <string name="home_widget_stack_title">Pilha de Widgets</string>
+    <string name="home_widget_show_indicator">Mostrar indicador de posição</string>
+    <string name="home_widget_picker_search_placeholder">Pesquisar widgets&#8230;</string>
+    <string name="home_widget_picker_none_found">Nenhum widget encontrado.</string>
+    <plurals name="home_widget_count">
         <item quantity="one">%1$d Widget</item>
         <item quantity="many">%1$d Widgets</item>
         <item quantity="other">%1$d Widgets</item>
     </plurals>
-    <string name="widget_group">Grupo de Widgets</string>
-    <string name="widget_unavailable">Widget indisponível</string>
-    <string name="widget_tap_to_configure">Toque para reconfigurar widget</string>
-    <string name="widget_add">Adicionar Widget</string>
-    <string name="widget_app_settings">Configurações do App</string>
-    <string name="widget_resize_group">Redimensionar Grupo</string>
-    <string name="widget_toggle_indicator">Alternar Indicador de Posição</string>
-    <string name="widget_remove">Remover</string>
+    <string name="home_widget_group">Grupo de Widgets</string>
+    <string name="home_widget_unavailable">Widget indisponível</string>
+    <string name="home_widget_tap_to_configure">Toque para reconfigurar widget</string>
+    <string name="home_widget_add">Adicionar Widget</string>
+    <string name="home_widget_app_settings">Configurações do App</string>
+    <string name="home_widget_resize_group">Redimensionar Grupo</string>
+    <string name="home_widget_toggle_indicator">Alternar Indicador de Posição</string>
+    <string name="home_widget_remove">Remover</string>
 
     <!-- Edit Container -->
-    <string name="edit_container_title">Configurações do Container</string>
-    <string name="edit_container_appearance">Aparência</string>
-    <string name="edit_container_behavior">Comportamento</string>
-    <string name="edit_container_manage_items">Gerenciar Itens</string>
-    <string name="edit_container_save">Salvar</string>
-    <string name="edit_container_expand_cells">Expandir células</string>
-    <string name="edit_container_grid_folders">Pastas em grid</string>
-    <string name="edit_container_bg_enabled">Fundo ativado</string>
-    <string name="edit_container_show_folder_labels">Exibir rótulos das pastas</string>
-    <string name="edit_container_back">Voltar</string>
-    <string name="edit_container_orientation">Orientação do Container</string>
-    <string name="edit_container_space_between">Espaçamento Entre (Separados)</string>
-    <string name="edit_container_space_evenly">Espaçamento Igual (Igualitário)</string>
-    <string name="edit_container_align_start">Início (Topo / Esquerda)</string>
-    <string name="edit_container_align_center">Centro</string>
-    <string name="edit_container_align_end">Fim (Base / Direita)</string>
-    <string name="edit_container_item_alignment">Alinhamento dos Itens</string>
-    <string name="edit_container_appearance_behavior_options">Opções de Aparência e Comportamento</string>
-    <string name="edit_container_bg_label">Fundo do Container</string>
-    <string name="edit_container_expand_cell_label">Expandir Célula</string>
-    <string name="edit_container_create_folder_btn">Botão de Criar Pasta</string>
-    <string name="edit_container_folder_labels">Exibir Rótulos das Pastas</string>
-    <string name="edit_container_grid_folder_mode">Modo de Pasta Expansiva (Grid)</string>
-    <string name="edit_container_child_components">Componentes Filhos (%1$d)</string>
-    <string name="edit_container_none_added">Nenhum componente adicionado ainda.</string>
-    <string name="edit_container_app_label">App</string>
-    <string name="edit_container_folder_label">Pasta</string>
-    <string name="edit_container_add_app">Adicionar App&#8230;</string>
+    <string name="home_container_edit_title">Configurações do Container</string>
+    <string name="home_container_edit_appearance">Aparência</string>
+    <string name="home_container_edit_behavior">Comportamento</string>
+    <string name="home_container_edit_manage_items">Gerenciar Itens</string>
+    <string name="home_container_edit_save">Salvar</string>
+    <string name="home_container_edit_expand_cells">Expandir células</string>
+    <string name="home_container_edit_grid_folders">Pastas em grid</string>
+    <string name="home_container_edit_bg_enabled">Fundo ativado</string>
+    <string name="home_container_edit_show_folder_labels">Exibir rótulos das pastas</string>
+    <string name="home_container_edit_back">Voltar</string>
+    <string name="home_container_edit_orientation">Orientação do Container</string>
+    <string name="home_container_edit_space_between">Espaçamento Entre (Separados)</string>
+    <string name="home_container_edit_space_evenly">Espaçamento Igual (Igualitário)</string>
+    <string name="home_container_edit_align_start">Início (Topo / Esquerda)</string>
+    <string name="home_container_edit_align_center">Centro</string>
+    <string name="home_container_edit_align_end">Fim (Base / Direita)</string>
+    <string name="home_container_edit_item_alignment">Alinhamento dos Itens</string>
+    <string name="home_container_edit_appearance_behavior_options">Opções de Aparência e Comportamento</string>
+    <string name="home_container_edit_bg_label">Fundo do Container</string>
+    <string name="home_container_edit_expand_cell_label">Expandir Célula</string>
+    <string name="home_container_edit_create_folder_btn">Botão de Criar Pasta</string>
+    <string name="home_container_edit_folder_labels">Exibir Rótulos das Pastas</string>
+    <string name="home_container_edit_grid_folder_mode">Modo de Pasta Expansiva (Grid)</string>
+    <string name="home_container_edit_child_components">Componentes Filhos (%1$d)</string>
+    <string name="home_container_edit_none_added">Nenhum componente adicionado ainda.</string>
+    <string name="home_container_edit_app_label">App</string>
+    <string name="home_container_edit_folder_label">Pasta</string>
+    <string name="home_container_edit_add_app">Adicionar App&#8230;</string>
 
     <!-- Folders (Additional) -->
-    <string name="folder_edit_shortcuts">Editar atalhos</string>
-    <string name="folder_rename">Renomear</string>
-    <string name="folder_icon_setting">Ícone</string>
-    <string name="folder_remove">Remover pasta</string>
-    <string name="folder_container_settings">Configurações do Container</string>
-    <string name="folder_settings">Configurações da Pasta</string>
-    <string name="folder_is_empty">A pasta está vazia</string>
+    <string name="home_folder_edit_shortcuts">Editar atalhos</string>
+    <string name="home_folder_rename">Renomear</string>
+    <string name="home_folder_icon_setting">Ícone</string>
+    <string name="home_folder_remove">Remover pasta</string>
+    <string name="home_folder_container_settings">Configurações do Container</string>
+    <string name="home_folder_settings">Configurações da Pasta</string>
+    <string name="home_folder_is_empty">A pasta está vazia</string>
 
     <!-- Reusable -->
-    <string name="color_picker_primary">Escolher Cor Primária</string>
-    <string name="color_picker_custom_hue">Ajuste Personalizado (Matiz)</string>
+    <string name="settings_appearance_color_picker_primary">Escolher Cor Primária</string>
+    <string name="settings_appearance_color_picker_custom_hue">Ajuste Personalizado (Matiz)</string>
 
     <!-- Grid & Containers -->
-    <string name="add_container_title">Adicionar Container</string>
-    <string name="add_container_nested_title">Adicionar ao Scroll View</string>
-    <string name="add_container_clock">Relógio</string>
-    <string name="add_container_apps_list">Lista de Aplicativos</string>
-    <string name="add_container_shortcuts_container">Container</string>
-    <string name="add_container_widget_list">Grupo de Widgets do Android</string>
-    <string name="add_container_quick_button">Botão Rápido</string>
-    <string name="add_container_scroll_view">Container Scroll View</string>
+    <string name="home_container_add_title">Adicionar Container</string>
+    <string name="home_container_add_nested_title">Adicionar ao Scroll View</string>
+    <string name="home_container_add_clock">Relógio</string>
+    <string name="home_container_add_apps_list">Lista de Aplicativos</string>
+    <string name="home_container_add_shortcuts_container">Container</string>
+    <string name="home_container_add_widget_list">Grupo de Widgets do Android</string>
+    <string name="home_container_add_quick_button">Botão Rápido</string>
+    <string name="home_container_add_scroll_view">Container Scroll View</string>
 
-    <string name="edit_container_scroll_orientation">Orientação do Scroll</string>
-    <string name="edit_container_vertical">Vertical</string>
-    <string name="edit_container_horizontal">Horizontal</string>
+    <string name="home_container_edit_scroll_orientation">Orientação do Scroll</string>
+    <string name="home_container_edit_vertical">Vertical</string>
+    <string name="home_container_edit_horizontal">Horizontal</string>
 
-    <string name="folder_opened_add_apps">Adicionar Apps</string>
-    <string name="folder_opened_edit">Editar Pasta</string>
-    <string name="folder_opened_empty">Nenhum app na pasta</string>
+    <string name="home_folder_opened_add_apps">Adicionar Apps</string>
+    <string name="home_folder_opened_edit">Editar Pasta</string>
+    <string name="home_folder_opened_empty">Nenhum app na pasta</string>
 
-    <string name="grid_widget_label">Widget</string>
-    <string name="grid_widget_unconfigured">Widget não configurado</string>
+    <string name="home_grid_widget_label">Widget</string>
+    <string name="home_grid_widget_unconfigured">Widget não configurado</string>
+
+    <!-- New Strings for Task 1 -->
+    <string name="settings_advanced_reset_dialog_title">Redefinir launcher?</string>
+    <string name="core_common_yes">Sim</string>
+    <string name="core_common_no">Não</string>
+    <string name="settings_advanced_reset_layout_title">Redefinir Layout?</string>
+    <string name="settings_advanced_reset_layout_restore">Restaurar</string>
+    <string name="settings_appearance_blur_opacity_title">Opacidade do Desfoque</string>
+    <string name="settings_appearance_blur_opacity_low">Baixa</string>
+    <string name="settings_appearance_blur_opacity_medium">Média</string>
+    <string name="settings_appearance_blur_opacity_high">Alta</string>
+    <string name="settings_appearance_blur_opacity_solid">Sólida</string>
+    <string name="settings_appearance_restore_background_title">Restaurar plano de fundo padrão?</string>
+    <string name="settings_dialogs_settings_button_position_title">Posição do Botão de Configurações</string>
+    <string name="settings_dialogs_search_icon_position_title">Posição do Ícone de Busca</string>
+    <string name="settings_appearance_set_background_title">Definir plano de fundo</string>
+    <string name="settings_appearance_solid_color">Cor sólida</string>
+    <string name="settings_appearance_custom_image">Imagem personalizada</string>
+    <string name="settings_appearance_pick_palette_title">Escolher uma paleta</string>
+    <string name="settings_appearance_glass_blur_title">Vidro e Desfoque</string>
+    <string name="settings_appearance_blur_none">Nenhum</string>
+    <string name="settings_appearance_blur_max">Máximo</string>
+    <string name="settings_contributors_title">Colaboradores</string>
+    <string name="settings_contributors_name">Nome</string>
+    <string name="settings_contributors_subtitle">Algo assim</string>
+    <string name="home_grid_remove_component">Remover Componente</string>
+    <string name="home_grid_customize_clock">Personalizar Relógio</string>
+    <string name="home_grid_edit_favorites">Editar Favoritos e Configurações</string>
+    <string name="home_grid_edit_sidebar">Editar Configurações do Painel Lateral</string>
+    <string name="home_grid_customize_quick_button">Personalizar Botão Rápido</string>
+    <string name="home_grid_add_component">Adicionar Componente</string>
+    <string name="home_widgets_about_placeholder">Sobre o widget aqui</string>
+    <string name="home_widgets_default_title">Widget</string>
+    <string name="home_grid_item_clock">Relógio</string>
+    <string name="home_grid_item_favorites">Favoritos</string>
+    <string name="home_grid_item_shortcuts">Atalhos</string>
+    <string name="home_grid_item_widget">Widget</string>
+    <string name="home_grid_item_widget_group">Grupo de Widgets</string>
+    <string name="home_grid_item_scroll_view">Componente Rolar</string>
+    <string name="home_grid_item_quick_button">Botão Rápido</string>
+    <string name="home_grid_item_container">Container</string>
+    <string name="home_grid_config_title">Configurar %1$s</string>
+    <string name="home_grid_current_size">Tamanho atual: %1$d x %2$d células</string>
+    <string name="settings_appearance_glass_effect">Efeito de vidro</string>
+    <string name="settings_appearance_glass_effect_none">Nenhum</string>
+    <string name="settings_appearance_glass_effect_low">Baixo</string>
+    <string name="settings_appearance_glass_effect_medium">Médio</string>
+    <string name="settings_appearance_glass_effect_max">Máximo</string>
+    <string name="settings_appearance_change_border">Alterar Borda</string>
+    <string name="settings_appearance_border_radius_format">%1$d dp</string>
+    <string name="favorites_dialog_plus_content_desc">Mais</string>
+    <string name="home_grid_scroll_component">Componente</string>
+    <string name="home_quickbutton_open_app_title">Abrir App</string>
 
 </resources>

@@ -128,7 +128,7 @@ fun WidgetGroupList(
                 ),
                 modifier = searchBarModifier,
                 params = AureoleFloatingSearchBarParams(
-                    placeholder = stringResource(R.string.widget_picker_search_placeholder),
+                    placeholder = stringResource(R.string.home_widget_picker_search_placeholder),
                     focusRequester = focusRequester,
                     sizes = AureoleSearchBarSizes(
                         collapsedSize = FolderButtonMetrics.MediumSize,

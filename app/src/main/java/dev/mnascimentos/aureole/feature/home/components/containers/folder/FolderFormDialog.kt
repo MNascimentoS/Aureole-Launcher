@@ -54,9 +54,15 @@ fun FolderFormDialog(
 ) {
     val isEditing = folder != null
     val title =
-        if (isEditing) stringResource(R.string.folder_edit_title) else stringResource(R.string.folder_new_title)
+        if (isEditing) {
+            stringResource(
+                R.string.home_folder_edit_title
+            )
+        } else {
+            stringResource(R.string.home_folder_new_title)
+        }
     val submitText =
-        if (isEditing) stringResource(R.string.common_save) else stringResource(R.string.common_create)
+        if (isEditing) stringResource(R.string.core_common_save) else stringResource(R.string.core_common_create)
 
     AureoleDialog(
         onDismissRequest = onDismiss,
@@ -103,7 +109,7 @@ private fun FolderFormDialogContent(
         Spacer(modifier = Modifier.height(AureoleDS.dimens.medium))
 
         AureoleText(
-            text = stringResource(dev.mnascimentos.aureole.R.string.folder_icon),
+            text = stringResource(dev.mnascimentos.aureole.R.string.home_folder_icon),
             color = AureoleDS.colors.onSurfaceMedium,
             modifier = Modifier.align(Alignment.Start),
             format = AureoleTextFormatParams(
@@ -122,7 +128,7 @@ private fun FolderFormDialogContent(
 
         Spacer(modifier = Modifier.height(AureoleDS.dimens.large))
 
-        val placeholderName = stringResource(R.string.folder_name_placeholder)
+        val placeholderName = stringResource(R.string.home_folder_name_placeholder)
         FolderFormButtons(
             isEditing = config.isEditing,
             submitText = config.submitText,
@@ -146,13 +152,13 @@ private fun FolderNameTextField(
         onValueChange = onFolderNameChange,
         label = {
             AureoleText(
-                stringResource(R.string.folder_name_label),
+                stringResource(R.string.home_folder_name_label),
                 color = AureoleDS.colors.onSurfaceMedium
             )
         },
         placeholder = {
             AureoleText(
-                stringResource(R.string.folder_name_placeholder),
+                stringResource(R.string.home_folder_name_placeholder),
                 color = AureoleDS.colors.onSurfaceLow
             )
         },
@@ -339,7 +345,7 @@ private fun FolderFormButtons(
         if (isEditing && onDelete != null) {
             TextButton(onClick = onDelete) {
                 AureoleText(
-                    stringResource(dev.mnascimentos.aureole.R.string.common_delete),
+                    stringResource(dev.mnascimentos.aureole.R.string.core_common_delete),
                     color = AureoleDS.colors.error
                 )
             }
@@ -350,7 +356,7 @@ private fun FolderFormButtons(
         Row {
             TextButton(onClick = onDismiss) {
                 AureoleText(
-                    stringResource(dev.mnascimentos.aureole.R.string.common_cancel),
+                    stringResource(dev.mnascimentos.aureole.R.string.core_common_cancel),
                     color = AureoleDS.colors.onSurfaceMedium
                 )
             }

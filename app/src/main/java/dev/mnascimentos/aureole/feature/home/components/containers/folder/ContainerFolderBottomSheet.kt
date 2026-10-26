@@ -65,7 +65,7 @@ internal fun ContainerFolderBottomSheet(
 @Composable
 private fun ContainerFolderMenuItems(params: ContainerFolderBottomSheetParams) {
     AureolePopupMenuItem(
-        title = stringResource(R.string.folder_edit_shortcuts),
+        title = stringResource(R.string.home_folder_edit_shortcuts),
         params = AureolePopupMenuItemParams(
             customIcon = {
                 AureoleDS.icons.Star(
@@ -78,7 +78,7 @@ private fun ContainerFolderMenuItems(params: ContainerFolderBottomSheetParams) {
     )
 
     AureolePopupMenuItem(
-        title = stringResource(R.string.folder_rename),
+        title = stringResource(R.string.home_folder_rename),
         params = AureolePopupMenuItemParams(
             customIcon = {
                 AureoleDS.icons.Edit(
@@ -91,7 +91,7 @@ private fun ContainerFolderMenuItems(params: ContainerFolderBottomSheetParams) {
     )
 
     AureolePopupMenuItem(
-        title = stringResource(R.string.folder_icon_setting),
+        title = stringResource(R.string.home_folder_icon_setting),
         params = AureolePopupMenuItemParams(
             customIcon = {
                 AureoleDS.icons.Smile(
@@ -109,7 +109,7 @@ private fun ContainerFolderMenuItems(params: ContainerFolderBottomSheetParams) {
 @Composable
 private fun SecondaryFolderMenuItems(params: ContainerFolderBottomSheetParams) {
     AureolePopupMenuItem(
-        title = stringResource(R.string.folder_remove),
+        title = stringResource(R.string.home_folder_remove),
         params = AureolePopupMenuItemParams(
             customIcon = {
                 AureoleDS.icons.Delete(
@@ -123,7 +123,7 @@ private fun SecondaryFolderMenuItems(params: ContainerFolderBottomSheetParams) {
     )
 
     AureolePopupMenuItem(
-        title = stringResource(R.string.folder_container_settings),
+        title = stringResource(R.string.home_folder_container_settings),
         params = AureolePopupMenuItemParams(
             customIcon = {
                 AureoleDS.icons.Settings(
@@ -145,7 +145,7 @@ private fun ContainerFolderBottomSheetHeader() {
             .padding(horizontal = AureoleDS.dimens.medium)
     ) {
         AureoleText(
-            text = stringResource(R.string.folder_settings),
+            text = stringResource(R.string.home_folder_settings),
             color = AureoleDS.colors.onSurfaceHigh,
             modifier = Modifier
                 .align(Alignment.Center)

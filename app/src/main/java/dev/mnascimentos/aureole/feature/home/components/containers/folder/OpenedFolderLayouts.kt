@@ -148,7 +148,7 @@ private fun EmptyFolderGridContent(maxListHeightDp: Dp) {
         contentAlignment = Alignment.Center
     ) {
         Text(
-            text = stringResource(R.string.no_apps_in_folder),
+            text = stringResource(R.string.home_folder_no_apps_in_folder),
             style = AureoleDS.typography.bodyMedium,
             color = AureoleDS.colors.onSurfaceMedium
         )

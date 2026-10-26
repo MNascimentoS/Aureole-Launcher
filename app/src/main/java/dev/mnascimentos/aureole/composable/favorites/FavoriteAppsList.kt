@@ -48,7 +48,7 @@ internal fun FavoriteSectionHeader(
         verticalAlignment = Alignment.CenterVertically
     ) {
         AureoleText(
-            text = stringResource(R.string.favorites_count, count),
+            text = stringResource(R.string.home_favorites_count, count),
             color = AureoleDS.colors.onSurfaceHigh,
             format = AureoleTextFormatParams(style = AureoleDS.typography.titleSmall, fontWeight = FontWeight.Bold)
         )
@@ -58,7 +58,7 @@ internal fun FavoriteSectionHeader(
                 contentPadding = PaddingValues(horizontal = AureoleDS.dimens.xSmall, vertical = AureoleDS.dimens.zero)
             ) {
                 AureoleText(
-                    text = stringResource(R.string.favorites_disable_all),
+                    text = stringResource(R.string.home_favorites_disable_all),
                     color = AureoleDS.colors.error,
                     format = AureoleTextFormatParams(
                         style = AureoleDS.typography.labelMedium,
@@ -83,7 +83,7 @@ internal fun RemainingSectionHeader(
         verticalAlignment = Alignment.CenterVertically
     ) {
         AureoleText(
-            text = stringResource(R.string.other_apps_count, count),
+            text = stringResource(R.string.home_folder_other_apps_count, count),
             color = AureoleDS.colors.onSurfaceMedium,
             format = AureoleTextFormatParams(style = AureoleDS.typography.titleSmall, fontWeight = FontWeight.Bold)
         )
@@ -93,7 +93,7 @@ internal fun RemainingSectionHeader(
                 contentPadding = PaddingValues(horizontal = AureoleDS.dimens.xSmall, vertical = AureoleDS.dimens.zero)
             ) {
                 AureoleText(
-                    text = stringResource(R.string.favorites_enable_all),
+                    text = stringResource(R.string.home_favorites_enable_all),
                     color = AureoleDS.colors.onSurfaceHigh,
                     format = AureoleTextFormatParams(
                         style = AureoleDS.typography.labelMedium,
@@ -127,9 +127,9 @@ internal fun LazyListScope.favoriteSectionItems(
     if (filteredFavorites.isEmpty()) {
         item {
             val emptyMsg = if (searchQuery.isBlank()) {
-                stringResource(R.string.favorites_none_selected)
+                stringResource(R.string.home_favorites_none_selected)
             } else {
-                stringResource(R.string.favorites_none_found)
+                stringResource(R.string.home_favorites_none_found)
             }
             AureoleText(
                 text = emptyMsg,
@@ -180,9 +180,9 @@ internal fun LazyListScope.remainingSectionItems(
     if (filteredRemaining.isEmpty()) {
         item {
             val emptyMsg = if (searchQuery.isBlank()) {
-                stringResource(R.string.favorites_all_added)
+                stringResource(R.string.home_favorites_all_added)
             } else {
-                stringResource(R.string.favorites_none_other_found)
+                stringResource(R.string.home_favorites_none_other_found)
             }
             AureoleText(
                 text = emptyMsg,
@@ -244,7 +244,7 @@ internal fun FavoriteAppsSearchInput(
     OutlinedTextField(
         value = query,
         onValueChange = onQueryChange,
-        placeholder = { AureoleText(stringResource(R.string.favorites_search_placeholder)) },
+        placeholder = { AureoleText(stringResource(R.string.home_favorites_search_placeholder)) },
         leadingIcon = {
             AureoleDS.icons.Search(
                 tint = AureoleDS.colors.onSurfaceMedium,

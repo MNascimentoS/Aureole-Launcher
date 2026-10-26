@@ -11,9 +11,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
+import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
 import dev.mnascimentos.aureole.core.designsystem.icons.Corners
@@ -57,16 +59,22 @@ internal fun GlassAndBlurRow(
             modifier = Modifier.padding(end = AureoleDS.dimens.iconMedium).size(AureoleDS.dimens.iconMedium)
         )
         AureoleText(
-            text = "Glass effect",
+            text = stringResource(R.string.settings_appearance_glass_effect),
             color = AureoleDS.colors.onSurfaceMedium,
             modifier = Modifier.weight(1f),
             format = AureoleTextFormatParams(style = AureoleDS.typography.bodyLarge, fontWeight = FontWeight.Normal)
         )
         val opacityText = when {
-            (!uiState.isHazeEnabled || uiState.hazeOpacity <= OPACITY_NONE_THRESHOLD) -> "None"
-            uiState.hazeOpacity <= OPACITY_LOW_THRESHOLD -> "Low"
-            uiState.hazeOpacity <= OPACITY_MEDIUM_THRESHOLD -> "Medium"
-            else -> "Max"
+            (!uiState.isHazeEnabled || uiState.hazeOpacity <= OPACITY_NONE_THRESHOLD) -> stringResource(
+                R.string.settings_appearance_glass_effect_none
+            )
+            uiState.hazeOpacity <= OPACITY_LOW_THRESHOLD -> stringResource(
+                R.string.settings_appearance_glass_effect_low
+            )
+            uiState.hazeOpacity <= OPACITY_MEDIUM_THRESHOLD -> stringResource(
+                R.string.settings_appearance_glass_effect_medium
+            )
+            else -> stringResource(R.string.settings_appearance_glass_effect_max)
         }
         AureoleText(
             text = opacityText,
@@ -99,13 +107,13 @@ internal fun ChangeBorderRow(
             modifier = Modifier.padding(end = AureoleDS.dimens.iconMedium).size(AureoleDS.dimens.iconMedium)
         )
         AureoleText(
-            text = "Change Border",
+            text = stringResource(R.string.settings_appearance_change_border),
             color = AureoleDS.colors.onSurfaceMedium,
             modifier = Modifier.weight(1f),
             format = AureoleTextFormatParams(style = AureoleDS.typography.bodyLarge, fontWeight = FontWeight.Normal)
         )
         AureoleText(
-            text = "$cornerRadiusDp dp",
+            text = stringResource(R.string.settings_appearance_border_radius_format, cornerRadiusDp),
             color = AureoleDS.colors.onSurfaceLow,
             format = AureoleTextFormatParams(style = AureoleDS.typography.bodyLarge)
         )

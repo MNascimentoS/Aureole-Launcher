@@ -52,7 +52,7 @@ internal fun EditDialogChildrenListSection(
             contentAlignment = Alignment.Center
         ) {
             AureoleText(
-                text = stringResource(R.string.edit_container_none_added),
+                text = stringResource(R.string.home_container_edit_none_added),
                 color = AureoleDS.colors.onSurfaceMedium,
                 format = AureoleTextFormatParams(style = AureoleDS.typography.bodyMedium)
             )
@@ -85,7 +85,7 @@ internal fun ScrollViewOrientationSelector(
 ) {
     Column(modifier = Modifier.fillMaxWidth()) {
         AureoleText(
-            text = stringResource(R.string.edit_container_scroll_orientation),
+            text = stringResource(R.string.home_container_edit_scroll_orientation),
             color = AureoleDS.colors.onSurfaceHigh,
             modifier = Modifier.padding(bottom = AureoleDS.dimens.smallCompact),
             format = AureoleTextFormatParams(style = AureoleDS.typography.titleMedium, fontWeight = FontWeight.SemiBold)
@@ -96,14 +96,14 @@ internal fun ScrollViewOrientationSelector(
             horizontalArrangement = Arrangement.spacedBy(AureoleDS.dimens.small)
         ) {
             OrientationOptionCard(
-                title = stringResource(R.string.edit_container_vertical),
+                title = stringResource(R.string.home_container_edit_vertical),
                 isSelected = item.safeScrollOrientation == ScrollOrientation.VERTICAL,
                 onClick = { actions.onUpdateScrollViewOrientation(item.id, ScrollOrientation.VERTICAL) },
                 modifier = Modifier.weight(1f)
             )
 
             OrientationOptionCard(
-                title = stringResource(R.string.edit_container_horizontal),
+                title = stringResource(R.string.home_container_edit_horizontal),
                 isSelected = item.safeScrollOrientation == ScrollOrientation.HORIZONTAL,
                 onClick = { actions.onUpdateScrollViewOrientation(item.id, ScrollOrientation.HORIZONTAL) },
                 modifier = Modifier.weight(1f)

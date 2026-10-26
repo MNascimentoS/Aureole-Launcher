@@ -26,7 +26,6 @@ import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.core.designsystem.utils.LocalHazeState
-import dev.mnascimentos.aureole.feature.home.components.clock.ClockHeaderContent
 import dev.mnascimentos.aureole.feature.home.components.clock.model.ClockHazeConfig
 import dev.mnascimentos.aureole.feature.home.components.clock.model.ClockHeaderConfig
 import dev.mnascimentos.aureole.feature.home.components.clock.model.ClockHeaderContentParams
@@ -161,9 +160,9 @@ private fun Modifier.clockClickable(onClick: (() -> Unit)?, onLongClick: (() -> 
 private fun getGreetingForCurrentHour(): String {
     val hour = SimpleDateFormat("H", Locale.getDefault()).format(Date()).toIntOrNull() ?: DEFAULT_NOON_HOUR
     return when (hour) {
-        in MORNING_HOUR_START..MORNING_HOUR_END -> stringResource(R.string.clock_greeting_morning)
-        in AFTERNOON_HOUR_START..AFTERNOON_HOUR_END -> stringResource(R.string.clock_greeting_afternoon)
-        else -> stringResource(R.string.clock_greeting_evening)
+        in MORNING_HOUR_START..MORNING_HOUR_END -> stringResource(R.string.home_clock_greeting_morning)
+        in AFTERNOON_HOUR_START..AFTERNOON_HOUR_END -> stringResource(R.string.home_clock_greeting_afternoon)
+        else -> stringResource(R.string.home_clock_greeting_evening)
     }
 }
 

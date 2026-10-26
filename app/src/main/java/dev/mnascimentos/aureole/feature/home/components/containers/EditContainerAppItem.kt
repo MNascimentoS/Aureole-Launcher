@@ -79,9 +79,9 @@ internal fun EditContainerItemRow(
 
         AureoleText(
             text = if (params.isFolder) {
-                stringResource(R.string.edit_container_folder_label)
+                stringResource(R.string.home_container_edit_folder_label)
             } else {
-                stringResource(R.string.edit_container_app_label)
+                stringResource(R.string.home_container_edit_app_label)
             },
             color = AureoleDS.colors.onSurfaceMedium,
             modifier = Modifier.padding(end = AureoleDS.dimens.xxSmall),
@@ -139,7 +139,7 @@ private fun EditContainerItemMoveButtons(
 internal fun EditContainerAddAppDropdown(
     allApps: List<AppInfo>,
     onAppSelected: (String) -> Unit,
-    label: String = stringResource(R.string.edit_container_add_app)
+    label: String = stringResource(R.string.home_container_edit_add_app)
 ) {
     var isExpanded by remember { mutableStateOf(false) }
     var searchQuery by remember { mutableStateOf("") }

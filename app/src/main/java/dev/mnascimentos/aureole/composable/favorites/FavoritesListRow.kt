@@ -65,7 +65,7 @@ internal fun FavoritesEmptyHint(onClick: () -> Unit) {
             )
             Spacer(modifier = Modifier.width(AureoleDS.dimens.xSmall))
             AureoleText(
-                text = stringResource(R.string.favorites_tap_to_select),
+                text = stringResource(R.string.home_favorites_tap_to_select),
                 color = AureoleDS.colors.onSurfaceMedium,
                 format = AureoleTextFormatParams(style = AureoleDS.typography.bodyMedium)
             )
@@ -86,7 +86,7 @@ internal fun AllAppsDivider() {
             color = AureoleDS.colors.onSurfaceHigh.copy(alpha = 0.12f)
         )
         AureoleText(
-            text = stringResource(R.string.favorites_all_apps_divider),
+            text = stringResource(R.string.home_favorites_all_apps_divider),
             color = AureoleDS.colors.onSurfaceMedium.copy(alpha = 0.6f),
             modifier = Modifier.padding(horizontal = AureoleDS.dimens.xSmall),
             format = AureoleTextFormatParams(style = AureoleDS.typography.labelSmall)

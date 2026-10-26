@@ -47,7 +47,7 @@ fun FavoriteAppsDialogHeader(modifier: Modifier = Modifier) {
         contentAlignment = Alignment.Center
     ) {
         AureoleText(
-            text = stringResource(R.string.favorites_dialog_title),
+            text = stringResource(R.string.home_favorites_dialog_title),
             color = AureoleDS.colors.onSurfaceMedium,
             format = AureoleTextFormatParams(
                 style = AureoleDS.typography.titleMedium,
@@ -75,7 +75,7 @@ fun FavoriteAppsShowAllSwitchRow(
     ) {
         Column(modifier = Modifier.weight(1f)) {
             AureoleText(
-                text = stringResource(R.string.favorites_show_all_apps),
+                text = stringResource(R.string.home_favorites_show_all_apps),
                 color = AureoleDS.colors.onSurfaceHigh,
                 format = AureoleTextFormatParams(
                     style = AureoleDS.typography.bodyMedium,
@@ -83,7 +83,7 @@ fun FavoriteAppsShowAllSwitchRow(
                 )
             )
             AureoleText(
-                text = stringResource(R.string.favorites_show_all_apps_desc),
+                text = stringResource(R.string.home_favorites_show_all_apps_desc),
                 color = AureoleDS.colors.onSurfaceMedium,
                 format = AureoleTextFormatParams(style = AureoleDS.typography.bodySmall)
             )
@@ -221,6 +221,7 @@ fun RemainingAppRow(
             )
         }
 
+        val plusDesc = stringResource(R.string.favorites_dialog_plus_content_desc)
         Box(
             modifier = Modifier
                 .size(AureoleDS.dimens.large)
@@ -228,7 +229,7 @@ fun RemainingAppRow(
                     color = AureoleDS.colors.surfaceVariant,
                     shape = RoundedCornerShape(AureoleDS.dimens.radiusXSmall)
                 )
-                .semantics { contentDescription = "Plus" }
+                .semantics { contentDescription = plusDesc }
                 .clickable(role = Role.Button) { onToggleFavorite() },
             contentAlignment = Alignment.Center
         ) {

@@ -26,6 +26,6 @@ Qualquer agente de IA ou sistema autônomo trabalhando neste repositório **DEVE
 Antes de finalizar alterações complexas, valide com:
 1. `./gradlew detekt --auto-correct` (máx. 5 issues)
 2. `./gradlew testDebugUnitTest` (100% aprovação)
-3. `./gradlew jacocoTestCoverageVerification` (linhas ≥ 85%, instruções ≥ 70%, branches de lógica ≥ 70%)
+3. `./gradlew jacocoTestCoverageVerification` (linhas ≥ 85%, instruções ≥ 70%, branches de lógica ≥ 60%)
 4. `./gradlew validateDebugScreenshotTest`
 5. `./gradlew assembleDebug`

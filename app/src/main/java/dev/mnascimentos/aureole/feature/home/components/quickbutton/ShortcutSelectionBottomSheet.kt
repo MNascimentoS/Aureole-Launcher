@@ -100,10 +100,10 @@ fun ShortcutSelectionBottomSheet(
         params = AureoleEditOverlayParams(
             config = AureoleEditOverlayConfig(
                 title = if (isShowingAppPicker) {
-                    stringResource(R.string.qb_select_app)
+                    stringResource(R.string.home_quickbutton_select_app)
                 } else {
                     stringResource(
-                        R.string.qb_select_shortcut
+                        R.string.home_quickbutton_select_shortcut
                     )
                 },
                 hazeState = if (uiState.isHazeEnabled) hazeState else null,
