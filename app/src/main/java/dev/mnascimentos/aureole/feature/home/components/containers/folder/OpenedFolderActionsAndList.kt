@@ -63,7 +63,7 @@ fun OpenedFolderActions(
                 .padding(bottom = AureoleDS.dimens.xSmall)
         ) {
             AureolePopupMenuItem(
-                title = "Add Apps",
+                title = stringResource(R.string.folder_opened_add_apps),
                 params = AureolePopupMenuItemParams(
                     icon = { m -> AureoleDS.icons.Add(m) }
                 ),
@@ -71,7 +71,7 @@ fun OpenedFolderActions(
             )
 
             AureolePopupMenuItem(
-                title = "Edit Folder",
+                title = stringResource(R.string.folder_opened_edit),
                 params = AureolePopupMenuItemParams(
                     icon = { m -> AureoleDS.icons.Edit(m) }
                 ),

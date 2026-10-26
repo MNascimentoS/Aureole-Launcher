@@ -225,7 +225,7 @@ fun SingleAppWidgetContent(
 
 @SuppressLint("SetTextI18n")
 private fun createSingleWidgetView(context: Context, widgetId: Int, appWidgetHost: AppWidgetHost?): View {
-    if (appWidgetHost == null) return TextView(context).apply { text = "Widget" }
+    if (appWidgetHost == null) return TextView(context).apply { text = context.getString(R.string.grid_widget_label) }
     val appWidgetManager = AppWidgetManager.getInstance(context)
     val appWidgetInfo = appWidgetManager.getAppWidgetInfo(widgetId)
     return if (appWidgetInfo != null) {
@@ -239,7 +239,7 @@ private fun createSingleWidgetView(context: Context, widgetId: Int, appWidgetHos
         appWidgetManager.updateAppWidgetOptions(widgetId, options)
         appWidgetHost.createView(context, widgetId, appWidgetInfo)
     } else {
-        TextView(context).apply { text = "Widget" }
+        TextView(context).apply { text = context.getString(R.string.grid_widget_label) }
     }
 }
 

@@ -1,12 +1,14 @@
 package dev.mnascimentos.aureole.feature.home.components.appsdrawer.appitem
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.NonRestartableComposable
 import androidx.compose.ui.Modifier
 import dev.mnascimentos.aureole.composable.appitem.AppItemRow
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.feature.home.components.appsdrawer.appitem.model.AppItemRowActions
 import dev.mnascimentos.aureole.feature.home.components.appsdrawer.appitem.model.AppItemRowConfig
 
+@NonRestartableComposable
 @Composable
 fun AppItemRow(
     app: AppInfo,

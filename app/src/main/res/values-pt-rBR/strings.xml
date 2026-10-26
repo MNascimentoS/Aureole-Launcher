@@ -191,7 +191,7 @@
     <string name="favorites_none_found">Nenhum favorito encontrado.</string>
     <string name="favorites_all_added">Todos os aplicativos já estão nos favoritos.</string>
     <string name="favorites_none_other_found">Nenhum outro aplicativo encontrado.</string>
-    <string name="favorites_search_placeholder">Buscar aplicativo...</string>
+    <string name="favorites_search_placeholder">Buscar aplicativo&#8230;</string>
     <string name="favorites_tap_to_select">Toque para selecionar Favoritos</string>
     <string name="favorites_all_apps_divider">\" TODOS OS APPS \"</string>
     <string name="favorites_done">Concluído</string>

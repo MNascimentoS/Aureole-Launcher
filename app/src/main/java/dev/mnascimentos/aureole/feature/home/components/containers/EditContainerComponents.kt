@@ -31,6 +31,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Switch
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -121,6 +122,7 @@ private fun OrientationOptionButton(
 }
 
 @Composable
+@ReadOnlyComposable
 private fun getPositionOptionsMap(): List<Pair<String, String>> = listOf(
     "Space Between" to stringResource(R.string.edit_container_space_between),
     "Space Evenly" to stringResource(R.string.edit_container_space_evenly),

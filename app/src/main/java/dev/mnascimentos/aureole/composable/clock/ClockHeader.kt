@@ -157,6 +157,7 @@ private fun Modifier.clockClickable(onClick: (() -> Unit)?, onLongClick: (() -> 
 }
 
 @Composable
+@ReadOnlyComposable
 private fun getGreetingForCurrentHour(): String {
     val hour = SimpleDateFormat("H", Locale.getDefault()).format(Date()).toIntOrNull() ?: DEFAULT_NOON_HOUR
     return when (hour) {
