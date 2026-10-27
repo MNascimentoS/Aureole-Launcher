@@ -37,7 +37,10 @@ internal object OnboardingReducer {
         return when {
             updated == onboarding -> next
             !isFinished -> next.copy(onboarding = updated)
-            else -> reduceChecklist(previous, next.copy(onboarding = updated.copy(stage = OnboardingStage.CHECKLIST)))
+            else -> reduceChecklist(
+                previous,
+                next.copy(onboarding = updated.copy(stage = OnboardingStage.CHECKLIST, isChecklistExpanded = true))
+            )
         }
     }
 
@@ -54,7 +57,9 @@ internal object OnboardingReducer {
                 )
             )
         }
-        val hasNewTask = !previous.onboarding.completedTasks.containsAll(tasks)
+        // Tasks restored from disk are not news: only reopen for completions seen on the checklist.
+        val hasNewTask = previous.onboarding.stage == OnboardingStage.CHECKLIST &&
+            !previous.onboarding.completedTasks.containsAll(tasks)
         val updated = onboarding.copy(
             completedTasks = tasks,
             isChecklistExpanded = onboarding.isChecklistExpanded || hasNewTask

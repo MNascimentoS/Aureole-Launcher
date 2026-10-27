@@ -100,4 +100,16 @@ class OnboardingUiStateTest {
         assertTrue(state.isChecklistExpanded)
         assertFalse(state.isDefaultLauncher)
     }
+
+    @Test
+    fun `when steps are done out of order, should teach the first pending visible step`() {
+        val state = OnboardingUiState(completedSteps = setOf(GestureCoachStep.OPEN_APPS))
+
+        assertEquals(GestureCoachStep.ALPHABET_SCRUB, state.currentGestureStep(isAlphabetScrubberDisabled = false))
+        assertEquals(GestureCoachStep.CUSTOMIZE, state.currentGestureStep(isAlphabetScrubberDisabled = true))
+        assertEquals(
+            null,
+            state.copy(completedSteps = GestureCoachStep.entries.toSet()).currentGestureStep(false)
+        )
+    }
 }

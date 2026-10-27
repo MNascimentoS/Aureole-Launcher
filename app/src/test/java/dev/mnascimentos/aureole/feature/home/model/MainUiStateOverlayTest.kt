@@ -5,6 +5,8 @@ import android.graphics.drawable.ColorDrawable
 import dev.mnascimentos.aureole.core.data.model.AppFolder
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.data.model.LauncherItemState
+import dev.mnascimentos.aureole.core.data.model.OnboardingStage
+import dev.mnascimentos.aureole.feature.home.components.onboarding.model.OnboardingUiState
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
@@ -74,5 +76,20 @@ class MainUiStateOverlayTest {
 
         assertEquals(listOf(9), state.getWidgetIdsForStack("top_widgets"))
         assertEquals(emptyList<Int>(), state.getWidgetIdsForStack("unknown"))
+    }
+
+    @Test
+    fun `when the onboarding blocks the home, should report an active overlay but no home overlay`() {
+        val state = MainUiState(onboarding = OnboardingUiState(stage = OnboardingStage.WELCOME))
+
+        assertTrue(state.isOverlayActive)
+        assertFalse(state.isHomeOverlayActive)
+    }
+
+    @Test
+    fun `when the onboarding does not block the home, should not report an active overlay`() {
+        val state = MainUiState(onboarding = OnboardingUiState(stage = OnboardingStage.GESTURES))
+
+        assertFalse(state.isOverlayActive)
     }
 }

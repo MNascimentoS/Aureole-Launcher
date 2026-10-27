@@ -276,6 +276,17 @@ class OnboardingReducerTest {
     }
 
     @Test
+    fun `when tasks arrive with the checklist from another stage, should keep the list collapsed`() {
+        val previous = MainUiState()
+        val next = stateAt(
+            OnboardingStage.CHECKLIST,
+            OnboardingUiState(completedTasks = setOf(OnboardingTask.CHOOSE_FONT), isChecklistExpanded = false)
+        )
+
+        assertSame(next, OnboardingReducer.reduce(previous, next))
+    }
+
+    @Test
     fun `when a derived task is undone, should keep it completed`() {
         val previous = stateAt(
             OnboardingStage.CHECKLIST,

@@ -35,6 +35,10 @@ val OnboardingUiState.taskProgress: Float
 fun visibleGestureSteps(isAlphabetScrubberDisabled: Boolean): List<GestureCoachStep> =
     GestureCoachStep.entries.filter { it != GestureCoachStep.ALPHABET_SCRUB || !isAlphabetScrubberDisabled }
 
+/** The step the coach teaches now: the first visible one not done yet. */
+fun OnboardingUiState.currentGestureStep(isAlphabetScrubberDisabled: Boolean): GestureCoachStep? =
+    visibleGestureSteps(isAlphabetScrubberDisabled).firstOrNull { it !in completedSteps }
+
 fun OnboardingUiState.toProgress(): OnboardingProgress = OnboardingProgress(
     stage = stage,
     completedSteps = completedSteps,

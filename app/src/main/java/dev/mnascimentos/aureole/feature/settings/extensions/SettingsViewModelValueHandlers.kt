@@ -1,7 +1,6 @@
 package dev.mnascimentos.aureole.feature.settings.extensions
 
-import androidx.compose.ui.graphics.toArgb
-import dev.mnascimentos.aureole.core.designsystem.palette.getPaletteByName
+import dev.mnascimentos.aureole.core.designsystem.palette.resolveThemeSeedColor
 import dev.mnascimentos.aureole.feature.settings.SettingsViewModel
 import dev.mnascimentos.aureole.feature.settings.model.SettingValue
 
@@ -45,8 +44,7 @@ private fun SettingsViewModel.handleManualSeedColor(color: Int) {
 }
 
 private fun SettingsViewModel.handleSelectedTheme(themeName: String) {
-    val palette = getPaletteByName(themeName)
-    val surfaceVariantColorArgb = palette.colors.surfaceVariant.toArgb()
+    val surfaceVariantColorArgb = resolveThemeSeedColor(themeName)
     settingsRepository.selectedThemeName = themeName
     settingsRepository.manualSeedColor = surfaceVariantColorArgb
     updateUiState {

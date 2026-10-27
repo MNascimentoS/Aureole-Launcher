@@ -9,6 +9,7 @@ import dev.mnascimentos.aureole.core.data.model.LauncherItemState
 import dev.mnascimentos.aureole.core.data.model.QuickButtonModel
 import dev.mnascimentos.aureole.core.data.repository.SettingsRepository
 import dev.mnascimentos.aureole.feature.home.components.onboarding.model.OnboardingUiState
+import dev.mnascimentos.aureole.feature.home.components.onboarding.model.blocksHome
 import dev.mnascimentos.aureole.feature.home.grid.model.GridLimits
 
 data class MainUiState(
@@ -162,6 +163,10 @@ fun MainUiState.getWidgetIdsForStack(stackId: String): List<Int> {
 }
 
 val MainUiState.isOverlayActive: Boolean
+    get() = isHomeOverlayActive || onboarding.blocksHome
+
+/** Home layers other than the onboarding, which must never cover them. */
+val MainUiState.isHomeOverlayActive: Boolean
     get() {
         val isFolderActive = activeFolder != null ||
             isCreateFolderDialogVisible ||
