@@ -8,6 +8,7 @@ import dev.mnascimentos.aureole.core.data.model.ContainerModel
 import dev.mnascimentos.aureole.core.data.model.LauncherItemState
 import dev.mnascimentos.aureole.core.data.model.QuickButtonModel
 import dev.mnascimentos.aureole.core.data.repository.SettingsRepository
+import dev.mnascimentos.aureole.feature.home.components.onboarding.model.OnboardingUiState
 import dev.mnascimentos.aureole.feature.home.grid.model.GridLimits
 
 data class MainUiState(
@@ -129,7 +130,10 @@ data class MainUiState(
     val activeContainerFolderBottomSheet: ContainerFolderBottomSheetState? = null,
     val activeFolderAppBottomSheet: FolderAppBottomSheetState? = null,
     val activeWidgetStackBottomSheet: WidgetStackBottomSheetState? = null,
-    val widgetStackDots: Map<String, Boolean> = emptyMap()
+    val widgetStackDots: Map<String, Boolean> = emptyMap(),
+
+    // First user experience
+    val onboarding: OnboardingUiState = OnboardingUiState()
 )
 
 data class ContainerAppBottomSheetState(
