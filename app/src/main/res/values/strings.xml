@@ -60,7 +60,6 @@
 
     <!-- Settings -->
     <string name="settings_root_header">Settings</string>
-    <string name="settings_root_general">General</string>
 
     <!-- Settings Root -->
     <string name="settings_root_thank_you">Thank you!</string>
@@ -111,9 +110,6 @@
     <!-- Apps Drawer -->
     <string name="home_apps_search_placeholder">Search</string>
 
-    <!-- Favorites -->
-    <string name="home_favorites_title">Favorites</string>
-
     <!-- Overlays & Customization -->
     <string name="home_customize_title">Customize</string>
     <string name="home_customize_add_clock">Add clock</string>
@@ -150,7 +146,6 @@
 
     <!-- Clock Customization -->
     <string name="home_clock_customize_title">Customize Clock</string>
-    <string name="home_clock_style">Clock Style</string>
     <string name="home_clock_layout_style">Layout Style</string>
     <string name="home_clock_greeting_text">Greeting Text</string>
     <string name="home_clock_greeting_placeholder">E.g: Welcome back!</string>
@@ -322,7 +317,7 @@
     <string name="home_grid_item_quick_button">Quick Button</string>
     <string name="home_grid_item_container">Container</string>
     <string name="home_grid_config_title">Configure %1$s</string>
-    <string name="home_grid_current_size">Current size: %1$d x %2$d cells</string>
+    <string name="home_grid_current_size" tools:ignore="PluralsCandidate">Current size: %1$d x %2$d cells</string>
     <string name="settings_appearance_glass_effect">Glass effect</string>
     <string name="settings_appearance_glass_effect_none">None</string>
     <string name="settings_appearance_glass_effect_low">Low</string>

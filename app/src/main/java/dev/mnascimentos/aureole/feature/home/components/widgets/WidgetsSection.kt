@@ -19,6 +19,8 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -26,11 +28,15 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.input.pointer.PointerEventPass
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.rememberNestedScrollInteropConnection
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import dev.mnascimentos.aureole.composable.widgets.AddWidgetButton
 import dev.mnascimentos.aureole.composable.widgets.WidgetPositionIndicatorBar
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
+import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.core.designsystem.utils.LocalAnimatedVisibilityScope
 import dev.mnascimentos.aureole.core.designsystem.utils.LocalSharedTransitionScope
 import dev.mnascimentos.aureole.feature.home.components.widgets.model.PagerContentParams
@@ -38,6 +44,7 @@ import dev.mnascimentos.aureole.feature.home.components.widgets.model.StackedWid
 import dev.mnascimentos.aureole.feature.home.components.widgets.model.StackedWidgetPagerParams
 import dev.mnascimentos.aureole.feature.home.model.LocalHomeActions
 import dev.mnascimentos.aureole.feature.home.model.LocalHomeUiState
+import dev.mnascimentos.aureole.feature.home.model.MainUiState
 import dev.mnascimentos.aureole.feature.home.model.getWidgetIdsForStack
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -207,6 +214,31 @@ private fun updateWidgetHostView(view: View, widgetId: Int) {
         val appWidgetInfo = appWidgetManager.getAppWidgetInfo(widgetId)
         if (appWidgetInfo != null) {
             applyWidgetOptionsIfNeeded(view, widgetId, appWidgetManager, appWidgetInfo)
+        }
+    }
+}
+
+private const val PREVIEW_APPWIDGET_HOST_ID = 1024
+private const val PREVIEW_HEIGHT_PX = 400f
+
+@AureolePreview
+@Composable
+private fun StackedWidgetSectionPreview() {
+    val context = LocalContext.current
+    val mockUiState = MainUiState()
+
+    AureoleLauncherTheme {
+        CompositionLocalProvider(
+            LocalHomeUiState provides mockUiState
+        ) {
+            StackedWidgetSection(
+                config = StackedWidgetConfig(
+                    topWidgetIds = emptyList(),
+                    currentHeightDp = 160.dp,
+                    currentHeightPx = PREVIEW_HEIGHT_PX
+                ),
+                appWidgetHost = remember { AppWidgetHost(context, PREVIEW_APPWIDGET_HOST_ID) }
+            )
         }
     }
 }

@@ -60,7 +60,6 @@
 
     <!-- Settings -->
     <string name="settings_root_header">Configurações</string>
-    <string name="settings_root_general">Geral</string>
 
     <!-- Settings Root -->
     <string name="settings_root_thank_you">Muito obrigado!</string>
@@ -111,9 +110,6 @@
     <!-- Apps Drawer -->
     <string name="home_apps_search_placeholder">Buscar aplicativos</string>
 
-    <!-- Favorites -->
-    <string name="home_favorites_title">Favoritos</string>
-
     <!-- Overlays & Customization -->
     <string name="home_customize_title">Personalizar</string>
     <string name="home_customize_add_clock">Adicionar relógio</string>
@@ -150,7 +146,6 @@
 
     <!-- Clock Customization -->
     <string name="home_clock_customize_title">Personalizar Relógio</string>
-    <string name="home_clock_style">Estilo do Relógio</string>
     <string name="home_clock_layout_style">Estilo do Layout</string>
     <string name="home_clock_greeting_text">Texto da Saudação</string>
     <string name="home_clock_greeting_placeholder">Ex: Bem-vindo(a) de volta!</string>
@@ -323,7 +318,7 @@
     <string name="home_grid_item_quick_button">Botão Rápido</string>
     <string name="home_grid_item_container">Container</string>
     <string name="home_grid_config_title">Configurar %1$s</string>
-    <string name="home_grid_current_size">Tamanho atual: %1$d x %2$d células</string>
+    <string name="home_grid_current_size" tools:ignore="PluralsCandidate">Tamanho atual: %1$d x %2$d células</string>
     <string name="settings_appearance_glass_effect">Efeito de vidro</string>
     <string name="settings_appearance_glass_effect_none">Nenhum</string>
     <string name="settings_appearance_glass_effect_low">Baixo</string>

@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -304,6 +305,7 @@ private fun ChildTypeIcon(type: LauncherItemType?) {
 }
 
 @Composable
+@ReadOnlyComposable
 private fun getScrollViewChildTitle(type: LauncherItemType?): String {
     return when (type) {
         LauncherItemType.CLOCK -> stringResource(R.string.home_container_add_clock)

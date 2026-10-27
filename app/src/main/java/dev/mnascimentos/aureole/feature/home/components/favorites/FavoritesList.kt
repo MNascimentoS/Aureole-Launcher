@@ -1,6 +1,7 @@
 package dev.mnascimentos.aureole.feature.home.components.favorites
 
 import android.appwidget.AppWidgetHost
+import android.content.ComponentName
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -9,20 +10,27 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.Dp
+import androidx.core.graphics.drawable.toDrawable
 import dev.mnascimentos.aureole.composable.appitem.model.AppItemRowActions
 import dev.mnascimentos.aureole.composable.appitem.model.AppItemRowConfig
 import dev.mnascimentos.aureole.composable.clock.model.ClockHazeConfig
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
+import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.core.designsystem.utils.fadingEdges
 import dev.mnascimentos.aureole.feature.home.components.appsdrawer.appitem.HomeAppItemRow
 import dev.mnascimentos.aureole.feature.home.components.clock.HomeClockHeader
 import dev.mnascimentos.aureole.feature.home.components.favorites.model.FavoritesListConfig
 import dev.mnascimentos.aureole.feature.home.components.favorites.model.FavoritesListOptions
+import dev.mnascimentos.aureole.feature.home.components.favorites.model.FavoritesPreviewMetrics
 import dev.mnascimentos.aureole.feature.home.components.favorites.model.NonScrollableFavoritesParams
 import dev.mnascimentos.aureole.feature.home.components.favorites.model.ScrollableFavoritesParams
 import dev.mnascimentos.aureole.feature.home.components.widgets.StackedWidgetSection
@@ -30,8 +38,10 @@ import dev.mnascimentos.aureole.feature.home.components.widgets.model.StackedWid
 import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
 import dev.mnascimentos.aureole.feature.home.model.LocalHomeActions
 import dev.mnascimentos.aureole.feature.home.model.LocalHomeUiState
+import dev.mnascimentos.aureole.feature.home.model.MainUiState
 
 private const val MAX_NON_SCROLLABLE_APPS = 20
+private const val PREVIEW_APPWIDGET_HOST_ID = 1024
 
 @Composable
 fun FavoritesList(
@@ -289,4 +299,36 @@ fun FavoritesList(
         appWidgetHost = appWidgetHost,
         modifier = modifier
     )
+}
+
+@AureolePreview
+@Composable
+private fun FavoritesListPreview() {
+    val context = LocalContext.current
+    val mockApp = AppInfo(
+        label = "Phone",
+        packageName = "com.example.phone",
+        componentName = ComponentName("com.example.phone", "MainActivity"),
+        icon = 0xFF1B65C0.toInt().toDrawable()
+    )
+    val mockUiState = MainUiState(
+        favoriteApps = listOf(mockApp),
+        favoriteAppPackages = listOf(mockApp.packageName),
+        isWidgetRowEnabled = false
+    )
+
+    AureoleLauncherTheme {
+        CompositionLocalProvider(
+            LocalHomeUiState provides mockUiState
+        ) {
+            FavoritesList(
+                config = FavoritesListConfig(
+                    currentHeightDp = FavoritesPreviewMetrics.DefaultHeight,
+                    currentHeightPx = 400f,
+                    state = rememberLazyListState()
+                ),
+                appWidgetHost = remember { AppWidgetHost(context, PREVIEW_APPWIDGET_HOST_ID) }
+            )
+        }
+    }
 }

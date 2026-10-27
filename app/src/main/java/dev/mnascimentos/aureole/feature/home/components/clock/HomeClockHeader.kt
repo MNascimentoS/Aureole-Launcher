@@ -6,6 +6,8 @@ import dev.mnascimentos.aureole.composable.clock.ClockHeader
 import dev.mnascimentos.aureole.composable.clock.model.ClockHazeConfig
 import dev.mnascimentos.aureole.composable.clock.model.ClockHeaderConfig
 import dev.mnascimentos.aureole.composable.clock.model.ResolvedClockConfig
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
+import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.model.LocalHomeUiState
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
 
@@ -47,4 +49,12 @@ internal fun resolveClockHazeConfig(hazeConfig: ClockHazeConfig, uiState: MainUi
         hazeOpacity = if (hazeConfig.isHazeEnabled) hazeConfig.hazeOpacity else uiState.hazeOpacity,
         isBackgroundEnabled = hazeConfig.isBackgroundEnabled && uiState.isClockBackgroundEnabled
     )
+}
+
+@AureolePreview
+@Composable
+private fun HomeClockHeaderPreview() {
+    AureoleLauncherTheme {
+        HomeClockHeader()
+    }
 }
