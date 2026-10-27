@@ -19,19 +19,21 @@ import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.re
 import dev.mnascimentos.aureole.feature.home.components.onboarding.model.OnboardingMotionSpec
 
 /**
- * Slides its card in from outside the screen edge with the card spring. [fromTop] picks the edge;
- * previews and reduced motion show it settled.
+ * Slides its card in from outside the screen edge with a spring, the card spring unless [damping] and
+ * [stiffness] say otherwise. [fromTop] picks the edge; previews and reduced motion show it settled.
  */
 @Composable
 fun OnboardingCardEntrance(
     fromTop: Boolean,
     modifier: Modifier = Modifier,
+    damping: Float = OnboardingMotionSpec.CARD_DAMPING,
+    stiffness: Float = OnboardingMotionSpec.CARD_STIFFNESS,
     content: @Composable BoxScope.() -> Unit
 ) {
     val loopsEnabled = rememberOnboardingLoopsEnabled()
     val hidden = remember { Animatable(if (loopsEnabled) 1f else 0f) }
     LaunchedEffect(Unit) {
-        hidden.animateTo(0f, spring(OnboardingMotionSpec.CARD_DAMPING, OnboardingMotionSpec.CARD_STIFFNESS))
+        hidden.animateTo(0f, spring(damping, stiffness))
     }
     Box(
         modifier = modifier.graphicsLayer {
