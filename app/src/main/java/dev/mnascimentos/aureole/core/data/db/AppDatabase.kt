@@ -20,7 +20,7 @@ import dev.mnascimentos.aureole.core.data.model.FolderItemEntity
         FolderEntity::class,
         FolderItemEntity::class
     ],
-    version = 2,
+    version = 3,
     exportSchema = false
 )
 @TypeConverters(RoomConverters::class)

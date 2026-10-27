@@ -45,7 +45,7 @@ class AddContainerDialogTest {
     }
 
     @Test
-    fun `when rendering nested dialog, should not display scroll view option`() {
+    fun `when rendering nested dialog, should not display scroll view or container option`() {
         val context = ApplicationProvider.getApplicationContext<Context>()
         composeTestRule.setContent {
             AureoleLauncherTheme {
@@ -59,6 +59,9 @@ class AddContainerDialogTest {
 
         composeTestRule.onNodeWithText(context.getString(R.string.home_container_add_nested_title)).assertExists()
         composeTestRule.onNodeWithText(context.getString(R.string.home_container_add_scroll_view)).assertDoesNotExist()
+        composeTestRule.onNodeWithText(
+            context.getString(R.string.home_container_add_shortcuts_container)
+        ).assertDoesNotExist()
     }
 
     @Test

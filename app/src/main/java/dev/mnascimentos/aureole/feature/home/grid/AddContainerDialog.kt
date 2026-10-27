@@ -81,11 +81,13 @@ private fun AddContainerOptionList(
             icon = { m -> AureoleDS.icons.HorizontalContainer(m) },
             onClick = { onSelectType(LauncherItemType.APPS_LIST) }
         )
-        AddContainerOptionItem(
-            title = stringResource(R.string.home_container_add_shortcuts_container),
-            icon = { m -> AureoleDS.icons.MenuIcon(m) },
-            onClick = { onSelectType(LauncherItemType.SHORTCUTS_CONTAINER) }
-        )
+        if (!isNested) {
+            AddContainerOptionItem(
+                title = stringResource(R.string.home_container_add_shortcuts_container),
+                icon = { m -> AureoleDS.icons.MenuIcon(m) },
+                onClick = { onSelectType(LauncherItemType.SHORTCUTS_CONTAINER) }
+            )
+        }
         AddContainerOptionItem(
             title = stringResource(R.string.home_container_add_widget_list),
             icon = { m -> AureoleDS.icons.Add(m) },

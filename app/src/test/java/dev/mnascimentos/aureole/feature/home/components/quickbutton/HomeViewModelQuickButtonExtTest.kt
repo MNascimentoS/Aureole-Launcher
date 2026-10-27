@@ -1,6 +1,9 @@
 package dev.mnascimentos.aureole.feature.home.components.quickbutton
 
 import android.content.Context
+import dev.mnascimentos.aureole.core.data.model.ContainerItemEntity
+import dev.mnascimentos.aureole.core.data.model.ContainerItemType
+import dev.mnascimentos.aureole.core.data.model.ContainerModel
 import dev.mnascimentos.aureole.core.data.model.LauncherItemState
 import dev.mnascimentos.aureole.core.data.model.QuickButtonAppearance
 import dev.mnascimentos.aureole.core.data.model.QuickButtonModel
@@ -161,5 +164,68 @@ class HomeViewModelQuickButtonExtTest {
         state = viewModel.uiState.value
         assertEquals(newShortcuts, state.activeQuickButtonModel?.shortcuts)
         assertEquals(newShortcuts, state.gridItems.first().quickButtonModel?.shortcuts)
+    }
+
+    @Test
+    fun `when opening settings for quick button inside container, should find model and open sheet`() {
+        // Given
+        val qbModel = QuickButtonModel(id = "qb_in_container")
+        val containerItem = ContainerItemEntity(
+            id = "c_item_1",
+            panelId = "panel_1",
+            itemType = ContainerItemType.QUICK_BUTTON,
+            quickButtonId = "qb_in_container",
+            orderIndex = 0
+        ).also { it.quickButtonModel = qbModel }
+        val container = ContainerModel(
+            id = "panel_1",
+            items = listOf(containerItem),
+            quickButtons = listOf(qbModel)
+        )
+        viewModel.updateUiState { it.copy(containers = mapOf("panel_1" to container)) }
+
+        // When
+        viewModel.onOpenQuickButtonSettings("qb_in_container")
+
+        // Then
+        val state = viewModel.uiState.value
+        assertTrue(state.showQuickButtonSettingsBottomSheet)
+        assertEquals("qb_in_container", state.activeQuickButtonId)
+        assertEquals(qbModel, state.activeQuickButtonModel)
+    }
+
+    @Test
+    fun `when updating shortcuts for quick button inside container, should update container`() {
+        // Given
+        val qbModel = QuickButtonModel(id = "qb_in_container")
+        val containerItem = ContainerItemEntity(
+            id = "c_item_1",
+            panelId = "panel_1",
+            itemType = ContainerItemType.QUICK_BUTTON,
+            quickButtonId = "qb_in_container",
+            orderIndex = 0
+        ).also { it.quickButtonModel = qbModel }
+        val container = ContainerModel(
+            id = "panel_1",
+            items = listOf(containerItem),
+            quickButtons = listOf(qbModel)
+        )
+        viewModel.updateUiState {
+            it.copy(
+                activeQuickButtonId = "qb_in_container",
+                activeQuickButtonModel = qbModel,
+                containers = mapOf("panel_1" to container)
+            )
+        }
+
+        // When updating shortcuts
+        val newShortcuts = QuickButtonShortcuts(click = ShortcutAction.Settings)
+        viewModel.onUpdateQuickButtonShortcuts(newShortcuts)
+
+        // Then
+        val state = viewModel.uiState.value
+        val updatedContainer = state.containers["panel_1"]
+        val updatedQb = updatedContainer?.quickButtons?.first()
+        assertEquals(newShortcuts, updatedQb?.shortcuts)
     }
 }

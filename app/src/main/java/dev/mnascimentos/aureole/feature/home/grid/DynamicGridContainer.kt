@@ -272,6 +272,9 @@ private fun GridItemCellBox(config: CellBoxConfig) {
                             LauncherItemType.SHORTCUTS_CONTAINER -> {
                                 config.actions.onOpenEditContainerDialog(item.id)
                             }
+                            LauncherItemType.QUICK_BUTTON -> {
+                                config.actions.onOpenQuickButtonSettings(item.id)
+                            }
                             else -> {
                                 config.actions.onOpenEditGridItemDialog(item)
                             }

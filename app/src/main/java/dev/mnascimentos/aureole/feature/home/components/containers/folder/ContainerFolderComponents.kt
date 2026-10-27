@@ -24,15 +24,20 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInWindow
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
+import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.composable.dialogs.FolderIconRegistry
 import dev.mnascimentos.aureole.composable.dialogs.model.FolderButtonMetrics
 import dev.mnascimentos.aureole.core.data.model.AppFolder
+import dev.mnascimentos.aureole.core.data.model.QuickButtonModel
+import dev.mnascimentos.aureole.core.data.model.ShortcutType
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
 import dev.mnascimentos.aureole.core.designsystem.icons.Add
@@ -43,7 +48,14 @@ import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.ContainerFolderButtonParams
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.ContainerFolderConfig
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.ContainerFolderItemParams
+import dev.mnascimentos.aureole.feature.home.components.containers.model.ContainerConfig
+import dev.mnascimentos.aureole.feature.home.components.quickbutton.QuickButtonGridItem
+import dev.mnascimentos.aureole.feature.home.components.quickbutton.launchAppPackage
+import dev.mnascimentos.aureole.feature.home.components.quickbutton.launchSystemIntent
+import dev.mnascimentos.aureole.feature.home.components.quickbutton.launchVoiceAssistant
+import dev.mnascimentos.aureole.feature.home.model.LocalHomeActions
 import dev.mnascimentos.aureole.feature.home.model.LocalHomeUiState
+import dev.mnascimentos.aureole.util.IntentUtils
 
 private const val FOLDER_BG_INACTIVE_ALPHA = 0.85f
 
@@ -59,7 +71,7 @@ fun ContainerAddFolderButton(
         FolderButtonMetrics.MediumSize
     }
     val iconSize = if (isBackgroundEnabled) AureoleDS.dimens.large else AureoleDS.dimens.iconXLarge
-    val cornerRadius = if (isBackgroundEnabled) AureoleDS.dimens.radiusMedium else AureoleDS.dimens.iconMedium
+    val cornerRadius = AureoleDS.dimens.radiusMedium
 
     Box(
         modifier = modifier
@@ -155,7 +167,7 @@ fun ContainerFolderButton(
         FolderButtonMetrics.MediumSize
     }
     val iconSize = if (isBackgroundEnabled) AureoleDS.dimens.large else AureoleDS.dimens.iconXLarge
-    val cornerRadius = if (isBackgroundEnabled) AureoleDS.dimens.radiusMedium else AureoleDS.dimens.iconMedium
+    val cornerRadius = AureoleDS.dimens.radiusMedium
 
     val clickModifier = if (onLongClick != null) {
         Modifier.combinedClickable(
@@ -267,7 +279,7 @@ fun ContainerAppItem(
     } else {
         FolderButtonMetrics.MediumSize
     }
-    val cornerRadius = if (isBackgroundEnabled) AureoleDS.dimens.radiusMedium else AureoleDS.dimens.iconMedium
+    val cornerRadius = AureoleDS.dimens.radiusMedium
     val imgPadding = if (isBackgroundEnabled) AureoleDS.dimens.borderMax else AureoleDS.dimens.minimal
 
     Column(
@@ -299,6 +311,70 @@ fun ContainerAppItem(
 
         if (showLabels) {
             ContainerFolderLabel(name = app.label)
+        }
+    }
+}
+
+@Composable
+fun ContainerQuickButtonItem(
+    quickButtonModel: QuickButtonModel,
+    config: ContainerConfig,
+    modifier: Modifier = Modifier
+) {
+    val actions = LocalHomeActions.current
+    val uiState = LocalHomeUiState.current
+    val context = LocalContext.current
+
+    val isBackgroundEnabled = config.isBackgroundEnabled
+    val buttonSize = if (isBackgroundEnabled) {
+        FolderButtonMetrics.SmallSize
+    } else {
+        FolderButtonMetrics.MediumSize
+    }
+    val cornerRadius = AureoleDS.dimens.radiusMedium
+
+    val appInfo = remember(quickButtonModel.shortcuts.click, uiState.apps) {
+        if (quickButtonModel.shortcuts.click.type == ShortcutType.OPEN_APP) {
+            uiState.apps.find { it.packageName == quickButtonModel.shortcuts.click.target }
+        } else {
+            null
+        }
+    }
+
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = modifier
+            .padding(vertical = AureoleDS.dimens.xxSmall)
+            .widthIn(max = FolderButtonMetrics.ContainerMaxWidth),
+    ) {
+        Box(
+            modifier = Modifier
+                .size(buttonSize)
+                .semantics(mergeDescendants = true) {}
+        ) {
+            QuickButtonGridItem(
+                model = quickButtonModel,
+                appInfo = appInfo,
+                shape = RoundedCornerShape(cornerRadius),
+                onAction = { shortcutAction ->
+                    when (shortcutAction.type) {
+                        ShortcutType.ALL_APPS -> actions.onAllAppsDrawerOpen()
+                        ShortcutType.ASSISTANT -> launchVoiceAssistant(context)
+                        ShortcutType.SETTINGS -> actions.onSettingsClick()
+                        ShortcutType.NOTIFICATIONS -> IntentUtils.expandNotificationShade(context)
+                        ShortcutType.OPEN_APP -> launchAppPackage(context, shortcutAction.target)
+                        ShortcutType.SYSTEM_INTENT -> launchSystemIntent(context, shortcutAction.target)
+                        ShortcutType.NONE -> { /* Do nothing */ }
+                    }
+                },
+                onLongPress = {
+                    actions.onOpenQuickButtonSettings(quickButtonModel.id)
+                }
+            )
+        }
+
+        if (config.showFolderLabels) {
+            ContainerFolderLabel(name = stringResource(R.string.home_grid_item_quick_button))
         }
     }
 }

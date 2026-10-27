@@ -72,6 +72,7 @@ fun EditContainerScreen(
         items = state.itemsList,
         folders = state.folders.map { it.copy(displayAsGrid = state.isGridFolderEnabled) },
         appPackageNames = state.itemsList.mapNotNull { it.packageName },
+        quickButtons = state.quickButtons,
         position = state.position,
         orientation = state.orientation,
         isBackgroundEnabled = state.isBackgroundEnabled,

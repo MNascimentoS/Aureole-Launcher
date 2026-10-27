@@ -261,6 +261,21 @@ class EditContainerStateTest {
         assertEquals(1, model.items[1].orderIndex)
     }
 
+    @Test
+    fun `when addQuickButton called, should append quick button item`() {
+        val state = createTestState()
+        val initialSize = state.itemsList.size
+
+        state.addQuickButton()
+
+        assertEquals(initialSize + 1, state.itemsList.size)
+        assertEquals(ContainerItemType.QUICK_BUTTON, state.itemsList.last().itemType)
+        assertEquals(1, state.quickButtons.size)
+
+        val model = state.toModel()
+        assertEquals(1, model.quickButtons.size)
+    }
+
     private fun createTestState(): EditContainerState {
         val item1 = ContainerItemEntity(
             id = "1",
