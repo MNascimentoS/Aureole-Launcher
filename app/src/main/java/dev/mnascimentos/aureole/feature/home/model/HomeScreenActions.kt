@@ -6,6 +6,8 @@ import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.data.model.ContainerModel
 import dev.mnascimentos.aureole.core.data.model.LauncherItemState
 import dev.mnascimentos.aureole.core.data.model.LauncherItemType
+import dev.mnascimentos.aureole.core.data.model.QuickButtonAppearance
+import dev.mnascimentos.aureole.core.data.model.QuickButtonShortcuts
 import dev.mnascimentos.aureole.core.data.model.ScrollOrientation
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.FolderViewIntent
 
@@ -13,6 +15,7 @@ data class HomeScreenActions(
     val onWidgetRowHeightChanged: (Dp) -> Unit,
     val onAddWidgetClick: (String?) -> Unit = {},
     val onRemoveWidgetClick: (Int, String?) -> Unit = { _, _ -> },
+    val onReorderWidgets: (List<Int>, String?) -> Unit = { _, _ -> },
     val onAppClick: (AppInfo) -> Unit,
     val onExpandNotificationShade: () -> Unit,
     val onFolderIntent: (FolderViewIntent) -> Unit,
@@ -23,11 +26,15 @@ data class HomeScreenActions(
     val onAllAppsDrawerClose: () -> Unit,
     val onAllAppsDrawerOpen: () -> Unit,
     val onToggleFavorite: (String) -> Unit = {},
+    val onToggleFavoriteWithContainer: (String, String?) -> Unit = { _, _ -> },
     val onUpdateFavoritePackages: (String?, List<String>) -> Unit = { _, _ -> },
     val onToggleShowAllAppsOnHome: () -> Unit = {},
     val onAppInfoClick: (AppInfo) -> Unit = {},
     val onUninstallAppClick: (AppInfo) -> Unit = {},
     val onOpenFavoritePicker: (String?) -> Unit = {},
+    val onDismissFavoritePicker: () -> Unit = {},
+    val onDismissWidgetPicker: () -> Unit = {},
+    val onDismissReleaseNotes: () -> Unit = {},
     val onOpenWidgetPopup: (Int, Float) -> Unit = { _, _ -> },
     val onCloseWidgetPopup: () -> Unit = {},
     val onOpenWidgetResizeDialog: () -> Unit = {},
@@ -81,6 +88,16 @@ data class HomeScreenActions(
     val onUpdateClockBackgroundColor: (Int) -> Unit = {},
     val onToggleClockBackground: () -> Unit = {},
     val onResetClockSettings: () -> Unit = {},
+
+    // Quick Button Customization Actions
+    val onOpenQuickButtonSettings: (String) -> Unit = {},
+    val onCloseQuickButtonSettings: () -> Unit = {},
+    val onOpenQuickButtonAppearance: () -> Unit = {},
+    val onCloseQuickButtonAppearance: () -> Unit = {},
+    val onOpenShortcutSelection: (String) -> Unit = {},
+    val onCloseShortcutSelection: () -> Unit = {},
+    val onUpdateQuickButtonAppearance: (QuickButtonAppearance) -> Unit = {},
+    val onUpdateQuickButtonShortcuts: (QuickButtonShortcuts) -> Unit = {},
 
     val onOpenContainerAppBottomSheet: (AppInfo, String) -> Unit = { _, _ -> },
     val onCloseContainerAppBottomSheet: () -> Unit = {},

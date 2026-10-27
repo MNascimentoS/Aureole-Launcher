@@ -1,30 +1,43 @@
 package dev.mnascimentos.aureole.core.data.repository
 
 import android.content.Context
-import dev.mnascimentos.aureole.core.data.db.ContainerDatabaseHelper
-import dev.mnascimentos.aureole.core.data.db.FolderDatabaseHelper
+import com.google.gson.Gson
+import dev.mnascimentos.aureole.core.data.db.AppDatabase
+import dev.mnascimentos.aureole.core.data.db.ContainerDao
+import dev.mnascimentos.aureole.core.data.db.FolderDao
 import dev.mnascimentos.aureole.core.data.model.AppFolder
 import dev.mnascimentos.aureole.core.data.model.ContainerEntity
 import dev.mnascimentos.aureole.core.data.model.ContainerItemEntity
 import dev.mnascimentos.aureole.core.data.model.ContainerItemType
 import dev.mnascimentos.aureole.core.data.model.ContainerModel
+import dev.mnascimentos.aureole.core.data.model.QuickButtonModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.util.UUID
 
-class ContainerRepository(context: Context) {
-    private val dbHelper = ContainerDatabaseHelper(context)
-    private val folderDbHelper = FolderDatabaseHelper(context)
+class ContainerRepository(
+    private val containerDao: ContainerDao,
+    private val folderDao: FolderDao
+) {
+    private val gson = Gson()
+
+    constructor(context: Context) : this(
+        AppDatabase.getInstance(context).containerDao(),
+        AppDatabase.getInstance(context).folderDao()
+    )
 
     suspend fun getAllContainers(): List<ContainerModel> = withContext(Dispatchers.IO) {
-        val entities = dbHelper.getAllContainers()
-        val allFolders = folderDbHelper.getAllFoldersWithItems().map { it.toAppFolder() }
+        val entities = containerDao.getAllContainers()
+        val allFolders = folderDao.getAllFoldersWithItems().map { it.toAppFolder() }
 
         entities.map { entity ->
-            val items = dbHelper.getItemsForPanel(entity.id)
+            val rawItems = containerDao.getItemsForPanel(entity.id)
+            val items = rawItems.map { mapItemQuickButton(it) }
             val panelFolders = allFolders.filter { it.panelId == entity.id }
             val appPackageNames = items.filter { it.itemType == ContainerItemType.APP && it.packageName != null }
                 .mapNotNull { it.packageName }
+            val quickButtons = items.filter { it.itemType == ContainerItemType.QUICK_BUTTON }
+                .mapNotNull { it.quickButtonModel }
 
             ContainerModel(
                 id = entity.id,
@@ -47,18 +60,22 @@ class ContainerRepository(context: Context) {
                 scrollDownShortcut = entity.scrollDownShortcut,
                 items = items,
                 folders = panelFolders,
-                appPackageNames = appPackageNames
+                appPackageNames = appPackageNames,
+                quickButtons = quickButtons
             )
         }
     }
 
     suspend fun getContainer(panelId: String): ContainerModel? = withContext(Dispatchers.IO) {
-        val entity = dbHelper.getContainer(panelId) ?: return@withContext null
-        val items = dbHelper.getItemsForPanel(panelId)
-        val allFolders = folderDbHelper.getAllFoldersWithItems().map { it.toAppFolder() }
+        val entity = containerDao.getContainer(panelId) ?: return@withContext null
+        val rawItems = containerDao.getItemsForPanel(panelId)
+        val items = rawItems.map { mapItemQuickButton(it) }
+        val allFolders = folderDao.getAllFoldersWithItems().map { it.toAppFolder() }
         val panelFolders = allFolders.filter { it.panelId == panelId }
         val appPackageNames = items.filter { it.itemType == ContainerItemType.APP && it.packageName != null }
             .mapNotNull { it.packageName }
+        val quickButtons = items.filter { it.itemType == ContainerItemType.QUICK_BUTTON }
+            .mapNotNull { it.quickButtonModel }
 
         ContainerModel(
             id = entity.id,
@@ -81,8 +98,25 @@ class ContainerRepository(context: Context) {
             scrollDownShortcut = entity.scrollDownShortcut,
             items = items,
             folders = panelFolders,
-            appPackageNames = appPackageNames
+            appPackageNames = appPackageNames,
+            quickButtons = quickButtons
         )
+    }
+
+    private fun mapItemQuickButton(item: ContainerItemEntity): ContainerItemEntity {
+        if (item.itemType != ContainerItemType.QUICK_BUTTON) return item
+        val parsedModel = item.quickButtonModel
+            ?: item.quickButtonJson?.let {
+                try {
+                    gson.fromJson(it, QuickButtonModel::class.java)
+                } catch (_: Exception) {
+                    null
+                }
+            }
+            ?: item.quickButtonId?.let { qbId -> QuickButtonModel(id = qbId) }
+        return item.copy(
+            quickButtonId = parsedModel?.id ?: item.quickButtonId
+        ).also { it.quickButtonModel = parsedModel }
     }
 
     suspend fun ensureContainerExists(panelId: String, defaultTitle: String = "Painel Lateral"): ContainerModel =
@@ -94,7 +128,7 @@ class ContainerRepository(context: Context) {
                 id = panelId,
                 title = defaultTitle
             )
-            dbHelper.insertOrUpdateContainer(newEntity)
+            containerDao.insertOrUpdateContainer(newEntity)
 
             getContainer(panelId) ?: ContainerModel(id = panelId, title = defaultTitle)
         }
@@ -120,13 +154,35 @@ class ContainerRepository(context: Context) {
             scrollUpShortcut = panel.scrollUpShortcut,
             scrollDownShortcut = panel.scrollDownShortcut
         )
-        dbHelper.insertOrUpdateContainer(entity)
+        containerDao.insertOrUpdateContainer(entity)
 
+        val itemEntities = buildItemEntities(panel)
+
+        panel.folders.forEach { folder ->
+            val folderWithPanelId = folder.copy(panelId = panel.id, displayAsGrid = panel.isGridFolderEnabled)
+            folderDao.insertFolder(folderWithPanelId)
+        }
+
+        containerDao.updatePanelItems(panel.id, itemEntities)
+    }
+
+    private fun buildItemEntities(panel: ContainerModel): List<ContainerItemEntity> {
         val itemEntities = mutableListOf<ContainerItemEntity>()
-
         if (panel.items.isNotEmpty()) {
             panel.items.forEachIndexed { index, item ->
-                itemEntities.add(item.copy(orderIndex = index))
+                val updatedItem = if (item.itemType == ContainerItemType.QUICK_BUTTON) {
+                    val qbModel = item.quickButtonModel
+                        ?: panel.quickButtons.find { it.id == item.quickButtonId || it.id == item.id }
+                    val qbJson = qbModel?.let { gson.toJson(it) }
+                    item.copy(
+                        orderIndex = index,
+                        quickButtonId = qbModel?.id ?: item.quickButtonId,
+                        quickButtonJson = qbJson
+                    ).also { it.quickButtonModel = qbModel }
+                } else {
+                    item.copy(orderIndex = index)
+                }
+                itemEntities.add(updatedItem)
             }
         } else {
             var orderIndex = 0
@@ -141,7 +197,6 @@ class ContainerRepository(context: Context) {
                     )
                 )
             }
-
             panel.appPackageNames.forEach { pkg ->
                 itemEntities.add(
                     ContainerItemEntity(
@@ -153,21 +208,27 @@ class ContainerRepository(context: Context) {
                     )
                 )
             }
+            panel.quickButtons.forEach { qb ->
+                itemEntities.add(
+                    ContainerItemEntity(
+                        id = UUID.randomUUID().toString(),
+                        panelId = panel.id,
+                        itemType = ContainerItemType.QUICK_BUTTON,
+                        quickButtonId = qb.id,
+                        quickButtonJson = gson.toJson(qb),
+                        orderIndex = orderIndex++
+                    ).also { it.quickButtonModel = qb }
+                )
+            }
         }
-
-        panel.folders.forEach { folder ->
-            val folderWithPanelId = folder.copy(panelId = panel.id, displayAsGrid = panel.isGridFolderEnabled)
-            folderDbHelper.insertFolder(folderWithPanelId)
-        }
-
-        dbHelper.updatePanelItems(panel.id, itemEntities)
+        return itemEntities
     }
 
     suspend fun deleteContainer(panelId: String) = withContext(Dispatchers.IO) {
-        dbHelper.deleteContainer(panelId)
-        val allFolders = folderDbHelper.getAllFoldersWithItems().map { it.toAppFolder() }
+        containerDao.deleteContainer(panelId)
+        val allFolders = folderDao.getAllFoldersWithItems().map { it.toAppFolder() }
         allFolders.filter { it.panelId == panelId }.forEach { folder ->
-            folderDbHelper.deleteFolder(folder.id)
+            folderDao.deleteFolder(folder.id)
         }
     }
 
@@ -188,7 +249,7 @@ class ContainerRepository(context: Context) {
     suspend fun addFolderToPanel(panelId: String, folder: AppFolder) = withContext(Dispatchers.IO) {
         val current = getContainer(panelId) ?: ensureContainerExists(panelId)
         val folderWithPanelId = folder.copy(panelId = panelId)
-        folderDbHelper.insertFolder(folderWithPanelId)
+        folderDao.insertFolder(folderWithPanelId)
 
         val newFolderItem = ContainerItemEntity(
             id = UUID.randomUUID().toString(),
@@ -212,7 +273,7 @@ class ContainerRepository(context: Context) {
     }
 
     suspend fun deleteFolderFromPanel(panelId: String, folderId: String) = withContext(Dispatchers.IO) {
-        folderDbHelper.deleteFolder(folderId)
+        folderDao.deleteFolder(folderId)
         val current = getContainer(panelId) ?: return@withContext
         val updatedFolders = current.folders.filter { it.id != folderId }
         saveContainer(current.copy(folders = updatedFolders))

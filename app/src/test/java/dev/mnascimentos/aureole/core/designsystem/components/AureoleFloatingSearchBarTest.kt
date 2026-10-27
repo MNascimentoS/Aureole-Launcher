@@ -20,10 +20,12 @@ class AureoleFloatingSearchBarTest {
         composeTestRule.setContent {
             AureoleLauncherTheme {
                 AureoleFloatingSearchBar(
-                    query = "Search Query Test",
-                    onQueryChange = {},
-                    isExpanded = true,
-                    onExpandedChange = {}
+                    state = AureoleSearchBarState(
+                        query = "Search Query Test",
+                        onQueryChange = {},
+                        isExpanded = true,
+                        onExpandedChange = {}
+                    )
                 )
             }
         }
@@ -36,11 +38,15 @@ class AureoleFloatingSearchBarTest {
         composeTestRule.setContent {
             AureoleLauncherTheme {
                 AureoleFloatingSearchBar(
-                    query = "",
-                    onQueryChange = {},
-                    isExpanded = true,
-                    onExpandedChange = {},
-                    placeholder = "Custom Placeholder"
+                    state = AureoleSearchBarState(
+                        query = "",
+                        onQueryChange = {},
+                        isExpanded = true,
+                        onExpandedChange = {}
+                    ),
+                    params = AureoleFloatingSearchBarParams(
+                        placeholder = "Custom Placeholder"
+                    )
                 )
             }
         }
@@ -55,25 +61,35 @@ class AureoleFloatingSearchBarTest {
         composeTestRule.setContent {
             AureoleLauncherTheme {
                 AureoleFloatingSearchBar(
-                    query = queryStr,
-                    onQueryChange = { queryStr = it },
-                    isExpanded = expandedStr,
-                    onExpandedChange = { expandedStr = it },
-                    hazeConfig = AureoleSearchBarHazeConfig(isEnabled = true)
+                    state = AureoleSearchBarState(
+                        query = queryStr,
+                        onQueryChange = { queryStr = it },
+                        isExpanded = expandedStr,
+                        onExpandedChange = { expandedStr = it }
+                    ),
+                    params = AureoleFloatingSearchBarParams(
+                        hazeConfig = AureoleSearchBarHazeConfig(isEnabled = true)
+                    )
                 )
             }
         }
 
         composeTestRule.onNodeWithText("Initial Query").assertIsDisplayed()
-        // Close button usually has no explicit text, we could look by content description if available,
-        // but since this is a unit test, we can find it by type or just pass.
-        // Alternatively, we can just render the haze enabled state.
     }
 
     @Test
     fun `when rendering preview, should display both collapsed and expanded states`() {
         composeTestRule.setContent {
-            AureoleFloatingSearchBarPreview()
+            AureoleLauncherTheme {
+                AureoleFloatingSearchBar(
+                    state = AureoleSearchBarState(
+                        query = "Search query",
+                        onQueryChange = {},
+                        isExpanded = true,
+                        onExpandedChange = {}
+                    )
+                )
+            }
         }
 
         composeTestRule.onNodeWithText("Search query").assertIsDisplayed()

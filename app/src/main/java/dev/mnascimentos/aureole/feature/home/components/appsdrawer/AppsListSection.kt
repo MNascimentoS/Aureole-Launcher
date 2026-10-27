@@ -24,19 +24,23 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.res.stringResource
 import dev.chrisbanes.haze.HazeState
 import dev.chrisbanes.haze.HazeStyle
 import dev.chrisbanes.haze.HazeTint
 import dev.chrisbanes.haze.hazeEffect
+import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleFloatingSearchBar
+import dev.mnascimentos.aureole.core.designsystem.components.AureoleFloatingSearchBarParams
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleSearchBarHazeConfig
+import dev.mnascimentos.aureole.core.designsystem.components.AureoleSearchBarState
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.core.designsystem.utils.fadingEdges
-import dev.mnascimentos.aureole.feature.home.LocalHomeActions
-import dev.mnascimentos.aureole.feature.home.LocalHomeUiState
+import dev.mnascimentos.aureole.feature.home.components.appsdrawer.model.AppsDrawerMetrics
+import dev.mnascimentos.aureole.feature.home.model.LocalHomeActions
+import dev.mnascimentos.aureole.feature.home.model.LocalHomeUiState
 
 private const val DRAWER_HAZE_TINT_FACTOR = 0.5f
 private const val DRAWER_HAZE_MIN_ALPHA = 0.15f
@@ -50,8 +54,8 @@ fun AppsListDrawer(
 ) {
     val uiState = LocalHomeUiState.current
     val actions = LocalHomeActions.current
-    val startPadding = if (uiState.isLeftHandedMode) 72.dp else 24.dp
-    val endPadding = if (uiState.isLeftHandedMode) 24.dp else 72.dp
+    val startPadding = if (uiState.isLeftHandedMode) AppsDrawerMetrics.HandedOffsetPadding else AureoleDS.dimens.large
+    val endPadding = if (uiState.isLeftHandedMode) AureoleDS.dimens.large else AppsDrawerMetrics.HandedOffsetPadding
 
     val baseBgColor = AureoleDS.colors.background
     val hasHaze = uiState.isHazeEnabled && (hazeState != null)
@@ -68,8 +72,12 @@ fun AppsListDrawer(
             .then(hazeModifier)
             .background(drawerBgColor)
     ) {
-        val topOffsetDp = (maxHeight * (uiState.headerOffsetPercent / 100f)).coerceAtLeast(16.dp)
-        val extraTopPadding = if (uiState.showSearchBarInAllApps && isSearchExpanded) 88.dp else 0.dp
+        val topOffsetDp = (maxHeight * (uiState.headerOffsetPercent / 100f)).coerceAtLeast(AureoleDS.dimens.medium)
+        val extraTopPadding = if (uiState.showSearchBarInAllApps && isSearchExpanded) {
+            AppsDrawerMetrics.SearchBarExtraTopPadding
+        } else {
+            AureoleDS.dimens.zero
+        }
 
         LazyColumn(
             state = listState,
@@ -77,7 +85,7 @@ fun AppsListDrawer(
                 start = startPadding,
                 top = topOffsetDp + extraTopPadding,
                 end = endPadding,
-                bottom = 120.dp
+                bottom = AppsDrawerMetrics.ListBottomPadding
             ),
             modifier = Modifier
                 .fillMaxSize()
@@ -102,7 +110,7 @@ fun AppsListDrawer(
             Box(
                 modifier = alignModifier
                     .fillMaxWidth()
-                    .padding(horizontal = 24.dp, vertical = 16.dp),
+                    .padding(horizontal = AureoleDS.dimens.large, vertical = AureoleDS.dimens.medium),
                 contentAlignment = when {
                     isSearchExpanded -> Alignment.TopCenter
                     uiState.isLeftHandedMode -> Alignment.BottomStart
@@ -110,15 +118,19 @@ fun AppsListDrawer(
                 }
             ) {
                 AureoleFloatingSearchBar(
-                    query = uiState.searchQuery,
-                    onQueryChange = actions.onSearchQueryChanged,
-                    isExpanded = isSearchExpanded,
-                    onExpandedChange = { isSearchExpanded = it },
-                    placeholder = "Search apps",
-                    hazeConfig = AureoleSearchBarHazeConfig(
-                        state = hazeState,
-                        isEnabled = uiState.isHazeEnabled,
-                        opacity = uiState.hazeOpacity
+                    state = AureoleSearchBarState(
+                        query = uiState.searchQuery,
+                        onQueryChange = actions.onSearchQueryChanged,
+                        isExpanded = isSearchExpanded,
+                        onExpandedChange = { isSearchExpanded = it }
+                    ),
+                    params = AureoleFloatingSearchBarParams(
+                        placeholder = stringResource(R.string.home_apps_search_placeholder),
+                        hazeConfig = AureoleSearchBarHazeConfig(
+                            state = hazeState,
+                            isEnabled = uiState.isHazeEnabled,
+                            opacity = uiState.hazeOpacity
+                        )
                     )
                 )
             }
@@ -126,7 +138,6 @@ fun AppsListDrawer(
     }
 }
 
-@Composable
 private fun Modifier.buildDrawerHaze(
     hasHaze: Boolean,
     hazeState: HazeState?,
@@ -142,7 +153,7 @@ private fun Modifier.buildDrawerHaze(
         Modifier.hazeEffect(
             state = hazeState,
             style = HazeStyle(
-                blurRadius = 24.dp,
+                blurRadius = AppsDrawerMetrics.HazeBlurRadius,
                 tint = HazeTint(baseBgColor.copy(alpha = tintAlpha))
             )
         ) {
@@ -153,7 +164,7 @@ private fun Modifier.buildDrawerHaze(
 
 @AureolePreview
 @Composable
-internal fun AppsListSectionDrawerPreview() {
+private fun AppsListSectionDrawerPreview() {
     AureoleLauncherTheme {
         AppsListDrawer(
             listState = rememberLazyListState()

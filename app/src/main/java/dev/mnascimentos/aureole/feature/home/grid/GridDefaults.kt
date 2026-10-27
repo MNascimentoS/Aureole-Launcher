@@ -25,6 +25,8 @@ private const val WIDGET_LIST_DEFAULT_COL_SPAN = 14
 private const val WIDGET_LIST_DEFAULT_ROW_SPAN = 6
 private const val SCROLL_VIEW_DEFAULT_COL_SPAN = 14
 private const val SCROLL_VIEW_DEFAULT_ROW_SPAN = 9
+private const val QUICK_BUTTON_DEFAULT_COL_SPAN = 4
+private const val QUICK_BUTTON_DEFAULT_ROW_SPAN = 3
 private const val DEFAULT_MIN_COL_SPAN = 1
 private const val DEFAULT_MIN_ROW_SPAN = 1
 
@@ -53,6 +55,10 @@ object GridDefaults {
             )
             LauncherItemType.SCROLL_VIEW -> Pair(
                 Pair(SCROLL_VIEW_DEFAULT_COL_SPAN, SCROLL_VIEW_DEFAULT_ROW_SPAN),
+                Pair(DEFAULT_MIN_COL_SPAN, DEFAULT_MIN_ROW_SPAN)
+            )
+            LauncherItemType.QUICK_BUTTON -> Pair(
+                Pair(QUICK_BUTTON_DEFAULT_COL_SPAN, QUICK_BUTTON_DEFAULT_ROW_SPAN),
                 Pair(DEFAULT_MIN_COL_SPAN, DEFAULT_MIN_ROW_SPAN)
             )
         }

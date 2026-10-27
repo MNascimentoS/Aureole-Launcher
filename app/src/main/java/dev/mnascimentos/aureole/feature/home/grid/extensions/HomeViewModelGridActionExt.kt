@@ -1,25 +1,14 @@
 package dev.mnascimentos.aureole.feature.home.grid.extensions
 
 import dev.mnascimentos.aureole.core.data.model.LauncherItemState
-import dev.mnascimentos.aureole.core.data.model.LauncherItemType
-import dev.mnascimentos.aureole.core.data.model.ScrollOrientation
 import dev.mnascimentos.aureole.feature.home.HomeViewModel
 import dev.mnascimentos.aureole.feature.home.grid.GridDefaults
 import dev.mnascimentos.aureole.feature.home.grid.GridEngineUtils
-import dev.mnascimentos.aureole.feature.home.grid.SlotSearchRequest
+import dev.mnascimentos.aureole.feature.home.grid.model.GridItemSpec
+import dev.mnascimentos.aureole.feature.home.grid.model.SlotSearchRequest
 import java.util.UUID
 
 private const val CONTAINER_ERROR_MSG = "Não há espaço livre suficiente na grade para este container."
-
-data class GridItemSpec(
-    val type: LauncherItemType,
-    val widgetId: Int? = null,
-    val targetColSpan: Int? = null,
-    val targetRowSpan: Int? = null,
-    val minColSpan: Int? = null,
-    val minRowSpan: Int? = null,
-    val scrollOrientation: ScrollOrientation? = null
-)
 
 fun HomeViewModel.setShowAddContainerDialog(show: Boolean) {
     updateUiState {
@@ -55,7 +44,8 @@ fun HomeViewModel.addGridItem(spec: GridItemSpec) {
                 targetColSpan = reqTargetColSpan,
                 targetRowSpan = reqTargetRowSpan,
                 minColSpan = reqMinColSpan,
-                minRowSpan = reqMinRowSpan
+                minRowSpan = reqMinRowSpan,
+                limits = state.gridLimits
             ),
             items = currentItems
         )

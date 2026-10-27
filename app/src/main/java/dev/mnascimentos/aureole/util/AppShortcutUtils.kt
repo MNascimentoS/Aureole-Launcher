@@ -9,10 +9,10 @@ import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.Process
-import android.util.Log
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.core.graphics.createBitmap
+import timber.log.Timber
 
 data class AureoleShortcutItem(
     val id: String,
@@ -29,7 +29,7 @@ object AppShortcutUtils {
         val launcherApps = try {
             context.getSystemService(Context.LAUNCHER_APPS_SERVICE) as? LauncherApps
         } catch (e: AssertionError) {
-            Log.w(TAG, "Unsupported service in preview", e)
+            Timber.tag(TAG).w(e, "Unsupported service in preview")
             null
         } ?: return emptyList()
 
@@ -41,10 +41,10 @@ object AppShortcutUtils {
             val iconDrawable = try {
                 launcherApps.getShortcutIconDrawable(shortcut, density)
             } catch (e: SecurityException) {
-                Log.w(TAG, "Security exception fetching shortcut icon", e)
+                Timber.tag(TAG).w(e, "Security exception fetching shortcut icon")
                 null
             } catch (e: IllegalStateException) {
-                Log.w(TAG, "Illegal state fetching shortcut icon", e)
+                Timber.tag(TAG).w(e, "Illegal state fetching shortcut icon")
                 null
             }
 
@@ -75,11 +75,11 @@ object AppShortcutUtils {
                 val results = launcherApps.getShortcuts(cachedQuery, Process.myUserHandle())
                 if (!results.isNullOrEmpty()) return results
             } catch (e: SecurityException) {
-                Log.w(TAG, "Security error in cached query for $packageName", e)
+                Timber.tag(TAG).w(e, "Security error in cached query for $packageName")
             } catch (e: IllegalStateException) {
-                Log.w(TAG, "Illegal state in cached query for $packageName", e)
+                Timber.tag(TAG).w(e, "Illegal state in cached query for $packageName")
             } catch (e: IllegalArgumentException) {
-                Log.w(TAG, "Illegal argument in cached query for $packageName", e)
+                Timber.tag(TAG).w(e, "Illegal argument in cached query for $packageName")
             }
         }
 
@@ -95,13 +95,13 @@ object AppShortcutUtils {
         return try {
             launcherApps.getShortcuts(standardQuery, Process.myUserHandle()) ?: emptyList()
         } catch (e: SecurityException) {
-            Log.w(TAG, "Security error in standard query for $packageName", e)
+            Timber.tag(TAG).w(e, "Security error in standard query for $packageName")
             emptyList()
         } catch (e: IllegalStateException) {
-            Log.w(TAG, "Illegal state in standard query for $packageName", e)
+            Timber.tag(TAG).w(e, "Illegal state in standard query for $packageName")
             emptyList()
         } catch (e: IllegalArgumentException) {
-            Log.w(TAG, "Illegal argument in standard query for $packageName", e)
+            Timber.tag(TAG).w(e, "Illegal argument in standard query for $packageName")
             emptyList()
         }
     }
@@ -112,9 +112,9 @@ object AppShortcutUtils {
         try {
             launcherApps.startShortcut(shortcut.shortcutInfo, null, null)
         } catch (e: ActivityNotFoundException) {
-            Log.e(TAG, "Error launching shortcut: ${shortcut.id} (not found)", e)
+            Timber.tag(TAG).e(e, "Error launching shortcut: ${shortcut.id} (not found)")
         } catch (e: SecurityException) {
-            Log.e(TAG, "Security error launching shortcut: ${shortcut.id}, trying fallback", e)
+            Timber.tag(TAG).e(e, "Security error launching shortcut: ${shortcut.id}, trying fallback")
             try {
                 launcherApps.startShortcut(
                     shortcut.shortcutInfo.`package`,
@@ -124,11 +124,11 @@ object AppShortcutUtils {
                     shortcut.shortcutInfo.userHandle
                 )
             } catch (e2: SecurityException) {
-                Log.e(TAG, "Fallback launchShortcut security failed: ${shortcut.id}", e2)
+                Timber.tag(TAG).e(e2, "Fallback launchShortcut security failed: ${shortcut.id}")
             } catch (e2: IllegalStateException) {
-                Log.e(TAG, "Fallback launchShortcut illegal state failed: ${shortcut.id}", e2)
+                Timber.tag(TAG).e(e2, "Fallback launchShortcut illegal state failed: ${shortcut.id}")
             } catch (e2: ActivityNotFoundException) {
-                Log.e(TAG, "Fallback launchShortcut not found: ${shortcut.id}", e2)
+                Timber.tag(TAG).e(e2, "Fallback launchShortcut not found: ${shortcut.id}")
             }
         }
     }

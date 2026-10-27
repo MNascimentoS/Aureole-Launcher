@@ -2,15 +2,16 @@
 
 package dev.mnascimentos.aureole.feature.settings.screens
 
-import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.provider.Settings
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -29,21 +30,26 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
+import androidx.core.net.toUri
+import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.composable.SettingsActionItem
-import dev.mnascimentos.aureole.composable.SettingsToggleItem
+import dev.mnascimentos.aureole.composable.sheets.ReleaseNotesBottomSheet
+import dev.mnascimentos.aureole.composable.sheets.SettingsBottomSheet
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
+import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
 import dev.mnascimentos.aureole.core.designsystem.icons.Delete
 import dev.mnascimentos.aureole.core.designsystem.icons.Home
 import dev.mnascimentos.aureole.core.designsystem.icons.Info
-import dev.mnascimentos.aureole.core.designsystem.icons.RefreshCcw
 import dev.mnascimentos.aureole.core.designsystem.icons.Smile
 import dev.mnascimentos.aureole.core.designsystem.icons.Undo
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
-import dev.mnascimentos.aureole.feature.home.components.overlays.ReleaseNotesBottomSheet
-import dev.mnascimentos.aureole.feature.settings.components.SettingsBottomSheet
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
+import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
+import dev.mnascimentos.aureole.feature.settings.extensions.tryUninstall
+import dev.mnascimentos.aureole.feature.settings.model.SettingsAdvancedDialogActions
 import dev.mnascimentos.aureole.feature.settings.model.SettingsScreenActions
 import dev.mnascimentos.aureole.feature.settings.model.SettingsUiState
 
@@ -55,60 +61,30 @@ fun SettingsAdvancedScreen(
     uiState: SettingsUiState,
     actions: SettingsScreenActions,
     onNavigateToContributors: () -> Unit,
-    @Suppress("UNUSED_PARAMETER") // Parameter reserved for navigation contract
-    onNavigateBack: () -> Unit
+    onNavigateBack: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
+    BackHandler(onBack = onNavigateBack)
+
     val context = LocalContext.current
     var showUninstallDialog by remember { mutableStateOf(false) }
     var showReleaseNotesDialog by remember { mutableStateOf(false) }
 
     Scaffold(
+        modifier = modifier,
         containerColor = AureoleDS.colors.surface
     ) { innerPadding ->
-        BoxWithConstraints(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding)
-        ) {
-            val topSpacerHeight = (maxHeight * (uiState.headerOffsetPercent / 100f)).coerceAtLeast(16.dp)
-            val bottomSpacerHeight = (maxHeight * BOTTOM_SPACER_PERCENT).coerceAtLeast(24.dp)
-
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .statusBarsPadding()
-                    .verticalScroll(rememberScrollState())
-                    .padding(horizontal = 28.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Spacer(modifier = Modifier.height(topSpacerHeight))
-
-                AureoleText(
-                    text = "Advanced",
-                    style = AureoleDS.typography.titleLarge,
-                    fontWeight = FontWeight.Medium,
-                    color = AureoleDS.colors.onSurfaceMedium,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.fillMaxWidth()
-                )
-
-                Spacer(modifier = Modifier.height(24.dp))
-
-                AdvancedItemsGroup(
-                    uiState = uiState,
-                    actions = actions,
-                    context = context,
-                    onOpenUninstallDialog = { showUninstallDialog = true },
-                    onOpenReleaseNotesDialog = { showReleaseNotesDialog = true }
-                )
-
-                Spacer(modifier = Modifier.height(20.dp))
-
-                AdvancedLinksGroup(onNavigateToContributors = onNavigateToContributors)
-
-                Spacer(modifier = Modifier.height(bottomSpacerHeight))
-            }
-        }
+        SettingsAdvancedContent(
+            uiState = uiState,
+            actions = actions,
+            context = context,
+            innerPadding = innerPadding,
+            dialogActions = SettingsAdvancedDialogActions(
+                onNavigateToContributors = onNavigateToContributors,
+                onOpenUninstallDialog = { showUninstallDialog = true },
+                onOpenReleaseNotesDialog = { showReleaseNotesDialog = true }
+            )
+        )
 
         if (showUninstallDialog) {
             UninstallBottomSheet(
@@ -126,31 +102,81 @@ fun SettingsAdvancedScreen(
 }
 
 @Composable
-private fun AdvancedItemsGroup(
+private fun SettingsAdvancedContent(
     uiState: SettingsUiState,
+    actions: SettingsScreenActions,
+    context: Context,
+    innerPadding: PaddingValues,
+    dialogActions: SettingsAdvancedDialogActions
+) {
+    BoxWithConstraints(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(innerPadding)
+    ) {
+        val topSpacerHeight = (maxHeight * (uiState.headerOffsetPercent / 100f))
+            .coerceAtLeast(AureoleDS.dimens.medium)
+        val bottomSpacerHeight = (maxHeight * BOTTOM_SPACER_PERCENT)
+            .coerceAtLeast(AureoleDS.dimens.large)
+
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .statusBarsPadding()
+                .verticalScroll(rememberScrollState())
+                .padding(horizontal = AureoleDS.dimens.iconXLargeMedium),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Spacer(modifier = Modifier.height(topSpacerHeight))
+
+            AureoleText(
+                text = stringResource(R.string.settings_advanced_title),
+                color = AureoleDS.colors.onSurfaceMedium,
+                modifier = Modifier.fillMaxWidth(),
+                format = AureoleTextFormatParams(
+                    style = AureoleDS.typography.titleLarge,
+                    fontWeight = FontWeight.Medium,
+                    textAlign = TextAlign.Center
+                )
+            )
+
+            Spacer(modifier = Modifier.height(AureoleDS.dimens.large))
+
+            AdvancedItemsGroup(
+                actions = actions,
+                context = context,
+                onOpenUninstallDialog = dialogActions.onOpenUninstallDialog,
+                onOpenReleaseNotesDialog = dialogActions.onOpenReleaseNotesDialog
+            )
+
+            Spacer(modifier = Modifier.height(AureoleDS.dimens.large))
+
+            AdvancedLinksGroup(onNavigateToContributors = dialogActions.onNavigateToContributors)
+
+            Spacer(modifier = Modifier.height(bottomSpacerHeight))
+        }
+    }
+}
+
+@Composable
+private fun AdvancedItemsGroup(
     actions: SettingsScreenActions,
     context: Context,
     onOpenUninstallDialog: () -> Unit,
     onOpenReleaseNotesDialog: () -> Unit
 ) {
     Column(
-        verticalArrangement = Arrangement.spacedBy(8.dp),
+        verticalArrangement = Arrangement.spacedBy(AureoleDS.dimens.xSmall),
         modifier = Modifier.fillMaxWidth()
     ) {
         SettingsActionItem(
-            title = "What's new (Release notes)",
-            leadingContent = { AureoleDS.icons.Smile() },
-            onClick = onOpenReleaseNotesDialog
-        )
-
-        SettingsActionItem(
-            title = "Set as default launcher",
+            title = stringResource(R.string.settings_advanced_set_default_launcher),
             leadingContent = { AureoleDS.icons.Home() },
             onClick = { actions.onSetDefaultLauncherClick() }
         )
 
         SettingsActionItem(
-            title = "App info",
+            title = stringResource(R.string.settings_advanced_app_info),
             leadingContent = { AureoleDS.icons.Info() },
             onClick = {
                 val intent = Intent(
@@ -161,21 +187,20 @@ private fun AdvancedItemsGroup(
             }
         )
 
-        SettingsToggleItem(
-            title = "Check for updates",
-            checked = uiState.isInAppUpdateEnabled,
-            onCheckedChange = { actions.onToggleInAppUpdate() },
-            leadingContent = { AureoleDS.icons.RefreshCcw() }
+        SettingsActionItem(
+            title = stringResource(R.string.settings_advanced_whats_new),
+            leadingContent = { AureoleDS.icons.Smile() },
+            onClick = onOpenReleaseNotesDialog
         )
 
         SettingsActionItem(
-            title = "Reset launcher",
+            title = stringResource(R.string.settings_advanced_reset_launcher),
             leadingContent = { AureoleDS.icons.Undo() },
             onClick = { actions.onOpenFactoryResetDialog() }
         )
 
         SettingsActionItem(
-            title = "Uninstall launcher",
+            title = stringResource(R.string.settings_advanced_uninstall_launcher),
             leadingContent = { AureoleDS.icons.Delete() },
             onClick = onOpenUninstallDialog
         )
@@ -187,43 +212,53 @@ private fun AdvancedLinksGroup(onNavigateToContributors: () -> Unit) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(start = 44.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
+            .padding(start = AureoleDS.dimens.xSmall),
+        verticalArrangement = Arrangement.spacedBy(AureoleDS.dimens.xSmall)
     ) {
         AureoleText(
-            text = "Contributors",
-            style = AureoleDS.typography.bodyLarge,
-            fontWeight = FontWeight.Normal,
-            color = AureoleDS.colors.onSurfaceMedium,
-            modifier = Modifier.clickable { onNavigateToContributors() }
+            text = stringResource(R.string.settings_advanced_contributors),
+            color = AureoleDS.colors.onSurfaceLow,
+            modifier = Modifier.clickable { onNavigateToContributors() },
+            format = AureoleTextFormatParams(
+                style = AureoleDS.typography.bodySmall,
+                fontWeight = FontWeight.Normal
+            )
         )
         AureoleText(
-            text = "Privacy policy",
-            style = AureoleDS.typography.bodyLarge,
-            fontWeight = FontWeight.Normal,
-            color = AureoleDS.colors.onSurfaceMedium,
-            modifier = Modifier.clickable { }
+            text = stringResource(R.string.settings_advanced_privacy_policy),
+            color = AureoleDS.colors.onSurfaceLow,
+            modifier = Modifier.clickable { },
+            format = AureoleTextFormatParams(
+                style = AureoleDS.typography.bodySmall,
+                fontWeight = FontWeight.Normal
+            )
         )
         AureoleText(
-            text = "Terms of service",
-            style = AureoleDS.typography.bodyLarge,
-            fontWeight = FontWeight.Normal,
-            color = AureoleDS.colors.onSurfaceMedium,
-            modifier = Modifier.clickable { }
+            text = stringResource(R.string.settings_advanced_terms_of_service),
+            color = AureoleDS.colors.onSurfaceLow,
+            modifier = Modifier.clickable { },
+            format = AureoleTextFormatParams(
+                style = AureoleDS.typography.bodySmall,
+                fontWeight = FontWeight.Normal
+            )
         )
         AureoleText(
-            text = "Privacy settings",
-            style = AureoleDS.typography.bodyLarge,
-            fontWeight = FontWeight.Normal,
-            color = AureoleDS.colors.onSurfaceMedium,
-            modifier = Modifier.clickable { }
+            text = stringResource(R.string.settings_advanced_privacy_settings),
+            color = AureoleDS.colors.onSurfaceLow,
+            modifier = Modifier.clickable { },
+            format = AureoleTextFormatParams(
+                style = AureoleDS.typography.bodySmall,
+                fontWeight = FontWeight.Normal
+            )
         )
         AureoleText(
-            text = "Open source e license",
-            style = AureoleDS.typography.bodyLarge,
-            fontWeight = FontWeight.Normal,
-            color = AureoleDS.colors.onSurfaceMedium,
-            modifier = Modifier.clickable { }
+            text = stringResource(R.string.settings_advanced_open_source_licenses),
+            color = AureoleDS.colors.onSurfaceLow,
+            modifier = Modifier.clickable { },
+            format = AureoleTextFormatParams(
+                style = AureoleDS.typography.bodySmall,
+                fontWeight = FontWeight.Normal
+            )
         )
     }
 }
@@ -234,23 +269,23 @@ private fun UninstallBottomSheet(
     onDismiss: () -> Unit
 ) {
     SettingsBottomSheet(
-        title = "Uninstall launcher?",
+        title = stringResource(R.string.settings_advanced_uninstall_dialog_title),
         onDismissRequest = onDismiss
     ) {
-        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+        Column(verticalArrangement = Arrangement.spacedBy(AureoleDS.dimens.xSmall)) {
             SettingsActionItem(
-                title = "Contact us",
+                title = stringResource(R.string.settings_advanced_contact_us),
                 leadingContent = { AureoleDS.icons.Smile() },
                 onClick = {
                     onDismiss()
                     val intent = Intent(Intent.ACTION_SENDTO).apply {
-                        data = Uri.parse("mailto:aureole@mnascimentos.dev")
+                        data = "mailto:aureole@mnascimentos.dev".toUri()
                     }
                     context.startActivity(intent)
                 }
             )
             SettingsActionItem(
-                title = "Uninstall",
+                title = stringResource(R.string.home_app_menu_uninstall),
                 leadingContent = { AureoleDS.icons.Delete() },
                 onClick = {
                     onDismiss()
@@ -261,22 +296,15 @@ private fun UninstallBottomSheet(
     }
 }
 
-private fun tryUninstall(context: Context) {
-    try {
-        val intent = Intent(
-            Intent.ACTION_VIEW,
-            Uri.parse("market://details?id=${context.packageName}")
-        ).apply {
-            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-        }
-        context.startActivity(intent)
-    } catch (_: ActivityNotFoundException) {
-        val intent = Intent(
-            Intent.ACTION_VIEW,
-            Uri.parse("https://play.google.com/store/apps/details?id=${context.packageName}")
-        ).apply {
-            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-        }
-        context.startActivity(intent)
+@AureolePreview
+@Composable
+private fun SettingsAdvancedScreenPreview() {
+    AureoleLauncherTheme {
+        SettingsAdvancedScreen(
+            uiState = SettingsUiState(),
+            actions = SettingsScreenActions(),
+            onNavigateToContributors = {},
+            onNavigateBack = {}
+        )
     }
 }

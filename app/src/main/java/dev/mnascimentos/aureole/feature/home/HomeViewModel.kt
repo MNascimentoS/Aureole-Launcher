@@ -13,23 +13,25 @@ import dev.mnascimentos.aureole.feature.home.components.appsdrawer.extensions.up
 import dev.mnascimentos.aureole.feature.home.components.containers.extensions.loadContainers
 import dev.mnascimentos.aureole.feature.home.components.widgets.extensions.loadWidgetSettings
 import dev.mnascimentos.aureole.feature.home.grid.extensions.loadGridItems
+import dev.mnascimentos.aureole.feature.home.model.HomeRepositories
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-@Suppress("LongParameterList") // Primary ViewModel requiring dependencies for launcher state management
 class HomeViewModel(
-    internal val appRepository: AppRepository,
-    internal val widgetRepository: WidgetRepository,
-    internal val settingsRepository: SettingsRepository,
-    internal val folderRepository: FolderRepository,
-    internal val favoriteContainerRepository: FavoriteContainerRepository,
-    internal val containerRepository: ContainerRepository,
-    internal val gridRepository: GridRepository,
+    repositories: HomeRepositories,
 ) : ViewModel() {
+    internal val appRepository: AppRepository = repositories.appRepository
+    internal val widgetRepository: WidgetRepository = repositories.widgetRepository
+    internal val settingsRepository: SettingsRepository = repositories.settingsRepository
+    internal val folderRepository: FolderRepository = repositories.folderRepository
+    internal val favoriteContainerRepository: FavoriteContainerRepository = repositories.favoriteContainerRepository
+    internal val containerRepository: ContainerRepository = repositories.containerRepository
+    internal val gridRepository: GridRepository = repositories.gridRepository
 
     private val _uiState = MutableStateFlow(MainUiState())
     val uiState: StateFlow<MainUiState> = _uiState.asStateFlow()
@@ -42,6 +44,7 @@ class HomeViewModel(
         get() = _uiState.value.pendingWidgetId
 
     internal var activeVersionCode: Int = 0
+    internal var searchJob: Job? = null
 
     var isUpdateInProgressOrDismissed: Boolean = false
         internal set

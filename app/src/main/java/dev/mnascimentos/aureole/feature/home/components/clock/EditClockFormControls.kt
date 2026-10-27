@@ -16,13 +16,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.res.stringResource
+import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
+import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
-import dev.mnascimentos.aureole.feature.home.LocalHomeUiState
 import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
+import dev.mnascimentos.aureole.feature.home.model.LocalHomeUiState
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
 
 @OptIn(ExperimentalLayoutApi::class)
@@ -31,16 +33,16 @@ internal fun EditClockBackgroundSection(
     uiState: MainUiState,
     actions: HomeScreenActions
 ) {
-    EditClockSectionHeader(title = "Fundo do Cartão")
+    EditClockSectionHeader(title = stringResource(R.string.home_clock_card_background))
     Row(
         modifier = Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         AureoleText(
-            text = "Mostrar cartão de fundo",
-            style = AureoleDS.typography.bodyMedium,
-            color = AureoleDS.colors.onSurfaceHigh
+            text = stringResource(R.string.home_clock_show_background),
+            color = AureoleDS.colors.onSurfaceHigh,
+            format = AureoleTextFormatParams(style = AureoleDS.typography.bodyMedium)
         )
         Switch(
             checked = uiState.isClockBackgroundEnabled,
@@ -49,17 +51,17 @@ internal fun EditClockBackgroundSection(
     }
 
     if (uiState.isClockBackgroundEnabled) {
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(AureoleDS.dimens.xSmall))
         AureoleText(
-            text = "Cor de Fundo Personalizada:",
-            style = AureoleDS.typography.bodySmall,
+            text = stringResource(R.string.home_clock_custom_bg_color),
             color = AureoleDS.colors.onSurfaceMedium,
-            modifier = Modifier.padding(bottom = 6.dp)
+            modifier = Modifier.padding(bottom = AureoleDS.dimens.xxSmall),
+            format = AureoleTextFormatParams(style = AureoleDS.typography.bodySmall)
         )
         FlowRow(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(10.dp),
-            verticalArrangement = Arrangement.spacedBy(10.dp)
+            horizontalArrangement = Arrangement.spacedBy(AureoleDS.dimens.smallCompact),
+            verticalArrangement = Arrangement.spacedBy(AureoleDS.dimens.smallCompact)
         ) {
             PRESET_BG_COLORS.forEach { (name, colorValue) ->
                 EditClockColorSwatchItem(
@@ -91,7 +93,7 @@ internal fun EditClockActionButtons(
             }
         ) {
             AureoleText(
-                text = "Redefinir Padrões",
+                text = stringResource(R.string.home_clock_reset_defaults),
                 color = AureoleDS.colors.error
             )
         }
@@ -103,14 +105,14 @@ internal fun EditClockActionButtons(
                 contentColor = AureoleDS.colors.surface
             )
         ) {
-            AureoleText("Salvar", color = AureoleDS.colors.surface)
+            AureoleText(stringResource(R.string.home_container_edit_save), color = AureoleDS.colors.surface)
         }
     }
 }
 
 @AureolePreview
 @Composable
-fun EditClockBottomSheetPreview() {
+private fun EditClockBottomSheetPreview() {
     val uiState = MainUiState()
     val actions = HomeScreenActions(
         onWidgetRowHeightChanged = {},

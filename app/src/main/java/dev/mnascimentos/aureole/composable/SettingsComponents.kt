@@ -16,14 +16,20 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
+import androidx.compose.material3.minimumInteractiveComponentSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
+import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
+import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 
 @Composable
 fun AdvancedIcon(
@@ -45,55 +51,67 @@ fun AdvancedIcon(
 fun SettingsHugeTitle(text: String, modifier: Modifier = Modifier) {
     AureoleText(
         text = text,
-        style = AureoleDS.typography.displayMedium,
-        fontWeight = FontWeight.Bold,
         color = AureoleDS.colors.onSurfaceHigh,
-        modifier = modifier.padding(vertical = AureoleDS.dimens.medium)
+        modifier = modifier.padding(vertical = AureoleDS.dimens.medium),
+        format = AureoleTextFormatParams(style = AureoleDS.typography.displayMedium, fontWeight = FontWeight.Bold)
     )
 }
 
+data class SettingsMenuParams(
+    val title: String,
+    val subtitle: String? = null,
+    val leadingContent: (@Composable () -> Unit)? = null,
+    val trailingContent: (@Composable () -> Unit)? = null,
+    val onClick: () -> Unit
+)
+
 @Composable
 fun SettingsMenuItem(
-    title: String,
-    modifier: Modifier = Modifier,
-    subtitle: String? = null,
-    leadingContent: (@Composable () -> Unit)? = null,
-    onClick: () -> Unit,
+    params: SettingsMenuParams,
+    modifier: Modifier = Modifier
 ) {
     Row(
         modifier = modifier
             .fillMaxWidth()
+            .minimumInteractiveComponentSize()
             .clip(RoundedCornerShape(AureoleDS.dimens.radiusMedium))
-            .clickable { onClick() }
+            .clickable(
+                onClick = params.onClick,
+                role = Role.Button
+            )
+            .semantics(mergeDescendants = true) {}
             .padding(vertical = AureoleDS.dimens.xSmall, horizontal = AureoleDS.dimens.small),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        if (leadingContent != null) {
+        if (params.leadingContent != null) {
             Box(
                 modifier = Modifier
                     .padding(end = AureoleDS.dimens.large)
                     .size(AureoleDS.dimens.iconMedium),
                 contentAlignment = Alignment.Center
             ) {
-                leadingContent()
+                params.leadingContent()
             }
         }
 
         Column(modifier = Modifier.weight(1f)) {
             AureoleText(
-                text = title,
-                style = AureoleDS.typography.bodyLarge,
-                fontWeight = FontWeight.Normal,
-                color = AureoleDS.colors.onSurfaceMedium
+                text = params.title,
+                color = AureoleDS.colors.onSurfaceMedium,
+                format = AureoleTextFormatParams(style = AureoleDS.typography.bodyLarge, fontWeight = FontWeight.Normal)
             )
-            if (subtitle != null) {
+            if (params.subtitle != null) {
                 Spacer(modifier = Modifier.height(AureoleDS.dimens.minimal))
                 AureoleText(
-                    text = subtitle,
-                    style = AureoleDS.typography.bodySmall,
-                    color = AureoleDS.colors.onSurfaceLow
+                    text = params.subtitle,
+                    color = AureoleDS.colors.onSurfaceLow,
+                    format = AureoleTextFormatParams(style = AureoleDS.typography.bodySmall)
                 )
             }
+        }
+
+        if (params.trailingContent != null) {
+            params.trailingContent()
         }
     }
 }
@@ -109,8 +127,13 @@ fun SettingsToggleItem(
     Row(
         modifier = modifier
             .fillMaxWidth()
+            .minimumInteractiveComponentSize()
             .clip(RoundedCornerShape(AureoleDS.dimens.radiusMedium))
-            .clickable { onCheckedChange(!checked) }
+            .clickable(
+                onClick = { onCheckedChange(!checked) },
+                role = Role.Switch
+            )
+            .semantics(mergeDescendants = true) {}
             .padding(vertical = AureoleDS.dimens.xSmall, horizontal = AureoleDS.dimens.small),
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -128,9 +151,8 @@ fun SettingsToggleItem(
         Column(modifier = Modifier.weight(1f)) {
             AureoleText(
                 text = title,
-                style = AureoleDS.typography.bodyLarge,
-                fontWeight = FontWeight.Normal,
-                color = AureoleDS.colors.onSurfaceMedium
+                color = AureoleDS.colors.onSurfaceMedium,
+                format = AureoleTextFormatParams(style = AureoleDS.typography.bodyLarge, fontWeight = FontWeight.Normal)
             )
         }
 
@@ -153,15 +175,20 @@ fun SettingsToggleItem(
 @Composable
 fun SettingsActionItem(
     title: String,
-    leadingContent: (@Composable () -> Unit)? = null,
-    modifier: Modifier = Modifier,
     onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    leadingContent: (@Composable () -> Unit)? = null,
 ) {
     Row(
         modifier = modifier
             .fillMaxWidth()
+            .minimumInteractiveComponentSize()
             .clip(RoundedCornerShape(AureoleDS.dimens.radiusMedium))
-            .clickable { onClick() }
+            .clickable(
+                onClick = onClick,
+                role = Role.Button
+            )
+            .semantics(mergeDescendants = true) {}
             .padding(vertical = AureoleDS.dimens.xSmall, horizontal = AureoleDS.dimens.small),
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -177,10 +204,22 @@ fun SettingsActionItem(
         }
         AureoleText(
             text = title,
-            style = AureoleDS.typography.bodyLarge,
-            fontWeight = FontWeight.Normal,
             color = AureoleDS.colors.onSurfaceMedium,
-            modifier = Modifier.weight(1f)
+            modifier = Modifier.weight(1f),
+            format = AureoleTextFormatParams(style = AureoleDS.typography.bodyLarge, fontWeight = FontWeight.Normal)
         )
+    }
+}
+
+@AureolePreview
+@Composable
+private fun SettingsComponentsPreview() {
+    AureoleLauncherTheme {
+        Column(modifier = Modifier.padding(AureoleDS.dimens.medium)) {
+            SettingsHugeTitle(text = "Settings")
+            SettingsMenuItem(SettingsMenuParams(title = "General", onClick = {}))
+            SettingsToggleItem(title = "Enable Feature", checked = true, onCheckedChange = {})
+            SettingsActionItem(title = "Reset All", onClick = {})
+        }
     }
 }

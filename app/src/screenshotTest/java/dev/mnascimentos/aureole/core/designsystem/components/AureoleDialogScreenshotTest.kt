@@ -1,16 +1,60 @@
 package dev.mnascimentos.aureole.core.designsystem.components
 
-import android.content.res.Configuration
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.tooling.preview.Preview
 import com.android.tools.screenshot.PreviewTest
+import dev.mnascimentos.aureole.core.designsystem.icons.Smile
+import dev.mnascimentos.aureole.core.designsystem.model.AureoleDialogConfig
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
+import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 
 @PreviewTest
-@Preview(name = "Dark Mode", uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
+@AureolePreview
 @Composable
-fun AureoleDialogScreenshotTest() {
+private fun AureoleDialogDefaultScreenshotTest() {
     AureoleLauncherTheme {
-        AureoleDialogPreview()
+        AureoleDialog(
+            onDismissRequest = {},
+            title = "Sample Dialog Title",
+        ) {
+            AureoleText(
+                text = "This is sample content inside AureoleDialog.",
+                format = AureoleTextFormatParams(style = AureoleDS.typography.bodyMedium),
+            )
+        }
+    }
+}
+
+@PreviewTest
+@AureolePreview
+@Composable
+private fun AureoleDialogWithIconAndLogoScreenshotTest() {
+    AureoleLauncherTheme {
+        AureoleDialog(
+            onDismissRequest = {},
+            config = AureoleDialogConfig(
+                title = "Dialog With Icon",
+                onLogoClick = {},
+            ),
+            icon = { m -> AureoleDS.icons.Smile(m) },
+        ) {
+            AureoleText(
+                text = "Dialog content with leading icon and logo callback.",
+                format = AureoleTextFormatParams(style = AureoleDS.typography.bodyMedium),
+            )
+        }
+    }
+}
+
+@PreviewTest
+@AureolePreview
+@Composable
+private fun AureoleDialogHeaderSlotScreenshotTest() {
+    AureoleLauncherTheme {
+        AureoleDialogHeader(
+            title = "Header Composition Title",
+            icon = { m -> AureoleDS.icons.Smile(m) },
+            onLogoClick = {},
+        )
     }
 }

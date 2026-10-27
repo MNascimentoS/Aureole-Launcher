@@ -18,7 +18,6 @@ import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.core.data.model.LauncherItemState
 import dev.mnascimentos.aureole.core.designsystem.icons.Delete
 import dev.mnascimentos.aureole.core.designsystem.icons.Edit
@@ -28,25 +27,22 @@ import dev.mnascimentos.aureole.feature.home.grid.model.GridCellParams
 import dev.mnascimentos.aureole.feature.home.grid.model.ResizeHandleCallbacks
 import kotlin.math.roundToInt
 
-private val HANDLE_TOUCH_SIZE = 28.dp
-private val CORNER_TOUCH_SIZE = 36.dp
-private val CORNER_HANDLE_RADIUS = 12.dp
-
 @Composable
 fun BoxScope.RightEdgeResizeHandle(
     params: GridCellParams,
-    callbacks: ResizeHandleCallbacks
+    callbacks: ResizeHandleCallbacks,
+    modifier: Modifier = Modifier
 ) {
     val currentItem by rememberUpdatedState(params.item)
     val currentParams by rememberUpdatedState(params)
     val currentCallbacks by rememberUpdatedState(callbacks)
 
     Box(
-        modifier = Modifier
+        modifier = modifier
             .align(Alignment.CenterEnd)
             .fillMaxHeight()
-            .padding(top = CORNER_TOUCH_SIZE, bottom = CORNER_TOUCH_SIZE)
-            .width(HANDLE_TOUCH_SIZE)
+            .padding(top = AureoleDS.dimens.iconXLarge, bottom = AureoleDS.dimens.iconXLarge)
+            .width(AureoleDS.dimens.iconXLargeMedium)
             .pointerInput(params.item.id) {
                 var totalDragX = 0f
                 detectDragGestures(
@@ -87,18 +83,19 @@ fun BoxScope.RightEdgeResizeHandle(
 @Composable
 fun BoxScope.BottomEdgeResizeHandle(
     params: GridCellParams,
-    callbacks: ResizeHandleCallbacks
+    callbacks: ResizeHandleCallbacks,
+    modifier: Modifier = Modifier
 ) {
     val currentItem by rememberUpdatedState(params.item)
     val currentParams by rememberUpdatedState(params)
     val currentCallbacks by rememberUpdatedState(callbacks)
 
     Box(
-        modifier = Modifier
+        modifier = modifier
             .align(Alignment.BottomCenter)
             .fillMaxWidth()
-            .padding(start = CORNER_TOUCH_SIZE, end = CORNER_TOUCH_SIZE)
-            .height(HANDLE_TOUCH_SIZE)
+            .padding(start = AureoleDS.dimens.iconXLarge, end = AureoleDS.dimens.iconXLarge)
+            .height(AureoleDS.dimens.iconXLargeMedium)
             .pointerInput(params.item.id) {
                 var totalDragY = 0f
                 detectDragGestures(
@@ -139,7 +136,8 @@ fun BoxScope.BottomEdgeResizeHandle(
 @Composable
 fun BoxScope.CornerResizeHandle(
     params: GridCellParams,
-    callbacks: CornerResizeCallbacks
+    callbacks: CornerResizeCallbacks,
+    modifier: Modifier = Modifier
 ) {
     val currentItem by rememberUpdatedState(params.item)
     val currentParams by rememberUpdatedState(params)
@@ -177,12 +175,12 @@ fun BoxScope.CornerResizeHandle(
     }
 
     Box(
-        modifier = Modifier
+        modifier = modifier
             .align(Alignment.BottomEnd)
-            .size(CORNER_TOUCH_SIZE)
+            .size(AureoleDS.dimens.iconXLarge)
             .background(
                 color = AureoleDS.colors.surfaceVariant,
-                shape = RoundedCornerShape(topStart = CORNER_HANDLE_RADIUS)
+                shape = RoundedCornerShape(topStart = AureoleDS.dimens.radiusSmall)
             )
             .pointerInput(params.item.id) { detectTapGestures(onTap = { currentCallbacks.onEditItem() }) }
             .then(dragModifier),
@@ -190,7 +188,7 @@ fun BoxScope.CornerResizeHandle(
     ) {
         AureoleDS.icons.Edit(
             tint = AureoleDS.colors.onSurfaceHigh,
-            modifier = Modifier.size(20.dp)
+            modifier = Modifier.size(AureoleDS.dimens.iconMedium)
         )
     }
 }
@@ -226,24 +224,25 @@ private fun handleCornerDragEnd(
 @Composable
 fun BoxScope.DeleteActionHandle(
     itemId: String,
-    onDeleteItem: () -> Unit
+    onDeleteItem: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     val currentOnDelete by rememberUpdatedState(onDeleteItem)
 
     Box(
-        modifier = Modifier
+        modifier = modifier
             .align(Alignment.TopEnd)
-            .size(CORNER_TOUCH_SIZE)
+            .size(AureoleDS.dimens.iconXLarge)
             .background(
                 color = AureoleDS.colors.error,
-                shape = RoundedCornerShape(bottomStart = CORNER_HANDLE_RADIUS)
+                shape = RoundedCornerShape(bottomStart = AureoleDS.dimens.radiusSmall)
             )
             .pointerInput(itemId + "_delete") { detectTapGestures(onTap = { currentOnDelete() }) },
         contentAlignment = Alignment.Center
     ) {
         AureoleDS.icons.Delete(
             tint = AureoleDS.colors.onError,
-            modifier = Modifier.size(20.dp)
+            modifier = Modifier.size(AureoleDS.dimens.iconMedium)
         )
     }
 }

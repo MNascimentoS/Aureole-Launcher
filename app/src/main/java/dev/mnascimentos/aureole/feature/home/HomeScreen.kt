@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.systemGestureExclusion
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -20,10 +19,8 @@ import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
@@ -31,48 +28,38 @@ import dev.chrisbanes.haze.hazeSource
 import dev.chrisbanes.haze.rememberHazeState
 import dev.mnascimentos.aureole.core.data.model.ContainerModel
 import dev.mnascimentos.aureole.core.data.model.LauncherItemType
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
+import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.core.designsystem.utils.LocalHazeState
 import dev.mnascimentos.aureole.core.designsystem.utils.LocalSharedTransitionScope
 import dev.mnascimentos.aureole.feature.home.components.clock.EditClockBottomSheet
+import dev.mnascimentos.aureole.feature.home.components.common.HomeScreenFolderOverlays
 import dev.mnascimentos.aureole.feature.home.components.common.WallpaperBackground
 import dev.mnascimentos.aureole.feature.home.components.containers.EditContainerScreen
-import dev.mnascimentos.aureole.feature.home.components.containers.folder.HomeScreenFolderOverlays
+import dev.mnascimentos.aureole.feature.home.components.containers.model.EditContainerScreenParams
 import dev.mnascimentos.aureole.feature.home.components.overlays.CustomizeBottomSheet
 import dev.mnascimentos.aureole.feature.home.components.overlays.HomeOverlaysContent
 import dev.mnascimentos.aureole.feature.home.components.overlays.homeDragGestures
 import dev.mnascimentos.aureole.feature.home.components.widgets.EditWidgetGroupScreen
 import dev.mnascimentos.aureole.feature.home.components.widgets.model.EditWidgetGroupActions
 import dev.mnascimentos.aureole.feature.home.components.widgets.model.EditWidgetGroupParams
+import dev.mnascimentos.aureole.feature.home.extensions.homeScreenExclusion
 import dev.mnascimentos.aureole.feature.home.grid.AddContainerDialog
 import dev.mnascimentos.aureole.feature.home.grid.EditGridItemDialog
 import dev.mnascimentos.aureole.feature.home.model.HomeDragParams
 import dev.mnascimentos.aureole.feature.home.model.HomeOverlaysConfig
-import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
 import dev.mnascimentos.aureole.feature.home.model.HomeScreenBodyConfig
-import dev.mnascimentos.aureole.feature.home.model.MainUiState
+import dev.mnascimentos.aureole.feature.home.model.LocalHomeActions
+import dev.mnascimentos.aureole.feature.home.model.LocalHomeUiState
 import dev.mnascimentos.aureole.feature.home.model.getWidgetIdsForStack
 import dev.mnascimentos.aureole.feature.home.model.isOverlayActive
 
-val LocalHomeUiState = staticCompositionLocalOf<MainUiState> { MainUiState() }
-val LocalHomeActions = staticCompositionLocalOf<HomeScreenActions> { createDefaultHomeScreenActions() }
-
-fun createDefaultHomeScreenActions(): HomeScreenActions = HomeScreenActions(
-    onWidgetRowHeightChanged = {},
-    onAppClick = {},
-    onExpandNotificationShade = {},
-    onFolderIntent = {},
-    onSetAddAppToFolderDialogVisible = {},
-    onSetRenameFolderDialogVisible = {},
-    onSearchQueryChanged = {},
-    onSettingsClick = {},
-    onAllAppsDrawerClose = {},
-    onAllAppsDrawerOpen = {}
-)
+private const val DEFAULT_APP_WIDGET_HOST_ID = 1024
 
 @Suppress("LongMethod") // Root composable of home feature managing scaffolding and gesture states
 @Composable
 fun HomeScreen(
-    appWidgetHost: AppWidgetHost,
+    appWidgetHost: AppWidgetHost?,
     modifier: Modifier = Modifier,
 ) {
     val uiState = LocalHomeUiState.current
@@ -118,8 +105,8 @@ fun HomeScreen(
                         screenHeightPx = it.size.height.toFloat()
                         screenWidthPx = it.size.width.toFloat()
                     }
-                    .then(HomeScreenExclusionModifier(isSystemBackActive))
-                    .then(if (uiState.isGridEditMode) Modifier else dragModifier)
+                    .homeScreenExclusion(isSystemBackActive)
+                    .then(if (uiState.isOverlayActive) Modifier else dragModifier)
             ) {
                 HomeScreenBody(
                     HomeScreenBodyConfig(
@@ -141,19 +128,7 @@ fun HomeScreen(
     }
 }
 
-@Composable
-private fun HomeScreenExclusionModifier(isSystemBackActive: Boolean): Modifier {
-    return if (!isSystemBackActive) {
-        Modifier.systemGestureExclusion {
-            val heightPx = it.size.height.toFloat()
-            val widthPx = it.size.width.toFloat()
-            Rect(0f, 0f, widthPx, heightPx)
-        }
-    } else {
-        Modifier
-    }
-}
-
+@Suppress("LongMethod") // Root composable of home feature managing scaffolding and gesture states
 @Composable
 private fun BoxScope.HomeScreenBody(
     config: HomeScreenBodyConfig
@@ -174,7 +149,7 @@ private fun BoxScope.HomeScreenBody(
 
         if (!config.uiState.isLoading) {
             MainHomeLayout(
-                appWidgetHost = config.appWidgetHost,
+                appWidgetHost = config.appWidgetHost ?: AppWidgetHost(LocalContext.current, DEFAULT_APP_WIDGET_HOST_ID),
                 currentHeightPx = config.currentHeightPx,
                 favListState = config.favListState,
                 hazeState = config.hazeState,
@@ -209,6 +184,7 @@ private fun BoxScope.HomeScreenBody(
     }
 }
 
+@Suppress("LongMethod") // Root composable of home feature managing scaffolding and gesture states
 @Composable
 private fun HomeOverlaysDialogsAndErrors(config: HomeOverlaysConfig) {
     if (config.uiState.showCustomizeBottomSheet) {
@@ -255,6 +231,7 @@ private fun HomeOverlaysDialogsAndErrors(config: HomeOverlaysConfig) {
     }
 }
 
+@Suppress("LongMethod") // Root composable of home feature managing scaffolding and gesture states
 @Composable
 private fun HomeEditGridItemOverlay(config: HomeOverlaysConfig) {
     config.uiState.editingGridItem?.let { editingItem ->
@@ -273,7 +250,8 @@ private fun HomeEditGridItemOverlay(config: HomeOverlaysConfig) {
                     onToggleIndicator = { config.actions.onToggleWidgetStackDots(editingItem.id) },
                     onRemoveWidget = { config.actions.onRemoveWidgetClick(it, editingItem.id) },
                     onAddWidgetClick = { config.actions.onAddWidgetClick(editingItem.id) },
-                    onDismissRequest = config.actions.onCloseEditGridItemDialog
+                    onDismissRequest = config.actions.onCloseEditGridItemDialog,
+                    onReorderWidgets = { config.actions.onReorderWidgets(it, editingItem.id) }
                 )
             )
         } else {
@@ -286,6 +264,7 @@ private fun HomeEditGridItemOverlay(config: HomeOverlaysConfig) {
     }
 }
 
+@Suppress("LongMethod") // Root composable of home feature managing scaffolding and gesture states
 @Composable
 private fun HomeEditContainerOverlay(config: HomeOverlaysConfig) {
     if (config.uiState.isEditContainerDialogVisible && config.uiState.editingContainerId != null) {
@@ -293,11 +272,22 @@ private fun HomeEditContainerOverlay(config: HomeOverlaysConfig) {
             ?: ContainerModel(id = config.uiState.editingContainerId)
 
         EditContainerScreen(
-            panel = editingPanel,
-            allApps = config.uiState.apps,
-            hazeState = if (config.uiState.isHazeEnabled) config.hazeState else null,
-            onDismiss = config.actions.onCloseEditContainerDialog,
-            onSave = config.actions.onSaveContainerModel
+            params = EditContainerScreenParams(
+                panel = editingPanel,
+                allApps = config.uiState.apps,
+                hazeState = if (config.uiState.isHazeEnabled) config.hazeState else null,
+                onDismiss = config.actions.onCloseEditContainerDialog,
+                onSave = config.actions.onSaveContainerModel
+            )
         )
+    }
+}
+
+@AureolePreview
+@Composable
+private fun HomeScreenPreview() {
+    val context = LocalContext.current
+    AureoleLauncherTheme {
+        HomeScreen(appWidgetHost = AppWidgetHost(context, DEFAULT_APP_WIDGET_HOST_ID))
     }
 }

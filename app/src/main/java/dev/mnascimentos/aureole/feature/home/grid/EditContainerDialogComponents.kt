@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
@@ -17,18 +18,22 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
+import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.core.data.model.LauncherItemState
 import dev.mnascimentos.aureole.core.data.model.LauncherItemType
 import dev.mnascimentos.aureole.core.data.model.ScrollOrientation
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
+import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
-import dev.mnascimentos.aureole.feature.home.LocalHomeActions
-import dev.mnascimentos.aureole.feature.home.LocalHomeUiState
+import dev.mnascimentos.aureole.feature.home.grid.model.ScrollViewChildParams
 import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
+import dev.mnascimentos.aureole.feature.home.model.LocalHomeActions
+import dev.mnascimentos.aureole.feature.home.model.LocalHomeUiState
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
 
 @Composable
@@ -41,21 +46,21 @@ internal fun EditDialogChildrenListSection(
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .clip(RoundedCornerShape(14.dp))
+                .clip(RoundedCornerShape(AureoleDS.dimens.radiusMedium))
                 .background(AureoleDS.colors.surfaceVariant.copy(alpha = 0.25f))
-                .padding(16.dp),
+                .padding(AureoleDS.dimens.medium),
             contentAlignment = Alignment.Center
         ) {
             AureoleText(
-                text = "Nenhum componente adicionado ainda.",
-                style = AureoleDS.typography.bodyMedium,
-                color = AureoleDS.colors.onSurfaceMedium
+                text = stringResource(R.string.home_container_edit_none_added),
+                color = AureoleDS.colors.onSurfaceMedium,
+                format = AureoleTextFormatParams(style = AureoleDS.typography.bodyMedium)
             )
         }
     } else {
         val isVertical = item.safeScrollOrientation == ScrollOrientation.VERTICAL
         val totalChildren = item.safeChildren.size
-        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+        Column(verticalArrangement = Arrangement.spacedBy(AureoleDS.dimens.xSmall)) {
             item.safeChildren.forEachIndexed { index, child ->
                 ScrollViewChildItemCard(
                     params = ScrollViewChildParams(
@@ -80,26 +85,25 @@ internal fun ScrollViewOrientationSelector(
 ) {
     Column(modifier = Modifier.fillMaxWidth()) {
         AureoleText(
-            text = "Orientação do Scroll",
-            style = AureoleDS.typography.titleMedium,
-            fontWeight = FontWeight.SemiBold,
+            text = stringResource(R.string.home_container_edit_scroll_orientation),
             color = AureoleDS.colors.onSurfaceHigh,
-            modifier = Modifier.padding(bottom = 10.dp)
+            modifier = Modifier.padding(bottom = AureoleDS.dimens.smallCompact),
+            format = AureoleTextFormatParams(style = AureoleDS.typography.titleMedium, fontWeight = FontWeight.SemiBold)
         )
 
         Row(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(12.dp)
+            horizontalArrangement = Arrangement.spacedBy(AureoleDS.dimens.small)
         ) {
             OrientationOptionCard(
-                title = "Vertical",
+                title = stringResource(R.string.home_container_edit_vertical),
                 isSelected = item.safeScrollOrientation == ScrollOrientation.VERTICAL,
                 onClick = { actions.onUpdateScrollViewOrientation(item.id, ScrollOrientation.VERTICAL) },
                 modifier = Modifier.weight(1f)
             )
 
             OrientationOptionCard(
-                title = "Horizontal",
+                title = stringResource(R.string.home_container_edit_horizontal),
                 isSelected = item.safeScrollOrientation == ScrollOrientation.HORIZONTAL,
                 onClick = { actions.onUpdateScrollViewOrientation(item.id, ScrollOrientation.HORIZONTAL) },
                 modifier = Modifier.weight(1f)
@@ -128,10 +132,14 @@ private fun OrientationOptionCard(
 
     Row(
         modifier = modifier
-            .clip(RoundedCornerShape(12.dp))
+            .defaultMinSize(minHeight = AureoleDS.dimens.minTouchTarget)
+            .clip(RoundedCornerShape(AureoleDS.dimens.radiusSmall))
             .background(bgColor)
-            .clickable(onClick = onClick)
-            .padding(horizontal = 8.dp, vertical = 10.dp),
+            .clickable(
+                role = Role.RadioButton,
+                onClick = onClick
+            )
+            .padding(horizontal = AureoleDS.dimens.xSmall, vertical = AureoleDS.dimens.smallCompact),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center
     ) {
@@ -139,21 +147,23 @@ private fun OrientationOptionCard(
             selected = isSelected,
             onClick = null
         )
-        Spacer(modifier = Modifier.width(2.dp))
+        Spacer(modifier = Modifier.width(AureoleDS.dimens.minimal))
         AureoleText(
             text = title,
-            style = AureoleDS.typography.labelLarge,
-            fontWeight = FontWeight.SemiBold,
             color = contentColor,
-            maxLines = 1,
-            softWrap = false
+            format = AureoleTextFormatParams(
+                style = AureoleDS.typography.labelLarge,
+                fontWeight = FontWeight.SemiBold,
+                maxLines = 1,
+                softWrap = false
+            )
         )
     }
 }
 
 @AureolePreview
 @Composable
-fun EditGridItemDialogPreview() {
+private fun EditGridItemDialogPreview() {
     val sampleItem = LauncherItemState(
         id = "item_1",
         type = LauncherItemType.APPS_LIST,

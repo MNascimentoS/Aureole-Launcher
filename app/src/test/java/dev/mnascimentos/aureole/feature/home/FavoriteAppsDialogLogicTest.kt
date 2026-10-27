@@ -17,7 +17,7 @@ class FavoriteAppsDialogLogicTest {
     )
 
     @Test
-    fun testActivateAllAddsRemainingAppsToFavorites() {
+    fun `when activate all triggered, should add remaining apps to favorites`() {
         val app1 = createApp("App 1", "com.example.app1")
         val app2 = createApp("App 2", "com.example.app2")
         val app3 = createApp("App 3", "com.example.app3")
@@ -34,7 +34,7 @@ class FavoriteAppsDialogLogicTest {
     }
 
     @Test
-    fun testDeactivateAllRemovesFavorites() {
+    fun `when deactivate all triggered, should remove all favorites`() {
         val initialFavs = listOf("com.example.app1", "com.example.app2")
         val filteredFavorites = listOf(
             createApp("App 1", "com.example.app1"),
@@ -48,7 +48,7 @@ class FavoriteAppsDialogLogicTest {
     }
 
     @Test
-    fun testActivateAndDeactivateWithSearchFilter() {
+    fun `when filtering with search, should activate and deactivate filtered apps correctly`() {
         val app1 = createApp("Alpha", "com.example.alpha")
         val app2 = createApp("Beta", "com.example.beta")
         val app3 = createApp("Gamma", "com.example.gamma")

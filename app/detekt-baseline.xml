@@ -11,7 +11,6 @@
     <ID>MatchingDeclarationName:AppItemMenusModels.kt$AppItemBottomSheetParams</ID>
     <ID>NestedBlockDepth:AppIconHelper.kt$AppIconHelper$private fun findRowBounds(pixels: IntArray, yOffset: Int, width: Int): Pair&lt;Int, Int&gt;?</ID>
     <ID>NestedBlockDepth:AppShortcutUtils.kt$AppShortcutUtils$private fun queryShortcutsForPackage( launcherApps: LauncherApps, packageName: String ): List&lt;ShortcutInfo&gt;</ID>
-    <ID>NestedBlockDepth:FolderDatabaseHelper.kt$FolderDatabaseHelper$fun getAllFoldersWithItems(): List&lt;FolderWithItems&gt;</ID>
     <ID>NestedBlockDepth:GridEngineUtils.kt$GridEngineUtils$fun findFirstAvailableSlot( colSpan: Int, rowSpan: Int, items: List&lt;LauncherItemState&gt;, limits: GridLimits = GridLimits() ): Pair&lt;Int, Int&gt;?</ID>
     <ID>NestedBlockDepth:GridEngineUtils.kt$GridEngineUtils$private fun searchNearestSlot(params: SlotSearchParams): Pair&lt;Int, Int&gt;?</ID>
     <ID>NestedBlockDepth:GridItemContent.kt$private fun updateSingleWidgetView(view: View, widgetId: Int)</ID>

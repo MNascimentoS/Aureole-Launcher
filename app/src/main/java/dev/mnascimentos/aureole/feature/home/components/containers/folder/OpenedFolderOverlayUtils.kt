@@ -11,6 +11,7 @@ import dev.mnascimentos.aureole.feature.home.model.MainUiState
 private const val POPUP_MAX_OFFSET_SUBTRAHEND = 300
 private const val POPUP_MIN_OFFSET_DP = 16f
 private val SIDE_PADDING_DP = 88.dp
+private val GRID_FOLDER_HORIZONTAL_PADDING = 24.dp
 
 internal object OpenedFolderOverlayUtils {
 
@@ -24,15 +25,15 @@ internal object OpenedFolderOverlayUtils {
         }
     }
 
-    fun calculatePopupPaddingModifier(
+    fun Modifier.popupPadding(
         isGridFolderEnabled: Boolean,
         isLeftHandedMode: Boolean,
         clampedTopDp: Dp
     ): Modifier {
         return if (isGridFolderEnabled) {
-            Modifier
+            this.padding(horizontal = GRID_FOLDER_HORIZONTAL_PADDING)
         } else {
-            Modifier.padding(
+            this.padding(
                 start = if (isLeftHandedMode) SIDE_PADDING_DP else 0.dp,
                 end = if (!isLeftHandedMode) SIDE_PADDING_DP else 0.dp,
                 top = clampedTopDp

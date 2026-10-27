@@ -1,5 +1,6 @@
 package dev.mnascimentos.aureole
 
+import android.content.Context
 import android.content.Intent
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.IntentSenderRequest
@@ -38,15 +39,25 @@ import dev.mnascimentos.aureole.feature.home.components.overlays.extensions.clos
 import dev.mnascimentos.aureole.feature.home.components.overlays.extensions.closeContainerFolderBottomSheet
 import dev.mnascimentos.aureole.feature.home.components.overlays.extensions.closeFolderAppBottomSheet
 import dev.mnascimentos.aureole.feature.home.components.overlays.extensions.closeWidgetStackBottomSheet
+import dev.mnascimentos.aureole.feature.home.components.overlays.extensions.dismissReleaseNotes
 import dev.mnascimentos.aureole.feature.home.components.overlays.extensions.openContainerAppBottomSheet
 import dev.mnascimentos.aureole.feature.home.components.overlays.extensions.openContainerFolderBottomSheet
 import dev.mnascimentos.aureole.feature.home.components.overlays.extensions.openEditFolderForFolder
 import dev.mnascimentos.aureole.feature.home.components.overlays.extensions.openFolderAppBottomSheet
 import dev.mnascimentos.aureole.feature.home.components.overlays.extensions.openWidgetStackBottomSheet
 import dev.mnascimentos.aureole.feature.home.components.overlays.extensions.toggleWidgetStackDots
-import dev.mnascimentos.aureole.feature.home.components.widgets.WidgetHostManager
+import dev.mnascimentos.aureole.feature.home.components.quickbutton.extensions.onCloseQuickButtonAppearance
+import dev.mnascimentos.aureole.feature.home.components.quickbutton.extensions.onCloseQuickButtonSettings
+import dev.mnascimentos.aureole.feature.home.components.quickbutton.extensions.onCloseShortcutSelection
+import dev.mnascimentos.aureole.feature.home.components.quickbutton.extensions.onOpenQuickButtonAppearance
+import dev.mnascimentos.aureole.feature.home.components.quickbutton.extensions.onOpenQuickButtonSettings
+import dev.mnascimentos.aureole.feature.home.components.quickbutton.extensions.onOpenShortcutSelection
+import dev.mnascimentos.aureole.feature.home.components.quickbutton.extensions.onUpdateQuickButtonAppearance
+import dev.mnascimentos.aureole.feature.home.components.quickbutton.extensions.onUpdateQuickButtonShortcuts
 import dev.mnascimentos.aureole.feature.home.components.widgets.extensions.closeWidgetPopup
 import dev.mnascimentos.aureole.feature.home.components.widgets.extensions.openWidgetPopup
+import dev.mnascimentos.aureole.feature.home.components.widgets.extensions.removeWidgetId
+import dev.mnascimentos.aureole.feature.home.components.widgets.extensions.reorderWidgets
 import dev.mnascimentos.aureole.feature.home.components.widgets.extensions.setIsAddingSingleWidget
 import dev.mnascimentos.aureole.feature.home.components.widgets.extensions.setShowWidgetPicker
 import dev.mnascimentos.aureole.feature.home.components.widgets.extensions.setShowWidgetResizeDialog
@@ -55,7 +66,6 @@ import dev.mnascimentos.aureole.feature.home.components.widgets.extensions.setWi
 import dev.mnascimentos.aureole.feature.home.extensions.setAllAppsDrawerOpen
 import dev.mnascimentos.aureole.feature.home.extensions.setShowCustomizeBottomSheet
 import dev.mnascimentos.aureole.feature.home.extensions.toggleShowAllAppsOnHome
-import dev.mnascimentos.aureole.feature.home.grid.extensions.GridItemSpec
 import dev.mnascimentos.aureole.feature.home.grid.extensions.addGridItem
 import dev.mnascimentos.aureole.feature.home.grid.extensions.cancelGridEditMode
 import dev.mnascimentos.aureole.feature.home.grid.extensions.deleteGridItem
@@ -73,14 +83,14 @@ import dev.mnascimentos.aureole.feature.home.grid.extensions.setEditingGridItem
 import dev.mnascimentos.aureole.feature.home.grid.extensions.setShowAddContainerDialog
 import dev.mnascimentos.aureole.feature.home.grid.extensions.updateGridItemsOrientation
 import dev.mnascimentos.aureole.feature.home.grid.extensions.updateScrollViewOrientation
+import dev.mnascimentos.aureole.feature.home.grid.model.GridItemSpec
 import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
 import dev.mnascimentos.aureole.feature.settings.SettingsActivity
 import dev.mnascimentos.aureole.util.IntentUtils
 
 class HomeActionsFactory(
-    private val activity: MainActivity,
+    private val context: Context,
     private val viewModel: HomeViewModel,
-    private val widgetHostManager: WidgetHostManager,
     private val appUpdateManager: AppUpdateManager,
     private val updateActivityResultLauncher: ActivityResultLauncher<IntentSenderRequest>,
     private val cachedAppUpdateInfo: AppUpdateInfo? = null,
@@ -92,28 +102,38 @@ class HomeActionsFactory(
                 viewModel.setTargetWidgetStackId(stackId)
                 viewModel.setShowWidgetPicker(true)
             },
+            onRemoveWidgetClick = { widgetId, stackId ->
+                viewModel.removeWidgetId(widgetId, stackId)
+            },
+            onReorderWidgets = { newWidgets, stackId ->
+                viewModel.reorderWidgets(newWidgets, stackId)
+            },
             onAppClick = { appInfo ->
-                activity.packageManager.getLaunchIntentForPackage(appInfo.packageName)?.let { launchIntent ->
-                    activity.startActivity(launchIntent)
+                context.packageManager.getLaunchIntentForPackage(appInfo.packageName)?.let { launchIntent ->
+                    context.startActivity(launchIntent)
                 }
             },
-            onExpandNotificationShade = { IntentUtils.expandNotificationShade(activity) },
+            onExpandNotificationShade = { IntentUtils.expandNotificationShade(context) },
             onFolderIntent = { viewModel.onFolderIntent(it) },
             onSetAddAppToFolderDialogVisible = { viewModel.setAddAppToFolderDialogVisible(it) },
             onSetRenameFolderDialogVisible = { viewModel.setRenameFolderDialogVisible(it) },
             onSearchQueryChanged = { viewModel.onSearchQueryChanged(it) },
             onSettingsClick = {
-                val intent = Intent(activity, SettingsActivity::class.java)
-                activity.startActivity(intent)
+                val intent = Intent(context, SettingsActivity::class.java)
+                context.startActivity(intent)
             },
             onAllAppsDrawerClose = { viewModel.setAllAppsDrawerOpen(false) },
             onAllAppsDrawerOpen = { viewModel.setAllAppsDrawerOpen(true) },
             onToggleFavorite = { pkg -> viewModel.toggleFavorite(pkg) },
+            onToggleFavoriteWithContainer = { pkg, containerId -> viewModel.toggleFavorite(pkg, containerId) },
             onUpdateFavoritePackages = { containerId, pkgs -> handleUpdateFavoritePackages(containerId, pkgs) },
             onToggleShowAllAppsOnHome = { viewModel.toggleShowAllAppsOnHome() },
-            onAppInfoClick = { app -> IntentUtils.openAppInfo(activity, app.packageName) },
-            onUninstallAppClick = { app -> IntentUtils.uninstallApp(activity, app.packageName) },
+            onAppInfoClick = { app -> IntentUtils.openAppInfo(context, app.packageName) },
+            onUninstallAppClick = { app -> IntentUtils.uninstallApp(context, app.packageName) },
             onOpenFavoritePicker = { containerId -> viewModel.setShowFavoritePicker(true, containerId) },
+            onDismissFavoritePicker = { viewModel.setShowFavoritePicker(false) },
+            onDismissWidgetPicker = { viewModel.setShowWidgetPicker(false) },
+            onDismissReleaseNotes = { viewModel.dismissReleaseNotes() },
             onOpenWidgetPopup = { id, y -> viewModel.openWidgetPopup(id, y) },
             onCloseWidgetPopup = { viewModel.closeWidgetPopup() },
             onOpenWidgetResizeDialog = { viewModel.setShowWidgetResizeDialog(true) },
@@ -193,7 +213,15 @@ class HomeActionsFactory(
             onUpdateClockTextColor = { color -> viewModel.updateClockTextColor(color) },
             onUpdateClockBackgroundColor = { color -> viewModel.updateClockBackgroundColor(color) },
             onToggleClockBackground = { viewModel.toggleClockBackground() },
-            onResetClockSettings = { viewModel.resetClockSettings() }
+            onResetClockSettings = { viewModel.resetClockSettings() },
+            onOpenQuickButtonSettings = { id -> viewModel.onOpenQuickButtonSettings(id) },
+            onCloseQuickButtonSettings = { viewModel.onCloseQuickButtonSettings() },
+            onOpenQuickButtonAppearance = { viewModel.onOpenQuickButtonAppearance() },
+            onCloseQuickButtonAppearance = { viewModel.onCloseQuickButtonAppearance() },
+            onOpenShortcutSelection = { type -> viewModel.onOpenShortcutSelection(type) },
+            onCloseShortcutSelection = { viewModel.onCloseShortcutSelection() },
+            onUpdateQuickButtonAppearance = { app -> viewModel.onUpdateQuickButtonAppearance(app) },
+            onUpdateQuickButtonShortcuts = { shortcuts -> viewModel.onUpdateQuickButtonShortcuts(shortcuts) }
         )
     }
 

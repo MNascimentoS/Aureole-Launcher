@@ -10,7 +10,7 @@ import org.robolectric.RobolectricTestRunner
 class ThemePaletteTest {
 
     @Test
-    fun testGetPaletteByNameCustomGeneratesPaletteFromSeedColor() {
+    fun `when getting palette by custom name, should generate palette from seed color`() {
         val seedColor = 0xFF6650A4.toInt()
         val customPalette = getPaletteByName("Custom", isDarkTheme = true, seedColor = seedColor)
 
@@ -21,7 +21,7 @@ class ThemePaletteTest {
     }
 
     @Test
-    fun testGetPaletteByNameCustomLightMode() {
+    fun `when getting palette by custom name in light mode, should return light mode palette`() {
         val seedColor = 0xFF2E7D32.toInt()
         val customLightPalette = getPaletteByName("Custom", isDarkTheme = false, seedColor = seedColor)
 

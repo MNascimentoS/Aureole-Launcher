@@ -1,6 +1,5 @@
 package dev.mnascimentos.aureole.core.designsystem.components
 
-import android.content.Intent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -22,7 +21,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.ImageBitmap
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -32,13 +31,11 @@ import dev.chrisbanes.haze.HazeState
 import dev.chrisbanes.haze.HazeStyle
 import dev.chrisbanes.haze.HazeTint
 import dev.chrisbanes.haze.hazeEffect
-import dev.mnascimentos.aureole.core.designsystem.icons.Close
 import dev.mnascimentos.aureole.core.designsystem.icons.Logo
-import dev.mnascimentos.aureole.core.designsystem.icons.Settings
+import dev.mnascimentos.aureole.core.designsystem.model.AureolePopupHeaderParams
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
-import dev.mnascimentos.aureole.feature.settings.SettingsActivity
 
 private const val HAZE_ALPHA = 0.85f
 private const val OPAQUE_ALPHA = 1f
@@ -92,7 +89,6 @@ fun AureolePopupBox(
  * Header Banner matching design:
  * Filled top banner with height (48dp), centered title, and Aureole logo icon
  * aligned to top right with 4dp margin. Clipped to top corner radius.
- * Clicking the Aureole logo (or header banner) navigates to Aureole Settings screen.
  *
  * @param title The title of the banner.
  * @param modifier The modifier to be applied to the layout.
@@ -104,15 +100,6 @@ fun AureoleHeaderBanner(
     modifier: Modifier = Modifier,
     onLogoClick: (() -> Unit)? = null,
 ) {
-    val context = LocalContext.current
-    val handleSettingsClick = {
-        if (onLogoClick != null) {
-            onLogoClick()
-        } else {
-            context.startActivity(Intent(context, SettingsActivity::class.java))
-        }
-    }
-
     Box(
         modifier = modifier
             .fillMaxWidth()
@@ -128,15 +115,17 @@ fun AureoleHeaderBanner(
     ) {
         AureoleText(
             text = title,
-            style = AureoleDS.typography.titleMedium,
-            fontWeight = FontWeight.Bold,
             color = AureoleDS.colors.onSurfaceHigh,
-            textAlign = TextAlign.Center,
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis,
             modifier = Modifier
                 .align(Alignment.Center)
-                .padding(horizontal = 36.dp),
+                .padding(horizontal = AureoleDS.dimens.iconXLarge),
+            format = AureoleTextFormatParams(
+                style = AureoleDS.typography.titleMedium,
+                fontWeight = FontWeight.Bold,
+                textAlign = TextAlign.Center,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
         )
 
         Box(
@@ -145,7 +134,13 @@ fun AureoleHeaderBanner(
                 .padding(top = AureoleDS.dimens.xxSmall, end = AureoleDS.dimens.xxSmall)
                 .size(AureoleDS.dimens.iconXLarge)
                 .clip(CircleShape)
-                .clickable(onClick = handleSettingsClick),
+                .then(
+                    if (onLogoClick != null) {
+                        Modifier.clickable(onClick = onLogoClick, role = Role.Button)
+                    } else {
+                        Modifier
+                    }
+                ),
             contentAlignment = Alignment.Center,
         ) {
             AureoleDS.icons.Logo(
@@ -157,45 +152,19 @@ fun AureoleHeaderBanner(
 }
 
 /**
- * Standard Popup Header with distinct header background bar (surfaceVariant),
- * app/folder icon badge, main title, and top-right Aureole logo icon aligned to TopEnd (4dp margin).
- * Clipped to top corner radius.
+ * Standard Popup Header displaying a surfaceVariant top background bar, optional app/folder icon badge,
+ * main title, optional session subtitle, and top-right action icon (Settings/Logo/Close).
  *
- * @param title The main title of the header.
- * @param modifier The modifier to be applied to the layout.
- * @param sessionTitle The optional subtitle of the header.
- * @param iconVector The vector icon to be displayed.
- * @param iconBitmap The bitmap icon to be displayed.
- * @param customIcon The custom icon content.
- * @param showAureoleLogo Whether to show the Aureole logo.
- * @param onSettingsClick Executes when the user clicks the settings icon.
- * @param onCloseClick Executes when the user clicks the close icon.
+ * @param title The primary title text of the popup header.
+ * @param modifier The [Modifier] applied to the header layout. First optional parameter.
+ * @param params Additional configuration options provided via [AureolePopupHeaderParams].
  */
-@Suppress(
-    "LongParameterList",
-    "LongMethod"
-) // AureolePopupHeader provides structured header with logo, title, and slots
 @Composable
 fun AureolePopupHeader(
     title: String,
     modifier: Modifier = Modifier,
-    sessionTitle: String? = null,
-    iconVector: @Composable ((Modifier) -> Unit)? = null,
-    iconBitmap: ImageBitmap? = null,
-    customIcon: (@Composable () -> Unit)? = null,
-    showAureoleLogo: Boolean = true,
-    onSettingsClick: (() -> Unit)? = null,
-    onCloseClick: (() -> Unit)? = null,
+    params: AureolePopupHeaderParams = AureolePopupHeaderParams(),
 ) {
-    val context = LocalContext.current
-    val handleOpenSettings = {
-        if (onSettingsClick != null) {
-            onSettingsClick()
-        } else {
-            context.startActivity(Intent(context, SettingsActivity::class.java))
-        }
-    }
-
     Box(
         modifier = modifier
             .fillMaxWidth()
@@ -206,99 +175,110 @@ fun AureolePopupHeader(
                 )
             )
             .background(AureoleDS.colors.surfaceVariant)
-            .padding(horizontal = AureoleDS.dimens.xSmall, vertical = AureoleDS.dimens.xSmall)
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
+                .padding(horizontal = AureoleDS.dimens.xSmall, vertical = AureoleDS.dimens.xSmall)
                 .padding(end = AureoleDS.dimens.large),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            Box(
-                modifier = Modifier
-                    .size(AureoleDS.dimens.iconXLarge)
-                    .clip(RoundedCornerShape(AureoleDS.dimens.radiusXSmall))
-                    .background(AureoleDS.colors.surface),
-                contentAlignment = Alignment.Center,
-            ) {
-                when {
-                    customIcon != null -> customIcon()
-                    iconBitmap != null -> Image(
-                        bitmap = iconBitmap,
-                        contentDescription = title,
-                        modifier = Modifier.size(AureoleDS.dimens.iconLarge),
-                    )
-                    iconVector != null -> iconVector(
-                        Modifier.size(AureoleDS.dimens.iconMedium)
-                    )
-                    else -> AureoleText(
-                        text = title.take(1).uppercase(),
-                        style = AureoleDS.typography.titleMedium,
-                        fontWeight = FontWeight.Bold,
-                        color = AureoleDS.colors.onSurfaceHigh,
-                    )
-                }
-            }
-
+            PopupHeaderIconBadge(
+                title = title,
+                iconBitmap = params.iconBitmap,
+                customIcon = params.customIcon
+            )
             Spacer(modifier = Modifier.width(AureoleDS.dimens.xSmall))
-
-            Column(modifier = Modifier.weight(1f)) {
-                AureoleText(
-                    text = title,
-                    style = AureoleDS.typography.titleMedium,
-                    fontWeight = FontWeight.Bold,
-                    color = AureoleDS.colors.onSurfaceHigh,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                )
-
-                if (!sessionTitle.isNullOrBlank()) {
-                    AureoleText(
-                        text = sessionTitle,
-                        style = AureoleDS.typography.labelSmall,
-                        color = AureoleDS.colors.onSurfaceMedium,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
-                    )
-                }
-            }
+            PopupHeaderTitleGroup(
+                title = title,
+                sessionTitle = params.sessionTitle,
+                modifier = Modifier.weight(1f)
+            )
         }
 
-        Box(
-            modifier = Modifier
-                .align(Alignment.TopEnd)
+        PopupHeaderActions(params = params, modifier = Modifier.align(Alignment.TopEnd))
+    }
+}
+
+@Composable
+private fun PopupHeaderIconBadge(
+    title: String,
+    iconBitmap: ImageBitmap?,
+    customIcon: (@Composable () -> Unit)?
+) {
+    Box(
+        modifier = Modifier
+            .size(AureoleDS.dimens.iconXLarge)
+            .clip(RoundedCornerShape(AureoleDS.dimens.radiusXSmall))
+            .background(AureoleDS.colors.surface),
+        contentAlignment = Alignment.Center,
+    ) {
+        when {
+            customIcon != null -> customIcon()
+            iconBitmap != null -> Image(
+                bitmap = iconBitmap,
+                contentDescription = title,
+                modifier = Modifier.size(AureoleDS.dimens.iconLarge),
+            )
+
+            else -> AureoleText(
+                text = title.take(1).uppercase(),
+                color = AureoleDS.colors.onSurfaceHigh,
+                format = AureoleTextFormatParams(
+                    style = AureoleDS.typography.titleMedium,
+                    fontWeight = FontWeight.Bold
+                )
+            )
+        }
+    }
+}
+
+@Composable
+private fun PopupHeaderTitleGroup(
+    title: String,
+    sessionTitle: String?,
+    modifier: Modifier = Modifier
+) {
+    Column(modifier = modifier) {
+        AureoleText(
+            text = title,
+            color = AureoleDS.colors.onSurfaceHigh,
+            format = AureoleTextFormatParams(
+                style = AureoleDS.typography.titleMedium,
+                fontWeight = FontWeight.Bold,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
+        )
+
+        if (!sessionTitle.isNullOrBlank()) {
+            AureoleText(
+                text = sessionTitle,
+                color = AureoleDS.colors.onSurfaceMedium,
+                format = AureoleTextFormatParams(
+                    style = AureoleDS.typography.labelSmall,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+            )
+        }
+    }
+}
+
+@Composable
+private fun PopupHeaderActions(
+    params: AureolePopupHeaderParams,
+    modifier: Modifier = Modifier
+) {
+    Box(modifier = modifier) {
+        IconButton(
+            onClick = { params.onSettingsClick?.invoke() },
+            modifier = Modifier.size(AureoleDS.dimens.iconXLarge),
         ) {
-            if (showAureoleLogo) {
-                IconButton(
-                    onClick = handleOpenSettings,
-                    modifier = Modifier.size(AureoleDS.dimens.iconXLarge),
-                ) {
-                    AureoleDS.icons.Logo(
-                        tint = AureoleDS.colors.onSurfaceHigh,
-                        modifier = Modifier.size(AureoleDS.dimens.iconSmall),
-                    )
-                }
-            } else if (onSettingsClick != null) {
-                IconButton(
-                    onClick = onSettingsClick,
-                    modifier = Modifier.size(AureoleDS.dimens.iconXLarge),
-                ) {
-                    AureoleDS.icons.Settings(
-                        tint = AureoleDS.colors.onSurfaceHigh,
-                        modifier = Modifier.size(AureoleDS.dimens.iconMedium),
-                    )
-                }
-            } else if (onCloseClick != null) {
-                IconButton(
-                    onClick = onCloseClick,
-                    modifier = Modifier.size(AureoleDS.dimens.iconXLarge),
-                ) {
-                    AureoleDS.icons.Close(
-                        tint = AureoleDS.colors.onSurfaceHigh,
-                        modifier = Modifier.size(AureoleDS.dimens.iconMedium),
-                    )
-                }
-            }
+            AureoleDS.icons.Logo(
+                tint = AureoleDS.colors.onSurfaceHigh,
+                modifier = Modifier.size(AureoleDS.dimens.iconSmall),
+            )
         }
     }
 }
@@ -326,31 +306,35 @@ fun AureolePopupMenuSection(
     ) {
         AureoleText(
             text = title,
-            style = AureoleDS.typography.labelSmall,
-            fontWeight = FontWeight.SemiBold,
             color = AureoleDS.colors.onSurfaceMedium,
+            format = AureoleTextFormatParams(
+                style = AureoleDS.typography.labelSmall,
+                fontWeight = FontWeight.SemiBold
+            )
         )
     }
 }
 
 @AureolePreview
 @Composable
-fun AureolePopupBoxPreview() {
+private fun AureolePopupBoxPreview() {
     AureoleLauncherTheme {
         AureolePopupBox(
             modifier = Modifier.width(260.dp),
         ) {
             AureolePopupHeader(
                 title = "Folder Name",
-                sessionTitle = "Session Subtitle",
-                onSettingsClick = {},
+                params = AureolePopupHeaderParams(
+                    sessionTitle = "Session Subtitle",
+                    onSettingsClick = {},
+                )
             )
             AureolePopupMenuSection(title = "Section Header")
             AureoleText(
                 text = "Popup Body Content",
-                style = AureoleDS.typography.bodyMedium,
                 color = AureoleDS.colors.onSurfaceHigh,
                 modifier = Modifier.padding(AureoleDS.dimens.small),
+                format = AureoleTextFormatParams(style = AureoleDS.typography.bodyMedium)
             )
         }
     }

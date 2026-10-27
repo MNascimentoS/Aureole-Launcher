@@ -29,7 +29,7 @@ class AureoleTextTest {
             AureoleLauncherTheme {
                 AureoleText(
                     text = "Aureole Launcher Text",
-                    style = AureoleDS.typography.titleMedium
+                    format = AureoleTextFormatParams(style = AureoleDS.typography.titleMedium)
                 )
             }
         }
@@ -43,20 +43,22 @@ class AureoleTextTest {
             AureoleLauncherTheme {
                 AureoleText(
                     text = "Custom Params Text",
-                    style = AureoleDS.typography.titleMedium,
                     color = Color.Red,
-                    textAlign = TextAlign.Center,
-                    overflow = TextOverflow.Ellipsis,
-                    maxLines = 1,
-                    minLines = 1,
-                    softWrap = false,
-                    letterSpacing = TextUnit.Unspecified,
-                    lineHeight = TextUnit.Unspecified,
-                    fontSize = TextUnit.Unspecified,
-                    fontWeight = FontWeight.Bold,
-                    fontStyle = FontStyle.Italic,
-                    textDecoration = TextDecoration.Underline,
-                    onTextLayout = {}
+                    format = AureoleTextFormatParams(
+                        style = AureoleDS.typography.titleMedium,
+                        textAlign = TextAlign.Center,
+                        overflow = TextOverflow.Ellipsis,
+                        maxLines = 1,
+                        minLines = 1,
+                        softWrap = false,
+                        letterSpacing = TextUnit.Unspecified,
+                        lineHeight = TextUnit.Unspecified,
+                        fontSize = TextUnit.Unspecified,
+                        fontWeight = FontWeight.Bold,
+                        fontStyle = FontStyle.Italic,
+                        textDecoration = TextDecoration.Underline,
+                        onTextLayout = {}
+                    )
                 )
             }
         }
@@ -66,7 +68,20 @@ class AureoleTextTest {
     @Test
     fun `when rendering text preview, should display text previews`() {
         composeTestRule.setContent {
-            AureoleTextPreview()
+            AureoleLauncherTheme {
+                AureoleText(
+                    text = "Title Medium Text",
+                    format = AureoleTextFormatParams(style = AureoleDS.typography.titleMedium)
+                )
+                AureoleText(
+                    text = "Body Medium Text",
+                    format = AureoleTextFormatParams(style = AureoleDS.typography.bodyMedium)
+                )
+                AureoleText(
+                    text = "Label Small Text",
+                    format = AureoleTextFormatParams(style = AureoleDS.typography.labelSmall)
+                )
+            }
         }
 
         composeTestRule.onNodeWithText("Title Medium Text").assertIsDisplayed()

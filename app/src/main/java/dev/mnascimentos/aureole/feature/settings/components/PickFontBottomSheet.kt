@@ -1,101 +1,54 @@
 package dev.mnascimentos.aureole.feature.settings.components
 
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ModalBottomSheet
-import androidx.compose.material3.Surface
-import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalInspectionMode
+import androidx.compose.ui.res.stringResource
+import dev.mnascimentos.aureole.R
+import dev.mnascimentos.aureole.composable.sheets.SettingsBottomSheet
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
+import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
 import dev.mnascimentos.aureole.core.designsystem.icons.Check
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.theme.AvailableFonts
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PickFontBottomSheet(
     selectedFontName: String,
     onFontSelected: (String) -> Unit,
-    onDismissRequest: () -> Unit
+    onDismissRequest: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
-    val sheetContent = @Composable {
-        PickFontSheetContent(selectedFontName = selectedFontName, onFontSelected = onFontSelected)
-    }
-
-    if (LocalInspectionMode.current) {
-        Box(
-            modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.BottomCenter
-        ) {
-            Surface(
-                color = AureoleDS.colors.surface,
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                sheetContent()
-            }
-        }
-    } else {
-        val bottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
-
-        ModalBottomSheet(
-            onDismissRequest = onDismissRequest,
-            sheetState = bottomSheetState,
-            dragHandle = null,
-            containerColor = AureoleDS.colors.surface
-        ) {
-            sheetContent()
-        }
-    }
-}
-
-@Composable
-private fun PickFontSheetContent(
-    selectedFontName: String,
-    onFontSelected: (String) -> Unit
-) {
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = AureoleDS.dimens.large, bottom = AureoleDS.dimens.xLarge)
+    SettingsBottomSheet(
+        title = stringResource(R.string.settings_appearance_pick_font),
+        onDismissRequest = onDismissRequest,
+        modifier = modifier
     ) {
-        AureoleText(
-            text = "Pick Font",
-            style = AureoleDS.typography.titleMedium,
-            color = AureoleDS.colors.onSurfaceHigh,
-            modifier = Modifier.padding(horizontal = AureoleDS.dimens.xLarge)
-        )
-
-        Spacer(modifier = Modifier.height(AureoleDS.dimens.medium))
-
-        Box(modifier = Modifier.weight(1f, fill = false)) {
-            LazyColumn {
-                items(
-                    items = AvailableFonts.keys.toList(),
-                    key = { it },
-                    contentType = { "font_option" }
-                ) { fontName ->
-                    FontOptionItem(
-                        fontName = fontName,
-                        isSelected = fontName == selectedFontName,
-                        onFontSelected = onFontSelected
-                    )
-                }
+        LazyColumn(
+            verticalArrangement = Arrangement.spacedBy(AureoleDS.dimens.small),
+            modifier = Modifier.fillMaxSize()
+        ) {
+            items(
+                items = AvailableFonts.keys.toList(),
+                key = { it },
+                contentType = { "font_option" }
+            ) { fontName ->
+                FontOptionItem(
+                    fontName = fontName,
+                    isSelected = fontName == selectedFontName,
+                    onFontSelected = onFontSelected
+                )
             }
         }
     }
@@ -112,15 +65,14 @@ private fun FontOptionItem(
         modifier = Modifier
             .fillMaxWidth()
             .clickable { onFontSelected(fontName) }
-            .padding(horizontal = AureoleDS.dimens.xLarge, vertical = AureoleDS.dimens.medium),
+            .padding(vertical = AureoleDS.dimens.small, horizontal = AureoleDS.dimens.xSmall),
         verticalAlignment = Alignment.CenterVertically
     ) {
         AureoleText(
             text = fontName,
-            style = AureoleDS.typography.bodyLarge,
-            fontFamily = font,
             color = AureoleDS.colors.onSurfaceMedium,
-            modifier = Modifier.weight(1f)
+            modifier = Modifier.weight(1f),
+            format = AureoleTextFormatParams(style = AureoleDS.typography.bodyLarge, fontFamily = font)
         )
         if (isSelected) {
             AureoleDS.icons.Check(
@@ -133,7 +85,7 @@ private fun FontOptionItem(
 
 @AureolePreview
 @Composable
-fun PickFontBottomSheetPreview() {
+private fun PickFontBottomSheetPreview() {
     AureoleLauncherTheme {
         PickFontBottomSheet(
             selectedFontName = "Istok Web",

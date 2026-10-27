@@ -1,7 +1,6 @@
 package dev.mnascimentos.aureole.feature.home.components.appsdrawer
 
 import android.content.ComponentName
-import android.graphics.drawable.ColorDrawable
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -22,20 +21,24 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.res.stringResource
+import androidx.core.graphics.drawable.toDrawable
+import dev.mnascimentos.aureole.R
+import dev.mnascimentos.aureole.composable.appitem.model.AppItemRowActions
+import dev.mnascimentos.aureole.composable.appitem.model.AppItemRowConfig
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleSectionHeader
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
+import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
 import dev.mnascimentos.aureole.core.designsystem.icons.Settings
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
-import dev.mnascimentos.aureole.feature.home.LocalHomeActions
-import dev.mnascimentos.aureole.feature.home.LocalHomeUiState
-import dev.mnascimentos.aureole.feature.home.components.appsdrawer.appitem.AppItemRow
-import dev.mnascimentos.aureole.feature.home.components.appsdrawer.appitem.model.AppItemRowActions
-import dev.mnascimentos.aureole.feature.home.components.appsdrawer.appitem.model.AppItemRowConfig
+import dev.mnascimentos.aureole.feature.home.components.appsdrawer.appitem.HomeAppItemRow
+import dev.mnascimentos.aureole.feature.home.components.appsdrawer.model.AppsListMetrics
 import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
+import dev.mnascimentos.aureole.feature.home.model.LocalHomeActions
+import dev.mnascimentos.aureole.feature.home.model.LocalHomeUiState
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
 
 fun LazyListScope.appsListItems(
@@ -58,14 +61,14 @@ fun LazyListScope.appsListItems(
                 title = currentLetter.toString(),
                 color = AureoleDS.colors.onSurfaceHigh,
                 modifier = Modifier.padding(
-                    top = 20.dp,
-                    bottom = 8.dp
+                    top = AureoleDS.dimens.medium,
+                    bottom = AureoleDS.dimens.xSmall
                 )
             )
         }
 
         val isFav = uiState.favoriteAppPackages.contains(app.packageName)
-        AppItemRow(
+        HomeAppItemRow(
             app = app,
             onClick = { actions.onAppClick(app) },
             config = AppItemRowConfig(isFavorite = isFav),
@@ -83,48 +86,48 @@ fun LazyListScope.appsListItems(
 
 private fun LazyListScope.settingsListItem(actions: HomeScreenActions) {
     item(key = "aureole_settings_item", contentType = "settings_item") {
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(AureoleDS.dimens.medium))
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .clip(RoundedCornerShape(12.dp))
+                .clip(RoundedCornerShape(AureoleDS.dimens.radiusSmall))
                 .clickable { actions.onSettingsClick() }
                 .padding(horizontal = AureoleDS.dimens.medium, vertical = AureoleDS.dimens.small),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Box(
                 modifier = Modifier
-                    .size(42.dp)
+                    .size(AppsListMetrics.SettingsIconContainerSize)
                     .clip(CircleShape)
                     .background(AureoleDS.colors.surfaceVariant),
                 contentAlignment = Alignment.Center
             ) {
                 AureoleDS.icons.Settings(
                     tint = AureoleDS.colors.onSurfaceHigh,
-                    modifier = Modifier.size(24.dp)
+                    modifier = Modifier.size(AureoleDS.dimens.iconLarge)
                 )
             }
 
             Spacer(modifier = Modifier.width(AureoleDS.dimens.medium))
 
             AureoleText(
-                text = "Aureole Settings",
-                style = AureoleDS.typography.bodyLarge,
-                color = AureoleDS.colors.onSurfaceMedium
+                text = stringResource(R.string.home_customize_aureole_settings),
+                color = AureoleDS.colors.onSurfaceMedium,
+                format = AureoleTextFormatParams(style = AureoleDS.typography.bodyLarge)
             )
         }
-        Spacer(modifier = Modifier.height(80.dp))
+        Spacer(modifier = Modifier.height(AppsListMetrics.SettingsBottomSpacerHeight))
     }
 }
 
 @AureolePreview
 @Composable
-fun AppsListDrawerPreview() {
+private fun AppsListDrawerPreview() {
     val mockApp = AppInfo(
         label = "Gallery",
         packageName = "com.example.gallery",
         componentName = ComponentName("com.example.gallery", "MainActivity"),
-        icon = ColorDrawable(0xFF1B65C0.toInt())
+        icon = 0xFF1B65C0.toInt().toDrawable()
     )
     val mockUiState = MainUiState(
         apps = listOf(mockApp),

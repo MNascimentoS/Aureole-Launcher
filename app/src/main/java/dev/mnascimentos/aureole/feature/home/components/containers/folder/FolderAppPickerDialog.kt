@@ -1,5 +1,8 @@
+@file:Suppress("MagicNumber")
+
 package dev.mnascimentos.aureole.feature.home.components.containers.folder
 
+import android.content.ComponentName
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -18,6 +21,7 @@ import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Surface
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -26,11 +30,18 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalInspectionMode
-import androidx.compose.ui.unit.dp
+import androidx.core.graphics.drawable.toDrawable
 import dev.mnascimentos.aureole.core.data.model.AppFolder
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
+import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
+import dev.mnascimentos.aureole.feature.home.components.containers.folder.extensions.filterAppsBySearch
+import dev.mnascimentos.aureole.feature.home.components.containers.folder.extensions.togglePackageSelection
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.FolderAppPickerBodyParams
+import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.FolderPickerMetrics
+import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.SelectedFolderAppSectionParams
+import kotlinx.coroutines.delay
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -38,14 +49,15 @@ fun FolderAppPickerDialog(
     folder: AppFolder,
     allApps: List<AppInfo>,
     onDismiss: () -> Unit,
-    onSave: (List<String>) -> Unit
+    onSave: (List<String>) -> Unit,
+    modifier: Modifier = Modifier
 ) {
     val sheetContent = @Composable {
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(horizontal = 20.dp)
-                .padding(bottom = 20.dp)
+                .padding(horizontal = FolderPickerMetrics.DialogContentPadding)
+                .padding(bottom = FolderPickerMetrics.DialogContentPadding)
         ) {
             FolderAppPickerDialogContent(
                 folder = folder,
@@ -58,7 +70,7 @@ fun FolderAppPickerDialog(
 
     if (LocalInspectionMode.current) {
         Box(
-            modifier = Modifier.fillMaxSize(),
+            modifier = modifier.fillMaxSize(),
             contentAlignment = Alignment.BottomCenter
         ) {
             Surface(
@@ -86,7 +98,7 @@ fun FolderAppPickerDialog(
             ),
             containerColor = AureoleDS.colors.surface,
             contentColor = AureoleDS.colors.onSurfaceMedium,
-            modifier = Modifier.windowInsetsPadding(WindowInsets.statusBars)
+            modifier = modifier.windowInsetsPadding(WindowInsets.statusBars)
         ) {
             sheetContent()
         }
@@ -104,6 +116,12 @@ private fun FolderAppPickerDialogContent(
         mutableStateListOf<String>().apply { addAll(folder.appPackageNames) }
     }
     var searchQuery by remember { mutableStateOf("") }
+    var debouncedQuery by remember { mutableStateOf("") }
+
+    LaunchedEffect(searchQuery) {
+        delay(300)
+        debouncedQuery = searchQuery
+    }
 
     val appMap = remember(allApps) {
         allApps.associateBy { it.packageName }
@@ -119,12 +137,12 @@ private fun FolderAppPickerDialogContent(
             .sortedBy { it.label.lowercase() }
     }
 
-    val filteredSelected = remember(searchQuery, selectedApps) {
-        filterAppsBySearch(selectedApps, searchQuery)
+    val filteredSelected = remember(debouncedQuery, selectedApps) {
+        filterAppsBySearch(selectedApps, debouncedQuery)
     }
 
-    val filteredRemaining = remember(searchQuery, remainingApps) {
-        filterAppsBySearch(remainingApps, searchQuery)
+    val filteredRemaining = remember(debouncedQuery, remainingApps) {
+        filterAppsBySearch(remainingApps, debouncedQuery)
     }
 
     FolderAppPickerDialogBody(
@@ -139,14 +157,6 @@ private fun FolderAppPickerDialogContent(
         onDismiss = onDismiss,
         onSave = onSave
     )
-}
-
-private fun filterAppsBySearch(apps: List<AppInfo>, query: String): List<AppInfo> {
-    return if (query.isBlank()) {
-        apps
-    } else {
-        apps.filter { it.label.contains(query, ignoreCase = true) }
-    }
 }
 
 @Composable
@@ -173,26 +183,28 @@ private fun FolderAppPickerDialogBody(
 
     Column(modifier = Modifier.fillMaxWidth()) {
         FolderAppPickerHeader(folderName = params.folderName, onDismiss = onDismiss)
-        Spacer(modifier = Modifier.height(12.dp))
+        Spacer(modifier = Modifier.height(AureoleDS.dimens.small))
 
         FolderAppPickerSearchInput(
             query = params.searchQuery,
             onQueryChange = onSearchQueryChange
         )
 
-        Spacer(modifier = Modifier.height(12.dp))
+        Spacer(modifier = Modifier.height(AureoleDS.dimens.small))
 
         LazyColumn(
             modifier = Modifier.weight(1f).fillMaxWidth(),
-            verticalArrangement = Arrangement.spacedBy(4.dp)
+            verticalArrangement = Arrangement.spacedBy(AureoleDS.dimens.xxSmall)
         ) {
             selectedFolderAppSection(
-                filteredSelected = params.filteredSelected,
-                searchQuery = params.searchQuery,
-                totalSelectedCount = selectedPackages.size,
-                onMoveUp = handleMoveUp,
-                onMoveDown = handleMoveDown,
-                onToggleSelect = { pkg -> togglePackageSelection(selectedPackages, pkg) }
+                params = SelectedFolderAppSectionParams(
+                    filteredSelected = params.filteredSelected,
+                    searchQuery = params.searchQuery,
+                    totalSelectedCount = selectedPackages.size,
+                    onMoveUp = handleMoveUp,
+                    onMoveDown = handleMoveDown,
+                    onToggleSelect = { pkg -> togglePackageSelection(selectedPackages, pkg) }
+                )
             )
 
             remainingFolderAppSection(
@@ -202,15 +214,29 @@ private fun FolderAppPickerDialogBody(
             )
         }
 
-        Spacer(modifier = Modifier.height(12.dp))
+        Spacer(modifier = Modifier.height(AureoleDS.dimens.small))
         FolderAppPickerFooter(onDismiss = onDismiss, onSave = { onSave(selectedPackages.toList()) })
     }
 }
 
-private fun togglePackageSelection(selectedPackages: MutableList<String>, pkg: String) {
-    if (selectedPackages.contains(pkg)) {
-        selectedPackages.remove(pkg)
-    } else {
-        selectedPackages.add(pkg)
+@AureolePreview
+@Composable
+private fun FolderAppPickerDialogPreview() {
+    val sampleFolder = AppFolder(id = "f1", name = "Tools", appPackageNames = listOf("com.example.camera"))
+    val sampleApps = listOf(
+        AppInfo(
+            label = "Camera",
+            packageName = "com.example.camera",
+            componentName = ComponentName("com.example.camera", "MainActivity"),
+            icon = 0xFF2E7D32.toInt().toDrawable()
+        )
+    )
+    AureoleLauncherTheme {
+        FolderAppPickerDialog(
+            folder = sampleFolder,
+            allApps = sampleApps,
+            onDismiss = {},
+            onSave = {}
+        )
     }
 }

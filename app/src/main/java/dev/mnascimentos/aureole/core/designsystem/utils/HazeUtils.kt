@@ -5,7 +5,7 @@ import android.content.Context
 import android.os.Build
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.lazy.LazyListState
-import androidx.compose.runtime.compositionLocalOf
+import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.graphics.BlendMode
@@ -17,7 +17,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import dev.chrisbanes.haze.HazeState
 
-val LocalHazeState = compositionLocalOf<HazeState?> { null }
+val LocalHazeState = staticCompositionLocalOf<HazeState?> { null }
 
 fun Modifier.fadingEdges(
     scrollState: LazyListState,

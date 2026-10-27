@@ -1,12 +1,11 @@
 package dev.mnascimentos.aureole.feature.settings
 
-import android.content.res.Configuration
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.tooling.preview.Preview
 import com.android.tools.screenshot.PreviewTest
 import dev.mnascimentos.aureole.composable.ColorPickerDialog
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
+import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.settings.components.BlurBottomSheet
 import dev.mnascimentos.aureole.feature.settings.components.ContainerPositionDialog
 import dev.mnascimentos.aureole.feature.settings.components.PickBorderRadiusBottomSheet
@@ -14,13 +13,17 @@ import dev.mnascimentos.aureole.feature.settings.components.PickFontBottomSheet
 import dev.mnascimentos.aureole.feature.settings.components.PickPaletteBottomSheet
 import dev.mnascimentos.aureole.feature.settings.components.SearchIconPositionDialog
 import dev.mnascimentos.aureole.feature.settings.components.SetBackgroundBottomSheet
-import dev.mnascimentos.aureole.feature.settings.components.SettingsBottomSheet
+import dev.mnascimentos.aureole.composable.sheets.SettingsBottomSheet
 import dev.mnascimentos.aureole.feature.settings.components.SettingsButtonPositionDialog
+import dev.mnascimentos.aureole.feature.settings.screens.FactoryResetDialog
+import dev.mnascimentos.aureole.feature.settings.screens.HazeOpacityDialog
+import dev.mnascimentos.aureole.feature.settings.screens.ResetGridDialog
+import dev.mnascimentos.aureole.feature.settings.screens.RestoreWallpaperDialog
 
 @PreviewTest
-@Preview(name = "Color Picker Dialog Flow", uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
+@AureolePreview
 @Composable
-fun ColorPickerDialogScreenshotTest() {
+private fun ColorPickerDialogScreenshotTest() {
     AureoleLauncherTheme {
         ColorPickerDialog(
             initialColor = 0xFF1B65C0.toInt(),
@@ -31,9 +34,9 @@ fun ColorPickerDialogScreenshotTest() {
 }
 
 @PreviewTest
-@Preview(name = "Container Position Dialog Flow", uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
+@AureolePreview
 @Composable
-fun ContainerPositionDialogScreenshotTest() {
+private fun ContainerPositionDialogScreenshotTest() {
     AureoleLauncherTheme {
         ContainerPositionDialog(
             currentPosition = "Center",
@@ -44,9 +47,9 @@ fun ContainerPositionDialogScreenshotTest() {
 }
 
 @PreviewTest
-@Preview(name = "Settings Button Position Dialog Flow", uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
+@AureolePreview
 @Composable
-fun SettingsButtonPositionDialogScreenshotTest() {
+private fun SettingsButtonPositionDialogScreenshotTest() {
     AureoleLauncherTheme {
         SettingsButtonPositionDialog(
             currentPosition = "Right",
@@ -57,9 +60,9 @@ fun SettingsButtonPositionDialogScreenshotTest() {
 }
 
 @PreviewTest
-@Preview(name = "Search Icon Position Dialog Flow", uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
+@AureolePreview
 @Composable
-fun SearchIconPositionDialogScreenshotTest() {
+private fun SearchIconPositionDialogScreenshotTest() {
     AureoleLauncherTheme {
         SearchIconPositionDialog(
             currentPosition = "Left",
@@ -70,9 +73,9 @@ fun SearchIconPositionDialogScreenshotTest() {
 }
 
 @PreviewTest
-@Preview(name = "Pick Palette Bottom Sheet Flow", uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
+@AureolePreview
 @Composable
-fun PickPaletteBottomSheetScreenshotTest() {
+private fun PickPaletteBottomSheetScreenshotTest() {
     AureoleLauncherTheme {
         PickPaletteBottomSheet(
             selectedPaletteName = "Frostbite",
@@ -83,9 +86,9 @@ fun PickPaletteBottomSheetScreenshotTest() {
 }
 
 @PreviewTest
-@Preview(name = "Pick Font Bottom Sheet Flow", uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
+@AureolePreview
 @Composable
-fun PickFontBottomSheetScreenshotTest() {
+private fun PickFontBottomSheetScreenshotTest() {
     AureoleLauncherTheme {
         PickFontBottomSheet(
             selectedFontName = "Istok Web",
@@ -96,9 +99,9 @@ fun PickFontBottomSheetScreenshotTest() {
 }
 
 @PreviewTest
-@Preview(name = "Pick Border Radius Bottom Sheet Flow", uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
+@AureolePreview
 @Composable
-fun PickBorderRadiusBottomSheetScreenshotTest() {
+private fun PickBorderRadiusBottomSheetScreenshotTest() {
     AureoleLauncherTheme {
         PickBorderRadiusBottomSheet(
             selectedRadiusDp = 16,
@@ -109,9 +112,9 @@ fun PickBorderRadiusBottomSheetScreenshotTest() {
 }
 
 @PreviewTest
-@Preview(name = "Set Background Bottom Sheet Flow", uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
+@AureolePreview
 @Composable
-fun SetBackgroundBottomSheetScreenshotTest() {
+private fun SetBackgroundBottomSheetScreenshotTest() {
     AureoleLauncherTheme {
         SetBackgroundBottomSheet(
             onSolidColorClick = {},
@@ -122,9 +125,9 @@ fun SetBackgroundBottomSheetScreenshotTest() {
 }
 
 @PreviewTest
-@Preview(name = "Blur Bottom Sheet Flow", uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
+@AureolePreview
 @Composable
-fun BlurBottomSheetScreenshotTest() {
+private fun BlurBottomSheetScreenshotTest() {
     AureoleLauncherTheme {
         BlurBottomSheet(
             currentOpacity = 0.5f,
@@ -136,9 +139,9 @@ fun BlurBottomSheetScreenshotTest() {
 }
 
 @PreviewTest
-@Preview(name = "Settings Bottom Sheet Flow", uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
+@AureolePreview
 @Composable
-fun SettingsBottomSheetScreenshotTest() {
+private fun SettingsBottomSheetScreenshotTest() {
     AureoleLauncherTheme {
         SettingsBottomSheet(
             title = "Settings Bottom Sheet",
@@ -149,4 +152,45 @@ fun SettingsBottomSheetScreenshotTest() {
     }
 }
 
+@PreviewTest
+@AureolePreview
+@Composable
+private fun FactoryResetDialogScreenshotTest() {
+    AureoleLauncherTheme {
+        FactoryResetDialog()
+    }
+}
 
+@PreviewTest
+@AureolePreview
+@Composable
+private fun ResetGridDialogScreenshotTest() {
+    AureoleLauncherTheme {
+        ResetGridDialog()
+    }
+}
+
+@PreviewTest
+@AureolePreview
+@Composable
+private fun HazeOpacityDialogScreenshotTest() {
+    AureoleLauncherTheme {
+        HazeOpacityDialog(
+            currentOpacity = 0.5f,
+            onOpacitySelected = {},
+            onDismiss = {}
+        )
+    }
+}
+
+@PreviewTest
+@AureolePreview
+@Composable
+private fun RestoreWallpaperDialogScreenshotTest() {
+    AureoleLauncherTheme {
+        RestoreWallpaperDialog(
+            onConfirm = {},
+            onDismiss = {}
+        )
+    }
+}

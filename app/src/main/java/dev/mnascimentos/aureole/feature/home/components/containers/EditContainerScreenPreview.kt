@@ -1,8 +1,8 @@
 package dev.mnascimentos.aureole.feature.home.components.containers
 
 import android.content.ComponentName
-import android.graphics.drawable.ColorDrawable
 import androidx.compose.runtime.Composable
+import androidx.core.graphics.drawable.toDrawable
 import dev.mnascimentos.aureole.core.data.model.AppFolder
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.data.model.ContainerItemEntity
@@ -10,28 +10,30 @@ import dev.mnascimentos.aureole.core.data.model.ContainerItemType
 import dev.mnascimentos.aureole.core.data.model.ContainerModel
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
+import dev.mnascimentos.aureole.feature.home.components.containers.model.EditContainerScreenParams
 
+@Suppress("LongMethod") // Compose preview rendering sample container horizontal layout
 @AureolePreview
 @Composable
-fun EditContainerScreenPreview() {
+private fun EditContainerScreenPreview() {
     val sampleApps = listOf(
         AppInfo(
             label = "App 1",
             packageName = "com.example.app1",
             componentName = ComponentName("com.example.app1", "MainActivity"),
-            icon = ColorDrawable(0xFF1B65C0.toInt())
+            icon = 0xFF1B65C0.toInt().toDrawable()
         ),
         AppInfo(
             label = "App 2",
             packageName = "com.example.app2",
             componentName = ComponentName("com.example.app2", "MainActivity"),
-            icon = ColorDrawable(0xFF2E7D32.toInt())
+            icon = 0xFF2E7D32.toInt().toDrawable()
         ),
         AppInfo(
             label = "App 3",
             packageName = "com.example.app3",
             componentName = ComponentName("com.example.app3", "MainActivity"),
-            icon = ColorDrawable(0xFFF57C00.toInt())
+            icon = 0xFFF57C00.toInt().toDrawable()
         )
     )
     val sampleFolders = listOf(
@@ -64,36 +66,38 @@ fun EditContainerScreenPreview() {
     )
     AureoleLauncherTheme {
         EditContainerScreen(
-            panel = panel,
-            allApps = sampleApps,
-            onDismiss = {},
-            onSave = {}
+            params = EditContainerScreenParams(
+                panel = panel,
+                allApps = sampleApps,
+                onDismiss = {},
+                onSave = {}
+            )
         )
     }
 }
 
-@Suppress("LongMethod") // Compose preview initializing sample container and app data
+@Suppress("LongMethod") // Compose preview rendering sample container horizontal layout
 @AureolePreview
 @Composable
-fun EditContainerScreenHorizontalPreview() {
+private fun EditContainerScreenHorizontalPreview() {
     val sampleApps = listOf(
         AppInfo(
             label = "App 1",
             packageName = "com.example.app1",
             componentName = ComponentName("com.example.app1", "MainActivity"),
-            icon = ColorDrawable(0xFF1B65C0.toInt())
+            icon = 0xFF1B65C0.toInt().toDrawable()
         ),
         AppInfo(
             label = "App 2",
             packageName = "com.example.app2",
             componentName = ComponentName("com.example.app2", "MainActivity"),
-            icon = ColorDrawable(0xFF2E7D32.toInt())
+            icon = 0xFF2E7D32.toInt().toDrawable()
         ),
         AppInfo(
             label = "App 3",
             packageName = "com.example.app3",
             componentName = ComponentName("com.example.app3", "MainActivity"),
-            icon = ColorDrawable(0xFFF57C00.toInt())
+            icon = 0xFFF57C00.toInt().toDrawable()
         )
     )
     val sampleFolders = listOf(
@@ -133,10 +137,12 @@ fun EditContainerScreenHorizontalPreview() {
     )
     AureoleLauncherTheme {
         EditContainerScreen(
-            panel = panel,
-            allApps = sampleApps,
-            onDismiss = {},
-            onSave = {}
+            params = EditContainerScreenParams(
+                panel = panel,
+                allApps = sampleApps,
+                onDismiss = {},
+                onSave = {}
+            )
         )
     }
 }

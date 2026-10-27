@@ -1,5 +1,6 @@
 package dev.mnascimentos.aureole.feature.home.components.containers
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Row
@@ -13,6 +14,7 @@ import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuAnchorType
 import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.ExposedDropdownMenuBoxScope
 import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
@@ -25,9 +27,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import dev.mnascimentos.aureole.R
+import dev.mnascimentos.aureole.composable.dialogs.FolderIconRegistry
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
+import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
 import dev.mnascimentos.aureole.core.designsystem.icons.ArrowDown
 import dev.mnascimentos.aureole.core.designsystem.icons.ArrowUp
 import dev.mnascimentos.aureole.core.designsystem.icons.Delete
@@ -35,7 +41,8 @@ import dev.mnascimentos.aureole.core.designsystem.icons.Search
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
-import dev.mnascimentos.aureole.feature.home.components.containers.folder.FolderIconRegistry
+import dev.mnascimentos.aureole.feature.home.components.containers.model.EditContainerItemRowActions
+import dev.mnascimentos.aureole.feature.home.components.containers.model.EditContainerItemRowParams
 
 private const val MAX_DROPDOWN_APP_RESULTS = 8
 
@@ -47,41 +54,45 @@ internal fun EditContainerItemRow(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(8.dp))
+            .clip(RoundedCornerShape(AureoleDS.dimens.radiusXSmall))
             .background(AureoleDS.colors.surfaceVariant.copy(alpha = 0.5f))
-            .padding(horizontal = AureoleDS.dimens.small, vertical = 4.dp),
+            .padding(horizontal = AureoleDS.dimens.small, vertical = AureoleDS.dimens.xxSmall),
         verticalAlignment = Alignment.CenterVertically
     ) {
         EditContainerItemMoveButtons(params = params, actions = actions)
 
-        Spacer(modifier = Modifier.width(4.dp))
+        Spacer(modifier = Modifier.width(AureoleDS.dimens.xxSmall))
 
         FolderIconRegistry.RenderIcon(
             name = params.iconName,
             tint = AureoleDS.colors.onSurfaceHigh,
-            modifier = Modifier.size(20.dp)
+            modifier = Modifier.size(AureoleDS.dimens.iconMedium)
         )
 
         Spacer(modifier = Modifier.width(AureoleDS.dimens.xSmall))
 
         AureoleText(
             text = params.title,
-            style = AureoleDS.typography.bodyMedium,
             color = AureoleDS.colors.onSurfaceHigh,
-            modifier = Modifier.weight(1f)
+            modifier = Modifier.weight(1f),
+            format = AureoleTextFormatParams(style = AureoleDS.typography.bodyMedium)
         )
 
         AureoleText(
-            text = if (params.isFolder) "Pasta" else "App",
-            style = AureoleDS.typography.labelSmall,
+            text = if (params.isFolder) {
+                stringResource(R.string.home_container_edit_folder_label)
+            } else {
+                stringResource(R.string.home_container_edit_app_label)
+            },
             color = AureoleDS.colors.onSurfaceMedium,
-            modifier = Modifier.padding(end = 4.dp)
+            modifier = Modifier.padding(end = AureoleDS.dimens.xxSmall),
+            format = AureoleTextFormatParams(style = AureoleDS.typography.labelSmall)
         )
 
-        IconButton(onClick = actions.onRemove, modifier = Modifier.size(28.dp)) {
+        IconButton(onClick = actions.onRemove, modifier = Modifier.size(AureoleDS.dimens.large)) {
             AureoleDS.icons.Delete(
                 tint = AureoleDS.colors.error,
-                modifier = Modifier.size(18.dp)
+                modifier = Modifier.size(AureoleDS.dimens.iconMedium)
             )
         }
     }
@@ -96,7 +107,7 @@ private fun EditContainerItemMoveButtons(
         IconButton(
             onClick = actions.onMoveUp,
             enabled = params.canMoveUp,
-            modifier = Modifier.size(28.dp)
+            modifier = Modifier.size(AureoleDS.dimens.large)
         ) {
             AureoleDS.icons.ArrowUp(
                 tint = if (params.canMoveUp) {
@@ -104,13 +115,13 @@ private fun EditContainerItemMoveButtons(
                 } else {
                     AureoleDS.colors.onSurfaceMedium.copy(alpha = 0.3f)
                 },
-                modifier = Modifier.size(16.dp)
+                modifier = Modifier.size(AureoleDS.dimens.iconSmall)
             )
         }
         IconButton(
             onClick = actions.onMoveDown,
             enabled = params.canMoveDown,
-            modifier = Modifier.size(28.dp)
+            modifier = Modifier.size(AureoleDS.dimens.large)
         ) {
             AureoleDS.icons.ArrowDown(
                 tint = if (params.canMoveDown) {
@@ -118,7 +129,7 @@ private fun EditContainerItemMoveButtons(
                 } else {
                     AureoleDS.colors.onSurfaceMedium.copy(alpha = 0.3f)
                 },
-                modifier = Modifier.size(16.dp)
+                modifier = Modifier.size(AureoleDS.dimens.iconSmall)
             )
         }
     }
@@ -129,11 +140,11 @@ private fun EditContainerItemMoveButtons(
 internal fun EditContainerAddAppDropdown(
     allApps: List<AppInfo>,
     onAppSelected: (String) -> Unit,
-    label: String = "Adicionar App..."
+    modifier: Modifier = Modifier,
+    label: String = stringResource(R.string.home_container_edit_add_app)
 ) {
     var isExpanded by remember { mutableStateOf(false) }
     var searchQuery by remember { mutableStateOf("") }
-
     val filteredApps = remember(searchQuery, allApps) {
         if (searchQuery.isBlank()) {
             allApps.take(MAX_DROPDOWN_APP_RESULTS)
@@ -145,7 +156,7 @@ internal fun EditContainerAddAppDropdown(
     ExposedDropdownMenuBox(
         expanded = isExpanded,
         onExpandedChange = { isExpanded = !isExpanded },
-        modifier = Modifier.fillMaxWidth()
+        modifier = modifier.fillMaxWidth()
     ) {
         OutlinedTextField(
             value = searchQuery,
@@ -153,14 +164,16 @@ internal fun EditContainerAddAppDropdown(
                 searchQuery = it
                 isExpanded = true
             },
+            singleLine = true,
             placeholder = { AureoleText(label) },
             leadingIcon = {
                 AureoleDS.icons.Search(
                     tint = AureoleDS.colors.onSurfaceMedium,
-                    modifier = Modifier.size(18.dp)
+                    modifier = Modifier.size(AureoleDS.dimens.iconMedium)
                 )
             },
             trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = isExpanded) },
+            shape = RoundedCornerShape(AureoleDS.dimens.radiusSmall),
             colors = OutlinedTextFieldDefaults.colors(
                 focusedBorderColor = AureoleDS.colors.onSurfaceHigh,
                 unfocusedBorderColor = AureoleDS.colors.outline,
@@ -170,20 +183,41 @@ internal fun EditContainerAddAppDropdown(
             modifier = Modifier.menuAnchor(ExposedDropdownMenuAnchorType.PrimaryEditable).fillMaxWidth()
         )
 
-        ExposedDropdownMenu(
-            expanded = isExpanded && filteredApps.isNotEmpty(),
-            onDismissRequest = { isExpanded = false }
-        ) {
-            filteredApps.forEach { app ->
-                DropdownAppItem(
-                    app = app,
-                    onAppSelected = {
-                        onAppSelected(it)
-                        searchQuery = ""
-                        isExpanded = false
-                    }
-                )
+        AddAppDropdownMenu(
+            isExpanded = isExpanded && filteredApps.isNotEmpty(),
+            filteredApps = filteredApps,
+            onDismiss = { isExpanded = false },
+            onAppSelected = {
+                onAppSelected(it)
+                searchQuery = ""
+                isExpanded = false
             }
+        )
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun ExposedDropdownMenuBoxScope.AddAppDropdownMenu(
+    isExpanded: Boolean,
+    filteredApps: List<AppInfo>,
+    onDismiss: () -> Unit,
+    onAppSelected: (String) -> Unit
+) {
+    ExposedDropdownMenu(
+        expanded = isExpanded,
+        onDismissRequest = onDismiss,
+        shape = RoundedCornerShape(AureoleDS.dimens.radiusMedium),
+        containerColor = AureoleDS.colors.surfaceVariant,
+        border = BorderStroke(
+            width = AureoleDS.dimens.borderMinimal,
+            color = AureoleDS.colors.outline.copy(alpha = 0.3f)
+        ),
+        shadowElevation = 8.dp,
+        modifier = Modifier.padding(vertical = AureoleDS.dimens.xxSmall)
+    ) {
+        filteredApps.forEach { app ->
+            DropdownAppItem(app = app, onAppSelected = onAppSelected)
         }
     }
 }
@@ -195,21 +229,30 @@ private fun DropdownAppItem(
 ) {
     val iconBitmap = remember(app.packageName) { app.getIconBitmap() }
     DropdownMenuItem(
-        text = { AureoleText(app.label, color = AureoleDS.colors.onSurfaceHigh) },
+        text = {
+            AureoleText(
+                text = app.label,
+                color = AureoleDS.colors.onSurfaceHigh,
+                format = AureoleTextFormatParams(style = AureoleDS.typography.bodyMedium)
+            )
+        },
         leadingIcon = {
             Image(
                 bitmap = iconBitmap,
                 contentDescription = app.label,
-                modifier = Modifier.size(20.dp)
+                modifier = Modifier.size(AureoleDS.dimens.iconMedium)
             )
         },
-        onClick = { onAppSelected(app.packageName) }
+        onClick = { onAppSelected(app.packageName) },
+        modifier = Modifier
+            .padding(horizontal = AureoleDS.dimens.xxSmall, vertical = AureoleDS.dimens.minimal)
+            .clip(RoundedCornerShape(AureoleDS.dimens.radiusXSmall))
     )
 }
 
 @AureolePreview
 @Composable
-internal fun EditContainerItemRowPreview() {
+private fun EditContainerItemRowPreview() {
     AureoleLauncherTheme {
         EditContainerItemRow(
             params = EditContainerItemRowParams(

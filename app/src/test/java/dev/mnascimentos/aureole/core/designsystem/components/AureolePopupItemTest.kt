@@ -5,6 +5,7 @@ import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.v2.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
+import dev.mnascimentos.aureole.core.designsystem.model.AureolePopupHeaderParams
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import org.junit.Assert.assertTrue
 import org.junit.Rule
@@ -24,7 +25,7 @@ class AureolePopupItemTest {
             AureoleLauncherTheme {
                 AureolePopupMenuItem(
                     title = "Menu Item Title",
-                    badge = "99",
+                    params = AureolePopupMenuItemParams(badge = "99"),
                     onClick = {}
                 )
             }
@@ -59,9 +60,11 @@ class AureolePopupItemTest {
                 AureolePopupMenuItem(
                     title = "Menu Item Title",
                     onClick = {},
-                    customIcon = { Text("CustomIcon") },
-                    trailingIcon = { Text("TrailingIcon") },
-                    onTrailingClick = { trailingClicked = true }
+                    params = AureolePopupMenuItemParams(
+                        customIcon = { Text("CustomIcon") },
+                        trailingIcon = { Text("TrailingIcon") },
+                        onTrailingClick = { trailingClicked = true }
+                    )
                 )
             }
         }
@@ -76,7 +79,23 @@ class AureolePopupItemTest {
     @Test
     fun `when rendering preview, should display all variations`() {
         composeTestRule.setContent {
-            AureolePopupPreview()
+            AureoleLauncherTheme {
+                AureolePopupBox {
+                    AureolePopupHeader(
+                        title = "Folder name",
+                        params = AureolePopupHeaderParams(
+                            sessionTitle = "Titulo de sessão"
+                        )
+                    )
+                    AureolePopupMenuItem(title = "Add folder", onClick = {})
+                    AureolePopupMenuItem(title = "Create stack", onClick = {})
+                    AureolePopupMenuItem(
+                        title = "Remove",
+                        params = AureolePopupMenuItemParams(isDestructive = true),
+                        onClick = {}
+                    )
+                }
+            }
         }
 
         composeTestRule.onNodeWithText("Folder name").assertIsDisplayed()

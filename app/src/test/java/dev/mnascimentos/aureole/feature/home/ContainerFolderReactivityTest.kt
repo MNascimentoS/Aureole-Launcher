@@ -12,7 +12,7 @@ import org.junit.Test
 class ContainerFolderReactivityTest {
 
     @Test
-    fun `OpenCreateFolderDialog retains target panelId`() {
+    fun `when opening create folder dialog, should retain target panelId`() {
         val intentWithPanel = FolderViewIntent.OpenCreateFolderDialog(panelId = "container_1")
         assertEquals("container_1", intentWithPanel.panelId)
 
@@ -21,13 +21,13 @@ class ContainerFolderReactivityTest {
     }
 
     @Test
-    fun `MainUiState tracks targetPanelIdForFolder when creating folder`() {
+    fun `when creating folder, should track targetPanelIdForFolder in MainUiState`() {
         val state = MainUiState(targetPanelIdForFolder = "container_1")
         assertEquals("container_1", state.targetPanelIdForFolder)
     }
 
     @Test
-    fun `adding new folder to side panel maintains hierarchy and existing folder order`() {
+    fun `when adding new folder to side panel, should maintain hierarchy and existing folder order`() {
         val panelId = "panel_main"
         val existingFolder1 = AppFolder(id = "f1", name = "Social", panelId = panelId)
         val existingFolder2 = AppFolder(id = "f2", name = "Games", panelId = panelId)
@@ -49,7 +49,7 @@ class ContainerFolderReactivityTest {
     }
 
     @Test
-    fun `MainUiState containers state map updates reactively with new folder list`() {
+    fun `when folder list is updated, should reactively update containers state map in MainUiState`() {
         val panelId = "panel_1"
         val initialMap = mapOf(
             panelId to ContainerModel(id = panelId, folders = emptyList())
@@ -66,7 +66,7 @@ class ContainerFolderReactivityTest {
     }
 
     @Test
-    fun `multiple side panels maintain isolated folders and empty panels do not leak folders`() {
+    fun `when using multiple side panels, should maintain isolated folders and not leak empty panels`() {
         val folderPanel1 = AppFolder(id = "f1", name = "Panel 1 Folder", panelId = "panel_1")
 
         val panel1 = ContainerModel(id = "panel_1", folders = listOf(folderPanel1))

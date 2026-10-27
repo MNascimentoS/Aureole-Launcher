@@ -10,7 +10,9 @@ import dev.mnascimentos.aureole.core.data.repository.SettingsRepository
 import dev.mnascimentos.aureole.feature.settings.extensions.SettingsToggleManager
 import dev.mnascimentos.aureole.feature.settings.extensions.applySettingValue
 import dev.mnascimentos.aureole.feature.settings.extensions.checkDefaultLauncher
+import dev.mnascimentos.aureole.feature.settings.model.SettingToggle
 import dev.mnascimentos.aureole.feature.settings.model.SettingValue
+import dev.mnascimentos.aureole.feature.settings.model.SettingsDialog
 import dev.mnascimentos.aureole.feature.settings.model.SettingsUiState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -20,42 +22,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-enum class SettingToggle {
-    SHOW_WIDGET_DOTS,
-    HAZE,
-    LEFT_HANDED_MODE,
-    CONTAINER,
-    CONTAINER_BACKGROUND,
-    CONTAINER_EXPAND_CELL,
-    CLOCK_BACKGROUND,
-    SHOW_CONTAINER_ADD_FOLDER_BUTTON,
-    SHOW_FOLDER_LABELS,
-    HOME_OPENS_ALL_APPS,
-    SHOW_ALL_APPS_ON_HOME,
-    WIDGET_ROW,
-    DYNAMIC_WALLPAPER,
-    IN_APP_UPDATE,
-    THEMED_APP_ICONS,
-    DISABLE_ALPHABET_SCRUBBER,
-    SHOW_SETTINGS_BUTTON_IN_ALL_APPS,
-    SHOW_SEARCH_BAR_IN_ALL_APPS
-}
-
-enum class SettingsDialog {
-    FAVORITE_PICKER,
-    CONTAINER_POSITION,
-    HAZE_OPACITY,
-    COLOR_PICKER,
-    RESTORE_WALLPAPER,
-    CREATE_FOLDER,
-    RESET_GRID,
-    FACTORY_RESET,
-    SETTINGS_BUTTON_POSITION,
-    SEARCH_ICON_POSITION
-}
-
-// SettingsViewModel holds many properties
-@Suppress("TooManyFunctions")
+@Suppress("TooManyFunctions") // Settings ViewModel manages multiple settings sections and state flows
 class SettingsViewModel(
     internal val settingsRepository: SettingsRepository,
     private val appRepository: AppRepository,

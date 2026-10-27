@@ -12,20 +12,22 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.unit.dp
 import dev.chrisbanes.haze.HazeState
 import dev.mnascimentos.aureole.core.data.model.AppFolder
 import dev.mnascimentos.aureole.core.data.model.LauncherItemState
 import dev.mnascimentos.aureole.core.data.model.LauncherItemType
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.feature.home.components.containers.model.ContainerConfig
 import dev.mnascimentos.aureole.feature.home.components.content.GridItemContent
-import dev.mnascimentos.aureole.feature.home.components.favorites.FavoritesListConfig
+import dev.mnascimentos.aureole.feature.home.components.favorites.model.FavoritesListConfig
 import dev.mnascimentos.aureole.feature.home.components.widgets.model.StackedWidgetConfig
 import dev.mnascimentos.aureole.feature.home.grid.DynamicGridContainer
 import dev.mnascimentos.aureole.feature.home.grid.GridEngineUtils
-import dev.mnascimentos.aureole.feature.home.grid.GridLimits
 import dev.mnascimentos.aureole.feature.home.grid.model.GridEditConfig
+import dev.mnascimentos.aureole.feature.home.grid.model.GridLimits
 import dev.mnascimentos.aureole.feature.home.model.GridItemContentParams
+import dev.mnascimentos.aureole.feature.home.model.LocalHomeActions
+import dev.mnascimentos.aureole.feature.home.model.LocalHomeUiState
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
 
 internal fun getGridLimits(orientation: Int): GridLimits {
@@ -52,7 +54,7 @@ internal fun getGridItemsForOrientation(isLandscape: Boolean, uiState: MainUiSta
 
 @Composable
 internal fun MainHomeLayout(
-    appWidgetHost: AppWidgetHost,
+    appWidgetHost: AppWidgetHost?,
     currentHeightPx: Float,
     favListState: LazyListState,
     hazeState: HazeState
@@ -96,8 +98,8 @@ internal fun MainHomeLayout(
             .fillMaxSize()
             .statusBarsPadding()
             .navigationBarsPadding()
-            .padding(horizontal = 8.dp)
-            .padding(top = 24.dp, bottom = 8.dp)
+            .padding(horizontal = AureoleDS.dimens.xSmall)
+            .padding(top = AureoleDS.dimens.large, bottom = AureoleDS.dimens.xSmall)
     ) { item ->
         val currentContainerConfig = buildContainerConfig(item, uiState, hazeState)
 

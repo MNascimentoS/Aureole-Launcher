@@ -4,12 +4,39 @@ package dev.mnascimentos.aureole.feature.home.components.containers.folder.model
 
 import androidx.compose.ui.graphics.Color
 import dev.mnascimentos.aureole.core.data.model.AppFolder
+import dev.mnascimentos.aureole.core.data.model.AppInfo
+
+data class ContainerFolderConfig(
+    val showFolderLabels: Boolean,
+    val isGridFolderEnabled: Boolean,
+    val isBackgroundEnabled: Boolean = true,
+)
 
 data class ContainerFolderButtonParams(
     val folder: AppFolder,
     val isGridFolderEnabled: Boolean,
     val containerColor: Color,
-    val textColor: Color
+    val textColor: Color,
+    val isBackgroundEnabled: Boolean = true,
+    val onPositionedY: (Float) -> Unit = {},
+    val onClick: () -> Unit = {},
+    val onLongClick: (() -> Unit)? = null,
+)
+
+data class ContainerFolderItemParams(
+    val folder: AppFolder,
+    val isOpened: Boolean,
+    val config: ContainerFolderConfig,
+    val onFolderClick: (AppFolder, Float) -> Unit,
+    val onLongClick: (() -> Unit)? = null,
+)
+
+data class ContainerAppItemParams(
+    val app: AppInfo,
+    val showLabels: Boolean,
+    val onAppClick: (AppInfo) -> Unit,
+    val isBackgroundEnabled: Boolean = true,
+    val onLongClick: () -> Unit = {}
 )
 
 data class ContainerFolderBottomSheetParams(

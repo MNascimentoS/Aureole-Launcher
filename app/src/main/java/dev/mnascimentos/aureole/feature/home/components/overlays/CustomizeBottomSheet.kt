@@ -14,11 +14,15 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.res.stringResource
+import dev.mnascimentos.aureole.R
+import dev.mnascimentos.aureole.composable.sheets.SettingsBottomSheet
 import dev.mnascimentos.aureole.core.data.model.LauncherItemType
 import dev.mnascimentos.aureole.core.data.model.ScrollOrientation
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
+import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
 import dev.mnascimentos.aureole.core.designsystem.icons.Add
+import dev.mnascimentos.aureole.core.designsystem.icons.Click
 import dev.mnascimentos.aureole.core.designsystem.icons.Icon
 import dev.mnascimentos.aureole.core.designsystem.icons.Layout
 import dev.mnascimentos.aureole.core.designsystem.icons.MultipleView
@@ -29,16 +33,17 @@ import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
-import dev.mnascimentos.aureole.feature.settings.components.SettingsBottomSheet
 
 @Composable
 fun CustomizeBottomSheet(
     actions: HomeScreenActions,
     onDismissRequest: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     SettingsBottomSheet(
-        title = "Customize",
-        onDismissRequest = onDismissRequest
+        title = stringResource(R.string.home_customize_title),
+        onDismissRequest = onDismissRequest,
+        modifier = modifier
     ) {
         Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
             CustomizeAddItemOptions(actions = actions, onDismissRequest = onDismissRequest)
@@ -52,11 +57,25 @@ private fun CustomizeAddItemOptions(
     actions: HomeScreenActions,
     onDismissRequest: () -> Unit
 ) {
+    Column {
+        CustomizeClockOption(actions, onDismissRequest)
+        CustomizeContainerOption(actions, onDismissRequest)
+        CustomizeScrollViewOption(actions, onDismissRequest)
+        CustomizeQuickButtonOption(actions, onDismissRequest)
+        CustomizeWidgetGroupOption(actions, onDismissRequest)
+    }
+}
+
+@Composable
+private fun CustomizeClockOption(
+    actions: HomeScreenActions,
+    onDismissRequest: () -> Unit
+) {
     CustomizeOptionItem(
-        title = "Add clock",
+        title = stringResource(R.string.home_customize_add_clock),
         icon = {
             AureoleDS.icons.Add(
-                modifier = Modifier.size(24.dp),
+                modifier = Modifier.size(AureoleDS.dimens.iconLarge),
                 tint = AureoleDS.colors.onSurfaceMedium
             )
         },
@@ -65,11 +84,18 @@ private fun CustomizeAddItemOptions(
             onDismissRequest()
         }
     )
+}
+
+@Composable
+private fun CustomizeContainerOption(
+    actions: HomeScreenActions,
+    onDismissRequest: () -> Unit
+) {
     CustomizeOptionItem(
-        title = "Add container",
+        title = stringResource(R.string.home_customize_add_container),
         icon = {
             AureoleDS.icons.Star(
-                modifier = Modifier.size(24.dp),
+                modifier = Modifier.size(AureoleDS.dimens.iconLarge),
                 tint = AureoleDS.colors.onSurfaceMedium
             )
         },
@@ -78,11 +104,18 @@ private fun CustomizeAddItemOptions(
             onDismissRequest()
         }
     )
+}
+
+@Composable
+private fun CustomizeScrollViewOption(
+    actions: HomeScreenActions,
+    onDismissRequest: () -> Unit
+) {
     CustomizeOptionItem(
-        title = "Add scrollview container",
+        title = stringResource(R.string.home_customize_add_scrollview),
         icon = {
             AureoleDS.icons.VerticalContainer(
-                modifier = Modifier.size(24.dp),
+                modifier = Modifier.size(AureoleDS.dimens.iconLarge),
                 tint = AureoleDS.colors.onSurfaceMedium
             )
         },
@@ -91,11 +124,38 @@ private fun CustomizeAddItemOptions(
             onDismissRequest()
         }
     )
+}
+
+@Composable
+private fun CustomizeQuickButtonOption(
+    actions: HomeScreenActions,
+    onDismissRequest: () -> Unit
+) {
     CustomizeOptionItem(
-        title = "Add widget group",
+        title = stringResource(R.string.home_customize_add_quick_button),
+        icon = {
+            AureoleDS.icons.Click(
+                modifier = Modifier.size(AureoleDS.dimens.iconLarge),
+                tint = AureoleDS.colors.onSurfaceMedium
+            )
+        },
+        onClick = {
+            actions.onAddGridItem(LauncherItemType.QUICK_BUTTON, null, null)
+            onDismissRequest()
+        }
+    )
+}
+
+@Composable
+private fun CustomizeWidgetGroupOption(
+    actions: HomeScreenActions,
+    onDismissRequest: () -> Unit
+) {
+    CustomizeOptionItem(
+        title = stringResource(R.string.home_customize_add_widget_group),
         icon = {
             AureoleDS.icons.MultipleView(
-                modifier = Modifier.size(24.dp),
+                modifier = Modifier.size(AureoleDS.dimens.iconLarge),
                 tint = AureoleDS.colors.onSurfaceMedium
             )
         },
@@ -111,45 +171,47 @@ private fun CustomizeSystemOptions(
     actions: HomeScreenActions,
     onDismissRequest: () -> Unit
 ) {
-    CustomizeOptionItem(
-        title = "Adjust layout",
-        icon = {
-            AureoleDS.icons.Layout(
-                modifier = Modifier.size(24.dp),
-                tint = AureoleDS.colors.onSurfaceMedium
-            )
-        },
-        onClick = {
-            actions.onEnterGridEditMode()
-            onDismissRequest()
-        }
-    )
-    CustomizeOptionItem(
-        title = "Set Background",
-        icon = {
-            AureoleDS.icons.Placeholder(
-                modifier = Modifier.size(24.dp),
-                tint = AureoleDS.colors.onSurfaceMedium
-            )
-        },
-        onClick = {
-            actions.onSettingsClick()
-            onDismissRequest()
-        }
-    )
-    CustomizeOptionItem(
-        title = "Aureole settings",
-        icon = {
-            AureoleDS.icons.Icon(
-                modifier = Modifier.size(24.dp),
-                tint = AureoleDS.colors.onSurfaceMedium
-            )
-        },
-        onClick = {
-            actions.onSettingsClick()
-            onDismissRequest()
-        }
-    )
+    Column {
+        CustomizeOptionItem(
+            title = stringResource(R.string.home_customize_adjust_layout),
+            icon = {
+                AureoleDS.icons.Layout(
+                    modifier = Modifier.size(AureoleDS.dimens.iconLarge),
+                    tint = AureoleDS.colors.onSurfaceMedium
+                )
+            },
+            onClick = {
+                actions.onEnterGridEditMode()
+                onDismissRequest()
+            }
+        )
+        CustomizeOptionItem(
+            title = stringResource(R.string.home_customize_set_background),
+            icon = {
+                AureoleDS.icons.Placeholder(
+                    modifier = Modifier.size(AureoleDS.dimens.iconLarge),
+                    tint = AureoleDS.colors.onSurfaceMedium
+                )
+            },
+            onClick = {
+                actions.onSettingsClick()
+                onDismissRequest()
+            }
+        )
+        CustomizeOptionItem(
+            title = stringResource(R.string.home_customize_aureole_settings),
+            icon = {
+                AureoleDS.icons.Icon(
+                    modifier = Modifier.size(AureoleDS.dimens.iconLarge),
+                    tint = AureoleDS.colors.onSurfaceMedium
+                )
+            },
+            onClick = {
+                actions.onSettingsClick()
+                onDismissRequest()
+            }
+        )
+    }
 }
 
 @Composable
@@ -166,7 +228,7 @@ private fun CustomizeOptionItem(
         verticalAlignment = Alignment.CenterVertically
     ) {
         Box(
-            modifier = Modifier.size(24.dp),
+            modifier = Modifier.size(AureoleDS.dimens.iconLarge),
             contentAlignment = Alignment.Center
         ) {
             icon()
@@ -174,15 +236,15 @@ private fun CustomizeOptionItem(
         Spacer(modifier = Modifier.width(AureoleDS.dimens.medium))
         AureoleText(
             text = title,
-            style = AureoleDS.typography.bodyLarge,
-            color = AureoleDS.colors.onSurfaceMedium
+            color = AureoleDS.colors.onSurfaceMedium,
+            format = AureoleTextFormatParams(style = AureoleDS.typography.bodyLarge)
         )
     }
 }
 
 @AureolePreview
 @Composable
-fun CustomizeBottomSheetPreview() {
+private fun CustomizeBottomSheetPreview() {
     val actions = HomeScreenActions(
         onWidgetRowHeightChanged = {},
         onAddWidgetClick = {},

@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -26,12 +27,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalInspectionMode
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
+import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
+import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
 import dev.mnascimentos.aureole.core.designsystem.icons.Check
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
+import dev.mnascimentos.aureole.feature.settings.components.model.BorderRadiusSwatchMetrics
 
 private const val RADIUS_NONE = 0
 private const val RADIUS_COMPACT = 8
@@ -47,76 +53,115 @@ private val BORDER_RADIUS_OPTIONS = listOf(
     BorderRadiusOption(RADIUS_LARGE, "Large (24 dp)"),
 )
 
+@Suppress("LongMethod") // Bottom sheet composable for border radius slider and preset controls
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PickBorderRadiusBottomSheet(
     selectedRadiusDp: Int,
     onRadiusSelected: (Int) -> Unit,
     onDismissRequest: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     val sheetContent = @Composable {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = AureoleDS.dimens.large, bottom = AureoleDS.dimens.xLarge),
-        ) {
-            AureoleText(
-                text = "Change Border",
-                style = AureoleDS.typography.titleMedium,
-                color = AureoleDS.colors.onSurfaceHigh,
-                modifier = Modifier.padding(horizontal = AureoleDS.dimens.xLarge),
-            )
-
-            Spacer(modifier = Modifier.height(AureoleDS.dimens.medium))
-
-            Box(modifier = Modifier.weight(1f, fill = false)) {
-                LazyColumn {
-                    items(
-                        items = BORDER_RADIUS_OPTIONS,
-                        key = { it.radiusDp },
-                        contentType = { "border_radius_option" }
-                    ) { option ->
-                        BorderRadiusOptionItem(
-                            option = option,
-                            isSelected = option.radiusDp == selectedRadiusDp,
-                            onSelected = { onRadiusSelected(option.radiusDp) },
-                        )
-                    }
-                }
-            }
-        }
+        BorderRadiusSheetContent(
+            selectedRadiusDp = selectedRadiusDp,
+            onRadiusSelected = onRadiusSelected
+        )
     }
 
     if (LocalInspectionMode.current) {
-        Box(
-            modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.BottomCenter
-        ) {
-            Surface(
-                shape = RoundedCornerShape(
-                    topStart = AureoleDS.dimens.radiusLarge,
-                    topEnd = AureoleDS.dimens.radiusLarge,
-                ),
-                color = AureoleDS.colors.surface,
-                modifier = Modifier.fillMaxWidth(),
-            ) {
-                sheetContent()
+        PickBorderRadiusInspectionLayout(
+            modifier = modifier,
+            content = sheetContent
+        )
+        return
+    }
+
+    val bottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+
+    ModalBottomSheet(
+        onDismissRequest = onDismissRequest,
+        sheetState = bottomSheetState,
+        modifier = modifier,
+        dragHandle = null,
+        containerColor = AureoleDS.colors.surface,
+        shape = RoundedCornerShape(
+            topStart = AureoleDS.dimens.radiusLarge,
+            topEnd = AureoleDS.dimens.radiusLarge,
+        ),
+    ) {
+        sheetContent()
+    }
+}
+
+@Composable
+private fun BorderRadiusSheetContent(
+    selectedRadiusDp: Int,
+    onRadiusSelected: (Int) -> Unit
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = AureoleDS.dimens.large, bottom = AureoleDS.dimens.xLarge),
+    ) {
+        AureoleText(
+            text = stringResource(R.string.settings_appearance_change_border),
+            color = AureoleDS.colors.onSurfaceHigh,
+            modifier = Modifier.padding(horizontal = AureoleDS.dimens.xLarge),
+            format = AureoleTextFormatParams(style = AureoleDS.typography.titleMedium)
+        )
+
+        Spacer(modifier = Modifier.height(AureoleDS.dimens.medium))
+
+        BorderRadiusOptionsList(
+            selectedRadiusDp = selectedRadiusDp,
+            onRadiusSelected = onRadiusSelected,
+            modifier = Modifier.weight(1f, fill = false)
+        )
+    }
+}
+
+@Composable
+private fun BorderRadiusOptionsList(
+    selectedRadiusDp: Int,
+    onRadiusSelected: (Int) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Box(modifier = modifier) {
+        LazyColumn {
+            items(
+                items = BORDER_RADIUS_OPTIONS,
+                key = { it.radiusDp },
+                contentType = { "border_radius_option" }
+            ) { option ->
+                BorderRadiusOptionItem(
+                    option = option,
+                    isSelected = option.radiusDp == selectedRadiusDp,
+                    onSelected = { onRadiusSelected(option.radiusDp) },
+                )
             }
         }
-    } else {
-        val bottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+    }
+}
 
-        ModalBottomSheet(
-            onDismissRequest = onDismissRequest,
-            sheetState = bottomSheetState,
-            dragHandle = null,
-            containerColor = AureoleDS.colors.surface,
+@Composable
+private fun PickBorderRadiusInspectionLayout(
+    modifier: Modifier = Modifier,
+    content: @Composable () -> Unit
+) {
+    Box(
+        modifier = modifier.fillMaxSize(),
+        contentAlignment = Alignment.BottomCenter
+    ) {
+        Surface(
             shape = RoundedCornerShape(
                 topStart = AureoleDS.dimens.radiusLarge,
                 topEnd = AureoleDS.dimens.radiusLarge,
             ),
+            color = AureoleDS.colors.surface,
+            modifier = Modifier.fillMaxWidth(),
         ) {
-            sheetContent()
+            content()
         }
     }
 }
@@ -132,7 +177,11 @@ private fun BorderRadiusOptionItem(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable(onClick = onSelected)
+            .defaultMinSize(minHeight = AureoleDS.dimens.minTouchTarget)
+            .clickable(
+                role = Role.RadioButton,
+                onClick = onSelected
+            )
             .padding(horizontal = AureoleDS.dimens.xLarge, vertical = AureoleDS.dimens.small),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -146,12 +195,12 @@ private fun BorderRadiusOptionItem(
 
             Box(
                 modifier = Modifier
-                    .width(54.dp)
-                    .height(34.dp)
+                    .width(BorderRadiusSwatchMetrics.Width)
+                    .height(BorderRadiusSwatchMetrics.Height)
                     .clip(shape)
                     .background(bgColor)
                     .border(
-                        width = if (isSelected) 2.dp else AureoleDS.dimens.borderMinimal,
+                        width = if (isSelected) AureoleDS.dimens.minimal else AureoleDS.dimens.borderMinimal,
                         color = borderColor,
                         shape = shape,
                     ),
@@ -160,9 +209,9 @@ private fun BorderRadiusOptionItem(
             val textColor = if (isSelected) AureoleDS.colors.onSurfaceHigh else AureoleDS.colors.onSurfaceMedium
             AureoleText(
                 text = option.label,
-                style = AureoleDS.typography.bodyLarge,
                 color = textColor,
                 modifier = Modifier.padding(start = AureoleDS.dimens.medium),
+                format = AureoleTextFormatParams(style = AureoleDS.typography.bodyLarge)
             )
         }
 
@@ -177,7 +226,7 @@ private fun BorderRadiusOptionItem(
 
 @AureolePreview
 @Composable
-fun PickBorderRadiusBottomSheetPreview() {
+private fun PickBorderRadiusBottomSheetPreview() {
     AureoleLauncherTheme {
         PickBorderRadiusBottomSheet(
             selectedRadiusDp = 16,

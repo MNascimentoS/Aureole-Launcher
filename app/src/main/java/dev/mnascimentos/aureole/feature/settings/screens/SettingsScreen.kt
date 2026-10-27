@@ -19,22 +19,28 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
+import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.composable.ColorPickerDialog
 import dev.mnascimentos.aureole.composable.SettingsActionItem
 import dev.mnascimentos.aureole.composable.SettingsMenuItem
+import dev.mnascimentos.aureole.composable.SettingsMenuParams
+import dev.mnascimentos.aureole.composable.dialogs.CreateFolderDialog
+import dev.mnascimentos.aureole.composable.favorites.FavoriteAppsDialog
+import dev.mnascimentos.aureole.composable.favorites.model.FavoriteAppsDialogActions
+import dev.mnascimentos.aureole.composable.favorites.model.FavoriteAppsDialogConfig
+import dev.mnascimentos.aureole.composable.sheets.SettingsBottomSheet
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
+import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
 import dev.mnascimentos.aureole.core.designsystem.icons.Check
 import dev.mnascimentos.aureole.core.designsystem.icons.Delete
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
-import dev.mnascimentos.aureole.feature.home.components.containers.folder.CreateFolderDialog
 import dev.mnascimentos.aureole.feature.settings.SettingsNavGraph
 import dev.mnascimentos.aureole.feature.settings.components.ContainerPositionDialog
 import dev.mnascimentos.aureole.feature.settings.components.SearchIconPositionDialog
-import dev.mnascimentos.aureole.feature.settings.components.SettingsBottomSheet
 import dev.mnascimentos.aureole.feature.settings.components.SettingsButtonPositionDialog
 import dev.mnascimentos.aureole.feature.settings.model.SettingsScreenActions
 import dev.mnascimentos.aureole.feature.settings.model.SettingsUiState
@@ -113,6 +119,19 @@ private fun SettingsDialogsPrimary(
     if (uiState.showResetGridDialog) {
         ResetGridDialog(actions = actions)
     }
+
+    if (uiState.showFavoritePickerDialog) {
+        FavoriteAppsDialog(
+            config = FavoriteAppsDialogConfig(
+                allApps = uiState.allApps,
+                favoriteAppPackages = uiState.favoriteAppPackages
+            ),
+            actions = FavoriteAppsDialogActions(
+                onToggleFavorite = actions.onToggleFavorite,
+                onDismiss = actions.onDismissFavoritePickerDialog
+            )
+        )
+    }
 }
 
 @Composable
@@ -159,37 +178,41 @@ private fun SettingsDialogsSecondary(
 }
 
 @Composable
-private fun FactoryResetDialog(
-    actions: SettingsScreenActions
+internal fun FactoryResetDialog(
+    actions: SettingsScreenActions = SettingsScreenActions()
 ) {
     SettingsBottomSheet(
-        title = "Reset launcher?",
+        title = stringResource(R.string.settings_advanced_reset_dialog_title),
         onDismissRequest = actions.onDismissFactoryResetDialog
     ) {
-        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+        Column(verticalArrangement = Arrangement.spacedBy(AureoleDS.dimens.xSmall)) {
             SettingsMenuItem(
-                title = "Yes",
-                onClick = { actions.onConfirmFactoryReset() }
+                SettingsMenuParams(
+                    title = stringResource(R.string.core_common_yes),
+                    onClick = { actions.onConfirmFactoryReset() }
+                )
             )
             SettingsMenuItem(
-                title = "No",
-                onClick = { actions.onDismissFactoryResetDialog() }
+                SettingsMenuParams(
+                    title = stringResource(R.string.core_common_no),
+                    onClick = { actions.onDismissFactoryResetDialog() }
+                )
             )
         }
     }
 }
 
 @Composable
-private fun ResetGridDialog(
-    actions: SettingsScreenActions
+internal fun ResetGridDialog(
+    actions: SettingsScreenActions = SettingsScreenActions()
 ) {
     SettingsBottomSheet(
-        title = "Reset Layout?",
+        title = stringResource(R.string.settings_advanced_reset_layout_title),
         onDismissRequest = actions.onDismissResetGridDialog
     ) {
-        Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+        Column(verticalArrangement = Arrangement.spacedBy(AureoleDS.dimens.small)) {
             SettingsActionItem(
-                title = "Restore",
+                title = stringResource(R.string.settings_advanced_reset_layout_restore),
                 leadingContent = { AureoleDS.icons.Check() },
                 onClick = {
                     actions.onConfirmResetGrid()
@@ -197,7 +220,7 @@ private fun ResetGridDialog(
                 }
             )
             SettingsActionItem(
-                title = "Cancel",
+                title = stringResource(R.string.core_common_cancel),
                 leadingContent = { AureoleDS.icons.Delete() },
                 onClick = { actions.onDismissResetGridDialog() }
             )
@@ -206,26 +229,25 @@ private fun ResetGridDialog(
 }
 
 @Composable
-private fun HazeOpacityDialog(
-    currentOpacity: Float,
-    onOpacitySelected: (Float) -> Unit,
-    onDismiss: () -> Unit
+internal fun HazeOpacityDialog(
+    currentOpacity: Float = OPACITY_MEDIUM,
+    onOpacitySelected: (Float) -> Unit = {},
+    onDismiss: () -> Unit = {}
 ) {
     val options = listOf(
-        OPACITY_LOW to "Low",
-        OPACITY_MEDIUM to "Medium",
-        OPACITY_HIGH to "High",
-        OPACITY_SOLID to "Solid"
+        OPACITY_LOW to stringResource(R.string.settings_appearance_blur_opacity_low),
+        OPACITY_MEDIUM to stringResource(R.string.settings_appearance_blur_opacity_medium),
+        OPACITY_HIGH to stringResource(R.string.settings_appearance_blur_opacity_high),
+        OPACITY_SOLID to stringResource(R.string.settings_appearance_blur_opacity_solid)
     )
 
     AlertDialog(
         onDismissRequest = onDismiss,
         title = {
             AureoleText(
-                text = "Blur Opacity",
-                style = AureoleDS.typography.titleMedium,
-                fontWeight = FontWeight.Bold,
-                color = AureoleDS.colors.onSurfaceHigh
+                text = stringResource(R.string.settings_appearance_blur_opacity_title),
+                color = AureoleDS.colors.onSurfaceHigh,
+                format = AureoleTextFormatParams(style = AureoleDS.typography.titleMedium, fontWeight = FontWeight.Bold)
             )
         },
         containerColor = AureoleDS.colors.surface,
@@ -235,20 +257,20 @@ private fun HazeOpacityDialog(
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .clip(RoundedCornerShape(12.dp))
+                            .clip(RoundedCornerShape(AureoleDS.dimens.radiusSmall))
                             .clickable { onOpacitySelected(value) }
-                            .padding(vertical = 8.dp, horizontal = 8.dp),
+                            .padding(vertical = AureoleDS.dimens.xSmall, horizontal = AureoleDS.dimens.xSmall),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         RadioButton(
                             selected = (currentOpacity == value),
                             onClick = { onOpacitySelected(value) }
                         )
-                        Spacer(modifier = Modifier.width(12.dp))
+                        Spacer(modifier = Modifier.width(AureoleDS.dimens.small))
                         AureoleText(
                             text = label,
-                            style = AureoleDS.typography.bodyLarge,
-                            color = AureoleDS.colors.onSurfaceHigh
+                            color = AureoleDS.colors.onSurfaceHigh,
+                            format = AureoleTextFormatParams(style = AureoleDS.typography.bodyLarge)
                         )
                     }
                 }
@@ -256,29 +278,33 @@ private fun HazeOpacityDialog(
         },
         confirmButton = {
             TextButton(onClick = onDismiss) {
-                AureoleText("Cancel", color = AureoleDS.colors.onSurfaceHigh)
+                AureoleText(stringResource(R.string.core_common_cancel), color = AureoleDS.colors.onSurfaceHigh)
             }
         }
     )
 }
 
 @Composable
-private fun RestoreWallpaperDialog(
-    onConfirm: () -> Unit,
-    onDismiss: () -> Unit
+internal fun RestoreWallpaperDialog(
+    onConfirm: () -> Unit = {},
+    onDismiss: () -> Unit = {}
 ) {
     SettingsBottomSheet(
-        title = "Restore default background?",
+        title = stringResource(R.string.settings_appearance_restore_background_title),
         onDismissRequest = onDismiss
     ) {
-        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+        Column(verticalArrangement = Arrangement.spacedBy(AureoleDS.dimens.xSmall)) {
             SettingsMenuItem(
-                title = "Yes",
-                onClick = onConfirm
+                SettingsMenuParams(
+                    title = stringResource(R.string.core_common_yes),
+                    onClick = onConfirm
+                )
             )
             SettingsMenuItem(
-                title = "No",
-                onClick = onDismiss
+                SettingsMenuParams(
+                    title = stringResource(R.string.core_common_no),
+                    onClick = onDismiss
+                )
             )
         }
     }
@@ -286,11 +312,13 @@ private fun RestoreWallpaperDialog(
 
 @AureolePreview
 @Composable
-fun SettingsScreenPreview() {
+private fun SettingsScreenPreview() {
     AureoleLauncherTheme {
-        SettingsScreen(
+        SettingsRootScreen(
             uiState = SettingsUiState(),
-            actions = SettingsScreenActions()
+            onNavigateToBehavior = {},
+            onNavigateToAppearance = {},
+            onNavigateToAdvanced = {}
         )
     }
 }

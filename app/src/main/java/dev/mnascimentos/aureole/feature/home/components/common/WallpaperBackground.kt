@@ -20,6 +20,7 @@ fun WallpaperBackground(
     isCustomWallpaperSet: Boolean,
     customWallpaperPath: String?,
     hazeState: HazeState,
+    modifier: Modifier = Modifier,
     wallpaperScaleType: String = "Crop"
 ) {
     val hazeModifier = Modifier.hazeSource(state = hazeState)
@@ -30,7 +31,7 @@ fun WallpaperBackground(
         else -> ContentScale.Crop
     }
 
-    Box(modifier = Modifier.fillMaxSize().then(hazeModifier)) {
+    Box(modifier = modifier.fillMaxSize().then(hazeModifier)) {
         if (isCustomWallpaperSet && !customWallpaperPath.isNullOrEmpty()) {
             AsyncImage(
                 model = File(customWallpaperPath),
@@ -55,7 +56,7 @@ fun WallpaperBackground(
 
 @AureolePreview
 @Composable
-internal fun WallpaperBackgroundPreview() {
+private fun WallpaperBackgroundPreview() {
     AureoleLauncherTheme {
         WallpaperBackground(
             isCustomWallpaperSet = false,

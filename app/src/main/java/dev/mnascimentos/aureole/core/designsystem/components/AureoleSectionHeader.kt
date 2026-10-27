@@ -23,16 +23,15 @@ fun AureoleSectionHeader(
 ) {
     AureoleText(
         text = title,
-        style = AureoleDS.typography.titleLarge,
-        fontWeight = FontWeight.Bold,
         color = color,
-        modifier = modifier
+        modifier = modifier,
+        format = AureoleTextFormatParams(style = AureoleDS.typography.titleLarge, fontWeight = FontWeight.Bold)
     )
 }
 
 @AureolePreview
 @Composable
-fun AureoleSectionHeaderPreview() {
+private fun AureoleSectionHeaderPreview() {
     AureoleLauncherTheme {
         AureoleSectionHeader(
             title = "A"

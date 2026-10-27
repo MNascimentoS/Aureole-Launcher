@@ -25,5 +25,6 @@ data class ContainerModel(
 
     val items: List<ContainerItemEntity> = emptyList(),
     val folders: List<AppFolder> = emptyList(),
-    val appPackageNames: List<String> = emptyList()
+    val appPackageNames: List<String> = emptyList(),
+    val quickButtons: List<QuickButtonModel> = emptyList()
 )

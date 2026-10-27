@@ -1,5 +1,9 @@
 package dev.mnascimentos.aureole.di
 
+import dev.mnascimentos.aureole.core.data.db.AppDatabase
+import dev.mnascimentos.aureole.core.data.db.ContainerDao
+import dev.mnascimentos.aureole.core.data.db.FavoriteContainerDao
+import dev.mnascimentos.aureole.core.data.db.FolderDao
 import dev.mnascimentos.aureole.core.data.repository.AppRepository
 import dev.mnascimentos.aureole.core.data.repository.ContainerRepository
 import dev.mnascimentos.aureole.core.data.repository.FavoriteContainerRepository
@@ -7,21 +11,45 @@ import dev.mnascimentos.aureole.core.data.repository.FolderRepository
 import dev.mnascimentos.aureole.core.data.repository.GridRepository
 import dev.mnascimentos.aureole.core.data.repository.SettingsRepository
 import dev.mnascimentos.aureole.core.data.repository.WidgetRepository
+import dev.mnascimentos.aureole.core.network.ApiClient
+import dev.mnascimentos.aureole.core.network.SpkiPinValidator
+import dev.mnascimentos.aureole.core.telemetry.DefaultTelemetryLogger
+import dev.mnascimentos.aureole.core.telemetry.TelemetryLogger
 import dev.mnascimentos.aureole.feature.home.HomeViewModel
 import dev.mnascimentos.aureole.feature.home.components.widgets.WidgetPickerViewModel
+import dev.mnascimentos.aureole.feature.home.model.HomeRepositories
 import dev.mnascimentos.aureole.feature.settings.SettingsViewModel
+import org.koin.android.ext.koin.androidContext
+import org.koin.core.module.dsl.bind
+import org.koin.core.module.dsl.factoryOf
 import org.koin.core.module.dsl.singleOf
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 
 val appModule = module {
+    single { AppDatabase.getInstance(androidContext()) }
+    single { get<AppDatabase>().appInfoDao() }
+    single { get<AppDatabase>().containerDao() }
+    single { get<AppDatabase>().favoriteContainerDao() }
+    single { get<AppDatabase>().folderDao() }
+
     singleOf(::AppRepository)
     singleOf(::WidgetRepository)
     singleOf(::SettingsRepository)
-    singleOf(::FolderRepository)
-    singleOf(::FavoriteContainerRepository)
-    singleOf(::ContainerRepository)
+    single<FolderRepository> { FolderRepository(get(), androidContext()) }
+    single<FavoriteContainerRepository> {
+        FavoriteContainerRepository(
+            get<FavoriteContainerDao>(),
+            get<SettingsRepository>()
+        )
+    }
+    single<ContainerRepository> { ContainerRepository(get<ContainerDao>(), get<FolderDao>()) }
     singleOf(::GridRepository)
+    factoryOf(::HomeRepositories)
+
+    singleOf(::DefaultTelemetryLogger) { bind<TelemetryLogger>() }
+    singleOf(::SpkiPinValidator)
+    singleOf(::ApiClient)
 
     viewModelOf(::HomeViewModel)
     viewModelOf(::SettingsViewModel)

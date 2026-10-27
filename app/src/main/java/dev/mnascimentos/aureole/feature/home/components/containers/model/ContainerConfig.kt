@@ -3,6 +3,7 @@ package dev.mnascimentos.aureole.feature.home.components.containers.model
 import dev.chrisbanes.haze.HazeState
 import dev.mnascimentos.aureole.core.data.model.AppFolder
 import dev.mnascimentos.aureole.core.data.model.ContainerItemEntity
+import dev.mnascimentos.aureole.core.data.model.QuickButtonModel
 
 data class ContainerConfig(
     val panelId: String = "container_item",
@@ -10,6 +11,7 @@ data class ContainerConfig(
     val items: List<ContainerItemEntity> = emptyList(),
     val folders: List<AppFolder> = emptyList(),
     val appPackageNames: List<String> = emptyList(),
+    val quickButtons: List<QuickButtonModel> = emptyList(),
     val openedFolderId: String? = null,
     val position: String = "Space Between",
     val orientation: String = "Vertical",

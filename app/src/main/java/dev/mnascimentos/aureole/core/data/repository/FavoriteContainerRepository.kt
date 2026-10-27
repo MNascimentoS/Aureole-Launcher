@@ -1,22 +1,26 @@
 package dev.mnascimentos.aureole.core.data.repository
 
 import android.content.Context
-import dev.mnascimentos.aureole.core.data.db.FavoriteContainerDatabaseHelper
+import dev.mnascimentos.aureole.core.data.db.AppDatabase
+import dev.mnascimentos.aureole.core.data.db.FavoriteContainerDao
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 class FavoriteContainerRepository(
-    context: Context,
+    private val favoriteContainerDao: FavoriteContainerDao,
     private val settingsRepository: SettingsRepository,
 ) {
-    private val dbHelper = FavoriteContainerDatabaseHelper(context)
+    constructor(context: Context, settingsRepository: SettingsRepository) : this(
+        AppDatabase.getInstance(context).favoriteContainerDao(),
+        settingsRepository
+    )
 
     suspend fun getFavoritesForContainer(containerId: String): List<String> = withContext(Dispatchers.IO) {
-        val items = dbHelper.getFavoriteItemsForContainer(containerId)
+        val items = favoriteContainerDao.getFavoriteItemsForContainer(containerId)
         if (items.isEmpty()) {
             val legacyFavorites = settingsRepository.favoriteAppPackages
             if (legacyFavorites.isNotEmpty()) {
-                dbHelper.updateContainerItems(containerId, legacyFavorites)
+                favoriteContainerDao.updateContainerItems(containerId, legacyFavorites)
                 return@withContext legacyFavorites
             }
         }
@@ -24,26 +28,32 @@ class FavoriteContainerRepository(
     }
 
     suspend fun getAllContainerFavorites(): Map<String, List<String>> = withContext(Dispatchers.IO) {
-        var map = dbHelper.getAllContainersWithItems()
-        if (map.isEmpty()) {
+        val containers = favoriteContainerDao.getAllFavoriteContainers()
+        val result = mutableMapOf<String, List<String>>()
+        for (container in containers) {
+            val items = favoriteContainerDao.getFavoriteItemsForContainer(container.id)
+            result[container.id] = items
+        }
+
+        if (result.isEmpty()) {
             val legacyFavorites = settingsRepository.favoriteAppPackages
             if (legacyFavorites.isNotEmpty()) {
                 val defaultId = DEFAULT_CONTAINER_ID
-                dbHelper.updateContainerItems(defaultId, legacyFavorites)
-                map = mapOf(defaultId to legacyFavorites)
+                favoriteContainerDao.updateContainerItems(defaultId, legacyFavorites)
+                return@withContext mapOf(defaultId to legacyFavorites)
             }
         }
-        map
+        result
     }
 
     suspend fun updateContainerFavorites(containerId: String, packageNames: List<String>) = withContext(
         Dispatchers.IO
     ) {
-        dbHelper.updateContainerItems(containerId, packageNames)
+        favoriteContainerDao.updateContainerItems(containerId, packageNames)
     }
 
     suspend fun deleteContainer(containerId: String) = withContext(Dispatchers.IO) {
-        dbHelper.deleteContainer(containerId)
+        favoriteContainerDao.deleteFavoriteContainer(containerId)
     }
 
     companion object {

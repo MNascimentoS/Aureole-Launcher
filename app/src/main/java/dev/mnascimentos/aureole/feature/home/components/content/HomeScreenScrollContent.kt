@@ -1,6 +1,5 @@
 package dev.mnascimentos.aureole.feature.home.components.content
 
-import android.appwidget.AppWidgetHost
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
@@ -32,46 +31,45 @@ import androidx.compose.ui.input.nestedscroll.NestedScrollSource
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.rememberNestedScrollInteropConnection
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
-import dev.mnascimentos.aureole.core.data.model.LauncherItemState
+import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.core.data.model.LauncherItemType
 import dev.mnascimentos.aureole.core.data.model.ScrollOrientation
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
+import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
 import dev.mnascimentos.aureole.core.designsystem.icons.Add
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
+import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.core.designsystem.utils.fadingEdges
-import dev.mnascimentos.aureole.feature.home.LocalHomeActions
-import dev.mnascimentos.aureole.feature.home.LocalHomeUiState
-import dev.mnascimentos.aureole.feature.home.components.containers.model.ContainerConfig
-import dev.mnascimentos.aureole.feature.home.components.favorites.FavoritesListConfig
-import dev.mnascimentos.aureole.feature.home.components.widgets.model.StackedWidgetConfig
+import dev.mnascimentos.aureole.feature.home.components.content.model.ScrollChildDimensions
+import dev.mnascimentos.aureole.feature.home.components.content.model.ScrollViewContainerParams
 import dev.mnascimentos.aureole.feature.home.model.GridItemContentParams
 import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
+import dev.mnascimentos.aureole.feature.home.model.LocalHomeActions
+import dev.mnascimentos.aureole.feature.home.model.LocalHomeUiState
 import dev.mnascimentos.aureole.feature.home.model.ScrollViewChildItemParams
 import dev.mnascimentos.aureole.feature.home.model.ScrollViewContentParams
 import dev.mnascimentos.aureole.feature.home.model.VerticalScrollViewContentParams
 
-private const val SCROLL_CHILD_MIN_HEIGHT = 70
-private const val SCROLL_CHILD_MIN_WIDTH = 100
-private const val SCROLL_CHILD_ROW_HEIGHT = 60
-private const val SCROLL_CHILD_COL_WIDTH = 70
-
 @Composable
 fun ScrollViewContainerContent(
-    item: LauncherItemState,
-    favConfig: FavoritesListConfig,
-    appWidgetHost: AppWidgetHost,
-    stackedWidgetConfig: StackedWidgetConfig,
-    containerConfig: ContainerConfig
+    params: ScrollViewContainerParams,
+    modifier: Modifier = Modifier
 ) {
+    val item = params.item
+    val favConfig = params.favConfig
+    val appWidgetHost = params.appWidgetHost
+    val stackedWidgetConfig = params.stackedWidgetConfig
+    val containerConfig = params.containerConfig
     val isVertical = item.safeScrollOrientation == ScrollOrientation.VERTICAL
     val scrollState = rememberScrollState()
     val nestedScrollInterop = rememberNestedScrollInteropConnection()
     val parentNestedScrollConnection = rememberScrollViewNestedConnection(scrollState, isVertical)
 
     Box(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
             .fadingEdges(scrollState, isHorizontal = !isVertical)
             .nestedScroll(parentNestedScrollConnection)
@@ -114,23 +112,25 @@ private fun rememberScrollViewNestedConnection(
                 available: Offset,
                 source: NestedScrollSource
             ): Offset {
-                val delta = if (isVertical) {
-                    available.y
-                } else {
-                    available.x
-                }
-                if (delta != 0f && (scrollState.canScrollForward || scrollState.canScrollBackward)) {
-                    val consumedByParent = scrollState.dispatchRawDelta(-delta)
-                    return if (isVertical) {
-                        Offset(0f, -consumedByParent)
-                    } else {
-                        Offset(-consumedByParent, 0f)
-                    }
-                }
-                return Offset.Zero
+                return dispatchParentScroll(scrollState, available, isVertical)
             }
         }
     }
+}
+
+private fun dispatchParentScroll(
+    scrollState: ScrollState,
+    available: Offset,
+    isVertical: Boolean
+): Offset {
+    val delta = if (isVertical) available.y else available.x
+    val canScroll = scrollState.canScrollForward || scrollState.canScrollBackward
+    if (delta == 0f || !canScroll) {
+        return Offset.Zero
+    }
+
+    val consumedByParent = scrollState.dispatchRawDelta(-delta)
+    return if (isVertical) Offset(0f, -consumedByParent) else Offset(-consumedByParent, 0f)
 }
 
 @Composable
@@ -142,8 +142,8 @@ private fun VerticalScrollViewContent(params: VerticalScrollViewContentParams) {
         modifier = Modifier
             .fillMaxSize()
             .verticalScroll(params.scrollState)
-            .padding(horizontal = 4.dp, vertical = 4.dp),
-        verticalArrangement = Arrangement.spacedBy(4.dp),
+            .padding(horizontal = AureoleDS.dimens.xxSmall, vertical = AureoleDS.dimens.xxSmall),
+        verticalArrangement = Arrangement.spacedBy(AureoleDS.dimens.xxSmall),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         item.safeChildren.forEach { childItem ->
@@ -174,8 +174,8 @@ private fun HorizontalScrollViewContent(params: ScrollViewContentParams) {
         modifier = Modifier
             .fillMaxSize()
             .horizontalScroll(rememberScrollState())
-            .padding(8.dp),
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
+            .padding(AureoleDS.dimens.xSmall),
+        horizontalArrangement = Arrangement.spacedBy(AureoleDS.dimens.xSmall),
         verticalAlignment = Alignment.CenterVertically
     ) {
         item.safeChildren.forEach { childItem ->
@@ -205,13 +205,13 @@ private fun ScrollViewChildItem(params: ScrollViewChildItemParams) {
     val childModifier = when {
         isAppsList && isVertical -> Modifier.fillMaxWidth().wrapContentHeight()
         isVertical -> {
-            val childHeightDp = (childItem.rowSpan * SCROLL_CHILD_ROW_HEIGHT).dp
-                .coerceAtLeast(SCROLL_CHILD_MIN_HEIGHT.dp)
+            val childHeightDp = (ScrollChildDimensions.RowHeight * childItem.rowSpan)
+                .coerceAtLeast(ScrollChildDimensions.MinHeight)
             Modifier.fillMaxWidth().height(childHeightDp)
         }
         else -> {
-            val childWidthDp = (childItem.colSpan * SCROLL_CHILD_COL_WIDTH).dp
-                .coerceAtLeast(SCROLL_CHILD_MIN_WIDTH.dp)
+            val childWidthDp = (ScrollChildDimensions.ColWidth * childItem.colSpan)
+                .coerceAtLeast(ScrollChildDimensions.MinWidth)
             Modifier.width(childWidthDp).fillMaxHeight()
         }
     }
@@ -234,8 +234,8 @@ private fun ScrollViewChildItem(params: ScrollViewChildItemParams) {
 private fun ScrollViewAddComponentButton(parentId: String, actions: HomeScreenActions) {
     Box(
         modifier = Modifier
-            .padding(vertical = 12.dp)
-            .clip(RoundedCornerShape(20.dp))
+            .padding(vertical = AureoleDS.dimens.small)
+            .clip(RoundedCornerShape(AureoleDS.dimens.radiusMediumLarge))
             .background(AureoleDS.colors.surfaceVariant)
             .pointerInput("add_btn_" + parentId) {
                 detectTapGestures(
@@ -244,21 +244,43 @@ private fun ScrollViewAddComponentButton(parentId: String, actions: HomeScreenAc
                     }
                 )
             }
-            .padding(horizontal = 16.dp, vertical = 8.dp),
+            .padding(horizontal = AureoleDS.dimens.medium, vertical = AureoleDS.dimens.xSmall),
         contentAlignment = Alignment.Center
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             AureoleDS.icons.Add(
                 tint = AureoleDS.colors.onSurfaceHigh,
-                modifier = Modifier.size(18.dp)
+                modifier = Modifier.size(AureoleDS.dimens.iconMediumSmall)
             )
-            Spacer(modifier = Modifier.width(6.dp))
+            Spacer(modifier = Modifier.width(AureoleDS.dimens.xxSmall))
             AureoleText(
-                text = "Componente",
-                style = AureoleDS.typography.labelMedium,
+                text = stringResource(R.string.home_grid_scroll_component),
                 color = AureoleDS.colors.onSurfaceHigh,
-                fontWeight = FontWeight.SemiBold
+                format = AureoleTextFormatParams(
+                    style = AureoleDS.typography.labelMedium,
+                    fontWeight = FontWeight.SemiBold
+                )
             )
         }
+    }
+}
+
+@AureolePreview
+@Composable
+private fun ScrollViewAddComponentButtonPreview() {
+    val mockActions = HomeScreenActions(
+        onWidgetRowHeightChanged = {},
+        onAppClick = {},
+        onExpandNotificationShade = {},
+        onFolderIntent = {},
+        onSetAddAppToFolderDialogVisible = {},
+        onSetRenameFolderDialogVisible = {},
+        onSearchQueryChanged = {},
+        onSettingsClick = {},
+        onAllAppsDrawerClose = {},
+        onAllAppsDrawerOpen = {}
+    )
+    AureoleLauncherTheme {
+        ScrollViewAddComponentButton(parentId = "p1", actions = mockActions)
     }
 }

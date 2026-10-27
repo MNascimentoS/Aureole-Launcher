@@ -1,11 +1,11 @@
 package dev.mnascimentos.aureole.feature.home.components.content
 
+import android.annotation.SuppressLint
 import android.appwidget.AppWidgetHost
 import android.appwidget.AppWidgetHostView
 import android.appwidget.AppWidgetManager
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.TextView
 import androidx.compose.animation.ExperimentalSharedTransitionApi
@@ -23,27 +23,34 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.input.pointer.PointerEventPass
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.rememberNestedScrollInteropConnection
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.viewinterop.AndroidView
+import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.core.data.model.LauncherItemState
 import dev.mnascimentos.aureole.core.data.model.LauncherItemType
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
+import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.core.designsystem.utils.LocalAnimatedVisibilityScope
 import dev.mnascimentos.aureole.core.designsystem.utils.LocalSharedTransitionScope
-import dev.mnascimentos.aureole.feature.home.LocalHomeActions
-import dev.mnascimentos.aureole.feature.home.LocalHomeUiState
 import dev.mnascimentos.aureole.feature.home.components.clock.ClockContainer
 import dev.mnascimentos.aureole.feature.home.components.containers.Container
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.FolderViewIntent
 import dev.mnascimentos.aureole.feature.home.components.containers.model.ContainerConfig
+import dev.mnascimentos.aureole.feature.home.components.content.model.ScrollViewContainerParams
 import dev.mnascimentos.aureole.feature.home.components.favorites.FavoritesList
 import dev.mnascimentos.aureole.feature.home.components.favorites.model.FavoritesListOptions
+import dev.mnascimentos.aureole.feature.home.components.quickbutton.GridQuickButtonContent
 import dev.mnascimentos.aureole.feature.home.components.widgets.StackedWidgetSection
 import dev.mnascimentos.aureole.feature.home.model.GridItemContentParams
 import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
+import dev.mnascimentos.aureole.feature.home.model.LocalHomeActions
+import dev.mnascimentos.aureole.feature.home.model.LocalHomeUiState
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 private const val LONG_PRESS_MARGIN_MS = 50L
 private const val MIN_LONG_PRESS_TIMEOUT_MS = 200L
@@ -51,18 +58,22 @@ private const val DEFAULT_WIDGET_MIN_WIDTH = 100
 private const val DEFAULT_WIDGET_MAX_HEIGHT = 360
 
 @Composable
-fun GridClockContent(containerConfig: ContainerConfig, uiState: MainUiState) {
-    ClockContainer(
-        modifier = Modifier.fillMaxSize(),
-        hazeState = containerConfig.hazeState,
-        uiState = uiState
-    )
+fun GridClockContent(
+    containerConfig: ContainerConfig,
+    uiState: MainUiState,
+    modifier: Modifier = Modifier
+) {
+    ClockContainer(modifier = modifier.fillMaxSize(), hazeState = containerConfig.hazeState, uiState = uiState)
 }
 
 @Composable
-fun GridAppsListContent(params: GridItemContentParams) {
+fun GridAppsListContent(
+    params: GridItemContentParams,
+    modifier: Modifier = Modifier
+) {
     val isInScrollView = params.isInScrollView
-    Box(modifier = if (isInScrollView) Modifier.fillMaxWidth() else Modifier.fillMaxSize()) {
+    val listModifier = if (isInScrollView) Modifier.fillMaxWidth() else Modifier.fillMaxSize()
+    Box(modifier = modifier.then(listModifier)) {
         FavoritesList(
             config = if (isInScrollView) params.favConfig.copy(hazeState = null) else params.favConfig,
             appWidgetHost = params.appWidgetHost,
@@ -71,7 +82,7 @@ fun GridAppsListContent(params: GridItemContentParams) {
                 showHeadersAndWidgets = false,
                 isInsideScrollView = isInScrollView
             ),
-            modifier = if (isInScrollView) Modifier.fillMaxWidth() else Modifier.fillMaxSize()
+            modifier = listModifier
         )
     }
 }
@@ -81,15 +92,12 @@ fun GridContainerContent(
     containerConfig: ContainerConfig,
     uiState: MainUiState,
     actions: HomeScreenActions,
+    modifier: Modifier = Modifier,
     isInScrollView: Boolean = false
 ) {
-    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+    Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
         Container(
-            config = if (isInScrollView) {
-                containerConfig.copy(hazeState = null)
-            } else {
-                containerConfig
-            },
+            config = if (isInScrollView) containerConfig.copy(hazeState = null) else containerConfig,
             onFolderClick = { folder, topYPx ->
                 if (uiState.openedFolderId == folder.id) {
                     actions.onFolderIntent(FolderViewIntent.CloseFolder)
@@ -102,11 +110,16 @@ fun GridContainerContent(
 }
 
 @Composable
-fun GridWidgetListContent(params: GridItemContentParams) {
-    Box(modifier = Modifier.fillMaxSize()) {
+fun GridWidgetListContent(
+    params: GridItemContentParams,
+    modifier: Modifier = Modifier
+) {
+    Box(modifier = modifier.fillMaxSize()) {
         StackedWidgetSection(
             config = if (params.isInScrollView) {
-                params.stackedWidgetConfig.copy(hazeState = null)
+                params.stackedWidgetConfig.copy(
+                    hazeState = null
+                )
             } else {
                 params.stackedWidgetConfig
             },
@@ -128,21 +141,19 @@ fun GridItemContent(params: GridItemContentParams) {
             params.containerConfig,
             uiState,
             actions,
-            params.isInScrollView
+            isInScrollView = params.isInScrollView
         )
-
-        LauncherItemType.SINGLE_APP_WIDGET -> SingleAppWidgetContent(
-            item = item,
-            appWidgetHost = params.appWidgetHost
-        )
-
+        LauncherItemType.SINGLE_APP_WIDGET -> SingleAppWidgetContent(item = item, appWidgetHost = params.appWidgetHost)
         LauncherItemType.WIDGET_LIST -> GridWidgetListContent(params)
+        LauncherItemType.QUICK_BUTTON -> GridQuickButtonContent(item, actions)
         LauncherItemType.SCROLL_VIEW -> ScrollViewContainerContent(
-            item = item,
-            favConfig = params.favConfig,
-            appWidgetHost = params.appWidgetHost,
-            stackedWidgetConfig = params.stackedWidgetConfig,
-            containerConfig = params.containerConfig
+            ScrollViewContainerParams(
+                item = item,
+                favConfig = params.favConfig,
+                appWidgetHost = params.appWidgetHost,
+                stackedWidgetConfig = params.stackedWidgetConfig,
+                containerConfig = params.containerConfig
+            )
         )
     }
 }
@@ -151,18 +162,19 @@ fun GridItemContent(params: GridItemContentParams) {
 @Composable
 fun SingleAppWidgetContent(
     item: LauncherItemState,
-    appWidgetHost: AppWidgetHost
+    appWidgetHost: AppWidgetHost?,
+    modifier: Modifier = Modifier
 ) {
     val actions = LocalHomeActions.current
     val coroutineScope = rememberCoroutineScope()
-
     val sharedTransitionScope = LocalSharedTransitionScope.current
     val animatedVisibilityScope = LocalAnimatedVisibilityScope.current
 
-    val isSharedTransitionActive = sharedTransitionScope != null &&
-        animatedVisibilityScope != null &&
-        item.widgetId != null
-    val sharedModifier = if (isSharedTransitionActive) {
+    val isSharedTransitionActive =
+        sharedTransitionScope != null && animatedVisibilityScope != null && item.widgetId != null
+    val sharedModifier = if (
+        isSharedTransitionActive && sharedTransitionScope != null && animatedVisibilityScope != null
+    ) {
         with(sharedTransitionScope) {
             Modifier.sharedElement(
                 sharedContentState = rememberSharedContentState(key = "widget_${item.widgetId}"),
@@ -174,7 +186,7 @@ fun SingleAppWidgetContent(
     }
 
     Box(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
             .then(sharedModifier)
             .pointerInput(item.widgetId, item.id) {
@@ -182,22 +194,18 @@ fun SingleAppWidgetContent(
                 awaitEachGesture {
                     val down = awaitFirstDown(pass = PointerEventPass.Initial)
                     var isLongPressTriggered = false
-
                     val job = coroutineScope.launch {
                         delay((longPressTimeout - LONG_PRESS_MARGIN_MS).coerceAtLeast(MIN_LONG_PRESS_TIMEOUT_MS))
                         isLongPressTriggered = true
                         down.consume()
                         actions.onOpenWidgetStackBottomSheet(item.widgetId, item.id)
                     }
-
                     try {
                         val up = waitForUpOrCancellation(pass = PointerEventPass.Initial)
                         job.cancel()
-                        if (isLongPressTriggered) {
-                            up?.consume()
-                        }
+                        if (isLongPressTriggered) up?.consume()
                     } catch (e: IllegalArgumentException) {
-                        Log.d("GridItemContent", "Pointer gesture wait interrupted", e)
+                        Timber.tag("GridItemContent").d(e, "Pointer gesture wait interrupted")
                         job.cancel()
                     }
                 }
@@ -207,9 +215,7 @@ fun SingleAppWidgetContent(
             AndroidView(
                 factory = { context -> createSingleWidgetView(context, item.widgetId, appWidgetHost) },
                 update = { view -> updateSingleWidgetView(view, item.widgetId) },
-                modifier = Modifier
-                    .fillMaxSize()
-                    .nestedScroll(rememberNestedScrollInteropConnection())
+                modifier = Modifier.fillMaxSize().nestedScroll(rememberNestedScrollInteropConnection())
             )
         } else {
             UnconfiguredWidgetPlaceholder()
@@ -217,16 +223,17 @@ fun SingleAppWidgetContent(
     }
 }
 
-private fun createSingleWidgetView(
-    context: Context,
-    widgetId: Int,
-    appWidgetHost: AppWidgetHost
-): View {
+@SuppressLint("SetTextI18n")
+private fun createSingleWidgetView(context: Context, widgetId: Int, appWidgetHost: AppWidgetHost?): View {
+    if (appWidgetHost == null) {
+        return TextView(
+            context
+        ).apply { text = context.getString(R.string.home_grid_widget_label) }
+    }
     val appWidgetManager = AppWidgetManager.getInstance(context)
     val appWidgetInfo = appWidgetManager.getAppWidgetInfo(widgetId)
     return if (appWidgetInfo != null) {
-        val widthDp = (context.resources.configuration.screenWidthDp)
-            .coerceAtLeast(DEFAULT_WIDGET_MIN_WIDTH)
+        val widthDp = (context.resources.configuration.screenWidthDp).coerceAtLeast(DEFAULT_WIDGET_MIN_WIDTH)
         val options = Bundle().apply {
             putInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH, appWidgetInfo.minWidth)
             putInt(AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT, appWidgetInfo.minHeight)
@@ -236,7 +243,7 @@ private fun createSingleWidgetView(
         appWidgetManager.updateAppWidgetOptions(widgetId, options)
         appWidgetHost.createView(context, widgetId, appWidgetInfo)
     } else {
-        TextView(context).apply { text = "Widget" }
+        TextView(context).apply { text = context.getString(R.string.home_grid_widget_label) }
     }
 }
 
@@ -250,10 +257,7 @@ private fun updateSingleWidgetView(view: View, widgetId: Int) {
             val options = Bundle().apply {
                 putInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH, appWidgetInfo.minWidth)
                 putInt(AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT, appWidgetInfo.minHeight)
-                putInt(
-                    AppWidgetManager.OPTION_APPWIDGET_MAX_WIDTH,
-                    widthDp.coerceAtLeast(DEFAULT_WIDGET_MIN_WIDTH)
-                )
+                putInt(AppWidgetManager.OPTION_APPWIDGET_MAX_WIDTH, widthDp.coerceAtLeast(DEFAULT_WIDGET_MIN_WIDTH))
                 putInt(AppWidgetManager.OPTION_APPWIDGET_MAX_HEIGHT, DEFAULT_WIDGET_MAX_HEIGHT)
             }
             appWidgetManager.updateAppWidgetOptions(widgetId, options)
@@ -265,8 +269,14 @@ private fun updateSingleWidgetView(view: View, widgetId: Int) {
 private fun UnconfiguredWidgetPlaceholder() {
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
         AureoleText(
-            text = "Widget não configurado",
+            text = stringResource(R.string.home_grid_widget_unconfigured),
             color = AureoleDS.colors.onSurfaceHigh
         )
     }
+}
+
+@AureolePreview
+@Composable
+private fun UnconfiguredWidgetPlaceholderPreview() {
+    AureoleLauncherTheme { UnconfiguredWidgetPlaceholder() }
 }

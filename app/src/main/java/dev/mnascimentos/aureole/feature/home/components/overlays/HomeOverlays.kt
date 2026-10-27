@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.isImeVisible
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -28,6 +29,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.PointerInputChange
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.dp
+import dev.chrisbanes.haze.HazeState
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
+import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.components.appsdrawer.AppsListDrawer
 import dev.mnascimentos.aureole.feature.home.components.scrubber.CurvedAlphabetScrubber
 import dev.mnascimentos.aureole.feature.home.components.scrubber.model.ScrubberCallbacks
@@ -48,7 +52,8 @@ private const val VERTICAL_GESTURE_RATIO = 1.5f
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun BoxScope.HomeOverlaysContent(
-    config: HomeOverlaysConfig
+    config: HomeOverlaysConfig,
+    modifier: Modifier = Modifier
 ) {
     AppsDrawerOverlay(
         config = AppsDrawerOverlayConfig(
@@ -59,6 +64,7 @@ fun BoxScope.HomeOverlaysContent(
             hazeState = config.hazeState,
             onClose = config.actions.onAllAppsDrawerClose,
         ),
+        modifier = modifier
     )
 
     if (!config.uiState.isAlphabetScrubberDisabled && !WindowInsets.isImeVisible) {
@@ -85,6 +91,7 @@ fun BoxScope.HomeOverlaysContent(
 @Composable
 fun AppsDrawerOverlay(
     config: AppsDrawerOverlayConfig,
+    modifier: Modifier = Modifier,
 ) {
     val enterTransition = if (config.isOpenedFromBottom) {
         fadeIn() + slideInVertically { it }
@@ -102,7 +109,7 @@ fun AppsDrawerOverlay(
         visible = config.isAllAppsDrawerOpen,
         enter = enterTransition,
         exit = exitTransition,
-        modifier = Modifier.fillMaxSize(),
+        modifier = modifier.fillMaxSize(),
     ) {
         Box(
             modifier = Modifier
@@ -292,4 +299,21 @@ private fun handleVerticalGesture(
     }
 
     return triggered
+}
+
+@AureolePreview
+@Composable
+private fun AppsDrawerOverlayPreview() {
+    AureoleLauncherTheme {
+        AppsDrawerOverlay(
+            config = AppsDrawerOverlayConfig(
+                isAllAppsDrawerOpen = true,
+                isOpenedFromBottom = false,
+                isLeftHandedMode = false,
+                listState = rememberLazyListState(),
+                hazeState = remember { HazeState() },
+                onClose = {}
+            )
+        )
+    }
 }

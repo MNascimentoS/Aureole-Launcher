@@ -23,33 +23,26 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import dev.mnascimentos.aureole.core.data.model.LauncherItemState
 import dev.mnascimentos.aureole.core.data.model.LauncherItemType
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.feature.home.grid.model.CellBoxCallbacks
 import dev.mnascimentos.aureole.feature.home.grid.model.CellBoxConfig
 import dev.mnascimentos.aureole.feature.home.grid.model.CellBoxMetrics
 import dev.mnascimentos.aureole.feature.home.grid.model.CornerResizeCallbacks
 import dev.mnascimentos.aureole.feature.home.grid.model.DragTargetSlot
+import dev.mnascimentos.aureole.feature.home.grid.model.DynamicGridItemsParams
 import dev.mnascimentos.aureole.feature.home.grid.model.GridCellParams
 import dev.mnascimentos.aureole.feature.home.grid.model.GridEditConfig
+import dev.mnascimentos.aureole.feature.home.grid.model.GridEditModifierArgs
 import dev.mnascimentos.aureole.feature.home.grid.model.GridItemEditCallbacks
 import dev.mnascimentos.aureole.feature.home.grid.model.GridMetricsTuple
 import dev.mnascimentos.aureole.feature.home.grid.model.ResizeHandleCallbacks
 import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
 
-internal val BORDER_CORNER_RADIUS = 16.dp
 private const val LIFTED_Z_INDEX = 10f
 private const val LIFTED_SCALE = 1.02f
-
-data class DynamicGridItemsParams(
-    val items: List<LauncherItemState>,
-    val isEditMode: Boolean,
-    val metrics: GridMetricsTuple,
-    val limits: GridLimits,
-    val actions: HomeScreenActions
-)
 
 @Composable
 fun DynamicGridContainer(
@@ -165,7 +158,7 @@ private fun GridItemCell(
     val animOffset = remember { Animatable(Offset.Zero, Offset.VectorConverter) }
     val wDp = (params.cellWidthDp * item.colSpan) + with(LocalDensity.current) { resizeExtra.x.toDp() }
     val hDp = (params.cellHeightDp * item.rowSpan) + with(LocalDensity.current) { resizeExtra.y.toDp() }
-    val editModifier = rememberGridCellEditModifier(
+    val editModifier = Modifier.rememberGridCellEditModifier(
         GridEditModifierArgs(
             params = params,
             isDragging = isDragging,
@@ -251,7 +244,7 @@ private fun GridItemCellBox(config: CellBoxConfig) {
                 scaleX = if (isLifted) LIFTED_SCALE else 1f
                 scaleY = if (isLifted) LIFTED_SCALE else 1f
             }
-            .padding(4.dp)
+            .padding(AureoleDS.dimens.xxSmall)
             .then(config.modifier)
     ) {
         config.content()
@@ -278,6 +271,9 @@ private fun GridItemCellBox(config: CellBoxConfig) {
                             }
                             LauncherItemType.SHORTCUTS_CONTAINER -> {
                                 config.actions.onOpenEditContainerDialog(item.id)
+                            }
+                            LauncherItemType.QUICK_BUTTON -> {
+                                config.actions.onOpenQuickButtonSettings(item.id)
                             }
                             else -> {
                                 config.actions.onOpenEditGridItemDialog(item)

@@ -5,6 +5,9 @@ import dev.mnascimentos.aureole.core.data.repository.AppRepository
 import dev.mnascimentos.aureole.core.data.repository.FolderRepository
 import dev.mnascimentos.aureole.core.data.repository.GridRepository
 import dev.mnascimentos.aureole.core.data.repository.SettingsRepository
+import dev.mnascimentos.aureole.feature.settings.model.SettingToggle
+import dev.mnascimentos.aureole.feature.settings.model.SettingValue
+import dev.mnascimentos.aureole.feature.settings.model.SettingsDialog
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNull
@@ -43,14 +46,14 @@ class SettingsViewModelTest {
     }
 
     @Test
-    fun `when initialized, state is emitted with default settings`() {
+    fun `when initialized, should emit state with default settings`() {
         val state = viewModel.uiState.value
         assertEquals(settingsRepository.isLeftHandedMode, state.isLeftHandedMode)
         assertEquals(settingsRepository.isClockBackgroundEnabled, state.isClockBackgroundEnabled)
     }
 
     @Test
-    fun `loadSettings reloads settings from repository`() {
+    fun `when loading settings, should reload settings from repository`() {
         settingsRepository.isLeftHandedMode = true
         viewModel.loadSettings()
 
@@ -58,7 +61,7 @@ class SettingsViewModelTest {
     }
 
     @Test
-    fun `toggleSetting LeftHandedMode toggles setting state`() {
+    fun `when toggling LeftHandedMode setting, should toggle setting state`() {
         val initial = settingsRepository.isLeftHandedMode
         viewModel.toggleSetting(SettingToggle.LEFT_HANDED_MODE)
 
@@ -67,7 +70,7 @@ class SettingsViewModelTest {
     }
 
     @Test
-    fun `setDialogVisible updates specific dialog visibility in uiState`() {
+    fun `when setting dialog visibility, should update specific dialog visibility in uiState`() {
         viewModel.setDialogVisible(SettingsDialog.FAVORITE_PICKER, true)
         assertTrue(viewModel.uiState.value.showFavoritePickerDialog)
 
@@ -76,7 +79,7 @@ class SettingsViewModelTest {
     }
 
     @Test
-    fun `setHeaderOffsetPercent clamps and updates header offset`() {
+    fun `when setting header offset percent, should clamp and update header offset`() {
         viewModel.setHeaderOffsetPercent(25)
         assertEquals(25, viewModel.uiState.value.headerOffsetPercent)
 
@@ -88,7 +91,7 @@ class SettingsViewModelTest {
     }
 
     @Test
-    fun `toggleFavorite adds and removes package from favorites`() {
+    fun `when toggling favorite, should add and remove package from favorites`() {
         val pkg = "com.example.app"
 
         viewModel.toggleFavorite(pkg)
@@ -99,7 +102,7 @@ class SettingsViewModelTest {
     }
 
     @Test
-    fun `onActivityFinishedHandled resets shouldFinishActivity state`() {
+    fun `when activity finished is handled, should reset shouldFinishActivity state`() {
         viewModel.updateUiState { it.copy(shouldFinishActivity = true) }
         assertTrue(viewModel.uiState.value.shouldFinishActivity)
 
@@ -108,11 +111,46 @@ class SettingsViewModelTest {
     }
 
     @Test
-    fun `clearErrorMessage resets error message to null`() {
+    fun `when clearing error message, should reset error message to null`() {
         viewModel.updateUiState { it.copy(errorMessage = "Sample Error") }
         assertEquals("Sample Error", viewModel.uiState.value.errorMessage)
 
         viewModel.clearErrorMessage()
         assertNull(viewModel.uiState.value.errorMessage)
+    }
+
+    @Test
+    fun `when setting dialog visibility for all dialog types, should update visibility correctly`() {
+        viewModel.setDialogVisible(SettingsDialog.CONTAINER_POSITION, true)
+        assertTrue(viewModel.uiState.value.showContainerPositionDialog)
+
+        viewModel.setDialogVisible(SettingsDialog.HAZE_OPACITY, true)
+        assertTrue(viewModel.uiState.value.showHazeOpacityDialog)
+
+        viewModel.setDialogVisible(SettingsDialog.COLOR_PICKER, true)
+        assertTrue(viewModel.uiState.value.showColorPickerDialog)
+
+        viewModel.setDialogVisible(SettingsDialog.RESET_GRID, true)
+        assertTrue(viewModel.uiState.value.showResetGridDialog)
+
+        viewModel.setDialogVisible(SettingsDialog.FACTORY_RESET, true)
+        assertTrue(viewModel.uiState.value.showFactoryResetDialog)
+    }
+
+    @Test
+    fun `when toggling setting for CONTAINER and HAZE, should toggle settings state`() {
+        val initialContainer = settingsRepository.isContainerEnabled
+        viewModel.toggleSetting(SettingToggle.CONTAINER)
+        assertEquals(!initialContainer, settingsRepository.isContainerEnabled)
+
+        val initialHaze = settingsRepository.isHazeEnabled
+        viewModel.toggleSetting(SettingToggle.HAZE)
+        assertEquals(!initialHaze, settingsRepository.isHazeEnabled)
+    }
+
+    @Test
+    fun `when setting container position value, should update container position`() {
+        viewModel.setSettingValue(SettingValue.ContainerPosition("Right"))
+        assertEquals("Right", viewModel.uiState.value.containerPosition)
     }
 }

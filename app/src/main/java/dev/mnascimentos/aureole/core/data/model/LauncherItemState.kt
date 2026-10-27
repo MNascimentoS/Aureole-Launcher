@@ -1,21 +1,26 @@
 package dev.mnascimentos.aureole.core.data.model
 
+import androidx.annotation.Keep
 import java.util.UUID
 
+@Keep
 enum class LauncherItemType {
     CLOCK,
     APPS_LIST,
     SHORTCUTS_CONTAINER,
     SINGLE_APP_WIDGET,
     WIDGET_LIST,
-    SCROLL_VIEW
+    SCROLL_VIEW,
+    QUICK_BUTTON
 }
 
+@Keep
 enum class ScrollOrientation {
     HORIZONTAL,
     VERTICAL
 }
 
+@Keep
 data class LauncherItemState(
     val id: String = "",
     val type: LauncherItemType? = null,
@@ -27,6 +32,7 @@ data class LauncherItemState(
     val minRowSpan: Int = 1,
     val widgetId: Int? = null,
     val scrollOrientation: ScrollOrientation? = ScrollOrientation.VERTICAL,
+    val quickButtonModel: QuickButtonModel? = null,
     val children: List<LauncherItemState>? = emptyList()
 ) {
     val safeId: String

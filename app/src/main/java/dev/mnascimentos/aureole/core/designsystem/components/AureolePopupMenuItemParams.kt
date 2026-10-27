@@ -1,0 +1,5 @@
+package dev.mnascimentos.aureole.core.designsystem.components
+
+import dev.mnascimentos.aureole.core.designsystem.model.AureolePopupMenuItemParams as ModelAureolePopupMenuItemParams
+
+typealias AureolePopupMenuItemParams = ModelAureolePopupMenuItemParams

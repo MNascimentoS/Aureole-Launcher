@@ -1,6 +1,7 @@
 package dev.mnascimentos.aureole.feature.home.components.widgets
 
 import android.appwidget.AppWidgetProviderInfo
+import android.graphics.drawable.Drawable
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -24,27 +25,36 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.dp
+import dev.mnascimentos.aureole.R
+import dev.mnascimentos.aureole.composable.dialogs.model.FolderButtonMetrics
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleFloatingSearchBar
+import dev.mnascimentos.aureole.core.designsystem.components.AureoleFloatingSearchBarParams
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleSearchBarSizes
+import dev.mnascimentos.aureole.core.designsystem.components.AureoleSearchBarState
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleSectionHeader
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
+import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.components.scrubber.CurvedAlphabetScrubber
 import dev.mnascimentos.aureole.feature.home.components.scrubber.model.ScrubberCallbacks
 import dev.mnascimentos.aureole.feature.home.components.scrubber.model.ScrubberOptions
 import dev.mnascimentos.aureole.feature.home.components.widgets.model.WidgetAppGroup
+import dev.mnascimentos.aureole.feature.home.components.widgets.model.WidgetPickerMetrics
 import dev.mnascimentos.aureole.feature.home.components.widgets.model.WidgetSelectorIntent
 import dev.mnascimentos.aureole.feature.home.components.widgets.model.WidgetSelectorState
+import dev.mnascimentos.aureole.feature.home.components.widgets.model.WidgetVariant
 import kotlinx.coroutines.launch
 
-// Note: break down long method
-@Suppress("LongMethod")
+@Suppress("LongMethod") // Composable rendering list of app widgets and expand controls
 @Composable
 fun WidgetGroupList(
     state: WidgetSelectorState,
     onIntent: (WidgetSelectorIntent) -> Unit,
     onWidgetSelected: (AppWidgetProviderInfo) -> Unit,
-    onDismiss: () -> Unit
+    onDismiss: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     val listState = rememberLazyListState()
     var lastScrolledIndex by remember { mutableIntStateOf(-1) }
@@ -74,9 +84,9 @@ fun WidgetGroupList(
     }
 
     val groupedData = rememberGroupedAppsData(state.widgetGroups)
-    val topPadding = if (isSearchExpanded) 80.dp else 16.dp
+    val topPadding = if (isSearchExpanded) WidgetPickerMetrics.SearchTopPaddingExpanded else AureoleDS.dimens.medium
 
-    Box(modifier = Modifier.fillMaxSize()) {
+    Box(modifier = modifier.fillMaxSize()) {
         WidgetGroupListColumn(
             params = WidgetGroupListColumnParams(
                 groupedApps = groupedData.groupedApps,
@@ -102,30 +112,35 @@ fun WidgetGroupList(
         val searchBarModifier = if (isSearchExpanded) {
             Modifier
                 .fillMaxWidth()
-                .padding(start = 24.dp, end = 24.dp, top = 16.dp)
+                .padding(start = AureoleDS.dimens.large, end = AureoleDS.dimens.large, top = AureoleDS.dimens.medium)
         } else {
             Modifier
-                .padding(end = 24.dp, bottom = 24.dp)
+                .padding(end = AureoleDS.dimens.large, bottom = AureoleDS.dimens.large)
         }
 
         Box(modifier = Modifier.align(searchBarAlign)) {
             AureoleFloatingSearchBar(
-                query = state.searchQuery,
-                onQueryChange = { onIntent(WidgetSelectorIntent.SearchQueryChanged(it)) },
-                isExpanded = isSearchExpanded,
-                onExpandedChange = { isSearchExpanded = it },
+                state = AureoleSearchBarState(
+                    query = state.searchQuery,
+                    onQueryChange = { onIntent(WidgetSelectorIntent.SearchQueryChanged(it)) },
+                    isExpanded = isSearchExpanded,
+                    onExpandedChange = { isSearchExpanded = it }
+                ),
                 modifier = searchBarModifier,
-                placeholder = "Pesquisar widgets...",
-                focusRequester = focusRequester,
-                sizes = AureoleSearchBarSizes(
-                    collapsedSize = 60.dp,
-                    barHeight = 52.dp
+                params = AureoleFloatingSearchBarParams(
+                    placeholder = stringResource(R.string.home_widget_picker_search_placeholder),
+                    focusRequester = focusRequester,
+                    sizes = AureoleSearchBarSizes(
+                        collapsedSize = FolderButtonMetrics.MediumSize,
+                        barHeight = FolderButtonMetrics.SmallSize
+                    )
                 )
             )
         }
     }
 }
 
+@Suppress("LongMethod") // Composable rendering list of app widgets and expand controls
 @Composable
 private fun WidgetScrubberOverlay(
     groupedData: GroupedAppsData,
@@ -164,6 +179,7 @@ private data class GroupedAppsData(
     val letterIndexMap: Map<Char, Int>
 )
 
+@Suppress("LongMethod") // Composable rendering list of app widgets and expand controls
 @Composable
 private fun rememberGroupedAppsData(widgetGroups: List<WidgetAppGroup>): GroupedAppsData {
     return remember(widgetGroups) {
@@ -188,6 +204,7 @@ private data class WidgetGroupListColumnParams(
     val topPadding: Dp
 )
 
+@Suppress("LongMethod") // Composable rendering list of app widgets and expand controls
 @Composable
 private fun WidgetGroupListColumn(
     params: WidgetGroupListColumnParams,
@@ -201,13 +218,17 @@ private fun WidgetGroupListColumn(
     LazyColumn(
         state = listState,
         modifier = Modifier.fillMaxSize(),
-        contentPadding = PaddingValues(bottom = 120.dp, top = topPadding)
+        contentPadding = PaddingValues(bottom = WidgetPickerMetrics.ListBottomPadding, top = topPadding)
     ) {
         groupedApps.forEach { (letter, groups) ->
             item(key = "header_$letter") {
                 AureoleSectionHeader(
                     title = letter.toString(),
-                    modifier = Modifier.padding(start = 24.dp, top = 16.dp, bottom = 8.dp)
+                    modifier = Modifier.padding(
+                        start = AureoleDS.dimens.large,
+                        top = AureoleDS.dimens.medium,
+                        bottom = AureoleDS.dimens.xSmall
+                    )
                 )
             }
 
@@ -216,35 +237,93 @@ private fun WidgetGroupListColumn(
                 key = { it.appId },
                 contentType = { "widget_app_group" }
             ) { group ->
-                val isExpanded = expandedAppIds.contains(group.appId)
-
-                AppGroupHeader(
+                WidgetAppGroupItem(
                     group = group,
-                    onClick = { onIntent(WidgetSelectorIntent.ToggleAppGroup(group.appId)) }
+                    isExpanded = expandedAppIds.contains(group.appId),
+                    onToggleExpand = { onIntent(WidgetSelectorIntent.ToggleAppGroup(group.appId)) },
+                    onWidgetSelected = onWidgetSelected
                 )
-
-                if (isExpanded) {
-                    LazyRow(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = 12.dp),
-                        contentPadding = PaddingValues(start = 24.dp, end = 48.dp),
-                        horizontalArrangement = Arrangement.spacedBy(16.dp)
-                    ) {
-                        items(
-                            items = group.availableWidgets,
-                            key = { it.widgetId },
-                            contentType = { "widget_preview_card" }
-                        ) { widget ->
-                            WidgetPreviewCard(
-                                widget = widget,
-                                fallbackAppIcon = group.appIcon,
-                                onClick = { widget.providerInfo?.let { onWidgetSelected(it) } }
-                            )
-                        }
-                    }
-                }
             }
         }
+    }
+}
+
+@Composable
+private fun WidgetAppGroupItem(
+    group: WidgetAppGroup,
+    isExpanded: Boolean,
+    onToggleExpand: () -> Unit,
+    onWidgetSelected: (AppWidgetProviderInfo) -> Unit
+) {
+    AppGroupHeader(
+        group = group,
+        onClick = onToggleExpand
+    )
+
+    if (isExpanded) {
+        WidgetPreviewRow(
+            widgets = group.availableWidgets,
+            fallbackAppIcon = group.appIcon,
+            onWidgetSelected = onWidgetSelected
+        )
+    }
+}
+
+@Composable
+private fun WidgetPreviewRow(
+    widgets: List<WidgetVariant>,
+    fallbackAppIcon: Drawable?,
+    onWidgetSelected: (AppWidgetProviderInfo) -> Unit
+) {
+    LazyRow(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = AureoleDS.dimens.small),
+        contentPadding = PaddingValues(start = AureoleDS.dimens.large, end = AureoleDS.dimens.minTouchTarget),
+        horizontalArrangement = Arrangement.spacedBy(AureoleDS.dimens.medium)
+    ) {
+        items(
+            items = widgets,
+            key = { it.widgetId },
+            contentType = { "widget_preview_card" }
+        ) { widget ->
+            WidgetPreviewCard(
+                widget = widget,
+                fallbackAppIcon = fallbackAppIcon,
+                onClick = { widget.providerInfo?.let(onWidgetSelected) }
+            )
+        }
+    }
+}
+
+@AureolePreview
+@Composable
+private fun WidgetGroupListPreview() {
+    val sampleState = WidgetSelectorState(
+        widgetGroups = listOf(
+            WidgetAppGroup(
+                appId = "com.example.clock",
+                appName = "Relógio",
+                availableWidgets = listOf(
+                    WidgetVariant(widgetId = "clock_1", title = "Relógio Analógico"),
+                    WidgetVariant(widgetId = "clock_2", title = "Relógio Digital")
+                )
+            ),
+            WidgetAppGroup(
+                appId = "com.example.weather",
+                appName = "Tempo",
+                availableWidgets = listOf(
+                    WidgetVariant(widgetId = "weather_1", title = "Previsão Diária")
+                )
+            )
+        )
+    )
+    AureoleLauncherTheme {
+        WidgetGroupList(
+            state = sampleState,
+            onIntent = {},
+            onWidgetSelected = {},
+            onDismiss = {}
+        )
     }
 }

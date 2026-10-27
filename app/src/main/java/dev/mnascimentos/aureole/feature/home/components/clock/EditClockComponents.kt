@@ -23,10 +23,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
+import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
@@ -35,10 +37,9 @@ import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 internal fun EditClockSectionHeader(title: String) {
     AureoleText(
         text = title,
-        style = AureoleDS.typography.titleMedium,
-        fontWeight = FontWeight.SemiBold,
         color = AureoleDS.colors.onSurfaceHigh,
-        modifier = Modifier.padding(bottom = 4.dp)
+        modifier = Modifier.padding(bottom = AureoleDS.dimens.xxSmall),
+        format = AureoleTextFormatParams(style = AureoleDS.typography.titleMedium, fontWeight = FontWeight.SemiBold)
     )
 }
 
@@ -52,14 +53,14 @@ internal fun EditClockLayoutChip(
         selected = selected,
         onClick = onClick,
         label = { AureoleText(label) },
-        shape = RoundedCornerShape(16.dp),
+        shape = RoundedCornerShape(AureoleDS.dimens.radiusMedium),
         border = FilterChipDefaults.filterChipBorder(
             enabled = true,
             selected = selected,
             selectedBorderColor = AureoleDS.colors.onSurfaceHigh,
             borderColor = AureoleDS.colors.onSurfaceMedium.copy(alpha = 0.3f),
-            selectedBorderWidth = 1.5.dp,
-            borderWidth = 1.dp
+            selectedBorderWidth = AureoleDS.dimens.borderMax,
+            borderWidth = AureoleDS.dimens.borderMinimal
         ),
         colors = FilterChipDefaults.filterChipColors(
             selectedContainerColor = AureoleDS.colors.onSurfaceHigh,
@@ -81,8 +82,8 @@ internal fun EditClockChoiceButton(
         Button(
             onClick = onClick,
             modifier = modifier,
-            shape = RoundedCornerShape(16.dp),
-            contentPadding = PaddingValues(horizontal = 4.dp, vertical = 8.dp),
+            shape = RoundedCornerShape(AureoleDS.dimens.radiusMedium),
+            contentPadding = PaddingValues(horizontal = AureoleDS.dimens.xxSmall, vertical = AureoleDS.dimens.xSmall),
             colors = ButtonDefaults.buttonColors(
                 containerColor = AureoleDS.colors.onSurfaceHigh,
                 contentColor = AureoleDS.colors.surface
@@ -91,17 +92,16 @@ internal fun EditClockChoiceButton(
             AureoleText(
                 text = text,
                 color = AureoleDS.colors.surface,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
+                format = AureoleTextFormatParams(maxLines = 1, overflow = TextOverflow.Ellipsis)
             )
         }
     } else {
         OutlinedButton(
             onClick = onClick,
             modifier = modifier,
-            shape = RoundedCornerShape(16.dp),
-            border = BorderStroke(1.dp, AureoleDS.colors.onSurfaceMedium.copy(alpha = 0.3f)),
-            contentPadding = PaddingValues(horizontal = 4.dp, vertical = 8.dp),
+            shape = RoundedCornerShape(AureoleDS.dimens.radiusMedium),
+            border = BorderStroke(AureoleDS.dimens.borderMinimal, AureoleDS.colors.onSurfaceMedium.copy(alpha = 0.3f)),
+            contentPadding = PaddingValues(horizontal = AureoleDS.dimens.xxSmall, vertical = AureoleDS.dimens.xSmall),
             colors = ButtonDefaults.outlinedButtonColors(
                 containerColor = AureoleDS.colors.surfaceVariant.copy(alpha = 0.6f),
                 contentColor = AureoleDS.colors.onSurfaceHigh
@@ -110,8 +110,7 @@ internal fun EditClockChoiceButton(
             AureoleText(
                 text = text,
                 color = AureoleDS.colors.onSurfaceMedium,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
+                format = AureoleTextFormatParams(maxLines = 1, overflow = TextOverflow.Ellipsis)
             )
         }
     }
@@ -130,24 +129,28 @@ internal fun EditClockColorSwatchItem(
     Row(
         modifier = Modifier
             .clip(CircleShape)
-            .border(2.dp, borderColor, CircleShape)
-            .clickable(onClick = onClick)
+            .border(AureoleDS.dimens.borderMax, borderColor, CircleShape)
+            .clickable(
+                onClick = onClick,
+                role = Role.Button
+            )
+            .semantics(mergeDescendants = true) {}
             .background(AureoleDS.colors.surfaceVariant.copy(alpha = 0.6f))
-            .padding(horizontal = 10.dp, vertical = 6.dp),
+            .padding(horizontal = AureoleDS.dimens.xSmall, vertical = AureoleDS.dimens.xxSmall),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Box(
             modifier = Modifier
-                .size(16.dp)
+                .size(AureoleDS.dimens.iconSmall)
                 .clip(CircleShape)
                 .background(displayColor)
-                .border(1.dp, Color.White.copy(alpha = 0.5f), CircleShape)
+                .border(AureoleDS.dimens.borderMinimal, Color.White.copy(alpha = 0.5f), CircleShape)
         )
-        Spacer(modifier = Modifier.width(6.dp))
+        Spacer(modifier = Modifier.width(AureoleDS.dimens.xxSmall))
         AureoleText(
             text = name,
-            style = AureoleDS.typography.bodySmall,
-            color = if (isSelected) AureoleDS.colors.onSurfaceHigh else AureoleDS.colors.onSurfaceMedium
+            color = if (isSelected) AureoleDS.colors.onSurfaceHigh else AureoleDS.colors.onSurfaceMedium,
+            format = AureoleTextFormatParams(style = AureoleDS.typography.bodySmall)
         )
     }
 }

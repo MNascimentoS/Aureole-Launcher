@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://aureole.mnascimentos.dev/sitemap.xml

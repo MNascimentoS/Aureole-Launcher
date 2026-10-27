@@ -1,7 +1,10 @@
 package dev.mnascimentos.aureole.core.data.repository
 
 import android.content.Context
+import dev.mnascimentos.aureole.core.data.db.AppDatabase
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
+import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Before
@@ -20,6 +23,11 @@ class FavoriteContainerRepositoryTest {
     fun setUp() {
         context = RuntimeEnvironment.getApplication()
         repository = FavoriteContainerRepository(context, SettingsRepository(context))
+    }
+
+    @After
+    fun tearDown() = runBlocking(Dispatchers.IO) {
+        AppDatabase.getInstance(context).clearAllTables()
     }
 
     @Test

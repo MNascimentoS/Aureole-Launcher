@@ -2,9 +2,6 @@
 
 package dev.mnascimentos.aureole.feature.settings.screens
 
-import android.content.Context
-import android.content.pm.PackageManager
-import android.os.Build
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -30,17 +27,23 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
+import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.composable.SettingsMenuItem
+import dev.mnascimentos.aureole.composable.SettingsMenuParams
+import dev.mnascimentos.aureole.composable.sheets.ReleaseNotesBottomSheet
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
+import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
 import dev.mnascimentos.aureole.core.designsystem.icons.Advanced
 import dev.mnascimentos.aureole.core.designsystem.icons.Edit
 import dev.mnascimentos.aureole.core.designsystem.icons.Logo
 import dev.mnascimentos.aureole.core.designsystem.icons.Star
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
-import dev.mnascimentos.aureole.feature.home.components.overlays.ReleaseNotesBottomSheet
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
+import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
+import dev.mnascimentos.aureole.feature.settings.extensions.getVersionName
 import dev.mnascimentos.aureole.feature.settings.model.SettingsUiState
 
 private const val BOTTOM_SPACER_PERCENT = 0.1f
@@ -52,12 +55,14 @@ fun SettingsRootScreen(
     onNavigateToBehavior: () -> Unit,
     onNavigateToAppearance: () -> Unit,
     onNavigateToAdvanced: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
     val versionName = remember(context) { getVersionName(context) }
     var showReleaseNotes by remember { mutableStateOf(false) }
 
     Scaffold(
+        modifier = modifier,
         containerColor = AureoleDS.colors.surface
     ) { innerPadding ->
         BoxWithConstraints(
@@ -65,8 +70,10 @@ fun SettingsRootScreen(
                 .fillMaxSize()
                 .padding(innerPadding)
         ) {
-            val topSpacerHeight = (maxHeight * (uiState.headerOffsetPercent / 100f)).coerceAtLeast(16.dp)
-            val bottomSpacerHeight = (maxHeight * BOTTOM_SPACER_PERCENT).coerceAtLeast(24.dp)
+            val topSpacerHeight = (maxHeight * (uiState.headerOffsetPercent / 100f)).coerceAtLeast(
+                AureoleDS.dimens.medium
+            )
+            val bottomSpacerHeight = (maxHeight * BOTTOM_SPACER_PERCENT).coerceAtLeast(AureoleDS.dimens.large)
 
             Column(
                 modifier = Modifier
@@ -93,11 +100,13 @@ fun SettingsRootScreen(
                 Spacer(modifier = Modifier.height(bottomSpacerHeight))
 
                 AureoleText(
-                    text = "Thank you!",
-                    style = AureoleDS.typography.bodyMedium,
+                    text = stringResource(R.string.settings_root_thank_you),
                     color = AureoleDS.colors.onSurfaceMedium,
                     modifier = Modifier.padding(bottom = AureoleDS.dimens.xxLarge),
-                    textAlign = TextAlign.Center
+                    format = AureoleTextFormatParams(
+                        style = AureoleDS.typography.bodyMedium,
+                        textAlign = TextAlign.Center
+                    )
                 )
             }
         }
@@ -123,21 +132,23 @@ private fun SettingsHeader(
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             AureoleDS.icons.Logo(
-                modifier = Modifier.size(120.dp, 68.dp),
+                modifier = Modifier.size(AureoleDS.dimens.sizeExtraLarge, AureoleDS.dimens.sizeLarge),
                 tint = AureoleDS.colors.onSurfaceHigh
             )
             Spacer(modifier = Modifier.height(AureoleDS.dimens.xLarge))
             AureoleText(
-                text = "Aureole",
-                style = AureoleDS.typography.displaySmall,
-                fontWeight = FontWeight.Bold,
-                color = AureoleDS.colors.onSurfaceHigh
+                text = stringResource(R.string.settings_root_title),
+                color = AureoleDS.colors.onSurfaceHigh,
+                format = AureoleTextFormatParams(
+                    style = AureoleDS.typography.displaySmall,
+                    fontWeight = FontWeight.Bold
+                )
             )
             Spacer(modifier = Modifier.height(AureoleDS.dimens.xxSmall))
             AureoleText(
-                text = "Version $versionName",
-                style = AureoleDS.typography.bodyMedium,
-                color = AureoleDS.colors.outline
+                text = stringResource(R.string.settings_root_version, versionName),
+                color = AureoleDS.colors.outline,
+                format = AureoleTextFormatParams(style = AureoleDS.typography.bodyMedium)
             )
         }
     }
@@ -154,43 +165,46 @@ private fun SettingsNavigationList(
         modifier = Modifier.fillMaxWidth().padding(horizontal = AureoleDS.dimens.xSmall)
     ) {
         SettingsMenuItem(
-            title = "Appearance",
-            subtitle = "Colors, themes, and layout",
-            leadingContent = { AureoleDS.icons.Edit() },
-            onClick = onNavigateToAppearance,
+            params = SettingsMenuParams(
+                title = stringResource(R.string.settings_root_appearance_title),
+                subtitle = stringResource(R.string.settings_root_appearance_subtitle),
+                leadingContent = { AureoleDS.icons.Edit() },
+                onClick = onNavigateToAppearance
+            ),
             modifier = Modifier.background(Color.Transparent)
         )
 
         SettingsMenuItem(
-            title = "Behavior",
-            subtitle = "Gestures, buttons, and controls",
-            leadingContent = { AureoleDS.icons.Star() },
-            onClick = onNavigateToBehavior,
+            params = SettingsMenuParams(
+                title = stringResource(R.string.settings_root_behavior_title),
+                subtitle = stringResource(R.string.settings_root_behavior_subtitle),
+                leadingContent = { AureoleDS.icons.Star() },
+                onClick = onNavigateToBehavior
+            ),
             modifier = Modifier.background(Color.Transparent)
         )
 
         SettingsMenuItem(
-            title = "Advanced",
-            subtitle = "System tools and legal info",
-            leadingContent = { AureoleDS.icons.Advanced() },
-            onClick = onNavigateToAdvanced,
+            params = SettingsMenuParams(
+                title = stringResource(R.string.settings_root_advanced_title),
+                subtitle = stringResource(R.string.settings_root_advanced_subtitle),
+                leadingContent = { AureoleDS.icons.Advanced() },
+                onClick = onNavigateToAdvanced
+            ),
             modifier = Modifier.background(Color.Transparent)
         )
     }
 }
 
-private fun getVersionName(context: Context): String {
-    return try {
-        val packageInfo = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            context.packageManager.getPackageInfo(
-                context.packageName,
-                PackageManager.PackageInfoFlags.of(0)
-            )
-        } else {
-            context.packageManager.getPackageInfo(context.packageName, 0)
-        }
-        packageInfo.versionName ?: "1.0.0"
-    } catch (_: Throwable) {
-        "1.0.0"
+@AureolePreview
+@Composable
+private fun SettingsRootScreenPreview() {
+    AureoleLauncherTheme {
+        SettingsRootScreen(
+            uiState = SettingsUiState(),
+            onNavigateToBehavior = {},
+            onNavigateToAppearance = {},
+            onNavigateToAdvanced = {}
+        )
     }
 }

@@ -76,7 +76,7 @@ internal object AppIconHelper {
 
     fun scaleCroppedBitmap(srcBitmap: Bitmap, minX: Int, minY: Int, cropW: Int, cropH: Int): Bitmap {
         val cropped = Bitmap.createBitmap(srcBitmap, minX, minY, cropW, cropH)
-        val scaled = Bitmap.createBitmap(DEFAULT_ICON_SIZE, DEFAULT_ICON_SIZE, Bitmap.Config.ARGB_8888)
+        val scaled = createBitmap(DEFAULT_ICON_SIZE, DEFAULT_ICON_SIZE)
         val scaledCanvas = Canvas(scaled)
 
         val padding = (DEFAULT_ICON_SIZE * CROP_PADDING_RATIO).toInt()

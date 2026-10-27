@@ -8,6 +8,18 @@ import dev.mnascimentos.aureole.core.data.repository.FolderRepository
 import dev.mnascimentos.aureole.core.data.repository.GridRepository
 import dev.mnascimentos.aureole.core.data.repository.SettingsRepository
 import dev.mnascimentos.aureole.core.data.repository.WidgetRepository
+import dev.mnascimentos.aureole.feature.home.components.appsdrawer.extensions.onSearchQueryChanged
+import dev.mnascimentos.aureole.feature.home.components.clock.extensions.closeEditClockBottomSheet
+import dev.mnascimentos.aureole.feature.home.components.clock.extensions.openEditClockBottomSheet
+import dev.mnascimentos.aureole.feature.home.components.clock.extensions.updateClockStyle
+import dev.mnascimentos.aureole.feature.home.components.widgets.extensions.reorderWidgets
+import dev.mnascimentos.aureole.feature.home.components.widgets.extensions.setShowWidgetPicker
+import dev.mnascimentos.aureole.feature.home.extensions.setContainerPosition
+import dev.mnascimentos.aureole.feature.home.extensions.toggleContainer
+import dev.mnascimentos.aureole.feature.home.extensions.toggleLeftHandedMode
+import dev.mnascimentos.aureole.feature.home.grid.extensions.cancelGridEditMode
+import dev.mnascimentos.aureole.feature.home.grid.extensions.enterGridEditMode
+import dev.mnascimentos.aureole.feature.home.model.HomeRepositories
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotNull
@@ -44,18 +56,20 @@ class HomeViewModelTest {
         gridRepository = GridRepository(context)
 
         viewModel = HomeViewModel(
-            appRepository = appRepository,
-            widgetRepository = widgetRepository,
-            settingsRepository = settingsRepository,
-            folderRepository = folderRepository,
-            favoriteContainerRepository = favoriteContainerRepository,
-            containerRepository = containerRepository,
-            gridRepository = gridRepository
+            HomeRepositories(
+                appRepository = appRepository,
+                widgetRepository = widgetRepository,
+                settingsRepository = settingsRepository,
+                folderRepository = folderRepository,
+                favoriteContainerRepository = favoriteContainerRepository,
+                containerRepository = containerRepository,
+                gridRepository = gridRepository
+            )
         )
     }
 
     @Test
-    fun `when initialized, uiState is emitted with default settings`() {
+    fun `when initialized, should emit uiState with default settings`() {
         val state = viewModel.uiState.value
         assertNotNull(state)
         assertFalse(state.showUpdateAvailableDialog)
@@ -63,7 +77,7 @@ class HomeViewModelTest {
     }
 
     @Test
-    fun `updateUiState updates MainUiState emissions directly`() {
+    fun `when updating ui state, should emit updated MainUiState directly`() {
         viewModel.updateUiState {
             it.copy(
                 clockStyle = "DATE_ON_TOP",
@@ -79,7 +93,7 @@ class HomeViewModelTest {
     }
 
     @Test
-    fun `setShowUpdateAvailableDialog updates dialog visibility`() {
+    fun `when setting show update available dialog, should update dialog visibility`() {
         viewModel.setShowUpdateAvailableDialog(true)
         assertTrue(viewModel.uiState.value.showUpdateAvailableDialog)
 
@@ -88,7 +102,7 @@ class HomeViewModelTest {
     }
 
     @Test
-    fun `setShowUpdateDownloadedDialog updates dialog visibility`() {
+    fun `when setting show update downloaded dialog, should update dialog visibility`() {
         viewModel.setShowUpdateDownloadedDialog(true)
         assertTrue(viewModel.uiState.value.showUpdateDownloadedDialog)
 
@@ -97,11 +111,88 @@ class HomeViewModelTest {
     }
 
     @Test
-    fun `activeVersionCode and isUpdateInProgressOrDismissed properties can be set and read`() {
+    fun `when setting activeVersionCode and update status, should allow reading updated values`() {
         viewModel.activeVersionCode = 123
         viewModel.isUpdateInProgressOrDismissed = true
 
         assertEquals(123, viewModel.activeVersionCode)
         assertTrue(viewModel.isUpdateInProgressOrDismissed)
+    }
+
+    @Test
+    fun `when search query changed, should update search query state`() {
+        viewModel.onSearchQueryChanged("Calculator")
+        assertEquals("Calculator", viewModel.uiState.value.searchQuery)
+    }
+
+    @Test
+    fun `when toggling left handed mode, should invert left handed setting`() {
+        val initial = viewModel.uiState.value.isLeftHandedMode
+        viewModel.toggleLeftHandedMode()
+        assertEquals(!initial, viewModel.uiState.value.isLeftHandedMode)
+    }
+
+    @Test
+    fun `when toggling container, should toggle container enabled state`() {
+        val initial = viewModel.uiState.value.isContainerEnabled
+        viewModel.toggleContainer()
+        assertEquals(!initial, viewModel.uiState.value.isContainerEnabled)
+    }
+
+    @Test
+    fun `when container position updated, should update position in state`() {
+        viewModel.setContainerPosition("Right")
+        assertEquals("Right", viewModel.uiState.value.containerPosition)
+    }
+
+    @Test
+    fun `when clock style updated, should reflect new style in uiState`() {
+        viewModel.updateClockStyle("DATE_ONLY")
+        assertEquals("DATE_ONLY", viewModel.uiState.value.clockStyle)
+    }
+
+    @Test
+    fun `when favorite apps updated, should emit updated favorite package list`() {
+        val newFavorites = listOf("com.example.app1", "com.example.app2")
+        viewModel.updateUiState { it.copy(favoriteAppPackages = newFavorites) }
+        assertEquals(newFavorites, viewModel.uiState.value.favoriteAppPackages)
+    }
+
+    @Test
+    fun `when opening and closing edit clock bottom sheet, should toggle visibility in uiState`() {
+        viewModel.openEditClockBottomSheet()
+        assertTrue(viewModel.uiState.value.showEditClockBottomSheet)
+
+        viewModel.closeEditClockBottomSheet()
+        assertFalse(viewModel.uiState.value.showEditClockBottomSheet)
+    }
+
+    @Test
+    fun `when opening and closing widget picker, should update showWidgetPicker in uiState`() {
+        viewModel.setShowWidgetPicker(true)
+        assertTrue(viewModel.uiState.value.showWidgetPicker)
+
+        viewModel.setShowWidgetPicker(false)
+        assertFalse(viewModel.uiState.value.showWidgetPicker)
+    }
+
+    @Test
+    fun `when grid edit mode entered, should set isGridEditMode to true`() {
+        viewModel.enterGridEditMode()
+        assertTrue(viewModel.uiState.value.isGridEditMode)
+
+        viewModel.cancelGridEditMode()
+        assertFalse(viewModel.uiState.value.isGridEditMode)
+    }
+
+    @Test
+    fun `when widgets reordered, should update widgetStacks in state and persist`() {
+        val stackId = "stack_1"
+        val reorderedList = listOf(102, 101, 103)
+
+        viewModel.reorderWidgets(reorderedList, stackId)
+
+        assertEquals(reorderedList, viewModel.uiState.value.widgetStacks[stackId])
+        assertEquals(reorderedList, widgetRepository.getWidgetIdsForStack(stackId))
     }
 }

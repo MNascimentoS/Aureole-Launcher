@@ -1,10 +1,5 @@
 package dev.mnascimentos.aureole.feature.home.components.containers.folder
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.expandVertically
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -13,104 +8,77 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.NonRestartableComposable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.dp
-import dev.chrisbanes.haze.HazeState
 import dev.chrisbanes.haze.HazeStyle
 import dev.chrisbanes.haze.HazeTint
 import dev.chrisbanes.haze.hazeEffect
+import dev.mnascimentos.aureole.R
+import dev.mnascimentos.aureole.composable.dialogs.model.FolderButtonMetrics
+import dev.mnascimentos.aureole.core.data.model.AppFolder
 import dev.mnascimentos.aureole.core.data.model.AppInfo
-import dev.mnascimentos.aureole.core.designsystem.components.AureolePopupMenuItem
-import dev.mnascimentos.aureole.core.designsystem.icons.Add
-import dev.mnascimentos.aureole.core.designsystem.icons.Edit
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
+import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.core.designsystem.utils.LocalHazeState
-import dev.mnascimentos.aureole.feature.home.LocalHomeActions
-import dev.mnascimentos.aureole.feature.home.LocalHomeUiState
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.FolderPopupActions
+import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.FolderPopupMetrics
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.GridFolderPopupParams
+import dev.mnascimentos.aureole.feature.home.model.LocalHomeActions
+import dev.mnascimentos.aureole.feature.home.model.LocalHomeUiState
 
-private const val GRID_MAX_3 = 3
-private const val GRID_MAX_6 = 6
-private const val GRID_MAX_9 = 9
-private const val GRID_COLUMNS = 3
-private const val GRID_WIDTH_FRACTION = 0.75f
+private const val GRID_COLUMNS = 4
+private const val POPUP_HAZE_ALPHA = 0.55f
 
-@OptIn(ExperimentalFoundationApi::class)
+@NonRestartableComposable
 @Composable
-fun GridStyleExpandedFolderPopup(
+fun GridFolderPopup(
     params: GridFolderPopupParams,
     modifier: Modifier = Modifier
 ) {
-    val folder = params.folder
-    val appsInFolder = params.appsInFolder
-    val actions = params.actions
-
     Column(
-        modifier = modifier
-            .fillMaxWidth(GRID_WIDTH_FRACTION)
-            .padding(vertical = 16.dp),
+        modifier = modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 8.dp, vertical = 8.dp)
-        ) {
+        if (params.folder.name.isNotBlank()) {
             Text(
-                text = folder.name,
+                text = params.folder.name,
                 style = AureoleDS.typography.titleLarge,
                 fontWeight = FontWeight.Bold,
-                color = Color.White,
+                color = AureoleDS.colors.onSurfaceHigh,
                 textAlign = TextAlign.Center,
                 modifier = Modifier
-                    .align(Alignment.Center)
-                    .combinedClickable(
-                        onClick = {},
-                        onLongClick = params.onToggleActions
-                    )
+                    .fillMaxWidth()
+                    .padding(bottom = AureoleDS.dimens.medium)
             )
         }
 
-        Spacer(modifier = Modifier.height(12.dp))
-
-        OpenedFolderActions(
-            isVisible = params.isActionsVisible,
-            onAddAppsClick = actions.onAddAppsClick,
-            onEditFolderClick = actions.onEditFolderClick
-        )
-
         GridFolderContainer(
             params = params,
-            appsInFolder = appsInFolder,
-            actions = actions,
-            hazeState = params.hazeState ?: LocalHazeState.current,
-            isHazeEnabled = true
+            modifier = Modifier.fillMaxWidth()
         )
     }
 }
@@ -118,74 +86,69 @@ fun GridStyleExpandedFolderPopup(
 @Composable
 private fun GridFolderContainer(
     params: GridFolderPopupParams,
-    appsInFolder: List<AppInfo>,
-    actions: FolderPopupActions,
-    hazeState: HazeState?,
-    @Suppress("UNUSED_PARAMETER") // Parameter reserved for conditional haze styling
-    isHazeEnabled: Boolean
+    modifier: Modifier = Modifier
 ) {
-    val effectiveHazeState = hazeState ?: LocalHazeState.current
-    val hasHaze = effectiveHazeState != null
+    val effectiveHazeState = params.hazeState ?: LocalHazeState.current
+    val containerShape = RoundedCornerShape(AureoleDS.dimens.radiusLarge)
 
-    val hazeModifier = if (effectiveHazeState != null) {
+    val hazeModifier = if (params.isHazeEnabled && effectiveHazeState != null) {
         Modifier.hazeEffect(
             state = effectiveHazeState,
             style = HazeStyle(
-                blurRadius = 32.dp,
-                tint = HazeTint(AureoleDS.colors.surfaceVariant.copy(alpha = 0.55f))
+                blurRadius = FolderPopupMetrics.HazeBlurRadius,
+                tint = HazeTint(Color.Black.copy(alpha = POPUP_HAZE_ALPHA))
             )
-        ) {
-            blurEnabled = true
-        }
+        ) { blurEnabled = true }
     } else {
         Modifier
     }
 
-    val containerBgColor = if (hasHaze) {
-        AureoleDS.colors.surfaceVariant.copy(alpha = 0.55f)
-    } else {
-        AureoleDS.colors.surfaceVariant
-    }
-
-    val gridMaxHeight = calculateGridMaxHeight(appsInFolder.size)
-
-    Box(
-        modifier = Modifier
+    Column(
+        modifier = modifier
             .fillMaxWidth()
-            .heightIn(min = 120.dp, max = gridMaxHeight)
-            .clip(RoundedCornerShape(32.dp))
+            .clip(containerShape)
             .then(hazeModifier)
-            .background(containerBgColor)
-            .padding(16.dp)
+            .background(
+                color = AureoleDS.colors.surface,
+                shape = containerShape
+            )
+            .padding(AureoleDS.dimens.medium),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        if (appsInFolder.isEmpty()) {
-            EmptyFolderGridHint()
+        OpenedFolderActions(
+            isVisible = params.isActionsVisible,
+            onAddAppsClick = params.actions.onAddAppsClick,
+            onEditFolderClick = params.actions.onEditFolderClick
+        )
+
+        if (params.appsInFolder.isEmpty()) {
+            EmptyFolderGridContent(maxListHeightDp = FolderPopupMetrics.HeightMax)
         } else {
-            PopulatedFolderGrid(params = params, appsInFolder = appsInFolder, actions = actions)
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .heightIn(max = FolderPopupMetrics.HeightMax)
+            ) {
+                PopulatedFolderGrid(
+                    params = params,
+                    appsInFolder = params.appsInFolder,
+                    actions = params.actions
+                )
+            }
         }
     }
 }
 
-private fun calculateGridMaxHeight(appCount: Int): Dp {
-    return when {
-        appCount == 0 -> 100.dp
-        appCount <= GRID_MAX_3 -> 120.dp
-        appCount <= GRID_MAX_6 -> 230.dp
-        appCount <= GRID_MAX_9 -> 340.dp
-        else -> 440.dp
-    }
-}
-
 @Composable
-private fun EmptyFolderGridHint() {
+private fun EmptyFolderGridContent(maxListHeightDp: Dp) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 32.dp),
+            .height(maxListHeightDp),
         contentAlignment = Alignment.Center
     ) {
         Text(
-            text = "Nenhum aplicativo na pasta",
+            text = stringResource(R.string.home_folder_no_apps_in_folder),
             style = AureoleDS.typography.bodyMedium,
             color = AureoleDS.colors.onSurfaceMedium
         )
@@ -201,9 +164,9 @@ private fun PopulatedFolderGrid(
     val homeActions = LocalHomeActions.current
     LazyVerticalGrid(
         columns = GridCells.Fixed(GRID_COLUMNS),
-        contentPadding = PaddingValues(8.dp),
-        horizontalArrangement = Arrangement.spacedBy(16.dp),
-        verticalArrangement = Arrangement.spacedBy(18.dp),
+        contentPadding = PaddingValues(AureoleDS.dimens.xSmall),
+        horizontalArrangement = Arrangement.spacedBy(AureoleDS.dimens.medium),
+        verticalArrangement = Arrangement.spacedBy(FolderButtonMetrics.GridGap),
         modifier = Modifier.fillMaxWidth()
     ) {
         items(
@@ -238,21 +201,23 @@ private fun OpenedFolderSamsungGridAppItem(
         verticalArrangement = Arrangement.Center,
         modifier = Modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(16.dp))
+            .defaultMinSize(minWidth = AureoleDS.dimens.minTouchTarget, minHeight = AureoleDS.dimens.minTouchTarget)
+            .clip(RoundedCornerShape(AureoleDS.dimens.radiusMedium))
             .combinedClickable(
+                role = Role.Button,
                 onClick = onClick,
                 onLongClick = onLongClick
             )
-            .padding(vertical = 6.dp)
+            .padding(vertical = AureoleDS.dimens.xxSmall)
     ) {
         Image(
             bitmap = iconBitmap,
             contentDescription = app.label,
             modifier = Modifier
-                .size(52.dp)
-                .clip(RoundedCornerShape(16.dp))
+                .size(FolderButtonMetrics.SmallSize)
+                .clip(RoundedCornerShape(AureoleDS.dimens.radiusMedium))
         )
-        Spacer(modifier = Modifier.height(6.dp))
+        Spacer(modifier = Modifier.height(AureoleDS.dimens.xxSmall))
         Text(
             text = app.label,
             style = AureoleDS.typography.labelSmall,
@@ -265,137 +230,25 @@ private fun OpenedFolderSamsungGridAppItem(
     }
 }
 
+@AureolePreview
 @Composable
-fun OpenedFolderActions(
-    isVisible: Boolean,
-    onAddAppsClick: () -> Unit,
-    onEditFolderClick: () -> Unit
-) {
-    AnimatedVisibility(
-        visible = isVisible,
-        enter = fadeIn() + expandVertically(),
-        exit = fadeOut() + shrinkVertically()
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(bottom = 8.dp)
-        ) {
-            AureolePopupMenuItem(
-                title = "Add Apps",
-                icon = { m -> AureoleDS.icons.Add(m) },
-                onClick = onAddAppsClick
+private fun GridFolderPopupPreview() {
+    AureoleLauncherTheme {
+        GridFolderPopup(
+            params = GridFolderPopupParams(
+                folder = AppFolder(id = "1", panelId = "1", name = "Preview Folder"),
+                appsInFolder = emptyList(),
+                actions = FolderPopupActions(
+                    onDismiss = {},
+                    onAppClick = {},
+                    onAddAppsClick = {},
+                    onEditFolderClick = {}
+                ),
+                isActionsVisible = false,
+                onToggleActions = {},
+                hazeState = null,
+                isHazeEnabled = false
             )
-
-            AureolePopupMenuItem(
-                title = "Edit Folder",
-                icon = { m -> AureoleDS.icons.Edit(m) },
-                onClick = onEditFolderClick
-            )
-        }
-    }
-}
-
-@Composable
-fun OpenedFolderAppList(
-    appsInFolder: List<AppInfo>,
-    isLeftHandedMode: Boolean,
-    onAppClick: (AppInfo) -> Unit,
-    onAppLongClick: ((AppInfo) -> Unit)? = null
-) {
-    if (appsInFolder.isEmpty()) {
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(vertical = 16.dp),
-            contentAlignment = Alignment.Center
-        ) {
-            Text(
-                text = "No apps in folder",
-                style = AureoleDS.typography.bodySmall,
-                color = AureoleDS.colors.onSurfaceMedium
-            )
-        }
-    } else {
-        LazyColumn(
-            contentPadding = PaddingValues(vertical = 2.dp),
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            items(
-                items = appsInFolder,
-                key = { it.packageName },
-                contentType = { "opened_folder_app_row" }
-            ) { app ->
-                OpenedFolderAppItemRow(
-                    app = app,
-                    isLeftHandedMode = isLeftHandedMode,
-                    onClick = { onAppClick(app) },
-                    onLongClick = { onAppLongClick?.invoke(app) }
-                )
-            }
-        }
-    }
-}
-
-@OptIn(ExperimentalFoundationApi::class)
-@Composable
-private fun OpenedFolderAppItemRow(
-    app: AppInfo,
-    isLeftHandedMode: Boolean,
-    onClick: () -> Unit,
-    onLongClick: () -> Unit = {}
-) {
-    val uiState = LocalHomeUiState.current
-    val iconBitmap: ImageBitmap = app.getDisplayIconBitmap(
-        isThemed = uiState.isThemedAppIconsEnabled,
-        tintColor = AureoleDS.colors.onSurfaceMedium
-    )
-
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clip(RoundedCornerShape(10.dp))
-            .combinedClickable(
-                onClick = onClick,
-                onLongClick = onLongClick
-            )
-            .padding(horizontal = 8.dp, vertical = 8.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        if (isLeftHandedMode) {
-            Text(
-                text = app.label,
-                style = AureoleDS.typography.bodyMedium,
-                color = AureoleDS.colors.onSurfaceHigh,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-                modifier = Modifier.weight(1f)
-            )
-            Spacer(modifier = Modifier.width(10.dp))
-            Image(
-                bitmap = iconBitmap,
-                contentDescription = app.label,
-                modifier = Modifier
-                    .size(28.dp)
-                    .clip(CircleShape)
-            )
-        } else {
-            Image(
-                bitmap = iconBitmap,
-                contentDescription = app.label,
-                modifier = Modifier
-                    .size(28.dp)
-                    .clip(CircleShape)
-            )
-            Spacer(modifier = Modifier.width(10.dp))
-            Text(
-                text = app.label,
-                style = AureoleDS.typography.bodyMedium,
-                color = AureoleDS.colors.onSurfaceHigh,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-                modifier = Modifier.weight(1f)
-            )
-        }
+        )
     }
 }

@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -24,10 +25,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.composable.SettingsMenuItem
+import dev.mnascimentos.aureole.composable.SettingsMenuParams
+import dev.mnascimentos.aureole.composable.sheets.SettingsBottomSheet
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
+import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
 import dev.mnascimentos.aureole.core.designsystem.icons.Check
 import dev.mnascimentos.aureole.core.designsystem.icons.Edit
 import dev.mnascimentos.aureole.core.designsystem.icons.StrokeColor
@@ -39,7 +46,6 @@ import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 
 private const val BLUR_SWATCH_WIDTH_DP = 140
-private const val BLUR_SWATCH_HEIGHT_DP = 22
 private const val BLUR_LOW_OPACITY = 0.2f
 private const val BLUR_MED_OPACITY = 0.5f
 private const val BLUR_MAX_OPACITY = 0.9f
@@ -48,26 +54,32 @@ private const val BLUR_MAX_OPACITY = 0.9f
 fun SetBackgroundBottomSheet(
     onSolidColorClick: () -> Unit,
     onCustomImageClick: () -> Unit,
-    onDismissRequest: () -> Unit
+    onDismissRequest: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     SettingsBottomSheet(
-        title = "Set background",
-        onDismissRequest = onDismissRequest
+        title = stringResource(R.string.settings_appearance_set_background_title),
+        onDismissRequest = onDismissRequest,
+        modifier = modifier
     ) {
         Column(
             verticalArrangement = Arrangement.spacedBy(AureoleDS.dimens.xSmall),
             modifier = Modifier.fillMaxWidth().verticalScroll(rememberScrollState())
         ) {
             SettingsMenuItem(
-                title = "Solid color",
-                leadingContent = { AureoleDS.icons.StrokeColor() },
-                onClick = onSolidColorClick
+                SettingsMenuParams(
+                    title = stringResource(R.string.settings_appearance_solid_color),
+                    leadingContent = { AureoleDS.icons.StrokeColor() },
+                    onClick = onSolidColorClick
+                )
             )
 
             SettingsMenuItem(
-                title = "Custom image",
-                leadingContent = { AureoleDS.icons.Edit() },
-                onClick = onCustomImageClick
+                SettingsMenuParams(
+                    title = stringResource(R.string.settings_appearance_custom_image),
+                    leadingContent = { AureoleDS.icons.Edit() },
+                    onClick = onCustomImageClick
+                )
             )
         }
     }
@@ -77,14 +89,16 @@ fun SetBackgroundBottomSheet(
 fun PickPaletteBottomSheet(
     selectedPaletteName: String,
     onPaletteSelected: (ThemePalette) -> Unit,
-    onDismissRequest: () -> Unit
+    onDismissRequest: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     val isDarkTheme = isSystemInDarkTheme()
     val cleanSelectedName = selectedPaletteName.removeSuffix(" Light").trim()
 
     SettingsBottomSheet(
-        title = "Pick a palette",
-        onDismissRequest = onDismissRequest
+        title = stringResource(R.string.settings_appearance_pick_palette_title),
+        onDismissRequest = onDismissRequest,
+        modifier = modifier
     ) {
         LazyColumn(
             verticalArrangement = Arrangement.spacedBy(AureoleDS.dimens.small),
@@ -130,18 +144,24 @@ private fun PaletteRowItem(
     Row(
         modifier = Modifier
             .fillMaxWidth()
+            .defaultMinSize(minHeight = AureoleDS.dimens.minTouchTarget)
             .clip(RoundedCornerShape(AureoleDS.dimens.radiusSmall))
             .background(rowBg)
-            .clickable(onClick = onSelect)
+            .clickable(
+                role = Role.RadioButton,
+                onClick = onSelect
+            )
             .padding(vertical = AureoleDS.dimens.small, horizontal = AureoleDS.dimens.xSmall),
         verticalAlignment = Alignment.CenterVertically
     ) {
         AureoleText(
             text = displayName,
-            style = AureoleDS.typography.titleMedium,
-            fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium,
             color = textColor,
-            modifier = Modifier.weight(1f)
+            modifier = Modifier.weight(1f),
+            format = AureoleTextFormatParams(
+                style = AureoleDS.typography.titleMedium,
+                fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium
+            )
         )
 
         PaletteColorSwatches(palette = palette)
@@ -153,9 +173,13 @@ private fun PaletteColorSwatches(palette: ThemePalette) {
     Row(
         modifier = Modifier
             .width(BLUR_SWATCH_WIDTH_DP.dp)
-            .height(BLUR_SWATCH_HEIGHT_DP.dp)
-            .clip(RoundedCornerShape(6.dp))
-            .border(AureoleDS.dimens.borderMinimal, AureoleDS.colors.outline, RoundedCornerShape(6.dp))
+            .height(AureoleDS.dimens.iconLargePlus)
+            .clip(RoundedCornerShape(AureoleDS.dimens.radiusXSmall))
+            .border(
+                AureoleDS.dimens.borderMinimal,
+                AureoleDS.colors.outline,
+                RoundedCornerShape(AureoleDS.dimens.radiusXSmall)
+            )
     ) {
         val colorList = listOf(
             palette.colors.background,
@@ -182,18 +206,20 @@ fun BlurBottomSheet(
     currentOpacity: Float,
     isHazeEnabled: Boolean,
     onOptionSelected: (Float, Boolean) -> Unit,
-    onDismissRequest: () -> Unit
+    onDismissRequest: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     val options = listOf(
-        Triple(0.0f, false, "None"),
-        Triple(BLUR_LOW_OPACITY, true, "Low"),
-        Triple(BLUR_MED_OPACITY, true, "Medium"),
-        Triple(BLUR_MAX_OPACITY, true, "Max")
+        Triple(0.0f, false, stringResource(R.string.settings_appearance_blur_none)),
+        Triple(BLUR_LOW_OPACITY, true, stringResource(R.string.settings_appearance_blur_opacity_low)),
+        Triple(BLUR_MED_OPACITY, true, stringResource(R.string.settings_appearance_blur_opacity_medium)),
+        Triple(BLUR_MAX_OPACITY, true, stringResource(R.string.settings_appearance_blur_max))
     )
 
     SettingsBottomSheet(
-        title = "Glass & Blur",
-        onDismissRequest = onDismissRequest
+        title = stringResource(R.string.settings_appearance_glass_blur_title),
+        onDismissRequest = onDismissRequest,
+        modifier = modifier
     ) {
         Column(
             verticalArrangement = Arrangement.spacedBy(AureoleDS.dimens.xSmall),
@@ -236,18 +262,24 @@ private fun BlurOptionRow(
     Row(
         modifier = Modifier
             .fillMaxWidth()
+            .defaultMinSize(minHeight = AureoleDS.dimens.minTouchTarget)
             .clip(RoundedCornerShape(AureoleDS.dimens.radiusSmall))
             .background(rowBg)
-            .clickable(onClick = onSelect)
+            .clickable(
+                role = Role.RadioButton,
+                onClick = onSelect
+            )
             .padding(vertical = AureoleDS.dimens.small, horizontal = AureoleDS.dimens.small),
         verticalAlignment = Alignment.CenterVertically
     ) {
         AureoleText(
             text = label,
-            style = AureoleDS.typography.bodyLarge,
-            fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
             color = textColor,
-            modifier = Modifier.weight(1f)
+            modifier = Modifier.weight(1f),
+            format = AureoleTextFormatParams(
+                style = AureoleDS.typography.bodyLarge,
+                fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
+            )
         )
         if (isSelected) {
             AureoleDS.icons.Check(
@@ -260,7 +292,7 @@ private fun BlurOptionRow(
 
 @AureolePreview
 @Composable
-fun SetBackgroundBottomSheetPreview() {
+private fun SetBackgroundBottomSheetPreview() {
     AureoleLauncherTheme {
         SetBackgroundBottomSheet(
             onSolidColorClick = {},
@@ -272,7 +304,7 @@ fun SetBackgroundBottomSheetPreview() {
 
 @AureolePreview
 @Composable
-fun PickPaletteBottomSheetPreview() {
+private fun PickPaletteBottomSheetPreview() {
     AureoleLauncherTheme {
         PickPaletteBottomSheet(
             selectedPaletteName = "Frostbite",
@@ -284,7 +316,7 @@ fun PickPaletteBottomSheetPreview() {
 
 @AureolePreview
 @Composable
-fun BlurBottomSheetPreview() {
+private fun BlurBottomSheetPreview() {
     AureoleLauncherTheme {
         BlurBottomSheet(
             currentOpacity = BLUR_MED_OPACITY,

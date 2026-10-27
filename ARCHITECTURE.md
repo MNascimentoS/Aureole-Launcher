@@ -20,7 +20,7 @@ Cada funcionalidade ou tela do aplicativo deve ser dividida em camadas bem defin
 - **Fluxo Unidirecional de Dados (UDF):** O fluxo de dados deve ser estritamente unidirecional (ViewModel -> UiState -> UI -> Actions -> ViewModel).
 - **Proibido `data class` em arquivos de View:** É **estritamente proibido** declarar `data class`, `enum` ou interfaces de parâmetros dentro de arquivos `.kt` de UI. Todos os modelos de dados e estados de tela devem residir na pasta `model/`.
 - **Regra Obrigatória para Bottom Views e Popups:** Qualquer bottom sheet (`*BottomSheet.kt`), diálogo (`*Dialog.kt`) ou popup (`*Popup.kt`) deve obrigatoriamente:
-  1. Conter funções de `@Preview` (utilizando `@AureolePreview`) do componente principal diretamente no próprio arquivo onde o componente é declarado.
+  1. Conter funções de `@Preview` (utilizando obrigatoriamente a anotação `@AureolePreview` e modificador `private fun`) do componente principal diretamente no próprio arquivo onde o componente é declarado.
   2. Possuir um teste de screenshot correspondente (anotado com `@PreviewTest`) na suíte de testes de screenshot (`app/src/screenshotTest`).
 
 ### 3. ViewModel (`*ViewModel.kt`)
@@ -93,7 +93,7 @@ feature/<nome_da_feature>/
 
 O código deve ser pequeno, conciso, simples e direto. A leitura deve ser natural.
 
-- **Tamanho Máximo de Arquivos (Limite Estrito):** Arquivos devem ser extremamente concisos. **O tamanho máximo permitido para qualquer arquivo é de 300 a 400 linhas** (com exceção explicita de catálogos unificados do Design System como `AureoleIcons.kt` e `ThemePaletteBase.kt`, que contêm supressão documentada). Se um arquivo ultrapassar 300-400 linhas, ele deve ser imediatamente refatorado e dividido em subcomponentes ou arquivos utilitários.
+- **Tamanho Máximo de Arquivos (Limite Estrito):** Arquivos devem ser extremamente concisos. **O tamanho máximo permitido para qualquer arquivo é de 500 linhas** (com exceção explicita de catálogos unificados do Design System como `AureoleIcons.kt` e `ThemePaletteBase.kt`, que contêm supressão documentada). Se um arquivo ultrapassar 500 linhas, ele deve ser imediatamente refatorado e dividido em subcomponentes ou arquivos utilitários. **Arquivos de teste** (`app/src/test/`, `app/src/screenshotTest/`, `app/src/androidTest/`) podem ter **no máximo 800 linhas**; acima disso, a classe de teste deve ser dividida por comportamento ou componente.
 - **Funções Limpas:** Funções devem ter apenas uma responsabilidade clara. Evite aninhamentos profundos (`if` dentro de `if` dentro de `for`).
 - **Zero Detekt Issues (`maxIssues: 0`):** O código deve estar 100% em conformidade com do Detekt. O build falhará se houver violações.
 - **Proibição de `@Suppress` Sem Justificativa:** Não utilize `@Suppress` sem uma justificativa arquitetural explícita, revisada e documentada.

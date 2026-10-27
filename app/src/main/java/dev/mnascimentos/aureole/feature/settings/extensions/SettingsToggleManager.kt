@@ -1,7 +1,7 @@
 package dev.mnascimentos.aureole.feature.settings.extensions
 
-import dev.mnascimentos.aureole.feature.settings.SettingToggle
 import dev.mnascimentos.aureole.feature.settings.SettingsViewModel
+import dev.mnascimentos.aureole.feature.settings.model.SettingToggle
 
 internal object SettingsToggleManager {
     fun toggleSetting(vm: SettingsViewModel, toggle: SettingToggle) {

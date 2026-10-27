@@ -1,12 +1,12 @@
 package dev.mnascimentos.aureole.feature.home.extensions
 
-import android.util.Log
 import com.google.android.play.core.appupdate.AppUpdateInfo
 import com.google.android.play.core.appupdate.AppUpdateManager
 import com.google.android.play.core.install.model.AppUpdateType
 import com.google.android.play.core.install.model.InstallStatus
 import com.google.android.play.core.install.model.UpdateAvailability
 import dev.mnascimentos.aureole.feature.home.HomeViewModel
+import timber.log.Timber
 
 fun checkAppUpdate(
     appUpdateManager: AppUpdateManager,
@@ -40,6 +40,6 @@ fun checkAppUpdate(
             }
         }
     }.addOnFailureListener { e ->
-        Log.w("MainActivity", "Failed to check for app update", e)
+        Timber.tag("MainActivity").w(e, "Failed to check for app update")
     }
 }

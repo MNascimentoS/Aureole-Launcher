@@ -20,30 +20,32 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
-import dev.chrisbanes.haze.HazeState
 import dev.chrisbanes.haze.HazeStyle
 import dev.chrisbanes.haze.HazeTint
 import dev.chrisbanes.haze.hazeEffect
+import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
-import dev.mnascimentos.aureole.feature.home.LocalHomeUiState
 import dev.mnascimentos.aureole.feature.home.components.widgets.model.WidgetAppGroup
+import dev.mnascimentos.aureole.feature.home.components.widgets.model.WidgetPickerScreenParams
 import dev.mnascimentos.aureole.feature.home.components.widgets.model.WidgetSelectorIntent
+import dev.mnascimentos.aureole.feature.home.components.widgets.model.WidgetSelectorScreenParams
 import dev.mnascimentos.aureole.feature.home.components.widgets.model.WidgetSelectorState
 import dev.mnascimentos.aureole.feature.home.components.widgets.model.WidgetVariant
+import dev.mnascimentos.aureole.feature.home.model.LocalHomeUiState
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
 import org.koin.androidx.compose.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun WidgetPickerScreen(
-    isBlurEnabled: Boolean = true,
-    hazeState: HazeState? = null,
-    viewModel: WidgetPickerViewModel = koinViewModel(),
-    onWidgetSelected: (AppWidgetProviderInfo) -> Unit,
-    onDismiss: () -> Unit
+    params: WidgetPickerScreenParams,
+    modifier: Modifier = Modifier,
+    viewModel: WidgetPickerViewModel = koinViewModel()
 ) {
     val state by viewModel.state.collectAsState()
 
@@ -52,23 +54,29 @@ fun WidgetPickerScreen(
     }
 
     WidgetSelectorScreen(
-        state = state,
-        hazeState = if (isBlurEnabled) hazeState else null,
-        onIntent = { viewModel.processIntent(it) },
-        onWidgetSelected = onWidgetSelected,
-        onDismiss = onDismiss
+        params = WidgetSelectorScreenParams(
+            state = state,
+            hazeState = if (params.isBlurEnabled) params.hazeState else null,
+            onIntent = { viewModel.processIntent(it) },
+            onWidgetSelected = params.onWidgetSelected,
+            onDismiss = params.onDismiss
+        ),
+        modifier = modifier
     )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun WidgetSelectorScreen(
-    state: WidgetSelectorState,
-    hazeState: HazeState? = null,
-    onIntent: (WidgetSelectorIntent) -> Unit,
-    onWidgetSelected: (AppWidgetProviderInfo) -> Unit,
-    onDismiss: () -> Unit
+    params: WidgetSelectorScreenParams,
+    modifier: Modifier = Modifier
 ) {
+    val state = params.state
+    val onIntent = params.onIntent
+    val onWidgetSelected = params.onWidgetSelected
+    val onDismiss = params.onDismiss
+    val hazeState = params.hazeState
+
     val hazeModifier = if (hazeState != null) {
         Modifier.hazeEffect(
             state = hazeState,
@@ -90,39 +98,56 @@ fun WidgetSelectorScreen(
     }
 
     Box(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
             .then(hazeModifier)
             .background(backgroundColor)
             .clickable(
                 interactionSource = remember { MutableInteractionSource() },
                 indication = null,
+                role = Role.Button,
+                onClickLabel = "Dismiss",
                 onClick = onDismiss
             )
     ) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(top = 16.dp)
-                .clickable(enabled = false) {}
-        ) {
-            if (state.isLoading) {
-                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    CircularProgressIndicator()
-                }
-            } else if (state.widgetGroups.isEmpty() && state.searchQuery.isEmpty()) {
-                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    Text("Nenhum widget encontrado.", color = Color.White)
-                }
-            } else {
-                Box(modifier = Modifier.weight(1f)) {
-                    WidgetGroupList(
-                        state = state,
-                        onIntent = onIntent,
-                        onWidgetSelected = onWidgetSelected,
-                        onDismiss = onDismiss
-                    )
-                }
+        WidgetSelectorContent(
+            state = state,
+            onIntent = onIntent,
+            onWidgetSelected = onWidgetSelected,
+            onDismiss = onDismiss
+        )
+    }
+}
+
+@Composable
+private fun WidgetSelectorContent(
+    state: WidgetSelectorState,
+    onIntent: (WidgetSelectorIntent) -> Unit,
+    onWidgetSelected: (AppWidgetProviderInfo) -> Unit,
+    onDismiss: () -> Unit
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(top = AureoleDS.dimens.medium)
+            .clickable(enabled = false) {}
+    ) {
+        if (state.isLoading) {
+            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                CircularProgressIndicator()
+            }
+        } else if (state.widgetGroups.isEmpty() && state.searchQuery.isEmpty()) {
+            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                Text(stringResource(R.string.home_widget_picker_none_found), color = Color.White)
+            }
+        } else {
+            Box(modifier = Modifier.weight(1f)) {
+                WidgetGroupList(
+                    state = state,
+                    onIntent = onIntent,
+                    onWidgetSelected = onWidgetSelected,
+                    onDismiss = onDismiss
+                )
             }
         }
     }
@@ -130,7 +155,7 @@ fun WidgetSelectorScreen(
 
 @AureolePreview
 @Composable
-fun WidgetSelectorScreenPreview() {
+private fun WidgetSelectorScreenPreview() {
     val sampleWidgetGroup = WidgetAppGroup(
         appId = "com.example.calendar",
         appName = "Calendar",
@@ -158,10 +183,12 @@ fun WidgetSelectorScreenPreview() {
     AureoleLauncherTheme {
         CompositionLocalProvider(LocalHomeUiState provides MainUiState()) {
             WidgetSelectorScreen(
-                state = sampleState,
-                onIntent = {},
-                onWidgetSelected = {},
-                onDismiss = {}
+                params = WidgetSelectorScreenParams(
+                    state = sampleState,
+                    onIntent = {},
+                    onWidgetSelected = {},
+                    onDismiss = {}
+                )
             )
         }
     }

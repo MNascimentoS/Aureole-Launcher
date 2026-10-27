@@ -1,0 +1,122 @@
+package dev.mnascimentos.aureole.feature.home.components.favorites
+
+import android.content.ComponentName
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.junit4.v2.createComposeRule
+import androidx.compose.ui.test.onNodeWithText
+import dev.mnascimentos.aureole.composable.favorites.favoriteSectionItems
+import dev.mnascimentos.aureole.composable.favorites.model.FavoriteSectionParams
+import dev.mnascimentos.aureole.composable.favorites.remainingSectionItems
+import dev.mnascimentos.aureole.core.data.model.AppInfo
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
+import org.junit.Rule
+import org.junit.Test
+import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
+
+@RunWith(RobolectricTestRunner::class)
+class FavoriteAppsListTest {
+
+    @get:Rule
+    val composeTestRule = createComposeRule()
+
+    private fun createApp(label: String, pkg: String) = AppInfo(
+        label = label,
+        packageName = pkg,
+        componentName = ComponentName(pkg, "MainActivity"),
+        icon = ColorDrawable(Color.GREEN)
+    )
+
+    @Test
+    fun `when favoriteSectionItems is called with empty list and empty search, should display empty message`() {
+        val params = FavoriteSectionParams(
+            filteredFavorites = emptyList(),
+            searchQuery = "",
+            favoriteCount = 0
+        )
+
+        composeTestRule.setContent {
+            AureoleLauncherTheme {
+                LazyColumn {
+                    favoriteSectionItems(
+                        params = params,
+                        onMoveUp = {},
+                        onMoveDown = {},
+                        onToggleFavorite = {},
+                        onDeactivateAll = {}
+                    )
+                }
+            }
+        }
+
+        composeTestRule.onNodeWithText("Favorites (0)").assertIsDisplayed()
+        composeTestRule.onNodeWithText("No favorite app selected.").assertIsDisplayed()
+    }
+
+    @Test
+    fun `when favoriteSectionItems is called with empty list and search query, should display not found message`() {
+        val params = FavoriteSectionParams(
+            filteredFavorites = emptyList(),
+            searchQuery = "busca",
+            favoriteCount = 0
+        )
+
+        composeTestRule.setContent {
+            AureoleLauncherTheme {
+                LazyColumn {
+                    favoriteSectionItems(
+                        params = params,
+                        onMoveUp = {},
+                        onMoveDown = {},
+                        onToggleFavorite = {},
+                        onDeactivateAll = {}
+                    )
+                }
+            }
+        }
+
+        composeTestRule.onNodeWithText("No favorite found.").assertIsDisplayed()
+    }
+
+    @Test
+    fun `when remainingSectionItems is called with empty list and empty search, should display empty message`() {
+        composeTestRule.setContent {
+            AureoleLauncherTheme {
+                LazyColumn {
+                    remainingSectionItems(
+                        filteredRemaining = emptyList(),
+                        searchQuery = "",
+                        onToggleFavorite = {},
+                        onActivateAll = {}
+                    )
+                }
+            }
+        }
+
+        composeTestRule.onNodeWithText("Other Apps (0)").assertIsDisplayed()
+        composeTestRule.onNodeWithText("All apps are already in favorites.").assertIsDisplayed()
+    }
+
+    @Test
+    fun `when remainingSectionItems is called with items, should display items`() {
+        val app = createApp("Novo App", "com.example.novo")
+        composeTestRule.setContent {
+            AureoleLauncherTheme {
+                LazyColumn {
+                    remainingSectionItems(
+                        filteredRemaining = listOf(app),
+                        searchQuery = "",
+                        onToggleFavorite = {},
+                        onActivateAll = {}
+                    )
+                }
+            }
+        }
+
+        composeTestRule.onNodeWithText("Other Apps (1)").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Novo App").assertIsDisplayed()
+    }
+}

@@ -1,7 +1,6 @@
 package dev.mnascimentos.aureole.feature.home.components.widgets
 
 import android.graphics.drawable.Drawable
-import android.util.Log
 import android.view.InflateException
 import android.widget.ImageView
 import android.widget.RemoteViews
@@ -13,6 +12,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -31,15 +31,23 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.pluralStringResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import coil.compose.AsyncImage
+import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
+import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
+import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.FolderPopupMetrics
 import dev.mnascimentos.aureole.feature.home.components.widgets.model.WidgetAppGroup
 import dev.mnascimentos.aureole.feature.home.components.widgets.model.WidgetVariant
+import timber.log.Timber
 
 private const val TAG = "WidgetPickerAppListRow"
 private const val WIDGET_PREVIEW_ASPECT_RATIO = 1.2f
@@ -52,8 +60,17 @@ internal fun AppGroupHeader(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable(onClick = onClick)
-            .padding(start = 24.dp, end = 48.dp, top = 12.dp, bottom = 12.dp)
+            .defaultMinSize(minHeight = 48.dp)
+            .clickable(
+                role = Role.Button,
+                onClick = onClick
+            )
+            .padding(
+                start = AureoleDS.dimens.large,
+                end = AureoleDS.dimens.xxLarge + AureoleDS.dimens.xSmall,
+                top = AureoleDS.dimens.small,
+                bottom = AureoleDS.dimens.small
+            )
             .animateContentSize(),
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -61,17 +78,17 @@ internal fun AppGroupHeader(
             AsyncImage(
                 model = group.appIcon,
                 contentDescription = group.appName,
-                modifier = Modifier.size(42.dp)
+                modifier = Modifier.size(AureoleDS.dimens.xxLarge)
             )
         } else {
             Box(
                 modifier = Modifier
-                    .size(42.dp)
-                    .background(AureoleDS.colors.surfaceVariant, RoundedCornerShape(10.dp))
+                    .size(AureoleDS.dimens.xxLarge)
+                    .background(AureoleDS.colors.surfaceVariant, RoundedCornerShape(AureoleDS.dimens.radiusXSmall))
             )
         }
 
-        Spacer(modifier = Modifier.width(16.dp))
+        Spacer(modifier = Modifier.width(AureoleDS.dimens.medium))
 
         Column(modifier = Modifier.weight(1f)) {
             Text(
@@ -81,7 +98,11 @@ internal fun AppGroupHeader(
                 color = Color.White
             )
             Text(
-                text = "${group.availableWidgets.size} Widget${if (group.availableWidgets.size > 1) "s" else ""}",
+                text = pluralStringResource(
+                    R.plurals.home_widget_count,
+                    group.availableWidgets.size,
+                    group.availableWidgets.size
+                ),
                 style = AureoleDS.typography.bodySmall,
                 color = AureoleDS.colors.onSurfaceMedium
             )
@@ -97,24 +118,31 @@ internal fun WidgetPreviewCard(
 ) {
     Column(
         modifier = Modifier
-            .width(220.dp)
-            .background(AureoleDS.colors.surfaceVariant.copy(alpha = 0.6f), RoundedCornerShape(24.dp))
-            .clickable(onClick = onClick)
-            .padding(16.dp),
+            .width(FolderPopupMetrics.WidthMax)
+            .defaultMinSize(minWidth = 48.dp, minHeight = 48.dp)
+            .background(
+                AureoleDS.colors.surfaceVariant.copy(alpha = 0.6f),
+                RoundedCornerShape(AureoleDS.dimens.radiusLarge)
+            )
+            .clickable(
+                role = Role.Button,
+                onClick = onClick
+            )
+            .padding(AureoleDS.dimens.medium),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Box(
             modifier = Modifier
                 .fillMaxWidth()
                 .aspectRatio(WIDGET_PREVIEW_ASPECT_RATIO)
-                .clip(RoundedCornerShape(16.dp))
+                .clip(RoundedCornerShape(AureoleDS.dimens.radiusMedium))
                 .background(AureoleDS.colors.surface.copy(alpha = 0.5f)),
             contentAlignment = Alignment.Center
         ) {
             WidgetPreviewContent(widget = widget, fallbackAppIcon = fallbackAppIcon)
         }
 
-        Spacer(modifier = Modifier.height(12.dp))
+        Spacer(modifier = Modifier.height(AureoleDS.dimens.small))
 
         Text(
             text = widget.title,
@@ -126,7 +154,7 @@ internal fun WidgetPreviewCard(
             overflow = TextOverflow.Ellipsis
         )
         Text(
-            text = "About the widget here",
+            text = stringResource(R.string.home_widgets_about_placeholder),
             style = AureoleDS.typography.bodyMedium,
             color = AureoleDS.colors.onSurfaceMedium,
             textAlign = TextAlign.Center,
@@ -149,7 +177,7 @@ private fun WidgetPreviewContent(
             contentDescription = widget.title,
             contentScale = ContentScale.Fit,
             modifier = Modifier
-                .padding(8.dp)
+                .padding(AureoleDS.dimens.xSmall)
                 .fillMaxSize()
         )
     } else if (widget.previewLayoutRes != 0 && !previewFailed && widget.providerInfo != null) {
@@ -163,17 +191,17 @@ private fun WidgetPreviewContent(
                     )
                     rv.apply(ctx, null)
                 } catch (e: InflateException) {
-                    Log.e(TAG, "Failed to inflate previewLayout for ${widget.title}", e)
+                    Timber.tag(TAG).e(e, "Failed to inflate previewLayout for ${widget.title}")
                     previewFailed = true
                     ImageView(ctx).apply { if (fallbackAppIcon != null) setImageDrawable(fallbackAppIcon) }
                 } catch (e: IllegalArgumentException) {
-                    Log.e(TAG, "Invalid previewLayout for ${widget.title}", e)
+                    Timber.tag(TAG).e(e, "Invalid previewLayout for ${widget.title}")
                     previewFailed = true
                     ImageView(ctx).apply { if (fallbackAppIcon != null) setImageDrawable(fallbackAppIcon) }
                 }
             },
             modifier = Modifier
-                .padding(8.dp)
+                .padding(AureoleDS.dimens.xSmall)
                 .fillMaxSize()
         )
     } else if (fallbackAppIcon != null) {
@@ -182,16 +210,40 @@ private fun WidgetPreviewContent(
             contentDescription = widget.title,
             contentScale = ContentScale.Fit,
             modifier = Modifier
-                .padding(16.dp)
+                .padding(AureoleDS.dimens.medium)
                 .fillMaxSize()
         )
     } else {
         Text(
-            text = "Widget",
+            text = stringResource(R.string.home_widgets_default_title),
             style = AureoleDS.typography.titleLarge,
             fontWeight = FontWeight.Bold,
             color = Color.White,
             textAlign = TextAlign.Center
         )
+    }
+}
+
+@AureolePreview
+@Composable
+private fun WidgetPickerAppListRowPreview() {
+    val sampleGroup = WidgetAppGroup(
+        appId = "com.example.clock",
+        appName = "Relógio",
+        availableWidgets = listOf(
+            WidgetVariant(widgetId = "clock_1", title = "Relógio Analógico"),
+            WidgetVariant(widgetId = "clock_2", title = "Relógio Digital")
+        )
+    )
+    AureoleLauncherTheme {
+        Column {
+            AppGroupHeader(group = sampleGroup, onClick = {})
+            Spacer(modifier = Modifier.height(AureoleDS.dimens.xSmall))
+            WidgetPreviewCard(
+                widget = WidgetVariant(widgetId = "clock_1", title = "Relógio Analógico"),
+                fallbackAppIcon = null,
+                onClick = {}
+            )
+        }
     }
 }

@@ -1,12 +1,12 @@
 package dev.mnascimentos.aureole.core.data.repository
 
 import android.content.Context
-import android.util.Log
 import androidx.core.content.edit
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import dev.mnascimentos.aureole.core.data.model.LauncherItemState
 import dev.mnascimentos.aureole.feature.home.grid.GridDefaults
+import timber.log.Timber
 import java.util.UUID
 
 private const val TAG = "GridRepository"
@@ -17,7 +17,7 @@ class GridRepository(private val context: Context) {
     private val prefs
         get() = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
 
-    @Suppress("TooGenericExceptionCaught")
+    @Suppress("TooGenericExceptionCaught") // Catching generic exceptions for SharedPreferences parsing
     fun getGridItems(isLandscape: Boolean = false): List<LauncherItemState> {
         val key = if (isLandscape) KEY_LANDSCAPE_GRID_ITEMS else KEY_PORTRAIT_GRID_ITEMS
         var json = prefs.getString(key, null)
@@ -37,7 +37,7 @@ class GridRepository(private val context: Context) {
                     .ifEmpty { GridDefaults.getDefaultGridItems(isLandscape) }
             }
         } catch (e: Exception) {
-            Log.w(TAG, "Failed to parse or sanitize grid items JSON", e)
+            Timber.tag(TAG).w(e, "Failed to parse or sanitize grid items JSON")
             GridDefaults.getDefaultGridItems(isLandscape)
         }
     }

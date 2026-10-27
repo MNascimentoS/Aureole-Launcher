@@ -20,6 +20,20 @@
 # Remove debug and verbose logs (Log.d and Log.v) in release builds
 -assumenosideeffects class android.util.Log {
     public static boolean isLoggable(java.lang.String, int);
-    public static int v(...);
-    public static int d(...);
+    public static *** v(...);
+    public static *** d(...);
+}
+
+# Remove Timber debug and verbose logs in release builds
+-assumenosideeffects class timber.log.Timber {
+    public static *** v(...);
+    public static *** d(...);
+}
+-assumenosideeffects class timber.log.Timber$Forest {
+    public *** v(...);
+    public *** d(...);
+}
+-assumenosideeffects class timber.log.Timber$Tree {
+    public *** v(...);
+    public *** d(...);
 }

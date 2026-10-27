@@ -4,6 +4,7 @@ import androidx.compose.material3.Text
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.v2.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
+import dev.mnascimentos.aureole.core.designsystem.model.AureolePopupHeaderParams
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import org.junit.Rule
 import org.junit.Test
@@ -51,8 +52,10 @@ class AureolePopupTest {
             AureoleLauncherTheme {
                 AureolePopupHeader(
                     title = "Popup Title",
-                    sessionTitle = "Session Subtitle",
-                    showAureoleLogo = true
+                    params = AureolePopupHeaderParams(
+                        sessionTitle = "Session Subtitle",
+                        showAureoleLogo = true
+                    )
                 )
             }
         }
@@ -75,7 +78,18 @@ class AureolePopupTest {
     @Test
     fun `when rendering preview, should display complete popup box`() {
         composeTestRule.setContent {
-            AureolePopupBoxPreview()
+            AureoleLauncherTheme {
+                AureolePopupBox {
+                    AureolePopupHeader(
+                        title = "Folder Name",
+                        params = AureolePopupHeaderParams(
+                            sessionTitle = "Session Subtitle"
+                        )
+                    )
+                    AureolePopupMenuSection(title = "Section Header")
+                    Text("Popup Body Content")
+                }
+            }
         }
 
         composeTestRule.onNodeWithText("Folder Name").assertIsDisplayed()
@@ -102,9 +116,11 @@ class AureolePopupTest {
             AureoleLauncherTheme {
                 AureolePopupHeader(
                     title = "Custom Icon Header",
-                    showAureoleLogo = false,
-                    onSettingsClick = {},
-                    customIcon = { Text("CustomIcon") }
+                    params = AureolePopupHeaderParams(
+                        showAureoleLogo = false,
+                        onSettingsClick = {},
+                        customIcon = { Text("CustomIcon") }
+                    )
                 )
             }
         }
@@ -118,9 +134,11 @@ class AureolePopupTest {
             AureoleLauncherTheme {
                 AureolePopupHeader(
                     title = "Vector Icon Header",
-                    showAureoleLogo = false,
-                    onCloseClick = {},
-                    iconVector = { Text("VectorIcon") }
+                    params = AureolePopupHeaderParams(
+                        showAureoleLogo = false,
+                        onCloseClick = {},
+                        customIcon = { Text("VectorIcon") }
+                    )
                 )
             }
         }
@@ -134,7 +152,9 @@ class AureolePopupTest {
             AureoleLauncherTheme {
                 AureolePopupHeader(
                     title = "No Clicks Header",
-                    showAureoleLogo = false
+                    params = AureolePopupHeaderParams(
+                        showAureoleLogo = false
+                    )
                 )
             }
         }
@@ -147,9 +167,11 @@ class AureolePopupTest {
             AureoleLauncherTheme {
                 AureolePopupHeader(
                     title = "Settings Vector Header",
-                    showAureoleLogo = false,
-                    onSettingsClick = {},
-                    iconVector = { Text("VectorIcon2") }
+                    params = AureolePopupHeaderParams(
+                        showAureoleLogo = false,
+                        onSettingsClick = {},
+                        customIcon = { Text("VectorIcon2") }
+                    )
                 )
             }
         }

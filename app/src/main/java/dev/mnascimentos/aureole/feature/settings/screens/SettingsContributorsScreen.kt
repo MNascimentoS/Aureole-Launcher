@@ -1,5 +1,6 @@
 package dev.mnascimentos.aureole.feature.settings.screens
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -13,18 +14,25 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.res.stringResource
+import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.composable.SettingsHugeTitle
 import dev.mnascimentos.aureole.composable.SettingsMenuItem
+import dev.mnascimentos.aureole.composable.SettingsMenuParams
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
+import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsContributorsScreen(
-    @Suppress("UNUSED_PARAMETER") // Parameter reserved for navigation contract
-    onNavigateBack: () -> Unit
+    onNavigateBack: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
+    BackHandler(onBack = onNavigateBack)
+
     Scaffold(
+        modifier = modifier,
         containerColor = AureoleDS.colors.surface
     ) { innerPadding ->
         Column(
@@ -32,32 +40,46 @@ fun SettingsContributorsScreen(
                 .fillMaxSize()
                 .statusBarsPadding()
                 .padding(innerPadding)
-                .padding(horizontal = 24.dp, vertical = 16.dp)
+                .padding(horizontal = AureoleDS.dimens.large, vertical = AureoleDS.dimens.medium)
         ) {
-            SettingsHugeTitle(text = "Contributors")
+            SettingsHugeTitle(text = stringResource(R.string.settings_contributors_title))
 
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(AureoleDS.dimens.large))
 
             LazyColumn(
-                verticalArrangement = Arrangement.spacedBy(16.dp),
-                contentPadding = PaddingValues(bottom = 80.dp)
+                verticalArrangement = Arrangement.spacedBy(AureoleDS.dimens.medium),
+                contentPadding = PaddingValues(bottom = AureoleDS.dimens.xxLarge * 2)
             ) {
                 item {
                     SettingsMenuItem(
-                        title = "Name",
-                        subtitle = "Something something",
-                        onClick = {}
+                        SettingsMenuParams(
+                            title = stringResource(R.string.settings_contributors_name),
+                            subtitle = stringResource(R.string.settings_contributors_subtitle),
+                            onClick = {}
+                        )
                     )
                 }
 
                 item {
                     SettingsMenuItem(
-                        title = "Name",
-                        subtitle = "Something something",
-                        onClick = {}
+                        SettingsMenuParams(
+                            title = stringResource(R.string.settings_contributors_name),
+                            subtitle = stringResource(R.string.settings_contributors_subtitle),
+                            onClick = {}
+                        )
                     )
                 }
             }
         }
+    }
+}
+
+@AureolePreview
+@Composable
+private fun SettingsContributorsScreenPreview() {
+    AureoleLauncherTheme {
+        SettingsContributorsScreen(
+            onNavigateBack = {}
+        )
     }
 }

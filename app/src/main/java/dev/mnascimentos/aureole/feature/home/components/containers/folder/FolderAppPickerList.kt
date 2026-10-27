@@ -21,53 +21,55 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
+import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.core.data.model.AppFolder
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
+import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
 import dev.mnascimentos.aureole.core.designsystem.icons.Search
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.FolderAppRowItemParams
+import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.SelectedFolderAppSectionParams
 
-@Suppress("LongParameterList") // Folder app selection section requires state filters and list action callbacks
 @OptIn(ExperimentalFoundationApi::class)
 internal fun LazyListScope.selectedFolderAppSection(
-    filteredSelected: List<AppInfo>,
-    searchQuery: String,
-    totalSelectedCount: Int,
-    onMoveUp: (Int) -> Unit,
-    onMoveDown: (Int) -> Unit,
-    onToggleSelect: (String) -> Unit
+    params: SelectedFolderAppSectionParams
 ) {
+    val filteredSelected = params.filteredSelected
+    val searchQuery = params.searchQuery
+    val totalSelectedCount = params.totalSelectedCount
+    val onMoveUp = params.onMoveUp
+    val onMoveDown = params.onMoveDown
+    val onToggleSelect = params.onToggleSelect
+
     item {
         AureoleText(
-            text = "Selecionados ($totalSelectedCount)",
-            style = AureoleDS.typography.titleSmall,
-            fontWeight = FontWeight.Bold,
+            text = stringResource(R.string.home_folder_selected_apps_count, totalSelectedCount),
             color = AureoleDS.colors.onSurfaceHigh,
-            modifier = Modifier.padding(vertical = 4.dp)
+            modifier = Modifier.padding(vertical = AureoleDS.dimens.xxSmall),
+            format = AureoleTextFormatParams(style = AureoleDS.typography.titleSmall, fontWeight = FontWeight.Bold)
         )
     }
 
     if (filteredSelected.isEmpty()) {
         item {
             val emptyText = if (searchQuery.isBlank()) {
-                "Nenhum aplicativo na pasta."
+                stringResource(R.string.home_folder_no_apps_in_folder)
             } else {
-                "Nenhum aplicativo encontrado."
+                stringResource(R.string.core_common_no_apps_found)
             }
             AureoleText(
                 text = emptyText,
-                style = AureoleDS.typography.bodyMedium,
                 color = AureoleDS.colors.onSurfaceMedium,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(vertical = 12.dp),
-                textAlign = TextAlign.Center
+                    .padding(vertical = AureoleDS.dimens.small),
+                format = AureoleTextFormatParams(style = AureoleDS.typography.bodyMedium, textAlign = TextAlign.Center)
             )
         }
     } else {
@@ -99,31 +101,29 @@ internal fun LazyListScope.remainingFolderAppSection(
     onToggleSelect: (String) -> Unit
 ) {
     item {
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(AureoleDS.dimens.xSmall))
         AureoleText(
-            text = "Outros Aplicativos (${filteredRemaining.size})",
-            style = AureoleDS.typography.titleSmall,
-            fontWeight = FontWeight.Bold,
+            text = stringResource(R.string.home_folder_other_apps_count, filteredRemaining.size),
             color = AureoleDS.colors.onSurfaceMedium,
-            modifier = Modifier.padding(vertical = 4.dp)
+            modifier = Modifier.padding(vertical = AureoleDS.dimens.xxSmall),
+            format = AureoleTextFormatParams(style = AureoleDS.typography.titleSmall, fontWeight = FontWeight.Bold)
         )
     }
 
     if (filteredRemaining.isEmpty()) {
         item {
             val emptyText = if (searchQuery.isBlank()) {
-                "Todos os aplicativos já foram adicionados."
+                stringResource(dev.mnascimentos.aureole.R.string.home_folder_all_apps_added)
             } else {
-                "Nenhum outro aplicativo encontrado."
+                stringResource(R.string.core_common_no_apps_found)
             }
             AureoleText(
                 text = emptyText,
-                style = AureoleDS.typography.bodyMedium,
                 color = AureoleDS.colors.onSurfaceMedium,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(vertical = 12.dp),
-                textAlign = TextAlign.Center
+                    .padding(vertical = AureoleDS.dimens.small),
+                format = AureoleTextFormatParams(style = AureoleDS.typography.bodyMedium, textAlign = TextAlign.Center)
             )
         }
     } else {
@@ -153,9 +153,9 @@ internal fun SelectedFolderAppRow(
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(12.dp))
+            .clip(RoundedCornerShape(AureoleDS.dimens.radiusSmall))
             .background(AureoleDS.colors.surfaceVariant.copy(alpha = 0.5f))
-            .padding(horizontal = 12.dp, vertical = 6.dp),
+            .padding(horizontal = AureoleDS.dimens.small, vertical = AureoleDS.dimens.xSmall),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
@@ -167,15 +167,17 @@ internal fun SelectedFolderAppRow(
                 bitmap = iconBitmap,
                 contentDescription = params.app.label,
                 modifier = Modifier
-                    .size(32.dp)
-                    .clip(RoundedCornerShape(8.dp))
+                    .size(AureoleDS.dimens.xLarge)
+                    .clip(RoundedCornerShape(AureoleDS.dimens.radiusXSmall))
             )
-            Spacer(modifier = Modifier.width(8.dp))
+            Spacer(modifier = Modifier.width(AureoleDS.dimens.xSmall))
             AureoleText(
                 text = params.app.label,
-                style = AureoleDS.typography.bodyMedium,
-                fontWeight = FontWeight.SemiBold,
-                color = AureoleDS.colors.onSurfaceHigh
+                color = AureoleDS.colors.onSurfaceHigh,
+                format = AureoleTextFormatParams(
+                    style = AureoleDS.typography.bodyMedium,
+                    fontWeight = FontWeight.SemiBold
+                )
             )
         }
 
@@ -196,7 +198,12 @@ internal fun FolderAppPickerSearchInput(
     OutlinedTextField(
         value = query,
         onValueChange = onQueryChange,
-        placeholder = { AureoleText("Buscar aplicativo...", color = AureoleDS.colors.onSurfaceLow) },
+        placeholder = {
+            AureoleText(
+                stringResource(dev.mnascimentos.aureole.R.string.core_common_search_app_placeholder),
+                color = AureoleDS.colors.onSurfaceLow
+            )
+        },
         leadingIcon = {
             AureoleDS.icons.Search(
                 tint = AureoleDS.colors.onSurfaceMedium
@@ -215,7 +222,7 @@ internal fun FolderAppPickerSearchInput(
 
 @AureolePreview
 @Composable
-fun FolderAppPickerDialogPreview() {
+private fun FolderAppPickerDialogPreview() {
     val mockFolder = AppFolder(id = "1", name = "Social")
     AureoleLauncherTheme {
         FolderAppPickerDialog(

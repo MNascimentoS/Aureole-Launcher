@@ -1,16 +1,17 @@
 package dev.mnascimentos.aureole.feature.home.components.containers.folder.model
 
+import androidx.compose.ui.unit.dp
 import dev.chrisbanes.haze.HazeState
 import dev.mnascimentos.aureole.core.data.model.AppFolder
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
 
-data class FolderFormConfig(
-    val initialName: String,
-    val initialIcon: String?,
-    val isEditing: Boolean,
-    val submitText: String
-)
+object FolderPopupMetrics {
+    val HazeBlurRadius = 20.dp
+    val WidthMin = 180.dp
+    val WidthMax = 210.dp
+    val HeightMax = 400.dp
+}
 
 data class FolderAppRowItemParams(
     val app: AppInfo,
@@ -23,6 +24,15 @@ data class FolderSectionParams(
     val filteredSelected: List<AppInfo>,
     val searchQuery: String,
     val totalSelectedCount: Int
+)
+
+data class SelectedFolderAppSectionParams(
+    val filteredSelected: List<AppInfo>,
+    val searchQuery: String,
+    val totalSelectedCount: Int,
+    val onMoveUp: (Int) -> Unit,
+    val onMoveDown: (Int) -> Unit,
+    val onToggleSelect: (String) -> Unit
 )
 
 data class FolderAppPickerBodyParams(

@@ -7,17 +7,25 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.net.Uri
 import android.os.Build
-import android.util.Log
+import androidx.annotation.VisibleForTesting
 import androidx.core.content.edit
+import androidx.core.net.toUri
 import dev.mnascimentos.aureole.core.data.db.AppDatabase
 import dev.mnascimentos.aureole.core.designsystem.utils.HazeUtils
+import timber.log.Timber
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
 
 class SettingsRepository(private val context: Context) {
+
+    /**
+     * Ends the app process after a factory reset. Unit tests replace it so the reset
+     * does not terminate the test JVM.
+     */
+    @VisibleForTesting
+    internal var terminateProcess: () -> Unit = { Runtime.getRuntime().exit(0) }
 
     var isLeftHandedMode: Boolean
         get() = prefs.getBoolean(KEY_LEFT_HANDED_MODE, false)
@@ -223,10 +231,10 @@ class SettingsRepository(private val context: Context) {
         }
     }
 
-    @Suppress("ReturnCount", "TooGenericExceptionCaught")
+    @Suppress("ReturnCount", "TooGenericExceptionCaught") // Catching generic exceptions for file read/write operations
     fun saveCustomWallpaper(uriString: String): Boolean {
         return try {
-            val uri = Uri.parse(uriString)
+            val uri = uriString.toUri()
             val inputStream = context.contentResolver.openInputStream(uri) ?: return false
             val bitmap = inputStream.use { BitmapFactory.decodeStream(it) } ?: return false
             val file = File(context.filesDir, "custom_wallpaper.jpg")
@@ -237,7 +245,7 @@ class SettingsRepository(private val context: Context) {
             isCustomWallpaperSet = true
             true
         } catch (e: Exception) {
-            Log.w(TAG, "Error in saveCustomWallpaper", e)
+            Timber.tag(TAG).w(e, "Error in saveCustomWallpaper")
             false
         }
     }
@@ -259,9 +267,9 @@ class SettingsRepository(private val context: Context) {
             val wallpaperManager = WallpaperManager.getInstance(context)
             wallpaperManager.clear()
         } catch (e: IOException) {
-            Log.w(TAG, "IOException clearing wallpaper", e)
+            Timber.tag(TAG).w(e, "IOException clearing wallpaper")
         } catch (e: SecurityException) {
-            Log.w(TAG, "SecurityException clearing wallpaper", e)
+            Timber.tag(TAG).w(e, "SecurityException clearing wallpaper")
         }
     }
 
@@ -271,7 +279,7 @@ class SettingsRepository(private val context: Context) {
             try {
                 AppDatabase.getInstance(context).clearAllTables()
             } catch (e: Exception) {
-                Log.w(TAG, "Error clearing Room database", e)
+                Timber.tag(TAG).w(e, "Error clearing Room database")
             }
             context.deleteDatabase("aureole_app_database.db")
             context.deleteDatabase("aureole_folders.db")
@@ -282,13 +290,13 @@ class SettingsRepository(private val context: Context) {
                 "aureole_widget_prefs",
                 "${context.packageName}_preferences"
             ).forEach { prefName ->
-                context.getSharedPreferences(prefName, Context.MODE_PRIVATE).edit().clear().commit()
+                context.getSharedPreferences(prefName, Context.MODE_PRIVATE).edit(commit = true) { clear() }
             }
 
             context.cacheDir.deleteRecursively()
             File(context.filesDir, "custom_wallpaper.jpg").delete()
         } catch (e: Exception) {
-            Log.w(TAG, "Error performing factory reset", e)
+            Timber.tag(TAG).w(e, "Error performing factory reset")
         }
 
         val intent = context.packageManager.getLaunchIntentForPackage(context.packageName)?.apply {
@@ -299,7 +307,7 @@ class SettingsRepository(private val context: Context) {
         if (intent != null) {
             context.startActivity(intent)
         }
-        Runtime.getRuntime().exit(0)
+        terminateProcess()
     }
 
     private val prefs
