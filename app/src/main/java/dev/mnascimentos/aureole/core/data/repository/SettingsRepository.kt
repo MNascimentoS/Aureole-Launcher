@@ -217,6 +217,8 @@ class SettingsRepository(private val context: Context) {
         get() = prefs.getInt(KEY_LAST_SEEN_VERSION_CODE, 0)
         set(value) = prefs.edit { putInt(KEY_LAST_SEEN_VERSION_CODE, value) }
 
+    val onboarding: OnboardingPreferences by lazy { OnboardingPreferences { prefs } }
+
     fun clearCustomWallpaper() {
         val path = customWallpaperPath
         if (!path.isNullOrEmpty()) {
