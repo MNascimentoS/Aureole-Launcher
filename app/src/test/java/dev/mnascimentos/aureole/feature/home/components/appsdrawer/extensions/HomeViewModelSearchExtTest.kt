@@ -201,6 +201,7 @@ class HomeViewModelSearchExtTest {
         assertEquals("Alpha", viewModel.uiState.value.searchQuery)
 
         testDispatcher.scheduler.advanceTimeBy(350)
+        testDispatcher.scheduler.runCurrent()
         ShadowLooper.idleMainLooper()
 
         val state = viewModel.uiState.value
