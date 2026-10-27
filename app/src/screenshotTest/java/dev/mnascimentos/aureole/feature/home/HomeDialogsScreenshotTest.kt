@@ -3,6 +3,12 @@ package dev.mnascimentos.aureole.feature.home
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import com.android.tools.screenshot.PreviewTest
+import dev.mnascimentos.aureole.composable.dialogs.CreateFolderDialog
+import dev.mnascimentos.aureole.composable.dialogs.FolderFormDialog
+import dev.mnascimentos.aureole.composable.favorites.FavoriteAppsDialog
+import dev.mnascimentos.aureole.composable.favorites.model.FavoriteAppsDialogActions
+import dev.mnascimentos.aureole.composable.favorites.model.FavoriteAppsDialogConfig
+import dev.mnascimentos.aureole.composable.sheets.ReleaseNotesBottomSheet
 import dev.mnascimentos.aureole.core.data.model.AppFolder
 import dev.mnascimentos.aureole.core.data.model.ContainerItemEntity
 import dev.mnascimentos.aureole.core.data.model.ContainerItemType
@@ -16,23 +22,15 @@ import dev.mnascimentos.aureole.core.data.model.ReleaseNoteVersion
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.components.clock.EditClockBottomSheet
-import dev.mnascimentos.aureole.feature.home.model.LocalHomeActions
-import dev.mnascimentos.aureole.feature.home.model.LocalHomeUiState
 import dev.mnascimentos.aureole.feature.home.components.containers.EditContainerScreen
-import dev.mnascimentos.aureole.feature.home.components.containers.model.EditContainerScreenParams
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.ContainerFolderBottomSheet
-import dev.mnascimentos.aureole.feature.home.components.containers.folder.CreateFolderDialog
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.EditFolderDialog
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.FolderAppPickerDialog
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.FolderDialog
-import dev.mnascimentos.aureole.feature.home.components.containers.folder.FolderFormDialog
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.FolderMiniGridPreview
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.ContainerFolderBottomSheetParams
-import dev.mnascimentos.aureole.feature.home.components.favorites.FavoriteAppsDialog
-import dev.mnascimentos.aureole.feature.home.components.favorites.model.FavoriteAppsDialogActions
-import dev.mnascimentos.aureole.feature.home.components.favorites.model.FavoriteAppsDialogConfig
+import dev.mnascimentos.aureole.feature.home.components.containers.model.EditContainerScreenParams
 import dev.mnascimentos.aureole.feature.home.components.overlays.CustomizeBottomSheet
-import dev.mnascimentos.aureole.feature.home.components.overlays.ReleaseNotesBottomSheet
 import dev.mnascimentos.aureole.feature.home.components.overlays.StandardUpdateAlertDialog
 import dev.mnascimentos.aureole.feature.home.components.overlays.UpdateAvailableDialog
 import dev.mnascimentos.aureole.feature.home.components.overlays.UpdateDownloadedDialog
@@ -49,6 +47,8 @@ import dev.mnascimentos.aureole.feature.home.components.widgets.model.WidgetStac
 import dev.mnascimentos.aureole.feature.home.components.widgets.model.WidgetVariant
 import dev.mnascimentos.aureole.feature.home.grid.AddContainerDialog
 import dev.mnascimentos.aureole.feature.home.grid.EditGridItemDialog
+import dev.mnascimentos.aureole.feature.home.model.LocalHomeActions
+import dev.mnascimentos.aureole.feature.home.model.LocalHomeUiState
 
 @PreviewTest
 @AureolePreview

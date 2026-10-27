@@ -1,8 +1,11 @@
 package dev.mnascimentos.aureole.feature.home.grid
 
+import android.content.Context
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
+import androidx.test.core.app.ApplicationProvider
+import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.core.data.model.LauncherItemState
 import dev.mnascimentos.aureole.core.data.model.LauncherItemType
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
@@ -42,6 +45,7 @@ class EditContainerDialogComponentsTest {
 
     @Test
     fun `when rendering children list section empty, should show empty message`() {
+        val context = ApplicationProvider.getApplicationContext<Context>()
         val item = LauncherItemState(id = "c1", type = LauncherItemType.SCROLL_VIEW)
 
         composeTestRule.setContent {
@@ -54,11 +58,12 @@ class EditContainerDialogComponentsTest {
             }
         }
 
-        composeTestRule.onNodeWithText("Nenhum componente adicionado ainda.").assertExists()
+        composeTestRule.onNodeWithText(context.getString(R.string.home_container_edit_none_added)).assertExists()
     }
 
     @Test
     fun `when rendering orientation selector, should trigger onUpdateScrollViewOrientation`() {
+        val context = ApplicationProvider.getApplicationContext<Context>()
         var actionTriggered = false
         val item = LauncherItemState(id = "sv", type = LauncherItemType.SCROLL_VIEW)
 
@@ -88,7 +93,7 @@ class EditContainerDialogComponentsTest {
             }
         }
 
-        composeTestRule.onNodeWithText("Horizontal").performClick()
+        composeTestRule.onNodeWithText(context.getString(R.string.home_container_edit_horizontal)).performClick()
         assertTrue(actionTriggered)
     }
 }

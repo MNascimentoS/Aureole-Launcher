@@ -161,7 +161,7 @@ internal fun OverlaySheetBody(
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = AureoleDS.dimens.large, vertical = AureoleDS.dimens.large)
+            .padding(horizontal = AureoleDS.dimens.xxSmall, vertical = AureoleDS.dimens.xxSmall)
     ) {
         if (title != null) {
             OverlaySheetHeader(
@@ -174,6 +174,7 @@ internal fun OverlaySheetBody(
         if (sheetContent != null) {
             Column(
                 modifier = Modifier
+                    .padding(horizontal = AureoleDS.dimens.small)
                     .weight(1f, fill = false)
                     .fillMaxWidth()
             ) {
@@ -182,8 +183,14 @@ internal fun OverlaySheetBody(
         }
 
         if (bottomBarContent != null) {
-            Spacer(modifier = Modifier.height(AureoleDS.dimens.small))
-            bottomBarContent()
+            Spacer(
+                modifier = Modifier
+                    .height(AureoleDS.dimens.small)
+                    .padding(horizontal = AureoleDS.dimens.small)
+            )
+            Column(modifier = Modifier.padding(horizontal = AureoleDS.dimens.small)) {
+                bottomBarContent()
+            }
         }
     }
 }
@@ -198,7 +205,7 @@ private fun OverlaySheetHeader(
         modifier = Modifier
             .fillMaxWidth()
             .padding(bottom = AureoleDS.dimens.medium),
-        contentAlignment = Alignment.Center
+        contentAlignment = Alignment.BottomCenter
     ) {
         Text(
             text = title,
@@ -211,7 +218,7 @@ private fun OverlaySheetHeader(
         if (onSettingsClick != null || headerIcon != null) {
             Box(
                 modifier = Modifier
-                    .align(Alignment.CenterEnd)
+                    .align(Alignment.TopEnd)
                     .size(AureoleDS.dimens.iconXLarge)
                     .clip(RoundedCornerShape(AureoleDS.dimens.radiusMedium))
                     .clickable(

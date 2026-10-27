@@ -29,7 +29,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
-import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.data.model.ContainerModel
@@ -43,16 +42,12 @@ import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.components.containers.model.ContainerConfig
+import dev.mnascimentos.aureole.feature.home.components.containers.model.ContainerPreviewMetrics
 import dev.mnascimentos.aureole.feature.home.components.containers.model.EditContainerScreenMode
 import dev.mnascimentos.aureole.feature.home.components.containers.model.EditContainerScreenParams
 import dev.mnascimentos.aureole.feature.home.model.LocalHomeActions
 import dev.mnascimentos.aureole.feature.home.model.LocalHomeUiState
 import kotlinx.coroutines.delay
-
-private object ContainerPreviewMetrics {
-    val MinSize = 60.dp
-    val MaxSize = 120.dp
-}
 
 private const val ANIMATION_DURATION_MS = 300
 
@@ -118,10 +113,10 @@ fun EditContainerScreen(
         }
 
         val titleText = when (currentMode) {
-            EditContainerScreenMode.MAIN -> stringResource(R.string.edit_container_title)
-            EditContainerScreenMode.APPEARANCE -> stringResource(R.string.edit_container_appearance)
-            EditContainerScreenMode.BEHAVIOR -> stringResource(R.string.edit_container_behavior)
-            EditContainerScreenMode.MANAGE_ITEMS -> stringResource(R.string.edit_container_manage_items)
+            EditContainerScreenMode.MAIN -> stringResource(R.string.home_container_edit_title)
+            EditContainerScreenMode.APPEARANCE -> stringResource(R.string.home_container_edit_appearance)
+            EditContainerScreenMode.BEHAVIOR -> stringResource(R.string.home_container_edit_behavior)
+            EditContainerScreenMode.MANAGE_ITEMS -> stringResource(R.string.home_container_edit_manage_items)
         }
 
         val homeActions = LocalHomeActions.current
@@ -213,7 +208,7 @@ internal fun MainSettingsContent(
 ) {
     Column(modifier = modifier) {
         MainSettingsNavigationRow(
-            title = stringResource(R.string.edit_container_appearance),
+            title = stringResource(R.string.home_container_edit_appearance),
             onClick = onAppearanceClick,
             icon = {
                 AureoleDS.icons.ColorFill(
@@ -224,7 +219,7 @@ internal fun MainSettingsContent(
         )
 
         MainSettingsNavigationRow(
-            title = stringResource(R.string.edit_container_behavior),
+            title = stringResource(R.string.home_container_edit_behavior),
             onClick = onBehaviorClick,
             icon = {
                 AureoleDS.icons.Click(
@@ -235,7 +230,7 @@ internal fun MainSettingsContent(
         )
 
         MainSettingsNavigationRow(
-            title = stringResource(R.string.edit_container_manage_items),
+            title = stringResource(R.string.home_container_edit_manage_items),
             onClick = onManageItemsClick,
             icon = {
                 AureoleDS.icons.DragMenu(
@@ -250,7 +245,7 @@ internal fun MainSettingsContent(
             onClick = onSave,
             modifier = Modifier.fillMaxWidth()
         ) {
-            Text(stringResource(R.string.edit_container_save))
+            Text(stringResource(R.string.home_container_edit_save))
         }
     }
 }
@@ -291,7 +286,10 @@ internal fun AppearanceSettingsContent(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(stringResource(R.string.edit_container_expand_cells), color = AureoleDS.colors.onSurfaceMedium)
+                Text(
+                    stringResource(R.string.home_container_edit_expand_cells),
+                    color = AureoleDS.colors.onSurfaceMedium
+                )
                 Switch(checked = state.isExpandCell, onCheckedChange = { state.isExpandCell = it })
             }
             Row(
@@ -299,7 +297,10 @@ internal fun AppearanceSettingsContent(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(stringResource(R.string.edit_container_grid_folders), color = AureoleDS.colors.onSurfaceMedium)
+                Text(
+                    stringResource(R.string.home_container_edit_grid_folders),
+                    color = AureoleDS.colors.onSurfaceMedium
+                )
                 Switch(checked = state.isGridFolderEnabled, onCheckedChange = { state.isGridFolderEnabled = it })
             }
         } else {
@@ -312,7 +313,7 @@ internal fun AppearanceSettingsContent(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(stringResource(R.string.edit_container_bg_enabled), color = AureoleDS.colors.onSurfaceMedium)
+                Text(stringResource(R.string.home_container_edit_bg_enabled), color = AureoleDS.colors.onSurfaceMedium)
                 Switch(checked = state.isBackgroundEnabled, onCheckedChange = { state.isBackgroundEnabled = it })
             }
             Row(
@@ -321,7 +322,7 @@ internal fun AppearanceSettingsContent(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    stringResource(R.string.edit_container_show_folder_labels),
+                    stringResource(R.string.home_container_edit_show_folder_labels),
                     color = AureoleDS.colors.onSurfaceMedium
                 )
                 Switch(checked = state.showFolderLabels, onCheckedChange = { state.showFolderLabels = it })
@@ -330,7 +331,7 @@ internal fun AppearanceSettingsContent(
 
         Spacer(modifier = Modifier.height(AureoleDS.dimens.large))
         Button(onClick = onBack, modifier = Modifier.fillMaxWidth()) {
-            Text(stringResource(R.string.edit_container_back))
+            Text(stringResource(R.string.home_container_edit_back))
         }
     }
 }

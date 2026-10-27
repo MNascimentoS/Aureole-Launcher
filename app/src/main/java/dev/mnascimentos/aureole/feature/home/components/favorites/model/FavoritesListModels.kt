@@ -2,10 +2,15 @@ package dev.mnascimentos.aureole.feature.home.components.favorites.model
 
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 import dev.chrisbanes.haze.HazeState
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
+
+object FavoritesPreviewMetrics {
+    val DefaultHeight: Dp = 160.dp
+}
 
 data class FavoritesListConfig(
     val currentHeightDp: Dp,

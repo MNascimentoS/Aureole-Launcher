@@ -43,8 +43,9 @@ feature/<feature_name>/
 ## 🛑 3. Strict Rules (MAX-500 & Suppress)
 
 ### REGRA MAX-500 (File Size Limit)
-- **NO file can exceed 500 lines** (Single exception: `AureoleIcons.kt`).
-- If an edit exceeds 500 lines, **STOP** and extract logic into new files or subcomponents.
+- **NO production file can exceed 500 lines** (Single exception: `AureoleIcons.kt`).
+- **Test files** (`app/src/test/`, `app/src/screenshotTest/`, `app/src/androidTest/`) can have **at most 800 lines**.
+- If an edit exceeds the limit (500 for production code, 800 for tests), **STOP** and extract logic into new files or subcomponents (for tests, split the class by behavior or component).
 
 ### Proibição Absoluta de `@Suppress`
 - It is **strictly prohibited** to use `@Suppress("LongMethod")`, `@Suppress("ComplexMethod")`, `@Suppress("LargeClass")`, or similar suppressions. Refactor the code instead.

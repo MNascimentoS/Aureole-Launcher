@@ -129,7 +129,7 @@ private fun WidgetSelectorContent(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(top = 16.dp)
+            .padding(top = AureoleDS.dimens.medium)
             .clickable(enabled = false) {}
     ) {
         if (state.isLoading) {
@@ -138,7 +138,7 @@ private fun WidgetSelectorContent(
             }
         } else if (state.widgetGroups.isEmpty() && state.searchQuery.isEmpty()) {
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                Text(stringResource(R.string.widget_picker_none_found), color = Color.White)
+                Text(stringResource(R.string.home_widget_picker_none_found), color = Color.White)
             }
         } else {
             Box(modifier = Modifier.weight(1f)) {

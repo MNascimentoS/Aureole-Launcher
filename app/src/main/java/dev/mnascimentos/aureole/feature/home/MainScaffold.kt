@@ -9,15 +9,16 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import dev.mnascimentos.aureole.composable.appitem.model.AppItemRowConfig
+import dev.mnascimentos.aureole.composable.favorites.FavoriteAppsDialog
+import dev.mnascimentos.aureole.composable.favorites.model.FavoriteAppsDialogActions
+import dev.mnascimentos.aureole.composable.favorites.model.FavoriteAppsDialogConfig
+import dev.mnascimentos.aureole.composable.sheets.ReleaseNotesBottomSheet
 import dev.mnascimentos.aureole.core.designsystem.utils.LocalHazeState
-import dev.mnascimentos.aureole.feature.home.components.favorites.FavoriteAppsDialog
 import dev.mnascimentos.aureole.feature.home.components.favorites.extensions.setShowFavoritePicker
 import dev.mnascimentos.aureole.feature.home.components.favorites.extensions.toggleFavorite
 import dev.mnascimentos.aureole.feature.home.components.favorites.extensions.updateContainerFavorites
 import dev.mnascimentos.aureole.feature.home.components.favorites.extensions.updateFavoritePackages
-import dev.mnascimentos.aureole.feature.home.components.favorites.model.FavoriteAppsDialogActions
-import dev.mnascimentos.aureole.feature.home.components.favorites.model.FavoriteAppsDialogConfig
-import dev.mnascimentos.aureole.feature.home.components.overlays.ReleaseNotesBottomSheet
 import dev.mnascimentos.aureole.feature.home.components.overlays.UpdateAvailableDialog
 import dev.mnascimentos.aureole.feature.home.components.overlays.UpdateDownloadedDialog
 import dev.mnascimentos.aureole.feature.home.components.overlays.extensions.dismissReleaseNotes
@@ -124,7 +125,11 @@ private fun FavoritePickerOverlay(
                 allApps = uiState.apps,
                 favoriteAppPackages = favPackages,
                 containerId = containerId,
-                showAllAppsOnHome = uiState.showAllAppsOnHome
+                showAllAppsOnHome = uiState.showAllAppsOnHome,
+                rowConfig = AppItemRowConfig(
+                    isThemedAppIconsEnabled = uiState.isThemedAppIconsEnabled,
+                    isLeftHandedMode = uiState.isLeftHandedMode
+                )
             ),
             actions = FavoriteAppsDialogActions(
                 onToggleFavorite = { pkg -> onToggleFavorite(pkg, containerId) },

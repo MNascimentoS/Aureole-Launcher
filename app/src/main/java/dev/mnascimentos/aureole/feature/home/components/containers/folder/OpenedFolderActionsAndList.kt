@@ -29,9 +29,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.core.graphics.drawable.toDrawable
+import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.designsystem.components.AureolePopupMenuItem
 import dev.mnascimentos.aureole.core.designsystem.components.AureolePopupMenuItemParams
@@ -61,7 +63,7 @@ fun OpenedFolderActions(
                 .padding(bottom = AureoleDS.dimens.xSmall)
         ) {
             AureolePopupMenuItem(
-                title = "Add Apps",
+                title = stringResource(R.string.home_folder_opened_add_apps),
                 params = AureolePopupMenuItemParams(
                     icon = { m -> AureoleDS.icons.Add(m) }
                 ),
@@ -69,7 +71,7 @@ fun OpenedFolderActions(
             )
 
             AureolePopupMenuItem(
-                title = "Edit Folder",
+                title = stringResource(R.string.home_folder_opened_edit),
                 params = AureolePopupMenuItemParams(
                     icon = { m -> AureoleDS.icons.Edit(m) }
                 ),
@@ -95,7 +97,7 @@ fun OpenedFolderAppList(
             contentAlignment = Alignment.Center
         ) {
             Text(
-                text = "No apps in folder",
+                text = stringResource(R.string.home_folder_opened_empty),
                 style = AureoleDS.typography.bodySmall,
                 color = AureoleDS.colors.onSurfaceMedium
             )

@@ -6,27 +6,12 @@ import dev.mnascimentos.aureole.core.data.model.AppFolder
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
 
-object FolderButtonMetrics {
-    val SmallSize = 52.dp
-    val MediumSize = 60.dp
-    val LabelMaxWidth = 56.dp
-    val ContainerMaxWidth = 68.dp
-    val GridGap = 18.dp
-}
-
 object FolderPopupMetrics {
     val HazeBlurRadius = 20.dp
     val WidthMin = 180.dp
     val WidthMax = 210.dp
     val HeightMax = 400.dp
 }
-
-data class FolderFormConfig(
-    val initialName: String,
-    val initialIcon: String?,
-    val isEditing: Boolean,
-    val submitText: String
-)
 
 data class FolderAppRowItemParams(
     val app: AppInfo,

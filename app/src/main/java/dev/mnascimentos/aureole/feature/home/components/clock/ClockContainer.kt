@@ -4,9 +4,9 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import dev.chrisbanes.haze.HazeState
+import dev.mnascimentos.aureole.composable.clock.model.ClockHazeConfig
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
-import dev.mnascimentos.aureole.feature.home.components.clock.model.ClockHazeConfig
 import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
 import dev.mnascimentos.aureole.feature.home.model.LocalHomeActions
 import dev.mnascimentos.aureole.feature.home.model.LocalHomeUiState
@@ -22,7 +22,7 @@ fun ClockContainer(
     onLongClick: (() -> Unit)? = { actions.onOpenEditClockBottomSheet() }
 ) {
     Box(modifier = modifier) {
-        ClockHeader(
+        HomeClockHeader(
             hazeConfig = ClockHazeConfig(
                 hazeState = hazeState,
                 isHazeEnabled = uiState.isHazeEnabled,

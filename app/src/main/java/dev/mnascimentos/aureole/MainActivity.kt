@@ -7,13 +7,8 @@ import android.graphics.Rect
 import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
-import androidx.activity.OnBackPressedCallback
-import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.activity.result.ActivityResultLauncher
-import androidx.activity.result.IntentSenderRequest
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -36,63 +31,21 @@ import dev.mnascimentos.aureole.core.lifecycle.MainLifecycleObserver
 import dev.mnascimentos.aureole.core.lifecycle.UpdateLifecycleObserver
 import dev.mnascimentos.aureole.core.lifecycle.WidgetLifecycleObserver
 import dev.mnascimentos.aureole.feature.home.HomeViewModel
-import dev.mnascimentos.aureole.feature.home.MainScaffold
-import dev.mnascimentos.aureole.feature.home.components.widgets.WidgetHostManager
-import dev.mnascimentos.aureole.feature.home.components.widgets.extensions.setIsAddingSingleWidget
-import dev.mnascimentos.aureole.feature.home.components.widgets.extensions.setPendingWidgetId
-import dev.mnascimentos.aureole.feature.home.extensions.handleBackNavigation
+import dev.mnascimentos.aureole.feature.home.MainRoute
 import dev.mnascimentos.aureole.feature.home.extensions.setAllAppsDrawerOpen
-import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
-import dev.mnascimentos.aureole.feature.home.model.LocalHomeActions
-import dev.mnascimentos.aureole.feature.home.model.LocalHomeUiState
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
 import dev.mnascimentos.aureole.feature.home.model.isOverlayActive
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import timber.log.Timber
 
 class MainActivity : ComponentActivity() {
 
     internal val viewModel: HomeViewModel by viewModel()
 
-    // Widget System
     internal lateinit var appWidgetManager: AppWidgetManager
     internal lateinit var appWidgetHost: AppWidgetHost
-    internal lateinit var widgetHostManager: WidgetHostManager
 
-    // In-App Update
     internal lateinit var appUpdateManager: AppUpdateManager
     internal var cachedAppUpdateInfo: AppUpdateInfo? = null
-
-    internal val updateActivityResultLauncher: ActivityResultLauncher<IntentSenderRequest> =
-        registerForActivityResult(ActivityResultContracts.StartIntentSenderForResult()) { result ->
-            if (result.resultCode != RESULT_OK) {
-                Timber.tag(TAG).w("In-app update flow failed or was cancelled by user: ${result.resultCode}")
-            }
-        }
-
-    internal val widgetConfigureLauncher: ActivityResultLauncher<Intent> =
-        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-            handleWidgetActivityResult(result.resultCode)
-        }
-
-    internal val widgetBindLauncher: ActivityResultLauncher<Intent> =
-        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-            handleWidgetActivityResult(result.resultCode)
-        }
-
-    private fun handleWidgetActivityResult(resultCode: Int) {
-        val pendingWidgetId = viewModel.pendingWidgetId
-        if (pendingWidgetId != -1) {
-            if (resultCode == RESULT_OK) {
-                val appWidgetInfo = appWidgetManager.getAppWidgetInfo(pendingWidgetId)
-                widgetHostManager.completeWidgetConfiguration(pendingWidgetId, appWidgetInfo)
-            } else {
-                appWidgetHost.deleteAppWidgetId(pendingWidgetId)
-                viewModel.setPendingWidgetId(-1)
-                viewModel.setIsAddingSingleWidget(false)
-            }
-        }
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -100,13 +53,6 @@ class MainActivity : ComponentActivity() {
 
         appWidgetManager = AppWidgetManager.getInstance(this)
         appWidgetHost = AppWidgetHost(this, APPWIDGET_HOST_ID)
-        widgetHostManager = WidgetHostManager(
-            viewModel = viewModel,
-            appWidgetHost = appWidgetHost,
-            appWidgetManager = appWidgetManager,
-            launchWidgetConfigure = { intent -> widgetConfigureLauncher.launch(intent) },
-            launchWidgetBind = { intent -> widgetBindLauncher.launch(intent) }
-        )
 
         appUpdateManager = AppUpdateManagerFactory.create(this)
 
@@ -123,28 +69,12 @@ class MainActivity : ComponentActivity() {
             systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
         }
 
-        onBackPressedDispatcher.addCallback(
-            this,
-            object : OnBackPressedCallback(true) {
-                override fun handleOnBackPressed() {
-                    val state = viewModel.uiState.value
-                    if (checkOverlayActive(state)) {
-                        handleBackNavigation(state, viewModel)
-                    } else {
-                        isEnabled = false
-                        onBackPressedDispatcher.onBackPressed()
-                        isEnabled = true
-                    }
-                }
-            }
-        )
-
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             window.isNavigationBarContrastEnforced = false
             window.decorView.addOnLayoutChangeListener { view, _, _, _, _, _, _, _, _ ->
                 val w = view.width
                 val h = view.height
-                val isOverlayActive = checkOverlayActive(viewModel.uiState.value)
+                val isOverlayActive = viewModel.uiState.value.isOverlayActive
                 if (w > 0 && h > 0) {
                     view.systemGestureExclusionRects = if (isOverlayActive) {
                         emptyList()
@@ -168,23 +98,21 @@ class MainActivity : ComponentActivity() {
     private fun setupContent() {
         setContent {
             val uiState by viewModel.uiState.collectAsState()
-            val isOverlayActive = checkOverlayActive(uiState)
+            val isOverlayActive = uiState.isOverlayActive
 
             LaunchedEffect(isOverlayActive) {
                 updateGestureExclusion(isOverlayActive)
             }
 
             MainActivityRootContent(
-                uiState = uiState,
-                isOverlayActive = isOverlayActive
+                uiState = uiState
             )
         }
     }
 
     @Composable
     private fun MainActivityRootContent(
-        uiState: MainUiState,
-        isOverlayActive: Boolean
+        uiState: MainUiState
     ) {
         val hazeState = rememberHazeState()
         val isDarkTheme = isSystemInDarkTheme()
@@ -200,29 +128,14 @@ class MainActivity : ComponentActivity() {
                     aureoleDimens = AureoleDimens(radiusLarge = uiState.cornerRadiusDp.dp)
                 )
             ) {
-                MainThemeContent(uiState = uiState, isOverlayActive = isOverlayActive)
+                MainRoute(
+                    viewModel = viewModel,
+                    appWidgetHost = appWidgetHost,
+                    appWidgetManager = appWidgetManager,
+                    appUpdateManager = appUpdateManager,
+                    cachedAppUpdateInfo = cachedAppUpdateInfo
+                )
             }
-        }
-    }
-
-    @Composable
-    private fun MainThemeContent(
-        uiState: MainUiState,
-        isOverlayActive: Boolean
-    ) {
-        BackHandler(enabled = isOverlayActive) {
-            handleBackNavigation(uiState, viewModel)
-        }
-
-        CompositionLocalProvider(
-            LocalHomeUiState provides uiState,
-            LocalHomeActions provides createHomeActions()
-        ) {
-            MainScaffold(
-                appWidgetHost = appWidgetHost,
-                viewModel = viewModel,
-                onWidgetSelected = { widgetHostManager.handleWidgetSelected(it) }
-            )
         }
     }
 
@@ -244,21 +157,6 @@ class MainActivity : ComponentActivity() {
     }
 
     companion object {
-        private const val TAG = "MainActivity"
         private const val APPWIDGET_HOST_ID = 1024
     }
-}
-
-private fun checkOverlayActive(uiState: MainUiState): Boolean {
-    return uiState.isOverlayActive
-}
-
-private fun MainActivity.createHomeActions(): HomeScreenActions {
-    return HomeActionsFactory(
-        activity = this,
-        viewModel = viewModel,
-        appUpdateManager = appUpdateManager,
-        updateActivityResultLauncher = updateActivityResultLauncher,
-        cachedAppUpdateInfo = cachedAppUpdateInfo
-    ).createHomeActions()
 }

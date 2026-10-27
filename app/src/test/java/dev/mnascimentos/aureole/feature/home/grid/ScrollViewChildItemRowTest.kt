@@ -1,8 +1,11 @@
 package dev.mnascimentos.aureole.feature.home.grid
 
+import android.content.Context
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
+import androidx.test.core.app.ApplicationProvider
+import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.core.data.model.LauncherItemState
 import dev.mnascimentos.aureole.core.data.model.LauncherItemType
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
@@ -71,7 +74,8 @@ class ScrollViewChildItemRowTest {
             }
         }
 
-        composeTestRule.onNodeWithText("Lista de Aplicativos").assertExists()
+        val context = ApplicationProvider.getApplicationContext<Context>()
+        composeTestRule.onNodeWithText(context.getString(R.string.home_container_add_apps_list)).assertExists()
         composeTestRule.onNodeWithText("2x").assertExists() // vertical -> rowSpan
     }
 

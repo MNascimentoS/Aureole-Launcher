@@ -8,9 +8,14 @@ import androidx.compose.ui.test.junit4.v2.createComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
+import dev.mnascimentos.aureole.composable.favorites.FavoriteAppRowActionButtons
+import dev.mnascimentos.aureole.composable.favorites.FavoriteAppRowInfo
+import dev.mnascimentos.aureole.composable.favorites.FavoriteAppsDialogHeader
+import dev.mnascimentos.aureole.composable.favorites.FavoriteAppsShowAllSwitchRow
+import dev.mnascimentos.aureole.composable.favorites.RemainingAppRow
+import dev.mnascimentos.aureole.composable.favorites.model.FavoriteAppRowParams
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
-import dev.mnascimentos.aureole.feature.home.components.favorites.model.FavoriteAppRowParams
 import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test

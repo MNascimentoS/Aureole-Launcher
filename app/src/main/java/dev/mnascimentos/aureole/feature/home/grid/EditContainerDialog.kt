@@ -13,7 +13,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import dev.mnascimentos.aureole.R
+import dev.mnascimentos.aureole.composable.sheets.SettingsBottomSheet
 import dev.mnascimentos.aureole.core.data.model.LauncherItemState
 import dev.mnascimentos.aureole.core.data.model.LauncherItemType
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
@@ -22,7 +25,6 @@ import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.model.LocalHomeActions
-import dev.mnascimentos.aureole.feature.settings.components.SettingsBottomSheet
 
 @Composable
 fun EditGridItemDialog(
@@ -33,18 +35,18 @@ fun EditGridItemDialog(
 ) {
     val actions = LocalHomeActions.current
     val title = when (item.type) {
-        LauncherItemType.CLOCK -> "Relógio"
-        LauncherItemType.APPS_LIST -> "Favoritos"
-        LauncherItemType.SHORTCUTS_CONTAINER -> "Shortcuts"
-        LauncherItemType.SINGLE_APP_WIDGET -> "Widget"
-        LauncherItemType.WIDGET_LIST -> "Grupo de Widgets"
-        LauncherItemType.SCROLL_VIEW -> "Componente Rolar"
-        LauncherItemType.QUICK_BUTTON -> "Botão Rápido"
-        else -> "Container"
+        LauncherItemType.CLOCK -> stringResource(R.string.home_grid_item_clock)
+        LauncherItemType.APPS_LIST -> stringResource(R.string.home_grid_item_favorites)
+        LauncherItemType.SHORTCUTS_CONTAINER -> stringResource(R.string.home_grid_item_shortcuts)
+        LauncherItemType.SINGLE_APP_WIDGET -> stringResource(R.string.home_grid_item_widget)
+        LauncherItemType.WIDGET_LIST -> stringResource(R.string.home_grid_item_widget_group)
+        LauncherItemType.SCROLL_VIEW -> stringResource(R.string.home_grid_item_scroll_view)
+        LauncherItemType.QUICK_BUTTON -> stringResource(R.string.home_grid_item_quick_button)
+        else -> stringResource(R.string.home_grid_item_container)
     }
 
     SettingsBottomSheet(
-        title = "Configurar $title",
+        title = stringResource(R.string.home_grid_config_title, title),
         onDismissRequest = onDismissRequest
     ) {
         Column(
@@ -62,7 +64,7 @@ fun EditGridItemDialog(
                 contentAlignment = Alignment.Center
             ) {
                 AureoleText(
-                    text = "Tamanho atual: ${item.colSpan} x ${item.rowSpan} células",
+                    text = stringResource(R.string.home_grid_current_size, item.colSpan, item.rowSpan),
                     color = AureoleDS.colors.onSurfaceMedium,
                     format = AureoleTextFormatParams(
                         style = AureoleDS.typography.bodyMedium,

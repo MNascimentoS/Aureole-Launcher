@@ -1,8 +1,11 @@
 package dev.mnascimentos.aureole.feature.home.grid
 
+import android.content.Context
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
+import androidx.test.core.app.ApplicationProvider
+import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.core.data.model.LauncherItemType
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import org.junit.Assert.assertEquals
@@ -20,6 +23,7 @@ class AddContainerDialogTest {
 
     @Test
     fun `when rendering dialog, should display default options`() {
+        val context = ApplicationProvider.getApplicationContext<Context>()
         composeTestRule.setContent {
             AureoleLauncherTheme {
                 AddContainerDialog(
@@ -29,17 +33,20 @@ class AddContainerDialogTest {
             }
         }
 
-        composeTestRule.onNodeWithText("Adicionar Container").assertExists()
-        composeTestRule.onNodeWithText("Relógio").assertExists()
-        composeTestRule.onNodeWithText("Lista de Aplicativos").assertExists()
-        composeTestRule.onNodeWithText("Container").assertExists()
-        composeTestRule.onNodeWithText("Grupo de Widgets do Android").assertExists()
-        composeTestRule.onNodeWithText("Botão Rápido").assertExists()
-        composeTestRule.onNodeWithText("Container Scroll View").assertExists()
+        composeTestRule.onNodeWithText(context.getString(R.string.home_container_add_title)).assertExists()
+        composeTestRule.onNodeWithText(context.getString(R.string.home_container_add_clock)).assertExists()
+        composeTestRule.onNodeWithText(context.getString(R.string.home_container_add_apps_list)).assertExists()
+        composeTestRule.onNodeWithText(
+            context.getString(R.string.home_container_add_shortcuts_container)
+        ).assertExists()
+        composeTestRule.onNodeWithText(context.getString(R.string.home_container_add_widget_list)).assertExists()
+        composeTestRule.onNodeWithText(context.getString(R.string.home_container_add_quick_button)).assertExists()
+        composeTestRule.onNodeWithText(context.getString(R.string.home_container_add_scroll_view)).assertExists()
     }
 
     @Test
     fun `when rendering nested dialog, should not display scroll view option`() {
+        val context = ApplicationProvider.getApplicationContext<Context>()
         composeTestRule.setContent {
             AureoleLauncherTheme {
                 AddContainerDialog(
@@ -50,12 +57,13 @@ class AddContainerDialogTest {
             }
         }
 
-        composeTestRule.onNodeWithText("Adicionar ao Scroll View").assertExists()
-        composeTestRule.onNodeWithText("Container Scroll View").assertDoesNotExist()
+        composeTestRule.onNodeWithText(context.getString(R.string.home_container_add_nested_title)).assertExists()
+        composeTestRule.onNodeWithText(context.getString(R.string.home_container_add_scroll_view)).assertDoesNotExist()
     }
 
     @Test
     fun `when clicking an option, should invoke onSelectType and onDismissRequest`() {
+        val context = ApplicationProvider.getApplicationContext<Context>()
         var selectedType: LauncherItemType? = null
         var dismissed = false
 
@@ -68,7 +76,7 @@ class AddContainerDialogTest {
             }
         }
 
-        composeTestRule.onNodeWithText("Lista de Aplicativos").performClick()
+        composeTestRule.onNodeWithText(context.getString(R.string.home_container_add_apps_list)).performClick()
 
         assertEquals(LauncherItemType.APPS_LIST, selectedType)
         assertTrue(dismissed)

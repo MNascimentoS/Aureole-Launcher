@@ -18,8 +18,10 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
+import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.core.data.model.LauncherItemState
 import dev.mnascimentos.aureole.core.data.model.LauncherItemType
 import dev.mnascimentos.aureole.core.data.model.ScrollOrientation
@@ -50,7 +52,7 @@ internal fun EditDialogChildrenListSection(
             contentAlignment = Alignment.Center
         ) {
             AureoleText(
-                text = "Nenhum componente adicionado ainda.",
+                text = stringResource(R.string.home_container_edit_none_added),
                 color = AureoleDS.colors.onSurfaceMedium,
                 format = AureoleTextFormatParams(style = AureoleDS.typography.bodyMedium)
             )
@@ -83,7 +85,7 @@ internal fun ScrollViewOrientationSelector(
 ) {
     Column(modifier = Modifier.fillMaxWidth()) {
         AureoleText(
-            text = "Orientação do Scroll",
+            text = stringResource(R.string.home_container_edit_scroll_orientation),
             color = AureoleDS.colors.onSurfaceHigh,
             modifier = Modifier.padding(bottom = AureoleDS.dimens.smallCompact),
             format = AureoleTextFormatParams(style = AureoleDS.typography.titleMedium, fontWeight = FontWeight.SemiBold)
@@ -94,14 +96,14 @@ internal fun ScrollViewOrientationSelector(
             horizontalArrangement = Arrangement.spacedBy(AureoleDS.dimens.small)
         ) {
             OrientationOptionCard(
-                title = "Vertical",
+                title = stringResource(R.string.home_container_edit_vertical),
                 isSelected = item.safeScrollOrientation == ScrollOrientation.VERTICAL,
                 onClick = { actions.onUpdateScrollViewOrientation(item.id, ScrollOrientation.VERTICAL) },
                 modifier = Modifier.weight(1f)
             )
 
             OrientationOptionCard(
-                title = "Horizontal",
+                title = stringResource(R.string.home_container_edit_horizontal),
                 isSelected = item.safeScrollOrientation == ScrollOrientation.HORIZONTAL,
                 onClick = { actions.onUpdateScrollViewOrientation(item.id, ScrollOrientation.HORIZONTAL) },
                 modifier = Modifier.weight(1f)

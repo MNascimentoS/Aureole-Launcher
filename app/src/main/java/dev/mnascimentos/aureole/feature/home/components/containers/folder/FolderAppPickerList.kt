@@ -49,7 +49,7 @@ internal fun LazyListScope.selectedFolderAppSection(
 
     item {
         AureoleText(
-            text = stringResource(R.string.selected_apps_count, totalSelectedCount),
+            text = stringResource(R.string.home_folder_selected_apps_count, totalSelectedCount),
             color = AureoleDS.colors.onSurfaceHigh,
             modifier = Modifier.padding(vertical = AureoleDS.dimens.xxSmall),
             format = AureoleTextFormatParams(style = AureoleDS.typography.titleSmall, fontWeight = FontWeight.Bold)
@@ -59,9 +59,9 @@ internal fun LazyListScope.selectedFolderAppSection(
     if (filteredSelected.isEmpty()) {
         item {
             val emptyText = if (searchQuery.isBlank()) {
-                stringResource(R.string.no_apps_in_folder)
+                stringResource(R.string.home_folder_no_apps_in_folder)
             } else {
-                stringResource(R.string.no_apps_found)
+                stringResource(R.string.core_common_no_apps_found)
             }
             AureoleText(
                 text = emptyText,
@@ -103,7 +103,7 @@ internal fun LazyListScope.remainingFolderAppSection(
     item {
         Spacer(modifier = Modifier.height(AureoleDS.dimens.xSmall))
         AureoleText(
-            text = stringResource(R.string.other_apps_count, filteredRemaining.size),
+            text = stringResource(R.string.home_folder_other_apps_count, filteredRemaining.size),
             color = AureoleDS.colors.onSurfaceMedium,
             modifier = Modifier.padding(vertical = AureoleDS.dimens.xxSmall),
             format = AureoleTextFormatParams(style = AureoleDS.typography.titleSmall, fontWeight = FontWeight.Bold)
@@ -113,9 +113,9 @@ internal fun LazyListScope.remainingFolderAppSection(
     if (filteredRemaining.isEmpty()) {
         item {
             val emptyText = if (searchQuery.isBlank()) {
-                stringResource(dev.mnascimentos.aureole.R.string.all_apps_added)
+                stringResource(dev.mnascimentos.aureole.R.string.home_folder_all_apps_added)
             } else {
-                stringResource(R.string.no_apps_found)
+                stringResource(R.string.core_common_no_apps_found)
             }
             AureoleText(
                 text = emptyText,
@@ -200,7 +200,7 @@ internal fun FolderAppPickerSearchInput(
         onValueChange = onQueryChange,
         placeholder = {
             AureoleText(
-                stringResource(dev.mnascimentos.aureole.R.string.search_app_placeholder),
+                stringResource(dev.mnascimentos.aureole.R.string.core_common_search_app_placeholder),
                 color = AureoleDS.colors.onSurfaceLow
             )
         },

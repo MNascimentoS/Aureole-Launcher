@@ -42,9 +42,9 @@ jobs:
           java-version: '17'
           cache: 'gradle'
 
-      - name: Run Unit Tests
+      - name: Run Unit Tests & Coverage Gate
         id: unit_tests
-        run: ./gradlew testDebugUnitTest
+        run: ./gradlew testDebugUnitTest jacocoTestCoverageVerification
 
       # ---- Full Report (para branch ou PR de release/*) ----
       - name: Full Report - Build, Coverage & Lint

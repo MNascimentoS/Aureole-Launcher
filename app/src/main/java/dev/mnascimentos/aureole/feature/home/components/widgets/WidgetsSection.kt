@@ -5,31 +5,20 @@ import android.appwidget.AppWidgetHostView
 import android.appwidget.AppWidgetManager
 import android.view.View
 import androidx.compose.animation.ExperimentalSharedTransitionApi
-import androidx.compose.animation.animateColorAsState
-import androidx.compose.animation.core.Spring
-import androidx.compose.animation.core.animateDpAsState
-import androidx.compose.animation.core.spring
-import androidx.compose.animation.core.tween
-import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.awaitEachGesture
 import androidx.compose.foundation.gestures.awaitFirstDown
 import androidx.compose.foundation.gestures.waitForUpOrCancellation
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -38,11 +27,10 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.input.pointer.PointerEventPass
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.rememberNestedScrollInteropConnection
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
+import dev.mnascimentos.aureole.composable.widgets.AddWidgetButton
+import dev.mnascimentos.aureole.composable.widgets.WidgetPositionIndicatorBar
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
-import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
-import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.core.designsystem.utils.LocalAnimatedVisibilityScope
 import dev.mnascimentos.aureole.core.designsystem.utils.LocalSharedTransitionScope
 import dev.mnascimentos.aureole.feature.home.components.widgets.model.PagerContentParams
@@ -55,13 +43,8 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
-private const val COLOR_ANIMATION_DURATION_MS = 150
 private const val LONG_PRESS_MARGIN_MS = 50L
 private const val MIN_LONG_PRESS_TIMEOUT_MS = 200L
-
-private object IndicatorMetrics {
-    val IndicatorHeight = 5.dp
-}
 
 @Composable
 fun StackedWidgetSection(
@@ -154,48 +137,6 @@ private fun StackedWidgetPagerContent(
     }
 }
 
-@Composable
-fun WidgetPositionIndicatorBar(
-    pageCount: Int,
-    currentPage: Int,
-    modifier: Modifier = Modifier
-) {
-    Row(
-        modifier = modifier
-            .padding(top = AureoleDS.dimens.xxSmall, bottom = AureoleDS.dimens.xxSmall)
-            .fillMaxWidth(),
-        horizontalArrangement = Arrangement.Center,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        repeat(pageCount) { index ->
-            val isSelected = (index == currentPage)
-            val animatedWidth by animateDpAsState(
-                targetValue = if (isSelected) AureoleDS.dimens.iconLargePlus else AureoleDS.dimens.xSmall,
-                animationSpec = spring(stiffness = Spring.StiffnessMediumLow),
-                label = "indicator_width"
-            )
-            val animatedColor by animateColorAsState(
-                targetValue = if (isSelected) {
-                    AureoleDS.colors.onSurfaceHigh
-                } else {
-                    AureoleDS.colors.onSurfaceHigh.copy(alpha = 0.25f)
-                },
-                animationSpec = tween(COLOR_ANIMATION_DURATION_MS),
-                label = "indicator_color"
-            )
-
-            Box(
-                modifier = Modifier
-                    .padding(horizontal = AureoleDS.dimens.minimal)
-                    .height(IndicatorMetrics.IndicatorHeight)
-                    .width(animatedWidth)
-                    .clip(CircleShape)
-                    .background(animatedColor)
-            )
-        }
-    }
-}
-
 @OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 private fun WidgetHostItem(
@@ -267,16 +208,5 @@ private fun updateWidgetHostView(view: View, widgetId: Int) {
         if (appWidgetInfo != null) {
             applyWidgetOptionsIfNeeded(view, widgetId, appWidgetManager, appWidgetInfo)
         }
-    }
-}
-
-@AureolePreview
-@Composable
-private fun WidgetPositionIndicatorBarPreview() {
-    AureoleLauncherTheme {
-        WidgetPositionIndicatorBar(
-            pageCount = 4,
-            currentPage = 1
-        )
     }
 }

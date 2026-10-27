@@ -48,7 +48,7 @@ class QuickButtonSettingsBottomSheetTest {
         }
 
         // Assert
-        composeTestRule.onNodeWithText("Quick button settings").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Quick button").assertIsDisplayed()
         composeTestRule.onNodeWithText("Appearance").assertIsDisplayed()
         composeTestRule.onNodeWithText("Click shortcut").assertIsDisplayed()
         composeTestRule.onNodeWithText("Remove quick button").performScrollTo().assertIsDisplayed()

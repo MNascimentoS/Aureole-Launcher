@@ -23,6 +23,11 @@ data class AureoleDimens(
     val xxLarge: Dp = 40.dp,
     val minTouchTarget: Dp = 48.dp,
 
+    // Specific Sizes
+    val itemHeightExtraLarge: Dp = 52.dp,
+    val sizeLarge: Dp = 68.dp,
+    val sizeExtraLarge: Dp = 120.dp,
+
     // 02. Ícones
     val iconXSmall: Dp = 12.dp,
     val iconSmallCompact: Dp = 14.dp,

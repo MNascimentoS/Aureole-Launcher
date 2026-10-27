@@ -17,6 +17,7 @@ import dev.mnascimentos.aureole.core.designsystem.model.AureoleEditOverlayConfig
 import dev.mnascimentos.aureole.core.designsystem.model.AureoleEditOverlayParams
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
+import dev.mnascimentos.aureole.feature.home.components.quickbutton.extensions.resolveEditingShortcut
 import dev.mnascimentos.aureole.feature.home.components.quickbutton.model.ShortcutSelectionSheetParams
 import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
@@ -99,10 +100,10 @@ fun ShortcutSelectionBottomSheet(
         params = AureoleEditOverlayParams(
             config = AureoleEditOverlayConfig(
                 title = if (isShowingAppPicker) {
-                    stringResource(R.string.qb_select_app)
+                    stringResource(R.string.home_quickbutton_select_app)
                 } else {
                     stringResource(
-                        R.string.qb_select_shortcut
+                        R.string.home_quickbutton_select_shortcut
                     )
                 },
                 hazeState = if (uiState.isHazeEnabled) hazeState else null,
@@ -121,17 +122,6 @@ fun ShortcutSelectionBottomSheet(
             }
         )
     )
-}
-
-private fun resolveEditingShortcut(type: String?, model: QuickButtonModel): ShortcutAction {
-    return when (type) {
-        "click" -> model.shortcuts.click
-        "press" -> model.shortcuts.press
-        "swipeUp" -> model.shortcuts.swipeUp
-        "swipeLeft" -> model.shortcuts.swipeLeft
-        "swipeRight" -> model.shortcuts.swipeRight
-        else -> ShortcutAction.None
-    }
 }
 
 @AureolePreview

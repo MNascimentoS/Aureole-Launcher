@@ -13,7 +13,7 @@ import dev.mnascimentos.aureole.feature.settings.components.PickFontBottomSheet
 import dev.mnascimentos.aureole.feature.settings.components.PickPaletteBottomSheet
 import dev.mnascimentos.aureole.feature.settings.components.SearchIconPositionDialog
 import dev.mnascimentos.aureole.feature.settings.components.SetBackgroundBottomSheet
-import dev.mnascimentos.aureole.feature.settings.components.SettingsBottomSheet
+import dev.mnascimentos.aureole.composable.sheets.SettingsBottomSheet
 import dev.mnascimentos.aureole.feature.settings.components.SettingsButtonPositionDialog
 import dev.mnascimentos.aureole.feature.settings.screens.FactoryResetDialog
 import dev.mnascimentos.aureole.feature.settings.screens.HazeOpacityDialog

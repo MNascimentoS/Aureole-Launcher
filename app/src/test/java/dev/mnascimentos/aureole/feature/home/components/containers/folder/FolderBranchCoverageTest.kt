@@ -15,6 +15,9 @@ import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTextInput
 import androidx.core.graphics.drawable.toDrawable
 import dev.chrisbanes.haze.HazeState
+import dev.mnascimentos.aureole.composable.dialogs.CreateFolderDialog
+import dev.mnascimentos.aureole.composable.dialogs.FolderFormDialog
+import dev.mnascimentos.aureole.composable.dialogs.IconSelectionRow
 import dev.mnascimentos.aureole.core.data.model.AppFolder
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme

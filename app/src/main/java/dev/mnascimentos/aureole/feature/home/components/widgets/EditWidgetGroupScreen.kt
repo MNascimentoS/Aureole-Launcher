@@ -39,6 +39,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.viewinterop.AndroidView
 import dev.mnascimentos.aureole.R
+import dev.mnascimentos.aureole.composable.widgets.WidgetPositionIndicatorBar
 import dev.mnascimentos.aureole.core.data.model.LauncherItemState
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleEditOverlay
 import dev.mnascimentos.aureole.core.designsystem.icons.Add
@@ -99,7 +100,7 @@ fun EditWidgetGroupScreen(
         modifier = modifier,
         params = AureoleEditOverlayParams(
             config = AureoleEditOverlayConfig(
-                title = stringResource(R.string.widget_stack_title),
+                title = stringResource(R.string.home_widget_stack_title),
                 hazeState = params.hazeState,
                 maxSheetHeightFraction = 0.3f
             ),
@@ -125,7 +126,7 @@ fun EditWidgetGroupScreen(
                     onClick = { isVisible = false },
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    Text(stringResource(R.string.edit_container_save))
+                    Text(stringResource(R.string.home_container_edit_save))
                 }
             },
             sheetContent = {
@@ -144,7 +145,10 @@ fun EditWidgetGroupScreen(
                             fontWeight = FontWeight.Bold
                         )
                         Spacer(modifier = Modifier.width(AureoleDS.dimens.medium))
-                        Text(stringResource(R.string.widget_show_indicator), color = AureoleDS.colors.onSurfaceMedium)
+                        Text(
+                            stringResource(R.string.home_widget_show_indicator),
+                            color = AureoleDS.colors.onSurfaceMedium
+                        )
                     }
                     Switch(
                         checked = params.isIndicatorEnabled,
@@ -271,7 +275,7 @@ private fun WidgetPreviewItem(
                     )
                 } else {
                     Text(
-                        text = "Widget",
+                        text = stringResource(R.string.home_widgets_default_title),
                         style = AureoleDS.typography.titleMedium,
                         fontWeight = FontWeight.Bold,
                         color = AureoleDS.colors.onSurfaceHigh

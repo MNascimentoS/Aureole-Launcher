@@ -10,9 +10,9 @@ import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.onRoot
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTouchInput
+import dev.mnascimentos.aureole.composable.clock.model.ClockHazeConfig
+import dev.mnascimentos.aureole.composable.clock.model.ClockHeaderConfig
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
-import dev.mnascimentos.aureole.feature.home.components.clock.model.ClockHazeConfig
-import dev.mnascimentos.aureole.feature.home.components.clock.model.ClockHeaderConfig
 import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
 import dev.mnascimentos.aureole.feature.home.model.LocalHomeActions
 import dev.mnascimentos.aureole.feature.home.model.LocalHomeUiState
@@ -34,7 +34,7 @@ class ClockHeaderTest {
         // Arrange & Act
         composeTestRule.setContent {
             AureoleLauncherTheme {
-                ClockHeader()
+                HomeClockHeader()
             }
         }
 
@@ -47,7 +47,7 @@ class ClockHeaderTest {
         // Arrange & Act
         composeTestRule.setContent {
             AureoleLauncherTheme {
-                ClockHeader(
+                HomeClockHeader(
                     config = ClockHeaderConfig(
                         style = "CUSTOM_GREETING",
                         customGreeting = "Olá Mundo",
@@ -66,7 +66,7 @@ class ClockHeaderTest {
         var clicked = false
         composeTestRule.setContent {
             AureoleLauncherTheme {
-                ClockHeader(
+                HomeClockHeader(
                     onClick = { clicked = true }
                 )
             }
@@ -85,7 +85,7 @@ class ClockHeaderTest {
         var longClicked = false
         composeTestRule.setContent {
             AureoleLauncherTheme {
-                ClockHeader {
+                HomeClockHeader {
                     longClicked = true
                 }
             }
@@ -169,7 +169,7 @@ class ClockHeaderTest {
         // Act
         composeTestRule.setContent {
             AureoleLauncherTheme {
-                ClockHeader(
+                HomeClockHeader(
                     hazeConfig = hazeConfig,
                     config = ClockHeaderConfig(
                         backgroundColor = Color.BLUE,

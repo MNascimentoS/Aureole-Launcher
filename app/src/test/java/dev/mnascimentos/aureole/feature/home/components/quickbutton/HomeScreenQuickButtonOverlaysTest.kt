@@ -63,7 +63,7 @@ class HomeScreenQuickButtonOverlaysTest {
         }
 
         // Assert
-        composeTestRule.onNodeWithText("Quick button settings").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Quick button").assertIsDisplayed()
     }
 
     @Test
@@ -83,7 +83,7 @@ class HomeScreenQuickButtonOverlaysTest {
         }
 
         // Assert
-        composeTestRule.onNodeWithText("Quick button appearance").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Quick button").assertIsDisplayed()
     }
 
     @Test

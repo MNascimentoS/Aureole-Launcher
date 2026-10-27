@@ -20,7 +20,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
@@ -28,10 +27,7 @@ import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.components.overlays.model.UpdateDialogContentParams
-
-private object UpdateDialogMetrics {
-    val DialogCornerRadius = 22.dp
-}
+import dev.mnascimentos.aureole.feature.home.components.overlays.model.UpdateDialogMetrics
 
 /**
  * Dialog alerting the user that a new app update is available in Google Play.
@@ -43,10 +39,10 @@ fun UpdateAvailableDialog(
 ) {
     UpdateDialogContent(
         UpdateDialogContentParams(
-            title = stringResource(R.string.update_new_available),
-            body = stringResource(R.string.update_new_body),
-            confirmLabel = stringResource(R.string.update_now),
-            dismissLabel = stringResource(R.string.update_later),
+            title = stringResource(R.string.settings_advanced_update_new_available),
+            body = stringResource(R.string.settings_advanced_update_new_body),
+            confirmLabel = stringResource(R.string.settings_advanced_update_now),
+            dismissLabel = stringResource(R.string.settings_advanced_update_later),
             onConfirm = onConfirmUpdate,
             onDismiss = onDismiss
         )
@@ -63,10 +59,10 @@ fun UpdateDownloadedDialog(
 ) {
     UpdateDialogContent(
         UpdateDialogContentParams(
-            title = stringResource(R.string.update_ready),
-            body = stringResource(R.string.update_ready_body),
-            confirmLabel = stringResource(R.string.update_restart_now),
-            dismissLabel = stringResource(R.string.update_restart_later),
+            title = stringResource(R.string.settings_advanced_update_ready),
+            body = stringResource(R.string.settings_advanced_update_ready_body),
+            confirmLabel = stringResource(R.string.settings_advanced_update_restart_now),
+            dismissLabel = stringResource(R.string.settings_advanced_update_restart_later),
             onConfirm = onConfirmRestart,
             onDismiss = onDismiss
         )

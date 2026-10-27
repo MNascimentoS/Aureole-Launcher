@@ -34,9 +34,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
+import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.composable.SettingsToggleItem
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
@@ -49,6 +50,7 @@ import dev.mnascimentos.aureole.core.designsystem.icons.RefreshCcw
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
+import dev.mnascimentos.aureole.feature.settings.model.PickerDimensions
 import dev.mnascimentos.aureole.feature.settings.model.SettingsScreenActions
 import dev.mnascimentos.aureole.feature.settings.model.SettingsUiState
 import kotlin.math.roundToInt
@@ -56,12 +58,6 @@ import kotlin.math.roundToInt
 private const val BOTTOM_SPACER_RATIO = 0.15f
 private const val MIN_OFFSET_PERCENT = 0
 private const val MAX_OFFSET_PERCENT = 60
-
-private object PickerDimensions {
-    val Height = 72.dp
-    val Width = 60.dp
-    val ItemHeight = 24.dp
-}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -98,7 +94,7 @@ fun SettingsBehaviorScreen(
                 Spacer(modifier = Modifier.height(topSpacerHeight))
 
                 AureoleText(
-                    text = "Behavior",
+                    text = stringResource(R.string.settings_behavior_title),
                     color = AureoleDS.colors.onSurfaceMedium,
                     modifier = Modifier.fillMaxWidth(),
                     format = AureoleTextFormatParams(
@@ -133,42 +129,42 @@ private fun BehaviorMenuItems(
         )
 
         SettingsToggleItem(
-            title = "Home opens all apps",
+            title = stringResource(R.string.settings_behavior_home_opens_all_apps),
             checked = uiState.homeButtonOpensAllApps,
             onCheckedChange = { actions.onToggleHomeButtonOpensAllApps() },
             leadingContent = { AureoleDS.icons.Press() }
         )
 
         SettingsToggleItem(
-            title = "Show all apps on home",
+            title = stringResource(R.string.settings_behavior_show_all_apps_on_home),
             checked = uiState.showAllAppsOnHome,
             onCheckedChange = { actions.onToggleShowAllAppsOnHome() },
             leadingContent = { AureoleDS.icons.AppSelect() }
         )
 
         SettingsToggleItem(
-            title = "All apps on left side",
+            title = stringResource(R.string.settings_behavior_all_apps_left_side),
             checked = uiState.isLeftHandedMode,
             onCheckedChange = { actions.onToggleLeftHandedMode() },
             leadingContent = { AureoleDS.icons.AlignRight() }
         )
 
         SettingsToggleItem(
-            title = "Show widget indicator",
+            title = stringResource(R.string.settings_behavior_show_widget_indicator),
             checked = uiState.showWidgetDots,
             onCheckedChange = { actions.onToggleShowWidgetDots() },
             leadingContent = { AureoleDS.icons.Dots() }
         )
 
         SettingsToggleItem(
-            title = "Disable alphabet scrubber",
+            title = stringResource(R.string.settings_behavior_disable_alphabet_scrubber),
             checked = uiState.isAlphabetScrubberDisabled,
             onCheckedChange = { actions.onToggleDisableAlphabetScrubber() },
             leadingContent = { AureoleDS.icons.AlignRight() }
         )
 
         SettingsToggleItem(
-            title = "Check for updates",
+            title = stringResource(R.string.settings_behavior_check_for_updates),
             checked = uiState.isInAppUpdateEnabled,
             onCheckedChange = { actions.onToggleInAppUpdate() },
             leadingContent = { AureoleDS.icons.RefreshCcw() }
@@ -193,7 +189,7 @@ private fun HeaderOffsetPickerRow(
         )
 
         AureoleText(
-            text = "Header offset",
+            text = stringResource(R.string.settings_behavior_header_offset),
             color = AureoleDS.colors.onSurfaceMedium,
             modifier = Modifier.weight(1f),
             format = AureoleTextFormatParams(style = AureoleDS.typography.bodyLarge, fontWeight = FontWeight.Normal)

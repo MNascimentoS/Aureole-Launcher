@@ -12,6 +12,9 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
+import dev.mnascimentos.aureole.R
+import dev.mnascimentos.aureole.composable.sheets.SettingsBottomSheet
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
 import dev.mnascimentos.aureole.core.designsystem.icons.Check
@@ -28,7 +31,7 @@ fun PickFontBottomSheet(
     modifier: Modifier = Modifier
 ) {
     SettingsBottomSheet(
-        title = "Pick Font",
+        title = stringResource(R.string.settings_appearance_pick_font),
         onDismissRequest = onDismissRequest,
         modifier = modifier
     ) {

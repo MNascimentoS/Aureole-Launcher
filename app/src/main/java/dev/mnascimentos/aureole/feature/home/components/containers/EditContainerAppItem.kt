@@ -29,6 +29,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.R
+import dev.mnascimentos.aureole.composable.dialogs.FolderIconRegistry
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
@@ -39,7 +40,6 @@ import dev.mnascimentos.aureole.core.designsystem.icons.Search
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
-import dev.mnascimentos.aureole.feature.home.components.containers.folder.FolderIconRegistry
 import dev.mnascimentos.aureole.feature.home.components.containers.model.EditContainerItemRowActions
 import dev.mnascimentos.aureole.feature.home.components.containers.model.EditContainerItemRowParams
 
@@ -79,9 +79,9 @@ internal fun EditContainerItemRow(
 
         AureoleText(
             text = if (params.isFolder) {
-                stringResource(R.string.edit_container_folder_label)
+                stringResource(R.string.home_container_edit_folder_label)
             } else {
-                stringResource(R.string.edit_container_app_label)
+                stringResource(R.string.home_container_edit_app_label)
             },
             color = AureoleDS.colors.onSurfaceMedium,
             modifier = Modifier.padding(end = AureoleDS.dimens.xxSmall),
@@ -139,7 +139,7 @@ private fun EditContainerItemMoveButtons(
 internal fun EditContainerAddAppDropdown(
     allApps: List<AppInfo>,
     onAppSelected: (String) -> Unit,
-    label: String = stringResource(R.string.edit_container_add_app)
+    label: String = stringResource(R.string.home_container_edit_add_app)
 ) {
     var isExpanded by remember { mutableStateOf(false) }
     var searchQuery by remember { mutableStateOf("") }
@@ -225,7 +225,7 @@ private fun DropdownAppItem(
         },
         onClick = { onAppSelected(app.packageName) },
         modifier = Modifier
-            .padding(horizontal = AureoleDS.dimens.xxSmall, vertical = 2.dp)
+            .padding(horizontal = AureoleDS.dimens.xxSmall, vertical = AureoleDS.dimens.minimal)
             .clip(RoundedCornerShape(AureoleDS.dimens.radiusXSmall))
     )
 }

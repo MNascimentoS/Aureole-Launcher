@@ -46,7 +46,7 @@ fun FolderAppPickerHeader(
         verticalAlignment = Alignment.CenterVertically
     ) {
         AureoleText(
-            text = stringResource(R.string.apps_in_folder, folderName),
+            text = stringResource(R.string.home_folder_apps_in_folder, folderName),
             color = AureoleDS.colors.onSurfaceHigh,
             format = AureoleTextFormatParams(style = AureoleDS.typography.titleMedium, fontWeight = FontWeight.Bold)
         )
@@ -70,11 +70,11 @@ fun FolderAppPickerFooter(
         verticalAlignment = Alignment.CenterVertically
     ) {
         OutlinedButton(onClick = onDismiss) {
-            AureoleText(stringResource(R.string.common_cancel))
+            AureoleText(stringResource(R.string.core_common_cancel))
         }
         Spacer(modifier = Modifier.width(AureoleDS.dimens.xSmall))
         Button(onClick = onSave) {
-            AureoleText(stringResource(R.string.common_save))
+            AureoleText(stringResource(R.string.core_common_save))
         }
     }
 }

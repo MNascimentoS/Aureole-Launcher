@@ -25,7 +25,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import dev.chrisbanes.haze.HazeState
 import dev.chrisbanes.haze.HazeStyle
 import dev.chrisbanes.haze.HazeTint
@@ -39,19 +38,13 @@ import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.core.designsystem.utils.fadingEdges
+import dev.mnascimentos.aureole.feature.home.components.appsdrawer.model.AppsDrawerMetrics
 import dev.mnascimentos.aureole.feature.home.model.LocalHomeActions
 import dev.mnascimentos.aureole.feature.home.model.LocalHomeUiState
 
 private const val DRAWER_HAZE_TINT_FACTOR = 0.5f
 private const val DRAWER_HAZE_MIN_ALPHA = 0.15f
 private const val DRAWER_HAZE_MAX_ALPHA = 0.65f
-
-private object AppsDrawerMetrics {
-    val HandedOffsetPadding = 72.dp
-    val ListBottomPadding = 120.dp
-    val SearchBarExtraTopPadding = 88.dp
-    val HazeBlurRadius = 24.dp
-}
 
 @Composable
 fun AppsListDrawer(
@@ -132,7 +125,7 @@ fun AppsListDrawer(
                         onExpandedChange = { isSearchExpanded = it }
                     ),
                     params = AureoleFloatingSearchBarParams(
-                        placeholder = stringResource(R.string.app_search_placeholder),
+                        placeholder = stringResource(R.string.home_apps_search_placeholder),
                         hazeConfig = AureoleSearchBarHazeConfig(
                             state = hazeState,
                             isEnabled = uiState.isHazeEnabled,

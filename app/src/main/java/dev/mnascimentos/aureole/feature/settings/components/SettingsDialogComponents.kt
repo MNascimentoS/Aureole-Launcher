@@ -15,7 +15,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
@@ -39,7 +41,7 @@ internal fun SettingsButtonPositionDialog(
         shape = RoundedCornerShape(AureoleDS.dimens.radiusLarge),
         title = {
             AureoleText(
-                text = "Posição do Botão de Configurações",
+                text = stringResource(R.string.settings_dialogs_settings_button_position_title),
                 color = AureoleDS.colors.onSurfaceHigh,
                 format = AureoleTextFormatParams(style = AureoleDS.typography.titleMedium, fontWeight = FontWeight.Bold)
             )
@@ -71,7 +73,7 @@ internal fun SettingsButtonPositionDialog(
         },
         confirmButton = {
             TextButton(onClick = onDismiss) {
-                AureoleText("Cancelar", color = AureoleDS.colors.onSurfaceHigh)
+                AureoleText(stringResource(R.string.core_common_cancel), color = AureoleDS.colors.onSurfaceHigh)
             }
         }
     )
@@ -94,7 +96,7 @@ internal fun SearchIconPositionDialog(
         shape = RoundedCornerShape(AureoleDS.dimens.radiusLarge),
         title = {
             AureoleText(
-                text = "Posição do Ícone de Busca",
+                text = stringResource(R.string.settings_dialogs_search_icon_position_title),
                 color = AureoleDS.colors.onSurfaceHigh,
                 format = AureoleTextFormatParams(style = AureoleDS.typography.titleMedium, fontWeight = FontWeight.Bold)
             )
@@ -126,7 +128,7 @@ internal fun SearchIconPositionDialog(
         },
         confirmButton = {
             TextButton(onClick = onDismiss) {
-                AureoleText("Cancelar", color = AureoleDS.colors.onSurfaceHigh)
+                AureoleText(stringResource(R.string.core_common_cancel), color = AureoleDS.colors.onSurfaceHigh)
             }
         }
     )
@@ -152,7 +154,7 @@ internal fun ContainerPositionDialog(
         shape = RoundedCornerShape(AureoleDS.dimens.radiusLarge),
         title = {
             AureoleText(
-                text = "Alinhamento do Painel Lateral",
+                text = stringResource(R.string.settings_dialogs_container_position_title),
                 color = AureoleDS.colors.onSurfaceHigh,
                 format = AureoleTextFormatParams(style = AureoleDS.typography.titleMedium, fontWeight = FontWeight.Bold)
             )
@@ -184,7 +186,7 @@ internal fun ContainerPositionDialog(
         },
         confirmButton = {
             TextButton(onClick = onDismiss) {
-                AureoleText("Cancelar", color = AureoleDS.colors.onSurfaceHigh)
+                AureoleText(stringResource(R.string.core_common_cancel), color = AureoleDS.colors.onSurfaceHigh)
             }
         }
     )

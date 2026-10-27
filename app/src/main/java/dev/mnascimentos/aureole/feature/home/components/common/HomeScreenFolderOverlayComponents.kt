@@ -8,6 +8,7 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
@@ -21,20 +22,21 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.unit.dp
 import dev.chrisbanes.haze.HazeState
 import dev.chrisbanes.haze.HazeStyle
 import dev.chrisbanes.haze.HazeTint
 import dev.chrisbanes.haze.hazeEffect
+import dev.mnascimentos.aureole.composable.appitem.AppItemBottomSheet
+import dev.mnascimentos.aureole.composable.appitem.model.AppItemBottomSheetParams
+import dev.mnascimentos.aureole.composable.appitem.model.AppItemRowActions
+import dev.mnascimentos.aureole.composable.dialogs.CreateFolderDialog
 import dev.mnascimentos.aureole.core.data.model.AppFolder
 import dev.mnascimentos.aureole.core.data.model.LauncherItemState
 import dev.mnascimentos.aureole.core.data.model.LauncherItemType
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
-import dev.mnascimentos.aureole.feature.home.components.appsdrawer.appitem.AppItemBottomSheet
-import dev.mnascimentos.aureole.feature.home.components.appsdrawer.appitem.model.AppItemBottomSheetParams
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.ContainerFolderBottomSheet
-import dev.mnascimentos.aureole.feature.home.components.containers.folder.CreateFolderDialog
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.EditFolderDialog
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.FolderAppPickerDialog
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.OpenedFolderOverlayUtils
@@ -75,13 +77,9 @@ private fun ContainerAppAndFolderOverlays(
         AppItemBottomSheet(
             params = AppItemBottomSheetParams(
                 app = state.app,
-                onRemoveFromContainer = {
-                    actions.onRemoveAppFromContainer(
-                        state.panelId,
-                        state.app.packageName
-                    )
-                },
-                onOpenContainerSettings = { actions.onOpenEditContainerDialog(state.panelId) }
+                onRemoveFromContainer = { actions.onRemoveAppFromContainer(state.panelId, state.app.packageName) },
+                onOpenContainerSettings = { actions.onOpenEditContainerDialog(state.panelId) },
+                actions = AppItemRowActions(onOpenSettings = actions.onSettingsClick)
             ),
             onDismiss = actions.onCloseContainerAppBottomSheet
         )
@@ -119,13 +117,9 @@ private fun ContainerAppAndFolderOverlays(
         AppItemBottomSheet(
             params = AppItemBottomSheetParams(
                 app = state.app,
-                onRemoveFromFolder = {
-                    actions.onRemoveAppFromFolder(
-                        state.folder.id,
-                        state.app.packageName
-                    )
-                },
-                onOpenFolderSettings = { actions.onOpenEditFolderForFolder(state.folder) }
+                onRemoveFromFolder = { actions.onRemoveAppFromFolder(state.folder.id, state.app.packageName) },
+                onOpenFolderSettings = { actions.onOpenEditFolderForFolder(state.folder) },
+                actions = AppItemRowActions(onOpenSettings = actions.onSettingsClick)
             ),
             onDismiss = actions.onCloseFolderAppBottomSheet
         )
@@ -223,30 +217,10 @@ private fun OpenedFolderOverlayContent(
     val folderToDisplay = params.folderToDisplay
     val isGridFolderEnabled = OpenedFolderOverlayUtils.isGridFolderMode(uiState, folderToDisplay)
 
-    val blurModifier = if (isGridFolderEnabled) {
-        Modifier.hazeEffect(
-            state = params.hazeState,
-            style = HazeStyle(blurRadius = 24.dp, tint = HazeTint(Color.Black.copy(alpha = 0.25f)))
-        ) {
-            blurEnabled = true
-        }
-    } else {
-        Modifier.Companion
-    }
-    val overlayBgColor = if (isGridFolderEnabled) Color.Black.copy(alpha = 0.2f) else Color.Black.copy(alpha = 0.45f)
-
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .then(blurModifier)
-            .background(overlayBgColor)
-            .pointerInput(Unit) {
-                detectTapGestures(onTap = {
-                    actions.onFolderIntent(
-                        FolderViewIntent.CloseFolder
-                    )
-                })
-            }
+    OpenedFolderBackgroundBox(
+        params = params,
+        actions = actions,
+        isGridFolderEnabled = isGridFolderEnabled
     ) {
         val topInsetDp = WindowInsets.statusBars.asPaddingValues().calculateTopPadding()
         val clampedTopDp = OpenedFolderOverlayUtils.calculateClampedTopDp(
@@ -278,12 +252,46 @@ private fun OpenedFolderOverlayContent(
                         )
                     },
                     onEditFolderClick = { actions.onSetRenameFolderDialogVisible(true) }
-                ),
-                isGridFolderEnabled = isGridFolderEnabled,
-                hazeState = if (isGridFolderEnabled) params.hazeState else null
+                )
             ),
             modifier = Modifier.align(align).then(popupPadding)
         )
+    }
+}
+
+@Composable
+private fun OpenedFolderBackgroundBox(
+    params: OpenedFolderOverlayParams,
+    actions: HomeScreenActions,
+    isGridFolderEnabled: Boolean,
+    content: @Composable BoxScope.() -> Unit
+) {
+    val blurModifier = if (isGridFolderEnabled) {
+        Modifier.hazeEffect(
+            state = params.hazeState,
+            style = HazeStyle(blurRadius = AureoleDS.dimens.large, tint = HazeTint(Color.Black.copy(alpha = 0.25f)))
+        ) {
+            blurEnabled = true
+        }
+    } else {
+        Modifier.Companion
+    }
+    val overlayBgColor = if (isGridFolderEnabled) Color.Black.copy(alpha = 0.2f) else Color.Black.copy(alpha = 0.45f)
+
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .then(blurModifier)
+            .background(overlayBgColor)
+            .pointerInput(Unit) {
+                detectTapGestures(onTap = {
+                    actions.onFolderIntent(
+                        FolderViewIntent.CloseFolder
+                    )
+                })
+            }
+    ) {
+        content()
     }
 }
 

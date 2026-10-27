@@ -22,9 +22,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import androidx.core.graphics.drawable.toDrawable
 import dev.mnascimentos.aureole.R
+import dev.mnascimentos.aureole.composable.appitem.model.AppItemRowActions
+import dev.mnascimentos.aureole.composable.appitem.model.AppItemRowConfig
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleSectionHeader
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
@@ -33,18 +34,12 @@ import dev.mnascimentos.aureole.core.designsystem.icons.Settings
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
-import dev.mnascimentos.aureole.feature.home.components.appsdrawer.appitem.AppItemRow
-import dev.mnascimentos.aureole.feature.home.components.appsdrawer.appitem.model.AppItemRowActions
-import dev.mnascimentos.aureole.feature.home.components.appsdrawer.appitem.model.AppItemRowConfig
+import dev.mnascimentos.aureole.feature.home.components.appsdrawer.appitem.HomeAppItemRow
+import dev.mnascimentos.aureole.feature.home.components.appsdrawer.model.AppsListMetrics
 import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
 import dev.mnascimentos.aureole.feature.home.model.LocalHomeActions
 import dev.mnascimentos.aureole.feature.home.model.LocalHomeUiState
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
-
-private object AppsListMetrics {
-    val SettingsIconContainerSize = 42.dp
-    val SettingsBottomSpacerHeight = 80.dp
-}
 
 fun LazyListScope.appsListItems(
     uiState: MainUiState,
@@ -73,7 +68,7 @@ fun LazyListScope.appsListItems(
         }
 
         val isFav = uiState.favoriteAppPackages.contains(app.packageName)
-        AppItemRow(
+        HomeAppItemRow(
             app = app,
             onClick = { actions.onAppClick(app) },
             config = AppItemRowConfig(isFavorite = isFav),
@@ -116,7 +111,7 @@ private fun LazyListScope.settingsListItem(actions: HomeScreenActions) {
             Spacer(modifier = Modifier.width(AureoleDS.dimens.medium))
 
             AureoleText(
-                text = stringResource(R.string.customize_aureole_settings),
+                text = stringResource(R.string.home_customize_aureole_settings),
                 color = AureoleDS.colors.onSurfaceMedium,
                 format = AureoleTextFormatParams(style = AureoleDS.typography.bodyLarge)
             )

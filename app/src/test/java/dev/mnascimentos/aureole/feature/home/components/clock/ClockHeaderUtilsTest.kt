@@ -2,6 +2,7 @@ package dev.mnascimentos.aureole.feature.home.components.clock
 
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.text.style.TextAlign
+import dev.mnascimentos.aureole.composable.clock.ClockHeaderUtils
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Test

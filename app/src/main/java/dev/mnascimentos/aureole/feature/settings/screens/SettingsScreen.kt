@@ -19,11 +19,15 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.composable.ColorPickerDialog
 import dev.mnascimentos.aureole.composable.SettingsActionItem
 import dev.mnascimentos.aureole.composable.SettingsMenuItem
 import dev.mnascimentos.aureole.composable.SettingsMenuParams
+import dev.mnascimentos.aureole.composable.dialogs.CreateFolderDialog
+import dev.mnascimentos.aureole.composable.sheets.SettingsBottomSheet
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
 import dev.mnascimentos.aureole.core.designsystem.icons.Check
@@ -31,11 +35,9 @@ import dev.mnascimentos.aureole.core.designsystem.icons.Delete
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
-import dev.mnascimentos.aureole.feature.home.components.containers.folder.CreateFolderDialog
 import dev.mnascimentos.aureole.feature.settings.SettingsNavGraph
 import dev.mnascimentos.aureole.feature.settings.components.ContainerPositionDialog
 import dev.mnascimentos.aureole.feature.settings.components.SearchIconPositionDialog
-import dev.mnascimentos.aureole.feature.settings.components.SettingsBottomSheet
 import dev.mnascimentos.aureole.feature.settings.components.SettingsButtonPositionDialog
 import dev.mnascimentos.aureole.feature.settings.model.SettingsScreenActions
 import dev.mnascimentos.aureole.feature.settings.model.SettingsUiState
@@ -164,19 +166,19 @@ internal fun FactoryResetDialog(
     actions: SettingsScreenActions = SettingsScreenActions()
 ) {
     SettingsBottomSheet(
-        title = "Reset launcher?",
+        title = stringResource(R.string.settings_advanced_reset_dialog_title),
         onDismissRequest = actions.onDismissFactoryResetDialog
     ) {
         Column(verticalArrangement = Arrangement.spacedBy(AureoleDS.dimens.xSmall)) {
             SettingsMenuItem(
                 SettingsMenuParams(
-                    title = "Yes",
+                    title = stringResource(R.string.core_common_yes),
                     onClick = { actions.onConfirmFactoryReset() }
                 )
             )
             SettingsMenuItem(
                 SettingsMenuParams(
-                    title = "No",
+                    title = stringResource(R.string.core_common_no),
                     onClick = { actions.onDismissFactoryResetDialog() }
                 )
             )
@@ -189,12 +191,12 @@ internal fun ResetGridDialog(
     actions: SettingsScreenActions = SettingsScreenActions()
 ) {
     SettingsBottomSheet(
-        title = "Reset Layout?",
+        title = stringResource(R.string.settings_advanced_reset_layout_title),
         onDismissRequest = actions.onDismissResetGridDialog
     ) {
         Column(verticalArrangement = Arrangement.spacedBy(AureoleDS.dimens.small)) {
             SettingsActionItem(
-                title = "Restore",
+                title = stringResource(R.string.settings_advanced_reset_layout_restore),
                 leadingContent = { AureoleDS.icons.Check() },
                 onClick = {
                     actions.onConfirmResetGrid()
@@ -202,7 +204,7 @@ internal fun ResetGridDialog(
                 }
             )
             SettingsActionItem(
-                title = "Cancel",
+                title = stringResource(R.string.core_common_cancel),
                 leadingContent = { AureoleDS.icons.Delete() },
                 onClick = { actions.onDismissResetGridDialog() }
             )
@@ -217,17 +219,17 @@ internal fun HazeOpacityDialog(
     onDismiss: () -> Unit = {}
 ) {
     val options = listOf(
-        OPACITY_LOW to "Low",
-        OPACITY_MEDIUM to "Medium",
-        OPACITY_HIGH to "High",
-        OPACITY_SOLID to "Solid"
+        OPACITY_LOW to stringResource(R.string.settings_appearance_blur_opacity_low),
+        OPACITY_MEDIUM to stringResource(R.string.settings_appearance_blur_opacity_medium),
+        OPACITY_HIGH to stringResource(R.string.settings_appearance_blur_opacity_high),
+        OPACITY_SOLID to stringResource(R.string.settings_appearance_blur_opacity_solid)
     )
 
     AlertDialog(
         onDismissRequest = onDismiss,
         title = {
             AureoleText(
-                text = "Blur Opacity",
+                text = stringResource(R.string.settings_appearance_blur_opacity_title),
                 color = AureoleDS.colors.onSurfaceHigh,
                 format = AureoleTextFormatParams(style = AureoleDS.typography.titleMedium, fontWeight = FontWeight.Bold)
             )
@@ -260,7 +262,7 @@ internal fun HazeOpacityDialog(
         },
         confirmButton = {
             TextButton(onClick = onDismiss) {
-                AureoleText("Cancel", color = AureoleDS.colors.onSurfaceHigh)
+                AureoleText(stringResource(R.string.core_common_cancel), color = AureoleDS.colors.onSurfaceHigh)
             }
         }
     )
@@ -272,19 +274,19 @@ internal fun RestoreWallpaperDialog(
     onDismiss: () -> Unit = {}
 ) {
     SettingsBottomSheet(
-        title = "Restore default background?",
+        title = stringResource(R.string.settings_appearance_restore_background_title),
         onDismissRequest = onDismiss
     ) {
         Column(verticalArrangement = Arrangement.spacedBy(AureoleDS.dimens.xSmall)) {
             SettingsMenuItem(
                 SettingsMenuParams(
-                    title = "Yes",
+                    title = stringResource(R.string.core_common_yes),
                     onClick = onConfirm
                 )
             )
             SettingsMenuItem(
                 SettingsMenuParams(
-                    title = "No",
+                    title = stringResource(R.string.core_common_no),
                     onClick = onDismiss
                 )
             )

@@ -78,7 +78,7 @@ fun ColorPickerDialog(
         onDismissRequest = onDismiss,
         title = {
             AureoleText(
-                text = stringResource(R.string.color_picker_primary),
+                text = stringResource(R.string.settings_appearance_color_picker_primary),
                 format = AureoleTextFormatParams(style = AureoleDS.typography.titleMedium, fontWeight = FontWeight.Bold)
             )
         },
@@ -114,12 +114,12 @@ fun ColorPickerDialog(
         },
         confirmButton = {
             TextButton(onClick = { onColorSelected(selectedColor) }) {
-                AureoleText(stringResource(R.string.common_confirm))
+                AureoleText(stringResource(R.string.core_common_confirm))
             }
         },
         dismissButton = {
             TextButton(onClick = onDismiss) {
-                AureoleText(stringResource(R.string.common_cancel))
+                AureoleText(stringResource(R.string.core_common_cancel))
             }
         },
     )
@@ -133,7 +133,7 @@ private fun PresetColorsSection(
 ) {
     Column(verticalArrangement = Arrangement.spacedBy(AureoleDS.dimens.medium)) {
         AureoleText(
-            text = stringResource(R.string.colors_recommended),
+            text = stringResource(R.string.settings_appearance_colors_recommended),
             color = AureoleDS.colors.onSurfaceMedium,
             format = AureoleTextFormatParams(style = AureoleDS.typography.labelMedium)
         )
@@ -194,7 +194,7 @@ private fun CustomHueSection(
 ) {
     Column {
         AureoleText(
-            text = stringResource(R.string.color_picker_custom_hue),
+            text = stringResource(R.string.settings_appearance_color_picker_custom_hue),
             color = AureoleDS.colors.onSurfaceMedium,
             format = AureoleTextFormatParams(style = AureoleDS.typography.labelMedium)
         )

@@ -28,6 +28,7 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import dev.mnascimentos.aureole.R
+import dev.mnascimentos.aureole.composable.dialogs.model.FolderButtonMetrics
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleFloatingSearchBar
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleFloatingSearchBarParams
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleSearchBarSizes
@@ -36,7 +37,6 @@ import dev.mnascimentos.aureole.core.designsystem.components.AureoleSectionHeade
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
-import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.FolderButtonMetrics
 import dev.mnascimentos.aureole.feature.home.components.scrubber.CurvedAlphabetScrubber
 import dev.mnascimentos.aureole.feature.home.components.scrubber.model.ScrubberCallbacks
 import dev.mnascimentos.aureole.feature.home.components.scrubber.model.ScrubberOptions
@@ -128,7 +128,7 @@ fun WidgetGroupList(
                 ),
                 modifier = searchBarModifier,
                 params = AureoleFloatingSearchBarParams(
-                    placeholder = stringResource(R.string.widget_picker_search_placeholder),
+                    placeholder = stringResource(R.string.home_widget_picker_search_placeholder),
                     focusRequester = focusRequester,
                     sizes = AureoleSearchBarSizes(
                         collapsedSize = FolderButtonMetrics.MediumSize,

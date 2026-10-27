@@ -17,7 +17,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import dev.chrisbanes.haze.HazeState
 import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.core.data.model.QuickButtonModel
@@ -31,6 +30,7 @@ import dev.mnascimentos.aureole.core.designsystem.model.AureoleEditOverlayParams
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
+import dev.mnascimentos.aureole.feature.home.components.quickbutton.model.QuickButtonAppearanceMetrics
 import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
 import kotlinx.coroutines.delay
@@ -69,21 +69,21 @@ fun QuickButtonSettingsBottomSheet(
         modifier = modifier,
         params = AureoleEditOverlayParams(
             config = AureoleEditOverlayConfig(
-                title = stringResource(R.string.qb_settings_title),
+                title = stringResource(R.string.home_quickbutton_settings_title),
                 onSettingsClick = { actions.onSettingsClick() },
                 hazeState = effectiveHazeState,
                 isVisible = isVisible,
                 animated = true,
-                maxSheetHeightFraction = 0.4f
+                maxSheetHeightFraction = 0.3f
             ),
             previewContent = {
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(140.dp),
+                        .height(QuickButtonAppearanceMetrics.PreviewBoxHeight),
                     contentAlignment = Alignment.Center
                 ) {
-                    Box(modifier = Modifier.size(72.dp)) {
+                    Box(modifier = Modifier.size(QuickButtonAppearanceMetrics.PreviewItemSize)) {
                         QuickButtonGridItem(
                             model = activeModel,
                             appInfo = activeAppInfo,
@@ -119,7 +119,7 @@ private fun QuickButtonSettingsSheetContent(
             .verticalScroll(rememberScrollState())
     ) {
         SettingsRow(
-            title = stringResource(R.string.qb_appearance),
+            title = stringResource(R.string.home_quickbutton_appearance),
             icon = { m -> AureoleDS.icons.Edit(m) },
             onClick = { actions.onOpenQuickButtonAppearance() }
         )
@@ -129,10 +129,10 @@ private fun QuickButtonSettingsSheetContent(
                 val pkg = activeModel.shortcuts.click.target
                 val appLabel = uiState.apps.find { it.packageName == pkg }?.label
                 if (appLabel != null) {
-                    stringResource(R.string.qb_open_app_name, appLabel)
+                    stringResource(R.string.home_quickbutton_open_app_name, appLabel)
                 } else {
                     stringResource(
-                        R.string.qb_open_app
+                        R.string.home_quickbutton_open_app
                     )
                 }
             }
@@ -140,7 +140,7 @@ private fun QuickButtonSettingsSheetContent(
         }
 
         SettingsRow(
-            title = stringResource(R.string.qb_click_shortcut),
+            title = stringResource(R.string.home_quickbutton_click_shortcut),
             value = clickValue,
             icon = { m -> AureoleDS.icons.Click(m) },
             onClick = { actions.onOpenShortcutSelection("click") }
@@ -149,7 +149,7 @@ private fun QuickButtonSettingsSheetContent(
         Spacer(modifier = Modifier.height(AureoleDS.dimens.medium))
 
         SettingsRow(
-            title = stringResource(dev.mnascimentos.aureole.R.string.qb_remove),
+            title = stringResource(dev.mnascimentos.aureole.R.string.home_quickbutton_remove),
             icon = { m -> AureoleDS.icons.Delete(m, tint = AureoleDS.colors.error) },
             textColor = AureoleDS.colors.error,
             onClick = {

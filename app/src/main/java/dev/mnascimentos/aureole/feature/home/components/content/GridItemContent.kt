@@ -23,7 +23,9 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.input.pointer.PointerEventPass
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.rememberNestedScrollInteropConnection
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.viewinterop.AndroidView
+import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.core.data.model.LauncherItemState
 import dev.mnascimentos.aureole.core.data.model.LauncherItemType
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
@@ -223,7 +225,11 @@ fun SingleAppWidgetContent(
 
 @SuppressLint("SetTextI18n")
 private fun createSingleWidgetView(context: Context, widgetId: Int, appWidgetHost: AppWidgetHost?): View {
-    if (appWidgetHost == null) return TextView(context).apply { text = "Widget" }
+    if (appWidgetHost == null) {
+        return TextView(
+            context
+        ).apply { text = context.getString(R.string.home_grid_widget_label) }
+    }
     val appWidgetManager = AppWidgetManager.getInstance(context)
     val appWidgetInfo = appWidgetManager.getAppWidgetInfo(widgetId)
     return if (appWidgetInfo != null) {
@@ -237,7 +243,7 @@ private fun createSingleWidgetView(context: Context, widgetId: Int, appWidgetHos
         appWidgetManager.updateAppWidgetOptions(widgetId, options)
         appWidgetHost.createView(context, widgetId, appWidgetInfo)
     } else {
-        TextView(context).apply { text = "Widget" }
+        TextView(context).apply { text = context.getString(R.string.home_grid_widget_label) }
     }
 }
 
@@ -262,7 +268,10 @@ private fun updateSingleWidgetView(view: View, widgetId: Int) {
 @Composable
 private fun UnconfiguredWidgetPlaceholder() {
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-        AureoleText(text = "Widget não configurado", color = AureoleDS.colors.onSurfaceHigh)
+        AureoleText(
+            text = stringResource(R.string.home_grid_widget_unconfigured),
+            color = AureoleDS.colors.onSurfaceHigh
+        )
     }
 }
 

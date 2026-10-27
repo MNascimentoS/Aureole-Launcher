@@ -18,7 +18,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.data.model.QuickButtonModel
 import dev.mnascimentos.aureole.core.data.model.ShortcutAction
@@ -47,7 +46,7 @@ fun QuickButtonGridItem(
         .background(Color(model.appearance.backgroundColor))
 
     val strokeModifier = if (model.appearance.strokeEnabled) {
-        baseModifier.border(2.dp, Color(model.appearance.strokeColor), shape)
+        baseModifier.border(AureoleDS.dimens.minimal, Color(model.appearance.strokeColor), shape)
     } else {
         baseModifier
     }
@@ -84,7 +83,7 @@ fun QuickButtonGridItem(
 @Composable
 private fun QuickButtonGridItemPreview() {
     AureoleLauncherTheme {
-        Box(modifier = Modifier.size(100.dp)) {
+        Box(modifier = Modifier.size(AureoleDS.dimens.radiusFull)) {
             QuickButtonGridItem(
                 model = QuickButtonModel(),
                 onAction = {},

@@ -1,13 +1,10 @@
 package dev.mnascimentos.aureole.feature.home.components.favorites
 
 import android.appwidget.AppWidgetHost
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.LazyListState
@@ -16,16 +13,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.Dp
+import dev.mnascimentos.aureole.composable.appitem.model.AppItemRowActions
+import dev.mnascimentos.aureole.composable.appitem.model.AppItemRowConfig
+import dev.mnascimentos.aureole.composable.clock.model.ClockHazeConfig
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
-import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
-import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.core.designsystem.utils.fadingEdges
-import dev.mnascimentos.aureole.feature.home.components.appsdrawer.appitem.AppItemRow
-import dev.mnascimentos.aureole.feature.home.components.appsdrawer.appitem.model.AppItemRowActions
-import dev.mnascimentos.aureole.feature.home.components.appsdrawer.appitem.model.AppItemRowConfig
-import dev.mnascimentos.aureole.feature.home.components.clock.ClockHeader
-import dev.mnascimentos.aureole.feature.home.components.clock.model.ClockHazeConfig
+import dev.mnascimentos.aureole.feature.home.components.appsdrawer.appitem.HomeAppItemRow
+import dev.mnascimentos.aureole.feature.home.components.clock.HomeClockHeader
 import dev.mnascimentos.aureole.feature.home.components.favorites.model.FavoritesListConfig
 import dev.mnascimentos.aureole.feature.home.components.favorites.model.FavoritesListOptions
 import dev.mnascimentos.aureole.feature.home.components.favorites.model.NonScrollableFavoritesParams
@@ -35,8 +30,6 @@ import dev.mnascimentos.aureole.feature.home.components.widgets.model.StackedWid
 import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
 import dev.mnascimentos.aureole.feature.home.model.LocalHomeActions
 import dev.mnascimentos.aureole.feature.home.model.LocalHomeUiState
-import dev.mnascimentos.aureole.feature.home.model.MainUiState
-import dev.mnascimentos.aureole.feature.home.model.createDefaultHomeScreenActions
 
 private const val MAX_NON_SCROLLABLE_APPS = 20
 
@@ -118,7 +111,7 @@ private fun ScrollableFavoritesList(
     ) {
         if (showHeadersAndWidgets) {
             item(key = "clock_header") {
-                ClockHeader(
+                HomeClockHeader(
                     hazeConfig = ClockHazeConfig(
                         hazeState = config.hazeState,
                         isHazeEnabled = uiState.isHazeEnabled,
@@ -178,7 +171,7 @@ private fun NonScrollableFavoritesList(
     ) {
         if (favoriteApps.isNotEmpty()) {
             favoriteApps.forEach { app ->
-                AppItemRow(
+                HomeAppItemRow(
                     app = app,
                     onClick = { actions.onAppClick(app) },
                     config = AppItemRowConfig(isFavorite = true, useActionSheet = true),
@@ -199,7 +192,7 @@ private fun NonScrollableFavoritesList(
             val appsToDisplay = remember(uiState.apps) { uiState.apps.take(MAX_NON_SCROLLABLE_APPS) }
             appsToDisplay.forEach { app ->
                 val isFav = favoritePackages.contains(app.packageName)
-                AppItemRow(
+                HomeAppItemRow(
                     app = app,
                     onClick = { actions.onAppClick(app) },
                     config = AppItemRowConfig(isFavorite = isFav, useActionSheet = true),
@@ -227,7 +220,7 @@ private fun LazyListScope.favoriteAppsSection(
             key = { "fav_${it.packageName}" },
             contentType = { "app_row" }
         ) { app ->
-            AppItemRow(
+            HomeAppItemRow(
                 app = app,
                 onClick = { actions.onAppClick(app) },
                 config = AppItemRowConfig(isFavorite = true, useActionSheet = true),
@@ -264,7 +257,7 @@ private fun LazyListScope.allAppsSection(
             contentType = { "app_row" }
         ) { app ->
             val isFav = favoritePackages.contains(app.packageName)
-            AppItemRow(
+            HomeAppItemRow(
                 app = app,
                 onClick = { actions.onAppClick(app) },
                 config = AppItemRowConfig(isFavorite = isFav, useActionSheet = true),
@@ -296,26 +289,4 @@ fun FavoritesList(
         appWidgetHost = appWidgetHost,
         modifier = modifier
     )
-}
-
-@AureolePreview
-@Composable
-private fun FavoritesListPreview() {
-    AureoleLauncherTheme {
-        Box(
-            modifier = Modifier
-                .background(AureoleDS.colors.surface)
-                .padding(AureoleDS.dimens.medium)
-        ) {
-            NonScrollableFavoritesList(
-                params = NonScrollableFavoritesParams(
-                    uiState = MainUiState(),
-                    favoriteApps = emptyList(),
-                    actions = createDefaultHomeScreenActions(),
-                    favoritePackages = emptySet(),
-                    containerId = null
-                )
-            )
-        }
-    }
 }
