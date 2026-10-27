@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import dev.mnascimentos.aureole.core.data.db.AppDatabase
+import dev.mnascimentos.aureole.core.data.model.OnboardingStage
 import dev.mnascimentos.aureole.core.data.repository.AppRepository
 import dev.mnascimentos.aureole.core.data.repository.ContainerRepository
 import dev.mnascimentos.aureole.core.data.repository.FavoriteContainerRepository
@@ -16,6 +17,8 @@ import dev.mnascimentos.aureole.feature.home.model.HomeRepositories
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import org.junit.After
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
@@ -76,5 +79,18 @@ class MainLifecycleObserverTest {
         observer.onResume(dummyOwner)
 
         assertTrue(wasResumedCalled)
+    }
+
+    @Test
+    fun `when resumed on a fresh install, should start the welcome without release notes`() {
+        val dummyOwner = object : LifecycleOwner {
+            override val lifecycle: Lifecycle
+                get() = error("Not needed")
+        }
+
+        observer.onResume(dummyOwner)
+
+        assertEquals(OnboardingStage.WELCOME, viewModel.uiState.value.onboarding.stage)
+        assertFalse(viewModel.uiState.value.showReleaseNotesBottomSheet)
     }
 }
