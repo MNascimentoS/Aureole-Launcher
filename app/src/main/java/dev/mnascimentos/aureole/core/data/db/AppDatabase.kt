@@ -1,6 +1,7 @@
 package dev.mnascimentos.aureole.core.data.db
 
 import android.content.Context
+import androidx.annotation.VisibleForTesting
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
@@ -21,7 +22,7 @@ import dev.mnascimentos.aureole.core.data.model.FolderItemEntity
         FolderItemEntity::class
     ],
     version = 3,
-    exportSchema = false
+    exportSchema = true
 )
 @TypeConverters(RoomConverters::class)
 abstract class AppDatabase : RoomDatabase() {
@@ -32,19 +33,22 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun folderDao(): FolderDao
 
     companion object {
+        private const val DATABASE_NAME = "aureole_app_database.db"
+
         @Volatile
         private var instance: AppDatabase? = null
 
         fun getInstance(context: Context): AppDatabase {
             return instance ?: synchronized(this) {
-                instance ?: Room.databaseBuilder(
-                    context.applicationContext,
-                    AppDatabase::class.java,
-                    "aureole_app_database.db",
-                )
-                    .fallbackToDestructiveMigration(dropAllTables = true)
-                    .build().also { instance = it }
+                instance ?: buildDatabase(context, DATABASE_NAME).also { instance = it }
             }
         }
+
+        @VisibleForTesting
+        internal fun buildDatabase(context: Context, name: String): AppDatabase =
+            Room.databaseBuilder(context.applicationContext, AppDatabase::class.java, name)
+                .addMigrations(MIGRATION_2_3)
+                .fallbackToDestructiveMigration(dropAllTables = true)
+                .build()
     }
 }

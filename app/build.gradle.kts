@@ -105,6 +105,11 @@ tasks.withType<KotlinCompile>().configureEach {
     }
 }
 
+// Region: Room schema history (every version bump must ship a migration)
+ksp {
+    arg("room.schemaLocation", "$projectDir/schemas")
+}
+
 // Region: Code Quality Configuration (Detekt & Jacoco)
 detekt {
     buildUponDefaultConfig = true
