@@ -15,6 +15,9 @@ import dev.mnascimentos.aureole.composable.favorites.model.FavoriteAppsDialogAct
 import dev.mnascimentos.aureole.composable.favorites.model.FavoriteAppsDialogConfig
 import dev.mnascimentos.aureole.composable.sheets.ReleaseNotesBottomSheet
 import dev.mnascimentos.aureole.core.designsystem.utils.LocalHazeState
+import dev.mnascimentos.aureole.feature.home.components.onboarding.OnboardingHostComponent
+import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.rememberTouchExplorationEnabled
+import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.toOnboardingHostParams
 import dev.mnascimentos.aureole.feature.home.components.overlays.UpdateAvailableDialog
 import dev.mnascimentos.aureole.feature.home.components.overlays.UpdateDownloadedDialog
 import dev.mnascimentos.aureole.feature.home.components.widgets.WidgetPickerScreen
@@ -65,6 +68,15 @@ fun MainScaffold(
         ReleaseNotesOverlay(
             uiState = uiState,
             onDismiss = actions.onDismissReleaseNotes
+        )
+
+        // Last layer: the onboarding sits above every home surface, but only blocks touches when it must.
+        OnboardingHostComponent(
+            params = uiState.toOnboardingHostParams(
+                hazeState = LocalHazeState.current,
+                isTouchExplorationEnabled = rememberTouchExplorationEnabled()
+            ),
+            actions = actions.onboarding
         )
     }
 }
