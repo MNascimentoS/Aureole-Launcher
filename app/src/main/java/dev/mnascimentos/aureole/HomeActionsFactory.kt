@@ -35,6 +35,8 @@ import dev.mnascimentos.aureole.feature.home.components.favorites.extensions.set
 import dev.mnascimentos.aureole.feature.home.components.favorites.extensions.toggleFavorite
 import dev.mnascimentos.aureole.feature.home.components.favorites.extensions.updateContainerFavorites
 import dev.mnascimentos.aureole.feature.home.components.favorites.extensions.updateFavoritePackages
+import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.onOnboardingSignal
+import dev.mnascimentos.aureole.feature.home.components.onboarding.model.OnboardingSignal
 import dev.mnascimentos.aureole.feature.home.components.overlays.extensions.closeContainerAppBottomSheet
 import dev.mnascimentos.aureole.feature.home.components.overlays.extensions.closeContainerFolderBottomSheet
 import dev.mnascimentos.aureole.feature.home.components.overlays.extensions.closeFolderAppBottomSheet
@@ -94,6 +96,7 @@ class HomeActionsFactory(
     private val appUpdateManager: AppUpdateManager,
     private val updateActivityResultLauncher: ActivityResultLauncher<IntentSenderRequest>,
     private val cachedAppUpdateInfo: AppUpdateInfo? = null,
+    private val launchDefaultHomeRequest: (Intent) -> Unit = {},
 ) {
     fun createHomeActions(): HomeScreenActions {
         val baseActions = HomeScreenActions(
@@ -119,6 +122,7 @@ class HomeActionsFactory(
             onSetRenameFolderDialogVisible = { viewModel.setRenameFolderDialogVisible(it) },
             onSearchQueryChanged = { viewModel.onSearchQueryChanged(it) },
             onSettingsClick = {
+                viewModel.onOnboardingSignal(OnboardingSignal.SETTINGS_OPENED)
                 val intent = Intent(context, SettingsActivity::class.java)
                 context.startActivity(intent)
             },
@@ -144,8 +148,9 @@ class HomeActionsFactory(
             onDismissUpdateDialog = { handleDismissUpdateDialog() }
         )
 
-        val gridBase = attachGridActions(baseActions)
-        return gridBase
+        val homeActions = attachGridActions(baseActions)
+        val onboarding = OnboardingActionsFactory(context, viewModel, homeActions, launchDefaultHomeRequest)
+        return homeActions.copy(onboarding = onboarding.createOnboardingActions())
     }
 
     private fun attachGridActions(base: HomeScreenActions): HomeScreenActions {

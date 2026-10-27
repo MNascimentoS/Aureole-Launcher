@@ -147,6 +147,7 @@ fun ScrubberOverlay(
         ),
         callbacks = ScrubberCallbacks(
             onLetterSelected = { letter ->
+                config.actions.onboarding.onAlphabetScrubbed()
                 if (!config.uiState.isAllAppsDrawerOpen) {
                     config.actions.onAllAppsDrawerOpen()
                 }

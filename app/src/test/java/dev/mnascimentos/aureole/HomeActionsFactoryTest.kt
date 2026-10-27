@@ -14,6 +14,8 @@ import androidx.lifecycle.viewModelScope
 import com.google.android.play.core.appupdate.testing.FakeAppUpdateManager
 import com.google.android.play.core.install.model.AppUpdateType
 import dev.mnascimentos.aureole.core.data.model.AppInfo
+import dev.mnascimentos.aureole.core.data.model.OnboardingStage
+import dev.mnascimentos.aureole.core.data.model.OnboardingTask
 import dev.mnascimentos.aureole.core.data.repository.AppRepository
 import dev.mnascimentos.aureole.core.data.repository.ContainerRepository
 import dev.mnascimentos.aureole.core.data.repository.FavoriteContainerRepository
@@ -22,6 +24,7 @@ import dev.mnascimentos.aureole.core.data.repository.GridRepository
 import dev.mnascimentos.aureole.core.data.repository.SettingsRepository
 import dev.mnascimentos.aureole.core.data.repository.WidgetRepository
 import dev.mnascimentos.aureole.feature.home.HomeViewModel
+import dev.mnascimentos.aureole.feature.home.components.onboarding.model.OnboardingUiState
 import dev.mnascimentos.aureole.feature.home.model.HomeRepositories
 import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
 import dev.mnascimentos.aureole.feature.settings.SettingsActivity
@@ -75,6 +78,17 @@ class HomeActionsFactoryTest {
 
         val started = shadowOf(activity).nextStartedActivity
         assertEquals(SettingsActivity::class.java.name, started.component?.className)
+    }
+
+    @Test
+    fun `when settings is clicked during the checklist, should complete the settings task`() {
+        viewModel.updateUiState {
+            it.copy(onboarding = OnboardingUiState(stage = OnboardingStage.CHECKLIST))
+        }
+
+        actions().onSettingsClick()
+
+        assertTrue(OnboardingTask.EXPLORE_SETTINGS in viewModel.uiState.value.onboarding.completedTasks)
     }
 
     @Test
