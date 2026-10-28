@@ -80,7 +80,8 @@ fun FavoriteAppsDialog(
                 title = titleText,
                 isVisible = isVisible,
                 animated = true,
-                maxSheetHeightFraction = 0.35f,
+                maxSheetHeightFraction = 0.6f,
+                onSettingsClick = actions.onSettingsClick,
                 onBackPress = {
                     if (currentMode != FavoriteAppsScreenMode.MAIN) {
                         currentMode = FavoriteAppsScreenMode.MAIN
@@ -92,20 +93,10 @@ fun FavoriteAppsDialog(
             previewContent = {
                 FavoriteAppsPreviewContent(previewFavoriteApps = previewFavoriteApps, rowConfig = config.rowConfig)
             },
-            bottomBarContent = {
-                FavoriteAppsBottomBar(
-                    currentMode = currentMode,
-                    onBack = { currentMode = FavoriteAppsScreenMode.MAIN },
-                    onClose = { isVisible = false }
-                )
-            },
             sheetContent = {
                 FavoriteAppsSheetContent(
-                    currentMode = currentMode,
                     config = config,
                     actions = actions,
-                    onEditShortcutsClick = { currentMode = FavoriteAppsScreenMode.EDIT_SHORTCUTS },
-                    onAppearanceClick = { currentMode = FavoriteAppsScreenMode.APPEARANCE }
                 )
             }
         )
@@ -117,6 +108,7 @@ private fun FavoriteAppsPreviewContent(previewFavoriteApps: List<AppInfo>, rowCo
     Box(
         modifier = Modifier
             .fillMaxWidth(PREVIEW_WIDTH_FRACTION)
+            .padding(vertical = AureoleDS.dimens.small)
             .clip(RoundedCornerShape(AureoleDS.dimens.radiusLarge))
             .background(AureoleDS.colors.surfaceVariant.copy(alpha = 0.35f))
             .border(

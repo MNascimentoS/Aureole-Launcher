@@ -3,16 +3,6 @@ package dev.mnascimentos.aureole.feature.home.grid
 import dev.mnascimentos.aureole.core.data.model.LauncherItemState
 import dev.mnascimentos.aureole.core.data.model.LauncherItemType
 
-private const val DEFAULT_CLOCK_SPAN_X = 20
-private const val DEFAULT_CLOCK_SPAN_Y = 9
-private const val DEFAULT_PANEL_COL = 14
-private const val DEFAULT_PANEL_ROW = 9
-private const val DEFAULT_PANEL_SPAN_X = 6
-private const val DEFAULT_PANEL_SPAN_Y = 11
-private const val DEFAULT_APPS_ROW = 13
-private const val DEFAULT_APPS_SPAN_X = 14
-private const val DEFAULT_APPS_SPAN_Y = 17
-
 private const val CLOCK_DEFAULT_COL_SPAN = 20
 private const val CLOCK_DEFAULT_ROW_SPAN = 9
 private const val APPS_DEFAULT_COL_SPAN = 14
@@ -30,6 +20,29 @@ private const val QUICK_BUTTON_DEFAULT_ROW_SPAN = 3
 private const val DEFAULT_MIN_COL_SPAN = 1
 private const val DEFAULT_MIN_ROW_SPAN = 1
 
+// Default layout v3 (specs/first-user-experience/default-layout-v3.png), right-handed.
+// Left-handed mode mirrors every item horizontally.
+private const val PORTRAIT_FULL_WIDTH = 20
+private const val PORTRAIT_CLOCK_ROW_SPAN = 6
+private const val PORTRAIT_WIDGETS_ROW = 6
+private const val PORTRAIT_WIDGETS_ROW_SPAN = 6
+private const val PORTRAIT_BOTTOM_ROW = 12
+private const val PORTRAIT_BOTTOM_ROW_SPAN = 18
+private const val PORTRAIT_APPS_COL_SPAN = 16
+private const val PORTRAIT_CONTAINER_COL = 16
+private const val PORTRAIT_CONTAINER_COL_SPAN = 4
+
+private const val LANDSCAPE_CLOCK_COL_SPAN = 14
+private const val LANDSCAPE_CLOCK_ROW_SPAN = 7
+private const val LANDSCAPE_WIDGETS_COL = 14
+private const val LANDSCAPE_WIDGETS_COL_SPAN = 12
+private const val LANDSCAPE_FULL_HEIGHT = 20
+private const val LANDSCAPE_APPS_ROW = 7
+private const val LANDSCAPE_APPS_COL_SPAN = 14
+private const val LANDSCAPE_APPS_ROW_SPAN = 13
+private const val LANDSCAPE_CONTAINER_COL = 26
+private const val LANDSCAPE_CONTAINER_COL_SPAN = 4
+
 object GridDefaults {
     fun getDefaultSpanForType(type: LauncherItemType): Pair<Pair<Int, Int>, Pair<Int, Int>> {
         return when (type) {
@@ -37,7 +50,7 @@ object GridDefaults {
                 Pair(CLOCK_DEFAULT_COL_SPAN, CLOCK_DEFAULT_ROW_SPAN),
                 Pair(DEFAULT_MIN_COL_SPAN, DEFAULT_MIN_ROW_SPAN)
             )
-            LauncherItemType.APPS_LIST -> Pair(
+            LauncherItemType.APPS_LIST, LauncherItemType.ALL_APPS_LIST -> Pair(
                 Pair(APPS_DEFAULT_COL_SPAN, APPS_DEFAULT_ROW_SPAN),
                 Pair(DEFAULT_MIN_COL_SPAN, DEFAULT_MIN_ROW_SPAN)
             )
@@ -64,81 +77,101 @@ object GridDefaults {
         }
     }
 
-    fun getDefaultGridItems(isLandscape: Boolean = false): List<LauncherItemState> {
-        return if (isLandscape) {
-            getDefaultLandscapeGridItems()
-        } else {
-            getDefaultPortraitGridItems()
+    const val CLOCK_ITEM_ID = "clock_item"
+    const val WIDGETS_ITEM_ID = "widgets_item"
+    const val APPS_LIST_ITEM_ID = "apps_list_item"
+    const val CONTAINER_ITEM_ID = "container_item"
+
+    /** Without favorites, the apps spot holds the all apps list, so the home always shows apps. */
+    fun getDefaultGridItems(
+        isLandscape: Boolean = false,
+        isLeftHanded: Boolean = false,
+        hasFavorites: Boolean = true
+    ): List<LauncherItemState> {
+        val items = (if (isLandscape) landscapeItems() else portraitItems()).map { item ->
+            val showsAllApps = !hasFavorites && item.safeType == LauncherItemType.APPS_LIST
+            if (showsAllApps) item.copy(type = LauncherItemType.ALL_APPS_LIST) else item
         }
+        if (!isLeftHanded) return items
+        val maxCols = if (isLandscape) GridEngineUtils.LANDSCAPE_MAX_COLS else GridEngineUtils.PORTRAIT_MAX_COLS
+        return items.map { it.copy(col = maxCols - it.col - it.colSpan) }
     }
 
-    private fun getDefaultLandscapeGridItems(): List<LauncherItemState> {
-        return listOf(
-            LauncherItemState(
-                id = "clock_item",
-                type = LauncherItemType.CLOCK,
-                col = 0,
-                row = 0,
-                colSpan = 20,
-                rowSpan = 6,
-                minColSpan = 1,
-                minRowSpan = 1
-            ),
-            LauncherItemState(
-                id = "container_item",
-                type = LauncherItemType.SHORTCUTS_CONTAINER,
-                col = 24,
-                row = 0,
-                colSpan = 6,
-                rowSpan = 20,
-                minColSpan = 1,
-                minRowSpan = 1
-            ),
-            LauncherItemState(
-                id = "apps_list_item",
-                type = LauncherItemType.APPS_LIST,
-                col = 0,
-                row = 6,
-                colSpan = 24,
-                rowSpan = 14,
-                minColSpan = 1,
-                minRowSpan = 1
-            )
-        )
-    }
+    /** The item of [type] in the default layout, or null when the layout has none. */
+    fun getDefaultItem(
+        type: LauncherItemType,
+        isLandscape: Boolean,
+        isLeftHanded: Boolean
+    ): LauncherItemState? = getDefaultGridItems(
+        isLandscape = isLandscape,
+        isLeftHanded = isLeftHanded,
+        hasFavorites = type != LauncherItemType.ALL_APPS_LIST
+    ).firstOrNull { it.safeType == type }
 
-    private fun getDefaultPortraitGridItems(): List<LauncherItemState> {
-        return listOf(
-            LauncherItemState(
-                id = "clock_item",
-                type = LauncherItemType.CLOCK,
-                col = 0,
-                row = 0,
-                colSpan = DEFAULT_CLOCK_SPAN_X,
-                rowSpan = DEFAULT_CLOCK_SPAN_Y,
-                minColSpan = 1,
-                minRowSpan = 1
-            ),
-            LauncherItemState(
-                id = "container_item",
-                type = LauncherItemType.SHORTCUTS_CONTAINER,
-                col = DEFAULT_PANEL_COL,
-                row = DEFAULT_PANEL_ROW,
-                colSpan = DEFAULT_PANEL_SPAN_X,
-                rowSpan = DEFAULT_PANEL_SPAN_Y,
-                minColSpan = 1,
-                minRowSpan = 1
-            ),
-            LauncherItemState(
-                id = "apps_list_item",
-                type = LauncherItemType.APPS_LIST,
-                col = 0,
-                row = DEFAULT_APPS_ROW,
-                colSpan = DEFAULT_APPS_SPAN_X,
-                rowSpan = DEFAULT_APPS_SPAN_Y,
-                minColSpan = 1,
-                minRowSpan = 1
-            )
+    private fun portraitItems(): List<LauncherItemState> = listOf(
+        LauncherItemType.CLOCK.placedAt(CLOCK_ITEM_ID, 0, 0, PORTRAIT_FULL_WIDTH, PORTRAIT_CLOCK_ROW_SPAN),
+        LauncherItemType.WIDGET_LIST.placedAt(
+            WIDGETS_ITEM_ID,
+            0,
+            PORTRAIT_WIDGETS_ROW,
+            PORTRAIT_FULL_WIDTH,
+            PORTRAIT_WIDGETS_ROW_SPAN
+        ),
+        LauncherItemType.APPS_LIST.placedAt(
+            APPS_LIST_ITEM_ID,
+            0,
+            PORTRAIT_BOTTOM_ROW,
+            PORTRAIT_APPS_COL_SPAN,
+            PORTRAIT_BOTTOM_ROW_SPAN
+        ),
+        LauncherItemType.SHORTCUTS_CONTAINER.placedAt(
+            CONTAINER_ITEM_ID,
+            PORTRAIT_CONTAINER_COL,
+            PORTRAIT_BOTTOM_ROW,
+            PORTRAIT_CONTAINER_COL_SPAN,
+            PORTRAIT_BOTTOM_ROW_SPAN
         )
-    }
+    )
+
+    private fun landscapeItems(): List<LauncherItemState> = listOf(
+        LauncherItemType.CLOCK.placedAt(CLOCK_ITEM_ID, 0, 0, LANDSCAPE_CLOCK_COL_SPAN, LANDSCAPE_CLOCK_ROW_SPAN),
+        LauncherItemType.WIDGET_LIST.placedAt(
+            WIDGETS_ITEM_ID,
+            LANDSCAPE_WIDGETS_COL,
+            0,
+            LANDSCAPE_WIDGETS_COL_SPAN,
+            LANDSCAPE_FULL_HEIGHT
+        ),
+        LauncherItemType.APPS_LIST.placedAt(
+            APPS_LIST_ITEM_ID,
+            0,
+            LANDSCAPE_APPS_ROW,
+            LANDSCAPE_APPS_COL_SPAN,
+            LANDSCAPE_APPS_ROW_SPAN
+        ),
+        LauncherItemType.SHORTCUTS_CONTAINER.placedAt(
+            CONTAINER_ITEM_ID,
+            LANDSCAPE_CONTAINER_COL,
+            0,
+            LANDSCAPE_CONTAINER_COL_SPAN,
+            LANDSCAPE_FULL_HEIGHT
+        )
+    )
+
+    private fun LauncherItemType.placedAt(
+        id: String,
+        col: Int,
+        row: Int,
+        colSpan: Int,
+        rowSpan: Int
+    ) = LauncherItemState(
+        id = id,
+        type = this,
+        col = col,
+        row = row,
+        colSpan = colSpan,
+        rowSpan = rowSpan,
+        minColSpan = DEFAULT_MIN_COL_SPAN,
+        minRowSpan = DEFAULT_MIN_ROW_SPAN
+    )
 }

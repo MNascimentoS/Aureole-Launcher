@@ -2,6 +2,7 @@ package dev.mnascimentos.aureole.feature.home.components.overlays.extensions
 
 import android.content.Context
 import androidx.lifecycle.viewModelScope
+import dev.mnascimentos.aureole.core.data.model.OnboardingStage
 import dev.mnascimentos.aureole.core.data.repository.AppRepository
 import dev.mnascimentos.aureole.core.data.repository.ContainerRepository
 import dev.mnascimentos.aureole.core.data.repository.FavoriteContainerRepository
@@ -10,6 +11,7 @@ import dev.mnascimentos.aureole.core.data.repository.GridRepository
 import dev.mnascimentos.aureole.core.data.repository.SettingsRepository
 import dev.mnascimentos.aureole.core.data.repository.WidgetRepository
 import dev.mnascimentos.aureole.feature.home.HomeViewModel
+import dev.mnascimentos.aureole.feature.home.components.onboarding.model.OnboardingUiState
 import dev.mnascimentos.aureole.feature.home.model.HomeRepositories
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -114,6 +116,33 @@ class HomeViewModelReleaseNotesExtTest {
 
         assertFalse(viewModel.uiState.value.showReleaseNotesBottomSheet)
         assertEquals(30, settingsRepository.lastSeenVersionCode)
+    }
+
+    @Test
+    fun `checkReleaseNotes on a fresh install records the version without showing notes`() {
+        settingsRepository.lastSeenVersionCode = 0
+
+        viewModel.checkReleaseNotes(currentVersionCode = 20, versionName = "2.0")
+
+        assertFalse(viewModel.uiState.value.showReleaseNotesBottomSheet)
+        assertEquals(20, settingsRepository.lastSeenVersionCode)
+    }
+
+    @Test
+    fun `checkReleaseNotes during the onboarding waits until it completes`() {
+        settingsRepository.lastSeenVersionCode = 10
+        viewModel.updateUiState { it.copy(onboarding = OnboardingUiState(stage = OnboardingStage.CHECKLIST)) }
+
+        viewModel.checkReleaseNotes(currentVersionCode = 20, versionName = "2.0")
+
+        assertFalse(viewModel.uiState.value.showReleaseNotesBottomSheet)
+        assertEquals(10, settingsRepository.lastSeenVersionCode)
+
+        viewModel.updateUiState { it.copy(onboarding = OnboardingUiState(stage = OnboardingStage.COMPLETED)) }
+        viewModel.checkReleaseNotes(currentVersionCode = 20, versionName = "2.0")
+
+        assertTrue(viewModel.uiState.value.showReleaseNotesBottomSheet)
+        assertEquals(20, settingsRepository.lastSeenVersionCode)
     }
 }
 

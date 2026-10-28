@@ -40,7 +40,6 @@ import dev.mnascimentos.aureole.feature.home.model.LocalHomeActions
 import dev.mnascimentos.aureole.feature.home.model.LocalHomeUiState
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
 
-private const val MAX_NON_SCROLLABLE_APPS = 20
 private const val PREVIEW_APPWIDGET_HOST_ID = 1024
 
 @Composable
@@ -107,7 +106,6 @@ private fun ScrollableFavoritesList(
     val config = params.config
     val uiState = params.uiState
     val actions = params.actions
-    val favoritePackages = params.favoritePackages
     val appWidgetHost = params.appWidgetHost
     val showHeadersAndWidgets = params.showHeadersAndWidgets
     val modifier = params.modifier
@@ -152,15 +150,8 @@ private fun ScrollableFavoritesList(
             favoriteApps = favoriteApps,
             actions = actions,
             containerId = containerId,
+            isLeftHandedMode = uiState.isLeftHandedMode,
             onEmptyClick = { actions.onOpenFavoritePicker(containerId) }
-        )
-
-        allAppsSection(
-            showAllApps = uiState.showAllAppsOnHome,
-            apps = uiState.apps,
-            favoritePackages = favoritePackages,
-            actions = actions,
-            containerId = containerId
         )
     }
 }
@@ -170,11 +161,10 @@ private fun NonScrollableFavoritesList(
     params: NonScrollableFavoritesParams,
     modifier: Modifier = Modifier
 ) {
-    val uiState = params.uiState
     val favoriteApps = params.favoriteApps
     val actions = params.actions
-    val favoritePackages = params.favoritePackages
     val containerId = params.containerId
+    val isLeftHandedMode = params.uiState.isLeftHandedMode
 
     Column(
         modifier = modifier.fillMaxWidth()
@@ -184,7 +174,11 @@ private fun NonScrollableFavoritesList(
                 HomeAppItemRow(
                     app = app,
                     onClick = { actions.onAppClick(app) },
-                    config = AppItemRowConfig(isFavorite = true, useActionSheet = true),
+                    config = AppItemRowConfig(
+                        isFavorite = true,
+                        useActionSheet = true,
+                        isLeftHandedMode = isLeftHandedMode
+                    ),
                     actions = AppItemRowActions(
                         onToggleFavorite = { actions.onToggleFavorite(it) },
                         onEditFavoritesClick = { actions.onOpenFavoritePicker(containerId) },
@@ -196,25 +190,6 @@ private fun NonScrollableFavoritesList(
         } else {
             FavoritesEmptyHint(onClick = { actions.onOpenFavoritePicker(containerId) })
         }
-
-        if (uiState.showAllAppsOnHome) {
-            AllAppsDivider()
-            val appsToDisplay = remember(uiState.apps) { uiState.apps.take(MAX_NON_SCROLLABLE_APPS) }
-            appsToDisplay.forEach { app ->
-                val isFav = favoritePackages.contains(app.packageName)
-                HomeAppItemRow(
-                    app = app,
-                    onClick = { actions.onAppClick(app) },
-                    config = AppItemRowConfig(isFavorite = isFav, useActionSheet = true),
-                    actions = AppItemRowActions(
-                        onToggleFavorite = { actions.onToggleFavorite(it) },
-                        onEditFavoritesClick = { actions.onOpenFavoritePicker(containerId) },
-                        onAppInfoClick = { actions.onAppInfoClick(it) },
-                        onUninstallClick = { actions.onUninstallAppClick(it) }
-                    )
-                )
-            }
-        }
     }
 }
 
@@ -222,6 +197,7 @@ private fun LazyListScope.favoriteAppsSection(
     favoriteApps: List<AppInfo>,
     actions: HomeScreenActions,
     containerId: String? = null,
+    isLeftHandedMode: Boolean = false,
     onEmptyClick: () -> Unit
 ) {
     if (favoriteApps.isNotEmpty()) {
@@ -233,7 +209,11 @@ private fun LazyListScope.favoriteAppsSection(
             HomeAppItemRow(
                 app = app,
                 onClick = { actions.onAppClick(app) },
-                config = AppItemRowConfig(isFavorite = true, useActionSheet = true),
+                config = AppItemRowConfig(
+                    isFavorite = true,
+                    useActionSheet = true,
+                    isLeftHandedMode = isLeftHandedMode
+                ),
                 actions = AppItemRowActions(
                     onToggleFavorite = { actions.onToggleFavorite(it) },
                     onEditFavoritesClick = { actions.onOpenFavoritePicker(containerId) },
@@ -245,39 +225,6 @@ private fun LazyListScope.favoriteAppsSection(
     } else {
         item(key = "favorites_empty_hint", contentType = "empty_hint") {
             FavoritesEmptyHint(onClick = onEmptyClick)
-        }
-    }
-}
-
-private fun LazyListScope.allAppsSection(
-    showAllApps: Boolean,
-    apps: List<AppInfo>,
-    favoritePackages: Set<String>,
-    actions: HomeScreenActions,
-    containerId: String? = null
-) {
-    if (showAllApps) {
-        item(key = "all_apps_divider", contentType = "divider") {
-            AllAppsDivider()
-        }
-
-        items(
-            items = apps,
-            key = { "all_${it.packageName}" },
-            contentType = { "app_row" }
-        ) { app ->
-            val isFav = favoritePackages.contains(app.packageName)
-            HomeAppItemRow(
-                app = app,
-                onClick = { actions.onAppClick(app) },
-                config = AppItemRowConfig(isFavorite = isFav, useActionSheet = true),
-                actions = AppItemRowActions(
-                    onToggleFavorite = { actions.onToggleFavorite(it) },
-                    onEditFavoritesClick = { actions.onOpenFavoritePicker(containerId) },
-                    onAppInfoClick = { actions.onAppInfoClick(it) },
-                    onUninstallClick = { actions.onUninstallAppClick(it) }
-                )
-            )
         }
     }
 }

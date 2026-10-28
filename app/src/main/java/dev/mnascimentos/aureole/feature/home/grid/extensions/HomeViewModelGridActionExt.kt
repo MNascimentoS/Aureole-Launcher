@@ -6,6 +6,7 @@ import dev.mnascimentos.aureole.feature.home.grid.GridDefaults
 import dev.mnascimentos.aureole.feature.home.grid.GridEngineUtils
 import dev.mnascimentos.aureole.feature.home.grid.model.GridItemSpec
 import dev.mnascimentos.aureole.feature.home.grid.model.SlotSearchRequest
+import dev.mnascimentos.aureole.feature.home.model.MainUiState
 import java.util.UUID
 
 private const val CONTAINER_ERROR_MSG = "Não há espaço livre suficiente na grade para este container."
@@ -66,24 +67,26 @@ fun HomeViewModel.addGridItem(spec: GridItemSpec) {
                 widgetId = spec.widgetId,
                 scrollOrientation = spec.scrollOrientation
             )
-            val updatedList = currentItems + newItem
-            val wasInEditMode = state.isGridEditMode
-            val newStateWithGrid = updateActiveGridItemsInState(state, updatedList).copy(
-                showAddContainerDialog = false,
-                targetParentContainerId = null,
-                isGridEditMode = true
-            )
-
-            if (!wasInEditMode) {
-                newStateWithGrid.copy(
-                    cachedPortraitGridItems = state.portraitGridItems,
-                    cachedLandscapeGridItems = state.landscapeGridItems,
-                    cachedGridItems = state.gridItems
-                )
-            } else {
-                newStateWithGrid
-            }
+            withNewGridItemInEditMode(state, newItem)
         }
+    }
+}
+
+/** Adds [newItem] to the active grid and enters edit mode, keeping the layout to restore on cancel. */
+internal fun withNewGridItemInEditMode(state: MainUiState, newItem: LauncherItemState): MainUiState {
+    val newStateWithGrid = updateActiveGridItemsInState(state, state.gridItems + newItem).copy(
+        showAddContainerDialog = false,
+        targetParentContainerId = null,
+        isGridEditMode = true
+    )
+    return if (!state.isGridEditMode) {
+        newStateWithGrid.copy(
+            cachedPortraitGridItems = state.portraitGridItems,
+            cachedLandscapeGridItems = state.landscapeGridItems,
+            cachedGridItems = state.gridItems
+        )
+    } else {
+        newStateWithGrid
     }
 }
 

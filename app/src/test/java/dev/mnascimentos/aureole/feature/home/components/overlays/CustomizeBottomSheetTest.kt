@@ -1,6 +1,7 @@
 package dev.mnascimentos.aureole.feature.home.components.overlays
 
 import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.getUnclippedBoundsInRoot
 import androidx.compose.ui.test.junit4.v2.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
@@ -23,7 +24,7 @@ class CustomizeBottomSheetTest {
     val composeTestRule = createComposeRule()
 
     @Test
-    fun `when customize bottom sheet is rendered, title and options are displayed`() {
+    fun `when customize bottom sheet is rendered, should list the ten options in order`() {
         composeTestRule.setContent {
             AureoleLauncherTheme {
                 CustomizeBottomSheet(
@@ -34,11 +35,44 @@ class CustomizeBottomSheetTest {
         }
 
         composeTestRule.onNodeWithText("Customize").assertIsDisplayed()
-        composeTestRule.onNodeWithText("Add clock").assertIsDisplayed()
-        composeTestRule.onNodeWithText("Add container").assertIsDisplayed()
-        composeTestRule.onNodeWithText("Add scrollview container").assertIsDisplayed()
-        composeTestRule.onNodeWithText("Add quick button").assertIsDisplayed()
-        composeTestRule.onNodeWithText("Add widget group").assertIsDisplayed()
+        val tops = OPTIONS_IN_ORDER.map { label ->
+            composeTestRule.onNodeWithText(label).assertExists().getUnclippedBoundsInRoot().top
+        }
+        assertEquals(tops.sorted(), tops)
+    }
+
+    @Test
+    fun `when add favorites is clicked, should ask for a favorites list and dismiss`() {
+        var asked = false
+        var dismissed = false
+        val actions = createDefaultHomeScreenActions().copy(onAddFavoritesList = { asked = true })
+
+        composeTestRule.setContent {
+            AureoleLauncherTheme {
+                CustomizeBottomSheet(actions = actions, onDismissRequest = { dismissed = true })
+            }
+        }
+
+        composeTestRule.onNodeWithText("Add favorites").performScrollTo().performClick()
+
+        assertTrue(asked)
+        assertTrue(dismissed)
+    }
+
+    @Test
+    fun `when add all apps is clicked, should add an all apps list`() {
+        var addedType: LauncherItemType? = null
+        val actions = createDefaultHomeScreenActions().copy(onAddGridItem = { type, _, _ -> addedType = type })
+
+        composeTestRule.setContent {
+            AureoleLauncherTheme {
+                CustomizeBottomSheet(actions = actions, onDismissRequest = {})
+            }
+        }
+
+        composeTestRule.onNodeWithText("Add all apps").performScrollTo().performClick()
+
+        assertEquals(LauncherItemType.ALL_APPS_LIST, addedType)
     }
 
     @Test
@@ -111,7 +145,7 @@ class CustomizeBottomSheetTest {
             }
         }
 
-        composeTestRule.onNodeWithText("Add scrollview container").performScrollTo().performClick()
+        composeTestRule.onNodeWithText("Add scrolling group").performScrollTo().performClick()
 
         assertEquals(LauncherItemType.SCROLL_VIEW, addedType)
         assertEquals(ScrollOrientation.VERTICAL, addedOrientation)
@@ -236,5 +270,20 @@ class CustomizeBottomSheetTest {
 
         assertEquals(1, settingsClickedCount)
         assertTrue(dismissed)
+    }
+
+    private companion object {
+        val OPTIONS_IN_ORDER = listOf(
+            "Add clock",
+            "Add favorites",
+            "Add all apps",
+            "Add container",
+            "Add widget group",
+            "Add scrolling group",
+            "Add quick button",
+            "Adjust layout",
+            "Set Background",
+            "Aureole settings"
+        )
     }
 }

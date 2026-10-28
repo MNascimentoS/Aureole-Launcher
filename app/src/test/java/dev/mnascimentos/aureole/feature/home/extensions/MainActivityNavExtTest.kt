@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.lifecycle.viewModelScope
 import dev.mnascimentos.aureole.core.data.model.AppFolder
 import dev.mnascimentos.aureole.core.data.model.LauncherItemState
+import dev.mnascimentos.aureole.core.data.model.OnboardingStage
 import dev.mnascimentos.aureole.core.data.repository.AppRepository
 import dev.mnascimentos.aureole.core.data.repository.ContainerRepository
 import dev.mnascimentos.aureole.core.data.repository.FavoriteContainerRepository
@@ -12,6 +13,7 @@ import dev.mnascimentos.aureole.core.data.repository.GridRepository
 import dev.mnascimentos.aureole.core.data.repository.SettingsRepository
 import dev.mnascimentos.aureole.core.data.repository.WidgetRepository
 import dev.mnascimentos.aureole.feature.home.HomeViewModel
+import dev.mnascimentos.aureole.feature.home.components.onboarding.model.OnboardingUiState
 import dev.mnascimentos.aureole.feature.home.model.HomeRepositories
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
 import dev.mnascimentos.aureole.feature.home.model.WidgetStackBottomSheetState
@@ -137,5 +139,40 @@ class MainActivityNavExtTest {
         handleBackNavigation(viewModel.uiState.value, viewModel)
 
         assertFalse(viewModel.uiState.value.isOverlayActive)
+    }
+
+    @Test
+    fun `when the onboarding handles back, should step back without touching the home`() {
+        viewModel.updateUiState { MainUiState(onboarding = OnboardingUiState(stage = OnboardingStage.DEFAULT_HOME)) }
+
+        handleBackNavigation(viewModel.uiState.value, viewModel)
+
+        assertEquals(OnboardingStage.WELCOME, viewModel.uiState.value.onboarding.stage)
+    }
+
+    @Test
+    fun `when an editor is open over the checklist, should close the editor first`() {
+        viewModel.updateUiState {
+            MainUiState(
+                showFavoritePickerDialog = true,
+                onboarding = OnboardingUiState(stage = OnboardingStage.CHECKLIST, isChecklistExpanded = true)
+            )
+        }
+
+        handleBackNavigation(viewModel.uiState.value, viewModel)
+
+        assertFalse(viewModel.uiState.value.showFavoritePickerDialog)
+        assertTrue(viewModel.uiState.value.onboarding.isChecklistExpanded)
+    }
+
+    @Test
+    fun `when the onboarding does not handle back, should fall through to the home`() {
+        viewModel.updateUiState {
+            MainUiState(isAllAppsDrawerOpen = true, onboarding = OnboardingUiState(stage = OnboardingStage.GESTURES))
+        }
+
+        handleBackNavigation(viewModel.uiState.value, viewModel)
+
+        assertFalse(viewModel.uiState.value.isAllAppsDrawerOpen)
     }
 }

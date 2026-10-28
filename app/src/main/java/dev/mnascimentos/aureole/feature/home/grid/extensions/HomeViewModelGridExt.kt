@@ -1,8 +1,11 @@
 package dev.mnascimentos.aureole.feature.home.grid.extensions
 
 import dev.mnascimentos.aureole.core.data.model.LauncherItemState
+import dev.mnascimentos.aureole.core.data.model.LauncherItemType
 import dev.mnascimentos.aureole.core.data.repository.GridRepository
 import dev.mnascimentos.aureole.feature.home.HomeViewModel
+import dev.mnascimentos.aureole.feature.home.components.containers.extensions.loadContainers
+import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.abandonPendingTask
 import dev.mnascimentos.aureole.feature.home.grid.GridEngineUtils
 import dev.mnascimentos.aureole.feature.home.grid.model.GridLimits
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
@@ -13,8 +16,9 @@ internal fun HomeViewModel.getGridRepository(): GridRepository {
 
 fun HomeViewModel.loadGridItems(isLandscape: Boolean = false) {
     if (uiState.value.isGridEditMode) return
-    val portraitItems = getGridRepository().getGridItems(isLandscape = false)
-    val landscapeItems = getGridRepository().getGridItems(isLandscape = true)
+    val isLeftHanded = settingsRepository.isLeftHandedMode
+    val portraitItems = getGridRepository().getGridItems(isLandscape = false, isLeftHanded = isLeftHanded)
+    val landscapeItems = getGridRepository().getGridItems(isLandscape = true, isLeftHanded = isLeftHanded)
     updateUiState {
         it.copy(
             portraitGridItems = portraitItems,
@@ -23,6 +27,11 @@ fun HomeViewModel.loadGridItems(isLandscape: Boolean = false) {
             isLandscape = isLandscape
         )
     }
+    // A reset or the default layout can bring a container that has no entity yet.
+    val hasMissingContainer = (portraitItems + landscapeItems).any {
+        it.safeType == LauncherItemType.SHORTCUTS_CONTAINER && it.id !in uiState.value.containers
+    }
+    if (hasMissingContainer) loadContainers()
 }
 
 fun HomeViewModel.enterGridEditMode() {
@@ -48,7 +57,9 @@ fun HomeViewModel.cancelGridEditMode() {
             gridItems = restoredGridItems,
             cachedPortraitGridItems = null,
             cachedLandscapeGridItems = null,
-            cachedGridItems = null
+            cachedGridItems = null,
+            // Cancelling undoes the onboarding item too, so its task cannot complete.
+            onboarding = state.onboarding.abandonPendingTask()
         )
     }
 }
@@ -80,13 +91,13 @@ fun HomeViewModel.updateGridItemsOrientation(maxCols: Int, maxRows: Int) {
         val portraitItems = if (state.portraitGridItems.isNotEmpty()) {
             state.portraitGridItems
         } else {
-            getGridRepository().getGridItems(isLandscape = false)
+            getGridRepository().getGridItems(isLandscape = false, isLeftHanded = state.isLeftHandedMode)
         }
 
         val landscapeItems = if (state.landscapeGridItems.isNotEmpty()) {
             state.landscapeGridItems
         } else {
-            getGridRepository().getGridItems(isLandscape = true)
+            getGridRepository().getGridItems(isLandscape = true, isLeftHanded = state.isLeftHandedMode)
         }
 
         val activeItems = if (isLandscape) landscapeItems else portraitItems

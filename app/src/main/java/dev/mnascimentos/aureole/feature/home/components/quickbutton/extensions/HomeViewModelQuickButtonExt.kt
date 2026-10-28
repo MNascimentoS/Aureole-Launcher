@@ -139,19 +139,15 @@ internal object QuickButtonUtils {
     }
 
     fun findQuickButtonInContainers(containers: Collection<ContainerModel>, id: String): QuickButtonModel? {
-        containers.forEach { container ->
-            container.quickButtons.find { it.id == id }?.let { return it }
-
-            val itemMatch = container.items.firstNotNullOfOrNull { item ->
+        return containers.firstNotNullOfOrNull { container ->
+            container.quickButtons.find { it.id == id } ?: container.items.firstNotNullOfOrNull { item ->
                 if (isMatchingQuickButton(item, id)) {
                     item.quickButtonModel ?: item.quickButtonId?.let { qbId -> QuickButtonModel(id = qbId) }
                 } else {
                     null
                 }
             }
-            if (itemMatch != null) return itemMatch
         }
-        return null
     }
 
     fun updateQuickButtonInList(

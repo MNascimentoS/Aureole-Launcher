@@ -15,6 +15,9 @@ import dev.mnascimentos.aureole.composable.favorites.model.FavoriteAppsDialogAct
 import dev.mnascimentos.aureole.composable.favorites.model.FavoriteAppsDialogConfig
 import dev.mnascimentos.aureole.composable.sheets.ReleaseNotesBottomSheet
 import dev.mnascimentos.aureole.core.designsystem.utils.LocalHazeState
+import dev.mnascimentos.aureole.feature.home.components.onboarding.OnboardingHostComponent
+import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.rememberTouchExplorationEnabled
+import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.toOnboardingHostParams
 import dev.mnascimentos.aureole.feature.home.components.overlays.UpdateAvailableDialog
 import dev.mnascimentos.aureole.feature.home.components.overlays.UpdateDownloadedDialog
 import dev.mnascimentos.aureole.feature.home.components.widgets.WidgetPickerScreen
@@ -23,6 +26,7 @@ import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
 import dev.mnascimentos.aureole.feature.home.model.LocalHomeActions
 import dev.mnascimentos.aureole.feature.home.model.LocalHomeUiState
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
+import dev.mnascimentos.aureole.feature.home.model.isAppsLoading
 
 @Composable
 fun MainScaffold(
@@ -51,10 +55,7 @@ fun MainScaffold(
 
         FavoritePickerOverlay(
             uiState = uiState,
-            onToggleFavorite = actions.onToggleFavoriteWithContainer,
-            onUpdateFavorites = actions.onUpdateFavoritePackages,
-            onToggleShowAllAppsOnHome = actions.onToggleShowAllAppsOnHome,
-            onDismiss = actions.onDismissFavoritePicker
+            actions = actions
         )
 
         InAppUpdateOverlay(
@@ -65,6 +66,15 @@ fun MainScaffold(
         ReleaseNotesOverlay(
             uiState = uiState,
             onDismiss = actions.onDismissReleaseNotes
+        )
+
+        // Last layer: the onboarding sits above every home surface, but only blocks touches when it must.
+        OnboardingHostComponent(
+            params = uiState.toOnboardingHostParams(
+                hazeState = LocalHazeState.current,
+                isTouchExplorationEnabled = rememberTouchExplorationEnabled()
+            ),
+            actions = actions.onboarding
         )
     }
 }
@@ -93,10 +103,7 @@ private fun WidgetPickerOverlay(
 @Composable
 private fun FavoritePickerOverlay(
     uiState: MainUiState,
-    onToggleFavorite: (String, String?) -> Unit,
-    onUpdateFavorites: (String?, List<String>) -> Unit,
-    onToggleShowAllAppsOnHome: () -> Unit,
-    onDismiss: () -> Unit
+    actions: HomeScreenActions
 ) {
     if (uiState.showFavoritePickerDialog) {
         val containerId = uiState.activeFavoriteContainerId
@@ -111,17 +118,18 @@ private fun FavoritePickerOverlay(
                 allApps = uiState.apps,
                 favoriteAppPackages = favPackages,
                 containerId = containerId,
-                showAllAppsOnHome = uiState.showAllAppsOnHome,
+                isLoading = uiState.isAppsLoading,
                 rowConfig = AppItemRowConfig(
                     isThemedAppIconsEnabled = uiState.isThemedAppIconsEnabled,
                     isLeftHandedMode = uiState.isLeftHandedMode
                 )
             ),
             actions = FavoriteAppsDialogActions(
-                onToggleFavorite = { pkg -> onToggleFavorite(pkg, containerId) },
-                onUpdateFavoritePackages = { cId, pkgs -> onUpdateFavorites(cId, pkgs) },
-                onToggleShowAllAppsOnHome = onToggleShowAllAppsOnHome,
-                onDismiss = onDismiss
+                onToggleFavorite = { pkg -> actions.onToggleFavoriteWithContainer(pkg, containerId) },
+                onUpdateFavoritePackages = { cId, pkgs -> actions.onUpdateFavoritePackages(cId, pkgs) },
+                onToggleShowAllAppsOnHome = actions.onToggleShowAllAppsOnHome,
+                onSettingsClick = actions.onSettingsClick,
+                onDismiss = actions.onDismissFavoritePicker
             )
         )
     }

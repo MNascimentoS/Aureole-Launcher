@@ -116,31 +116,36 @@ class WidgetsSectionTest {
     }
 
     @Test
-    fun `when StackedWidgetSection rendered with empty widgets, should render spacer without error`() {
+    fun `when the stack is empty, should show the add button and open the picker for that stack`() {
+        var clickedStackId: String? = null
         val config = StackedWidgetConfig(
             topWidgetIds = emptyList(),
             currentHeightDp = 160.dp,
             currentHeightPx = 480f
         )
         val state = MainUiState(
-            widgetStacks = mapOf("top_widgets" to emptyList())
+            widgetStacks = mapOf("stack_1" to emptyList())
         )
 
         composeTestRule.setContent {
             AureoleLauncherTheme {
                 CompositionLocalProvider(
                     LocalHomeUiState provides state,
-                    LocalHomeActions provides createDefaultHomeScreenActions()
+                    LocalHomeActions provides createDefaultHomeScreenActions().copy(
+                        onAddWidgetClick = { clickedStackId = it }
+                    )
                 ) {
                     StackedWidgetSection(
                         config = config,
-                        stackId = "top_widgets"
+                        stackId = "stack_1"
                     )
                 }
             }
         }
 
-        composeTestRule.waitForIdle()
+        composeTestRule.onNodeWithText("Add Widget").performClick()
+
+        assertEquals("stack_1", clickedStackId)
     }
 
     @Test

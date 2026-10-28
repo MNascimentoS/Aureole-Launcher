@@ -1,0 +1,727 @@
+<title>Aureole Primeira Órbita</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Istok+Web:wght@400;700&family=JetBrains+Mono:wght@400;600&family=Montserrat:wght@400;700&family=Rubik:wght@400;700&family=Space+Grotesk:wght@400;700&family=Orbitron:wght@400;700&family=Special+Elite&family=Chelsea+Market&display=swap">
+<style>
+/* Layout: protótipo do aparelho à esquerda, roteiro da etapa à direita; empilha no celular.
+   Paleta = tokens Frostbite do AureoleDS (tema padrão do app). Visual dark-only por escolha. */
+:root {
+  --bg: #0b1014;            /* moldura da página, um tom abaixo do background do app */
+  --app-bg: #12181D;        /* AureoleDS.colors.background */
+  --surface: #2B373E;       /* surface */
+  --variant: #4A5D6B;       /* surfaceVariant */
+  --outline: #7D96AA;       /* outline */
+  --low: #9BB4C8;           /* onSurfaceLow */
+  --medium: #C5D8E8;        /* onSurfaceMedium */
+  --high: #FFFFFF;          /* onSurfaceHigh */
+  --ok: #81C784;            /* badgeText */
+  --font-ui: "Istok Web", "Segoe UI", Roboto, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, Menlo, monospace;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html, body { background: var(--bg); color: var(--medium); }
+body {
+  font-family: var(--font-ui);
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 24px 40px;
+}
+button { font-family: inherit; }
+button:focus-visible, .chip:focus-visible { outline: 2px solid var(--medium); outline-offset: 2px; }
+
+.page { max-width: 1080px; margin: 0 auto; display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 40px; align-items: start; }
+@media (max-width: 860px) { .page { grid-template-columns: minmax(0, 1fr); justify-items: center; gap: 24px; } }
+
+header.top { max-width: 1080px; margin: 0 auto 24px; display: flex; flex-wrap: wrap; gap: 12px 24px; align-items: baseline; justify-content: space-between; }
+header.top h1 { margin: 0; font-size: 1.5rem; color: var(--high); text-wrap: balance; letter-spacing: -0.01em; }
+header.top p { margin: 0; color: var(--low); font-size: .9rem; max-width: 60ch; }
+
+/* ---------- Controles ---------- */
+.controls { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip { border: 1px solid #2f3c45; background: #151d23; color: var(--low); padding: 8px 12px; border-radius: 100px; font-size: .82rem; cursor: pointer; display: inline-flex; gap: 6px; align-items: center; }
+.chip b { font-family: var(--font-mono); font-weight: 600; color: var(--outline); font-size: .75rem; }
+.chip[aria-pressed="true"] { background: var(--medium); color: var(--app-bg); border-color: var(--medium); }
+.chip[aria-pressed="true"] b { color: var(--surface); }
+.row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.toggle { display: inline-flex; align-items: center; gap: 8px; font-size: .82rem; color: var(--low); cursor: pointer; }
+.toggle input { accent-color: var(--medium); width: 16px; height: 16px; }
+
+.notes { background: #10171c; border: 1px solid #1f2a31; border-radius: 16px; padding: 20px; min-width: 0; }
+.notes .eyebrow { font-family: var(--font-mono); font-size: .72rem; letter-spacing: .08em; text-transform: uppercase; color: var(--outline); }
+.notes h2 { margin: 6px 0 10px; color: var(--high); font-size: 1.2rem; text-wrap: balance; }
+.notes p { margin: 0 0 12px; line-height: 1.55; max-width: 62ch; }
+.notes dl { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 6px 14px; margin: 14px 0 0; font-size: .85rem; }
+.notes dt { font-family: var(--font-mono); color: var(--outline); font-size: .75rem; padding-top: 2px; }
+.notes dd { margin: 0; color: var(--medium); min-width: 0; overflow-wrap: anywhere; }
+.notes code { font-family: var(--font-mono); font-size: .78rem; color: var(--low); background: #172027; padding: 1px 5px; border-radius: 4px; }
+.log { font-family: var(--font-mono); font-size: .75rem; color: var(--low); background: #0d1418; border: 1px solid #1c262d; border-radius: 10px; padding: 10px 12px; min-height: 64px; max-height: 140px; overflow: auto; }
+.log div::before { content: "› "; color: var(--outline); }
+
+/* ---------- Aparelho ---------- */
+.device { width: 360px; max-width: 100%; aspect-ratio: 360 / 780; border-radius: 44px; padding: 10px; background: #050709; box-shadow: 0 0 0 1px #222c33, 0 30px 80px -20px rgba(0,0,0,.8); }
+.screen { --app-font: var(--font-ui); position: relative; width: 100%; height: 100%; border-radius: 36px; overflow: hidden; background: var(--app-bg); font-family: var(--app-font); user-select: none; transition: background .5s; touch-action: none; container-type: size; }
+
+/* papel de parede: nebulosa feita com gradientes dos tokens */
+.wall { transition: background .5s; position: absolute; inset: 0; background:
+  radial-gradient(60% 40% at 70% 30%, color-mix(in srgb, var(--low) 22%, transparent), transparent 70%),
+  radial-gradient(45% 55% at 35% 60%, color-mix(in srgb, var(--variant) 55%, transparent), transparent 70%),
+  radial-gradient(30% 30% at 15% 10%, color-mix(in srgb, var(--outline) 18%, transparent), transparent 70%),
+  linear-gradient(160deg, var(--app-bg) 0%, color-mix(in srgb, var(--app-bg) 80%, var(--variant)) 45%, color-mix(in srgb, var(--app-bg) 85%, black) 100%);
+}
+.wall::after { content: ""; position: absolute; inset: -20%; background: conic-gradient(from 210deg at 55% 45%, transparent, color-mix(in srgb, var(--medium) 10%, transparent), transparent 30%, color-mix(in srgb, var(--variant) 25%, transparent), transparent 60%); filter: blur(30px); animation: drift 18s linear infinite; }
+@keyframes drift { to { transform: rotate(360deg); } }
+canvas.stars { position: absolute; inset: 0; width: 100%; height: 100%; }
+
+.statusbar { position: absolute; top: 0; left: 0; right: 0; height: 34px; display: flex; justify-content: space-between; align-items: center; padding: 0 26px; font-size: 12px; color: var(--high); z-index: 50; pointer-events: none; }
+.statusbar .icons { display: flex; gap: 5px; align-items: center; }
+.statusbar .icons i { display: block; background: var(--high); border-radius: 2px; }
+.navbar { position: absolute; bottom: 8px; left: 50%; width: 110px; height: 4px; margin-left: -55px; border-radius: 4px; background: rgba(255,255,255,.85); z-index: 50; pointer-events: none; }
+
+/* ---------- Home real (fundo) ---------- */
+.home { position: absolute; inset: 44px 10px 24px; transition: filter .5s ease, opacity .5s ease, transform .5s ease; }
+.home.dim { filter: blur(10px) saturate(.8); opacity: .35; transform: scale(.97); }
+.clock { background: color-mix(in srgb, var(--surface) 78%, transparent); border-radius: 22px; padding: 14px 18px 16px; color: var(--high); }
+.clock small { font-size: 12px; color: var(--medium); }
+.clock .time { font-size: 54px; font-weight: 700; line-height: 1; margin: 6px 0 4px; letter-spacing: -1px; }
+.clock .date { font-size: 12px; }
+.homegrid { display: grid; grid-template-columns: 1fr 64px; gap: 10px; margin-top: 18px; height: calc(100% - 150px); }
+.applist { display: flex; flex-direction: column; gap: 12px; padding: 8px 6px; overflow: hidden; }
+.app { display: flex; align-items: center; gap: 12px; font-size: 15px; color: var(--medium); }
+.app i { width: 30px; height: 30px; border-radius: 9px; display: block; flex: none; }
+.sep { display: flex; align-items: center; gap: 8px; color: var(--outline); font-size: 10px; letter-spacing: .1em; margin: 4px 0; }
+.sep::before, .sep::after { content: ""; flex: 1; height: 1px; background: var(--variant); }
+.home [data-item] { transition: opacity .45s ease, transform .45s ease; }
+.home [data-item]:not(.on) { opacity: 0; transform: scale(.96); pointer-events: none; }
+.widgets { margin-top: 12px; height: 74px; border: 1.5px dashed color-mix(in srgb, var(--medium) 45%, transparent); border-radius: 18px; display: grid; place-items: center; font-size: 12px; color: var(--medium); }
+.container { align-self: start; margin-top: 80px; background: color-mix(in srgb, var(--surface) 70%, transparent); border-radius: 18px; height: 64px; display: grid; place-items: center; }
+.container span { width: 30px; height: 30px; border: 2px solid var(--medium); border-radius: 8px; display: grid; place-items: center; color: var(--medium); font-size: 18px; line-height: 1; }
+
+/* gaveta de apps */
+.drawer { position: absolute; inset: 40px 0 20px 30%; background: color-mix(in srgb, var(--surface) 72%, transparent); backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); border-radius: 26px 0 0 26px; padding: 18px 16px; transform: translateX(105%); transition: transform .45s cubic-bezier(.2,.9,.25,1); z-index: 10; display: flex; flex-direction: column; gap: 12px; }
+.drawer.open { transform: none; }
+.drawer .search { background: color-mix(in srgb, var(--app-bg) 60%, transparent); border-radius: 12px; padding: 9px 12px; color: var(--low); font-size: 13px; }
+.drawer .app { font-size: 14px; }
+.scrub { position: absolute; right: 6px; top: 34%; z-index: 12; display: flex; flex-direction: column; gap: 3px; font-size: 9px; color: var(--low); opacity: 0; transition: opacity .3s; text-align: right; }
+.scrub.show { opacity: 1; }
+.scrub span { transition: transform .2s, color .2s; }
+.scrub span.hot { color: var(--high); transform: translateX(-26px) scale(2.2); font-weight: 700; }
+
+/* sheet de personalização */
+.sheet { position: absolute; left: 0; right: 0; bottom: 0; background: var(--surface); border-radius: 24px 24px 0 0; padding: 18px 24px 34px; z-index: 30; transform: translateY(105%); transition: transform .45s cubic-bezier(.2,.9,.25,1); }
+.sheet.open { transform: none; }
+.sheet h4 { margin: 0 0 12px; text-align: center; color: var(--medium); font-size: 15px; }
+.sheet .opt { display: flex; gap: 14px; align-items: center; padding: 9px 4px; color: var(--medium); font-size: 14px; }
+.sheet .opt svg { width: 20px; height: 20px; }
+
+/* ---------- Camadas do onboarding ---------- */
+.layer { position: absolute; inset: 0; z-index: 40; opacity: 0; pointer-events: none; transition: opacity .5s ease; }
+.layer.on { opacity: 1; pointer-events: auto; }
+
+/* Boas-vindas */
+.welcome { display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 0 30px; background: radial-gradient(70% 50% at 50% 42%, color-mix(in srgb, var(--variant) 35%, transparent), transparent 70%), rgba(10,14,18,.55); }
+.halo { position: relative; width: 168px; height: 168px; display: grid; place-items: center; margin-bottom: 26px; }
+.halo svg.ring { position: absolute; inset: 0; width: 100%; height: 100%; transform: rotate(-90deg); overflow: visible; }
+.halo .glow { position: absolute; inset: 18%; border-radius: 50%; background: radial-gradient(circle, color-mix(in srgb, var(--medium) 35%, transparent), transparent 70%); filter: blur(12px); opacity: 0; transform: scale(.6); }
+.halo .logo { width: 92px; opacity: 0; transform: scale(.85); }
+.welcome h2 { margin: 0; color: var(--high); font-size: 30px; line-height: 1.15; letter-spacing: -.5px; opacity: 0; transform: translateY(18px); }
+.welcome p { margin: 10px 0 0; color: var(--medium); font-size: 15px; line-height: 1.45; opacity: 0; transform: translateY(18px); }
+.welcome .cta { margin-top: 40px; opacity: 0; transform: translateY(18px); display: flex; flex-direction: column; gap: 6px; align-items: center; width: 100%; }
+.btn { font-family: var(--app-font); border: 0; border-radius: 18px; padding: 15px 22px; min-height: 48px; font-size: 15px; font-weight: 700; cursor: pointer; width: 100%; background: var(--high); color: var(--surface); }
+.btn.ghost { background: transparent; color: var(--low); font-weight: 400; width: auto; }
+.btn.small { padding: 10px 14px; min-height: 40px; font-size: 13px; border-radius: 14px; }
+.welcome.play .ring circle.arc { animation: draw 1s .2s cubic-bezier(.4,0,.2,1) forwards; }
+.welcome.play .glow { animation: glow 1.2s .5s ease-out forwards, pulse 3.2s 1.8s ease-in-out infinite; }
+.welcome.play .logo { animation: rise .6s .5s cubic-bezier(.2,.9,.3,1.2) forwards; }
+.welcome.play h2 { animation: up .5s .9s ease-out forwards; }
+.welcome.play p { animation: up .5s 1.05s ease-out forwards; }
+.welcome.play .cta { animation: up .5s 1.25s ease-out forwards; }
+.welcome.exit .halo { animation: burst .55s cubic-bezier(.5,0,.75,0) forwards; }
+@keyframes draw { to { stroke-dashoffset: 0; } }
+@keyframes glow { to { opacity: 1; transform: scale(1); } }
+@keyframes pulse { 50% { opacity: .55; transform: scale(1.12); } }
+@keyframes rise { to { opacity: 1; transform: scale(1); } }
+@keyframes up { to { opacity: 1; transform: none; } }
+@keyframes burst { to { transform: scale(7); opacity: 0; } }
+
+/* Tela inicial padrão */
+.defhome { background: rgba(10,14,18,.5); }
+.card { position: absolute; left: 14px; right: 14px; bottom: 30px; background: color-mix(in srgb, var(--surface) 86%, transparent); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-radius: 26px; padding: 22px 20px 16px; color: var(--medium); transform: translateY(120%); transition: transform .6s cubic-bezier(.2,1.15,.35,1); }
+.defhome.on .card { transform: none; }
+.card h3 { margin: 14px 0 6px; color: var(--high); font-size: 20px; letter-spacing: -.2px; }
+.card p { margin: 0 0 18px; font-size: 14px; line-height: 1.45; }
+.card .illus { height: 92px; border-radius: 18px; background: color-mix(in srgb, var(--app-bg) 55%, transparent); display: grid; place-items: center; position: relative; overflow: hidden; }
+.mini-phone { width: 46px; height: 76px; border-radius: 10px; border: 2px solid var(--low); position: relative; display: grid; place-items: center; }
+.mini-phone .home-dot { position: absolute; bottom: 6px; left: 50%; width: 14px; height: 3px; margin-left: -7px; border-radius: 3px; background: var(--high); }
+.mini-phone .home-dot::after { content: ""; position: absolute; inset: -8px -10px; border-radius: 10px; border: 2px solid var(--medium); opacity: 0; animation: ping 1.6s ease-out infinite; }
+.mini-phone svg { width: 26px; }
+@keyframes ping { 0% { opacity: .9; transform: scale(.6); } 100% { opacity: 0; transform: scale(1.6); } }
+.actions { display: flex; flex-direction: column; align-items: center; gap: 2px; }
+.rolesheet { position: absolute; left: 10px; right: 10px; bottom: 10px; background: #e9eef2; color: #1d252b; border-radius: 24px; padding: 18px; z-index: 45; transform: translateY(130%); transition: transform .4s cubic-bezier(.2,.9,.25,1); font-size: 13px; }
+.rolesheet.open { transform: none; }
+.rolesheet .sys { font-family: var(--font-mono); font-size: 9px; letter-spacing: .1em; color: #6b7a85; text-transform: uppercase; }
+.rolesheet h5 { margin: 6px 0 12px; font-size: 16px; }
+.rolesheet .opt { display: flex; align-items: center; gap: 10px; padding: 10px; border-radius: 12px; cursor: pointer; }
+.rolesheet .opt:hover { background: #dbe3e9; }
+.rolesheet .opt i { width: 26px; height: 26px; border-radius: 8px; display: block; }
+.toast { position: absolute; left: 50%; bottom: 34px; transform: translate(-50%, 30px); opacity: 0; background: color-mix(in srgb, var(--surface) 95%, transparent); color: var(--high); border-radius: 100px; padding: 9px 14px; font-size: 12.5px; z-index: 60; transition: all .4s cubic-bezier(.2,1.2,.35,1); white-space: nowrap; display: flex; gap: 8px; align-items: center; }
+.toast.show { opacity: 1; transform: translate(-50%, 0); }
+
+/* Coach de gestos (não bloqueia toques) */
+.coach { pointer-events: none !important; }
+.coachcard { position: absolute; left: 14px; right: 14px; top: 44px; background: color-mix(in srgb, var(--surface) 90%, transparent); backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); border-radius: 22px; padding: 14px 16px; color: var(--medium); pointer-events: auto; transform: translateY(-140%); transition: transform .5s cubic-bezier(.2,1.15,.35,1); z-index: 41; }
+.coach.on .coachcard { transform: none; }
+.coachcard .dots { display: flex; gap: 5px; margin-bottom: 8px; }
+.coachcard .dots i { width: 16px; height: 4px; border-radius: 4px; background: var(--variant); transition: background .3s, width .3s; }
+.coachcard .dots i.on { background: var(--high); width: 26px; }
+.coachcard .dots i.done { background: var(--ok); }
+.coachcard h3 { margin: 0; color: var(--high); font-size: 18px; }
+.coachcard p { margin: 4px 0 10px; font-size: 13.5px; line-height: 1.4; }
+.coachcard .row2 { display: flex; justify-content: space-between; align-items: center; }
+.coachcard.success h3 { color: var(--ok); }
+.finger { position: absolute; width: 44px; height: 44px; border-radius: 50%; background: radial-gradient(circle, rgba(255,255,255,.95) 0 30%, rgba(255,255,255,.35) 31% 60%, transparent 61%); z-index: 39; opacity: 0; pointer-events: none; }
+.trail { position: absolute; width: 6px; border-radius: 6px; background: linear-gradient(to top, transparent, rgba(255,255,255,.55)); z-index: 38; opacity: 0; pointer-events: none; }
+.coach.step-up .finger { left: calc(50% - 22px); animation: fUp 1.8s .3s infinite cubic-bezier(.45,0,.2,1); }
+.coach.step-up .trail { left: calc(50% - 3px); animation: tUp 1.8s .3s infinite cubic-bezier(.45,0,.2,1); }
+@keyframes fUp { 0% { top: 78%; opacity: 0; transform: scale(.7); } 12% { opacity: 1; transform: scale(1); } 60% { top: 48%; opacity: 1; } 75%, 100% { top: 46%; opacity: 0; } }
+@keyframes tUp { 0%, 12% { top: 80%; height: 0; opacity: 0; } 60% { top: 50%; height: 30%; opacity: 1; } 80%, 100% { top: 50%; height: 0; opacity: 0; } }
+.coach.step-edge .finger { animation: fEdge 1.9s .3s infinite cubic-bezier(.45,0,.2,1); }
+.coach.left.step-edge .finger { animation-name: fEdgeL; }
+@keyframes fEdgeL { 0% { left: -10px; top: 46%; opacity: 0; } 15% { left: 0; opacity: 1; } 45% { left: 30px; top: 46%; } 80% { left: 30px; top: 66%; opacity: 1; } 100% { left: 30px; top: 66%; opacity: 0; } }
+@keyframes fEdge { 0% { right: -10px; left: auto; top: 46%; opacity: 0; } 15% { right: 0; opacity: 1; } 45% { right: 30px; top: 46%; } 80% { right: 30px; top: 66%; opacity: 1; } 100% { right: 30px; top: 66%; opacity: 0; } }
+.coach.step-press .finger { left: calc(50% - 22px); top: 58%; animation: fPress 1.8s .3s infinite ease-in-out; }
+.coach.step-press .pressring { position: absolute; left: calc(50% - 34px); top: calc(58% - 12px); width: 68px; height: 68px; z-index: 38; pointer-events: none; }
+.pressring circle { fill: none; stroke: var(--high); stroke-width: 3; stroke-dasharray: 200; stroke-dashoffset: 200; transform-origin: center; transform: rotate(-90deg); }
+.coach.step-press .pressring circle { animation: pRing 1.8s .3s infinite ease-in-out; }
+@keyframes fPress { 0% { opacity: 0; transform: scale(1.3); } 15% { opacity: 1; transform: scale(1); } 70% { opacity: 1; transform: scale(.88); } 100% { opacity: 0; transform: scale(.88); } }
+@keyframes pRing { 0%, 15% { stroke-dashoffset: 200; opacity: 1; } 65% { stroke-dashoffset: 0; opacity: 1; } 100% { stroke-dashoffset: 0; opacity: 0; } }
+.pressring { display: none; }
+.coach.step-press .pressring { display: block; }
+
+/* Primeiros passos (referência do Figma: sobe da base com overshoot) */
+.check { position: absolute; left: 0; right: 0; top: 0; bottom: 0; z-index: 35; pointer-events: none; }
+.check.on { pointer-events: auto; }
+.checkwrap { position: absolute; left: 26px; right: 26px; top: 30%; transform: translateY(170%); transition: transform 1.05s cubic-bezier(.22,1.18,.36,1); }
+.check.on .checkwrap { transform: none; }
+.checkhead { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; opacity: 0; transition: opacity .4s .35s; }
+.check.on .checkhead { opacity: 1; }
+.hp { width: 44px; height: 44px; position: relative; flex: none; }
+.hp svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+.hp .track { fill: none; stroke: color-mix(in srgb, var(--medium) 18%, transparent); stroke-width: 3; }
+.hp .val { fill: none; stroke: var(--high); stroke-width: 3; stroke-linecap: round; transition: stroke-dashoffset .7s cubic-bezier(.2,1.2,.35,1); }
+.hp img, .hp .lg { position: absolute; inset: 0; margin: auto; width: 24px; height: 14px; }
+.hp svg.lg { transform: none; }
+.checkhead h3 { margin: 0; color: var(--high); font-size: 17px; }
+.checkhead small { color: var(--low); font-size: 12px; font-variant-numeric: tabular-nums; }
+.items { display: flex; flex-direction: column; gap: 6px; }
+.item { font-family: var(--app-font); display: flex; align-items: center; gap: 14px; padding: 8px 6px; border-radius: 14px; color: var(--medium); font-size: 14px; cursor: pointer; opacity: 0; transform: translateY(16px); transition: opacity .45s, transform .55s cubic-bezier(.2,1.2,.35,1), background .2s; border: 0; background: transparent; text-align: left; width: 100%; min-height: 48px; }
+.check.on .item { opacity: 1; transform: none; }
+.item:hover { background: color-mix(in srgb, var(--medium) 6%, transparent); }
+.item .ib { width: 34px; height: 34px; border-radius: 10px; background: color-mix(in srgb, var(--variant) 55%, transparent); display: grid; place-items: center; flex: none; position: relative; transition: background .3s; }
+.item .ib svg { width: 18px; height: 18px; stroke: var(--medium); fill: none; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; transition: opacity .25s, transform .3s; }
+.item .ib .ck { position: absolute; opacity: 0; transform: scale(.4); stroke: var(--app-bg); stroke-width: 2.4; }
+.item b { color: var(--high); }
+.item.done { color: var(--outline); }
+.item.done b { color: var(--low); }
+.item.done .ib { background: var(--ok); }
+.item.done .ib svg.ic { opacity: 0; transform: scale(.4); }
+.item.done .ib .ck { opacity: 1; transform: none; }
+.item.next .ib::after { content: ""; position: absolute; inset: -4px; border-radius: 13px; border: 1.5px solid color-mix(in srgb, var(--medium) 60%, transparent); animation: breathe 2.2s ease-in-out infinite; }
+@keyframes breathe { 0%, 100% { opacity: 0; transform: scale(.92); } 50% { opacity: 1; transform: scale(1); } }
+.checkfoot { display: flex; justify-content: space-between; margin-top: 14px; opacity: 0; transition: opacity .4s .9s; }
+.check.on .checkfoot { opacity: 1; }
+
+/* Pílula recolhida */
+.pill { font-family: var(--app-font); white-space: nowrap; position: absolute; left: 50%; bottom: 30px; transform: translate(-50%, 160px); opacity: 0; z-index: 36; display: flex; gap: 10px; align-items: center; background: color-mix(in srgb, var(--surface) 90%, transparent); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border-radius: 100px; padding: 6px 14px 6px 6px; color: var(--high); font-size: 13px; cursor: pointer; border: 0; transition: transform .5s cubic-bezier(.2,1.2,.35,1), opacity .3s; min-height: 48px; }
+.pill.on { transform: translate(-50%, 0); opacity: 1; }
+.pill .hp { width: 36px; height: 36px; }
+
+/* Pickers de aparência na home (preview ao vivo) */
+.picker { position: absolute; left: 0; right: 0; bottom: 0; max-height: 64%; background: var(--surface); border-radius: 24px 24px 0 0; padding: 16px 18px 28px; z-index: 37; transform: translateY(105%); transition: transform .45s cubic-bezier(.2,.9,.25,1), background .5s; display: flex; flex-direction: column; }
+.picker.open { transform: none; }
+.picker h4 { margin: 0 0 4px; text-align: center; color: var(--medium); font-size: 15px; }
+.picker .hint { text-align: center; color: var(--low); font-size: 11.5px; margin: 0 0 10px; }
+.picker .list { overflow: auto; display: flex; flex-direction: column; gap: 4px; padding-right: 2px; }
+.prow { display: flex; align-items: center; justify-content: space-between; gap: 10px; border: 0; background: transparent; color: var(--medium); font-size: 14px; padding: 9px 10px; border-radius: 12px; cursor: pointer; text-align: left; min-height: 44px; font-family: var(--app-font); }
+.prow.sel { background: var(--variant); color: var(--high); font-weight: 700; }
+.sw { display: flex; border-radius: 7px; overflow: hidden; border: 1px solid var(--outline); flex: none; }
+.sw i { width: 15px; height: 18px; display: block; }
+.prow .tick { width: 16px; height: 16px; stroke: var(--high); fill: none; stroke-width: 2.4; opacity: 0; }
+.prow.sel .tick { opacity: 1; }
+.picker .btn { margin-top: 12px; }
+
+/* Celebração */
+.celebrate { display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; background: rgba(10,14,18,.55); }
+.celebrate h2 { color: var(--high); margin: 22px 0 6px; font-size: 26px; }
+.celebrate p { margin: 0; color: var(--medium); font-size: 14px; }
+.celebrate canvas { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+.celebrate .hp { width: 120px; height: 120px; }
+.celebrate .hp .val { stroke-width: 2.5; }
+.celebrate .hp .lg { width: 64px; height: 37px; }
+
+.reduced *, .reduced *::before, .reduced *::after { animation-duration: 1ms !important; animation-delay: 0ms !important; animation-iteration-count: 1 !important; transition-duration: 1ms !important; transition-delay: 0ms !important; }
+@media (prefers-reduced-motion: reduce) { .wall::after { animation: none; } }
+</style>
+
+<header class="top">
+  <h1>Aureole · Primeira Órbita</h1>
+  <p>Protótipo navegável da experiência de primeiro uso. Use o celular de verdade: arraste para cima, deslize na borda direita e toque e segure na tela.</p>
+</header>
+
+<main class="page">
+  <div class="device">
+    <div class="screen" id="screen" aria-label="Tela do Aureole simulada">
+      <div class="wall"></div>
+      <canvas class="stars" id="stars"></canvas>
+
+      <div class="home" id="home">
+        <div class="clock" data-item="clock"><small data-i="greet"></small><div class="time">9:41</div><div class="date" data-i="date"></div></div>
+        <div class="widgets" data-item="widg" data-i="addWidget"></div>
+        <div class="homegrid">
+          <div class="applist" data-item="apps">
+            <div class="sep" data-i="allapps"></div>
+            <div class="app"><i style="background:#2e7d32"></i>Agenda</div>
+            <div class="app"><i style="background:#1565c0"></i>Câmera</div>
+            <div class="app"><i style="background:#ef6c00"></i>Mensagens</div>
+            <div class="app"><i style="background:#0288d1"></i>Navegador</div>
+            <div class="app"><i style="background:#6a1b9a"></i>Música</div>
+            <div class="app"><i style="background:#00897b"></i>Telefone</div>
+          </div>
+          <div class="container" data-item="cont"><span>+</span></div>
+        </div>
+      </div>
+
+      <div class="drawer" id="drawer">
+        <div class="search" data-i="search"></div>
+        <div class="app"><i style="background:#2e7d32"></i>Agenda</div>
+        <div class="app"><i style="background:#455a64"></i>Arquivos</div>
+        <div class="app"><i style="background:#1565c0"></i>Câmera</div>
+        <div class="app"><i style="background:#c62828"></i>Galeria</div>
+        <div class="app"><i style="background:#ef6c00"></i>Mensagens</div>
+        <div class="app"><i style="background:#6a1b9a"></i>Música</div>
+        <div class="app"><i style="background:#0288d1"></i>Navegador</div>
+        <div class="app"><i style="background:#00897b"></i>Telefone</div>
+      </div>
+      <div class="scrub" id="scrub"></div>
+
+      <div class="sheet" id="customize">
+        <h4 data-i="customize"></h4>
+        <div class="opt"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="3" width="18" height="18" rx="4"/><path d="M12 8v8M8 12h8"/></svg><span data-i="c1"></span></div>
+        <div class="opt"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="m12 3 2.6 5.6 6 .7-4.5 4.1 1.2 6L12 16.4 6.7 19.4l1.2-6L3.4 9.3l6-.7z"/></svg><span data-i="c2"></span></div>
+        <div class="opt"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M3 9h18M9 21V9"/></svg><span data-i="c3"></span></div>
+        <div class="opt"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="12" r="3"/><path d="M19 12a7 7 0 0 0-.1-1.2l2-1.6-2-3.4-2.4 1a7 7 0 0 0-2-1.2L14 3h-4l-.5 2.6a7 7 0 0 0-2 1.2l-2.4-1-2 3.4 2 1.6A7 7 0 0 0 5 12c0 .4 0 .8.1 1.2l-2 1.6 2 3.4 2.4-1a7 7 0 0 0 2 1.2L10 21h4l.5-2.6a7 7 0 0 0 2-1.2l2.4 1 2-3.4-2-1.6c.1-.4.1-.8.1-1.2z"/></svg><span data-i="c4"></span></div>
+      </div>
+
+      <!-- 1. Boas-vindas -->
+      <section class="layer welcome" id="welcome" aria-live="polite">
+        <div class="halo">
+          <div class="glow"></div>
+          <svg class="ring" viewBox="0 0 168 168"><circle cx="84" cy="84" r="78" fill="none" stroke="color-mix(in srgb, var(--medium) 14%, transparent)" stroke-width="1.5"/><circle class="arc" cx="84" cy="84" r="78" fill="none" style="stroke: var(--high)" stroke-width="2.5" stroke-linecap="round" stroke-dasharray="490" stroke-dashoffset="490"/></svg>
+          <svg class="logo" viewBox="0 0 128 73" aria-hidden="true"><path style="fill: var(--high)" d="M92.2754 35.8133C92.3018 35.8545 95.6394 41.0686 95.6396 45.0604C95.6396 49.0681 92.1152 65.4415 74.0127 71.1737C55.9102 76.9057 42.2931 67.6709 38.9287 63.6903C35.5741 59.7209 43.0513 53.5223 43.0938 53.4871C43.127 53.5306 55.7759 70.0227 75.7744 62.0848C95.7515 54.1553 92.2921 35.9007 92.2754 35.8133ZM49.3418 3.33088C68.8859 -5.267 82.0223 4.76219 93.877 11.1287C108.544 19.0057 117.587 15.2728 128 13.9949C128 13.9949 103.349 23.9334 83.3818 31.8074C85.6835 41.1114 80.821 50.9249 71.6221 54.619C62.056 58.4604 51.238 54.304 46.666 45.3162C26.0985 52.1355 0 60.1707 0 60.1707C6.24781 56.0349 20.4569 48.1355 22.5879 43.1229C27.3939 31.8179 29.7974 11.929 49.3418 3.33088ZM80.2539 33.0389C74.2362 35.4045 68.8198 37.5117 64.8809 38.9979C60.4299 40.6773 53.9747 42.8924 46.8418 45.2586C47.6531 46.5004 48.5903 47.637 49.6318 48.6444C55.3917 54.2956 64.1957 55.4927 70.6768 52.2938C78.0877 48.9243 81.915 40.4358 80.2539 33.0389ZM87.79 23.7117C87.79 23.7117 74.653 5.11691 54.4678 13.8397C34.3381 22.5385 38.9035 41.916 38.9287 42.0223L44.8242 39.8123C43.2592 30.9096 48.0875 21.824 56.8584 18.3016C65.9254 14.6606 76.1178 18.2043 81.0498 26.2371L87.79 23.7117ZM77.8711 27.4285C73.7799 21.2433 65.3147 17.9952 57.8037 20.6268C50.906 22.8005 45.4094 29.7403 45.2158 37.7821C45.1964 38.4024 45.2107 39.0265 45.252 39.6522L77.8711 27.4285Z"/></svg>
+        </div>
+        <h2 data-i="wTitle"></h2>
+        <p data-i="wSub"></p>
+        <div class="cta">
+          <button class="btn" id="btnStart" data-i="wCta"></button>
+          <button class="btn ghost" id="btnSkip" data-i="wSkip"></button>
+        </div>
+      </section>
+
+      <!-- 2. Tela inicial padrão -->
+      <section class="layer defhome" id="defhome">
+        <div class="card">
+          <div class="illus"><div class="mini-phone"><svg viewBox="0 0 128 73"><use href="#lg"/></svg><span class="home-dot"></span></div></div>
+          <h3 data-i="dTitle"></h3>
+          <p data-i="dBody"></p>
+          <div class="actions">
+            <button class="btn" id="btnRole" data-i="dCta"></button>
+            <button class="btn ghost" id="btnNotNow" data-i="dLater"></button>
+          </div>
+        </div>
+        <div class="rolesheet" id="rolesheet" role="dialog" aria-label="Diálogo do sistema simulado">
+          <div class="sys" data-i="sys"></div>
+          <h5 data-i="sysTitle"></h5>
+          <div class="opt" id="pickAureole"><i style="background:#2B373E"></i><strong>Aureole</strong></div>
+          <div class="opt" id="pickOther"><i style="background:#9aa7b0"></i><span data-i="sysOther"></span></div>
+        </div>
+      </section>
+
+      <!-- 3. Coach de gestos -->
+      <section class="layer coach" id="coach" aria-live="polite">
+        <div class="coachcard" id="coachcard">
+          <div class="dots"><i></i><i></i><i></i></div>
+          <h3 id="cTitle"></h3>
+          <p id="cBody"></p>
+          <div class="row2">
+            <button class="btn ghost small" id="btnCoachSkip" data-i="skip"></button>
+            <button class="btn small" id="btnShowMe" style="width:auto" data-i="showMe"></button>
+          </div>
+        </div>
+        <div class="trail"></div>
+        <div class="finger"></div>
+        <svg class="pressring" viewBox="0 0 68 68"><circle cx="34" cy="34" r="30"/></svg>
+      </section>
+
+      <!-- 4. Primeiros passos -->
+      <section class="check" id="check">
+        <div class="checkwrap">
+          <div class="checkhead">
+            <div class="hp" id="hpHead"></div>
+            <div><h3 data-i="kTitle"></h3><small id="kCount"></small></div>
+          </div>
+          <div class="items" id="items"></div>
+          <div class="checkfoot">
+            <button class="btn ghost small" id="btnHide" data-i="kHide"></button>
+            <button class="btn ghost small" id="btnMin" data-i="kMin"></button>
+          </div>
+        </div>
+      </section>
+      <button class="pill" id="pill"><span class="hp" id="hpPill"></span><span id="pillText"></span></button>
+
+      <div class="picker" id="picker" role="dialog" aria-modal="true">
+        <h4 id="pkTitle"></h4>
+        <p class="hint" data-i="pkHint"></p>
+        <div class="list" id="pkList"></div>
+        <button class="btn" id="pkDone" data-i="pkDone"></button>
+      </div>
+
+      <!-- 5. Celebração -->
+      <section class="layer celebrate" id="celebrate">
+        <canvas id="burst"></canvas>
+        <div class="hp" id="hpDone"></div>
+        <h2 data-i="doneTitle"></h2>
+        <p data-i="doneSub"></p>
+      </section>
+
+      <div class="toast" id="toast"></div>
+      <div class="statusbar"><span>9:41</span><span class="icons"><i style="width:14px;height:8px"></i><i style="width:10px;height:8px;border-radius:50%"></i><i style="width:18px;height:9px"></i></span></div>
+      <div class="navbar"></div>
+      <svg width="0" height="0" style="position:absolute"><defs><path id="lg" style="fill: var(--medium)" d="M92.2754 35.8133C92.3018 35.8545 95.6394 41.0686 95.6396 45.0604C95.6396 49.0681 92.1152 65.4415 74.0127 71.1737C55.9102 76.9057 42.2931 67.6709 38.9287 63.6903C35.5741 59.7209 43.0513 53.5223 43.0938 53.4871C43.127 53.5306 55.7759 70.0227 75.7744 62.0848C95.7515 54.1553 92.2921 35.9007 92.2754 35.8133ZM49.3418 3.33088C68.8859 -5.267 82.0223 4.76219 93.877 11.1287C108.544 19.0057 117.587 15.2728 128 13.9949C128 13.9949 103.349 23.9334 83.3818 31.8074C85.6835 41.1114 80.821 50.9249 71.6221 54.619C62.056 58.4604 51.238 54.304 46.666 45.3162C26.0985 52.1355 0 60.1707 0 60.1707C6.24781 56.0349 20.4569 48.1355 22.5879 43.1229C27.3939 31.8179 29.7974 11.929 49.3418 3.33088ZM80.2539 33.0389C74.2362 35.4045 68.8198 37.5117 64.8809 38.9979C60.4299 40.6773 53.9747 42.8924 46.8418 45.2586C47.6531 46.5004 48.5903 47.637 49.6318 48.6444C55.3917 54.2956 64.1957 55.4927 70.6768 52.2938C78.0877 48.9243 81.915 40.4358 80.2539 33.0389ZM87.79 23.7117C87.79 23.7117 74.653 5.11691 54.4678 13.8397C34.3381 22.5385 38.9035 41.916 38.9287 42.0223L44.8242 39.8123C43.2592 30.9096 48.0875 21.824 56.8584 18.3016C65.9254 14.6606 76.1178 18.2043 81.0498 26.2371L87.79 23.7117ZM77.8711 27.4285C73.7799 21.2433 65.3147 17.9952 57.8037 20.6268C50.906 22.8005 45.4094 29.7403 45.2158 37.7821C45.1964 38.4024 45.2107 39.0265 45.252 39.6522L77.8711 27.4285Z"/></defs></svg>
+    </div>
+  </div>
+
+  <aside class="controls">
+    <div class="chips" role="group" aria-label="Etapas">
+      <button class="chip" data-go="welcome"><b>1</b><span data-i="s1"></span></button>
+      <button class="chip" data-go="defhome"><b>2</b><span data-i="s2"></span></button>
+      <button class="chip" data-go="gestures"><b>3</b><span data-i="s3"></span></button>
+      <button class="chip" data-go="checklist"><b>4</b><span data-i="s4"></span></button>
+      <button class="chip" data-go="done"><b>5</b><span data-i="s5"></span></button>
+    </div>
+    <div class="row">
+      <button class="chip" id="btnReplay">↺ <span data-i="replay"></span></button>
+      <button class="chip" id="btnLang" aria-label="Idioma">PT · EN</button>
+      <label class="toggle"><input type="checkbox" id="optReduce"><span data-i="reduce"></span></label>
+      <label class="toggle"><input type="checkbox" id="optLeft"><span data-i="left"></span></label>
+    </div>
+    <article class="notes" id="notes"></article>
+    <div class="log" id="log" aria-live="polite"></div>
+  </aside>
+</main>
+
+<script>
+(function () {
+  const $ = (s) => document.querySelector(s);
+  const T = {
+    pt: {
+      greet: "Boa tarde", date: "terça-feira, 27 de outubro", allapps: "TODOS OS APPS", search: "Buscar app…", customize: "Personalizar",
+      c1: "Adicionar relógio", c2: "Adicionar container", c3: "Ajustar layout", c4: "Configurações do Aureole",
+      wTitle: "Bem-vindo ao Aureole", wSub: "Uma tela inicial leve, bonita e do seu jeito. Leva menos de um minuto para começar.", wCta: "Começar", wSkip: "Pular introdução",
+      dTitle: "Faça do Aureole sua casa", dBody: "Para o botão Início abrir o Aureole, escolha-o como app de tela inicial. Você pode trocar quando quiser.", dCta: "Definir como tela inicial", dLater: "Agora não",
+      sys: "Diálogo do sistema (simulado)", sysTitle: "Definir app de tela inicial", sysOther: "Tela inicial atual",
+      okDefault: "Pronto! O Aureole agora é sua tela inicial.", laterToast: "Tudo bem, vou deixar isso na sua lista.",
+      skip: "Pular", showMe: "Mostrar para mim", nice: "Isso aí!",
+      g1t: "Deslize para cima", g1b: "para ver todos os seus apps. O botão Início também abre e fecha a lista.",
+      g2t: "Deslize na borda direita", g2tL: "Deslize na borda esquerda", g2b: "e desça o dedo para pular direto para uma letra.",
+      g3t: "Toque e segure", g3b: "em um espaço vazio da tela para personalizar o que aparece nela.",
+      g1ok: "Seus apps estão aqui. Toque fora para fechar.", g2ok: "Rápido, né? Solte para fechar.", g3ok: "É aqui que você monta sua tela.",
+      kTitle: "Primeiros passos", kCount: "{d} de {t} concluídos", kHide: "Não mostrar mais", kMin: "Minimizar",
+      t_home: "Definir como <b>tela inicial</b>", t_apps: "Escolha seus <b>apps</b>", t_cont: "Preencha o <b>container</b>", t_widg: "Adicione <b>widgets</b>", t_sett: "Explore mais <b>ajustes</b>", t_pal: "Escolha uma <b>paleta de cores</b>", t_font: "Escolha uma <b>fonte</b>", t_clock: "Adicione um <b>relógio</b>", addWidget: "+ Adicionar widget", editHint: "Arraste para mover, puxe a borda para redimensionar. · Salvar",
+      pkPal: "Paleta de cores", pkFont: "Fonte", pkHint: "Toque para ver sua tela mudar na hora.", pkDone: "Ficou bom",
+      pill: "{d}/{t} primeiros passos",
+      doneTitle: "Tudo pronto", doneSub: "Seu Aureole está brilhando. Bom proveito!",
+      s1: "Boas-vindas", s2: "Tela inicial", s3: "Gestos", s4: "Primeiros passos", s5: "Conclusão",
+      replay: "Recomeçar", reduce: "Movimento reduzido", left: "Modo canhoto",
+      done_toast: "Concluído: {x}"
+    },
+    en: {
+      greet: "Good afternoon", date: "Tuesday, October 27", allapps: "ALL APPS", search: "Search app…", customize: "Customize",
+      c1: "Add clock", c2: "Add container", c3: "Adjust layout", c4: "Aureole settings",
+      wTitle: "Welcome to Aureole", wSub: "A light, beautiful home screen, made your way. Getting started takes less than a minute.", wCta: "Let's begin", wSkip: "Skip intro",
+      dTitle: "Make Aureole your home", dBody: "So the Home button opens Aureole, pick it as your home app. You can switch back anytime.", dCta: "Set as home app", dLater: "Not now",
+      sys: "System dialog (simulated)", sysTitle: "Set default home app", sysOther: "Current home app",
+      okDefault: "Done! Aureole is now your home screen.", laterToast: "No problem, it stays on your list.",
+      skip: "Skip", showMe: "Show me", nice: "Nice!",
+      g1t: "Swipe up", g1b: "to see all your apps. The Home button also opens and closes the list.",
+      g2t: "Swipe along the right edge", g2tL: "Swipe along the left edge", g2b: "and slide down to jump straight to a letter.",
+      g3t: "Touch and hold", g3b: "an empty spot on the screen to customize what shows up there.",
+      g1ok: "Your apps live here. Tap outside to close.", g2ok: "Quick, right? Let go to close.", g3ok: "This is where you build your screen.",
+      kTitle: "First steps", kCount: "{d} of {t} done", kHide: "Don't show again", kMin: "Minimize",
+      t_home: "Set as <b>home app</b>", t_apps: "Add some <b>apps</b>", t_cont: "Fill the <b>container</b>", t_widg: "Add some <b>widgets</b>", t_sett: "Check more <b>settings</b>", t_pal: "Pick a <b>color palette</b>", t_font: "Pick a <b>font</b>", t_clock: "Add a <b>clock</b>", addWidget: "+ Add widget", editHint: "Drag to move, pull the edge to resize. · Save",
+      pkPal: "Color palette", pkFont: "Font", pkHint: "Tap to see your screen change right away.", pkDone: "Looks good",
+      pill: "{d}/{t} first steps",
+      doneTitle: "All set", doneSub: "Your Aureole is shining. Enjoy!",
+      s1: "Welcome", s2: "Home app", s3: "Gestures", s4: "First steps", s5: "Done",
+      replay: "Restart", reduce: "Reduced motion", left: "Left-handed mode",
+      done_toast: "Done: {x}"
+    }
+  };
+  const NOTES = {
+    welcome: { k: "WELCOME · bloqueante", h: "Ignição do halo", p: "Cobre o carregamento inicial dos apps (isLoading) em vez do spinner. O anel desenha 360°, o logo sobe com leve overshoot e o texto entra em cascata. Ao sair, o halo expande e “abre” a próxima etapa.", d: [["Duração", "~1,8 s até ficar interativo; saída 550 ms"], ["Compose", "Animatable(sweep) + spring(0.6) + tween FastOutSlowIn"], ["Pular", "Leva direto à lista de primeiros passos — nada essencial se perde"], ["Voltar", "Sem efeito (é a raiz do launcher)"]] },
+    defhome: { k: "DEFAULT_HOME · bloqueante", h: "Faça do Aureole sua casa", p: "O motivo nº 1 de alguém se perder: apertar Início e cair no launcher antigo. Pedimos o papel ROLE_HOME com o diálogo do sistema; no Android 9 abrimos as configurações de tela inicial. Se o Aureole já for padrão, a etapa é pulada sozinha.", d: [["API 29+", "RoleManager.createRequestRoleIntent(ROLE_HOME)"], ["API 28", "Settings.ACTION_HOME_SETTINGS (fallback existente)"], ["Recusou", "Vira item pendente na lista; nunca bloqueia"], ["Revalida", "checkDefaultLauncher() em todo onResume"]] },
+    gestures: { k: "GESTURES · não bloqueante", h: "Aprender fazendo", p: "Nada de slides: a home real fica viva por baixo e o cartão só orienta. Cada passo conclui quando o estado real muda (gaveta abriu, letra escolhida, menu de personalizar abriu). Após 8 s parado, ou com TalkBack, aparece “Mostrar para mim”.", d: [["Passo 1", "isAllAppsDrawerOpen false → true"], ["Passo 2", "sinal do CurvedAlphabetScrubber (onLetterSelected)"], ["Passo 3", "showCustomizeBottomSheet false → true"], ["Toques", "camada sem pointerInput: o gesto chega na home"]] },
+    checklist: { k: "CHECKLIST · persistente", h: "Primeiros passos", p: "A referência do Figma: a lista sobe da base com overshoot e assenta na parte superior. O halo do cabeçalho é a barra de progresso. Cada item coloca o seu componente na home e abre o editor real; marca ao salvar. Minimizar vira uma pílula; nada se perde.", d: [["Entrada", "spring(dampingRatio 0.65, stiffness 180) + stagger 60 ms"], ["Concluir", "check + haptic Confirm + halo avança"], ["Concluir ao salvar", "relógio, apps e widgets concluem quando o layout é salvo; container no Salvar do editor; ajustes na volta do Settings"], ["Home vazia", "instalação nova começa sem itens; cada passo coloca o seu na posição do layout v3"], ["Persistência", "itens concluídos ficam salvos (não desmarcam)"], ["Paleta e fonte", "pickers abrem na própria home; a tela re-tematiza ao vivo atrás do sheet"]] },
+    done: { k: "COMPLETED", h: "Tudo pronto", p: "O halo fecha o círculo, solta partículas e some sozinho em 1,6 s. O tour pode ser revisto em Configurações › Avançado › Rever boas-vindas.", d: [["Partículas", "≤ 40, um único Canvas, desligadas sem animações do sistema"], ["Depois", "Release notes e diálogos de atualização voltam a aparecer"]] }
+  };
+  const TASKS = [
+    { id: "home", ic: '<path d="M4 11 12 4l8 7v8a1 1 0 0 1-1 1h-4v-6H9v6H5a1 1 0 0 1-1-1z"/>' },
+    { id: "pal", ic: '<path d="M12 3a9 9 0 1 0 0 18c1.1 0 1.6-.8 1.6-1.6 0-.5-.2-.9-.5-1.2-.3-.3-.5-.7-.5-1.2 0-.9.7-1.6 1.6-1.6H16a5 5 0 0 0 5-5c0-4.2-4-7.4-9-7.4z"/><circle cx="7.5" cy="11" r="1"/><circle cx="10" cy="7.5" r="1"/><circle cx="14.5" cy="7.5" r="1"/>' },
+    { id: "font", ic: '<path d="M4 19 9 5l5 14M5.8 14h6.4"/><path d="M15.5 12.5c.6-.6 1.4-1 2.4-1 1.7 0 2.6 1 2.6 2.6V19m0-3.2c-3 0-4.9.5-4.9 1.9 0 1 .8 1.5 1.9 1.5 1.6 0 3-1.1 3-3.4"/>' },
+    { id: "clock", ic: '<circle cx="12" cy="12" r="8"/><path d="M12 8v4l3 2"/>' },
+    { id: "apps", ic: '<path d="M4 20h4L19 9l-4-4L4 16z"/><path d="m13 7 4 4"/>' },
+    { id: "cont", ic: '<rect x="8" y="3" width="8" height="18" rx="2"/><path d="M11 7h2M11 17h2"/>' },
+    { id: "widg", ic: '<rect x="3" y="3" width="18" height="18" rx="3"/><path d="M3 9h18M9 21V9"/>' },
+    { id: "sett", ic: '<path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2"/><circle cx="10" cy="17" r="2"/>' }
+  ];
+  const S = { lang: "pt", stage: "welcome", step: 0, stepDone: [false, false, false], done: new Set(), isDefault: false, collapsed: false, timers: [] };
+  const t = (k) => T[S.lang][k] || k;
+  const fmt = (k, o) => t(k).replace(/\{(\w)\}/g, (_, x) => o[x]);
+  const log = (m) => { const el = $("#log"); const d = document.createElement("div"); d.textContent = m; el.prepend(d); };
+  const later = (fn, ms) => { const id = setTimeout(fn, $("#screen").classList.contains("reduced") ? 0 : ms); S.timers.push(id); return id; };
+  const clearTimers = () => { S.timers.forEach(clearTimeout); S.timers = []; };
+
+  function haloSVG(frac) {
+    const c = 2 * Math.PI * 19;
+    return `<svg viewBox="0 0 44 44"><circle class="track" cx="22" cy="22" r="19"/><circle class="val" cx="22" cy="22" r="19" stroke-dasharray="${c}" stroke-dashoffset="${c * (1 - frac)}"/></svg><svg class="lg" viewBox="0 0 128 73"><use href="#lg"/></svg>`;
+  }
+  function tasks() { return TASKS.filter((x) => x.id !== "home" || !S.isDefault || S.done.has("home")); }
+
+  function applyLang() {
+    document.querySelectorAll("[data-i]").forEach((el) => { el.textContent = t(el.dataset.i); });
+    $("#scrub").innerHTML = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("").map((l) => `<span>${l}</span>`).join("");
+    renderCoach(); renderChecklist(); renderNotes(); renderPicker();
+  }
+  function renderNotes() {
+    const n = NOTES[S.stage === "gestures" ? "gestures" : S.stage];
+    $("#notes").innerHTML = `<div class="eyebrow">${n.k}</div><h2>${n.h}</h2><p>${n.p}</p><dl>${n.d.map(([a, b]) => `<dt>${a}</dt><dd>${b}</dd>`).join("")}</dl>`;
+    document.querySelectorAll("[data-go]").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.go === S.stage)));
+  }
+  let toastT = null;
+  function toast(msg) { const el = $("#toast"); el.textContent = msg; el.classList.add("show"); clearTimeout(toastT); toastT = setTimeout(() => el.classList.remove("show"), 2400); }
+
+  /* ---------- Etapas ---------- */
+  function resetSurfaces() {
+    ["#welcome", "#defhome", "#coach", "#celebrate"].forEach((s) => $(s).classList.remove("on", "play", "exit"));
+    $("#check").classList.remove("on"); $("#pill").classList.remove("on");
+    $("#rolesheet").classList.remove("open"); $("#drawer").classList.remove("open"); $("#customize").classList.remove("open"); $("#scrub").classList.remove("show");
+    $("#home").classList.remove("dim"); $("#picker").classList.remove("open"); S.picker = null;
+  }
+  function go(stage) {
+    clearTimers(); resetSurfaces(); S.stage = stage; renderNotes();
+    if (stage === "welcome") {
+      $("#home").classList.add("dim");
+      const w = $("#welcome"); w.classList.add("on"); void w.offsetWidth; w.classList.add("play");
+      log("stage=WELCOME (cobre isLoading)");
+    } else if (stage === "defhome") {
+      if (S.isDefault) { log("já é padrão → etapa pulada"); return go("gestures"); }
+      $("#home").classList.add("dim"); $("#defhome").classList.add("on"); log("stage=DEFAULT_HOME");
+    } else if (stage === "gestures") {
+      S.step = S.stepDone.indexOf(false); if (S.step < 0) return go("checklist");
+      $("#coach").classList.add("on"); renderCoach(); log("stage=GESTURES passo " + (S.step + 1));
+      armShowMe();
+    } else if (stage === "checklist") {
+      S.collapsed = false; $("#home").classList.add("dim"); renderChecklist();
+      requestAnimationFrame(() => requestAnimationFrame(() => $("#check").classList.add("on")));
+      log("stage=CHECKLIST (sobe com overshoot)");
+    } else if (stage === "done") {
+      $("#home").classList.add("dim"); $("#celebrate").classList.add("on");
+      $("#hpDone").innerHTML = haloSVG(0); requestAnimationFrame(() => requestAnimationFrame(() => { $("#hpDone").innerHTML = haloSVG(1); }));
+      burst(); log("stage=COMPLETED");
+      later(() => { $("#celebrate").classList.remove("on"); $("#home").classList.remove("dim"); log("celebração some sozinha"); }, 2600);
+    }
+  }
+
+  /* Boas-vindas */
+  $("#btnStart").onclick = () => { $("#welcome").classList.add("exit"); later(() => go("defhome"), 450); };
+  $("#btnSkip").onclick = () => { log("pulou introdução"); go("checklist"); };
+
+  /* Tela inicial padrão */
+  $("#btnRole").onclick = () => { $("#rolesheet").classList.add("open"); log("RoleManager.createRequestRoleIntent(ROLE_HOME)"); };
+  $("#pickAureole").onclick = () => { S.isDefault = true; S.done.add("home"); $("#rolesheet").classList.remove("open"); $("#defhome").classList.remove("on"); $("#home").classList.remove("dim"); toast("✓ " + t("okDefault")); log("RESULT_OK · isDefaultLauncher=true"); later(() => go("gestures"), 900); };
+  $("#pickOther").onclick = () => { $("#rolesheet").classList.remove("open"); log("RESULT_CANCELED"); };
+  $("#btnNotNow").onclick = () => { toast(t("laterToast")); log("adiado → item pendente"); later(() => go("gestures"), 700); };
+
+  /* Coach */
+  function renderCoach() {
+    const left = $("#optLeft").checked;
+    const titles = [t("g1t"), left ? t("g2tL") : t("g2t"), t("g3t")];
+    const bodies = [t("g1b"), t("g2b"), t("g3b")];
+    const i = Math.max(0, S.step);
+    $("#cTitle").textContent = titles[i]; $("#cBody").textContent = bodies[i];
+    $("#coachcard").classList.remove("success");
+    document.querySelectorAll(".coachcard .dots i").forEach((d, k) => { d.className = S.stepDone[k] ? "done" : k === i ? "on" : ""; });
+    const c = $("#coach"); c.classList.remove("step-up", "step-edge", "step-press");
+    if (S.stage === "gestures") { void c.offsetWidth; c.classList.add(["step-up", "step-edge", "step-press"][i]); }
+    c.classList.toggle("left", left);
+  }
+  let showMeTimer = null;
+  function armShowMe() { $("#btnShowMe").style.visibility = "hidden"; clearTimeout(showMeTimer); showMeTimer = later(() => { $("#btnShowMe").style.visibility = "visible"; log("8 s parado → Mostrar para mim"); }, 8000); }
+  function completeStep(i, okKey) {
+    if (S.stage !== "gestures" || S.step !== i || S.stepDone[i]) return;
+    S.stepDone[i] = true; $("#coach").classList.remove("step-up", "step-edge", "step-press");
+    $("#coachcard").classList.add("success"); $("#cTitle").textContent = t("nice"); $("#cBody").textContent = t(okKey);
+    document.querySelectorAll(".coachcard .dots i")[i].className = "done";
+    log("passo " + (i + 1) + " concluído (haptic Confirm)");
+  }
+  function nextStep() {
+    const n = S.stepDone.indexOf(false);
+    if (n < 0) { $("#coach").classList.remove("on"); later(() => go("checklist"), 350); return; }
+    S.step = n; renderCoach(); armShowMe();
+  }
+  $("#btnCoachSkip").onclick = () => { S.stepDone = [true, true, true]; closeAll(); log("pulou gestos"); nextStep(); };
+  $("#btnShowMe").onclick = () => { if (S.step === 0) openDrawer(); else if (S.step === 1) scrubDemo(); else openCustomize(); };
+
+  function openDrawer() { $("#drawer").classList.add("open"); $("#scrub").classList.add("show"); completeStep(0, "g1ok"); log("isAllAppsDrawerOpen=true"); }
+  function closeAll() {
+    const wasDrawer = $("#drawer").classList.contains("open"), wasSheet = $("#customize").classList.contains("open");
+    $("#drawer").classList.remove("open"); $("#scrub").classList.remove("show"); $("#customize").classList.remove("open");
+    document.querySelectorAll("#scrub span").forEach((s) => s.classList.remove("hot"));
+    if (S.stage === "gestures" && (wasDrawer || wasSheet) && S.stepDone[S.step]) later(nextStep, 300);
+  }
+  function openCustomize() { $("#customize").classList.add("open"); completeStep(2, "g3ok"); log("showCustomizeBottomSheet=true"); }
+  function hotLetter(yFrac) {
+    const spans = [...document.querySelectorAll("#scrub span")]; spans.forEach((s) => s.classList.remove("hot"));
+    const k = Math.max(0, Math.min(spans.length - 1, Math.floor(yFrac * spans.length))); spans[k].classList.add("hot");
+  }
+  function scrubDemo() { $("#drawer").classList.add("open"); $("#scrub").classList.add("show"); let k = 0; const iv = setInterval(() => { hotLetter(k / 10); k++; if (k > 6) { clearInterval(iv); completeStep(1, "g2ok"); log("onLetterSelected → sinal ALPHABET"); later(closeAll, 1200); } }, 140); }
+
+  /* Gestos reais no aparelho */
+  const screen = $("#screen"); let p = null, holdT = null;
+  screen.addEventListener("pointerdown", (e) => {
+    if (e.target.closest("button, .opt, .item, .rolesheet")) return;
+    const r = screen.getBoundingClientRect(); const x = (e.clientX - r.left) / r.width, y = (e.clientY - r.top) / r.height;
+    const left = $("#optLeft").checked; const edge = left ? x < 0.08 : x > 0.92;
+    p = { x, y, edge, moved: false };
+    if ($("#drawer").classList.contains("open") && x < 0.3) { closeAll(); p = null; return; }
+    if ($("#customize").classList.contains("open") && y < 0.6) { closeAll(); p = null; return; }
+    if (!edge && !$("#drawer").classList.contains("open")) holdT = setTimeout(() => { if (p && !p.moved) { openCustomize(); p = null; } }, 550);
+  });
+  screen.addEventListener("pointermove", (e) => {
+    if (!p) return; const r = screen.getBoundingClientRect(); const x = (e.clientX - r.left) / r.width, y = (e.clientY - r.top) / r.height;
+    if (Math.hypot(x - p.x, y - p.y) > 0.03) { p.moved = true; clearTimeout(holdT); }
+    if (p.edge) { $("#drawer").classList.add("open"); $("#scrub").classList.add("show"); hotLetter((y - 0.34) / 0.45); p.scrubbed = true; }
+    else if (p.y - y > 0.1 && !$("#drawer").classList.contains("open")) { openDrawer(); p = null; }
+  });
+  const end = () => { clearTimeout(holdT); if (p && p.scrubbed) { completeStep(1, "g2ok"); log("onLetterSelected → sinal ALPHABET"); later(closeAll, 700); } p = null; };
+  screen.addEventListener("pointerup", end); screen.addEventListener("pointercancel", end);
+
+  /* Checklist */
+  function renderChecklist() {
+    const list = tasks(); const d = list.filter((x) => S.done.has(x.id)).length; const frac = list.length ? d / list.length : 0;
+    const firstPending = list.find((x) => !S.done.has(x.id));
+    $("#items").innerHTML = list.map((x, k) => `<button class="item ${S.done.has(x.id) ? "done" : ""} ${firstPending === x ? "next" : ""}" data-t="${x.id}" style="transition-delay:${S.stage === "checklist" ? 0 : 240 + k * 60}ms"><span class="ib"><svg class="ic" viewBox="0 0 24 24">${x.ic}</svg><svg class="ck" viewBox="0 0 24 24"><path d="m6 12 4 4 8-9"/></svg></span><span>${t("t_" + x.id)}</span></button>`).join("");
+    $("#hpHead").innerHTML = haloSVG(frac); $("#hpPill").innerHTML = haloSVG(frac);
+    $("#kCount").textContent = fmt("kCount", { d, t: list.length }); $("#pillText").textContent = fmt("pill", { d, t: list.length });
+    document.querySelectorAll(".item").forEach((b) => (b.onclick = () => doTask(b.dataset.t)));
+  }
+  function doTask(id) {
+    if (S.done.has(id)) return;
+    if (id === "pal" || id === "font") { openPicker(id); return; }
+    if (id === "sett") { log("onSettingsClick() → pendingTask = EXPLORE_SETTINGS; conclui na volta (onResume)"); later(() => completeTask(id), 900); return; }
+    if (id === "home") { log("abre editor real: RoleManager / ACTION_HOME_SETTINGS"); later(() => completeTask(id), 650); return; }
+    const what = { clock: "onOpenEditClockBottomSheet()", apps: "onOpenFavoritePicker(apps_list_item)", cont: "onOpenEditContainerDialog(container_item)", widg: "onAddWidgetClick(widgets_item)" }[id];
+    // FUE-16/17: o item entra na posição do layout v3, em modo de edição; só conclui ao salvar.
+    $("#check").classList.remove("on"); $("#home").classList.remove("dim");
+    place(id); log("startGridTask → item na posição do v3 + " + what);
+    later(() => toast(t("editHint")), 500);
+    later(() => { log("Salvar → ponto de confirmação"); $("#home").classList.add("dim"); $("#check").classList.add("on"); completeTask(id); }, 2600);
+  }
+  function place(id) { const el = document.querySelector(`.home [data-item="${id}"]`); if (el) el.classList.add("on"); }
+  $("#btnMin").onclick = () => { $("#check").classList.remove("on"); $("#home").classList.remove("dim"); later(() => $("#pill").classList.add("on"), 300); log("checklist minimizada → pílula"); };
+  $("#pill").onclick = () => { $("#pill").classList.remove("on"); $("#home").classList.add("dim"); later(() => $("#check").classList.add("on"), 150); };
+  $("#btnHide").onclick = () => {
+    $("#check").classList.remove("on"); $("#home").classList.remove("dim");
+    const isEmpty = !document.querySelector(".home [data-item].on");
+    if (isEmpty) { ["clock", "widg", "apps", "cont"].forEach(place); log("home vazia → layout padrão v3 (todos os apps no lugar dos favoritos)"); }
+    else if (!S.done.has("apps")) { place("apps"); log("sem favoritos → ALL_APPS_LIST na posição padrão (FUE-22)"); }
+    log("dispensada → COMPLETED (dá para rever em Configurações)");
+  };
+
+  /* Paletas reais (ThemePalettePresets): bg, surface, variant, outline, low, medium, high */
+  const PALETTES = {
+    "Frostbite": ["#12181D", "#2B373E", "#4A5D6B", "#7D96AA", "#9BB4C8", "#C5D8E8", "#FFFFFF"],
+    "Abyss": ["#001F20", "#00363A", "#006064", "#00838F", "#26C6DA", "#80DEEA", "#E0F7FA"],
+    "Neon Dusk": ["#1A1B17", "#272822", "#383830", "#49483E", "#AE81FF", "#66D9EF", "#F8F8F2"],
+    "Violet": ["#1A0A20", "#351845", "#5C2A70", "#8E4AA8", "#B87BD0", "#D6B8E8", "#F3E5F5"],
+    "Emerald": ["#052005", "#0D4A0D", "#1A7A1A", "#2AB82A", "#6BD86B", "#B8E8B8", "#E8F8E8"],
+    "Teal": ["#051A18", "#0D352F", "#1F5A54", "#3A8A82", "#6BB8B0", "#A8D8D0", "#E0F2F0"],
+    "Charcoal": ["#121212", "#212121", "#424242", "#616161", "#9E9E9E", "#E0E0E0", "#FAFAFA"]
+  };
+  const FONTS = ["Istok Web", "Montserrat", "Rubik", "Space Grotesk", "Orbitron", "Special Elite", "Chelsea Market"];
+  S.palette = "Frostbite"; S.font = "Istok Web"; S.picker = null;
+  function applyTheme() {
+    const v = PALETTES[S.palette]; const keys = ["--app-bg", "--surface", "--variant", "--outline", "--low", "--medium", "--high"];
+    keys.forEach((k, i) => screen.style.setProperty(k, v[i]));
+    screen.style.setProperty("--app-font", `"${S.font}", "Istok Web", sans-serif`);
+  }
+  function renderPicker() {
+    if (!S.picker) return;
+    const tick = '<svg class="tick" viewBox="0 0 24 24"><path d="m6 12 4 4 8-9"/></svg>';
+    $("#pkTitle").textContent = t(S.picker === "pal" ? "pkPal" : "pkFont");
+    $("#pkList").innerHTML = S.picker === "pal"
+      ? Object.entries(PALETTES).map(([n, c]) => `<button class="prow ${n === S.palette ? "sel" : ""}" data-v="${n}"><span>${n}</span><span class="sw">${c.slice(0, 6).concat(c[6]).map((x) => `<i style="background:${x}"></i>`).join("")}</span></button>`).join("")
+      : FONTS.map((f) => `<button class="prow ${f === S.font ? "sel" : ""}" data-v="${f}" style="font-family:'${f}', sans-serif"><span>${f}</span>${tick}</button>`).join("");
+    document.querySelectorAll(".prow").forEach((b) => (b.onclick = () => {
+      if (S.picker === "pal") S.palette = b.dataset.v; else S.font = b.dataset.v;
+      applyTheme(); renderPicker(); S.pickedSomething = true;
+      log((S.picker === "pal" ? "onSelectPalette(" : "onSelectFont(") + b.dataset.v + ") → MainUiState re-tematiza ao vivo");
+    }));
+  }
+  function openPicker(id) {
+    S.picker = id; S.pickedSomething = false; renderPicker();
+    $("#check").classList.remove("on"); $("#home").classList.remove("dim");
+    later(() => $("#picker").classList.add("open"), 200);
+    log("abre " + (id === "pal" ? "PickPaletteBottomSheet" : "PickFontBottomSheet") + " na própria home");
+  }
+  $("#pkDone").onclick = () => {
+    const id = S.picker; $("#picker").classList.remove("open"); S.picker = null;
+    $("#home").classList.add("dim"); later(() => $("#check").classList.add("on"), 250);
+    later(() => completeTask(id), 700);
+  };
+  function completeTask(id) {
+    S.done.add(id); if (id === "home") S.isDefault = true; renderChecklist(); document.querySelectorAll(".item").forEach((b) => (b.style.transitionDelay = "0ms"));
+    log("estado comprova tarefa → " + id + " ✓"); if (navigator.vibrate) try { navigator.vibrate(12); } catch (e) {}
+    if (tasks().every((x) => S.done.has(x.id))) later(() => { $("#check").classList.remove("on"); later(() => go("done"), 500); }, 700);
+  }
+
+  /* Estrelas e partículas */
+  function stars() {
+    const c = $("#stars"), x = c.getContext("2d"); const dpr = Math.min(2, devicePixelRatio || 1);
+    const W = (c.width = c.offsetWidth * dpr), H = (c.height = c.offsetHeight * dpr);
+    const pts = Array.from({ length: 38 }, () => ({ x: Math.random() * W, y: Math.random() * H, r: (Math.random() * 1.1 + .3) * dpr, a: Math.random(), s: Math.random() * .004 + .002 }));
+    (function loop() {
+      x.clearRect(0, 0, W, H);
+      const reduced = screen.classList.contains("reduced") || matchMedia("(prefers-reduced-motion: reduce)").matches;
+      for (const s of pts) { if (!reduced) { s.a += s.s; s.y -= .05 * dpr; if (s.y < 0) s.y = H; } x.globalAlpha = .35 + .45 * Math.abs(Math.sin(s.a * 6.28)); x.fillStyle = getComputedStyle(screen).getPropertyValue("--medium").trim() || "#C5D8E8"; x.beginPath(); x.arc(s.x, s.y, s.r, 0, 6.29); x.fill(); }
+      requestAnimationFrame(loop);
+    })();
+  }
+  function burst() {
+    const c = $("#burst"), x = c.getContext("2d"); const dpr = Math.min(2, devicePixelRatio || 1);
+    const W = (c.width = c.offsetWidth * dpr), H = (c.height = c.offsetHeight * dpr);
+    if (screen.classList.contains("reduced")) { x.clearRect(0, 0, W, H); return; }
+    const cx = W / 2, cy = H / 2 - 60 * dpr; const ps = Array.from({ length: 36 }, (_, i) => { const a = (i / 36) * 6.283 + Math.random() * .2, v = (2 + Math.random() * 3) * dpr; return { x: cx, y: cy, vx: Math.cos(a) * v, vy: Math.sin(a) * v, life: 1 }; });
+    let f = 0; (function loop() { x.clearRect(0, 0, W, H); let alive = false; for (const q of ps) { q.x += q.vx; q.y += q.vy; q.vx *= .965; q.vy = q.vy * .965 + .03 * dpr; q.life -= .012; if (q.life > 0) { alive = true; x.globalAlpha = q.life; x.fillStyle = f % 2 ? "#FFFFFF" : "#C5D8E8"; x.beginPath(); x.arc(q.x, q.y, 2 * dpr, 0, 6.29); x.fill(); } } f++; if (alive) requestAnimationFrame(loop); else x.clearRect(0, 0, W, H); })();
+  }
+
+  /* Controles */
+  document.querySelectorAll("[data-go]").forEach((b) => (b.onclick = () => { if (b.dataset.go === "gestures") S.stepDone = [false, false, false]; go(b.dataset.go); }));
+  $("#btnReplay").onclick = () => { $("#toast").classList.remove("show"); S.palette = "Frostbite"; S.font = "Istok Web"; applyTheme(); S.done.clear(); S.isDefault = false; S.stepDone = [false, false, false]; $("#log").innerHTML = ""; go("welcome"); };
+  $("#btnLang").onclick = () => { S.lang = S.lang === "pt" ? "en" : "pt"; applyLang(); };
+  $("#optReduce").onchange = (e) => { screen.classList.toggle("reduced", e.target.checked); log("animações do sistema " + (e.target.checked ? "desligadas" : "ligadas")); };
+  $("#optLeft").onchange = () => { renderCoach(); log("isLeftHandedMode=" + $("#optLeft").checked); };
+
+  applyTheme(); applyLang(); stars(); go("welcome");
+})();
+</script>

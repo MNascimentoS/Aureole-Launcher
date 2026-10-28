@@ -49,39 +49,15 @@ class FavoriteAppsDialogSectionsTest {
     }
 
     @Test
-    fun `when rendering FavoriteAppsSheetContent in MAIN mode, should display options`() {
+    fun `when rendering FavoriteAppsSheetContent, should render sheet content`() {
         composeTestRule.setContent {
             AureoleLauncherTheme {
                 FavoriteAppsSheetContent(
-                    currentMode = FavoriteAppsScreenMode.MAIN,
                     config = FavoriteAppsDialogConfig(
                         allApps = emptyList(),
                         favoriteAppPackages = emptyList()
                     ),
-                    actions = FavoriteAppsDialogActions(),
-                    onEditShortcutsClick = {},
-                    onAppearanceClick = {}
-                )
-            }
-        }
-
-        composeTestRule.onNodeWithText("Edit shortcuts").assertIsDisplayed()
-        composeTestRule.onNodeWithText("Appearance").assertIsDisplayed()
-    }
-
-    @Test
-    fun `when rendering FavoriteAppsSheetContent in EDIT_SHORTCUTS mode, should render body`() {
-        composeTestRule.setContent {
-            AureoleLauncherTheme {
-                FavoriteAppsSheetContent(
-                    currentMode = FavoriteAppsScreenMode.EDIT_SHORTCUTS,
-                    config = FavoriteAppsDialogConfig(
-                        allApps = emptyList(),
-                        favoriteAppPackages = emptyList()
-                    ),
-                    actions = FavoriteAppsDialogActions(),
-                    onEditShortcutsClick = {},
-                    onAppearanceClick = {}
+                    actions = FavoriteAppsDialogActions()
                 )
             }
         }

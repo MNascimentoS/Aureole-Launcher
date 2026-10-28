@@ -120,13 +120,20 @@ class HomeViewModelGridExtensionsTest {
 
         val state = viewModel.uiState.value
         assertFalse(state.isLandscape)
-        assertTrue(state.portraitGridItems.isNotEmpty())
-        assertTrue(state.landscapeGridItems.isNotEmpty())
         assertEquals(state.portraitGridItems, state.gridItems)
     }
 
     @Test
     fun `when entering and canceling edit mode, should restore original items`() = runTest {
+        val testItem = LauncherItemState(
+            id = "test_item",
+            type = LauncherItemType.CLOCK,
+            col = 0,
+            row = 0,
+            colSpan = 1,
+            rowSpan = 1
+        )
+        gridRepository.saveGridItems(listOf(testItem), isLandscape = false)
         viewModel.loadGridItems(isLandscape = false)
         testDispatcher.scheduler.advanceUntilIdle()
 
@@ -339,19 +346,27 @@ class HomeViewModelGridExtensionsTest {
 
     @Test
     fun `when resetting grid, should clear items and reload defaults`() = runTest {
+        val testItem = LauncherItemState(
+            id = "test_item",
+            type = LauncherItemType.CLOCK,
+            col = 0,
+            row = 0,
+            colSpan = 1,
+            rowSpan = 1
+        )
+        gridRepository.saveGridItems(listOf(testItem), isLandscape = false)
         viewModel.loadGridItems(isLandscape = false)
         testDispatcher.scheduler.advanceUntilIdle()
 
-        viewModel.enterGridEditMode()
-        viewModel.uiState.value.gridItems.forEach { viewModel.deleteGridItem(it.id) }
-        viewModel.saveGridEditMode()
-
-        assertEquals(0, viewModel.uiState.value.gridItems.size)
+        assertEquals(1, viewModel.uiState.value.gridItems.size)
 
         viewModel.resetGridItems()
         testDispatcher.scheduler.advanceUntilIdle()
 
-        assertTrue(viewModel.uiState.value.gridItems.isNotEmpty())
+        assertEquals(
+            GridDefaults.getDefaultGridItems(isLandscape = false).map { it.id },
+            viewModel.uiState.value.gridItems.map { it.id }
+        )
     }
 }
 

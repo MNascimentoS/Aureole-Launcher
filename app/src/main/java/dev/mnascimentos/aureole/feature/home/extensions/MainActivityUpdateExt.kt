@@ -6,6 +6,7 @@ import com.google.android.play.core.install.model.AppUpdateType
 import com.google.android.play.core.install.model.InstallStatus
 import com.google.android.play.core.install.model.UpdateAvailability
 import dev.mnascimentos.aureole.feature.home.HomeViewModel
+import dev.mnascimentos.aureole.feature.home.components.onboarding.model.isBlocking
 import timber.log.Timber
 
 fun checkAppUpdate(
@@ -14,6 +15,8 @@ fun checkAppUpdate(
     onAppUpdateInfoRetrieved: (AppUpdateInfo) -> Unit,
 ) {
     if (!viewModel.uiState.value.isInAppUpdateEnabled) return
+    // Asked on a later resume, so it never competes with the first-run welcome.
+    if (viewModel.uiState.value.onboarding.isBlocking) return
 
     appUpdateManager.appUpdateInfo.addOnSuccessListener { appUpdateInfo ->
         onAppUpdateInfoRetrieved(appUpdateInfo)

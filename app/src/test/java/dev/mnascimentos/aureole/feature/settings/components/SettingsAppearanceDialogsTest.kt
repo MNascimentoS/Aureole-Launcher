@@ -4,6 +4,7 @@ import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.v2.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
+import dev.mnascimentos.aureole.composable.sheets.PickPaletteBottomSheet
 import dev.mnascimentos.aureole.core.designsystem.palette.ThemePalette
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import org.junit.Assert.assertEquals

@@ -30,6 +30,7 @@ import dev.chrisbanes.haze.HazeStyle
 import dev.chrisbanes.haze.HazeTint
 import dev.chrisbanes.haze.hazeEffect
 import dev.mnascimentos.aureole.R
+import dev.mnascimentos.aureole.composable.appitem.AppListSkeletonComponent
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleFloatingSearchBar
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleFloatingSearchBarParams
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleSearchBarHazeConfig
@@ -41,6 +42,7 @@ import dev.mnascimentos.aureole.core.designsystem.utils.fadingEdges
 import dev.mnascimentos.aureole.feature.home.components.appsdrawer.model.AppsDrawerMetrics
 import dev.mnascimentos.aureole.feature.home.model.LocalHomeActions
 import dev.mnascimentos.aureole.feature.home.model.LocalHomeUiState
+import dev.mnascimentos.aureole.feature.home.model.isAppsLoading
 
 private const val DRAWER_HAZE_TINT_FACTOR = 0.5f
 private const val DRAWER_HAZE_MIN_ALPHA = 0.15f
@@ -91,7 +93,11 @@ fun AppsListDrawer(
                 .fillMaxSize()
                 .fadingEdges(listState)
         ) {
-            appsListItems(uiState, actions)
+            if (uiState.isAppsLoading) {
+                item(key = "apps_loading", contentType = "skeleton") { AppListSkeletonComponent() }
+            } else {
+                appsListItems(uiState, actions)
+            }
         }
 
         if (uiState.showSearchBarInAllApps) {
