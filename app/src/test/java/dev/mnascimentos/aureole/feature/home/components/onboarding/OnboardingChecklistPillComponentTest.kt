@@ -83,6 +83,6 @@ class OnboardingChecklistPillComponentTest {
     }
 
     private companion object {
-        const val PILL_TEXT = "3/7 first steps"
+        const val PILL_TEXT = "3/8 first steps"
     }
 }

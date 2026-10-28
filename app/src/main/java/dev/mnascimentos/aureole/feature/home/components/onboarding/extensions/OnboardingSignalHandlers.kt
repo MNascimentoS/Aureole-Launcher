@@ -24,12 +24,19 @@ internal fun OnboardingUiState.onPickerConfirmed(): OnboardingUiState {
     return copy(completedTasks = completedTasks + task, activePicker = null)
 }
 
+/** Opening Settings only starts the task: it completes when the user comes back to the home. */
 internal fun OnboardingUiState.onSettingsOpened(): OnboardingUiState {
-    if (stage != OnboardingStage.CHECKLIST) return this
-    return copy(completedTasks = completedTasks + OnboardingTask.EXPLORE_SETTINGS)
+    if (stage != OnboardingStage.CHECKLIST || OnboardingTask.EXPLORE_SETTINGS in completedTasks) return this
+    return copy(pendingTask = OnboardingTask.EXPLORE_SETTINGS)
 }
 
 internal fun OnboardingUiState.onDefaultHomeResult(): OnboardingUiState {
     if (stage != OnboardingStage.DEFAULT_HOME && stage != OnboardingStage.CHECKLIST) return this
     return copy(defaultHomeAttempted = true)
+}
+
+/** The grid task ended without a save: clear it and bring the list back unchecked. */
+internal fun OnboardingUiState.abandonPendingTask(): OnboardingUiState {
+    if (pendingTask == null) return this
+    return copy(pendingTask = null, createdItemId = null, isChecklistExpanded = true)
 }

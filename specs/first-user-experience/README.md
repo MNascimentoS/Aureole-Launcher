@@ -103,30 +103,37 @@ Cartão no topo com indicador de 3 passos e um "dedo fantasma" animado. A camada
 
 Animação de entrada fiel ao frame "Animation": a lista nasce abaixo da tela, sobe com overshoot e assenta no terço superior. Cabeçalho com o **halo de progresso** (o anel do logo é a barra de progresso).
 
-| Ordem | Tarefa (`OnboardingTask`) | Ação ao tocar | Concluída quando (derivado do `MainUiState`) |
+Numa instalação nova a home começa **vazia** (`[]` gravado em retrato e paisagem); cada passo de grid coloca o seu item na posição do layout padrão v3 (ver [`CHANGES_2026-10-28.md`](CHANGES_2026-10-28.md)).
+
+| Ordem | Tarefa (`OnboardingTask`) | Ação ao tocar | Concluída quando |
 |---|---|---|---|
 | 1 | `SET_DEFAULT_HOME` | mesmo fluxo da 4.2 | `onboarding.isDefaultLauncher == true` (checado em todo `onResume`) |
-| 2 | `CHOOSE_PALETTE` | abre `PickPaletteBottomSheet` **na home**, com preview ao vivo | usuário tocou em uma paleta e fechou o sheet |
-| 3 | `CHOOSE_FONT` | abre `PickFontBottomSheet` **na home**, com preview ao vivo | usuário tocou em uma fonte e fechou o sheet |
-| 4 | `ADD_FAVORITE_APPS` | `onOpenFavoritePicker(<id do 1º APPS_LIST>)` | `favoriteAppPackages` ou algum `containerFavorites` não vazio |
-| 5 | `FILL_CONTAINER` | `onOpenEditContainerDialog(<id do 1º SHORTCUTS_CONTAINER>)`; sem container → `onAddGridItem(SHORTCUTS_CONTAINER)` | algum `ContainerModel` com `items` ou `folders` |
-| 6 | `ADD_WIDGET` | `onSetIsAddingSingleWidget(true)` + `onAddWidgetClick(null)` (vai direto ao seletor) | algum `SINGLE_APP_WIDGET` com `widgetId` válido ou `widgetStacks` não vazio |
-| 7 | `EXPLORE_SETTINGS` | `onSettingsClick()` | ao abrir |
+| 2 | `CHOOSE_PALETTE` | abre `PickPaletteBottomSheet` **na home**, com preview ao vivo | usuário tocou em uma paleta e em **Ficou bom** |
+| 3 | `CHOOSE_FONT` | abre `PickFontBottomSheet` **na home**, com preview ao vivo | usuário tocou em uma fonte e em **Ficou bom** |
+| 4 | `ADD_CLOCK` | `startGridTask` coloca o `CLOCK` → `onOpenEditClockBottomSheet()` | layout salvo com um `CLOCK` |
+| 5 | `ADD_FAVORITE_APPS` | `startGridTask` coloca o `APPS_LIST` → `onOpenFavoritePicker(id)` | layout salvo com ≥ 1 favorito no `APPS_LIST` |
+| 6 | `FILL_CONTAINER` | `startGridTask` coloca o `SHORTCUTS_CONTAINER` → `onOpenEditContainerDialog(id)` | **Salvar** no editor do container, mesmo vazio |
+| 7 | `ADD_WIDGET` | `startGridTask` coloca o `WIDGET_LIST` → `onAddWidgetClick(id)` | layout salvo com ≥ 1 widget na pilha do item |
+| 8 | `EXPLORE_SETTINGS` | `onSettingsClick()` (só marca a pendência) | volta do Settings para a home (`onReturnedToHome`) |
 
 Regras:
 - Paleta e fonte vêm logo depois da tela inicial de propósito: são vitórias rápidas com recompensa visual imediata, o que dá impulso para o resto.
 - Enquanto um picker de aparência está aberto, a lista some e o scrim sai, para a pessoa ver a home inteira re-tematizar atrás do sheet. Ao tocar **Ficou bom**, a lista volta com o item marcado.
-- Ao tocar numa tarefa que abre um editor existente (favoritos, container, widget, Settings), a lista **recolhe para a pílula** antes de abrir o editor, porque o host do onboarding é a última camada do `MainScaffold` e não pode cobrir o editor. A pílula some enquanto qualquer outra sobreposição da home estiver ativa. Quando o reducer detecta a tarefa concluída, a lista reabre e mostra o check.
+- Ao tocar numa tarefa que abre um editor existente (relógio, favoritos, container, widget, Settings), a lista **recolhe para a pílula** antes de abrir o editor, porque o host do onboarding é a última camada do `MainScaffold` e não pode cobrir o editor. A pílula some enquanto qualquer outra sobreposição da home estiver ativa.
+- **Concluir só ao salvar.** Os passos de grid deixam o item em modo de edição e guardam a tarefa em `pendingTask`. Ela é avaliada uma única vez, quando o editor e o modo de edição fecham. Concluiu: marca, reabre a lista e dispara o haptic. Falhou: o item criado sai da home, a pendência é limpa e a lista reabre sem marcar. Cancelar o modo de edição também falha. Favoritos é exceção: sem favoritos, o `APPS_LIST` criado vira um `ALL_APPS_LIST` na mesma posição.
+- Enquanto uma tarefa de grid espera em modo de edição, sem editor por cima, um chip no topo diz "Arraste para mover, puxe a borda para redimensionar." e tem o botão **Salvar**.
 - Itens concluídos são **persistidos e não desmarcam** (apagar um favorito depois não "desfaz" o passo).
-- Se já era a tela inicial padrão, o item 1 já aparece marcado (progresso inicial "1 de 7").
+- Se já era a tela inicial padrão, o item 1 já aparece marcado (progresso inicial "1 de 8").
 - O próximo item pendente tem um contorno "respirando".
-- **Minimizar** → pílula inferior com halo + "3/7 primeiros passos"; tocar reabre. Voltar com a lista aberta também minimiza.
-- **Não mostrar mais** → `COMPLETED` + Toast "Você pode rever em Configurações › Avançado".
+- **Minimizar** → pílula inferior com halo + "3/8 primeiros passos"; tocar reabre. Voltar com a lista aberta também minimiza.
+- **Não mostrar mais** → `COMPLETED` + Toast "Você pode rever em Configurações › Avançado". Se a home estiver vazia (por orientação), aplica o layout padrão v3.
 - Lista expandida bloqueia a home (scrim); tocar no scrim minimiza.
 
 ### 4.5 COMPLETED: celebração
 
 Ao concluir a última tarefa: a lista desce, o halo fecha o círculo, ≤ 40 partículas saem do centro e o texto "Tudo pronto" aparece. Some sozinho em 2,6 s e **não bloqueia** toques. O estágio é persistido como `COMPLETED` no momento em que a última tarefa conclui, então a celebração não se repete após morte de processo.
+
+A celebração só toca com a home em primeiro plano. No caso normal, "Explore mais ajustes" é o último item e ela aparece na volta do Settings. Se a última tarefa concluir com a home escondida (diálogo do sistema, outro app), `isCelebrationPending` guarda a celebração para o próximo `onResume`.
 
 ### 4.6 Rever boas-vindas
 
@@ -295,7 +302,7 @@ Os enums e o `OnboardingProgress` (o que é persistido) ficam em `core/data/mode
 enum class OnboardingStage { WELCOME, DEFAULT_HOME, GESTURES, CHECKLIST, COMPLETED }
 enum class GestureCoachStep { OPEN_APPS, ALPHABET_SCRUB, CUSTOMIZE }
 enum class OnboardingTask {
-    SET_DEFAULT_HOME, CHOOSE_PALETTE, CHOOSE_FONT,
+    SET_DEFAULT_HOME, CHOOSE_PALETTE, CHOOSE_FONT, ADD_CLOCK,
     ADD_FAVORITE_APPS, FILL_CONTAINER, ADD_WIDGET, EXPLORE_SETTINGS
 }
 enum class AppearancePicker { PALETTE, FONT }
@@ -310,6 +317,11 @@ data class OnboardingUiState(
     val isChecklistExpanded: Boolean = true,
     val activePicker: AppearancePicker? = null,
     val isCelebrating: Boolean = false,
+    // Transientes, nunca persistidos:
+    val pendingTask: OnboardingTask? = null,       // tarefa esperando o salvar (ou a volta do Settings)
+    val createdItemId: String? = null,             // item que a tarefa colocou; sai da home se ela falhar
+    val isHomeInForeground: Boolean = true,
+    val isCelebrationPending: Boolean = false,     // tudo concluído com a home escondida
 )
 
 val OnboardingUiState.isBlocking: Boolean
@@ -347,7 +359,7 @@ internal fun updateUiState(transform: (MainUiState) -> MainUiState) {
 }
 ```
 
-`OnboardingReducer.reduce` retorna `next` intacto quando `stage` é `COMPLETED`, `WELCOME` ou `DEFAULT_HOME` (custo zero no uso normal). Em `GESTURES`, compara `previous` × `next` para detectar gaveta e Personalizar abrindo e fechando. Em `CHECKLIST`, deriva tarefas do estado (favoritos, containers, widgets) e as une às já concluídas; com todas concluídas, vai para `COMPLETED` com `isCelebrating = true`.
+`OnboardingReducer.reduce` retorna `next` intacto quando `stage` é `COMPLETED`, `WELCOME` ou `DEFAULT_HOME` (custo zero no uso normal). Em `GESTURES`, compara `previous` × `next` para detectar gaveta e Personalizar abrindo e fechando. Em `CHECKLIST`, só a tela inicial é derivada do estado (`isDefaultLauncher`); as tarefas de grid concluem no ponto de confirmação (`confirmPendingTask`, chamado ao fim de `updateUiState`), e o container no **Salvar** do editor (`confirmContainerTaskOnSave`). Com todas concluídas, vai para `COMPLETED` com `isCelebrating = isHomeInForeground`.
 
 Sinais que não estão no estado (`ALPHABET_SCRUBBED`, picker escolhido, settings aberto, resultado do papel de tela inicial) entram por funções explícitas em `HomeViewModelOnboardingExt.kt`.
 
@@ -378,7 +390,7 @@ Todos ficam abaixo de 500 linhas.
 
 **ADR-2: persistência composta no `SettingsRepository`.** Herda de graça a limpeza do reset de fábrica e a exclusão do backup, e não muda nenhum construtor (`HomeRepositories` é construído em 23 arquivos de teste e `SettingsViewModel` em 7). Alternativa rejeitada: `OnboardingRepository` injetado via Koin, que exigiria migrar esses 30 arquivos e lembrar de incluir o novo arquivo de prefs no reset e no backup.
 
-**ADR-3: progresso derivado do estado + sticky.** Robusto contra caminhos alternativos (o usuário pode adicionar favoritos pelo Settings e o item marca do mesmo jeito). Persistir o concluído evita itens "desmarcando".
+**ADR-3: progresso confirmado ao salvar + sticky.** A primeira versão derivava as tarefas do estado a cada atualização, e marcar o primeiro favorito com o seletor ainda aberto já pulava para o próximo item (B1). Agora a tarefa só conclui quando a pessoa salva. Persistir o concluído evita itens "desmarcando".
 
 **ADR-4: pickers de aparência na home.** Mover `PickPaletteBottomSheet` e `PickFontBottomSheet` para `composable/sheets/` (regra: componente usado por mais de uma tela vai para `composable/`). Os testes de screenshot continuam no mesmo arquivo e as imagens de referência não mudam de caminho. A regra de seed color sai do `SettingsViewModelValueHandlers` para `ThemeSeedColor.kt`, usada pelos dois ViewModels.
 
@@ -400,9 +412,12 @@ Todos ficam abaixo de 500 linhas.
 | AC-10 | estágio `CHECKLIST` | a lista entra | sobe da base com overshoot e assenta (fiel ao Figma) |
 | AC-11 | toco "Escolha uma paleta de cores" | toco "Violet" | a home inteira muda para Violet atrás do sheet; "Ficou bom" marca o item e a escolha persiste |
 | AC-12 | toco "Escolha uma fonte" | toco "Space Grotesk" | a home muda de fonte ao vivo; o item marca e persiste |
-| AC-13 | toco "Escolha seus apps" | marco um favorito e fecho | o seletor abre por cima (lista recolhida), e ao fechar a lista reabre com o item marcado |
-| AC-14 | toco "Preencha o container" | adiciono um app e salvo | o item marca sozinho |
-| AC-15 | toco "Adicione widgets" | adiciono um widget | o item marca sozinho |
+| AC-13 | toco "Escolha seus apps" | marco um favorito, fecho o seletor e salvo o layout | a lista de apps aparece na posição padrão; a lista só reabre com o item marcado depois do Salvar |
+| AC-14 | toco "Preencha o container" | toco Salvar no editor, mesmo sem apps | o item marca e o container fica na home |
+| AC-15 | toco "Adicione widgets" | escolho um widget e salvo o layout | o widget aparece na área de widgets e o item marca |
+| AC-24 | instalação nova | passo do welcome | a home está vazia; cada passo coloca o seu item |
+| AC-25 | home vazia | "Não mostrar mais" | a home recebe o layout padrão v3 |
+| AC-26 | toco "Explore mais ajustes" | volto do Settings | o item marca na volta; se era o último, a celebração toca com a home visível |
 | AC-16 | lista aberta | Minimizar / Voltar / toque no scrim | vira a pílula com o progresso; tocar reabre |
 | AC-17 | última tarefa concluída | — | celebração toca uma vez e some; não volta após reiniciar |
 | AC-18 | "Não mostrar mais" | — | some para sempre e mostra como rever |

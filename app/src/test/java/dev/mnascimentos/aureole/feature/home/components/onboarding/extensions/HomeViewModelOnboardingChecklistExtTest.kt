@@ -163,6 +163,7 @@ class HomeViewModelOnboardingChecklistExtTest {
         viewModel.updateOnboarding(OnboardingStage.CHECKLIST) { copy(completedTasks = allButSettings) }
 
         viewModel.onOnboardingSignal(OnboardingSignal.SETTINGS_OPENED)
+        viewModel.onReturnedToHome()
         assertTrue(state.onboarding.isCelebrating)
         assertEquals(OnboardingStage.COMPLETED, settingsRepository.onboarding.read()?.stage)
 

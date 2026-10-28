@@ -84,4 +84,16 @@ class OnboardingHostExtTest {
         assertEquals("Inter", params.selection.fontName)
         assertTrue(params.isHomeOverlayActive)
     }
+
+    @Test
+    fun `edit hint should show only while a grid task waits in edit mode with no editor on top`() {
+        val pending = OnboardingUiState(stage = OnboardingStage.CHECKLIST, pendingTask = OnboardingTask.ADD_CLOCK)
+        fun hint(state: MainUiState) = state.toOnboardingHostParams(hazeState = null, isTouchExplorationEnabled = false)
+            .showEditHint
+
+        assertTrue(hint(MainUiState(onboarding = pending, isGridEditMode = true)))
+        assertFalse(hint(MainUiState(onboarding = pending, isGridEditMode = true, showEditClockBottomSheet = true)))
+        assertFalse(hint(MainUiState(onboarding = pending)))
+        assertFalse(hint(MainUiState(onboarding = pending.copy(pendingTask = null), isGridEditMode = true)))
+    }
 }

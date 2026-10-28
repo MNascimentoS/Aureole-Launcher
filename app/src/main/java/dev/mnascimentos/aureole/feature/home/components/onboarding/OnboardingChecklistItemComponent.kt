@@ -31,6 +31,7 @@ import dev.mnascimentos.aureole.core.data.model.OnboardingTask
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
 import dev.mnascimentos.aureole.core.designsystem.icons.AppSelect
+import dev.mnascimentos.aureole.core.designsystem.icons.Calendar
 import dev.mnascimentos.aureole.core.designsystem.icons.ColorFill
 import dev.mnascimentos.aureole.core.designsystem.icons.Home
 import dev.mnascimentos.aureole.core.designsystem.icons.MultipleView
@@ -100,6 +101,7 @@ private fun OnboardingTaskIcon(task: OnboardingTask) {
         OnboardingTask.SET_DEFAULT_HOME -> AureoleDS.icons.Home(iconModifier, tint)
         OnboardingTask.CHOOSE_PALETTE -> AureoleDS.icons.ColorFill(iconModifier, tint)
         OnboardingTask.CHOOSE_FONT -> AureoleDS.icons.Text(iconModifier, tint)
+        OnboardingTask.ADD_CLOCK -> AureoleDS.icons.Calendar(iconModifier, tint)
         OnboardingTask.ADD_FAVORITE_APPS -> AureoleDS.icons.AppSelect(iconModifier, tint)
         OnboardingTask.FILL_CONTAINER -> AureoleDS.icons.VerticalContainer(iconModifier, tint)
         OnboardingTask.ADD_WIDGET -> AureoleDS.icons.MultipleView(iconModifier, tint)

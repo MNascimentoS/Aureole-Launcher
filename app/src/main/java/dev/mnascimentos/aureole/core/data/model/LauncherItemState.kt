@@ -7,6 +7,7 @@ import java.util.UUID
 enum class LauncherItemType {
     CLOCK,
     APPS_LIST,
+    ALL_APPS_LIST,
     SHORTCUTS_CONTAINER,
     SINGLE_APP_WIDGET,
     WIDGET_LIST,

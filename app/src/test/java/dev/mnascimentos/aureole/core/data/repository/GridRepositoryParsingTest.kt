@@ -44,6 +44,13 @@ class GridRepositoryParsingTest {
     }
 
     @Test
+    fun `when nothing is saved in left-handed mode, should return the mirrored defaults`() {
+        val items = repository.getGridItems(isLandscape = false, isLeftHanded = true)
+
+        assertEquals(GridDefaults.getDefaultGridItems(isLandscape = false, isLeftHanded = true), items)
+    }
+
+    @Test
     fun `when only the legacy portrait key exists, should read it`() {
         prefs().edit().putString("grid_items_json", """[{"id":"legacy","type":"CLOCK"}]""").commit()
 
@@ -52,15 +59,23 @@ class GridRepositoryParsingTest {
     }
 
     @Test
-    fun `when the saved data is broken or empty, should fall back to the defaults`() {
+    fun `when the saved data is broken, should fall back to the defaults`() {
         prefs().edit().putString("grid_items_portrait_json", "{broken").commit()
         assertEquals(defaults(isLandscape = false), ids(isLandscape = false))
 
-        prefs().edit().putString("grid_items_portrait_json", "[]").commit()
+        prefs().edit().putString("grid_items_portrait_json", "null").commit()
         assertEquals(defaults(isLandscape = false), ids(isLandscape = false))
 
         prefs().edit().putString("grid_items_portrait_json", "[null]").commit()
         assertEquals(defaults(isLandscape = false), ids(isLandscape = false))
+    }
+
+    @Test
+    fun `when the saved list is empty, should keep the home empty`() {
+        prefs().edit().putString("grid_items_portrait_json", "[]").commit()
+
+        assertTrue(repository.getGridItems(isLandscape = false).isEmpty())
+        assertTrue(repository.hasSavedLayout())
     }
 
     @Test

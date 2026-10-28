@@ -14,7 +14,10 @@ import dev.mnascimentos.aureole.feature.home.components.onboarding.model.toUiSta
  */
 fun HomeViewModel.syncOnboarding() {
     val isDefaultLauncher = settingsRepository.checkDefaultLauncher()
-    val stored = settingsRepository.onboarding.read() ?: resolveFirstProgress()
+    val saved = settingsRepository.onboarding.read()
+    val stored = saved ?: resolveFirstProgress()
+    // Only the first resolution of a fresh install; replaying the welcome keeps the layout.
+    if (saved == null && stored.stage == OnboardingStage.WELCOME) startWithEmptyHome()
     updateUiState { state ->
         val current = state.onboarding
         val base = if (current.toProgress() == stored) current else stored.toUiState(isDefaultLauncher)

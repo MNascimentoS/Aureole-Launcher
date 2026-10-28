@@ -18,5 +18,6 @@ data class OnboardingActions(
     val onDismissAppearancePicker: () -> Unit = {},
     val onSetChecklistExpanded: (Boolean) -> Unit = {},
     val onDismissChecklist: () -> Unit = {},
-    val onFinishCelebration: () -> Unit = {}
+    val onFinishCelebration: () -> Unit = {},
+    val onSaveGridEdit: () -> Unit = {}
 )

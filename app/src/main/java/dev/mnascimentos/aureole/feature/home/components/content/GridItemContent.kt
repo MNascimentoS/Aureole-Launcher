@@ -137,6 +137,7 @@ fun GridItemContent(params: GridItemContentParams) {
     when (item.safeType) {
         LauncherItemType.CLOCK -> GridClockContent(params.containerConfig, uiState)
         LauncherItemType.APPS_LIST -> GridAppsListContent(params)
+        LauncherItemType.ALL_APPS_LIST -> GridAllAppsListContent(params)
         LauncherItemType.SHORTCUTS_CONTAINER -> GridContainerContent(
             params.containerConfig,
             uiState,

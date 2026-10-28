@@ -41,7 +41,7 @@ fun HomeViewModel.skipGestures() {
 fun HomeViewModel.showMeGesture() {
     val state = uiState.value
     if (state.onboarding.stage != OnboardingStage.GESTURES) return
-    when (state.onboarding.currentGestureStep(state.isAlphabetScrubberDisabled)) {
+    when (state.onboarding.currentGestureStep(state.isAlphabetScrubberDisabled, state.isLandscape)) {
         GestureCoachStep.OPEN_APPS -> setAllAppsDrawerOpen(true)
         GestureCoachStep.ALPHABET_SCRUB -> {
             setAllAppsDrawerOpen(true)

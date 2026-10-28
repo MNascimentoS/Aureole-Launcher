@@ -30,8 +30,6 @@ object OnboardingMotionSpec {
     const val HAND_APPEAR_MS = 150
     const val HAND_SWIPE_TRAVEL = 0.3f
     const val HAND_EDGE_LOOP_MS = 1900
-    val HAND_EDGE_PULL = 30.dp
-    const val HAND_EDGE_TRAVEL = 0.2f
     const val HAND_PRESS_LOOP_MS = 1800
     const val HAND_PRESS_FILL_MS = 600
     const val SHOW_ME_DELAY_MS = 8_000L

@@ -25,7 +25,7 @@ class ClockSettingsRepositoryTest {
 
     @Test
     fun `when initialized, should load default clock settings`() {
-        assertTrue(repository.isClockBackgroundEnabled)
+        assertFalse(repository.isClockBackgroundEnabled)
         assertEquals(SettingsRepository.DEFAULT_CLOCK_STYLE, repository.clockStyle)
         assertEquals("", repository.clockCustomGreeting)
         assertEquals(SettingsRepository.DEFAULT_CLOCK_ALIGNMENT, repository.clockAlignment)
@@ -38,20 +38,20 @@ class ClockSettingsRepositoryTest {
 
     @Test
     fun `when updating clock settings, should persist updated values`() {
-        repository.isClockBackgroundEnabled = false
-        repository.clockStyle = "DATE_ON_TOP"
+        repository.isClockBackgroundEnabled = true
+        repository.clockStyle = "DYNAMIC_GREETING"
         repository.clockCustomGreeting = "Boa tarde"
-        repository.clockAlignment = "CENTER"
+        repository.clockAlignment = "START"
         repository.clockFontFamily = "SERIF"
         repository.clockTimeFormat = "24H"
         repository.clockDateFormat = "SHORT"
         repository.clockTextColor = 0xFF90CAF9.toInt()
         repository.clockBackgroundColor = 0xFF1E2124.toInt()
 
-        assertFalse(repository.isClockBackgroundEnabled)
-        assertEquals("DATE_ON_TOP", repository.clockStyle)
+        assertTrue(repository.isClockBackgroundEnabled)
+        assertEquals("DYNAMIC_GREETING", repository.clockStyle)
         assertEquals("Boa tarde", repository.clockCustomGreeting)
-        assertEquals("CENTER", repository.clockAlignment)
+        assertEquals("START", repository.clockAlignment)
         assertEquals("SERIF", repository.clockFontFamily)
         assertEquals("24H", repository.clockTimeFormat)
         assertEquals("SHORT", repository.clockDateFormat)
@@ -63,11 +63,11 @@ class ClockSettingsRepositoryTest {
     fun `when resetting clock settings, should restore default values`() {
         repository.clockStyle = "GREETING_AND_DATE"
         repository.clockTextColor = 0xFFE1BEE7.toInt()
-        repository.isClockBackgroundEnabled = false
+        repository.isClockBackgroundEnabled = true
 
         repository.resetClockSettings()
 
-        assertTrue(repository.isClockBackgroundEnabled)
+        assertFalse(repository.isClockBackgroundEnabled)
         assertEquals(SettingsRepository.DEFAULT_CLOCK_STYLE, repository.clockStyle)
         assertEquals(0, repository.clockTextColor)
     }

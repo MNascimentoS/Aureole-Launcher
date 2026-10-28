@@ -49,6 +49,9 @@ fun HomeViewModel.setChecklistExpanded(expanded: Boolean) {
 }
 
 fun HomeViewModel.dismissChecklist() {
+    if (uiState.value.onboarding.stage != OnboardingStage.CHECKLIST) return
+    // Before completing: completion adds the apps component, which would make the home look built.
+    applyDefaultLayoutWhereEmpty()
     updateOnboarding(OnboardingStage.CHECKLIST) { copy(stage = OnboardingStage.COMPLETED, activePicker = null) }
 }
 

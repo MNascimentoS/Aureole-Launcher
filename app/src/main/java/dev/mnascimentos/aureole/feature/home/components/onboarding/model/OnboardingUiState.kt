@@ -19,7 +19,15 @@ data class OnboardingUiState(
     val defaultHomeAttempted: Boolean = false,
     val isChecklistExpanded: Boolean = true,
     val activePicker: AppearancePicker? = null,
-    val isCelebrating: Boolean = false
+    val isCelebrating: Boolean = false,
+    /** Grid task waiting for the user to save its item; never persisted. */
+    val pendingTask: OnboardingTask? = null,
+    /** Item the pending task placed on the home, removed again if the task fails. */
+    val createdItemId: String? = null,
+    /** The home is on screen; the celebration never plays behind another app or Settings. */
+    val isHomeInForeground: Boolean = true,
+    /** Every task got done while the home was hidden: celebrate on the next resume. Never persisted. */
+    val isCelebrationPending: Boolean = false
 )
 
 val OnboardingUiState.isBlocking: Boolean
@@ -32,12 +40,20 @@ val OnboardingUiState.blocksHome: Boolean
 val OnboardingUiState.taskProgress: Float
     get() = completedTasks.size.toFloat() / OnboardingTask.entries.size
 
-fun visibleGestureSteps(isAlphabetScrubberDisabled: Boolean): List<GestureCoachStep> =
-    GestureCoachStep.entries.filter { it != GestureCoachStep.ALPHABET_SCRUB || !isAlphabetScrubberDisabled }
+/** The scrubber is off when disabled and does not exist in landscape, so its step is left out. */
+fun visibleGestureSteps(isAlphabetScrubberDisabled: Boolean, isLandscape: Boolean = false): List<GestureCoachStep> =
+    GestureCoachStep.entries.filter {
+        it != GestureCoachStep.ALPHABET_SCRUB || (!isAlphabetScrubberDisabled && !isLandscape)
+    }
 
 /** The step the coach teaches now: the first visible one not done yet. */
-fun OnboardingUiState.currentGestureStep(isAlphabetScrubberDisabled: Boolean): GestureCoachStep? =
-    visibleGestureSteps(isAlphabetScrubberDisabled).firstOrNull { it !in completedSteps }
+fun OnboardingUiState.currentGestureStep(
+    isAlphabetScrubberDisabled: Boolean,
+    isLandscape: Boolean = false
+): GestureCoachStep? = visibleGestureSteps(
+    isAlphabetScrubberDisabled,
+    isLandscape
+).firstOrNull { it !in completedSteps }
 
 fun OnboardingUiState.toProgress(): OnboardingProgress = OnboardingProgress(
     stage = stage,

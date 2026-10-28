@@ -32,10 +32,11 @@ internal object OnboardingReducer {
             closedSurface && onboarding.succeededStep != null -> onboarding.copy(succeededStep = null)
             else -> onboarding
         }
-        val visibleSteps = visibleGestureSteps(next.isAlphabetScrubberDisabled)
+        val visibleSteps = visibleGestureSteps(next.isAlphabetScrubberDisabled, next.isLandscape)
         val isFinished = updated.succeededStep == null && updated.completedSteps.containsAll(visibleSteps)
+        // Finishing can also come from the step list shrinking, as when the screen turns to landscape.
         return when {
-            updated == onboarding -> next
+            !isFinished && updated == onboarding -> next
             !isFinished -> next.copy(onboarding = updated)
             else -> reduceChecklist(
                 previous,
@@ -53,7 +54,8 @@ internal object OnboardingReducer {
                     stage = OnboardingStage.COMPLETED,
                     completedTasks = tasks,
                     activePicker = null,
-                    isCelebrating = true
+                    isCelebrating = onboarding.isHomeInForeground,
+                    isCelebrationPending = !onboarding.isHomeInForeground
                 )
             )
         }
@@ -67,12 +69,12 @@ internal object OnboardingReducer {
         return if (updated == onboarding) next else next.copy(onboarding = updated)
     }
 
-    fun deriveCompletedTasks(state: MainUiState): Set<OnboardingTask> = buildSet {
-        if (state.onboarding.isDefaultLauncher) add(OnboardingTask.SET_DEFAULT_HOME)
-        if (state.hasFavoriteApps()) add(OnboardingTask.ADD_FAVORITE_APPS)
-        if (state.hasFilledContainer()) add(OnboardingTask.FILL_CONTAINER)
-        if (state.hasWidgets()) add(OnboardingTask.ADD_WIDGET)
-    }
+    /**
+     * Only the home app is read from the state. Grid tasks complete when their item is saved
+     * (see `confirmPendingTask`), so marking a favorite with the picker still open does not count.
+     */
+    fun deriveCompletedTasks(state: MainUiState): Set<OnboardingTask> =
+        if (state.onboarding.isDefaultLauncher) setOf(OnboardingTask.SET_DEFAULT_HOME) else emptySet()
 
     fun applySignal(state: MainUiState, signal: OnboardingSignal): MainUiState {
         val onboarding = state.onboarding

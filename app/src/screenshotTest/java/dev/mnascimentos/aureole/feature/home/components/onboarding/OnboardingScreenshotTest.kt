@@ -182,3 +182,12 @@ private fun OnboardingCelebrationScreenshotTest() {
         OnboardingCelebrationComponent(onFinished = {})
     }
 }
+
+@PreviewTest
+@AureolePreview
+@Composable
+private fun OnboardingEditHintScreenshotTest() {
+    AureoleLauncherTheme {
+        OnboardingEditHintComponent(isVisible = true, glass = OnboardingGlass(), onSave = {})
+    }
+}

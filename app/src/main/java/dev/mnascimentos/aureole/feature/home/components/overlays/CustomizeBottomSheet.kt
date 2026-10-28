@@ -17,18 +17,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.composable.sheets.SettingsBottomSheet
-import dev.mnascimentos.aureole.core.data.model.LauncherItemType
-import dev.mnascimentos.aureole.core.data.model.ScrollOrientation
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
-import dev.mnascimentos.aureole.core.designsystem.icons.Add
-import dev.mnascimentos.aureole.core.designsystem.icons.Click
 import dev.mnascimentos.aureole.core.designsystem.icons.Icon
 import dev.mnascimentos.aureole.core.designsystem.icons.Layout
-import dev.mnascimentos.aureole.core.designsystem.icons.MultipleView
 import dev.mnascimentos.aureole.core.designsystem.icons.Placeholder
-import dev.mnascimentos.aureole.core.designsystem.icons.Star
-import dev.mnascimentos.aureole.core.designsystem.icons.VerticalContainer
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
@@ -46,124 +39,10 @@ fun CustomizeBottomSheet(
         modifier = modifier
     ) {
         Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
-            CustomizeAddItemOptions(actions = actions, onDismissRequest = onDismissRequest)
+            CustomizeAddOptionsComponent(actions = actions, onDismissRequest = onDismissRequest)
             CustomizeSystemOptions(actions = actions, onDismissRequest = onDismissRequest)
         }
     }
-}
-
-@Composable
-private fun CustomizeAddItemOptions(
-    actions: HomeScreenActions,
-    onDismissRequest: () -> Unit
-) {
-    Column {
-        CustomizeClockOption(actions, onDismissRequest)
-        CustomizeContainerOption(actions, onDismissRequest)
-        CustomizeScrollViewOption(actions, onDismissRequest)
-        CustomizeQuickButtonOption(actions, onDismissRequest)
-        CustomizeWidgetGroupOption(actions, onDismissRequest)
-    }
-}
-
-@Composable
-private fun CustomizeClockOption(
-    actions: HomeScreenActions,
-    onDismissRequest: () -> Unit
-) {
-    CustomizeOptionItem(
-        title = stringResource(R.string.home_customize_add_clock),
-        icon = {
-            AureoleDS.icons.Add(
-                modifier = Modifier.size(AureoleDS.dimens.iconLarge),
-                tint = AureoleDS.colors.onSurfaceMedium
-            )
-        },
-        onClick = {
-            actions.onAddGridItem(LauncherItemType.CLOCK, null, null)
-            onDismissRequest()
-        }
-    )
-}
-
-@Composable
-private fun CustomizeContainerOption(
-    actions: HomeScreenActions,
-    onDismissRequest: () -> Unit
-) {
-    CustomizeOptionItem(
-        title = stringResource(R.string.home_customize_add_container),
-        icon = {
-            AureoleDS.icons.Star(
-                modifier = Modifier.size(AureoleDS.dimens.iconLarge),
-                tint = AureoleDS.colors.onSurfaceMedium
-            )
-        },
-        onClick = {
-            actions.onAddGridItem(LauncherItemType.SHORTCUTS_CONTAINER, null, null)
-            onDismissRequest()
-        }
-    )
-}
-
-@Composable
-private fun CustomizeScrollViewOption(
-    actions: HomeScreenActions,
-    onDismissRequest: () -> Unit
-) {
-    CustomizeOptionItem(
-        title = stringResource(R.string.home_customize_add_scrollview),
-        icon = {
-            AureoleDS.icons.VerticalContainer(
-                modifier = Modifier.size(AureoleDS.dimens.iconLarge),
-                tint = AureoleDS.colors.onSurfaceMedium
-            )
-        },
-        onClick = {
-            actions.onAddGridItem(LauncherItemType.SCROLL_VIEW, null, ScrollOrientation.VERTICAL)
-            onDismissRequest()
-        }
-    )
-}
-
-@Composable
-private fun CustomizeQuickButtonOption(
-    actions: HomeScreenActions,
-    onDismissRequest: () -> Unit
-) {
-    CustomizeOptionItem(
-        title = stringResource(R.string.home_customize_add_quick_button),
-        icon = {
-            AureoleDS.icons.Click(
-                modifier = Modifier.size(AureoleDS.dimens.iconLarge),
-                tint = AureoleDS.colors.onSurfaceMedium
-            )
-        },
-        onClick = {
-            actions.onAddGridItem(LauncherItemType.QUICK_BUTTON, null, null)
-            onDismissRequest()
-        }
-    )
-}
-
-@Composable
-private fun CustomizeWidgetGroupOption(
-    actions: HomeScreenActions,
-    onDismissRequest: () -> Unit
-) {
-    CustomizeOptionItem(
-        title = stringResource(R.string.home_customize_add_widget_group),
-        icon = {
-            AureoleDS.icons.MultipleView(
-                modifier = Modifier.size(AureoleDS.dimens.iconLarge),
-                tint = AureoleDS.colors.onSurfaceMedium
-            )
-        },
-        onClick = {
-            actions.onAddGridItem(LauncherItemType.WIDGET_LIST, null, null)
-            onDismissRequest()
-        }
-    )
 }
 
 @Composable
@@ -215,7 +94,7 @@ private fun CustomizeSystemOptions(
 }
 
 @Composable
-private fun CustomizeOptionItem(
+internal fun CustomizeOptionItem(
     title: String,
     icon: @Composable () -> Unit,
     onClick: () -> Unit

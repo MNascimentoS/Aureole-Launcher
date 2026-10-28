@@ -44,7 +44,7 @@ class SettingsRepository(private val context: Context) {
         set(value) = prefs.edit { putBoolean(KEY_CONTAINER_EXPAND_CELL, value) }
 
     var isClockBackgroundEnabled: Boolean
-        get() = prefs.getBoolean(KEY_CLOCK_BACKGROUND_ENABLED, true)
+        get() = prefs.getBoolean(KEY_CLOCK_BACKGROUND_ENABLED, false)
         set(value) = prefs.edit { putBoolean(KEY_CLOCK_BACKGROUND_ENABLED, value) }
 
     var clockStyle: String
@@ -81,7 +81,7 @@ class SettingsRepository(private val context: Context) {
 
     fun resetClockSettings() {
         prefs.edit {
-            putBoolean(KEY_CLOCK_BACKGROUND_ENABLED, true)
+            putBoolean(KEY_CLOCK_BACKGROUND_ENABLED, false)
             putString(KEY_CLOCK_STYLE, DEFAULT_CLOCK_STYLE)
             putString(KEY_CLOCK_CUSTOM_GREETING, "")
             putString(KEY_CLOCK_ALIGNMENT, DEFAULT_CLOCK_ALIGNMENT)
@@ -333,8 +333,8 @@ class SettingsRepository(private val context: Context) {
         private const val KEY_CLOCK_TEXT_COLOR = "clock_text_color"
         private const val KEY_CLOCK_BACKGROUND_COLOR = "clock_background_color"
 
-        const val DEFAULT_CLOCK_STYLE = "DYNAMIC_GREETING"
-        const val DEFAULT_CLOCK_ALIGNMENT = "START"
+        const val DEFAULT_CLOCK_STYLE = "DATE_ON_TOP"
+        const val DEFAULT_CLOCK_ALIGNMENT = "CENTER"
         const val DEFAULT_CLOCK_FONT_FAMILY = "SANS_SERIF"
         const val DEFAULT_CLOCK_TIME_FORMAT = "SYSTEM"
         const val DEFAULT_CLOCK_DATE_FORMAT = "DEFAULT"

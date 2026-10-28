@@ -18,26 +18,19 @@ private fun FavoriteAppsDialogSectionsScreenshotTest() {
     AureoleLauncherTheme {
         Column {
             FavoriteAppsSheetContent(
-                currentMode = FavoriteAppsScreenMode.MAIN,
                 config = FavoriteAppsDialogConfig(
                     allApps = emptyList(),
                     favoriteAppPackages = emptyList()
                 ),
-                actions = FavoriteAppsDialogActions(),
-                onEditShortcutsClick = {},
-                onAppearanceClick = {}
+                actions = FavoriteAppsDialogActions()
             )
 
             FavoriteAppsSheetContent(
-                currentMode = FavoriteAppsScreenMode.APPEARANCE,
                 config = FavoriteAppsDialogConfig(
                     allApps = emptyList(),
                     favoriteAppPackages = emptyList(),
-                    showAllAppsOnHome = true
                 ),
-                actions = FavoriteAppsDialogActions(),
-                onEditShortcutsClick = {},
-                onAppearanceClick = {}
+                actions = FavoriteAppsDialogActions()
             )
         }
     }

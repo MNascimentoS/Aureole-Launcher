@@ -34,6 +34,7 @@ data class HomeScreenActions(
     val onUninstallAppClick: (AppInfo) -> Unit = {},
     val onOpenFavoritePicker: (String?) -> Unit = {},
     val onDismissFavoritePicker: () -> Unit = {},
+    val onAddFavoritesList: () -> Unit = {},
     val onDismissWidgetPicker: () -> Unit = {},
     val onDismissReleaseNotes: () -> Unit = {},
     val onOpenWidgetPopup: (Int, Float) -> Unit = { _, _ -> },

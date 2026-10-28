@@ -58,6 +58,11 @@ fun OnboardingHostComponent(
             glass = params.glass,
             onExpand = { actions.onSetChecklistExpanded(true) }
         )
+        OnboardingEditHintComponent(
+            isVisible = params.showEditHint,
+            glass = params.glass,
+            onSave = actions.onSaveGridEdit
+        )
         OnboardingAppearancePickerComponent(
             picker = onboarding.activePicker,
             selection = params.selection,

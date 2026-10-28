@@ -31,6 +31,8 @@ import dev.mnascimentos.aureole.feature.home.components.containers.folder.extens
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.extensions.removeAppFromFolder
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.extensions.setAddAppToFolderDialogVisible
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.extensions.setRenameFolderDialogVisible
+import dev.mnascimentos.aureole.feature.home.components.favorites.extensions.addFavoritesList
+import dev.mnascimentos.aureole.feature.home.components.favorites.extensions.dismissFavoritePicker
 import dev.mnascimentos.aureole.feature.home.components.favorites.extensions.setShowFavoritePicker
 import dev.mnascimentos.aureole.feature.home.components.favorites.extensions.toggleFavorite
 import dev.mnascimentos.aureole.feature.home.components.favorites.extensions.updateContainerFavorites
@@ -135,7 +137,8 @@ class HomeActionsFactory(
             onAppInfoClick = { app -> IntentUtils.openAppInfo(context, app.packageName) },
             onUninstallAppClick = { app -> IntentUtils.uninstallApp(context, app.packageName) },
             onOpenFavoritePicker = { containerId -> viewModel.setShowFavoritePicker(true, containerId) },
-            onDismissFavoritePicker = { viewModel.setShowFavoritePicker(false) },
+            onDismissFavoritePicker = { viewModel.dismissFavoritePicker() },
+            onAddFavoritesList = { viewModel.addFavoritesList() },
             onDismissWidgetPicker = { viewModel.setShowWidgetPicker(false) },
             onDismissReleaseNotes = { viewModel.dismissReleaseNotes() },
             onOpenWidgetPopup = { id, y -> viewModel.openWidgetPopup(id, y) },

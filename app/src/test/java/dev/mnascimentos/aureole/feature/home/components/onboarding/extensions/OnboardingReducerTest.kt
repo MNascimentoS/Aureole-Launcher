@@ -1,6 +1,5 @@
 package dev.mnascimentos.aureole.feature.home.components.onboarding.extensions
 
-import dev.mnascimentos.aureole.core.data.model.AppFolder
 import dev.mnascimentos.aureole.core.data.model.ContainerItemEntity
 import dev.mnascimentos.aureole.core.data.model.ContainerItemType
 import dev.mnascimentos.aureole.core.data.model.ContainerModel
@@ -30,7 +29,7 @@ class OnboardingReducerTest {
     private fun MainUiState.withOnboarding(transform: OnboardingUiState.() -> OnboardingUiState) =
         copy(onboarding = onboarding.transform())
 
-    private val allTasksButSettings = OnboardingTask.entries.toSet() - OnboardingTask.EXPLORE_SETTINGS
+    private val allTasksButFont = OnboardingTask.entries.toSet() - OnboardingTask.CHOOSE_FONT
 
     // region reduce
 
@@ -210,55 +209,29 @@ class OnboardingReducerTest {
     }
 
     @Test
-    fun `when there are global or container favorites, should derive the favorites task`() {
-        val global = MainUiState(favoriteAppPackages = listOf("a"))
-        val container = MainUiState(containerFavorites = mapOf("list" to listOf("a")))
-        val emptyContainer = MainUiState(containerFavorites = mapOf("list" to emptyList()))
-
-        assertEquals(setOf(OnboardingTask.ADD_FAVORITE_APPS), OnboardingReducer.deriveCompletedTasks(global))
-        assertEquals(setOf(OnboardingTask.ADD_FAVORITE_APPS), OnboardingReducer.deriveCompletedTasks(container))
-        assertTrue(OnboardingReducer.deriveCompletedTasks(emptyContainer).isEmpty())
-    }
-
-    @Test
-    fun `when a container has items or folders, should derive the container task`() {
+    fun `when favorites, containers or widgets change, should not derive their tasks`() {
         val item = ContainerItemEntity(id = "i", panelId = "c", itemType = ContainerItemType.APP, packageName = "a")
-        val withItem = MainUiState(containers = mapOf("c" to ContainerModel(id = "c", items = listOf(item))))
-        val withFolder = MainUiState(
-            containers = mapOf("c" to ContainerModel(id = "c", folders = listOf(AppFolder(name = "f"))))
-        )
-        val empty = MainUiState(containers = mapOf("c" to ContainerModel(id = "c")))
-
-        assertEquals(setOf(OnboardingTask.FILL_CONTAINER), OnboardingReducer.deriveCompletedTasks(withItem))
-        assertEquals(setOf(OnboardingTask.FILL_CONTAINER), OnboardingReducer.deriveCompletedTasks(withFolder))
-        assertTrue(OnboardingReducer.deriveCompletedTasks(empty).isEmpty())
-    }
-
-    @Test
-    fun `when a widget is bound anywhere, should derive the widget task`() {
-        val widget = LauncherItemState(id = "w", type = LauncherItemType.SINGLE_APP_WIDGET, widgetId = 7)
-        val nested = LauncherItemState(id = "s", type = LauncherItemType.SCROLL_VIEW, children = listOf(widget))
-        val states = listOf(
-            MainUiState(topWidgetIds = listOf(1)),
-            MainUiState(widgetStacks = mapOf("stack" to listOf(2))),
-            MainUiState(gridItems = listOf(widget)),
-            MainUiState(gridItems = listOf(nested))
-        )
-
-        states.forEach { assertEquals(setOf(OnboardingTask.ADD_WIDGET), OnboardingReducer.deriveCompletedTasks(it)) }
-    }
-
-    @Test
-    fun `when a widget is pending or the item is not a widget, should not derive the widget task`() {
-        val pending = LauncherItemState(id = "w", type = LauncherItemType.SINGLE_APP_WIDGET, widgetId = -1)
-        val unbound = LauncherItemState(id = "u", type = LauncherItemType.SINGLE_APP_WIDGET)
-        val clock = LauncherItemState(id = "c", type = LauncherItemType.CLOCK, widgetId = 7)
         val state = MainUiState(
-            gridItems = listOf(pending, unbound, clock),
-            widgetStacks = mapOf("stack" to emptyList())
+            favoriteAppPackages = listOf("a"),
+            containers = mapOf("c" to ContainerModel(id = "c", items = listOf(item))),
+            widgetStacks = mapOf("stack" to listOf(2)),
+            gridItems = listOf(LauncherItemState(id = "w", type = LauncherItemType.SINGLE_APP_WIDGET, widgetId = 7))
         )
 
         assertTrue(OnboardingReducer.deriveCompletedTasks(state).isEmpty())
+    }
+
+    @Test
+    fun `when a favorite is marked with the picker open, should not complete or advance the list`() {
+        val previous = stateAt(
+            OnboardingStage.CHECKLIST,
+            OnboardingUiState(isChecklistExpanded = false, pendingTask = OnboardingTask.ADD_FAVORITE_APPS)
+        ).copy(showFavoritePickerDialog = true, isGridEditMode = true)
+
+        val result = OnboardingReducer.reduce(previous, previous.copy(favoriteAppPackages = listOf("a")))
+
+        assertTrue(result.onboarding.completedTasks.isEmpty())
+        assertFalse(result.onboarding.isChecklistExpanded)
     }
 
     // endregion
@@ -269,9 +242,11 @@ class OnboardingReducerTest {
     fun `when a task becomes done, should mark it and reopen the list`() {
         val previous = stateAt(OnboardingStage.CHECKLIST, OnboardingUiState(isChecklistExpanded = false))
 
-        val result = OnboardingReducer.reduce(previous, previous.copy(favoriteAppPackages = listOf("a"))).onboarding
+        val next = previous.withOnboarding { copy(isDefaultLauncher = true) }
 
-        assertEquals(setOf(OnboardingTask.ADD_FAVORITE_APPS), result.completedTasks)
+        val result = OnboardingReducer.reduce(previous, next).onboarding
+
+        assertEquals(setOf(OnboardingTask.SET_DEFAULT_HOME), result.completedTasks)
         assertTrue(result.isChecklistExpanded)
     }
 
@@ -304,16 +279,32 @@ class OnboardingReducerTest {
     fun `when the last task is done, should complete and celebrate`() {
         val previous = stateAt(
             OnboardingStage.CHECKLIST,
-            OnboardingUiState(completedTasks = allTasksButSettings)
+            OnboardingUiState(completedTasks = allTasksButFont, activePicker = AppearancePicker.FONT)
         )
-        val next = OnboardingReducer.applySignal(previous, OnboardingSignal.SETTINGS_OPENED)
+        val next = OnboardingReducer.applySignal(previous, OnboardingSignal.PICKER_CONFIRMED)
 
         val result = OnboardingReducer.reduce(previous, next).onboarding
 
         assertEquals(OnboardingStage.COMPLETED, result.stage)
         assertEquals(OnboardingTask.entries.toSet(), result.completedTasks)
         assertTrue(result.isCelebrating)
+        assertFalse(result.isCelebrationPending)
         assertNull(result.activePicker)
+    }
+
+    @Test
+    fun `when the last task is done with the home hidden, should hold the celebration`() {
+        val previous = stateAt(
+            OnboardingStage.CHECKLIST,
+            OnboardingUiState(completedTasks = allTasksButFont, isHomeInForeground = false)
+        )
+        val next = previous.withOnboarding { copy(completedTasks = OnboardingTask.entries.toSet()) }
+
+        val result = OnboardingReducer.reduce(previous, next).onboarding
+
+        assertEquals(OnboardingStage.COMPLETED, result.stage)
+        assertFalse(result.isCelebrating)
+        assertTrue(result.isCelebrationPending)
     }
 
     // endregion
@@ -368,13 +359,24 @@ class OnboardingReducerTest {
     }
 
     @Test
-    fun `when settings open during the checklist, should complete the settings task`() {
+    fun `when settings open during the checklist, should only mark the settings task as pending`() {
         val result = OnboardingReducer.applySignal(
             stateAt(OnboardingStage.CHECKLIST),
             OnboardingSignal.SETTINGS_OPENED
         ).onboarding
 
-        assertEquals(setOf(OnboardingTask.EXPLORE_SETTINGS), result.completedTasks)
+        assertTrue(result.completedTasks.isEmpty())
+        assertEquals(OnboardingTask.EXPLORE_SETTINGS, result.pendingTask)
+    }
+
+    @Test
+    fun `when settings open after the settings task is done, should keep the state`() {
+        val done = stateAt(
+            OnboardingStage.CHECKLIST,
+            OnboardingUiState(completedTasks = setOf(OnboardingTask.EXPLORE_SETTINGS))
+        )
+
+        assertSame(done, OnboardingReducer.applySignal(done, OnboardingSignal.SETTINGS_OPENED))
     }
 
     @Test

@@ -18,6 +18,7 @@ enum class OnboardingTask {
     SET_DEFAULT_HOME,
     CHOOSE_PALETTE,
     CHOOSE_FONT,
+    ADD_CLOCK,
     ADD_FAVORITE_APPS,
     FILL_CONTAINER,
     ADD_WIDGET,

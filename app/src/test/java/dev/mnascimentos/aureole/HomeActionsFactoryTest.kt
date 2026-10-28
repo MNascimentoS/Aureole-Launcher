@@ -81,14 +81,16 @@ class HomeActionsFactoryTest {
     }
 
     @Test
-    fun `when settings is clicked during the checklist, should complete the settings task`() {
+    fun `when settings is clicked during the checklist, should wait for the return to complete it`() {
         viewModel.updateUiState {
             it.copy(onboarding = OnboardingUiState(stage = OnboardingStage.CHECKLIST))
         }
 
         actions().onSettingsClick()
 
-        assertTrue(OnboardingTask.EXPLORE_SETTINGS in viewModel.uiState.value.onboarding.completedTasks)
+        val onboarding = viewModel.uiState.value.onboarding
+        assertTrue(onboarding.completedTasks.isEmpty())
+        assertEquals(OnboardingTask.EXPLORE_SETTINGS, onboarding.pendingTask)
     }
 
     @Test

@@ -33,8 +33,10 @@ import dev.chrisbanes.haze.HazeState
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.components.appsdrawer.AppsListDrawer
+import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.isScrubberHintVisible
 import dev.mnascimentos.aureole.feature.home.components.scrubber.CurvedAlphabetScrubber
 import dev.mnascimentos.aureole.feature.home.components.scrubber.model.ScrubberCallbacks
+import dev.mnascimentos.aureole.feature.home.components.scrubber.model.ScrubberDimensions
 import dev.mnascimentos.aureole.feature.home.components.scrubber.model.ScrubberOptions
 import dev.mnascimentos.aureole.feature.home.model.AppsDrawerOverlayConfig
 import dev.mnascimentos.aureole.feature.home.model.HomeDragParams
@@ -43,7 +45,6 @@ import dev.mnascimentos.aureole.feature.home.model.ScrubberOverlayConfig
 import kotlinx.coroutines.launch
 import kotlin.math.abs
 
-private const val EDGE_GESTURE_START_WIDTH_DP = 32
 private const val EDGE_INTENT_THRESHOLD_DP = 28
 private const val VERTICAL_INTENT_THRESHOLD_DP = 36
 private const val SCRUBBER_TOP_RATIO = 1f / 3f
@@ -143,7 +144,8 @@ fun ScrubberOverlay(
         options = ScrubberOptions(
             isAlwaysVisible = config.uiState.isAllAppsDrawerOpen,
             isGestureEnabled = config.uiState.isAllAppsDrawerOpen,
-            externalTouchY = config.externalTouchY
+            externalTouchY = config.externalTouchY,
+            isHintVisible = config.uiState.isScrubberHintVisible
         ),
         callbacks = ScrubberCallbacks(
             onLetterSelected = { letter ->
@@ -233,7 +235,7 @@ private fun handleEdgeDragStart(
     params: HomeDragParams
 ): Boolean {
     if (params.isAlphabetScrubberDisabled) return false
-    val edgeThreshold = with(params.density) { EDGE_GESTURE_START_WIDTH_DP.dp.toPx() }
+    val edgeThreshold = with(params.density) { ScrubberDimensions.EdgeGestureStartWidth.toPx() }
     return if (params.isLeftHandedMode) {
         offset.x < edgeThreshold
     } else {

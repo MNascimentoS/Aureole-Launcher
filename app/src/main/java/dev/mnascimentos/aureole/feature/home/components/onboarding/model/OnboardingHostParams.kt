@@ -17,5 +17,7 @@ data class OnboardingHostParams(
     val coachConfig: GestureCoachConfig = GestureCoachConfig(),
     val selection: AppearanceSelection = AppearanceSelection(),
     /** A home sheet, dialog or drawer is open: the pill must not cover it. */
-    val isHomeOverlayActive: Boolean = false
+    val isHomeOverlayActive: Boolean = false,
+    /** A grid task waits in edit mode with no editor on top: show how to adjust and save. */
+    val showEditHint: Boolean = false
 )

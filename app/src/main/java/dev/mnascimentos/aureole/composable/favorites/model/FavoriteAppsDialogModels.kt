@@ -11,14 +11,16 @@ data class FavoriteAppsDialogConfig(
     val allApps: List<AppInfo>,
     val favoriteAppPackages: List<String>,
     val containerId: String? = null,
-    val showAllAppsOnHome: Boolean = true,
-    val rowConfig: AppItemRowConfig = AppItemRowConfig()
+    val rowConfig: AppItemRowConfig = AppItemRowConfig(),
+    /** The apps have not arrived yet: the list shows its skeleton. */
+    val isLoading: Boolean = false
 )
 
 data class FavoriteAppsDialogActions(
     val onToggleFavorite: (String) -> Unit = {},
     val onUpdateFavoritePackages: (String?, List<String>) -> Unit = { _, _ -> },
     val onToggleShowAllAppsOnHome: () -> Unit = {},
+    val onSettingsClick: (() -> Unit)? = null,
     val onDismiss: () -> Unit = {}
 )
 

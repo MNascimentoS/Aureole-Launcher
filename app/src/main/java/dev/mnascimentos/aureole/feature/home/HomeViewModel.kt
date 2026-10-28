@@ -12,6 +12,8 @@ import dev.mnascimentos.aureole.core.data.repository.WidgetRepository
 import dev.mnascimentos.aureole.feature.home.components.appsdrawer.extensions.updateAppsState
 import dev.mnascimentos.aureole.feature.home.components.containers.extensions.loadContainers
 import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.OnboardingReducer
+import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.confirmPendingTask
+import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.ensureAppsOnCompletion
 import dev.mnascimentos.aureole.feature.home.components.onboarding.model.toProgress
 import dev.mnascimentos.aureole.feature.home.components.widgets.extensions.loadWidgetSettings
 import dev.mnascimentos.aureole.feature.home.grid.extensions.loadGridItems
@@ -39,11 +41,14 @@ class HomeViewModel(
     val uiState: StateFlow<MainUiState> = _uiState.asStateFlow()
 
     internal fun updateUiState(transform: (MainUiState) -> MainUiState) {
-        val before = _uiState.value.onboarding.toProgress()
+        val previous = _uiState.value
+        val before = previous.onboarding.toProgress()
         _uiState.update { current -> OnboardingReducer.reduce(previous = current, next = transform(current)) }
         val after = _uiState.value.onboarding.toProgress()
         // Persisted outside update {}, whose lambda may run more than once.
         if (after != before) settingsRepository.onboarding.write(after)
+        confirmPendingTask(previous)
+        ensureAppsOnCompletion(previous)
     }
 
     val pendingWidgetId: Int

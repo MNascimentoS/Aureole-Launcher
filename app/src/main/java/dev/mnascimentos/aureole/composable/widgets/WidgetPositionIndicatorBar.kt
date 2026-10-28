@@ -41,7 +41,7 @@ fun WidgetPositionIndicatorBar(
         repeat(pageCount) { index ->
             val isSelected = (index == currentPage)
             val animatedWidth by animateDpAsState(
-                targetValue = if (isSelected) AureoleDS.dimens.iconLargePlus else AureoleDS.dimens.xSmall,
+                targetValue = if (isSelected) AureoleDS.dimens.medium else AureoleDS.dimens.xxSmall,
                 animationSpec = spring(stiffness = Spring.StiffnessMediumLow),
                 label = "indicator_width"
             )
@@ -58,7 +58,7 @@ fun WidgetPositionIndicatorBar(
             Box(
                 modifier = Modifier
                     .padding(horizontal = AureoleDS.dimens.minimal)
-                    .height(AureoleDS.dimens.radiusSmall)
+                    .height(AureoleDS.dimens.xxSmall)
                     .width(animatedWidth)
                     .clip(CircleShape)
                     .background(animatedColor)

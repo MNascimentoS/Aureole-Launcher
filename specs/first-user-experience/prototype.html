@@ -92,6 +92,9 @@ canvas.stars { position: absolute; inset: 0; width: 100%; height: 100%; }
 .app i { width: 30px; height: 30px; border-radius: 9px; display: block; flex: none; }
 .sep { display: flex; align-items: center; gap: 8px; color: var(--outline); font-size: 10px; letter-spacing: .1em; margin: 4px 0; }
 .sep::before, .sep::after { content: ""; flex: 1; height: 1px; background: var(--variant); }
+.home [data-item] { transition: opacity .45s ease, transform .45s ease; }
+.home [data-item]:not(.on) { opacity: 0; transform: scale(.96); pointer-events: none; }
+.widgets { margin-top: 12px; height: 74px; border: 1.5px dashed color-mix(in srgb, var(--medium) 45%, transparent); border-radius: 18px; display: grid; place-items: center; font-size: 12px; color: var(--medium); }
 .container { align-self: start; margin-top: 80px; background: color-mix(in srgb, var(--surface) 70%, transparent); border-radius: 18px; height: 64px; display: grid; place-items: center; }
 .container span { width: 30px; height: 30px; border: 2px solid var(--medium); border-radius: 8px; display: grid; place-items: center; color: var(--medium); font-size: 18px; line-height: 1; }
 
@@ -273,9 +276,10 @@ canvas.stars { position: absolute; inset: 0; width: 100%; height: 100%; }
       <canvas class="stars" id="stars"></canvas>
 
       <div class="home" id="home">
-        <div class="clock"><small data-i="greet"></small><div class="time">9:41</div><div class="date" data-i="date"></div></div>
+        <div class="clock" data-item="clock"><small data-i="greet"></small><div class="time">9:41</div><div class="date" data-i="date"></div></div>
+        <div class="widgets" data-item="widg" data-i="addWidget"></div>
         <div class="homegrid">
-          <div class="applist">
+          <div class="applist" data-item="apps">
             <div class="sep" data-i="allapps"></div>
             <div class="app"><i style="background:#2e7d32"></i>Agenda</div>
             <div class="app"><i style="background:#1565c0"></i>Câmera</div>
@@ -284,7 +288,7 @@ canvas.stars { position: absolute; inset: 0; width: 100%; height: 100%; }
             <div class="app"><i style="background:#6a1b9a"></i>Música</div>
             <div class="app"><i style="background:#00897b"></i>Telefone</div>
           </div>
-          <div class="container"><span>+</span></div>
+          <div class="container" data-item="cont"><span>+</span></div>
         </div>
       </div>
 
@@ -433,7 +437,7 @@ canvas.stars { position: absolute; inset: 0; width: 100%; height: 100%; }
       g3t: "Toque e segure", g3b: "em um espaço vazio da tela para personalizar o que aparece nela.",
       g1ok: "Seus apps estão aqui. Toque fora para fechar.", g2ok: "Rápido, né? Solte para fechar.", g3ok: "É aqui que você monta sua tela.",
       kTitle: "Primeiros passos", kCount: "{d} de {t} concluídos", kHide: "Não mostrar mais", kMin: "Minimizar",
-      t_home: "Definir como <b>tela inicial</b>", t_apps: "Escolha seus <b>apps</b>", t_cont: "Preencha o <b>container</b>", t_widg: "Adicione <b>widgets</b>", t_sett: "Explore mais <b>ajustes</b>", t_pal: "Escolha uma <b>paleta de cores</b>", t_font: "Escolha uma <b>fonte</b>",
+      t_home: "Definir como <b>tela inicial</b>", t_apps: "Escolha seus <b>apps</b>", t_cont: "Preencha o <b>container</b>", t_widg: "Adicione <b>widgets</b>", t_sett: "Explore mais <b>ajustes</b>", t_pal: "Escolha uma <b>paleta de cores</b>", t_font: "Escolha uma <b>fonte</b>", t_clock: "Adicione um <b>relógio</b>", addWidget: "+ Adicionar widget", editHint: "Arraste para mover, puxe a borda para redimensionar. · Salvar",
       pkPal: "Paleta de cores", pkFont: "Fonte", pkHint: "Toque para ver sua tela mudar na hora.", pkDone: "Ficou bom",
       pill: "{d}/{t} primeiros passos",
       doneTitle: "Tudo pronto", doneSub: "Seu Aureole está brilhando. Bom proveito!",
@@ -454,7 +458,7 @@ canvas.stars { position: absolute; inset: 0; width: 100%; height: 100%; }
       g3t: "Touch and hold", g3b: "an empty spot on the screen to customize what shows up there.",
       g1ok: "Your apps live here. Tap outside to close.", g2ok: "Quick, right? Let go to close.", g3ok: "This is where you build your screen.",
       kTitle: "First steps", kCount: "{d} of {t} done", kHide: "Don't show again", kMin: "Minimize",
-      t_home: "Set as <b>home app</b>", t_apps: "Add some <b>apps</b>", t_cont: "Fill the <b>container</b>", t_widg: "Add some <b>widgets</b>", t_sett: "Check more <b>settings</b>", t_pal: "Pick a <b>color palette</b>", t_font: "Pick a <b>font</b>",
+      t_home: "Set as <b>home app</b>", t_apps: "Add some <b>apps</b>", t_cont: "Fill the <b>container</b>", t_widg: "Add some <b>widgets</b>", t_sett: "Check more <b>settings</b>", t_pal: "Pick a <b>color palette</b>", t_font: "Pick a <b>font</b>", t_clock: "Add a <b>clock</b>", addWidget: "+ Add widget", editHint: "Drag to move, pull the edge to resize. · Save",
       pkPal: "Color palette", pkFont: "Font", pkHint: "Tap to see your screen change right away.", pkDone: "Looks good",
       pill: "{d}/{t} first steps",
       doneTitle: "All set", doneSub: "Your Aureole is shining. Enjoy!",
@@ -467,13 +471,14 @@ canvas.stars { position: absolute; inset: 0; width: 100%; height: 100%; }
     welcome: { k: "WELCOME · bloqueante", h: "Ignição do halo", p: "Cobre o carregamento inicial dos apps (isLoading) em vez do spinner. O anel desenha 360°, o logo sobe com leve overshoot e o texto entra em cascata. Ao sair, o halo expande e “abre” a próxima etapa.", d: [["Duração", "~1,8 s até ficar interativo; saída 550 ms"], ["Compose", "Animatable(sweep) + spring(0.6) + tween FastOutSlowIn"], ["Pular", "Leva direto à lista de primeiros passos — nada essencial se perde"], ["Voltar", "Sem efeito (é a raiz do launcher)"]] },
     defhome: { k: "DEFAULT_HOME · bloqueante", h: "Faça do Aureole sua casa", p: "O motivo nº 1 de alguém se perder: apertar Início e cair no launcher antigo. Pedimos o papel ROLE_HOME com o diálogo do sistema; no Android 9 abrimos as configurações de tela inicial. Se o Aureole já for padrão, a etapa é pulada sozinha.", d: [["API 29+", "RoleManager.createRequestRoleIntent(ROLE_HOME)"], ["API 28", "Settings.ACTION_HOME_SETTINGS (fallback existente)"], ["Recusou", "Vira item pendente na lista; nunca bloqueia"], ["Revalida", "checkDefaultLauncher() em todo onResume"]] },
     gestures: { k: "GESTURES · não bloqueante", h: "Aprender fazendo", p: "Nada de slides: a home real fica viva por baixo e o cartão só orienta. Cada passo conclui quando o estado real muda (gaveta abriu, letra escolhida, menu de personalizar abriu). Após 8 s parado, ou com TalkBack, aparece “Mostrar para mim”.", d: [["Passo 1", "isAllAppsDrawerOpen false → true"], ["Passo 2", "sinal do CurvedAlphabetScrubber (onLetterSelected)"], ["Passo 3", "showCustomizeBottomSheet false → true"], ["Toques", "camada sem pointerInput: o gesto chega na home"]] },
-    checklist: { k: "CHECKLIST · persistente", h: "Primeiros passos", p: "A referência do Figma: a lista sobe da base com overshoot e assenta na parte superior. O halo do cabeçalho é a barra de progresso. Cada item abre o editor real e se marca sozinho quando o estado do app comprova a tarefa. Minimizar vira uma pílula; nada se perde.", d: [["Entrada", "spring(dampingRatio 0.65, stiffness 180) + stagger 60 ms"], ["Concluir", "check + haptic Confirm + halo avança"], ["Derivado", "favoritos, container, widgets e padrão vêm do MainUiState"], ["Persistência", "itens concluídos ficam salvos (não desmarcam)"], ["Paleta e fonte", "pickers abrem na própria home; a tela re-tematiza ao vivo atrás do sheet"]] },
+    checklist: { k: "CHECKLIST · persistente", h: "Primeiros passos", p: "A referência do Figma: a lista sobe da base com overshoot e assenta na parte superior. O halo do cabeçalho é a barra de progresso. Cada item coloca o seu componente na home e abre o editor real; marca ao salvar. Minimizar vira uma pílula; nada se perde.", d: [["Entrada", "spring(dampingRatio 0.65, stiffness 180) + stagger 60 ms"], ["Concluir", "check + haptic Confirm + halo avança"], ["Concluir ao salvar", "relógio, apps e widgets concluem quando o layout é salvo; container no Salvar do editor; ajustes na volta do Settings"], ["Home vazia", "instalação nova começa sem itens; cada passo coloca o seu na posição do layout v3"], ["Persistência", "itens concluídos ficam salvos (não desmarcam)"], ["Paleta e fonte", "pickers abrem na própria home; a tela re-tematiza ao vivo atrás do sheet"]] },
     done: { k: "COMPLETED", h: "Tudo pronto", p: "O halo fecha o círculo, solta partículas e some sozinho em 1,6 s. O tour pode ser revisto em Configurações › Avançado › Rever boas-vindas.", d: [["Partículas", "≤ 40, um único Canvas, desligadas sem animações do sistema"], ["Depois", "Release notes e diálogos de atualização voltam a aparecer"]] }
   };
   const TASKS = [
     { id: "home", ic: '<path d="M4 11 12 4l8 7v8a1 1 0 0 1-1 1h-4v-6H9v6H5a1 1 0 0 1-1-1z"/>' },
     { id: "pal", ic: '<path d="M12 3a9 9 0 1 0 0 18c1.1 0 1.6-.8 1.6-1.6 0-.5-.2-.9-.5-1.2-.3-.3-.5-.7-.5-1.2 0-.9.7-1.6 1.6-1.6H16a5 5 0 0 0 5-5c0-4.2-4-7.4-9-7.4z"/><circle cx="7.5" cy="11" r="1"/><circle cx="10" cy="7.5" r="1"/><circle cx="14.5" cy="7.5" r="1"/>' },
     { id: "font", ic: '<path d="M4 19 9 5l5 14M5.8 14h6.4"/><path d="M15.5 12.5c.6-.6 1.4-1 2.4-1 1.7 0 2.6 1 2.6 2.6V19m0-3.2c-3 0-4.9.5-4.9 1.9 0 1 .8 1.5 1.9 1.5 1.6 0 3-1.1 3-3.4"/>' },
+    { id: "clock", ic: '<circle cx="12" cy="12" r="8"/><path d="M12 8v4l3 2"/>' },
     { id: "apps", ic: '<path d="M4 20h4L19 9l-4-4L4 16z"/><path d="m13 7 4 4"/>' },
     { id: "cont", ic: '<rect x="8" y="3" width="8" height="18" rx="2"/><path d="M11 7h2M11 17h2"/>' },
     { id: "widg", ic: '<rect x="3" y="3" width="18" height="18" rx="3"/><path d="M3 9h18M9 21V9"/>' },
@@ -623,14 +628,25 @@ canvas.stars { position: absolute; inset: 0; width: 100%; height: 100%; }
   function doTask(id) {
     if (S.done.has(id)) return;
     if (id === "pal" || id === "font") { openPicker(id); return; }
-    const what = { home: "RoleManager / ACTION_HOME_SETTINGS", apps: "onOpenFavoritePicker(apps_list_item)", cont: "onOpenEditContainerDialog(container_item)", widg: "onSetIsAddingSingleWidget(true) + onAddWidgetClick(null)", sett: "onSettingsClick()" }[id];
-    log("abre editor real: " + what);
-    const el = document.querySelector(`.item[data-t="${id}"]`); el.style.transitionDelay = "0ms";
-    later(() => completeTask(id), 650);
+    if (id === "sett") { log("onSettingsClick() → pendingTask = EXPLORE_SETTINGS; conclui na volta (onResume)"); later(() => completeTask(id), 900); return; }
+    if (id === "home") { log("abre editor real: RoleManager / ACTION_HOME_SETTINGS"); later(() => completeTask(id), 650); return; }
+    const what = { clock: "onOpenEditClockBottomSheet()", apps: "onOpenFavoritePicker(apps_list_item)", cont: "onOpenEditContainerDialog(container_item)", widg: "onAddWidgetClick(widgets_item)" }[id];
+    // FUE-16/17: o item entra na posição do layout v3, em modo de edição; só conclui ao salvar.
+    $("#check").classList.remove("on"); $("#home").classList.remove("dim");
+    place(id); log("startGridTask → item na posição do v3 + " + what);
+    later(() => toast(t("editHint")), 500);
+    later(() => { log("Salvar → ponto de confirmação"); $("#home").classList.add("dim"); $("#check").classList.add("on"); completeTask(id); }, 2600);
   }
+  function place(id) { const el = document.querySelector(`.home [data-item="${id}"]`); if (el) el.classList.add("on"); }
   $("#btnMin").onclick = () => { $("#check").classList.remove("on"); $("#home").classList.remove("dim"); later(() => $("#pill").classList.add("on"), 300); log("checklist minimizada → pílula"); };
   $("#pill").onclick = () => { $("#pill").classList.remove("on"); $("#home").classList.add("dim"); later(() => $("#check").classList.add("on"), 150); };
-  $("#btnHide").onclick = () => { $("#check").classList.remove("on"); $("#home").classList.remove("dim"); log("dispensada → COMPLETED (dá para rever em Configurações)"); };
+  $("#btnHide").onclick = () => {
+    $("#check").classList.remove("on"); $("#home").classList.remove("dim");
+    const isEmpty = !document.querySelector(".home [data-item].on");
+    if (isEmpty) { ["clock", "widg", "apps", "cont"].forEach(place); log("home vazia → layout padrão v3 (todos os apps no lugar dos favoritos)"); }
+    else if (!S.done.has("apps")) { place("apps"); log("sem favoritos → ALL_APPS_LIST na posição padrão (FUE-22)"); }
+    log("dispensada → COMPLETED (dá para rever em Configurações)");
+  };
 
   /* Paletas reais (ThemePalettePresets): bg, surface, variant, outline, low, medium, high */
   const PALETTES = {

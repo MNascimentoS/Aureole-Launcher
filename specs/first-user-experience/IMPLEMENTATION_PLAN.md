@@ -28,6 +28,7 @@ Lidas de `AGENTS.md`, `agents/*.md`, `ARCHITECTURE.md` e `.github/copilot-instru
 | M1 Fundação | FUE-01 a FUE-05 | estado, persistência, lógica pura, correções de release notes e update | Só a correção de P2 (release notes não abrem na 1ª instalação) |
 | M2 Componentes | FUE-06 a FUE-11 | DS, strings e todas as telas com previews e screenshots | Não (componentes ainda não plugados) |
 | M3 Integração | FUE-12 a FUE-14 | host no `MainScaffold`, Settings, release notes, QA | Sim |
+| M4 Ajustes (28/10) | FUE-15 a FUE-24 | home vazia, layout padrão v3, concluir ao salvar, widgets, Settings e celebração | Sim |
 
 ---
 
@@ -48,7 +49,7 @@ Lidas de `AGENTS.md`, `agents/*.md`, `ARCHITECTURE.md` e `.github/copilot-instru
 **Arquivo** `feature/home/components/onboarding/extensions/OnboardingReducer.kt` (`internal object`), dividido em funções pequenas para ficar abaixo de 60 linhas e complexidade 15 cada:
 - `reduce(previous: MainUiState, next: MainUiState): MainUiState`: retorna `next` sem cópia se o estágio não for `GESTURES` nem `CHECKLIST`.
 - `reduceGestures(...)`: transições gaveta e Personalizar `false → true` concluem o passo correspondente; superfície fechando com `succeededStep != null` avança; todos os visíveis feitos → `CHECKLIST`.
-- `deriveCompletedTasks(state)`: favoritos, containers com itens ou pastas, widgets válidos, `isDefaultLauncher`.
+- `deriveCompletedTasks(state)`: favoritos, containers com itens ou pastas, widgets válidos, `isDefaultLauncher`. **Substituído na FUE-17:** só `isDefaultLauncher` continua derivado; as tarefas de grid concluem ao salvar (ver M4).
 - `reduceChecklist(...)`: une tarefas derivadas às já concluídas (sticky); tarefa nova concluída → `isChecklistExpanded = true` (a lista reabre para mostrar o check); todas concluídas → `COMPLETED` + `isCelebrating = true`.
 - `applySignal(state, signal)` para sinais explícitos (`ALPHABET_SCRUBBED`, `PICKER_CONFIRMED`, `SETTINGS_OPENED`, `DEFAULT_HOME_RESULT`).
 
@@ -158,6 +159,23 @@ Todos com `LocalInspectionMode` renderizando o estado final assentado, `@Aureole
 **Commit** `docs(release): announce guided welcome`
 
 ---
+
+## M4 Ajustes (28/10)
+
+Detalhes, tabelas e testes em [`CHANGES_2026-10-28.md`](CHANGES_2026-10-28.md), que vence onde conflitar com este plano. Ordem de execução: FUE-19, FUE-20, FUE-15, FUE-16, FUE-17, FUE-21, FUE-22, FUE-23, FUE-24 e FUE-18.
+
+| Tarefa | Entrega |
+|---|---|
+| FUE-19 | área de widgets vazia mostra "Adicionar widget"; widget único vira `SINGLE_APP_WIDGET`; favoritos e todos os apps respeitam o modo canhoto |
+| FUE-20 | `GridDefaults` com o layout v3 (retrato, paisagem e canhoto espelhado); `container_item` do layout padrão nasce sem fundo; "Redefinir layout" recarrega os containers |
+| FUE-15 | instalação nova grava `[]` (home vazia); `[]` salvo deixa de cair no padrão; "Não mostrar mais" aplica o v3 onde a home estiver vazia |
+| FUE-16 | 8 tarefas (`ADD_CLOCK` novo); `startGridTask` coloca o item na posição do v3 (ou no maior espaço livre) em modo de edição e abre o editor |
+| FUE-17 | `pendingTask` avaliada só no ponto de confirmação; falha remove o item criado (favoritos viram `ALL_APPS_LIST`); container conclui no Salvar do editor; chip de dica com **Salvar** |
+| FUE-21 | Settings conclui na volta à home; a celebração espera a home em primeiro plano (`isCelebrationPending`) |
+| FUE-22 | ao concluir, a home sempre fica com acesso aos apps (`ALL_APPS_LIST` no lugar de favoritos vazios ou na posição padrão) |
+| FUE-23 | Personalizar com "Adicionar favoritos", "Adicionar todos os apps", ícones novos e "grupo rolável" |
+| FUE-24 | dedo do coach e alfabeto-fantasma na faixa real do scrubber; passo omitido em paisagem; esqueleto de carregamento na gaveta, no `ALL_APPS_LIST` e no seletor de favoritos, no lugar do spinner global |
+| FUE-18 | referências de screenshot e documentação |
 
 ## Matriz de QA manual (aparelho real ou emulador)
 

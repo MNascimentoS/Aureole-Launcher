@@ -23,13 +23,14 @@ import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.rememberOnboardingLoopsEnabled
+import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.scrubberHintPath
 import dev.mnascimentos.aureole.feature.home.components.onboarding.model.OnboardingMotionSpec
+import dev.mnascimentos.aureole.feature.home.components.scrubber.model.ScrubberDimensions
 
 private const val SETTLED_PHASE = 0.45f
 private const val FINGER_ALPHA = 0.9f
 private const val TRAIL_ALPHA = 0.35f
 private const val SWIPE_START_Y = 0.78f
-private const val EDGE_START_Y = 0.32f
 private const val PRESS_Y = 0.6f
 private const val FADE_OUT_START = 0.8f
 
@@ -101,9 +102,9 @@ private fun DrawScope.drawEdgeScrub(phase: State<Float>, isLeftHandedMode: Boole
     val pullPhase = (phase.value / EDGE_PULL_PORTION).coerceIn(0f, 1f)
     val slideRaw = (phase.value - EDGE_PULL_PORTION) / EDGE_SLIDE_PORTION
     val slidePhase = FastOutSlowInEasing.transform(slideRaw.coerceIn(0f, 1f))
-    val startY = size.height * EDGE_START_Y
-    val x = edgeX + inward * OnboardingMotionSpec.HAND_EDGE_PULL.toPx() * pullPhase
-    val y = startY + size.height * OnboardingMotionSpec.HAND_EDGE_TRAVEL * slidePhase
+    val (startY, endY) = scrubberHintPath(size.height, ScrubberDimensions.PaddingBottom.toPx())
+    val x = edgeX + inward * ScrubberDimensions.EdgeGestureStartWidth.toPx() * pullPhase
+    val y = startY + (endY - startY) * slidePhase
     val alpha = fadeFor(phase.value, OnboardingMotionSpec.HAND_EDGE_LOOP_MS)
     drawLine(
         color.copy(alpha = TRAIL_ALPHA * alpha),

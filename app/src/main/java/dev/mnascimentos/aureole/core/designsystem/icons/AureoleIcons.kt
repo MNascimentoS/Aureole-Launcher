@@ -275,6 +275,24 @@ fun AureoleIcons.SmileColor(
 
 // Set D
 @Composable
+fun AureoleIcons.Favorite(
+    modifier: Modifier = Modifier,
+    tint: Color? = null
+) { AureoleIcon(R.drawable.ic_aureole_favorite, modifier, tint) }
+
+@Composable
+fun AureoleIcons.AllApps(
+    modifier: Modifier = Modifier,
+    tint: Color? = null
+) { AureoleIcon(R.drawable.ic_aureole_all_apps, modifier, tint) }
+
+@Composable
+fun AureoleIcons.ScrollGroup(
+    modifier: Modifier = Modifier,
+    tint: Color? = null
+) { AureoleIcon(R.drawable.ic_aureole_scroll_group, modifier, tint) }
+
+@Composable
 fun AureoleIcons.Star(
     modifier: Modifier = Modifier,
     tint: Color? = null

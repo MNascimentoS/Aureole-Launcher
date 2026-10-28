@@ -41,6 +41,7 @@ import dev.mnascimentos.aureole.feature.home.components.onboarding.model.Onboard
 import dev.mnascimentos.aureole.feature.home.components.onboarding.model.OnboardingMotionSpec
 import dev.mnascimentos.aureole.feature.home.components.onboarding.model.OnboardingUiState
 import dev.mnascimentos.aureole.feature.home.components.onboarding.model.currentGestureStep
+import dev.mnascimentos.aureole.feature.home.components.onboarding.model.isWaitingForAlphabet
 import dev.mnascimentos.aureole.feature.home.components.onboarding.model.visibleGestureSteps
 import kotlinx.coroutines.delay
 
@@ -59,11 +60,11 @@ fun GestureCoachComponent(
     modifier: Modifier = Modifier
 ) {
     val step = onboarding.succeededStep
-        ?: onboarding.currentGestureStep(config.isAlphabetScrubberDisabled)
+        ?: onboarding.currentGestureStep(config.isAlphabetScrubberDisabled, config.isLandscape)
         ?: return
     val succeeded = onboarding.succeededStep != null
     Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.TopCenter) {
-        if (!succeeded) {
+        if (!succeeded && !config.isWaitingForAlphabet(step)) {
             GestureCoachHandComponent(step = step, isLeftHandedMode = config.isLeftHandedMode)
         }
         OnboardingCardEntrance(
@@ -93,9 +94,14 @@ private fun GestureCoachCardContent(
     config: GestureCoachConfig
 ) {
     val succeeded = onboarding.succeededStep != null
+    val bodyRes = if (!succeeded && config.isWaitingForAlphabet(step)) {
+        R.string.home_apps_loading
+    } else {
+        step.coachBodyRes(succeeded)
+    }
     Column(verticalArrangement = Arrangement.spacedBy(AureoleDS.dimens.xSmall)) {
         GestureCoachStepIndicator(
-            steps = visibleGestureSteps(config.isAlphabetScrubberDisabled),
+            steps = visibleGestureSteps(config.isAlphabetScrubberDisabled, config.isLandscape),
             completed = onboarding.completedSteps,
             current = step
         )
@@ -107,19 +113,29 @@ private fun GestureCoachCardContent(
             format = AureoleTextFormatParams(style = AureoleDS.typography.titleLarge)
         )
         AureoleText(
-            text = stringResource(step.coachBodyRes(succeeded)),
+            text = stringResource(bodyRes),
             color = AureoleDS.colors.onSurfaceMedium,
             format = AureoleTextFormatParams(style = AureoleDS.typography.bodyLarge)
         )
         if (!succeeded) {
-            GestureCoachButtons(step = step, actions = actions, showMeAtOnce = config.isTouchExplorationEnabled)
+            GestureCoachButtons(
+                step = step,
+                actions = actions,
+                showMeAtOnce = config.isTouchExplorationEnabled,
+                canShowMe = !config.isWaitingForAlphabet(step)
+            )
         }
     }
 }
 
 /** "Show me" waits [OnboardingMotionSpec.SHOW_ME_DELAY_MS] on each step, unless TalkBack is on. */
 @Composable
-private fun GestureCoachButtons(step: GestureCoachStep, actions: OnboardingActions, showMeAtOnce: Boolean) {
+private fun GestureCoachButtons(
+    step: GestureCoachStep,
+    actions: OnboardingActions,
+    showMeAtOnce: Boolean,
+    canShowMe: Boolean
+) {
     var showMe by remember(step) { mutableStateOf(showMeAtOnce) }
     if (!showMe) {
         LaunchedEffect(step) {
@@ -136,7 +152,7 @@ private fun GestureCoachButtons(step: GestureCoachStep, actions: OnboardingActio
             text = stringResource(R.string.home_onboarding_coach_skip),
             onClick = actions.onSkipGestures
         )
-        if (showMe) {
+        if (showMe && canShowMe) {
             OnboardingTextButton(
                 text = stringResource(R.string.home_onboarding_coach_show_me),
                 onClick = actions.onShowMeGesture

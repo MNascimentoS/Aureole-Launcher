@@ -150,6 +150,33 @@ class HomeViewModelWidgetStackTest {
     }
 
     @Test
+    fun `when adding a single widget, should create a single app widget item with its id`() {
+        viewModel.updateUiState { MainUiState(isAddingSingleWidget = true) }
+
+        viewModel.addWidgetId(30)
+
+        val state = viewModel.uiState.value
+        val single = state.gridItems.single()
+        assertEquals(LauncherItemType.SINGLE_APP_WIDGET, single.safeType)
+        assertEquals(30, single.widgetId)
+        assertNull(state.widgetStacks["top_widgets"])
+        assertFalse(state.isAddingSingleWidget)
+    }
+
+    @Test
+    fun `when a widget list is the target, should add the widget to that list's stack`() {
+        viewModel.updateUiState {
+            MainUiState(gridItems = listOf(stack), targetWidgetStackId = stack.id, isAddingSingleWidget = true)
+        }
+
+        viewModel.addWidgetId(31)
+
+        val state = viewModel.uiState.value
+        assertEquals(listOf(31), state.widgetStacks["stack_1"])
+        assertEquals(1, state.gridItems.size)
+    }
+
+    @Test
     fun `when a scroll view already holds a widget, should not create another container`() {
         val scroll = LauncherItemState(
             id = "scroll",

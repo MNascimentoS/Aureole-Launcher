@@ -26,6 +26,7 @@ import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
 import dev.mnascimentos.aureole.feature.home.model.LocalHomeActions
 import dev.mnascimentos.aureole.feature.home.model.LocalHomeUiState
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
+import dev.mnascimentos.aureole.feature.home.model.isAppsLoading
 
 @Composable
 fun MainScaffold(
@@ -54,10 +55,7 @@ fun MainScaffold(
 
         FavoritePickerOverlay(
             uiState = uiState,
-            onToggleFavorite = actions.onToggleFavoriteWithContainer,
-            onUpdateFavorites = actions.onUpdateFavoritePackages,
-            onToggleShowAllAppsOnHome = actions.onToggleShowAllAppsOnHome,
-            onDismiss = actions.onDismissFavoritePicker
+            actions = actions
         )
 
         InAppUpdateOverlay(
@@ -105,10 +103,7 @@ private fun WidgetPickerOverlay(
 @Composable
 private fun FavoritePickerOverlay(
     uiState: MainUiState,
-    onToggleFavorite: (String, String?) -> Unit,
-    onUpdateFavorites: (String?, List<String>) -> Unit,
-    onToggleShowAllAppsOnHome: () -> Unit,
-    onDismiss: () -> Unit
+    actions: HomeScreenActions
 ) {
     if (uiState.showFavoritePickerDialog) {
         val containerId = uiState.activeFavoriteContainerId
@@ -123,17 +118,18 @@ private fun FavoritePickerOverlay(
                 allApps = uiState.apps,
                 favoriteAppPackages = favPackages,
                 containerId = containerId,
-                showAllAppsOnHome = uiState.showAllAppsOnHome,
+                isLoading = uiState.isAppsLoading,
                 rowConfig = AppItemRowConfig(
                     isThemedAppIconsEnabled = uiState.isThemedAppIconsEnabled,
                     isLeftHandedMode = uiState.isLeftHandedMode
                 )
             ),
             actions = FavoriteAppsDialogActions(
-                onToggleFavorite = { pkg -> onToggleFavorite(pkg, containerId) },
-                onUpdateFavoritePackages = { cId, pkgs -> onUpdateFavorites(cId, pkgs) },
-                onToggleShowAllAppsOnHome = onToggleShowAllAppsOnHome,
-                onDismiss = onDismiss
+                onToggleFavorite = { pkg -> actions.onToggleFavoriteWithContainer(pkg, containerId) },
+                onUpdateFavoritePackages = { cId, pkgs -> actions.onUpdateFavoritePackages(cId, pkgs) },
+                onToggleShowAllAppsOnHome = actions.onToggleShowAllAppsOnHome,
+                onSettingsClick = actions.onSettingsClick,
+                onDismiss = actions.onDismissFavoritePicker
             )
         )
     }

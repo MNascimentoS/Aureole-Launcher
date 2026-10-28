@@ -160,4 +160,25 @@ class GestureCoachComponentTest {
     private companion object {
         const val HOME_TAG = "home"
     }
+
+    @Test
+    fun `when the alphabet is still loading on the scrub step, should wait and hide show me`() {
+        render(
+            onboarding = OnboardingUiState(completedSteps = setOf(GestureCoachStep.OPEN_APPS)),
+            config = GestureCoachConfig(isTouchExplorationEnabled = true, isAlphabetLoading = true)
+        )
+
+        composeTestRule.onNodeWithText("Loading your apps…").assertExists()
+        composeTestRule.onNodeWithText("Show me").assertDoesNotExist()
+    }
+
+    @Test
+    fun `when in landscape, should skip the scrub step`() {
+        render(
+            onboarding = OnboardingUiState(completedSteps = setOf(GestureCoachStep.OPEN_APPS)),
+            config = GestureCoachConfig(isLandscape = true)
+        )
+
+        composeTestRule.onNodeWithText("Touch and hold", substring = true).assertExists()
+    }
 }

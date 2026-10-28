@@ -111,10 +111,13 @@
     <string name="home_apps_search_placeholder">Search</string>
 
     <!-- Overlays & Customization -->
+    <string name="home_apps_loading">Loading your apps…</string>
     <string name="home_customize_title">Customize</string>
     <string name="home_customize_add_clock">Add clock</string>
+    <string name="home_customize_add_favorites">Add favorites</string>
+    <string name="home_customize_add_all_apps">Add all apps</string>
     <string name="home_customize_add_container">Add container</string>
-    <string name="home_customize_add_scrollview">Add scrollview container</string>
+    <string name="home_customize_add_scrollview">Add scrolling group</string>
     <string name="home_customize_add_quick_button">Add quick button</string>
     <string name="home_customize_add_widget_group">Add widget group</string>
     <string name="home_customize_adjust_layout">Adjust layout</string>
@@ -256,13 +259,14 @@
 
     <!-- Grid & Containers -->
     <string name="home_container_add_title">Add Container</string>
-    <string name="home_container_add_nested_title">Add to Scroll View</string>
+    <string name="home_container_add_nested_title">Add to scrolling group</string>
     <string name="home_container_add_clock">Clock</string>
     <string name="home_container_add_apps_list">Apps List</string>
+    <string name="home_container_add_all_apps_list">All Apps List</string>
     <string name="home_container_add_shortcuts_container">Container</string>
     <string name="home_container_add_widget_list">Android Widget Group</string>
     <string name="home_container_add_quick_button">Quick Button</string>
-    <string name="home_container_add_scroll_view">Scroll View Container</string>
+    <string name="home_container_add_scroll_view">Scrolling group</string>
 
     <string name="home_container_edit_scroll_orientation">Scroll Orientation</string>
     <string name="home_container_edit_vertical">Vertical</string>
@@ -313,7 +317,7 @@
     <string name="home_grid_item_shortcuts">Shortcuts</string>
     <string name="home_grid_item_widget">Widget</string>
     <string name="home_grid_item_widget_group">Widget Group</string>
-    <string name="home_grid_item_scroll_view">Scroll Component</string>
+    <string name="home_grid_item_scroll_view">Scrolling group</string>
     <string name="home_grid_item_quick_button">Quick Button</string>
     <string name="home_grid_item_container">Container</string>
     <string name="home_grid_config_title">Configure %1$s</string>
@@ -362,6 +366,9 @@
     <string name="home_onboarding_task_default_home">Set as &lt;b&gt;home app&lt;/b&gt;</string>
     <string name="home_onboarding_task_palette">Pick a &lt;b&gt;color palette&lt;/b&gt;</string>
     <string name="home_onboarding_task_font">Pick a &lt;b&gt;font&lt;/b&gt;</string>
+    <string name="home_onboarding_task_clock">Add a &lt;b&gt;clock&lt;/b&gt;</string>
+    <string name="home_onboarding_edit_hint">Drag to move, pull the edge to resize.</string>
+    <string name="home_onboarding_edit_save">Save</string>
     <string name="home_onboarding_task_apps">Add some &lt;b&gt;apps&lt;/b&gt;</string>
     <string name="home_onboarding_task_container">Fill the &lt;b&gt;container&lt;/b&gt;</string>
     <string name="home_onboarding_task_widget">Add some &lt;b&gt;widgets&lt;/b&gt;</string>

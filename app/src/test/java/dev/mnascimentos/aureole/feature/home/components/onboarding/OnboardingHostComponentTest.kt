@@ -51,7 +51,7 @@ class OnboardingHostComponentTest {
         render(OnboardingUiState(stage = OnboardingStage.CHECKLIST, isChecklistExpanded = false))
 
         composeTestRule.onNodeWithText("First steps").assertDoesNotExist()
-        composeTestRule.onNodeWithText("0/7 first steps").performClick()
+        composeTestRule.onNodeWithText("0/8 first steps").performClick()
 
         assertEquals(listOf("expanded=true"), calls)
     }

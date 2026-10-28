@@ -62,10 +62,10 @@ class OnboardingChecklistComponentTest {
     }
 
     @Test
-    fun `should count the done tasks out of seven`() {
+    fun `should count the done tasks out of eight`() {
         render(completed = setOf(OnboardingTask.SET_DEFAULT_HOME, OnboardingTask.ADD_WIDGET))
 
-        composeTestRule.onNodeWithText("2 of 7 done").assertExists()
+        composeTestRule.onNodeWithText("2 of 8 done").assertExists()
     }
 
     @Test

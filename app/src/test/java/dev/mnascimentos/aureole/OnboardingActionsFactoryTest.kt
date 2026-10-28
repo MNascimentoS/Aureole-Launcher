@@ -20,6 +20,9 @@ import dev.mnascimentos.aureole.feature.home.HomeViewModel
 import dev.mnascimentos.aureole.feature.home.components.onboarding.model.AppearancePicker
 import dev.mnascimentos.aureole.feature.home.components.onboarding.model.OnboardingActions
 import dev.mnascimentos.aureole.feature.home.components.onboarding.model.OnboardingUiState
+import dev.mnascimentos.aureole.feature.home.grid.GridDefaults
+import dev.mnascimentos.aureole.feature.home.grid.GridEngineUtils
+import dev.mnascimentos.aureole.feature.home.grid.model.GridLimits
 import dev.mnascimentos.aureole.feature.home.model.HomeRepositories
 import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
 import kotlinx.coroutines.Dispatchers
@@ -33,6 +36,7 @@ import kotlinx.coroutines.test.setMain
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
+import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
@@ -49,6 +53,7 @@ class OnboardingActionsFactoryTest {
     private val context: Application = RuntimeEnvironment.getApplication()
     private lateinit var viewModel: HomeViewModel
     private val calls = mutableListOf<String>()
+    private val portraitLimits = GridLimits(GridEngineUtils.PORTRAIT_MAX_COLS, GridEngineUtils.PORTRAIT_MAX_ROWS)
     private val launchedIntents = mutableListOf<Intent>()
 
     private val homeActions = HomeScreenActions(
@@ -66,13 +71,16 @@ class OnboardingActionsFactoryTest {
         onOpenEditContainerDialog = { id -> calls += "container:$id" },
         onAddGridItem = { type, _, _ -> calls += "add:$type" },
         onSetIsAddingSingleWidget = { adding -> calls += "singleWidget:$adding" },
-        onAddWidgetClick = { stack -> calls += "widgetPicker:$stack" }
+        onAddWidgetClick = { stack -> calls += "widgetPicker:$stack" },
+        onOpenEditClockBottomSheet = { calls += "clock" },
+        onSaveGridEditMode = { calls += "saveGrid" }
     )
 
     @Before
     fun setUp() {
         Dispatchers.setMain(UnconfinedTestDispatcher())
         val settingsRepository = SettingsRepository(context)
+        settingsRepository.isLeftHandedMode = false
         viewModel = HomeViewModel(
             HomeRepositories(
                 appRepository = AppRepository(context),
@@ -85,7 +93,11 @@ class OnboardingActionsFactoryTest {
             )
         )
         viewModel.updateUiState {
-            it.copy(gridItems = emptyList(), onboarding = OnboardingUiState(stage = OnboardingStage.CHECKLIST))
+            it.copy(
+                gridItems = emptyList(),
+                gridLimits = portraitLimits,
+                onboarding = OnboardingUiState(stage = OnboardingStage.CHECKLIST)
+            )
         }
     }
 
@@ -114,36 +126,70 @@ class OnboardingActionsFactoryTest {
     }
 
     @Test
-    fun `when there is no apps list, should edit the global favorites`() {
+    fun `when there is no apps list, should place one where the default layout puts it`() {
         actions().onTaskClick(OnboardingTask.ADD_FAVORITE_APPS)
 
-        assertEquals(listOf("favorites:null"), calls)
+        val state = viewModel.uiState.value
+        assertEquals(listOf("favorites:${GridDefaults.APPS_LIST_ITEM_ID}"), calls)
+        assertEquals(GridDefaults.getDefaultGridItems()[2], state.gridItems.single())
+        assertTrue(state.isGridEditMode)
+        assertEquals(OnboardingTask.ADD_FAVORITE_APPS, state.onboarding.pendingTask)
+        assertEquals(GridDefaults.APPS_LIST_ITEM_ID, state.onboarding.createdItemId)
     }
 
     @Test
-    fun `when the container task is tapped, should edit the first container, even inside a scroll view`() {
-        val container = LauncherItemState(id = "box", type = LauncherItemType.SHORTCUTS_CONTAINER)
-        withGrid(
-            LauncherItemState(id = "scroll", type = LauncherItemType.SCROLL_VIEW, children = listOf(container))
-        )
+    fun `when the container task is tapped, should edit the container already on the home`() {
+        withGrid(LauncherItemState(id = "box", type = LauncherItemType.SHORTCUTS_CONTAINER, colSpan = 4, rowSpan = 4))
 
         actions().onTaskClick(OnboardingTask.FILL_CONTAINER)
 
+        val onboarding = viewModel.uiState.value.onboarding
         assertEquals(listOf("container:box"), calls)
+        assertEquals(OnboardingTask.FILL_CONTAINER, onboarding.pendingTask)
+        assertNull(onboarding.createdItemId)
+        assertTrue(viewModel.uiState.value.isGridEditMode)
     }
 
     @Test
-    fun `when there is no container, should add one`() {
+    fun `when there is no container, should place one and edit it`() {
         actions().onTaskClick(OnboardingTask.FILL_CONTAINER)
 
-        assertEquals(listOf("add:${LauncherItemType.SHORTCUTS_CONTAINER}"), calls)
+        assertEquals(listOf("container:${GridDefaults.CONTAINER_ITEM_ID}"), calls)
     }
 
     @Test
-    fun `when the widget task is tapped, should go straight to the single widget picker`() {
+    fun `when the widget task is tapped, should open the picker for the placed widget list`() {
         actions().onTaskClick(OnboardingTask.ADD_WIDGET)
 
-        assertEquals(listOf("singleWidget:true", "widgetPicker:null"), calls)
+        assertEquals(listOf("widgetPicker:${GridDefaults.WIDGETS_ITEM_ID}"), calls)
+    }
+
+    @Test
+    fun `when the clock task is tapped, should place the clock and open its editor`() {
+        actions().onTaskClick(OnboardingTask.ADD_CLOCK)
+
+        assertEquals(listOf("clock"), calls)
+        assertEquals(GridDefaults.CLOCK_ITEM_ID, viewModel.uiState.value.onboarding.createdItemId)
+    }
+
+    @Test
+    fun `when the grid has no room, should open no editor and bring the list back`() {
+        viewModel.updateUiState { it.copy(gridLimits = GridLimits(1, 1)) }
+        withGrid(LauncherItemState(id = "full", type = LauncherItemType.QUICK_BUTTON, colSpan = 1, rowSpan = 1))
+
+        actions().onTaskClick(OnboardingTask.ADD_CLOCK)
+
+        val onboarding = viewModel.uiState.value.onboarding
+        assertTrue(calls.isEmpty())
+        assertNull(onboarding.pendingTask)
+        assertTrue(onboarding.isChecklistExpanded)
+    }
+
+    @Test
+    fun `when the edit hint saves, should save the grid`() {
+        actions().onSaveGridEdit()
+
+        assertEquals(listOf("saveGrid"), calls)
     }
 
     @Test
