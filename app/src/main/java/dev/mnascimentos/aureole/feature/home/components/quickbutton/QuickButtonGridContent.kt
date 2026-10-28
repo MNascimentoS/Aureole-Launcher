@@ -10,10 +10,12 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
+import dev.mnascimentos.aureole.composable.dialogs.model.FolderButtonMetrics
 import dev.mnascimentos.aureole.core.data.model.LauncherItemState
 import dev.mnascimentos.aureole.core.data.model.QuickButtonModel
 import dev.mnascimentos.aureole.core.data.model.ShortcutType
@@ -42,29 +44,34 @@ fun GridQuickButtonContent(
         }
     }
 
-    Box(modifier = modifier.fillMaxSize()) {
-        QuickButtonGridItem(
-            model = model,
-            appInfo = appInfo,
-            onAction = { shortcutAction ->
-                when (shortcutAction.type) {
-                    ShortcutType.ALL_APPS -> actions.onAllAppsDrawerOpen()
-                    ShortcutType.ASSISTANT -> launchVoiceAssistant(context)
-                    ShortcutType.SETTINGS -> actions.onSettingsClick()
-                    ShortcutType.NOTIFICATIONS -> IntentUtils.expandNotificationShade(context)
-                    ShortcutType.OPEN_APP -> launchAppPackage(context, shortcutAction.target)
-                    ShortcutType.SYSTEM_INTENT -> launchSystemIntent(context, shortcutAction.target)
-                    ShortcutType.NONE -> { /* Do nothing */ }
+    Box(
+        modifier = modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
+        Box(modifier = Modifier.size(FolderButtonMetrics.MediumSize)) {
+            QuickButtonGridItem(
+                model = model,
+                appInfo = appInfo,
+                onAction = { shortcutAction ->
+                    when (shortcutAction.type) {
+                        ShortcutType.ALL_APPS -> actions.onAllAppsDrawerOpen()
+                        ShortcutType.ASSISTANT -> launchVoiceAssistant(context)
+                        ShortcutType.SETTINGS -> actions.onSettingsClick()
+                        ShortcutType.NOTIFICATIONS -> IntentUtils.expandNotificationShade(context)
+                        ShortcutType.OPEN_APP -> launchAppPackage(context, shortcutAction.target)
+                        ShortcutType.SYSTEM_INTENT -> launchSystemIntent(context, shortcutAction.target)
+                        ShortcutType.NONE -> { /* Do nothing */ }
+                    }
+                },
+                onLongPress = {
+                    actions.onOpenQuickButtonSettings(item.id)
                 }
-            },
-            onLongPress = {
-                actions.onOpenQuickButtonSettings(item.id)
-            }
-        )
+            )
+        }
     }
 }
 
-private fun launchVoiceAssistant(context: Context) {
+internal fun launchVoiceAssistant(context: Context) {
     val intent = Intent(Intent.ACTION_VOICE_COMMAND).apply {
         flags = Intent.FLAG_ACTIVITY_NEW_TASK
     }
@@ -75,7 +82,7 @@ private fun launchVoiceAssistant(context: Context) {
     }
 }
 
-private fun launchAppPackage(context: Context, target: String) {
+internal fun launchAppPackage(context: Context, target: String) {
     if (target.isEmpty()) return
     try {
         val launchIntent = context.packageManager.getLaunchIntentForPackage(target)
@@ -87,7 +94,7 @@ private fun launchAppPackage(context: Context, target: String) {
     }
 }
 
-private fun launchSystemIntent(context: Context, target: String) {
+internal fun launchSystemIntent(context: Context, target: String) {
     val intent = when (target) {
         "Browser" -> Intent(Intent.ACTION_VIEW, "http://www.google.com".toUri())
         "Camera" -> Intent(MediaStore.INTENT_ACTION_STILL_IMAGE_CAMERA)

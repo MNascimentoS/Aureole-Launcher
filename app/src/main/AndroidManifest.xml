@@ -25,6 +25,10 @@
         android:theme="@style/Theme.AureoleLauncher"
         tools:targetApi="33">
 
+        <meta-data
+            android:name="firebase_crashlytics_collection_enabled"
+            android:value="false" />
+
         <activity
             android:name=".MainActivity"
             android:exported="true"

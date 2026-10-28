@@ -60,7 +60,6 @@ fun MainRoute(
     ) {
         MainScaffold(
             appWidgetHost = appWidgetHost,
-            viewModel = viewModel,
             onWidgetSelected = { widgetHostManager.handleWidgetSelected(it) }
         )
     }

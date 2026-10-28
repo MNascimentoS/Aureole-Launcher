@@ -16,3 +16,7 @@
 - **Mandatory:** All strings must be extracted to `res/values/strings.xml` and referenced using `stringResource(R.string.<key>)` or `AureoleDS.strings`.
 - **Mandatory:** Every new string added to `res/values/strings.xml` must have a corresponding translation in `res/values-pt-rBR/strings.xml`.
 - **Key Naming Convention:** Strings must follow the format `<feature>_<component>_<description>` (e.g., `customize_add_clock`, `edit_container_orientation`).
+
+## 5. Read-Only Composables (`@ReadOnlyComposable`)
+- **Mandatory:** Any `@Composable` function or helper method that only reads composition/resources (such as `stringResource(...)`, theme tokens, or `CompositionLocal` values) without emitting UI layout nodes or modifying state MUST be annotated with `@ReadOnlyComposable` alongside `@Composable`.
+

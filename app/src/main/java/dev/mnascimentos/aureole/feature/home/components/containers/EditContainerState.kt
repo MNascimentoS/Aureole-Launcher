@@ -9,6 +9,7 @@ import dev.mnascimentos.aureole.core.data.model.AppFolder
 import dev.mnascimentos.aureole.core.data.model.ContainerItemEntity
 import dev.mnascimentos.aureole.core.data.model.ContainerItemType
 import dev.mnascimentos.aureole.core.data.model.ContainerModel
+import dev.mnascimentos.aureole.core.data.model.QuickButtonModel
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.components.containers.model.ContainerOptionsState
@@ -18,7 +19,8 @@ internal class EditContainerState(
     val panel: ContainerModel,
     options: ContainerOptionsState,
     itemsList: List<ContainerItemEntity>,
-    folders: List<AppFolder>
+    folders: List<AppFolder>,
+    quickButtons: List<QuickButtonModel> = panel.quickButtons
 ) {
     var position by mutableStateOf(options.position)
     var orientation by mutableStateOf(options.orientation)
@@ -38,6 +40,7 @@ internal class EditContainerState(
     var scrollDownShortcut by mutableStateOf(options.scrollDownShortcut)
     var itemsList by mutableStateOf(itemsList)
     var folders by mutableStateOf(folders)
+    var quickButtons by mutableStateOf(quickButtons)
 
     fun toModel(): ContainerModel {
         val updatedApps = itemsList
@@ -47,6 +50,13 @@ internal class EditContainerState(
         val updatedFolders = folders.filter { f ->
             itemsList.any { it.itemType == ContainerItemType.FOLDER && it.folderId == f.id }
         }.map { it.copy(displayAsGrid = isGridFolderEnabled) }
+
+        val updatedQuickButtons = quickButtons.filter { qb ->
+            itemsList.any { item ->
+                item.itemType == ContainerItemType.QUICK_BUTTON &&
+                    (item.quickButtonId == qb.id || item.id == qb.id)
+            }
+        }
 
         return panel.copy(
             position = position,
@@ -67,7 +77,8 @@ internal class EditContainerState(
             scrollDownShortcut = scrollDownShortcut,
             items = itemsList.mapIndexed { idx, item -> item.copy(orderIndex = idx) },
             appPackageNames = updatedApps,
-            folders = updatedFolders
+            folders = updatedFolders,
+            quickButtons = updatedQuickButtons
         )
     }
 
@@ -98,6 +109,8 @@ internal class EditContainerState(
             itemsList = list
             if (removed.itemType == ContainerItemType.FOLDER) {
                 folders = folders.filterNot { it.id == removed.folderId }
+            } else if (removed.itemType == ContainerItemType.QUICK_BUTTON) {
+                quickButtons = quickButtons.filterNot { it.id == removed.quickButtonId || it.id == removed.id }
             }
         }
     }
@@ -130,40 +143,65 @@ internal class EditContainerState(
             )
         }
     }
+
+    fun addQuickButton(model: QuickButtonModel = QuickButtonModel()) {
+        val qbId = if (model.id.isNotEmpty()) model.id else UUID.randomUUID().toString()
+        val newQuickButton = model.copy(id = qbId)
+        quickButtons = quickButtons + newQuickButton
+        itemsList = itemsList + ContainerItemEntity(
+            id = UUID.randomUUID().toString(),
+            panelId = panel.id,
+            itemType = ContainerItemType.QUICK_BUTTON,
+            quickButtonId = newQuickButton.id,
+            orderIndex = itemsList.size
+        ).also { it.quickButtonModel = newQuickButton }
+    }
+}
+
+private fun buildInitialItemsList(panel: ContainerModel): List<ContainerItemEntity> {
+    if (panel.items.isNotEmpty()) return panel.items
+    val list = mutableListOf<ContainerItemEntity>()
+    var idx = 0
+    panel.folders.forEach { f ->
+        list.add(
+            ContainerItemEntity(
+                id = UUID.randomUUID().toString(),
+                panelId = panel.id,
+                itemType = ContainerItemType.FOLDER,
+                folderId = f.id,
+                orderIndex = idx++
+            )
+        )
+    }
+    panel.appPackageNames.forEach { pkg ->
+        list.add(
+            ContainerItemEntity(
+                id = UUID.randomUUID().toString(),
+                panelId = panel.id,
+                itemType = ContainerItemType.APP,
+                packageName = pkg,
+                orderIndex = idx++
+            )
+        )
+    }
+    panel.quickButtons.forEach { qb ->
+        list.add(
+            ContainerItemEntity(
+                id = UUID.randomUUID().toString(),
+                panelId = panel.id,
+                itemType = ContainerItemType.QUICK_BUTTON,
+                quickButtonId = qb.id,
+                orderIndex = idx++
+            ).also { it.quickButtonModel = qb }
+        )
+    }
+    return list
 }
 
 @Composable
 internal fun rememberEditContainerState(panel: ContainerModel): EditContainerState {
     return remember(panel.id) {
-        val initialItemsList = if (panel.items.isNotEmpty()) {
-            panel.items
-        } else {
-            val list = mutableListOf<ContainerItemEntity>()
-            var idx = 0
-            panel.folders.forEach { f ->
-                list.add(
-                    ContainerItemEntity(
-                        id = UUID.randomUUID().toString(),
-                        panelId = panel.id,
-                        itemType = ContainerItemType.FOLDER,
-                        folderId = f.id,
-                        orderIndex = idx++
-                    )
-                )
-            }
-            panel.appPackageNames.forEach { pkg ->
-                list.add(
-                    ContainerItemEntity(
-                        id = UUID.randomUUID().toString(),
-                        panelId = panel.id,
-                        itemType = ContainerItemType.APP,
-                        packageName = pkg,
-                        orderIndex = idx++
-                    )
-                )
-            }
-            list
-        }
+        val initialItemsList = buildInitialItemsList(panel)
 
         EditContainerState(
             panel = panel,

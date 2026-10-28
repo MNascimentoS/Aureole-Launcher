@@ -38,7 +38,7 @@ enum class QuickButtonIcon(@DrawableRes val iconRes: Int) {
 
 @Keep
 data class QuickButtonAppearance(
-    val backgroundColor: Int = 0xFF455A64.toInt(),
+    val backgroundColor: Int = 0,
     val strokeEnabled: Boolean = false,
     val strokeColor: Int = 0xFFFFFFFF.toInt(),
     val icon: QuickButtonIcon = QuickButtonIcon.ADD,

@@ -14,6 +14,7 @@ import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuAnchorType
 import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.ExposedDropdownMenuBoxScope
 import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
@@ -139,6 +140,7 @@ private fun EditContainerItemMoveButtons(
 internal fun EditContainerAddAppDropdown(
     allApps: List<AppInfo>,
     onAppSelected: (String) -> Unit,
+    modifier: Modifier = Modifier,
     label: String = stringResource(R.string.home_container_edit_add_app)
 ) {
     var isExpanded by remember { mutableStateOf(false) }
@@ -154,7 +156,7 @@ internal fun EditContainerAddAppDropdown(
     ExposedDropdownMenuBox(
         expanded = isExpanded,
         onExpandedChange = { isExpanded = !isExpanded },
-        modifier = Modifier.fillMaxWidth()
+        modifier = modifier.fillMaxWidth()
     ) {
         OutlinedTextField(
             value = searchQuery,
@@ -162,6 +164,7 @@ internal fun EditContainerAddAppDropdown(
                 searchQuery = it
                 isExpanded = true
             },
+            singleLine = true,
             placeholder = { AureoleText(label) },
             leadingIcon = {
                 AureoleDS.icons.Search(
@@ -170,6 +173,7 @@ internal fun EditContainerAddAppDropdown(
                 )
             },
             trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = isExpanded) },
+            shape = RoundedCornerShape(AureoleDS.dimens.radiusSmall),
             colors = OutlinedTextFieldDefaults.colors(
                 focusedBorderColor = AureoleDS.colors.onSurfaceHigh,
                 unfocusedBorderColor = AureoleDS.colors.outline,
@@ -179,25 +183,41 @@ internal fun EditContainerAddAppDropdown(
             modifier = Modifier.menuAnchor(ExposedDropdownMenuAnchorType.PrimaryEditable).fillMaxWidth()
         )
 
-        ExposedDropdownMenu(
-            expanded = isExpanded && filteredApps.isNotEmpty(),
-            onDismissRequest = { isExpanded = false },
-            shape = RoundedCornerShape(AureoleDS.dimens.radiusMedium),
-            containerColor = AureoleDS.colors.surfaceVariant,
-            border = BorderStroke(
-                width = AureoleDS.dimens.borderMinimal,
-                color = AureoleDS.colors.outline.copy(alpha = 0.3f)
-            ),
-            shadowElevation = 8.dp,
-            modifier = Modifier.padding(vertical = AureoleDS.dimens.xxSmall)
-        ) {
-            filteredApps.forEach { app ->
-                DropdownAppItem(app = app, onAppSelected = {
-                    onAppSelected(it)
-                    searchQuery = ""
-                    isExpanded = false
-                })
+        AddAppDropdownMenu(
+            isExpanded = isExpanded && filteredApps.isNotEmpty(),
+            filteredApps = filteredApps,
+            onDismiss = { isExpanded = false },
+            onAppSelected = {
+                onAppSelected(it)
+                searchQuery = ""
+                isExpanded = false
             }
+        )
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun ExposedDropdownMenuBoxScope.AddAppDropdownMenu(
+    isExpanded: Boolean,
+    filteredApps: List<AppInfo>,
+    onDismiss: () -> Unit,
+    onAppSelected: (String) -> Unit
+) {
+    ExposedDropdownMenu(
+        expanded = isExpanded,
+        onDismissRequest = onDismiss,
+        shape = RoundedCornerShape(AureoleDS.dimens.radiusMedium),
+        containerColor = AureoleDS.colors.surfaceVariant,
+        border = BorderStroke(
+            width = AureoleDS.dimens.borderMinimal,
+            color = AureoleDS.colors.outline.copy(alpha = 0.3f)
+        ),
+        shadowElevation = 8.dp,
+        modifier = Modifier.padding(vertical = AureoleDS.dimens.xxSmall)
+    ) {
+        filteredApps.forEach { app ->
+            DropdownAppItem(app = app, onAppSelected = onAppSelected)
         }
     }
 }

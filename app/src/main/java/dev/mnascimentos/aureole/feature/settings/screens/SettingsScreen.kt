@@ -27,6 +27,9 @@ import dev.mnascimentos.aureole.composable.SettingsActionItem
 import dev.mnascimentos.aureole.composable.SettingsMenuItem
 import dev.mnascimentos.aureole.composable.SettingsMenuParams
 import dev.mnascimentos.aureole.composable.dialogs.CreateFolderDialog
+import dev.mnascimentos.aureole.composable.favorites.FavoriteAppsDialog
+import dev.mnascimentos.aureole.composable.favorites.model.FavoriteAppsDialogActions
+import dev.mnascimentos.aureole.composable.favorites.model.FavoriteAppsDialogConfig
 import dev.mnascimentos.aureole.composable.sheets.SettingsBottomSheet
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
@@ -115,6 +118,19 @@ private fun SettingsDialogsPrimary(
 
     if (uiState.showResetGridDialog) {
         ResetGridDialog(actions = actions)
+    }
+
+    if (uiState.showFavoritePickerDialog) {
+        FavoriteAppsDialog(
+            config = FavoriteAppsDialogConfig(
+                allApps = uiState.allApps,
+                favoriteAppPackages = uiState.favoriteAppPackages
+            ),
+            actions = FavoriteAppsDialogActions(
+                onToggleFavorite = actions.onToggleFavorite,
+                onDismiss = actions.onDismissFavoritePickerDialog
+            )
+        )
     }
 }
 

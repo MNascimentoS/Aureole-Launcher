@@ -39,6 +39,7 @@ import dev.mnascimentos.aureole.feature.home.components.overlays.extensions.clos
 import dev.mnascimentos.aureole.feature.home.components.overlays.extensions.closeContainerFolderBottomSheet
 import dev.mnascimentos.aureole.feature.home.components.overlays.extensions.closeFolderAppBottomSheet
 import dev.mnascimentos.aureole.feature.home.components.overlays.extensions.closeWidgetStackBottomSheet
+import dev.mnascimentos.aureole.feature.home.components.overlays.extensions.dismissReleaseNotes
 import dev.mnascimentos.aureole.feature.home.components.overlays.extensions.openContainerAppBottomSheet
 import dev.mnascimentos.aureole.feature.home.components.overlays.extensions.openContainerFolderBottomSheet
 import dev.mnascimentos.aureole.feature.home.components.overlays.extensions.openEditFolderForFolder
@@ -124,11 +125,15 @@ class HomeActionsFactory(
             onAllAppsDrawerClose = { viewModel.setAllAppsDrawerOpen(false) },
             onAllAppsDrawerOpen = { viewModel.setAllAppsDrawerOpen(true) },
             onToggleFavorite = { pkg -> viewModel.toggleFavorite(pkg) },
+            onToggleFavoriteWithContainer = { pkg, containerId -> viewModel.toggleFavorite(pkg, containerId) },
             onUpdateFavoritePackages = { containerId, pkgs -> handleUpdateFavoritePackages(containerId, pkgs) },
             onToggleShowAllAppsOnHome = { viewModel.toggleShowAllAppsOnHome() },
             onAppInfoClick = { app -> IntentUtils.openAppInfo(context, app.packageName) },
             onUninstallAppClick = { app -> IntentUtils.uninstallApp(context, app.packageName) },
             onOpenFavoritePicker = { containerId -> viewModel.setShowFavoritePicker(true, containerId) },
+            onDismissFavoritePicker = { viewModel.setShowFavoritePicker(false) },
+            onDismissWidgetPicker = { viewModel.setShowWidgetPicker(false) },
+            onDismissReleaseNotes = { viewModel.dismissReleaseNotes() },
             onOpenWidgetPopup = { id, y -> viewModel.openWidgetPopup(id, y) },
             onCloseWidgetPopup = { viewModel.closeWidgetPopup() },
             onOpenWidgetResizeDialog = { viewModel.setShowWidgetResizeDialog(true) },

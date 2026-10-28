@@ -22,6 +22,8 @@ data class SettingsScreenActions(
     val onBackClick: () -> Unit = {},
     val onSetDefaultLauncherClick: () -> Unit = {},
     val onOpenFavoritePickerClick: () -> Unit = {},
+    val onToggleFavorite: (String) -> Unit = {},
+    val onDismissFavoritePickerDialog: () -> Unit = {},
     val onToggleShowAllAppsOnHome: () -> Unit = {},
     val onToggleHomeButtonOpensAllApps: () -> Unit = {},
     val onToggleWidgetRow: () -> Unit = {},

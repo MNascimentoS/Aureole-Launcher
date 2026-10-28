@@ -7,9 +7,6 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
-import dev.mnascimentos.aureole.composable.favorites.FavoriteAppsDialog
-import dev.mnascimentos.aureole.composable.favorites.model.FavoriteAppsDialogActions
-import dev.mnascimentos.aureole.composable.favorites.model.FavoriteAppsDialogConfig
 import dev.mnascimentos.aureole.feature.settings.SettingsViewModel
 import dev.mnascimentos.aureole.feature.settings.extensions.SettingsIntentUtils
 import dev.mnascimentos.aureole.feature.settings.extensions.performFactoryReset
@@ -35,7 +32,7 @@ fun SettingsRoute(
         uri?.let { viewModel.setCustomWallpaper(it.toString()) }
     }
 
-    val actions = remember(context, viewModel, photoPickerLauncher, onFinish) {
+    val actions = remember(context, photoPickerLauncher, onFinish) {
         buildSettingsScreenActions(
             viewModel = viewModel,
             photoPickerLauncher = photoPickerLauncher,
@@ -48,21 +45,6 @@ fun SettingsRoute(
         uiState = uiState,
         actions = actions
     )
-
-    if (uiState.showFavoritePickerDialog) {
-        FavoriteAppsDialog(
-            config = FavoriteAppsDialogConfig(
-                allApps = uiState.allApps,
-                favoriteAppPackages = uiState.favoriteAppPackages
-            ),
-            actions = FavoriteAppsDialogActions(
-                onToggleFavorite = { pkg -> viewModel.toggleFavorite(pkg) },
-                onDismiss = {
-                    viewModel.setDialogVisible(SettingsDialog.FAVORITE_PICKER, visible = false)
-                }
-            )
-        )
-    }
 }
 
 private fun buildSettingsScreenActions(
@@ -187,6 +169,8 @@ private fun applyDialogActions(viewModel: SettingsViewModel, base: SettingsScree
                 false
             )
         },
-        onSearchIconPositionSelected = { pos -> viewModel.setSettingValue(SettingValue.SearchIconPosition(pos)) }
+        onSearchIconPositionSelected = { pos -> viewModel.setSettingValue(SettingValue.SearchIconPosition(pos)) },
+        onToggleFavorite = { pkg -> viewModel.toggleFavorite(pkg) },
+        onDismissFavoritePickerDialog = { viewModel.setDialogVisible(SettingsDialog.FAVORITE_PICKER, visible = false) }
     )
 }

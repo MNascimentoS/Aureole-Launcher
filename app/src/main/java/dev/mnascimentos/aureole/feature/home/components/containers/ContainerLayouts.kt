@@ -25,6 +25,7 @@ import androidx.compose.ui.unit.Dp
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.data.model.ContainerItemEntity
 import dev.mnascimentos.aureole.core.data.model.ContainerItemType
+import dev.mnascimentos.aureole.core.data.model.QuickButtonModel
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
@@ -32,6 +33,7 @@ import dev.mnascimentos.aureole.core.designsystem.utils.fadingEdges
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.ContainerAddFolderButton
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.ContainerAppItem
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.ContainerFolderItem
+import dev.mnascimentos.aureole.feature.home.components.containers.folder.ContainerQuickButtonItem
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.ContainerAppItemParams
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.ContainerFolderConfig
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.ContainerFolderItemParams
@@ -50,25 +52,35 @@ private object ContainerEffectMetrics {
 
 internal fun resolveContainerRenderItems(
     config: ContainerConfig,
-    allApps: List<AppInfo>
+    allApps: List<AppInfo>,
+    quickButtons: List<QuickButtonModel> = config.quickButtons
 ): List<ContainerRenderItem> {
     if (config.items.isNotEmpty()) {
-        return config.items.mapNotNull { resolveConfigItem(it, config, allApps) }
+        return config.items.mapNotNull { resolveConfigItem(it, config, allApps, quickButtons) }
     }
     val folderItems = config.folders.map { ContainerRenderItem.Folder(it) }
     val appItems = config.appPackageNames.mapNotNull { pkg ->
         allApps.find { it.packageName == pkg }?.let { ContainerRenderItem.App(it) }
     }
-    return folderItems + appItems
+    val qbItems = config.quickButtons.map { ContainerRenderItem.QuickButton(it) }
+    return folderItems + appItems + qbItems
 }
 
 private fun resolveConfigItem(
     item: ContainerItemEntity,
     config: ContainerConfig,
-    allApps: List<AppInfo>
+    allApps: List<AppInfo>,
+    quickButtons: List<QuickButtonModel>
 ): ContainerRenderItem? = when (item.itemType) {
     ContainerItemType.FOLDER -> config.folders.find { it.id == item.folderId }?.let { ContainerRenderItem.Folder(it) }
     ContainerItemType.APP -> allApps.find { it.packageName == item.packageName }?.let { ContainerRenderItem.App(it) }
+    ContainerItemType.QUICK_BUTTON -> {
+        val qbModel = item.quickButtonModel
+            ?: quickButtons.find { it.id == item.quickButtonId || it.id == item.id }
+            ?: config.quickButtons.find { it.id == item.quickButtonId || it.id == item.id }
+            ?: QuickButtonModel(id = item.quickButtonId ?: item.id)
+        ContainerRenderItem.QuickButton(qbModel)
+    }
 }
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -157,6 +169,12 @@ private fun ColumnRenderItem(
                     onAppClick = { appInfo -> actions.onAppClick(appInfo) },
                     onLongClick = { actions.onOpenContainerAppBottomSheet(renderItem.appInfo, config.panelId) }
                 )
+            )
+        }
+        is ContainerRenderItem.QuickButton -> {
+            ContainerQuickButtonItem(
+                quickButtonModel = renderItem.quickButtonModel,
+                config = config
             )
         }
     }
@@ -251,6 +269,14 @@ private fun RowRenderItem(
                         onAppClick = { appInfo -> actions.onAppClick(appInfo) },
                         onLongClick = { actions.onOpenContainerAppBottomSheet(renderItem.appInfo, config.panelId) }
                     )
+                )
+            }
+        }
+        is ContainerRenderItem.QuickButton -> {
+            Box(modifier = Modifier.padding(horizontal = AureoleDS.dimens.xxSmall)) {
+                ContainerQuickButtonItem(
+                    quickButtonModel = renderItem.quickButtonModel,
+                    config = config
                 )
             }
         }

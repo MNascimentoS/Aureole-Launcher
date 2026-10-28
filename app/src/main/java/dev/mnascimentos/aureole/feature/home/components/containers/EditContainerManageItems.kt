@@ -1,7 +1,9 @@
 package dev.mnascimentos.aureole.feature.home.components.containers
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -34,20 +36,24 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.composable.dialogs.CreateFolderDialog
+import dev.mnascimentos.aureole.core.data.model.AppFolder
 import dev.mnascimentos.aureole.core.data.model.AppInfo
+import dev.mnascimentos.aureole.core.data.model.ContainerItemEntity
 import dev.mnascimentos.aureole.core.data.model.ContainerItemType
 import dev.mnascimentos.aureole.core.data.model.ContainerModel
 import dev.mnascimentos.aureole.core.designsystem.icons.Add
+import dev.mnascimentos.aureole.core.designsystem.icons.AppSelect
 import dev.mnascimentos.aureole.core.designsystem.icons.ArrowDown
 import dev.mnascimentos.aureole.core.designsystem.icons.ArrowUp
+import dev.mnascimentos.aureole.core.designsystem.icons.Click
 import dev.mnascimentos.aureole.core.designsystem.icons.Delete
+import dev.mnascimentos.aureole.core.designsystem.icons.Folder
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.components.containers.model.ManageItemRowActions
 import dev.mnascimentos.aureole.feature.home.components.containers.model.ManageItemRowParams
 
-@Suppress("LongMethod") // Layout managing container reordering and item deletion controls
 @Composable
 internal fun ManageItemsContent(
     state: EditContainerState,
@@ -68,46 +74,21 @@ internal fun ManageItemsContent(
             )
         }
 
+        ManageItemsAddSection(
+            state = state,
+            allApps = allApps,
+            onOpenCreateFolderDialog = { isCreateFolderDialogVisible = true }
+        )
+
+        Spacer(modifier = Modifier.height(AureoleDS.dimens.medium))
+
         Text(
             text = stringResource(R.string.home_container_edit_child_components, state.itemsList.size),
             style = AureoleDS.typography.titleMedium,
             fontWeight = FontWeight.Bold,
-            modifier = Modifier.padding(bottom = AureoleDS.dimens.medium).fillMaxWidth(),
+            modifier = Modifier.padding(bottom = AureoleDS.dimens.small).fillMaxWidth(),
             color = AureoleDS.colors.onSurfaceHigh
         )
-
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(bottom = AureoleDS.dimens.small),
-            horizontalArrangement = Arrangement.spacedBy(AureoleDS.dimens.xSmall),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Box(modifier = Modifier.weight(1f)) {
-                EditContainerAddAppDropdown(
-                    allApps = allApps,
-                    onAppSelected = { state.addApp(it) },
-                    label = stringResource(R.string.home_container_edit_add_app)
-                )
-            }
-            OutlinedButton(
-                onClick = { isCreateFolderDialogVisible = true },
-                shape = RoundedCornerShape(AureoleDS.dimens.radiusSmall),
-                border = BorderStroke(AureoleDS.dimens.borderMinimal, AureoleDS.colors.outline.copy(alpha = 0.5f)),
-                colors = ButtonDefaults.outlinedButtonColors(
-                    contentColor = AureoleDS.colors.onSurfaceHigh
-                ),
-                contentPadding = PaddingValues(horizontal = AureoleDS.dimens.small),
-                modifier = Modifier.height(AureoleDS.dimens.itemHeightExtraLarge)
-            ) {
-                AureoleDS.icons.Add(
-                    tint = AureoleDS.colors.onSurfaceHigh,
-                    modifier = Modifier.size(AureoleDS.dimens.iconMedium)
-                )
-                Spacer(modifier = Modifier.width(AureoleDS.dimens.xxSmall))
-                Text(stringResource(R.string.home_container_edit_folder_label), style = AureoleDS.typography.labelLarge)
-            }
-        }
 
         ManageItemsListSection(state = state, allApps = allApps)
 
@@ -117,6 +98,105 @@ internal fun ManageItemsContent(
             modifier = Modifier.fillMaxWidth()
         ) {
             Text(stringResource(R.string.home_container_edit_back))
+        }
+    }
+}
+
+@Composable
+internal fun ManageItemsAddSection(
+    state: EditContainerState,
+    allApps: List<AppInfo>,
+    onOpenCreateFolderDialog: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Column(
+        modifier = modifier
+            .fillMaxWidth()
+            .background(
+                color = AureoleDS.colors.surfaceVariant.copy(alpha = 0.25f),
+                shape = RoundedCornerShape(AureoleDS.dimens.radiusMedium)
+            )
+            .border(
+                width = AureoleDS.dimens.borderMinimal,
+                color = AureoleDS.colors.outline.copy(alpha = 0.2f),
+                shape = RoundedCornerShape(AureoleDS.dimens.radiusMedium)
+            )
+            .padding(AureoleDS.dimens.small),
+        verticalArrangement = Arrangement.spacedBy(AureoleDS.dimens.small)
+    ) {
+        EditContainerAddAppDropdown(
+            allApps = allApps,
+            onAppSelected = { state.addApp(it) },
+            label = stringResource(R.string.home_container_edit_add_app),
+            modifier = Modifier.fillMaxWidth()
+        )
+
+        ManageItemsAddButtons(
+            onOpenCreateFolderDialog = onOpenCreateFolderDialog,
+            onAddQuickButton = { state.addQuickButton() }
+        )
+    }
+}
+
+@Composable
+private fun ManageItemsAddButtons(
+    onOpenCreateFolderDialog: () -> Unit,
+    onAddQuickButton: () -> Unit
+) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.spacedBy(AureoleDS.dimens.small)
+    ) {
+        OutlinedButton(
+            onClick = onOpenCreateFolderDialog,
+            shape = RoundedCornerShape(AureoleDS.dimens.radiusSmall),
+            border = BorderStroke(
+                AureoleDS.dimens.borderMinimal,
+                AureoleDS.colors.outline.copy(alpha = 0.5f)
+            ),
+            colors = ButtonDefaults.outlinedButtonColors(
+                contentColor = AureoleDS.colors.onSurfaceHigh
+            ),
+            contentPadding = PaddingValues(horizontal = AureoleDS.dimens.small),
+            modifier = Modifier
+                .weight(1f)
+                .height(AureoleDS.dimens.itemHeightExtraLarge)
+        ) {
+            AureoleDS.icons.Add(
+                tint = AureoleDS.colors.onSurfaceHigh,
+                modifier = Modifier.size(AureoleDS.dimens.iconMedium)
+            )
+            Spacer(modifier = Modifier.width(AureoleDS.dimens.xxSmall))
+            Text(
+                text = stringResource(R.string.home_container_edit_folder_label),
+                style = AureoleDS.typography.labelLarge
+            )
+        }
+
+        OutlinedButton(
+            onClick = onAddQuickButton,
+            shape = RoundedCornerShape(AureoleDS.dimens.radiusSmall),
+            border = BorderStroke(
+                AureoleDS.dimens.borderMinimal,
+                AureoleDS.colors.outline.copy(alpha = 0.5f)
+            ),
+            colors = ButtonDefaults.outlinedButtonColors(
+                contentColor = AureoleDS.colors.onSurfaceHigh
+            ),
+            contentPadding = PaddingValues(horizontal = AureoleDS.dimens.small),
+            modifier = Modifier
+                .weight(1f)
+                .height(AureoleDS.dimens.itemHeightExtraLarge)
+        ) {
+            AureoleDS.icons.Add(
+                tint = AureoleDS.colors.onSurfaceHigh,
+                modifier = Modifier.size(AureoleDS.dimens.iconMedium)
+            )
+            Spacer(modifier = Modifier.width(AureoleDS.dimens.xxSmall))
+            Text(
+                text = stringResource(R.string.home_grid_item_quick_button),
+                style = AureoleDS.typography.labelLarge
+            )
         }
     }
 }
@@ -172,6 +252,16 @@ internal fun ManageItemsListSection(
     }
 }
 
+private fun resolveFolder(item: ContainerItemEntity, folders: List<AppFolder>): AppFolder? {
+    if (item.itemType != ContainerItemType.FOLDER) return null
+    return folders.find { it.id == item.folderId }
+}
+
+private fun resolveApp(item: ContainerItemEntity, allApps: List<AppInfo>): AppInfo? {
+    if (item.itemType != ContainerItemType.APP) return null
+    return allApps.find { it.packageName == item.packageName }
+}
+
 @Composable
 internal fun ManageItemRow(
     params: ManageItemRowParams,
@@ -181,10 +271,15 @@ internal fun ManageItemRow(
     val item = params.item
     val defaultFolderLabel = stringResource(R.string.home_container_edit_folder_label)
     val defaultAppLabel = stringResource(R.string.home_container_edit_app_label)
-    val title = if (item.itemType == ContainerItemType.FOLDER) {
-        params.folders.find { it.id == item.folderId }?.name ?: defaultFolderLabel
-    } else {
-        params.allApps.find { it.packageName == item.packageName }?.label ?: item.packageName ?: defaultAppLabel
+    val defaultQuickButtonLabel = stringResource(R.string.home_grid_item_quick_button)
+
+    val folder = resolveFolder(item, params.folders)
+    val app = resolveApp(item, params.allApps)
+
+    val title = when (item.itemType) {
+        ContainerItemType.FOLDER -> folder?.name ?: defaultFolderLabel
+        ContainerItemType.APP -> app?.label ?: item.packageName ?: defaultAppLabel
+        ContainerItemType.QUICK_BUTTON -> defaultQuickButtonLabel
     }
 
     Row(
@@ -198,15 +293,58 @@ internal fun ManageItemRow(
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Text(
-            text = title,
-            style = AureoleDS.typography.bodyMedium,
-            fontWeight = FontWeight.SemiBold,
-            color = AureoleDS.colors.onSurfaceHigh,
-            modifier = Modifier.weight(1f)
-        )
+        Row(
+            modifier = Modifier.weight(1f),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(AureoleDS.dimens.small)
+        ) {
+            ManageItemRowIcon(itemType = item.itemType, app = app)
+
+            Text(
+                text = title,
+                style = AureoleDS.typography.bodyMedium,
+                fontWeight = FontWeight.SemiBold,
+                color = AureoleDS.colors.onSurfaceHigh
+            )
+        }
 
         ManageItemRowActionButtons(index = index, totalItems = params.totalItems, actions = actions)
+    }
+}
+
+@Composable
+private fun ManageItemRowIcon(
+    itemType: ContainerItemType,
+    app: AppInfo?
+) {
+    when (itemType) {
+        ContainerItemType.FOLDER -> {
+            AureoleDS.icons.Folder(
+                tint = AureoleDS.colors.onSurfaceHigh,
+                modifier = Modifier.size(AureoleDS.dimens.iconMedium)
+            )
+        }
+        ContainerItemType.APP -> {
+            val iconBitmap = remember(app?.packageName) { app?.getIconBitmap() }
+            if (iconBitmap != null) {
+                Image(
+                    bitmap = iconBitmap,
+                    contentDescription = app?.label,
+                    modifier = Modifier.size(AureoleDS.dimens.iconMedium)
+                )
+            } else {
+                AureoleDS.icons.AppSelect(
+                    tint = AureoleDS.colors.onSurfaceHigh,
+                    modifier = Modifier.size(AureoleDS.dimens.iconMedium)
+                )
+            }
+        }
+        ContainerItemType.QUICK_BUTTON -> {
+            AureoleDS.icons.Click(
+                tint = AureoleDS.colors.onSurfaceHigh,
+                modifier = Modifier.size(AureoleDS.dimens.iconMedium)
+            )
+        }
     }
 }
 
