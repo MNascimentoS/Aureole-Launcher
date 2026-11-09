@@ -122,7 +122,7 @@ class ContainerRepository(
     suspend fun ensureContainerExists(
         panelId: String,
         defaultTitle: String = "Painel Lateral",
-        isBackgroundEnabled: Boolean = true
+        isBackgroundEnabled: Boolean = false
     ): ContainerModel =
         withContext(Dispatchers.IO) {
             val existing = getContainer(panelId)

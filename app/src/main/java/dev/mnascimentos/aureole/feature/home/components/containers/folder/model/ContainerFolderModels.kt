@@ -9,7 +9,7 @@ import dev.mnascimentos.aureole.core.data.model.AppInfo
 data class ContainerFolderConfig(
     val showFolderLabels: Boolean,
     val isGridFolderEnabled: Boolean,
-    val isBackgroundEnabled: Boolean = true,
+    val isBackgroundEnabled: Boolean = false,
 )
 
 data class ContainerFolderButtonParams(
@@ -17,7 +17,7 @@ data class ContainerFolderButtonParams(
     val isGridFolderEnabled: Boolean,
     val containerColor: Color,
     val textColor: Color,
-    val isBackgroundEnabled: Boolean = true,
+    val isBackgroundEnabled: Boolean = false,
     val onPositionedY: (Float) -> Unit = {},
     val onClick: () -> Unit = {},
     val onLongClick: (() -> Unit)? = null,
@@ -35,7 +35,7 @@ data class ContainerAppItemParams(
     val app: AppInfo,
     val showLabels: Boolean,
     val onAppClick: (AppInfo) -> Unit,
-    val isBackgroundEnabled: Boolean = true,
+    val isBackgroundEnabled: Boolean = false,
     val onLongClick: () -> Unit = {}
 )
 

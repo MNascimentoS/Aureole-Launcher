@@ -7,7 +7,7 @@ data class ContainerModel(
     val title: String = "Container",
     val position: String = "Space Between",
     val orientation: String = "Vertical",
-    val isBackgroundEnabled: Boolean = true,
+    val isBackgroundEnabled: Boolean = false,
     val isExpandCell: Boolean = false,
     val showAddFolderButton: Boolean = true,
     val showFolderLabels: Boolean = false,

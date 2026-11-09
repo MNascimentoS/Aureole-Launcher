@@ -20,6 +20,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -43,8 +44,11 @@ import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.components.containers.model.EditContainerItemRowActions
 import dev.mnascimentos.aureole.feature.home.components.containers.model.EditContainerItemRowParams
+import kotlinx.coroutines.delay
 
 private const val MAX_DROPDOWN_APP_RESULTS = 8
+
+private const val DEBOUNCE_DELAY_MS = 300L
 
 @Composable
 internal fun EditContainerItemRow(
@@ -145,11 +149,18 @@ internal fun EditContainerAddAppDropdown(
 ) {
     var isExpanded by remember { mutableStateOf(false) }
     var searchQuery by remember { mutableStateOf("") }
-    val filteredApps = remember(searchQuery, allApps) {
-        if (searchQuery.isBlank()) {
+    var debouncedQuery by remember { mutableStateOf("") }
+
+    LaunchedEffect(searchQuery) {
+        delay(DEBOUNCE_DELAY_MS)
+        debouncedQuery = searchQuery
+    }
+
+    val filteredApps = remember(debouncedQuery, allApps) {
+        if (debouncedQuery.isBlank()) {
             allApps.take(MAX_DROPDOWN_APP_RESULTS)
         } else {
-            allApps.filter { it.label.contains(searchQuery, ignoreCase = true) }.take(MAX_DROPDOWN_APP_RESULTS)
+            allApps.filter { it.label.contains(debouncedQuery, ignoreCase = true) }.take(MAX_DROPDOWN_APP_RESULTS)
         }
     }
 

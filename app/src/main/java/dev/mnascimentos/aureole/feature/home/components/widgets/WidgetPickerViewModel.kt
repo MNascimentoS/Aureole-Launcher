@@ -6,11 +6,15 @@ import dev.mnascimentos.aureole.core.data.repository.WidgetRepository
 import dev.mnascimentos.aureole.feature.home.components.widgets.model.WidgetAppGroup
 import dev.mnascimentos.aureole.feature.home.components.widgets.model.WidgetSelectorIntent
 import dev.mnascimentos.aureole.feature.home.components.widgets.model.WidgetSelectorState
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+
+private const val DEBOUNCE_DELAY_MS = 300L
 
 class WidgetPickerViewModel(
     private val widgetRepository: WidgetRepository
@@ -20,6 +24,7 @@ class WidgetPickerViewModel(
     val state: StateFlow<WidgetSelectorState> = _state.asStateFlow()
 
     private var allGroups: List<WidgetAppGroup> = emptyList()
+    private var searchJob: Job? = null
 
     fun processIntent(intent: WidgetSelectorIntent) {
         when (intent) {
@@ -29,7 +34,11 @@ class WidgetPickerViewModel(
 
             is WidgetSelectorIntent.SearchQueryChanged -> {
                 _state.update { it.copy(searchQuery = intent.query) }
-                filterWidgets(intent.query)
+                searchJob?.cancel()
+                searchJob = viewModelScope.launch {
+                    delay(DEBOUNCE_DELAY_MS)
+                    filterWidgets(intent.query)
+                }
             }
 
             is WidgetSelectorIntent.ToggleAppGroup -> {

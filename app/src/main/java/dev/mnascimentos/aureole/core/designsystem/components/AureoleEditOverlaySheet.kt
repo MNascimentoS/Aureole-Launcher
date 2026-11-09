@@ -61,7 +61,7 @@ internal fun OverlayContentBox(
         Modifier.hazeEffect(
             state = effectiveHazeState,
             style = HazeStyle(
-                blurRadius = 32.dp,
+                blurRadius = AureoleDS.dimens.xLarge,
                 tint = HazeTint(Color.Black.copy(alpha = 0.55f))
             )
         ) { blurEnabled = true }
@@ -87,7 +87,7 @@ internal fun OverlayContentBox(
         val maxExpansionAllowed = (sheetMaxExpandedHeight - maxSheetHeight).coerceAtLeast(0.dp)
         val bounds = SheetBounds(maxSheetHeight, maxExpansionAllowed)
 
-        val previewHeight = maxHeight - maxSheetHeight
+        val previewHeight = maxHeight - (maxSheetHeight + stateData.dragExpansion.dp)
 
         Box(modifier = Modifier.fillMaxSize()) {
             PreviewSlot(

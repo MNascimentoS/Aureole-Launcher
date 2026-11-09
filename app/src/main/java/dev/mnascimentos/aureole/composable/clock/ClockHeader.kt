@@ -16,7 +16,6 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.unit.dp
 import dev.chrisbanes.haze.HazeState
 import dev.chrisbanes.haze.HazeStyle
 import dev.chrisbanes.haze.HazeTint
@@ -107,7 +106,7 @@ private fun Modifier.clockHazeEffect(isHazeEnabled: Boolean, hazeStateRef: HazeS
     return this.hazeEffect(
         state = hazeStateRef,
         style = HazeStyle(
-            blurRadius = 24.dp,
+            blurRadius = AureoleDS.dimens.large,
             tint = HazeTint(AureoleDS.colors.surfaceVariant.copy(alpha = hazeOpacity))
         )
     ) {

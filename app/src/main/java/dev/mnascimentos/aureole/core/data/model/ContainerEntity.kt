@@ -13,7 +13,7 @@ data class ContainerEntity(
     val position: String = "Space Between",
     val orientation: String = "Vertical",
     @ColumnInfo(name = "is_background_enabled")
-    val isBackgroundEnabled: Boolean = true,
+    val isBackgroundEnabled: Boolean = false,
     @ColumnInfo(name = "is_expand_cell")
     val isExpandCell: Boolean = false,
     @ColumnInfo(name = "show_add_folder_button")

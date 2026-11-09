@@ -1,12 +1,6 @@
 package dev.mnascimentos.aureole.feature.home.components.onboarding
 
 import androidx.compose.animation.core.FastOutLinearInEasing
-import androidx.compose.animation.core.FastOutSlowInEasing
-import androidx.compose.animation.core.LinearEasing
-import androidx.compose.animation.core.RepeatMode
-import androidx.compose.animation.core.Spring
-import androidx.compose.animation.core.infiniteRepeatable
-import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -37,11 +31,10 @@ import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatPa
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
+import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.playWelcomeIgnition
 import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.rememberOnboardingLoopsEnabled
 import dev.mnascimentos.aureole.feature.home.components.onboarding.model.OnboardingMotionSpec
 import dev.mnascimentos.aureole.feature.home.components.onboarding.model.WelcomeMotion
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 private const val BACKDROP_ALPHA = 0.88f
@@ -150,41 +143,6 @@ private fun WelcomeContent(
             Spacer(modifier = Modifier.height(AureoleDS.dimens.xSmall))
             OnboardingTextButton(text = stringResource(R.string.home_onboarding_welcome_skip), onClick = onSkipIntro)
         }
-    }
-}
-
-private suspend fun playWelcomeIgnition(motion: WelcomeMotion) = coroutineScope {
-    val delays = listOf(
-        OnboardingMotionSpec.TITLE_DELAY_MS,
-        OnboardingMotionSpec.SUBTITLE_DELAY_MS,
-        OnboardingMotionSpec.BUTTONS_DELAY_MS
-    )
-    launch {
-        val ringSpec = tween<Float>(
-            OnboardingMotionSpec.RING_DRAW_MS,
-            OnboardingMotionSpec.RING_DELAY_MS,
-            FastOutSlowInEasing
-        )
-        motion.ring.animateTo(1f, ringSpec)
-    }
-    launch {
-        delay(OnboardingMotionSpec.LOGO_DELAY_MS.toLong())
-        motion.logo.animateTo(1f, spring(OnboardingMotionSpec.LOGO_DAMPING, Spring.StiffnessMediumLow))
-    }
-    launch {
-        delay(OnboardingMotionSpec.LOGO_DELAY_MS.toLong())
-        motion.glow.animateTo(1f, tween(OnboardingMotionSpec.GLOW_PULSE_MS / 2))
-        motion.glow.animateTo(
-            OnboardingMotionSpec.GLOW_PULSE_SCALE,
-            infiniteRepeatable(tween(OnboardingMotionSpec.GLOW_PULSE_MS / 2), RepeatMode.Reverse)
-        )
-    }
-    launch {
-        val twinkleSpec = tween<Float>(OnboardingMotionSpec.GLOW_PULSE_MS, easing = LinearEasing)
-        motion.twinkle.animateTo(1f, infiniteRepeatable(twinkleSpec))
-    }
-    motion.texts.forEachIndexed { index, text ->
-        launch { text.animateTo(1f, tween(OnboardingMotionSpec.TEXT_ENTER_MS, delays[index])) }
     }
 }
 

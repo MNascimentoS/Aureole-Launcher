@@ -27,6 +27,7 @@ import androidx.compose.ui.semantics.LiveRegionMode
 import androidx.compose.ui.semantics.liveRegion
 import androidx.compose.ui.semantics.semantics
 import dev.mnascimentos.aureole.R
+import dev.mnascimentos.aureole.composable.appitem.model.AppListSkeletonMetrics
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
@@ -39,13 +40,6 @@ private const val SHIMMER_HIGH = 0.9f
 private const val ICON_ALPHA = 0.8f
 private const val BAR_ALPHA = 0.55f
 private const val DEFAULT_ROW_COUNT = 8
-
-// Label widths step through LABEL_WIDTH_STEPS sizes out of order, so the rows do not look stamped.
-private const val LABEL_MIN_WIDTH = 0.4f
-private const val LABEL_WIDTH_STEP = 0.05f
-private const val LABEL_WIDTH_STEPS = 7
-
-private fun labelWidth(index: Int): Float = LABEL_MIN_WIDTH + ((index * 2 + 1) % LABEL_WIDTH_STEPS) * LABEL_WIDTH_STEP
 
 /**
  * Placeholder rows for an app list whose apps have not arrived yet. The rows breathe while the
@@ -73,7 +67,7 @@ fun AppListSkeletonComponent(
         verticalArrangement = Arrangement.spacedBy(AureoleDS.dimens.small)
     ) {
         repeat(rowCount) { index ->
-            SkeletonRow(labelWidth = labelWidth(index), alpha = shimmer)
+            SkeletonRow(labelWidth = AppListSkeletonMetrics.labelWidth(index), alpha = shimmer)
         }
         AureoleText(
             text = stringResource(R.string.home_apps_loading),

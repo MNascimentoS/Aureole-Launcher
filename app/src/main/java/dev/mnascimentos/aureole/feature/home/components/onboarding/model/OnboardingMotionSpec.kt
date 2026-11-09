@@ -33,6 +33,10 @@ object OnboardingMotionSpec {
     const val HAND_PRESS_LOOP_MS = 1800
     const val HAND_PRESS_FILL_MS = 600
     const val SHOW_ME_DELAY_MS = 8_000L
+    val HAND_FINGER_RADIUS = 18.dp
+    val HAND_EDGE_INSET = 6.dp
+    val HAND_PRESS_RING_GAP = 10.dp
+    val HAND_TRAIL_WIDTH = 4.dp
 
     // Checklist (Figma "Animation" frame)
     const val CHECKLIST_DAMPING = 0.65f
@@ -47,6 +51,7 @@ object OnboardingMotionSpec {
     const val CELEBRATION_MS = 2600L
     const val HALO_CLOSE_MS = 700
     const val MAX_PARTICLES = 40
+    val PARTICLE_RADIUS = 3.dp
 
     // Default home success message before moving on
     const val DEFAULT_HOME_SUCCESS_MS = 1400L

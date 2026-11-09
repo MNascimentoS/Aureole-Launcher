@@ -61,7 +61,7 @@ fun AureolePopupBox(
         Modifier.hazeEffect(
             state = hazeState,
             style = HazeStyle(
-                blurRadius = 24.dp,
+                blurRadius = AureoleDS.dimens.large,
                 tint = HazeTint(surfaceColor.copy(alpha = HAZE_ALPHA)),
             ),
         ) {
@@ -103,7 +103,7 @@ fun AureoleHeaderBanner(
     Box(
         modifier = modifier
             .fillMaxWidth()
-            .height(48.dp)
+            .height(AureoleDS.dimens.minTouchTarget)
             .clip(
                 RoundedCornerShape(
                     topStart = AureoleDS.dimens.radiusMedium,
