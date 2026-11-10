@@ -8,6 +8,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -37,6 +38,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.composable.widgets.WidgetPositionIndicatorBar
@@ -62,6 +64,7 @@ import kotlinx.coroutines.delay
 private const val ROTATION_LEFT_DEGREES = -90f
 private const val ROTATION_RIGHT_DEGREES = 90f
 private const val ANIMATION_DURATION_MS = 300
+private val PREVIEW_CARD_WIDTH = 240.dp
 
 @Suppress("LongMethod") // Screen composable managing widget group editing layout
 @OptIn(ExperimentalMaterial3Api::class)
@@ -181,9 +184,9 @@ private fun EditWidgetGroupPreviewCarousel(
         LazyRow(
             state = listState,
             horizontalArrangement = Arrangement.spacedBy(AureoleDS.dimens.small),
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            contentPadding = PaddingValues(horizontal = AureoleDS.dimens.medium)
         ) {
-            item { Spacer(modifier = Modifier.width(AureoleDS.dimens.medium)) }
             itemsIndexed(
                 items = currentWidgets,
                 key = { _, widgetId -> widgetId },
@@ -206,7 +209,6 @@ private fun EditWidgetGroupPreviewCarousel(
                 )
             }
             item { AddWidgetCard(onClick = onAddWidgetClick) }
-            item { Spacer(modifier = Modifier.width(AureoleDS.dimens.large)) }
         }
 
         Spacer(modifier = Modifier.height(AureoleDS.dimens.medium))
@@ -256,12 +258,13 @@ private fun WidgetPreviewItem(
                     color = AureoleDS.colors.onSurfaceMedium.copy(alpha = 0.4f),
                     shape = RoundedCornerShape(AureoleDS.dimens.radiusLarge)
                 )
-                .padding(AureoleDS.dimens.xxSmall)
+                .padding(AureoleDS.dimens.xSmall)
         ) {
             // Inner card displaying widget
             Box(
                 modifier = Modifier
-                    .size(WidgetPickerMetrics.PreviewCardSize)
+                    .height(WidgetPickerMetrics.PreviewCardSize)
+                    .width(PREVIEW_CARD_WIDTH)
                     .clip(RoundedCornerShape(AureoleDS.dimens.radiusLarge))
                     .then(sharedModifier)
                     .background(AureoleDS.colors.surfaceVariant.copy(alpha = 0.6f)),
@@ -364,11 +367,12 @@ private fun AddWidgetCard(
                     color = AureoleDS.colors.outline.copy(alpha = 0.2f),
                     shape = RoundedCornerShape(AureoleDS.dimens.radiusLarge)
                 )
-                .padding(AureoleDS.dimens.xxSmall)
+                .padding(AureoleDS.dimens.xSmall)
         ) {
             Box(
                 modifier = Modifier
-                    .size(WidgetPickerMetrics.PreviewCardSize)
+                    .height(WidgetPickerMetrics.PreviewCardSize)
+                    .width(PREVIEW_CARD_WIDTH)
                     .clip(RoundedCornerShape(AureoleDS.dimens.radiusLarge))
                     .background(AureoleDS.colors.surfaceVariant.copy(alpha = 0.35f))
                     .clickable { onClick() },

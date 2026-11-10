@@ -399,4 +399,9 @@
     </plurals>
     <string name="home_folder_picker_remove_chip">Remove %1$s</string>
     <string name="home_folder_picker_selected_label">Selected</string>
+    <string name="home_clock_tab_style">Style</string>
+    <string name="home_clock_tab_format">Format</string>
+    <string name="home_clock_tab_colors">Colors</string>
+    <string name="home_clock_tab_bar_description">Clock editor tabs</string>
+    <string name="home_clock_tab_page_description">%1$s tab. Swipe sideways to change tab.</string>
 </resources>

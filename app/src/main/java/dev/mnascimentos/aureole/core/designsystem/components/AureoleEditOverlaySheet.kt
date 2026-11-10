@@ -26,6 +26,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.Layout
@@ -97,7 +98,10 @@ internal fun OverlayContentBox(
                 PreviewSlot(
                     previewContent = params.previewContent,
                     effectiveAnimated = stateData.effectiveAnimated,
-                    animScope = stateData.animScope
+                    animScope = stateData.animScope,
+                    isExpanded = stateData.isExpanded,
+                    motion = motion,
+                    bounds = bounds
                 )
             },
             sheet = {
@@ -166,7 +170,10 @@ private fun AnchoredPreviewLayout(
 private fun PreviewSlot(
     previewContent: (@Composable BoxScope.() -> Unit)?,
     effectiveAnimated: Boolean,
-    animScope: AnimatedVisibilityScope
+    animScope: AnimatedVisibilityScope,
+    isExpanded: Boolean,
+    motion: OverlaySheetMotion,
+    bounds: SheetBounds
 ) {
     val previewModifier = if (effectiveAnimated) {
         with(animScope) {
@@ -187,11 +194,24 @@ private fun PreviewSlot(
         Modifier.Companion
     }
 
+    val currentHeight = motion.currentHeight(isExpanded, bounds)
+    val restHeight = motion.restOrFallback(bounds)
+    val expandFraction = if (bounds.expandedPx > restHeight) {
+        ((currentHeight - restHeight) / (bounds.expandedPx - restHeight)).coerceIn(0f, 1f)
+    } else {
+        0f
+    }
+
     Box(
         modifier = Modifier
             .fillMaxWidth()
             .then(previewModifier)
-            .padding(horizontal = AureoleDS.dimens.medium),
+            .drawWithContent {
+                drawContent()
+                if (expandFraction > 0f) {
+                    drawRect(color = Color.Black.copy(alpha = 0.6f * expandFraction))
+                }
+            },
         contentAlignment = Alignment.BottomCenter
     ) {
         previewContent?.invoke(this)

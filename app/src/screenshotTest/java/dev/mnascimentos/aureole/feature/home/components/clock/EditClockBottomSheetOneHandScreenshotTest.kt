@@ -6,6 +6,7 @@ import com.android.tools.screenshot.PreviewTest
 import dev.mnascimentos.aureole.core.designsystem.model.AureoleEditOverlayState
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
+import dev.mnascimentos.aureole.feature.home.components.clock.model.ClockTab
 import dev.mnascimentos.aureole.feature.home.components.clock.model.EditClockOverlayOptions
 import dev.mnascimentos.aureole.feature.home.createSampleHomeData
 import dev.mnascimentos.aureole.feature.home.model.LocalHomeUiState
@@ -14,7 +15,7 @@ import dev.mnascimentos.aureole.feature.home.model.LocalHomeUiState
 class EditClockBottomSheetOneHandScreenshotTest {
 
     @Composable
-    private fun EditClockSheet(isExpanded: Boolean, isLeftHanded: Boolean) {
+    private fun EditClockSheet(isExpanded: Boolean, isLeftHanded: Boolean, tab: ClockTab = ClockTab.STYLE) {
         val sampleData = createSampleHomeData()
         val uiState = sampleData.uiState.copy(isLeftHandedMode = isLeftHanded)
         AureoleLauncherTheme {
@@ -24,7 +25,8 @@ class EditClockBottomSheetOneHandScreenshotTest {
                     actions = sampleData.actions,
                     onDismissRequest = {},
                     options = EditClockOverlayOptions(
-                        overlayState = AureoleEditOverlayState(initialExpanded = isExpanded)
+                        overlayState = AureoleEditOverlayState(initialExpanded = isExpanded),
+                        initialTab = tab
                     )
                 )
             }
@@ -50,5 +52,33 @@ class EditClockBottomSheetOneHandScreenshotTest {
     @Composable
     private fun EditClockBottomSheetLeftHanded() {
         EditClockSheet(isExpanded = false, isLeftHanded = true)
+    }
+
+    @PreviewTest
+    @AureolePreview
+    @Composable
+    private fun EditClockBottomSheetTabStyle() {
+        EditClockSheet(isExpanded = false, isLeftHanded = false, tab = ClockTab.STYLE)
+    }
+
+    @PreviewTest
+    @AureolePreview
+    @Composable
+    private fun EditClockBottomSheetTabFormat() {
+        EditClockSheet(isExpanded = false, isLeftHanded = false, tab = ClockTab.FORMAT)
+    }
+
+    @PreviewTest
+    @AureolePreview
+    @Composable
+    private fun EditClockBottomSheetTabColors() {
+        EditClockSheet(isExpanded = false, isLeftHanded = false, tab = ClockTab.COLORS)
+    }
+
+    @PreviewTest
+    @AureolePreview
+    @Composable
+    private fun EditClockBottomSheetTabFormatLeftHanded() {
+        EditClockSheet(isExpanded = false, isLeftHanded = true, tab = ClockTab.FORMAT)
     }
 }

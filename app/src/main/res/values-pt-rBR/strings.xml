@@ -401,4 +401,9 @@
     </plurals>
     <string name="home_folder_picker_remove_chip">Remover %1$s</string>
     <string name="home_folder_picker_selected_label">Escolhidos</string>
+    <string name="home_clock_tab_style">Estilo</string>
+    <string name="home_clock_tab_format">Formato</string>
+    <string name="home_clock_tab_colors">Cores</string>
+    <string name="home_clock_tab_bar_description">Abas do editor de relógio</string>
+    <string name="home_clock_tab_page_description">Aba %1$s. Deslize para o lado para trocar de aba.</string>
 </resources>

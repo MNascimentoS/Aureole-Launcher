@@ -5,7 +5,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.test.assertIsDisplayed
-import androidx.compose.ui.test.hasScrollAction
 import androidx.compose.ui.test.hasSetTextAction
 import androidx.compose.ui.test.isToggleable
 import androidx.compose.ui.test.junit4.v2.createComposeRule
@@ -13,8 +12,6 @@ import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollTo
 import androidx.compose.ui.test.performTextInput
-import androidx.compose.ui.test.performTouchInput
-import androidx.compose.ui.test.swipeUp
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
@@ -25,9 +22,6 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
-
-private const val SWIPE_START_FRACTION = 0.8f
-private const val SWIPE_END_FRACTION = 0.2f
 
 @RunWith(RobolectricTestRunner::class)
 class EditClockBottomSheetTest {
@@ -69,13 +63,6 @@ class EditClockBottomSheetTest {
         composeTestRule.waitForIdle()
     }
 
-    private fun scrollDownBottomSheet() {
-        composeTestRule.onNode(hasScrollAction()).performTouchInput {
-            swipeUp(startY = height * SWIPE_START_FRACTION, endY = height * SWIPE_END_FRACTION)
-        }
-        composeTestRule.waitForIdle()
-    }
-
     @Test
     fun `when edit clock bottom sheet is displayed, should render title and sections`() {
         // Arrange & Act
@@ -93,13 +80,15 @@ class EditClockBottomSheetTest {
         // Assert
         composeTestRule.onNodeWithText("Customize Clock").assertIsDisplayed()
         composeTestRule.onNodeWithText("Layout Style").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Alignment").performScrollTo().assertIsDisplayed()
 
-        scrollDownBottomSheet()
-        composeTestRule.onNodeWithText("Alignment").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Format").performClick()
+        advanceAnimation()
         composeTestRule.onNodeWithText("Time and Date Format").assertIsDisplayed()
-
-        scrollDownBottomSheet()
         composeTestRule.onNodeWithText("Font Style").performScrollTo().assertIsDisplayed()
+
+        composeTestRule.onNodeWithText("Colors").performClick()
+        advanceAnimation()
         composeTestRule.onNodeWithText("Text Color").performScrollTo().assertIsDisplayed()
         composeTestRule.onNodeWithText("Card Background").performScrollTo().assertIsDisplayed()
     }
@@ -177,7 +166,7 @@ class EditClockBottomSheetTest {
         advanceAnimation()
 
         // Assert field is shown
-        composeTestRule.onNodeWithText("Greeting Text").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Greeting Text").performScrollTo().assertIsDisplayed()
 
         // Act - type in text field specifically using hasSetTextAction
         composeTestRule.onNode(hasSetTextAction()).performTextInput("Olá Amigo")
