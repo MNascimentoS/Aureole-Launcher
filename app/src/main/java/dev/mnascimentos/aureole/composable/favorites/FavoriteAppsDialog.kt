@@ -80,7 +80,7 @@ fun FavoriteAppsDialog(
                 title = titleText,
                 isVisible = isVisible,
                 animated = true,
-                maxSheetHeightFraction = 0.6f,
+                isLeftHanded = config.rowConfig.isLeftHandedMode,
                 onSettingsClick = actions.onSettingsClick,
                 onBackPress = {
                     if (currentMode != FavoriteAppsScreenMode.MAIN) {

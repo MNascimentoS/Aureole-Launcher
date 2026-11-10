@@ -28,9 +28,11 @@ import dev.mnascimentos.aureole.composable.clock.model.ClockHeaderConfig
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleEditOverlay
 import dev.mnascimentos.aureole.core.designsystem.model.AureoleEditOverlayConfig
 import dev.mnascimentos.aureole.core.designsystem.model.AureoleEditOverlayParams
+import dev.mnascimentos.aureole.core.designsystem.model.rememberAureoleEditOverlayState
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
+import dev.mnascimentos.aureole.feature.home.components.clock.model.EditClockOverlayOptions
 import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
 import kotlinx.coroutines.delay
@@ -56,8 +58,6 @@ internal val PRESET_BG_COLORS = listOf(
 
 private const val DISMISS_DELAY_MS = 300L
 
-@Suppress("LongMethod") // Bottom sheet composable initializing clock editor state
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EditClockBottomSheet(
     uiState: MainUiState,
@@ -66,6 +66,27 @@ fun EditClockBottomSheet(
     modifier: Modifier = Modifier,
     hazeState: HazeState? = null
 ) {
+    val overlayState = rememberAureoleEditOverlayState()
+    EditClockOverlay(
+        uiState = uiState,
+        actions = actions,
+        onDismissRequest = onDismissRequest,
+        modifier = modifier,
+        options = remember(hazeState, overlayState) { EditClockOverlayOptions(hazeState, overlayState) }
+    )
+}
+
+/** Clock editor overlay; [options] carries the blur source and the sheet state. */
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+internal fun EditClockOverlay(
+    uiState: MainUiState,
+    actions: HomeScreenActions,
+    onDismissRequest: () -> Unit,
+    modifier: Modifier = Modifier,
+    options: EditClockOverlayOptions = EditClockOverlayOptions()
+) {
+    val hazeState = options.hazeState
     var isVisible by remember { mutableStateOf(true) }
 
     if (!isVisible) {
@@ -84,6 +105,7 @@ fun EditClockBottomSheet(
     AureoleEditOverlay(
         onDismissRequest = { isVisible = false },
         modifier = modifier,
+        state = options.overlayState,
         params = AureoleEditOverlayParams(
             config = AureoleEditOverlayConfig(
                 title = stringResource(R.string.home_clock_customize_title),
@@ -91,7 +113,7 @@ fun EditClockBottomSheet(
                 hazeState = effectiveHazeState,
                 isVisible = isVisible,
                 animated = true,
-                maxSheetHeightFraction = 0.65f
+                isLeftHanded = uiState.isLeftHandedMode
             ),
             previewContent = {
                 EditClockPreviewCard(
@@ -103,51 +125,56 @@ fun EditClockBottomSheet(
             bottomBarContent = {
                 EditClockActionButtons(
                     actions = actions,
+                    isLeftHanded = uiState.isLeftHandedMode,
                     onDismissRequest = { isVisible = false },
                     onResetGreeting = { tempCustomGreeting = "" }
                 )
             },
             sheetContent = {
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .verticalScroll(rememberScrollState())
-                ) {
-                    EditClockStyleSection(
-                        uiState = uiState,
-                        actions = actions,
-                        tempCustomGreeting = tempCustomGreeting,
-                        onGreetingChange = {
-                            tempCustomGreeting = it
-                            actions.onUpdateClockCustomGreeting(it)
-                        }
-                    )
-
-                    Spacer(modifier = Modifier.height(AureoleDS.dimens.medium))
-
-                    EditClockAlignmentSection(uiState = uiState, actions = actions)
-
-                    Spacer(modifier = Modifier.height(AureoleDS.dimens.medium))
-
-                    EditClockFormatSection(uiState = uiState, actions = actions)
-
-                    Spacer(modifier = Modifier.height(AureoleDS.dimens.medium))
-
-                    EditClockFontSection(uiState = uiState, actions = actions)
-
-                    Spacer(modifier = Modifier.height(AureoleDS.dimens.medium))
-
-                    EditClockTextColorSection(uiState = uiState, actions = actions)
-
-                    Spacer(modifier = Modifier.height(AureoleDS.dimens.medium))
-
-                    EditClockBackgroundSection(uiState = uiState, actions = actions)
-
-                    Spacer(modifier = Modifier.height(AureoleDS.dimens.medium))
-                }
+                EditClockSheetSections(
+                    uiState = uiState,
+                    actions = actions,
+                    tempCustomGreeting = tempCustomGreeting,
+                    onGreetingChange = {
+                        tempCustomGreeting = it
+                        actions.onUpdateClockCustomGreeting(it)
+                    }
+                )
             }
         )
     )
+}
+
+@Composable
+private fun EditClockSheetSections(
+    uiState: MainUiState,
+    actions: HomeScreenActions,
+    tempCustomGreeting: String,
+    onGreetingChange: (String) -> Unit
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .verticalScroll(rememberScrollState())
+    ) {
+        EditClockStyleSection(
+            uiState = uiState,
+            actions = actions,
+            tempCustomGreeting = tempCustomGreeting,
+            onGreetingChange = onGreetingChange
+        )
+        Spacer(modifier = Modifier.height(AureoleDS.dimens.medium))
+        EditClockAlignmentSection(uiState = uiState, actions = actions)
+        Spacer(modifier = Modifier.height(AureoleDS.dimens.medium))
+        EditClockFormatSection(uiState = uiState, actions = actions)
+        Spacer(modifier = Modifier.height(AureoleDS.dimens.medium))
+        EditClockFontSection(uiState = uiState, actions = actions)
+        Spacer(modifier = Modifier.height(AureoleDS.dimens.medium))
+        EditClockTextColorSection(uiState = uiState, actions = actions)
+        Spacer(modifier = Modifier.height(AureoleDS.dimens.medium))
+        EditClockBackgroundSection(uiState = uiState, actions = actions)
+        Spacer(modifier = Modifier.height(AureoleDS.dimens.medium))
+    }
 }
 
 @Composable

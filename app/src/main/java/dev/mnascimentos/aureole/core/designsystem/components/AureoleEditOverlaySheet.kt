@@ -8,16 +8,15 @@ import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -28,23 +27,28 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.layout.Layout
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.dp
 import dev.chrisbanes.haze.HazeState
 import dev.chrisbanes.haze.HazeStyle
 import dev.chrisbanes.haze.HazeTint
 import dev.chrisbanes.haze.hazeEffect
 import dev.mnascimentos.aureole.core.designsystem.icons.Logo
 import dev.mnascimentos.aureole.core.designsystem.model.AureoleEditOverlayParams
+import dev.mnascimentos.aureole.core.designsystem.model.OverlaySheetDecorations
+import dev.mnascimentos.aureole.core.designsystem.model.OverlaySheetMotion
 import dev.mnascimentos.aureole.core.designsystem.model.OverlaySheetStateData
 import dev.mnascimentos.aureole.core.designsystem.model.SheetBounds
+import dev.mnascimentos.aureole.core.designsystem.model.anchoredPreviewTop
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.core.designsystem.utils.LocalHazeState
+import kotlin.math.roundToInt
 
 private const val ANIMATION_DURATION_MS = 300
 
@@ -75,40 +79,91 @@ internal fun OverlayContentBox(
             .fillMaxSize()
             .then(hazeModifier)
             .background(backgroundColor)
-            .clickable(
-                interactionSource = remember { MutableInteractionSource() },
-                indication = null,
-                role = Role.Button,
-                onClick = stateData.triggerDismiss
-            )
+            .scrimTapToDismiss(stateData.triggerDismiss)
     ) {
-        val maxSheetHeight = maxHeight * params.config.maxSheetHeightFraction
-        val sheetMaxExpandedHeight = maxHeight - AureoleDS.dimens.large
-        val maxExpansionAllowed = (sheetMaxExpandedHeight - maxSheetHeight).coerceAtLeast(0.dp)
-        val bounds = SheetBounds(maxSheetHeight, maxExpansionAllowed)
+        val density = LocalDensity.current
+        val screenHeightPx = with(density) { maxHeight.toPx() }
+        val bounds = SheetBounds(
+            restMaxPx = screenHeightPx * params.config.restHeightFraction,
+            expandedPx = screenHeightPx * params.config.expandedHeightFraction
+        )
+        val motion = remember { OverlaySheetMotion() }
 
-        val previewHeight = maxHeight - (maxSheetHeight + stateData.dragExpansion.dp)
+        AnchoredPreviewLayout(
+            bounds = bounds,
+            motion = motion,
+            isExpanded = stateData.isExpanded,
+            preview = {
+                PreviewSlot(
+                    previewContent = params.previewContent,
+                    effectiveAnimated = stateData.effectiveAnimated,
+                    animScope = stateData.animScope
+                )
+            },
+            sheet = {
+                SheetSurface(
+                    stateData = stateData,
+                    params = params,
+                    bounds = bounds,
+                    motion = motion
+                )
+            }
+        )
+    }
+}
 
-        Box(modifier = Modifier.fillMaxSize()) {
-            PreviewSlot(
-                previewHeight = previewHeight,
-                previewContent = params.previewContent,
-                effectiveAnimated = stateData.effectiveAnimated,
-                animScope = stateData.animScope
-            )
+/**
+ * Closes the overlay on a tap outside the sheet. A plain tap detector instead of `clickable`, so the
+ * scrim does not merge the whole sheet into a single accessibility node; TalkBack closes with back.
+ */
+private fun Modifier.scrimTapToDismiss(onDismiss: () -> Unit): Modifier {
+    return pointerInput(onDismiss) { detectTapGestures(onTap = { onDismiss() }) }
+}
 
-            SheetSurface(
-                stateData = stateData,
-                params = params,
-                bounds = bounds
-            )
+/**
+ * Places the sheet at the bottom and the preview right above the sheet's real top, measured in the same
+ * layout pass. The preview follows the sheet while it is dragged, settles or expands over it, and keeps
+ * the size it gets above the sheet at rest.
+ */
+@Composable
+private fun AnchoredPreviewLayout(
+    bounds: SheetBounds,
+    motion: OverlaySheetMotion,
+    isExpanded: Boolean,
+    preview: @Composable () -> Unit,
+    sheet: @Composable () -> Unit
+) {
+    val density = LocalDensity.current
+    val previewGapPx = with(density) { AureoleDS.dimens.medium.roundToPx() }
+    val previewTopPaddingPx = with(density) { AureoleDS.dimens.large.roundToPx() }
+    Layout(
+        contents = listOf(preview, sheet),
+        modifier = Modifier.fillMaxSize()
+    ) { (previewMeasurables, sheetMeasurables), constraints ->
+        val loose = constraints.copy(minWidth = 0, minHeight = 0)
+        val sheetPlaceables = sheetMeasurables.map { it.measure(loose) }
+        val sheetHeight = sheetPlaceables.maxOfOrNull { it.height } ?: 0
+        if (motion.fixedHeight(isExpanded, bounds) == null) motion.restOuterHeight = sheetHeight
+        val restSheetHeight = motion.restOuterHeight.takeIf { it > 0 } ?: bounds.restMaxPx.roundToInt()
+        val previewMaxHeight = (constraints.maxHeight - restSheetHeight - previewGapPx - previewTopPaddingPx)
+            .coerceAtLeast(0)
+        val previewPlaceables = previewMeasurables.map { it.measure(loose.copy(maxHeight = previewMaxHeight)) }
+
+        layout(constraints.maxWidth, constraints.maxHeight) {
+            val sheetTop = constraints.maxHeight - sheetHeight + motion.translation(bounds).roundToInt()
+            previewPlaceables.forEach { placeable ->
+                placeable.placeRelative(
+                    0,
+                    anchoredPreviewTop(sheetTop, previewGapPx, placeable.height, previewTopPaddingPx)
+                )
+            }
+            sheetPlaceables.forEach { it.placeRelative(0, sheetTop) }
         }
     }
 }
 
 @Composable
-private fun BoxScope.PreviewSlot(
-    previewHeight: Dp,
+private fun PreviewSlot(
     previewContent: (@Composable BoxScope.() -> Unit)?,
     effectiveAnimated: Boolean,
     animScope: AnimatedVisibilityScope
@@ -134,61 +189,62 @@ private fun BoxScope.PreviewSlot(
 
     Box(
         modifier = Modifier
-            .align(Alignment.TopCenter)
             .fillMaxWidth()
-            .height(previewHeight)
             .then(previewModifier)
-            .padding(
-                start = AureoleDS.dimens.medium,
-                end = AureoleDS.dimens.medium,
-                top = AureoleDS.dimens.large,
-                bottom = AureoleDS.dimens.medium
-            ),
+            .padding(horizontal = AureoleDS.dimens.medium),
         contentAlignment = Alignment.BottomCenter
     ) {
         previewContent?.invoke(this)
     }
 }
 
+/**
+ * Inside of the overlay sheet: handle, header and content at the top, bottom bar at the bottom.
+ * When the sheet is taller than its content (expanded), the free space sits between content and bottom bar.
+ */
 @Composable
 internal fun OverlaySheetBody(
     title: String?,
     onSettingsClick: (() -> Unit)?,
     bottomBarContent: (@Composable ColumnScope.() -> Unit)?,
     sheetContent: (@Composable ColumnScope.() -> Unit)?,
-    headerIcon: (@Composable (Modifier) -> Unit)? = null
+    decorations: OverlaySheetDecorations = OverlaySheetDecorations()
 ) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = AureoleDS.dimens.xxSmall, vertical = AureoleDS.dimens.xxSmall)
+            .padding(horizontal = AureoleDS.dimens.xxSmall, vertical = AureoleDS.dimens.xxSmall),
+        verticalArrangement = Arrangement.SpaceBetween
     ) {
-        if (title != null) {
-            OverlaySheetHeader(
-                title = title,
-                onSettingsClick = onSettingsClick,
-                headerIcon = headerIcon
-            )
-        }
-
-        if (sheetContent != null) {
-            Column(
-                modifier = Modifier
-                    .padding(horizontal = AureoleDS.dimens.small)
-                    .weight(1f, fill = false)
-                    .fillMaxWidth()
-            ) {
-                sheetContent()
+        Column(modifier = Modifier.weight(1f, fill = false)) {
+            decorations.handle?.invoke()
+            if (title != null) {
+                OverlaySheetHeader(
+                    title = title,
+                    onSettingsClick = onSettingsClick,
+                    headerIcon = decorations.headerIcon
+                )
+            }
+            if (sheetContent != null) {
+                Column(
+                    modifier = Modifier
+                        .padding(horizontal = AureoleDS.dimens.small)
+                        .weight(1f, fill = false)
+                        .fillMaxWidth()
+                ) {
+                    sheetContent()
+                }
             }
         }
 
         if (bottomBarContent != null) {
-            Spacer(
-                modifier = Modifier
-                    .height(AureoleDS.dimens.small)
-                    .padding(horizontal = AureoleDS.dimens.small)
-            )
-            Column(modifier = Modifier.padding(horizontal = AureoleDS.dimens.small)) {
+            Column(
+                modifier = Modifier.padding(
+                    start = AureoleDS.dimens.small,
+                    end = AureoleDS.dimens.small,
+                    top = AureoleDS.dimens.small
+                )
+            ) {
                 bottomBarContent()
             }
         }

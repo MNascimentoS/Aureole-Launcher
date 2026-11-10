@@ -71,7 +71,7 @@ fun QuickButtonAppearanceBottomSheet(
                 hazeState = if (uiState.isHazeEnabled) hazeState else null,
                 isVisible = isVisible,
                 animated = true,
-                maxSheetHeightFraction = 0.4f
+                isLeftHanded = uiState.isLeftHandedMode
             ),
             previewContent = {
                 QuickButtonPreviewBox(activeModel = activeModel, activeAppInfo = activeAppInfo)

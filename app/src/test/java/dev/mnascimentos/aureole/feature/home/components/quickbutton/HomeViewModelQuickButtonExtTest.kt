@@ -27,9 +27,13 @@ import dev.mnascimentos.aureole.feature.home.components.quickbutton.extensions.o
 import dev.mnascimentos.aureole.feature.home.components.quickbutton.extensions.onUpdateQuickButtonAppearance
 import dev.mnascimentos.aureole.feature.home.components.quickbutton.extensions.onUpdateQuickButtonShortcuts
 import dev.mnascimentos.aureole.feature.home.model.HomeRepositories
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.job
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
+import kotlinx.coroutines.test.resetMain
+import kotlinx.coroutines.test.setMain
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
@@ -51,6 +55,7 @@ class HomeViewModelQuickButtonExtTest {
 
     @Before
     fun setUp() {
+        Dispatchers.setMain(UnconfinedTestDispatcher())
         context = RuntimeEnvironment.getApplication()
         val settingsRepo = SettingsRepository(context)
         gridRepository = GridRepository(context)
@@ -76,6 +81,7 @@ class HomeViewModelQuickButtonExtTest {
             containerRepository.deleteContainer(PANEL_ID)
         }
         gridRepository.resetToDefault()
+        Dispatchers.resetMain()
     }
 
     @Test

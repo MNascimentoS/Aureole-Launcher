@@ -135,7 +135,7 @@ fun EditContainerScreen(
                     hazeState = hazeState,
                     isVisible = isVisible,
                     animated = true,
-                    maxSheetHeightFraction = 0.45f,
+                    isLeftHanded = effectiveUiState.isLeftHandedMode,
                     onBackPress = {
                         if (currentMode != EditContainerScreenMode.MAIN) {
                             currentMode = EditContainerScreenMode.MAIN

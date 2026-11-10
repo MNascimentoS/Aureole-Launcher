@@ -14,6 +14,8 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.RuntimeEnvironment
+import org.robolectric.shadows.ShadowLooper
+import java.util.concurrent.TimeUnit
 
 @RunWith(RobolectricTestRunner::class)
 class WidgetPickerViewModelTest {
@@ -27,6 +29,11 @@ class WidgetPickerViewModelTest {
         context = RuntimeEnvironment.getApplication()
         widgetRepository = WidgetRepository(context)
         viewModel = WidgetPickerViewModel(widgetRepository)
+    }
+
+    /** The search filters after a 300 ms debounce on Main: run it out. */
+    private fun awaitSearchDebounce() {
+        ShadowLooper.idleMainLooper(SEARCH_DEBOUNCE_MS, TimeUnit.MILLISECONDS)
     }
 
     private fun setAllGroups(groups: List<WidgetAppGroup>) {
@@ -91,6 +98,7 @@ class WidgetPickerViewModelTest {
         setAllGroups(groups)
 
         viewModel.processIntent(WidgetSelectorIntent.SearchQueryChanged("cal"))
+        awaitSearchDebounce()
 
         val state = viewModel.state.value
         assertEquals(1, state.widgetGroups.size)
@@ -113,6 +121,7 @@ class WidgetPickerViewModelTest {
         setAllGroups(groups)
 
         viewModel.processIntent(WidgetSelectorIntent.SearchQueryChanged("calendar"))
+        awaitSearchDebounce()
 
         val state = viewModel.state.value
         assertEquals(1, state.widgetGroups.size)
@@ -132,6 +141,7 @@ class WidgetPickerViewModelTest {
         setAllGroups(groups)
 
         viewModel.processIntent(WidgetSelectorIntent.SearchQueryChanged("xyz"))
+        awaitSearchDebounce()
 
         val state = viewModel.state.value
         assertTrue(state.widgetGroups.isEmpty())
@@ -149,9 +159,15 @@ class WidgetPickerViewModelTest {
         setAllGroups(groups)
 
         viewModel.processIntent(WidgetSelectorIntent.SearchQueryChanged("xyz"))
+        awaitSearchDebounce()
         assertEquals(0, viewModel.state.value.widgetGroups.size)
 
         viewModel.processIntent(WidgetSelectorIntent.SearchQueryChanged(""))
+        awaitSearchDebounce()
         assertEquals(1, viewModel.state.value.widgetGroups.size)
+    }
+
+    private companion object {
+        const val SEARCH_DEBOUNCE_MS = 301L
     }
 }
