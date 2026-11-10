@@ -67,6 +67,8 @@ import dev.mnascimentos.aureole.feature.home.components.widgets.extensions.setSh
 import dev.mnascimentos.aureole.feature.home.components.widgets.extensions.setShowWidgetResizeDialog
 import dev.mnascimentos.aureole.feature.home.components.widgets.extensions.setTargetWidgetStackId
 import dev.mnascimentos.aureole.feature.home.components.widgets.extensions.setWidgetRowHeight
+import dev.mnascimentos.aureole.feature.home.extensions.onUndo
+import dev.mnascimentos.aureole.feature.home.extensions.onUndoExpired
 import dev.mnascimentos.aureole.feature.home.extensions.setAllAppsDrawerOpen
 import dev.mnascimentos.aureole.feature.home.extensions.setShowCustomizeBottomSheet
 import dev.mnascimentos.aureole.feature.home.extensions.toggleShowAllAppsOnHome
@@ -229,7 +231,9 @@ class HomeActionsFactory(
             onOpenShortcutSelection = { type -> viewModel.onOpenShortcutSelection(type) },
             onCloseShortcutSelection = { viewModel.onCloseShortcutSelection() },
             onUpdateQuickButtonAppearance = { app -> viewModel.onUpdateQuickButtonAppearance(app) },
-            onUpdateQuickButtonShortcuts = { shortcuts -> viewModel.onUpdateQuickButtonShortcuts(shortcuts) }
+            onUpdateQuickButtonShortcuts = { shortcuts -> viewModel.onUpdateQuickButtonShortcuts(shortcuts) },
+            onUndo = { viewModel.onUndo() },
+            onUndoExpired = { id -> viewModel.onUndoExpired(id) }
         )
     }
 

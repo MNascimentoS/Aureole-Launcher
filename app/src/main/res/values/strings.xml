@@ -384,4 +384,9 @@
     <string name="overlay_sheet_action_expand">Expand</string>
     <string name="overlay_sheet_action_collapse">Collapse</string>
     <string name="overlay_sheet_action_settings">Aureole settings</string>
+    <string name="home_undo_action">Undo</string>
+    <string name="home_undo_removed_from_folder">%1$s left the folder</string>
+    <string name="home_undo_favorite_added">%1$s added to favorites</string>
+    <string name="home_undo_favorite_removed">%1$s removed from favorites</string>
+    <string name="home_undo_shortcut_changed">Shortcut changed to %1$s</string>
 </resources>

@@ -385,4 +385,9 @@
     <string name="overlay_sheet_action_expand">Expandir</string>
     <string name="overlay_sheet_action_collapse">Recolher</string>
     <string name="overlay_sheet_action_settings">Ajustes do Aureole</string>
+    <string name="home_undo_action">Desfazer</string>
+    <string name="home_undo_removed_from_folder">%1$s saiu da pasta</string>
+    <string name="home_undo_favorite_added">%1$s nos favoritos</string>
+    <string name="home_undo_favorite_removed">%1$s saiu dos favoritos</string>
+    <string name="home_undo_shortcut_changed">Atalho trocado para %1$s</string>
 </resources>

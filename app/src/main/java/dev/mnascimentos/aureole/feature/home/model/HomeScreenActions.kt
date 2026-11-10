@@ -100,6 +100,8 @@ data class HomeScreenActions(
     val onCloseShortcutSelection: () -> Unit = {},
     val onUpdateQuickButtonAppearance: (QuickButtonAppearance) -> Unit = {},
     val onUpdateQuickButtonShortcuts: (QuickButtonShortcuts) -> Unit = {},
+    val onUndo: () -> Unit = {},
+    val onUndoExpired: (Long) -> Unit = {},
 
     val onOpenContainerAppBottomSheet: (AppInfo, String) -> Unit = { _, _ -> },
     val onCloseContainerAppBottomSheet: () -> Unit = {},

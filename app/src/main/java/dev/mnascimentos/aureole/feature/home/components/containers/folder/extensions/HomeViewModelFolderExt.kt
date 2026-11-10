@@ -1,8 +1,11 @@
 package dev.mnascimentos.aureole.feature.home.components.containers.folder.extensions
 
 import androidx.lifecycle.viewModelScope
+import dev.mnascimentos.aureole.R
+import dev.mnascimentos.aureole.core.designsystem.model.TextResource
 import dev.mnascimentos.aureole.feature.home.HomeViewModel
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.FolderViewIntent
+import dev.mnascimentos.aureole.feature.home.extensions.showUndo
 import kotlinx.coroutines.launch
 
 fun HomeViewModel.onFolderIntent(intent: FolderViewIntent) {
@@ -104,8 +107,24 @@ private suspend fun HomeViewModel.refreshFolders() {
 fun HomeViewModel.removeAppFromFolder(folderId: String, packageName: String) {
     viewModelScope.launch {
         val folder = uiState.value.folders.find { it.id == folderId } ?: return@launch
-        val newAppPackages = folder.appPackageNames.filterNot { it == packageName }
+        val originalPackages = folder.appPackageNames
+        val index = originalPackages.indexOf(packageName)
+        val newAppPackages = originalPackages.filterNot { it == packageName }
         folderRepository.updateFolderApps(folderId, newAppPackages)
         refreshFoldersAndOpen(folderId)
+        if (index < 0) return@launch
+        val appName = uiState.value.apps.find { it.packageName == packageName }?.label ?: packageName
+        showUndo(TextResource.fromResId(R.string.home_undo_removed_from_folder, appName)) {
+            viewModelScope.launch { restoreFolderApp(folderId, packageName, index) }
+        }
     }
+}
+
+private suspend fun HomeViewModel.restoreFolderApp(folderId: String, packageName: String, index: Int) {
+    val current = folderRepository.getFolders().find { it.id == folderId } ?: return
+    if (packageName in current.appPackageNames) return
+    val restored = current.appPackageNames.toMutableList()
+    restored.add(index.coerceAtMost(restored.size), packageName)
+    folderRepository.updateFolderApps(folderId, restored)
+    refreshFoldersAndOpen(folderId)
 }
