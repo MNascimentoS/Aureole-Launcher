@@ -16,6 +16,7 @@ import androidx.compose.ui.platform.LocalContext
 import com.google.android.play.core.appupdate.AppUpdateInfo
 import com.google.android.play.core.appupdate.AppUpdateManager
 import dev.mnascimentos.aureole.HomeActionsFactory
+import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.refreshDefaultLauncherStatus
 import dev.mnascimentos.aureole.feature.home.components.widgets.WidgetHostManager
 import dev.mnascimentos.aureole.feature.home.components.widgets.extensions.setIsAddingSingleWidget
 import dev.mnascimentos.aureole.feature.home.components.widgets.extensions.setPendingWidgetId
@@ -137,13 +138,19 @@ private fun rememberHomeActions(
         }
     }
 
-    return remember(context, viewModel, appUpdateManager, updateLauncher, cachedAppUpdateInfo) {
+    // Some vendors report RESULT_CANCELED even after the user accepts, so the role is re-checked instead.
+    val defaultHomeLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { viewModel.refreshDefaultLauncherStatus() }
+
+    return remember(context, viewModel, appUpdateManager, updateLauncher, cachedAppUpdateInfo, defaultHomeLauncher) {
         HomeActionsFactory(
             context = context,
             viewModel = viewModel,
             appUpdateManager = appUpdateManager,
             updateActivityResultLauncher = updateLauncher,
-            cachedAppUpdateInfo = cachedAppUpdateInfo
+            cachedAppUpdateInfo = cachedAppUpdateInfo,
+            launchDefaultHomeRequest = { intent -> defaultHomeLauncher.launch(intent) }
         ).createHomeActions()
     }
 }

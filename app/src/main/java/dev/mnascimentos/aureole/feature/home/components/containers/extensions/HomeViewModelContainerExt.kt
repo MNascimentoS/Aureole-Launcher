@@ -4,6 +4,8 @@ import androidx.lifecycle.viewModelScope
 import dev.mnascimentos.aureole.core.data.model.ContainerModel
 import dev.mnascimentos.aureole.core.data.model.LauncherItemType
 import dev.mnascimentos.aureole.feature.home.HomeViewModel
+import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.confirmContainerTaskOnSave
+import dev.mnascimentos.aureole.feature.home.grid.GridDefaults
 import kotlinx.coroutines.launch
 
 fun HomeViewModel.loadContainers() {
@@ -11,10 +13,17 @@ fun HomeViewModel.loadContainers() {
         val allPanels = containerRepository.getAllContainers()
         val panelsMap = allPanels.associateBy { it.id }.toMutableMap()
 
-        uiState.value.gridItems.filter { it.safeType == LauncherItemType.SHORTCUTS_CONTAINER }
+        val state = uiState.value
+        (state.gridItems + state.portraitGridItems + state.landscapeGridItems)
+            .filter { it.safeType == LauncherItemType.SHORTCUTS_CONTAINER }
+            .distinctBy { it.id }
             .forEach { item ->
                 if (!panelsMap.containsKey(item.id)) {
-                    val ensured = containerRepository.ensureContainerExists(item.id)
+                    // The default layout's container starts without a background.
+                    val ensured = containerRepository.ensureContainerExists(
+                        panelId = item.id,
+                        isBackgroundEnabled = item.id != GridDefaults.CONTAINER_ITEM_ID
+                    )
                     panelsMap[item.id] = ensured
                 }
             }
@@ -50,6 +59,7 @@ fun HomeViewModel.closeEditContainerDialog() {
 }
 
 fun HomeViewModel.saveContainerModel(panel: ContainerModel) {
+    confirmContainerTaskOnSave()
     viewModelScope.launch {
         containerRepository.saveContainer(panel)
         val updatedPanels = containerRepository.getAllContainers().associateBy { it.id }

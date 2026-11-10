@@ -10,6 +10,7 @@ import dev.mnascimentos.aureole.core.data.model.QuickButtonAppearance
 import dev.mnascimentos.aureole.core.data.model.QuickButtonShortcuts
 import dev.mnascimentos.aureole.core.data.model.ScrollOrientation
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.FolderViewIntent
+import dev.mnascimentos.aureole.feature.home.components.onboarding.model.OnboardingActions
 
 data class HomeScreenActions(
     val onWidgetRowHeightChanged: (Dp) -> Unit,
@@ -33,6 +34,7 @@ data class HomeScreenActions(
     val onUninstallAppClick: (AppInfo) -> Unit = {},
     val onOpenFavoritePicker: (String?) -> Unit = {},
     val onDismissFavoritePicker: () -> Unit = {},
+    val onAddFavoritesList: () -> Unit = {},
     val onDismissWidgetPicker: () -> Unit = {},
     val onDismissReleaseNotes: () -> Unit = {},
     val onOpenWidgetPopup: (Int, Float) -> Unit = { _, _ -> },
@@ -111,4 +113,6 @@ data class HomeScreenActions(
     val onRemoveAppFromContainer: (String, String) -> Unit = { _, _ -> },
     val onRemoveAppFromFolder: (String, String) -> Unit = { _, _ -> },
     val onOpenEditFolderForFolder: (AppFolder) -> Unit = {},
+
+    val onboarding: OnboardingActions = OnboardingActions(),
 )

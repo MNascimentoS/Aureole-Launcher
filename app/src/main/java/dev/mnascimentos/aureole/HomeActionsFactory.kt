@@ -31,10 +31,14 @@ import dev.mnascimentos.aureole.feature.home.components.containers.folder.extens
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.extensions.removeAppFromFolder
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.extensions.setAddAppToFolderDialogVisible
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.extensions.setRenameFolderDialogVisible
+import dev.mnascimentos.aureole.feature.home.components.favorites.extensions.addFavoritesList
+import dev.mnascimentos.aureole.feature.home.components.favorites.extensions.dismissFavoritePicker
 import dev.mnascimentos.aureole.feature.home.components.favorites.extensions.setShowFavoritePicker
 import dev.mnascimentos.aureole.feature.home.components.favorites.extensions.toggleFavorite
 import dev.mnascimentos.aureole.feature.home.components.favorites.extensions.updateContainerFavorites
 import dev.mnascimentos.aureole.feature.home.components.favorites.extensions.updateFavoritePackages
+import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.onOnboardingSignal
+import dev.mnascimentos.aureole.feature.home.components.onboarding.model.OnboardingSignal
 import dev.mnascimentos.aureole.feature.home.components.overlays.extensions.closeContainerAppBottomSheet
 import dev.mnascimentos.aureole.feature.home.components.overlays.extensions.closeContainerFolderBottomSheet
 import dev.mnascimentos.aureole.feature.home.components.overlays.extensions.closeFolderAppBottomSheet
@@ -94,6 +98,7 @@ class HomeActionsFactory(
     private val appUpdateManager: AppUpdateManager,
     private val updateActivityResultLauncher: ActivityResultLauncher<IntentSenderRequest>,
     private val cachedAppUpdateInfo: AppUpdateInfo? = null,
+    private val launchDefaultHomeRequest: (Intent) -> Unit = {},
 ) {
     fun createHomeActions(): HomeScreenActions {
         val baseActions = HomeScreenActions(
@@ -119,6 +124,7 @@ class HomeActionsFactory(
             onSetRenameFolderDialogVisible = { viewModel.setRenameFolderDialogVisible(it) },
             onSearchQueryChanged = { viewModel.onSearchQueryChanged(it) },
             onSettingsClick = {
+                viewModel.onOnboardingSignal(OnboardingSignal.SETTINGS_OPENED)
                 val intent = Intent(context, SettingsActivity::class.java)
                 context.startActivity(intent)
             },
@@ -131,7 +137,8 @@ class HomeActionsFactory(
             onAppInfoClick = { app -> IntentUtils.openAppInfo(context, app.packageName) },
             onUninstallAppClick = { app -> IntentUtils.uninstallApp(context, app.packageName) },
             onOpenFavoritePicker = { containerId -> viewModel.setShowFavoritePicker(true, containerId) },
-            onDismissFavoritePicker = { viewModel.setShowFavoritePicker(false) },
+            onDismissFavoritePicker = { viewModel.dismissFavoritePicker() },
+            onAddFavoritesList = { viewModel.addFavoritesList() },
             onDismissWidgetPicker = { viewModel.setShowWidgetPicker(false) },
             onDismissReleaseNotes = { viewModel.dismissReleaseNotes() },
             onOpenWidgetPopup = { id, y -> viewModel.openWidgetPopup(id, y) },
@@ -144,8 +151,9 @@ class HomeActionsFactory(
             onDismissUpdateDialog = { handleDismissUpdateDialog() }
         )
 
-        val gridBase = attachGridActions(baseActions)
-        return gridBase
+        val homeActions = attachGridActions(baseActions)
+        val onboarding = OnboardingActionsFactory(context, viewModel, homeActions, launchDefaultHomeRequest)
+        return homeActions.copy(onboarding = onboarding.createOnboardingActions())
     }
 
     private fun attachGridActions(base: HomeScreenActions): HomeScreenActions {

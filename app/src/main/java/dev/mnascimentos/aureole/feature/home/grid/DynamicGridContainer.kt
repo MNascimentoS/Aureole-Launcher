@@ -269,6 +269,7 @@ private fun GridItemCellBox(config: CellBoxConfig) {
                             LauncherItemType.APPS_LIST -> {
                                 config.actions.onOpenFavoritePicker(item.id)
                             }
+                            LauncherItemType.ALL_APPS_LIST -> Unit
                             LauncherItemType.SHORTCUTS_CONTAINER -> {
                                 config.actions.onOpenEditContainerDialog(item.id)
                             }

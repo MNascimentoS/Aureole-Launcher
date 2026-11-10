@@ -70,7 +70,6 @@ data class WidgetItemActions(
 )
 
 data class PagerContentParams(
-    val showAddButton: Boolean,
     val pageCount: Int,
     val pagerState: PagerState,
     val hasFillMaxSize: Boolean

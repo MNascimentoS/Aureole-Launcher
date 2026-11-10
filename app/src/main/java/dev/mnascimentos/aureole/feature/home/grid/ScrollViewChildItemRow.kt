@@ -282,6 +282,9 @@ private fun handleEditChildClick(
             actions.onOpenFavoritePicker(child.id)
             onDismissRequest()
         }
+        LauncherItemType.ALL_APPS_LIST -> {
+            // No edit action for all apps list
+        }
         LauncherItemType.QUICK_BUTTON -> {
             actions.onOpenQuickButtonSettings(child.id)
             onDismissRequest()
@@ -295,7 +298,7 @@ private fun ChildTypeIcon(type: LauncherItemType?) {
     val iconModifier = Modifier.size(AureoleDS.dimens.iconMedium)
     when (type) {
         LauncherItemType.CLOCK -> AureoleDS.icons.Add(iconModifier)
-        LauncherItemType.APPS_LIST -> AureoleDS.icons.HorizontalContainer(iconModifier)
+        LauncherItemType.APPS_LIST, LauncherItemType.ALL_APPS_LIST -> AureoleDS.icons.HorizontalContainer(iconModifier)
         LauncherItemType.SHORTCUTS_CONTAINER -> AureoleDS.icons.MenuIcon(iconModifier)
         LauncherItemType.WIDGET_LIST -> AureoleDS.icons.Add(iconModifier)
         LauncherItemType.SCROLL_VIEW -> AureoleDS.icons.VerticalContainer(iconModifier)
@@ -310,6 +313,7 @@ private fun getScrollViewChildTitle(type: LauncherItemType?): String {
     return when (type) {
         LauncherItemType.CLOCK -> stringResource(R.string.home_container_add_clock)
         LauncherItemType.APPS_LIST -> stringResource(R.string.home_container_add_apps_list)
+        LauncherItemType.ALL_APPS_LIST -> stringResource(R.string.home_container_add_all_apps_list)
         LauncherItemType.SHORTCUTS_CONTAINER -> stringResource(R.string.home_grid_item_container)
         LauncherItemType.WIDGET_LIST -> stringResource(R.string.home_grid_item_widget_group)
         LauncherItemType.SCROLL_VIEW -> stringResource(R.string.home_container_add_scroll_view)

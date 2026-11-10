@@ -18,27 +18,28 @@ class GridRepository(private val context: Context) {
         get() = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
 
     @Suppress("TooGenericExceptionCaught") // Catching generic exceptions for SharedPreferences parsing
-    fun getGridItems(isLandscape: Boolean = false): List<LauncherItemState> {
+    fun getGridItems(isLandscape: Boolean = false, isLeftHanded: Boolean = false): List<LauncherItemState> {
         val key = if (isLandscape) KEY_LANDSCAPE_GRID_ITEMS else KEY_PORTRAIT_GRID_ITEMS
         var json = prefs.getString(key, null)
         if (json == null && !isLandscape) {
             json = prefs.getString(KEY_GRID_ITEMS, null)
         }
         if (json.isNullOrBlank()) {
-            return GridDefaults.getDefaultGridItems(isLandscape)
+            return GridDefaults.getDefaultGridItems(isLandscape, isLeftHanded)
         }
         return try {
             val type = object : TypeToken<List<LauncherItemState>>() {}.type
             val items: List<LauncherItemState>? = gson.fromJson(json, type)
-            if (items.isNullOrEmpty()) {
-                GridDefaults.getDefaultGridItems(isLandscape)
-            } else {
-                items.filterNotNull().map { item -> sanitizeItem(item) }
-                    .ifEmpty { GridDefaults.getDefaultGridItems(isLandscape) }
+            // A saved empty list is a home the user (or the first run) left empty on purpose.
+            when {
+                items == null -> GridDefaults.getDefaultGridItems(isLandscape, isLeftHanded)
+                items.isEmpty() -> emptyList()
+                else -> items.filterNotNull().map { item -> sanitizeItem(item) }
+                    .ifEmpty { GridDefaults.getDefaultGridItems(isLandscape, isLeftHanded) }
             }
         } catch (e: Exception) {
             Timber.tag(TAG).w(e, "Failed to parse or sanitize grid items JSON")
-            GridDefaults.getDefaultGridItems(isLandscape)
+            GridDefaults.getDefaultGridItems(isLandscape, isLeftHanded)
         }
     }
 
@@ -59,6 +60,9 @@ class GridRepository(private val context: Context) {
         val json = gson.toJson(items)
         prefs.edit { putString(key, json) }
     }
+
+    fun hasSavedLayout(): Boolean =
+        listOf(KEY_GRID_ITEMS, KEY_PORTRAIT_GRID_ITEMS, KEY_LANDSCAPE_GRID_ITEMS).any { prefs.contains(it) }
 
     fun resetToDefault() {
         prefs.edit {

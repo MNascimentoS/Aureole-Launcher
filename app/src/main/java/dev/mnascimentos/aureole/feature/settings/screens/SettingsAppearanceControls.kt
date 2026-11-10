@@ -16,6 +16,8 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import dev.mnascimentos.aureole.R
+import dev.mnascimentos.aureole.composable.sheets.PickFontBottomSheet
+import dev.mnascimentos.aureole.composable.sheets.PickPaletteBottomSheet
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
 import dev.mnascimentos.aureole.core.designsystem.icons.Corners
@@ -25,8 +27,6 @@ import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.settings.components.BlurBottomSheet
 import dev.mnascimentos.aureole.feature.settings.components.PickBorderRadiusBottomSheet
-import dev.mnascimentos.aureole.feature.settings.components.PickFontBottomSheet
-import dev.mnascimentos.aureole.feature.settings.components.PickPaletteBottomSheet
 import dev.mnascimentos.aureole.feature.settings.components.SetBackgroundBottomSheet
 import dev.mnascimentos.aureole.feature.settings.model.AppearanceDialogFlags
 import dev.mnascimentos.aureole.feature.settings.model.SettingsScreenActions

@@ -16,6 +16,7 @@ import dev.mnascimentos.aureole.core.data.repository.GridRepository
 import dev.mnascimentos.aureole.core.data.repository.SettingsRepository
 import dev.mnascimentos.aureole.core.data.repository.WidgetRepository
 import dev.mnascimentos.aureole.feature.home.HomeViewModel
+import dev.mnascimentos.aureole.feature.home.grid.GridDefaults
 import dev.mnascimentos.aureole.feature.home.model.HomeRepositories
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
 import kotlinx.coroutines.Dispatchers
@@ -176,6 +177,27 @@ class HomeViewModelContainerExtTest {
         val state = awaitState { it.containers.containsKey(PANEL_ID) }
         assertFalse(state.containers.containsKey("clock_1"))
         assertNotNull(runBlocking { containerRepository.getContainer(PANEL_ID) })
+    }
+
+    @Test
+    fun `when loading the default layout's container, should create it without a background`() {
+        val defaultId = GridDefaults.CONTAINER_ITEM_ID
+        runBlocking { containerRepository.deleteContainer(defaultId) }
+        viewModel.updateUiState {
+            it.copy(
+                gridItems = listOf(LauncherItemState(id = PANEL_ID, type = LauncherItemType.SHORTCUTS_CONTAINER)),
+                landscapeGridItems = listOf(
+                    LauncherItemState(id = defaultId, type = LauncherItemType.SHORTCUTS_CONTAINER)
+                )
+            )
+        }
+
+        viewModel.loadContainers()
+
+        val state = awaitState { it.containers.containsKey(defaultId) && it.containers.containsKey(PANEL_ID) }
+        assertFalse(state.containers.getValue(defaultId).isBackgroundEnabled)
+        assertTrue(state.containers.getValue(PANEL_ID).isBackgroundEnabled)
+        runBlocking { containerRepository.deleteContainer(defaultId) }
     }
 
     private fun appItem(packageName: String, order: Int) = ContainerItemEntity(

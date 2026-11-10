@@ -32,6 +32,7 @@ import dev.mnascimentos.aureole.core.lifecycle.UpdateLifecycleObserver
 import dev.mnascimentos.aureole.core.lifecycle.WidgetLifecycleObserver
 import dev.mnascimentos.aureole.feature.home.HomeViewModel
 import dev.mnascimentos.aureole.feature.home.MainRoute
+import dev.mnascimentos.aureole.feature.home.components.onboarding.model.isBlocking
 import dev.mnascimentos.aureole.feature.home.extensions.setAllAppsDrawerOpen
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
 import dev.mnascimentos.aureole.feature.home.model.isOverlayActive
@@ -148,6 +149,8 @@ class MainActivity : ComponentActivity() {
             if (wasInBackground) {
                 viewModel.setAllAppsDrawerOpen(false)
                 wasInBackground = false
+            } else if (state.onboarding.isBlocking) {
+                return
             } else if (state.homeButtonOpensAllApps) {
                 viewModel.setAllAppsDrawerOpen(!state.isAllAppsDrawerOpen, fromHomeButton = true)
             } else {

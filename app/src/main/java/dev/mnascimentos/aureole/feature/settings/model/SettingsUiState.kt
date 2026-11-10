@@ -20,7 +20,7 @@ data class SettingsUiState(
     val isContainerEnabled: Boolean = true,
     val isContainerBackgroundEnabled: Boolean = true,
     val isContainerExpandCell: Boolean = false,
-    val isClockBackgroundEnabled: Boolean = true,
+    val isClockBackgroundEnabled: Boolean = false,
     val showContainerAddFolderButton: Boolean = true,
     val containerPosition: String = "Space Between",
     val showFolderLabels: Boolean = false,

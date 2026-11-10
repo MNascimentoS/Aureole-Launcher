@@ -6,6 +6,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.NonRestartableComposable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.AnnotatedString
 import dev.mnascimentos.aureole.core.designsystem.model.AureoleTextFormatParams
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
@@ -49,6 +50,43 @@ fun AureoleText(
         maxLines = format.maxLines,
         minLines = format.minLines,
         onTextLayout = format.onTextLayout,
+        style = format.style ?: AureoleDS.typography.text,
+    )
+}
+
+/**
+ * [AureoleText] for styled text, such as strings with bold spans built with `AnnotatedString.fromHtml`.
+ *
+ * @param text The styled text to be displayed.
+ * @param modifier The modifier to be applied to the layout.
+ * @param color Color to apply to the text.
+ * @param format Grouped text formatting parameters.
+ */
+@NonRestartableComposable
+@Composable
+fun AureoleText(
+    text: AnnotatedString,
+    modifier: Modifier = Modifier,
+    color: Color = Color.Unspecified,
+    format: AureoleTextFormatParams = AureoleTextFormatParams(),
+) {
+    Text(
+        text = text,
+        modifier = modifier,
+        color = color,
+        fontSize = format.fontSize,
+        fontStyle = format.fontStyle,
+        fontWeight = format.fontWeight,
+        fontFamily = format.fontFamily,
+        letterSpacing = format.letterSpacing,
+        textDecoration = format.textDecoration,
+        textAlign = format.textAlign,
+        lineHeight = format.lineHeight,
+        overflow = format.overflow,
+        softWrap = format.softWrap,
+        maxLines = format.maxLines,
+        minLines = format.minLines,
+        onTextLayout = format.onTextLayout ?: {},
         style = format.style ?: AureoleDS.typography.text,
     )
 }

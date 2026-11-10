@@ -5,7 +5,8 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.v2.createComposeRule
-import androidx.compose.ui.test.onNodeWithText
+import androidx.compose.ui.test.onAllNodesWithText
+import androidx.compose.ui.test.onFirst
 import dev.mnascimentos.aureole.composable.favorites.FavoriteAppsDialog
 import dev.mnascimentos.aureole.composable.favorites.model.FavoriteAppsDialogActions
 import dev.mnascimentos.aureole.composable.favorites.model.FavoriteAppsDialogConfig
@@ -45,7 +46,7 @@ class FavoriteAppsDialogTest {
             }
         }
 
-        composeTestRule.onNodeWithText("No favorite app selected.").assertIsDisplayed()
+        composeTestRule.onAllNodesWithText("No favorite app selected.").onFirst().assertIsDisplayed()
     }
 
     @Test
@@ -63,6 +64,6 @@ class FavoriteAppsDialogTest {
             }
         }
 
-        composeTestRule.onNodeWithText("App Favorito 1").assertIsDisplayed()
+        composeTestRule.onAllNodesWithText("App Favorito 1").onFirst().assertIsDisplayed()
     }
 }

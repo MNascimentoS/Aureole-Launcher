@@ -37,6 +37,7 @@ fun EditGridItemDialog(
     val title = when (item.type) {
         LauncherItemType.CLOCK -> stringResource(R.string.home_grid_item_clock)
         LauncherItemType.APPS_LIST -> stringResource(R.string.home_grid_item_favorites)
+        LauncherItemType.ALL_APPS_LIST -> stringResource(R.string.home_container_add_all_apps_list)
         LauncherItemType.SHORTCUTS_CONTAINER -> stringResource(R.string.home_grid_item_shortcuts)
         LauncherItemType.SINGLE_APP_WIDGET -> stringResource(R.string.home_grid_item_widget)
         LauncherItemType.WIDGET_LIST -> stringResource(R.string.home_grid_item_widget_group)

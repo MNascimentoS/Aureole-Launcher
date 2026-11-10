@@ -8,6 +8,7 @@ import com.google.android.play.core.appupdate.AppUpdateInfo
 import com.google.android.play.core.appupdate.AppUpdateOptions
 import com.google.android.play.core.appupdate.testing.FakeAppUpdateManager
 import com.google.android.play.core.install.model.AppUpdateType
+import dev.mnascimentos.aureole.core.data.model.OnboardingStage
 import dev.mnascimentos.aureole.core.data.repository.AppRepository
 import dev.mnascimentos.aureole.core.data.repository.ContainerRepository
 import dev.mnascimentos.aureole.core.data.repository.FavoriteContainerRepository
@@ -16,6 +17,7 @@ import dev.mnascimentos.aureole.core.data.repository.GridRepository
 import dev.mnascimentos.aureole.core.data.repository.SettingsRepository
 import dev.mnascimentos.aureole.core.data.repository.WidgetRepository
 import dev.mnascimentos.aureole.feature.home.HomeViewModel
+import dev.mnascimentos.aureole.feature.home.components.onboarding.model.OnboardingUiState
 import dev.mnascimentos.aureole.feature.home.model.HomeRepositories
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -158,6 +160,17 @@ class MainActivityUpdateExtTest {
         check()
 
         assertTrue(viewModel.uiState.value.showUpdateDownloadedDialog)
+        assertFalse(viewModel.uiState.value.showUpdateAvailableDialog)
+    }
+
+    @Test
+    fun `when the onboarding blocks the home, should not ask the store`() {
+        viewModel.updateUiState { it.copy(onboarding = OnboardingUiState(stage = OnboardingStage.WELCOME)) }
+        manager.setUpdateAvailable(NEW_VERSION, AppUpdateType.FLEXIBLE)
+
+        check()
+
+        assertNull(retrieved)
         assertFalse(viewModel.uiState.value.showUpdateAvailableDialog)
     }
 

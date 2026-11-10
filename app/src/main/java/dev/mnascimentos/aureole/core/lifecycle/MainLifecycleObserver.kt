@@ -8,6 +8,9 @@ import androidx.core.content.pm.PackageInfoCompat
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import dev.mnascimentos.aureole.feature.home.HomeViewModel
+import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.onHomeHidden
+import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.onReturnedToHome
+import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.syncOnboarding
 import dev.mnascimentos.aureole.feature.home.components.overlays.extensions.checkReleaseNotes
 import dev.mnascimentos.aureole.feature.home.grid.extensions.loadGridItems
 
@@ -24,8 +27,15 @@ class MainLifecycleObserver(
         viewModel.loadGridItems(isLandscape = isLandscape)
         val versionCode = getAppVersionCode(context)
         val versionName = getAppVersionName(context)
+        // Before release notes: they stay hidden while the onboarding runs.
+        viewModel.syncOnboarding()
+        viewModel.onReturnedToHome()
         viewModel.checkReleaseNotes(versionCode, versionName)
         onResumed()
+    }
+
+    override fun onPause(owner: LifecycleOwner) {
+        viewModel.onHomeHidden()
     }
 }
 

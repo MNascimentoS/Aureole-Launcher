@@ -119,14 +119,19 @@ class ContainerRepository(
         ).also { it.quickButtonModel = parsedModel }
     }
 
-    suspend fun ensureContainerExists(panelId: String, defaultTitle: String = "Painel Lateral"): ContainerModel =
+    suspend fun ensureContainerExists(
+        panelId: String,
+        defaultTitle: String = "Painel Lateral",
+        isBackgroundEnabled: Boolean = true
+    ): ContainerModel =
         withContext(Dispatchers.IO) {
             val existing = getContainer(panelId)
             if (existing != null) return@withContext existing
 
             val newEntity = ContainerEntity(
                 id = panelId,
-                title = defaultTitle
+                title = defaultTitle,
+                isBackgroundEnabled = isBackgroundEnabled
             )
             containerDao.insertOrUpdateContainer(newEntity)
 

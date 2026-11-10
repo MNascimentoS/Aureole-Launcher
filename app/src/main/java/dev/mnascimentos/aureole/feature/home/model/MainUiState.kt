@@ -8,6 +8,8 @@ import dev.mnascimentos.aureole.core.data.model.ContainerModel
 import dev.mnascimentos.aureole.core.data.model.LauncherItemState
 import dev.mnascimentos.aureole.core.data.model.QuickButtonModel
 import dev.mnascimentos.aureole.core.data.repository.SettingsRepository
+import dev.mnascimentos.aureole.feature.home.components.onboarding.model.OnboardingUiState
+import dev.mnascimentos.aureole.feature.home.components.onboarding.model.blocksHome
 import dev.mnascimentos.aureole.feature.home.grid.model.GridLimits
 
 data class MainUiState(
@@ -32,7 +34,7 @@ data class MainUiState(
     val isContainerEnabled: Boolean = true,
     val isContainerBackgroundEnabled: Boolean = true,
     val isContainerExpandCell: Boolean = false,
-    val isClockBackgroundEnabled: Boolean = true,
+    val isClockBackgroundEnabled: Boolean = false,
     val clockStyle: String = SettingsRepository.DEFAULT_CLOCK_STYLE,
     val clockCustomGreeting: String = "",
     val clockAlignment: String = SettingsRepository.DEFAULT_CLOCK_ALIGNMENT,
@@ -74,6 +76,8 @@ data class MainUiState(
     val favoriteAppPackages: List<String> = emptyList(),
     val containerFavorites: Map<String, List<String>> = emptyMap(),
     val activeFavoriteContainerId: String? = null,
+    /** Favorites list the Customize sheet just placed; it leaves the home if the picker closes empty. */
+    val customizeFavoritesListId: String? = null,
     val folders: List<AppFolder> = emptyList(),
     val favoriteApps: List<AppInfo> = emptyList(),
 
@@ -129,7 +133,10 @@ data class MainUiState(
     val activeContainerFolderBottomSheet: ContainerFolderBottomSheetState? = null,
     val activeFolderAppBottomSheet: FolderAppBottomSheetState? = null,
     val activeWidgetStackBottomSheet: WidgetStackBottomSheetState? = null,
-    val widgetStackDots: Map<String, Boolean> = emptyMap()
+    val widgetStackDots: Map<String, Boolean> = emptyMap(),
+
+    // First user experience
+    val onboarding: OnboardingUiState = OnboardingUiState()
 )
 
 data class ContainerAppBottomSheetState(
@@ -158,6 +165,14 @@ fun MainUiState.getWidgetIdsForStack(stackId: String): List<Int> {
 }
 
 val MainUiState.isOverlayActive: Boolean
+    get() = isHomeOverlayActive || onboarding.blocksHome
+
+/** Home layers other than the onboarding, which must never cover them. */
+/** The first app sync has not delivered any app yet: app lists show their skeleton. */
+val MainUiState.isAppsLoading: Boolean
+    get() = isLoading && apps.isEmpty()
+
+val MainUiState.isHomeOverlayActive: Boolean
     get() {
         val isFolderActive = activeFolder != null ||
             isCreateFolderDialogVisible ||

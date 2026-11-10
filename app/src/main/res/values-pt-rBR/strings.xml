@@ -111,10 +111,13 @@
     <string name="home_apps_search_placeholder">Buscar aplicativos</string>
 
     <!-- Overlays & Customization -->
+    <string name="home_apps_loading">Carregando seus apps…</string>
     <string name="home_customize_title">Personalizar</string>
     <string name="home_customize_add_clock">Adicionar relógio</string>
+    <string name="home_customize_add_favorites">Adicionar favoritos</string>
+    <string name="home_customize_add_all_apps">Adicionar todos os apps</string>
     <string name="home_customize_add_container">Adicionar container</string>
-    <string name="home_customize_add_scrollview">Adicionar container rolável</string>
+    <string name="home_customize_add_scrollview">Adicionar grupo rolável</string>
     <string name="home_customize_add_quick_button">Adicionar botão rápido</string>
     <string name="home_customize_add_widget_group">Adicionar grupo de widgets</string>
     <string name="home_customize_adjust_layout">Ajustar layout</string>
@@ -257,13 +260,14 @@
 
     <!-- Grid & Containers -->
     <string name="home_container_add_title">Adicionar Container</string>
-    <string name="home_container_add_nested_title">Adicionar ao Scroll View</string>
+    <string name="home_container_add_nested_title">Adicionar ao grupo rolável</string>
     <string name="home_container_add_clock">Relógio</string>
-    <string name="home_container_add_apps_list">Lista de Aplicativos</string>
+    <string name="home_container_add_apps_list">Lista de Apps (Favoritos)</string>
+    <string name="home_container_add_all_apps_list">Lista de Todos os Apps</string>
     <string name="home_container_add_shortcuts_container">Container</string>
     <string name="home_container_add_widget_list">Grupo de Widgets do Android</string>
     <string name="home_container_add_quick_button">Botão Rápido</string>
-    <string name="home_container_add_scroll_view">Container Scroll View</string>
+    <string name="home_container_add_scroll_view">Grupo rolável</string>
 
     <string name="home_container_edit_scroll_orientation">Orientação do Scroll</string>
     <string name="home_container_edit_vertical">Vertical</string>
@@ -314,7 +318,7 @@
     <string name="home_grid_item_shortcuts">Atalhos</string>
     <string name="home_grid_item_widget">Widget</string>
     <string name="home_grid_item_widget_group">Grupo de Widgets</string>
-    <string name="home_grid_item_scroll_view">Componente Rolar</string>
+    <string name="home_grid_item_scroll_view">Grupo rolável</string>
     <string name="home_grid_item_quick_button">Botão Rápido</string>
     <string name="home_grid_item_container">Container</string>
     <string name="home_grid_config_title">Configurar %1$s</string>
@@ -330,4 +334,51 @@
     <string name="home_grid_scroll_component">Componente</string>
     <string name="home_quickbutton_open_app_title">Abrir App</string>
 
+    <!-- First user experience -->
+    <string name="home_onboarding_welcome_title">Bem-vindo ao Aureole</string>
+    <string name="home_onboarding_welcome_subtitle">Uma tela inicial leve, bonita e do seu jeito. Leva menos de um minuto para começar.</string>
+    <string name="home_onboarding_welcome_start">Começar</string>
+    <string name="home_onboarding_welcome_skip">Pular introdução</string>
+    <string name="home_onboarding_default_title">Faça do Aureole sua casa</string>
+    <string name="home_onboarding_default_body">Para o botão Início abrir o Aureole, escolha-o como app de tela inicial. Você pode trocar quando quiser.</string>
+    <string name="home_onboarding_default_confirm">Definir como tela inicial</string>
+    <string name="home_onboarding_default_later">Agora não</string>
+    <string name="home_onboarding_default_open_settings">Abrir configurações do sistema</string>
+    <string name="home_onboarding_default_success">Pronto! O Aureole agora é sua tela inicial.</string>
+    <string name="home_onboarding_coach_skip">Pular</string>
+    <string name="home_onboarding_coach_show_me">Mostrar para mim</string>
+    <string name="home_onboarding_coach_success">Isso aí!</string>
+    <string name="home_onboarding_coach_apps_title">Deslize para cima</string>
+    <string name="home_onboarding_coach_apps_body">para ver todos os seus apps. O botão Início também abre e fecha a lista.</string>
+    <string name="home_onboarding_coach_apps_done">Seus apps estão aqui. Toque fora para fechar.</string>
+    <string name="home_onboarding_coach_scrub_title_right">Deslize na borda direita</string>
+    <string name="home_onboarding_coach_scrub_title_left">Deslize na borda esquerda</string>
+    <string name="home_onboarding_coach_scrub_body">e desça o dedo para pular direto para uma letra.</string>
+    <string name="home_onboarding_coach_scrub_done">Rápido, né? Solte para fechar.</string>
+    <string name="home_onboarding_coach_customize_title">Toque e segure</string>
+    <string name="home_onboarding_coach_customize_body">em um espaço vazio da tela para personalizar o que aparece nela.</string>
+    <string name="home_onboarding_coach_customize_done">É aqui que você monta sua tela.</string>
+    <string name="home_onboarding_checklist_title">Primeiros passos</string>
+    <string name="home_onboarding_checklist_progress">%1$d de %2$d concluídos</string>
+    <string name="home_onboarding_checklist_pill">%1$d/%2$d primeiros passos</string>
+    <string name="home_onboarding_checklist_minimize">Minimizar</string>
+    <string name="home_onboarding_checklist_dismiss">Não mostrar mais</string>
+    <string name="home_onboarding_checklist_dismissed">Você pode rever em Configurações › Avançado.</string>
+    <string name="home_onboarding_task_default_home">Definir como &lt;b&gt;tela inicial&lt;/b&gt;</string>
+    <string name="home_onboarding_task_palette">Escolha uma &lt;b&gt;paleta de cores&lt;/b&gt;</string>
+    <string name="home_onboarding_task_font">Escolha uma &lt;b&gt;fonte&lt;/b&gt;</string>
+    <string name="home_onboarding_task_clock">Adicione um &lt;b&gt;relógio&lt;/b&gt;</string>
+    <string name="home_onboarding_edit_hint">Arraste para mover, puxe a borda para redimensionar.</string>
+    <string name="home_onboarding_edit_save">Salvar</string>
+    <string name="home_onboarding_task_apps">Escolha seus &lt;b&gt;apps&lt;/b&gt;</string>
+    <string name="home_onboarding_task_container">Preencha o &lt;b&gt;container&lt;/b&gt;</string>
+    <string name="home_onboarding_task_widget">Adicione &lt;b&gt;widgets&lt;/b&gt;</string>
+    <string name="home_onboarding_task_settings">Explore mais &lt;b&gt;ajustes&lt;/b&gt;</string>
+    <string name="home_onboarding_picker_hint">Toque para ver sua tela mudar na hora.</string>
+    <string name="home_onboarding_picker_done">Ficou bom</string>
+    <string name="home_onboarding_done_title">Tudo pronto</string>
+    <string name="home_onboarding_done_subtitle">Seu Aureole está brilhando. Bom proveito!</string>
+    <string name="home_onboarding_task_done_a11y">%1$s, concluído</string>
+    <string name="home_onboarding_task_pending_a11y">%1$s, pendente</string>
+    <string name="settings_advanced_replay_onboarding">Rever boas-vindas</string>
 </resources>

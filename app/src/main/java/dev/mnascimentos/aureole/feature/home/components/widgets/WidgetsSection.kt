@@ -11,10 +11,9 @@ import androidx.compose.foundation.gestures.waitForUpOrCancellation
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -62,7 +61,6 @@ fun StackedWidgetSection(
 ) {
     val uiState = LocalHomeUiState.current
     val widgetIds = uiState.getWidgetIdsForStack(stackId)
-    val showAddButton = false
     val pageCount = widgetIds.size
     val pagerState = rememberPagerState(pageCount = { pageCount })
 
@@ -80,7 +78,6 @@ fun StackedWidgetSection(
                 appWidgetHost = appWidgetHost,
                 stackId = stackId,
                 params = PagerContentParams(
-                    showAddButton = showAddButton,
                     pageCount = pageCount,
                     pagerState = pagerState,
                     hasFillMaxSize = true
@@ -114,33 +111,27 @@ private fun StackedWidgetPagerContent(
     val uiState = LocalHomeUiState.current
     val actions = LocalHomeActions.current
     val pageCount = params.pageCount
-    val showAddButton = params.showAddButton
 
     if (pageCount > 0) {
         HorizontalPager(
             state = params.pagerState,
             modifier = modifier
         ) { page ->
-            if (page < widgetIds.size) {
-                val widgetId = widgetIds[page]
-                WidgetHostItem(
-                    widgetId = widgetId,
-                    stackId = stackId,
-                    appWidgetHost = appWidgetHost,
-                    modifier = Modifier.fillMaxSize()
-                )
-            } else if (showAddButton) {
-                AddWidgetButton(
-                    onClick = { actions.onAddWidgetClick(stackId) },
-                    modifier = Modifier.fillMaxSize(),
-                    hazeState = config.hazeState,
-                    isHazeEnabled = uiState.isHazeEnabled,
-                    hazeOpacity = uiState.hazeOpacity
-                )
-            }
+            WidgetHostItem(
+                widgetId = widgetIds[page],
+                stackId = stackId,
+                appWidgetHost = appWidgetHost,
+                modifier = Modifier.fillMaxSize()
+            )
         }
     } else {
-        Spacer(modifier = modifier.height(config.currentHeightDp))
+        AddWidgetButton(
+            onClick = { actions.onAddWidgetClick(stackId) },
+            modifier = modifier.heightIn(min = config.currentHeightDp),
+            hazeState = config.hazeState,
+            isHazeEnabled = uiState.isHazeEnabled,
+            hazeOpacity = uiState.hazeOpacity
+        )
     }
 }
 

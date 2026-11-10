@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
@@ -19,7 +18,6 @@ import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
@@ -147,41 +145,37 @@ private fun BoxScope.HomeScreenBody(
             hazeState = config.hazeState
         )
 
-        if (!config.uiState.isLoading) {
-            MainHomeLayout(
-                appWidgetHost = config.appWidgetHost ?: AppWidgetHost(LocalContext.current, DEFAULT_APP_WIDGET_HOST_ID),
-                currentHeightPx = config.currentHeightPx,
-                favListState = config.favListState,
-                hazeState = config.hazeState,
-            )
-        }
+        // No global spinner: the grid comes from preferences at once, and app lists show their own
+        // skeleton until the first app sync lands (FUE-24).
+        MainHomeLayout(
+            appWidgetHost = config.appWidgetHost ?: AppWidgetHost(LocalContext.current, DEFAULT_APP_WIDGET_HOST_ID),
+            currentHeightPx = config.currentHeightPx,
+            favListState = config.favListState,
+            hazeState = config.hazeState,
+        )
     }
 
-    if (config.uiState.isLoading) {
-        CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
-    } else {
-        val overlaysConfig = HomeOverlaysConfig(
-            uiState = config.uiState,
-            actions = config.actions,
-            listState = config.listState,
-            hazeState = config.hazeState,
-            externalTouchY = config.externalTouchY,
-            coroutineScope = config.coroutineScope,
-            screenHeightPx = config.screenHeightPx,
-            appWidgetHost = config.appWidgetHost,
-            onExternalTouchYReset = config.onExternalTouchYReset
-        )
+    val overlaysConfig = HomeOverlaysConfig(
+        uiState = config.uiState,
+        actions = config.actions,
+        listState = config.listState,
+        hazeState = config.hazeState,
+        externalTouchY = config.externalTouchY,
+        coroutineScope = config.coroutineScope,
+        screenHeightPx = config.screenHeightPx,
+        appWidgetHost = config.appWidgetHost,
+        onExternalTouchYReset = config.onExternalTouchYReset
+    )
 
-        HomeOverlaysContent(overlaysConfig)
+    HomeOverlaysContent(overlaysConfig)
 
-        HomeScreenFolderOverlays(
-            screenHeightPx = config.screenHeightPx,
-            hazeState = config.hazeState,
-            appWidgetHost = config.appWidgetHost
-        )
+    HomeScreenFolderOverlays(
+        screenHeightPx = config.screenHeightPx,
+        hazeState = config.hazeState,
+        appWidgetHost = config.appWidgetHost
+    )
 
-        HomeOverlaysDialogsAndErrors(config = overlaysConfig)
-    }
+    HomeOverlaysDialogsAndErrors(config = overlaysConfig)
 }
 
 @Suppress("LongMethod") // Root composable of home feature managing scaffolding and gesture states

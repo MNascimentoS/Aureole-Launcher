@@ -1,32 +1,23 @@
 package dev.mnascimentos.aureole.composable.favorites
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Button
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.semantics.Role
-import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.text.font.FontWeight
 import dev.mnascimentos.aureole.R
+import dev.mnascimentos.aureole.composable.appitem.AppListSkeletonComponent
 import dev.mnascimentos.aureole.composable.favorites.model.FavoriteAppsBodyParams
 import dev.mnascimentos.aureole.composable.favorites.model.FavoriteAppsDialogActions
 import dev.mnascimentos.aureole.composable.favorites.model.FavoriteAppsDialogConfig
@@ -34,8 +25,6 @@ import dev.mnascimentos.aureole.composable.favorites.model.FavoriteAppsScreenMod
 import dev.mnascimentos.aureole.composable.favorites.model.FavoriteSectionParams
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
-import dev.mnascimentos.aureole.core.designsystem.icons.Edit
-import dev.mnascimentos.aureole.core.designsystem.icons.Star
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
@@ -60,124 +49,11 @@ internal fun FavoriteAppsBottomBar(
 
 @Composable
 internal fun FavoriteAppsSheetContent(
-    currentMode: FavoriteAppsScreenMode,
-    config: FavoriteAppsDialogConfig,
-    actions: FavoriteAppsDialogActions,
-    onEditShortcutsClick: () -> Unit,
-    onAppearanceClick: () -> Unit
-) {
-    when (currentMode) {
-        FavoriteAppsScreenMode.MAIN -> {
-            MainFavoritesContent(
-                onEditShortcutsClick = onEditShortcutsClick,
-                onAppearanceClick = onAppearanceClick
-            )
-        }
-        FavoriteAppsScreenMode.APPEARANCE -> {
-            AppearanceFavoritesContent(
-                config = config,
-                actions = actions
-            )
-        }
-        FavoriteAppsScreenMode.EDIT_SHORTCUTS -> {
-            FavoriteAppsDialogContent(config = config, actions = actions)
-        }
-    }
-}
-
-@Composable
-private fun MainFavoritesContent(
-    onEditShortcutsClick: () -> Unit,
-    onAppearanceClick: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    Column(modifier = modifier) {
-        MainFavoritesEditShortcutsRow(onClick = onEditShortcutsClick)
-        MainFavoritesAppearanceRow(onClick = onAppearanceClick)
-    }
-}
-
-@Composable
-private fun MainFavoritesEditShortcutsRow(onClick: () -> Unit) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .defaultMinSize(minHeight = AureoleDS.dimens.minTouchTarget)
-            .clickable(
-                role = Role.Button,
-                onClick = onClick
-            )
-            .semantics(mergeDescendants = true) {}
-            .padding(vertical = AureoleDS.dimens.small),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        AureoleDS.icons.Star(
-            tint = AureoleDS.colors.onSurfaceMedium,
-            modifier = Modifier.size(AureoleDS.dimens.iconLarge)
-        )
-        Spacer(modifier = Modifier.width(AureoleDS.dimens.medium))
-        Column(modifier = Modifier.weight(1f)) {
-            Text(
-                text = stringResource(R.string.home_favorites_edit_shortcuts),
-                style = AureoleDS.typography.titleMedium,
-                fontWeight = FontWeight.Bold,
-                color = AureoleDS.colors.onSurfaceHigh
-            )
-            Text(
-                text = stringResource(R.string.home_favorites_manage_apps_order),
-                style = AureoleDS.typography.bodySmall,
-                color = AureoleDS.colors.onSurfaceMedium
-            )
-        }
-    }
-}
-
-@Composable
-private fun MainFavoritesAppearanceRow(onClick: () -> Unit) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .defaultMinSize(minHeight = AureoleDS.dimens.minTouchTarget)
-            .clickable(
-                role = Role.Button,
-                onClick = onClick
-            )
-            .semantics(mergeDescendants = true) {}
-            .padding(vertical = AureoleDS.dimens.small),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        AureoleDS.icons.Edit(
-            tint = AureoleDS.colors.onSurfaceMedium,
-            modifier = Modifier.size(AureoleDS.dimens.iconLarge)
-        )
-        Spacer(modifier = Modifier.width(AureoleDS.dimens.medium))
-        Column(modifier = Modifier.weight(1f)) {
-            Text(
-                text = stringResource(R.string.home_container_edit_appearance),
-                style = AureoleDS.typography.titleMedium,
-                fontWeight = FontWeight.Bold,
-                color = AureoleDS.colors.onSurfaceHigh
-            )
-            Text(
-                text = stringResource(R.string.home_favorites_appearance_desc),
-                style = AureoleDS.typography.bodySmall,
-                color = AureoleDS.colors.onSurfaceMedium
-            )
-        }
-    }
-}
-
-@Composable
-private fun AppearanceFavoritesContent(
     config: FavoriteAppsDialogConfig,
     actions: FavoriteAppsDialogActions
 ) {
-    FavoriteAppsShowAllSwitchRow(
-        showAllAppsOnHome = config.showAllAppsOnHome,
-        onToggleShowAllAppsOnHome = actions.onToggleShowAllAppsOnHome
-    )
+    FavoriteAppsDialogContent(config = config, actions = actions)
 }
-
 private const val SEARCH_DEBOUNCE_DELAY_MS = 300L
 
 @Composable
@@ -263,6 +139,11 @@ private fun FavoriteAppsDialogBody(
 
         Spacer(modifier = Modifier.height(AureoleDS.dimens.small))
 
+        if (config.isLoading) {
+            AppListSkeletonComponent(modifier = Modifier.weight(1f))
+            return@Column
+        }
+
         LazyColumn(
             modifier = Modifier
                 .weight(1f)
@@ -311,14 +192,11 @@ private fun moveFavoriteItem(
 private fun FavoriteAppsSheetContentMainPreview() {
     AureoleLauncherTheme {
         FavoriteAppsSheetContent(
-            currentMode = FavoriteAppsScreenMode.MAIN,
             config = FavoriteAppsDialogConfig(
                 allApps = emptyList(),
                 favoriteAppPackages = emptyList()
             ),
-            actions = FavoriteAppsDialogActions(),
-            onEditShortcutsClick = {},
-            onAppearanceClick = {}
+            actions = FavoriteAppsDialogActions()
         )
     }
 }
@@ -328,15 +206,11 @@ private fun FavoriteAppsSheetContentMainPreview() {
 private fun FavoriteAppsSheetContentAppearancePreview() {
     AureoleLauncherTheme {
         FavoriteAppsSheetContent(
-            currentMode = FavoriteAppsScreenMode.APPEARANCE,
             config = FavoriteAppsDialogConfig(
                 allApps = emptyList(),
-                favoriteAppPackages = emptyList(),
-                showAllAppsOnHome = true
+                favoriteAppPackages = emptyList()
             ),
-            actions = FavoriteAppsDialogActions(),
-            onEditShortcutsClick = {},
-            onAppearanceClick = {}
+            actions = FavoriteAppsDialogActions()
         )
     }
 }
@@ -346,14 +220,11 @@ private fun FavoriteAppsSheetContentAppearancePreview() {
 private fun FavoriteAppsSheetContentEditShortcutsPreview() {
     AureoleLauncherTheme {
         FavoriteAppsSheetContent(
-            currentMode = FavoriteAppsScreenMode.EDIT_SHORTCUTS,
             config = FavoriteAppsDialogConfig(
                 allApps = emptyList(),
                 favoriteAppPackages = emptyList()
             ),
-            actions = FavoriteAppsDialogActions(),
-            onEditShortcutsClick = {},
-            onAppearanceClick = {}
+            actions = FavoriteAppsDialogActions()
         )
     }
 }

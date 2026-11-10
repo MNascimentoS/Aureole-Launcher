@@ -49,11 +49,11 @@ import dev.mnascimentos.aureole.feature.home.model.MainUiState
 import kotlin.math.exp
 import kotlin.math.roundToInt
 
-private const val SCRUBBER_HEIGHT_FRACTION = 0.55f
 private const val GAUSSIAN_HALF_FACTOR = 0.5f
 
 private const val SCRUBBER_ANIMATION_DURATION = 150
 private const val INACTIVE_LETTER_ALPHA = 0.6f
+private const val HINT_ALPHA = 0.35f
 
 @Composable
 fun CurvedAlphabetScrubber(
@@ -95,7 +95,7 @@ private fun ScrubberContainer(
     var selectedIndex by remember { mutableIntStateOf(-1) }
 
     val scrubberAlpha by animateFloatAsState(
-        targetValue = if (isDragging || options.isAlwaysVisible) 1f else 0f,
+        targetValue = targetScrubberAlpha(isDragging, options),
         animationSpec = tween(durationMillis = SCRUBBER_ANIMATION_DURATION),
         label = "scrubberAlpha"
     )
@@ -156,6 +156,13 @@ private fun ScrubberContainer(
     }
 }
 
+/** Full while used, faint while the onboarding hints at it, hidden otherwise. */
+private fun targetScrubberAlpha(isDragging: Boolean, options: ScrubberOptions): Float = when {
+    isDragging || options.isAlwaysVisible -> 1f
+    options.isHintVisible -> HINT_ALPHA
+    else -> 0f
+}
+
 @Composable
 @ReadOnlyComposable
 private fun Modifier.scrubberBaseModifier(
@@ -164,7 +171,7 @@ private fun Modifier.scrubberBaseModifier(
 ): Modifier {
     val dimens = AureoleDS.dimens
     return this
-        .fillMaxHeight(SCRUBBER_HEIGHT_FRACTION)
+        .fillMaxHeight(ScrubberDimensions.SCRUBBER_HEIGHT_FRACTION)
         .padding(
             top = dimens.zero,
             bottom = ScrubberDimensions.PaddingBottom,

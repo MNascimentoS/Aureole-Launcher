@@ -73,6 +73,20 @@ fun HomeViewModel.addWidgetId(
     widgetId: Int,
     targetStackId: String? = null
 ) {
+    val isSingleWidget = uiState.value.isAddingSingleWidget &&
+        (targetStackId ?: uiState.value.targetWidgetStackId) == null
+    if (isSingleWidget) {
+        addGridItem(GridItemSpec(type = LauncherItemType.SINGLE_APP_WIDGET, widgetId = widgetId))
+    } else {
+        addWidgetToStack(widgetId, targetStackId)
+    }
+    setIsAddingSingleWidget(false)
+}
+
+private fun HomeViewModel.addWidgetToStack(
+    widgetId: Int,
+    targetStackId: String?
+) {
     val stackId = resolveTargetStackId(targetStackId)
     val currentMap = uiState.value.widgetStacks
     val currentList = currentMap[stackId] ?: uiState.value.getWidgetIdsForStack(stackId)
@@ -102,7 +116,6 @@ fun HomeViewModel.addWidgetId(
         addGridItem(GridItemSpec(type = LauncherItemType.WIDGET_LIST))
         dismissGridError()
     }
-    setIsAddingSingleWidget(false)
 }
 
 fun HomeViewModel.removeWidgetId(

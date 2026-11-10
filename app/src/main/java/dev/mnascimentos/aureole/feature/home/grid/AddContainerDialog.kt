@@ -81,6 +81,11 @@ private fun AddContainerOptionList(
             icon = { m -> AureoleDS.icons.HorizontalContainer(m) },
             onClick = { onSelectType(LauncherItemType.APPS_LIST) }
         )
+        AddContainerOptionItem(
+            title = stringResource(R.string.home_container_add_all_apps_list),
+            icon = { m -> AureoleDS.icons.HorizontalContainer(m) },
+            onClick = { onSelectType(LauncherItemType.ALL_APPS_LIST) }
+        )
         if (!isNested) {
             AddContainerOptionItem(
                 title = stringResource(R.string.home_container_add_shortcuts_container),

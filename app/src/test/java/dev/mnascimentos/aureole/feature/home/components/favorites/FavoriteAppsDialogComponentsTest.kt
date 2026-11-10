@@ -10,8 +10,6 @@ import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import dev.mnascimentos.aureole.composable.favorites.FavoriteAppRowActionButtons
 import dev.mnascimentos.aureole.composable.favorites.FavoriteAppRowInfo
-import dev.mnascimentos.aureole.composable.favorites.FavoriteAppsDialogHeader
-import dev.mnascimentos.aureole.composable.favorites.FavoriteAppsShowAllSwitchRow
 import dev.mnascimentos.aureole.composable.favorites.RemainingAppRow
 import dev.mnascimentos.aureole.composable.favorites.model.FavoriteAppRowParams
 import dev.mnascimentos.aureole.core.data.model.AppInfo
@@ -34,33 +32,6 @@ class FavoriteAppsDialogComponentsTest {
         componentName = ComponentName(pkg, "MainActivity"),
         icon = ColorDrawable(Color.BLUE)
     )
-
-    @Test
-    fun `when rendering FavoriteAppsDialogHeader, should display title`() {
-        composeTestRule.setContent {
-            AureoleLauncherTheme {
-                FavoriteAppsDialogHeader()
-            }
-        }
-
-        composeTestRule.onNodeWithText("Apps List").assertIsDisplayed()
-    }
-
-    @Test
-    fun `when rendering FavoriteAppsShowAllSwitchRow, should display text and toggle switch`() {
-        var toggled = false
-        composeTestRule.setContent {
-            AureoleLauncherTheme {
-                FavoriteAppsShowAllSwitchRow(
-                    showAllAppsOnHome = true,
-                    onToggleShowAllAppsOnHome = { toggled = true }
-                )
-            }
-        }
-
-        composeTestRule.onNodeWithText("Show all apps on Home").assertIsDisplayed()
-        composeTestRule.onNodeWithText("If disabled, shows only favorited apps").assertIsDisplayed()
-    }
 
     @Test
     fun `when rendering FavoriteAppRowInfo, should display app label`() {
