@@ -1,7 +1,6 @@
 package dev.mnascimentos.aureole.feature.home.components.containers.folder
 
 import android.content.ComponentName
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -12,7 +11,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.windowInsetsPadding
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
@@ -34,8 +32,6 @@ import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
-import dev.mnascimentos.aureole.feature.home.components.containers.folder.extensions.moveDown
-import dev.mnascimentos.aureole.feature.home.components.containers.folder.extensions.moveUp
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.extensions.searchFolderApps
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.extensions.selectedTrayApps
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.extensions.toggleBestSearchResult
@@ -44,7 +40,7 @@ import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.FolderAppPickerFooterActions
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.FolderAppPickerFooterParams
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.FolderPickerMetrics
-import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.SelectedFolderAppSectionParams
+import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.sortedForPickerGrid
 import dev.mnascimentos.aureole.feature.home.model.LocalHomeUiState
 import kotlinx.coroutines.delay
 
@@ -143,8 +139,7 @@ private fun FolderAppPickerDialogContent(
 
     val remainingApps = remember(allApps, selectedPackages.toList()) {
         val selectedSet = selectedPackages.toSet()
-        allApps.filter { it.packageName !in selectedSet }
-            .sortedBy { it.label.lowercase() }
+        sortedForPickerGrid(allApps.filter { it.packageName !in selectedSet }) { it.label }
     }
 
     val sortedApps = remember(allApps) { allApps.sortedBy { it.label.lowercase() } }
@@ -195,7 +190,7 @@ internal fun FolderAppPickerDialogBody(
                 modifier = Modifier.weight(1f)
             )
         } else {
-            FolderAppPickerBrowseList(params = params, onToggleSelect = onToggleSelect, modifier = Modifier.weight(1f))
+            FolderAppPickerBrowseGrid(params = params, onToggleSelect = onToggleSelect, modifier = Modifier.weight(1f))
         }
 
         Spacer(modifier = Modifier.height(AureoleDS.dimens.small))
@@ -213,37 +208,6 @@ internal fun FolderAppPickerDialogBody(
                 onDismiss = onDismiss,
                 onSave = { onSave(selectedPackages.toList()) }
             )
-        )
-    }
-}
-
-/** Selected apps (with reorder arrows) followed by the remaining apps. */
-@Composable
-private fun FolderAppPickerBrowseList(
-    params: FolderAppPickerBodyParams,
-    onToggleSelect: (String) -> Unit,
-    modifier: Modifier = Modifier
-) {
-    val selectedPackages = params.selectedPackages
-    LazyColumn(
-        modifier = modifier.fillMaxWidth(),
-        verticalArrangement = Arrangement.spacedBy(AureoleDS.dimens.xxSmall)
-    ) {
-        selectedFolderAppSection(
-            params = SelectedFolderAppSectionParams(
-                filteredSelected = params.filteredSelected,
-                searchQuery = params.searchQuery,
-                totalSelectedCount = selectedPackages.size,
-                onMoveUp = { index -> selectedPackages.moveUp(index) },
-                onMoveDown = { index -> selectedPackages.moveDown(index) },
-                onToggleSelect = onToggleSelect
-            )
-        )
-
-        remainingFolderAppSection(
-            filteredRemaining = params.filteredRemaining,
-            searchQuery = params.searchQuery,
-            onToggleSelect = onToggleSelect
         )
     }
 }

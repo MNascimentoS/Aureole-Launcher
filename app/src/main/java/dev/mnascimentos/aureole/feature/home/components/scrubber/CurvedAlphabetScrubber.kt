@@ -6,6 +6,7 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.offset
@@ -134,15 +135,17 @@ private fun ScrubberContainer(
         }
     )
 
-    val baseModifier = modifier.scrubberBaseModifier(uiState.isLeftHandedMode) { height ->
+    val baseModifier = modifier.scrubberBaseModifier(uiState.isLeftHandedMode, options) { height ->
         containerHeightPx = height
     }
 
-    Box(modifier = baseModifier.then(gestureModifier)) {
-        if (containerHeightPx > 0f) {
+    // The constraints already hold the height on the first frame; the measured one is the fallback.
+    BoxWithConstraints(modifier = baseModifier.then(gestureModifier)) {
+        val heightPx = if (constraints.hasBoundedHeight) constraints.maxHeight.toFloat() else containerHeightPx
+        if (heightPx > 0f) {
             ScrubberContent(
                 alphabet = alphabet,
-                containerHeightPx = containerHeightPx,
+                containerHeightPx = heightPx,
                 density = density,
                 params = ScrubberRenderParams(
                     touchYPx = touchYPx,
@@ -167,14 +170,15 @@ private fun targetScrubberAlpha(isDragging: Boolean, options: ScrubberOptions): 
 @ReadOnlyComposable
 private fun Modifier.scrubberBaseModifier(
     isLeftHandedMode: Boolean,
+    options: ScrubberOptions,
     onHeightChanged: (Float) -> Unit
 ): Modifier {
     val dimens = AureoleDS.dimens
     return this
-        .fillMaxHeight(ScrubberDimensions.SCRUBBER_HEIGHT_FRACTION)
+        .fillMaxHeight(options.heightFraction)
         .padding(
             top = dimens.zero,
-            bottom = ScrubberDimensions.PaddingBottom,
+            bottom = options.bottomPadding,
             start = if (isLeftHandedMode) dimens.xSmall else dimens.zero,
             end = if (isLeftHandedMode) dimens.zero else dimens.xSmall
         )

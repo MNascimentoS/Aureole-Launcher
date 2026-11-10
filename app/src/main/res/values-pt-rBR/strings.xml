@@ -36,6 +36,7 @@
     <string name="core_common_no_apps_found">Nenhum aplicativo encontrado.</string>
     <string name="home_folder_other_apps_count">Outros Aplicativos (%1$d)</string>
     <string name="home_folder_all_apps_added">Todos os aplicativos já foram adicionados.</string>
+    <string name="home_folder_picker_drag_hint">Segure um app e deslize para marcar vários</string>
     <string name="core_common_search_app_placeholder">Buscar aplicativo&#8230;</string>
 
     <!-- Quick Buttons -->

@@ -36,6 +36,7 @@
     <string name="core_common_no_apps_found">No apps found.</string>
     <string name="home_folder_other_apps_count">Other Apps (%1$d)</string>
     <string name="home_folder_all_apps_added">All apps have been added.</string>
+    <string name="home_folder_picker_drag_hint">Hold an app and slide to mark several</string>
     <string name="core_common_search_app_placeholder">Search app&#8230;</string>
 
     <!-- Quick Buttons -->

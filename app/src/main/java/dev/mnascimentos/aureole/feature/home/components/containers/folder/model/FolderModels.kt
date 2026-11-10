@@ -32,6 +32,24 @@ data class SelectedFolderAppSectionParams(
     val totalSelectedCount: Int,
     val onMoveUp: (Int) -> Unit,
     val onMoveDown: (Int) -> Unit,
+    val onToggleSelect: (String) -> Unit,
+    /** Off while a selection drag runs: the rows are frozen and their indexes no longer match. */
+    val isReorderEnabled: Boolean = true,
+    /** Live selection; a row unmarked by a drag stays visible, faded, until the drag ends. */
+    val isMarked: (String) -> Boolean = { true }
+)
+
+/** Apps of the picker grid that is not searching: selected rows on top, the other apps in the grid. */
+data class PickerBrowseApps(
+    val selected: List<AppInfo>,
+    val remaining: List<AppInfo>
+)
+
+data class RemainingFolderAppGridParams(
+    val apps: List<AppInfo>,
+    val searchQuery: String,
+    val isSelecting: Boolean,
+    val isMarked: (String) -> Boolean,
     val onToggleSelect: (String) -> Unit
 )
 
