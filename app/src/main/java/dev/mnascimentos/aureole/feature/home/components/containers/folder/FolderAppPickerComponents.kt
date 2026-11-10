@@ -10,9 +10,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -54,27 +52,6 @@ fun FolderAppPickerHeader(
             AureoleDS.icons.Close(
                 tint = AureoleDS.colors.onSurfaceMedium
             )
-        }
-    }
-}
-
-@Composable
-fun FolderAppPickerFooter(
-    onDismiss: () -> Unit,
-    onSave: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    Row(
-        modifier = modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.End,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        OutlinedButton(onClick = onDismiss) {
-            AureoleText(stringResource(R.string.core_common_cancel))
-        }
-        Spacer(modifier = Modifier.width(AureoleDS.dimens.xSmall))
-        Button(onClick = onSave) {
-            AureoleText(stringResource(R.string.core_common_save))
         }
     }
 }

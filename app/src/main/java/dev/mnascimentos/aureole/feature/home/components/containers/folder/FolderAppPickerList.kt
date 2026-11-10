@@ -14,8 +14,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -29,7 +27,6 @@ import dev.mnascimentos.aureole.core.data.model.AppFolder
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
-import dev.mnascimentos.aureole.core.designsystem.icons.Search
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
@@ -188,36 +185,6 @@ internal fun SelectedFolderAppRow(
             onToggleSelect = onToggleSelect
         )
     }
-}
-
-@Composable
-internal fun FolderAppPickerSearchInput(
-    query: String,
-    onQueryChange: (String) -> Unit
-) {
-    OutlinedTextField(
-        value = query,
-        onValueChange = onQueryChange,
-        placeholder = {
-            AureoleText(
-                stringResource(dev.mnascimentos.aureole.R.string.core_common_search_app_placeholder),
-                color = AureoleDS.colors.onSurfaceLow
-            )
-        },
-        leadingIcon = {
-            AureoleDS.icons.Search(
-                tint = AureoleDS.colors.onSurfaceMedium
-            )
-        },
-        singleLine = true,
-        colors = OutlinedTextFieldDefaults.colors(
-            focusedBorderColor = AureoleDS.colors.onSurfaceHigh,
-            unfocusedBorderColor = AureoleDS.colors.outline,
-            focusedTextColor = AureoleDS.colors.onSurfaceHigh,
-            unfocusedTextColor = AureoleDS.colors.onSurfaceHigh
-        ),
-        modifier = Modifier.fillMaxWidth()
-    )
 }
 
 @AureolePreview

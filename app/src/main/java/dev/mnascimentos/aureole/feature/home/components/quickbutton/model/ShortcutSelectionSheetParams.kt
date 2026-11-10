@@ -7,5 +7,8 @@ internal data class ShortcutSelectionSheetParams(
     val isShowingAppPicker: Boolean,
     val currentAction: ShortcutAction,
     val defaultShortcutOptions: List<ShortcutAction>,
-    val uiState: MainUiState
+    val uiState: MainUiState,
+    val isVisible: Boolean = true,
+    val searchQuery: String = "",
+    val searchResults: List<ShortcutSearchCandidate> = emptyList()
 )

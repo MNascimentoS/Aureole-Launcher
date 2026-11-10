@@ -38,6 +38,15 @@ internal fun ShortcutSelectionSheetContent(
     onApplyShortcut: (ShortcutAction) -> Unit,
     onShowAppPicker: () -> Unit
 ) {
+    if (params.searchQuery.isNotBlank()) {
+        ShortcutSearchResultsList(
+            query = params.searchQuery.trim(),
+            results = params.searchResults,
+            currentAction = params.currentAction,
+            onApplyShortcut = onApplyShortcut
+        )
+        return
+    }
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -147,10 +156,11 @@ internal fun ShortcutOptionRow(
     title: String,
     isSelected: Boolean,
     endContent: (@Composable () -> Unit)? = null,
+    modifier: Modifier = Modifier,
     onClick: () -> Unit
 ) {
     Row(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(AureoleDS.dimens.radiusMedium))
             .clickable { onClick() }
@@ -182,10 +192,11 @@ internal fun ShortcutOptionRow(
 internal fun AppOptionRow(
     app: AppInfo,
     isSelected: Boolean,
+    modifier: Modifier = Modifier,
     onClick: () -> Unit
 ) {
     Row(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(AureoleDS.dimens.radiusMedium))
             .clickable { onClick() }

@@ -10,6 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import dev.chrisbanes.haze.HazeState
 import dev.mnascimentos.aureole.R
+import dev.mnascimentos.aureole.composable.search.AureoleSearchField
 import dev.mnascimentos.aureole.core.data.model.QuickButtonModel
 import dev.mnascimentos.aureole.core.data.model.ShortcutAction
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleEditOverlay
@@ -18,7 +19,13 @@ import dev.mnascimentos.aureole.core.designsystem.model.AureoleEditOverlayParams
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.components.quickbutton.extensions.resolveEditingShortcut
+import dev.mnascimentos.aureole.feature.home.components.quickbutton.extensions.withShortcut
+import dev.mnascimentos.aureole.feature.home.components.quickbutton.model.ShortcutSelectionCallbacks
+import dev.mnascimentos.aureole.feature.home.components.quickbutton.model.ShortcutSelectionOptions
 import dev.mnascimentos.aureole.feature.home.components.quickbutton.model.ShortcutSelectionSheetParams
+import dev.mnascimentos.aureole.feature.home.components.quickbutton.model.bestShortcutAction
+import dev.mnascimentos.aureole.feature.home.components.quickbutton.model.buildShortcutSearchCandidates
+import dev.mnascimentos.aureole.feature.home.components.quickbutton.model.searchShortcuts
 import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
 import kotlinx.coroutines.delay
@@ -58,10 +65,11 @@ fun ShortcutSelectionBottomSheet(
     actions: HomeScreenActions,
     onDismissRequest: () -> Unit,
     modifier: Modifier = Modifier,
-    hazeState: HazeState? = null
+    options: ShortcutSelectionOptions = ShortcutSelectionOptions()
 ) {
     var isVisible by remember { mutableStateOf(true) }
     var isShowingAppPicker by remember { mutableStateOf(false) }
+    var searchQuery by remember { mutableStateOf(options.initialSearchQuery) }
 
     if (!isVisible) {
         LaunchedEffect(isVisible) {
@@ -72,53 +80,79 @@ fun ShortcutSelectionBottomSheet(
 
     val activeModel = uiState.activeQuickButtonModel ?: QuickButtonModel()
     val editingType = uiState.editingShortcutType
-    val currentAction = resolveEditingShortcut(editingType, activeModel)
-
-    fun applyShortcut(action: ShortcutAction) {
-        val newShortcuts = when (editingType) {
-            "click" -> activeModel.shortcuts.copy(click = action)
-            "press" -> activeModel.shortcuts.copy(press = action)
-            "swipeUp" -> activeModel.shortcuts.copy(swipeUp = action)
-            "swipeLeft" -> activeModel.shortcuts.copy(swipeLeft = action)
-            "swipeRight" -> activeModel.shortcuts.copy(swipeRight = action)
-            else -> activeModel.shortcuts
-        }
-        actions.onUpdateQuickButtonShortcuts(newShortcuts)
+    val candidates = remember(uiState.apps, isShowingAppPicker) {
+        buildShortcutSearchCandidates(DEFAULT_SHORTCUT_OPTIONS, uiState.apps, onlyApps = isShowingAppPicker)
+    }
+    val searchResults = remember(candidates, searchQuery) { searchShortcuts(candidates, searchQuery) }
+    val applyShortcut = { action: ShortcutAction ->
+        actions.onUpdateQuickButtonShortcuts(activeModel.shortcuts.withShortcut(editingType, action))
         isVisible = false
     }
 
-    val params = ShortcutSelectionSheetParams(
-        isShowingAppPicker = isShowingAppPicker,
-        currentAction = currentAction,
-        defaultShortcutOptions = DEFAULT_SHORTCUT_OPTIONS,
-        uiState = uiState
+    ShortcutSelectionOverlay(
+        params = ShortcutSelectionSheetParams(
+            isShowingAppPicker = isShowingAppPicker,
+            currentAction = resolveEditingShortcut(editingType, activeModel),
+            defaultShortcutOptions = DEFAULT_SHORTCUT_OPTIONS,
+            uiState = uiState,
+            isVisible = isVisible,
+            searchQuery = searchQuery,
+            searchResults = searchResults
+        ),
+        callbacks = ShortcutSelectionCallbacks(
+            onQueryChange = { searchQuery = it },
+            onApplyShortcut = applyShortcut,
+            onShowAppPicker = {
+                searchQuery = ""
+                isShowingAppPicker = true
+            },
+            onSettingsClick = { actions.onSettingsClick() },
+            onDismiss = { isVisible = false }
+        ),
+        hazeState = options.hazeState,
+        modifier = modifier
     )
+}
 
+@Composable
+private fun ShortcutSelectionOverlay(
+    params: ShortcutSelectionSheetParams,
+    callbacks: ShortcutSelectionCallbacks,
+    hazeState: HazeState?,
+    modifier: Modifier = Modifier
+) {
+    val searchPlaceholder = stringResource(R.string.home_quickbutton_search_placeholder)
+    val title = if (params.isShowingAppPicker) {
+        stringResource(R.string.home_quickbutton_select_app)
+    } else {
+        stringResource(R.string.home_quickbutton_select_shortcut)
+    }
     AureoleEditOverlay(
-        onDismissRequest = { isVisible = false },
+        onDismissRequest = callbacks.onDismiss,
         modifier = modifier,
         params = AureoleEditOverlayParams(
             config = AureoleEditOverlayConfig(
-                title = if (isShowingAppPicker) {
-                    stringResource(R.string.home_quickbutton_select_app)
-                } else {
-                    stringResource(
-                        R.string.home_quickbutton_select_shortcut
-                    )
-                },
-                hazeState = if (uiState.isHazeEnabled) hazeState else null,
-                isVisible = isVisible,
+                title = title,
+                hazeState = if (params.uiState.isHazeEnabled) hazeState else null,
+                isVisible = params.isVisible,
                 animated = true,
-                isLeftHanded = uiState.isLeftHandedMode,
-                onSettingsClick = { actions.onSettingsClick() }
+                isLeftHanded = params.uiState.isLeftHandedMode,
+                onSettingsClick = callbacks.onSettingsClick
             ),
             previewContent = null,
-            bottomBarContent = null,
+            bottomBarContent = {
+                AureoleSearchField(
+                    query = params.searchQuery,
+                    onQueryChange = callbacks.onQueryChange,
+                    placeholder = searchPlaceholder,
+                    onSearch = { bestShortcutAction(params.searchResults)?.let(callbacks.onApplyShortcut) }
+                )
+            },
             sheetContent = {
                 ShortcutSelectionSheetContent(
                     params = params,
-                    onApplyShortcut = ::applyShortcut,
-                    onShowAppPicker = { isShowingAppPicker = true }
+                    onApplyShortcut = callbacks.onApplyShortcut,
+                    onShowAppPicker = callbacks.onShowAppPicker
                 )
             }
         )

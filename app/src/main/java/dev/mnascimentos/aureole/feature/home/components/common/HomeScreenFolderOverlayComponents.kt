@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -51,6 +52,7 @@ import dev.mnascimentos.aureole.feature.home.components.widgets.EditWidgetGroupS
 import dev.mnascimentos.aureole.feature.home.components.widgets.model.EditWidgetGroupActions
 import dev.mnascimentos.aureole.feature.home.components.widgets.model.EditWidgetGroupParams
 import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
+import dev.mnascimentos.aureole.feature.home.model.LocalHomeUiState
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
 import dev.mnascimentos.aureole.feature.home.model.getWidgetIdsForStack
 
@@ -301,19 +303,21 @@ internal fun AddAppToFolderOverlay(
     actions: HomeScreenActions
 ) {
     if (uiState.isAddAppToFolderDialogVisible && uiState.activeFolder != null) {
-        FolderAppPickerDialog(
-            folder = uiState.activeFolder,
-            allApps = uiState.apps,
-            onDismiss = { actions.onSetAddAppToFolderDialogVisible(false) },
-            onSave = { selectedPackages ->
-                actions.onFolderIntent(
-                    FolderViewIntent.SaveFolderApps(
-                        uiState.activeFolder.id,
-                        selectedPackages
+        CompositionLocalProvider(LocalHomeUiState provides uiState) {
+            FolderAppPickerDialog(
+                folder = uiState.activeFolder,
+                allApps = uiState.apps,
+                onDismiss = { actions.onSetAddAppToFolderDialogVisible(false) },
+                onSave = { selectedPackages ->
+                    actions.onFolderIntent(
+                        FolderViewIntent.SaveFolderApps(
+                            uiState.activeFolder.id,
+                            selectedPackages
+                        )
                     )
-                )
-            }
-        )
+                }
+            )
+        }
     }
 }
 

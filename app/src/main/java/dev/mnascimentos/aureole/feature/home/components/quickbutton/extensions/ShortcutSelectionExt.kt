@@ -23,3 +23,13 @@ fun changedShortcut(before: QuickButtonShortcuts, after: QuickButtonShortcuts): 
     before.swipeLeft to after.swipeLeft,
     before.swipeRight to after.swipeRight,
 ).firstOrNull { (old, new) -> old != new }?.second
+
+/** Copy of these shortcuts with the gesture named by [type] set to [action]; unknown types change nothing. */
+fun QuickButtonShortcuts.withShortcut(type: String?, action: ShortcutAction): QuickButtonShortcuts = when (type) {
+    "click" -> copy(click = action)
+    "press" -> copy(press = action)
+    "swipeUp" -> copy(swipeUp = action)
+    "swipeLeft" -> copy(swipeLeft = action)
+    "swipeRight" -> copy(swipeRight = action)
+    else -> this
+}

@@ -390,4 +390,14 @@
     <string name="home_undo_favorite_added">%1$s nos favoritos</string>
     <string name="home_undo_favorite_removed">%1$s saiu dos favoritos</string>
     <string name="home_undo_shortcut_changed">Atalho trocado para %1$s</string>
+    <string name="home_quickbutton_search_placeholder">Buscar atalho ou app&#8230;</string>
+    <string name="core_common_search_best_hint">melhor resultado embaixo &#183; &#8629; escolhe</string>
+    <string name="core_common_search_empty">Nada com &#8220;%1$s&#8221;.</string>
+    <plurals name="home_folder_picker_save_count">
+        <item quantity="one">Salvar %1$d app</item>
+        <item quantity="many">Salvar %1$d apps</item>
+        <item quantity="other">Salvar %1$d apps</item>
+    </plurals>
+    <string name="home_folder_picker_remove_chip">Remover %1$s</string>
+    <string name="home_folder_picker_selected_label">Escolhidos</string>
 </resources>

@@ -9,7 +9,6 @@ import androidx.compose.ui.test.hasClickAction
 import androidx.compose.ui.test.hasSetTextAction
 import androidx.compose.ui.test.junit4.v2.createComposeRule
 import androidx.compose.ui.test.onAllNodesWithText
-import androidx.compose.ui.test.onFirst
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTextInput
@@ -682,7 +681,7 @@ class FolderBranchCoverageTest {
         composeTestRule.mainClock.advanceTimeBy(400L)
         composeTestRule.waitForIdle()
 
-        composeTestRule.onAllNodesWithText("No apps found.").onFirst().assertIsDisplayed()
+        composeTestRule.onNodeWithText("Nothing with \u201cXYZ_NO_MATCH\u201d.").assertIsDisplayed()
     }
 
     @Test
@@ -709,7 +708,7 @@ class FolderBranchCoverageTest {
         composeTestRule.onAllNodes(hasClickAction())[2].performClick()
 
         // Click Save
-        composeTestRule.onNodeWithText("Save").performClick()
+        composeTestRule.onNodeWithText("Save", substring = true).performClick()
         assertTrue(savedList.contains(app1.packageName))
     }
 

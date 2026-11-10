@@ -40,7 +40,18 @@ data class FolderAppPickerBodyParams(
     val searchQuery: String,
     val filteredSelected: List<AppInfo>,
     val filteredRemaining: List<AppInfo>,
-    val selectedPackages: MutableList<String>
+    val selectedPackages: MutableList<String>,
+    val isSearching: Boolean = false,
+    val searchResults: List<AppInfo> = emptyList(),
+    val trayApps: List<AppInfo> = emptyList(),
+    val isLeftHandedMode: Boolean = false
+)
+
+data class FolderAppPickerFooterParams(
+    val trayApps: List<AppInfo>,
+    val searchQuery: String,
+    val saveCount: Int,
+    val isLeftHandedMode: Boolean = false
 )
 
 data class OpenedFolderOverlayParams(
@@ -74,4 +85,12 @@ data class GridFolderPopupParams(
     val onToggleActions: () -> Unit,
     val hazeState: HazeState?,
     val isHazeEnabled: Boolean
+)
+
+data class FolderAppPickerFooterActions(
+    val onQueryChange: (String) -> Unit,
+    val onSearch: () -> Unit,
+    val onRemove: (String) -> Unit,
+    val onDismiss: () -> Unit,
+    val onSave: () -> Unit
 )

@@ -389,4 +389,13 @@
     <string name="home_undo_favorite_added">%1$s added to favorites</string>
     <string name="home_undo_favorite_removed">%1$s removed from favorites</string>
     <string name="home_undo_shortcut_changed">Shortcut changed to %1$s</string>
+    <string name="home_quickbutton_search_placeholder">Search shortcut or app&#8230;</string>
+    <string name="core_common_search_best_hint">best result below &#183; &#8629; picks</string>
+    <string name="core_common_search_empty">Nothing with &#8220;%1$s&#8221;.</string>
+    <plurals name="home_folder_picker_save_count">
+        <item quantity="one">Save %1$d app</item>
+        <item quantity="other">Save %1$d apps</item>
+    </plurals>
+    <string name="home_folder_picker_remove_chip">Remove %1$s</string>
+    <string name="home_folder_picker_selected_label">Selected</string>
 </resources>
