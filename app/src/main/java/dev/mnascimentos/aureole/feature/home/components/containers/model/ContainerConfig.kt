@@ -17,7 +17,7 @@ data class ContainerConfig(
     val orientation: String = "Vertical",
     val showFolderLabels: Boolean = false,
     val showAddFolderButton: Boolean = true,
-    val isBackgroundEnabled: Boolean = true,
+    val isBackgroundEnabled: Boolean = false,
     val isExpandCell: Boolean = false,
     val isGridFolderEnabled: Boolean = false,
     val hideText: Boolean = false,

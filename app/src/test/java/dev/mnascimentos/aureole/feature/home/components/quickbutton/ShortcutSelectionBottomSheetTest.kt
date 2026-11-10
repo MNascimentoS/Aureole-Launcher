@@ -4,6 +4,7 @@ import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.v2.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.performScrollTo
 import dev.mnascimentos.aureole.core.data.model.QuickButtonModel
 import dev.mnascimentos.aureole.core.data.model.QuickButtonShortcuts
 import dev.mnascimentos.aureole.core.data.model.ShortcutAction
@@ -48,7 +49,7 @@ class ShortcutSelectionBottomSheetTest {
 
         // Assert
         composeTestRule.onNodeWithText("Select a shortcut").assertIsDisplayed()
-        composeTestRule.onNodeWithText("Aureole Settings").performClick()
+        composeTestRule.onNodeWithText("Aureole Settings").performScrollTo().performClick()
 
         assertNotNull(updatedShortcuts)
         assertEquals(ShortcutAction.Settings, updatedShortcuts!!.click)
@@ -78,7 +79,7 @@ class ShortcutSelectionBottomSheetTest {
         }
 
         // Assert
-        composeTestRule.onNodeWithText("Aureole Settings").performClick()
+        composeTestRule.onNodeWithText("Aureole Settings").performScrollTo().performClick()
 
         assertNotNull(updatedShortcuts)
         assertEquals(ShortcutAction.Settings, updatedShortcuts!!.press)
@@ -108,7 +109,7 @@ class ShortcutSelectionBottomSheetTest {
         }
 
         // Assert
-        composeTestRule.onNodeWithText("Aureole Settings").performClick()
+        composeTestRule.onNodeWithText("Aureole Settings").performScrollTo().performClick()
 
         assertNotNull(updatedShortcuts)
         assertEquals(ShortcutAction.Settings, updatedShortcuts!!.swipeUp)

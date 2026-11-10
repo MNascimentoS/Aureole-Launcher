@@ -109,7 +109,8 @@ fun ShortcutSelectionBottomSheet(
                 hazeState = if (uiState.isHazeEnabled) hazeState else null,
                 isVisible = isVisible,
                 animated = true,
-                maxSheetHeightFraction = 0.8f
+                isLeftHanded = uiState.isLeftHandedMode,
+                onSettingsClick = { actions.onSettingsClick() }
             ),
             previewContent = null,
             bottomBarContent = null,

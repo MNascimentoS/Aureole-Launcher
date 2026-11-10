@@ -26,6 +26,9 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 
+private const val SWIPE_START_FRACTION = 0.8f
+private const val SWIPE_END_FRACTION = 0.2f
+
 @RunWith(RobolectricTestRunner::class)
 class EditClockBottomSheetTest {
 
@@ -68,7 +71,7 @@ class EditClockBottomSheetTest {
 
     private fun scrollDownBottomSheet() {
         composeTestRule.onNode(hasScrollAction()).performTouchInput {
-            swipeUp(startY = 0.8f, endY = 0.2f)
+            swipeUp(startY = height * SWIPE_START_FRACTION, endY = height * SWIPE_END_FRACTION)
         }
         composeTestRule.waitForIdle()
     }
@@ -96,9 +99,9 @@ class EditClockBottomSheetTest {
         composeTestRule.onNodeWithText("Time and Date Format").assertIsDisplayed()
 
         scrollDownBottomSheet()
-        composeTestRule.onNodeWithText("Font Style").assertIsDisplayed()
-        composeTestRule.onNodeWithText("Text Color").assertIsDisplayed()
-        composeTestRule.onNodeWithText("Card Background").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Font Style").performScrollTo().assertIsDisplayed()
+        composeTestRule.onNodeWithText("Text Color").performScrollTo().assertIsDisplayed()
+        composeTestRule.onNodeWithText("Card Background").performScrollTo().assertIsDisplayed()
     }
 
     @Test

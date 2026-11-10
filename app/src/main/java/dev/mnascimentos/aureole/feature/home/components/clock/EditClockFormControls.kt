@@ -75,38 +75,56 @@ internal fun EditClockBackgroundSection(
     }
 }
 
+/**
+ * Footer of the clock editor. Right-handed: restore on the left, save on the right.
+ * Left-handed: save on the left, under the thumb, and restore on the right.
+ */
 @Composable
 internal fun EditClockActionButtons(
     actions: HomeScreenActions,
+    isLeftHanded: Boolean,
     onDismissRequest: () -> Unit,
     onResetGreeting: () -> Unit
 ) {
+    val onReset = {
+        actions.onResetClockSettings()
+        onResetGreeting()
+    }
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        TextButton(
-            onClick = {
-                actions.onResetClockSettings()
-                onResetGreeting()
-            }
-        ) {
-            AureoleText(
-                text = stringResource(R.string.home_clock_reset_defaults),
-                color = AureoleDS.colors.error
-            )
+        if (isLeftHanded) {
+            EditClockSaveButton(onClick = onDismissRequest)
+            EditClockResetButton(onClick = onReset)
+        } else {
+            EditClockResetButton(onClick = onReset)
+            EditClockSaveButton(onClick = onDismissRequest)
         }
+    }
+}
 
-        Button(
-            onClick = onDismissRequest,
-            colors = ButtonDefaults.buttonColors(
-                containerColor = AureoleDS.colors.onSurfaceHigh,
-                contentColor = AureoleDS.colors.surface
-            )
-        ) {
-            AureoleText(stringResource(R.string.home_container_edit_save), color = AureoleDS.colors.surface)
-        }
+@Composable
+private fun EditClockResetButton(onClick: () -> Unit) {
+    TextButton(onClick = onClick) {
+        AureoleText(
+            text = stringResource(R.string.home_clock_reset_defaults),
+            color = AureoleDS.colors.error
+        )
+    }
+}
+
+@Composable
+private fun EditClockSaveButton(onClick: () -> Unit) {
+    Button(
+        onClick = onClick,
+        colors = ButtonDefaults.buttonColors(
+            containerColor = AureoleDS.colors.onSurfaceHigh,
+            contentColor = AureoleDS.colors.surface
+        )
+    ) {
+        AureoleText(stringResource(R.string.home_container_edit_save), color = AureoleDS.colors.surface)
     }
 }
 

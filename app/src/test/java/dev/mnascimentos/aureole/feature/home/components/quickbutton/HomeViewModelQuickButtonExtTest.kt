@@ -1,6 +1,7 @@
 package dev.mnascimentos.aureole.feature.home.components.quickbutton
 
 import android.content.Context
+import androidx.lifecycle.viewModelScope
 import dev.mnascimentos.aureole.core.data.model.ContainerItemEntity
 import dev.mnascimentos.aureole.core.data.model.ContainerItemType
 import dev.mnascimentos.aureole.core.data.model.ContainerModel
@@ -26,6 +27,14 @@ import dev.mnascimentos.aureole.feature.home.components.quickbutton.extensions.o
 import dev.mnascimentos.aureole.feature.home.components.quickbutton.extensions.onUpdateQuickButtonAppearance
 import dev.mnascimentos.aureole.feature.home.components.quickbutton.extensions.onUpdateQuickButtonShortcuts
 import dev.mnascimentos.aureole.feature.home.model.HomeRepositories
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.cancelAndJoin
+import kotlinx.coroutines.job
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
+import kotlinx.coroutines.test.resetMain
+import kotlinx.coroutines.test.setMain
+import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNull
@@ -41,22 +50,38 @@ class HomeViewModelQuickButtonExtTest {
 
     private lateinit var context: Context
     private lateinit var viewModel: HomeViewModel
+    private lateinit var gridRepository: GridRepository
+    private lateinit var containerRepository: ContainerRepository
 
     @Before
     fun setUp() {
+        Dispatchers.setMain(UnconfinedTestDispatcher())
         context = RuntimeEnvironment.getApplication()
         val settingsRepo = SettingsRepository(context)
+        gridRepository = GridRepository(context)
+        containerRepository = ContainerRepository(context)
         viewModel = HomeViewModel(
             HomeRepositories(
                 appRepository = AppRepository(context),
                 widgetRepository = WidgetRepository(context),
                 settingsRepository = settingsRepo,
-                gridRepository = GridRepository(context),
+                gridRepository = gridRepository,
                 folderRepository = FolderRepository(context),
-                containerRepository = ContainerRepository(context),
+                containerRepository = containerRepository,
                 favoriteContainerRepository = FavoriteContainerRepository(context, settingsRepo)
             )
         )
+    }
+
+    @After
+    fun tearDown() {
+        // Room is shared by every test class: stop the pending saves, then drop what they wrote.
+        runBlocking {
+            viewModel.viewModelScope.coroutineContext.job.cancelAndJoin()
+            containerRepository.deleteContainer(PANEL_ID)
+        }
+        gridRepository.resetToDefault()
+        Dispatchers.resetMain()
     }
 
     @Test
@@ -172,17 +197,17 @@ class HomeViewModelQuickButtonExtTest {
         val qbModel = QuickButtonModel(id = "qb_in_container")
         val containerItem = ContainerItemEntity(
             id = "c_item_1",
-            panelId = "panel_1",
+            panelId = PANEL_ID,
             itemType = ContainerItemType.QUICK_BUTTON,
             quickButtonId = "qb_in_container",
             orderIndex = 0
         ).also { it.quickButtonModel = qbModel }
         val container = ContainerModel(
-            id = "panel_1",
+            id = PANEL_ID,
             items = listOf(containerItem),
             quickButtons = listOf(qbModel)
         )
-        viewModel.updateUiState { it.copy(containers = mapOf("panel_1" to container)) }
+        viewModel.updateUiState { it.copy(containers = mapOf(PANEL_ID to container)) }
 
         // When
         viewModel.onOpenQuickButtonSettings("qb_in_container")
@@ -200,13 +225,13 @@ class HomeViewModelQuickButtonExtTest {
         val qbModel = QuickButtonModel(id = "qb_in_container")
         val containerItem = ContainerItemEntity(
             id = "c_item_1",
-            panelId = "panel_1",
+            panelId = PANEL_ID,
             itemType = ContainerItemType.QUICK_BUTTON,
             quickButtonId = "qb_in_container",
             orderIndex = 0
         ).also { it.quickButtonModel = qbModel }
         val container = ContainerModel(
-            id = "panel_1",
+            id = PANEL_ID,
             items = listOf(containerItem),
             quickButtons = listOf(qbModel)
         )
@@ -214,7 +239,7 @@ class HomeViewModelQuickButtonExtTest {
             it.copy(
                 activeQuickButtonId = "qb_in_container",
                 activeQuickButtonModel = qbModel,
-                containers = mapOf("panel_1" to container)
+                containers = mapOf(PANEL_ID to container)
             )
         }
 
@@ -224,8 +249,12 @@ class HomeViewModelQuickButtonExtTest {
 
         // Then
         val state = viewModel.uiState.value
-        val updatedContainer = state.containers["panel_1"]
+        val updatedContainer = state.containers[PANEL_ID]
         val updatedQb = updatedContainer?.quickButtons?.first()
         assertEquals(newShortcuts, updatedQb?.shortcuts)
+    }
+
+    private companion object {
+        const val PANEL_ID = "panel_1"
     }
 }

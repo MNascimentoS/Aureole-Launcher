@@ -63,7 +63,7 @@ private const val FOLDER_BG_INACTIVE_ALPHA = 0.85f
 fun ContainerAddFolderButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
-    isBackgroundEnabled: Boolean = true
+    isBackgroundEnabled: Boolean = false
 ) {
     val buttonSize = if (isBackgroundEnabled) {
         FolderButtonMetrics.SmallSize

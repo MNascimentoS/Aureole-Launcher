@@ -22,7 +22,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
-import androidx.compose.ui.unit.dp
 import dev.chrisbanes.haze.HazeStyle
 import dev.chrisbanes.haze.HazeTint
 import dev.chrisbanes.haze.hazeEffect
@@ -81,7 +80,7 @@ fun WidgetSelectorScreen(
         Modifier.hazeEffect(
             state = hazeState,
             style = HazeStyle(
-                blurRadius = 32.dp,
+                blurRadius = AureoleDS.dimens.xLarge,
                 tint = HazeTint(Color.Black.copy(alpha = 0.45f))
             )
         ) {

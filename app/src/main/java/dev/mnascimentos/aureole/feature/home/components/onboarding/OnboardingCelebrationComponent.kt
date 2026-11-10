@@ -13,16 +13,12 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.LiveRegionMode
 import androidx.compose.ui.semantics.liveRegion
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleHaloProgress
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
@@ -30,19 +26,13 @@ import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatPa
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
+import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.drawParticles
 import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.rememberOnboardingLoopsEnabled
 import dev.mnascimentos.aureole.feature.home.components.onboarding.model.OnboardingMotionSpec
 import kotlinx.coroutines.delay
-import kotlin.math.cos
-import kotlin.math.sin
 
 private const val HALO_START_PROGRESS = 0.86f
 private const val TEXT_FADE_PORTION = 0.15f
-private const val GOLDEN_ANGLE_RAD = 2.39996f
-private const val PARTICLE_MIN_TRAVEL = 0.18f
-private const val PARTICLE_TRAVEL_STEPS = 5
-private const val PARTICLE_TRAVEL_STEP = 0.06f
-private val PARTICLE_RADIUS = 3.dp
 
 /**
  * "All set": the halo closes its circle, particles burst from the center and the message fades in.
@@ -91,21 +81,6 @@ fun OnboardingCelebrationComponent(
                 format = AureoleTextFormatParams(style = AureoleDS.typography.bodyLarge, textAlign = TextAlign.Center)
             )
         }
-    }
-}
-
-/** Up to [OnboardingMotionSpec.MAX_PARTICLES] dots on a golden-angle spiral, flying out and fading. */
-private fun DrawScope.drawParticles(progress: Float, color: Color) {
-    val reach = size.minDimension
-    repeat(OnboardingMotionSpec.MAX_PARTICLES) { index ->
-        val angle = index * GOLDEN_ANGLE_RAD
-        val travel = PARTICLE_MIN_TRAVEL + (index % PARTICLE_TRAVEL_STEPS) * PARTICLE_TRAVEL_STEP
-        val distance = reach * travel * progress
-        drawCircle(
-            color = color.copy(alpha = 1f - progress),
-            radius = PARTICLE_RADIUS.toPx(),
-            center = center + Offset(cos(angle) * distance, sin(angle) * distance)
-        )
     }
 }
 

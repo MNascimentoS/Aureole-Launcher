@@ -9,7 +9,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import dev.chrisbanes.haze.HazeStyle
 import dev.chrisbanes.haze.HazeTint
 import dev.chrisbanes.haze.hazeEffect
@@ -35,7 +34,7 @@ fun OnboardingGlassCard(
             .hazeEffect(
                 state = hazeState,
                 style = HazeStyle(
-                    blurRadius = 24.dp,
+                    blurRadius = AureoleDS.dimens.large,
                     tint = HazeTint(AureoleDS.colors.surfaceVariant.copy(alpha = glass.hazeOpacity))
                 )
             )

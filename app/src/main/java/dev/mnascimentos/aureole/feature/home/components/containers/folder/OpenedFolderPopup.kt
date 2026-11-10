@@ -37,7 +37,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.dp
 import androidx.core.graphics.drawable.toDrawable
 import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.core.data.model.AppFolder
@@ -218,7 +217,7 @@ private fun OpenedFolderGridAppItem(
         verticalArrangement = Arrangement.Center,
         modifier = Modifier
             .fillMaxWidth()
-            .defaultMinSize(minWidth = 48.dp, minHeight = 48.dp)
+            .defaultMinSize(minWidth = AureoleDS.dimens.minTouchTarget, minHeight = AureoleDS.dimens.minTouchTarget)
             .clip(RoundedCornerShape(AureoleDS.dimens.radiusMedium))
             .combinedClickable(
                 role = Role.Button,

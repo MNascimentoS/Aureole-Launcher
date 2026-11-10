@@ -32,11 +32,12 @@ private const val ANIMATION_DURATION_MS = 300
 /**
  * Fullscreen modal overlay sheet for edit mode features (such as container/clock/widget group editing).
  *
- * Supports background blur via Haze, swipe-down dismiss gestures, preview content area, bottom bar actions,
- * and custom sheet layout.
+ * Supports background blur via Haze, a sheet that rests hugging its content (up to 60% of the screen) and
+ * expands to 90%, swipe-down dismiss, a grab handle (double tap to resize, hold for settings), a preview
+ * anchored above the sheet, bottom bar actions and custom sheet layout.
  *
  * @param modifier The [Modifier] applied to the root overlay layout.
- * @param state The [AureoleEditOverlayState] managing the overlay internal visibility and drag expansion state.
+ * @param state The [AureoleEditOverlayState] holding the internal visibility and whether the sheet is expanded.
  * @param params Configuration and content slots provided via [AureoleEditOverlayParams].
  * @param onDismissRequest Callback executed when overlay is dismissed via drag gesture or back press.
  */
@@ -78,8 +79,8 @@ fun AureoleEditOverlay(
         CompositionLocalProvider(LocalAnimatedVisibilityScope provides this) {
             OverlayContentBox(
                 stateData = OverlaySheetStateData(
-                    dragExpansion = state.dragExpansion,
-                    onDragExpansionChanged = { state.dragExpansion = it },
+                    isExpanded = state.isExpanded,
+                    onExpandedChanged = { state.isExpanded = it },
                     effectiveAnimated = effectiveAnimated,
                     triggerDismiss = overlayState.triggerDismiss,
                     animScope = this

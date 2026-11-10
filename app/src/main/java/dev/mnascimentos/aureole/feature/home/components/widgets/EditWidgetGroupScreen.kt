@@ -56,6 +56,7 @@ import dev.mnascimentos.aureole.feature.home.components.widgets.model.EditWidget
 import dev.mnascimentos.aureole.feature.home.components.widgets.model.EditWidgetGroupActions
 import dev.mnascimentos.aureole.feature.home.components.widgets.model.EditWidgetGroupParams
 import dev.mnascimentos.aureole.feature.home.components.widgets.model.WidgetPickerMetrics
+import dev.mnascimentos.aureole.feature.home.model.LocalHomeUiState
 import kotlinx.coroutines.delay
 
 private const val ROTATION_LEFT_DEGREES = -90f
@@ -102,7 +103,7 @@ fun EditWidgetGroupScreen(
             config = AureoleEditOverlayConfig(
                 title = stringResource(R.string.home_widget_stack_title),
                 hazeState = params.hazeState,
-                maxSheetHeightFraction = 0.3f
+                isLeftHanded = LocalHomeUiState.current.isLeftHandedMode
             ),
             previewContent = {
                 EditWidgetGroupPreviewCarousel(
