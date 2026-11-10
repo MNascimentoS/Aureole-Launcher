@@ -1,0 +1,23 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(./gradlew detekt:*)",
+      "Bash(./gradlew testDebugUnitTest:*)",
+      "Bash(./gradlew jacocoTestCoverageVerification:*)",
+      "Bash(./gradlew jacocoLogicBranchCoverageVerification:*)",
+      "Bash(./gradlew validateDebugScreenshotTest:*)",
+      "Bash(./gradlew assembleDebug:*)",
+      "Bash(./gradlew compileDebugKotlin:*)",
+      "Bash(./gradlew :app:compileDebugKotlin:*)",
+      "Bash(git status:*)",
+      "Bash(git diff:*)",
+      "Bash(git log:*)",
+      "Bash(wc -l:*)"
+    ],
+    "deny": [
+      "Bash(git push:*)",
+      "Read(./credentials.properties)",
+      "Read(./play_store_key.json)"
+    ]
+  }
+}

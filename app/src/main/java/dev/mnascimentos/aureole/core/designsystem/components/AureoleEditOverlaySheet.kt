@@ -52,6 +52,7 @@ import dev.mnascimentos.aureole.core.designsystem.utils.LocalHazeState
 import kotlin.math.roundToInt
 
 private const val ANIMATION_DURATION_MS = 300
+private const val PREVIEW_DIM_ALPHA = 0.6f
 
 @Composable
 internal fun OverlayContentBox(
@@ -99,9 +100,7 @@ internal fun OverlayContentBox(
                     previewContent = params.previewContent,
                     effectiveAnimated = stateData.effectiveAnimated,
                     animScope = stateData.animScope,
-                    isExpanded = stateData.isExpanded,
-                    motion = motion,
-                    bounds = bounds
+                    expandFraction = { expandFractionOf(motion, stateData.isExpanded, bounds) }
                 )
             },
             sheet = {
@@ -171,9 +170,7 @@ private fun PreviewSlot(
     previewContent: (@Composable BoxScope.() -> Unit)?,
     effectiveAnimated: Boolean,
     animScope: AnimatedVisibilityScope,
-    isExpanded: Boolean,
-    motion: OverlaySheetMotion,
-    bounds: SheetBounds
+    expandFraction: () -> Float
 ) {
     val previewModifier = if (effectiveAnimated) {
         with(animScope) {
@@ -194,28 +191,29 @@ private fun PreviewSlot(
         Modifier.Companion
     }
 
-    val currentHeight = motion.currentHeight(isExpanded, bounds)
-    val restHeight = motion.restOrFallback(bounds)
-    val expandFraction = if (bounds.expandedPx > restHeight) {
-        ((currentHeight - restHeight) / (bounds.expandedPx - restHeight)).coerceIn(0f, 1f)
-    } else {
-        0f
-    }
-
     Box(
         modifier = Modifier
             .fillMaxWidth()
             .then(previewModifier)
             .drawWithContent {
                 drawContent()
-                if (expandFraction > 0f) {
-                    drawRect(color = Color.Black.copy(alpha = 0.6f * expandFraction))
+                val fraction = expandFraction()
+                if (fraction > 0f) {
+                    drawRect(color = Color.Black.copy(alpha = PREVIEW_DIM_ALPHA * fraction))
                 }
             },
         contentAlignment = Alignment.BottomCenter
     ) {
         previewContent?.invoke(this)
     }
+}
+
+/** How far the sheet is from rest (0) to expanded (1); read while drawing, so a drag does not recompose. */
+private fun expandFractionOf(motion: OverlaySheetMotion, isExpanded: Boolean, bounds: SheetBounds): Float {
+    val currentHeight = motion.currentHeight(isExpanded, bounds)
+    val restHeight = motion.restOrFallback(bounds)
+    if (bounds.expandedPx <= restHeight) return 0f
+    return ((currentHeight - restHeight) / (bounds.expandedPx - restHeight)).coerceIn(0f, 1f)
 }
 
 /**

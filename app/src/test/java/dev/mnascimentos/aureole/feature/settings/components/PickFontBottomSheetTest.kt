@@ -38,7 +38,7 @@ class PickFontBottomSheetTest {
     }
 
     @Test
-    fun `when font item is clicked, should invoke onFontSelected`() {
+    fun `when font item is clicked and Apply pressed, should invoke onFontSelected`() {
         var selectedFont: String? = null
         val targetFont = AvailableFonts.keys.elementAtOrElse(1) { "Istok Web" }
 
@@ -53,6 +53,7 @@ class PickFontBottomSheetTest {
         }
 
         composeTestRule.onNodeWithText(targetFont).performClick()
+        composeTestRule.onNodeWithText("Apply").performClick()
         assertEquals(targetFont, selectedFont)
     }
 }

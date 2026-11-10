@@ -406,4 +406,18 @@
     <string name="home_clock_tab_colors">Cores</string>
     <string name="home_clock_tab_bar_description">Abas do editor de relógio</string>
     <string name="home_clock_tab_page_description">Aba %1$s. Deslize para o lado para trocar de aba.</string>
+
+    <!-- Appearance: palette and font with live preview -->
+    <string name="settings_appearance_palette_section_label">Escuras · toque para ver na hora</string>
+    <string name="settings_appearance_font_section_label">Fonte do launcher</string>
+    <string name="settings_appearance_apply">Aplicar</string>
+    <string name="settings_appearance_palette_chip_description">Paleta %1$s</string>
+    <string name="settings_appearance_font_chip_description">Fonte %1$s</string>
+    <string name="settings_appearance_font_chip_sample">Aa</string>
+    <string name="settings_appearance_minihome_time">09:41</string>
+    <string name="settings_appearance_minihome_date">Terça, 10 de novembro</string>
+    <string name="settings_appearance_minihome_phone">Telefone</string>
+    <string name="settings_appearance_minihome_messages">Mensagens</string>
+    <string name="settings_appearance_minihome_camera">Câmera</string>
+    <string name="settings_appearance_minihome_browser">Navegador</string>
 </resources>

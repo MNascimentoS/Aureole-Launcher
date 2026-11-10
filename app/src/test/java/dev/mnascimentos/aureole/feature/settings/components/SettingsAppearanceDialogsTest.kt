@@ -61,6 +61,7 @@ class SettingsAppearanceDialogsTest {
 
         composeTestRule.onNodeWithText("Pick a palette").assertIsDisplayed()
         composeTestRule.onNodeWithText("Frostbite").performClick()
+        composeTestRule.onNodeWithText("Apply").performClick()
         assertNotNull(selectedPalette)
     }
 

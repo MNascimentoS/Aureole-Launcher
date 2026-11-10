@@ -14,8 +14,10 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
+import org.robolectric.annotation.Config
 
 @RunWith(RobolectricTestRunner::class)
+@Config(qualifiers = "w411dp-h891dp")
 class OnboardingAppearancePickerComponentTest {
 
     @get:Rule
@@ -41,22 +43,27 @@ class OnboardingAppearancePickerComponentTest {
     }
 
     @Test
-    fun `when a palette is tapped, should apply it right away`() {
+    fun `when a palette is tapped, should only preview it until Apply`() {
         val palette = allPalettes.first().name
         render(AppearancePicker.PALETTE)
 
         composeTestRule.onNodeWithText(palette).performClick()
+        assertEquals(emptyList<String>(), calls)
 
-        assertEquals(listOf("palette=$palette"), calls)
+        composeTestRule.onNodeWithText("Apply").performClick()
+        composeTestRule.waitForIdle()
+
+        assertEquals(listOf("palette=$palette", "confirm"), calls)
     }
 
     @Test
-    fun `when a font is tapped and looks good confirmed, should apply and confirm`() {
+    fun `when a font is tapped and Apply is pressed, should apply it and confirm`() {
         val font = AvailableFonts.keys.first()
         render(AppearancePicker.FONT)
 
         composeTestRule.onNodeWithText(font).performClick()
-        composeTestRule.onNodeWithText("Looks good").performClick()
+        composeTestRule.onNodeWithText("Apply").performClick()
+        composeTestRule.waitForIdle()
 
         assertEquals(listOf("font=$font", "confirm"), calls)
     }

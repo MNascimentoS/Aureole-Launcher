@@ -4,6 +4,54 @@ import dev.mnascimentos.aureole.core.data.model.ReleaseNoteItem
 import dev.mnascimentos.aureole.core.data.model.ReleaseNoteSection
 import dev.mnascimentos.aureole.core.data.model.ReleaseNoteType
 
+internal val releaseNotes0918: List<ReleaseNoteSection> = listOf(
+    ReleaseNoteSection(
+        title = "Personalização & Aparência",
+        items = listOf(
+            ReleaseNoteItem(
+                title = "Novo Editor de Temas e Cores",
+                description = "Nova interface para escolher paletas e fontes com " +
+                    "pré-visualização ao vivo na Mini Tela Inicial.",
+                type = ReleaseNoteType.FEATURE
+            ),
+            ReleaseNoteItem(
+                title = "Nova Tela de Edição de Relógio",
+                description = "Configurar o formato e layout do relógio ficou muito " +
+                    "mais fácil com os novos painéis.",
+                type = ReleaseNoteType.FEATURE
+            )
+        )
+    ),
+    ReleaseNoteSection(
+        title = "Navegação e Busca",
+        items = listOf(
+            ReleaseNoteItem(
+                title = "Busca Integrada ao Teclado",
+                description = "A barra de pesquisa de aplicativos agora fica fixada junto ao " +
+                    "teclado, colocando o melhor resultado logo em destaque.",
+                type = ReleaseNoteType.IMPROVEMENT
+            ),
+            ReleaseNoteItem(
+                title = "Novo Seletor de Aplicativos",
+                description = "Adicionar aplicativos aos atalhos e widgets agora está mais " +
+                    "fluido com o novo seletor.",
+                type = ReleaseNoteType.IMPROVEMENT
+            )
+        )
+    ),
+    ReleaseNoteSection(
+        title = "Interface & Consistência",
+        items = listOf(
+            ReleaseNoteItem(
+                title = "Novas Janelas Inferiores (Bottom Sheets)",
+                description = "Todos os painéis de configuração foram redesenhados para um visual " +
+                    "mais moderno, espaçado e consistente em todo o sistema.",
+                type = ReleaseNoteType.IMPROVEMENT
+            )
+        )
+    )
+)
+
 internal fun getSectionsForVersion0913(): List<ReleaseNoteSection> = listOf(
     ReleaseNoteSection(
         title = "Boas-vindas Guiadas",
