@@ -4,6 +4,7 @@ import android.content.ComponentName
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalInspectionMode
+import androidx.compose.ui.semantics.SemanticsActions
 import androidx.compose.ui.semantics.SemanticsProperties
 import androidx.compose.ui.test.SemanticsMatcher
 import androidx.compose.ui.test.assertCountEquals
@@ -14,7 +15,7 @@ import androidx.compose.ui.test.junit4.v2.createComposeRule
 import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
-import androidx.compose.ui.test.performScrollTo
+import androidx.compose.ui.test.performSemanticsAction
 import androidx.compose.ui.test.performTextInput
 import androidx.core.graphics.drawable.toDrawable
 import dev.chrisbanes.haze.HazeState
@@ -279,10 +280,11 @@ class FolderBranchCoverageTest {
             }
         }
 
-        // The grid starts on the category of "settings" (Tools); the form is a scroll, so bring the tile in view.
-        composeTestRule.onAllNodes(iconTile)[0].performScrollTo().performClick()
+        // The grid starts on the category of "settings" (Tools). On a small test window a touch lands on the
+        // scrim and closes the overlay, so the tile and the button are pressed through their semantics.
+        composeTestRule.onAllNodes(iconTile)[0].performSemanticsAction(SemanticsActions.OnClick)
 
-        composeTestRule.onNodeWithText("Save").performClick()
+        composeTestRule.onNodeWithText("Save").performSemanticsAction(SemanticsActions.OnClick)
         assertEquals("build", selectedIconResult)
     }
 
