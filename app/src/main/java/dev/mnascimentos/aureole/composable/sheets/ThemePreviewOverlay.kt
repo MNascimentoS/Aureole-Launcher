@@ -16,6 +16,7 @@ import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.composable.minihome.AureoleMiniHome
 import dev.mnascimentos.aureole.composable.minihome.sampleMiniHomeContent
 import dev.mnascimentos.aureole.composable.sheets.model.ThemePreviewOverlayParams
+import dev.mnascimentos.aureole.composable.sheets.model.ThemePreviewState
 import dev.mnascimentos.aureole.composable.sheets.model.resolvePreviewConfig
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleEditOverlay
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
@@ -25,6 +26,8 @@ import dev.mnascimentos.aureole.core.designsystem.model.AureoleEditOverlayState
 import dev.mnascimentos.aureole.core.designsystem.model.rememberAureoleEditOverlayState
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleThemeConfig
+import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.model.LocalHomeUiState
 
 /**
@@ -94,6 +97,27 @@ private fun ThemePreviewActions(
         } else {
             CancelButton(onClick = onCancel)
             ApplyButton(onClick = onApply)
+        }
+    }
+}
+
+@AureolePreview
+@Composable
+private fun ThemePreviewOverlayPreview() {
+    AureoleLauncherTheme {
+        ThemePreviewOverlay(
+            params = ThemePreviewOverlayParams(
+                title = stringResource(R.string.settings_appearance_pick_palette_title),
+                base = AureoleThemeConfig(darkTheme = false),
+                pending = ThemePreviewState(),
+                onApply = {},
+                onDismissRequest = {}
+            )
+        ) {
+            AureoleText(
+                text = stringResource(R.string.settings_appearance_palette_section_label),
+                color = AureoleDS.colors.onSurfaceMedium
+            )
         }
     }
 }

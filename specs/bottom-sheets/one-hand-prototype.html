@@ -39,22 +39,22 @@ button:focus-visible, input:focus-visible { outline: 2px solid var(--reach); out
 @media (max-width: 860px) { .wrap { grid-template-columns: 1fr; justify-items: center; } }
 
 header.top { grid-column: 1 / -1; display: flex; flex-direction: column; gap: 6px; }
-header.top h1 { font-size: 28px; font-weight: 800; letter-spacing: -0.02em; text-wrap: balance; }
-header.top p { color: var(--muted); font-size: 14px; max-width: 70ch; line-height: 1.55; }
+header.top h1 { font-size: calc(28px * var(--fs, 1)); font-weight: 800; letter-spacing: -0.02em; text-wrap: balance; }
+header.top p { color: var(--muted); font-size: calc(14px * var(--fs, 1)); max-width: 70ch; line-height: 1.55; }
 
 /* ---------- Phone ---------- */
 .stage { position: sticky; top: 20px; display: flex; flex-direction: column; align-items: center; gap: 12px; }
 .phone { width: 360px; height: 760px; border-radius: 42px; background: var(--home); border: 3px solid #26323a; position: relative; overflow: hidden; font-family: var(--font-ui); color: var(--hi); box-shadow: 0 30px 80px rgba(0,0,0,.55); touch-action: none; }
 .wall { position: absolute; inset: 0; background: radial-gradient(120% 60% at 20% 0%, #1d3346 0%, transparent 60%), radial-gradient(90% 50% at 100% 100%, #23203d 0%, transparent 70%), var(--home); }
-.status { position: absolute; top: 0; left: 0; right: 0; height: 30px; display: flex; justify-content: space-between; padding: 8px 22px; font-size: 11px; color: var(--med); z-index: 3; }
+.status { position: absolute; top: 0; left: 0; right: 0; height: 30px; display: flex; justify-content: space-between; padding: 8px 22px; font-size: calc(11px * var(--fs, 1)); color: var(--med); z-index: 3; }
 
 .home { position: absolute; inset: 30px 0 0 0; padding: 0 18px; display: flex; flex-direction: column; }
 .clock { text-align: center; margin-top: 44px; }
-.clock .t { font-size: 64px; font-weight: 700; letter-spacing: -2px; line-height: 1; }
-.clock .d { font-size: 13px; color: var(--med); margin-top: 6px; }
+.clock .t { font-size: calc(64px * var(--fs, 1)); font-weight: 700; letter-spacing: -2px; line-height: 1; }
+.clock .d { font-size: calc(13px * var(--fs, 1)); color: var(--med); margin-top: 6px; }
 .favs { margin-top: auto; margin-bottom: 26px; display: flex; flex-direction: column; gap: 4px; }
 .phone.left .favs { align-items: flex-start; } .phone:not(.left) .favs { align-items: flex-end; }
-.fav { display: flex; align-items: center; gap: 12px; padding: 7px 4px; font-size: 17px; }
+.fav { display: flex; align-items: center; gap: 12px; padding: 7px 4px; font-size: calc(17px * var(--fs, 1)); }
 .phone:not(.left) .fav { flex-direction: row-reverse; }
 .fav i { width: 34px; height: 34px; border-radius: 10px; display: block; }
 .dock { display: flex; justify-content: space-around; padding: 10px 0 18px; border-top: 1px solid rgba(255,255,255,.06); }
@@ -84,24 +84,24 @@ header.top p { color: var(--muted); font-size: 14px; max-width: 70ch; line-heigh
 .grab { padding: 10px 0 4px; display: flex; justify-content: center; cursor: grab; flex-shrink: 0; }
 .grab i { width: 36px; height: 4px; border-radius: 4px; background: var(--low); opacity: .7; display: block; }
 .sh-title { display: flex; align-items: center; gap: 10px; padding: 2px 18px 8px; flex-shrink: 0; }
-.sh-title b { font-size: 15px; flex: 1; }
+.sh-title b { font-size: calc(15px * var(--fs, 1)); flex: 1; }
 .phone:not(.left) .sh-title { flex-direction: row; }
-.sh-title .ctx { font-size: 11px; color: var(--low); }
+.sh-title .ctx { font-size: calc(11px * var(--fs, 1)); color: var(--low); }
 .sh-body { flex: 1; overflow-y: auto; padding: 0 16px; display: flex; flex-direction: column; scrollbar-width: none; }
 .sh-body::-webkit-scrollbar { display: none; }
 .sh-foot { flex-shrink: 0; padding: 10px 16px 18px; display: flex; flex-direction: column; gap: 10px; border-top: 1px solid rgba(255,255,255,.06); }
 .actions { display: flex; gap: 10px; }
 .phone.left .actions { flex-direction: row-reverse; }
-.btn { height: 48px; border-radius: 99px; padding: 0 18px; font-weight: 700; font-size: 14px; display: inline-flex; align-items: center; justify-content: center; }
+.btn { min-height: 48px; border-radius: 99px; padding: 0 18px; font-weight: 700; font-size: calc(14px * var(--fs, 1)); display: inline-flex; align-items: center; justify-content: center; }
 .btn.primary { background: var(--hi); color: #11181c; flex: 1.4; }
 .btn.ghost { border: 1px solid var(--variant); color: var(--med); flex: 1; }
-.lbl { font-size: 10px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--low); margin: 12px 2px 8px; }
+.lbl { font-size: calc(10px * var(--fs, 1)); font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--low); margin: 12px 2px 8px; }
 
 /* AureoleDS icons (drawables do app), tingidos por currentColor */
 .ai { display: inline-block; width: var(--s, 20px); height: var(--s, 20px); background: currentColor; -webkit-mask: var(--i) center / contain no-repeat; mask: var(--i) center / contain no-repeat; flex-shrink: 0; }
 /* Header do DS (OverlaySheetHeader / AureoleSheetHeader): título centralizado titleMedium bold, ícone opcional à esquerda, logo do Aureole no canto superior do fim, caixa de 36dp */
 .sh-head { position: relative; padding: 4px 52px 16px; display: flex; align-items: center; justify-content: center; gap: 10px; flex-shrink: 0; min-height: 52px; }
-.sh-head b { font-size: 16px; line-height: 22.4px; font-weight: 700; color: var(--hi); text-align: center; }
+.sh-head b { font-size: calc(16px * var(--fs, 1)); line-height: 22.4px; font-weight: 700; color: var(--hi); text-align: center; }
 .sh-head .lead { width: 36px; height: 36px; border-radius: 10px; background: var(--variant); display: grid; place-items: center; color: var(--med); overflow: hidden; }
 .sh-head .logo { position: absolute; top: 0; right: 16px; width: 36px; height: 36px; border-radius: 16px; display: grid; place-items: center; color: var(--hi); }
 .sh-head .logo:hover { background: rgba(255,255,255,.06); }
@@ -110,32 +110,32 @@ header.top p { color: var(--muted); font-size: 14px; max-width: 70ch; line-heigh
 
 /* Segmented / tabs */
 .seg { display: flex; background: rgba(0,0,0,.22); border-radius: 14px; padding: 4px; gap: 4px; }
-.seg button { flex: 1; height: 44px; border-radius: 11px; font-size: 13px; color: var(--low); }
+.seg button { flex: 1; min-height: 44px; border-radius: 11px; font-size: calc(13px * var(--fs, 1)); color: var(--low); }
 .seg button[aria-pressed="true"] { background: var(--hi); color: #11181c; font-weight: 700; }
 
 /* Tiles */
 .tiles { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
-.tile { border-radius: 16px; background: rgba(74,93,107,.35); padding: 10px 4px 9px; display: flex; flex-direction: column; align-items: center; gap: 6px; font-size: 11px; color: var(--med); position: relative; min-height: 78px; text-align: center; line-height: 1.15; }
+.tile { border-radius: 16px; background: rgba(74,93,107,.35); padding: 10px 4px 9px; display: flex; flex-direction: column; align-items: center; gap: 6px; font-size: calc(11px * var(--fs, 1)); color: var(--med); position: relative; min-height: 78px; text-align: center; line-height: 1.15; }
 .tile .g { width: 40px; height: 40px; border-radius: 12px; background: var(--home); display: grid; place-items: center; color: var(--hi); }
 .tile.on-home { opacity: .55; }
-.tile .bdg { position: absolute; top: 5px; right: 5px; width: 15px; height: 15px; border-radius: 50%; background: #81c784; color: #0a0e11; font-size: 9px; display: grid; place-items: center; font-weight: 900; }
+.tile .bdg { position: absolute; top: 5px; right: 5px; width: 15px; height: 15px; border-radius: 50%; background: #81c784; color: #0a0e11; font-size: calc(9px * var(--fs, 1)); display: grid; place-items: center; font-weight: 900; }
 .pills { display: flex; gap: 8px; }
-.pill { flex: 1; height: 48px; border-radius: 14px; background: rgba(74,93,107,.35); display: flex; align-items: center; justify-content: center; gap: 7px; font-size: 12.5px; color: var(--med); }
+.pill { flex: 1; min-height: 48px; border-radius: 14px; background: rgba(74,93,107,.35); display: flex; align-items: center; justify-content: center; gap: 7px; font-size: calc(12.5px * var(--fs, 1)); color: var(--med); }
 
 /* Rows */
-.row { display: flex; align-items: center; gap: 12px; text-align: left; width: 100%; min-height: 48px; padding: 0 6px; border-radius: 12px; font-size: 14px; color: var(--med); }
+.row { display: flex; align-items: center; gap: 12px; text-align: left; width: 100%; min-height: 48px; padding: 0 6px; border-radius: 12px; font-size: calc(14px * var(--fs, 1)); color: var(--med); }
 .phone.left .row.mirror { flex-direction: row-reverse; text-align: right; }
-.row .ic { width: 30px; height: 30px; border-radius: 9px; background: rgba(74,93,107,.6); display: grid; place-items: center; font-size: 13px; flex-shrink: 0; }
+.row .ic { width: 30px; height: 30px; border-radius: 9px; background: rgba(74,93,107,.6); display: grid; place-items: center; font-size: calc(13px * var(--fs, 1)); flex-shrink: 0; }
 .row .grow { flex: 1; }
-.row .chk { width: 22px; height: 22px; border-radius: 50%; border: 2px solid var(--variant); display: grid; place-items: center; font-size: 12px; flex-shrink: 0; }
+.row .chk { width: 22px; height: 22px; border-radius: 50%; border: 2px solid var(--variant); display: grid; place-items: center; font-size: calc(12px * var(--fs, 1)); flex-shrink: 0; }
 .row.sel { background: rgba(255,255,255,.07); color: var(--hi); }
 .row.sel .chk { background: var(--hi); border-color: var(--hi); color: #11181c; font-weight: 900; }
 
 /* Quick actions */
 .qa { display: flex; justify-content: space-between; }
 .phone.left .qa { flex-direction: row-reverse; }
-.qa button { display: flex; flex-direction: column; align-items: center; gap: 6px; width: 62px; font-size: 10.5px; color: var(--med); }
-.qa i { width: 50px; height: 50px; border-radius: 50%; background: rgba(74,93,107,.6); display: grid; place-items: center; font-style: normal; font-size: 18px; }
+.qa button { display: flex; flex-direction: column; align-items: center; gap: 6px; width: 62px; font-size: calc(10.5px * var(--fs, 1)); color: var(--med); }
+.qa i { width: 50px; height: 50px; border-radius: 50%; background: rgba(74,93,107,.6); display: grid; place-items: center; font-style: normal; font-size: calc(18px * var(--fs, 1)); }
 .qa .on i { background: var(--hi); color: #11181c; }
 .qa .danger i { background: rgba(207,102,121,.18); color: var(--error); }
 .qa .danger { color: var(--error); }
@@ -143,29 +143,29 @@ header.top p { color: var(--muted); font-size: 14px; max-width: 70ch; line-heigh
 .hold::after { content: ""; position: absolute; left: 0; bottom: 0; height: 3px; width: var(--p, 0%); background: var(--error); }
 
 /* Search dock */
-.search { display: flex; align-items: center; gap: 8px; height: 48px; border-radius: 14px; border: 1px solid var(--variant); padding: 0 14px; color: var(--low); font-size: 14px; }
+.search { display: flex; align-items: center; gap: 8px; min-height: 48px; border-radius: 14px; border: 1px solid var(--variant); padding: 0 14px; color: var(--low); font-size: calc(14px * var(--fs, 1)); }
 .search input { flex: 1; background: none; border: 0; color: var(--hi); font: inherit; outline: none; min-width: 0; }
 .jump { display: flex; gap: 6px; overflow-x: auto; scrollbar-width: none; }
 .phone.left .jump { flex-direction: row-reverse; }
-.jump button { height: 36px; padding: 0 13px; border-radius: 99px; background: rgba(74,93,107,.45); font-size: 12px; color: var(--med); white-space: nowrap; }
+.jump button { min-height: 36px; padding: 0 13px; border-radius: 99px; background: rgba(74,93,107,.45); font-size: calc(12px * var(--fs, 1)); color: var(--med); white-space: nowrap; }
 .jump button[aria-pressed="true"] { background: var(--hi); color: #11181c; font-weight: 700; }
 
 /* App picker */
 .grid-wrap { position: relative; display: flex; gap: 6px; }
 .phone.left .grid-wrap { flex-direction: row-reverse; }
 .agrid { flex: 1; display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px 6px; padding: 4px 0; }
-.app { display: flex; flex-direction: column; align-items: center; gap: 4px; font-size: 10.5px; color: var(--med); position: relative; }
+.app { display: flex; flex-direction: column; align-items: center; gap: 4px; font-size: calc(10.5px * var(--fs, 1)); color: var(--med); position: relative; }
 .app i { width: 46px; height: 46px; border-radius: 14px; display: block; }
 .app.on i { outline: 2px solid var(--hi); outline-offset: 2px; }
-.app .ck { position: absolute; top: -4px; right: 6px; width: 17px; height: 17px; border-radius: 50%; background: var(--hi); color: #11181c; font-size: 10px; font-weight: 900; display: none; place-items: center; }
+.app .ck { position: absolute; top: -4px; right: 6px; width: 17px; height: 17px; border-radius: 50%; background: var(--hi); color: #11181c; font-size: calc(10px * var(--fs, 1)); font-weight: 900; display: none; place-items: center; }
 .app.on .ck { display: grid; }
-.az { width: 22px; display: flex; flex-direction: column; justify-content: space-between; align-items: center; font-size: 9px; color: var(--low); padding: 2px 0; border-radius: 11px; background: rgba(0,0,0,.18); }
+.az { width: 22px; display: flex; flex-direction: column; justify-content: space-between; align-items: center; font-size: calc(9px * var(--fs, 1)); color: var(--low); padding: 2px 0; border-radius: 11px; background: rgba(0,0,0,.18); }
 .tray { display: flex; gap: 10px; overflow-x: auto; padding: 6px 2px 2px; scrollbar-width: none; min-height: 72px; }
 .phone.left .tray { flex-direction: row-reverse; }
-.tray .ta { display: flex; flex-direction: column; align-items: center; gap: 4px; font-size: 10px; color: var(--med); position: relative; flex-shrink: 0; width: 52px; }
+.tray .ta { display: flex; flex-direction: column; align-items: center; gap: 4px; font-size: calc(10px * var(--fs, 1)); color: var(--med); position: relative; flex-shrink: 0; width: 52px; }
 .tray .ta i { width: 42px; height: 42px; border-radius: 13px; display: block; }
-.tray .x { position: absolute; top: -5px; right: 0; width: 20px; height: 20px; border-radius: 50%; background: var(--variant); font-size: 11px; display: grid; place-items: center; }
-.empty { font-size: 12px; color: var(--low); padding: 18px 4px; }
+.tray .x { position: absolute; top: -5px; right: 0; width: 20px; height: 20px; border-radius: 50%; background: var(--variant); font-size: calc(11px * var(--fs, 1)); display: grid; place-items: center; }
+.empty { font-size: calc(12px * var(--fs, 1)); color: var(--low); padding: 18px 4px; }
 
 /* Clock bits */
 .styles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
@@ -173,7 +173,7 @@ header.top p { color: var(--muted); font-size: 14px; max-width: 70ch; line-heigh
 .style[aria-pressed="true"] { border-color: var(--hi); }
 .style .b1 { height: 4px; width: 55%; border-radius: 2px; background: var(--low); }
 .style .b2 { height: 13px; width: 80%; border-radius: 3px; background: var(--hi); }
-.style span { font-size: 10.5px; color: var(--med); margin-top: auto; }
+.style span { font-size: calc(10.5px * var(--fs, 1)); color: var(--med); margin-top: auto; }
 .dots { display: flex; gap: 10px; flex-wrap: wrap; }
 .phone.left .dots { flex-direction: row-reverse; }
 .dots button { width: 40px; height: 40px; border-radius: 50%; border: 3px solid transparent; }
@@ -185,35 +185,35 @@ header.top p { color: var(--muted); font-size: 14px; max-width: 70ch; line-heigh
 .gcard { position: absolute; top: 25px; width: 110px; height: 100px; border: 1px solid rgba(255,255,255,.14); padding: 12px; transition: border-radius .2s, background .2s, backdrop-filter .2s; }
 .gcard.a { left: 26px; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
 .gcard.a i { border-radius: 9px; display: block; }
-.gcard.b { right: 26px; font-size: 26px; font-weight: 700; }
-.gcard.b small { display: block; font-size: 10px; color: var(--med); font-weight: 400; }
+.gcard.b { right: 26px; font-size: calc(26px * var(--fs, 1)); font-weight: 700; }
+.gcard.b small { display: block; font-size: calc(10px * var(--fs, 1)); color: var(--med); font-weight: 400; }
 .chips { display: flex; gap: 6px; }
-.chips button { flex: 1; height: 48px; background: rgba(74,93,107,.4); font-size: 13px; color: var(--med); }
+.chips button { flex: 1; min-height: 48px; background: rgba(74,93,107,.4); font-size: calc(13px * var(--fs, 1)); color: var(--med); }
 .chips button[aria-pressed="true"] { background: var(--hi); color: #11181c; font-weight: 700; }
 
 /* ---------- Side panel ---------- */
 .side { display: flex; flex-direction: column; gap: 18px; min-width: 0; width: 100%; }
 .card { background: var(--panel); border: 1px solid var(--line); border-radius: 18px; padding: 18px; }
-.card h2 { font-size: 13px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); margin-bottom: 12px; }
+.card h2 { font-size: calc(13px * var(--fs, 1)); font-weight: 800; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); margin-bottom: 12px; }
 .picker { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
 @media (max-width: 520px) { .picker { grid-template-columns: repeat(2, 1fr); } }
 .picker button { text-align: left; border: 1px solid var(--line); border-radius: 14px; padding: 11px 12px; display: flex; flex-direction: column; gap: 3px; background: #0d1317; }
-.picker button b { font-size: 14px; }
-.picker button span { font-size: 11.5px; color: var(--muted); }
+.picker button b { font-size: calc(14px * var(--fs, 1)); }
+.picker button span { font-size: calc(11.5px * var(--fs, 1)); color: var(--muted); }
 .picker button[aria-pressed="true"] { border-color: var(--reach); background: #102019; }
 .toggles { display: flex; gap: 10px; flex-wrap: wrap; }
-.tg { display: inline-flex; align-items: center; gap: 8px; border: 1px solid var(--line); border-radius: 99px; padding: 8px 14px; font-size: 13px; background: #0d1317; }
+.tg { display: inline-flex; align-items: center; gap: 8px; border: 1px solid var(--line); border-radius: 99px; padding: 8px 14px; font-size: calc(13px * var(--fs, 1)); background: #0d1317; }
 .tg[aria-pressed="true"] { border-color: var(--reach); color: var(--reach); }
-.why h3 { font-size: 20px; font-weight: 800; letter-spacing: -.01em; margin-bottom: 4px; text-wrap: balance; }
-.why .today { font-size: 13px; color: var(--muted); margin-bottom: 12px; line-height: 1.5; }
+.why h3 { font-size: calc(20px * var(--fs, 1)); font-weight: 800; letter-spacing: -.01em; margin-bottom: 4px; text-wrap: balance; }
+.why .today { font-size: calc(13px * var(--fs, 1)); color: var(--muted); margin-bottom: 12px; line-height: 1.5; }
 .why ul { list-style: none; display: flex; flex-direction: column; gap: 9px; }
-.why li { display: grid; grid-template-columns: 22px 1fr; gap: 8px; font-size: 14px; line-height: 1.5; }
-.why li::before { content: attr(data-n); width: 22px; height: 22px; border-radius: 50%; background: #15332a; color: var(--reach); font-size: 11px; font-weight: 800; display: grid; place-items: center; margin-top: 1px; }
+.why li { display: grid; grid-template-columns: 22px 1fr; gap: 8px; font-size: calc(14px * var(--fs, 1)); line-height: 1.5; }
+.why li::before { content: attr(data-n); width: 22px; height: 22px; border-radius: 50%; background: #15332a; color: var(--reach); font-size: calc(11px * var(--fs, 1)); font-weight: 800; display: grid; place-items: center; margin-top: 1px; }
 .rules { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
 @media (max-width: 520px) { .rules { grid-template-columns: 1fr; } }
-.rule { border-left: 3px solid var(--reach); padding: 2px 0 2px 12px; font-size: 13px; line-height: 1.5; color: #c9d5db; }
-.rule b { display: block; color: var(--text); font-size: 13.5px; margin-bottom: 2px; }
-.hint { font-size: 12px; color: var(--muted); text-align: center; max-width: 340px; line-height: 1.5; }
+.rule { border-left: 3px solid var(--reach); padding: 2px 0 2px 12px; font-size: calc(13px * var(--fs, 1)); line-height: 1.5; color: #c9d5db; }
+.rule b { display: block; color: var(--text); font-size: calc(13.5px * var(--fs, 1)); margin-bottom: 2px; }
+.hint { font-size: calc(12px * var(--fs, 1)); color: var(--muted); text-align: center; max-width: 340px; line-height: 1.5; }
 
 /* ---------- v3: gestos de uma mão ---------- */
 .grab { touch-action: none; user-select: none; }
@@ -232,15 +232,15 @@ header.top p { color: var(--muted); font-size: 14px; max-width: 70ch; line-heigh
 .kbd.on { transform: none; }
 .kr { display: flex; gap: 5px; justify-content: center; }
 .kr button { flex: 1; max-width: 32px; height: 42px; border-radius: 7px; background: #3a464d; color: #fff; font: 500 16px var(--font-ui); user-select: none; }
-.kr button.f { max-width: 52px; flex: 1.6; background: #283237; font-size: 14px; }
-.kr button.w { max-width: none; flex: 5; font-size: 12px; color: var(--low); }
+.kr button.f { max-width: 52px; flex: 1.6; background: #283237; font-size: calc(14px * var(--fs, 1)); }
+.kr button.w { max-width: none; flex: 5; font-size: calc(12px * var(--fs, 1)); color: var(--low); }
 .kr button:active { background: #56656d; }
 .sh-body.q > :first-child { margin-top: auto; }
 .agrid.q { display: flex; flex-wrap: wrap-reverse; flex-direction: row-reverse; gap: 10px 6px; }
 .phone.left .agrid.q { flex-direction: row; }
 .agrid.q .app { width: calc((100% - 18px) / 4); }
 .app.best i, .row.best .ic { box-shadow: 0 0 0 2px var(--surface), 0 0 0 4px var(--med); }
-.qhint { font-size: 10px; color: var(--low); text-align: center; padding: 6px 0 2px; }
+.qhint { font-size: calc(10px * var(--fs, 1)); color: var(--low); text-align: center; padding: 6px 0 2px; }
 
 /* Arrastar para selecionar */
 .app { user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; }
@@ -269,9 +269,9 @@ header.top p { color: var(--muted); font-size: 14px; max-width: 70ch; line-heigh
 
 /* Paleta e fonte com prévia ancorada */
 .mini { position: relative; width: 300px; height: 168px; border-radius: 22px; padding: 16px 18px 0; color: var(--hi); font-family: var(--font-ui); background: radial-gradient(120% 70% at 20% 0%, color-mix(in srgb, var(--variant) 70%, transparent) 0%, transparent 60%), var(--home); border: 1px solid rgba(255,255,255,.12); display: flex; flex-direction: column; overflow: hidden; transition: background .25s; }
-.mini .mt { font-size: 40px; font-weight: 700; letter-spacing: -1px; line-height: 1; text-align: center; }
-.mini .md { font-size: 11px; color: var(--med); text-align: center; margin-top: 4px; }
-.mini .mf { margin-top: auto; display: flex; flex-direction: column; align-items: flex-end; gap: 3px; font-size: 13px; }
+.mini .mt { font-size: calc(40px * var(--fs, 1)); font-weight: 700; letter-spacing: -1px; line-height: 1; text-align: center; }
+.mini .md { font-size: calc(11px * var(--fs, 1)); color: var(--med); text-align: center; margin-top: 4px; }
+.mini .mf { margin-top: auto; display: flex; flex-direction: column; align-items: flex-end; gap: 3px; font-size: calc(13px * var(--fs, 1)); }
 .phone.left .mini .mf { align-items: flex-start; }
 .mini .mf span { display: flex; align-items: center; gap: 8px; }
 .phone:not(.left) .mini .mf span { flex-direction: row-reverse; }
@@ -283,25 +283,132 @@ header.top p { color: var(--muted); font-size: 14px; max-width: 70ch; line-heigh
 .pal[aria-pressed="true"] { border-color: var(--hi); }
 .pal .sw { display: flex; height: 18px; border-radius: 6px; overflow: hidden; }
 .pal .sw i { flex: 1; display: block; }
-.pal b { font-size: 11.5px; }
+.pal b { font-size: calc(11.5px * var(--fs, 1)); }
 .fonts { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
 .fonts button { min-height: 52px; border-radius: 14px; background: rgba(74,93,107,.35); display: flex; align-items: center; gap: 10px; padding: 0 12px; text-align: left; border: 2px solid transparent; color: var(--med); }
 .phone.left .fonts button { flex-direction: row-reverse; text-align: right; }
-.fonts button b { font-size: 20px; color: var(--hi); width: 30px; flex-shrink: 0; text-align: center; }
-.fonts button span { font-size: 13px; line-height: 1.1; }
+.fonts button b { font-size: calc(20px * var(--fs, 1)); color: var(--hi); width: 30px; flex-shrink: 0; text-align: center; }
+.fonts button span { font-size: calc(13px * var(--fs, 1)); line-height: 1.1; }
 .fonts button[aria-pressed="true"] { border-color: var(--hi); background: rgba(255,255,255,.08); }
 .try { list-style: none; display: flex; flex-direction: column; gap: 10px; }
-.try li { display: grid; grid-template-columns: 26px 1fr; gap: 10px; font-size: 13.5px; line-height: 1.5; color: #c9d5db; }
+.try li { display: grid; grid-template-columns: 26px 1fr; gap: 10px; font-size: calc(13.5px * var(--fs, 1)); line-height: 1.5; color: #c9d5db; }
 .try li b { color: var(--text); }
 .try li::before { content: attr(data-n); width: 26px; height: 26px; border-radius: 8px; background: #15332a; color: var(--reach); font: 800 11px var(--font-page); display: grid; place-items: center; }
 .try li button { color: var(--reach); text-decoration: underline; text-underline-offset: 2px; font-weight: 700; }
+
+/* ---------- v4: telas restantes ---------- */
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.sheet.floating { left: 12px; right: 12px; border-radius: 26px; max-height: 70%; }
+.sheet.floating .grab { display: none; }
+.sheet.floating .sh-head { padding-top: 18px; }
+.sheet.floating .sh-foot { padding-bottom: 14px; }
+.msg { font-size: calc(13.5px * var(--fs, 1)); color: var(--med); line-height: 1.5; padding: 2px 4px 10px; }
+.gh { grid-column: 1 / -1; font: 800 10.5px var(--font-page); letter-spacing: .08em; text-transform: uppercase; color: var(--reach); margin-top: 8px; }
+.gh:first-child { margin-top: 0; }
+
+/* switch, linhas de navegação */
+.swr { display: flex; align-items: center; gap: 12px; min-height: 56px; padding: 0 6px; font-size: calc(14px * var(--fs, 1)); color: var(--med); }
+.phone.left .swr { flex-direction: row-reverse; text-align: right; }
+.swr .grow { flex: 1; display: flex; flex-direction: column; gap: 2px; }
+.swr b { font-weight: 400; color: var(--hi); }
+.swr small, .navr small { display: block; font-size: calc(11px * var(--fs, 1)); color: var(--low); }
+.sw { width: 52px; height: 32px; border-radius: 16px; background: var(--variant); position: relative; flex-shrink: 0; transition: background .15s; }
+.sw i { position: absolute; top: 4px; left: 4px; width: 24px; height: 24px; border-radius: 50%; background: var(--low); transition: transform .15s, background .15s; display: block; }
+.sw[aria-checked="true"] { background: var(--hi); }
+.sw[aria-checked="true"] i { transform: translateX(20px); background: #11181c; }
+.navr .grow small { margin-top: 1px; }
+.navr { min-height: 56px; }
+.phone.left .navr .chev { transform: scaleX(-1); }
+.row.dng { color: var(--error); }
+.row.dng .ic { background: rgba(207,102,121,.18); }
+
+/* listas reordenáveis */
+.rl, .tray { position: relative; }
+.ri { display: flex; align-items: center; gap: 8px; min-height: 52px; padding: 0 4px 0 8px; border-radius: 12px; font-size: calc(14px * var(--fs, 1)); color: var(--hi); background: rgba(74,93,107,.22); margin-bottom: 6px; transition: box-shadow .12s; }
+.phone.left .ri { flex-direction: row-reverse; text-align: right; padding: 0 8px 0 4px; }
+.ri .grow { flex: 1; display: flex; align-items: center; gap: 10px; min-width: 0; }
+.phone.left .ri .grow { flex-direction: row-reverse; }
+.ri .grow em { font-style: normal; font-size: calc(10.5px * var(--fs, 1)); color: var(--low); border: 1px solid var(--variant); border-radius: 99px; padding: 1px 7px; }
+.sq { width: 26px; height: 26px; border-radius: 8px; display: block; flex-shrink: 0; }
+.ri .hd { width: 48px; height: 48px; display: grid; place-items: center; color: var(--low); font-size: calc(18px * var(--fs, 1)); touch-action: none; cursor: grab; letter-spacing: -2px; flex-shrink: 0; }
+.x2 { width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; color: var(--low); flex-shrink: 0; }
+.lift { position: relative; z-index: 5; box-shadow: 0 8px 22px rgba(0,0,0,.5); background: var(--variant); opacity: .96; }
+.ta.lift { background: none; box-shadow: none; transform-origin: center; }
+.ta.lift i { box-shadow: 0 8px 22px rgba(0,0,0,.55); }
+.mini-act { height: 32px; padding: 0 12px; border-radius: 99px; background: rgba(74,93,107,.45); font: 600 11px var(--font-ui); color: var(--med); text-transform: none; letter-spacing: 0; }
+.addrow { display: flex; gap: 10px; overflow-x: auto; padding: 4px 2px 8px; scrollbar-width: none; }
+.phone.left .addrow { flex-direction: row-reverse; }
+.addrow button { flex-shrink: 0; width: 60px; display: flex; flex-direction: column; align-items: center; gap: 4px; font-size: calc(10px * var(--fs, 1)); color: var(--med); }
+.addrow i { width: 42px; height: 42px; border-radius: 13px; display: block; }
+
+/* prévias */
+.cprev { position: relative; width: 300px; min-height: 118px; padding: 14px 12px 10px; border: 1px dashed rgba(255,255,255,.28); display: flex; flex-direction: column; gap: 6px; transition: background .2s, border-radius .2s; }
+.cprev.h { flex-direction: row; flex-wrap: wrap; }
+.cprev .ci { display: flex; align-items: center; gap: 8px; font-size: calc(11px * var(--fs, 1)); color: var(--med); }
+.cprev .ci i { width: 22px; height: 22px; display: block; }
+.cprev.h .ci { flex-direction: column; gap: 3px; }
+.cprev.h .ci i { width: 34px; height: 34px; }
+.cprev.x .ci { flex: 1; }
+.favprev { position: relative; width: 300px; padding: 12px 14px; border-radius: 18px; background: rgba(43,55,62,.55); display: flex; flex-direction: column; gap: 6px; align-items: flex-end; font-size: calc(13px * var(--fs, 1)); color: var(--hi); }
+.phone.left .favprev { align-items: flex-start; }
+.favprev span { display: flex; align-items: center; gap: 10px; }
+.phone:not(.left) .favprev span { flex-direction: row-reverse; }
+.favprev i { width: 22px; height: 22px; border-radius: 7px; display: block; }
+.wprev { position: relative; width: 320px; display: flex; flex-direction: column; align-items: center; gap: 8px; }
+.wc-row { display: flex; gap: 10px; align-items: center; justify-content: center; }
+.wc { width: 96px; height: 78px; border-radius: 16px; background: rgba(43,55,62,.7); border: 2px solid transparent; display: grid; place-items: center; font-size: calc(12px * var(--fs, 1)); color: var(--med); transition: transform .2s, border-color .2s; }
+.wc.sel { transform: scale(1.12); border-color: var(--hi); color: var(--hi); }
+.wdots { display: flex; gap: 6px; height: 8px; }
+.wdots i { width: 6px; height: 6px; border-radius: 50%; background: var(--low); opacity: .5; display: block; }
+.wdots i.on { background: var(--hi); opacity: 1; }
+.gridprev { position: relative; display: grid; grid-template-columns: repeat(4, 34px); grid-auto-rows: 34px; gap: 6px; }
+.gridprev i { border-radius: 8px; background: rgba(255,255,255,.1); display: block; }
+.gridprev i.on { background: var(--hi); }
+.chipprev { position: relative; display: flex; flex-direction: column; align-items: center; gap: 6px; font-size: calc(12px * var(--fs, 1)); color: var(--med); }
+.chipprev b { width: 64px; height: 64px; border-radius: 50%; display: block; border: 3px solid rgba(255,255,255,.4); }
+
+/* grades de ícone e tiles */
+.icg { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+.icg button { height: 52px; border-radius: 14px; background: rgba(74,93,107,.35); display: grid; place-items: center; color: var(--med); border: 2px solid transparent; }
+.icg button[aria-pressed="true"] { border-color: var(--hi); color: var(--hi); background: rgba(255,255,255,.08); }
+.bigtiles { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.bigtile { min-height: 84px; border-radius: 16px; background: rgba(74,93,107,.35); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; font-size: calc(13px * var(--fs, 1)); color: var(--med); border: 2px solid transparent; text-align: center; padding: 8px; }
+.bigtile[aria-pressed="true"] { border-color: var(--hi); color: var(--hi); }
+.dots.many button { width: 38px; height: 38px; }
+input[type=range].hue { width: 100%; height: 48px; accent-color: #fff; background: none; }
+.stepper { display: flex; align-items: center; gap: 10px; min-height: 56px; padding: 0 6px; font-size: calc(14px * var(--fs, 1)); color: var(--hi); }
+.stepper .grow { flex: 1; }
+.phone.left .stepper { flex-direction: row-reverse; }
+.stepper button { width: 48px; height: 48px; border-radius: 50%; background: rgba(74,93,107,.5); font-size: calc(22px * var(--fs, 1)); display: grid; place-items: center; }
+.stepper output { min-width: 28px; text-align: center; font-weight: 700; }
+.stepper .nums { display: flex; align-items: center; gap: 6px; }
+
+/* notas de versão */
+.vchips { display: flex; gap: 6px; overflow-x: auto; scrollbar-width: none; }
+.phone.left .vchips { flex-direction: row-reverse; }
+.vchips button { height: 36px; padding: 0 13px; border-radius: 99px; background: rgba(74,93,107,.45); font-size: calc(12px * var(--fs, 1)); color: var(--med); white-space: nowrap; flex-shrink: 0; }
+.vchips button[aria-pressed="true"] { background: var(--hi); color: #11181c; font-weight: 700; }
+.note { border-radius: 14px; background: rgba(74,93,107,.25); padding: 12px; margin-bottom: 8px; display: flex; flex-direction: column; gap: 4px; }
+.note b { font-size: calc(13.5px * var(--fs, 1)); color: var(--hi); }
+.note p { font-size: calc(12.5px * var(--fs, 1)); color: var(--med); line-height: 1.45; }
+.badge { align-self: flex-start; font: 700 9.5px var(--font-page); letter-spacing: .05em; text-transform: uppercase; padding: 2px 8px; border-radius: 99px; }
+.badge.new { background: #1f4d2e; color: #a5d6a7; }
+.badge.imp { background: #1f3a55; color: #90caf9; }
+.badge.fix { background: #55401f; color: #ffe082; }
+.pgrid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px 6px; padding: 4px 0 8px; }
+.btn.danger { background: var(--error); color: #11181c; }
+.btn.hold { position: relative; overflow: hidden; }
+.cov { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
+.cov button { text-align: left; border: 1px solid var(--line); border-radius: 12px; padding: 9px 11px; background: #0d1317; display: flex; flex-direction: column; gap: 2px; }
+.cov b { font-size: 13px; } .cov span { font-size: 11px; color: var(--muted); word-break: break-word; }
+@media (max-width: 520px) { .cov { grid-template-columns: 1fr; } }
 </style>
 </head>
 <body>
 <div class="wrap">
   <header class="top">
     <h1>Aureole com uma mão</h1>
-    <p>Protótipo das bottom sheets pensado para o polegar: tudo o que se toca fica abaixo da linha de alcance, o que só se olha fica no topo, e o lado das ações segue a mão configurada no app (destro ou canhoto). Os conceitos do layout base continuam: sheet escura arredondada, preview ancorada acima da sheet, tokens do AureoleDS.</p>
+    <p>Protótipo das bottom sheets, menus, diálogos e popups pensado para o polegar (v4, com todas as telas do app): tudo o que se toca fica abaixo da linha de alcance, o que só se olha fica no topo, e o lado das ações segue a mão configurada no app (destro ou canhoto). Os conceitos do layout base continuam: sheet escura arredondada, preview ancorada acima da sheet, tokens do AureoleDS.</p>
   </header>
 
   <div class="stage">
@@ -343,11 +450,13 @@ header.top p { color: var(--muted); font-size: 14px; max-width: 70ch; line-heigh
       <div class="picker" id="picker"></div>
     </section>
     <section class="card">
-      <h2>Mão e alcance</h2>
+      <h2>Mão, alcance e estados</h2>
       <div class="toggles">
         <button class="tg" id="tgHand" aria-pressed="false">✋ Canhoto</button>
         <button class="tg" id="tgHeat" aria-pressed="true">◐ Zona do polegar</button>
         <button class="tg" id="tgReach" aria-pressed="true">┄ Linha de alcance</button>
+        <button class="tg" id="tgBig" aria-pressed="false">Aa Texto grande</button>
+        <button class="tg" id="tgEmpty" aria-pressed="false">∅ Estado vazio</button>
       </div>
     </section>
     <section class="card">
@@ -364,6 +473,7 @@ header.top p { color: var(--muted); font-size: 14px; max-width: 70ch; line-heigh
       </ol>
     </section>
     <section class="card why" id="why"></section>
+    <section class="card" id="cover"></section>
     <section class="card">
       <h2>Regras para todas as sheets</h2>
       <div class="rules">
@@ -374,7 +484,9 @@ header.top p { color: var(--muted); font-size: 14px; max-width: 70ch; line-heigh
         <div class="rule"><b>Topo é para ver</b>A preview ancorada e o header do DS (título centralizado e logo do Aureole) ficam em cima. O logo mantém o comportamento atual e abre os Ajustes do Aureole; fora isso, nada no topo exige trocar de mão. Não há X: fecha-se arrastando ou tocando fora.</div>
         <div class="rule"><b>Desfazer em vez de confirmar</b>Remover da pasta, favoritar e trocar o atalho acontecem na hora e mostram “Desfazer” por 4 s, no lado do polegar. Segurar 1 s fica só para o que não tem volta, como desinstalar, que fica no lado oposto à mão.</div>
         <div class="rule"><b>Índice alfabético na borda do polegar</b>Listas longas de apps reaproveitam a faixa A–Z da gaveta de apps, na borda do lado da mão.</div>
-        <div class="rule"><b>Alvos de 48 dp</b>Todo botão, chip e linha tocável tem pelo menos 48 dp, com 8 dp entre eles.</div>
+        <div class="rule"><b>Alvos de 48 dp, alturas são mínimos</b>Todo botão, chip e linha tem pelo menos 48 dp, com 8 dp entre eles. Com texto grande a altura cresce; nada é cortado.</div>
+        <div class="rule"><b>Diálogo central vira card no polegar</b>Confirmações e avisos descem para a zona do polegar, com a ação principal do lado da mão. O que é reversível não pergunta: faz e mostra “Desfazer”.</div>
+        <div class="rule"><b>Desfazer acima do rodapé</b>O aviso aparece logo acima dos botões da sheet, sem cobrir Salvar.</div>
       </div>
     </section>
   </div>
@@ -386,7 +498,16 @@ const ICON = {"smile": "data:image/webp;base64,UklGRgICAABXRUJQVlA4TPYBAAAvMAAME
 const ic = (n, size = 20) => `<span class="ai" style="--i:url('${ICON[n]}');--s:${size}px" aria-hidden="true"></span>`;
 const phone = $('#phone'), sheet = $('#sheet'), scrim = $('#scrim'), preview = $('#preview');
 const PHONE_H = 760, KBD_H = 236, REACH = 0.6, FULL = 0.9;
-const state = { sheet: 'customize', left: false, expanded: false, kbd: false, kbdTarget: null, onDismiss: null, sc: 'Todos os apps', fav: true, palette: 'Frostbite', font: 'Istok Web' };
+const state = { sheet: 'customize', left: false, expanded: false, kbd: false, kbdTarget: null, onDismiss: null, sc: 'Todos os apps', fav: true, palette: 'Frostbite', font: 'Istok Web',
+  mode: null, floating: false, big: false, empty: false, bk: null, favQuery: '',
+  flags: { expand: true, gridFolders: false, bgOn: true, labels: true, indicator: true, showAll: true },
+  opts: { orient: 'Vertical', align: 'Início', pos: 'Direita', pos2: 'Direita', pos3: 'Centro', haze: 'Média' },
+  qb: { bg: '#4a5d6b', stroke: '1', strokeColor: '#ffffff', icon: 'click', iconColor: '#ffffff', app: 'Navegador' },
+  children: [['Telefone', '#2e8b3a', 'App'], ['Social', '#c2414b', 'Pasta'], ['Câmera', '#1f63c2', 'App'], ['Trabalho', '#d4a017', 'Pasta']],
+  favs: ['Telefone', 'Mensagens', 'Câmera', 'Navegador', 'Agenda'], widgets: ['Relógio', 'Clima', 'Agenda'], wSel: 0,
+  folderName: 'Trabalho', folderIcon: 'folder', ver: '0.9.13', bgKind: 'solid', bgColor: '#4a5d6b', hue: 200, cp: '#90caf9', size: [2, 2] };
+const rid = id => SHEETS[id].render || id;
+const cur = () => RENDER[rid(state.sheet)](state.mode);
 const norm = s => s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
 
 const APPS = [
@@ -524,7 +645,7 @@ const RENDER = {
       foot: `<div class="seg" id="clockTabs" role="tablist">
           <button aria-pressed="true" data-tab="style">Estilo</button><button aria-pressed="false" data-tab="format">Formato</button><button aria-pressed="false" data-tab="colors">Cores</button>
         </div>${actionsRow('Restaurar', 'Salvar')}`,
-      preview: () => `<div style="position:relative;width:300px;border-radius:20px;background:rgba(43,55,62,.55);padding:16px;text-align:center" id="clockPrev"><span class="tag" style="left:0">Prévia</span><div style="font-size:12px;color:var(--med)">Terça, 10 de novembro</div><div style="font-size:52px;font-weight:700;letter-spacing:-2px;line-height:1.05" id="clockPrevT">09:41</div></div>`,
+      preview: () => `<div style="position:relative;width:300px;border-radius:20px;background:rgba(43,55,62,.55);padding:16px;text-align:center" id="clockPrev"><span class="tag" style="left:0">Prévia</span><div style="font-size: calc(12px * var(--fs, 1));color:var(--med)">Terça, 10 de novembro</div><div style="font-size: calc(52px * var(--fs, 1));font-weight:700;letter-spacing:-2px;line-height:1.05" id="clockPrevT">09:41</div></div>`,
       previewH: 118
     };
   },
@@ -534,7 +655,7 @@ const RENDER = {
       body: `<div class="sh-body" id="scBody"></div>`,
       foot: `<div class="jump" id="scJump"><button aria-pressed="true">Aureole</button><button aria-pressed="false">Apps</button><button aria-pressed="false">Sistema</button><button aria-pressed="false">Outro app…</button></div>
         <label class="search">${ic('search', 18)}<input id="scSearch" inputmode="none" autocomplete="off" placeholder="Buscar ação ou app" aria-label="Buscar ação ou app"></label>`,
-      preview: () => `<div style="position:relative;display:flex;flex-direction:column;align-items:center;gap:8px"><span class="tag">Prévia</span><div style="width:56px;height:56px;border-radius:16px;background:#5b6b73;display:grid;place-items:center">${ic('plus', 24)}</div><span style="font-size:12px;background:var(--surface);padding:5px 12px;border-radius:99px;color:var(--med)" id="scChip">Ao tocar: ${state.sc}</span></div>`,
+      preview: () => `<div style="position:relative;display:flex;flex-direction:column;align-items:center;gap:8px"><span class="tag">Prévia</span><div style="width:56px;height:56px;border-radius:16px;background:#5b6b73;display:grid;place-items:center">${ic('plus', 24)}</div><span style="font-size: calc(12px * var(--fs, 1));background:var(--surface);padding:5px 12px;border-radius:99px;color:var(--med)" id="scChip">Ao tocar: ${state.sc}</span></div>`,
       previewH: 92
     };
   },
@@ -582,6 +703,261 @@ const RENDER = {
   }
 };
 
+/* ================= v4: telas restantes (menus, editores, diálogos, avisos) ================= */
+const COLORS = ['#ffffff', '#90caf9', '#e1bee7', '#ffe082', '#a5d6a7', '#ffab91', '#4a5d6b', '#c2414b'];
+const COLORS_MANY = [...COLORS, '#1d8fe0', '#2e8b3a', '#f28a0f', '#7b4bc2'];
+const kOf = a => (Array.isArray(a) ? a[0] : a);
+const getPath = p => p.split('.').reduce((o, k) => o[k], state);
+const setPath = (p, v) => { const ks = p.split('.'); const last = ks.pop(); ks.reduce((o, k) => o[k], state)[last] = v; };
+const hsl = h => { const a = 0.3; const f = n => { const k = (n + h / 30) % 12; return Math.round(255 * (0.5 - a * Math.max(-1, Math.min(k - 3, 9 - k, 1)))).toString(16).padStart(2, '0'); }; return `#${f(0)}${f(8)}${f(4)}`; };
+
+const sw = (key, label, desc) => `<div class="swr"><span class="grow"><b>${label}</b>${desc ? `<small>${desc}</small>` : ''}</span><button class="sw" role="switch" aria-label="${label}" aria-checked="${state.flags[key]}" data-sw="${key}"><i></i></button></div>`;
+const navRow = (label, desc, attr) => `<button class="row mirror navr" ${attr}><span class="grow">${label}${desc ? `<small>${desc}</small>` : ''}</span><span class="chev">›</span></button>`;
+const dotsRow = (path, cur, many) => `<div class="dots ${many ? 'many' : ''}" data-dots="${path}">${(many ? COLORS_MANY : COLORS).map(c => `<button aria-pressed="${c.toLowerCase() === String(cur).toLowerCase()}" data-c="${c}" style="background:${c}" aria-label="Cor ${c}"></button>`).join('')}</div>`;
+const optSeg = (path, vals, cls = 'seg') => `<div class="${cls}" data-opt="${path}">${vals.map(v => `<button aria-pressed="${getPath(path) === v}" data-v="${v}">${v}</button>`).join('')}</div>`;
+const dangerRow = (label, msg) => `<button class="row mirror dng" data-remove="${msg}"><span class="ic">${ic('delete', 16)}</span><span class="grow">${label}</span></button>`;
+const gbtn = (label, attr = '') => `<button class="btn ghost" ${attr}>${label}</button>`;
+const pbtn = (label, attr = '') => `<button class="btn primary" ${attr}>${label}</button>`;
+const actions2 = (a, b) => `<div class="actions">${a}${b}</div>`;
+const applyRow = (applyId, cancelId, applyLabel = 'Aplicar') => actions2(gbtn('Cancelar', `id="${cancelId}"`), pbtn(applyLabel, `id="${applyId}"`));
+const backRow = () => `<div class="actions">${pbtn('Voltar', 'data-back')}</div>`;
+const doneRow = label => `<div class="actions">${pbtn(label, 'data-close')}</div>`;
+const reorderList = (id, items, fn) => `<div class="rl" id="${id}">${items.map(fn).join('')}</div>`;
+const rrow = (key, inner, removable = true) => `<div class="ri" data-key="${key}"><span class="grow">${inner}</span>${removable ? `<button class="x2" data-rm="${key}" aria-label="Remover ${key}">${ic('close', 12)}</button>` : ''}<span class="hd" data-handle role="button" aria-label="Arraste para reordenar ${key}">⋮⋮</span></div>`;
+const sqName = (n, c, tag) => `<i class="sq" style="background:${c}"></i>${n}${tag ? `<em>${tag}</em>` : ''}`;
+const appIcon = n => `<button data-add="${n}" aria-label="Adicionar ${n}"><i style="background:${color(n)}"></i>${n.slice(0, 9)}</button>`;
+
+/* ----- prévias que dependem do estado ----- */
+const containerPrev = () => {
+  const f = state.flags, h = state.opts.orient === 'Horizontal';
+  const just = { 'Início': 'flex-start', 'Centro': 'center', 'Fim': 'flex-end' }[state.opts.align];
+  const items = state.children.map(([n, c, t]) => `<div class="ci"><i style="background:${c};border-radius:${t === 'Pasta' ? 9 : 7}px"></i>${f.labels || t !== 'Pasta' ? `<span>${n}</span>` : ''}</div>`).join('');
+  return `<div class="cprev ${h ? 'h' : ''} ${f.expand ? 'x' : ''}" style="background:${f.bgOn ? 'rgba(43,55,62,.6)' : 'transparent'};border-radius:${f.bgOn ? 18 : 6}px;justify-content:${just}"><span class="tag" style="left:0;top:-22px">Prévia ao vivo</span>${items || '<span style="font-size:12px;color:var(--low)">Nenhum componente adicionado ainda.</span>'}</div>`;
+};
+const qbPrev = () => { const q = state.qb; return `<div class="chipprev"><span class="tag" style="left:0">Prévia ao vivo</span><b style="background:${q.bg};border-color:${q.stroke === '0' ? 'transparent' : q.strokeColor};border-width:${q.stroke}px;display:grid;place-items:center;color:${q.iconColor}">${ic(q.icon, 28)}</b>${q.app}</div>`; };
+const favPrev = () => `<div class="favprev"><span class="tag" style="left:0;top:-22px">Prévia na home</span>${state.favs.slice(0, 4).map(n => `<span><i style="background:${color(n)}"></i>${n}</span>`).join('') || '<span style="font-size:12px;color:var(--low)">Nenhum aplicativo favorito selecionado.</span>'}</div>`;
+const widgetPrev = () => {
+  const w = state.widgets;
+  const cards = w.map((n, i) => `<div class="wc ${i === state.wSel ? 'sel' : ''}">${n}</div>`).join('') || '<div class="wc" style="border:2px dashed var(--variant);width:150px">Nenhum widget</div>';
+  return `<div class="wprev"><span class="tag" style="left:0;top:-22px">Prévia ao vivo</span><div class="wc-row">${cards}</div><div class="wdots">${state.flags.indicator ? w.map((_, i) => `<i class="${i === state.wSel ? 'on' : ''}"></i>`).join('') : ''}</div></div>`;
+};
+const folderPrev = () => `<div class="chipprev"><span class="tag" style="left:0">Prévia</span><b style="background:var(--variant);border-radius:18px;display:grid;place-items:center;color:var(--hi);border:0">${ic(state.folderIcon, 30)}</b><span id="fpName">${state.folderName || 'Nova Pasta'}</span></div>`;
+const gridPrev = () => `<div class="gridprev"><span class="tag" style="left:0;top:-22px">Prévia ao vivo</span>${Array.from({ length: 16 }, (_, i) => `<i class="${i % 4 < state.size[0] && Math.floor(i / 4) < state.size[1] ? 'on' : ''}"></i>`).join('')}</div>`;
+const colorPrev = () => `<div class="chipprev"><span class="tag" style="left:0">Prévia</span><b style="background:${state.cp};border-color:rgba(255,255,255,.5)"></b><span id="cpHex">${state.cp.toUpperCase()}</span></div>`;
+
+const REL = {
+  '0.9.13': [['new', 'Primeiros passos guiados', 'Um passeio rápido na primeira abertura mostra o essencial.'], ['imp', 'Ajustes mais fáceis de achar', 'O que você mais usa fica mais perto do polegar.']],
+  '0.9.12': [['new', 'Botão rápido', 'Crie um atalho redondo na home para o que você mais abre.'], ['fix', 'Pastas abrem sem travar', 'Corrigimos uma demora ao abrir pastas grandes.']],
+  '0.9.11': [['imp', 'Paletas mais bonitas', 'Cores ajustadas para ler melhor à noite.'], ['fix', 'Relógio no lugar certo', 'O relógio não pula mais ao girar a tela.']]
+};
+const OPTS = {
+  settingsbtn: ['Posição do Botão de Configurações', 'opts.pos', ['Esquerda', 'Direita']],
+  searchicon: ['Posição do Ícone de Busca', 'opts.pos2', ['Esquerda', 'Direita']],
+  panel: ['Alinhamento do Painel Lateral', 'opts.pos3', ['Superior', 'Centro', 'Inferior', 'Espaçamento Igual', 'Espaçamento Entre']],
+  haze: ['Opacidade do Desfoque', 'opts.haze', ['Baixa', 'Média', 'Alta', 'Sólida']]
+};
+const ICONS_QB = ['click', 'add', 'favorite', 'smile', 'folder', 'search', 'info', 'calendar'];
+const ADD_ITEMS = [['calendar', 'Relógio'], ['favorite', 'Lista de Apps (Favoritos)'], ['all_apps', 'Lista de Todos os Apps'], ['vertical_container', 'Container'], ['multiple_view', 'Grupo de Widgets do Android'], ['click', 'Botão Rápido'], ['scroll_group', 'Grupo rolável']];
+
+/* ----- metadados ----- */
+const G = { home: 'Início', menus: 'Menus', edit: 'Editores com prévia', list: 'Listas e busca', dlg: 'Diálogos e avisos', read: 'Leitura e popup' };
+Object.assign(SHEETS.customize, { group: G.home });
+Object.assign(SHEETS.appmenu, { group: G.menus });
+Object.assign(SHEETS.clock, { group: G.edit });
+Object.assign(SHEETS.cards, { group: G.edit });
+Object.assign(SHEETS.palette, { group: G.edit });
+Object.assign(SHEETS.font, { group: G.edit });
+Object.assign(SHEETS.shortcut, { group: G.list });
+Object.assign(SHEETS.picker, { group: G.list });
+const S = (group, name, sub, title, today, points, extra = {}) => ({ group, name, sub, title, today, points, ...extra });
+Object.assign(SHEETS, {
+  itemmenu: S(G.menus, 'Menu do componente', 'segurar um item da home', 'Menu do componente: remover longe do polegar, editar perto', 'Hoje: ação do tipo do item (Personalizar Relógio, Editar Favoritos, Painel Lateral, Botão Rápido) e “Remover Componente” numa lista só.', ['“Remover Componente” sobe para o topo, no lado oposto ao polegar.', 'Remover não pede confirmação: sai na hora e mostra “Desfazer” por 4 s.', 'A ação do tipo (a mais usada) fica por último, colada no rodapé.']),
+  widgetstack: S(G.menus, 'Menu do grupo de widgets', 'segurar um grupo', 'Grupo de widgets: menu com Remover no topo', 'Hoje: ModalBottomSheet com Configurações do App, Redimensionar Grupo, Alternar Indicador e Remover.', ['O indicador de posição vira um switch na própria linha: um toque, sem fechar a sheet.', 'Redimensionar abre o editor de tamanho com passos de 48 dp.', 'Remover vai para o topo e usa “Desfazer”.']),
+  foldermenu: S(G.menus, 'Menu da pasta', 'segurar uma pasta', 'Pasta: ações no rodapé, Remover no topo', 'Hoje: ContainerFolderBottomSheet com Editar atalhos, Renomear, Ícone, Remover pasta e Configurações do Container.', ['Renomear e Ícone abrem o formulário com o teclado colado ao campo.', 'Remover pasta sai na hora, com “Desfazer”.']),
+  qbsettings: S(G.menus, 'Botão rápido', 'configurar o botão', 'Botão rápido: três linhas e Remover no topo', 'Hoje: overlay a 30% da tela com Aparência, Abrir App, Atalho de clique e Remover botão rápido.', ['As três linhas viram linhas de 56 dp.', 'Remover sobe para o topo e usa “Desfazer”.', 'Atalho de clique abre o seletor de atalho já em uma mão.']),
+  qbappearance: S(G.edit, 'Aparência do botão', 'prévia ao vivo', 'Aparência do botão: prévia em cima, controles embaixo', 'Hoje: overlay a 40% com prévia; cores e ícone abrem dois diálogos centrais à parte.', ['Cores e ícone ficam na própria sheet, sem diálogo no meio da tela.', 'A prévia muda a cada toque.', 'Pronto fica do lado da mão.']),
+  widgetgroup: S(G.edit, 'Pilha de widgets', 'prévia ao vivo', 'Pilha de widgets: lista reordenável e prévia ao vivo', 'Hoje: carrossel de prévia no topo, switch do indicador e Salvar.', ['Segurar a alça ⋮⋮ (lado do polegar) reordena; ✕ remove com “Desfazer”.', 'Tocar numa linha mostra o widget na prévia.', 'Adicionar e Salvar ficam lado a lado no rodapé.']),
+  container: S(G.edit, 'Container', 'editor em 4 telas', 'Container: 4 telas, Voltar e Salvar no rodapé', 'Hoje: EditContainerScreen com 4 modos (principal, aparência, comportamento, itens), altura máxima 45%.', ['Cada modo troca o conteúdo na mesma sheet; Voltar fica na mão.', 'Switches de 56 dp, opções em chips de 48 dp.', 'Itens: reordenar com a alça no lado do polegar; ✕ com “Desfazer”.']),
+  favorites: S(G.edit, 'Favoritos', 'lista de apps', 'Favoritos: gerenciar e ordenar com uma mão', 'Hoje: FavoriteAppsDialog com os modos principal, editar atalhos e aparência.', ['Gerenciar junta favoritos (reordenáveis) e a fileira “toque para selecionar”.', 'A busca fica colada ao teclado.', 'Desativar todos usa “Desfazer”.']),
+  background: S(G.edit, 'Plano de fundo', 'cor ou imagem', 'Plano de fundo: prévia e dois tiles grandes', 'Hoje: SetBackgroundBottomSheet com duas linhas, Cor sólida e Imagem personalizada.', ['Dois tiles de 84 dp; a cor aparece na prévia na hora.', 'Cancelar, arrastar ou tocar fora voltam ao fundo anterior.']),
+  griditem: S(G.edit, 'Tamanho do widget', 'redimensionar', 'Tamanho: passos de 48 dp no lado do polegar', 'Hoje: EditGridItemDialog (diálogo central) com “Tamanho atual: L x A células”. Os controles exatos precisam ser conferidos no código.', ['Largura e altura com botões − e + de 48 dp, no lado da mão.', 'A grade de prévia mostra o novo tamanho.']),
+  colorpicker: S(G.edit, 'Escolher cor', 'seletor de cor', 'Cor: recomendadas e matiz ao alcance do polegar', 'Hoje: ColorPickerDialog central com Cores Recomendadas e Ajuste Personalizado (Matiz).', ['O slider de matiz tem 48 dp de altura e ocupa a largura toda.', 'Confirmar no lado da mão.']),
+  folderform: S(G.edit, 'Nova pasta', 'nome e ícone', 'Nova pasta: campo colado ao teclado', 'Hoje: FolderFormDialog central com Nome da Pasta, Ícone da Pasta e Cancelar/Criar.', ['O campo de nome sobe com o teclado, junto de Cancelar e Criar.', 'A prévia mostra o nome enquanto se digita.'], { render: 'folderform', mode: 'new' }),
+  folderedit: S(G.edit, 'Editar pasta', 'nome, ícone, excluir', 'Editar pasta: Excluir no topo, com desfazer', 'Hoje: o mesmo FolderFormDialog, com Excluir.', ['Excluir sobe para o topo e vira “Desfazer”.'], { render: 'folderform', mode: 'edit' }),
+  addcontainer: S(G.list, 'Adicionar container', 'o que adicionar', 'Adicionar container: lista de 7 itens em linhas de 56 dp', 'Hoje: AureoleDialog central com 7 opções.', ['Linhas de 56 dp e ícones do DS.', 'Tocar adiciona e fecha.']),
+  optbtn: S(G.list, 'Posição do botão', 'diálogo de opções', 'Opções: lista de rádio ao alcance, com Desfazer', 'Hoje: AlertDialog central; os rótulos “Esquerda (Left)” estão escritos no código, sem passar pelo strings.xml.', ['Opção marcada no lado do polegar.', 'Escolher aplica e fecha; “Desfazer” volta.', 'Os textos vão para o strings.xml (EN e PT-BR).'], { render: 'options', mode: 'settingsbtn' }),
+  optsearch: S(G.list, 'Posição da busca', 'diálogo de opções', 'Opções: ícone de busca', 'Hoje: AlertDialog central com Esquerda/Direita.', ['Mesmo padrão da posição do botão.'], { render: 'options', mode: 'searchicon' }),
+  optpanel: S(G.list, 'Alinhamento do painel', 'diálogo de opções', 'Opções: alinhamento do painel lateral', 'Hoje: AlertDialog central com 5 opções.', ['Cinco linhas de 56 dp, sem rolagem.'], { render: 'options', mode: 'panel' }),
+  opthaze: S(G.list, 'Opacidade do desfoque', 'diálogo de opções', 'Opções: opacidade do desfoque', 'Hoje: HazeOpacityDialog com Baixa, Média, Alta e Sólida.', ['Quatro linhas; aplica na hora.'], { render: 'options', mode: 'haze' }),
+  confirmlayout: S(G.dlg, 'Redefinir layout', 'confirmação', 'Confirmação: card no polegar, não no meio da tela', 'Hoje: AlertDialog central “Redefinir Layout?” com Restaurar e Cancelar.', ['O card desce para a zona do polegar.', 'Restaurar no lado da mão; Cancelar do outro lado.', 'Texto de apoio é de exemplo.'], { render: 'confirm', mode: 'layout' }),
+  confirmfactory: S(G.dlg, 'Redefinir launcher', 'ação sem volta', 'Sem volta: segurar 1 s no lugar de “Sim/Não”', 'Hoje: FactoryResetDialog central com Sim e Não.', ['Não dá para desfazer: segurar 1 s, com barra de progresso.', 'O botão fica no lado oposto ao polegar.'], { render: 'confirm', mode: 'factory' }),
+  confirmwall: S(G.dlg, 'Restaurar fundo', 'vira desfazer', 'Reversível: sem diálogo, só “Desfazer”', 'Hoje: RestoreWallpaperDialog pergunta “Restaurar plano de fundo padrão?”.', ['O fundo volta na hora e “Desfazer” aparece por 4 s.'], { render: 'confirm', mode: 'wallpaper' }),
+  updateavail: S(G.dlg, 'Atualização disponível', 'aviso do app', 'Aviso de atualização: card no polegar', 'Hoje: InAppUpdateDialog central “Nova atualização disponível”.', ['Atualizar agora no lado da mão; Agora não do outro.'], { render: 'update', mode: 'available' }),
+  updateready: S(G.dlg, 'Atualização pronta', 'aviso do app', 'Atualização pronta: reiniciar agora ou depois', 'Hoje: InAppUpdateDialog “Atualização pronta”.', ['Reiniciar agora no lado da mão.'], { render: 'update', mode: 'ready' }),
+  releasenotes: S(G.read, 'O que há de novo', 'notas de versão', 'Notas: versões no rodapé, Entendido na mão', 'Hoje: SettingsBottomSheet com cabeçalho, chips de versão no topo e Entendido no fim. O conteúdo aqui é de exemplo.', ['Os chips de versão descem para o rodapé; a versão atual fica na borda do polegar.', 'Entendido fica do lado da mão.']),
+  folderpopup: S(G.read, 'Pasta aberta', 'popup da pasta', 'Pasta aberta: popup na zona do polegar', 'Hoje: OpenedFolderPopup com grade de apps, Adicionar Apps e Editar Pasta.', ['O popup abre colado embaixo; os apps ficam ao alcance.', 'Segurar um app abre o menu do app.', 'Pasta vazia mostra “Nenhum app na pasta” e Adicionar Apps em destaque.'])
+});
+
+/* ----- renderizadores ----- */
+Object.assign(RENDER, {
+  itemmenu() {
+    return {
+      title: 'Relógio', lead: ic('calendar', 20),
+      body: `<div class="sh-body">${dangerRow('Remover Componente', 'Componente removido')}<div class="lbl">Ações do item</div>
+        ${navRow('Editar Painel Lateral', '', 'data-toast="Abre o painel lateral"')}${navRow('Personalizar Botão Rápido', '', 'data-go="qbsettings"')}${navRow('Editar Favoritos e Configurações', '', 'data-go="favorites"')}${navRow('Personalizar Relógio', '', 'data-go="clock"')}<div style="height:12px"></div></div>`
+    };
+  },
+  widgetstack() {
+    return {
+      title: 'Grupo de Widgets', lead: ic('multiple_view', 20),
+      body: `<div class="sh-body">${dangerRow('Remover', 'Grupo de widgets removido')}<div class="lbl">Grupo</div>
+        ${navRow('Configurações do App', '', 'data-toast="Abre as configurações do app"')}${navRow('Redimensionar Grupo', 'Tamanho atual: ' + state.size[0] + ' x ' + state.size[1], 'data-go="griditem"')}${sw('indicator', 'Alternar Indicador de Posição')}<div style="height:12px"></div></div>`
+    };
+  },
+  foldermenu() {
+    return {
+      title: 'Configurações da Pasta', lead: ic('folder', 20),
+      body: `<div class="sh-body">${dangerRow('Remover pasta', 'Pasta removida')}<div class="lbl">Pasta</div>
+        ${navRow('Configurações do Container', '', 'data-go="container"')}${navRow('Ícone', '', 'data-go="folderedit"')}${navRow('Renomear', '', 'data-go="folderedit"')}${navRow('Editar atalhos', '', 'data-go="picker"')}<div style="height:12px"></div></div>`
+    };
+  },
+  qbsettings() {
+    return {
+      title: 'Botão rápido', lead: ic('click', 20),
+      body: `<div class="sh-body">${dangerRow('Remover botão rápido', 'Botão rápido removido')}<div class="lbl">Botão</div>
+        ${navRow('Atalho de clique', '', 'data-go="shortcut"')}${navRow(`Abrir App (${state.qb.app})`, '', 'data-toast="Abre o seletor de app"')}${navRow('Aparência', '', 'data-go="qbappearance"')}<div style="height:12px"></div></div>`
+    };
+  },
+  qbappearance() {
+    return {
+      title: 'Botão Rápido',
+      body: `<div class="sh-body"><div class="lbl">Ícone</div><div class="icg" data-opt="qb.icon">${ICONS_QB.map(n => `<button aria-pressed="${state.qb.icon === n}" data-v="${n}" aria-label="Ícone ${n}">${ic(n, 22)}</button>`).join('')}</div>
+        <div class="lbl">Cor do ícone</div>${dotsRow('qb.iconColor', state.qb.iconColor)}
+        <div class="lbl">Cor da borda</div>${dotsRow('qb.strokeColor', state.qb.strokeColor)}
+        <div class="lbl">Borda</div>${optSeg('qb.stroke', ['0', '1', '2', '3'])}
+        <div class="lbl">Cor de fundo</div>${dotsRow('qb.bg', state.qb.bg)}<div style="height:10px"></div></div>`,
+      foot: doneRow('Pronto'), preview: qbPrev, previewH: 112
+    };
+  },
+  widgetgroup() {
+    return {
+      title: 'Pilha de Widgets',
+      body: `<div class="sh-body"><div class="lbl">Widgets (${state.widgets.length})</div>${state.widgets.length ? reorderList('rlWidgets', state.widgets, w => rrow(w, sqName(w, '#5b6b73'))) : '<div class="empty">Nenhum widget no grupo.</div>'}${sw('indicator', 'Mostrar indicador de posição')}</div>`,
+      foot: actions2(gbtn('Adicionar widget', 'data-toast="Abre a lista de widgets"'), pbtn('Salvar', 'data-close')), preview: widgetPrev, previewH: 124
+    };
+  },
+  container(mode) {
+    const n = state.children.length, f = state.flags;
+    const heads = { null: 'Configurações do Container', appearance: 'Aparência', behavior: 'Comportamento', items: 'Gerenciar Itens' };
+    let body, foot;
+    if (mode === 'appearance') {
+      body = `<div class="sh-body">${sw('expand', 'Expandir células')}${sw('gridFolders', 'Pastas em grid')}${sw('bgOn', 'Fundo ativado')}${sw('labels', 'Exibir rótulos das pastas')}</div>`; foot = backRow();
+    } else if (mode === 'behavior') {
+      body = `<div class="sh-body"><div class="lbl">Orientação do container</div>${optSeg('opts.orient', ['Vertical', 'Horizontal'])}<div class="lbl">Alinhamento dos itens</div>${optSeg('opts.align', ['Início', 'Centro', 'Fim'], 'chips')}<div style="height:8px"></div></div>`; foot = backRow();
+    } else if (mode === 'items') {
+      body = `<div class="sh-body"><div class="lbl">Componentes filhos (${n})</div>${n ? reorderList('rlItems', state.children, c => rrow(c[0], sqName(c[0], c[1], c[2]))) : '<div class="empty">Nenhum componente adicionado ainda.</div>'}</div>`;
+      foot = actions2(gbtn('Voltar', 'data-back'), pbtn('Adicionar', 'data-go="addcontainer"'));
+    } else {
+      body = `<div class="sh-body"><div class="lbl">Opções</div>${navRow('Aparência', 'Células, pastas e fundo', 'data-nav="appearance"')}${navRow('Comportamento', 'Orientação e alinhamento', 'data-nav="behavior"')}${navRow('Gerenciar Itens', n + ' componentes', 'data-nav="items"')}<div style="height:8px"></div></div>`;
+      foot = actions2(gbtn('Cancelar', 'data-close'), pbtn('Salvar', 'data-close'));
+    }
+    return { title: heads[mode] || heads.null, body, foot, preview: containerPrev, previewH: 150 };
+  },
+  favorites(mode) {
+    if (mode === 'manage') {
+      const q = norm(state.favQuery || '');
+      const pool = APPS.filter(a => !state.favs.includes(a[0]) && norm(a[0]).includes(q));
+      return {
+        title: 'Gerenciar aplicativos e ordem',
+        body: `<div class="sh-body"><div class="lbl" style="display:flex;justify-content:space-between;align-items:center">Favoritos (${state.favs.length})<button class="mini-act" id="favClear">Desativar todos</button></div>
+          ${state.favs.length ? reorderList('rlFavs', state.favs, f => rrow(f, sqName(f, color(f)))) : '<div class="empty">Nenhum aplicativo favorito selecionado.</div>'}
+          <div class="lbl">Toque para selecionar Favoritos</div><div class="addrow" id="favAdd">${pool.map(a => appIcon(a[0])).join('') || '<div class="empty">Todos os aplicativos já estão nos favoritos.</div>'}</div></div>`,
+        foot: `<label class="search">${ic('search', 18)}<input id="favSearch" inputmode="none" autocomplete="off" placeholder="Buscar aplicativo…" aria-label="Buscar aplicativo" value="${state.favQuery || ''}"></label>${backRow()}`,
+        preview: favPrev, previewH: 150
+      };
+    }
+    return {
+      title: 'Lista de Aplicativos',
+      body: `<div class="sh-body">${sw('showAll', 'Mostrar todos os apps na Home', 'Se desativado, exibe apenas os aplicativos favoritados')}${navRow('Editar atalhos', '', 'data-go="shortcut"')}${navRow('Aparência', 'Exibição dos apps na Home', 'data-go="cards"')}${navRow('Gerenciar aplicativos e ordem', state.favs.length + ' favoritos', 'data-nav="manage"')}<div style="height:8px"></div></div>`,
+      foot: doneRow('Concluído'), preview: favPrev, previewH: 150
+    };
+  },
+  background() {
+    return {
+      title: 'Definir plano de fundo',
+      body: `<div class="sh-body"><div class="lbl">Tipo</div><div class="bigtiles" id="bgKind"><button class="bigtile" data-k="solid" aria-pressed="${state.bgKind === 'solid'}">${ic('placeholder', 24)}Cor sólida</button><button class="bigtile" data-k="image" aria-pressed="${state.bgKind === 'image'}">${ic('add', 24)}Imagem personalizada</button></div>
+        <div id="bgOpts">${state.bgKind === 'solid' ? `<div class="lbl">Cor</div>${dotsRow('bgColor', state.bgColor)}` : '<div class="lbl">Imagem</div><div class="msg">Abre a galeria do aparelho. (Exemplo)</div>'}</div><div style="height:8px"></div></div>`,
+      foot: applyRow('bgApply', 'bgCancel'), preview: miniHome, previewH: 168
+    };
+  },
+  griditem() {
+    return {
+      title: 'Configurar Widget',
+      body: `<div class="sh-body"><div class="lbl" id="sizeLbl">Tamanho atual: ${state.size[0]} x ${state.size[1]} células</div>
+        <div class="stepper"><span class="grow">Largura</span><span class="nums"><button data-step="0:-1" aria-label="Diminuir largura">−</button><output id="sw0">${state.size[0]}</output><button data-step="0:1" aria-label="Aumentar largura">+</button></span></div>
+        <div class="stepper"><span class="grow">Altura</span><span class="nums"><button data-step="1:-1" aria-label="Diminuir altura">−</button><output id="sw1">${state.size[1]}</output><button data-step="1:1" aria-label="Aumentar altura">+</button></span></div><div style="height:8px"></div></div>`,
+      foot: applyRow('gsApply', 'gsCancel'), preview: gridPrev, previewH: 150
+    };
+  },
+  colorpicker() {
+    return {
+      title: 'Escolher Cor Primária',
+      body: `<div class="sh-body"><div class="lbl">Cores Recomendadas</div>${dotsRow('cp', state.cp, true)}<div class="lbl">Ajuste Personalizado (Matiz)</div><input class="hue" id="hue" type="range" min="0" max="359" value="${state.hue}" aria-label="Matiz" style="background:linear-gradient(90deg,#d94f4f,#d9d94f,#4fd94f,#4fd9d9,#4f4fd9,#d94fd9,#d94f4f);border-radius:99px;height:14px;margin:16px 0 22px;-webkit-appearance:none;appearance:none"></div>`,
+      foot: applyRow('cpApply', 'cpCancel', 'Confirmar'), preview: colorPrev, previewH: 112
+    };
+  },
+  folderform(mode) {
+    const edit = mode === 'edit';
+    return {
+      title: edit ? 'Editar Pasta' : 'Nova Pasta',
+      body: `<div class="sh-body">${edit ? dangerRow('Excluir pasta', 'Pasta excluída') : ''}<div class="lbl">Ícone da Pasta</div><div class="icg" data-opt="folderIcon">${['folder', 'star', 'favorite', 'smile', 'calendar', 'search', 'info', 'click'].map(n => `<button aria-pressed="${state.folderIcon === n}" data-v="${n}" aria-label="Ícone ${n}">${ic(n, 22)}</button>`).join('')}</div><div style="height:8px"></div></div>`,
+      foot: `<label class="search">${ic('edit', 18)}<input id="ffName" inputmode="none" autocomplete="off" placeholder="Nome da Pasta" aria-label="Nome da Pasta" value="${edit ? state.folderName : ''}"></label>${actions2(gbtn('Cancelar', 'data-close'), pbtn(edit ? 'Salvar' : 'Criar', 'id="ffSave"'))}`,
+      preview: folderPrev, previewH: 112
+    };
+  },
+  addcontainer() {
+    return { title: 'Adicionar Container', body: `<div class="sh-body">${ADD_ITEMS.map(([i, t]) => `<button class="row mirror navr" data-addc="${t}"><span class="ic">${ic(i, 18)}</span><span class="grow">${t}</span></button>`).join('')}<div style="height:12px"></div></div>` };
+  },
+  options(mode) {
+    const [title, path, vals] = OPTS[mode];
+    return { title, body: `<div class="sh-body">${vals.map(v => `<button class="row mirror navr ${getPath(path) === v ? 'sel' : ''}" data-pick="${v}"><span class="grow">${v}</span><span class="chk">${getPath(path) === v ? '✓' : ''}</span></button>`).join('')}<div style="height:12px"></div></div>` };
+  },
+  confirm(mode) {
+    if (mode === 'factory') {
+      return { floating: true, noLogo: true, title: 'Redefinir launcher?', body: `<div class="sh-body"><p class="msg">Apaga todas as suas configurações e volta ao início. Não dá para desfazer.</p></div>`, foot: `<div class="actions"><button class="btn danger hold" data-hold="Launcher redefinido" style="flex:1.4">Segure para redefinir</button>${gbtn('Cancelar', 'data-close')}</div>` };
+    }
+    if (mode === 'wallpaper') {
+      return { floating: true, noLogo: true, title: 'Plano de fundo', body: `<div class="sh-body"><p class="msg">Sem diálogo: o fundo padrão volta na hora e dá para desfazer.</p></div>`, foot: `<div class="actions">${gbtn('Fechar', 'data-close')}${pbtn('Restaurar padrão', 'id="wallRestore"')}</div>` };
+    }
+    return { floating: true, noLogo: true, title: 'Redefinir Layout?', body: `<div class="sh-body"><p class="msg">Os itens voltam para a posição inicial da home.</p></div>`, foot: actions2(gbtn('Cancelar', 'data-close'), pbtn('Restaurar', 'data-close data-toast="Layout restaurado"')) };
+  },
+  update(mode) {
+    const ready = mode === 'ready';
+    return {
+      floating: true, noLogo: true, title: ready ? 'Atualização pronta' : 'Nova atualização disponível',
+      body: `<div class="sh-body"><p class="msg">${ready ? 'A nova versão foi baixada com sucesso. Reinicie o aplicativo para concluir a instalação.' : 'Uma nova versão do Aureole Launcher está disponível na Google Play. Deseja atualizar agora?'}</p></div>`,
+      foot: actions2(gbtn(ready ? 'Depois' : 'Agora não', 'data-close'), pbtn(ready ? 'Reiniciar agora' : 'Atualizar agora', 'data-close data-toast="Abrindo…"'))
+    };
+  },
+  releasenotes() {
+    const items = REL[state.ver] || [];
+    const tag = { new: 'Novo', imp: 'Melhoria', fix: 'Correção' };
+    return {
+      title: 'O que há de novo',
+      body: `<div class="sh-body"><div class="lbl">Versão ${state.ver}</div>${items.map(([t, h, p]) => `<div class="note"><span class="badge ${t}">${tag[t]}</span><b>${h}</b><p>${p}</p></div>`).join('')}</div>`,
+      foot: `<div class="vchips" id="vchips">${Object.keys(REL).map((v, i) => `<button aria-pressed="${v === state.ver}" data-v="${v}">${i === 0 ? `v${v} (Atual)` : 'v' + v}</button>`).join('')}</div>${doneRow('Entendido')}`
+    };
+  },
+  folderpopup() {
+    const apps = folderApps;
+    return {
+      floating: true, noLogo: true, title: state.folderName,
+      body: `<div class="sh-body">${apps.length ? `<div class="pgrid" id="pgrid">${apps.map(n => `<button class="app" data-papp="${n}"><i style="background:${color(n)}"></i>${n}</button>`).join('')}</div>` : '<div class="empty" style="text-align:center">Nenhum app na pasta</div>'}</div>`,
+      foot: apps.length ? actions2(gbtn('Adicionar Apps', 'data-go="picker"'), pbtn('Editar Pasta', 'data-go="foldermenu"')) : `<div class="actions">${pbtn('Adicionar Apps', 'data-go="picker"')}</div>`
+    };
+  }
+});
+
 /* ---------- Feedback: tic háptico, toast e snackbar ---------- */
 function haptic() {
   try { if (navigator.vibrate) navigator.vibrate(8); } catch (e) { /* sem vibração no desktop */ }
@@ -599,7 +975,7 @@ function showUndo(text, undo) {
   const s = $('#snack');
   $('#snackText').textContent = text;
   snackUndo = undo;
-  s.style.bottom = (state.kbd ? KBD_H : 0) + 12 + 'px';
+  placeSnack();
   s.classList.remove('on'); void s.offsetWidth; s.classList.add('on');
   clearTimeout(snackT); snackT = setTimeout(hideSnack, 4000);
 }
@@ -617,32 +993,35 @@ function naturalHeight() {
 const restHeight = () => Math.min(naturalHeight(), Math.round(PHONE_H * REACH));
 const fullHeight = () => Math.round(PHONE_H * FULL);
 function sheetHeight() {
-  if (state.kbd) return PHONE_H - KBD_H - 64;
+  if (state.kbd) return Math.min(naturalHeight(), PHONE_H - KBD_H - 64);
   return state.expanded ? fullHeight() : restHeight();
 }
 
 function placePreview(h = sheetHeight()) {
-  const r = RENDER[state.sheet]();
-  if (!r.preview || state.kbd) { preview.style.opacity = 0; return; }
-  preview.style.top = Math.max(56, PHONE_H - h - 16 - r.previewH) + 'px';
+  const r = cur();
+  const top = PHONE_H - (state.kbd ? KBD_H : 0) - h - 16 - r.previewH;
+  if (!r.preview || (state.kbd && top < 10)) { preview.style.opacity = 0; return; }
+  preview.style.top = Math.max(state.kbd ? 24 : 56, top) + 'px';
   preview.style.opacity = 1;
 }
 
 function resize() {
-  sheet.style.bottom = (state.kbd ? KBD_H : 0) + 'px';
-  $('#snack').style.bottom = (state.kbd ? KBD_H : 0) + 12 + 'px';
+  sheet.style.bottom = (state.kbd ? KBD_H : 0) + (state.floating ? 28 : 0) + 'px';
   sheet.style.height = sheetHeight() + 'px';
   placePreview();
 }
 
-function open(id) {
-  if (state.onDismiss) { state.onDismiss(); state.onDismiss = null; }
-  hideKbd(true); hideSnack();
+function open(id, mode, keep = false) {
+  if (!keep) { if (state.onDismiss) { state.onDismiss(); state.onDismiss = null; } hideKbd(true); hideSnack(); state.expanded = false; }
+  else hideKbd(true);
   state.sheet = id;
-  state.expanded = false;
-  const r = RENDER[id]();
+  state.mode = keep ? mode : (SHEETS[id].mode || null);
+  const r = cur();
+  state.floating = !!r.floating;
+  sheet.classList.toggle('floating', state.floating);
+  sheet.style.bottom = (state.floating ? 28 : 0) + 'px';
   sheet.innerHTML = `<div class="grab" id="grab" role="button" aria-label="Alça: arraste para 60% ou 90%, toque duas vezes para alternar, segure para os Ajustes do Aureole"><i></i></div>
-    <div class="sh-head">${r.lead ? `<span class="lead">${r.lead}</span>` : ''}<b>${r.title}</b><button class="logo" id="logo" aria-label="Ajustes do Aureole">${ic('logo', 16)}</button></div>${r.body}${r.foot ? `<div class="sh-foot">${r.foot}</div>` : ''}`;
+    <div class="sh-head">${r.lead ? `<span class="lead">${r.lead}</span>` : ''}<b>${r.title}</b>${r.noLogo ? '' : `<button class="logo" id="logo" aria-label="Ajustes do Aureole">${ic('logo', 16)}</button>`}</div>${r.body}${r.foot ? `<div class="sh-foot">${r.foot}</div>` : ''}`;
   preview.innerHTML = r.preview ? r.preview() : '';
   wire(id);
   sheet.classList.add('dragging');
@@ -695,8 +1074,9 @@ sheet.addEventListener('focusin', e => { if (e.target.matches('.search input')) 
 function wire(id) {
   sheet.querySelectorAll('[data-close]').forEach(b => b.addEventListener('click', close));
   sheet.querySelectorAll('[data-go]').forEach(b => b.addEventListener('click', () => open(b.dataset.go)));
-  $('#logo').addEventListener('click', openAureoleSettings);
+  const lg = $('#logo'); if (lg) lg.addEventListener('click', openAureoleSettings);
   dragHandle();
+  wireExtra();
 
   if (id === 'appmenu') {
     const u = $('#uninstall'); let t = null, p = 0;
@@ -756,7 +1136,8 @@ function wire(id) {
 
   if (id === 'shortcut') {
     const body = $('#scBody'), input = $('#scSearch');
-    const all = SC_GROUPS.flatMap(([, items]) => items);
+    const base = SC_GROUPS.flatMap(([, items]) => items), names = new Set(base.map(i => i[1]));
+    const all = base.concat(APPS.filter(a => !names.has(a[0])).map(a => ['▣', a[0]]));
     let best = null;
     const render = () => {
       const q = norm(input.value.trim());
@@ -771,7 +1152,7 @@ function wire(id) {
           .sort((a, b) => (norm(a[1]).startsWith(q) ? 0 : 1) - (norm(b[1]).startsWith(q) ? 0 : 1) || a[1].localeCompare(b[1], 'pt'));
         best = hits[0] ? hits[0][1] : null;
         body.innerHTML = hits.length
-          ? `<div>${hits.map((it, i) => scRow(it, i === 0)).reverse().join('')}<div class="qhint">melhor resultado embaixo · ↵ escolhe</div></div>`
+          ? `<div>${hits.map((it, i) => scRow(it, i === 0)).reverse().join('')}<div class="sr">melhor resultado embaixo; Enter escolhe</div></div>`
           : `<div class="empty" style="text-align:center">Nada com “${input.value}”.</div>`;
       }
       body.scrollTop = body.scrollHeight;
@@ -790,6 +1171,7 @@ function wire(id) {
     $('#scJump').addEventListener('click', e => {
       const b = e.target.closest('button'); if (!b) return;
       $('#scJump').querySelectorAll('button').forEach(x => x.setAttribute('aria-pressed', String(x === b)));
+      if (b.textContent.startsWith('Outro')) { input.focus(); return; }
       const target = body.querySelector(`[data-group="${b.textContent}"]`);
       if (target) body.scrollTo({ top: target.offsetTop - 8, behavior: 'smooth' });
     });
@@ -799,7 +1181,7 @@ function wire(id) {
     const grid = $('#pkGrid'), body = $('#pkBody'), input = $('#pkSearch'), az = $('#pkAz');
     let best = null;
     const drawTray = () => {
-      $('#pkTray').innerHTML = folderApps.length ? folderApps.map(n => `<div class="ta"><i style="background:${color(n)}"></i>${n.slice(0, 8)}<button class="x" data-rm="${n}" aria-label="Remover ${n}">${ic('close', 10)}</button></div>`).join('') : '<div class="empty">Nenhum app na pasta ainda.</div>';
+      $('#pkTray').innerHTML = folderApps.length ? folderApps.map(n => `<div class="ta" data-key="${n}"><i style="background:${color(n)}"></i>${n.slice(0, 8)}<button class="x" data-rm="${n}" aria-label="Remover ${n}">${ic('close', 10)}</button></div>`).join('') : '<div class="empty">Nenhum app na pasta ainda.</div>';
       $('#pkSave').textContent = `Salvar ${folderApps.length} apps`;
     };
     const draw = () => {
@@ -829,6 +1211,7 @@ function wire(id) {
     input.addEventListener('input', draw);
     input.addEventListener('kbd-enter', () => { if (best) { toggle(best); haptic(); } });
     $('#pkTray').addEventListener('click', e => { const b = e.target.closest('[data-rm]'); if (b) remove(b.dataset.rm); });
+    reorderable($('#pkTray'), { itemSel: '.ta', vertical: false, onDone: (now, b) => { folderApps = now; draw(); showUndo('Ordem alterada', () => { folderApps = b; draw(); }); } });
 
     // (4) Segurar e deslizar: marca ou desmarca vários apps de uma vez
     let sel = null, lpT = null, sx = 0, sy = 0, suppress = false;
@@ -993,7 +1376,9 @@ function dragHandle() {
   grab.addEventListener('pointerup', end); grab.addEventListener('pointercancel', end);
 }
 
-$('#picker').innerHTML = Object.entries(SHEETS).map(([id, s]) => `<button data-id="${id}" aria-pressed="false"><b>${s.name}</b><span>${s.sub}</span></button>`).join('');
+$('#picker').innerHTML = Object.values(G).map(g => `<div class="gh">${g}</div>` + Object.entries(SHEETS).filter(([, s]) => s.group === g).map(([id, s]) => `<button data-id="${id}" aria-pressed="false"><b>${s.name}</b><span>${s.sub}</span></button>`).join('')).join('');
+$('#tgBig').addEventListener('click', toggleBig);
+$('#tgEmpty').addEventListener('click', toggleEmpty);
 $('#picker').addEventListener('click', e => { const b = e.target.closest('button'); if (b) open(b.dataset.id); });
 $('#try').addEventListener('click', e => { const b = e.target.closest('[data-go]'); if (b) open(b.dataset.go); });
 scrim.addEventListener('click', close);
@@ -1010,10 +1395,199 @@ $('#tgHand').addEventListener('click', () => setHand(!state.left));
 $('#tgHeat').addEventListener('click', e => { const on = e.currentTarget.getAttribute('aria-pressed') !== 'true'; e.currentTarget.setAttribute('aria-pressed', String(on)); $('#heat').classList.toggle('on', on); });
 $('#tgReach').addEventListener('click', e => { const on = e.currentTarget.getAttribute('aria-pressed') !== 'true'; e.currentTarget.setAttribute('aria-pressed', String(on)); $('#reach').classList.toggle('on', on); });
 
+
+const COVER = [
+  ['CustomizeBottomSheet', 'Personalizar', 'customize'], ['EditClockBottomSheet', 'Relógio', 'clock'], ['ShortcutSelectionBottomSheet', 'Escolher atalho', 'shortcut'],
+  ['AppItemMenus', 'Menu do app', 'appmenu'], ['EditContainerDialogSections', 'Menu do componente', 'itemmenu'], ['WidgetStackBottomSheet', 'Menu do grupo de widgets', 'widgetstack'],
+  ['ContainerFolderBottomSheet', 'Menu da pasta', 'foldermenu'], ['QuickButtonSettingsBottomSheet', 'Botão rápido', 'qbsettings'], ['QuickButtonAppearanceBottomSheet', 'Aparência do botão', 'qbappearance'],
+  ['EditWidgetGroupScreen', 'Pilha de widgets', 'widgetgroup'], ['EditContainerScreen', 'Container (4 telas)', 'container'], ['FavoriteAppsDialog', 'Favoritos', 'favorites'],
+  ['FolderAppPickerDialog', 'Apps da pasta', 'picker'], ['OpenedFolderPopup', 'Pasta aberta', 'folderpopup'], ['FolderFormDialog / CreateFolderDialog', 'Nova e editar pasta', 'folderform'],
+  ['AddContainerDialog', 'Adicionar container', 'addcontainer'], ['EditGridItemDialog', 'Tamanho do widget', 'griditem'], ['ColorPickerDialog', 'Escolher cor', 'colorpicker'],
+  ['SetBackgroundBottomSheet', 'Plano de fundo', 'background'], ['BlurBottomSheet / PickBorderRadiusBottomSheet', 'Cartões e vidro', 'cards'], ['PickPaletteBottomSheet', 'Paleta', 'palette'],
+  ['PickFontBottomSheet', 'Fonte', 'font'], ['SettingsDialogComponents / HazeOpacityDialog', 'Opções de posição e opacidade', 'optbtn'], ['SettingsScreen (Reset, Factory, Wallpaper)', 'Confirmações', 'confirmlayout'],
+  ['InAppUpdateDialog', 'Atualização', 'updateavail'], ['ReleaseNotesBottomSheet', 'O que há de novo', 'releasenotes']
+];
+const OUT = ['SettingsRootScreen, SettingsScreen, SettingsAppearance/Behavior/AdvancedScreen: telas cheias com barra no topo', 'OnboardingHostComponent: passo a passo da primeira abertura', 'AureoleFloatingSearchBar: busca flutuante da home', 'Tema claro, paisagem e tablet: validar nos screenshot tests e no aparelho'];
+$('#cover').innerHTML = `<h2>Mapa: tela do app → protótipo</h2><div class="cov">${COVER.map(([f, n, id]) => `<button data-cov="${id}"><b>${n}</b><span>${f}</span></button>`).join('')}</div><h2 style="margin-top:16px">Fora do protótipo (a decidir)</h2><ul class="try">${OUT.map((t, i) => `<li data-n="${i + 1}"><span>${t}</span></li>`).join('')}</ul>`;
+$('#cover').addEventListener('click', e => { const b = e.target.closest('[data-cov]'); if (b) open(b.dataset.cov); });
 setHand(false);
 $('#heat').classList.add('on');
 $('#reach').classList.add('on');
 open('customize');
+/* ================= v4: interações das telas novas ================= */
+function nav(mode) { state.mode = mode; open(state.sheet, mode, true); }
+function refreshPreview() { const r = cur(); if (r.preview) preview.innerHTML = r.preview(); }
+
+function placeSnack() {
+  const s = $('#snack'), foot = sheet.querySelector('.sh-foot'), isOpen = sheet.classList.contains('open');
+  const base = isOpen ? (state.kbd ? KBD_H : 0) + (state.floating ? 28 : 0) + (foot ? foot.offsetHeight : 0) + 8 : 24;
+  s.style.bottom = base + 'px';
+}
+
+/* Reordenar: alça no lado do polegar (listas) ou segurar e arrastar (fileira de escolhidos) */
+function reorderable(box, { itemSel, handleSel, vertical, onDone }) {
+  let it = null, lp = null, g = 0, before = [], sx = 0, sy = 0;
+  const keys = () => [...box.querySelectorAll(itemSel)].map(x => x.dataset.key);
+  const rel = e => { const r = box.getBoundingClientRect(); return vertical ? e.clientY - r.top + box.scrollTop : e.clientX - r.left + box.scrollLeft; };
+  const pos = el => (vertical ? [el.offsetTop, el.offsetHeight] : [el.offsetLeft, el.offsetWidth]);
+  const lift = (el, e) => {
+    it = el; before = keys(); const [o, s] = pos(el); g = rel(e) - (o + s / 2);
+    el.classList.add('lift'); try { box.setPointerCapture(e.pointerId); } catch (x) { /* ok */ } haptic();
+  };
+  box.addEventListener('pointerdown', e => {
+    const el = e.target.closest(itemSel); if (!el || e.target.closest('[data-rm]')) return;
+    if (handleSel) { if (e.target.closest(handleSel)) { e.preventDefault(); lift(el, e); } return; }
+    sx = e.clientX; sy = e.clientY;
+    lp = setTimeout(() => { lp = null; lift(el, e); }, 280);
+  });
+  box.addEventListener('pointermove', e => {
+    if (!it) { if (lp && Math.hypot(e.clientX - sx, e.clientY - sy) > 8) { clearTimeout(lp); lp = null; } return; }
+    const r = rel(e);
+    [...box.querySelectorAll(itemSel)].forEach(s => {
+      if (s === it) return;
+      const [o, sz] = pos(s);
+      if (r > o && r < o + sz) { if (it.compareDocumentPosition(s) & Node.DOCUMENT_POSITION_FOLLOWING) s.after(it); else s.before(it); haptic(); }
+    });
+    const [o, sz] = pos(it); const d = r - g - (o + sz / 2);
+    it.style.transform = vertical ? `translateY(${d}px)` : `translateX(${d}px)`;
+  });
+  const end = () => {
+    clearTimeout(lp); lp = null; if (!it) return;
+    it.classList.remove('lift'); it.style.transform = '';
+    const now = keys(), b = before; it = null;
+    if (now.join('|') !== b.join('|')) onDone(now, b);
+  };
+  box.addEventListener('pointerup', end); box.addEventListener('pointercancel', end);
+  box.addEventListener('touchmove', e => { if (it) e.preventDefault(); }, { passive: false });
+}
+
+function listWire(id, get, set, rerender) {
+  const box = $('#' + id); if (!box) return;
+  const reorder = (keys) => { const arr = get(); set(keys.map(k => arr.find(a => kOf(a) === k))); };
+  reorderable(box, { itemSel: '.ri', handleSel: '[data-handle]', vertical: true, onDone: (now, b) => { reorder(now); rerender(); showUndo('Ordem alterada', () => { reorder(b); rerender(); }); } });
+  box.addEventListener('click', e => {
+    const x = e.target.closest('[data-rm]'); if (!x) return;
+    const arr = get(), i = arr.findIndex(a => kOf(a) === x.dataset.rm), item = arr[i];
+    set(arr.filter((_, j) => j !== i)); haptic(); rerender();
+    showUndo(`${kOf(item)} removido`, () => { const a = get().slice(); a.splice(i, 0, item); set(a); rerender(); });
+  });
+}
+
+/* Cancelar / Aplicar com desfazer da prévia ao vivo */
+function applyCancel(applyId, cancelId, restore, onApply, msg) {
+  state.onDismiss = restore;
+  $('#' + cancelId).addEventListener('click', close);
+  $('#' + applyId).addEventListener('click', () => { state.onDismiss = null; if (onApply) onApply(); close(); if (msg) showToast(msg); });
+}
+
+function wireExtra() {
+  const id = rid(state.sheet), mode = state.mode;
+  const rerender = () => open(state.sheet, state.mode, true);
+
+  // genéricos
+  sheet.querySelectorAll('[data-nav]').forEach(b => b.addEventListener('click', () => nav(b.dataset.nav)));
+  sheet.querySelectorAll('[data-back]').forEach(b => b.addEventListener('click', () => nav(null)));
+  sheet.querySelectorAll('[data-toast]').forEach(b => b.addEventListener('click', () => showToast(b.dataset.toast)));
+  sheet.querySelectorAll('[data-remove]').forEach(b => b.addEventListener('click', () => { const m = b.dataset.remove; close(); haptic(); showUndo(m, () => showToast('Restaurado')); }));
+  sheet.querySelectorAll('[data-sw]').forEach(b => b.addEventListener('click', () => {
+    const k = b.dataset.sw; state.flags[k] = !state.flags[k]; b.setAttribute('aria-checked', String(state.flags[k])); haptic(); refreshPreview();
+  }));
+  sheet.querySelectorAll('[data-opt]').forEach(g => g.addEventListener('click', e => {
+    const b = e.target.closest('button'); if (!b) return;
+    setPath(g.dataset.opt, b.dataset.v); g.querySelectorAll('button').forEach(x => x.setAttribute('aria-pressed', String(x === b))); haptic(); refreshPreview();
+  }));
+  sheet.querySelectorAll('[data-dots]').forEach(g => g.addEventListener('click', e => {
+    const b = e.target.closest('button'); if (!b) return;
+    setPath(g.dataset.dots, b.dataset.c); g.querySelectorAll('button').forEach(x => x.setAttribute('aria-pressed', String(x === b))); haptic(); refreshPreview();
+  }));
+  sheet.querySelectorAll('[data-hold]').forEach(u => {
+    let t = null, p = 0;
+    const stop = () => { clearInterval(t); p = 0; u.style.setProperty('--p', '0%'); };
+    u.addEventListener('pointerdown', () => { t = setInterval(() => { p += 10; u.style.setProperty('--p', p + '%'); if (p >= 100) { const m = u.dataset.hold; stop(); haptic(); close(); showToast(m); } }, 100); });
+    ['pointerup', 'pointerleave', 'pointercancel'].forEach(ev => u.addEventListener(ev, stop));
+  });
+
+  // listas reordenáveis
+  listWire('rlItems', () => state.children, a => { state.children = a; }, rerender);
+  listWire('rlWidgets', () => state.widgets, a => { state.widgets = a; state.wSel = Math.min(state.wSel, Math.max(0, a.length - 1)); }, rerender);
+  listWire('rlFavs', () => state.favs, a => { state.favs = a; }, rerender);
+
+  if (id === 'widgetgroup') {
+    const box = $('#rlWidgets');
+    if (box) box.addEventListener('click', e => { if (e.target.closest('[data-rm],[data-handle]')) return; const r = e.target.closest('.ri'); if (r) { state.wSel = Math.max(0, state.widgets.indexOf(r.dataset.key)); refreshPreview(); } });
+  }
+  if (id === 'favorites' && mode === 'manage') {
+    $('#favAdd').addEventListener('click', e => { const b = e.target.closest('[data-add]'); if (!b) return; state.favs = [...state.favs, b.dataset.add]; haptic(); rerender(); });
+    const clear = $('#favClear');
+    clear.addEventListener('click', () => { const bk = state.favs; if (!bk.length) return; state.favs = []; rerender(); showUndo('Favoritos desativados', () => { state.favs = bk; rerender(); }); });
+    $('#favSearch').addEventListener('input', e => {
+      state.favQuery = e.target.value; const q = norm(state.favQuery);
+      $('#favAdd').innerHTML = APPS.filter(a => !state.favs.includes(a[0]) && norm(a[0]).includes(q)).map(a => appIcon(a[0])).join('') || '<div class="empty">Nenhum outro aplicativo encontrado.</div>';
+    });
+  }
+  if (id === 'background') {
+    const orig = PALETTES.find(p => p[0] === state.palette)[1];
+    applyCancel('bgApply', 'bgCancel', () => phone.style.setProperty('--home', orig), null, 'Plano de fundo aplicado');
+    $('#bgKind').addEventListener('click', e => { const b = e.target.closest('[data-k]'); if (!b) return; state.bgKind = b.dataset.k; haptic(); rerender(); });
+    const dots = $('[data-dots="bgColor"]');
+    if (dots) dots.addEventListener('click', e => { const b = e.target.closest('button'); if (b) phone.style.setProperty('--home', b.dataset.c === '#ffffff' ? '#3a4750' : b.dataset.c); });
+  }
+  if (id === 'griditem') {
+    const orig = [...state.size];
+    applyCancel('gsApply', 'gsCancel', () => { state.size = orig; }, null, 'Tamanho aplicado');
+    sheet.querySelectorAll('[data-step]').forEach(b => b.addEventListener('click', () => {
+      const [i, d] = b.dataset.step.split(':').map(Number);
+      state.size[i] = Math.max(1, Math.min(4, state.size[i] + d)); haptic();
+      $('#sw' + i).textContent = state.size[i]; $('#sizeLbl').textContent = `Tamanho atual: ${state.size[0]} x ${state.size[1]} células`; refreshPreview();
+    }));
+  }
+  if (id === 'colorpicker') {
+    const orig = state.cp;
+    applyCancel('cpApply', 'cpCancel', () => { state.cp = orig; }, null, 'Cor aplicada');
+    $('#hue').addEventListener('input', e => { state.hue = +e.target.value; state.cp = hsl(state.hue); refreshPreview(); });
+  }
+  if (id === 'folderform') {
+    const input = $('#ffName');
+    const save = () => { state.folderName = input.value.trim() || 'Nova Pasta'; hideKbd(true); close(); showToast(mode === 'edit' ? 'Pasta salva' : 'Pasta criada'); };
+    $('#ffSave').addEventListener('click', save);
+    input.addEventListener('kbd-enter', save);
+    input.addEventListener('input', () => { const n = $('#fpName'); if (n) n.textContent = input.value || 'Nova Pasta'; });
+  }
+  if (id === 'addcontainer') sheet.querySelectorAll('[data-addc]').forEach(b => b.addEventListener('click', () => { const t = b.dataset.addc; close(); showToast(`${t} adicionado`); }));
+  if (id === 'options') {
+    const [title, path] = OPTS[mode];
+    sheet.querySelectorAll('[data-pick]').forEach(b => b.addEventListener('click', () => {
+      const prev = getPath(path), v = b.dataset.pick; if (v === prev) { close(); return; }
+      setPath(path, v); haptic(); close(); showUndo(`${v}`, () => setPath(path, prev));
+    }));
+  }
+  if (id === 'confirm' && mode === 'wallpaper') $('#wallRestore').addEventListener('click', () => { close(); haptic(); showUndo('Plano de fundo restaurado', () => showToast('Restaurado')); });
+  if (id === 'releasenotes') $('#vchips').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; state.ver = b.dataset.v; haptic(); rerender(); });
+  if (id === 'folderpopup') {
+    const g = $('#pgrid');
+    if (g) {
+      let lp = null, longed = false;
+      g.addEventListener('pointerdown', e => { const b = e.target.closest('[data-papp]'); if (!b) return; longed = false; lp = setTimeout(() => { longed = true; haptic(); open('appmenu'); }, 500); });
+      ['pointerup', 'pointerleave', 'pointercancel'].forEach(ev => g.addEventListener(ev, () => clearTimeout(lp)));
+      g.addEventListener('click', e => { if (longed) return; const b = e.target.closest('[data-papp]'); if (b) showToast(`Abre ${b.dataset.papp}`); });
+    }
+  }
+}
+
+function toggleEmpty() {
+  if (!state.empty) { state.bk = { favs: state.favs, children: state.children, widgets: state.widgets, folderApps }; state.favs = []; state.children = []; state.widgets = []; folderApps = []; }
+  else { ({ favs: state.favs, children: state.children, widgets: state.widgets, folderApps } = state.bk); }
+  state.empty = !state.empty;
+  $('#tgEmpty').setAttribute('aria-pressed', String(state.empty));
+  open(state.sheet, state.mode, true);
+}
+function toggleBig() {
+  state.big = !state.big;
+  phone.style.setProperty('--fs', state.big ? '1.3' : '1');
+  $('#tgBig').setAttribute('aria-pressed', String(state.big));
+  requestAnimationFrame(() => requestAnimationFrame(resize));
+}
+
 </script>
 </body>
 </html>

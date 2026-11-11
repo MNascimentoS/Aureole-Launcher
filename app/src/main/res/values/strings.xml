@@ -374,8 +374,8 @@
     <string name="home_onboarding_task_container">Fill the &lt;b&gt;container&lt;/b&gt;</string>
     <string name="home_onboarding_task_widget">Add some &lt;b&gt;widgets&lt;/b&gt;</string>
     <string name="home_onboarding_task_settings">Check more &lt;b&gt;settings&lt;/b&gt;</string>
-    <string name="home_onboarding_picker_hint">Tap to see your screen change right away.</string>
-    <string name="home_onboarding_picker_done">Looks good</string>
+    <string name="home_onboarding_picker_hint">Tap a palette or font to try it. Nothing changes until you tap Apply.</string>
+    <string name="home_onboarding_picker_done">Got it</string>
     <string name="home_onboarding_done_title">All set</string>
     <string name="home_onboarding_done_subtitle">Your Aureole is shining. Enjoy!</string>
     <string name="home_onboarding_task_done_a11y">%1$s, done</string>

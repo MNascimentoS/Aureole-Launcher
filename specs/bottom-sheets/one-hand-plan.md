@@ -17,6 +17,7 @@ Rodar cada fase com `/fase <n>`. O comando mostra o plano, espera o ok, delega a
 | 5 | Relógio: abas que trocam deslizando | `sheet-ui` (Sonnet) | 60–90k |
 | 6 | Paleta e Fonte com mini-home e efeito na hora | `sheet-ui` (Sonnet) | 120–160k |
 | 7 | Strings, previews e testes de screenshot que faltarem | `sheet-chores` (Haiku) | 40–80k |
+| 8 | Fechamento: divergências da revisão visual, canhoto, `EditWidgetGroupScreen` e checklist no aparelho | `sheet-ui` (Sonnet) | 120–180k |
 | — | Revisão visual ao fim de cada fase | `visual-reviewer` (Opus) | 30–50k por fase |
 
 Diferenças aceitas em relação ao protótipo:
@@ -99,3 +100,34 @@ O detalhe de cada uma é escrito ao fim da fase anterior, a partir do que a fase
 5. `HorizontalPager` no conteúdo de `EditClockBottomSheet`, com as abas no rodapé sincronizadas.
 6. Mini-home ancorada e tema local aplicado na hora. Cancelar, arrastar ou tocar fora voltam ao anterior. Paletas em grade de 3 colunas e fontes em grade de 2, cada uma escrita na própria fonte.
 7. O que faltar de strings, previews e screenshots.
+
+
+## Fase 8: fechamento
+
+**Modelo recomendado:** Sonnet 5.5 (`sheet-ui`) para o código. A revisão visual segue com `visual-reviewer` (Opus). O checklist no aparelho é feito por você.
+
+**Origem:** revisão visual das fases 5, 6 e 7 (veredito "quase"), comparada com o CSS do protótipo, já que `ref/` só tem `fase1-*`, mais as pendências deixadas nas fases anteriores.
+
+### Comportamento esperado
+
+1. **Pager do relógio:** a altura acompanha a aba ativa. Hoje segue a página mais alta e sobra vão na aba Estilo (`EditClockBottomSheet`, `EditClockPager`).
+2. **Linha de ações:** Restaurar/Cancelar contornado (flex 1) e Salvar/Aplicar principal (flex 1,4), 48 dp, largura toda. Vale para relógio, paleta e fonte (`ThemePreviewOverlay.kt`, `EditClockBottomSheet`).
+3. **Relógio expandido (90%):** a prévia sai da tela ou fica acima da sheet. Hoje fica por baixo, só com a data esmaecida (`AureoleEditOverlaySheet.kt`).
+4. **Logo do Aureole no header** de Paleta e Fonte, ligando `onSettingsClick` em `ThemePreviewOverlay.kt`.
+5. **Mini-home:** proporção 300×168 (cerca de 22% da tela) e faixa de dock com 4 ícones e borda no topo (`AureoleMiniHome.kt`).
+6. **Chip de fonte no canhoto:** espelhado (`row-reverse`, texto à direita). `ThemePickerChips.kt` passa a receber o lado da mão, com variante canhota no screenshot.
+7. **Onboarding do seletor:** hierarquia dos botões corrigida; "Apply" principal e "Got it" secundário.
+8. **Canhoto das listas:** linhas espelhadas no modo canhoto, como no protótipo.
+9. **Letra do `CurvedAlphabetScrubber`:** letra única na posição certa.
+10. **Bandeja canhota:** começa pela direita, como no protótipo. Não mudar.
+11. **`EditWidgetGroupScreen`:** confirmar se `onSettingsClick` é necessário e ligar se for.
+12. **Acabamentos menores:** rótulos de seção pequenos em caixa-alta com espaçamento e cor `low`; nome de cada paleta na cor de destaque dela; avaliar os 3 cartões de estilo e as bolinhas de 40 dp na aba Cores.
+
+### Pronto quando
+
+- [ ] Itens 1 a 7 corrigidos e baselines regravadas com `updateDebugScreenshotTest`.
+- [ ] Canhoto das listas e letra do scrubber corrigidos.
+- [ ] `EditWidgetGroupScreen` resolvido (ligado ou descartado com motivo).
+- [ ] Nova revisão visual das fases 5, 6 e 7 sem divergência de layout.
+- [ ] Checklist no aparelho sem bloqueio, nas duas mãos: gestos da fase 1, desfazer, busca no teclado, abas do relógio, mini-home e tema na hora.
+- [ ] Gates finais verdes: detekt, testDebugUnitTest, jacocoTestCoverageVerification, validateDebugScreenshotTest, assembleDebug.
