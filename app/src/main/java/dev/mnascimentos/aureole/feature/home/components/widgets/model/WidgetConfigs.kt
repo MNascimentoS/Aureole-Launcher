@@ -1,7 +1,7 @@
 package dev.mnascimentos.aureole.feature.home.components.widgets.model
 
 import android.appwidget.AppWidgetHost
-import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -11,24 +11,28 @@ import dev.mnascimentos.aureole.core.data.model.LauncherItemState
 object WidgetPickerMetrics {
     val SearchTopPaddingExpanded = 80.dp
     val ListBottomPadding = 120.dp
-    val PreviewCardSize = 150.dp
+
+    /** Small enough that about three cards and the "+" card fit across the live preview. */
+    val PreviewCardWidth = 110.dp
+    val PreviewCardHeight = 90.dp
     val AddCardSize = 164.dp
 }
 
 private const val DEFAULT_HAZE_OPACITY = 0.5f
 
 /**
- * Parameters for the widget carousel preview in [EditWidgetGroupScreen].
+ * Parameters for the reorderable widget preview in [EditWidgetGroupScreen]: [onMoveWidget] runs at every swap
+ * while a card is dragged and [onMoveEnd] once when the drag that moved it ends.
  */
 data class EditWidgetCarouselParams(
     val currentWidgets: List<Int>,
     val appWidgetHost: AppWidgetHost?,
-    val listState: LazyListState,
-    val currentPage: Int,
+    val scrollState: ScrollState,
     val isIndicatorEnabled: Boolean,
     val onRemoveWidget: (Int) -> Unit,
     val onAddWidgetClick: () -> Unit,
-    val onMoveWidget: ((Int, Int) -> Unit)? = null
+    val onMoveWidget: (Int, Int) -> Unit = { _, _ -> },
+    val onMoveEnd: () -> Unit = {}
 )
 
 data class EditWidgetGroupParams(
@@ -44,6 +48,7 @@ data class EditWidgetGroupActions(
     val onRemoveWidget: (Int) -> Unit,
     val onAddWidgetClick: () -> Unit,
     val onDismissRequest: () -> Unit,
+    /** The new order, once per drag (or accessibility move) that changed it. */
     val onReorderWidgets: (List<Int>) -> Unit = {},
     /** Opens the Aureole settings from the sheet's header logo; null hides the logo. */
     val onSettingsClick: (() -> Unit)? = null

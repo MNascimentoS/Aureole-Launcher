@@ -27,7 +27,6 @@ import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.ContainerFolderButtonParams
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.ContainerFolderConfig
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.ContainerFolderItemParams
-import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.FolderAppRowItemParams
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.FolderPopupActions
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.GridFolderPopupParams
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.OpenedFolderPopupConfig
@@ -358,39 +357,6 @@ class FolderBranchCoverageTest {
         composeTestRule.onNodeWithText("Apps in Folder: App Picker").assertIsDisplayed()
     }
 
-    @Test
-    fun `when reordering apps with in SelectedFolderAppRowActionButtons, should reorder branches`() {
-        var moveUpCalled = false
-        var moveDownCalled = false
-        var toggleCalled = false
-
-        composeTestRule.setContent {
-            AureoleLauncherTheme {
-                SelectedFolderAppRowActionButtons(
-                    params = FolderAppRowItemParams(
-                        app = app2,
-                        index = 1,
-                        totalCount = 3,
-                        canReorder = true
-                    ),
-                    onMoveUp = { moveUpCalled = true },
-                    onMoveDown = { moveDownCalled = true },
-                    onToggleSelect = { toggleCalled = true }
-                )
-            }
-        }
-
-        // Perform clicks on buttons
-        composeTestRule.onAllNodes(hasClickAction())[0].performClick()
-        assertTrue(moveUpCalled)
-
-        composeTestRule.onAllNodes(hasClickAction())[1].performClick()
-        assertTrue(moveDownCalled)
-
-        composeTestRule.onAllNodes(hasClickAction())[2].performClick()
-        assertTrue(toggleCalled)
-    }
-
     // --- 6. OpenedFolderLayouts & OpenedFolderPopup Branches ---
 
     @Test
@@ -704,12 +670,11 @@ class FolderBranchCoverageTest {
             }
         }
 
-        // Click Plus on App Two to add it
-        composeTestRule.onAllNodes(hasClickAction())[2].performClick()
+        // Tap App Two in the grid to add it
+        composeTestRule.onNodeWithText("App Two").performClick()
 
-        // Click Save
         composeTestRule.onNodeWithText("Save", substring = true).performClick()
-        assertTrue(savedList.contains(app1.packageName))
+        assertEquals(listOf(app1.packageName, app2.packageName), savedList)
     }
 
     // --- 11. Overlays & BottomSheets Full Coverage ---

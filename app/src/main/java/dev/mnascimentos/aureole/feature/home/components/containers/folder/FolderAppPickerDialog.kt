@@ -32,6 +32,7 @@ import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
+import dev.mnascimentos.aureole.feature.home.components.containers.folder.extensions.moveTrayApp
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.extensions.searchFolderApps
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.extensions.selectedTrayApps
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.extensions.toggleBestSearchResult
@@ -137,10 +138,8 @@ private fun FolderAppPickerDialogContent(
         selectedTrayApps(selectedPackages, appMap)
     }
 
-    val remainingApps = remember(allApps, selectedPackages.toList()) {
-        val selectedSet = selectedPackages.toSet()
-        sortedForPickerGrid(allApps.filter { it.packageName !in selectedSet }) { it.label }
-    }
+    // Every app stays in the grid, marked or not, so nothing jumps away when it is tapped.
+    val gridApps = remember(allApps) { sortedForPickerGrid(allApps) { it.label } }
 
     val sortedApps = remember(allApps) { allApps.sortedBy { it.label.lowercase() } }
     val isSearching = searchQuery.isNotBlank() && debouncedQuery.isNotBlank()
@@ -150,8 +149,7 @@ private fun FolderAppPickerDialogContent(
         params = FolderAppPickerBodyParams(
             folderName = folder.name,
             searchQuery = searchQuery,
-            filteredSelected = selectedApps,
-            filteredRemaining = remainingApps,
+            gridApps = gridApps,
             selectedPackages = selectedPackages,
             isSearching = isSearching,
             searchResults = searchResults,
@@ -205,6 +203,9 @@ internal fun FolderAppPickerDialogBody(
                 onQueryChange = onSearchQueryChange,
                 onSearch = onSearch,
                 onRemove = onToggleSelect,
+                onMove = { from, to ->
+                    moveTrayApp(selectedPackages, params.trayApps.map { it.packageName }, from, to)
+                },
                 onDismiss = onDismiss,
                 onSave = { onSave(selectedPackages.toList()) }
             )

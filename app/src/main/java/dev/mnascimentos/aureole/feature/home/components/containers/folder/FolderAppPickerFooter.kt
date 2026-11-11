@@ -1,8 +1,6 @@
 package dev.mnascimentos.aureole.feature.home.components.containers.folder
 
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
@@ -13,32 +11,28 @@ import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.isImeVisible
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.widthIn
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.semantics.contentDescription
-import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.LayoutDirection
 import dev.mnascimentos.aureole.R
+import dev.mnascimentos.aureole.composable.reorder.ReorderableRow
+import dev.mnascimentos.aureole.composable.reorder.model.ReorderableActions
+import dev.mnascimentos.aureole.composable.reorder.model.ReorderableParams
 import dev.mnascimentos.aureole.composable.search.AureoleSearchField
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
-import dev.mnascimentos.aureole.core.designsystem.icons.Close
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
@@ -47,7 +41,7 @@ import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.
 
 /**
  * Fixed footer of the folder picker, kept above the keyboard with `imePadding()`. From top to bottom:
- * the tray of marked apps (only while searching or with the keyboard open), the search field and Cancel/Save.
+ * the reorderable tray of the chosen apps, the search field and Cancel/Save.
  * Save sits on the thumb side.
  */
 @OptIn(ExperimentalLayoutApi::class)
@@ -57,7 +51,8 @@ internal fun FolderAppPickerFooter(
     actions: FolderAppPickerFooterActions,
     modifier: Modifier = Modifier
 ) {
-    val showTray = params.trayApps.isNotEmpty() && (params.searchQuery.isNotBlank() || WindowInsets.isImeVisible)
+    // Empty, the tray only shows its hint while browsing: with the keyboard up the room goes to the results.
+    val showTray = params.trayApps.isNotEmpty() || (params.searchQuery.isBlank() && !WindowInsets.isImeVisible)
     Column(
         modifier = modifier
             .fillMaxWidth()
@@ -67,8 +62,7 @@ internal fun FolderAppPickerFooter(
         if (showTray) {
             FolderAppPickerTray(
                 apps = params.trayApps,
-                isLeftHandedMode = params.isLeftHandedMode,
-                onRemove = actions.onRemove
+                actions = actions
             )
         }
         AureoleSearchField(
@@ -116,88 +110,72 @@ private fun FolderAppPickerActions(
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
+/**
+ * The apps of the folder, in their order: hold one and drag it sideways to reorder, ✕ takes it out. The order reads
+ * left to right in both hand modes, since it is the order the folder shows them in.
+ */
 @Composable
 private fun FolderAppPickerTray(
     apps: List<AppInfo>,
-    isLeftHandedMode: Boolean,
-    onRemove: (String) -> Unit,
+    actions: FolderAppPickerFooterActions,
     modifier: Modifier = Modifier
 ) {
-    // Left-handed: the row runs right to left, so the chips start at the thumb side (the left edge).
-    val direction = if (isLeftHandedMode) LayoutDirection.Rtl else LayoutDirection.Ltr
     Column(modifier = modifier.fillMaxWidth()) {
         AureoleText(
-            text = stringResource(R.string.home_folder_picker_selected_label),
+            text = stringResource(R.string.home_folder_picker_tray_label).uppercase(),
             color = AureoleDS.colors.onSurfaceMedium,
             modifier = Modifier.padding(bottom = AureoleDS.dimens.xxSmall),
-            format = AureoleTextFormatParams(style = AureoleDS.typography.labelSmall)
+            format = AureoleTextFormatParams(style = AureoleDS.typography.labelSmall, fontWeight = FontWeight.Bold)
         )
-        CompositionLocalProvider(LocalLayoutDirection provides direction) {
-            LazyRow(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(AureoleDS.dimens.xSmall)
-            ) {
-                items(apps, key = { it.packageName }) { app ->
-                    CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
-                        FolderAppPickerChip(
-                            app = app,
-                            onRemove = { onRemove(app.packageName) },
-                            modifier = Modifier.animateItem()
-                        )
-                    }
-                }
-            }
+        if (apps.isEmpty()) {
+            AureoleText(
+                text = stringResource(R.string.home_folder_no_apps_in_folder),
+                color = AureoleDS.colors.onSurfaceLow,
+                modifier = Modifier.padding(vertical = AureoleDS.dimens.small),
+                format = AureoleTextFormatParams(style = AureoleDS.typography.bodySmall)
+            )
+            return@Column
         }
+        ReorderableRow(
+            params = ReorderableParams(
+                items = apps,
+                key = { it.packageName },
+                actions = ReorderableActions(
+                    onMove = actions.onMove,
+                    onRemove = { index -> apps.getOrNull(index)?.let { actions.onRemove(it.packageName) } }
+                ),
+                spacing = AureoleDS.dimens.xxSmall
+            ),
+            modifier = Modifier.fillMaxWidth()
+        ) { app -> FolderAppPickerTrayTile(app = app) }
     }
 }
 
 @Composable
-private fun FolderAppPickerChip(
-    app: AppInfo,
-    onRemove: () -> Unit,
-    modifier: Modifier = Modifier
-) {
+private fun FolderAppPickerTrayTile(app: AppInfo, modifier: Modifier = Modifier) {
     val iconBitmap = remember(app.packageName) { app.getIconBitmap() }
-    val removeDescription = stringResource(R.string.home_folder_picker_remove_chip, app.label)
-    Row(
-        modifier = modifier
-            .clip(RoundedCornerShape(AureoleDS.dimens.radiusFull))
-            .background(AureoleDS.colors.surfaceVariant)
-            .padding(start = AureoleDS.dimens.xSmall, end = AureoleDS.dimens.xxSmall)
-            .padding(vertical = AureoleDS.dimens.xxSmall),
-        verticalAlignment = Alignment.CenterVertically
+    Column(
+        modifier = modifier.width(AureoleDS.dimens.itemHeightExtraLarge),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(AureoleDS.dimens.xxSmall)
     ) {
         Image(
             bitmap = iconBitmap,
             contentDescription = null,
             modifier = Modifier
-                .size(AureoleDS.dimens.iconMedium)
-                .clip(RoundedCornerShape(AureoleDS.dimens.radiusMinimal))
+                .size(AureoleDS.dimens.xxLarge)
+                .clip(RoundedCornerShape(AureoleDS.dimens.radiusSmall))
         )
         AureoleText(
             text = app.label,
-            color = AureoleDS.colors.onSurfaceHigh,
-            modifier = Modifier
-                .padding(horizontal = AureoleDS.dimens.xSmall)
-                .widthIn(max = AureoleDS.dimens.sizeExtraLarge),
+            color = AureoleDS.colors.onSurfaceMedium,
             format = AureoleTextFormatParams(
-                style = AureoleDS.typography.bodySmall,
+                style = AureoleDS.typography.labelSmall,
                 maxLines = 1,
-                overflow = TextOverflow.Ellipsis
+                overflow = TextOverflow.Ellipsis,
+                textAlign = TextAlign.Center
             )
         )
-        IconButton(
-            onClick = onRemove,
-            modifier = Modifier
-                .size(AureoleDS.dimens.large)
-                .semantics { contentDescription = removeDescription }
-        ) {
-            AureoleDS.icons.Close(
-                tint = AureoleDS.colors.onSurfaceMedium,
-                modifier = Modifier.size(AureoleDS.dimens.iconSmall)
-            )
-        }
     }
 }
 
@@ -211,6 +189,7 @@ private fun FolderAppPickerFooterPreview() {
                 onQueryChange = {},
                 onSearch = {},
                 onRemove = {},
+                onMove = { _, _ -> },
                 onDismiss = {},
                 onSave = {}
             )

@@ -24,24 +24,27 @@ data class FavoriteAppsDialogActions(
     val onDismiss: () -> Unit = {}
 )
 
-data class FavoriteAppRowParams(
-    val app: AppInfo,
-    val index: Int,
-    val totalCount: Int,
-    val canReorder: Boolean
-)
-
+/** Favorites shown in the manage list; they can only be reordered while [searchQuery] is blank. */
 data class FavoriteSectionParams(
     val filteredFavorites: List<AppInfo>,
-    val searchQuery: String,
-    val favoriteCount: Int
+    val searchQuery: String
+)
+
+/**
+ * Callbacks of the favorites section. [onMove] is one swap of the reorderable list (apply it to a local draft) and
+ * [onMoveEnd] the end of the gesture, where the new order is saved.
+ */
+data class FavoriteSectionActions(
+    val onMove: (from: Int, to: Int) -> Unit,
+    val onMoveEnd: () -> Unit,
+    val onToggleFavorite: (String) -> Unit,
+    val onDeactivateAll: () -> Unit
 )
 
 data class FavoriteAppsBodyParams(
     val config: FavoriteAppsDialogConfig,
     val actions: FavoriteAppsDialogActions,
     val searchQuery: String,
-    val favoriteCount: Int,
     val filteredFavorites: List<AppInfo>,
     val filteredRemaining: List<AppInfo>
 )

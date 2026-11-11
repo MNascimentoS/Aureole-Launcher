@@ -13,36 +13,10 @@ object FolderPopupMetrics {
     val HeightMax = 400.dp
 }
 
-data class FolderAppRowItemParams(
-    val app: AppInfo,
-    val index: Int,
-    val totalCount: Int,
-    val canReorder: Boolean
-)
-
 data class FolderSectionParams(
     val filteredSelected: List<AppInfo>,
     val searchQuery: String,
     val totalSelectedCount: Int
-)
-
-data class SelectedFolderAppSectionParams(
-    val filteredSelected: List<AppInfo>,
-    val searchQuery: String,
-    val totalSelectedCount: Int,
-    val onMoveUp: (Int) -> Unit,
-    val onMoveDown: (Int) -> Unit,
-    val onToggleSelect: (String) -> Unit,
-    /** Off while a selection drag runs: the rows are frozen and their indexes no longer match. */
-    val isReorderEnabled: Boolean = true,
-    /** Live selection; a row unmarked by a drag stays visible, faded, until the drag ends. */
-    val isMarked: (String) -> Boolean = { true }
-)
-
-/** Apps of the picker grid that is not searching: selected rows on top, the other apps in the grid. */
-data class PickerBrowseApps(
-    val selected: List<AppInfo>,
-    val remaining: List<AppInfo>
 )
 
 data class RemainingFolderAppGridParams(
@@ -56,8 +30,8 @@ data class RemainingFolderAppGridParams(
 data class FolderAppPickerBodyParams(
     val folderName: String,
     val searchQuery: String,
-    val filteredSelected: List<AppInfo>,
-    val filteredRemaining: List<AppInfo>,
+    /** Every app, in grid order (alphabetical); the marked ones show a check. */
+    val gridApps: List<AppInfo>,
     val selectedPackages: MutableList<String>,
     val isSearching: Boolean = false,
     val searchResults: List<AppInfo> = emptyList(),
@@ -109,6 +83,8 @@ data class FolderAppPickerFooterActions(
     val onQueryChange: (String) -> Unit,
     val onSearch: () -> Unit,
     val onRemove: (String) -> Unit,
+    /** A tray swap: the app at `from` of the tray now sits at `to`. */
+    val onMove: (from: Int, to: Int) -> Unit,
     val onDismiss: () -> Unit,
     val onSave: () -> Unit
 )

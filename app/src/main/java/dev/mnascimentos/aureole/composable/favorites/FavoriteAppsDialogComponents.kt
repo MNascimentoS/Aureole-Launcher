@@ -17,7 +17,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
@@ -25,12 +24,9 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import dev.mnascimentos.aureole.R
-import dev.mnascimentos.aureole.composable.favorites.model.FavoriteAppRowParams
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
-import dev.mnascimentos.aureole.core.designsystem.icons.ArrowDown
-import dev.mnascimentos.aureole.core.designsystem.icons.ArrowUp
 import dev.mnascimentos.aureole.core.designsystem.icons.Delete
 import dev.mnascimentos.aureole.core.designsystem.icons.Plus
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
@@ -63,61 +59,22 @@ fun FavoriteAppRowInfo(app: AppInfo, modifier: Modifier = Modifier) {
     }
 }
 
+/** Red button that takes the app out of the favorites. */
 @Composable
-fun FavoriteAppRowActionButtons(
-    params: FavoriteAppRowParams,
-    onMoveUp: () -> Unit,
-    onMoveDown: () -> Unit,
-    onToggleFavorite: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    Row(
-        modifier = modifier,
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(AureoleDS.dimens.xSmall)
-    ) {
-        val bgVariant = AureoleDS.colors.surfaceVariant.copy(alpha = 0.5f)
-        if (params.canReorder && params.index > 0) {
-            ActionIconButton("Arrow Up", bgVariant, onMoveUp) {
-                AureoleDS.icons.ArrowUp(
-                    tint = AureoleDS.colors.onSurfaceHigh,
-                    modifier = Modifier.size(AureoleDS.dimens.iconSmall)
-                )
-            }
-        }
-        if (params.canReorder && params.index < params.totalCount - 1) {
-            ActionIconButton("Arrow Down", bgVariant, onMoveDown) {
-                AureoleDS.icons.ArrowDown(
-                    tint = AureoleDS.colors.onSurfaceHigh,
-                    modifier = Modifier.size(AureoleDS.dimens.iconSmall)
-                )
-            }
-        }
-        ActionIconButton("Delete", AureoleDS.colors.error, onToggleFavorite) {
-            AureoleDS.icons.Delete(
-                tint = AureoleDS.colors.onError,
-                modifier = Modifier.size(AureoleDS.dimens.iconSmall)
-            )
-        }
-    }
-}
-
-@Composable
-private fun ActionIconButton(
-    desc: String,
-    bgColor: Color,
-    onClick: () -> Unit,
-    iconContent: @Composable () -> Unit
-) {
+fun FavoriteAppRemoveButton(onClick: () -> Unit, modifier: Modifier = Modifier) {
+    val description = stringResource(R.string.home_favorites_remove)
     Box(
-        modifier = Modifier
+        modifier = modifier
             .size(AureoleDS.dimens.large)
-            .background(color = bgColor, shape = RoundedCornerShape(AureoleDS.dimens.radiusXSmall))
-            .semantics { contentDescription = desc }
+            .background(color = AureoleDS.colors.error, shape = RoundedCornerShape(AureoleDS.dimens.radiusXSmall))
+            .semantics { contentDescription = description }
             .clickable(role = Role.Button, onClick = onClick),
         contentAlignment = Alignment.Center
     ) {
-        iconContent()
+        AureoleDS.icons.Delete(
+            tint = AureoleDS.colors.onError,
+            modifier = Modifier.size(AureoleDS.dimens.iconSmall)
+        )
     }
 }
 

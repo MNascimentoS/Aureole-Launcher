@@ -31,11 +31,9 @@
     <string name="home_folder_name_placeholder">Nova Pasta</string>
     <string name="home_folder_icon">Ícone da Pasta</string>
     <string name="home_folder_apps_in_folder">Apps na Pasta: %1$s</string>
-    <string name="home_folder_selected_apps_count">Selecionados (%1$d)</string>
     <string name="home_folder_no_apps_in_folder">Nenhum aplicativo na pasta.</string>
     <string name="core_common_no_apps_found">Nenhum aplicativo encontrado.</string>
     <string name="home_folder_other_apps_count">Outros Aplicativos (%1$d)</string>
-    <string name="home_folder_all_apps_added">Todos os aplicativos já foram adicionados.</string>
     <string name="home_folder_picker_drag_hint">Segure um app e deslize para marcar vários</string>
     <string name="core_common_search_app_placeholder">Buscar aplicativo&#8230;</string>
 
@@ -196,6 +194,7 @@
     <string name="home_favorites_all_apps_divider">\" TODOS OS APPS \"</string>
     <string name="home_favorites_done">Concluído</string>
     <string name="home_favorites_back">Voltar</string>
+    <string name="home_favorites_remove">Remover dos favoritos</string>
 
     <!-- Widgets -->
     <string name="home_widget_stack_title">Pilha de Widgets</string>
@@ -399,8 +398,7 @@
         <item quantity="many">Salvar %1$d apps</item>
         <item quantity="other">Salvar %1$d apps</item>
     </plurals>
-    <string name="home_folder_picker_remove_chip">Remover %1$s</string>
-    <string name="home_folder_picker_selected_label">Escolhidos</string>
+    <string name="home_folder_picker_tray_label">Escolhidos · segure e arraste para ordenar</string>
     <string name="home_clock_tab_style">Estilo</string>
     <string name="home_clock_tab_format">Formato</string>
     <string name="home_clock_tab_colors">Cores</string>
@@ -419,4 +417,11 @@
     <string name="settings_appearance_minihome_phone">Telefone</string>
     <string name="settings_appearance_minihome_messages">Mensagens</string>
     <string name="settings_appearance_minihome_camera">Câmera</string>
+    <string name="core_reorder_move_up">Mover para cima</string>
+    <string name="core_reorder_move_down">Mover para baixo</string>
+    <string name="core_reorder_move_left">Mover para a esquerda</string>
+    <string name="core_reorder_move_right">Mover para a direita</string>
+    <string name="core_reorder_remove">Remover</string>
+    <string name="home_undo_widget_removed">Widget removido</string>
+    <string name="home_undo_widget_order_changed">Ordem alterada</string>
 </resources>

@@ -44,8 +44,7 @@ private fun PickerSearchCase(isLeftHanded: Boolean) {
                 params = FolderAppPickerBodyParams(
                     folderName = "Media",
                     searchQuery = "cam",
-                    filteredSelected = listOf(camera, gallery),
-                    filteredRemaining = listOf(camcorder),
+                    gridApps = listOf(camcorder),
                     selectedPackages = selected,
                     isSearching = true,
                     searchResults = listOf(camcorder, camera),

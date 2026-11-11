@@ -35,14 +35,11 @@ import dev.mnascimentos.aureole.composable.dialogs.FolderIconRegistry
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
-import dev.mnascimentos.aureole.core.designsystem.icons.ArrowDown
-import dev.mnascimentos.aureole.core.designsystem.icons.ArrowUp
 import dev.mnascimentos.aureole.core.designsystem.icons.Delete
 import dev.mnascimentos.aureole.core.designsystem.icons.Search
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
-import dev.mnascimentos.aureole.feature.home.components.containers.model.EditContainerItemRowActions
 import dev.mnascimentos.aureole.feature.home.components.containers.model.EditContainerItemRowParams
 import kotlinx.coroutines.delay
 
@@ -53,7 +50,7 @@ private const val DEBOUNCE_DELAY_MS = 300L
 @Composable
 internal fun EditContainerItemRow(
     params: EditContainerItemRowParams,
-    actions: EditContainerItemRowActions
+    onRemove: () -> Unit
 ) {
     Row(
         modifier = Modifier
@@ -63,10 +60,6 @@ internal fun EditContainerItemRow(
             .padding(horizontal = AureoleDS.dimens.small, vertical = AureoleDS.dimens.xxSmall),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        EditContainerItemMoveButtons(params = params, actions = actions)
-
-        Spacer(modifier = Modifier.width(AureoleDS.dimens.xxSmall))
-
         FolderIconRegistry.RenderIcon(
             name = params.iconName,
             tint = AureoleDS.colors.onSurfaceHigh,
@@ -93,47 +86,10 @@ internal fun EditContainerItemRow(
             format = AureoleTextFormatParams(style = AureoleDS.typography.labelSmall)
         )
 
-        IconButton(onClick = actions.onRemove, modifier = Modifier.size(AureoleDS.dimens.large)) {
+        IconButton(onClick = onRemove, modifier = Modifier.size(AureoleDS.dimens.large)) {
             AureoleDS.icons.Delete(
                 tint = AureoleDS.colors.error,
                 modifier = Modifier.size(AureoleDS.dimens.iconMedium)
-            )
-        }
-    }
-}
-
-@Composable
-private fun EditContainerItemMoveButtons(
-    params: EditContainerItemRowParams,
-    actions: EditContainerItemRowActions
-) {
-    Row {
-        IconButton(
-            onClick = actions.onMoveUp,
-            enabled = params.canMoveUp,
-            modifier = Modifier.size(AureoleDS.dimens.large)
-        ) {
-            AureoleDS.icons.ArrowUp(
-                tint = if (params.canMoveUp) {
-                    AureoleDS.colors.onSurfaceHigh
-                } else {
-                    AureoleDS.colors.onSurfaceMedium.copy(alpha = 0.3f)
-                },
-                modifier = Modifier.size(AureoleDS.dimens.iconSmall)
-            )
-        }
-        IconButton(
-            onClick = actions.onMoveDown,
-            enabled = params.canMoveDown,
-            modifier = Modifier.size(AureoleDS.dimens.large)
-        ) {
-            AureoleDS.icons.ArrowDown(
-                tint = if (params.canMoveDown) {
-                    AureoleDS.colors.onSurfaceHigh
-                } else {
-                    AureoleDS.colors.onSurfaceMedium.copy(alpha = 0.3f)
-                },
-                modifier = Modifier.size(AureoleDS.dimens.iconSmall)
             )
         }
     }
@@ -269,15 +225,9 @@ private fun EditContainerItemRowPreview() {
             params = EditContainerItemRowParams(
                 title = "Work Folder",
                 iconName = "briefcase",
-                isFolder = true,
-                canMoveUp = false,
-                canMoveDown = true
+                isFolder = true
             ),
-            actions = EditContainerItemRowActions(
-                onMoveUp = {},
-                onMoveDown = {},
-                onRemove = {}
-            )
+            onRemove = {}
         )
     }
 }

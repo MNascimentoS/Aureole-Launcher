@@ -60,8 +60,8 @@ import dev.mnascimentos.aureole.feature.home.components.quickbutton.extensions.o
 import dev.mnascimentos.aureole.feature.home.components.quickbutton.extensions.onUpdateQuickButtonShortcuts
 import dev.mnascimentos.aureole.feature.home.components.widgets.extensions.closeWidgetPopup
 import dev.mnascimentos.aureole.feature.home.components.widgets.extensions.openWidgetPopup
-import dev.mnascimentos.aureole.feature.home.components.widgets.extensions.removeWidgetId
-import dev.mnascimentos.aureole.feature.home.components.widgets.extensions.reorderWidgets
+import dev.mnascimentos.aureole.feature.home.components.widgets.extensions.removeWidgetWithUndo
+import dev.mnascimentos.aureole.feature.home.components.widgets.extensions.reorderWidgetsWithUndo
 import dev.mnascimentos.aureole.feature.home.components.widgets.extensions.setIsAddingSingleWidget
 import dev.mnascimentos.aureole.feature.home.components.widgets.extensions.setShowWidgetPicker
 import dev.mnascimentos.aureole.feature.home.components.widgets.extensions.setShowWidgetResizeDialog
@@ -110,10 +110,10 @@ class HomeActionsFactory(
                 viewModel.setShowWidgetPicker(true)
             },
             onRemoveWidgetClick = { widgetId, stackId ->
-                viewModel.removeWidgetId(widgetId, stackId)
+                viewModel.removeWidgetWithUndo(widgetId, stackId)
             },
             onReorderWidgets = { newWidgets, stackId ->
-                viewModel.reorderWidgets(newWidgets, stackId)
+                viewModel.reorderWidgetsWithUndo(newWidgets, stackId)
             },
             onAppClick = { appInfo ->
                 context.packageManager.getLaunchIntentForPackage(appInfo.packageName)?.let { launchIntent ->

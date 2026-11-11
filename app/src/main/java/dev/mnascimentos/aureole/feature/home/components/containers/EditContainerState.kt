@@ -5,6 +5,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import dev.mnascimentos.aureole.composable.reorder.model.move
 import dev.mnascimentos.aureole.core.data.model.AppFolder
 import dev.mnascimentos.aureole.core.data.model.ContainerItemEntity
 import dev.mnascimentos.aureole.core.data.model.ContainerItemType
@@ -82,24 +83,9 @@ internal class EditContainerState(
         )
     }
 
-    fun moveItemUp(index: Int) {
-        if (index > 0) {
-            val list = itemsList.toMutableList()
-            val temp = list[index]
-            list[index] = list[index - 1]
-            list[index - 1] = temp
-            itemsList = list
-        }
-    }
-
-    fun moveItemDown(index: Int) {
-        if (index < itemsList.size - 1) {
-            val list = itemsList.toMutableList()
-            val temp = list[index]
-            list[index] = list[index + 1]
-            list[index + 1] = temp
-            itemsList = list
-        }
+    /** Moves the item at [from] to [to] (one swap of the reorderable list); out of range changes nothing. */
+    fun moveItem(from: Int, to: Int) {
+        itemsList = move(itemsList, from, to)
     }
 
     fun removeItem(index: Int) {

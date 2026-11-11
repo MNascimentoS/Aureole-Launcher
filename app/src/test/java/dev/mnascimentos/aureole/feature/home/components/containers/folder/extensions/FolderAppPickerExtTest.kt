@@ -76,15 +76,29 @@ class FolderAppPickerExtTest {
     }
 
     @Test
-    fun `moveUp and moveDown swap neighbours and ignore the edges`() {
-        val list = mutableListOf("a", "b", "c")
-        list.moveUp(2)
-        assertEquals(listOf("a", "c", "b"), list)
-        list.moveUp(0)
-        list.moveDown(2)
-        list.moveDown(9)
-        assertEquals(listOf("a", "c", "b"), list)
-        list.moveDown(0)
-        assertEquals(listOf("c", "a", "b"), list)
+    fun `moveTrayApp moves the package down and up through the tray`() {
+        val selected = mutableListOf("a", "b", "c")
+        moveTrayApp(selected, listOf("a", "b", "c"), from = 0, to = 2)
+        assertEquals(listOf("b", "c", "a"), selected)
+        moveTrayApp(selected, listOf("b", "c", "a"), from = 2, to = 1)
+        assertEquals(listOf("b", "a", "c"), selected)
+    }
+
+    @Test
+    fun `moveTrayApp maps tray indexes past packages that are not installed`() {
+        val selected = mutableListOf("a", "gone", "c")
+        moveTrayApp(selected, listOf("a", "c"), from = 0, to = 1)
+        assertEquals(listOf("gone", "c", "a"), selected)
+    }
+
+    @Test
+    fun `moveTrayApp ignores out of range and same place`() {
+        val selected = mutableListOf("a", "b")
+        moveTrayApp(selected, listOf("a", "b"), from = 0, to = 0)
+        moveTrayApp(selected, listOf("a", "b"), from = -1, to = 1)
+        moveTrayApp(selected, listOf("a", "b"), from = 0, to = 5)
+        moveTrayApp(selected, listOf("a", "x"), from = 0, to = 1)
+        moveTrayApp(mutableListOf(), emptyList(), from = 0, to = 0)
+        assertEquals(listOf("a", "b"), selected)
     }
 }

@@ -17,7 +17,7 @@ Atualizado por `/fase`. Marque `[x]` quando os gates passarem e o veredito visua
 | # | Fase | Modelo | Estimativa | Gates | Visual | Aparelho |
 |---|---|---|---|---|---|---|
 | 1 | Ajustes da base: faixa de gesto invisível, `ActionRow`/espelho, base do `SettingsBottomSheet` | Opus | 1,5–2,5 h | [x] | [x] quase | [ ] |
-| 2 | Lista reordenável com ✕ e "+" (e desfazer em widgets e reordenar) | Opus | 2,5–3,5 h | [ ] | [ ] | [ ] |
+| 2 | Lista reordenável com ✕ e "+" (e desfazer em widgets e reordenar) | Opus | 2,5–3,5 h | [x] | [x] quase | [ ] |
 | 3 | Menus e popup da pasta | Sonnet | 2–3 h | [ ] | [ ] | [ ] |
 | 4 | Editores restantes | Sonnet | 3–4,5 h | [ ] | [ ] | [ ] |
 | 5 | Adicionar container e opções de posição | Sonnet | 1,5–2,5 h | [ ] | [ ] | [ ] |
@@ -51,3 +51,24 @@ Atualizado por `/fase`. Marque `[x]` quando os gates passarem e o veredito visua
 - Data da prévia do relógio com idiomas misturados ("Wednesday, 31 de December"): possível bug de locale.
 - Conteúdo do Personalizar: seção "AJUSTAR" com 3 botões e "ADICIONAR À HOME" em grade de 4 colunas com ✓ e estado esmaecido.
 - Teste no aparelho (pendente).
+
+### Fase 2: lista reordenável (11/11/2026)
+
+**O que mudou**
+- Novos em `composable/reorder/`: `ReorderableRow` e `ReorderableColumn` (arrastar após segurar, tic a cada troca, ✕, slot final "+", `customActions` de mover e remover) e a lógica pura `ReorderMath` e `ReorderDragState`, com testes. O selo ✕ sobrepõe a borda por offset, sem encolher a linha.
+- **Pilha de widgets:** a prévia virou uma fileira reordenável com ✕, destaque do cartão atual e cartão "+" (cartões de 110x90 dp). O `EditWidgetGroupScreen` caiu de 409 para 152 linhas e perdeu 2 `@Suppress`.
+- **Desfazer:** remover widget ("Widget removido") e reordenar a pilha ("Ordem alterada", um só por gesto).
+- **Bandeja "Escolhidos" da pasta**, **itens do container** e **favoritos** passaram a usar os componentes reordenáveis. As setas ↑↓ e as strings fixas "Arrow Up/Down" saíram. Essas três telas são rascunho até Salvar/Concluído e por isso não têm desfazer.
+- O seletor de apps da pasta segue o protótipo: a grade mostra todos os apps com ✓ e os escolhidos ficam só na bandeja.
+
+**Gates**
+- Detekt: 5 issues, no limite (as mesmas de antes). Testes unitários: 1285 passando. Cobertura (inclusive de branches de lógica), `assembleDebug` e screenshot: passaram.
+- Screenshot: referências regeneradas de pilha de widgets (destro, canhoto e 2 widgets), `HomeScreenWidgetStackBottomSheet`, `FavoriteAppsDialog`, `FolderAppPickerDialog`, picker (grade e busca), container (gerenciar itens), favoritos (gerenciar lista) e `composable/reorder/`.
+
+**Visual** (`widgetgroup`, `picker`, `container`, `favorites`): **quase**. Corrigidos depois da revisão: cartão "+" fora do print, ordem da bandeja invertida no canhoto, espelho pela metade em favoritos e linhas com ✕ mais estreitas.
+
+**Ficou faltando**
+- Rolagem automática quando o item arrastado chega na borda da fileira.
+- Em favoritos no canhoto, os cabeçalhos também espelham ("Favorites" à direita, "Disable all" à esquerda). Decidir se isso fica assim.
+- Fora do escopo da fase 2, ficam para a fase 4: botão "Adicionar widget" ao lado de Salvar e rótulo "PRÉVIA AO VIVO" na pilha; subtítulos, chevron, "OPÇÕES" e Cancelar no container; menu principal de favoritos (toggle, atalhos, aparência, gerenciar).
+- Teste no aparelho (pendente): arrastar com o polegar nas 4 telas, widget real nos cartões de 110x90 dp e destaque de página no carrossel.

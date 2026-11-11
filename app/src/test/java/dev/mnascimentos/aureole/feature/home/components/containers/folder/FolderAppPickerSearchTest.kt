@@ -123,12 +123,13 @@ class FolderAppPickerSearchTest {
     }
 
     @Test
-    fun `tray shows chips while searching and the remove button unmarks the app`() {
+    fun `tray keeps the chosen apps while searching and its remove badge unmarks the app`() {
         var saved = listOf("x")
         setPicker(listOf("com.gallery"), onSave = { saved = it })
         search("cam")
 
-        composeTestRule.onNodeWithContentDescription("Remove Gallery").assertIsDisplayed().performClick()
+        composeTestRule.onNodeWithText("Gallery").assertIsDisplayed()
+        composeTestRule.onNodeWithContentDescription("Remove").assertIsDisplayed().performClick()
         composeTestRule.onNodeWithText("Save 0 apps").performClick()
 
         assertEquals(emptyList<String>(), saved)

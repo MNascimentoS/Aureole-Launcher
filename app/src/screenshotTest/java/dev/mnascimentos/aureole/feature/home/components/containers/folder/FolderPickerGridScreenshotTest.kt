@@ -55,8 +55,7 @@ private fun PickerGridCase(isLeftHanded: Boolean, selectedLabels: List<String> =
                     params = FolderAppPickerBodyParams(
                         folderName = "Media",
                         searchQuery = "",
-                        filteredSelected = selectedApps,
-                        filteredRemaining = sortedForPickerGrid(gridApps - selectedApps.toSet()) { it.label },
+                        gridApps = sortedForPickerGrid(gridApps) { it.label },
                         selectedPackages = selected,
                         trayApps = selectedApps,
                         isLeftHandedMode = isLeftHanded
@@ -86,6 +85,12 @@ private fun FolderPickerGridLeftHandedScreenshotTest() = PickerGridCase(isLeftHa
 @Composable
 private fun FolderPickerGridWithMarkedAppsScreenshotTest() =
     PickerGridCase(isLeftHanded = false, selectedLabels = listOf("Câmera", "Fotos", "Galeria"))
+
+@PreviewTest
+@AureolePreview
+@Composable
+private fun FolderPickerGridWithMarkedAppsLeftHandedScreenshotTest() =
+    PickerGridCase(isLeftHanded = true, selectedLabels = listOf("Câmera", "Fotos", "Galeria"))
 
 @PreviewTest
 @AureolePreview

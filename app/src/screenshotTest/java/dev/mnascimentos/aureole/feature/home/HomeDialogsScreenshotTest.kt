@@ -422,10 +422,8 @@ private fun EditContainerHorizontalScreenScreenshotTest() {
     }
 }
 
-@PreviewTest
-@AureolePreview
 @Composable
-private fun EditWidgetGroupScreenScreenshotTest() {
+private fun EditWidgetGroupCase(isLeftHanded: Boolean, widgets: List<Int> = listOf(1, 2, 3)) {
     val sampleData = createSampleHomeData()
     val item = LauncherItemState(
         id = "widget_group_1",
@@ -436,11 +434,13 @@ private fun EditWidgetGroupScreenScreenshotTest() {
         rowSpan = 2
     )
     AureoleLauncherTheme {
-        CompositionLocalProvider(LocalHomeUiState provides sampleData.uiState) {
+        CompositionLocalProvider(
+            LocalHomeUiState provides sampleData.uiState.copy(isLeftHandedMode = isLeftHanded)
+        ) {
             EditWidgetGroupScreen(
                 params = EditWidgetGroupParams(
                     item = item,
-                    widgets = listOf(1, 2),
+                    widgets = widgets,
                     appWidgetHost = null,
                     isIndicatorEnabled = true
                 ),
@@ -454,6 +454,23 @@ private fun EditWidgetGroupScreenScreenshotTest() {
         }
     }
 }
+
+@PreviewTest
+@AureolePreview
+@Composable
+private fun EditWidgetGroupScreenScreenshotTest() = EditWidgetGroupCase(isLeftHanded = false)
+
+@PreviewTest
+@AureolePreview
+@Composable
+private fun EditWidgetGroupScreenLeftHandedScreenshotTest() = EditWidgetGroupCase(isLeftHanded = true)
+
+/** Two widgets: both cards and the "+" card at the end fit across the screen. */
+@PreviewTest
+@AureolePreview
+@Composable
+private fun EditWidgetGroupScreenTwoWidgetsScreenshotTest() =
+    EditWidgetGroupCase(isLeftHanded = false, widgets = listOf(1, 2))
 
 @PreviewTest
 @AureolePreview

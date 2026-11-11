@@ -61,7 +61,7 @@ fun HomeViewModel.setTargetWidgetStackId(stackId: String?) {
     updateUiState { it.copy(targetWidgetStackId = stackId) }
 }
 
-private fun HomeViewModel.resolveTargetStackId(targetStackId: String?): String {
+internal fun HomeViewModel.resolveTargetStackId(targetStackId: String?): String {
     return targetStackId
         ?: uiState.value.targetWidgetStackId
         ?: uiState.value.activeWidgetStackBottomSheet?.stackId

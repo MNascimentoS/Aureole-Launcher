@@ -94,39 +94,46 @@ class EditContainerStateTest {
     }
 
     @Test
-    fun `when moveItemUp with valid index, should swap with previous element`() {
+    fun `when moveItem down, should place the item at the target index`() {
         val state = createTestState()
-        assertEquals("app1", state.itemsList[0].packageName)
-        assertEquals("app2", state.itemsList[1].packageName)
+        val order = state.itemsList.map { it.packageName }
 
-        state.moveItemUp(1)
+        state.moveItem(0, order.lastIndex)
+
+        assertEquals(order.drop(1) + order.first(), state.itemsList.map { it.packageName })
+    }
+
+    @Test
+    fun `when moveItem up, should swap with the previous element`() {
+        val state = createTestState()
+
+        state.moveItem(1, 0)
 
         assertEquals("app2", state.itemsList[0].packageName)
         assertEquals("app1", state.itemsList[1].packageName)
     }
 
     @Test
-    fun `when moveItemUp with index 0, should do nothing`() {
+    fun `when moveItem is out of range or to the same place, should do nothing`() {
         val state = createTestState()
-        state.moveItemUp(0)
-        assertEquals("app1", state.itemsList[0].packageName)
+        val before = state.itemsList
+
+        state.moveItem(0, 0)
+        state.moveItem(-1, 0)
+        state.moveItem(0, state.itemsList.size)
+
+        assertEquals(before, state.itemsList)
     }
 
     @Test
-    fun `when moveItemDown with valid index, should swap with next element`() {
+    fun `when moveItem then toModel, should persist the new order indexes`() {
         val state = createTestState()
-        state.moveItemDown(0)
-        assertEquals("app2", state.itemsList[0].packageName)
-        assertEquals("app1", state.itemsList[1].packageName)
-    }
 
-    @Test
-    fun `when moveItemDown with last index, should do nothing`() {
-        val state = createTestState()
-        val lastIdx = state.itemsList.size - 1
-        val lastPkg = state.itemsList[lastIdx].packageName
-        state.moveItemDown(lastIdx)
-        assertEquals(lastPkg, state.itemsList[lastIdx].packageName)
+        state.moveItem(1, 0)
+        val model = state.toModel()
+
+        assertEquals(listOf(0, 1), model.items.take(2).map { it.orderIndex })
+        assertEquals("app2", model.items[0].packageName)
     }
 
     @Test

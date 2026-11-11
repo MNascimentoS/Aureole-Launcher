@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Button
 import androidx.compose.runtime.Composable
@@ -22,7 +21,11 @@ import dev.mnascimentos.aureole.composable.favorites.model.FavoriteAppsBodyParam
 import dev.mnascimentos.aureole.composable.favorites.model.FavoriteAppsDialogActions
 import dev.mnascimentos.aureole.composable.favorites.model.FavoriteAppsDialogConfig
 import dev.mnascimentos.aureole.composable.favorites.model.FavoriteAppsScreenMode
+import dev.mnascimentos.aureole.composable.favorites.model.FavoriteSectionActions
 import dev.mnascimentos.aureole.composable.favorites.model.FavoriteSectionParams
+import dev.mnascimentos.aureole.composable.favorites.model.reorderFavoritePackages
+import dev.mnascimentos.aureole.composable.mirror.LeftHandMirror
+import dev.mnascimentos.aureole.composable.reorder.model.move
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
@@ -96,7 +99,6 @@ private fun FavoriteAppsDialogContent(
             config = config,
             actions = actions,
             searchQuery = searchQuery,
-            favoriteCount = favoriteApps.size,
             filteredFavorites = filteredFavorites,
             filteredRemaining = filteredRemaining
         ),
@@ -116,8 +118,12 @@ private fun FavoriteAppsDialogBody(
 ) {
     val config = params.config
     val actions = params.actions
-    val handleMoveUp = { index: Int -> moveFavoriteItem(config, actions, index, delta = -1) }
-    val handleMoveDown = { index: Int -> moveFavoriteItem(config, actions, index, delta = 1) }
+    // Draft order while a favorite is dragged; saved once, when the gesture ends.
+    var draftFavorites by remember(params.filteredFavorites) { mutableStateOf(params.filteredFavorites) }
+    val handleMoveEnd = {
+        val order = reorderFavoritePackages(config.favoriteAppPackages, draftFavorites.map { it.packageName })
+        if (order != config.favoriteAppPackages) actions.onUpdateFavoritePackages(config.containerId, order)
+    }
 
     val handleActivateAll = {
         val toAdd = params.filteredRemaining.map { it.packageName }
@@ -144,47 +150,51 @@ private fun FavoriteAppsDialogBody(
             return@Column
         }
 
-        LazyColumn(
-            modifier = Modifier
-                .weight(1f)
-                .fillMaxWidth(),
-            verticalArrangement = Arrangement.spacedBy(AureoleDS.dimens.xSmall)
-        ) {
-            favoriteSectionItems(
-                params = FavoriteSectionParams(
-                    filteredFavorites = params.filteredFavorites,
-                    searchQuery = params.searchQuery,
-                    favoriteCount = params.favoriteCount
+        LeftHandMirror {
+            FavoriteAppsSections(
+                params = params.copy(filteredFavorites = draftFavorites),
+                actions = FavoriteSectionActions(
+                    onMove = { from, to -> draftFavorites = move(draftFavorites, from, to) },
+                    onMoveEnd = handleMoveEnd,
+                    onToggleFavorite = { pkg -> actions.onToggleFavorite(pkg) },
+                    onDeactivateAll = handleDeactivateAll
                 ),
-                onMoveUp = handleMoveUp,
-                onMoveDown = handleMoveDown,
-                onToggleFavorite = { pkg -> actions.onToggleFavorite(pkg) },
-                onDeactivateAll = handleDeactivateAll
-            )
-
-            remainingSectionItems(
-                filteredRemaining = params.filteredRemaining,
-                searchQuery = params.searchQuery,
-                onToggleFavorite = { pkg -> actions.onToggleFavorite(pkg) },
-                onActivateAll = handleActivateAll
+                onActivateAll = handleActivateAll,
+                modifier = Modifier.weight(1f)
             )
         }
     }
 }
 
-private fun moveFavoriteItem(
-    config: FavoriteAppsDialogConfig,
-    actions: FavoriteAppsDialogActions,
-    index: Int,
-    delta: Int
+/**
+ * Both sections, favorites then the other apps. [FavoriteAppsDialogBody] mirrors them together in the left-handed
+ * mode, so the ✕ of a favorite and the switch of an other app sit on the same side, under the thumb.
+ */
+@Composable
+private fun FavoriteAppsSections(
+    params: FavoriteAppsBodyParams,
+    actions: FavoriteSectionActions,
+    onActivateAll: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
-    val targetIndex = index + delta
-    if (targetIndex !in config.favoriteAppPackages.indices) return
-
-    val list = config.favoriteAppPackages.toMutableList()
-    val item = list.removeAt(index)
-    list.add(targetIndex, item)
-    actions.onUpdateFavoritePackages(config.containerId, list)
+    LazyColumn(
+        modifier = modifier.fillMaxWidth(),
+        verticalArrangement = Arrangement.spacedBy(AureoleDS.dimens.xSmall)
+    ) {
+        favoriteSectionItems(
+            params = FavoriteSectionParams(
+                filteredFavorites = params.filteredFavorites,
+                searchQuery = params.searchQuery
+            ),
+            actions = actions
+        )
+        remainingSectionItems(
+            filteredRemaining = params.filteredRemaining,
+            searchQuery = params.searchQuery,
+            onToggleFavorite = actions.onToggleFavorite,
+            onActivateAll = onActivateAll
+        )
+    }
 }
 
 @AureolePreview

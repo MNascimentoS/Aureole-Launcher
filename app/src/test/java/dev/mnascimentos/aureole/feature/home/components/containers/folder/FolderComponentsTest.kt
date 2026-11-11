@@ -2,6 +2,7 @@ package dev.mnascimentos.aureole.feature.home.components.containers.folder
 
 import android.content.ComponentName
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.ui.test.assertCountEquals
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.hasClickAction
 import androidx.compose.ui.test.hasContentDescription
@@ -323,7 +324,8 @@ class FolderComponentsTest {
         }
 
         composeTestRule.onNodeWithText("Apps in Folder: Social").assertIsDisplayed()
-        composeTestRule.onNodeWithText("Test App").assertIsDisplayed()
+        // The chosen app shows both in the grid (checked) and in the tray.
+        composeTestRule.onAllNodesWithText("Test App").assertCountEquals(2)
         composeTestRule.onNodeWithText("Browser").assertIsDisplayed()
 
         // Click Save
@@ -489,7 +491,7 @@ class FolderComponentsTest {
         }
 
         composeTestRule.onNodeWithText("No apps in the folder.").assertIsDisplayed()
-        composeTestRule.onNodeWithText("All apps have been added.").assertIsDisplayed()
+        composeTestRule.onNodeWithText("No apps found.").assertIsDisplayed()
     }
 
     @Test

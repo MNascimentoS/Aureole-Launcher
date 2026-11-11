@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyListScope
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.OutlinedTextField
@@ -25,8 +26,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import dev.mnascimentos.aureole.R
-import dev.mnascimentos.aureole.composable.favorites.model.FavoriteAppRowParams
+import dev.mnascimentos.aureole.composable.favorites.model.FavoriteSectionActions
 import dev.mnascimentos.aureole.composable.favorites.model.FavoriteSectionParams
+import dev.mnascimentos.aureole.composable.reorder.ReorderableColumn
+import dev.mnascimentos.aureole.composable.reorder.model.ReorderableActions
+import dev.mnascimentos.aureole.composable.reorder.model.ReorderableParams
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
@@ -105,27 +109,27 @@ internal fun RemainingSectionHeader(
     }
 }
 
+/**
+ * Header and rows of the favorites. With the search empty they form one reorderable list (hold and drag, ✕
+ * removes); while searching they are plain rows, since a filtered list has no order to change.
+ */
 @OptIn(ExperimentalFoundationApi::class)
 internal fun LazyListScope.favoriteSectionItems(
     params: FavoriteSectionParams,
-    onMoveUp: (Int) -> Unit,
-    onMoveDown: (Int) -> Unit,
-    onToggleFavorite: (String) -> Unit,
-    onDeactivateAll: () -> Unit
+    actions: FavoriteSectionActions
 ) {
     val filteredFavorites = params.filteredFavorites
     val searchQuery = params.searchQuery
-    val favoriteCount = params.favoriteCount
 
     item {
         FavoriteSectionHeader(
             count = filteredFavorites.size,
-            onDeactivateAll = onDeactivateAll
+            onDeactivateAll = actions.onDeactivateAll
         )
     }
 
-    if (filteredFavorites.isEmpty()) {
-        item {
+    when {
+        filteredFavorites.isEmpty() -> item {
             val emptyMsg = if (searchQuery.isBlank()) {
                 stringResource(R.string.home_favorites_none_selected)
             } else {
@@ -140,26 +144,38 @@ internal fun LazyListScope.favoriteSectionItems(
                 format = AureoleTextFormatParams(style = AureoleDS.typography.bodyMedium, textAlign = TextAlign.Center)
             )
         }
-    } else {
-        itemsIndexed(
+        searchQuery.isBlank() -> item(key = "fav_reorderable", contentType = "fav_reorderable") {
+            ReorderableFavorites(apps = filteredFavorites, actions = actions)
+        }
+        else -> items(
             items = filteredFavorites,
-            key = { _, app -> "fav_${app.packageName}" },
-            contentType = { _, _ -> "fav_app_row" }
-        ) { index, app ->
+            key = { app -> "fav_${app.packageName}" },
+            contentType = { "fav_app_row" }
+        ) { app ->
             FavoriteAppRow(
-                params = FavoriteAppRowParams(
-                    app = app,
-                    index = index,
-                    totalCount = favoriteCount,
-                    canReorder = searchQuery.isBlank()
-                ),
-                onMoveUp = { onMoveUp(index) },
-                onMoveDown = { onMoveDown(index) },
-                onToggleFavorite = { onToggleFavorite(app.packageName) },
+                app = app,
+                onRemove = { actions.onToggleFavorite(app.packageName) },
                 modifier = Modifier.animateItem()
             )
         }
     }
+}
+
+/** The favorites in their order: hold one and drag it up or down, ✕ removes it. */
+@Composable
+private fun ReorderableFavorites(apps: List<AppInfo>, actions: FavoriteSectionActions) {
+    ReorderableColumn(
+        params = ReorderableParams(
+            items = apps,
+            key = { it.packageName },
+            actions = ReorderableActions(
+                onMove = actions.onMove,
+                onMoveEnd = actions.onMoveEnd,
+                onRemove = { index -> apps.getOrNull(index)?.let { actions.onToggleFavorite(it.packageName) } }
+            ),
+            spacing = AureoleDS.dimens.xSmall
+        )
+    ) { app -> FavoriteAppRow(app = app) }
 }
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -208,13 +224,12 @@ internal fun LazyListScope.remainingSectionItems(
     }
 }
 
+/** One favorite: icon and name, plus the remove button when [onRemove] is given (the reorderable list uses ✕). */
 @Composable
 internal fun FavoriteAppRow(
-    params: FavoriteAppRowParams,
-    onMoveUp: () -> Unit,
-    onMoveDown: () -> Unit,
-    onToggleFavorite: () -> Unit,
-    modifier: Modifier = Modifier
+    app: AppInfo,
+    modifier: Modifier = Modifier,
+    onRemove: (() -> Unit)? = null
 ) {
     Row(
         modifier = modifier
@@ -225,14 +240,8 @@ internal fun FavoriteAppRow(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        FavoriteAppRowInfo(app = params.app, modifier = Modifier.weight(1f))
-
-        FavoriteAppRowActionButtons(
-            params = params,
-            onMoveUp = onMoveUp,
-            onMoveDown = onMoveDown,
-            onToggleFavorite = onToggleFavorite
-        )
+        FavoriteAppRowInfo(app = app, modifier = Modifier.weight(1f))
+        if (onRemove != null) FavoriteAppRemoveButton(onClick = onRemove)
     }
 }
 
