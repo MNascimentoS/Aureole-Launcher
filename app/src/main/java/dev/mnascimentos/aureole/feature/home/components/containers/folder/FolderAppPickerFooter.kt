@@ -4,23 +4,18 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.isImeVisible
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -40,9 +35,8 @@ import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.FolderAppPickerFooterParams
 
 /**
- * Fixed footer of the folder picker, kept above the keyboard with `imePadding()`. From top to bottom:
- * the reorderable tray of the chosen apps, the search field and Cancel/Save.
- * Save sits on the thumb side.
+ * Footer of the folder picker, glued by the confirm overlay to its action row and to the keyboard. From top to
+ * bottom: the reorderable tray of the chosen apps and the search field.
  */
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
@@ -54,9 +48,7 @@ internal fun FolderAppPickerFooter(
     // Empty, the tray only shows its hint while browsing: with the keyboard up the room goes to the results.
     val showTray = params.trayApps.isNotEmpty() || (params.searchQuery.isBlank() && !WindowInsets.isImeVisible)
     Column(
-        modifier = modifier
-            .fillMaxWidth()
-            .imePadding(),
+        modifier = modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(AureoleDS.dimens.xSmall)
     ) {
         if (showTray) {
@@ -71,42 +63,6 @@ internal fun FolderAppPickerFooter(
             placeholder = stringResource(R.string.core_common_search_app_placeholder),
             onSearch = actions.onSearch
         )
-        FolderAppPickerActions(params = params, onDismiss = actions.onDismiss, onSave = actions.onSave)
-    }
-}
-
-@Composable
-private fun FolderAppPickerActions(
-    params: FolderAppPickerFooterParams,
-    onDismiss: () -> Unit,
-    onSave: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    val cancel = @Composable {
-        OutlinedButton(onClick = onDismiss) { AureoleText(stringResource(R.string.core_common_cancel)) }
-    }
-    val save = @Composable {
-        Button(onClick = onSave) {
-            AureoleText(
-                pluralStringResource(R.plurals.home_folder_picker_save_count, params.saveCount, params.saveCount)
-            )
-        }
-    }
-    Row(
-        modifier = modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(
-            AureoleDS.dimens.xSmall,
-            if (params.isLeftHandedMode) Alignment.Start else Alignment.End
-        ),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        if (params.isLeftHandedMode) {
-            save()
-            cancel()
-        } else {
-            cancel()
-            save()
-        }
     }
 }
 
@@ -184,14 +140,12 @@ private fun FolderAppPickerTrayTile(app: AppInfo, modifier: Modifier = Modifier)
 private fun FolderAppPickerFooterPreview() {
     AureoleLauncherTheme {
         FolderAppPickerFooter(
-            params = FolderAppPickerFooterParams(trayApps = emptyList(), searchQuery = "cam", saveCount = 2),
+            params = FolderAppPickerFooterParams(trayApps = emptyList(), searchQuery = "cam"),
             actions = FolderAppPickerFooterActions(
                 onQueryChange = {},
                 onSearch = {},
                 onRemove = {},
-                onMove = { _, _ -> },
-                onDismiss = {},
-                onSave = {}
+                onMove = { _, _ -> }
             )
         )
     }

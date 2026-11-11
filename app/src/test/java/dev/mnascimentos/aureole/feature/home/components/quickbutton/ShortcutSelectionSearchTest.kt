@@ -115,9 +115,9 @@ class ShortcutSelectionSearchTest {
     }
 
     @Test
-    fun `open app row switches to apps only search`() {
+    fun `apps chip switches to apps only search`() {
         setSheet()
-        composeTestRule.onNodeWithText("Open App").performClick()
+        composeTestRule.onNodeWithText("Apps").performClick()
         type("cal")
 
         composeTestRule.onNodeWithText("Nothing with “cal”.").assertIsDisplayed()

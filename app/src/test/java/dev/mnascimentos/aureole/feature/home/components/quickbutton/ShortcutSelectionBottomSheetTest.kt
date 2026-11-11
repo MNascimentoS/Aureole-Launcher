@@ -109,6 +109,7 @@ class ShortcutSelectionBottomSheetTest {
         }
 
         // Assert
+        composeTestRule.onNodeWithText("Aureole").performClick()
         composeTestRule.onNodeWithText("Aureole Settings").performScrollTo().performClick()
 
         assertNotNull(updatedShortcuts)

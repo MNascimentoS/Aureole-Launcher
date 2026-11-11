@@ -20,6 +20,8 @@ import dev.mnascimentos.aureole.feature.home.components.containers.folder.Opened
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.ContainerFolderBottomSheetParams
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.FolderPopupActions
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.OpenedFolderPopupConfig
+import dev.mnascimentos.aureole.feature.home.components.widgets.WidgetStackBottomSheet
+import dev.mnascimentos.aureole.feature.home.components.widgets.model.WidgetStackBottomSheetParams
 import dev.mnascimentos.aureole.feature.home.grid.EditGridItemDialog
 import dev.mnascimentos.aureole.feature.home.model.LocalHomeActions
 import dev.mnascimentos.aureole.feature.home.model.LocalHomeUiState
@@ -75,6 +77,20 @@ private fun FolderMenuCase(isLeftHanded: Boolean) = MenuCase(isLeftHanded) {
             onRemoveFolder = {},
             onOpenContainerSettings = {},
             onOpenSettings = {}
+        ),
+        onDismiss = {}
+    )
+}
+
+@Composable
+private fun WidgetStackMenuCase(isLeftHanded: Boolean) = MenuCase(isLeftHanded) {
+    WidgetStackBottomSheet(
+        params = WidgetStackBottomSheetParams(
+            widgetId = 1,
+            stackId = "widget_stack_1",
+            onEditStack = {},
+            onToggleDots = {},
+            onRemoveStack = {}
         ),
         onDismiss = {}
     )
@@ -157,3 +173,13 @@ private fun FolderPopupListRightHandedScreenshotTest() = FolderPopupCase(isLeftH
 @AureolePreview
 @Composable
 private fun FolderPopupListLeftHandedScreenshotTest() = FolderPopupCase(isLeftHanded = true, isGrid = false)
+
+@PreviewTest
+@AureolePreview
+@Composable
+private fun WidgetStackMenuRightHandedScreenshotTest() = WidgetStackMenuCase(isLeftHanded = false)
+
+@PreviewTest
+@AureolePreview
+@Composable
+private fun WidgetStackMenuLeftHandedScreenshotTest() = WidgetStackMenuCase(isLeftHanded = true)

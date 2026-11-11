@@ -26,7 +26,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onGloballyPositioned
@@ -56,6 +59,7 @@ private const val GAUSSIAN_HALF_FACTOR = 0.5f
 private const val SCRUBBER_ANIMATION_DURATION = 150
 private const val INACTIVE_LETTER_ALPHA = 0.6f
 private const val HINT_ALPHA = 0.35f
+private const val PILL_ALPHA = 0.6f
 
 @Composable
 fun CurvedAlphabetScrubber(
@@ -175,6 +179,7 @@ private fun Modifier.scrubberBaseModifier(
     onHeightChanged: (Float) -> Unit
 ): Modifier {
     val dimens = AureoleDS.dimens
+    val pillColor = AureoleDS.colors.surfaceVariant.copy(alpha = PILL_ALPHA)
     return this
         .fillMaxHeight(options.heightFraction)
         .padding(
@@ -184,6 +189,21 @@ private fun Modifier.scrubberBaseModifier(
             end = if (isLeftHandedMode) dimens.zero else dimens.xSmall
         )
         .width(dimens.minTouchTarget)
+        .then(
+            if (options.hasPillBackground) {
+                Modifier.drawBehind {
+                    val pillWidth = dimens.iconXLargeMedium.toPx()
+                    drawRoundRect(
+                        color = pillColor,
+                        topLeft = Offset((size.width - pillWidth) / 2f, 0f),
+                        size = Size(pillWidth, size.height),
+                        cornerRadius = CornerRadius(pillWidth / 2f)
+                    )
+                }
+            } else {
+                Modifier
+            }
+        )
         .onGloballyPositioned { coordinates ->
             onHeightChanged(coordinates.size.height.toFloat())
         }

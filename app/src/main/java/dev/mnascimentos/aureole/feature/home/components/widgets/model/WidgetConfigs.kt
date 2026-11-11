@@ -101,6 +101,7 @@ data class WidgetStackBottomSheetParams(
     val onEditStack: () -> Unit,
     val onToggleDots: (String) -> Unit,
     val onRemoveStack: () -> Unit,
+    val showIndicator: Boolean = true,
 )
 
 data class StackedWidgetPagerParams(

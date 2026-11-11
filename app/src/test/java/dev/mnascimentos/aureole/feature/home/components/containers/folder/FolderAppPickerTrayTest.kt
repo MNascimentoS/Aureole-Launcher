@@ -48,16 +48,13 @@ class FolderAppPickerTrayTest {
                 FolderAppPickerFooter(
                     params = FolderAppPickerFooterParams(
                         trayApps = listOf(app1, app2),
-                        searchQuery = "",
-                        saveCount = 2
+                        searchQuery = ""
                     ),
                     actions = FolderAppPickerFooterActions(
                         onQueryChange = {},
                         onSearch = {},
                         onRemove = { removed += it },
-                        onMove = { from, to -> moves += from to to },
-                        onDismiss = {},
-                        onSave = {}
+                        onMove = { from, to -> moves += from to to }
                     )
                 )
             }
@@ -76,14 +73,12 @@ class FolderAppPickerTrayTest {
         composeTestRule.setContent {
             AureoleLauncherTheme {
                 FolderAppPickerFooter(
-                    params = FolderAppPickerFooterParams(trayApps = emptyList(), searchQuery = "", saveCount = 0),
+                    params = FolderAppPickerFooterParams(trayApps = emptyList(), searchQuery = ""),
                     actions = FolderAppPickerFooterActions(
                         onQueryChange = {},
                         onSearch = {},
                         onRemove = {},
-                        onMove = { _, _ -> },
-                        onDismiss = {},
-                        onSave = {}
+                        onMove = { _, _ -> }
                     )
                 )
             }

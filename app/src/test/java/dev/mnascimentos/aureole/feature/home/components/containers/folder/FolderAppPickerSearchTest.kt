@@ -20,6 +20,10 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
+import org.robolectric.annotation.Config
+
+/** The sheet hugs a 60% share of the window: the default Robolectric window leaves the grid no height. */
+private const val TALL_WINDOW = "w400dp-h900dp"
 
 @RunWith(RobolectricTestRunner::class)
 class FolderAppPickerSearchTest {
@@ -55,10 +59,11 @@ class FolderAppPickerSearchTest {
 
     private fun search(text: String) {
         composeTestRule.onNode(hasSetTextAction()).performTextInput(text)
-        composeTestRule.mainClock.advanceTimeBy(400L)
+        composeTestRule.mainClock.advanceTimeBy(1000L)
         composeTestRule.waitForIdle()
     }
 
+    @Config(qualifiers = TALL_WINDOW)
     @Test
     fun `search shows ranked results with the hint`() {
         setPicker(emptyList(), onSave = {})

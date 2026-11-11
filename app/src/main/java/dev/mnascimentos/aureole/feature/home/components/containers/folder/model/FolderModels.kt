@@ -41,9 +41,7 @@ data class FolderAppPickerBodyParams(
 
 data class FolderAppPickerFooterParams(
     val trayApps: List<AppInfo>,
-    val searchQuery: String,
-    val saveCount: Int,
-    val isLeftHandedMode: Boolean = false
+    val searchQuery: String
 )
 
 data class OpenedFolderOverlayParams(
@@ -75,7 +73,12 @@ data class FolderAppPickerFooterActions(
     val onSearch: () -> Unit,
     val onRemove: (String) -> Unit,
     /** A tray swap: the app at `from` of the tray now sits at `to`. */
-    val onMove: (from: Int, to: Int) -> Unit,
+    val onMove: (from: Int, to: Int) -> Unit
+)
+
+/** What the picker does when it closes: [onSave] gets the chosen packages in order; the logo opens the settings. */
+data class FolderAppPickerCallbacks(
     val onDismiss: () -> Unit,
-    val onSave: () -> Unit
+    val onSave: (List<String>) -> Unit,
+    val onSettingsClick: (() -> Unit)? = null
 )

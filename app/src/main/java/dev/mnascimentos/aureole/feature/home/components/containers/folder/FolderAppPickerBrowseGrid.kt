@@ -196,7 +196,8 @@ private fun PickerScrubber(
         options = ScrubberOptions(
             isAlwaysVisible = true,
             heightFraction = 1f,
-            bottomPadding = AureoleDS.dimens.xSmall
+            bottomPadding = AureoleDS.dimens.xSmall,
+            hasPillBackground = true
         )
     )
 }

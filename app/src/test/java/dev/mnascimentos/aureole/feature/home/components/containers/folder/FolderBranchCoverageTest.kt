@@ -51,6 +51,12 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
+import org.robolectric.annotation.Config
+
+private const val SHEET_ENTER_MS = 1000L
+
+/** The sheet hugs a 60% share of the window: the default Robolectric window leaves the grid no height. */
+private const val TALL_WINDOW = "w400dp-h900dp"
 
 @RunWith(RobolectricTestRunner::class)
 class FolderBranchCoverageTest {
@@ -352,6 +358,7 @@ class FolderBranchCoverageTest {
 
     // --- 5. FolderAppPickerDialog & List Branches ---
 
+    @Config(qualifiers = TALL_WINDOW)
     @Test
     fun `when FolderAppPickerDialog rendered in InspectionMode, should render Surface layout`() {
         val folder =
@@ -371,6 +378,7 @@ class FolderBranchCoverageTest {
                 }
             }
         }
+        composeTestRule.mainClock.advanceTimeBy(SHEET_ENTER_MS)
 
         composeTestRule.onNodeWithText("Apps in Folder: App Picker").assertIsDisplayed()
     }
@@ -633,6 +641,7 @@ class FolderBranchCoverageTest {
 
     // --- 10. FolderAppPickerDialog Search and Empty Branches ---
 
+    @Config(qualifiers = TALL_WINDOW)
     @Test
     fun `when FolderAppPickerDialog search produces no matches, should display empty search results message`() {
         val folder = AppFolder(
@@ -651,6 +660,7 @@ class FolderBranchCoverageTest {
                 )
             }
         }
+        composeTestRule.mainClock.advanceTimeBy(SHEET_ENTER_MS)
 
         // Search for non-matching string
         composeTestRule.onNode(hasSetTextAction()).performTextInput("XYZ_NO_MATCH")
@@ -660,6 +670,7 @@ class FolderBranchCoverageTest {
         composeTestRule.onNodeWithText("Nothing with \u201cXYZ_NO_MATCH\u201d.").assertIsDisplayed()
     }
 
+    @Config(qualifiers = TALL_WINDOW)
     @Test
     fun `when clicking Plus and Delete in FolderAppPickerDialog, should toggle package selection`() {
         val folder = AppFolder(
@@ -679,6 +690,7 @@ class FolderBranchCoverageTest {
                 )
             }
         }
+        composeTestRule.mainClock.advanceTimeBy(SHEET_ENTER_MS)
 
         // Tap App Two in the grid to add it
         composeTestRule.onNodeWithText("App Two").performClick()

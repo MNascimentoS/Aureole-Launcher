@@ -32,8 +32,14 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
+import org.robolectric.annotation.Config
 
 private const val DISMISS_ANIMATION_MS = 500L
+
+private const val SHEET_ENTER_MS = 1000L
+
+/** The sheet hugs a 60% share of the window: the default Robolectric window leaves the grid no height. */
+private const val TALL_WINDOW = "w400dp-h900dp"
 
 @RunWith(RobolectricTestRunner::class)
 class HomeScreenFolderOverlaysTest {
@@ -92,6 +98,7 @@ class HomeScreenFolderOverlaysTest {
         composeTestRule.onNodeWithText("New Folder").assertDoesNotExist()
     }
 
+    @Config(qualifiers = TALL_WINDOW)
     @Test
     fun `when AddAppToFolderOverlay is visible, should display FolderAppPickerDialog`() {
         var addAppClosed = false
@@ -113,9 +120,11 @@ class HomeScreenFolderOverlaysTest {
                 )
             }
         }
+        composeTestRule.mainClock.advanceTimeBy(SHEET_ENTER_MS)
 
         composeTestRule.onNodeWithText("Apps in Folder: Media").assertIsDisplayed()
         composeTestRule.onNodeWithText("Cancel").performClick()
+        composeTestRule.mainClock.advanceTimeBy(DISMISS_ANIMATION_MS)
         assertTrue(addAppClosed)
     }
 

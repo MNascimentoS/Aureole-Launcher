@@ -16,41 +16,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
-import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
-import dev.mnascimentos.aureole.core.designsystem.icons.Close
 import dev.mnascimentos.aureole.core.designsystem.icons.Plus
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
-import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
-import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
-
-@Composable
-fun FolderAppPickerHeader(
-    folderName: String,
-    onDismiss: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    Row(
-        modifier = modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        AureoleText(
-            text = stringResource(R.string.home_folder_apps_in_folder, folderName),
-            color = AureoleDS.colors.onSurfaceHigh,
-            format = AureoleTextFormatParams(style = AureoleDS.typography.titleMedium, fontWeight = FontWeight.Bold)
-        )
-        IconButton(onClick = onDismiss) {
-            AureoleDS.icons.Close(
-                tint = AureoleDS.colors.onSurfaceMedium
-            )
-        }
-    }
-}
 
 @Composable
 fun RemainingFolderAppRow(
@@ -96,16 +66,5 @@ fun RemainingFolderAppRow(
                 modifier = Modifier.size(AureoleDS.dimens.iconMedium)
             )
         }
-    }
-}
-
-@AureolePreview
-@Composable
-private fun FolderAppPickerHeaderPreview() {
-    AureoleLauncherTheme {
-        FolderAppPickerHeader(
-            folderName = "Social",
-            onDismiss = {}
-        )
     }
 }

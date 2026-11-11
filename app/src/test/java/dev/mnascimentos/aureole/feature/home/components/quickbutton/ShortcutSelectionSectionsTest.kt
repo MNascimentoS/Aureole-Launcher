@@ -10,11 +10,11 @@ import androidx.compose.ui.test.performClick
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.data.model.ShortcutAction
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
+import dev.mnascimentos.aureole.feature.home.components.quickbutton.model.ShortcutCategory
 import dev.mnascimentos.aureole.feature.home.components.quickbutton.model.ShortcutSelectionSheetParams
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
-import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -27,12 +27,11 @@ class ShortcutSelectionSectionsTest {
     val composeTestRule = createComposeRule()
 
     @Test
-    fun `when default list is displayed, should render default options and trigger show app picker`() {
+    fun `when default list is displayed, should render default options and apply the clicked one`() {
         // Arrange
-        var appPickerShown = false
         var appliedShortcut: ShortcutAction? = null
         val params = ShortcutSelectionSheetParams(
-            isShowingAppPicker = false,
+            category = ShortcutCategory.AUREOLE,
             currentAction = ShortcutAction.AllApps,
             defaultShortcutOptions = listOf(ShortcutAction.AllApps, ShortcutAction.Settings),
             uiState = MainUiState()
@@ -43,23 +42,20 @@ class ShortcutSelectionSectionsTest {
             AureoleLauncherTheme {
                 ShortcutSelectionSheetContent(
                     params = params,
-                    onApplyShortcut = { appliedShortcut = it },
-                    onShowAppPicker = { appPickerShown = true }
+                    onApplyShortcut = { appliedShortcut = it }
                 )
             }
         }
 
         // Assert
         composeTestRule.onNodeWithText("All apps").assertIsDisplayed()
-        composeTestRule.onNodeWithText("Open App").assertIsDisplayed().performClick()
-        assertTrue("Expected onShowAppPicker to be called", appPickerShown)
-
+        composeTestRule.onNodeWithText("AUREOLE").assertIsDisplayed()
         composeTestRule.onNodeWithText("Aureole Settings").assertIsDisplayed().performClick()
         assertEquals(ShortcutAction.Settings, appliedShortcut)
     }
 
     @Test
-    fun `when app selected in open app shortcut, should display selected app name`() {
+    fun `when app selected in open app shortcut, should list the system shortcuts of the category`() {
         // Arrange
         val app = AppInfo(
             label = "Browser App",
@@ -68,9 +64,9 @@ class ShortcutSelectionSectionsTest {
             icon = ColorDrawable(Color.BLACK)
         )
         val params = ShortcutSelectionSheetParams(
-            isShowingAppPicker = false,
-            currentAction = ShortcutAction.openApp("com.example.browser"),
-            defaultShortcutOptions = listOf(ShortcutAction.AllApps),
+            category = ShortcutCategory.SYSTEM,
+            currentAction = ShortcutAction.systemIntent("Camera"),
+            defaultShortcutOptions = listOf(ShortcutAction.AllApps, ShortcutAction.systemIntent("Camera")),
             uiState = MainUiState(apps = listOf(app))
         )
 
@@ -79,14 +75,14 @@ class ShortcutSelectionSectionsTest {
             AureoleLauncherTheme {
                 ShortcutSelectionSheetContent(
                     params = params,
-                    onApplyShortcut = {},
-                    onShowAppPicker = {}
+                    onApplyShortcut = {}
                 )
             }
         }
 
         // Assert
-        composeTestRule.onNodeWithText("Browser App").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Camera").assertIsDisplayed()
+        composeTestRule.onNodeWithText("All apps").assertDoesNotExist()
     }
 
     @Test
@@ -106,7 +102,7 @@ class ShortcutSelectionSectionsTest {
             icon = ColorDrawable(Color.BLUE)
         )
         val params = ShortcutSelectionSheetParams(
-            isShowingAppPicker = true,
+            category = ShortcutCategory.APPS,
             currentAction = ShortcutAction.None,
             defaultShortcutOptions = listOf(ShortcutAction.AllApps),
             uiState = MainUiState(apps = listOf(app1, app2))
@@ -117,8 +113,7 @@ class ShortcutSelectionSectionsTest {
             AureoleLauncherTheme {
                 ShortcutSelectionSheetContent(
                     params = params,
-                    onApplyShortcut = { appliedShortcut = it },
-                    onShowAppPicker = {}
+                    onApplyShortcut = { appliedShortcut = it }
                 )
             }
         }

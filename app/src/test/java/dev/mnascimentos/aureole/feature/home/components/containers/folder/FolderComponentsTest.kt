@@ -34,14 +34,19 @@ import dev.mnascimentos.aureole.feature.home.model.MainUiState
 import dev.mnascimentos.aureole.feature.home.model.ProvideHomeUiState
 import dev.mnascimentos.aureole.feature.home.model.createDefaultHomeScreenActions
 import org.junit.Assert.assertEquals
-import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
+import org.robolectric.annotation.Config
 
 private const val DISMISS_ANIMATION_MS = 500L
+
+private const val SHEET_ENTER_MS = 1000L
+
+/** The sheet hugs a 60% share of the window: the default Robolectric window leaves the grid no height. */
+private const val TALL_WINDOW = "w400dp-h900dp"
 
 @RunWith(RobolectricTestRunner::class)
 class FolderComponentsTest {
@@ -231,7 +236,8 @@ class FolderComponentsTest {
         composeTestRule.onNodeWithText("Create").performClick()
 
         assertEquals("My New Folder", submittedName)
-        assertNull(submittedIcon)
+        // A new folder opens with the folder icon selected, so saving without choosing keeps it.
+        assertEquals("folder", submittedIcon)
     }
 
     @Test
@@ -305,6 +311,7 @@ class FolderComponentsTest {
 
     // --- FolderAppPickerDialog Tests ---
 
+    @Config(qualifiers = TALL_WINDOW)
     @Test
     fun `when rendering FolderAppPickerDialog, should display selected and remaining sections`() {
         val otherApp = AppInfo(
@@ -326,6 +333,7 @@ class FolderComponentsTest {
                 )
             }
         }
+        composeTestRule.mainClock.advanceTimeBy(SHEET_ENTER_MS)
 
         composeTestRule.onNodeWithText("Apps in Folder: Social").assertIsDisplayed()
         // The chosen app shows both in the grid (checked) and in the tray.
@@ -459,6 +467,7 @@ class FolderComponentsTest {
         assertTrue(dismissed)
     }
 
+    @Config(qualifiers = TALL_WINDOW)
     @Test
     fun `when searching in FolderAppPickerDialog, should filter apps list`() {
         val app1 = AppInfo(
@@ -485,6 +494,7 @@ class FolderComponentsTest {
                 )
             }
         }
+        composeTestRule.mainClock.advanceTimeBy(SHEET_ENTER_MS)
 
         // Search for "Gall"
         composeTestRule.onNode(hasSetTextAction()).performTextInput("Gall")
@@ -494,6 +504,7 @@ class FolderComponentsTest {
         composeTestRule.onNodeWithText("Gallery").assertIsDisplayed()
     }
 
+    @Config(qualifiers = TALL_WINDOW)
     @Test
     fun `when FolderAppPickerDialog has empty selected or remaining apps, should display empty status text`() {
         val folder = AppFolder(id = "f_empty", name = "EmptyFolder", appPackageNames = emptyList())
@@ -508,6 +519,7 @@ class FolderComponentsTest {
                 )
             }
         }
+        composeTestRule.mainClock.advanceTimeBy(SHEET_ENTER_MS)
 
         composeTestRule.onNodeWithText("No apps in the folder.").assertIsDisplayed()
         composeTestRule.onNodeWithText("No apps found.").assertIsDisplayed()

@@ -34,7 +34,9 @@ data class ScrubberOptions(
     /** Share of the parent height the letters take; the home keeps [ScrubberDimensions.SCRUBBER_HEIGHT_FRACTION]. */
     val heightFraction: Float = ScrubberDimensions.SCRUBBER_HEIGHT_FRACTION,
     /** Space kept under the letters; the home leaves room for its dock. */
-    val bottomPadding: Dp = ScrubberDimensions.PaddingBottom
+    val bottomPadding: Dp = ScrubberDimensions.PaddingBottom,
+    /** Draws a narrow pill behind the letters (the folder picker); the touch area keeps its full width. */
+    val hasPillBackground: Boolean = false
 )
 
 data class ScrubberRenderParams(
