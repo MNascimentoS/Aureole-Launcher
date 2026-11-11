@@ -33,7 +33,8 @@ class FolderFormDialogTest {
 
         composeTestRule.onNode(hasSetTextAction()).performTextInput("Work")
 
-        composeTestRule.onAllNodesWithText("Work").assertCountEquals(2)
+        // The preview label, the field and the "Work" category chip.
+        composeTestRule.onAllNodesWithText("Work").assertCountEquals(3)
     }
 
     @Test

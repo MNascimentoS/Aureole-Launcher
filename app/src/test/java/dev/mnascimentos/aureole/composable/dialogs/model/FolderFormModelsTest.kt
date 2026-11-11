@@ -1,7 +1,10 @@
 package dev.mnascimentos.aureole.composable.dialogs.model
 
+import dev.mnascimentos.aureole.core.designsystem.icons.AureoleFolderIcons
+import dev.mnascimentos.aureole.core.designsystem.icons.FolderIconCategory
 import org.junit.Assert.assertEquals
-import org.junit.Assert.assertNull
+import org.junit.Assert.assertFalse
+import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class FolderFormModelsTest {
@@ -18,18 +21,42 @@ class FolderFormModelsTest {
     }
 
     @Test
-    fun `icon rows start with the letter option and have the grid columns`() {
-        val keys = List(FOLDER_ICON_COLUMNS + 1) { "k$it" }
-        val rows = folderIconRows(keys)
+    fun `icon rows have the grid columns and keep every icon of the category`() {
+        FolderIconCategory.entries.forEach { category ->
+            val rows = folderIconRows(category)
 
-        assertNull(rows.first().first())
-        assertEquals(FOLDER_ICON_COLUMNS, rows.first().size)
-        assertEquals(keys.takeLast(2), rows.last())
-        assertEquals(2, rows.size)
+            assertTrue(rows.dropLast(1).all { it.size == FOLDER_ICON_COLUMNS })
+            assertEquals(folderIconKeys(category), rows.flatten())
+        }
     }
 
     @Test
-    fun `no icons still gives the letter option`() {
-        assertEquals(listOf(listOf<String?>(null)), folderIconRows(emptyList()))
+    fun `categories cover the 80 icons without repeating any`() {
+        val keys = FolderIconCategory.entries.flatMap { folderIconKeys(it) }
+
+        assertEquals(80, keys.size)
+        assertEquals(keys.size, keys.toSet().size)
+        assertEquals(AureoleFolderIcons.all.map { it.key }.toSet(), keys.toSet())
+    }
+
+    @Test
+    fun `the first category is shown when no icon is set, and an unknown key shows the folder icon category`() {
+        assertEquals(FolderIconCategory.WORK, initialFolderIconCategory(null))
+        assertEquals(FolderIconCategory.TOOLS, initialFolderIconCategory("nope"))
+    }
+
+    @Test
+    fun `the initial category is the one of the saved icon, old keys included`() {
+        assertEquals(FolderIconCategory.MEDIA, initialFolderIconCategory("music_note"))
+        assertEquals(FolderIconCategory.MEDIA, initialFolderIconCategory("play"))
+        assertEquals(FolderIconCategory.MONEY, initialFolderIconCategory("cart"))
+    }
+
+    @Test
+    fun `an icon is marked when its key or the old key that maps to it is saved`() {
+        assertTrue(isFolderIconSelected("shopping_cart", "cart"))
+        assertTrue(isFolderIconSelected("work", "work"))
+        assertFalse(isFolderIconSelected("work", "star"))
+        assertFalse(isFolderIconSelected("work", null))
     }
 }

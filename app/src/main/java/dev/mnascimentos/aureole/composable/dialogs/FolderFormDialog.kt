@@ -17,6 +17,9 @@ import androidx.compose.ui.res.stringResource
 import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.composable.dialogs.model.FolderFormSheetActions
 import dev.mnascimentos.aureole.composable.dialogs.model.FolderFormSheetState
+import dev.mnascimentos.aureole.composable.dialogs.model.FolderIconPickerActions
+import dev.mnascimentos.aureole.composable.dialogs.model.FolderIconPickerState
+import dev.mnascimentos.aureole.composable.dialogs.model.initialFolderIconCategory
 import dev.mnascimentos.aureole.composable.dialogs.model.resolveFolderName
 import dev.mnascimentos.aureole.composable.menu.AureoleMenuRow
 import dev.mnascimentos.aureole.composable.menu.model.MenuRowParams
@@ -50,6 +53,7 @@ fun FolderFormDialog(
     val placeholderName = stringResource(R.string.home_folder_name_placeholder)
     var folderName by remember { mutableStateOf(folder?.name.orEmpty()) }
     var selectedIcon by remember { mutableStateOf(folder?.icon) }
+    var category by remember { mutableStateOf(initialFolderIconCategory(folder?.icon)) }
 
     AureoleConfirmOverlay(
         params = ConfirmOverlayParams(
@@ -82,11 +86,16 @@ fun FolderFormDialog(
     ) {
         FolderFormSheetBody(
             state = FolderFormSheetState(
-                resolveFolderName(folderName, placeholderName),
-                selectedIcon,
+                picker = FolderIconPickerState(selectedIcon, category),
                 showDelete = isEditing && onDelete != null
             ),
-            actions = FolderFormSheetActions(onIconSelected = { selectedIcon = it }, onDelete = onDelete),
+            actions = FolderFormSheetActions(
+                picker = FolderIconPickerActions(
+                    onIconSelected = { selectedIcon = it },
+                    onCategorySelected = { category = it }
+                ),
+                onDelete = onDelete
+            ),
             isLeftHanded = isLeftHanded
         )
     }
@@ -118,9 +127,8 @@ private fun FolderFormSheetBody(
             format = AureoleTextFormatParams(style = AureoleDS.typography.labelSmall)
         )
         FolderIconGrid(
-            selectedIcon = state.selectedIcon,
-            onIconSelected = actions.onIconSelected,
-            folderName = state.folderName,
+            state = state.picker,
+            actions = actions.picker,
             isLeftHanded = isLeftHanded
         )
     }

@@ -464,4 +464,12 @@
     <string name="settings_position_option_space_evenly">Espaçamento Igual</string>
     <string name="settings_position_option_space_between">Espaçamento Entre</string>
     <string name="settings_position_changed">Posição alterada</string>
+    <string name="folder_icon_cat_work">Trabalho</string>
+    <string name="folder_icon_cat_social">Social</string>
+    <string name="folder_icon_cat_media">Mídia</string>
+    <string name="folder_icon_cat_games">Jogos</string>
+    <string name="folder_icon_cat_money">Finanças</string>
+    <string name="folder_icon_cat_health">Saúde</string>
+    <string name="folder_icon_cat_travel">Viagem</string>
+    <string name="folder_icon_cat_tools">Ferramentas</string>
 </resources>

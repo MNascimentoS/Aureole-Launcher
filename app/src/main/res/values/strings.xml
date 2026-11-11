@@ -460,4 +460,12 @@
     <string name="settings_position_option_space_evenly">Space Evenly</string>
     <string name="settings_position_option_space_between">Space Between</string>
     <string name="settings_position_changed">Position changed</string>
+    <string name="folder_icon_cat_work">Work</string>
+    <string name="folder_icon_cat_social">Social</string>
+    <string name="folder_icon_cat_media">Media</string>
+    <string name="folder_icon_cat_games">Games</string>
+    <string name="folder_icon_cat_money">Finances</string>
+    <string name="folder_icon_cat_health">Health</string>
+    <string name="folder_icon_cat_travel">Travel</string>
+    <string name="folder_icon_cat_tools">Tools</string>
 </resources>

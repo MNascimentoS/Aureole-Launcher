@@ -4,25 +4,28 @@ import android.content.ComponentName
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalInspectionMode
-import androidx.compose.ui.semantics.SemanticsActions
+import androidx.compose.ui.semantics.SemanticsProperties
+import androidx.compose.ui.test.SemanticsMatcher
 import androidx.compose.ui.test.assertCountEquals
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.hasClickAction
 import androidx.compose.ui.test.hasSetTextAction
-import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.v2.createComposeRule
 import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
-import androidx.compose.ui.test.performSemanticsAction
+import androidx.compose.ui.test.performScrollTo
 import androidx.compose.ui.test.performTextInput
 import androidx.core.graphics.drawable.toDrawable
 import dev.chrisbanes.haze.HazeState
 import dev.mnascimentos.aureole.composable.dialogs.CreateFolderDialog
 import dev.mnascimentos.aureole.composable.dialogs.FolderFormDialog
 import dev.mnascimentos.aureole.composable.dialogs.FolderIconGrid
+import dev.mnascimentos.aureole.composable.dialogs.model.FolderIconPickerActions
+import dev.mnascimentos.aureole.composable.dialogs.model.FolderIconPickerState
 import dev.mnascimentos.aureole.core.data.model.AppFolder
 import dev.mnascimentos.aureole.core.data.model.AppInfo
+import dev.mnascimentos.aureole.core.designsystem.icons.FolderIconCategory
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.feature.home.components.common.HomeScreenFolderBottomSheetOverlays
 import dev.mnascimentos.aureole.feature.home.components.common.OpenedFolderOverlay
@@ -253,6 +256,9 @@ class FolderBranchCoverageTest {
         assertEquals("Shortcuts", nameSubmitted)
     }
 
+    private val iconTile = SemanticsMatcher.keyIsDefined(SemanticsProperties.Selected) and
+        SemanticsMatcher.keyNotDefined(SemanticsProperties.Text)
+
     @Test
     fun `when selecting icon tiles in FolderIconGrid, should update selected icon state`() {
         var selectedIconResult: String? = "initial"
@@ -268,12 +274,11 @@ class FolderBranchCoverageTest {
             }
         }
 
-        // Click the first chip (Default Letter chip)
-        composeTestRule.onNode(hasText("T") and hasClickAction()).performSemanticsAction(SemanticsActions.OnClick)
+        // The grid starts on the category of "settings" (Tools); the form is a scroll, so bring the tile in view.
+        composeTestRule.onAllNodes(iconTile)[0].performScrollTo().performClick()
 
-        // Save
         composeTestRule.onNodeWithText("Save").performClick()
-        assertEquals(null, selectedIconResult)
+        assertEquals("build", selectedIconResult)
     }
 
     // --- 4. FolderDialog Branches ---
@@ -591,7 +596,8 @@ class FolderBranchCoverageTest {
             }
         }
 
-        composeTestRule.onAllNodesWithText("N").assertCountEquals(2)
+        // Only the preview shows the initial now: the grid has no letter tile.
+        composeTestRule.onAllNodesWithText("N").assertCountEquals(1)
     }
 
     @Test
@@ -601,16 +607,18 @@ class FolderBranchCoverageTest {
         composeTestRule.setContent {
             AureoleLauncherTheme {
                 FolderIconGrid(
-                    selectedIcon = null,
-                    onIconSelected = { selectedIconResult = it },
-                    folderName = "Icons"
+                    state = FolderIconPickerState(selectedIcon = null, category = FolderIconCategory.WORK),
+                    actions = FolderIconPickerActions(
+                        onIconSelected = { selectedIconResult = it },
+                        onCategorySelected = {}
+                    )
                 )
             }
         }
 
-        // Index 0 is Default Letter, Index 1 is the first icon option chip ("star")
-        composeTestRule.onAllNodes(hasClickAction())[1].performClick()
-        assertEquals("star", selectedIconResult)
+        // The category chips come first (8), then the icons: the first one of Work is "work".
+        composeTestRule.onAllNodes(hasClickAction())[FolderIconCategory.entries.size].performClick()
+        assertEquals("work", selectedIconResult)
     }
 
     // --- 10. FolderAppPickerDialog Search and Empty Branches ---
