@@ -12,21 +12,33 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.composable.mirror.LeftHandMirror
-import dev.mnascimentos.aureole.composable.sheets.SettingsBottomSheet
+import dev.mnascimentos.aureole.core.designsystem.components.AureoleEditOverlay
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
 import dev.mnascimentos.aureole.core.designsystem.icons.Icon
 import dev.mnascimentos.aureole.core.designsystem.icons.Layout
 import dev.mnascimentos.aureole.core.designsystem.icons.Placeholder
+import dev.mnascimentos.aureole.core.designsystem.model.AureoleEditOverlayConfig
+import dev.mnascimentos.aureole.core.designsystem.model.AureoleEditOverlayParams
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
+import dev.mnascimentos.aureole.feature.home.model.LocalHomeUiState
+import kotlinx.coroutines.delay
+
+/** Lets the sheet slide out before the caller removes it. */
+private const val DISMISS_DELAY_MS = 300L
 
 @Composable
 fun CustomizeBottomSheet(
@@ -34,16 +46,35 @@ fun CustomizeBottomSheet(
     onDismissRequest: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    SettingsBottomSheet(
-        title = stringResource(R.string.home_customize_title),
-        onDismissRequest = onDismissRequest,
-        modifier = modifier
-    ) {
-        Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
-            CustomizeAddOptionsComponent(actions = actions, onDismissRequest = onDismissRequest)
-            CustomizeSystemOptions(actions = actions, onDismissRequest = onDismissRequest)
+    var isVisible by remember { mutableStateOf(true) }
+    if (!isVisible) {
+        LaunchedEffect(isVisible) {
+            delay(DISMISS_DELAY_MS)
+            onDismissRequest()
         }
     }
+
+    AureoleEditOverlay(
+        onDismissRequest = { isVisible = false },
+        modifier = modifier,
+        params = AureoleEditOverlayParams(
+            config = AureoleEditOverlayConfig(
+                title = stringResource(R.string.home_customize_title),
+                isVisible = isVisible,
+                isLeftHanded = LocalHomeUiState.current.isLeftHandedMode,
+                onSettingsClick = {
+                    actions.onSettingsClick()
+                    onDismissRequest()
+                }
+            ),
+            sheetContent = {
+                Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
+                    CustomizeAddOptionsComponent(actions = actions, onDismissRequest = onDismissRequest)
+                    CustomizeSystemOptions(actions = actions, onDismissRequest = onDismissRequest)
+                }
+            }
+        )
+    )
 }
 
 @Composable

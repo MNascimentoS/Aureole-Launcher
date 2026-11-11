@@ -5,14 +5,14 @@ import com.android.tools.screenshot.PreviewTest
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 
-class OverlaySheetHandleScreenshotTest {
+class OverlaySheetGestureZoneScreenshotTest {
 
     @PreviewTest
     @AureolePreview
     @Composable
-    private fun OverlaySheetHandleDefault() {
+    private fun OverlaySheetGestureZoneDefault() {
         AureoleLauncherTheme {
-            OverlaySheetHandle(
+            OverlaySheetGestureZone(
                 isExpanded = false,
                 isLeftHanded = false,
                 onToggleExpanded = {},

@@ -382,7 +382,7 @@
     <string name="home_onboarding_task_done_a11y">%1$s, concluído</string>
     <string name="home_onboarding_task_pending_a11y">%1$s, pendente</string>
     <string name="settings_advanced_replay_onboarding">Rever boas-vindas</string>
-    <string name="overlay_sheet_handle_description">Alça do painel</string>
+    <string name="overlay_sheet_gesture_zone_description">Segure o topo da sheet</string>
     <string name="overlay_sheet_action_expand">Expandir</string>
     <string name="overlay_sheet_action_collapse">Recolher</string>
     <string name="overlay_sheet_action_settings">Ajustes do Aureole</string>

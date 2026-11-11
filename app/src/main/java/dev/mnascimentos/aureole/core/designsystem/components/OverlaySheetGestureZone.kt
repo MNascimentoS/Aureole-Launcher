@@ -1,19 +1,15 @@
 package dev.mnascimentos.aureole.core.designsystem.components
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.input.pointer.pointerInput
@@ -24,24 +20,26 @@ import androidx.compose.ui.semantics.CustomAccessibilityAction
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.customActions
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.core.designsystem.model.SheetHandleAction
 import dev.mnascimentos.aureole.core.designsystem.model.sheetHandleActions
-import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.core.designsystem.utils.LongPressViewConfiguration
 
-/** Holding the handle this long opens the Aureole settings. */
-private const val HANDLE_LONG_PRESS_TIMEOUT_MS = 600L
+/** Holding the gesture zone this long opens the Aureole settings. */
+private const val GESTURE_ZONE_LONG_PRESS_TIMEOUT_MS = 600L
 
-private const val HANDLE_PILL_ALPHA = 0.5f
+/** Height of the invisible gesture strip at the top of the sheet. */
+private const val GESTURE_ZONE_HEIGHT_DP = 20
 
 /**
- * Grab handle at the top of the overlay sheet.
+ * Invisible gesture strip across the top of the overlay sheet; nothing is drawn.
  *
  * Double tap toggles between the rest and expanded heights; holding it opens the settings. Dragging is
- * handled by the sheet surface around it. TalkBack gets the same gestures as custom actions.
+ * handled by the sheet surface around it, so a drag that starts on the strip resizes the sheet too.
+ * TalkBack gets the same gestures as custom actions.
  *
  * @param isExpanded Whether the sheet is expanded, to label the resize action.
  * @param isLeftHanded Thumb side; sets the order of the accessibility actions.
@@ -49,7 +47,7 @@ private const val HANDLE_PILL_ALPHA = 0.5f
  * @param onSettingsClick Opens the Aureole settings; null hides the action and disables holding.
  */
 @Composable
-internal fun OverlaySheetHandle(
+internal fun OverlaySheetGestureZone(
     isExpanded: Boolean,
     isLeftHanded: Boolean,
     onToggleExpanded: () -> Unit,
@@ -66,43 +64,33 @@ internal fun OverlaySheetHandle(
         }
         Unit
     }
-    val description = stringResource(R.string.overlay_sheet_handle_description)
+    val description = stringResource(R.string.overlay_sheet_gesture_zone_description)
     val actions = sheetHandleActions(isExpanded, onSettingsClick != null, isLeftHanded).map { action ->
-        CustomAccessibilityAction(handleActionLabel(action)) {
+        CustomAccessibilityAction(gestureZoneActionLabel(action)) {
             if (action == SheetHandleAction.Settings) onSettingsClick?.invoke() else onToggleExpanded()
             true
         }
     }
     val baseConfiguration = LocalViewConfiguration.current
-    val handleConfiguration = remember(baseConfiguration) {
-        LongPressViewConfiguration(baseConfiguration, HANDLE_LONG_PRESS_TIMEOUT_MS)
+    val gestureZoneConfiguration = remember(baseConfiguration) {
+        LongPressViewConfiguration(baseConfiguration, GESTURE_ZONE_LONG_PRESS_TIMEOUT_MS)
     }
 
-    CompositionLocalProvider(LocalViewConfiguration provides handleConfiguration) {
+    CompositionLocalProvider(LocalViewConfiguration provides gestureZoneConfiguration) {
         Box(
             modifier = modifier
                 .fillMaxWidth()
-                .height(AureoleDS.dimens.large)
+                .height(GESTURE_ZONE_HEIGHT_DP.dp)
                 .semantics {
                     contentDescription = description
                     customActions = actions
                 }
-                .handleGestures(onDoubleTap = { currentToggle() }, onLongPress = onHold),
-            contentAlignment = Alignment.Center
-        ) {
-            Box(
-                modifier = Modifier
-                    .size(width = AureoleDS.dimens.xLarge, height = AureoleDS.dimens.xxSmall)
-                    .background(
-                        color = AureoleDS.colors.onSurfaceMedium.copy(alpha = HANDLE_PILL_ALPHA),
-                        shape = RoundedCornerShape(AureoleDS.dimens.radiusFull)
-                    )
-            )
-        }
+                .gestureZoneTaps(onDoubleTap = { currentToggle() }, onLongPress = onHold)
+        )
     }
 }
 
-private fun Modifier.handleGestures(onDoubleTap: () -> Unit, onLongPress: () -> Unit): Modifier {
+private fun Modifier.gestureZoneTaps(onDoubleTap: () -> Unit, onLongPress: () -> Unit): Modifier {
     return pointerInput(Unit) {
         detectTapGestures(
             onDoubleTap = { onDoubleTap() },
@@ -113,7 +101,7 @@ private fun Modifier.handleGestures(onDoubleTap: () -> Unit, onLongPress: () -> 
 
 @Composable
 @ReadOnlyComposable
-private fun handleActionLabel(action: SheetHandleAction): String {
+private fun gestureZoneActionLabel(action: SheetHandleAction): String {
     return when (action) {
         SheetHandleAction.Expand -> stringResource(R.string.overlay_sheet_action_expand)
         SheetHandleAction.Collapse -> stringResource(R.string.overlay_sheet_action_collapse)
@@ -123,9 +111,9 @@ private fun handleActionLabel(action: SheetHandleAction): String {
 
 @AureolePreview
 @Composable
-private fun OverlaySheetHandlePreview() {
+private fun OverlaySheetGestureZonePreview() {
     AureoleLauncherTheme {
-        OverlaySheetHandle(
+        OverlaySheetGestureZone(
             isExpanded = false,
             isLeftHanded = false,
             onToggleExpanded = {},

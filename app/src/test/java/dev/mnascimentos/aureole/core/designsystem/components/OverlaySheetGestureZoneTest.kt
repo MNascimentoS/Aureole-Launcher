@@ -23,13 +23,13 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 
-private const val HANDLE = "Sheet handle"
+private const val GESTURE_ZONE = "Hold the top of the sheet"
 private const val LONG_PRESS_MS = 800L
 private const val SWIPE_DISTANCE_PX = 600f
 
 @OptIn(ExperimentalTestApi::class)
 @RunWith(RobolectricTestRunner::class)
-class OverlaySheetHandleTest {
+class OverlaySheetGestureZoneTest {
 
     @get:Rule
     val composeTestRule = createComposeRule()
@@ -43,14 +43,14 @@ class OverlaySheetHandleTest {
                     state = state,
                     params = AureoleEditOverlayParams(
                         config = AureoleEditOverlayConfig(
-                            title = "Handle Overlay",
+                            title = "Zone Overlay",
                             animated = false,
                             isLeftHanded = isLeftHanded,
                             onSettingsClick = { settingsClicks++ }
                         ),
-                        previewContent = { Text("Handle Preview") },
-                        bottomBarContent = { Text("Handle Footer") },
-                        sheetContent = { Text("Handle Content") }
+                        previewContent = { Text("Zone Preview") },
+                        bottomBarContent = { Text("Zone Footer") },
+                        sheetContent = { Text("Zone Content") }
                     )
                 )
             }
@@ -62,11 +62,11 @@ class OverlaySheetHandleTest {
         val state = AureoleEditOverlayState()
         setOverlay(state)
 
-        composeTestRule.onNodeWithContentDescription(HANDLE).performCustomAccessibilityActionWithLabel("Expand")
+        composeTestRule.onNodeWithContentDescription(GESTURE_ZONE).performCustomAccessibilityActionWithLabel("Expand")
         composeTestRule.waitForIdle()
         assertTrue(state.isExpanded)
 
-        composeTestRule.onNodeWithContentDescription(HANDLE).performCustomAccessibilityActionWithLabel("Collapse")
+        composeTestRule.onNodeWithContentDescription(GESTURE_ZONE).performCustomAccessibilityActionWithLabel("Collapse")
         composeTestRule.waitForIdle()
         assertFalse(state.isExpanded)
     }
@@ -75,28 +75,28 @@ class OverlaySheetHandleTest {
     fun `when settings action runs, should call settings`() {
         setOverlay(AureoleEditOverlayState(), isLeftHanded = true)
 
-        composeTestRule.onNodeWithContentDescription(HANDLE)
+        composeTestRule.onNodeWithContentDescription(GESTURE_ZONE)
             .performCustomAccessibilityActionWithLabel("Aureole settings")
 
         assertEquals(1, settingsClicks)
     }
 
     @Test
-    fun `when handle is double tapped, should toggle expanded`() {
+    fun `when gesture zone is double tapped, should toggle expanded`() {
         val state = AureoleEditOverlayState()
         setOverlay(state)
 
-        composeTestRule.onNodeWithContentDescription(HANDLE).performTouchInput { doubleClick() }
+        composeTestRule.onNodeWithContentDescription(GESTURE_ZONE).performTouchInput { doubleClick() }
         composeTestRule.waitForIdle()
 
         assertTrue(state.isExpanded)
     }
 
     @Test
-    fun `when handle is held, should open settings`() {
+    fun `when gesture zone is held, should open settings`() {
         setOverlay(AureoleEditOverlayState())
 
-        composeTestRule.onNodeWithContentDescription(HANDLE)
+        composeTestRule.onNodeWithContentDescription(GESTURE_ZONE)
             .performTouchInput { longClick(durationMillis = LONG_PRESS_MS) }
 
         assertEquals(1, settingsClicks)
@@ -107,7 +107,19 @@ class OverlaySheetHandleTest {
         val state = AureoleEditOverlayState()
         setOverlay(state)
 
-        composeTestRule.onNodeWithText("Handle Overlay")
+        composeTestRule.onNodeWithText("Zone Overlay")
+            .performTouchInput { swipeUp(startY = centerY, endY = centerY - SWIPE_DISTANCE_PX) }
+        composeTestRule.waitForIdle()
+
+        assertTrue(state.isExpanded)
+    }
+
+    @Test
+    fun `when gesture zone is swiped up, should expand`() {
+        val state = AureoleEditOverlayState()
+        setOverlay(state)
+
+        composeTestRule.onNodeWithContentDescription(GESTURE_ZONE)
             .performTouchInput { swipeUp(startY = centerY, endY = centerY - SWIPE_DISTANCE_PX) }
         composeTestRule.waitForIdle()
 
@@ -118,7 +130,7 @@ class OverlaySheetHandleTest {
     fun `when overlay starts expanded, should show content and bottom bar`() {
         setOverlay(AureoleEditOverlayState(initialExpanded = true))
 
-        composeTestRule.onNodeWithText("Handle Content").assertIsDisplayed()
-        composeTestRule.onNodeWithText("Handle Footer").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Zone Content").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Zone Footer").assertIsDisplayed()
     }
 }

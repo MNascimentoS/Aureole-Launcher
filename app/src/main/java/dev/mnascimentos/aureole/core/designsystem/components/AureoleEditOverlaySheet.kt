@@ -210,7 +210,7 @@ private fun expandFractionOf(motion: OverlaySheetMotion, isExpanded: Boolean, bo
 }
 
 /**
- * Inside of the overlay sheet: handle, header and content at the top, bottom bar at the bottom.
+ * Inside of the overlay sheet: gesture zone, header and content at the top, bottom bar at the bottom.
  * When the sheet is taller than its content (expanded), the free space sits between content and bottom bar.
  */
 @Composable
@@ -228,7 +228,7 @@ internal fun OverlaySheetBody(
         verticalArrangement = Arrangement.SpaceBetween
     ) {
         Column(modifier = Modifier.weight(1f, fill = false)) {
-            decorations.handle?.invoke()
+            decorations.gestureZone?.invoke()
             if (title != null) {
                 OverlaySheetHeader(
                     title = title,
@@ -253,7 +253,8 @@ internal fun OverlaySheetBody(
                 modifier = Modifier.padding(
                     start = AureoleDS.dimens.small,
                     end = AureoleDS.dimens.small,
-                    top = AureoleDS.dimens.small
+                    top = AureoleDS.dimens.small,
+                    bottom = AureoleDS.dimens.medium
                 )
             ) {
                 bottomBarContent()
@@ -271,8 +272,8 @@ private fun OverlaySheetHeader(
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(bottom = AureoleDS.dimens.medium),
-        contentAlignment = Alignment.BottomCenter
+            .padding(start = AureoleDS.dimens.small, end = AureoleDS.dimens.small, bottom = AureoleDS.dimens.medium),
+        contentAlignment = Alignment.Center
     ) {
         Text(
             text = title,
@@ -285,7 +286,7 @@ private fun OverlaySheetHeader(
         if (onSettingsClick != null || headerIcon != null) {
             Box(
                 modifier = Modifier
-                    .align(Alignment.TopEnd)
+                    .align(Alignment.CenterEnd)
                     .size(AureoleDS.dimens.iconXLarge)
                     .clip(RoundedCornerShape(AureoleDS.dimens.radiusMedium))
                     .clickable(

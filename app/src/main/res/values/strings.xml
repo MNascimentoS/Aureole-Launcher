@@ -381,7 +381,7 @@
     <string name="home_onboarding_task_done_a11y">%1$s, done</string>
     <string name="home_onboarding_task_pending_a11y">%1$s, not done yet</string>
     <string name="settings_advanced_replay_onboarding">Replay welcome tour</string>
-    <string name="overlay_sheet_handle_description">Sheet handle</string>
+    <string name="overlay_sheet_gesture_zone_description">Hold the top of the sheet</string>
     <string name="overlay_sheet_action_expand">Expand</string>
     <string name="overlay_sheet_action_collapse">Collapse</string>
     <string name="overlay_sheet_action_settings">Aureole settings</string>

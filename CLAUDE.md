@@ -14,7 +14,7 @@ As regras do projeto ficam em AGENTS.md e em agents/. Elas são carregadas aqui 
 - Responder em PT-BR, com termos técnicos em inglês. Curto e direto, código primeiro.
 - Em tarefa grande: mostrar um plano curto e esperar o ok.
 - Mudança visual: sempre gerar print (screenshot test ou `@AureolePreview`) e comparar com a referência em `specs/bottom-sheets/ref/`.
-- **Nunca** fazer `git commit` nem `git push`. O Mateus revisa e sobe na `release/0.9.13`.
+- **Nunca** fazer `git commit` nem `git push`. O Mateus revisa e sobe na `release/0.9.20` (trabalhe nela; ela sai da `release/0.9.18` atual).
 - Se `validateDebugScreenshotTest` falhar: parar e perguntar antes de rodar `updateDebugScreenshotTest`.
 
 ## Trabalho atual: bottom sheets para uma mão
