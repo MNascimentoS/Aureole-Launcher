@@ -13,6 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.android.tools.screenshot.PreviewTest
 import dev.mnascimentos.aureole.R
+import dev.mnascimentos.aureole.composable.sheets.model.ThemePickerGridParams
 import dev.mnascimentos.aureole.core.designsystem.palette.allPalettes
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
@@ -73,9 +74,10 @@ private fun PickerGridCase() {
     AureoleLauncherTheme {
         Box(modifier = Modifier.height(AureoleDS.dimens.sizeExtraLarge * GRID_CASE_HEIGHT_MULTIPLIER)) {
             ThemePickerGrid(
-                label = stringResource(R.string.settings_appearance_palette_section_label),
-                columns = 3,
-                footer = null
+                params = ThemePickerGridParams(
+                    label = stringResource(R.string.settings_appearance_palette_section_label),
+                    columns = 3
+                )
             ) {
                 items(items = allPalettes, key = { it.name }) { palette ->
                     PaletteChip(
@@ -92,7 +94,7 @@ private fun PickerGridCase() {
 }
 
 @Composable
-private fun ChipsCase() {
+private fun ChipsCase(isLeftHanded: Boolean = false) {
     AureoleLauncherTheme {
         Column(
             modifier = Modifier.padding(AureoleDS.dimens.medium),
@@ -105,8 +107,20 @@ private fun ChipsCase() {
                 onSelect = {},
                 modifier = Modifier.fillMaxWidth()
             )
-            FontChip(fontName = "Istok Web", isSelected = false, onSelect = {}, modifier = Modifier.fillMaxWidth())
-            FontChip(fontName = "Istok Web", isSelected = true, onSelect = {}, modifier = Modifier.fillMaxWidth())
+            FontChip(
+                fontName = "Istok Web",
+                isSelected = false,
+                onSelect = {},
+                modifier = Modifier.fillMaxWidth(),
+                isLeftHanded = isLeftHanded
+            )
+            FontChip(
+                fontName = "Istok Web",
+                isSelected = true,
+                onSelect = {},
+                modifier = Modifier.fillMaxWidth(),
+                isLeftHanded = isLeftHanded
+            )
         }
     }
 }
@@ -120,3 +134,8 @@ private fun ThemePickerGridScreenshotTest() = PickerGridCase()
 @AureolePreview
 @Composable
 private fun ThemePickerChipsScreenshotTest() = ChipsCase()
+
+@PreviewTest
+@AureolePreview
+@Composable
+private fun ThemePickerChipsLeftHandedScreenshotTest() = ChipsCase(isLeftHanded = true)

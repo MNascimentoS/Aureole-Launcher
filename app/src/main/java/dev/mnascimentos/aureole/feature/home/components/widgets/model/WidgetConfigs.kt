@@ -44,7 +44,9 @@ data class EditWidgetGroupActions(
     val onRemoveWidget: (Int) -> Unit,
     val onAddWidgetClick: () -> Unit,
     val onDismissRequest: () -> Unit,
-    val onReorderWidgets: (List<Int>) -> Unit = {}
+    val onReorderWidgets: (List<Int>) -> Unit = {},
+    /** Opens the Aureole settings from the sheet's header logo; null hides the logo. */
+    val onSettingsClick: (() -> Unit)? = null
 )
 
 data class StackedWidgetConfig(

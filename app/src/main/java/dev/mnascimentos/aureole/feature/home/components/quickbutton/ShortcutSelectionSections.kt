@@ -20,6 +20,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import dev.mnascimentos.aureole.R
+import dev.mnascimentos.aureole.composable.mirror.LeftHandMirror
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.data.model.ShortcutAction
 import dev.mnascimentos.aureole.core.data.model.ShortcutType
@@ -159,31 +160,33 @@ internal fun ShortcutOptionRow(
     modifier: Modifier = Modifier,
     onClick: () -> Unit
 ) {
-    Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .clip(RoundedCornerShape(AureoleDS.dimens.radiusMedium))
-            .clickable { onClick() }
-            .padding(horizontal = AureoleDS.dimens.medium, vertical = AureoleDS.dimens.medium),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        AureoleText(
-            text = title,
-            color = AureoleDS.colors.onSurfaceHigh,
-            format = AureoleTextFormatParams(
-                style = AureoleDS.typography.bodyMedium,
-                fontWeight = FontWeight.Medium
-            ),
-            modifier = Modifier.weight(1f)
-        )
-        if (endContent != null) {
-            endContent()
-            Spacer(modifier = Modifier.width(AureoleDS.dimens.small))
-        }
-        if (isSelected) {
-            AureoleDS.icons.Check(Modifier.size(AureoleDS.dimens.iconMedium))
-        } else {
-            Spacer(modifier = Modifier.size(AureoleDS.dimens.iconMedium))
+    LeftHandMirror {
+        Row(
+            modifier = modifier
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(AureoleDS.dimens.radiusMedium))
+                .clickable { onClick() }
+                .padding(horizontal = AureoleDS.dimens.medium, vertical = AureoleDS.dimens.medium),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            AureoleText(
+                text = title,
+                color = AureoleDS.colors.onSurfaceHigh,
+                format = AureoleTextFormatParams(
+                    style = AureoleDS.typography.bodyMedium,
+                    fontWeight = FontWeight.Medium
+                ),
+                modifier = Modifier.weight(1f)
+            )
+            if (endContent != null) {
+                endContent()
+                Spacer(modifier = Modifier.width(AureoleDS.dimens.small))
+            }
+            if (isSelected) {
+                AureoleDS.icons.Check(Modifier.size(AureoleDS.dimens.iconMedium))
+            } else {
+                Spacer(modifier = Modifier.size(AureoleDS.dimens.iconMedium))
+            }
         }
     }
 }
@@ -195,33 +198,35 @@ internal fun AppOptionRow(
     modifier: Modifier = Modifier,
     onClick: () -> Unit
 ) {
-    Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .clip(RoundedCornerShape(AureoleDS.dimens.radiusMedium))
-            .clickable { onClick() }
-            .padding(horizontal = AureoleDS.dimens.medium, vertical = AureoleDS.dimens.small),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Image(
-            bitmap = app.getIconBitmap(),
-            contentDescription = null,
-            modifier = Modifier.size(AureoleDS.dimens.xLarge)
-        )
-        Spacer(modifier = Modifier.width(AureoleDS.dimens.medium))
-        AureoleText(
-            text = app.label,
-            color = AureoleDS.colors.onSurfaceHigh,
-            format = AureoleTextFormatParams(
-                style = AureoleDS.typography.bodyMedium,
-                fontWeight = FontWeight.Medium
-            ),
-            modifier = Modifier.weight(1f)
-        )
-        if (isSelected) {
-            AureoleDS.icons.Check(Modifier.size(AureoleDS.dimens.iconMedium))
-        } else {
-            Spacer(modifier = Modifier.size(AureoleDS.dimens.iconMedium))
+    LeftHandMirror {
+        Row(
+            modifier = modifier
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(AureoleDS.dimens.radiusMedium))
+                .clickable { onClick() }
+                .padding(horizontal = AureoleDS.dimens.medium, vertical = AureoleDS.dimens.small),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Image(
+                bitmap = app.getIconBitmap(),
+                contentDescription = null,
+                modifier = Modifier.size(AureoleDS.dimens.xLarge)
+            )
+            Spacer(modifier = Modifier.width(AureoleDS.dimens.medium))
+            AureoleText(
+                text = app.label,
+                color = AureoleDS.colors.onSurfaceHigh,
+                format = AureoleTextFormatParams(
+                    style = AureoleDS.typography.bodyMedium,
+                    fontWeight = FontWeight.Medium
+                ),
+                modifier = Modifier.weight(1f)
+            )
+            if (isSelected) {
+                AureoleDS.icons.Check(Modifier.size(AureoleDS.dimens.iconMedium))
+            } else {
+                Spacer(modifier = Modifier.size(AureoleDS.dimens.iconMedium))
+            }
         }
     }
 }

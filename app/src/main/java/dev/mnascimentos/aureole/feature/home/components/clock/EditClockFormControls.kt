@@ -8,16 +8,15 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Switch
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import dev.mnascimentos.aureole.R
+import dev.mnascimentos.aureole.composable.actions.AureoleActionRow
+import dev.mnascimentos.aureole.composable.actions.model.ActionRowParams
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
@@ -86,46 +85,19 @@ internal fun EditClockActionButtons(
     onDismissRequest: () -> Unit,
     onResetGreeting: () -> Unit
 ) {
-    val onReset = {
-        actions.onResetClockSettings()
-        onResetGreeting()
-    }
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        if (isLeftHanded) {
-            EditClockSaveButton(onClick = onDismissRequest)
-            EditClockResetButton(onClick = onReset)
-        } else {
-            EditClockResetButton(onClick = onReset)
-            EditClockSaveButton(onClick = onDismissRequest)
-        }
-    }
-}
-
-@Composable
-private fun EditClockResetButton(onClick: () -> Unit) {
-    TextButton(onClick = onClick) {
-        AureoleText(
-            text = stringResource(R.string.home_clock_reset_defaults),
-            color = AureoleDS.colors.error
-        )
-    }
-}
-
-@Composable
-private fun EditClockSaveButton(onClick: () -> Unit) {
-    Button(
-        onClick = onClick,
-        colors = ButtonDefaults.buttonColors(
-            containerColor = AureoleDS.colors.onSurfaceHigh,
-            contentColor = AureoleDS.colors.surface
-        )
-    ) {
-        AureoleText(stringResource(R.string.home_container_edit_save), color = AureoleDS.colors.surface)
-    }
+    AureoleActionRow(
+        params = ActionRowParams(
+            primaryLabel = stringResource(R.string.home_container_edit_save),
+            onPrimary = onDismissRequest,
+            secondaryLabel = stringResource(R.string.home_clock_reset_defaults),
+            onSecondary = {
+                actions.onResetClockSettings()
+                onResetGreeting()
+            },
+            isSecondaryDestructive = true
+        ),
+        isLeftHanded = isLeftHanded
+    )
 }
 
 @AureolePreview

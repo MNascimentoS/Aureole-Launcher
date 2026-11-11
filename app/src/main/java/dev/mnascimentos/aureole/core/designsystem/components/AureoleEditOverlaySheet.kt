@@ -26,8 +26,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.platform.LocalDensity
@@ -52,7 +52,6 @@ import dev.mnascimentos.aureole.core.designsystem.utils.LocalHazeState
 import kotlin.math.roundToInt
 
 private const val ANIMATION_DURATION_MS = 300
-private const val PREVIEW_DIM_ALPHA = 0.6f
 
 @Composable
 internal fun OverlayContentBox(
@@ -195,13 +194,7 @@ private fun PreviewSlot(
         modifier = Modifier
             .fillMaxWidth()
             .then(previewModifier)
-            .drawWithContent {
-                drawContent()
-                val fraction = expandFraction()
-                if (fraction > 0f) {
-                    drawRect(color = Color.Black.copy(alpha = PREVIEW_DIM_ALPHA * fraction))
-                }
-            },
+            .graphicsLayer { alpha = 1f - expandFraction() },
         contentAlignment = Alignment.BottomCenter
     ) {
         previewContent?.invoke(this)

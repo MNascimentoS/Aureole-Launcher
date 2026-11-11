@@ -16,6 +16,7 @@ import androidx.compose.ui.text.style.TextAlign
 import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.composable.sheets.PickFontBottomSheet
 import dev.mnascimentos.aureole.composable.sheets.PickPaletteBottomSheet
+import dev.mnascimentos.aureole.composable.sheets.model.ThemePickerSheetOptions
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
@@ -39,7 +40,10 @@ fun OnboardingAppearancePickerComponent(
     if (picker == null) return
     var hasPicked by remember(picker) { mutableStateOf(false) }
     val onDismiss = if (hasPicked) actions.onConfirmAppearancePicker else actions.onDismissAppearancePicker
-    val footer = @Composable { AppearancePickerFooter(onConfirm = actions.onConfirmAppearancePicker) }
+    val options = ThemePickerSheetOptions(
+        footer = { AppearancePickerFooter(onConfirm = actions.onConfirmAppearancePicker) },
+        onSettingsClick = actions.onOpenSettings
+    )
     when (picker) {
         AppearancePicker.PALETTE -> PickPaletteBottomSheet(
             selectedPaletteName = selection.paletteName,
@@ -49,7 +53,7 @@ fun OnboardingAppearancePickerComponent(
             },
             onDismissRequest = onDismiss,
             modifier = modifier,
-            footer = footer
+            options = options
         )
         AppearancePicker.FONT -> PickFontBottomSheet(
             selectedFontName = selection.fontName,
@@ -59,7 +63,7 @@ fun OnboardingAppearancePickerComponent(
             },
             onDismissRequest = onDismiss,
             modifier = modifier,
-            footer = footer
+            options = options
         )
     }
 }
@@ -78,7 +82,7 @@ private fun AppearancePickerFooter(onConfirm: () -> Unit) {
             color = AureoleDS.colors.onSurfaceMedium,
             format = AureoleTextFormatParams(style = AureoleDS.typography.text, textAlign = TextAlign.Center)
         )
-        OnboardingPrimaryButton(text = stringResource(R.string.home_onboarding_picker_done), onClick = onConfirm)
+        OnboardingTextButton(text = stringResource(R.string.home_onboarding_picker_done), onClick = onConfirm)
     }
 }
 

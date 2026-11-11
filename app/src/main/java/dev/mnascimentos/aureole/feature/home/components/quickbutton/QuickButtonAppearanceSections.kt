@@ -32,6 +32,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import dev.mnascimentos.aureole.R
+import dev.mnascimentos.aureole.composable.mirror.LeftHandMirror
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.data.model.QuickButtonIcon
 import dev.mnascimentos.aureole.core.data.model.QuickButtonModel
@@ -104,28 +105,33 @@ internal fun AppearanceColorRow(
     colorValue: Color,
     onClick: () -> Unit
 ) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clip(RoundedCornerShape(AureoleDS.dimens.radiusMedium))
-            .clickable { onClick() }
-            .padding(horizontal = AureoleDS.dimens.medium, vertical = AureoleDS.dimens.medium),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        icon(Modifier.size(AureoleDS.dimens.iconMedium))
-        Spacer(modifier = Modifier.width(AureoleDS.dimens.medium))
-        AureoleText(
-            text = title,
-            color = AureoleDS.colors.onSurfaceHigh,
-            format = AureoleTextFormatParams(style = AureoleDS.typography.bodyMedium, fontWeight = FontWeight.Medium),
-            modifier = Modifier.weight(1f)
-        )
-        Box(
+    LeftHandMirror {
+        Row(
             modifier = Modifier
-                .size(AureoleDS.dimens.iconLarge)
-                .background(colorValue, CircleShape)
-                .border(AureoleDS.dimens.minimal, AureoleDS.colors.surfaceVariant, CircleShape)
-        )
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(AureoleDS.dimens.radiusMedium))
+                .clickable { onClick() }
+                .padding(horizontal = AureoleDS.dimens.medium, vertical = AureoleDS.dimens.medium),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            icon(Modifier.size(AureoleDS.dimens.iconMedium))
+            Spacer(modifier = Modifier.width(AureoleDS.dimens.medium))
+            AureoleText(
+                text = title,
+                color = AureoleDS.colors.onSurfaceHigh,
+                format = AureoleTextFormatParams(
+                    style = AureoleDS.typography.bodyMedium,
+                    fontWeight = FontWeight.Medium
+                ),
+                modifier = Modifier.weight(1f)
+            )
+            Box(
+                modifier = Modifier
+                    .size(AureoleDS.dimens.iconLarge)
+                    .background(colorValue, CircleShape)
+                    .border(AureoleDS.dimens.minimal, AureoleDS.colors.surfaceVariant, CircleShape)
+            )
+        }
     }
 }
 
@@ -136,38 +142,43 @@ internal fun AppearanceToggleRow(
     isChecked: Boolean,
     onToggle: () -> Unit
 ) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clip(RoundedCornerShape(AureoleDS.dimens.radiusMedium))
-            .clickable { onToggle() }
-            .padding(horizontal = AureoleDS.dimens.medium, vertical = AureoleDS.dimens.medium),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        icon(Modifier.size(AureoleDS.dimens.iconMedium))
-        Spacer(modifier = Modifier.width(AureoleDS.dimens.medium))
-        AureoleText(
-            text = title,
-            color = AureoleDS.colors.onSurfaceHigh,
-            format = AureoleTextFormatParams(style = AureoleDS.typography.bodyMedium, fontWeight = FontWeight.Medium),
-            modifier = Modifier.weight(1f)
-        )
-        Box(
+    LeftHandMirror {
+        Row(
             modifier = Modifier
-                .size(AureoleDS.dimens.iconLarge)
-                .border(
-                    width = AureoleDS.dimens.minimal,
-                    color = if (isChecked) AureoleDS.colors.onSurfaceHigh else AureoleDS.colors.onSurfaceLow,
-                    shape = RoundedCornerShape(AureoleDS.dimens.radiusMinimal)
-                ),
-            contentAlignment = Alignment.Center
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(AureoleDS.dimens.radiusMedium))
+                .clickable { onToggle() }
+                .padding(horizontal = AureoleDS.dimens.medium, vertical = AureoleDS.dimens.medium),
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            if (isChecked) {
-                Box(
-                    modifier = Modifier.size(
-                        AureoleDS.dimens.iconSmallCompact
-                    ).background(AureoleDS.colors.onSurfaceHigh, RoundedCornerShape(AureoleDS.dimens.minimal))
-                )
+            icon(Modifier.size(AureoleDS.dimens.iconMedium))
+            Spacer(modifier = Modifier.width(AureoleDS.dimens.medium))
+            AureoleText(
+                text = title,
+                color = AureoleDS.colors.onSurfaceHigh,
+                format = AureoleTextFormatParams(
+                    style = AureoleDS.typography.bodyMedium,
+                    fontWeight = FontWeight.Medium
+                ),
+                modifier = Modifier.weight(1f)
+            )
+            Box(
+                modifier = Modifier
+                    .size(AureoleDS.dimens.iconLarge)
+                    .border(
+                        width = AureoleDS.dimens.minimal,
+                        color = if (isChecked) AureoleDS.colors.onSurfaceHigh else AureoleDS.colors.onSurfaceLow,
+                        shape = RoundedCornerShape(AureoleDS.dimens.radiusMinimal)
+                    ),
+                contentAlignment = Alignment.Center
+            ) {
+                if (isChecked) {
+                    Box(
+                        modifier = Modifier.size(
+                            AureoleDS.dimens.iconSmallCompact
+                        ).background(AureoleDS.colors.onSurfaceHigh, RoundedCornerShape(AureoleDS.dimens.minimal))
+                    )
+                }
             }
         }
     }
@@ -181,35 +192,40 @@ internal fun AppearanceIconRow(
     appInfo: AppInfo? = null,
     onClick: () -> Unit
 ) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clip(RoundedCornerShape(AureoleDS.dimens.radiusMedium))
-            .clickable { onClick() }
-            .padding(horizontal = AureoleDS.dimens.medium, vertical = AureoleDS.dimens.medium),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        icon(Modifier.size(AureoleDS.dimens.iconMedium))
-        Spacer(modifier = Modifier.width(AureoleDS.dimens.medium))
-        AureoleText(
-            text = title,
-            color = AureoleDS.colors.onSurfaceHigh,
-            format = AureoleTextFormatParams(style = AureoleDS.typography.bodyMedium, fontWeight = FontWeight.Medium),
-            modifier = Modifier.weight(1f)
-        )
-        if (appInfo != null) {
-            Image(
-                bitmap = appInfo.getIconBitmap(),
-                contentDescription = null,
-                modifier = Modifier.size(AureoleDS.dimens.iconLarge)
+    LeftHandMirror {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(AureoleDS.dimens.radiusMedium))
+                .clickable { onClick() }
+                .padding(horizontal = AureoleDS.dimens.medium, vertical = AureoleDS.dimens.medium),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            icon(Modifier.size(AureoleDS.dimens.iconMedium))
+            Spacer(modifier = Modifier.width(AureoleDS.dimens.medium))
+            AureoleText(
+                text = title,
+                color = AureoleDS.colors.onSurfaceHigh,
+                format = AureoleTextFormatParams(
+                    style = AureoleDS.typography.bodyMedium,
+                    fontWeight = FontWeight.Medium
+                ),
+                modifier = Modifier.weight(1f)
             )
-        } else {
-            Icon(
-                painter = painterResource(id = selectedIcon.iconRes),
-                contentDescription = null,
-                tint = AureoleDS.colors.onSurfaceHigh,
-                modifier = Modifier.size(AureoleDS.dimens.iconLarge)
-            )
+            if (appInfo != null) {
+                Image(
+                    bitmap = appInfo.getIconBitmap(),
+                    contentDescription = null,
+                    modifier = Modifier.size(AureoleDS.dimens.iconLarge)
+                )
+            } else {
+                Icon(
+                    painter = painterResource(id = selectedIcon.iconRes),
+                    contentDescription = null,
+                    tint = AureoleDS.colors.onSurfaceHigh,
+                    modifier = Modifier.size(AureoleDS.dimens.iconLarge)
+                )
+            }
         }
     }
 }

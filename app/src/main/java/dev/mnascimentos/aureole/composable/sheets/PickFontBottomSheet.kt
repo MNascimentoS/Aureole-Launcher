@@ -10,6 +10,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import dev.mnascimentos.aureole.R
+import dev.mnascimentos.aureole.composable.sheets.model.ThemePickerGridParams
+import dev.mnascimentos.aureole.composable.sheets.model.ThemePickerSheetOptions
 import dev.mnascimentos.aureole.composable.sheets.model.ThemePreviewOverlayParams
 import dev.mnascimentos.aureole.composable.sheets.model.ThemePreviewState
 import dev.mnascimentos.aureole.composable.sheets.model.discard
@@ -18,13 +20,15 @@ import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleThemeConfig
 import dev.mnascimentos.aureole.core.designsystem.theme.AvailableFonts
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
+import dev.mnascimentos.aureole.feature.home.model.LocalHomeUiState
 
 private const val FONT_COLUMNS = 2
 
 /**
  * Font picker with a live preview: tapping a font rewrites the mini-home and the sheet in it at once, and
  * nothing is persisted until Apply, which calls [onFontSelected] with the chosen font and closes.
- * Cancel, swiping down and tapping outside only call [onDismissRequest].
+ * Cancel, swiping down and tapping outside only call [onDismissRequest]. [options] adds a footer and the
+ * Aureole logo in the header.
  */
 @Composable
 fun PickFontBottomSheet(
@@ -32,7 +36,7 @@ fun PickFontBottomSheet(
     onFontSelected: (String) -> Unit,
     onDismissRequest: () -> Unit,
     modifier: Modifier = Modifier,
-    footer: (@Composable () -> Unit)? = null
+    options: ThemePickerSheetOptions = ThemePickerSheetOptions()
 ) {
     var pending by remember { mutableStateOf(ThemePreviewState()) }
     val base = AureoleThemeConfig(
@@ -42,6 +46,7 @@ fun PickFontBottomSheet(
         aureoleIcons = AureoleDS.icons,
         aureoleDimens = AureoleDS.dimens
     )
+    val isLeftHanded = LocalHomeUiState.current.isLeftHandedMode
     val shownFont = pending.fontName ?: selectedFontName
 
     ThemePreviewOverlay(
@@ -53,20 +58,25 @@ fun PickFontBottomSheet(
             onDismissRequest = {
                 pending = pending.discard()
                 onDismissRequest()
-            }
+            },
+            onSettingsClick = options.onSettingsClick
         ),
         modifier = modifier
     ) {
         ThemePickerGrid(
-            label = stringResource(R.string.settings_appearance_font_section_label),
-            columns = FONT_COLUMNS,
-            footer = footer
+            params = ThemePickerGridParams(
+                label = stringResource(R.string.settings_appearance_font_section_label),
+                columns = FONT_COLUMNS,
+                footer = options.footer,
+                isLeftHanded = isLeftHanded
+            )
         ) {
             items(items = AvailableFonts.keys.toList(), key = { it }, contentType = { "font_chip" }) { fontName ->
                 FontChip(
                     fontName = fontName,
                     isSelected = fontName == shownFont,
-                    onSelect = { pending = pending.copy(fontName = fontName) }
+                    onSelect = { pending = pending.copy(fontName = fontName) },
+                    isLeftHanded = isLeftHanded
                 )
             }
         }

@@ -33,8 +33,29 @@ class ClockTabTest {
     }
 
     @Test
-    fun `stableHeight never shrinks`() {
-        assertEquals(500, ClockTab.stableHeight(current = 300, measured = 500))
-        assertEquals(500, ClockTab.stableHeight(current = 500, measured = 300))
+    fun `pagerHeight follows the settled page`() {
+        assertEquals(300, ClockTab.pagerHeight(listOf(300, 500, 400), currentPage = 0, offsetFraction = 0f))
+        assertEquals(500, ClockTab.pagerHeight(listOf(300, 500, 400), currentPage = 1, offsetFraction = 0f))
+    }
+
+    @Test
+    fun `pagerHeight blends with the next page while sliding forward`() {
+        assertEquals(400, ClockTab.pagerHeight(listOf(300, 500, 400), currentPage = 0, offsetFraction = 0.5f))
+    }
+
+    @Test
+    fun `pagerHeight blends with the previous page while sliding back`() {
+        assertEquals(400, ClockTab.pagerHeight(listOf(300, 500, 400), currentPage = 1, offsetFraction = -0.5f))
+    }
+
+    @Test
+    fun `pagerHeight wraps content until the page is measured`() {
+        assertEquals(0, ClockTab.pagerHeight(listOf(0, 500, 400), currentPage = 0, offsetFraction = 0f))
+    }
+
+    @Test
+    fun `pagerHeight keeps the page height when the neighbour is unknown or missing`() {
+        assertEquals(300, ClockTab.pagerHeight(listOf(300, 0, 400), currentPage = 0, offsetFraction = 0.5f))
+        assertEquals(400, ClockTab.pagerHeight(listOf(300, 500, 400), currentPage = 2, offsetFraction = 0.5f))
     }
 }

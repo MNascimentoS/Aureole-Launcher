@@ -268,21 +268,19 @@ header.top p { color: var(--muted); font-size: calc(14px * var(--fs, 1)); max-wi
 .phone.left .snack .bar { transform-origin: right; }
 
 /* Paleta e fonte com prévia ancorada */
-.mini { position: relative; width: 300px; height: 168px; border-radius: 22px; padding: 16px 18px 0; color: var(--hi); font-family: var(--font-ui); background: radial-gradient(120% 70% at 20% 0%, color-mix(in srgb, var(--variant) 70%, transparent) 0%, transparent 60%), var(--home); border: 1px solid rgba(255,255,255,.12); display: flex; flex-direction: column; overflow: hidden; transition: background .25s; }
+.mini { position: relative; width: 300px; height: 212px; border-radius: 22px; padding: 22px 24px 22px; display: flex; flex-direction: column; color: var(--hi); font-family: var(--font-ui); background: radial-gradient(120% 70% at 20% 0%, color-mix(in srgb, var(--variant) 70%, transparent) 0%, transparent 60%), var(--home); border: 1px solid rgba(255,255,255,.12); display: flex; flex-direction: column; overflow: hidden; transition: background .25s; }
 .mini .mt { font-size: calc(40px * var(--fs, 1)); font-weight: 700; letter-spacing: -1px; line-height: 1; text-align: center; }
-.mini .md { font-size: calc(11px * var(--fs, 1)); color: var(--med); text-align: center; margin-top: 4px; }
-.mini .mf { margin-top: auto; display: flex; flex-direction: column; align-items: flex-end; gap: 3px; font-size: calc(13px * var(--fs, 1)); }
-.phone.left .mini .mf { align-items: flex-start; }
-.mini .mf span { display: flex; align-items: center; gap: 8px; }
-.phone:not(.left) .mini .mf span { flex-direction: row-reverse; }
-.mini .mf i { width: 20px; height: 20px; border-radius: 6px; display: block; }
-.mini .mdock { display: flex; justify-content: space-around; padding: 8px 0 10px; margin-top: 8px; border-top: 1px solid rgba(255,255,255,.08); }
-.mini .mdock i { width: 26px; height: 26px; border-radius: 8px; background: var(--surface); display: block; }
+.mini .md { font-size: calc(11px * var(--fs, 1)); color: var(--med); text-align: center; margin-top: 6px; }
+.mini .mf { margin-top: auto; display: flex; flex-direction: column; align-items: flex-start; gap: 7px; font-size: calc(13px * var(--fs, 1)); }
+.phone.left .mini .mf { align-items: flex-end; }
+.mini .mf span { display: flex; align-items: center; gap: 10px; }
+.phone.left .mini .mf span { flex-direction: row-reverse; }
+.mini .mf i { width: 22px; height: 22px; border-radius: 7px; display: block; }
 .pals { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
 .pal { border-radius: 14px; padding: 9px 9px 8px; min-height: 64px; display: flex; flex-direction: column; gap: 7px; border: 2px solid transparent; text-align: left; }
 .pal[aria-pressed="true"] { border-color: var(--hi); }
-.pal .sw { display: flex; height: 18px; border-radius: 6px; overflow: hidden; }
-.pal .sw i { flex: 1; display: block; }
+.pal .ps { display: flex; height: 18px; border-radius: 6px; overflow: hidden; }
+.pal .ps i { flex: 1; display: block; }
 .pal b { font-size: calc(11.5px * var(--fs, 1)); }
 .fonts { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
 .fonts button { min-height: 52px; border-radius: 14px; background: rgba(74,93,107,.35); display: flex; align-items: center; gap: 10px; padding: 0 12px; text-align: left; border: 2px solid transparent; color: var(--med); }
@@ -298,6 +296,16 @@ header.top p { color: var(--muted); font-size: calc(14px * var(--fs, 1)); max-wi
 
 /* ---------- v4: telas restantes ---------- */
 .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.sheet.pop { bottom: auto !important; height: auto !important; max-height: 70%; border-radius: 22px; opacity: 0; transform: translateY(var(--ty, 0)) scale(.94); transition: transform .2s, opacity .2s; box-shadow: 0 12px 34px rgba(0,0,0,.5); }
+.sheet.pop.open { opacity: 1; transform: translateY(var(--ty, 0)) scale(1); }
+.sheet.pop .grab { display: none; }
+.sheet.pop.center { left: 28px; right: 28px; top: 50%; --ty: -50%; }
+.sheet.pop.anchor { left: 54px; right: auto; width: 208px; top: 264px; border-radius: 18px; background: #2b373e; }
+.sheet.pop .sh-head { padding-top: 14px; padding-bottom: 6px; }
+.sheet.pop.anchor .sh-head b { font-size: 14px; }
+.plist { display: flex; flex-direction: column; padding: 4px 6px 10px; }
+.plist button { display: flex; align-items: center; gap: 14px; min-height: 48px; padding: 0 12px; border-radius: 12px; font-size: 14px; color: var(--hi); text-align: left; }
+.plist i { width: 26px; height: 26px; border-radius: 8px; display: block; flex-shrink: 0; }
 .sheet.floating { left: 12px; right: 12px; border-radius: 26px; max-height: 70%; }
 .sheet.floating .grab { display: none; }
 .sheet.floating .sh-head { padding-top: 18px; }
@@ -402,6 +410,15 @@ input[type=range].hue { width: 100%; height: 48px; accent-color: #fff; backgroun
 .cov button { text-align: left; border: 1px solid var(--line); border-radius: 12px; padding: 9px 11px; background: #0d1317; display: flex; flex-direction: column; gap: 2px; }
 .cov b { font-size: 13px; } .cov span { font-size: 11px; color: var(--muted); word-break: break-word; }
 @media (max-width: 520px) { .cov { grid-template-columns: 1fr; } }
+.grab { position: relative; padding: 0; height: 20px; }
+.grab i { display: none; }
+.grab.holding::after { content: ""; position: absolute; top: 0; left: 50%; height: 3px; width: 0; border-radius: 3px; background: var(--hi); transform: translateX(-50%); animation: holdline .6s linear forwards; }
+@keyframes holdline { to { width: 72px; } }
+.wc-row { display: flex; gap: 12px; align-items: center; justify-content: flex-start; overflow-x: auto; padding: 12px 14px; width: 330px; scrollbar-width: none; position: relative; }
+.wc { flex-shrink: 0; position: relative; }
+.wc .wx { position: absolute; top: -7px; right: -5px; width: 26px; height: 26px; border-radius: 50%; background: var(--variant); color: var(--hi); display: grid; place-items: center; }
+.wc.add { border: 2px dashed var(--variant); background: none; color: var(--med); }
+.preview .wprev { pointer-events: auto; }
 </style>
 </head>
 <body>
@@ -441,7 +458,7 @@ input[type=range].hue { width: 100%; height: 48px; accent-color: #fff; backgroun
       </div>
       <div class="reachline" id="reach"><span>linha de alcance · 60%</span></div>
     </div>
-    <p class="hint">Alça: arraste entre 60% e 90%, toque duas vezes para alternar, segure para abrir os Ajustes do Aureole. Toque fora para fechar. O selo TIC mostra onde o celular vibraria.</p>
+    <p class="hint">Topo da sheet: arraste entre 60% e 90%, toque duas vezes para alternar, segure para abrir os Ajustes do Aureole. Toque fora para fechar. O selo TIC mostra onde o celular vibraria.</p>
   </div>
 
   <div class="side">
@@ -462,8 +479,8 @@ input[type=range].hue { width: 100%; height: 48px; accent-color: #fff; backgroun
     <section class="card">
       <h2>Experimente</h2>
       <ol class="try" id="try">
-        <li data-n="1"><span><b>Segure a alça</b> por meio segundo: abre os Ajustes do Aureole. O logo no canto continua igual.</span></li>
-        <li data-n="2"><span><b>Toque duas vezes na alça</b> ou arraste: a sheet para em 60% ou 90%, com um tic em cada.</span></li>
+        <li data-n="1"><span><b>Segure o topo da sheet</b> (sem barrinha) por meio segundo: abre os Ajustes do Aureole. O logo no canto continua igual.</span></li>
+        <li data-n="2"><span><b>Toque duas vezes no topo da sheet</b> ou arraste: a sheet para em 60% ou 90%, com um tic em cada.</span></li>
         <li data-n="3"><span><b>Toque na busca</b> em <button data-go="shortcut">Escolher atalho</button> ou <button data-go="picker">Apps da pasta</button>: busca, escolhidos e Salvar grudam no teclado, e o melhor resultado aparece colado no campo.</span></li>
         <li data-n="4"><span><b>Segure um app e deslize</b> em <button data-go="picker">Apps da pasta</button> para marcar ou desmarcar vários de uma vez.</span></li>
         <li data-n="5"><span><b>Remova, desfavorite ou troque o atalho</b>: no lugar de confirmar, aparece “Desfazer” por 4 s. Segurar 1 s fica só para desinstalar.</span></li>
@@ -477,7 +494,7 @@ input[type=range].hue { width: 100%; height: 48px; accent-color: #fff; backgroun
     <section class="card">
       <h2>Regras para todas as sheets</h2>
       <div class="rules">
-        <div class="rule"><b>Duas alturas fixas</b>A sheet abre com no máximo 60% da tela e para em 90% quando expandida, com um tic em cada. Toque duplo na alça alterna; segurar a alça abre os Ajustes do Aureole.</div>
+        <div class="rule"><b>Duas alturas fixas</b>A sheet abre com no máximo 60% da tela e para em 90% quando expandida, com um tic em cada. Toque duplo no topo da sheet alterna; segurar o topo abre os Ajustes do Aureole.</div>
         <div class="rule"><b>Ação principal no lado do polegar</b>Salvar, Pronto e Aplicar ficam no rodapé fixo, do lado da mão configurada. A ação secundária fica do outro lado.</div>
         <div class="rule"><b>Busca grudada no teclado</b>Com o foco na busca, o campo, os escolhidos e Salvar sobem junto com o teclado, e o melhor resultado fica logo acima do campo. Abas ficam no rodapé e também trocam com um deslize lateral.</div>
         <div class="rule"><b>O mais usado mais perto do rodapé</b>A ordem das seções põe o que se usa mais por último, perto do polegar. A sheet abraça o conteúdo; ao expandir, tudo sobe junto e nada fica preso embaixo.</div>
@@ -542,7 +559,7 @@ const SHEETS = {
     name: 'Personalizar', sub: 'segurar na home',
     title: 'Personalizar: o que se adiciona fica embaixo',
     today: 'Hoje: lista de 10 linhas; as primeiras ficam no topo da sheet, longe do polegar, e “Ajustes do Aureole” fica no canto superior.',
-    points: ['“Adicionar à home” é o que mais se usa, por isso vem por último, colado no rodapé, em tiles de 78 dp.', 'Layout, Fundo e Ajustes sobem para uma fileira compacta acima: são usados raramente.', 'Segurar a alça abre os Ajustes do Aureole sem esticar o dedo até o logo, que continua no canto.']
+    points: ['“Adicionar à home” é o que mais se usa, por isso vem por último, colado no rodapé, em tiles de 78 dp.', 'Layout, Fundo e Ajustes sobem para uma fileira compacta acima: são usados raramente.', 'Segurar o topo da sheet abre os Ajustes do Aureole sem esticar o dedo até o logo, que continua no canto.']
   },
   appmenu: {
     name: 'Menu do app', sub: 'segurar um app',
@@ -570,9 +587,9 @@ const SHEETS = {
   },
   cards: {
     name: 'Cartões e vidro', sub: 'ajustes de aparência',
-    title: 'Cartões e vidro: prévia em cima, controles embaixo',
-    today: 'Hoje: duas sheets de lista (“None, Low, Medium…” e “Compact (8 dp)…”) sem prévia.',
-    points: ['A prévia sobre o wallpaper fica no topo: só se olha para ela.', 'Cantos e vidro viram chips de 48 dp na parte de baixo, com efeito na hora.', 'Pronto fica do lado da mão.']
+    title: 'Cartões e vidro: prévia em cima, três controles embaixo',
+    today: 'Hoje: três sheets de lista separadas (borda, vidro e opacidade do desfoque), todas sem prévia.',
+    points: ['A prévia sobre o wallpaper fica no topo: só se olha para ela.', 'Cantos, vidro e opacidade do desfoque viram uma sheet só, com chips de 48 dp e efeito na hora.', 'Pronto fica do lado da mão.']
   },
   palette: {
     name: 'Paleta', sub: 'aparência · prévia ao vivo',
@@ -600,7 +617,7 @@ const SC_GROUPS = [
 ];
 const scRow = ([i, t], best) => `<button class="row mirror ${t === state.sc ? 'sel' : ''} ${best ? 'best' : ''}" data-sc="${t}"><span class="ic">${i}</span><span class="grow">${t}</span><span class="chk">${t === state.sc ? '✓' : ''}</span></button>`;
 
-const miniHome = () => `<div class="mini" id="mini"><span class="tag" style="left:0;top:-22px">Prévia ao vivo</span><div class="mt">09:41</div><div class="md">Terça, 10 de novembro</div><div class="mf"><span><i style="background:#2e8b3a"></i>Telefone</span><span><i style="background:#f28a0f"></i>Mensagens</span><span><i style="background:#1f63c2"></i>Câmera</span></div><div class="mdock"><i></i><i></i><i></i><i></i></div></div>`;
+const miniHome = () => `<div class="mini" id="mini"><span class="tag" style="left:0;top:-22px">Prévia ao vivo</span><div class="mt">09:41</div><div class="md">Terça, 10 de novembro</div><div class="mf"><span><i style="background:#2e8b3a"></i>Telefone</span><span><i style="background:#f28a0f"></i>Mensagens</span><span><i style="background:#1f63c2"></i>Câmera</span><span><i style="background:#e0463b"></i>Navegador</span></div></div>`;
 
 const RENDER = {
   customize() {
@@ -674,8 +691,10 @@ const RENDER = {
       body: `<div class="sh-body">
         <div class="lbl">Cantos</div>
         <div class="chips" id="radius">${[0, 8, 12, 16, 24].map(r => `<button aria-pressed="${r === 16}" data-r="${r}" style="border-radius:${Math.min(r, 16)}px">${r === 0 ? 'Reto' : r}</button>`).join('')}</div>
-        <div class="lbl">Vidro</div>
+        <div class="lbl">Vidro (desfoque)</div>
         <div class="seg" id="glass">${['Nenhum', 'Leve', 'Médio', 'Máx.'].map((g, i) => `<button aria-pressed="${i === 2}" data-g="${i}">${g}</button>`).join('')}</div>
+        <div class="lbl">Opacidade do desfoque</div>
+        <div class="seg" id="haze">${['Baixa', 'Média', 'Alta', 'Sólida'].map((g, i) => `<button aria-pressed="${i === 1}" data-h="${i}">${g}</button>`).join('')}</div>
         <div style="height:6px"></div>
       </div>`,
       foot: `<div class="actions"><button class="btn primary" data-close>Pronto</button></div>`,
@@ -686,10 +705,10 @@ const RENDER = {
   palette() {
     return {
       title: 'Paleta',
-      body: `<div class="sh-body"><div class="lbl">Escuras · toque para ver na hora</div><div class="pals" id="pals">${PALETTES.map(p => `<button class="pal" aria-pressed="${p[0] === state.palette}" data-p="${p[0]}" style="background:${p[1]}"><span class="sw">${[p[2], p[3], p[6], p[5], p[4]].map(c => `<i style="background:${c}"></i>`).join('')}</span><b style="color:${p[4]}">${p[0]}</b></button>`).join('')}</div><div style="height:6px"></div></div>`,
+      body: `<div class="sh-body"><div class="lbl">Escuras · toque para ver na hora</div><div class="pals" id="pals">${PALETTES.map(p => `<button class="pal" aria-pressed="${p[0] === state.palette}" data-p="${p[0]}" style="background:${p[1]}"><span class="ps">${[p[2], p[3], p[6], p[5], p[4]].map(c => `<i style="background:${c}"></i>`).join('')}</span><b style="color:${p[4]}">${p[0]}</b></button>`).join('')}</div><div style="height:6px"></div></div>`,
       foot: actionsRow('Cancelar', 'Aplicar', 'palApply', 'palCancel', true),
       preview: miniHome,
-      previewH: 168
+      previewH: 212
     };
   },
   font() {
@@ -698,7 +717,7 @@ const RENDER = {
       body: `<div class="sh-body"><div class="lbl">Fonte do launcher</div><div class="fonts" id="fonts">${FONTS.map(f => `<button aria-pressed="${f === state.font}" data-f="${f}" style="font-family:'${f}'"><b>Aa</b><span>${f}</span></button>`).join('')}</div><div style="height:6px"></div></div>`,
       foot: actionsRow('Cancelar', 'Aplicar', 'fontApply', 'fontCancel', true),
       preview: miniHome,
-      previewH: 168
+      previewH: 212
     };
   }
 };
@@ -738,11 +757,10 @@ const qbPrev = () => { const q = state.qb; return `<div class="chipprev"><span c
 const favPrev = () => `<div class="favprev"><span class="tag" style="left:0;top:-22px">Prévia na home</span>${state.favs.slice(0, 4).map(n => `<span><i style="background:${color(n)}"></i>${n}</span>`).join('') || '<span style="font-size:12px;color:var(--low)">Nenhum aplicativo favorito selecionado.</span>'}</div>`;
 const widgetPrev = () => {
   const w = state.widgets;
-  const cards = w.map((n, i) => `<div class="wc ${i === state.wSel ? 'sel' : ''}">${n}</div>`).join('') || '<div class="wc" style="border:2px dashed var(--variant);width:150px">Nenhum widget</div>';
-  return `<div class="wprev"><span class="tag" style="left:0;top:-22px">Prévia ao vivo</span><div class="wc-row">${cards}</div><div class="wdots">${state.flags.indicator ? w.map((_, i) => `<i class="${i === state.wSel ? 'on' : ''}"></i>`).join('') : ''}</div></div>`;
+  const cards = w.map((n, i) => `<div class="wc ${i === state.wSel ? 'sel' : ''}" data-key="${n}"><span>${n}</span><button class="wx" data-rm="${n}" aria-label="Remover ${n}">${ic('close', 10)}</button></div>`).join('');
+  return `<div class="wprev"><span class="tag" style="left:0;top:-22px">Prévia ao vivo</span><div class="wc-row" id="wcRow">${cards}<button class="wc add" id="wcAdd" aria-label="Adicionar widget">${ic('add', 22)}</button></div><div class="wdots">${state.flags.indicator ? w.map((_, k) => `<i class="${k === state.wSel ? 'on' : ''}"></i>`).join('') : ''}</div></div>`;
 };
 const folderPrev = () => `<div class="chipprev"><span class="tag" style="left:0">Prévia</span><b style="background:var(--variant);border-radius:18px;display:grid;place-items:center;color:var(--hi);border:0">${ic(state.folderIcon, 30)}</b><span id="fpName">${state.folderName || 'Nova Pasta'}</span></div>`;
-const gridPrev = () => `<div class="gridprev"><span class="tag" style="left:0;top:-22px">Prévia ao vivo</span>${Array.from({ length: 16 }, (_, i) => `<i class="${i % 4 < state.size[0] && Math.floor(i / 4) < state.size[1] ? 'on' : ''}"></i>`).join('')}</div>`;
 const colorPrev = () => `<div class="chipprev"><span class="tag" style="left:0">Prévia</span><b style="background:${state.cp};border-color:rgba(255,255,255,.5)"></b><span id="cpHex">${state.cp.toUpperCase()}</span></div>`;
 
 const REL = {
@@ -754,7 +772,6 @@ const OPTS = {
   settingsbtn: ['Posição do Botão de Configurações', 'opts.pos', ['Esquerda', 'Direita']],
   searchicon: ['Posição do Ícone de Busca', 'opts.pos2', ['Esquerda', 'Direita']],
   panel: ['Alinhamento do Painel Lateral', 'opts.pos3', ['Superior', 'Centro', 'Inferior', 'Espaçamento Igual', 'Espaçamento Entre']],
-  haze: ['Opacidade do Desfoque', 'opts.haze', ['Baixa', 'Média', 'Alta', 'Sólida']]
 };
 const ICONS_QB = ['click', 'add', 'favorite', 'smile', 'folder', 'search', 'info', 'calendar'];
 const ADD_ITEMS = [['calendar', 'Relógio'], ['favorite', 'Lista de Apps (Favoritos)'], ['all_apps', 'Lista de Todos os Apps'], ['vertical_container', 'Container'], ['multiple_view', 'Grupo de Widgets do Android'], ['click', 'Botão Rápido'], ['scroll_group', 'Grupo rolável']];
@@ -771,16 +788,15 @@ Object.assign(SHEETS.shortcut, { group: G.list });
 Object.assign(SHEETS.picker, { group: G.list });
 const S = (group, name, sub, title, today, points, extra = {}) => ({ group, name, sub, title, today, points, ...extra });
 Object.assign(SHEETS, {
-  itemmenu: S(G.menus, 'Menu do componente', 'segurar um item da home', 'Menu do componente: remover longe do polegar, editar perto', 'Hoje: ação do tipo do item (Personalizar Relógio, Editar Favoritos, Painel Lateral, Botão Rápido) e “Remover Componente” numa lista só.', ['“Remover Componente” sobe para o topo, no lado oposto ao polegar.', 'Remover não pede confirmação: sai na hora e mostra “Desfazer” por 4 s.', 'A ação do tipo (a mais usada) fica por último, colada no rodapé.']),
-  widgetstack: S(G.menus, 'Menu do grupo de widgets', 'segurar um grupo', 'Grupo de widgets: menu com Remover no topo', 'Hoje: ModalBottomSheet com Configurações do App, Redimensionar Grupo, Alternar Indicador e Remover.', ['O indicador de posição vira um switch na própria linha: um toque, sem fechar a sheet.', 'Redimensionar abre o editor de tamanho com passos de 48 dp.', 'Remover vai para o topo e usa “Desfazer”.']),
+  itemmenu: S(G.menus, 'Menu do componente', 'segurar um item da home', 'Menu do componente: remover longe do polegar, editar perto', 'Hoje: EditGridItemDialog, uma sheet com “Tamanho atual: L x A células” (só leitura), a ação do tipo do item e “Remover Componente”.', ['“Remover Componente” sobe para o topo, no lado oposto ao polegar.', 'Remover não pede confirmação: sai na hora e mostra “Desfazer” por 4 s.', 'A ação do tipo (a mais usada) fica por último, colada no rodapé.']),
+  widgetstack: S(G.menus, 'Menu do grupo de widgets', 'segurar um grupo', 'Grupo de widgets: menu com Remover no topo', 'Hoje: ModalBottomSheet com Configurações do App, Redimensionar Grupo, Alternar Indicador e Remover.', ['O indicador de posição vira um switch na própria linha: um toque, sem fechar a sheet.', 'Redimensionar Grupo abre a própria pilha de widgets, como no app hoje.', 'Remover vai para o topo e usa “Desfazer”.']),
   foldermenu: S(G.menus, 'Menu da pasta', 'segurar uma pasta', 'Pasta: ações no rodapé, Remover no topo', 'Hoje: ContainerFolderBottomSheet com Editar atalhos, Renomear, Ícone, Remover pasta e Configurações do Container.', ['Renomear e Ícone abrem o formulário com o teclado colado ao campo.', 'Remover pasta sai na hora, com “Desfazer”.']),
   qbsettings: S(G.menus, 'Botão rápido', 'configurar o botão', 'Botão rápido: três linhas e Remover no topo', 'Hoje: overlay a 30% da tela com Aparência, Abrir App, Atalho de clique e Remover botão rápido.', ['As três linhas viram linhas de 56 dp.', 'Remover sobe para o topo e usa “Desfazer”.', 'Atalho de clique abre o seletor de atalho já em uma mão.']),
   qbappearance: S(G.edit, 'Aparência do botão', 'prévia ao vivo', 'Aparência do botão: prévia em cima, controles embaixo', 'Hoje: overlay a 40% com prévia; cores e ícone abrem dois diálogos centrais à parte.', ['Cores e ícone ficam na própria sheet, sem diálogo no meio da tela.', 'A prévia muda a cada toque.', 'Pronto fica do lado da mão.']),
-  widgetgroup: S(G.edit, 'Pilha de widgets', 'prévia ao vivo', 'Pilha de widgets: lista reordenável e prévia ao vivo', 'Hoje: carrossel de prévia no topo, switch do indicador e Salvar.', ['Segurar a alça ⋮⋮ (lado do polegar) reordena; ✕ remove com “Desfazer”.', 'Tocar numa linha mostra o widget na prévia.', 'Adicionar e Salvar ficam lado a lado no rodapé.']),
+  widgetgroup: S(G.edit, 'Pilha de widgets', 'prévia ao vivo', 'Pilha de widgets: a prévia vira a lista', 'Hoje: carrossel de prévia no topo, switch do indicador e Salvar.', ['A prévia continua o carrossel de hoje; cada widget ganha ✕ (remove com “Desfazer”) e segurar e arrastar reordena, como nos escolhidos do seletor de apps.', 'O card “+” no fim da prévia adiciona; Adicionar widget também fica no rodapé.', 'Tocar num widget o seleciona no carrossel.']),
   container: S(G.edit, 'Container', 'editor em 4 telas', 'Container: 4 telas, Voltar e Salvar no rodapé', 'Hoje: EditContainerScreen com 4 modos (principal, aparência, comportamento, itens), altura máxima 45%.', ['Cada modo troca o conteúdo na mesma sheet; Voltar fica na mão.', 'Switches de 56 dp, opções em chips de 48 dp.', 'Itens: reordenar com a alça no lado do polegar; ✕ com “Desfazer”.']),
   favorites: S(G.edit, 'Favoritos', 'lista de apps', 'Favoritos: gerenciar e ordenar com uma mão', 'Hoje: FavoriteAppsDialog com os modos principal, editar atalhos e aparência.', ['Gerenciar junta favoritos (reordenáveis) e a fileira “toque para selecionar”.', 'A busca fica colada ao teclado.', 'Desativar todos usa “Desfazer”.']),
   background: S(G.edit, 'Plano de fundo', 'cor ou imagem', 'Plano de fundo: prévia e dois tiles grandes', 'Hoje: SetBackgroundBottomSheet com duas linhas, Cor sólida e Imagem personalizada.', ['Dois tiles de 84 dp; a cor aparece na prévia na hora.', 'Cancelar, arrastar ou tocar fora voltam ao fundo anterior.']),
-  griditem: S(G.edit, 'Tamanho do widget', 'redimensionar', 'Tamanho: passos de 48 dp no lado do polegar', 'Hoje: EditGridItemDialog (diálogo central) com “Tamanho atual: L x A células”. Os controles exatos precisam ser conferidos no código.', ['Largura e altura com botões − e + de 48 dp, no lado da mão.', 'A grade de prévia mostra o novo tamanho.']),
   colorpicker: S(G.edit, 'Escolher cor', 'seletor de cor', 'Cor: recomendadas e matiz ao alcance do polegar', 'Hoje: ColorPickerDialog central com Cores Recomendadas e Ajuste Personalizado (Matiz).', ['O slider de matiz tem 48 dp de altura e ocupa a largura toda.', 'Confirmar no lado da mão.']),
   folderform: S(G.edit, 'Nova pasta', 'nome e ícone', 'Nova pasta: campo colado ao teclado', 'Hoje: FolderFormDialog central com Nome da Pasta, Ícone da Pasta e Cancelar/Criar.', ['O campo de nome sobe com o teclado, junto de Cancelar e Criar.', 'A prévia mostra o nome enquanto se digita.'], { render: 'folderform', mode: 'new' }),
   folderedit: S(G.edit, 'Editar pasta', 'nome, ícone, excluir', 'Editar pasta: Excluir no topo, com desfazer', 'Hoje: o mesmo FolderFormDialog, com Excluir.', ['Excluir sobe para o topo e vira “Desfazer”.'], { render: 'folderform', mode: 'edit' }),
@@ -788,14 +804,14 @@ Object.assign(SHEETS, {
   optbtn: S(G.list, 'Posição do botão', 'diálogo de opções', 'Opções: lista de rádio ao alcance, com Desfazer', 'Hoje: AlertDialog central; os rótulos “Esquerda (Left)” estão escritos no código, sem passar pelo strings.xml.', ['Opção marcada no lado do polegar.', 'Escolher aplica e fecha; “Desfazer” volta.', 'Os textos vão para o strings.xml (EN e PT-BR).'], { render: 'options', mode: 'settingsbtn' }),
   optsearch: S(G.list, 'Posição da busca', 'diálogo de opções', 'Opções: ícone de busca', 'Hoje: AlertDialog central com Esquerda/Direita.', ['Mesmo padrão da posição do botão.'], { render: 'options', mode: 'searchicon' }),
   optpanel: S(G.list, 'Alinhamento do painel', 'diálogo de opções', 'Opções: alinhamento do painel lateral', 'Hoje: AlertDialog central com 5 opções.', ['Cinco linhas de 56 dp, sem rolagem.'], { render: 'options', mode: 'panel' }),
-  opthaze: S(G.list, 'Opacidade do desfoque', 'diálogo de opções', 'Opções: opacidade do desfoque', 'Hoje: HazeOpacityDialog com Baixa, Média, Alta e Sólida.', ['Quatro linhas; aplica na hora.'], { render: 'options', mode: 'haze' }),
   confirmlayout: S(G.dlg, 'Redefinir layout', 'confirmação', 'Confirmação: card no polegar, não no meio da tela', 'Hoje: AlertDialog central “Redefinir Layout?” com Restaurar e Cancelar.', ['O card desce para a zona do polegar.', 'Restaurar no lado da mão; Cancelar do outro lado.', 'Texto de apoio é de exemplo.'], { render: 'confirm', mode: 'layout' }),
   confirmfactory: S(G.dlg, 'Redefinir launcher', 'ação sem volta', 'Sem volta: segurar 1 s no lugar de “Sim/Não”', 'Hoje: FactoryResetDialog central com Sim e Não.', ['Não dá para desfazer: segurar 1 s, com barra de progresso.', 'O botão fica no lado oposto ao polegar.'], { render: 'confirm', mode: 'factory' }),
   confirmwall: S(G.dlg, 'Restaurar fundo', 'vira desfazer', 'Reversível: sem diálogo, só “Desfazer”', 'Hoje: RestoreWallpaperDialog pergunta “Restaurar plano de fundo padrão?”.', ['O fundo volta na hora e “Desfazer” aparece por 4 s.'], { render: 'confirm', mode: 'wallpaper' }),
   updateavail: S(G.dlg, 'Atualização disponível', 'aviso do app', 'Aviso de atualização: card no polegar', 'Hoje: InAppUpdateDialog central “Nova atualização disponível”.', ['Atualizar agora no lado da mão; Agora não do outro.'], { render: 'update', mode: 'available' }),
   updateready: S(G.dlg, 'Atualização pronta', 'aviso do app', 'Atualização pronta: reiniciar agora ou depois', 'Hoje: InAppUpdateDialog “Atualização pronta”.', ['Reiniciar agora no lado da mão.'], { render: 'update', mode: 'ready' }),
   releasenotes: S(G.read, 'O que há de novo', 'notas de versão', 'Notas: versões no rodapé, Entendido na mão', 'Hoje: SettingsBottomSheet com cabeçalho, chips de versão no topo e Entendido no fim. O conteúdo aqui é de exemplo.', ['Os chips de versão descem para o rodapé; a versão atual fica na borda do polegar.', 'Entendido fica do lado da mão.']),
-  folderpopup: S(G.read, 'Pasta aberta', 'popup da pasta', 'Pasta aberta: popup na zona do polegar', 'Hoje: OpenedFolderPopup com grade de apps, Adicionar Apps e Editar Pasta.', ['O popup abre colado embaixo; os apps ficam ao alcance.', 'Segurar um app abre o menu do app.', 'Pasta vazia mostra “Nenhum app na pasta” e Adicionar Apps em destaque.'])
+  folderpopup: S(G.read, 'Pasta aberta', 'popup da pasta', 'Pasta aberta: popup na zona do polegar', 'Hoje: OpenedFolderPopup com grade de apps, Adicionar Apps e Editar Pasta. Aqui o popup abre no centro, só com os apps; Adicionar Apps e Editar Pasta ficam no menu da pasta (segurar a pasta).', ['Em modo grade o popup abre centralizado; sem botões.', 'Segurar um app abre o menu do app.', 'Pasta vazia mostra “Nenhum app na pasta”.']),
+  folderlist: S(G.read, 'Pasta aberta (lista)', 'popup da pasta', 'Pasta em modo lista: popup junto da pasta', 'Hoje: OpenedFolderPopup em lista, ancorado perto da pasta.', ['Em modo lista o popup continua ancorado perto da pasta, com ícone e nome de cada app.', 'Segurar um app abre o menu do app.'], { render: 'folderpopup', mode: 'list' }),
 });
 
 /* ----- renderizadores ----- */
@@ -803,7 +819,7 @@ Object.assign(RENDER, {
   itemmenu() {
     return {
       title: 'Relógio', lead: ic('calendar', 20),
-      body: `<div class="sh-body">${dangerRow('Remover Componente', 'Componente removido')}<div class="lbl">Ações do item</div>
+      body: `<div class="sh-body">${dangerRow('Remover Componente', 'Componente removido')}<div class="note" style="margin:8px 0 0;padding:9px 12px;flex-direction:row;justify-content:center"><b style="font-weight:500;font-size:12.5px;color:var(--med)">Tamanho atual: 2 x 2 células</b></div><div class="lbl">Ações do item</div>
         ${navRow('Editar Painel Lateral', '', 'data-toast="Abre o painel lateral"')}${navRow('Personalizar Botão Rápido', '', 'data-go="qbsettings"')}${navRow('Editar Favoritos e Configurações', '', 'data-go="favorites"')}${navRow('Personalizar Relógio', '', 'data-go="clock"')}<div style="height:12px"></div></div>`
     };
   },
@@ -811,7 +827,7 @@ Object.assign(RENDER, {
     return {
       title: 'Grupo de Widgets', lead: ic('multiple_view', 20),
       body: `<div class="sh-body">${dangerRow('Remover', 'Grupo de widgets removido')}<div class="lbl">Grupo</div>
-        ${navRow('Configurações do App', '', 'data-toast="Abre as configurações do app"')}${navRow('Redimensionar Grupo', 'Tamanho atual: ' + state.size[0] + ' x ' + state.size[1], 'data-go="griditem"')}${sw('indicator', 'Alternar Indicador de Posição')}<div style="height:12px"></div></div>`
+        ${navRow('Configurações do App', '', 'data-toast="Abre as configurações do app"')}${navRow('Redimensionar Grupo', '', 'data-go="widgetgroup"')}${sw('indicator', 'Alternar Indicador de Posição')}<div style="height:12px"></div></div>`
     };
   },
   foldermenu() {
@@ -842,8 +858,8 @@ Object.assign(RENDER, {
   widgetgroup() {
     return {
       title: 'Pilha de Widgets',
-      body: `<div class="sh-body"><div class="lbl">Widgets (${state.widgets.length})</div>${state.widgets.length ? reorderList('rlWidgets', state.widgets, w => rrow(w, sqName(w, '#5b6b73'))) : '<div class="empty">Nenhum widget no grupo.</div>'}${sw('indicator', 'Mostrar indicador de posição')}</div>`,
-      foot: actions2(gbtn('Adicionar widget', 'data-toast="Abre a lista de widgets"'), pbtn('Salvar', 'data-close')), preview: widgetPrev, previewH: 124
+      body: `<div class="sh-body">${sw('indicator', 'Mostrar indicador de posição')}<div class="sr">Na prévia: segure e arraste um widget para ordenar; o botão ✕ remove.</div></div>`,
+      foot: actions2(gbtn('Adicionar widget', 'data-toast="Abre a lista de widgets"'), pbtn('Salvar', 'data-close')), preview: widgetPrev, previewH: 130
     };
   },
   container(mode) {
@@ -888,15 +904,6 @@ Object.assign(RENDER, {
       body: `<div class="sh-body"><div class="lbl">Tipo</div><div class="bigtiles" id="bgKind"><button class="bigtile" data-k="solid" aria-pressed="${state.bgKind === 'solid'}">${ic('placeholder', 24)}Cor sólida</button><button class="bigtile" data-k="image" aria-pressed="${state.bgKind === 'image'}">${ic('add', 24)}Imagem personalizada</button></div>
         <div id="bgOpts">${state.bgKind === 'solid' ? `<div class="lbl">Cor</div>${dotsRow('bgColor', state.bgColor)}` : '<div class="lbl">Imagem</div><div class="msg">Abre a galeria do aparelho. (Exemplo)</div>'}</div><div style="height:8px"></div></div>`,
       foot: applyRow('bgApply', 'bgCancel'), preview: miniHome, previewH: 168
-    };
-  },
-  griditem() {
-    return {
-      title: 'Configurar Widget',
-      body: `<div class="sh-body"><div class="lbl" id="sizeLbl">Tamanho atual: ${state.size[0]} x ${state.size[1]} células</div>
-        <div class="stepper"><span class="grow">Largura</span><span class="nums"><button data-step="0:-1" aria-label="Diminuir largura">−</button><output id="sw0">${state.size[0]}</output><button data-step="0:1" aria-label="Aumentar largura">+</button></span></div>
-        <div class="stepper"><span class="grow">Altura</span><span class="nums"><button data-step="1:-1" aria-label="Diminuir altura">−</button><output id="sw1">${state.size[1]}</output><button data-step="1:1" aria-label="Aumentar altura">+</button></span></div><div style="height:8px"></div></div>`,
-      foot: applyRow('gsApply', 'gsCancel'), preview: gridPrev, previewH: 150
     };
   },
   colorpicker() {
@@ -948,13 +955,12 @@ Object.assign(RENDER, {
       foot: `<div class="vchips" id="vchips">${Object.keys(REL).map((v, i) => `<button aria-pressed="${v === state.ver}" data-v="${v}">${i === 0 ? `v${v} (Atual)` : 'v' + v}</button>`).join('')}</div>${doneRow('Entendido')}`
     };
   },
-  folderpopup() {
-    const apps = folderApps;
-    return {
-      floating: true, noLogo: true, title: state.folderName,
-      body: `<div class="sh-body">${apps.length ? `<div class="pgrid" id="pgrid">${apps.map(n => `<button class="app" data-papp="${n}"><i style="background:${color(n)}"></i>${n}</button>`).join('')}</div>` : '<div class="empty" style="text-align:center">Nenhum app na pasta</div>'}</div>`,
-      foot: apps.length ? actions2(gbtn('Adicionar Apps', 'data-go="picker"'), pbtn('Editar Pasta', 'data-go="foldermenu"')) : `<div class="actions">${pbtn('Adicionar Apps', 'data-go="picker"')}</div>`
-    };
+  folderpopup(mode) {
+    const apps = folderApps, list = mode === 'list';
+    const body = !apps.length ? '<div class="empty" style="text-align:center">Nenhum app na pasta</div>'
+      : list ? `<div class="plist" id="pgrid">${apps.map(n => `<button data-papp="${n}"><i style="background:${color(n)}"></i>${n}</button>`).join('')}</div>`
+      : `<div class="pgrid" id="pgrid">${apps.map(n => `<button class="app" data-papp="${n}"><i style="background:${color(n)}"></i>${n}</button>`).join('')}</div>`;
+    return { pop: list ? 'anchor' : 'center', noLogo: true, title: state.folderName, body: `<div class="sh-body">${body}</div>`, foot: '' };
   }
 });
 
@@ -1019,8 +1025,10 @@ function open(id, mode, keep = false) {
   const r = cur();
   state.floating = !!r.floating;
   sheet.classList.toggle('floating', state.floating);
+  sheet.classList.remove('pop', 'center', 'anchor'); sheet.style.removeProperty('--ty');
+  if (r.pop) sheet.classList.add('pop', r.pop);
   sheet.style.bottom = (state.floating ? 28 : 0) + 'px';
-  sheet.innerHTML = `<div class="grab" id="grab" role="button" aria-label="Alça: arraste para 60% ou 90%, toque duas vezes para alternar, segure para os Ajustes do Aureole"><i></i></div>
+  sheet.innerHTML = `<div class="grab" id="grab" role="button" aria-label="Topo da sheet: arraste para 60% ou 90%, toque duas vezes para alternar, segure para os Ajustes do Aureole"><i></i></div>
     <div class="sh-head">${r.lead ? `<span class="lead">${r.lead}</span>` : ''}<b>${r.title}</b>${r.noLogo ? '' : `<button class="logo" id="logo" aria-label="Ajustes do Aureole">${ic('logo', 16)}</button>`}</div>${r.body}${r.foot ? `<div class="sh-foot">${r.foot}</div>` : ''}`;
   preview.innerHTML = r.preview ? r.preview() : '';
   wire(id);
@@ -1287,15 +1295,16 @@ function wire(id) {
     const apply = () => {
       const r = +$('#radius [aria-pressed="true"]').dataset.r;
       const g = +$('#glass [aria-pressed="true"]').dataset.g;
+      const h = +$('#haze [aria-pressed="true"]').dataset.h;
       [$('#gA'), $('#gB')].forEach(el => {
         el.style.borderRadius = r + 'px';
-        el.style.background = g === 0 ? 'var(--surface)' : `rgba(43,55,62,${[0, .25, .5, .85][g]})`;
-        el.style.backdropFilter = g === 0 ? 'none' : 'blur(10px)';
+        el.style.background = `rgba(43,55,62,${[.3, .5, .75, 1][h]})`;
+        el.style.backdropFilter = g === 0 ? 'none' : `blur(${[0, 4, 10, 18][g]}px)`;
         el.style.webkitBackdropFilter = el.style.backdropFilter;
       });
       $('#gA').querySelectorAll('i').forEach(i => i.style.borderRadius = Math.max(4, r * .55) + 'px');
     };
-    ['#radius', '#glass'].forEach(sel => $(sel).addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; $(sel).querySelectorAll('button').forEach(x => x.setAttribute('aria-pressed', String(x === b))); apply(); }));
+    ['#radius', '#glass', '#haze'].forEach(sel => $(sel).addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; $(sel).querySelectorAll('button').forEach(x => x.setAttribute('aria-pressed', String(x === b))); apply(); }));
     apply();
   }
 
@@ -1398,13 +1407,13 @@ $('#tgReach').addEventListener('click', e => { const on = e.currentTarget.getAtt
 
 const COVER = [
   ['CustomizeBottomSheet', 'Personalizar', 'customize'], ['EditClockBottomSheet', 'Relógio', 'clock'], ['ShortcutSelectionBottomSheet', 'Escolher atalho', 'shortcut'],
-  ['AppItemMenus', 'Menu do app', 'appmenu'], ['EditContainerDialogSections', 'Menu do componente', 'itemmenu'], ['WidgetStackBottomSheet', 'Menu do grupo de widgets', 'widgetstack'],
+  ['AppItemMenus', 'Menu do app', 'appmenu'], ['EditGridItemDialog / EditContainerDialogSections', 'Menu do componente', 'itemmenu'], ['WidgetStackBottomSheet', 'Menu do grupo de widgets', 'widgetstack'],
   ['ContainerFolderBottomSheet', 'Menu da pasta', 'foldermenu'], ['QuickButtonSettingsBottomSheet', 'Botão rápido', 'qbsettings'], ['QuickButtonAppearanceBottomSheet', 'Aparência do botão', 'qbappearance'],
   ['EditWidgetGroupScreen', 'Pilha de widgets', 'widgetgroup'], ['EditContainerScreen', 'Container (4 telas)', 'container'], ['FavoriteAppsDialog', 'Favoritos', 'favorites'],
   ['FolderAppPickerDialog', 'Apps da pasta', 'picker'], ['OpenedFolderPopup', 'Pasta aberta', 'folderpopup'], ['FolderFormDialog / CreateFolderDialog', 'Nova e editar pasta', 'folderform'],
-  ['AddContainerDialog', 'Adicionar container', 'addcontainer'], ['EditGridItemDialog', 'Tamanho do widget', 'griditem'], ['ColorPickerDialog', 'Escolher cor', 'colorpicker'],
-  ['SetBackgroundBottomSheet', 'Plano de fundo', 'background'], ['BlurBottomSheet / PickBorderRadiusBottomSheet', 'Cartões e vidro', 'cards'], ['PickPaletteBottomSheet', 'Paleta', 'palette'],
-  ['PickFontBottomSheet', 'Fonte', 'font'], ['SettingsDialogComponents / HazeOpacityDialog', 'Opções de posição e opacidade', 'optbtn'], ['SettingsScreen (Reset, Factory, Wallpaper)', 'Confirmações', 'confirmlayout'],
+  ['AddContainerDialog', 'Adicionar container', 'addcontainer'], ['ColorPickerDialog', 'Escolher cor', 'colorpicker'],
+  ['SetBackgroundBottomSheet', 'Plano de fundo', 'background'], ['BlurBottomSheet / HazeOpacityDialog / PickBorderRadiusBottomSheet', 'Cartões e vidro e opacidade', 'cards'], ['PickPaletteBottomSheet', 'Paleta', 'palette'],
+  ['PickFontBottomSheet', 'Fonte', 'font'], ['SettingsDialogComponents', 'Opções de posição', 'optbtn'], ['SettingsScreen (Reset, Factory, Wallpaper)', 'Confirmações', 'confirmlayout'],
   ['InAppUpdateDialog', 'Atualização', 'updateavail'], ['ReleaseNotesBottomSheet', 'O que há de novo', 'releasenotes']
 ];
 const OUT = ['SettingsRootScreen, SettingsScreen, SettingsAppearance/Behavior/AdvancedScreen: telas cheias com barra no topo', 'OnboardingHostComponent: passo a passo da primeira abertura', 'AureoleFloatingSearchBar: busca flutuante da home', 'Tema claro, paisagem e tablet: validar nos screenshot tests e no aparelho'];
@@ -1416,7 +1425,7 @@ $('#reach').classList.add('on');
 open('customize');
 /* ================= v4: interações das telas novas ================= */
 function nav(mode) { state.mode = mode; open(state.sheet, mode, true); }
-function refreshPreview() { const r = cur(); if (r.preview) preview.innerHTML = r.preview(); }
+function refreshPreview() { const r = cur(); if (r.preview) preview.innerHTML = r.preview(); if (rid(state.sheet) === 'widgetgroup') wireWidgetPrev(); }
 
 function placeSnack() {
   const s = $('#snack'), foot = sheet.querySelector('.sh-foot'), isOpen = sheet.classList.contains('open');
@@ -1509,13 +1518,9 @@ function wireExtra() {
 
   // listas reordenáveis
   listWire('rlItems', () => state.children, a => { state.children = a; }, rerender);
-  listWire('rlWidgets', () => state.widgets, a => { state.widgets = a; state.wSel = Math.min(state.wSel, Math.max(0, a.length - 1)); }, rerender);
   listWire('rlFavs', () => state.favs, a => { state.favs = a; }, rerender);
 
-  if (id === 'widgetgroup') {
-    const box = $('#rlWidgets');
-    if (box) box.addEventListener('click', e => { if (e.target.closest('[data-rm],[data-handle]')) return; const r = e.target.closest('.ri'); if (r) { state.wSel = Math.max(0, state.widgets.indexOf(r.dataset.key)); refreshPreview(); } });
-  }
+  if (id === 'widgetgroup') wireWidgetPrev();
   if (id === 'favorites' && mode === 'manage') {
     $('#favAdd').addEventListener('click', e => { const b = e.target.closest('[data-add]'); if (!b) return; state.favs = [...state.favs, b.dataset.add]; haptic(); rerender(); });
     const clear = $('#favClear');
@@ -1531,15 +1536,6 @@ function wireExtra() {
     $('#bgKind').addEventListener('click', e => { const b = e.target.closest('[data-k]'); if (!b) return; state.bgKind = b.dataset.k; haptic(); rerender(); });
     const dots = $('[data-dots="bgColor"]');
     if (dots) dots.addEventListener('click', e => { const b = e.target.closest('button'); if (b) phone.style.setProperty('--home', b.dataset.c === '#ffffff' ? '#3a4750' : b.dataset.c); });
-  }
-  if (id === 'griditem') {
-    const orig = [...state.size];
-    applyCancel('gsApply', 'gsCancel', () => { state.size = orig; }, null, 'Tamanho aplicado');
-    sheet.querySelectorAll('[data-step]').forEach(b => b.addEventListener('click', () => {
-      const [i, d] = b.dataset.step.split(':').map(Number);
-      state.size[i] = Math.max(1, Math.min(4, state.size[i] + d)); haptic();
-      $('#sw' + i).textContent = state.size[i]; $('#sizeLbl').textContent = `Tamanho atual: ${state.size[0]} x ${state.size[1]} células`; refreshPreview();
-    }));
   }
   if (id === 'colorpicker') {
     const orig = state.cp;
@@ -1563,7 +1559,7 @@ function wireExtra() {
   }
   if (id === 'confirm' && mode === 'wallpaper') $('#wallRestore').addEventListener('click', () => { close(); haptic(); showUndo('Plano de fundo restaurado', () => showToast('Restaurado')); });
   if (id === 'releasenotes') $('#vchips').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; state.ver = b.dataset.v; haptic(); rerender(); });
-  if (id === 'folderpopup') {
+  if (id === 'folderpopup' || id === 'folderlist') {
     const g = $('#pgrid');
     if (g) {
       let lp = null, longed = false;
@@ -1572,6 +1568,23 @@ function wireExtra() {
       g.addEventListener('click', e => { if (longed) return; const b = e.target.closest('[data-papp]'); if (b) showToast(`Abre ${b.dataset.papp}`); });
     }
   }
+}
+
+function wireWidgetPrev() {
+  const row = $('#wcRow'); if (!row) return;
+  const reorder = keys => { state.widgets = keys.slice(); };
+  reorderable(row, { itemSel: '.wc[data-key]', vertical: false, onDone: (now, b) => { reorder(now); refreshPreview(); showUndo('Ordem alterada', () => { reorder(b); refreshPreview(); }); } });
+  row.addEventListener('click', e => {
+    const x = e.target.closest('[data-rm]');
+    if (x) {
+      const i = state.widgets.indexOf(x.dataset.rm), item = state.widgets[i];
+      state.widgets = state.widgets.filter((_, j) => j !== i); state.wSel = Math.min(state.wSel, Math.max(0, state.widgets.length - 1));
+      haptic(); refreshPreview(); showUndo(`${item} removido`, () => { const a = state.widgets.slice(); a.splice(i, 0, item); state.widgets = a; refreshPreview(); });
+      return;
+    }
+    if (e.target.closest('#wcAdd')) { showToast('Abre a lista de widgets'); return; }
+    const c = e.target.closest('.wc[data-key]'); if (c) { state.wSel = state.widgets.indexOf(c.dataset.key); refreshPreview(); }
+  });
 }
 
 function toggleEmpty() {

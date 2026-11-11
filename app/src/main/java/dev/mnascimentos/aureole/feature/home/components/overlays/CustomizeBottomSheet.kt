@@ -16,6 +16,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import dev.mnascimentos.aureole.R
+import dev.mnascimentos.aureole.composable.mirror.LeftHandMirror
 import dev.mnascimentos.aureole.composable.sheets.SettingsBottomSheet
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
@@ -99,25 +100,27 @@ internal fun CustomizeOptionItem(
     icon: @Composable () -> Unit,
     onClick: () -> Unit
 ) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable { onClick() }
-            .padding(vertical = AureoleDS.dimens.medium, horizontal = AureoleDS.dimens.small),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Box(
-            modifier = Modifier.size(AureoleDS.dimens.iconLarge),
-            contentAlignment = Alignment.Center
+    LeftHandMirror {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clickable { onClick() }
+                .padding(vertical = AureoleDS.dimens.medium, horizontal = AureoleDS.dimens.small),
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            icon()
+            Box(
+                modifier = Modifier.size(AureoleDS.dimens.iconLarge),
+                contentAlignment = Alignment.Center
+            ) {
+                icon()
+            }
+            Spacer(modifier = Modifier.width(AureoleDS.dimens.medium))
+            AureoleText(
+                text = title,
+                color = AureoleDS.colors.onSurfaceMedium,
+                format = AureoleTextFormatParams(style = AureoleDS.typography.bodyLarge)
+            )
         }
-        Spacer(modifier = Modifier.width(AureoleDS.dimens.medium))
-        AureoleText(
-            text = title,
-            color = AureoleDS.colors.onSurfaceMedium,
-            format = AureoleTextFormatParams(style = AureoleDS.typography.bodyLarge)
-        )
     }
 }
 

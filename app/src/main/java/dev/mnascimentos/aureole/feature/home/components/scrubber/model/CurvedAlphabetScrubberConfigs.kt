@@ -44,3 +44,10 @@ data class ScrubberRenderParams(
     val scrubberAlpha: Float,
     val alignment: Alignment
 )
+
+/**
+ * Alpha of one letter of the strip. The selected letter is drawn by the badge while a drag runs, so the strip
+ * hides its own copy and the letter shows once, in the right place, instead of twice on top of each other.
+ */
+fun scrubberLetterAlpha(isSelected: Boolean, isDragging: Boolean, scrubberAlpha: Float): Float =
+    if (isSelected && isDragging) 0f else scrubberAlpha

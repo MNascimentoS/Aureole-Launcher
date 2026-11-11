@@ -15,6 +15,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
+import dev.mnascimentos.aureole.composable.mirror.LeftHandMirror
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
 import dev.mnascimentos.aureole.core.designsystem.icons.Edit
@@ -30,38 +31,40 @@ internal fun SettingsRow(
     textColor: Color = AureoleDS.colors.onSurfaceHigh,
     onClick: () -> Unit
 ) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clip(RoundedCornerShape(AureoleDS.dimens.radiusMedium))
-            .clickable { onClick() }
-            .padding(horizontal = AureoleDS.dimens.medium, vertical = AureoleDS.dimens.medium),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        icon(Modifier.size(AureoleDS.dimens.iconMedium))
-        Spacer(modifier = Modifier.width(AureoleDS.dimens.medium))
-        AureoleText(
-            text = title,
-            color = textColor,
-            format = AureoleTextFormatParams(
-                style = AureoleDS.typography.bodyMedium,
-                fontWeight = FontWeight.Medium,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
-            ),
-            modifier = Modifier.weight(1f)
-        )
-        if (value != null) {
-            Spacer(modifier = Modifier.width(AureoleDS.dimens.small))
+    LeftHandMirror {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(AureoleDS.dimens.radiusMedium))
+                .clickable { onClick() }
+                .padding(horizontal = AureoleDS.dimens.medium, vertical = AureoleDS.dimens.medium),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            icon(Modifier.size(AureoleDS.dimens.iconMedium))
+            Spacer(modifier = Modifier.width(AureoleDS.dimens.medium))
             AureoleText(
-                text = value,
-                color = AureoleDS.colors.onSurfaceMedium,
+                text = title,
+                color = textColor,
                 format = AureoleTextFormatParams(
-                    style = AureoleDS.typography.bodySmall,
+                    style = AureoleDS.typography.bodyMedium,
+                    fontWeight = FontWeight.Medium,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
-                )
+                ),
+                modifier = Modifier.weight(1f)
             )
+            if (value != null) {
+                Spacer(modifier = Modifier.width(AureoleDS.dimens.small))
+                AureoleText(
+                    text = value,
+                    color = AureoleDS.colors.onSurfaceMedium,
+                    format = AureoleTextFormatParams(
+                        style = AureoleDS.typography.bodySmall,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                )
+            }
         }
     }
 }

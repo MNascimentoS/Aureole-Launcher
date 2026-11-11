@@ -45,6 +45,7 @@ import dev.mnascimentos.aureole.feature.home.components.scrubber.model.ScrubberC
 import dev.mnascimentos.aureole.feature.home.components.scrubber.model.ScrubberDimensions
 import dev.mnascimentos.aureole.feature.home.components.scrubber.model.ScrubberOptions
 import dev.mnascimentos.aureole.feature.home.components.scrubber.model.ScrubberRenderParams
+import dev.mnascimentos.aureole.feature.home.components.scrubber.model.scrubberLetterAlpha
 import dev.mnascimentos.aureole.feature.home.model.LocalHomeUiState
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
 import kotlin.math.exp
@@ -292,7 +293,7 @@ private fun BoxScope.ScrubberAlphabetItems(
                     }
                     translationX = offsetXPx
                     translationY = itemCenterY - (size.height / 2f)
-                    alpha = params.scrubberAlpha
+                    alpha = scrubberLetterAlpha(isActive, params.isDragging, params.scrubberAlpha)
                 },
             format = AureoleTextFormatParams(
                 style = AureoleDS.typography.labelSmall,

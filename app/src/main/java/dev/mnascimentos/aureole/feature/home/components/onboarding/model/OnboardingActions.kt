@@ -19,5 +19,7 @@ data class OnboardingActions(
     val onSetChecklistExpanded: (Boolean) -> Unit = {},
     val onDismissChecklist: () -> Unit = {},
     val onFinishCelebration: () -> Unit = {},
-    val onSaveGridEdit: () -> Unit = {}
+    val onSaveGridEdit: () -> Unit = {},
+    /** Opens the Aureole settings from the logo of the palette and font sheets; null hides the logo. */
+    val onOpenSettings: (() -> Unit)? = null
 )

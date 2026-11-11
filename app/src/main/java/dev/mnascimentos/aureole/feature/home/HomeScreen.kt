@@ -264,7 +264,8 @@ private fun HomeEditGridItemOverlay(config: HomeOverlaysConfig) {
                     onRemoveWidget = { config.actions.onRemoveWidgetClick(it, editingItem.id) },
                     onAddWidgetClick = { config.actions.onAddWidgetClick(editingItem.id) },
                     onDismissRequest = config.actions.onCloseEditGridItemDialog,
-                    onReorderWidgets = { config.actions.onReorderWidgets(it, editingItem.id) }
+                    onReorderWidgets = { config.actions.onReorderWidgets(it, editingItem.id) },
+                    onSettingsClick = config.actions.onSettingsClick
                 )
             )
         } else {

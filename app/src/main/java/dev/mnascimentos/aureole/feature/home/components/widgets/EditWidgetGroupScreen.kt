@@ -106,6 +106,7 @@ fun EditWidgetGroupScreen(
             config = AureoleEditOverlayConfig(
                 title = stringResource(R.string.home_widget_stack_title),
                 hazeState = params.hazeState,
+                onSettingsClick = actions.onSettingsClick,
                 isLeftHanded = LocalHomeUiState.current.isLeftHandedMode
             ),
             previewContent = {

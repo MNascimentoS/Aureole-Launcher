@@ -1,18 +1,13 @@
 package dev.mnascimentos.aureole.composable.sheets
 
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.ColumnScope
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.defaultMinSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import dev.mnascimentos.aureole.R
+import dev.mnascimentos.aureole.composable.actions.AureoleActionRow
+import dev.mnascimentos.aureole.composable.actions.model.ActionRowParams
 import dev.mnascimentos.aureole.composable.minihome.AureoleMiniHome
 import dev.mnascimentos.aureole.composable.minihome.sampleMiniHomeContent
 import dev.mnascimentos.aureole.composable.sheets.model.ThemePreviewOverlayParams
@@ -44,13 +39,19 @@ internal fun ThemePreviewOverlay(
 ) {
     val overlayState = rememberAureoleEditOverlayState()
     val isLeftHanded = LocalHomeUiState.current.isLeftHandedMode
+    val applyLabel = stringResource(R.string.settings_appearance_apply)
+    val cancelLabel = stringResource(R.string.core_common_cancel)
     AureoleLauncherTheme(config = resolvePreviewConfig(params.base, params.pending)) {
         AureoleEditOverlay(
             modifier = modifier,
             state = overlayState,
             onDismissRequest = params.onDismissRequest,
             params = AureoleEditOverlayParams(
-                config = AureoleEditOverlayConfig(title = params.title, isLeftHanded = isLeftHanded),
+                config = AureoleEditOverlayConfig(
+                    title = params.title,
+                    isLeftHanded = isLeftHanded,
+                    onSettingsClick = params.onSettingsClick
+                ),
                 previewContent = {
                     AureoleMiniHome(
                         content = sampleMiniHomeContent(),
@@ -59,13 +60,17 @@ internal fun ThemePreviewOverlay(
                     )
                 },
                 bottomBarContent = {
-                    ThemePreviewActions(
-                        isLeftHanded = isLeftHanded,
-                        onCancel = { overlayState.close() },
-                        onApply = {
-                            params.onApply()
-                            overlayState.close()
-                        }
+                    AureoleActionRow(
+                        params = ActionRowParams(
+                            primaryLabel = applyLabel,
+                            onPrimary = {
+                                params.onApply()
+                                overlayState.close()
+                            },
+                            secondaryLabel = cancelLabel,
+                            onSecondary = { overlayState.close() }
+                        ),
+                        isLeftHanded = isLeftHanded
                     )
                 },
                 sheetContent = content
@@ -76,29 +81,6 @@ internal fun ThemePreviewOverlay(
 
 private fun AureoleEditOverlayState.close() {
     internalVisible = false
-}
-
-/** Cancel on the side away from the thumb, Apply (primary) on the thumb side. */
-@Composable
-private fun ThemePreviewActions(
-    isLeftHanded: Boolean,
-    onCancel: () -> Unit,
-    onApply: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    Row(
-        modifier = modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        if (isLeftHanded) {
-            ApplyButton(onClick = onApply)
-            CancelButton(onClick = onCancel)
-        } else {
-            CancelButton(onClick = onCancel)
-            ApplyButton(onClick = onApply)
-        }
-    }
 }
 
 @AureolePreview
@@ -119,29 +101,5 @@ private fun ThemePreviewOverlayPreview() {
                 color = AureoleDS.colors.onSurfaceMedium
             )
         }
-    }
-}
-
-@Composable
-private fun CancelButton(onClick: () -> Unit) {
-    TextButton(
-        onClick = onClick,
-        modifier = Modifier.defaultMinSize(minHeight = AureoleDS.dimens.minTouchTarget)
-    ) {
-        AureoleText(stringResource(R.string.core_common_cancel), color = AureoleDS.colors.onSurfaceMedium)
-    }
-}
-
-@Composable
-private fun ApplyButton(onClick: () -> Unit) {
-    Button(
-        onClick = onClick,
-        modifier = Modifier.defaultMinSize(minHeight = AureoleDS.dimens.minTouchTarget),
-        colors = ButtonDefaults.buttonColors(
-            containerColor = AureoleDS.colors.onSurfaceHigh,
-            contentColor = AureoleDS.colors.surface
-        )
-    ) {
-        AureoleText(stringResource(R.string.settings_appearance_apply), color = AureoleDS.colors.surface)
     }
 }

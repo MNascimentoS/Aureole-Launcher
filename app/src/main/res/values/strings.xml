@@ -417,5 +417,4 @@
     <string name="settings_appearance_minihome_phone">Phone</string>
     <string name="settings_appearance_minihome_messages">Messages</string>
     <string name="settings_appearance_minihome_camera">Camera</string>
-    <string name="settings_appearance_minihome_browser">Browser</string>
 </resources>
