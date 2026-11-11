@@ -1,5 +1,3 @@
-@file:Suppress("MagicNumber", "MaxLineLength")
-
 package dev.mnascimentos.aureole.feature.settings.screens
 
 import android.content.Context
@@ -45,6 +43,7 @@ import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatPa
 import dev.mnascimentos.aureole.core.designsystem.icons.Delete
 import dev.mnascimentos.aureole.core.designsystem.icons.Home
 import dev.mnascimentos.aureole.core.designsystem.icons.Info
+import dev.mnascimentos.aureole.core.designsystem.icons.RefreshCcw
 import dev.mnascimentos.aureole.core.designsystem.icons.Smile
 import dev.mnascimentos.aureole.core.designsystem.icons.Undo
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
@@ -56,6 +55,7 @@ import dev.mnascimentos.aureole.feature.settings.extensions.tryUninstall
 import dev.mnascimentos.aureole.feature.settings.model.SettingsAdvancedDialogActions
 import dev.mnascimentos.aureole.feature.settings.model.SettingsScreenActions
 import dev.mnascimentos.aureole.feature.settings.model.SettingsUiState
+import dev.mnascimentos.aureole.util.percentToFraction
 
 private const val BOTTOM_SPACER_PERCENT = 0.15f
 
@@ -122,7 +122,7 @@ private fun SettingsAdvancedContent(
             .fillMaxSize()
             .padding(innerPadding)
     ) {
-        val topSpacerHeight = (maxHeight * (uiState.headerOffsetPercent / 100f))
+        val topSpacerHeight = (maxHeight * uiState.headerOffsetPercent.percentToFraction())
             .coerceAtLeast(AureoleDS.dimens.medium)
         val bottomSpacerHeight = (maxHeight * BOTTOM_SPACER_PERCENT)
             .coerceAtLeast(AureoleDS.dimens.large)
@@ -199,6 +199,12 @@ private fun AdvancedItemsGroup(
             title = stringResource(R.string.settings_advanced_whats_new),
             leadingContent = { AureoleDS.icons.Smile() },
             onClick = onOpenReleaseNotesDialog
+        )
+
+        SettingsActionItem(
+            title = stringResource(R.string.settings_advanced_replay_onboarding),
+            leadingContent = { AureoleDS.icons.RefreshCcw() },
+            onClick = { actions.onReplayOnboardingClick() }
         )
 
         SettingsActionItem(

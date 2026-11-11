@@ -9,13 +9,16 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import dev.mnascimentos.aureole.feature.settings.SettingsViewModel
 import dev.mnascimentos.aureole.feature.settings.extensions.SettingsIntentUtils
+import dev.mnascimentos.aureole.feature.settings.extensions.createFolder
 import dev.mnascimentos.aureole.feature.settings.extensions.finishCardsGlass
 import dev.mnascimentos.aureole.feature.settings.extensions.onUndo
 import dev.mnascimentos.aureole.feature.settings.extensions.onUndoExpired
 import dev.mnascimentos.aureole.feature.settings.extensions.performFactoryReset
+import dev.mnascimentos.aureole.feature.settings.extensions.replayOnboarding
 import dev.mnascimentos.aureole.feature.settings.extensions.resetGridLayout
 import dev.mnascimentos.aureole.feature.settings.extensions.restoreDefaultWallpaper
 import dev.mnascimentos.aureole.feature.settings.extensions.selectPosition
+import dev.mnascimentos.aureole.feature.settings.extensions.toggleFavorite
 import dev.mnascimentos.aureole.feature.settings.model.PositionKind
 import dev.mnascimentos.aureole.feature.settings.model.SettingToggle
 import dev.mnascimentos.aureole.feature.settings.model.SettingValue
@@ -137,6 +140,7 @@ private fun applyDialogActions(viewModel: SettingsViewModel, base: SettingsScree
         onContainerPositionSelected = { pos -> viewModel.selectPosition(PositionKind.CONTAINER, pos) },
         onOpenResetGridDialog = { viewModel.setDialogVisible(SettingsDialog.RESET_GRID, true) },
         onDismissResetGridDialog = { viewModel.setDialogVisible(SettingsDialog.RESET_GRID, false) },
+        onReplayOnboardingClick = { viewModel.replayOnboarding() },
         onOpenFactoryResetDialog = { viewModel.setDialogVisible(SettingsDialog.FACTORY_RESET, true) },
         onDismissFactoryResetDialog = { viewModel.setDialogVisible(SettingsDialog.FACTORY_RESET, false) },
         onConfirmFactoryReset = { viewModel.performFactoryReset() },

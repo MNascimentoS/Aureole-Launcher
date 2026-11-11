@@ -202,3 +202,12 @@ Commits (sem push), na `release/0.9.20`: `263e1c5` (6), `a00eed1` (6b), `11b0c41
 ### Teste no aparelho (11/11/2026)
 
 O Mateus validou no aparelho os itens da lista de testes das fases 1 a 9 (arrastar com o polegar e autoscroll, "Redefinir launcher" por segurar, desfazer do fundo, blur, campo de nome da pasta com teclado, TalkBack, menu do app em janela própria). Coluna "Aparelho" marcada em todas as fases. As decisões abertas listadas em "Fechamento das fases 6 a 9" continuam valendo.
+
+### Pendências tratadas depois do fechamento (11/11/2026)
+
+- **"Rever boas-vindas"** em Configurações › Avançado: nova linha que chama `OnboardingPreferences.restart()` e volta à Home (o `syncOnboarding()` da Home reabre as boas-vindas). Só dados de onboarding são tocados.
+- **Mini-home** de Paleta, Fonte e Fundo: apps do lado oposto ao polegar (esquerda no destro, direita no canhoto), 4 apps, como em `palette.png` e `palette-canhoto.png`. A prévia do Fundo continua fixa em Ltr.
+- **Chevron no canhoto:** mantido como está (a `container-canhoto.png` mostra o "‹" na borda esquerda). Se ainda parecer "voltar" no aparelho, é decisão visual sua.
+- **Detekt: 0 issues** (eram 5) e **`@Suppress`: 3** (eram 19 + 3 `@file`), só os documentados em `AGENTS.md`: `ThemePaletteBase.kt`, `ThemePalettePresets.kt` (1224 linhas de catálogo) e `AureoleIcons.kt`. `@SuppressLint("SetTextI18n")` em `GridItemContent.kt` é do lint do Android e ficou. Refatorações: `ContainerItemMapper`, `ReleaseNotesData0913`, `QuickButtonGridItemCallbacks`, `TextResource` sem spread (máx. 3 argumentos), `runCatching` no lugar de `catch (Exception)` em `GridRepository` e `SettingsRepository`, extensões de `SettingsViewModel` e de relógio, `PercentUtils`.
+- **Não feitos:** botões "Pasta" e "Ícone" por app (o plano os tirou do menu); textos fixos de release notes e nomes de paleta; dividir `ThemePalettePresets.kt`.
+- **Gates do zero:** detekt 0, testes unitários, jacoco (branches de lógica 75,5%), screenshots (`update` + `validate`) e `assembleDebug` passando.

@@ -5,6 +5,7 @@ import android.graphics.drawable.Drawable
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -47,7 +48,6 @@ import dev.mnascimentos.aureole.feature.home.components.widgets.model.WidgetSele
 import dev.mnascimentos.aureole.feature.home.components.widgets.model.WidgetVariant
 import kotlinx.coroutines.launch
 
-@Suppress("LongMethod") // Composable rendering list of app widgets and expand controls
 @Composable
 fun WidgetGroupList(
     state: WidgetSelectorState,
@@ -108,39 +108,55 @@ fun WidgetGroupList(
             )
         }
 
-        val searchBarAlign = if (isSearchExpanded) Alignment.TopCenter else Alignment.BottomEnd
-        val searchBarModifier = if (isSearchExpanded) {
-            Modifier
-                .fillMaxWidth()
-                .padding(start = AureoleDS.dimens.large, end = AureoleDS.dimens.large, top = AureoleDS.dimens.medium)
-        } else {
-            Modifier
-                .padding(end = AureoleDS.dimens.large, bottom = AureoleDS.dimens.large)
-        }
-
-        Box(modifier = Modifier.align(searchBarAlign)) {
-            AureoleFloatingSearchBar(
-                state = AureoleSearchBarState(
-                    query = state.searchQuery,
-                    onQueryChange = { onIntent(WidgetSelectorIntent.SearchQueryChanged(it)) },
-                    isExpanded = isSearchExpanded,
-                    onExpandedChange = { isSearchExpanded = it }
-                ),
-                modifier = searchBarModifier,
-                params = AureoleFloatingSearchBarParams(
-                    placeholder = stringResource(R.string.home_widget_picker_search_placeholder),
-                    focusRequester = focusRequester,
-                    sizes = AureoleSearchBarSizes(
-                        collapsedSize = FolderButtonMetrics.MediumSize,
-                        barHeight = FolderButtonMetrics.SmallSize
-                    )
-                )
-            )
-        }
+        WidgetSearchBarOverlay(
+            searchQuery = state.searchQuery,
+            isSearchExpanded = isSearchExpanded,
+            focusRequester = focusRequester,
+            onExpandedChange = { isSearchExpanded = it },
+            onIntent = onIntent
+        )
     }
 }
 
-@Suppress("LongMethod") // Composable rendering list of app widgets and expand controls
+@Composable
+private fun BoxScope.WidgetSearchBarOverlay(
+    searchQuery: String,
+    isSearchExpanded: Boolean,
+    focusRequester: FocusRequester,
+    onExpandedChange: (Boolean) -> Unit,
+    onIntent: (WidgetSelectorIntent) -> Unit
+) {
+    val searchBarAlign = if (isSearchExpanded) Alignment.TopCenter else Alignment.BottomEnd
+    val searchBarModifier = if (isSearchExpanded) {
+        Modifier
+            .fillMaxWidth()
+            .padding(start = AureoleDS.dimens.large, end = AureoleDS.dimens.large, top = AureoleDS.dimens.medium)
+    } else {
+        Modifier
+            .padding(end = AureoleDS.dimens.large, bottom = AureoleDS.dimens.large)
+    }
+
+    Box(modifier = Modifier.align(searchBarAlign)) {
+        AureoleFloatingSearchBar(
+            state = AureoleSearchBarState(
+                query = searchQuery,
+                onQueryChange = { onIntent(WidgetSelectorIntent.SearchQueryChanged(it)) },
+                isExpanded = isSearchExpanded,
+                onExpandedChange = onExpandedChange
+            ),
+            modifier = searchBarModifier,
+            params = AureoleFloatingSearchBarParams(
+                placeholder = stringResource(R.string.home_widget_picker_search_placeholder),
+                focusRequester = focusRequester,
+                sizes = AureoleSearchBarSizes(
+                    collapsedSize = FolderButtonMetrics.MediumSize,
+                    barHeight = FolderButtonMetrics.SmallSize
+                )
+            )
+        )
+    }
+}
+
 @Composable
 private fun WidgetScrubberOverlay(
     groupedData: GroupedAppsData,
@@ -179,7 +195,6 @@ private data class GroupedAppsData(
     val letterIndexMap: Map<Char, Int>
 )
 
-@Suppress("LongMethod") // Composable rendering list of app widgets and expand controls
 @Composable
 private fun rememberGroupedAppsData(widgetGroups: List<WidgetAppGroup>): GroupedAppsData {
     return remember(widgetGroups) {
@@ -204,7 +219,6 @@ private data class WidgetGroupListColumnParams(
     val topPadding: Dp
 )
 
-@Suppress("LongMethod") // Composable rendering list of app widgets and expand controls
 @Composable
 private fun WidgetGroupListColumn(
     params: WidgetGroupListColumnParams,

@@ -1,5 +1,3 @@
-@file:Suppress("Filename", "MatchingDeclarationName")
-
 package dev.mnascimentos.aureole.feature.settings.model
 
 data class AppearanceDialogFlags(

@@ -60,3 +60,13 @@ fun SettingsViewModel.performFactoryReset() {
         }
     }
 }
+
+/** Clears the onboarding progress only (no user data) and goes back to the home, which reopens the welcome. */
+fun SettingsViewModel.replayOnboarding() {
+    viewModelScope.launch {
+        withContext(Dispatchers.IO) {
+            settingsRepository.onboarding.restart()
+        }
+        updateUiState { it.copy(shouldFinishActivity = true) }
+    }
+}

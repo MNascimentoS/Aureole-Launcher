@@ -6,6 +6,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.net.Uri
 import android.os.Build
 import androidx.annotation.VisibleForTesting
 import androidx.core.content.edit
@@ -250,23 +251,20 @@ class SettingsRepository(private val context: Context) {
         }
     }
 
-    @Suppress("ReturnCount", "TooGenericExceptionCaught") // Catching generic exceptions for file read/write operations
-    fun saveCustomWallpaper(uriString: String): Boolean {
-        return try {
-            val uri = uriString.toUri()
-            val inputStream = context.contentResolver.openInputStream(uri) ?: return false
-            val bitmap = inputStream.use { BitmapFactory.decodeStream(it) } ?: return false
-            val file = File(context.filesDir, "custom_wallpaper.jpg")
-            FileOutputStream(file).use { out ->
-                bitmap.compress(Bitmap.CompressFormat.JPEG, JPEG_QUALITY, out)
-            }
-            customWallpaperPath = file.absolutePath
-            isCustomWallpaperSet = true
-            true
-        } catch (e: Exception) {
-            Timber.tag(TAG).w(e, "Error in saveCustomWallpaper")
-            false
+    fun saveCustomWallpaper(uriString: String): Boolean = runCatching { writeCustomWallpaper(uriString.toUri()) }
+        .onFailure { Timber.tag(TAG).w(it, "Error in saveCustomWallpaper") }
+        .getOrDefault(false)
+
+    private fun writeCustomWallpaper(uri: Uri): Boolean {
+        val bitmap = context.contentResolver.openInputStream(uri)
+            ?.use { BitmapFactory.decodeStream(it) } ?: return false
+        val file = File(context.filesDir, "custom_wallpaper.jpg")
+        FileOutputStream(file).use { out ->
+            bitmap.compress(Bitmap.CompressFormat.JPEG, JPEG_QUALITY, out)
         }
+        customWallpaperPath = file.absolutePath
+        isCustomWallpaperSet = true
+        return true
     }
 
     fun checkDefaultLauncher(): Boolean {
@@ -285,31 +283,9 @@ class SettingsRepository(private val context: Context) {
         systemWallpaper.clear()
     }
 
-    @Suppress("TooGenericExceptionCaught") // Best effort reset cleanup
     fun performFactoryReset() {
-        try {
-            try {
-                AppDatabase.getInstance(context).clearAllTables()
-            } catch (e: Exception) {
-                Timber.tag(TAG).w(e, "Error clearing Room database")
-            }
-            context.deleteDatabase("aureole_app_database.db")
-            context.deleteDatabase("aureole_folders.db")
-
-            listOf(
-                "aureole_grid_prefs",
-                "aureole_settings_prefs",
-                "aureole_widget_prefs",
-                "${context.packageName}_preferences"
-            ).forEach { prefName ->
-                context.getSharedPreferences(prefName, Context.MODE_PRIVATE).edit(commit = true) { clear() }
-            }
-
-            context.cacheDir.deleteRecursively()
-            File(context.filesDir, "custom_wallpaper.jpg").delete()
-        } catch (e: Exception) {
-            Timber.tag(TAG).w(e, "Error performing factory reset")
-        }
+        runCatching { wipeLocalData() }
+            .onFailure { Timber.tag(TAG).w(it, "Error performing factory reset") }
 
         val intent = context.packageManager.getLaunchIntentForPackage(context.packageName)?.apply {
             addFlags(
@@ -320,6 +296,25 @@ class SettingsRepository(private val context: Context) {
             context.startActivity(intent)
         }
         terminateProcess()
+    }
+
+    private fun wipeLocalData() {
+        runCatching { AppDatabase.getInstance(context).clearAllTables() }
+            .onFailure { Timber.tag(TAG).w(it, "Error clearing Room database") }
+        context.deleteDatabase("aureole_app_database.db")
+        context.deleteDatabase("aureole_folders.db")
+
+        listOf(
+            "aureole_grid_prefs",
+            "aureole_settings_prefs",
+            "aureole_widget_prefs",
+            "${context.packageName}_preferences"
+        ).forEach { prefName ->
+            context.getSharedPreferences(prefName, Context.MODE_PRIVATE).edit(commit = true) { clear() }
+        }
+
+        context.cacheDir.deleteRecursively()
+        File(context.filesDir, "custom_wallpaper.jpg").delete()
     }
 
     private val prefs

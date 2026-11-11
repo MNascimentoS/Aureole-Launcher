@@ -1,5 +1,3 @@
-@file:Suppress("TooManyFunctions") // HomeScreen coordinates main launcher overlays, layouts and grid containers
-
 package dev.mnascimentos.aureole.feature.home
 
 import android.appwidget.AppWidgetHost
@@ -29,6 +27,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.unit.Density
+import androidx.compose.ui.unit.Dp
 import dev.chrisbanes.haze.hazeSource
 import dev.chrisbanes.haze.rememberHazeState
 import dev.mnascimentos.aureole.composable.undo.AureoleUndoSnackbar
@@ -56,15 +56,16 @@ import dev.mnascimentos.aureole.feature.home.grid.AddContainerDialog
 import dev.mnascimentos.aureole.feature.home.grid.EditGridItemDialog
 import dev.mnascimentos.aureole.feature.home.model.HomeDragParams
 import dev.mnascimentos.aureole.feature.home.model.HomeOverlaysConfig
+import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
 import dev.mnascimentos.aureole.feature.home.model.HomeScreenBodyConfig
 import dev.mnascimentos.aureole.feature.home.model.LocalHomeActions
 import dev.mnascimentos.aureole.feature.home.model.LocalHomeUiState
+import dev.mnascimentos.aureole.feature.home.model.MainUiState
 import dev.mnascimentos.aureole.feature.home.model.getWidgetIdsForStack
 import dev.mnascimentos.aureole.feature.home.model.isOverlayActive
 
 private const val DEFAULT_APP_WIDGET_HOST_ID = 1024
 
-@Suppress("LongMethod") // Root composable of home feature managing scaffolding and gesture states
 @Composable
 fun HomeScreen(
     appWidgetHost: AppWidgetHost?,
@@ -77,9 +78,7 @@ fun HomeScreen(
     val coroutineScope = rememberCoroutineScope()
     val density = LocalDensity.current
 
-    val currentHeightPx by remember(uiState.widgetRowHeight) {
-        mutableFloatStateOf(with(density) { uiState.widgetRowHeight.toPx() })
-    }
+    val currentHeightPx = rememberWidgetRowHeightPx(uiState.widgetRowHeight, density)
 
     var externalTouchY by remember { mutableFloatStateOf(-1f) }
     var screenHeightPx by remember { mutableFloatStateOf(0f) }
@@ -101,8 +100,6 @@ fun HomeScreen(
 
     val hazeState = LocalHazeState.current ?: rememberHazeState()
 
-    val isSystemBackActive = uiState.isOverlayActive
-
     @OptIn(ExperimentalSharedTransitionApi::class)
     SharedTransitionLayout {
         CompositionLocalProvider(LocalSharedTransitionScope provides this) {
@@ -113,7 +110,7 @@ fun HomeScreen(
                         screenHeightPx = it.size.height.toFloat()
                         screenWidthPx = it.size.width.toFloat()
                     }
-                    .homeScreenExclusion(isSystemBackActive)
+                    .homeScreenExclusion(uiState.isOverlayActive)
                     .then(if (uiState.isOverlayActive) Modifier else dragModifier)
             ) {
                 HomeScreenBody(
@@ -131,22 +128,34 @@ fun HomeScreen(
                         onExternalTouchYReset = { externalTouchY = -1f }
                     )
                 )
-                AureoleUndoSnackbar(
-                    state = uiState.undoSnackbar,
-                    isLeftHanded = uiState.isLeftHandedMode,
-                    onUndo = actions.onUndo,
-                    onTimeout = actions.onUndoExpired,
-                    modifier = Modifier
-                        .align(Alignment.BottomCenter)
-                        .windowInsetsPadding(WindowInsets.navigationBars.union(WindowInsets.ime))
-                        .padding(AureoleDS.dimens.small)
-                )
+                HomeUndoSnackbar(uiState = uiState, actions = actions)
             }
         }
     }
 }
 
-@Suppress("LongMethod") // Root composable of home feature managing scaffolding and gesture states
+@Composable
+private fun rememberWidgetRowHeightPx(height: Dp, density: Density): Float {
+    val heightPx by remember(height) {
+        mutableFloatStateOf(with(density) { height.toPx() })
+    }
+    return heightPx
+}
+
+@Composable
+private fun BoxScope.HomeUndoSnackbar(uiState: MainUiState, actions: HomeScreenActions) {
+    AureoleUndoSnackbar(
+        state = uiState.undoSnackbar,
+        isLeftHanded = uiState.isLeftHandedMode,
+        onUndo = actions.onUndo,
+        onTimeout = actions.onUndoExpired,
+        modifier = Modifier
+            .align(Alignment.BottomCenter)
+            .windowInsetsPadding(WindowInsets.navigationBars.union(WindowInsets.ime))
+            .padding(AureoleDS.dimens.small)
+    )
+}
+
 @Composable
 private fun BoxScope.HomeScreenBody(
     config: HomeScreenBodyConfig
@@ -198,7 +207,6 @@ private fun BoxScope.HomeScreenBody(
     HomeOverlaysDialogsAndErrors(config = overlaysConfig)
 }
 
-@Suppress("LongMethod") // Root composable of home feature managing scaffolding and gesture states
 @Composable
 private fun HomeOverlaysDialogsAndErrors(config: HomeOverlaysConfig) {
     if (config.uiState.showCustomizeBottomSheet) {
@@ -247,7 +255,6 @@ private fun HomeOverlaysDialogsAndErrors(config: HomeOverlaysConfig) {
     }
 }
 
-@Suppress("LongMethod") // Root composable of home feature managing scaffolding and gesture states
 @Composable
 private fun HomeEditGridItemOverlay(config: HomeOverlaysConfig) {
     config.uiState.editingGridItem?.let { editingItem ->
@@ -281,7 +288,6 @@ private fun HomeEditGridItemOverlay(config: HomeOverlaysConfig) {
     }
 }
 
-@Suppress("LongMethod") // Root composable of home feature managing scaffolding and gesture states
 @Composable
 private fun HomeEditContainerOverlay(config: HomeOverlaysConfig) {
     if (config.uiState.isEditContainerDialogVisible && config.uiState.editingContainerId != null) {

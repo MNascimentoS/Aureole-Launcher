@@ -1,5 +1,3 @@
-@file:Suppress("Filename", "MatchingDeclarationName")
-
 package dev.mnascimentos.aureole.feature.home.components.containers.folder.model
 
 import androidx.compose.ui.graphics.Color

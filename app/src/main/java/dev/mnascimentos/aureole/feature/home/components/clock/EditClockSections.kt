@@ -1,5 +1,3 @@
-@file:Suppress("MagicNumber")
-
 package dev.mnascimentos.aureole.feature.home.components.clock
 
 import androidx.compose.foundation.background
@@ -32,7 +30,8 @@ import dev.mnascimentos.aureole.feature.home.model.MainUiState
 import dev.mnascimentos.aureole.feature.home.model.createDefaultHomeScreenActions
 
 private object ClockSectionMetrics {
-    val NegativeChipVerticalSpacing = (-8).dp
+    private const val NEGATIVE_CHIP_SPACING_DP = -8
+    val NegativeChipVerticalSpacing = NEGATIVE_CHIP_SPACING_DP.dp
 }
 
 @Composable

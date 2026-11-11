@@ -419,6 +419,7 @@
     <string name="settings_appearance_minihome_phone">Telefone</string>
     <string name="settings_appearance_minihome_messages">Mensagens</string>
     <string name="settings_appearance_minihome_camera">Câmera</string>
+    <string name="settings_appearance_minihome_browser">Navegador</string>
     <string name="core_reorder_move_up">Mover para cima</string>
     <string name="core_reorder_move_down">Mover para baixo</string>
     <string name="core_reorder_move_left">Mover para a esquerda</string>

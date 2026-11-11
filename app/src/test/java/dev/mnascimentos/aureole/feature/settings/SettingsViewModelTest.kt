@@ -6,6 +6,7 @@ import dev.mnascimentos.aureole.core.data.repository.FolderRepository
 import dev.mnascimentos.aureole.core.data.repository.GridRepository
 import dev.mnascimentos.aureole.core.data.repository.SettingsRepository
 import dev.mnascimentos.aureole.core.designsystem.model.TextResource
+import dev.mnascimentos.aureole.feature.settings.extensions.toggleFavorite
 import dev.mnascimentos.aureole.feature.settings.model.SettingToggle
 import dev.mnascimentos.aureole.feature.settings.model.SettingValue
 import dev.mnascimentos.aureole.feature.settings.model.SettingsDialog

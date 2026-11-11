@@ -69,6 +69,20 @@ private fun SettingsAdvancedScreenScreenshotTest() {
 @PreviewTest
 @AureolePreview
 @Composable
+private fun SettingsAdvancedScreenLeftHandedScreenshotTest() {
+    AureoleLauncherTheme {
+        SettingsAdvancedScreen(
+            uiState = SettingsUiState(isLeftHandedMode = true),
+            actions = SettingsScreenActions(),
+            onNavigateToContributors = {},
+            onNavigateBack = {}
+        )
+    }
+}
+
+@PreviewTest
+@AureolePreview
+@Composable
 private fun SettingsContributorsScreenScreenshotTest() {
     AureoleLauncherTheme {
         SettingsContributorsScreen(

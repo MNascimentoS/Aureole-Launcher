@@ -1,5 +1,3 @@
-@file:Suppress("MagicNumber") // Suppressed for animation, padding, and size constants in launcher apps list
-
 package dev.mnascimentos.aureole.feature.home.components.appsdrawer
 
 import androidx.compose.foundation.background
@@ -45,6 +43,7 @@ import dev.mnascimentos.aureole.feature.home.components.appsdrawer.model.AppsDra
 import dev.mnascimentos.aureole.feature.home.model.LocalHomeActions
 import dev.mnascimentos.aureole.feature.home.model.LocalHomeUiState
 import dev.mnascimentos.aureole.feature.home.model.isAppsLoading
+import dev.mnascimentos.aureole.util.percentToFraction
 
 private const val DRAWER_HAZE_TINT_FACTOR = 0.5f
 private const val DRAWER_HAZE_MIN_ALPHA = 0.15f
@@ -76,7 +75,9 @@ fun AppsListDrawer(
             .then(hazeModifier)
             .background(drawerBgColor)
     ) {
-        val topOffsetDp = (maxHeight * (uiState.headerOffsetPercent / 100f)).coerceAtLeast(AureoleDS.dimens.medium)
+        val topOffsetDp = (maxHeight * uiState.headerOffsetPercent.percentToFraction()).coerceAtLeast(
+            AureoleDS.dimens.medium
+        )
         val extraTopPadding = if (uiState.showSearchBarInAllApps && isSearchExpanded) {
             AppsDrawerMetrics.SearchBarExtraTopPadding
         } else {

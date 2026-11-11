@@ -17,7 +17,6 @@ class GridRepository(private val context: Context) {
     private val prefs
         get() = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
 
-    @Suppress("TooGenericExceptionCaught") // Catching generic exceptions for SharedPreferences parsing
     fun getGridItems(isLandscape: Boolean = false, isLeftHanded: Boolean = false): List<LauncherItemState> {
         val key = if (isLandscape) KEY_LANDSCAPE_GRID_ITEMS else KEY_PORTRAIT_GRID_ITEMS
         var json = prefs.getString(key, null)
@@ -27,19 +26,21 @@ class GridRepository(private val context: Context) {
         if (json.isNullOrBlank()) {
             return GridDefaults.getDefaultGridItems(isLandscape, isLeftHanded)
         }
-        return try {
-            val type = object : TypeToken<List<LauncherItemState>>() {}.type
-            val items: List<LauncherItemState>? = gson.fromJson(json, type)
-            // A saved empty list is a home the user (or the first run) left empty on purpose.
-            when {
-                items == null -> GridDefaults.getDefaultGridItems(isLandscape, isLeftHanded)
-                items.isEmpty() -> emptyList()
-                else -> items.filterNotNull().map { item -> sanitizeItem(item) }
-                    .ifEmpty { GridDefaults.getDefaultGridItems(isLandscape, isLeftHanded) }
-            }
-        } catch (e: Exception) {
+        return runCatching { parseGridItems(json, isLandscape, isLeftHanded) }.getOrElse { e ->
             Timber.tag(TAG).w(e, "Failed to parse or sanitize grid items JSON")
             GridDefaults.getDefaultGridItems(isLandscape, isLeftHanded)
+        }
+    }
+
+    private fun parseGridItems(json: String, isLandscape: Boolean, isLeftHanded: Boolean): List<LauncherItemState> {
+        val type = object : TypeToken<List<LauncherItemState>>() {}.type
+        val items: List<LauncherItemState>? = gson.fromJson(json, type)
+        // A saved empty list is a home the user (or the first run) left empty on purpose.
+        return when {
+            items == null -> GridDefaults.getDefaultGridItems(isLandscape, isLeftHanded)
+            items.isEmpty() -> emptyList()
+            else -> items.filterNotNull().map { item -> sanitizeItem(item) }
+                .ifEmpty { GridDefaults.getDefaultGridItems(isLandscape, isLeftHanded) }
         }
     }
 

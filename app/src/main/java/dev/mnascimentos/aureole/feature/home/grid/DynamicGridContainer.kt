@@ -230,7 +230,6 @@ private fun rememberCellCallbacks(
 private fun GridItemCellBox(config: CellBoxConfig) {
     val metrics = config.metrics
     val params = config.params
-    val item = params.item
     val isLifted = params.isEditMode && (config.isDragging || config.isResizing)
 
     Box(
@@ -252,42 +251,47 @@ private fun GridItemCellBox(config: CellBoxConfig) {
         if (params.isEditMode) {
             GridItemEditOverlay(
                 params = params,
-                callbacks = GridItemEditCallbacks(
-                    onResizing = config.callbacks.onResizingChange,
-                    onResizeWidthDelta = config.callbacks.onResizeWidthChange,
-                    onResizeHeightDelta = config.callbacks.onResizeHeightChange,
-                    onResizeDelta = config.callbacks.onResizeDelta,
-                    onResetWidthExtra = config.callbacks.onResetWidth,
-                    onResetHeightExtra = config.callbacks.onResetHeight,
-                    onResetAllExtra = config.callbacks.onResetAll,
-                    onResizeItem = config.actions.onResizeGridItem,
-                    onEditItem = {
-                        when (item.safeType) {
-                            LauncherItemType.CLOCK -> {
-                                config.actions.onOpenEditClockBottomSheet()
-                            }
-                            LauncherItemType.APPS_LIST -> {
-                                config.actions.onOpenFavoritePicker(item.id)
-                            }
-                            LauncherItemType.ALL_APPS_LIST -> Unit
-                            LauncherItemType.SHORTCUTS_CONTAINER -> {
-                                config.actions.onOpenEditContainerDialog(item.id)
-                            }
-                            LauncherItemType.QUICK_BUTTON -> {
-                                config.actions.onOpenQuickButtonSettings(item.id)
-                            }
-                            else -> {
-                                config.actions.onOpenEditGridItemDialog(item)
-                            }
-                        }
-                    },
-                    onDeleteItem = {
-                        config.actions.onDeleteGridItem(item.id)
-                    }
-                )
+                callbacks = config.toEditCallbacks()
             )
         }
     }
+}
+
+private fun CellBoxConfig.toEditCallbacks(): GridItemEditCallbacks {
+    val item = params.item
+    return GridItemEditCallbacks(
+        onResizing = callbacks.onResizingChange,
+        onResizeWidthDelta = callbacks.onResizeWidthChange,
+        onResizeHeightDelta = callbacks.onResizeHeightChange,
+        onResizeDelta = callbacks.onResizeDelta,
+        onResetWidthExtra = callbacks.onResetWidth,
+        onResetHeightExtra = callbacks.onResetHeight,
+        onResetAllExtra = callbacks.onResetAll,
+        onResizeItem = actions.onResizeGridItem,
+        onEditItem = {
+            when (item.safeType) {
+                LauncherItemType.CLOCK -> {
+                    actions.onOpenEditClockBottomSheet()
+                }
+                LauncherItemType.APPS_LIST -> {
+                    actions.onOpenFavoritePicker(item.id)
+                }
+                LauncherItemType.ALL_APPS_LIST -> Unit
+                LauncherItemType.SHORTCUTS_CONTAINER -> {
+                    actions.onOpenEditContainerDialog(item.id)
+                }
+                LauncherItemType.QUICK_BUTTON -> {
+                    actions.onOpenQuickButtonSettings(item.id)
+                }
+                else -> {
+                    actions.onOpenEditGridItemDialog(item)
+                }
+            }
+        },
+        onDeleteItem = {
+            actions.onDeleteGridItem(item.id)
+        }
+    )
 }
 
 @Composable

@@ -1,5 +1,3 @@
-@file:Suppress("MagicNumber", "MaxLineLength")
-
 package dev.mnascimentos.aureole.feature.settings.screens
 
 import androidx.activity.compose.BackHandler
@@ -56,6 +54,7 @@ import dev.mnascimentos.aureole.feature.settings.model.AppearanceDialogFlags
 import dev.mnascimentos.aureole.feature.settings.model.AppearanceMenuDialogActions
 import dev.mnascimentos.aureole.feature.settings.model.SettingsScreenActions
 import dev.mnascimentos.aureole.feature.settings.model.SettingsUiState
+import dev.mnascimentos.aureole.util.percentToFraction
 
 private const val BOTTOM_SPACER_RATIO = 0.15f
 
@@ -107,7 +106,9 @@ private fun SettingsAppearanceContent(
             .fillMaxSize()
             .padding(innerPadding)
     ) {
-        val topSpacerHeight = (maxHeight * (uiState.headerOffsetPercent / 100f)).coerceAtLeast(AureoleDS.dimens.medium)
+        val topSpacerHeight = (maxHeight * uiState.headerOffsetPercent.percentToFraction()).coerceAtLeast(
+            AureoleDS.dimens.medium
+        )
         val bottomSpacerHeight = (maxHeight * BOTTOM_SPACER_RATIO).coerceAtLeast(AureoleDS.dimens.large)
 
         Column(

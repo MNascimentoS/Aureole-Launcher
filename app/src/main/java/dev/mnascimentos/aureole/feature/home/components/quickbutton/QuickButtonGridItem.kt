@@ -26,6 +26,7 @@ import dev.mnascimentos.aureole.core.data.model.ShortcutType
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
+import dev.mnascimentos.aureole.feature.home.components.quickbutton.model.QuickButtonGridItemCallbacks
 
 @Composable
 fun QuickButtonGridItem(
@@ -38,8 +39,7 @@ fun QuickButtonGridItem(
     QuickButtonGridItem(
         model = model,
         shape = RoundedCornerShape(AureoleDS.dimens.radiusMedium),
-        onAction = onAction,
-        onLongPress = onLongPress,
+        callbacks = QuickButtonGridItemCallbacks(onAction = onAction, onLongPress = onLongPress),
         modifier = modifier,
         appInfo = appInfo
     )
@@ -49,14 +49,13 @@ fun QuickButtonGridItem(
 fun QuickButtonGridItem(
     model: QuickButtonModel,
     shape: Shape,
-    onAction: (ShortcutAction) -> Unit,
-    onLongPress: () -> Unit,
+    callbacks: QuickButtonGridItemCallbacks,
     modifier: Modifier = Modifier,
     appInfo: AppInfo? = null
 ) {
     val currentModel by rememberUpdatedState(model)
-    val currentOnAction by rememberUpdatedState(onAction)
-    val currentOnLongPress by rememberUpdatedState(onLongPress)
+    val currentOnAction by rememberUpdatedState(callbacks.onAction)
+    val currentOnLongPress by rememberUpdatedState(callbacks.onLongPress)
 
     val isDefaultBg = model.appearance.backgroundColor == 0 ||
         model.appearance.backgroundColor == 0xFF455A64.toInt()

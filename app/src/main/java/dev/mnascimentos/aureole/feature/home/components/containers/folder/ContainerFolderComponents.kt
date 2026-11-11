@@ -53,6 +53,7 @@ import dev.mnascimentos.aureole.feature.home.components.quickbutton.QuickButtonG
 import dev.mnascimentos.aureole.feature.home.components.quickbutton.launchAppPackage
 import dev.mnascimentos.aureole.feature.home.components.quickbutton.launchSystemIntent
 import dev.mnascimentos.aureole.feature.home.components.quickbutton.launchVoiceAssistant
+import dev.mnascimentos.aureole.feature.home.components.quickbutton.model.QuickButtonGridItemCallbacks
 import dev.mnascimentos.aureole.feature.home.model.LocalHomeActions
 import dev.mnascimentos.aureole.feature.home.model.LocalHomeUiState
 import dev.mnascimentos.aureole.util.IntentUtils
@@ -356,20 +357,22 @@ fun ContainerQuickButtonItem(
                 model = quickButtonModel,
                 appInfo = appInfo,
                 shape = RoundedCornerShape(cornerRadius),
-                onAction = { shortcutAction ->
-                    when (shortcutAction.type) {
-                        ShortcutType.ALL_APPS -> actions.onAllAppsDrawerOpen()
-                        ShortcutType.ASSISTANT -> launchVoiceAssistant(context)
-                        ShortcutType.SETTINGS -> actions.onSettingsClick()
-                        ShortcutType.NOTIFICATIONS -> IntentUtils.expandNotificationShade(context)
-                        ShortcutType.OPEN_APP -> launchAppPackage(context, shortcutAction.target)
-                        ShortcutType.SYSTEM_INTENT -> launchSystemIntent(context, shortcutAction.target)
-                        ShortcutType.NONE -> { /* Do nothing */ }
+                callbacks = QuickButtonGridItemCallbacks(
+                    onAction = { shortcutAction ->
+                        when (shortcutAction.type) {
+                            ShortcutType.ALL_APPS -> actions.onAllAppsDrawerOpen()
+                            ShortcutType.ASSISTANT -> launchVoiceAssistant(context)
+                            ShortcutType.SETTINGS -> actions.onSettingsClick()
+                            ShortcutType.NOTIFICATIONS -> IntentUtils.expandNotificationShade(context)
+                            ShortcutType.OPEN_APP -> launchAppPackage(context, shortcutAction.target)
+                            ShortcutType.SYSTEM_INTENT -> launchSystemIntent(context, shortcutAction.target)
+                            ShortcutType.NONE -> { /* Do nothing */ }
+                        }
+                    },
+                    onLongPress = {
+                        actions.onOpenQuickButtonSettings(quickButtonModel.id)
                     }
-                },
-                onLongPress = {
-                    actions.onOpenQuickButtonSettings(quickButtonModel.id)
-                }
+                )
             )
         }
 

@@ -1,5 +1,3 @@
-@file:Suppress("MatchingDeclarationName", "MagicNumber", "MaxLineLength", "LongMethod")
-
 package dev.mnascimentos.aureole.feature.home.grid
 
 import androidx.compose.animation.core.Spring

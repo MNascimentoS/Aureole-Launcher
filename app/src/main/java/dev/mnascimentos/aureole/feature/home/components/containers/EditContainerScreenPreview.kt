@@ -12,63 +12,61 @@ import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.components.containers.model.EditContainerScreenParams
 
-@Suppress("LongMethod") // Compose preview rendering sample container horizontal layout
-@AureolePreview
-@Composable
-private fun EditContainerScreenPreview() {
-    val sampleApps = listOf(
-        AppInfo(
-            label = "App 1",
-            packageName = "com.example.app1",
-            componentName = ComponentName("com.example.app1", "MainActivity"),
-            icon = 0xFF1B65C0.toInt().toDrawable()
-        ),
-        AppInfo(
-            label = "App 2",
-            packageName = "com.example.app2",
-            componentName = ComponentName("com.example.app2", "MainActivity"),
-            icon = 0xFF2E7D32.toInt().toDrawable()
-        ),
-        AppInfo(
-            label = "App 3",
-            packageName = "com.example.app3",
-            componentName = ComponentName("com.example.app3", "MainActivity"),
-            icon = 0xFFF57C00.toInt().toDrawable()
+private fun previewApps(): List<AppInfo> = listOf(
+    previewApp(index = 1, color = 0xFF1B65C0.toInt()),
+    previewApp(index = 2, color = 0xFF2E7D32.toInt()),
+    previewApp(index = 3, color = 0xFFF57C00.toInt())
+)
+
+private fun previewApp(index: Int, color: Int): AppInfo = AppInfo(
+    label = "App $index",
+    packageName = "com.example.app$index",
+    componentName = ComponentName("com.example.app$index", "MainActivity"),
+    icon = color.toDrawable()
+)
+
+private fun previewFolders(): List<AppFolder> = listOf(
+    AppFolder(id = "folder_1", name = "Social", icon = "folder", appPackageNames = listOf("com.example.app1"))
+)
+
+private fun previewItems(panelId: String, apps: List<AppInfo>, folders: List<AppFolder>): List<ContainerItemEntity> =
+    listOf(
+        ContainerItemEntity(
+            id = "item_f1",
+            panelId = panelId,
+            itemType = ContainerItemType.FOLDER,
+            folderId = folders.first().id,
+            orderIndex = 0
         )
-    )
-    val sampleFolders = listOf(
-        AppFolder(id = "folder_1", name = "Social", icon = "folder", appPackageNames = listOf("com.example.app1"))
-    )
+    ) + apps.map { it.packageName }.mapIndexed { index, packageName ->
+        ContainerItemEntity(
+            id = "item_a${index + 1}",
+            panelId = panelId,
+            itemType = ContainerItemType.APP,
+            packageName = packageName,
+            orderIndex = index + 1
+        )
+    }
+
+@Composable
+private fun PreviewContainerScreen(panelId: String, title: String, orientation: String, appCount: Int) {
+    val apps = previewApps()
+    val folders = previewFolders()
     val panel = ContainerModel(
-        id = "panel_1",
-        title = "Favoritos",
-        orientation = "Vertical",
+        id = panelId,
+        title = title,
+        orientation = orientation,
         isBackgroundEnabled = true,
         isGridFolderEnabled = true,
-        folders = sampleFolders,
-        appPackageNames = sampleApps.map { it.packageName },
-        items = listOf(
-            ContainerItemEntity(
-                id = "item_f1",
-                panelId = "panel_1",
-                itemType = ContainerItemType.FOLDER,
-                folderId = sampleFolders.first().id,
-                orderIndex = 0
-            ),
-            ContainerItemEntity(
-                id = "item_a1",
-                panelId = "panel_1",
-                itemType = ContainerItemType.APP,
-                packageName = sampleApps.first().packageName,
-                orderIndex = 1
-            )
-        )
+        folders = folders,
+        appPackageNames = apps.map { it.packageName },
+        items = previewItems(panelId, apps.take(appCount), folders)
     )
     AureoleLauncherTheme {
         EditContainerScreen(
             params = EditContainerScreenParams(
                 panel = panel,
-                allApps = sampleApps,
+                allApps = apps,
                 onDismiss = {},
                 onSave = {}
             )
@@ -76,73 +74,19 @@ private fun EditContainerScreenPreview() {
     }
 }
 
-@Suppress("LongMethod") // Compose preview rendering sample container horizontal layout
+@AureolePreview
+@Composable
+private fun EditContainerScreenPreview() {
+    PreviewContainerScreen(panelId = "panel_1", title = "Favoritos", orientation = "Vertical", appCount = 1)
+}
+
 @AureolePreview
 @Composable
 private fun EditContainerScreenHorizontalPreview() {
-    val sampleApps = listOf(
-        AppInfo(
-            label = "App 1",
-            packageName = "com.example.app1",
-            componentName = ComponentName("com.example.app1", "MainActivity"),
-            icon = 0xFF1B65C0.toInt().toDrawable()
-        ),
-        AppInfo(
-            label = "App 2",
-            packageName = "com.example.app2",
-            componentName = ComponentName("com.example.app2", "MainActivity"),
-            icon = 0xFF2E7D32.toInt().toDrawable()
-        ),
-        AppInfo(
-            label = "App 3",
-            packageName = "com.example.app3",
-            componentName = ComponentName("com.example.app3", "MainActivity"),
-            icon = 0xFFF57C00.toInt().toDrawable()
-        )
-    )
-    val sampleFolders = listOf(
-        AppFolder(id = "folder_1", name = "Social", icon = "folder", appPackageNames = listOf("com.example.app1"))
-    )
-    val panel = ContainerModel(
-        id = "panel_2",
+    PreviewContainerScreen(
+        panelId = "panel_2",
         title = "Favoritos Horizontal",
         orientation = "Horizontal",
-        isBackgroundEnabled = true,
-        isGridFolderEnabled = true,
-        folders = sampleFolders,
-        appPackageNames = sampleApps.map { it.packageName },
-        items = listOf(
-            ContainerItemEntity(
-                id = "item_f1",
-                panelId = "panel_2",
-                itemType = ContainerItemType.FOLDER,
-                folderId = sampleFolders.first().id,
-                orderIndex = 0
-            ),
-            ContainerItemEntity(
-                id = "item_a1",
-                panelId = "panel_2",
-                itemType = ContainerItemType.APP,
-                packageName = sampleApps.first().packageName,
-                orderIndex = 1
-            ),
-            ContainerItemEntity(
-                id = "item_a2",
-                panelId = "panel_2",
-                itemType = ContainerItemType.APP,
-                packageName = sampleApps[1].packageName,
-                orderIndex = 2
-            )
-        )
+        appCount = 2
     )
-    AureoleLauncherTheme {
-        EditContainerScreen(
-            params = EditContainerScreenParams(
-                panel = panel,
-                allApps = sampleApps,
-                onDismiss = {},
-                onSave = {}
-            )
-        )
-    }
 }

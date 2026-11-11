@@ -41,15 +41,17 @@ private const val DOCK_BORDER_PX = 1f
 private const val PHONE_HEX = 0xFF2E8B3A
 private const val MESSAGES_HEX = 0xFFF28A0F
 private const val CAMERA_HEX = 0xFF1F63C2
+private const val BROWSER_HEX = 0xFFE0453A
 
 /**
- * Stateless miniature of the home screen (clock, three favorites and a four-icon dock) drawn with the tokens of the
+ * Stateless miniature of the home screen (clock, date, four apps and a four-icon dock) drawn with the tokens of the
  * current `AureoleDS` theme, so wrapping it in another theme previews that theme.
  *
  * @param content Sample content to draw.
  * @param modifier Modifier applied to the root.
  * @param backgroundColor Fill of the mini-home; null keeps the theme background.
- * @param isLeftHanded Aligns the favorites to the thumb side of a left-handed user.
+ * @param isLeftHanded Puts the apps on the side opposite to the thumb: left for right-handed (icon first), right
+ *   for left-handed (label first). The default is the right-handed layout, which the background preview also uses.
  */
 @Composable
 fun AureoleMiniHome(
@@ -140,10 +142,10 @@ private fun MiniHomeFavorites(
             .padding(horizontal = AureoleDS.dimens.large)
             .padding(bottom = AureoleDS.dimens.xSmall),
         verticalArrangement = Arrangement.spacedBy(AureoleDS.dimens.minimal, Alignment.Bottom),
-        horizontalAlignment = if (isLeftHanded) Alignment.Start else Alignment.End
+        horizontalAlignment = if (isLeftHanded) Alignment.End else Alignment.Start
     ) {
         favorites.forEach { favorite ->
-            MiniHomeFavoriteRow(favorite = favorite, iconFirst = isLeftHanded)
+            MiniHomeFavoriteRow(favorite = favorite, iconFirst = !isLeftHanded)
         }
     }
 }
@@ -188,7 +190,8 @@ fun sampleMiniHomeContent(): MiniHomeContent = MiniHomeContent(
     favorites = listOf(
         MiniHomeFavorite(stringResource(R.string.settings_appearance_minihome_phone), Color(PHONE_HEX)),
         MiniHomeFavorite(stringResource(R.string.settings_appearance_minihome_messages), Color(MESSAGES_HEX)),
-        MiniHomeFavorite(stringResource(R.string.settings_appearance_minihome_camera), Color(CAMERA_HEX))
+        MiniHomeFavorite(stringResource(R.string.settings_appearance_minihome_camera), Color(CAMERA_HEX)),
+        MiniHomeFavorite(stringResource(R.string.settings_appearance_minihome_browser), Color(BROWSER_HEX))
     )
 )
 
