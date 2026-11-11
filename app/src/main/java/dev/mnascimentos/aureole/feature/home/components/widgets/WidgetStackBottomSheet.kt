@@ -19,7 +19,6 @@ import dev.mnascimentos.aureole.composable.menu.model.MenuSheetParams
 import dev.mnascimentos.aureole.composable.menu.model.SwitchRowParams
 import dev.mnascimentos.aureole.core.designsystem.icons.Delete
 import dev.mnascimentos.aureole.core.designsystem.icons.Dots
-import dev.mnascimentos.aureole.core.designsystem.icons.Layout
 import dev.mnascimentos.aureole.core.designsystem.icons.MultipleView
 import dev.mnascimentos.aureole.core.designsystem.icons.Settings
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
@@ -40,14 +39,16 @@ internal fun WidgetStackBottomSheet(
     modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
-    val widgetAppPackage = remember(params.widgetId) { resolveWidgetPackage(context, params.widgetId) }
+    val widgetAppPackage = remember(params.widgetId, params.appPackage) {
+        params.appPackage ?: resolveWidgetPackage(context, params.widgetId)
+    }
 
     AureoleMenuSheet(
         title = stringResource(R.string.home_widget_group),
         onDismiss = onDismiss,
         modifier = modifier,
         params = MenuSheetParams(
-            titleIcon = { m -> AureoleDS.icons.Layout(modifier = m, tint = AureoleDS.colors.onSurfaceMedium) },
+            titleIcon = { m -> AureoleDS.icons.MultipleView(modifier = m, tint = AureoleDS.colors.onSurfaceMedium) },
             onSettingsClick = { context.startActivity(Intent(context, SettingsActivity::class.java)) }
         )
     ) { dismiss ->

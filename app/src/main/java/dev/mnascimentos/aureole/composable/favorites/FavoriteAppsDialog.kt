@@ -60,6 +60,7 @@ fun FavoriteAppsDialog(
     }
 
     var currentMode by remember { mutableStateOf(initialMode) }
+    var searchQuery by remember(currentMode) { mutableStateOf("") }
 
     val appMap = remember(config.allApps) {
         config.allApps.associateBy { it.packageName }
@@ -96,7 +97,9 @@ fun FavoriteAppsDialog(
                 FavoriteAppsBottomBar(
                     currentMode = currentMode,
                     onBack = { currentMode = FavoriteAppsScreenMode.MAIN },
-                    onClose = { isVisible = false }
+                    onClose = { isVisible = false },
+                    searchQuery = searchQuery,
+                    onSearchQueryChange = { searchQuery = it }
                 )
             },
             sheetContent = {
@@ -104,7 +107,8 @@ fun FavoriteAppsDialog(
                     currentMode = currentMode,
                     config = config,
                     actions = actions,
-                    onModeChange = { currentMode = it }
+                    onModeChange = { currentMode = it },
+                    searchQuery = searchQuery
                 )
             }
         )

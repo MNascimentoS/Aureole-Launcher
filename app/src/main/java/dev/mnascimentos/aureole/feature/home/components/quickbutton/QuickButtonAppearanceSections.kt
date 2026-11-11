@@ -44,6 +44,8 @@ import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.components.quickbutton.model.QUICK_BUTTON_ICON_COLUMNS
 import dev.mnascimentos.aureole.feature.home.components.quickbutton.model.QuickButtonColorTarget
 import dev.mnascimentos.aureole.feature.home.components.quickbutton.model.colorOf
+import dev.mnascimentos.aureole.feature.home.components.quickbutton.model.isSameQuickButtonIcon
+import dev.mnascimentos.aureole.feature.home.components.quickbutton.model.quickButtonPickerIcons
 import dev.mnascimentos.aureole.feature.home.components.quickbutton.model.withColor
 
 /**
@@ -177,12 +179,12 @@ internal fun QuickButtonIconGrid(
         modifier = modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(gap)
     ) {
-        QuickButtonIcon.entries.chunked(QUICK_BUTTON_ICON_COLUMNS).forEach { row ->
+        quickButtonPickerIcons().chunked(QUICK_BUTTON_ICON_COLUMNS).forEach { row ->
             Row(horizontalArrangement = Arrangement.spacedBy(gap)) {
                 row.forEach { iconItem ->
                     QuickButtonIconTile(
                         icon = iconItem,
-                        isSelected = iconItem == selectedIcon,
+                        isSelected = isSameQuickButtonIcon(iconItem, selectedIcon),
                         onClick = { onIconSelected(iconItem) },
                         modifier = Modifier.weight(1f)
                     )

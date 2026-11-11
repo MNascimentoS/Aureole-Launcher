@@ -39,10 +39,17 @@ import kotlinx.coroutines.delay
 internal fun FavoriteAppsBottomBar(
     currentMode: FavoriteAppsScreenMode,
     onBack: () -> Unit,
-    onClose: () -> Unit
+    onClose: () -> Unit,
+    searchQuery: String = "",
+    onSearchQueryChange: (String) -> Unit = {}
 ) {
     val isMain = currentMode == FavoriteAppsScreenMode.MAIN
     val label = if (isMain) R.string.home_favorites_done else R.string.home_favorites_back
+    // The search sits in the footer, under the divider that separates it from the list, above the button.
+    if (!isMain) {
+        FavoriteAppsSearchInput(query = searchQuery, onQueryChange = onSearchQueryChange)
+        Spacer(modifier = Modifier.height(AureoleDS.dimens.small))
+    }
     AureolePrimaryActionButton(
         label = stringResource(label),
         onClick = if (isMain) onClose else onBack,
@@ -55,12 +62,17 @@ internal fun FavoriteAppsSheetContent(
     currentMode: FavoriteAppsScreenMode,
     config: FavoriteAppsDialogConfig,
     actions: FavoriteAppsDialogActions,
-    onModeChange: (FavoriteAppsScreenMode) -> Unit
+    onModeChange: (FavoriteAppsScreenMode) -> Unit,
+    searchQuery: String = ""
 ) {
     when (currentMode) {
         FavoriteAppsScreenMode.MAIN -> FavoriteAppsMainContent(config = config, onModeChange = onModeChange)
         FavoriteAppsScreenMode.MANAGE,
-        FavoriteAppsScreenMode.EDIT_SHORTCUTS -> FavoriteAppsDialogContent(config = config, actions = actions)
+        FavoriteAppsScreenMode.EDIT_SHORTCUTS -> FavoriteAppsDialogContent(
+            config = config,
+            actions = actions,
+            searchQuery = searchQuery
+        )
     }
 }
 
@@ -69,9 +81,9 @@ private const val SEARCH_DEBOUNCE_DELAY_MS = 300L
 @Composable
 private fun FavoriteAppsDialogContent(
     config: FavoriteAppsDialogConfig,
-    actions: FavoriteAppsDialogActions
+    actions: FavoriteAppsDialogActions,
+    searchQuery: String
 ) {
-    var searchQuery by remember { mutableStateOf("") }
     var debouncedQuery by remember { mutableStateOf("") }
 
     LaunchedEffect(searchQuery) {
@@ -108,8 +120,7 @@ private fun FavoriteAppsDialogContent(
             searchQuery = searchQuery,
             filteredFavorites = filteredFavorites,
             filteredRemaining = filteredRemaining
-        ),
-        onSearchQueryChange = { searchQuery = it }
+        )
     )
 }
 
@@ -120,8 +131,7 @@ private fun filterAppsByQuery(apps: List<AppInfo>, query: String): List<AppInfo>
 
 @Composable
 private fun FavoriteAppsDialogBody(
-    params: FavoriteAppsBodyParams,
-    onSearchQueryChange: (String) -> Unit
+    params: FavoriteAppsBodyParams
 ) {
     val config = params.config
     val actions = params.actions
@@ -138,7 +148,7 @@ private fun FavoriteAppsDialogBody(
         actions.onUpdateFavoritePackages(config.containerId, newFavs)
     }
 
-    // The search sits under the list, right above the Back button, within the thumb's reach.
+    // The search lives in the footer of the sheet (see FavoriteAppsBottomBar), below the divider.
     Column(modifier = Modifier.fillMaxWidth()) {
         if (config.isLoading) {
             AppListSkeletonComponent(modifier = Modifier.weight(1f))
@@ -156,13 +166,6 @@ private fun FavoriteAppsDialogBody(
                 )
             }
         }
-
-        Spacer(modifier = Modifier.height(AureoleDS.dimens.small))
-
-        FavoriteAppsSearchInput(
-            query = params.searchQuery,
-            onQueryChange = onSearchQueryChange
-        )
     }
 }
 

@@ -18,11 +18,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDirection
 import dev.mnascimentos.aureole.composable.mirror.LeftHandMirror
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
 import dev.mnascimentos.aureole.core.designsystem.icons.Check
+import dev.mnascimentos.aureole.core.designsystem.model.LocalLeftHanded
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 
 private const val SELECTED_ROW_ALPHA = 0.5f
@@ -44,6 +46,8 @@ fun AureoleRadioRow(
     } else {
         AureoleDS.colors.surfaceVariant.copy(alpha = 0f)
     }
+    // With an icon the label hugs it: at the end of the mirrored row, away from the marker (Start when right-handed).
+    val labelAlign = if (icon != null && LocalLeftHanded.current) TextAlign.End else TextAlign.Start
     LeftHandMirror {
         Row(
             modifier = modifier
@@ -62,7 +66,8 @@ fun AureoleRadioRow(
                 color = if (isSelected) AureoleDS.colors.onSurfaceHigh else AureoleDS.colors.onSurfaceMedium,
                 modifier = Modifier.weight(1f),
                 format = AureoleTextFormatParams(
-                    style = AureoleDS.typography.bodyLarge.copy(textDirection = TextDirection.Content)
+                    style = AureoleDS.typography.bodyLarge.copy(textDirection = TextDirection.Content),
+                    textAlign = labelAlign
                 )
             )
             RadioMarker(isSelected = isSelected)

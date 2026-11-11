@@ -102,6 +102,8 @@ data class WidgetStackBottomSheetParams(
     val onToggleDots: (String) -> Unit,
     val onRemoveStack: () -> Unit,
     val showIndicator: Boolean = true,
+    /** Package that owns the widget; looked up from [widgetId] when null. */
+    val appPackage: String? = null,
 )
 
 data class StackedWidgetPagerParams(

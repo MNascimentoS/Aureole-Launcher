@@ -90,7 +90,8 @@ private fun WidgetStackMenuCase(isLeftHanded: Boolean) = MenuCase(isLeftHanded) 
             stackId = "widget_stack_1",
             onEditStack = {},
             onToggleDots = {},
-            onRemoveStack = {}
+            onRemoveStack = {},
+            appPackage = "com.example.widgets"
         ),
         onDismiss = {}
     )

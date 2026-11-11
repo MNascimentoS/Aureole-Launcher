@@ -2,6 +2,7 @@ package dev.mnascimentos.aureole.feature.home.components.quickbutton
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.rememberScrollState
@@ -38,7 +39,7 @@ internal fun ShortcutSelectionSheetContent(
     }
     Column(
         modifier = Modifier
-            .fillMaxWidth()
+            .fillMaxSize()
             .verticalScroll(rememberScrollState())
     ) {
         if (params.category == ShortcutCategory.APPS) {

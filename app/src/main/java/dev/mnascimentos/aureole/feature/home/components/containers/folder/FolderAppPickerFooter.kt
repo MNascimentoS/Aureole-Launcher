@@ -48,7 +48,7 @@ internal fun FolderAppPickerFooter(
     // Empty, the tray only shows its hint while browsing: with the keyboard up the room goes to the results.
     val showTray = params.trayApps.isNotEmpty() || (params.searchQuery.isBlank() && !WindowInsets.isImeVisible)
     Column(
-        modifier = modifier.fillMaxWidth(),
+        modifier = modifier.fillMaxWidth().padding(bottom = AureoleDS.dimens.small),
         verticalArrangement = Arrangement.spacedBy(AureoleDS.dimens.xSmall)
     ) {
         if (showTray) {

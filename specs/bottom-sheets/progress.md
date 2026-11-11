@@ -23,12 +23,12 @@ Atualizado por `/fase`. Marque `[x]` quando os gates passarem e o veredito visua
 | 3 | Menus e popup da pasta | Sonnet | 2–3 h | [x] | [x] quase | [ ] |
 | 4 | Editores restantes | Sonnet | 3–4,5 h | [x] | [x] quase | [ ] |
 | 5 | Adicionar container e opções de posição | Sonnet | 1,5–2,5 h | [x] | [x] igual | [ ] |
-| 6 | Ajustes do teste no aparelho: prévia sem rótulo, ícones nas linhas, cards da pilha, mover por botões, Cartões e vidro só com "Pronto", menu do app sem "Pasta"/"Ícone" | Sonnet | 2–3 h | [ ] | [ ] | [ ] |
-| 6b | Favoritos sem duplicação (sem favoritos = todos os apps) e alça de arrastar clara | Sonnet | 1,5–2,5 h | [ ] | [ ] | [ ] |
-| 6c | Ícones de pasta do Material Symbols (aprovado; arquivos em `folder-icons/`) | Haiku + Sonnet | 1–2 h | [ ] | [ ] | [ ] |
-| 7 | Dívidas restantes das fases 1 a 5 (sem o que já foi resolvido) | Sonnet + Opus (autoscroll) | 2,5–4 h | [ ] | [ ] | [ ] |
-| 8 | Diálogos e avisos | Sonnet | 1,5–2,5 h | [ ] | [ ] | [ ] |
-| 9 | Acabamento | Haiku | 1–1,5 h | [ ] | [ ] | [ ] |
+| 6 | Ajustes do teste no aparelho: prévia sem rótulo, ícones nas linhas, cards da pilha, mover por botões, Cartões e vidro só com "Pronto", menu do app sem "Pasta"/"Ícone" | Sonnet | 2–3 h | [x] | [x] quase | [ ] |
+| 6b | Favoritos sem duplicação (sem favoritos = todos os apps) e alça de arrastar clara | Sonnet | 1,5–2,5 h | [x] | [x] quase | [ ] |
+| 6c | Ícones de pasta do Material Symbols (aprovado; arquivos em `folder-icons/`) | Haiku + Sonnet | 1–2 h | [x] | [x] quase | [ ] |
+| 7 | Dívidas restantes das fases 1 a 5 (sem o que já foi resolvido) | Sonnet + Opus (autoscroll) | 2,5–4 h | [x] | [x] quase | [ ] |
+| 8 | Diálogos e avisos | Sonnet | 1,5–2,5 h | [x] | [x] quase | [ ] |
+| 9 | Acabamento | Haiku | 1–1,5 h | [x] | [x] quase | [ ] |
 
 ## Notas por fase
 
@@ -167,3 +167,34 @@ Atualizado por `/fase`. Marque `[x]` quando os gates passarem e o veredito visua
 - **Correção:** `AureoleOverlayWindow` (`composable/overlay/`) é um `Dialog` em tela cheia e envolve o menu em `AppItemRow`. O `AnchoredPreviewLayout` também passou a aceitar altura ilimitada. Testes novos (long click dentro de `LazyColumn` e de `Column` com rolagem) falham sem a correção.
 - **Validado no aparelho:** long click em item de favoritos abre o menu sem crash.
 - **Ainda a conferir no aparelho:** fechar pelo botão voltar e por arrastar, insets dentro da janela, "Desinstalar" por segurar e a engrenagem, e o menu sem o blur do Haze (outra janela).
+
+### Fechamento das fases 6 a 9 (11/11/2026)
+
+Commits (sem push), na `release/0.9.20`: `263e1c5` (6), `a00eed1` (6b), `11b0c41` (6c), `4d66329` (7a), `353fa64` (7b), `8c06137` (7c), `1c5329a` (7d), `117e5e4` (8), `89399cd` (9) e os de correção da revisão visual final.
+
+**Gates (do zero, no fim):** detekt 5 issues (as de antes); `testDebugUnitTest` completo; `jacocoTestCoverageVerification` (branches de lógica 75,5%); `updateDebugScreenshotTest` + `validateDebugScreenshotTest`; `assembleDebug`. Nenhum `@Suppress` novo; nenhum arquivo de produção novo acima de 500 linhas; `composable/` e `core/designsystem/` sem import de `feature/`.
+
+**Visual:** revisão de todas as 41 telas de `ref/telas/`: 17 iguais, 13 quase e 5 diferentes. Os 5 diferentes (seletor de apps da pasta, seletor de atalho, gerenciar favoritos, menu do grupo de widgets, "Mover" no canhoto) foram corrigidos em duas rodadas e reconferidos: ficaram **quase**. Uma última rodada tratou as regressões da reconferência (divisor de favoritos sobre a busca, busca encostada nos botões do seletor da pasta, texto do atalho no canhoto, posição do "Mover", ícone de lápis duplicado). **Essa última rodada não foi reconferida visualmente depois de regenerar os prints.**
+
+**O que mudou na 6 a 9**
+- 6: prévia sem rótulo; ícones em coluna fixa nas linhas; cards da pilha em 2,5 por tela; "Mover" por botões; "Cartões e vidro" aplica na hora e fecha com "Pronto".
+- 6b: favoritos sem duplicação (sem favoritos = todos os apps), alça de arrastar, migração do flag legado.
+- 6c: 80 ícones do Material Symbols, grade de 5 colunas com chips de categoria.
+- 7: `LocalLeftHanded` no DS, `ChevronRight`, data do relógio no locale, relógio em cartões, Personalizar em Ajustar + grade de 4 colunas, moldura tracejada, aparência do botão rápido inline, fechamento animado das opções, autoscroll na fileira reordenável.
+- 8: diálogos de confirmação (redefinir launcher exige segurar 1,5 s), atualização, notas de versão com chips.
+- 9: textos fixos movidos para strings, previews e varredura de regras.
+- Revisão final: seletor de apps da pasta e seletor de atalho sobre a base padrão, menu do grupo de widgets em `AureoleMenuSheet`.
+
+**Pendências e decisões para você**
+- Teste no aparelho de tudo (nenhuma caixa "Aparelho" marcada, exceto o crash do long click que foi validado).
+- `ReleaseNotesData` e `ReleaseNotesRepository` ainda têm ~140 textos fixos em pt-BR nos modelos (exige trocar o tipo para `TextResource`); nomes de paleta são dados (precisam de id estável para traduzir).
+- 19 `@Suppress` antigos (5 `LongMethod` em `HomeScreen.kt`) e 5 issues de detekt antigas: refatoração à parte.
+- `settings_advanced_replay_onboarding` não tem uso: a opção "Rever boas-vindas" em Configurações › Avançado parece não existir.
+- Mini-home de Paleta, Fonte e Fundo: os apps ficam do lado do polegar, e o plano pede o lado oposto; decidir qual vale.
+- Menu do app: o plano manda a ação mais usada no lado do polegar, e a `appmenu.png` mostra o oposto.
+- Seletor de atalho: chips Aureole/Sistema/Apps (sem "Outro app"); "Aparência" removida do menu de favoritos; subtela de atalhos de favoritos igual à de gerenciar.
+- Botões "Pasta" e "Ícone" por app não foram feitos (features novas).
+- Tema claro nos screenshots: o projeto não tem convenção; não criado.
+- O chevron no canhoto aponta para a esquerda e pode ser lido como "voltar".
+- `ShortcutAction.displayName` ainda tem texto fixo em inglês.
+- Fator de blur Leve (0,4x) e Máx. (1,6x), `WallpaperManager` ao desfazer o fundo e velocidade do autoscroll (800 dp/s, faixa de 48 dp): conferir no aparelho.
