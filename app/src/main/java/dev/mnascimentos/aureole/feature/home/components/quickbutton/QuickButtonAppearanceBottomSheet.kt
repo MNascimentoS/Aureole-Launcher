@@ -69,7 +69,6 @@ fun QuickButtonAppearanceBottomSheet(
         modifier = modifier,
         preview = {
             AureolePreviewFrame(
-                label = stringResource(R.string.home_edit_preview_live),
                 modifier = Modifier.align(Alignment.Center)
             ) {
                 QuickButtonPreviewBox(activeModel = draftModel, activeAppInfo = activeAppInfo)

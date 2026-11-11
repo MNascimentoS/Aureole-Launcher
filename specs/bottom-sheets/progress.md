@@ -11,7 +11,8 @@ Atualizado por `/fase`. Marque `[x]` quando os gates passarem e o veredito visua
 - [x] Relógio com abas que deslizam
 - [x] Paleta e Fonte com mini-home e efeito na hora (grade de chips)
 - [x] Fases 1 a 5 do plano rodaram em 10 e 11/11 (gates ok, visual quase/igual). Falta o teste no aparelho.
-- [~] O teste no aparelho gerou a fase 6; as pendências das notas abaixo viraram a fase 7 (ver `one-hand-plan.md`).
+- [~] O teste no aparelho gerou a fase 6; as pendências das notas abaixo viraram a fase 7 (ver `one-hand-plan.md`). Já resolvidas fora das fases: vidro na Home, desfazer do fundo, Favorito em container/pasta e o crash do menu do app.
+- Decisões de 11/11: menu do app com ação no lado do polegar, cabeçalhos de favoritos espelhados, matiz em barra, Cartões e vidro só com "Pronto", ícones de pasta aprovados, sem "Pasta"/"Ícone" no menu do app.
 
 ## Fases restantes
 
@@ -22,9 +23,10 @@ Atualizado por `/fase`. Marque `[x]` quando os gates passarem e o veredito visua
 | 3 | Menus e popup da pasta | Sonnet | 2–3 h | [x] | [x] quase | [ ] |
 | 4 | Editores restantes | Sonnet | 3–4,5 h | [x] | [x] quase | [ ] |
 | 5 | Adicionar container e opções de posição | Sonnet | 1,5–2,5 h | [x] | [x] igual | [ ] |
-| 6 | Ajustes do teste no aparelho: prévia sem rótulo, ícones nas linhas, cards da pilha, mover por botões | Sonnet | 2–3 h | [ ] | [ ] | [ ] |
-| 6+ | Ícones de pasta do Material Symbols (se aprovado) | Haiku + Sonnet | 1,5–2,5 h | [ ] | [ ] | [ ] |
-| 7 | Lacunas e dívidas das fases 1 a 5 | Sonnet + Opus (autoscroll) | 3,5–5,5 h | [ ] | [ ] | [ ] |
+| 6 | Ajustes do teste no aparelho: prévia sem rótulo, ícones nas linhas, cards da pilha, mover por botões, Cartões e vidro só com "Pronto", menu do app sem "Pasta"/"Ícone" | Sonnet | 2–3 h | [ ] | [ ] | [ ] |
+| 6b | Favoritos sem duplicação (sem favoritos = todos os apps) e alça de arrastar clara | Sonnet | 1,5–2,5 h | [ ] | [ ] | [ ] |
+| 6c | Ícones de pasta do Material Symbols (aprovado; arquivos em `folder-icons/`) | Haiku + Sonnet | 1–2 h | [ ] | [ ] | [ ] |
+| 7 | Dívidas restantes das fases 1 a 5 (sem o que já foi resolvido) | Sonnet + Opus (autoscroll) | 2,5–4 h | [ ] | [ ] | [ ] |
 | 8 | Diálogos e avisos | Sonnet | 1,5–2,5 h | [ ] | [ ] | [ ] |
 | 9 | Acabamento | Haiku | 1–1,5 h | [ ] | [ ] | [ ] |
 

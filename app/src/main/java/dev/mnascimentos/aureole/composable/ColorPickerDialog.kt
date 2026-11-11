@@ -98,7 +98,6 @@ fun ColorPickerDialog(
 @Composable
 private fun BoxScope.ColorPreview(color: Int) {
     AureolePreviewFrame(
-        label = stringResource(R.string.settings_appearance_preview_label),
         modifier = Modifier.align(Alignment.Center)
     ) {
         Column(

@@ -149,7 +149,7 @@ private fun EditContainerPreview(state: EditContainerState) {
             .wrapContentHeight(Alignment.Bottom)
             .widthIn(min = ContainerPreviewMetrics.MinSize, max = ContainerPreviewMetrics.MaxSize)
     }
-    AureolePreviewFrame(label = stringResource(R.string.home_edit_preview_live)) {
+    AureolePreviewFrame {
         Container(
             config = state.toConfig(),
             onFolderClick = { _, _ -> },

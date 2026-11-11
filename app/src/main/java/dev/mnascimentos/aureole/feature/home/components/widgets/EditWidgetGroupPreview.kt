@@ -7,6 +7,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
@@ -14,11 +15,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -36,6 +37,9 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.DpSize
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.composable.reorder.ReorderableRow
@@ -50,7 +54,10 @@ import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.core.designsystem.utils.LocalAnimatedVisibilityScope
 import dev.mnascimentos.aureole.core.designsystem.utils.LocalSharedTransitionScope
 import dev.mnascimentos.aureole.feature.home.components.widgets.model.EditWidgetCarouselParams
-import dev.mnascimentos.aureole.feature.home.components.widgets.model.WidgetPickerMetrics
+import dev.mnascimentos.aureole.feature.home.components.widgets.model.RevealScrollParams
+import dev.mnascimentos.aureole.feature.home.components.widgets.model.revealScrollTarget
+import dev.mnascimentos.aureole.feature.home.components.widgets.model.widgetCardHeight
+import dev.mnascimentos.aureole.feature.home.components.widgets.model.widgetCardWidth
 import dev.mnascimentos.aureole.feature.home.components.widgets.model.widgetPreviewPage
 
 private const val PREVIEW_ITEM_COUNT = 3
@@ -60,8 +67,9 @@ private const val ADD_CARD_BORDER_ALPHA = 0.2f
 private const val ADD_CARD_FILL_ALPHA = 0.35f
 
 /**
- * Live preview of the widget stack: hold a card and drag it sideways to reorder, ✕ removes it and the "+" card at
- * the end adds a widget. The position bar below follows the scroll.
+ * Live preview of the widget stack; the cards are sized so two and a half show: hold a card and drag it sideways
+ * to reorder, tap one to select it, ✕ removes it and the "+" card at the end adds a widget. The position bar below
+ * follows the scroll.
  */
 @Composable
 fun EditWidgetGroupPreviewCarousel(
@@ -70,50 +78,88 @@ fun EditWidgetGroupPreviewCarousel(
 ) {
     val widgets = params.currentWidgets
     val spacing = AureoleDS.dimens.small
-    val slotPx = with(LocalDensity.current) { (WidgetPickerMetrics.PreviewCardWidth + spacing).toPx() }
-    val currentPage = widgetPreviewPage(params.scrollState.value, slotPx, widgets.size)
-    Column(
-        modifier = modifier,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        ReorderableRow(
-            params = ReorderableParams(
-                items = widgets,
-                key = { it },
-                actions = ReorderableActions(
-                    onMove = params.onMoveWidget,
-                    onMoveEnd = params.onMoveEnd,
-                    onRemove = { index -> widgets.getOrNull(index)?.let(params.onRemoveWidget) }
+    val margin = AureoleDS.dimens.medium
+    BoxWithConstraints(modifier = modifier) {
+        val cardWidth = widgetCardWidth(maxWidth.value, margin.value, spacing.value).dp
+        val cardSize = DpSize(cardWidth, widgetCardHeight(cardWidth.value).dp)
+        val slotPx = with(LocalDensity.current) { (cardWidth + spacing).toPx() }
+        val scrolledPage = widgetPreviewPage(params.scrollState.value, slotPx, widgets.size)
+        val currentPage = widgets.indexOf(params.selectedWidgetId).takeIf { it >= 0 } ?: scrolledPage
+        RevealSelectedCard(params = params, slotPx = slotPx, cardPx = cardWidth, margin = margin, viewport = maxWidth)
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            ReorderableRow(
+                params = ReorderableParams(
+                    items = widgets,
+                    key = { it },
+                    actions = ReorderableActions(
+                        onMove = params.onMoveWidget,
+                        onMoveEnd = params.onMoveEnd,
+                        onRemove = { index -> widgets.getOrNull(index)?.let(params.onRemoveWidget) }
+                    ),
+                    spacing = spacing,
+                    contentPadding = PaddingValues(horizontal = margin)
                 ),
-                spacing = spacing,
-                contentPadding = PaddingValues(horizontal = AureoleDS.dimens.medium)
-            ),
-            modifier = Modifier.fillMaxWidth(),
-            scrollState = params.scrollState,
-            trailingContent = { AddWidgetCard(onClick = params.onAddWidgetClick) }
-        ) { widgetId ->
-            WidgetPreviewCard(
-                widgetId = widgetId,
-                appWidgetHost = params.appWidgetHost,
-                isCurrent = widgets.indexOf(widgetId) == currentPage
+                modifier = Modifier.fillMaxWidth(),
+                scrollState = params.scrollState,
+                trailingContent = { AddWidgetCard(size = cardSize, onClick = params.onAddWidgetClick) }
+            ) { widgetId ->
+                WidgetPreviewCard(
+                    widgetId = widgetId,
+                    appWidgetHost = params.appWidgetHost,
+                    isCurrent = widgets.indexOf(widgetId) == currentPage,
+                    size = cardSize,
+                    onSelect = { params.onSelectWidget(widgetId) }
+                )
+            }
+
+            Spacer(modifier = Modifier.height(AureoleDS.dimens.medium))
+
+            if (widgets.isNotEmpty() && params.isIndicatorEnabled) {
+                WidgetPositionIndicatorBar(pageCount = widgets.size, currentPage = currentPage)
+            }
+        }
+    }
+}
+
+/** After a move by button, scrolls the row just enough to keep the selected card whole inside it. */
+@Composable
+private fun RevealSelectedCard(
+    params: EditWidgetCarouselParams,
+    slotPx: Float,
+    cardPx: Dp,
+    margin: Dp,
+    viewport: Dp
+) {
+    val density = LocalDensity.current
+    val index = params.currentWidgets.indexOf(params.selectedWidgetId)
+    LaunchedEffect(params.revealToken) {
+        if (index < 0 || params.revealToken == 0) return@LaunchedEffect
+        val target = with(density) {
+            revealScrollTarget(
+                current = params.scrollState.value,
+                params = RevealScrollParams(
+                    index = index,
+                    slotPx = slotPx,
+                    cardPx = cardPx.toPx(),
+                    marginPx = margin.toPx(),
+                    viewportPx = viewport.toPx()
+                )
             )
         }
-
-        Spacer(modifier = Modifier.height(AureoleDS.dimens.medium))
-
-        if (widgets.isNotEmpty() && params.isIndicatorEnabled) {
-            WidgetPositionIndicatorBar(
-                pageCount = widgets.size,
-                currentPage = currentPage
-            )
-        }
+        params.scrollState.animateScrollTo(target)
     }
 }
 
 /** One widget of the stack; the card of the page the position bar shows gets a clear border, as on the home. */
 @OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
-private fun WidgetPreviewCard(widgetId: Int, appWidgetHost: AppWidgetHost?, isCurrent: Boolean) {
+private fun WidgetPreviewCard(
+    widgetId: Int,
+    appWidgetHost: AppWidgetHost?,
+    isCurrent: Boolean,
+    size: DpSize,
+    onSelect: () -> Unit
+) {
     val sharedTransitionScope = LocalSharedTransitionScope.current
     val animatedVisibilityScope = LocalAnimatedVisibilityScope.current
     val sharedModifier = if (sharedTransitionScope != null && animatedVisibilityScope != null) {
@@ -133,10 +179,11 @@ private fun WidgetPreviewCard(widgetId: Int, appWidgetHost: AppWidgetHost?, isCu
     }
     Box(
         modifier = sharedModifier.previewCardShape(
+            size = size,
             border = border,
             fill = AureoleDS.colors.surfaceVariant.copy(alpha = CARD_FILL_ALPHA),
             shape = RoundedCornerShape(AureoleDS.dimens.radiusMedium)
-        ),
+        ).clickable(onClick = onSelect),
         contentAlignment = Alignment.Center
     ) {
         if (appWidgetHost != null) {
@@ -173,7 +220,7 @@ private fun TouchShield() {
 }
 
 @Composable
-private fun AddWidgetCard(onClick: () -> Unit) {
+private fun AddWidgetCard(size: DpSize, onClick: () -> Unit) {
     val label = stringResource(R.string.home_widget_add)
     val border = BorderStroke(
         AureoleDS.dimens.borderMinimal,
@@ -182,6 +229,7 @@ private fun AddWidgetCard(onClick: () -> Unit) {
     Box(
         modifier = Modifier
             .previewCardShape(
+                size = size,
                 border = border,
                 fill = AureoleDS.colors.surfaceVariant.copy(alpha = ADD_CARD_FILL_ALPHA),
                 shape = RoundedCornerShape(AureoleDS.dimens.radiusMedium)
@@ -201,9 +249,8 @@ private fun AddWidgetCard(onClick: () -> Unit) {
 }
 
 /** Size, rounded shape, border and fill shared by the widget cards and the "+" card. */
-private fun Modifier.previewCardShape(border: BorderStroke, fill: Color, shape: Shape): Modifier = this
-    .width(WidgetPickerMetrics.PreviewCardWidth)
-    .height(WidgetPickerMetrics.PreviewCardHeight)
+private fun Modifier.previewCardShape(size: DpSize, border: BorderStroke, fill: Color, shape: Shape): Modifier = this
+    .size(size)
     .clip(shape)
     .background(fill)
     .border(border, shape)

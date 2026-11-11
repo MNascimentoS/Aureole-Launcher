@@ -10,8 +10,8 @@ import dev.mnascimentos.aureole.feature.settings.model.AppearanceDialogFlags
 import dev.mnascimentos.aureole.feature.settings.model.CardsGlassDraft
 import dev.mnascimentos.aureole.feature.settings.model.SettingsScreenActions
 import dev.mnascimentos.aureole.feature.settings.model.SettingsUiState
+import dev.mnascimentos.aureole.feature.settings.model.toCardsGlassDraft
 import org.junit.Assert.assertEquals
-import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
@@ -201,10 +201,9 @@ class SettingsAppearanceControlsTest {
     }
 
     @Test
-    fun `when cardsGlass flag is true, should apply the draft chosen in the sheet`() {
-        var applied: CardsGlassDraft? = null
-        var dismissCalled = false
-        val actions = SettingsScreenActions(onApplyCardsGlass = { applied = it })
+    fun `when cardsGlass flag is true, should apply every tap on the spot`() {
+        val applied = mutableListOf<CardsGlassDraft>()
+        val actions = SettingsScreenActions(onApplyCardsGlass = { applied += it })
 
         composeTestRule.setContent {
             AureoleLauncherTheme {
@@ -212,7 +211,7 @@ class SettingsAppearanceControlsTest {
                     flags = AppearanceDialogFlags(showCardsGlass = true),
                     uiState = SettingsUiState(cornerRadiusDp = 16, isHazeEnabled = true),
                     actions = actions,
-                    onDismissDialog = { dismissCalled = true }
+                    onDismissDialog = {}
                 )
             }
         }
@@ -221,34 +220,50 @@ class SettingsAppearanceControlsTest {
         composeTestRule.onNodeWithText("8").performScrollTo().performClick()
         composeTestRule.onNodeWithText("Max").performScrollTo().performClick()
         composeTestRule.onNodeWithText("Solid").performScrollTo().performClick()
-        composeTestRule.onNodeWithText("Apply").performClick()
-        composeTestRule.mainClock.advanceTimeBy(DISMISS_ANIMATION_MS)
 
-        assertEquals(CardsGlassDraft(radiusDp = 8, glass = GlassLevel.MAX, opacity = 0.9f), applied)
-        assertTrue(dismissCalled)
+        assertEquals(CardsGlassDraft(radiusDp = 8, glass = GlassLevel.MAX, opacity = 0.9f), applied.last())
+        assertEquals(3, applied.size)
     }
 
     @Test
-    fun `when cancelling the cardsGlass sheet, should close without applying`() {
-        var applied = false
+    fun `when tapping Done on the cardsGlass sheet, should close and hand back the opening values`() {
+        var closedWith: CardsGlassDraft? = null
         var dismissCalled = false
+        val opening = SettingsUiState(cornerRadiusDp = 16, isHazeEnabled = true)
 
         composeTestRule.setContent {
             AureoleLauncherTheme {
                 AppearanceDialogs(
                     flags = AppearanceDialogFlags(showCardsGlass = true),
-                    uiState = SettingsUiState(),
-                    actions = SettingsScreenActions(onApplyCardsGlass = { applied = true }),
+                    uiState = opening,
+                    actions = SettingsScreenActions(onCardsGlassClosed = { closedWith = it }),
                     onDismissDialog = { dismissCalled = true }
                 )
             }
         }
 
-        composeTestRule.onNodeWithText("None").performScrollTo().performClick()
-        composeTestRule.onNodeWithText("Cancel").performClick()
+        composeTestRule.onNodeWithText("8").performScrollTo().performClick()
+        composeTestRule.onNodeWithText("Done").performClick()
         composeTestRule.mainClock.advanceTimeBy(DISMISS_ANIMATION_MS)
 
-        assertFalse(applied)
+        assertEquals(opening.toCardsGlassDraft(), closedWith)
         assertTrue(dismissCalled)
+    }
+
+    @Test
+    fun `the cardsGlass sheet has no Apply or Cancel button`() {
+        composeTestRule.setContent {
+            AureoleLauncherTheme {
+                AppearanceDialogs(
+                    flags = AppearanceDialogFlags(showCardsGlass = true),
+                    uiState = SettingsUiState(),
+                    actions = SettingsScreenActions(),
+                    onDismissDialog = {}
+                )
+            }
+        }
+
+        composeTestRule.onNodeWithText("Apply").assertDoesNotExist()
+        composeTestRule.onNodeWithText("Cancel").assertDoesNotExist()
     }
 }

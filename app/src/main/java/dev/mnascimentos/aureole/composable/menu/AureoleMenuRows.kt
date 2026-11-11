@@ -40,7 +40,7 @@ private const val DESTRUCTIVE_TILE_ALPHA = 0.18f
 private const val NOTE_ALPHA = 0.35f
 
 /**
- * A 56 dp menu row: optional icon tile, title and an optional chevron. Mirrored for left-handed users so the
+ * A 56 dp menu row: optional icon column, title and an optional chevron. Mirrored for left-handed users so the
  * icon sits at the thumb side. Destructive rows use the error color.
  */
 @Composable
@@ -61,7 +61,7 @@ fun AureoleMenuRow(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(AureoleDS.dimens.small)
         ) {
-            params.icon?.let { icon -> MenuRowIconTile(icon = icon, isDestructive = params.isDestructive) }
+            params.icon?.let { icon -> MenuIconColumn(icon = icon, isDestructive = params.isDestructive) }
             MenuRowTexts(params = params, titleColor = titleColor, modifier = Modifier.weight(1f))
             if (params.showChevron) MenuRowChevron()
         }
@@ -95,22 +95,31 @@ private fun MenuRowTexts(params: MenuRowParams, titleColor: Color, modifier: Mod
     }
 }
 
+/**
+ * Fixed 36 dp column that centers a 22 dp icon, so every title in a list starts at the same x no matter the icon.
+ * A destructive row keeps a tinted tile behind the icon.
+ */
 @Composable
-private fun MenuRowIconTile(icon: @Composable (Modifier, Color) -> Unit, isDestructive: Boolean) {
+internal fun MenuIconColumn(
+    icon: @Composable (Modifier, Color) -> Unit,
+    modifier: Modifier = Modifier,
+    isDestructive: Boolean = false
+) {
     val iconTint = if (isDestructive) AureoleDS.colors.error else AureoleDS.colors.onSurfaceMedium
-    val tileColor = if (isDestructive) {
-        AureoleDS.colors.error.copy(alpha = DESTRUCTIVE_TILE_ALPHA)
+    val tileModifier = if (isDestructive) {
+        Modifier
+            .clip(RoundedCornerShape(AureoleDS.dimens.radiusXSmall))
+            .background(AureoleDS.colors.error.copy(alpha = DESTRUCTIVE_TILE_ALPHA))
     } else {
-        AureoleDS.colors.surfaceVariant
+        Modifier
     }
     Box(
-        modifier = Modifier
+        modifier = modifier
             .size(AureoleDS.dimens.iconXLarge)
-            .clip(RoundedCornerShape(AureoleDS.dimens.radiusSmall))
-            .background(tileColor),
+            .then(tileModifier),
         contentAlignment = Alignment.Center
     ) {
-        icon(Modifier.size(AureoleDS.dimens.iconMedium), iconTint)
+        icon(Modifier.size(AureoleDS.dimens.iconLargePlus), iconTint)
     }
 }
 

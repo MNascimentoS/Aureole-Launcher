@@ -12,9 +12,6 @@ object WidgetPickerMetrics {
     val SearchTopPaddingExpanded = 80.dp
     val ListBottomPadding = 120.dp
 
-    /** Small enough that about three cards and the "+" card fit across the live preview. */
-    val PreviewCardWidth = 110.dp
-    val PreviewCardHeight = 90.dp
     val AddCardSize = 164.dp
 }
 
@@ -31,8 +28,24 @@ data class EditWidgetCarouselParams(
     val isIndicatorEnabled: Boolean,
     val onRemoveWidget: (Int) -> Unit,
     val onAddWidgetClick: () -> Unit,
+    val selectedWidgetId: Int? = null,
+    /** Changes when the selected card must be scrolled into view (a move by button), not while dragging. */
+    val revealToken: Int = 0,
+    val onSelectWidget: (Int) -> Unit = {},
     val onMoveWidget: (Int, Int) -> Unit = { _, _ -> },
     val onMoveEnd: () -> Unit = {}
+)
+
+/**
+ * What the "Move <widget>" row of the stack editor shows: the selected widget, its 1-based [position] among [count]
+ * and the two steps; a null step means the widget already sits at that end and its button is disabled.
+ */
+data class WidgetMoveParams(
+    val name: String,
+    val position: Int,
+    val count: Int,
+    val onPrevious: (() -> Unit)?,
+    val onNext: (() -> Unit)?
 )
 
 data class EditWidgetGroupParams(
@@ -96,4 +109,11 @@ data class StackedWidgetPagerParams(
     val appWidgetHost: AppWidgetHost? = null,
     val stackId: String,
     val params: PagerContentParams
+)
+
+/** What the editor sheet shows: the [widgets] in order, the [selected] one and the indicator switch. */
+data class EditWidgetSheetParams(
+    val widgets: List<Int>,
+    val selected: Int?,
+    val isIndicatorEnabled: Boolean
 )

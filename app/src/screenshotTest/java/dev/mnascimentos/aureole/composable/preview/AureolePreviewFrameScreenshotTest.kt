@@ -12,7 +12,7 @@ import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 @Composable
 private fun AureolePreviewFrameScreenshotTest() {
     AureoleLauncherTheme {
-        AureolePreviewFrame(label = "Live preview") {
+        AureolePreviewFrame {
             AureoleText(text = "Preview content", color = AureoleDS.colors.onSurfaceHigh)
         }
     }

@@ -2,11 +2,13 @@ package dev.mnascimentos.aureole.composable.sheets
 
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.composable.actions.AureoleActionRow
+import dev.mnascimentos.aureole.composable.actions.AureolePrimaryActionButton
 import dev.mnascimentos.aureole.composable.actions.model.ActionRowParams
 import dev.mnascimentos.aureole.composable.sheets.model.ConfirmOverlayParams
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleEditOverlay
@@ -20,10 +22,10 @@ import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 
 /**
  * Edit overlay with an optional preview anchored above the sheet and a Cancel / confirm action row below it, the
- * filled button on the thumb side. Used by the editors that keep a draft until the user confirms (background,
- * color picker, folder form, quick button appearance). The confirm button runs `onPrimary` and closes; Cancel,
- * swiping down and tapping outside only close. [bottomExtra] sits above the action row, glued to it (a text field
- * that has to stay next to the keyboard).
+ * filled button on the thumb side (or the filled button alone, when `hasSecondary` is false). Used by the
+ * editors that keep a draft until the user confirms (background, color picker, folder form, quick button
+ * appearance). The confirm button runs `onPrimary` and closes; Cancel, swiping down and tapping outside only
+ * close. [bottomExtra] sits above the action row, glued to it (a text field that has to stay next to the keyboard).
  */
 @Composable
 fun AureoleConfirmOverlay(
@@ -49,18 +51,29 @@ fun AureoleConfirmOverlay(
             previewContent = preview,
             bottomBarContent = {
                 bottomExtra?.invoke(this)
-                AureoleActionRow(
-                    params = ActionRowParams(
-                        primaryLabel = params.primaryLabel,
-                        onPrimary = {
+                if (params.hasSecondary) {
+                    AureoleActionRow(
+                        params = ActionRowParams(
+                            primaryLabel = params.primaryLabel,
+                            onPrimary = {
+                                params.onPrimary()
+                                overlayState.internalVisible = false
+                            },
+                            secondaryLabel = cancelLabel,
+                            onSecondary = { overlayState.internalVisible = false }
+                        ),
+                        isLeftHanded = params.isLeftHanded
+                    )
+                } else {
+                    AureolePrimaryActionButton(
+                        label = params.primaryLabel,
+                        onClick = {
                             params.onPrimary()
                             overlayState.internalVisible = false
                         },
-                        secondaryLabel = cancelLabel,
-                        onSecondary = { overlayState.internalVisible = false }
-                    ),
-                    isLeftHanded = params.isLeftHanded
-                )
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                }
             },
             sheetContent = content
         )

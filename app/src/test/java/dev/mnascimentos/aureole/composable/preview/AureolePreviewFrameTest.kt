@@ -17,14 +17,14 @@ class AureolePreviewFrameTest {
     val composeTestRule = createComposeRule()
 
     @Test
-    fun `when rendering, should upper-case the label and show the content`() {
+    fun `when rendering, should show only the content and no label`() {
         composeTestRule.setContent {
             AureoleLauncherTheme {
-                AureolePreviewFrame(label = "Live preview") { AureoleText(text = "Content") }
+                AureolePreviewFrame { AureoleText(text = "Content") }
             }
         }
 
-        composeTestRule.onNodeWithText("LIVE PREVIEW").assertIsDisplayed()
         composeTestRule.onNodeWithText("Content").assertIsDisplayed()
+        composeTestRule.onNodeWithText("LIVE PREVIEW").assertDoesNotExist()
     }
 }

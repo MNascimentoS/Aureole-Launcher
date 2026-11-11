@@ -73,4 +73,5 @@ data class SettingsScreenActions(
     val onSearchIconPositionSelected: (String) -> Unit = {},
     val onSelectWallpaperScaleType: (String) -> Unit = {},
     val onApplyCardsGlass: (CardsGlassDraft) -> Unit = {},
+    val onCardsGlassClosed: (CardsGlassDraft) -> Unit = {},
 )

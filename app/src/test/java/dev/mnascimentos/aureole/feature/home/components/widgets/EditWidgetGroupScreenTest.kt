@@ -1,7 +1,10 @@
 package dev.mnascimentos.aureole.feature.home.components.widgets
 
 import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.assertIsEnabled
+import androidx.compose.ui.test.assertIsNotEnabled
 import androidx.compose.ui.test.junit4.v2.createComposeRule
+import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import dev.mnascimentos.aureole.core.data.model.LauncherItemState
@@ -125,10 +128,10 @@ class EditWidgetGroupScreenTest {
     }
 
     @Test
-    fun `when rendering, should show the live preview label and the Add widget and Save buttons`() {
+    fun `when rendering, should show the Add widget and Save buttons and no preview label`() {
         setScreen(isIndicatorEnabled = true, onToggle = {}, onAdd = {})
 
-        composeTestRule.onNodeWithText("LIVE PREVIEW").assertIsDisplayed()
+        composeTestRule.onNodeWithText("LIVE PREVIEW").assertDoesNotExist()
         composeTestRule.onNodeWithText("Add Widget").assertIsDisplayed()
         composeTestRule.onNodeWithText("Save").assertIsDisplayed()
         composeTestRule.onNodeWithText("•••").assertDoesNotExist()
@@ -152,5 +155,52 @@ class EditWidgetGroupScreenTest {
         composeTestRule.onNodeWithText("Show widget indicator").performClick()
 
         assertEquals(1, toggled)
+    }
+
+    private fun setStack(widgets: List<Int>, onReorder: (List<Int>) -> Unit) {
+        composeTestRule.setContent {
+            AureoleLauncherTheme {
+                EditWidgetGroupScreen(
+                    params = EditWidgetGroupParams(item = LauncherItemState(id = "item_1"), widgets = widgets),
+                    actions = EditWidgetGroupActions(
+                        onToggleIndicator = {},
+                        onRemoveWidget = {},
+                        onAddWidgetClick = {},
+                        onDismissRequest = {},
+                        onReorderWidgets = onReorder
+                    )
+                )
+            }
+        }
+        advanceAnimation()
+    }
+
+    @Test
+    fun `when the stack has three widgets, should show the position and disable Move earlier on the first`() {
+        setStack(listOf(1, 2, 3), onReorder = {})
+
+        composeTestRule.onNodeWithText("1 of 3").assertIsDisplayed()
+        composeTestRule.onNodeWithContentDescription("Move Widget earlier").assertIsNotEnabled()
+        composeTestRule.onNodeWithContentDescription("Move Widget later").assertIsEnabled()
+    }
+
+    @Test
+    fun `when tapping Move later, should reorder the stack and report the new order`() {
+        var order: List<Int>? = null
+        setStack(listOf(1, 2, 3), onReorder = { order = it })
+
+        composeTestRule.onNodeWithContentDescription("Move Widget later").performClick()
+        advanceAnimation()
+
+        assertEquals(listOf(2, 1, 3), order)
+        composeTestRule.onNodeWithText("2 of 3").assertIsDisplayed()
+    }
+
+    @Test
+    fun `when the stack has one widget, should disable both Move buttons`() {
+        setStack(listOf(1), onReorder = {})
+
+        composeTestRule.onNodeWithContentDescription("Move Widget earlier").assertIsNotEnabled()
+        composeTestRule.onNodeWithContentDescription("Move Widget later").assertIsNotEnabled()
     }
 }

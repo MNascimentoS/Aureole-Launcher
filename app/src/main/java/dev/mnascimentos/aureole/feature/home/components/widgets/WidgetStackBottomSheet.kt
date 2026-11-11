@@ -32,10 +32,10 @@ import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
 import dev.mnascimentos.aureole.core.designsystem.icons.Delete
 import dev.mnascimentos.aureole.core.designsystem.icons.Dots
-import dev.mnascimentos.aureole.core.designsystem.icons.Edit
-import dev.mnascimentos.aureole.core.designsystem.icons.Info
 import dev.mnascimentos.aureole.core.designsystem.icons.Layout
 import dev.mnascimentos.aureole.core.designsystem.icons.Logo
+import dev.mnascimentos.aureole.core.designsystem.icons.MultipleView
+import dev.mnascimentos.aureole.core.designsystem.icons.Settings
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
@@ -99,7 +99,7 @@ private fun WidgetStackMenuItems(
             AureolePopupMenuItem(
                 title = stringResource(R.string.home_widget_app_settings),
                 params = AureolePopupMenuItemParams(
-                    icon = { m -> AureoleDS.icons.Info(m) }
+                    icon = { m -> AureoleDS.icons.Settings(m) }
                 ),
                 onClick = {
                     IntentUtils.openAppInfo(context, widgetAppPackage)
@@ -111,7 +111,7 @@ private fun WidgetStackMenuItems(
         AureolePopupMenuItem(
             title = stringResource(R.string.home_widget_resize_group),
             params = AureolePopupMenuItemParams(
-                icon = { m -> AureoleDS.icons.Edit(m) }
+                icon = { m -> AureoleDS.icons.MultipleView(m) }
             ),
             onClick = {
                 params.onEditStack()

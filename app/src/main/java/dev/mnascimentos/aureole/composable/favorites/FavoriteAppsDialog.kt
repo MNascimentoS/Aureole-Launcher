@@ -88,7 +88,7 @@ fun FavoriteAppsDialog(
                 onBackPress = { currentMode.backTarget()?.let { currentMode = it } ?: run { isVisible = false } }
             ),
             previewContent = {
-                AureolePreviewFrame(label = stringResource(R.string.home_favorites_preview_on_home)) {
+                AureolePreviewFrame {
                     FavoriteAppsPreviewContent(previewFavoriteApps = previewFavoriteApps, rowConfig = config.rowConfig)
                 }
             },

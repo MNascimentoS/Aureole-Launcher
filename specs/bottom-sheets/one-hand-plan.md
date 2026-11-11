@@ -1,41 +1,38 @@
 # Bottom sheets para uma mão: plano de desenvolvimento
 
 **Base:** `release/0.9.20` · **Protótipo:** `specs/bottom-sheets/one-hand-prototype.html` (31 telas)
-**Referências:** `ref/telas/<tela>.png` (todas as telas; `-canhoto` nas 6 principais), `ref/paleta.png`, `ref/fonte.png`
+**Referências:** `ref/telas/<tela>.png` (todas as telas; `-canhoto` nas 6 principais; `appmenu`, `favoritos-*` atualizadas em 11/11), `ref/paleta.png`, `ref/fonte.png`
 **Como rodar:** `/fase <n>` · progresso em `/estado` e `progress.md` (as notas de cada fase estão lá). Commit e push ficam com o Mateus.
 
 ## Onde estamos (11/11)
 
-As fases 1 a 5 já rodaram: gates passando (detekt em 5 issues, 1285 testes, cobertura, screenshot e `assembleDebug`) e visual **quase** ou **igual**. Falta o teste no aparelho de todas elas.
-Depois disso o Mateus testou no aparelho e pediu ajustes (fase 6). As pendências que as próprias fases deixaram viraram a fase 7. Restam também diálogos e acabamento.
+As fases 1 a 5 rodaram (gates passando, visual **quase** ou **igual**) e você já resolveu, fora das fases (ver `progress.md`): nível de vidro na Home (`GlassBlur.kt`), desfazer do fundo (`system_wallpaper_undo.jpg`), Favorito no menu do app dentro de container e pasta, e o crash do menu do app em listas com rolagem (`AureoleOverlayWindow`). O que falta: ajustes do teste no aparelho (6), a regra nova de favoritos (6b), os ícones de pasta (6c), as dívidas restantes (7), diálogos (8) e acabamento (9).
 
 ## Resumo
 
 | # | Fase | Modelo | Tempo (agente + gates) | Tokens | Estado |
 |---|---|---|---|---|---|
-| 1 | Base da sheet: faixa de gesto invisível, `ActionRow`, espelho | Opus | 1,5–2,5 h | 100–160k | feita |
-| 2 | Lista reordenável, ✕, "+", desfazer | Opus | 2,5–3,5 h | 120–180k | feita |
-| 3 | Menus e popup da pasta | Sonnet | 2–3 h | 100–150k | feita |
-| 4 | Editores restantes, cartões e vidro numa sheet | Sonnet | 3–4,5 h | 180–260k | feita |
-| 5 | Adicionar container e opções de posição | Sonnet | 1,5–2,5 h | 80–130k | feita |
-| 6 | **Ajustes do teste no aparelho:** prévia sem rótulo, ícones nas linhas, cards da pilha, mover por botões | `sheet-ui` (Sonnet) | 2–3 h | 120–180k | a fazer |
-| 6+ | (se aprovado) ícones de pasta do Material Symbols | `sheet-chores` (Haiku) + `sheet-ui` | 1,5–2,5 h | 80–120k | decidir |
-| 7 | **Lacunas e dívidas das fases 1 a 5** | `sheet-ui` (Sonnet), autoscroll com `sheet-gestures` (Opus) | 3,5–5,5 h | 200–300k | a fazer |
+| 1 a 5 | Base, reordenável, menus, editores, container e posições | Opus / Sonnet | — | — | feitas |
+| — | Vidro na Home, desfazer do fundo, Favorito em container/pasta, crash do menu | você | — | — | feitas (conferir no aparelho) |
+| 6 | **Ajustes do teste no aparelho:** prévia sem rótulo, ícones nas linhas, cards da pilha, mover por botões, Cartões e vidro só com "Pronto", menu do app sem "Pasta"/"Ícone" | `sheet-ui` (Sonnet) | 2–3 h | 120–180k | a fazer |
+| 6b | **Favoritos sem duplicação:** sem favoritos = todos os apps; tela de gerenciar com alça de arrastar clara | `sheet-ui` (Sonnet) | 1,5–2,5 h | 80–130k | a fazer |
+| 6c | **Ícones de pasta** (aprovado; arquivos prontos em `folder-icons/`) | `sheet-chores` (Haiku) + `sheet-ui` | 1–2 h | 60–100k | a fazer |
+| 7 | **Dívidas restantes das fases 1 a 5** | `sheet-ui` (Sonnet), autoscroll com `sheet-gestures` (Opus) | 2,5–4 h | 150–240k | a fazer |
 | 8 | Diálogos e avisos | `sheet-ui` (Sonnet) | 1,5–2,5 h | 80–130k | a fazer |
 | 9 | Acabamento: strings, previews, screenshots, varredura | `sheet-chores` (Haiku) | 1–1,5 h | 40–80k | a fazer |
 | — | Revisão visual ao fim de cada fase | `visual-reviewer` (Opus) | 10–20 min | 30–50k por fase | |
 
-**Falta:** cerca de 8–12,5 h de trabalho do agente (mais 1,5–2,5 h se aprovar os ícones de pasta) e 0,45–0,7 M de tokens. Calendário realista: 1 semana, a maior parte do tempo no seu teste no aparelho.
-**Ordem:** 6 → 7 → 8 → 9. A 6 e a 7 vêm antes da 8 porque mexem em componentes que os diálogos reaproveitam (`AureolePreviewFrame`, `AureoleMenuSheet`, linhas de switch).
+**Falta:** cerca de 9,5–15,5 h de trabalho do agente e 0,55–0,85 M de tokens. Calendário realista: 1 semana, a maior parte no seu teste no aparelho.
+**Ordem:** 6 → 6b → 6c → 7 → 8 → 9. A 6 e a 6b vêm antes da 8 porque mexem em componentes que os diálogos reaproveitam (`AureolePreviewFrame`, `AureoleMenuSheet`, linhas de switch). Rode `/fase 6b` e `/fase 6c` normalmente (o argumento é só o nome da fase).
 
-### Decisões que dependem do Mateus
+### Decisões já tomadas (11/11)
 
-1. **Menu do app, lado da mão:** o texto do protótipo manda a ação mais usada para o lado do polegar; a imagem `appmenu.png` destra mostra o oposto. A fase 3 seguiu o texto. Escolher uma.
-2. **Favoritos no canhoto:** os cabeçalhos também espelham ("Favorites" à direita). Manter ou não.
-3. **Seletor de cor:** matiz em barra (protótipo) ou em círculo (referência antiga). Sugestão: barra, mais fácil com o polegar.
-4. **Cartões e vidro:** o protótipo usa "Aplicar/Cancelar" ou só "Pronto"? Hoje o código tem Aplicar/Cancelar.
-5. **Ícones de pasta:** aprovar a proposta do Material Symbols (abaixo).
-6. **"Pasta" e "Ícone" na fileira do app:** o código não tem essas ações. Sugestão: tirar do protótipo.
+1. **Menu do app:** a ação mais usada fica no lado do polegar (como a fase 3 fez). Vale o texto do protótipo, não a `appmenu.png` antiga.
+2. **Favoritos no canhoto:** cabeçalhos espelhados, como está.
+3. **Seletor de cor:** matiz em **barra** (já é o que o código tem).
+4. **Cartões e vidro:** só **"Pronto"** (o código hoje tem Aplicar/Cancelar: trocar na fase 6).
+5. **Ícones de pasta:** aprovados; os arquivos estão prontos (fase 6c).
+6. **Menu do app:** sem "Pasta" e "Ícone" (o protótipo já foi atualizado).
 
 ### Diferenças aceitas em relação ao protótipo
 
@@ -53,6 +50,8 @@ Depois disso o Mateus testou no aparelho e pediu ajustes (fase 6). As pendência
 - Prévia sem rótulo: sem "PRÉVIA", "PRÉVIA AO VIVO", "LIVE PREVIEW" nem "PREVIEW" em nenhuma tela (decisão de 11/11, vale mais que as referências antigas). A prévia flutua acima da sheet sem texto.
 - Linhas de menu com ícone numa coluna fixa e centralizada, como no app hoje (Aparência, Comportamento, Gerenciar Itens, Configurações do App…), mantendo subtítulo e seta. A linha "Mostrar indicador de posição" também ganha o ícone de pontos.
 - Pilha de widgets: cards da prévia maiores (116 x 96 dp) para aparecer 2,5 cards e indicar que dá para rolar; reordenar além de arrastar: botões ‹ › "Mover <widget> · 2 de 3" na sheet, ao alcance do polegar (com desfazer), e `customActions` de acessibilidade.
+- Favoritos: **sem favoritos configurados, a Home mostra todos os apps**; não existe mais o switch "Mostrar todos os apps na Home" nem "Ativar todos". Tela de gerenciar com alça de arrastar visível, número da posição e dica "Segure e arraste o botão para ordenar" (decisão de 11/11).
+- Menu do app: ações do rodapé são Favorito, Info e Desinstalar (segurar 1 s). Sem "Pasta" e "Ícone".
 - Paleta e Fonte: grade de chips, mini-home só com relógio, data e 4 apps (do lado oposto ao polegar), Aplicar/Cancelar do lado da mão. **Já implementadas.**
 
 ### Fora do escopo (decidir depois)
@@ -91,31 +90,63 @@ Detalhes, gates, veredito visual e o que ficou faltando de cada uma estão em `p
 3. **Cards da pilha de widgets:** largura calculada, não fixa: `cardWidth = (larguraDaFileira − margens − 2 · gap) / 2,5`, de modo que apareçam 2 cards e meio e o terceiro fique cortado para indicar rolagem. Altura de cerca de 0,82 da largura. Função pura com teste. O "+" fica depois dos cards e não conta.
 4. **Reordenar sem arrastar:** linha na sheet, ao alcance do polegar: "Mover **<widget>** · n de m" com botões ‹ › de 48 dp, desabilitados nos extremos, usando a mesma `ReorderMath` e o mesmo desfazer "Ordem alterada". Os `customActions` de mover já existem; manter.
 
+5. **Cartões e vidro só com "Pronto":** `CardsGlassBottomSheet` aplica na hora (prévia ao vivo) e fecha com um botão "Pronto" do lado da mão, no lugar de Aplicar/Cancelar. Referência: `ref/telas/cards.png`. Manter o desfazer (4 s) se a mudança precisar voltar.
+6. **Menu do app sem "Pasta" e "Ícone":** a fileira do rodapé fica com Favorito, Info e Desinstalar (segurar 1 s). Ref nova: `ref/telas/appmenu.png`.
+
 ### Pronto quando
 
 - [ ] Gates passam; screenshots regenerados e `visual-reviewer` **igual** ou **quase** contra as refs de `ref/telas/` (já sem rótulo e com ícones).
 - [ ] Teste no aparelho: 2,5 cards visíveis em telas de 360 e de 412 dp; botões ‹ › com o polegar.
 
-### 6+: ícones de pasta (decidir)
+---
 
-Hoje o `FolderIconRegistry` tem 26 chaves, mas só uns 20 ícones diferentes; várias caem no ícone errado (`lock` → olho riscado, `cart` → pasta, `play` → seta, `share` → menu, `warning` → info). Proposta:
-- **Fonte:** Material Symbols (Google Fonts Icons), Rounded, peso 400, Apache 2.0.
-- **Como trazer:** *File → New → Vector Asset → Clip Art* no Android Studio, ou SVGs de `google/material-design-icons` convertidos com o `download_and_convert_svgs.py` que já existe.
-- **Quantos:** 50 a 60 escolhidos, por categoria (trabalho, social, mídia, jogos, finanças, saúde, viagem, ferramentas).
-- **Onde:** `AureoleFolderIcons.kt` próprio (o `AureoleIcons.kt` não deve passar de 500 linhas). As chaves salvas continuam valendo; as que caem em ícone errado ganham o certo.
-- **Tela:** grade de 5 colunas com chips de categoria no rodapé; busca só se passar de 60 ícones.
-- **Evitar:** a dependência `material-icons-extended` (pesa no build e foge da regra de usar só `AureoleDS.icons`) e a fonte de ícones inteira.
+## Fase 6b: favoritos sem duplicação
+
+**Referências:** `ref/telas/favoritos-lista.png`, `favoritos-gerenciar.png`, `favoritos-sem-favoritos.png` · **Detalhes:** `specs/bottom-sheets/favoritos-gerenciar.md`
+**Já existe:** `FavoriteAppsDialog` (menu principal e gerenciar), `ReorderableColumn`, `AureoleSwitchRow`, desfazer "Remover todos".
+
+### Entrega
+
+1. **Regra:** `visibleApps(allApps, favorites) = if (favorites.isEmpty()) allApps else favorites`. Função pura com teste (vazio, 1 favorito, favorito que foi desinstalado). A Home e a lista usam só ela.
+2. **Remover duplicação:** apagar o switch "Mostrar todos os apps na Home" (flag `showAll`) e a ação "Ativar todos". Migração: se `showAll` estava ligado, limpar os favoritos salvos (comportamento igual); se estava desligado, manter os favoritos. Tirar as strings órfãs.
+3. **Menu principal:** subtítulo de "Gerenciar aplicativos e ordem" = "N favoritos, o resto fica oculto" ou "Sem favoritos: mostra todos os apps".
+4. **Tela de gerenciar:** dica "Segure e arraste o botão para ordenar" (só com 2+ favoritos); banner "Sem favoritos: a Home mostra todos os N apps" quando vazio; cada linha = número + ícone + nome + ✕ (40 dp) + **alça de 6 pontos** (44 x 38 dp, destaca ao arrastar) no lado da mão; "Remover todos" (com desfazer); seção "Outros aplicativos (N)" com botão "+" no ícone de cada app. Ações de acessibilidade "mover para cima/baixo".
+
+### Pronto quando
+
+- [ ] Gates passam; `visual-reviewer` **igual** ou **quase** nas 3 refs (destro e canhoto).
+- [ ] Teste no aparelho: limpar favoritos mostra todos os apps na Home; arrastar pela alça com o polegar; desfazer de "Remover todos".
 
 ---
 
-## Fase 7: lacunas e dívidas das fases 1 a 5
+## Fase 6c: ícones de pasta (aprovado)
 
-Saiu das seções "Ficou faltando" do `progress.md`. Ordem por impacto.
+**Arquivos prontos:** `specs/bottom-sheets/folder-icons/` (80 VectorDrawables `ic_folder_*.xml` do Material Symbols Rounded, Apache 2.0, em 8 categorias; `AureoleFolderIcons.kt`; `strings-folder-icons.xml`; `folder-icons-contact-sheet.png`; `README.md`).
 
-**Funcionalidade que ficou incompleta** (`sheet-ui`)
-- **Nível de vidro:** `hazeBlurLevel` só vale na prévia. Aplicar na Home: `Container`, `OpenedFolderLayouts`, `AureolePopup`, `ClockHeader`.
-- **Desfazer do fundo:** `WallpaperManager.clear()` do sistema continua sendo chamado e não é revertido; desfazer precisa restaurar o papel de parede.
-- **Menu do app dentro de container e pasta** aparece sem Favorito: ligar `onToggleFavorite` em `HomeScreenFolderOverlayComponents.kt`.
+### Entrega
+
+1. Copiar `drawable/ic_folder_*.xml` para `core/designsystem/.../res/drawable/` e o `AureoleFolderIcons.kt` para o pacote de ícones, ajustando `package` e `R`. Strings das categorias em EN e pt-BR. NOTICE da licença Apache 2.0.
+2. `FolderIconRegistry`: manter as 26 chaves antigas (compatibilidade com o que já foi salvo) e mapear as que caíam no ícone errado: `lock`→`lock`, `cart`→`shopping_cart`, `play`→`play_circle`, `share`→`share`, `warning`→`warning`; chave desconhecida → `folder`.
+3. Seletor da pasta: grade de 5 colunas com chips de categoria (`byCategory`), item marcado destacado; sem busca.
+4. Testes: toda chave antiga resolve para um drawable; `resFor(null)` é nulo; categorias cobrem os 80 ícones.
+
+### Pronto quando
+
+- [ ] Gates passam; `visual-reviewer` confere a grade contra `folder-icons-contact-sheet.png`.
+- [ ] `./gradlew assembleDebug` sem aumento relevante do APK (80 vetores pequenos).
+
+---
+
+## Fase 7: dívidas restantes das fases 1 a 5
+
+Saiu das seções "Ficou faltando" do `progress.md`, já sem o que você resolveu. Ordem por impacto.
+
+**Conferir no aparelho o que já foi feito** (não é código novo)
+- Desfazer do fundo: validar se `getWallpaperFile` funciona sem permissão de storage; se falhar, o desfazer devolve só a imagem.
+- Nível de vidro na Home: ajustar os fatores (Leve 0,4x, Máx. 1,6x são palpite).
+- Menu do app em `AureoleOverlayWindow`: fechar pelo botão voltar e por arrastar, insets, "Desinstalar" por segurar, engrenagem e o menu sem o blur do Haze.
+
+**Funcionalidade que falta** (`sheet-ui`)
 - **Data da prévia do relógio** com idiomas misturados ("Wednesday, 31 de December"): usar o locale do app.
 - **Seletor de cor e de ícones** abertos pela aparência do botão rápido ficam empilhados (dois scrims): um só.
 
@@ -128,14 +159,15 @@ Saiu das seções "Ficou faltando" do `progress.md`. Ordem por impacto.
 - Tirar strings órfãs (`home_app_menu_uninstall`, `home_app_menu_add_to_favorites`, `home_app_menu_remove_from_favorites`, `home_folder_opened_add_apps`, `home_folder_opened_edit`, `home_grid_config_title`) — `sheet-chores`.
 
 **Telas que ainda diferem do protótipo** (`sheet-ui`)
-- **Relógio:** títulos de seção em versalete, estilo em 3 cartões no lugar do dropdown, alinhamento em segmented, divisória antes das abas e "Restaurar" neutro (hoje vermelho e cortado em "Reset Defau…"). Sem rótulo de prévia.
+- **Relógio:** títulos de seção em versalete, estilo em 3 cartões no lugar do dropdown, alinhamento em segmented, divisória antes das abas e "Restaurar" neutro (hoje vermelho e cortado em "Reset Defau…").
 - **Personalizar:** seção "AJUSTAR" com 3 botões e "ADICIONAR À HOME" em grade de 4 colunas com ✓ e estado esmaecido.
 - **Formulário da pasta:** altura da sheet acima da ref (~47%); tirar o tile "letra" da grade.
 - **Container:** prévia sem a moldura tracejada.
 - **Fundo:** mini-home alinha os favoritos ao lado do polegar no canhoto.
 - **Opções de posição:** fechar com os 300 ms de animação; título como na ref.
-- **Cartões e vidro:** botões conforme a decisão 4.
-- **Menu do app:** lado da ação mais usada, conforme a decisão 1; sem "Pasta" e "Ícone" na fileira (decisão 6).
+- **Menu do botão rápido:** linhas que abrem seletores em vez de grades inline.
+
+**Fora do código (só se sobrar tempo):** botões "Pasta" e "Ícone" por app seriam features novas (seletor de pasta de destino e troca de ícone por app); ficam fora deste plano.
 
 **Pronto quando:** gates + visual + checklist do aparelho abaixo.
 
@@ -147,6 +179,7 @@ Saiu das seções "Ficou faltando" do `progress.md`. Ordem por impacto.
 - Cartões e vidro, opacidade e blur ao vivo; desfazer do fundo.
 - Paleta e Fonte: Aplicar/Cancelar em destro e canhoto.
 - Menus do app, da pasta e do item em destro e canhoto.
+- Favoritos: limpar a lista mostra todos os apps na Home; arrastar pela alça; ícones de pasta na grade nova.
 
 ---
 

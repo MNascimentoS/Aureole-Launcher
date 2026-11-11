@@ -3,6 +3,7 @@ package dev.mnascimentos.aureole.feature.settings
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import com.android.tools.screenshot.PreviewTest
+import dev.mnascimentos.aureole.core.designsystem.model.GlassLevel
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.model.LocalHomeUiState
@@ -11,7 +12,6 @@ import dev.mnascimentos.aureole.feature.settings.components.CardsGlassBottomShee
 import dev.mnascimentos.aureole.feature.settings.model.BlurOpacity
 import dev.mnascimentos.aureole.feature.settings.model.CardsGlassDraft
 import dev.mnascimentos.aureole.feature.settings.model.CardsGlassParams
-import dev.mnascimentos.aureole.core.designsystem.model.GlassLevel
 
 private const val CARD_RADIUS_DP = 16
 
@@ -22,7 +22,7 @@ private fun CardsGlassCase(draft: CardsGlassDraft, isLeftHanded: Boolean) {
             CardsGlassBottomSheet(
                 params = CardsGlassParams(
                     initial = draft,
-                    onApply = {},
+                    onChange = {},
                     onDismissRequest = {},
                     isLeftHanded = isLeftHanded
                 )

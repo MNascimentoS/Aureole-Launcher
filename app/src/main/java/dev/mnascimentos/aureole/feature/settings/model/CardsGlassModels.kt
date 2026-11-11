@@ -49,15 +49,15 @@ data class CardsGlassDraft(
 /**
  * Parameters of `CardsGlassBottomSheet`.
  *
- * @property initial Values currently applied; the draft starts from them.
- * @property onApply Called with the draft when the user taps Apply.
- * @property onDismissRequest Called when the sheet closes, whichever way it closed.
- * @property isLeftHanded Puts Apply under the left thumb.
+ * @property initial Values applied when the sheet opened; kept as the "before" of the undo.
+ * @property onChange Called with the draft on every tap: the change applies on the spot.
+ * @property onDismissRequest Called when the sheet closes, whichever way it closed, with the values it opened with.
+ * @property isLeftHanded Puts Done under the left thumb.
  */
 data class CardsGlassParams(
     val initial: CardsGlassDraft,
-    val onApply: (CardsGlassDraft) -> Unit,
-    val onDismissRequest: () -> Unit,
+    val onChange: (CardsGlassDraft) -> Unit,
+    val onDismissRequest: (CardsGlassDraft) -> Unit,
     val isLeftHanded: Boolean = false
 )
 

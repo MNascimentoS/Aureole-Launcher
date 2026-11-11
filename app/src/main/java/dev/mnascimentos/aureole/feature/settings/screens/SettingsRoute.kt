@@ -9,6 +9,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import dev.mnascimentos.aureole.feature.settings.SettingsViewModel
 import dev.mnascimentos.aureole.feature.settings.extensions.SettingsIntentUtils
+import dev.mnascimentos.aureole.feature.settings.extensions.finishCardsGlass
 import dev.mnascimentos.aureole.feature.settings.extensions.onUndo
 import dev.mnascimentos.aureole.feature.settings.extensions.onUndoExpired
 import dev.mnascimentos.aureole.feature.settings.extensions.performFactoryReset
@@ -85,6 +86,7 @@ private fun buildSettingsScreenActions(
         onApplyCardsGlass = { draft ->
             viewModel.setSettingValue(SettingValue.CardsGlass(draft))
         },
+        onCardsGlassClosed = viewModel::finishCardsGlass,
         onHeaderOffsetChanged = viewModel::setHeaderOffsetPercent,
         onConfirmResetGrid = { viewModel.resetGridLayout() },
     )

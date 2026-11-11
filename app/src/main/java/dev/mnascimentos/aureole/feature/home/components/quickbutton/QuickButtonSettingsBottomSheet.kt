@@ -12,6 +12,7 @@ import dev.mnascimentos.aureole.composable.menu.model.MenuSheetParams
 import dev.mnascimentos.aureole.core.data.model.QuickButtonModel
 import dev.mnascimentos.aureole.core.data.model.ShortcutType
 import dev.mnascimentos.aureole.core.designsystem.icons.Click
+import dev.mnascimentos.aureole.core.designsystem.icons.ColorFill
 import dev.mnascimentos.aureole.core.designsystem.icons.Delete
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
@@ -56,6 +57,7 @@ fun QuickButtonSettingsBottomSheet(
                 title = stringResource(R.string.home_quickbutton_click_shortcut),
                 subtitle = clickSubtitle,
                 onClick = { actions.onOpenShortcutSelection("click") },
+                icon = { m, c -> AureoleDS.icons.Click(modifier = m, tint = c) },
                 showChevron = true
             )
         )
@@ -63,6 +65,7 @@ fun QuickButtonSettingsBottomSheet(
             MenuRowParams(
                 title = stringResource(R.string.home_quickbutton_appearance),
                 onClick = { actions.onOpenQuickButtonAppearance() },
+                icon = { m, c -> AureoleDS.icons.ColorFill(modifier = m, tint = c) },
                 showChevron = true
             )
         )

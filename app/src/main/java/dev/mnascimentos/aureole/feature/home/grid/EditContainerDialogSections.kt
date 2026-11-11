@@ -18,6 +18,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.semantics
@@ -30,8 +31,11 @@ import dev.mnascimentos.aureole.core.data.model.LauncherItemType
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
 import dev.mnascimentos.aureole.core.designsystem.icons.Add
+import dev.mnascimentos.aureole.core.designsystem.icons.Calendar
+import dev.mnascimentos.aureole.core.designsystem.icons.Click
 import dev.mnascimentos.aureole.core.designsystem.icons.Delete
-import dev.mnascimentos.aureole.core.designsystem.icons.Edit
+import dev.mnascimentos.aureole.core.designsystem.icons.Layout
+import dev.mnascimentos.aureole.core.designsystem.icons.Star
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
@@ -88,10 +92,21 @@ internal fun EditDialogTypeActionSection(
         MenuRowParams(
             title = text,
             onClick = onClick,
-            icon = { m, c -> AureoleDS.icons.Edit(modifier = m, tint = c) },
+            icon = { m, c -> TypeActionIcon(type = item.type, modifier = m, tint = c) },
             showChevron = true
         )
     )
+}
+
+/** Icon of the type specific row: Layout for the side panel, Click, Star and Calendar. */
+@Composable
+private fun TypeActionIcon(type: LauncherItemType?, modifier: Modifier, tint: Color) {
+    when (type) {
+        LauncherItemType.CLOCK -> AureoleDS.icons.Calendar(modifier = modifier, tint = tint)
+        LauncherItemType.APPS_LIST -> AureoleDS.icons.Star(modifier = modifier, tint = tint)
+        LauncherItemType.QUICK_BUTTON -> AureoleDS.icons.Click(modifier = modifier, tint = tint)
+        else -> AureoleDS.icons.Layout(modifier = modifier, tint = tint)
+    }
 }
 
 @Composable

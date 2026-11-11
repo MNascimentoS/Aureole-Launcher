@@ -9,12 +9,12 @@ import dev.mnascimentos.aureole.composable.menu.AureoleMenuSectionLabel
 import dev.mnascimentos.aureole.composable.menu.AureoleMenuSheet
 import dev.mnascimentos.aureole.composable.menu.model.MenuRowParams
 import dev.mnascimentos.aureole.composable.menu.model.MenuSheetParams
+import dev.mnascimentos.aureole.core.designsystem.icons.AllApps
 import dev.mnascimentos.aureole.core.designsystem.icons.Delete
 import dev.mnascimentos.aureole.core.designsystem.icons.Edit
-import dev.mnascimentos.aureole.core.designsystem.icons.Favorite
 import dev.mnascimentos.aureole.core.designsystem.icons.Folder
-import dev.mnascimentos.aureole.core.designsystem.icons.Settings
 import dev.mnascimentos.aureole.core.designsystem.icons.Smile
+import dev.mnascimentos.aureole.core.designsystem.icons.VerticalContainer
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
@@ -59,7 +59,7 @@ private fun ContainerFolderMenuItems(params: ContainerFolderBottomSheetParams) {
         MenuRowParams(
             title = stringResource(R.string.home_folder_container_settings),
             onClick = params.onOpenContainerSettings,
-            icon = { m, c -> AureoleDS.icons.Settings(modifier = m, tint = c) },
+            icon = { m, c -> AureoleDS.icons.VerticalContainer(modifier = m, tint = c) },
             showChevron = true
         )
     )
@@ -83,7 +83,7 @@ private fun ContainerFolderMenuItems(params: ContainerFolderBottomSheetParams) {
         MenuRowParams(
             title = stringResource(R.string.home_folder_edit_shortcuts),
             onClick = params.onEditShortcuts,
-            icon = { m, c -> AureoleDS.icons.Favorite(modifier = m, tint = c) },
+            icon = { m, c -> AureoleDS.icons.AllApps(modifier = m, tint = c) },
             showChevron = true
         )
     )

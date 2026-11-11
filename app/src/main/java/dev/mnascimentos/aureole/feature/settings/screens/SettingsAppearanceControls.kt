@@ -153,8 +153,11 @@ internal fun AppearanceDialogs(
         CardsGlassBottomSheet(
             params = CardsGlassParams(
                 initial = uiState.toCardsGlassDraft(),
-                onApply = actions.onApplyCardsGlass,
-                onDismissRequest = onDismissDialog,
+                onChange = actions.onApplyCardsGlass,
+                onDismissRequest = { before ->
+                    actions.onCardsGlassClosed(before)
+                    onDismissDialog()
+                },
                 isLeftHanded = uiState.isLeftHandedMode
             )
         )

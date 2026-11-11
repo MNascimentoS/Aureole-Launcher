@@ -576,7 +576,7 @@ const SHEETS = {
     name: 'Menu do app', sub: 'segurar um app',
     title: 'Menu do app: ações na altura do polegar',
     today: 'Hoje: ações em lista e o botão de ajustes no canto superior direito, inalcançável para canhotos.',
-    points: ['Favoritar, Pasta, Info e Ícone viram botões redondos de 50 dp na última fileira.', 'Favoritar é reversível: em vez de confirmar, mostra “Desfazer” por 4 s.', 'Desinstalar não tem volta: fica no lado oposto ao polegar e pede segurar 1 s.']
+    points: ['Favoritar e Info viram botões redondos de 50 dp na última fileira, ao lado de Desinstalar.', 'Favoritar é reversível: em vez de confirmar, mostra “Desfazer” por 4 s.', 'Desinstalar não tem volta: fica no lado oposto ao polegar e pede segurar 1 s.']
   },
   clock: {
     name: 'Relógio', sub: 'overlay com preview',
@@ -659,9 +659,7 @@ const RENDER = {
       </div>`,
       foot: `<div class="qa">
           <button class="${state.fav ? 'on' : ''}" id="favBtn" aria-pressed="${state.fav}"><i>${ic('favorite')}</i>Favorito</button>
-          <button><i>${ic('folder')}</i>Pasta</button>
           <button><i>${ic('info')}</i>Info</button>
-          <button><i>${ic('smile')}</i>Ícone</button>
           <button class="danger hold" id="uninstall"><i>${ic('delete')}</i>Segure p/ desinstalar</button>
         </div>`
     };

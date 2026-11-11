@@ -7,6 +7,7 @@ import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import dev.mnascimentos.aureole.composable.menu.model.MenuRowParams
+import dev.mnascimentos.aureole.composable.menu.model.SwitchRowParams
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import org.junit.Assert.assertEquals
 import org.junit.Rule
@@ -25,7 +26,7 @@ class AureoleSwitchRowTest {
         val values = mutableListOf<Boolean>()
         composeTestRule.setContent {
             AureoleLauncherTheme {
-                AureoleSwitchRow(title = "Option", checked = false, onCheckedChange = { values += it })
+                AureoleSwitchRow(SwitchRowParams(title = "Option", checked = false, onCheckedChange = { values += it }))
             }
         }
 
@@ -38,7 +39,9 @@ class AureoleSwitchRowTest {
     fun `when checked with a description, should show both texts and the on state`() {
         composeTestRule.setContent {
             AureoleLauncherTheme {
-                AureoleSwitchRow(title = "Option", checked = true, onCheckedChange = {}, description = "Details")
+                AureoleSwitchRow(
+                    SwitchRowParams(title = "Option", checked = true, onCheckedChange = {}, description = "Details")
+                )
             }
         }
 

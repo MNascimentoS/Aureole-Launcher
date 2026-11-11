@@ -12,6 +12,12 @@ import dev.mnascimentos.aureole.composable.favorites.model.FavoriteAppsScreenMod
 import dev.mnascimentos.aureole.composable.menu.AureoleMenuRow
 import dev.mnascimentos.aureole.composable.menu.AureoleSwitchRow
 import dev.mnascimentos.aureole.composable.menu.model.MenuRowParams
+import dev.mnascimentos.aureole.composable.menu.model.SwitchRowParams
+import dev.mnascimentos.aureole.core.designsystem.icons.AllApps
+import dev.mnascimentos.aureole.core.designsystem.icons.Click
+import dev.mnascimentos.aureole.core.designsystem.icons.ColorFill
+import dev.mnascimentos.aureole.core.designsystem.icons.Favorite
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 
@@ -28,15 +34,19 @@ internal fun FavoriteAppsMainContent(
 ) {
     Column(modifier = modifier) {
         AureoleSwitchRow(
-            title = stringResource(R.string.home_favorites_show_all_apps),
-            description = stringResource(R.string.home_favorites_show_all_apps_desc),
-            checked = config.showAllAppsOnHome,
-            onCheckedChange = { actions.onToggleShowAllAppsOnHome() }
+            SwitchRowParams(
+                title = stringResource(R.string.home_favorites_show_all_apps),
+                description = stringResource(R.string.home_favorites_show_all_apps_desc),
+                checked = config.showAllAppsOnHome,
+                onCheckedChange = { actions.onToggleShowAllAppsOnHome() },
+                icon = { m, c -> AureoleDS.icons.AllApps(modifier = m, tint = c) }
+            )
         )
         AureoleMenuRow(
             MenuRowParams(
                 title = stringResource(R.string.home_favorites_edit_shortcuts),
                 onClick = { onModeChange(FavoriteAppsScreenMode.EDIT_SHORTCUTS) },
+                icon = { m, c -> AureoleDS.icons.Click(modifier = m, tint = c) },
                 showChevron = true
             )
         )
@@ -45,6 +55,7 @@ internal fun FavoriteAppsMainContent(
                 title = stringResource(R.string.home_container_edit_appearance),
                 subtitle = stringResource(R.string.home_favorites_appearance_desc),
                 onClick = { onModeChange(FavoriteAppsScreenMode.APPEARANCE) },
+                icon = { m, c -> AureoleDS.icons.ColorFill(modifier = m, tint = c) },
                 showChevron = true
             )
         )
@@ -57,6 +68,7 @@ internal fun FavoriteAppsMainContent(
                     config.favoriteAppPackages.size
                 ),
                 onClick = { onModeChange(FavoriteAppsScreenMode.MANAGE) },
+                icon = { m, c -> AureoleDS.icons.Favorite(modifier = m, tint = c) },
                 showChevron = true
             )
         )
@@ -87,10 +99,12 @@ internal fun FavoriteAppsAppearanceContent(
 ) {
     Column(modifier = modifier) {
         AureoleSwitchRow(
-            title = stringResource(R.string.home_favorites_show_all_apps),
-            description = stringResource(R.string.home_favorites_show_all_apps_desc),
-            checked = config.showAllAppsOnHome,
-            onCheckedChange = { actions.onToggleShowAllAppsOnHome() }
+            SwitchRowParams(
+                title = stringResource(R.string.home_favorites_show_all_apps),
+                description = stringResource(R.string.home_favorites_show_all_apps_desc),
+                checked = config.showAllAppsOnHome,
+                onCheckedChange = { actions.onToggleShowAllAppsOnHome() }
+            )
         )
     }
 }

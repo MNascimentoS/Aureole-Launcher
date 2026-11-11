@@ -62,7 +62,6 @@ fun FolderFormDialog(
         modifier = modifier,
         preview = {
             AureolePreviewFrame(
-                label = stringResource(R.string.home_folder_form_preview),
                 modifier = Modifier.align(Alignment.Center)
             ) {
                 FolderIconPreview(

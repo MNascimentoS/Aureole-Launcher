@@ -189,7 +189,7 @@ class EditContainerScreenTest {
         var dismissed = false
         setScreen(onSave = { saved = it }, onDismiss = { dismissed = true })
 
-        composeTestRule.onNodeWithText("LIVE PREVIEW").assertIsDisplayed()
+        composeTestRule.onNodeWithText("LIVE PREVIEW").assertDoesNotExist()
         composeTestRule.onNodeWithText("Save").performClick()
         composeTestRule.mainClock.advanceTimeBy(ANIMATION_MS)
         composeTestRule.waitForIdle()

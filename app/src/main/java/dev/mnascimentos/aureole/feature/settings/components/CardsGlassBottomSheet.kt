@@ -50,16 +50,17 @@ private const val CHIP_INACTIVE_ALPHA = 0.5f
 
 /**
  * "Cards and glass" editor in an edit overlay: corner radius of the cards, glass (blur) level and blur opacity in
- * one place. The sample cards above the sheet and the sheet itself are drawn with the draft, so every tap shows at
- * once; nothing is saved until Apply calls `params.onApply` with the draft. Cancel, swiping down and tapping
- * outside only close.
+ * one place. Every tap applies on the spot (`params.onChange`) and the sample cards above the sheet and the sheet
+ * itself are drawn with the draft. Only "Done", at the thumb side, closes it (swiping down and tapping outside
+ * close too); the caller gets the opening values back to offer an undo.
  */
 @Composable
 fun CardsGlassBottomSheet(
     params: CardsGlassParams,
     modifier: Modifier = Modifier
 ) {
-    var draft by remember { mutableStateOf(params.initial) }
+    val start = remember { params.initial }
+    var draft by remember { mutableStateOf(start) }
     val config = AureoleThemeConfig(
         darkTheme = isSystemInDarkTheme(),
         aureoleColors = AureoleDS.colors,
@@ -71,10 +72,11 @@ fun CardsGlassBottomSheet(
         AureoleConfirmOverlay(
             params = ConfirmOverlayParams(
                 title = stringResource(R.string.settings_cards_glass_title),
-                primaryLabel = stringResource(R.string.settings_appearance_apply),
-                onPrimary = { params.onApply(draft) },
-                onDismissRequest = params.onDismissRequest,
-                isLeftHanded = params.isLeftHanded
+                primaryLabel = stringResource(R.string.settings_cards_glass_done),
+                onPrimary = {},
+                onDismissRequest = { params.onDismissRequest(start) },
+                isLeftHanded = params.isLeftHanded,
+                hasSecondary = false
             ),
             modifier = modifier,
             preview = {
@@ -86,7 +88,10 @@ fun CardsGlassBottomSheet(
         ) {
             CardsGlassControls(
                 draft = draft,
-                onDraftChange = { draft = it }
+                onDraftChange = {
+                    draft = it
+                    params.onChange(it)
+                }
             )
         }
     }
@@ -178,7 +183,7 @@ private fun CardsGlassBottomSheetPreview() {
         CardsGlassBottomSheet(
             params = CardsGlassParams(
                 initial = CardsGlassDraft(radiusDp = 16, glass = GlassLevel.MEDIUM, opacity = BlurOpacity.MEDIUM.value),
-                onApply = {},
+                onChange = {},
                 onDismissRequest = {}
             )
         )

@@ -11,6 +11,7 @@ import dev.chrisbanes.haze.HazeState
  * @property onDismissRequest Called when the overlay has closed, whichever way it closed.
  * @property isLeftHanded Puts the filled button under the left thumb.
  * @property secondaryLabel Text of the outlined button; null uses "Cancel".
+ * @property hasSecondary False leaves only the filled button, full width (editors that apply on the spot).
  * @property onSettingsClick Opens the Aureole settings from the header logo; null hides the logo.
  * @property hazeState Blur state of the screen behind the overlay.
  */
@@ -21,6 +22,7 @@ data class ConfirmOverlayParams(
     val onDismissRequest: () -> Unit,
     val isLeftHanded: Boolean = false,
     val secondaryLabel: String? = null,
+    val hasSecondary: Boolean = true,
     val onSettingsClick: (() -> Unit)? = null,
     val hazeState: HazeState? = null
 )
