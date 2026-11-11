@@ -10,11 +10,11 @@
     <string name="core_common_understood">Entendido</string>
 
     <!-- Clock -->
-    <string name="home_clock_daily_greeting">Saudação Diária</string>
-    <string name="home_clock_date_on_top">Data no Topo</string>
-    <string name="home_clock_greeting_and_date">Saudação + Data</string>
-    <string name="home_clock_custom_text">Texto Personalizado</string>
-    <string name="home_clock_time_only">Apenas Horário</string>
+    <string name="home_clock_daily_greeting">Saudação diária</string>
+    <string name="home_clock_date_on_top">Data em cima</string>
+    <string name="home_clock_greeting_and_date">Saudação e data</string>
+    <string name="home_clock_custom_text">Texto personalizado</string>
+    <string name="home_clock_time_only">Só a hora</string>
 
     <string name="home_clock_date_default">Completo (sexta, 9 out)</string>
     <string name="home_clock_date_short">Curto (Tue, 22 Sep)</string>
@@ -110,15 +110,20 @@
     <!-- Overlays & Customization -->
     <string name="home_apps_loading">Carregando seus apps…</string>
     <string name="home_customize_title">Personalizar</string>
-    <string name="home_customize_add_clock">Adicionar relógio</string>
-    <string name="home_customize_add_favorites">Adicionar favoritos</string>
-    <string name="home_customize_add_all_apps">Adicionar todos os apps</string>
-    <string name="home_customize_add_container">Adicionar container</string>
-    <string name="home_customize_add_scrollview">Adicionar grupo rolável</string>
-    <string name="home_customize_add_quick_button">Adicionar botão rápido</string>
-    <string name="home_customize_add_widget_group">Adicionar grupo de widgets</string>
-    <string name="home_customize_adjust_layout">Ajustar layout</string>
-    <string name="home_customize_set_background">Definir plano de fundo</string>
+    <string name="home_customize_section_adjust">Ajustar</string>
+    <string name="home_customize_section_add">Adicionar à home</string>
+    <string name="home_customize_adjust_layout">Layout</string>
+    <string name="home_customize_adjust_palette">Paleta</string>
+    <string name="home_customize_adjust_font">Fonte</string>
+    <string name="home_customize_item_clock">Relógio</string>
+    <string name="home_customize_item_favorites">Favoritos</string>
+    <string name="home_customize_item_all_apps">Todos os apps</string>
+    <string name="home_customize_item_container">Container</string>
+    <string name="home_customize_item_widget_group">Grupo de widgets</string>
+    <string name="home_customize_item_scrollview">Grupo rolável</string>
+    <string name="home_customize_item_quick_button">Botão rápido</string>
+    <string name="home_customize_item_widget">Widget</string>
+    <string name="home_customize_item_on_home">Já na home</string>
     <string name="home_customize_aureole_settings">Configurações do Aureole</string>
     <string name="settings_advanced_update_new_available">Nova atualização disponível</string>
     <string name="settings_advanced_update_new_body">Uma nova versão do Aureole Launcher está disponível na Google Play. Deseja atualizar agora?</string>
@@ -144,7 +149,7 @@
 
     <!-- Clock Customization -->
     <string name="home_clock_customize_title">Personalizar Relógio</string>
-    <string name="home_clock_layout_style">Estilo do Layout</string>
+    <string name="home_clock_layout_style">Estilo</string>
     <string name="home_clock_greeting_text">Texto da Saudação</string>
     <string name="home_clock_greeting_placeholder">Ex: Bem-vindo(a) de volta!</string>
     <string name="home_clock_alignment">Alinhamento</string>
@@ -164,9 +169,9 @@
     <string name="home_clock_time_12h">12 Horas</string>
     <string name="home_clock_time_24h">24 Horas</string>
     <string name="home_clock_card_background">Fundo do Cartão</string>
+    <string name="home_clock_restore">Restaurar</string>
     <string name="home_clock_show_background">Mostrar cartão de fundo</string>
     <string name="home_clock_custom_bg_color">Cor de Fundo Personalizada:</string>
-    <string name="home_clock_reset_defaults">Redefinir Padrões</string>
     <string name="home_clock_greeting_morning">Bom dia</string>
     <string name="home_clock_greeting_afternoon">Boa tarde</string>
     <string name="home_clock_greeting_evening">Boa noite</string>

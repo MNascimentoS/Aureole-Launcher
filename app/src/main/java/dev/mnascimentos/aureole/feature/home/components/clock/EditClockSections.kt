@@ -20,11 +20,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.R
+import dev.mnascimentos.aureole.composable.controls.AureoleSegmentedControl
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
+import dev.mnascimentos.aureole.feature.home.components.clock.model.ClockAlignmentOption
 import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
 import dev.mnascimentos.aureole.feature.home.model.createDefaultHomeScreenActions
@@ -32,16 +34,6 @@ import dev.mnascimentos.aureole.feature.home.model.createDefaultHomeScreenAction
 private object ClockSectionMetrics {
     val NegativeChipVerticalSpacing = (-8).dp
 }
-
-@Composable
-@ReadOnlyComposable
-private fun getClockStyleOptions(): List<Pair<String, String>> = listOf(
-    Pair("DYNAMIC_GREETING", stringResource(R.string.home_clock_daily_greeting)),
-    Pair("DATE_ON_TOP", stringResource(R.string.home_clock_date_on_top)),
-    Pair("GREETING_AND_DATE", stringResource(R.string.home_clock_greeting_and_date)),
-    Pair("CUSTOM_GREETING", stringResource(R.string.home_clock_custom_text)),
-    Pair("TIME_ONLY", stringResource(R.string.home_clock_time_only))
-)
 
 @Composable
 @ReadOnlyComposable
@@ -60,11 +52,9 @@ internal fun EditClockStyleSection(
     onGreetingChange: (String) -> Unit
 ) {
     EditClockSectionHeader(title = stringResource(R.string.home_clock_layout_style))
-    EditClockDropdown(
-        label = null,
+    EditClockStyleCards(
         selectedKey = uiState.clockStyle,
-        options = getClockStyleOptions(),
-        onOptionSelected = { actions.onUpdateClockStyle(it) }
+        onSelect = { actions.onUpdateClockStyle(it.key) }
     )
 
     if (uiState.clockStyle == "CUSTOM_GREETING") {
@@ -90,29 +80,12 @@ internal fun EditClockAlignmentSection(
     actions: HomeScreenActions
 ) {
     EditClockSectionHeader(title = stringResource(R.string.home_clock_alignment))
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(AureoleDS.dimens.xSmall)
-    ) {
-        EditClockChoiceButton(
-            text = stringResource(R.string.home_clock_align_left),
-            selected = uiState.clockAlignment == "START",
-            onClick = { actions.onUpdateClockAlignment("START") },
-            modifier = Modifier.weight(1f)
-        )
-        EditClockChoiceButton(
-            text = stringResource(R.string.home_clock_align_center),
-            selected = uiState.clockAlignment == "CENTER",
-            onClick = { actions.onUpdateClockAlignment("CENTER") },
-            modifier = Modifier.weight(1f)
-        )
-        EditClockChoiceButton(
-            text = stringResource(R.string.home_clock_align_right),
-            selected = uiState.clockAlignment == "END",
-            onClick = { actions.onUpdateClockAlignment("END") },
-            modifier = Modifier.weight(1f)
-        )
-    }
+    AureoleSegmentedControl(
+        options = ClockAlignmentOption.entries.map { stringResource(it.labelRes) },
+        selectedIndex = ClockAlignmentOption.indexOfKey(uiState.clockAlignment),
+        onSelect = { actions.onUpdateClockAlignment(ClockAlignmentOption.entries[it].key) },
+        itemHeight = AureoleDS.dimens.minTouchTarget
+    )
 }
 
 @OptIn(ExperimentalLayoutApi::class)
@@ -242,26 +215,6 @@ private fun EditClockSectionsPreview() {
                 actions = createDefaultHomeScreenActions(),
                 tempCustomGreeting = "Bem-vindo",
                 onGreetingChange = {}
-            )
-        }
-    }
-}
-
-@AureolePreview
-@Composable
-private fun EditClockDropdownOpenPreview() {
-    AureoleLauncherTheme {
-        Column(
-            modifier = Modifier
-                .background(AureoleDS.colors.surface)
-                .padding(AureoleDS.dimens.medium)
-        ) {
-            EditClockDropdown(
-                label = "Estilo do Layout",
-                selectedKey = "DATE_ON_TOP",
-                options = getClockStyleOptions(),
-                onOptionSelected = {},
-                initialExpanded = true
             )
         }
     }

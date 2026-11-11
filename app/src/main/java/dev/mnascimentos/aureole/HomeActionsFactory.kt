@@ -38,6 +38,8 @@ import dev.mnascimentos.aureole.feature.home.components.favorites.extensions.tog
 import dev.mnascimentos.aureole.feature.home.components.favorites.extensions.updateContainerFavorites
 import dev.mnascimentos.aureole.feature.home.components.favorites.extensions.updateFavoritePackages
 import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.onOnboardingSignal
+import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.selectFont
+import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.selectPalette
 import dev.mnascimentos.aureole.feature.home.components.onboarding.model.OnboardingSignal
 import dev.mnascimentos.aureole.feature.home.components.overlays.extensions.closeContainerAppBottomSheet
 import dev.mnascimentos.aureole.feature.home.components.overlays.extensions.closeContainerFolderBottomSheet
@@ -140,6 +142,8 @@ class HomeActionsFactory(
             onOpenFavoritePicker = { containerId -> viewModel.setShowFavoritePicker(true, containerId) },
             onDismissFavoritePicker = { viewModel.dismissFavoritePicker() },
             onAddFavoritesList = { viewModel.addFavoritesList() },
+            onSelectPalette = { name -> viewModel.selectPalette(name) },
+            onSelectFont = { name -> viewModel.selectFont(name) },
             onDismissWidgetPicker = { viewModel.setShowWidgetPicker(false) },
             onDismissReleaseNotes = { viewModel.dismissReleaseNotes() },
             onOpenWidgetPopup = { id, y -> viewModel.openWidgetPopup(id, y) },

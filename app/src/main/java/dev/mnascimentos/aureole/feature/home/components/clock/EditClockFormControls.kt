@@ -74,7 +74,7 @@ internal fun EditClockBackgroundSection(
 }
 
 /**
- * Footer of the clock editor. Right-handed: restore on the left, save on the right.
+ * Footer of the clock editor. Right-handed: restore (neutral) on the left, save on the right.
  * Left-handed: save on the left, under the thumb, and restore on the right.
  */
 @Composable
@@ -88,12 +88,11 @@ internal fun EditClockActionButtons(
         params = ActionRowParams(
             primaryLabel = stringResource(R.string.home_container_edit_save),
             onPrimary = onDismissRequest,
-            secondaryLabel = stringResource(R.string.home_clock_reset_defaults),
+            secondaryLabel = stringResource(R.string.home_clock_restore),
             onSecondary = {
                 actions.onResetClockSettings()
                 onResetGreeting()
-            },
-            isSecondaryDestructive = true
+            }
         ),
         isLeftHanded = isLeftHanded
     )

@@ -202,6 +202,7 @@ private fun BoxScope.HomeScreenBody(
 private fun HomeOverlaysDialogsAndErrors(config: HomeOverlaysConfig) {
     if (config.uiState.showCustomizeBottomSheet) {
         CustomizeBottomSheet(
+            uiState = config.uiState,
             actions = config.actions,
             onDismissRequest = config.actions.onCloseCustomizeBottomSheet
         )

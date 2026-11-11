@@ -11,6 +11,7 @@ import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -65,6 +66,7 @@ internal val PRESET_BG_COLORS = listOf(
 )
 
 private const val DISMISS_DELAY_MS = 300L
+private const val DIVIDER_ALPHA = 0.3f
 
 @Composable
 fun EditClockBottomSheet(
@@ -180,6 +182,11 @@ private fun ColumnScope.EditClockFooter(
     onResetGreeting: () -> Unit
 ) {
     val scope = rememberCoroutineScope()
+    HorizontalDivider(
+        modifier = Modifier.padding(bottom = AureoleDS.dimens.xSmall),
+        thickness = AureoleDS.dimens.borderMinimal,
+        color = AureoleDS.colors.outline.copy(alpha = DIVIDER_ALPHA)
+    )
     EditClockTabBar(
         selected = ClockTab.resolve(
             currentPage = pagerState.currentPage,

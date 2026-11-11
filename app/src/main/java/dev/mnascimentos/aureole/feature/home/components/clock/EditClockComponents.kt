@@ -25,22 +25,18 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
+import dev.mnascimentos.aureole.composable.menu.AureoleMenuSectionLabel
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 
+/** Small caps section title ("STYLE", "ALIGNMENT"), always on the left like the other sheets. */
 @Composable
 internal fun EditClockSectionHeader(title: String) {
-    AureoleText(
-        text = title,
-        color = AureoleDS.colors.onSurfaceHigh,
-        modifier = Modifier.padding(bottom = AureoleDS.dimens.xxSmall),
-        format = AureoleTextFormatParams(style = AureoleDS.typography.titleMedium, fontWeight = FontWeight.SemiBold)
-    )
+    AureoleMenuSectionLabel(text = title)
 }
 
 @Composable

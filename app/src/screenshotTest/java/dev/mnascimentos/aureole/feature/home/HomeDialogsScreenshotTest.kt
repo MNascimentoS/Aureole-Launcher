@@ -263,6 +263,7 @@ private fun CustomizeBottomSheetScreenshotTest() {
     val sampleData = createSampleHomeData()
     AureoleLauncherTheme {
         CustomizeBottomSheet(
+            uiState = sampleData.uiState,
             actions = sampleData.actions,
             onDismissRequest = {}
         )
