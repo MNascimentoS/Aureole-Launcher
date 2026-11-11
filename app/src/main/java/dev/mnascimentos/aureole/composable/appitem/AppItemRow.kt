@@ -34,6 +34,7 @@ import dev.mnascimentos.aureole.composable.appitem.model.AppItemBottomSheetParam
 import dev.mnascimentos.aureole.composable.appitem.model.AppItemRowActions
 import dev.mnascimentos.aureole.composable.appitem.model.AppItemRowConfig
 import dev.mnascimentos.aureole.composable.appitem.model.AppItemRowMetrics
+import dev.mnascimentos.aureole.composable.overlay.AureoleOverlayWindow
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
@@ -174,14 +175,16 @@ private fun AppItemRowDropdownMenu(
 ) {
     if (showMenu) {
         if (config.useActionSheet) {
-            AppItemBottomSheet(
-                params = AppItemBottomSheetParams(
-                    app = app,
-                    isFavorite = config.isFavorite,
-                    actions = actions
-                ),
-                onDismiss = onDismiss
-            )
+            AureoleOverlayWindow(onDismissRequest = onDismiss) {
+                AppItemBottomSheet(
+                    params = AppItemBottomSheetParams(
+                        app = app,
+                        isFavorite = config.isFavorite,
+                        actions = actions
+                    ),
+                    onDismiss = onDismiss
+                )
+            }
         } else {
             AppItemPopup(app = app, isFavorite = config.isFavorite, actions = actions, onDismiss = onDismiss)
         }

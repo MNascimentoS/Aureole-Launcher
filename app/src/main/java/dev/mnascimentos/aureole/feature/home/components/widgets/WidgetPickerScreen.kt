@@ -29,6 +29,7 @@ import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
+import dev.mnascimentos.aureole.core.designsystem.utils.glassBlurRadius
 import dev.mnascimentos.aureole.feature.home.components.widgets.model.WidgetAppGroup
 import dev.mnascimentos.aureole.feature.home.components.widgets.model.WidgetPickerScreenParams
 import dev.mnascimentos.aureole.feature.home.components.widgets.model.WidgetSelectorIntent
@@ -80,7 +81,7 @@ fun WidgetSelectorScreen(
         Modifier.hazeEffect(
             state = hazeState,
             style = HazeStyle(
-                blurRadius = AureoleDS.dimens.xLarge,
+                blurRadius = glassBlurRadius(AureoleDS.dimens.xLarge),
                 tint = HazeTint(Color.Black.copy(alpha = 0.45f))
             )
         ) {

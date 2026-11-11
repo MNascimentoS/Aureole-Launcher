@@ -9,9 +9,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import dev.mnascimentos.aureole.feature.settings.SettingsViewModel
 import dev.mnascimentos.aureole.feature.settings.extensions.SettingsIntentUtils
+import dev.mnascimentos.aureole.feature.settings.extensions.onUndo
+import dev.mnascimentos.aureole.feature.settings.extensions.onUndoExpired
 import dev.mnascimentos.aureole.feature.settings.extensions.performFactoryReset
 import dev.mnascimentos.aureole.feature.settings.extensions.resetGridLayout
 import dev.mnascimentos.aureole.feature.settings.extensions.restoreDefaultWallpaper
+import dev.mnascimentos.aureole.feature.settings.extensions.selectPosition
+import dev.mnascimentos.aureole.feature.settings.model.PositionKind
 import dev.mnascimentos.aureole.feature.settings.model.SettingToggle
 import dev.mnascimentos.aureole.feature.settings.model.SettingValue
 import dev.mnascimentos.aureole.feature.settings.model.SettingsDialog
@@ -62,7 +66,9 @@ private fun buildSettingsScreenActions(
             )
         },
         onSubmitCreateFolder = viewModel::createFolder,
-        onConfirmRestoreWallpaper = { viewModel.restoreDefaultWallpaper() },
+        onRestoreDefaultWallpaperClick = { viewModel.restoreDefaultWallpaper() },
+        onUndo = viewModel::onUndo,
+        onUndoExpired = viewModel::onUndoExpired,
         onClearErrorMessage = { viewModel.clearErrorMessage() },
         onSelectManualSeedColor = { color ->
             viewModel.setSettingValue(SettingValue.ManualSeedColor(color))
@@ -73,14 +79,11 @@ private fun buildSettingsScreenActions(
         onSelectFont = { fontName ->
             viewModel.setSettingValue(SettingValue.SelectedFont(fontName))
         },
-        onHazeOpacitySelected = { opacity ->
-            viewModel.setSettingValue(SettingValue.HazeOpacity(opacity))
-        },
         onSelectWallpaperScaleType = { scaleType ->
             viewModel.setSettingValue(SettingValue.WallpaperScaleType(scaleType))
         },
-        onSelectCornerRadius = { radiusDp ->
-            viewModel.setSettingValue(SettingValue.CornerRadius(radiusDp))
+        onApplyCardsGlass = { draft ->
+            viewModel.setSettingValue(SettingValue.CardsGlass(draft))
         },
         onHeaderOffsetChanged = viewModel::setHeaderOffsetPercent,
         onConfirmResetGrid = { viewModel.resetGridLayout() },
@@ -130,7 +133,7 @@ private fun applyDialogActions(viewModel: SettingsViewModel, base: SettingsScree
                 false
             )
         },
-        onContainerPositionSelected = { pos -> viewModel.setSettingValue(SettingValue.ContainerPosition(pos)) },
+        onContainerPositionSelected = { pos -> viewModel.selectPosition(PositionKind.CONTAINER, pos) },
         onOpenResetGridDialog = { viewModel.setDialogVisible(SettingsDialog.RESET_GRID, true) },
         onDismissResetGridDialog = { viewModel.setDialogVisible(SettingsDialog.RESET_GRID, false) },
         onOpenFactoryResetDialog = { viewModel.setDialogVisible(SettingsDialog.FACTORY_RESET, true) },
@@ -139,12 +142,8 @@ private fun applyDialogActions(viewModel: SettingsViewModel, base: SettingsScree
         onOpenFavoritePickerClick = { viewModel.setDialogVisible(SettingsDialog.FAVORITE_PICKER, true) },
         onOpenColorPickerDialog = { viewModel.setDialogVisible(SettingsDialog.COLOR_PICKER, true) },
         onDismissColorPickerDialog = { viewModel.setDialogVisible(SettingsDialog.COLOR_PICKER, false) },
-        onRestoreDefaultWallpaperClick = { viewModel.setDialogVisible(SettingsDialog.RESTORE_WALLPAPER, true) },
-        onDismissRestoreWallpaperDialog = { viewModel.setDialogVisible(SettingsDialog.RESTORE_WALLPAPER, false) },
         onAddFolderClick = { viewModel.setDialogVisible(SettingsDialog.CREATE_FOLDER, true) },
         onDismissCreateFolderDialog = { viewModel.setDialogVisible(SettingsDialog.CREATE_FOLDER, false) },
-        onOpenHazeOpacityDialog = { viewModel.setDialogVisible(SettingsDialog.HAZE_OPACITY, true) },
-        onDismissHazeOpacityDialog = { viewModel.setDialogVisible(SettingsDialog.HAZE_OPACITY, false) },
         onOpenSettingsButtonPositionDialog = {
             viewModel.setDialogVisible(
                 SettingsDialog.SETTINGS_BUTTON_POSITION,
@@ -157,11 +156,7 @@ private fun applyDialogActions(viewModel: SettingsViewModel, base: SettingsScree
                 false
             )
         },
-        onSettingsButtonPositionSelected = { pos ->
-            viewModel.setSettingValue(
-                SettingValue.SettingsButtonPosition(pos)
-            )
-        },
+        onSettingsButtonPositionSelected = { pos -> viewModel.selectPosition(PositionKind.SETTINGS_BUTTON, pos) },
         onOpenSearchIconPositionDialog = { viewModel.setDialogVisible(SettingsDialog.SEARCH_ICON_POSITION, true) },
         onDismissSearchIconPositionDialog = {
             viewModel.setDialogVisible(
@@ -169,7 +164,7 @@ private fun applyDialogActions(viewModel: SettingsViewModel, base: SettingsScree
                 false
             )
         },
-        onSearchIconPositionSelected = { pos -> viewModel.setSettingValue(SettingValue.SearchIconPosition(pos)) },
+        onSearchIconPositionSelected = { pos -> viewModel.selectPosition(PositionKind.SEARCH_ICON, pos) },
         onToggleFavorite = { pkg -> viewModel.toggleFavorite(pkg) },
         onDismissFavoritePickerDialog = { viewModel.setDialogVisible(SettingsDialog.FAVORITE_PICKER, visible = false) }
     )

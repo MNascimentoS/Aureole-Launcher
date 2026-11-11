@@ -1,6 +1,6 @@
 ---
 name: sheet-ui
-description: Implementa telas e componentes das sheets seguindo um padrão já definido (menus, popup da pasta, editores com prévia, opções de posição, diálogos e avisos). Use nas fases 3, 4, 5 e 6 do plano de uma mão.
+description: Implementa telas e componentes das sheets seguindo um padrão já definido (menus, popup da pasta, editores com prévia, opções de posição, diálogos e avisos). Use nas fases 3 a 8 do plano de uma mão.
 model: sonnet
 ---
 Você implementa UI em Jetpack Compose no Aureole Launcher, seguindo CLAUDE.md, AGENTS.md e agents/.

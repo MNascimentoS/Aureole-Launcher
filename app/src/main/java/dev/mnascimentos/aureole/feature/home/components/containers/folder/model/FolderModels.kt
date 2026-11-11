@@ -62,19 +62,10 @@ data class OpenedFolderPopupConfig(
     val hazeState: HazeState? = null
 )
 
-data class OpenedFolderPopupContentParams(
-    val folderName: String,
-    val appsInFolder: List<AppInfo>,
-    val isActionsVisible: Boolean,
-    val isGridMode: Boolean
-)
-
 data class GridFolderPopupParams(
     val folder: AppFolder,
     val appsInFolder: List<AppInfo>,
     val actions: FolderPopupActions,
-    val isActionsVisible: Boolean,
-    val onToggleActions: () -> Unit,
     val hazeState: HazeState?,
     val isHazeEnabled: Boolean
 )

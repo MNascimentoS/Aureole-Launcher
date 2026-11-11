@@ -4,19 +4,23 @@ import android.content.ComponentName
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalInspectionMode
+import androidx.compose.ui.semantics.SemanticsActions
+import androidx.compose.ui.test.assertCountEquals
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.hasClickAction
 import androidx.compose.ui.test.hasSetTextAction
+import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.v2.createComposeRule
 import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.performSemanticsAction
 import androidx.compose.ui.test.performTextInput
 import androidx.core.graphics.drawable.toDrawable
 import dev.chrisbanes.haze.HazeState
 import dev.mnascimentos.aureole.composable.dialogs.CreateFolderDialog
 import dev.mnascimentos.aureole.composable.dialogs.FolderFormDialog
-import dev.mnascimentos.aureole.composable.dialogs.IconSelectionRow
+import dev.mnascimentos.aureole.composable.dialogs.FolderIconGrid
 import dev.mnascimentos.aureole.core.data.model.AppFolder
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
@@ -250,7 +254,7 @@ class FolderBranchCoverageTest {
     }
 
     @Test
-    fun `when selecting icon chips in IconSelectionRow, should update selected icon state`() {
+    fun `when selecting icon tiles in FolderIconGrid, should update selected icon state`() {
         var selectedIconResult: String? = "initial"
 
         composeTestRule.setContent {
@@ -265,7 +269,7 @@ class FolderBranchCoverageTest {
         }
 
         // Click the first chip (Default Letter chip)
-        composeTestRule.onNodeWithText("T").performClick()
+        composeTestRule.onNode(hasText("T") and hasClickAction()).performSemanticsAction(SemanticsActions.OnClick)
 
         // Save
         composeTestRule.onNodeWithText("Save").performClick()
@@ -364,9 +368,7 @@ class FolderBranchCoverageTest {
         val folder = AppFolder(id = "f_blank", name = "", displayAsGrid = true)
         val actions = FolderPopupActions(
             onDismiss = {},
-            onAppClick = {},
-            onAddAppsClick = {},
-            onEditFolderClick = {}
+            onAppClick = {}
         )
 
         composeTestRule.setContent {
@@ -376,8 +378,6 @@ class FolderBranchCoverageTest {
                         folder = folder,
                         appsInFolder = listOf(app1),
                         actions = actions,
-                        isActionsVisible = false,
-                        onToggleActions = {},
                         hazeState = null,
                         isHazeEnabled = false
                     )
@@ -409,9 +409,7 @@ class FolderBranchCoverageTest {
             )
         val actions = FolderPopupActions(
             onDismiss = {},
-            onAppClick = {},
-            onAddAppsClick = {},
-            onEditFolderClick = {}
+            onAppClick = {}
         )
 
         composeTestRule.setContent {
@@ -477,9 +475,7 @@ class FolderBranchCoverageTest {
             )
         val actions = FolderPopupActions(
             onDismiss = {},
-            onAppClick = {},
-            onAddAppsClick = {},
-            onEditFolderClick = {}
+            onAppClick = {}
         )
 
         composeTestRule.setContent {
@@ -522,9 +518,7 @@ class FolderBranchCoverageTest {
 
         val actions = FolderPopupActions(
             onDismiss = {},
-            onAppClick = {},
-            onAddAppsClick = {},
-            onEditFolderClick = {}
+            onAppClick = {}
         )
 
         composeTestRule.setContent {
@@ -563,9 +557,7 @@ class FolderBranchCoverageTest {
             )
         val actions = FolderPopupActions(
             onDismiss = {},
-            onAppClick = {},
-            onAddAppsClick = {},
-            onEditFolderClick = {}
+            onAppClick = {}
         )
 
         composeTestRule.setContent {
@@ -588,7 +580,7 @@ class FolderBranchCoverageTest {
     // --- 9. FolderFormDialog & Icon Selection Branches ---
 
     @Test
-    fun `when FolderFormDialog rendered with empty folder name, should display question mark in preview`() {
+    fun `when FolderFormDialog has empty name, should show placeholder initial in preview and tile`() {
         composeTestRule.setContent {
             AureoleLauncherTheme {
                 FolderFormDialog(
@@ -599,16 +591,16 @@ class FolderBranchCoverageTest {
             }
         }
 
-        composeTestRule.onNodeWithText("?").assertIsDisplayed()
+        composeTestRule.onAllNodesWithText("N").assertCountEquals(2)
     }
 
     @Test
-    fun `when selecting specific icon chip in IconSelectionRow, should update selected icon`() {
+    fun `when selecting specific icon chip in FolderIconGrid, should update selected icon`() {
         var selectedIconResult: String? = null
 
         composeTestRule.setContent {
             AureoleLauncherTheme {
-                IconSelectionRow(
+                FolderIconGrid(
                     selectedIcon = null,
                     onIconSelected = { selectedIconResult = it },
                     folderName = "Icons"

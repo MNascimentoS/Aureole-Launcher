@@ -60,6 +60,7 @@ data class HomeScreenActions(
     val onOpenEditGridItemDialog: (LauncherItemState) -> Unit = {},
     val onCloseEditGridItemDialog: () -> Unit = {},
     val onDeleteGridItem: (String) -> Unit = {},
+    val onRemoveGridItem: (String) -> Unit = {},
     val onDismissGridError: () -> Unit = {},
     val onSetIsAddingSingleWidget: (Boolean) -> Unit = {},
     val onUpdateScrollViewOrientation: (String, ScrollOrientation) -> Unit = { _, _ -> },

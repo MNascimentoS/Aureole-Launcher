@@ -5,11 +5,14 @@ import dev.mnascimentos.aureole.core.data.repository.AppRepository
 import dev.mnascimentos.aureole.core.data.repository.FolderRepository
 import dev.mnascimentos.aureole.core.data.repository.GridRepository
 import dev.mnascimentos.aureole.core.data.repository.SettingsRepository
+import dev.mnascimentos.aureole.core.designsystem.model.GlassLevel
 import dev.mnascimentos.aureole.feature.settings.SettingsViewModel
+import dev.mnascimentos.aureole.feature.settings.model.CardsGlassDraft
 import dev.mnascimentos.aureole.feature.settings.model.SettingValue
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNull
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -41,14 +44,6 @@ class SettingsViewModelValueHandlersTest {
         assertEquals("Center", viewModel.uiState.value.containerPosition)
         assertEquals("Center", settingsRepository.containerPosition)
         assertFalse(viewModel.uiState.value.showContainerPositionDialog)
-    }
-
-    @Test
-    fun `applySettingValue HazeOpacity should update haze opacity`() {
-        viewModel.applySettingValue(SettingValue.HazeOpacity(0.85f))
-        assertEquals(0.85f, viewModel.uiState.value.hazeOpacity, 0.001f)
-        assertEquals(0.85f, settingsRepository.hazeOpacity, 0.001f)
-        assertFalse(viewModel.uiState.value.showHazeOpacityDialog)
     }
 
     @Test
@@ -100,9 +95,22 @@ class SettingsViewModelValueHandlersTest {
     }
 
     @Test
-    fun `applySettingValue CornerRadius should update corner radius`() {
-        viewModel.applySettingValue(SettingValue.CornerRadius(18))
+    fun `applySettingValue CardsGlass should save radius, blur, level and opacity`() {
+        val draft = CardsGlassDraft(radiusDp = 18, glass = GlassLevel.MAX, opacity = 0.7f)
+        viewModel.applySettingValue(SettingValue.CardsGlass(draft))
         assertEquals(18, viewModel.uiState.value.cornerRadiusDp)
         assertEquals(18, settingsRepository.cornerRadiusDp)
+        assertEquals(0.7f, settingsRepository.hazeOpacity, 0.001f)
+        assertEquals("MAX", settingsRepository.hazeBlurLevel)
+        assertEquals(GlassLevel.MAX, viewModel.uiState.value.hazeBlurLevel)
+        assertTrue(viewModel.uiState.value.isHazeEnabled)
+    }
+
+    @Test
+    fun `applySettingValue CardsGlass with no glass should switch the blur off and keep the level`() {
+        settingsRepository.hazeBlurLevel = "LOW"
+        viewModel.applySettingValue(SettingValue.CardsGlass(CardsGlassDraft(16, GlassLevel.NONE, 0.5f)))
+        assertFalse(viewModel.uiState.value.isHazeEnabled)
+        assertEquals("LOW", settingsRepository.hazeBlurLevel)
     }
 }

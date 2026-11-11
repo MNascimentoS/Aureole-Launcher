@@ -9,6 +9,7 @@ import dev.mnascimentos.aureole.core.data.model.ContainerModel
 import dev.mnascimentos.aureole.core.data.model.LauncherItemState
 import dev.mnascimentos.aureole.core.data.model.QuickButtonModel
 import dev.mnascimentos.aureole.core.data.repository.SettingsRepository
+import dev.mnascimentos.aureole.core.designsystem.model.GlassLevel
 import dev.mnascimentos.aureole.feature.home.components.onboarding.model.OnboardingUiState
 import dev.mnascimentos.aureole.feature.home.components.onboarding.model.blocksHome
 import dev.mnascimentos.aureole.feature.home.grid.model.GridLimits
@@ -60,6 +61,7 @@ data class MainUiState(
     val isHazeEnabled: Boolean = true,
     val isHazeSupported: Boolean = true,
     val hazeOpacity: Float = 0.5f,
+    val glassLevel: GlassLevel = GlassLevel.MEDIUM,
     val isInAppUpdateEnabled: Boolean = true,
     val isThemedAppIconsEnabled: Boolean = false,
     val isAlphabetScrubberDisabled: Boolean = false,

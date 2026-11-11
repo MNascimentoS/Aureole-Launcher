@@ -99,6 +99,7 @@ internal fun SheetSurface(
             sheetContent = params.sheetContent,
             decorations = OverlaySheetDecorations(
                 headerIcon = config.headerIcon,
+                titleIcon = config.titleIcon,
                 gestureZone = {
                     OverlaySheetGestureZone(
                         isExpanded = isExpanded,

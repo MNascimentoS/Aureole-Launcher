@@ -107,7 +107,8 @@ private fun WhenContainerFolderBottomSheetRendered_shouldRenderBottomSheetScreen
                 onRename = {},
                 onIcon = {},
                 onRemoveFolder = {},
-                onOpenContainerSettings = {}
+                onOpenContainerSettings = {},
+                onOpenSettings = {}
             ),
             onDismiss = {}
         )
@@ -203,9 +204,7 @@ private fun WhenOpenedFolderPopupRendered_shouldRenderPopupScreenshotTest() {
     )
     val actions = FolderPopupActions(
         onDismiss = {},
-        onAppClick = {},
-        onAddAppsClick = {},
-        onEditFolderClick = {}
+        onAppClick = {}
     )
 
     AureoleLauncherTheme {

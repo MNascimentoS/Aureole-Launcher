@@ -285,12 +285,10 @@
     <string name="core_common_no">No</string>
     <string name="settings_advanced_reset_layout_title">Reset Layout?</string>
     <string name="settings_advanced_reset_layout_restore">Restore</string>
-    <string name="settings_appearance_blur_opacity_title">Blur Opacity</string>
     <string name="settings_appearance_blur_opacity_low">Low</string>
     <string name="settings_appearance_blur_opacity_medium">Medium</string>
     <string name="settings_appearance_blur_opacity_high">High</string>
     <string name="settings_appearance_blur_opacity_solid">Solid</string>
-    <string name="settings_appearance_restore_background_title">Restore default background?</string>
     <string name="settings_dialogs_settings_button_position_title">Settings Button Position</string>
     <string name="settings_dialogs_search_icon_position_title">Search Icon Position</string>
     <string name="settings_dialogs_container_position_title">Sidebar Alignment</string>
@@ -298,9 +296,6 @@
     <string name="settings_appearance_solid_color">Solid color</string>
     <string name="settings_appearance_custom_image">Custom image</string>
     <string name="settings_appearance_pick_palette_title">Pick a palette</string>
-    <string name="settings_appearance_glass_blur_title">Glass &amp; Blur</string>
-    <string name="settings_appearance_blur_none">None</string>
-    <string name="settings_appearance_blur_max">Max</string>
     <string name="settings_contributors_title">Contributors</string>
     <string name="settings_contributors_name">Name</string>
     <string name="settings_contributors_subtitle">Something something</string>
@@ -322,11 +317,17 @@
     <string name="home_grid_item_container">Container</string>
     <string name="home_grid_config_title">Configure %1$s</string>
     <string name="home_grid_current_size" tools:ignore="PluralsCandidate">Current size: %1$d x %2$d cells</string>
+    <string name="settings_cards_glass_title">Cards and glass</string>
+    <string name="settings_cards_glass_corners_label">Corners</string>
+    <string name="settings_cards_glass_glass_label">Glass (blur)</string>
+    <string name="settings_cards_glass_opacity_label">Blur opacity</string>
+    <string name="settings_cards_glass_corners_flat">Flat</string>
+    <string name="settings_cards_glass_level_none">None</string>
+    <string name="settings_cards_glass_level_low">Light</string>
+    <string name="settings_cards_glass_level_medium">Medium</string>
+    <string name="settings_cards_glass_level_max">Max</string>
+    <string name="settings_cards_glass_preview_date">Tue, Nov 10</string>
     <string name="settings_appearance_glass_effect">Glass effect</string>
-    <string name="settings_appearance_glass_effect_none">None</string>
-    <string name="settings_appearance_glass_effect_low">Low</string>
-    <string name="settings_appearance_glass_effect_medium">Medium</string>
-    <string name="settings_appearance_glass_effect_max">Max</string>
     <string name="settings_appearance_change_border">Change Border</string>
     <string name="settings_appearance_border_radius_format">%1$d dp</string>
     <string name="favorites_dialog_plus_content_desc">Plus</string>
@@ -420,6 +421,42 @@
     <string name="core_reorder_move_left">Move left</string>
     <string name="core_reorder_move_right">Move right</string>
     <string name="core_reorder_remove">Remove</string>
+    <string name="home_folder_menu_section">Folder</string>
+    <string name="home_undo_folder_removed">Folder removed</string>
+    <string name="home_undo_component_removed">Component removed</string>
+    <string name="home_grid_menu_section">Item actions</string>
+    <string name="home_app_menu_favorite">Favorite</string>
+    <string name="home_app_menu_hold_uninstall">Hold to uninstall</string>
+    <string name="home_app_menu_section_shortcuts">App shortcuts</string>
     <string name="home_undo_widget_removed">Widget removed</string>
     <string name="home_undo_widget_order_changed">Order changed</string>
+    <string name="home_edit_preview_live">Live preview</string>
+    <string name="home_container_edit_options_label">Options</string>
+    <string name="home_container_edit_appearance_subtitle">Cells, folders and background</string>
+    <string name="home_container_edit_behavior_subtitle">Orientation and alignment</string>
+    <plurals name="home_container_edit_components_count">
+        <item quantity="one">%1$d component</item>
+        <item quantity="other">%1$d components</item>
+    </plurals>
+    <string name="home_favorites_preview_on_home">Preview on Home</string>
+    <plurals name="home_favorites_menu_count">
+        <item quantity="one">%1$d favorite</item>
+        <item quantity="other">%1$d favorites</item>
+    </plurals>
+    <string name="settings_appearance_preview_label">Preview</string>
+    <string name="settings_appearance_restore_background">Restore background</string>
+    <string name="settings_appearance_background_restored">Background restored</string>
+    <string name="settings_appearance_background_type">Type</string>
+    <string name="settings_appearance_background_color">Color</string>
+    <string name="home_folder_form_preview">Preview</string>
+    <string name="home_folder_form_delete">Delete folder</string>
+    <string name="home_quickbutton_menu_section">Button</string>
+    <string name="settings_position_option_left">Left</string>
+    <string name="settings_position_option_right">Right</string>
+    <string name="settings_position_option_top">Top</string>
+    <string name="settings_position_option_center">Center</string>
+    <string name="settings_position_option_bottom">Bottom</string>
+    <string name="settings_position_option_space_evenly">Space Evenly</string>
+    <string name="settings_position_option_space_between">Space Between</string>
+    <string name="settings_position_changed">Position changed</string>
 </resources>

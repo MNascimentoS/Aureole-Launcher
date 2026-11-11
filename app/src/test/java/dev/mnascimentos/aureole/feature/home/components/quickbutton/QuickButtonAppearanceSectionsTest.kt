@@ -14,7 +14,6 @@ import dev.mnascimentos.aureole.core.data.model.QuickButtonModel
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.feature.home.components.quickbutton.model.QuickButtonColorPickerTarget
-import dev.mnascimentos.aureole.feature.home.model.createDefaultHomeScreenActions
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertTrue
@@ -44,7 +43,7 @@ class QuickButtonAppearanceSectionsTest {
                 QuickButtonAppearanceSheetContent(
                     activeModel = model,
                     activeAppInfo = null,
-                    actions = createDefaultHomeScreenActions(),
+                    onUpdateAppearance = {},
                     onPickColor = { target -> pickedTarget = target },
                     onOpenIconPicker = { iconPickerOpened = true }
                 )
@@ -69,9 +68,6 @@ class QuickButtonAppearanceSectionsTest {
     fun `when stroke is disabled, should hide stroke color row and toggle stroke on click`() {
         // Arrange
         var updatedAppearance: QuickButtonAppearance? = null
-        val actions = createDefaultHomeScreenActions().copy(
-            onUpdateQuickButtonAppearance = { updatedAppearance = it }
-        )
         val model = QuickButtonModel(
             appearance = QuickButtonAppearance(strokeEnabled = false)
         )
@@ -82,7 +78,7 @@ class QuickButtonAppearanceSectionsTest {
                 QuickButtonAppearanceSheetContent(
                     activeModel = model,
                     activeAppInfo = null,
-                    actions = actions,
+                    onUpdateAppearance = { updatedAppearance = it },
                     onPickColor = {},
                     onOpenIconPicker = {}
                 )

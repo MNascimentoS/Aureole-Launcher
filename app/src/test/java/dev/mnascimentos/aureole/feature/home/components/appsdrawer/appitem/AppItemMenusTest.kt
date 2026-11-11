@@ -7,23 +7,29 @@ import android.content.pm.ShortcutInfo
 import android.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.down
 import androidx.compose.ui.test.junit4.v2.createComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.performTouchInput
 import androidx.core.graphics.drawable.toDrawable
 import dev.mnascimentos.aureole.composable.appitem.AppItemBottomSheet
 import dev.mnascimentos.aureole.composable.appitem.model.AppItemBottomSheetParams
 import dev.mnascimentos.aureole.composable.appitem.model.AppItemRowActions
+import dev.mnascimentos.aureole.composable.menu.model.MENU_HOLD_MS
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.Shadows.shadowOf
+
+private const val HOLD_MARGIN_MS = 100L
 
 @RunWith(RobolectricTestRunner::class)
 class AppItemMenusTest {
@@ -38,6 +44,32 @@ class AppItemMenusTest {
         icon = Color.BLUE.toDrawable(),
     )
 
+    private fun holdUninstall() {
+        composeTestRule.mainClock.autoAdvance = false
+        composeTestRule.onNodeWithText("Hold to uninstall").performTouchInput { down(center) }
+        composeTestRule.mainClock.advanceTimeBy(MENU_HOLD_MS + HOLD_MARGIN_MS)
+    }
+
+    @Test
+    fun `when tapping Hold to uninstall without holding, should not uninstall`() {
+        var uninstallClicked = false
+        composeTestRule.setContent {
+            AureoleLauncherTheme {
+                AppItemBottomSheet(
+                    params = AppItemBottomSheetParams(
+                        app = sampleApp,
+                        actions = AppItemRowActions(onUninstallClick = { uninstallClicked = true })
+                    ),
+                    onDismiss = {}
+                )
+            }
+        }
+
+        composeTestRule.onNodeWithText("Hold to uninstall").performClick()
+
+        assertFalse(uninstallClicked)
+    }
+
     @Test
     fun `when rendering AppItemBottomSheet, should display app label and default menu items`() {
         composeTestRule.setContent {
@@ -51,7 +83,7 @@ class AppItemMenusTest {
 
         composeTestRule.onNodeWithText("Test App Header").assertIsDisplayed()
         composeTestRule.onNodeWithText("App Info").assertIsDisplayed()
-        composeTestRule.onNodeWithText("Uninstall").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Hold to uninstall").assertIsDisplayed()
     }
 
     @Test
@@ -164,7 +196,7 @@ class AppItemMenusTest {
             }
         }
 
-        composeTestRule.onNodeWithText("Uninstall").performClick()
+        holdUninstall()
         assertTrue(uninstallClicked)
         assertTrue(dismissed)
     }
@@ -187,7 +219,7 @@ class AppItemMenusTest {
             }
         }
 
-        composeTestRule.onNodeWithText("Uninstall").performClick()
+        holdUninstall()
         assertTrue(dismissed)
     }
 
@@ -236,7 +268,7 @@ class AppItemMenusTest {
         }
 
         composeTestRule.onNodeWithText("Remove from folder").assertIsDisplayed()
-        composeTestRule.onNodeWithText("Folder settings").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Folder settings").assertExists()
 
         composeTestRule.onNodeWithText("Remove from folder").performClick()
         assertTrue(removedFromFolder)
@@ -268,7 +300,7 @@ class AppItemMenusTest {
     }
 
     @Test
-    fun `when onToggleFavorite provided and not favorite, should display Add to favorites and invoke toggle`() {
+    fun `when onToggleFavorite provided and not favorite, should show the Favorite button and invoke toggle`() {
         var toggledPkg: String? = null
         var dismissed = false
 
@@ -289,15 +321,15 @@ class AppItemMenusTest {
             }
         }
 
-        composeTestRule.onNodeWithText("Add to favorites").assertIsDisplayed()
-        composeTestRule.onNodeWithText("Add to favorites").performClick()
+        composeTestRule.onNodeWithText("Favorite").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Favorite").performClick()
 
         assertEquals(sampleApp.packageName, toggledPkg)
         assertTrue(dismissed)
     }
 
     @Test
-    fun `when onToggleFavorite provided and is favorite, should display Remove from favorites`() {
+    fun `when onToggleFavorite provided and is favorite, should still toggle through the Favorite button`() {
         var toggledPkg: String? = null
         var dismissed = false
 
@@ -318,8 +350,8 @@ class AppItemMenusTest {
             }
         }
 
-        composeTestRule.onNodeWithText("Remove from favorites").assertIsDisplayed()
-        composeTestRule.onNodeWithText("Remove from favorites").performClick()
+        composeTestRule.onNodeWithText("Favorite").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Favorite").performClick()
 
         assertEquals(sampleApp.packageName, toggledPkg)
         assertTrue(dismissed)

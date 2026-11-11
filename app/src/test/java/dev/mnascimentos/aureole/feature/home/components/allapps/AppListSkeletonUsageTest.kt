@@ -7,6 +7,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.test.junit4.v2.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
+import androidx.compose.ui.test.performClick
 import androidx.compose.ui.unit.dp
 import androidx.core.graphics.drawable.toDrawable
 import dev.mnascimentos.aureole.composable.favorites.FavoriteAppsDialog
@@ -27,6 +28,7 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
+import org.robolectric.annotation.Config
 
 /** FUE-24 B: every component that lists apps shows the same skeleton until the apps arrive. */
 @RunWith(RobolectricTestRunner::class)
@@ -85,6 +87,7 @@ class AppListSkeletonUsageTest {
     }
 
     @Test
+    @Config(qualifiers = "w411dp-h891dp")
     fun `when the favorites picker is loading, should show the skeleton`() {
         composeTestRule.setContent {
             AureoleLauncherTheme {
@@ -98,6 +101,9 @@ class AppListSkeletonUsageTest {
                 )
             }
         }
+        composeTestRule.onNodeWithText("Manage apps and order").performClick()
+        composeTestRule.mainClock.advanceTimeBy(500L)
+        composeTestRule.waitForIdle()
 
         composeTestRule.onNodeWithText(LOADING).assertExists()
     }

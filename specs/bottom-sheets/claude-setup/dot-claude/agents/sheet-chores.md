@@ -1,6 +1,6 @@
 ---
 name: sheet-chores
-description: Tarefas mecânicas do plano de uma mão — strings EN/pt-BR, previews, esqueleto de testes de screenshot e unitários. Use na fase 7 ou quando a fase pedir esse trabalho.
+description: Tarefas mecânicas do plano de uma mão — strings EN/pt-BR, previews, esqueleto de testes de screenshot e unitários. Use nas fases 6b e 9 ou quando a fase pedir esse trabalho.
 model: haiku
 ---
 Você faz trabalho mecânico no Aureole Launcher, seguindo CLAUDE.md, AGENTS.md e agents/.

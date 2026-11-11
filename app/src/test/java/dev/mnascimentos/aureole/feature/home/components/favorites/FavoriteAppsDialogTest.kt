@@ -3,15 +3,19 @@ package dev.mnascimentos.aureole.feature.home.components.favorites
 import android.content.ComponentName
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
+import androidx.compose.ui.semantics.SemanticsActions
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.v2.createComposeRule
 import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onFirst
+import androidx.compose.ui.test.onNodeWithText
+import androidx.compose.ui.test.performSemanticsAction
 import dev.mnascimentos.aureole.composable.favorites.FavoriteAppsDialog
 import dev.mnascimentos.aureole.composable.favorites.model.FavoriteAppsDialogActions
 import dev.mnascimentos.aureole.composable.favorites.model.FavoriteAppsDialogConfig
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
+import org.junit.Assert.assertEquals
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -65,5 +69,44 @@ class FavoriteAppsDialogTest {
         }
 
         composeTestRule.onAllNodesWithText("App Favorito 1").onFirst().assertIsDisplayed()
+    }
+
+    @Test
+    fun `when tapping Edit shortcuts on the menu, should open that sub-screen and go back to the menu`() {
+        composeTestRule.setContent {
+            AureoleLauncherTheme {
+                FavoriteAppsDialog(
+                    config = FavoriteAppsDialogConfig(allApps = emptyList(), favoriteAppPackages = emptyList()),
+                    actions = FavoriteAppsDialogActions()
+                )
+            }
+        }
+
+        composeTestRule.onNodeWithText("Edit shortcuts").performSemanticsAction(SemanticsActions.OnClick)
+
+        composeTestRule.onNodeWithText("Manage apps and order").assertDoesNotExist()
+        composeTestRule.onNodeWithText("Back").performSemanticsAction(SemanticsActions.OnClick)
+        composeTestRule.onNodeWithText("Manage apps and order").assertExists()
+    }
+
+    @Test
+    fun `when tapping Appearance on the menu, should open the appearance sub-screen and go back`() {
+        var toggled = 0
+        composeTestRule.setContent {
+            AureoleLauncherTheme {
+                FavoriteAppsDialog(
+                    config = FavoriteAppsDialogConfig(allApps = emptyList(), favoriteAppPackages = emptyList()),
+                    actions = FavoriteAppsDialogActions(onToggleShowAllAppsOnHome = { toggled++ })
+                )
+            }
+        }
+
+        composeTestRule.onNodeWithText("Appearance").performSemanticsAction(SemanticsActions.OnClick)
+
+        composeTestRule.onNodeWithText("Manage apps and order").assertDoesNotExist()
+        composeTestRule.onNodeWithText("Show all apps on Home").performSemanticsAction(SemanticsActions.OnClick)
+        assertEquals(1, toggled)
+        composeTestRule.onNodeWithText("Back").performSemanticsAction(SemanticsActions.OnClick)
+        composeTestRule.onNodeWithText("Manage apps and order").assertExists()
     }
 }

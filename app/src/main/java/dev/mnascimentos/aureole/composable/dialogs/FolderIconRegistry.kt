@@ -57,6 +57,12 @@ object FolderIconRegistry {
         "build" to { m, t -> AureoleDS.icons.Advanced(m, t) }, // Fallback from Build to Advanced
     )
 
+    /** Keys offered in the folder form: one per distinct drawable (the other keys are fallbacks or aliases). */
+    internal val pickerKeys: List<String> = listOf(
+        "star", "home", "person", "settings", "info", "lock", "check", "edit", "add", "delete",
+        "search", "share", "refresh", "menu", "more_vert", "date_range", "play", "cart", "build"
+    )
+
     private val aliases: Map<String, String> = mapOf(
         "games" to "play",
         "jogos" to "play",

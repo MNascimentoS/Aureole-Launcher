@@ -1,6 +1,7 @@
 package dev.mnascimentos.aureole.feature.home
 
 import android.content.Context
+import android.os.Looper
 import dev.mnascimentos.aureole.core.data.repository.AppRepository
 import dev.mnascimentos.aureole.core.data.repository.ContainerRepository
 import dev.mnascimentos.aureole.core.data.repository.FavoriteContainerRepository
@@ -8,6 +9,8 @@ import dev.mnascimentos.aureole.core.data.repository.FolderRepository
 import dev.mnascimentos.aureole.core.data.repository.GridRepository
 import dev.mnascimentos.aureole.core.data.repository.SettingsRepository
 import dev.mnascimentos.aureole.core.data.repository.WidgetRepository
+import dev.mnascimentos.aureole.core.designsystem.model.GlassLevel
+import dev.mnascimentos.aureole.core.designsystem.model.glassLevelOf
 import dev.mnascimentos.aureole.feature.home.components.appsdrawer.extensions.onSearchQueryChanged
 import dev.mnascimentos.aureole.feature.home.components.clock.extensions.closeEditClockBottomSheet
 import dev.mnascimentos.aureole.feature.home.components.clock.extensions.openEditClockBottomSheet
@@ -29,6 +32,10 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.RuntimeEnvironment
+import org.robolectric.Shadows.shadowOf
+
+private const val LOAD_ATTEMPTS = 50
+private const val LOAD_WAIT_MS = 100L
 
 @RunWith(RobolectricTestRunner::class)
 class HomeViewModelTest {
@@ -74,6 +81,26 @@ class HomeViewModelTest {
         assertNotNull(state)
         assertFalse(state.showUpdateAvailableDialog)
         assertFalse(state.showUpdateDownloadedDialog)
+    }
+
+    @Test
+    fun `when nothing was chosen, should emit medium glass level`() {
+        assertEquals(GlassLevel.MEDIUM, viewModel.uiState.value.glassLevel)
+    }
+
+    @Test
+    fun `when a glass level is stored, should emit it in the ui state`() {
+        settingsRepository.hazeBlurLevel = GlassLevel.MAX.name
+        viewModel.loadSettings()
+        repeat(LOAD_ATTEMPTS) {
+            shadowOf(Looper.getMainLooper()).idle()
+            if (viewModel.uiState.value.glassLevel == GlassLevel.MAX) return@repeat
+            Thread.sleep(LOAD_WAIT_MS)
+        }
+        assertEquals(GlassLevel.MAX, viewModel.uiState.value.glassLevel)
+
+        settingsRepository.hazeBlurLevel = "garbage"
+        assertEquals(GlassLevel.MEDIUM, glassLevelOf(settingsRepository.hazeBlurLevel))
     }
 
     @Test

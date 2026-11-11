@@ -1,6 +1,6 @@
 ---
 name: sheet-gestures
-description: Implementa gestos e física das sheets (faixa de gesto invisível, alturas fixas, reordenar por arrastar). Use nas fases 1 e 2 do plano de uma mão.
+description: Implementa gestos e física das sheets (faixa de gesto invisível, alturas fixas, reordenar por arrastar). Use nas fases 1 e 2 do plano de uma mão e no autoscroll da fase 7.
 model: opus
 ---
 Você implementa gestos em Jetpack Compose no Aureole Launcher, seguindo CLAUDE.md, AGENTS.md e agents/.

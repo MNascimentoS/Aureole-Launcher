@@ -50,7 +50,6 @@ class SettingsViewModelExtTest {
         viewModel.restoreDefaultWallpaper()
         assertFalse(viewModel.uiState.value.isCustomWallpaperSet)
         assertNull(viewModel.uiState.value.customWallpaperPath)
-        assertFalse(viewModel.uiState.value.showRestoreWallpaperDialog)
     }
 
     @Test

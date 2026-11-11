@@ -26,6 +26,7 @@ import dev.mnascimentos.aureole.core.designsystem.palette.getPaletteByName
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDimens
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleThemeConfig
+import dev.mnascimentos.aureole.core.designsystem.utils.LocalGlassLevel
 import dev.mnascimentos.aureole.core.designsystem.utils.LocalHazeState
 import dev.mnascimentos.aureole.core.lifecycle.MainLifecycleObserver
 import dev.mnascimentos.aureole.core.lifecycle.UpdateLifecycleObserver
@@ -119,7 +120,10 @@ class MainActivity : ComponentActivity() {
         val isDarkTheme = isSystemInDarkTheme()
         val palette = getPaletteByName(uiState.selectedThemeName, isDarkTheme, uiState.manualSeedColor)
 
-        CompositionLocalProvider(LocalHazeState provides hazeState) {
+        CompositionLocalProvider(
+            LocalHazeState provides hazeState,
+            LocalGlassLevel provides uiState.glassLevel
+        ) {
             AureoleLauncherTheme(
                 config = AureoleThemeConfig(
                     darkTheme = isDarkTheme,

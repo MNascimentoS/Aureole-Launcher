@@ -25,16 +25,15 @@ import dev.mnascimentos.aureole.core.designsystem.icons.Glass
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
-import dev.mnascimentos.aureole.feature.settings.components.BlurBottomSheet
-import dev.mnascimentos.aureole.feature.settings.components.PickBorderRadiusBottomSheet
+import dev.mnascimentos.aureole.feature.settings.components.CardsGlassBottomSheet
 import dev.mnascimentos.aureole.feature.settings.components.SetBackgroundBottomSheet
 import dev.mnascimentos.aureole.feature.settings.model.AppearanceDialogFlags
+import dev.mnascimentos.aureole.feature.settings.model.CardsGlassParams
+import dev.mnascimentos.aureole.feature.settings.model.SetBackgroundParams
 import dev.mnascimentos.aureole.feature.settings.model.SettingsScreenActions
 import dev.mnascimentos.aureole.feature.settings.model.SettingsUiState
-
-private const val OPACITY_NONE_THRESHOLD = 0.05f
-private const val OPACITY_LOW_THRESHOLD = 0.35f
-private const val OPACITY_MEDIUM_THRESHOLD = 0.70f
+import dev.mnascimentos.aureole.feature.settings.model.shownGlassLevel
+import dev.mnascimentos.aureole.feature.settings.model.toCardsGlassDraft
 
 @Composable
 internal fun GlassAndBlurRow(
@@ -64,20 +63,8 @@ internal fun GlassAndBlurRow(
             modifier = Modifier.weight(1f),
             format = AureoleTextFormatParams(style = AureoleDS.typography.bodyLarge, fontWeight = FontWeight.Normal)
         )
-        val opacityText = when {
-            (!uiState.isHazeEnabled || uiState.hazeOpacity <= OPACITY_NONE_THRESHOLD) -> stringResource(
-                R.string.settings_appearance_glass_effect_none
-            )
-            uiState.hazeOpacity <= OPACITY_LOW_THRESHOLD -> stringResource(
-                R.string.settings_appearance_glass_effect_low
-            )
-            uiState.hazeOpacity <= OPACITY_MEDIUM_THRESHOLD -> stringResource(
-                R.string.settings_appearance_glass_effect_medium
-            )
-            else -> stringResource(R.string.settings_appearance_glass_effect_max)
-        }
         AureoleText(
-            text = opacityText,
+            text = stringResource(uiState.shownGlassLevel().labelRes),
             color = AureoleDS.colors.onSurfaceLow,
             format = AureoleTextFormatParams(style = AureoleDS.typography.bodyLarge)
         )
@@ -151,58 +138,26 @@ internal fun AppearanceDialogs(
 
     if (flags.showSetBg) {
         SetBackgroundBottomSheet(
-            onSolidColorClick = {
-                onDismissDialog()
-                actions.onOpenColorPickerDialog()
-            },
-            onCustomImageClick = {
-                onDismissDialog()
-                actions.onChangeWallpaperClick()
-            },
-            onDismissRequest = onDismissDialog
+            params = SetBackgroundParams(
+                currentColor = uiState.manualSeedColor,
+                isCustomImageSet = uiState.isCustomWallpaperSet,
+                onSolidColorSelected = actions.onSelectManualSeedColor,
+                onCustomImageClick = actions.onChangeWallpaperClick,
+                onDismissRequest = onDismissDialog,
+                isLeftHanded = uiState.isLeftHandedMode
+            )
         )
     }
 
-    if (flags.showBlur) {
-        BlurBottomSheet(
-            currentOpacity = uiState.hazeOpacity,
-            isHazeEnabled = uiState.isHazeEnabled,
-            onOptionSelected = { opacity, enableHaze ->
-                onDismissDialog()
-                handleBlurOptionSelected(opacity, enableHaze, uiState, actions)
-            },
-            onDismissRequest = onDismissDialog
+    if (flags.showCardsGlass) {
+        CardsGlassBottomSheet(
+            params = CardsGlassParams(
+                initial = uiState.toCardsGlassDraft(),
+                onApply = actions.onApplyCardsGlass,
+                onDismissRequest = onDismissDialog,
+                isLeftHanded = uiState.isLeftHandedMode
+            )
         )
-    }
-
-    if (flags.showBorderRadius) {
-        PickBorderRadiusBottomSheet(
-            selectedRadiusDp = uiState.cornerRadiusDp,
-            onRadiusSelected = { radius ->
-                onDismissDialog()
-                actions.onSelectCornerRadius(radius)
-            },
-            onDismissRequest = onDismissDialog
-        )
-    }
-}
-
-private fun handleBlurOptionSelected(
-    opacity: Float,
-    enableHaze: Boolean,
-    uiState: SettingsUiState,
-    actions: SettingsScreenActions
-) {
-    if (enableHaze) {
-        if (!uiState.isHazeEnabled) {
-            actions.onToggleHaze()
-        }
-        actions.onHazeOpacitySelected(opacity)
-    } else {
-        if (uiState.isHazeEnabled) {
-            actions.onToggleHaze()
-        }
-        actions.onHazeOpacitySelected(0.0f)
     }
 }
 

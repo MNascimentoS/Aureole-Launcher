@@ -21,6 +21,10 @@ enum class EditContainerScreenMode {
     MAIN, APPEARANCE, BEHAVIOR, MANAGE_ITEMS
 }
 
+/** Where the back key goes from this screen: the main one from a sub screen, or null (close) from the main one. */
+fun EditContainerScreenMode.backTarget(): EditContainerScreenMode? =
+    if (this == EditContainerScreenMode.MAIN) null else EditContainerScreenMode.MAIN
+
 data class ContainerOptionsState(
     val position: String,
     val orientation: String,

@@ -1,6 +1,8 @@
 package dev.mnascimentos.aureole.feature.settings.extensions
 
 import androidx.lifecycle.viewModelScope
+import dev.mnascimentos.aureole.R
+import dev.mnascimentos.aureole.core.designsystem.model.TextResource
 import dev.mnascimentos.aureole.feature.settings.SettingsViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -11,17 +13,28 @@ fun SettingsViewModel.checkDefaultLauncher() {
     updateUiState { it.copy(isDefaultLauncher = isDefault) }
 }
 
+/** Restores the default background at once and offers an "Undo" for the custom image that was set aside. */
 fun SettingsViewModel.restoreDefaultWallpaper() {
     viewModelScope.launch {
-        withContext(Dispatchers.IO) {
-            settingsRepository.restoreDefaultWallpaper()
+        val previousPath = withContext(Dispatchers.IO) {
+            settingsRepository.wallpaperStash.restoreDefaultKeepingUndo()
         }
         updateUiState {
-            it.copy(
-                isCustomWallpaperSet = false,
-                customWallpaperPath = null,
-                showRestoreWallpaperDialog = false
-            )
+            it.copy(isCustomWallpaperSet = false, customWallpaperPath = null)
+        }
+        if (previousPath != null) {
+            showUndo(TextResource.fromResId(R.string.settings_appearance_background_restored)) {
+                undoRestoreWallpaper(previousPath)
+            }
+        }
+    }
+}
+
+private fun SettingsViewModel.undoRestoreWallpaper(path: String) {
+    viewModelScope.launch {
+        val restored = withContext(Dispatchers.IO) { settingsRepository.wallpaperStash.undo(path) }
+        if (restored) {
+            updateUiState { it.copy(isCustomWallpaperSet = true, customWallpaperPath = path) }
         }
     }
 }

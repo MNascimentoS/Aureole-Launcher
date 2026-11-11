@@ -5,6 +5,7 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.performScrollTo
 import androidx.test.core.app.ApplicationProvider
 import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.core.data.model.LauncherItemState
@@ -141,10 +142,14 @@ class EditGridItemDialogTest {
         composeTestRule.onNodeWithText(
             context.getString(R.string.home_container_edit_scroll_orientation)
         ).assertExists()
-        composeTestRule.onNodeWithText(context.getString(R.string.home_container_edit_horizontal)).performClick()
+        composeTestRule.onNodeWithText(
+            context.getString(R.string.home_container_edit_horizontal)
+        ).performScrollTo().performClick()
         assertEquals(ScrollOrientation.HORIZONTAL, orientationTriggered)
 
-        composeTestRule.onNodeWithText(context.getString(R.string.home_grid_add_component)).performClick()
+        composeTestRule.onNodeWithText(
+            context.getString(R.string.home_grid_add_component)
+        ).performScrollTo().performClick()
         assertTrue(addContainerTriggered)
     }
 

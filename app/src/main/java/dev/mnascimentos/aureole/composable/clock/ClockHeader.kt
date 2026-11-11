@@ -29,6 +29,7 @@ import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.core.designsystem.utils.LocalHazeState
+import dev.mnascimentos.aureole.core.designsystem.utils.glassBlurRadius
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -106,7 +107,7 @@ private fun Modifier.clockHazeEffect(isHazeEnabled: Boolean, hazeStateRef: HazeS
     return this.hazeEffect(
         state = hazeStateRef,
         style = HazeStyle(
-            blurRadius = AureoleDS.dimens.large,
+            blurRadius = glassBlurRadius(AureoleDS.dimens.large),
             tint = HazeTint(AureoleDS.colors.surfaceVariant.copy(alpha = hazeOpacity))
         )
     ) {

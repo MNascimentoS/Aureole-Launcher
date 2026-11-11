@@ -272,7 +272,7 @@ private fun HomeEditGridItemOverlay(config: HomeOverlaysConfig) {
             EditGridItemDialog(
                 item = editingItem,
                 onDismissRequest = config.actions.onCloseEditGridItemDialog,
-                onDeleteConfirm = { id -> config.actions.onDeleteGridItem(id) }
+                onDeleteConfirm = { id -> config.actions.onRemoveGridItem(id) }
             )
         }
     }

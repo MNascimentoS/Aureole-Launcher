@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material3.Button
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -16,6 +15,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import dev.mnascimentos.aureole.R
+import dev.mnascimentos.aureole.composable.actions.AureolePrimaryActionButton
 import dev.mnascimentos.aureole.composable.appitem.AppListSkeletonComponent
 import dev.mnascimentos.aureole.composable.favorites.model.FavoriteAppsBodyParams
 import dev.mnascimentos.aureole.composable.favorites.model.FavoriteAppsDialogActions
@@ -27,7 +27,6 @@ import dev.mnascimentos.aureole.composable.favorites.model.reorderFavoritePackag
 import dev.mnascimentos.aureole.composable.mirror.LeftHandMirror
 import dev.mnascimentos.aureole.composable.reorder.model.move
 import dev.mnascimentos.aureole.core.data.model.AppInfo
-import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
@@ -40,23 +39,33 @@ internal fun FavoriteAppsBottomBar(
     onClose: () -> Unit
 ) {
     val isMain = currentMode == FavoriteAppsScreenMode.MAIN
-    Button(
+    val label = if (isMain) R.string.home_favorites_done else R.string.home_favorites_back
+    AureolePrimaryActionButton(
+        label = stringResource(label),
         onClick = if (isMain) onClose else onBack,
         modifier = Modifier.fillMaxWidth()
-    ) {
-        AureoleText(
-            if (isMain) stringResource(R.string.home_favorites_done) else stringResource(R.string.home_favorites_back)
-        )
-    }
+    )
 }
 
 @Composable
 internal fun FavoriteAppsSheetContent(
+    currentMode: FavoriteAppsScreenMode,
     config: FavoriteAppsDialogConfig,
-    actions: FavoriteAppsDialogActions
+    actions: FavoriteAppsDialogActions,
+    onModeChange: (FavoriteAppsScreenMode) -> Unit
 ) {
-    FavoriteAppsDialogContent(config = config, actions = actions)
+    when (currentMode) {
+        FavoriteAppsScreenMode.MAIN -> FavoriteAppsMainContent(
+            config = config,
+            actions = actions,
+            onModeChange = onModeChange
+        )
+        FavoriteAppsScreenMode.MANAGE,
+        FavoriteAppsScreenMode.EDIT_SHORTCUTS -> FavoriteAppsDialogContent(config = config, actions = actions)
+        FavoriteAppsScreenMode.APPEARANCE -> FavoriteAppsAppearanceContent(config = config, actions = actions)
+    }
 }
+
 private const val SEARCH_DEBOUNCE_DELAY_MS = 300L
 
 @Composable
@@ -199,42 +208,16 @@ private fun FavoriteAppsSections(
 
 @AureolePreview
 @Composable
-private fun FavoriteAppsSheetContentMainPreview() {
+private fun FavoriteAppsSheetContentManagePreview() {
     AureoleLauncherTheme {
         FavoriteAppsSheetContent(
+            currentMode = FavoriteAppsScreenMode.MANAGE,
             config = FavoriteAppsDialogConfig(
                 allApps = emptyList(),
                 favoriteAppPackages = emptyList()
             ),
-            actions = FavoriteAppsDialogActions()
-        )
-    }
-}
-
-@AureolePreview
-@Composable
-private fun FavoriteAppsSheetContentAppearancePreview() {
-    AureoleLauncherTheme {
-        FavoriteAppsSheetContent(
-            config = FavoriteAppsDialogConfig(
-                allApps = emptyList(),
-                favoriteAppPackages = emptyList()
-            ),
-            actions = FavoriteAppsDialogActions()
-        )
-    }
-}
-
-@AureolePreview
-@Composable
-private fun FavoriteAppsSheetContentEditShortcutsPreview() {
-    AureoleLauncherTheme {
-        FavoriteAppsSheetContent(
-            config = FavoriteAppsDialogConfig(
-                allApps = emptyList(),
-                favoriteAppPackages = emptyList()
-            ),
-            actions = FavoriteAppsDialogActions()
+            actions = FavoriteAppsDialogActions(),
+            onModeChange = {}
         )
     }
 }

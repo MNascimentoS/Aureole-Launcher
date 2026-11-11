@@ -53,18 +53,30 @@ fun AureoleActionRow(
 
 @Composable
 private fun RowScope.PrimaryButton(params: ActionRowParams) {
-    Button(
+    AureolePrimaryActionButton(
+        label = params.primaryLabel,
         onClick = params.onPrimary,
-        modifier = Modifier
-            .weight(ACTION_PRIMARY_WEIGHT)
-            .heightIn(min = AureoleDS.dimens.minTouchTarget),
+        modifier = Modifier.weight(ACTION_PRIMARY_WEIGHT)
+    )
+}
+
+/** The filled, pill-shaped primary button of the edit sheets: "Save", "Apply", "Done". Alone it fills the width. */
+@Composable
+fun AureolePrimaryActionButton(
+    label: String,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Button(
+        onClick = onClick,
+        modifier = modifier.heightIn(min = AureoleDS.dimens.minTouchTarget),
         shape = CircleShape,
         colors = ButtonDefaults.buttonColors(
             containerColor = AureoleDS.colors.onSurfaceHigh,
             contentColor = AureoleDS.colors.surface
         )
     ) {
-        ActionLabel(params.primaryLabel, AureoleDS.colors.surface)
+        ActionLabel(label, AureoleDS.colors.surface)
     }
 }
 

@@ -2,30 +2,27 @@ package dev.mnascimentos.aureole.feature.settings.extensions
 
 import dev.mnascimentos.aureole.core.designsystem.palette.resolveThemeSeedColor
 import dev.mnascimentos.aureole.feature.settings.SettingsViewModel
+import dev.mnascimentos.aureole.feature.settings.model.CardsGlassDraft
 import dev.mnascimentos.aureole.feature.settings.model.SettingValue
+import dev.mnascimentos.aureole.feature.settings.model.isHazeEnabled
+import dev.mnascimentos.aureole.feature.settings.model.withCardsGlass
 
 internal fun SettingsViewModel.applySettingValue(value: SettingValue) {
     when (value) {
         is SettingValue.ContainerPosition -> handleContainerPosition(value.position)
-        is SettingValue.HazeOpacity -> handleHazeOpacity(value.opacity)
         is SettingValue.ManualSeedColor -> handleManualSeedColor(value.color)
         is SettingValue.SelectedTheme -> handleSelectedTheme(value.themeName)
         is SettingValue.SelectedFont -> handleSelectedFont(value.fontName)
         is SettingValue.SettingsButtonPosition -> handleSettingsButtonPosition(value.position)
         is SettingValue.SearchIconPosition -> handleSearchIconPosition(value.position)
         is SettingValue.WallpaperScaleType -> handleWallpaperScaleType(value.scaleType)
-        is SettingValue.CornerRadius -> handleCornerRadius(value.radiusDp)
+        is SettingValue.CardsGlass -> handleCardsGlass(value.draft)
     }
 }
 
 private fun SettingsViewModel.handleContainerPosition(position: String) {
     settingsRepository.containerPosition = position
     updateUiState { it.copy(containerPosition = position, showContainerPositionDialog = false) }
-}
-
-private fun SettingsViewModel.handleHazeOpacity(opacity: Float) {
-    settingsRepository.hazeOpacity = opacity
-    updateUiState { it.copy(hazeOpacity = opacity, showHazeOpacityDialog = false) }
 }
 
 private fun SettingsViewModel.handleManualSeedColor(color: Int) {
@@ -75,7 +72,10 @@ private fun SettingsViewModel.handleWallpaperScaleType(scaleType: String) {
     updateUiState { it.copy(wallpaperScaleType = scaleType) }
 }
 
-private fun SettingsViewModel.handleCornerRadius(radiusDp: Int) {
-    settingsRepository.cornerRadiusDp = radiusDp
-    updateUiState { it.copy(cornerRadiusDp = radiusDp) }
+private fun SettingsViewModel.handleCardsGlass(draft: CardsGlassDraft) {
+    settingsRepository.cornerRadiusDp = draft.radiusDp
+    settingsRepository.isHazeEnabled = draft.isHazeEnabled()
+    settingsRepository.hazeOpacity = draft.opacity
+    if (draft.isHazeEnabled()) settingsRepository.hazeBlurLevel = draft.glass.name
+    updateUiState { it.withCardsGlass(draft) }
 }

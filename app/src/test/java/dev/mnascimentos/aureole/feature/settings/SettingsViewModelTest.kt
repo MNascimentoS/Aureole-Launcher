@@ -124,9 +124,6 @@ class SettingsViewModelTest {
         viewModel.setDialogVisible(SettingsDialog.CONTAINER_POSITION, true)
         assertTrue(viewModel.uiState.value.showContainerPositionDialog)
 
-        viewModel.setDialogVisible(SettingsDialog.HAZE_OPACITY, true)
-        assertTrue(viewModel.uiState.value.showHazeOpacityDialog)
-
         viewModel.setDialogVisible(SettingsDialog.COLOR_PICKER, true)
         assertTrue(viewModel.uiState.value.showColorPickerDialog)
 

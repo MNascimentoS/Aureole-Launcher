@@ -26,6 +26,8 @@ import dev.mnascimentos.aureole.composable.appitem.model.AppItemRowConfig
 import dev.mnascimentos.aureole.composable.favorites.model.FavoriteAppsDialogActions
 import dev.mnascimentos.aureole.composable.favorites.model.FavoriteAppsDialogConfig
 import dev.mnascimentos.aureole.composable.favorites.model.FavoriteAppsScreenMode
+import dev.mnascimentos.aureole.composable.favorites.model.backTarget
+import dev.mnascimentos.aureole.composable.preview.AureolePreviewFrame
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleEditOverlay
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
@@ -38,7 +40,7 @@ import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import kotlinx.coroutines.delay
 
 private const val DISMISS_DELAY_MS = 300L
-private const val PREVIEW_WIDTH_FRACTION = 0.88f
+private const val PREVIEW_MAX_APPS = 4
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -63,11 +65,12 @@ fun FavoriteAppsDialog(
     }
 
     val previewFavoriteApps = remember(config.favoriteAppPackages, appMap) {
-        config.favoriteAppPackages.mapNotNull { pkg -> appMap[pkg] }
+        config.favoriteAppPackages.mapNotNull { pkg -> appMap[pkg] }.take(PREVIEW_MAX_APPS)
     }
 
     val titleText = when (currentMode) {
         FavoriteAppsScreenMode.MAIN -> stringResource(R.string.home_favorites_dialog_title)
+        FavoriteAppsScreenMode.MANAGE -> stringResource(R.string.home_favorites_manage_apps_order)
         FavoriteAppsScreenMode.EDIT_SHORTCUTS -> stringResource(R.string.home_favorites_edit_shortcuts)
         FavoriteAppsScreenMode.APPEARANCE -> stringResource(R.string.home_container_edit_appearance)
     }
@@ -82,21 +85,26 @@ fun FavoriteAppsDialog(
                 animated = true,
                 isLeftHanded = config.rowConfig.isLeftHandedMode,
                 onSettingsClick = actions.onSettingsClick,
-                onBackPress = {
-                    if (currentMode != FavoriteAppsScreenMode.MAIN) {
-                        currentMode = FavoriteAppsScreenMode.MAIN
-                    } else {
-                        isVisible = false
-                    }
-                }
+                onBackPress = { currentMode.backTarget()?.let { currentMode = it } ?: run { isVisible = false } }
             ),
             previewContent = {
-                FavoriteAppsPreviewContent(previewFavoriteApps = previewFavoriteApps, rowConfig = config.rowConfig)
+                AureolePreviewFrame(label = stringResource(R.string.home_favorites_preview_on_home)) {
+                    FavoriteAppsPreviewContent(previewFavoriteApps = previewFavoriteApps, rowConfig = config.rowConfig)
+                }
+            },
+            bottomBarContent = {
+                FavoriteAppsBottomBar(
+                    currentMode = currentMode,
+                    onBack = { currentMode = FavoriteAppsScreenMode.MAIN },
+                    onClose = { isVisible = false }
+                )
             },
             sheetContent = {
                 FavoriteAppsSheetContent(
+                    currentMode = currentMode,
                     config = config,
                     actions = actions,
+                    onModeChange = { currentMode = it }
                 )
             }
         )
@@ -107,8 +115,8 @@ fun FavoriteAppsDialog(
 private fun FavoriteAppsPreviewContent(previewFavoriteApps: List<AppInfo>, rowConfig: AppItemRowConfig) {
     Box(
         modifier = Modifier
-            .fillMaxWidth(PREVIEW_WIDTH_FRACTION)
-            .padding(vertical = AureoleDS.dimens.small)
+            .fillMaxWidth()
+            .padding(horizontal = AureoleDS.dimens.large, vertical = AureoleDS.dimens.small)
             .clip(RoundedCornerShape(AureoleDS.dimens.radiusLarge))
             .background(AureoleDS.colors.surfaceVariant.copy(alpha = 0.35f))
             .border(

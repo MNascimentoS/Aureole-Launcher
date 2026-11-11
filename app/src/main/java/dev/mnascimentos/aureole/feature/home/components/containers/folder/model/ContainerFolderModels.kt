@@ -45,4 +45,5 @@ data class ContainerFolderBottomSheetParams(
     val onIcon: () -> Unit,
     val onRemoveFolder: () -> Unit,
     val onOpenContainerSettings: () -> Unit,
+    val onOpenSettings: (() -> Unit)? = null,
 )

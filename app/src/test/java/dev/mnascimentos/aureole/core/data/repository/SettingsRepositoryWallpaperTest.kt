@@ -21,11 +21,13 @@ class SettingsRepositoryWallpaperTest {
 
     private lateinit var context: Context
     private lateinit var repository: SettingsRepository
+    private val system = FakeSystemWallpaper()
 
     @Before
     fun setUp() {
         context = RuntimeEnvironment.getApplication()
         repository = SettingsRepository(context)
+        repository.systemWallpaper = system
         repository.clearCustomWallpaper()
     }
 
@@ -94,6 +96,113 @@ class SettingsRepositoryWallpaperTest {
     }
 
     @Test
+    fun `when restoring keeping undo, should keep the file aside and turn the custom wallpaper off`() {
+        repository.saveCustomWallpaper(Uri.fromFile(pngFile("stash.png")).toString())
+        val path = requireNotNull(repository.customWallpaperPath)
+
+        val stashed = repository.wallpaperStash.restoreDefaultKeepingUndo()
+
+        assertEquals(path, stashed)
+        assertFalse(File(path).exists())
+        assertFalse(repository.isCustomWallpaperSet)
+        assertNull(repository.customWallpaperPath)
+        repository.wallpaperStash.discard()
+    }
+
+    @Test
+    fun `when undoing, should put the file and the settings back`() {
+        repository.saveCustomWallpaper(Uri.fromFile(pngFile("unstash.png")).toString())
+        val path = requireNotNull(repository.wallpaperStash.restoreDefaultKeepingUndo())
+
+        val restored = repository.wallpaperStash.undo(path)
+
+        assertTrue(restored)
+        assertTrue(File(path).exists())
+        assertTrue(repository.isCustomWallpaperSet)
+        assertEquals(path, repository.customWallpaperPath)
+    }
+
+    @Test
+    fun `when nothing is stashed, should stash nothing and not undo`() {
+        assertNull(repository.wallpaperStash.restoreDefaultKeepingUndo())
+        assertFalse(repository.wallpaperStash.undo(File(context.filesDir, "nothing.jpg").absolutePath))
+    }
+
+    @Test
+    fun `when the stash is discarded, should not undo anymore`() {
+        repository.saveCustomWallpaper(Uri.fromFile(pngFile("discard.png")).toString())
+        val path = requireNotNull(repository.wallpaperStash.restoreDefaultKeepingUndo())
+
+        repository.wallpaperStash.discard()
+
+        assertFalse(repository.wallpaperStash.undo(path))
+    }
+
+    @Test
+    fun `when restoring keeping undo, should save then clear the system wallpaper`() {
+        repository.saveCustomWallpaper(Uri.fromFile(pngFile("sys1.png")).toString())
+
+        repository.wallpaperStash.restoreDefaultKeepingUndo()
+
+        assertEquals(listOf("save", "clear"), system.calls)
+        repository.wallpaperStash.discard()
+    }
+
+    @Test
+    fun `when undoing, should reapply the saved system wallpaper`() {
+        repository.saveCustomWallpaper(Uri.fromFile(pngFile("sys2.png")).toString())
+        val path = requireNotNull(repository.wallpaperStash.restoreDefaultKeepingUndo())
+
+        repository.wallpaperStash.undo(path)
+
+        assertEquals(listOf("save", "clear", "apply"), system.calls)
+        assertEquals("system", system.applied)
+        assertFalse(File(context.filesDir, "system_wallpaper_undo.jpg").exists())
+    }
+
+    @Test
+    fun `when the system wallpaper could not be saved, should still clear and not reapply on undo`() {
+        system.canSave = false
+        repository.saveCustomWallpaper(Uri.fromFile(pngFile("sys3.png")).toString())
+        val path = requireNotNull(repository.wallpaperStash.restoreDefaultKeepingUndo())
+
+        assertTrue(repository.wallpaperStash.undo(path))
+
+        assertEquals(listOf("save", "clear"), system.calls)
+    }
+
+    @Test
+    fun `when the undo window expires, should not reapply and should delete the saved files`() {
+        repository.saveCustomWallpaper(Uri.fromFile(pngFile("sys4.png")).toString())
+        repository.wallpaperStash.restoreDefaultKeepingUndo()
+
+        repository.wallpaperStash.discard()
+
+        assertEquals(listOf("save", "clear"), system.calls)
+        assertFalse(File(context.filesDir, "system_wallpaper_undo.jpg").exists())
+        assertFalse(File(context.filesDir, "custom_wallpaper_undo.jpg").exists())
+    }
+
+    @Test
+    fun `when there is no custom wallpaper, should not touch the system wallpaper`() {
+        repository.wallpaperStash.restoreDefaultKeepingUndo()
+
+        assertTrue(system.calls.isEmpty())
+    }
+
+    @Test
+    fun `when the platform wallpaper is used, should not throw`() {
+        val platform = PlatformSystemWallpaper(context)
+        val target = File(context.cacheDir, "sys_target.jpg")
+
+        platform.save(target)
+        platform.apply(target)
+        platform.apply(File(context.cacheDir, "absent.jpg"))
+        platform.clear()
+        target.delete()
+    }
+
+    @Test
     fun `when the app does not hold the home role, should not be the default launcher`() {
         assertFalse(repository.checkDefaultLauncher())
     }
@@ -116,5 +225,28 @@ class SettingsRepositoryWallpaperTest {
         val bitmap: Bitmap = createBitmap(4, 4)
         file.outputStream().use { bitmap.compress(Bitmap.CompressFormat.PNG, 100, it) }
         return file
+    }
+}
+
+private class FakeSystemWallpaper : SystemWallpaper {
+    val calls = mutableListOf<String>()
+    var canSave = true
+    var applied: String? = null
+
+    override fun clear(): Boolean {
+        calls += "clear"
+        return true
+    }
+
+    override fun save(target: File): Boolean {
+        calls += "save"
+        if (canSave) target.writeText("system")
+        return canSave
+    }
+
+    override fun apply(source: File): Boolean {
+        calls += "apply"
+        applied = source.readText()
+        return true
     }
 }

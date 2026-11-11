@@ -34,6 +34,7 @@ import androidx.compose.ui.text.font.FontWeight
 import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.composable.mirror.LeftHandMirror
 import dev.mnascimentos.aureole.core.data.model.AppInfo
+import dev.mnascimentos.aureole.core.data.model.QuickButtonAppearance
 import dev.mnascimentos.aureole.core.data.model.QuickButtonIcon
 import dev.mnascimentos.aureole.core.data.model.QuickButtonModel
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
@@ -47,13 +48,12 @@ import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.components.quickbutton.model.QuickButtonColorPickerTarget
-import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
 
 @Composable
 internal fun QuickButtonAppearanceSheetContent(
     activeModel: QuickButtonModel,
     activeAppInfo: AppInfo?,
-    actions: HomeScreenActions,
+    onUpdateAppearance: (QuickButtonAppearance) -> Unit,
     onPickColor: (QuickButtonColorPickerTarget) -> Unit,
     onOpenIconPicker: () -> Unit
 ) {
@@ -70,7 +70,7 @@ internal fun QuickButtonAppearanceSheetContent(
             isChecked = activeModel.appearance.strokeEnabled,
             onToggle = {
                 val newStroke = !activeModel.appearance.strokeEnabled
-                actions.onUpdateQuickButtonAppearance(activeModel.appearance.copy(strokeEnabled = newStroke))
+                onUpdateAppearance(activeModel.appearance.copy(strokeEnabled = newStroke))
             }
         )
         if (activeModel.appearance.strokeEnabled) {
@@ -296,23 +296,11 @@ private fun QuickButtonIconFlowRow(
 @AureolePreview
 @Composable
 private fun QuickButtonAppearanceSheetContentPreview() {
-    val dummyActions = HomeScreenActions(
-        onWidgetRowHeightChanged = {},
-        onAppClick = {},
-        onExpandNotificationShade = {},
-        onFolderIntent = {},
-        onSetAddAppToFolderDialogVisible = {},
-        onSetRenameFolderDialogVisible = {},
-        onSearchQueryChanged = {},
-        onSettingsClick = {},
-        onAllAppsDrawerClose = {},
-        onAllAppsDrawerOpen = {},
-    )
     AureoleLauncherTheme {
         QuickButtonAppearanceSheetContent(
             activeModel = QuickButtonModel(),
             activeAppInfo = null,
-            actions = dummyActions,
+            onUpdateAppearance = {},
             onPickColor = {},
             onOpenIconPicker = {},
         )

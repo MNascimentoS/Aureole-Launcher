@@ -1,10 +1,10 @@
 ---
 description: Executa uma fase do plano de bottom sheets para uma mão
-argument-hint: <número da fase, de 1 a 7>
+argument-hint: <número da fase, de 1 a 9>
 ---
 Execute a fase $ARGUMENTS de `specs/bottom-sheets/one-hand-plan.md`.
 
-1. Leia a seção da fase, `specs/bottom-sheets/progress.md` e as referências citadas em `specs/bottom-sheets/ref/`. Se alguma fase da qual esta depende (ver "Ordem e dependências") não estiver marcada como concluída em `progress.md`, avise e pare.
+1. Leia a seção da fase, `specs/bottom-sheets/progress.md` e as referências citadas em `specs/bottom-sheets/ref/`. Se uma fase anterior (a ordem está no plano) não estiver marcada como concluída em `progress.md`, avise e pare.
 2. **Antes de planejar, leia o código que já existe** para esta fase (a seção "Já existe" do plano lista os arquivos). Reaproveite; só crie o que falta. Trabalhe na branch atual.
 3. Mostre um plano curto (arquivos que mudam e por quê, subagente e modelo, estimativa) e **espere meu ok**.
 4. Delegue a implementação ao subagente indicado na tabela do plano (`sheet-gestures`, `sheet-ui` ou `sheet-chores`). Ele já roda no modelo certo. Se o escopo for grande, divida por tela e rode uma de cada vez.

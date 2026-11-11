@@ -4,8 +4,12 @@ import dev.mnascimentos.aureole.composable.appitem.model.AppItemRowConfig
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 
 enum class FavoriteAppsScreenMode {
-    MAIN, EDIT_SHORTCUTS, APPEARANCE
+    MAIN, MANAGE, EDIT_SHORTCUTS, APPEARANCE
 }
+
+/** Where the back key goes from this screen: the main one from any sub-screen, or null (close) from the main one. */
+fun FavoriteAppsScreenMode.backTarget(): FavoriteAppsScreenMode? =
+    if (this == FavoriteAppsScreenMode.MAIN) null else FavoriteAppsScreenMode.MAIN
 
 data class FavoriteAppsDialogConfig(
     val allApps: List<AppInfo>,
@@ -13,7 +17,9 @@ data class FavoriteAppsDialogConfig(
     val containerId: String? = null,
     val rowConfig: AppItemRowConfig = AppItemRowConfig(),
     /** The apps have not arrived yet: the list shows its skeleton. */
-    val isLoading: Boolean = false
+    val isLoading: Boolean = false,
+    /** Whether the Home lists every app (on) or only the favorites (off). */
+    val showAllAppsOnHome: Boolean = true
 )
 
 data class FavoriteAppsDialogActions(

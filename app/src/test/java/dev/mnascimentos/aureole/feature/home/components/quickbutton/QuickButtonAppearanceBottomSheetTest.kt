@@ -9,16 +9,23 @@ import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollTo
 import dev.mnascimentos.aureole.core.data.model.AppInfo
+import dev.mnascimentos.aureole.core.data.model.QuickButtonAppearance
 import dev.mnascimentos.aureole.core.data.model.QuickButtonModel
 import dev.mnascimentos.aureole.core.data.model.QuickButtonShortcuts
 import dev.mnascimentos.aureole.core.data.model.ShortcutAction
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
+import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
 import dev.mnascimentos.aureole.feature.home.model.createDefaultHomeScreenActions
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNull
+import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
+
+private const val DISMISS_ANIMATION_MS = 500L
 
 @RunWith(RobolectricTestRunner::class)
 class QuickButtonAppearanceBottomSheetTest {
@@ -107,5 +114,50 @@ class QuickButtonAppearanceBottomSheetTest {
         // Assert
         composeTestRule.onNodeWithText("Icon").performScrollTo().performClick()
         composeTestRule.onNodeWithText("Select Icon").assertIsDisplayed()
+    }
+
+    private fun setAppearanceSheet(actions: HomeScreenActions, dismissed: MutableList<Unit> = mutableListOf()) {
+        val uiState = MainUiState(
+            activeQuickButtonModel = QuickButtonModel(appearance = QuickButtonAppearance(strokeEnabled = false))
+        )
+        composeTestRule.setContent {
+            AureoleLauncherTheme {
+                QuickButtonAppearanceBottomSheet(
+                    uiState = uiState,
+                    actions = actions,
+                    onDismissRequest = { dismissed += Unit }
+                )
+            }
+        }
+    }
+
+    @Test
+    fun `when toggling the stroke, should not write the button until Save is tapped`() {
+        var saved: QuickButtonAppearance? = null
+        setAppearanceSheet(createDefaultHomeScreenActions().copy(onUpdateQuickButtonAppearance = { saved = it }))
+
+        composeTestRule.onNodeWithText("Stroke").performScrollTo().performClick()
+        composeTestRule.onNodeWithText("Stroke color").assertExists()
+        assertNull(saved)
+
+        composeTestRule.onNodeWithText("Save").performClick()
+        assertTrue(saved!!.strokeEnabled)
+    }
+
+    @Test
+    fun `when cancelling after editing, should drop the draft and close`() {
+        var saved: QuickButtonAppearance? = null
+        val dismissed = mutableListOf<Unit>()
+        setAppearanceSheet(
+            createDefaultHomeScreenActions().copy(onUpdateQuickButtonAppearance = { saved = it }),
+            dismissed
+        )
+
+        composeTestRule.onNodeWithText("Stroke").performScrollTo().performClick()
+        composeTestRule.onNodeWithText("Cancel").performClick()
+        composeTestRule.mainClock.advanceTimeBy(DISMISS_ANIMATION_MS)
+
+        assertNull(saved)
+        assertEquals(1, dismissed.size)
     }
 }

@@ -15,6 +15,7 @@ import com.android.tools.screenshot.PreviewTest
 import dev.mnascimentos.aureole.composable.favorites.FavoriteAppsSheetContent
 import dev.mnascimentos.aureole.composable.favorites.model.FavoriteAppsDialogActions
 import dev.mnascimentos.aureole.composable.favorites.model.FavoriteAppsDialogConfig
+import dev.mnascimentos.aureole.composable.favorites.model.FavoriteAppsScreenMode
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
@@ -45,11 +46,13 @@ private fun FavoritesManageCase(isLeftHanded: Boolean) {
                     .padding(16.dp)
             ) {
                 FavoriteAppsSheetContent(
+                    currentMode = FavoriteAppsScreenMode.MANAGE,
                     config = FavoriteAppsDialogConfig(
                         allApps = favoriteSampleApps,
                         favoriteAppPackages = favoriteSampleApps.take(4).map { it.packageName }
                     ),
-                    actions = FavoriteAppsDialogActions()
+                    actions = FavoriteAppsDialogActions(),
+                    onModeChange = {}
                 )
             }
         }

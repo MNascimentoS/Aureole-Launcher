@@ -81,6 +81,7 @@ import dev.mnascimentos.aureole.feature.home.grid.extensions.moveChildInScrollVi
 import dev.mnascimentos.aureole.feature.home.grid.extensions.moveGridItem
 import dev.mnascimentos.aureole.feature.home.grid.extensions.openAddContainerForParent
 import dev.mnascimentos.aureole.feature.home.grid.extensions.removeChildFromScrollView
+import dev.mnascimentos.aureole.feature.home.grid.extensions.removeGridItemWithUndo
 import dev.mnascimentos.aureole.feature.home.grid.extensions.resetGridItems
 import dev.mnascimentos.aureole.feature.home.grid.extensions.resizeChildInScrollView
 import dev.mnascimentos.aureole.feature.home.grid.extensions.resizeGridItem
@@ -175,6 +176,7 @@ class HomeActionsFactory(
             onOpenEditGridItemDialog = { item -> viewModel.setEditingGridItem(item) },
             onCloseEditGridItemDialog = { viewModel.setEditingGridItem(null) },
             onDeleteGridItem = { id -> viewModel.deleteGridItem(id) },
+            onRemoveGridItem = { id -> viewModel.removeGridItemWithUndo(id) },
             onDismissGridError = { viewModel.dismissGridError() },
             onSetIsAddingSingleWidget = { viewModel.setIsAddingSingleWidget(it) },
             onUpdateScrollViewOrientation = { id, o -> viewModel.updateScrollViewOrientation(id, o) },

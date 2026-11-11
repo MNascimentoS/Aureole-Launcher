@@ -7,6 +7,8 @@ import dev.mnascimentos.aureole.core.data.repository.AppRepository
 import dev.mnascimentos.aureole.core.data.repository.FolderRepository
 import dev.mnascimentos.aureole.core.data.repository.GridRepository
 import dev.mnascimentos.aureole.core.data.repository.SettingsRepository
+import dev.mnascimentos.aureole.core.designsystem.model.glassLevelOf
+import dev.mnascimentos.aureole.core.undo.UndoController
 import dev.mnascimentos.aureole.feature.settings.extensions.SettingsToggleManager
 import dev.mnascimentos.aureole.feature.settings.extensions.applySettingValue
 import dev.mnascimentos.aureole.feature.settings.extensions.checkDefaultLauncher
@@ -28,6 +30,7 @@ class SettingsViewModel(
     private val appRepository: AppRepository,
     private val folderRepository: FolderRepository,
     internal val gridRepository: GridRepository,
+    internal val undoController: UndoController = UndoController(),
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(SettingsUiState())
@@ -35,6 +38,11 @@ class SettingsViewModel(
 
     internal fun updateUiState(transform: (SettingsUiState) -> SettingsUiState) {
         _uiState.update(transform)
+    }
+
+    /** Publishes the controller's current offer (or none) to [uiState]. */
+    internal fun syncUndoState() {
+        _uiState.update { it.copy(undoSnackbar = undoController.state.value) }
     }
 
     init {
@@ -72,6 +80,7 @@ class SettingsViewModel(
                 isHazeEnabled = settingsRepository.isHazeEnabled,
                 isHazeSupported = settingsRepository.isHazeSupported,
                 hazeOpacity = settingsRepository.hazeOpacity,
+                hazeBlurLevel = glassLevelOf(settingsRepository.hazeBlurLevel),
                 isInAppUpdateEnabled = settingsRepository.isInAppUpdateEnabled,
                 isThemedAppIconsEnabled = settingsRepository.isThemedAppIconsEnabled,
                 isAlphabetScrubberDisabled = settingsRepository.isAlphabetScrubberDisabled,
@@ -94,9 +103,7 @@ class SettingsViewModel(
             when (dialog) {
                 SettingsDialog.FAVORITE_PICKER -> it.copy(showFavoritePickerDialog = visible)
                 SettingsDialog.CONTAINER_POSITION -> it.copy(showContainerPositionDialog = visible)
-                SettingsDialog.HAZE_OPACITY -> it.copy(showHazeOpacityDialog = visible)
                 SettingsDialog.COLOR_PICKER -> it.copy(showColorPickerDialog = visible)
-                SettingsDialog.RESTORE_WALLPAPER -> it.copy(showRestoreWallpaperDialog = visible)
                 SettingsDialog.CREATE_FOLDER -> it.copy(showCreateFolderDialog = visible)
                 SettingsDialog.RESET_GRID -> it.copy(showResetGridDialog = visible)
                 SettingsDialog.FACTORY_RESET -> it.copy(showFactoryResetDialog = visible)

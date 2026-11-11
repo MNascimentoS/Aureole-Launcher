@@ -9,6 +9,7 @@ import dev.mnascimentos.aureole.core.data.repository.FolderRepository
 import dev.mnascimentos.aureole.core.data.repository.GridRepository
 import dev.mnascimentos.aureole.core.data.repository.SettingsRepository
 import dev.mnascimentos.aureole.core.data.repository.WidgetRepository
+import dev.mnascimentos.aureole.core.designsystem.model.glassLevelOf
 import dev.mnascimentos.aureole.core.undo.UndoController
 import dev.mnascimentos.aureole.feature.home.components.appsdrawer.extensions.updateAppsState
 import dev.mnascimentos.aureole.feature.home.components.containers.extensions.loadContainers
@@ -137,6 +138,7 @@ class HomeViewModel(
                     isHazeEnabled = settingsRepository.isHazeEnabled,
                     isHazeSupported = settingsRepository.isHazeSupported,
                     hazeOpacity = settingsRepository.hazeOpacity,
+                    glassLevel = glassLevelOf(settingsRepository.hazeBlurLevel),
                     isInAppUpdateEnabled = settingsRepository.isInAppUpdateEnabled,
                     isThemedAppIconsEnabled = settingsRepository.isThemedAppIconsEnabled,
                     isAlphabetScrubberDisabled = settingsRepository.isAlphabetScrubberDisabled,

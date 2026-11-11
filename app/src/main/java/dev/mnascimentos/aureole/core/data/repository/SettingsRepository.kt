@@ -1,6 +1,5 @@
 package dev.mnascimentos.aureole.core.data.repository
 
-import android.app.WallpaperManager
 import android.app.role.RoleManager
 import android.content.Context
 import android.content.Intent
@@ -16,7 +15,6 @@ import dev.mnascimentos.aureole.core.designsystem.utils.HazeUtils
 import timber.log.Timber
 import java.io.File
 import java.io.FileOutputStream
-import java.io.IOException
 
 class SettingsRepository(private val context: Context) {
 
@@ -26,6 +24,10 @@ class SettingsRepository(private val context: Context) {
      */
     @VisibleForTesting
     internal var terminateProcess: () -> Unit = { Runtime.getRuntime().exit(0) }
+
+    /** The device wallpaper; unit tests replace it so no real WallpaperManager call happens. */
+    @VisibleForTesting
+    internal var systemWallpaper: SystemWallpaper = PlatformSystemWallpaper(context)
 
     var isLeftHandedMode: Boolean
         get() = prefs.getBoolean(KEY_LEFT_HANDED_MODE, false)
@@ -181,6 +183,11 @@ class SettingsRepository(private val context: Context) {
         get() = prefs.getFloat(KEY_HAZE_OPACITY, DEFAULT_HAZE_OPACITY)
         set(value) = prefs.edit { putFloat(KEY_HAZE_OPACITY, value) }
 
+    /** Name of the last glass level the user chose (kept while the blur is switched off). */
+    var hazeBlurLevel: String
+        get() = prefs.getString(KEY_HAZE_BLUR_LEVEL, DEFAULT_HAZE_BLUR_LEVEL) ?: DEFAULT_HAZE_BLUR_LEVEL
+        set(value) = prefs.edit { putString(KEY_HAZE_BLUR_LEVEL, value) }
+
     var isDynamicWallpaperEnabled: Boolean
         get() = prefs.getBoolean(KEY_USE_WALLPAPER_COLORS, false)
         set(value) = prefs.edit { putBoolean(KEY_USE_WALLPAPER_COLORS, value) }
@@ -218,6 +225,9 @@ class SettingsRepository(private val context: Context) {
         set(value) = prefs.edit { putInt(KEY_LAST_SEEN_VERSION_CODE, value) }
 
     val onboarding: OnboardingPreferences by lazy { OnboardingPreferences { prefs } }
+
+    /** Keeps the custom wallpaper aside while a "Restore background" can still be undone. */
+    val wallpaperStash: WallpaperUndoStash by lazy { WallpaperUndoStash(context, this) { systemWallpaper } }
 
     fun clearCustomWallpaper() {
         val path = customWallpaperPath
@@ -265,14 +275,7 @@ class SettingsRepository(private val context: Context) {
 
     fun restoreDefaultWallpaper() {
         clearCustomWallpaper()
-        try {
-            val wallpaperManager = WallpaperManager.getInstance(context)
-            wallpaperManager.clear()
-        } catch (e: IOException) {
-            Timber.tag(TAG).w(e, "IOException clearing wallpaper")
-        } catch (e: SecurityException) {
-            Timber.tag(TAG).w(e, "SecurityException clearing wallpaper")
-        }
+        systemWallpaper.clear()
     }
 
     @Suppress("TooGenericExceptionCaught") // Best effort reset cleanup
@@ -352,6 +355,7 @@ class SettingsRepository(private val context: Context) {
         private const val KEY_MANUAL_SEED_COLOR = "manual_seed_color"
         private const val KEY_HAZE_ENABLED = "haze_enabled"
         private const val KEY_HAZE_OPACITY = "haze_opacity"
+        private const val KEY_HAZE_BLUR_LEVEL = "haze_blur_level"
         private const val KEY_SHOW_WIDGET_DOTS = "show_widget_dots"
         private const val KEY_IN_APP_UPDATE_ENABLED = "in_app_update_enabled"
         private const val KEY_HEADER_OFFSET_PERCENT = "header_offset_percent"
@@ -366,6 +370,7 @@ class SettingsRepository(private val context: Context) {
         private const val KEY_SELECTED_FONT = "selected_font"
         private const val KEY_LAST_SEEN_VERSION_CODE = "last_seen_version_code"
         private const val DEFAULT_HAZE_OPACITY = 0.5f
+        private const val DEFAULT_HAZE_BLUR_LEVEL = "MEDIUM"
         private const val DEFAULT_HEADER_OFFSET = 10
         private const val MIN_HEADER_OFFSET = 0
         private const val MAX_HEADER_OFFSET = 60

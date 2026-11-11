@@ -1,40 +1,41 @@
 # Bottom sheets para uma mão: plano de desenvolvimento
 
-**Base:** `release/0.9.20` (criada a partir da `release/0.9.18` + commits locais) · **Protótipo:** `specs/bottom-sheets/one-hand-prototype.html` (31 telas)
+**Base:** `release/0.9.20` · **Protótipo:** `specs/bottom-sheets/one-hand-prototype.html` (31 telas)
 **Referências:** `ref/telas/<tela>.png` (todas as telas; `-canhoto` nas 6 principais), `ref/paleta.png`, `ref/fonte.png`
-**Como rodar:** `/fase <n>` · progresso em `/estado` e `progress.md`. Commit e push ficam com o Mateus.
+**Como rodar:** `/fase <n>` · progresso em `/estado` e `progress.md` (as notas de cada fase estão lá). Commit e push ficam com o Mateus.
 
-## Onde estamos
+## Onde estamos (11/11)
 
-Em 10/11 já estavam no código (ver `progress.md`): base da sheet 60/90%, desfazer por 4 s, busca grudada no teclado, seletor de apps com arrastar para marcar e A–Z, relógio com abas que deslizam, Paleta e Fonte com mini-home. Este plano cobre só o que falta para o app ficar igual ao protótipo v5.
+As fases 1 a 5 já rodaram: gates passando (detekt em 5 issues, 1285 testes, cobertura, screenshot e `assembleDebug`) e visual **quase** ou **igual**. Falta o teste no aparelho de todas elas.
+Depois disso o Mateus testou no aparelho e pediu ajustes (fase 6). As pendências que as próprias fases deixaram viraram a fase 7. Restam também diálogos e acabamento.
 
-## Resumo das fases restantes
+## Resumo
 
-| # | Fase | Modelo | Tempo (agente + gates) | Tokens |
-|---|---|---|---|---|
-| 1 | Ajustes da base: faixa de gesto invisível, `ActionRow` e espelho, base do `SettingsBottomSheet` | `sheet-gestures` (Opus) | 1,5–2,5 h | 100–160k |
-| 2 | Lista reordenável com ✕ e "+", desfazer em widgets e reordenar | `sheet-gestures` (Opus) | 2,5–3,5 h | 120–180k |
-| 3 | Menus e popup da pasta (grade centrada, lista ancorada) | `sheet-ui` (Sonnet) | 2–3 h | 100–150k |
-| 4 | Editores restantes: container, favoritos, pilha de widgets, plano de fundo, cor, pasta, botão rápido, cartões e vidro | `sheet-ui` (Sonnet) | 3–4,5 h | 180–260k |
-| 5 | Adicionar container e opções de posição | `sheet-ui` (Sonnet) | 1,5–2,5 h | 80–130k |
-| 6 | Diálogos e avisos: confirmações, atualização, novidades | `sheet-ui` (Sonnet) | 1,5–2,5 h | 80–130k |
-| 7 | Acabamento: strings, previews, screenshots, varredura | `sheet-chores` (Haiku) | 1–1,5 h | 40–80k |
-| — | Revisão visual ao fim de cada fase | `visual-reviewer` (Opus) | 10–20 min | 30–50k por fase |
+| # | Fase | Modelo | Tempo (agente + gates) | Tokens | Estado |
+|---|---|---|---|---|---|
+| 1 | Base da sheet: faixa de gesto invisível, `ActionRow`, espelho | Opus | 1,5–2,5 h | 100–160k | feita |
+| 2 | Lista reordenável, ✕, "+", desfazer | Opus | 2,5–3,5 h | 120–180k | feita |
+| 3 | Menus e popup da pasta | Sonnet | 2–3 h | 100–150k | feita |
+| 4 | Editores restantes, cartões e vidro numa sheet | Sonnet | 3–4,5 h | 180–260k | feita |
+| 5 | Adicionar container e opções de posição | Sonnet | 1,5–2,5 h | 80–130k | feita |
+| 6 | **Ajustes do teste no aparelho:** prévia sem rótulo, ícones nas linhas, cards da pilha, mover por botões | `sheet-ui` (Sonnet) | 2–3 h | 120–180k | a fazer |
+| 6+ | (se aprovado) ícones de pasta do Material Symbols | `sheet-chores` (Haiku) + `sheet-ui` | 1,5–2,5 h | 80–120k | decidir |
+| 7 | **Lacunas e dívidas das fases 1 a 5** | `sheet-ui` (Sonnet), autoscroll com `sheet-gestures` (Opus) | 3,5–5,5 h | 200–300k | a fazer |
+| 8 | Diálogos e avisos | `sheet-ui` (Sonnet) | 1,5–2,5 h | 80–130k | a fazer |
+| 9 | Acabamento: strings, previews, screenshots, varredura | `sheet-chores` (Haiku) | 1–1,5 h | 40–80k | a fazer |
+| — | Revisão visual ao fim de cada fase | `visual-reviewer` (Opus) | 10–20 min | 30–50k por fase | |
 
-**Total:** cerca de 13–20 h de trabalho do agente e 0,9–1,4 M de tokens, já contando as revisões.
-**Calendário realista:** 1,5 a 2 semanas, 2 a 3 fases por semana. O ritmo é limitado por você: ok no plano de cada fase, olhar os prints e testar no aparelho (30–60 min por fase). Os tempos são estimativas.
-**O que costuma estourar o tempo:** divergência de screenshot test (a decisão é sua), detekt com mais de 5 issues, arquivo acima de 500 linhas, cobertura abaixo de 85/70/60.
+**Falta:** cerca de 8–12,5 h de trabalho do agente (mais 1,5–2,5 h se aprovar os ícones de pasta) e 0,45–0,7 M de tokens. Calendário realista: 1 semana, a maior parte do tempo no seu teste no aparelho.
+**Ordem:** 6 → 7 → 8 → 9. A 6 e a 7 vêm antes da 8 porque mexem em componentes que os diálogos reaproveitam (`AureolePreviewFrame`, `AureoleMenuSheet`, linhas de switch).
 
-### Ordem e dependências
+### Decisões que dependem do Mateus
 
-1 → 2 → 3, 4, 5 e 6 (qualquer ordem entre elas; 4 antes de 5 aproveita mais) → 7.
-As fases 3 a 6 dependem da 1 (base) e da 2 (reordenar e desfazer). Não pule.
-
-### Por que cada modelo
-
-- **Opus:** gestos e física (fases 1 e 2) e a revisão visual. Erra caro e é difícil de testar à mão.
-- **Sonnet:** telas com padrão e referência definidos (3 a 6).
-- **Haiku:** strings, previews e esqueleto de testes (7).
+1. **Menu do app, lado da mão:** o texto do protótipo manda a ação mais usada para o lado do polegar; a imagem `appmenu.png` destra mostra o oposto. A fase 3 seguiu o texto. Escolher uma.
+2. **Favoritos no canhoto:** os cabeçalhos também espelham ("Favorites" à direita). Manter ou não.
+3. **Seletor de cor:** matiz em barra (protótipo) ou em círculo (referência antiga). Sugestão: barra, mais fácil com o polegar.
+4. **Cartões e vidro:** o protótipo usa "Aplicar/Cancelar" ou só "Pronto"? Hoje o código tem Aplicar/Cancelar.
+5. **Ícones de pasta:** aprovar a proposta do Material Symbols (abaixo).
+6. **"Pasta" e "Ícone" na fileira do app:** o código não tem essas ações. Sugestão: tirar do protótipo.
 
 ### Diferenças aceitas em relação ao protótipo
 
@@ -49,6 +50,9 @@ As fases 3 a 6 dependem da 1 (base) e da 2 (reordenar e desfazer). Não pule.
 - Pasta aberta em modo grade: popup centralizado, só com os apps. Em modo lista: popup ancorado perto da pasta, como hoje. Sem Adicionar Apps nem Editar Pasta no popup.
 - Sem sheet de tamanho de widget: `EditGridItemDialog` só mostra "Tamanho atual" (leitura); "Redimensionar Grupo" abre o editor da pilha.
 - Pilha de widgets: a prévia lista os widgets com ✕ (com desfazer), arrastar após segurar e cartão "+".
+- Prévia sem rótulo: sem "PRÉVIA", "PRÉVIA AO VIVO", "LIVE PREVIEW" nem "PREVIEW" em nenhuma tela (decisão de 11/11, vale mais que as referências antigas). A prévia flutua acima da sheet sem texto.
+- Linhas de menu com ícone numa coluna fixa e centralizada, como no app hoje (Aparência, Comportamento, Gerenciar Itens, Configurações do App…), mantendo subtítulo e seta. A linha "Mostrar indicador de posição" também ganha o ícone de pontos.
+- Pilha de widgets: cards da prévia maiores (116 x 96 dp) para aparecer 2,5 cards e indicar que dá para rolar; reordenar além de arrastar: botões ‹ › "Mover <widget> · 2 de 3" na sheet, ao alcance do polegar (com desfazer), e `customActions` de acessibilidade.
 - Paleta e Fonte: grade de chips, mini-home só com relógio, data e 4 apps (do lado oposto ao polegar), Aplicar/Cancelar do lado da mão. **Já implementadas.**
 
 ### Fora do escopo (decidir depois)
@@ -57,79 +61,108 @@ Telas cheias de Settings, onboarding, `AureoleFloatingSearchBar`, tema claro, pa
 
 ---
 
-## Fase 1: ajustes da base
+## Fases 1 a 5 (feitas)
 
-**Já existe:** `core/designsystem/model/SheetDetents.kt`, `OverlaySheetMotion.kt`, `SheetHandleAction.kt`, `components/OverlaySheetHandle.kt`, `AureoleEditOverlaySheet*.kt`, `composable/actions/AureoleActionRow.kt`, `composable/mirror/LeftHandMirror.kt`.
-**Referências:** `ref/fase1-*.png` (a pílula nelas é da versão antiga; a nova não tem pílula) e `ref/telas/clock.png`, `customize.png`.
+Detalhes, gates, veredito visual e o que ficou faltando de cada uma estão em `progress.md`. O que entrou no código: `OverlaySheetGestureZone` (faixa de 20 dp sem pílula), `AureoleActionRow`, `LeftHandMirror`, `composable/reorder/` (`ReorderableRow`, `ReorderableColumn`, `ReorderMath`), `composable/menu/` (`AureoleMenuSheet`, `AureoleRadioSheet`), `AureoleConfirmOverlay`, `AureolePreviewFrame`, `AureoleSwitchRow`, `AureoleSegmentedControl`, `CardsGlassBottomSheet` e o desfazer do fundo.
+
+---
+
+## Fase 6: ajustes do teste no aparelho
+
+**Já existe:** `AureolePreviewFrame` (desenha o rótulo), `AureoleMenuSheet` e linhas de menu, `AureoleSwitchRow`, `ReorderableRow` e o editor da pilha (`EditWidgetGroupScreen`, cartões de 110 x 90 dp).
+**Referências:** `ref/telas/container.png`, `widgetgroup.png`, `widgetstack.png`, `foldermenu.png`, `qbsettings.png`, `customize.png` (+ canhoto).
 
 ### Entrega
 
-1. **Faixa de gesto invisível:** `OverlaySheetHandle` deixa de desenhar a pílula e vira uma faixa transparente de 20 dp no topo da sheet. Mantém arrastar, toque duplo, segurar, vibração e `customActions`. Se o nome ficar confuso, renomear para `OverlaySheetGestureZone` (atenção às strings `overlay_sheet_handle_*`).
-2. **Lado da mão:** conferir que `AureoleActionRow` e `LeftHandMirror` cobrem o que o protótipo faz (ação principal no lado do polegar, listas espelhadas) e que o DS não importa nada de `feature/`.
-3. **`SettingsBottomSheet`:** hoje é `ModalBottomSheet`. Decidir, lendo o código, se as sheets de Paleta, Fonte, Cartões e opções passam para a mesma base do `AureoleEditOverlay` (alturas 60/90 e prévia ancorada) ou se o `ThemePreviewOverlay` já resolve. Mostrar a conclusão no plano curto antes de mexer.
-4. **Constantes de gesto:** `private const val`; funções puras com teste (`resolveDetent`, `crossedDetent` já têm; completar o que faltar).
+1. **Prévia sem rótulo:** `AureolePreviewFrame` deixa de desenhar texto. Remover as strings "PRÉVIA", "PRÉVIA AO VIVO", "LIVE PREVIEW" e "PREVIEW" e a altura que reservavam. A prévia continua ancorada 16 dp acima da sheet. Conferir as margens em todas as telas com prévia (relógio, container, favoritos, pilha, pasta, cor, fundo, botão rápido, cartões, paleta e fonte).
+2. **Ícones nas linhas, em coluna fixa e centralizada:** o slot de ícone vai para a linha de `AureoleMenuSheet` (coluna de 36 dp, ícone de 22 dp centralizado, o texto alinha após ela) e para `AureoleSwitchRow` (opcional). Subtítulo e seta continuam. Espelhar no canhoto. Mapa:
+
+| Tela | Linha | Ícone |
+|---|---|---|
+| Container | Aparência / Comportamento / Gerenciar Itens | `ColorFill` / `Click` / `AllApps` |
+| Personalizar | Editar Painel Lateral / Botão Rápido / Favoritos e Configurações / Relógio | `Layout` / `Click` / `Star` / `Calendar` |
+| Pilha de widgets | Configurações do App / Redimensionar Grupo | `Settings` / `MultipleView` |
+| Pilha de widgets | Mostrar indicador de posição (switch) | `Dots` |
+| Menu da pasta | Container / Ícone / Renomear / Editar atalhos | `VerticalContainer` / `Smile` / `Edit` / `AllApps` |
+| Botão rápido | Atalho de clique / Abrir app / Aparência | `Click` / `AllApps` / `ColorFill` |
+| Favoritos | Editar atalhos / Aparência / Gerenciar e ordem | `Click` / `ColorFill` / `Favorite` |
+
+   Os nomes são os do protótipo; usar o que já existir em `AureoleIcons` e só criar o que faltar.
+3. **Cards da pilha de widgets:** largura calculada, não fixa: `cardWidth = (larguraDaFileira − margens − 2 · gap) / 2,5`, de modo que apareçam 2 cards e meio e o terceiro fique cortado para indicar rolagem. Altura de cerca de 0,82 da largura. Função pura com teste. O "+" fica depois dos cards e não conta.
+4. **Reordenar sem arrastar:** linha na sheet, ao alcance do polegar: "Mover **<widget>** · n de m" com botões ‹ › de 48 dp, desabilitados nos extremos, usando a mesma `ReorderMath` e o mesmo desfazer "Ordem alterada". Os `customActions` de mover já existem; manter.
 
 ### Pronto quando
 
-- [ ] Os 5 gates passam: detekt com no máximo 5 issues, testes unitários, cobertura 85/70/60, screenshot e `assembleDebug`.
-- [ ] `visual-reviewer` diz **igual** ou **quase** contra `ref/telas/clock.png` e `customize.png`.
-- [ ] Testado no aparelho: arrastar, toque duplo e segurar no topo sem pílula; TalkBack.
+- [ ] Gates passam; screenshots regenerados e `visual-reviewer` **igual** ou **quase** contra as refs de `ref/telas/` (já sem rótulo e com ícones).
+- [ ] Teste no aparelho: 2,5 cards visíveis em telas de 360 e de 412 dp; botões ‹ › com o polegar.
 
-## Fase 2: lista reordenável
+### 6+: ícones de pasta (decidir)
 
-**Já existe:** `UndoController`, `AureoleUndoSnackbar`, `onReorderWidgets` em `HomeScreenActions`, `EditWidgetGroupScreen`.
-**Referências:** `ref/telas/container.png`, `widgetgroup.png`, `picker.png`, `favorites.png` (+ canhoto).
-**Entrega:**
-- `ReorderableRow` e `ReorderableColumn` em `composable/`: arrastar após segurar (`detectDragGesturesAfterLongPress`), ✕ remover e tic a cada troca.
-- Cálculo da troca em função pura (`model/ReorderMath.kt`) com teste: para cima, para baixo, limites, lista de 1 item.
-- Usado em: itens do container, bandeja de apps da pasta, favoritos e a lista da prévia da pilha de widgets (que também ganha o cartão "+").
-- Desfazer ligado a remover widget e a reordenar, pelo `UndoController` existente.
-- Acessibilidade: `customActions` "Mover para cima/baixo".
-**Pronto quando:** gates + visual + teste no aparelho do arrastar com o polegar.
+Hoje o `FolderIconRegistry` tem 26 chaves, mas só uns 20 ícones diferentes; várias caem no ícone errado (`lock` → olho riscado, `cart` → pasta, `play` → seta, `share` → menu, `warning` → info). Proposta:
+- **Fonte:** Material Symbols (Google Fonts Icons), Rounded, peso 400, Apache 2.0.
+- **Como trazer:** *File → New → Vector Asset → Clip Art* no Android Studio, ou SVGs de `google/material-design-icons` convertidos com o `download_and_convert_svgs.py` que já existe.
+- **Quantos:** 50 a 60 escolhidos, por categoria (trabalho, social, mídia, jogos, finanças, saúde, viagem, ferramentas).
+- **Onde:** `AureoleFolderIcons.kt` próprio (o `AureoleIcons.kt` não deve passar de 500 linhas). As chaves salvas continuam valendo; as que caem em ícone errado ganham o certo.
+- **Tela:** grade de 5 colunas com chips de categoria no rodapé; busca só se passar de 60 ícones.
+- **Evitar:** a dependência `material-icons-extended` (pesa no build e foge da regra de usar só `AureoleDS.icons`) e a fonte de ícones inteira.
 
-## Fase 3: menus e popup da pasta
+---
 
-**Já existe:** `AppItemMenus`, `ContainerFolderBottomSheet`, `OpenedFolderPopup` (com `isGridMode`, `onAddAppsClick`, `onEditFolderClick`).
-**Referências:** `ref/telas/appmenu.png`, `itemmenu.png`, `widgetstack.png`, `foldermenu.png`, `qbsettings.png`, `folderpopup.png`, `folderlist.png` (+ `folderpopup-canhoto.png`).
-**Entrega:**
-- Menus como linhas de 56 dp com a ação mais usada perto do polegar; "Remover" em vermelho no topo, com desfazer.
-- `EditGridItemDialog`: só "Tamanho atual: N x M células" (leitura) e as ações.
-- `OpenedFolderPopup`: modo grade → popup centralizado sem botões; modo lista → ancorado perto da pasta, como hoje. Tirar `onAddAppsClick` e `onEditFolderClick` do popup; as duas ações ficam no menu da pasta (segurar a pasta).
-**Pronto quando:** gates + visual.
+## Fase 7: lacunas e dívidas das fases 1 a 5
 
-## Fase 4: editores restantes
+Saiu das seções "Ficou faltando" do `progress.md`. Ordem por impacto.
 
-**Já existe:** relógio com abas (`EditClockPager`), `AureoleEditOverlay` com prévia ancorada.
-**Referências:** `ref/telas/container.png`, `favorites.png`, `widgetgroup.png`, `background.png`, `colorpicker.png`, `folderform.png`, `folderedit.png`, `qbappearance.png`, `cards.png` (+ canhoto).
-**Entrega:**
-- Prévia ancorada e Salvar/Cancelar do lado da mão em todos.
-- Cartões e vidro numa sheet só, com cantos, vidro e opacidade do desfoque e efeito na hora.
-- Formulário da pasta: nome colado no teclado, com a prévia do nome ao digitar.
-- Pilha de widgets: prévia com a lista (✕, arrastar, "+") vinda da fase 2.
-**Pronto quando:** gates + visual; revisar com o teclado aberto.
+**Funcionalidade que ficou incompleta** (`sheet-ui`)
+- **Nível de vidro:** `hazeBlurLevel` só vale na prévia. Aplicar na Home: `Container`, `OpenedFolderLayouts`, `AureolePopup`, `ClockHeader`.
+- **Desfazer do fundo:** `WallpaperManager.clear()` do sistema continua sendo chamado e não é revertido; desfazer precisa restaurar o papel de parede.
+- **Menu do app dentro de container e pasta** aparece sem Favorito: ligar `onToggleFavorite` em `HomeScreenFolderOverlayComponents.kt`.
+- **Data da prévia do relógio** com idiomas misturados ("Wednesday, 31 de December"): usar o locale do app.
+- **Seletor de cor e de ícones** abertos pela aparência do botão rápido ficam empilhados (dois scrims): um só.
 
-## Fase 5: adicionar container e opções de posição
+**Gestos** (`sheet-gestures`, Opus)
+- **Autoscroll** na fileira reordenável quando o item arrastado chega na borda.
 
-**Já existe:** `AddContainerDialog`, `SettingsDialogComponents` (com "Esquerda (Left)" escrito no código).
-**Referências:** `ref/telas/addcontainer.png`, `optbtn.png`, `optsearch.png`, `optpanel.png`.
-**Entrega:**
-- Adicionar container: lista ao alcance.
-- Opções de posição: rádio com linhas de 56 dp, opção marcada no lado do polegar, escolher aplica e fecha, com "Desfazer".
-- **Tirar o "Esquerda (Left)" fixo** para `strings.xml` (EN e pt-BR).
-**Pronto quando:** gates + visual.
+**Dívida de arquitetura** (`sheet-ui`)
+- `LeftHandMirror`, `ThemePreviewOverlay`, `PickPalette` e `PickFont` importam `LocalHomeUiState` de `feature/home/model`. Passar `isLeftHanded` por parâmetro.
+- Seta das linhas: hoje é `ArrowDown` girada e aponta para fora do texto no canhoto. Criar `ChevronRight` no catálogo e espelhar certo.
+- Tirar strings órfãs (`home_app_menu_uninstall`, `home_app_menu_add_to_favorites`, `home_app_menu_remove_from_favorites`, `home_folder_opened_add_apps`, `home_folder_opened_edit`, `home_grid_config_title`) — `sheet-chores`.
 
-## Fase 6: diálogos e avisos
+**Telas que ainda diferem do protótipo** (`sheet-ui`)
+- **Relógio:** títulos de seção em versalete, estilo em 3 cartões no lugar do dropdown, alinhamento em segmented, divisória antes das abas e "Restaurar" neutro (hoje vermelho e cortado em "Reset Defau…"). Sem rótulo de prévia.
+- **Personalizar:** seção "AJUSTAR" com 3 botões e "ADICIONAR À HOME" em grade de 4 colunas com ✓ e estado esmaecido.
+- **Formulário da pasta:** altura da sheet acima da ref (~47%); tirar o tile "letra" da grade.
+- **Container:** prévia sem a moldura tracejada.
+- **Fundo:** mini-home alinha os favoritos ao lado do polegar no canhoto.
+- **Opções de posição:** fechar com os 300 ms de animação; título como na ref.
+- **Cartões e vidro:** botões conforme a decisão 4.
+- **Menu do app:** lado da ação mais usada, conforme a decisão 1; sem "Pasta" e "Ícone" na fileira (decisão 6).
+
+**Pronto quando:** gates + visual + checklist do aparelho abaixo.
+
+### Checklist do aparelho (fases 1 a 7, 30–60 min)
+
+- Arrastar, toque duplo e segurar no topo da sheet; TalkBack.
+- Arrastar com o polegar: pilha de widgets, bandeja da pasta, itens do container, favoritos.
+- Campo de nome da pasta com o teclado aberto (os prints não injetam IME).
+- Cartões e vidro, opacidade e blur ao vivo; desfazer do fundo.
+- Paleta e Fonte: Aplicar/Cancelar em destro e canhoto.
+- Menus do app, da pasta e do item em destro e canhoto.
+
+---
+
+## Fase 8: diálogos e avisos
 
 **Referências:** `ref/telas/confirmlayout.png`, `confirmfactory.png`, `confirmwall.png`, `updateavail.png`, `updateready.png`, `releasenotes.png`.
 **Entrega:**
-- Diálogos flutuantes no polegar; "Redefinir launcher" exige segurar; "Restaurar fundo" sem diálogo, com desfazer.
+- Diálogos flutuantes no polegar; "Redefinir launcher" exige segurar; "Restaurar fundo" já está sem diálogo e com desfazer (fase 4).
 - Atualização disponível e pronta; notas de versão com chips de versão.
+- Reaproveitar `AureoleConfirmOverlay`.
 **Pronto quando:** gates + visual.
 
-## Fase 7: acabamento
+## Fase 9: acabamento
 
 - Todas as strings novas em EN e pt-BR.
 - `@AureolePreview` privado em todo componente novo.
 - Screenshot tests de cada tela nova (destro e canhoto nas 6 principais, e tema claro nas novas).
-- Varredura final: arquivos acima de 500 linhas, `@Suppress`, imports de `feature/` no DS.
+- Varredura final: arquivos acima de 500 linhas, `@Suppress`, imports de `feature/` no DS e em `composable/`.
 **Pronto quando:** os 5 gates passam do zero e o `visual-reviewer` percorre `ref/telas/` inteiro.

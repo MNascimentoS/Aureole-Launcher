@@ -21,6 +21,7 @@ import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.
 import dev.mnascimentos.aureole.feature.home.model.ContainerAppBottomSheetState
 import dev.mnascimentos.aureole.feature.home.model.ContainerFolderBottomSheetState
 import dev.mnascimentos.aureole.feature.home.model.FolderAppBottomSheetState
+import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
 import dev.mnascimentos.aureole.feature.home.model.LocalHomeActions
 import dev.mnascimentos.aureole.feature.home.model.LocalHomeUiState
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
@@ -30,6 +31,8 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
+
+private const val DISMISS_ANIMATION_MS = 500L
 
 @RunWith(RobolectricTestRunner::class)
 class HomeScreenFolderOverlaysTest {
@@ -69,6 +72,7 @@ class HomeScreenFolderOverlaysTest {
 
         composeTestRule.onAllNodesWithText("New Folder")[0].assertIsDisplayed()
         composeTestRule.onNodeWithText("Cancel").performClick()
+        composeTestRule.mainClock.advanceTimeBy(DISMISS_ANIMATION_MS)
         assertTrue(createClosed)
     }
 
@@ -137,6 +141,7 @@ class HomeScreenFolderOverlaysTest {
 
         composeTestRule.onNodeWithText("Edit Folder").assertIsDisplayed()
         composeTestRule.onNodeWithText("Cancel").performClick()
+        composeTestRule.mainClock.advanceTimeBy(DISMISS_ANIMATION_MS)
         assertTrue(renameClosed)
     }
 
@@ -256,7 +261,7 @@ class HomeScreenFolderOverlaysTest {
         }
 
         composeTestRule.onNodeWithText("Remove from folder").assertIsDisplayed()
-        composeTestRule.onNodeWithText("Folder settings").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Folder settings").assertExists()
     }
 
     @Test
@@ -289,5 +294,45 @@ class HomeScreenFolderOverlaysTest {
 
         composeTestRule.onNodeWithText("App Info").assertIsDisplayed()
         composeTestRule.onNodeWithText("Container settings").assertIsDisplayed()
+    }
+
+    @Test
+    fun `when container app sheet opens, favorite action calls toggle with the panel id`() {
+        var toggled: Pair<String, String?>? = null
+        val actions = createDefaultHomeScreenActions().copy(
+            onToggleFavoriteWithContainer = { pkg, id -> toggled = pkg to id }
+        )
+        val state = MainUiState(
+            activeContainerAppBottomSheet = ContainerAppBottomSheetState(app = sampleApp, panelId = "p1")
+        )
+        showOverlays(state, actions)
+
+        composeTestRule.onNodeWithText("Favorite").performClick()
+
+        assertTrue(toggled == (sampleApp.packageName to "p1"))
+    }
+
+    @Test
+    fun `when folder app sheet opens, favorite action calls toggle favorite`() {
+        var toggled: String? = null
+        val actions = createDefaultHomeScreenActions().copy(onToggleFavorite = { toggled = it })
+        val state = MainUiState(
+            activeFolderAppBottomSheet = FolderAppBottomSheetState(folder = sampleFolder, app = sampleApp)
+        )
+        showOverlays(state, actions)
+
+        composeTestRule.onNodeWithText("Favorite").performClick()
+
+        assertTrue(toggled == sampleApp.packageName)
+    }
+
+    private fun showOverlays(state: MainUiState, actions: HomeScreenActions) {
+        composeTestRule.setContent {
+            CompositionLocalProvider(LocalHomeUiState provides state, LocalHomeActions provides actions) {
+                AureoleLauncherTheme {
+                    HomeScreenFolderOverlays(screenHeightPx = 1920f, hazeState = HazeState())
+                }
+            }
+        }
     }
 }

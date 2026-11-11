@@ -11,6 +11,7 @@ import androidx.compose.ui.test.junit4.v2.createComposeRule
 import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.performScrollTo
 import androidx.compose.ui.test.performTextInput
 import androidx.core.graphics.drawable.toDrawable
 import dev.chrisbanes.haze.HazeState
@@ -38,6 +39,8 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
+
+private const val DISMISS_ANIMATION_MS = 500L
 
 @RunWith(RobolectricTestRunner::class)
 class FolderComponentsTest {
@@ -183,19 +186,19 @@ class FolderComponentsTest {
         }
 
         composeTestRule.onNodeWithText("Folder settings").assertIsDisplayed()
-        composeTestRule.onNodeWithText("Edit shortcuts").assertIsDisplayed().performClick()
+        composeTestRule.onNodeWithText("Edit shortcuts").performScrollTo().performClick()
         assertTrue(editShortcutsClicked)
 
-        composeTestRule.onNodeWithText("Rename").assertIsDisplayed().performClick()
+        composeTestRule.onNodeWithText("Rename").performScrollTo().performClick()
         assertTrue(renameClicked)
 
-        composeTestRule.onNodeWithText("Icon").assertIsDisplayed().performClick()
+        composeTestRule.onNodeWithText("Icon").performScrollTo().performClick()
         assertTrue(iconClicked)
 
-        composeTestRule.onNodeWithText("Remove folder").assertIsDisplayed().performClick()
+        composeTestRule.onNodeWithText("Remove folder").performScrollTo().performClick()
         assertTrue(removeFolderClicked)
 
-        composeTestRule.onNodeWithText("Container settings").assertIsDisplayed().performClick()
+        composeTestRule.onNodeWithText("Container settings").performScrollTo().performClick()
         assertTrue(openSettingsClicked)
     }
 
@@ -249,7 +252,7 @@ class FolderComponentsTest {
         composeTestRule.onNodeWithText("Edit Folder").assertIsDisplayed()
 
         // Click Delete
-        composeTestRule.onNodeWithText("Delete").performClick()
+        composeTestRule.onNodeWithText("Delete folder").performClick()
         assertTrue(deleted)
 
         // Click Save
@@ -336,25 +339,45 @@ class FolderComponentsTest {
     // --- OpenedFolderActionsAndList & OpenedFolderPopup Tests ---
 
     @Test
-    fun `when rendering OpenedFolderActions, should display Add Apps and Edit Folder buttons`() {
-        var addAppsClicked = false
-        var editFolderClicked = false
-
+    fun `when rendering OpenedFolderPopup in list mode, should show no Add Apps or Edit Folder buttons`() {
         composeTestRule.setContent {
-            AureoleLauncherTheme {
-                OpenedFolderActions(
-                    isVisible = true,
-                    onAddAppsClick = { addAppsClicked = true },
-                    onEditFolderClick = { editFolderClicked = true }
-                )
+            CompositionLocalProvider(LocalHomeUiState provides MainUiState()) {
+                AureoleLauncherTheme {
+                    OpenedFolderPopup(
+                        config = OpenedFolderPopupConfig(
+                            folder = sampleFolder,
+                            allApps = listOf(sampleApp),
+                            actions = FolderPopupActions(onDismiss = {}, onAppClick = {})
+                        )
+                    )
+                }
             }
         }
 
-        composeTestRule.onNodeWithText("Add Apps").assertIsDisplayed().performClick()
-        assertTrue(addAppsClicked)
+        composeTestRule.onNodeWithText("Test App").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Add Apps").assertDoesNotExist()
+        composeTestRule.onNodeWithText("Edit Folder").assertDoesNotExist()
+    }
 
-        composeTestRule.onNodeWithText("Edit Folder").assertIsDisplayed().performClick()
-        assertTrue(editFolderClicked)
+    @Test
+    fun `when rendering an empty OpenedFolderPopup in grid mode, should show no Add Apps or Edit Folder buttons`() {
+        composeTestRule.setContent {
+            CompositionLocalProvider(LocalHomeUiState provides MainUiState()) {
+                AureoleLauncherTheme {
+                    OpenedFolderPopup(
+                        config = OpenedFolderPopupConfig(
+                            folder = sampleFolder.copy(appPackageNames = emptyList()),
+                            allApps = listOf(sampleApp),
+                            actions = FolderPopupActions(onDismiss = {}, onAppClick = {}),
+                            isGridFolderEnabled = true
+                        )
+                    )
+                }
+            }
+        }
+
+        composeTestRule.onNodeWithText("Add Apps").assertDoesNotExist()
+        composeTestRule.onNodeWithText("Edit Folder").assertDoesNotExist()
     }
 
     @Test
@@ -362,9 +385,7 @@ class FolderComponentsTest {
         var appClicked = false
         val actions = FolderPopupActions(
             onDismiss = {},
-            onAppClick = { appClicked = true },
-            onAddAppsClick = {},
-            onEditFolderClick = {}
+            onAppClick = { appClicked = true }
         )
 
         composeTestRule.setContent {
@@ -391,9 +412,7 @@ class FolderComponentsTest {
         var appClicked = false
         val actions = FolderPopupActions(
             onDismiss = {},
-            onAppClick = { appClicked = true },
-            onAddAppsClick = {},
-            onEditFolderClick = {}
+            onAppClick = { appClicked = true }
         )
 
         composeTestRule.setContent {
@@ -404,8 +423,6 @@ class FolderComponentsTest {
                             folder = sampleFolder,
                             appsInFolder = listOf(sampleApp),
                             actions = actions,
-                            isActionsVisible = false,
-                            onToggleActions = {},
                             hazeState = null,
                             isHazeEnabled = false
                         )
@@ -437,6 +454,7 @@ class FolderComponentsTest {
         }
 
         composeTestRule.onNodeWithText("Cancel").performClick()
+        composeTestRule.mainClock.advanceTimeBy(DISMISS_ANIMATION_MS)
         assertTrue(dismissed)
     }
 
@@ -534,9 +552,7 @@ class FolderComponentsTest {
         val emptyFolder = AppFolder(id = "g_empty", name = "Empty Grid", displayAsGrid = true)
         val actions = FolderPopupActions(
             onDismiss = {},
-            onAppClick = {},
-            onAddAppsClick = {},
-            onEditFolderClick = {}
+            onAppClick = {}
         )
 
         composeTestRule.setContent {
@@ -546,8 +562,6 @@ class FolderComponentsTest {
                         folder = emptyFolder,
                         appsInFolder = emptyList(),
                         actions = actions,
-                        isActionsVisible = true,
-                        onToggleActions = {},
                         hazeState = null,
                         isHazeEnabled = false
                     )

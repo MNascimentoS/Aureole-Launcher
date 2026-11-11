@@ -24,9 +24,7 @@ enum class SettingToggle {
 enum class SettingsDialog {
     FAVORITE_PICKER,
     CONTAINER_POSITION,
-    HAZE_OPACITY,
     COLOR_PICKER,
-    RESTORE_WALLPAPER,
     CREATE_FOLDER,
     RESET_GRID,
     FACTORY_RESET,

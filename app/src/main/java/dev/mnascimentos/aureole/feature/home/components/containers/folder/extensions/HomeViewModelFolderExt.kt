@@ -33,7 +33,7 @@ internal suspend fun HomeViewModel.handleFolderIntent(intent: FolderViewIntent) 
         }
         is FolderViewIntent.SaveFolderApps -> saveFolderApps(intent)
         is FolderViewIntent.RenameFolder -> renameFolder(intent)
-        is FolderViewIntent.DeleteFolder -> deleteFolder(intent.folderId)
+        is FolderViewIntent.DeleteFolder -> removeFolderWithUndo(intent.folderId)
     }
 }
 
@@ -93,7 +93,7 @@ internal suspend fun HomeViewModel.refreshFoldersAndOpen(folderId: String) {
     }
 }
 
-private suspend fun HomeViewModel.refreshFolders() {
+internal suspend fun HomeViewModel.refreshFolders() {
     val updatedFolders = folderRepository.getFolders()
     val updatedPanels = containerRepository.getAllContainers().associateBy { it.id }
     updateUiState {

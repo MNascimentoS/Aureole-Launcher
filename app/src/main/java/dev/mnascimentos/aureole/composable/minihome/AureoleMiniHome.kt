@@ -48,13 +48,15 @@ private const val CAMERA_HEX = 0xFF1F63C2
  *
  * @param content Sample content to draw.
  * @param modifier Modifier applied to the root.
+ * @param backgroundColor Fill of the mini-home; null keeps the theme background.
  * @param isLeftHanded Aligns the favorites to the thumb side of a left-handed user.
  */
 @Composable
 fun AureoleMiniHome(
     content: MiniHomeContent,
     modifier: Modifier = Modifier,
-    isLeftHanded: Boolean = false
+    isLeftHanded: Boolean = false,
+    backgroundColor: Color? = null
 ) {
     val shape = RoundedCornerShape(AureoleDS.dimens.radiusLarge)
     val colors = AureoleDS.colors
@@ -63,7 +65,7 @@ fun AureoleMiniHome(
             .fillMaxWidth(MINI_HOME_WIDTH_FRACTION)
             .aspectRatio(MINI_HOME_ASPECT_RATIO)
             .clip(shape)
-            .background(colors.background)
+            .background(backgroundColor ?: colors.background)
             .background(
                 Brush.verticalGradient(
                     listOf(colors.surfaceVariant.copy(alpha = VARIANT_GLOW_ALPHA), Color.Transparent)

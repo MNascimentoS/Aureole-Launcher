@@ -36,6 +36,7 @@ import dev.mnascimentos.aureole.core.designsystem.model.AureolePopupHeaderParams
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
+import dev.mnascimentos.aureole.core.designsystem.utils.glassBlurRadius
 
 private const val HAZE_ALPHA = 0.85f
 private const val OPAQUE_ALPHA = 1f
@@ -61,7 +62,7 @@ fun AureolePopupBox(
         Modifier.hazeEffect(
             state = hazeState,
             style = HazeStyle(
-                blurRadius = AureoleDS.dimens.large,
+                blurRadius = glassBlurRadius(AureoleDS.dimens.large),
                 tint = HazeTint(surfaceColor.copy(alpha = HAZE_ALPHA)),
             ),
         ) {

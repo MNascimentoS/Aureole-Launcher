@@ -1,5 +1,6 @@
 package dev.mnascimentos.aureole.composable.actions
 
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -34,3 +35,16 @@ private fun ActionRowLeftHandedScreenshotTest() = ActionRowCase(isLeftHanded = t
 @AureolePreview
 @Composable
 private fun ActionRowDestructiveScreenshotTest() = ActionRowCase(isLeftHanded = false, isDestructive = true)
+
+@PreviewTest
+@AureolePreview
+@Composable
+private fun PrimaryActionButtonFullWidthScreenshotTest() {
+    AureoleLauncherTheme {
+        AureolePrimaryActionButton(
+            label = "Done",
+            onClick = {},
+            modifier = Modifier.fillMaxWidth().padding(AureoleDS.dimens.medium)
+        )
+    }
+}

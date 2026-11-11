@@ -55,6 +55,7 @@ fun rememberAureoleEditOverlayState(
  * @property onBackPress Custom back key handler callback.
  * @property onSettingsClick Settings icon click callback.
  * @property headerIcon Optional custom icon for sheet header end action.
+ * @property titleIcon Optional icon drawn before the title (menus show what the sheet is about).
  */
 data class AureoleEditOverlayConfig(
     val title: String? = null,
@@ -67,6 +68,7 @@ data class AureoleEditOverlayConfig(
     val onBackPress: (() -> Unit)? = null,
     val onSettingsClick: (() -> Unit)? = null,
     val headerIcon: (@Composable (Modifier) -> Unit)? = null,
+    val titleIcon: (@Composable (Modifier) -> Unit)? = null,
 )
 
 /**
@@ -100,6 +102,7 @@ internal data class SheetBounds(
  */
 internal class OverlaySheetDecorations(
     val headerIcon: (@Composable (Modifier) -> Unit)? = null,
+    val titleIcon: (@Composable (Modifier) -> Unit)? = null,
     val gestureZone: (@Composable () -> Unit)? = null
 )
 

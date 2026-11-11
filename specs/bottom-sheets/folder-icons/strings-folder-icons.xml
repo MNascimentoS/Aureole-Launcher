@@ -1,0 +1,9 @@
+<!-- values/strings.xml -->
+<string name="folder_icon_cat_work">Trabalho</string>
+<string name="folder_icon_cat_social">Social</string>
+<string name="folder_icon_cat_media">Mídia</string>
+<string name="folder_icon_cat_games">Jogos</string>
+<string name="folder_icon_cat_money">Finanças</string>
+<string name="folder_icon_cat_health">Saúde</string>
+<string name="folder_icon_cat_travel">Viagem</string>
+<string name="folder_icon_cat_tools">Ferramentas</string>

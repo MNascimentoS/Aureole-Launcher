@@ -49,6 +49,7 @@ import dev.mnascimentos.aureole.feature.home.grid.AddContainerDialog
 import dev.mnascimentos.aureole.feature.home.grid.EditGridItemDialog
 import dev.mnascimentos.aureole.feature.home.model.LocalHomeActions
 import dev.mnascimentos.aureole.feature.home.model.LocalHomeUiState
+import dev.mnascimentos.aureole.feature.home.model.MainUiState
 
 @PreviewTest
 @AureolePreview
@@ -114,6 +115,26 @@ private fun AddContainerDialogScreenshotTest() {
             onDismissRequest = {},
             onSelectType = {}
         )
+    }
+}
+
+@PreviewTest
+@AureolePreview
+@Composable
+private fun AddContainerDialogLeftHandedScreenshotTest() {
+    CompositionLocalProvider(LocalHomeUiState provides MainUiState(isLeftHandedMode = true)) {
+        AureoleLauncherTheme {
+            AddContainerDialog(onDismissRequest = {}, onSelectType = {})
+        }
+    }
+}
+
+@PreviewTest
+@AureolePreview
+@Composable
+private fun AddContainerNestedDialogScreenshotTest() {
+    AureoleLauncherTheme {
+        AddContainerDialog(onDismissRequest = {}, onSelectType = {}, isNested = true)
     }
 }
 
@@ -481,7 +502,8 @@ private fun ContainerFolderBottomSheetScreenshotTest() {
         onRename = {},
         onIcon = {},
         onRemoveFolder = {},
-        onOpenContainerSettings = {}
+        onOpenContainerSettings = {},
+        onOpenSettings = {}
     )
     AureoleLauncherTheme {
         ContainerFolderBottomSheet(

@@ -119,6 +119,7 @@ private fun FavoritePickerOverlay(
                 favoriteAppPackages = favPackages,
                 containerId = containerId,
                 isLoading = uiState.isAppsLoading,
+                showAllAppsOnHome = uiState.showAllAppsOnHome,
                 rowConfig = AppItemRowConfig(
                     isThemedAppIconsEnabled = uiState.isThemedAppIconsEnabled,
                     isLeftHandedMode = uiState.isLeftHandedMode

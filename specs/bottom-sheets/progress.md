@@ -10,7 +10,8 @@ Atualizado por `/fase`. Marque `[x]` quando os gates passarem e o veredito visua
 - [x] Seletor de apps: arrastar para marcar e faixa A–Z
 - [x] Relógio com abas que deslizam
 - [x] Paleta e Fonte com mini-home e efeito na hora (grade de chips)
-- [~] Commits locais ainda sem push: `AureoleActionRow`, `LeftHandMirror`, ajustes de Paleta e Fonte
+- [x] Fases 1 a 5 do plano rodaram em 10 e 11/11 (gates ok, visual quase/igual). Falta o teste no aparelho.
+- [~] O teste no aparelho gerou a fase 6; as pendências das notas abaixo viraram a fase 7 (ver `one-hand-plan.md`).
 
 ## Fases restantes
 
@@ -18,11 +19,14 @@ Atualizado por `/fase`. Marque `[x]` quando os gates passarem e o veredito visua
 |---|---|---|---|---|---|---|
 | 1 | Ajustes da base: faixa de gesto invisível, `ActionRow`/espelho, base do `SettingsBottomSheet` | Opus | 1,5–2,5 h | [x] | [x] quase | [ ] |
 | 2 | Lista reordenável com ✕ e "+" (e desfazer em widgets e reordenar) | Opus | 2,5–3,5 h | [x] | [x] quase | [ ] |
-| 3 | Menus e popup da pasta | Sonnet | 2–3 h | [ ] | [ ] | [ ] |
-| 4 | Editores restantes | Sonnet | 3–4,5 h | [ ] | [ ] | [ ] |
-| 5 | Adicionar container e opções de posição | Sonnet | 1,5–2,5 h | [ ] | [ ] | [ ] |
-| 6 | Diálogos e avisos | Sonnet | 1,5–2,5 h | [ ] | [ ] | [ ] |
-| 7 | Acabamento | Haiku | 1–1,5 h | [ ] | [ ] | [ ] |
+| 3 | Menus e popup da pasta | Sonnet | 2–3 h | [x] | [x] quase | [ ] |
+| 4 | Editores restantes | Sonnet | 3–4,5 h | [x] | [x] quase | [ ] |
+| 5 | Adicionar container e opções de posição | Sonnet | 1,5–2,5 h | [x] | [x] igual | [ ] |
+| 6 | Ajustes do teste no aparelho: prévia sem rótulo, ícones nas linhas, cards da pilha, mover por botões | Sonnet | 2–3 h | [ ] | [ ] | [ ] |
+| 6+ | Ícones de pasta do Material Symbols (se aprovado) | Haiku + Sonnet | 1,5–2,5 h | [ ] | [ ] | [ ] |
+| 7 | Lacunas e dívidas das fases 1 a 5 | Sonnet + Opus (autoscroll) | 3,5–5,5 h | [ ] | [ ] | [ ] |
+| 8 | Diálogos e avisos | Sonnet | 1,5–2,5 h | [ ] | [ ] | [ ] |
+| 9 | Acabamento | Haiku | 1–1,5 h | [ ] | [ ] | [ ] |
 
 ## Notas por fase
 
@@ -72,3 +76,92 @@ Atualizado por `/fase`. Marque `[x]` quando os gates passarem e o veredito visua
 - Em favoritos no canhoto, os cabeçalhos também espelham ("Favorites" à direita, "Disable all" à esquerda). Decidir se isso fica assim.
 - Fora do escopo da fase 2, ficam para a fase 4: botão "Adicionar widget" ao lado de Salvar e rótulo "PRÉVIA AO VIVO" na pilha; subtítulos, chevron, "OPÇÕES" e Cancelar no container; menu principal de favoritos (toggle, atalhos, aparência, gerenciar).
 - Teste no aparelho (pendente): arrastar com o polegar nas 4 telas, widget real nos cartões de 110x90 dp e destaque de página no carrossel.
+
+### Fase 3: menus e popup da pasta (11/11/2026)
+
+**O que mudou**
+- Base de menu nova em `composable/menu/`: `AureoleMenuSheet` (sobre `AureoleEditOverlay`), linhas de 56 dp com "Remover" em vermelho no topo, rótulo de seção em versalete e fileira de ações redondas (a ação com `requiresHold` exige 1 s de pressão). Tokens `menuRowHeight` e `quickActionIconSize` em `AureoleDimens`.
+- Menus do app, da pasta e do item da grade migrados. `EditGridItemDialog` só mostra "Tamanho atual: N x M células" e as ações.
+- `OpenedFolderPopup`: modo grade centralizado e sem botões, com o título dentro do cartão; modo lista ancorado, só com o título pequeno. `onAddAppsClick` e `onEditFolderClick` saíram do popup (as ações já estavam no menu da pasta como "Editar atalhos" e "Renomear/Ícone").
+- Desfazer ao remover pasta ("Pasta removida") e componente da grade ("Componente removido").
+
+**Gates:** detekt 5 issues (as de antes), testes, cobertura, screenshot e `assembleDebug` passando. Um teste de `HomeViewModelUndoTest` falhou uma vez em rodada conjunta e passou na seguinte (possível flaky por causa do Room compartilhado).
+
+**Visual:** **quase**. Corrigidos depois da revisão: ícone de Favorito (agora estrela), seta das linhas menor, título do popup em grade, header do popup em lista, divisória acima da fileira de ações e logo no preview da pasta.
+
+**Ficou faltando / para decidir**
+- **Lado da mão no menu do app:** o texto do protótipo manda a ação mais usada para o lado do polegar. A `appmenu.png` destra mostra o oposto (Favorito à esquerda, "Segure p/ desinstalar" à direita). Foi seguido o texto, então o destro sai espelhado em relação à imagem.
+- Faltam "Pasta" e "Ícone" na fileira do app (não existem ações no código).
+- Menu de app dentro de container e de pasta aparece sem Favorito (`HomeScreenFolderOverlayComponents.kt` não liga `onToggleFavorite`).
+- Sem ícone chevron no catálogo: a seta é `ArrowDown` girada, e no canhoto ela aponta para fora do texto.
+- No canhoto o espelho chega ao texto das linhas, e não há referência canhota para comparar.
+- O ícone de "Editar atalhos" no menu da pasta passou a ser a estrela de favoritos.
+- Strings órfãs: `home_app_menu_uninstall`, `home_app_menu_add_to_favorites`, `home_app_menu_remove_from_favorites`, `home_folder_opened_add_apps`, `home_folder_opened_edit`, `home_grid_config_title`.
+- Menu do botão rápido (`qbsettings`) não foi migrado (entra na fase 4).
+- Os screenshots dos popups são recortados e não mostram a posição na tela. Teste no aparelho pendente.
+
+### Fase 4: editores restantes (11/11/2026)
+
+**O que mudou**
+- **Componentes novos:** `AureoleConfirmOverlay` (prévia ancorada + Cancelar/Confirmar do lado da mão), `AureolePreviewFrame` (rótulo da prévia), `AureoleSwitchRow`, `AureoleSegmentedControl`, `AureolePrimaryActionButton`, seletor de cor (`composable/color/`: swatches e barra de matiz) e subtítulo nas linhas de menu.
+- **Container:** menu principal "OPÇÕES" com subtítulo e chevron, prévia ao vivo e Cancelar/Salvar. Cancelar, voltar, arrastar e tocar fora agora descartam o rascunho (antes, fechar salvava).
+- **Favoritos:** menu principal (toggle, Editar atalhos, Aparência, Gerenciar e ordem) e botão "Concluído". As subtelas de atalhos e aparência foram restauradas depois de uma regressão da rodada 4A.
+- **Pilha de widgets:** barra com "Adicionar widget" e "Salvar" do lado da mão, e rótulo "PRÉVIA AO VIVO".
+- **Fundo e cor:** fundo com tipo (cor sólida ou imagem), swatches e mini-home com a cor escolhida; seletor de cor em overlay. "Restaurar fundo" passou a existir na UI, sem diálogo e com desfazer (o arquivo da imagem vai para `WallpaperUndoStash` em vez de ser apagado).
+- **Pasta:** formulário com prévia do nome ao digitar, campo de nome colado na barra de baixo.
+- **Botão rápido:** aparência com rascunho (Salvar grava, Cancelar descarta) e menu como `AureoleMenuSheet`.
+- **Cartões e vidro:** uma sheet só (`CardsGlassBottomSheet`) no lugar de `BlurBottomSheet`, `HazeOpacityDialog` e `PickBorderRadiusBottomSheet`, com cantos, vidro e opacidade e efeito na prévia. Novo `hazeBlurLevel` persistido.
+- Logo sempre desenhado no header das sheets com título; número dos subtítulos corrigido no canhoto.
+
+**Gates:** detekt 5 issues (as de antes; o `--auto-correct` arrumou um `ImportOrdering` novo), testes, cobertura, screenshot e `assembleDebug` passando.
+
+**Visual:** **quase** em todas as telas. Corrigidos depois da revisão: número invertido no canhoto, logo ausente, margens das prévias do container e de favoritos, cor do fundo na mini-home, tile e prévia do formulário da pasta, prévia de cartões espelhada no canhoto e rótulos e swatches espelhados.
+
+**Ficou faltando**
+- **Nível de vidro:** `hazeBlurLevel` só vale na prévia e na linha "Efeito de vidro". A Home ainda usa o raio fixo (`Container`, `OpenedFolderLayouts`, `AureolePopup`, `ClockHeader`).
+- **Desfazer do fundo:** `WallpaperManager.clear()` do sistema continua sendo chamado e não é revertido.
+- Formulário da pasta: altura da sheet ainda acima da ref (~47%); o tile "letra" continua na grade.
+- Prévia do container sem a moldura tracejada; botão rápido com linhas que abrem seletores em vez de grades inline.
+- Prévias não conferidas lado a lado com a ref depois das correções: container, pasta e destro de cartões e fundo.
+- Mini-home do fundo ainda alinha os favoritos ao lado do polegar no canhoto.
+- Seletor de cor e seletor de ícones abertos pela aparência do botão rápido ficam empilhados (dois scrims).
+- **Teclado:** os prints não injetam IME. Conferir no aparelho o campo de nome da pasta.
+- Teste no aparelho (pendente): prévias e Aplicar/Cancelar de todas as sheets, desfazer do fundo, blur e opacidade ao vivo.
+
+### Fase 5: adicionar container e opções de posição (11/11/2026)
+
+**O que mudou**
+- `AddContainerDialog` virou `AureoleMenuSheet` com uma linha de 56 dp por container (ícones do catálogo: Calendário e Estrela para relógio e lista de apps).
+- Novo `AureoleRadioSheet` (`composable/menu/`): linhas de 56 dp, linha marcada destacada e marcador no lado do polegar (espelhado no canhoto), escolher aplica e fecha, folga embaixo.
+- Posição do botão, da busca e do painel usam essa sheet, com desfazer ("Posição alterada") em `SettingsViewModel.selectPosition`. Escolher a opção já marcada não faz nada.
+- Saíram os textos fixos "Esquerda (Left)", "Direita (Right)", "Superior (Top)" e similares; entraram 8 chaves `settings_position_option_*` e `settings_position_changed` em EN e pt-BR.
+- Correções finais das fases 4 e 5: switch de `AureoleSwitchRow` sempre LTR (no canhoto parecia desligado quando estava ligado), rótulos de seção sempre à esquerda, grade de ícones da pasta só com ícones distintos (`FolderIconRegistry.pickerKeys`, 7 colunas, 3 linhas).
+
+**Gates:** detekt 5 issues (as de antes; duas de `MaximumLineLength` de um teste da fase 4 foram corrigidas), testes, cobertura, screenshot e `assembleDebug` passando. Nenhum `@Suppress` novo; nenhum arquivo de produção novo acima de 500 linhas.
+
+**Visual:** **igual** em Adicionar container e nas três posições, destro e canhoto.
+
+**Ficou faltando**
+- O fechamento ao escolher uma opção é imediato, sem os 300 ms de animação do `AureoleMenuSheet`.
+- Título centralizado (a `optpanel.png` o mostra à esquerda) e sem fundo de mini-home no preview.
+- Ícones de container de grade e widget não existem no catálogo (`AureoleIcons`).
+- Os valores de posição continuam em inglês no armazenamento ("Left", "Space Between"), por compatibilidade com o `Container.kt`.
+- `FolderIconRegistry` tem vários fallbacks para o mesmo ícone; ícones próprios são trabalho de catálogo.
+- Seletor de cor: matiz em barra (a ref usa círculo) e rótulo "PREVIEW" à esquerda (a ref centraliza).
+- Cartões e vidro: Aplicar/Cancelar, enquanto a `cards.png` tem só "Pronto".
+- Teste no aparelho (pendente).
+
+### Pendências das fases 3 a 5 resolvidas (11/11/2026)
+
+- **Nível de vidro na Home:** `GlassBlur.kt` (`LocalGlassLevel` e `glassBlurRadius`) aplica o nível de "Cartões e vidro" em todos os pontos de blur da Home e na prévia. Médio mantém o raio de hoje; Leve é 0,4x e Máx. 1,6x (palpite visual, ajustar no aparelho). `GlassLevel` foi para `core/designsystem/model/`.
+- **Desfazer do fundo:** o app nunca aplicava a imagem personalizada no `WallpaperManager`; o `clear()` apagava o fundo de tela do Android. Agora o fundo do sistema é salvo antes de limpar (`system_wallpaper_undo.jpg`) e reaplicado ao desfazer. `clear()` só roda quando há imagem personalizada. Validar no aparelho se `getWallpaperFile` funciona sem permissão de storage; se falhar, o desfazer devolve só a imagem.
+- **Menu do app:** Favorito aparece dentro de container e de pasta (na pasta usa a lista de favoritos padrão, a pasta não tem lista própria).
+- **Não feitos (features novas):** botão "Pasta" (falta seletor de pasta de destino, criar pasta e ação "adicionar app à pasta" com desfazer) e botão "Ícone" (não existe troca de ícone por app).
+
+### Crash do menu do app na lista de favoritos (11/11/2026)
+
+- **Sintoma:** long click em um item de favoritos fechava o app com `Can't represent a width of 802 and height of 2147483095 in Constraints` (`AnchoredPreviewLayout`).
+- **Causa:** `AppItemRow` compunha o `AppItemBottomSheet`, que desde a fase 3 é um `AureoleEditOverlay` em `fillMaxSize`, dentro da linha de uma lista com rolagem (altura ilimitada). Antes era um `ModalBottomSheet`, que abre numa janela própria.
+- **Correção:** `AureoleOverlayWindow` (`composable/overlay/`) é um `Dialog` em tela cheia e envolve o menu em `AppItemRow`. O `AnchoredPreviewLayout` também passou a aceitar altura ilimitada. Testes novos (long click dentro de `LazyColumn` e de `Column` com rolagem) falham sem a correção.
+- **Validado no aparelho:** long click em item de favoritos abre o menu sem crash.
+- **Ainda a conferir no aparelho:** fechar pelo botão voltar e por arrastar, insets dentro da janela, "Desinstalar" por segurar e a engrenagem, e o menu sem o blur do Haze (outra janela).

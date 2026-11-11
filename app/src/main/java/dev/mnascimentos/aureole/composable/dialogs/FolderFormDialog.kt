@@ -1,25 +1,11 @@
 package dev.mnascimentos.aureole.composable.dialogs
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.OutlinedTextFieldDefaults
-import androidx.compose.material3.TextButton
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -27,23 +13,30 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.semantics.Role
-import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.text.font.FontWeight
 import dev.mnascimentos.aureole.R
-import dev.mnascimentos.aureole.composable.dialogs.model.FolderButtonMetrics
-import dev.mnascimentos.aureole.composable.dialogs.model.FolderFormConfig
+import dev.mnascimentos.aureole.composable.dialogs.model.FolderFormSheetActions
+import dev.mnascimentos.aureole.composable.dialogs.model.FolderFormSheetState
+import dev.mnascimentos.aureole.composable.dialogs.model.resolveFolderName
+import dev.mnascimentos.aureole.composable.menu.AureoleMenuRow
+import dev.mnascimentos.aureole.composable.menu.model.MenuRowParams
+import dev.mnascimentos.aureole.composable.preview.AureolePreviewFrame
+import dev.mnascimentos.aureole.composable.sheets.AureoleConfirmOverlay
+import dev.mnascimentos.aureole.composable.sheets.model.ConfirmOverlayParams
 import dev.mnascimentos.aureole.core.data.model.AppFolder
-import dev.mnascimentos.aureole.core.designsystem.components.AureoleDialog
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
+import dev.mnascimentos.aureole.core.designsystem.icons.Delete
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
+import dev.mnascimentos.aureole.feature.home.model.LocalHomeUiState
 
+/**
+ * New / edit folder form in an edit overlay: the folder (icon and name) is anchored above the sheet and follows
+ * what is typed, the icon grid scrolls inside it, and the name field sits glued to the Cancel / Create (Save)
+ * row, which rides above the keyboard. The filled button is on the thumb side.
+ */
 @Composable
 fun FolderFormDialog(
     onDismiss: () -> Unit,
@@ -52,323 +45,85 @@ fun FolderFormDialog(
     folder: AppFolder? = null,
     onDelete: (() -> Unit)? = null
 ) {
+    val isLeftHanded = LocalHomeUiState.current.isLeftHandedMode
     val isEditing = folder != null
-    val title =
-        if (isEditing) {
-            stringResource(
-                R.string.home_folder_edit_title
-            )
-        } else {
-            stringResource(R.string.home_folder_new_title)
-        }
-    val submitText =
-        if (isEditing) stringResource(R.string.core_common_save) else stringResource(R.string.core_common_create)
+    val placeholderName = stringResource(R.string.home_folder_name_placeholder)
+    var folderName by remember { mutableStateOf(folder?.name.orEmpty()) }
+    var selectedIcon by remember { mutableStateOf(folder?.icon) }
 
-    AureoleDialog(
-        onDismissRequest = onDismiss,
-        title = title,
-        modifier = modifier
-    ) {
-        FolderFormDialogContent(
-            config = FolderFormConfig(
-                initialName = folder?.name.orEmpty(),
-                initialIcon = folder?.icon,
-                isEditing = isEditing,
-                submitText = submitText
-            ),
-            onDismiss = onDismiss,
-            onSave = onSave,
-            onDelete = onDelete
-        )
-    }
-}
-
-@Composable
-private fun FolderFormDialogContent(
-    config: FolderFormConfig,
-    onDismiss: () -> Unit,
-    onSave: (name: String, icon: String?) -> Unit,
-    onDelete: (() -> Unit)?
-) {
-    var folderName by remember { mutableStateOf(config.initialName) }
-    var selectedIcon by remember { mutableStateOf(config.initialIcon) }
-
-    Column(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        FolderIconPreview(folderName = folderName, selectedIcon = selectedIcon)
-
-        Spacer(modifier = Modifier.height(AureoleDS.dimens.medium))
-
-        FolderNameTextField(
-            folderName = folderName,
-            onFolderNameChange = { folderName = it }
-        )
-
-        Spacer(modifier = Modifier.height(AureoleDS.dimens.medium))
-
-        AureoleText(
-            text = stringResource(R.string.home_folder_icon),
-            color = AureoleDS.colors.onSurfaceMedium,
-            modifier = Modifier.align(Alignment.Start),
-            format = AureoleTextFormatParams(
-                style = AureoleDS.typography.labelMedium,
-                fontWeight = FontWeight.SemiBold
-            )
-        )
-
-        Spacer(modifier = Modifier.height(AureoleDS.dimens.xSmall))
-
-        IconSelectionRow(
-            selectedIcon = selectedIcon,
-            onIconSelected = { selectedIcon = it },
-            folderName = folderName
-        )
-
-        Spacer(modifier = Modifier.height(AureoleDS.dimens.large))
-
-        val placeholderName = stringResource(R.string.home_folder_name_placeholder)
-        FolderFormButtons(
-            isEditing = config.isEditing,
-            submitText = config.submitText,
-            onDelete = onDelete,
-            onDismiss = onDismiss,
-            onSave = {
-                val finalName = folderName.ifBlank { placeholderName }
-                onSave(finalName.trim(), selectedIcon)
-            }
-        )
-    }
-}
-
-@Composable
-private fun FolderNameTextField(
-    folderName: String,
-    onFolderNameChange: (String) -> Unit
-) {
-    OutlinedTextField(
-        value = folderName,
-        onValueChange = onFolderNameChange,
-        label = {
-            AureoleText(
-                stringResource(R.string.home_folder_name_label),
-                color = AureoleDS.colors.onSurfaceMedium
-            )
-        },
-        placeholder = {
-            AureoleText(
-                stringResource(R.string.home_folder_name_placeholder),
-                color = AureoleDS.colors.onSurfaceLow
-            )
-        },
-        singleLine = true,
-        colors = OutlinedTextFieldDefaults.colors(
-            focusedBorderColor = AureoleDS.colors.onSurfaceHigh,
-            unfocusedBorderColor = AureoleDS.colors.outline,
-            focusedTextColor = AureoleDS.colors.onSurfaceHigh,
-            unfocusedTextColor = AureoleDS.colors.onSurfaceHigh
+    AureoleConfirmOverlay(
+        params = ConfirmOverlayParams(
+            title = stringResource(if (isEditing) R.string.home_folder_edit_title else R.string.home_folder_new_title),
+            primaryLabel = stringResource(if (isEditing) R.string.core_common_save else R.string.core_common_create),
+            onPrimary = { onSave(resolveFolderName(folderName, placeholderName), selectedIcon) },
+            onDismissRequest = onDismiss,
+            isLeftHanded = isLeftHanded
         ),
-        modifier = Modifier.fillMaxWidth()
-    )
+        modifier = modifier,
+        preview = {
+            AureolePreviewFrame(
+                label = stringResource(R.string.home_folder_form_preview),
+                modifier = Modifier.align(Alignment.Center)
+            ) {
+                FolderIconPreview(
+                    folderName = folderName,
+                    selectedIcon = selectedIcon,
+                    label = resolveFolderName(folderName, placeholderName),
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
+        },
+        bottomExtra = {
+            FolderNameField(
+                value = folderName,
+                onValueChange = { folderName = it },
+                modifier = Modifier.padding(bottom = AureoleDS.dimens.xSmall)
+            )
+        }
+    ) {
+        FolderFormSheetBody(
+            state = FolderFormSheetState(
+                resolveFolderName(folderName, placeholderName),
+                selectedIcon,
+                showDelete = isEditing && onDelete != null
+            ),
+            actions = FolderFormSheetActions(onIconSelected = { selectedIcon = it }, onDelete = onDelete),
+            isLeftHanded = isLeftHanded
+        )
+    }
 }
 
 @Composable
-fun FolderIconPreview(
-    folderName: String,
-    selectedIcon: String?,
-    modifier: Modifier = Modifier
+private fun FolderFormSheetBody(
+    state: FolderFormSheetState,
+    actions: FolderFormSheetActions,
+    isLeftHanded: Boolean
 ) {
-    Box(
-        modifier = modifier
-            .size(FolderButtonMetrics.SmallSize)
-            .clip(RoundedCornerShape(AureoleDS.dimens.radiusMedium))
-            .background(AureoleDS.colors.surfaceVariant),
-        contentAlignment = Alignment.Center
+    Column(
+        modifier = Modifier.fillMaxWidth().verticalScroll(rememberScrollState()),
+        verticalArrangement = Arrangement.spacedBy(AureoleDS.dimens.xSmall)
     ) {
-        if (selectedIcon != null) {
-            FolderIconRegistry.RenderIcon(
-                name = selectedIcon,
-                tint = AureoleDS.colors.onSurfaceHigh,
-                modifier = Modifier.size(AureoleDS.dimens.iconLarge)
-            )
-        } else {
-            AureoleText(
-                text = folderName.take(1).uppercase().ifEmpty { "?" },
-                color = AureoleDS.colors.onSurfaceHigh,
-                format = AureoleTextFormatParams(
-                    style = AureoleDS.typography.titleLarge,
-                    fontWeight = FontWeight.Bold
+        actions.onDelete?.takeIf { state.showDelete }?.let { onDelete ->
+            AureoleMenuRow(
+                MenuRowParams(
+                    title = stringResource(R.string.home_folder_form_delete),
+                    onClick = onDelete,
+                    icon = { m, tint -> AureoleDS.icons.Delete(m, tint = tint) },
+                    isDestructive = true
                 )
             )
         }
-    }
-}
-
-@Composable
-fun IconSelectionRow(
-    selectedIcon: String?,
-    onIconSelected: (String?) -> Unit,
-    folderName: String,
-    modifier: Modifier = Modifier
-) {
-    val scrollState = rememberScrollState()
-
-    Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .horizontalScroll(scrollState)
-            .padding(vertical = AureoleDS.dimens.xxSmall),
-        horizontalArrangement = Arrangement.spacedBy(AureoleDS.dimens.xSmall),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        DefaultLetterOptionChip(
-            isSelected = selectedIcon == null,
-            letter = folderName.take(1).uppercase().ifEmpty { "A" },
-            onClick = { onIconSelected(null) }
-        )
-
-        FolderIconRegistry.icons.keys.forEach { iconKey ->
-            IconOptionChip(
-                isSelected = selectedIcon == iconKey,
-                iconKey = iconKey,
-                onClick = { onIconSelected(iconKey) }
-            )
-        }
-    }
-}
-
-@Composable
-private fun DefaultLetterOptionChip(
-    isSelected: Boolean,
-    letter: String,
-    onClick: () -> Unit
-) {
-    val borderColor = if (isSelected) {
-        AureoleDS.colors.onSurfaceHigh
-    } else {
-        AureoleDS.colors.outline
-    }
-    val textColor = if (isSelected) {
-        AureoleDS.colors.onSurfaceHigh
-    } else {
-        AureoleDS.colors.onSurfaceMedium
-    }
-
-    Box(
-        modifier = Modifier
-            .size(AureoleDS.dimens.xxLarge)
-            .clip(CircleShape)
-            .background(
-                if (isSelected) AureoleDS.colors.onSurfaceHigh else AureoleDS.colors.surfaceVariant
-            )
-            .border(
-                width = if (isSelected) AureoleDS.dimens.borderMax else AureoleDS.dimens.borderMinimal,
-                color = borderColor,
-                shape = CircleShape
-            )
-            .clickable(
-                onClick = onClick,
-                role = Role.Button
-            )
-            .semantics(mergeDescendants = true) {},
-        contentAlignment = Alignment.Center
-    ) {
         AureoleText(
-            text = letter,
-            color = textColor,
-            format = AureoleTextFormatParams(
-                style = AureoleDS.typography.labelLarge,
-                fontWeight = FontWeight.Bold
-            )
+            text = stringResource(R.string.home_folder_icon).uppercase(),
+            color = AureoleDS.colors.onSurfaceMedium,
+            format = AureoleTextFormatParams(style = AureoleDS.typography.labelSmall)
         )
-    }
-}
-
-@Composable
-private fun IconOptionChip(
-    isSelected: Boolean,
-    iconKey: String,
-    onClick: () -> Unit
-) {
-    val borderColor = if (isSelected) {
-        AureoleDS.colors.onSurfaceHigh
-    } else {
-        AureoleDS.colors.outline
-    }
-    val iconTint: Color = if (isSelected) {
-        AureoleDS.colors.onSurfaceHigh
-    } else {
-        AureoleDS.colors.onSurfaceMedium
-    }
-
-    Box(
-        modifier = Modifier
-            .size(AureoleDS.dimens.xxLarge)
-            .clip(CircleShape)
-            .background(
-                if (isSelected) AureoleDS.colors.onSurfaceHigh else AureoleDS.colors.surfaceVariant
-            )
-            .border(
-                width = if (isSelected) AureoleDS.dimens.borderMax else AureoleDS.dimens.borderMinimal,
-                color = borderColor,
-                shape = CircleShape
-            )
-            .clickable(
-                onClick = onClick,
-                role = Role.Button
-            )
-            .semantics(mergeDescendants = true) {},
-        contentAlignment = Alignment.Center
-    ) {
-        FolderIconRegistry.RenderIcon(
-            name = iconKey,
-            tint = iconTint,
-            modifier = Modifier.size(AureoleDS.dimens.iconMedium)
+        FolderIconGrid(
+            selectedIcon = state.selectedIcon,
+            onIconSelected = actions.onIconSelected,
+            folderName = state.folderName,
+            isLeftHanded = isLeftHanded
         )
-    }
-}
-
-@Composable
-private fun FolderFormButtons(
-    isEditing: Boolean,
-    submitText: String,
-    onDelete: (() -> Unit)?,
-    onDismiss: () -> Unit,
-    onSave: () -> Unit
-) {
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        if (isEditing && onDelete != null) {
-            TextButton(onClick = onDelete) {
-                AureoleText(
-                    stringResource(R.string.core_common_delete),
-                    color = AureoleDS.colors.error
-                )
-            }
-        } else {
-            Spacer(modifier = Modifier.width(AureoleDS.dimens.borderMinimal))
-        }
-
-        Row {
-            TextButton(onClick = onDismiss) {
-                AureoleText(
-                    stringResource(R.string.core_common_cancel),
-                    color = AureoleDS.colors.onSurfaceMedium
-                )
-            }
-            Spacer(modifier = Modifier.width(AureoleDS.dimens.xSmall))
-            TextButton(onClick = onSave) {
-                AureoleText(
-                    submitText,
-                    color = AureoleDS.colors.onSurfaceHigh,
-                    format = AureoleTextFormatParams(fontWeight = FontWeight.Bold)
-                )
-            }
-        }
     }
 }
 

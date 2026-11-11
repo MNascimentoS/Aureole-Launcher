@@ -15,10 +15,13 @@ import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -31,13 +34,18 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Constraints
 import dev.chrisbanes.haze.HazeState
 import dev.chrisbanes.haze.HazeStyle
 import dev.chrisbanes.haze.HazeTint
 import dev.chrisbanes.haze.hazeEffect
+import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.core.designsystem.icons.Logo
 import dev.mnascimentos.aureole.core.designsystem.model.AureoleEditOverlayParams
 import dev.mnascimentos.aureole.core.designsystem.model.OverlaySheetDecorations
@@ -49,6 +57,7 @@ import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.core.designsystem.utils.LocalHazeState
+import dev.mnascimentos.aureole.core.designsystem.utils.glassBlurRadius
 import kotlin.math.roundToInt
 
 private const val ANIMATION_DURATION_MS = 300
@@ -66,7 +75,7 @@ internal fun OverlayContentBox(
         Modifier.hazeEffect(
             state = effectiveHazeState,
             style = HazeStyle(
-                blurRadius = AureoleDS.dimens.xLarge,
+                blurRadius = glassBlurRadius(AureoleDS.dimens.xLarge),
                 tint = HazeTint(Color.Black.copy(alpha = 0.55f))
             )
         ) { blurEnabled = true }
@@ -147,12 +156,23 @@ private fun AnchoredPreviewLayout(
         val sheetHeight = sheetPlaceables.maxOfOrNull { it.height } ?: 0
         if (motion.fixedHeight(isExpanded, bounds) == null) motion.restOuterHeight = sheetHeight
         val restSheetHeight = motion.restOuterHeight.takeIf { it > 0 } ?: bounds.restMaxPx.roundToInt()
-        val previewMaxHeight = (constraints.maxHeight - restSheetHeight - previewGapPx - previewTopPaddingPx)
-            .coerceAtLeast(0)
+        // An unbounded parent (e.g. inside a scroll) has no height to subtract from: keep it unbounded, since
+        // Infinity minus anything is not a height Constraints can represent.
+        val previewMaxHeight = if (constraints.hasBoundedHeight) {
+            (constraints.maxHeight - restSheetHeight - previewGapPx - previewTopPaddingPx).coerceAtLeast(0)
+        } else {
+            Constraints.Infinity
+        }
         val previewPlaceables = previewMeasurables.map { it.measure(loose.copy(maxHeight = previewMaxHeight)) }
+        val layoutHeight = if (constraints.hasBoundedHeight) {
+            constraints.maxHeight
+        } else {
+            val previewHeight = previewPlaceables.maxOfOrNull { it.height } ?: 0
+            previewTopPaddingPx + previewHeight + previewGapPx + sheetHeight
+        }
 
-        layout(constraints.maxWidth, constraints.maxHeight) {
-            val sheetTop = constraints.maxHeight - sheetHeight + motion.translation(bounds).roundToInt()
+        layout(constraints.maxWidth, layoutHeight) {
+            val sheetTop = layoutHeight - sheetHeight + motion.translation(bounds).roundToInt()
             previewPlaceables.forEach { placeable ->
                 placeable.placeRelative(
                     0,
@@ -233,7 +253,8 @@ internal fun OverlaySheetBody(
                 OverlaySheetHeader(
                     title = title,
                     onSettingsClick = onSettingsClick,
-                    headerIcon = decorations.headerIcon
+                    headerIcon = decorations.headerIcon,
+                    titleIcon = decorations.titleIcon
                 )
             }
             if (sheetContent != null) {
@@ -267,31 +288,52 @@ internal fun OverlaySheetBody(
 private fun OverlaySheetHeader(
     title: String,
     onSettingsClick: (() -> Unit)?,
-    headerIcon: (@Composable (Modifier) -> Unit)? = null
+    headerIcon: (@Composable (Modifier) -> Unit)? = null,
+    titleIcon: (@Composable (Modifier) -> Unit)? = null
 ) {
+    val settingsLabel = stringResource(R.string.overlay_sheet_action_settings)
     Box(
         modifier = Modifier
             .fillMaxWidth()
             .padding(start = AureoleDS.dimens.small, end = AureoleDS.dimens.small, bottom = AureoleDS.dimens.medium),
         contentAlignment = Alignment.Center
     ) {
-        Text(
-            text = title,
-            style = AureoleDS.typography.titleMedium,
-            fontWeight = FontWeight.Bold,
-            color = AureoleDS.colors.onSurfaceHigh,
-            textAlign = TextAlign.Center
-        )
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            if (titleIcon != null) {
+                Box(
+                    modifier = Modifier
+                        .size(AureoleDS.dimens.iconXLarge)
+                        .clip(RoundedCornerShape(AureoleDS.dimens.radiusSmall))
+                        .background(AureoleDS.colors.surfaceVariant),
+                    contentAlignment = Alignment.Center
+                ) {
+                    titleIcon(Modifier.size(AureoleDS.dimens.iconMedium))
+                }
+                Spacer(modifier = Modifier.width(AureoleDS.dimens.small))
+            }
+            Text(
+                text = title,
+                style = AureoleDS.typography.titleMedium,
+                fontWeight = FontWeight.Bold,
+                color = AureoleDS.colors.onSurfaceHigh,
+                textAlign = TextAlign.Center
+            )
+        }
 
-        if (onSettingsClick != null || headerIcon != null) {
+        run {
             Box(
                 modifier = Modifier
                     .align(Alignment.CenterEnd)
                     .size(AureoleDS.dimens.iconXLarge)
                     .clip(RoundedCornerShape(AureoleDS.dimens.radiusMedium))
-                    .clickable(
-                        onClick = { onSettingsClick?.invoke() },
-                        role = Role.Button
+                    .then(
+                        if (onSettingsClick != null) {
+                            Modifier
+                                .clickable(onClick = onSettingsClick, role = Role.Button)
+                                .semantics { contentDescription = settingsLabel }
+                        } else {
+                            Modifier
+                        }
                     ),
                 contentAlignment = Alignment.Center
             ) {

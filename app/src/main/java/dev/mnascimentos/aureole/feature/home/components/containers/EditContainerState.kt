@@ -13,6 +13,7 @@ import dev.mnascimentos.aureole.core.data.model.ContainerModel
 import dev.mnascimentos.aureole.core.data.model.QuickButtonModel
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
+import dev.mnascimentos.aureole.feature.home.components.containers.model.ContainerConfig
 import dev.mnascimentos.aureole.feature.home.components.containers.model.ContainerOptionsState
 import java.util.UUID
 
@@ -143,6 +144,31 @@ internal class EditContainerState(
         ).also { it.quickButtonModel = newQuickButton }
     }
 }
+
+/** The container as the live preview draws it, from the draft in [EditContainerState]. */
+internal fun EditContainerState.toConfig(): ContainerConfig = ContainerConfig(
+    panelId = panel.id,
+    items = itemsList,
+    folders = folders.map { it.copy(displayAsGrid = isGridFolderEnabled) },
+    appPackageNames = itemsList.mapNotNull { it.packageName },
+    quickButtons = quickButtons,
+    position = position,
+    orientation = orientation,
+    isBackgroundEnabled = isBackgroundEnabled,
+    isExpandCell = isExpandCell,
+    showAddFolderButton = showAddFolderButton,
+    showFolderLabels = showFolderLabels,
+    isGridFolderEnabled = isGridFolderEnabled,
+    hideText = hideText,
+    textColor = textColor,
+    backgroundColor = backgroundColor,
+    strokeEnabled = strokeEnabled,
+    strokeColor = strokeColor,
+    folderColor = folderColor,
+    folderStrokeEnabled = folderStrokeEnabled,
+    scrollUpShortcut = scrollUpShortcut,
+    scrollDownShortcut = scrollDownShortcut
+)
 
 private fun buildInitialItemsList(panel: ContainerModel): List<ContainerItemEntity> {
     if (panel.items.isNotEmpty()) return panel.items
