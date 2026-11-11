@@ -16,3 +16,8 @@
 - Modelo principal da sessão: `/model sonnet` está bom; os subagentes já trocam para Opus ou Haiku sozinhos.
 - Se um gate de screenshot divergir, ele para e pergunta. Decida se a mudança é esperada e rode `./gradlew updateDebugScreenshotTest`.
 - Para uma tela só de uma fase grande: `/fase 4` e peça "só o formulário da pasta" no ok do plano.
+
+## Polimento das action sheets (`/polish`)
+
+- Plano: `actionsheets-polish-plan.md`. Progresso: `actionsheets-polish-progress.md`. Protótipo: `actionsheets-polish-prototype.html`. Referências: `ref/polish-*.png`.
+- Depois de copiar o `claude-setup` de novo (passo 1), abra uma sessão nova e rode `/polish 1`, `/polish 2` e assim por diante, uma fase por sessão.
