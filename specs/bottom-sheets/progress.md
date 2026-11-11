@@ -18,17 +18,17 @@ Atualizado por `/fase`. Marque `[x]` quando os gates passarem e o veredito visua
 
 | # | Fase | Modelo | Estimativa | Gates | Visual | Aparelho |
 |---|---|---|---|---|---|---|
-| 1 | Ajustes da base: faixa de gesto invisível, `ActionRow`/espelho, base do `SettingsBottomSheet` | Opus | 1,5–2,5 h | [x] | [x] quase | [ ] |
-| 2 | Lista reordenável com ✕ e "+" (e desfazer em widgets e reordenar) | Opus | 2,5–3,5 h | [x] | [x] quase | [ ] |
-| 3 | Menus e popup da pasta | Sonnet | 2–3 h | [x] | [x] quase | [ ] |
-| 4 | Editores restantes | Sonnet | 3–4,5 h | [x] | [x] quase | [ ] |
-| 5 | Adicionar container e opções de posição | Sonnet | 1,5–2,5 h | [x] | [x] igual | [ ] |
-| 6 | Ajustes do teste no aparelho: prévia sem rótulo, ícones nas linhas, cards da pilha, mover por botões, Cartões e vidro só com "Pronto", menu do app sem "Pasta"/"Ícone" | Sonnet | 2–3 h | [x] | [x] quase | [ ] |
-| 6b | Favoritos sem duplicação (sem favoritos = todos os apps) e alça de arrastar clara | Sonnet | 1,5–2,5 h | [x] | [x] quase | [ ] |
-| 6c | Ícones de pasta do Material Symbols (aprovado; arquivos em `folder-icons/`) | Haiku + Sonnet | 1–2 h | [x] | [x] quase | [ ] |
-| 7 | Dívidas restantes das fases 1 a 5 (sem o que já foi resolvido) | Sonnet + Opus (autoscroll) | 2,5–4 h | [x] | [x] quase | [ ] |
-| 8 | Diálogos e avisos | Sonnet | 1,5–2,5 h | [x] | [x] quase | [ ] |
-| 9 | Acabamento | Haiku | 1–1,5 h | [x] | [x] quase | [ ] |
+| 1 | Ajustes da base: faixa de gesto invisível, `ActionRow`/espelho, base do `SettingsBottomSheet` | Opus | 1,5–2,5 h | [x] | [x] quase | [x] |
+| 2 | Lista reordenável com ✕ e "+" (e desfazer em widgets e reordenar) | Opus | 2,5–3,5 h | [x] | [x] quase | [x] |
+| 3 | Menus e popup da pasta | Sonnet | 2–3 h | [x] | [x] quase | [x] |
+| 4 | Editores restantes | Sonnet | 3–4,5 h | [x] | [x] quase | [x] |
+| 5 | Adicionar container e opções de posição | Sonnet | 1,5–2,5 h | [x] | [x] igual | [x] |
+| 6 | Ajustes do teste no aparelho: prévia sem rótulo, ícones nas linhas, cards da pilha, mover por botões, Cartões e vidro só com "Pronto", menu do app sem "Pasta"/"Ícone" | Sonnet | 2–3 h | [x] | [x] quase | [x] |
+| 6b | Favoritos sem duplicação (sem favoritos = todos os apps) e alça de arrastar clara | Sonnet | 1,5–2,5 h | [x] | [x] quase | [x] |
+| 6c | Ícones de pasta do Material Symbols (aprovado; arquivos em `folder-icons/`) | Haiku + Sonnet | 1–2 h | [x] | [x] quase | [x] |
+| 7 | Dívidas restantes das fases 1 a 5 (sem o que já foi resolvido) | Sonnet + Opus (autoscroll) | 2,5–4 h | [x] | [x] quase | [x] |
+| 8 | Diálogos e avisos | Sonnet | 1,5–2,5 h | [x] | [x] quase | [x] |
+| 9 | Acabamento | Haiku | 1–1,5 h | [x] | [x] quase | [x] |
 
 ## Notas por fase
 
@@ -198,3 +198,7 @@ Commits (sem push), na `release/0.9.20`: `263e1c5` (6), `a00eed1` (6b), `11b0c41
 - O chevron no canhoto aponta para a esquerda e pode ser lido como "voltar".
 - `ShortcutAction.displayName` ainda tem texto fixo em inglês.
 - Fator de blur Leve (0,4x) e Máx. (1,6x), `WallpaperManager` ao desfazer o fundo e velocidade do autoscroll (800 dp/s, faixa de 48 dp): conferir no aparelho.
+
+### Teste no aparelho (11/11/2026)
+
+O Mateus validou no aparelho os itens da lista de testes das fases 1 a 9 (arrastar com o polegar e autoscroll, "Redefinir launcher" por segurar, desfazer do fundo, blur, campo de nome da pasta com teclado, TalkBack, menu do app em janela própria). Coluna "Aparelho" marcada em todas as fases. As decisões abertas listadas em "Fechamento das fases 6 a 9" continuam valendo.
