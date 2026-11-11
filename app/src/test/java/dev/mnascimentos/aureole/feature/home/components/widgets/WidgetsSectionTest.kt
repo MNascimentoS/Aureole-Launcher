@@ -17,6 +17,7 @@ import androidx.compose.ui.unit.dp
 import dev.chrisbanes.haze.HazeState
 import dev.mnascimentos.aureole.composable.widgets.AddWidgetButton
 import dev.mnascimentos.aureole.composable.widgets.WidgetPositionIndicatorBar
+import dev.mnascimentos.aureole.core.designsystem.model.LocalLeftHanded
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.feature.home.components.widgets.model.StackedWidgetConfig
 import dev.mnascimentos.aureole.feature.home.model.LocalHomeActions
@@ -102,6 +103,7 @@ class WidgetsSectionTest {
             AureoleLauncherTheme {
                 CompositionLocalProvider(
                     LocalHomeUiState provides state,
+                    LocalLeftHanded provides state.isLeftHandedMode,
                     LocalHomeActions provides createDefaultHomeScreenActions()
                 ) {
                     StackedWidgetSection(
@@ -131,6 +133,7 @@ class WidgetsSectionTest {
             AureoleLauncherTheme {
                 CompositionLocalProvider(
                     LocalHomeUiState provides state,
+                    LocalLeftHanded provides state.isLeftHandedMode,
                     LocalHomeActions provides createDefaultHomeScreenActions().copy(
                         onAddWidgetClick = { clickedStackId = it }
                     )

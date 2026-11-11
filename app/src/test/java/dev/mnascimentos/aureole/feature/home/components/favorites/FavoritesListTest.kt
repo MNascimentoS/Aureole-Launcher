@@ -11,6 +11,7 @@ import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.unit.dp
 import androidx.core.graphics.drawable.toDrawable
 import dev.mnascimentos.aureole.core.data.model.AppInfo
+import dev.mnascimentos.aureole.core.designsystem.model.LocalLeftHanded
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.feature.home.components.favorites.model.FavoritesListConfig
 import dev.mnascimentos.aureole.feature.home.components.favorites.model.FavoritesListOptions
@@ -43,6 +44,7 @@ class FavoritesListTest {
             AureoleLauncherTheme {
                 CompositionLocalProvider(
                     LocalHomeUiState provides uiState,
+                    LocalLeftHanded provides uiState.isLeftHandedMode,
                     LocalHomeActions provides createDefaultHomeScreenActions()
                 ) {
                     FavoritesList(
@@ -92,6 +94,7 @@ class FavoritesListTest {
             AureoleLauncherTheme {
                 CompositionLocalProvider(
                     LocalHomeUiState provides uiState,
+                    LocalLeftHanded provides uiState.isLeftHandedMode,
                     LocalHomeActions provides createDefaultHomeScreenActions()
                 ) {
                     FavoritesList(

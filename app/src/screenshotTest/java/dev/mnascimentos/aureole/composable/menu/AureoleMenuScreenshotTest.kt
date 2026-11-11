@@ -16,11 +16,12 @@ import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.model.LocalHomeUiState
+import dev.mnascimentos.aureole.feature.home.model.ProvideHomeUiState
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
 
 @Composable
 private fun MenuRowsCase(isLeftHanded: Boolean) {
-    CompositionLocalProvider(LocalHomeUiState provides MainUiState(isLeftHandedMode = isLeftHanded)) {
+    ProvideHomeUiState(MainUiState(isLeftHandedMode = isLeftHanded)) {
         AureoleLauncherTheme {
             Column(modifier = Modifier.padding(AureoleDS.dimens.medium)) {
                 AureoleMenuRow(
@@ -48,7 +49,7 @@ private fun MenuRowsCase(isLeftHanded: Boolean) {
 
 @Composable
 private fun QuickActionsCase(isLeftHanded: Boolean) {
-    CompositionLocalProvider(LocalHomeUiState provides MainUiState(isLeftHandedMode = isLeftHanded)) {
+    ProvideHomeUiState(MainUiState(isLeftHandedMode = isLeftHanded)) {
         AureoleLauncherTheme {
             AureoleMenuQuickActions(
                 actions = listOf(

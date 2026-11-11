@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.union
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -34,8 +33,8 @@ import dev.mnascimentos.aureole.core.designsystem.icons.Delete
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
-import dev.mnascimentos.aureole.feature.home.model.LocalHomeUiState
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
+import dev.mnascimentos.aureole.feature.home.model.ProvideHomeUiState
 import dev.mnascimentos.aureole.feature.settings.SettingsNavGraph
 import dev.mnascimentos.aureole.feature.settings.components.ContainerPositionDialog
 import dev.mnascimentos.aureole.feature.settings.components.SearchIconPositionDialog
@@ -102,7 +101,7 @@ private fun SettingsDialogsPrimary(
     }
 
     if (uiState.showCreateFolderDialog) {
-        CompositionLocalProvider(LocalHomeUiState provides MainUiState(isLeftHandedMode = uiState.isLeftHandedMode)) {
+        ProvideHomeUiState(MainUiState(isLeftHandedMode = uiState.isLeftHandedMode)) {
             CreateFolderDialog(
                 onDismiss = actions.onDismissCreateFolderDialog,
                 onSubmit = actions.onSubmitCreateFolder
@@ -133,7 +132,7 @@ private fun SettingsDialogsSecondary(
     uiState: SettingsUiState,
     actions: SettingsScreenActions
 ) {
-    CompositionLocalProvider(LocalHomeUiState provides MainUiState(isLeftHandedMode = uiState.isLeftHandedMode)) {
+    ProvideHomeUiState(MainUiState(isLeftHandedMode = uiState.isLeftHandedMode)) {
         SettingsPositionSheets(uiState = uiState, actions = actions)
     }
 

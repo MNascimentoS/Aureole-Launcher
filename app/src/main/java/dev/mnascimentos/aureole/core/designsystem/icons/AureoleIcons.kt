@@ -75,6 +75,13 @@ fun AureoleIcons.AlignRight(
     tint: Color? = null
 ) { AureoleIcon(R.drawable.ic_aureole_align_right, modifier, tint) }
 
+/** Points to the end of the row and mirrors by itself in right-to-left layouts (left-handed mode). */
+@Composable
+fun AureoleIcons.ChevronRight(
+    modifier: Modifier = Modifier,
+    tint: Color? = null
+) { AureoleIcon(R.drawable.ic_aureole_chevron_right, modifier, tint) }
+
 private const val ARROW_DOWN_ROTATION_DEGREES = 180f
 private const val CLOSE_SQUARE_ROTATION_DEGREES = 45f
 

@@ -8,11 +8,12 @@ import dev.mnascimentos.aureole.composable.menu.model.RadioSheetParams
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.model.LocalHomeUiState
+import dev.mnascimentos.aureole.feature.home.model.ProvideHomeUiState
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
 
 @Composable
 private fun RadioSheetCase(isLeftHanded: Boolean) {
-    CompositionLocalProvider(LocalHomeUiState provides MainUiState(isLeftHandedMode = isLeftHanded)) {
+    ProvideHomeUiState(MainUiState(isLeftHandedMode = isLeftHanded)) {
         AureoleLauncherTheme {
             AureoleRadioSheet(
                 params = RadioSheetParams(

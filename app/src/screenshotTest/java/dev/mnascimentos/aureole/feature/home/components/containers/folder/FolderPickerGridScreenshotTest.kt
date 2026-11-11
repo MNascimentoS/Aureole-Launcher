@@ -22,6 +22,7 @@ import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.FolderAppPickerBodyParams
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.sortedForPickerGrid
 import dev.mnascimentos.aureole.feature.home.model.LocalHomeUiState
+import dev.mnascimentos.aureole.feature.home.model.ProvideHomeUiState
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
 
 private val gridColors = listOf(0xFF2E7D32, 0xFF1B65C0, 0xFFC62828, 0xFF6A1B9A, 0xFFEF6C00, 0xFF00838F)
@@ -42,7 +43,7 @@ private val gridApps: List<AppInfo> = listOf(
 private fun PickerGridCase(isLeftHanded: Boolean, selectedLabels: List<String> = emptyList()) {
     val selectedApps = gridApps.filter { it.label in selectedLabels }
     val selected = remember { mutableStateListOf<String>().apply { addAll(selectedApps.map { it.packageName }) } }
-    CompositionLocalProvider(LocalHomeUiState provides MainUiState(isLeftHandedMode = isLeftHanded)) {
+    ProvideHomeUiState(MainUiState(isLeftHandedMode = isLeftHanded)) {
         AureoleLauncherTheme {
             Box(
                 modifier = Modifier

@@ -8,6 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
 import com.android.tools.screenshot.PreviewTest
+import dev.mnascimentos.aureole.core.designsystem.model.LocalLeftHanded
 import dev.mnascimentos.aureole.composable.appitem.model.AppItemRowConfig
 import dev.mnascimentos.aureole.composable.favorites.FavoriteAppsDialog
 import dev.mnascimentos.aureole.composable.favorites.FavoriteAppsMainContent
@@ -26,7 +27,8 @@ private fun FavoritesMenuDialogCase(isLeftHanded: Boolean) {
     val sampleData = createSampleHomeData()
     AureoleLauncherTheme {
         CompositionLocalProvider(
-            LocalHomeUiState provides sampleData.uiState.copy(isLeftHandedMode = isLeftHanded)
+            LocalHomeUiState provides sampleData.uiState.copy(isLeftHandedMode = isLeftHanded),
+            LocalLeftHanded provides (sampleData.uiState.copy(isLeftHandedMode = isLeftHanded)).isLeftHandedMode
         ) {
             FavoriteAppsDialog(
                 config = FavoriteAppsDialogConfig(
@@ -54,7 +56,8 @@ private fun FavoriteAppsMenuLeftHandedScreenshotTest() = FavoritesMenuDialogCase
 @Composable
 private fun FavoritesMainContentCase(isLeftHanded: Boolean, favoriteCount: Int) {
     CompositionLocalProvider(
-        LocalHomeUiState provides createSampleHomeData().uiState.copy(isLeftHandedMode = isLeftHanded)
+        LocalHomeUiState provides createSampleHomeData().uiState.copy(isLeftHandedMode = isLeftHanded),
+        LocalLeftHanded provides (createSampleHomeData().uiState.copy(isLeftHandedMode = isLeftHanded)).isLeftHandedMode
     ) {
         AureoleLauncherTheme {
             Box(
@@ -90,7 +93,8 @@ private fun FavoriteAppsMainContentLeftHandedNoFavoritesScreenshotTest() =
 @Composable
 private fun FavoritesSubScreenCase(mode: FavoriteAppsScreenMode, isLeftHanded: Boolean) {
     CompositionLocalProvider(
-        LocalHomeUiState provides createSampleHomeData().uiState.copy(isLeftHandedMode = isLeftHanded)
+        LocalHomeUiState provides createSampleHomeData().uiState.copy(isLeftHandedMode = isLeftHanded),
+        LocalLeftHanded provides (createSampleHomeData().uiState.copy(isLeftHandedMode = isLeftHanded)).isLeftHandedMode
     ) {
         AureoleLauncherTheme {
             Box(

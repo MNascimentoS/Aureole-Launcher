@@ -15,12 +15,12 @@ import dev.mnascimentos.aureole.composable.sheets.model.ThemePickerSheetOptions
 import dev.mnascimentos.aureole.composable.sheets.model.ThemePreviewOverlayParams
 import dev.mnascimentos.aureole.composable.sheets.model.ThemePreviewState
 import dev.mnascimentos.aureole.composable.sheets.model.discard
+import dev.mnascimentos.aureole.core.designsystem.model.LocalLeftHanded
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleThemeConfig
 import dev.mnascimentos.aureole.core.designsystem.theme.AvailableFonts
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
-import dev.mnascimentos.aureole.feature.home.model.LocalHomeUiState
 
 private const val FONT_COLUMNS = 2
 
@@ -46,7 +46,7 @@ fun PickFontBottomSheet(
         aureoleIcons = AureoleDS.icons,
         aureoleDimens = AureoleDS.dimens
     )
-    val isLeftHanded = LocalHomeUiState.current.isLeftHandedMode
+    val isLeftHanded = LocalLeftHanded.current
     val shownFont = pending.fontName ?: selectedFontName
 
     ThemePreviewOverlay(

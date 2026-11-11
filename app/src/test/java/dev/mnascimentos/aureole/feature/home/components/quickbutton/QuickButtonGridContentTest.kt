@@ -3,7 +3,6 @@ package dev.mnascimentos.aureole.feature.home.components.quickbutton
 import android.content.ComponentName
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.v2.createComposeRule
 import androidx.compose.ui.test.longClick
@@ -17,8 +16,8 @@ import dev.mnascimentos.aureole.core.data.model.QuickButtonModel
 import dev.mnascimentos.aureole.core.data.model.QuickButtonShortcuts
 import dev.mnascimentos.aureole.core.data.model.ShortcutAction
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
-import dev.mnascimentos.aureole.feature.home.model.LocalHomeUiState
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
+import dev.mnascimentos.aureole.feature.home.model.ProvideHomeUiState
 import dev.mnascimentos.aureole.feature.home.model.createDefaultHomeScreenActions
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
@@ -134,7 +133,7 @@ class QuickButtonGridContentTest {
         // Act
         composeTestRule.setContent {
             AureoleLauncherTheme {
-                CompositionLocalProvider(LocalHomeUiState provides uiState) {
+                ProvideHomeUiState(uiState) {
                     GridQuickButtonContent(
                         item = item,
                         actions = createDefaultHomeScreenActions()

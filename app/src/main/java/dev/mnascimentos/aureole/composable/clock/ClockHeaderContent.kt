@@ -10,6 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -60,7 +61,7 @@ internal fun ClockHeaderContent(params: ClockHeaderContentParams) {
 
     val typeface = ClockHeaderUtils.resolveClockTypeface(params.fontFamily)
     val (format12, format24) = ClockHeaderUtils.resolveClockTimeFormats(params.timeFormat)
-    val datePattern = ClockHeaderUtils.resolveClockDatePattern(params.dateFormat)
+    val datePattern = ClockHeaderUtils.resolveClockDatePattern(params.dateFormat, LocalConfiguration.current.locales[0])
 
     Column(
         modifier = Modifier.fillMaxWidth(),

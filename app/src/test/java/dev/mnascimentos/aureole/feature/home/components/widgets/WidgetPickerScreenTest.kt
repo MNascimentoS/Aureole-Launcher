@@ -1,6 +1,5 @@
 package dev.mnascimentos.aureole.feature.home.components.widgets
 
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.v2.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
@@ -12,8 +11,8 @@ import dev.mnascimentos.aureole.feature.home.components.widgets.model.WidgetPick
 import dev.mnascimentos.aureole.feature.home.components.widgets.model.WidgetSelectorScreenParams
 import dev.mnascimentos.aureole.feature.home.components.widgets.model.WidgetSelectorState
 import dev.mnascimentos.aureole.feature.home.components.widgets.model.WidgetVariant
-import dev.mnascimentos.aureole.feature.home.model.LocalHomeUiState
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
+import dev.mnascimentos.aureole.feature.home.model.ProvideHomeUiState
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -52,7 +51,7 @@ class WidgetPickerScreenTest {
     fun `when WidgetPickerScreen is rendered, should inject viewModel and render screen`() {
         composeTestRule.setContent {
             AureoleLauncherTheme {
-                CompositionLocalProvider(LocalHomeUiState provides MainUiState()) {
+                ProvideHomeUiState(MainUiState()) {
                     WidgetPickerScreen(
                         params = WidgetPickerScreenParams(
                             onWidgetSelected = {},
@@ -71,7 +70,7 @@ class WidgetPickerScreenTest {
     fun `when state is loading, should render progress indicator`() {
         composeTestRule.setContent {
             AureoleLauncherTheme {
-                CompositionLocalProvider(LocalHomeUiState provides MainUiState()) {
+                ProvideHomeUiState(MainUiState()) {
                     WidgetSelectorScreen(
                         params = WidgetSelectorScreenParams(
                             state = WidgetSelectorState(isLoading = true, widgetGroups = emptyList()),
@@ -91,7 +90,7 @@ class WidgetPickerScreenTest {
     fun `when state is empty and query is empty, should display empty message`() {
         composeTestRule.setContent {
             AureoleLauncherTheme {
-                CompositionLocalProvider(LocalHomeUiState provides MainUiState()) {
+                ProvideHomeUiState(MainUiState()) {
                     WidgetSelectorScreen(
                         params = WidgetSelectorScreenParams(
                             state = WidgetSelectorState(isLoading = false, widgetGroups = emptyList()),
@@ -124,7 +123,7 @@ class WidgetPickerScreenTest {
 
         composeTestRule.setContent {
             AureoleLauncherTheme {
-                CompositionLocalProvider(LocalHomeUiState provides MainUiState()) {
+                ProvideHomeUiState(MainUiState()) {
                     WidgetSelectorScreen(
                         params = WidgetSelectorScreenParams(
                             state = sampleState,

@@ -11,6 +11,7 @@ import androidx.core.graphics.drawable.toDrawable
 import dev.chrisbanes.haze.HazeState
 import dev.mnascimentos.aureole.core.data.model.AppFolder
 import dev.mnascimentos.aureole.core.data.model.AppInfo
+import dev.mnascimentos.aureole.core.designsystem.model.LocalLeftHanded
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.feature.home.components.common.AddAppToFolderOverlay
 import dev.mnascimentos.aureole.feature.home.components.common.CreateFolderOverlay
@@ -218,6 +219,7 @@ class HomeScreenFolderOverlaysTest {
         composeTestRule.setContent {
             CompositionLocalProvider(
                 LocalHomeUiState provides uiStateFolderSheet,
+                LocalLeftHanded provides uiStateFolderSheet.isLeftHandedMode,
                 LocalHomeActions provides actions
             ) {
                 AureoleLauncherTheme {
@@ -249,6 +251,7 @@ class HomeScreenFolderOverlaysTest {
         composeTestRule.setContent {
             CompositionLocalProvider(
                 LocalHomeUiState provides uiStateFolderAppSheet,
+                LocalLeftHanded provides uiStateFolderAppSheet.isLeftHandedMode,
                 LocalHomeActions provides actions
             ) {
                 AureoleLauncherTheme {
@@ -281,6 +284,7 @@ class HomeScreenFolderOverlaysTest {
         composeTestRule.setContent {
             CompositionLocalProvider(
                 LocalHomeUiState provides uiStateContainerAppSheet,
+                LocalLeftHanded provides uiStateContainerAppSheet.isLeftHandedMode,
                 LocalHomeActions provides actions
             ) {
                 AureoleLauncherTheme {
@@ -328,7 +332,11 @@ class HomeScreenFolderOverlaysTest {
 
     private fun showOverlays(state: MainUiState, actions: HomeScreenActions) {
         composeTestRule.setContent {
-            CompositionLocalProvider(LocalHomeUiState provides state, LocalHomeActions provides actions) {
+            CompositionLocalProvider(
+                LocalHomeUiState provides state,
+                LocalLeftHanded provides state.isLeftHandedMode,
+                LocalHomeActions provides actions
+            ) {
                 AureoleLauncherTheme {
                     HomeScreenFolderOverlays(screenHeightPx = 1920f, hazeState = HazeState())
                 }

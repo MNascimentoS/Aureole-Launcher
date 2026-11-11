@@ -20,10 +20,12 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Icon
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -33,6 +35,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.composable.mirror.LeftHandMirror
+import dev.mnascimentos.aureole.composable.sheets.AureoleConfirmOverlay
+import dev.mnascimentos.aureole.composable.sheets.model.ConfirmOverlayParams
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.data.model.QuickButtonAppearance
 import dev.mnascimentos.aureole.core.data.model.QuickButtonIcon
@@ -230,29 +234,33 @@ internal fun AppearanceIconRow(
     }
 }
 
+/**
+ * Icon picker in an edit overlay (the same kind as the color picker), so it shares the screen with the appearance
+ * editor without a second window or scrim. The tapped icon is a draft until Confirm.
+ */
 @Composable
 internal fun QuickButtonIconPickerDialog(
     selectedIcon: QuickButtonIcon,
     onIconSelected: (QuickButtonIcon) -> Unit,
-    onDismiss: () -> Unit
+    onDismiss: () -> Unit,
+    modifier: Modifier = Modifier,
+    isLeftHanded: Boolean = false
 ) {
-    AlertDialog(
-        onDismissRequest = onDismiss,
-        title = {
-            AureoleText(
-                text = stringResource(R.string.home_quickbutton_select_icon),
-                format = AureoleTextFormatParams(style = AureoleDS.typography.titleMedium, fontWeight = FontWeight.Bold)
-            )
-        },
-        text = {
-            Column(modifier = Modifier.fillMaxWidth().verticalScroll(rememberScrollState())) {
-                QuickButtonIconFlowRow(selectedIcon = selectedIcon, onIconSelected = onIconSelected)
-            }
-        },
-        confirmButton = {
-            TextButton(onClick = onDismiss) { AureoleText(stringResource(R.string.core_common_cancel)) }
+    var pendingIcon by remember { mutableStateOf(selectedIcon) }
+    AureoleConfirmOverlay(
+        params = ConfirmOverlayParams(
+            title = stringResource(R.string.home_quickbutton_select_icon),
+            primaryLabel = stringResource(R.string.core_common_confirm),
+            onPrimary = { onIconSelected(pendingIcon) },
+            onDismissRequest = onDismiss,
+            isLeftHanded = isLeftHanded
+        ),
+        modifier = modifier
+    ) {
+        Column(modifier = Modifier.fillMaxWidth().verticalScroll(rememberScrollState())) {
+            QuickButtonIconFlowRow(selectedIcon = pendingIcon, onIconSelected = { pendingIcon = it })
         }
-    )
+    }
 }
 
 @OptIn(ExperimentalLayoutApi::class)
@@ -283,7 +291,7 @@ private fun QuickButtonIconFlowRow(
                 contentAlignment = Alignment.Center
             ) {
                 Icon(
-                    painter = painterResource(id = selectedIcon.iconRes),
+                    painter = painterResource(id = iconItem.iconRes),
                     contentDescription = iconItem.name,
                     tint = AureoleDS.colors.onSurfaceHigh,
                     modifier = Modifier.size(AureoleDS.dimens.iconLarge)

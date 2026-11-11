@@ -16,9 +16,9 @@ import dev.mnascimentos.aureole.composable.menu.model.MenuSheetParams
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleEditOverlay
 import dev.mnascimentos.aureole.core.designsystem.model.AureoleEditOverlayConfig
 import dev.mnascimentos.aureole.core.designsystem.model.AureoleEditOverlayParams
+import dev.mnascimentos.aureole.core.designsystem.model.LocalLeftHanded
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
-import dev.mnascimentos.aureole.feature.home.model.LocalHomeUiState
 import kotlinx.coroutines.delay
 
 /** Lets the sheet slide out before the caller removes it. */
@@ -53,7 +53,7 @@ fun AureoleMenuSheet(
             config = AureoleEditOverlayConfig(
                 title = title,
                 isVisible = isVisible,
-                isLeftHanded = LocalHomeUiState.current.isLeftHandedMode,
+                isLeftHanded = LocalLeftHanded.current,
                 onSettingsClick = params.onSettingsClick,
                 titleIcon = params.titleIcon
             ),

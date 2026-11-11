@@ -5,7 +5,6 @@
     <!-- Common -->
     <string name="core_common_cancel">Cancelar</string>
     <string name="core_common_save">Salvar</string>
-    <string name="core_common_delete">Excluir</string>
     <string name="core_common_confirm">Confirmar</string>
     <string name="core_common_create">Criar</string>
     <string name="core_common_understood">Entendido</string>
@@ -141,8 +140,6 @@
     <string name="home_app_menu_info">Informações do App</string>
     <string name="home_app_menu_uninstall">Desinstalar</string>
     <string name="home_app_menu_remove_from_folder">Remover da pasta</string>
-    <string name="home_app_menu_add_to_favorites">Adicionar aos favoritos</string>
-    <string name="home_app_menu_remove_from_favorites">Remover dos favoritos</string>
     <string name="home_app_menu_quick_panel_settings">Configurações do painel rápido</string>
 
     <!-- Clock Customization -->
@@ -272,8 +269,6 @@
     <string name="home_container_edit_vertical">Vertical</string>
     <string name="home_container_edit_horizontal">Horizontal</string>
 
-    <string name="home_folder_opened_add_apps">Adicionar Apps</string>
-    <string name="home_folder_opened_edit">Editar Pasta</string>
     <string name="home_folder_opened_empty">Nenhum app na pasta</string>
 
     <string name="home_grid_widget_label">Widget</string>
@@ -315,7 +310,6 @@
     <string name="home_grid_item_scroll_view">Grupo rolável</string>
     <string name="home_grid_item_quick_button">Botão Rápido</string>
     <string name="home_grid_item_container">Container</string>
-    <string name="home_grid_config_title">Configurar %1$s</string>
     <string name="home_grid_current_size" tools:ignore="PluralsCandidate">Tamanho atual: %1$d x %2$d células</string>
     <string name="settings_cards_glass_title">Cartões e vidro</string>
     <string name="settings_cards_glass_corners_label">Cantos</string>

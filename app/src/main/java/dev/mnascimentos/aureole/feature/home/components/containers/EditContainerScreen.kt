@@ -17,7 +17,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.runtime.getValue
@@ -45,6 +44,7 @@ import dev.mnascimentos.aureole.feature.home.components.containers.model.EditCon
 import dev.mnascimentos.aureole.feature.home.components.containers.model.backTarget
 import dev.mnascimentos.aureole.feature.home.model.LocalHomeActions
 import dev.mnascimentos.aureole.feature.home.model.LocalHomeUiState
+import dev.mnascimentos.aureole.feature.home.model.ProvideHomeUiState
 import kotlinx.coroutines.delay
 
 private const val ANIMATION_DURATION_MS = 300L
@@ -66,7 +66,7 @@ fun EditContainerScreen(
     val isLeftHanded = effectiveUiState.isLeftHandedMode
     val homeActions = LocalHomeActions.current
 
-    CompositionLocalProvider(LocalHomeUiState provides effectiveUiState) {
+    ProvideHomeUiState(effectiveUiState) {
         if (!isVisible) {
             LaunchedEffect(isVisible) {
                 delay(ANIMATION_DURATION_MS)

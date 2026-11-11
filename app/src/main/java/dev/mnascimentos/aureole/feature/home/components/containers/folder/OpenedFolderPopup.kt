@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
@@ -27,6 +26,7 @@ import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.
 import dev.mnascimentos.aureole.feature.home.model.LocalHomeActions
 import dev.mnascimentos.aureole.feature.home.model.LocalHomeUiState
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
+import dev.mnascimentos.aureole.feature.home.model.ProvideHomeUiState
 
 /**
  * The opened folder. Grid mode ([OpenedFolderPopupConfig.isGridFolderEnabled] or the folder's own flag) is a
@@ -123,7 +123,7 @@ private fun OpenedFolderPopupPreview() {
     val actions = FolderPopupActions(onDismiss = {}, onAppClick = {})
 
     AureoleLauncherTheme {
-        CompositionLocalProvider(LocalHomeUiState provides MainUiState()) {
+        ProvideHomeUiState(MainUiState()) {
             OpenedFolderPopup(
                 config = OpenedFolderPopupConfig(
                     folder = mockFolder,

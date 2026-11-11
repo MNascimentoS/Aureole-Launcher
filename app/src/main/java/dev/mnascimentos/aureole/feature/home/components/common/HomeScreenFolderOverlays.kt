@@ -5,6 +5,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.remember
 import dev.chrisbanes.haze.HazeState
+import dev.mnascimentos.aureole.core.designsystem.model.LocalLeftHanded
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.FolderViewIntent
@@ -76,6 +77,7 @@ private fun HomeScreenFolderOverlaysPreview() {
     AureoleLauncherTheme {
         CompositionLocalProvider(
             LocalHomeUiState provides MainUiState(),
+            LocalLeftHanded provides (MainUiState()).isLeftHandedMode,
             LocalHomeActions provides mockActions
         ) {
             HomeScreenFolderOverlays(

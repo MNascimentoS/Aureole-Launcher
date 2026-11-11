@@ -5,6 +5,7 @@ import androidx.compose.ui.test.junit4.v2.createComposeRule
 import dev.mnascimentos.aureole.core.data.model.ContainerModel
 import dev.mnascimentos.aureole.core.data.model.LauncherItemState
 import dev.mnascimentos.aureole.core.data.model.LauncherItemType
+import dev.mnascimentos.aureole.core.designsystem.model.LocalLeftHanded
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.feature.home.model.LocalHomeActions
 import dev.mnascimentos.aureole.feature.home.model.LocalHomeUiState
@@ -30,6 +31,7 @@ class HomeScreenTest {
             AureoleLauncherTheme {
                 CompositionLocalProvider(
                     LocalHomeUiState provides uiState,
+                    LocalLeftHanded provides uiState.isLeftHandedMode,
                     LocalHomeActions provides createDefaultHomeScreenActions()
                 ) {
                     HomeScreen(appWidgetHost = null)
@@ -46,6 +48,7 @@ class HomeScreenTest {
             AureoleLauncherTheme {
                 CompositionLocalProvider(
                     LocalHomeUiState provides uiState,
+                    LocalLeftHanded provides uiState.isLeftHandedMode,
                     LocalHomeActions provides createDefaultHomeScreenActions()
                 ) {
                     HomeScreen(appWidgetHost = null)
@@ -62,6 +65,7 @@ class HomeScreenTest {
             AureoleLauncherTheme {
                 CompositionLocalProvider(
                     LocalHomeUiState provides uiState,
+                    LocalLeftHanded provides uiState.isLeftHandedMode,
                     LocalHomeActions provides createDefaultHomeScreenActions()
                 ) {
                     HomeScreen(appWidgetHost = null)
@@ -78,6 +82,7 @@ class HomeScreenTest {
             AureoleLauncherTheme {
                 CompositionLocalProvider(
                     LocalHomeUiState provides uiState,
+                    LocalLeftHanded provides uiState.isLeftHandedMode,
                     LocalHomeActions provides createDefaultHomeScreenActions()
                 ) {
                     HomeScreen(appWidgetHost = null)
@@ -94,6 +99,7 @@ class HomeScreenTest {
             AureoleLauncherTheme {
                 CompositionLocalProvider(
                     LocalHomeUiState provides uiState,
+                    LocalLeftHanded provides uiState.isLeftHandedMode,
                     LocalHomeActions provides createDefaultHomeScreenActions()
                 ) {
                     HomeScreen(appWidgetHost = null)
@@ -111,6 +117,7 @@ class HomeScreenTest {
             AureoleLauncherTheme {
                 CompositionLocalProvider(
                     LocalHomeUiState provides uiState,
+                    LocalLeftHanded provides uiState.isLeftHandedMode,
                     LocalHomeActions provides createDefaultHomeScreenActions()
                 ) {
                     HomeScreen(appWidgetHost = null)
@@ -128,6 +135,7 @@ class HomeScreenTest {
             AureoleLauncherTheme {
                 CompositionLocalProvider(
                     LocalHomeUiState provides uiState,
+                    LocalLeftHanded provides uiState.isLeftHandedMode,
                     LocalHomeActions provides createDefaultHomeScreenActions()
                 ) {
                     HomeScreen(appWidgetHost = null)
@@ -150,6 +158,7 @@ class HomeScreenTest {
             AureoleLauncherTheme {
                 CompositionLocalProvider(
                     LocalHomeUiState provides uiState,
+                    LocalLeftHanded provides uiState.isLeftHandedMode,
                     LocalHomeActions provides createDefaultHomeScreenActions()
                 ) {
                     HomeScreen(appWidgetHost = null)
@@ -170,6 +179,7 @@ class HomeScreenTest {
             AureoleLauncherTheme {
                 CompositionLocalProvider(
                     LocalHomeUiState provides uiState,
+                    LocalLeftHanded provides uiState.isLeftHandedMode,
                     LocalHomeActions provides actions
                 ) {
                     HomeScreen(appWidgetHost = null)

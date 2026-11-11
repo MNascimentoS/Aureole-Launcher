@@ -15,27 +15,23 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDirection
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.LayoutDirection
 import dev.mnascimentos.aureole.composable.menu.model.MenuRowParams
 import dev.mnascimentos.aureole.composable.mirror.LeftHandMirror
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
-import dev.mnascimentos.aureole.core.designsystem.icons.ArrowDown
+import dev.mnascimentos.aureole.core.designsystem.icons.ChevronRight
 import dev.mnascimentos.aureole.core.designsystem.icons.Delete
 import dev.mnascimentos.aureole.core.designsystem.icons.Settings
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 
-private const val CHEVRON_ROTATION = 90f
 private const val DESTRUCTIVE_TILE_ALPHA = 0.18f
 private const val NOTE_ALPHA = 0.35f
 
@@ -125,13 +121,10 @@ internal fun MenuIconColumn(
 
 @Composable
 private fun MenuRowChevron() {
-    // The row is mirrored for left-handed users, so the chevron turns the other way.
-    val rotation = if (LocalLayoutDirection.current == LayoutDirection.Rtl) CHEVRON_ROTATION else -CHEVRON_ROTATION
-    AureoleDS.icons.ArrowDown(
+    // Auto-mirrored: points to the end of the row, so it stays on the far side of the text in both hands.
+    AureoleDS.icons.ChevronRight(
         tint = AureoleDS.colors.onSurfaceLow,
-        modifier = Modifier
-            .size(AureoleDS.dimens.iconSmall)
-            .rotate(rotation)
+        modifier = Modifier.size(AureoleDS.dimens.iconSmall)
     )
 }
 

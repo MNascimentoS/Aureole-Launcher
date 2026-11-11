@@ -16,6 +16,7 @@ import androidx.compose.ui.platform.LocalContext
 import com.google.android.play.core.appupdate.AppUpdateInfo
 import com.google.android.play.core.appupdate.AppUpdateManager
 import dev.mnascimentos.aureole.HomeActionsFactory
+import dev.mnascimentos.aureole.core.designsystem.model.LocalLeftHanded
 import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.refreshDefaultLauncherStatus
 import dev.mnascimentos.aureole.feature.home.components.widgets.WidgetHostManager
 import dev.mnascimentos.aureole.feature.home.components.widgets.extensions.setIsAddingSingleWidget
@@ -57,6 +58,7 @@ fun MainRoute(
 
     CompositionLocalProvider(
         LocalHomeUiState provides uiState,
+        LocalLeftHanded provides uiState.isLeftHandedMode,
         LocalHomeActions provides homeActions
     ) {
         MainScaffold(

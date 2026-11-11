@@ -16,7 +16,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.runtime.getValue
@@ -48,6 +47,7 @@ import dev.mnascimentos.aureole.feature.home.components.scrubber.model.ScrubberR
 import dev.mnascimentos.aureole.feature.home.components.scrubber.model.scrubberLetterAlpha
 import dev.mnascimentos.aureole.feature.home.model.LocalHomeUiState
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
+import dev.mnascimentos.aureole.feature.home.model.ProvideHomeUiState
 import kotlin.math.exp
 import kotlin.math.roundToInt
 
@@ -334,7 +334,7 @@ private fun BoxScope.ScrubberSelectedBadge(
 @Composable
 private fun CurvedAlphabetScrubberPreview() {
     AureoleLauncherTheme {
-        CompositionLocalProvider(LocalHomeUiState provides MainUiState()) {
+        ProvideHomeUiState(MainUiState()) {
             CurvedAlphabetScrubber(
                 alphabet = listOf('A', 'B', 'C', 'D', 'E', 'F', 'G'),
                 options = ScrubberOptions(isAlwaysVisible = true),

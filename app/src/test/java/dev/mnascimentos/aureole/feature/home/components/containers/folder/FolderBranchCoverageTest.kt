@@ -26,6 +26,7 @@ import dev.mnascimentos.aureole.composable.dialogs.model.FolderIconPickerState
 import dev.mnascimentos.aureole.core.data.model.AppFolder
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.designsystem.icons.FolderIconCategory
+import dev.mnascimentos.aureole.core.designsystem.model.LocalLeftHanded
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.feature.home.components.common.HomeScreenFolderBottomSheetOverlays
 import dev.mnascimentos.aureole.feature.home.components.common.OpenedFolderOverlay
@@ -40,6 +41,7 @@ import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.
 import dev.mnascimentos.aureole.feature.home.model.LocalHomeActions
 import dev.mnascimentos.aureole.feature.home.model.LocalHomeUiState
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
+import dev.mnascimentos.aureole.feature.home.model.ProvideHomeUiState
 import dev.mnascimentos.aureole.feature.home.model.WidgetStackBottomSheetState
 import dev.mnascimentos.aureole.feature.home.model.createDefaultHomeScreenActions
 import org.junit.Assert.assertEquals
@@ -93,7 +95,8 @@ class FolderBranchCoverageTest {
 
         composeTestRule.setContent {
             CompositionLocalProvider(
-                LocalHomeUiState provides MainUiState(apps = listOf(app1))
+                LocalHomeUiState provides MainUiState(apps = listOf(app1)),
+                LocalLeftHanded provides (MainUiState(apps = listOf(app1))).isLeftHandedMode
             ) {
                 AureoleLauncherTheme {
                     ContainerFolderItem(
@@ -123,7 +126,8 @@ class FolderBranchCoverageTest {
 
         composeTestRule.setContent {
             CompositionLocalProvider(
-                LocalHomeUiState provides MainUiState(apps = emptyList())
+                LocalHomeUiState provides MainUiState(apps = emptyList()),
+                LocalLeftHanded provides (MainUiState(apps = emptyList())).isLeftHandedMode
             ) {
                 AureoleLauncherTheme {
                     ContainerFolderButton(
@@ -152,7 +156,8 @@ class FolderBranchCoverageTest {
 
         composeTestRule.setContent {
             CompositionLocalProvider(
-                LocalHomeUiState provides MainUiState(isThemedAppIconsEnabled = true)
+                LocalHomeUiState provides MainUiState(isThemedAppIconsEnabled = true),
+                LocalLeftHanded provides (MainUiState(isThemedAppIconsEnabled = true)).isLeftHandedMode
             ) {
                 AureoleLauncherTheme {
                     ContainerAppItem(
@@ -294,7 +299,8 @@ class FolderBranchCoverageTest {
         composeTestRule.setContent {
             CompositionLocalProvider(
                 LocalInspectionMode provides true,
-                LocalHomeUiState provides MainUiState()
+                LocalHomeUiState provides MainUiState(),
+                LocalLeftHanded provides (MainUiState()).isLeftHandedMode
             ) {
                 AureoleLauncherTheme {
                     FolderDialog(
@@ -324,7 +330,8 @@ class FolderBranchCoverageTest {
         composeTestRule.setContent {
             CompositionLocalProvider(
                 LocalInspectionMode provides true,
-                LocalHomeUiState provides MainUiState()
+                LocalHomeUiState provides MainUiState(),
+                LocalLeftHanded provides (MainUiState()).isLeftHandedMode
             ) {
                 AureoleLauncherTheme {
                     FolderDialog(
@@ -418,7 +425,7 @@ class FolderBranchCoverageTest {
         )
 
         composeTestRule.setContent {
-            CompositionLocalProvider(LocalHomeUiState provides MainUiState()) {
+            ProvideHomeUiState(MainUiState()) {
                 AureoleLauncherTheme {
                     OpenedFolderPopup(
                         config = OpenedFolderPopupConfig(
@@ -452,6 +459,7 @@ class FolderBranchCoverageTest {
         composeTestRule.setContent {
             CompositionLocalProvider(
                 LocalHomeUiState provides uiStateWidgetStack,
+                LocalLeftHanded provides uiStateWidgetStack.isLeftHandedMode,
                 LocalHomeActions provides actions
             ) {
                 AureoleLauncherTheme {
@@ -484,7 +492,7 @@ class FolderBranchCoverageTest {
         )
 
         composeTestRule.setContent {
-            CompositionLocalProvider(LocalHomeUiState provides MainUiState()) {
+            ProvideHomeUiState(MainUiState()) {
                 AureoleLauncherTheme {
                     OpenedFolderPopup(
                         config = OpenedFolderPopupConfig(
@@ -527,7 +535,7 @@ class FolderBranchCoverageTest {
         )
 
         composeTestRule.setContent {
-            CompositionLocalProvider(LocalHomeUiState provides MainUiState()) {
+            ProvideHomeUiState(MainUiState()) {
                 AureoleLauncherTheme {
                     OpenedFolderPopup(
                         config = OpenedFolderPopupConfig(
@@ -566,7 +574,7 @@ class FolderBranchCoverageTest {
         )
 
         composeTestRule.setContent {
-            CompositionLocalProvider(LocalHomeUiState provides MainUiState()) {
+            ProvideHomeUiState(MainUiState()) {
                 AureoleLauncherTheme {
                     OpenedFolderPopup(
                         config = OpenedFolderPopupConfig(
@@ -701,6 +709,7 @@ class FolderBranchCoverageTest {
         composeTestRule.setContent {
             CompositionLocalProvider(
                 LocalHomeUiState provides uiState,
+                LocalLeftHanded provides uiState.isLeftHandedMode,
                 LocalHomeActions provides actions
             ) {
                 AureoleLauncherTheme {

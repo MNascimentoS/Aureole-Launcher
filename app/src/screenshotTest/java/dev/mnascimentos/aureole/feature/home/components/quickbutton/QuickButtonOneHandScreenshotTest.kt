@@ -8,6 +8,7 @@ import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
 import dev.mnascimentos.aureole.feature.home.model.LocalHomeUiState
+import dev.mnascimentos.aureole.feature.home.model.ProvideHomeUiState
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
 
 private fun dummyActions() = HomeScreenActions(
@@ -26,7 +27,7 @@ private fun dummyActions() = HomeScreenActions(
 @Composable
 private fun QuickButtonSheetCase(isLeftHanded: Boolean, content: @Composable (MainUiState) -> Unit) {
     val uiState = MainUiState(activeQuickButtonModel = QuickButtonModel(), isLeftHandedMode = isLeftHanded)
-    CompositionLocalProvider(LocalHomeUiState provides uiState) {
+    ProvideHomeUiState(uiState) {
         AureoleLauncherTheme { content(uiState) }
     }
 }

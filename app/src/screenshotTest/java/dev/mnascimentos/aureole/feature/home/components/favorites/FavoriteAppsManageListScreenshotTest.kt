@@ -30,6 +30,7 @@ import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.model.LocalHomeUiState
+import dev.mnascimentos.aureole.feature.home.model.ProvideHomeUiState
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
 
 private val favoriteColors = listOf(0xFF2E7D32, 0xFFEF6C00, 0xFF1B65C0, 0xFF0288D1, 0xFF6A1B9A)
@@ -45,7 +46,7 @@ private val favoriteSampleApps = listOf("Telefone", "Mensagens", "Câmera", "Nav
 
 @Composable
 private fun FavoritesManageCase(isLeftHanded: Boolean, favoriteCount: Int = 4) {
-    CompositionLocalProvider(LocalHomeUiState provides MainUiState(isLeftHandedMode = isLeftHanded)) {
+    ProvideHomeUiState(MainUiState(isLeftHandedMode = isLeftHanded)) {
         AureoleLauncherTheme {
             Box(
                 modifier = Modifier

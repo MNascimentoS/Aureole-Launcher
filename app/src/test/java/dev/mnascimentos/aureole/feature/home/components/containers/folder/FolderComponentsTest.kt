@@ -31,6 +31,7 @@ import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.
 import dev.mnascimentos.aureole.feature.home.model.LocalHomeActions
 import dev.mnascimentos.aureole.feature.home.model.LocalHomeUiState
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
+import dev.mnascimentos.aureole.feature.home.model.ProvideHomeUiState
 import dev.mnascimentos.aureole.feature.home.model.createDefaultHomeScreenActions
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
@@ -114,7 +115,7 @@ class FolderComponentsTest {
     fun `when rendering container folder item, should display folder name label`() {
         var clicked = false
         composeTestRule.setContent {
-            CompositionLocalProvider(LocalHomeUiState provides MainUiState()) {
+            ProvideHomeUiState(MainUiState()) {
                 AureoleLauncherTheme {
                     ContainerFolderItem(
                         params = ContainerFolderItemParams(
@@ -141,7 +142,7 @@ class FolderComponentsTest {
     fun `when rendering container app item, should display app label and trigger click`() {
         var clicked = false
         composeTestRule.setContent {
-            CompositionLocalProvider(LocalHomeUiState provides MainUiState()) {
+            ProvideHomeUiState(MainUiState()) {
                 AureoleLauncherTheme {
                     ContainerAppItem(
                         params = ContainerAppItemParams(
@@ -266,7 +267,7 @@ class FolderComponentsTest {
     fun `when rendering FolderDialog with apps, should display header and apps`() {
         var appClicked = false
         composeTestRule.setContent {
-            CompositionLocalProvider(LocalHomeUiState provides MainUiState()) {
+            ProvideHomeUiState(MainUiState()) {
                 AureoleLauncherTheme {
                     FolderDialog(
                         folder = sampleFolder,
@@ -287,7 +288,7 @@ class FolderComponentsTest {
     fun `when rendering empty FolderDialog, should display empty message`() {
         val emptyFolder = AppFolder(id = "f_empty", name = "Empty", appPackageNames = emptyList())
         composeTestRule.setContent {
-            CompositionLocalProvider(LocalHomeUiState provides MainUiState()) {
+            ProvideHomeUiState(MainUiState()) {
                 AureoleLauncherTheme {
                     FolderDialog(
                         folder = emptyFolder,
@@ -341,7 +342,7 @@ class FolderComponentsTest {
     @Test
     fun `when rendering OpenedFolderPopup in list mode, should show no Add Apps or Edit Folder buttons`() {
         composeTestRule.setContent {
-            CompositionLocalProvider(LocalHomeUiState provides MainUiState()) {
+            ProvideHomeUiState(MainUiState()) {
                 AureoleLauncherTheme {
                     OpenedFolderPopup(
                         config = OpenedFolderPopupConfig(
@@ -362,7 +363,7 @@ class FolderComponentsTest {
     @Test
     fun `when rendering an empty OpenedFolderPopup in grid mode, should show no Add Apps or Edit Folder buttons`() {
         composeTestRule.setContent {
-            CompositionLocalProvider(LocalHomeUiState provides MainUiState()) {
+            ProvideHomeUiState(MainUiState()) {
                 AureoleLauncherTheme {
                     OpenedFolderPopup(
                         config = OpenedFolderPopupConfig(
@@ -389,7 +390,7 @@ class FolderComponentsTest {
         )
 
         composeTestRule.setContent {
-            CompositionLocalProvider(LocalHomeUiState provides MainUiState()) {
+            ProvideHomeUiState(MainUiState()) {
                 AureoleLauncherTheme {
                     OpenedFolderPopup(
                         config = OpenedFolderPopupConfig(
@@ -416,7 +417,7 @@ class FolderComponentsTest {
         )
 
         composeTestRule.setContent {
-            CompositionLocalProvider(LocalHomeUiState provides MainUiState()) {
+            ProvideHomeUiState(MainUiState()) {
                 AureoleLauncherTheme {
                     GridFolderPopup(
                         params = GridFolderPopupParams(
@@ -517,7 +518,7 @@ class FolderComponentsTest {
         var clickedApp: AppInfo? = null
 
         composeTestRule.setContent {
-            CompositionLocalProvider(LocalHomeUiState provides MainUiState(isLeftHandedMode = true)) {
+            ProvideHomeUiState(MainUiState(isLeftHandedMode = true)) {
                 AureoleLauncherTheme {
                     OpenedFolderAppList(
                         appsInFolder = listOf(sampleApp),

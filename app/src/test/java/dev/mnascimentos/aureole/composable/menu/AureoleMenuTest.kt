@@ -1,7 +1,6 @@
 package dev.mnascimentos.aureole.composable.menu
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.down
 import androidx.compose.ui.test.getUnclippedBoundsInRoot
@@ -17,8 +16,8 @@ import dev.mnascimentos.aureole.composable.menu.model.MenuQuickAction
 import dev.mnascimentos.aureole.composable.menu.model.MenuRowParams
 import dev.mnascimentos.aureole.composable.menu.model.MenuSheetParams
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
-import dev.mnascimentos.aureole.feature.home.model.LocalHomeUiState
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
+import dev.mnascimentos.aureole.feature.home.model.ProvideHomeUiState
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
@@ -35,7 +34,7 @@ class AureoleMenuTest {
 
     @Composable
     private fun Themed(isLeftHanded: Boolean = false, content: @Composable () -> Unit) {
-        CompositionLocalProvider(LocalHomeUiState provides MainUiState(isLeftHandedMode = isLeftHanded)) {
+        ProvideHomeUiState(MainUiState(isLeftHandedMode = isLeftHanded)) {
             AureoleLauncherTheme { content() }
         }
     }

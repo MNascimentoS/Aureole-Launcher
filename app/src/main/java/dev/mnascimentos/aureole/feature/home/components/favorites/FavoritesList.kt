@@ -23,6 +23,7 @@ import dev.mnascimentos.aureole.composable.appitem.model.AppItemRowConfig
 import dev.mnascimentos.aureole.composable.clock.model.ClockHazeConfig
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.data.model.visibleApps
+import dev.mnascimentos.aureole.core.designsystem.model.LocalLeftHanded
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
@@ -266,7 +267,8 @@ private fun FavoritesListPreview() {
 
     AureoleLauncherTheme {
         CompositionLocalProvider(
-            LocalHomeUiState provides mockUiState
+            LocalHomeUiState provides mockUiState,
+            LocalLeftHanded provides mockUiState.isLeftHandedMode
         ) {
             FavoritesList(
                 config = FavoritesListConfig(

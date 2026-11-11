@@ -18,12 +18,12 @@ import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.model.AureoleEditOverlayConfig
 import dev.mnascimentos.aureole.core.designsystem.model.AureoleEditOverlayParams
 import dev.mnascimentos.aureole.core.designsystem.model.AureoleEditOverlayState
+import dev.mnascimentos.aureole.core.designsystem.model.LocalLeftHanded
 import dev.mnascimentos.aureole.core.designsystem.model.rememberAureoleEditOverlayState
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleThemeConfig
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
-import dev.mnascimentos.aureole.feature.home.model.LocalHomeUiState
 
 /**
  * Overlay shared by the palette and font sheets: a mini-home above the sheet and Cancel/Apply below it.
@@ -38,7 +38,7 @@ internal fun ThemePreviewOverlay(
     content: @Composable ColumnScope.() -> Unit
 ) {
     val overlayState = rememberAureoleEditOverlayState()
-    val isLeftHanded = LocalHomeUiState.current.isLeftHandedMode
+    val isLeftHanded = LocalLeftHanded.current
     val applyLabel = stringResource(R.string.settings_appearance_apply)
     val cancelLabel = stringResource(R.string.core_common_cancel)
     AureoleLauncherTheme(config = resolvePreviewConfig(params.base, params.pending)) {

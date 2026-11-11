@@ -139,6 +139,35 @@ class QuickButtonAppearanceSectionsTest {
         // Assert
         composeTestRule.onNodeWithText("Select Icon").assertIsDisplayed()
         composeTestRule.onNodeWithText("Cancel").performClick()
+        composeTestRule.mainClock.advanceTimeBy(OVERLAY_CLOSE_MS)
         assertTrue("Expected onDismiss to be called on cancel click", dismissed)
+    }
+
+    @Test
+    fun `when icon picker is confirmed, should report the selected icon once and close`() {
+        // Arrange
+        val selected = mutableListOf<QuickButtonIcon>()
+        var dismissed = false
+
+        // Act
+        composeTestRule.setContent {
+            AureoleLauncherTheme {
+                QuickButtonIconPickerDialog(
+                    selectedIcon = QuickButtonIcon.STAR,
+                    onIconSelected = { selected += it },
+                    onDismiss = { dismissed = true }
+                )
+            }
+        }
+        composeTestRule.onNodeWithText("Confirm").performClick()
+        composeTestRule.mainClock.advanceTimeBy(OVERLAY_CLOSE_MS)
+
+        // Assert
+        assertEquals(listOf(QuickButtonIcon.STAR), selected)
+        assertTrue(dismissed)
+    }
+
+    private companion object {
+        const val OVERLAY_CLOSE_MS = 600L
     }
 }

@@ -27,6 +27,7 @@ import dev.mnascimentos.aureole.core.data.model.LauncherItemType
 import dev.mnascimentos.aureole.core.data.model.ScrollOrientation
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
+import dev.mnascimentos.aureole.core.designsystem.model.LocalLeftHanded
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
@@ -175,6 +176,7 @@ private fun EditGridItemDialogPreview() {
     AureoleLauncherTheme {
         CompositionLocalProvider(
             LocalHomeUiState provides MainUiState(),
+            LocalLeftHanded provides (MainUiState()).isLeftHandedMode,
             LocalHomeActions provides HomeScreenActions(
                 onWidgetRowHeightChanged = {},
                 onAddWidgetClick = {},

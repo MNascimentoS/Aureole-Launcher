@@ -18,6 +18,7 @@ import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.model.LocalHomeUiState
+import dev.mnascimentos.aureole.feature.home.model.ProvideHomeUiState
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
 
 private val manageApps = listOf("Telefone" to 0xFF2E7D32, "Câmera" to 0xFF1B65C0).mapIndexed { index, (label, color) ->
@@ -36,7 +37,7 @@ private fun ManageItemsCase(isLeftHanded: Boolean) {
         appPackageNames = manageApps.map { it.packageName },
         folders = listOf(AppFolder(id = "f1", panelId = "p1", name = "Trabalho"))
     )
-    CompositionLocalProvider(LocalHomeUiState provides MainUiState(isLeftHandedMode = isLeftHanded)) {
+    ProvideHomeUiState(MainUiState(isLeftHandedMode = isLeftHanded)) {
         AureoleLauncherTheme {
             Box(
                 modifier = Modifier

@@ -14,6 +14,7 @@ import dev.mnascimentos.aureole.composable.favorites.FavoriteAppsDialog
 import dev.mnascimentos.aureole.composable.favorites.model.FavoriteAppsDialogActions
 import dev.mnascimentos.aureole.composable.favorites.model.FavoriteAppsDialogConfig
 import dev.mnascimentos.aureole.core.data.model.AppInfo
+import dev.mnascimentos.aureole.core.designsystem.model.LocalLeftHanded
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.feature.home.components.appsdrawer.AppsListDrawer
 import dev.mnascimentos.aureole.feature.home.components.favorites.model.FavoritesListConfig
@@ -51,6 +52,7 @@ class AppListSkeletonUsageTest {
             AureoleLauncherTheme {
                 CompositionLocalProvider(
                     LocalHomeUiState provides state,
+                    LocalLeftHanded provides state.isLeftHandedMode,
                     LocalHomeActions provides createDefaultHomeScreenActions()
                 ) { content() }
             }

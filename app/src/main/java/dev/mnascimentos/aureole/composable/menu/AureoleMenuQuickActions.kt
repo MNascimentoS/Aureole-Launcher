@@ -46,10 +46,10 @@ import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatPa
 import dev.mnascimentos.aureole.core.designsystem.icons.Delete
 import dev.mnascimentos.aureole.core.designsystem.icons.Favorite
 import dev.mnascimentos.aureole.core.designsystem.icons.Info
+import dev.mnascimentos.aureole.core.designsystem.model.LocalLeftHanded
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
-import dev.mnascimentos.aureole.feature.home.model.LocalHomeUiState
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
@@ -69,7 +69,7 @@ fun AureoleMenuQuickActions(
     actions: List<MenuQuickAction>,
     modifier: Modifier = Modifier
 ) {
-    val isLeftHanded = LocalHomeUiState.current.isLeftHandedMode
+    val isLeftHanded = LocalLeftHanded.current
     Column(modifier = modifier.fillMaxWidth()) {
         HorizontalDivider(
             color = AureoleDS.colors.outline.copy(alpha = DIVIDER_ALPHA),

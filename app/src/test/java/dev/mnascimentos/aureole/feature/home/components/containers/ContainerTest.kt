@@ -8,6 +8,7 @@ import androidx.compose.ui.test.junit4.v2.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import dev.chrisbanes.haze.HazeState
 import dev.mnascimentos.aureole.core.data.model.AppInfo
+import dev.mnascimentos.aureole.core.designsystem.model.LocalLeftHanded
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.feature.home.components.containers.model.ContainerConfig
 import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
@@ -182,6 +183,7 @@ class ContainerTest {
             AureoleLauncherTheme {
                 CompositionLocalProvider(
                     LocalHomeUiState provides uiState,
+                    LocalLeftHanded provides uiState.isLeftHandedMode,
                     LocalHomeActions provides mockActions()
                 ) {
                     Container(
@@ -220,6 +222,7 @@ class ContainerTest {
             AureoleLauncherTheme {
                 CompositionLocalProvider(
                     LocalHomeUiState provides MainUiState(apps = listOf(sampleApp)),
+                    LocalLeftHanded provides (MainUiState(apps = listOf(sampleApp))).isLeftHandedMode,
                     LocalHomeActions provides mockActions()
                 ) {
                     Container(

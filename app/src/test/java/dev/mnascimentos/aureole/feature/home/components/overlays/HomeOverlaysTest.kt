@@ -3,7 +3,6 @@ package dev.mnascimentos.aureole.feature.home.components.overlays
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyListState
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.remember
@@ -25,8 +24,8 @@ import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.feature.home.model.AppsDrawerOverlayConfig
 import dev.mnascimentos.aureole.feature.home.model.HomeDragParams
 import dev.mnascimentos.aureole.feature.home.model.HomeOverlaysConfig
-import dev.mnascimentos.aureole.feature.home.model.LocalHomeUiState
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
+import dev.mnascimentos.aureole.feature.home.model.ProvideHomeUiState
 import dev.mnascimentos.aureole.feature.home.model.ScrubberOverlayConfig
 import dev.mnascimentos.aureole.feature.home.model.createDefaultHomeScreenActions
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -69,7 +68,7 @@ class HomeOverlaysTest {
 
         composeTestRule.setContent {
             AureoleLauncherTheme {
-                CompositionLocalProvider(LocalHomeUiState provides uiState) {
+                ProvideHomeUiState(uiState) {
                     Box(modifier = Modifier.fillMaxSize()) {
                         HomeOverlaysContent(config = config)
                     }
@@ -102,7 +101,7 @@ class HomeOverlaysTest {
 
         composeTestRule.setContent {
             AureoleLauncherTheme {
-                CompositionLocalProvider(LocalHomeUiState provides uiState) {
+                ProvideHomeUiState(uiState) {
                     Box(modifier = Modifier.fillMaxSize()) {
                         HomeOverlaysContent(config = config)
                     }
@@ -183,7 +182,7 @@ class HomeOverlaysTest {
 
         composeTestRule.setContent {
             AureoleLauncherTheme {
-                CompositionLocalProvider(LocalHomeUiState provides uiState) {
+                ProvideHomeUiState(uiState) {
                     ScrubberOverlay(config = config)
                 }
             }

@@ -5,6 +5,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.core.graphics.drawable.toDrawable
 import com.android.tools.screenshot.PreviewTest
+import dev.mnascimentos.aureole.core.designsystem.model.LocalLeftHanded
 import dev.mnascimentos.aureole.composable.appitem.AppItemBottomSheet
 import dev.mnascimentos.aureole.composable.appitem.model.AppItemBottomSheetParams
 import dev.mnascimentos.aureole.composable.appitem.model.AppItemRowActions
@@ -43,6 +44,7 @@ private fun MenuCase(isLeftHanded: Boolean, content: @Composable () -> Unit) {
     AureoleLauncherTheme {
         CompositionLocalProvider(
             LocalHomeUiState provides sampleData.uiState.copy(isLeftHandedMode = isLeftHanded),
+            LocalLeftHanded provides (sampleData.uiState.copy(isLeftHandedMode = isLeftHanded)).isLeftHandedMode,
             LocalHomeActions provides sampleData.actions
         ) {
             content()

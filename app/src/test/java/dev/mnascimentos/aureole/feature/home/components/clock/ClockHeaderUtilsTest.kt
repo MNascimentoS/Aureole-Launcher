@@ -8,6 +8,7 @@ import org.junit.Assert.assertNotNull
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
+import java.util.Locale
 
 @RunWith(RobolectricTestRunner::class)
 class ClockHeaderUtilsTest {
@@ -81,12 +82,22 @@ class ClockHeaderUtilsTest {
     @Test
     fun `when date format is DEFAULT or unknown, should return default date pattern`() {
         // Arrange & Act
-        val patternDefault = ClockHeaderUtils.resolveClockDatePattern("DEFAULT")
-        val patternUnknown = ClockHeaderUtils.resolveClockDatePattern("UNKNOWN")
+        val patternDefault = ClockHeaderUtils.resolveClockDatePattern("DEFAULT", Locale.US)
+        val patternUnknown = ClockHeaderUtils.resolveClockDatePattern("UNKNOWN", Locale.US)
 
         // Assert
-        assertEquals("EEEE, d 'de' MMMM", patternDefault)
-        assertEquals("EEEE, d 'de' MMMM", patternUnknown)
+        assertEquals(patternDefault, patternUnknown)
+    }
+
+    @Test
+    fun `default date pattern follows the locale without mixing languages`() {
+        // Arrange & Act
+        val english = ClockHeaderUtils.resolveClockDatePattern("DEFAULT", Locale.US)
+        val portuguese = ClockHeaderUtils.resolveClockDatePattern("DEFAULT", Locale.forLanguageTag("pt-BR"))
+
+        // Assert
+        assertEquals("EEEE, MMMM d", english)
+        assertEquals("EEEE, d 'de' MMMM", portuguese)
     }
 
     @Test

@@ -19,6 +19,7 @@ import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.model.LocalHomeUiState
+import dev.mnascimentos.aureole.feature.home.model.ProvideHomeUiState
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
 
 private const val GRID_CASE_HEIGHT_MULTIPLIER = 3
@@ -26,7 +27,7 @@ private const val GRID_CASE_HEIGHT_MULTIPLIER = 3
 @Composable
 private fun PaletteCase(isLeftHanded: Boolean) {
     AureoleLauncherTheme {
-        CompositionLocalProvider(LocalHomeUiState provides MainUiState(isLeftHandedMode = isLeftHanded)) {
+        ProvideHomeUiState(MainUiState(isLeftHandedMode = isLeftHanded)) {
             PickPaletteBottomSheet(
                 selectedPaletteName = "Frostbite",
                 onPaletteSelected = {},
@@ -39,7 +40,7 @@ private fun PaletteCase(isLeftHanded: Boolean) {
 @Composable
 private fun FontCase(isLeftHanded: Boolean) {
     AureoleLauncherTheme {
-        CompositionLocalProvider(LocalHomeUiState provides MainUiState(isLeftHandedMode = isLeftHanded)) {
+        ProvideHomeUiState(MainUiState(isLeftHandedMode = isLeftHanded)) {
             PickFontBottomSheet(
                 selectedFontName = "Istok Web",
                 onFontSelected = {},

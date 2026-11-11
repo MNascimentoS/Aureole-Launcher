@@ -4,7 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.platform.LocalLayoutDirection
 import dev.mnascimentos.aureole.composable.mirror.model.mirroredLayoutDirection
-import dev.mnascimentos.aureole.feature.home.model.LocalHomeUiState
+import dev.mnascimentos.aureole.core.designsystem.model.LocalLeftHanded
 
 /**
  * Mirrors the row drawn in [content] in the left-handed mode: children run right to left and start-aligned
@@ -12,7 +12,7 @@ import dev.mnascimentos.aureole.feature.home.model.LocalHomeUiState
  */
 @Composable
 fun LeftHandMirror(
-    isLeftHanded: Boolean = LocalHomeUiState.current.isLeftHandedMode,
+    isLeftHanded: Boolean = LocalLeftHanded.current,
     content: @Composable () -> Unit
 ) {
     val direction = mirroredLayoutDirection(isLeftHanded, LocalLayoutDirection.current)

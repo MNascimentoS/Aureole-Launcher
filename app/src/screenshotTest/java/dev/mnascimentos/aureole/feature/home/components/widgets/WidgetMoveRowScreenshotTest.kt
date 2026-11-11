@@ -11,11 +11,12 @@ import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.components.widgets.model.WidgetMoveParams
 import dev.mnascimentos.aureole.feature.home.model.LocalHomeUiState
+import dev.mnascimentos.aureole.feature.home.model.ProvideHomeUiState
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
 
 @Composable
 private fun WidgetMoveRowCase(isLeftHanded: Boolean) {
-    CompositionLocalProvider(LocalHomeUiState provides MainUiState(isLeftHandedMode = isLeftHanded)) {
+    ProvideHomeUiState(MainUiState(isLeftHandedMode = isLeftHanded)) {
         AureoleLauncherTheme {
             Column(modifier = Modifier.padding(AureoleDS.dimens.medium)) {
                 WidgetMoveRow(WidgetMoveParams("Clock", position = 1, count = 3, onPrevious = null, onNext = {}))

@@ -18,5 +18,6 @@
     "sheet-chores": { "minutes": 6, "actions": 25 },
     "visual-reviewer": { "minutes": 2, "actions": 18 }
   },
-  "tokensPerMinute": 8000
+  "tokensPerMinute": 8000,
+  "authorized": "all"
 }

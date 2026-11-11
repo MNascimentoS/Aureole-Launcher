@@ -10,6 +10,7 @@ import dev.mnascimentos.aureole.feature.home.components.clock.model.ClockTab
 import dev.mnascimentos.aureole.feature.home.components.clock.model.EditClockOverlayOptions
 import dev.mnascimentos.aureole.feature.home.createSampleHomeData
 import dev.mnascimentos.aureole.feature.home.model.LocalHomeUiState
+import dev.mnascimentos.aureole.feature.home.model.ProvideHomeUiState
 
 /** Clock editor on the one-hand sheet: rest (60%), expanded (90%) and left-handed footer. */
 class EditClockBottomSheetOneHandScreenshotTest {
@@ -19,7 +20,7 @@ class EditClockBottomSheetOneHandScreenshotTest {
         val sampleData = createSampleHomeData()
         val uiState = sampleData.uiState.copy(isLeftHandedMode = isLeftHanded)
         AureoleLauncherTheme {
-            CompositionLocalProvider(LocalHomeUiState provides uiState) {
+            ProvideHomeUiState(uiState) {
                 EditClockOverlay(
                     uiState = uiState,
                     actions = sampleData.actions,

@@ -1,7 +1,6 @@
 package dev.mnascimentos.aureole.feature.home.components.containers.folder
 
 import android.content.ComponentName
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.hasSetTextAction
 import androidx.compose.ui.test.junit4.v2.createComposeRule
@@ -14,8 +13,8 @@ import androidx.core.graphics.drawable.toDrawable
 import dev.mnascimentos.aureole.core.data.model.AppFolder
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
-import dev.mnascimentos.aureole.feature.home.model.LocalHomeUiState
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
+import dev.mnascimentos.aureole.feature.home.model.ProvideHomeUiState
 import org.junit.Assert.assertEquals
 import org.junit.Rule
 import org.junit.Test
@@ -41,7 +40,7 @@ class FolderAppPickerSearchTest {
 
     private fun setPicker(selected: List<String>, onSave: (List<String>) -> Unit, isLeftHanded: Boolean = false) {
         composeTestRule.setContent {
-            CompositionLocalProvider(LocalHomeUiState provides MainUiState(isLeftHandedMode = isLeftHanded)) {
+            ProvideHomeUiState(MainUiState(isLeftHandedMode = isLeftHanded)) {
                 AureoleLauncherTheme {
                     FolderAppPickerDialog(
                         folder = AppFolder(id = "f", name = "Media", appPackageNames = selected),

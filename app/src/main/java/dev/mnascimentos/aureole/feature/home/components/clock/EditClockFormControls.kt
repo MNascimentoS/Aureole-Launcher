@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Switch
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -23,8 +22,8 @@ import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
-import dev.mnascimentos.aureole.feature.home.model.LocalHomeUiState
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
+import dev.mnascimentos.aureole.feature.home.model.ProvideHomeUiState
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
@@ -122,7 +121,7 @@ private fun EditClockBottomSheetPreview() {
         onSaveGridEditMode = {}
     )
     AureoleLauncherTheme {
-        CompositionLocalProvider(LocalHomeUiState provides uiState) {
+        ProvideHomeUiState(uiState) {
             EditClockBottomSheet(
                 uiState = uiState,
                 actions = actions,

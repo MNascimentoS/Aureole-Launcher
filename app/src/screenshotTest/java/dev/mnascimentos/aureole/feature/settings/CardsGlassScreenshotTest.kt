@@ -7,6 +7,7 @@ import dev.mnascimentos.aureole.core.designsystem.model.GlassLevel
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.model.LocalHomeUiState
+import dev.mnascimentos.aureole.feature.home.model.ProvideHomeUiState
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
 import dev.mnascimentos.aureole.feature.settings.components.CardsGlassBottomSheet
 import dev.mnascimentos.aureole.feature.settings.model.BlurOpacity
@@ -18,7 +19,7 @@ private const val CARD_RADIUS_DP = 16
 @Composable
 private fun CardsGlassCase(draft: CardsGlassDraft, isLeftHanded: Boolean) {
     AureoleLauncherTheme {
-        CompositionLocalProvider(LocalHomeUiState provides MainUiState(isLeftHandedMode = isLeftHanded)) {
+        ProvideHomeUiState(MainUiState(isLeftHandedMode = isLeftHanded)) {
             CardsGlassBottomSheet(
                 params = CardsGlassParams(
                     initial = draft,

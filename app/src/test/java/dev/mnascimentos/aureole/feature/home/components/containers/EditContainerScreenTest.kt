@@ -10,6 +10,7 @@ import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.data.model.ContainerModel
+import dev.mnascimentos.aureole.core.designsystem.model.LocalLeftHanded
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.feature.home.components.containers.model.ContainerOptionsState
 import dev.mnascimentos.aureole.feature.home.components.containers.model.EditContainerScreenMode
@@ -86,6 +87,7 @@ class EditContainerScreenTest {
                 CompositionLocalProvider(
                     LocalInspectionMode provides true,
                     LocalHomeUiState provides MainUiState(apps = listOf(sampleApp)),
+                    LocalLeftHanded provides (MainUiState(apps = listOf(sampleApp))).isLeftHandedMode,
                     LocalHomeActions provides mockHomeScreenActions()
                 ) {
                     EditContainerScreen(
@@ -112,6 +114,7 @@ class EditContainerScreenTest {
                 CompositionLocalProvider(
                     LocalInspectionMode provides true,
                     LocalHomeUiState provides MainUiState(apps = listOf(sampleApp)),
+                    LocalLeftHanded provides (MainUiState(apps = listOf(sampleApp))).isLeftHandedMode,
                     LocalHomeActions provides mockHomeScreenActions()
                 ) {
                     EditContainerScreen(
@@ -166,6 +169,7 @@ class EditContainerScreenTest {
                 CompositionLocalProvider(
                     LocalInspectionMode provides true,
                     LocalHomeUiState provides MainUiState(apps = listOf(sampleApp)),
+                    LocalLeftHanded provides (MainUiState(apps = listOf(sampleApp))).isLeftHandedMode,
                     LocalHomeActions provides mockHomeScreenActions()
                 ) {
                     EditContainerScreen(

@@ -30,10 +30,10 @@ import dev.mnascimentos.aureole.core.data.model.AppFolder
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
 import dev.mnascimentos.aureole.core.designsystem.icons.Delete
+import dev.mnascimentos.aureole.core.designsystem.model.LocalLeftHanded
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
-import dev.mnascimentos.aureole.feature.home.model.LocalHomeUiState
 
 /**
  * New / edit folder form in an edit overlay: the folder (icon and name) is anchored above the sheet and follows
@@ -48,7 +48,7 @@ fun FolderFormDialog(
     folder: AppFolder? = null,
     onDelete: (() -> Unit)? = null
 ) {
-    val isLeftHanded = LocalHomeUiState.current.isLeftHandedMode
+    val isLeftHanded = LocalLeftHanded.current
     val isEditing = folder != null
     val placeholderName = stringResource(R.string.home_folder_name_placeholder)
     var folderName by remember { mutableStateOf(folder?.name.orEmpty()) }

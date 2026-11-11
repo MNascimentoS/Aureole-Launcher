@@ -1,5 +1,7 @@
 package dev.mnascimentos.aureole.feature.home.components.quickbutton
 
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -11,6 +13,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.res.stringResource
 import dev.chrisbanes.haze.HazeState
 import dev.mnascimentos.aureole.R
@@ -28,6 +31,8 @@ import dev.mnascimentos.aureole.feature.home.components.quickbutton.model.QuickB
 import dev.mnascimentos.aureole.feature.home.components.quickbutton.model.QuickButtonColorPickerTarget
 import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
+
+private const val EDITOR_FADE_MS = 200
 
 /**
  * Quick button appearance editor in an edit overlay. The edits go to a draft that the live preview anchored above
@@ -56,6 +61,13 @@ fun QuickButtonAppearanceBottomSheet(
         }
     }
 
+    // One scrim at a time: the editor fades out while a picker (which draws its own scrim) is open.
+    val editorAlpha by animateFloatAsState(
+        targetValue = if (colorPickerTarget != null || showIconPicker) 0f else 1f,
+        animationSpec = tween(EDITOR_FADE_MS),
+        label = "quickButtonEditorAlpha"
+    )
+
     AureoleConfirmOverlay(
         params = ConfirmOverlayParams(
             title = stringResource(R.string.home_quickbutton_appearance_title),
@@ -66,7 +78,7 @@ fun QuickButtonAppearanceBottomSheet(
             onSettingsClick = { actions.onSettingsClick() },
             hazeState = if (uiState.isHazeEnabled) hazeState else null
         ),
-        modifier = modifier,
+        modifier = modifier.alpha(editorAlpha),
         preview = {
             AureolePreviewFrame(
                 modifier = Modifier.align(Alignment.Center)
@@ -159,7 +171,8 @@ private fun QuickButtonAppearanceDialogs(
                 dialogState.onUpdateAppearance(activeModel.appearance.copy(icon = selectedIcon))
                 onDismissIconPicker()
             },
-            onDismiss = onDismissIconPicker
+            onDismiss = onDismissIconPicker,
+            isLeftHanded = dialogState.isLeftHanded
         )
     }
 }

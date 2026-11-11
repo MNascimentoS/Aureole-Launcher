@@ -3,6 +3,7 @@ package dev.mnascimentos.aureole.feature.home
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import com.android.tools.screenshot.PreviewTest
+import dev.mnascimentos.aureole.core.designsystem.model.LocalLeftHanded
 import dev.mnascimentos.aureole.composable.dialogs.CreateFolderDialog
 import dev.mnascimentos.aureole.composable.dialogs.FolderFormDialog
 import dev.mnascimentos.aureole.composable.favorites.FavoriteAppsDialog
@@ -49,6 +50,7 @@ import dev.mnascimentos.aureole.feature.home.grid.AddContainerDialog
 import dev.mnascimentos.aureole.feature.home.grid.EditGridItemDialog
 import dev.mnascimentos.aureole.feature.home.model.LocalHomeActions
 import dev.mnascimentos.aureole.feature.home.model.LocalHomeUiState
+import dev.mnascimentos.aureole.feature.home.model.ProvideHomeUiState
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
 
 @PreviewTest
@@ -64,7 +66,7 @@ private fun FavoriteAppsDialogScreenshotTest() {
         onDismiss = {}
     )
     AureoleLauncherTheme {
-        CompositionLocalProvider(LocalHomeUiState provides sampleData.uiState) {
+        ProvideHomeUiState(sampleData.uiState) {
             FavoriteAppsDialog(config = config, actions = actions)
         }
     }
@@ -95,6 +97,7 @@ private fun EditContainerDialogScreenshotTest() {
     AureoleLauncherTheme {
         CompositionLocalProvider(
             LocalHomeUiState provides sampleData.uiState,
+            LocalLeftHanded provides (sampleData.uiState).isLeftHandedMode,
             LocalHomeActions provides sampleData.actions
         ) {
             EditGridItemDialog(
@@ -122,7 +125,7 @@ private fun AddContainerDialogScreenshotTest() {
 @AureolePreview
 @Composable
 private fun AddContainerDialogLeftHandedScreenshotTest() {
-    CompositionLocalProvider(LocalHomeUiState provides MainUiState(isLeftHandedMode = true)) {
+    ProvideHomeUiState(MainUiState(isLeftHandedMode = true)) {
         AureoleLauncherTheme {
             AddContainerDialog(onDismissRequest = {}, onSelectType = {})
         }
@@ -272,7 +275,7 @@ private fun CustomizeBottomSheetScreenshotTest() {
 private fun EditClockBottomSheetScreenshotTest() {
     val sampleData = createSampleHomeData()
     AureoleLauncherTheme {
-        CompositionLocalProvider(LocalHomeUiState provides sampleData.uiState) {
+        ProvideHomeUiState(sampleData.uiState) {
             EditClockBottomSheet(
                 uiState = sampleData.uiState,
                 actions = sampleData.actions,
@@ -312,7 +315,7 @@ private fun WidgetPickerBottomSheetScreenshotTest() {
         expandedAppIds = setOf("com.example.calendar")
     )
     AureoleLauncherTheme {
-        CompositionLocalProvider(LocalHomeUiState provides sampleData.uiState) {
+        ProvideHomeUiState(sampleData.uiState) {
             WidgetSelectorScreen(
                 params = WidgetSelectorScreenParams(
                     state = sampleState,
@@ -331,7 +334,7 @@ private fun WidgetPickerBottomSheetScreenshotTest() {
 private fun FolderDialogScreenshotTest() {
     val sampleData = createSampleHomeData()
     AureoleLauncherTheme {
-        CompositionLocalProvider(LocalHomeUiState provides sampleData.uiState) {
+        ProvideHomeUiState(sampleData.uiState) {
             FolderDialog(
                 folder = sampleData.folders.first(),
                 allApps = sampleData.apps,
@@ -375,6 +378,7 @@ private fun EditContainerScreenScreenshotTest() {
     AureoleLauncherTheme {
         CompositionLocalProvider(
             LocalHomeUiState provides sampleData.uiState,
+            LocalLeftHanded provides (sampleData.uiState).isLeftHandedMode,
             LocalHomeActions provides sampleData.actions
         ) {
             EditContainerScreen(
@@ -429,6 +433,7 @@ private fun EditContainerHorizontalScreenScreenshotTest() {
     AureoleLauncherTheme {
         CompositionLocalProvider(
             LocalHomeUiState provides sampleData.uiState,
+            LocalLeftHanded provides (sampleData.uiState).isLeftHandedMode,
             LocalHomeActions provides sampleData.actions
         ) {
             EditContainerScreen(
@@ -456,7 +461,8 @@ private fun EditWidgetGroupCase(isLeftHanded: Boolean, widgets: List<Int> = list
     )
     AureoleLauncherTheme {
         CompositionLocalProvider(
-            LocalHomeUiState provides sampleData.uiState.copy(isLeftHandedMode = isLeftHanded)
+            LocalHomeUiState provides sampleData.uiState.copy(isLeftHandedMode = isLeftHanded),
+            LocalLeftHanded provides (sampleData.uiState.copy(isLeftHandedMode = isLeftHanded)).isLeftHandedMode
         ) {
             EditWidgetGroupScreen(
                 params = EditWidgetGroupParams(

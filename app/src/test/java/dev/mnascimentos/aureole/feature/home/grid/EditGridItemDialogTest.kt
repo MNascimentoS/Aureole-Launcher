@@ -11,6 +11,7 @@ import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.core.data.model.LauncherItemState
 import dev.mnascimentos.aureole.core.data.model.LauncherItemType
 import dev.mnascimentos.aureole.core.data.model.ScrollOrientation
+import dev.mnascimentos.aureole.core.designsystem.model.LocalLeftHanded
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
 import dev.mnascimentos.aureole.feature.home.model.LocalHomeActions
@@ -58,6 +59,7 @@ class EditGridItemDialogTest {
             AureoleLauncherTheme {
                 CompositionLocalProvider(
                     LocalHomeUiState provides MainUiState(),
+                    LocalLeftHanded provides (MainUiState()).isLeftHandedMode,
                     LocalHomeActions provides baseActions()
                 ) {
                     EditGridItemDialog(
@@ -89,6 +91,7 @@ class EditGridItemDialogTest {
             AureoleLauncherTheme {
                 CompositionLocalProvider(
                     LocalHomeUiState provides MainUiState(),
+                    LocalLeftHanded provides (MainUiState()).isLeftHandedMode,
                     LocalHomeActions provides baseActions().copy(
                         onOpenEditClockBottomSheet = { actionTriggered = true }
                     )
@@ -125,6 +128,7 @@ class EditGridItemDialogTest {
             AureoleLauncherTheme {
                 CompositionLocalProvider(
                     LocalHomeUiState provides MainUiState(),
+                    LocalLeftHanded provides (MainUiState()).isLeftHandedMode,
                     LocalHomeActions provides baseActions().copy(
                         onUpdateScrollViewOrientation = { _, o -> orientationTriggered = o },
                         onOpenAddContainerForParent = { _ -> addContainerTriggered = true }
@@ -170,6 +174,7 @@ class EditGridItemDialogTest {
             AureoleLauncherTheme {
                 CompositionLocalProvider(
                     LocalHomeUiState provides MainUiState(),
+                    LocalLeftHanded provides (MainUiState()).isLeftHandedMode,
                     LocalHomeActions provides baseActions()
                 ) {
                     EditGridItemDialog(
