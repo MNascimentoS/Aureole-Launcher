@@ -14,6 +14,10 @@ import dev.chrisbanes.haze.HazeState
  * @property hasSecondary False leaves only the filled button, full width (editors that apply on the spot).
  * @property onSettingsClick Opens the Aureole settings from the header logo; null hides the logo.
  * @property hazeState Blur state of the screen behind the overlay.
+ * @property primaryHoldMs When set, the filled button becomes the error colored hold button (fires after this
+ * many milliseconds of holding), for actions that cannot be undone.
+ * @property isPrimaryAwayFromThumb Puts the filled button on the side opposite to the thumb, so a destructive
+ * action is never the easiest one to hit.
  */
 data class ConfirmOverlayParams(
     val title: String,
@@ -24,5 +28,7 @@ data class ConfirmOverlayParams(
     val secondaryLabel: String? = null,
     val hasSecondary: Boolean = true,
     val onSettingsClick: (() -> Unit)? = null,
-    val hazeState: HazeState? = null
+    val hazeState: HazeState? = null,
+    val primaryHoldMs: Long? = null,
+    val isPrimaryAwayFromThumb: Boolean = false
 )

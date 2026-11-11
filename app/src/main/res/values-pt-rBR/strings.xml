@@ -281,9 +281,10 @@
 
     <!-- New Strings for Task 1 -->
     <string name="settings_advanced_reset_dialog_title">Redefinir launcher?</string>
-    <string name="core_common_yes">Sim</string>
-    <string name="core_common_no">Não</string>
     <string name="settings_advanced_reset_layout_title">Redefinir Layout?</string>
+    <string name="settings_advanced_reset_dialog_message">Apaga todas as suas configurações e volta ao início. Não dá para desfazer.</string>
+    <string name="settings_advanced_reset_dialog_hold">Segure para redefinir</string>
+    <string name="settings_advanced_reset_layout_message">Os itens voltam para a posição inicial da home.</string>
     <string name="settings_advanced_reset_layout_restore">Restaurar</string>
     <string name="settings_appearance_blur_opacity_low">Baixa</string>
     <string name="settings_appearance_blur_opacity_medium">Média</string>

@@ -1,13 +1,8 @@
 package dev.mnascimentos.aureole.composable.menu
 
 import androidx.compose.animation.core.Animatable
-import androidx.compose.animation.core.LinearEasing
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.gestures.awaitEachGesture
-import androidx.compose.foundation.gestures.awaitFirstDown
-import androidx.compose.foundation.gestures.waitForUpOrCancellation
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -20,7 +15,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -29,15 +23,11 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.Stroke
-import androidx.compose.ui.hapticfeedback.HapticFeedbackType
-import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.semantics.Role
-import androidx.compose.ui.semantics.onLongClick
-import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import dev.mnascimentos.aureole.composable.actions.holdToConfirm
 import dev.mnascimentos.aureole.composable.menu.model.MENU_HOLD_MS
 import dev.mnascimentos.aureole.composable.menu.model.MenuQuickAction
 import dev.mnascimentos.aureole.composable.menu.model.thumbOrder
@@ -50,8 +40,6 @@ import dev.mnascimentos.aureole.core.designsystem.model.LocalLeftHanded
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
 
 private const val IDLE_TILE_ALPHA = 0.6f
 private const val DANGER_TILE_ALPHA = 0.18f
@@ -161,34 +149,17 @@ private fun QuickActionIcon(action: MenuQuickAction, tint: Color) {
 
 /** Tap for ordinary actions; hold with a draining ring for those that [MenuQuickAction.requiresHold]. */
 @Composable
-private fun Modifier.quickActionInput(action: MenuQuickAction, progress: Animatable<Float, *>): Modifier {
-    if (!action.requiresHold) {
-        return clickable(role = Role.Button, onClick = action.onTrigger)
+private fun Modifier.quickActionInput(action: MenuQuickAction, progress: Animatable<Float, *>): Modifier =
+    if (action.requiresHold) {
+        holdToConfirm(
+            label = action.label,
+            holdMs = MENU_HOLD_MS,
+            progress = progress,
+            onTrigger = action.onTrigger
+        )
+    } else {
+        clickable(role = Role.Button, onClick = action.onTrigger)
     }
-    val scope = rememberCoroutineScope()
-    val haptic = LocalHapticFeedback.current
-    return this
-        .semantics {
-            role = Role.Button
-            onLongClick(label = action.label) {
-                action.onTrigger()
-                true
-            }
-        }
-        .pointerInput(action) {
-            awaitEachGesture {
-                awaitFirstDown()
-                val hold: Job = scope.launch {
-                    progress.animateTo(1f, tween(MENU_HOLD_MS.toInt(), easing = LinearEasing))
-                    haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                    action.onTrigger()
-                }
-                waitForUpOrCancellation()
-                hold.cancel()
-                scope.launch { progress.snapTo(0f) }
-            }
-        }
-}
 
 @AureolePreview
 @Composable

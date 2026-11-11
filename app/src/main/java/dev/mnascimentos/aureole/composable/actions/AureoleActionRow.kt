@@ -53,11 +53,21 @@ fun AureoleActionRow(
 
 @Composable
 private fun RowScope.PrimaryButton(params: ActionRowParams) {
-    AureolePrimaryActionButton(
-        label = params.primaryLabel,
-        onClick = params.onPrimary,
-        modifier = Modifier.weight(ACTION_PRIMARY_WEIGHT)
-    )
+    val holdMs = params.primaryHoldMs
+    if (holdMs != null) {
+        AureoleHoldActionButton(
+            label = params.primaryLabel,
+            onTrigger = params.onPrimary,
+            modifier = Modifier.weight(ACTION_PRIMARY_WEIGHT),
+            holdMs = holdMs
+        )
+    } else {
+        AureolePrimaryActionButton(
+            label = params.primaryLabel,
+            onClick = params.onPrimary,
+            modifier = Modifier.weight(ACTION_PRIMARY_WEIGHT)
+        )
+    }
 }
 
 /** The filled, pill-shaped primary button of the edit sheets: "Save", "Apply", "Done". Alone it fills the width. */

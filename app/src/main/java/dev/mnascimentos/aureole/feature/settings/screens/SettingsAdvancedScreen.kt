@@ -36,8 +36,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.core.net.toUri
 import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.composable.SettingsActionItem
+import dev.mnascimentos.aureole.composable.menu.AureoleMenuRow
+import dev.mnascimentos.aureole.composable.menu.AureoleMenuSheet
+import dev.mnascimentos.aureole.composable.menu.model.MenuRowParams
 import dev.mnascimentos.aureole.composable.sheets.ReleaseNotesBottomSheet
-import dev.mnascimentos.aureole.composable.sheets.SettingsBottomSheet
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
 import dev.mnascimentos.aureole.core.designsystem.icons.Delete
@@ -48,6 +50,8 @@ import dev.mnascimentos.aureole.core.designsystem.icons.Undo
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
+import dev.mnascimentos.aureole.feature.home.model.MainUiState
+import dev.mnascimentos.aureole.feature.home.model.ProvideHomeUiState
 import dev.mnascimentos.aureole.feature.settings.extensions.tryUninstall
 import dev.mnascimentos.aureole.feature.settings.model.SettingsAdvancedDialogActions
 import dev.mnascimentos.aureole.feature.settings.model.SettingsScreenActions
@@ -87,16 +91,20 @@ fun SettingsAdvancedScreen(
         )
 
         if (showUninstallDialog) {
-            UninstallBottomSheet(
-                context = context,
-                onDismiss = { showUninstallDialog = false }
-            )
+            ProvideHomeUiState(MainUiState(isLeftHandedMode = uiState.isLeftHandedMode)) {
+                UninstallBottomSheet(
+                    context = context,
+                    onDismiss = { showUninstallDialog = false }
+                )
+            }
         }
 
         if (showReleaseNotesDialog) {
-            ReleaseNotesBottomSheet(
-                onDismissRequest = { showReleaseNotesDialog = false }
-            )
+            ProvideHomeUiState(MainUiState(isLeftHandedMode = uiState.isLeftHandedMode)) {
+                ReleaseNotesBottomSheet(
+                    onDismissRequest = { showReleaseNotesDialog = false }
+                )
+            }
         }
     }
 }
@@ -268,31 +276,34 @@ private fun UninstallBottomSheet(
     context: Context,
     onDismiss: () -> Unit
 ) {
-    SettingsBottomSheet(
+    AureoleMenuSheet(
         title = stringResource(R.string.settings_advanced_uninstall_dialog_title),
-        onDismissRequest = onDismiss
-    ) {
-        Column(verticalArrangement = Arrangement.spacedBy(AureoleDS.dimens.xSmall)) {
-            SettingsActionItem(
+        onDismiss = onDismiss
+    ) { dismiss ->
+        AureoleMenuRow(
+            MenuRowParams(
                 title = stringResource(R.string.settings_advanced_contact_us),
-                leadingContent = { AureoleDS.icons.Smile() },
+                icon = { modifier, tint -> AureoleDS.icons.Smile(modifier = modifier, tint = tint) },
                 onClick = {
-                    onDismiss()
+                    dismiss()
                     val intent = Intent(Intent.ACTION_SENDTO).apply {
                         data = "mailto:aureole@mnascimentos.dev".toUri()
                     }
                     context.startActivity(intent)
                 }
             )
-            SettingsActionItem(
+        )
+        AureoleMenuRow(
+            MenuRowParams(
                 title = stringResource(R.string.home_app_menu_uninstall),
-                leadingContent = { AureoleDS.icons.Delete() },
+                icon = { modifier, tint -> AureoleDS.icons.Delete(modifier = modifier, tint = tint) },
+                isDestructive = true,
                 onClick = {
-                    onDismiss()
+                    dismiss()
                     tryUninstall(context)
                 }
             )
-        }
+        )
     }
 }
 

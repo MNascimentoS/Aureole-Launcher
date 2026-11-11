@@ -280,9 +280,10 @@
 
     <!-- New Strings for Task 1 -->
     <string name="settings_advanced_reset_dialog_title">Reset launcher?</string>
-    <string name="core_common_yes">Yes</string>
-    <string name="core_common_no">No</string>
     <string name="settings_advanced_reset_layout_title">Reset Layout?</string>
+    <string name="settings_advanced_reset_dialog_message">Erases all your settings and starts over. This cannot be undone.</string>
+    <string name="settings_advanced_reset_dialog_hold">Hold to reset</string>
+    <string name="settings_advanced_reset_layout_message">Items go back to the starting position of the home screen.</string>
     <string name="settings_advanced_reset_layout_restore">Restore</string>
     <string name="settings_appearance_blur_opacity_low">Low</string>
     <string name="settings_appearance_blur_opacity_medium">Medium</string>

@@ -1,8 +1,6 @@
 package dev.mnascimentos.aureole.feature.settings.screens
 
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.ime
@@ -19,17 +17,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.composable.ColorPickerDialog
-import dev.mnascimentos.aureole.composable.SettingsActionItem
-import dev.mnascimentos.aureole.composable.SettingsMenuItem
-import dev.mnascimentos.aureole.composable.SettingsMenuParams
+import dev.mnascimentos.aureole.composable.actions.model.HOLD_CONFIRM_MS
 import dev.mnascimentos.aureole.composable.dialogs.CreateFolderDialog
 import dev.mnascimentos.aureole.composable.favorites.FavoriteAppsDialog
 import dev.mnascimentos.aureole.composable.favorites.model.FavoriteAppsDialogActions
 import dev.mnascimentos.aureole.composable.favorites.model.FavoriteAppsDialogConfig
-import dev.mnascimentos.aureole.composable.sheets.SettingsBottomSheet
+import dev.mnascimentos.aureole.composable.sheets.AureoleConfirmDialog
+import dev.mnascimentos.aureole.composable.sheets.model.ConfirmDialogParams
 import dev.mnascimentos.aureole.composable.undo.AureoleUndoSnackbar
-import dev.mnascimentos.aureole.core.designsystem.icons.Check
-import dev.mnascimentos.aureole.core.designsystem.icons.Delete
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
@@ -110,7 +105,9 @@ private fun SettingsDialogsPrimary(
     }
 
     if (uiState.showResetGridDialog) {
-        ResetGridDialog(actions = actions)
+        ProvideHomeUiState(MainUiState(isLeftHandedMode = uiState.isLeftHandedMode)) {
+            ResetGridDialog(actions = actions)
+        }
     }
 
     if (uiState.showFavoritePickerDialog) {
@@ -137,7 +134,9 @@ private fun SettingsDialogsSecondary(
     }
 
     if (uiState.showFactoryResetDialog) {
-        FactoryResetDialog(actions = actions)
+        ProvideHomeUiState(MainUiState(isLeftHandedMode = uiState.isLeftHandedMode)) {
+            FactoryResetDialog(actions = actions)
+        }
     }
 }
 
@@ -184,51 +183,31 @@ private fun SettingsPositionSheets(
 internal fun FactoryResetDialog(
     actions: SettingsScreenActions = SettingsScreenActions()
 ) {
-    SettingsBottomSheet(
-        title = stringResource(R.string.settings_advanced_reset_dialog_title),
-        onDismissRequest = actions.onDismissFactoryResetDialog
-    ) {
-        Column(verticalArrangement = Arrangement.spacedBy(AureoleDS.dimens.xSmall)) {
-            SettingsMenuItem(
-                SettingsMenuParams(
-                    title = stringResource(R.string.core_common_yes),
-                    onClick = { actions.onConfirmFactoryReset() }
-                )
-            )
-            SettingsMenuItem(
-                SettingsMenuParams(
-                    title = stringResource(R.string.core_common_no),
-                    onClick = { actions.onDismissFactoryResetDialog() }
-                )
-            )
-        }
-    }
+    AureoleConfirmDialog(
+        params = ConfirmDialogParams(
+            title = stringResource(R.string.settings_advanced_reset_dialog_title),
+            message = stringResource(R.string.settings_advanced_reset_dialog_message),
+            confirmLabel = stringResource(R.string.settings_advanced_reset_dialog_hold),
+            onConfirm = actions.onConfirmFactoryReset,
+            onDismiss = actions.onDismissFactoryResetDialog,
+            holdMs = HOLD_CONFIRM_MS
+        )
+    )
 }
 
 @Composable
 internal fun ResetGridDialog(
     actions: SettingsScreenActions = SettingsScreenActions()
 ) {
-    SettingsBottomSheet(
-        title = stringResource(R.string.settings_advanced_reset_layout_title),
-        onDismissRequest = actions.onDismissResetGridDialog
-    ) {
-        Column(verticalArrangement = Arrangement.spacedBy(AureoleDS.dimens.small)) {
-            SettingsActionItem(
-                title = stringResource(R.string.settings_advanced_reset_layout_restore),
-                leadingContent = { AureoleDS.icons.Check() },
-                onClick = {
-                    actions.onConfirmResetGrid()
-                    actions.onDismissResetGridDialog()
-                }
-            )
-            SettingsActionItem(
-                title = stringResource(R.string.core_common_cancel),
-                leadingContent = { AureoleDS.icons.Delete() },
-                onClick = { actions.onDismissResetGridDialog() }
-            )
-        }
-    }
+    AureoleConfirmDialog(
+        params = ConfirmDialogParams(
+            title = stringResource(R.string.settings_advanced_reset_layout_title),
+            message = stringResource(R.string.settings_advanced_reset_layout_message),
+            confirmLabel = stringResource(R.string.settings_advanced_reset_layout_restore),
+            onConfirm = actions.onConfirmResetGrid,
+            onDismiss = actions.onDismissResetGridDialog
+        )
+    )
 }
 
 @AureolePreview

@@ -9,17 +9,12 @@ import dev.mnascimentos.aureole.composable.dialogs.FolderFormDialog
 import dev.mnascimentos.aureole.composable.favorites.FavoriteAppsDialog
 import dev.mnascimentos.aureole.composable.favorites.model.FavoriteAppsDialogActions
 import dev.mnascimentos.aureole.composable.favorites.model.FavoriteAppsDialogConfig
-import dev.mnascimentos.aureole.composable.sheets.ReleaseNotesBottomSheet
 import dev.mnascimentos.aureole.core.data.model.AppFolder
 import dev.mnascimentos.aureole.core.data.model.ContainerItemEntity
 import dev.mnascimentos.aureole.core.data.model.ContainerItemType
 import dev.mnascimentos.aureole.core.data.model.ContainerModel
 import dev.mnascimentos.aureole.core.data.model.LauncherItemState
 import dev.mnascimentos.aureole.core.data.model.LauncherItemType
-import dev.mnascimentos.aureole.core.data.model.ReleaseNoteItem
-import dev.mnascimentos.aureole.core.data.model.ReleaseNoteSection
-import dev.mnascimentos.aureole.core.data.model.ReleaseNoteType
-import dev.mnascimentos.aureole.core.data.model.ReleaseNoteVersion
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.components.clock.EditClockBottomSheet
@@ -32,10 +27,6 @@ import dev.mnascimentos.aureole.feature.home.components.containers.folder.Folder
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.ContainerFolderBottomSheetParams
 import dev.mnascimentos.aureole.feature.home.components.containers.model.EditContainerScreenParams
 import dev.mnascimentos.aureole.feature.home.components.overlays.CustomizeBottomSheet
-import dev.mnascimentos.aureole.feature.home.components.overlays.StandardUpdateAlertDialog
-import dev.mnascimentos.aureole.feature.home.components.overlays.UpdateAvailableDialog
-import dev.mnascimentos.aureole.feature.home.components.overlays.UpdateDownloadedDialog
-import dev.mnascimentos.aureole.feature.home.components.overlays.model.UpdateDialogContentParams
 import dev.mnascimentos.aureole.feature.home.components.widgets.EditWidgetGroupScreen
 import dev.mnascimentos.aureole.feature.home.components.widgets.WidgetSelectorScreen
 import dev.mnascimentos.aureole.feature.home.components.widgets.WidgetStackBottomSheet
@@ -179,79 +170,6 @@ private fun FolderAppPickerDialogScreenshotTest() {
             allApps = sampleData.apps,
             onDismiss = {},
             onSave = {}
-        )
-    }
-}
-
-@PreviewTest
-@AureolePreview
-@Composable
-private fun UpdateAvailableDialogScreenshotTest() {
-    AureoleLauncherTheme {
-        UpdateAvailableDialog(
-            onConfirmUpdate = {},
-            onDismiss = {}
-        )
-    }
-}
-
-@PreviewTest
-@AureolePreview
-@Composable
-private fun UpdateDownloadedDialogScreenshotTest() {
-    AureoleLauncherTheme {
-        UpdateDownloadedDialog(
-            onConfirmRestart = {},
-            onDismiss = {}
-        )
-    }
-}
-
-@PreviewTest
-@AureolePreview
-@Composable
-private fun ReleaseNotesBottomSheetScreenshotTest() {
-    val sampleReleaseNoteVersion = ReleaseNoteVersion(
-        versionName = "0.6.13",
-        releaseDate = "14/10/2026",
-        isCurrent = true,
-        sections = listOf(
-            ReleaseNoteSection(
-                title = "Novidades & Recursos",
-                items = listOf(
-                    ReleaseNoteItem(
-                        title = "Nova Tela de Edição de Container",
-                        description = "Interface de personalização em tela cheia com pré-visualização em tempo real e seções dedicadas para Aparência, Comportamento e Componentes.",
-                        type = ReleaseNoteType.FEATURE
-                    ),
-                    ReleaseNoteItem(
-                        title = "Modo de Pastas em Grade (Grid Folders)",
-                        description = "Suporte para exibir miniaturas de ícones 2x2 no container e abrir o menu expansível de pastas em formato de grade.",
-                        type = ReleaseNoteType.FEATURE
-                    )
-                )
-            ),
-            ReleaseNoteSection(
-                title = "Melhorias de Interface & Experiência",
-                items = listOf(
-                    ReleaseNoteItem(
-                        title = "Melhorias de Performance",
-                        description = "Otimizações gerais no carregamento da tela inicial.",
-                        type = ReleaseNoteType.IMPROVEMENT
-                    )
-                )
-            )
-        )
-    )
-
-    AureoleLauncherTheme {
-        ReleaseNotesBottomSheet(
-            onDismissRequest = {},
-            allVersions = listOf(
-                sampleReleaseNoteVersion,
-                sampleReleaseNoteVersion.copy(versionName = "0.5.13", isCurrent = false),
-                sampleReleaseNoteVersion.copy(versionName = "0.3.13", isCurrent = false)
-            )
         )
     }
 }
@@ -556,23 +474,6 @@ private fun FolderFormDialogScreenshotTest() {
             onSave = { _, _ -> },
             onDelete = {}
         )
-    }
-}
-
-@PreviewTest
-@AureolePreview
-@Composable
-private fun StandardUpdateAlertDialogScreenshotTest() {
-    val params = UpdateDialogContentParams(
-        title = "Nova atualização disponível",
-        body = "Uma nova versão do Aureole Launcher está disponível com melhorias.",
-        confirmLabel = "Atualizar",
-        dismissLabel = "Cancelar",
-        onConfirm = {},
-        onDismiss = {}
-    )
-    AureoleLauncherTheme {
-        StandardUpdateAlertDialog(params = params)
     }
 }
 
