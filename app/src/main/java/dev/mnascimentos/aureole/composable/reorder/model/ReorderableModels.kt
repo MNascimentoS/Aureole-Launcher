@@ -43,6 +43,8 @@ data class ReorderSlotParams(
     val orientation: ReorderOrientation,
     val spacingPx: Float,
     val handleOnly: Boolean = false,
+    /** Scrolls the list while the held item is near an edge of its viewport; null: no auto scroll. */
+    val autoScroll: ReorderAutoScroll? = null,
 )
 
 /**

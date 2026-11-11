@@ -20,6 +20,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
 import dev.mnascimentos.aureole.composable.mirror.LeftHandMirror
+import dev.mnascimentos.aureole.composable.reorder.model.ReorderAutoScroll
 import dev.mnascimentos.aureole.composable.reorder.model.ReorderDragState
 import dev.mnascimentos.aureole.composable.reorder.model.ReorderOrientation
 import dev.mnascimentos.aureole.composable.reorder.model.ReorderSlotParams
@@ -35,12 +36,14 @@ private const val PREVIEW_ITEM_COUNT = 3
 /**
  * Vertical list whose items move by holding and dragging them up or down; each item fills the width. Stateless:
  * apply every [ReorderableActions.onMove] to the items you pass back. It does not scroll by itself, so it fits
- * inside a scrolling sheet; [trailingContent] (for example an "add" row) follows the items and does not move.
+ * inside a scrolling sheet: pass that sheet's [autoScroll] (see [rememberReorderAutoScroll]) so a held item scrolls
+ * it near the viewport's edges. [trailingContent] (for example an "add" row) follows the items and does not move.
  */
 @Composable
 fun <T> ReorderableColumn(
     params: ReorderableParams<T>,
     modifier: Modifier = Modifier,
+    autoScroll: ReorderAutoScroll? = null,
     trailingContent: (@Composable () -> Unit)? = null,
     itemContent: @Composable (item: T) -> Unit,
 ) {
@@ -65,7 +68,8 @@ fun <T> ReorderableColumn(
                         keys,
                         ReorderOrientation.Vertical,
                         spacingPx,
-                        params.dragHandleOnly
+                        params.dragHandleOnly,
+                        autoScroll
                     ),
                     state = state,
                     actions = params.actions,

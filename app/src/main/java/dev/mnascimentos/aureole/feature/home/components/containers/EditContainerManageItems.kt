@@ -39,6 +39,8 @@ import dev.mnascimentos.aureole.composable.mirror.LeftHandMirror
 import dev.mnascimentos.aureole.composable.reorder.ReorderableColumn
 import dev.mnascimentos.aureole.composable.reorder.model.ReorderableActions
 import dev.mnascimentos.aureole.composable.reorder.model.ReorderableParams
+import dev.mnascimentos.aureole.composable.reorder.rememberReorderAutoScroll
+import dev.mnascimentos.aureole.composable.reorder.reorderAutoScrollViewport
 import dev.mnascimentos.aureole.core.data.model.AppFolder
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.data.model.ContainerItemEntity
@@ -232,15 +234,18 @@ internal fun ManageItemsListSection(
 
 /**
  * The items in their order: hold one and drag it up or down to reorder, ✕ removes it. The sheet does not scroll,
- * so the list keeps its own capped scroll; a held item still drags freely.
+ * so the list keeps its own capped scroll; a held item near its top or bottom edge scrolls it.
  */
 @Composable
 private fun ReorderableManageItems(state: EditContainerState, allApps: List<AppInfo>) {
+    val scrollState = rememberScrollState()
+    val autoScroll = rememberReorderAutoScroll(scrollState)
     Column(
         modifier = Modifier
             .heightIn(max = MANAGE_LIST_MAX_HEIGHT)
             .fillMaxWidth()
-            .verticalScroll(rememberScrollState())
+            .reorderAutoScrollViewport(autoScroll)
+            .verticalScroll(scrollState)
     ) {
         ReorderableColumn(
             params = ReorderableParams(
@@ -248,7 +253,8 @@ private fun ReorderableManageItems(state: EditContainerState, allApps: List<AppI
                 key = { it.id },
                 actions = ReorderableActions(onMove = state::moveItem, onRemove = state::removeItem),
                 spacing = AureoleDS.dimens.xSmall
-            )
+            ),
+            autoScroll = autoScroll
         ) { item ->
             ManageItemRow(params = ManageItemRowParams(item = item, folders = state.folders, allApps = allApps))
         }

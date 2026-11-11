@@ -30,9 +30,11 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.layout.LayoutCoordinates
 import androidx.compose.ui.layout.onPlaced
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.layout.positionInParent
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.stringResource
@@ -51,9 +53,11 @@ import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.composable.reorder.model.LocalReorderHandle
 import dev.mnascimentos.aureole.composable.reorder.model.ReorderDragState
 import dev.mnascimentos.aureole.composable.reorder.model.ReorderHandle
+import dev.mnascimentos.aureole.composable.reorder.model.ReorderMove
 import dev.mnascimentos.aureole.composable.reorder.model.ReorderOrientation
 import dev.mnascimentos.aureole.composable.reorder.model.ReorderSlotParams
 import dev.mnascimentos.aureole.composable.reorder.model.ReorderableActions
+import dev.mnascimentos.aureole.composable.reorder.model.reorderAxisDelta
 import dev.mnascimentos.aureole.composable.reorder.model.reorderStepTarget
 import dev.mnascimentos.aureole.core.designsystem.icons.Close
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
@@ -158,7 +162,11 @@ private fun RemoveBadge(onClick: () -> Unit, modifier: Modifier = Modifier) {
     }
 }
 
-/** Long-press then drag: picks the item, reports each swap with a tick and settles it back when the finger lifts. */
+/**
+ * Long-press then drag: picks the item, reports each swap with a tick and settles it back when the finger lifts.
+ * With [ReorderSlotParams.autoScroll], holding the item near an edge of the viewport scrolls the list and the
+ * item stays under the finger.
+ */
 @Composable
 private fun rememberReorderGestures(
     slot: ReorderSlotParams,
@@ -167,17 +175,29 @@ private fun rememberReorderGestures(
     isRtl: Boolean,
 ): Modifier {
     val haptics = LocalHapticFeedback.current
+    val density = LocalDensity.current
     val scope = rememberCoroutineScope()
     val currentSlot by rememberUpdatedState(slot)
     val currentActions by rememberUpdatedState(actions)
-    val axisDelta = { amount: Offset ->
-        when {
-            currentSlot.orientation == ReorderOrientation.Vertical -> amount.y
-            isRtl -> -amount.x
-            else -> amount.x
+    val source = remember { mutableStateOf<LayoutCoordinates?>(null) }
+    val report = { swap: ReorderMove? ->
+        if (swap != null) {
+            currentActions.onMove(swap.from, swap.to)
+            haptics.performHapticFeedback(HapticFeedbackType.SegmentTick)
+        }
+    }
+    val follow = { finger: Offset ->
+        val coordinates = source.value
+        val auto = currentSlot.autoScroll
+        if (auto != null && coordinates != null && state.isDragging) {
+            auto.track(coordinates, finger, currentSlot.orientation, isRtl)
+            auto.scrollIfNearEdge(scope, density) { scrolled ->
+                report(state.onScrolled(scrolled, currentSlot.spacingPx))
+            }
         }
     }
     val finish = {
+        currentSlot.autoScroll?.release()
         val key = currentSlot.key
         if (state.isDragging && state.activeKey == key) {
             if (state.release()) currentActions.onMoveEnd()
@@ -189,20 +209,18 @@ private fun rememberReorderGestures(
             }
         }
     }
-    return Modifier.pointerInput(slot.key, isRtl) {
+    return Modifier.onPlaced { source.value = it }.pointerInput(slot.key, isRtl) {
         detectDragGesturesAfterLongPress(
-            onDragStart = {
+            onDragStart = { finger ->
                 if (state.start(currentSlot.key, currentSlot.keys)) {
                     haptics.performHapticFeedback(HapticFeedbackType.LongPress)
+                    follow(finger)
                 }
             },
             onDrag = { change, amount ->
                 change.consume()
-                val swap = state.drag(axisDelta(amount), currentSlot.spacingPx)
-                if (swap != null) {
-                    currentActions.onMove(swap.from, swap.to)
-                    haptics.performHapticFeedback(HapticFeedbackType.SegmentTick)
-                }
+                report(state.drag(reorderAxisDelta(amount, currentSlot.orientation, isRtl), currentSlot.spacingPx))
+                follow(change.position)
             },
             onDragEnd = { finish() },
             onDragCancel = { finish() }

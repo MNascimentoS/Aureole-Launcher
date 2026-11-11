@@ -58,6 +58,12 @@ class ReorderDragState {
         return if (target == index) null else swapTo(target, slotSizes, spacing)
     }
 
+    /**
+     * The list scrolled [consumed] px (positive: towards its end) under the held item: moves the item as much, so it
+     * stays under the finger and the swap check sees the scroll too; the swap to report, if any.
+     */
+    fun onScrolled(consumed: Float, spacing: Float): ReorderMove? = drag(consumed, spacing)
+
     private fun swapTo(target: Int, slotSizes: List<Float>, spacing: Float): ReorderMove {
         offset -= reorderShift(index, target, slotSizes, spacing)
         val swap = ReorderMove(index, target)

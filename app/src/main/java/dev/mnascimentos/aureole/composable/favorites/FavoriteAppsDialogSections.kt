@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -26,6 +27,8 @@ import dev.mnascimentos.aureole.composable.favorites.model.FavoriteSectionParams
 import dev.mnascimentos.aureole.composable.favorites.model.reorderFavoritePackages
 import dev.mnascimentos.aureole.composable.mirror.LeftHandMirror
 import dev.mnascimentos.aureole.composable.reorder.model.move
+import dev.mnascimentos.aureole.composable.reorder.rememberReorderAutoScroll
+import dev.mnascimentos.aureole.composable.reorder.reorderAutoScrollViewport
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
@@ -173,8 +176,13 @@ private fun FavoriteAppsSections(
     actions: FavoriteSectionActions,
     modifier: Modifier = Modifier
 ) {
+    val listState = rememberLazyListState()
+    val autoScroll = rememberReorderAutoScroll(listState)
     LazyColumn(
-        modifier = modifier.fillMaxWidth(),
+        modifier = modifier
+            .fillMaxWidth()
+            .reorderAutoScrollViewport(autoScroll),
+        state = listState,
         verticalArrangement = Arrangement.spacedBy(AureoleDS.dimens.xSmall)
     ) {
         favoriteSectionItems(
@@ -182,7 +190,8 @@ private fun FavoriteAppsSections(
                 filteredFavorites = params.filteredFavorites,
                 searchQuery = params.searchQuery,
                 favoritesCount = params.config.favoriteAppPackages.size,
-                allAppsCount = params.config.allApps.size
+                allAppsCount = params.config.allApps.size,
+                autoScroll = autoScroll
             ),
             actions = actions
         )

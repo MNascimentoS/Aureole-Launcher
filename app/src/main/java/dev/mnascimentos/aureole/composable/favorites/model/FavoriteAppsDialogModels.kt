@@ -1,6 +1,7 @@
 package dev.mnascimentos.aureole.composable.favorites.model
 
 import dev.mnascimentos.aureole.composable.appitem.model.AppItemRowConfig
+import dev.mnascimentos.aureole.composable.reorder.model.ReorderAutoScroll
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 
 enum class FavoriteAppsScreenMode {
@@ -34,7 +35,9 @@ data class FavoriteSectionParams(
     /** Favorites before the search filter; the drag hint needs two, the empty banner none. */
     val favoritesCount: Int = filteredFavorites.size,
     /** Apps the Home lists while there are no favorites. */
-    val allAppsCount: Int = 0
+    val allAppsCount: Int = 0,
+    /** Auto scroll of the list around the favorites, so a held favorite near its edges scrolls it. */
+    val autoScroll: ReorderAutoScroll? = null
 )
 
 /**

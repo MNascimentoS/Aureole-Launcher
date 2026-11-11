@@ -31,6 +31,7 @@ import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.composable.favorites.model.FavoriteSectionActions
 import dev.mnascimentos.aureole.composable.favorites.model.FavoriteSectionParams
 import dev.mnascimentos.aureole.composable.reorder.ReorderableColumn
+import dev.mnascimentos.aureole.composable.reorder.model.ReorderAutoScroll
 import dev.mnascimentos.aureole.composable.reorder.model.ReorderableActions
 import dev.mnascimentos.aureole.composable.reorder.model.ReorderableParams
 import dev.mnascimentos.aureole.core.data.model.AppInfo
@@ -137,7 +138,7 @@ internal fun LazyListScope.favoriteSectionItems(
             )
         }
         searchQuery.isBlank() -> item(key = "fav_reorderable", contentType = "fav_reorderable") {
-            ReorderableFavorites(apps = filteredFavorites, actions = actions)
+            ReorderableFavorites(apps = filteredFavorites, actions = actions, autoScroll = params.autoScroll)
         }
         else -> items(
             items = filteredFavorites,
@@ -158,7 +159,11 @@ private const val MIN_FAVORITES_TO_REORDER = 2
 
 /** The favorites in their order: hold the handle of one and drag it up or down, ✕ removes it. */
 @Composable
-private fun ReorderableFavorites(apps: List<AppInfo>, actions: FavoriteSectionActions) {
+private fun ReorderableFavorites(
+    apps: List<AppInfo>,
+    actions: FavoriteSectionActions,
+    autoScroll: ReorderAutoScroll?
+) {
     ReorderableColumn(
         params = ReorderableParams(
             items = apps,
@@ -166,7 +171,8 @@ private fun ReorderableFavorites(apps: List<AppInfo>, actions: FavoriteSectionAc
             actions = ReorderableActions(onMove = actions.onMove, onMoveEnd = actions.onMoveEnd),
             spacing = AureoleDS.dimens.xSmall,
             dragHandleOnly = true
-        )
+        ),
+        autoScroll = autoScroll
     ) { app ->
         FavoriteAppRow(
             app = app,

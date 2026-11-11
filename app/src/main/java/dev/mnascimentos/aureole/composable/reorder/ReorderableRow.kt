@@ -36,7 +36,8 @@ private const val PREVIEW_ITEM_COUNT = 3
 
 /**
  * Horizontal list whose items move by holding and dragging them sideways. Stateless: apply every
- * [ReorderableActions.onMove] to the items you pass back. Scrolls when the items overflow (not while one is held);
+ * [ReorderableActions.onMove] to the items you pass back. Scrolls when the items overflow; while one is held, it
+ * scrolls by itself as the finger nears either edge.
  * [trailingContent] (for example an "add" card) follows the items and does not move. Follows the layout direction,
  * so wrap it in `LeftHandMirror` to run it from the right.
  */
@@ -49,12 +50,14 @@ fun <T> ReorderableRow(
     itemContent: @Composable (item: T) -> Unit,
 ) {
     val state = remember { ReorderDragState() }
+    val autoScroll = rememberReorderAutoScroll(scrollState)
     val spacingPx = with(LocalDensity.current) { params.spacing.toPx() }
     val keys = params.items.map(params.key)
     // Room inside the scroll for the ✕ badge that sticks out of the top end corner of each item.
     val badgeRoom = if (params.actions.onRemove != null) reorderBadgeOverhang() else AureoleDS.dimens.zero
     Row(
         modifier = modifier
+            .reorderAutoScrollViewport(autoScroll)
             .horizontalScroll(scrollState, enabled = !state.isDragging)
             .padding(params.contentPadding)
             .padding(top = badgeRoom, end = badgeRoom),
@@ -70,7 +73,8 @@ fun <T> ReorderableRow(
                         keys,
                         ReorderOrientation.Horizontal,
                         spacingPx,
-                        params.dragHandleOnly
+                        params.dragHandleOnly,
+                        autoScroll
                     ),
                     state = state,
                     actions = params.actions
