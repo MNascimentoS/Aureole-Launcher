@@ -119,7 +119,6 @@ private fun FavoritePickerOverlay(
                 favoriteAppPackages = favPackages,
                 containerId = containerId,
                 isLoading = uiState.isAppsLoading,
-                showAllAppsOnHome = uiState.showAllAppsOnHome,
                 rowConfig = AppItemRowConfig(
                     isThemedAppIconsEnabled = uiState.isThemedAppIconsEnabled,
                     isLeftHandedMode = uiState.isLeftHandedMode
@@ -128,7 +127,6 @@ private fun FavoritePickerOverlay(
             actions = FavoriteAppsDialogActions(
                 onToggleFavorite = { pkg -> actions.onToggleFavoriteWithContainer(pkg, containerId) },
                 onUpdateFavoritePackages = { cId, pkgs -> actions.onUpdateFavoritePackages(cId, pkgs) },
-                onToggleShowAllAppsOnHome = actions.onToggleShowAllAppsOnHome,
                 onSettingsClick = actions.onSettingsClick,
                 onDismiss = actions.onDismissFavoritePicker
             )

@@ -2,46 +2,32 @@ package dev.mnascimentos.aureole.composable.favorites
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import dev.mnascimentos.aureole.R
-import dev.mnascimentos.aureole.composable.favorites.model.FavoriteAppsDialogActions
 import dev.mnascimentos.aureole.composable.favorites.model.FavoriteAppsDialogConfig
 import dev.mnascimentos.aureole.composable.favorites.model.FavoriteAppsScreenMode
 import dev.mnascimentos.aureole.composable.menu.AureoleMenuRow
-import dev.mnascimentos.aureole.composable.menu.AureoleSwitchRow
 import dev.mnascimentos.aureole.composable.menu.model.MenuRowParams
-import dev.mnascimentos.aureole.composable.menu.model.SwitchRowParams
-import dev.mnascimentos.aureole.core.designsystem.icons.AllApps
 import dev.mnascimentos.aureole.core.designsystem.icons.Click
-import dev.mnascimentos.aureole.core.designsystem.icons.ColorFill
 import dev.mnascimentos.aureole.core.designsystem.icons.Favorite
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 
 /**
- * Main menu of the favorites sheet: the "show all apps" switch and the rows that lead to the shortcut editor, the
- * appearance and the manage list.
+ * Main menu of the favorites sheet: the rows that lead to the shortcut editor and to the manage list, whose
+ * subtitle says what the Home shows.
  */
 @Composable
 internal fun FavoriteAppsMainContent(
     config: FavoriteAppsDialogConfig,
-    actions: FavoriteAppsDialogActions,
     onModeChange: (FavoriteAppsScreenMode) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(modifier = modifier) {
-        AureoleSwitchRow(
-            SwitchRowParams(
-                title = stringResource(R.string.home_favorites_show_all_apps),
-                description = stringResource(R.string.home_favorites_show_all_apps_desc),
-                checked = config.showAllAppsOnHome,
-                onCheckedChange = { actions.onToggleShowAllAppsOnHome() },
-                icon = { m, c -> AureoleDS.icons.AllApps(modifier = m, tint = c) }
-            )
-        )
         AureoleMenuRow(
             MenuRowParams(
                 title = stringResource(R.string.home_favorites_edit_shortcuts),
@@ -52,21 +38,8 @@ internal fun FavoriteAppsMainContent(
         )
         AureoleMenuRow(
             MenuRowParams(
-                title = stringResource(R.string.home_container_edit_appearance),
-                subtitle = stringResource(R.string.home_favorites_appearance_desc),
-                onClick = { onModeChange(FavoriteAppsScreenMode.APPEARANCE) },
-                icon = { m, c -> AureoleDS.icons.ColorFill(modifier = m, tint = c) },
-                showChevron = true
-            )
-        )
-        AureoleMenuRow(
-            MenuRowParams(
                 title = stringResource(R.string.home_favorites_manage_apps_order),
-                subtitle = pluralStringResource(
-                    R.plurals.home_favorites_menu_count,
-                    config.favoriteAppPackages.size,
-                    config.favoriteAppPackages.size
-                ),
+                subtitle = manageSubtitle(config.favoriteAppPackages.size),
                 onClick = { onModeChange(FavoriteAppsScreenMode.MANAGE) },
                 icon = { m, c -> AureoleDS.icons.Favorite(modifier = m, tint = c) },
                 showChevron = true
@@ -84,27 +57,17 @@ private fun FavoriteAppsMainContentPreview() {
                 allApps = emptyList(),
                 favoriteAppPackages = listOf("a", "b", "c", "d", "e")
             ),
-            actions = FavoriteAppsDialogActions(),
             onModeChange = {}
         )
     }
 }
 
-/** Appearance sub-screen of the favorites sheet: how the Home shows the apps (the "show all apps" switch). */
+/** "N favorites, the rest stays hidden", or that the Home shows every app when there are no favorites. */
 @Composable
-internal fun FavoriteAppsAppearanceContent(
-    config: FavoriteAppsDialogConfig,
-    actions: FavoriteAppsDialogActions,
-    modifier: Modifier = Modifier
-) {
-    Column(modifier = modifier) {
-        AureoleSwitchRow(
-            SwitchRowParams(
-                title = stringResource(R.string.home_favorites_show_all_apps),
-                description = stringResource(R.string.home_favorites_show_all_apps_desc),
-                checked = config.showAllAppsOnHome,
-                onCheckedChange = { actions.onToggleShowAllAppsOnHome() }
-            )
-        )
+@ReadOnlyComposable
+private fun manageSubtitle(favoriteCount: Int): String =
+    if (favoriteCount == 0) {
+        stringResource(R.string.home_favorites_menu_all_shown)
+    } else {
+        pluralStringResource(R.plurals.home_favorites_menu_count, favoriteCount, favoriteCount)
     }
-}

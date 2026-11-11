@@ -89,7 +89,6 @@
     <!-- Settings Behavior -->
     <string name="settings_behavior_title">Behavior</string>
     <string name="settings_behavior_home_opens_all_apps">Home opens all apps</string>
-    <string name="settings_behavior_show_all_apps_on_home">Show all apps on home</string>
     <string name="settings_behavior_all_apps_left_side">All apps on left side</string>
     <string name="settings_behavior_show_widget_indicator">Show widget indicator</string>
     <string name="settings_behavior_disable_alphabet_scrubber">Disable alphabet scrubber</string>
@@ -177,14 +176,10 @@
 
     <!-- Favorites Dialog -->
     <string name="home_favorites_dialog_title">Apps List</string>
-    <string name="home_favorites_show_all_apps">Show all apps on Home</string>
-    <string name="home_favorites_show_all_apps_desc">If disabled, shows only favorited apps</string>
     <string name="home_favorites_edit_shortcuts">Edit shortcuts</string>
     <string name="home_favorites_manage_apps_order">Manage apps and order</string>
-    <string name="home_favorites_appearance_desc">Apps display on Home</string>
     <string name="home_favorites_count">Favorites (%1$d)</string>
-    <string name="home_favorites_disable_all">Disable all</string>
-    <string name="home_favorites_enable_all">Enable all</string>
+    <string name="home_favorites_disable_all">Remove all</string>
     <string name="home_favorites_none_selected">No favorite app selected.</string>
     <string name="home_favorites_none_found">No favorite found.</string>
     <string name="home_favorites_all_added">All apps are already in favorites.</string>
@@ -443,9 +438,13 @@
         <item quantity="one">%1$d component</item>
         <item quantity="other">%1$d components</item>
     </plurals>
+    <string name="home_favorites_menu_all_shown">No favorites: shows all apps</string>
+    <string name="home_favorites_manage_drag_hint">Hold and drag the button to reorder</string>
+    <string name="home_favorites_manage_empty_banner">No favorites: the Home shows all %1$d apps. Tap + to pick only some.</string>
+    <string name="home_favorites_manage_drag_handle">Reorder</string>
     <plurals name="home_favorites_menu_count">
-        <item quantity="one">%1$d favorite</item>
-        <item quantity="other">%1$d favorites</item>
+        <item quantity="one">%1$d favorite, the rest stays hidden</item>
+        <item quantity="other">%1$d favorites, the rest stay hidden</item>
     </plurals>
     <string name="settings_appearance_restore_background">Restore background</string>
     <string name="settings_appearance_background_restored">Background restored</string>

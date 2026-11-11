@@ -16,7 +16,6 @@ internal object SettingsToggleManager {
             SettingToggle.CONTAINER -> toggleGroupOne(vm, toggle)
             SettingToggle.SHOW_FOLDER_LABELS,
             SettingToggle.HOME_OPENS_ALL_APPS,
-            SettingToggle.SHOW_ALL_APPS_ON_HOME,
             SettingToggle.WIDGET_ROW,
             SettingToggle.DISABLE_ALPHABET_SCRUBBER,
             SettingToggle.SHOW_SETTINGS_BUTTON_IN_ALL_APPS,
@@ -85,11 +84,6 @@ internal object SettingsToggleManager {
                 val newValue = !vm.uiState.value.homeButtonOpensAllApps
                 vm.settingsRepository.homeButtonOpensAllApps = newValue
                 vm.updateUiState { it.copy(homeButtonOpensAllApps = newValue) }
-            }
-            SettingToggle.SHOW_ALL_APPS_ON_HOME -> {
-                val newValue = !vm.uiState.value.showAllAppsOnHome
-                vm.settingsRepository.showAllAppsOnHome = newValue
-                vm.updateUiState { it.copy(showAllAppsOnHome = newValue) }
             }
             SettingToggle.WIDGET_ROW -> {
                 val newValue = !vm.uiState.value.isWidgetRowEnabled

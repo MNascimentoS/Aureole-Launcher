@@ -22,6 +22,7 @@ import dev.mnascimentos.aureole.composable.appitem.model.AppItemRowActions
 import dev.mnascimentos.aureole.composable.appitem.model.AppItemRowConfig
 import dev.mnascimentos.aureole.composable.clock.model.ClockHazeConfig
 import dev.mnascimentos.aureole.core.data.model.AppInfo
+import dev.mnascimentos.aureole.core.data.model.visibleApps
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
@@ -64,9 +65,8 @@ fun FavoritesList(
         favoritePackagesList.toSet()
     }
 
-    val appMap = remember(uiState.apps) { uiState.apps.associateBy { it.packageName } }
-    val favoriteApps = remember(favoritePackagesList, appMap) {
-        favoritePackagesList.mapNotNull { pkg -> appMap[pkg] }
+    val favoriteApps = remember(favoritePackagesList, uiState.apps) {
+        visibleApps(uiState.apps, favoritePackagesList)
     }
 
     if (options.isInsideScrollView) {
@@ -148,10 +148,10 @@ private fun ScrollableFavoritesList(
 
         favoriteAppsSection(
             favoriteApps = favoriteApps,
+            isFavorite = params.favoritePackages.isNotEmpty(),
             actions = actions,
             containerId = containerId,
-            isLeftHandedMode = uiState.isLeftHandedMode,
-            onEmptyClick = { actions.onOpenFavoritePicker(containerId) }
+            isLeftHandedMode = uiState.isLeftHandedMode
         )
     }
 }
@@ -175,7 +175,7 @@ private fun NonScrollableFavoritesList(
                     app = app,
                     onClick = { actions.onAppClick(app) },
                     config = AppItemRowConfig(
-                        isFavorite = true,
+                        isFavorite = params.favoritePackages.isNotEmpty(),
                         useActionSheet = true,
                         isLeftHandedMode = isLeftHandedMode
                     ),
@@ -195,10 +195,10 @@ private fun NonScrollableFavoritesList(
 
 private fun LazyListScope.favoriteAppsSection(
     favoriteApps: List<AppInfo>,
+    isFavorite: Boolean,
     actions: HomeScreenActions,
     containerId: String? = null,
-    isLeftHandedMode: Boolean = false,
-    onEmptyClick: () -> Unit
+    isLeftHandedMode: Boolean = false
 ) {
     if (favoriteApps.isNotEmpty()) {
         items(
@@ -210,7 +210,7 @@ private fun LazyListScope.favoriteAppsSection(
                 app = app,
                 onClick = { actions.onAppClick(app) },
                 config = AppItemRowConfig(
-                    isFavorite = true,
+                    isFavorite = isFavorite,
                     useActionSheet = true,
                     isLeftHandedMode = isLeftHandedMode
                 ),
@@ -224,7 +224,7 @@ private fun LazyListScope.favoriteAppsSection(
         }
     } else {
         item(key = "favorites_empty_hint", contentType = "empty_hint") {
-            FavoritesEmptyHint(onClick = onEmptyClick)
+            FavoritesEmptyHint(onClick = { actions.onOpenFavoritePicker(containerId) })
         }
     }
 }

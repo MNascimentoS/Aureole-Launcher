@@ -38,7 +38,7 @@ class FavoriteAppsListTest {
         onMove = { _, _ -> },
         onMoveEnd = {},
         onToggleFavorite = {},
-        onDeactivateAll = {}
+        onRemoveAll = {}
     )
 
     private fun createApp(label: String, pkg: String) = AppInfo(
@@ -93,8 +93,7 @@ class FavoriteAppsListTest {
                     remainingSectionItems(
                         filteredRemaining = emptyList(),
                         searchQuery = "",
-                        onToggleFavorite = {},
-                        onActivateAll = {}
+                        onToggleFavorite = {}
                     )
                 }
             }
@@ -113,8 +112,7 @@ class FavoriteAppsListTest {
                     remainingSectionItems(
                         filteredRemaining = listOf(app),
                         searchQuery = "",
-                        onToggleFavorite = {},
-                        onActivateAll = {}
+                        onToggleFavorite = {}
                     )
                 }
             }
@@ -140,7 +138,7 @@ class FavoriteAppsListTest {
                             onMove = { from, to -> moves += from to to },
                             onMoveEnd = { moveEnds++ },
                             onToggleFavorite = { toggled += it },
-                            onDeactivateAll = {}
+                            onRemoveAll = {}
                         )
                     )
                 }
@@ -149,7 +147,7 @@ class FavoriteAppsListTest {
 
         composeTestRule.onAllNodes(SemanticsMatcher.keyIsDefined(SemanticsActions.CustomActions))[0]
             .performCustomAccessibilityActionWithLabel("Move down")
-        composeTestRule.onAllNodesWithContentDescription("Remove")[1].performClick()
+        composeTestRule.onAllNodesWithContentDescription("Remove from favorites")[1].performClick()
 
         assertEquals(listOf(0 to 1), moves)
         assertEquals(1, moveEnds)
@@ -175,5 +173,81 @@ class FavoriteAppsListTest {
         composeTestRule.onAllNodes(SemanticsMatcher.keyIsDefined(SemanticsActions.CustomActions)).assertCountEquals(0)
         composeTestRule.onNodeWithContentDescription("Remove from favorites").performClick()
         assertEquals(listOf("com.example.uno"), toggled)
+    }
+
+    private fun setSection(favorites: List<AppInfo>, searchQuery: String = "", favoritesCount: Int = favorites.size) {
+        composeTestRule.setContent {
+            AureoleLauncherTheme {
+                LazyColumn {
+                    favoriteSectionItems(
+                        params = FavoriteSectionParams(
+                            filteredFavorites = favorites,
+                            searchQuery = searchQuery,
+                            favoritesCount = favoritesCount,
+                            allAppsCount = 34
+                        ),
+                        actions = noActions
+                    )
+                }
+            }
+        }
+    }
+
+    @Test
+    fun `with two favorites, should show the drag hint, the numbers and one handle per row`() {
+        setSection(listOf(createApp("Uno", "com.example.uno"), createApp("Dos", "com.example.dos")))
+
+        composeTestRule.onNodeWithText("Hold and drag the button to reorder").assertIsDisplayed()
+        composeTestRule.onNodeWithText("1").assertIsDisplayed()
+        composeTestRule.onNodeWithText("2").assertIsDisplayed()
+        composeTestRule.onAllNodesWithContentDescription("Reorder").assertCountEquals(2)
+        composeTestRule.onNodeWithText("Remove all").assertIsDisplayed()
+    }
+
+    @Test
+    fun `with one favorite, should not show the drag hint`() {
+        setSection(listOf(createApp("Uno", "com.example.uno")))
+
+        composeTestRule.onNodeWithText("Hold and drag the button to reorder").assertDoesNotExist()
+        composeTestRule.onNodeWithText("1").assertIsDisplayed()
+    }
+
+    @Test
+    fun `while searching, should not show the drag hint nor the handles`() {
+        setSection(listOf(createApp("Uno", "com.example.uno")), searchQuery = "un", favoritesCount = 3)
+
+        composeTestRule.onNodeWithText("Hold and drag the button to reorder").assertDoesNotExist()
+        composeTestRule.onAllNodesWithContentDescription("Reorder").assertCountEquals(0)
+    }
+
+    @Test
+    fun `without favorites, should show the banner with the number of apps and hide Remove all`() {
+        setSection(emptyList())
+
+        composeTestRule.onNodeWithText("No favorites: the Home shows all 34 apps. Tap + to pick only some.")
+            .assertIsDisplayed()
+        composeTestRule.onNodeWithText("Remove all").assertDoesNotExist()
+    }
+
+    @Test
+    fun `when Remove all is tapped, should report it`() {
+        var removed = 0
+        composeTestRule.setContent {
+            AureoleLauncherTheme {
+                LazyColumn {
+                    favoriteSectionItems(
+                        params = FavoriteSectionParams(
+                            filteredFavorites = listOf(createApp("Uno", "com.example.uno")),
+                            searchQuery = ""
+                        ),
+                        actions = noActions.copy(onRemoveAll = { removed++ })
+                    )
+                }
+            }
+        }
+
+        composeTestRule.onNodeWithText("Remove all").performClick()
+
+        assertEquals(1, removed)
     }
 }

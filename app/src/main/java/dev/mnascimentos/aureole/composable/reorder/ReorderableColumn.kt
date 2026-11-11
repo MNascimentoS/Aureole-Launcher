@@ -59,7 +59,14 @@ fun <T> ReorderableColumn(
         params.items.forEachIndexed { index, item ->
             key(keys[index]) {
                 ReorderableSlot(
-                    slot = ReorderSlotParams(keys[index], index, keys, ReorderOrientation.Vertical, spacingPx),
+                    slot = ReorderSlotParams(
+                        keys[index],
+                        index,
+                        keys,
+                        ReorderOrientation.Vertical,
+                        spacingPx,
+                        params.dragHandleOnly
+                    ),
                     state = state,
                     actions = params.actions,
                     modifier = Modifier.fillMaxWidth()

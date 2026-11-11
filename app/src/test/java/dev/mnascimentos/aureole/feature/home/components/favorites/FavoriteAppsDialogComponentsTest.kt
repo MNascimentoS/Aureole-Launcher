@@ -73,7 +73,7 @@ class FavoriteAppsDialogComponentsTest {
         }
 
         composeTestRule.onNodeWithText("Outro App").assertIsDisplayed()
-        composeTestRule.onNodeWithContentDescription("Plus").performClick()
+        composeTestRule.onNodeWithText("Outro App").performClick()
         assertTrue(toggled)
     }
 }

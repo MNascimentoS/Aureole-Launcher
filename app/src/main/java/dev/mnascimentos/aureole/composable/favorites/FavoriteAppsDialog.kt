@@ -72,7 +72,6 @@ fun FavoriteAppsDialog(
         FavoriteAppsScreenMode.MAIN -> stringResource(R.string.home_favorites_dialog_title)
         FavoriteAppsScreenMode.MANAGE -> stringResource(R.string.home_favorites_manage_apps_order)
         FavoriteAppsScreenMode.EDIT_SHORTCUTS -> stringResource(R.string.home_favorites_edit_shortcuts)
-        FavoriteAppsScreenMode.APPEARANCE -> stringResource(R.string.home_container_edit_appearance)
     }
 
     AureoleEditOverlay(

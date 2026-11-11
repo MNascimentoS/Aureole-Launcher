@@ -1,6 +1,8 @@
 package dev.mnascimentos.aureole.composable.reorder.model
 
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.runtime.compositionLocalOf
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
@@ -23,6 +25,8 @@ data class ReorderableParams<T>(
     val actions: ReorderableActions,
     val spacing: Dp = 0.dp,
     val contentPadding: PaddingValues = PaddingValues(),
+    /** Only a drag handle placed by the item (see [LocalReorderHandle]) starts the drag, not the whole item. */
+    val dragHandleOnly: Boolean = false,
 )
 
 /** One swap reported while dragging: the item at [from] now sits at [to]. */
@@ -38,4 +42,14 @@ data class ReorderSlotParams(
     val keys: List<Any>,
     val orientation: ReorderOrientation,
     val spacingPx: Float,
+    val handleOnly: Boolean = false,
 )
+
+/**
+ * What an item of a list with [ReorderableParams.dragHandleOnly] needs to draw its handle: the [gestureModifier] that
+ * starts the drag (hold, then drag) and whether this item is [isDragging] now.
+ */
+data class ReorderHandle(val gestureModifier: Modifier = Modifier, val isDragging: Boolean = false)
+
+/** The [ReorderHandle] of the item being composed; the default one does nothing. */
+val LocalReorderHandle = compositionLocalOf { ReorderHandle() }

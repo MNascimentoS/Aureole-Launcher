@@ -77,25 +77,9 @@ class FavoriteAppsDialogSectionsTest {
             mutableListOf()
         )
 
-        composeTestRule.onNodeWithText("Show all apps on Home").assertIsDisplayed()
         composeTestRule.onNodeWithText("Edit shortcuts").assertIsDisplayed()
-        composeTestRule.onNodeWithText("Apps display on Home").assertIsDisplayed()
         composeTestRule.onNodeWithText("Manage apps and order").assertIsDisplayed()
-        composeTestRule.onNodeWithText("3 favorites").assertIsDisplayed()
-    }
-
-    @Test
-    fun `when tapping the switch row, should toggle show all apps on Home`() {
-        var toggled = 0
-        setMainContent(
-            FavoriteAppsDialogConfig(allApps = emptyList(), favoriteAppPackages = emptyList()),
-            FavoriteAppsDialogActions(onToggleShowAllAppsOnHome = { toggled++ }),
-            mutableListOf()
-        )
-
-        composeTestRule.onNodeWithText("Show all apps on Home").performClick()
-
-        assertEquals(1, toggled)
+        composeTestRule.onNodeWithText("3 favorites, the rest stay hidden").assertIsDisplayed()
     }
 
     @Test
@@ -126,27 +110,13 @@ class FavoriteAppsDialogSectionsTest {
         assertEquals(listOf(FavoriteAppsScreenMode.EDIT_SHORTCUTS), modes)
     }
 
-    @Test
-    fun `when tapping Appearance, should open the APPEARANCE sub-screen`() {
-        val modes = mutableListOf<FavoriteAppsScreenMode>()
-        setMainContent(
-            FavoriteAppsDialogConfig(allApps = emptyList(), favoriteAppPackages = emptyList()),
-            FavoriteAppsDialogActions(),
-            modes
-        )
-
-        composeTestRule.onNodeWithText("Appearance").performClick()
-
-        assertEquals(listOf(FavoriteAppsScreenMode.APPEARANCE), modes)
-    }
-
-    private fun setSubScreen(mode: FavoriteAppsScreenMode, toggles: MutableList<Unit> = mutableListOf()) {
+    private fun setSubScreen(mode: FavoriteAppsScreenMode) {
         composeTestRule.setContent {
             AureoleLauncherTheme {
                 FavoriteAppsSheetContent(
                     currentMode = mode,
                     config = FavoriteAppsDialogConfig(allApps = emptyList(), favoriteAppPackages = emptyList()),
-                    actions = FavoriteAppsDialogActions(onToggleShowAllAppsOnHome = { toggles += Unit }),
+                    actions = FavoriteAppsDialogActions(),
                     onModeChange = {}
                 )
             }
@@ -154,14 +124,27 @@ class FavoriteAppsDialogSectionsTest {
     }
 
     @Test
-    fun `the APPEARANCE sub-screen shows the switch and toggles show all apps`() {
-        val toggles = mutableListOf<Unit>()
-        setSubScreen(FavoriteAppsScreenMode.APPEARANCE, toggles)
+    fun `the main menu with no favorites says the Home shows all apps and has no switch nor Appearance row`() {
+        setMainContent(
+            FavoriteAppsDialogConfig(allApps = emptyList(), favoriteAppPackages = emptyList()),
+            FavoriteAppsDialogActions(),
+            mutableListOf()
+        )
 
-        composeTestRule.onNodeWithText("Show all apps on Home").performClick()
+        composeTestRule.onNodeWithText("No favorites: shows all apps").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Show all apps on Home").assertDoesNotExist()
+        composeTestRule.onNodeWithText("Appearance").assertDoesNotExist()
+    }
 
-        assertEquals(1, toggles.size)
-        composeTestRule.onNodeWithText("Edit shortcuts").assertDoesNotExist()
+    @Test
+    fun `the main menu with one favorite uses the singular subtitle`() {
+        setMainContent(
+            FavoriteAppsDialogConfig(allApps = emptyList(), favoriteAppPackages = listOf("a")),
+            FavoriteAppsDialogActions(),
+            mutableListOf()
+        )
+
+        composeTestRule.onNodeWithText("1 favorite, the rest stays hidden").assertIsDisplayed()
     }
 
     @Test
@@ -175,7 +158,6 @@ class FavoriteAppsDialogSectionsTest {
     @Test
     fun `the sub-screens go back to the menu`() {
         assertEquals(FavoriteAppsScreenMode.MAIN, FavoriteAppsScreenMode.EDIT_SHORTCUTS.backTarget())
-        assertEquals(FavoriteAppsScreenMode.MAIN, FavoriteAppsScreenMode.APPEARANCE.backTarget())
     }
 
     @Test

@@ -100,7 +100,6 @@ private fun applyTogglesAndDialogs(viewModel: SettingsViewModel, base: SettingsS
 
 private fun applyToggleActions(viewModel: SettingsViewModel, base: SettingsScreenActions): SettingsScreenActions {
     return base.copy(
-        onToggleShowAllAppsOnHome = { viewModel.toggleSetting(SettingToggle.SHOW_ALL_APPS_ON_HOME) },
         onToggleHomeButtonOpensAllApps = { viewModel.toggleSetting(SettingToggle.HOME_OPENS_ALL_APPS) },
         onToggleWidgetRow = { viewModel.toggleSetting(SettingToggle.WIDGET_ROW) },
         onToggleShowWidgetDots = { viewModel.toggleSetting(SettingToggle.SHOW_WIDGET_DOTS) },

@@ -50,7 +50,6 @@ data class MainUiState(
     val containerPosition: String = "Center",
     val showFolderLabels: Boolean = false,
     val homeButtonOpensAllApps: Boolean = true,
-    val showAllAppsOnHome: Boolean = true,
     val isCustomWallpaperSet: Boolean = false,
     val customWallpaperPath: String? = null,
     val wallpaperScaleType: String = "Crop",

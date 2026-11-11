@@ -246,8 +246,7 @@ internal fun createSampleHomeData(): SampleHomeData {
         isLoading = false,
         isHazeEnabled = false,
         isContainerEnabled = true,
-        showFolderLabels = true,
-        showAllAppsOnHome = true
+        showFolderLabels = true
     )
 
     val actions = HomeScreenActions(

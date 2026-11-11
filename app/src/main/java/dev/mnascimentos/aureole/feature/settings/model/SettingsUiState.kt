@@ -26,7 +26,6 @@ data class SettingsUiState(
     val containerPosition: String = "Space Between",
     val showFolderLabels: Boolean = false,
     val homeButtonOpensAllApps: Boolean = true,
-    val showAllAppsOnHome: Boolean = true,
     val isWidgetRowEnabled: Boolean = true,
     val showWidgetDots: Boolean = true,
     val favoriteAppPackages: List<String> = emptyList(),

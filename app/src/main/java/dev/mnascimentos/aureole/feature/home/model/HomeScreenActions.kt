@@ -29,7 +29,6 @@ data class HomeScreenActions(
     val onToggleFavorite: (String) -> Unit = {},
     val onToggleFavoriteWithContainer: (String, String?) -> Unit = { _, _ -> },
     val onUpdateFavoritePackages: (String?, List<String>) -> Unit = { _, _ -> },
-    val onToggleShowAllAppsOnHome: () -> Unit = {},
     val onAppInfoClick: (AppInfo) -> Unit = {},
     val onUninstallAppClick: (AppInfo) -> Unit = {},
     val onOpenFavoritePicker: (String?) -> Unit = {},

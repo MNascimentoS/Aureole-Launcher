@@ -67,7 +67,6 @@ class SettingsViewModel(
                 containerPosition = settingsRepository.containerPosition,
                 showFolderLabels = settingsRepository.showFolderLabels,
                 homeButtonOpensAllApps = settingsRepository.homeButtonOpensAllApps,
-                showAllAppsOnHome = settingsRepository.showAllAppsOnHome,
                 isWidgetRowEnabled = settingsRepository.isWidgetRowEnabled,
                 showWidgetDots = settingsRepository.showWidgetDots,
                 favoriteAppPackages = settingsRepository.favoriteAppPackages,

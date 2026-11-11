@@ -52,6 +52,23 @@ class FavoriteContainerRepository(
         favoriteContainerDao.updateContainerItems(containerId, packageNames)
     }
 
+    /**
+     * The removed "show all apps on Home" switch was on: an empty favorites list now means "show all", so the saved
+     * favorites (the legacy list and every container's) are cleared once to keep what the user saw.
+     */
+    suspend fun migrateLegacyShowAllApps() {
+        if (!settingsRepository.consumeLegacyShowAllApps()) return
+        settingsRepository.favoriteAppPackages = emptyList()
+        clearAllFavorites()
+    }
+
+    /** Empties the favorites of every container (an empty list shows all apps). */
+    suspend fun clearAllFavorites() = withContext(Dispatchers.IO) {
+        favoriteContainerDao.getAllFavoriteContainers().forEach { container ->
+            favoriteContainerDao.updateContainerItems(container.id, emptyList())
+        }
+    }
+
     suspend fun deleteContainer(containerId: String) = withContext(Dispatchers.IO) {
         favoriteContainerDao.deleteFavoriteContainer(containerId)
     }

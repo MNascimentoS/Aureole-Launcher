@@ -4,7 +4,7 @@ import dev.mnascimentos.aureole.composable.appitem.model.AppItemRowConfig
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 
 enum class FavoriteAppsScreenMode {
-    MAIN, MANAGE, EDIT_SHORTCUTS, APPEARANCE
+    MAIN, MANAGE, EDIT_SHORTCUTS
 }
 
 /** Where the back key goes from this screen: the main one from any sub-screen, or null (close) from the main one. */
@@ -17,15 +17,12 @@ data class FavoriteAppsDialogConfig(
     val containerId: String? = null,
     val rowConfig: AppItemRowConfig = AppItemRowConfig(),
     /** The apps have not arrived yet: the list shows its skeleton. */
-    val isLoading: Boolean = false,
-    /** Whether the Home lists every app (on) or only the favorites (off). */
-    val showAllAppsOnHome: Boolean = true
+    val isLoading: Boolean = false
 )
 
 data class FavoriteAppsDialogActions(
     val onToggleFavorite: (String) -> Unit = {},
     val onUpdateFavoritePackages: (String?, List<String>) -> Unit = { _, _ -> },
-    val onToggleShowAllAppsOnHome: () -> Unit = {},
     val onSettingsClick: (() -> Unit)? = null,
     val onDismiss: () -> Unit = {}
 )
@@ -33,7 +30,11 @@ data class FavoriteAppsDialogActions(
 /** Favorites shown in the manage list; they can only be reordered while [searchQuery] is blank. */
 data class FavoriteSectionParams(
     val filteredFavorites: List<AppInfo>,
-    val searchQuery: String
+    val searchQuery: String,
+    /** Favorites before the search filter; the drag hint needs two, the empty banner none. */
+    val favoritesCount: Int = filteredFavorites.size,
+    /** Apps the Home lists while there are no favorites. */
+    val allAppsCount: Int = 0
 )
 
 /**
@@ -44,7 +45,7 @@ data class FavoriteSectionActions(
     val onMove: (from: Int, to: Int) -> Unit,
     val onMoveEnd: () -> Unit,
     val onToggleFavorite: (String) -> Unit,
-    val onDeactivateAll: () -> Unit
+    val onRemoveAll: () -> Unit
 )
 
 data class FavoriteAppsBodyParams(

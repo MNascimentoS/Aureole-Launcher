@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -47,7 +48,9 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.round
 import androidx.compose.ui.zIndex
 import dev.mnascimentos.aureole.R
+import dev.mnascimentos.aureole.composable.reorder.model.LocalReorderHandle
 import dev.mnascimentos.aureole.composable.reorder.model.ReorderDragState
+import dev.mnascimentos.aureole.composable.reorder.model.ReorderHandle
 import dev.mnascimentos.aureole.composable.reorder.model.ReorderOrientation
 import dev.mnascimentos.aureole.composable.reorder.model.ReorderSlotParams
 import dev.mnascimentos.aureole.composable.reorder.model.ReorderableActions
@@ -66,7 +69,8 @@ private const val DRAGGED_ELEVATION = 16f
 private const val DRAGGED_Z_INDEX = 1f
 
 /**
- * One item of [ReorderableRow] or [ReorderableColumn]: long-press then drag to move it, a tick at every swap,
+ * One item of [ReorderableRow] or [ReorderableColumn]: long-press then drag (the item, or only its handle when
+ * [ReorderSlotParams.handleOnly]) to move it, a tick at every swap,
  * neighbours sliding to their new place, the optional ✕ badge in the top end corner and the accessibility actions
  * "move" and "remove".
  */
@@ -82,6 +86,7 @@ internal fun ReorderableSlot(
     val isActive = state.activeKey == slot.key
     val scale by animateFloatAsState(if (isActive && state.isDragging) DRAGGED_SCALE else 1f, label = "reorderScale")
     val onRemove = actions.onRemove
+    val gestures = rememberReorderGestures(slot, state, actions, isRtl)
     Box(
         modifier = modifier
             .zIndex(if (isActive) DRAGGED_Z_INDEX else 0f)
@@ -101,10 +106,15 @@ internal fun ReorderableSlot(
                 scaleY = scale
                 shadowElevation = if (isActive) DRAGGED_ELEVATION * (scale - 1f) / (DRAGGED_SCALE - 1f) else 0f
             }
-            .then(rememberReorderGestures(slot, state, actions, isRtl))
+            .then(if (slot.handleOnly) Modifier else gestures)
             .then(reorderSemantics(slot, actions, isRtl))
     ) {
-        content()
+        if (slot.handleOnly) {
+            val handle = ReorderHandle(gestures, isActive && state.isDragging)
+            CompositionLocalProvider(LocalReorderHandle provides handle) { content() }
+        } else {
+            content()
+        }
         if (onRemove != null && !isActive) {
             val overhang = reorderBadgeOverhang()
             RemoveBadge(

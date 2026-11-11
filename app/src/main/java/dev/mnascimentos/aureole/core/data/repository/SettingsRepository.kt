@@ -118,9 +118,16 @@ class SettingsRepository(private val context: Context) {
         get() = prefs.getBoolean(KEY_HOME_OPENS_ALL_APPS, true)
         set(value) = prefs.edit { putBoolean(KEY_HOME_OPENS_ALL_APPS, value) }
 
-    var showAllAppsOnHome: Boolean
-        get() = prefs.getBoolean(KEY_SHOW_ALL_APPS_ON_HOME, true)
-        set(value) = prefs.edit { putBoolean(KEY_SHOW_ALL_APPS_ON_HOME, value) }
+    /**
+     * Migration of the removed "show all apps on Home" switch: true once, when the user had turned it on, so the
+     * caller clears the saved favorites (an empty favorites list now means "show all"). The old key is deleted, so
+     * later calls return false. A switch that was never saved keeps the favorites: the Home never listed all apps.
+     */
+    fun consumeLegacyShowAllApps(): Boolean {
+        val wasOn = prefs.getBoolean(KEY_LEGACY_SHOW_ALL_APPS_ON_HOME, false)
+        if (prefs.contains(KEY_LEGACY_SHOW_ALL_APPS_ON_HOME)) prefs.edit { remove(KEY_LEGACY_SHOW_ALL_APPS_ON_HOME) }
+        return wasOn
+    }
 
     var isWidgetRowEnabled: Boolean
         get() = prefs.getBoolean(KEY_WIDGET_ROW_ENABLED, true)
@@ -346,7 +353,7 @@ class SettingsRepository(private val context: Context) {
         private const val KEY_SHOW_FOLDER_LABELS = "show_folder_labels"
         private const val KEY_FAVORITE_APPS = "favorite_apps"
         private const val KEY_HOME_OPENS_ALL_APPS = "home_opens_all_apps"
-        private const val KEY_SHOW_ALL_APPS_ON_HOME = "show_all_apps_on_home"
+        private const val KEY_LEGACY_SHOW_ALL_APPS_ON_HOME = "show_all_apps_on_home"
         private const val KEY_WIDGET_ROW_ENABLED = "widget_row_enabled"
         private const val KEY_IS_CUSTOM_WALLPAPER_SET = "is_custom_wallpaper_set"
         private const val KEY_CUSTOM_WALLPAPER_PATH = "custom_wallpaper_path"

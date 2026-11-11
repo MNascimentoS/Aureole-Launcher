@@ -40,7 +40,7 @@ private fun FavoritesMenuDialogCase(isLeftHanded: Boolean) {
     }
 }
 
-/** Favorites main menu: preview label, switch, three rows and the full-width Done button. */
+/** Favorites main menu: two rows and the full-width Done button. */
 @PreviewTest
 @AureolePreview
 @Composable
@@ -52,7 +52,7 @@ private fun FavoriteAppsMenuRightHandedScreenshotTest() = FavoritesMenuDialogCas
 private fun FavoriteAppsMenuLeftHandedScreenshotTest() = FavoritesMenuDialogCase(isLeftHanded = true)
 
 @Composable
-private fun FavoritesMainContentCase(isLeftHanded: Boolean, showAll: Boolean) {
+private fun FavoritesMainContentCase(isLeftHanded: Boolean, favoriteCount: Int) {
     CompositionLocalProvider(
         LocalHomeUiState provides createSampleHomeData().uiState.copy(isLeftHandedMode = isLeftHanded)
     ) {
@@ -66,10 +66,8 @@ private fun FavoritesMainContentCase(isLeftHanded: Boolean, showAll: Boolean) {
                 FavoriteAppsMainContent(
                     config = FavoriteAppsDialogConfig(
                         allApps = emptyList(),
-                        favoriteAppPackages = listOf("a", "b", "c", "d", "e"),
-                        showAllAppsOnHome = showAll
+                        favoriteAppPackages = listOf("a", "b", "c", "d", "e").take(favoriteCount)
                     ),
-                    actions = FavoriteAppsDialogActions(),
                     onModeChange = {}
                 )
             }
@@ -81,13 +79,13 @@ private fun FavoritesMainContentCase(isLeftHanded: Boolean, showAll: Boolean) {
 @AureolePreview
 @Composable
 private fun FavoriteAppsMainContentRightHandedScreenshotTest() =
-    FavoritesMainContentCase(isLeftHanded = false, showAll = true)
+    FavoritesMainContentCase(isLeftHanded = false, favoriteCount = 5)
 
 @PreviewTest
 @AureolePreview
 @Composable
-private fun FavoriteAppsMainContentLeftHandedOffScreenshotTest() =
-    FavoritesMainContentCase(isLeftHanded = true, showAll = false)
+private fun FavoriteAppsMainContentLeftHandedNoFavoritesScreenshotTest() =
+    FavoritesMainContentCase(isLeftHanded = true, favoriteCount = 0)
 
 @Composable
 private fun FavoritesSubScreenCase(mode: FavoriteAppsScreenMode, isLeftHanded: Boolean) {
@@ -114,13 +112,6 @@ private fun FavoritesSubScreenCase(mode: FavoriteAppsScreenMode, isLeftHanded: B
         }
     }
 }
-
-/** The "Appearance" sub-screen opened from the menu: the show-all-apps switch. */
-@PreviewTest
-@AureolePreview
-@Composable
-private fun FavoriteAppsAppearanceSubScreenScreenshotTest() =
-    FavoritesSubScreenCase(mode = FavoriteAppsScreenMode.APPEARANCE, isLeftHanded = false)
 
 /** The "Edit shortcuts" sub-screen opened from the menu: the shortcut list. */
 @PreviewTest

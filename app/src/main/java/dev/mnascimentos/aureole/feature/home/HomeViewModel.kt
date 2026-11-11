@@ -101,6 +101,7 @@ class HomeViewModel(
 
     fun loadSettings() {
         viewModelScope.launch {
+            favoriteContainerRepository.migrateLegacyShowAllApps()
             val containerFavsMap = favoriteContainerRepository.getAllContainerFavorites()
             val savedFolders = folderRepository.getFolders()
             _uiState.update {
@@ -122,7 +123,6 @@ class HomeViewModel(
                     containerPosition = settingsRepository.containerPosition,
                     showFolderLabels = settingsRepository.showFolderLabels,
                     homeButtonOpensAllApps = settingsRepository.homeButtonOpensAllApps,
-                    showAllAppsOnHome = settingsRepository.showAllAppsOnHome,
                     isWidgetRowEnabled = settingsRepository.isWidgetRowEnabled,
                     showWidgetDots = settingsRepository.showWidgetDots,
                     favoriteAppPackages = settingsRepository.favoriteAppPackages,

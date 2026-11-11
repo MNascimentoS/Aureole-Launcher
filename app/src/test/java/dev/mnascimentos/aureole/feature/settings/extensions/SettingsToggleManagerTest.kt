@@ -117,14 +117,6 @@ class SettingsToggleManagerTest {
     }
 
     @Test
-    fun `toggle SHOW_ALL_APPS_ON_HOME should flip showAllAppsOnHome state`() {
-        val initial = viewModel.uiState.value.showAllAppsOnHome
-        SettingsToggleManager.toggleSetting(viewModel, SettingToggle.SHOW_ALL_APPS_ON_HOME)
-        assertEquals(!initial, viewModel.uiState.value.showAllAppsOnHome)
-        assertEquals(!initial, settingsRepository.showAllAppsOnHome)
-    }
-
-    @Test
     fun `toggle WIDGET_ROW should flip isWidgetRowEnabled state`() {
         val initial = viewModel.uiState.value.isWidgetRowEnabled
         SettingsToggleManager.toggleSetting(viewModel, SettingToggle.WIDGET_ROW)

@@ -146,6 +146,12 @@ fun AureoleIcons.Dots(
 ) { AureoleIcon(R.drawable.ic_aureole_dots, modifier, tint) }
 
 @Composable
+fun AureoleIcons.DragHandle(
+    modifier: Modifier = Modifier,
+    tint: Color? = null
+) { AureoleIcon(R.drawable.ic_aureole_drag_handle, modifier, tint) }
+
+@Composable
 fun AureoleIcons.DragMenu(
     modifier: Modifier = Modifier,
     tint: Color? = null

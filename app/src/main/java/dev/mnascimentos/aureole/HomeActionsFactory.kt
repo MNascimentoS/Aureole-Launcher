@@ -71,7 +71,6 @@ import dev.mnascimentos.aureole.feature.home.extensions.onUndo
 import dev.mnascimentos.aureole.feature.home.extensions.onUndoExpired
 import dev.mnascimentos.aureole.feature.home.extensions.setAllAppsDrawerOpen
 import dev.mnascimentos.aureole.feature.home.extensions.setShowCustomizeBottomSheet
-import dev.mnascimentos.aureole.feature.home.extensions.toggleShowAllAppsOnHome
 import dev.mnascimentos.aureole.feature.home.grid.extensions.addGridItem
 import dev.mnascimentos.aureole.feature.home.grid.extensions.cancelGridEditMode
 import dev.mnascimentos.aureole.feature.home.grid.extensions.deleteGridItem
@@ -136,7 +135,6 @@ class HomeActionsFactory(
             onToggleFavorite = { pkg -> viewModel.toggleFavorite(pkg) },
             onToggleFavoriteWithContainer = { pkg, containerId -> viewModel.toggleFavorite(pkg, containerId) },
             onUpdateFavoritePackages = { containerId, pkgs -> handleUpdateFavoritePackages(containerId, pkgs) },
-            onToggleShowAllAppsOnHome = { viewModel.toggleShowAllAppsOnHome() },
             onAppInfoClick = { app -> IntentUtils.openAppInfo(context, app.packageName) },
             onUninstallAppClick = { app -> IntentUtils.uninstallApp(context, app.packageName) },
             onOpenFavoritePicker = { containerId -> viewModel.setShowFavoritePicker(true, containerId) },

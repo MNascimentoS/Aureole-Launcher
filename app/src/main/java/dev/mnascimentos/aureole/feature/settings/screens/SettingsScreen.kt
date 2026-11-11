@@ -118,12 +118,10 @@ private fun SettingsDialogsPrimary(
         FavoriteAppsDialog(
             config = FavoriteAppsDialogConfig(
                 allApps = uiState.allApps,
-                favoriteAppPackages = uiState.favoriteAppPackages,
-                showAllAppsOnHome = uiState.showAllAppsOnHome
+                favoriteAppPackages = uiState.favoriteAppPackages
             ),
             actions = FavoriteAppsDialogActions(
                 onToggleFavorite = actions.onToggleFavorite,
-                onToggleShowAllAppsOnHome = actions.onToggleShowAllAppsOnHome,
                 onDismiss = actions.onDismissFavoritePickerDialog
             )
         )

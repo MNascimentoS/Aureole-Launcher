@@ -55,14 +55,9 @@ internal fun FavoriteAppsSheetContent(
     onModeChange: (FavoriteAppsScreenMode) -> Unit
 ) {
     when (currentMode) {
-        FavoriteAppsScreenMode.MAIN -> FavoriteAppsMainContent(
-            config = config,
-            actions = actions,
-            onModeChange = onModeChange
-        )
+        FavoriteAppsScreenMode.MAIN -> FavoriteAppsMainContent(config = config, onModeChange = onModeChange)
         FavoriteAppsScreenMode.MANAGE,
         FavoriteAppsScreenMode.EDIT_SHORTCUTS -> FavoriteAppsDialogContent(config = config, actions = actions)
-        FavoriteAppsScreenMode.APPEARANCE -> FavoriteAppsAppearanceContent(config = config, actions = actions)
     }
 }
 
@@ -134,13 +129,7 @@ private fun FavoriteAppsDialogBody(
         if (order != config.favoriteAppPackages) actions.onUpdateFavoritePackages(config.containerId, order)
     }
 
-    val handleActivateAll = {
-        val toAdd = params.filteredRemaining.map { it.packageName }
-        val newFavs = (config.favoriteAppPackages + toAdd).distinct()
-        actions.onUpdateFavoritePackages(config.containerId, newFavs)
-    }
-
-    val handleDeactivateAll = {
+    val handleRemoveAll = {
         val toRemove = params.filteredFavorites.map { it.packageName }.toSet()
         val newFavs = config.favoriteAppPackages.filter { it !in toRemove }
         actions.onUpdateFavoritePackages(config.containerId, newFavs)
@@ -166,9 +155,8 @@ private fun FavoriteAppsDialogBody(
                     onMove = { from, to -> draftFavorites = move(draftFavorites, from, to) },
                     onMoveEnd = handleMoveEnd,
                     onToggleFavorite = { pkg -> actions.onToggleFavorite(pkg) },
-                    onDeactivateAll = handleDeactivateAll
+                    onRemoveAll = handleRemoveAll
                 ),
-                onActivateAll = handleActivateAll,
                 modifier = Modifier.weight(1f)
             )
         }
@@ -183,7 +171,6 @@ private fun FavoriteAppsDialogBody(
 private fun FavoriteAppsSections(
     params: FavoriteAppsBodyParams,
     actions: FavoriteSectionActions,
-    onActivateAll: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     LazyColumn(
@@ -193,15 +180,16 @@ private fun FavoriteAppsSections(
         favoriteSectionItems(
             params = FavoriteSectionParams(
                 filteredFavorites = params.filteredFavorites,
-                searchQuery = params.searchQuery
+                searchQuery = params.searchQuery,
+                favoritesCount = params.config.favoriteAppPackages.size,
+                allAppsCount = params.config.allApps.size
             ),
             actions = actions
         )
         remainingSectionItems(
             filteredRemaining = params.filteredRemaining,
             searchQuery = params.searchQuery,
-            onToggleFavorite = actions.onToggleFavorite,
-            onActivateAll = onActivateAll
+            onToggleFavorite = actions.onToggleFavorite
         )
     }
 }
