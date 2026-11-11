@@ -11,10 +11,12 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -24,6 +26,7 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.selected
 import androidx.compose.ui.semantics.semantics
 import dev.mnascimentos.aureole.composable.dialogs.model.FOLDER_ICON_COLUMNS
+import dev.mnascimentos.aureole.composable.dialogs.model.FOLDER_ICON_VISIBLE_ROWS
 import dev.mnascimentos.aureole.composable.dialogs.model.FolderIconPickerActions
 import dev.mnascimentos.aureole.composable.dialogs.model.FolderIconPickerState
 import dev.mnascimentos.aureole.composable.dialogs.model.folderIconRows
@@ -54,17 +57,31 @@ fun FolderIconGrid(
             verticalArrangement = Arrangement.spacedBy(AureoleDS.dimens.xSmall)
         ) {
             FolderCategoryChips(category = state.category, onCategorySelected = actions.onCategorySelected)
-            folderIconRows(state.category).forEach { row ->
-                Row(horizontalArrangement = Arrangement.spacedBy(AureoleDS.dimens.xSmall)) {
-                    row.forEach { iconKey ->
-                        IconTile(
-                            icon = iconKey,
-                            isSelected = isFolderIconSelected(iconKey, state.selectedIcon),
-                            onClick = { actions.onIconSelected(iconKey) }
-                        )
-                    }
-                    repeat(FOLDER_ICON_COLUMNS - row.size) { EmptyTile() }
+            FolderIconRows(state = state, actions = actions)
+        }
+    }
+}
+
+/** The icons of the category: capped at [FOLDER_ICON_VISIBLE_ROWS] rows and scrolling on their own beyond that. */
+@Composable
+private fun FolderIconRows(state: FolderIconPickerState, actions: FolderIconPickerActions) {
+    val gap = AureoleDS.dimens.xSmall
+    Column(
+        modifier = Modifier
+            .heightIn(max = AureoleDS.dimens.iconXLarge * FOLDER_ICON_VISIBLE_ROWS + gap * 2)
+            .verticalScroll(rememberScrollState()),
+        verticalArrangement = Arrangement.spacedBy(gap)
+    ) {
+        folderIconRows(state.category).forEach { row ->
+            Row(horizontalArrangement = Arrangement.spacedBy(gap)) {
+                row.forEach { iconKey ->
+                    IconTile(
+                        icon = iconKey,
+                        isSelected = isFolderIconSelected(iconKey, state.selectedIcon),
+                        onClick = { actions.onIconSelected(iconKey) }
+                    )
                 }
+                repeat(FOLDER_ICON_COLUMNS - row.size) { EmptyTile() }
             }
         }
     }
@@ -98,7 +115,7 @@ private fun CategoryChip(label: String, isSelected: Boolean, onClick: () -> Unit
             .background(if (isSelected) AureoleDS.colors.onSurfaceHigh else AureoleDS.colors.surfaceVariant)
             .clickable(role = Role.RadioButton, onClick = onClick)
             .semantics { this.selected = isSelected }
-            .padding(horizontal = AureoleDS.dimens.small, vertical = AureoleDS.dimens.xSmall),
+            .padding(horizontal = AureoleDS.dimens.small, vertical = AureoleDS.dimens.xxSmall),
         contentAlignment = Alignment.Center
     ) {
         AureoleText(

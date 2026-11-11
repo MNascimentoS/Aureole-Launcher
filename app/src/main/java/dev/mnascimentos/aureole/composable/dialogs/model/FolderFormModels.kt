@@ -15,6 +15,9 @@ object FolderButtonMetrics {
 /** Columns of the folder icon grid. */
 const val FOLDER_ICON_COLUMNS = 5
 
+/** Rows of icons visible at once (the half row hints that the grid scrolls); the grid scrolls inside itself. */
+const val FOLDER_ICON_VISIBLE_ROWS = 2.5f
+
 data class FolderFormConfig(
     val initialName: String,
     val initialIcon: String?,

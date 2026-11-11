@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -13,7 +14,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.LayoutDirection
 import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.composable.color.AureoleColorSwatches
 import dev.mnascimentos.aureole.composable.color.model.DefaultPickerColor
@@ -94,7 +97,10 @@ fun SetBackgroundBottomSheet(
 @Composable
 private fun BackgroundPreview(draft: BackgroundDraft, modifier: Modifier = Modifier) {
     val fill = if (draft.type == BackgroundType.SOLID_COLOR) Color(draft.color) else null
-    AureoleMiniHome(content = sampleMiniHomeContent(), modifier = modifier, backgroundColor = fill)
+    // Same preview for both hands: a mirrored layout direction must not move the favorites.
+    CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
+        AureoleMiniHome(content = sampleMiniHomeContent(), modifier = modifier, backgroundColor = fill)
+    }
 }
 
 @Composable

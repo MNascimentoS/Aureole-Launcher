@@ -5,11 +5,13 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.v2.createComposeRule
+import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollTo
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.data.model.QuickButtonAppearance
+import dev.mnascimentos.aureole.core.data.model.QuickButtonIcon
 import dev.mnascimentos.aureole.core.data.model.QuickButtonModel
 import dev.mnascimentos.aureole.core.data.model.QuickButtonShortcuts
 import dev.mnascimentos.aureole.core.data.model.ShortcutAction
@@ -66,54 +68,7 @@ class QuickButtonAppearanceBottomSheetTest {
 
         // Assert
         composeTestRule.onNodeWithText("Quick button").assertIsDisplayed()
-        composeTestRule.onNodeWithText("Background color").assertIsDisplayed()
-    }
-
-    @Test
-    fun `when background color row is clicked, should show color picker dialog`() {
-        // Arrange
-        val uiState = MainUiState(
-            activeQuickButtonModel = QuickButtonModel(),
-            isHazeEnabled = false
-        )
-
-        // Act
-        composeTestRule.setContent {
-            AureoleLauncherTheme {
-                QuickButtonAppearanceBottomSheet(
-                    uiState = uiState,
-                    actions = createDefaultHomeScreenActions(),
-                    onDismissRequest = {}
-                )
-            }
-        }
-
-        // Assert
-        composeTestRule.onNodeWithText("Background color").performClick()
-        composeTestRule.onNodeWithText("Choose Primary Color").assertIsDisplayed()
-    }
-
-    @Test
-    fun `when icon row is clicked, should show icon picker dialog`() {
-        // Arrange
-        val uiState = MainUiState(
-            activeQuickButtonModel = QuickButtonModel()
-        )
-
-        // Act
-        composeTestRule.setContent {
-            AureoleLauncherTheme {
-                QuickButtonAppearanceBottomSheet(
-                    uiState = uiState,
-                    actions = createDefaultHomeScreenActions(),
-                    onDismissRequest = {}
-                )
-            }
-        }
-
-        // Assert
-        composeTestRule.onNodeWithText("Icon").performScrollTo().performClick()
-        composeTestRule.onNodeWithText("Select Icon").assertIsDisplayed()
+        composeTestRule.onNodeWithText("BACKGROUND COLOR").performScrollTo().assertIsDisplayed()
     }
 
     private fun setAppearanceSheet(actions: HomeScreenActions, dismissed: MutableList<Unit> = mutableListOf()) {
@@ -137,7 +92,7 @@ class QuickButtonAppearanceBottomSheetTest {
         setAppearanceSheet(createDefaultHomeScreenActions().copy(onUpdateQuickButtonAppearance = { saved = it }))
 
         composeTestRule.onNodeWithText("Stroke").performScrollTo().performClick()
-        composeTestRule.onNodeWithText("Stroke color").assertExists()
+        composeTestRule.onNodeWithText("STROKE COLOR").assertExists()
         assertNull(saved)
 
         composeTestRule.onNodeWithText("Save").performClick()
@@ -159,5 +114,17 @@ class QuickButtonAppearanceBottomSheetTest {
 
         assertNull(saved)
         assertEquals(1, dismissed.size)
+    }
+
+    @Test
+    fun `when an icon of the inline grid is tapped, should save it with Save and not before`() {
+        var saved: QuickButtonAppearance? = null
+        setAppearanceSheet(createDefaultHomeScreenActions().copy(onUpdateQuickButtonAppearance = { saved = it }))
+
+        composeTestRule.onNodeWithContentDescription(QuickButtonIcon.STAR.name).performScrollTo().performClick()
+        assertNull(saved)
+
+        composeTestRule.onNodeWithText("Save").performClick()
+        assertEquals(QuickButtonIcon.STAR, saved!!.icon)
     }
 }

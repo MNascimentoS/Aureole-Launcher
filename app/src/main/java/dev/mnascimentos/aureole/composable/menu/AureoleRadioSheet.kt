@@ -35,7 +35,8 @@ private const val SELECTED_ROW_ALPHA = 0.5f
 
 /**
  * Menu sheet with one radio row per option (56 dp each). The marker sits at the thumb side: the right end for
- * right-handed users and the left end for left-handed users. Picking a row calls [onSelect] and closes the sheet.
+ * right-handed users and the left end for left-handed users. Picking a row calls [onSelect] and closes the sheet
+ * with the menu exit animation (300 ms); [onDismiss] runs when the animation ends.
  */
 @Composable
 fun AureoleRadioSheet(
@@ -44,14 +45,14 @@ fun AureoleRadioSheet(
     onDismiss: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    AureoleMenuSheet(title = params.title, onDismiss = onDismiss, modifier = modifier) {
+    AureoleMenuSheet(title = params.title, onDismiss = onDismiss, modifier = modifier) { dismiss ->
         params.options.forEach { option ->
             AureoleRadioRow(
                 label = option.label,
                 isSelected = option.value == params.selectedValue,
                 onClick = {
                     onSelect(option.value)
-                    onDismiss()
+                    dismiss()
                 }
             )
         }

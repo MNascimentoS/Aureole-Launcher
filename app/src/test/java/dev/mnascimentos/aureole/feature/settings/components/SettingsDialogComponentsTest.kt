@@ -42,6 +42,7 @@ class SettingsDialogComponentsTest {
         ).assertIsDisplayed()
         composeTestRule.onNodeWithText(context.getString(R.string.settings_position_option_left)).performClick()
         assertEquals("Left", selectedPosition)
+        composeTestRule.mainClock.advanceTimeBy(500)
         assertTrue(dismissCalled)
     }
 
@@ -66,6 +67,7 @@ class SettingsDialogComponentsTest {
         ).assertIsDisplayed()
         composeTestRule.onNodeWithText(context.getString(R.string.settings_position_option_right)).performClick()
         assertEquals("Right", selectedPosition)
+        composeTestRule.mainClock.advanceTimeBy(500)
         assertTrue(dismissCalled)
     }
 
@@ -90,6 +92,7 @@ class SettingsDialogComponentsTest {
         ).assertIsDisplayed()
         composeTestRule.onNodeWithText(context.getString(R.string.settings_position_option_top)).performClick()
         assertEquals("Top", selectedPosition)
+        composeTestRule.mainClock.advanceTimeBy(500)
         assertTrue(dismissCalled)
     }
 }

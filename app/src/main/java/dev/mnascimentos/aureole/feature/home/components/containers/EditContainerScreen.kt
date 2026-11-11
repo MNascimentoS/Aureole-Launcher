@@ -30,6 +30,7 @@ import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.composable.actions.AureoleActionRow
 import dev.mnascimentos.aureole.composable.actions.model.ActionRowParams
 import dev.mnascimentos.aureole.composable.preview.AureolePreviewFrame
+import dev.mnascimentos.aureole.composable.preview.aureoleDashedBorder
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.data.model.ContainerModel
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleEditOverlay
@@ -153,7 +154,11 @@ private fun EditContainerPreview(state: EditContainerState) {
         Container(
             config = state.toConfig(),
             onFolderClick = { _, _ -> },
-            modifier = Modifier.padding(horizontal = AureoleDS.dimens.large).then(previewModifier)
+            modifier = Modifier
+                .padding(horizontal = AureoleDS.dimens.large)
+                .aureoleDashedBorder()
+                .padding(AureoleDS.dimens.xSmall)
+                .then(previewModifier)
         )
     }
 }

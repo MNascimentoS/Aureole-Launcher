@@ -1,19 +1,15 @@
 package dev.mnascimentos.aureole.feature.home.components.quickbutton
 
-import android.content.ComponentName
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.v2.createComposeRule
+import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
-import dev.mnascimentos.aureole.core.data.model.AppInfo
+import androidx.compose.ui.test.performScrollTo
 import dev.mnascimentos.aureole.core.data.model.QuickButtonAppearance
 import dev.mnascimentos.aureole.core.data.model.QuickButtonIcon
 import dev.mnascimentos.aureole.core.data.model.QuickButtonModel
-import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
-import dev.mnascimentos.aureole.feature.home.components.quickbutton.model.QuickButtonColorPickerTarget
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertTrue
@@ -28,146 +24,44 @@ class QuickButtonAppearanceSectionsTest {
     @get:Rule
     val composeTestRule = createComposeRule()
 
-    @Test
-    fun `when rendering sheet content with stroke enabled, should display background, stroke, icon rows`() {
-        // Arrange
-        var pickedTarget: QuickButtonColorPickerTarget? = null
-        var iconPickerOpened = false
-        val model = QuickButtonModel(
-            appearance = QuickButtonAppearance(strokeEnabled = true)
-        )
-
-        // Act
+    private fun setContent(model: QuickButtonModel, onUpdate: (QuickButtonAppearance) -> Unit = {}) {
         composeTestRule.setContent {
             AureoleLauncherTheme {
-                QuickButtonAppearanceSheetContent(
-                    activeModel = model,
-                    activeAppInfo = null,
-                    onUpdateAppearance = {},
-                    onPickColor = { target -> pickedTarget = target },
-                    onOpenIconPicker = { iconPickerOpened = true }
-                )
+                QuickButtonAppearanceSheetContent(activeModel = model, onUpdateAppearance = onUpdate)
             }
         }
-
-        // Assert
-        composeTestRule.onNodeWithText("Background color").assertIsDisplayed().performClick()
-        assertEquals(QuickButtonColorPickerTarget.BACKGROUND, pickedTarget)
-
-        composeTestRule.onNodeWithText("Stroke color").assertIsDisplayed().performClick()
-        assertEquals(QuickButtonColorPickerTarget.STROKE, pickedTarget)
-
-        composeTestRule.onNodeWithText("Icon").assertIsDisplayed().performClick()
-        assertTrue("Expected onOpenIconPicker to be called", iconPickerOpened)
-
-        composeTestRule.onNodeWithText("Icon color").assertIsDisplayed().performClick()
-        assertEquals(QuickButtonColorPickerTarget.ICON, pickedTarget)
     }
 
     @Test
-    fun `when stroke is disabled, should hide stroke color row and toggle stroke on click`() {
-        // Arrange
-        var updatedAppearance: QuickButtonAppearance? = null
-        val model = QuickButtonModel(
-            appearance = QuickButtonAppearance(strokeEnabled = false)
-        )
+    fun `when stroke is enabled, should display the inline sections of icon, icon color, background and stroke`() {
+        setContent(QuickButtonModel(appearance = QuickButtonAppearance(strokeEnabled = true)))
 
-        // Act
-        composeTestRule.setContent {
-            AureoleLauncherTheme {
-                QuickButtonAppearanceSheetContent(
-                    activeModel = model,
-                    activeAppInfo = null,
-                    onUpdateAppearance = { updatedAppearance = it },
-                    onPickColor = {},
-                    onOpenIconPicker = {}
-                )
-            }
-        }
-
-        // Assert
-        composeTestRule.onNodeWithText("Stroke color").assertDoesNotExist()
-        composeTestRule.onNodeWithText("Stroke").assertIsDisplayed().performClick()
-
-        assertNotNull(updatedAppearance)
-        assertTrue(updatedAppearance!!.strokeEnabled)
+        composeTestRule.onNodeWithText("ICON").assertIsDisplayed()
+        composeTestRule.onNodeWithText("ICON COLOR").assertIsDisplayed()
+        composeTestRule.onNodeWithText("BACKGROUND COLOR").assertIsDisplayed()
+        composeTestRule.onNodeWithText("STROKE COLOR").performScrollTo().assertIsDisplayed()
     }
 
     @Test
-    fun `when rendering icon row with app info, should render app info icon without failure`() {
-        // Arrange
-        val appInfo = AppInfo(
-            label = "Camera",
-            packageName = "com.example.camera",
-            componentName = ComponentName("com.example.camera", "CameraActivity"),
-            icon = ColorDrawable(Color.BLUE)
-        )
+    fun `when stroke is disabled, should hide the stroke color and toggle stroke on click`() {
+        var updated: QuickButtonAppearance? = null
+        setContent(QuickButtonModel(appearance = QuickButtonAppearance(strokeEnabled = false))) { updated = it }
 
-        // Act
-        composeTestRule.setContent {
-            AureoleLauncherTheme {
-                AppearanceIconRow(
-                    title = "App Icon",
-                    icon = { _ -> AureoleText("I") },
-                    selectedIcon = QuickButtonIcon.STAR,
-                    appInfo = appInfo,
-                    onClick = {}
-                )
-            }
-        }
+        composeTestRule.onNodeWithText("STROKE COLOR").assertDoesNotExist()
+        composeTestRule.onNodeWithText("Stroke").performScrollTo().performClick()
 
-        // Assert
-        composeTestRule.onNodeWithText("App Icon").assertIsDisplayed()
+        assertNotNull(updated)
+        assertTrue(updated!!.strokeEnabled)
     }
 
     @Test
-    fun `when icon picker dialog is displayed, should allow selecting an icon and dismissing`() {
-        // Arrange
-        var dismissed = false
+    fun `when an icon is tapped, should report the appearance with that icon and keep the rest`() {
+        var updated: QuickButtonAppearance? = null
+        val appearance = QuickButtonAppearance(strokeEnabled = true, iconColor = 0xFF123456.toInt())
+        setContent(QuickButtonModel(appearance = appearance)) { updated = it }
 
-        // Act
-        composeTestRule.setContent {
-            AureoleLauncherTheme {
-                QuickButtonIconPickerDialog(
-                    selectedIcon = QuickButtonIcon.STAR,
-                    onIconSelected = {},
-                    onDismiss = { dismissed = true }
-                )
-            }
-        }
+        composeTestRule.onNodeWithContentDescription(QuickButtonIcon.STAR.name).performScrollTo().performClick()
 
-        // Assert
-        composeTestRule.onNodeWithText("Select Icon").assertIsDisplayed()
-        composeTestRule.onNodeWithText("Cancel").performClick()
-        composeTestRule.mainClock.advanceTimeBy(OVERLAY_CLOSE_MS)
-        assertTrue("Expected onDismiss to be called on cancel click", dismissed)
-    }
-
-    @Test
-    fun `when icon picker is confirmed, should report the selected icon once and close`() {
-        // Arrange
-        val selected = mutableListOf<QuickButtonIcon>()
-        var dismissed = false
-
-        // Act
-        composeTestRule.setContent {
-            AureoleLauncherTheme {
-                QuickButtonIconPickerDialog(
-                    selectedIcon = QuickButtonIcon.STAR,
-                    onIconSelected = { selected += it },
-                    onDismiss = { dismissed = true }
-                )
-            }
-        }
-        composeTestRule.onNodeWithText("Confirm").performClick()
-        composeTestRule.mainClock.advanceTimeBy(OVERLAY_CLOSE_MS)
-
-        // Assert
-        assertEquals(listOf(QuickButtonIcon.STAR), selected)
-        assertTrue(dismissed)
-    }
-
-    private companion object {
-        const val OVERLAY_CLOSE_MS = 600L
+        assertEquals(appearance.copy(icon = QuickButtonIcon.STAR), updated)
     }
 }

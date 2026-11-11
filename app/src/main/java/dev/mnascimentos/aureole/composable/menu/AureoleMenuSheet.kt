@@ -27,7 +27,8 @@ private const val DISMISS_DELAY_MS = 300L
 /**
  * Base of every menu sheet (app, grid item, folder, ...): the edit overlay with a header (icon, title and a
  * settings button), a scrollable list of rows and an optional bottom bar. The thumb side comes from the
- * launcher setting, so the callers do not pass it.
+ * launcher setting, so the callers do not pass it. [content] receives `dismiss`, which closes the sheet with its
+ * 300 ms exit animation and then calls [onDismiss]; rows that close the sheet on click call it instead of [onDismiss].
  */
 @Composable
 fun AureoleMenuSheet(
@@ -35,7 +36,7 @@ fun AureoleMenuSheet(
     onDismiss: () -> Unit,
     modifier: Modifier = Modifier,
     params: MenuSheetParams = MenuSheetParams(),
-    content: @Composable ColumnScope.() -> Unit
+    content: @Composable ColumnScope.(dismiss: () -> Unit) -> Unit
 ) {
     var isVisible by remember { mutableStateOf(true) }
     if (!isVisible) {
@@ -60,7 +61,7 @@ fun AureoleMenuSheet(
             bottomBarContent = bottomBar?.let { bar -> { bar() } },
             sheetContent = {
                 Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
-                    content()
+                    content { isVisible = false }
                 }
             }
         )
