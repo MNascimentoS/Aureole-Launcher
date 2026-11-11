@@ -42,6 +42,7 @@ private const val SHEET_ENTER_MS = 1000L
 private const val TALL_WINDOW = "w400dp-h900dp"
 
 @RunWith(RobolectricTestRunner::class)
+@Config(qualifiers = "w411dp-h891dp")
 class HomeScreenFolderOverlaysTest {
 
     @get:Rule

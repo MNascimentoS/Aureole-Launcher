@@ -28,10 +28,12 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.Shadows.shadowOf
+import org.robolectric.annotation.Config
 
 private const val HOLD_MARGIN_MS = 100L
 
 @RunWith(RobolectricTestRunner::class)
+@Config(qualifiers = "w411dp-h891dp")
 class AppItemMenusTest {
 
     @get:Rule

@@ -16,9 +16,17 @@ import dev.mnascimentos.aureole.feature.home.model.ProvideHomeUiState
 class EditClockBottomSheetOneHandScreenshotTest {
 
     @Composable
-    private fun EditClockSheet(isExpanded: Boolean, isLeftHanded: Boolean, tab: ClockTab = ClockTab.STYLE) {
+    private fun EditClockSheet(
+        isExpanded: Boolean,
+        isLeftHanded: Boolean,
+        tab: ClockTab = ClockTab.STYLE,
+        hasBackgroundCard: Boolean = false
+    ) {
         val sampleData = createSampleHomeData()
-        val uiState = sampleData.uiState.copy(isLeftHandedMode = isLeftHanded)
+        val uiState = sampleData.uiState.copy(
+            isLeftHandedMode = isLeftHanded,
+            isClockBackgroundEnabled = hasBackgroundCard
+        )
         AureoleLauncherTheme {
             ProvideHomeUiState(uiState) {
                 EditClockOverlay(
@@ -81,5 +89,26 @@ class EditClockBottomSheetOneHandScreenshotTest {
     @Composable
     private fun EditClockBottomSheetTabFormatLeftHanded() {
         EditClockSheet(isExpanded = false, isLeftHanded = true, tab = ClockTab.FORMAT)
+    }
+
+    @PreviewTest
+    @AureolePreview
+    @Composable
+    private fun EditClockBottomSheetExpandedFormat() {
+        EditClockSheet(isExpanded = true, isLeftHanded = false, tab = ClockTab.FORMAT)
+    }
+
+    @PreviewTest
+    @AureolePreview
+    @Composable
+    private fun EditClockBottomSheetRestWithBackgroundCard() {
+        EditClockSheet(isExpanded = false, isLeftHanded = false, hasBackgroundCard = true)
+    }
+
+    @PreviewTest
+    @AureolePreview
+    @Composable
+    private fun EditClockBottomSheetRestWithoutBackgroundCard() {
+        EditClockSheet(isExpanded = false, isLeftHanded = false, hasBackgroundCard = false)
     }
 }

@@ -56,6 +56,8 @@ fun rememberAureoleEditOverlayState(
  * @property onSettingsClick Settings icon click callback.
  * @property headerIcon Optional custom icon for sheet header end action.
  * @property titleIcon Optional icon drawn before the title (menus show what the sheet is about).
+ * @property edgeToEdgeContent Whether the sheet content takes the full sheet width, with no horizontal padding;
+ * the content then pads itself (a pager needs this so its pages do not clip at the margin mid-swipe).
  */
 data class AureoleEditOverlayConfig(
     val title: String? = null,
@@ -69,6 +71,7 @@ data class AureoleEditOverlayConfig(
     val onSettingsClick: (() -> Unit)? = null,
     val headerIcon: (@Composable (Modifier) -> Unit)? = null,
     val titleIcon: (@Composable (Modifier) -> Unit)? = null,
+    val edgeToEdgeContent: Boolean = false,
 )
 
 /**
@@ -103,7 +106,8 @@ internal data class SheetBounds(
 internal class OverlaySheetDecorations(
     val headerIcon: (@Composable (Modifier) -> Unit)? = null,
     val titleIcon: (@Composable (Modifier) -> Unit)? = null,
-    val gestureZone: (@Composable () -> Unit)? = null
+    val gestureZone: (@Composable () -> Unit)? = null,
+    val edgeToEdgeContent: Boolean = false
 )
 
 internal class OverlayDismissState(

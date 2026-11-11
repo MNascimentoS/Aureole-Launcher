@@ -100,6 +100,7 @@ internal fun SheetSurface(
             decorations = OverlaySheetDecorations(
                 headerIcon = config.headerIcon,
                 titleIcon = config.titleIcon,
+                edgeToEdgeContent = config.edgeToEdgeContent,
                 gestureZone = {
                     OverlaySheetGestureZone(
                         isExpanded = isExpanded,

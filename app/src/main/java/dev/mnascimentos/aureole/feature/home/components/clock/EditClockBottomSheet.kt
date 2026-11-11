@@ -1,6 +1,5 @@
 package dev.mnascimentos.aureole.feature.home.components.clock
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Spacer
@@ -9,7 +8,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -21,7 +19,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.stringResource
@@ -103,10 +100,7 @@ internal fun EditClockOverlay(
         }
     }
 
-    var tempCustomGreeting by remember(uiState.clockCustomGreeting) {
-        mutableStateOf(uiState.clockCustomGreeting)
-    }
-
+    var tempCustomGreeting by remember(uiState.clockCustomGreeting) { mutableStateOf(uiState.clockCustomGreeting) }
     val pagerState = rememberClockPagerState(options.initialTab)
     val effectiveHazeState = if (uiState.isHazeEnabled) options.hazeState else null
 
@@ -121,7 +115,8 @@ internal fun EditClockOverlay(
                 hazeState = effectiveHazeState,
                 isVisible = isVisible,
                 animated = true,
-                isLeftHanded = uiState.isLeftHandedMode
+                isLeftHanded = uiState.isLeftHandedMode,
+                edgeToEdgeContent = true
             ),
             previewContent = {
                 EditClockPreviewCard(
@@ -145,6 +140,7 @@ internal fun EditClockOverlay(
                     params = EditClockPagerParams(
                         uiState = uiState,
                         actions = actions,
+                        isExpanded = options.overlayState.isExpanded,
                         tempCustomGreeting = tempCustomGreeting,
                         onGreetingChange = {
                             tempCustomGreeting = it
@@ -209,8 +205,6 @@ private fun EditClockPreviewCard(
         modifier = Modifier
             .fillMaxWidth()
             .padding(AureoleDS.dimens.medium)
-            .clip(RoundedCornerShape(AureoleDS.dimens.radiusMediumLarge))
-            .background(AureoleDS.colors.surfaceVariant.copy(alpha = 0.85f))
             .padding(AureoleDS.dimens.medium),
         contentAlignment = Alignment.Center
     ) {

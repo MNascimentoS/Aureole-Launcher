@@ -42,6 +42,7 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Constraints
+import androidx.compose.ui.unit.dp
 import dev.chrisbanes.haze.HazeState
 import dev.chrisbanes.haze.HazeStyle
 import dev.chrisbanes.haze.HazeTint
@@ -260,23 +261,31 @@ internal fun OverlaySheetBody(
                 )
             }
             if (sheetContent != null) {
+                val contentPadding = if (decorations.edgeToEdgeContent) 0.dp else AureoleDS.dimens.small
                 Column(
                     modifier = Modifier
-                        .padding(horizontal = AureoleDS.dimens.small)
+                        .padding(horizontal = contentPadding)
                         .weight(1f, fill = false)
                         .fillMaxWidth()
                 ) {
                     sheetContent()
                 }
             }
+            // Right after the content: free space of an expanded sheet falls between divider and bottom bar.
+            if (bottomBarContent != null) {
+                HorizontalDivider(
+                    modifier = Modifier.padding(
+                        start = AureoleDS.dimens.small,
+                        end = AureoleDS.dimens.small,
+                        top = AureoleDS.dimens.medium
+                    ),
+                    thickness = AureoleDS.dimens.borderMinimal,
+                    color = AureoleDS.colors.outline.copy(alpha = BOTTOM_BAR_DIVIDER_ALPHA)
+                )
+            }
         }
 
         if (bottomBarContent != null) {
-            HorizontalDivider(
-                modifier = Modifier.padding(horizontal = AureoleDS.dimens.small),
-                thickness = AureoleDS.dimens.borderMinimal,
-                color = AureoleDS.colors.outline.copy(alpha = BOTTOM_BAR_DIVIDER_ALPHA)
-            )
             Column(
                 modifier = Modifier.padding(
                     start = AureoleDS.dimens.small,
