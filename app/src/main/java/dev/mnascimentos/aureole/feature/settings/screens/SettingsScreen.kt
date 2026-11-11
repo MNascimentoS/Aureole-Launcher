@@ -25,6 +25,7 @@ import dev.mnascimentos.aureole.composable.favorites.model.FavoriteAppsDialogCon
 import dev.mnascimentos.aureole.composable.sheets.AureoleConfirmDialog
 import dev.mnascimentos.aureole.composable.sheets.model.ConfirmDialogParams
 import dev.mnascimentos.aureole.composable.undo.AureoleUndoSnackbar
+import dev.mnascimentos.aureole.core.designsystem.model.asString
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
@@ -44,8 +45,9 @@ fun SettingsScreen(
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
 
-    LaunchedEffect(uiState.errorMessage) {
-        uiState.errorMessage?.let { message ->
+    val errorText = uiState.errorMessage?.asString()
+    LaunchedEffect(errorText) {
+        errorText?.let { message ->
             snackbarHostState.showSnackbar(message)
             actions.onClearErrorMessage()
         }

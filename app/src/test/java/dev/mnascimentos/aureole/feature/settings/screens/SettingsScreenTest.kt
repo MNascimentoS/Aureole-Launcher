@@ -6,6 +6,7 @@ import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTouchInput
 import dev.mnascimentos.aureole.composable.actions.model.HOLD_CONFIRM_MS
+import dev.mnascimentos.aureole.core.designsystem.model.TextResource
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.feature.settings.model.SettingsScreenActions
 import dev.mnascimentos.aureole.feature.settings.model.SettingsUiState
@@ -29,7 +30,7 @@ class SettingsScreenTest {
     @Test
     fun `when errorMessage is present, should handle composition without throwing exception`() {
         var clearErrorCalled = false
-        val state = SettingsUiState(errorMessage = "Test Error Message")
+        val state = SettingsUiState(errorMessage = TextResource.fromString("Test Error Message"))
         val actions = SettingsScreenActions(onClearErrorMessage = { clearErrorCalled = true })
 
         composeTestRule.setContent {

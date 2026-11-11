@@ -4,6 +4,7 @@ import dev.mnascimentos.aureole.composable.undo.model.UndoSnackbarState
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.data.repository.SettingsRepository
 import dev.mnascimentos.aureole.core.designsystem.model.GlassLevel
+import dev.mnascimentos.aureole.core.designsystem.model.TextResource
 
 sealed interface SettingValue {
     data class ContainerPosition(val position: String) : SettingValue
@@ -62,5 +63,5 @@ data class SettingsUiState(
     /** The pending "Undo" offer shown at the bottom of the screen. */
     val undoSnackbar: UndoSnackbarState? = null,
     val shouldFinishActivity: Boolean = false,
-    val errorMessage: String? = null,
+    val errorMessage: TextResource? = null,
 )

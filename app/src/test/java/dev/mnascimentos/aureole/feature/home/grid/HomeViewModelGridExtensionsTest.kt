@@ -2,6 +2,7 @@ package dev.mnascimentos.aureole.feature.home.grid
 
 import android.content.Context
 import androidx.lifecycle.viewModelScope
+import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.core.data.model.LauncherItemState
 import dev.mnascimentos.aureole.core.data.model.LauncherItemType
 import dev.mnascimentos.aureole.core.data.model.ScrollOrientation
@@ -12,6 +13,7 @@ import dev.mnascimentos.aureole.core.data.repository.FolderRepository
 import dev.mnascimentos.aureole.core.data.repository.GridRepository
 import dev.mnascimentos.aureole.core.data.repository.SettingsRepository
 import dev.mnascimentos.aureole.core.data.repository.WidgetRepository
+import dev.mnascimentos.aureole.core.designsystem.model.TextResource
 import dev.mnascimentos.aureole.feature.home.HomeViewModel
 import dev.mnascimentos.aureole.feature.home.grid.extensions.addChildToScrollView
 import dev.mnascimentos.aureole.feature.home.grid.extensions.addGridItem
@@ -192,7 +194,7 @@ class HomeViewModelGridExtensionsTest {
 
         val state = viewModel.uiState.value
         assertNotNull(state.gridErrorMessage)
-        assertEquals("Não há espaço livre suficiente na grade para este container.", state.gridErrorMessage)
+        assertEquals(TextResource.fromResId(R.string.home_grid_no_space_error), state.gridErrorMessage)
 
         viewModel.dismissGridError()
         assertNull(viewModel.uiState.value.gridErrorMessage)

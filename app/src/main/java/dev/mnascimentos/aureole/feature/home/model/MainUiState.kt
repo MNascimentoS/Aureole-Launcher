@@ -10,6 +10,7 @@ import dev.mnascimentos.aureole.core.data.model.LauncherItemState
 import dev.mnascimentos.aureole.core.data.model.QuickButtonModel
 import dev.mnascimentos.aureole.core.data.repository.SettingsRepository
 import dev.mnascimentos.aureole.core.designsystem.model.GlassLevel
+import dev.mnascimentos.aureole.core.designsystem.model.TextResource
 import dev.mnascimentos.aureole.feature.home.components.onboarding.model.OnboardingUiState
 import dev.mnascimentos.aureole.feature.home.components.onboarding.model.blocksHome
 import dev.mnascimentos.aureole.feature.home.grid.model.GridLimits
@@ -123,7 +124,7 @@ data class MainUiState(
     val activeQuickButtonModel: QuickButtonModel? = null,
     val editingShortcutType: String? = null,
     val targetParentContainerId: String? = null,
-    val gridErrorMessage: String? = null,
+    val gridErrorMessage: TextResource? = null,
     val isAddingSingleWidget: Boolean = false,
 
     // Side Panels

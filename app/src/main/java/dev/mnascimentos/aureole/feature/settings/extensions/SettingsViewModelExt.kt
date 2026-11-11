@@ -46,7 +46,7 @@ fun SettingsViewModel.resetGridLayout() {
             it.copy(
                 showResetGridDialog = false,
                 shouldFinishActivity = true,
-                errorMessage = "Layout da tela inicial resetado para o padrão"
+                errorMessage = TextResource.fromResId(R.string.settings_reset_grid_success)
             )
         }
     }

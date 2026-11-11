@@ -51,7 +51,6 @@
     <string name="home_quickbutton_stroke_color">Cor da borda</string>
     <string name="home_quickbutton_icon">Ícone</string>
     <string name="home_quickbutton_icon_color">Cor do ícone</string>
-    <string name="home_quickbutton_select_icon">Selecionar Ícone</string>
 
     <!-- Colors / Theming -->
     <string name="settings_appearance_colors_recommended">Cores Recomendadas</string>
@@ -472,4 +471,7 @@
     <string name="folder_icon_cat_health">Saúde</string>
     <string name="folder_icon_cat_travel">Viagem</string>
     <string name="folder_icon_cat_tools">Ferramentas</string>
+    <string name="home_grid_no_space_error">Não há espaço livre suficiente na grade para este container.</string>
+    <string name="settings_reset_grid_success">Layout da tela inicial resetado para o padrão</string>
+    <string name="settings_wallpaper_load_error">Não foi possível carregar a imagem selecionada</string>
 </resources>

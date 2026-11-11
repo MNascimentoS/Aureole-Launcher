@@ -1,10 +1,13 @@
 package dev.mnascimentos.aureole.composable.favorites
 
+import android.content.ComponentName
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -26,6 +29,7 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.core.graphics.drawable.toDrawable
 import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.composable.reorder.model.LocalReorderHandle
 import dev.mnascimentos.aureole.core.data.model.AppInfo
@@ -35,6 +39,8 @@ import dev.mnascimentos.aureole.core.designsystem.icons.Close
 import dev.mnascimentos.aureole.core.designsystem.icons.DragHandle
 import dev.mnascimentos.aureole.core.designsystem.icons.Plus
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
+import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 
 @Composable
 fun FavoriteAppRowInfo(app: AppInfo, modifier: Modifier = Modifier) {
@@ -170,3 +176,28 @@ fun RemainingAppRow(
 
 private val HANDLE_WIDTH = 44.dp
 private val HANDLE_HEIGHT = 38.dp
+
+@AureolePreview
+@Composable
+private fun FavoriteAppsDialogComponentsPreview() {
+    val app = AppInfo(
+        label = "Camera",
+        packageName = "com.example.camera",
+        componentName = ComponentName("com.example.camera", "MainActivity"),
+        icon = 0xFF1B65C0.toInt().toDrawable()
+    )
+    AureoleLauncherTheme {
+        Column(
+            verticalArrangement = Arrangement.spacedBy(AureoleDS.dimens.small),
+            modifier = Modifier.padding(AureoleDS.dimens.medium)
+        ) {
+            FavoriteAppRowInfo(app = app)
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                FavoriteAppDragHandle()
+                Spacer(modifier = Modifier.width(AureoleDS.dimens.small))
+                FavoriteAppRemoveButton(onClick = {})
+            }
+            RemainingAppRow(app = app, onToggleFavorite = {})
+        }
+    }
+}

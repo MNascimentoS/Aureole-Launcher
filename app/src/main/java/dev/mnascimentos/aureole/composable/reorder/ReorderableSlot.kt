@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.ReadOnlyComposable
@@ -61,6 +62,8 @@ import dev.mnascimentos.aureole.composable.reorder.model.reorderAxisDelta
 import dev.mnascimentos.aureole.composable.reorder.model.reorderStepTarget
 import dev.mnascimentos.aureole.core.designsystem.icons.Close
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
+import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import kotlinx.coroutines.launch
 
 /** Scale of the item while the finger holds it. */
@@ -289,4 +292,28 @@ private fun rememberPlacementAnimation(isActive: Boolean): Modifier {
                 else -> anim.value - place
             }
         }
+}
+
+@AureolePreview
+@Composable
+private fun ReorderableSlotPreview() {
+    AureoleLauncherTheme {
+        ReorderableSlot(
+            slot = ReorderSlotParams(
+                key = 1,
+                index = 0,
+                keys = listOf(1),
+                orientation = ReorderOrientation.Horizontal,
+                spacingPx = 0f
+            ),
+            state = remember { ReorderDragState() },
+            actions = ReorderableActions(onMove = { _, _ -> }, onRemove = {})
+        ) {
+            Box(
+                modifier = Modifier
+                    .size(AureoleDS.dimens.sizeLarge)
+                    .background(AureoleDS.colors.surfaceVariant, RoundedCornerShape(AureoleDS.dimens.radiusMedium))
+            )
+        }
+    }
 }

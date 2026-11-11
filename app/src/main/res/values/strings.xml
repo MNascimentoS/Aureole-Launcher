@@ -51,7 +51,6 @@
     <string name="home_quickbutton_stroke_color">Stroke color</string>
     <string name="home_quickbutton_icon">Icon</string>
     <string name="home_quickbutton_icon_color">Icon color</string>
-    <string name="home_quickbutton_select_icon">Select Icon</string>
 
     <!-- Colors / Theming -->
     <string name="settings_appearance_colors_recommended">Recommended Colors</string>
@@ -468,4 +467,7 @@
     <string name="folder_icon_cat_health">Health</string>
     <string name="folder_icon_cat_travel">Travel</string>
     <string name="folder_icon_cat_tools">Tools</string>
+    <string name="home_grid_no_space_error">Not enough free space on the grid for this container.</string>
+    <string name="settings_reset_grid_success">Home screen layout reset to default</string>
+    <string name="settings_wallpaper_load_error">Could not load the selected image</string>
 </resources>

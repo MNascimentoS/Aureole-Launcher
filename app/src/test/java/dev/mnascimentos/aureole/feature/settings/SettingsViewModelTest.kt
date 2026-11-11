@@ -5,6 +5,7 @@ import dev.mnascimentos.aureole.core.data.repository.AppRepository
 import dev.mnascimentos.aureole.core.data.repository.FolderRepository
 import dev.mnascimentos.aureole.core.data.repository.GridRepository
 import dev.mnascimentos.aureole.core.data.repository.SettingsRepository
+import dev.mnascimentos.aureole.core.designsystem.model.TextResource
 import dev.mnascimentos.aureole.feature.settings.model.SettingToggle
 import dev.mnascimentos.aureole.feature.settings.model.SettingValue
 import dev.mnascimentos.aureole.feature.settings.model.SettingsDialog
@@ -112,8 +113,8 @@ class SettingsViewModelTest {
 
     @Test
     fun `when clearing error message, should reset error message to null`() {
-        viewModel.updateUiState { it.copy(errorMessage = "Sample Error") }
-        assertEquals("Sample Error", viewModel.uiState.value.errorMessage)
+        viewModel.updateUiState { it.copy(errorMessage = TextResource.fromString("Sample Error")) }
+        assertEquals(TextResource.fromString("Sample Error"), viewModel.uiState.value.errorMessage)
 
         viewModel.clearErrorMessage()
         assertNull(viewModel.uiState.value.errorMessage)

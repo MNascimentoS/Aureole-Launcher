@@ -34,6 +34,7 @@ import dev.chrisbanes.haze.rememberHazeState
 import dev.mnascimentos.aureole.composable.undo.AureoleUndoSnackbar
 import dev.mnascimentos.aureole.core.data.model.ContainerModel
 import dev.mnascimentos.aureole.core.data.model.LauncherItemType
+import dev.mnascimentos.aureole.core.designsystem.model.asString
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
@@ -237,7 +238,8 @@ private fun HomeOverlaysDialogsAndErrors(config: HomeOverlaysConfig) {
     HomeEditContainerOverlay(config = config)
 
     val context = LocalContext.current
-    config.uiState.gridErrorMessage?.let { message ->
+    val gridError = config.uiState.gridErrorMessage?.asString()
+    gridError?.let { message ->
         LaunchedEffect(message) {
             Toast.makeText(context, message, Toast.LENGTH_LONG).show()
             config.actions.onDismissGridError()

@@ -12,8 +12,6 @@ import dev.mnascimentos.aureole.feature.home.grid.model.SlotSearchRequest
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
 import java.util.UUID
 
-private const val CONTAINER_ERROR_MSG = "Não há espaço livre suficiente na grade para este container."
-
 fun HomeViewModel.setShowAddContainerDialog(show: Boolean) {
     updateUiState {
         it.copy(
@@ -55,7 +53,7 @@ fun HomeViewModel.addGridItem(spec: GridItemSpec) {
         )
 
         if (largestSlotResult == null) {
-            state.copy(gridErrorMessage = CONTAINER_ERROR_MSG)
+            state.copy(gridErrorMessage = TextResource.fromResId(R.string.home_grid_no_space_error))
         } else {
             val (actualColSpan, actualRowSpan, slot) = largestSlotResult
             val newItem = LauncherItemState(

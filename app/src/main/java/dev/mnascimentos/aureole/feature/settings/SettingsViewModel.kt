@@ -2,11 +2,13 @@ package dev.mnascimentos.aureole.feature.settings
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.core.data.model.AppFolder
 import dev.mnascimentos.aureole.core.data.repository.AppRepository
 import dev.mnascimentos.aureole.core.data.repository.FolderRepository
 import dev.mnascimentos.aureole.core.data.repository.GridRepository
 import dev.mnascimentos.aureole.core.data.repository.SettingsRepository
+import dev.mnascimentos.aureole.core.designsystem.model.TextResource
 import dev.mnascimentos.aureole.core.designsystem.model.glassLevelOf
 import dev.mnascimentos.aureole.core.undo.UndoController
 import dev.mnascimentos.aureole.feature.settings.extensions.SettingsToggleManager
@@ -150,7 +152,7 @@ class SettingsViewModel(
                 }
             } else {
                 _uiState.update {
-                    it.copy(errorMessage = "Não foi possível carregar a imagem selecionada")
+                    it.copy(errorMessage = TextResource.fromResId(R.string.settings_wallpaper_load_error))
                 }
             }
         }

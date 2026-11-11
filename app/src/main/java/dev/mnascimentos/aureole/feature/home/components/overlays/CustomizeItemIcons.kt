@@ -1,5 +1,10 @@
 package dev.mnascimentos.aureole.feature.home.components.overlays
 
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -15,6 +20,8 @@ import dev.mnascimentos.aureole.core.designsystem.icons.ScrollGroup
 import dev.mnascimentos.aureole.core.designsystem.icons.Text
 import dev.mnascimentos.aureole.core.designsystem.icons.VerticalContainer
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
+import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.components.overlays.model.CustomizeAddItem
 import dev.mnascimentos.aureole.feature.home.components.overlays.model.CustomizeAdjustItem
 
@@ -42,5 +49,35 @@ internal fun CustomizeItemIcon(item: CustomizeAdjustItem, modifier: Modifier = M
         CustomizeAdjustItem.LAYOUT -> icons.Layout(modifier, tint)
         CustomizeAdjustItem.PALETTE -> icons.ColorFill(modifier, tint)
         CustomizeAdjustItem.FONT -> icons.Text(modifier, tint)
+    }
+}
+
+@AureolePreview
+@Composable
+private fun CustomizeItemIconsPreview() {
+    AureoleLauncherTheme {
+        Column(
+            verticalArrangement = Arrangement.spacedBy(AureoleDS.dimens.small),
+            modifier = Modifier.padding(AureoleDS.dimens.medium)
+        ) {
+            Row(horizontalArrangement = Arrangement.spacedBy(AureoleDS.dimens.small)) {
+                CustomizeAddItem.entries.forEach { item ->
+                    CustomizeItemIcon(
+                        item = item,
+                        modifier = Modifier.size(AureoleDS.dimens.iconMedium),
+                        tint = AureoleDS.colors.onSurfaceHigh
+                    )
+                }
+            }
+            Row(horizontalArrangement = Arrangement.spacedBy(AureoleDS.dimens.small)) {
+                CustomizeAdjustItem.entries.forEach { item ->
+                    CustomizeItemIcon(
+                        item = item,
+                        modifier = Modifier.size(AureoleDS.dimens.iconMedium),
+                        tint = AureoleDS.colors.onSurfaceHigh
+                    )
+                }
+            }
+        }
     }
 }

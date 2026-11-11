@@ -1,10 +1,12 @@
 package dev.mnascimentos.aureole.feature.settings.extensions
 
 import android.content.Context
+import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.core.data.repository.AppRepository
 import dev.mnascimentos.aureole.core.data.repository.FolderRepository
 import dev.mnascimentos.aureole.core.data.repository.GridRepository
 import dev.mnascimentos.aureole.core.data.repository.SettingsRepository
+import dev.mnascimentos.aureole.core.designsystem.model.TextResource
 import dev.mnascimentos.aureole.feature.settings.SettingsViewModel
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
@@ -57,7 +59,7 @@ class SettingsViewModelExtTest {
         viewModel.resetGridLayout()
         assertFalse(viewModel.uiState.value.showResetGridDialog)
         assertTrue(viewModel.uiState.value.shouldFinishActivity)
-        assertEquals("Layout da tela inicial resetado para o padrão", viewModel.uiState.value.errorMessage)
+        assertEquals(TextResource.fromResId(R.string.settings_reset_grid_success), viewModel.uiState.value.errorMessage)
     }
 
     @Test
