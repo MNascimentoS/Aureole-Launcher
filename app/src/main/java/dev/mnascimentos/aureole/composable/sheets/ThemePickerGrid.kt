@@ -27,8 +27,8 @@ import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 
 /**
  * Sheet body of the palette and font pickers: a small uppercase section label above a grid with
- * `params.columns` columns, and the optional footer below it. The label sits on the right in the left-handed
- * mode. The grid scrolls when it is taller than the sheet.
+ * `params.columns` columns, and the optional footer below it. The label stays on the left in both hands.
+ * The grid scrolls when it is taller than the sheet.
  */
 @Composable
 internal fun ThemePickerGrid(
@@ -47,7 +47,7 @@ internal fun ThemePickerGrid(
                 style = AureoleDS.typography.smallText,
                 fontWeight = FontWeight.Bold,
                 letterSpacing = SECTION_LABEL_SPACING_SP.sp,
-                textAlign = if (params.isLeftHanded) TextAlign.End else TextAlign.Start
+                textAlign = TextAlign.Start
             )
         )
         LazyVerticalGrid(

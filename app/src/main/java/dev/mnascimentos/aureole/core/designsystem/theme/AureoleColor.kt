@@ -10,6 +10,7 @@ private const val ERROR_HEX = 0xFFCF6679
 private const val ON_ERROR_HEX = 0xFFFFFFFF
 private const val BADGE_CONTAINER_HEX = 0xFF4CAF50
 private const val BADGE_TEXT_HEX = 0xFF81C784
+private const val INFO_HEX = 0xFF64B5F6
 
 @Immutable
 data class AureoleColors(
@@ -23,7 +24,8 @@ data class AureoleColors(
     val error: Color = Color(ERROR_HEX),
     val onError: Color = Color(ON_ERROR_HEX),
     val badgeContainer: Color = Color(BADGE_CONTAINER_HEX),
-    val badgeText: Color = Color(BADGE_TEXT_HEX)
+    val badgeText: Color = Color(BADGE_TEXT_HEX),
+    val info: Color = Color(INFO_HEX)
 )
 
 val LocalAureoleColors = staticCompositionLocalOf {

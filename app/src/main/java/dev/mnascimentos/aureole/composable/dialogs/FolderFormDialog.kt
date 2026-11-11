@@ -15,6 +15,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import dev.mnascimentos.aureole.R
+import dev.mnascimentos.aureole.composable.dialogs.model.FOLDER_ICON_FALLBACK
 import dev.mnascimentos.aureole.composable.dialogs.model.FolderFormSheetActions
 import dev.mnascimentos.aureole.composable.dialogs.model.FolderFormSheetState
 import dev.mnascimentos.aureole.composable.dialogs.model.FolderIconPickerActions
@@ -52,8 +53,9 @@ fun FolderFormDialog(
     val isEditing = folder != null
     val placeholderName = stringResource(R.string.home_folder_name_placeholder)
     var folderName by remember { mutableStateOf(folder?.name.orEmpty()) }
-    var selectedIcon by remember { mutableStateOf(folder?.icon) }
-    var category by remember { mutableStateOf(initialFolderIconCategory(folder?.icon)) }
+    // A new folder opens with the plain folder icon marked, not with none.
+    var selectedIcon by remember { mutableStateOf(if (isEditing) folder?.icon else FOLDER_ICON_FALLBACK) }
+    var category by remember { mutableStateOf(initialFolderIconCategory(selectedIcon)) }
 
     AureoleConfirmOverlay(
         params = ConfirmOverlayParams(

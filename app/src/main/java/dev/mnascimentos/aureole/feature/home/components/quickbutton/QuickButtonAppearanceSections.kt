@@ -6,13 +6,10 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ExperimentalLayoutApi
-import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -44,7 +41,7 @@ import dev.mnascimentos.aureole.core.designsystem.icons.Stroke
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
-import dev.mnascimentos.aureole.feature.home.components.quickbutton.model.QUICK_BUTTON_ICON_VISIBLE_ROWS
+import dev.mnascimentos.aureole.feature.home.components.quickbutton.model.QUICK_BUTTON_ICON_COLUMNS
 import dev.mnascimentos.aureole.feature.home.components.quickbutton.model.QuickButtonColorTarget
 import dev.mnascimentos.aureole.feature.home.components.quickbutton.model.colorOf
 import dev.mnascimentos.aureole.feature.home.components.quickbutton.model.withColor
@@ -165,49 +162,65 @@ internal fun AppearanceToggleRow(
     }
 }
 
-/** Every quick button icon, inline: [QUICK_BUTTON_ICON_VISIBLE_ROWS] rows visible, scrolling on its own beyond that. */
-@OptIn(ExperimentalLayoutApi::class)
+/**
+ * Every quick button icon, inline, in [QUICK_BUTTON_ICON_COLUMNS] columns. It does not scroll on its own: the
+ * sheet's single scroll carries it, so there are no nested scroll areas.
+ */
 @Composable
 internal fun QuickButtonIconGrid(
     selectedIcon: QuickButtonIcon,
     onIconSelected: (QuickButtonIcon) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val tile = AureoleDS.dimens.xxLarge
     val gap = AureoleDS.dimens.small
-    FlowRow(
-        modifier = modifier
-            .fillMaxWidth()
-            .heightIn(max = tile * QUICK_BUTTON_ICON_VISIBLE_ROWS + gap * 2)
-            .verticalScroll(rememberScrollState()),
-        horizontalArrangement = Arrangement.spacedBy(gap, Alignment.CenterHorizontally),
+    Column(
+        modifier = modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(gap)
     ) {
-        QuickButtonIcon.entries.forEach { iconItem ->
-            val isSelected = iconItem == selectedIcon
-            val shape = RoundedCornerShape(AureoleDS.dimens.radiusSmall)
-            Box(
-                modifier = Modifier
-                    .size(tile)
-                    .clip(shape)
-                    .background(AureoleDS.colors.surfaceVariant)
-                    .border(
-                        width = if (isSelected) AureoleDS.dimens.borderMax else AureoleDS.dimens.zero,
-                        color = AureoleDS.colors.onSurfaceHigh,
-                        shape = shape
+        QuickButtonIcon.entries.chunked(QUICK_BUTTON_ICON_COLUMNS).forEach { row ->
+            Row(horizontalArrangement = Arrangement.spacedBy(gap)) {
+                row.forEach { iconItem ->
+                    QuickButtonIconTile(
+                        icon = iconItem,
+                        isSelected = iconItem == selectedIcon,
+                        onClick = { onIconSelected(iconItem) },
+                        modifier = Modifier.weight(1f)
                     )
-                    .clickable(role = Role.RadioButton) { onIconSelected(iconItem) }
-                    .semantics { this.selected = isSelected },
-                contentAlignment = Alignment.Center
-            ) {
-                Icon(
-                    painter = painterResource(id = iconItem.iconRes),
-                    contentDescription = iconItem.name,
-                    tint = AureoleDS.colors.onSurfaceHigh,
-                    modifier = Modifier.size(AureoleDS.dimens.iconLarge)
-                )
+                }
+                repeat(QUICK_BUTTON_ICON_COLUMNS - row.size) { Spacer(modifier = Modifier.weight(1f)) }
             }
         }
+    }
+}
+
+@Composable
+private fun QuickButtonIconTile(
+    icon: QuickButtonIcon,
+    isSelected: Boolean,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    val shape = RoundedCornerShape(AureoleDS.dimens.radiusSmall)
+    Box(
+        modifier = modifier
+            .height(AureoleDS.dimens.minTouchTarget)
+            .clip(shape)
+            .background(AureoleDS.colors.surfaceVariant)
+            .border(
+                width = if (isSelected) AureoleDS.dimens.borderMax else AureoleDS.dimens.zero,
+                color = AureoleDS.colors.onSurfaceHigh,
+                shape = shape
+            )
+            .clickable(role = Role.RadioButton, onClick = onClick)
+            .semantics { this.selected = isSelected },
+        contentAlignment = Alignment.Center
+    ) {
+        Icon(
+            painter = painterResource(id = icon.iconRes),
+            contentDescription = icon.name,
+            tint = AureoleDS.colors.onSurfaceHigh,
+            modifier = Modifier.size(AureoleDS.dimens.iconLarge)
+        )
     }
 }
 

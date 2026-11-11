@@ -73,7 +73,8 @@ internal fun EditClockPager(
                     ClockTab.FORMAT -> EditClockFormatPage(params.uiState, params.actions)
                     ClockTab.COLORS -> EditClockColorsPage(params.uiState, params.actions)
                 }
-                Spacer(modifier = Modifier.height(AureoleDS.dimens.medium))
+                // Room under the last control so it is not cut in half at the edge of the scroll.
+                Spacer(modifier = Modifier.height(AureoleDS.dimens.xLarge))
             }
         }
     }

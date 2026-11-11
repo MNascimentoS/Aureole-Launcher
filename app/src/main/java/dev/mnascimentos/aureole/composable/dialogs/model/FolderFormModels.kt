@@ -42,6 +42,18 @@ fun initialFolderIconCategory(selectedIcon: String?): FolderIconCategory {
     return AureoleFolderIcons.all.firstOrNull { it.key == key }?.category ?: FolderIconCategory.entries.first()
 }
 
+/**
+ * First row of the icon grid to show for [category] so [selectedIcon] is in view: the row before the selected
+ * one stays visible for context, and 0 when the icon is not in the category.
+ */
+fun folderIconFirstVisibleRow(category: FolderIconCategory, selectedIcon: String?): Int {
+    val row = folderIconRows(category).indexOfFirst { keys -> keys.any { isFolderIconSelected(it, selectedIcon) } }
+    return (row - 1).coerceAtLeast(0)
+}
+
+/** Position of [category] among the category chips. */
+fun folderIconCategoryIndex(category: FolderIconCategory): Int = FolderIconCategory.entries.indexOf(category)
+
 /** True when [iconKey] (or the old key it maps to) is the icon marked in the grid. */
 fun isFolderIconSelected(iconKey: String, selectedIcon: String?): Boolean =
     selectedIcon != null && resolveFolderIconKey(selectedIcon) == iconKey

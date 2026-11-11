@@ -138,31 +138,31 @@ private fun FavoriteAppsDialogBody(
         actions.onUpdateFavoritePackages(config.containerId, newFavs)
     }
 
+    // The search sits under the list, right above the Back button, within the thumb's reach.
     Column(modifier = Modifier.fillMaxWidth()) {
+        if (config.isLoading) {
+            AppListSkeletonComponent(modifier = Modifier.weight(1f))
+        } else {
+            LeftHandMirror {
+                FavoriteAppsSections(
+                    params = params.copy(filteredFavorites = draftFavorites),
+                    actions = FavoriteSectionActions(
+                        onMove = { from, to -> draftFavorites = move(draftFavorites, from, to) },
+                        onMoveEnd = handleMoveEnd,
+                        onToggleFavorite = { pkg -> actions.onToggleFavorite(pkg) },
+                        onRemoveAll = handleRemoveAll
+                    ),
+                    modifier = Modifier.weight(1f)
+                )
+            }
+        }
+
+        Spacer(modifier = Modifier.height(AureoleDS.dimens.small))
+
         FavoriteAppsSearchInput(
             query = params.searchQuery,
             onQueryChange = onSearchQueryChange
         )
-
-        Spacer(modifier = Modifier.height(AureoleDS.dimens.small))
-
-        if (config.isLoading) {
-            AppListSkeletonComponent(modifier = Modifier.weight(1f))
-            return@Column
-        }
-
-        LeftHandMirror {
-            FavoriteAppsSections(
-                params = params.copy(filteredFavorites = draftFavorites),
-                actions = FavoriteSectionActions(
-                    onMove = { from, to -> draftFavorites = move(draftFavorites, from, to) },
-                    onMoveEnd = handleMoveEnd,
-                    onToggleFavorite = { pkg -> actions.onToggleFavorite(pkg) },
-                    onRemoveAll = handleRemoveAll
-                ),
-                modifier = Modifier.weight(1f)
-            )
-        }
     }
 }
 

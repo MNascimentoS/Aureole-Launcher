@@ -18,7 +18,6 @@ import dev.mnascimentos.aureole.composable.sheets.model.basePaletteName
 import dev.mnascimentos.aureole.composable.sheets.model.discard
 import dev.mnascimentos.aureole.composable.sheets.model.findBasePalette
 import dev.mnascimentos.aureole.composable.sheets.model.fontNameOf
-import dev.mnascimentos.aureole.core.designsystem.model.LocalLeftHanded
 import dev.mnascimentos.aureole.core.designsystem.palette.ThemePalette
 import dev.mnascimentos.aureole.core.designsystem.palette.allPalettes
 import dev.mnascimentos.aureole.core.designsystem.palette.toLight
@@ -72,8 +71,7 @@ fun PickPaletteBottomSheet(
             params = ThemePickerGridParams(
                 label = stringResource(R.string.settings_appearance_palette_section_label),
                 columns = PALETTE_COLUMNS,
-                footer = options.footer,
-                isLeftHanded = LocalLeftHanded.current
+                footer = options.footer
             )
         ) {
             items(items = allPalettes, key = { it.name }, contentType = { "palette_chip" }) { basePalette ->

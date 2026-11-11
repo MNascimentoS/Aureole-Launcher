@@ -53,8 +53,12 @@ private val nameAliases: Map<String, String> = mapOf(
  */
 fun resolveFolderIconKey(name: String?): String {
     val lower = name?.lowercase()?.trim()?.replace(' ', '_').orEmpty()
-    val key = nameAliases[lower] ?: lower
+    // A catalog key always wins: "security" is a catalog icon of its own, not an alias of "lock".
+    val key = lower.takeIf(::isKnownFolderIconKey) ?: nameAliases[lower] ?: lower
     val mapped = legacyRemap[key] ?: key
     return mapped.takeIf { AureoleFolderIcons.resFor(it) != null || it in LEGACY_FOLDER_ICON_KEYS }
         ?: FOLDER_ICON_FALLBACK
 }
+
+private fun isKnownFolderIconKey(key: String): Boolean =
+    AureoleFolderIcons.resFor(key) != null || key in LEGACY_FOLDER_ICON_KEYS

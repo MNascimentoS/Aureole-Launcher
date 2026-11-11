@@ -22,5 +22,5 @@ internal fun QuickButtonAppearance.withColor(target: QuickButtonColorTarget, col
         QuickButtonColorTarget.ICON -> copy(iconColor = color)
     }
 
-/** Rows of the quick button icon grid that are visible at once; the grid scrolls inside itself beyond that. */
-internal const val QUICK_BUTTON_ICON_VISIBLE_ROWS = 2.5f
+/** Columns of the inline icon grid: five tiles of at least 44 dp each fit the sheet width. */
+internal const val QUICK_BUTTON_ICON_COLUMNS = 5

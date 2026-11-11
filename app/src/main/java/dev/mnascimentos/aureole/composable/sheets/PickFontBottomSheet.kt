@@ -67,8 +67,7 @@ fun PickFontBottomSheet(
             params = ThemePickerGridParams(
                 label = stringResource(R.string.settings_appearance_font_section_label),
                 columns = FONT_COLUMNS,
-                footer = options.footer,
-                isLeftHanded = isLeftHanded
+                footer = options.footer
             )
         ) {
             items(items = AvailableFonts.keys.toList(), key = { it }, contentType = { "font_chip" }) { fontName ->

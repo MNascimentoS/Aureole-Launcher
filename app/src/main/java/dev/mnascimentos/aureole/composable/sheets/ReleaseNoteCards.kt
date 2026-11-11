@@ -78,7 +78,7 @@ private fun TypeBadge(type: ReleaseNoteType, modifier: Modifier = Modifier) {
         ReleaseNoteType.FEATURE -> stringResource(R.string.settings_advanced_release_notes_tag_new) to
             AureoleDS.colors.badgeText
         ReleaseNoteType.IMPROVEMENT -> stringResource(R.string.settings_advanced_release_notes_tag_improvement) to
-            AureoleDS.colors.onSurfaceHigh
+            AureoleDS.colors.info
         ReleaseNoteType.FIX -> stringResource(R.string.settings_advanced_release_notes_tag_fix) to
             AureoleDS.colors.error
     }

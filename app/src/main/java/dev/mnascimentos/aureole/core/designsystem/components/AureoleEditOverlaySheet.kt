@@ -23,6 +23,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -61,6 +62,7 @@ import dev.mnascimentos.aureole.core.designsystem.utils.glassBlurRadius
 import kotlin.math.roundToInt
 
 private const val ANIMATION_DURATION_MS = 300
+private const val BOTTOM_BAR_DIVIDER_ALPHA = 0.3f
 
 @Composable
 internal fun OverlayContentBox(
@@ -270,6 +272,11 @@ internal fun OverlaySheetBody(
         }
 
         if (bottomBarContent != null) {
+            HorizontalDivider(
+                modifier = Modifier.padding(horizontal = AureoleDS.dimens.small),
+                thickness = AureoleDS.dimens.borderMinimal,
+                color = AureoleDS.colors.outline.copy(alpha = BOTTOM_BAR_DIVIDER_ALPHA)
+            )
             Column(
                 modifier = Modifier.padding(
                     start = AureoleDS.dimens.small,

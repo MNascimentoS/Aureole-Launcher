@@ -59,4 +59,34 @@ class FolderFormModelsTest {
         assertFalse(isFolderIconSelected("work", "star"))
         assertFalse(isFolderIconSelected("work", null))
     }
+
+    @Test
+    fun `the grid opens with the saved icon in view`() {
+        // "lock" is the 3rd icon of TOOLS (row 2 of 5 columns after build, settings): it stays on screen.
+        val row = folderIconRows(FolderIconCategory.TOOLS).indexOfFirst { "star" in it }
+
+        assertEquals((row - 1).coerceAtLeast(0), folderIconFirstVisibleRow(FolderIconCategory.TOOLS, "star"))
+        assertEquals(0, folderIconFirstVisibleRow(FolderIconCategory.WORK, "work"))
+        assertEquals(0, folderIconFirstVisibleRow(FolderIconCategory.WORK, null))
+        assertEquals(0, folderIconFirstVisibleRow(FolderIconCategory.WORK, "star"))
+    }
+
+    @Test
+    fun `the category index follows the chip order`() {
+        assertEquals(0, folderIconCategoryIndex(FolderIconCategory.WORK))
+        assertEquals(FolderIconCategory.entries.lastIndex, folderIconCategoryIndex(FolderIconCategory.TOOLS))
+    }
+
+    @Test
+    fun `lock and security are two different icons`() {
+        assertEquals("lock", resolveFolderIconKey("lock"))
+        assertEquals("security", resolveFolderIconKey("security"))
+        assertFalse(isFolderIconSelected("lock", "security"))
+        assertTrue(isFolderIconSelected("security", "security"))
+    }
+
+    @Test
+    fun `every catalog key resolves to itself`() {
+        AureoleFolderIcons.all.forEach { assertEquals(it.key, resolveFolderIconKey(it.key)) }
+    }
 }

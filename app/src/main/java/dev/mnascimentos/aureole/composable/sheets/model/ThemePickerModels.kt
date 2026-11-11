@@ -20,11 +20,9 @@ data class ThemePickerSheetOptions(
  * @property label Small section label above the grid.
  * @property columns Number of grid columns.
  * @property footer Content below the grid.
- * @property isLeftHanded Mirrors the label to the thumb side.
  */
 data class ThemePickerGridParams(
     val label: String,
     val columns: Int,
-    val footer: (@Composable () -> Unit)? = null,
-    val isLeftHanded: Boolean = false
+    val footer: (@Composable () -> Unit)? = null
 )

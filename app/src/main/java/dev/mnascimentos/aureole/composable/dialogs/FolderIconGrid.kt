@@ -1,9 +1,9 @@
 package dev.mnascimentos.aureole.composable.dialogs
 
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -14,13 +14,17 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.selected
@@ -29,6 +33,8 @@ import dev.mnascimentos.aureole.composable.dialogs.model.FOLDER_ICON_COLUMNS
 import dev.mnascimentos.aureole.composable.dialogs.model.FOLDER_ICON_VISIBLE_ROWS
 import dev.mnascimentos.aureole.composable.dialogs.model.FolderIconPickerActions
 import dev.mnascimentos.aureole.composable.dialogs.model.FolderIconPickerState
+import dev.mnascimentos.aureole.composable.dialogs.model.folderIconCategoryIndex
+import dev.mnascimentos.aureole.composable.dialogs.model.folderIconFirstVisibleRow
 import dev.mnascimentos.aureole.composable.dialogs.model.folderIconRows
 import dev.mnascimentos.aureole.composable.dialogs.model.isFolderIconSelected
 import dev.mnascimentos.aureole.composable.mirror.LeftHandMirror
@@ -66,10 +72,15 @@ fun FolderIconGrid(
 @Composable
 private fun FolderIconRows(state: FolderIconPickerState, actions: FolderIconPickerActions) {
     val gap = AureoleDS.dimens.xSmall
+    val rowStepPx = with(LocalDensity.current) { (AureoleDS.dimens.iconXLarge + gap).roundToPx() }
+    // Opens on the category's rows with the saved icon in view; changes with the category only.
+    val scrollState = remember(state.category) {
+        ScrollState(folderIconFirstVisibleRow(state.category, state.selectedIcon) * rowStepPx)
+    }
     Column(
         modifier = Modifier
             .heightIn(max = AureoleDS.dimens.iconXLarge * FOLDER_ICON_VISIBLE_ROWS + gap * 2)
-            .verticalScroll(rememberScrollState()),
+            .verticalScroll(scrollState),
         verticalArrangement = Arrangement.spacedBy(gap)
     ) {
         folderIconRows(state.category).forEach { row ->
@@ -92,11 +103,15 @@ private fun FolderCategoryChips(
     category: FolderIconCategory,
     onCategorySelected: (FolderIconCategory) -> Unit
 ) {
-    Row(
-        modifier = Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()),
+    val entries = FolderIconCategory.entries
+    // Starts at the marked chip so it is never cut off or hidden past the edge (the list clamps at the end).
+    val listState = rememberLazyListState(initialFirstVisibleItemIndex = folderIconCategoryIndex(category))
+    LazyRow(
+        modifier = Modifier.fillMaxWidth(),
+        state = listState,
         horizontalArrangement = Arrangement.spacedBy(AureoleDS.dimens.xSmall)
     ) {
-        FolderIconCategory.entries.forEach { entry ->
+        items(entries, key = { it.name }) { entry ->
             CategoryChip(
                 label = stringResource(entry.label),
                 isSelected = entry == category,

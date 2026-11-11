@@ -8,21 +8,25 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.composable.menu.AureoleMenuSectionLabel
@@ -65,8 +69,16 @@ internal fun CustomizeAdjustSection(
     }
 }
 
+/** The chip keeps "icon, then text" in both hands: only the order of the chips is mirrored, not their content. */
 @Composable
 private fun AdjustButton(item: CustomizeAdjustItem, onClick: () -> Unit, modifier: Modifier = Modifier) {
+    CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
+        AdjustButtonContent(item = item, onClick = onClick, modifier = modifier)
+    }
+}
+
+@Composable
+private fun AdjustButtonContent(item: CustomizeAdjustItem, onClick: () -> Unit, modifier: Modifier = Modifier) {
     Row(
         modifier = modifier
             .heightIn(min = CustomizeMetrics.AdjustHeight)
@@ -119,6 +131,7 @@ internal fun CustomizeAddSection(
                         repeat(CUSTOMIZE_ADD_COLUMNS - row.size) { Spacer(modifier = Modifier.weight(1f)) }
                     }
                 }
+                Spacer(modifier = Modifier.height(AureoleDS.dimens.medium))
             }
         }
     }
@@ -130,7 +143,7 @@ private fun AddTile(item: CustomizeAddItem, isOnHome: Boolean, onClick: () -> Un
     val onHomeLabel = stringResource(R.string.home_customize_item_on_home)
     Column(
         modifier = modifier
-            .heightIn(min = CustomizeMetrics.TileHeight)
+            .height(CustomizeMetrics.TileHeight)
             .alpha(if (isOnHome) CustomizeMetrics.DIMMED_ALPHA else 1f)
             .clip(RoundedCornerShape(AureoleDS.dimens.radiusMedium))
             .background(AureoleDS.colors.surfaceVariant.copy(alpha = CustomizeMetrics.CARD_ALPHA))

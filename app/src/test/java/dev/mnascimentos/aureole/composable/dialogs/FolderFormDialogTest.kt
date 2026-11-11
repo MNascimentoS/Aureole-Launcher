@@ -11,7 +11,6 @@ import androidx.compose.ui.test.performTextInput
 import dev.mnascimentos.aureole.core.data.model.AppFolder
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import org.junit.Assert.assertEquals
-import org.junit.Assert.assertNull
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -38,7 +37,7 @@ class FolderFormDialogTest {
     }
 
     @Test
-    fun `when creating with a blank name, should save the placeholder name and no icon`() {
+    fun `when creating with a blank name, should save the placeholder name and the plain folder icon`() {
         var name: String? = null
         var icon: String? = "unset"
         composeTestRule.setContent {
@@ -56,7 +55,7 @@ class FolderFormDialogTest {
         composeTestRule.onNodeWithText("Create").performClick()
 
         assertEquals("New Folder", name)
-        assertNull(icon)
+        assertEquals("folder", icon)
     }
 
     @Test

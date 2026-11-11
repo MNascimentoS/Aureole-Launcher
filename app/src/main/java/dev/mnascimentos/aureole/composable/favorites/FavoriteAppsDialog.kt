@@ -47,7 +47,8 @@ private const val PREVIEW_MAX_APPS = 4
 fun FavoriteAppsDialog(
     config: FavoriteAppsDialogConfig,
     actions: FavoriteAppsDialogActions,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    initialMode: FavoriteAppsScreenMode = FavoriteAppsScreenMode.MAIN
 ) {
     var isVisible by remember { mutableStateOf(true) }
 
@@ -58,7 +59,7 @@ fun FavoriteAppsDialog(
         }
     }
 
-    var currentMode by remember { mutableStateOf(FavoriteAppsScreenMode.MAIN) }
+    var currentMode by remember { mutableStateOf(initialMode) }
 
     val appMap = remember(config.allApps) {
         config.allApps.associateBy { it.packageName }

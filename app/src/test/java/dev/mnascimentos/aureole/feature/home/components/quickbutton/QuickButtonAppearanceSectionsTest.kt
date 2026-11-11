@@ -37,8 +37,8 @@ class QuickButtonAppearanceSectionsTest {
         setContent(QuickButtonModel(appearance = QuickButtonAppearance(strokeEnabled = true)))
 
         composeTestRule.onNodeWithText("ICON").assertIsDisplayed()
-        composeTestRule.onNodeWithText("ICON COLOR").assertIsDisplayed()
-        composeTestRule.onNodeWithText("BACKGROUND COLOR").assertIsDisplayed()
+        composeTestRule.onNodeWithText("ICON COLOR").performScrollTo().assertIsDisplayed()
+        composeTestRule.onNodeWithText("BACKGROUND COLOR").performScrollTo().assertIsDisplayed()
         composeTestRule.onNodeWithText("STROKE COLOR").performScrollTo().assertIsDisplayed()
     }
 
