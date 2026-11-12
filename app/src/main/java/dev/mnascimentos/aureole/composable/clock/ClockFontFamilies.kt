@@ -15,8 +15,15 @@ private val RoundedFontFamily: FontFamily by lazy { FontFamily(Typeface.create("
 /** Compose family of this option; [ClockFontSpec.THEME] is the family of the current theme. */
 @Composable
 @ReadOnlyComposable
-internal fun ClockFontSpec.fontFamily(): FontFamily = when (this) {
-    ClockFontSpec.THEME -> AureoleDS.typography.fontFamily
+internal fun ClockFontSpec.fontFamily(): FontFamily {
+    // Read unconditionally: a theme read only in the THEME branch would change the reads when the font changes.
+    val themeFamily = AureoleDS.typography.fontFamily
+    return fontFamilyFor(themeFamily)
+}
+
+/** Compose family of this option, given the family of the current theme. */
+internal fun ClockFontSpec.fontFamilyFor(themeFamily: FontFamily): FontFamily = when (this) {
+    ClockFontSpec.THEME -> themeFamily
     ClockFontSpec.BOLD -> FontFamily.SansSerif
     ClockFontSpec.SERIF -> FontFamily.Serif
     ClockFontSpec.MONO -> FontFamily.Monospace

@@ -15,7 +15,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -24,6 +23,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.Dp
 import dev.chrisbanes.haze.HazeState
 import dev.chrisbanes.haze.HazeStyle
 import dev.chrisbanes.haze.HazeTint
@@ -62,8 +62,9 @@ fun AppsListDrawer(
 
     val baseBgColor = AureoleDS.colors.background
     val hasHaze = uiState.isHazeEnabled && (hazeState != null)
+    val blurRadius = glassBlurRadius(AppsDrawerMetrics.HazeBlurRadius)
     val hazeModifier =
-        Modifier.buildDrawerHaze(hasHaze, hazeState, baseBgColor, uiState.hazeOpacity)
+        Modifier.buildDrawerHaze(hasHaze, hazeState, baseBgColor, uiState.hazeOpacity, blurRadius)
     val drawerBgColor = if (hasHaze) Color.Transparent else baseBgColor
 
     var isSearchExpanded by remember { mutableStateOf(uiState.searchQuery.isNotEmpty()) }
@@ -147,13 +148,13 @@ fun AppsListDrawer(
     }
 }
 
-@Composable
-@ReadOnlyComposable
+/** Drawer glass; [blurRadius] is read by the caller so no composition local is read conditionally. */
 private fun Modifier.buildDrawerHaze(
     hasHaze: Boolean,
     hazeState: HazeState?,
     baseBgColor: Color,
-    hazeOpacity: Float
+    hazeOpacity: Float,
+    blurRadius: Dp
 ): Modifier {
     if (!hasHaze || hazeState == null) return this
     val tintAlpha = (hazeOpacity * DRAWER_HAZE_TINT_FACTOR).coerceIn(
@@ -164,7 +165,7 @@ private fun Modifier.buildDrawerHaze(
         Modifier.hazeEffect(
             state = hazeState,
             style = HazeStyle(
-                blurRadius = glassBlurRadius(AppsDrawerMetrics.HazeBlurRadius),
+                blurRadius = blurRadius,
                 tint = HazeTint(baseBgColor.copy(alpha = tintAlpha))
             )
         ) {
