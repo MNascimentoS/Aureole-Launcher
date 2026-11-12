@@ -73,7 +73,7 @@ class OnboardingActionsFactoryTest {
         onAddGridItem = { type, _, _ -> calls += "add:$type" },
         onSetIsAddingSingleWidget = { adding -> calls += "singleWidget:$adding" },
         onAddWidgetClick = { stack -> calls += "widgetPicker:$stack" },
-        onOpenEditClockBottomSheet = { calls += "clock" },
+        onOpenEditClockBottomSheet = { calls += "clock:$it" },
         onSaveGridEditMode = { calls += "saveGrid" }
     )
 
@@ -170,7 +170,7 @@ class OnboardingActionsFactoryTest {
     fun `when the clock task is tapped, should place the clock and open its editor`() {
         actions().onTaskClick(OnboardingTask.ADD_CLOCK)
 
-        assertEquals(listOf("clock"), calls)
+        assertEquals(listOf("clock:${GridDefaults.CLOCK_ITEM_ID}"), calls)
         assertEquals(GridDefaults.CLOCK_ITEM_ID, viewModel.uiState.value.onboarding.createdItemId)
     }
 

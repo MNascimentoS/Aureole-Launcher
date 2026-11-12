@@ -216,7 +216,7 @@ class HomeActionsFactory(
             onOpenEditFolderForFolder = { folder -> viewModel.openEditFolderForFolder(folder) },
             onOpenCustomizeBottomSheet = { viewModel.setShowCustomizeBottomSheet(true) },
             onCloseCustomizeBottomSheet = { viewModel.setShowCustomizeBottomSheet(false) },
-            onOpenEditClockBottomSheet = { viewModel.openEditClockBottomSheet() },
+            onOpenEditClockBottomSheet = { clockId -> viewModel.openEditClockBottomSheet(clockId) },
             onCloseEditClockBottomSheet = { viewModel.closeEditClockBottomSheet() },
             onUpdateClockStyle = { style -> viewModel.updateClockStyle(style) },
             onUpdateClockCustomGreeting = { greeting -> viewModel.updateClockCustomGreeting(greeting) },

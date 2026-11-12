@@ -80,7 +80,8 @@ data class HomeScreenActions(
     val onCloseCustomizeBottomSheet: () -> Unit = {},
 
     // Clock Customization Actions
-    val onOpenEditClockBottomSheet: () -> Unit = {},
+    /** Opens the clock editor for the clock with this grid item id; null edits the default clock look. */
+    val onOpenEditClockBottomSheet: (String?) -> Unit = {},
     val onCloseEditClockBottomSheet: () -> Unit = {},
     val onUpdateClockStyle: (String) -> Unit = {},
     val onUpdateClockCustomGreeting: (String) -> Unit = {},

@@ -57,13 +57,20 @@ private const val MIN_LONG_PRESS_TIMEOUT_MS = 200L
 private const val DEFAULT_WIDGET_MIN_WIDTH = 100
 private const val DEFAULT_WIDGET_MAX_HEIGHT = 360
 
+/** The clock [item] of the grid, drawn with the config saved for its id. */
 @Composable
 fun GridClockContent(
+    item: LauncherItemState,
     containerConfig: ContainerConfig,
     uiState: MainUiState,
     modifier: Modifier = Modifier
 ) {
-    ClockContainer(modifier = modifier.fillMaxSize(), hazeState = containerConfig.hazeState, uiState = uiState)
+    ClockContainer(
+        modifier = modifier.fillMaxSize(),
+        clockId = item.id.takeIf { it.isNotBlank() },
+        hazeState = containerConfig.hazeState,
+        uiState = uiState
+    )
 }
 
 @Composable
@@ -135,7 +142,7 @@ fun GridItemContent(params: GridItemContentParams) {
     val uiState = LocalHomeUiState.current
     val actions = LocalHomeActions.current
     when (item.safeType) {
-        LauncherItemType.CLOCK -> GridClockContent(params.containerConfig, uiState)
+        LauncherItemType.CLOCK -> GridClockContent(item, params.containerConfig, uiState)
         LauncherItemType.APPS_LIST -> GridAppsListContent(params)
         LauncherItemType.ALL_APPS_LIST -> GridAllAppsListContent(params)
         LauncherItemType.SHORTCUTS_CONTAINER -> GridContainerContent(

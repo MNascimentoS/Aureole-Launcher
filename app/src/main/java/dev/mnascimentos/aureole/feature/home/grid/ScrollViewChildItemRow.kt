@@ -265,7 +265,7 @@ private fun handleEditChildClick(
 ) {
     when (child.type) {
         LauncherItemType.CLOCK -> {
-            actions.onOpenEditClockBottomSheet()
+            actions.onOpenEditClockBottomSheet(child.id)
             onDismissRequest()
         }
         LauncherItemType.SHORTCUTS_CONTAINER,

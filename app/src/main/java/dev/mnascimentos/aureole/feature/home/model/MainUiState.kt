@@ -5,6 +5,7 @@ import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.composable.undo.model.UndoSnackbarState
 import dev.mnascimentos.aureole.core.data.model.AppFolder
 import dev.mnascimentos.aureole.core.data.model.AppInfo
+import dev.mnascimentos.aureole.core.data.model.ClockConfig
 import dev.mnascimentos.aureole.core.data.model.ContainerModel
 import dev.mnascimentos.aureole.core.data.model.LauncherItemState
 import dev.mnascimentos.aureole.core.data.model.QuickButtonModel
@@ -47,6 +48,8 @@ data class MainUiState(
     val clockDateFormat: String = SettingsRepository.DEFAULT_CLOCK_DATE_FORMAT,
     val clockTextColor: Int = 0,
     val clockBackgroundColor: Int = 0,
+    /** The look of each clock on the grid by item id; a clock missing here uses the clock fields above. */
+    val clockConfigs: Map<String, ClockConfig> = emptyMap(),
     val showContainerAddFolderButton: Boolean = true,
     val containerPosition: String = "Center",
     val showFolderLabels: Boolean = false,
@@ -117,6 +120,8 @@ data class MainUiState(
     val showAddContainerDialog: Boolean = false,
     val showCustomizeBottomSheet: Boolean = false,
     val showEditClockBottomSheet: Boolean = false,
+    /** The grid item id of the clock the clock editor changes; null edits the clock fields above (the default). */
+    val editingClockId: String? = null,
     val showQuickButtonSettingsBottomSheet: Boolean = false,
     val showQuickButtonAppearanceBottomSheet: Boolean = false,
     val showShortcutSelectionBottomSheet: Boolean = false,

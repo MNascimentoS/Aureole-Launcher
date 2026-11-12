@@ -99,7 +99,7 @@ private fun ScrollableAllAppsList(
                         hazeOpacity = uiState.hazeOpacity,
                         isBackgroundEnabled = uiState.isClockBackgroundEnabled
                     ),
-                    onLongClick = { actions.onOpenEditClockBottomSheet() }
+                    onLongClick = { actions.onOpenEditClockBottomSheet(null) }
                 )
             }
 

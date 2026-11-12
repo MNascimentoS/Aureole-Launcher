@@ -23,7 +23,7 @@ fun HomeClockHeader(
     ClockHeader(
         resolvedConfig = resolveClockConfig(config, uiState),
         modifier = modifier,
-        hazeConfig = resolveClockHazeConfig(hazeConfig, uiState),
+        hazeConfig = resolveClockHazeConfig(hazeConfig, uiState, config),
         onClick = onClick,
         onLongClick = onLongClick
     )
@@ -42,12 +42,18 @@ internal fun resolveClockConfig(config: ClockHeaderConfig, uiState: MainUiState)
     )
 }
 
-internal fun resolveClockHazeConfig(hazeConfig: ClockHazeConfig, uiState: MainUiState): ClockHazeConfig {
+/** The background switch of [config] wins over the one of the state, as the other fields of [resolveClockConfig]. */
+internal fun resolveClockHazeConfig(
+    hazeConfig: ClockHazeConfig,
+    uiState: MainUiState,
+    config: ClockHeaderConfig = ClockHeaderConfig()
+): ClockHazeConfig {
     return ClockHazeConfig(
         hazeState = hazeConfig.hazeState,
         isHazeEnabled = hazeConfig.isHazeEnabled || uiState.isHazeEnabled,
         hazeOpacity = if (hazeConfig.isHazeEnabled) hazeConfig.hazeOpacity else uiState.hazeOpacity,
-        isBackgroundEnabled = hazeConfig.isBackgroundEnabled && uiState.isClockBackgroundEnabled
+        isBackgroundEnabled = hazeConfig.isBackgroundEnabled &&
+            (config.isBackgroundEnabled ?: uiState.isClockBackgroundEnabled)
     )
 }
 
