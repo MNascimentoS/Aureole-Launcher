@@ -16,11 +16,9 @@ import androidx.core.graphics.drawable.toDrawable
 import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.composable.appitem.model.AppItemBottomSheetParams
 import dev.mnascimentos.aureole.composable.appitem.model.AppItemRowActions
-import dev.mnascimentos.aureole.composable.menu.AureoleMenuQuickActions
+import dev.mnascimentos.aureole.composable.menu.AureoleMenuListSheet
 import dev.mnascimentos.aureole.composable.menu.AureoleMenuRow
-import dev.mnascimentos.aureole.composable.menu.AureoleMenuSectionLabel
-import dev.mnascimentos.aureole.composable.menu.AureoleMenuSheet
-import dev.mnascimentos.aureole.composable.menu.model.MenuQuickAction
+import dev.mnascimentos.aureole.composable.menu.model.MenuEntry
 import dev.mnascimentos.aureole.composable.menu.model.MenuRowParams
 import dev.mnascimentos.aureole.composable.menu.model.MenuSheetParams
 import dev.mnascimentos.aureole.core.data.model.AppInfo
@@ -38,8 +36,9 @@ import dev.mnascimentos.aureole.util.IntentUtils
 import dev.mnascimentos.aureole.util.toImageBitmap
 
 /**
- * Menu of an app (long press): the app shortcuts and container or folder rows on top, and a bar of round
- * actions at the bottom with Favorite at the thumb side and Uninstall, which needs a hold, at the far end.
+ * Menu of an app (long press), a plain vertical list: the app shortcuts, a divider, App info, Favorite and the
+ * container or folder settings, then (after another divider, in red) Remove from folder and Uninstall. Uninstall
+ * needs a 1 s hold. The thumb side comes from the launcher setting, so the order is the same for both hands.
  */
 @Composable
 fun AppItemBottomSheet(
@@ -49,130 +48,141 @@ fun AppItemBottomSheet(
 ) {
     val context = LocalContext.current
     val iconBitmap = remember(params.app.packageName) { params.app.getIconBitmap() }
-    val shortcuts = remember(params.app.packageName) {
+    val shortcuts = params.shortcuts ?: remember(params.app.packageName) {
         AppShortcutUtils.getAppShortcuts(context, params.app.packageName)
     }
-    val quickActions = appQuickActions(params = params, context = context, onDismiss = onDismiss)
 
-    AureoleMenuSheet(
+    AureoleMenuListSheet(
         title = params.app.label,
         onDismiss = onDismiss,
         modifier = modifier,
         params = MenuSheetParams(
             titleIcon = { m -> Image(bitmap = iconBitmap, contentDescription = params.app.label, modifier = m) },
-            onSettingsClick = params.actions.onOpenSettings,
-            bottomBar = { AureoleMenuQuickActions(actions = quickActions) }
+            onSettingsClick = params.actions.onOpenSettings
         )
     ) {
-        AppMenuRows(params = params, shortcuts = shortcuts, onDismiss = onDismiss, context = context)
+        appMenuEntries(params = params, shortcuts = shortcuts, onDismiss = onDismiss, context = context)
     }
 }
 
 @Composable
-private fun appQuickActions(
-    params: AppItemBottomSheetParams,
-    context: Context,
-    onDismiss: () -> Unit
-): List<MenuQuickAction> {
-    val favoriteLabel = stringResource(R.string.home_app_menu_favorite)
-    val infoLabel = stringResource(R.string.home_app_menu_info)
-    val uninstallLabel = stringResource(R.string.home_app_menu_hold_uninstall)
-    return buildList {
-        params.actions.onToggleFavorite?.let { toggle ->
-            add(
-                MenuQuickAction(
-                    label = favoriteLabel,
-                    icon = { m, c -> AureoleDS.icons.Favorite(modifier = m, tint = c) },
-                    onTrigger = {
-                        toggle(params.app.packageName)
-                        onDismiss()
-                    },
-                    isActive = params.isFavorite
-                )
-            )
-        }
-        add(
-            MenuQuickAction(
-                label = infoLabel,
-                icon = { m, c -> AureoleDS.icons.Info(modifier = m, tint = c) },
-                onTrigger = {
-                    params.actions.onAppInfoClick?.invoke(params.app)
-                        ?: IntentUtils.openAppInfo(context, params.app.packageName)
-                    onDismiss()
-                }
-            )
-        )
-        add(
-            MenuQuickAction(
-                label = uninstallLabel,
-                icon = { m, c -> AureoleDS.icons.Delete(modifier = m, tint = c) },
-                onTrigger = {
-                    params.actions.onUninstallClick?.invoke(params.app)
-                        ?: IntentUtils.uninstallApp(context, params.app.packageName)
-                    onDismiss()
-                },
-                isDestructive = true,
-                requiresHold = true
-            )
-        )
-    }
-}
-
-@Composable
-private fun AppMenuRows(
+private fun appMenuEntries(
     params: AppItemBottomSheetParams,
     shortcuts: List<AureoleShortcutItem>,
     onDismiss: () -> Unit,
     context: Context
-) {
-    val hasRows = shortcuts.isNotEmpty() || params.onOpenContainerSettings != null ||
-        params.onOpenFolderSettings != null || params.actions.onEditFavoritesClick != null
-
-    if (params.onRemoveFromFolder != null) {
-        AureoleMenuRow(
-            MenuRowParams(
-                title = stringResource(R.string.home_app_menu_remove_from_folder),
-                onClick = {
-                    params.onRemoveFromFolder.invoke()
-                    onDismiss()
-                },
-                icon = { m, c -> AureoleDS.icons.Delete(modifier = m, tint = c) },
-                isDestructive = true
-            )
-        )
+): List<MenuEntry> = buildList {
+    if (shortcuts.isNotEmpty()) {
+        add(MenuEntry.Section(text = stringResource(R.string.home_app_menu_section_shortcuts)))
+        shortcuts.forEach { shortcut ->
+            add(MenuEntry.Content { ShortcutRow(shortcut = shortcut, onDismiss = onDismiss, context = context) })
+        }
+        add(MenuEntry.Divider)
     }
-    if (hasRows) AureoleMenuSectionLabel(text = stringResource(R.string.home_app_menu_section_shortcuts))
-
-    shortcuts.forEach { shortcut -> ShortcutRow(shortcut = shortcut, onDismiss = onDismiss, context = context) }
-    AppMenuNavRow(
-        title = stringResource(R.string.home_folder_container_settings),
-        onClick = params.onOpenContainerSettings,
-        onDismiss = onDismiss
-    )
-    AppMenuNavRow(
-        title = stringResource(R.string.home_folder_settings),
-        onClick = params.onOpenFolderSettings,
-        onDismiss = onDismiss
-    )
-    AppMenuNavRow(
-        title = stringResource(R.string.home_app_menu_quick_panel_settings),
-        onClick = params.actions.onEditFavoritesClick,
-        onDismiss = onDismiss
-    )
+    addAll(appActionEntries(params = params, onDismiss = onDismiss, context = context))
+    addAll(appNavEntries(params = params, onDismiss = onDismiss))
+    addAll(appDestructiveEntries(params = params, onDismiss = onDismiss, context = context))
 }
 
 @Composable
-private fun AppMenuNavRow(title: String, onClick: (() -> Unit)?, onDismiss: () -> Unit) {
-    if (onClick == null) return
-    AureoleMenuRow(
-        MenuRowParams(
-            title = title,
-            onClick = {
-                onClick()
-                onDismiss()
-            },
-            icon = { m, c -> AureoleDS.icons.Settings(modifier = m, tint = c) },
-            showChevron = true
+private fun appActionEntries(
+    params: AppItemBottomSheetParams,
+    onDismiss: () -> Unit,
+    context: Context
+): List<MenuEntry> = buildList {
+    add(
+        MenuEntry.Row(
+            MenuRowParams(
+                title = stringResource(R.string.home_app_menu_info),
+                onClick = {
+                    params.actions.onAppInfoClick?.invoke(params.app)
+                        ?: IntentUtils.openAppInfo(context, params.app.packageName)
+                    onDismiss()
+                },
+                icon = { m, c -> AureoleDS.icons.Info(modifier = m, tint = c) }
+            )
+        )
+    )
+    params.actions.onToggleFavorite?.let { toggle ->
+        val titleRes = if (params.isFavorite) {
+            R.string.home_app_menu_favorite_remove
+        } else {
+            R.string.home_app_menu_favorite_add
+        }
+        add(
+            MenuEntry.Row(
+                MenuRowParams(
+                    title = stringResource(titleRes),
+                    onClick = {
+                        toggle(params.app.packageName)
+                        onDismiss()
+                    },
+                    icon = { m, c -> AureoleDS.icons.Favorite(modifier = m, tint = c) }
+                )
+            )
+        )
+    }
+}
+
+@Composable
+private fun appNavEntries(params: AppItemBottomSheetParams, onDismiss: () -> Unit): List<MenuEntry> {
+    val navRows = listOf(
+        stringResource(R.string.home_folder_container_settings) to params.onOpenContainerSettings,
+        stringResource(R.string.home_folder_settings) to params.onOpenFolderSettings,
+        stringResource(R.string.home_app_menu_quick_panel_settings) to params.actions.onEditFavoritesClick
+    )
+    return navRows.mapNotNull { (title, onClick) ->
+        onClick?.let {
+            MenuEntry.Row(
+                MenuRowParams(
+                    title = title,
+                    onClick = {
+                        it()
+                        onDismiss()
+                    },
+                    icon = { m, c -> AureoleDS.icons.Settings(modifier = m, tint = c) },
+                    showChevron = true
+                )
+            )
+        }
+    }
+}
+
+@Composable
+private fun appDestructiveEntries(
+    params: AppItemBottomSheetParams,
+    onDismiss: () -> Unit,
+    context: Context
+): List<MenuEntry> = buildList {
+    params.onRemoveFromFolder?.let { remove ->
+        add(
+            MenuEntry.Row(
+                MenuRowParams(
+                    title = stringResource(R.string.home_app_menu_remove_from_folder),
+                    onClick = {
+                        remove()
+                        onDismiss()
+                    },
+                    icon = { m, c -> AureoleDS.icons.Delete(modifier = m, tint = c) },
+                    isDestructive = true
+                )
+            )
+        )
+    }
+    add(
+        MenuEntry.Row(
+            MenuRowParams(
+                title = stringResource(R.string.home_app_menu_uninstall),
+                subtitle = stringResource(R.string.home_app_menu_hold_to_confirm),
+                onClick = {
+                    params.actions.onUninstallClick?.invoke(params.app)
+                        ?: IntentUtils.uninstallApp(context, params.app.packageName)
+                    onDismiss()
+                },
+                icon = { m, c -> AureoleDS.icons.Delete(modifier = m, tint = c) },
+                isDestructive = true,
+                requiresHold = true
+            )
         )
     )
 }

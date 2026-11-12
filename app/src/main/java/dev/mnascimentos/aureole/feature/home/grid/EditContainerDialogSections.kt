@@ -47,18 +47,24 @@ internal fun EditDialogDeleteRow(
     onDeleteConfirm: (String) -> Unit,
     onDismissRequest: () -> Unit
 ) {
-    AureoleMenuRow(
-        MenuRowParams(
-            title = stringResource(R.string.home_grid_remove_component),
-            onClick = {
-                onDeleteConfirm(itemId)
-                onDismissRequest()
-            },
-            icon = { m, c -> AureoleDS.icons.Delete(modifier = m, tint = c) },
-            isDestructive = true
-        )
-    )
+    AureoleMenuRow(editDialogDeleteParams(itemId, onDeleteConfirm, onDismissRequest))
 }
+
+/** The destructive "Remove component" row; the menu base moves it to the end of the list. */
+@Composable
+internal fun editDialogDeleteParams(
+    itemId: String,
+    onDeleteConfirm: (String) -> Unit,
+    onDismissRequest: () -> Unit
+) = MenuRowParams(
+    title = stringResource(R.string.home_grid_remove_component),
+    onClick = {
+        onDeleteConfirm(itemId)
+        onDismissRequest()
+    },
+    icon = { m, c -> AureoleDS.icons.Delete(modifier = m, tint = c) },
+    isDestructive = true
+)
 
 @Composable
 internal fun EditDialogTypeActionSection(

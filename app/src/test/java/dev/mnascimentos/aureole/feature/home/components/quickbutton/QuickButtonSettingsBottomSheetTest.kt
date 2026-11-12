@@ -129,7 +129,7 @@ class QuickButtonSettingsBottomSheetTest {
         // Arrange
         var deletedId: String? = null
         val actions = createDefaultHomeScreenActions().copy(
-            onDeleteGridItem = { id -> deletedId = id }
+            onRemoveGridItem = { id -> deletedId = id }
         )
         val uiState = MainUiState(
             activeQuickButtonId = "qb_delete_id",

@@ -1,14 +1,11 @@
 package dev.mnascimentos.aureole.feature.home.grid
 
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.height
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import dev.mnascimentos.aureole.R
-import dev.mnascimentos.aureole.composable.menu.AureoleMenuNote
-import dev.mnascimentos.aureole.composable.menu.AureoleMenuSectionLabel
-import dev.mnascimentos.aureole.composable.menu.AureoleMenuSheet
+import dev.mnascimentos.aureole.composable.menu.AureoleMenuListSheet
+import dev.mnascimentos.aureole.composable.menu.model.MenuEntry
 import dev.mnascimentos.aureole.composable.menu.model.MenuSheetParams
 import dev.mnascimentos.aureole.core.data.model.LauncherItemState
 import dev.mnascimentos.aureole.core.data.model.LauncherItemType
@@ -45,7 +42,14 @@ fun EditGridItemDialog(
         else -> stringResource(R.string.home_grid_item_container)
     }
 
-    AureoleMenuSheet(
+    val sizeNote = stringResource(R.string.home_grid_current_size, item.colSpan, item.rowSpan)
+    val sectionLabel = stringResource(R.string.home_grid_menu_section)
+    val deleteParams = editDialogDeleteParams(
+        itemId = item.id,
+        onDeleteConfirm = onDeleteConfirm,
+        onDismissRequest = onDismissRequest
+    )
+    AureoleMenuListSheet(
         title = title,
         onDismiss = onDismissRequest,
         modifier = modifier,
@@ -57,19 +61,19 @@ fun EditGridItemDialog(
             }
         )
     ) {
-        EditDialogDeleteRow(
-            itemId = item.id,
-            onDeleteConfirm = onDeleteConfirm,
-            onDismissRequest = onDismissRequest
-        )
-        Spacer(modifier = Modifier.height(AureoleDS.dimens.xSmall))
-        AureoleMenuNote(text = stringResource(R.string.home_grid_current_size, item.colSpan, item.rowSpan))
-        AureoleMenuSectionLabel(text = stringResource(R.string.home_grid_menu_section))
-
-        if (item.type == LauncherItemType.SCROLL_VIEW) {
-            EditDialogScrollViewSection(item = item, actions = actions, onDismissRequest = onDismissRequest)
+        buildList {
+            add(MenuEntry.Note(text = sizeNote))
+            add(MenuEntry.Section(text = sectionLabel))
+            if (item.type == LauncherItemType.SCROLL_VIEW) {
+                add(MenuEntry.Content {
+                    EditDialogScrollViewSection(item = item, actions = actions, onDismissRequest = onDismissRequest)
+                })
+            }
+            add(MenuEntry.Content {
+                EditDialogTypeActionSection(item = item, actions = actions, onDismissRequest = onDismissRequest)
+            })
+            add(MenuEntry.Row(deleteParams))
         }
-        EditDialogTypeActionSection(item = item, actions = actions, onDismissRequest = onDismissRequest)
     }
 }
 

@@ -429,8 +429,9 @@
     <string name="home_undo_folder_removed">Pasta removida</string>
     <string name="home_undo_component_removed">Componente removido</string>
     <string name="home_grid_menu_section">Ações do item</string>
-    <string name="home_app_menu_favorite">Favorito</string>
-    <string name="home_app_menu_hold_uninstall">Segure p/ desinstalar</string>
+    <string name="home_app_menu_favorite_add">Adicionar aos favoritos</string>
+    <string name="home_app_menu_favorite_remove">Remover dos favoritos</string>
+    <string name="home_app_menu_hold_to_confirm">Segure para confirmar</string>
     <string name="home_app_menu_section_shortcuts">Atalhos do app</string>
     <string name="home_undo_widget_removed">Widget removido</string>
     <string name="home_undo_widget_order_changed">Ordem alterada</string>

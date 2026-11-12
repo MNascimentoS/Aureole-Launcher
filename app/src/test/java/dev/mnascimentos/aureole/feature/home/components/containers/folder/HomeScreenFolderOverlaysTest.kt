@@ -321,7 +321,7 @@ class HomeScreenFolderOverlaysTest {
         )
         showOverlays(state, actions)
 
-        composeTestRule.onNodeWithText("Favorite").performClick()
+        composeTestRule.onNodeWithText("Add to favorites").performClick()
 
         assertTrue(toggled == (sampleApp.packageName to "p1"))
     }
@@ -335,7 +335,7 @@ class HomeScreenFolderOverlaysTest {
         )
         showOverlays(state, actions)
 
-        composeTestRule.onNodeWithText("Favorite").performClick()
+        composeTestRule.onNodeWithText("Add to favorites").performClick()
 
         assertTrue(toggled == sampleApp.packageName)
     }

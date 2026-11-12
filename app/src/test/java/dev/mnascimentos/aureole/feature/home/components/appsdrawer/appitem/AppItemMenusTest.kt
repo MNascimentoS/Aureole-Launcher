@@ -8,6 +8,7 @@ import android.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.down
+import androidx.compose.ui.test.getUnclippedBoundsInRoot
 import androidx.compose.ui.test.junit4.v2.createComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
@@ -48,7 +49,7 @@ class AppItemMenusTest {
 
     private fun holdUninstall() {
         composeTestRule.mainClock.autoAdvance = false
-        composeTestRule.onNodeWithText("Hold to uninstall").performTouchInput { down(center) }
+        composeTestRule.onNodeWithText("Uninstall").performTouchInput { down(center) }
         composeTestRule.mainClock.advanceTimeBy(MENU_HOLD_MS + HOLD_MARGIN_MS)
     }
 
@@ -67,7 +68,7 @@ class AppItemMenusTest {
             }
         }
 
-        composeTestRule.onNodeWithText("Hold to uninstall").performClick()
+        composeTestRule.onNodeWithText("Uninstall").performClick()
 
         assertFalse(uninstallClicked)
     }
@@ -85,7 +86,7 @@ class AppItemMenusTest {
 
         composeTestRule.onNodeWithText("Test App Header").assertIsDisplayed()
         composeTestRule.onNodeWithText("App Info").assertIsDisplayed()
-        composeTestRule.onNodeWithText("Hold to uninstall").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Uninstall").assertIsDisplayed()
     }
 
     @Test
@@ -323,8 +324,8 @@ class AppItemMenusTest {
             }
         }
 
-        composeTestRule.onNodeWithText("Favorite").assertIsDisplayed()
-        composeTestRule.onNodeWithText("Favorite").performClick()
+        composeTestRule.onNodeWithText("Add to favorites").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Add to favorites").performClick()
 
         assertEquals(sampleApp.packageName, toggledPkg)
         assertTrue(dismissed)
@@ -352,8 +353,8 @@ class AppItemMenusTest {
             }
         }
 
-        composeTestRule.onNodeWithText("Favorite").assertIsDisplayed()
-        composeTestRule.onNodeWithText("Favorite").performClick()
+        composeTestRule.onNodeWithText("Remove from favorites").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Remove from favorites").performClick()
 
         assertEquals(sampleApp.packageName, toggledPkg)
         assertTrue(dismissed)
@@ -416,5 +417,46 @@ class AppItemMenusTest {
         }
 
         composeTestRule.onNodeWithContentDescription("Aureole settings").assertDoesNotExist()
+    }
+
+    @Test
+    fun `menu is a vertical list that ends with Remove from folder and Uninstall`() {
+        composeTestRule.setContent {
+            AureoleLauncherTheme {
+                AppItemBottomSheet(
+                    params = AppItemBottomSheetParams(
+                        app = sampleApp,
+                        actions = AppItemRowActions(onToggleFavorite = {}),
+                        onOpenContainerSettings = {},
+                        onRemoveFromFolder = {}
+                    ),
+                    onDismiss = {}
+                )
+            }
+        }
+
+        fun top(text: String) = composeTestRule.onNodeWithText(text).getUnclippedBoundsInRoot().top
+        val order = listOf("App Info", "Add to favorites", "Container settings", "Remove from folder", "Uninstall")
+        assertEquals(order, order.sortedBy { top(it) })
+        composeTestRule.onNodeWithText("Hold to confirm").assertIsDisplayed()
+    }
+
+    @Test
+    fun `remove from folder is red row that calls back and dismisses`() {
+        var removed = false
+        var dismissed = false
+        composeTestRule.setContent {
+            AureoleLauncherTheme {
+                AppItemBottomSheet(
+                    params = AppItemBottomSheetParams(app = sampleApp, onRemoveFromFolder = { removed = true }),
+                    onDismiss = { dismissed = true }
+                )
+            }
+        }
+
+        composeTestRule.onNodeWithText("Remove from folder").performClick()
+
+        assertTrue(removed)
+        assertTrue(dismissed)
     }
 }

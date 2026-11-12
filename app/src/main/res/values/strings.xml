@@ -427,8 +427,9 @@
     <string name="home_undo_folder_removed">Folder removed</string>
     <string name="home_undo_component_removed">Component removed</string>
     <string name="home_grid_menu_section">Item actions</string>
-    <string name="home_app_menu_favorite">Favorite</string>
-    <string name="home_app_menu_hold_uninstall">Hold to uninstall</string>
+    <string name="home_app_menu_favorite_add">Add to favorites</string>
+    <string name="home_app_menu_favorite_remove">Remove from favorites</string>
+    <string name="home_app_menu_hold_to_confirm">Hold to confirm</string>
     <string name="home_app_menu_section_shortcuts">App shortcuts</string>
     <string name="home_undo_widget_removed">Widget removed</string>
     <string name="home_undo_widget_order_changed">Order changed</string>

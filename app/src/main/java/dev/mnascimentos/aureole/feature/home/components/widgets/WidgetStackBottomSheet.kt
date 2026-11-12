@@ -10,10 +10,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import dev.mnascimentos.aureole.R
-import dev.mnascimentos.aureole.composable.menu.AureoleMenuRow
-import dev.mnascimentos.aureole.composable.menu.AureoleMenuSectionLabel
-import dev.mnascimentos.aureole.composable.menu.AureoleMenuSheet
+import dev.mnascimentos.aureole.composable.menu.AureoleMenuListSheet
 import dev.mnascimentos.aureole.composable.menu.AureoleSwitchRow
+import dev.mnascimentos.aureole.composable.menu.model.MenuEntry
 import dev.mnascimentos.aureole.composable.menu.model.MenuRowParams
 import dev.mnascimentos.aureole.composable.menu.model.MenuSheetParams
 import dev.mnascimentos.aureole.composable.menu.model.SwitchRowParams
@@ -29,8 +28,8 @@ import dev.mnascimentos.aureole.feature.settings.SettingsActivity
 import dev.mnascimentos.aureole.util.IntentUtils
 
 /**
- * Menu of a widget group (long press on the group): Remove at the top, away from the thumb, then the group
- * actions and the position indicator switch, on the shared menu base.
+ * Menu of a widget group (long press on the group): the group actions and the position indicator switch, then
+ * Remove last, in red, on the shared menu base.
  */
 @Composable
 internal fun WidgetStackBottomSheet(
@@ -43,7 +42,7 @@ internal fun WidgetStackBottomSheet(
         params.appPackage ?: resolveWidgetPackage(context, params.widgetId)
     }
 
-    AureoleMenuSheet(
+    AureoleMenuListSheet(
         title = stringResource(R.string.home_widget_group),
         onDismiss = onDismiss,
         modifier = modifier,
@@ -52,7 +51,64 @@ internal fun WidgetStackBottomSheet(
             onSettingsClick = { context.startActivity(Intent(context, SettingsActivity::class.java)) }
         )
     ) { dismiss ->
-        AureoleMenuRow(
+        widgetStackEntries(params, widgetAppPackage, context, dismiss)
+    }
+}
+
+@Composable
+private fun widgetStackEntries(
+    params: WidgetStackBottomSheetParams,
+    widgetAppPackage: String?,
+    context: Context,
+    dismiss: () -> Unit
+): List<MenuEntry> = buildList {
+    add(MenuEntry.Section(text = stringResource(R.string.home_widget_menu_section)))
+    if (widgetAppPackage != null) {
+        add(
+            MenuEntry.Row(
+                MenuRowParams(
+                    title = stringResource(R.string.home_widget_app_settings),
+                    onClick = {
+                        IntentUtils.openAppInfo(context, widgetAppPackage)
+                        dismiss()
+                    },
+                    icon = { m, c -> AureoleDS.icons.Settings(modifier = m, tint = c) },
+                    showChevron = true
+                )
+            )
+        )
+    }
+    add(
+        MenuEntry.Row(
+            MenuRowParams(
+                title = stringResource(R.string.home_widget_resize_group),
+                onClick = {
+                    params.onEditStack()
+                    dismiss()
+                },
+                icon = { m, c -> AureoleDS.icons.MultipleView(modifier = m, tint = c) },
+                showChevron = true
+            )
+        )
+    )
+    val indicatorTitle = stringResource(R.string.home_widget_toggle_indicator)
+    add(
+        MenuEntry.Content {
+            AureoleSwitchRow(
+                SwitchRowParams(
+                    title = indicatorTitle,
+                    checked = params.showIndicator,
+                    onCheckedChange = {
+                        params.onToggleDots(params.stackId)
+                        dismiss()
+                    },
+                    icon = { m, c -> AureoleDS.icons.Dots(modifier = m.size(AureoleDS.dimens.iconMedium), tint = c) }
+                )
+            )
+        }
+    )
+    add(
+        MenuEntry.Row(
             MenuRowParams(
                 title = stringResource(R.string.home_widget_remove),
                 onClick = {
@@ -62,52 +118,6 @@ internal fun WidgetStackBottomSheet(
                 icon = { m, c -> AureoleDS.icons.Delete(modifier = m, tint = c) },
                 isDestructive = true
             )
-        )
-        AureoleMenuSectionLabel(text = stringResource(R.string.home_widget_menu_section))
-        WidgetStackMenuRows(params, widgetAppPackage, context, dismiss)
-    }
-}
-
-@Composable
-private fun WidgetStackMenuRows(
-    params: WidgetStackBottomSheetParams,
-    widgetAppPackage: String?,
-    context: Context,
-    dismiss: () -> Unit
-) {
-    if (widgetAppPackage != null) {
-        AureoleMenuRow(
-            MenuRowParams(
-                title = stringResource(R.string.home_widget_app_settings),
-                onClick = {
-                    IntentUtils.openAppInfo(context, widgetAppPackage)
-                    dismiss()
-                },
-                icon = { m, c -> AureoleDS.icons.Settings(modifier = m, tint = c) },
-                showChevron = true
-            )
-        )
-    }
-    AureoleMenuRow(
-        MenuRowParams(
-            title = stringResource(R.string.home_widget_resize_group),
-            onClick = {
-                params.onEditStack()
-                dismiss()
-            },
-            icon = { m, c -> AureoleDS.icons.MultipleView(modifier = m, tint = c) },
-            showChevron = true
-        )
-    )
-    AureoleSwitchRow(
-        SwitchRowParams(
-            title = stringResource(R.string.home_widget_toggle_indicator),
-            checked = params.showIndicator,
-            onCheckedChange = {
-                params.onToggleDots(params.stackId)
-                dismiss()
-            },
-            icon = { m, c -> AureoleDS.icons.Dots(modifier = m.size(AureoleDS.dimens.iconMedium), tint = c) }
         )
     )
 }

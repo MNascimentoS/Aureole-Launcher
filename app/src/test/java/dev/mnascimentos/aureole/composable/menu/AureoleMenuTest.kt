@@ -12,7 +12,7 @@ import androidx.compose.ui.test.performTouchInput
 import androidx.compose.ui.test.up
 import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.composable.menu.model.MENU_HOLD_MS
-import dev.mnascimentos.aureole.composable.menu.model.MenuQuickAction
+import dev.mnascimentos.aureole.composable.menu.model.MenuEntry
 import dev.mnascimentos.aureole.composable.menu.model.MenuRowParams
 import dev.mnascimentos.aureole.composable.menu.model.MenuSheetParams
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
@@ -69,54 +69,12 @@ class AureoleMenuTest {
     }
 
     @Test
-    fun `quick action with a tap fires once`() {
-        var count = 0
-        composeTestRule.setContent {
-            Themed {
-                AureoleMenuQuickActions(listOf(MenuQuickAction("Info", { _, _ -> }, { count++ })))
-            }
-        }
-
-        composeTestRule.onNodeWithText("Info").performClick()
-
-        assertEquals(1, count)
-    }
-
-    @Test
-    fun `quick actions put the first one at the thumb side`() {
-        val actions = listOf(
-            MenuQuickAction("First", { _, _ -> }, {}),
-            MenuQuickAction("Last", { _, _ -> }, {})
-        )
-        composeTestRule.setContent { Themed { AureoleMenuQuickActions(actions) } }
-
-        val first = composeTestRule.onNodeWithText("First").getUnclippedBoundsInRoot().left
-        val last = composeTestRule.onNodeWithText("Last").getUnclippedBoundsInRoot().left
-        assertTrue(first > last)
-    }
-
-    @Test
-    fun `quick actions put the first one at the left for left-handed users`() {
-        val actions = listOf(
-            MenuQuickAction("First", { _, _ -> }, {}),
-            MenuQuickAction("Last", { _, _ -> }, {})
-        )
-        composeTestRule.setContent { Themed(isLeftHanded = true) { AureoleMenuQuickActions(actions) } }
-
-        val first = composeTestRule.onNodeWithText("First").getUnclippedBoundsInRoot().left
-        val last = composeTestRule.onNodeWithText("Last").getUnclippedBoundsInRoot().left
-        assertTrue(first < last)
-    }
-
-    @Test
-    fun `hold action does not fire on a short press and fires after the hold time`() {
+    fun `hold row does not fire on a short press and fires after the hold time`() {
         var fired = false
         composeTestRule.mainClock.autoAdvance = false
         composeTestRule.setContent {
             Themed {
-                AureoleMenuQuickActions(
-                    listOf(MenuQuickAction("Uninstall", { _, _ -> }, { fired = true }, requiresHold = true))
-                )
+                AureoleMenuRow(MenuRowParams(title = "Uninstall", onClick = { fired = true }, requiresHold = true))
             }
         }
 
@@ -133,6 +91,44 @@ class AureoleMenuTest {
     }
 
     @Test
+    fun `list sheet draws destructive rows after the others even when given first`() {
+        composeTestRule.setContent {
+            Themed {
+                AureoleMenuListSheet(title = "Menu", onDismiss = {}) {
+                    listOf(
+                        MenuEntry.Row(MenuRowParams(title = "Remove", onClick = {}, isDestructive = true)),
+                        MenuEntry.Row(MenuRowParams(title = "Rename", onClick = {}))
+                    )
+                }
+            }
+        }
+
+        val rename = composeTestRule.onNodeWithText("Rename").getUnclippedBoundsInRoot().top
+        val remove = composeTestRule.onNodeWithText("Remove").getUnclippedBoundsInRoot().top
+        assertTrue(rename < remove)
+    }
+
+    @Test
+    fun `list sheet draws every entry kind`() {
+        composeTestRule.setContent {
+            Themed {
+                AureoleMenuListSheet(title = "Menu", onDismiss = {}) {
+                    listOf(
+                        MenuEntry.Section("part"),
+                        MenuEntry.Note("a note"),
+                        MenuEntry.Content { AureoleMenuRow(MenuRowParams(title = "Custom", onClick = {})) },
+                        MenuEntry.Divider
+                    )
+                }
+            }
+        }
+
+        composeTestRule.onNodeWithText("PART").assertIsDisplayed()
+        composeTestRule.onNodeWithText("a note").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Custom").assertIsDisplayed()
+    }
+
+    @Test
     fun `menu sheet shows title, rows and bottom bar and the settings button calls back`() {
         var settingsClicked = false
         composeTestRule.setContent {
@@ -142,7 +138,7 @@ class AureoleMenuTest {
                     onDismiss = {},
                     params = MenuSheetParams(
                         onSettingsClick = { settingsClicked = true },
-                        bottomBar = { AureoleMenuQuickActions(listOf(MenuQuickAction("Info", { _, _ -> }, {}))) }
+                        bottomBar = { AureoleMenuRow(MenuRowParams(title = "Info", onClick = {})) }
                     )
                 ) {
                     AureoleMenuRow(MenuRowParams(title = "Row", onClick = {}))

@@ -1,5 +1,6 @@
 package dev.mnascimentos.aureole.composable.menu
 
+import androidx.compose.animation.core.Animatable
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -12,15 +13,20 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDirection
 import androidx.compose.ui.text.style.TextOverflow
+import dev.mnascimentos.aureole.composable.actions.holdToConfirm
+import dev.mnascimentos.aureole.composable.menu.model.MENU_HOLD_MS
 import dev.mnascimentos.aureole.composable.menu.model.MenuRowParams
 import dev.mnascimentos.aureole.composable.mirror.LeftHandMirror
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
@@ -34,6 +40,7 @@ import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 
 private const val DESTRUCTIVE_TILE_ALPHA = 0.18f
 private const val NOTE_ALPHA = 0.35f
+private const val HOLD_FILL_ALPHA = 0.28f
 
 /**
  * A 56 dp menu row: optional icon column, title and an optional chevron. Mirrored for left-handed users so the
@@ -45,13 +52,16 @@ fun AureoleMenuRow(
     modifier: Modifier = Modifier
 ) {
     val titleColor = if (params.isDestructive) AureoleDS.colors.error else AureoleDS.colors.onSurfaceMedium
+    val holdProgress = remember { Animatable(0f) }
+    val holdFill = AureoleDS.colors.error.copy(alpha = HOLD_FILL_ALPHA)
     LeftHandMirror {
         Row(
             modifier = modifier
                 .fillMaxWidth()
                 .heightIn(min = AureoleDS.dimens.menuRowHeight)
                 .clip(RoundedCornerShape(AureoleDS.dimens.radiusSmall))
-                .clickable(role = Role.Button, onClick = params.onClick)
+                .drawBehind { drawRect(color = holdFill, size = Size(size.width * holdProgress.value, size.height)) }
+                .rowInput(params = params, progress = holdProgress)
                 .semantics(mergeDescendants = true) {}
                 .padding(horizontal = AureoleDS.dimens.xxSmall),
             verticalAlignment = Alignment.CenterVertically,
@@ -63,6 +73,15 @@ fun AureoleMenuRow(
         }
     }
 }
+
+/** A tap, or a hold of [MENU_HOLD_MS] with a draining fill for rows that [MenuRowParams.requiresHold]. */
+@Composable
+private fun Modifier.rowInput(params: MenuRowParams, progress: Animatable<Float, *>): Modifier =
+    if (params.requiresHold) {
+        holdToConfirm(label = params.title, holdMs = MENU_HOLD_MS, progress = progress, onTrigger = params.onClick)
+    } else {
+        clickable(role = Role.Button, onClick = params.onClick)
+    }
 
 @Composable
 private fun MenuRowTexts(params: MenuRowParams, titleColor: Color, modifier: Modifier = Modifier) {

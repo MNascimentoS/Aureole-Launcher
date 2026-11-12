@@ -1,8 +1,10 @@
 package dev.mnascimentos.aureole.feature.home
 
 import android.content.ComponentName
+import android.content.pm.ShortcutInfo
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.ui.platform.LocalContext
 import androidx.core.graphics.drawable.toDrawable
 import com.android.tools.screenshot.PreviewTest
 import dev.mnascimentos.aureole.core.designsystem.model.LocalLeftHanded
@@ -25,6 +27,7 @@ import dev.mnascimentos.aureole.feature.home.components.widgets.model.WidgetStac
 import dev.mnascimentos.aureole.feature.home.grid.EditGridItemDialog
 import dev.mnascimentos.aureole.feature.home.model.LocalHomeActions
 import dev.mnascimentos.aureole.feature.home.model.LocalHomeUiState
+import dev.mnascimentos.aureole.util.AureoleShortcutItem
 
 private val SAMPLE_APPS = listOf(
     "Phone" to 0xFF2E7D32,
@@ -55,13 +58,34 @@ private fun MenuCase(isLeftHanded: Boolean, content: @Composable () -> Unit) {
 }
 
 @Composable
-private fun AppMenuCase(isLeftHanded: Boolean) = MenuCase(isLeftHanded) {
+private fun sampleShortcuts(): List<AureoleShortcutItem> {
+    val context = LocalContext.current
+    return listOf("Ride" to "ride", "Delivery" to "delivery").map { (label, id) ->
+        AureoleShortcutItem(
+            id = id,
+            label = label,
+            icon = null,
+            shortcutInfo = ShortcutInfo.Builder(context, id).setShortLabel(label).build()
+        )
+    }
+}
+
+@Composable
+private fun AppMenuCase(
+    isLeftHanded: Boolean,
+    withShortcuts: Boolean = false,
+    insideFolder: Boolean = false
+) = MenuCase(isLeftHanded) {
+    val shortcuts = if (withShortcuts) sampleShortcuts() else emptyList()
     AppItemBottomSheet(
         params = AppItemBottomSheetParams(
             app = SAMPLE_APPS.last(),
             isFavorite = true,
             actions = AppItemRowActions(onToggleFavorite = {}, onOpenSettings = {}),
-            onOpenContainerSettings = {}
+            onOpenContainerSettings = if (insideFolder) null else ({}),
+            onOpenFolderSettings = if (insideFolder) ({}) else null,
+            onRemoveFromFolder = if (insideFolder) ({}) else null,
+            shortcuts = shortcuts
         ),
         onDismiss = {}
     )
@@ -134,6 +158,32 @@ private fun AppMenuRightHandedScreenshotTest() = AppMenuCase(isLeftHanded = fals
 @AureolePreview
 @Composable
 private fun AppMenuLeftHandedScreenshotTest() = AppMenuCase(isLeftHanded = true)
+
+@PreviewTest
+@AureolePreview
+@Composable
+private fun AppMenuShortcutsRightHandedScreenshotTest() = AppMenuCase(isLeftHanded = false, withShortcuts = true)
+
+@PreviewTest
+@AureolePreview
+@Composable
+private fun AppMenuShortcutsLeftHandedScreenshotTest() = AppMenuCase(isLeftHanded = true, withShortcuts = true)
+
+@PreviewTest
+@AureolePreview
+@Composable
+private fun AppMenuInFolderRightHandedScreenshotTest() = AppMenuCase(isLeftHanded = false, insideFolder = true)
+
+@PreviewTest
+@AureolePreview
+@Composable
+private fun AppMenuInFolderLeftHandedScreenshotTest() = AppMenuCase(isLeftHanded = true, insideFolder = true)
+
+@PreviewTest
+@AureolePreview
+@Composable
+private fun AppMenuInFolderShortcutsRightHandedScreenshotTest() =
+    AppMenuCase(isLeftHanded = false, withShortcuts = true, insideFolder = true)
 
 @PreviewTest
 @AureolePreview

@@ -11,6 +11,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import dev.mnascimentos.aureole.composable.menu.model.MenuEntry
 import dev.mnascimentos.aureole.composable.menu.model.MenuRowParams
 import dev.mnascimentos.aureole.composable.menu.model.MenuSheetParams
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleEditOverlay
@@ -68,14 +69,34 @@ fun AureoleMenuSheet(
     )
 }
 
+/**
+ * [AureoleMenuSheet] for a list of rows: [entries] are built with `dismiss` in hand and drawn with the destructive
+ * ones (Remove, Uninstall) at the end, after a divider, in red. Every list menu goes through here so the rule holds
+ * for all of them.
+ */
+@Composable
+fun AureoleMenuListSheet(
+    title: String,
+    onDismiss: () -> Unit,
+    modifier: Modifier = Modifier,
+    params: MenuSheetParams = MenuSheetParams(),
+    entries: @Composable (dismiss: () -> Unit) -> List<MenuEntry>
+) {
+    AureoleMenuSheet(title = title, onDismiss = onDismiss, modifier = modifier, params = params) { dismiss ->
+        AureoleMenuEntries(entries = entries(dismiss))
+    }
+}
+
 @AureolePreview
 @Composable
 private fun AureoleMenuSheetPreview() {
     AureoleLauncherTheme {
-        AureoleMenuSheet(title = "Menu", onDismiss = {}) {
-            AureoleMenuRow(MenuRowParams(title = "Remove", onClick = {}, isDestructive = true))
-            AureoleMenuSectionLabel(text = "SECTION")
-            AureoleMenuRow(MenuRowParams(title = "Action", onClick = {}, showChevron = true))
+        AureoleMenuListSheet(title = "Menu", onDismiss = {}) {
+            listOf(
+                MenuEntry.Row(MenuRowParams(title = "Remove", onClick = {}, isDestructive = true)),
+                MenuEntry.Section(text = "SECTION"),
+                MenuEntry.Row(MenuRowParams(title = "Action", onClick = {}, showChevron = true))
+            )
         }
     }
 }

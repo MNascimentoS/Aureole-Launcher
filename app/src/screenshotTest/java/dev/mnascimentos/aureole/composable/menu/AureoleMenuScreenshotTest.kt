@@ -6,12 +6,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
 import com.android.tools.screenshot.PreviewTest
-import dev.mnascimentos.aureole.composable.menu.model.MenuQuickAction
 import dev.mnascimentos.aureole.composable.menu.model.MenuRowParams
 import dev.mnascimentos.aureole.core.designsystem.icons.Delete
-import dev.mnascimentos.aureole.core.designsystem.icons.Info
 import dev.mnascimentos.aureole.core.designsystem.icons.Settings
-import dev.mnascimentos.aureole.core.designsystem.icons.Favorite
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
@@ -48,23 +45,21 @@ private fun MenuRowsCase(isLeftHanded: Boolean) {
 }
 
 @Composable
-private fun QuickActionsCase(isLeftHanded: Boolean) {
+private fun HoldRowCase(isLeftHanded: Boolean) {
     ProvideHomeUiState(MainUiState(isLeftHandedMode = isLeftHanded)) {
         AureoleLauncherTheme {
-            AureoleMenuQuickActions(
-                actions = listOf(
-                    MenuQuickAction("Favorite", { m, c -> AureoleDS.icons.Favorite(modifier = m, tint = c) }, {}, true),
-                    MenuQuickAction("Info", { m, c -> AureoleDS.icons.Info(modifier = m, tint = c) }, {}),
-                    MenuQuickAction(
-                        "Hold to uninstall",
-                        { m, c -> AureoleDS.icons.Delete(modifier = m, tint = c) },
-                        {},
+            Column(modifier = Modifier.padding(AureoleDS.dimens.medium)) {
+                AureoleMenuRow(
+                    MenuRowParams(
+                        title = "Uninstall",
+                        subtitle = "Hold to confirm",
+                        onClick = {},
+                        icon = { m, c -> AureoleDS.icons.Delete(modifier = m, tint = c) },
                         isDestructive = true,
                         requiresHold = true
                     )
-                ),
-                modifier = Modifier.padding(AureoleDS.dimens.medium)
-            )
+                )
+            }
         }
     }
 }
@@ -82,9 +77,9 @@ private fun MenuRowsLeftHandedScreenshotTest() = MenuRowsCase(isLeftHanded = tru
 @PreviewTest
 @AureolePreview
 @Composable
-private fun MenuQuickActionsRightHandedScreenshotTest() = QuickActionsCase(isLeftHanded = false)
+private fun MenuHoldRowRightHandedScreenshotTest() = HoldRowCase(isLeftHanded = false)
 
 @PreviewTest
 @AureolePreview
 @Composable
-private fun MenuQuickActionsLeftHandedScreenshotTest() = QuickActionsCase(isLeftHanded = true)
+private fun MenuHoldRowLeftHandedScreenshotTest() = HoldRowCase(isLeftHanded = true)

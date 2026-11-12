@@ -47,7 +47,7 @@ private fun QuickButtonAppearanceLeftHandedScreenshotTest() = QuickButtonSheetCa
     QuickButtonAppearanceBottomSheet(uiState = it, actions = dummyActions(), onDismissRequest = {})
 }
 
-/** Button menu: Remove on top, then the section with the shortcut and appearance rows. */
+/** Button menu: the section with the shortcut and appearance rows, then Remove last. */
 @PreviewTest
 @AureolePreview
 @Composable

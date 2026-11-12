@@ -4,9 +4,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import dev.mnascimentos.aureole.R
-import dev.mnascimentos.aureole.composable.menu.AureoleMenuRow
-import dev.mnascimentos.aureole.composable.menu.AureoleMenuSectionLabel
-import dev.mnascimentos.aureole.composable.menu.AureoleMenuSheet
+import dev.mnascimentos.aureole.composable.menu.AureoleMenuListSheet
+import dev.mnascimentos.aureole.composable.menu.model.MenuEntry
 import dev.mnascimentos.aureole.composable.menu.model.MenuRowParams
 import dev.mnascimentos.aureole.composable.menu.model.MenuSheetParams
 import dev.mnascimentos.aureole.core.data.model.QuickButtonModel
@@ -21,8 +20,9 @@ import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
 
 /**
- * Quick button menu: "Remove" on top, then the click shortcut and the appearance, each with a chevron. The rows
- * open the shortcut picker and the appearance editor; nothing here is a draft, so there is no Save / Cancel.
+ * Quick button menu: the click shortcut and the appearance, each with a chevron, then "Remove" last, in red, with
+ * a 4 s undo. The rows open the shortcut picker and the appearance editor; nothing here is a draft, so there is no
+ * Save / Cancel.
  */
 @Composable
 fun QuickButtonSettingsBottomSheet(
@@ -34,7 +34,8 @@ fun QuickButtonSettingsBottomSheet(
     val activeModel = uiState.activeQuickButtonModel ?: QuickButtonModel()
     val clickSubtitle = clickShortcutLabel(activeModel = activeModel, uiState = uiState)
 
-    AureoleMenuSheet(
+    val entries = quickButtonEntries(uiState = uiState, actions = actions, clickSubtitle = clickSubtitle)
+    AureoleMenuListSheet(
         title = stringResource(R.string.home_quickbutton_settings_title),
         onDismiss = onDismissRequest,
         modifier = modifier,
@@ -42,35 +43,42 @@ fun QuickButtonSettingsBottomSheet(
             titleIcon = { m -> AureoleDS.icons.Click(modifier = m, tint = AureoleDS.colors.onSurfaceMedium) },
             onSettingsClick = { actions.onSettingsClick() }
         )
-    ) {
-        AureoleMenuRow(
-            MenuRowParams(
-                title = stringResource(R.string.home_quickbutton_remove),
-                onClick = { uiState.activeQuickButtonId?.let { actions.onDeleteGridItem(it) } },
-                icon = { m, c -> AureoleDS.icons.Delete(modifier = m, tint = c) },
-                isDestructive = true
-            )
-        )
-        AureoleMenuSectionLabel(text = stringResource(R.string.home_quickbutton_menu_section))
-        AureoleMenuRow(
-            MenuRowParams(
-                title = stringResource(R.string.home_quickbutton_click_shortcut),
-                subtitle = clickSubtitle,
-                onClick = { actions.onOpenShortcutSelection("click") },
-                icon = { m, c -> AureoleDS.icons.Click(modifier = m, tint = c) },
-                showChevron = true
-            )
-        )
-        AureoleMenuRow(
-            MenuRowParams(
-                title = stringResource(R.string.home_quickbutton_appearance),
-                onClick = { actions.onOpenQuickButtonAppearance() },
-                icon = { m, c -> AureoleDS.icons.ColorFill(modifier = m, tint = c) },
-                showChevron = true
-            )
-        )
-    }
+    ) { entries }
 }
+
+@Composable
+private fun quickButtonEntries(
+    uiState: MainUiState,
+    actions: HomeScreenActions,
+    clickSubtitle: String
+): List<MenuEntry> = listOf(
+    MenuEntry.Section(text = stringResource(R.string.home_quickbutton_menu_section)),
+    MenuEntry.Row(
+        MenuRowParams(
+            title = stringResource(R.string.home_quickbutton_click_shortcut),
+            subtitle = clickSubtitle,
+            onClick = { actions.onOpenShortcutSelection("click") },
+            icon = { m, c -> AureoleDS.icons.Click(modifier = m, tint = c) },
+            showChevron = true
+        )
+    ),
+    MenuEntry.Row(
+        MenuRowParams(
+            title = stringResource(R.string.home_quickbutton_appearance),
+            onClick = { actions.onOpenQuickButtonAppearance() },
+            icon = { m, c -> AureoleDS.icons.ColorFill(modifier = m, tint = c) },
+            showChevron = true
+        )
+    ),
+    MenuEntry.Row(
+        MenuRowParams(
+            title = stringResource(R.string.home_quickbutton_remove),
+            onClick = { uiState.activeQuickButtonId?.let { actions.onRemoveGridItem(it) } },
+            icon = { m, c -> AureoleDS.icons.Delete(modifier = m, tint = c) },
+            isDestructive = true
+        )
+    )
+)
 
 /** What the click shortcut does, in words: "Open App (Browser)" for an app, the shortcut's name otherwise. */
 @Composable
