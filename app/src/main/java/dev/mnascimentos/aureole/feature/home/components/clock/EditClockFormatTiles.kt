@@ -4,9 +4,12 @@ import android.text.format.DateFormat
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.runtime.Composable
@@ -116,8 +119,11 @@ internal fun <T> TileGrid(
         verticalArrangement = Arrangement.spacedBy(AureoleDS.dimens.xSmall)
     ) {
         items.chunked(columns).forEach { row ->
-            Row(horizontalArrangement = Arrangement.spacedBy(AureoleDS.dimens.xSmall)) {
-                row.forEach { item -> tile(item, Modifier.weight(1f)) }
+            Row(
+                modifier = Modifier.height(IntrinsicSize.Min),
+                horizontalArrangement = Arrangement.spacedBy(AureoleDS.dimens.xSmall)
+            ) {
+                row.forEach { item -> tile(item, Modifier.weight(1f).fillMaxHeight()) }
                 repeat(columns - row.size) { Spacer(modifier = Modifier.weight(1f)) }
             }
         }
