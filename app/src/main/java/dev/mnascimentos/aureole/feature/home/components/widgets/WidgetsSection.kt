@@ -70,7 +70,8 @@ fun StackedWidgetSection(
     Column(
         modifier = modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+        // In landscape the group is tall and wide: the stack sits at the top instead of floating mid-height.
+        verticalArrangement = if (uiState.isLandscape) Arrangement.Top else Arrangement.Center
     ) {
         StackedWidgetPagerContent(
             pagerParams = StackedWidgetPagerParams(

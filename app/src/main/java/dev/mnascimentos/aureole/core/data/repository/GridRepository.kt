@@ -65,6 +65,9 @@ class GridRepository(private val context: Context) {
     fun hasSavedLayout(): Boolean =
         listOf(KEY_GRID_ITEMS, KEY_PORTRAIT_GRID_ITEMS, KEY_LANDSCAPE_GRID_ITEMS).any { prefs.contains(it) }
 
+    /** Whether the user's (or the first run's) landscape layout was ever saved, even as an empty home. */
+    fun hasSavedLandscapeLayout(): Boolean = prefs.contains(KEY_LANDSCAPE_GRID_ITEMS)
+
     fun resetToDefault() {
         prefs.edit {
             remove(KEY_GRID_ITEMS)

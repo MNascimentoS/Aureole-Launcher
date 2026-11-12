@@ -76,7 +76,7 @@ class GridDefaultsTest {
     }
 
     @Test
-    fun `when getting the portrait layout, should match the v3 placements`() {
+    fun `when getting the portrait layout, should match the v4 placements`() {
         val right = GridDefaults.getDefaultGridItems(isLandscape = false).map { it.placement() }
         val left = GridDefaults.getDefaultGridItems(isLandscape = false, isLeftHanded = true).map { it.placement() }
 
@@ -91,16 +91,16 @@ class GridDefaultsTest {
     }
 
     @Test
-    fun `when getting the landscape layout, should match the v3 placements`() {
+    fun `when getting the landscape layout, should match the v4 placements`() {
         val right = GridDefaults.getDefaultGridItems(isLandscape = true).map { it.placement() }
         val left = GridDefaults.getDefaultGridItems(isLandscape = true, isLeftHanded = true).map { it.placement() }
 
         assertEquals(
-            listOf(listOf(0, 0, 14, 7), listOf(14, 0, 12, 20), listOf(0, 7, 14, 13), listOf(26, 0, 4, 20)),
+            listOf(listOf(0, 0, 10, 6), listOf(10, 0, 16, 20), listOf(0, 6, 10, 14), listOf(26, 0, 4, 20)),
             right
         )
         assertEquals(
-            listOf(listOf(16, 0, 14, 7), listOf(4, 0, 12, 20), listOf(16, 7, 14, 13), listOf(0, 0, 4, 20)),
+            listOf(listOf(20, 0, 10, 6), listOf(4, 0, 16, 20), listOf(20, 6, 10, 14), listOf(0, 0, 4, 20)),
             left
         )
     }
@@ -130,6 +130,6 @@ class GridDefaultsTest {
             isLandscape = true,
             isLeftHanded = false
         )
-        assertEquals(listOf(0, 7), listOf(allApps?.col, allApps?.row))
+        assertEquals(listOf(0, 6), listOf(allApps?.col, allApps?.row))
     }
 }

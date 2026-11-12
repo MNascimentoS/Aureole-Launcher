@@ -19,6 +19,7 @@ fun HomeViewModel.loadGridItems(isLandscape: Boolean = false) {
     val isLeftHanded = settingsRepository.isLeftHandedMode
     val portraitItems = getGridRepository().getGridItems(isLandscape = false, isLeftHanded = isLeftHanded)
     val landscapeItems = getGridRepository().getGridItems(isLandscape = true, isLeftHanded = isLeftHanded)
+        .let { saved -> if (isLandscape) orFirstLandscapeLayout(saved, portraitItems, isLeftHanded) else saved }
     updateUiState {
         it.copy(
             portraitGridItems = portraitItems,

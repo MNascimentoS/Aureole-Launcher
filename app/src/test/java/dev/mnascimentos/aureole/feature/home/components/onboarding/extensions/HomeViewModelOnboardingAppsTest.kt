@@ -209,7 +209,7 @@ class HomeViewModelOnboardingAppsTest {
         val portrait = allApps(state.portraitGridItems).single()
         val landscape = allApps(state.landscapeGridItems).single()
         assertEquals(4, portrait.col)
-        assertEquals(listOf(16, 7), listOf(landscape.col, landscape.row))
+        assertEquals(listOf(20, 6), listOf(landscape.col, landscape.row))
     }
 
     @Test
