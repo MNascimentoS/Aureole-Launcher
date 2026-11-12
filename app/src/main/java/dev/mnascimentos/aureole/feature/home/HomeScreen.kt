@@ -48,11 +48,10 @@ import dev.mnascimentos.aureole.feature.home.components.containers.model.EditCon
 import dev.mnascimentos.aureole.feature.home.components.overlays.CustomizeBottomSheet
 import dev.mnascimentos.aureole.feature.home.components.overlays.HomeOverlaysContent
 import dev.mnascimentos.aureole.feature.home.components.overlays.homeDragGestures
-import dev.mnascimentos.aureole.feature.home.components.scrubber.scrubberGestureInsetPx
 import dev.mnascimentos.aureole.feature.home.components.widgets.EditWidgetGroupScreen
 import dev.mnascimentos.aureole.feature.home.components.widgets.model.EditWidgetGroupActions
 import dev.mnascimentos.aureole.feature.home.components.widgets.model.EditWidgetGroupParams
-import dev.mnascimentos.aureole.feature.home.extensions.homeScreenExclusion
+import dev.mnascimentos.aureole.feature.home.extensions.rememberHomeScreenExclusion
 import dev.mnascimentos.aureole.feature.home.grid.AddContainerDialog
 import dev.mnascimentos.aureole.feature.home.grid.EditGridItemDialog
 import dev.mnascimentos.aureole.feature.home.model.HomeDragParams
@@ -93,13 +92,13 @@ fun HomeScreen(
             screenWidthPx = screenWidthPx,
             isAllAppsDrawerOpen = uiState.isAllAppsDrawerOpen,
             density = density,
-            gestureInsetPx = scrubberGestureInsetPx().toFloat(),
             onAllAppsDrawerOpen = actions.onAllAppsDrawerOpen,
             onExpandNotificationShade = actions.onExpandNotificationShade,
             onExternalTouchYChange = { externalTouchY = it }
         )
     )
 
+    val exclusionModifier = rememberHomeScreenExclusion(uiState)
     val hazeState = LocalHazeState.current ?: rememberHazeState()
 
     @OptIn(ExperimentalSharedTransitionApi::class)
@@ -112,7 +111,7 @@ fun HomeScreen(
                         screenHeightPx = it.size.height.toFloat()
                         screenWidthPx = it.size.width.toFloat()
                     }
-                    .homeScreenExclusion(uiState.isOverlayActive)
+                    .then(exclusionModifier)
                     .then(if (uiState.isOverlayActive) Modifier else dragModifier)
             ) {
                 HomeScreenBody(

@@ -36,11 +36,7 @@ data class ScrubberOptions(
     /** Space kept under the letters; the home leaves room for its dock. */
     val bottomPadding: Dp = ScrubberDimensions.PaddingBottom,
     /** Draws a narrow pill behind the letters (the folder picker); the touch area keeps its full width. */
-    val hasPillBackground: Boolean = false,
-    /** Keeps the system back gesture off the touch area; set only while the drawer is open with nothing above it. */
-    val isGestureExclusionActive: Boolean = false,
-    /** Moves the scrubber inside the system gesture strip of its edge; only the home scrubber hugs the edge. */
-    val isInsetByGestures: Boolean = false
+    val hasPillBackground: Boolean = false
 )
 
 data class ScrubberRenderParams(

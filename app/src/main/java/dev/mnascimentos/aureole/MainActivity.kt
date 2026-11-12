@@ -6,6 +6,7 @@ import android.content.Intent
 import android.graphics.Rect
 import android.os.Build
 import android.os.Bundle
+import android.view.View
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -16,7 +17,9 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.unit.dp
+import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import com.google.android.play.core.appupdate.AppUpdateInfo
 import com.google.android.play.core.appupdate.AppUpdateManager
@@ -35,8 +38,10 @@ import dev.mnascimentos.aureole.feature.home.HomeViewModel
 import dev.mnascimentos.aureole.feature.home.MainRoute
 import dev.mnascimentos.aureole.feature.home.components.onboarding.model.isBlocking
 import dev.mnascimentos.aureole.feature.home.extensions.setAllAppsDrawerOpen
+import dev.mnascimentos.aureole.feature.home.model.GestureExclusion
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
-import dev.mnascimentos.aureole.feature.home.model.isOverlayActive
+import dev.mnascimentos.aureole.feature.home.model.gestureExclusion
+import dev.mnascimentos.aureole.feature.home.model.gestureExclusionRects
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MainActivity : ComponentActivity() {
@@ -74,36 +79,31 @@ class MainActivity : ComponentActivity() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             window.isNavigationBarContrastEnforced = false
             window.decorView.addOnLayoutChangeListener { view, _, _, _, _, _, _, _, _ ->
-                val w = view.width
-                val h = view.height
-                val isOverlayActive = viewModel.uiState.value.isOverlayActive
-                if (w > 0 && h > 0) {
-                    view.systemGestureExclusionRects = if (isOverlayActive) {
-                        emptyList()
-                    } else {
-                        listOf(Rect(0, 0, w, h))
-                    }
-                }
+                applyGestureExclusion(view, viewModel.uiState.value.gestureExclusion())
             }
         }
     }
 
-    private fun updateGestureExclusion(isOverlayActive: Boolean) {
+    private fun updateGestureExclusion(exclusion: GestureExclusion) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) return
-        val view = window.decorView
-        val w = view.width
-        val h = view.height
-        if (w <= 0 || h <= 0) return
-        view.systemGestureExclusionRects = if (isOverlayActive) emptyList() else listOf(Rect(0, 0, w, h))
+        applyGestureExclusion(window.decorView, exclusion)
+    }
+
+    private fun applyGestureExclusion(view: View, exclusion: GestureExclusion) {
+        if (view.width <= 0 || view.height <= 0) return
+        val gestures = ViewCompat.getRootWindowInsets(view)?.getInsets(WindowInsetsCompat.Type.systemGestures())
+        val edgeInset = (if (exclusion == GestureExclusion.LEFT_EDGE) gestures?.left else gestures?.right) ?: 0
+        view.systemGestureExclusionRects = gestureExclusionRects(exclusion, view.width, view.height, edgeInset)
+            .map { Rect(it.left, it.top, it.right, it.bottom) }
     }
 
     private fun setupContent() {
         setContent {
             val uiState by viewModel.uiState.collectAsState()
-            val isOverlayActive = uiState.isOverlayActive
+            val exclusion = uiState.gestureExclusion()
 
-            LaunchedEffect(isOverlayActive) {
-                updateGestureExclusion(isOverlayActive)
+            LaunchedEffect(exclusion) {
+                updateGestureExclusion(exclusion)
             }
 
             MainActivityRootContent(
