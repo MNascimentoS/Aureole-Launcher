@@ -90,6 +90,73 @@ internal val releaseNotes0920: List<ReleaseNoteSection> = listOf(
     )
 )
 
+internal val releaseNotes0924: List<ReleaseNoteSection> = listOf(
+    ReleaseNoteSection(
+        title = "Novidades",
+        items = listOf(
+            ReleaseNoteItem(
+                title = "Vários Relógios na Tela Inicial",
+                description = "Adicione quantos relógios quiser, cada um com o seu estilo. " +
+                    "O seu relógio atual continua igual.",
+                type = ReleaseNoteType.FEATURE
+            ),
+            ReleaseNoteItem(
+                title = "Várias Listas de Favoritos",
+                description = "Crie listas de favoritos independentes, cada uma com os seus apps.",
+                type = ReleaseNoteType.FEATURE
+            ),
+            ReleaseNoteItem(
+                title = "Da Home Direto para a Letra",
+                description = "Segure na borda do alfabeto da tela inicial para abrir a gaveta " +
+                    "de apps já na letra escolhida, com a letra em destaque.",
+                type = ReleaseNoteType.FEATURE
+            ),
+            ReleaseNoteItem(
+                title = "Layout Padrão em Paisagem",
+                description = "Na horizontal, a tela inicial agora vem com os mesmos itens do retrato.",
+                type = ReleaseNoteType.IMPROVEMENT
+            )
+        )
+    ),
+    ReleaseNoteSection(
+        title = "Melhorias",
+        items = listOf(
+            ReleaseNoteItem(
+                title = "Redefinir Launcher Mais Seguro",
+                description = "A confirmação agora é igual à de desinstalar: segure o botão " +
+                    "para confirmar.",
+                type = ReleaseNoteType.IMPROVEMENT
+            ),
+            ReleaseNoteItem(
+                title = "Primeiros Passos Mais Naturais",
+                description = "Na apresentação inicial, \"Adicionar widget\" vem logo depois do relógio.",
+                type = ReleaseNoteType.IMPROVEMENT
+            ),
+            ReleaseNoteItem(
+                title = "Criar Pasta em Tela Cheia",
+                description = "Em \"Gerenciar itens\", \"Criar pasta\" agora abre em tela cheia.",
+                type = ReleaseNoteType.IMPROVEMENT
+            )
+        )
+    ),
+    ReleaseNoteSection(
+        title = "Correções",
+        items = listOf(
+            ReleaseNoteItem(
+                title = "Relógio Não Fecha Mais o App",
+                description = "Corrigido o fechamento do app ao trocar o vidro ou o fundo do relógio.",
+                type = ReleaseNoteType.FIX
+            ),
+            ReleaseNoteItem(
+                title = "Alfabeto da Gaveta sem Voltar",
+                description = "Deslizar no alfabeto da gaveta de apps não aciona mais o voltar " +
+                    "do sistema, e o alfabeto fica no lugar de sempre.",
+                type = ReleaseNoteType.FIX
+            )
+        )
+    )
+)
+
 internal fun getSectionsForVersion0826(): List<ReleaseNoteSection> = listOf(
     ReleaseNoteSection(
         title = "Interface & Consistência",

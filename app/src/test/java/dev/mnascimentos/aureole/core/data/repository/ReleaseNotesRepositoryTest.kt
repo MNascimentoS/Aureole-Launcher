@@ -1,5 +1,6 @@
 package dev.mnascimentos.aureole.core.data.repository
 
+import dev.mnascimentos.aureole.core.data.model.ReleaseNoteType
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotNull
@@ -67,5 +68,13 @@ class ReleaseNotesRepositoryTest {
                 }
             }
         }
+    }
+
+    @Test
+    fun `when fetching latest version notes, should be 0_9_24 with the fixes section`() {
+        val latest = ReleaseNotesRepository.getLatestVersionNotes()
+
+        assertEquals("0.9.24", latest.versionName)
+        assertTrue(latest.sections.any { section -> section.items.any { it.type == ReleaseNoteType.FIX } })
     }
 }
