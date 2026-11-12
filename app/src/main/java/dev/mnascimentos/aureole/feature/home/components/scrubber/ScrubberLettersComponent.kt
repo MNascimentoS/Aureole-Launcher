@@ -45,7 +45,8 @@ fun BoxScope.ScrubberAlphabetItems(
     alphabet: List<Char>,
     containerHeightPx: Float,
     params: ScrubberRenderParams,
-    isLeftHandedMode: Boolean
+    isLeftHandedMode: Boolean,
+    modifier: Modifier = Modifier
 ) {
     val density = LocalDensity.current
     val dimens = AureoleDS.dimens
@@ -65,7 +66,7 @@ fun BoxScope.ScrubberAlphabetItems(
             } else {
                 AureoleDS.colors.onSurfaceHigh.copy(alpha = INACTIVE_LETTER_ALPHA)
             },
-            modifier = Modifier
+            modifier = modifier
                 .align(params.alignment)
                 .padding(
                     start = if (isLeftHandedMode) ScrubberDimensions.LabelOffset else dimens.zero,
@@ -106,7 +107,8 @@ fun BoxScope.ScrubberSelectedBadge(
     selectedChar: Char,
     badgeYPx: Float,
     badgeXPx: Float,
-    alignment: Alignment
+    alignment: Alignment,
+    modifier: Modifier = Modifier
 ) {
     val dimens = AureoleDS.dimens
     Surface(
@@ -114,7 +116,7 @@ fun BoxScope.ScrubberSelectedBadge(
         color = AureoleDS.colors.onSurfaceHigh,
         contentColor = AureoleDS.colors.surface,
         shadowElevation = ScrubberDimensions.BadgeElevation,
-        modifier = Modifier
+        modifier = modifier
             .size(dimens.minTouchTarget)
             .align(alignment)
             .offset { IntOffset(badgeXPx.roundToInt(), badgeYPx.roundToInt()) }

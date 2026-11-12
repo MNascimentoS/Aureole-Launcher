@@ -93,8 +93,9 @@ class MainActivity : ComponentActivity() {
         if (view.width <= 0 || view.height <= 0) return
         val gestures = ViewCompat.getRootWindowInsets(view)?.getInsets(WindowInsetsCompat.Type.systemGestures())
         val edgeInset = (if (exclusion == GestureExclusion.LEFT_EDGE) gestures?.left else gestures?.right) ?: 0
-        view.systemGestureExclusionRects = gestureExclusionRects(exclusion, view.width, view.height, edgeInset)
+        val rects = gestureExclusionRects(exclusion, view.width, view.height, edgeInset)
             .map { Rect(it.left, it.top, it.right, it.bottom) }
+        ViewCompat.setSystemGestureExclusionRects(view, rects)
     }
 
     private fun setupContent() {

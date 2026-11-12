@@ -43,15 +43,17 @@ private const val DATE_SIZE_NORMAL = 13f
 
 private const val GREETING_CROSSFADE_DURATION_MS = 500
 
+private fun shouldShowGreeting(params: ClockHeaderContentParams): Boolean = when (params.clockStyle) {
+    "TIME_ONLY", "DATE_ON_TOP" -> false
+    "GREETING_AND_DATE", "CUSTOM_GREETING" -> true
+    else -> params.maxHeight >= MIN_GREETING_HEIGHT_DP.dp
+}
+
 @Composable
 internal fun ClockHeaderContent(params: ClockHeaderContentParams) {
     val (horizontalAlignment, textAlign) = ClockHeaderUtils.resolveClockAlignments(params.alignment)
 
-    val showGreeting = when (params.clockStyle) {
-        "TIME_ONLY", "DATE_ON_TOP" -> false
-        "GREETING_AND_DATE", "CUSTOM_GREETING" -> true
-        else -> params.maxHeight >= MIN_GREETING_HEIGHT_DP.dp
-    }
+    val showGreeting = shouldShowGreeting(params)
 
     val isCompact = params.maxHeight < COMPACT_CONTAINER_HEIGHT_DP.dp
     val greetingSize = if (isCompact) GREETING_SIZE_COMPACT else GREETING_SIZE_NORMAL

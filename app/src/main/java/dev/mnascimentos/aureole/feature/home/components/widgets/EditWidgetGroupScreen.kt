@@ -48,7 +48,11 @@ fun EditWidgetGroupScreen(
 ) {
     var isVisible by remember { mutableStateOf(true) }
     val draft = remember { WidgetStackDraft(params.widgets) }
-    remember(params.widgets) { draft.sync(params.widgets) }
+    var syncedWidgets by remember { mutableStateOf(params.widgets) }
+    if (syncedWidgets != params.widgets) {
+        syncedWidgets = params.widgets
+        draft.sync(params.widgets)
+    }
     val scrollState = rememberScrollState()
     val isLeftHanded = LocalHomeUiState.current.isLeftHandedMode
 

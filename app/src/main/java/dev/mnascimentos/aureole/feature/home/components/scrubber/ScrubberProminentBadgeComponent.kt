@@ -52,7 +52,8 @@ fun BoxScope.ScrubberProminentBadge(
     selectedChar: Char?,
     touchYPx: Float,
     alignment: Alignment,
-    isLeftHandedMode: Boolean
+    isLeftHandedMode: Boolean,
+    modifier: Modifier = Modifier
 ) {
     val density = LocalDensity.current
     var lastChar by remember { mutableStateOf(selectedChar) }
@@ -77,7 +78,7 @@ fun BoxScope.ScrubberProminentBadge(
             scaleIn(tween(ScrubberMotion.BADGE_ENTER_MS), initialScale = ScrubberMotion.BADGE_START_SCALE),
         exit = fadeOut(tween(ScrubberMotion.BADGE_EXIT_MS)) +
             scaleOut(tween(ScrubberMotion.BADGE_EXIT_MS), targetScale = ScrubberMotion.BADGE_START_SCALE),
-        modifier = Modifier
+        modifier = modifier
             .align(alignment)
             .offset { IntOffset(offset.xPx.roundToInt(), offset.yPx.roundToInt()) }
             // The scrubber column is narrower than the badge: measure it unbounded, anchored on the alphabet edge.

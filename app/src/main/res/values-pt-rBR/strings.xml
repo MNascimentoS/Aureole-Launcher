@@ -133,7 +133,6 @@
     <string name="settings_advanced_update_restart_now">Reiniciar agora</string>
     <string name="settings_advanced_update_restart_later">Depois</string>
     <string name="settings_advanced_release_notes_whats_new">O que há de novo</string>
-    <string name="settings_advanced_release_notes_version">Versão %1$s</string>
     <string name="settings_advanced_release_notes_version_current">v%1$s (Atual)</string>
     <string name="settings_advanced_release_notes_version_past">v%1$s</string>
     <string name="settings_advanced_release_notes_tag_new">Novo</string>
@@ -168,7 +167,6 @@
     <string name="home_clock_time_12h">12 Horas</string>
     <string name="home_clock_time_24h">24 Horas</string>
     <string name="home_clock_card_background">Fundo do Cartão</string>
-    <string name="home_clock_restore">Restaurar</string>
     <string name="home_clock_show_background">Mostrar cartão de fundo</string>
     <string name="home_clock_custom_bg_color">Cor de Fundo Personalizada:</string>
     <string name="home_clock_color_default">Padrão</string>
@@ -200,7 +198,6 @@
     <string name="home_favorites_search_placeholder">Buscar aplicativo&#8230;</string>
     <string name="home_favorites_tap_to_select">Toque para selecionar Favoritos</string>
     <string name="home_favorites_all_apps_divider">\" TODOS OS APPS \"</string>
-    <string name="home_favorites_done">Concluído</string>
     <string name="home_favorites_back">Voltar</string>
     <string name="home_favorites_remove">Remover dos favoritos</string>
 
@@ -233,7 +230,6 @@
     <string name="home_container_edit_appearance">Aparência</string>
     <string name="home_container_edit_behavior">Comportamento</string>
     <string name="home_container_edit_manage_items">Gerenciar Itens</string>
-    <string name="home_container_edit_save">Salvar</string>
     <string name="home_container_edit_expand_cells">Expandir células</string>
     <string name="home_container_edit_grid_folders">Pastas em grid</string>
     <string name="home_container_edit_bg_enabled">Fundo ativado</string>
@@ -261,13 +257,10 @@
     <!-- Folders (Additional) -->
     <string name="home_folder_edit_shortcuts">Editar itens da pasta</string>
     <string name="home_folder_edit">Editar pasta</string>
-    <string name="home_folder_rename">Renomear</string>
-    <string name="home_folder_icon_setting">Ícone</string>
     <string name="home_folder_remove">Remover pasta</string>
     <string name="home_folder_container_settings">Configurações do Container</string>
     <string name="home_folder_settings">Configurações da Pasta</string>
     <string name="home_folder_is_empty">A pasta está vazia</string>
-    <string name="home_folder_items_saved">Itens da pasta salvos</string>
     <string name="home_container_saved">Configurações do container salvas</string>
 
     <!-- Reusable -->
@@ -349,7 +342,6 @@
     <string name="settings_appearance_border_radius_format">%1$d dp</string>
     <string name="favorites_dialog_plus_content_desc">Mais</string>
     <string name="home_grid_scroll_component">Componente</string>
-    <string name="home_quickbutton_open_app_title">Abrir App</string>
 
     <!-- First user experience -->
     <string name="home_onboarding_welcome_title">Bem-vindo ao Aureole</string>
@@ -376,8 +368,16 @@
     <string name="home_onboarding_coach_customize_body">em um espaço vazio da tela para personalizar o que aparece nela.</string>
     <string name="home_onboarding_coach_customize_done">É aqui que você monta sua tela.</string>
     <string name="home_onboarding_checklist_title">Primeiros passos</string>
-    <string name="home_onboarding_checklist_progress">%1$d de %2$d concluídos</string>
-    <string name="home_onboarding_checklist_pill">%1$d/%2$d primeiros passos</string>
+    <plurals name="home_onboarding_checklist_progress">
+        <item quantity="one">%1$d de %2$d concluídos</item>
+        <item quantity="many">%1$d de %2$d concluídos</item>
+        <item quantity="other">%1$d de %2$d concluídos</item>
+    </plurals>
+    <plurals name="home_onboarding_checklist_pill">
+        <item quantity="one">%1$d/%2$d primeiros passos</item>
+        <item quantity="many">%1$d/%2$d primeiros passos</item>
+        <item quantity="other">%1$d/%2$d primeiros passos</item>
+    </plurals>
     <string name="home_onboarding_checklist_minimize">Minimizar</string>
     <string name="home_onboarding_checklist_dismiss">Não mostrar mais</string>
     <string name="home_onboarding_checklist_dismissed">Você pode rever em Configurações › Avançado.</string>
@@ -460,7 +460,11 @@
     </plurals>
     <string name="home_favorites_menu_all_shown">Sem favoritos: mostra todos os apps</string>
     <string name="home_favorites_manage_drag_hint">Segure e arraste o botão para ordenar</string>
-    <string name="home_favorites_manage_empty_banner">Sem favoritos: a Home mostra todos os %1$d apps. Toque em + para escolher só alguns.</string>
+    <plurals name="home_favorites_manage_empty_banner">
+        <item quantity="one">Sem favoritos: a Home mostra todos os %1$d apps. Toque em + para escolher só alguns.</item>
+        <item quantity="many">Sem favoritos: a Home mostra todos os %1$d apps. Toque em + para escolher só alguns.</item>
+        <item quantity="other">Sem favoritos: a Home mostra todos os %1$d apps. Toque em + para escolher só alguns.</item>
+    </plurals>
     <string name="home_favorites_manage_drag_handle">Reordenar</string>
     <plurals name="home_favorites_menu_count">
         <item quantity="one">%1$d favorito, o resto fica oculto</item>

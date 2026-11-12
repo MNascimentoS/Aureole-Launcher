@@ -24,6 +24,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.core.data.model.OnboardingTask
@@ -111,7 +112,12 @@ private fun ChecklistCardContent(onboarding: OnboardingUiState, actions: Onboard
 private fun ChecklistHeader(onboarding: OnboardingUiState) {
     val total = OnboardingTask.entries.size
     val progressText =
-        stringResource(R.string.home_onboarding_checklist_progress, onboarding.completedTasks.size, total)
+        pluralStringResource(
+            R.plurals.home_onboarding_checklist_progress,
+            onboarding.completedTasks.size,
+            onboarding.completedTasks.size,
+            total
+        )
     Row(
         horizontalArrangement = Arrangement.spacedBy(AureoleDS.dimens.small),
         verticalAlignment = Alignment.CenterVertically,

@@ -133,7 +133,6 @@
     <string name="settings_advanced_update_restart_now">Restart now</string>
     <string name="settings_advanced_update_restart_later">Later</string>
     <string name="settings_advanced_release_notes_whats_new">What\'s new</string>
-    <string name="settings_advanced_release_notes_version">Version %1$s</string>
     <string name="settings_advanced_release_notes_version_current">v%1$s (Current)</string>
     <string name="settings_advanced_release_notes_version_past">v%1$s</string>
     <string name="settings_advanced_release_notes_tag_new">New</string>
@@ -168,7 +167,6 @@
     <string name="home_clock_time_12h">12 Hours</string>
     <string name="home_clock_time_24h">24 Hours</string>
     <string name="home_clock_card_background">Card Background</string>
-    <string name="home_clock_restore">Reset</string>
     <string name="home_clock_show_background">Show background card</string>
     <string name="home_clock_custom_bg_color">Custom Background Color:</string>
     <string name="home_clock_color_default">Default</string>
@@ -200,7 +198,6 @@
     <string name="home_favorites_search_placeholder">Search app&#8230;</string>
     <string name="home_favorites_tap_to_select">Tap to select Favorites</string>
     <string name="home_favorites_all_apps_divider">\" ALL APPS \"</string>
-    <string name="home_favorites_done">Done</string>
     <string name="home_favorites_back">Back</string>
     <string name="home_favorites_remove">Remove from favorites</string>
 
@@ -232,7 +229,6 @@
     <string name="home_container_edit_appearance">Appearance</string>
     <string name="home_container_edit_behavior">Behavior</string>
     <string name="home_container_edit_manage_items">Manage Items</string>
-    <string name="home_container_edit_save">Save</string>
     <string name="home_container_edit_expand_cells">Expand cells</string>
     <string name="home_container_edit_grid_folders">Grid folders</string>
     <string name="home_container_edit_bg_enabled">Background enabled</string>
@@ -260,13 +256,10 @@
     <!-- Folders (Additional) -->
     <string name="home_folder_edit_shortcuts">Edit folder items</string>
     <string name="home_folder_edit">Edit folder</string>
-    <string name="home_folder_rename">Rename</string>
-    <string name="home_folder_icon_setting">Icon</string>
     <string name="home_folder_remove">Remove folder</string>
     <string name="home_folder_container_settings">Container settings</string>
     <string name="home_folder_settings">Folder settings</string>
     <string name="home_folder_is_empty">Folder is empty</string>
-    <string name="home_folder_items_saved">Folder items saved</string>
     <string name="home_container_saved">Container settings saved</string>
 
     <!-- Reusable -->
@@ -348,7 +341,6 @@
     <string name="settings_appearance_border_radius_format">%1$d dp</string>
     <string name="favorites_dialog_plus_content_desc">Plus</string>
     <string name="home_grid_scroll_component">Component</string>
-    <string name="home_quickbutton_open_app_title">Open App</string>
 
     <!-- First user experience -->
     <string name="home_onboarding_welcome_title">Welcome to Aureole</string>
@@ -375,8 +367,14 @@
     <string name="home_onboarding_coach_customize_body">an empty spot on the screen to customize what shows up there.</string>
     <string name="home_onboarding_coach_customize_done">This is where you build your screen.</string>
     <string name="home_onboarding_checklist_title">First steps</string>
-    <string name="home_onboarding_checklist_progress">%1$d of %2$d done</string>
-    <string name="home_onboarding_checklist_pill">%1$d/%2$d first steps</string>
+    <plurals name="home_onboarding_checklist_progress">
+        <item quantity="one">%1$d of %2$d done</item>
+        <item quantity="other">%1$d of %2$d done</item>
+    </plurals>
+    <plurals name="home_onboarding_checklist_pill">
+        <item quantity="one">%1$d/%2$d first steps</item>
+        <item quantity="other">%1$d/%2$d first steps</item>
+    </plurals>
     <string name="home_onboarding_checklist_minimize">Minimize</string>
     <string name="home_onboarding_checklist_dismiss">Don\'t show again</string>
     <string name="home_onboarding_checklist_dismissed">You can replay it in Settings › Advanced.</string>
@@ -457,7 +455,10 @@
     </plurals>
     <string name="home_favorites_menu_all_shown">No favorites: shows all apps</string>
     <string name="home_favorites_manage_drag_hint">Hold and drag the button to reorder</string>
-    <string name="home_favorites_manage_empty_banner">No favorites: the Home shows all %1$d apps. Tap + to pick only some.</string>
+    <plurals name="home_favorites_manage_empty_banner">
+        <item quantity="one">No favorites: the Home shows all %1$d apps. Tap + to pick only some.</item>
+        <item quantity="other">No favorites: the Home shows all %1$d apps. Tap + to pick only some.</item>
+    </plurals>
     <string name="home_favorites_manage_drag_handle">Reorder</string>
     <plurals name="home_favorites_menu_count">
         <item quantity="one">%1$d favorite, the rest stays hidden</item>

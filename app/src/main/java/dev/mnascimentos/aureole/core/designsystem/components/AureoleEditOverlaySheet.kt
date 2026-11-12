@@ -62,7 +62,6 @@ import dev.mnascimentos.aureole.core.designsystem.utils.scrimTapToDismiss
 import kotlin.math.roundToInt
 
 private const val ANIMATION_DURATION_MS = 300
-private const val BOTTOM_BAR_DIVIDER_ALPHA = 0.3f
 
 @Composable
 internal fun OverlayContentBox(
@@ -227,7 +226,6 @@ internal fun OverlaySheetBody(
     sheetContent: (@Composable ColumnScope.() -> Unit)?,
     decorations: OverlaySheetDecorations = OverlaySheetDecorations()
 ) {
-    val settingsLabel = stringResource(R.string.overlay_sheet_action_settings)
     Box(modifier = Modifier.fillMaxWidth()) {
         Column(
             modifier = Modifier
@@ -271,31 +269,45 @@ internal fun OverlaySheetBody(
             }
         }
 
-        Box(
-            modifier = Modifier
-                .align(Alignment.TopEnd)
-                .padding(top = AureoleDS.dimens.minimal, end = AureoleDS.dimens.minimal)
-                .size(AureoleDS.dimens.iconXLarge)
-                .clip(RoundedCornerShape(AureoleDS.dimens.radiusMedium))
-                .then(
-                    if (onSettingsClick != null) {
-                        Modifier
-                            .clickable(onClick = onSettingsClick, role = Role.Button)
-                            .semantics { contentDescription = settingsLabel }
-                    } else {
-                        Modifier
-                    }
-                ),
-            contentAlignment = Alignment.Center
-        ) {
-            if (decorations.headerIcon != null) {
-                decorations.headerIcon.invoke(Modifier.size(AureoleDS.dimens.iconSmall))
-            } else {
-                AureoleDS.icons.Logo(
-                    tint = AureoleDS.colors.onSurfaceHigh,
-                    modifier = Modifier.size(AureoleDS.dimens.iconSmall)
-                )
-            }
+        OverlaySheetSettingsSlot(
+            onSettingsClick = onSettingsClick,
+            headerIcon = decorations.headerIcon,
+            modifier = Modifier.align(Alignment.TopEnd)
+        )
+    }
+}
+
+/** Top-end slot of the sheet: header icon (or logo) that opens settings when [onSettingsClick] is set. */
+@Composable
+private fun OverlaySheetSettingsSlot(
+    onSettingsClick: (() -> Unit)?,
+    headerIcon: (@Composable (Modifier) -> Unit)?,
+    modifier: Modifier = Modifier
+) {
+    val settingsLabel = stringResource(R.string.overlay_sheet_action_settings)
+    Box(
+        modifier = modifier
+            .padding(top = AureoleDS.dimens.minimal, end = AureoleDS.dimens.minimal)
+            .size(AureoleDS.dimens.iconXLarge)
+            .clip(RoundedCornerShape(AureoleDS.dimens.radiusMedium))
+            .then(
+                if (onSettingsClick != null) {
+                    Modifier
+                        .clickable(onClick = onSettingsClick, role = Role.Button)
+                        .semantics { contentDescription = settingsLabel }
+                } else {
+                    Modifier
+                }
+            ),
+        contentAlignment = Alignment.Center
+    ) {
+        if (headerIcon != null) {
+            headerIcon.invoke(Modifier.size(AureoleDS.dimens.iconSmall))
+        } else {
+            AureoleDS.icons.Logo(
+                tint = AureoleDS.colors.onSurfaceHigh,
+                modifier = Modifier.size(AureoleDS.dimens.iconSmall)
+            )
         }
     }
 }

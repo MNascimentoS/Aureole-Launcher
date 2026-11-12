@@ -13,7 +13,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.style.TextOverflow
 import dev.mnascimentos.aureole.R
@@ -68,8 +68,9 @@ private fun PillContent(onboarding: OnboardingUiState) {
     ) {
         AureoleHaloProgress(progress = onboarding.taskProgress, size = AureoleDS.dimens.iconLarge)
         AureoleText(
-            text = stringResource(
-                R.string.home_onboarding_checklist_pill,
+            text = pluralStringResource(
+                R.plurals.home_onboarding_checklist_pill,
+                onboarding.completedTasks.size,
                 onboarding.completedTasks.size,
                 OnboardingTask.entries.size
             ),

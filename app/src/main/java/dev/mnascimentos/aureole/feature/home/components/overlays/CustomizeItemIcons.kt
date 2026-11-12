@@ -27,7 +27,7 @@ import dev.mnascimentos.aureole.feature.home.components.overlays.model.Customize
 
 /** Icon of an "Add to home" grid entry, from the design system catalog. */
 @Composable
-internal fun CustomizeItemIcon(item: CustomizeAddItem, modifier: Modifier = Modifier, tint: Color) {
+internal fun CustomizeItemIcon(item: CustomizeAddItem, tint: Color, modifier: Modifier = Modifier) {
     val icons = AureoleDS.icons
     when (item) {
         CustomizeAddItem.CLOCK -> icons.Calendar(modifier, tint)
@@ -43,7 +43,7 @@ internal fun CustomizeItemIcon(item: CustomizeAddItem, modifier: Modifier = Modi
 
 /** Icon of an "Adjust" button. */
 @Composable
-internal fun CustomizeItemIcon(item: CustomizeAdjustItem, modifier: Modifier = Modifier, tint: Color) {
+internal fun CustomizeItemIcon(item: CustomizeAdjustItem, tint: Color, modifier: Modifier = Modifier) {
     val icons = AureoleDS.icons
     when (item) {
         CustomizeAdjustItem.LAYOUT -> icons.Layout(modifier, tint)
