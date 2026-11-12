@@ -55,6 +55,16 @@ class OnboardingTaskEvidenceTest {
     }
 
     @Test
+    fun `when the home has new clocks and not the default one, should still meet the clock task`() {
+        val first = LauncherItemState(id = "0b6f6c1e-uuid-a", type = LauncherItemType.CLOCK)
+        val second = LauncherItemState(id = "0b6f6c1e-uuid-b", type = LauncherItemType.CLOCK)
+
+        assertTrue(MainUiState(gridItems = listOf(first, second)).meetsRequirement(OnboardingTask.ADD_CLOCK))
+        assertTrue(MainUiState(gridItems = listOf(second, appsList)).meetsRequirement(OnboardingTask.ADD_CLOCK))
+        assertFalse(MainUiState(gridItems = listOf(appsList)).meetsRequirement(OnboardingTask.ADD_CLOCK))
+    }
+
+    @Test
     fun `when the apps list has its own or global favorites, should meet the favorites task`() {
         val own = MainUiState(gridItems = listOf(appsList), containerFavorites = mapOf("list" to listOf("a")))
         val legacyList = LauncherItemState(id = GridDefaults.APPS_LIST_ITEM_ID, type = LauncherItemType.APPS_LIST)

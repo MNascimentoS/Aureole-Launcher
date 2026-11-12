@@ -10,6 +10,8 @@ import com.android.tools.screenshot.PreviewTest
 import dev.mnascimentos.aureole.core.designsystem.model.LocalLeftHanded
 import dev.mnascimentos.aureole.core.data.model.AppFolder
 import dev.mnascimentos.aureole.core.data.model.AppInfo
+import dev.mnascimentos.aureole.core.data.model.ClockConfig
+import dev.mnascimentos.aureole.core.data.model.LauncherItemType
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.grid.GridDefaults
@@ -175,6 +177,46 @@ private fun HomeScreenWidgetStackBottomSheetScreenshotTest() {
         activeWidgetStackBottomSheet = WidgetStackBottomSheetState(
             widgetId = 101,
             stackId = "widget_stack_1"
+        )
+    )
+
+    AureoleLauncherTheme {
+        CompositionLocalProvider(
+            LocalHomeUiState provides customUiState,
+            LocalLeftHanded provides customUiState.isLeftHandedMode,
+            LocalHomeActions provides sampleData.actions
+        ) {
+            HomeScreen(appWidgetHost = AppWidgetHost(context, 1024))
+        }
+    }
+}
+
+/** Two clocks on the home, each drawn with its own config: the default one and a second, different clock. */
+@PreviewTest
+@AureolePreview
+@Composable
+private fun HomeScreenTwoClocksScreenshotTest() {
+    val context = LocalContext.current
+    val sampleData = createSampleHomeData()
+    val secondClockId = "clock_second"
+    // The second clock takes the widgets row.
+    val gridItems = sampleData.uiState.gridItems.map { item ->
+        val isWidgetsRow = item.id == GridDefaults.WIDGETS_ITEM_ID
+        if (isWidgetsRow) item.copy(id = secondClockId, type = LauncherItemType.CLOCK) else item
+    }
+    val customUiState = sampleData.uiState.copy(
+        gridItems = gridItems,
+        portraitGridItems = gridItems,
+        clockConfigs = mapOf(
+            GridDefaults.CLOCK_ITEM_ID to ClockConfig(),
+            secondClockId to ClockConfig(
+                style = "TIME_ONLY",
+                alignment = "END",
+                fontFamily = "SERIF",
+                textColor = 0xFFFFD54F.toInt(),
+                backgroundColor = 0xFF1A237E.toInt(),
+                isBackgroundEnabled = true
+            )
         )
     )
 

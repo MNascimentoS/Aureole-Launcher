@@ -3,6 +3,7 @@ package dev.mnascimentos.aureole.feature.home.components.onboarding.extensions
 import dev.mnascimentos.aureole.core.data.model.LauncherItemState
 import dev.mnascimentos.aureole.core.data.model.LauncherItemType
 import dev.mnascimentos.aureole.feature.home.HomeViewModel
+import dev.mnascimentos.aureole.feature.home.components.clock.extensions.giveNewClockItsConfig
 import dev.mnascimentos.aureole.feature.home.grid.GridDefaults
 import dev.mnascimentos.aureole.feature.home.grid.GridEngineUtils
 import dev.mnascimentos.aureole.feature.home.grid.extensions.addGridItem
@@ -60,10 +61,13 @@ internal fun HomeViewModel.ensureGridItem(type: LauncherItemType): String? {
 /**
  * Always adds a new item of [type], even when the home already has one: at the layout's default spot if it is free,
  * else in the largest free slot. With [alwaysNewId] the id is a fresh UUID, never the layout's stable one, so the
- * item cannot pick up data that an earlier item with that stable id left behind. Null means the grid is full.
+ * item cannot pick up data that an earlier item with that stable id left behind. A new clock gets its own config.
+ * Null means the grid is full.
  */
 internal fun HomeViewModel.placeNewGridItem(type: LauncherItemType, alwaysNewId: Boolean = false): String? =
-    placeAtDefaultPosition(type, alwaysNewId) ?: placeInLargestSlot(type)
+    (placeAtDefaultPosition(type, alwaysNewId) ?: placeInLargestSlot(type))?.also { id ->
+        if (type == LauncherItemType.CLOCK) giveNewClockItsConfig(id)
+    }
 
 private fun HomeViewModel.placeAtDefaultPosition(type: LauncherItemType, alwaysNewId: Boolean): String? {
     val state = uiState.value

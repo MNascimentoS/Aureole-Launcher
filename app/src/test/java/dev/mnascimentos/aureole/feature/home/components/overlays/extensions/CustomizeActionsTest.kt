@@ -18,7 +18,6 @@ class CustomizeActionsTest {
         val actions = createDefaultHomeScreenActions().copy(onAddGridItem = { type, _, o -> calls += Call(type, o) })
 
         listOf(
-            CustomizeAddItem.CLOCK,
             CustomizeAddItem.ALL_APPS,
             CustomizeAddItem.CONTAINER,
             CustomizeAddItem.WIDGET_GROUP,
@@ -27,7 +26,6 @@ class CustomizeActionsTest {
 
         assertEquals(
             listOf(
-                Call(LauncherItemType.CLOCK, null),
                 Call(LauncherItemType.ALL_APPS_LIST, null),
                 Call(LauncherItemType.SHORTCUTS_CONTAINER, null),
                 Call(LauncherItemType.WIDGET_LIST, null),
@@ -60,6 +58,22 @@ class CustomizeActionsTest {
 
         assertTrue(asked)
         assertEquals(false, added)
+    }
+
+    @Test
+    fun `when adding a clock, should add a new clock and not a plain grid item`() {
+        var added = 0
+        var gridItems = 0
+        val actions = createDefaultHomeScreenActions().copy(
+            onAddClock = { added++ },
+            onAddGridItem = { _, _, _ -> gridItems++ }
+        )
+
+        actions.addCustomizeItem(CustomizeAddItem.CLOCK)
+        actions.addCustomizeItem(CustomizeAddItem.CLOCK)
+
+        assertEquals(2, added)
+        assertEquals(0, gridItems)
     }
 
     @Test

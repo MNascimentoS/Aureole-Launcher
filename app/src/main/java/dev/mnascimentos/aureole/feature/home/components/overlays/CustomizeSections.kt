@@ -199,7 +199,7 @@ private fun CustomizeSectionsPreview() {
         Column(modifier = Modifier.background(AureoleDS.colors.surface).padding(AureoleDS.dimens.medium)) {
             CustomizeAdjustSection(onAdjust = {}, isLeftHanded = false)
             CustomizeAddSection(
-                onHome = setOf(CustomizeAddItem.CLOCK, CustomizeAddItem.ALL_APPS),
+                onHome = setOf(CustomizeAddItem.ALL_APPS),
                 onAdd = {},
                 isLeftHanded = false
             )
