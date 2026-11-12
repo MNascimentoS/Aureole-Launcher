@@ -14,6 +14,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.core.graphics.drawable.toDrawable
 import com.android.tools.screenshot.PreviewTest
+import dev.mnascimentos.aureole.composable.LocalHomeUiState
+import dev.mnascimentos.aureole.composable.ProvideHomeUiState
 import dev.mnascimentos.aureole.composable.favorites.FavoriteAppRow
 import dev.mnascimentos.aureole.composable.favorites.FavoriteAppsDragHint
 import dev.mnascimentos.aureole.composable.favorites.FavoriteAppsEmptyBanner
@@ -29,8 +31,6 @@ import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
-import dev.mnascimentos.aureole.feature.home.model.LocalHomeUiState
-import dev.mnascimentos.aureole.feature.home.model.ProvideHomeUiState
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
 
 private val favoriteColors = listOf(0xFF2E7D32, 0xFFEF6C00, 0xFF1B65C0, 0xFF0288D1, 0xFF6A1B9A)

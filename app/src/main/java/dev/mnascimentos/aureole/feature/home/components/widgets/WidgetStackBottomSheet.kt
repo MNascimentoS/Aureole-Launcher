@@ -1,6 +1,5 @@
 package dev.mnascimentos.aureole.feature.home.components.widgets
 
-import android.appwidget.AppWidgetManager
 import android.content.Context
 import android.content.Intent
 import androidx.compose.foundation.layout.size
@@ -23,6 +22,7 @@ import dev.mnascimentos.aureole.core.designsystem.icons.Settings
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
+import dev.mnascimentos.aureole.feature.home.components.widgets.extensions.resolveWidgetPackage
 import dev.mnascimentos.aureole.feature.home.components.widgets.model.WidgetStackBottomSheetParams
 import dev.mnascimentos.aureole.feature.settings.SettingsActivity
 import dev.mnascimentos.aureole.util.IntentUtils
@@ -122,15 +122,6 @@ private fun widgetStackIndicatorEntry(params: WidgetStackBottomSheetParams, dism
                 icon = { m, c -> AureoleDS.icons.Dots(modifier = m.size(AureoleDS.dimens.iconMedium), tint = c) }
             )
         )
-    }
-}
-
-private fun resolveWidgetPackage(context: Context, widgetId: Int?): String? {
-    if (widgetId == null || widgetId == -1) return null
-    return try {
-        AppWidgetManager.getInstance(context).getAppWidgetInfo(widgetId)?.provider?.packageName
-    } catch (_: Throwable) {
-        null
     }
 }
 

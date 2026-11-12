@@ -2,6 +2,7 @@ package dev.mnascimentos.aureole.composable.sheets
 
 import androidx.compose.runtime.Composable
 import com.android.tools.screenshot.PreviewTest
+import dev.mnascimentos.aureole.composable.ProvideHomeUiState
 import dev.mnascimentos.aureole.composable.actions.model.HOLD_CONFIRM_MS
 import dev.mnascimentos.aureole.composable.sheets.model.ConfirmDialogParams
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
@@ -9,7 +10,6 @@ import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.components.overlays.UpdateAvailableDialog
 import dev.mnascimentos.aureole.feature.home.components.overlays.UpdateDownloadedDialog
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
-import dev.mnascimentos.aureole.feature.home.model.ProvideHomeUiState
 
 @Composable
 private fun DialogCase(isLeftHanded: Boolean, content: @Composable () -> Unit) {

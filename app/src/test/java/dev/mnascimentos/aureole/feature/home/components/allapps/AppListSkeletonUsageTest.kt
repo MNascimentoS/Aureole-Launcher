@@ -10,6 +10,7 @@ import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.unit.dp
 import androidx.core.graphics.drawable.toDrawable
+import dev.mnascimentos.aureole.composable.LocalHomeUiState
 import dev.mnascimentos.aureole.composable.favorites.FavoriteAppsDialog
 import dev.mnascimentos.aureole.composable.favorites.model.FavoriteAppsDialogActions
 import dev.mnascimentos.aureole.composable.favorites.model.FavoriteAppsDialogConfig
@@ -19,7 +20,6 @@ import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.feature.home.components.appsdrawer.AppsListDrawer
 import dev.mnascimentos.aureole.feature.home.components.favorites.model.FavoritesListConfig
 import dev.mnascimentos.aureole.feature.home.model.LocalHomeActions
-import dev.mnascimentos.aureole.feature.home.model.LocalHomeUiState
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
 import dev.mnascimentos.aureole.feature.home.model.createDefaultHomeScreenActions
 import dev.mnascimentos.aureole.feature.home.model.isAppsLoading

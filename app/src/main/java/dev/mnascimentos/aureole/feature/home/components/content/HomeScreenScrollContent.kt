@@ -34,6 +34,7 @@ import androidx.compose.ui.platform.rememberNestedScrollInteropConnection
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import dev.mnascimentos.aureole.R
+import dev.mnascimentos.aureole.composable.LocalHomeUiState
 import dev.mnascimentos.aureole.core.data.model.LauncherItemType
 import dev.mnascimentos.aureole.core.data.model.ScrollOrientation
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
@@ -48,7 +49,6 @@ import dev.mnascimentos.aureole.feature.home.components.content.model.ScrollView
 import dev.mnascimentos.aureole.feature.home.model.GridItemContentParams
 import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
 import dev.mnascimentos.aureole.feature.home.model.LocalHomeActions
-import dev.mnascimentos.aureole.feature.home.model.LocalHomeUiState
 import dev.mnascimentos.aureole.feature.home.model.ScrollViewChildItemParams
 import dev.mnascimentos.aureole.feature.home.model.ScrollViewContentParams
 import dev.mnascimentos.aureole.feature.home.model.VerticalScrollViewContentParams

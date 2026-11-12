@@ -26,6 +26,7 @@ import androidx.compose.ui.platform.rememberNestedScrollInteropConnection
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.viewinterop.AndroidView
 import dev.mnascimentos.aureole.R
+import dev.mnascimentos.aureole.composable.LocalHomeUiState
 import dev.mnascimentos.aureole.core.data.model.LauncherItemState
 import dev.mnascimentos.aureole.core.data.model.LauncherItemType
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
@@ -46,7 +47,6 @@ import dev.mnascimentos.aureole.feature.home.components.widgets.StackedWidgetSec
 import dev.mnascimentos.aureole.feature.home.model.GridItemContentParams
 import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
 import dev.mnascimentos.aureole.feature.home.model.LocalHomeActions
-import dev.mnascimentos.aureole.feature.home.model.LocalHomeUiState
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch

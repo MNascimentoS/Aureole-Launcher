@@ -25,6 +25,7 @@ import dev.chrisbanes.haze.HazeStyle
 import dev.chrisbanes.haze.HazeTint
 import dev.chrisbanes.haze.hazeEffect
 import dev.mnascimentos.aureole.R
+import dev.mnascimentos.aureole.composable.ProvideHomeUiState
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
@@ -36,7 +37,6 @@ import dev.mnascimentos.aureole.feature.home.components.widgets.model.WidgetSele
 import dev.mnascimentos.aureole.feature.home.components.widgets.model.WidgetSelectorState
 import dev.mnascimentos.aureole.feature.home.components.widgets.model.WidgetVariant
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
-import dev.mnascimentos.aureole.feature.home.model.ProvideHomeUiState
 import org.koin.androidx.compose.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)

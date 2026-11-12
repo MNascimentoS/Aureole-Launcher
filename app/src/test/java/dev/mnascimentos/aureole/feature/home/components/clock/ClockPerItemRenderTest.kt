@@ -16,6 +16,7 @@ import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performScrollTo
 import androidx.compose.ui.test.performTouchInput
 import androidx.compose.ui.unit.dp
+import dev.mnascimentos.aureole.composable.ProvideHomeUiState
 import dev.mnascimentos.aureole.core.data.model.ClockConfig
 import dev.mnascimentos.aureole.core.data.model.LauncherItemState
 import dev.mnascimentos.aureole.core.data.model.LauncherItemType
@@ -24,7 +25,6 @@ import dev.mnascimentos.aureole.feature.home.components.containers.model.Contain
 import dev.mnascimentos.aureole.feature.home.components.content.GridClockContent
 import dev.mnascimentos.aureole.feature.home.model.LocalHomeActions
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
-import dev.mnascimentos.aureole.feature.home.model.ProvideHomeUiState
 import dev.mnascimentos.aureole.feature.home.model.createDefaultHomeScreenActions
 import org.junit.Assert.assertEquals
 import org.junit.Rule

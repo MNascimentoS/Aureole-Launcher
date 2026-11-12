@@ -10,11 +10,11 @@ import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performImeAction
 import androidx.compose.ui.test.performTextInput
 import androidx.core.graphics.drawable.toDrawable
+import dev.mnascimentos.aureole.composable.ProvideHomeUiState
 import dev.mnascimentos.aureole.core.data.model.AppFolder
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
-import dev.mnascimentos.aureole.feature.home.model.ProvideHomeUiState
 import org.junit.Assert.assertEquals
 import org.junit.Rule
 import org.junit.Test

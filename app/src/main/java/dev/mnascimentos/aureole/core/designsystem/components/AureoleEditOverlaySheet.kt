@@ -8,7 +8,6 @@ import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
@@ -31,7 +30,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
@@ -58,7 +56,9 @@ import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.core.designsystem.utils.LocalHazeState
+import dev.mnascimentos.aureole.core.designsystem.utils.expandFractionOf
 import dev.mnascimentos.aureole.core.designsystem.utils.glassBlurRadius
+import dev.mnascimentos.aureole.core.designsystem.utils.scrimTapToDismiss
 import kotlin.math.roundToInt
 
 private const val ANIMATION_DURATION_MS = 300
@@ -123,14 +123,6 @@ internal fun OverlayContentBox(
             }
         )
     }
-}
-
-/**
- * Closes the overlay on a tap outside the sheet. A plain tap detector instead of `clickable`, so the
- * scrim does not merge the whole sheet into a single accessibility node; TalkBack closes with back.
- */
-private fun Modifier.scrimTapToDismiss(onDismiss: () -> Unit): Modifier {
-    return pointerInput(onDismiss) { detectTapGestures(onTap = { onDismiss() }) }
 }
 
 /**
@@ -221,14 +213,6 @@ private fun PreviewSlot(
     ) {
         previewContent?.invoke(this)
     }
-}
-
-/** How far the sheet is from rest (0) to expanded (1); read while drawing, so a drag does not recompose. */
-private fun expandFractionOf(motion: OverlaySheetMotion, isExpanded: Boolean, bounds: SheetBounds): Float {
-    val currentHeight = motion.currentHeight(isExpanded, bounds)
-    val restHeight = motion.restOrFallback(bounds)
-    if (bounds.expandedPx <= restHeight) return 0f
-    return ((currentHeight - restHeight) / (bounds.expandedPx - restHeight)).coerceIn(0f, 1f)
 }
 
 /**

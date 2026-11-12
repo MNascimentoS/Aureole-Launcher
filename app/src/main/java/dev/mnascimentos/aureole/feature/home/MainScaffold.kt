@@ -9,6 +9,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import dev.mnascimentos.aureole.composable.LocalHomeUiState
 import dev.mnascimentos.aureole.composable.appitem.model.AppItemRowConfig
 import dev.mnascimentos.aureole.composable.favorites.FavoriteAppsDialog
 import dev.mnascimentos.aureole.composable.favorites.model.FavoriteAppsDialogActions
@@ -24,7 +25,6 @@ import dev.mnascimentos.aureole.feature.home.components.widgets.WidgetPickerScre
 import dev.mnascimentos.aureole.feature.home.components.widgets.model.WidgetPickerScreenParams
 import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
 import dev.mnascimentos.aureole.feature.home.model.LocalHomeActions
-import dev.mnascimentos.aureole.feature.home.model.LocalHomeUiState
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
 import dev.mnascimentos.aureole.feature.home.model.favoritesOf
 import dev.mnascimentos.aureole.feature.home.model.isAppsLoading

@@ -24,12 +24,12 @@ import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTouchInput
 import androidx.core.graphics.drawable.toDrawable
+import dev.mnascimentos.aureole.composable.LocalHomeUiState
 import dev.mnascimentos.aureole.core.data.model.AppFolder
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.designsystem.model.LocalLeftHanded
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.FOLDER_PICKER_GRID_TEST_TAG
-import dev.mnascimentos.aureole.feature.home.model.LocalHomeUiState
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue

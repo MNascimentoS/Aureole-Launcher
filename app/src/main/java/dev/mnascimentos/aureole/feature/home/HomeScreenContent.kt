@@ -13,6 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
 import dev.chrisbanes.haze.HazeState
+import dev.mnascimentos.aureole.composable.LocalHomeUiState
 import dev.mnascimentos.aureole.core.data.model.AppFolder
 import dev.mnascimentos.aureole.core.data.model.LauncherItemState
 import dev.mnascimentos.aureole.core.data.model.LauncherItemType
@@ -27,7 +28,6 @@ import dev.mnascimentos.aureole.feature.home.grid.model.GridEditConfig
 import dev.mnascimentos.aureole.feature.home.grid.model.GridLimits
 import dev.mnascimentos.aureole.feature.home.model.GridItemContentParams
 import dev.mnascimentos.aureole.feature.home.model.LocalHomeActions
-import dev.mnascimentos.aureole.feature.home.model.LocalHomeUiState
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
 
 internal fun getGridLimits(orientation: Int): GridLimits {

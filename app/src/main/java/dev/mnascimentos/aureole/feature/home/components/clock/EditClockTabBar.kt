@@ -12,6 +12,7 @@ import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.components.clock.model.ClockTab
 
+/** Height of the segmented tab bar in the sheet footer; a layout constraint of this bar only. */
 private val TabHeight = 44.dp
 
 /** Segmented tab bar fixed in the sheet footer: the selected tab is light with dark text. */

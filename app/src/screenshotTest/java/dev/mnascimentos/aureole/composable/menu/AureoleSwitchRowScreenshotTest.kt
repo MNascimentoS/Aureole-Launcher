@@ -6,6 +6,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
 import com.android.tools.screenshot.PreviewTest
+import dev.mnascimentos.aureole.composable.LocalHomeUiState
+import dev.mnascimentos.aureole.composable.ProvideHomeUiState
 import dev.mnascimentos.aureole.composable.menu.model.MenuRowParams
 import dev.mnascimentos.aureole.composable.menu.model.SwitchRowParams
 import dev.mnascimentos.aureole.core.designsystem.icons.ColorFill
@@ -13,8 +15,6 @@ import dev.mnascimentos.aureole.core.designsystem.icons.Dots
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
-import dev.mnascimentos.aureole.feature.home.model.LocalHomeUiState
-import dev.mnascimentos.aureole.feature.home.model.ProvideHomeUiState
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
 
 @Composable

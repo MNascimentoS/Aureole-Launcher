@@ -30,6 +30,8 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.unit.Density
+import dev.mnascimentos.aureole.composable.LocalHomeUiState
+import dev.mnascimentos.aureole.composable.ProvideHomeUiState
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDimens
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
@@ -43,9 +45,7 @@ import dev.mnascimentos.aureole.feature.home.components.scrubber.model.ScrubberO
 import dev.mnascimentos.aureole.feature.home.components.scrubber.model.ScrubberRenderParams
 import dev.mnascimentos.aureole.feature.home.components.scrubber.model.letterCenterY
 import dev.mnascimentos.aureole.feature.home.components.scrubber.model.letterIndexAt
-import dev.mnascimentos.aureole.feature.home.model.LocalHomeUiState
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
-import dev.mnascimentos.aureole.feature.home.model.ProvideHomeUiState
 
 private const val SCRUBBER_ANIMATION_DURATION = 150
 private const val HINT_ALPHA = 0.35f

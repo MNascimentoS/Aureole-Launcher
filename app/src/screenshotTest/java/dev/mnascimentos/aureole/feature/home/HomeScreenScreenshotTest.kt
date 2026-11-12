@@ -7,11 +7,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.platform.LocalContext
 import com.android.tools.screenshot.PreviewTest
-import dev.mnascimentos.aureole.core.designsystem.model.LocalLeftHanded
+import dev.mnascimentos.aureole.composable.LocalHomeUiState
 import dev.mnascimentos.aureole.core.data.model.AppFolder
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.data.model.ClockConfig
 import dev.mnascimentos.aureole.core.data.model.LauncherItemType
+import dev.mnascimentos.aureole.core.designsystem.model.LocalLeftHanded
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.grid.GridDefaults
@@ -19,7 +20,6 @@ import dev.mnascimentos.aureole.feature.home.model.ContainerAppBottomSheetState
 import dev.mnascimentos.aureole.feature.home.model.ContainerFolderBottomSheetState
 import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
 import dev.mnascimentos.aureole.feature.home.model.LocalHomeActions
-import dev.mnascimentos.aureole.feature.home.model.LocalHomeUiState
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
 import dev.mnascimentos.aureole.feature.home.model.WidgetStackBottomSheetState
 

@@ -2,12 +2,12 @@ package dev.mnascimentos.aureole.feature.home.components.overlays
 
 import androidx.compose.runtime.Composable
 import com.android.tools.screenshot.PreviewTest
+import dev.mnascimentos.aureole.composable.ProvideHomeUiState
 import dev.mnascimentos.aureole.core.data.model.LauncherItemState
 import dev.mnascimentos.aureole.core.data.model.LauncherItemType
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.createSampleHomeData
-import dev.mnascimentos.aureole.feature.home.model.ProvideHomeUiState
 
 /** Customize sheet with the clock and all apps already on the home: right-handed and left-handed. */
 class CustomizeBottomSheetOneHandScreenshotTest {

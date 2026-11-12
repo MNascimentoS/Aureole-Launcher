@@ -33,6 +33,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import dev.mnascimentos.aureole.R
+import dev.mnascimentos.aureole.composable.LocalHomeUiState
 import dev.mnascimentos.aureole.composable.dialogs.FolderIconRegistry
 import dev.mnascimentos.aureole.composable.dialogs.model.FolderButtonMetrics
 import dev.mnascimentos.aureole.core.data.model.AppFolder
@@ -55,7 +56,6 @@ import dev.mnascimentos.aureole.feature.home.components.quickbutton.launchSystem
 import dev.mnascimentos.aureole.feature.home.components.quickbutton.launchVoiceAssistant
 import dev.mnascimentos.aureole.feature.home.components.quickbutton.model.QuickButtonGridItemCallbacks
 import dev.mnascimentos.aureole.feature.home.model.LocalHomeActions
-import dev.mnascimentos.aureole.feature.home.model.LocalHomeUiState
 import dev.mnascimentos.aureole.util.IntentUtils
 
 private const val FOLDER_BG_INACTIVE_ALPHA = 0.85f

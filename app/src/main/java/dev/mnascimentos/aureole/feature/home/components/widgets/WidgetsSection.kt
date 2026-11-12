@@ -31,6 +31,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.rememberNestedScrollInteropConnection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
+import dev.mnascimentos.aureole.composable.LocalHomeUiState
 import dev.mnascimentos.aureole.composable.widgets.AddWidgetButton
 import dev.mnascimentos.aureole.composable.widgets.WidgetPositionIndicatorBar
 import dev.mnascimentos.aureole.core.designsystem.model.LocalLeftHanded
@@ -43,7 +44,6 @@ import dev.mnascimentos.aureole.feature.home.components.widgets.model.PagerConte
 import dev.mnascimentos.aureole.feature.home.components.widgets.model.StackedWidgetConfig
 import dev.mnascimentos.aureole.feature.home.components.widgets.model.StackedWidgetPagerParams
 import dev.mnascimentos.aureole.feature.home.model.LocalHomeActions
-import dev.mnascimentos.aureole.feature.home.model.LocalHomeUiState
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
 import dev.mnascimentos.aureole.feature.home.model.getWidgetIdsForStack
 import kotlinx.coroutines.delay

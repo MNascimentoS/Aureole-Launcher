@@ -9,6 +9,7 @@ import androidx.compose.ui.test.longClick
 import androidx.compose.ui.test.onRoot
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTouchInput
+import dev.mnascimentos.aureole.composable.ProvideHomeUiState
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.data.model.LauncherItemState
 import dev.mnascimentos.aureole.core.data.model.QuickButtonAppearance
@@ -17,7 +18,6 @@ import dev.mnascimentos.aureole.core.data.model.QuickButtonShortcuts
 import dev.mnascimentos.aureole.core.data.model.ShortcutAction
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
-import dev.mnascimentos.aureole.feature.home.model.ProvideHomeUiState
 import dev.mnascimentos.aureole.feature.home.model.createDefaultHomeScreenActions
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue

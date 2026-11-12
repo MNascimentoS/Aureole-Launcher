@@ -1,6 +1,8 @@
 package dev.mnascimentos.aureole.feature.home.model
 
 import androidx.compose.ui.test.junit4.createComposeRule
+import dev.mnascimentos.aureole.composable.LocalHomeUiState
+import dev.mnascimentos.aureole.composable.ProvideHomeUiState
 import dev.mnascimentos.aureole.core.designsystem.model.LocalLeftHanded
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse

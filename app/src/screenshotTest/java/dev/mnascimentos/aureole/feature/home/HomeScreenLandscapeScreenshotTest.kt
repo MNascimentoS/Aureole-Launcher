@@ -7,12 +7,12 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import com.android.tools.screenshot.PreviewTest
+import dev.mnascimentos.aureole.composable.LocalHomeUiState
 import dev.mnascimentos.aureole.core.designsystem.model.LocalLeftHanded
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureoleLandscapePreview
 import dev.mnascimentos.aureole.feature.home.grid.GridDefaults
 import dev.mnascimentos.aureole.feature.home.model.LocalHomeActions
-import dev.mnascimentos.aureole.feature.home.model.LocalHomeUiState
 
 @Composable
 private fun LandscapeHome(isLeftHanded: Boolean) {

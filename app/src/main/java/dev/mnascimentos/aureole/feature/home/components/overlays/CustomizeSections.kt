@@ -42,7 +42,7 @@ import dev.mnascimentos.aureole.feature.home.components.overlays.model.Customize
 import dev.mnascimentos.aureole.feature.home.components.overlays.model.CustomizeAdjustItem
 
 private object CustomizeMetrics {
-    val AdjustHeight = 52.dp
+    /** Height of the "Add" tile: sized so the icon, the two-line label and the badge fit; no other tile shares it. */
     val TileHeight = 92.dp
     val IconTile = 40.dp
     val BadgeSize = 16.dp
@@ -81,7 +81,7 @@ private fun AdjustButton(item: CustomizeAdjustItem, onClick: () -> Unit, modifie
 private fun AdjustButtonContent(item: CustomizeAdjustItem, onClick: () -> Unit, modifier: Modifier = Modifier) {
     Row(
         modifier = modifier
-            .heightIn(min = CustomizeMetrics.AdjustHeight)
+            .heightIn(min = AureoleDS.dimens.itemHeightExtraLarge)
             .clip(RoundedCornerShape(AureoleDS.dimens.radiusMedium))
             .background(AureoleDS.colors.surfaceVariant.copy(alpha = CustomizeMetrics.CARD_ALPHA))
             .clickable(role = Role.Button, onClick = onClick)

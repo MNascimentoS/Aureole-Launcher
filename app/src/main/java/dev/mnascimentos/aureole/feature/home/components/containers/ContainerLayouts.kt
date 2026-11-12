@@ -22,6 +22,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.Dp
+import dev.mnascimentos.aureole.composable.LocalHomeUiState
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.data.model.ContainerItemEntity
 import dev.mnascimentos.aureole.core.data.model.ContainerItemType
@@ -42,7 +43,6 @@ import dev.mnascimentos.aureole.feature.home.components.containers.model.Contain
 import dev.mnascimentos.aureole.feature.home.components.containers.model.ContainerRenderItem
 import dev.mnascimentos.aureole.feature.home.components.containers.model.ContainerRowConfig
 import dev.mnascimentos.aureole.feature.home.model.LocalHomeActions
-import dev.mnascimentos.aureole.feature.home.model.LocalHomeUiState
 
 private object ContainerEffectMetrics {
     val FadingEdgeLength: Dp

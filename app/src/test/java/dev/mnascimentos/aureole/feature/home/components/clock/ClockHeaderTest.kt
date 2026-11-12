@@ -10,15 +10,15 @@ import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.onRoot
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTouchInput
+import dev.mnascimentos.aureole.composable.LocalHomeUiState
+import dev.mnascimentos.aureole.composable.ProvideHomeUiState
 import dev.mnascimentos.aureole.composable.clock.model.ClockHazeConfig
 import dev.mnascimentos.aureole.composable.clock.model.ClockHeaderConfig
 import dev.mnascimentos.aureole.core.designsystem.model.LocalLeftHanded
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
 import dev.mnascimentos.aureole.feature.home.model.LocalHomeActions
-import dev.mnascimentos.aureole.feature.home.model.LocalHomeUiState
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
-import dev.mnascimentos.aureole.feature.home.model.ProvideHomeUiState
 import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test

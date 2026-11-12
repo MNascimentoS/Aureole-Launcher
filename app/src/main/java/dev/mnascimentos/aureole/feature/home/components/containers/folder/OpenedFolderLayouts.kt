@@ -37,6 +37,7 @@ import dev.chrisbanes.haze.HazeStyle
 import dev.chrisbanes.haze.HazeTint
 import dev.chrisbanes.haze.hazeEffect
 import dev.mnascimentos.aureole.R
+import dev.mnascimentos.aureole.composable.LocalHomeUiState
 import dev.mnascimentos.aureole.composable.dialogs.model.FolderButtonMetrics
 import dev.mnascimentos.aureole.core.data.model.AppFolder
 import dev.mnascimentos.aureole.core.data.model.AppInfo
@@ -49,7 +50,6 @@ import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.FolderPopupMetrics
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.GridFolderPopupParams
 import dev.mnascimentos.aureole.feature.home.model.LocalHomeActions
-import dev.mnascimentos.aureole.feature.home.model.LocalHomeUiState
 
 private const val GRID_COLUMNS = 4
 private const val POPUP_HAZE_ALPHA = 0.55f

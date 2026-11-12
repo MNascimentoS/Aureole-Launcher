@@ -3,14 +3,14 @@ package dev.mnascimentos.aureole.feature.home.components.clock
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import com.android.tools.screenshot.PreviewTest
+import dev.mnascimentos.aureole.composable.LocalHomeUiState
+import dev.mnascimentos.aureole.composable.ProvideHomeUiState
 import dev.mnascimentos.aureole.core.designsystem.model.AureoleEditOverlayState
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.components.clock.model.ClockTab
 import dev.mnascimentos.aureole.feature.home.components.clock.model.EditClockOverlayOptions
 import dev.mnascimentos.aureole.feature.home.createSampleHomeData
-import dev.mnascimentos.aureole.feature.home.model.LocalHomeUiState
-import dev.mnascimentos.aureole.feature.home.model.ProvideHomeUiState
 
 /** Clock editor on the one-hand sheet: rest (60%), expanded (90%) and left-handed footer. */
 class EditClockBottomSheetOneHandScreenshotTest {

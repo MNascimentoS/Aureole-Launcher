@@ -2,6 +2,7 @@ package dev.mnascimentos.aureole.composable.sheets
 
 import androidx.compose.runtime.Composable
 import com.android.tools.screenshot.PreviewTest
+import dev.mnascimentos.aureole.composable.ProvideHomeUiState
 import dev.mnascimentos.aureole.core.data.model.ReleaseNoteItem
 import dev.mnascimentos.aureole.core.data.model.ReleaseNoteSection
 import dev.mnascimentos.aureole.core.data.model.ReleaseNoteType
@@ -9,7 +10,6 @@ import dev.mnascimentos.aureole.core.data.model.ReleaseNoteVersion
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
-import dev.mnascimentos.aureole.feature.home.model.ProvideHomeUiState
 
 private val sampleVersion = ReleaseNoteVersion(
     versionName = "0.9.13",

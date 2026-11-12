@@ -2,6 +2,7 @@ package dev.mnascimentos.aureole.feature.home
 
 import android.content.Context
 import android.os.Looper
+import androidx.lifecycle.viewModelScope
 import dev.mnascimentos.aureole.core.data.repository.AppRepository
 import dev.mnascimentos.aureole.core.data.repository.ClockConfigRepository
 import dev.mnascimentos.aureole.core.data.repository.ContainerRepository
@@ -24,6 +25,14 @@ import dev.mnascimentos.aureole.feature.home.extensions.toggleLeftHandedMode
 import dev.mnascimentos.aureole.feature.home.grid.extensions.cancelGridEditMode
 import dev.mnascimentos.aureole.feature.home.grid.extensions.enterGridEditMode
 import dev.mnascimentos.aureole.feature.home.model.HomeRepositories
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.cancelAndJoin
+import kotlinx.coroutines.job
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
+import kotlinx.coroutines.test.resetMain
+import kotlinx.coroutines.test.setMain
+import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotNull
@@ -37,6 +46,7 @@ import org.robolectric.Shadows.shadowOf
 
 private const val LOAD_ATTEMPTS = 50
 private const val LOAD_WAIT_MS = 100L
+private const val STACK_ID = "stack_1"
 
 @RunWith(RobolectricTestRunner::class)
 class HomeViewModelTest {
@@ -54,6 +64,7 @@ class HomeViewModelTest {
 
     @Before
     fun setUp() {
+        Dispatchers.setMain(UnconfinedTestDispatcher())
         context = RuntimeEnvironment.getApplication()
         settingsRepository = SettingsRepository(context)
         appRepository = AppRepository(context)
@@ -75,6 +86,16 @@ class HomeViewModelTest {
                 clockConfigRepository = ClockConfigRepository(context, gridRepository, settingsRepository)
             )
         )
+    }
+
+    @After
+    fun tearDown() {
+        // The ViewModel loads from IO threads and the Room database is shared by every test class: stop the
+        // pending loads, then undo what the tests wrote (the widget stack and the grid layouts).
+        runBlocking { viewModel.viewModelScope.coroutineContext.job.cancelAndJoin() }
+        widgetRepository.saveWidgetIdsForStack(STACK_ID, emptyList())
+        gridRepository.resetToDefault()
+        Dispatchers.resetMain()
     }
 
     @Test
@@ -216,7 +237,7 @@ class HomeViewModelTest {
 
     @Test
     fun `when widgets reordered, should update widgetStacks in state and persist`() {
-        val stackId = "stack_1"
+        val stackId = STACK_ID
         val reorderedList = listOf(102, 101, 103)
 
         viewModel.reorderWidgets(reorderedList, stackId)

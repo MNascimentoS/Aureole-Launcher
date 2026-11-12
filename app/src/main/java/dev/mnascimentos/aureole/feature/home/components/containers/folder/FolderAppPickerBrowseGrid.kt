@@ -34,6 +34,7 @@ import androidx.compose.ui.platform.LocalViewConfiguration
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import dev.mnascimentos.aureole.composable.LocalHomeUiState
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.utils.LongPressViewConfiguration
@@ -49,7 +50,6 @@ import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.
 import dev.mnascimentos.aureole.feature.home.components.scrubber.CurvedAlphabetScrubber
 import dev.mnascimentos.aureole.feature.home.components.scrubber.model.ScrubberCallbacks
 import dev.mnascimentos.aureole.feature.home.components.scrubber.model.ScrubberOptions
-import dev.mnascimentos.aureole.feature.home.model.LocalHomeUiState
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 
