@@ -18,6 +18,8 @@ const val MENU_HOLD_MS = 1000L
  * @property showChevron Draws a chevron at the far end, pointing away from the thumb side start.
  * @property requiresHold Needs a hold of [MENU_HOLD_MS] instead of a tap, with a fill that grows while holding.
  *   For actions the system does not confirm again.
+ * @property subtitleMaxLines Lines the subtitle may take before it is cut with an ellipsis. One line fits a count
+ *   ("4 components"); a warning the user must read in full (Reset) needs more.
  */
 data class MenuRowParams(
     val title: String,
@@ -26,7 +28,8 @@ data class MenuRowParams(
     val isDestructive: Boolean = false,
     val showChevron: Boolean = false,
     val subtitle: String? = null,
-    val requiresHold: Boolean = false
+    val requiresHold: Boolean = false,
+    val subtitleMaxLines: Int = 1
 )
 
 /** Slots of the menu sheet that depend on the caller. */

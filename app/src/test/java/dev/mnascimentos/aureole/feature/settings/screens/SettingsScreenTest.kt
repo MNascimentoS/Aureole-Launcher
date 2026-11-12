@@ -5,7 +5,7 @@ import androidx.compose.ui.test.junit4.v2.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTouchInput
-import dev.mnascimentos.aureole.composable.actions.model.HOLD_CONFIRM_MS
+import dev.mnascimentos.aureole.composable.menu.model.MENU_HOLD_MS
 import dev.mnascimentos.aureole.core.designsystem.model.TextResource
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.feature.settings.model.SettingsScreenActions
@@ -157,13 +157,12 @@ class SettingsScreenTest {
         }
 
         composeTestRule.onNodeWithText("Reset launcher?").assertIsDisplayed()
-        composeTestRule.onNodeWithText("Hold to reset").performClick()
+        composeTestRule.onNodeWithText("Reset").performClick()
         assertFalse(factoryResetConfirmed)
 
-        composeTestRule.onNodeWithText("Hold to reset").performTouchInput { down(center) }
-        composeTestRule.mainClock.advanceTimeBy(HOLD_CONFIRM_MS + HOLD_MARGIN_MS)
-        composeTestRule.mainClock.advanceTimeBy(DISMISS_ANIMATION_MS)
+        composeTestRule.onNodeWithText("Reset").performTouchInput { down(center) }
+        composeTestRule.mainClock.advanceTimeBy(MENU_HOLD_MS + HOLD_MARGIN_MS)
         assertTrue(factoryResetConfirmed)
-        assertTrue(factoryResetDismissed)
+        assertFalse(factoryResetDismissed)
     }
 }

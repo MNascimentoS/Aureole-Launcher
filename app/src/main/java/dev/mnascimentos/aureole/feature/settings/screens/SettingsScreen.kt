@@ -17,7 +17,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.composable.ColorPickerDialog
-import dev.mnascimentos.aureole.composable.actions.model.HOLD_CONFIRM_MS
 import dev.mnascimentos.aureole.composable.dialogs.CreateFolderDialog
 import dev.mnascimentos.aureole.composable.favorites.FavoriteAppsDialog
 import dev.mnascimentos.aureole.composable.favorites.model.FavoriteAppsDialogActions
@@ -33,6 +32,7 @@ import dev.mnascimentos.aureole.feature.home.model.MainUiState
 import dev.mnascimentos.aureole.feature.home.model.ProvideHomeUiState
 import dev.mnascimentos.aureole.feature.settings.SettingsNavGraph
 import dev.mnascimentos.aureole.feature.settings.components.ContainerPositionDialog
+import dev.mnascimentos.aureole.feature.settings.components.FactoryResetBottomSheet
 import dev.mnascimentos.aureole.feature.settings.components.SearchIconPositionDialog
 import dev.mnascimentos.aureole.feature.settings.components.SettingsButtonPositionDialog
 import dev.mnascimentos.aureole.feature.settings.model.SettingsScreenActions
@@ -137,7 +137,7 @@ private fun SettingsDialogsSecondary(
 
     if (uiState.showFactoryResetDialog) {
         ProvideHomeUiState(MainUiState(isLeftHandedMode = uiState.isLeftHandedMode)) {
-            FactoryResetDialog(actions = actions)
+            FactoryResetBottomSheet(actions = actions)
         }
     }
 }
@@ -179,22 +179,6 @@ private fun SettingsPositionSheets(
             onDismiss = actions.onDismissSearchIconPositionDialog
         )
     }
-}
-
-@Composable
-internal fun FactoryResetDialog(
-    actions: SettingsScreenActions = SettingsScreenActions()
-) {
-    AureoleConfirmDialog(
-        params = ConfirmDialogParams(
-            title = stringResource(R.string.settings_advanced_reset_dialog_title),
-            message = stringResource(R.string.settings_advanced_reset_dialog_message),
-            confirmLabel = stringResource(R.string.settings_advanced_reset_dialog_hold),
-            onConfirm = actions.onConfirmFactoryReset,
-            onDismiss = actions.onDismissFactoryResetDialog,
-            holdMs = HOLD_CONFIRM_MS
-        )
-    )
 }
 
 @Composable
