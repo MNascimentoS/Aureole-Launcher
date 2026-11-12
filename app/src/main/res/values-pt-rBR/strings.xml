@@ -259,13 +259,16 @@
     <string name="home_container_edit_add_app">Adicionar App&#8230;</string>
 
     <!-- Folders (Additional) -->
-    <string name="home_folder_edit_shortcuts">Editar atalhos</string>
+    <string name="home_folder_edit_shortcuts">Editar itens da pasta</string>
+    <string name="home_folder_edit">Editar pasta</string>
     <string name="home_folder_rename">Renomear</string>
     <string name="home_folder_icon_setting">Ícone</string>
     <string name="home_folder_remove">Remover pasta</string>
     <string name="home_folder_container_settings">Configurações do Container</string>
     <string name="home_folder_settings">Configurações da Pasta</string>
     <string name="home_folder_is_empty">A pasta está vazia</string>
+    <string name="home_folder_items_saved">Itens da pasta salvos</string>
+    <string name="home_container_saved">Configurações do container salvas</string>
 
     <!-- Reusable -->
     <string name="settings_appearance_color_picker_primary">Escolher Cor Primária</string>

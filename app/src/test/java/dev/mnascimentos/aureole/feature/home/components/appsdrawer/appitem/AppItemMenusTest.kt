@@ -426,7 +426,6 @@ class AppItemMenusTest {
                 AppItemBottomSheet(
                     params = AppItemBottomSheetParams(
                         app = sampleApp,
-                        actions = AppItemRowActions(onToggleFavorite = {}),
                         onOpenContainerSettings = {},
                         onRemoveFromFolder = {}
                     ),
@@ -436,7 +435,7 @@ class AppItemMenusTest {
         }
 
         fun top(text: String) = composeTestRule.onNodeWithText(text).getUnclippedBoundsInRoot().top
-        val order = listOf("App Info", "Add to favorites", "Container settings", "Remove from folder", "Uninstall")
+        val order = listOf("App Info", "Container settings", "Remove from folder", "Uninstall")
         assertEquals(order, order.sortedBy { top(it) })
         composeTestRule.onNodeWithText("Hold to confirm").assertIsDisplayed()
     }

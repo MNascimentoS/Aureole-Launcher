@@ -258,13 +258,16 @@
     <string name="home_container_edit_add_app">Add App&#8230;</string>
 
     <!-- Folders (Additional) -->
-    <string name="home_folder_edit_shortcuts">Edit shortcuts</string>
+    <string name="home_folder_edit_shortcuts">Edit folder items</string>
+    <string name="home_folder_edit">Edit folder</string>
     <string name="home_folder_rename">Rename</string>
     <string name="home_folder_icon_setting">Icon</string>
     <string name="home_folder_remove">Remove folder</string>
     <string name="home_folder_container_settings">Container settings</string>
     <string name="home_folder_settings">Folder settings</string>
     <string name="home_folder_is_empty">Folder is empty</string>
+    <string name="home_folder_items_saved">Folder items saved</string>
+    <string name="home_container_saved">Container settings saved</string>
 
     <!-- Reusable -->
     <string name="settings_appearance_color_picker_primary">Choose Primary Color</string>

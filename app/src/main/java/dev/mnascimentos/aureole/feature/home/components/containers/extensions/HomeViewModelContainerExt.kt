@@ -1,10 +1,13 @@
 package dev.mnascimentos.aureole.feature.home.components.containers.extensions
 
 import androidx.lifecycle.viewModelScope
+import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.core.data.model.ContainerModel
 import dev.mnascimentos.aureole.core.data.model.LauncherItemType
+import dev.mnascimentos.aureole.core.designsystem.model.TextResource
 import dev.mnascimentos.aureole.feature.home.HomeViewModel
 import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.confirmContainerTaskOnSave
+import dev.mnascimentos.aureole.feature.home.extensions.showUndo
 import dev.mnascimentos.aureole.feature.home.grid.GridDefaults
 import kotlinx.coroutines.launch
 
@@ -59,6 +62,7 @@ fun HomeViewModel.closeEditContainerDialog() {
 }
 
 fun HomeViewModel.saveContainerModel(panel: ContainerModel) {
+    val previousPanel = uiState.value.containers[panel.id]
     confirmContainerTaskOnSave()
     viewModelScope.launch {
         containerRepository.saveContainer(panel)
@@ -72,6 +76,16 @@ fun HomeViewModel.saveContainerModel(panel: ContainerModel) {
                 isEditContainerDialogVisible = false,
                 editingContainerId = null
             )
+        }
+
+        if (previousPanel != null && previousPanel != panel) {
+            showUndo(TextResource.fromResId(R.string.home_container_saved)) {
+                viewModelScope.launch {
+                    containerRepository.saveContainer(previousPanel)
+                    val restoredPanels = containerRepository.getAllContainers().associateBy { it.id }
+                    updateUiState { state -> state.copy(containers = restoredPanels) }
+                }
+            }
         }
     }
 }

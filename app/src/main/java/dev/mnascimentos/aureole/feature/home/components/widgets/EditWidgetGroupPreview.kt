@@ -60,14 +60,14 @@ import dev.mnascimentos.aureole.feature.home.components.widgets.model.widgetCard
 import dev.mnascimentos.aureole.feature.home.components.widgets.model.widgetCardWidth
 import dev.mnascimentos.aureole.feature.home.components.widgets.model.widgetPreviewPage
 
-private const val PREVIEW_ITEM_COUNT = 3
+private const val PREVIEW_ITEM_COUNT = 1
 private const val CARD_BORDER_ALPHA = 0.25f
 private const val CARD_FILL_ALPHA = 0.6f
 private const val ADD_CARD_BORDER_ALPHA = 0.2f
 private const val ADD_CARD_FILL_ALPHA = 0.35f
 
 /**
- * Live preview of the widget stack; the cards are sized so two and a half show: hold a card and drag it sideways
+ * Live preview of the widget stack; the cards are sized so one and a half show: hold a card and drag it sideways
  * to reorder, tap one to select it, ✕ removes it and the "+" card at the end adds a widget. The position bar below
  * follows the scroll.
  */

@@ -12,9 +12,7 @@ import dev.mnascimentos.aureole.composable.menu.model.MenuRowParams
 import dev.mnascimentos.aureole.composable.menu.model.MenuSheetParams
 import dev.mnascimentos.aureole.core.designsystem.icons.AllApps
 import dev.mnascimentos.aureole.core.designsystem.icons.Delete
-import dev.mnascimentos.aureole.core.designsystem.icons.Edit
 import dev.mnascimentos.aureole.core.designsystem.icons.Folder
-import dev.mnascimentos.aureole.core.designsystem.icons.Smile
 import dev.mnascimentos.aureole.core.designsystem.icons.VerticalContainer
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
@@ -49,9 +47,8 @@ private fun folderMenuEntries(params: ContainerFolderBottomSheetParams): List<Me
     folderRow(R.string.home_folder_edit_shortcuts, params.onEditShortcuts) { m, c ->
         AureoleDS.icons.AllApps(modifier = m, tint = c)
     },
-    folderRow(R.string.home_folder_rename, params.onRename) { m, c -> AureoleDS.icons.Edit(modifier = m, tint = c) },
-    folderRow(R.string.home_folder_icon_setting, params.onIcon) { m, c ->
-        AureoleDS.icons.Smile(modifier = m, tint = c)
+    folderRow(R.string.home_folder_edit, params.onRename) { m, c ->
+        AureoleDS.icons.Folder(modifier = m, tint = c)
     },
     folderRow(R.string.home_folder_container_settings, params.onOpenContainerSettings) { m, c ->
         AureoleDS.icons.VerticalContainer(modifier = m, tint = c)

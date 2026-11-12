@@ -54,9 +54,9 @@ fun WidgetMoveRow(
                 .heightIn(min = AureoleDS.dimens.menuRowHeight)
                 .padding(horizontal = AureoleDS.dimens.xxSmall),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(AureoleDS.dimens.small, Alignment.End)
+            horizontalArrangement = Arrangement.spacedBy(AureoleDS.dimens.small)
         ) {
-            MoveLabel(name = params.name)
+            MoveLabel(name = params.name, modifier = Modifier.weight(1f))
             CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
                 MoveControls(params = params)
             }
@@ -99,7 +99,11 @@ private fun MoveControls(params: WidgetMoveParams) {
             text = stringResource(R.string.home_widget_move_position, params.position, params.count),
             color = AureoleDS.colors.onSurfaceHigh,
             modifier = Modifier.padding(horizontal = AureoleDS.dimens.xSmall),
-            format = AureoleTextFormatParams(style = AureoleDS.typography.bodyMedium, fontWeight = FontWeight.Bold)
+            format = AureoleTextFormatParams(
+                style = AureoleDS.typography.bodyMedium,
+                fontWeight = FontWeight.Bold,
+                maxLines = 1
+            )
         )
         MoveButton(
             isForward = true,

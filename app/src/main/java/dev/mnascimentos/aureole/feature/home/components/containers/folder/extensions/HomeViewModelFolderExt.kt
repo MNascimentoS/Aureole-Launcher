@@ -29,7 +29,14 @@ internal suspend fun HomeViewModel.handleFolderIntent(intent: FolderViewIntent) 
         is FolderViewIntent.CloseFolder -> closeFolder()
         is FolderViewIntent.LaunchApp -> launchAppFromFolder(intent.packageName)
         is FolderViewIntent.AddAppToFolder -> {
-            updateUiState { it.copy(isAddAppToFolderDialogVisible = true) }
+            val targetFolder = uiState.value.folders.find { it.id == intent.folderId }
+                ?: uiState.value.activeFolder
+            updateUiState {
+                it.copy(
+                    isAddAppToFolderDialogVisible = true,
+                    activeFolder = targetFolder ?: it.activeFolder
+                )
+            }
         }
         is FolderViewIntent.SaveFolderApps -> saveFolderApps(intent)
         is FolderViewIntent.RenameFolder -> renameFolder(intent)

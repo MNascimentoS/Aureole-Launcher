@@ -93,14 +93,18 @@ fun FavoriteAppsDialog(
                     FavoriteAppsPreviewContent(previewFavoriteApps = previewFavoriteApps, rowConfig = config.rowConfig)
                 }
             },
-            bottomBarContent = {
-                FavoriteAppsBottomBar(
-                    currentMode = currentMode,
-                    onBack = { currentMode = FavoriteAppsScreenMode.MAIN },
-                    onClose = { isVisible = false },
-                    searchQuery = searchQuery,
-                    onSearchQueryChange = { searchQuery = it }
-                )
+            bottomBarContent = if (currentMode == FavoriteAppsScreenMode.MAIN) {
+                null
+            } else {
+                {
+                    FavoriteAppsBottomBar(
+                        currentMode = currentMode,
+                        onBack = { currentMode = FavoriteAppsScreenMode.MAIN },
+                        onClose = { isVisible = false },
+                        searchQuery = searchQuery,
+                        onSearchQueryChange = { searchQuery = it }
+                    )
+                }
             },
             sheetContent = {
                 FavoriteAppsSheetContent(

@@ -172,7 +172,6 @@ class FolderComponentsTest {
     fun `when container folder bottom sheet is rendered, should display header and menu items`() {
         var editShortcutsClicked = false
         var renameClicked = false
-        var iconClicked = false
         var removeFolderClicked = false
         var openSettingsClicked = false
 
@@ -182,7 +181,7 @@ class FolderComponentsTest {
                     params = ContainerFolderBottomSheetParams(
                         onEditShortcuts = { editShortcutsClicked = true },
                         onRename = { renameClicked = true },
-                        onIcon = { iconClicked = true },
+                        onIcon = {},
                         onRemoveFolder = { removeFolderClicked = true },
                         onOpenContainerSettings = { openSettingsClicked = true }
                     ),
@@ -192,14 +191,11 @@ class FolderComponentsTest {
         }
 
         composeTestRule.onNodeWithText("Folder settings").assertIsDisplayed()
-        composeTestRule.onNodeWithText("Edit shortcuts").performScrollTo().performClick()
+        composeTestRule.onNodeWithText("Edit folder items").performScrollTo().performClick()
         assertTrue(editShortcutsClicked)
 
-        composeTestRule.onNodeWithText("Rename").performScrollTo().performClick()
+        composeTestRule.onNodeWithText("Edit folder").performScrollTo().performClick()
         assertTrue(renameClicked)
-
-        composeTestRule.onNodeWithText("Icon").performScrollTo().performClick()
-        assertTrue(iconClicked)
 
         composeTestRule.onNodeWithText("Remove folder").performScrollTo().performClick()
         assertTrue(removeFolderClicked)

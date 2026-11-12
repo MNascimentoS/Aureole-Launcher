@@ -1,6 +1,7 @@
 package dev.mnascimentos.aureole.composable.favorites
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.ui.Modifier
@@ -27,7 +28,7 @@ internal fun FavoriteAppsMainContent(
     onModeChange: (FavoriteAppsScreenMode) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Column(modifier = modifier) {
+    Column(modifier = modifier.padding(bottom = AureoleDS.dimens.large)) {
         AureoleMenuRow(
             MenuRowParams(
                 title = stringResource(R.string.home_favorites_edit_shortcuts),

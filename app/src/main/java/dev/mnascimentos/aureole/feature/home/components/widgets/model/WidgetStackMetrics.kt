@@ -3,15 +3,15 @@ package dev.mnascimentos.aureole.feature.home.components.widgets.model
 import dev.mnascimentos.aureole.composable.reorder.model.reorderStepTarget
 import kotlin.math.ceil
 
-/** Cards that fit across the stack preview: two whole ones and half of the third, which hints at the scroll. */
-const val WIDGET_CARDS_VISIBLE = 2.5f
+/** Cards that fit across the stack preview: one whole card and half of the second card show in the carousel. */
+const val WIDGET_CARDS_VISIBLE = 1.5f
 
 /** Height of a stack card as a share of its width. */
 const val WIDGET_CARD_HEIGHT_RATIO = 0.82f
 
 /**
  * Width of a stack card so that [visibleCards] fit in a row of [rowWidth] with a [margin] on both sides and a [gap]
- * between neighbours. The gaps of the whole cards are subtracted; the cut third card is what shows the scroll.
+ * between neighbours.
  */
 fun widgetCardWidth(rowWidth: Float, margin: Float, gap: Float, visibleCards: Float = WIDGET_CARDS_VISIBLE): Float {
     val wholeCards = ceil(visibleCards).toInt()

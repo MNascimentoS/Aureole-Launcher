@@ -14,8 +14,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import dev.mnascimentos.aureole.R
-import dev.mnascimentos.aureole.composable.actions.AureoleActionRow
-import dev.mnascimentos.aureole.composable.actions.model.ActionRowParams
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
@@ -71,31 +69,6 @@ internal fun EditClockBackgroundSection(
             }
         }
     }
-}
-
-/**
- * Footer of the clock editor. Right-handed: restore (neutral) on the left, save on the right.
- * Left-handed: save on the left, under the thumb, and restore on the right.
- */
-@Composable
-internal fun EditClockActionButtons(
-    actions: HomeScreenActions,
-    isLeftHanded: Boolean,
-    onDismissRequest: () -> Unit,
-    onResetGreeting: () -> Unit
-) {
-    AureoleActionRow(
-        params = ActionRowParams(
-            primaryLabel = stringResource(R.string.home_container_edit_save),
-            onPrimary = onDismissRequest,
-            secondaryLabel = stringResource(R.string.home_clock_restore),
-            onSecondary = {
-                actions.onResetClockSettings()
-                onResetGreeting()
-            }
-        ),
-        isLeftHanded = isLeftHanded
-    )
 }
 
 @AureolePreview

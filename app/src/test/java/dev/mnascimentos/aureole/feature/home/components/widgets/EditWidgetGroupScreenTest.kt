@@ -12,7 +12,6 @@ import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.feature.home.components.widgets.model.EditWidgetGroupActions
 import dev.mnascimentos.aureole.feature.home.components.widgets.model.EditWidgetGroupParams
 import org.junit.Assert.assertEquals
-import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -30,7 +29,7 @@ class EditWidgetGroupScreenTest {
     }
 
     @Test
-    fun `when rendering EditWidgetGroupScreen, should display title, indicator switch label and save button`() {
+    fun `when rendering EditWidgetGroupScreen, should display title and indicator switch label`() {
         composeTestRule.setContent {
             AureoleLauncherTheme {
                 EditWidgetGroupScreen(
@@ -52,11 +51,10 @@ class EditWidgetGroupScreenTest {
 
         composeTestRule.onNodeWithText("Widget Stack").assertIsDisplayed()
         composeTestRule.onNodeWithText("Show widget indicator").assertIsDisplayed()
-        composeTestRule.onNodeWithText("Save").assertIsDisplayed()
     }
 
     @Test
-    fun `when rendering preview carousel with widgets, should render widget cards`() {
+    fun `when rendering preview carousel with widgets, should render title`() {
         composeTestRule.setContent {
             AureoleLauncherTheme {
                 EditWidgetGroupScreen(
@@ -75,35 +73,7 @@ class EditWidgetGroupScreenTest {
         }
         advanceAnimation()
 
-        composeTestRule.onNodeWithText("Save").assertIsDisplayed()
-    }
-
-    @Test
-    fun `when clicking save button, should request dismiss`() {
-        var dismissCalled = false
-
-        composeTestRule.setContent {
-            AureoleLauncherTheme {
-                EditWidgetGroupScreen(
-                    params = EditWidgetGroupParams(
-                        item = LauncherItemState(id = "item_1"),
-                        widgets = listOf(10)
-                    ),
-                    actions = EditWidgetGroupActions(
-                        onToggleIndicator = {},
-                        onRemoveWidget = {},
-                        onAddWidgetClick = {},
-                        onDismissRequest = { dismissCalled = true }
-                    )
-                )
-            }
-        }
-        advanceAnimation()
-
-        composeTestRule.onNodeWithText("Save").performClick()
-        advanceAnimation()
-
-        assertTrue(dismissCalled)
+        composeTestRule.onNodeWithText("Widget Stack").assertIsDisplayed()
     }
 
     private fun setScreen(isIndicatorEnabled: Boolean, onToggle: () -> Unit, onAdd: () -> Unit) {
@@ -128,23 +98,12 @@ class EditWidgetGroupScreenTest {
     }
 
     @Test
-    fun `when rendering, should show the Add widget and Save buttons and no preview label`() {
+    fun `when rendering, should show the indicator row and no preview label`() {
         setScreen(isIndicatorEnabled = true, onToggle = {}, onAdd = {})
 
         composeTestRule.onNodeWithText("LIVE PREVIEW").assertDoesNotExist()
-        composeTestRule.onNodeWithText("Add Widget").assertIsDisplayed()
-        composeTestRule.onNodeWithText("Save").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Show widget indicator").assertIsDisplayed()
         composeTestRule.onNodeWithText("•••").assertDoesNotExist()
-    }
-
-    @Test
-    fun `when tapping Add widget in the bottom bar, should open the widget picker`() {
-        var added = 0
-        setScreen(isIndicatorEnabled = true, onToggle = {}, onAdd = { added++ })
-
-        composeTestRule.onNodeWithText("Add Widget").performClick()
-
-        assertEquals(1, added)
     }
 
     @Test

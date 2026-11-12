@@ -2,6 +2,8 @@ package dev.mnascimentos.aureole.feature.home.components.widgets
 
 import android.appwidget.AppWidgetManager
 import androidx.compose.foundation.ScrollState
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
@@ -14,8 +16,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import dev.mnascimentos.aureole.R
-import dev.mnascimentos.aureole.composable.actions.AureoleActionRow
-import dev.mnascimentos.aureole.composable.actions.model.ActionRowParams
 import dev.mnascimentos.aureole.composable.menu.AureoleSwitchRow
 import dev.mnascimentos.aureole.composable.menu.model.SwitchRowParams
 import dev.mnascimentos.aureole.composable.preview.AureolePreviewFrame
@@ -72,13 +72,7 @@ fun EditWidgetGroupScreen(
             previewContent = {
                 AureolePreviewFrame { StackPreview(params, actions, draft, scrollState) }
             },
-            bottomBarContent = {
-                EditWidgetGroupBottomBar(
-                    onSave = { isVisible = false },
-                    onAddWidget = actions.onAddWidgetClick,
-                    isLeftHanded = isLeftHanded
-                )
-            },
+            bottomBarContent = null,
             sheetContent = {
                 EditWidgetGroupSheetContent(
                     params = EditWidgetSheetParams(
@@ -132,17 +126,19 @@ private fun EditWidgetGroupSheetContent(
     onToggleIndicator: () -> Unit,
     onMove: (id: Int, target: Int) -> Unit
 ) {
-    params.selected?.let { id ->
-        WidgetMoveRow(params = widgetMoveParams(params.widgets, id) { target -> onMove(id, target) })
-    }
-    AureoleSwitchRow(
-        SwitchRowParams(
-            title = stringResource(R.string.home_widget_show_indicator),
-            checked = params.isIndicatorEnabled,
-            onCheckedChange = { onToggleIndicator() },
-            icon = { m, c -> AureoleDS.icons.Dots(modifier = m, tint = c) }
+    Column(modifier = Modifier.padding(bottom = AureoleDS.dimens.xLarge)) {
+        params.selected?.let { id ->
+            WidgetMoveRow(params = widgetMoveParams(params.widgets, id) { target -> onMove(id, target) })
+        }
+        AureoleSwitchRow(
+            SwitchRowParams(
+                title = stringResource(R.string.home_widget_show_indicator),
+                checked = params.isIndicatorEnabled,
+                onCheckedChange = { onToggleIndicator() },
+                icon = { m, c -> AureoleDS.icons.Dots(modifier = m, tint = c) }
+            )
         )
-    )
+    }
 }
 
 /** What the move row shows for [id]; [onMove] receives the index the widget goes to. */
@@ -170,20 +166,6 @@ private fun rememberWidgetName(widgetId: Int): String {
             AppWidgetManager.getInstance(context).getAppWidgetInfo(widgetId)?.loadLabel(context.packageManager)
         }.getOrNull()?.takeIf { it.isNotBlank() } ?: fallback
     }
-}
-
-/** Add widget (secondary) and Save (primary), with Save on the thumb side. */
-@Composable
-private fun EditWidgetGroupBottomBar(onSave: () -> Unit, onAddWidget: () -> Unit, isLeftHanded: Boolean) {
-    AureoleActionRow(
-        params = ActionRowParams(
-            primaryLabel = stringResource(R.string.home_container_edit_save),
-            onPrimary = onSave,
-            secondaryLabel = stringResource(R.string.home_widget_add),
-            onSecondary = onAddWidget
-        ),
-        isLeftHanded = isLeftHanded
-    )
 }
 
 @AureolePreview

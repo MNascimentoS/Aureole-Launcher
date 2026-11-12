@@ -35,9 +35,6 @@ private const val CARD_ALPHA = 0.35f
 @Composable
 internal fun ReleaseNotesBody(version: ReleaseNoteVersion, modifier: Modifier = Modifier) {
     Column(modifier = modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(AureoleDS.dimens.xSmall)) {
-        AureoleMenuSectionLabel(
-            text = stringResource(R.string.settings_advanced_release_notes_version, version.versionName)
-        )
         val showTitles = showsSectionTitles(version.sections)
         version.sections.forEach { section ->
             if (showTitles) {

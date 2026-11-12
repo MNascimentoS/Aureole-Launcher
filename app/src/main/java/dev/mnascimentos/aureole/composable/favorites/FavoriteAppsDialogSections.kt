@@ -37,24 +37,19 @@ import kotlinx.coroutines.delay
 
 @Composable
 internal fun FavoriteAppsBottomBar(
-    currentMode: FavoriteAppsScreenMode,
     onBack: () -> Unit,
-    onClose: () -> Unit,
     searchQuery: String = "",
     onSearchQueryChange: (String) -> Unit = {}
 ) {
-    val isMain = currentMode == FavoriteAppsScreenMode.MAIN
-    val label = if (isMain) R.string.home_favorites_done else R.string.home_favorites_back
-    // The search sits in the footer, under the divider that separates it from the list, above the button.
-    if (!isMain) {
+    Column(modifier = Modifier.fillMaxWidth()) {
         FavoriteAppsSearchInput(query = searchQuery, onQueryChange = onSearchQueryChange)
         Spacer(modifier = Modifier.height(AureoleDS.dimens.small))
+        AureolePrimaryActionButton(
+            label = stringResource(R.string.home_favorites_back),
+            onClick = onBack,
+            modifier = Modifier.fillMaxWidth()
+        )
     }
-    AureolePrimaryActionButton(
-        label = stringResource(label),
-        onClick = if (isMain) onClose else onBack,
-        modifier = Modifier.fillMaxWidth()
-    )
 }
 
 @Composable

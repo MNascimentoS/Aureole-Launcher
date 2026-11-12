@@ -1,6 +1,6 @@
 {
-  "plan": "specs/bottom-sheets/one-hand-plan.md",
-  "progress": "specs/bottom-sheets/progress.md",
+  "plan": "specs/actionsheets-polish/plan.md",
+  "progress": "specs/actionsheets-polish/progress.md",
   "scanRoot": "app",
   "startCommand": "fase",
   "gates": [

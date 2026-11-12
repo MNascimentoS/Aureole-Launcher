@@ -99,7 +99,7 @@ private fun VersionChipsRow(
     modifier: Modifier = Modifier
 ) {
     LazyRow(
-        modifier = modifier.fillMaxWidth(),
+        modifier = modifier.fillMaxWidth().padding(vertical = AureoleDS.dimens.xxSmall),
         horizontalArrangement = Arrangement.spacedBy(AureoleDS.dimens.small)
     ) {
         items(items = versions, key = { it.versionName }, contentType = { "version_chip" }) { version ->

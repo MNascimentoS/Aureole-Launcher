@@ -310,36 +310,6 @@ class HomeScreenFolderOverlaysTest {
         composeTestRule.onNodeWithText("Container settings").assertIsDisplayed()
     }
 
-    @Test
-    fun `when container app sheet opens, favorite action calls toggle with the panel id`() {
-        var toggled: Pair<String, String?>? = null
-        val actions = createDefaultHomeScreenActions().copy(
-            onToggleFavoriteWithContainer = { pkg, id -> toggled = pkg to id }
-        )
-        val state = MainUiState(
-            activeContainerAppBottomSheet = ContainerAppBottomSheetState(app = sampleApp, panelId = "p1")
-        )
-        showOverlays(state, actions)
-
-        composeTestRule.onNodeWithText("Add to favorites").performClick()
-
-        assertTrue(toggled == (sampleApp.packageName to "p1"))
-    }
-
-    @Test
-    fun `when folder app sheet opens, favorite action calls toggle favorite`() {
-        var toggled: String? = null
-        val actions = createDefaultHomeScreenActions().copy(onToggleFavorite = { toggled = it })
-        val state = MainUiState(
-            activeFolderAppBottomSheet = FolderAppBottomSheetState(folder = sampleFolder, app = sampleApp)
-        )
-        showOverlays(state, actions)
-
-        composeTestRule.onNodeWithText("Add to favorites").performClick()
-
-        assertTrue(toggled == sampleApp.packageName)
-    }
-
     private fun showOverlays(state: MainUiState, actions: HomeScreenActions) {
         composeTestRule.setContent {
             CompositionLocalProvider(

@@ -27,8 +27,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import dev.mnascimentos.aureole.R
-import dev.mnascimentos.aureole.composable.actions.AureoleActionRow
-import dev.mnascimentos.aureole.composable.actions.model.ActionRowParams
 import dev.mnascimentos.aureole.composable.preview.AureolePreviewFrame
 import dev.mnascimentos.aureole.composable.preview.aureoleDashedBorder
 import dev.mnascimentos.aureole.core.data.model.AppInfo
@@ -74,16 +72,13 @@ fun EditContainerScreen(
                 params.onDismiss()
             }
         }
-        // Cancel, back, drag and tap outside drop the draft; only Save writes it.
-        val discard = { isVisible = false }
-        val save = {
+        val saveAndClose = {
             params.onSave(state.toModel())
             isVisible = false
         }
-        val isMain = currentMode == EditContainerScreenMode.MAIN
 
         AureoleEditOverlay(
-            onDismissRequest = discard,
+            onDismissRequest = saveAndClose,
             modifier = modifier,
             params = AureoleEditOverlayParams(
                 config = AureoleEditOverlayConfig(
@@ -93,14 +88,10 @@ fun EditContainerScreen(
                     isVisible = isVisible,
                     animated = true,
                     isLeftHanded = isLeftHanded,
-                    onBackPress = { currentMode.backTarget()?.let { currentMode = it } ?: discard() }
+                    onBackPress = { currentMode.backTarget()?.let { currentMode = it } ?: saveAndClose() }
                 ),
                 previewContent = { EditContainerPreview(state = state) },
-                bottomBarContent = if (isMain) {
-                    { EditContainerBottomBar(onSave = save, onCancel = discard, isLeftHanded = isLeftHanded) }
-                } else {
-                    null
-                },
+                bottomBarContent = null,
                 sheetContent = {
                     EditContainerSheetContent(
                         currentMode = currentMode,
@@ -112,20 +103,6 @@ fun EditContainerScreen(
             )
         )
     }
-}
-
-/** Cancel and Save, with Save on the thumb side. */
-@Composable
-private fun EditContainerBottomBar(onSave: () -> Unit, onCancel: () -> Unit, isLeftHanded: Boolean) {
-    AureoleActionRow(
-        params = ActionRowParams(
-            primaryLabel = stringResource(R.string.home_container_edit_save),
-            onPrimary = onSave,
-            secondaryLabel = stringResource(R.string.core_common_cancel),
-            onSecondary = onCancel
-        ),
-        isLeftHanded = isLeftHanded
-    )
 }
 
 @Composable

@@ -7,18 +7,15 @@ import org.junit.Test
 class WidgetStackMetricsTest {
 
     @Test
-    fun `card width shows two cards and a half in a 360 dp row`() {
+    fun `card width shows one card and a half in a 360 dp row`() {
         val width = widgetCardWidth(rowWidth = 360f, margin = 16f, gap = 12f)
 
-        assertEquals(121.6f, width, 0.01f)
-        // Two whole cards, two gaps and the left margin leave room for 0.6 of the third card.
-        val third = 360f - 16f - 2 * width - 2 * 12f
-        assertEquals(true, third in 0.4f * width..0.8f * width)
+        assertEquals(210.67f, width, 0.01f)
     }
 
     @Test
     fun `card width grows with the row`() {
-        assertEquals(142.4f, widgetCardWidth(rowWidth = 412f, margin = 16f, gap = 12f), 0.01f)
+        assertEquals(245.33f, widgetCardWidth(rowWidth = 412f, margin = 16f, gap = 12f), 0.01f)
     }
 
     @Test

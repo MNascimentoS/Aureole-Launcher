@@ -93,56 +93,6 @@ class EditClockBottomSheetTest {
     }
 
     @Test
-    fun `when clicking reset defaults, should invoke onResetClockSettings`() {
-        // Arrange
-        var resetCalled = false
-        val actions = createDefaultActions {
-            onResetClockSettings = { resetCalled = true }
-        }
-
-        composeTestRule.setContent {
-            AureoleLauncherTheme {
-                EditClockBottomSheet(
-                    uiState = MainUiState(),
-                    actions = actions,
-                    onDismissRequest = {}
-                )
-            }
-        }
-        advanceAnimation()
-
-        // Act
-        composeTestRule.onNodeWithText("Reset").performClick()
-
-        // Assert
-        assertTrue(resetCalled)
-    }
-
-    @Test
-    fun `when clicking save button, should invoke onDismissRequest after dismissal delay`() {
-        // Arrange
-        var dismissed = false
-
-        composeTestRule.setContent {
-            AureoleLauncherTheme {
-                EditClockBottomSheet(
-                    uiState = MainUiState(),
-                    actions = createDefaultActions(),
-                    onDismissRequest = { dismissed = true }
-                )
-            }
-        }
-        advanceAnimation()
-
-        // Act
-        composeTestRule.onNodeWithText("Save").performClick()
-        advanceAnimation()
-
-        // Assert
-        assertTrue(dismissed)
-    }
-
-    @Test
     fun `when custom greeting style is selected, should show greeting text field`() {
         // Arrange
         var updatedGreeting = ""

@@ -125,13 +125,7 @@ internal fun EditClockOverlay(
                 )
             },
             bottomBarContent = {
-                EditClockFooter(
-                    pagerState = pagerState,
-                    actions = actions,
-                    isLeftHanded = uiState.isLeftHandedMode,
-                    onSave = { isVisible = false },
-                    onResetGreeting = { tempCustomGreeting = "" }
-                )
+                EditClockFooter(pagerState = pagerState)
             },
             sheetContent = {
                 EditClockPager(
@@ -166,17 +160,12 @@ private fun rememberClockPagerState(initialTab: ClockTab): PagerState {
     return pagerState
 }
 
-/** Footer: tabs fixed above the action buttons. */
+/** Footer: tabs fixed below the preview. */
 @Composable
 private fun ColumnScope.EditClockFooter(
-    pagerState: PagerState,
-    actions: HomeScreenActions,
-    isLeftHanded: Boolean,
-    onSave: () -> Unit,
-    onResetGreeting: () -> Unit
+    pagerState: PagerState
 ) {
     val scope = rememberCoroutineScope()
-    // The divider above the footer is drawn by the overlay sheet itself.
     Spacer(modifier = Modifier.height(AureoleDS.dimens.xSmall))
     EditClockTabBar(
         selected = ClockTab.resolve(
@@ -187,12 +176,6 @@ private fun ColumnScope.EditClockFooter(
         onTabSelected = { tab -> scope.launch { pagerState.animateScrollToPage(tab.index) } }
     )
     Spacer(modifier = Modifier.height(AureoleDS.dimens.xSmall))
-    EditClockActionButtons(
-        actions = actions,
-        isLeftHanded = isLeftHanded,
-        onDismissRequest = onSave,
-        onResetGreeting = onResetGreeting
-    )
 }
 
 @Composable
@@ -204,7 +187,6 @@ private fun EditClockPreviewCard(
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(AureoleDS.dimens.medium)
             .padding(AureoleDS.dimens.medium),
         contentAlignment = Alignment.Center
     ) {
