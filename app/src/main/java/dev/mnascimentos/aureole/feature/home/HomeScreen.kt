@@ -48,6 +48,7 @@ import dev.mnascimentos.aureole.feature.home.components.containers.model.EditCon
 import dev.mnascimentos.aureole.feature.home.components.overlays.CustomizeBottomSheet
 import dev.mnascimentos.aureole.feature.home.components.overlays.HomeOverlaysContent
 import dev.mnascimentos.aureole.feature.home.components.overlays.homeDragGestures
+import dev.mnascimentos.aureole.feature.home.components.scrubber.scrubberGestureInsetPx
 import dev.mnascimentos.aureole.feature.home.components.widgets.EditWidgetGroupScreen
 import dev.mnascimentos.aureole.feature.home.components.widgets.model.EditWidgetGroupActions
 import dev.mnascimentos.aureole.feature.home.components.widgets.model.EditWidgetGroupParams
@@ -92,6 +93,7 @@ fun HomeScreen(
             screenWidthPx = screenWidthPx,
             isAllAppsDrawerOpen = uiState.isAllAppsDrawerOpen,
             density = density,
+            gestureInsetPx = scrubberGestureInsetPx().toFloat(),
             onAllAppsDrawerOpen = actions.onAllAppsDrawerOpen,
             onExpandNotificationShade = actions.onExpandNotificationShade,
             onExternalTouchYChange = { externalTouchY = it }
