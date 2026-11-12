@@ -10,6 +10,7 @@ import com.google.android.play.core.appupdate.AppUpdateOptions
 import com.google.android.play.core.install.model.AppUpdateType
 import dev.mnascimentos.aureole.feature.home.HomeViewModel
 import dev.mnascimentos.aureole.feature.home.components.appsdrawer.extensions.onSearchQueryChanged
+import dev.mnascimentos.aureole.feature.home.components.clock.extensions.addClock
 import dev.mnascimentos.aureole.feature.home.components.clock.extensions.closeEditClockBottomSheet
 import dev.mnascimentos.aureole.feature.home.components.clock.extensions.openEditClockBottomSheet
 import dev.mnascimentos.aureole.feature.home.components.clock.extensions.resetClockSettings
@@ -142,6 +143,7 @@ class HomeActionsFactory(
             onOpenFavoritePicker = { containerId -> viewModel.setShowFavoritePicker(true, containerId) },
             onDismissFavoritePicker = { viewModel.dismissFavoritePicker() },
             onAddFavoritesList = { viewModel.addFavoritesList() },
+            onAddClock = { viewModel.addClock() },
             onSelectPalette = { name -> viewModel.selectPalette(name) },
             onSelectFont = { name -> viewModel.selectFont(name) },
             onDismissWidgetPicker = { viewModel.setShowWidgetPicker(false) },

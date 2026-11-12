@@ -14,15 +14,15 @@ const val CUSTOMIZE_ADD_COLUMNS = 4
  *
  * @property labelRes Label under the icon.
  * @property type Grid item type this entry adds; null for the single widget, which opens the widget picker.
- * @property isSingleton True for items a home keeps only once (clock, all apps): the grid marks the
- * ones already there. The other kinds can be added any number of times.
+ * @property isSingleton True for items a home keeps only once (all apps): the grid marks the ones already
+ * there. The other kinds can be added any number of times.
  */
 enum class CustomizeAddItem(
     @StringRes val labelRes: Int,
     val type: LauncherItemType?,
     val isSingleton: Boolean = false
 ) {
-    CLOCK(R.string.home_customize_item_clock, LauncherItemType.CLOCK, isSingleton = true),
+    CLOCK(R.string.home_customize_item_clock, LauncherItemType.CLOCK),
     FAVORITES(R.string.home_customize_item_favorites, LauncherItemType.APPS_LIST),
     ALL_APPS(R.string.home_customize_item_all_apps, LauncherItemType.ALL_APPS_LIST, isSingleton = true),
     CONTAINER(R.string.home_customize_item_container, LauncherItemType.SHORTCUTS_CONTAINER),

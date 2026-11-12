@@ -155,14 +155,14 @@ class CustomizeBottomSheetTest {
     }
 
     @Test
-    fun `when the clock is already on the home, should keep it tappable`() {
-        var added: LauncherItemType? = null
+    fun `when the clock is already on the home, should keep it tappable to add another clock`() {
+        var added = 0
         val uiState = MainUiState(gridItems = listOf(LauncherItemState(id = "c", type = LauncherItemType.CLOCK)))
-        show(createDefaultHomeScreenActions().copy(onAddGridItem = { type, _, _ -> added = type }), uiState)
+        show(createDefaultHomeScreenActions().copy(onAddClock = { added++ }), uiState)
 
         composeTestRule.onNodeWithText("Clock").performScrollTo().performClick()
 
-        assertEquals(LauncherItemType.CLOCK, added)
+        assertEquals(1, added)
     }
 
     private companion object {

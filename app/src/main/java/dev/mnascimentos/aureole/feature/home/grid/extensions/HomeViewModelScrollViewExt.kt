@@ -34,11 +34,16 @@ fun HomeViewModel.updateScrollViewOrientation(parentId: String, orientation: Scr
     }
 }
 
-fun HomeViewModel.addChildToScrollView(parentId: String, type: LauncherItemType, widgetId: Int? = null) {
+fun HomeViewModel.addChildToScrollView(
+    parentId: String,
+    type: LauncherItemType,
+    widgetId: Int? = null,
+    childId: String = UUID.randomUUID().toString()
+) {
     updateUiState { state ->
         val (defaultSpans, defaultMinSpans) = GridDefaults.getDefaultSpanForType(type)
         val newChild = LauncherItemState(
-            id = UUID.randomUUID().toString(),
+            id = childId,
             type = type,
             col = 0,
             row = 0,

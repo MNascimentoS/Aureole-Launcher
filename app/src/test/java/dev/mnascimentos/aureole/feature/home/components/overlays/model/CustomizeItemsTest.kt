@@ -17,10 +17,16 @@ class CustomizeItemsTest {
     }
 
     @Test
-    fun `when the home has a clock and an all apps list, should mark exactly those`() {
+    fun `when the home has a clock and an all apps list, should mark only the all apps list`() {
         val onHome = itemsOnHome(listOf(item(LauncherItemType.CLOCK), item(LauncherItemType.ALL_APPS_LIST)))
 
-        assertEquals(setOf(CustomizeAddItem.CLOCK, CustomizeAddItem.ALL_APPS), onHome)
+        assertEquals(setOf(CustomizeAddItem.ALL_APPS), onHome)
+    }
+
+    @Test
+    fun `when the home has a clock, should still offer the clock to add another`() {
+        assertTrue(itemsOnHome(listOf(item(LauncherItemType.CLOCK))).isEmpty())
+        assertFalse(CustomizeAddItem.CLOCK.isSingleton)
     }
 
     @Test
