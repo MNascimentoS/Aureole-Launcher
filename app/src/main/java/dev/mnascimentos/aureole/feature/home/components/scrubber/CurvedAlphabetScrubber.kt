@@ -46,7 +46,6 @@ import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.components.scrubber.model.ScrubberCallbacks
 import dev.mnascimentos.aureole.feature.home.components.scrubber.model.ScrubberDimensions
-import dev.mnascimentos.aureole.feature.home.components.scrubber.model.ScrubberEdge
 import dev.mnascimentos.aureole.feature.home.components.scrubber.model.ScrubberOptions
 import dev.mnascimentos.aureole.feature.home.components.scrubber.model.ScrubberRenderParams
 import dev.mnascimentos.aureole.feature.home.components.scrubber.model.scrubberLetterAlpha
@@ -144,10 +143,9 @@ private fun ScrubberContainer(
 
     val dimens = AureoleDS.dimens
     val pillColor = AureoleDS.colors.surfaceVariant.copy(alpha = PILL_ALPHA)
-    val edge = rememberScrubberEdge(options)
-    val baseModifier = modifier
-        .scrubberBaseModifier(edge, options, dimens, pillColor) { height -> containerHeightPx = height }
-        .scrubberGestureExclusion(options.isGestureExclusionActive)
+    val baseModifier = modifier.scrubberBaseModifier(uiState.isLeftHandedMode, options, dimens, pillColor) { height ->
+        containerHeightPx = height
+    }
 
     // The constraints already hold the height on the first frame; the measured one is the fallback.
     BoxWithConstraints(modifier = baseModifier.then(gestureModifier)) {
@@ -178,7 +176,7 @@ private fun targetScrubberAlpha(isDragging: Boolean, options: ScrubberOptions): 
 
 /** Size, padding and pill of the scrubber; the theme values come from the caller, read unconditionally. */
 private fun Modifier.scrubberBaseModifier(
-    edge: ScrubberEdge,
+    isLeftHandedMode: Boolean,
     options: ScrubberOptions,
     dimens: AureoleDimens,
     pillColor: Color,
@@ -189,8 +187,8 @@ private fun Modifier.scrubberBaseModifier(
         .padding(
             top = dimens.zero,
             bottom = options.bottomPadding,
-            start = if (edge.isLeftHandedMode) dimens.xSmall + edge.gestureInset else dimens.zero,
-            end = if (edge.isLeftHandedMode) dimens.zero else dimens.xSmall + edge.gestureInset
+            start = if (isLeftHandedMode) dimens.xSmall else dimens.zero,
+            end = if (isLeftHandedMode) dimens.zero else dimens.xSmall
         )
         .width(dimens.minTouchTarget)
         .then(

@@ -38,13 +38,10 @@ import dev.mnascimentos.aureole.feature.home.components.scrubber.CurvedAlphabetS
 import dev.mnascimentos.aureole.feature.home.components.scrubber.model.ScrubberCallbacks
 import dev.mnascimentos.aureole.feature.home.components.scrubber.model.ScrubberDimensions
 import dev.mnascimentos.aureole.feature.home.components.scrubber.model.ScrubberOptions
-import dev.mnascimentos.aureole.feature.home.components.scrubber.model.isInScrubberEdgeStartZone
-import dev.mnascimentos.aureole.feature.home.components.scrubber.model.scrubberEdgeStartZonePx
 import dev.mnascimentos.aureole.feature.home.model.AppsDrawerOverlayConfig
 import dev.mnascimentos.aureole.feature.home.model.HomeDragParams
 import dev.mnascimentos.aureole.feature.home.model.HomeOverlaysConfig
 import dev.mnascimentos.aureole.feature.home.model.ScrubberOverlayConfig
-import dev.mnascimentos.aureole.feature.home.model.isScrubberEdgeActive
 import kotlinx.coroutines.launch
 import kotlin.math.abs
 
@@ -148,9 +145,7 @@ fun ScrubberOverlay(
             isAlwaysVisible = config.uiState.isAllAppsDrawerOpen,
             isGestureEnabled = config.uiState.isAllAppsDrawerOpen,
             externalTouchY = config.externalTouchY,
-            isHintVisible = config.uiState.isScrubberHintVisible,
-            isGestureExclusionActive = config.uiState.isScrubberEdgeActive,
-            isInsetByGestures = true
+            isHintVisible = config.uiState.isScrubberHintVisible
         ),
         callbacks = ScrubberCallbacks(
             onLetterSelected = { letter ->
@@ -187,8 +182,7 @@ fun Modifier.homeDragGestures(
     params.isLeftHandedMode,
     params.isAlphabetScrubberDisabled,
     params.screenHeightPx,
-    params.screenWidthPx,
-    params.gestureInsetPx
+    params.screenWidthPx
 ) {
     var dragStartedOnEdge = false
     var hasTriggeredGesture = false
@@ -241,11 +235,12 @@ private fun handleEdgeDragStart(
     params: HomeDragParams
 ): Boolean {
     if (params.isAlphabetScrubberDisabled) return false
-    val zonePx = scrubberEdgeStartZonePx(
-        baseWidthPx = with(params.density) { ScrubberDimensions.EdgeGestureStartWidth.toPx() },
-        insetPx = params.gestureInsetPx
-    )
-    return isInScrubberEdgeStartZone(offset.x, params.screenWidthPx, zonePx, params.isLeftHandedMode)
+    val edgeThreshold = with(params.density) { ScrubberDimensions.EdgeGestureStartWidth.toPx() }
+    return if (params.isLeftHandedMode) {
+        offset.x < edgeThreshold
+    } else {
+        offset.x > params.screenWidthPx - edgeThreshold
+    }
 }
 
 private fun handleEdgeDrag(
