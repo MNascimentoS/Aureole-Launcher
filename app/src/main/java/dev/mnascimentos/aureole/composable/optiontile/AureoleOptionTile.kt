@@ -2,6 +2,7 @@ package dev.mnascimentos.aureole.composable.optiontile
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -24,7 +25,7 @@ import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 
 private object OptionTileMetrics {
-    val MinHeight = 96.dp
+    val MinHeight = 56.dp
     const val UNSELECTED_ALPHA = 0.5f
 }
 
@@ -49,16 +50,17 @@ fun AureoleOptionTile(
             .background(AureoleDS.colors.surfaceVariant.copy(alpha = OptionTileMetrics.UNSELECTED_ALPHA))
             .border(AureoleDS.dimens.borderMax, borderColor, shape)
             .selectable(selected = selected, role = Role.RadioButton, onClick = onClick)
-            .padding(AureoleDS.dimens.xSmall),
-        horizontalAlignment = Alignment.CenterHorizontally
+            .padding(horizontal = AureoleDS.dimens.small, vertical = AureoleDS.dimens.xSmall),
+        horizontalAlignment = Alignment.Start,
+        verticalArrangement = Arrangement.Center
     ) {
-        Box(modifier = Modifier.weight(1f).fillMaxWidth(), contentAlignment = Alignment.Center) { sample() }
+        Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.CenterStart) { sample() }
         AureoleText(
             text = label,
             color = if (selected) AureoleDS.colors.onSurfaceHigh else AureoleDS.colors.onSurfaceMedium,
             format = AureoleTextFormatParams(
                 style = AureoleDS.typography.labelSmall,
-                textAlign = TextAlign.Center,
+                textAlign = TextAlign.Start,
                 maxLines = 2
             )
         )

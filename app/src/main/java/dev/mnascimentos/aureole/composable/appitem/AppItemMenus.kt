@@ -4,6 +4,7 @@ import android.content.ComponentName
 import android.content.Context
 import android.graphics.Color
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.Composable
@@ -27,6 +28,7 @@ import dev.mnascimentos.aureole.core.designsystem.icons.Favorite
 import dev.mnascimentos.aureole.core.designsystem.icons.Info
 import dev.mnascimentos.aureole.core.designsystem.icons.Settings
 import dev.mnascimentos.aureole.core.designsystem.icons.Smile
+import dev.mnascimentos.aureole.core.designsystem.icons.VerticalContainer
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
@@ -126,12 +128,14 @@ private fun appActionEntries(
 
 @Composable
 private fun appNavEntries(params: AppItemBottomSheetParams, onDismiss: () -> Unit): List<MenuEntry> {
+    val containerTitle = stringResource(R.string.home_folder_container_settings)
     val navRows = listOf(
-        stringResource(R.string.home_folder_container_settings) to params.onOpenContainerSettings,
+        containerTitle to params.onOpenContainerSettings,
         stringResource(R.string.home_folder_settings) to params.onOpenFolderSettings,
         stringResource(R.string.home_app_menu_quick_panel_settings) to params.actions.onEditFavoritesClick
     )
     return navRows.mapNotNull { (title, onClick) ->
+        val isContainer = title == containerTitle
         onClick?.let {
             MenuEntry.Row(
                 MenuRowParams(
@@ -140,8 +144,14 @@ private fun appNavEntries(params: AppItemBottomSheetParams, onDismiss: () -> Uni
                         it()
                         onDismiss()
                     },
-                    icon = { m, c -> AureoleDS.icons.Settings(modifier = m, tint = c) },
-                    showChevron = true
+                    icon = { m, c ->
+                        if (isContainer) {
+                            AureoleDS.icons.VerticalContainer(modifier = m, tint = c)
+                        } else {
+                            AureoleDS.icons.Settings(modifier = m, tint = c)
+                        }
+                    },
+                    showChevron = !isContainer
                 )
             )
         }
@@ -205,6 +215,7 @@ private fun ShortcutRow(shortcut: AureoleShortcutItem, onDismiss: () -> Unit, co
                         modifier = m
                             .size(AureoleDS.dimens.iconLargePlus)
                             .clip(CircleShape)
+                            .background(AureoleDS.colors.surfaceVariant, CircleShape)
                     )
                 } else {
                     AureoleDS.icons.Smile(modifier = m, tint = c)

@@ -15,6 +15,7 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import dev.mnascimentos.aureole.composable.clock.ClockHeaderUtils
 import dev.mnascimentos.aureole.composable.clock.model.ClockDateFormat
 import dev.mnascimentos.aureole.composable.clock.model.ClockTimeFormat
@@ -29,6 +30,8 @@ import dev.mnascimentos.aureole.feature.home.components.clock.model.CLOCK_DATE_C
 import dev.mnascimentos.aureole.feature.home.components.clock.model.CLOCK_TIME_COLUMNS
 import dev.mnascimentos.aureole.feature.home.components.clock.model.ClockDateOption
 import dev.mnascimentos.aureole.feature.home.components.clock.model.ClockTimeOption
+
+private const val TIME_SAMPLE_PATTERN_12H = "h:mm a"
 
 /** Hour picker: System, 12 h and 24 h, each showing [nowMillis] written that way. */
 @Composable
@@ -46,8 +49,9 @@ internal fun EditClockTimeTiles(
         columns = CLOCK_TIME_COLUMNS,
         items = ClockTimeOption.entries
     ) { option, tileModifier ->
-        val (format12, format24) = ClockHeaderUtils.resolveClockTimeFormats(option.format.key)
-        val pattern = if (option.format == ClockTimeFormat.SYSTEM && !is24Hour) format12 else format24
+        val (_, format24) = ClockHeaderUtils.resolveClockTimeFormats(option.format.key)
+        val uses12Hour = option.format == ClockTimeFormat.H12 || (option.format == ClockTimeFormat.SYSTEM && !is24Hour)
+        val pattern = if (uses12Hour) TIME_SAMPLE_PATTERN_12H else format24
         AureoleOptionTile(
             sample = { TileSample(formatClockSample(pattern, locale, nowMillis)) },
             label = stringResource(option.labelRes),
@@ -89,7 +93,12 @@ private fun TileSample(text: String) {
     AureoleText(
         text = text,
         color = AureoleDS.colors.onSurfaceHigh,
-        format = AureoleTextFormatParams(style = AureoleDS.typography.bodyMedium, textAlign = TextAlign.Center)
+        format = AureoleTextFormatParams(
+            style = AureoleDS.typography.bodyMedium,
+            textAlign = TextAlign.Start,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis
+        )
     )
 }
 

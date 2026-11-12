@@ -45,10 +45,10 @@ internal fun EditClockFontTiles(
                     text = sample,
                     color = AureoleDS.colors.onSurfaceHigh,
                     format = AureoleTextFormatParams(
-                        style = AureoleDS.typography.bodyLarge,
+                        style = AureoleDS.typography.titleLarge,
                         fontFamily = family,
-                        fontWeight = FontWeight.Bold,
-                        textAlign = TextAlign.Center
+                        fontWeight = if (option == ClockFontOption.BOLD) FontWeight.Bold else FontWeight.Normal,
+                        textAlign = TextAlign.Start
                     )
                 )
             },
