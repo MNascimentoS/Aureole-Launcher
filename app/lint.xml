@@ -4,6 +4,8 @@
         <option name="allowed-composition-locals" value="LocalHomeUiState,LocalHomeActions,LocalGlassLevel,LocalLeftHanded,LocalReorderHandle,LocalHazeState,LocalAureoleColors,LocalAureoleIcons,LocalAureoleDimens,LocalAureoleTypography,LocalSharedTransitionScope,LocalAnimatedVisibilityScope" />
     </issue>
     <issue id="GradleDependency" severity="ignore" />
+    <!-- Gradle/AGP version notices: upgrading the build tools is out of a release's scope, like GradleDependency. -->
+    <issue id="AndroidGradlePluginVersion" severity="ignore" />
 </lint>
 
 
