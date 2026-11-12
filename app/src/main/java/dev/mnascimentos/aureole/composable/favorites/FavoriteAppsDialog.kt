@@ -98,9 +98,7 @@ fun FavoriteAppsDialog(
             } else {
                 {
                     FavoriteAppsBottomBar(
-                        currentMode = currentMode,
                         onBack = { currentMode = FavoriteAppsScreenMode.MAIN },
-                        onClose = { isVisible = false },
                         searchQuery = searchQuery,
                         onSearchQueryChange = { searchQuery = it }
                     )
