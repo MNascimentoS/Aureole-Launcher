@@ -41,6 +41,7 @@ import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
 import dev.mnascimentos.aureole.feature.home.model.LocalHomeActions
 import dev.mnascimentos.aureole.feature.home.model.LocalHomeUiState
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
+import dev.mnascimentos.aureole.feature.home.model.favoritesOf
 
 private const val PREVIEW_APPWIDGET_HOST_ID = 1024
 
@@ -56,11 +57,7 @@ fun FavoritesList(
 
     val containerId = options.containerId
     val favoritePackagesList = remember(containerId, uiState.containerFavorites, uiState.favoriteAppPackages) {
-        if (containerId != null && uiState.containerFavorites.containsKey(containerId)) {
-            uiState.containerFavorites[containerId] ?: uiState.favoriteAppPackages
-        } else {
-            uiState.favoriteAppPackages
-        }
+        uiState.favoritesOf(containerId)
     }
     val favoritePackages = remember(favoritePackagesList) {
         favoritePackagesList.toSet()

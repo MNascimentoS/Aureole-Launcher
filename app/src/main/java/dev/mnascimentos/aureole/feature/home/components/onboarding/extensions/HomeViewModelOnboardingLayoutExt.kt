@@ -54,15 +54,23 @@ internal fun HomeViewModel.ensureGridItem(type: LauncherItemType): String? {
         if (!uiState.value.isGridEditMode) enterGridEditMode()
         return existing.id
     }
-    return placeAtDefaultPosition(type) ?: placeInLargestSlot(type)
+    return placeNewGridItem(type)
 }
 
-private fun HomeViewModel.placeAtDefaultPosition(type: LauncherItemType): String? {
+/**
+ * Always adds a new item of [type], even when the home already has one: at the layout's default spot if it is free,
+ * else in the largest free slot. With [alwaysNewId] the id is a fresh UUID, never the layout's stable one, so the
+ * item cannot pick up data that an earlier item with that stable id left behind. Null means the grid is full.
+ */
+internal fun HomeViewModel.placeNewGridItem(type: LauncherItemType, alwaysNewId: Boolean = false): String? =
+    placeAtDefaultPosition(type, alwaysNewId) ?: placeInLargestSlot(type)
+
+private fun HomeViewModel.placeAtDefaultPosition(type: LauncherItemType, alwaysNewId: Boolean): String? {
     val state = uiState.value
     val default = GridDefaults.getDefaultItem(type, state.isLandscape, settingsRepository.isLeftHandedMode)
     // The stable id can already be in use, for example by an item of another type after a reset.
     val item = default?.let { candidate ->
-        val isIdTaken = state.gridItems.any { it.id == candidate.id }
+        val isIdTaken = alwaysNewId || state.gridItems.any { it.id == candidate.id }
         if (isIdTaken) candidate.copy(id = UUID.randomUUID().toString()) else candidate
     }
     if (item == null || !item.fitsIn(state)) return null

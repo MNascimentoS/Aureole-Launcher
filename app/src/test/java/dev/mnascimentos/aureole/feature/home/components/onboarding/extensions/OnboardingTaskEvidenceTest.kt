@@ -7,6 +7,7 @@ import dev.mnascimentos.aureole.core.data.model.ContainerModel
 import dev.mnascimentos.aureole.core.data.model.LauncherItemState
 import dev.mnascimentos.aureole.core.data.model.LauncherItemType
 import dev.mnascimentos.aureole.core.data.model.OnboardingTask
+import dev.mnascimentos.aureole.feature.home.grid.GridDefaults
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
@@ -56,7 +57,9 @@ class OnboardingTaskEvidenceTest {
     @Test
     fun `when the apps list has its own or global favorites, should meet the favorites task`() {
         val own = MainUiState(gridItems = listOf(appsList), containerFavorites = mapOf("list" to listOf("a")))
-        val global = MainUiState(gridItems = listOf(appsList), favoriteAppPackages = listOf("a"))
+        val legacyList = LauncherItemState(id = GridDefaults.APPS_LIST_ITEM_ID, type = LauncherItemType.APPS_LIST)
+        val global = MainUiState(gridItems = listOf(legacyList), favoriteAppPackages = listOf("a"))
+        val newListNoInherit = MainUiState(gridItems = listOf(appsList), favoriteAppPackages = listOf("a"))
         val emptyOwn = MainUiState(
             gridItems = listOf(appsList),
             favoriteAppPackages = listOf("a"),
@@ -66,6 +69,7 @@ class OnboardingTaskEvidenceTest {
 
         assertTrue(own.meetsRequirement(OnboardingTask.ADD_FAVORITE_APPS))
         assertTrue(global.meetsRequirement(OnboardingTask.ADD_FAVORITE_APPS))
+        assertFalse(newListNoInherit.meetsRequirement(OnboardingTask.ADD_FAVORITE_APPS))
         assertFalse(emptyOwn.meetsRequirement(OnboardingTask.ADD_FAVORITE_APPS))
         assertFalse(noList.meetsRequirement(OnboardingTask.ADD_FAVORITE_APPS))
     }

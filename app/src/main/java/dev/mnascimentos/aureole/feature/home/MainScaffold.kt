@@ -26,6 +26,7 @@ import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
 import dev.mnascimentos.aureole.feature.home.model.LocalHomeActions
 import dev.mnascimentos.aureole.feature.home.model.LocalHomeUiState
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
+import dev.mnascimentos.aureole.feature.home.model.favoritesOf
 import dev.mnascimentos.aureole.feature.home.model.isAppsLoading
 
 @Composable
@@ -107,11 +108,7 @@ private fun FavoritePickerOverlay(
 ) {
     if (uiState.showFavoritePickerDialog) {
         val containerId = uiState.activeFavoriteContainerId
-        val favPackages = if (containerId != null && uiState.containerFavorites.containsKey(containerId)) {
-            uiState.containerFavorites[containerId] ?: uiState.favoriteAppPackages
-        } else {
-            uiState.favoriteAppPackages
-        }
+        val favPackages = uiState.favoritesOf(containerId)
 
         FavoriteAppsDialog(
             config = FavoriteAppsDialogConfig(
