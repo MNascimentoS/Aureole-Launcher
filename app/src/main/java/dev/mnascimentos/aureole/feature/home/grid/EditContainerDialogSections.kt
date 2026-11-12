@@ -74,7 +74,7 @@ internal fun EditDialogTypeActionSection(
 ) {
     val (text, onClick) = when (item.type) {
         LauncherItemType.CLOCK -> stringResource(R.string.home_grid_customize_clock) to {
-            actions.onOpenEditClockBottomSheet()
+            actions.onOpenEditClockBottomSheet(item.id)
             onDismissRequest()
         }
         LauncherItemType.APPS_LIST -> stringResource(R.string.home_grid_edit_favorites) to {

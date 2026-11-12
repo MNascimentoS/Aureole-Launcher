@@ -181,14 +181,16 @@ class HomeActionsFactoryTest {
     }
 
     @Test
-    fun `when the edit clock sheet is opened and closed, should toggle it`() {
+    fun `when the edit clock sheet is opened and closed, should toggle it for the clock it was opened for`() {
         val actions = actions()
 
-        actions.onOpenEditClockBottomSheet()
+        actions.onOpenEditClockBottomSheet("clock_a")
         assertTrue(viewModel.uiState.value.showEditClockBottomSheet)
+        assertEquals("clock_a", viewModel.uiState.value.editingClockId)
 
         actions.onCloseEditClockBottomSheet()
         assertFalse(viewModel.uiState.value.showEditClockBottomSheet)
+        assertNull(viewModel.uiState.value.editingClockId)
     }
 
     @Test

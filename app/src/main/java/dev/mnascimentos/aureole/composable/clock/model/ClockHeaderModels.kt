@@ -20,7 +20,8 @@ data class ClockHeaderConfig(
     val timeFormat: String? = null,
     val dateFormat: String? = null,
     val textColor: Int? = null,
-    val backgroundColor: Int? = null
+    val backgroundColor: Int? = null,
+    val isBackgroundEnabled: Boolean? = null
 )
 
 internal data class ClockHeaderContentParams(

@@ -13,6 +13,7 @@ import dev.mnascimentos.aureole.core.data.repository.WidgetRepository
 import dev.mnascimentos.aureole.core.designsystem.model.glassLevelOf
 import dev.mnascimentos.aureole.core.undo.UndoController
 import dev.mnascimentos.aureole.feature.home.components.appsdrawer.extensions.updateAppsState
+import dev.mnascimentos.aureole.feature.home.components.clock.extensions.observeClockConfigs
 import dev.mnascimentos.aureole.feature.home.components.containers.extensions.loadContainers
 import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.OnboardingReducer
 import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.confirmPendingTask
@@ -73,6 +74,7 @@ class HomeViewModel(
 
     init {
         migrateClockConfigs()
+        observeClockConfigs()
         loadSettings()
         observeAppsFlow()
         loadGridItems()

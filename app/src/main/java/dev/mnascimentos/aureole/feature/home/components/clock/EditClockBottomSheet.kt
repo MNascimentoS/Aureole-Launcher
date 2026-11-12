@@ -25,7 +25,6 @@ import androidx.compose.ui.res.stringResource
 import dev.chrisbanes.haze.HazeState
 import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.composable.clock.model.ClockHazeConfig
-import dev.mnascimentos.aureole.composable.clock.model.ClockHeaderConfig
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleEditOverlay
 import dev.mnascimentos.aureole.core.designsystem.model.AureoleEditOverlayConfig
 import dev.mnascimentos.aureole.core.designsystem.model.AureoleEditOverlayParams
@@ -33,6 +32,9 @@ import dev.mnascimentos.aureole.core.designsystem.model.rememberAureoleEditOverl
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
+import dev.mnascimentos.aureole.feature.home.components.clock.extensions.defaultClockConfig
+import dev.mnascimentos.aureole.feature.home.components.clock.extensions.forClockEditor
+import dev.mnascimentos.aureole.feature.home.components.clock.extensions.toHeaderConfig
 import dev.mnascimentos.aureole.feature.home.components.clock.model.ClockTab
 import dev.mnascimentos.aureole.feature.home.components.clock.model.EditClockOverlayOptions
 import dev.mnascimentos.aureole.feature.home.components.clock.model.EditClockPagerParams
@@ -91,6 +93,8 @@ internal fun EditClockOverlay(
     modifier: Modifier = Modifier,
     options: EditClockOverlayOptions = EditClockOverlayOptions()
 ) {
+    // The editor shows and changes the clock being edited: its clock fields hold that clock's look.
+    val clockState = remember(uiState) { uiState.forClockEditor() }
     var isVisible by remember { mutableStateOf(true) }
 
     LaunchedEffect(isVisible) {
@@ -100,9 +104,10 @@ internal fun EditClockOverlay(
         }
     }
 
-    var tempCustomGreeting by remember(uiState.clockCustomGreeting) { mutableStateOf(uiState.clockCustomGreeting) }
+    val savedGreeting = clockState.clockCustomGreeting
+    var tempCustomGreeting by remember(savedGreeting) { mutableStateOf(savedGreeting) }
     val pagerState = rememberClockPagerState(options.initialTab)
-    val effectiveHazeState = if (uiState.isHazeEnabled) options.hazeState else null
+    val effectiveHazeState = if (clockState.isHazeEnabled) options.hazeState else null
 
     AureoleEditOverlay(
         onDismissRequest = { isVisible = false },
@@ -114,12 +119,12 @@ internal fun EditClockOverlay(
                 onSettingsClick = { actions.onSettingsClick() },
                 hazeState = effectiveHazeState,
                 isVisible = isVisible,
-                isLeftHanded = uiState.isLeftHandedMode,
+                isLeftHanded = clockState.isLeftHandedMode,
                 edgeToEdgeContent = true
             ),
             previewContent = {
                 EditClockPreviewCard(
-                    uiState = uiState,
+                    uiState = clockState,
                     tempCustomGreeting = tempCustomGreeting,
                     hazeState = effectiveHazeState
                 )
@@ -131,7 +136,7 @@ internal fun EditClockOverlay(
                 EditClockPager(
                     pagerState = pagerState,
                     params = EditClockPagerParams(
-                        uiState = uiState,
+                        uiState = clockState,
                         actions = actions,
                         isExpanded = options.overlayState.isExpanded,
                         tempCustomGreeting = tempCustomGreeting,
@@ -196,16 +201,8 @@ private fun EditClockPreviewCard(
                 hazeState = hazeState,
                 isBackgroundEnabled = uiState.isClockBackgroundEnabled
             ),
-            config = ClockHeaderConfig(
-                style = uiState.clockStyle,
-                customGreeting = tempCustomGreeting,
-                alignment = uiState.clockAlignment,
-                fontFamily = uiState.clockFontFamily,
-                timeFormat = uiState.clockTimeFormat,
-                dateFormat = uiState.clockDateFormat,
-                textColor = uiState.clockTextColor,
-                backgroundColor = uiState.clockBackgroundColor
-            )
+            // The clock fields of uiState hold the edited clock (forClockEditor); all of them, the background too.
+            config = uiState.defaultClockConfig().toHeaderConfig().copy(customGreeting = tempCustomGreeting)
         )
     }
 }

@@ -32,6 +32,7 @@ class ClockConfigRepository(
 ) {
     private val gson = Gson()
     private val migrationLock = Mutex()
+    private val writeLock = Mutex()
     private val prefs: SharedPreferences
         get() = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
 
@@ -87,22 +88,32 @@ class ClockConfigRepository(
     /** The config of the clock [itemId], or the [defaultConfig] when it has none saved. */
     suspend fun getOrDefault(itemId: String): ClockConfig = get(itemId) ?: defaultConfig()
 
+    /**
+     * Saves the config of the clock [itemId]. The [configs] change at once, in call order; the file then gets the
+     * newest config of the clock, so a slower earlier write never overwrites a later one.
+     */
     suspend fun save(itemId: String, config: ClockConfig) {
         ensureMigrated()
-        withContext(Dispatchers.IO) {
-            prefs.edit(commit = true) { putString(keyOf(itemId), gson.toJson(config)) }
-        }
         _configs.update { it + (itemId to config) }
+        persist(itemId)
     }
 
     /** Deletes the config of the clock [itemId] only. */
     suspend fun remove(itemId: String) {
         ensureMigrated()
+        _configs.update { it - itemId }
+        persist(itemId)
+    }
+
+    /** Writes what [configs] holds now for the clock [itemId]: its config, or nothing when it has none. */
+    private suspend fun persist(itemId: String) = writeLock.withLock {
         withContext(Dispatchers.IO) {
             val key = keyOf(itemId)
-            prefs.edit(commit = true) { remove(key) }
+            val config = _configs.value[itemId]
+            prefs.edit(commit = true) {
+                if (config == null) remove(key) else putString(key, gson.toJson(config))
+            }
         }
-        _configs.update { it - itemId }
     }
 
     private fun readAll(): Map<String, ClockConfig> = prefs.all.mapNotNull { (key, value) ->

@@ -2,6 +2,10 @@ package dev.mnascimentos.aureole.core.data.repository
 
 import android.content.Context
 import dev.mnascimentos.aureole.core.data.model.ClockConfig
+import kotlinx.coroutines.CoroutineStart
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.joinAll
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
@@ -13,6 +17,7 @@ import org.robolectric.RuntimeEnvironment
 
 private const val CLOCK_A = "clock_a"
 private const val CLOCK_B = "clock_b"
+private const val SAVES_IN_A_ROW = 20
 
 @RunWith(RobolectricTestRunner::class)
 class ClockConfigRepositoryTest {
@@ -60,6 +65,32 @@ class ClockConfigRepositoryTest {
 
         assertEquals(ClockConfig(textColor = 1), repository.get(CLOCK_A))
         assertEquals(configB, repository.get(CLOCK_B))
+    }
+
+    @Test
+    fun `when saving one clock many times at once, should publish and keep the last config`() = runBlocking {
+        repository.ensureMigrated()
+        val saves = (1..SAVES_IN_A_ROW).map { color ->
+            launch(Dispatchers.IO) { repository.save(CLOCK_A, ClockConfig(textColor = color)) }
+        }
+        saves.joinAll()
+        val last = repository.configs.value.getValue(CLOCK_A)
+
+        val restarted = ClockConfigRepository(context, gridRepository, settingsRepository)
+
+        assertEquals(mapOf(CLOCK_A to last), restarted.getAll())
+    }
+
+    @Test
+    fun `when saving, should publish the config before it is written`() = runBlocking {
+        repository.ensureMigrated()
+
+        val save = launch(Dispatchers.IO, start = CoroutineStart.UNDISPATCHED) {
+            repository.save(CLOCK_A, ClockConfig(style = "MINIMAL"))
+        }
+
+        assertEquals("MINIMAL", repository.configs.value.getValue(CLOCK_A).style)
+        save.join()
     }
 
     @Test
