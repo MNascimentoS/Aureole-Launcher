@@ -110,6 +110,7 @@ class SettingsAppearanceControlsTest {
 
         composeTestRule.onNodeWithText("Pick a palette").assertExists()
         composeTestRule.onNodeWithText("Frostbite").performClick()
+        composeTestRule.onNodeWithText("Apply").performClick()
         assertEquals("Frostbite", selectedTheme)
         assertTrue(dismissCalled)
     }
@@ -134,6 +135,7 @@ class SettingsAppearanceControlsTest {
 
         composeTestRule.onNodeWithText("Pick Font").assertExists()
         composeTestRule.onNodeWithText("Istok Web").performClick()
+        composeTestRule.onNodeWithText("Apply").performClick()
         assertEquals("Istok Web", selectedFont)
         assertTrue(dismissCalled)
     }

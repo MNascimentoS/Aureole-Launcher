@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import dev.chrisbanes.haze.HazeState
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
+import dev.mnascimentos.aureole.feature.home.components.quickbutton.model.ShortcutSelectionOptions
 import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
 
@@ -36,7 +37,7 @@ internal fun HomeScreenQuickButtonOverlays(
             uiState = uiState,
             actions = actions,
             onDismissRequest = actions.onCloseShortcutSelection,
-            hazeState = hazeState
+            options = ShortcutSelectionOptions(hazeState = hazeState)
         )
     }
 }

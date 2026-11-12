@@ -15,6 +15,7 @@ import dev.mnascimentos.aureole.core.network.ApiClient
 import dev.mnascimentos.aureole.core.network.SpkiPinValidator
 import dev.mnascimentos.aureole.core.telemetry.DefaultTelemetryLogger
 import dev.mnascimentos.aureole.core.telemetry.TelemetryLogger
+import dev.mnascimentos.aureole.core.undo.UndoController
 import dev.mnascimentos.aureole.feature.home.HomeViewModel
 import dev.mnascimentos.aureole.feature.home.components.widgets.WidgetPickerViewModel
 import dev.mnascimentos.aureole.feature.home.model.HomeRepositories
@@ -46,6 +47,7 @@ val appModule = module {
     single<ContainerRepository> { ContainerRepository(get<ContainerDao>(), get<FolderDao>()) }
     singleOf(::GridRepository)
     factoryOf(::HomeRepositories)
+    factoryOf(::UndoController)
 
     singleOf(::DefaultTelemetryLogger) { bind<TelemetryLogger>() }
     singleOf(::SpkiPinValidator)

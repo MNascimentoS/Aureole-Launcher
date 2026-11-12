@@ -2,6 +2,7 @@ package dev.mnascimentos.aureole.feature.home.model
 
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import dev.mnascimentos.aureole.composable.undo.model.UndoSnackbarState
 import dev.mnascimentos.aureole.core.data.model.AppFolder
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.data.model.ContainerModel
@@ -31,6 +32,7 @@ data class MainUiState(
 
     // Settings
     val isLeftHandedMode: Boolean = false,
+    val undoSnackbar: UndoSnackbarState? = null,
     val isContainerEnabled: Boolean = true,
     val isContainerBackgroundEnabled: Boolean = true,
     val isContainerExpandCell: Boolean = false,

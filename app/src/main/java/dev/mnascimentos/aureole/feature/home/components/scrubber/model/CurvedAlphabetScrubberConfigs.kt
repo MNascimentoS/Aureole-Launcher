@@ -1,6 +1,7 @@
 package dev.mnascimentos.aureole.feature.home.components.scrubber.model
 
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
 object ScrubberDimensions {
@@ -29,7 +30,11 @@ data class ScrubberOptions(
     val isGestureEnabled: Boolean = true,
     val externalTouchY: Float = -1f,
     /** The onboarding teaches the scrub: show the letters faintly without any touch. */
-    val isHintVisible: Boolean = false
+    val isHintVisible: Boolean = false,
+    /** Share of the parent height the letters take; the home keeps [ScrubberDimensions.SCRUBBER_HEIGHT_FRACTION]. */
+    val heightFraction: Float = ScrubberDimensions.SCRUBBER_HEIGHT_FRACTION,
+    /** Space kept under the letters; the home leaves room for its dock. */
+    val bottomPadding: Dp = ScrubberDimensions.PaddingBottom
 )
 
 data class ScrubberRenderParams(

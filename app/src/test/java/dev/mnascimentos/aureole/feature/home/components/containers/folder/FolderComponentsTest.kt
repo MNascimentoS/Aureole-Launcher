@@ -252,7 +252,7 @@ class FolderComponentsTest {
         assertTrue(deleted)
 
         // Click Save
-        composeTestRule.onNodeWithText("Save").performClick()
+        composeTestRule.onNodeWithText("Save", substring = true).performClick()
         assertEquals("Social", savedName)
     }
 
@@ -327,7 +327,7 @@ class FolderComponentsTest {
         composeTestRule.onNodeWithText("Browser").assertIsDisplayed()
 
         // Click Save
-        composeTestRule.onNodeWithText("Save").performClick()
+        composeTestRule.onNodeWithText("Save", substring = true).performClick()
         assertEquals(listOf(sampleApp.packageName), savedPackages)
     }
 

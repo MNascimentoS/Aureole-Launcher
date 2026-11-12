@@ -9,6 +9,7 @@ import dev.mnascimentos.aureole.core.data.repository.FolderRepository
 import dev.mnascimentos.aureole.core.data.repository.GridRepository
 import dev.mnascimentos.aureole.core.data.repository.SettingsRepository
 import dev.mnascimentos.aureole.core.data.repository.WidgetRepository
+import dev.mnascimentos.aureole.core.undo.UndoController
 import dev.mnascimentos.aureole.feature.home.components.appsdrawer.extensions.updateAppsState
 import dev.mnascimentos.aureole.feature.home.components.containers.extensions.loadContainers
 import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.OnboardingReducer
@@ -28,6 +29,7 @@ import kotlinx.coroutines.launch
 
 class HomeViewModel(
     repositories: HomeRepositories,
+    internal val undoController: UndoController = UndoController(),
 ) : ViewModel() {
     internal val appRepository: AppRepository = repositories.appRepository
     internal val widgetRepository: WidgetRepository = repositories.widgetRepository
@@ -49,6 +51,11 @@ class HomeViewModel(
         if (after != before) settingsRepository.onboarding.write(after)
         confirmPendingTask(previous)
         ensureAppsOnCompletion(previous)
+    }
+
+    /** Publishes the controller's current offer (or none) to [uiState]. */
+    internal fun syncUndoState() {
+        _uiState.update { it.copy(undoSnackbar = undoController.state.value) }
     }
 
     val pendingWidgetId: Int
