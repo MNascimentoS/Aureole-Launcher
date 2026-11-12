@@ -50,7 +50,9 @@ private fun folderMenuEntries(params: ContainerFolderBottomSheetParams): List<Me
         AureoleDS.icons.AllApps(modifier = m, tint = c)
     },
     folderRow(R.string.home_folder_rename, params.onRename) { m, c -> AureoleDS.icons.Edit(modifier = m, tint = c) },
-    folderRow(R.string.home_folder_icon_setting, params.onIcon) { m, c -> AureoleDS.icons.Smile(modifier = m, tint = c) },
+    folderRow(R.string.home_folder_icon_setting, params.onIcon) { m, c ->
+        AureoleDS.icons.Smile(modifier = m, tint = c)
+    },
     folderRow(R.string.home_folder_container_settings, params.onOpenContainerSettings) { m, c ->
         AureoleDS.icons.VerticalContainer(modifier = m, tint = c)
     },

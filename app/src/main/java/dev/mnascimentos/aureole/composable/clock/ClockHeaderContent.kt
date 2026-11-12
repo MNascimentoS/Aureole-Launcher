@@ -16,6 +16,7 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
@@ -56,11 +57,7 @@ internal fun ClockHeaderContent(params: ClockHeaderContentParams) {
     val greetingSize = if (isCompact) GREETING_SIZE_COMPACT else GREETING_SIZE_NORMAL
     val dateSize = if (isCompact) DATE_SIZE_COMPACT else DATE_SIZE_NORMAL
 
-    val clockTextSizePx = when {
-        params.maxHeight < COMPACT_CONTAINER_HEIGHT_DP.dp -> CLOCK_TEXT_SIZE_SMALL_PX
-        params.maxHeight > MAX_CONTAINER_HEIGHT_DP.dp -> CLOCK_TEXT_SIZE_LARGE_PX
-        else -> CLOCK_TEXT_SIZE_NORMAL_PX
-    }
+    val clockTextSizePx = clockTextSizePx(params.maxHeight)
 
     val fontSpec = ClockFontSpec.fromKey(params.fontFamily)
     val typeface = fontSpec.timeTypeface()
@@ -114,6 +111,12 @@ internal fun ClockHeaderContent(params: ClockHeaderContentParams) {
             )
         }
     }
+}
+
+private fun clockTextSizePx(maxHeight: Dp): Float = when {
+    maxHeight < COMPACT_CONTAINER_HEIGHT_DP.dp -> CLOCK_TEXT_SIZE_SMALL_PX
+    maxHeight > MAX_CONTAINER_HEIGHT_DP.dp -> CLOCK_TEXT_SIZE_LARGE_PX
+    else -> CLOCK_TEXT_SIZE_NORMAL_PX
 }
 
 @Composable

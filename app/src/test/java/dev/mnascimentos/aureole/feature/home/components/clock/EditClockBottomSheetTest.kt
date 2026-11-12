@@ -291,8 +291,11 @@ class EditClockBottomSheetTest {
         // Assert
         composeTestRule.onNodeWithText("Custom Background Color:").assertIsDisplayed()
 
-        // Act - click "Escuro Slate"
-        composeTestRule.onNodeWithText("Escuro Slate").performClick()
+        val darkSlate = ApplicationProvider.getApplicationContext<Context>()
+            .getString(R.string.home_clock_bg_color_dark_slate)
+
+        // Act - click dark slate
+        composeTestRule.onNodeWithText(darkSlate).performClick()
 
         // Assert
         assertEquals(0xFF1E2124.toInt(), selectedBgColor)

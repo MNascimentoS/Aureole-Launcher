@@ -91,22 +91,7 @@ private fun widgetStackEntries(
             )
         )
     )
-    val indicatorTitle = stringResource(R.string.home_widget_toggle_indicator)
-    add(
-        MenuEntry.Content {
-            AureoleSwitchRow(
-                SwitchRowParams(
-                    title = indicatorTitle,
-                    checked = params.showIndicator,
-                    onCheckedChange = {
-                        params.onToggleDots(params.stackId)
-                        dismiss()
-                    },
-                    icon = { m, c -> AureoleDS.icons.Dots(modifier = m.size(AureoleDS.dimens.iconMedium), tint = c) }
-                )
-            )
-        }
-    )
+    add(widgetStackIndicatorEntry(params, dismiss))
     add(
         MenuEntry.Row(
             MenuRowParams(
@@ -120,6 +105,24 @@ private fun widgetStackEntries(
             )
         )
     )
+}
+
+@Composable
+private fun widgetStackIndicatorEntry(params: WidgetStackBottomSheetParams, dismiss: () -> Unit): MenuEntry {
+    val indicatorTitle = stringResource(R.string.home_widget_toggle_indicator)
+    return MenuEntry.Content {
+        AureoleSwitchRow(
+            SwitchRowParams(
+                title = indicatorTitle,
+                checked = params.showIndicator,
+                onCheckedChange = {
+                    params.onToggleDots(params.stackId)
+                    dismiss()
+                },
+                icon = { m, c -> AureoleDS.icons.Dots(modifier = m.size(AureoleDS.dimens.iconMedium), tint = c) }
+            )
+        )
+    }
 }
 
 private fun resolveWidgetPackage(context: Context, widgetId: Int?): String? {

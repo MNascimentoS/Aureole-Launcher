@@ -65,13 +65,15 @@ fun EditGridItemDialog(
             add(MenuEntry.Note(text = sizeNote))
             add(MenuEntry.Section(text = sectionLabel))
             if (item.type == LauncherItemType.SCROLL_VIEW) {
-                add(MenuEntry.Content {
+                val scrollSection = MenuEntry.Content {
                     EditDialogScrollViewSection(item = item, actions = actions, onDismissRequest = onDismissRequest)
-                })
+                }
+                add(scrollSection)
             }
-            add(MenuEntry.Content {
+            val typeSection = MenuEntry.Content {
                 EditDialogTypeActionSection(item = item, actions = actions, onDismissRequest = onDismissRequest)
-            })
+            }
+            add(typeSection)
             add(MenuEntry.Row(deleteParams))
         }
     }
