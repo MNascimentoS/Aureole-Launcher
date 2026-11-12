@@ -35,7 +35,8 @@ class EditClockBottomSheetOneHandScreenshotTest {
                     onDismissRequest = {},
                     options = EditClockOverlayOptions(
                         overlayState = AureoleEditOverlayState(initialExpanded = isExpanded),
-                        initialTab = tab
+                        initialTab = tab,
+                        nowMillis = FIXED_NOW_MILLIS
                     )
                 )
             }
@@ -112,3 +113,6 @@ class EditClockBottomSheetOneHandScreenshotTest {
         EditClockSheet(isExpanded = false, isLeftHanded = false, hasBackgroundCard = false)
     }
 }
+
+/** 2026-11-11 17:29 UTC, so the format tiles render the same on every run. */
+private const val FIXED_NOW_MILLIS = 1_794_418_140_000L

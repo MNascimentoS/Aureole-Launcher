@@ -16,12 +16,12 @@
     <string name="home_clock_custom_text">Texto personalizado</string>
     <string name="home_clock_time_only">Só a hora</string>
 
-    <string name="home_clock_date_default">Completo (sexta, 9 out)</string>
-    <string name="home_clock_date_short">Curto (Tue, 22 Sep)</string>
-    <string name="home_clock_date_medium">Médio (9 de outubro)</string>
-    <string name="home_clock_date_numeric">Numérico (09/10/2026)</string>
+    <string name="home_clock_date_default">Completo</string>
+    <string name="home_clock_date_short">Curto</string>
+    <string name="home_clock_date_medium">Médio</string>
+    <string name="home_clock_date_numeric">Numérico</string>
 
-    <string name="home_clock_date_format_label">Formato de Data:</string>
+    <string name="home_clock_date_format_label">Data</string>
 
     <!-- Folders -->
     <string name="home_folder_edit_title">Editar Pasta</string>
@@ -163,7 +163,7 @@
     <string name="home_clock_font_monospaced">Monospaced</string>
     <string name="home_clock_font_rounded">Arredondada</string>
     <string name="home_clock_time_date_format">Formato de Hora e Data</string>
-    <string name="home_clock_time_format">Formato de Hora:</string>
+    <string name="home_clock_time_format">Hora</string>
     <string name="home_clock_time_system">Sistema</string>
     <string name="home_clock_time_12h">12 Horas</string>
     <string name="home_clock_time_24h">24 Horas</string>

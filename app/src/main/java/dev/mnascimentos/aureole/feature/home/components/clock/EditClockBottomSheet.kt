@@ -93,8 +93,8 @@ internal fun EditClockOverlay(
 ) {
     var isVisible by remember { mutableStateOf(true) }
 
-    if (!isVisible) {
-        LaunchedEffect(isVisible) {
+    LaunchedEffect(isVisible) {
+        if (!isVisible) {
             delay(DISMISS_DELAY_MS)
             onDismissRequest()
         }
@@ -114,7 +114,6 @@ internal fun EditClockOverlay(
                 onSettingsClick = { actions.onSettingsClick() },
                 hazeState = effectiveHazeState,
                 isVisible = isVisible,
-                animated = true,
                 isLeftHanded = uiState.isLeftHandedMode,
                 edgeToEdgeContent = true
             ),
@@ -145,7 +144,8 @@ internal fun EditClockOverlay(
                         onGreetingChange = {
                             tempCustomGreeting = it
                             actions.onUpdateClockCustomGreeting(it)
-                        }
+                        },
+                        nowMillis = options.nowMillis
                     )
                 )
             }

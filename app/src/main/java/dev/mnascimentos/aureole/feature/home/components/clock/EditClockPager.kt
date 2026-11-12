@@ -75,7 +75,7 @@ internal fun EditClockPager(
             ) {
                 when (tab) {
                     ClockTab.STYLE -> EditClockStylePage(params)
-                    ClockTab.FORMAT -> EditClockFormatPage(params.uiState, params.actions)
+                    ClockTab.FORMAT -> EditClockFormatPage(params)
                     ClockTab.COLORS -> EditClockColorsPage(params.uiState, params.actions)
                 }
                 // Room under the last control so it is not cut in half at the edge of the scroll; the
@@ -117,10 +117,10 @@ private fun ColumnScope.EditClockStylePage(params: EditClockPagerParams) {
 }
 
 @Composable
-private fun ColumnScope.EditClockFormatPage(uiState: MainUiState, actions: HomeScreenActions) {
-    EditClockFormatSection(uiState = uiState, actions = actions)
+private fun ColumnScope.EditClockFormatPage(params: EditClockPagerParams) {
+    EditClockFormatSection(uiState = params.uiState, actions = params.actions, nowMillis = params.nowMillis)
     Spacer(modifier = Modifier.height(AureoleDS.dimens.medium))
-    EditClockFontSection(uiState = uiState, actions = actions)
+    EditClockFontSection(uiState = params.uiState, actions = params.actions)
 }
 
 @Composable

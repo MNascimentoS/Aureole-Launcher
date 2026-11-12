@@ -1,7 +1,6 @@
 package dev.mnascimentos.aureole.feature.home.components.clock
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -10,22 +9,16 @@ import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.semantics.Role
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
-import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
+import dev.mnascimentos.aureole.composable.optiontile.AureoleOptionTile
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
@@ -35,12 +28,10 @@ import dev.mnascimentos.aureole.feature.home.components.clock.model.ClockStyleOp
 
 private object StyleCardMetrics {
     val MiniatureHeight = 44.dp
-    val CardMinHeight = 96.dp
     val SmallLineHeight = 4.dp
     val LargeLineHeight = 14.dp
     const val SMALL_LINE_FRACTION = 0.45f
     const val LARGE_LINE_FRACTION = 0.7f
-    const val UNSELECTED_ALPHA = 0.5f
 }
 
 /**
@@ -76,31 +67,13 @@ internal fun EditClockStyleCards(
 
 @Composable
 private fun RowScope.StyleCard(option: ClockStyleOption, isSelected: Boolean, onClick: () -> Unit) {
-    val shape = RoundedCornerShape(AureoleDS.dimens.radiusMedium)
-    val borderColor = if (isSelected) AureoleDS.colors.onSurfaceHigh else Color.Transparent
-    Column(
-        modifier = Modifier
-            .weight(1f)
-            .heightIn(min = StyleCardMetrics.CardMinHeight)
-            .clip(shape)
-            .background(AureoleDS.colors.surfaceVariant.copy(alpha = StyleCardMetrics.UNSELECTED_ALPHA))
-            .border(AureoleDS.dimens.borderMax, borderColor, shape)
-            .selectable(selected = isSelected, role = Role.RadioButton, onClick = onClick)
-            .padding(AureoleDS.dimens.xSmall),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        StyleMiniature(lines = option.lines)
-        Spacer(modifier = Modifier.weight(1f))
-        AureoleText(
-            text = stringResource(option.labelRes),
-            color = if (isSelected) AureoleDS.colors.onSurfaceHigh else AureoleDS.colors.onSurfaceMedium,
-            format = AureoleTextFormatParams(
-                style = AureoleDS.typography.labelSmall,
-                textAlign = TextAlign.Center,
-                maxLines = 2
-            )
-        )
-    }
+    AureoleOptionTile(
+        sample = { StyleMiniature(lines = option.lines) },
+        label = stringResource(option.labelRes),
+        selected = isSelected,
+        onClick = onClick,
+        modifier = Modifier.weight(1f)
+    )
 }
 
 @Composable

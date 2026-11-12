@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -13,7 +12,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -33,15 +31,6 @@ private object ClockSectionMetrics {
     private const val NEGATIVE_CHIP_SPACING_DP = -8
     val NegativeChipVerticalSpacing = NEGATIVE_CHIP_SPACING_DP.dp
 }
-
-@Composable
-@ReadOnlyComposable
-private fun getDateFormatOptions(): List<Pair<String, String>> = listOf(
-    Pair("DEFAULT", stringResource(R.string.home_clock_date_default)),
-    Pair("SHORT", stringResource(R.string.home_clock_date_short)),
-    Pair("MEDIUM", stringResource(R.string.home_clock_date_medium)),
-    Pair("NUMERIC", stringResource(R.string.home_clock_date_numeric))
-)
 
 @Composable
 internal fun EditClockStyleSection(
@@ -150,54 +139,38 @@ internal fun EditClockFontSection(
     }
 }
 
-@OptIn(ExperimentalLayoutApi::class)
 @Composable
 internal fun EditClockFormatSection(
     uiState: MainUiState,
-    actions: HomeScreenActions
+    actions: HomeScreenActions,
+    nowMillis: Long = System.currentTimeMillis()
 ) {
     Column {
         EditClockSectionHeader(title = stringResource(R.string.home_clock_time_date_format))
-
-        AureoleText(
-            text = stringResource(R.string.home_clock_time_format),
-            color = AureoleDS.colors.onSurfaceMedium,
-            modifier = Modifier.padding(bottom = AureoleDS.dimens.xSmall),
-            format = AureoleTextFormatParams(style = AureoleDS.typography.bodySmall)
+        FormatSubtitle(text = stringResource(R.string.home_clock_time_format))
+        EditClockTimeTiles(
+            selectedKey = uiState.clockTimeFormat,
+            nowMillis = nowMillis,
+            onSelect = { actions.onUpdateClockTimeFormat(it) }
         )
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(AureoleDS.dimens.xSmall)
-        ) {
-            EditClockChoiceButton(
-                text = stringResource(R.string.home_clock_time_system),
-                selected = uiState.clockTimeFormat == "SYSTEM",
-                onClick = { actions.onUpdateClockTimeFormat("SYSTEM") },
-                modifier = Modifier.weight(1f)
-            )
-            EditClockChoiceButton(
-                text = stringResource(R.string.home_clock_time_12h),
-                selected = uiState.clockTimeFormat == "12H",
-                onClick = { actions.onUpdateClockTimeFormat("12H") },
-                modifier = Modifier.weight(1f)
-            )
-            EditClockChoiceButton(
-                text = stringResource(R.string.home_clock_time_24h),
-                selected = uiState.clockTimeFormat == "24H",
-                onClick = { actions.onUpdateClockTimeFormat("24H") },
-                modifier = Modifier.weight(1f)
-            )
-        }
-
         Spacer(modifier = Modifier.height(AureoleDS.dimens.smallCompact))
-
-        EditClockDropdown(
-            label = stringResource(R.string.home_clock_date_format_label),
+        FormatSubtitle(text = stringResource(R.string.home_clock_date_format_label))
+        EditClockDateTiles(
             selectedKey = uiState.clockDateFormat,
-            options = getDateFormatOptions(),
-            onOptionSelected = { actions.onUpdateClockDateFormat(it) }
+            nowMillis = nowMillis,
+            onSelect = { actions.onUpdateClockDateFormat(it) }
         )
     }
+}
+
+@Composable
+private fun FormatSubtitle(text: String) {
+    AureoleText(
+        text = text,
+        color = AureoleDS.colors.onSurfaceMedium,
+        modifier = Modifier.padding(bottom = AureoleDS.dimens.xSmall),
+        format = AureoleTextFormatParams(style = AureoleDS.typography.bodySmall)
+    )
 }
 
 @AureolePreview
