@@ -18,6 +18,7 @@ import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 
+/** Length of one dash of the placeholder border; a drawing detail of this border only. */
 private val DashLength = 6.dp
 
 /**

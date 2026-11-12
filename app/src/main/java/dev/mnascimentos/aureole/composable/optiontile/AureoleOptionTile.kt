@@ -17,7 +17,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
@@ -25,7 +24,6 @@ import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 
 private object OptionTileMetrics {
-    val MinHeight = 56.dp
     const val UNSELECTED_ALPHA = 0.5f
 }
 
@@ -45,7 +43,7 @@ fun AureoleOptionTile(
     val borderColor = if (selected) AureoleDS.colors.onSurfaceHigh else Color.Transparent
     Column(
         modifier = modifier
-            .heightIn(min = OptionTileMetrics.MinHeight)
+            .heightIn(min = AureoleDS.dimens.menuRowHeight)
             .clip(shape)
             .background(AureoleDS.colors.surfaceVariant.copy(alpha = OptionTileMetrics.UNSELECTED_ALPHA))
             .border(AureoleDS.dimens.borderMax, borderColor, shape)

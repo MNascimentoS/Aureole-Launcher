@@ -27,8 +27,8 @@ import dev.mnascimentos.aureole.feature.home.components.clock.model.ClockStyleLi
 import dev.mnascimentos.aureole.feature.home.components.clock.model.ClockStyleOption
 
 private object StyleCardMetrics {
+    /** Height of the style miniature; a drawing proportion of this card only, not a shared spacing. */
     val MiniatureHeight = 44.dp
-    val SmallLineHeight = 4.dp
     val LargeLineHeight = 14.dp
     const val SMALL_LINE_FRACTION = 0.45f
     const val LARGE_LINE_FRACTION = 0.7f
@@ -92,7 +92,7 @@ private fun StyleMiniature(lines: List<ClockStyleLine>) {
                     .fillMaxWidth(
                         if (isLarge) StyleCardMetrics.LARGE_LINE_FRACTION else StyleCardMetrics.SMALL_LINE_FRACTION
                     )
-                    .height(if (isLarge) StyleCardMetrics.LargeLineHeight else StyleCardMetrics.SmallLineHeight)
+                    .height(if (isLarge) StyleCardMetrics.LargeLineHeight else AureoleDS.dimens.xxSmall)
                     .clip(RoundedCornerShape(AureoleDS.dimens.minimal))
                     .background(AureoleDS.colors.onSurfaceHigh)
             )

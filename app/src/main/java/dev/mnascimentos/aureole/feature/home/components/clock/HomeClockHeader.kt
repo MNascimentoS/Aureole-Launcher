@@ -2,13 +2,13 @@ package dev.mnascimentos.aureole.feature.home.components.clock
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import dev.mnascimentos.aureole.composable.LocalHomeUiState
 import dev.mnascimentos.aureole.composable.clock.ClockHeader
 import dev.mnascimentos.aureole.composable.clock.model.ClockHazeConfig
 import dev.mnascimentos.aureole.composable.clock.model.ClockHeaderConfig
 import dev.mnascimentos.aureole.composable.clock.model.ResolvedClockConfig
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
-import dev.mnascimentos.aureole.feature.home.model.LocalHomeUiState
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
 
 @Composable

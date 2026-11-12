@@ -16,6 +16,7 @@ import androidx.compose.ui.platform.LocalContext
 import com.google.android.play.core.appupdate.AppUpdateInfo
 import com.google.android.play.core.appupdate.AppUpdateManager
 import dev.mnascimentos.aureole.HomeActionsFactory
+import dev.mnascimentos.aureole.composable.LocalHomeUiState
 import dev.mnascimentos.aureole.core.designsystem.model.LocalLeftHanded
 import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.refreshDefaultLauncherStatus
 import dev.mnascimentos.aureole.feature.home.components.widgets.WidgetHostManager
@@ -24,7 +25,6 @@ import dev.mnascimentos.aureole.feature.home.components.widgets.extensions.setPe
 import dev.mnascimentos.aureole.feature.home.extensions.handleBackNavigation
 import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
 import dev.mnascimentos.aureole.feature.home.model.LocalHomeActions
-import dev.mnascimentos.aureole.feature.home.model.LocalHomeUiState
 import dev.mnascimentos.aureole.feature.home.model.isOverlayActive
 import timber.log.Timber
 
