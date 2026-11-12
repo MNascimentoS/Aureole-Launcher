@@ -19,9 +19,9 @@ enum class OnboardingTask {
     CHOOSE_PALETTE,
     CHOOSE_FONT,
     ADD_CLOCK,
+    ADD_WIDGET,
     ADD_FAVORITE_APPS,
     FILL_CONTAINER,
-    ADD_WIDGET,
     EXPLORE_SETTINGS
 }
 

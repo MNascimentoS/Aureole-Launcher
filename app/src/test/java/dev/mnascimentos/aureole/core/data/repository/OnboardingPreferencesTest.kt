@@ -81,6 +81,31 @@ class OnboardingPreferencesTest {
     }
 
     @Test
+    fun `when progress was saved before the reorder, should keep the same completed tasks`() {
+        // Stored by name in the previous order (ADD_FAVORITE_APPS before ADD_WIDGET).
+        // The order is not part of the data, so the same set comes back.
+        settingsPrefs().edit {
+            putString("onboarding_stage", OnboardingStage.CHECKLIST.name)
+            putString(
+                "onboarding_completed_tasks",
+                "ADD_CLOCK,ADD_FAVORITE_APPS,ADD_WIDGET,SET_DEFAULT_HOME"
+            )
+        }
+
+        val progress = preferences.read()
+
+        assertEquals(
+            setOf(
+                OnboardingTask.SET_DEFAULT_HOME,
+                OnboardingTask.ADD_CLOCK,
+                OnboardingTask.ADD_FAVORITE_APPS,
+                OnboardingTask.ADD_WIDGET
+            ),
+            progress?.completedTasks
+        )
+    }
+
+    @Test
     fun `when restarted, should go back to welcome with no progress`() {
         preferences.write(
             OnboardingProgress(
