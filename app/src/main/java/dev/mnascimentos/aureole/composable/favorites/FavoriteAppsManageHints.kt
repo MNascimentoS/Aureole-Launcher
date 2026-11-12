@@ -15,6 +15,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
@@ -43,7 +44,7 @@ internal fun FavoriteAppsDragHint(modifier: Modifier = Modifier) {
 @Composable
 internal fun FavoriteAppsEmptyBanner(appCount: Int, modifier: Modifier = Modifier) {
     FavoriteAppsNotice(
-        text = stringResource(R.string.home_favorites_manage_empty_banner, appCount),
+        text = pluralStringResource(R.plurals.home_favorites_manage_empty_banner, appCount, appCount),
         modifier = modifier
     ) {
         AureoleDS.icons.AllApps(

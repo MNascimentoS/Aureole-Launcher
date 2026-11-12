@@ -28,9 +28,9 @@ private fun Modifier.homeScreenExclusion(exclusion: GestureExclusion, edgeInsetP
 
 /** The exclusion modifier of the home for [uiState], using the system gesture strip width of its edge. */
 @Composable
-fun rememberHomeScreenExclusion(uiState: MainUiState): Modifier {
+fun Modifier.rememberHomeScreenExclusion(uiState: MainUiState): Modifier {
     val exclusion = uiState.gestureExclusion()
-    return Modifier.homeScreenExclusion(exclusion, rememberExclusionInsetPx(exclusion))
+    return homeScreenExclusion(exclusion, rememberExclusionInsetPx(exclusion))
 }
 
 /** Width of the system gesture strip on the edge that [exclusion] covers; zero with button navigation. */

@@ -63,13 +63,13 @@ private fun ShortcutIconTile(action: ShortcutAction, app: AppInfo?) {
             )
         } else {
             val modifier = Modifier.size(AureoleDS.dimens.iconMedium)
-            ShortcutActionIcon(action.type, modifier, AureoleDS.colors.onSurfaceMedium)
+            ShortcutActionIcon(action.type, AureoleDS.colors.onSurfaceMedium, modifier)
         }
     }
 }
 
 @Composable
-private fun ShortcutActionIcon(type: ShortcutType, modifier: Modifier, tint: Color) {
+private fun ShortcutActionIcon(type: ShortcutType, tint: Color, modifier: Modifier = Modifier) {
     when (type) {
         ShortcutType.ALL_APPS -> AureoleDS.icons.AllApps(modifier = modifier, tint = tint)
         ShortcutType.ASSISTANT -> AureoleDS.icons.Star(modifier = modifier, tint = tint)

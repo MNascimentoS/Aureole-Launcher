@@ -117,7 +117,7 @@ internal fun FolderAppPickerBrowseGrid(
         PickerLazyGrid(
             gridState = gridState,
             isSelecting = isSelecting,
-            gridModifier = Modifier
+            modifier = Modifier
                 .thumbSideGutter(gutter, params.isLeftHandedMode)
                 .dragToSelect(onStart = { onDragStart(it) }, onMove = onDragMove, onEnd = onDragEnd)
         ) {
@@ -152,7 +152,7 @@ private fun gridParams(
 private fun PickerLazyGrid(
     gridState: LazyGridState,
     isSelecting: Boolean,
-    gridModifier: Modifier,
+    modifier: Modifier = Modifier,
     content: LazyGridScope.() -> Unit
 ) {
     val baseConfiguration = LocalViewConfiguration.current
@@ -165,7 +165,7 @@ private fun PickerLazyGrid(
             state = gridState,
             modifier = Modifier
                 .fillMaxSize()
-                .then(gridModifier)
+                .then(modifier)
                 .testTag(FOLDER_PICKER_GRID_TEST_TAG),
             userScrollEnabled = !isSelecting,
             verticalArrangement = Arrangement.spacedBy(AureoleDS.dimens.xxSmall),

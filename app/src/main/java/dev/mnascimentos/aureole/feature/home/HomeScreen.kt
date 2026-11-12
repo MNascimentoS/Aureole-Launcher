@@ -89,14 +89,13 @@ fun HomeScreen(
     var screenHeightPx by remember { mutableFloatStateOf(0f) }
     var screenWidthPx by remember { mutableFloatStateOf(0f) }
 
-    val dragModifier = homeDragModifier(
+    val dragModifier = Modifier.homeDragModifier(
         screenWidthPx = screenWidthPx,
         screenHeightPx = screenHeightPx,
         onExternalTouchYChange = { externalTouchY = it },
         onEdgeScrubChange = { isEdgeScrubbing = it }
     )
 
-    val exclusionModifier = rememberHomeScreenExclusion(uiState)
     val hazeState = LocalHazeState.current ?: rememberHazeState()
 
     @OptIn(ExperimentalSharedTransitionApi::class)
@@ -109,7 +108,7 @@ fun HomeScreen(
                         screenHeightPx = it.size.height.toFloat()
                         screenWidthPx = it.size.width.toFloat()
                     }
-                    .then(exclusionModifier)
+                    .rememberHomeScreenExclusion(uiState)
                     // The edge scrub opens the drawer under the finger: keep the gesture alive until it lifts.
                     .then(if (isHomeDragAttached(uiState.isOverlayActive, isEdgeScrubbing)) dragModifier else Modifier)
             ) {
@@ -136,7 +135,7 @@ fun HomeScreen(
 
 /** Home vertical swipes and the alphabet edge scrub (RF-20), for the current hand and screen size. */
 @Composable
-private fun homeDragModifier(
+private fun Modifier.homeDragModifier(
     screenWidthPx: Float,
     screenHeightPx: Float,
     onExternalTouchYChange: (Float) -> Unit,
@@ -145,7 +144,7 @@ private fun homeDragModifier(
     val uiState = LocalHomeUiState.current
     val actions = LocalHomeActions.current
     val isLandscape = LocalConfiguration.current.orientation == Configuration.ORIENTATION_LANDSCAPE
-    return Modifier.homeDragGestures(
+    return homeDragGestures(
         HomeDragParams(
             isLeftHandedMode = uiState.isLeftHandedMode,
             // No alphabet in landscape, so no edge scrub there either.

@@ -1,4 +1,5 @@
 import io.gitlab.arturbosch.detekt.Detekt
+import java.time.Duration
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
@@ -93,7 +94,6 @@ android {
     lint {
         checkReleaseBuilds = false
         abortOnError = false
-        disable += "InvalidFragmentVersionForActivityResult"
         lintConfig = file("lint.xml")
     }
 }
@@ -133,7 +133,11 @@ jacoco {
     toolVersion = "0.8.12"
 }
 
+// A hung test (e.g. runBlocking deadlock on the Robolectric main thread) fails the task instead of stalling the build.
+val testTaskTimeoutMinutes = 10L
+
 tasks.withType<Test>().configureEach {
+    timeout.set(Duration.ofMinutes(testTaskTimeoutMinutes))
     configure<JacocoTaskExtension> {
         isIncludeNoLocationClasses = true
         excludes = listOf("jdk.internal.*")

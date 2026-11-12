@@ -41,7 +41,8 @@ import dev.mnascimentos.aureole.feature.settings.model.SettingsUiState
 @Composable
 fun SettingsScreen(
     uiState: SettingsUiState,
-    actions: SettingsScreenActions
+    actions: SettingsScreenActions,
+    modifier: Modifier = Modifier
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
 
@@ -53,7 +54,7 @@ fun SettingsScreen(
         }
     }
 
-    Box(modifier = Modifier.fillMaxSize()) {
+    Box(modifier = modifier.fillMaxSize()) {
         SettingsNavGraph(
             uiState = uiState,
             actions = actions

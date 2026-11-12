@@ -93,11 +93,11 @@ internal fun ReorderableSlot(
     val isActive = state.activeKey == slot.key
     val scale by animateFloatAsState(if (isActive && state.isDragging) DRAGGED_SCALE else 1f, label = "reorderScale")
     val onRemove = actions.onRemove
-    val gestures = rememberReorderGestures(slot, state, actions, isRtl)
+    val gestures = Modifier.rememberReorderGestures(slot, state, actions, isRtl)
     Box(
         modifier = modifier
             .zIndex(if (isActive) DRAGGED_Z_INDEX else 0f)
-            .then(rememberPlacementAnimation(isActive))
+            .rememberPlacementAnimation(isActive)
             .onSizeChanged { size ->
                 val main = if (slot.orientation == ReorderOrientation.Horizontal) size.width else size.height
                 state.onMeasured(slot.key, main.toFloat())
@@ -114,7 +114,7 @@ internal fun ReorderableSlot(
                 shadowElevation = if (isActive) DRAGGED_ELEVATION * (scale - 1f) / (DRAGGED_SCALE - 1f) else 0f
             }
             .then(if (slot.handleOnly) Modifier else gestures)
-            .then(reorderSemantics(slot, actions, isRtl))
+            .reorderSemantics(slot, actions, isRtl)
     ) {
         if (slot.handleOnly) {
             val handle = ReorderHandle(gestures, isActive && state.isDragging)
@@ -171,7 +171,7 @@ private fun RemoveBadge(onClick: () -> Unit, modifier: Modifier = Modifier) {
  * item stays under the finger.
  */
 @Composable
-private fun rememberReorderGestures(
+private fun Modifier.rememberReorderGestures(
     slot: ReorderSlotParams,
     state: ReorderDragState,
     actions: ReorderableActions,
@@ -212,7 +212,7 @@ private fun rememberReorderGestures(
             }
         }
     }
-    return Modifier.onPlaced { source.value = it }.pointerInput(slot.key, isRtl) {
+    return onPlaced { source.value = it }.pointerInput(slot.key, isRtl) {
         detectDragGesturesAfterLongPress(
             onDragStart = { finger ->
                 if (state.start(currentSlot.key, currentSlot.keys)) {
@@ -234,7 +234,7 @@ private fun rememberReorderGestures(
 /** "Move up/down" (columns) or "Move left/right" (rows) towards each neighbour that exists, and "Remove". */
 @Composable
 @ReadOnlyComposable
-private fun reorderSemantics(
+private fun Modifier.reorderSemantics(
     slot: ReorderSlotParams,
     actions: ReorderableActions,
     isRtl: Boolean,
@@ -264,7 +264,7 @@ private fun reorderSemantics(
             }
         }
     )
-    return Modifier.semantics { customActions = list }
+    return semantics { customActions = list }
 }
 
 /**
@@ -272,11 +272,11 @@ private fun reorderSemantics(
  * past it). The [isActive] item follows the finger instead, so it jumps straight to its new slot.
  */
 @Composable
-private fun rememberPlacementAnimation(isActive: Boolean): Modifier {
+private fun Modifier.rememberPlacementAnimation(isActive: Boolean): Modifier {
     val scope = rememberCoroutineScope()
     var target by remember { mutableStateOf<IntOffset?>(null) }
     var animatable by remember { mutableStateOf<Animatable<IntOffset, AnimationVector2D>?>(null) }
-    return Modifier.onPlaced { coordinates -> target = coordinates.positionInParent().round() }
+    return onPlaced { coordinates -> target = coordinates.positionInParent().round() }
         .offset {
             val place = target ?: return@offset IntOffset.Zero
             val anim = animatable ?: Animatable(place, IntOffset.VectorConverter).also { animatable = it }

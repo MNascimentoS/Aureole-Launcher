@@ -23,7 +23,6 @@ import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.
 import dev.mnascimentos.aureole.feature.home.model.ContainerAppBottomSheetState
 import dev.mnascimentos.aureole.feature.home.model.ContainerFolderBottomSheetState
 import dev.mnascimentos.aureole.feature.home.model.FolderAppBottomSheetState
-import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
 import dev.mnascimentos.aureole.feature.home.model.LocalHomeActions
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
 import dev.mnascimentos.aureole.feature.home.model.createDefaultHomeScreenActions
@@ -308,19 +307,5 @@ class HomeScreenFolderOverlaysTest {
 
         composeTestRule.onNodeWithText("App Info").assertIsDisplayed()
         composeTestRule.onNodeWithText("Container settings").assertIsDisplayed()
-    }
-
-    private fun showOverlays(state: MainUiState, actions: HomeScreenActions) {
-        composeTestRule.setContent {
-            CompositionLocalProvider(
-                LocalHomeUiState provides state,
-                LocalLeftHanded provides state.isLeftHandedMode,
-                LocalHomeActions provides actions
-            ) {
-                AureoleLauncherTheme {
-                    HomeScreenFolderOverlays(screenHeightPx = 1920f, hazeState = HazeState())
-                }
-            }
-        }
     }
 }

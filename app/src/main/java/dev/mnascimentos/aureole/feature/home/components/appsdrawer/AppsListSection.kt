@@ -2,6 +2,7 @@ package dev.mnascimentos.aureole.feature.home.components.appsdrawer
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -41,7 +42,9 @@ import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.core.designsystem.utils.fadingEdges
 import dev.mnascimentos.aureole.core.designsystem.utils.glassBlurRadius
 import dev.mnascimentos.aureole.feature.home.components.appsdrawer.model.AppsDrawerMetrics
+import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
 import dev.mnascimentos.aureole.feature.home.model.LocalHomeActions
+import dev.mnascimentos.aureole.feature.home.model.MainUiState
 import dev.mnascimentos.aureole.feature.home.model.isAppsLoading
 import dev.mnascimentos.aureole.util.percentToFraction
 
@@ -105,45 +108,13 @@ fun AppsListDrawer(
         }
 
         if (uiState.showSearchBarInAllApps) {
-            val alignModifier = if (isSearchExpanded) {
-                Modifier
-                    .align(Alignment.TopCenter)
-                    .statusBarsPadding()
-            } else {
-                val align = if (uiState.isLeftHandedMode) Alignment.BottomStart else Alignment.BottomEnd
-                Modifier
-                    .align(align)
-                    .navigationBarsPadding()
-                    .imePadding()
-            }
-
-            Box(
-                modifier = alignModifier
-                    .fillMaxWidth()
-                    .padding(horizontal = AureoleDS.dimens.large, vertical = AureoleDS.dimens.medium),
-                contentAlignment = when {
-                    isSearchExpanded -> Alignment.TopCenter
-                    uiState.isLeftHandedMode -> Alignment.BottomStart
-                    else -> Alignment.BottomEnd
-                }
-            ) {
-                AureoleFloatingSearchBar(
-                    state = AureoleSearchBarState(
-                        query = uiState.searchQuery,
-                        onQueryChange = actions.onSearchQueryChanged,
-                        isExpanded = isSearchExpanded,
-                        onExpandedChange = { isSearchExpanded = it }
-                    ),
-                    params = AureoleFloatingSearchBarParams(
-                        placeholder = stringResource(R.string.home_apps_search_placeholder),
-                        hazeConfig = AureoleSearchBarHazeConfig(
-                            state = hazeState,
-                            isEnabled = uiState.isHazeEnabled,
-                            opacity = uiState.hazeOpacity
-                        )
-                    )
-                )
-            }
+            AppsDrawerSearchBar(
+                uiState = uiState,
+                actions = actions,
+                isSearchExpanded = isSearchExpanded,
+                onExpandedChange = { isSearchExpanded = it },
+                hazeState = hazeState
+            )
         }
     }
 }
@@ -180,6 +151,55 @@ private fun AppsListSectionDrawerPreview() {
     AureoleLauncherTheme {
         AppsListDrawer(
             listState = rememberLazyListState()
+        )
+    }
+}
+
+@Composable
+private fun BoxScope.AppsDrawerSearchBar(
+    uiState: MainUiState,
+    actions: HomeScreenActions,
+    isSearchExpanded: Boolean,
+    onExpandedChange: (Boolean) -> Unit,
+    hazeState: HazeState?
+) {
+    val alignModifier = if (isSearchExpanded) {
+        Modifier
+            .align(Alignment.TopCenter)
+            .statusBarsPadding()
+    } else {
+        val align = if (uiState.isLeftHandedMode) Alignment.BottomStart else Alignment.BottomEnd
+        Modifier
+            .align(align)
+            .navigationBarsPadding()
+            .imePadding()
+    }
+
+    Box(
+        modifier = alignModifier
+            .fillMaxWidth()
+            .padding(horizontal = AureoleDS.dimens.large, vertical = AureoleDS.dimens.medium),
+        contentAlignment = when {
+            isSearchExpanded -> Alignment.TopCenter
+            uiState.isLeftHandedMode -> Alignment.BottomStart
+            else -> Alignment.BottomEnd
+        }
+    ) {
+        AureoleFloatingSearchBar(
+            state = AureoleSearchBarState(
+                query = uiState.searchQuery,
+                onQueryChange = actions.onSearchQueryChanged,
+                isExpanded = isSearchExpanded,
+                onExpandedChange = onExpandedChange
+            ),
+            params = AureoleFloatingSearchBarParams(
+                placeholder = stringResource(R.string.home_apps_search_placeholder),
+                hazeConfig = AureoleSearchBarHazeConfig(
+                    state = hazeState,
+                    isEnabled = uiState.isHazeEnabled,
+                    opacity = uiState.hazeOpacity
+                )
+            )
         )
     }
 }
