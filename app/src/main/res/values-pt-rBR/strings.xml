@@ -157,7 +157,7 @@
     <string name="home_clock_align_right">Direita</string>
     <string name="home_clock_text_color">Cor do Texto</string>
     <string name="home_clock_font_style">Estilo da Fonte</string>
-    <string name="home_clock_font_default">Padrão</string>
+    <string name="home_clock_font_default">Padrão do tema</string>
     <string name="home_clock_font_bold">Negrito</string>
     <string name="home_clock_font_serif">Serifada</string>
     <string name="home_clock_font_monospaced">Monospaced</string>

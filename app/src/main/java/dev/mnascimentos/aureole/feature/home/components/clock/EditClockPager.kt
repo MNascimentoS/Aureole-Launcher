@@ -120,7 +120,7 @@ private fun ColumnScope.EditClockStylePage(params: EditClockPagerParams) {
 private fun ColumnScope.EditClockFormatPage(params: EditClockPagerParams) {
     EditClockFormatSection(uiState = params.uiState, actions = params.actions, nowMillis = params.nowMillis)
     Spacer(modifier = Modifier.height(AureoleDS.dimens.medium))
-    EditClockFontSection(uiState = params.uiState, actions = params.actions)
+    EditClockFontSection(uiState = params.uiState, actions = params.actions, nowMillis = params.nowMillis)
 }
 
 @Composable

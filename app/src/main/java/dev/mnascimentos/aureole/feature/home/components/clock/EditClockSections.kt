@@ -14,7 +14,6 @@ import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.composable.controls.AureoleSegmentedControl
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
@@ -26,11 +25,6 @@ import dev.mnascimentos.aureole.feature.home.components.clock.model.ClockAlignme
 import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
 import dev.mnascimentos.aureole.feature.home.model.createDefaultHomeScreenActions
-
-private object ClockSectionMetrics {
-    private const val NEGATIVE_CHIP_SPACING_DP = -8
-    val NegativeChipVerticalSpacing = NEGATIVE_CHIP_SPACING_DP.dp
-}
 
 @Composable
 internal fun EditClockStyleSection(
@@ -99,44 +93,18 @@ internal fun EditClockTextColorSection(
     }
 }
 
-@OptIn(ExperimentalLayoutApi::class)
 @Composable
 internal fun EditClockFontSection(
     uiState: MainUiState,
-    actions: HomeScreenActions
+    actions: HomeScreenActions,
+    nowMillis: Long = System.currentTimeMillis()
 ) {
     EditClockSectionHeader(title = stringResource(R.string.home_clock_font_style))
-    FlowRow(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(AureoleDS.dimens.xSmall),
-        verticalArrangement = Arrangement.spacedBy(ClockSectionMetrics.NegativeChipVerticalSpacing)
-    ) {
-        EditClockLayoutChip(
-            label = stringResource(R.string.home_clock_font_default),
-            selected = uiState.clockFontFamily == "SANS_SERIF",
-            onClick = { actions.onUpdateClockFontFamily("SANS_SERIF") }
-        )
-        EditClockLayoutChip(
-            label = stringResource(R.string.home_clock_font_bold),
-            selected = uiState.clockFontFamily == "BOLD",
-            onClick = { actions.onUpdateClockFontFamily("BOLD") }
-        )
-        EditClockLayoutChip(
-            label = stringResource(R.string.home_clock_font_serif),
-            selected = uiState.clockFontFamily == "SERIF",
-            onClick = { actions.onUpdateClockFontFamily("SERIF") }
-        )
-        EditClockLayoutChip(
-            label = stringResource(R.string.home_clock_font_monospaced),
-            selected = uiState.clockFontFamily == "MONOSPACE",
-            onClick = { actions.onUpdateClockFontFamily("MONOSPACE") }
-        )
-        EditClockLayoutChip(
-            label = stringResource(R.string.home_clock_font_rounded),
-            selected = uiState.clockFontFamily == "ROUNDED",
-            onClick = { actions.onUpdateClockFontFamily("ROUNDED") }
-        )
-    }
+    EditClockFontTiles(
+        selectedKey = uiState.clockFontFamily,
+        nowMillis = nowMillis,
+        onSelect = { actions.onUpdateClockFontFamily(it) }
+    )
 }
 
 @Composable

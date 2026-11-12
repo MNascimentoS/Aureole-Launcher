@@ -94,7 +94,7 @@ private fun TileSample(text: String) {
 }
 
 @Composable
-private fun <T> TileGrid(
+internal fun <T> TileGrid(
     columns: Int,
     items: List<T>,
     modifier: Modifier = Modifier,
@@ -129,4 +129,4 @@ private fun EditClockFormatTilesPreview() {
     }
 }
 
-private const val PREVIEW_NOW_MILLIS = 1_794_000_000_000L
+internal const val PREVIEW_NOW_MILLIS = 1_794_000_000_000L

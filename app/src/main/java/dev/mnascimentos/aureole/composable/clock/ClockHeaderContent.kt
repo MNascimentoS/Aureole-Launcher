@@ -1,5 +1,6 @@
 package dev.mnascimentos.aureole.composable.clock
 
+import android.graphics.Typeface
 import android.view.View
 import android.widget.TextClock
 import androidx.compose.animation.Crossfade
@@ -11,12 +12,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
+import dev.mnascimentos.aureole.composable.clock.model.ClockFontSpec
 import dev.mnascimentos.aureole.composable.clock.model.ClockHeaderContentParams
 import dev.mnascimentos.aureole.composable.clock.model.ClockTimeDisplayParams
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
@@ -59,7 +62,10 @@ internal fun ClockHeaderContent(params: ClockHeaderContentParams) {
         else -> CLOCK_TEXT_SIZE_NORMAL_PX
     }
 
-    val typeface = ClockHeaderUtils.resolveClockTypeface(params.fontFamily)
+    val fontSpec = ClockFontSpec.fromKey(params.fontFamily)
+    val typeface = fontSpec.timeTypeface()
+    val dateTypeface = fontSpec.dateTypeface()
+    val greetingFamily = fontSpec.fontFamily()
     val (format12, format24) = ClockHeaderUtils.resolveClockTimeFormats(params.timeFormat)
     val datePattern = ClockHeaderUtils.resolveClockDatePattern(params.dateFormat, LocalConfiguration.current.locales[0])
 
@@ -71,6 +77,7 @@ internal fun ClockHeaderContent(params: ClockHeaderContentParams) {
             ClockDateDisplay(
                 datePattern = datePattern,
                 dateSizeSp = dateSize,
+                dateTypeface = dateTypeface,
                 textColor = params.composeTextColor,
                 textAlign = textAlign
             )
@@ -80,6 +87,7 @@ internal fun ClockHeaderContent(params: ClockHeaderContentParams) {
             ClockGreetingDisplay(
                 greeting = params.greeting,
                 greetingSizeSp = greetingSize,
+                fontFamily = greetingFamily,
                 textColor = params.composeTextColor,
                 textAlign = textAlign
             )
@@ -100,6 +108,7 @@ internal fun ClockHeaderContent(params: ClockHeaderContentParams) {
             ClockDateDisplay(
                 datePattern = datePattern,
                 dateSizeSp = dateSize,
+                dateTypeface = dateTypeface,
                 textColor = params.composeTextColor,
                 textAlign = textAlign
             )
@@ -111,6 +120,7 @@ internal fun ClockHeaderContent(params: ClockHeaderContentParams) {
 private fun ClockGreetingDisplay(
     greeting: String,
     greetingSizeSp: Float,
+    fontFamily: FontFamily,
     textColor: Color,
     textAlign: TextAlign
 ) {
@@ -124,6 +134,7 @@ private fun ClockGreetingDisplay(
             color = textColor,
             format = AureoleTextFormatParams(
                 fontSize = greetingSizeSp.sp,
+                fontFamily = fontFamily,
                 fontWeight = FontWeight.Medium,
                 textAlign = textAlign,
                 maxLines = 1,
@@ -137,6 +148,7 @@ private fun ClockGreetingDisplay(
 private fun ClockDateDisplay(
     datePattern: String,
     dateSizeSp: Float,
+    dateTypeface: Typeface,
     textColor: Color,
     textAlign: TextAlign
 ) {
@@ -146,6 +158,7 @@ private fun ClockDateDisplay(
                 format12Hour = datePattern
                 format24Hour = datePattern
                 textSize = dateSizeSp
+                typeface = dateTypeface
                 setTextColor(textColor.toArgb())
                 textAlignment = when (textAlign) {
                     TextAlign.Center -> View.TEXT_ALIGNMENT_CENTER
@@ -158,6 +171,7 @@ private fun ClockDateDisplay(
             clock.format12Hour = datePattern
             clock.format24Hour = datePattern
             clock.textSize = dateSizeSp
+            clock.typeface = dateTypeface
             clock.setTextColor(textColor.toArgb())
             clock.textAlignment = when (textAlign) {
                 TextAlign.Center -> View.TEXT_ALIGNMENT_CENTER

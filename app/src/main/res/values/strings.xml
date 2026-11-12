@@ -157,7 +157,7 @@
     <string name="home_clock_align_right">Right</string>
     <string name="home_clock_text_color">Text Color</string>
     <string name="home_clock_font_style">Font Style</string>
-    <string name="home_clock_font_default">Default</string>
+    <string name="home_clock_font_default">Theme default</string>
     <string name="home_clock_font_bold">Bold</string>
     <string name="home_clock_font_serif">Serif</string>
     <string name="home_clock_font_monospaced">Monospaced</string>
