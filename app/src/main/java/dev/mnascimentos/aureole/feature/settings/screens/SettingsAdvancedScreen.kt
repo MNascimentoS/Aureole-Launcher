@@ -31,12 +31,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.core.net.toUri
 import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.composable.SettingsActionItem
-import dev.mnascimentos.aureole.composable.menu.AureoleMenuRow
-import dev.mnascimentos.aureole.composable.menu.AureoleMenuSheet
-import dev.mnascimentos.aureole.composable.menu.model.MenuRowParams
 import dev.mnascimentos.aureole.composable.sheets.ReleaseNotesBottomSheet
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
@@ -51,7 +47,7 @@ import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
 import dev.mnascimentos.aureole.feature.home.model.ProvideHomeUiState
-import dev.mnascimentos.aureole.feature.settings.extensions.tryUninstall
+import dev.mnascimentos.aureole.feature.settings.components.UninstallBottomSheet
 import dev.mnascimentos.aureole.feature.settings.model.SettingsAdvancedDialogActions
 import dev.mnascimentos.aureole.feature.settings.model.SettingsScreenActions
 import dev.mnascimentos.aureole.feature.settings.model.SettingsUiState
@@ -274,50 +270,6 @@ private fun AdvancedLinksGroup(onNavigateToContributors: () -> Unit) {
                 fontWeight = FontWeight.Normal
             )
         )
-    }
-}
-
-@Composable
-private fun UninstallBottomSheet(
-    context: Context,
-    onDismiss: () -> Unit
-) {
-    AureoleMenuSheet(
-        title = stringResource(R.string.settings_advanced_uninstall_dialog_title),
-        onDismiss = onDismiss
-    ) { dismiss ->
-        AureoleMenuRow(
-            MenuRowParams(
-                title = stringResource(R.string.settings_advanced_contact_us),
-                icon = { modifier, tint -> AureoleDS.icons.Smile(modifier = modifier, tint = tint) },
-                onClick = {
-                    dismiss()
-                    val intent = Intent(Intent.ACTION_SENDTO).apply {
-                        data = "mailto:aureole@mnascimentos.dev".toUri()
-                    }
-                    context.startActivity(intent)
-                }
-            )
-        )
-        AureoleMenuRow(
-            MenuRowParams(
-                title = stringResource(R.string.home_app_menu_uninstall),
-                icon = { modifier, tint -> AureoleDS.icons.Delete(modifier = modifier, tint = tint) },
-                isDestructive = true,
-                onClick = {
-                    dismiss()
-                    tryUninstall(context)
-                }
-            )
-        )
-    }
-}
-
-@AureolePreview
-@Composable
-private fun UninstallBottomSheetPreview() {
-    AureoleLauncherTheme {
-        UninstallBottomSheet(context = LocalContext.current, onDismiss = {})
     }
 }
 
