@@ -13,6 +13,7 @@ import dev.mnascimentos.aureole.core.data.model.QuickButtonModel
 import dev.mnascimentos.aureole.core.data.model.QuickButtonShortcuts
 import dev.mnascimentos.aureole.core.data.model.ShortcutAction
 import dev.mnascimentos.aureole.core.data.repository.AppRepository
+import dev.mnascimentos.aureole.core.data.repository.ClockConfigRepository
 import dev.mnascimentos.aureole.core.data.repository.ContainerRepository
 import dev.mnascimentos.aureole.core.data.repository.FavoriteContainerRepository
 import dev.mnascimentos.aureole.core.data.repository.FolderRepository
@@ -76,6 +77,7 @@ class HomeViewModelUndoTest {
                 favoriteContainerRepository = favoriteRepository,
                 containerRepository = ContainerRepository(context),
                 gridRepository = gridRepository,
+                clockConfigRepository = ClockConfigRepository(context, gridRepository, settingsRepository),
             )
         )
     }

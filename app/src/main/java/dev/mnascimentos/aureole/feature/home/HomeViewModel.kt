@@ -3,6 +3,7 @@ package dev.mnascimentos.aureole.feature.home
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dev.mnascimentos.aureole.core.data.repository.AppRepository
+import dev.mnascimentos.aureole.core.data.repository.ClockConfigRepository
 import dev.mnascimentos.aureole.core.data.repository.ContainerRepository
 import dev.mnascimentos.aureole.core.data.repository.FavoriteContainerRepository
 import dev.mnascimentos.aureole.core.data.repository.FolderRepository
@@ -21,6 +22,7 @@ import dev.mnascimentos.aureole.feature.home.components.widgets.extensions.loadW
 import dev.mnascimentos.aureole.feature.home.grid.extensions.loadGridItems
 import dev.mnascimentos.aureole.feature.home.model.HomeRepositories
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -39,6 +41,7 @@ class HomeViewModel(
     internal val favoriteContainerRepository: FavoriteContainerRepository = repositories.favoriteContainerRepository
     internal val containerRepository: ContainerRepository = repositories.containerRepository
     internal val gridRepository: GridRepository = repositories.gridRepository
+    internal val clockConfigRepository: ClockConfigRepository = repositories.clockConfigRepository
 
     private val _uiState = MutableStateFlow(MainUiState())
     val uiState: StateFlow<MainUiState> = _uiState.asStateFlow()
@@ -69,12 +72,18 @@ class HomeViewModel(
         internal set
 
     init {
+        migrateClockConfigs()
         loadSettings()
         observeAppsFlow()
         loadGridItems()
         loadContainers()
         loadWidgetSettings()
         syncApps()
+    }
+
+    /** Gives each clock already on the grid the clock look of the settings, once, off the main thread. */
+    private fun migrateClockConfigs() {
+        viewModelScope.launch(Dispatchers.IO) { clockConfigRepository.ensureMigrated() }
     }
 
     private fun observeAppsFlow() {

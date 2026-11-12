@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import dev.mnascimentos.aureole.core.data.model.AppFolder
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.data.repository.AppRepository
+import dev.mnascimentos.aureole.core.data.repository.ClockConfigRepository
 import dev.mnascimentos.aureole.core.data.repository.ContainerRepository
 import dev.mnascimentos.aureole.core.data.repository.FavoriteContainerRepository
 import dev.mnascimentos.aureole.core.data.repository.FolderRepository
@@ -59,7 +60,8 @@ class HomeViewModelOverlayExtTest {
                 folderRepository = FolderRepository(context),
                 favoriteContainerRepository = FavoriteContainerRepository(context, settingsRepository),
                 containerRepository = ContainerRepository(context),
-                gridRepository = GridRepository(context)
+                gridRepository = GridRepository(context),
+                clockConfigRepository = ClockConfigRepository(context, GridRepository(context), settingsRepository)
             )
         )
         ShadowLooper.idleMainLooper()

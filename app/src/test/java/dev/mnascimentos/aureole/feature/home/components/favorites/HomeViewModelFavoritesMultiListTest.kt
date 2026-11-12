@@ -6,6 +6,7 @@ import dev.mnascimentos.aureole.core.data.model.AppFolder
 import dev.mnascimentos.aureole.core.data.model.LauncherItemState
 import dev.mnascimentos.aureole.core.data.model.LauncherItemType
 import dev.mnascimentos.aureole.core.data.repository.AppRepository
+import dev.mnascimentos.aureole.core.data.repository.ClockConfigRepository
 import dev.mnascimentos.aureole.core.data.repository.ContainerRepository
 import dev.mnascimentos.aureole.core.data.repository.FavoriteContainerRepository
 import dev.mnascimentos.aureole.core.data.repository.FolderRepository
@@ -73,7 +74,8 @@ class HomeViewModelFavoritesMultiListTest {
                 folderRepository = FolderRepository(context),
                 favoriteContainerRepository = favoriteRepository,
                 containerRepository = ContainerRepository(context),
-                gridRepository = gridRepository
+                gridRepository = gridRepository,
+                clockConfigRepository = ClockConfigRepository(context, gridRepository, settingsRepository)
             )
         )
         awaitInitialLoad()
@@ -94,6 +96,8 @@ class HomeViewModelFavoritesMultiListTest {
     private fun awaitInitialLoad() {
         val sentinel = AppFolder(id = "__init_sentinel__", name = "")
         viewModel.updateUiState { it.copy(folders = listOf(sentinel)) }
+        // The init load may already be over before the sentinel is set: a new load always replaces it.
+        viewModel.loadSettings()
         awaitUntil { viewModel.uiState.value.folders != listOf(sentinel) }
     }
 
@@ -212,7 +216,10 @@ class HomeViewModelFavoritesMultiListTest {
         arrangeHome(list(LEGACY_ID, col = 0, row = 0))
 
         viewModel.removeGridItemWithUndo(LEGACY_ID)
-        awaitUntil { settingsRepository.favoriteAppPackages.isEmpty() }
+        // The settings are written before the state update, on another thread: wait for both.
+        awaitUntil {
+            settingsRepository.favoriteAppPackages.isEmpty() && viewModel.uiState.value.favoriteAppPackages.isEmpty()
+        }
         assertEquals(emptyList<String>(), viewModel.uiState.value.favoriteAppPackages)
 
         viewModel.onUndo()

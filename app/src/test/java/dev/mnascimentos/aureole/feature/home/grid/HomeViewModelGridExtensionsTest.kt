@@ -7,6 +7,7 @@ import dev.mnascimentos.aureole.core.data.model.LauncherItemState
 import dev.mnascimentos.aureole.core.data.model.LauncherItemType
 import dev.mnascimentos.aureole.core.data.model.ScrollOrientation
 import dev.mnascimentos.aureole.core.data.repository.AppRepository
+import dev.mnascimentos.aureole.core.data.repository.ClockConfigRepository
 import dev.mnascimentos.aureole.core.data.repository.ContainerRepository
 import dev.mnascimentos.aureole.core.data.repository.FavoriteContainerRepository
 import dev.mnascimentos.aureole.core.data.repository.FolderRepository
@@ -95,7 +96,8 @@ class HomeViewModelGridExtensionsTest {
                 folderRepository = folderRepository,
                 favoriteContainerRepository = favoriteContainerRepository,
                 containerRepository = containerRepository,
-                gridRepository = gridRepository
+                gridRepository = gridRepository,
+                clockConfigRepository = ClockConfigRepository(context, gridRepository, settingsRepository)
             )
         )
     }

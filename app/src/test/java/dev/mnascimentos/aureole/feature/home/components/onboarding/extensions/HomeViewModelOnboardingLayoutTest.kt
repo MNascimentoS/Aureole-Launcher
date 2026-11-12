@@ -7,6 +7,7 @@ import dev.mnascimentos.aureole.core.data.model.LauncherItemType
 import dev.mnascimentos.aureole.core.data.model.OnboardingProgress
 import dev.mnascimentos.aureole.core.data.model.OnboardingStage
 import dev.mnascimentos.aureole.core.data.repository.AppRepository
+import dev.mnascimentos.aureole.core.data.repository.ClockConfigRepository
 import dev.mnascimentos.aureole.core.data.repository.ContainerRepository
 import dev.mnascimentos.aureole.core.data.repository.FavoriteContainerRepository
 import dev.mnascimentos.aureole.core.data.repository.FolderRepository
@@ -84,7 +85,8 @@ class HomeViewModelOnboardingLayoutTest {
                 folderRepository = FolderRepository(context),
                 favoriteContainerRepository = FavoriteContainerRepository(context, settingsRepository),
                 containerRepository = ContainerRepository(context),
-                gridRepository = gridRepository
+                gridRepository = gridRepository,
+                clockConfigRepository = ClockConfigRepository(context, gridRepository, settingsRepository)
             )
         )
         ShadowLooper.idleMainLooper()

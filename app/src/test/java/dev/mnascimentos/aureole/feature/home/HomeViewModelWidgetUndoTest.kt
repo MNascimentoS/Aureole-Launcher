@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.lifecycle.viewModelScope
 import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.core.data.repository.AppRepository
+import dev.mnascimentos.aureole.core.data.repository.ClockConfigRepository
 import dev.mnascimentos.aureole.core.data.repository.ContainerRepository
 import dev.mnascimentos.aureole.core.data.repository.FavoriteContainerRepository
 import dev.mnascimentos.aureole.core.data.repository.FolderRepository
@@ -54,6 +55,7 @@ class HomeViewModelWidgetUndoTest {
                 favoriteContainerRepository = FavoriteContainerRepository(context, settingsRepository),
                 containerRepository = ContainerRepository(context),
                 gridRepository = GridRepository(context),
+                clockConfigRepository = ClockConfigRepository(context, GridRepository(context), settingsRepository),
             )
         )
         viewModel.updateUiState { it.copy(widgetStacks = it.widgetStacks + (STACK_ID to listOf(1, 2, 3))) }

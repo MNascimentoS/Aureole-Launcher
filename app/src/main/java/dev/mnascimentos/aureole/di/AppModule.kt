@@ -5,6 +5,7 @@ import dev.mnascimentos.aureole.core.data.db.ContainerDao
 import dev.mnascimentos.aureole.core.data.db.FavoriteContainerDao
 import dev.mnascimentos.aureole.core.data.db.FolderDao
 import dev.mnascimentos.aureole.core.data.repository.AppRepository
+import dev.mnascimentos.aureole.core.data.repository.ClockConfigRepository
 import dev.mnascimentos.aureole.core.data.repository.ContainerRepository
 import dev.mnascimentos.aureole.core.data.repository.FavoriteContainerRepository
 import dev.mnascimentos.aureole.core.data.repository.FolderRepository
@@ -46,6 +47,7 @@ val appModule = module {
     }
     single<ContainerRepository> { ContainerRepository(get<ContainerDao>(), get<FolderDao>()) }
     singleOf(::GridRepository)
+    single { ClockConfigRepository(androidContext(), get<GridRepository>(), get<SettingsRepository>()) }
     factoryOf(::HomeRepositories)
     factoryOf(::UndoController)
 
