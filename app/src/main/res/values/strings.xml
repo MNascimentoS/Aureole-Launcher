@@ -499,4 +499,5 @@
     <string name="home_grid_no_space_error">Not enough free space on the grid for this container.</string>
     <string name="settings_reset_grid_success">Home screen layout reset to default</string>
     <string name="settings_wallpaper_load_error">Could not load the selected image</string>
+    <string name="home_container_preview_app_label">App %1$d</string>
 </resources>

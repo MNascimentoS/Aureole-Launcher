@@ -506,4 +506,5 @@
     <string name="home_grid_no_space_error">Não há espaço livre suficiente na grade para este container.</string>
     <string name="settings_reset_grid_success">Layout da tela inicial resetado para o padrão</string>
     <string name="settings_wallpaper_load_error">Não foi possível carregar a imagem selecionada</string>
+    <string name="home_container_preview_app_label">App %1$d</string>
 </resources>

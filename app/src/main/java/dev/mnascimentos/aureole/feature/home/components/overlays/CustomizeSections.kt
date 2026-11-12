@@ -44,7 +44,6 @@ import dev.mnascimentos.aureole.feature.home.components.overlays.model.Customize
 private object CustomizeMetrics {
     /** Height of the "Add" tile: sized so the icon, the two-line label and the badge fit; no other tile shares it. */
     val TileHeight = 92.dp
-    val IconTile = 40.dp
     val BadgeSize = 16.dp
     const val CARD_ALPHA = 0.5f
     const val DIMMED_ALPHA = 0.55f
@@ -154,7 +153,7 @@ private fun AddTile(item: CustomizeAddItem, isOnHome: Boolean, onClick: () -> Un
     ) {
         Box(
             modifier = Modifier
-                .size(CustomizeMetrics.IconTile)
+                .size(AureoleDS.dimens.iconHuge)
                 .clip(RoundedCornerShape(AureoleDS.dimens.radiusSmall))
                 .background(AureoleDS.colors.background),
             contentAlignment = Alignment.Center

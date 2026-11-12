@@ -29,6 +29,8 @@ import dev.mnascimentos.aureole.feature.home.components.clock.model.ClockStyleOp
 private object StyleCardMetrics {
     /** Height of the style miniature; a drawing proportion of this card only, not a shared spacing. */
     val MiniatureHeight = 44.dp
+
+    /** Thickness of the big line in the miniature (the time); a drawing proportion of this card only. */
     val LargeLineHeight = 14.dp
     const val SMALL_LINE_FRACTION = 0.45f
     const val LARGE_LINE_FRACTION = 0.7f
