@@ -2,6 +2,7 @@ package dev.mnascimentos.aureole.di
 
 import android.app.Application
 import dev.mnascimentos.aureole.core.data.repository.AppRepository
+import dev.mnascimentos.aureole.core.data.repository.ClockConfigRepository
 import dev.mnascimentos.aureole.core.data.repository.ContainerRepository
 import dev.mnascimentos.aureole.core.data.repository.FavoriteContainerRepository
 import dev.mnascimentos.aureole.core.data.repository.FolderRepository
@@ -16,6 +17,7 @@ import dev.mnascimentos.aureole.feature.home.components.widgets.WidgetPickerView
 import dev.mnascimentos.aureole.feature.settings.SettingsViewModel
 import org.junit.After
 import org.junit.Assert.assertNotNull
+import org.junit.Assert.assertSame
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -58,6 +60,8 @@ class AppModuleTest : KoinTest {
         assertNotNull(get<FavoriteContainerRepository>())
         assertNotNull(get<ContainerRepository>())
         assertNotNull(get<GridRepository>())
+        assertNotNull(get<ClockConfigRepository>())
+        assertSame(get<ClockConfigRepository>(), get<ClockConfigRepository>())
     }
 
     @Test

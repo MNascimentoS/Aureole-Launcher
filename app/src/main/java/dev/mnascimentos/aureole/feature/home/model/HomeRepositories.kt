@@ -1,6 +1,7 @@
 package dev.mnascimentos.aureole.feature.home.model
 
 import dev.mnascimentos.aureole.core.data.repository.AppRepository
+import dev.mnascimentos.aureole.core.data.repository.ClockConfigRepository
 import dev.mnascimentos.aureole.core.data.repository.ContainerRepository
 import dev.mnascimentos.aureole.core.data.repository.FavoriteContainerRepository
 import dev.mnascimentos.aureole.core.data.repository.FolderRepository
@@ -16,4 +17,5 @@ data class HomeRepositories(
     val favoriteContainerRepository: FavoriteContainerRepository,
     val containerRepository: ContainerRepository,
     val gridRepository: GridRepository,
+    val clockConfigRepository: ClockConfigRepository,
 )

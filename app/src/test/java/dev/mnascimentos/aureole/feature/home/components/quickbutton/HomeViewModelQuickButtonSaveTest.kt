@@ -9,6 +9,7 @@ import dev.mnascimentos.aureole.core.data.model.QuickButtonModel
 import dev.mnascimentos.aureole.core.data.model.QuickButtonShortcuts
 import dev.mnascimentos.aureole.core.data.model.ShortcutAction
 import dev.mnascimentos.aureole.core.data.repository.AppRepository
+import dev.mnascimentos.aureole.core.data.repository.ClockConfigRepository
 import dev.mnascimentos.aureole.core.data.repository.ContainerRepository
 import dev.mnascimentos.aureole.core.data.repository.FavoriteContainerRepository
 import dev.mnascimentos.aureole.core.data.repository.FolderRepository
@@ -63,7 +64,8 @@ class HomeViewModelQuickButtonSaveTest {
                 folderRepository = FolderRepository(context),
                 favoriteContainerRepository = FavoriteContainerRepository(context, settingsRepository),
                 containerRepository = ContainerRepository(context),
-                gridRepository = gridRepository
+                gridRepository = gridRepository,
+                clockConfigRepository = ClockConfigRepository(context, gridRepository, settingsRepository)
             )
         )
     }

@@ -3,6 +3,7 @@ package dev.mnascimentos.aureole.feature.home
 import android.content.Context
 import android.os.Looper
 import dev.mnascimentos.aureole.core.data.repository.AppRepository
+import dev.mnascimentos.aureole.core.data.repository.ClockConfigRepository
 import dev.mnascimentos.aureole.core.data.repository.ContainerRepository
 import dev.mnascimentos.aureole.core.data.repository.FavoriteContainerRepository
 import dev.mnascimentos.aureole.core.data.repository.FolderRepository
@@ -70,7 +71,8 @@ class HomeViewModelTest {
                 folderRepository = folderRepository,
                 favoriteContainerRepository = favoriteContainerRepository,
                 containerRepository = containerRepository,
-                gridRepository = gridRepository
+                gridRepository = gridRepository,
+                clockConfigRepository = ClockConfigRepository(context, gridRepository, settingsRepository)
             )
         )
     }
