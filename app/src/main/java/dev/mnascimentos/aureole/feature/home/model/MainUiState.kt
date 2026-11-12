@@ -177,6 +177,16 @@ val MainUiState.isAppsLoading: Boolean
     get() = isLoading && apps.isEmpty()
 
 val MainUiState.isHomeOverlayActive: Boolean
+    get() = isAllAppsDrawerOpen || hasOverlayBesidesDrawer
+
+/**
+ * The all-apps drawer is open with nothing above it (sheet, folder, search, dialog or onboarding), so the
+ * alphabet scrubber is the only thing that needs the system back gesture off its edge.
+ */
+val MainUiState.isScrubberEdgeActive: Boolean
+    get() = isAllAppsDrawerOpen && !hasOverlayBesidesDrawer && !onboarding.blocksHome
+
+private val MainUiState.hasOverlayBesidesDrawer: Boolean
     get() {
         val isFolderActive = activeFolder != null ||
             isCreateFolderDialogVisible ||
@@ -188,7 +198,6 @@ val MainUiState.isHomeOverlayActive: Boolean
             showQuickButtonSettingsBottomSheet ||
             showQuickButtonAppearanceBottomSheet ||
             showShortcutSelectionBottomSheet ||
-            isAllAppsDrawerOpen ||
             searchQuery.isNotEmpty() ||
             isFolderActive
         val isWidgetActive = showWidgetPicker ||

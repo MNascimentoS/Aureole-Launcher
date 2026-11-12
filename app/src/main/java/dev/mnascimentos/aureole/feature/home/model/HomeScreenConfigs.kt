@@ -18,6 +18,8 @@ data class HomeDragParams(
     val screenWidthPx: Float,
     val isAllAppsDrawerOpen: Boolean,
     val density: Density,
+    /** Width of the system gesture strip on the scrubber edge; the scrubber and its start zone sit inside it. */
+    val gestureInsetPx: Float = 0f,
     val onAllAppsDrawerOpen: () -> Unit,
     val onExpandNotificationShade: () -> Unit,
     val onExternalTouchYChange: (Float) -> Unit,
