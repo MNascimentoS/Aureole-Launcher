@@ -315,6 +315,14 @@ private fun UninstallBottomSheet(
 
 @AureolePreview
 @Composable
+private fun UninstallBottomSheetPreview() {
+    AureoleLauncherTheme {
+        UninstallBottomSheet(context = LocalContext.current, onDismiss = {})
+    }
+}
+
+@AureolePreview
+@Composable
 private fun SettingsAdvancedScreenPreview() {
     AureoleLauncherTheme {
         SettingsAdvancedScreen(

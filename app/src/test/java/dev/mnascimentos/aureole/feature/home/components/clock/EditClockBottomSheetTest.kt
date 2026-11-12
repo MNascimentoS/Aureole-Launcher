@@ -1,5 +1,6 @@
 package dev.mnascimentos.aureole.feature.home.components.clock
 
+import android.content.Context
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.hasSetTextAction
 import androidx.compose.ui.test.isToggleable
@@ -8,6 +9,8 @@ import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollTo
 import androidx.compose.ui.test.performTextInput
+import androidx.test.core.app.ApplicationProvider
+import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
@@ -260,8 +263,9 @@ class EditClockBottomSheetTest {
             }
         }
 
-        // Act - click "Azul Gelado"
-        composeTestRule.onNodeWithText("Azul Gelado").performClick()
+        // Act - click "Azul Gelado" (the name comes from the string resource, so it follows the test locale)
+        val iceBlue = ApplicationProvider.getApplicationContext<Context>().getString(R.string.home_clock_color_ice_blue)
+        composeTestRule.onNodeWithText(iceBlue).performClick()
 
         // Assert
         assertEquals(0xFF90CAF9.toInt(), selectedColor)

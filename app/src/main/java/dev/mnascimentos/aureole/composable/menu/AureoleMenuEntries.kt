@@ -1,13 +1,17 @@
 package dev.mnascimentos.aureole.composable.menu
 
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import dev.mnascimentos.aureole.composable.menu.model.MenuEntry
+import dev.mnascimentos.aureole.composable.menu.model.MenuRowParams
 import dev.mnascimentos.aureole.composable.menu.model.withDestructiveDivider
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
+import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 
 private const val DIVIDER_ALPHA = 0.5f
 
@@ -35,4 +39,21 @@ private fun MenuDivider(modifier: Modifier = Modifier) {
         thickness = AureoleDS.dimens.borderMinimal,
         color = AureoleDS.colors.outline.copy(alpha = DIVIDER_ALPHA)
     )
+}
+
+@AureolePreview
+@Composable
+private fun AureoleMenuEntriesPreview() {
+    AureoleLauncherTheme {
+        Column {
+            AureoleMenuEntries(
+                entries = listOf(
+                    MenuEntry.Section(text = "SECTION"),
+                    MenuEntry.Row(MenuRowParams(title = "Action", onClick = {}, showChevron = true)),
+                    MenuEntry.Row(MenuRowParams(title = "Remove", onClick = {}, isDestructive = true)),
+                    MenuEntry.Row(MenuRowParams(title = "Info", onClick = {}, showChevron = true))
+                )
+            )
+        }
+    }
 }

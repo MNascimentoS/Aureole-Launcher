@@ -61,9 +61,9 @@ internal fun EditClockBackgroundSection(
             horizontalArrangement = Arrangement.spacedBy(AureoleDS.dimens.smallCompact),
             verticalArrangement = Arrangement.spacedBy(AureoleDS.dimens.smallCompact)
         ) {
-            PRESET_BG_COLORS.forEach { (name, colorValue) ->
+            PRESET_BG_COLORS.forEach { (nameRes, colorValue) ->
                 EditClockColorSwatchItem(
-                    name = name,
+                    name = stringResource(nameRes),
                     colorValue = colorValue,
                     isSelected = uiState.clockBackgroundColor == colorValue,
                     onClick = { actions.onUpdateClockBackgroundColor(colorValue) }

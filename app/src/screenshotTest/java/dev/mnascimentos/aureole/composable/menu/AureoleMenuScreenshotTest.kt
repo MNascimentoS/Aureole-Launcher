@@ -6,6 +6,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
 import com.android.tools.screenshot.PreviewTest
+import dev.mnascimentos.aureole.composable.menu.model.MenuEntry
 import dev.mnascimentos.aureole.composable.menu.model.MenuRowParams
 import dev.mnascimentos.aureole.core.designsystem.icons.Delete
 import dev.mnascimentos.aureole.core.designsystem.icons.Settings
@@ -63,6 +64,34 @@ private fun HoldRowCase(isLeftHanded: Boolean) {
         }
     }
 }
+
+@Composable
+private fun EntriesListCase(isLeftHanded: Boolean) {
+    ProvideHomeUiState(MainUiState(isLeftHandedMode = isLeftHanded)) {
+        AureoleLauncherTheme {
+            Column(modifier = Modifier.padding(AureoleDS.dimens.medium)) {
+                AureoleMenuEntries(
+                    entries = listOf(
+                        MenuEntry.Row(MenuRowParams(title = "Remove from folder", onClick = {}, isDestructive = true)),
+                        MenuEntry.Section(text = "Actions"),
+                        MenuEntry.Row(MenuRowParams(title = "App info", onClick = {}, showChevron = true)),
+                        MenuEntry.Row(MenuRowParams(title = "Favorite", onClick = {}, showChevron = true))
+                    )
+                )
+            }
+        }
+    }
+}
+
+@PreviewTest
+@AureolePreview
+@Composable
+private fun MenuEntriesListRightHandedScreenshotTest() = EntriesListCase(isLeftHanded = false)
+
+@PreviewTest
+@AureolePreview
+@Composable
+private fun MenuEntriesListLeftHandedScreenshotTest() = EntriesListCase(isLeftHanded = true)
 
 @PreviewTest
 @AureolePreview

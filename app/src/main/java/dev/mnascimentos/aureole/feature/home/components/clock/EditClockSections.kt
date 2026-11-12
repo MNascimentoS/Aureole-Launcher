@@ -82,9 +82,9 @@ internal fun EditClockTextColorSection(
         horizontalArrangement = Arrangement.spacedBy(AureoleDS.dimens.smallCompact),
         verticalArrangement = Arrangement.spacedBy(AureoleDS.dimens.smallCompact)
     ) {
-        PRESET_TEXT_COLORS.forEach { (name, colorValue) ->
+        PRESET_TEXT_COLORS.forEach { (nameRes, colorValue) ->
             EditClockColorSwatchItem(
-                name = name,
+                name = stringResource(nameRes),
                 colorValue = colorValue,
                 isSelected = uiState.clockTextColor == colorValue,
                 onClick = { actions.onUpdateClockTextColor(colorValue) }
