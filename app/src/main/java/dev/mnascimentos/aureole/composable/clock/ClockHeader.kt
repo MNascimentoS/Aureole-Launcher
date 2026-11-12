@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -16,11 +15,6 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.semantics
-import dev.chrisbanes.haze.HazeState
-import dev.chrisbanes.haze.HazeStyle
-import dev.chrisbanes.haze.HazeTint
-import dev.chrisbanes.haze.hazeEffect
-import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.composable.clock.model.ClockHazeConfig
 import dev.mnascimentos.aureole.composable.clock.model.ClockHeaderContentParams
 import dev.mnascimentos.aureole.composable.clock.model.ResolvedClockConfig
@@ -30,15 +24,6 @@ import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.core.designsystem.utils.LocalHazeState
 import dev.mnascimentos.aureole.core.designsystem.utils.glassBlurRadius
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
-
-private const val MORNING_HOUR_START = 5
-private const val MORNING_HOUR_END = 11
-private const val AFTERNOON_HOUR_START = 12
-private const val AFTERNOON_HOUR_END = 17
-private const val DEFAULT_NOON_HOUR = 12
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -54,32 +39,36 @@ fun ClockHeader(
     val hazeOpacity = hazeConfig.hazeOpacity
     val isBgEnabled = hazeConfig.isBackgroundEnabled
 
-    val defaultTextColor = AureoleDS.colors.onSurfaceHigh.toArgb()
-    val colorPrimaryInt = if (resolvedConfig.textColor != 0) resolvedConfig.textColor else defaultTextColor
-    val colorPrimaryCompose = if (resolvedConfig.textColor != 0) {
-        Color(resolvedConfig.textColor)
-    } else {
-        AureoleDS.colors.onSurfaceHigh
-    }
+    val defaultTextColor = AureoleDS.colors.onSurfaceHigh
+    val colorPrimaryInt = if (resolvedConfig.textColor != 0) resolvedConfig.textColor else defaultTextColor.toArgb()
+    val colorPrimaryCompose = if (resolvedConfig.textColor != 0) Color(resolvedConfig.textColor) else defaultTextColor
+
+    // Read every theme value and string unconditionally: a conditional read here misaligns the slot table
+    // when the glass, background or style changes (ClassCastException in rememberComposableLambda).
+    val surfaceColor = AureoleDS.colors.surface
+    val hazeTintColor = AureoleDS.colors.surfaceVariant
+    val hazeBlurRadius = glassBlurRadius(AureoleDS.dimens.large)
+    val hourGreeting = stringResource(greetingRes(hourOfDay()))
 
     val greeting = if (resolvedConfig.style == "CUSTOM_GREETING" && resolvedConfig.customGreeting.isNotBlank()) {
         resolvedConfig.customGreeting
     } else {
-        getGreetingForCurrentHour()
+        hourGreeting
     }
 
     val containerBgColor = resolveClockBgColor(
         isBgEnabled = isBgEnabled,
         isHazeEnabled = isHazeEnabled,
         bgColorInt = resolvedConfig.backgroundColor,
-        hazeOpacity = hazeOpacity
+        hazeOpacity = hazeOpacity,
+        surfaceColor = surfaceColor
     )
 
     BoxWithConstraints(
         modifier = modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(AureoleDS.dimens.radiusLarge))
-            .clockHazeEffect(isHazeEnabled, hazeStateRef, hazeOpacity)
+            .clockHazeEffect(isHazeEnabled, hazeStateRef, hazeOpacity, hazeBlurRadius, hazeTintColor)
             .background(containerBgColor)
             .clockClickable(onClick, onLongClick)
             .padding(horizontal = AureoleDS.dimens.medium, vertical = AureoleDS.dimens.xSmall)
@@ -100,34 +89,6 @@ fun ClockHeader(
     }
 }
 
-@Composable
-@ReadOnlyComposable
-private fun Modifier.clockHazeEffect(isHazeEnabled: Boolean, hazeStateRef: HazeState?, hazeOpacity: Float): Modifier {
-    if (!isHazeEnabled || hazeStateRef == null) return this
-    return this.hazeEffect(
-        state = hazeStateRef,
-        style = HazeStyle(
-            blurRadius = glassBlurRadius(AureoleDS.dimens.large),
-            tint = HazeTint(AureoleDS.colors.surfaceVariant.copy(alpha = hazeOpacity))
-        )
-    ) {
-        blurEnabled = isHazeEnabled
-    }
-}
-
-@Composable
-@ReadOnlyComposable
-private fun resolveClockBgColor(
-    isBgEnabled: Boolean,
-    isHazeEnabled: Boolean,
-    bgColorInt: Int,
-    hazeOpacity: Float
-): Color {
-    if (!isBgEnabled) return Color.Transparent
-    val baseBgColor = if (bgColorInt != 0) Color(bgColorInt) else AureoleDS.colors.surface
-    return if (isHazeEnabled) baseBgColor.copy(alpha = hazeOpacity) else baseBgColor
-}
-
 @OptIn(ExperimentalFoundationApi::class)
 private fun Modifier.clockClickable(onClick: (() -> Unit)?, onLongClick: (() -> Unit)?): Modifier {
     if (onClick == null && onLongClick == null) return this
@@ -136,17 +97,6 @@ private fun Modifier.clockClickable(onClick: (() -> Unit)?, onLongClick: (() -> 
         onLongClick = onLongClick,
         role = Role.Button
     ).semantics(mergeDescendants = true) {}
-}
-
-@Composable
-@ReadOnlyComposable
-private fun getGreetingForCurrentHour(): String {
-    val hour = SimpleDateFormat("H", Locale.getDefault()).format(Date()).toIntOrNull() ?: DEFAULT_NOON_HOUR
-    return when (hour) {
-        in MORNING_HOUR_START..MORNING_HOUR_END -> stringResource(R.string.home_clock_greeting_morning)
-        in AFTERNOON_HOUR_START..AFTERNOON_HOUR_END -> stringResource(R.string.home_clock_greeting_afternoon)
-        else -> stringResource(R.string.home_clock_greeting_evening)
-    }
 }
 
 @AureolePreview

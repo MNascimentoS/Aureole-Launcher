@@ -5,9 +5,9 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.Dp
 import dev.chrisbanes.haze.HazeState
 import dev.chrisbanes.haze.HazeStyle
 import dev.chrisbanes.haze.HazeTint
@@ -28,20 +28,20 @@ private const val CONTAINER_MIN_ALPHA = 0.2f
 private const val CONTAINER_MAX_ALPHA = 0.95f
 private const val CONTAINER_DEFAULT_ALPHA = 0.95f
 
-@Composable
-@ReadOnlyComposable
+/** Glass for the container; [blurRadius] is read by the caller so no composition local is read conditionally. */
 private fun Modifier.hazeModifier(
     hasHaze: Boolean,
     hazeState: HazeState?,
     hazeOpacity: Float,
-    surfaceColor: Color
+    surfaceColor: Color,
+    blurRadius: Dp
 ): Modifier {
     return if (hasHaze && hazeState != null) {
         this.then(
             Modifier.hazeEffect(
                 state = hazeState,
                 style = HazeStyle(
-                    blurRadius = glassBlurRadius(FolderPopupMetrics.HazeBlurRadius),
+                    blurRadius = blurRadius,
                     tint = HazeTint(surfaceColor.copy(alpha = hazeOpacity))
                 )
             ) {
@@ -102,7 +102,9 @@ fun Container(
     val surfaceColor = AureoleDS.colors.surface
     val hasHaze = config.isBackgroundEnabled && uiState.isHazeEnabled && (config.hazeState != null)
 
-    val hazeModifier = Modifier.hazeModifier(hasHaze, config.hazeState, uiState.hazeOpacity, surfaceColor)
+    val blurRadius = glassBlurRadius(FolderPopupMetrics.HazeBlurRadius)
+
+    val hazeModifier = Modifier.hazeModifier(hasHaze, config.hazeState, uiState.hazeOpacity, surfaceColor, blurRadius)
     val backgroundColor = getBackgroundColor(config.isBackgroundEnabled, hasHaze, uiState.hazeOpacity, surfaceColor)
     val shouldExpand = config.isExpandCell
 

@@ -17,7 +17,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
@@ -30,6 +29,7 @@ import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onGloballyPositioned
@@ -41,6 +41,7 @@ import androidx.compose.ui.unit.IntOffset
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDimens
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.components.scrubber.model.ScrubberCallbacks
@@ -140,7 +141,9 @@ private fun ScrubberContainer(
         }
     )
 
-    val baseModifier = modifier.scrubberBaseModifier(uiState.isLeftHandedMode, options) { height ->
+    val dimens = AureoleDS.dimens
+    val pillColor = AureoleDS.colors.surfaceVariant.copy(alpha = PILL_ALPHA)
+    val baseModifier = modifier.scrubberBaseModifier(uiState.isLeftHandedMode, options, dimens, pillColor) { height ->
         containerHeightPx = height
     }
 
@@ -171,15 +174,14 @@ private fun targetScrubberAlpha(isDragging: Boolean, options: ScrubberOptions): 
     else -> 0f
 }
 
-@Composable
-@ReadOnlyComposable
+/** Size, padding and pill of the scrubber; the theme values come from the caller, read unconditionally. */
 private fun Modifier.scrubberBaseModifier(
     isLeftHandedMode: Boolean,
     options: ScrubberOptions,
+    dimens: AureoleDimens,
+    pillColor: Color,
     onHeightChanged: (Float) -> Unit
 ): Modifier {
-    val dimens = AureoleDS.dimens
-    val pillColor = AureoleDS.colors.surfaceVariant.copy(alpha = PILL_ALPHA)
     return this
         .fillMaxHeight(options.heightFraction)
         .padding(
