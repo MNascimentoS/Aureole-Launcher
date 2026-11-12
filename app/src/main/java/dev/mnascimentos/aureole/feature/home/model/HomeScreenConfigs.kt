@@ -20,7 +20,10 @@ data class HomeDragParams(
     val density: Density,
     val onAllAppsDrawerOpen: () -> Unit,
     val onExpandNotificationShade: () -> Unit,
+    /** Y of the finger inside the letters column while an edge scrub runs; -1 when it ends. */
     val onExternalTouchYChange: (Float) -> Unit,
+    /** An edge scrub started (true) or ended (false): the home keeps this modifier on while it runs. */
+    val onEdgeScrubChange: (Boolean) -> Unit = {},
 )
 
 data class ScrubberOverlayConfig(

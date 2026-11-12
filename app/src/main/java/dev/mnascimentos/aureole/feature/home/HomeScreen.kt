@@ -1,6 +1,7 @@
 package dev.mnascimentos.aureole.feature.home
 
 import android.appwidget.AppWidgetHost
+import android.content.res.Configuration
 import android.widget.Toast
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionLayout
@@ -19,12 +20,14 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Density
@@ -48,6 +51,7 @@ import dev.mnascimentos.aureole.feature.home.components.containers.model.EditCon
 import dev.mnascimentos.aureole.feature.home.components.overlays.CustomizeBottomSheet
 import dev.mnascimentos.aureole.feature.home.components.overlays.HomeOverlaysContent
 import dev.mnascimentos.aureole.feature.home.components.overlays.homeDragGestures
+import dev.mnascimentos.aureole.feature.home.components.scrubber.model.isHomeDragAttached
 import dev.mnascimentos.aureole.feature.home.components.widgets.EditWidgetGroupScreen
 import dev.mnascimentos.aureole.feature.home.components.widgets.model.EditWidgetGroupActions
 import dev.mnascimentos.aureole.feature.home.components.widgets.model.EditWidgetGroupParams
@@ -81,21 +85,15 @@ fun HomeScreen(
     val currentHeightPx = rememberWidgetRowHeightPx(uiState.widgetRowHeight, density)
 
     var externalTouchY by remember { mutableFloatStateOf(-1f) }
+    var isEdgeScrubbing by remember { mutableStateOf(false) }
     var screenHeightPx by remember { mutableFloatStateOf(0f) }
     var screenWidthPx by remember { mutableFloatStateOf(0f) }
 
-    val dragModifier = Modifier.homeDragGestures(
-        HomeDragParams(
-            isLeftHandedMode = uiState.isLeftHandedMode,
-            isAlphabetScrubberDisabled = uiState.isAlphabetScrubberDisabled,
-            screenHeightPx = screenHeightPx,
-            screenWidthPx = screenWidthPx,
-            isAllAppsDrawerOpen = uiState.isAllAppsDrawerOpen,
-            density = density,
-            onAllAppsDrawerOpen = actions.onAllAppsDrawerOpen,
-            onExpandNotificationShade = actions.onExpandNotificationShade,
-            onExternalTouchYChange = { externalTouchY = it }
-        )
+    val dragModifier = homeDragModifier(
+        screenWidthPx = screenWidthPx,
+        screenHeightPx = screenHeightPx,
+        onExternalTouchYChange = { externalTouchY = it },
+        onEdgeScrubChange = { isEdgeScrubbing = it }
     )
 
     val exclusionModifier = rememberHomeScreenExclusion(uiState)
@@ -112,7 +110,8 @@ fun HomeScreen(
                         screenWidthPx = it.size.width.toFloat()
                     }
                     .then(exclusionModifier)
-                    .then(if (uiState.isOverlayActive) Modifier else dragModifier)
+                    // The edge scrub opens the drawer under the finger: keep the gesture alive until it lifts.
+                    .then(if (isHomeDragAttached(uiState.isOverlayActive, isEdgeScrubbing)) dragModifier else Modifier)
             ) {
                 HomeScreenBody(
                     HomeScreenBodyConfig(
@@ -133,6 +132,34 @@ fun HomeScreen(
             }
         }
     }
+}
+
+/** Home vertical swipes and the alphabet edge scrub (RF-20), for the current hand and screen size. */
+@Composable
+private fun homeDragModifier(
+    screenWidthPx: Float,
+    screenHeightPx: Float,
+    onExternalTouchYChange: (Float) -> Unit,
+    onEdgeScrubChange: (Boolean) -> Unit
+): Modifier {
+    val uiState = LocalHomeUiState.current
+    val actions = LocalHomeActions.current
+    val isLandscape = LocalConfiguration.current.orientation == Configuration.ORIENTATION_LANDSCAPE
+    return Modifier.homeDragGestures(
+        HomeDragParams(
+            isLeftHandedMode = uiState.isLeftHandedMode,
+            // No alphabet in landscape, so no edge scrub there either.
+            isAlphabetScrubberDisabled = uiState.isAlphabetScrubberDisabled || isLandscape,
+            screenHeightPx = screenHeightPx,
+            screenWidthPx = screenWidthPx,
+            isAllAppsDrawerOpen = uiState.isAllAppsDrawerOpen,
+            density = LocalDensity.current,
+            onAllAppsDrawerOpen = actions.onAllAppsDrawerOpen,
+            onExpandNotificationShade = actions.onExpandNotificationShade,
+            onExternalTouchYChange = onExternalTouchYChange,
+            onEdgeScrubChange = onEdgeScrubChange
+        )
+    )
 }
 
 @Composable
