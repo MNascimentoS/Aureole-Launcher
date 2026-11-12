@@ -32,14 +32,16 @@ private const val PORTRAIT_APPS_COL_SPAN = 16
 private const val PORTRAIT_CONTAINER_COL = 16
 private const val PORTRAIT_CONTAINER_COL_SPAN = 4
 
-private const val LANDSCAPE_CLOCK_COL_SPAN = 14
-private const val LANDSCAPE_CLOCK_ROW_SPAN = 7
-private const val LANDSCAPE_WIDGETS_COL = 14
-private const val LANDSCAPE_WIDGETS_COL_SPAN = 12
+// Default landscape layout v4 (30x20 grid): clock and favorites stacked on the left, wide widgets in
+// the middle, shortcuts container on the right edge. Right-handed; left-handed mirrors it.
 private const val LANDSCAPE_FULL_HEIGHT = 20
-private const val LANDSCAPE_APPS_ROW = 7
-private const val LANDSCAPE_APPS_COL_SPAN = 14
-private const val LANDSCAPE_APPS_ROW_SPAN = 13
+private const val LANDSCAPE_CLOCK_COL_SPAN = 10
+private const val LANDSCAPE_CLOCK_ROW_SPAN = 6
+private const val LANDSCAPE_APPS_ROW = 6
+private const val LANDSCAPE_APPS_COL_SPAN = 10
+private const val LANDSCAPE_APPS_ROW_SPAN = 14
+private const val LANDSCAPE_WIDGETS_COL = 10
+private const val LANDSCAPE_WIDGETS_COL_SPAN = 16
 private const val LANDSCAPE_CONTAINER_COL = 26
 private const val LANDSCAPE_CONTAINER_COL_SPAN = 4
 

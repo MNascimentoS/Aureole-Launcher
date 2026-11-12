@@ -7,6 +7,7 @@ import dev.mnascimentos.aureole.feature.home.grid.GridDefaults
 import dev.mnascimentos.aureole.feature.home.grid.GridEngineUtils
 import dev.mnascimentos.aureole.feature.home.grid.extensions.addGridItem
 import dev.mnascimentos.aureole.feature.home.grid.extensions.enterGridEditMode
+import dev.mnascimentos.aureole.feature.home.grid.extensions.landscapeFromPortrait
 import dev.mnascimentos.aureole.feature.home.grid.extensions.loadGridItems
 import dev.mnascimentos.aureole.feature.home.grid.extensions.withNewGridItemInEditMode
 import dev.mnascimentos.aureole.feature.home.grid.model.GridItemSpec
@@ -32,7 +33,11 @@ internal fun HomeViewModel.applyDefaultLayoutWhereEmpty() {
         .filterValues { it.isEmpty() }
         .keys
         .forEach { isLandscape ->
-            val items = GridDefaults.getDefaultGridItems(isLandscape, isLeftHanded, state.hasAnyFavorites)
+            val items = if (isLandscape && state.portraitGridItems.isNotEmpty()) {
+                landscapeFromPortrait(state.portraitGridItems, isLeftHanded)
+            } else {
+                GridDefaults.getDefaultGridItems(isLandscape, isLeftHanded, state.hasAnyFavorites)
+            }
             gridRepository.saveGridItems(items, isLandscape)
         }
     loadGridItems(state.isLandscape)

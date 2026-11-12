@@ -172,10 +172,11 @@ class HomeViewModelOnboardingLayoutTest {
         val state = viewModel.uiState.value
         assertEquals(savedClock.id, state.portraitGridItems.first().id)
         assertEquals(LauncherItemType.ALL_APPS_LIST, state.portraitGridItems.last().safeType)
-        assertEquals(
-            GridDefaults.getDefaultGridItems(isLandscape = true, hasFavorites = false),
-            state.landscapeGridItems
-        )
+        // The landscape comes from the portrait items (same clock id) plus the apps the onboarding adds.
+        assertEquals(savedClock.id, state.landscapeGridItems.first().id)
+        val clock = state.landscapeGridItems.first()
+        assertEquals(listOf(0, 0, 10, 6), listOf(clock.col, clock.row, clock.colSpan, clock.rowSpan))
+        assertEquals(LauncherItemType.ALL_APPS_LIST, state.landscapeGridItems.last().safeType)
     }
 
     private companion object {
