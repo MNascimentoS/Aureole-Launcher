@@ -36,6 +36,7 @@ import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.composable.dialogs.CreateFolderDialog
 import dev.mnascimentos.aureole.composable.mirror.LeftHandMirror
+import dev.mnascimentos.aureole.composable.overlay.AureoleOverlayWindow
 import dev.mnascimentos.aureole.composable.reorder.ReorderableColumn
 import dev.mnascimentos.aureole.composable.reorder.model.ReorderableActions
 import dev.mnascimentos.aureole.composable.reorder.model.ReorderableParams
@@ -67,8 +68,8 @@ internal fun ManageItemsContent(
 ) {
     var isCreateFolderDialogVisible by remember { mutableStateOf(false) }
 
-    Column(modifier = modifier) {
-        if (isCreateFolderDialogVisible) {
+    if (isCreateFolderDialogVisible) {
+        AureoleOverlayWindow(onDismissRequest = { isCreateFolderDialogVisible = false }) {
             CreateFolderDialog(
                 onDismiss = { isCreateFolderDialogVisible = false },
                 onSubmit = { name ->
@@ -77,7 +78,9 @@ internal fun ManageItemsContent(
                 }
             )
         }
+    }
 
+    Column(modifier = modifier) {
         ManageItemsAddSection(
             state = state,
             allApps = allApps,
