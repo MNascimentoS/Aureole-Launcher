@@ -21,7 +21,6 @@ import dev.mnascimentos.aureole.feature.home.model.LocalHomeActions
 import dev.mnascimentos.aureole.feature.home.model.LocalHomeUiState
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
 import org.junit.Assert.assertEquals
-import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Rule
@@ -185,35 +184,6 @@ class EditContainerScreenTest {
         }
         composeTestRule.mainClock.advanceTimeBy(ANIMATION_MS)
         composeTestRule.waitForIdle()
-    }
-
-    @Test
-    fun `when Save is tapped on the main screen, should save the draft and dismiss`() {
-        var saved: ContainerModel? = null
-        var dismissed = false
-        setScreen(onSave = { saved = it }, onDismiss = { dismissed = true })
-
-        composeTestRule.onNodeWithText("LIVE PREVIEW").assertDoesNotExist()
-        composeTestRule.onNodeWithText("Save").performClick()
-        composeTestRule.mainClock.advanceTimeBy(ANIMATION_MS)
-        composeTestRule.waitForIdle()
-
-        assertEquals("p1", saved?.id)
-        assertTrue(dismissed)
-    }
-
-    @Test
-    fun `when Cancel is tapped on the main screen, should dismiss without saving`() {
-        var saved = false
-        var dismissed = false
-        setScreen(onSave = { saved = true }, onDismiss = { dismissed = true })
-
-        composeTestRule.onNodeWithText("Cancel").performClick()
-        composeTestRule.mainClock.advanceTimeBy(ANIMATION_MS)
-        composeTestRule.waitForIdle()
-
-        assertFalse(saved)
-        assertTrue(dismissed)
     }
 
     @Test

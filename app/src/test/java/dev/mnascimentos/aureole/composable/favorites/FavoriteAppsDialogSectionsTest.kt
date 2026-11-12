@@ -23,28 +23,11 @@ class FavoriteAppsDialogSectionsTest {
     val composeTestRule = createComposeRule()
 
     @Test
-    fun `when rendering FavoriteAppsBottomBar in MAIN mode, should display Concluido`() {
+    fun `when rendering FavoriteAppsBottomBar, should display Back`() {
         composeTestRule.setContent {
             AureoleLauncherTheme {
                 FavoriteAppsBottomBar(
-                    currentMode = FavoriteAppsScreenMode.MAIN,
-                    onBack = {},
-                    onClose = {}
-                )
-            }
-        }
-
-        composeTestRule.onNodeWithText("Done").assertIsDisplayed()
-    }
-
-    @Test
-    fun `when rendering FavoriteAppsBottomBar in MANAGE mode, should display Voltar`() {
-        composeTestRule.setContent {
-            AureoleLauncherTheme {
-                FavoriteAppsBottomBar(
-                    currentMode = FavoriteAppsScreenMode.MANAGE,
-                    onBack = {},
-                    onClose = {}
+                    onBack = {}
                 )
             }
         }

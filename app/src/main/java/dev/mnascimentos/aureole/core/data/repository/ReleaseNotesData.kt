@@ -47,6 +47,44 @@ internal val releaseNotes0918: List<ReleaseNoteSection> = listOf(
                 description = "Todos os painéis de configuração foram redesenhados para um visual " +
                     "mais moderno, espaçado e consistente em todo o sistema.",
                 type = ReleaseNoteType.IMPROVEMENT
+            ),
+            ReleaseNoteItem(
+                title = "Fácil Alcance em Telas Grandes",
+                description = "Menu de aplicativos, configurações e edição do relógio e pastas " +
+                    "agora focam as ações perto do polegar na metade de baixo da tela, " +
+                    "com suporte à mão esquerda.",
+                type = ReleaseNoteType.IMPROVEMENT
+            )
+        )
+    )
+)
+
+internal val releaseNotes0920: List<ReleaseNoteSection> = listOf(
+    ReleaseNoteSection(
+        title = "Experiência de Uso",
+        items = listOf(
+            ReleaseNoteItem(
+                title = "Salvar sem Cliques Extras",
+                description = "Ao personalizar relógio ou editar contêiners, os ajustes são " +
+                    "salvos automaticamente ao fechar a janela, sem necessidade de confirmar.",
+                type = ReleaseNoteType.IMPROVEMENT
+            ),
+            ReleaseNoteItem(
+                title = "Nova Ação de Desfazer",
+                description = "Removeu um atalho sem querer, ou mexeu onde não devia? " +
+                    "A nova barra de desfazer salva tudo com 1 clique antes de sumir.",
+                type = ReleaseNoteType.FEATURE
+            )
+        )
+    ),
+    ReleaseNoteSection(
+        title = "Ajustes Finos",
+        items = listOf(
+            ReleaseNoteItem(
+                title = "Visual de Favoritos e Widgets",
+                description = "Refinamentos no editor de widgets da home, que agora " +
+                    "mostra exatamente um painel completo. Favoritos revisado.",
+                type = ReleaseNoteType.FIX
             )
         )
     )
