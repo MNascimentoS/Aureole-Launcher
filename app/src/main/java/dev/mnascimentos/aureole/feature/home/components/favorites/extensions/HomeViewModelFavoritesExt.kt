@@ -6,6 +6,8 @@ import dev.mnascimentos.aureole.core.designsystem.model.TextResource
 import dev.mnascimentos.aureole.feature.home.HomeViewModel
 import dev.mnascimentos.aureole.feature.home.components.appsdrawer.extensions.updateAppsState
 import dev.mnascimentos.aureole.feature.home.extensions.showUndo
+import dev.mnascimentos.aureole.feature.home.model.favoritesOf
+import dev.mnascimentos.aureole.feature.home.model.isLegacyFavoritesId
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -20,7 +22,7 @@ fun HomeViewModel.setShowFavoritePicker(show: Boolean, containerId: String? = nu
 
 fun HomeViewModel.toggleFavorite(packageName: String, containerId: String? = null) {
     val targetContainerId = containerId ?: uiState.value.activeFavoriteContainerId ?: "default_favorites"
-    val previousFavs = uiState.value.containerFavorites[targetContainerId] ?: uiState.value.favoriteAppPackages
+    val previousFavs = uiState.value.favoritesOf(targetContainerId)
     val currentFavs = previousFavs.toMutableList()
     val wasFavorite = currentFavs.contains(packageName)
     if (wasFavorite) {
@@ -51,10 +53,12 @@ fun HomeViewModel.updateContainerFavorites(containerId: String, newFavorites: Li
         }
         val updatedMap = uiState.value.containerFavorites.toMutableMap()
         updatedMap[containerId] = newFavorites
-        settingsRepository.favoriteAppPackages = newFavorites
+        // The global favorites follow the legacy list only; another list must not overwrite them.
+        val isLegacy = isLegacyFavoritesId(containerId)
+        if (isLegacy) settingsRepository.favoriteAppPackages = newFavorites
         updateUiState {
             it.copy(
-                favoriteAppPackages = newFavorites,
+                favoriteAppPackages = if (isLegacy) newFavorites else it.favoriteAppPackages,
                 containerFavorites = updatedMap
             )
         }

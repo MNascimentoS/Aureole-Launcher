@@ -2,8 +2,10 @@ package dev.mnascimentos.aureole.feature.home.grid.extensions
 
 import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.core.data.model.LauncherItemState
+import dev.mnascimentos.aureole.core.data.model.LauncherItemType
 import dev.mnascimentos.aureole.core.designsystem.model.TextResource
 import dev.mnascimentos.aureole.feature.home.HomeViewModel
+import dev.mnascimentos.aureole.feature.home.components.favorites.extensions.dropFavoritesList
 import dev.mnascimentos.aureole.feature.home.extensions.showUndo
 import dev.mnascimentos.aureole.feature.home.grid.GridDefaults
 import dev.mnascimentos.aureole.feature.home.grid.GridEngineUtils
@@ -102,12 +104,19 @@ fun HomeViewModel.deleteGridItem(id: String) {
     }
 }
 
-/** Removes the item and offers "Undo", which puts it back in the same cell. */
+/**
+ * Removes the item and offers "Undo", which puts it back in the same cell. A favorites list also loses its saved
+ * favorites right away; the undo writes them back (see [dropFavoritesList]).
+ */
 fun HomeViewModel.removeGridItemWithUndo(id: String) {
     val item = uiState.value.gridItems.find { it.id == id }
+    val restoreFavorites = if (item?.safeType == LauncherItemType.APPS_LIST) dropFavoritesList(id) else null
     deleteGridItem(id)
     if (item == null) return
-    showUndo(TextResource.fromResId(R.string.home_undo_component_removed)) { restoreGridItem(item) }
+    showUndo(TextResource.fromResId(R.string.home_undo_component_removed)) {
+        restoreGridItem(item)
+        restoreFavorites?.invoke()
+    }
 }
 
 internal fun HomeViewModel.restoreGridItem(item: LauncherItemState) {

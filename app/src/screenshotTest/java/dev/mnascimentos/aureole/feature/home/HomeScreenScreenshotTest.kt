@@ -122,7 +122,9 @@ private fun HomeScreenAppItemBottomSheetScreenshotTest() {
         activeContainerAppBottomSheet = ContainerAppBottomSheetState(
             app = sampleData.apps.first(),
             panelId = "panel_1"
-        )
+        ),
+        // A list only shows its own favorites (a new list starts empty), so the panel owns the sample's.
+        containerFavorites = mapOf("panel_1" to sampleData.uiState.favoriteAppPackages)
     )
 
     AureoleLauncherTheme {

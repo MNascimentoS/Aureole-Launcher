@@ -143,17 +143,20 @@ class HomeViewModelFavoritesListTest {
     }
 
     @Test
-    fun `when a favorites list is already on the home, should edit it and never remove it`() {
-        val existing = LauncherItemState(id = "fav", type = LauncherItemType.APPS_LIST, colSpan = 5, rowSpan = 7)
+    fun `when a favorites list is already on the home, should add a second one and keep the first`() {
+        val existing = LauncherItemState(id = "fav", type = LauncherItemType.APPS_LIST, col = 0, row = 0)
         viewModel.updateUiState { it.copy(gridItems = listOf(existing), portraitGridItems = listOf(existing)) }
 
         viewModel.addFavoritesList()
-        assertEquals("fav", state.activeFavoriteContainerId)
-        assertNull(state.customizeFavoritesListId)
+
+        val created = state.customizeFavoritesListId
+        assertTrue(created != null && created != "fav")
+        assertEquals(created, state.activeFavoriteContainerId)
+        assertEquals(setOf("fav", created), state.gridItems.map { it.id }.toSet())
 
         viewModel.dismissFavoritePicker()
 
-        assertEquals(listOf(existing.id), state.gridItems.map { it.id })
+        assertEquals(listOf("fav"), state.gridItems.map { it.id })
     }
 
     private companion object {

@@ -4,6 +4,7 @@ import dev.mnascimentos.aureole.core.data.model.LauncherItemState
 import dev.mnascimentos.aureole.core.data.model.LauncherItemType
 import dev.mnascimentos.aureole.core.data.model.OnboardingTask
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
+import dev.mnascimentos.aureole.feature.home.model.favoritesOf
 
 /** The home item a checklist task places and edits; null for tasks that do not touch the grid. */
 val OnboardingTask.gridItemType: LauncherItemType?
@@ -40,9 +41,9 @@ internal fun MainUiState.meetsRequirement(task: OnboardingTask): Boolean = when 
     else -> false
 }
 
-/** Same lookup as the home's favorites list: the list's own favorites, else the global ones. */
+/** Same lookup as the home's favorites list: the list's own favorites, else the global ones for the legacy list. */
 internal fun MainUiState.hasFavorites(item: LauncherItemState): Boolean =
-    (containerFavorites[item.id] ?: favoriteAppPackages).isNotEmpty()
+    favoritesOf(item.id).isNotEmpty()
 
 private fun MainUiState.hasWidget(item: LauncherItemState): Boolean {
     val hasStackedWidget = item.safeType == LauncherItemType.WIDGET_LIST && !widgetStacks[item.id].isNullOrEmpty()

@@ -24,8 +24,9 @@ class CustomizeItemsTest {
     }
 
     @Test
-    fun `when the home has a favorites list, should mark favorites`() {
-        assertEquals(setOf(CustomizeAddItem.FAVORITES), itemsOnHome(listOf(item(LauncherItemType.APPS_LIST))))
+    fun `when the home has a favorites list, should still offer favorites to add another`() {
+        assertTrue(itemsOnHome(listOf(item(LauncherItemType.APPS_LIST))).isEmpty())
+        assertFalse(CustomizeAddItem.FAVORITES.isSingleton)
     }
 
     @Test

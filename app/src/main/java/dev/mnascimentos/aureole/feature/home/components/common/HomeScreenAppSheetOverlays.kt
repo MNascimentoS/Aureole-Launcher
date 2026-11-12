@@ -15,6 +15,7 @@ import dev.mnascimentos.aureole.feature.home.model.FolderAppBottomSheetState
 import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
 import dev.mnascimentos.aureole.feature.home.model.ProvideHomeUiState
+import dev.mnascimentos.aureole.feature.home.model.favoritesOf
 
 @Composable
 internal fun ContainerAppSheetOverlay(uiState: MainUiState, actions: HomeScreenActions) {
@@ -22,8 +23,7 @@ internal fun ContainerAppSheetOverlay(uiState: MainUiState, actions: HomeScreenA
         AppItemBottomSheet(
             params = AppItemBottomSheetParams(
                 app = state.app,
-                isFavorite = state.app.packageName in
-                    (uiState.containerFavorites[state.panelId] ?: uiState.favoriteAppPackages),
+                isFavorite = state.app.packageName in uiState.favoritesOf(state.panelId),
                 onRemoveFromContainer = { actions.onRemoveAppFromContainer(state.panelId, state.app.packageName) },
                 onOpenContainerSettings = { actions.onOpenEditContainerDialog(state.panelId) },
                 actions = AppItemRowActions(
