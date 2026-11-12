@@ -176,6 +176,8 @@ fun RemainingAppRow(
 
 /** Width of the drag handle hit area; a layout constraint of this handle only, not a shared dimension. */
 private val HANDLE_WIDTH = 44.dp
+
+/** Height of the drag handle hit area; a layout constraint of this handle only, not a shared dimension. */
 private val HANDLE_HEIGHT = 38.dp
 
 @AureolePreview

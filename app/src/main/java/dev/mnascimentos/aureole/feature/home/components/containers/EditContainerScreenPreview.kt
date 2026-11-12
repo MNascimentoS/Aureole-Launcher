@@ -2,7 +2,9 @@ package dev.mnascimentos.aureole.feature.home.components.containers
 
 import android.content.ComponentName
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.res.stringResource
 import androidx.core.graphics.drawable.toDrawable
+import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.core.data.model.AppFolder
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.data.model.ContainerItemEntity
@@ -12,14 +14,16 @@ import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.components.containers.model.EditContainerScreenParams
 
-private fun previewApps(): List<AppInfo> = listOf(
-    previewApp(index = 1, color = 0xFF1B65C0.toInt()),
-    previewApp(index = 2, color = 0xFF2E7D32.toInt()),
-    previewApp(index = 3, color = 0xFFF57C00.toInt())
+private const val PREVIEW_APP_COUNT = 3
+
+private fun previewApps(labels: List<String>): List<AppInfo> = listOf(
+    previewApp(index = 1, label = labels[0], color = 0xFF1B65C0.toInt()),
+    previewApp(index = 2, label = labels[1], color = 0xFF2E7D32.toInt()),
+    previewApp(index = 3, label = labels[2], color = 0xFFF57C00.toInt())
 )
 
-private fun previewApp(index: Int, color: Int): AppInfo = AppInfo(
-    label = "App $index",
+private fun previewApp(index: Int, label: String, color: Int): AppInfo = AppInfo(
+    label = label,
     packageName = "com.example.app$index",
     componentName = ComponentName("com.example.app$index", "MainActivity"),
     icon = color.toDrawable()
@@ -50,7 +54,8 @@ private fun previewItems(panelId: String, apps: List<AppInfo>, folders: List<App
 
 @Composable
 private fun PreviewContainerScreen(panelId: String, title: String, orientation: String, appCount: Int) {
-    val apps = previewApps()
+    val labels = (1..PREVIEW_APP_COUNT).map { stringResource(R.string.home_container_preview_app_label, it) }
+    val apps = previewApps(labels = labels)
     val folders = previewFolders()
     val panel = ContainerModel(
         id = panelId,
