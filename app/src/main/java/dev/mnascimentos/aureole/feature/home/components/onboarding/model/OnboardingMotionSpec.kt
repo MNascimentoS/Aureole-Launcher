@@ -48,7 +48,8 @@ object OnboardingMotionSpec {
     val CHECKLIST_MAX_WIDTH = 420.dp
 
     // Celebration
-    const val CELEBRATION_MS = 2600L
+    const val CELEBRATION_MS = 4500L
+    const val CELEBRATION_BURST_MS = 2600
     const val HALO_CLOSE_MS = 700
     const val MAX_PARTICLES = 40
     val PARTICLE_RADIUS = 3.dp

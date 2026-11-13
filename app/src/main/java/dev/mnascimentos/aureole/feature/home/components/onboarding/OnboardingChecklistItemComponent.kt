@@ -26,12 +26,15 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.fromHtml
+import androidx.compose.ui.text.style.TextDecoration
 import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.core.data.model.OnboardingTask
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
 import dev.mnascimentos.aureole.core.designsystem.icons.Calendar
+import dev.mnascimentos.aureole.core.designsystem.icons.Close
 import dev.mnascimentos.aureole.core.designsystem.icons.ColorFill
+import dev.mnascimentos.aureole.core.designsystem.icons.Edit
 import dev.mnascimentos.aureole.core.designsystem.icons.Favorite
 import dev.mnascimentos.aureole.core.designsystem.icons.Home
 import dev.mnascimentos.aureole.core.designsystem.icons.MultipleView
@@ -45,51 +48,81 @@ import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.rememberOnboardingLoopsEnabled
 import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.titleRes
 import dev.mnascimentos.aureole.feature.home.components.onboarding.model.OnboardingMotionSpec
+import dev.mnascimentos.aureole.feature.home.components.onboarding.model.OnboardingTaskStatus
 
 private const val BREATH_MIN_ALPHA = 0.25f
 
-/** One "First steps" row. Pending rows are buttons; done rows show a check and no longer react. */
+/**
+ * One "First steps" row. Pending rows are buttons; done rows show a check and no longer react. The next row of a
+ * skippable task also has "Skip" at its end; a skipped row is struck through and taps back into a pending one.
+ */
 @Composable
 fun OnboardingChecklistItemComponent(
     task: OnboardingTask,
-    isDone: Boolean,
-    isNext: Boolean,
+    status: OnboardingTaskStatus,
     onClick: (OnboardingTask) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onSkip: (OnboardingTask) -> Unit = {}
 ) {
+    val isDone = status == OnboardingTaskStatus.DONE
+    val isSkipped = status == OnboardingTaskStatus.SKIPPED
+    val isNext = status == OnboardingTaskStatus.NEXT
     val title = AnnotatedString.fromHtml(stringResource(task.titleRes()))
     val description = stringResource(
-        if (isDone) R.string.home_onboarding_task_done_a11y else R.string.home_onboarding_task_pending_a11y,
+        when {
+            isDone -> R.string.home_onboarding_task_done_a11y
+            isSkipped -> R.string.home_onboarding_task_skipped_a11y
+            else -> R.string.home_onboarding_task_pending_a11y
+        },
         title.text
     )
     val shape = RoundedCornerShape(AureoleDS.dimens.radiusMedium)
+    val showSkip = isNext && task.isSkippable
     Row(
         modifier = modifier
             .fillMaxWidth()
             .defaultMinSize(minHeight = AureoleDS.dimens.minTouchTarget)
             .clip(shape)
-            .then(if (isNext && !isDone) Modifier.breathingOutline(shape) else Modifier)
-            .then(if (isDone) Modifier else Modifier.clickable(role = Role.Button) { onClick(task) })
-            .semantics(mergeDescendants = true) { contentDescription = description }
-            .padding(horizontal = AureoleDS.dimens.small, vertical = AureoleDS.dimens.xSmall),
-        horizontalArrangement = Arrangement.spacedBy(AureoleDS.dimens.small),
+            .then(if (isNext) Modifier.breathingOutline(shape) else Modifier),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Crossfade(targetState = isDone, label = "taskIcon") { done ->
-            if (done) {
-                AureoleDS.icons.RoundCheck(
-                    tint = AureoleDS.colors.badgeText,
-                    modifier = Modifier.size(AureoleDS.dimens.iconMedium)
+        Row(
+            modifier = Modifier
+                .weight(1f)
+                .then(if (isDone) Modifier else Modifier.clickable(role = Role.Button) { onClick(task) })
+                .semantics(mergeDescendants = true) { contentDescription = description }
+                .padding(horizontal = AureoleDS.dimens.small, vertical = AureoleDS.dimens.xSmall),
+            horizontalArrangement = Arrangement.spacedBy(AureoleDS.dimens.small),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            RowIcon(task = task, isDone = isDone, isSkipped = isSkipped)
+            AureoleText(
+                text = title,
+                color = if (isDone || isSkipped) AureoleDS.colors.onSurfaceMedium else AureoleDS.colors.onSurfaceHigh,
+                format = AureoleTextFormatParams(
+                    style = AureoleDS.typography.bodyLarge,
+                    textDecoration = if (isSkipped) TextDecoration.LineThrough else null
                 )
-            } else {
-                OnboardingTaskIcon(task = task)
-            }
+            )
         }
-        AureoleText(
-            text = title,
-            color = if (isDone) AureoleDS.colors.onSurfaceMedium else AureoleDS.colors.onSurfaceHigh,
-            format = AureoleTextFormatParams(style = AureoleDS.typography.bodyLarge)
-        )
+        if (showSkip) {
+            OnboardingTextButton(
+                text = stringResource(R.string.home_onboarding_task_skip),
+                onClick = { onSkip(task) }
+            )
+        }
+    }
+}
+
+@Composable
+private fun RowIcon(task: OnboardingTask, isDone: Boolean, isSkipped: Boolean) {
+    val iconModifier = Modifier.size(AureoleDS.dimens.iconMedium)
+    Crossfade(targetState = isDone, label = "taskIcon") { done ->
+        when {
+            done -> AureoleDS.icons.RoundCheck(tint = AureoleDS.colors.badgeText, modifier = iconModifier)
+            isSkipped -> AureoleDS.icons.Close(modifier = iconModifier, tint = AureoleDS.colors.onSurfaceMedium)
+            else -> OnboardingTaskIcon(task = task)
+        }
     }
 }
 
@@ -105,6 +138,7 @@ private fun OnboardingTaskIcon(task: OnboardingTask) {
         OnboardingTask.ADD_FAVORITE_APPS -> AureoleDS.icons.Favorite(iconModifier, tint)
         OnboardingTask.FILL_CONTAINER -> AureoleDS.icons.VerticalContainer(iconModifier, tint)
         OnboardingTask.ADD_WIDGET -> AureoleDS.icons.MultipleView(iconModifier, tint)
+        OnboardingTask.ADJUST_LAYOUT -> AureoleDS.icons.Edit(iconModifier, tint)
         OnboardingTask.EXPLORE_SETTINGS -> AureoleDS.icons.Settings(iconModifier, tint)
     }
 }
@@ -127,8 +161,7 @@ private fun OnboardingChecklistItemPreview() {
     AureoleLauncherTheme {
         OnboardingChecklistItemComponent(
             task = OnboardingTask.CHOOSE_PALETTE,
-            isDone = false,
-            isNext = true,
+            status = OnboardingTaskStatus.NEXT,
             onClick = {}
         )
     }

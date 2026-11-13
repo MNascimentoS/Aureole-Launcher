@@ -4,7 +4,7 @@ import dev.mnascimentos.aureole.core.data.model.LauncherItemState
 import dev.mnascimentos.aureole.core.data.model.OnboardingTask
 import dev.mnascimentos.aureole.feature.home.HomeViewModel
 import dev.mnascimentos.aureole.feature.home.grid.GridEngineUtils
-import dev.mnascimentos.aureole.feature.home.grid.extensions.saveGridEditMode
+import dev.mnascimentos.aureole.feature.home.grid.extensions.persistGridEditMode
 import dev.mnascimentos.aureole.feature.home.grid.extensions.updateActiveGridItemsInState
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
 
@@ -33,9 +33,9 @@ fun HomeViewModel.startGridTask(task: OnboardingTask): String? {
  */
 internal fun HomeViewModel.confirmPendingTask(previous: MainUiState) {
     val state = uiState.value
-    val task = state.onboarding.pendingTask?.takeIf { it.gridItemType != null } ?: return
+    val task = state.onboarding.pendingTask?.takeIf { it.isJudgedOnSave } ?: return
     if (!previous.isTaskInProgress || state.isTaskInProgress) return
-    if (state.meetsRequirement(task)) completePendingTask(task) else failPendingTask(task)
+    if (state.meetsRequirement(task)) completeTask(task) else failPendingTask(task)
 }
 
 /**
@@ -44,8 +44,8 @@ internal fun HomeViewModel.confirmPendingTask(previous: MainUiState) {
  */
 fun HomeViewModel.confirmContainerTaskOnSave() {
     if (uiState.value.onboarding.pendingTask != OnboardingTask.FILL_CONTAINER) return
-    completePendingTask(OnboardingTask.FILL_CONTAINER)
-    if (uiState.value.isGridEditMode) saveGridEditMode()
+    completeTask(OnboardingTask.FILL_CONTAINER)
+    if (uiState.value.isGridEditMode) persistGridEditMode()
 }
 
 /** The home went to the background (Settings, another app, a system dialog). */
@@ -75,12 +75,14 @@ fun HomeViewModel.onReturnedToHome() {
     }
 }
 
-private fun HomeViewModel.completePendingTask(task: OnboardingTask) {
+/** Marks [task] done (it leaves the skipped ones), clears a pending task and brings the list back. */
+internal fun HomeViewModel.completeTask(task: OnboardingTask) {
     updateUiState { state ->
         val onboarding = state.onboarding
         state.copy(
             onboarding = onboarding.copy(
                 completedTasks = onboarding.completedTasks + task,
+                skippedTasks = onboarding.skippedTasks - task,
                 pendingTask = null,
                 createdItemId = null,
                 isChecklistExpanded = true

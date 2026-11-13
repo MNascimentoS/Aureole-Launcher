@@ -23,6 +23,8 @@ import dev.mnascimentos.aureole.feature.home.components.onboarding.model.Onboard
 import dev.mnascimentos.aureole.feature.home.components.onboarding.model.OnboardingUiState
 import dev.mnascimentos.aureole.feature.home.grid.GridDefaults
 import dev.mnascimentos.aureole.feature.home.grid.GridEngineUtils
+import dev.mnascimentos.aureole.feature.home.grid.extensions.cancelGridEditMode
+import dev.mnascimentos.aureole.feature.home.grid.extensions.saveGridEditMode
 import dev.mnascimentos.aureole.feature.home.grid.model.GridLimits
 import dev.mnascimentos.aureole.feature.home.model.HomeRepositories
 import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
@@ -37,6 +39,7 @@ import kotlinx.coroutines.test.setMain
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
+import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Before
@@ -141,51 +144,129 @@ class OnboardingActionsFactoryTest {
     }
 
     @Test
-    fun `when the container task is tapped, should edit the container already on the home`() {
+    fun `when the container task is tapped, should count the container already on the home without an editor`() {
         withGrid(LauncherItemState(id = "box", type = LauncherItemType.SHORTCUTS_CONTAINER, colSpan = 4, rowSpan = 4))
 
         actions().onTaskClick(OnboardingTask.FILL_CONTAINER)
 
-        val onboarding = viewModel.uiState.value.onboarding
-        assertEquals(listOf("container:box"), calls)
-        assertEquals(OnboardingTask.FILL_CONTAINER, onboarding.pendingTask)
-        assertNull(onboarding.createdItemId)
-        assertTrue(viewModel.uiState.value.isGridEditMode)
+        val state = viewModel.uiState.value
+        assertTrue(calls.isEmpty())
+        assertTrue(OnboardingTask.FILL_CONTAINER in state.onboarding.completedTasks)
+        assertNull(state.onboarding.pendingTask)
+        assertFalse(state.isGridEditMode)
     }
 
     @Test
-    fun `when there is no container, should place one and edit it`() {
+    fun `when there is no container, should save a compact one with no editor and finish the task`() {
         actions().onTaskClick(OnboardingTask.FILL_CONTAINER)
 
-        assertEquals(listOf("container:${GridDefaults.CONTAINER_ITEM_ID}"), calls)
+        val state = viewModel.uiState.value
+        val container = state.gridItems.single()
+        assertTrue(calls.isEmpty())
+        assertEquals(LauncherItemType.SHORTCUTS_CONTAINER, container.safeType)
+        assertEquals(4, container.colSpan)
+        assertFalse(state.isGridEditMode)
+        assertTrue(OnboardingTask.FILL_CONTAINER in state.onboarding.completedTasks)
+        assertTrue(state.onboarding.isChecklistExpanded)
     }
 
     @Test
-    fun `when the widget task is tapped, should open the picker for the placed widget list`() {
+    fun `when the widget task is tapped, should save a compact widget list and open the picker for it`() {
         actions().onTaskClick(OnboardingTask.ADD_WIDGET)
 
-        assertEquals(listOf("widgetPicker:${GridDefaults.WIDGETS_ITEM_ID}"), calls)
+        val state = viewModel.uiState.value
+        val list = state.gridItems.single()
+        assertEquals(listOf("widgetPicker:${list.id}"), calls)
+        assertEquals(LauncherItemType.WIDGET_LIST, list.safeType)
+        assertFalse(state.isGridEditMode)
+        assertEquals(OnboardingTask.ADD_WIDGET, state.onboarding.pendingTask)
+        assertEquals(list.id, state.onboarding.createdItemId)
     }
 
     @Test
-    fun `when the clock task is tapped, should place the clock and open its editor`() {
+    fun `when the clock task is tapped, should save a compact clock with no editor and finish the task`() {
         actions().onTaskClick(OnboardingTask.ADD_CLOCK)
 
-        assertEquals(listOf("clock:${GridDefaults.CLOCK_ITEM_ID}"), calls)
-        assertEquals(GridDefaults.CLOCK_ITEM_ID, viewModel.uiState.value.onboarding.createdItemId)
+        val state = viewModel.uiState.value
+        val clock = state.gridItems.single()
+        assertTrue(calls.isEmpty())
+        assertEquals(LauncherItemType.CLOCK, clock.safeType)
+        assertEquals(10, clock.colSpan)
+        assertEquals(4, clock.rowSpan)
+        assertTrue(state.clockConfigs.containsKey(clock.id))
+        assertFalse(state.isGridEditMode)
+        assertTrue(OnboardingTask.ADD_CLOCK in state.onboarding.completedTasks)
+        assertNull(state.onboarding.pendingTask)
+        assertNull(state.onboarding.createdItemId)
     }
 
     @Test
-    fun `when the grid has no room, should open no editor and bring the list back`() {
+    fun `when the grid has no room, should add no item and bring the list back`() {
         viewModel.updateUiState { it.copy(gridLimits = GridLimits(1, 1)) }
         withGrid(LauncherItemState(id = "full", type = LauncherItemType.QUICK_BUTTON, colSpan = 1, rowSpan = 1))
 
         actions().onTaskClick(OnboardingTask.ADD_CLOCK)
 
-        val onboarding = viewModel.uiState.value.onboarding
+        val state = viewModel.uiState.value
         assertTrue(calls.isEmpty())
+        assertEquals(1, state.gridItems.size)
+        assertTrue(OnboardingTask.ADD_CLOCK !in state.onboarding.completedTasks)
+        assertTrue(state.onboarding.isChecklistExpanded)
+    }
+
+    @Test
+    fun `when the layout task is tapped before any item is done, should only warn`() {
+        actions().onTaskClick(OnboardingTask.ADJUST_LAYOUT)
+
+        val state = viewModel.uiState.value
+        assertFalse(state.isGridEditMode)
+        assertNull(state.onboarding.pendingTask)
+        assertTrue(state.onboarding.isChecklistExpanded)
+        assertNotNull(state.gridErrorMessage)
+    }
+
+    @Test
+    fun `when the layout task is tapped after an item is done, should open the edit mode and wait for the save`() {
+        viewModel.updateUiState {
+            it.copy(onboarding = it.onboarding.copy(completedTasks = setOf(OnboardingTask.ADD_CLOCK)))
+        }
+
+        actions().onTaskClick(OnboardingTask.ADJUST_LAYOUT)
+        assertTrue(viewModel.uiState.value.isGridEditMode)
+        assertEquals(OnboardingTask.ADJUST_LAYOUT, viewModel.uiState.value.onboarding.pendingTask)
+        assertFalse(viewModel.uiState.value.onboarding.isChecklistExpanded)
+
+        viewModel.saveGridEditMode()
+        assertTrue(OnboardingTask.ADJUST_LAYOUT in viewModel.uiState.value.onboarding.completedTasks)
+        assertNull(viewModel.uiState.value.onboarding.pendingTask)
+    }
+
+    @Test
+    fun `when the layout edit mode is cancelled, should keep the task pending`() {
+        viewModel.updateUiState {
+            it.copy(onboarding = it.onboarding.copy(completedTasks = setOf(OnboardingTask.ADD_CLOCK)))
+        }
+
+        actions().onTaskClick(OnboardingTask.ADJUST_LAYOUT)
+        viewModel.cancelGridEditMode()
+
+        val onboarding = viewModel.uiState.value.onboarding
+        assertTrue(OnboardingTask.ADJUST_LAYOUT !in onboarding.completedTasks)
         assertNull(onboarding.pendingTask)
         assertTrue(onboarding.isChecklistExpanded)
+    }
+
+    @Test
+    fun `when a task is skipped and tapped again, should be pending again and start`() {
+        val actions = actions()
+
+        actions.onSkipTask(OnboardingTask.ADD_CLOCK)
+        assertEquals(setOf(OnboardingTask.ADD_CLOCK), viewModel.uiState.value.onboarding.skippedTasks)
+        assertTrue(viewModel.uiState.value.gridItems.isEmpty())
+
+        actions.onTaskClick(OnboardingTask.ADD_CLOCK)
+        assertTrue(viewModel.uiState.value.onboarding.skippedTasks.isEmpty())
+        assertTrue(OnboardingTask.ADD_CLOCK in viewModel.uiState.value.onboarding.completedTasks)
     }
 
     @Test

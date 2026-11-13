@@ -2,6 +2,7 @@ package dev.mnascimentos.aureole.feature.home.components.onboarding
 
 import androidx.compose.ui.test.junit4.v2.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
+import androidx.compose.ui.test.performClick
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.feature.home.components.onboarding.model.OnboardingMotionSpec
 import org.junit.Assert.assertEquals
@@ -32,6 +33,26 @@ class OnboardingCelebrationComponentTest {
         composeTestRule.mainClock.advanceTimeBy(OnboardingMotionSpec.CELEBRATION_MS + FRAME_MARGIN_MS)
 
         assertEquals(1, finished)
+    }
+
+    @Test
+    fun `when it is tapped, should finish right away`() {
+        var finished = 0
+        composeTestRule.mainClock.autoAdvance = false
+        composeTestRule.setContent {
+            AureoleLauncherTheme {
+                OnboardingCelebrationComponent(onFinished = { finished++ })
+            }
+        }
+
+        composeTestRule.onNodeWithText("All set").performClick()
+
+        assertEquals(1, finished)
+    }
+
+    @Test
+    fun `should stay for four and a half seconds`() {
+        assertEquals(4_500L, OnboardingMotionSpec.CELEBRATION_MS)
     }
 
     private companion object {

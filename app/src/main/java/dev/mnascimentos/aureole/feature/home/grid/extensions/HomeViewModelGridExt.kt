@@ -72,21 +72,6 @@ fun HomeViewModel.cancelGridEditMode() {
     keptAppsList?.let { getGridRepository().saveGridItems(it, uiState.value.isLandscape) }
 }
 
-fun HomeViewModel.saveGridEditMode() {
-    val portraitToSave = uiState.value.portraitGridItems
-    val landscapeToSave = uiState.value.landscapeGridItems
-    getGridRepository().saveGridItems(portraitToSave, isLandscape = false)
-    getGridRepository().saveGridItems(landscapeToSave, isLandscape = true)
-    updateUiState {
-        it.copy(
-            isGridEditMode = false,
-            cachedPortraitGridItems = null,
-            cachedLandscapeGridItems = null,
-            cachedGridItems = null
-        )
-    }
-}
-
 fun HomeViewModel.updateGridItemsOrientation(maxCols: Int, maxRows: Int) {
     val limits = GridLimits(maxCols, maxRows)
     val isLandscape = (maxCols == GridEngineUtils.LANDSCAPE_MAX_COLS)

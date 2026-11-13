@@ -49,6 +49,29 @@ class OnboardingPreferencesTest {
     }
 
     @Test
+    fun `when tasks are skipped, should read the skipped tasks back and keep them apart from the done ones`() {
+        val progress = OnboardingProgress(
+            stage = OnboardingStage.CHECKLIST,
+            completedTasks = setOf(OnboardingTask.ADD_CLOCK),
+            skippedTasks = setOf(OnboardingTask.ADD_WIDGET, OnboardingTask.ADJUST_LAYOUT)
+        )
+
+        preferences.write(progress)
+
+        assertEquals(progress, preferences.read())
+        preferences.write(progress.copy(skippedTasks = emptySet()))
+        assertTrue(preferences.read()?.skippedTasks.orEmpty().isEmpty())
+    }
+
+    @Test
+    fun `when progress was stored before skipping existed, should read no skipped tasks`() {
+        preferences.write(OnboardingProgress(stage = OnboardingStage.CHECKLIST))
+        settingsPrefs().edit { remove("onboarding_skipped_tasks") }
+
+        assertTrue(preferences.read()?.skippedTasks.orEmpty().isEmpty())
+    }
+
+    @Test
     fun `when progress has empty sets, should read empty sets back`() {
         preferences.write(OnboardingProgress(stage = OnboardingStage.GESTURES))
 

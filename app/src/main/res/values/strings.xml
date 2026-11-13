@@ -369,8 +369,8 @@
     <string name="home_onboarding_coach_customize_done">This is where you build your screen.</string>
     <string name="home_onboarding_checklist_title">First steps</string>
     <plurals name="home_onboarding_checklist_progress">
-        <item quantity="one">%1$d of %2$d done</item>
-        <item quantity="other">%1$d of %2$d done</item>
+        <item quantity="one">%1$d of %2$d steps</item>
+        <item quantity="other">%1$d of %2$d steps</item>
     </plurals>
     <plurals name="home_onboarding_checklist_pill">
         <item quantity="one">%1$d/%2$d first steps</item>
@@ -388,6 +388,10 @@
     <string name="home_onboarding_task_favorites">Choose your &lt;b&gt;favorites&lt;/b&gt;</string>
     <string name="home_onboarding_task_container">Fill the &lt;b&gt;container&lt;/b&gt;</string>
     <string name="home_onboarding_task_widget">Add some &lt;b&gt;widgets&lt;/b&gt;</string>
+    <string name="home_onboarding_task_layout">Adjust your &lt;b&gt;layout&lt;/b&gt;</string>
+    <string name="home_onboarding_layout_needs_item">Add an item first.</string>
+    <string name="home_onboarding_task_skip">Skip</string>
+    <string name="home_onboarding_task_skipped_a11y">%1$s, skipped. Tap to do it now</string>
     <string name="home_onboarding_task_settings">Check more &lt;b&gt;settings&lt;/b&gt;</string>
     <string name="home_onboarding_picker_hint">Tap a palette or font to try it. Nothing changes until you tap Apply.</string>
     <string name="home_onboarding_picker_done">Got it</string>

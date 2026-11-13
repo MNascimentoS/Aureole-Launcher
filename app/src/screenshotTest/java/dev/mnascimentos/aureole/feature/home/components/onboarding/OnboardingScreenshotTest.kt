@@ -146,6 +146,27 @@ private fun OnboardingChecklistFourDoneScreenshotTest() {
 @PreviewTest
 @AureolePreview
 @Composable
+private fun OnboardingChecklistSkippedScreenshotTest() {
+    AureoleLauncherTheme {
+        OnboardingChecklistComponent(
+            onboarding = OnboardingUiState(
+                stage = OnboardingStage.CHECKLIST,
+                completedTasks = setOf(
+                    OnboardingTask.SET_DEFAULT_HOME,
+                    OnboardingTask.CHOOSE_PALETTE,
+                    OnboardingTask.CHOOSE_FONT
+                ),
+                skippedTasks = setOf(OnboardingTask.ADD_CLOCK)
+            ),
+            actions = OnboardingActions(),
+            glass = OnboardingGlass()
+        )
+    }
+}
+
+@PreviewTest
+@AureolePreview
+@Composable
 private fun OnboardingChecklistPillScreenshotTest() {
     AureoleLauncherTheme {
         OnboardingChecklistPillComponent(

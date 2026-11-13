@@ -16,6 +16,10 @@ val OnboardingTask.gridItemType: LauncherItemType?
         else -> null
     }
 
+/** Tasks judged when the grid edit mode or their editor closes: the item tasks and the layout step. */
+internal val OnboardingTask.isJudgedOnSave: Boolean
+    get() = gridItemType != null || this == OnboardingTask.ADJUST_LAYOUT
+
 /** An editor a grid task opens is on screen, including the widget bind/configure screens. */
 internal val MainUiState.isTaskEditorOpen: Boolean
     get() = showEditClockBottomSheet ||
@@ -36,6 +40,7 @@ internal fun MainUiState.meetsRequirement(task: OnboardingTask): Boolean = when 
     OnboardingTask.ADD_CLOCK -> gridItems.any { it.safeType == LauncherItemType.CLOCK }
     OnboardingTask.ADD_FAVORITE_APPS -> gridItems.any { hasAppsListWithFavorites(it) }
     OnboardingTask.ADD_WIDGET -> gridItems.any { hasWidget(it) }
+    OnboardingTask.ADJUST_LAYOUT -> true
     else -> false
 }
 
