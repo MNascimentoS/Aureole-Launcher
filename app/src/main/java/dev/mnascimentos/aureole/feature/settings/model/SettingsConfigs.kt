@@ -14,6 +14,7 @@ data class PreferenceItemConfig(
  */
 data class SettingsAdvancedDialogActions(
     val onNavigateToContributors: () -> Unit,
+    val onNavigateToLicenses: () -> Unit,
     val onOpenUninstallDialog: () -> Unit,
     val onOpenReleaseNotesDialog: () -> Unit
 )
@@ -59,8 +60,8 @@ data class SettingsScreenActions(
     val onOpenResetGridDialog: () -> Unit = {},
     val onConfirmResetGrid: () -> Unit = {},
     val onDismissResetGridDialog: () -> Unit = {},
-    val onReplayOnboardingClick: () -> Unit = {},
     val onOpenFactoryResetDialog: () -> Unit = {},
+    val onNavigateToLicenses: () -> Unit = {},
     val onConfirmFactoryReset: () -> Unit = {},
     val onDismissFactoryResetDialog: () -> Unit = {},
     val onToggleShowSettingsButtonInAllApps: () -> Unit = {},

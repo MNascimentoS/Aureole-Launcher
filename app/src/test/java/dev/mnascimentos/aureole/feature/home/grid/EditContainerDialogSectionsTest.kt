@@ -96,7 +96,7 @@ class EditContainerDialogSectionsTest {
         }
 
         composeTestRule.onNodeWithText(
-            context.getString(R.string.home_container_edit_child_components, 0)
+            context.getString(R.string.home_container_edit_child_components)
         ).assertIsDisplayed()
     }
 }

@@ -21,7 +21,12 @@ internal fun OnboardingUiState.onPickerConfirmed(): OnboardingUiState {
         AppearancePicker.FONT -> OnboardingTask.CHOOSE_FONT
         null -> return this
     }
-    return copy(completedTasks = completedTasks + task, activePicker = null)
+    return copy(
+        completedTasks = completedTasks + task,
+        skippedTasks = skippedTasks - task,
+        activePicker = null,
+        isChecklistExpanded = true
+    )
 }
 
 /** Opening Settings only starts the task: it completes when the user comes back to the home. */
@@ -38,5 +43,16 @@ internal fun OnboardingUiState.onDefaultHomeResult(): OnboardingUiState {
 /** The grid task ended without a save: clear it and bring the list back unchecked. */
 internal fun OnboardingUiState.abandonPendingTask(): OnboardingUiState {
     if (pendingTask == null) return this
-    return copy(pendingTask = null, createdItemId = null, isChecklistExpanded = true)
+    return copy(pendingTask = null, createdItemId = null, isPendingTaskSaved = false, isChecklistExpanded = true)
+}
+
+/** The task's screen closed: hides the list and the pill so the home shows alone until [endingHomePeek]. */
+internal fun OnboardingUiState.peekingHome(): OnboardingUiState =
+    copy(isChecklistExpanded = false, isHomePeeking = true)
+
+/** The peek is over: the list comes back, unless the tour moved on or the user already opened something else. */
+internal fun OnboardingUiState.endingHomePeek(): OnboardingUiState {
+    if (!isHomePeeking) return this
+    val canReopen = stage == OnboardingStage.CHECKLIST && pendingTask == null && activePicker == null
+    return copy(isHomePeeking = false, isChecklistExpanded = isChecklistExpanded || canReopen)
 }

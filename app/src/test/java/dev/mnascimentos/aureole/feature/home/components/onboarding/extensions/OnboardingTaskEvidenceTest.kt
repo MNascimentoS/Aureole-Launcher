@@ -1,12 +1,9 @@
 package dev.mnascimentos.aureole.feature.home.components.onboarding.extensions
 
-import dev.mnascimentos.aureole.core.data.model.AppFolder
-import dev.mnascimentos.aureole.core.data.model.ContainerItemEntity
-import dev.mnascimentos.aureole.core.data.model.ContainerItemType
-import dev.mnascimentos.aureole.core.data.model.ContainerModel
 import dev.mnascimentos.aureole.core.data.model.LauncherItemState
 import dev.mnascimentos.aureole.core.data.model.LauncherItemType
 import dev.mnascimentos.aureole.core.data.model.OnboardingTask
+import dev.mnascimentos.aureole.feature.home.components.onboarding.model.OnboardingUiState
 import dev.mnascimentos.aureole.feature.home.grid.GridDefaults
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
 import org.junit.Assert.assertEquals
@@ -95,15 +92,15 @@ class OnboardingTaskEvidenceTest {
     }
 
     @Test
-    fun `when leaving the container editor without its save, should not meet the container task`() {
-        val item = ContainerItemEntity(id = "i", panelId = "c", itemType = ContainerItemType.APP, packageName = "a")
-        val withItem = ContainerModel(id = "c", items = listOf(item))
-        val withFolder = ContainerModel(id = "c", folders = listOf(AppFolder(name = "f")))
+    fun `when the container editor saved, should meet the container task even empty, else not`() {
+        val saved = MainUiState(
+            gridItems = listOf(container),
+            onboarding = OnboardingUiState(pendingTask = OnboardingTask.FILL_CONTAINER, isPendingTaskSaved = true)
+        )
+        val unsaved = saved.copy(onboarding = saved.onboarding.copy(isPendingTaskSaved = false))
 
-        listOf(withItem, withFolder).forEach { model ->
-            val state = MainUiState(gridItems = listOf(container), containers = mapOf("c" to model))
-            assertFalse(state.meetsRequirement(OnboardingTask.FILL_CONTAINER))
-        }
+        assertTrue(saved.meetsRequirement(OnboardingTask.FILL_CONTAINER))
+        assertFalse(unsaved.meetsRequirement(OnboardingTask.FILL_CONTAINER))
     }
 
     @Test

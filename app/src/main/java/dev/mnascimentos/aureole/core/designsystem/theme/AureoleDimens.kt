@@ -28,6 +28,7 @@ data class AureoleDimens(
     // Specific Sizes
     val itemHeightExtraLarge: Dp = 52.dp,
     val menuRowHeight: Dp = 56.dp,
+    val avatarSize: Dp = 64.dp,
     val quickActionIconSize: Dp = 50.dp,
     val sizeLarge: Dp = 68.dp,
     val sizeExtraLarge: Dp = 120.dp,

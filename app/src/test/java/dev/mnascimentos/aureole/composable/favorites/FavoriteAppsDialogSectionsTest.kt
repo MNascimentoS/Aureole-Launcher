@@ -1,19 +1,18 @@
 package dev.mnascimentos.aureole.composable.favorites
 
+import androidx.compose.ui.test.assertCountEquals
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertIsOff
 import androidx.compose.ui.test.assertIsOn
 import androidx.compose.ui.test.junit4.v2.createComposeRule
+import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import dev.mnascimentos.aureole.composable.favorites.model.FavoriteAppsDialogActions
 import dev.mnascimentos.aureole.composable.favorites.model.FavoriteAppsDialogConfig
-import dev.mnascimentos.aureole.composable.favorites.model.FavoriteAppsScreenMode
 import dev.mnascimentos.aureole.composable.favorites.model.ShowAllAppsParams
-import dev.mnascimentos.aureole.composable.favorites.model.backTarget
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import org.junit.Assert.assertEquals
-import org.junit.Assert.assertNull
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -25,93 +24,59 @@ class FavoriteAppsDialogSectionsTest {
     @get:Rule
     val composeTestRule = createComposeRule()
 
-    @Test
-    fun `when rendering FavoriteAppsBottomBar, should display Back`() {
-        composeTestRule.setContent {
-            AureoleLauncherTheme {
-                FavoriteAppsBottomBar(
-                    onBack = {}
-                )
-            }
-        }
-
-        composeTestRule.onNodeWithText("Back").assertIsDisplayed()
-    }
-
-    private fun setMainContent(
+    private fun setSheet(
         config: FavoriteAppsDialogConfig,
-        actions: FavoriteAppsDialogActions,
-        modes: MutableList<FavoriteAppsScreenMode>
+        actions: FavoriteAppsDialogActions = FavoriteAppsDialogActions()
     ) {
         composeTestRule.setContent {
             AureoleLauncherTheme {
-                FavoriteAppsSheetContent(
-                    currentMode = FavoriteAppsScreenMode.MAIN,
-                    config = config,
-                    actions = actions,
-                    onModeChange = { modes += it }
-                )
+                FavoriteAppsSheetContent(config = config, actions = actions)
             }
         }
     }
 
-    @Test
-    fun `when rendering the MAIN menu without the switch, should show Choose favorites with the favorites count`() {
-        setMainContent(
-            FavoriteAppsDialogConfig(allApps = emptyList(), favoriteAppPackages = listOf("a", "b", "c")),
-            FavoriteAppsDialogActions(),
-            mutableListOf()
-        )
+    private fun homeList(
+        favorites: List<String>,
+        checked: Boolean,
+        onCheckedChange: (Boolean) -> Unit = {}
+    ) = FavoriteAppsDialogConfig(
+        allApps = emptyList(),
+        favoriteAppPackages = favorites,
+        showAllApps = ShowAllAppsParams(checked = checked, onCheckedChange = onCheckedChange)
+    )
 
-        composeTestRule.onNodeWithText("Choose favorites").assertIsDisplayed()
-        composeTestRule.onNodeWithText("3 favorites, the rest stay hidden").assertIsDisplayed()
-        composeTestRule.onNodeWithText("Edit shortcuts").assertDoesNotExist()
+    @Test
+    fun `when rendering FavoriteAppsBottomBar, should show the search and no Back button`() {
+        composeTestRule.setContent {
+            AureoleLauncherTheme {
+                FavoriteAppsBottomBar()
+            }
+        }
+
+        composeTestRule.onNodeWithText("Back").assertDoesNotExist()
+    }
+
+    @Test
+    fun `the single screen has no menu row and no switch without the list's switch params`() {
+        setSheet(FavoriteAppsDialogConfig(allApps = emptyList(), favoriteAppPackages = listOf("a", "b", "c")))
+
         composeTestRule.onNodeWithText("Show all apps").assertDoesNotExist()
+        composeTestRule.onNodeWithText("Customize home").assertDoesNotExist()
+        composeTestRule.onNodeWithText("Edit shortcuts").assertDoesNotExist()
     }
 
     @Test
-    fun `when tapping Choose favorites, should switch to the MANAGE mode`() {
-        val modes = mutableListOf<FavoriteAppsScreenMode>()
-        setMainContent(
-            FavoriteAppsDialogConfig(allApps = emptyList(), favoriteAppPackages = listOf("a")),
-            FavoriteAppsDialogActions(),
-            modes
-        )
-
-        composeTestRule.onNodeWithText("Choose favorites").performClick()
-
-        assertEquals(listOf(FavoriteAppsScreenMode.MANAGE), modes)
-    }
-
-    @Test
-    fun `a home apps list shows the switch below Choose favorites and the on-top subtitle while it is on`() {
-        setMainContent(
-            FavoriteAppsDialogConfig(
-                allApps = emptyList(),
-                favoriteAppPackages = listOf("a", "b"),
-                showAllApps = ShowAllAppsParams(checked = true, onCheckedChange = {})
-            ),
-            FavoriteAppsDialogActions(),
-            mutableListOf()
-        )
+    fun `a home apps list shows the switch on top with the on-top subtitle while it is on`() {
+        setSheet(homeList(favorites = listOf("a", "b"), checked = true))
 
         composeTestRule.onNodeWithText("Show all apps").assertIsDisplayed().assertIsOn()
-        composeTestRule.onNodeWithText("Favorites stay at the top").assertIsDisplayed()
         composeTestRule.onNodeWithText("2 favorites on top, then all apps").assertIsDisplayed()
     }
 
     @Test
     fun `tapping the switch reports the new value at once`() {
         val values = mutableListOf<Boolean>()
-        setMainContent(
-            FavoriteAppsDialogConfig(
-                allApps = emptyList(),
-                favoriteAppPackages = emptyList(),
-                showAllApps = ShowAllAppsParams(checked = true, onCheckedChange = { values += it })
-            ),
-            FavoriteAppsDialogActions(),
-            mutableListOf()
-        )
+        setSheet(homeList(favorites = emptyList(), checked = true, onCheckedChange = { values += it }))
 
         composeTestRule.onNodeWithText("Show all apps").performClick()
 
@@ -120,74 +85,44 @@ class FavoriteAppsDialogSectionsTest {
 
     @Test
     fun `with the switch off and no favorites, the subtitle says none is selected`() {
-        setMainContent(
-            FavoriteAppsDialogConfig(
-                allApps = emptyList(),
-                favoriteAppPackages = emptyList(),
-                showAllApps = ShowAllAppsParams(checked = false, onCheckedChange = {})
-            ),
-            FavoriteAppsDialogActions(),
-            mutableListOf()
-        )
+        setSheet(homeList(favorites = emptyList(), checked = false))
 
         composeTestRule.onNodeWithText("Show all apps").assertIsOff()
-        composeTestRule.onNodeWithText("No favorite app selected.").assertIsDisplayed()
-    }
-
-    private fun setSubScreen(mode: FavoriteAppsScreenMode) {
-        composeTestRule.setContent {
-            AureoleLauncherTheme {
-                FavoriteAppsSheetContent(
-                    currentMode = mode,
-                    config = FavoriteAppsDialogConfig(allApps = emptyList(), favoriteAppPackages = emptyList()),
-                    actions = FavoriteAppsDialogActions(),
-                    onModeChange = {}
-                )
-            }
-        }
+        // The switch subtitle and the empty list message use the same text.
+        composeTestRule.onAllNodesWithText("No favorite app selected.", substring = true).assertCountEquals(2)
     }
 
     @Test
-    fun `the main menu with no favorites says the Home shows all apps and has no switch nor Appearance row`() {
-        setMainContent(
-            FavoriteAppsDialogConfig(allApps = emptyList(), favoriteAppPackages = emptyList()),
-            FavoriteAppsDialogActions(),
-            mutableListOf()
-        )
+    fun `with the switch on and no favorites, the subtitle says the Home shows all apps`() {
+        setSheet(homeList(favorites = emptyList(), checked = true))
 
         composeTestRule.onNodeWithText("No favorites: shows all apps").assertIsDisplayed()
-        composeTestRule.onNodeWithText("Show all apps").assertDoesNotExist()
-        composeTestRule.onNodeWithText("Appearance").assertDoesNotExist()
     }
 
     @Test
-    fun `the main menu with one favorite uses the singular subtitle`() {
-        setMainContent(
-            FavoriteAppsDialogConfig(allApps = emptyList(), favoriteAppPackages = listOf("a")),
-            FavoriteAppsDialogActions(),
-            mutableListOf()
-        )
+    fun `with the switch off and favorites, the subtitle uses the plural and singular count`() {
+        setSheet(homeList(favorites = listOf("a"), checked = false))
 
         composeTestRule.onNodeWithText("1 favorite, the rest stays hidden").assertIsDisplayed()
     }
 
     @Test
-    fun `the MANAGE sub-screen shows the list and not the menu`() {
-        setSubScreen(FavoriteAppsScreenMode.MANAGE)
+    fun `Customize home shows below the switch and opens the customization`() {
+        var opened = 0
+        setSheet(
+            homeList(favorites = listOf("a"), checked = true),
+            FavoriteAppsDialogActions(onCustomizeHome = { opened++ })
+        )
 
-        composeTestRule.onNodeWithText("Choose favorites").assertDoesNotExist()
-        composeTestRule.onNodeWithText("Show all apps").assertDoesNotExist()
+        composeTestRule.onNodeWithText("Customize home").assertIsDisplayed().performClick()
+
+        assertEquals(1, opened)
     }
 
     @Test
-    fun `backTarget closes from the main menu and returns to it from the manage list`() {
-        assertNull(FavoriteAppsScreenMode.MAIN.backTarget())
-        assertEquals(FavoriteAppsScreenMode.MAIN, FavoriteAppsScreenMode.MANAGE.backTarget())
-    }
+    fun `Customize home is left out when the sheet has no action for it`() {
+        setSheet(homeList(favorites = listOf("a"), checked = true))
 
-    @Test
-    fun `opened straight on the manage list, back closes the sheet instead of showing the menu`() {
-        assertNull(FavoriteAppsScreenMode.MANAGE.backTarget(entryMode = FavoriteAppsScreenMode.MANAGE))
-        assertNull(FavoriteAppsScreenMode.MAIN.backTarget(entryMode = FavoriteAppsScreenMode.MANAGE))
+        composeTestRule.onNodeWithText("Customize home").assertDoesNotExist()
     }
 }

@@ -10,7 +10,6 @@ import androidx.compose.ui.test.junit4.v2.createComposeRule
 import androidx.compose.ui.test.performCustomAccessibilityActionWithLabel
 import dev.mnascimentos.aureole.composable.favorites.model.FavoriteAppsDialogActions
 import dev.mnascimentos.aureole.composable.favorites.model.FavoriteAppsDialogConfig
-import dev.mnascimentos.aureole.composable.favorites.model.FavoriteAppsScreenMode
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import org.junit.Assert.assertEquals
@@ -39,14 +38,12 @@ class FavoriteAppsReorderTest {
         composeTestRule.setContent {
             AureoleLauncherTheme {
                 FavoriteAppsSheetContent(
-                    currentMode = FavoriteAppsScreenMode.MANAGE,
                     config = FavoriteAppsDialogConfig(
                         allApps = listOf(app("Uno", "a"), app("Dos", "b")),
                         favoriteAppPackages = listOf("a", "gone", "b"),
                         containerId = "c1"
                     ),
-                    actions = FavoriteAppsDialogActions(onUpdateFavoritePackages = { id, list -> saved += id to list }),
-                    onModeChange = {}
+                    actions = FavoriteAppsDialogActions(onUpdateFavoritePackages = { id, list -> saved += id to list })
                 )
             }
         }

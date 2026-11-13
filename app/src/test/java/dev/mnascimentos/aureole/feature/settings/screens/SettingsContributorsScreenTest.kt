@@ -26,5 +26,9 @@ class SettingsContributorsScreenTest {
         }
 
         composeTestRule.onNodeWithText("Contributors").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Aislan Tavares").assertIsDisplayed()
+        composeTestRule.onNodeWithText("The Dreamer").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Mateus Nascimento").assertIsDisplayed()
+        composeTestRule.onNodeWithText("The Creator").assertIsDisplayed()
     }
 }

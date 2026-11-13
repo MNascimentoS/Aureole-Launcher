@@ -11,6 +11,7 @@ import dev.mnascimentos.aureole.feature.settings.screens.SettingsAdvancedScreen
 import dev.mnascimentos.aureole.feature.settings.screens.SettingsAppearanceScreen
 import dev.mnascimentos.aureole.feature.settings.screens.SettingsBehaviorScreen
 import dev.mnascimentos.aureole.feature.settings.screens.SettingsContributorsScreen
+import dev.mnascimentos.aureole.feature.settings.screens.SettingsLicensesScreen
 import dev.mnascimentos.aureole.feature.settings.screens.SettingsRootScreen
 
 sealed class SettingsRoute(val route: String) {
@@ -19,6 +20,7 @@ sealed class SettingsRoute(val route: String) {
     object Appearance : SettingsRoute("appearance")
     object Advanced : SettingsRoute("advanced")
     object Contributors : SettingsRoute("contributors")
+    object Licenses : SettingsRoute("licenses")
 }
 
 @Composable
@@ -59,7 +61,9 @@ fun SettingsNavGraph(
         composable(SettingsRoute.Advanced.route) {
             SettingsAdvancedScreen(
                 uiState = uiState,
-                actions = actions,
+                actions = actions.copy(
+                    onNavigateToLicenses = { navController.navigate(SettingsRoute.Licenses.route) }
+                ),
                 onNavigateToContributors = { navController.navigate(SettingsRoute.Contributors.route) },
                 onNavigateBack = { navController.popBackStack() }
             )
@@ -67,6 +71,13 @@ fun SettingsNavGraph(
 
         composable(SettingsRoute.Contributors.route) {
             SettingsContributorsScreen(
+                onNavigateBack = { navController.popBackStack() }
+            )
+        }
+
+        composable(SettingsRoute.Licenses.route) {
+            SettingsLicensesScreen(
+                uiState = uiState,
                 onNavigateBack = { navController.popBackStack() }
             )
         }

@@ -2,6 +2,8 @@ package dev.mnascimentos.aureole.composable.menu
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
@@ -18,6 +20,7 @@ import dev.mnascimentos.aureole.core.designsystem.components.AureoleEditOverlay
 import dev.mnascimentos.aureole.core.designsystem.model.AureoleEditOverlayConfig
 import dev.mnascimentos.aureole.core.designsystem.model.AureoleEditOverlayParams
 import dev.mnascimentos.aureole.core.designsystem.model.LocalLeftHanded
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import kotlinx.coroutines.delay
@@ -63,6 +66,7 @@ fun AureoleMenuSheet(
             sheetContent = {
                 Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
                     content { isVisible = false }
+                    if (bottomBar == null) Spacer(Modifier.height(AureoleDS.dimens.large))
                 }
             }
         )

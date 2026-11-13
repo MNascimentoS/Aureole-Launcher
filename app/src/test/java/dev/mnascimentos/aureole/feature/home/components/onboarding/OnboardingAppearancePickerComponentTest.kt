@@ -27,7 +27,8 @@ class OnboardingAppearancePickerComponentTest {
     private val actions = OnboardingActions(
         onSelectPalette = { calls += "palette=$it" },
         onSelectFont = { calls += "font=$it" },
-        onConfirmAppearancePicker = { calls += "confirm" }
+        onConfirmAppearancePicker = { calls += "confirm" },
+        onDismissAppearancePicker = { calls += "dismiss" }
     )
 
     private fun render(picker: AppearancePicker?) {
@@ -69,11 +70,14 @@ class OnboardingAppearancePickerComponentTest {
     }
 
     @Test
-    fun `should invite the user to try the options`() {
+    fun `when a palette is previewed and Cancel is pressed, should give up without confirming`() {
         render(AppearancePicker.PALETTE)
 
-        val hint = "Tap a palette or font to try it. Nothing changes until you tap Apply."
-        composeTestRule.onNodeWithText(hint).assertExists()
+        composeTestRule.onNodeWithText(allPalettes.first().name).performClick()
+        composeTestRule.onNodeWithText("Cancel").performClick()
+        composeTestRule.waitForIdle()
+
+        assertEquals(listOf("dismiss"), calls)
     }
 
     @Test

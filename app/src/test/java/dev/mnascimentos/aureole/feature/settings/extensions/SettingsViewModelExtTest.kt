@@ -1,11 +1,7 @@
 package dev.mnascimentos.aureole.feature.settings.extensions
 
 import android.content.Context
-import android.os.Looper
 import dev.mnascimentos.aureole.R
-import dev.mnascimentos.aureole.core.data.model.OnboardingProgress
-import dev.mnascimentos.aureole.core.data.model.OnboardingStage
-import dev.mnascimentos.aureole.core.data.model.OnboardingTask
 import dev.mnascimentos.aureole.core.data.repository.AppRepository
 import dev.mnascimentos.aureole.core.data.repository.FolderRepository
 import dev.mnascimentos.aureole.core.data.repository.GridRepository
@@ -21,7 +17,6 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.RuntimeEnvironment
-import org.robolectric.Shadows.shadowOf
 
 @RunWith(RobolectricTestRunner::class)
 class SettingsViewModelExtTest {
@@ -81,32 +76,5 @@ class SettingsViewModelExtTest {
 
         assertTrue(processTerminated)
         assertFalse(settingsRepository.isLeftHandedMode)
-    }
-
-    @Test
-    fun `replayOnboarding should restart the stored progress and finish the activity`() {
-        settingsRepository.onboarding.write(
-            OnboardingProgress(
-                stage = OnboardingStage.COMPLETED,
-                completedTasks = setOf(OnboardingTask.entries.first())
-            )
-        )
-
-        viewModel.replayOnboarding()
-        repeat(REPLAY_WAIT_ATTEMPTS) {
-            shadowOf(Looper.getMainLooper()).idle()
-            if (viewModel.uiState.value.shouldFinishActivity) return@repeat
-            Thread.sleep(REPLAY_WAIT_STEP_MS)
-        }
-
-        assertTrue(viewModel.uiState.value.shouldFinishActivity)
-        val progress = settingsRepository.onboarding.read()
-        assertEquals(OnboardingStage.WELCOME, progress?.stage)
-        assertTrue(progress?.completedTasks.orEmpty().isEmpty())
-    }
-
-    private companion object {
-        const val REPLAY_WAIT_ATTEMPTS = 100
-        const val REPLAY_WAIT_STEP_MS = 20L
     }
 }

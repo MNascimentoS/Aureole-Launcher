@@ -14,41 +14,6 @@ import dev.mnascimentos.aureole.feature.home.grid.extensions.updateActiveGridIte
 import java.util.UUID
 
 /**
- * The clock and container tasks: puts the item on the home at its compact size and saves it on the spot, with no
- * editor and no grid edit mode. A home that already has one counts as done; with no room the list comes back
- * and nothing is added.
- */
-fun HomeViewModel.addGridItemSilently(task: OnboardingTask) {
-    val type = task.gridItemType ?: return
-    val hasItem = uiState.value.gridItems.any { it.safeType == type }
-    if (hasItem || placeSilently(type) != null) {
-        completeTask(task)
-    } else {
-        expandChecklist()
-    }
-}
-
-/**
- * The widgets task: places the (empty) widget list at its compact size when the home has none, saved, and
- * remembers the task until the picker closes. Returns the list id to open the picker for, or null with no room.
- */
-fun HomeViewModel.startWidgetTask(task: OnboardingTask): String? {
-    val type = task.gridItemType ?: return null
-    val existing = uiState.value.gridItems.firstOrNull { it.safeType == type }?.id
-    val itemId = existing ?: placeSilently(type)
-    if (itemId == null) {
-        expandChecklist()
-        return null
-    }
-    updateUiState { state ->
-        state.copy(
-            onboarding = state.onboarding.copy(pendingTask = task, createdItemId = itemId.takeIf { existing == null })
-        )
-    }
-    return itemId
-}
-
-/**
  * The layout step: opens the grid edit mode, which completes the task when saved. Before any item task is done
  * there is nothing to adjust, so only the hint shows and nothing changes.
  */
@@ -80,12 +45,12 @@ fun HomeViewModel.skipTask(task: OnboardingTask) {
     }
 }
 
-private fun HomeViewModel.expandChecklist() {
+internal fun HomeViewModel.expandChecklist() {
     updateOnboarding(OnboardingStage.CHECKLIST) { copy(isChecklistExpanded = true) }
 }
 
-/** Adds the compact item of [type] to the active layout and saves it; returns its id, null with no room. */
-private fun HomeViewModel.placeSilently(type: LauncherItemType): String? {
+/** Adds the item of [type] at its onboarding size to the active layout, saved; returns its id, null with no room. */
+internal fun HomeViewModel.placeSilently(type: LauncherItemType): String? {
     val state = uiState.value
     val item = placeOnboardingItem(
         OnboardingPlacementRequest(

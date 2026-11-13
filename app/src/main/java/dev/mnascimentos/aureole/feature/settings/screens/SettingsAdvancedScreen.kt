@@ -40,7 +40,6 @@ import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatPa
 import dev.mnascimentos.aureole.core.designsystem.icons.Delete
 import dev.mnascimentos.aureole.core.designsystem.icons.Home
 import dev.mnascimentos.aureole.core.designsystem.icons.Info
-import dev.mnascimentos.aureole.core.designsystem.icons.RefreshCcw
 import dev.mnascimentos.aureole.core.designsystem.icons.Smile
 import dev.mnascimentos.aureole.core.designsystem.icons.Undo
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
@@ -48,10 +47,14 @@ import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
 import dev.mnascimentos.aureole.feature.settings.components.UninstallBottomSheet
+import dev.mnascimentos.aureole.feature.settings.model.LegalPage
 import dev.mnascimentos.aureole.feature.settings.model.SettingsAdvancedDialogActions
 import dev.mnascimentos.aureole.feature.settings.model.SettingsScreenActions
 import dev.mnascimentos.aureole.feature.settings.model.SettingsUiState
+import dev.mnascimentos.aureole.feature.settings.model.legalPageUrl
+import dev.mnascimentos.aureole.util.IntentUtils
 import dev.mnascimentos.aureole.util.percentToFraction
+import java.util.Locale
 
 private const val BOTTOM_SPACER_PERCENT = 0.15f
 
@@ -81,6 +84,7 @@ fun SettingsAdvancedScreen(
             innerPadding = innerPadding,
             dialogActions = SettingsAdvancedDialogActions(
                 onNavigateToContributors = onNavigateToContributors,
+                onNavigateToLicenses = actions.onNavigateToLicenses,
                 onOpenUninstallDialog = { showUninstallDialog = true },
                 onOpenReleaseNotesDialog = { showReleaseNotesDialog = true }
             )
@@ -155,7 +159,10 @@ private fun SettingsAdvancedContent(
 
             Spacer(modifier = Modifier.height(AureoleDS.dimens.large))
 
-            AdvancedLinksGroup(onNavigateToContributors = dialogActions.onNavigateToContributors)
+            AdvancedLinksGroup(
+                onNavigateToContributors = dialogActions.onNavigateToContributors,
+                onNavigateToLicenses = dialogActions.onNavigateToLicenses
+            )
 
             Spacer(modifier = Modifier.height(bottomSpacerHeight))
         }
@@ -198,12 +205,6 @@ private fun AdvancedItemsGroup(
         )
 
         SettingsActionItem(
-            title = stringResource(R.string.settings_advanced_replay_onboarding),
-            leadingContent = { AureoleDS.icons.RefreshCcw() },
-            onClick = { actions.onReplayOnboardingClick() }
-        )
-
-        SettingsActionItem(
             title = stringResource(R.string.settings_advanced_reset_launcher),
             leadingContent = { AureoleDS.icons.Undo() },
             onClick = { actions.onOpenFactoryResetDialog() }
@@ -218,7 +219,8 @@ private fun AdvancedItemsGroup(
 }
 
 @Composable
-private fun AdvancedLinksGroup(onNavigateToContributors: () -> Unit) {
+private fun AdvancedLinksGroup(onNavigateToContributors: () -> Unit, onNavigateToLicenses: () -> Unit) {
+    val context = LocalContext.current
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -237,7 +239,7 @@ private fun AdvancedLinksGroup(onNavigateToContributors: () -> Unit) {
         AureoleText(
             text = stringResource(R.string.settings_advanced_privacy_policy),
             color = AureoleDS.colors.onSurfaceLow,
-            modifier = Modifier.clickable { },
+            modifier = Modifier.clickable { openLegalPage(context, LegalPage.PRIVACY) },
             format = AureoleTextFormatParams(
                 style = AureoleDS.typography.bodySmall,
                 fontWeight = FontWeight.Normal
@@ -246,16 +248,7 @@ private fun AdvancedLinksGroup(onNavigateToContributors: () -> Unit) {
         AureoleText(
             text = stringResource(R.string.settings_advanced_terms_of_service),
             color = AureoleDS.colors.onSurfaceLow,
-            modifier = Modifier.clickable { },
-            format = AureoleTextFormatParams(
-                style = AureoleDS.typography.bodySmall,
-                fontWeight = FontWeight.Normal
-            )
-        )
-        AureoleText(
-            text = stringResource(R.string.settings_advanced_privacy_settings),
-            color = AureoleDS.colors.onSurfaceLow,
-            modifier = Modifier.clickable { },
+            modifier = Modifier.clickable { openLegalPage(context, LegalPage.TERMS) },
             format = AureoleTextFormatParams(
                 style = AureoleDS.typography.bodySmall,
                 fontWeight = FontWeight.Normal
@@ -264,13 +257,17 @@ private fun AdvancedLinksGroup(onNavigateToContributors: () -> Unit) {
         AureoleText(
             text = stringResource(R.string.settings_advanced_open_source_licenses),
             color = AureoleDS.colors.onSurfaceLow,
-            modifier = Modifier.clickable { },
+            modifier = Modifier.clickable { onNavigateToLicenses() },
             format = AureoleTextFormatParams(
                 style = AureoleDS.typography.bodySmall,
                 fontWeight = FontWeight.Normal
             )
         )
     }
+}
+
+private fun openLegalPage(context: Context, page: LegalPage) {
+    IntentUtils.openUrl(context, legalPageUrl(page, Locale.getDefault()))
 }
 
 @AureolePreview

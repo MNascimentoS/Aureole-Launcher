@@ -21,6 +21,7 @@ import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -39,9 +40,10 @@ import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.components.containers.model.ContainerPreviewMetrics
+import dev.mnascimentos.aureole.feature.home.components.containers.model.EditContainerCloser
 import dev.mnascimentos.aureole.feature.home.components.containers.model.EditContainerScreenMode
 import dev.mnascimentos.aureole.feature.home.components.containers.model.EditContainerScreenParams
-import dev.mnascimentos.aureole.feature.home.components.containers.model.backTarget
+import dev.mnascimentos.aureole.feature.home.components.containers.model.handleBack
 import dev.mnascimentos.aureole.feature.home.model.LocalHomeActions
 import kotlinx.coroutines.delay
 
@@ -71,13 +73,16 @@ fun EditContainerScreen(
                 params.onDismiss()
             }
         }
-        val saveAndClose = {
-            params.onSave(state.toModel())
-            isVisible = false
+        val latestParams by rememberUpdatedState(params)
+        val closer = remember(state) {
+            EditContainerCloser(
+                save = { latestParams.onSave(state.toModel()) },
+                close = { isVisible = false }
+            )
         }
 
         AureoleEditOverlay(
-            onDismissRequest = saveAndClose,
+            onDismissRequest = closer::closeOnce,
             modifier = modifier,
             params = AureoleEditOverlayParams(
                 config = AureoleEditOverlayConfig(
@@ -87,7 +92,8 @@ fun EditContainerScreen(
                     isVisible = isVisible,
                     animated = true,
                     isLeftHanded = isLeftHanded,
-                    onBackPress = { currentMode.backTarget()?.let { currentMode = it } ?: saveAndClose() }
+                    onBackPress = { currentMode.handleBack(closer) { currentMode = it } },
+                    onDismiss = closer::closeOnce
                 ),
                 previewContent = { EditContainerPreview(state = state) },
                 bottomBarContent = null,

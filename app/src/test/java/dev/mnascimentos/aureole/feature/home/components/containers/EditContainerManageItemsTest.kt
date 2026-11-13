@@ -87,7 +87,7 @@ class EditContainerManageItemsTest {
             }
         }
 
-        composeTestRule.onNodeWithText("No component added yet.").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Add apps, folders or quick buttons above.").assertIsDisplayed()
         composeTestRule.onNodeWithText("Back").assertIsDisplayed().performClick()
         assertTrue(backClicked)
     }
@@ -236,5 +236,25 @@ class EditContainerManageItemsTest {
 
         composeTestRule.onAllNodesWithContentDescription("Remove")[0].performClick()
         assertEquals(listOf("a"), state.itemsList.map { it.id })
+    }
+
+    @Test
+    fun `manage items shows the add and items sections with the count`() {
+        val state = EditContainerState(
+            panel = ContainerModel(id = "p1"),
+            options = createDefaultOptionsState(),
+            itemsList = emptyList(),
+            folders = emptyList()
+        )
+
+        composeTestRule.setContent {
+            AureoleLauncherTheme {
+                ManageItemsContent(state = state, allApps = listOf(sampleApp), onBack = {})
+            }
+        }
+
+        composeTestRule.onNodeWithText("ADD").assertIsDisplayed()
+        composeTestRule.onNodeWithText("ITEMS").assertIsDisplayed()
+        composeTestRule.onNodeWithText("0").assertIsDisplayed()
     }
 }

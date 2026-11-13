@@ -7,6 +7,8 @@ import dev.mnascimentos.aureole.core.data.model.LauncherItemState
 import dev.mnascimentos.aureole.core.designsystem.model.TextResource
 import dev.mnascimentos.aureole.feature.home.HomeViewModel
 import dev.mnascimentos.aureole.feature.home.components.clock.extensions.hasItemOnAnyLayout
+import dev.mnascimentos.aureole.feature.home.components.containers.model.withEditContainerClosed
+import dev.mnascimentos.aureole.feature.home.components.containers.model.withEditContainerOpened
 import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.confirmContainerTaskOnSave
 import dev.mnascimentos.aureole.feature.home.extensions.showUndo
 import dev.mnascimentos.aureole.feature.home.grid.GridDefaults
@@ -85,23 +87,13 @@ fun HomeViewModel.openEditContainerDialog(panelId: String) {
         val currentMap = uiState.value.containers.toMutableMap()
         currentMap[panelId] = panel
 
-        updateUiState {
-            it.copy(
-                containers = currentMap,
-                editingContainerId = panelId,
-                isEditContainerDialogVisible = true
-            )
-        }
+        updateUiState { it.withEditContainerOpened(panelId).copy(containers = currentMap) }
     }
 }
 
-fun HomeViewModel.closeEditContainerDialog() {
-    updateUiState {
-        it.copy(
-            isEditContainerDialogVisible = false,
-            editingContainerId = null
-        )
-    }
+/** Closes the editor; with a [panelId] it only closes if that container is still the one being edited. */
+fun HomeViewModel.closeEditContainerDialog(panelId: String? = null) {
+    updateUiState { it.withEditContainerClosed(panelId) }
 }
 
 fun HomeViewModel.saveContainerModel(panel: ContainerModel) {
@@ -113,12 +105,7 @@ fun HomeViewModel.saveContainerModel(panel: ContainerModel) {
         val updatedFolders = folderRepository.getFolders()
 
         updateUiState {
-            it.copy(
-                containers = updatedPanels,
-                folders = updatedFolders,
-                isEditContainerDialogVisible = false,
-                editingContainerId = null
-            )
+            it.copy(containers = updatedPanels, folders = updatedFolders).withEditContainerClosed(panel.id)
         }
 
         if (previousPanel != null && previousPanel != panel) {

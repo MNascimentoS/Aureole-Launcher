@@ -16,7 +16,7 @@ val OnboardingTask.gridItemType: LauncherItemType?
         else -> null
     }
 
-/** Tasks judged when the grid edit mode or their editor closes: the item tasks and the layout step. */
+/** Tasks judged when their own screen or the grid edit mode closes: the item tasks and the layout step. */
 internal val OnboardingTask.isJudgedOnSave: Boolean
     get() = gridItemType != null || this == OnboardingTask.ADJUST_LAYOUT
 
@@ -33,13 +33,15 @@ internal val MainUiState.isTaskInProgress: Boolean
     get() = isGridEditMode || isTaskEditorOpen
 
 /**
- * Whether the saved home shows what [task] asks for. The container task has its own confirmation,
- * the editor's Save, so leaving its editor any other way fails it.
+ * Whether the home shows what [task] asks for once its screen closed: a clock, an apps list with favorites, a
+ * widget in the stack. The container task has its own confirmation, the editor's Save (even with it empty), so
+ * leaving the editor any other way leaves the task pending.
  */
 internal fun MainUiState.meetsRequirement(task: OnboardingTask): Boolean = when (task) {
     OnboardingTask.ADD_CLOCK -> gridItems.any { it.safeType == LauncherItemType.CLOCK }
     OnboardingTask.ADD_FAVORITE_APPS -> gridItems.any { hasAppsListWithFavorites(it) }
     OnboardingTask.ADD_WIDGET -> gridItems.any { hasWidget(it) }
+    OnboardingTask.FILL_CONTAINER -> onboarding.isPendingTaskSaved
     OnboardingTask.ADJUST_LAYOUT -> true
     else -> false
 }

@@ -23,7 +23,7 @@ import dev.mnascimentos.aureole.composable.favorites.FavoriteAppsSheetContent
 import dev.mnascimentos.aureole.composable.favorites.RemainingAppRow
 import dev.mnascimentos.aureole.composable.favorites.model.FavoriteAppsDialogActions
 import dev.mnascimentos.aureole.composable.favorites.model.FavoriteAppsDialogConfig
-import dev.mnascimentos.aureole.composable.favorites.model.FavoriteAppsScreenMode
+import dev.mnascimentos.aureole.composable.favorites.model.ShowAllAppsParams
 import dev.mnascimentos.aureole.composable.mirror.LeftHandMirror
 import dev.mnascimentos.aureole.composable.reorder.model.LocalReorderHandle
 import dev.mnascimentos.aureole.composable.reorder.model.ReorderHandle
@@ -56,13 +56,12 @@ private fun FavoritesManageCase(isLeftHanded: Boolean, favoriteCount: Int = 4) {
                     .padding(16.dp)
             ) {
                 FavoriteAppsSheetContent(
-                    currentMode = FavoriteAppsScreenMode.MANAGE,
                     config = FavoriteAppsDialogConfig(
                         allApps = favoriteSampleApps,
-                        favoriteAppPackages = favoriteSampleApps.take(favoriteCount).map { it.packageName }
+                        favoriteAppPackages = favoriteSampleApps.take(favoriteCount).map { it.packageName },
+                        showAllApps = ShowAllAppsParams(checked = true, onCheckedChange = {})
                     ),
-                    actions = FavoriteAppsDialogActions(),
-                    onModeChange = {}
+                    actions = FavoriteAppsDialogActions(onCustomizeHome = {})
                 )
             }
         }
