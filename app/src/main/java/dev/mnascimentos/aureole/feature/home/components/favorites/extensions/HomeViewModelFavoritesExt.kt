@@ -1,10 +1,10 @@
 package dev.mnascimentos.aureole.feature.home.components.favorites.extensions
 
 import androidx.lifecycle.viewModelScope
-import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.core.designsystem.model.TextResource
 import dev.mnascimentos.aureole.feature.home.HomeViewModel
 import dev.mnascimentos.aureole.feature.home.components.appsdrawer.extensions.updateAppsState
+import dev.mnascimentos.aureole.feature.home.components.favorites.model.toggleFavoriteIn
 import dev.mnascimentos.aureole.feature.home.extensions.showUndo
 import dev.mnascimentos.aureole.feature.home.model.favoritesOf
 import dev.mnascimentos.aureole.feature.home.model.isLegacyFavoritesId
@@ -23,17 +23,10 @@ fun HomeViewModel.setShowFavoritePicker(show: Boolean, containerId: String? = nu
 fun HomeViewModel.toggleFavorite(packageName: String, containerId: String? = null) {
     val targetContainerId = containerId ?: uiState.value.activeFavoriteContainerId ?: "default_favorites"
     val previousFavs = uiState.value.favoritesOf(targetContainerId)
-    val currentFavs = previousFavs.toMutableList()
-    val wasFavorite = currentFavs.contains(packageName)
-    if (wasFavorite) {
-        currentFavs.remove(packageName)
-    } else {
-        currentFavs.add(packageName)
-    }
+    val toggle = toggleFavoriteIn(previousFavs, packageName)
     val appName = uiState.value.apps.find { it.packageName == packageName }?.label ?: packageName
-    updateContainerFavorites(targetContainerId, currentFavs)
-    val messageRes = if (wasFavorite) R.string.home_undo_favorite_removed else R.string.home_undo_favorite_added
-    showUndo(TextResource.fromResId(messageRes, appName)) {
+    updateContainerFavorites(targetContainerId, toggle.favorites)
+    showUndo(TextResource.fromResId(toggle.undoMessageRes, appName)) {
         updateContainerFavorites(targetContainerId, previousFavs)
     }
 }
