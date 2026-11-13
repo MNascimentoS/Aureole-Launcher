@@ -7,6 +7,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.composable.menu.AureoleMenuListSheet
+import dev.mnascimentos.aureole.composable.menu.customizeHomeEntry
 import dev.mnascimentos.aureole.composable.menu.model.MenuEntry
 import dev.mnascimentos.aureole.composable.menu.model.MenuRowParams
 import dev.mnascimentos.aureole.composable.menu.model.MenuSheetParams
@@ -18,6 +19,7 @@ import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.ContainerFolderBottomSheetParams
+import dev.mnascimentos.aureole.feature.home.model.LocalHomeActions
 
 /**
  * Menu of a folder on the home (long press on the folder): the folder actions first and Remove last, near the
@@ -29,7 +31,7 @@ internal fun ContainerFolderBottomSheet(
     onDismiss: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val entries = folderMenuEntries(params)
+    val onCustomize = LocalHomeActions.current.onOpenCustomizeBottomSheet
     AureoleMenuListSheet(
         title = stringResource(R.string.home_folder_settings),
         onDismiss = onDismiss,
@@ -38,11 +40,19 @@ internal fun ContainerFolderBottomSheet(
             titleIcon = { m -> AureoleDS.icons.Folder(modifier = m, tint = AureoleDS.colors.onSurfaceMedium) },
             onSettingsClick = params.onOpenSettings
         )
-    ) { entries }
+    ) { dismiss ->
+        folderMenuEntries(params) {
+            dismiss()
+            onCustomize()
+        }
+    }
 }
 
 @Composable
-private fun folderMenuEntries(params: ContainerFolderBottomSheetParams): List<MenuEntry> = listOf(
+private fun folderMenuEntries(
+    params: ContainerFolderBottomSheetParams,
+    onCustomizeHome: () -> Unit
+): List<MenuEntry> = listOf(
     MenuEntry.Section(text = stringResource(R.string.home_folder_menu_section)),
     folderRow(R.string.home_folder_edit_shortcuts, params.onEditShortcuts) { m, c ->
         AureoleDS.icons.AllApps(modifier = m, tint = c)
@@ -53,6 +63,7 @@ private fun folderMenuEntries(params: ContainerFolderBottomSheetParams): List<Me
     folderRow(R.string.home_folder_container_settings, params.onOpenContainerSettings) { m, c ->
         AureoleDS.icons.VerticalContainer(modifier = m, tint = c)
     },
+    customizeHomeEntry(onCustomizeHome),
     MenuEntry.Row(
         MenuRowParams(
             title = stringResource(R.string.home_folder_remove),

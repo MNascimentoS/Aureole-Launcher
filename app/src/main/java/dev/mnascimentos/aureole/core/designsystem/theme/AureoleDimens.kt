@@ -23,6 +23,7 @@ data class AureoleDimens(
     val xLarge: Dp = 32.dp,
     val xxLarge: Dp = 40.dp,
     val minTouchTarget: Dp = 48.dp,
+    val homeTopGrabZone: Dp = 40.dp,
 
     // Specific Sizes
     val itemHeightExtraLarge: Dp = 52.dp,

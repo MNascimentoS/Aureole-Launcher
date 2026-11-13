@@ -5,6 +5,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.composable.menu.AureoleMenuListSheet
+import dev.mnascimentos.aureole.composable.menu.customizeHomeEntry
 import dev.mnascimentos.aureole.composable.menu.model.MenuEntry
 import dev.mnascimentos.aureole.composable.menu.model.MenuSheetParams
 import dev.mnascimentos.aureole.core.data.model.LauncherItemState
@@ -58,7 +59,7 @@ fun EditGridItemDialog(
                 onDismissRequest()
             }
         )
-    ) {
+    ) { dismiss ->
         buildList {
             add(MenuEntry.Note(text = sizeNote))
             add(MenuEntry.Section(text = sectionLabel))
@@ -72,6 +73,13 @@ fun EditGridItemDialog(
                 EditDialogTypeActionSection(item = item, actions = actions, onDismissRequest = onDismissRequest)
             }
             add(typeSection)
+            add(
+                customizeHomeEntry {
+                    actions.onSaveGridEditMode()
+                    dismiss()
+                    actions.onOpenCustomizeBottomSheet()
+                }
+            )
             add(MenuEntry.Row(deleteParams))
         }
     }

@@ -2,6 +2,7 @@ package dev.mnascimentos.aureole.feature.home
 
 import android.appwidget.AppWidgetHost
 import android.content.res.Configuration
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
@@ -16,6 +17,7 @@ import dev.chrisbanes.haze.HazeState
 import dev.mnascimentos.aureole.composable.LocalHomeUiState
 import dev.mnascimentos.aureole.core.data.model.LauncherItemState
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
+import dev.mnascimentos.aureole.feature.home.components.HomeTopGrabZone
 import dev.mnascimentos.aureole.feature.home.components.content.GridItemContent
 import dev.mnascimentos.aureole.feature.home.components.favorites.model.FavoritesListConfig
 import dev.mnascimentos.aureole.feature.home.components.widgets.model.StackedWidgetConfig
@@ -87,25 +89,28 @@ internal fun MainHomeLayout(
     val currentLimits = getGridLimits(configuration.orientation)
     val currentItems = getGridItemsForOrientation(isLandscape, uiState)
 
-    DynamicGridContainer(
-        items = currentItems,
-        config = GridEditConfig(isEditMode = uiState.isGridEditMode, limits = currentLimits),
-        actions = actions,
-        modifier = Modifier
-            .fillMaxSize()
-            .statusBarsPadding()
-            .navigationBarsPadding()
-            .padding(horizontal = AureoleDS.dimens.xSmall)
-            .padding(top = AureoleDS.dimens.large, bottom = AureoleDS.dimens.xSmall)
-    ) { item ->
-        GridItemContent(
-            GridItemContentParams(
-                item = item,
-                favConfig = favConfig,
-                appWidgetHost = appWidgetHost,
-                stackedWidgetConfig = stackedWidgetConfig,
-                hazeState = hazeState
+    Box(modifier = Modifier.fillMaxSize()) {
+        DynamicGridContainer(
+            items = currentItems,
+            config = GridEditConfig(isEditMode = uiState.isGridEditMode, limits = currentLimits),
+            actions = actions,
+            modifier = Modifier
+                .fillMaxSize()
+                .statusBarsPadding()
+                .navigationBarsPadding()
+                .padding(horizontal = AureoleDS.dimens.xSmall)
+                .padding(top = AureoleDS.dimens.homeTopGrabZone, bottom = AureoleDS.dimens.xSmall)
+        ) { item ->
+            GridItemContent(
+                GridItemContentParams(
+                    item = item,
+                    favConfig = favConfig,
+                    appWidgetHost = appWidgetHost,
+                    stackedWidgetConfig = stackedWidgetConfig,
+                    hazeState = hazeState
+                )
             )
-        )
+        }
+        HomeTopGrabZone(enabled = !uiState.isGridEditMode, onLongPress = actions.onOpenCustomizeBottomSheet)
     }
 }

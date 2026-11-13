@@ -186,7 +186,9 @@ class EditGridItemDialogTest {
             }
         }
 
-        composeTestRule.onNodeWithText(context.getString(R.string.home_grid_remove_component)).performClick()
+        composeTestRule.onNodeWithText(
+            context.getString(R.string.home_grid_remove_component)
+        ).performScrollTo().performClick()
         assertEquals("del_item", deletedId)
     }
 }

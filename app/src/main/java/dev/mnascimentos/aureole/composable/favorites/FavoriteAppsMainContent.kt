@@ -15,6 +15,7 @@ import dev.mnascimentos.aureole.composable.favorites.model.ShowAllAppsParams
 import dev.mnascimentos.aureole.composable.favorites.model.favoritesMenuSubtitle
 import dev.mnascimentos.aureole.composable.menu.AureoleMenuRow
 import dev.mnascimentos.aureole.composable.menu.AureoleSwitchRow
+import dev.mnascimentos.aureole.composable.menu.customizeHomeRowParams
 import dev.mnascimentos.aureole.composable.menu.model.MenuRowParams
 import dev.mnascimentos.aureole.composable.menu.model.SwitchRowParams
 import dev.mnascimentos.aureole.core.designsystem.icons.AllApps
@@ -31,7 +32,8 @@ import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 internal fun FavoriteAppsMainContent(
     config: FavoriteAppsDialogConfig,
     onModeChange: (FavoriteAppsScreenMode) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onCustomizeHome: (() -> Unit)? = null
 ) {
     Column(modifier = modifier.padding(bottom = AureoleDS.dimens.large)) {
         AureoleMenuRow(
@@ -53,6 +55,7 @@ internal fun FavoriteAppsMainContent(
                     icon = { m, c -> AureoleDS.icons.AllApps(modifier = m, tint = c) }
                 )
             )
+            onCustomizeHome?.let { AureoleMenuRow(customizeHomeRowParams(it)) }
         }
     }
 }
@@ -67,7 +70,8 @@ private fun FavoriteAppsMainContentPreview() {
                 favoriteAppPackages = listOf("a", "b", "c", "d", "e"),
                 showAllApps = ShowAllAppsParams(checked = true, onCheckedChange = {})
             ),
-            onModeChange = {}
+            onModeChange = {},
+            onCustomizeHome = {}
         )
     }
 }

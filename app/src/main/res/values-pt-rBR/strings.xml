@@ -257,6 +257,8 @@
     <string name="home_folder_edit_shortcuts">Editar itens da pasta</string>
     <string name="home_folder_edit">Editar pasta</string>
     <string name="home_folder_remove">Remover pasta</string>
+    <string name="home_menu_customize_home">Personalizar home</string>
+    <string name="home_menu_customize_home_subtitle">Ajustar, adicionar componentes…</string>
     <string name="home_folder_container_settings">Configurações do Container</string>
     <string name="home_folder_settings">Configurações da Pasta</string>
     <string name="home_folder_is_empty">A pasta está vazia</string>
