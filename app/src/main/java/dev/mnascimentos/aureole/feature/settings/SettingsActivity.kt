@@ -8,7 +8,6 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.core.designsystem.palette.getPaletteByName
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDimens
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
@@ -38,7 +37,7 @@ class SettingsActivity : ComponentActivity() {
                     isDynamicWallpaperEnabled = uiState.isDynamicWallpaperEnabled,
                     aureoleColors = palette.colors,
                     aureoleFontName = uiState.selectedFontName,
-                    aureoleDimens = AureoleDimens(radiusLarge = uiState.cornerRadiusDp.dp)
+                    aureoleDimens = AureoleDimens.forCornerRadius(uiState.cornerRadiusDp)
                 )
             ) {
                 LaunchedEffect(uiState.shouldFinishActivity) {

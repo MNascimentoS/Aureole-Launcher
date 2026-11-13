@@ -4,6 +4,7 @@ import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import dev.mnascimentos.aureole.core.data.repository.SettingsRepository
 
 /**
  * Design system dimension tokens for Aureole Launcher based on Figma rules.
@@ -54,6 +55,27 @@ data class AureoleDimens(
     val radiusMediumLarge: Dp = 20.dp,
     val radiusLarge: Dp = 24.dp,
     val radiusFull: Dp = 100.dp,
-)
+) {
+    companion object {
+        /**
+         * Derives every radius token from the "Cartões e vidro" corner radius chosen by the user.
+         * The default radius (20 dp) keeps today's visual; 0 makes everything straight, pills included.
+         */
+        fun forCornerRadius(userDp: Int): AureoleDimens {
+            val base = AureoleDimens()
+            val scale = userDp / SettingsRepository.DEFAULT_CORNER_RADIUS_DP.toFloat()
+            return base.copy(
+                radiusMinimal = base.radiusMinimal * scale,
+                radiusXSmall = base.radiusXSmall * scale,
+                radiusSmallCompact = base.radiusSmallCompact * scale,
+                radiusSmall = base.radiusSmall * scale,
+                radiusMedium = base.radiusMedium * scale,
+                radiusMediumLarge = base.radiusMediumLarge * scale,
+                radiusLarge = userDp.dp,
+                radiusFull = if (userDp == 0) 0.dp else base.radiusFull
+            )
+        }
+    }
+}
 
 val LocalAureoleDimens = staticCompositionLocalOf { AureoleDimens() }
