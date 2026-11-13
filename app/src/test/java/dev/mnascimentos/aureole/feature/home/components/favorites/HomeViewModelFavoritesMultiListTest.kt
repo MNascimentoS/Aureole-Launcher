@@ -14,7 +14,7 @@ import dev.mnascimentos.aureole.core.data.repository.GridRepository
 import dev.mnascimentos.aureole.core.data.repository.SettingsRepository
 import dev.mnascimentos.aureole.core.data.repository.WidgetRepository
 import dev.mnascimentos.aureole.feature.home.HomeViewModel
-import dev.mnascimentos.aureole.feature.home.components.favorites.extensions.addFavoritesList
+import dev.mnascimentos.aureole.feature.home.components.favorites.extensions.addAppsList
 import dev.mnascimentos.aureole.feature.home.components.favorites.extensions.dismissFavoritePicker
 import dev.mnascimentos.aureole.feature.home.components.favorites.extensions.updateContainerFavorites
 import dev.mnascimentos.aureole.feature.home.extensions.onUndo
@@ -133,14 +133,14 @@ class HomeViewModelFavoritesMultiListTest {
     @Test
     fun `adding favorites twice creates two lists with independent favorites`() {
         arrangeHome()
-        viewModel.addFavoritesList()
-        val first = viewModel.uiState.value.customizeFavoritesListId!!
+        viewModel.addAppsList()
+        val first = viewModel.uiState.value.activeFavoriteContainerId!!
         viewModel.updateContainerFavorites(first, listOf("a"))
         awaitUntil { favorites(first) == listOf("a") }
         viewModel.dismissFavoritePicker()
 
-        viewModel.addFavoritesList()
-        val second = viewModel.uiState.value.customizeFavoritesListId!!
+        viewModel.addAppsList()
+        val second = viewModel.uiState.value.activeFavoriteContainerId!!
         touchedIds += listOf(first, second)
 
         assertNotEquals(first, second)
@@ -156,8 +156,8 @@ class HomeViewModelFavoritesMultiListTest {
         settingsRepository.favoriteAppPackages = listOf("old")
         arrangeHome(list(LEGACY_ID, col = 0, row = 0))
 
-        viewModel.addFavoritesList()
-        val created = viewModel.uiState.value.customizeFavoritesListId!!
+        viewModel.addAppsList()
+        val created = viewModel.uiState.value.activeFavoriteContainerId!!
         touchedIds += created
         viewModel.updateContainerFavorites(created, listOf("new"))
         awaitUntil { favorites(created) == listOf("new") }

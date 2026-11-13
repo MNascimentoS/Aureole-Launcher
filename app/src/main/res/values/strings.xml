@@ -187,8 +187,9 @@
 
     <!-- Favorites Dialog -->
     <string name="home_favorites_dialog_title">Apps List</string>
-    <string name="home_favorites_edit_shortcuts">Edit shortcuts</string>
-    <string name="home_favorites_manage_apps_order">Manage apps and order</string>
+    <string name="home_favorites_choose">Choose favorites</string>
+    <string name="home_apps_list_show_all">Show all apps</string>
+    <string name="home_apps_list_show_all_description">Favorites stay at the top</string>
     <string name="home_favorites_count">Favorites (%1$d)</string>
     <string name="home_favorites_disable_all">Remove all</string>
     <string name="home_favorites_none_selected">No favorite app selected.</string>
@@ -384,7 +385,7 @@
     <string name="home_onboarding_task_clock">Add a &lt;b&gt;clock&lt;/b&gt;</string>
     <string name="home_onboarding_edit_hint">Drag to move, pull the edge to resize.</string>
     <string name="home_onboarding_edit_save">Save</string>
-    <string name="home_onboarding_task_apps">Add some &lt;b&gt;apps&lt;/b&gt;</string>
+    <string name="home_onboarding_task_favorites">Choose your &lt;b&gt;favorites&lt;/b&gt;</string>
     <string name="home_onboarding_task_container">Fill the &lt;b&gt;container&lt;/b&gt;</string>
     <string name="home_onboarding_task_widget">Add some &lt;b&gt;widgets&lt;/b&gt;</string>
     <string name="home_onboarding_task_settings">Check more &lt;b&gt;settings&lt;/b&gt;</string>
@@ -463,6 +464,10 @@
     <plurals name="home_favorites_menu_count">
         <item quantity="one">%1$d favorite, the rest stays hidden</item>
         <item quantity="other">%1$d favorites, the rest stay hidden</item>
+    </plurals>
+    <plurals name="home_favorites_menu_count_on_top">
+        <item quantity="one">%1$d favorite on top, then all apps</item>
+        <item quantity="other">%1$d favorites on top, then all apps</item>
     </plurals>
     <string name="settings_appearance_restore_background">Restore background</string>
     <string name="settings_appearance_background_restored">Background restored</string>

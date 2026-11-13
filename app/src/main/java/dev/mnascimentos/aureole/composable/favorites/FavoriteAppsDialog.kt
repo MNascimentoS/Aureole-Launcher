@@ -47,8 +47,7 @@ private const val PREVIEW_MAX_APPS = 4
 @ReadOnlyComposable
 private fun favoriteAppsTitle(mode: FavoriteAppsScreenMode): String = when (mode) {
     FavoriteAppsScreenMode.MAIN -> stringResource(R.string.home_favorites_dialog_title)
-    FavoriteAppsScreenMode.MANAGE -> stringResource(R.string.home_favorites_manage_apps_order)
-    FavoriteAppsScreenMode.EDIT_SHORTCUTS -> stringResource(R.string.home_favorites_edit_shortcuts)
+    FavoriteAppsScreenMode.MANAGE -> stringResource(R.string.home_favorites_choose)
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -71,15 +70,13 @@ fun FavoriteAppsDialog(
     var currentMode by remember { mutableStateOf(initialMode) }
     var searchQuery by remember(currentMode) { mutableStateOf("") }
 
-    val appMap = remember(config.allApps) {
-        config.allApps.associateBy { it.packageName }
-    }
-
-    val previewFavoriteApps = remember(config.favoriteAppPackages, appMap) {
-        config.favoriteAppPackages.mapNotNull { pkg -> appMap[pkg] }.take(PREVIEW_MAX_APPS)
-    }
+    val previewFavoriteApps = rememberPreviewFavoriteApps(config)
 
     val titleText = favoriteAppsTitle(currentMode)
+    // Opened straight on the manage list (the onboarding task), back closes the sheet instead of showing the menu.
+    val goBack = {
+        currentMode.backTarget(entryMode = initialMode)?.let { currentMode = it } ?: run { isVisible = false }
+    }
 
     AureoleEditOverlay(
         onDismissRequest = { isVisible = false },
@@ -91,7 +88,7 @@ fun FavoriteAppsDialog(
                 animated = true,
                 isLeftHanded = config.rowConfig.isLeftHandedMode,
                 onSettingsClick = actions.onSettingsClick,
-                onBackPress = { currentMode.backTarget()?.let { currentMode = it } ?: run { isVisible = false } }
+                onBackPress = goBack
             ),
             previewContent = {
                 AureolePreviewFrame {
@@ -103,7 +100,7 @@ fun FavoriteAppsDialog(
             } else {
                 {
                     FavoriteAppsBottomBar(
-                        onBack = { currentMode = FavoriteAppsScreenMode.MAIN },
+                        onBack = goBack,
                         searchQuery = searchQuery,
                         onSearchQueryChange = { searchQuery = it }
                     )
@@ -120,6 +117,15 @@ fun FavoriteAppsDialog(
             }
         )
     )
+}
+
+/** The first favorites, in their order, shown in the sheet's preview frame. */
+@Composable
+private fun rememberPreviewFavoriteApps(config: FavoriteAppsDialogConfig): List<AppInfo> {
+    val appMap = remember(config.allApps) { config.allApps.associateBy { it.packageName } }
+    return remember(config.favoriteAppPackages, appMap) {
+        config.favoriteAppPackages.mapNotNull { pkg -> appMap[pkg] }.take(PREVIEW_MAX_APPS)
+    }
 }
 
 @Composable

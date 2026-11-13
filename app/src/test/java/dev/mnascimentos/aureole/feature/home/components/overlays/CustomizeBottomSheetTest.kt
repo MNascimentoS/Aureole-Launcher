@@ -55,7 +55,7 @@ class CustomizeBottomSheetTest {
         var asked = false
         var dismissed = false
         show(
-            createDefaultHomeScreenActions().copy(onAddFavoritesList = { asked = true }),
+            createDefaultHomeScreenActions().copy(onAddAppsList = { asked = true }),
             onDismiss = { dismissed = true }
         )
 

@@ -14,8 +14,10 @@ import dev.mnascimentos.aureole.composable.appitem.model.AppItemRowConfig
 import dev.mnascimentos.aureole.composable.favorites.FavoriteAppsDialog
 import dev.mnascimentos.aureole.composable.favorites.model.FavoriteAppsDialogActions
 import dev.mnascimentos.aureole.composable.favorites.model.FavoriteAppsDialogConfig
+import dev.mnascimentos.aureole.composable.favorites.model.ShowAllAppsParams
 import dev.mnascimentos.aureole.composable.sheets.ReleaseNotesBottomSheet
 import dev.mnascimentos.aureole.core.designsystem.utils.LocalHazeState
+import dev.mnascimentos.aureole.feature.home.components.favorites.extensions.findAppsList
 import dev.mnascimentos.aureole.feature.home.components.onboarding.OnboardingHostComponent
 import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.rememberTouchExplorationEnabled
 import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.toOnboardingHostParams
@@ -109,6 +111,8 @@ private fun FavoritePickerOverlay(
     if (uiState.showFavoritePickerDialog) {
         val containerId = uiState.activeFavoriteContainerId
         val favPackages = uiState.favoritesOf(containerId)
+        // Only a home apps list has the switch; the drawer's favorites (no id) keep the plain menu.
+        val appsList = containerId?.let { uiState.gridItems.findAppsList(it) }
 
         FavoriteAppsDialog(
             config = FavoriteAppsDialogConfig(
@@ -119,14 +123,21 @@ private fun FavoritePickerOverlay(
                 rowConfig = AppItemRowConfig(
                     isThemedAppIconsEnabled = uiState.isThemedAppIconsEnabled,
                     isLeftHandedMode = uiState.isLeftHandedMode
-                )
+                ),
+                showAllApps = appsList?.let { list ->
+                    ShowAllAppsParams(
+                        checked = list.isShowingAllApps,
+                        onCheckedChange = { show -> actions.onSetShowAllApps(list.id, show) }
+                    )
+                }
             ),
             actions = FavoriteAppsDialogActions(
                 onToggleFavorite = { pkg -> actions.onToggleFavoriteWithContainer(pkg, containerId) },
                 onUpdateFavoritePackages = { cId, pkgs -> actions.onUpdateFavoritePackages(cId, pkgs) },
                 onSettingsClick = actions.onSettingsClick,
                 onDismiss = actions.onDismissFavoritePicker
-            )
+            ),
+            initialMode = uiState.favoritePickerInitialMode
         )
     }
 }

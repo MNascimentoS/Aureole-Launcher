@@ -59,7 +59,7 @@ class OnboardingActionsFactory(
             OnboardingTask.SET_DEFAULT_HOME -> requestDefaultHome()
             OnboardingTask.CHOOSE_PALETTE, OnboardingTask.CHOOSE_FONT -> Unit
             OnboardingTask.ADD_CLOCK -> viewModel.startGridTask(task)?.let(homeActions.onOpenEditClockBottomSheet)
-            OnboardingTask.ADD_FAVORITE_APPS -> viewModel.startGridTask(task)?.let(homeActions.onOpenFavoritePicker)
+            OnboardingTask.ADD_FAVORITE_APPS -> viewModel.startGridTask(task)?.let(homeActions.onChooseFavorites)
             OnboardingTask.FILL_CONTAINER -> viewModel.startGridTask(task)?.let(homeActions.onOpenEditContainerDialog)
             OnboardingTask.ADD_WIDGET -> viewModel.startGridTask(task)?.let(homeActions.onAddWidgetClick)
             OnboardingTask.EXPLORE_SETTINGS -> homeActions.onSettingsClick()

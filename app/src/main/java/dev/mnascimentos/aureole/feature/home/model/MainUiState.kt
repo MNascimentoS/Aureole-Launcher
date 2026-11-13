@@ -2,6 +2,7 @@ package dev.mnascimentos.aureole.feature.home.model
 
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import dev.mnascimentos.aureole.composable.favorites.model.FavoriteAppsScreenMode
 import dev.mnascimentos.aureole.composable.undo.model.UndoSnackbarState
 import dev.mnascimentos.aureole.core.data.model.AppFolder
 import dev.mnascimentos.aureole.core.data.model.AppInfo
@@ -83,8 +84,6 @@ data class MainUiState(
     val favoriteAppPackages: List<String> = emptyList(),
     val containerFavorites: Map<String, List<String>> = emptyMap(),
     val activeFavoriteContainerId: String? = null,
-    /** Favorites list the Customize sheet just placed; it leaves the home if the picker closes empty. */
-    val customizeFavoritesListId: String? = null,
     val folders: List<AppFolder> = emptyList(),
     val favoriteApps: List<AppInfo> = emptyList(),
 
@@ -99,6 +98,8 @@ data class MainUiState(
     val searchQuery: String = "",
     val showSettingsDialog: Boolean = false,
     val showFavoritePickerDialog: Boolean = false,
+    /** Screen the favorites sheet opens on; the onboarding task opens it straight on the manage list. */
+    val favoritePickerInitialMode: FavoriteAppsScreenMode = FavoriteAppsScreenMode.MAIN,
     val isAllAppsDrawerOpen: Boolean = false,
     val isAllAppsOpenedFromBottom: Boolean = false,
     val activeWidgetId: Int? = null,

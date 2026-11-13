@@ -163,7 +163,7 @@ class HomeViewModelOnboardingTaskTest {
 
     @Test
     fun `when the layout is saved without favorites, should show all apps instead and keep the task`() {
-        viewModel.startGridTask(OnboardingTask.ADD_FAVORITE_APPS)
+        val createdId = viewModel.startGridTask(OnboardingTask.ADD_FAVORITE_APPS)
         openEditor { it.copy(showFavoritePickerDialog = true) }
         viewModel.updateUiState { it.copy(showFavoritePickerDialog = false) }
 
@@ -171,6 +171,7 @@ class HomeViewModelOnboardingTaskTest {
 
         val allApps = state.gridItems.single()
         val defaultApps = GridDefaults.getDefaultGridItems()[2]
+        assertEquals(createdId, allApps.id)
         assertEquals(LauncherItemType.APPS_LIST, allApps.safeType)
         assertEquals(true, allApps.showAllApps)
         assertEquals(listOf(defaultApps.col, defaultApps.row), listOf(allApps.col, allApps.row))
@@ -192,6 +193,25 @@ class HomeViewModelOnboardingTaskTest {
         assertTrue(onboarding.completedTasks.isEmpty())
         assertNull(onboarding.pendingTask)
         assertTrue(onboarding.isChecklistExpanded)
+    }
+
+    @Test
+    fun `when the favorites task edit is cancelled, should keep its list with all apps and the same id`() {
+        val createdId = viewModel.startGridTask(OnboardingTask.ADD_FAVORITE_APPS)
+        openEditor { it.copy(showFavoritePickerDialog = true) }
+        viewModel.updateUiState { it.copy(showFavoritePickerDialog = false) }
+
+        viewModel.cancelGridEditMode()
+
+        val list = state.gridItems.single()
+        assertEquals(createdId, list.id)
+        assertTrue(list.isShowingAllApps)
+        assertEquals(listOf(list), gridRepository.getGridItems())
+        assertTrue(onboarding.completedTasks.isEmpty())
+        assertNull(onboarding.pendingTask)
+
+        assertEquals(createdId, viewModel.startGridTask(OnboardingTask.ADD_FAVORITE_APPS))
+        assertEquals(1, state.gridItems.size)
     }
 
     @Test

@@ -5,6 +5,7 @@ import dev.mnascimentos.aureole.core.data.repository.GridRepository
 import dev.mnascimentos.aureole.feature.home.HomeViewModel
 import dev.mnascimentos.aureole.feature.home.components.containers.extensions.loadContainers
 import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.abandonPendingTask
+import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.keepingCreatedAppsList
 import dev.mnascimentos.aureole.feature.home.grid.GridEngineUtils
 import dev.mnascimentos.aureole.feature.home.grid.model.GridLimits
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
@@ -45,10 +46,16 @@ fun HomeViewModel.enterGridEditMode() {
     }
 }
 
+/** Goes back to the layout the edit started from; the favorites task keeps the apps list it created (saved). */
 fun HomeViewModel.cancelGridEditMode() {
+    var keptAppsList: List<LauncherItemState>? = null
     updateUiState { state ->
-        val restoredPortrait = state.cachedPortraitGridItems ?: state.portraitGridItems
-        val restoredLandscape = state.cachedLandscapeGridItems ?: state.landscapeGridItems
+        val cachedPortrait = state.cachedPortraitGridItems ?: state.portraitGridItems
+        val cachedLandscape = state.cachedLandscapeGridItems ?: state.landscapeGridItems
+        val kept = state.keepingCreatedAppsList(if (state.isLandscape) cachedLandscape else cachedPortrait)
+        keptAppsList = kept
+        val restoredPortrait = if (kept != null && !state.isLandscape) kept else cachedPortrait
+        val restoredLandscape = if (kept != null && state.isLandscape) kept else cachedLandscape
         val restoredGridItems = if (state.isLandscape) restoredLandscape else restoredPortrait
         state.copy(
             isGridEditMode = false,
@@ -62,6 +69,7 @@ fun HomeViewModel.cancelGridEditMode() {
             onboarding = state.onboarding.abandonPendingTask()
         )
     }
+    keptAppsList?.let { getGridRepository().saveGridItems(it, uiState.value.isLandscape) }
 }
 
 fun HomeViewModel.saveGridEditMode() {

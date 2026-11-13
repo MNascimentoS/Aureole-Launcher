@@ -13,6 +13,7 @@ import androidx.core.app.ActivityOptionsCompat
 import androidx.lifecycle.viewModelScope
 import com.google.android.play.core.appupdate.testing.FakeAppUpdateManager
 import com.google.android.play.core.install.model.AppUpdateType
+import dev.mnascimentos.aureole.composable.favorites.model.FavoriteAppsScreenMode
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.data.model.OnboardingStage
 import dev.mnascimentos.aureole.core.data.model.OnboardingTask
@@ -156,6 +157,22 @@ class HomeActionsFactoryTest {
         val closed = viewModel.uiState.value
         assertFalse(closed.showCustomizeBottomSheet)
         assertFalse(closed.showAddContainerDialog)
+    }
+
+    @Test
+    fun `when Choose favorites opens, the sheet starts on the manage list and closing resets it`() {
+        val actions = actions()
+
+        actions.onChooseFavorites("list_1")
+        val opened = viewModel.uiState.value
+        assertTrue(opened.showFavoritePickerDialog)
+        assertEquals("list_1", opened.activeFavoriteContainerId)
+        assertEquals(FavoriteAppsScreenMode.MANAGE, opened.favoritePickerInitialMode)
+
+        actions.onDismissFavoritePicker()
+        val closed = viewModel.uiState.value
+        assertFalse(closed.showFavoritePickerDialog)
+        assertEquals(FavoriteAppsScreenMode.MAIN, closed.favoritePickerInitialMode)
     }
 
     @Test

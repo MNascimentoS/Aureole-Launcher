@@ -85,6 +85,16 @@ class OnboardingTaskEvidenceTest {
     }
 
     @Test
+    fun `when an apps list inside a scroll group has favorites, should meet the favorites task`() {
+        val group = LauncherItemState(id = "group", type = LauncherItemType.SCROLL_VIEW, children = listOf(appsList))
+        val withFavorites = MainUiState(gridItems = listOf(group), containerFavorites = mapOf("list" to listOf("a")))
+        val withoutFavorites = MainUiState(gridItems = listOf(group))
+
+        assertTrue(withFavorites.meetsRequirement(OnboardingTask.ADD_FAVORITE_APPS))
+        assertFalse(withoutFavorites.meetsRequirement(OnboardingTask.ADD_FAVORITE_APPS))
+    }
+
+    @Test
     fun `when leaving the container editor without its save, should not meet the container task`() {
         val item = ContainerItemEntity(id = "i", panelId = "c", itemType = ContainerItemType.APP, packageName = "a")
         val withItem = ContainerModel(id = "c", items = listOf(item))

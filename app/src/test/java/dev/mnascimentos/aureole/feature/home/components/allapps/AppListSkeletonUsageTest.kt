@@ -106,7 +106,7 @@ class AppListSkeletonUsageTest {
                 )
             }
         }
-        composeTestRule.onNodeWithText("Manage apps and order").performClick()
+        composeTestRule.onNodeWithText("Choose favorites").performClick()
         composeTestRule.mainClock.advanceTimeBy(500L)
         composeTestRule.waitForIdle()
 

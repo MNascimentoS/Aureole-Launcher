@@ -50,7 +50,7 @@ class CustomizeActionsTest {
         var asked = false
         var added = false
         val actions = createDefaultHomeScreenActions().copy(
-            onAddFavoritesList = { asked = true },
+            onAddAppsList = { asked = true },
             onAddGridItem = { _, _, _ -> added = true }
         )
 

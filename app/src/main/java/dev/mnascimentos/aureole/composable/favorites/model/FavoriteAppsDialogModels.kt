@@ -5,12 +5,49 @@ import dev.mnascimentos.aureole.composable.reorder.model.ReorderAutoScroll
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 
 enum class FavoriteAppsScreenMode {
-    MAIN, MANAGE, EDIT_SHORTCUTS
+    MAIN, MANAGE
 }
 
-/** Where the back key goes from this screen: the main one from any sub-screen, or null (close) from the main one. */
-fun FavoriteAppsScreenMode.backTarget(): FavoriteAppsScreenMode? =
-    if (this == FavoriteAppsScreenMode.MAIN) null else FavoriteAppsScreenMode.MAIN
+/**
+ * Where the back key goes from this screen: the main one from a sub-screen, or null (close) from the main one and
+ * from the screen the sheet opened on ([entryMode]), so a sheet opened straight on the manage list closes from it.
+ */
+fun FavoriteAppsScreenMode.backTarget(
+    entryMode: FavoriteAppsScreenMode = FavoriteAppsScreenMode.MAIN
+): FavoriteAppsScreenMode? =
+    if (this == FavoriteAppsScreenMode.MAIN || this == entryMode) null else FavoriteAppsScreenMode.MAIN
+
+/** The "Show all apps" switch of a home apps list: whether it is on and what flips it. */
+data class ShowAllAppsParams(
+    val checked: Boolean,
+    val onCheckedChange: (Boolean) -> Unit
+)
+
+/** What the subtitle of "Choose favorites" says about the Home. */
+enum class FavoritesMenuSubtitle {
+    /** No favorites: the Home lists every app. */
+    ALL_SHOWN,
+
+    /** No favorites and the list shows only them: nothing is picked yet. */
+    NONE_SELECTED,
+
+    /** "N favorites, the rest stays hidden". */
+    COUNT,
+
+    /** "N favorites on top, then all apps". */
+    COUNT_ON_TOP
+}
+
+/**
+ * The subtitle of "Choose favorites" for [favoriteCount] favorites. [showAllApps] is the list's switch, or null when
+ * the sheet has none (the global favorites in Settings), which keeps the old wording.
+ */
+fun favoritesMenuSubtitle(favoriteCount: Int, showAllApps: Boolean?): FavoritesMenuSubtitle = when {
+    favoriteCount == 0 && showAllApps == false -> FavoritesMenuSubtitle.NONE_SELECTED
+    favoriteCount == 0 -> FavoritesMenuSubtitle.ALL_SHOWN
+    showAllApps == true -> FavoritesMenuSubtitle.COUNT_ON_TOP
+    else -> FavoritesMenuSubtitle.COUNT
+}
 
 data class FavoriteAppsDialogConfig(
     val allApps: List<AppInfo>,
@@ -18,7 +55,9 @@ data class FavoriteAppsDialogConfig(
     val containerId: String? = null,
     val rowConfig: AppItemRowConfig = AppItemRowConfig(),
     /** The apps have not arrived yet: the list shows its skeleton. */
-    val isLoading: Boolean = false
+    val isLoading: Boolean = false,
+    /** The "Show all apps" switch of a home apps list; null (Settings) leaves the menu without it. */
+    val showAllApps: ShowAllAppsParams? = null
 )
 
 data class FavoriteAppsDialogActions(
@@ -36,6 +75,8 @@ data class FavoriteSectionParams(
     val favoritesCount: Int = filteredFavorites.size,
     /** Apps the Home lists while there are no favorites. */
     val allAppsCount: Int = 0,
+    /** The Home lists every app while there are no favorites, so the empty banner says so; off with the switch off. */
+    val isShowingAllAppsWhenEmpty: Boolean = true,
     /** Auto scroll of the list around the favorites, so a held favorite near its edges scrolls it. */
     val autoScroll: ReorderAutoScroll? = null
 )

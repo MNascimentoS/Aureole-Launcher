@@ -69,6 +69,7 @@ class OnboardingActionsFactoryTest {
         onAllAppsDrawerClose = {},
         onAllAppsDrawerOpen = {},
         onOpenFavoritePicker = { id -> calls += "favorites:$id" },
+        onChooseFavorites = { id -> calls += "chooseFavorites:$id" },
         onOpenEditContainerDialog = { id -> calls += "container:$id" },
         onAddGridItem = { type, _, _ -> calls += "add:$type" },
         onSetIsAddingSingleWidget = { adding -> calls += "singleWidget:$adding" },
@@ -118,12 +119,12 @@ class OnboardingActionsFactoryTest {
     }
 
     @Test
-    fun `when the favorites task is tapped, should collapse the list and open the first apps list picker`() {
+    fun `when the favorites task is tapped, should collapse the list and open Choose favorites of the first list`() {
         withGrid(LauncherItemState(id = "apps_1", type = LauncherItemType.APPS_LIST))
 
         actions().onTaskClick(OnboardingTask.ADD_FAVORITE_APPS)
 
-        assertEquals(listOf("favorites:apps_1"), calls)
+        assertEquals(listOf("chooseFavorites:apps_1"), calls)
         assertFalse(viewModel.uiState.value.onboarding.isChecklistExpanded)
     }
 
@@ -132,7 +133,7 @@ class OnboardingActionsFactoryTest {
         actions().onTaskClick(OnboardingTask.ADD_FAVORITE_APPS)
 
         val state = viewModel.uiState.value
-        assertEquals(listOf("favorites:${GridDefaults.APPS_LIST_ITEM_ID}"), calls)
+        assertEquals(listOf("chooseFavorites:${GridDefaults.APPS_LIST_ITEM_ID}"), calls)
         assertEquals(GridDefaults.getDefaultGridItems()[2], state.gridItems.single())
         assertTrue(state.isGridEditMode)
         assertEquals(OnboardingTask.ADD_FAVORITE_APPS, state.onboarding.pendingTask)

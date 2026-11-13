@@ -15,7 +15,7 @@ import dev.mnascimentos.aureole.core.data.repository.GridRepository
 import dev.mnascimentos.aureole.core.data.repository.SettingsRepository
 import dev.mnascimentos.aureole.core.data.repository.WidgetRepository
 import dev.mnascimentos.aureole.feature.home.HomeViewModel
-import dev.mnascimentos.aureole.feature.home.components.favorites.extensions.addFavoritesList
+import dev.mnascimentos.aureole.feature.home.components.favorites.extensions.addAppsList
 import dev.mnascimentos.aureole.feature.home.components.favorites.extensions.dismissFavoritePicker
 import dev.mnascimentos.aureole.feature.home.components.onboarding.model.OnboardingUiState
 import dev.mnascimentos.aureole.feature.home.grid.GridEngineUtils
@@ -41,7 +41,7 @@ import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.RuntimeEnvironment
 
-/** Customize › Add favorites (FUE-23). */
+/** Customize › Add apps list (FUE-23). */
 @OptIn(ExperimentalCoroutinesApi::class)
 @RunWith(RobolectricTestRunner::class)
 class HomeViewModelFavoritesListTest {
@@ -112,53 +112,42 @@ class HomeViewModelFavoritesListTest {
     }
 
     @Test
-    fun `when add favorites runs on an empty home, should place a list and open its picker`() {
-        viewModel.addFavoritesList()
+    fun `when add apps list runs on an empty home, should place a list that shows all apps and open its picker`() {
+        viewModel.addAppsList()
 
         val list = state.gridItems.single()
         assertEquals(LauncherItemType.APPS_LIST, list.safeType)
+        assertTrue(list.isShowingAllApps)
         assertTrue(state.showFavoritePickerDialog)
         assertEquals(list.id, state.activeFavoriteContainerId)
-        assertEquals(list.id, state.customizeFavoritesListId)
     }
 
     @Test
-    fun `when the picker closes without favorites, should remove the placed list`() {
-        viewModel.addFavoritesList()
-
-        viewModel.dismissFavoritePicker()
-
-        assertTrue(state.gridItems.isEmpty())
-        assertFalse(state.showFavoritePickerDialog)
-        assertNull(state.customizeFavoritesListId)
-    }
-
-    @Test
-    fun `when the picker closes with favorites, should keep the placed list`() {
-        viewModel.addFavoritesList()
+    fun `when the picker closes without favorites, should keep the placed list because it shows all apps`() {
+        viewModel.addAppsList()
         val id = state.gridItems.single().id
-        viewModel.updateUiState { it.copy(containerFavorites = mapOf(id to listOf("a"))) }
 
         viewModel.dismissFavoritePicker()
 
         assertEquals(listOf(id), state.gridItems.map { it.id })
+        assertFalse(state.showFavoritePickerDialog)
+        assertNull(state.activeFavoriteContainerId)
     }
 
     @Test
-    fun `when a favorites list is already on the home, should add a second one and keep the first`() {
+    fun `when an apps list is already on the home, should add a second one and keep both`() {
         val existing = LauncherItemState(id = "fav", type = LauncherItemType.APPS_LIST, col = 0, row = 0)
         viewModel.updateUiState { it.copy(gridItems = listOf(existing), portraitGridItems = listOf(existing)) }
 
-        viewModel.addFavoritesList()
+        viewModel.addAppsList()
 
-        val created = state.customizeFavoritesListId
+        val created = state.activeFavoriteContainerId
         assertTrue(created != null && created != "fav")
-        assertEquals(created, state.activeFavoriteContainerId)
         assertEquals(setOf("fav", created), state.gridItems.map { it.id }.toSet())
 
         viewModel.dismissFavoritePicker()
 
-        assertEquals(listOf("fav"), state.gridItems.map { it.id })
+        assertEquals(setOf("fav", created), state.gridItems.map { it.id }.toSet())
     }
 
     private companion object {

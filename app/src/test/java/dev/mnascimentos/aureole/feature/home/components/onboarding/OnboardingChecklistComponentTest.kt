@@ -91,7 +91,7 @@ class OnboardingChecklistComponentTest {
             OnboardingTask.SET_DEFAULT_HOME to "Set as home app",
             OnboardingTask.CHOOSE_PALETTE to "Pick a color palette",
             OnboardingTask.CHOOSE_FONT to "Pick a font",
-            OnboardingTask.ADD_FAVORITE_APPS to "Add some apps",
+            OnboardingTask.ADD_FAVORITE_APPS to "Choose your favorites",
             OnboardingTask.FILL_CONTAINER to "Fill the container",
             OnboardingTask.ADD_WIDGET to "Add some widgets",
             OnboardingTask.EXPLORE_SETTINGS to "Check more settings"
