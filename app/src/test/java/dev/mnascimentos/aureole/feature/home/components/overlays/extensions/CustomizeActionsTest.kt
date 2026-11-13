@@ -26,7 +26,7 @@ class CustomizeActionsTest {
 
         assertEquals(
             listOf(
-                Call(LauncherItemType.ALL_APPS_LIST, null),
+                Call(LauncherItemType.APPS_LIST, null),
                 Call(LauncherItemType.SHORTCUTS_CONTAINER, null),
                 Call(LauncherItemType.WIDGET_LIST, null),
                 Call(LauncherItemType.QUICK_BUTTON, null)

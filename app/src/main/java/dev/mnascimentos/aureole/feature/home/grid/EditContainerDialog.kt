@@ -16,7 +16,6 @@ import dev.mnascimentos.aureole.core.designsystem.icons.Click
 import dev.mnascimentos.aureole.core.designsystem.icons.Layout
 import dev.mnascimentos.aureole.core.designsystem.icons.MultipleView
 import dev.mnascimentos.aureole.core.designsystem.icons.ScrollGroup
-import dev.mnascimentos.aureole.core.designsystem.icons.Star
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
@@ -32,8 +31,7 @@ fun EditGridItemDialog(
     val actions = LocalHomeActions.current
     val title = when (item.type) {
         LauncherItemType.CLOCK -> stringResource(R.string.home_grid_item_clock)
-        LauncherItemType.APPS_LIST -> stringResource(R.string.home_grid_item_favorites)
-        LauncherItemType.ALL_APPS_LIST -> stringResource(R.string.home_container_add_all_apps_list)
+        LauncherItemType.APPS_LIST -> stringResource(R.string.home_grid_item_apps_list)
         LauncherItemType.SHORTCUTS_CONTAINER -> stringResource(R.string.home_grid_item_shortcuts)
         LauncherItemType.SINGLE_APP_WIDGET -> stringResource(R.string.home_grid_item_widget)
         LauncherItemType.WIDGET_LIST -> stringResource(R.string.home_grid_item_widget_group)
@@ -84,8 +82,7 @@ private fun GridItemTypeIcon(type: LauncherItemType?, modifier: Modifier = Modif
     val tint = AureoleDS.colors.onSurfaceMedium
     when (type) {
         LauncherItemType.CLOCK -> AureoleDS.icons.Calendar(modifier = modifier, tint = tint)
-        LauncherItemType.APPS_LIST -> AureoleDS.icons.Star(modifier = modifier, tint = tint)
-        LauncherItemType.ALL_APPS_LIST -> AureoleDS.icons.AllApps(modifier = modifier, tint = tint)
+        LauncherItemType.APPS_LIST -> AureoleDS.icons.AllApps(modifier = modifier, tint = tint)
         LauncherItemType.SHORTCUTS_CONTAINER -> AureoleDS.icons.AppSelect(modifier = modifier, tint = tint)
         LauncherItemType.QUICK_BUTTON -> AureoleDS.icons.Click(modifier = modifier, tint = tint)
         LauncherItemType.SCROLL_VIEW -> AureoleDS.icons.ScrollGroup(modifier = modifier, tint = tint)

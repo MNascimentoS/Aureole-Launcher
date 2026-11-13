@@ -147,17 +147,17 @@ class HomeViewModelOnboardingLayoutTest {
 
         val state = viewModel.uiState.value
         assertEquals(OnboardingStage.COMPLETED, state.onboarding.stage)
-        // A fresh install has no favorites: the apps spot holds the all apps list.
+        // The default apps list shows all apps, so a fresh install with no favorites still lists them.
         assertEquals(
-            GridDefaults.getDefaultGridItems(isLandscape = false, hasFavorites = false),
+            GridDefaults.getDefaultGridItems(isLandscape = false),
             state.portraitGridItems
         )
         assertEquals(
-            GridDefaults.getDefaultGridItems(isLandscape = true, hasFavorites = false),
+            GridDefaults.getDefaultGridItems(isLandscape = true),
             state.landscapeGridItems
         )
         assertEquals(
-            GridDefaults.getDefaultGridItems(isLandscape = false, hasFavorites = false),
+            GridDefaults.getDefaultGridItems(isLandscape = false),
             gridRepository.getGridItems()
         )
     }
@@ -173,12 +173,14 @@ class HomeViewModelOnboardingLayoutTest {
 
         val state = viewModel.uiState.value
         assertEquals(savedClock.id, state.portraitGridItems.first().id)
-        assertEquals(LauncherItemType.ALL_APPS_LIST, state.portraitGridItems.last().safeType)
+        assertEquals(LauncherItemType.APPS_LIST, state.portraitGridItems.last().safeType)
+        assertTrue(state.portraitGridItems.last().isShowingAllApps)
         // The landscape comes from the portrait items (same clock id) plus the apps the onboarding adds.
         assertEquals(savedClock.id, state.landscapeGridItems.first().id)
         val clock = state.landscapeGridItems.first()
         assertEquals(listOf(0, 0, 10, 6), listOf(clock.col, clock.row, clock.colSpan, clock.rowSpan))
-        assertEquals(LauncherItemType.ALL_APPS_LIST, state.landscapeGridItems.last().safeType)
+        assertEquals(LauncherItemType.APPS_LIST, state.landscapeGridItems.last().safeType)
+        assertTrue(state.landscapeGridItems.last().isShowingAllApps)
     }
 
     private companion object {

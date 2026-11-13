@@ -40,11 +40,8 @@ fun AddContainerDialog(
             onDismissRequest()
         }
         AddContainerRow(CustomizeAddItem.CLOCK, R.string.home_container_add_clock) { select(LauncherItemType.CLOCK) }
-        AddContainerRow(CustomizeAddItem.FAVORITES, R.string.home_container_add_apps_list) {
+        AddContainerRow(CustomizeAddItem.ALL_APPS, R.string.home_grid_item_apps_list) {
             select(LauncherItemType.APPS_LIST)
-        }
-        AddContainerRow(CustomizeAddItem.ALL_APPS, R.string.home_container_add_all_apps_list) {
-            select(LauncherItemType.ALL_APPS_LIST)
         }
         if (!isNested) {
             AddContainerRow(CustomizeAddItem.CONTAINER, R.string.home_container_add_shortcuts_container) {

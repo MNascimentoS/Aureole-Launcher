@@ -112,7 +112,8 @@ class HomeViewModelOnboardingAppsTest {
         }
     }
 
-    private fun allApps(items: List<LauncherItemState>) = items.filter { it.safeType == LauncherItemType.ALL_APPS_LIST }
+    private fun allApps(items: List<LauncherItemState>) =
+        items.filter { it.safeType == LauncherItemType.APPS_LIST && it.isShowingAllApps }
 
     private fun place(vararg items: LauncherItemState, landscape: List<LauncherItemState> = emptyList()) {
         viewModel.updateUiState {
@@ -127,7 +128,7 @@ class HomeViewModelOnboardingAppsTest {
         viewModel.dismissChecklist()
 
         val portraitApps = allApps(state.portraitGridItems).single()
-        val defaultSpot = GridDefaults.getDefaultItem(LauncherItemType.ALL_APPS_LIST, false, false)!!
+        val defaultSpot = GridDefaults.getDefaultItem(LauncherItemType.APPS_LIST, false, false)!!
         assertEquals(listOf(defaultSpot.col, defaultSpot.row), listOf(portraitApps.col, portraitApps.row))
         assertEquals(1, allApps(gridRepository.getGridItems(isLandscape = false)).size)
     }
@@ -140,20 +141,28 @@ class HomeViewModelOnboardingAppsTest {
             col = 2,
             row = 3,
             colSpan = 5,
-            rowSpan = 7
+            rowSpan = 7,
+            showAllApps = false
         )
         place(emptyList)
 
         viewModel.ensureAppsComponent()
 
         val swapped = state.portraitGridItems.single()
-        assertEquals(LauncherItemType.ALL_APPS_LIST, swapped.safeType)
+        assertEquals(LauncherItemType.APPS_LIST, swapped.safeType)
+        assertEquals(true, swapped.showAllApps)
         assertEquals(listOf(2, 3, 5, 7), listOf(swapped.col, swapped.row, swapped.colSpan, swapped.rowSpan))
     }
 
     @Test
     fun `when the favorites list has favorites, should change nothing in that orientation`() {
-        val list = LauncherItemState(id = "fav", type = LauncherItemType.APPS_LIST, colSpan = 5, rowSpan = 7)
+        val list = LauncherItemState(
+            id = "fav",
+            type = LauncherItemType.APPS_LIST,
+            colSpan = 5,
+            rowSpan = 7,
+            showAllApps = false
+        )
         place(list)
         viewModel.updateUiState { it.copy(containerFavorites = mapOf("fav" to listOf("a"))) }
 
@@ -163,8 +172,14 @@ class HomeViewModelOnboardingAppsTest {
     }
 
     @Test
-    fun `when an all apps list is already there, should change nothing in that orientation`() {
-        val list = LauncherItemState(id = "all", type = LauncherItemType.ALL_APPS_LIST, colSpan = 5, rowSpan = 7)
+    fun `when an apps list that shows all apps is already there, should change nothing in that orientation`() {
+        val list = LauncherItemState(
+            id = "all",
+            type = LauncherItemType.APPS_LIST,
+            colSpan = 5,
+            rowSpan = 7,
+            showAllApps = true
+        )
         place(list)
 
         viewModel.ensureAppsComponent()

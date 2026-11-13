@@ -91,8 +91,8 @@ private fun HomeViewModel.completePendingTask(task: OnboardingTask) {
 }
 
 /**
- * Takes the created item back off the home. A favorites list left empty becomes the all apps list
- * instead, so the home still shows apps; the task stays pending either way.
+ * Takes the created item back off the home. A favorites list left empty becomes an apps list that shows
+ * all apps instead, so the home still shows apps; the task stays pending either way.
  */
 private fun HomeViewModel.failPendingTask(task: OnboardingTask) {
     val createdId = uiState.value.onboarding.createdItemId
@@ -110,7 +110,7 @@ private fun List<LauncherItemState>.withoutFailedItem(
     createdId == null -> this
     task == OnboardingTask.ADD_FAVORITE_APPS -> map { item ->
         if (item.id == createdId) {
-            item.copy(id = UUID.randomUUID().toString(), type = LauncherItemType.ALL_APPS_LIST)
+            item.copy(id = UUID.randomUUID().toString(), type = LauncherItemType.APPS_LIST, showAllApps = true)
         } else {
             item
         }

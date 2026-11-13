@@ -117,19 +117,15 @@ class GridDefaultsTest {
     }
 
     @Test
-    fun `when there are no favorites, should put the all apps list at the apps spot`() {
+    fun `the default apps list should show all apps, in every orientation and handedness`() {
         for ((isLandscape, isLeftHanded) in variations) {
-            val withFavorites = GridDefaults.getDefaultGridItems(isLandscape, isLeftHanded)
-            val withoutFavorites = GridDefaults.getDefaultGridItems(isLandscape, isLeftHanded, hasFavorites = false)
+            val items = GridDefaults.getDefaultGridItems(isLandscape, isLeftHanded)
 
-            assertEquals(LauncherItemType.ALL_APPS_LIST, withoutFavorites[2].safeType)
-            assertEquals(withFavorites[2].copy(type = LauncherItemType.ALL_APPS_LIST), withoutFavorites[2])
+            val apps = items.single { it.safeType == LauncherItemType.APPS_LIST }
+            assertEquals(GridDefaults.APPS_LIST_ITEM_ID, apps.id)
+            assertEquals(true, apps.showAllApps)
+            assertTrue(items.none { it.safeType == LauncherItemType.ALL_APPS_LIST })
+            assertTrue(items.filter { it.safeType != LauncherItemType.APPS_LIST }.all { it.showAllApps == null })
         }
-        val allApps = GridDefaults.getDefaultItem(
-            LauncherItemType.ALL_APPS_LIST,
-            isLandscape = true,
-            isLeftHanded = false
-        )
-        assertEquals(listOf(0, 6), listOf(allApps?.col, allApps?.row))
     }
 }

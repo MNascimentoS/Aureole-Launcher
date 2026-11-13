@@ -171,7 +171,8 @@ class HomeViewModelOnboardingTaskTest {
 
         val allApps = state.gridItems.single()
         val defaultApps = GridDefaults.getDefaultGridItems()[2]
-        assertEquals(LauncherItemType.ALL_APPS_LIST, allApps.safeType)
+        assertEquals(LauncherItemType.APPS_LIST, allApps.safeType)
+        assertEquals(true, allApps.showAllApps)
         assertEquals(listOf(defaultApps.col, defaultApps.row), listOf(allApps.col, allApps.row))
         assertEquals(listOf(allApps), gridRepository.getGridItems())
         assertTrue(onboarding.completedTasks.isEmpty())

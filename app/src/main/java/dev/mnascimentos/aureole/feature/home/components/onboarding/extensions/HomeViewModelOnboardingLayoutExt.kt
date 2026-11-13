@@ -37,7 +37,7 @@ internal fun HomeViewModel.applyDefaultLayoutWhereEmpty() {
             val items = if (isLandscape && state.portraitGridItems.isNotEmpty()) {
                 landscapeFromPortrait(state.portraitGridItems, isLeftHanded)
             } else {
-                GridDefaults.getDefaultGridItems(isLandscape, isLeftHanded, state.hasAnyFavorites)
+                GridDefaults.getDefaultGridItems(isLandscape, isLeftHanded)
             }
             gridRepository.saveGridItems(items, isLandscape)
         }

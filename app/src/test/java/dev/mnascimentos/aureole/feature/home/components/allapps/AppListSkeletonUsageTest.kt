@@ -18,7 +18,9 @@ import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.designsystem.model.LocalLeftHanded
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.feature.home.components.appsdrawer.AppsListDrawer
+import dev.mnascimentos.aureole.feature.home.components.favorites.AppsList
 import dev.mnascimentos.aureole.feature.home.components.favorites.model.FavoritesListConfig
+import dev.mnascimentos.aureole.feature.home.components.favorites.model.FavoritesListOptions
 import dev.mnascimentos.aureole.feature.home.model.LocalHomeActions
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
 import dev.mnascimentos.aureole.feature.home.model.createDefaultHomeScreenActions
@@ -46,6 +48,7 @@ class AppListSkeletonUsageTest {
     )
     private val loading = MainUiState(isLoading = true, apps = emptyList())
     private val loaded = MainUiState(isLoading = false, apps = listOf(app))
+    private val allAppsOptions = FavoritesListOptions(showHeadersAndWidgets = false, showAllApps = true)
 
     private fun withHome(state: MainUiState, content: @Composable () -> Unit) {
         composeTestRule.setContent {
@@ -67,15 +70,15 @@ class AppListSkeletonUsageTest {
     }
 
     @Test
-    fun `when the all apps list is loading, should show the skeleton`() {
-        withHome(loading) { AllAppsList(config = listConfig()) }
+    fun `when an apps list that shows all apps is loading, should show the skeleton`() {
+        withHome(loading) { AppsList(config = listConfig(), options = allAppsOptions) }
 
         composeTestRule.onNodeWithText(LOADING).assertExists()
     }
 
     @Test
-    fun `when the apps arrive, the all apps list should drop the skeleton`() {
-        withHome(loaded) { AllAppsList(config = listConfig()) }
+    fun `when the apps arrive, the apps list should drop the skeleton`() {
+        withHome(loaded) { AppsList(config = listConfig(), options = allAppsOptions) }
 
         composeTestRule.onNodeWithText(LOADING).assertDoesNotExist()
         composeTestRule.onNodeWithText("Camera App").assertExists()

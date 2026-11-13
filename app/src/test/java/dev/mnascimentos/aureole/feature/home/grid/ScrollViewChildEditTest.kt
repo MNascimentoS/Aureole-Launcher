@@ -83,7 +83,7 @@ class ScrollViewChildEditTest {
                 context.getString(R.string.home_grid_scroll_component) to "widgets:child"
                 ),
             LauncherItemType.APPS_LIST to (
-                context.getString(R.string.home_container_add_apps_list) to "favorites:child"
+                context.getString(R.string.home_grid_item_apps_list) to "favorites:child"
                 ),
             LauncherItemType.QUICK_BUTTON to (
                 context.getString(R.string.home_container_add_quick_button) to "quick:child"
