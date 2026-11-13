@@ -21,7 +21,6 @@ import dev.mnascimentos.aureole.core.data.model.ClockConfig
 import dev.mnascimentos.aureole.core.data.model.LauncherItemState
 import dev.mnascimentos.aureole.core.data.model.LauncherItemType
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
-import dev.mnascimentos.aureole.feature.home.components.containers.model.ContainerConfig
 import dev.mnascimentos.aureole.feature.home.components.content.GridClockContent
 import dev.mnascimentos.aureole.feature.home.model.LocalHomeActions
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
@@ -59,7 +58,7 @@ class ClockPerItemRenderTest {
     private fun GridClock(id: String, uiState: MainUiState = homeState) {
         GridClockContent(
             item = clockItem(id),
-            containerConfig = ContainerConfig(),
+            hazeState = null,
             uiState = uiState,
             modifier = Modifier.height(CLOCK_HEIGHT_DP.dp)
         )

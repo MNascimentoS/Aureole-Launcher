@@ -1,7 +1,6 @@
 package dev.mnascimentos.aureole.feature.home.grid.extensions
 
 import dev.mnascimentos.aureole.core.data.model.LauncherItemState
-import dev.mnascimentos.aureole.core.data.model.LauncherItemType
 import dev.mnascimentos.aureole.core.data.repository.GridRepository
 import dev.mnascimentos.aureole.feature.home.HomeViewModel
 import dev.mnascimentos.aureole.feature.home.components.containers.extensions.loadContainers
@@ -29,9 +28,9 @@ fun HomeViewModel.loadGridItems(isLandscape: Boolean = false) {
         )
     }
     // A reset or the default layout can bring a container that has no entity yet.
-    val hasMissingContainer = (portraitItems + landscapeItems).any {
-        it.safeType == LauncherItemType.SHORTCUTS_CONTAINER && it.id !in uiState.value.containers
-    }
+    val hasMissingContainer = (portraitItems + landscapeItems)
+        .missingContainerIds(uiState.value.containers.keys)
+        .isNotEmpty()
     if (hasMissingContainer) loadContainers()
 }
 

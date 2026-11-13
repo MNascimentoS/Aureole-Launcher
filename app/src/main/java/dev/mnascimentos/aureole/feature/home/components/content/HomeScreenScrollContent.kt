@@ -62,7 +62,6 @@ fun ScrollViewContainerContent(
     val favConfig = params.favConfig
     val appWidgetHost = params.appWidgetHost
     val stackedWidgetConfig = params.stackedWidgetConfig
-    val containerConfig = params.containerConfig
     val isVertical = item.safeScrollOrientation == ScrollOrientation.VERTICAL
     val scrollState = rememberScrollState()
     val nestedScrollInterop = rememberNestedScrollInteropConnection()
@@ -82,7 +81,7 @@ fun ScrollViewContainerContent(
                     favConfig = favConfig,
                     appWidgetHost = appWidgetHost,
                     stackedWidgetConfig = stackedWidgetConfig,
-                    containerConfig = containerConfig,
+                    hazeState = params.hazeState,
                     scrollState = scrollState
                 )
             )
@@ -93,7 +92,7 @@ fun ScrollViewContainerContent(
                     favConfig = favConfig,
                     appWidgetHost = appWidgetHost,
                     stackedWidgetConfig = stackedWidgetConfig,
-                    containerConfig = containerConfig
+                    hazeState = params.hazeState
                 )
             )
         }
@@ -154,7 +153,7 @@ private fun VerticalScrollViewContent(params: VerticalScrollViewContentParams) {
                     favConfig = params.favConfig,
                     appWidgetHost = params.appWidgetHost,
                     stackedWidgetConfig = params.stackedWidgetConfig,
-                    containerConfig = params.containerConfig,
+                    hazeState = params.hazeState,
                     isVertical = true
                 )
             )
@@ -186,7 +185,7 @@ private fun HorizontalScrollViewContent(params: ScrollViewContentParams) {
                     favConfig = params.favConfig,
                     appWidgetHost = params.appWidgetHost,
                     stackedWidgetConfig = params.stackedWidgetConfig,
-                    containerConfig = params.containerConfig,
+                    hazeState = params.hazeState,
                     isVertical = false
                 )
             )
@@ -223,7 +222,7 @@ private fun ScrollViewChildItem(params: ScrollViewChildItemParams) {
                 favConfig = params.favConfig,
                 appWidgetHost = params.appWidgetHost,
                 stackedWidgetConfig = params.stackedWidgetConfig,
-                containerConfig = params.containerConfig,
+                hazeState = params.hazeState,
                 isInScrollView = true
             )
         )

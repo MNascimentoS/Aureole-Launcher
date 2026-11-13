@@ -25,6 +25,7 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.rememberNestedScrollInteropConnection
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.viewinterop.AndroidView
+import dev.chrisbanes.haze.HazeState
 import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.composable.LocalHomeUiState
 import dev.mnascimentos.aureole.core.data.model.LauncherItemState
@@ -38,14 +39,13 @@ import dev.mnascimentos.aureole.core.designsystem.utils.LocalSharedTransitionSco
 import dev.mnascimentos.aureole.feature.home.components.clock.ClockContainer
 import dev.mnascimentos.aureole.feature.home.components.containers.Container
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.FolderViewIntent
-import dev.mnascimentos.aureole.feature.home.components.containers.model.ContainerConfig
+import dev.mnascimentos.aureole.feature.home.components.containers.model.containerConfigFor
 import dev.mnascimentos.aureole.feature.home.components.content.model.ScrollViewContainerParams
 import dev.mnascimentos.aureole.feature.home.components.favorites.FavoritesList
 import dev.mnascimentos.aureole.feature.home.components.favorites.model.FavoritesListOptions
 import dev.mnascimentos.aureole.feature.home.components.quickbutton.GridQuickButtonContent
 import dev.mnascimentos.aureole.feature.home.components.widgets.StackedWidgetSection
 import dev.mnascimentos.aureole.feature.home.model.GridItemContentParams
-import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
 import dev.mnascimentos.aureole.feature.home.model.LocalHomeActions
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
 import kotlinx.coroutines.delay
@@ -61,14 +61,14 @@ private const val DEFAULT_WIDGET_MAX_HEIGHT = 360
 @Composable
 fun GridClockContent(
     item: LauncherItemState,
-    containerConfig: ContainerConfig,
+    hazeState: HazeState?,
     uiState: MainUiState,
     modifier: Modifier = Modifier
 ) {
     ClockContainer(
         modifier = modifier.fillMaxSize(),
         clockId = item.id.takeIf { it.isNotBlank() },
-        hazeState = containerConfig.hazeState,
+        hazeState = hazeState,
         uiState = uiState
     )
 }
@@ -96,15 +96,17 @@ fun GridAppsListContent(
 
 @Composable
 fun GridContainerContent(
-    containerConfig: ContainerConfig,
+    item: LauncherItemState,
+    hazeState: HazeState?,
     uiState: MainUiState,
-    actions: HomeScreenActions,
     modifier: Modifier = Modifier,
     isInScrollView: Boolean = false
 ) {
+    val actions = LocalHomeActions.current
+    val containerConfig = uiState.containerConfigFor(item, if (isInScrollView) null else hazeState)
     Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
         Container(
-            config = if (isInScrollView) containerConfig.copy(hazeState = null) else containerConfig,
+            config = containerConfig,
             onFolderClick = { folder, topYPx ->
                 if (uiState.openedFolderId == folder.id) {
                     actions.onFolderIntent(FolderViewIntent.CloseFolder)
@@ -142,13 +144,13 @@ fun GridItemContent(params: GridItemContentParams) {
     val uiState = LocalHomeUiState.current
     val actions = LocalHomeActions.current
     when (item.safeType) {
-        LauncherItemType.CLOCK -> GridClockContent(item, params.containerConfig, uiState)
+        LauncherItemType.CLOCK -> GridClockContent(item, params.hazeState, uiState)
         LauncherItemType.APPS_LIST -> GridAppsListContent(params)
         LauncherItemType.ALL_APPS_LIST -> GridAllAppsListContent(params)
         LauncherItemType.SHORTCUTS_CONTAINER -> GridContainerContent(
-            params.containerConfig,
+            item,
+            params.hazeState,
             uiState,
-            actions,
             isInScrollView = params.isInScrollView
         )
         LauncherItemType.SINGLE_APP_WIDGET -> SingleAppWidgetContent(item = item, appWidgetHost = params.appWidgetHost)
@@ -160,7 +162,7 @@ fun GridItemContent(params: GridItemContentParams) {
                 favConfig = params.favConfig,
                 appWidgetHost = params.appWidgetHost,
                 stackedWidgetConfig = params.stackedWidgetConfig,
-                containerConfig = params.containerConfig
+                hazeState = params.hazeState
             )
         )
     }

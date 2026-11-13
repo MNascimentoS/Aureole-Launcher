@@ -6,7 +6,6 @@ import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.ui.unit.Density
 import dev.chrisbanes.haze.HazeState
 import dev.mnascimentos.aureole.core.data.model.LauncherItemState
-import dev.mnascimentos.aureole.feature.home.components.containers.model.ContainerConfig
 import dev.mnascimentos.aureole.feature.home.components.favorites.model.FavoritesListConfig
 import dev.mnascimentos.aureole.feature.home.components.widgets.model.StackedWidgetConfig
 import kotlinx.coroutines.CoroutineScope
@@ -75,7 +74,7 @@ data class GridItemContentParams(
     val favConfig: FavoritesListConfig,
     val appWidgetHost: AppWidgetHost?,
     val stackedWidgetConfig: StackedWidgetConfig,
-    val containerConfig: ContainerConfig,
+    val hazeState: HazeState?,
     val isInScrollView: Boolean = false
 )
 
@@ -84,7 +83,7 @@ data class VerticalScrollViewContentParams(
     val favConfig: FavoritesListConfig,
     val appWidgetHost: AppWidgetHost?,
     val stackedWidgetConfig: StackedWidgetConfig,
-    val containerConfig: ContainerConfig,
+    val hazeState: HazeState?,
     val scrollState: ScrollState
 )
 
@@ -93,7 +92,7 @@ data class ScrollViewContentParams(
     val favConfig: FavoritesListConfig,
     val appWidgetHost: AppWidgetHost?,
     val stackedWidgetConfig: StackedWidgetConfig,
-    val containerConfig: ContainerConfig,
+    val hazeState: HazeState?,
     val scrollState: ScrollState? = null
 )
 
@@ -103,6 +102,6 @@ data class ScrollViewChildItemParams(
     val favConfig: FavoritesListConfig,
     val appWidgetHost: AppWidgetHost?,
     val stackedWidgetConfig: StackedWidgetConfig,
-    val containerConfig: ContainerConfig,
+    val hazeState: HazeState?,
     val isVertical: Boolean
 )

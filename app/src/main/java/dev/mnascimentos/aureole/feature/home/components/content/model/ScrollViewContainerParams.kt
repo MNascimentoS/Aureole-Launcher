@@ -2,8 +2,8 @@ package dev.mnascimentos.aureole.feature.home.components.content.model
 
 import android.appwidget.AppWidgetHost
 import androidx.compose.ui.unit.dp
+import dev.chrisbanes.haze.HazeState
 import dev.mnascimentos.aureole.core.data.model.LauncherItemState
-import dev.mnascimentos.aureole.feature.home.components.containers.model.ContainerConfig
 import dev.mnascimentos.aureole.feature.home.components.favorites.model.FavoritesListConfig
 import dev.mnascimentos.aureole.feature.home.components.widgets.model.StackedWidgetConfig
 
@@ -22,5 +22,5 @@ data class ScrollViewContainerParams(
     val favConfig: FavoritesListConfig,
     val appWidgetHost: AppWidgetHost?,
     val stackedWidgetConfig: StackedWidgetConfig,
-    val containerConfig: ContainerConfig
+    val hazeState: HazeState?
 )

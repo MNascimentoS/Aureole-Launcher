@@ -2,8 +2,8 @@ package dev.mnascimentos.aureole.feature.home.components.content
 
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.ui.unit.dp
+import dev.chrisbanes.haze.HazeState
 import dev.mnascimentos.aureole.core.data.model.LauncherItemState
-import dev.mnascimentos.aureole.feature.home.components.containers.model.ContainerConfig
 import dev.mnascimentos.aureole.feature.home.components.content.model.ScrollChildDimensions
 import dev.mnascimentos.aureole.feature.home.components.content.model.ScrollViewContainerParams
 import dev.mnascimentos.aureole.feature.home.components.favorites.model.FavoritesListConfig
@@ -35,21 +35,21 @@ class ScrollChildDimensionsTest {
             currentHeightDp = 100.dp,
             currentHeightPx = 100f
         )
-        val containerConfig = ContainerConfig(panelId = "p1")
+        val hazeState = HazeState()
 
         val params = ScrollViewContainerParams(
             item = item,
             favConfig = favConfig,
             appWidgetHost = null,
             stackedWidgetConfig = stackedWidgetConfig,
-            containerConfig = containerConfig
+            hazeState = hazeState
         )
 
         assertEquals(item, params.item)
         assertEquals(favConfig, params.favConfig)
         assertEquals(null, params.appWidgetHost)
         assertEquals(stackedWidgetConfig, params.stackedWidgetConfig)
-        assertEquals(containerConfig, params.containerConfig)
+        assertEquals(hazeState, params.hazeState)
         assertNotNull(params)
     }
 }

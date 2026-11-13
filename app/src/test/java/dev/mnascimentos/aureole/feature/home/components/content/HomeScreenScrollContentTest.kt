@@ -16,7 +16,6 @@ import dev.mnascimentos.aureole.core.data.model.LauncherItemType
 import dev.mnascimentos.aureole.core.data.model.ScrollOrientation
 import dev.mnascimentos.aureole.core.designsystem.model.LocalLeftHanded
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
-import dev.mnascimentos.aureole.feature.home.components.containers.model.ContainerConfig
 import dev.mnascimentos.aureole.feature.home.components.content.model.ScrollViewContainerParams
 import dev.mnascimentos.aureole.feature.home.components.favorites.model.FavoritesListConfig
 import dev.mnascimentos.aureole.feature.home.components.widgets.model.StackedWidgetConfig
@@ -71,9 +70,7 @@ class HomeScreenScrollContentTest {
                 currentHeightDp = 200.dp,
                 currentHeightPx = 200f
             ),
-            containerConfig = ContainerConfig(
-                panelId = "p1"
-            )
+            hazeState = null
         )
     }
 
