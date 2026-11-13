@@ -21,7 +21,7 @@ import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.co
 import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.ensureAppsOnCompletion
 import dev.mnascimentos.aureole.feature.home.components.onboarding.model.toProgress
 import dev.mnascimentos.aureole.feature.home.components.widgets.extensions.loadWidgetSettings
-import dev.mnascimentos.aureole.feature.home.grid.extensions.loadGridItems
+import dev.mnascimentos.aureole.feature.home.grid.extensions.loadGridItemsNow
 import dev.mnascimentos.aureole.feature.home.model.HomeRepositories
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
 import kotlinx.coroutines.CoroutineDispatcher
@@ -83,7 +83,8 @@ class HomeViewModel(
         observeClockConfigs()
         loadSettings()
         observeAppsFlow()
-        loadGridItems()
+        // Once, at creation: the first state must hold the saved layout before anything reads it.
+        loadGridItemsNow()
         loadContainers()
         loadWidgetSettings()
         syncApps()
