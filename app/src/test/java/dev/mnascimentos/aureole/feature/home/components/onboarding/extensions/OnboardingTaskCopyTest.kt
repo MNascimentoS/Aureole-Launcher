@@ -25,7 +25,7 @@ class OnboardingTaskCopyTest {
     }
 
     @Test
-    fun `after the clock is added, next task should be the widget before the favorites`() {
+    fun `after the clock is added, next task should be the favorites before the widget`() {
         val state = OnboardingUiState(
             completedTasks = setOf(
                 OnboardingTask.SET_DEFAULT_HOME,
@@ -35,7 +35,7 @@ class OnboardingTaskCopyTest {
             )
         )
 
-        assertEquals(OnboardingTask.ADD_WIDGET, state.nextPendingTask)
+        assertEquals(OnboardingTask.ADD_FAVORITE_APPS, state.nextPendingTask)
     }
 
     @Test
