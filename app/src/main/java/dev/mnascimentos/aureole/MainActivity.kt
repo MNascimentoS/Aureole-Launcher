@@ -16,7 +16,6 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.unit.dp
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
@@ -131,7 +130,7 @@ class MainActivity : ComponentActivity() {
                     isDynamicWallpaperEnabled = uiState.isDynamicWallpaperEnabled,
                     aureoleColors = palette.colors,
                     aureoleFontName = uiState.selectedFontName,
-                    aureoleDimens = AureoleDimens(radiusLarge = uiState.cornerRadiusDp.dp)
+                    aureoleDimens = AureoleDimens.forCornerRadius(uiState.cornerRadiusDp)
                 )
             ) {
                 MainRoute(
