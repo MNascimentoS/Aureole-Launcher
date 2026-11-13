@@ -54,6 +54,7 @@ fun rememberAureoleEditOverlayState(
  * @property isLeftHanded Whether the user holds the phone with the left thumb. Callers pass the launcher setting.
  * @property onBackPress Custom back key handler callback.
  * @property onSettingsClick Settings icon click callback.
+ * @property showHeaderAction Whether the top-end header slot (logo or [headerIcon]) is drawn; false leaves it out.
  * @property headerIcon Optional custom icon for sheet header end action.
  * @property titleIcon Optional icon drawn before the title (menus show what the sheet is about).
  * @property edgeToEdgeContent Whether the sheet content takes the full sheet width, with no horizontal padding;
@@ -69,6 +70,7 @@ data class AureoleEditOverlayConfig(
     val isLeftHanded: Boolean = false,
     val onBackPress: (() -> Unit)? = null,
     val onSettingsClick: (() -> Unit)? = null,
+    val showHeaderAction: Boolean = true,
     val headerIcon: (@Composable (Modifier) -> Unit)? = null,
     val titleIcon: (@Composable (Modifier) -> Unit)? = null,
     val edgeToEdgeContent: Boolean = false,
@@ -107,7 +109,8 @@ internal class OverlaySheetDecorations(
     val headerIcon: (@Composable (Modifier) -> Unit)? = null,
     val titleIcon: (@Composable (Modifier) -> Unit)? = null,
     val gestureZone: (@Composable () -> Unit)? = null,
-    val edgeToEdgeContent: Boolean = false
+    val edgeToEdgeContent: Boolean = false,
+    val showHeaderAction: Boolean = true
 )
 
 internal class OverlayDismissState(

@@ -269,11 +269,13 @@ internal fun OverlaySheetBody(
             }
         }
 
-        OverlaySheetSettingsSlot(
-            onSettingsClick = onSettingsClick,
-            headerIcon = decorations.headerIcon,
-            modifier = Modifier.align(Alignment.TopEnd)
-        )
+        if (decorations.showHeaderAction) {
+            OverlaySheetSettingsSlot(
+                onSettingsClick = onSettingsClick,
+                headerIcon = decorations.headerIcon,
+                modifier = Modifier.align(Alignment.TopEnd)
+            )
+        }
     }
 }
 

@@ -12,11 +12,11 @@ import dev.mnascimentos.aureole.core.designsystem.icons.AllApps
 import dev.mnascimentos.aureole.core.designsystem.icons.Calendar
 import dev.mnascimentos.aureole.core.designsystem.icons.Click
 import dev.mnascimentos.aureole.core.designsystem.icons.ColorFill
-import dev.mnascimentos.aureole.core.designsystem.icons.Favorite
 import dev.mnascimentos.aureole.core.designsystem.icons.Layout
 import dev.mnascimentos.aureole.core.designsystem.icons.MultipleView
 import dev.mnascimentos.aureole.core.designsystem.icons.Plus
 import dev.mnascimentos.aureole.core.designsystem.icons.ScrollGroup
+import dev.mnascimentos.aureole.core.designsystem.icons.Settings
 import dev.mnascimentos.aureole.core.designsystem.icons.Text
 import dev.mnascimentos.aureole.core.designsystem.icons.VerticalContainer
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
@@ -31,13 +31,13 @@ internal fun CustomizeItemIcon(item: CustomizeAddItem, tint: Color, modifier: Mo
     val icons = AureoleDS.icons
     when (item) {
         CustomizeAddItem.CLOCK -> icons.Calendar(modifier, tint)
-        CustomizeAddItem.FAVORITES -> icons.Favorite(modifier, tint)
-        CustomizeAddItem.ALL_APPS -> icons.AllApps(modifier, tint)
+        CustomizeAddItem.APPS_LIST -> icons.AllApps(modifier, tint)
         CustomizeAddItem.CONTAINER -> icons.VerticalContainer(modifier, tint)
         CustomizeAddItem.WIDGET_GROUP -> icons.MultipleView(modifier, tint)
         CustomizeAddItem.SCROLL_GROUP -> icons.ScrollGroup(modifier, tint)
         CustomizeAddItem.QUICK_BUTTON -> icons.Click(modifier, tint)
         CustomizeAddItem.WIDGET -> icons.Plus(modifier, tint)
+        CustomizeAddItem.SETTINGS -> icons.Settings(modifier, tint)
     }
 }
 
