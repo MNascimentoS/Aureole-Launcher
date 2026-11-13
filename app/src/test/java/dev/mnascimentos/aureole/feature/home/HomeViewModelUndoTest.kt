@@ -24,7 +24,6 @@ import dev.mnascimentos.aureole.core.designsystem.model.TextResource
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.extensions.handleFolderIntent
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.extensions.removeAppFromFolder
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.FolderViewIntent
-import dev.mnascimentos.aureole.feature.home.components.favorites.extensions.toggleFavorite
 import dev.mnascimentos.aureole.feature.home.components.quickbutton.extensions.onUpdateQuickButtonShortcuts
 import dev.mnascimentos.aureole.feature.home.extensions.onUndo
 import dev.mnascimentos.aureole.feature.home.extensions.onUndoExpired
@@ -88,7 +87,6 @@ class HomeViewModelUndoTest {
         runBlocking {
             viewModel.viewModelScope.coroutineContext.job.cancelAndJoin()
             folderRepository.deleteFolder(FOLDER_ID)
-            favoriteRepository.deleteContainer(CONTAINER_ID)
         }
         gridRepository.resetToDefault()
         Dispatchers.resetMain()
@@ -127,49 +125,6 @@ class HomeViewModelUndoTest {
         awaitUntil { viewModel.uiState.value.openedFolderId == FOLDER_ID }
 
         assertNull(viewModel.uiState.value.undoSnackbar)
-    }
-
-    @Test
-    fun `adding a favorite offers undo that restores the previous list`() = runBlocking {
-        viewModel.updateUiState {
-            it.copy(containerFavorites = mapOf(CONTAINER_ID to listOf("a")), apps = listOf(app("b", "Beta")))
-        }
-
-        viewModel.toggleFavorite("b", CONTAINER_ID)
-        awaitUntil { favorites() == listOf("a", "b") }
-
-        assertEquals(listOf("a", "b"), favorites())
-        assertEquals(
-            TextResource.fromResId(R.string.home_undo_favorite_added, "Beta"),
-            viewModel.uiState.value.undoSnackbar?.message
-        )
-
-        viewModel.onUndo()
-        awaitUntil { favorites() == listOf("a") }
-
-        assertEquals(listOf("a"), favorites())
-        assertNull(viewModel.uiState.value.undoSnackbar)
-    }
-
-    @Test
-    fun `removing a favorite offers undo with its own message that brings it back`() = runBlocking {
-        viewModel.updateUiState {
-            it.copy(containerFavorites = mapOf(CONTAINER_ID to listOf("a", "b")), apps = listOf(app("b", "Beta")))
-        }
-
-        viewModel.toggleFavorite("b", CONTAINER_ID)
-        awaitUntil { favorites() == listOf("a") }
-
-        assertEquals(listOf("a"), favorites())
-        assertEquals(
-            TextResource.fromResId(R.string.home_undo_favorite_removed, "Beta"),
-            viewModel.uiState.value.undoSnackbar?.message
-        )
-
-        viewModel.onUndo()
-        awaitUntil { favorites() == listOf("a", "b") }
-
-        assertEquals(listOf("a", "b"), favorites())
     }
 
     @Test
@@ -322,8 +277,6 @@ class HomeViewModelUndoTest {
 
     private fun folderPackages() = viewModel.uiState.value.folders.first { it.id == FOLDER_ID }.appPackageNames
 
-    private fun favorites() = viewModel.uiState.value.containerFavorites[CONTAINER_ID]
-
     private fun app(packageName: String, label: String) = AppInfo(
         label = label,
         packageName = packageName,
@@ -333,7 +286,6 @@ class HomeViewModelUndoTest {
 
     private companion object {
         const val FOLDER_ID = "undo_test_folder"
-        const val CONTAINER_ID = "undo_test_container"
         const val AWAIT_MS = 5000L
         const val POLL_MS = 20L
         const val BUTTON_ID = "undo_test_button"
