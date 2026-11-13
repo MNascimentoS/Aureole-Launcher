@@ -22,7 +22,8 @@ Welcome to the **Aureole Launcher** agent documentation hub. This index guides A
 4. **[Testing & Quality Assurance](aureole_testing.md)**
    - Mandatory unit tests (`app/src/test/`) and screenshot tests (`@PreviewTest`).
    - Mandatory `@AureolePreview` with private functions.
-   - Detekt verification and quality gates.
+   - Quality gates: detekt with 0 issues, lintDebug with 0 errors/warnings, coverage, screenshots, assemble.
+   - Tests that never hang (no blocking the Robolectric main thread) and ViewModel logic tested on the plain JVM.
 
 5. **[Design System & Tokens](aureole_design_system.md)**
    - Semantic tokens: `AureoleDS.colors`, `AureoleDS.dimens`, typography, and `AureoleIcons`.

@@ -24,8 +24,20 @@ Qualquer agente de IA ou sistema autônomo trabalhando neste repositório **DEVE
 
 ## ⚡ Comandos de Verificação Gradle
 Antes de finalizar alterações complexas, valide com:
-1. `./gradlew detekt --auto-correct` (máx. 5 issues)
-2. `./gradlew testDebugUnitTest` (100% aprovação)
-3. `./gradlew jacocoTestCoverageVerification` (linhas ≥ 85%, instruções ≥ 70%, branches de lógica ≥ 60%)
-4. `./gradlew validateDebugScreenshotTest`
-5. `./gradlew assembleDebug`
+1. `./gradlew detekt --auto-correct` (**0 issues**; `maxIssues: 0`, sem baseline)
+2. `./gradlew lintDebug` (**0 erros e 0 avisos**; `abortOnError` e `warningsAsErrors` ligados)
+3. `./gradlew testDebugUnitTest` (100% aprovação)
+4. `./gradlew jacocoTestCoverageVerification` (linhas ≥ 85%, instruções ≥ 70%, branches de lógica ≥ 60%)
+5. `./gradlew validateDebugScreenshotTest`
+6. `./gradlew assembleDebug`
+
+Detekt e lint se corrigem no código: sem `@Suppress`, sem baseline, sem `tools:ignore` ou `severity="ignore"` novos e sem afrouxar regra (detalhes em `agents/aureole_testing.md` §3).
+
+---
+
+## 🛠️ Como Agentes Rodam os Gates
+- **Um comando Gradle por chamada, com o nome do task escrito por extenso** (`./gradlew testDebugUnitTest`, nunca `for t in ...; do ./gradlew $t`). O painel de atividades reconhece o gate pelo texto do comando.
+- Rodar o Gradle em segundo plano (`run_in_background`) e esperar a notificação de término, sem ficar lendo o arquivo de saída em loop. Ao terminar a tarefa, não deixar nenhum build rodando.
+- **Nunca editar arquivos com um build rodando.** Editar durante o `lintDebug` já deixou a análise em loop por 18 min.
+- Durações normais neste projeto: `lintDebug` ~30–60 s, `testDebugUnitTest` ~40 s a quente. Um `lintDebug` acima de 5 min ou um teste parado com CPU baixa está travado: matar o processo (não o daemon do Android Studio), achar a causa (`jcmd <pid> Thread.print`) e relatar.
+- Testes nunca podem travar a suíte: seguir `agents/aureole_testing.md` §5 (sem `runBlocking`/`Thread.sleep` na main do Robolectric) e §6 (lógica de ViewModel testada em JVM puro).
