@@ -25,6 +25,7 @@ import org.koin.android.ext.koin.androidContext
 import org.koin.core.module.dsl.bind
 import org.koin.core.module.dsl.factoryOf
 import org.koin.core.module.dsl.singleOf
+import org.koin.core.module.dsl.viewModel
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 
@@ -55,7 +56,7 @@ val appModule = module {
     singleOf(::SpkiPinValidator)
     singleOf(::ApiClient)
 
-    viewModelOf(::HomeViewModel)
+    viewModel { HomeViewModel(get<HomeRepositories>(), get<UndoController>()) }
     viewModelOf(::SettingsViewModel)
     viewModelOf(::WidgetPickerViewModel)
 }
