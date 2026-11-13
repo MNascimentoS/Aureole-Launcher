@@ -11,11 +11,15 @@
 
 ## 3. Gradle Quality & Verification Gates
 Before finishing complex changes, validate using:
-1. `./gradlew detekt --auto-correct` (max 5 issues)
-2. `./gradlew testDebugUnitTest` (100% passing)
-3. `./gradlew jacocoTestCoverageVerification` (minimum **85% lines**, **70% instructions** and **60% logic branches**; report in `app/build/reports/jacoco/jacocoTestReport/html/index.html`)
-4. `./gradlew validateDebugScreenshotTest`
-5. `./gradlew assembleDebug`
+1. `./gradlew detekt --auto-correct` (**0 issues**: `maxIssues: 0`, no baseline)
+2. `./gradlew lintDebug` (**0 errors and 0 warnings**: `abortOnError` and `warningsAsErrors` are on)
+3. `./gradlew testDebugUnitTest` (100% passing)
+4. `./gradlew jacocoTestCoverageVerification` (minimum **85% lines**, **70% instructions** and **60% logic branches**; report in `app/build/reports/jacoco/jacocoTestReport/html/index.html`)
+5. `./gradlew validateDebugScreenshotTest`
+6. `./gradlew assembleDebug`
+
+- Detekt and lint are fixed in the code, never silenced: no `@Suppress`, no detekt baseline, no new `tools:ignore` or `severity="ignore"` in `app/lint.xml`, no relaxed rule or threshold. The only accepted exceptions are the ones already in the repo (build-tool version notices in `lint.xml`; protected permissions in the manifest), each with a comment saying why.
+- `detekt --auto-correct` counts the fixes it applies as issues in that same run: when it reformats something, run it again; the second run must report 0.
 
 ## 4. Coverage Rules
 - The build fails below **85% line coverage**, **70% instruction coverage** or **60% logic branch coverage**.
@@ -24,3 +28,15 @@ Before finishing complex changes, validate using:
 - Tests that build a `HomeViewModel` with `UnconfinedTestDispatcher` must cancel and join `viewModelScope` before `Dispatchers.resetMain()`: the init loads resume on Main from IO threads and otherwise race the reset (`Dispatchers.Main is used concurrently with setting it`).
 - The Room `AppDatabase` is a JVM-wide singleton shared by every test class: delete what a test writes, or use `Room.inMemoryDatabaseBuilder` for isolated data.
 - Deliver broadcasts with `registerReceiver` + `sendBroadcast` instead of calling `onReceive()` directly: `goAsync()` returns null outside a real dispatch and the receiver crashes on a background thread, failing an unrelated later test.
+
+## 5. Tests That Never Hang (Robolectric + coroutines)
+- A Robolectric test runs on the Robolectric main thread, which is also `Dispatchers.Main` unless the test replaces it. Blocking that thread while waiting for work that needs `Main` is a deadlock, and the whole `testDebugUnitTest` run hangs instead of failing.
+- **Prohibited** on the Robolectric main thread: `runBlocking { ... }` that waits on a `viewModelScope` or any `Main` work (`cancelAndJoin`, `join`, `first { }`), and `Thread.sleep` loops that poll state filled on `Main`.
+- **Mandatory** when a test builds a ViewModel: `Dispatchers.setMain(UnconfinedTestDispatcher())` (or a `StandardTestDispatcher` with `runTest`/`advanceUntilIdle`) **before** creating it; in `@After`, cancel and join the `viewModelScope`, then clean up, then `Dispatchers.resetMain()` last.
+- Wait for asynchronous results with the test dispatcher, `runTest`, `shadowOf(Looper.getMainLooper()).idle()` or a bounded `withTimeout`, never with an unbounded wait.
+- Do not use `@Test(timeout = ...)`: JUnit runs the test on another thread and breaks Robolectric. The Gradle `Test` task has a task-level timeout (`app/build.gradle.kts`) so a deadlock fails the build instead of hanging it; keep it.
+
+## 6. ViewModel Logic Is Tested on the JVM, Not by Booting the ViewModel in Robolectric
+- Booting `HomeViewModel` or `SettingsViewModel` under Robolectric (real repositories, Room, prefs, IO threads) produced flaky tests and hung builds. **New ViewModel logic must be written as pure functions or extensions** (in `model/` or `extensions/`) **and tested as plain JVM tests**, without creating the ViewModel and without Robolectric.
+- Keep in the ViewModel only the wiring (collect a flow, call a pure function, save through a repository). Repositories are tested on their own; screens with Compose UI tests or screenshots.
+- Existing ViewModel tests stay while they are stable. A ViewModel test that fails intermittently is not retried or relaxed: replace it with a JVM test of the same logic (extracting the logic if needed) and delete it.
