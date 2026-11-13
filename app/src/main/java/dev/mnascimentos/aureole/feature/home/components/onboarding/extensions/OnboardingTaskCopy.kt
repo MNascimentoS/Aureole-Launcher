@@ -4,6 +4,7 @@ import androidx.annotation.StringRes
 import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.core.data.model.OnboardingTask
 import dev.mnascimentos.aureole.feature.home.components.onboarding.model.OnboardingUiState
+import dev.mnascimentos.aureole.feature.home.components.onboarding.model.resolvedTasks
 
 /** Checklist label; bold spans are escaped `<b>` tags, read with `AnnotatedString.fromHtml`. */
 @StringRes
@@ -15,9 +16,10 @@ fun OnboardingTask.titleRes(): Int = when (this) {
     OnboardingTask.ADD_FAVORITE_APPS -> R.string.home_onboarding_task_favorites
     OnboardingTask.FILL_CONTAINER -> R.string.home_onboarding_task_container
     OnboardingTask.ADD_WIDGET -> R.string.home_onboarding_task_widget
+    OnboardingTask.ADJUST_LAYOUT -> R.string.home_onboarding_task_layout
     OnboardingTask.EXPLORE_SETTINGS -> R.string.home_onboarding_task_settings
 }
 
-/** The first pending task in list order: the one with the breathing outline. */
+/** The first unresolved (neither done nor skipped) task in list order: the one with the breathing outline. */
 val OnboardingUiState.nextPendingTask: OnboardingTask?
-    get() = OnboardingTask.entries.firstOrNull { it !in completedTasks }
+    get() = OnboardingTask.entries.firstOrNull { it !in resolvedTasks }

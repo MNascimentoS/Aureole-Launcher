@@ -10,11 +10,28 @@ enum class AppearancePicker {
     FONT
 }
 
+/** How a checklist row looks and reacts: [NEXT] is the pending task that leads, with the breathing outline. */
+enum class OnboardingTaskStatus {
+    PENDING,
+    NEXT,
+    DONE,
+    SKIPPED
+}
+
+/** The row status of [task]: done wins over skipped, and only a pending task can lead. */
+fun OnboardingUiState.statusOf(task: OnboardingTask, next: OnboardingTask?): OnboardingTaskStatus = when {
+    task in completedTasks -> OnboardingTaskStatus.DONE
+    task in skippedTasks -> OnboardingTaskStatus.SKIPPED
+    task == next -> OnboardingTaskStatus.NEXT
+    else -> OnboardingTaskStatus.PENDING
+}
+
 data class OnboardingUiState(
     val stage: OnboardingStage = OnboardingStage.COMPLETED,
     val completedSteps: Set<GestureCoachStep> = emptySet(),
     val succeededStep: GestureCoachStep? = null,
     val completedTasks: Set<OnboardingTask> = emptySet(),
+    val skippedTasks: Set<OnboardingTask> = emptySet(),
     val isDefaultLauncher: Boolean = false,
     val defaultHomeAttempted: Boolean = false,
     val isChecklistExpanded: Boolean = true,
@@ -37,8 +54,12 @@ val OnboardingUiState.blocksHome: Boolean
     get() = isBlocking || activePicker != null ||
         (stage == OnboardingStage.CHECKLIST && isChecklistExpanded)
 
+/** Done or skipped: what the progress, the next task and the celebration count. */
+val OnboardingUiState.resolvedTasks: Set<OnboardingTask>
+    get() = completedTasks + skippedTasks
+
 val OnboardingUiState.taskProgress: Float
-    get() = completedTasks.size.toFloat() / OnboardingTask.entries.size
+    get() = resolvedTasks.size.toFloat() / OnboardingTask.entries.size
 
 /** The scrubber is off when disabled and does not exist in landscape, so its step is left out. */
 fun visibleGestureSteps(isAlphabetScrubberDisabled: Boolean, isLandscape: Boolean = false): List<GestureCoachStep> =
@@ -59,6 +80,7 @@ fun OnboardingUiState.toProgress(): OnboardingProgress = OnboardingProgress(
     stage = stage,
     completedSteps = completedSteps,
     completedTasks = completedTasks,
+    skippedTasks = skippedTasks,
     isChecklistCollapsed = !isChecklistExpanded
 )
 
@@ -66,6 +88,7 @@ fun OnboardingProgress.toUiState(isDefaultLauncher: Boolean): OnboardingUiState 
     stage = stage,
     completedSteps = completedSteps,
     completedTasks = completedTasks,
+    skippedTasks = skippedTasks,
     isDefaultLauncher = isDefaultLauncher,
     isChecklistExpanded = !isChecklistCollapsed
 )

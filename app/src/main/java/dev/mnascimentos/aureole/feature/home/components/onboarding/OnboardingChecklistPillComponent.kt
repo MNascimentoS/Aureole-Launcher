@@ -28,6 +28,7 @@ import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.components.onboarding.model.OnboardingGlass
 import dev.mnascimentos.aureole.feature.home.components.onboarding.model.OnboardingMotionSpec
 import dev.mnascimentos.aureole.feature.home.components.onboarding.model.OnboardingUiState
+import dev.mnascimentos.aureole.feature.home.components.onboarding.model.resolvedTasks
 import dev.mnascimentos.aureole.feature.home.components.onboarding.model.taskProgress
 
 /**
@@ -70,8 +71,8 @@ private fun PillContent(onboarding: OnboardingUiState) {
         AureoleText(
             text = pluralStringResource(
                 R.plurals.home_onboarding_checklist_pill,
-                onboarding.completedTasks.size,
-                onboarding.completedTasks.size,
+                onboarding.resolvedTasks.size,
+                onboarding.resolvedTasks.size,
                 OnboardingTask.entries.size
             ),
             color = AureoleDS.colors.onSurfaceHigh,

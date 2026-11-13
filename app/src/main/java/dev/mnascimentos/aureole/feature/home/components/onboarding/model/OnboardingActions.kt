@@ -12,6 +12,7 @@ data class OnboardingActions(
     val onShowMeGesture: () -> Unit = {},
     val onAlphabetScrubbed: () -> Unit = {},
     val onTaskClick: (OnboardingTask) -> Unit = {},
+    val onSkipTask: (OnboardingTask) -> Unit = {},
     val onSelectPalette: (String) -> Unit = {},
     val onSelectFont: (String) -> Unit = {},
     val onConfirmAppearancePicker: () -> Unit = {},
