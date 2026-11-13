@@ -1,13 +1,12 @@
 package dev.mnascimentos.aureole.feature.home.components.onboarding.extensions
 
 import dev.mnascimentos.aureole.core.data.model.LauncherItemState
-import dev.mnascimentos.aureole.core.data.model.LauncherItemType
 import dev.mnascimentos.aureole.core.data.model.OnboardingTask
 import dev.mnascimentos.aureole.feature.home.HomeViewModel
+import dev.mnascimentos.aureole.feature.home.grid.GridEngineUtils
 import dev.mnascimentos.aureole.feature.home.grid.extensions.saveGridEditMode
 import dev.mnascimentos.aureole.feature.home.grid.extensions.updateActiveGridItemsInState
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
-import java.util.UUID
 
 /**
  * Puts the task's item on the home (in edit mode) and remembers the task until the user saves.
@@ -91,8 +90,9 @@ private fun HomeViewModel.completePendingTask(task: OnboardingTask) {
 }
 
 /**
- * Takes the created item back off the home. A favorites list left empty becomes an apps list that shows
- * all apps instead, so the home still shows apps; the task stays pending either way.
+ * Takes the created item back off the home. An apps list the task created and left without favorites stays,
+ * with the same id and "Show all apps" on, so the home still shows apps and a retry reuses it; the task stays
+ * pending either way.
  */
 private fun HomeViewModel.failPendingTask(task: OnboardingTask) {
     val createdId = uiState.value.onboarding.createdItemId
@@ -103,17 +103,27 @@ private fun HomeViewModel.failPendingTask(task: OnboardingTask) {
     if (createdId != null) gridRepository.saveGridItems(uiState.value.gridItems, uiState.value.isLandscape)
 }
 
+/**
+ * The layout a cancelled grid edit goes back to, [restored], plus the apps list the favorites task created during
+ * the edit, with the same id and "Show all apps" on, so cancelling the task leaves the home with apps and a retry
+ * reuses the list. Null when there is nothing to keep: another task, no list created, or its spot taken.
+ */
+internal fun MainUiState.keepingCreatedAppsList(restored: List<LauncherItemState>): List<LauncherItemState>? {
+    if (onboarding.pendingTask != OnboardingTask.ADD_FAVORITE_APPS) return null
+    val createdId = onboarding.createdItemId ?: return null
+    val created = gridItems.firstOrNull { it.id == createdId } ?: return null
+    val isKept = restored.any { it.id == createdId }
+    if (isKept || GridEngineUtils.checkCollisionWithOthers(created, restored)) return null
+    return restored + created.copy(showAllApps = true)
+}
+
 private fun List<LauncherItemState>.withoutFailedItem(
     task: OnboardingTask,
     createdId: String?
 ): List<LauncherItemState> = when {
     createdId == null -> this
     task == OnboardingTask.ADD_FAVORITE_APPS -> map { item ->
-        if (item.id == createdId) {
-            item.copy(id = UUID.randomUUID().toString(), type = LauncherItemType.APPS_LIST, showAllApps = true)
-        } else {
-            item
-        }
+        if (item.id == createdId) item.copy(showAllApps = true) else item
     }
     else -> filterNot { it.id == createdId }
 }

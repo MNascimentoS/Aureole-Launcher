@@ -4,27 +4,38 @@ import androidx.lifecycle.viewModelScope
 import dev.mnascimentos.aureole.core.data.model.LauncherItemType
 import dev.mnascimentos.aureole.feature.home.HomeViewModel
 import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.placeNewGridItem
-import dev.mnascimentos.aureole.feature.home.grid.extensions.deleteGridItem
 import dev.mnascimentos.aureole.feature.home.model.favoritesOf
 import dev.mnascimentos.aureole.feature.home.model.isLegacyFavoritesId
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
-/** Customize › Add favorites: places a new, empty favorites list (even if the home has one) and opens its picker. */
-fun HomeViewModel.addFavoritesList() {
+/**
+ * Customize › Add apps list: places a new apps list (even if the home has one) and opens its picker. The list shows
+ * all apps, so it stays on the home even if the picker closes without favorites.
+ */
+fun HomeViewModel.addAppsList() {
     val listId = placeNewGridItem(LauncherItemType.APPS_LIST, alwaysNewId = true) ?: return
-    updateUiState { it.copy(customizeFavoritesListId = listId) }
     setShowFavoritePicker(true, listId)
 }
 
-/** Closes the picker; a list Customize created and left without favorites leaves the home again. */
+/** Closes the picker. */
 fun HomeViewModel.dismissFavoritePicker() {
-    val createdId = uiState.value.customizeFavoritesListId
     setShowFavoritePicker(false)
-    if (createdId == null) return
-    val isEmpty = uiState.value.favoritesOf(createdId).isEmpty()
-    updateUiState { it.copy(customizeFavoritesListId = null) }
-    if (isEmpty) deleteGridItem(createdId)
+}
+
+/**
+ * "Show all apps" of the apps list [itemId]: applies at once in both orientations, inside scroll groups too, and
+ * saves the layouts it changed (in the grid edit mode, the layout the edit started from).
+ */
+fun HomeViewModel.setShowAllApps(itemId: String, show: Boolean) {
+    val before = uiState.value
+    val after = before.withShowAllApps(itemId, show)
+    if (after == before) return
+    updateUiState { it.withShowAllApps(itemId, show) }
+    listOf(false, true).forEach { isLandscape ->
+        val saved = after.savedGridItems(isLandscape)
+        if (saved !== before.savedGridItems(isLandscape)) gridRepository.saveGridItems(saved, isLandscape)
+    }
 }
 
 /**

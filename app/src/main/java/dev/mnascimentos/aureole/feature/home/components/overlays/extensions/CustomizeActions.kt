@@ -8,7 +8,7 @@ import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
 fun HomeScreenActions.addCustomizeItem(item: CustomizeAddItem) {
     when (item) {
         CustomizeAddItem.CLOCK -> onAddClock()
-        CustomizeAddItem.FAVORITES -> onAddFavoritesList()
+        CustomizeAddItem.FAVORITES -> onAddAppsList()
         CustomizeAddItem.WIDGET -> {
             onSetIsAddingSingleWidget(true)
             onAddWidgetClick(null)

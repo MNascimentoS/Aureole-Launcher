@@ -12,10 +12,9 @@ import dev.mnascimentos.aureole.composable.LocalHomeUiState
 import dev.mnascimentos.aureole.composable.appitem.model.AppItemRowConfig
 import dev.mnascimentos.aureole.composable.favorites.FavoriteAppsDialog
 import dev.mnascimentos.aureole.composable.favorites.FavoriteAppsMainContent
-import dev.mnascimentos.aureole.composable.favorites.FavoriteAppsSheetContent
 import dev.mnascimentos.aureole.composable.favorites.model.FavoriteAppsDialogActions
 import dev.mnascimentos.aureole.composable.favorites.model.FavoriteAppsDialogConfig
-import dev.mnascimentos.aureole.composable.favorites.model.FavoriteAppsScreenMode
+import dev.mnascimentos.aureole.composable.favorites.model.ShowAllAppsParams
 import dev.mnascimentos.aureole.core.designsystem.model.LocalLeftHanded
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
@@ -23,7 +22,7 @@ import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.createSampleHomeData
 
 @Composable
-private fun FavoritesMenuDialogCase(isLeftHanded: Boolean) {
+private fun FavoritesMenuDialogCase(isLeftHanded: Boolean, showAllApps: Boolean) {
     val sampleData = createSampleHomeData()
     AureoleLauncherTheme {
         CompositionLocalProvider(
@@ -34,7 +33,8 @@ private fun FavoritesMenuDialogCase(isLeftHanded: Boolean) {
                 config = FavoriteAppsDialogConfig(
                     allApps = sampleData.apps,
                     favoriteAppPackages = sampleData.apps.take(5).map { it.packageName },
-                    rowConfig = AppItemRowConfig(isLeftHandedMode = isLeftHanded)
+                    rowConfig = AppItemRowConfig(isLeftHandedMode = isLeftHanded),
+                    showAllApps = ShowAllAppsParams(checked = showAllApps, onCheckedChange = {})
                 ),
                 actions = FavoriteAppsDialogActions()
             )
@@ -42,19 +42,22 @@ private fun FavoritesMenuDialogCase(isLeftHanded: Boolean) {
     }
 }
 
-/** Favorites main menu: two rows and the full-width Done button. */
+/** Menu of a home apps list with "Show all apps" on: "Choose favorites" says the favorites sit on top. */
 @PreviewTest
 @AureolePreview
 @Composable
-private fun FavoriteAppsMenuRightHandedScreenshotTest() = FavoritesMenuDialogCase(isLeftHanded = false)
+private fun FavoriteAppsMenuRightHandedScreenshotTest() =
+    FavoritesMenuDialogCase(isLeftHanded = false, showAllApps = true)
 
+/** Menu of a home apps list with "Show all apps" off: the rest of the apps stays hidden. */
 @PreviewTest
 @AureolePreview
 @Composable
-private fun FavoriteAppsMenuLeftHandedScreenshotTest() = FavoritesMenuDialogCase(isLeftHanded = true)
+private fun FavoriteAppsMenuLeftHandedScreenshotTest() =
+    FavoritesMenuDialogCase(isLeftHanded = true, showAllApps = false)
 
 @Composable
-private fun FavoritesMainContentCase(isLeftHanded: Boolean, favoriteCount: Int) {
+private fun FavoritesMainContentCase(isLeftHanded: Boolean, favoriteCount: Int, showAllApps: Boolean? = null) {
     CompositionLocalProvider(
         LocalHomeUiState provides createSampleHomeData().uiState.copy(isLeftHandedMode = isLeftHanded),
         LocalLeftHanded provides (createSampleHomeData().uiState.copy(isLeftHandedMode = isLeftHanded)).isLeftHandedMode
@@ -69,7 +72,8 @@ private fun FavoritesMainContentCase(isLeftHanded: Boolean, favoriteCount: Int) 
                 FavoriteAppsMainContent(
                     config = FavoriteAppsDialogConfig(
                         allApps = emptyList(),
-                        favoriteAppPackages = listOf("a", "b", "c", "d", "e").take(favoriteCount)
+                        favoriteAppPackages = listOf("a", "b", "c", "d", "e").take(favoriteCount),
+                        showAllApps = showAllApps?.let { ShowAllAppsParams(checked = it, onCheckedChange = {}) }
                     ),
                     onModeChange = {}
                 )
@@ -90,36 +94,16 @@ private fun FavoriteAppsMainContentRightHandedScreenshotTest() =
 private fun FavoriteAppsMainContentLeftHandedNoFavoritesScreenshotTest() =
     FavoritesMainContentCase(isLeftHanded = true, favoriteCount = 0)
 
-@Composable
-private fun FavoritesSubScreenCase(mode: FavoriteAppsScreenMode, isLeftHanded: Boolean) {
-    CompositionLocalProvider(
-        LocalHomeUiState provides createSampleHomeData().uiState.copy(isLeftHandedMode = isLeftHanded),
-        LocalLeftHanded provides (createSampleHomeData().uiState.copy(isLeftHandedMode = isLeftHanded)).isLeftHandedMode
-    ) {
-        AureoleLauncherTheme {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(AureoleDS.colors.surface)
-                    .padding(AureoleDS.dimens.medium)
-            ) {
-                FavoriteAppsSheetContent(
-                    currentMode = mode,
-                    config = FavoriteAppsDialogConfig(
-                        allApps = createSampleHomeData().apps,
-                        favoriteAppPackages = createSampleHomeData().apps.take(3).map { it.packageName }
-                    ),
-                    actions = FavoriteAppsDialogActions(),
-                    onModeChange = {}
-                )
-            }
-        }
-    }
-}
-
-/** The "Edit shortcuts" sub-screen opened from the menu: the shortcut list. */
+/** A home apps list with "Show all apps" off and no favorites: the subtitle says none is selected. */
 @PreviewTest
 @AureolePreview
 @Composable
-private fun FavoriteAppsEditShortcutsSubScreenScreenshotTest() =
-    FavoritesSubScreenCase(mode = FavoriteAppsScreenMode.EDIT_SHORTCUTS, isLeftHanded = true)
+private fun FavoriteAppsMainContentShowAllOffNoFavoritesScreenshotTest() =
+    FavoritesMainContentCase(isLeftHanded = false, favoriteCount = 0, showAllApps = false)
+
+/** A home apps list with "Show all apps" on and no favorites: the Home shows all apps. */
+@PreviewTest
+@AureolePreview
+@Composable
+private fun FavoriteAppsMainContentShowAllOnNoFavoritesScreenshotTest() =
+    FavoritesMainContentCase(isLeftHanded = true, favoriteCount = 0, showAllApps = true)

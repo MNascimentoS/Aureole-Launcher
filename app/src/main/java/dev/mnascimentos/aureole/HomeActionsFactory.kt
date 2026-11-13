@@ -8,6 +8,7 @@ import com.google.android.play.core.appupdate.AppUpdateInfo
 import com.google.android.play.core.appupdate.AppUpdateManager
 import com.google.android.play.core.appupdate.AppUpdateOptions
 import com.google.android.play.core.install.model.AppUpdateType
+import dev.mnascimentos.aureole.composable.favorites.model.FavoriteAppsScreenMode
 import dev.mnascimentos.aureole.feature.home.HomeViewModel
 import dev.mnascimentos.aureole.feature.home.components.appsdrawer.extensions.onSearchQueryChanged
 import dev.mnascimentos.aureole.feature.home.components.clock.extensions.addClock
@@ -32,8 +33,9 @@ import dev.mnascimentos.aureole.feature.home.components.containers.folder.extens
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.extensions.removeAppFromFolder
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.extensions.setAddAppToFolderDialogVisible
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.extensions.setRenameFolderDialogVisible
-import dev.mnascimentos.aureole.feature.home.components.favorites.extensions.addFavoritesList
+import dev.mnascimentos.aureole.feature.home.components.favorites.extensions.addAppsList
 import dev.mnascimentos.aureole.feature.home.components.favorites.extensions.dismissFavoritePicker
+import dev.mnascimentos.aureole.feature.home.components.favorites.extensions.setShowAllApps
 import dev.mnascimentos.aureole.feature.home.components.favorites.extensions.setShowFavoritePicker
 import dev.mnascimentos.aureole.feature.home.components.favorites.extensions.toggleFavorite
 import dev.mnascimentos.aureole.feature.home.components.favorites.extensions.updateContainerFavorites
@@ -142,7 +144,7 @@ class HomeActionsFactory(
             onUninstallAppClick = { app -> IntentUtils.uninstallApp(context, app.packageName) },
             onOpenFavoritePicker = { containerId -> viewModel.setShowFavoritePicker(true, containerId) },
             onDismissFavoritePicker = { viewModel.dismissFavoritePicker() },
-            onAddFavoritesList = { viewModel.addFavoritesList() },
+            onAddAppsList = { viewModel.addAppsList() },
             onAddClock = { viewModel.addClock() },
             onSelectPalette = { name -> viewModel.selectPalette(name) },
             onSelectFont = { name -> viewModel.selectFont(name) },
@@ -216,6 +218,10 @@ class HomeActionsFactory(
             onRemoveAppFromContainer = { panelId, pkg -> viewModel.removeAppFromContainer(panelId, pkg) },
             onRemoveAppFromFolder = { folderId, pkg -> viewModel.removeAppFromFolder(folderId, pkg) },
             onOpenEditFolderForFolder = { folder -> viewModel.openEditFolderForFolder(folder) },
+            onChooseFavorites = { listId ->
+                viewModel.setShowFavoritePicker(true, listId, initialMode = FavoriteAppsScreenMode.MANAGE)
+            },
+            onSetShowAllApps = { listId, show -> viewModel.setShowAllApps(listId, show) },
             onOpenCustomizeBottomSheet = { viewModel.setShowCustomizeBottomSheet(true) },
             onCloseCustomizeBottomSheet = { viewModel.setShowCustomizeBottomSheet(false) },
             onOpenEditClockBottomSheet = { clockId -> viewModel.openEditClockBottomSheet(clockId) },

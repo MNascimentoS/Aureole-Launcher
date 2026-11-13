@@ -134,7 +134,7 @@ class HomeViewModelOnboardingAppsTest {
     }
 
     @Test
-    fun `when an empty favorites list is on the home, should swap it for all apps in place`() {
+    fun `when an empty favorites-only list is on the home, should turn Show all apps on in place keeping its id`() {
         val emptyList = LauncherItemState(
             id = "fav",
             type = LauncherItemType.APPS_LIST,
@@ -149,6 +149,7 @@ class HomeViewModelOnboardingAppsTest {
         viewModel.ensureAppsComponent()
 
         val swapped = state.portraitGridItems.single()
+        assertEquals("fav", swapped.id)
         assertEquals(LauncherItemType.APPS_LIST, swapped.safeType)
         assertEquals(true, swapped.showAllApps)
         assertEquals(listOf(2, 3, 5, 7), listOf(swapped.col, swapped.row, swapped.colSpan, swapped.rowSpan))

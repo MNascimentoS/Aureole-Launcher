@@ -32,8 +32,12 @@ data class HomeScreenActions(
     val onAppInfoClick: (AppInfo) -> Unit = {},
     val onUninstallAppClick: (AppInfo) -> Unit = {},
     val onOpenFavoritePicker: (String?) -> Unit = {},
+    /** Opens the favorites sheet of this apps list straight on "Choose favorites" (the onboarding task). */
+    val onChooseFavorites: (String) -> Unit = {},
     val onDismissFavoritePicker: () -> Unit = {},
-    val onAddFavoritesList: () -> Unit = {},
+    val onAddAppsList: () -> Unit = {},
+    /** Turns "Show all apps" on or off for the apps list with this id, in both orientations. */
+    val onSetShowAllApps: (String, Boolean) -> Unit = { _, _ -> },
     val onAddClock: () -> Unit = {},
     val onSelectPalette: (String) -> Unit = {},
     val onSelectFont: (String) -> Unit = {},

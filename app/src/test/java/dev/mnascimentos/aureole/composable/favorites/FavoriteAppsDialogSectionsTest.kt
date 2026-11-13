@@ -1,12 +1,15 @@
 package dev.mnascimentos.aureole.composable.favorites
 
 import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.assertIsOff
+import androidx.compose.ui.test.assertIsOn
 import androidx.compose.ui.test.junit4.v2.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import dev.mnascimentos.aureole.composable.favorites.model.FavoriteAppsDialogActions
 import dev.mnascimentos.aureole.composable.favorites.model.FavoriteAppsDialogConfig
 import dev.mnascimentos.aureole.composable.favorites.model.FavoriteAppsScreenMode
+import dev.mnascimentos.aureole.composable.favorites.model.ShowAllAppsParams
 import dev.mnascimentos.aureole.composable.favorites.model.backTarget
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import org.junit.Assert.assertEquals
@@ -53,20 +56,21 @@ class FavoriteAppsDialogSectionsTest {
     }
 
     @Test
-    fun `when rendering the MAIN menu, should show the switch and the three rows with the favorites count`() {
+    fun `when rendering the MAIN menu without the switch, should show Choose favorites with the favorites count`() {
         setMainContent(
             FavoriteAppsDialogConfig(allApps = emptyList(), favoriteAppPackages = listOf("a", "b", "c")),
             FavoriteAppsDialogActions(),
             mutableListOf()
         )
 
-        composeTestRule.onNodeWithText("Edit shortcuts").assertIsDisplayed()
-        composeTestRule.onNodeWithText("Manage apps and order").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Choose favorites").assertIsDisplayed()
         composeTestRule.onNodeWithText("3 favorites, the rest stay hidden").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Edit shortcuts").assertDoesNotExist()
+        composeTestRule.onNodeWithText("Show all apps").assertDoesNotExist()
     }
 
     @Test
-    fun `when tapping Manage apps and order, should switch to the MANAGE mode`() {
+    fun `when tapping Choose favorites, should switch to the MANAGE mode`() {
         val modes = mutableListOf<FavoriteAppsScreenMode>()
         setMainContent(
             FavoriteAppsDialogConfig(allApps = emptyList(), favoriteAppPackages = listOf("a")),
@@ -74,23 +78,60 @@ class FavoriteAppsDialogSectionsTest {
             modes
         )
 
-        composeTestRule.onNodeWithText("Manage apps and order").performClick()
+        composeTestRule.onNodeWithText("Choose favorites").performClick()
 
         assertEquals(listOf(FavoriteAppsScreenMode.MANAGE), modes)
     }
 
     @Test
-    fun `when tapping Edit shortcuts, should open the EDIT_SHORTCUTS sub-screen`() {
-        val modes = mutableListOf<FavoriteAppsScreenMode>()
+    fun `a home apps list shows the switch below Choose favorites and the on-top subtitle while it is on`() {
         setMainContent(
-            FavoriteAppsDialogConfig(allApps = emptyList(), favoriteAppPackages = emptyList()),
+            FavoriteAppsDialogConfig(
+                allApps = emptyList(),
+                favoriteAppPackages = listOf("a", "b"),
+                showAllApps = ShowAllAppsParams(checked = true, onCheckedChange = {})
+            ),
             FavoriteAppsDialogActions(),
-            modes
+            mutableListOf()
         )
 
-        composeTestRule.onNodeWithText("Edit shortcuts").performClick()
+        composeTestRule.onNodeWithText("Show all apps").assertIsDisplayed().assertIsOn()
+        composeTestRule.onNodeWithText("Favorites stay at the top").assertIsDisplayed()
+        composeTestRule.onNodeWithText("2 favorites on top, then all apps").assertIsDisplayed()
+    }
 
-        assertEquals(listOf(FavoriteAppsScreenMode.EDIT_SHORTCUTS), modes)
+    @Test
+    fun `tapping the switch reports the new value at once`() {
+        val values = mutableListOf<Boolean>()
+        setMainContent(
+            FavoriteAppsDialogConfig(
+                allApps = emptyList(),
+                favoriteAppPackages = emptyList(),
+                showAllApps = ShowAllAppsParams(checked = true, onCheckedChange = { values += it })
+            ),
+            FavoriteAppsDialogActions(),
+            mutableListOf()
+        )
+
+        composeTestRule.onNodeWithText("Show all apps").performClick()
+
+        assertEquals(listOf(false), values)
+    }
+
+    @Test
+    fun `with the switch off and no favorites, the subtitle says none is selected`() {
+        setMainContent(
+            FavoriteAppsDialogConfig(
+                allApps = emptyList(),
+                favoriteAppPackages = emptyList(),
+                showAllApps = ShowAllAppsParams(checked = false, onCheckedChange = {})
+            ),
+            FavoriteAppsDialogActions(),
+            mutableListOf()
+        )
+
+        composeTestRule.onNodeWithText("Show all apps").assertIsOff()
+        composeTestRule.onNodeWithText("No favorite app selected.").assertIsDisplayed()
     }
 
     private fun setSubScreen(mode: FavoriteAppsScreenMode) {
@@ -115,7 +156,7 @@ class FavoriteAppsDialogSectionsTest {
         )
 
         composeTestRule.onNodeWithText("No favorites: shows all apps").assertIsDisplayed()
-        composeTestRule.onNodeWithText("Show all apps on Home").assertDoesNotExist()
+        composeTestRule.onNodeWithText("Show all apps").assertDoesNotExist()
         composeTestRule.onNodeWithText("Appearance").assertDoesNotExist()
     }
 
@@ -131,21 +172,22 @@ class FavoriteAppsDialogSectionsTest {
     }
 
     @Test
-    fun `the EDIT_SHORTCUTS sub-screen shows the shortcut list and not the menu`() {
-        setSubScreen(FavoriteAppsScreenMode.EDIT_SHORTCUTS)
+    fun `the MANAGE sub-screen shows the list and not the menu`() {
+        setSubScreen(FavoriteAppsScreenMode.MANAGE)
 
-        composeTestRule.onNodeWithText("Manage apps and order").assertDoesNotExist()
-        composeTestRule.onNodeWithText("Show all apps on Home").assertDoesNotExist()
-    }
-
-    @Test
-    fun `the sub-screens go back to the menu`() {
-        assertEquals(FavoriteAppsScreenMode.MAIN, FavoriteAppsScreenMode.EDIT_SHORTCUTS.backTarget())
+        composeTestRule.onNodeWithText("Choose favorites").assertDoesNotExist()
+        composeTestRule.onNodeWithText("Show all apps").assertDoesNotExist()
     }
 
     @Test
     fun `backTarget closes from the main menu and returns to it from the manage list`() {
         assertNull(FavoriteAppsScreenMode.MAIN.backTarget())
         assertEquals(FavoriteAppsScreenMode.MAIN, FavoriteAppsScreenMode.MANAGE.backTarget())
+    }
+
+    @Test
+    fun `opened straight on the manage list, back closes the sheet instead of showing the menu`() {
+        assertNull(FavoriteAppsScreenMode.MANAGE.backTarget(entryMode = FavoriteAppsScreenMode.MANAGE))
+        assertNull(FavoriteAppsScreenMode.MAIN.backTarget(entryMode = FavoriteAppsScreenMode.MANAGE))
     }
 }

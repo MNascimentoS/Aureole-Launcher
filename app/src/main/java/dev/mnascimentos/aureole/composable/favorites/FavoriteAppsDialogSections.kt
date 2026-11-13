@@ -62,8 +62,7 @@ internal fun FavoriteAppsSheetContent(
 ) {
     when (currentMode) {
         FavoriteAppsScreenMode.MAIN -> FavoriteAppsMainContent(config = config, onModeChange = onModeChange)
-        FavoriteAppsScreenMode.MANAGE,
-        FavoriteAppsScreenMode.EDIT_SHORTCUTS -> FavoriteAppsDialogContent(
+        FavoriteAppsScreenMode.MANAGE -> FavoriteAppsDialogContent(
             config = config,
             actions = actions,
             searchQuery = searchQuery
@@ -189,6 +188,7 @@ private fun FavoriteAppsSections(
                 searchQuery = params.searchQuery,
                 favoritesCount = params.config.favoriteAppPackages.size,
                 allAppsCount = params.config.allApps.size,
+                isShowingAllAppsWhenEmpty = params.config.showAllApps?.checked != false,
                 autoScroll = autoScroll
             ),
             actions = actions

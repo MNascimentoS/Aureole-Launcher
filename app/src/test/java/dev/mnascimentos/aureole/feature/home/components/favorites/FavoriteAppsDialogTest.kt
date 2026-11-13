@@ -13,8 +13,10 @@ import androidx.compose.ui.test.performSemanticsAction
 import dev.mnascimentos.aureole.composable.favorites.FavoriteAppsDialog
 import dev.mnascimentos.aureole.composable.favorites.model.FavoriteAppsDialogActions
 import dev.mnascimentos.aureole.composable.favorites.model.FavoriteAppsDialogConfig
+import dev.mnascimentos.aureole.composable.favorites.model.FavoriteAppsScreenMode
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
+import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -71,7 +73,7 @@ class FavoriteAppsDialogTest {
     }
 
     @Test
-    fun `when tapping Edit shortcuts on the menu, should open that sub-screen and go back to the menu`() {
+    fun `when tapping Choose favorites on the menu, should open the manage list and go back to the menu`() {
         composeTestRule.setContent {
             AureoleLauncherTheme {
                 FavoriteAppsDialog(
@@ -81,10 +83,36 @@ class FavoriteAppsDialogTest {
             }
         }
 
-        composeTestRule.onNodeWithText("Edit shortcuts").performSemanticsAction(SemanticsActions.OnClick)
+        composeTestRule.onNodeWithText("Edit shortcuts").assertDoesNotExist()
+        composeTestRule.onNodeWithText("Choose favorites").performSemanticsAction(SemanticsActions.OnClick)
 
-        composeTestRule.onNodeWithText("Manage apps and order").assertDoesNotExist()
         composeTestRule.onNodeWithText("Back").performSemanticsAction(SemanticsActions.OnClick)
-        composeTestRule.onNodeWithText("Manage apps and order").assertExists()
+        composeTestRule.onNodeWithText("Back").assertDoesNotExist()
+        composeTestRule.onNodeWithText("Choose favorites").assertExists()
+    }
+
+    @Test
+    fun `opened straight on the manage list, Back closes the sheet instead of showing the menu`() {
+        var dismissed = false
+        composeTestRule.setContent {
+            AureoleLauncherTheme {
+                FavoriteAppsDialog(
+                    config = FavoriteAppsDialogConfig(allApps = emptyList(), favoriteAppPackages = emptyList()),
+                    actions = FavoriteAppsDialogActions(onDismiss = { dismissed = true }),
+                    initialMode = FavoriteAppsScreenMode.MANAGE
+                )
+            }
+        }
+
+        composeTestRule.onNodeWithText("Back").performSemanticsAction(SemanticsActions.OnClick)
+
+        composeTestRule.mainClock.advanceTimeBy(DISMISS_WAIT_MS)
+        composeTestRule.waitForIdle()
+
+        assertTrue(dismissed)
+    }
+
+    private companion object {
+        const val DISMISS_WAIT_MS = 1_000L
     }
 }

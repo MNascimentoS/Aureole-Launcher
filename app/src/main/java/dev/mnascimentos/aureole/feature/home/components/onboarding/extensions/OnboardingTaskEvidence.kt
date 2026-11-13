@@ -34,9 +34,7 @@ internal val MainUiState.isTaskInProgress: Boolean
  */
 internal fun MainUiState.meetsRequirement(task: OnboardingTask): Boolean = when (task) {
     OnboardingTask.ADD_CLOCK -> gridItems.any { it.safeType == LauncherItemType.CLOCK }
-    OnboardingTask.ADD_FAVORITE_APPS -> gridItems.any {
-        it.safeType == LauncherItemType.APPS_LIST && hasFavorites(it)
-    }
+    OnboardingTask.ADD_FAVORITE_APPS -> gridItems.any { hasAppsListWithFavorites(it) }
     OnboardingTask.ADD_WIDGET -> gridItems.any { hasWidget(it) }
     else -> false
 }
@@ -44,6 +42,11 @@ internal fun MainUiState.meetsRequirement(task: OnboardingTask): Boolean = when 
 /** Same lookup as the home's favorites list: the list's own favorites, else the global ones for the legacy list. */
 internal fun MainUiState.hasFavorites(item: LauncherItemState): Boolean =
     favoritesOf(item.id).isNotEmpty()
+
+/** An apps list with at least one favorite, on the home or inside a scroll group. */
+private fun MainUiState.hasAppsListWithFavorites(item: LauncherItemState): Boolean =
+    (item.safeType == LauncherItemType.APPS_LIST && hasFavorites(item)) ||
+        item.safeChildren.any { hasAppsListWithFavorites(it) }
 
 private fun MainUiState.hasWidget(item: LauncherItemState): Boolean {
     val hasStackedWidget = item.safeType == LauncherItemType.WIDGET_LIST && !widgetStacks[item.id].isNullOrEmpty()

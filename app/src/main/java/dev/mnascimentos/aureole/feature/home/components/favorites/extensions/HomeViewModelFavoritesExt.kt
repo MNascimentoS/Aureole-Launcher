@@ -1,6 +1,7 @@
 package dev.mnascimentos.aureole.feature.home.components.favorites.extensions
 
 import androidx.lifecycle.viewModelScope
+import dev.mnascimentos.aureole.composable.favorites.model.FavoriteAppsScreenMode
 import dev.mnascimentos.aureole.core.designsystem.model.TextResource
 import dev.mnascimentos.aureole.feature.home.HomeViewModel
 import dev.mnascimentos.aureole.feature.home.components.appsdrawer.extensions.updateAppsState
@@ -11,11 +12,17 @@ import dev.mnascimentos.aureole.feature.home.model.isLegacyFavoritesId
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
-fun HomeViewModel.setShowFavoritePicker(show: Boolean, containerId: String? = null) {
+/** Opens the favorites sheet of [containerId] on [initialMode], or closes it. */
+fun HomeViewModel.setShowFavoritePicker(
+    show: Boolean,
+    containerId: String? = null,
+    initialMode: FavoriteAppsScreenMode = FavoriteAppsScreenMode.MAIN
+) {
     updateUiState {
         it.copy(
             showFavoritePickerDialog = show,
-            activeFavoriteContainerId = if (show) (containerId ?: it.activeFavoriteContainerId) else null
+            activeFavoriteContainerId = if (show) (containerId ?: it.activeFavoriteContainerId) else null,
+            favoritePickerInitialMode = if (show) initialMode else FavoriteAppsScreenMode.MAIN
         )
     }
 }
