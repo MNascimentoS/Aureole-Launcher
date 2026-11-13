@@ -289,6 +289,7 @@ dependencies {
 
     // AndroidX Core & Lifecycle
     implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.exifinterface)
     implementation(libs.androidx.fragment.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
 
