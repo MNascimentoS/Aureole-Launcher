@@ -11,7 +11,7 @@ class OnboardingStringsTest {
         val file = listOf("src/main/res/$folder/strings.xml", "app/src/main/res/$folder/strings.xml")
             .map(::File)
             .first { it.exists() }
-        return Regex("""<string name="(home_onboarding_[a-z0-9_]+|settings_advanced_replay_onboarding)"""")
+        return Regex("""<string name="(home_onboarding_[a-z0-9_]+)"""")
             .findAll(file.readText())
             .map { it.groupValues[1] }
             .toSet()

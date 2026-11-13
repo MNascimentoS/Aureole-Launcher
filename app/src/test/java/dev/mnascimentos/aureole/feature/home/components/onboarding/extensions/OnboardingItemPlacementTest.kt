@@ -32,10 +32,13 @@ class OnboardingItemPlacementTest {
     )
 
     @Test
-    fun `when the type is a clock, container or widget list, should use a size smaller than the default`() {
-        assertEquals(OnboardingItemSize(10, 4), onboardingDefaultSize(LauncherItemType.CLOCK))
-        assertEquals(OnboardingItemSize(4, 6), onboardingDefaultSize(LauncherItemType.SHORTCUTS_CONTAINER))
-        assertEquals(OnboardingItemSize(14, 6), onboardingDefaultSize(LauncherItemType.WIDGET_LIST))
+    fun `when in portrait, should give the clock 10x4, the container 4x6 and the widget list its default`() {
+        assertEquals(OnboardingItemSize(10, 4), onboardingDefaultSize(LauncherItemType.CLOCK, isLandscape = false))
+        assertEquals(
+            OnboardingItemSize(4, 6),
+            onboardingDefaultSize(LauncherItemType.SHORTCUTS_CONTAINER, isLandscape = false)
+        )
+        assertEquals(OnboardingItemSize(14, 6), onboardingDefaultSize(LauncherItemType.WIDGET_LIST, false))
         val clockDefault = GridDefaults.getDefaultSpanForType(LauncherItemType.CLOCK).first
         assertTrue(10 * 4 < clockDefault.first * clockDefault.second)
     }
@@ -96,5 +99,42 @@ class OnboardingItemPlacementTest {
         assertEquals(0, item?.col)
         assertEquals(0, item?.row)
         assertEquals(LauncherItemType.QUICK_BUTTON, item?.type)
+    }
+
+    @Test
+    fun `when in landscape, should give the clock, container and widget list the smallest size they accept`() {
+        listOf(
+            LauncherItemType.CLOCK,
+            LauncherItemType.SHORTCUTS_CONTAINER,
+            LauncherItemType.WIDGET_LIST
+        ).forEach { type ->
+            val minimum = GridDefaults.getDefaultSpanForType(type).second
+            assertEquals(
+                OnboardingItemSize(minimum.first, minimum.second),
+                onboardingDefaultSize(type, isLandscape = true)
+            )
+        }
+    }
+
+    @Test
+    fun `when the grid is landscape, should place the item at the landscape size`() {
+        val landscape = GridLimits(GridEngineUtils.LANDSCAPE_MAX_COLS, GridEngineUtils.LANDSCAPE_MAX_ROWS)
+
+        val item = placeOnboardingItem(request(LauncherItemType.CLOCK, limits = landscape).copy(isLandscape = true))
+
+        assertEquals(1, item?.colSpan)
+        assertEquals(1, item?.rowSpan)
+    }
+
+    @Test
+    fun `when the size fits nowhere, should use the largest size that fits`() {
+        val quick = LauncherItemType.QUICK_BUTTON
+        val right = LauncherItemState(id = "r", type = quick, col = 5, colSpan = 15, rowSpan = 30)
+        val below = LauncherItemState(id = "b", type = quick, row = 3, colSpan = 5, rowSpan = 27)
+
+        val item = placeOnboardingItem(request(LauncherItemType.CLOCK, items = listOf(right, below)))
+
+        assertEquals(listOf(0, 0), listOf(item?.col, item?.row))
+        assertEquals(listOf(5, 3), listOf(item?.colSpan, item?.rowSpan))
     }
 }

@@ -8,7 +8,6 @@ import com.google.android.play.core.appupdate.AppUpdateInfo
 import com.google.android.play.core.appupdate.AppUpdateManager
 import com.google.android.play.core.appupdate.AppUpdateOptions
 import com.google.android.play.core.install.model.AppUpdateType
-import dev.mnascimentos.aureole.composable.favorites.model.FavoriteAppsScreenMode
 import dev.mnascimentos.aureole.feature.home.HomeViewModel
 import dev.mnascimentos.aureole.feature.home.components.appsdrawer.extensions.onSearchQueryChanged
 import dev.mnascimentos.aureole.feature.home.components.clock.extensions.addClock
@@ -193,7 +192,7 @@ class HomeActionsFactory(
             },
             onOpenAddContainerForParent = { pId -> viewModel.openAddContainerForParent(pId) },
             onOpenEditContainerDialog = { id -> viewModel.openEditContainerDialog(id) },
-            onCloseEditContainerDialog = { viewModel.closeEditContainerDialog() },
+            onCloseEditContainerDialog = { panelId -> viewModel.closeEditContainerDialog(panelId) },
             onSaveContainerModel = { model -> viewModel.saveContainerModel(model) },
             onDeleteContainerInstance = { id -> viewModel.deleteContainerInstance(id) }
         )
@@ -218,9 +217,7 @@ class HomeActionsFactory(
             onRemoveAppFromContainer = { panelId, pkg -> viewModel.removeAppFromContainer(panelId, pkg) },
             onRemoveAppFromFolder = { folderId, pkg -> viewModel.removeAppFromFolder(folderId, pkg) },
             onOpenEditFolderForFolder = { folder -> viewModel.openEditFolderForFolder(folder) },
-            onChooseFavorites = { listId ->
-                viewModel.setShowFavoritePicker(true, listId, initialMode = FavoriteAppsScreenMode.MANAGE)
-            },
+            onChooseFavorites = { listId -> viewModel.setShowFavoritePicker(true, listId) },
             onSetShowAllApps = { listId, show -> viewModel.setShowAllApps(listId, show) },
             onOpenCustomizeBottomSheet = { viewModel.setShowCustomizeBottomSheet(true) },
             onCloseCustomizeBottomSheet = { viewModel.setShowCustomizeBottomSheet(false) },

@@ -8,7 +8,6 @@ import dev.mnascimentos.aureole.composable.appitem.model.AppItemRowConfig
 import dev.mnascimentos.aureole.composable.favorites.FavoriteAppsDialog
 import dev.mnascimentos.aureole.composable.favorites.model.FavoriteAppsDialogActions
 import dev.mnascimentos.aureole.composable.favorites.model.FavoriteAppsDialogConfig
-import dev.mnascimentos.aureole.composable.favorites.model.FavoriteAppsScreenMode
 import dev.mnascimentos.aureole.core.designsystem.model.LocalLeftHanded
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
@@ -27,8 +26,7 @@ private fun ManageSheetCase(isLeftHanded: Boolean, favorites: List<String>) {
             ProvideHomeUiState(sampleData.uiState.copy(isLeftHandedMode = isLeftHanded)) {
                 FavoriteAppsDialog(
                     config = config,
-                    actions = FavoriteAppsDialogActions(onDismiss = {}),
-                    initialMode = FavoriteAppsScreenMode.MANAGE
+                    actions = FavoriteAppsDialogActions(onDismiss = {})
                 )
             }
         }

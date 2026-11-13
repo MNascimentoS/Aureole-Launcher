@@ -44,7 +44,7 @@ fun OnboardingChecklistPillComponent(
     modifier: Modifier = Modifier
 ) {
     val isMinimized = onboarding.stage == OnboardingStage.CHECKLIST &&
-        !onboarding.isChecklistExpanded && onboarding.activePicker == null
+        !onboarding.isChecklistExpanded && onboarding.activePicker == null && !onboarding.isHomePeeking
     if (!isMinimized || isOtherOverlayActive) return
     Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.BottomCenter) {
         OnboardingGlassCard(

@@ -19,6 +19,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -321,15 +322,17 @@ private fun HomeEditContainerOverlay(config: HomeOverlaysConfig) {
         val editingPanel = config.uiState.containers[config.uiState.editingContainerId]
             ?: ContainerModel(id = config.uiState.editingContainerId)
 
-        EditContainerScreen(
-            params = EditContainerScreenParams(
-                panel = editingPanel,
-                allApps = config.uiState.apps,
-                hazeState = if (config.uiState.isHazeEnabled) config.hazeState else null,
-                onDismiss = config.actions.onCloseEditContainerDialog,
-                onSave = config.actions.onSaveContainerModel
+        key(editingPanel.id, config.uiState.editContainerOpenCount) {
+            EditContainerScreen(
+                params = EditContainerScreenParams(
+                    panel = editingPanel,
+                    allApps = config.uiState.apps,
+                    hazeState = if (config.uiState.isHazeEnabled) config.hazeState else null,
+                    onDismiss = { config.actions.onCloseEditContainerDialog(editingPanel.id) },
+                    onSave = config.actions.onSaveContainerModel
+                )
             )
-        )
+        }
     }
 }
 

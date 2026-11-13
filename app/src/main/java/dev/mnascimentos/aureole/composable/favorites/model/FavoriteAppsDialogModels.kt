@@ -4,19 +4,6 @@ import dev.mnascimentos.aureole.composable.appitem.model.AppItemRowConfig
 import dev.mnascimentos.aureole.composable.reorder.model.ReorderAutoScroll
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 
-enum class FavoriteAppsScreenMode {
-    MAIN, MANAGE
-}
-
-/**
- * Where the back key goes from this screen: the main one from a sub-screen, or null (close) from the main one and
- * from the screen the sheet opened on ([entryMode]), so a sheet opened straight on the manage list closes from it.
- */
-fun FavoriteAppsScreenMode.backTarget(
-    entryMode: FavoriteAppsScreenMode = FavoriteAppsScreenMode.MAIN
-): FavoriteAppsScreenMode? =
-    if (this == FavoriteAppsScreenMode.MAIN || this == entryMode) null else FavoriteAppsScreenMode.MAIN
-
 /** The "Show all apps" switch of a home apps list: whether it is on and what flips it. */
 data class ShowAllAppsParams(
     val checked: Boolean,
@@ -64,7 +51,7 @@ data class FavoriteAppsDialogActions(
     val onToggleFavorite: (String) -> Unit = {},
     val onUpdateFavoritePackages: (String?, List<String>) -> Unit = { _, _ -> },
     val onSettingsClick: (() -> Unit)? = null,
-    /** "Customize home" row of the main menu; null (Settings, drawer favorites) leaves it out. */
+    /** "Customize home" row at the top of the list; null (Settings, drawer favorites) leaves it out. */
     val onCustomizeHome: (() -> Unit)? = null,
     val onDismiss: () -> Unit = {}
 )

@@ -3,20 +3,17 @@ package dev.mnascimentos.aureole.feature.home.components.favorites
 import android.content.ComponentName
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
-import androidx.compose.ui.semantics.SemanticsActions
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.v2.createComposeRule
 import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onFirst
 import androidx.compose.ui.test.onNodeWithText
-import androidx.compose.ui.test.performSemanticsAction
 import dev.mnascimentos.aureole.composable.favorites.FavoriteAppsDialog
 import dev.mnascimentos.aureole.composable.favorites.model.FavoriteAppsDialogActions
 import dev.mnascimentos.aureole.composable.favorites.model.FavoriteAppsDialogConfig
-import dev.mnascimentos.aureole.composable.favorites.model.FavoriteAppsScreenMode
+import dev.mnascimentos.aureole.composable.favorites.model.ShowAllAppsParams
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
-import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -73,7 +70,7 @@ class FavoriteAppsDialogTest {
     }
 
     @Test
-    fun `when tapping Choose favorites on the menu, should open the manage list and go back to the menu`() {
+    fun `when opening FavoriteAppsDialog, should land on Choose favorites with no menu step and no Back button`() {
         composeTestRule.setContent {
             AureoleLauncherTheme {
                 FavoriteAppsDialog(
@@ -83,36 +80,26 @@ class FavoriteAppsDialogTest {
             }
         }
 
+        composeTestRule.onNodeWithText("Choose favorites").assertIsDisplayed()
         composeTestRule.onNodeWithText("Edit shortcuts").assertDoesNotExist()
-        composeTestRule.onNodeWithText("Choose favorites").performSemanticsAction(SemanticsActions.OnClick)
-
-        composeTestRule.onNodeWithText("Back").performSemanticsAction(SemanticsActions.OnClick)
         composeTestRule.onNodeWithText("Back").assertDoesNotExist()
-        composeTestRule.onNodeWithText("Choose favorites").assertExists()
     }
 
     @Test
-    fun `opened straight on the manage list, Back closes the sheet instead of showing the menu`() {
-        var dismissed = false
+    fun `when a home list opens FavoriteAppsDialog, should show the switch on top of the list`() {
         composeTestRule.setContent {
             AureoleLauncherTheme {
                 FavoriteAppsDialog(
-                    config = FavoriteAppsDialogConfig(allApps = emptyList(), favoriteAppPackages = emptyList()),
-                    actions = FavoriteAppsDialogActions(onDismiss = { dismissed = true }),
-                    initialMode = FavoriteAppsScreenMode.MANAGE
+                    config = FavoriteAppsDialogConfig(
+                        allApps = emptyList(),
+                        favoriteAppPackages = emptyList(),
+                        showAllApps = ShowAllAppsParams(checked = true, onCheckedChange = {})
+                    ),
+                    actions = FavoriteAppsDialogActions()
                 )
             }
         }
 
-        composeTestRule.onNodeWithText("Back").performSemanticsAction(SemanticsActions.OnClick)
-
-        composeTestRule.mainClock.advanceTimeBy(DISMISS_WAIT_MS)
-        composeTestRule.waitForIdle()
-
-        assertTrue(dismissed)
-    }
-
-    private companion object {
-        const val DISMISS_WAIT_MS = 1_000L
+        composeTestRule.onNodeWithText("Show all apps").assertIsDisplayed()
     }
 }

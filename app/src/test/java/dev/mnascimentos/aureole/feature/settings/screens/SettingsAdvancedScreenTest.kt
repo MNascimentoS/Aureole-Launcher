@@ -36,13 +36,11 @@ class SettingsAdvancedScreenTest {
         composeTestRule.onNodeWithText("Set as default launcher").assertExists()
         composeTestRule.onNodeWithText("App info").assertExists()
         composeTestRule.onNodeWithText("What's new (Release notes)").assertExists()
-        composeTestRule.onNodeWithText("Replay welcome tour").assertExists()
         composeTestRule.onNodeWithText("Reset launcher").assertExists()
         composeTestRule.onNodeWithText("Uninstall launcher").assertExists()
         composeTestRule.onNodeWithText("Contributors").assertExists()
         composeTestRule.onNodeWithText("Privacy policy").assertExists()
         composeTestRule.onNodeWithText("Terms of service").assertExists()
-        composeTestRule.onNodeWithText("Privacy settings").assertExists()
         composeTestRule.onNodeWithText("Open source licenses").assertExists()
     }
 
@@ -50,12 +48,10 @@ class SettingsAdvancedScreenTest {
     fun `when clicking action items, should trigger callbacks and dialogs`() {
         var defaultLauncherClicked = false
         var resetLauncherClicked = false
-        var replayClicked = false
         var contributorsNavigated = false
 
         val actions = SettingsScreenActions(
             onSetDefaultLauncherClick = { defaultLauncherClicked = true },
-            onReplayOnboardingClick = { replayClicked = true },
             onOpenFactoryResetDialog = { resetLauncherClicked = true }
         )
 
@@ -75,14 +71,29 @@ class SettingsAdvancedScreenTest {
 
         composeTestRule.onNodeWithText("App info").performScrollTo().performClick()
 
-        composeTestRule.onNodeWithText("Replay welcome tour").performScrollTo().performClick()
-        assertTrue(replayClicked)
-
         composeTestRule.onNodeWithText("Reset launcher").performScrollTo().performClick()
         assertTrue(resetLauncherClicked)
 
         composeTestRule.onNodeWithText("Contributors").performScrollTo().performClick()
         assertTrue(contributorsNavigated)
+    }
+
+    @Test
+    fun `when clicking Open source licenses, should navigate to licenses`() {
+        var licensesNavigated = false
+        composeTestRule.setContent {
+            AureoleLauncherTheme {
+                SettingsAdvancedScreen(
+                    uiState = SettingsUiState(),
+                    actions = SettingsScreenActions(onNavigateToLicenses = { licensesNavigated = true }),
+                    onNavigateToContributors = {},
+                    onNavigateBack = {}
+                )
+            }
+        }
+
+        composeTestRule.onNodeWithText("Open source licenses").performScrollTo().performClick()
+        assertTrue(licensesNavigated)
     }
 
     @Test

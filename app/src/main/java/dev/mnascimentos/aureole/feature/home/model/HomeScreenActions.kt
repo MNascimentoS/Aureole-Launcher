@@ -77,7 +77,7 @@ data class HomeScreenActions(
 
     // Side Panel Actions
     val onOpenEditContainerDialog: (String) -> Unit = {},
-    val onCloseEditContainerDialog: () -> Unit = {},
+    val onCloseEditContainerDialog: (String?) -> Unit = {},
     val onSaveContainerModel: (ContainerModel) -> Unit = {},
     val onDeleteContainerInstance: (String) -> Unit = {},
 

@@ -12,7 +12,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -26,8 +25,6 @@ import dev.mnascimentos.aureole.composable.appitem.AppItemRow
 import dev.mnascimentos.aureole.composable.appitem.model.AppItemRowConfig
 import dev.mnascimentos.aureole.composable.favorites.model.FavoriteAppsDialogActions
 import dev.mnascimentos.aureole.composable.favorites.model.FavoriteAppsDialogConfig
-import dev.mnascimentos.aureole.composable.favorites.model.FavoriteAppsScreenMode
-import dev.mnascimentos.aureole.composable.favorites.model.backTarget
 import dev.mnascimentos.aureole.composable.preview.AureolePreviewFrame
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleEditOverlay
@@ -43,20 +40,12 @@ import kotlinx.coroutines.delay
 private const val DISMISS_DELAY_MS = 300L
 private const val PREVIEW_MAX_APPS = 4
 
-@Composable
-@ReadOnlyComposable
-private fun favoriteAppsTitle(mode: FavoriteAppsScreenMode): String = when (mode) {
-    FavoriteAppsScreenMode.MAIN -> stringResource(R.string.home_favorites_dialog_title)
-    FavoriteAppsScreenMode.MANAGE -> stringResource(R.string.home_favorites_choose)
-}
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FavoriteAppsDialog(
     config: FavoriteAppsDialogConfig,
     actions: FavoriteAppsDialogActions,
-    modifier: Modifier = Modifier,
-    initialMode: FavoriteAppsScreenMode = FavoriteAppsScreenMode.MAIN
+    modifier: Modifier = Modifier
 ) {
     var isVisible by remember { mutableStateOf(true) }
 
@@ -67,53 +56,32 @@ fun FavoriteAppsDialog(
         }
     }
 
-    var currentMode by remember { mutableStateOf(initialMode) }
-    var searchQuery by remember(currentMode) { mutableStateOf("") }
+    var searchQuery by remember { mutableStateOf("") }
 
     val previewFavoriteApps = rememberPreviewFavoriteApps(config)
-
-    val titleText = favoriteAppsTitle(currentMode)
-    // Opened straight on the manage list (the onboarding task), back closes the sheet instead of showing the menu.
-    val goBack = {
-        currentMode.backTarget(entryMode = initialMode)?.let { currentMode = it } ?: run { isVisible = false }
-    }
 
     AureoleEditOverlay(
         onDismissRequest = { isVisible = false },
         modifier = modifier,
         params = AureoleEditOverlayParams(
             config = AureoleEditOverlayConfig(
-                title = titleText,
+                title = stringResource(R.string.home_favorites_choose),
                 isVisible = isVisible,
                 animated = true,
                 isLeftHanded = config.rowConfig.isLeftHandedMode,
                 onSettingsClick = actions.onSettingsClick,
-                onBackPress = goBack
+                onBackPress = { isVisible = false }
             ),
             previewContent = {
                 AureolePreviewFrame {
                     FavoriteAppsPreviewContent(previewFavoriteApps = previewFavoriteApps, rowConfig = config.rowConfig)
                 }
             },
-            bottomBarContent = if (currentMode == FavoriteAppsScreenMode.MAIN) {
-                null
-            } else {
-                {
-                    FavoriteAppsBottomBar(
-                        onBack = goBack,
-                        searchQuery = searchQuery,
-                        onSearchQueryChange = { searchQuery = it }
-                    )
-                }
+            bottomBarContent = {
+                FavoriteAppsBottomBar(searchQuery = searchQuery, onSearchQueryChange = { searchQuery = it })
             },
             sheetContent = {
-                FavoriteAppsSheetContent(
-                    currentMode = currentMode,
-                    config = config,
-                    actions = actions,
-                    onModeChange = { currentMode = it },
-                    searchQuery = searchQuery
-                )
+                FavoriteAppsSheetContent(config = config, actions = actions, searchQuery = searchQuery)
             }
         )
     )

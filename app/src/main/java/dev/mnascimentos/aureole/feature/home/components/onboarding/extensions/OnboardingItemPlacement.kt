@@ -6,47 +6,75 @@ import dev.mnascimentos.aureole.feature.home.components.onboarding.model.Onboard
 import dev.mnascimentos.aureole.feature.home.components.onboarding.model.OnboardingPlacementRequest
 import dev.mnascimentos.aureole.feature.home.grid.GridDefaults
 import dev.mnascimentos.aureole.feature.home.grid.GridEngineUtils
+import dev.mnascimentos.aureole.feature.home.grid.model.SlotSearchRequest
 
 private const val CLOCK_COLS = 10
 private const val CLOCK_ROWS = 4
 private const val CONTAINER_COLS = 4
 private const val CONTAINER_ROWS = 6
-private const val WIDGETS_COLS = 14
-private const val WIDGETS_ROWS = 6
 
 /**
- * The compact size an onboarding item gets, so no item takes the whole home before the layout step: a short
- * clock, a narrow container and a widget list one row tall. Other types keep their default size.
+ * The size an onboarding item gets until the layout step, so no item takes the whole home: in portrait a clock
+ * 10x4 and a container 4x6 cells (a widget list keeps its default); in landscape the smallest the type accepts.
+ * Other types keep their default size.
  */
-internal fun onboardingDefaultSize(type: LauncherItemType): OnboardingItemSize = when (type) {
-    LauncherItemType.CLOCK -> OnboardingItemSize(CLOCK_COLS, CLOCK_ROWS)
-    LauncherItemType.SHORTCUTS_CONTAINER -> OnboardingItemSize(CONTAINER_COLS, CONTAINER_ROWS)
-    LauncherItemType.WIDGET_LIST -> OnboardingItemSize(WIDGETS_COLS, WIDGETS_ROWS)
-    else -> GridDefaults.getDefaultSpanForType(type).first.let { OnboardingItemSize(it.first, it.second) }
+internal fun onboardingDefaultSize(type: LauncherItemType, isLandscape: Boolean = false): OnboardingItemSize {
+    val (default, minimum) = GridDefaults.getDefaultSpanForType(type)
+    return when {
+        isLandscape && type in COMPACT_TYPES -> OnboardingItemSize(minimum.first, minimum.second)
+        type == LauncherItemType.CLOCK -> OnboardingItemSize(CLOCK_COLS, CLOCK_ROWS)
+        type == LauncherItemType.SHORTCUTS_CONTAINER -> OnboardingItemSize(CONTAINER_COLS, CONTAINER_ROWS)
+        else -> OnboardingItemSize(default.first, default.second)
+    }
 }
 
+private val COMPACT_TYPES = setOf(
+    LauncherItemType.CLOCK,
+    LauncherItemType.SHORTCUTS_CONTAINER,
+    LauncherItemType.WIDGET_LIST
+)
+
 /**
- * The item for [request] at its compact size: where the default layout puts that type when it is free
- * there, else in the first free slot. Null when the grid has no room (even for a 1x1 item).
+ * The item for [request] at its onboarding size: where the default layout puts that type when it is free
+ * there, else in the first free slot; when that size fits nowhere, the largest size that fits (never below the
+ * type's minimum). Null when the grid has no room (even for a 1x1 item).
  */
 internal fun placeOnboardingItem(request: OnboardingPlacementRequest): LauncherItemState? {
-    val size = onboardingDefaultSize(request.type)
+    val size = onboardingDefaultSize(request.type, request.isLandscape)
     val atDefault = GridDefaults.getDefaultItem(request.type, request.isLandscape, request.isLeftHanded)
         ?.copy(id = request.id, colSpan = size.colSpan, rowSpan = size.rowSpan, children = emptyList())
         ?.takeIf { it.isFreeIn(request) }
-    if (atDefault != null) return atDefault
-    val slot = GridEngineUtils.findFirstAvailableSlot(size.colSpan, size.rowSpan, request.items, request.limits)
-    return slot?.let { (col, row) ->
-        LauncherItemState(
-            id = request.id,
-            type = request.type,
-            col = col,
-            row = row,
-            colSpan = size.colSpan,
-            rowSpan = size.rowSpan
-        )
+    return atDefault
+        ?: request.firstFreeItem(size)
+        ?: request.largestFreeItem(size)
+}
+
+private fun OnboardingPlacementRequest.firstFreeItem(size: OnboardingItemSize): LauncherItemState? =
+    GridEngineUtils.findFirstAvailableSlot(size.colSpan, size.rowSpan, items, limits)
+        ?.let { (col, row) -> newItem(size, col, row) }
+
+private fun OnboardingPlacementRequest.largestFreeItem(size: OnboardingItemSize): LauncherItemState? {
+    val minimum = GridDefaults.getDefaultSpanForType(type).second
+    val search = SlotSearchRequest(
+        targetColSpan = size.colSpan,
+        targetRowSpan = size.rowSpan,
+        minColSpan = minimum.first,
+        minRowSpan = minimum.second,
+        limits = limits
+    )
+    return GridEngineUtils.findLargestAvailableSlot(search, items)?.let { (colSpan, rowSpan, slot) ->
+        newItem(OnboardingItemSize(colSpan, rowSpan), slot.first, slot.second)
     }
 }
+
+private fun OnboardingPlacementRequest.newItem(size: OnboardingItemSize, col: Int, row: Int) = LauncherItemState(
+    id = id,
+    type = type,
+    col = col,
+    row = row,
+    colSpan = size.colSpan,
+    rowSpan = size.rowSpan
+)
 
 private fun LauncherItemState.isFreeIn(request: OnboardingPlacementRequest): Boolean =
     GridEngineUtils.isWithinBounds(col, row, colSpan, rowSpan, request.limits) &&

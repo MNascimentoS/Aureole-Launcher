@@ -2,9 +2,7 @@ package dev.mnascimentos.aureole.composable.favorites
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
@@ -14,16 +12,13 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
-import dev.mnascimentos.aureole.R
-import dev.mnascimentos.aureole.composable.actions.AureolePrimaryActionButton
 import dev.mnascimentos.aureole.composable.appitem.AppListSkeletonComponent
 import dev.mnascimentos.aureole.composable.favorites.model.FavoriteAppsBodyParams
 import dev.mnascimentos.aureole.composable.favorites.model.FavoriteAppsDialogActions
 import dev.mnascimentos.aureole.composable.favorites.model.FavoriteAppsDialogConfig
-import dev.mnascimentos.aureole.composable.favorites.model.FavoriteAppsScreenMode
 import dev.mnascimentos.aureole.composable.favorites.model.FavoriteSectionActions
 import dev.mnascimentos.aureole.composable.favorites.model.FavoriteSectionParams
+import dev.mnascimentos.aureole.composable.favorites.model.ShowAllAppsParams
 import dev.mnascimentos.aureole.composable.favorites.model.reorderFavoritePackages
 import dev.mnascimentos.aureole.composable.mirror.LeftHandMirror
 import dev.mnascimentos.aureole.composable.reorder.model.move
@@ -35,43 +30,20 @@ import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import kotlinx.coroutines.delay
 
+/** The footer of the sheet: the search field. The sheet has no back button; the system back closes it. */
 @Composable
-internal fun FavoriteAppsBottomBar(
-    onBack: () -> Unit,
-    searchQuery: String = "",
-    onSearchQueryChange: (String) -> Unit = {}
-) {
-    Column(modifier = Modifier.fillMaxWidth()) {
-        FavoriteAppsSearchInput(query = searchQuery, onQueryChange = onSearchQueryChange)
-        Spacer(modifier = Modifier.height(AureoleDS.dimens.small))
-        AureolePrimaryActionButton(
-            label = stringResource(R.string.home_favorites_back),
-            onClick = onBack,
-            modifier = Modifier.fillMaxWidth()
-        )
-    }
+internal fun FavoriteAppsBottomBar(searchQuery: String = "", onSearchQueryChange: (String) -> Unit = {}) {
+    FavoriteAppsSearchInput(query = searchQuery, onQueryChange = onSearchQueryChange)
 }
 
+/** The single "Choose favorites" screen: the list header (switch, Customize home) over the apps to pick and order. */
 @Composable
 internal fun FavoriteAppsSheetContent(
-    currentMode: FavoriteAppsScreenMode,
     config: FavoriteAppsDialogConfig,
     actions: FavoriteAppsDialogActions,
-    onModeChange: (FavoriteAppsScreenMode) -> Unit,
     searchQuery: String = ""
 ) {
-    when (currentMode) {
-        FavoriteAppsScreenMode.MAIN -> FavoriteAppsMainContent(
-            config = config,
-            onModeChange = onModeChange,
-            onCustomizeHome = actions.onCustomizeHome
-        )
-        FavoriteAppsScreenMode.MANAGE -> FavoriteAppsDialogContent(
-            config = config,
-            actions = actions,
-            searchQuery = searchQuery
-        )
-    }
+    FavoriteAppsDialogContent(config = config, actions = actions, searchQuery = searchQuery)
 }
 
 private const val SEARCH_DEBOUNCE_DELAY_MS = 300L
@@ -148,6 +120,7 @@ private fun FavoriteAppsDialogBody(
 
     // The search lives in the footer of the sheet (see FavoriteAppsBottomBar), below the divider.
     Column(modifier = Modifier.fillMaxWidth()) {
+        FavoriteAppsListHeader(config = config, onCustomizeHome = actions.onCustomizeHome)
         if (config.isLoading) {
             AppListSkeletonComponent(modifier = Modifier.weight(1f))
         } else {
@@ -210,13 +183,12 @@ private fun FavoriteAppsSections(
 private fun FavoriteAppsSheetContentManagePreview() {
     AureoleLauncherTheme {
         FavoriteAppsSheetContent(
-            currentMode = FavoriteAppsScreenMode.MANAGE,
             config = FavoriteAppsDialogConfig(
                 allApps = emptyList(),
-                favoriteAppPackages = emptyList()
+                favoriteAppPackages = emptyList(),
+                showAllApps = ShowAllAppsParams(checked = true, onCheckedChange = {})
             ),
-            actions = FavoriteAppsDialogActions(),
-            onModeChange = {}
+            actions = FavoriteAppsDialogActions(onCustomizeHome = {})
         )
     }
 }

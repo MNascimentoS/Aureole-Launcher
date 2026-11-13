@@ -32,25 +32,18 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.R
-import dev.mnascimentos.aureole.composable.appitem.AureoleAppIcon
-import dev.mnascimentos.aureole.composable.appitem.model.AureoleAppIconParams
 import dev.mnascimentos.aureole.composable.dialogs.CreateFolderDialog
 import dev.mnascimentos.aureole.composable.mirror.LeftHandMirror
 import dev.mnascimentos.aureole.composable.overlay.AureoleOverlayWindow
+import dev.mnascimentos.aureole.composable.preview.aureoleDashedBorder
 import dev.mnascimentos.aureole.composable.reorder.ReorderableColumn
 import dev.mnascimentos.aureole.composable.reorder.model.ReorderableActions
 import dev.mnascimentos.aureole.composable.reorder.model.ReorderableParams
 import dev.mnascimentos.aureole.composable.reorder.rememberReorderAutoScroll
 import dev.mnascimentos.aureole.composable.reorder.reorderAutoScrollViewport
-import dev.mnascimentos.aureole.core.data.model.AppFolder
 import dev.mnascimentos.aureole.core.data.model.AppInfo
-import dev.mnascimentos.aureole.core.data.model.ContainerItemEntity
-import dev.mnascimentos.aureole.core.data.model.ContainerItemType
 import dev.mnascimentos.aureole.core.data.model.ContainerModel
 import dev.mnascimentos.aureole.core.designsystem.icons.Add
-import dev.mnascimentos.aureole.core.designsystem.icons.AppSelect
-import dev.mnascimentos.aureole.core.designsystem.icons.Click
-import dev.mnascimentos.aureole.core.designsystem.icons.Folder
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
@@ -81,6 +74,7 @@ internal fun ManageItemsContent(
     }
 
     Column(modifier = modifier) {
+        ManageItemsSectionLabel(text = stringResource(R.string.home_container_edit_section_add))
         ManageItemsAddSection(
             state = state,
             allApps = allApps,
@@ -89,18 +83,41 @@ internal fun ManageItemsContent(
 
         Spacer(modifier = Modifier.height(AureoleDS.dimens.medium))
 
-        Text(
-            text = stringResource(R.string.home_container_edit_child_components, state.itemsList.size),
-            style = AureoleDS.typography.titleMedium,
-            fontWeight = FontWeight.Bold,
-            modifier = Modifier.padding(bottom = AureoleDS.dimens.small).fillMaxWidth(),
-            color = AureoleDS.colors.onSurfaceHigh
+        ManageItemsSectionLabel(
+            text = stringResource(R.string.home_container_edit_child_components),
+            count = state.itemsList.size
         )
 
         ManageItemsListSection(state = state, allApps = allApps)
 
         Spacer(modifier = Modifier.height(AureoleDS.dimens.large))
         EditContainerBackButton(onClick = onBack)
+    }
+}
+
+/** Small caps section label; [count], when given, sits at the end of the row as a separate text. */
+@Composable
+private fun ManageItemsSectionLabel(text: String, modifier: Modifier = Modifier, count: Int? = null) {
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(bottom = AureoleDS.dimens.xSmall),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(
+            text = text,
+            style = AureoleDS.typography.labelMedium,
+            fontWeight = FontWeight.Bold,
+            color = AureoleDS.colors.onSurfaceMedium
+        )
+        if (count != null) {
+            Text(
+                text = count.toString(),
+                style = AureoleDS.typography.labelMedium,
+                color = AureoleDS.colors.onSurfaceMedium
+            )
+        }
     }
 }
 
@@ -212,10 +229,7 @@ internal fun ManageItemsListSection(
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(
-                    AureoleDS.colors.surfaceVariant.copy(alpha = 0.25f),
-                    RoundedCornerShape(AureoleDS.dimens.radiusMedium)
-                )
+                .aureoleDashedBorder(color = AureoleDS.colors.outline.copy(alpha = 0.5f))
                 .padding(AureoleDS.dimens.medium),
             contentAlignment = Alignment.Center
         ) {
@@ -255,89 +269,6 @@ private fun ReorderableManageItems(state: EditContainerState, allApps: List<AppI
             autoScroll = autoScroll
         ) { item ->
             ManageItemRow(params = ManageItemRowParams(item = item, folders = state.folders, allApps = allApps))
-        }
-    }
-}
-
-private fun resolveFolder(item: ContainerItemEntity, folders: List<AppFolder>): AppFolder? {
-    if (item.itemType != ContainerItemType.FOLDER) return null
-    return folders.find { it.id == item.folderId }
-}
-
-private fun resolveApp(item: ContainerItemEntity, allApps: List<AppInfo>): AppInfo? {
-    if (item.itemType != ContainerItemType.APP) return null
-    return allApps.find { it.packageName == item.packageName }
-}
-
-@Composable
-internal fun ManageItemRow(params: ManageItemRowParams) {
-    val item = params.item
-    val defaultFolderLabel = stringResource(R.string.home_container_edit_folder_label)
-    val defaultAppLabel = stringResource(R.string.home_container_edit_app_label)
-    val defaultQuickButtonLabel = stringResource(R.string.home_grid_item_quick_button)
-
-    val folder = resolveFolder(item, params.folders)
-    val app = resolveApp(item, params.allApps)
-
-    val title = when (item.itemType) {
-        ContainerItemType.FOLDER -> folder?.name ?: defaultFolderLabel
-        ContainerItemType.APP -> app?.label ?: item.packageName ?: defaultAppLabel
-        ContainerItemType.QUICK_BUTTON -> defaultQuickButtonLabel
-    }
-
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .background(
-                color = AureoleDS.colors.surfaceVariant.copy(alpha = 0.3f),
-                shape = RoundedCornerShape(AureoleDS.dimens.radiusSmall)
-            )
-            .padding(horizontal = AureoleDS.dimens.small, vertical = AureoleDS.dimens.small),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(AureoleDS.dimens.small)
-    ) {
-        ManageItemRowIcon(itemType = item.itemType, app = app)
-
-        Text(
-            text = title,
-            style = AureoleDS.typography.bodyMedium,
-            fontWeight = FontWeight.SemiBold,
-            color = AureoleDS.colors.onSurfaceHigh
-        )
-    }
-}
-
-@Composable
-private fun ManageItemRowIcon(
-    itemType: ContainerItemType,
-    app: AppInfo?
-) {
-    when (itemType) {
-        ContainerItemType.FOLDER -> {
-            AureoleDS.icons.Folder(
-                tint = AureoleDS.colors.onSurfaceHigh,
-                modifier = Modifier.size(AureoleDS.dimens.iconMedium)
-            )
-        }
-        ContainerItemType.APP -> {
-            if (app != null) {
-                AureoleAppIcon(
-                    app = app,
-                    size = AureoleDS.dimens.iconMedium,
-                    params = AureoleAppIconParams(contentDescription = app.label)
-                )
-            } else {
-                AureoleDS.icons.AppSelect(
-                    tint = AureoleDS.colors.onSurfaceHigh,
-                    modifier = Modifier.size(AureoleDS.dimens.iconMedium)
-                )
-            }
-        }
-        ContainerItemType.QUICK_BUTTON -> {
-            AureoleDS.icons.Click(
-                tint = AureoleDS.colors.onSurfaceHigh,
-                modifier = Modifier.size(AureoleDS.dimens.iconMedium)
-            )
         }
     }
 }

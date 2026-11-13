@@ -44,7 +44,11 @@ data class OnboardingUiState(
     /** The home is on screen; the celebration never plays behind another app or Settings. */
     val isHomeInForeground: Boolean = true,
     /** Every task got done while the home was hidden: celebrate on the next resume. Never persisted. */
-    val isCelebrationPending: Boolean = false
+    val isCelebrationPending: Boolean = false,
+    /** The task screen just closed: the home shows alone for a moment before the list comes back. Never persisted. */
+    val isHomePeeking: Boolean = false,
+    /** The pending task's own screen saved what the task asks for (the container editor's Save). Never persisted. */
+    val isPendingTaskSaved: Boolean = false
 )
 
 val OnboardingUiState.isBlocking: Boolean

@@ -93,9 +93,11 @@ private fun WidgetPickerOverlay(
             params = WidgetPickerScreenParams(
                 isBlurEnabled = uiState.isHazeEnabled,
                 hazeState = LocalHazeState.current,
+                // Select first: the onboarding judges its widget task when the picker closes, so the widget
+                // (or its bind screen) must already be there, else the task fails and drops the widget list.
                 onWidgetSelected = { provider ->
-                    onDismiss()
                     onWidgetSelected(provider)
+                    onDismiss()
                 },
                 onDismiss = onDismiss
             )
@@ -142,8 +144,7 @@ private fun FavoritePickerOverlay(
                     }
                 },
                 onDismiss = actions.onDismissFavoritePicker
-            ),
-            initialMode = uiState.favoritePickerInitialMode
+            )
         )
     }
 }

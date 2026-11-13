@@ -79,7 +79,6 @@
     <string name="settings_advanced_contributors">Contributors</string>
     <string name="settings_advanced_privacy_policy">Privacy policy</string>
     <string name="settings_advanced_terms_of_service">Terms of service</string>
-    <string name="settings_advanced_privacy_settings">Privacy settings</string>
     <string name="settings_advanced_open_source_licenses">Open source licenses</string>
     <string name="settings_advanced_uninstall_dialog_title">Uninstall launcher?</string>
     <string name="settings_advanced_contact_us">Contact us</string>
@@ -185,10 +184,8 @@
     <string name="home_clock_greeting_evening">Good evening</string>
 
     <!-- Favorites Dialog -->
-    <string name="home_favorites_dialog_title">Apps List</string>
     <string name="home_favorites_choose">Choose favorites</string>
     <string name="home_apps_list_show_all">Show all apps</string>
-    <string name="home_apps_list_show_all_description">Favorites stay at the top</string>
     <string name="home_favorites_count">Favorites (%1$d)</string>
     <string name="home_favorites_disable_all">Remove all</string>
     <string name="home_favorites_none_selected">No favorite app selected.</string>
@@ -197,7 +194,6 @@
     <string name="home_favorites_none_other_found">No other app found.</string>
     <string name="home_favorites_search_placeholder">Search app&#8230;</string>
     <string name="home_favorites_tap_to_select">Tap to select Favorites</string>
-    <string name="home_favorites_back">Back</string>
     <string name="home_favorites_remove">Remove from favorites</string>
 
     <!-- Widgets -->
@@ -246,8 +242,9 @@
     <string name="home_container_edit_create_folder_btn">Create Folder Button</string>
     <string name="home_container_edit_folder_labels">Show Folder Labels</string>
     <string name="home_container_edit_grid_folder_mode">Grid Folder Mode</string>
-    <string name="home_container_edit_child_components">Child Components (%1$d)</string>
-    <string name="home_container_edit_none_added">No component added yet.</string>
+    <string name="home_container_edit_child_components">ITEMS</string>
+    <string name="home_container_edit_section_add">ADD</string>
+    <string name="home_container_edit_none_added">Add apps, folders or quick buttons above.</string>
     <string name="home_container_edit_app_label">App</string>
     <string name="home_container_edit_folder_label">Folder</string>
     <string name="home_container_edit_add_app">Add App&#8230;</string>
@@ -303,9 +300,23 @@
     <string name="settings_appearance_solid_color">Solid color</string>
     <string name="settings_appearance_custom_image">Custom image</string>
     <string name="settings_appearance_pick_palette_title">Pick a palette</string>
+    <string name="settings_licenses_title">Open source licenses</string>
+    <string name="settings_licenses_section_libraries">Libraries</string>
+    <string name="settings_licenses_section_fonts">Fonts</string>
+    <string name="settings_licenses_section_icons">Icons</string>
+    <string name="settings_licenses_view_project">View project</string>
+    <string name="settings_licenses_view_terms">View terms</string>
+    <string name="settings_licenses_apache">Apache 2.0</string>
+    <string name="settings_licenses_ofl">SIL OFL 1.1</string>
+    <string name="settings_licenses_terms">Terms of use</string>
+    <string name="settings_licenses_author_license">%1$s · %2$s</string>
+    <string name="settings_licenses_copyright">Copyright © %1$s</string>
     <string name="settings_contributors_title">Contributors</string>
-    <string name="settings_contributors_name">Name</string>
-    <string name="settings_contributors_subtitle">Something something</string>
+    <string name="settings_contributors_aislan_name">Aislan Tavares</string>
+    <string name="settings_contributors_aislan_role">The Dreamer</string>
+    <string name="settings_contributors_mateus_name">Mateus Nascimento</string>
+    <string name="settings_contributors_mateus_role">The Creator</string>
+    <string name="settings_contributors_open_github">Open GitHub profile</string>
     <string name="home_grid_remove_component">Remove Component</string>
     <string name="home_grid_customize_clock">Customize Clock</string>
     <string name="home_grid_edit_favorites">Edit Favorites and Settings</string>
@@ -393,13 +404,10 @@
     <string name="home_onboarding_task_skip">Skip</string>
     <string name="home_onboarding_task_skipped_a11y">%1$s, skipped. Tap to do it now</string>
     <string name="home_onboarding_task_settings">Check more &lt;b&gt;settings&lt;/b&gt;</string>
-    <string name="home_onboarding_picker_hint">Tap a palette or font to try it. Nothing changes until you tap Apply.</string>
-    <string name="home_onboarding_picker_done">Got it</string>
     <string name="home_onboarding_done_title">All set</string>
     <string name="home_onboarding_done_subtitle">Your Aureole is shining. Enjoy!</string>
     <string name="home_onboarding_task_done_a11y">%1$s, done</string>
     <string name="home_onboarding_task_pending_a11y">%1$s, not done yet</string>
-    <string name="settings_advanced_replay_onboarding">Replay welcome tour</string>
     <string name="overlay_sheet_gesture_zone_description">Hold the top of the sheet</string>
     <string name="overlay_sheet_action_expand">Expand</string>
     <string name="overlay_sheet_action_collapse">Collapse</string>

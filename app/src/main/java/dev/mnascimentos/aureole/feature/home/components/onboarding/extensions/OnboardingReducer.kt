@@ -64,7 +64,7 @@ internal object OnboardingReducer {
             !previous.onboarding.completedTasks.containsAll(tasks)
         val updated = onboarding.copy(
             completedTasks = tasks,
-            isChecklistExpanded = onboarding.isChecklistExpanded || hasNewTask
+            isChecklistExpanded = onboarding.isChecklistExpanded || (hasNewTask && !onboarding.isHomePeeking)
         )
         return if (updated == onboarding) next else next.copy(onboarding = updated)
     }

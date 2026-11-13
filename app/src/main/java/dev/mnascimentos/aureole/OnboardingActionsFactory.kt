@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.Intent
 import dev.mnascimentos.aureole.core.data.model.OnboardingTask
 import dev.mnascimentos.aureole.feature.home.HomeViewModel
-import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.addGridItemSilently
 import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.confirmAppearancePicker
 import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.dismissAppearancePicker
 import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.dismissChecklist
@@ -22,7 +21,6 @@ import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.sk
 import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.startGridTask
 import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.startLayoutTask
 import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.startOnboarding
-import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.startWidgetTask
 import dev.mnascimentos.aureole.feature.home.components.onboarding.model.OnboardingActions
 import dev.mnascimentos.aureole.feature.home.components.onboarding.model.OnboardingSignal
 import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
@@ -30,8 +28,8 @@ import dev.mnascimentos.aureole.feature.settings.extensions.SettingsIntentUtils
 import dev.mnascimentos.aureole.util.DefaultHomeRoleUtils
 
 /**
- * Maps onboarding callbacks to the view model. The clock and container are saved on the home with no editor;
- * favorites and widgets place their list, then open the choice; the layout step opens the grid edit mode.
+ * Maps onboarding callbacks to the view model. The clock, container, favorites and widget tasks place their item
+ * on the home and open its own screen, with no grid edit mode; the layout step opens the grid edit mode.
  */
 class OnboardingActionsFactory(
     private val context: Context,
@@ -66,9 +64,10 @@ class OnboardingActionsFactory(
         when (task) {
             OnboardingTask.SET_DEFAULT_HOME -> requestDefaultHome()
             OnboardingTask.CHOOSE_PALETTE, OnboardingTask.CHOOSE_FONT -> Unit
-            OnboardingTask.ADD_CLOCK, OnboardingTask.FILL_CONTAINER -> viewModel.addGridItemSilently(task)
+            OnboardingTask.ADD_CLOCK -> viewModel.startGridTask(task)?.let(homeActions.onOpenEditClockBottomSheet)
+            OnboardingTask.FILL_CONTAINER -> viewModel.startGridTask(task)?.let(homeActions.onOpenEditContainerDialog)
             OnboardingTask.ADD_FAVORITE_APPS -> viewModel.startGridTask(task)?.let(homeActions.onChooseFavorites)
-            OnboardingTask.ADD_WIDGET -> viewModel.startWidgetTask(task)?.let(homeActions.onAddWidgetClick)
+            OnboardingTask.ADD_WIDGET -> viewModel.startGridTask(task)?.let(homeActions.onAddWidgetClick)
             OnboardingTask.ADJUST_LAYOUT -> viewModel.startLayoutTask()
             OnboardingTask.EXPLORE_SETTINGS -> homeActions.onSettingsClick()
         }
