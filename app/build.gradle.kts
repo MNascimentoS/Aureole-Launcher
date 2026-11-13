@@ -157,7 +157,9 @@ val coverageFileFilter = listOf(
     "**/*Database*.*",
     "dev/mnascimentos/aureole/data/db/*",
     "**/ComposableSingletons*.*",
-    "**/*Preview*.*"
+    "**/*Preview*.*",
+    // ViewModels and their extension files are not measured: their Robolectric tests were removed as flaky.
+    "**/*ViewModel*.*"
 )
 
 val coverageClassDirectories = files(
