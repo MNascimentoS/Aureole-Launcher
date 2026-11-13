@@ -88,7 +88,7 @@ class OnboardingSkipTest {
             skippedTasks = setOf(OnboardingTask.ADD_CLOCK)
         )
 
-        assertEquals(OnboardingTask.ADD_WIDGET, state.nextPendingTask)
+        assertEquals(OnboardingTask.ADD_FAVORITE_APPS, state.nextPendingTask)
         assertEquals(4, state.resolvedTasks.size)
         assertEquals(4f / OnboardingTask.entries.size, state.taskProgress, 0.0001f)
     }

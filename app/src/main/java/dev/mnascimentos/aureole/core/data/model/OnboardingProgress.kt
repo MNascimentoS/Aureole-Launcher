@@ -20,9 +20,9 @@ enum class OnboardingTask(val isSkippable: Boolean = false) {
     CHOOSE_PALETTE,
     CHOOSE_FONT,
     ADD_CLOCK(isSkippable = true),
-    ADD_WIDGET(isSkippable = true),
     ADD_FAVORITE_APPS(isSkippable = true),
     FILL_CONTAINER(isSkippable = true),
+    ADD_WIDGET(isSkippable = true),
     ADJUST_LAYOUT(isSkippable = true),
     EXPLORE_SETTINGS
 }
