@@ -2,8 +2,10 @@ package dev.mnascimentos.aureole.core.data.repository
 
 import android.content.Context
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.net.Uri
 import androidx.core.graphics.createBitmap
+import androidx.exifinterface.media.ExifInterface
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNull
@@ -220,11 +222,70 @@ class SettingsRepositoryWallpaperTest {
         assertEquals(826, repository.lastSeenVersionCode)
     }
 
+    @Test
+    fun `when a landscape photo has EXIF rotation 90, should save it upright`() {
+        val source = jpegFile(
+            "exif90.jpg",
+            width = WIDE,
+            height = TALL,
+            orientation = ExifInterface.ORIENTATION_ROTATE_90
+        )
+
+        assertTrue(repository.saveCustomWallpaper(Uri.fromFile(source).toString()))
+
+        assertEquals(TALL to WIDE, savedSize())
+    }
+
+    @Test
+    fun `when a photo has no EXIF rotation, should keep its size`() {
+        val source = jpegFile("exif0.jpg", width = WIDE, height = TALL, orientation = ExifInterface.ORIENTATION_NORMAL)
+
+        assertTrue(repository.saveCustomWallpaper(Uri.fromFile(source).toString()))
+
+        assertEquals(WIDE to TALL, savedSize())
+    }
+
+    @Test
+    fun `when a photo has EXIF rotation 180, should keep its size`() {
+        val source = jpegFile(
+            "exif180.jpg",
+            width = WIDE,
+            height = TALL,
+            orientation = ExifInterface.ORIENTATION_ROTATE_180
+        )
+
+        assertTrue(repository.saveCustomWallpaper(Uri.fromFile(source).toString()))
+
+        assertEquals(WIDE to TALL, savedSize())
+    }
+
+    private fun savedSize(): Pair<Int, Int> {
+        val bounds = BitmapFactory.Options().apply { inJustDecodeBounds = true }
+        BitmapFactory.decodeFile(requireNotNull(repository.customWallpaperPath), bounds)
+        return bounds.outWidth to bounds.outHeight
+    }
+
+    private fun jpegFile(name: String, width: Int, height: Int, orientation: Int): File {
+        val file = File(context.cacheDir, name)
+        val bitmap: Bitmap = createBitmap(width, height)
+        file.outputStream().use { bitmap.compress(Bitmap.CompressFormat.JPEG, 100, it) }
+        ExifInterface(file.absolutePath).apply {
+            setAttribute(ExifInterface.TAG_ORIENTATION, orientation.toString())
+            saveAttributes()
+        }
+        return file
+    }
+
     private fun pngFile(name: String): File {
         val file = File(context.cacheDir, name)
         val bitmap: Bitmap = createBitmap(4, 4)
         file.outputStream().use { bitmap.compress(Bitmap.CompressFormat.PNG, 100, it) }
         return file
+    }
+
+    private companion object {
+        const val WIDE = 40
+        const val TALL = 20
     }
 }
 

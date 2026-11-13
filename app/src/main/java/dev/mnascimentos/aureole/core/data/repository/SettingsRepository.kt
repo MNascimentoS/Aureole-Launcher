@@ -5,13 +5,13 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Build
 import androidx.annotation.VisibleForTesting
 import androidx.core.content.edit
 import androidx.core.net.toUri
 import dev.mnascimentos.aureole.core.data.db.AppDatabase
+import dev.mnascimentos.aureole.core.data.image.decodeWallpaperBitmap
 import dev.mnascimentos.aureole.core.data.model.ClockConfig
 import dev.mnascimentos.aureole.core.designsystem.utils.HazeUtils
 import timber.log.Timber
@@ -257,12 +257,17 @@ class SettingsRepository(private val context: Context) {
         .getOrDefault(false)
 
     private fun writeCustomWallpaper(uri: Uri): Boolean {
-        val bitmap = context.contentResolver.openInputStream(uri)
-            ?.use { BitmapFactory.decodeStream(it) } ?: return false
+        val screen = context.resources.displayMetrics
+        val bitmap = decodeWallpaperBitmap(
+            context.contentResolver,
+            uri,
+            target = maxOf(screen.widthPixels, screen.heightPixels)
+        ) ?: return false
         val file = File(context.filesDir, "custom_wallpaper.jpg")
         FileOutputStream(file).use { out ->
             bitmap.compress(Bitmap.CompressFormat.JPEG, JPEG_QUALITY, out)
         }
+        bitmap.recycle()
         customWallpaperPath = file.absolutePath
         isCustomWallpaperSet = true
         return true
