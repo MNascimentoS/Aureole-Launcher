@@ -256,6 +256,8 @@
     <string name="home_folder_edit_shortcuts">Edit folder items</string>
     <string name="home_folder_edit">Edit folder</string>
     <string name="home_folder_remove">Remove folder</string>
+    <string name="home_menu_customize_home">Customize home</string>
+    <string name="home_menu_customize_home_subtitle">Adjust, add components…</string>
     <string name="home_folder_container_settings">Container settings</string>
     <string name="home_folder_settings">Folder settings</string>
     <string name="home_folder_is_empty">Folder is empty</string>

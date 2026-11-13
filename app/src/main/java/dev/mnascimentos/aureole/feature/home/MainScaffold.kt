@@ -135,6 +135,12 @@ private fun FavoritePickerOverlay(
                 onToggleFavorite = { pkg -> actions.onToggleFavoriteWithContainer(pkg, containerId) },
                 onUpdateFavoritePackages = { cId, pkgs -> actions.onUpdateFavoritePackages(cId, pkgs) },
                 onSettingsClick = actions.onSettingsClick,
+                onCustomizeHome = appsList?.let {
+                    {
+                        actions.onDismissFavoritePicker()
+                        actions.onOpenCustomizeBottomSheet()
+                    }
+                },
                 onDismiss = actions.onDismissFavoritePicker
             ),
             initialMode = uiState.favoritePickerInitialMode

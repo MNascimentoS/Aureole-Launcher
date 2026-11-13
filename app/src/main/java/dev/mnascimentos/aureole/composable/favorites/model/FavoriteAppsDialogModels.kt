@@ -64,6 +64,8 @@ data class FavoriteAppsDialogActions(
     val onToggleFavorite: (String) -> Unit = {},
     val onUpdateFavoritePackages: (String?, List<String>) -> Unit = { _, _ -> },
     val onSettingsClick: (() -> Unit)? = null,
+    /** "Customize home" row of the main menu; null (Settings, drawer favorites) leaves it out. */
+    val onCustomizeHome: (() -> Unit)? = null,
     val onDismiss: () -> Unit = {}
 )
 

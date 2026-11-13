@@ -61,7 +61,11 @@ internal fun FavoriteAppsSheetContent(
     searchQuery: String = ""
 ) {
     when (currentMode) {
-        FavoriteAppsScreenMode.MAIN -> FavoriteAppsMainContent(config = config, onModeChange = onModeChange)
+        FavoriteAppsScreenMode.MAIN -> FavoriteAppsMainContent(
+            config = config,
+            onModeChange = onModeChange,
+            onCustomizeHome = actions.onCustomizeHome
+        )
         FavoriteAppsScreenMode.MANAGE -> FavoriteAppsDialogContent(
             config = config,
             actions = actions,

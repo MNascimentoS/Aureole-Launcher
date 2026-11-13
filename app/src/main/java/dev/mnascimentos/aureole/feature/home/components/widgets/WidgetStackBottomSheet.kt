@@ -11,6 +11,7 @@ import androidx.compose.ui.res.stringResource
 import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.composable.menu.AureoleMenuListSheet
 import dev.mnascimentos.aureole.composable.menu.AureoleSwitchRow
+import dev.mnascimentos.aureole.composable.menu.customizeHomeEntry
 import dev.mnascimentos.aureole.composable.menu.model.MenuEntry
 import dev.mnascimentos.aureole.composable.menu.model.MenuRowParams
 import dev.mnascimentos.aureole.composable.menu.model.MenuSheetParams
@@ -24,6 +25,7 @@ import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.components.widgets.extensions.resolveWidgetPackage
 import dev.mnascimentos.aureole.feature.home.components.widgets.model.WidgetStackBottomSheetParams
+import dev.mnascimentos.aureole.feature.home.model.LocalHomeActions
 import dev.mnascimentos.aureole.feature.settings.SettingsActivity
 import dev.mnascimentos.aureole.util.IntentUtils
 
@@ -38,6 +40,7 @@ internal fun WidgetStackBottomSheet(
     modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
+    val onCustomize = LocalHomeActions.current.onOpenCustomizeBottomSheet
     val widgetAppPackage = remember(params.widgetId, params.appPackage) {
         params.appPackage ?: resolveWidgetPackage(context, params.widgetId)
     }
@@ -51,7 +54,7 @@ internal fun WidgetStackBottomSheet(
             onSettingsClick = { context.startActivity(Intent(context, SettingsActivity::class.java)) }
         )
     ) { dismiss ->
-        widgetStackEntries(params, widgetAppPackage, context, dismiss)
+        widgetStackEntries(params, widgetAppPackage, context, dismiss, onCustomize)
     }
 }
 
@@ -60,7 +63,8 @@ private fun widgetStackEntries(
     params: WidgetStackBottomSheetParams,
     widgetAppPackage: String?,
     context: Context,
-    dismiss: () -> Unit
+    dismiss: () -> Unit,
+    onCustomizeHome: () -> Unit
 ): List<MenuEntry> = buildList {
     add(MenuEntry.Section(text = stringResource(R.string.home_widget_menu_section)))
     if (widgetAppPackage != null) {
@@ -92,6 +96,12 @@ private fun widgetStackEntries(
         )
     )
     add(widgetStackIndicatorEntry(params, dismiss))
+    add(
+        customizeHomeEntry {
+            dismiss()
+            onCustomizeHome()
+        }
+    )
     add(
         MenuEntry.Row(
             MenuRowParams(

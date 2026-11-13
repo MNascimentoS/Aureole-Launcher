@@ -36,7 +36,7 @@ private fun FavoritesMenuDialogCase(isLeftHanded: Boolean, showAllApps: Boolean)
                     rowConfig = AppItemRowConfig(isLeftHandedMode = isLeftHanded),
                     showAllApps = ShowAllAppsParams(checked = showAllApps, onCheckedChange = {})
                 ),
-                actions = FavoriteAppsDialogActions()
+                actions = FavoriteAppsDialogActions(onCustomizeHome = {})
             )
         }
     }
@@ -75,7 +75,8 @@ private fun FavoritesMainContentCase(isLeftHanded: Boolean, favoriteCount: Int, 
                         favoriteAppPackages = listOf("a", "b", "c", "d", "e").take(favoriteCount),
                         showAllApps = showAllApps?.let { ShowAllAppsParams(checked = it, onCheckedChange = {}) }
                     ),
-                    onModeChange = {}
+                    onModeChange = {},
+                    onCustomizeHome = {}
                 )
             }
         }
