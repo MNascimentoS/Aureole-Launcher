@@ -5,9 +5,12 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Color
+import android.graphics.drawable.AdaptiveIconDrawable
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.ColorDrawable
 import androidx.core.graphics.createBitmap
+import dev.mnascimentos.aureole.core.data.model.FullBleedIconDrawable
+import dev.mnascimentos.aureole.core.data.model.IconCacheNaming
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotNull
@@ -30,7 +33,7 @@ class IconCacheTest {
     @Before
     fun setUp() {
         context = RuntimeEnvironment.getApplication()
-        iconDir = File(context.cacheDir, "app_icons")
+        iconDir = File(context.cacheDir, IconCacheNaming.DIR_NAME)
         iconDir.deleteRecursively()
     }
 
@@ -48,7 +51,7 @@ class IconCacheTest {
     fun `when an unknown app icon is requested, should fall back to a default and save it to disk`() {
         IconCache(context).getIcon(PACKAGE, component())
 
-        assertTrue(iconFile().exists())
+        assertTrue(iconFile().exists() || File(iconDir, "$PACKAGE.fb.png").exists())
     }
 
     @Test
@@ -92,6 +95,45 @@ class IconCacheTest {
         IconCache(context).getIcon(PACKAGE, component())
 
         assertNotNull(BitmapFactory.decodeFile(iconFile().absolutePath))
+    }
+
+    @Test
+    fun `when an adaptive icon is cached, should save it full bleed and read it back as full bleed`() {
+        val adaptive = AdaptiveIconDrawable(ColorDrawable(Color.BLUE), ColorDrawable(Color.TRANSPARENT))
+        IconCache(context).cacheIcon(PACKAGE, adaptive)
+
+        assertTrue(File(iconDir, "$PACKAGE.fb.png").exists())
+        assertFalse(iconFile().exists())
+        assertTrue(IconCache(context).getIcon(PACKAGE, component()) is FullBleedIconDrawable)
+    }
+
+    @Test
+    fun `when a full bleed icon is cached again, should keep it full bleed`() {
+        val resources = context.resources
+        IconCache(context).cacheIcon(PACKAGE, FullBleedIconDrawable(resources, createBitmap(6, 6)))
+
+        assertTrue(File(iconDir, "$PACKAGE.fb.png").exists())
+        assertFalse(iconFile().exists())
+    }
+
+    @Test
+    fun `when the app is updated, should discard the old cache folder with masked icons`() {
+        val legacyDir = File(context.cacheDir, IconCacheNaming.LEGACY_DIR_NAME).apply { mkdirs() }
+        File(legacyDir, "$PACKAGE.png").writeText("masked")
+
+        IconCache(context)
+
+        assertFalse(legacyDir.exists())
+    }
+
+    @Test
+    fun `when an adaptive icon is removed, should delete the full bleed file too`() {
+        val cache = IconCache(context)
+        cache.cacheIcon(PACKAGE, AdaptiveIconDrawable(ColorDrawable(Color.BLUE), ColorDrawable(Color.RED)))
+
+        cache.removeIcon(PACKAGE)
+
+        assertFalse(File(iconDir, "$PACKAGE.fb.png").exists())
     }
 
     private fun component() = ComponentName(PACKAGE, "$PACKAGE.MainActivity")

@@ -1,6 +1,5 @@
 package dev.mnascimentos.aureole.feature.home.components.containers.folder
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -16,7 +15,6 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -24,6 +22,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import dev.mnascimentos.aureole.R
+import dev.mnascimentos.aureole.composable.appitem.AureoleAppIcon
+import dev.mnascimentos.aureole.composable.appitem.model.AureoleAppIconParams
 import dev.mnascimentos.aureole.core.data.model.AppFolder
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
@@ -85,7 +85,6 @@ internal fun SelectedFolderAppRow(
     onToggleSelect: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val iconBitmap = remember(app.packageName) { app.getIconBitmap() }
     Row(
         modifier = modifier
             .fillMaxWidth()
@@ -99,12 +98,13 @@ internal fun SelectedFolderAppRow(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.weight(1f)
         ) {
-            Image(
-                bitmap = iconBitmap,
-                contentDescription = app.label,
-                modifier = Modifier
-                    .size(AureoleDS.dimens.xLarge)
-                    .clip(RoundedCornerShape(AureoleDS.dimens.radiusXSmall))
+            AureoleAppIcon(
+                app = app,
+                size = AureoleDS.dimens.xLarge,
+                params = AureoleAppIconParams(
+                    legacyShape = RoundedCornerShape(AureoleDS.dimens.radiusXSmall),
+                    contentDescription = app.label
+                )
             )
             Spacer(modifier = Modifier.width(AureoleDS.dimens.xSmall))
             AureoleText(

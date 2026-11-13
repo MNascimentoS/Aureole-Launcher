@@ -5,11 +5,15 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Canvas
+import android.graphics.drawable.AdaptiveIconDrawable
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.util.LruCache
 import androidx.core.graphics.createBitmap
 import androidx.core.graphics.drawable.toDrawable
+import dev.mnascimentos.aureole.core.data.model.AppIconHelper
+import dev.mnascimentos.aureole.core.data.model.FullBleedIconDrawable
+import dev.mnascimentos.aureole.core.data.model.IconCacheNaming
 import java.io.File
 import java.io.FileOutputStream
 
@@ -21,7 +25,8 @@ class IconCache(private val context: Context) {
 
     private val packageManager = context.packageManager
     private val memoryCache = LruCache<String, Drawable>(MEMORY_CACHE_SIZE)
-    private val cacheDir = File(context.cacheDir, "app_icons").apply {
+    private val cacheDir = File(context.cacheDir, IconCacheNaming.DIR_NAME).apply {
+        File(context.cacheDir, IconCacheNaming.LEGACY_DIR_NAME).deleteRecursively()
         if (!exists()) {
             mkdirs()
         }
@@ -41,14 +46,20 @@ class IconCache(private val context: Context) {
     }
 
     private fun loadDrawableFromDisk(packageName: String): Drawable? {
-        val diskFile = getIconFile(packageName)
-        if (!diskFile.exists()) return null // Guard clause
+        val fullBleedFile = getIconFile(packageName, fullBleed = true)
+        val legacyFile = getIconFile(packageName, fullBleed = false)
+        return when {
+            fullBleedFile.exists() -> decode(fullBleedFile) { FullBleedIconDrawable(context.resources, it) }
+            legacyFile.exists() -> decode(legacyFile) { it.toDrawable(context.resources) }
+            else -> null
+        }
+    }
 
+    private fun decode(file: File, toDrawable: (Bitmap) -> Drawable): Drawable? {
         return try {
-            val bitmap = BitmapFactory.decodeFile(diskFile.absolutePath)
-            bitmap?.toDrawable(context.resources)
+            BitmapFactory.decodeFile(file.absolutePath)?.let(toDrawable)
         } catch (_: Exception) {
-            diskFile.delete()
+            file.delete()
             null
         }
     }
@@ -60,14 +71,12 @@ class IconCache(private val context: Context) {
 
     fun removeIcon(packageName: String) {
         memoryCache.remove(packageName)
-        val diskFile = getIconFile(packageName)
-        if (diskFile.exists()) {
-            diskFile.delete()
-        }
+        getIconFile(packageName, fullBleed = true).delete()
+        getIconFile(packageName, fullBleed = false).delete()
     }
 
-    private fun getIconFile(packageName: String): File {
-        return File(cacheDir, "$packageName.png")
+    private fun getIconFile(packageName: String, fullBleed: Boolean): File {
+        return File(cacheDir, IconCacheNaming.fileName(packageName, fullBleed))
     }
 
     private fun loadFromPackageManager(packageName: String, componentName: ComponentName): Drawable {
@@ -84,8 +93,14 @@ class IconCache(private val context: Context) {
 
     private fun saveIconToDisk(packageName: String, drawable: Drawable) {
         try {
-            val bitmap = drawableToBitmap(drawable)
-            val file = getIconFile(packageName)
+            val fullBleed = drawable is AdaptiveIconDrawable || drawable is FullBleedIconDrawable
+            val bitmap = if (drawable is AdaptiveIconDrawable) {
+                AppIconHelper.fullBleedBitmap(drawable)
+            } else {
+                drawableToBitmap(drawable)
+            }
+            getIconFile(packageName, !fullBleed).delete()
+            val file = getIconFile(packageName, fullBleed)
             FileOutputStream(file).use { out ->
                 bitmap.compress(Bitmap.CompressFormat.PNG, PNG_QUALITY, out)
             }

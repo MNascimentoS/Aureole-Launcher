@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -29,6 +28,7 @@ import androidx.core.graphics.drawable.toDrawable
 import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.composable.appitem.model.AppItemPopupMetrics
 import dev.mnascimentos.aureole.composable.appitem.model.AppItemRowActions
+import dev.mnascimentos.aureole.composable.appitem.model.AureoleAppIconParams
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.designsystem.components.AureolePopupBox
 import dev.mnascimentos.aureole.core.designsystem.components.AureolePopupHeader
@@ -57,12 +57,16 @@ fun AppItemPopup(
         AureolePopupBox(
             modifier = modifier.width(AppItemPopupMetrics.PopupWidth)
         ) {
-            val iconBitmap = remember(app.packageName) { app.getIconBitmap() }
-
             AureolePopupHeader(
                 title = app.label,
                 params = AureolePopupHeaderParams(
-                    iconBitmap = iconBitmap,
+                    customIcon = {
+                        AureoleAppIcon(
+                            app = app,
+                            size = AureoleDS.dimens.iconLarge,
+                            params = AureoleAppIconParams(contentDescription = app.label)
+                        )
+                    },
                     showAureoleLogo = true
                 )
             )

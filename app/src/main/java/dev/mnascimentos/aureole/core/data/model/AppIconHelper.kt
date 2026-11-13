@@ -5,11 +5,13 @@ import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.Rect
+import android.graphics.drawable.AdaptiveIconDrawable
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.core.graphics.createBitmap
+import kotlin.math.roundToInt
 
 internal const val DEFAULT_ICON_SIZE = 96
 internal const val BACKGROUND_WHITE_THRESHOLD = 235
@@ -27,6 +29,12 @@ internal const val ALPHA_BASE_RATIO = 0.4f
 internal const val ALPHA_LUM_RATIO = 0.6f
 internal const val COLOR_MAX_INT = 255
 internal const val BG_DIST_THRESHOLD = 45.0
+internal const val FULL_BLEED_SIZE_PX = 192
+private const val ADAPTIVE_LAYER_DP = 108f
+private const val ADAPTIVE_VISIBLE_DP = 72f
+private const val HALF = 2
+
+internal data class LayerBounds(val left: Int, val top: Int, val right: Int, val bottom: Int)
 
 internal data class Quad<A, B, C, D>(val first: A, val second: B, val third: C, val fourth: D)
 
@@ -100,7 +108,30 @@ internal object AppIconHelper {
         return isWhite && alpha > BACKGROUND_ALPHA_THRESHOLD
     }
 
+    /**
+     * Layer bounds (left/top/right/bottom) that map the 72 dp visible area of an adaptive icon's
+     * 108 dp layers onto a square of [sizePx]: layers scaled 1.5x and centered.
+     */
+    fun fullBleedLayerBounds(sizePx: Int): LayerBounds {
+        val layerPx = (sizePx * ADAPTIVE_LAYER_DP / ADAPTIVE_VISIBLE_DP).roundToInt()
+        val offset = (layerPx - sizePx) / HALF
+        return LayerBounds(-offset, -offset, -offset + layerPx, -offset + layerPx)
+    }
+
+    /** Adaptive icon drawn without the system mask: background + foreground filling the square. */
+    fun fullBleedBitmap(drawable: AdaptiveIconDrawable, sizePx: Int = FULL_BLEED_SIZE_PX): Bitmap {
+        val bitmap = createBitmap(sizePx, sizePx)
+        val canvas = Canvas(bitmap)
+        val bounds = fullBleedLayerBounds(sizePx)
+        listOfNotNull(drawable.background, drawable.foreground).forEach { layer ->
+            layer.setBounds(bounds.left, bounds.top, bounds.right, bounds.bottom)
+            layer.draw(canvas)
+        }
+        return bitmap
+    }
+
     fun drawableToImageBitmap(drawable: Drawable): ImageBitmap {
+        if (drawable is AdaptiveIconDrawable) return fullBleedBitmap(drawable).asImageBitmap()
         if ((drawable is BitmapDrawable) && (drawable.bitmap != null)) {
             return drawable.bitmap.asImageBitmap()
         }

@@ -1,6 +1,5 @@
 package dev.mnascimentos.aureole.feature.home.components.containers.folder
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
@@ -12,15 +11,15 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import dev.mnascimentos.aureole.R
+import dev.mnascimentos.aureole.composable.appitem.AureoleAppIcon
+import dev.mnascimentos.aureole.composable.appitem.model.AureoleAppIconParams
 import dev.mnascimentos.aureole.composable.reorder.ReorderableRow
 import dev.mnascimentos.aureole.composable.reorder.model.ReorderableActions
 import dev.mnascimentos.aureole.composable.reorder.model.ReorderableParams
@@ -109,18 +108,15 @@ private fun FolderAppPickerTray(
 
 @Composable
 private fun FolderAppPickerTrayTile(app: AppInfo, modifier: Modifier = Modifier) {
-    val iconBitmap = remember(app.packageName) { app.getIconBitmap() }
     Column(
         modifier = modifier.width(AureoleDS.dimens.itemHeightExtraLarge),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(AureoleDS.dimens.xxSmall)
     ) {
-        Image(
-            bitmap = iconBitmap,
-            contentDescription = null,
-            modifier = Modifier
-                .size(AureoleDS.dimens.xxLarge)
-                .clip(RoundedCornerShape(AureoleDS.dimens.radiusSmall))
+        AureoleAppIcon(
+            app = app,
+            size = AureoleDS.dimens.xxLarge,
+            params = AureoleAppIconParams(legacyShape = RoundedCornerShape(AureoleDS.dimens.radiusSmall))
         )
         AureoleText(
             text = app.label,

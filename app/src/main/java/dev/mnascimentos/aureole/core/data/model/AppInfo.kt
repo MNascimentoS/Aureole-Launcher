@@ -40,6 +40,10 @@ data class AppInfo(
     val firstLetter: Char
         get() = label.trimStart().firstOrNull()?.uppercaseChar() ?: '#'
 
+    /** True when [getIconBitmap] has no system mask, so the UI can clip it with the user's radius. */
+    val isFullBleedIcon: Boolean
+        get() = icon is AdaptiveIconDrawable || icon is FullBleedIconDrawable
+
     fun getIconBitmap(): ImageBitmap {
         cachedIconBitmap?.let { return it }
         val bitmap = AppIconHelper.drawableToImageBitmap(icon)

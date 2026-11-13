@@ -1,7 +1,6 @@
 package dev.mnascimentos.aureole.feature.home.components.containers.folder
 
 import android.content.ComponentName
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -19,6 +18,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.core.graphics.drawable.toDrawable
+import dev.mnascimentos.aureole.composable.appitem.AureoleAppIcon
+import dev.mnascimentos.aureole.composable.appitem.model.AureoleAppIconParams
 import dev.mnascimentos.aureole.composable.dialogs.FolderIconRegistry
 import dev.mnascimentos.aureole.composable.dialogs.model.FolderButtonMetrics
 import dev.mnascimentos.aureole.core.data.model.AppFolder
@@ -110,13 +111,10 @@ private fun FolderMiniGridCell(app: AppInfo?) {
         return
     }
 
-    val bitmap = remember(app.packageName) { app.getIconBitmap() }
-    Image(
-        bitmap = bitmap,
-        contentDescription = app.label,
-        modifier = Modifier
-            .size(AureoleDS.dimens.xSmall)
-            .clip(CircleShape)
+    AureoleAppIcon(
+        app = app,
+        size = AureoleDS.dimens.xSmall,
+        params = AureoleAppIconParams(legacyShape = CircleShape, contentDescription = app.label)
     )
 }
 

@@ -2,8 +2,6 @@ package dev.mnascimentos.aureole.composable.appitem
 
 import android.content.ComponentName
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -11,7 +9,6 @@ import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -23,8 +20,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.ImageBitmap
-import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
@@ -34,6 +29,7 @@ import dev.mnascimentos.aureole.composable.appitem.model.AppItemBottomSheetParam
 import dev.mnascimentos.aureole.composable.appitem.model.AppItemRowActions
 import dev.mnascimentos.aureole.composable.appitem.model.AppItemRowConfig
 import dev.mnascimentos.aureole.composable.appitem.model.AppItemRowMetrics
+import dev.mnascimentos.aureole.composable.appitem.model.AureoleAppIconParams
 import dev.mnascimentos.aureole.composable.overlay.AureoleOverlayWindow
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
@@ -52,10 +48,6 @@ fun AppItemRow(
     actions: AppItemRowActions = AppItemRowActions()
 ) {
     var showMenu by remember { mutableStateOf(false) }
-    val iconBitmap: ImageBitmap = remember(app.packageName) {
-        app.getIconBitmap()
-    }
-
     Box(modifier = modifier.fillMaxWidth()) {
         Row(
             modifier = Modifier
@@ -72,7 +64,6 @@ fun AppItemRow(
         ) {
             AppItemRowContent(
                 app = app,
-                iconBitmap = iconBitmap,
                 isThemedAppIconsEnabled = config.isThemedAppIconsEnabled,
                 isLeftHandedMode = config.isLeftHandedMode
             )
@@ -91,20 +82,9 @@ fun AppItemRow(
 @Composable
 private fun RowScope.AppItemRowContent(
     app: AppInfo,
-    iconBitmap: ImageBitmap,
     isThemedAppIconsEnabled: Boolean,
     isLeftHandedMode: Boolean
 ) {
-    val iconColor = AureoleDS.colors.onSurfaceMedium
-    val displayBitmap = remember(app.packageName, isThemedAppIconsEnabled, iconColor) {
-        if (isThemedAppIconsEnabled) {
-            val argb = iconColor.toArgb()
-            app.getThemedIconBitmap(argb)
-        } else {
-            iconBitmap
-        }
-    }
-
     val appLabel = @Composable {
         AureoleText(
             text = app.label,
@@ -120,7 +100,11 @@ private fun RowScope.AppItemRowContent(
     }
 
     val appIcon = @Composable {
-        AppItemIcon(bitmap = displayBitmap, label = app.label, isThemed = isThemedAppIconsEnabled)
+        AureoleAppIcon(
+            app = app,
+            size = AppItemRowMetrics.IconOuterSize,
+            params = AureoleAppIconParams(isThemed = isThemedAppIconsEnabled, contentDescription = app.label)
+        )
     }
 
     if (isLeftHandedMode) {
@@ -131,36 +115,6 @@ private fun RowScope.AppItemRowContent(
         appIcon()
         Spacer(modifier = Modifier.width(AureoleDS.dimens.medium))
         appLabel()
-    }
-}
-
-@Composable
-private fun AppItemIcon(
-    bitmap: ImageBitmap,
-    label: String,
-    isThemed: Boolean
-) {
-    if (isThemed) {
-        Box(
-            modifier = Modifier
-                .size(AppItemRowMetrics.IconOuterSize)
-                .clip(RoundedCornerShape(AureoleDS.dimens.radiusSmall))
-                .background(AureoleDS.colors.surfaceVariant.copy(alpha = 0.85f))
-                .padding(AureoleDS.dimens.xSmall),
-            contentAlignment = Alignment.Center
-        ) {
-            Image(
-                bitmap = bitmap,
-                contentDescription = label,
-                modifier = Modifier.size(AppItemRowMetrics.IconInnerSize)
-            )
-        }
-    } else {
-        Image(
-            bitmap = bitmap,
-            contentDescription = label,
-            modifier = Modifier.size(AppItemRowMetrics.IconOuterSize)
-        )
     }
 }
 

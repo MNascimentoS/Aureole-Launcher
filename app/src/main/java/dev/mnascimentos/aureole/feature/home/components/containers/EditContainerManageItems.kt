@@ -1,7 +1,6 @@
 package dev.mnascimentos.aureole.feature.home.components.containers
 
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -33,6 +32,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.R
+import dev.mnascimentos.aureole.composable.appitem.AureoleAppIcon
+import dev.mnascimentos.aureole.composable.appitem.model.AureoleAppIconParams
 import dev.mnascimentos.aureole.composable.dialogs.CreateFolderDialog
 import dev.mnascimentos.aureole.composable.mirror.LeftHandMirror
 import dev.mnascimentos.aureole.composable.overlay.AureoleOverlayWindow
@@ -319,12 +320,11 @@ private fun ManageItemRowIcon(
             )
         }
         ContainerItemType.APP -> {
-            val iconBitmap = remember(app?.packageName) { app?.getIconBitmap() }
-            if (iconBitmap != null) {
-                Image(
-                    bitmap = iconBitmap,
-                    contentDescription = app?.label,
-                    modifier = Modifier.size(AureoleDS.dimens.iconMedium)
+            if (app != null) {
+                AureoleAppIcon(
+                    app = app,
+                    size = AureoleDS.dimens.iconMedium,
+                    params = AureoleAppIconParams(contentDescription = app.label)
                 )
             } else {
                 AureoleDS.icons.AppSelect(

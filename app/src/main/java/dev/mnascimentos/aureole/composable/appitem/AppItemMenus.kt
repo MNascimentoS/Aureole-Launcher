@@ -6,7 +6,7 @@ import android.graphics.Color
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -17,6 +17,7 @@ import androidx.core.graphics.drawable.toDrawable
 import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.composable.appitem.model.AppItemBottomSheetParams
 import dev.mnascimentos.aureole.composable.appitem.model.AppItemRowActions
+import dev.mnascimentos.aureole.composable.appitem.model.AureoleAppIconParams
 import dev.mnascimentos.aureole.composable.menu.AureoleMenuListSheet
 import dev.mnascimentos.aureole.composable.menu.AureoleMenuRow
 import dev.mnascimentos.aureole.composable.menu.model.MenuEntry
@@ -49,7 +50,6 @@ fun AppItemBottomSheet(
     modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
-    val iconBitmap = remember(params.app.packageName) { params.app.getIconBitmap() }
     val shortcuts = params.shortcuts ?: remember(params.app.packageName) {
         AppShortcutUtils.getAppShortcuts(context, params.app.packageName)
     }
@@ -59,7 +59,13 @@ fun AppItemBottomSheet(
         onDismiss = onDismiss,
         modifier = modifier,
         params = MenuSheetParams(
-            titleIcon = { m -> Image(bitmap = iconBitmap, contentDescription = params.app.label, modifier = m) },
+            titleIcon = { m ->
+                AureoleAppIcon(
+                    app = params.app,
+                    modifier = m,
+                    params = AureoleAppIconParams(contentDescription = params.app.label)
+                )
+            },
             onSettingsClick = params.actions.onOpenSettings
         )
     ) {
@@ -214,8 +220,8 @@ private fun ShortcutRow(shortcut: AureoleShortcutItem, onDismiss: () -> Unit, co
                         contentDescription = shortcut.label,
                         modifier = m
                             .size(AureoleDS.dimens.iconLargePlus)
-                            .clip(CircleShape)
-                            .background(AureoleDS.colors.surfaceVariant, CircleShape)
+                            .clip(RoundedCornerShape(AureoleDS.dimens.radiusAppIcon))
+                            .background(AureoleDS.colors.surfaceVariant)
                     )
                 } else {
                     AureoleDS.icons.Smile(modifier = m, tint = c)
