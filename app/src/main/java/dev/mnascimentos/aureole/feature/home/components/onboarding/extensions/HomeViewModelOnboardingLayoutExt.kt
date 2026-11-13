@@ -9,7 +9,7 @@ import dev.mnascimentos.aureole.feature.home.grid.GridEngineUtils
 import dev.mnascimentos.aureole.feature.home.grid.extensions.addGridItem
 import dev.mnascimentos.aureole.feature.home.grid.extensions.enterGridEditMode
 import dev.mnascimentos.aureole.feature.home.grid.extensions.landscapeFromPortrait
-import dev.mnascimentos.aureole.feature.home.grid.extensions.loadGridItems
+import dev.mnascimentos.aureole.feature.home.grid.extensions.loadGridItemsNow
 import dev.mnascimentos.aureole.feature.home.grid.extensions.withNewGridItemInEditMode
 import dev.mnascimentos.aureole.feature.home.grid.model.GridItemSpec
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
@@ -23,7 +23,7 @@ internal fun HomeViewModel.startWithEmptyHome() {
     if (gridRepository.hasSavedLayout()) return
     gridRepository.saveGridItems(emptyList(), isLandscape = false)
     gridRepository.saveGridItems(emptyList(), isLandscape = true)
-    loadGridItems(uiState.value.isLandscape)
+    loadGridItemsNow(uiState.value.isLandscape)
 }
 
 /** Leaving the checklist with nothing built must not leave the home empty: use the default layout. */
@@ -41,7 +41,7 @@ internal fun HomeViewModel.applyDefaultLayoutWhereEmpty() {
             }
             gridRepository.saveGridItems(items, isLandscape)
         }
-    loadGridItems(state.isLandscape)
+    loadGridItemsNow(state.isLandscape)
 }
 
 /**

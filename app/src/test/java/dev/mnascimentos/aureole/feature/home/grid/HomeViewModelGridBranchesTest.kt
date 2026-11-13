@@ -46,6 +46,7 @@ class HomeViewModelGridBranchesTest {
 
     private lateinit var viewModel: HomeViewModel
     private lateinit var gridRepository: GridRepository
+    private val testDispatcher = UnconfinedTestDispatcher()
 
     private val portraitLimits = GridLimits(GridEngineUtils.PORTRAIT_MAX_COLS, GridEngineUtils.PORTRAIT_MAX_ROWS)
     private val landscapeLimits = GridLimits(GridEngineUtils.LANDSCAPE_MAX_COLS, GridEngineUtils.LANDSCAPE_MAX_ROWS)
@@ -68,7 +69,7 @@ class HomeViewModelGridBranchesTest {
 
     @Before
     fun setUp() {
-        Dispatchers.setMain(UnconfinedTestDispatcher())
+        Dispatchers.setMain(testDispatcher)
         val context: Context = RuntimeEnvironment.getApplication()
         val settingsRepository = SettingsRepository(context)
         gridRepository = GridRepository(context)
@@ -82,7 +83,8 @@ class HomeViewModelGridBranchesTest {
                 containerRepository = ContainerRepository(context),
                 gridRepository = gridRepository,
                 clockConfigRepository = ClockConfigRepository(context, gridRepository, settingsRepository)
-            )
+            ),
+            gridLoadDispatcher = testDispatcher
         )
     }
 
@@ -121,6 +123,7 @@ class HomeViewModelGridBranchesTest {
         val before = viewModel.uiState.value
 
         viewModel.loadGridItems(isLandscape = true)
+        testDispatcher.scheduler.advanceUntilIdle()
 
         assertEquals(before.gridState(), viewModel.uiState.value.gridState())
     }
@@ -131,6 +134,7 @@ class HomeViewModelGridBranchesTest {
         gridRepository.saveGridItems(listOf(clock), isLandscape = false)
 
         viewModel.loadGridItems(isLandscape = true)
+        testDispatcher.scheduler.advanceUntilIdle()
 
         val state = viewModel.uiState.value
         assertTrue(state.isLandscape)

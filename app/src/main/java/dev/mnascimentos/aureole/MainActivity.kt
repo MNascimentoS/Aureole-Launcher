@@ -3,6 +3,7 @@ package dev.mnascimentos.aureole
 import android.appwidget.AppWidgetHost
 import android.appwidget.AppWidgetManager
 import android.content.Intent
+import android.content.res.Configuration
 import android.graphics.Rect
 import android.os.Build
 import android.os.Bundle
@@ -52,6 +53,13 @@ class MainActivity : ComponentActivity() {
 
     internal lateinit var appUpdateManager: AppUpdateManager
     internal var cachedAppUpdateInfo: AppUpdateInfo? = null
+    private lateinit var mainObserver: MainLifecycleObserver
+
+    /** The manifest handles rotation here (no recreation); the UI follows LocalConfiguration. */
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        if (::mainObserver.isInitialized) mainObserver.onConfigurationChanged(newConfig)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -64,7 +72,8 @@ class MainActivity : ComponentActivity() {
 
         lifecycle.addObserver(UpdateLifecycleObserver(appUpdateManager, viewModel) { cachedAppUpdateInfo = it })
         lifecycle.addObserver(WidgetLifecycleObserver(appWidgetHost) { wasInBackground = it })
-        lifecycle.addObserver(MainLifecycleObserver(this, viewModel) { wasInBackground = false })
+        mainObserver = MainLifecycleObserver(this, viewModel) { wasInBackground = false }
+        lifecycle.addObserver(mainObserver)
 
         setupWindowAndBackHandling()
         setupContent()

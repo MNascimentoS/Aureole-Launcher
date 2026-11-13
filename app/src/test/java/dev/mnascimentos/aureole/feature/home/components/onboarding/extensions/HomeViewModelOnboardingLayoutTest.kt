@@ -87,16 +87,22 @@ class HomeViewModelOnboardingLayoutTest {
                 containerRepository = ContainerRepository(context),
                 gridRepository = gridRepository,
                 clockConfigRepository = ClockConfigRepository(context, gridRepository, settingsRepository)
-            )
+            ),
+            gridLoadDispatcher = testDispatcher
         )
         ShadowLooper.idleMainLooper()
         viewModels += viewModel
         return viewModel
     }
 
+    private fun settle() = testDispatcher.scheduler.advanceUntilIdle()
+
     @Test
     fun `when it is a fresh install, should start with an empty home in both orientations`() {
-        val viewModel = newViewModel().apply { syncOnboarding() }
+        val viewModel = newViewModel().apply {
+            syncOnboarding()
+            settle()
+        }
 
         val state = viewModel.uiState.value
         assertTrue(state.gridItems.isEmpty())
@@ -110,7 +116,10 @@ class HomeViewModelOnboardingLayoutTest {
         settingsRepository.lastSeenVersionCode = 826
         gridRepository.saveGridItems(listOf(savedClock), isLandscape = false)
 
-        val viewModel = newViewModel().apply { syncOnboarding() }
+        val viewModel = newViewModel().apply {
+            syncOnboarding()
+            settle()
+        }
 
         assertEquals(listOf(savedClock.id), viewModel.uiState.value.portraitGridItems.map { it.id })
     }
@@ -119,7 +128,10 @@ class HomeViewModelOnboardingLayoutTest {
     fun `when a fresh install already has a saved layout, should keep it`() {
         gridRepository.saveGridItems(listOf(savedClock), isLandscape = false)
 
-        val viewModel = newViewModel().apply { syncOnboarding() }
+        val viewModel = newViewModel().apply {
+            syncOnboarding()
+            settle()
+        }
 
         assertEquals(listOf(savedClock.id), viewModel.uiState.value.portraitGridItems.map { it.id })
     }
@@ -129,7 +141,10 @@ class HomeViewModelOnboardingLayoutTest {
         settingsRepository.lastSeenVersionCode = 826
         settingsRepository.onboarding.write(OnboardingProgress(stage = OnboardingStage.WELCOME))
 
-        val viewModel = newViewModel().apply { syncOnboarding() }
+        val viewModel = newViewModel().apply {
+            syncOnboarding()
+            settle()
+        }
 
         assertEquals(OnboardingStage.WELCOME, viewModel.uiState.value.onboarding.stage)
         assertEquals(
@@ -140,10 +155,15 @@ class HomeViewModelOnboardingLayoutTest {
 
     @Test
     fun `when dismissing the checklist with an empty home, should apply the default layout`() {
-        val viewModel = newViewModel().apply { syncOnboarding() }
+        val viewModel = newViewModel().apply {
+            syncOnboarding()
+            settle()
+        }
         viewModel.skipIntro()
+        settle()
 
         viewModel.dismissChecklist()
+        settle()
 
         val state = viewModel.uiState.value
         assertEquals(OnboardingStage.COMPLETED, state.onboarding.stage)
@@ -164,12 +184,17 @@ class HomeViewModelOnboardingLayoutTest {
 
     @Test
     fun `when dismissing the checklist after building the home, should keep what was built`() {
-        val viewModel = newViewModel().apply { syncOnboarding() }
+        val viewModel = newViewModel().apply {
+            syncOnboarding()
+            settle()
+        }
         viewModel.skipIntro()
+        settle()
         gridRepository.saveGridItems(listOf(savedClock), isLandscape = false)
         viewModel.updateUiState { it.copy(portraitGridItems = listOf(savedClock), gridItems = listOf(savedClock)) }
 
         viewModel.dismissChecklist()
+        settle()
 
         val state = viewModel.uiState.value
         assertEquals(savedClock.id, state.portraitGridItems.first().id)

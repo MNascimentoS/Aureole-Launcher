@@ -2,6 +2,7 @@ package dev.mnascimentos.aureole.feature.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import dev.mnascimentos.aureole.core.coroutines.LatestJobRunner
 import dev.mnascimentos.aureole.core.data.repository.AppRepository
 import dev.mnascimentos.aureole.core.data.repository.ClockConfigRepository
 import dev.mnascimentos.aureole.core.data.repository.ContainerRepository
@@ -23,6 +24,7 @@ import dev.mnascimentos.aureole.feature.home.components.widgets.extensions.loadW
 import dev.mnascimentos.aureole.feature.home.grid.extensions.loadGridItems
 import dev.mnascimentos.aureole.feature.home.model.HomeRepositories
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -34,6 +36,7 @@ import kotlinx.coroutines.launch
 class HomeViewModel(
     repositories: HomeRepositories,
     internal val undoController: UndoController = UndoController(),
+    internal val gridLoadDispatcher: CoroutineDispatcher = Dispatchers.IO,
 ) : ViewModel() {
     internal val appRepository: AppRepository = repositories.appRepository
     internal val widgetRepository: WidgetRepository = repositories.widgetRepository
@@ -68,6 +71,9 @@ class HomeViewModel(
 
     internal var activeVersionCode: Int = 0
     internal var searchJob: Job? = null
+
+    /** Grid loads: a new one cancels the previous, so a late portrait read never overwrites landscape. */
+    internal val gridLoads = LatestJobRunner(viewModelScope)
 
     var isUpdateInProgressOrDismissed: Boolean = false
         internal set

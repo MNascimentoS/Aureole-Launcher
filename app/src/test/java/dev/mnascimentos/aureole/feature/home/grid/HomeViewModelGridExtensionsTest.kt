@@ -98,7 +98,8 @@ class HomeViewModelGridExtensionsTest {
                 containerRepository = containerRepository,
                 gridRepository = gridRepository,
                 clockConfigRepository = ClockConfigRepository(context, gridRepository, settingsRepository)
-            )
+            ),
+            gridLoadDispatcher = testDispatcher
         )
     }
 

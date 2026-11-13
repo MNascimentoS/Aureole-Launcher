@@ -39,6 +39,7 @@
             android:exported="true"
             android:launchMode="singleTask"
             android:clearTaskOnLaunch="true"
+            android:configChanges="orientation|screenSize|screenLayout|smallestScreenSize"
             android:stateNotNeeded="true"
             android:theme="@style/Theme.AureoleLauncher"
             android:windowSoftInputMode="adjustResize">
