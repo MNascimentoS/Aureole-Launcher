@@ -270,8 +270,6 @@
     <string name="home_container_add_title">Add Container</string>
     <string name="home_container_add_nested_title">Add to scrolling group</string>
     <string name="home_container_add_clock">Clock</string>
-    <string name="home_container_add_apps_list">Apps List</string>
-    <string name="home_container_add_all_apps_list">All Apps List</string>
     <string name="home_container_add_shortcuts_container">Container</string>
     <string name="home_container_add_widget_list">Android Widget Group</string>
     <string name="home_container_add_quick_button">Quick Button</string>
@@ -316,7 +314,9 @@
     <string name="home_widgets_about_placeholder">About the widget here</string>
     <string name="home_widgets_default_title">Widget</string>
     <string name="home_grid_item_clock">Clock</string>
-    <string name="home_grid_item_favorites">Favorites</string>
+    <string name="home_grid_item_apps_list">Apps list</string>
+    <string name="home_apps_list_section_favorites">Favorites</string>
+    <string name="home_apps_list_section_all">All apps</string>
     <string name="home_grid_item_shortcuts">Shortcuts</string>
     <string name="home_grid_item_widget">Widget</string>
     <string name="home_grid_item_widget_group">Widget Group</string>

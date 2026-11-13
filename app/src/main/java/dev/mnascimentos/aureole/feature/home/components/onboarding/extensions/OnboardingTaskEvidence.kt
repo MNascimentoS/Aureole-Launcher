@@ -50,6 +50,3 @@ private fun MainUiState.hasWidget(item: LauncherItemState): Boolean {
     val isBoundWidget = item.safeType == LauncherItemType.SINGLE_APP_WIDGET && (item.widgetId ?: 0) > 0
     return hasStackedWidget || isBoundWidget || item.safeChildren.any { hasWidget(it) }
 }
-
-internal val MainUiState.hasAnyFavorites: Boolean
-    get() = favoriteAppPackages.isNotEmpty() || containerFavorites.values.any { it.isNotEmpty() }

@@ -76,13 +76,13 @@ class LandscapeFromPortraitTest {
     }
 
     @Test
-    fun `when the portrait has the all apps list, should use the favorites spot`() {
-        val result = landscapeFromPortrait(
-            listOf(item("all", LauncherItemType.ALL_APPS_LIST, listOf(0, 12, 16, 18))),
-            isLeftHanded = false
-        )
+    fun `when the portrait has an apps list that shows all apps, should use the apps spot and keep the toggle`() {
+        val allApps = item("all", LauncherItemType.APPS_LIST, listOf(0, 12, 16, 18)).copy(showAllApps = true)
 
-        assertEquals(LauncherItemType.ALL_APPS_LIST, result.single().safeType)
+        val result = landscapeFromPortrait(listOf(allApps), isLeftHanded = false)
+
+        assertEquals(LauncherItemType.APPS_LIST, result.single().safeType)
+        assertEquals(true, result.single().showAllApps)
         assertEquals(listOf(0, 6, 10, 14), result.single().placement())
     }
 

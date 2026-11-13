@@ -9,7 +9,7 @@ import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.createSampleHomeData
 
-/** Customize sheet with the clock and all apps already on the home: right-handed and left-handed. */
+/** Customize sheet with the clock and an apps list already on the home: right-handed and left-handed. */
 class CustomizeBottomSheetOneHandScreenshotTest {
 
     @Composable
@@ -18,7 +18,7 @@ class CustomizeBottomSheetOneHandScreenshotTest {
         val onHome = if (withItemsOnHome) {
             listOf(
                 LauncherItemState(id = "clock", type = LauncherItemType.CLOCK),
-                LauncherItemState(id = "all", type = LauncherItemType.ALL_APPS_LIST)
+                LauncherItemState(id = "all", type = LauncherItemType.APPS_LIST, showAllApps = true)
             )
         } else {
             emptyList()

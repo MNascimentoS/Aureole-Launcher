@@ -11,10 +11,6 @@ import dev.mnascimentos.aureole.feature.home.grid.model.SlotSearchRequest
 
 private val LANDSCAPE_LIMITS = GridLimits(GridEngineUtils.LANDSCAPE_MAX_COLS, GridEngineUtils.LANDSCAPE_MAX_ROWS)
 
-/** The default layout spot an item of [this] type takes, since the favorites spot also holds the all apps list. */
-private fun LauncherItemType.slotType(): LauncherItemType =
-    if (this == LauncherItemType.ALL_APPS_LIST) LauncherItemType.APPS_LIST else this
-
 /**
  * The first landscape layout of a home that already has a [portrait] one: the same items (same ids,
  * so favorites and widgets are shared) fitted into the default landscape layout v4. An item takes
@@ -25,13 +21,13 @@ private fun LauncherItemType.slotType(): LauncherItemType =
 fun landscapeFromPortrait(portrait: List<LauncherItemState>, isLeftHanded: Boolean): List<LauncherItemState> {
     val taken = mutableSetOf<LauncherItemType>()
     val (inMold, extras) = portrait.partition { item ->
-        val slotType = item.safeType.slotType()
-        val hasSlot = GridDefaults.getDefaultItem(slotType, isLandscape = true, isLeftHanded = isLeftHanded) != null
-        hasSlot && taken.add(slotType)
+        val type = item.safeType
+        val hasSlot = GridDefaults.getDefaultItem(type, isLandscape = true, isLeftHanded = isLeftHanded) != null
+        hasSlot && taken.add(type)
     }
     val placed = inMold.map { item ->
         val slot = checkNotNull(
-            GridDefaults.getDefaultItem(item.safeType.slotType(), isLandscape = true, isLeftHanded = isLeftHanded)
+            GridDefaults.getDefaultItem(item.safeType, isLandscape = true, isLeftHanded = isLeftHanded)
         )
         item.copy(col = slot.col, row = slot.row, colSpan = slot.colSpan, rowSpan = slot.rowSpan)
     }

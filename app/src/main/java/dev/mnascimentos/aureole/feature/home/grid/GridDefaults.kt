@@ -84,16 +84,12 @@ object GridDefaults {
     const val APPS_LIST_ITEM_ID = "apps_list_item"
     const val CONTAINER_ITEM_ID = "container_item"
 
-    /** Without favorites, the apps spot holds the all apps list, so the home always shows apps. */
+    /** The default layout; its apps list shows all apps, so the home always shows apps. */
     fun getDefaultGridItems(
         isLandscape: Boolean = false,
-        isLeftHanded: Boolean = false,
-        hasFavorites: Boolean = true
+        isLeftHanded: Boolean = false
     ): List<LauncherItemState> {
-        val items = (if (isLandscape) landscapeItems() else portraitItems()).map { item ->
-            val showsAllApps = !hasFavorites && item.safeType == LauncherItemType.APPS_LIST
-            if (showsAllApps) item.copy(type = LauncherItemType.ALL_APPS_LIST) else item
-        }
+        val items = if (isLandscape) landscapeItems() else portraitItems()
         if (!isLeftHanded) return items
         val maxCols = if (isLandscape) GridEngineUtils.LANDSCAPE_MAX_COLS else GridEngineUtils.PORTRAIT_MAX_COLS
         return items.map { it.copy(col = maxCols - it.col - it.colSpan) }
@@ -106,8 +102,7 @@ object GridDefaults {
         isLeftHanded: Boolean
     ): LauncherItemState? = getDefaultGridItems(
         isLandscape = isLandscape,
-        isLeftHanded = isLeftHanded,
-        hasFavorites = type != LauncherItemType.ALL_APPS_LIST
+        isLeftHanded = isLeftHanded
     ).firstOrNull { it.safeType == type }
 
     private fun portraitItems(): List<LauncherItemState> = listOf(
@@ -174,6 +169,7 @@ object GridDefaults {
         colSpan = colSpan,
         rowSpan = rowSpan,
         minColSpan = DEFAULT_MIN_COL_SPAN,
-        minRowSpan = DEFAULT_MIN_ROW_SPAN
+        minRowSpan = DEFAULT_MIN_ROW_SPAN,
+        showAllApps = if (this == LauncherItemType.APPS_LIST) true else null
     )
 }

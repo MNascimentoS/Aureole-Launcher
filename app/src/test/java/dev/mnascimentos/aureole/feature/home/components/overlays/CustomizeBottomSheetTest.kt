@@ -82,8 +82,8 @@ class CustomizeBottomSheetTest {
     }
 
     @Test
-    fun `when all apps is clicked, should add an all apps list and dismiss`() =
-        assertAddsType("All apps", LauncherItemType.ALL_APPS_LIST)
+    fun `when all apps is clicked, should add an apps list and dismiss`() =
+        assertAddsType("All apps", LauncherItemType.APPS_LIST)
 
     @Test
     fun `when container is clicked, should add a shortcuts container and dismiss`() =

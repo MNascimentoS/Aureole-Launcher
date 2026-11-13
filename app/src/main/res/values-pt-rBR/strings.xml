@@ -271,8 +271,6 @@
     <string name="home_container_add_title">Adicionar Container</string>
     <string name="home_container_add_nested_title">Adicionar ao grupo rolável</string>
     <string name="home_container_add_clock">Relógio</string>
-    <string name="home_container_add_apps_list">Lista de Apps (Favoritos)</string>
-    <string name="home_container_add_all_apps_list">Lista de Todos os Apps</string>
     <string name="home_container_add_shortcuts_container">Container</string>
     <string name="home_container_add_widget_list">Grupo de Widgets do Android</string>
     <string name="home_container_add_quick_button">Botão Rápido</string>
@@ -317,7 +315,9 @@
     <string name="home_widgets_about_placeholder">Sobre o widget aqui</string>
     <string name="home_widgets_default_title">Widget</string>
     <string name="home_grid_item_clock">Relógio</string>
-    <string name="home_grid_item_favorites">Favoritos</string>
+    <string name="home_grid_item_apps_list">Lista de apps</string>
+    <string name="home_apps_list_section_favorites">Favoritos</string>
+    <string name="home_apps_list_section_all">Todos os apps</string>
     <string name="home_grid_item_shortcuts">Atalhos</string>
     <string name="home_grid_item_widget">Widget</string>
     <string name="home_grid_item_widget_group">Grupo de Widgets</string>

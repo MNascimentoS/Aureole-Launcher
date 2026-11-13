@@ -276,7 +276,6 @@ private fun CellBoxConfig.toEditCallbacks(): GridItemEditCallbacks {
                 LauncherItemType.APPS_LIST -> {
                     actions.onOpenFavoritePicker(item.id)
                 }
-                LauncherItemType.ALL_APPS_LIST -> Unit
                 LauncherItemType.SHORTCUTS_CONTAINER -> {
                     actions.onOpenEditContainerDialog(item.id)
                 }

@@ -19,9 +19,10 @@ internal fun HomeViewModel.ensureAppsOnCompletion(previous: MainUiState) {
 }
 
 /**
- * In both orientations: keeps a favorites list that has favorites or an all apps list; turns an
- * empty favorites list into the all apps list in place; otherwise adds the all apps list at the
- * default apps spot, or in the largest free slot. A full grid gets nothing and no warning.
+ * In both orientations: keeps an apps list that shows all apps or has favorites; turns an apps list that
+ * shows only favorites but has none into one that shows all apps, in place; otherwise adds an apps list
+ * that shows all apps at the default apps spot, or in the largest free slot. A full grid gets nothing and
+ * no warning.
  */
 internal fun HomeViewModel.ensureAppsComponent() {
     val state = uiState.value
@@ -46,7 +47,7 @@ private fun MainUiState.withAppsComponent(
     isLeftHanded: Boolean
 ): List<LauncherItemState> {
     val hasApps = items.any {
-        it.safeType == LauncherItemType.ALL_APPS_LIST || (it.safeType == LauncherItemType.APPS_LIST && hasFavorites(it))
+        it.safeType == LauncherItemType.APPS_LIST && (it.isShowingAllApps || hasFavorites(it))
     }
     val emptyFavorites = items.firstOrNull { it.safeType == LauncherItemType.APPS_LIST }
     return when {
@@ -63,7 +64,7 @@ private fun placeAllApps(
     isLandscape: Boolean,
     isLeftHanded: Boolean
 ): LauncherItemState? {
-    val default = GridDefaults.getDefaultItem(LauncherItemType.ALL_APPS_LIST, isLandscape, isLeftHanded)
+    val default = GridDefaults.getDefaultItem(LauncherItemType.APPS_LIST, isLandscape, isLeftHanded)
         ?.asAllApps() ?: return null
     val limits = if (isLandscape) {
         GridLimits(GridEngineUtils.LANDSCAPE_MAX_COLS, GridEngineUtils.LANDSCAPE_MAX_ROWS)
@@ -78,4 +79,4 @@ private fun placeAllApps(
 }
 
 private fun LauncherItemState.asAllApps() =
-    copy(id = UUID.randomUUID().toString(), type = LauncherItemType.ALL_APPS_LIST)
+    copy(id = UUID.randomUUID().toString(), type = LauncherItemType.APPS_LIST, showAllApps = true)

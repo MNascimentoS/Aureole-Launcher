@@ -41,7 +41,7 @@ import dev.mnascimentos.aureole.feature.home.components.containers.Container
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.FolderViewIntent
 import dev.mnascimentos.aureole.feature.home.components.containers.model.containerConfigFor
 import dev.mnascimentos.aureole.feature.home.components.content.model.ScrollViewContainerParams
-import dev.mnascimentos.aureole.feature.home.components.favorites.FavoritesList
+import dev.mnascimentos.aureole.feature.home.components.favorites.AppsList
 import dev.mnascimentos.aureole.feature.home.components.favorites.model.FavoritesListOptions
 import dev.mnascimentos.aureole.feature.home.components.quickbutton.GridQuickButtonContent
 import dev.mnascimentos.aureole.feature.home.components.widgets.StackedWidgetSection
@@ -73,6 +73,7 @@ fun GridClockContent(
     )
 }
 
+/** The apps list [GridItemContentParams.item]: its favorites and, with its toggle on, all the other apps. */
 @Composable
 fun GridAppsListContent(
     params: GridItemContentParams,
@@ -81,13 +82,14 @@ fun GridAppsListContent(
     val isInScrollView = params.isInScrollView
     val listModifier = if (isInScrollView) Modifier.fillMaxWidth() else Modifier.fillMaxSize()
     Box(modifier = modifier.then(listModifier)) {
-        FavoritesList(
+        AppsList(
             config = if (isInScrollView) params.favConfig.copy(hazeState = null) else params.favConfig,
             appWidgetHost = params.appWidgetHost,
             options = FavoritesListOptions(
                 containerId = params.item.id,
                 showHeadersAndWidgets = false,
-                isInsideScrollView = isInScrollView
+                isInsideScrollView = isInScrollView,
+                showAllApps = params.item.isShowingAllApps
             ),
             modifier = listModifier
         )
@@ -145,8 +147,8 @@ fun GridItemContent(params: GridItemContentParams) {
     val actions = LocalHomeActions.current
     when (item.safeType) {
         LauncherItemType.CLOCK -> GridClockContent(item, params.hazeState, uiState)
-        LauncherItemType.APPS_LIST -> GridAppsListContent(params)
-        LauncherItemType.ALL_APPS_LIST -> GridAllAppsListContent(params)
+        // A saved all apps list is migrated on load; the branch only keeps the when exhaustive.
+        LauncherItemType.APPS_LIST, LauncherItemType.ALL_APPS_LIST -> GridAppsListContent(params)
         LauncherItemType.SHORTCUTS_CONTAINER -> GridContainerContent(
             item,
             params.hazeState,

@@ -75,7 +75,7 @@ class ScrollViewChildItemRowTest {
         }
 
         val context = ApplicationProvider.getApplicationContext<Context>()
-        composeTestRule.onNodeWithText(context.getString(R.string.home_container_add_apps_list)).assertExists()
+        composeTestRule.onNodeWithText(context.getString(R.string.home_grid_item_apps_list)).assertExists()
         composeTestRule.onNodeWithText("2x").assertExists() // vertical -> rowSpan
     }
 
