@@ -6,7 +6,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -44,7 +44,7 @@ internal fun ShortcutSelectionPreview(
                 text = pillText,
                 color = AureoleDS.colors.onSurfaceHigh,
                 modifier = Modifier
-                    .clip(CircleShape)
+                    .clip(RoundedCornerShape(AureoleDS.dimens.radiusFull))
                     .background(AureoleDS.colors.surfaceVariant)
                     .padding(horizontal = AureoleDS.dimens.small, vertical = AureoleDS.dimens.xSmall),
                 format = AureoleTextFormatParams(style = AureoleDS.typography.labelSmall, maxLines = 1)

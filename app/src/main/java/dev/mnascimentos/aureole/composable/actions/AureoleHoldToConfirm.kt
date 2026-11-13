@@ -10,7 +10,7 @@ import androidx.compose.foundation.gestures.waitForUpOrCancellation
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -96,7 +96,7 @@ fun AureoleHoldActionButton(
     Box(
         modifier = modifier
             .heightIn(min = AureoleDS.dimens.minTouchTarget)
-            .clip(CircleShape)
+            .clip(RoundedCornerShape(AureoleDS.dimens.radiusFull))
             .background(AureoleDS.colors.error)
             .drawBehind {
                 drawRect(color = fillColor, size = Size(size.width * progress.value, size.height))

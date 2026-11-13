@@ -17,7 +17,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
@@ -129,7 +129,7 @@ private fun ExpandedSearchRow(
     val searchBarModifier = Modifier
         .fillMaxWidth()
         .height(params.barHeight)
-        .clip(CircleShape)
+        .clip(RoundedCornerShape(AureoleDS.dimens.radiusFull))
         .then(
             if (hazeConfig.isEnabled && hazeConfig.state != null) {
                 Modifier.hazeEffect(state = hazeConfig.state, style = hazeStyle) { blurEnabled = true }
@@ -219,7 +219,7 @@ private fun CollapsedSearchBubble(
 ) {
     val bubbleModifier = Modifier
         .size(params.sizes.collapsedSize)
-        .clip(CircleShape)
+        .clip(RoundedCornerShape(AureoleDS.dimens.radiusFull))
         .then(
             if (params.hazeConfig.isEnabled && params.hazeConfig.state != null) {
                 Modifier.hazeEffect(state = params.hazeConfig.state, style = hazeStyle) { blurEnabled = true }

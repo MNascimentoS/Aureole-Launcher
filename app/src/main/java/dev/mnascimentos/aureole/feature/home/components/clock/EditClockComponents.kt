@@ -74,8 +74,8 @@ internal fun EditClockColorSwatchItem(
 
     Row(
         modifier = Modifier
-            .clip(CircleShape)
-            .border(AureoleDS.dimens.borderMax, borderColor, CircleShape)
+            .clip(RoundedCornerShape(AureoleDS.dimens.radiusFull))
+            .border(AureoleDS.dimens.borderMax, borderColor, RoundedCornerShape(AureoleDS.dimens.radiusFull))
             .clickable(
                 onClick = onClick,
                 role = Role.Button

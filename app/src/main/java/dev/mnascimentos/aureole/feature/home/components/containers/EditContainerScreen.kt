@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
-import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
@@ -231,9 +230,7 @@ internal fun AppearanceSettingsContent(
         }
 
         Spacer(modifier = Modifier.height(AureoleDS.dimens.large))
-        Button(onClick = onBack, modifier = Modifier.fillMaxWidth()) {
-            Text(stringResource(R.string.home_container_edit_back))
-        }
+        EditContainerBackButton(onClick = onBack)
     }
 }
 
