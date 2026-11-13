@@ -1,7 +1,6 @@
 package dev.mnascimentos.aureole.feature.home.components.containers
 
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -31,6 +30,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.R
+import dev.mnascimentos.aureole.composable.appitem.AureoleAppIcon
+import dev.mnascimentos.aureole.composable.appitem.model.AureoleAppIconParams
 import dev.mnascimentos.aureole.composable.dialogs.FolderIconRegistry
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
@@ -194,7 +195,6 @@ private fun DropdownAppItem(
     app: AppInfo,
     onAppSelected: (String) -> Unit
 ) {
-    val iconBitmap = remember(app.packageName) { app.getIconBitmap() }
     DropdownMenuItem(
         text = {
             AureoleText(
@@ -204,10 +204,10 @@ private fun DropdownAppItem(
             )
         },
         leadingIcon = {
-            Image(
-                bitmap = iconBitmap,
-                contentDescription = app.label,
-                modifier = Modifier.size(AureoleDS.dimens.iconMedium)
+            AureoleAppIcon(
+                app = app,
+                size = AureoleDS.dimens.iconMedium,
+                params = AureoleAppIconParams(contentDescription = app.label)
             )
         },
         onClick = { onAppSelected(app.packageName) },

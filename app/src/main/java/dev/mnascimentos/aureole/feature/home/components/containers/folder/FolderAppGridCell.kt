@@ -3,7 +3,6 @@ package dev.mnascimentos.aureole.feature.home.components.containers.folder
 import android.content.ComponentName
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -18,7 +17,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -27,6 +25,8 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.core.graphics.drawable.toDrawable
+import dev.mnascimentos.aureole.composable.appitem.AureoleAppIcon
+import dev.mnascimentos.aureole.composable.appitem.model.AureoleAppIconParams
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
@@ -93,19 +93,16 @@ internal fun FolderAppGridCell(
 @Composable
 private fun FolderAppGridIcon(app: AppInfo, isMarked: Boolean) {
     val dimens = AureoleDS.dimens
-    val iconBitmap = remember(app.packageName) { app.getIconBitmap() }
     val outline = if (isMarked) {
         Modifier.border(dimens.minimal, AureoleDS.colors.onSurfaceHigh, RoundedCornerShape(dimens.radiusMedium))
     } else {
         Modifier
     }
-    Image(
-        bitmap = iconBitmap,
-        contentDescription = null,
-        modifier = outline
-            .padding(dimens.xxSmall)
-            .size(dimens.iconHuge)
-            .clip(RoundedCornerShape(dimens.radiusSmall))
+    AureoleAppIcon(
+        app = app,
+        modifier = outline.padding(dimens.xxSmall),
+        size = dimens.iconHuge,
+        params = AureoleAppIconParams(legacyShape = RoundedCornerShape(dimens.radiusSmall))
     )
 }
 

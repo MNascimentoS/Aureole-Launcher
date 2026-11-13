@@ -15,7 +15,8 @@ class AureoleDimensCornerRadiusTest {
         radiusSmallCompact,
         radiusSmall,
         radiusMedium,
-        radiusMediumLarge
+        radiusMediumLarge,
+        radiusAppIcon
     )
 
     private fun assertDp(expected: Dp, actual: Dp) =
@@ -39,6 +40,12 @@ class AureoleDimensCornerRadiusTest {
     }
 
     @Test
+    fun `app icon radius is 12 dp by default and 0 when the radius is 0`() {
+        assertDp(12.dp, AureoleDimens.forCornerRadius(20).radiusAppIcon)
+        assertDp(0.dp, AureoleDimens.forCornerRadius(0).radiusAppIcon)
+    }
+
+    @Test
     fun `radius 24 scales the smaller radii proportionally`() {
         val dimens = AureoleDimens.forCornerRadius(24)
 
@@ -49,6 +56,7 @@ class AureoleDimensCornerRadiusTest {
         assertDp(base.radiusSmall * 1.2f, dimens.radiusSmall)
         assertDp(base.radiusMedium * 1.2f, dimens.radiusMedium)
         assertDp(base.radiusMediumLarge * 1.2f, dimens.radiusMediumLarge)
+        assertDp(base.radiusAppIcon * 1.2f, dimens.radiusAppIcon)
         assertDp(100.dp, dimens.radiusFull)
     }
 
@@ -65,6 +73,7 @@ class AureoleDimensCornerRadiusTest {
                     radiusSmall = dimens.radiusSmall,
                     radiusMedium = dimens.radiusMedium,
                     radiusMediumLarge = dimens.radiusMediumLarge,
+                    radiusAppIcon = dimens.radiusAppIcon,
                     radiusLarge = dimens.radiusLarge,
                     radiusFull = dimens.radiusFull
                 ),

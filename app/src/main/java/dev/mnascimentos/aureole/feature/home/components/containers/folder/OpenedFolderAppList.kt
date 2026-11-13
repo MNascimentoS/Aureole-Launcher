@@ -2,7 +2,6 @@ package dev.mnascimentos.aureole.feature.home.components.containers.folder
 
 import android.content.ComponentName
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
@@ -22,13 +21,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.core.graphics.drawable.toDrawable
 import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.composable.LocalHomeUiState
+import dev.mnascimentos.aureole.composable.appitem.AureoleAppIcon
+import dev.mnascimentos.aureole.composable.appitem.model.AureoleAppIconParams
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
@@ -85,9 +85,11 @@ private fun OpenedFolderAppItemRow(
     onLongClick: () -> Unit = {}
 ) {
     val uiState = LocalHomeUiState.current
-    val iconBitmap: ImageBitmap = app.getDisplayIconBitmap(
+    val iconParams = AureoleAppIconParams(
         isThemed = uiState.isThemedAppIconsEnabled,
-        tintColor = AureoleDS.colors.onSurfaceMedium
+        showThemedBox = false,
+        legacyShape = CircleShape,
+        contentDescription = app.label
     )
 
     Row(
@@ -113,21 +115,9 @@ private fun OpenedFolderAppItemRow(
                 modifier = Modifier.weight(1f)
             )
             Spacer(modifier = Modifier.width(AureoleDS.dimens.smallCompact))
-            Image(
-                bitmap = iconBitmap,
-                contentDescription = app.label,
-                modifier = Modifier
-                    .size(AureoleDS.dimens.iconXLargeMedium)
-                    .clip(CircleShape)
-            )
+            AureoleAppIcon(app = app, size = AureoleDS.dimens.iconXLargeMedium, params = iconParams)
         } else {
-            Image(
-                bitmap = iconBitmap,
-                contentDescription = app.label,
-                modifier = Modifier
-                    .size(AureoleDS.dimens.iconXLargeMedium)
-                    .clip(CircleShape)
-            )
+            AureoleAppIcon(app = app, size = AureoleDS.dimens.iconXLargeMedium, params = iconParams)
             Spacer(modifier = Modifier.width(AureoleDS.dimens.smallCompact))
             Text(
                 text = app.label,

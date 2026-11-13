@@ -54,6 +54,7 @@ data class AureoleDimens(
     val radiusMedium: Dp = 16.dp,
     val radiusMediumLarge: Dp = 20.dp,
     val radiusLarge: Dp = 24.dp,
+    val radiusAppIcon: Dp = 12.dp,
     val radiusFull: Dp = 100.dp,
 ) {
     companion object {
@@ -71,6 +72,7 @@ data class AureoleDimens(
                 radiusSmall = base.radiusSmall * scale,
                 radiusMedium = base.radiusMedium * scale,
                 radiusMediumLarge = base.radiusMediumLarge * scale,
+                radiusAppIcon = base.radiusAppIcon * scale,
                 radiusLarge = userDp.dp,
                 radiusFull = if (userDp == 0) 0.dp else base.radiusFull
             )
