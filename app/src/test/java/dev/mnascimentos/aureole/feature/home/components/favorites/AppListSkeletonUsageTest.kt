@@ -1,4 +1,4 @@
-package dev.mnascimentos.aureole.feature.home.components.allapps
+package dev.mnascimentos.aureole.feature.home.components.favorites
 
 import android.content.ComponentName
 import android.graphics.Color
@@ -18,7 +18,6 @@ import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.designsystem.model.LocalLeftHanded
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.feature.home.components.appsdrawer.AppsListDrawer
-import dev.mnascimentos.aureole.feature.home.components.favorites.AppsList
 import dev.mnascimentos.aureole.feature.home.components.favorites.model.FavoritesListConfig
 import dev.mnascimentos.aureole.feature.home.components.favorites.model.FavoritesListOptions
 import dev.mnascimentos.aureole.feature.home.model.LocalHomeActions

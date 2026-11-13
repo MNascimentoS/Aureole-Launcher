@@ -18,7 +18,6 @@ class CustomizeActionsTest {
         val actions = createDefaultHomeScreenActions().copy(onAddGridItem = { type, _, o -> calls += Call(type, o) })
 
         listOf(
-            CustomizeAddItem.ALL_APPS,
             CustomizeAddItem.CONTAINER,
             CustomizeAddItem.WIDGET_GROUP,
             CustomizeAddItem.QUICK_BUTTON
@@ -26,7 +25,6 @@ class CustomizeActionsTest {
 
         assertEquals(
             listOf(
-                Call(LauncherItemType.APPS_LIST, null),
                 Call(LauncherItemType.SHORTCUTS_CONTAINER, null),
                 Call(LauncherItemType.WIDGET_LIST, null),
                 Call(LauncherItemType.QUICK_BUTTON, null)
@@ -46,7 +44,7 @@ class CustomizeActionsTest {
     }
 
     @Test
-    fun `when adding favorites, should open the favorites flow and not add a grid item`() {
+    fun `when adding an apps list, should ask for a new list and not add a grid item`() {
         var asked = false
         var added = false
         val actions = createDefaultHomeScreenActions().copy(
@@ -54,9 +52,24 @@ class CustomizeActionsTest {
             onAddGridItem = { _, _, _ -> added = true }
         )
 
-        actions.addCustomizeItem(CustomizeAddItem.FAVORITES)
+        actions.addCustomizeItem(CustomizeAddItem.APPS_LIST)
 
         assertTrue(asked)
+        assertEquals(false, added)
+    }
+
+    @Test
+    fun `when choosing settings, should open the settings and not add a grid item`() {
+        var opened = 0
+        var added = false
+        val actions = createDefaultHomeScreenActions().copy(
+            onSettingsClick = { opened++ },
+            onAddGridItem = { _, _, _ -> added = true }
+        )
+
+        actions.addCustomizeItem(CustomizeAddItem.SETTINGS)
+
+        assertEquals(1, opened)
         assertEquals(false, added)
     }
 

@@ -30,15 +30,4 @@ class FavoritesListRowTest {
         composeTestRule.onNodeWithText("Tap to select Favorites").performClick()
         assertTrue(clicked)
     }
-
-    @Test
-    fun `when rendering AllAppsDivider, should display divider text`() {
-        composeTestRule.setContent {
-            AureoleLauncherTheme {
-                AllAppsDivider()
-            }
-        }
-
-        composeTestRule.onNodeWithText("ALL APPS", substring = true).assertIsDisplayed()
-    }
 }

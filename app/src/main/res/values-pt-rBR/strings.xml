@@ -115,14 +115,13 @@
     <string name="home_customize_adjust_palette">Paleta</string>
     <string name="home_customize_adjust_font">Fonte</string>
     <string name="home_customize_item_clock">Relógio</string>
-    <string name="home_customize_item_favorites">Favoritos</string>
-    <string name="home_customize_item_all_apps">Todos os apps</string>
+    <string name="home_customize_item_apps_list">Lista de apps</string>
     <string name="home_customize_item_container">Container</string>
     <string name="home_customize_item_widget_group">Grupo de widgets</string>
     <string name="home_customize_item_scrollview">Grupo rolável</string>
     <string name="home_customize_item_quick_button">Botão rápido</string>
     <string name="home_customize_item_widget">Widget</string>
-    <string name="home_customize_item_on_home">Já na home</string>
+    <string name="home_customize_item_settings">Configurações</string>
     <string name="home_customize_aureole_settings">Configurações do Aureole</string>
     <string name="settings_advanced_update_new_available">Nova atualização disponível</string>
     <string name="settings_advanced_update_new_body">Uma nova versão do Aureole Launcher está disponível na Google Play. Deseja atualizar agora?</string>
@@ -198,7 +197,6 @@
     <string name="home_favorites_none_other_found">Nenhum outro aplicativo encontrado.</string>
     <string name="home_favorites_search_placeholder">Buscar aplicativo&#8230;</string>
     <string name="home_favorites_tap_to_select">Toque para selecionar Favoritos</string>
-    <string name="home_favorites_all_apps_divider">\" TODOS OS APPS \"</string>
     <string name="home_favorites_back">Voltar</string>
     <string name="home_favorites_remove">Remover dos favoritos</string>
 
