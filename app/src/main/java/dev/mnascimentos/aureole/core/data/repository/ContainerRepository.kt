@@ -104,7 +104,9 @@ class ContainerRepository(
     suspend fun ensureContainerExists(
         panelId: String,
         defaultTitle: String = "Painel Lateral",
-        isBackgroundEnabled: Boolean = false
+        isBackgroundEnabled: Boolean = false,
+        position: String = ContainerModel().position,
+        isExpandCell: Boolean = false
     ): ContainerModel =
         withContext(Dispatchers.IO) {
             val existing = getContainer(panelId)
@@ -113,7 +115,9 @@ class ContainerRepository(
             val newEntity = ContainerEntity(
                 id = panelId,
                 title = defaultTitle,
-                isBackgroundEnabled = isBackgroundEnabled
+                position = position,
+                isBackgroundEnabled = isBackgroundEnabled,
+                isExpandCell = isExpandCell
             )
             containerDao.insertOrUpdateContainer(newEntity)
 

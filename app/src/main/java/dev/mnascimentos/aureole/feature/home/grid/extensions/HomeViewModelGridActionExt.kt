@@ -8,6 +8,7 @@ import dev.mnascimentos.aureole.feature.home.HomeViewModel
 import dev.mnascimentos.aureole.feature.home.components.clock.extensions.dropClockConfig
 import dev.mnascimentos.aureole.feature.home.components.clock.extensions.giveNewClockItsConfig
 import dev.mnascimentos.aureole.feature.home.components.clock.extensions.hasItemOnAnyLayout
+import dev.mnascimentos.aureole.feature.home.components.containers.extensions.dropContainers
 import dev.mnascimentos.aureole.feature.home.components.favorites.extensions.dropFavoritesList
 import dev.mnascimentos.aureole.feature.home.extensions.showUndo
 import dev.mnascimentos.aureole.feature.home.grid.GridDefaults
@@ -120,8 +121,8 @@ fun HomeViewModel.deleteGridItem(id: String) {
 
 /**
  * Removes the item and offers "Undo", which puts it back in the same cell. A favorites list also loses its saved
- * favorites right away, and a clock its config; the undo writes them back (see [dropFavoritesList] and
- * [dropClockConfig]).
+ * favorites right away, a clock its config and a container (or the containers of a scroll group) its items,
+ * folders and config; the undo writes them back (see [dropFavoritesList], [dropClockConfig] and [dropContainers]).
  */
 fun HomeViewModel.removeGridItemWithUndo(id: String) {
     val item = uiState.value.gridItems.find { it.id == id }
@@ -130,10 +131,12 @@ fun HomeViewModel.removeGridItemWithUndo(id: String) {
     if (item == null) return
     // After the delete, so a clock with the same id still in the other layout keeps the shared config.
     val restoreClock = if (item.safeType == LauncherItemType.CLOCK) dropClockConfig(id) else null
+    val restoreContainers = dropContainers(listOf(item))
     showUndo(TextResource.fromResId(R.string.home_undo_component_removed)) {
         restoreGridItem(item)
         restoreFavorites?.invoke()
         restoreClock?.invoke()
+        restoreContainers()
     }
 }
 
