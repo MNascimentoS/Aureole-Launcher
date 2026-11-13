@@ -1,6 +1,7 @@
 package dev.mnascimentos.aureole.feature.home
 
 import android.appwidget.AppWidgetHost
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.platform.LocalContext
@@ -13,7 +14,9 @@ import dev.mnascimentos.aureole.core.data.model.LauncherItemState
 import dev.mnascimentos.aureole.core.data.model.LauncherItemType
 import dev.mnascimentos.aureole.core.data.model.ScrollOrientation
 import dev.mnascimentos.aureole.core.designsystem.model.LocalLeftHanded
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDimens
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleThemeConfig
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.model.LocalHomeActions
 
@@ -52,7 +55,11 @@ private fun containerModel(id: String, title: String, vararg packages: String) =
 @PreviewTest
 @AureolePreview
 @Composable
-private fun HomeFourContainersScreenshotTest() {
+private fun HomeFourContainersScreenshotTest() = FourContainersHome()
+
+/** The four-container home, with the theme dimens of the chosen corner radius (default: 20 dp). */
+@Composable
+internal fun FourContainersHome(dimens: AureoleDimens = AureoleDimens()) {
     val context = LocalContext.current
     val sample = createSampleHomeData()
     val group = LauncherItemState(
@@ -82,7 +89,7 @@ private fun HomeFourContainersScreenshotTest() {
         )
     )
 
-    AureoleLauncherTheme {
+    AureoleLauncherTheme(AureoleThemeConfig(darkTheme = isSystemInDarkTheme(), aureoleDimens = dimens)) {
         CompositionLocalProvider(
             LocalHomeUiState provides uiState,
             LocalLeftHanded provides uiState.isLeftHandedMode,

@@ -30,6 +30,7 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Switch
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.runtime.getValue
@@ -93,6 +94,17 @@ internal fun EditContainerOrientationSelector(
 }
 
 @Composable
+internal fun EditContainerBackButton(onClick: () -> Unit, modifier: Modifier = Modifier) {
+    Button(
+        onClick = onClick,
+        modifier = modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(AureoleDS.dimens.radiusFull)
+    ) {
+        Text(stringResource(R.string.home_container_edit_back))
+    }
+}
+
+@Composable
 private fun OrientationOptionButton(
     optText: String,
     isSelected: Boolean,
@@ -103,6 +115,7 @@ private fun OrientationOptionButton(
         Button(
             onClick = onClick,
             modifier = modifier,
+            shape = RoundedCornerShape(AureoleDS.dimens.radiusFull),
             colors = ButtonDefaults.buttonColors(
                 containerColor = AureoleDS.colors.onSurfaceHigh,
                 contentColor = AureoleDS.colors.surface
@@ -114,6 +127,7 @@ private fun OrientationOptionButton(
         OutlinedButton(
             onClick = onClick,
             modifier = modifier,
+            shape = RoundedCornerShape(AureoleDS.dimens.radiusFull),
             border = BorderStroke(AureoleDS.dimens.borderMinimal, AureoleDS.colors.outline.copy(alpha = 0.5f))
         ) {
             AureoleText(text = optText, color = AureoleDS.colors.onSurfaceHigh)
@@ -156,6 +170,7 @@ internal fun EditContainerAlignmentSelector(
                 value = displayValue,
                 onValueChange = {},
                 readOnly = true,
+                shape = RoundedCornerShape(AureoleDS.dimens.radiusMedium),
                 trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = isDropdownExpanded) },
                 colors = OutlinedTextFieldDefaults.colors(
                     focusedBorderColor = AureoleDS.colors.onSurfaceHigh,

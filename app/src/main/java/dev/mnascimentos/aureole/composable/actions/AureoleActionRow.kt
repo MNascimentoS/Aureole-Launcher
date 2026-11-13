@@ -6,7 +6,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
-import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.OutlinedButton
@@ -80,7 +80,7 @@ fun AureolePrimaryActionButton(
     Button(
         onClick = onClick,
         modifier = modifier.heightIn(min = AureoleDS.dimens.minTouchTarget),
-        shape = CircleShape,
+        shape = RoundedCornerShape(AureoleDS.dimens.radiusFull),
         colors = ButtonDefaults.buttonColors(
             containerColor = AureoleDS.colors.onSurfaceHigh,
             contentColor = AureoleDS.colors.surface
@@ -98,7 +98,7 @@ private fun RowScope.SecondaryButton(params: ActionRowParams) {
         modifier = Modifier
             .weight(ACTION_SECONDARY_WEIGHT)
             .heightIn(min = AureoleDS.dimens.minTouchTarget),
-        shape = CircleShape,
+        shape = RoundedCornerShape(AureoleDS.dimens.radiusFull),
         border = BorderStroke(AureoleDS.dimens.borderMinimal, AureoleDS.colors.surfaceVariant)
     ) {
         ActionLabel(params.secondaryLabel, color)

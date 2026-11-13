@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.runtime.Composable
@@ -47,6 +48,7 @@ internal fun EditClockStyleSection(
             label = { AureoleText(stringResource(R.string.home_clock_greeting_text)) },
             placeholder = { AureoleText(stringResource(R.string.home_clock_greeting_placeholder)) },
             singleLine = true,
+            shape = RoundedCornerShape(AureoleDS.dimens.radiusMedium),
             colors = OutlinedTextFieldDefaults.colors(
                 focusedTextColor = AureoleDS.colors.onSurfaceHigh,
                 unfocusedTextColor = AureoleDS.colors.onSurfaceHigh
