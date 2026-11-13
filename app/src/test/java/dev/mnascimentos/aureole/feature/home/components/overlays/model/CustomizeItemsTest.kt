@@ -1,0 +1,61 @@
+package dev.mnascimentos.aureole.feature.home.components.overlays.model
+
+import dev.mnascimentos.aureole.core.data.model.LauncherItemState
+import dev.mnascimentos.aureole.core.data.model.LauncherItemType
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
+import org.junit.Assert.assertTrue
+import org.junit.Test
+
+class CustomizeItemsTest {
+
+    private fun item(type: LauncherItemType) = LauncherItemState(id = type.name, type = type)
+
+    @Test
+    fun `when the home is empty, should have no item marked as on home`() {
+        assertTrue(itemsOnHome(emptyList()).isEmpty())
+    }
+
+    @Test
+    fun `when the home has a clock and an all apps list, should mark exactly those`() {
+        val onHome = itemsOnHome(listOf(item(LauncherItemType.CLOCK), item(LauncherItemType.ALL_APPS_LIST)))
+
+        assertEquals(setOf(CustomizeAddItem.CLOCK, CustomizeAddItem.ALL_APPS), onHome)
+    }
+
+    @Test
+    fun `when the home has a favorites list, should mark favorites`() {
+        assertEquals(setOf(CustomizeAddItem.FAVORITES), itemsOnHome(listOf(item(LauncherItemType.APPS_LIST))))
+    }
+
+    @Test
+    fun `when the home has repeatable kinds, should never mark them`() {
+        val repeatable = listOf(
+            item(LauncherItemType.SHORTCUTS_CONTAINER),
+            item(LauncherItemType.WIDGET_LIST),
+            item(LauncherItemType.SCROLL_VIEW),
+            item(LauncherItemType.QUICK_BUTTON),
+            item(LauncherItemType.SINGLE_APP_WIDGET)
+        )
+
+        assertTrue(itemsOnHome(repeatable).isEmpty())
+        assertFalse(CustomizeAddItem.CONTAINER.isOnHome(repeatable))
+    }
+
+    @Test
+    fun `when laying out the grid, should have four columns and keep every item once in order`() {
+        assertEquals(CUSTOMIZE_ADD_COLUMNS, CustomizeAddItem.rows.first().size)
+        assertEquals(2, CustomizeAddItem.rows.size)
+        assertEquals(CustomizeAddItem.entries, CustomizeAddItem.rows.flatten())
+        assertEquals(CustomizeAddItem.CLOCK, CustomizeAddItem.rows.first().first())
+        assertEquals(CustomizeAddItem.WIDGET, CustomizeAddItem.rows.last().last())
+    }
+
+    @Test
+    fun `when listing adjust items, should be layout, palette and font`() {
+        assertEquals(
+            listOf(CustomizeAdjustItem.LAYOUT, CustomizeAdjustItem.PALETTE, CustomizeAdjustItem.FONT),
+            CustomizeAdjustItem.entries
+        )
+    }
+}

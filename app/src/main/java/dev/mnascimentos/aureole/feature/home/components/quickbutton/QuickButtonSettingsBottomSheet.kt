@@ -1,164 +1,95 @@
 package dev.mnascimentos.aureole.feature.home.components.quickbutton
 
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import dev.chrisbanes.haze.HazeState
 import dev.mnascimentos.aureole.R
+import dev.mnascimentos.aureole.composable.menu.AureoleMenuListSheet
+import dev.mnascimentos.aureole.composable.menu.model.MenuEntry
+import dev.mnascimentos.aureole.composable.menu.model.MenuRowParams
+import dev.mnascimentos.aureole.composable.menu.model.MenuSheetParams
 import dev.mnascimentos.aureole.core.data.model.QuickButtonModel
 import dev.mnascimentos.aureole.core.data.model.ShortcutType
-import dev.mnascimentos.aureole.core.designsystem.components.AureoleEditOverlay
 import dev.mnascimentos.aureole.core.designsystem.icons.Click
+import dev.mnascimentos.aureole.core.designsystem.icons.ColorFill
 import dev.mnascimentos.aureole.core.designsystem.icons.Delete
-import dev.mnascimentos.aureole.core.designsystem.icons.Edit
-import dev.mnascimentos.aureole.core.designsystem.model.AureoleEditOverlayConfig
-import dev.mnascimentos.aureole.core.designsystem.model.AureoleEditOverlayParams
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
-import dev.mnascimentos.aureole.feature.home.components.quickbutton.model.QuickButtonAppearanceMetrics
 import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
-import kotlinx.coroutines.delay
 
-private const val DISMISS_DELAY_MS = 300L
-
+/**
+ * Quick button menu: the click shortcut and the appearance, each with a chevron, then "Remove" last, in red, with
+ * a 4 s undo. The rows open the shortcut picker and the appearance editor; nothing here is a draft, so there is no
+ * Save / Cancel.
+ */
 @Composable
 fun QuickButtonSettingsBottomSheet(
     uiState: MainUiState,
     actions: HomeScreenActions,
     onDismissRequest: () -> Unit,
-    modifier: Modifier = Modifier,
-    hazeState: HazeState? = null
+    modifier: Modifier = Modifier
 ) {
-    var isVisible by remember { mutableStateOf(true) }
-
-    if (!isVisible) {
-        LaunchedEffect(isVisible) {
-            delay(DISMISS_DELAY_MS)
-            onDismissRequest()
-        }
-    }
-
     val activeModel = uiState.activeQuickButtonModel ?: QuickButtonModel()
-    val activeAppInfo = remember(activeModel.shortcuts.click, uiState.apps) {
-        if (activeModel.shortcuts.click.type == ShortcutType.OPEN_APP) {
-            uiState.apps.find { it.packageName == activeModel.shortcuts.click.target }
-        } else {
-            null
-        }
-    }
-    val effectiveHazeState = if (uiState.isHazeEnabled) hazeState else null
+    val clickSubtitle = clickShortcutLabel(activeModel = activeModel, uiState = uiState)
 
-    AureoleEditOverlay(
-        onDismissRequest = { isVisible = false },
+    val entries = quickButtonEntries(uiState = uiState, actions = actions, clickSubtitle = clickSubtitle)
+    AureoleMenuListSheet(
+        title = stringResource(R.string.home_quickbutton_settings_title),
+        onDismiss = onDismissRequest,
         modifier = modifier,
-        params = AureoleEditOverlayParams(
-            config = AureoleEditOverlayConfig(
-                title = stringResource(R.string.home_quickbutton_settings_title),
-                onSettingsClick = { actions.onSettingsClick() },
-                hazeState = effectiveHazeState,
-                isVisible = isVisible,
-                animated = true,
-                isLeftHanded = uiState.isLeftHandedMode
-            ),
-            previewContent = {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(QuickButtonAppearanceMetrics.PreviewBoxHeight),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Box(modifier = Modifier.size(QuickButtonAppearanceMetrics.PreviewItemSize)) {
-                        QuickButtonGridItem(
-                            model = activeModel,
-                            appInfo = activeAppInfo,
-                            onAction = {},
-                            onLongPress = {}
-                        )
-                    }
-                }
-            },
-            bottomBarContent = null,
-            sheetContent = {
-                QuickButtonSettingsSheetContent(
-                    activeModel = activeModel,
-                    uiState = uiState,
-                    actions = actions,
-                    onDismiss = { isVisible = false }
-                )
-            }
+        params = MenuSheetParams(
+            titleIcon = { m -> AureoleDS.icons.Click(modifier = m, tint = AureoleDS.colors.onSurfaceMedium) },
+            onSettingsClick = { actions.onSettingsClick() }
         )
-    )
+    ) { entries }
 }
 
 @Composable
-private fun QuickButtonSettingsSheetContent(
-    activeModel: QuickButtonModel,
+private fun quickButtonEntries(
     uiState: MainUiState,
     actions: HomeScreenActions,
-    onDismiss: () -> Unit
-) {
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .verticalScroll(rememberScrollState())
-    ) {
-        SettingsRow(
-            title = stringResource(R.string.home_quickbutton_appearance),
-            icon = { m -> AureoleDS.icons.Edit(m) },
-            onClick = { actions.onOpenQuickButtonAppearance() }
-        )
-
-        val clickValue = when (activeModel.shortcuts.click.type) {
-            ShortcutType.OPEN_APP -> {
-                val pkg = activeModel.shortcuts.click.target
-                val appLabel = uiState.apps.find { it.packageName == pkg }?.label
-                if (appLabel != null) {
-                    stringResource(R.string.home_quickbutton_open_app_name, appLabel)
-                } else {
-                    stringResource(
-                        R.string.home_quickbutton_open_app
-                    )
-                }
-            }
-            else -> activeModel.shortcuts.click.displayName
-        }
-
-        SettingsRow(
+    clickSubtitle: String
+): List<MenuEntry> = listOf(
+    MenuEntry.Section(text = stringResource(R.string.home_quickbutton_menu_section)),
+    MenuEntry.Row(
+        MenuRowParams(
             title = stringResource(R.string.home_quickbutton_click_shortcut),
-            value = clickValue,
-            icon = { m -> AureoleDS.icons.Click(m) },
-            onClick = { actions.onOpenShortcutSelection("click") }
+            subtitle = clickSubtitle,
+            onClick = { actions.onOpenShortcutSelection("click") },
+            icon = { m, c -> AureoleDS.icons.Click(modifier = m, tint = c) },
+            showChevron = true
         )
-
-        Spacer(modifier = Modifier.height(AureoleDS.dimens.medium))
-
-        SettingsRow(
-            title = stringResource(dev.mnascimentos.aureole.R.string.home_quickbutton_remove),
-            icon = { m -> AureoleDS.icons.Delete(m, tint = AureoleDS.colors.error) },
-            textColor = AureoleDS.colors.error,
-            onClick = {
-                uiState.activeQuickButtonId?.let { actions.onDeleteGridItem(it) }
-                onDismiss()
-            }
+    ),
+    MenuEntry.Row(
+        MenuRowParams(
+            title = stringResource(R.string.home_quickbutton_appearance),
+            onClick = { actions.onOpenQuickButtonAppearance() },
+            icon = { m, c -> AureoleDS.icons.ColorFill(modifier = m, tint = c) },
+            showChevron = true
         )
+    ),
+    MenuEntry.Row(
+        MenuRowParams(
+            title = stringResource(R.string.home_quickbutton_remove),
+            onClick = { uiState.activeQuickButtonId?.let { actions.onRemoveGridItem(it) } },
+            icon = { m, c -> AureoleDS.icons.Delete(modifier = m, tint = c) },
+            isDestructive = true
+        )
+    )
+)
 
-        Spacer(modifier = Modifier.height(AureoleDS.dimens.medium))
+/** What the click shortcut does, in words: "Open App (Browser)" for an app, the shortcut's name otherwise. */
+@Composable
+private fun clickShortcutLabel(activeModel: QuickButtonModel, uiState: MainUiState): String {
+    val click = activeModel.shortcuts.click
+    if (click.type != ShortcutType.OPEN_APP) return click.displayName
+    val appLabel = uiState.apps.find { it.packageName == click.target }?.label
+    return if (appLabel != null) {
+        stringResource(R.string.home_quickbutton_open_app_name, appLabel)
+    } else {
+        stringResource(R.string.home_quickbutton_open_app)
     }
 }
 

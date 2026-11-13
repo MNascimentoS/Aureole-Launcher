@@ -1,18 +1,20 @@
 package dev.mnascimentos.aureole.feature.settings.model
 
+import dev.mnascimentos.aureole.composable.undo.model.UndoSnackbarState
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.data.repository.SettingsRepository
+import dev.mnascimentos.aureole.core.designsystem.model.GlassLevel
+import dev.mnascimentos.aureole.core.designsystem.model.TextResource
 
 sealed interface SettingValue {
     data class ContainerPosition(val position: String) : SettingValue
-    data class HazeOpacity(val opacity: Float) : SettingValue
     data class ManualSeedColor(val color: Int) : SettingValue
     data class SelectedTheme(val themeName: String) : SettingValue
     data class SelectedFont(val fontName: String) : SettingValue
     data class SettingsButtonPosition(val position: String) : SettingValue
     data class SearchIconPosition(val position: String) : SettingValue
     data class WallpaperScaleType(val scaleType: String) : SettingValue
-    data class CornerRadius(val radiusDp: Int) : SettingValue
+    data class CardsGlass(val draft: CardsGlassDraft) : SettingValue
 }
 
 data class SettingsUiState(
@@ -25,7 +27,6 @@ data class SettingsUiState(
     val containerPosition: String = "Space Between",
     val showFolderLabels: Boolean = false,
     val homeButtonOpensAllApps: Boolean = true,
-    val showAllAppsOnHome: Boolean = true,
     val isWidgetRowEnabled: Boolean = true,
     val showWidgetDots: Boolean = true,
     val favoriteAppPackages: List<String> = emptyList(),
@@ -36,7 +37,6 @@ data class SettingsUiState(
     val isCustomWallpaperSet: Boolean = false,
     val customWallpaperPath: String? = null,
     val wallpaperScaleType: String = "Crop",
-    val showRestoreWallpaperDialog: Boolean = false,
     val showResetGridDialog: Boolean = false,
     val showFactoryResetDialog: Boolean = false,
     val showCreateFolderDialog: Boolean = false,
@@ -47,6 +47,7 @@ data class SettingsUiState(
     val isHazeEnabled: Boolean = true,
     val isHazeSupported: Boolean = true,
     val hazeOpacity: Float = 0.5f,
+    val hazeBlurLevel: GlassLevel = GlassLevel.MEDIUM,
     val isInAppUpdateEnabled: Boolean = true,
     val headerOffsetPercent: Int = 10,
     val cornerRadiusDp: Int = SettingsRepository.DEFAULT_CORNER_RADIUS_DP,
@@ -58,8 +59,9 @@ data class SettingsUiState(
     val searchIconPosition: String = "Left",
     val showSettingsButtonPositionDialog: Boolean = false,
     val showSearchIconPositionDialog: Boolean = false,
-    val showHazeOpacityDialog: Boolean = false,
     val showColorPickerDialog: Boolean = false,
+    /** The pending "Undo" offer shown at the bottom of the screen. */
+    val undoSnackbar: UndoSnackbarState? = null,
     val shouldFinishActivity: Boolean = false,
-    val errorMessage: String? = null,
+    val errorMessage: TextResource? = null,
 )

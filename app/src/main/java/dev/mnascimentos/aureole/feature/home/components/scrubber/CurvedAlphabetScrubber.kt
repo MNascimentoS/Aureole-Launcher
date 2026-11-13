@@ -16,7 +16,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.runtime.getValue
@@ -27,7 +26,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onGloballyPositioned
@@ -45,8 +47,10 @@ import dev.mnascimentos.aureole.feature.home.components.scrubber.model.ScrubberC
 import dev.mnascimentos.aureole.feature.home.components.scrubber.model.ScrubberDimensions
 import dev.mnascimentos.aureole.feature.home.components.scrubber.model.ScrubberOptions
 import dev.mnascimentos.aureole.feature.home.components.scrubber.model.ScrubberRenderParams
+import dev.mnascimentos.aureole.feature.home.components.scrubber.model.scrubberLetterAlpha
 import dev.mnascimentos.aureole.feature.home.model.LocalHomeUiState
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
+import dev.mnascimentos.aureole.feature.home.model.ProvideHomeUiState
 import kotlin.math.exp
 import kotlin.math.roundToInt
 
@@ -55,6 +59,7 @@ private const val GAUSSIAN_HALF_FACTOR = 0.5f
 private const val SCRUBBER_ANIMATION_DURATION = 150
 private const val INACTIVE_LETTER_ALPHA = 0.6f
 private const val HINT_ALPHA = 0.35f
+private const val PILL_ALPHA = 0.6f
 
 @Composable
 fun CurvedAlphabetScrubber(
@@ -174,6 +179,7 @@ private fun Modifier.scrubberBaseModifier(
     onHeightChanged: (Float) -> Unit
 ): Modifier {
     val dimens = AureoleDS.dimens
+    val pillColor = AureoleDS.colors.surfaceVariant.copy(alpha = PILL_ALPHA)
     return this
         .fillMaxHeight(options.heightFraction)
         .padding(
@@ -183,6 +189,21 @@ private fun Modifier.scrubberBaseModifier(
             end = if (isLeftHandedMode) dimens.zero else dimens.xSmall
         )
         .width(dimens.minTouchTarget)
+        .then(
+            if (options.hasPillBackground) {
+                Modifier.drawBehind {
+                    val pillWidth = dimens.iconXLargeMedium.toPx()
+                    drawRoundRect(
+                        color = pillColor,
+                        topLeft = Offset((size.width - pillWidth) / 2f, 0f),
+                        size = Size(pillWidth, size.height),
+                        cornerRadius = CornerRadius(pillWidth / 2f)
+                    )
+                }
+            } else {
+                Modifier
+            }
+        )
         .onGloballyPositioned { coordinates ->
             onHeightChanged(coordinates.size.height.toFloat())
         }
@@ -292,7 +313,7 @@ private fun BoxScope.ScrubberAlphabetItems(
                     }
                     translationX = offsetXPx
                     translationY = itemCenterY - (size.height / 2f)
-                    alpha = params.scrubberAlpha
+                    alpha = scrubberLetterAlpha(isActive, params.isDragging, params.scrubberAlpha)
                 },
             format = AureoleTextFormatParams(
                 style = AureoleDS.typography.labelSmall,
@@ -333,7 +354,7 @@ private fun BoxScope.ScrubberSelectedBadge(
 @Composable
 private fun CurvedAlphabetScrubberPreview() {
     AureoleLauncherTheme {
-        CompositionLocalProvider(LocalHomeUiState provides MainUiState()) {
+        ProvideHomeUiState(MainUiState()) {
             CurvedAlphabetScrubber(
                 alphabet = listOf('A', 'B', 'C', 'D', 'E', 'F', 'G'),
                 options = ScrubberOptions(isAlwaysVisible = true),

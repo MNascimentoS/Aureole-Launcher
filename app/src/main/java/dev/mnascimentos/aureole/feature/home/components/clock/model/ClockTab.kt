@@ -2,6 +2,9 @@ package dev.mnascimentos.aureole.feature.home.components.clock.model
 
 import androidx.annotation.StringRes
 import dev.mnascimentos.aureole.R
+import kotlin.math.abs
+import kotlin.math.roundToInt
+import kotlin.math.sign
 
 /** Tabs of the clock editor, in the order the pager shows them. */
 enum class ClockTab(@StringRes val labelRes: Int) {
@@ -25,7 +28,18 @@ enum class ClockTab(@StringRes val labelRes: Int) {
         fun resolve(currentPage: Int, targetPage: Int, isScrolling: Boolean): ClockTab =
             fromPage(if (isScrolling) targetPage else currentPage)
 
-        /** Largest page height seen so far, so the sheet keeps one height on every tab. */
-        fun stableHeight(current: Int, measured: Int): Int = maxOf(current, measured)
+        /**
+         * Pager height while the tabs slide: the height of the settled page, blended with the one of the
+         * neighbour it is moving to as [offsetFraction] (signed, as in `PagerState.currentPageOffsetFraction`)
+         * grows. Returns 0 while the settled page has not been measured, which means "wrap the content".
+         */
+        fun pagerHeight(heights: List<Int>, currentPage: Int, offsetFraction: Float): Int {
+            val current = heights.getOrElse(currentPage) { 0 }
+            val neighbourPage = currentPage + sign(offsetFraction).toInt()
+            val neighbour = heights.getOrElse(neighbourPage) { 0 }
+            if (current <= 0 || neighbour <= 0) return maxOf(current, 0)
+            val fraction = abs(offsetFraction).coerceIn(0f, 1f)
+            return (current + (neighbour - current) * fraction).roundToInt()
+        }
     }
 }

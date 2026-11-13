@@ -23,7 +23,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
@@ -106,13 +108,17 @@ private fun PaletteColorStrip(palette: ThemePalette) {
     }
 }
 
-/** Font chip: "Aa" and the font name, both written in the font itself, outlined when [isSelected]. */
+/**
+ * Font chip: "Aa" and the font name, both written in the font itself, outlined when [isSelected].
+ * With [isLeftHanded] the chip is mirrored: the name on the left and the sample on the right.
+ */
 @Composable
 internal fun FontChip(
     fontName: String,
     isSelected: Boolean,
     onSelect: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    isLeftHanded: Boolean = false
 ) {
     val shape = RoundedCornerShape(AureoleDS.dimens.radiusSmall)
     val family = AvailableFonts[fontName]
@@ -136,25 +142,40 @@ internal fun FontChip(
         horizontalArrangement = Arrangement.spacedBy(AureoleDS.dimens.smallCompact),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        AureoleText(
-            text = stringResource(R.string.settings_appearance_font_chip_sample),
-            color = AureoleDS.colors.onSurfaceHigh,
-            modifier = Modifier.width(FONT_SAMPLE_WIDTH_DP.dp),
-            format = AureoleTextFormatParams(
-                style = AureoleDS.typography.titleMedium,
-                fontFamily = family
-            )
-        )
-        AureoleText(
-            text = fontName,
-            color = AureoleDS.colors.onSurfaceMedium,
-            format = AureoleTextFormatParams(
-                style = AureoleDS.typography.smallText,
-                fontFamily = family,
-                maxLines = 1
-            )
-        )
+        if (isLeftHanded) {
+            FontChipName(fontName, family, isLeftHanded, Modifier.weight(1f))
+            FontChipSample(family)
+        } else {
+            FontChipSample(family)
+            FontChipName(fontName, family, isLeftHanded, Modifier.weight(1f))
+        }
     }
+}
+
+@Composable
+private fun FontChipSample(family: FontFamily?) {
+    AureoleText(
+        text = stringResource(R.string.settings_appearance_font_chip_sample),
+        color = AureoleDS.colors.onSurfaceHigh,
+        modifier = Modifier.width(FONT_SAMPLE_WIDTH_DP.dp),
+        format = AureoleTextFormatParams(style = AureoleDS.typography.titleMedium, fontFamily = family)
+    )
+}
+
+/** Font name in the font itself; right-aligned in the left-handed mode, where the chip is mirrored. */
+@Composable
+private fun FontChipName(fontName: String, family: FontFamily?, isLeftHanded: Boolean, modifier: Modifier = Modifier) {
+    AureoleText(
+        text = fontName,
+        color = AureoleDS.colors.onSurfaceMedium,
+        modifier = modifier,
+        format = AureoleTextFormatParams(
+            style = AureoleDS.typography.smallText,
+            fontFamily = family,
+            maxLines = 1,
+            textAlign = if (isLeftHanded) TextAlign.End else TextAlign.Start
+        )
+    )
 }
 
 @AureolePreview
@@ -168,6 +189,7 @@ private fun ThemePickerChipsPreview() {
             val palette = ThemePalette(name = "Preview", colors = AureoleDS.colors)
             PaletteChip(palette = palette, displayName = palette.name, isSelected = true, onSelect = {})
             FontChip(fontName = "Istok Web", isSelected = false, onSelect = {})
+            FontChip(fontName = "Istok Web", isSelected = true, onSelect = {}, isLeftHanded = true)
         }
     }
 }

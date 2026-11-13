@@ -1,5 +1,3 @@
-@file:Suppress("Filename", "MatchingDeclarationName")
-
 package dev.mnascimentos.aureole.feature.home.components.containers.folder.model
 
 import androidx.compose.ui.graphics.Color
@@ -45,4 +43,5 @@ data class ContainerFolderBottomSheetParams(
     val onIcon: () -> Unit,
     val onRemoveFolder: () -> Unit,
     val onOpenContainerSettings: () -> Unit,
+    val onOpenSettings: (() -> Unit)? = null,
 )

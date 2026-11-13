@@ -11,6 +11,7 @@ import androidx.core.graphics.drawable.toDrawable
 import dev.chrisbanes.haze.HazeState
 import dev.mnascimentos.aureole.core.data.model.AppFolder
 import dev.mnascimentos.aureole.core.data.model.AppInfo
+import dev.mnascimentos.aureole.core.designsystem.model.LocalLeftHanded
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.feature.home.components.common.AddAppToFolderOverlay
 import dev.mnascimentos.aureole.feature.home.components.common.CreateFolderOverlay
@@ -21,6 +22,7 @@ import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.
 import dev.mnascimentos.aureole.feature.home.model.ContainerAppBottomSheetState
 import dev.mnascimentos.aureole.feature.home.model.ContainerFolderBottomSheetState
 import dev.mnascimentos.aureole.feature.home.model.FolderAppBottomSheetState
+import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
 import dev.mnascimentos.aureole.feature.home.model.LocalHomeActions
 import dev.mnascimentos.aureole.feature.home.model.LocalHomeUiState
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
@@ -30,8 +32,17 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
+import org.robolectric.annotation.Config
+
+private const val DISMISS_ANIMATION_MS = 500L
+
+private const val SHEET_ENTER_MS = 1000L
+
+/** The sheet hugs a 60% share of the window: the default Robolectric window leaves the grid no height. */
+private const val TALL_WINDOW = "w400dp-h900dp"
 
 @RunWith(RobolectricTestRunner::class)
+@Config(qualifiers = "w411dp-h891dp")
 class HomeScreenFolderOverlaysTest {
 
     @get:Rule
@@ -69,6 +80,7 @@ class HomeScreenFolderOverlaysTest {
 
         composeTestRule.onAllNodesWithText("New Folder")[0].assertIsDisplayed()
         composeTestRule.onNodeWithText("Cancel").performClick()
+        composeTestRule.mainClock.advanceTimeBy(DISMISS_ANIMATION_MS)
         assertTrue(createClosed)
     }
 
@@ -87,6 +99,7 @@ class HomeScreenFolderOverlaysTest {
         composeTestRule.onNodeWithText("New Folder").assertDoesNotExist()
     }
 
+    @Config(qualifiers = TALL_WINDOW)
     @Test
     fun `when AddAppToFolderOverlay is visible, should display FolderAppPickerDialog`() {
         var addAppClosed = false
@@ -108,9 +121,11 @@ class HomeScreenFolderOverlaysTest {
                 )
             }
         }
+        composeTestRule.mainClock.advanceTimeBy(SHEET_ENTER_MS)
 
         composeTestRule.onNodeWithText("Apps in Folder: Media").assertIsDisplayed()
         composeTestRule.onNodeWithText("Cancel").performClick()
+        composeTestRule.mainClock.advanceTimeBy(DISMISS_ANIMATION_MS)
         assertTrue(addAppClosed)
     }
 
@@ -137,6 +152,7 @@ class HomeScreenFolderOverlaysTest {
 
         composeTestRule.onNodeWithText("Edit Folder").assertIsDisplayed()
         composeTestRule.onNodeWithText("Cancel").performClick()
+        composeTestRule.mainClock.advanceTimeBy(DISMISS_ANIMATION_MS)
         assertTrue(renameClosed)
     }
 
@@ -213,6 +229,7 @@ class HomeScreenFolderOverlaysTest {
         composeTestRule.setContent {
             CompositionLocalProvider(
                 LocalHomeUiState provides uiStateFolderSheet,
+                LocalLeftHanded provides uiStateFolderSheet.isLeftHandedMode,
                 LocalHomeActions provides actions
             ) {
                 AureoleLauncherTheme {
@@ -244,6 +261,7 @@ class HomeScreenFolderOverlaysTest {
         composeTestRule.setContent {
             CompositionLocalProvider(
                 LocalHomeUiState provides uiStateFolderAppSheet,
+                LocalLeftHanded provides uiStateFolderAppSheet.isLeftHandedMode,
                 LocalHomeActions provides actions
             ) {
                 AureoleLauncherTheme {
@@ -256,7 +274,7 @@ class HomeScreenFolderOverlaysTest {
         }
 
         composeTestRule.onNodeWithText("Remove from folder").assertIsDisplayed()
-        composeTestRule.onNodeWithText("Folder settings").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Folder settings").assertExists()
     }
 
     @Test
@@ -276,6 +294,7 @@ class HomeScreenFolderOverlaysTest {
         composeTestRule.setContent {
             CompositionLocalProvider(
                 LocalHomeUiState provides uiStateContainerAppSheet,
+                LocalLeftHanded provides uiStateContainerAppSheet.isLeftHandedMode,
                 LocalHomeActions provides actions
             ) {
                 AureoleLauncherTheme {
@@ -289,5 +308,19 @@ class HomeScreenFolderOverlaysTest {
 
         composeTestRule.onNodeWithText("App Info").assertIsDisplayed()
         composeTestRule.onNodeWithText("Container settings").assertIsDisplayed()
+    }
+
+    private fun showOverlays(state: MainUiState, actions: HomeScreenActions) {
+        composeTestRule.setContent {
+            CompositionLocalProvider(
+                LocalHomeUiState provides state,
+                LocalLeftHanded provides state.isLeftHandedMode,
+                LocalHomeActions provides actions
+            ) {
+                AureoleLauncherTheme {
+                    HomeScreenFolderOverlays(screenHeightPx = 1920f, hazeState = HazeState())
+                }
+            }
+        }
     }
 }

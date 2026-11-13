@@ -10,20 +10,29 @@ import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.data.model.ContainerModel
+import dev.mnascimentos.aureole.core.designsystem.model.LocalLeftHanded
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.feature.home.components.containers.model.ContainerOptionsState
+import dev.mnascimentos.aureole.feature.home.components.containers.model.EditContainerScreenMode
 import dev.mnascimentos.aureole.feature.home.components.containers.model.EditContainerScreenParams
+import dev.mnascimentos.aureole.feature.home.components.containers.model.backTarget
 import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
 import dev.mnascimentos.aureole.feature.home.model.LocalHomeActions
 import dev.mnascimentos.aureole.feature.home.model.LocalHomeUiState
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
+import org.robolectric.annotation.Config
+
+private const val ANIMATION_MS = 500L
 
 @RunWith(RobolectricTestRunner::class)
+@Config(qualifiers = "w411dp-h891dp")
 class EditContainerScreenTest {
 
     @get:Rule
@@ -77,6 +86,7 @@ class EditContainerScreenTest {
                 CompositionLocalProvider(
                     LocalInspectionMode provides true,
                     LocalHomeUiState provides MainUiState(apps = listOf(sampleApp)),
+                    LocalLeftHanded provides (MainUiState(apps = listOf(sampleApp))).isLeftHandedMode,
                     LocalHomeActions provides mockHomeScreenActions()
                 ) {
                     EditContainerScreen(
@@ -103,6 +113,7 @@ class EditContainerScreenTest {
                 CompositionLocalProvider(
                     LocalInspectionMode provides true,
                     LocalHomeUiState provides MainUiState(apps = listOf(sampleApp)),
+                    LocalLeftHanded provides (MainUiState(apps = listOf(sampleApp))).isLeftHandedMode,
                     LocalHomeActions provides mockHomeScreenActions()
                 ) {
                     EditContainerScreen(
@@ -125,15 +136,14 @@ class EditContainerScreenTest {
         var appearanceClicked = false
         var behaviorClicked = false
         var manageItemsClicked = false
-        var saveClicked = false
 
         composeTestRule.setContent {
             AureoleLauncherTheme {
                 MainSettingsContent(
+                    componentCount = 4,
                     onAppearanceClick = { appearanceClicked = true },
                     onBehaviorClick = { behaviorClicked = true },
-                    onManageItemsClick = { manageItemsClicked = true },
-                    onSave = { saveClicked = true }
+                    onManageItemsClick = { manageItemsClicked = true }
                 )
             }
         }
@@ -147,8 +157,54 @@ class EditContainerScreenTest {
         composeTestRule.onNodeWithText("Manage Items").assertIsDisplayed().performClick()
         assertTrue(manageItemsClicked)
 
-        composeTestRule.onNodeWithText("Save").assertIsDisplayed().performClick()
-        assertTrue(saveClicked)
+        composeTestRule.onNodeWithText("OPTIONS").assertIsDisplayed()
+        composeTestRule.onNodeWithText("4 components").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Orientation and alignment").assertIsDisplayed()
+    }
+
+    private fun setScreen(onSave: (ContainerModel) -> Unit, onDismiss: () -> Unit) {
+        composeTestRule.setContent {
+            AureoleLauncherTheme {
+                CompositionLocalProvider(
+                    LocalInspectionMode provides true,
+                    LocalHomeUiState provides MainUiState(apps = listOf(sampleApp)),
+                    LocalLeftHanded provides (MainUiState(apps = listOf(sampleApp))).isLeftHandedMode,
+                    LocalHomeActions provides mockHomeScreenActions()
+                ) {
+                    EditContainerScreen(
+                        params = EditContainerScreenParams(
+                            panel = samplePanel,
+                            allApps = listOf(sampleApp),
+                            onDismiss = onDismiss,
+                            onSave = onSave
+                        )
+                    )
+                }
+            }
+        }
+        composeTestRule.mainClock.advanceTimeBy(ANIMATION_MS)
+        composeTestRule.waitForIdle()
+    }
+
+    @Test
+    fun `when opening a sub screen, should hide the Cancel and Save bar`() {
+        setScreen(onSave = {}, onDismiss = {})
+
+        composeTestRule.onNodeWithText("Behavior").performClick()
+        composeTestRule.mainClock.advanceTimeBy(ANIMATION_MS)
+        composeTestRule.waitForIdle()
+
+        composeTestRule.onNodeWithText("Save").assertDoesNotExist()
+        composeTestRule.onNodeWithText("Cancel").assertDoesNotExist()
+        composeTestRule.onNodeWithText("Back").assertExists()
+    }
+
+    @Test
+    fun `backTarget goes to the main screen from a sub screen and closes from the main one`() {
+        assertNull(EditContainerScreenMode.MAIN.backTarget())
+        assertEquals(EditContainerScreenMode.MAIN, EditContainerScreenMode.APPEARANCE.backTarget())
+        assertEquals(EditContainerScreenMode.MAIN, EditContainerScreenMode.BEHAVIOR.backTarget())
+        assertEquals(EditContainerScreenMode.MAIN, EditContainerScreenMode.MANAGE_ITEMS.backTarget())
     }
 
     @Test

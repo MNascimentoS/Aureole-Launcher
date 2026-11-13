@@ -1,0 +1,14 @@
+Aureole Launcher
+Copyright (c) Aureole Launcher contributors. Licensed under the terms in LICENSE.
+
+Third-party notices
+
+Folder icons (app/src/main/res/drawable/ic_folder_*.xml and
+dev/mnascimentos/aureole/core/designsystem/icons/AureoleFolderIcons.kt)
+
+  Source: Material Symbols (Rounded), https://github.com/google/material-design-icons
+  Copyright Google LLC.
+  License: Apache License, Version 2.0, https://www.apache.org/licenses/LICENSE-2.0
+  The icons were copied and converted to Android VectorDrawable format without
+  modification of their artwork. Changes: file names prefixed with "ic_folder_",
+  grouped into the AureoleFolderIcons catalog. No endorsement by Google is implied.

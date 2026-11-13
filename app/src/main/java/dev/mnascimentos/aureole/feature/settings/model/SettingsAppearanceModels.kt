@@ -1,13 +1,10 @@
-@file:Suppress("Filename", "MatchingDeclarationName")
-
 package dev.mnascimentos.aureole.feature.settings.model
 
 data class AppearanceDialogFlags(
     val showPalette: Boolean = false,
     val showFont: Boolean = false,
     val showSetBg: Boolean = false,
-    val showBlur: Boolean = false,
-    val showBorderRadius: Boolean = false,
+    val showCardsGlass: Boolean = false,
 )
 
 /**
@@ -15,8 +12,7 @@ data class AppearanceDialogFlags(
  */
 data class AppearanceMenuDialogActions(
     val onShowSetBackgroundDialog: () -> Unit,
-    val onShowBlurDialog: () -> Unit,
+    val onShowCardsGlassDialog: () -> Unit,
     val onShowPaletteDialog: () -> Unit,
-    val onShowFontDialog: () -> Unit,
-    val onShowBorderRadiusDialog: () -> Unit
+    val onShowFontDialog: () -> Unit
 )

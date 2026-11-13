@@ -1,54 +1,42 @@
 package dev.mnascimentos.aureole.feature.settings.screens
 
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.ime
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.RadioButton
+import androidx.compose.foundation.layout.union
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.composable.ColorPickerDialog
-import dev.mnascimentos.aureole.composable.SettingsActionItem
-import dev.mnascimentos.aureole.composable.SettingsMenuItem
-import dev.mnascimentos.aureole.composable.SettingsMenuParams
+import dev.mnascimentos.aureole.composable.actions.model.HOLD_CONFIRM_MS
 import dev.mnascimentos.aureole.composable.dialogs.CreateFolderDialog
 import dev.mnascimentos.aureole.composable.favorites.FavoriteAppsDialog
 import dev.mnascimentos.aureole.composable.favorites.model.FavoriteAppsDialogActions
 import dev.mnascimentos.aureole.composable.favorites.model.FavoriteAppsDialogConfig
-import dev.mnascimentos.aureole.composable.sheets.SettingsBottomSheet
-import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
-import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
-import dev.mnascimentos.aureole.core.designsystem.icons.Check
-import dev.mnascimentos.aureole.core.designsystem.icons.Delete
+import dev.mnascimentos.aureole.composable.sheets.AureoleConfirmDialog
+import dev.mnascimentos.aureole.composable.sheets.model.ConfirmDialogParams
+import dev.mnascimentos.aureole.composable.undo.AureoleUndoSnackbar
+import dev.mnascimentos.aureole.core.designsystem.model.asString
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
+import dev.mnascimentos.aureole.feature.home.model.MainUiState
+import dev.mnascimentos.aureole.feature.home.model.ProvideHomeUiState
 import dev.mnascimentos.aureole.feature.settings.SettingsNavGraph
 import dev.mnascimentos.aureole.feature.settings.components.ContainerPositionDialog
 import dev.mnascimentos.aureole.feature.settings.components.SearchIconPositionDialog
 import dev.mnascimentos.aureole.feature.settings.components.SettingsButtonPositionDialog
 import dev.mnascimentos.aureole.feature.settings.model.SettingsScreenActions
 import dev.mnascimentos.aureole.feature.settings.model.SettingsUiState
-
-private const val OPACITY_LOW = 0.20f
-private const val OPACITY_MEDIUM = 0.50f
-private const val OPACITY_HIGH = 0.70f
-private const val OPACITY_SOLID = 0.90f
 
 @Composable
 fun SettingsScreen(
@@ -57,19 +45,33 @@ fun SettingsScreen(
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
 
-    LaunchedEffect(uiState.errorMessage) {
-        uiState.errorMessage?.let { message ->
+    val errorText = uiState.errorMessage?.asString()
+    LaunchedEffect(errorText) {
+        errorText?.let { message ->
             snackbarHostState.showSnackbar(message)
             actions.onClearErrorMessage()
         }
     }
 
-    SettingsNavGraph(
-        uiState = uiState,
-        actions = actions
-    )
+    Box(modifier = Modifier.fillMaxSize()) {
+        SettingsNavGraph(
+            uiState = uiState,
+            actions = actions
+        )
 
-    SettingsDialogs(uiState = uiState, actions = actions)
+        SettingsDialogs(uiState = uiState, actions = actions)
+
+        AureoleUndoSnackbar(
+            state = uiState.undoSnackbar,
+            isLeftHanded = uiState.isLeftHandedMode,
+            onUndo = actions.onUndo,
+            onTimeout = actions.onUndoExpired,
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .windowInsetsPadding(WindowInsets.navigationBars.union(WindowInsets.ime))
+                .padding(AureoleDS.dimens.small)
+        )
+    }
 }
 
 @Composable
@@ -86,38 +88,28 @@ private fun SettingsDialogsPrimary(
     uiState: SettingsUiState,
     actions: SettingsScreenActions
 ) {
-    if (uiState.showHazeOpacityDialog) {
-        HazeOpacityDialog(
-            currentOpacity = uiState.hazeOpacity,
-            onOpacitySelected = actions.onHazeOpacitySelected,
-            onDismiss = actions.onDismissHazeOpacityDialog
-        )
-    }
-
     if (uiState.showColorPickerDialog) {
         ColorPickerDialog(
             initialColor = uiState.manualSeedColor,
             onColorSelected = actions.onSelectManualSeedColor,
-            onDismiss = actions.onDismissColorPickerDialog
-        )
-    }
-
-    if (uiState.showRestoreWallpaperDialog) {
-        RestoreWallpaperDialog(
-            onConfirm = actions.onConfirmRestoreWallpaper,
-            onDismiss = actions.onDismissRestoreWallpaperDialog
+            onDismiss = actions.onDismissColorPickerDialog,
+            isLeftHanded = uiState.isLeftHandedMode
         )
     }
 
     if (uiState.showCreateFolderDialog) {
-        CreateFolderDialog(
-            onDismiss = actions.onDismissCreateFolderDialog,
-            onSubmit = actions.onSubmitCreateFolder
-        )
+        ProvideHomeUiState(MainUiState(isLeftHandedMode = uiState.isLeftHandedMode)) {
+            CreateFolderDialog(
+                onDismiss = actions.onDismissCreateFolderDialog,
+                onSubmit = actions.onSubmitCreateFolder
+            )
+        }
     }
 
     if (uiState.showResetGridDialog) {
-        ResetGridDialog(actions = actions)
+        ProvideHomeUiState(MainUiState(isLeftHandedMode = uiState.isLeftHandedMode)) {
+            ResetGridDialog(actions = actions)
+        }
     }
 
     if (uiState.showFavoritePickerDialog) {
@@ -136,6 +128,22 @@ private fun SettingsDialogsPrimary(
 
 @Composable
 private fun SettingsDialogsSecondary(
+    uiState: SettingsUiState,
+    actions: SettingsScreenActions
+) {
+    ProvideHomeUiState(MainUiState(isLeftHandedMode = uiState.isLeftHandedMode)) {
+        SettingsPositionSheets(uiState = uiState, actions = actions)
+    }
+
+    if (uiState.showFactoryResetDialog) {
+        ProvideHomeUiState(MainUiState(isLeftHandedMode = uiState.isLeftHandedMode)) {
+            FactoryResetDialog(actions = actions)
+        }
+    }
+}
+
+@Composable
+private fun SettingsPositionSheets(
     uiState: SettingsUiState,
     actions: SettingsScreenActions
 ) {
@@ -171,143 +179,37 @@ private fun SettingsDialogsSecondary(
             onDismiss = actions.onDismissSearchIconPositionDialog
         )
     }
-
-    if (uiState.showFactoryResetDialog) {
-        FactoryResetDialog(actions = actions)
-    }
 }
 
 @Composable
 internal fun FactoryResetDialog(
     actions: SettingsScreenActions = SettingsScreenActions()
 ) {
-    SettingsBottomSheet(
-        title = stringResource(R.string.settings_advanced_reset_dialog_title),
-        onDismissRequest = actions.onDismissFactoryResetDialog
-    ) {
-        Column(verticalArrangement = Arrangement.spacedBy(AureoleDS.dimens.xSmall)) {
-            SettingsMenuItem(
-                SettingsMenuParams(
-                    title = stringResource(R.string.core_common_yes),
-                    onClick = { actions.onConfirmFactoryReset() }
-                )
-            )
-            SettingsMenuItem(
-                SettingsMenuParams(
-                    title = stringResource(R.string.core_common_no),
-                    onClick = { actions.onDismissFactoryResetDialog() }
-                )
-            )
-        }
-    }
+    AureoleConfirmDialog(
+        params = ConfirmDialogParams(
+            title = stringResource(R.string.settings_advanced_reset_dialog_title),
+            message = stringResource(R.string.settings_advanced_reset_dialog_message),
+            confirmLabel = stringResource(R.string.settings_advanced_reset_dialog_hold),
+            onConfirm = actions.onConfirmFactoryReset,
+            onDismiss = actions.onDismissFactoryResetDialog,
+            holdMs = HOLD_CONFIRM_MS
+        )
+    )
 }
 
 @Composable
 internal fun ResetGridDialog(
     actions: SettingsScreenActions = SettingsScreenActions()
 ) {
-    SettingsBottomSheet(
-        title = stringResource(R.string.settings_advanced_reset_layout_title),
-        onDismissRequest = actions.onDismissResetGridDialog
-    ) {
-        Column(verticalArrangement = Arrangement.spacedBy(AureoleDS.dimens.small)) {
-            SettingsActionItem(
-                title = stringResource(R.string.settings_advanced_reset_layout_restore),
-                leadingContent = { AureoleDS.icons.Check() },
-                onClick = {
-                    actions.onConfirmResetGrid()
-                    actions.onDismissResetGridDialog()
-                }
-            )
-            SettingsActionItem(
-                title = stringResource(R.string.core_common_cancel),
-                leadingContent = { AureoleDS.icons.Delete() },
-                onClick = { actions.onDismissResetGridDialog() }
-            )
-        }
-    }
-}
-
-@Composable
-internal fun HazeOpacityDialog(
-    currentOpacity: Float = OPACITY_MEDIUM,
-    onOpacitySelected: (Float) -> Unit = {},
-    onDismiss: () -> Unit = {}
-) {
-    val options = listOf(
-        OPACITY_LOW to stringResource(R.string.settings_appearance_blur_opacity_low),
-        OPACITY_MEDIUM to stringResource(R.string.settings_appearance_blur_opacity_medium),
-        OPACITY_HIGH to stringResource(R.string.settings_appearance_blur_opacity_high),
-        OPACITY_SOLID to stringResource(R.string.settings_appearance_blur_opacity_solid)
+    AureoleConfirmDialog(
+        params = ConfirmDialogParams(
+            title = stringResource(R.string.settings_advanced_reset_layout_title),
+            message = stringResource(R.string.settings_advanced_reset_layout_message),
+            confirmLabel = stringResource(R.string.settings_advanced_reset_layout_restore),
+            onConfirm = actions.onConfirmResetGrid,
+            onDismiss = actions.onDismissResetGridDialog
+        )
     )
-
-    AlertDialog(
-        onDismissRequest = onDismiss,
-        title = {
-            AureoleText(
-                text = stringResource(R.string.settings_appearance_blur_opacity_title),
-                color = AureoleDS.colors.onSurfaceHigh,
-                format = AureoleTextFormatParams(style = AureoleDS.typography.titleMedium, fontWeight = FontWeight.Bold)
-            )
-        },
-        containerColor = AureoleDS.colors.surface,
-        text = {
-            Column {
-                options.forEach { (value, label) ->
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .clip(RoundedCornerShape(AureoleDS.dimens.radiusSmall))
-                            .clickable { onOpacitySelected(value) }
-                            .padding(vertical = AureoleDS.dimens.xSmall, horizontal = AureoleDS.dimens.xSmall),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        RadioButton(
-                            selected = (currentOpacity == value),
-                            onClick = { onOpacitySelected(value) }
-                        )
-                        Spacer(modifier = Modifier.width(AureoleDS.dimens.small))
-                        AureoleText(
-                            text = label,
-                            color = AureoleDS.colors.onSurfaceHigh,
-                            format = AureoleTextFormatParams(style = AureoleDS.typography.bodyLarge)
-                        )
-                    }
-                }
-            }
-        },
-        confirmButton = {
-            TextButton(onClick = onDismiss) {
-                AureoleText(stringResource(R.string.core_common_cancel), color = AureoleDS.colors.onSurfaceHigh)
-            }
-        }
-    )
-}
-
-@Composable
-internal fun RestoreWallpaperDialog(
-    onConfirm: () -> Unit = {},
-    onDismiss: () -> Unit = {}
-) {
-    SettingsBottomSheet(
-        title = stringResource(R.string.settings_appearance_restore_background_title),
-        onDismissRequest = onDismiss
-    ) {
-        Column(verticalArrangement = Arrangement.spacedBy(AureoleDS.dimens.xSmall)) {
-            SettingsMenuItem(
-                SettingsMenuParams(
-                    title = stringResource(R.string.core_common_yes),
-                    onClick = onConfirm
-                )
-            )
-            SettingsMenuItem(
-                SettingsMenuParams(
-                    title = stringResource(R.string.core_common_no),
-                    onClick = onDismiss
-                )
-            )
-        }
-    }
 }
 
 @AureolePreview

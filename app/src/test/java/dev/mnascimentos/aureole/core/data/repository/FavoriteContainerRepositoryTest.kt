@@ -6,6 +6,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import org.junit.After
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
@@ -78,5 +79,60 @@ class FavoriteContainerRepositoryTest {
         repository.deleteContainer(containerId)
         val result = repository.getFavoritesForContainer(containerId)
         assertTrue(result.isEmpty())
+    }
+
+    private fun setLegacyShowAll(value: Boolean) {
+        context.getSharedPreferences("aureole_settings_prefs", Context.MODE_PRIVATE).edit()
+            .putBoolean("show_all_apps_on_home", value).commit()
+    }
+
+    @Test
+    fun `when the old show all switch was on, migration clears the saved favorites and containers`() = runBlocking {
+        val settings = SettingsRepository(context)
+        settings.favoriteAppPackages = listOf("com.example.app1")
+        repository.updateContainerFavorites("container_a", listOf("com.example.app1", "com.example.app2"))
+        setLegacyShowAll(true)
+
+        repository.migrateLegacyShowAllApps()
+
+        assertTrue(settings.favoriteAppPackages.isEmpty())
+        assertTrue(repository.getFavoritesForContainer("container_a").isEmpty())
+        assertTrue(repository.getAllContainerFavorites().values.all { it.isEmpty() })
+    }
+
+    @Test
+    fun `when the old show all switch was off, migration keeps the favorites`() = runBlocking {
+        val settings = SettingsRepository(context)
+        settings.favoriteAppPackages = listOf("com.example.app1")
+        repository.updateContainerFavorites("container_a", listOf("com.example.app1"))
+        setLegacyShowAll(false)
+
+        repository.migrateLegacyShowAllApps()
+
+        assertEquals(listOf("com.example.app1"), settings.favoriteAppPackages)
+        assertEquals(listOf("com.example.app1"), repository.getFavoritesForContainer("container_a"))
+    }
+
+    @Test
+    fun `when the old switch was never saved, migration keeps the favorites`() = runBlocking {
+        val settings = SettingsRepository(context)
+        settings.favoriteAppPackages = listOf("com.example.app1")
+
+        repository.migrateLegacyShowAllApps()
+
+        assertEquals(listOf("com.example.app1"), settings.favoriteAppPackages)
+    }
+
+    @Test
+    fun `migration runs once, favorites chosen afterwards are kept`() = runBlocking {
+        val settings = SettingsRepository(context)
+        setLegacyShowAll(true)
+        repository.migrateLegacyShowAllApps()
+
+        settings.favoriteAppPackages = listOf("com.example.app1")
+        repository.migrateLegacyShowAllApps()
+
+        assertEquals(listOf("com.example.app1"), settings.favoriteAppPackages)
+        assertFalse(settings.consumeLegacyShowAllApps())
     }
 }

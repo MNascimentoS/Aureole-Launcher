@@ -1,7 +1,6 @@
 package dev.mnascimentos.aureole.feature.home.components.containers.folder
 
 import android.content.ComponentName
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.hasSetTextAction
 import androidx.compose.ui.test.junit4.v2.createComposeRule
@@ -14,13 +13,17 @@ import androidx.core.graphics.drawable.toDrawable
 import dev.mnascimentos.aureole.core.data.model.AppFolder
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
-import dev.mnascimentos.aureole.feature.home.model.LocalHomeUiState
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
+import dev.mnascimentos.aureole.feature.home.model.ProvideHomeUiState
 import org.junit.Assert.assertEquals
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
+import org.robolectric.annotation.Config
+
+/** The sheet hugs a 60% share of the window: the default Robolectric window leaves the grid no height. */
+private const val TALL_WINDOW = "w400dp-h900dp"
 
 @RunWith(RobolectricTestRunner::class)
 class FolderAppPickerSearchTest {
@@ -41,7 +44,7 @@ class FolderAppPickerSearchTest {
 
     private fun setPicker(selected: List<String>, onSave: (List<String>) -> Unit, isLeftHanded: Boolean = false) {
         composeTestRule.setContent {
-            CompositionLocalProvider(LocalHomeUiState provides MainUiState(isLeftHandedMode = isLeftHanded)) {
+            ProvideHomeUiState(MainUiState(isLeftHandedMode = isLeftHanded)) {
                 AureoleLauncherTheme {
                     FolderAppPickerDialog(
                         folder = AppFolder(id = "f", name = "Media", appPackageNames = selected),
@@ -56,10 +59,11 @@ class FolderAppPickerSearchTest {
 
     private fun search(text: String) {
         composeTestRule.onNode(hasSetTextAction()).performTextInput(text)
-        composeTestRule.mainClock.advanceTimeBy(400L)
+        composeTestRule.mainClock.advanceTimeBy(1000L)
         composeTestRule.waitForIdle()
     }
 
+    @Config(qualifiers = TALL_WINDOW)
     @Test
     fun `search shows ranked results with the hint`() {
         setPicker(emptyList(), onSave = {})
@@ -123,12 +127,13 @@ class FolderAppPickerSearchTest {
     }
 
     @Test
-    fun `tray shows chips while searching and the remove button unmarks the app`() {
+    fun `tray keeps the chosen apps while searching and its remove badge unmarks the app`() {
         var saved = listOf("x")
         setPicker(listOf("com.gallery"), onSave = { saved = it })
         search("cam")
 
-        composeTestRule.onNodeWithContentDescription("Remove Gallery").assertIsDisplayed().performClick()
+        composeTestRule.onNodeWithText("Gallery").assertIsDisplayed()
+        composeTestRule.onNodeWithContentDescription("Remove").assertIsDisplayed().performClick()
         composeTestRule.onNodeWithText("Save 0 apps").performClick()
 
         assertEquals(emptyList<String>(), saved)

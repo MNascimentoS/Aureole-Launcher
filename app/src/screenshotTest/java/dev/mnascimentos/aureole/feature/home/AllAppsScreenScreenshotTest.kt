@@ -6,6 +6,7 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import com.android.tools.screenshot.PreviewTest
+import dev.mnascimentos.aureole.core.designsystem.model.LocalLeftHanded
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
@@ -66,6 +67,7 @@ private fun AllAppsScreenScreenshotTest() {
     AureoleLauncherTheme {
         CompositionLocalProvider(
             LocalHomeUiState provides mockUiState,
+            LocalLeftHanded provides mockUiState.isLeftHandedMode,
             LocalHomeActions provides createMockHomeScreenActions()
         ) {
             AppsListDrawer(
@@ -98,6 +100,7 @@ private fun AllAppsScreenWithSearchQueryScreenshotTest() {
     AureoleLauncherTheme {
         CompositionLocalProvider(
             LocalHomeUiState provides mockUiState,
+            LocalLeftHanded provides mockUiState.isLeftHandedMode,
             LocalHomeActions provides createMockHomeScreenActions()
         ) {
             AppsListDrawer(
@@ -124,6 +127,7 @@ private fun AllAppsScreenWithEmptySearchQueryScreenshotTest() {
     AureoleLauncherTheme {
         CompositionLocalProvider(
             LocalHomeUiState provides mockUiState,
+            LocalLeftHanded provides mockUiState.isLeftHandedMode,
             LocalHomeActions provides createMockHomeScreenActions()
         ) {
             AppsListDrawer(

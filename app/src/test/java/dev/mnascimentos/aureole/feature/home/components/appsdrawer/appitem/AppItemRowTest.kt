@@ -2,7 +2,6 @@ package dev.mnascimentos.aureole.feature.home.components.appsdrawer.appitem
 
 import android.content.ComponentName
 import android.graphics.Color
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.v2.createComposeRule
 import androidx.compose.ui.test.longClick
@@ -14,8 +13,8 @@ import dev.mnascimentos.aureole.composable.appitem.model.AppItemRowActions
 import dev.mnascimentos.aureole.composable.appitem.model.AppItemRowConfig
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
-import dev.mnascimentos.aureole.feature.home.model.LocalHomeUiState
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
+import dev.mnascimentos.aureole.feature.home.model.ProvideHomeUiState
 import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
@@ -41,7 +40,7 @@ class AppItemRowTest {
 
         composeTestRule.setContent {
             AureoleLauncherTheme {
-                CompositionLocalProvider(LocalHomeUiState provides uiState) {
+                ProvideHomeUiState(uiState) {
                     HomeAppItemRow(
                         app = sampleApp,
                         onClick = {}
@@ -59,7 +58,7 @@ class AppItemRowTest {
 
         composeTestRule.setContent {
             AureoleLauncherTheme {
-                CompositionLocalProvider(LocalHomeUiState provides uiState) {
+                ProvideHomeUiState(uiState) {
                     HomeAppItemRow(
                         app = sampleApp,
                         onClick = {}
@@ -77,7 +76,7 @@ class AppItemRowTest {
 
         composeTestRule.setContent {
             AureoleLauncherTheme {
-                CompositionLocalProvider(LocalHomeUiState provides uiState) {
+                ProvideHomeUiState(uiState) {
                     HomeAppItemRow(
                         app = sampleApp,
                         onClick = {}
@@ -96,7 +95,7 @@ class AppItemRowTest {
 
         composeTestRule.setContent {
             AureoleLauncherTheme {
-                CompositionLocalProvider(LocalHomeUiState provides uiState) {
+                ProvideHomeUiState(uiState) {
                     HomeAppItemRow(
                         app = sampleApp,
                         onClick = { clicked = true }
@@ -121,7 +120,7 @@ class AppItemRowTest {
 
         composeTestRule.setContent {
             AureoleLauncherTheme {
-                CompositionLocalProvider(LocalHomeUiState provides uiState) {
+                ProvideHomeUiState(uiState) {
                     HomeAppItemRow(
                         app = sampleApp,
                         onClick = {},
@@ -152,7 +151,7 @@ class AppItemRowTest {
 
         composeTestRule.setContent {
             AureoleLauncherTheme {
-                CompositionLocalProvider(LocalHomeUiState provides uiState) {
+                ProvideHomeUiState(uiState) {
                     HomeAppItemRow(
                         app = sampleApp,
                         onClick = {},

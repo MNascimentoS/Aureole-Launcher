@@ -44,7 +44,6 @@ private fun getAppVersionCode(context: Context): Int {
         val packageInfo = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             context.packageManager.getPackageInfo(context.packageName, PackageManager.PackageInfoFlags.of(0))
         } else {
-            @Suppress("DEPRECATION") // Legacy getPackageInfo call required for API < 33
             context.packageManager.getPackageInfo(context.packageName, 0)
         }
         PackageInfoCompat.getLongVersionCode(packageInfo).toInt()
@@ -58,7 +57,6 @@ private fun getAppVersionName(context: Context): String {
         val packageInfo = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             context.packageManager.getPackageInfo(context.packageName, PackageManager.PackageInfoFlags.of(0))
         } else {
-            @Suppress("DEPRECATION") // Legacy getPackageInfo call required for API < 33
             context.packageManager.getPackageInfo(context.packageName, 0)
         }
         packageInfo.versionName ?: "0.3.13"

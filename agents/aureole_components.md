@@ -20,3 +20,9 @@
 ## 5. Read-Only Composables (`@ReadOnlyComposable`)
 - **Mandatory:** Any `@Composable` function or helper method that only reads composition/resources (such as `stringResource(...)`, theme tokens, or `CompositionLocal` values) without emitting UI layout nodes or modifying state MUST be annotated with `@ReadOnlyComposable` alongside `@Composable`.
 
+## 6. Action sheets e menus
+- **Menu é lista vertical.** Os menus usam `AureoleMenuListSheet` (ou `AureoleMenuEntries` dentro de `AureoleMenuSheet`). Sem pager e sem `bottomBarContent`: nada de fileira de botões redondos no rodapé.
+- **Altura:** a sheet abraça o conteúdo, até 60% da tela. Não sobra espaço vazio entre a última linha e a borda inferior.
+- **Ação destrutiva no fim:** Remover, Remover da pasta e Desinstalar (`isDestructive = true`) ficam depois de um divider, em vermelho. Nunca no topo nem no meio da lista. A ordem vem de `withDestructiveDivider`, que é estável.
+- **Remoção usa desfazer de 4 s** (`UndoController` com `AureoleUndoSnackbar`). **Desinstalar usa segurar** (`requiresHold = true`), porque o sistema já pede confirmação.
+

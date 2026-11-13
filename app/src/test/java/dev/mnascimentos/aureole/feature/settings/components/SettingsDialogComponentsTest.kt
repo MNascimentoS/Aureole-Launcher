@@ -40,10 +40,9 @@ class SettingsDialogComponentsTest {
         composeTestRule.onNodeWithText(
             context.getString(R.string.settings_dialogs_settings_button_position_title)
         ).assertIsDisplayed()
-        composeTestRule.onNodeWithText("Esquerda (Left)").performClick()
+        composeTestRule.onNodeWithText(context.getString(R.string.settings_position_option_left)).performClick()
         assertEquals("Left", selectedPosition)
-
-        composeTestRule.onNodeWithText(context.getString(R.string.core_common_cancel)).performClick()
+        composeTestRule.mainClock.advanceTimeBy(500)
         assertTrue(dismissCalled)
     }
 
@@ -66,10 +65,9 @@ class SettingsDialogComponentsTest {
         composeTestRule.onNodeWithText(
             context.getString(R.string.settings_dialogs_search_icon_position_title)
         ).assertIsDisplayed()
-        composeTestRule.onNodeWithText("Direita (Right)").performClick()
+        composeTestRule.onNodeWithText(context.getString(R.string.settings_position_option_right)).performClick()
         assertEquals("Right", selectedPosition)
-
-        composeTestRule.onNodeWithText(context.getString(R.string.core_common_cancel)).performClick()
+        composeTestRule.mainClock.advanceTimeBy(500)
         assertTrue(dismissCalled)
     }
 
@@ -92,10 +90,9 @@ class SettingsDialogComponentsTest {
         composeTestRule.onNodeWithText(
             context.getString(R.string.settings_dialogs_container_position_title)
         ).assertIsDisplayed()
-        composeTestRule.onNodeWithText("Superior (Top)").performClick()
+        composeTestRule.onNodeWithText(context.getString(R.string.settings_position_option_top)).performClick()
         assertEquals("Top", selectedPosition)
-
-        composeTestRule.onNodeWithText(context.getString(R.string.core_common_cancel)).performClick()
+        composeTestRule.mainClock.advanceTimeBy(500)
         assertTrue(dismissCalled)
     }
 }

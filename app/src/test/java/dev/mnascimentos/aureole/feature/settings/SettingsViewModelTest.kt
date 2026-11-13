@@ -5,6 +5,8 @@ import dev.mnascimentos.aureole.core.data.repository.AppRepository
 import dev.mnascimentos.aureole.core.data.repository.FolderRepository
 import dev.mnascimentos.aureole.core.data.repository.GridRepository
 import dev.mnascimentos.aureole.core.data.repository.SettingsRepository
+import dev.mnascimentos.aureole.core.designsystem.model.TextResource
+import dev.mnascimentos.aureole.feature.settings.extensions.toggleFavorite
 import dev.mnascimentos.aureole.feature.settings.model.SettingToggle
 import dev.mnascimentos.aureole.feature.settings.model.SettingValue
 import dev.mnascimentos.aureole.feature.settings.model.SettingsDialog
@@ -112,8 +114,8 @@ class SettingsViewModelTest {
 
     @Test
     fun `when clearing error message, should reset error message to null`() {
-        viewModel.updateUiState { it.copy(errorMessage = "Sample Error") }
-        assertEquals("Sample Error", viewModel.uiState.value.errorMessage)
+        viewModel.updateUiState { it.copy(errorMessage = TextResource.fromString("Sample Error")) }
+        assertEquals(TextResource.fromString("Sample Error"), viewModel.uiState.value.errorMessage)
 
         viewModel.clearErrorMessage()
         assertNull(viewModel.uiState.value.errorMessage)
@@ -123,9 +125,6 @@ class SettingsViewModelTest {
     fun `when setting dialog visibility for all dialog types, should update visibility correctly`() {
         viewModel.setDialogVisible(SettingsDialog.CONTAINER_POSITION, true)
         assertTrue(viewModel.uiState.value.showContainerPositionDialog)
-
-        viewModel.setDialogVisible(SettingsDialog.HAZE_OPACITY, true)
-        assertTrue(viewModel.uiState.value.showHazeOpacityDialog)
 
         viewModel.setDialogVisible(SettingsDialog.COLOR_PICKER, true)
         assertTrue(viewModel.uiState.value.showColorPickerDialog)

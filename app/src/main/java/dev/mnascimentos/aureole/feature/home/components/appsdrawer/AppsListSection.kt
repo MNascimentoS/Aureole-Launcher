@@ -1,5 +1,3 @@
-@file:Suppress("MagicNumber") // Suppressed for animation, padding, and size constants in launcher apps list
-
 package dev.mnascimentos.aureole.feature.home.components.appsdrawer
 
 import androidx.compose.foundation.background
@@ -17,6 +15,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -39,10 +38,12 @@ import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.core.designsystem.utils.fadingEdges
+import dev.mnascimentos.aureole.core.designsystem.utils.glassBlurRadius
 import dev.mnascimentos.aureole.feature.home.components.appsdrawer.model.AppsDrawerMetrics
 import dev.mnascimentos.aureole.feature.home.model.LocalHomeActions
 import dev.mnascimentos.aureole.feature.home.model.LocalHomeUiState
 import dev.mnascimentos.aureole.feature.home.model.isAppsLoading
+import dev.mnascimentos.aureole.util.percentToFraction
 
 private const val DRAWER_HAZE_TINT_FACTOR = 0.5f
 private const val DRAWER_HAZE_MIN_ALPHA = 0.15f
@@ -74,7 +75,9 @@ fun AppsListDrawer(
             .then(hazeModifier)
             .background(drawerBgColor)
     ) {
-        val topOffsetDp = (maxHeight * (uiState.headerOffsetPercent / 100f)).coerceAtLeast(AureoleDS.dimens.medium)
+        val topOffsetDp = (maxHeight * uiState.headerOffsetPercent.percentToFraction()).coerceAtLeast(
+            AureoleDS.dimens.medium
+        )
         val extraTopPadding = if (uiState.showSearchBarInAllApps && isSearchExpanded) {
             AppsDrawerMetrics.SearchBarExtraTopPadding
         } else {
@@ -144,6 +147,8 @@ fun AppsListDrawer(
     }
 }
 
+@Composable
+@ReadOnlyComposable
 private fun Modifier.buildDrawerHaze(
     hasHaze: Boolean,
     hazeState: HazeState?,
@@ -159,7 +164,7 @@ private fun Modifier.buildDrawerHaze(
         Modifier.hazeEffect(
             state = hazeState,
             style = HazeStyle(
-                blurRadius = AppsDrawerMetrics.HazeBlurRadius,
+                blurRadius = glassBlurRadius(AppsDrawerMetrics.HazeBlurRadius),
                 tint = HazeTint(baseBgColor.copy(alpha = tintAlpha))
             )
         ) {

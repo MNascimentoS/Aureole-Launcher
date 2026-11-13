@@ -8,11 +8,7 @@ const val NON_LETTER_BUCKET = '#'
 /** Test tag of the browse grid, where the hold-and-slide gesture lives. */
 const val FOLDER_PICKER_GRID_TEST_TAG = "folder_picker_grid"
 
-private const val SELECTED_ROW_KEY_PREFIX = "sel_"
 private const val REMAINING_CELL_KEY_PREFIX = "rem_"
-
-/** Lazy key of the full width row of a selected app. */
-fun selectedRowKey(pkg: String): String = SELECTED_ROW_KEY_PREFIX + pkg
 
 /** Lazy key of the grid cell of an app that is not in the folder. */
 fun remainingCellKey(pkg: String): String = REMAINING_CELL_KEY_PREFIX + pkg
@@ -20,11 +16,7 @@ fun remainingCellKey(pkg: String): String = REMAINING_CELL_KEY_PREFIX + pkg
 /** Package behind a picker lazy key, or null for headers and any other item. */
 fun packageOfPickerKey(key: Any): String? {
     val text = key as? String ?: return null
-    return when {
-        text.startsWith(SELECTED_ROW_KEY_PREFIX) -> text.removePrefix(SELECTED_ROW_KEY_PREFIX)
-        text.startsWith(REMAINING_CELL_KEY_PREFIX) -> text.removePrefix(REMAINING_CELL_KEY_PREFIX)
-        else -> null
-    }
+    return if (text.startsWith(REMAINING_CELL_KEY_PREFIX)) text.removePrefix(REMAINING_CELL_KEY_PREFIX) else null
 }
 
 /**
@@ -83,8 +75,5 @@ fun <T> letterIndex(items: List<T>, offset: Int = 0, label: (T) -> String): Map<
 fun <T> sortedForPickerGrid(items: List<T>, label: (T) -> String): List<T> =
     items.sortedBy { normalizeForSearch(label(it)) }
 
-/**
- * Lazy index of the first grid cell: the selected header, the selected rows (or their empty message) and
- * the header of the other apps come before it.
- */
-fun firstGridCellIndex(selectedCount: Int): Int = 2 + selectedCount.coerceAtLeast(1)
+/** Lazy index of the first grid cell: only the drag hint comes before it. */
+const val FIRST_GRID_CELL_INDEX = 1

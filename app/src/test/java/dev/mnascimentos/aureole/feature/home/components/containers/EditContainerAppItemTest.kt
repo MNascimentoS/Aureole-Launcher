@@ -9,7 +9,6 @@ import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTextInput
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
-import dev.mnascimentos.aureole.feature.home.components.containers.model.EditContainerItemRowActions
 import dev.mnascimentos.aureole.feature.home.components.containers.model.EditContainerItemRowParams
 import org.junit.Assert.assertEquals
 import org.junit.Rule
@@ -45,15 +44,9 @@ class EditContainerAppItemTest {
                     params = EditContainerItemRowParams(
                         title = "Work Folder",
                         iconName = "briefcase",
-                        isFolder = true,
-                        canMoveUp = true,
-                        canMoveDown = true
+                        isFolder = true
                     ),
-                    actions = EditContainerItemRowActions(
-                        onMoveUp = {},
-                        onMoveDown = {},
-                        onRemove = {}
-                    )
+                    onRemove = {}
                 )
             }
         }
@@ -70,15 +63,9 @@ class EditContainerAppItemTest {
                     params = EditContainerItemRowParams(
                         title = "Calculator",
                         iconName = null,
-                        isFolder = false,
-                        canMoveUp = false,
-                        canMoveDown = false
+                        isFolder = false
                     ),
-                    actions = EditContainerItemRowActions(
-                        onMoveUp = {},
-                        onMoveDown = {},
-                        onRemove = {}
-                    )
+                    onRemove = {}
                 )
             }
         }

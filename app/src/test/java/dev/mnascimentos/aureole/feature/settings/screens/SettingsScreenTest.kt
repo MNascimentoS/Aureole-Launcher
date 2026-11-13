@@ -4,15 +4,22 @@ import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.v2.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.performTouchInput
+import dev.mnascimentos.aureole.composable.actions.model.HOLD_CONFIRM_MS
+import dev.mnascimentos.aureole.core.designsystem.model.TextResource
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.feature.settings.model.SettingsScreenActions
 import dev.mnascimentos.aureole.feature.settings.model.SettingsUiState
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
+
+private const val DISMISS_ANIMATION_MS = 500L
+private const val HOLD_MARGIN_MS = 100L
 
 @RunWith(RobolectricTestRunner::class)
 class SettingsScreenTest {
@@ -23,7 +30,7 @@ class SettingsScreenTest {
     @Test
     fun `when errorMessage is present, should handle composition without throwing exception`() {
         var clearErrorCalled = false
-        val state = SettingsUiState(errorMessage = "Test Error Message")
+        val state = SettingsUiState(errorMessage = TextResource.fromString("Test Error Message"))
         val actions = SettingsScreenActions(onClearErrorMessage = { clearErrorCalled = true })
 
         composeTestRule.setContent {
@@ -33,30 +40,6 @@ class SettingsScreenTest {
         }
 
         composeTestRule.waitForIdle()
-    }
-
-    @Test
-    fun `when showHazeOpacityDialog is true, should render dialog and handle opacity selection and dismiss`() {
-        var selectedOpacity = 0f
-        var dismissCalled = false
-        val state = SettingsUiState(showHazeOpacityDialog = true)
-        val actions = SettingsScreenActions(
-            onHazeOpacitySelected = { selectedOpacity = it },
-            onDismissHazeOpacityDialog = { dismissCalled = true }
-        )
-
-        composeTestRule.setContent {
-            AureoleLauncherTheme {
-                SettingsScreen(uiState = state, actions = actions)
-            }
-        }
-
-        composeTestRule.onNodeWithText("Blur Opacity").assertIsDisplayed()
-        composeTestRule.onNodeWithText("Solid").performClick()
-        assertEquals(0.90f, selectedOpacity)
-
-        composeTestRule.onNodeWithText("Cancel").performClick()
-        assertTrue(dismissCalled)
     }
 
     @Test
@@ -75,30 +58,7 @@ class SettingsScreenTest {
 
         composeTestRule.onNodeWithText("Choose Primary Color").assertIsDisplayed()
         composeTestRule.onNodeWithText("Cancel").performClick()
-        assertTrue(dismissCalled)
-    }
-
-    @Test
-    fun `when showRestoreWallpaperDialog is true, should handle confirm and dismiss actions`() {
-        var confirmCalled = false
-        var dismissCalled = false
-        val state = SettingsUiState(showRestoreWallpaperDialog = true)
-        val actions = SettingsScreenActions(
-            onConfirmRestoreWallpaper = { confirmCalled = true },
-            onDismissRestoreWallpaperDialog = { dismissCalled = true }
-        )
-
-        composeTestRule.setContent {
-            AureoleLauncherTheme {
-                SettingsScreen(uiState = state, actions = actions)
-            }
-        }
-
-        composeTestRule.onNodeWithText("Restore default background?").assertIsDisplayed()
-        composeTestRule.onNodeWithText("Yes").performClick()
-        assertTrue(confirmCalled)
-
-        composeTestRule.onNodeWithText("No").performClick()
+        composeTestRule.mainClock.advanceTimeBy(DISMISS_ANIMATION_MS)
         assertTrue(dismissCalled)
     }
 
@@ -118,6 +78,7 @@ class SettingsScreenTest {
 
         composeTestRule.onNodeWithText("Create").assertExists()
         composeTestRule.onNodeWithText("Cancel").performClick()
+        composeTestRule.mainClock.advanceTimeBy(DISMISS_ANIMATION_MS)
         assertTrue(dismissCalled)
     }
 
@@ -139,11 +100,31 @@ class SettingsScreenTest {
 
         composeTestRule.onNodeWithText("Reset Layout?").assertIsDisplayed()
         composeTestRule.onNodeWithText("Restore").performClick()
+        composeTestRule.mainClock.advanceTimeBy(DISMISS_ANIMATION_MS)
         assertTrue(confirmCalled)
         assertEquals(1, dismissCount)
+    }
+
+    @Test
+    fun `when showResetGridDialog is true, cancel only dismisses`() {
+        var confirmCalled = false
+        var dismissCount = 0
+        val state = SettingsUiState(showResetGridDialog = true)
+        val actions = SettingsScreenActions(
+            onConfirmResetGrid = { confirmCalled = true },
+            onDismissResetGridDialog = { dismissCount++ }
+        )
+
+        composeTestRule.setContent {
+            AureoleLauncherTheme {
+                SettingsScreen(uiState = state, actions = actions)
+            }
+        }
 
         composeTestRule.onNodeWithText("Cancel").performClick()
-        assertEquals(2, dismissCount)
+        composeTestRule.mainClock.advanceTimeBy(DISMISS_ANIMATION_MS)
+        assertFalse(confirmCalled)
+        assertEquals(1, dismissCount)
     }
 
     @Test
@@ -168,6 +149,7 @@ class SettingsScreenTest {
             onDismissFactoryResetDialog = { factoryResetDismissed = true }
         )
 
+        composeTestRule.mainClock.autoAdvance = false
         composeTestRule.setContent {
             AureoleLauncherTheme {
                 SettingsScreen(uiState = state, actions = actions)
@@ -175,10 +157,13 @@ class SettingsScreenTest {
         }
 
         composeTestRule.onNodeWithText("Reset launcher?").assertIsDisplayed()
-        composeTestRule.onNodeWithText("Yes").performClick()
-        assertTrue(factoryResetConfirmed)
+        composeTestRule.onNodeWithText("Hold to reset").performClick()
+        assertFalse(factoryResetConfirmed)
 
-        composeTestRule.onNodeWithText("No").performClick()
+        composeTestRule.onNodeWithText("Hold to reset").performTouchInput { down(center) }
+        composeTestRule.mainClock.advanceTimeBy(HOLD_CONFIRM_MS + HOLD_MARGIN_MS)
+        composeTestRule.mainClock.advanceTimeBy(DISMISS_ANIMATION_MS)
+        assertTrue(factoryResetConfirmed)
         assertTrue(factoryResetDismissed)
     }
 }

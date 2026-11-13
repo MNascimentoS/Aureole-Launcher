@@ -1,5 +1,3 @@
-@file:Suppress("MagicNumber")
-
 package dev.mnascimentos.aureole.feature.home.components.appsdrawer.extensions
 
 import androidx.lifecycle.viewModelScope
@@ -9,11 +7,13 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.text.Normalizer
 
+private const val SEARCH_DEBOUNCE_MS = 300L
+
 fun HomeViewModel.onSearchQueryChanged(query: String) {
     updateUiState { it.copy(searchQuery = query) }
     searchJob?.cancel()
     searchJob = viewModelScope.launch {
-        delay(300) // Debounce delay
+        delay(SEARCH_DEBOUNCE_MS)
         applySearchFilter(query)
     }
 }

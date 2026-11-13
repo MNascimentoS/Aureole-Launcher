@@ -1,24 +1,26 @@
 package dev.mnascimentos.aureole.feature.settings
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import com.android.tools.screenshot.PreviewTest
 import dev.mnascimentos.aureole.composable.ColorPickerDialog
+import dev.mnascimentos.aureole.composable.color.model.DefaultPickerColor
 import dev.mnascimentos.aureole.composable.sheets.PickFontBottomSheet
 import dev.mnascimentos.aureole.composable.sheets.PickPaletteBottomSheet
 import dev.mnascimentos.aureole.composable.sheets.SettingsBottomSheet
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
-import dev.mnascimentos.aureole.feature.settings.components.BlurBottomSheet
+import dev.mnascimentos.aureole.feature.home.model.LocalHomeUiState
+import dev.mnascimentos.aureole.feature.home.model.ProvideHomeUiState
+import dev.mnascimentos.aureole.feature.home.model.MainUiState
 import dev.mnascimentos.aureole.feature.settings.components.ContainerPositionDialog
-import dev.mnascimentos.aureole.feature.settings.components.PickBorderRadiusBottomSheet
 import dev.mnascimentos.aureole.feature.settings.components.SearchIconPositionDialog
 import dev.mnascimentos.aureole.feature.settings.components.SetBackgroundBottomSheet
 import dev.mnascimentos.aureole.feature.settings.components.SettingsButtonPositionDialog
+import dev.mnascimentos.aureole.feature.settings.model.SetBackgroundParams
 import dev.mnascimentos.aureole.feature.settings.screens.FactoryResetDialog
-import dev.mnascimentos.aureole.feature.settings.screens.HazeOpacityDialog
 import dev.mnascimentos.aureole.feature.settings.screens.ResetGridDialog
-import dev.mnascimentos.aureole.feature.settings.screens.RestoreWallpaperDialog
 
 @PreviewTest
 @AureolePreview
@@ -101,39 +103,16 @@ private fun PickFontBottomSheetScreenshotTest() {
 @PreviewTest
 @AureolePreview
 @Composable
-private fun PickBorderRadiusBottomSheetScreenshotTest() {
-    AureoleLauncherTheme {
-        PickBorderRadiusBottomSheet(
-            selectedRadiusDp = 16,
-            onRadiusSelected = {},
-            onDismissRequest = {}
-        )
-    }
-}
-
-@PreviewTest
-@AureolePreview
-@Composable
 private fun SetBackgroundBottomSheetScreenshotTest() {
     AureoleLauncherTheme {
         SetBackgroundBottomSheet(
-            onSolidColorClick = {},
-            onCustomImageClick = {},
-            onDismissRequest = {}
-        )
-    }
-}
-
-@PreviewTest
-@AureolePreview
-@Composable
-private fun BlurBottomSheetScreenshotTest() {
-    AureoleLauncherTheme {
-        BlurBottomSheet(
-            currentOpacity = 0.5f,
-            isHazeEnabled = true,
-            onOptionSelected = { _, _ -> },
-            onDismissRequest = {}
+            SetBackgroundParams(
+                currentColor = DefaultPickerColor,
+                isCustomImageSet = false,
+                onSolidColorSelected = {},
+                onCustomImageClick = {},
+                onDismissRequest = {}
+            )
         )
     }
 }
@@ -170,27 +149,30 @@ private fun ResetGridDialogScreenshotTest() {
     }
 }
 
-@PreviewTest
-@AureolePreview
 @Composable
-private fun HazeOpacityDialogScreenshotTest() {
-    AureoleLauncherTheme {
-        HazeOpacityDialog(
-            currentOpacity = 0.5f,
-            onOpacitySelected = {},
-            onDismiss = {}
-        )
+private fun LeftHanded(content: @Composable () -> Unit) {
+    ProvideHomeUiState(MainUiState(isLeftHandedMode = true)) {
+        AureoleLauncherTheme { content() }
     }
 }
 
 @PreviewTest
 @AureolePreview
 @Composable
-private fun RestoreWallpaperDialogScreenshotTest() {
-    AureoleLauncherTheme {
-        RestoreWallpaperDialog(
-            onConfirm = {},
-            onDismiss = {}
-        )
-    }
+private fun ContainerPositionDialogLeftHandedScreenshotTest() {
+    LeftHanded { ContainerPositionDialog(currentPosition = "Center", onPositionSelected = {}, onDismiss = {}) }
+}
+
+@PreviewTest
+@AureolePreview
+@Composable
+private fun SettingsButtonPositionDialogLeftHandedScreenshotTest() {
+    LeftHanded { SettingsButtonPositionDialog(currentPosition = "Right", onPositionSelected = {}, onDismiss = {}) }
+}
+
+@PreviewTest
+@AureolePreview
+@Composable
+private fun SearchIconPositionDialogLeftHandedScreenshotTest() {
+    LeftHanded { SearchIconPositionDialog(currentPosition = "Left", onPositionSelected = {}, onDismiss = {}) }
 }

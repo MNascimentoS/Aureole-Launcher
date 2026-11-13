@@ -1,39 +1,46 @@
 package dev.mnascimentos.aureole.composable.favorites
 
+import android.content.ComponentName
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.dp
+import androidx.core.graphics.drawable.toDrawable
 import dev.mnascimentos.aureole.R
-import dev.mnascimentos.aureole.composable.favorites.model.FavoriteAppRowParams
+import dev.mnascimentos.aureole.composable.reorder.model.LocalReorderHandle
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
-import dev.mnascimentos.aureole.core.designsystem.icons.ArrowDown
-import dev.mnascimentos.aureole.core.designsystem.icons.ArrowUp
-import dev.mnascimentos.aureole.core.designsystem.icons.Delete
+import dev.mnascimentos.aureole.core.designsystem.icons.Close
+import dev.mnascimentos.aureole.core.designsystem.icons.DragHandle
 import dev.mnascimentos.aureole.core.designsystem.icons.Plus
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
+import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 
 @Composable
 fun FavoriteAppRowInfo(app: AppInfo, modifier: Modifier = Modifier) {
@@ -63,64 +70,57 @@ fun FavoriteAppRowInfo(app: AppInfo, modifier: Modifier = Modifier) {
     }
 }
 
+/** The ✕ (40 dp) that takes the app out of the favorites. */
 @Composable
-fun FavoriteAppRowActionButtons(
-    params: FavoriteAppRowParams,
-    onMoveUp: () -> Unit,
-    onMoveDown: () -> Unit,
-    onToggleFavorite: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    Row(
-        modifier = modifier,
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(AureoleDS.dimens.xSmall)
-    ) {
-        val bgVariant = AureoleDS.colors.surfaceVariant.copy(alpha = 0.5f)
-        if (params.canReorder && params.index > 0) {
-            ActionIconButton("Arrow Up", bgVariant, onMoveUp) {
-                AureoleDS.icons.ArrowUp(
-                    tint = AureoleDS.colors.onSurfaceHigh,
-                    modifier = Modifier.size(AureoleDS.dimens.iconSmall)
-                )
-            }
-        }
-        if (params.canReorder && params.index < params.totalCount - 1) {
-            ActionIconButton("Arrow Down", bgVariant, onMoveDown) {
-                AureoleDS.icons.ArrowDown(
-                    tint = AureoleDS.colors.onSurfaceHigh,
-                    modifier = Modifier.size(AureoleDS.dimens.iconSmall)
-                )
-            }
-        }
-        ActionIconButton("Delete", AureoleDS.colors.error, onToggleFavorite) {
-            AureoleDS.icons.Delete(
-                tint = AureoleDS.colors.onError,
-                modifier = Modifier.size(AureoleDS.dimens.iconSmall)
-            )
-        }
-    }
-}
-
-@Composable
-private fun ActionIconButton(
-    desc: String,
-    bgColor: Color,
-    onClick: () -> Unit,
-    iconContent: @Composable () -> Unit
-) {
+fun FavoriteAppRemoveButton(onClick: () -> Unit, modifier: Modifier = Modifier) {
+    val description = stringResource(R.string.home_favorites_remove)
     Box(
-        modifier = Modifier
-            .size(AureoleDS.dimens.large)
-            .background(color = bgColor, shape = RoundedCornerShape(AureoleDS.dimens.radiusXSmall))
-            .semantics { contentDescription = desc }
+        modifier = modifier
+            .size(AureoleDS.dimens.xxLarge)
+            .clip(CircleShape)
+            .semantics { contentDescription = description }
             .clickable(role = Role.Button, onClick = onClick),
         contentAlignment = Alignment.Center
     ) {
-        iconContent()
+        AureoleDS.icons.Close(
+            tint = AureoleDS.colors.onSurfaceMedium,
+            modifier = Modifier.size(AureoleDS.dimens.iconSmall)
+        )
     }
 }
 
+/**
+ * The 6-dot handle (44 x 38 dp) of a favorite: hold it and drag to reorder. Inside a list with
+ * `dragHandleOnly` it starts the drag of its row and lights up while the row is held.
+ */
+@Composable
+fun FavoriteAppDragHandle(modifier: Modifier = Modifier) {
+    val handle = LocalReorderHandle.current
+    val description = stringResource(R.string.home_favorites_manage_drag_handle)
+    val shape = RoundedCornerShape(AureoleDS.dimens.radiusXSmall)
+    val background = if (handle.isDragging) {
+        AureoleDS.colors.onSurfaceHigh.copy(alpha = 0.25f)
+    } else {
+        AureoleDS.colors.surfaceVariant.copy(alpha = 0.6f)
+    }
+    Box(
+        modifier = modifier
+            .size(width = HANDLE_WIDTH, height = HANDLE_HEIGHT)
+            .clip(shape)
+            .background(background)
+            .border(AureoleDS.dimens.borderMinimal, AureoleDS.colors.outline.copy(alpha = 0.5f), shape)
+            .then(handle.gestureModifier)
+            .semantics { contentDescription = description },
+        contentAlignment = Alignment.Center
+    ) {
+        AureoleDS.icons.DragHandle(
+            tint = AureoleDS.colors.onSurfaceHigh,
+            modifier = Modifier.size(AureoleDS.dimens.iconLarge)
+        )
+    }
+}
+
+/** An app that is not a favorite yet: tapping the row (or the + on its icon) adds it. */
 @Composable
 fun RemainingAppRow(
     app: AppInfo,
@@ -128,55 +128,76 @@ fun RemainingAppRow(
     modifier: Modifier = Modifier
 ) {
     val iconBitmap = remember(app.packageName) { app.getIconBitmap() }
+    val plusDesc = stringResource(R.string.favorites_dialog_plus_content_desc)
     Row(
         modifier = modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(AureoleDS.dimens.radiusSmall))
             .background(AureoleDS.colors.surfaceVariant.copy(alpha = 0.3f))
+            .clickable(onClickLabel = plusDesc, role = Role.Button, onClick = onToggleFavorite)
             .padding(horizontal = AureoleDS.dimens.small, vertical = AureoleDS.dimens.xSmall),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween
+        verticalAlignment = Alignment.CenterVertically
     ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.weight(1f)
-        ) {
+        Box {
             Image(
                 bitmap = iconBitmap,
-                contentDescription = app.label,
+                contentDescription = null,
                 modifier = Modifier
                     .size(AureoleDS.dimens.xLarge)
                     .clip(RoundedCornerShape(AureoleDS.dimens.radiusXSmall))
             )
-            Spacer(modifier = Modifier.width(AureoleDS.dimens.small))
-            AureoleText(
-                text = app.label,
-                color = AureoleDS.colors.onSurfaceHigh,
-                format = AureoleTextFormatParams(
-                    style = AureoleDS.typography.bodyMedium,
-                    fontWeight = FontWeight.Medium,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
+            Box(
+                modifier = Modifier
+                    .align(Alignment.TopEnd)
+                    .offset(x = AureoleDS.dimens.xxSmall, y = -AureoleDS.dimens.xxSmall)
+                    .size(AureoleDS.dimens.medium)
+                    .background(AureoleDS.colors.badgeContainer, CircleShape),
+                contentAlignment = Alignment.Center
+            ) {
+                AureoleDS.icons.Plus(
+                    tint = AureoleDS.colors.onError,
+                    modifier = Modifier.size(AureoleDS.dimens.iconXSmall)
                 )
-            )
+            }
         }
-
-        val plusDesc = stringResource(R.string.favorites_dialog_plus_content_desc)
-        Box(
-            modifier = Modifier
-                .size(AureoleDS.dimens.large)
-                .background(
-                    color = AureoleDS.colors.surfaceVariant,
-                    shape = RoundedCornerShape(AureoleDS.dimens.radiusXSmall)
-                )
-                .semantics { contentDescription = plusDesc }
-                .clickable(role = Role.Button) { onToggleFavorite() },
-            contentAlignment = Alignment.Center
-        ) {
-            AureoleDS.icons.Plus(
-                tint = AureoleDS.colors.onSurfaceHigh,
-                modifier = Modifier.size(AureoleDS.dimens.iconSmall)
+        Spacer(modifier = Modifier.width(AureoleDS.dimens.small))
+        AureoleText(
+            text = app.label,
+            color = AureoleDS.colors.onSurfaceHigh,
+            format = AureoleTextFormatParams(
+                style = AureoleDS.typography.bodyMedium,
+                fontWeight = FontWeight.Medium,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
             )
+        )
+    }
+}
+
+private val HANDLE_WIDTH = 44.dp
+private val HANDLE_HEIGHT = 38.dp
+
+@AureolePreview
+@Composable
+private fun FavoriteAppsDialogComponentsPreview() {
+    val app = AppInfo(
+        label = "Camera",
+        packageName = "com.example.camera",
+        componentName = ComponentName("com.example.camera", "MainActivity"),
+        icon = 0xFF1B65C0.toInt().toDrawable()
+    )
+    AureoleLauncherTheme {
+        Column(
+            verticalArrangement = Arrangement.spacedBy(AureoleDS.dimens.small),
+            modifier = Modifier.padding(AureoleDS.dimens.medium)
+        ) {
+            FavoriteAppRowInfo(app = app)
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                FavoriteAppDragHandle()
+                Spacer(modifier = Modifier.width(AureoleDS.dimens.small))
+                FavoriteAppRemoveButton(onClick = {})
+            }
+            RemainingAppRow(app = app, onToggleFavorite = {})
         }
     }
 }

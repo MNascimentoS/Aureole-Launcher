@@ -4,6 +4,10 @@ import android.content.ComponentName
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalInspectionMode
+import androidx.compose.ui.semantics.SemanticsActions
+import androidx.compose.ui.semantics.SemanticsProperties
+import androidx.compose.ui.test.SemanticsMatcher
+import androidx.compose.ui.test.assertCountEquals
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.hasClickAction
 import androidx.compose.ui.test.hasSetTextAction
@@ -11,14 +15,19 @@ import androidx.compose.ui.test.junit4.v2.createComposeRule
 import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.performSemanticsAction
 import androidx.compose.ui.test.performTextInput
 import androidx.core.graphics.drawable.toDrawable
 import dev.chrisbanes.haze.HazeState
 import dev.mnascimentos.aureole.composable.dialogs.CreateFolderDialog
 import dev.mnascimentos.aureole.composable.dialogs.FolderFormDialog
-import dev.mnascimentos.aureole.composable.dialogs.IconSelectionRow
+import dev.mnascimentos.aureole.composable.dialogs.FolderIconGrid
+import dev.mnascimentos.aureole.composable.dialogs.model.FolderIconPickerActions
+import dev.mnascimentos.aureole.composable.dialogs.model.FolderIconPickerState
 import dev.mnascimentos.aureole.core.data.model.AppFolder
 import dev.mnascimentos.aureole.core.data.model.AppInfo
+import dev.mnascimentos.aureole.core.designsystem.icons.FolderIconCategory
+import dev.mnascimentos.aureole.core.designsystem.model.LocalLeftHanded
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.feature.home.components.common.HomeScreenFolderBottomSheetOverlays
 import dev.mnascimentos.aureole.feature.home.components.common.OpenedFolderOverlay
@@ -27,13 +36,13 @@ import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.ContainerFolderButtonParams
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.ContainerFolderConfig
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.ContainerFolderItemParams
-import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.FolderAppRowItemParams
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.FolderPopupActions
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.GridFolderPopupParams
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.OpenedFolderPopupConfig
 import dev.mnascimentos.aureole.feature.home.model.LocalHomeActions
 import dev.mnascimentos.aureole.feature.home.model.LocalHomeUiState
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
+import dev.mnascimentos.aureole.feature.home.model.ProvideHomeUiState
 import dev.mnascimentos.aureole.feature.home.model.WidgetStackBottomSheetState
 import dev.mnascimentos.aureole.feature.home.model.createDefaultHomeScreenActions
 import org.junit.Assert.assertEquals
@@ -42,6 +51,12 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
+import org.robolectric.annotation.Config
+
+private const val SHEET_ENTER_MS = 1000L
+
+/** The sheet hugs a 60% share of the window: the default Robolectric window leaves the grid no height. */
+private const val TALL_WINDOW = "w400dp-h900dp"
 
 @RunWith(RobolectricTestRunner::class)
 class FolderBranchCoverageTest {
@@ -87,7 +102,8 @@ class FolderBranchCoverageTest {
 
         composeTestRule.setContent {
             CompositionLocalProvider(
-                LocalHomeUiState provides MainUiState(apps = listOf(app1))
+                LocalHomeUiState provides MainUiState(apps = listOf(app1)),
+                LocalLeftHanded provides (MainUiState(apps = listOf(app1))).isLeftHandedMode
             ) {
                 AureoleLauncherTheme {
                     ContainerFolderItem(
@@ -117,7 +133,8 @@ class FolderBranchCoverageTest {
 
         composeTestRule.setContent {
             CompositionLocalProvider(
-                LocalHomeUiState provides MainUiState(apps = emptyList())
+                LocalHomeUiState provides MainUiState(apps = emptyList()),
+                LocalLeftHanded provides (MainUiState(apps = emptyList())).isLeftHandedMode
             ) {
                 AureoleLauncherTheme {
                     ContainerFolderButton(
@@ -146,7 +163,8 @@ class FolderBranchCoverageTest {
 
         composeTestRule.setContent {
             CompositionLocalProvider(
-                LocalHomeUiState provides MainUiState(isThemedAppIconsEnabled = true)
+                LocalHomeUiState provides MainUiState(isThemedAppIconsEnabled = true),
+                LocalLeftHanded provides (MainUiState(isThemedAppIconsEnabled = true)).isLeftHandedMode
             ) {
                 AureoleLauncherTheme {
                     ContainerAppItem(
@@ -250,8 +268,11 @@ class FolderBranchCoverageTest {
         assertEquals("Shortcuts", nameSubmitted)
     }
 
+    private val iconTile = SemanticsMatcher.keyIsDefined(SemanticsProperties.Selected) and
+        SemanticsMatcher.keyNotDefined(SemanticsProperties.Text)
+
     @Test
-    fun `when selecting icon chips in IconSelectionRow, should update selected icon state`() {
+    fun `when selecting icon tiles in FolderIconGrid, should update selected icon state`() {
         var selectedIconResult: String? = "initial"
 
         composeTestRule.setContent {
@@ -265,12 +286,12 @@ class FolderBranchCoverageTest {
             }
         }
 
-        // Click the first chip (Default Letter chip)
-        composeTestRule.onNodeWithText("T").performClick()
+        // The grid starts on the category of "settings" (Tools). On a small test window a touch lands on the
+        // scrim and closes the overlay, so the tile and the button are pressed through their semantics.
+        composeTestRule.onAllNodes(iconTile)[0].performSemanticsAction(SemanticsActions.OnClick)
 
-        // Save
-        composeTestRule.onNodeWithText("Save").performClick()
-        assertEquals(null, selectedIconResult)
+        composeTestRule.onNodeWithText("Save").performSemanticsAction(SemanticsActions.OnClick)
+        assertEquals("build", selectedIconResult)
     }
 
     // --- 4. FolderDialog Branches ---
@@ -286,7 +307,8 @@ class FolderBranchCoverageTest {
         composeTestRule.setContent {
             CompositionLocalProvider(
                 LocalInspectionMode provides true,
-                LocalHomeUiState provides MainUiState()
+                LocalHomeUiState provides MainUiState(),
+                LocalLeftHanded provides (MainUiState()).isLeftHandedMode
             ) {
                 AureoleLauncherTheme {
                     FolderDialog(
@@ -316,7 +338,8 @@ class FolderBranchCoverageTest {
         composeTestRule.setContent {
             CompositionLocalProvider(
                 LocalInspectionMode provides true,
-                LocalHomeUiState provides MainUiState()
+                LocalHomeUiState provides MainUiState(),
+                LocalLeftHanded provides (MainUiState()).isLeftHandedMode
             ) {
                 AureoleLauncherTheme {
                     FolderDialog(
@@ -335,6 +358,7 @@ class FolderBranchCoverageTest {
 
     // --- 5. FolderAppPickerDialog & List Branches ---
 
+    @Config(qualifiers = TALL_WINDOW)
     @Test
     fun `when FolderAppPickerDialog rendered in InspectionMode, should render Surface layout`() {
         val folder =
@@ -354,41 +378,9 @@ class FolderBranchCoverageTest {
                 }
             }
         }
+        composeTestRule.mainClock.advanceTimeBy(SHEET_ENTER_MS)
 
         composeTestRule.onNodeWithText("Apps in Folder: App Picker").assertIsDisplayed()
-    }
-
-    @Test
-    fun `when reordering apps with in SelectedFolderAppRowActionButtons, should reorder branches`() {
-        var moveUpCalled = false
-        var moveDownCalled = false
-        var toggleCalled = false
-
-        composeTestRule.setContent {
-            AureoleLauncherTheme {
-                SelectedFolderAppRowActionButtons(
-                    params = FolderAppRowItemParams(
-                        app = app2,
-                        index = 1,
-                        totalCount = 3,
-                        canReorder = true
-                    ),
-                    onMoveUp = { moveUpCalled = true },
-                    onMoveDown = { moveDownCalled = true },
-                    onToggleSelect = { toggleCalled = true }
-                )
-            }
-        }
-
-        // Perform clicks on buttons
-        composeTestRule.onAllNodes(hasClickAction())[0].performClick()
-        assertTrue(moveUpCalled)
-
-        composeTestRule.onAllNodes(hasClickAction())[1].performClick()
-        assertTrue(moveDownCalled)
-
-        composeTestRule.onAllNodes(hasClickAction())[2].performClick()
-        assertTrue(toggleCalled)
     }
 
     // --- 6. OpenedFolderLayouts & OpenedFolderPopup Branches ---
@@ -398,9 +390,7 @@ class FolderBranchCoverageTest {
         val folder = AppFolder(id = "f_blank", name = "", displayAsGrid = true)
         val actions = FolderPopupActions(
             onDismiss = {},
-            onAppClick = {},
-            onAddAppsClick = {},
-            onEditFolderClick = {}
+            onAppClick = {}
         )
 
         composeTestRule.setContent {
@@ -410,8 +400,6 @@ class FolderBranchCoverageTest {
                         folder = folder,
                         appsInFolder = listOf(app1),
                         actions = actions,
-                        isActionsVisible = false,
-                        onToggleActions = {},
                         hazeState = null,
                         isHazeEnabled = false
                     )
@@ -443,13 +431,11 @@ class FolderBranchCoverageTest {
             )
         val actions = FolderPopupActions(
             onDismiss = {},
-            onAppClick = {},
-            onAddAppsClick = {},
-            onEditFolderClick = {}
+            onAppClick = {}
         )
 
         composeTestRule.setContent {
-            CompositionLocalProvider(LocalHomeUiState provides MainUiState()) {
+            ProvideHomeUiState(MainUiState()) {
                 AureoleLauncherTheme {
                     OpenedFolderPopup(
                         config = OpenedFolderPopupConfig(
@@ -483,6 +469,7 @@ class FolderBranchCoverageTest {
         composeTestRule.setContent {
             CompositionLocalProvider(
                 LocalHomeUiState provides uiStateWidgetStack,
+                LocalLeftHanded provides uiStateWidgetStack.isLeftHandedMode,
                 LocalHomeActions provides actions
             ) {
                 AureoleLauncherTheme {
@@ -511,13 +498,11 @@ class FolderBranchCoverageTest {
             )
         val actions = FolderPopupActions(
             onDismiss = {},
-            onAppClick = {},
-            onAddAppsClick = {},
-            onEditFolderClick = {}
+            onAppClick = {}
         )
 
         composeTestRule.setContent {
-            CompositionLocalProvider(LocalHomeUiState provides MainUiState()) {
+            ProvideHomeUiState(MainUiState()) {
                 AureoleLauncherTheme {
                     OpenedFolderPopup(
                         config = OpenedFolderPopupConfig(
@@ -556,13 +541,11 @@ class FolderBranchCoverageTest {
 
         val actions = FolderPopupActions(
             onDismiss = {},
-            onAppClick = {},
-            onAddAppsClick = {},
-            onEditFolderClick = {}
+            onAppClick = {}
         )
 
         composeTestRule.setContent {
-            CompositionLocalProvider(LocalHomeUiState provides MainUiState()) {
+            ProvideHomeUiState(MainUiState()) {
                 AureoleLauncherTheme {
                     OpenedFolderPopup(
                         config = OpenedFolderPopupConfig(
@@ -597,13 +580,11 @@ class FolderBranchCoverageTest {
             )
         val actions = FolderPopupActions(
             onDismiss = {},
-            onAppClick = {},
-            onAddAppsClick = {},
-            onEditFolderClick = {}
+            onAppClick = {}
         )
 
         composeTestRule.setContent {
-            CompositionLocalProvider(LocalHomeUiState provides MainUiState()) {
+            ProvideHomeUiState(MainUiState()) {
                 AureoleLauncherTheme {
                     OpenedFolderPopup(
                         config = OpenedFolderPopupConfig(
@@ -622,7 +603,7 @@ class FolderBranchCoverageTest {
     // --- 9. FolderFormDialog & Icon Selection Branches ---
 
     @Test
-    fun `when FolderFormDialog rendered with empty folder name, should display question mark in preview`() {
+    fun `when FolderFormDialog has empty name, should show placeholder initial in preview and tile`() {
         composeTestRule.setContent {
             AureoleLauncherTheme {
                 FolderFormDialog(
@@ -633,30 +614,34 @@ class FolderBranchCoverageTest {
             }
         }
 
-        composeTestRule.onNodeWithText("?").assertIsDisplayed()
+        // Only the preview shows the initial now: the grid has no letter tile.
+        composeTestRule.onAllNodesWithText("N").assertCountEquals(1)
     }
 
     @Test
-    fun `when selecting specific icon chip in IconSelectionRow, should update selected icon`() {
+    fun `when selecting specific icon chip in FolderIconGrid, should update selected icon`() {
         var selectedIconResult: String? = null
 
         composeTestRule.setContent {
             AureoleLauncherTheme {
-                IconSelectionRow(
-                    selectedIcon = null,
-                    onIconSelected = { selectedIconResult = it },
-                    folderName = "Icons"
+                FolderIconGrid(
+                    state = FolderIconPickerState(selectedIcon = null, category = FolderIconCategory.WORK),
+                    actions = FolderIconPickerActions(
+                        onIconSelected = { selectedIconResult = it },
+                        onCategorySelected = {}
+                    )
                 )
             }
         }
 
-        // Index 0 is Default Letter, Index 1 is the first icon option chip ("star")
-        composeTestRule.onAllNodes(hasClickAction())[1].performClick()
-        assertEquals("star", selectedIconResult)
+        // The category chips come first (8), then the icons: the first one of Work is "work".
+        composeTestRule.onAllNodes(hasClickAction())[FolderIconCategory.entries.size].performClick()
+        assertEquals("work", selectedIconResult)
     }
 
     // --- 10. FolderAppPickerDialog Search and Empty Branches ---
 
+    @Config(qualifiers = TALL_WINDOW)
     @Test
     fun `when FolderAppPickerDialog search produces no matches, should display empty search results message`() {
         val folder = AppFolder(
@@ -675,6 +660,7 @@ class FolderBranchCoverageTest {
                 )
             }
         }
+        composeTestRule.mainClock.advanceTimeBy(SHEET_ENTER_MS)
 
         // Search for non-matching string
         composeTestRule.onNode(hasSetTextAction()).performTextInput("XYZ_NO_MATCH")
@@ -684,6 +670,7 @@ class FolderBranchCoverageTest {
         composeTestRule.onNodeWithText("Nothing with \u201cXYZ_NO_MATCH\u201d.").assertIsDisplayed()
     }
 
+    @Config(qualifiers = TALL_WINDOW)
     @Test
     fun `when clicking Plus and Delete in FolderAppPickerDialog, should toggle package selection`() {
         val folder = AppFolder(
@@ -703,13 +690,13 @@ class FolderBranchCoverageTest {
                 )
             }
         }
+        composeTestRule.mainClock.advanceTimeBy(SHEET_ENTER_MS)
 
-        // Click Plus on App Two to add it
-        composeTestRule.onAllNodes(hasClickAction())[2].performClick()
+        // Tap App Two in the grid to add it
+        composeTestRule.onNodeWithText("App Two").performClick()
 
-        // Click Save
         composeTestRule.onNodeWithText("Save", substring = true).performClick()
-        assertTrue(savedList.contains(app1.packageName))
+        assertEquals(listOf(app1.packageName, app2.packageName), savedList)
     }
 
     // --- 11. Overlays & BottomSheets Full Coverage ---
@@ -736,6 +723,7 @@ class FolderBranchCoverageTest {
         composeTestRule.setContent {
             CompositionLocalProvider(
                 LocalHomeUiState provides uiState,
+                LocalLeftHanded provides uiState.isLeftHandedMode,
                 LocalHomeActions provides actions
             ) {
                 AureoleLauncherTheme {

@@ -49,7 +49,8 @@ class OnboardingActionsFactory(
         onSetChecklistExpanded = { expanded -> viewModel.setChecklistExpanded(expanded) },
         onDismissChecklist = { viewModel.dismissChecklist() },
         onFinishCelebration = { viewModel.finishCelebration() },
-        onSaveGridEdit = { homeActions.onSaveGridEditMode() }
+        onSaveGridEdit = { homeActions.onSaveGridEditMode() },
+        onOpenSettings = { homeActions.onSettingsClick() }
     )
 
     private fun handleTaskClick(task: OnboardingTask) {

@@ -1,5 +1,3 @@
-@file:Suppress("MagicNumber", "MaxLineLength")
-
 package dev.mnascimentos.aureole.feature.settings.screens
 
 import androidx.activity.compose.BackHandler
@@ -42,7 +40,6 @@ import dev.mnascimentos.aureole.composable.SettingsToggleItem
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
 import dev.mnascimentos.aureole.core.designsystem.icons.AlignRight
-import dev.mnascimentos.aureole.core.designsystem.icons.AppSelect
 import dev.mnascimentos.aureole.core.designsystem.icons.Dots
 import dev.mnascimentos.aureole.core.designsystem.icons.Header
 import dev.mnascimentos.aureole.core.designsystem.icons.Press
@@ -53,6 +50,7 @@ import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.settings.model.PickerDimensions
 import dev.mnascimentos.aureole.feature.settings.model.SettingsScreenActions
 import dev.mnascimentos.aureole.feature.settings.model.SettingsUiState
+import dev.mnascimentos.aureole.util.percentToFraction
 import kotlin.math.roundToInt
 
 private const val BOTTOM_SPACER_RATIO = 0.15f
@@ -78,7 +76,7 @@ fun SettingsBehaviorScreen(
                 .fillMaxSize()
                 .padding(innerPadding)
         ) {
-            val topSpacerHeight = (maxHeight * (uiState.headerOffsetPercent / 100f))
+            val topSpacerHeight = (maxHeight * uiState.headerOffsetPercent.percentToFraction())
                 .coerceAtLeast(AureoleDS.dimens.medium)
             val bottomSpacerHeight = (maxHeight * BOTTOM_SPACER_RATIO)
                 .coerceAtLeast(AureoleDS.dimens.large)
@@ -133,13 +131,6 @@ private fun BehaviorMenuItems(
             checked = uiState.homeButtonOpensAllApps,
             onCheckedChange = { actions.onToggleHomeButtonOpensAllApps() },
             leadingContent = { AureoleDS.icons.Press() }
-        )
-
-        SettingsToggleItem(
-            title = stringResource(R.string.settings_behavior_show_all_apps_on_home),
-            checked = uiState.showAllAppsOnHome,
-            onCheckedChange = { actions.onToggleShowAllAppsOnHome() },
-            leadingContent = { AureoleDS.icons.AppSelect() }
         )
 
         SettingsToggleItem(

@@ -36,6 +36,7 @@ class SettingsAdvancedScreenTest {
         composeTestRule.onNodeWithText("Set as default launcher").assertExists()
         composeTestRule.onNodeWithText("App info").assertExists()
         composeTestRule.onNodeWithText("What's new (Release notes)").assertExists()
+        composeTestRule.onNodeWithText("Replay welcome tour").assertExists()
         composeTestRule.onNodeWithText("Reset launcher").assertExists()
         composeTestRule.onNodeWithText("Uninstall launcher").assertExists()
         composeTestRule.onNodeWithText("Contributors").assertExists()
@@ -49,10 +50,12 @@ class SettingsAdvancedScreenTest {
     fun `when clicking action items, should trigger callbacks and dialogs`() {
         var defaultLauncherClicked = false
         var resetLauncherClicked = false
+        var replayClicked = false
         var contributorsNavigated = false
 
         val actions = SettingsScreenActions(
             onSetDefaultLauncherClick = { defaultLauncherClicked = true },
+            onReplayOnboardingClick = { replayClicked = true },
             onOpenFactoryResetDialog = { resetLauncherClicked = true }
         )
 
@@ -71,6 +74,9 @@ class SettingsAdvancedScreenTest {
         assertTrue(defaultLauncherClicked)
 
         composeTestRule.onNodeWithText("App info").performScrollTo().performClick()
+
+        composeTestRule.onNodeWithText("Replay welcome tour").performScrollTo().performClick()
+        assertTrue(replayClicked)
 
         composeTestRule.onNodeWithText("Reset launcher").performScrollTo().performClick()
         assertTrue(resetLauncherClicked)

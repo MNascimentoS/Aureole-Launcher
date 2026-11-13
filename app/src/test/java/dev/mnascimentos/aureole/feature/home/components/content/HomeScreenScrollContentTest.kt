@@ -13,6 +13,7 @@ import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.core.data.model.LauncherItemState
 import dev.mnascimentos.aureole.core.data.model.LauncherItemType
 import dev.mnascimentos.aureole.core.data.model.ScrollOrientation
+import dev.mnascimentos.aureole.core.designsystem.model.LocalLeftHanded
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.feature.home.components.containers.model.ContainerConfig
 import dev.mnascimentos.aureole.feature.home.components.content.model.ScrollViewContainerParams
@@ -90,6 +91,7 @@ class HomeScreenScrollContentTest {
             AureoleLauncherTheme {
                 CompositionLocalProvider(
                     LocalHomeUiState provides MainUiState(isGridEditMode = true),
+                    LocalLeftHanded provides (MainUiState(isGridEditMode = true)).isLeftHandedMode,
                     LocalHomeActions provides actions
                 ) {
                     ScrollViewContainerContent(params = params)
@@ -112,6 +114,7 @@ class HomeScreenScrollContentTest {
             AureoleLauncherTheme {
                 CompositionLocalProvider(
                     LocalHomeUiState provides MainUiState(isGridEditMode = false),
+                    LocalLeftHanded provides (MainUiState(isGridEditMode = false)).isLeftHandedMode,
                     LocalHomeActions provides createDefaultActions()
                 ) {
                     ScrollViewContainerContent(params = params)
@@ -136,6 +139,7 @@ class HomeScreenScrollContentTest {
             AureoleLauncherTheme {
                 CompositionLocalProvider(
                     LocalHomeUiState provides MainUiState(isGridEditMode = true),
+                    LocalLeftHanded provides (MainUiState(isGridEditMode = true)).isLeftHandedMode,
                     LocalHomeActions provides actions
                 ) {
                     ScrollViewContainerContent(params = params)
@@ -158,6 +162,7 @@ class HomeScreenScrollContentTest {
             AureoleLauncherTheme {
                 CompositionLocalProvider(
                     LocalHomeUiState provides MainUiState(isGridEditMode = false),
+                    LocalLeftHanded provides (MainUiState(isGridEditMode = false)).isLeftHandedMode,
                     LocalHomeActions provides createDefaultActions()
                 ) {
                     ScrollViewContainerContent(params = params)
@@ -178,6 +183,7 @@ class HomeScreenScrollContentTest {
             AureoleLauncherTheme {
                 CompositionLocalProvider(
                     LocalHomeUiState provides MainUiState(),
+                    LocalLeftHanded provides (MainUiState()).isLeftHandedMode,
                     LocalHomeActions provides createDefaultActions()
                 ) {
                     ScrollViewContainerContent(params = params)
@@ -200,6 +206,7 @@ class HomeScreenScrollContentTest {
             AureoleLauncherTheme {
                 CompositionLocalProvider(
                     LocalHomeUiState provides MainUiState(),
+                    LocalLeftHanded provides (MainUiState()).isLeftHandedMode,
                     LocalHomeActions provides createDefaultActions()
                 ) {
                     ScrollViewContainerContent(params = params)
@@ -222,6 +229,7 @@ class HomeScreenScrollContentTest {
             AureoleLauncherTheme {
                 CompositionLocalProvider(
                     LocalHomeUiState provides MainUiState(),
+                    LocalLeftHanded provides (MainUiState()).isLeftHandedMode,
                     LocalHomeActions provides createDefaultActions()
                 ) {
                     ScrollViewContainerContent(params = params)

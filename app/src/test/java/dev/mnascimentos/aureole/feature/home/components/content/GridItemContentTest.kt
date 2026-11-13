@@ -13,6 +13,7 @@ import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.core.data.model.AppFolder
 import dev.mnascimentos.aureole.core.data.model.LauncherItemState
 import dev.mnascimentos.aureole.core.data.model.LauncherItemType
+import dev.mnascimentos.aureole.core.designsystem.model.LocalLeftHanded
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.FolderViewIntent
 import dev.mnascimentos.aureole.feature.home.components.containers.model.ContainerConfig
@@ -86,6 +87,7 @@ class GridItemContentTest {
             AureoleLauncherTheme {
                 CompositionLocalProvider(
                     LocalHomeUiState provides MainUiState(),
+                    LocalLeftHanded provides (MainUiState()).isLeftHandedMode,
                     LocalHomeActions provides createDefaultActions()
                 ) {
                     GridItemContent(params = params)
@@ -101,6 +103,7 @@ class GridItemContentTest {
             AureoleLauncherTheme {
                 CompositionLocalProvider(
                     LocalHomeUiState provides MainUiState(),
+                    LocalLeftHanded provides (MainUiState()).isLeftHandedMode,
                     LocalHomeActions provides createDefaultActions()
                 ) {
                     GridItemContent(params = params)
@@ -116,6 +119,7 @@ class GridItemContentTest {
             AureoleLauncherTheme {
                 CompositionLocalProvider(
                     LocalHomeUiState provides MainUiState(),
+                    LocalLeftHanded provides (MainUiState()).isLeftHandedMode,
                     LocalHomeActions provides createDefaultActions()
                 ) {
                     GridItemContent(params = params)
@@ -131,6 +135,7 @@ class GridItemContentTest {
             AureoleLauncherTheme {
                 CompositionLocalProvider(
                     LocalHomeUiState provides MainUiState(),
+                    LocalLeftHanded provides (MainUiState()).isLeftHandedMode,
                     LocalHomeActions provides createDefaultActions()
                 ) {
                     GridItemContent(params = params)
@@ -146,6 +151,7 @@ class GridItemContentTest {
             AureoleLauncherTheme {
                 CompositionLocalProvider(
                     LocalHomeUiState provides MainUiState(),
+                    LocalLeftHanded provides (MainUiState()).isLeftHandedMode,
                     LocalHomeActions provides createDefaultActions()
                 ) {
                     GridItemContent(params = params)
@@ -161,6 +167,7 @@ class GridItemContentTest {
             AureoleLauncherTheme {
                 CompositionLocalProvider(
                     LocalHomeUiState provides MainUiState(),
+                    LocalLeftHanded provides (MainUiState()).isLeftHandedMode,
                     LocalHomeActions provides createDefaultActions()
                 ) {
                     GridItemContent(params = params)
@@ -176,6 +183,7 @@ class GridItemContentTest {
             AureoleLauncherTheme {
                 CompositionLocalProvider(
                     LocalHomeUiState provides MainUiState(),
+                    LocalLeftHanded provides (MainUiState()).isLeftHandedMode,
                     LocalHomeActions provides createDefaultActions()
                 ) {
                     GridItemContent(params = params)
@@ -191,6 +199,7 @@ class GridItemContentTest {
             AureoleLauncherTheme {
                 CompositionLocalProvider(
                     LocalHomeUiState provides MainUiState(),
+                    LocalLeftHanded provides (MainUiState()).isLeftHandedMode,
                     LocalHomeActions provides createDefaultActions()
                 ) {
                     GridItemContent(params = params)
@@ -206,6 +215,7 @@ class GridItemContentTest {
             AureoleLauncherTheme {
                 CompositionLocalProvider(
                     LocalHomeUiState provides MainUiState(),
+                    LocalLeftHanded provides (MainUiState()).isLeftHandedMode,
                     LocalHomeActions provides createDefaultActions()
                 ) {
                     GridItemContent(params = params)
@@ -225,6 +235,7 @@ class GridItemContentTest {
             AureoleLauncherTheme {
                 CompositionLocalProvider(
                     LocalHomeUiState provides MainUiState(),
+                    LocalLeftHanded provides (MainUiState()).isLeftHandedMode,
                     LocalHomeActions provides createDefaultActions()
                 ) {
                     GridItemContent(params = params)
@@ -244,6 +255,7 @@ class GridItemContentTest {
             AureoleLauncherTheme {
                 CompositionLocalProvider(
                     LocalHomeUiState provides MainUiState(),
+                    LocalLeftHanded provides (MainUiState()).isLeftHandedMode,
                     LocalHomeActions provides createDefaultActions()
                 ) {
                     GridItemContent(params = params)
@@ -269,6 +281,7 @@ class GridItemContentTest {
             AureoleLauncherTheme {
                 CompositionLocalProvider(
                     LocalHomeUiState provides MainUiState(openedFolderId = null),
+                    LocalLeftHanded provides (MainUiState(openedFolderId = null)).isLeftHandedMode,
                     LocalHomeActions provides actions
                 ) {
                     GridContainerContent(
@@ -302,6 +315,7 @@ class GridItemContentTest {
             AureoleLauncherTheme {
                 CompositionLocalProvider(
                     LocalHomeUiState provides MainUiState(openedFolderId = "f1"),
+                    LocalLeftHanded provides (MainUiState(openedFolderId = "f1")).isLeftHandedMode,
                     LocalHomeActions provides actions
                 ) {
                     GridContainerContent(

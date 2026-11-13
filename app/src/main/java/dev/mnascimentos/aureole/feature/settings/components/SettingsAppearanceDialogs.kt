@@ -1,164 +1,116 @@
 package dev.mnascimentos.aureole.feature.settings.components
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.semantics.Role
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.LayoutDirection
 import dev.mnascimentos.aureole.R
-import dev.mnascimentos.aureole.composable.SettingsMenuItem
-import dev.mnascimentos.aureole.composable.SettingsMenuParams
-import dev.mnascimentos.aureole.composable.sheets.SettingsBottomSheet
+import dev.mnascimentos.aureole.composable.color.AureoleColorSwatches
+import dev.mnascimentos.aureole.composable.color.model.DefaultPickerColor
+import dev.mnascimentos.aureole.composable.color.model.RecommendedColors
+import dev.mnascimentos.aureole.composable.minihome.AureoleMiniHome
+import dev.mnascimentos.aureole.composable.minihome.sampleMiniHomeContent
+import dev.mnascimentos.aureole.composable.mirror.LeftHandMirror
+import dev.mnascimentos.aureole.composable.sheets.AureoleConfirmOverlay
+import dev.mnascimentos.aureole.composable.sheets.model.ConfirmOverlayParams
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
-import dev.mnascimentos.aureole.core.designsystem.icons.Check
-import dev.mnascimentos.aureole.core.designsystem.icons.Edit
-import dev.mnascimentos.aureole.core.designsystem.icons.StrokeColor
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
+import dev.mnascimentos.aureole.feature.settings.model.BackgroundApplyAction
+import dev.mnascimentos.aureole.feature.settings.model.BackgroundDraft
+import dev.mnascimentos.aureole.feature.settings.model.BackgroundType
+import dev.mnascimentos.aureole.feature.settings.model.SetBackgroundParams
+import dev.mnascimentos.aureole.feature.settings.model.applyAction
+import dev.mnascimentos.aureole.feature.settings.model.initialBackgroundDraft
 
-private const val BLUR_LOW_OPACITY = 0.2f
-private const val BLUR_MED_OPACITY = 0.5f
-private const val BLUR_MAX_OPACITY = 0.9f
-
+/**
+ * Background editor in an edit overlay: the type (solid color or custom image) and, for a solid color, the
+ * swatches, with the mini-home anchored above the sheet on the chosen color. Nothing changes until Apply, which
+ * saves the color or opens the photo picker; Cancel only closes.
+ */
 @Composable
 fun SetBackgroundBottomSheet(
-    onSolidColorClick: () -> Unit,
-    onCustomImageClick: () -> Unit,
-    onDismissRequest: () -> Unit,
+    params: SetBackgroundParams,
     modifier: Modifier = Modifier
 ) {
-    SettingsBottomSheet(
-        title = stringResource(R.string.settings_appearance_set_background_title),
-        onDismissRequest = onDismissRequest,
-        modifier = modifier
-    ) {
-        Column(
-            verticalArrangement = Arrangement.spacedBy(AureoleDS.dimens.xSmall),
-            modifier = Modifier.fillMaxWidth().verticalScroll(rememberScrollState())
-        ) {
-            SettingsMenuItem(
-                SettingsMenuParams(
-                    title = stringResource(R.string.settings_appearance_solid_color),
-                    leadingContent = { AureoleDS.icons.StrokeColor() },
-                    onClick = onSolidColorClick
-                )
-            )
+    var draft by remember { mutableStateOf(initialBackgroundDraft(params.isCustomImageSet, params.currentColor)) }
 
-            SettingsMenuItem(
-                SettingsMenuParams(
-                    title = stringResource(R.string.settings_appearance_custom_image),
-                    leadingContent = { AureoleDS.icons.Edit() },
-                    onClick = onCustomImageClick
-                )
-            )
-        }
-    }
-}
-
-@Composable
-fun BlurBottomSheet(
-    currentOpacity: Float,
-    isHazeEnabled: Boolean,
-    onOptionSelected: (Float, Boolean) -> Unit,
-    onDismissRequest: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    val options = listOf(
-        Triple(0.0f, false, stringResource(R.string.settings_appearance_blur_none)),
-        Triple(BLUR_LOW_OPACITY, true, stringResource(R.string.settings_appearance_blur_opacity_low)),
-        Triple(BLUR_MED_OPACITY, true, stringResource(R.string.settings_appearance_blur_opacity_medium)),
-        Triple(BLUR_MAX_OPACITY, true, stringResource(R.string.settings_appearance_blur_max))
-    )
-
-    SettingsBottomSheet(
-        title = stringResource(R.string.settings_appearance_glass_blur_title),
-        onDismissRequest = onDismissRequest,
-        modifier = modifier
-    ) {
-        Column(
-            verticalArrangement = Arrangement.spacedBy(AureoleDS.dimens.xSmall),
-            modifier = Modifier.fillMaxWidth().verticalScroll(rememberScrollState())
-        ) {
-            options.forEach { (opacity, enableHaze, label) ->
-                val isSelected = if (!enableHaze || opacity == 0f) {
-                    !isHazeEnabled || currentOpacity == 0f
-                } else {
-                    isHazeEnabled && (currentOpacity == opacity)
+    AureoleConfirmOverlay(
+        params = ConfirmOverlayParams(
+            title = stringResource(R.string.settings_appearance_set_background_title),
+            primaryLabel = stringResource(R.string.settings_appearance_apply),
+            onPrimary = {
+                when (val action = draft.applyAction()) {
+                    is BackgroundApplyAction.SaveColor -> params.onSolidColorSelected(action.color)
+                    BackgroundApplyAction.PickImage -> params.onCustomImageClick()
                 }
-
-                BlurOptionRow(
-                    label = label,
-                    isSelected = isSelected,
-                    onSelect = { onOptionSelected(opacity, enableHaze) }
+            },
+            onDismissRequest = params.onDismissRequest,
+            isLeftHanded = params.isLeftHanded
+        ),
+        modifier = modifier,
+        preview = { BackgroundPreview(draft = draft, modifier = Modifier.align(Alignment.Center)) }
+    ) {
+        Column(
+            verticalArrangement = Arrangement.spacedBy(AureoleDS.dimens.small),
+            modifier = Modifier.fillMaxWidth().verticalScroll(rememberScrollState())
+        ) {
+            SheetSectionLabel(
+                text = stringResource(R.string.settings_appearance_background_type)
+            )
+            BackgroundTypeCards(
+                selected = draft.type,
+                onSelect = { draft = draft.copy(type = it) },
+                isLeftHanded = params.isLeftHanded
+            )
+            if (draft.type == BackgroundType.SOLID_COLOR) {
+                SheetSectionLabel(
+                    text = stringResource(R.string.settings_appearance_background_color)
                 )
+                LeftHandMirror(isLeftHanded = params.isLeftHanded) {
+                    AureoleColorSwatches(
+                        colors = RecommendedColors,
+                        selected = draft.color,
+                        onSelect = { draft = draft.copy(color = it) }
+                    )
+                }
             }
         }
     }
 }
 
 @Composable
-private fun BlurOptionRow(
-    label: String,
-    isSelected: Boolean,
-    onSelect: () -> Unit
-) {
-    val rowBg = if (isSelected) {
-        AureoleDS.colors.surfaceVariant.copy(alpha = 0.5f)
-    } else {
-        Color.Transparent
+private fun BackgroundPreview(draft: BackgroundDraft, modifier: Modifier = Modifier) {
+    val fill = if (draft.type == BackgroundType.SOLID_COLOR) Color(draft.color) else null
+    // Same preview for both hands: a mirrored layout direction must not move the favorites.
+    CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
+        AureoleMiniHome(content = sampleMiniHomeContent(), modifier = modifier, backgroundColor = fill)
     }
-    val textColor = if (isSelected) {
-        AureoleDS.colors.onSurfaceHigh
-    } else {
-        AureoleDS.colors.onSurfaceMedium
-    }
+}
 
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .defaultMinSize(minHeight = AureoleDS.dimens.minTouchTarget)
-            .clip(RoundedCornerShape(AureoleDS.dimens.radiusSmall))
-            .background(rowBg)
-            .clickable(
-                role = Role.RadioButton,
-                onClick = onSelect
-            )
-            .padding(vertical = AureoleDS.dimens.small, horizontal = AureoleDS.dimens.small),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        AureoleText(
-            text = label,
-            color = textColor,
-            modifier = Modifier.weight(1f),
-            format = AureoleTextFormatParams(
-                style = AureoleDS.typography.bodyLarge,
-                fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
-            )
-        )
-        if (isSelected) {
-            AureoleDS.icons.Check(
-                tint = AureoleDS.colors.onSurfaceHigh,
-                modifier = Modifier.size(AureoleDS.dimens.iconMedium)
-            )
-        }
-    }
+@Composable
+internal fun SheetSectionLabel(text: String, modifier: Modifier = Modifier) {
+    AureoleText(
+        text = text.uppercase(),
+        color = AureoleDS.colors.onSurfaceMedium,
+        modifier = modifier.fillMaxWidth(),
+        format = AureoleTextFormatParams(style = AureoleDS.typography.labelSmall)
+    )
 }
 
 @AureolePreview
@@ -166,22 +118,13 @@ private fun BlurOptionRow(
 private fun SetBackgroundBottomSheetPreview() {
     AureoleLauncherTheme {
         SetBackgroundBottomSheet(
-            onSolidColorClick = {},
-            onCustomImageClick = {},
-            onDismissRequest = {}
-        )
-    }
-}
-
-@AureolePreview
-@Composable
-private fun BlurBottomSheetPreview() {
-    AureoleLauncherTheme {
-        BlurBottomSheet(
-            currentOpacity = BLUR_MED_OPACITY,
-            isHazeEnabled = true,
-            onOptionSelected = { _, _ -> },
-            onDismissRequest = {}
+            params = SetBackgroundParams(
+                currentColor = DefaultPickerColor,
+                isCustomImageSet = false,
+                onSolidColorSelected = {},
+                onCustomImageClick = {},
+                onDismissRequest = {}
+            )
         )
     }
 }

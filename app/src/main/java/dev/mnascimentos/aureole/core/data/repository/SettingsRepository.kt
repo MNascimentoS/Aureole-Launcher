@@ -1,12 +1,12 @@
 package dev.mnascimentos.aureole.core.data.repository
 
-import android.app.WallpaperManager
 import android.app.role.RoleManager
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.net.Uri
 import android.os.Build
 import androidx.annotation.VisibleForTesting
 import androidx.core.content.edit
@@ -16,7 +16,6 @@ import dev.mnascimentos.aureole.core.designsystem.utils.HazeUtils
 import timber.log.Timber
 import java.io.File
 import java.io.FileOutputStream
-import java.io.IOException
 
 class SettingsRepository(private val context: Context) {
 
@@ -26,6 +25,10 @@ class SettingsRepository(private val context: Context) {
      */
     @VisibleForTesting
     internal var terminateProcess: () -> Unit = { Runtime.getRuntime().exit(0) }
+
+    /** The device wallpaper; unit tests replace it so no real WallpaperManager call happens. */
+    @VisibleForTesting
+    internal var systemWallpaper: SystemWallpaper = PlatformSystemWallpaper(context)
 
     var isLeftHandedMode: Boolean
         get() = prefs.getBoolean(KEY_LEFT_HANDED_MODE, false)
@@ -116,9 +119,16 @@ class SettingsRepository(private val context: Context) {
         get() = prefs.getBoolean(KEY_HOME_OPENS_ALL_APPS, true)
         set(value) = prefs.edit { putBoolean(KEY_HOME_OPENS_ALL_APPS, value) }
 
-    var showAllAppsOnHome: Boolean
-        get() = prefs.getBoolean(KEY_SHOW_ALL_APPS_ON_HOME, true)
-        set(value) = prefs.edit { putBoolean(KEY_SHOW_ALL_APPS_ON_HOME, value) }
+    /**
+     * Migration of the removed "show all apps on Home" switch: true once, when the user had turned it on, so the
+     * caller clears the saved favorites (an empty favorites list now means "show all"). The old key is deleted, so
+     * later calls return false. A switch that was never saved keeps the favorites: the Home never listed all apps.
+     */
+    fun consumeLegacyShowAllApps(): Boolean {
+        val wasOn = prefs.getBoolean(KEY_LEGACY_SHOW_ALL_APPS_ON_HOME, false)
+        if (prefs.contains(KEY_LEGACY_SHOW_ALL_APPS_ON_HOME)) prefs.edit { remove(KEY_LEGACY_SHOW_ALL_APPS_ON_HOME) }
+        return wasOn
+    }
 
     var isWidgetRowEnabled: Boolean
         get() = prefs.getBoolean(KEY_WIDGET_ROW_ENABLED, true)
@@ -181,6 +191,11 @@ class SettingsRepository(private val context: Context) {
         get() = prefs.getFloat(KEY_HAZE_OPACITY, DEFAULT_HAZE_OPACITY)
         set(value) = prefs.edit { putFloat(KEY_HAZE_OPACITY, value) }
 
+    /** Name of the last glass level the user chose (kept while the blur is switched off). */
+    var hazeBlurLevel: String
+        get() = prefs.getString(KEY_HAZE_BLUR_LEVEL, DEFAULT_HAZE_BLUR_LEVEL) ?: DEFAULT_HAZE_BLUR_LEVEL
+        set(value) = prefs.edit { putString(KEY_HAZE_BLUR_LEVEL, value) }
+
     var isDynamicWallpaperEnabled: Boolean
         get() = prefs.getBoolean(KEY_USE_WALLPAPER_COLORS, false)
         set(value) = prefs.edit { putBoolean(KEY_USE_WALLPAPER_COLORS, value) }
@@ -219,6 +234,9 @@ class SettingsRepository(private val context: Context) {
 
     val onboarding: OnboardingPreferences by lazy { OnboardingPreferences { prefs } }
 
+    /** Keeps the custom wallpaper aside while a "Restore background" can still be undone. */
+    val wallpaperStash: WallpaperUndoStash by lazy { WallpaperUndoStash(context, this) { systemWallpaper } }
+
     fun clearCustomWallpaper() {
         val path = customWallpaperPath
         if (!path.isNullOrEmpty()) {
@@ -233,23 +251,20 @@ class SettingsRepository(private val context: Context) {
         }
     }
 
-    @Suppress("ReturnCount", "TooGenericExceptionCaught") // Catching generic exceptions for file read/write operations
-    fun saveCustomWallpaper(uriString: String): Boolean {
-        return try {
-            val uri = uriString.toUri()
-            val inputStream = context.contentResolver.openInputStream(uri) ?: return false
-            val bitmap = inputStream.use { BitmapFactory.decodeStream(it) } ?: return false
-            val file = File(context.filesDir, "custom_wallpaper.jpg")
-            FileOutputStream(file).use { out ->
-                bitmap.compress(Bitmap.CompressFormat.JPEG, JPEG_QUALITY, out)
-            }
-            customWallpaperPath = file.absolutePath
-            isCustomWallpaperSet = true
-            true
-        } catch (e: Exception) {
-            Timber.tag(TAG).w(e, "Error in saveCustomWallpaper")
-            false
+    fun saveCustomWallpaper(uriString: String): Boolean = runCatching { writeCustomWallpaper(uriString.toUri()) }
+        .onFailure { Timber.tag(TAG).w(it, "Error in saveCustomWallpaper") }
+        .getOrDefault(false)
+
+    private fun writeCustomWallpaper(uri: Uri): Boolean {
+        val bitmap = context.contentResolver.openInputStream(uri)
+            ?.use { BitmapFactory.decodeStream(it) } ?: return false
+        val file = File(context.filesDir, "custom_wallpaper.jpg")
+        FileOutputStream(file).use { out ->
+            bitmap.compress(Bitmap.CompressFormat.JPEG, JPEG_QUALITY, out)
         }
+        customWallpaperPath = file.absolutePath
+        isCustomWallpaperSet = true
+        return true
     }
 
     fun checkDefaultLauncher(): Boolean {
@@ -265,41 +280,12 @@ class SettingsRepository(private val context: Context) {
 
     fun restoreDefaultWallpaper() {
         clearCustomWallpaper()
-        try {
-            val wallpaperManager = WallpaperManager.getInstance(context)
-            wallpaperManager.clear()
-        } catch (e: IOException) {
-            Timber.tag(TAG).w(e, "IOException clearing wallpaper")
-        } catch (e: SecurityException) {
-            Timber.tag(TAG).w(e, "SecurityException clearing wallpaper")
-        }
+        systemWallpaper.clear()
     }
 
-    @Suppress("TooGenericExceptionCaught") // Best effort reset cleanup
     fun performFactoryReset() {
-        try {
-            try {
-                AppDatabase.getInstance(context).clearAllTables()
-            } catch (e: Exception) {
-                Timber.tag(TAG).w(e, "Error clearing Room database")
-            }
-            context.deleteDatabase("aureole_app_database.db")
-            context.deleteDatabase("aureole_folders.db")
-
-            listOf(
-                "aureole_grid_prefs",
-                "aureole_settings_prefs",
-                "aureole_widget_prefs",
-                "${context.packageName}_preferences"
-            ).forEach { prefName ->
-                context.getSharedPreferences(prefName, Context.MODE_PRIVATE).edit(commit = true) { clear() }
-            }
-
-            context.cacheDir.deleteRecursively()
-            File(context.filesDir, "custom_wallpaper.jpg").delete()
-        } catch (e: Exception) {
-            Timber.tag(TAG).w(e, "Error performing factory reset")
-        }
+        runCatching { wipeLocalData() }
+            .onFailure { Timber.tag(TAG).w(it, "Error performing factory reset") }
 
         val intent = context.packageManager.getLaunchIntentForPackage(context.packageName)?.apply {
             addFlags(
@@ -310,6 +296,25 @@ class SettingsRepository(private val context: Context) {
             context.startActivity(intent)
         }
         terminateProcess()
+    }
+
+    private fun wipeLocalData() {
+        runCatching { AppDatabase.getInstance(context).clearAllTables() }
+            .onFailure { Timber.tag(TAG).w(it, "Error clearing Room database") }
+        context.deleteDatabase("aureole_app_database.db")
+        context.deleteDatabase("aureole_folders.db")
+
+        listOf(
+            "aureole_grid_prefs",
+            "aureole_settings_prefs",
+            "aureole_widget_prefs",
+            "${context.packageName}_preferences"
+        ).forEach { prefName ->
+            context.getSharedPreferences(prefName, Context.MODE_PRIVATE).edit(commit = true) { clear() }
+        }
+
+        context.cacheDir.deleteRecursively()
+        File(context.filesDir, "custom_wallpaper.jpg").delete()
     }
 
     private val prefs
@@ -343,7 +348,7 @@ class SettingsRepository(private val context: Context) {
         private const val KEY_SHOW_FOLDER_LABELS = "show_folder_labels"
         private const val KEY_FAVORITE_APPS = "favorite_apps"
         private const val KEY_HOME_OPENS_ALL_APPS = "home_opens_all_apps"
-        private const val KEY_SHOW_ALL_APPS_ON_HOME = "show_all_apps_on_home"
+        private const val KEY_LEGACY_SHOW_ALL_APPS_ON_HOME = "show_all_apps_on_home"
         private const val KEY_WIDGET_ROW_ENABLED = "widget_row_enabled"
         private const val KEY_IS_CUSTOM_WALLPAPER_SET = "is_custom_wallpaper_set"
         private const val KEY_CUSTOM_WALLPAPER_PATH = "custom_wallpaper_path"
@@ -352,6 +357,7 @@ class SettingsRepository(private val context: Context) {
         private const val KEY_MANUAL_SEED_COLOR = "manual_seed_color"
         private const val KEY_HAZE_ENABLED = "haze_enabled"
         private const val KEY_HAZE_OPACITY = "haze_opacity"
+        private const val KEY_HAZE_BLUR_LEVEL = "haze_blur_level"
         private const val KEY_SHOW_WIDGET_DOTS = "show_widget_dots"
         private const val KEY_IN_APP_UPDATE_ENABLED = "in_app_update_enabled"
         private const val KEY_HEADER_OFFSET_PERCENT = "header_offset_percent"
@@ -366,6 +372,7 @@ class SettingsRepository(private val context: Context) {
         private const val KEY_SELECTED_FONT = "selected_font"
         private const val KEY_LAST_SEEN_VERSION_CODE = "last_seen_version_code"
         private const val DEFAULT_HAZE_OPACITY = 0.5f
+        private const val DEFAULT_HAZE_BLUR_LEVEL = "MEDIUM"
         private const val DEFAULT_HEADER_OFFSET = 10
         private const val MIN_HEADER_OFFSET = 0
         private const val MAX_HEADER_OFFSET = 60

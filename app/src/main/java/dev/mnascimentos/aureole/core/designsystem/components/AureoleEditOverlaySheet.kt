@@ -15,10 +15,13 @@ import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -26,18 +29,24 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Constraints
+import androidx.compose.ui.unit.dp
 import dev.chrisbanes.haze.HazeState
 import dev.chrisbanes.haze.HazeStyle
 import dev.chrisbanes.haze.HazeTint
 import dev.chrisbanes.haze.hazeEffect
+import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.core.designsystem.icons.Logo
 import dev.mnascimentos.aureole.core.designsystem.model.AureoleEditOverlayParams
 import dev.mnascimentos.aureole.core.designsystem.model.OverlaySheetDecorations
@@ -49,10 +58,11 @@ import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.core.designsystem.utils.LocalHazeState
+import dev.mnascimentos.aureole.core.designsystem.utils.glassBlurRadius
 import kotlin.math.roundToInt
 
 private const val ANIMATION_DURATION_MS = 300
-private const val PREVIEW_DIM_ALPHA = 0.6f
+private const val BOTTOM_BAR_DIVIDER_ALPHA = 0.3f
 
 @Composable
 internal fun OverlayContentBox(
@@ -67,7 +77,7 @@ internal fun OverlayContentBox(
         Modifier.hazeEffect(
             state = effectiveHazeState,
             style = HazeStyle(
-                blurRadius = AureoleDS.dimens.xLarge,
+                blurRadius = glassBlurRadius(AureoleDS.dimens.xLarge),
                 tint = HazeTint(Color.Black.copy(alpha = 0.55f))
             )
         ) { blurEnabled = true }
@@ -148,12 +158,23 @@ private fun AnchoredPreviewLayout(
         val sheetHeight = sheetPlaceables.maxOfOrNull { it.height } ?: 0
         if (motion.fixedHeight(isExpanded, bounds) == null) motion.restOuterHeight = sheetHeight
         val restSheetHeight = motion.restOuterHeight.takeIf { it > 0 } ?: bounds.restMaxPx.roundToInt()
-        val previewMaxHeight = (constraints.maxHeight - restSheetHeight - previewGapPx - previewTopPaddingPx)
-            .coerceAtLeast(0)
+        // An unbounded parent (e.g. inside a scroll) has no height to subtract from: keep it unbounded, since
+        // Infinity minus anything is not a height Constraints can represent.
+        val previewMaxHeight = if (constraints.hasBoundedHeight) {
+            (constraints.maxHeight - restSheetHeight - previewGapPx - previewTopPaddingPx).coerceAtLeast(0)
+        } else {
+            Constraints.Infinity
+        }
         val previewPlaceables = previewMeasurables.map { it.measure(loose.copy(maxHeight = previewMaxHeight)) }
+        val layoutHeight = if (constraints.hasBoundedHeight) {
+            constraints.maxHeight
+        } else {
+            val previewHeight = previewPlaceables.maxOfOrNull { it.height } ?: 0
+            previewTopPaddingPx + previewHeight + previewGapPx + sheetHeight
+        }
 
-        layout(constraints.maxWidth, constraints.maxHeight) {
-            val sheetTop = constraints.maxHeight - sheetHeight + motion.translation(bounds).roundToInt()
+        layout(constraints.maxWidth, layoutHeight) {
+            val sheetTop = layoutHeight - sheetHeight + motion.translation(bounds).roundToInt()
             previewPlaceables.forEach { placeable ->
                 placeable.placeRelative(
                     0,
@@ -195,13 +216,7 @@ private fun PreviewSlot(
         modifier = Modifier
             .fillMaxWidth()
             .then(previewModifier)
-            .drawWithContent {
-                drawContent()
-                val fraction = expandFraction()
-                if (fraction > 0f) {
-                    drawRect(color = Color.Black.copy(alpha = PREVIEW_DIM_ALPHA * fraction))
-                }
-            },
+            .graphicsLayer { alpha = 1f - expandFraction() },
         contentAlignment = Alignment.BottomCenter
     ) {
         previewContent?.invoke(this)
@@ -217,7 +232,7 @@ private fun expandFractionOf(motion: OverlaySheetMotion, isExpanded: Boolean, bo
 }
 
 /**
- * Inside of the overlay sheet: handle, header and content at the top, bottom bar at the bottom.
+ * Inside of the overlay sheet: gesture zone, header and content at the top, bottom bar at the bottom.
  * When the sheet is taller than its content (expanded), the free space sits between content and bottom bar.
  */
 @Composable
@@ -228,42 +243,74 @@ internal fun OverlaySheetBody(
     sheetContent: (@Composable ColumnScope.() -> Unit)?,
     decorations: OverlaySheetDecorations = OverlaySheetDecorations()
 ) {
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = AureoleDS.dimens.xxSmall, vertical = AureoleDS.dimens.xxSmall),
-        verticalArrangement = Arrangement.SpaceBetween
-    ) {
-        Column(modifier = Modifier.weight(1f, fill = false)) {
-            decorations.handle?.invoke()
-            if (title != null) {
-                OverlaySheetHeader(
-                    title = title,
-                    onSettingsClick = onSettingsClick,
-                    headerIcon = decorations.headerIcon
-                )
+    val settingsLabel = stringResource(R.string.overlay_sheet_action_settings)
+    Box(modifier = Modifier.fillMaxWidth()) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = AureoleDS.dimens.xxSmall, vertical = AureoleDS.dimens.xxSmall),
+            verticalArrangement = Arrangement.SpaceBetween
+        ) {
+            val hasBottomBar = bottomBarContent != null
+            Column(modifier = Modifier.weight(1f, fill = hasBottomBar)) {
+                decorations.gestureZone?.invoke()
+                if (title != null) {
+                    OverlaySheetHeader(
+                        title = title,
+                        titleIcon = decorations.titleIcon
+                    )
+                }
+                if (sheetContent != null) {
+                    val contentPadding = if (decorations.edgeToEdgeContent) 0.dp else AureoleDS.dimens.small
+                    Column(
+                        modifier = Modifier
+                            .padding(horizontal = contentPadding)
+                            .weight(1f, fill = hasBottomBar)
+                            .fillMaxWidth()
+                    ) {
+                        sheetContent()
+                    }
+                }
             }
-            if (sheetContent != null) {
+
+            if (bottomBarContent != null) {
                 Column(
-                    modifier = Modifier
-                        .padding(horizontal = AureoleDS.dimens.small)
-                        .weight(1f, fill = false)
-                        .fillMaxWidth()
+                    modifier = Modifier.padding(
+                        start = AureoleDS.dimens.small,
+                        end = AureoleDS.dimens.small,
+                        top = AureoleDS.dimens.small,
+                        bottom = AureoleDS.dimens.medium
+                    )
                 ) {
-                    sheetContent()
+                    bottomBarContent()
                 }
             }
         }
 
-        if (bottomBarContent != null) {
-            Column(
-                modifier = Modifier.padding(
-                    start = AureoleDS.dimens.small,
-                    end = AureoleDS.dimens.small,
-                    top = AureoleDS.dimens.small
+        Box(
+            modifier = Modifier
+                .align(Alignment.TopEnd)
+                .padding(top = AureoleDS.dimens.minimal, end = AureoleDS.dimens.minimal)
+                .size(AureoleDS.dimens.iconXLarge)
+                .clip(RoundedCornerShape(AureoleDS.dimens.radiusMedium))
+                .then(
+                    if (onSettingsClick != null) {
+                        Modifier
+                            .clickable(onClick = onSettingsClick, role = Role.Button)
+                            .semantics { contentDescription = settingsLabel }
+                    } else {
+                        Modifier
+                    }
+                ),
+            contentAlignment = Alignment.Center
+        ) {
+            if (decorations.headerIcon != null) {
+                decorations.headerIcon.invoke(Modifier.size(AureoleDS.dimens.iconSmall))
+            } else {
+                AureoleDS.icons.Logo(
+                    tint = AureoleDS.colors.onSurfaceHigh,
+                    modifier = Modifier.size(AureoleDS.dimens.iconSmall)
                 )
-            ) {
-                bottomBarContent()
             }
         }
     }
@@ -272,44 +319,34 @@ internal fun OverlaySheetBody(
 @Composable
 private fun OverlaySheetHeader(
     title: String,
-    onSettingsClick: (() -> Unit)?,
-    headerIcon: (@Composable (Modifier) -> Unit)? = null
+    titleIcon: (@Composable (Modifier) -> Unit)? = null
 ) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(bottom = AureoleDS.dimens.medium),
-        contentAlignment = Alignment.BottomCenter
+            .padding(start = AureoleDS.dimens.small, end = AureoleDS.dimens.small, bottom = AureoleDS.dimens.medium),
+        contentAlignment = Alignment.Center
     ) {
-        Text(
-            text = title,
-            style = AureoleDS.typography.titleMedium,
-            fontWeight = FontWeight.Bold,
-            color = AureoleDS.colors.onSurfaceHigh,
-            textAlign = TextAlign.Center
-        )
-
-        if (onSettingsClick != null || headerIcon != null) {
-            Box(
-                modifier = Modifier
-                    .align(Alignment.TopEnd)
-                    .size(AureoleDS.dimens.iconXLarge)
-                    .clip(RoundedCornerShape(AureoleDS.dimens.radiusMedium))
-                    .clickable(
-                        onClick = { onSettingsClick?.invoke() },
-                        role = Role.Button
-                    ),
-                contentAlignment = Alignment.Center
-            ) {
-                if (headerIcon != null) {
-                    headerIcon(Modifier.size(AureoleDS.dimens.iconSmall))
-                } else {
-                    AureoleDS.icons.Logo(
-                        tint = AureoleDS.colors.onSurfaceHigh,
-                        modifier = Modifier.size(AureoleDS.dimens.iconSmall)
-                    )
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            if (titleIcon != null) {
+                Box(
+                    modifier = Modifier
+                        .size(AureoleDS.dimens.iconXLarge)
+                        .clip(RoundedCornerShape(AureoleDS.dimens.radiusSmall))
+                        .background(AureoleDS.colors.surfaceVariant),
+                    contentAlignment = Alignment.Center
+                ) {
+                    titleIcon(Modifier.size(AureoleDS.dimens.iconMedium))
                 }
+                Spacer(modifier = Modifier.width(AureoleDS.dimens.small))
             }
+            Text(
+                text = title,
+                style = AureoleDS.typography.titleMedium,
+                fontWeight = FontWeight.Bold,
+                color = AureoleDS.colors.onSurfaceHigh,
+                textAlign = TextAlign.Center
+            )
         }
     }
 }

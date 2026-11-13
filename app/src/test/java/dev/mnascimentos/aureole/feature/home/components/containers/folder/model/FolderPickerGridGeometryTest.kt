@@ -7,18 +7,16 @@ import org.junit.Test
 class FolderPickerGridGeometryTest {
 
     private val cells = listOf(
-        PickerCellBounds(key = "header_selected", x = 0, y = 0, width = 400, height = 40),
-        PickerCellBounds(key = selectedRowKey("sel.app"), x = 0, y = 40, width = 400, height = 60),
+        PickerCellBounds(key = "header_remaining", x = 0, y = 0, width = 400, height = 100),
         PickerCellBounds(key = remainingCellKey("a"), x = 0, y = 100, width = 100, height = 90),
         PickerCellBounds(key = remainingCellKey("b"), x = 104, y = 100, width = 100, height = 90),
         PickerCellBounds(key = 42, x = 208, y = 100, width = 100, height = 90)
     )
 
     @Test
-    fun `hit test finds the app cell or row under the finger`() {
+    fun `hit test finds the app cell under the finger`() {
         assertEquals("a", hitTestCell(50f, 150f, cells))
         assertEquals("b", hitTestCell(104f, 100f, cells))
-        assertEquals("sel.app", hitTestCell(300f, 60f, cells))
     }
 
     @Test
@@ -32,7 +30,7 @@ class FolderPickerGridGeometryTest {
 
     @Test
     fun `picker keys map back to the package`() {
-        assertEquals("x.y", packageOfPickerKey(selectedRowKey("x.y")))
+        assertNull(packageOfPickerKey("sel_x.y"))
         assertEquals("x.y", packageOfPickerKey(remainingCellKey("x.y")))
         assertNull(packageOfPickerKey("header_remaining"))
         assertNull(packageOfPickerKey(7))
@@ -82,9 +80,7 @@ class FolderPickerGridGeometryTest {
     }
 
     @Test
-    fun `first grid cell comes after both headers and the selected rows`() {
-        assertEquals(3, firstGridCellIndex(0))
-        assertEquals(3, firstGridCellIndex(1))
-        assertEquals(5, firstGridCellIndex(3))
+    fun `first grid cell comes right after the header of the other apps`() {
+        assertEquals(1, FIRST_GRID_CELL_INDEX)
     }
 }

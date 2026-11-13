@@ -45,6 +45,7 @@ import dev.mnascimentos.aureole.core.designsystem.model.ExpandedSearchRowParams
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
+import dev.mnascimentos.aureole.core.designsystem.utils.glassBlurRadius
 
 typealias AureoleSearchBarHazeConfig = AureoleSearchBarHazeConfig
 typealias AureoleSearchBarSizes = AureoleSearchBarSizes
@@ -82,7 +83,7 @@ fun AureoleFloatingSearchBar(
     }
 
     val hazeStyle = HazeStyle(
-        blurRadius = SEARCH_BLUR_RADIUS,
+        blurRadius = glassBlurRadius(SEARCH_BLUR_RADIUS),
         tint = HazeTint(AureoleDS.colors.surfaceVariant.copy(alpha = params.hazeConfig.opacity)),
     )
 

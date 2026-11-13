@@ -75,6 +75,21 @@ fun AureoleIcons.AlignRight(
     tint: Color? = null
 ) { AureoleIcon(R.drawable.ic_aureole_align_right, modifier, tint) }
 
+/** Points to the end of the row and mirrors by itself in right-to-left layouts (left-handed mode). */
+@Composable
+fun AureoleIcons.ChevronRight(
+    modifier: Modifier = Modifier,
+    tint: Color? = null
+) { AureoleIcon(R.drawable.ic_aureole_chevron_right, modifier, tint) }
+
+/** Points to the start of the row; like [ChevronRight] it mirrors by itself in right-to-left layouts. */
+@Composable
+fun AureoleIcons.ChevronLeft(
+    modifier: Modifier = Modifier,
+    tint: Color? = null
+) { AureoleIcon(R.drawable.ic_aureole_chevron_right, modifier.rotate(CHEVRON_LEFT_ROTATION_DEGREES), tint) }
+
+private const val CHEVRON_LEFT_ROTATION_DEGREES = 180f
 private const val ARROW_DOWN_ROTATION_DEGREES = 180f
 private const val CLOSE_SQUARE_ROTATION_DEGREES = 45f
 
@@ -144,6 +159,12 @@ fun AureoleIcons.Dots(
     modifier: Modifier = Modifier,
     tint: Color? = null
 ) { AureoleIcon(R.drawable.ic_aureole_dots, modifier, tint) }
+
+@Composable
+fun AureoleIcons.DragHandle(
+    modifier: Modifier = Modifier,
+    tint: Color? = null
+) { AureoleIcon(R.drawable.ic_aureole_drag_handle, modifier, tint) }
 
 @Composable
 fun AureoleIcons.DragMenu(

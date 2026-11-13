@@ -26,6 +26,7 @@ import androidx.compose.ui.test.performTouchInput
 import androidx.core.graphics.drawable.toDrawable
 import dev.mnascimentos.aureole.core.data.model.AppFolder
 import dev.mnascimentos.aureole.core.data.model.AppInfo
+import dev.mnascimentos.aureole.core.designsystem.model.LocalLeftHanded
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.FOLDER_PICKER_GRID_TEST_TAG
 import dev.mnascimentos.aureole.feature.home.model.LocalHomeUiState
@@ -72,7 +73,8 @@ class FolderAppPickerGridTest {
             CompositionLocalProvider(
                 LocalInspectionMode provides true,
                 LocalHapticFeedback provides fakeHaptics,
-                LocalHomeUiState provides MainUiState()
+                LocalHomeUiState provides MainUiState(),
+                LocalLeftHanded provides (MainUiState()).isLeftHandedMode
             ) {
                 AureoleLauncherTheme {
                     FolderAppPickerDialog(

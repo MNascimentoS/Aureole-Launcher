@@ -16,7 +16,6 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -37,8 +36,8 @@ import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.components.appsdrawer.appitem.HomeAppItemRow
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.FolderDialogMetrics
-import dev.mnascimentos.aureole.feature.home.model.LocalHomeUiState
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
+import dev.mnascimentos.aureole.feature.home.model.ProvideHomeUiState
 import dev.mnascimentos.aureole.feature.settings.SettingsActivity
 
 @Composable
@@ -166,7 +165,7 @@ private fun FolderDialogPreview() {
     )
 
     AureoleLauncherTheme {
-        CompositionLocalProvider(LocalHomeUiState provides MainUiState()) {
+        ProvideHomeUiState(MainUiState()) {
             FolderDialog(
                 folder = mockFolder,
                 allApps = listOf(mockApp),

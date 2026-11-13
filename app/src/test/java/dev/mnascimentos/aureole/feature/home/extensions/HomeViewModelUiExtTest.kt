@@ -43,16 +43,6 @@ class HomeViewModelUiExtTest {
     }
 
     @Test
-    fun `when toggleShowAllAppsOnHome is called, should toggle state and save to repo`() {
-        val initial = viewModel.uiState.value.showAllAppsOnHome
-
-        viewModel.toggleShowAllAppsOnHome()
-
-        assertEquals(!initial, viewModel.uiState.value.showAllAppsOnHome)
-        assertEquals(!initial, settingsRepository.showAllAppsOnHome)
-    }
-
-    @Test
     fun `when toggleLeftHandedMode is called, should toggle state and save to repo`() {
         val initial = viewModel.uiState.value.isLeftHandedMode
 

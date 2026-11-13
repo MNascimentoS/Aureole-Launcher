@@ -1,26 +1,22 @@
 package dev.mnascimentos.aureole.feature.home.grid
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import dev.mnascimentos.aureole.R
-import dev.mnascimentos.aureole.composable.sheets.SettingsBottomSheet
+import dev.mnascimentos.aureole.composable.menu.AureoleMenuListSheet
+import dev.mnascimentos.aureole.composable.menu.model.MenuEntry
+import dev.mnascimentos.aureole.composable.menu.model.MenuSheetParams
 import dev.mnascimentos.aureole.core.data.model.LauncherItemState
 import dev.mnascimentos.aureole.core.data.model.LauncherItemType
-import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
-import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
+import dev.mnascimentos.aureole.core.designsystem.icons.AllApps
+import dev.mnascimentos.aureole.core.designsystem.icons.AppSelect
+import dev.mnascimentos.aureole.core.designsystem.icons.Calendar
+import dev.mnascimentos.aureole.core.designsystem.icons.Click
+import dev.mnascimentos.aureole.core.designsystem.icons.Layout
+import dev.mnascimentos.aureole.core.designsystem.icons.MultipleView
+import dev.mnascimentos.aureole.core.designsystem.icons.ScrollGroup
+import dev.mnascimentos.aureole.core.designsystem.icons.Star
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
@@ -46,50 +42,56 @@ fun EditGridItemDialog(
         else -> stringResource(R.string.home_grid_item_container)
     }
 
-    SettingsBottomSheet(
-        title = stringResource(R.string.home_grid_config_title, title),
+    val sizeNote = stringResource(R.string.home_grid_current_size, item.colSpan, item.rowSpan)
+    val sectionLabel = stringResource(R.string.home_grid_menu_section)
+    val deleteParams = editDialogDeleteParams(
+        itemId = item.id,
+        onDeleteConfirm = onDeleteConfirm,
         onDismissRequest = onDismissRequest
+    )
+    AureoleMenuListSheet(
+        title = title,
+        onDismiss = onDismissRequest,
+        modifier = modifier,
+        params = MenuSheetParams(
+            titleIcon = { m -> GridItemTypeIcon(type = item.type, modifier = m) },
+            onSettingsClick = {
+                actions.onSettingsClick()
+                onDismissRequest()
+            }
+        )
     ) {
-        Column(
-            modifier = modifier
-                .fillMaxWidth()
-                .verticalScroll(rememberScrollState()),
-            verticalArrangement = Arrangement.spacedBy(AureoleDS.dimens.xSmall)
-        ) {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clip(RoundedCornerShape(AureoleDS.dimens.radiusSmall))
-                    .background(AureoleDS.colors.surfaceVariant.copy(alpha = 0.35f))
-                    .padding(horizontal = AureoleDS.dimens.medium, vertical = AureoleDS.dimens.xSmall),
-                contentAlignment = Alignment.Center
-            ) {
-                AureoleText(
-                    text = stringResource(R.string.home_grid_current_size, item.colSpan, item.rowSpan),
-                    color = AureoleDS.colors.onSurfaceMedium,
-                    format = AureoleTextFormatParams(
-                        style = AureoleDS.typography.bodyMedium,
-                        fontWeight = FontWeight.Medium
-                    )
-                )
-            }
-
-            EditDialogTypeActionSection(
-                item = item,
-                actions = actions,
-                onDismissRequest = onDismissRequest
-            )
-
+        buildList {
+            add(MenuEntry.Note(text = sizeNote))
+            add(MenuEntry.Section(text = sectionLabel))
             if (item.type == LauncherItemType.SCROLL_VIEW) {
-                EditDialogScrollViewSection(item = item, actions = actions, onDismissRequest = onDismissRequest)
+                val scrollSection = MenuEntry.Content {
+                    EditDialogScrollViewSection(item = item, actions = actions, onDismissRequest = onDismissRequest)
+                }
+                add(scrollSection)
             }
-
-            EditDialogDeleteRow(
-                itemId = item.id,
-                onDeleteConfirm = onDeleteConfirm,
-                onDismissRequest = onDismissRequest
-            )
+            val typeSection = MenuEntry.Content {
+                EditDialogTypeActionSection(item = item, actions = actions, onDismissRequest = onDismissRequest)
+            }
+            add(typeSection)
+            add(MenuEntry.Row(deleteParams))
         }
+    }
+}
+
+@Composable
+private fun GridItemTypeIcon(type: LauncherItemType?, modifier: Modifier = Modifier) {
+    val tint = AureoleDS.colors.onSurfaceMedium
+    when (type) {
+        LauncherItemType.CLOCK -> AureoleDS.icons.Calendar(modifier = modifier, tint = tint)
+        LauncherItemType.APPS_LIST -> AureoleDS.icons.Star(modifier = modifier, tint = tint)
+        LauncherItemType.ALL_APPS_LIST -> AureoleDS.icons.AllApps(modifier = modifier, tint = tint)
+        LauncherItemType.SHORTCUTS_CONTAINER -> AureoleDS.icons.AppSelect(modifier = modifier, tint = tint)
+        LauncherItemType.QUICK_BUTTON -> AureoleDS.icons.Click(modifier = modifier, tint = tint)
+        LauncherItemType.SCROLL_VIEW -> AureoleDS.icons.ScrollGroup(modifier = modifier, tint = tint)
+        LauncherItemType.WIDGET_LIST,
+        LauncherItemType.SINGLE_APP_WIDGET -> AureoleDS.icons.MultipleView(modifier = modifier, tint = tint)
+        else -> AureoleDS.icons.Layout(modifier = modifier, tint = tint)
     }
 }
 

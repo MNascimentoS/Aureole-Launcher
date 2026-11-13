@@ -18,18 +18,24 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import dev.mnascimentos.aureole.R
+import dev.mnascimentos.aureole.composable.menu.AureoleMenuRow
+import dev.mnascimentos.aureole.composable.menu.model.MenuRowParams
 import dev.mnascimentos.aureole.core.data.model.LauncherItemState
 import dev.mnascimentos.aureole.core.data.model.LauncherItemType
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
 import dev.mnascimentos.aureole.core.designsystem.icons.Add
+import dev.mnascimentos.aureole.core.designsystem.icons.Calendar
+import dev.mnascimentos.aureole.core.designsystem.icons.Click
 import dev.mnascimentos.aureole.core.designsystem.icons.Delete
-import dev.mnascimentos.aureole.core.designsystem.icons.Edit
+import dev.mnascimentos.aureole.core.designsystem.icons.Layout
+import dev.mnascimentos.aureole.core.designsystem.icons.Star
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
@@ -41,44 +47,24 @@ internal fun EditDialogDeleteRow(
     onDeleteConfirm: (String) -> Unit,
     onDismissRequest: () -> Unit
 ) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .defaultMinSize(minHeight = AureoleDS.dimens.minTouchTarget)
-            .clip(RoundedCornerShape(AureoleDS.dimens.radiusMedium))
-            .background(AureoleDS.colors.error.copy(alpha = 0.12f))
-            .clickable(
-                role = Role.Button,
-                onClick = {
-                    onDeleteConfirm(itemId)
-                    onDismissRequest()
-                }
-            )
-            .semantics(mergeDescendants = true) {}
-            .padding(horizontal = AureoleDS.dimens.medium, vertical = AureoleDS.dimens.small),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.Center
-    ) {
-        Box(
-            modifier = Modifier
-                .size(AureoleDS.dimens.xLarge)
-                .clip(RoundedCornerShape(AureoleDS.dimens.radiusXSmall))
-                .background(AureoleDS.colors.error.copy(alpha = 0.3f)),
-            contentAlignment = Alignment.Center
-        ) {
-            AureoleDS.icons.Delete(
-                tint = AureoleDS.colors.error,
-                modifier = Modifier.size(AureoleDS.dimens.iconMedium)
-            )
-        }
-        Spacer(modifier = Modifier.width(AureoleDS.dimens.xSmall))
-        AureoleText(
-            text = stringResource(R.string.home_grid_remove_component),
-            color = AureoleDS.colors.error,
-            format = AureoleTextFormatParams(style = AureoleDS.typography.labelLarge, fontWeight = FontWeight.Bold)
-        )
-    }
+    AureoleMenuRow(editDialogDeleteParams(itemId, onDeleteConfirm, onDismissRequest))
 }
+
+/** The destructive "Remove component" row; the menu base moves it to the end of the list. */
+@Composable
+internal fun editDialogDeleteParams(
+    itemId: String,
+    onDeleteConfirm: (String) -> Unit,
+    onDismissRequest: () -> Unit
+) = MenuRowParams(
+    title = stringResource(R.string.home_grid_remove_component),
+    onClick = {
+        onDeleteConfirm(itemId)
+        onDismissRequest()
+    },
+    icon = { m, c -> AureoleDS.icons.Delete(modifier = m, tint = c) },
+    isDestructive = true
+)
 
 @Composable
 internal fun EditDialogTypeActionSection(
@@ -108,42 +94,24 @@ internal fun EditDialogTypeActionSection(
 
     if (text == null || onClick == null) return
 
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .defaultMinSize(minHeight = AureoleDS.dimens.minTouchTarget)
-            .clip(RoundedCornerShape(AureoleDS.dimens.radiusMedium))
-            .background(AureoleDS.colors.surfaceVariant.copy(alpha = 0.45f))
-            .clickable(
-                role = Role.Button,
-                onClick = onClick
-            )
-            .semantics(mergeDescendants = true) {}
-            .padding(horizontal = AureoleDS.dimens.medium, vertical = AureoleDS.dimens.small),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Box(
-            modifier = Modifier
-                .size(AureoleDS.dimens.iconXLarge)
-                .clip(RoundedCornerShape(AureoleDS.dimens.radiusXSmall))
-                .background(AureoleDS.colors.surface.copy(alpha = 0.5f)),
-            contentAlignment = Alignment.Center
-        ) {
-            AureoleDS.icons.Edit(
-                tint = AureoleDS.colors.onSurfaceHigh,
-                modifier = Modifier.size(AureoleDS.dimens.iconMedium)
-            )
-        }
-        Spacer(modifier = Modifier.width(AureoleDS.dimens.small))
-        AureoleText(
-            text = text,
-            color = AureoleDS.colors.onSurfaceHigh,
-            modifier = Modifier.weight(1f),
-            format = AureoleTextFormatParams(
-                style = AureoleDS.typography.bodyMedium,
-                fontWeight = FontWeight.SemiBold
-            )
+    AureoleMenuRow(
+        MenuRowParams(
+            title = text,
+            onClick = onClick,
+            icon = { m, c -> TypeActionIcon(type = item.type, modifier = m, tint = c) },
+            showChevron = true
         )
+    )
+}
+
+/** Icon of the type specific row: Layout for the side panel, Click, Star and Calendar. */
+@Composable
+private fun TypeActionIcon(type: LauncherItemType?, modifier: Modifier, tint: Color) {
+    when (type) {
+        LauncherItemType.CLOCK -> AureoleDS.icons.Calendar(modifier = modifier, tint = tint)
+        LauncherItemType.APPS_LIST -> AureoleDS.icons.Star(modifier = modifier, tint = tint)
+        LauncherItemType.QUICK_BUTTON -> AureoleDS.icons.Click(modifier = modifier, tint = tint)
+        else -> AureoleDS.icons.Layout(modifier = modifier, tint = tint)
     }
 }
 

@@ -31,6 +31,7 @@ import dev.mnascimentos.aureole.core.designsystem.components.AureoleSectionHeade
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
 import dev.mnascimentos.aureole.core.designsystem.icons.Settings
+import dev.mnascimentos.aureole.core.designsystem.model.LocalLeftHanded
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
@@ -152,6 +153,7 @@ private fun AppsListDrawerPreview() {
     AureoleLauncherTheme {
         CompositionLocalProvider(
             LocalHomeUiState provides mockUiState,
+            LocalLeftHanded provides mockUiState.isLeftHandedMode,
             LocalHomeActions provides mockActions
         ) {
             AppsListDrawer(

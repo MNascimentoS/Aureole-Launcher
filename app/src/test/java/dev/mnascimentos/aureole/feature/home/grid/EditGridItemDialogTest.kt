@@ -5,11 +5,13 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.performScrollTo
 import androidx.test.core.app.ApplicationProvider
 import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.core.data.model.LauncherItemState
 import dev.mnascimentos.aureole.core.data.model.LauncherItemType
 import dev.mnascimentos.aureole.core.data.model.ScrollOrientation
+import dev.mnascimentos.aureole.core.designsystem.model.LocalLeftHanded
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
 import dev.mnascimentos.aureole.feature.home.model.LocalHomeActions
@@ -57,6 +59,7 @@ class EditGridItemDialogTest {
             AureoleLauncherTheme {
                 CompositionLocalProvider(
                     LocalHomeUiState provides MainUiState(),
+                    LocalLeftHanded provides (MainUiState()).isLeftHandedMode,
                     LocalHomeActions provides baseActions()
                 ) {
                     EditGridItemDialog(
@@ -88,6 +91,7 @@ class EditGridItemDialogTest {
             AureoleLauncherTheme {
                 CompositionLocalProvider(
                     LocalHomeUiState provides MainUiState(),
+                    LocalLeftHanded provides (MainUiState()).isLeftHandedMode,
                     LocalHomeActions provides baseActions().copy(
                         onOpenEditClockBottomSheet = { actionTriggered = true }
                     )
@@ -124,6 +128,7 @@ class EditGridItemDialogTest {
             AureoleLauncherTheme {
                 CompositionLocalProvider(
                     LocalHomeUiState provides MainUiState(),
+                    LocalLeftHanded provides (MainUiState()).isLeftHandedMode,
                     LocalHomeActions provides baseActions().copy(
                         onUpdateScrollViewOrientation = { _, o -> orientationTriggered = o },
                         onOpenAddContainerForParent = { _ -> addContainerTriggered = true }
@@ -141,10 +146,14 @@ class EditGridItemDialogTest {
         composeTestRule.onNodeWithText(
             context.getString(R.string.home_container_edit_scroll_orientation)
         ).assertExists()
-        composeTestRule.onNodeWithText(context.getString(R.string.home_container_edit_horizontal)).performClick()
+        composeTestRule.onNodeWithText(
+            context.getString(R.string.home_container_edit_horizontal)
+        ).performScrollTo().performClick()
         assertEquals(ScrollOrientation.HORIZONTAL, orientationTriggered)
 
-        composeTestRule.onNodeWithText(context.getString(R.string.home_grid_add_component)).performClick()
+        composeTestRule.onNodeWithText(
+            context.getString(R.string.home_grid_add_component)
+        ).performScrollTo().performClick()
         assertTrue(addContainerTriggered)
     }
 
@@ -165,6 +174,7 @@ class EditGridItemDialogTest {
             AureoleLauncherTheme {
                 CompositionLocalProvider(
                     LocalHomeUiState provides MainUiState(),
+                    LocalLeftHanded provides (MainUiState()).isLeftHandedMode,
                     LocalHomeActions provides baseActions()
                 ) {
                     EditGridItemDialog(

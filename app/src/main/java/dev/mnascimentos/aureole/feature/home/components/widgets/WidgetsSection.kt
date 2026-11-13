@@ -33,6 +33,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import dev.mnascimentos.aureole.composable.widgets.AddWidgetButton
 import dev.mnascimentos.aureole.composable.widgets.WidgetPositionIndicatorBar
+import dev.mnascimentos.aureole.core.designsystem.model.LocalLeftHanded
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
@@ -220,7 +221,8 @@ private fun StackedWidgetSectionPreview() {
 
     AureoleLauncherTheme {
         CompositionLocalProvider(
-            LocalHomeUiState provides mockUiState
+            LocalHomeUiState provides mockUiState,
+            LocalLeftHanded provides mockUiState.isLeftHandedMode
         ) {
             StackedWidgetSection(
                 config = StackedWidgetConfig(

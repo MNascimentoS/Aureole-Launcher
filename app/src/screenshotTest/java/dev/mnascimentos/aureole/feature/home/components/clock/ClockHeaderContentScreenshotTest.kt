@@ -7,6 +7,7 @@ import com.android.tools.screenshot.PreviewTest
 import dev.mnascimentos.aureole.composable.clock.ClockHeaderContent
 import dev.mnascimentos.aureole.composable.clock.model.ClockHeaderContentParams
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleThemeConfig
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 
 @PreviewTest
@@ -65,6 +66,27 @@ private fun ClockHeaderTimeOnlyEndScreenshotTest() {
                 clockStyle = "TIME_ONLY",
                 alignment = "END",
                 fontFamily = "DEFAULT",
+                timeFormat = "24H",
+                dateFormat = "DEFAULT"
+            )
+        )
+    }
+}
+
+@PreviewTest
+@AureolePreview
+@Composable
+private fun ClockHeaderThemeFontScreenshotTest() {
+    AureoleLauncherTheme(config = AureoleThemeConfig(darkTheme = true, aureoleFontName = "Space Mono")) {
+        ClockHeaderContent(
+            params = ClockHeaderContentParams(
+                maxHeight = 120.dp,
+                colorPrimary = android.graphics.Color.WHITE,
+                composeTextColor = Color.White,
+                greeting = "Boa tarde",
+                clockStyle = "GREETING_AND_DATE",
+                alignment = "CENTER",
+                fontFamily = "SANS_SERIF",
                 timeFormat = "24H",
                 dateFormat = "DEFAULT"
             )

@@ -1,11 +1,14 @@
 package dev.mnascimentos.aureole.feature.home.components.quickbutton
 
+import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import dev.chrisbanes.haze.HazeState
@@ -16,16 +19,22 @@ import dev.mnascimentos.aureole.core.data.model.ShortcutAction
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleEditOverlay
 import dev.mnascimentos.aureole.core.designsystem.model.AureoleEditOverlayConfig
 import dev.mnascimentos.aureole.core.designsystem.model.AureoleEditOverlayParams
+import dev.mnascimentos.aureole.core.designsystem.model.LocalLeftHanded
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.components.quickbutton.extensions.resolveEditingShortcut
 import dev.mnascimentos.aureole.feature.home.components.quickbutton.extensions.withShortcut
+import dev.mnascimentos.aureole.feature.home.components.quickbutton.model.ShortcutCategory
 import dev.mnascimentos.aureole.feature.home.components.quickbutton.model.ShortcutSelectionCallbacks
 import dev.mnascimentos.aureole.feature.home.components.quickbutton.model.ShortcutSelectionOptions
 import dev.mnascimentos.aureole.feature.home.components.quickbutton.model.ShortcutSelectionSheetParams
 import dev.mnascimentos.aureole.feature.home.components.quickbutton.model.bestShortcutAction
 import dev.mnascimentos.aureole.feature.home.components.quickbutton.model.buildShortcutSearchCandidates
 import dev.mnascimentos.aureole.feature.home.components.quickbutton.model.searchShortcuts
+import dev.mnascimentos.aureole.feature.home.components.quickbutton.model.shortcutCategoryOf
+import dev.mnascimentos.aureole.feature.home.components.quickbutton.model.shortcutGestureLabelRes
+import dev.mnascimentos.aureole.feature.home.components.quickbutton.model.shortcutLabel
 import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
 import kotlinx.coroutines.delay
@@ -68,7 +77,6 @@ fun ShortcutSelectionBottomSheet(
     options: ShortcutSelectionOptions = ShortcutSelectionOptions()
 ) {
     var isVisible by remember { mutableStateOf(true) }
-    var isShowingAppPicker by remember { mutableStateOf(false) }
     var searchQuery by remember { mutableStateOf(options.initialSearchQuery) }
 
     if (!isVisible) {
@@ -80,8 +88,14 @@ fun ShortcutSelectionBottomSheet(
 
     val activeModel = uiState.activeQuickButtonModel ?: QuickButtonModel()
     val editingType = uiState.editingShortcutType
-    val candidates = remember(uiState.apps, isShowingAppPicker) {
-        buildShortcutSearchCandidates(DEFAULT_SHORTCUT_OPTIONS, uiState.apps, onlyApps = isShowingAppPicker)
+    val currentAction = resolveEditingShortcut(editingType, activeModel)
+    var category by remember { mutableStateOf(shortcutCategoryOf(currentAction)) }
+    val candidates = remember(uiState.apps, category) {
+        buildShortcutSearchCandidates(
+            DEFAULT_SHORTCUT_OPTIONS,
+            uiState.apps,
+            onlyApps = category == ShortcutCategory.APPS
+        )
     }
     val searchResults = remember(candidates, searchQuery) { searchShortcuts(candidates, searchQuery) }
     val applyShortcut = { action: ShortcutAction ->
@@ -91,8 +105,9 @@ fun ShortcutSelectionBottomSheet(
 
     ShortcutSelectionOverlay(
         params = ShortcutSelectionSheetParams(
-            isShowingAppPicker = isShowingAppPicker,
-            currentAction = resolveEditingShortcut(editingType, activeModel),
+            category = category,
+            currentAction = currentAction,
+            editingType = editingType,
             defaultShortcutOptions = DEFAULT_SHORTCUT_OPTIONS,
             uiState = uiState,
             isVisible = isVisible,
@@ -102,13 +117,14 @@ fun ShortcutSelectionBottomSheet(
         callbacks = ShortcutSelectionCallbacks(
             onQueryChange = { searchQuery = it },
             onApplyShortcut = applyShortcut,
-            onShowAppPicker = {
+            onSelectCategory = {
                 searchQuery = ""
-                isShowingAppPicker = true
+                category = it
             },
             onSettingsClick = { actions.onSettingsClick() },
             onDismiss = { isVisible = false }
         ),
+        activeModel = activeModel,
         hazeState = options.hazeState,
         modifier = modifier
     )
@@ -118,45 +134,62 @@ fun ShortcutSelectionBottomSheet(
 private fun ShortcutSelectionOverlay(
     params: ShortcutSelectionSheetParams,
     callbacks: ShortcutSelectionCallbacks,
+    activeModel: QuickButtonModel,
     hazeState: HazeState?,
     modifier: Modifier = Modifier
 ) {
     val searchPlaceholder = stringResource(R.string.home_quickbutton_search_placeholder)
-    val title = if (params.isShowingAppPicker) {
+    val title = if (params.category == ShortcutCategory.APPS) {
         stringResource(R.string.home_quickbutton_select_app)
     } else {
         stringResource(R.string.home_quickbutton_select_shortcut)
     }
-    AureoleEditOverlay(
-        onDismissRequest = callbacks.onDismiss,
-        modifier = modifier,
-        params = AureoleEditOverlayParams(
-            config = AureoleEditOverlayConfig(
-                title = title,
-                hazeState = if (params.uiState.isHazeEnabled) hazeState else null,
-                isVisible = params.isVisible,
-                animated = true,
-                isLeftHanded = params.uiState.isLeftHandedMode,
-                onSettingsClick = callbacks.onSettingsClick
-            ),
-            previewContent = null,
-            bottomBarContent = {
-                AureoleSearchField(
-                    query = params.searchQuery,
-                    onQueryChange = callbacks.onQueryChange,
-                    placeholder = searchPlaceholder,
-                    onSearch = { bestShortcutAction(params.searchResults)?.let(callbacks.onApplyShortcut) }
-                )
-            },
-            sheetContent = {
-                ShortcutSelectionSheetContent(
-                    params = params,
-                    onApplyShortcut = callbacks.onApplyShortcut,
-                    onShowAppPicker = callbacks.onShowAppPicker
-                )
-            }
-        )
+    val pillText = stringResource(
+        shortcutGestureLabelRes(params.editingType),
+        shortcutLabel(params.currentAction, params.uiState.apps)
     )
+    CompositionLocalProvider(LocalLeftHanded provides params.uiState.isLeftHandedMode) {
+        AureoleEditOverlay(
+            onDismissRequest = callbacks.onDismiss,
+            modifier = modifier,
+            params = AureoleEditOverlayParams(
+                config = AureoleEditOverlayConfig(
+                    title = title,
+                    hazeState = if (params.uiState.isHazeEnabled) hazeState else null,
+                    isVisible = params.isVisible,
+                    animated = true,
+                    isLeftHanded = params.uiState.isLeftHandedMode,
+                    onSettingsClick = callbacks.onSettingsClick
+                ),
+                previewContent = {
+                    ShortcutSelectionPreview(
+                        model = activeModel,
+                        pillText = pillText,
+                        modifier = Modifier.align(Alignment.Center)
+                    )
+                },
+                bottomBarContent = {
+                    ShortcutCategoryChips(
+                        selected = params.category,
+                        onSelect = callbacks.onSelectCategory,
+                        modifier = Modifier.padding(bottom = AureoleDS.dimens.xSmall)
+                    )
+                    AureoleSearchField(
+                        query = params.searchQuery,
+                        onQueryChange = callbacks.onQueryChange,
+                        placeholder = searchPlaceholder,
+                        onSearch = { bestShortcutAction(params.searchResults)?.let(callbacks.onApplyShortcut) }
+                    )
+                },
+                sheetContent = {
+                    ShortcutSelectionSheetContent(
+                        params = params,
+                        onApplyShortcut = callbacks.onApplyShortcut
+                    )
+                }
+            )
+        )
+    }
 }
 
 @AureolePreview

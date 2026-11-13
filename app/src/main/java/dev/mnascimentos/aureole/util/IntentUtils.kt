@@ -11,6 +11,9 @@ import java.lang.reflect.InvocationTargetException
 object IntentUtils {
     private const val TAG = "IntentUtils"
 
+    // Value of the deprecated Intent.ACTION_UNINSTALL_PACKAGE, kept as the fallback for older devices.
+    private const val ACTION_UNINSTALL_PACKAGE_FALLBACK = "android.intent.action.UNINSTALL_PACKAGE"
+
     fun openAppInfo(context: Context, packageName: String) {
         try {
             val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
@@ -34,8 +37,7 @@ object IntentUtils {
             context.startActivity(intent)
         } catch (e: ActivityNotFoundException) {
             try {
-                @Suppress("DEPRECATION") // ACTION_UNINSTALL_PACKAGE required as fallback for older Android versions
-                val fallbackIntent = Intent(Intent.ACTION_UNINSTALL_PACKAGE).apply {
+                val fallbackIntent = Intent(ACTION_UNINSTALL_PACKAGE_FALLBACK).apply {
                     data = Uri.fromParts("package", packageName, null)
                     addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                 }

@@ -18,7 +18,6 @@ import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
-import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.FolderAppRowItemParams
 
 /**
  * Search results of the folder picker. The list is reversed and anchored at the bottom: the best result
@@ -72,9 +71,7 @@ internal fun FolderAppPickerSearchList(
             val ring = Modifier.bestResultRing(isBest = index == 0)
             if (app.packageName in selectedPackages) {
                 SelectedFolderAppRow(
-                    params = FolderAppRowItemParams(app = app, index = index, totalCount = 0, canReorder = false),
-                    onMoveUp = {},
-                    onMoveDown = {},
+                    app = app,
                     onToggleSelect = { onToggleSelect(app.packageName) },
                     modifier = ring
                 )

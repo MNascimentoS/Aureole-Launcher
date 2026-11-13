@@ -21,6 +21,10 @@ enum class EditContainerScreenMode {
     MAIN, APPEARANCE, BEHAVIOR, MANAGE_ITEMS
 }
 
+/** Where the back key goes from this screen: the main one from a sub screen, or null (close) from the main one. */
+fun EditContainerScreenMode.backTarget(): EditContainerScreenMode? =
+    if (this == EditContainerScreenMode.MAIN) null else EditContainerScreenMode.MAIN
+
 data class ContainerOptionsState(
     val position: String,
     val orientation: String,
@@ -64,26 +68,10 @@ data class EditContainerItemRowParams(
     val title: String,
     val iconName: String?,
     val isFolder: Boolean,
-    val canMoveUp: Boolean,
-    val canMoveDown: Boolean,
-)
-
-data class EditContainerItemRowActions(
-    val onMoveUp: () -> Unit,
-    val onMoveDown: () -> Unit,
-    val onRemove: () -> Unit,
 )
 
 data class ManageItemRowParams(
-    val index: Int,
     val item: ContainerItemEntity,
-    val totalItems: Int,
     val folders: List<AppFolder>,
     val allApps: List<AppInfo>
-)
-
-data class ManageItemRowActions(
-    val onMoveUp: (Int) -> Unit,
-    val onMoveDown: (Int) -> Unit,
-    val onRemove: (Int) -> Unit
 )

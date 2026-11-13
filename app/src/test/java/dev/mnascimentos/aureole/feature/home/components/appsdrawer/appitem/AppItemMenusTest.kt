@@ -7,25 +7,34 @@ import android.content.pm.ShortcutInfo
 import android.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.down
+import androidx.compose.ui.test.getUnclippedBoundsInRoot
 import androidx.compose.ui.test.junit4.v2.createComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.performTouchInput
 import androidx.core.graphics.drawable.toDrawable
 import dev.mnascimentos.aureole.composable.appitem.AppItemBottomSheet
 import dev.mnascimentos.aureole.composable.appitem.model.AppItemBottomSheetParams
 import dev.mnascimentos.aureole.composable.appitem.model.AppItemRowActions
+import dev.mnascimentos.aureole.composable.menu.model.MENU_HOLD_MS
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.Shadows.shadowOf
+import org.robolectric.annotation.Config
+
+private const val HOLD_MARGIN_MS = 100L
 
 @RunWith(RobolectricTestRunner::class)
+@Config(qualifiers = "w411dp-h891dp")
 class AppItemMenusTest {
 
     @get:Rule
@@ -37,6 +46,32 @@ class AppItemMenusTest {
         componentName = ComponentName("com.example.test", "MainActivity"),
         icon = Color.BLUE.toDrawable(),
     )
+
+    private fun holdUninstall() {
+        composeTestRule.mainClock.autoAdvance = false
+        composeTestRule.onNodeWithText("Uninstall").performTouchInput { down(center) }
+        composeTestRule.mainClock.advanceTimeBy(MENU_HOLD_MS + HOLD_MARGIN_MS)
+    }
+
+    @Test
+    fun `when tapping Hold to uninstall without holding, should not uninstall`() {
+        var uninstallClicked = false
+        composeTestRule.setContent {
+            AureoleLauncherTheme {
+                AppItemBottomSheet(
+                    params = AppItemBottomSheetParams(
+                        app = sampleApp,
+                        actions = AppItemRowActions(onUninstallClick = { uninstallClicked = true })
+                    ),
+                    onDismiss = {}
+                )
+            }
+        }
+
+        composeTestRule.onNodeWithText("Uninstall").performClick()
+
+        assertFalse(uninstallClicked)
+    }
 
     @Test
     fun `when rendering AppItemBottomSheet, should display app label and default menu items`() {
@@ -164,7 +199,7 @@ class AppItemMenusTest {
             }
         }
 
-        composeTestRule.onNodeWithText("Uninstall").performClick()
+        holdUninstall()
         assertTrue(uninstallClicked)
         assertTrue(dismissed)
     }
@@ -187,7 +222,7 @@ class AppItemMenusTest {
             }
         }
 
-        composeTestRule.onNodeWithText("Uninstall").performClick()
+        holdUninstall()
         assertTrue(dismissed)
     }
 
@@ -236,7 +271,7 @@ class AppItemMenusTest {
         }
 
         composeTestRule.onNodeWithText("Remove from folder").assertIsDisplayed()
-        composeTestRule.onNodeWithText("Folder settings").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Folder settings").assertExists()
 
         composeTestRule.onNodeWithText("Remove from folder").performClick()
         assertTrue(removedFromFolder)
@@ -268,7 +303,7 @@ class AppItemMenusTest {
     }
 
     @Test
-    fun `when onToggleFavorite provided and not favorite, should display Add to favorites and invoke toggle`() {
+    fun `when onToggleFavorite provided and not favorite, should show the Favorite button and invoke toggle`() {
         var toggledPkg: String? = null
         var dismissed = false
 
@@ -297,7 +332,7 @@ class AppItemMenusTest {
     }
 
     @Test
-    fun `when onToggleFavorite provided and is favorite, should display Remove from favorites`() {
+    fun `when onToggleFavorite provided and is favorite, should still toggle through the Favorite button`() {
         var toggledPkg: String? = null
         var dismissed = false
 
@@ -382,5 +417,45 @@ class AppItemMenusTest {
         }
 
         composeTestRule.onNodeWithContentDescription("Aureole settings").assertDoesNotExist()
+    }
+
+    @Test
+    fun `menu is a vertical list that ends with Remove from folder and Uninstall`() {
+        composeTestRule.setContent {
+            AureoleLauncherTheme {
+                AppItemBottomSheet(
+                    params = AppItemBottomSheetParams(
+                        app = sampleApp,
+                        onOpenContainerSettings = {},
+                        onRemoveFromFolder = {}
+                    ),
+                    onDismiss = {}
+                )
+            }
+        }
+
+        fun top(text: String) = composeTestRule.onNodeWithText(text).getUnclippedBoundsInRoot().top
+        val order = listOf("App Info", "Container settings", "Remove from folder", "Uninstall")
+        assertEquals(order, order.sortedBy { top(it) })
+        composeTestRule.onNodeWithText("Hold to confirm").assertIsDisplayed()
+    }
+
+    @Test
+    fun `remove from folder is red row that calls back and dismisses`() {
+        var removed = false
+        var dismissed = false
+        composeTestRule.setContent {
+            AureoleLauncherTheme {
+                AppItemBottomSheet(
+                    params = AppItemBottomSheetParams(app = sampleApp, onRemoveFromFolder = { removed = true }),
+                    onDismiss = { dismissed = true }
+                )
+            }
+        }
+
+        composeTestRule.onNodeWithText("Remove from folder").performClick()
+
+        assertTrue(removed)
+        assertTrue(dismissed)
     }
 }

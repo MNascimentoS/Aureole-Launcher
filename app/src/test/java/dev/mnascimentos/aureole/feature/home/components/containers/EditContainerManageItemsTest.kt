@@ -2,11 +2,16 @@ package dev.mnascimentos.aureole.feature.home.components.containers
 
 import android.content.ComponentName
 import android.graphics.drawable.ColorDrawable
+import androidx.compose.ui.semantics.SemanticsActions
+import androidx.compose.ui.test.ExperimentalTestApi
+import androidx.compose.ui.test.SemanticsMatcher
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.v2.createComposeRule
+import androidx.compose.ui.test.onAllNodesWithContentDescription
 import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.performCustomAccessibilityActionWithLabel
 import dev.mnascimentos.aureole.core.data.model.AppFolder
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.data.model.ContainerItemEntity
@@ -14,14 +19,15 @@ import dev.mnascimentos.aureole.core.data.model.ContainerItemType
 import dev.mnascimentos.aureole.core.data.model.ContainerModel
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.feature.home.components.containers.model.ContainerOptionsState
-import dev.mnascimentos.aureole.feature.home.components.containers.model.ManageItemRowActions
 import dev.mnascimentos.aureole.feature.home.components.containers.model.ManageItemRowParams
+import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 
+@OptIn(ExperimentalTestApi::class)
 @RunWith(RobolectricTestRunner::class)
 class EditContainerManageItemsTest {
 
@@ -118,23 +124,14 @@ class EditContainerManageItemsTest {
             folderId = "f1"
         )
 
-        val actions = ManageItemRowActions(
-            onMoveUp = {},
-            onMoveDown = {},
-            onRemove = {}
-        )
-
         composeTestRule.setContent {
             AureoleLauncherTheme {
                 ManageItemRow(
                     params = ManageItemRowParams(
-                        index = 0,
                         item = folderItem,
-                        totalItems = 2,
                         folders = listOf(sampleFolder),
                         allApps = listOf(sampleApp)
-                    ),
-                    actions = actions
+                    )
                 )
             }
         }
@@ -155,21 +152,44 @@ class EditContainerManageItemsTest {
             AureoleLauncherTheme {
                 ManageItemRow(
                     params = ManageItemRowParams(
-                        index = 1,
                         item = unknownAppItem,
-                        totalItems = 2,
                         folders = emptyList(),
                         allApps = emptyList()
-                    ),
-                    actions = ManageItemRowActions(
-                        onMoveUp = {},
-                        onMoveDown = {},
-                        onRemove = {}
                     )
                 )
             }
         }
 
         composeTestRule.onNodeWithText("com.unknown").assertIsDisplayed()
+    }
+
+    @Test
+    fun `when items are listed, should reorder through the move action and remove with the badge`() {
+        val first = ContainerItemEntity(id = "a", panelId = "p1", itemType = ContainerItemType.APP, packageName = "one")
+        val second = ContainerItemEntity(
+            id = "b",
+            panelId = "p1",
+            itemType = ContainerItemType.APP,
+            packageName = "two"
+        )
+        val state = EditContainerState(
+            panel = ContainerModel(id = "p1"),
+            options = createDefaultOptionsState(),
+            itemsList = listOf(first, second),
+            folders = emptyList()
+        )
+
+        composeTestRule.setContent {
+            AureoleLauncherTheme {
+                ManageItemsContent(state = state, allApps = emptyList(), onBack = {})
+            }
+        }
+
+        composeTestRule.onAllNodes(SemanticsMatcher.keyIsDefined(SemanticsActions.CustomActions))[0]
+            .performCustomAccessibilityActionWithLabel("Move down")
+        assertEquals(listOf("b", "a"), state.itemsList.map { it.id })
+
+        composeTestRule.onAllNodesWithContentDescription("Remove")[0].performClick()
+        assertEquals(listOf("a"), state.itemsList.map { it.id })
     }
 }

@@ -17,6 +17,7 @@ import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
+import dev.mnascimentos.aureole.core.designsystem.utils.glassBlurRadius
 import dev.mnascimentos.aureole.feature.home.components.onboarding.model.OnboardingGlass
 
 private const val SOLID_SURFACE_ALPHA = 0.94f
@@ -34,7 +35,7 @@ fun OnboardingGlassCard(
             .hazeEffect(
                 state = hazeState,
                 style = HazeStyle(
-                    blurRadius = AureoleDS.dimens.large,
+                    blurRadius = glassBlurRadius(AureoleDS.dimens.large),
                     tint = HazeTint(AureoleDS.colors.surfaceVariant.copy(alpha = glass.hazeOpacity))
                 )
             )

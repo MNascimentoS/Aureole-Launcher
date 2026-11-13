@@ -7,6 +7,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.platform.LocalContext
 import com.android.tools.screenshot.PreviewTest
+import dev.mnascimentos.aureole.core.designsystem.model.LocalLeftHanded
 import dev.mnascimentos.aureole.core.data.model.AppFolder
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
@@ -30,6 +31,7 @@ private fun HomeScreenScreenshotTest() {
     AureoleLauncherTheme {
         CompositionLocalProvider(
             LocalHomeUiState provides sampleData.uiState,
+            LocalLeftHanded provides (sampleData.uiState).isLeftHandedMode,
             LocalHomeActions provides sampleData.actions
         ) {
             HomeScreen(appWidgetHost = AppWidgetHost(context, 1024))
@@ -54,6 +56,7 @@ private fun HomeScreenOpenedFolderGridModeScreenshotTest() {
     AureoleLauncherTheme {
         CompositionLocalProvider(
             LocalHomeUiState provides customUiState,
+            LocalLeftHanded provides customUiState.isLeftHandedMode,
             LocalHomeActions provides sampleData.actions
         ) {
             HomeScreen(appWidgetHost = AppWidgetHost(context, 1024))
@@ -78,6 +81,7 @@ private fun HomeScreenOpenedFolderPopupModeScreenshotTest() {
     AureoleLauncherTheme {
         CompositionLocalProvider(
             LocalHomeUiState provides customUiState,
+            LocalLeftHanded provides customUiState.isLeftHandedMode,
             LocalHomeActions provides sampleData.actions
         ) {
             HomeScreen(appWidgetHost = AppWidgetHost(context, 1024))
@@ -99,6 +103,7 @@ private fun HomeScreenGridEditModeScreenshotTest() {
     AureoleLauncherTheme {
         CompositionLocalProvider(
             LocalHomeUiState provides customUiState,
+            LocalLeftHanded provides customUiState.isLeftHandedMode,
             LocalHomeActions provides sampleData.actions
         ) {
             HomeScreen(appWidgetHost = AppWidgetHost(context, 1024))
@@ -123,6 +128,7 @@ private fun HomeScreenAppItemBottomSheetScreenshotTest() {
     AureoleLauncherTheme {
         CompositionLocalProvider(
             LocalHomeUiState provides customUiState,
+            LocalLeftHanded provides customUiState.isLeftHandedMode,
             LocalHomeActions provides sampleData.actions
         ) {
             HomeScreen(appWidgetHost = AppWidgetHost(context, 1024))
@@ -147,6 +153,7 @@ private fun HomeScreenContainerFolderBottomSheetScreenshotTest() {
     AureoleLauncherTheme {
         CompositionLocalProvider(
             LocalHomeUiState provides customUiState,
+            LocalLeftHanded provides customUiState.isLeftHandedMode,
             LocalHomeActions provides sampleData.actions
         ) {
             HomeScreen(appWidgetHost = AppWidgetHost(context, 1024))
@@ -172,6 +179,7 @@ private fun HomeScreenWidgetStackBottomSheetScreenshotTest() {
     AureoleLauncherTheme {
         CompositionLocalProvider(
             LocalHomeUiState provides customUiState,
+            LocalLeftHanded provides customUiState.isLeftHandedMode,
             LocalHomeActions provides sampleData.actions
         ) {
             HomeScreen(appWidgetHost = AppWidgetHost(context, 1024))
@@ -246,8 +254,7 @@ internal fun createSampleHomeData(): SampleHomeData {
         isLoading = false,
         isHazeEnabled = false,
         isContainerEnabled = true,
-        showFolderLabels = true,
-        showAllAppsOnHome = true
+        showFolderLabels = true
     )
 
     val actions = HomeScreenActions(

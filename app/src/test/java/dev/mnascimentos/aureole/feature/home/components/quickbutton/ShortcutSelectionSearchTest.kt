@@ -23,8 +23,10 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
+import org.robolectric.annotation.Config
 
 @RunWith(RobolectricTestRunner::class)
+@Config(qualifiers = "w411dp-h891dp")
 class ShortcutSelectionSearchTest {
 
     @get:Rule
@@ -115,9 +117,9 @@ class ShortcutSelectionSearchTest {
     }
 
     @Test
-    fun `open app row switches to apps only search`() {
+    fun `apps chip switches to apps only search`() {
         setSheet()
-        composeTestRule.onNodeWithText("Open App").performClick()
+        composeTestRule.onNodeWithText("Apps").performClick()
         type("cal")
 
         composeTestRule.onNodeWithText("Nothing with “cal”.").assertIsDisplayed()

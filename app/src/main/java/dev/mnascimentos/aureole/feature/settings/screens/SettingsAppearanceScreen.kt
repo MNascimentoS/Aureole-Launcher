@@ -1,5 +1,3 @@
-@file:Suppress("MagicNumber", "MaxLineLength")
-
 package dev.mnascimentos.aureole.feature.settings.screens
 
 import androidx.activity.compose.BackHandler
@@ -48,6 +46,7 @@ import dev.mnascimentos.aureole.core.designsystem.icons.Edit
 import dev.mnascimentos.aureole.core.designsystem.icons.Layout
 import dev.mnascimentos.aureole.core.designsystem.icons.StrokeColor
 import dev.mnascimentos.aureole.core.designsystem.icons.Text
+import dev.mnascimentos.aureole.core.designsystem.icons.Undo
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
@@ -55,6 +54,7 @@ import dev.mnascimentos.aureole.feature.settings.model.AppearanceDialogFlags
 import dev.mnascimentos.aureole.feature.settings.model.AppearanceMenuDialogActions
 import dev.mnascimentos.aureole.feature.settings.model.SettingsScreenActions
 import dev.mnascimentos.aureole.feature.settings.model.SettingsUiState
+import dev.mnascimentos.aureole.util.percentToFraction
 
 private const val BOTTOM_SPACER_RATIO = 0.15f
 
@@ -68,17 +68,7 @@ fun SettingsAppearanceScreen(
 ) {
     BackHandler(onBack = onNavigateBack)
 
-    var flags by remember {
-        mutableStateOf(
-            AppearanceDialogFlags(
-                showPalette = false,
-                showFont = false,
-                showSetBg = false,
-                showBlur = false,
-                showBorderRadius = false
-            )
-        )
-    }
+    var flags by remember { mutableStateOf(AppearanceDialogFlags()) }
 
     Scaffold(
         modifier = modifier,
@@ -97,7 +87,7 @@ fun SettingsAppearanceScreen(
             uiState = uiState,
             actions = actions,
             onDismissDialog = {
-                flags = AppearanceDialogFlags(showPalette = false, showFont = false, showSetBg = false, showBlur = false, showBorderRadius = false)
+                flags = AppearanceDialogFlags()
             }
         )
     }
@@ -116,7 +106,9 @@ private fun SettingsAppearanceContent(
             .fillMaxSize()
             .padding(innerPadding)
     ) {
-        val topSpacerHeight = (maxHeight * (uiState.headerOffsetPercent / 100f)).coerceAtLeast(AureoleDS.dimens.medium)
+        val topSpacerHeight = (maxHeight * uiState.headerOffsetPercent.percentToFraction()).coerceAtLeast(
+            AureoleDS.dimens.medium
+        )
         val bottomSpacerHeight = (maxHeight * BOTTOM_SPACER_RATIO).coerceAtLeast(AureoleDS.dimens.large)
 
         Column(
@@ -147,10 +139,9 @@ private fun SettingsAppearanceContent(
                 actions = actions,
                 dialogActions = AppearanceMenuDialogActions(
                     onShowSetBackgroundDialog = { onFlagsChanged(flags.copy(showSetBg = true)) },
-                    onShowBlurDialog = { onFlagsChanged(flags.copy(showBlur = true)) },
+                    onShowCardsGlassDialog = { onFlagsChanged(flags.copy(showCardsGlass = true)) },
                     onShowPaletteDialog = { onFlagsChanged(flags.copy(showPalette = true)) },
-                    onShowFontDialog = { onFlagsChanged(flags.copy(showFont = true)) },
-                    onShowBorderRadiusDialog = { onFlagsChanged(flags.copy(showBorderRadius = true)) }
+                    onShowFontDialog = { onFlagsChanged(flags.copy(showFont = true)) }
                 )
             )
 
@@ -176,13 +167,8 @@ private fun AppearanceMenuItems(
                 onClick = dialogActions.onShowSetBackgroundDialog
             )
         )
-        if (uiState.isCustomWallpaperSet) {
-            WallpaperScaleTypeRow(
-                scaleType = uiState.wallpaperScaleType,
-                onSelectScaleType = actions.onSelectWallpaperScaleType
-            )
-        }
-        GlassAndBlurRow(uiState = uiState, onClick = dialogActions.onShowBlurDialog)
+        if (uiState.isCustomWallpaperSet) CustomWallpaperItems(uiState = uiState, actions = actions)
+        GlassAndBlurRow(uiState = uiState, onClick = dialogActions.onShowCardsGlassDialog)
         SettingsMenuItem(
             SettingsMenuParams(
                 title = stringResource(R.string.settings_appearance_change_font),
@@ -211,7 +197,7 @@ private fun AppearanceMenuItems(
                 onClick = { actions.onOpenColorPickerDialog() }
             )
         )
-        ChangeBorderRow(cornerRadiusDp = uiState.cornerRadiusDp, onClick = dialogActions.onShowBorderRadiusDialog)
+        ChangeBorderRow(cornerRadiusDp = uiState.cornerRadiusDp, onClick = dialogActions.onShowCardsGlassDialog)
         SettingsToggleItem(
             title = stringResource(R.string.settings_appearance_themed_icons),
             checked = uiState.isThemedAppIconsEnabled,
@@ -219,6 +205,21 @@ private fun AppearanceMenuItems(
             leadingContent = { AureoleDS.icons.AppSelect() }
         )
     }
+}
+
+@Composable
+private fun CustomWallpaperItems(uiState: SettingsUiState, actions: SettingsScreenActions) {
+    SettingsMenuItem(
+        SettingsMenuParams(
+            title = stringResource(R.string.settings_appearance_restore_background),
+            leadingContent = { AureoleDS.icons.Undo() },
+            onClick = actions.onRestoreDefaultWallpaperClick
+        )
+    )
+    WallpaperScaleTypeRow(
+        scaleType = uiState.wallpaperScaleType,
+        onSelectScaleType = actions.onSelectWallpaperScaleType
+    )
 }
 
 @Composable

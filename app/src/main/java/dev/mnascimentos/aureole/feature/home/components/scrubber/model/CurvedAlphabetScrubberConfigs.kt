@@ -34,7 +34,9 @@ data class ScrubberOptions(
     /** Share of the parent height the letters take; the home keeps [ScrubberDimensions.SCRUBBER_HEIGHT_FRACTION]. */
     val heightFraction: Float = ScrubberDimensions.SCRUBBER_HEIGHT_FRACTION,
     /** Space kept under the letters; the home leaves room for its dock. */
-    val bottomPadding: Dp = ScrubberDimensions.PaddingBottom
+    val bottomPadding: Dp = ScrubberDimensions.PaddingBottom,
+    /** Draws a narrow pill behind the letters (the folder picker); the touch area keeps its full width. */
+    val hasPillBackground: Boolean = false
 )
 
 data class ScrubberRenderParams(
@@ -44,3 +46,10 @@ data class ScrubberRenderParams(
     val scrubberAlpha: Float,
     val alignment: Alignment
 )
+
+/**
+ * Alpha of one letter of the strip. The selected letter is drawn by the badge while a drag runs, so the strip
+ * hides its own copy and the letter shows once, in the right place, instead of twice on top of each other.
+ */
+fun scrubberLetterAlpha(isSelected: Boolean, isDragging: Boolean, scrubberAlpha: Float): Float =
+    if (isSelected && isDragging) 0f else scrubberAlpha

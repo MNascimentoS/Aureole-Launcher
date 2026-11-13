@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import com.android.tools.screenshot.PreviewTest
+import dev.mnascimentos.aureole.core.designsystem.model.LocalLeftHanded
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
@@ -46,6 +47,7 @@ private fun ContainerLayoutsScreenshotTest() {
     AureoleLauncherTheme {
         CompositionLocalProvider(
             LocalHomeUiState provides MainUiState(apps = listOf(sampleApp)),
+            LocalLeftHanded provides (MainUiState(apps = listOf(sampleApp))).isLeftHandedMode,
             LocalHomeActions provides mockHomeScreenActions()
         ) {
             Column {

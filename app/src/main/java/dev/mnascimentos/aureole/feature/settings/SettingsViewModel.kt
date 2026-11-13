@@ -2,11 +2,14 @@ package dev.mnascimentos.aureole.feature.settings
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import dev.mnascimentos.aureole.core.data.model.AppFolder
+import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.core.data.repository.AppRepository
 import dev.mnascimentos.aureole.core.data.repository.FolderRepository
 import dev.mnascimentos.aureole.core.data.repository.GridRepository
 import dev.mnascimentos.aureole.core.data.repository.SettingsRepository
+import dev.mnascimentos.aureole.core.designsystem.model.TextResource
+import dev.mnascimentos.aureole.core.designsystem.model.glassLevelOf
+import dev.mnascimentos.aureole.core.undo.UndoController
 import dev.mnascimentos.aureole.feature.settings.extensions.SettingsToggleManager
 import dev.mnascimentos.aureole.feature.settings.extensions.applySettingValue
 import dev.mnascimentos.aureole.feature.settings.extensions.checkDefaultLauncher
@@ -22,12 +25,12 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-@Suppress("TooManyFunctions") // Settings ViewModel manages multiple settings sections and state flows
 class SettingsViewModel(
     internal val settingsRepository: SettingsRepository,
     private val appRepository: AppRepository,
-    private val folderRepository: FolderRepository,
+    internal val folderRepository: FolderRepository,
     internal val gridRepository: GridRepository,
+    internal val undoController: UndoController = UndoController(),
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(SettingsUiState())
@@ -35,6 +38,11 @@ class SettingsViewModel(
 
     internal fun updateUiState(transform: (SettingsUiState) -> SettingsUiState) {
         _uiState.update(transform)
+    }
+
+    /** Publishes the controller's current offer (or none) to [uiState]. */
+    internal fun syncUndoState() {
+        _uiState.update { it.copy(undoSnackbar = undoController.state.value) }
     }
 
     init {
@@ -59,7 +67,6 @@ class SettingsViewModel(
                 containerPosition = settingsRepository.containerPosition,
                 showFolderLabels = settingsRepository.showFolderLabels,
                 homeButtonOpensAllApps = settingsRepository.homeButtonOpensAllApps,
-                showAllAppsOnHome = settingsRepository.showAllAppsOnHome,
                 isWidgetRowEnabled = settingsRepository.isWidgetRowEnabled,
                 showWidgetDots = settingsRepository.showWidgetDots,
                 favoriteAppPackages = settingsRepository.favoriteAppPackages,
@@ -72,6 +79,7 @@ class SettingsViewModel(
                 isHazeEnabled = settingsRepository.isHazeEnabled,
                 isHazeSupported = settingsRepository.isHazeSupported,
                 hazeOpacity = settingsRepository.hazeOpacity,
+                hazeBlurLevel = glassLevelOf(settingsRepository.hazeBlurLevel),
                 isInAppUpdateEnabled = settingsRepository.isInAppUpdateEnabled,
                 isThemedAppIconsEnabled = settingsRepository.isThemedAppIconsEnabled,
                 isAlphabetScrubberDisabled = settingsRepository.isAlphabetScrubberDisabled,
@@ -94,9 +102,7 @@ class SettingsViewModel(
             when (dialog) {
                 SettingsDialog.FAVORITE_PICKER -> it.copy(showFavoritePickerDialog = visible)
                 SettingsDialog.CONTAINER_POSITION -> it.copy(showContainerPositionDialog = visible)
-                SettingsDialog.HAZE_OPACITY -> it.copy(showHazeOpacityDialog = visible)
                 SettingsDialog.COLOR_PICKER -> it.copy(showColorPickerDialog = visible)
-                SettingsDialog.RESTORE_WALLPAPER -> it.copy(showRestoreWallpaperDialog = visible)
                 SettingsDialog.CREATE_FOLDER -> it.copy(showCreateFolderDialog = visible)
                 SettingsDialog.RESET_GRID -> it.copy(showResetGridDialog = visible)
                 SettingsDialog.FACTORY_RESET -> it.copy(showFactoryResetDialog = visible)
@@ -110,22 +116,10 @@ class SettingsViewModel(
         applySettingValue(value)
     }
 
-    @Suppress("MagicNumber") // Header offset clamping limit of 60 percent
     fun setHeaderOffsetPercent(percent: Int) {
-        val clamped = percent.coerceIn(0, 60)
+        val clamped = percent.coerceIn(0, MAX_HEADER_OFFSET_PERCENT)
         settingsRepository.headerOffsetPercent = clamped
         _uiState.update { it.copy(headerOffsetPercent = clamped) }
-    }
-
-    fun toggleFavorite(packageName: String) {
-        val current = _uiState.value.favoriteAppPackages.toMutableList()
-        if (current.contains(packageName)) {
-            current.remove(packageName)
-        } else {
-            current.add(packageName)
-        }
-        settingsRepository.favoriteAppPackages = current
-        _uiState.update { it.copy(favoriteAppPackages = current) }
     }
 
     fun setCustomWallpaper(uriString: String) {
@@ -144,21 +138,8 @@ class SettingsViewModel(
                 }
             } else {
                 _uiState.update {
-                    it.copy(errorMessage = "Não foi possível carregar a imagem selecionada")
+                    it.copy(errorMessage = TextResource.fromResId(R.string.settings_wallpaper_load_error))
                 }
-            }
-        }
-    }
-
-    fun createFolder(name: String) {
-        viewModelScope.launch {
-            val newFolder = AppFolder(name = name)
-            folderRepository.addFolder(newFolder)
-            _uiState.update {
-                it.copy(
-                    showCreateFolderDialog = false,
-                    shouldFinishActivity = true
-                )
             }
         }
     }
@@ -171,7 +152,7 @@ class SettingsViewModel(
         _uiState.update { it.copy(errorMessage = null) }
     }
 
-    companion object {
-        // ViewModel state helpers
+    private companion object {
+        const val MAX_HEADER_OFFSET_PERCENT = 60
     }
 }

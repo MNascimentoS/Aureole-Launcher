@@ -30,12 +30,6 @@ fun HomeViewModel.toggleHomeOpensAllApps() {
     updateUiState { it.copy(homeButtonOpensAllApps = newValue) }
 }
 
-fun HomeViewModel.toggleShowAllAppsOnHome() {
-    val newValue = !uiState.value.showAllAppsOnHome
-    settingsRepository.showAllAppsOnHome = newValue
-    updateUiState { it.copy(showAllAppsOnHome = newValue) }
-}
-
 fun HomeViewModel.setShowSettingsDialog(show: Boolean) {
     updateUiState { it.copy(showSettingsDialog = show) }
 }

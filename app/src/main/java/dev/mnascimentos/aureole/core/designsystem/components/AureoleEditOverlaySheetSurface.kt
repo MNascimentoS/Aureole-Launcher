@@ -99,8 +99,10 @@ internal fun SheetSurface(
             sheetContent = params.sheetContent,
             decorations = OverlaySheetDecorations(
                 headerIcon = config.headerIcon,
-                handle = {
-                    OverlaySheetHandle(
+                titleIcon = config.titleIcon,
+                edgeToEdgeContent = config.edgeToEdgeContent,
+                gestureZone = {
+                    OverlaySheetGestureZone(
                         isExpanded = isExpanded,
                         isLeftHanded = config.isLeftHanded,
                         onToggleExpanded = controller::toggle,

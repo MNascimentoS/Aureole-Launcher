@@ -8,12 +8,8 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Switch
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -24,8 +20,8 @@ import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
-import dev.mnascimentos.aureole.feature.home.model.LocalHomeUiState
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
+import dev.mnascimentos.aureole.feature.home.model.ProvideHomeUiState
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
@@ -63,68 +59,15 @@ internal fun EditClockBackgroundSection(
             horizontalArrangement = Arrangement.spacedBy(AureoleDS.dimens.smallCompact),
             verticalArrangement = Arrangement.spacedBy(AureoleDS.dimens.smallCompact)
         ) {
-            PRESET_BG_COLORS.forEach { (name, colorValue) ->
+            PRESET_BG_COLORS.forEach { (nameRes, colorValue) ->
                 EditClockColorSwatchItem(
-                    name = name,
+                    name = stringResource(nameRes),
                     colorValue = colorValue,
                     isSelected = uiState.clockBackgroundColor == colorValue,
                     onClick = { actions.onUpdateClockBackgroundColor(colorValue) }
                 )
             }
         }
-    }
-}
-
-/**
- * Footer of the clock editor. Right-handed: restore on the left, save on the right.
- * Left-handed: save on the left, under the thumb, and restore on the right.
- */
-@Composable
-internal fun EditClockActionButtons(
-    actions: HomeScreenActions,
-    isLeftHanded: Boolean,
-    onDismissRequest: () -> Unit,
-    onResetGreeting: () -> Unit
-) {
-    val onReset = {
-        actions.onResetClockSettings()
-        onResetGreeting()
-    }
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        if (isLeftHanded) {
-            EditClockSaveButton(onClick = onDismissRequest)
-            EditClockResetButton(onClick = onReset)
-        } else {
-            EditClockResetButton(onClick = onReset)
-            EditClockSaveButton(onClick = onDismissRequest)
-        }
-    }
-}
-
-@Composable
-private fun EditClockResetButton(onClick: () -> Unit) {
-    TextButton(onClick = onClick) {
-        AureoleText(
-            text = stringResource(R.string.home_clock_reset_defaults),
-            color = AureoleDS.colors.error
-        )
-    }
-}
-
-@Composable
-private fun EditClockSaveButton(onClick: () -> Unit) {
-    Button(
-        onClick = onClick,
-        colors = ButtonDefaults.buttonColors(
-            containerColor = AureoleDS.colors.onSurfaceHigh,
-            contentColor = AureoleDS.colors.surface
-        )
-    ) {
-        AureoleText(stringResource(R.string.home_container_edit_save), color = AureoleDS.colors.surface)
     }
 }
 
@@ -150,7 +93,7 @@ private fun EditClockBottomSheetPreview() {
         onSaveGridEditMode = {}
     )
     AureoleLauncherTheme {
-        CompositionLocalProvider(LocalHomeUiState provides uiState) {
+        ProvideHomeUiState(uiState) {
             EditClockBottomSheet(
                 uiState = uiState,
                 actions = actions,

@@ -1,6 +1,10 @@
 package dev.mnascimentos.aureole.core.designsystem.components
 
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.v2.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
@@ -113,5 +117,27 @@ class AureoleEditOverlayTest {
 
         composeTestRule.onNodeWithText("Stateful Overlay").assertIsDisplayed()
         composeTestRule.onNodeWithText("Stateful Sheet Content").assertIsDisplayed()
+    }
+
+    @Test
+    fun `when overlay sits in a parent with unbounded height, should measure without crashing`() {
+        composeTestRule.setContent {
+            AureoleLauncherTheme {
+                Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
+                    AureoleEditOverlay(
+                        onDismissRequest = {},
+                        params = AureoleEditOverlayParams(
+                            config = AureoleEditOverlayConfig(title = "Unbounded Title", animated = false),
+                            previewContent = { Text("Unbounded Preview") },
+                            sheetContent = { Text("Unbounded Sheet") }
+                        )
+                    )
+                }
+            }
+        }
+
+        composeTestRule.onNodeWithText("Unbounded Title").assertExists()
+        composeTestRule.onNodeWithText("Unbounded Preview").assertExists()
+        composeTestRule.onNodeWithText("Unbounded Sheet").assertExists()
     }
 }

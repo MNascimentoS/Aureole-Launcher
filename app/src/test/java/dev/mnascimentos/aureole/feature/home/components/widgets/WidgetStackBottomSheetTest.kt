@@ -35,8 +35,9 @@ class WidgetStackBottomSheetTest {
                         onEditStack = {},
                         onToggleDots = {},
                         onRemoveStack = {},
-                    )
-                ) { }
+                    ),
+                    onDismiss = {}
+                )
             }
         }
         advanceAnimation()
@@ -69,7 +70,7 @@ class WidgetStackBottomSheetTest {
         advanceAnimation()
 
         composeTestRule.onNodeWithText("Resize Group").performClick()
-
+        advanceAnimation()
         assertTrue(editCalled)
         assertTrue(dismissed)
     }
@@ -96,7 +97,7 @@ class WidgetStackBottomSheetTest {
         advanceAnimation()
 
         composeTestRule.onNodeWithText("Toggle Position Indicator").performClick()
-
+        advanceAnimation()
         assertEquals("stack_abc", toggledStackId)
         assertTrue(dismissed)
     }
@@ -123,7 +124,7 @@ class WidgetStackBottomSheetTest {
         advanceAnimation()
 
         composeTestRule.onNodeWithText("Remove").performClick()
-
+        advanceAnimation()
         assertTrue(removeCalled)
         assertTrue(dismissed)
     }

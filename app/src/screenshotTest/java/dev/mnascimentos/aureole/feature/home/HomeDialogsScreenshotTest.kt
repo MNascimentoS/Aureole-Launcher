@@ -3,22 +3,18 @@ package dev.mnascimentos.aureole.feature.home
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import com.android.tools.screenshot.PreviewTest
+import dev.mnascimentos.aureole.core.designsystem.model.LocalLeftHanded
 import dev.mnascimentos.aureole.composable.dialogs.CreateFolderDialog
 import dev.mnascimentos.aureole.composable.dialogs.FolderFormDialog
 import dev.mnascimentos.aureole.composable.favorites.FavoriteAppsDialog
 import dev.mnascimentos.aureole.composable.favorites.model.FavoriteAppsDialogActions
 import dev.mnascimentos.aureole.composable.favorites.model.FavoriteAppsDialogConfig
-import dev.mnascimentos.aureole.composable.sheets.ReleaseNotesBottomSheet
 import dev.mnascimentos.aureole.core.data.model.AppFolder
 import dev.mnascimentos.aureole.core.data.model.ContainerItemEntity
 import dev.mnascimentos.aureole.core.data.model.ContainerItemType
 import dev.mnascimentos.aureole.core.data.model.ContainerModel
 import dev.mnascimentos.aureole.core.data.model.LauncherItemState
 import dev.mnascimentos.aureole.core.data.model.LauncherItemType
-import dev.mnascimentos.aureole.core.data.model.ReleaseNoteItem
-import dev.mnascimentos.aureole.core.data.model.ReleaseNoteSection
-import dev.mnascimentos.aureole.core.data.model.ReleaseNoteType
-import dev.mnascimentos.aureole.core.data.model.ReleaseNoteVersion
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.components.clock.EditClockBottomSheet
@@ -31,10 +27,6 @@ import dev.mnascimentos.aureole.feature.home.components.containers.folder.Folder
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.ContainerFolderBottomSheetParams
 import dev.mnascimentos.aureole.feature.home.components.containers.model.EditContainerScreenParams
 import dev.mnascimentos.aureole.feature.home.components.overlays.CustomizeBottomSheet
-import dev.mnascimentos.aureole.feature.home.components.overlays.StandardUpdateAlertDialog
-import dev.mnascimentos.aureole.feature.home.components.overlays.UpdateAvailableDialog
-import dev.mnascimentos.aureole.feature.home.components.overlays.UpdateDownloadedDialog
-import dev.mnascimentos.aureole.feature.home.components.overlays.model.UpdateDialogContentParams
 import dev.mnascimentos.aureole.feature.home.components.widgets.EditWidgetGroupScreen
 import dev.mnascimentos.aureole.feature.home.components.widgets.WidgetSelectorScreen
 import dev.mnascimentos.aureole.feature.home.components.widgets.WidgetStackBottomSheet
@@ -49,6 +41,8 @@ import dev.mnascimentos.aureole.feature.home.grid.AddContainerDialog
 import dev.mnascimentos.aureole.feature.home.grid.EditGridItemDialog
 import dev.mnascimentos.aureole.feature.home.model.LocalHomeActions
 import dev.mnascimentos.aureole.feature.home.model.LocalHomeUiState
+import dev.mnascimentos.aureole.feature.home.model.ProvideHomeUiState
+import dev.mnascimentos.aureole.feature.home.model.MainUiState
 
 @PreviewTest
 @AureolePreview
@@ -63,7 +57,7 @@ private fun FavoriteAppsDialogScreenshotTest() {
         onDismiss = {}
     )
     AureoleLauncherTheme {
-        CompositionLocalProvider(LocalHomeUiState provides sampleData.uiState) {
+        ProvideHomeUiState(sampleData.uiState) {
             FavoriteAppsDialog(config = config, actions = actions)
         }
     }
@@ -94,6 +88,7 @@ private fun EditContainerDialogScreenshotTest() {
     AureoleLauncherTheme {
         CompositionLocalProvider(
             LocalHomeUiState provides sampleData.uiState,
+            LocalLeftHanded provides (sampleData.uiState).isLeftHandedMode,
             LocalHomeActions provides sampleData.actions
         ) {
             EditGridItemDialog(
@@ -114,6 +109,26 @@ private fun AddContainerDialogScreenshotTest() {
             onDismissRequest = {},
             onSelectType = {}
         )
+    }
+}
+
+@PreviewTest
+@AureolePreview
+@Composable
+private fun AddContainerDialogLeftHandedScreenshotTest() {
+    ProvideHomeUiState(MainUiState(isLeftHandedMode = true)) {
+        AureoleLauncherTheme {
+            AddContainerDialog(onDismissRequest = {}, onSelectType = {})
+        }
+    }
+}
+
+@PreviewTest
+@AureolePreview
+@Composable
+private fun AddContainerNestedDialogScreenshotTest() {
+    AureoleLauncherTheme {
+        AddContainerDialog(onDismissRequest = {}, onSelectType = {}, isNested = true)
     }
 }
 
@@ -162,83 +177,11 @@ private fun FolderAppPickerDialogScreenshotTest() {
 @PreviewTest
 @AureolePreview
 @Composable
-private fun UpdateAvailableDialogScreenshotTest() {
-    AureoleLauncherTheme {
-        UpdateAvailableDialog(
-            onConfirmUpdate = {},
-            onDismiss = {}
-        )
-    }
-}
-
-@PreviewTest
-@AureolePreview
-@Composable
-private fun UpdateDownloadedDialogScreenshotTest() {
-    AureoleLauncherTheme {
-        UpdateDownloadedDialog(
-            onConfirmRestart = {},
-            onDismiss = {}
-        )
-    }
-}
-
-@PreviewTest
-@AureolePreview
-@Composable
-private fun ReleaseNotesBottomSheetScreenshotTest() {
-    val sampleReleaseNoteVersion = ReleaseNoteVersion(
-        versionName = "0.6.13",
-        releaseDate = "14/10/2026",
-        isCurrent = true,
-        sections = listOf(
-            ReleaseNoteSection(
-                title = "Novidades & Recursos",
-                items = listOf(
-                    ReleaseNoteItem(
-                        title = "Nova Tela de Edição de Container",
-                        description = "Interface de personalização em tela cheia com pré-visualização em tempo real e seções dedicadas para Aparência, Comportamento e Componentes.",
-                        type = ReleaseNoteType.FEATURE
-                    ),
-                    ReleaseNoteItem(
-                        title = "Modo de Pastas em Grade (Grid Folders)",
-                        description = "Suporte para exibir miniaturas de ícones 2x2 no container e abrir o menu expansível de pastas em formato de grade.",
-                        type = ReleaseNoteType.FEATURE
-                    )
-                )
-            ),
-            ReleaseNoteSection(
-                title = "Melhorias de Interface & Experiência",
-                items = listOf(
-                    ReleaseNoteItem(
-                        title = "Melhorias de Performance",
-                        description = "Otimizações gerais no carregamento da tela inicial.",
-                        type = ReleaseNoteType.IMPROVEMENT
-                    )
-                )
-            )
-        )
-    )
-
-    AureoleLauncherTheme {
-        ReleaseNotesBottomSheet(
-            onDismissRequest = {},
-            allVersions = listOf(
-                sampleReleaseNoteVersion,
-                sampleReleaseNoteVersion.copy(versionName = "0.5.13", isCurrent = false),
-                sampleReleaseNoteVersion.copy(versionName = "0.3.13", isCurrent = false)
-            )
-        )
-    }
-}
-
-@PreviewTest
-@AureolePreview
-@Composable
 private fun CustomizeBottomSheetScreenshotTest() {
     val sampleData = createSampleHomeData()
     AureoleLauncherTheme {
         CustomizeBottomSheet(
+            uiState = sampleData.uiState,
             actions = sampleData.actions,
             onDismissRequest = {}
         )
@@ -251,7 +194,7 @@ private fun CustomizeBottomSheetScreenshotTest() {
 private fun EditClockBottomSheetScreenshotTest() {
     val sampleData = createSampleHomeData()
     AureoleLauncherTheme {
-        CompositionLocalProvider(LocalHomeUiState provides sampleData.uiState) {
+        ProvideHomeUiState(sampleData.uiState) {
             EditClockBottomSheet(
                 uiState = sampleData.uiState,
                 actions = sampleData.actions,
@@ -291,7 +234,7 @@ private fun WidgetPickerBottomSheetScreenshotTest() {
         expandedAppIds = setOf("com.example.calendar")
     )
     AureoleLauncherTheme {
-        CompositionLocalProvider(LocalHomeUiState provides sampleData.uiState) {
+        ProvideHomeUiState(sampleData.uiState) {
             WidgetSelectorScreen(
                 params = WidgetSelectorScreenParams(
                     state = sampleState,
@@ -310,7 +253,7 @@ private fun WidgetPickerBottomSheetScreenshotTest() {
 private fun FolderDialogScreenshotTest() {
     val sampleData = createSampleHomeData()
     AureoleLauncherTheme {
-        CompositionLocalProvider(LocalHomeUiState provides sampleData.uiState) {
+        ProvideHomeUiState(sampleData.uiState) {
             FolderDialog(
                 folder = sampleData.folders.first(),
                 allApps = sampleData.apps,
@@ -354,6 +297,7 @@ private fun EditContainerScreenScreenshotTest() {
     AureoleLauncherTheme {
         CompositionLocalProvider(
             LocalHomeUiState provides sampleData.uiState,
+            LocalLeftHanded provides (sampleData.uiState).isLeftHandedMode,
             LocalHomeActions provides sampleData.actions
         ) {
             EditContainerScreen(
@@ -408,6 +352,7 @@ private fun EditContainerHorizontalScreenScreenshotTest() {
     AureoleLauncherTheme {
         CompositionLocalProvider(
             LocalHomeUiState provides sampleData.uiState,
+            LocalLeftHanded provides (sampleData.uiState).isLeftHandedMode,
             LocalHomeActions provides sampleData.actions
         ) {
             EditContainerScreen(
@@ -422,10 +367,8 @@ private fun EditContainerHorizontalScreenScreenshotTest() {
     }
 }
 
-@PreviewTest
-@AureolePreview
 @Composable
-private fun EditWidgetGroupScreenScreenshotTest() {
+private fun EditWidgetGroupCase(isLeftHanded: Boolean, widgets: List<Int> = listOf(1, 2, 3)) {
     val sampleData = createSampleHomeData()
     val item = LauncherItemState(
         id = "widget_group_1",
@@ -436,11 +379,14 @@ private fun EditWidgetGroupScreenScreenshotTest() {
         rowSpan = 2
     )
     AureoleLauncherTheme {
-        CompositionLocalProvider(LocalHomeUiState provides sampleData.uiState) {
+        CompositionLocalProvider(
+            LocalHomeUiState provides sampleData.uiState.copy(isLeftHandedMode = isLeftHanded),
+            LocalLeftHanded provides (sampleData.uiState.copy(isLeftHandedMode = isLeftHanded)).isLeftHandedMode
+        ) {
             EditWidgetGroupScreen(
                 params = EditWidgetGroupParams(
                     item = item,
-                    widgets = listOf(1, 2),
+                    widgets = widgets,
                     appWidgetHost = null,
                     isIndicatorEnabled = true
                 ),
@@ -458,13 +404,31 @@ private fun EditWidgetGroupScreenScreenshotTest() {
 @PreviewTest
 @AureolePreview
 @Composable
+private fun EditWidgetGroupScreenScreenshotTest() = EditWidgetGroupCase(isLeftHanded = false)
+
+@PreviewTest
+@AureolePreview
+@Composable
+private fun EditWidgetGroupScreenLeftHandedScreenshotTest() = EditWidgetGroupCase(isLeftHanded = true)
+
+/** Two widgets: both cards and the "+" card at the end fit across the screen. */
+@PreviewTest
+@AureolePreview
+@Composable
+private fun EditWidgetGroupScreenTwoWidgetsScreenshotTest() =
+    EditWidgetGroupCase(isLeftHanded = false, widgets = listOf(1, 2))
+
+@PreviewTest
+@AureolePreview
+@Composable
 private fun ContainerFolderBottomSheetScreenshotTest() {
     val params = ContainerFolderBottomSheetParams(
         onEditShortcuts = {},
         onRename = {},
         onIcon = {},
         onRemoveFolder = {},
-        onOpenContainerSettings = {}
+        onOpenContainerSettings = {},
+        onOpenSettings = {}
     )
     AureoleLauncherTheme {
         ContainerFolderBottomSheet(
@@ -510,23 +474,6 @@ private fun FolderFormDialogScreenshotTest() {
             onSave = { _, _ -> },
             onDelete = {}
         )
-    }
-}
-
-@PreviewTest
-@AureolePreview
-@Composable
-private fun StandardUpdateAlertDialogScreenshotTest() {
-    val params = UpdateDialogContentParams(
-        title = "Nova atualização disponível",
-        body = "Uma nova versão do Aureole Launcher está disponível com melhorias.",
-        confirmLabel = "Atualizar",
-        dismissLabel = "Cancelar",
-        onConfirm = {},
-        onDismiss = {}
-    )
-    AureoleLauncherTheme {
-        StandardUpdateAlertDialog(params = params)
     }
 }
 

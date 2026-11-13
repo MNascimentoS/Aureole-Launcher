@@ -1,6 +1,5 @@
 package dev.mnascimentos.aureole.feature.home.components.clock
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Spacer
@@ -9,7 +8,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -21,7 +19,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.stringResource
@@ -46,22 +43,22 @@ import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.launch
 
 internal val PRESET_TEXT_COLORS = listOf(
-    Pair("Padrão", 0),
-    Pair("Azul Gelado", 0xFF90CAF9.toInt()),
-    Pair("Lavanda", 0xFFE1BEE7.toInt()),
-    Pair("Branco", 0xFFFFFFFF.toInt()),
-    Pair("Ouro", 0xFFFFE082.toInt()),
-    Pair("Menta", 0xFFA5D6A7.toInt()),
-    Pair("Coral", 0xFFFFAB91.toInt())
+    Pair(R.string.home_clock_color_default, 0),
+    Pair(R.string.home_clock_color_ice_blue, 0xFF90CAF9.toInt()),
+    Pair(R.string.home_clock_color_lavender, 0xFFE1BEE7.toInt()),
+    Pair(R.string.home_clock_color_white, 0xFFFFFFFF.toInt()),
+    Pair(R.string.home_clock_color_gold, 0xFFFFE082.toInt()),
+    Pair(R.string.home_clock_color_mint, 0xFFA5D6A7.toInt()),
+    Pair(R.string.home_clock_color_coral, 0xFFFFAB91.toInt())
 )
 
 internal val PRESET_BG_COLORS = listOf(
-    Pair("Padrão", 0),
-    Pair("Escuro Slate", 0xFF1E2124.toInt()),
-    Pair("Roxo Profundo", 0xFF281C74.toInt()),
-    Pair("Azul Noturno", 0xFF1A237E.toInt()),
-    Pair("Vinho", 0xFF4A148C.toInt()),
-    Pair("Verde Escuro", 0xFF1B5E20.toInt())
+    Pair(R.string.home_clock_color_default, 0),
+    Pair(R.string.home_clock_bg_color_dark_slate, 0xFF1E2124.toInt()),
+    Pair(R.string.home_clock_bg_color_deep_purple, 0xFF281C74.toInt()),
+    Pair(R.string.home_clock_bg_color_night_blue, 0xFF1A237E.toInt()),
+    Pair(R.string.home_clock_bg_color_wine, 0xFF4A148C.toInt()),
+    Pair(R.string.home_clock_bg_color_dark_green, 0xFF1B5E20.toInt())
 )
 
 private const val DISMISS_DELAY_MS = 300L
@@ -96,17 +93,14 @@ internal fun EditClockOverlay(
 ) {
     var isVisible by remember { mutableStateOf(true) }
 
-    if (!isVisible) {
-        LaunchedEffect(isVisible) {
+    LaunchedEffect(isVisible) {
+        if (!isVisible) {
             delay(DISMISS_DELAY_MS)
             onDismissRequest()
         }
     }
 
-    var tempCustomGreeting by remember(uiState.clockCustomGreeting) {
-        mutableStateOf(uiState.clockCustomGreeting)
-    }
-
+    var tempCustomGreeting by remember(uiState.clockCustomGreeting) { mutableStateOf(uiState.clockCustomGreeting) }
     val pagerState = rememberClockPagerState(options.initialTab)
     val effectiveHazeState = if (uiState.isHazeEnabled) options.hazeState else null
 
@@ -120,8 +114,8 @@ internal fun EditClockOverlay(
                 onSettingsClick = { actions.onSettingsClick() },
                 hazeState = effectiveHazeState,
                 isVisible = isVisible,
-                animated = true,
-                isLeftHanded = uiState.isLeftHandedMode
+                isLeftHanded = uiState.isLeftHandedMode,
+                edgeToEdgeContent = true
             ),
             previewContent = {
                 EditClockPreviewCard(
@@ -131,13 +125,7 @@ internal fun EditClockOverlay(
                 )
             },
             bottomBarContent = {
-                EditClockFooter(
-                    pagerState = pagerState,
-                    actions = actions,
-                    isLeftHanded = uiState.isLeftHandedMode,
-                    onSave = { isVisible = false },
-                    onResetGreeting = { tempCustomGreeting = "" }
-                )
+                EditClockFooter(pagerState = pagerState)
             },
             sheetContent = {
                 EditClockPager(
@@ -145,11 +133,13 @@ internal fun EditClockOverlay(
                     params = EditClockPagerParams(
                         uiState = uiState,
                         actions = actions,
+                        isExpanded = options.overlayState.isExpanded,
                         tempCustomGreeting = tempCustomGreeting,
                         onGreetingChange = {
                             tempCustomGreeting = it
                             actions.onUpdateClockCustomGreeting(it)
-                        }
+                        },
+                        nowMillis = options.nowMillis
                     )
                 )
             }
@@ -170,16 +160,13 @@ private fun rememberClockPagerState(initialTab: ClockTab): PagerState {
     return pagerState
 }
 
-/** Footer: tabs fixed above the action buttons. */
+/** Footer: tabs fixed below the preview. */
 @Composable
 private fun ColumnScope.EditClockFooter(
-    pagerState: PagerState,
-    actions: HomeScreenActions,
-    isLeftHanded: Boolean,
-    onSave: () -> Unit,
-    onResetGreeting: () -> Unit
+    pagerState: PagerState
 ) {
     val scope = rememberCoroutineScope()
+    Spacer(modifier = Modifier.height(AureoleDS.dimens.xSmall))
     EditClockTabBar(
         selected = ClockTab.resolve(
             currentPage = pagerState.currentPage,
@@ -189,12 +176,6 @@ private fun ColumnScope.EditClockFooter(
         onTabSelected = { tab -> scope.launch { pagerState.animateScrollToPage(tab.index) } }
     )
     Spacer(modifier = Modifier.height(AureoleDS.dimens.xSmall))
-    EditClockActionButtons(
-        actions = actions,
-        isLeftHanded = isLeftHanded,
-        onDismissRequest = onSave,
-        onResetGreeting = onResetGreeting
-    )
 }
 
 @Composable
@@ -206,9 +187,6 @@ private fun EditClockPreviewCard(
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(AureoleDS.dimens.medium)
-            .clip(RoundedCornerShape(AureoleDS.dimens.radiusMediumLarge))
-            .background(AureoleDS.colors.surfaceVariant.copy(alpha = 0.85f))
             .padding(AureoleDS.dimens.medium),
         contentAlignment = Alignment.Center
     ) {

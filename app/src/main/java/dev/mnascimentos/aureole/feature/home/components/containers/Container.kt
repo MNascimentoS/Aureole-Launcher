@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import dev.chrisbanes.haze.HazeState
@@ -15,6 +16,7 @@ import dev.mnascimentos.aureole.core.data.model.AppFolder
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
+import dev.mnascimentos.aureole.core.designsystem.utils.glassBlurRadius
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.FolderPopupMetrics
 import dev.mnascimentos.aureole.feature.home.components.containers.model.ContainerColumnConfig
 import dev.mnascimentos.aureole.feature.home.components.containers.model.ContainerConfig
@@ -26,6 +28,8 @@ private const val CONTAINER_MIN_ALPHA = 0.2f
 private const val CONTAINER_MAX_ALPHA = 0.95f
 private const val CONTAINER_DEFAULT_ALPHA = 0.95f
 
+@Composable
+@ReadOnlyComposable
 private fun Modifier.hazeModifier(
     hasHaze: Boolean,
     hazeState: HazeState?,
@@ -37,7 +41,7 @@ private fun Modifier.hazeModifier(
             Modifier.hazeEffect(
                 state = hazeState,
                 style = HazeStyle(
-                    blurRadius = FolderPopupMetrics.HazeBlurRadius,
+                    blurRadius = glassBlurRadius(FolderPopupMetrics.HazeBlurRadius),
                     tint = HazeTint(surfaceColor.copy(alpha = hazeOpacity))
                 )
             ) {

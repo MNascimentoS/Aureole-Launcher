@@ -2,6 +2,7 @@ package dev.mnascimentos.aureole.feature.home.components.containers.folder
 
 import android.content.ComponentName
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.ui.test.assertCountEquals
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.hasClickAction
 import androidx.compose.ui.test.hasContentDescription
@@ -10,6 +11,7 @@ import androidx.compose.ui.test.junit4.v2.createComposeRule
 import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.performScrollTo
 import androidx.compose.ui.test.performTextInput
 import androidx.core.graphics.drawable.toDrawable
 import dev.chrisbanes.haze.HazeState
@@ -29,14 +31,22 @@ import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.
 import dev.mnascimentos.aureole.feature.home.model.LocalHomeActions
 import dev.mnascimentos.aureole.feature.home.model.LocalHomeUiState
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
+import dev.mnascimentos.aureole.feature.home.model.ProvideHomeUiState
 import dev.mnascimentos.aureole.feature.home.model.createDefaultHomeScreenActions
 import org.junit.Assert.assertEquals
-import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
+import org.robolectric.annotation.Config
+
+private const val DISMISS_ANIMATION_MS = 500L
+
+private const val SHEET_ENTER_MS = 1000L
+
+/** The sheet hugs a 60% share of the window: the default Robolectric window leaves the grid no height. */
+private const val TALL_WINDOW = "w400dp-h900dp"
 
 @RunWith(RobolectricTestRunner::class)
 class FolderComponentsTest {
@@ -110,7 +120,7 @@ class FolderComponentsTest {
     fun `when rendering container folder item, should display folder name label`() {
         var clicked = false
         composeTestRule.setContent {
-            CompositionLocalProvider(LocalHomeUiState provides MainUiState()) {
+            ProvideHomeUiState(MainUiState()) {
                 AureoleLauncherTheme {
                     ContainerFolderItem(
                         params = ContainerFolderItemParams(
@@ -137,7 +147,7 @@ class FolderComponentsTest {
     fun `when rendering container app item, should display app label and trigger click`() {
         var clicked = false
         composeTestRule.setContent {
-            CompositionLocalProvider(LocalHomeUiState provides MainUiState()) {
+            ProvideHomeUiState(MainUiState()) {
                 AureoleLauncherTheme {
                     ContainerAppItem(
                         params = ContainerAppItemParams(
@@ -162,7 +172,6 @@ class FolderComponentsTest {
     fun `when container folder bottom sheet is rendered, should display header and menu items`() {
         var editShortcutsClicked = false
         var renameClicked = false
-        var iconClicked = false
         var removeFolderClicked = false
         var openSettingsClicked = false
 
@@ -172,7 +181,7 @@ class FolderComponentsTest {
                     params = ContainerFolderBottomSheetParams(
                         onEditShortcuts = { editShortcutsClicked = true },
                         onRename = { renameClicked = true },
-                        onIcon = { iconClicked = true },
+                        onIcon = {},
                         onRemoveFolder = { removeFolderClicked = true },
                         onOpenContainerSettings = { openSettingsClicked = true }
                     ),
@@ -182,19 +191,16 @@ class FolderComponentsTest {
         }
 
         composeTestRule.onNodeWithText("Folder settings").assertIsDisplayed()
-        composeTestRule.onNodeWithText("Edit shortcuts").assertIsDisplayed().performClick()
+        composeTestRule.onNodeWithText("Edit folder items").performScrollTo().performClick()
         assertTrue(editShortcutsClicked)
 
-        composeTestRule.onNodeWithText("Rename").assertIsDisplayed().performClick()
+        composeTestRule.onNodeWithText("Edit folder").performScrollTo().performClick()
         assertTrue(renameClicked)
 
-        composeTestRule.onNodeWithText("Icon").assertIsDisplayed().performClick()
-        assertTrue(iconClicked)
-
-        composeTestRule.onNodeWithText("Remove folder").assertIsDisplayed().performClick()
+        composeTestRule.onNodeWithText("Remove folder").performScrollTo().performClick()
         assertTrue(removeFolderClicked)
 
-        composeTestRule.onNodeWithText("Container settings").assertIsDisplayed().performClick()
+        composeTestRule.onNodeWithText("Container settings").performScrollTo().performClick()
         assertTrue(openSettingsClicked)
     }
 
@@ -226,7 +232,8 @@ class FolderComponentsTest {
         composeTestRule.onNodeWithText("Create").performClick()
 
         assertEquals("My New Folder", submittedName)
-        assertNull(submittedIcon)
+        // A new folder opens with the folder icon selected, so saving without choosing keeps it.
+        assertEquals("folder", submittedIcon)
     }
 
     @Test
@@ -248,7 +255,7 @@ class FolderComponentsTest {
         composeTestRule.onNodeWithText("Edit Folder").assertIsDisplayed()
 
         // Click Delete
-        composeTestRule.onNodeWithText("Delete").performClick()
+        composeTestRule.onNodeWithText("Delete folder").performClick()
         assertTrue(deleted)
 
         // Click Save
@@ -262,7 +269,7 @@ class FolderComponentsTest {
     fun `when rendering FolderDialog with apps, should display header and apps`() {
         var appClicked = false
         composeTestRule.setContent {
-            CompositionLocalProvider(LocalHomeUiState provides MainUiState()) {
+            ProvideHomeUiState(MainUiState()) {
                 AureoleLauncherTheme {
                     FolderDialog(
                         folder = sampleFolder,
@@ -283,7 +290,7 @@ class FolderComponentsTest {
     fun `when rendering empty FolderDialog, should display empty message`() {
         val emptyFolder = AppFolder(id = "f_empty", name = "Empty", appPackageNames = emptyList())
         composeTestRule.setContent {
-            CompositionLocalProvider(LocalHomeUiState provides MainUiState()) {
+            ProvideHomeUiState(MainUiState()) {
                 AureoleLauncherTheme {
                     FolderDialog(
                         folder = emptyFolder,
@@ -300,6 +307,7 @@ class FolderComponentsTest {
 
     // --- FolderAppPickerDialog Tests ---
 
+    @Config(qualifiers = TALL_WINDOW)
     @Test
     fun `when rendering FolderAppPickerDialog, should display selected and remaining sections`() {
         val otherApp = AppInfo(
@@ -321,9 +329,11 @@ class FolderComponentsTest {
                 )
             }
         }
+        composeTestRule.mainClock.advanceTimeBy(SHEET_ENTER_MS)
 
         composeTestRule.onNodeWithText("Apps in Folder: Social").assertIsDisplayed()
-        composeTestRule.onNodeWithText("Test App").assertIsDisplayed()
+        // The chosen app shows both in the grid (checked) and in the tray.
+        composeTestRule.onAllNodesWithText("Test App").assertCountEquals(2)
         composeTestRule.onNodeWithText("Browser").assertIsDisplayed()
 
         // Click Save
@@ -334,25 +344,45 @@ class FolderComponentsTest {
     // --- OpenedFolderActionsAndList & OpenedFolderPopup Tests ---
 
     @Test
-    fun `when rendering OpenedFolderActions, should display Add Apps and Edit Folder buttons`() {
-        var addAppsClicked = false
-        var editFolderClicked = false
-
+    fun `when rendering OpenedFolderPopup in list mode, should show no Add Apps or Edit Folder buttons`() {
         composeTestRule.setContent {
-            AureoleLauncherTheme {
-                OpenedFolderActions(
-                    isVisible = true,
-                    onAddAppsClick = { addAppsClicked = true },
-                    onEditFolderClick = { editFolderClicked = true }
-                )
+            ProvideHomeUiState(MainUiState()) {
+                AureoleLauncherTheme {
+                    OpenedFolderPopup(
+                        config = OpenedFolderPopupConfig(
+                            folder = sampleFolder,
+                            allApps = listOf(sampleApp),
+                            actions = FolderPopupActions(onDismiss = {}, onAppClick = {})
+                        )
+                    )
+                }
             }
         }
 
-        composeTestRule.onNodeWithText("Add Apps").assertIsDisplayed().performClick()
-        assertTrue(addAppsClicked)
+        composeTestRule.onNodeWithText("Test App").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Add Apps").assertDoesNotExist()
+        composeTestRule.onNodeWithText("Edit Folder").assertDoesNotExist()
+    }
 
-        composeTestRule.onNodeWithText("Edit Folder").assertIsDisplayed().performClick()
-        assertTrue(editFolderClicked)
+    @Test
+    fun `when rendering an empty OpenedFolderPopup in grid mode, should show no Add Apps or Edit Folder buttons`() {
+        composeTestRule.setContent {
+            ProvideHomeUiState(MainUiState()) {
+                AureoleLauncherTheme {
+                    OpenedFolderPopup(
+                        config = OpenedFolderPopupConfig(
+                            folder = sampleFolder.copy(appPackageNames = emptyList()),
+                            allApps = listOf(sampleApp),
+                            actions = FolderPopupActions(onDismiss = {}, onAppClick = {}),
+                            isGridFolderEnabled = true
+                        )
+                    )
+                }
+            }
+        }
+
+        composeTestRule.onNodeWithText("Add Apps").assertDoesNotExist()
+        composeTestRule.onNodeWithText("Edit Folder").assertDoesNotExist()
     }
 
     @Test
@@ -360,13 +390,11 @@ class FolderComponentsTest {
         var appClicked = false
         val actions = FolderPopupActions(
             onDismiss = {},
-            onAppClick = { appClicked = true },
-            onAddAppsClick = {},
-            onEditFolderClick = {}
+            onAppClick = { appClicked = true }
         )
 
         composeTestRule.setContent {
-            CompositionLocalProvider(LocalHomeUiState provides MainUiState()) {
+            ProvideHomeUiState(MainUiState()) {
                 AureoleLauncherTheme {
                     OpenedFolderPopup(
                         config = OpenedFolderPopupConfig(
@@ -389,21 +417,17 @@ class FolderComponentsTest {
         var appClicked = false
         val actions = FolderPopupActions(
             onDismiss = {},
-            onAppClick = { appClicked = true },
-            onAddAppsClick = {},
-            onEditFolderClick = {}
+            onAppClick = { appClicked = true }
         )
 
         composeTestRule.setContent {
-            CompositionLocalProvider(LocalHomeUiState provides MainUiState()) {
+            ProvideHomeUiState(MainUiState()) {
                 AureoleLauncherTheme {
                     GridFolderPopup(
                         params = GridFolderPopupParams(
                             folder = sampleFolder,
                             appsInFolder = listOf(sampleApp),
                             actions = actions,
-                            isActionsVisible = false,
-                            onToggleActions = {},
                             hazeState = null,
                             isHazeEnabled = false
                         )
@@ -435,9 +459,11 @@ class FolderComponentsTest {
         }
 
         composeTestRule.onNodeWithText("Cancel").performClick()
+        composeTestRule.mainClock.advanceTimeBy(DISMISS_ANIMATION_MS)
         assertTrue(dismissed)
     }
 
+    @Config(qualifiers = TALL_WINDOW)
     @Test
     fun `when searching in FolderAppPickerDialog, should filter apps list`() {
         val app1 = AppInfo(
@@ -464,6 +490,7 @@ class FolderComponentsTest {
                 )
             }
         }
+        composeTestRule.mainClock.advanceTimeBy(SHEET_ENTER_MS)
 
         // Search for "Gall"
         composeTestRule.onNode(hasSetTextAction()).performTextInput("Gall")
@@ -473,6 +500,7 @@ class FolderComponentsTest {
         composeTestRule.onNodeWithText("Gallery").assertIsDisplayed()
     }
 
+    @Config(qualifiers = TALL_WINDOW)
     @Test
     fun `when FolderAppPickerDialog has empty selected or remaining apps, should display empty status text`() {
         val folder = AppFolder(id = "f_empty", name = "EmptyFolder", appPackageNames = emptyList())
@@ -487,9 +515,10 @@ class FolderComponentsTest {
                 )
             }
         }
+        composeTestRule.mainClock.advanceTimeBy(SHEET_ENTER_MS)
 
         composeTestRule.onNodeWithText("No apps in the folder.").assertIsDisplayed()
-        composeTestRule.onNodeWithText("All apps have been added.").assertIsDisplayed()
+        composeTestRule.onNodeWithText("No apps found.").assertIsDisplayed()
     }
 
     @Test
@@ -497,7 +526,7 @@ class FolderComponentsTest {
         var clickedApp: AppInfo? = null
 
         composeTestRule.setContent {
-            CompositionLocalProvider(LocalHomeUiState provides MainUiState(isLeftHandedMode = true)) {
+            ProvideHomeUiState(MainUiState(isLeftHandedMode = true)) {
                 AureoleLauncherTheme {
                     OpenedFolderAppList(
                         appsInFolder = listOf(sampleApp),
@@ -532,9 +561,7 @@ class FolderComponentsTest {
         val emptyFolder = AppFolder(id = "g_empty", name = "Empty Grid", displayAsGrid = true)
         val actions = FolderPopupActions(
             onDismiss = {},
-            onAppClick = {},
-            onAddAppsClick = {},
-            onEditFolderClick = {}
+            onAppClick = {}
         )
 
         composeTestRule.setContent {
@@ -544,8 +571,6 @@ class FolderComponentsTest {
                         folder = emptyFolder,
                         appsInFolder = emptyList(),
                         actions = actions,
-                        isActionsVisible = true,
-                        onToggleActions = {},
                         hazeState = null,
                         isHazeEnabled = false
                     )

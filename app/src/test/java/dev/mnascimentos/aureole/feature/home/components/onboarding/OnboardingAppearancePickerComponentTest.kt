@@ -72,13 +72,14 @@ class OnboardingAppearancePickerComponentTest {
     fun `should invite the user to try the options`() {
         render(AppearancePicker.PALETTE)
 
-        composeTestRule.onNodeWithText("Tap to see your screen change right away.").assertExists()
+        val hint = "Tap a palette or font to try it. Nothing changes until you tap Apply."
+        composeTestRule.onNodeWithText(hint).assertExists()
     }
 
     @Test
     fun `when no picker is active, should show nothing`() {
         render(picker = null)
 
-        composeTestRule.onNodeWithText("Looks good").assertDoesNotExist()
+        composeTestRule.onNodeWithText("Got it").assertDoesNotExist()
     }
 }

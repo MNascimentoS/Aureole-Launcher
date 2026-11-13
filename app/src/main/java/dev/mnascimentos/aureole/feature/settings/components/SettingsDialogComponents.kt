@@ -1,28 +1,15 @@
 package dev.mnascimentos.aureole.feature.settings.components
 
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.RadioButton
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import dev.mnascimentos.aureole.R
-import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
-import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
-import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
+import dev.mnascimentos.aureole.composable.menu.AureoleRadioSheet
+import dev.mnascimentos.aureole.composable.menu.model.RadioOption
+import dev.mnascimentos.aureole.composable.menu.model.RadioSheetParams
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
+import dev.mnascimentos.aureole.feature.settings.model.PositionKind
+import dev.mnascimentos.aureole.feature.settings.model.options
 
 @Composable
 internal fun SettingsButtonPositionDialog(
@@ -30,52 +17,12 @@ internal fun SettingsButtonPositionDialog(
     onPositionSelected: (String) -> Unit,
     onDismiss: () -> Unit
 ) {
-    val options = listOf(
-        "Left" to "Esquerda (Left)",
-        "Right" to "Direita (Right)"
-    )
-
-    AlertDialog(
-        onDismissRequest = onDismiss,
-        containerColor = AureoleDS.colors.surface,
-        shape = RoundedCornerShape(AureoleDS.dimens.radiusLarge),
-        title = {
-            AureoleText(
-                text = stringResource(R.string.settings_dialogs_settings_button_position_title),
-                color = AureoleDS.colors.onSurfaceHigh,
-                format = AureoleTextFormatParams(style = AureoleDS.typography.titleMedium, fontWeight = FontWeight.Bold)
-            )
-        },
-        text = {
-            Column {
-                options.forEach { (value, label) ->
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .clip(RoundedCornerShape(AureoleDS.dimens.radiusSmall))
-                            .clickable { onPositionSelected(value) }
-                            .padding(vertical = AureoleDS.dimens.xSmall, horizontal = AureoleDS.dimens.xSmall),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        RadioButton(
-                            selected = (currentPosition == value),
-                            onClick = { onPositionSelected(value) }
-                        )
-                        Spacer(modifier = Modifier.width(AureoleDS.dimens.small))
-                        AureoleText(
-                            text = label,
-                            color = AureoleDS.colors.onSurfaceHigh,
-                            format = AureoleTextFormatParams(style = AureoleDS.typography.bodyLarge)
-                        )
-                    }
-                }
-            }
-        },
-        confirmButton = {
-            TextButton(onClick = onDismiss) {
-                AureoleText(stringResource(R.string.core_common_cancel), color = AureoleDS.colors.onSurfaceHigh)
-            }
-        }
+    SettingsPositionSheet(
+        title = stringResource(R.string.settings_dialogs_settings_button_position_title),
+        kind = PositionKind.SETTINGS_BUTTON,
+        currentPosition = currentPosition,
+        onPositionSelected = onPositionSelected,
+        onDismiss = onDismiss
     )
 }
 
@@ -85,52 +32,12 @@ internal fun SearchIconPositionDialog(
     onPositionSelected: (String) -> Unit,
     onDismiss: () -> Unit
 ) {
-    val options = listOf(
-        "Left" to "Esquerda (Left)",
-        "Right" to "Direita (Right)"
-    )
-
-    AlertDialog(
-        onDismissRequest = onDismiss,
-        containerColor = AureoleDS.colors.surface,
-        shape = RoundedCornerShape(AureoleDS.dimens.radiusLarge),
-        title = {
-            AureoleText(
-                text = stringResource(R.string.settings_dialogs_search_icon_position_title),
-                color = AureoleDS.colors.onSurfaceHigh,
-                format = AureoleTextFormatParams(style = AureoleDS.typography.titleMedium, fontWeight = FontWeight.Bold)
-            )
-        },
-        text = {
-            Column {
-                options.forEach { (value, label) ->
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .clip(RoundedCornerShape(AureoleDS.dimens.radiusSmall))
-                            .clickable { onPositionSelected(value) }
-                            .padding(vertical = AureoleDS.dimens.xSmall, horizontal = AureoleDS.dimens.xSmall),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        RadioButton(
-                            selected = (currentPosition == value),
-                            onClick = { onPositionSelected(value) }
-                        )
-                        Spacer(modifier = Modifier.width(AureoleDS.dimens.small))
-                        AureoleText(
-                            text = label,
-                            color = AureoleDS.colors.onSurfaceHigh,
-                            format = AureoleTextFormatParams(style = AureoleDS.typography.bodyLarge)
-                        )
-                    }
-                }
-            }
-        },
-        confirmButton = {
-            TextButton(onClick = onDismiss) {
-                AureoleText(stringResource(R.string.core_common_cancel), color = AureoleDS.colors.onSurfaceHigh)
-            }
-        }
+    SettingsPositionSheet(
+        title = stringResource(R.string.settings_dialogs_search_icon_position_title),
+        kind = PositionKind.SEARCH_ICON,
+        currentPosition = currentPosition,
+        onPositionSelected = onPositionSelected,
+        onDismiss = onDismiss
     )
 }
 
@@ -140,55 +47,31 @@ internal fun ContainerPositionDialog(
     onPositionSelected: (String) -> Unit,
     onDismiss: () -> Unit
 ) {
-    val options = listOf(
-        "Top" to "Superior (Top)",
-        "Center" to "Centro (Center)",
-        "Bottom" to "Inferior (Bottom)",
-        "Space Evenly" to "Espaçamento Igual (Space Evenly)",
-        "Space Between" to "Espaçamento Entre (Space Between)"
+    SettingsPositionSheet(
+        title = stringResource(R.string.settings_dialogs_container_position_title),
+        kind = PositionKind.CONTAINER,
+        currentPosition = currentPosition,
+        onPositionSelected = onPositionSelected,
+        onDismiss = onDismiss
     )
+}
 
-    AlertDialog(
-        onDismissRequest = onDismiss,
-        containerColor = AureoleDS.colors.surface,
-        shape = RoundedCornerShape(AureoleDS.dimens.radiusLarge),
-        title = {
-            AureoleText(
-                text = stringResource(R.string.settings_dialogs_container_position_title),
-                color = AureoleDS.colors.onSurfaceHigh,
-                format = AureoleTextFormatParams(style = AureoleDS.typography.titleMedium, fontWeight = FontWeight.Bold)
-            )
-        },
-        text = {
-            Column {
-                options.forEach { (value, label) ->
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .clip(RoundedCornerShape(AureoleDS.dimens.radiusSmall))
-                            .clickable { onPositionSelected(value) }
-                            .padding(vertical = AureoleDS.dimens.xSmall, horizontal = AureoleDS.dimens.xSmall),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        RadioButton(
-                            selected = (currentPosition == value),
-                            onClick = { onPositionSelected(value) }
-                        )
-                        Spacer(modifier = Modifier.width(AureoleDS.dimens.small))
-                        AureoleText(
-                            text = label,
-                            color = AureoleDS.colors.onSurfaceHigh,
-                            format = AureoleTextFormatParams(style = AureoleDS.typography.bodyLarge)
-                        )
-                    }
-                }
-            }
-        },
-        confirmButton = {
-            TextButton(onClick = onDismiss) {
-                AureoleText(stringResource(R.string.core_common_cancel), color = AureoleDS.colors.onSurfaceHigh)
-            }
-        }
+@Composable
+private fun SettingsPositionSheet(
+    title: String,
+    kind: PositionKind,
+    currentPosition: String,
+    onPositionSelected: (String) -> Unit,
+    onDismiss: () -> Unit
+) {
+    AureoleRadioSheet(
+        params = RadioSheetParams(
+            title = title,
+            options = kind.options().map { RadioOption(it.value, stringResource(it.labelRes)) },
+            selectedValue = currentPosition
+        ),
+        onSelect = onPositionSelected,
+        onDismiss = onDismiss
     )
 }
 
@@ -196,11 +79,7 @@ internal fun ContainerPositionDialog(
 @Composable
 private fun ContainerPositionDialogPreview() {
     AureoleLauncherTheme {
-        ContainerPositionDialog(
-            currentPosition = "Center",
-            onPositionSelected = {},
-            onDismiss = {}
-        )
+        ContainerPositionDialog(currentPosition = "Center", onPositionSelected = {}, onDismiss = {})
     }
 }
 
@@ -208,11 +87,7 @@ private fun ContainerPositionDialogPreview() {
 @Composable
 private fun SettingsButtonPositionDialogPreview() {
     AureoleLauncherTheme {
-        SettingsButtonPositionDialog(
-            currentPosition = "Right",
-            onPositionSelected = {},
-            onDismiss = {}
-        )
+        SettingsButtonPositionDialog(currentPosition = "Right", onPositionSelected = {}, onDismiss = {})
     }
 }
 
@@ -220,10 +95,6 @@ private fun SettingsButtonPositionDialogPreview() {
 @Composable
 private fun SearchIconPositionDialogPreview() {
     AureoleLauncherTheme {
-        SearchIconPositionDialog(
-            currentPosition = "Left",
-            onPositionSelected = {},
-            onDismiss = {}
-        )
+        SearchIconPositionDialog(currentPosition = "Left", onPositionSelected = {}, onDismiss = {})
     }
 }

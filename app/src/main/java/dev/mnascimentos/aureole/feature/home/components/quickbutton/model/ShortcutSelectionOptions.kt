@@ -18,7 +18,7 @@ class ShortcutSelectionOptions(
 internal class ShortcutSelectionCallbacks(
     val onQueryChange: (String) -> Unit,
     val onApplyShortcut: (ShortcutAction) -> Unit,
-    val onShowAppPicker: () -> Unit,
+    val onSelectCategory: (ShortcutCategory) -> Unit,
     val onSettingsClick: () -> Unit,
     val onDismiss: () -> Unit
 )

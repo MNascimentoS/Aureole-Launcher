@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -27,9 +26,6 @@ import dev.chrisbanes.haze.HazeState
 import dev.chrisbanes.haze.HazeStyle
 import dev.chrisbanes.haze.HazeTint
 import dev.chrisbanes.haze.hazeEffect
-import dev.mnascimentos.aureole.composable.appitem.AppItemBottomSheet
-import dev.mnascimentos.aureole.composable.appitem.model.AppItemBottomSheetParams
-import dev.mnascimentos.aureole.composable.appitem.model.AppItemRowActions
 import dev.mnascimentos.aureole.composable.dialogs.CreateFolderDialog
 import dev.mnascimentos.aureole.core.data.model.AppFolder
 import dev.mnascimentos.aureole.core.data.model.LauncherItemState
@@ -37,6 +33,7 @@ import dev.mnascimentos.aureole.core.data.model.LauncherItemType
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
+import dev.mnascimentos.aureole.core.designsystem.utils.glassBlurRadius
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.ContainerFolderBottomSheet
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.EditFolderDialog
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.FolderAppPickerDialog
@@ -52,8 +49,8 @@ import dev.mnascimentos.aureole.feature.home.components.widgets.EditWidgetGroupS
 import dev.mnascimentos.aureole.feature.home.components.widgets.model.EditWidgetGroupActions
 import dev.mnascimentos.aureole.feature.home.components.widgets.model.EditWidgetGroupParams
 import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
-import dev.mnascimentos.aureole.feature.home.model.LocalHomeUiState
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
+import dev.mnascimentos.aureole.feature.home.model.ProvideHomeUiState
 import dev.mnascimentos.aureole.feature.home.model.getWidgetIdsForStack
 
 private const val FADE_ANIM_DURATION_MS = 180
@@ -75,18 +72,7 @@ private fun ContainerAppAndFolderOverlays(
     uiState: MainUiState,
     actions: HomeScreenActions
 ) {
-    uiState.activeContainerAppBottomSheet?.let { state ->
-        AppItemBottomSheet(
-            params = AppItemBottomSheetParams(
-                app = state.app,
-                onRemoveFromContainer = { actions.onRemoveAppFromContainer(state.panelId, state.app.packageName) },
-                onOpenContainerSettings = { actions.onOpenEditContainerDialog(state.panelId) },
-                actions = AppItemRowActions(onOpenSettings = actions.onSettingsClick)
-            ),
-            onDismiss = actions.onCloseContainerAppBottomSheet
-        )
-    }
-
+    ContainerAppSheetOverlay(uiState = uiState, actions = actions)
     uiState.activeContainerFolderBottomSheet?.let { state ->
         ContainerFolderBottomSheet(
             params = ContainerFolderBottomSheetParams(
@@ -109,23 +95,16 @@ private fun ContainerAppAndFolderOverlays(
                 onOpenContainerSettings = {
                     actions.onCloseContainerFolderBottomSheet()
                     actions.onOpenEditContainerDialog(state.panelId)
+                },
+                onOpenSettings = {
+                    actions.onCloseContainerFolderBottomSheet()
+                    actions.onSettingsClick()
                 }
             ),
             onDismiss = actions.onCloseContainerFolderBottomSheet
         )
     }
-
-    uiState.activeFolderAppBottomSheet?.let { state ->
-        AppItemBottomSheet(
-            params = AppItemBottomSheetParams(
-                app = state.app,
-                onRemoveFromFolder = { actions.onRemoveAppFromFolder(state.folder.id, state.app.packageName) },
-                onOpenFolderSettings = { actions.onOpenEditFolderForFolder(state.folder) },
-                actions = AppItemRowActions(onOpenSettings = actions.onSettingsClick)
-            ),
-            onDismiss = actions.onCloseFolderAppBottomSheet
-        )
-    }
+    FolderAppSheetOverlay(uiState = uiState, actions = actions)
 }
 
 @Composable
@@ -157,7 +136,8 @@ private fun WidgetStackOverlay(
                 onRemoveWidget = { actions.onRemoveWidgetClick(it, state.stackId) },
                 onAddWidgetClick = { actions.onAddWidgetClick(state.stackId) },
                 onDismissRequest = actions.onCloseWidgetStackBottomSheet,
-                onReorderWidgets = { actions.onReorderWidgets(it, state.stackId) }
+                onReorderWidgets = { actions.onReorderWidgets(it, state.stackId) },
+                onSettingsClick = actions.onSettingsClick
             )
         )
     }
@@ -245,16 +225,9 @@ private fun OpenedFolderOverlayContent(
                 allApps = uiState.apps,
                 actions = FolderPopupActions(
                     onDismiss = { actions.onFolderIntent(FolderViewIntent.CloseFolder) },
-                    onAppClick = { app -> actions.onFolderIntent(FolderViewIntent.LaunchApp(app.packageName)) },
-                    onAddAppsClick = {
-                        actions.onFolderIntent(
-                            FolderViewIntent.AddAppToFolder(
-                                folderToDisplay.id
-                            )
-                        )
-                    },
-                    onEditFolderClick = { actions.onSetRenameFolderDialogVisible(true) }
-                )
+                    onAppClick = { app -> actions.onFolderIntent(FolderViewIntent.LaunchApp(app.packageName)) }
+                ),
+                isGridFolderEnabled = isGridFolderEnabled
             ),
             modifier = Modifier.align(align).then(popupPadding)
         )
@@ -271,7 +244,10 @@ private fun OpenedFolderBackgroundBox(
     val blurModifier = if (isGridFolderEnabled) {
         Modifier.hazeEffect(
             state = params.hazeState,
-            style = HazeStyle(blurRadius = AureoleDS.dimens.large, tint = HazeTint(Color.Black.copy(alpha = 0.25f)))
+            style = HazeStyle(
+                blurRadius = glassBlurRadius(AureoleDS.dimens.large),
+                tint = HazeTint(Color.Black.copy(alpha = 0.25f))
+            )
         ) {
             blurEnabled = true
         }
@@ -303,7 +279,7 @@ internal fun AddAppToFolderOverlay(
     actions: HomeScreenActions
 ) {
     if (uiState.isAddAppToFolderDialogVisible && uiState.activeFolder != null) {
-        CompositionLocalProvider(LocalHomeUiState provides uiState) {
+        ProvideHomeUiState(uiState) {
             FolderAppPickerDialog(
                 folder = uiState.activeFolder,
                 allApps = uiState.apps,

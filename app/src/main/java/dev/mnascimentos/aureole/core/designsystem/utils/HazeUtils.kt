@@ -22,42 +22,65 @@ val LocalHazeState = staticCompositionLocalOf<HazeState?> { null }
 fun Modifier.fadingEdges(
     scrollState: LazyListState,
     topLength: Dp = 24.dp,
-    bottomLength: Dp = 24.dp
+    bottomLength: Dp = 24.dp,
+    isHorizontal: Boolean = false
 ): Modifier = this.graphicsLayer {
-    val showTopFade = scrollState.canScrollBackward
-    val showBottomFade = scrollState.canScrollForward
-    compositingStrategy = if (showTopFade || showBottomFade) {
+    val showStartFade = scrollState.canScrollBackward
+    val showEndFade = scrollState.canScrollForward
+    compositingStrategy = if (showStartFade || showEndFade) {
         CompositingStrategy.Offscreen
     } else {
         CompositingStrategy.Auto
     }
 }.drawWithContent {
     drawContent()
-    val showTopFade = scrollState.canScrollBackward
-    val showBottomFade = scrollState.canScrollForward
-    val topPx = topLength.toPx()
-    val bottomPx = bottomLength.toPx()
+    val showStartFade = scrollState.canScrollBackward
+    val showEndFade = scrollState.canScrollForward
+    val startPx = topLength.toPx()
+    val endPx = bottomLength.toPx()
 
-    if (showTopFade && topPx > 0f) {
-        drawRect(
-            brush = Brush.verticalGradient(
-                colors = listOf(Color.Transparent, Color.Black),
-                startY = 0f,
-                endY = topPx
-            ),
-            blendMode = BlendMode.DstIn
-        )
-    }
-
-    if (showBottomFade && bottomPx > 0f) {
-        drawRect(
-            brush = Brush.verticalGradient(
-                colors = listOf(Color.Black, Color.Transparent),
-                startY = size.height - bottomPx,
-                endY = size.height
-            ),
-            blendMode = BlendMode.DstIn
-        )
+    if (isHorizontal) {
+        if (showStartFade && startPx > 0f) {
+            drawRect(
+                brush = Brush.horizontalGradient(
+                    colors = listOf(Color.Transparent, Color.Black),
+                    startX = 0f,
+                    endX = startPx
+                ),
+                blendMode = BlendMode.DstIn
+            )
+        }
+        if (showEndFade && endPx > 0f) {
+            drawRect(
+                brush = Brush.horizontalGradient(
+                    colors = listOf(Color.Black, Color.Transparent),
+                    startX = size.width - endPx,
+                    endX = size.width
+                ),
+                blendMode = BlendMode.DstIn
+            )
+        }
+    } else {
+        if (showStartFade && startPx > 0f) {
+            drawRect(
+                brush = Brush.verticalGradient(
+                    colors = listOf(Color.Transparent, Color.Black),
+                    startY = 0f,
+                    endY = startPx
+                ),
+                blendMode = BlendMode.DstIn
+            )
+        }
+        if (showEndFade && endPx > 0f) {
+            drawRect(
+                brush = Brush.verticalGradient(
+                    colors = listOf(Color.Black, Color.Transparent),
+                    startY = size.height - endPx,
+                    endY = size.height
+                ),
+                blendMode = BlendMode.DstIn
+            )
+        }
     }
 }
 

@@ -1,21 +1,6 @@
 package dev.mnascimentos.aureole.feature.home.components.containers.folder
 
 import android.content.ComponentName
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.statusBars
-import androidx.compose.foundation.layout.windowInsetsPadding
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ModalBottomSheet
-import androidx.compose.material3.Surface
-import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -23,30 +8,38 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalInspectionMode
+import androidx.compose.ui.res.pluralStringResource
+import androidx.compose.ui.res.stringResource
 import androidx.core.graphics.drawable.toDrawable
+import dev.mnascimentos.aureole.R
+import dev.mnascimentos.aureole.composable.sheets.AureoleConfirmOverlay
+import dev.mnascimentos.aureole.composable.sheets.model.ConfirmOverlayParams
 import dev.mnascimentos.aureole.core.data.model.AppFolder
 import dev.mnascimentos.aureole.core.data.model.AppInfo
-import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
+import dev.mnascimentos.aureole.feature.home.components.containers.folder.extensions.moveTrayApp
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.extensions.searchFolderApps
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.extensions.selectedTrayApps
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.extensions.toggleBestSearchResult
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.extensions.togglePackageSelection
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.FolderAppPickerBodyParams
+import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.FolderAppPickerCallbacks
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.FolderAppPickerFooterActions
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.FolderAppPickerFooterParams
-import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.FolderPickerMetrics
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.sortedForPickerGrid
+import dev.mnascimentos.aureole.feature.home.model.LocalHomeActions
 import dev.mnascimentos.aureole.feature.home.model.LocalHomeUiState
 import kotlinx.coroutines.delay
 
 private const val SEARCH_DEBOUNCE_MS = 300L
 
-@OptIn(ExperimentalMaterial3Api::class)
+/**
+ * Picker of the apps of a folder on the shared confirm overlay (sheet at rest height, centered title with the logo,
+ * Cancel / "Save N apps" in equal widths on the thumb side). The grid with drag-to-mark and the A-Z strip scroll in
+ * the sheet; the tray of chosen apps and the search field stay glued to the action row (and the keyboard).
+ */
 @Composable
 fun FolderAppPickerDialog(
     folder: AppFolder,
@@ -55,68 +48,26 @@ fun FolderAppPickerDialog(
     onSave: (List<String>) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val isLeftHandedMode = LocalHomeUiState.current.isLeftHandedMode
-    val sheetContent = @Composable {
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(horizontal = FolderPickerMetrics.DialogContentPadding)
-                .padding(bottom = FolderPickerMetrics.DialogContentPadding)
-        ) {
-            FolderAppPickerDialogContent(
-                folder = folder,
-                allApps = allApps,
-                onDismiss = onDismiss,
-                onSave = onSave,
-                isLeftHandedMode = isLeftHandedMode
-            )
-        }
-    }
-
-    if (LocalInspectionMode.current) {
-        Box(
-            modifier = modifier.fillMaxSize(),
-            contentAlignment = Alignment.BottomCenter
-        ) {
-            Surface(
-                shape = RoundedCornerShape(
-                    topStart = AureoleDS.dimens.radiusLarge,
-                    topEnd = AureoleDS.dimens.radiusLarge
-                ),
-                color = AureoleDS.colors.surface,
-                contentColor = AureoleDS.colors.onSurfaceMedium,
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                sheetContent()
-            }
-        }
-    } else {
-        val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
-
-        ModalBottomSheet(
-            onDismissRequest = onDismiss,
-            sheetState = sheetState,
-            dragHandle = null,
-            shape = RoundedCornerShape(
-                topStart = AureoleDS.dimens.radiusLarge,
-                topEnd = AureoleDS.dimens.radiusLarge
-            ),
-            containerColor = AureoleDS.colors.surface,
-            contentColor = AureoleDS.colors.onSurfaceMedium,
-            modifier = modifier.windowInsetsPadding(WindowInsets.statusBars)
-        ) {
-            sheetContent()
-        }
-    }
+    FolderAppPickerDialogContent(
+        folder = folder,
+        allApps = allApps,
+        callbacks = FolderAppPickerCallbacks(
+            onDismiss = onDismiss,
+            onSave = onSave,
+            onSettingsClick = LocalHomeActions.current.onSettingsClick
+        ),
+        isLeftHandedMode = LocalHomeUiState.current.isLeftHandedMode,
+        modifier = modifier
+    )
 }
 
 @Composable
 private fun FolderAppPickerDialogContent(
     folder: AppFolder,
     allApps: List<AppInfo>,
-    onDismiss: () -> Unit,
-    onSave: (List<String>) -> Unit,
-    isLeftHandedMode: Boolean
+    callbacks: FolderAppPickerCallbacks,
+    isLeftHandedMode: Boolean,
+    modifier: Modifier = Modifier
 ) {
     val selectedPackages = remember {
         mutableStateListOf<String>().apply { addAll(folder.appPackageNames) }
@@ -137,10 +88,8 @@ private fun FolderAppPickerDialogContent(
         selectedTrayApps(selectedPackages, appMap)
     }
 
-    val remainingApps = remember(allApps, selectedPackages.toList()) {
-        val selectedSet = selectedPackages.toSet()
-        sortedForPickerGrid(allApps.filter { it.packageName !in selectedSet }) { it.label }
-    }
+    // Every app stays in the grid, marked or not, so nothing jumps away when it is tapped.
+    val gridApps = remember(allApps) { sortedForPickerGrid(allApps) { it.label } }
 
     val sortedApps = remember(allApps) { allApps.sortedBy { it.label.lowercase() } }
     val isSearching = searchQuery.isNotBlank() && debouncedQuery.isNotBlank()
@@ -150,8 +99,7 @@ private fun FolderAppPickerDialogContent(
         params = FolderAppPickerBodyParams(
             folderName = folder.name,
             searchQuery = searchQuery,
-            filteredSelected = selectedApps,
-            filteredRemaining = remainingApps,
+            gridApps = gridApps,
             selectedPackages = selectedPackages,
             isSearching = isSearching,
             searchResults = searchResults,
@@ -161,8 +109,8 @@ private fun FolderAppPickerDialogContent(
         onSearchQueryChange = { searchQuery = it },
         // Enter uses the best of what is typed right now, not of the debounced query.
         onSearch = { toggleBestSearchResult(selectedPackages, searchFolderApps(sortedApps, searchQuery)) },
-        onDismiss = onDismiss,
-        onSave = onSave
+        callbacks = callbacks,
+        modifier = modifier
     )
 }
 
@@ -171,16 +119,40 @@ internal fun FolderAppPickerDialogBody(
     params: FolderAppPickerBodyParams,
     onSearchQueryChange: (String) -> Unit,
     onSearch: () -> Unit,
-    onDismiss: () -> Unit,
-    onSave: (List<String>) -> Unit
+    callbacks: FolderAppPickerCallbacks,
+    modifier: Modifier = Modifier
 ) {
     val selectedPackages = params.selectedPackages
     val onToggleSelect = { pkg: String -> togglePackageSelection(selectedPackages, pkg) }
 
-    Column(modifier = Modifier.fillMaxWidth()) {
-        FolderAppPickerHeader(folderName = params.folderName, onDismiss = onDismiss)
-        Spacer(modifier = Modifier.height(AureoleDS.dimens.small))
-
+    AureoleConfirmOverlay(
+        params = ConfirmOverlayParams(
+            title = stringResource(R.string.home_folder_apps_in_folder, params.folderName),
+            primaryLabel = pluralStringResource(
+                R.plurals.home_folder_picker_save_count,
+                selectedPackages.size,
+                selectedPackages.size
+            ),
+            onPrimary = { callbacks.onSave(selectedPackages.toList()) },
+            onDismissRequest = callbacks.onDismiss,
+            isLeftHanded = params.isLeftHandedMode,
+            onSettingsClick = callbacks.onSettingsClick
+        ),
+        modifier = modifier,
+        bottomExtra = {
+            FolderAppPickerFooter(
+                params = FolderAppPickerFooterParams(trayApps = params.trayApps, searchQuery = params.searchQuery),
+                actions = FolderAppPickerFooterActions(
+                    onQueryChange = onSearchQueryChange,
+                    onSearch = onSearch,
+                    onRemove = onToggleSelect,
+                    onMove = { from, to ->
+                        moveTrayApp(selectedPackages, params.trayApps.map { it.packageName }, from, to)
+                    }
+                )
+            )
+        }
+    ) {
         if (params.isSearching) {
             FolderAppPickerSearchList(
                 query = params.searchQuery.trim(),
@@ -192,23 +164,6 @@ internal fun FolderAppPickerDialogBody(
         } else {
             FolderAppPickerBrowseGrid(params = params, onToggleSelect = onToggleSelect, modifier = Modifier.weight(1f))
         }
-
-        Spacer(modifier = Modifier.height(AureoleDS.dimens.small))
-        FolderAppPickerFooter(
-            params = FolderAppPickerFooterParams(
-                trayApps = params.trayApps,
-                searchQuery = params.searchQuery,
-                saveCount = selectedPackages.size,
-                isLeftHandedMode = params.isLeftHandedMode
-            ),
-            actions = FolderAppPickerFooterActions(
-                onQueryChange = onSearchQueryChange,
-                onSearch = onSearch,
-                onRemove = onToggleSelect,
-                onDismiss = onDismiss,
-                onSave = { onSave(selectedPackages.toList()) }
-            )
-        )
     }
 }
 

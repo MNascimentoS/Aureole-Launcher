@@ -1,10 +1,16 @@
 package dev.mnascimentos.aureole.feature.settings.extensions
 
 import android.content.Context
+import android.os.Looper
+import dev.mnascimentos.aureole.R
+import dev.mnascimentos.aureole.core.data.model.OnboardingProgress
+import dev.mnascimentos.aureole.core.data.model.OnboardingStage
+import dev.mnascimentos.aureole.core.data.model.OnboardingTask
 import dev.mnascimentos.aureole.core.data.repository.AppRepository
 import dev.mnascimentos.aureole.core.data.repository.FolderRepository
 import dev.mnascimentos.aureole.core.data.repository.GridRepository
 import dev.mnascimentos.aureole.core.data.repository.SettingsRepository
+import dev.mnascimentos.aureole.core.designsystem.model.TextResource
 import dev.mnascimentos.aureole.feature.settings.SettingsViewModel
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
@@ -15,6 +21,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.RuntimeEnvironment
+import org.robolectric.Shadows.shadowOf
 
 @RunWith(RobolectricTestRunner::class)
 class SettingsViewModelExtTest {
@@ -50,7 +57,6 @@ class SettingsViewModelExtTest {
         viewModel.restoreDefaultWallpaper()
         assertFalse(viewModel.uiState.value.isCustomWallpaperSet)
         assertNull(viewModel.uiState.value.customWallpaperPath)
-        assertFalse(viewModel.uiState.value.showRestoreWallpaperDialog)
     }
 
     @Test
@@ -58,7 +64,7 @@ class SettingsViewModelExtTest {
         viewModel.resetGridLayout()
         assertFalse(viewModel.uiState.value.showResetGridDialog)
         assertTrue(viewModel.uiState.value.shouldFinishActivity)
-        assertEquals("Layout da tela inicial resetado para o padrão", viewModel.uiState.value.errorMessage)
+        assertEquals(TextResource.fromResId(R.string.settings_reset_grid_success), viewModel.uiState.value.errorMessage)
     }
 
     @Test
@@ -75,5 +81,32 @@ class SettingsViewModelExtTest {
 
         assertTrue(processTerminated)
         assertFalse(settingsRepository.isLeftHandedMode)
+    }
+
+    @Test
+    fun `replayOnboarding should restart the stored progress and finish the activity`() {
+        settingsRepository.onboarding.write(
+            OnboardingProgress(
+                stage = OnboardingStage.COMPLETED,
+                completedTasks = setOf(OnboardingTask.entries.first())
+            )
+        )
+
+        viewModel.replayOnboarding()
+        repeat(REPLAY_WAIT_ATTEMPTS) {
+            shadowOf(Looper.getMainLooper()).idle()
+            if (viewModel.uiState.value.shouldFinishActivity) return@repeat
+            Thread.sleep(REPLAY_WAIT_STEP_MS)
+        }
+
+        assertTrue(viewModel.uiState.value.shouldFinishActivity)
+        val progress = settingsRepository.onboarding.read()
+        assertEquals(OnboardingStage.WELCOME, progress?.stage)
+        assertTrue(progress?.completedTasks.orEmpty().isEmpty())
+    }
+
+    private companion object {
+        const val REPLAY_WAIT_ATTEMPTS = 100
+        const val REPLAY_WAIT_STEP_MS = 20L
     }
 }

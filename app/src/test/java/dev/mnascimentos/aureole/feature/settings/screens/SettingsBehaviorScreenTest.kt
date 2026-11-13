@@ -34,7 +34,7 @@ class SettingsBehaviorScreenTest {
         composeTestRule.onNodeWithText("Behavior").assertExists()
         composeTestRule.onNodeWithText("Header offset").assertExists()
         composeTestRule.onNodeWithText("Home opens all apps").assertExists()
-        composeTestRule.onNodeWithText("Show all apps on home").assertExists()
+        composeTestRule.onNodeWithText("Show all apps on home").assertDoesNotExist()
         composeTestRule.onNodeWithText("All apps on left side").assertExists()
         composeTestRule.onNodeWithText("Show widget indicator").assertExists()
         composeTestRule.onNodeWithText("Disable alphabet scrubber").assertExists()
@@ -44,7 +44,6 @@ class SettingsBehaviorScreenTest {
     @Test
     fun `when toggling behavior settings, should invoke corresponding action callbacks`() {
         var homeOpensAllAppsToggled = false
-        var showAllAppsOnHomeToggled = false
         var leftHandedToggled = false
         var showWidgetDotsToggled = false
         var disableScrubberToggled = false
@@ -52,7 +51,6 @@ class SettingsBehaviorScreenTest {
 
         val actions = SettingsScreenActions(
             onToggleHomeButtonOpensAllApps = { homeOpensAllAppsToggled = true },
-            onToggleShowAllAppsOnHome = { showAllAppsOnHomeToggled = true },
             onToggleLeftHandedMode = { leftHandedToggled = true },
             onToggleShowWidgetDots = { showWidgetDotsToggled = true },
             onToggleDisableAlphabetScrubber = { disableScrubberToggled = true },
@@ -71,9 +69,6 @@ class SettingsBehaviorScreenTest {
 
         composeTestRule.onNodeWithText("Home opens all apps").performScrollTo().performClick()
         assertTrue(homeOpensAllAppsToggled)
-
-        composeTestRule.onNodeWithText("Show all apps on home").performScrollTo().performClick()
-        assertTrue(showAllAppsOnHomeToggled)
 
         composeTestRule.onNodeWithText("All apps on left side").performScrollTo().performClick()
         assertTrue(leftHandedToggled)

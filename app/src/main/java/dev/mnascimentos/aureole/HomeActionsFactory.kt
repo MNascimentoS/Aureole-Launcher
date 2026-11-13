@@ -38,6 +38,8 @@ import dev.mnascimentos.aureole.feature.home.components.favorites.extensions.tog
 import dev.mnascimentos.aureole.feature.home.components.favorites.extensions.updateContainerFavorites
 import dev.mnascimentos.aureole.feature.home.components.favorites.extensions.updateFavoritePackages
 import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.onOnboardingSignal
+import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.selectFont
+import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.selectPalette
 import dev.mnascimentos.aureole.feature.home.components.onboarding.model.OnboardingSignal
 import dev.mnascimentos.aureole.feature.home.components.overlays.extensions.closeContainerAppBottomSheet
 import dev.mnascimentos.aureole.feature.home.components.overlays.extensions.closeContainerFolderBottomSheet
@@ -60,8 +62,8 @@ import dev.mnascimentos.aureole.feature.home.components.quickbutton.extensions.o
 import dev.mnascimentos.aureole.feature.home.components.quickbutton.extensions.onUpdateQuickButtonShortcuts
 import dev.mnascimentos.aureole.feature.home.components.widgets.extensions.closeWidgetPopup
 import dev.mnascimentos.aureole.feature.home.components.widgets.extensions.openWidgetPopup
-import dev.mnascimentos.aureole.feature.home.components.widgets.extensions.removeWidgetId
-import dev.mnascimentos.aureole.feature.home.components.widgets.extensions.reorderWidgets
+import dev.mnascimentos.aureole.feature.home.components.widgets.extensions.removeWidgetWithUndo
+import dev.mnascimentos.aureole.feature.home.components.widgets.extensions.reorderWidgetsWithUndo
 import dev.mnascimentos.aureole.feature.home.components.widgets.extensions.setIsAddingSingleWidget
 import dev.mnascimentos.aureole.feature.home.components.widgets.extensions.setShowWidgetPicker
 import dev.mnascimentos.aureole.feature.home.components.widgets.extensions.setShowWidgetResizeDialog
@@ -71,7 +73,6 @@ import dev.mnascimentos.aureole.feature.home.extensions.onUndo
 import dev.mnascimentos.aureole.feature.home.extensions.onUndoExpired
 import dev.mnascimentos.aureole.feature.home.extensions.setAllAppsDrawerOpen
 import dev.mnascimentos.aureole.feature.home.extensions.setShowCustomizeBottomSheet
-import dev.mnascimentos.aureole.feature.home.extensions.toggleShowAllAppsOnHome
 import dev.mnascimentos.aureole.feature.home.grid.extensions.addGridItem
 import dev.mnascimentos.aureole.feature.home.grid.extensions.cancelGridEditMode
 import dev.mnascimentos.aureole.feature.home.grid.extensions.deleteGridItem
@@ -81,6 +82,7 @@ import dev.mnascimentos.aureole.feature.home.grid.extensions.moveChildInScrollVi
 import dev.mnascimentos.aureole.feature.home.grid.extensions.moveGridItem
 import dev.mnascimentos.aureole.feature.home.grid.extensions.openAddContainerForParent
 import dev.mnascimentos.aureole.feature.home.grid.extensions.removeChildFromScrollView
+import dev.mnascimentos.aureole.feature.home.grid.extensions.removeGridItemWithUndo
 import dev.mnascimentos.aureole.feature.home.grid.extensions.resetGridItems
 import dev.mnascimentos.aureole.feature.home.grid.extensions.resizeChildInScrollView
 import dev.mnascimentos.aureole.feature.home.grid.extensions.resizeGridItem
@@ -110,10 +112,10 @@ class HomeActionsFactory(
                 viewModel.setShowWidgetPicker(true)
             },
             onRemoveWidgetClick = { widgetId, stackId ->
-                viewModel.removeWidgetId(widgetId, stackId)
+                viewModel.removeWidgetWithUndo(widgetId, stackId)
             },
             onReorderWidgets = { newWidgets, stackId ->
-                viewModel.reorderWidgets(newWidgets, stackId)
+                viewModel.reorderWidgetsWithUndo(newWidgets, stackId)
             },
             onAppClick = { appInfo ->
                 context.packageManager.getLaunchIntentForPackage(appInfo.packageName)?.let { launchIntent ->
@@ -135,12 +137,13 @@ class HomeActionsFactory(
             onToggleFavorite = { pkg -> viewModel.toggleFavorite(pkg) },
             onToggleFavoriteWithContainer = { pkg, containerId -> viewModel.toggleFavorite(pkg, containerId) },
             onUpdateFavoritePackages = { containerId, pkgs -> handleUpdateFavoritePackages(containerId, pkgs) },
-            onToggleShowAllAppsOnHome = { viewModel.toggleShowAllAppsOnHome() },
             onAppInfoClick = { app -> IntentUtils.openAppInfo(context, app.packageName) },
             onUninstallAppClick = { app -> IntentUtils.uninstallApp(context, app.packageName) },
             onOpenFavoritePicker = { containerId -> viewModel.setShowFavoritePicker(true, containerId) },
             onDismissFavoritePicker = { viewModel.dismissFavoritePicker() },
             onAddFavoritesList = { viewModel.addFavoritesList() },
+            onSelectPalette = { name -> viewModel.selectPalette(name) },
+            onSelectFont = { name -> viewModel.selectFont(name) },
             onDismissWidgetPicker = { viewModel.setShowWidgetPicker(false) },
             onDismissReleaseNotes = { viewModel.dismissReleaseNotes() },
             onOpenWidgetPopup = { id, y -> viewModel.openWidgetPopup(id, y) },
@@ -175,6 +178,7 @@ class HomeActionsFactory(
             onOpenEditGridItemDialog = { item -> viewModel.setEditingGridItem(item) },
             onCloseEditGridItemDialog = { viewModel.setEditingGridItem(null) },
             onDeleteGridItem = { id -> viewModel.deleteGridItem(id) },
+            onRemoveGridItem = { id -> viewModel.removeGridItemWithUndo(id) },
             onDismissGridError = { viewModel.dismissGridError() },
             onSetIsAddingSingleWidget = { viewModel.setIsAddingSingleWidget(it) },
             onUpdateScrollViewOrientation = { id, o -> viewModel.updateScrollViewOrientation(id, o) },

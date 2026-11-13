@@ -12,7 +12,6 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -29,14 +28,15 @@ import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
+import dev.mnascimentos.aureole.core.designsystem.utils.glassBlurRadius
 import dev.mnascimentos.aureole.feature.home.components.widgets.model.WidgetAppGroup
 import dev.mnascimentos.aureole.feature.home.components.widgets.model.WidgetPickerScreenParams
 import dev.mnascimentos.aureole.feature.home.components.widgets.model.WidgetSelectorIntent
 import dev.mnascimentos.aureole.feature.home.components.widgets.model.WidgetSelectorScreenParams
 import dev.mnascimentos.aureole.feature.home.components.widgets.model.WidgetSelectorState
 import dev.mnascimentos.aureole.feature.home.components.widgets.model.WidgetVariant
-import dev.mnascimentos.aureole.feature.home.model.LocalHomeUiState
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
+import dev.mnascimentos.aureole.feature.home.model.ProvideHomeUiState
 import org.koin.androidx.compose.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -80,7 +80,7 @@ fun WidgetSelectorScreen(
         Modifier.hazeEffect(
             state = hazeState,
             style = HazeStyle(
-                blurRadius = AureoleDS.dimens.xLarge,
+                blurRadius = glassBlurRadius(AureoleDS.dimens.xLarge),
                 tint = HazeTint(Color.Black.copy(alpha = 0.45f))
             )
         ) {
@@ -180,7 +180,7 @@ private fun WidgetSelectorScreenPreview() {
         expandedAppIds = setOf("com.example.calendar")
     )
     AureoleLauncherTheme {
-        CompositionLocalProvider(LocalHomeUiState provides MainUiState()) {
+        ProvideHomeUiState(MainUiState()) {
             WidgetSelectorScreen(
                 params = WidgetSelectorScreenParams(
                     state = sampleState,

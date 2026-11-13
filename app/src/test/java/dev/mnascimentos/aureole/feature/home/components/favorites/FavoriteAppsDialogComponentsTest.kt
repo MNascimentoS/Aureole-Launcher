@@ -8,10 +8,9 @@ import androidx.compose.ui.test.junit4.v2.createComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
-import dev.mnascimentos.aureole.composable.favorites.FavoriteAppRowActionButtons
+import dev.mnascimentos.aureole.composable.favorites.FavoriteAppRemoveButton
 import dev.mnascimentos.aureole.composable.favorites.FavoriteAppRowInfo
 import dev.mnascimentos.aureole.composable.favorites.RemainingAppRow
-import dev.mnascimentos.aureole.composable.favorites.model.FavoriteAppRowParams
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import org.junit.Assert.assertTrue
@@ -46,88 +45,17 @@ class FavoriteAppsDialogComponentsTest {
     }
 
     @Test
-    fun `when rendering action buttons with reorder allowed, should render move and handle clicks`() {
-        var movedUp = false
-        var movedDown = false
-        var toggledFav = false
-
-        val app = createApp("App", "com.example.app")
-        val params = FavoriteAppRowParams(
-            app = app,
-            index = 1,
-            totalCount = 3,
-            canReorder = true
-        )
+    fun `when rendering FavoriteAppRemoveButton, should handle the click`() {
+        var removed = false
 
         composeTestRule.setContent {
             AureoleLauncherTheme {
-                FavoriteAppRowActionButtons(
-                    params = params,
-                    onMoveUp = { movedUp = true },
-                    onMoveDown = { movedDown = true },
-                    onToggleFavorite = { toggledFav = true }
-                )
+                FavoriteAppRemoveButton(onClick = { removed = true })
             }
         }
 
-        composeTestRule.onNodeWithContentDescription("Arrow Up").performClick()
-        assertTrue(movedUp)
-
-        composeTestRule.onNodeWithContentDescription("Arrow Down").performClick()
-        assertTrue(movedDown)
-
-        composeTestRule.onNodeWithContentDescription("Delete").performClick()
-        assertTrue(toggledFav)
-    }
-
-    @Test
-    fun `when rendering FavoriteAppRowActionButtons for first item, should not render move up button`() {
-        val app = createApp("App", "com.example.app")
-        val params = FavoriteAppRowParams(
-            app = app,
-            index = 0,
-            totalCount = 3,
-            canReorder = true
-        )
-
-        composeTestRule.setContent {
-            AureoleLauncherTheme {
-                FavoriteAppRowActionButtons(
-                    params = params,
-                    onMoveUp = {},
-                    onMoveDown = {},
-                    onToggleFavorite = {}
-                )
-            }
-        }
-
-        composeTestRule.onNodeWithContentDescription("Arrow Up").assertDoesNotExist()
-        composeTestRule.onNodeWithContentDescription("Arrow Down").assertIsDisplayed()
-    }
-
-    @Test
-    fun `when rendering FavoriteAppRowActionButtons for last item, should not render move down button`() {
-        val app = createApp("App", "com.example.app")
-        val params = FavoriteAppRowParams(
-            app = app,
-            index = 2,
-            totalCount = 3,
-            canReorder = true
-        )
-
-        composeTestRule.setContent {
-            AureoleLauncherTheme {
-                FavoriteAppRowActionButtons(
-                    params = params,
-                    onMoveUp = {},
-                    onMoveDown = {},
-                    onToggleFavorite = {}
-                )
-            }
-        }
-
-        composeTestRule.onNodeWithContentDescription("Arrow Up").assertIsDisplayed()
-        composeTestRule.onNodeWithContentDescription("Arrow Down").assertDoesNotExist()
+        composeTestRule.onNodeWithContentDescription("Remove from favorites").performClick()
+        assertTrue(removed)
     }
 
     @Test
@@ -145,7 +73,7 @@ class FavoriteAppsDialogComponentsTest {
         }
 
         composeTestRule.onNodeWithText("Outro App").assertIsDisplayed()
-        composeTestRule.onNodeWithContentDescription("Plus").performClick()
+        composeTestRule.onNodeWithText("Outro App").performClick()
         assertTrue(toggled)
     }
 }

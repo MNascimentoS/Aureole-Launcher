@@ -47,69 +47,43 @@ internal val releaseNotes0918: List<ReleaseNoteSection> = listOf(
                 description = "Todos os painéis de configuração foram redesenhados para um visual " +
                     "mais moderno, espaçado e consistente em todo o sistema.",
                 type = ReleaseNoteType.IMPROVEMENT
+            ),
+            ReleaseNoteItem(
+                title = "Fácil Alcance em Telas Grandes",
+                description = "Menu de aplicativos, configurações e edição do relógio e pastas " +
+                    "agora focam as ações perto do polegar na metade de baixo da tela, " +
+                    "com suporte à mão esquerda.",
+                type = ReleaseNoteType.IMPROVEMENT
             )
         )
     )
 )
 
-internal fun getSectionsForVersion0913(): List<ReleaseNoteSection> = listOf(
+internal val releaseNotes0920: List<ReleaseNoteSection> = listOf(
     ReleaseNoteSection(
-        title = "Boas-vindas Guiadas",
+        title = "Experiência de Uso",
         items = listOf(
             ReleaseNoteItem(
-                title = "Primeiros Passos na Sua Própria Tela",
-                description = "Quem instala o Aureole agora é recebido com uma apresentação rápida " +
-                    "que ensina os gestos e ajuda a montar a tela inicial passo a passo.",
-                type = ReleaseNoteType.FEATURE
-            ),
-            ReleaseNoteItem(
-                title = "Cada Passo Monta um Pedaço da Tela",
-                description = "Relógio, apps, container e widgets aparecem na tela conforme você " +
-                    "avança, e cada passo só conta depois que você salva.",
-                type = ReleaseNoteType.FEATURE
-            ),
-            ReleaseNoteItem(
-                title = "Rever Quando Quiser",
-                description = "Já usa o app? Veja a apresentação em Configurações › Avançado › Rever boas-vindas.",
+                title = "Salvar sem Cliques Extras",
+                description = "Ao personalizar relógio ou editar contêiners, os ajustes são " +
+                    "salvos automaticamente ao fechar a janela, sem necessidade de confirmar.",
                 type = ReleaseNoteType.IMPROVEMENT
+            ),
+            ReleaseNoteItem(
+                title = "Nova Ação de Desfazer",
+                description = "Removeu um atalho sem querer, ou mexeu onde não devia? " +
+                    "A nova barra de desfazer salva tudo com 1 clique antes de sumir.",
+                type = ReleaseNoteType.FEATURE
             )
         )
     ),
     ReleaseNoteSection(
-        title = "Personalizar",
+        title = "Ajustes Finos",
         items = listOf(
             ReleaseNoteItem(
-                title = "Adicionar Favoritos e Todos os Apps",
-                description = "O menu Personalizar ganhou opções para colocar seus favoritos ou a " +
-                    "lista com todos os apps direto na tela inicial.",
-                type = ReleaseNoteType.FEATURE
-            ),
-            ReleaseNoteItem(
-                title = "Novo Layout Padrão",
-                description = "O layout inicial ficou mais organizado, com espaço para widgets e " +
-                    "uma lista de apps maior.",
-                type = ReleaseNoteType.IMPROVEMENT
-            ),
-            ReleaseNoteItem(
-                title = "Carregamento Mais Suave",
-                description = "A tela inicial aparece na hora e as listas de apps mostram uma " +
-                    "prévia enquanto carregam.",
-                type = ReleaseNoteType.IMPROVEMENT
-            )
-        )
-    ),
-    ReleaseNoteSection(
-        title = "Correções",
-        items = listOf(
-            ReleaseNoteItem(
-                title = "Widgets Funcionando de Novo",
-                description = "A área de widgets vazia volta a mostrar o botão de adicionar, e o " +
-                    "widget escolhido aparece no lugar certo.",
-                type = ReleaseNoteType.FIX
-            ),
-            ReleaseNoteItem(
-                title = "Modo Canhoto nos Favoritos",
-                description = "A lista de favoritos da tela inicial agora respeita o modo canhoto.",
+                title = "Visual de Favoritos e Widgets",
+                description = "Refinamentos no editor de widgets da home, que agora " +
+                    "mostra exatamente um painel completo. Favoritos revisado.",
                 type = ReleaseNoteType.FIX
             )
         )

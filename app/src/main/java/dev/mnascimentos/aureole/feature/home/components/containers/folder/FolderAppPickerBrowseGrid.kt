@@ -34,19 +34,16 @@ import androidx.compose.ui.platform.LocalViewConfiguration
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.utils.LongPressViewConfiguration
-import dev.mnascimentos.aureole.feature.home.components.containers.folder.extensions.moveDown
-import dev.mnascimentos.aureole.feature.home.components.containers.folder.extensions.moveUp
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.DragSelection
+import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.FIRST_GRID_CELL_INDEX
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.FOLDER_PICKER_GRID_TEST_TAG
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.FolderAppPickerBodyParams
-import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.PickerBrowseApps
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.PickerCellBounds
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.RemainingFolderAppGridParams
-import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.SelectedFolderAppSectionParams
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.edgeAutoScrollDelta
-import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.firstGridCellIndex
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.hitTestCell
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.letterIndex
 import dev.mnascimentos.aureole.feature.home.components.scrubber.CurvedAlphabetScrubber
@@ -68,11 +65,11 @@ private const val AUTO_SCROLL_EDGE_DP = 56f
 private const val AUTO_SCROLL_MAX_STEP_DP = 14f
 
 /**
- * Browse mode of the folder picker (no search): the selected apps as full width rows with the reorder
- * arrows, then the other apps in a four column grid with the A–Z scrubber on the thumb side.
+ * Browse mode of the folder picker (no search): every app in a four column grid, the chosen ones with a check,
+ * and the A–Z scrubber on the thumb side. The chosen apps are reordered in the footer tray.
  *
  * Holding an app and sliding marks (or, from a marked app, unmarks) every app the finger reaches, with a
- * tic for each. The rows and the grid are frozen during the sweep so nothing moves under the finger.
+ * tic for each. The grid is frozen during the sweep so nothing moves under the finger.
  */
 @Composable
 internal fun FolderAppPickerBrowseGrid(
@@ -84,9 +81,9 @@ internal fun FolderAppPickerBrowseGrid(
     val gridState = rememberLazyGridState()
     val haptics = LocalHapticFeedback.current
     val dragSelection = remember(selectedPackages) { DragSelection(selectedPackages) }
-    var frozenApps by remember { mutableStateOf<PickerBrowseApps?>(null) }
+    var frozenApps by remember { mutableStateOf<List<AppInfo>?>(null) }
     var pointer by remember { mutableStateOf(Offset.Zero) }
-    val shownApps = frozenApps ?: PickerBrowseApps(params.filteredSelected, params.filteredRemaining)
+    val shownApps = frozenApps ?: params.gridApps
     val isSelecting = frozenApps != null
     val tick = { haptics.performHapticFeedback(HapticFeedbackType.SegmentTick) }
 
@@ -112,10 +109,7 @@ internal fun FolderAppPickerBrowseGrid(
 
     EdgeAutoScroll(isSelecting = isSelecting, gridState = gridState, pointer = { pointer }, onScrolled = onDragMove)
 
-    val gridStart = firstGridCellIndex(shownApps.selected.size)
-    val letters = remember(shownApps.remaining, gridStart) {
-        letterIndex(shownApps.remaining, gridStart) { it.label }
-    }
+    val letters = remember(shownApps) { letterIndex(shownApps, FIRST_GRID_CELL_INDEX) { it.label } }
     val showScrubber = letters.isNotEmpty() && !LocalHomeUiState.current.isAlphabetScrubberDisabled
     val gutter = if (showScrubber) AureoleDS.dimens.minTouchTarget + AureoleDS.dimens.xSmall else AureoleDS.dimens.zero
 
@@ -127,7 +121,7 @@ internal fun FolderAppPickerBrowseGrid(
                 .thumbSideGutter(gutter, params.isLeftHandedMode)
                 .dragToSelect(onStart = { onDragStart(it) }, onMove = onDragMove, onEnd = onDragEnd)
         ) {
-            browseSections(params, shownApps, isSelecting, guardedToggle)
+            remainingFolderAppSection(gridParams(params, shownApps, isSelecting, guardedToggle))
         }
         if (showScrubber) {
             PickerScrubber(
@@ -140,36 +134,19 @@ internal fun FolderAppPickerBrowseGrid(
     }
 }
 
-/** Selected rows on top, then the grid; the rows are frozen with [shownApps] during a sweep. */
-private fun LazyGridScope.browseSections(
+/** The grid of other apps, frozen as [shownApps] while a sweep runs. */
+private fun gridParams(
     params: FolderAppPickerBodyParams,
-    shownApps: PickerBrowseApps,
+    shownApps: List<AppInfo>,
     isSelecting: Boolean,
     onToggleSelect: (String) -> Unit
-) {
-    val selectedPackages = params.selectedPackages
-    selectedFolderAppSection(
-        params = SelectedFolderAppSectionParams(
-            filteredSelected = shownApps.selected,
-            searchQuery = params.searchQuery,
-            totalSelectedCount = selectedPackages.size,
-            onMoveUp = { index -> selectedPackages.moveUp(index) },
-            onMoveDown = { index -> selectedPackages.moveDown(index) },
-            onToggleSelect = onToggleSelect,
-            isReorderEnabled = !isSelecting,
-            isMarked = { it in selectedPackages }
-        )
-    )
-    remainingFolderAppSection(
-        RemainingFolderAppGridParams(
-            apps = shownApps.remaining,
-            searchQuery = params.searchQuery,
-            isSelecting = isSelecting,
-            isMarked = { it in selectedPackages },
-            onToggleSelect = onToggleSelect
-        )
-    )
-}
+): RemainingFolderAppGridParams = RemainingFolderAppGridParams(
+    apps = shownApps,
+    searchQuery = params.searchQuery,
+    isSelecting = isSelecting,
+    isMarked = { it in params.selectedPackages },
+    onToggleSelect = onToggleSelect
+)
 
 @Composable
 private fun PickerLazyGrid(
@@ -219,7 +196,8 @@ private fun PickerScrubber(
         options = ScrubberOptions(
             isAlwaysVisible = true,
             heightFraction = 1f,
-            bottomPadding = AureoleDS.dimens.xSmall
+            bottomPadding = AureoleDS.dimens.xSmall,
+            hasPillBackground = true
         )
     )
 }

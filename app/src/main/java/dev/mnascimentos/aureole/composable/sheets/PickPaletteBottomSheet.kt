@@ -10,6 +10,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import dev.mnascimentos.aureole.R
+import dev.mnascimentos.aureole.composable.sheets.model.ThemePickerGridParams
+import dev.mnascimentos.aureole.composable.sheets.model.ThemePickerSheetOptions
 import dev.mnascimentos.aureole.composable.sheets.model.ThemePreviewOverlayParams
 import dev.mnascimentos.aureole.composable.sheets.model.ThemePreviewState
 import dev.mnascimentos.aureole.composable.sheets.model.basePaletteName
@@ -29,7 +31,8 @@ private const val PALETTE_COLUMNS = 3
 /**
  * Palette picker with a live preview: tapping a palette repaints the mini-home and the sheet at once, and
  * nothing is persisted until Apply, which calls [onPaletteSelected] with the chosen palette and closes.
- * Cancel, swiping down and tapping outside only call [onDismissRequest].
+ * Cancel, swiping down and tapping outside only call [onDismissRequest]. [options] adds a footer and the
+ * Aureole logo in the header.
  */
 @Composable
 fun PickPaletteBottomSheet(
@@ -37,7 +40,7 @@ fun PickPaletteBottomSheet(
     onPaletteSelected: (ThemePalette) -> Unit,
     onDismissRequest: () -> Unit,
     modifier: Modifier = Modifier,
-    footer: (@Composable () -> Unit)? = null
+    options: ThemePickerSheetOptions = ThemePickerSheetOptions()
 ) {
     val isDarkTheme = isSystemInDarkTheme()
     var pending by remember { mutableStateOf(ThemePreviewState()) }
@@ -59,14 +62,17 @@ fun PickPaletteBottomSheet(
             onDismissRequest = {
                 pending = pending.discard()
                 onDismissRequest()
-            }
+            },
+            onSettingsClick = options.onSettingsClick
         ),
         modifier = modifier
     ) {
         ThemePickerGrid(
-            label = stringResource(R.string.settings_appearance_palette_section_label),
-            columns = PALETTE_COLUMNS,
-            footer = footer
+            params = ThemePickerGridParams(
+                label = stringResource(R.string.settings_appearance_palette_section_label),
+                columns = PALETTE_COLUMNS,
+                footer = options.footer
+            )
         ) {
             items(items = allPalettes, key = { it.name }, contentType = { "palette_chip" }) { basePalette ->
                 val active = if (isDarkTheme) basePalette else basePalette.toLight()

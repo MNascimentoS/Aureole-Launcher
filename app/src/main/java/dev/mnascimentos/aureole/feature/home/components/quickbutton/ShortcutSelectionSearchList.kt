@@ -56,23 +56,12 @@ internal fun ShortcutSearchResultsList(
         }
         itemsIndexed(results) { index, item ->
             val isSelected = currentAction.type == item.action.type && currentAction.target == item.action.target
-            val rowModifier = Modifier.bestResultRing(isBest = index == 0)
-            val app = item.app
-            if (app != null) {
-                AppOptionRow(
-                    app = app,
-                    isSelected = isSelected,
-                    modifier = rowModifier,
-                    onClick = { onApplyShortcut(item.action) }
-                )
-            } else {
-                ShortcutOptionRow(
-                    title = item.label,
-                    isSelected = isSelected,
-                    modifier = rowModifier,
-                    onClick = { onApplyShortcut(item.action) }
-                )
-            }
+            ShortcutActionRow(
+                candidate = item,
+                isSelected = currentAction == item.action,
+                onClick = { onApplyShortcut(item.action) },
+                modifier = Modifier.bestResultRing(isBest = index == 0)
+            )
         }
     }
 }

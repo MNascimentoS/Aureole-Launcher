@@ -1,15 +1,16 @@
 package dev.mnascimentos.aureole.feature.home.grid.extensions
 
+import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.core.data.model.LauncherItemState
+import dev.mnascimentos.aureole.core.designsystem.model.TextResource
 import dev.mnascimentos.aureole.feature.home.HomeViewModel
+import dev.mnascimentos.aureole.feature.home.extensions.showUndo
 import dev.mnascimentos.aureole.feature.home.grid.GridDefaults
 import dev.mnascimentos.aureole.feature.home.grid.GridEngineUtils
 import dev.mnascimentos.aureole.feature.home.grid.model.GridItemSpec
 import dev.mnascimentos.aureole.feature.home.grid.model.SlotSearchRequest
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
 import java.util.UUID
-
-private const val CONTAINER_ERROR_MSG = "Não há espaço livre suficiente na grade para este container."
 
 fun HomeViewModel.setShowAddContainerDialog(show: Boolean) {
     updateUiState {
@@ -52,7 +53,7 @@ fun HomeViewModel.addGridItem(spec: GridItemSpec) {
         )
 
         if (largestSlotResult == null) {
-            state.copy(gridErrorMessage = CONTAINER_ERROR_MSG)
+            state.copy(gridErrorMessage = TextResource.fromResId(R.string.home_grid_no_space_error))
         } else {
             val (actualColSpan, actualRowSpan, slot) = largestSlotResult
             val newItem = LauncherItemState(
@@ -98,6 +99,28 @@ fun HomeViewModel.deleteGridItem(id: String) {
             getGridRepository().saveGridItems(updatedList, state.isLandscape)
         }
         updateActiveGridItemsInState(state, updatedList).copy(editingGridItem = null)
+    }
+}
+
+/** Removes the item and offers "Undo", which puts it back in the same cell. */
+fun HomeViewModel.removeGridItemWithUndo(id: String) {
+    val item = uiState.value.gridItems.find { it.id == id }
+    deleteGridItem(id)
+    if (item == null) return
+    showUndo(TextResource.fromResId(R.string.home_undo_component_removed)) { restoreGridItem(item) }
+}
+
+internal fun HomeViewModel.restoreGridItem(item: LauncherItemState) {
+    updateUiState { state ->
+        if (state.gridItems.any { it.id == item.id }) {
+            state
+        } else {
+            val restored = state.gridItems + item
+            if (!state.isGridEditMode) {
+                getGridRepository().saveGridItems(restored, state.isLandscape)
+            }
+            updateActiveGridItemsInState(state, restored)
+        }
     }
 }
 

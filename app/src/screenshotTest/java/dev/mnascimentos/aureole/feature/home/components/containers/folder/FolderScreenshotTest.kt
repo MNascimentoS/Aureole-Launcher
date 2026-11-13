@@ -6,6 +6,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.core.graphics.drawable.toDrawable
 import com.android.tools.screenshot.PreviewTest
+import dev.mnascimentos.aureole.core.designsystem.model.LocalLeftHanded
 import dev.mnascimentos.aureole.composable.dialogs.FolderFormDialog
 import dev.mnascimentos.aureole.core.data.model.AppFolder
 import dev.mnascimentos.aureole.core.data.model.AppInfo
@@ -53,6 +54,7 @@ private fun WhenFolderMiniGridRendered_shouldRenderMiniGridScreenshotTest() {
     AureoleLauncherTheme {
         CompositionLocalProvider(
             LocalHomeUiState provides MainUiState(apps = listOf(sampleApp)),
+            LocalLeftHanded provides (MainUiState(apps = listOf(sampleApp))).isLeftHandedMode,
             LocalHomeActions provides createMockActions()
         ) {
             Column {
@@ -78,6 +80,7 @@ private fun WhenContainerFolderItemRendered_shouldRenderItemScreenshotTest() {
     AureoleLauncherTheme {
         CompositionLocalProvider(
             LocalHomeUiState provides MainUiState(),
+            LocalLeftHanded provides (MainUiState()).isLeftHandedMode,
             LocalHomeActions provides createMockActions()
         ) {
             ContainerFolderItem(
@@ -107,7 +110,8 @@ private fun WhenContainerFolderBottomSheetRendered_shouldRenderBottomSheetScreen
                 onRename = {},
                 onIcon = {},
                 onRemoveFolder = {},
-                onOpenContainerSettings = {}
+                onOpenContainerSettings = {},
+                onOpenSettings = {}
             ),
             onDismiss = {}
         )
@@ -148,6 +152,7 @@ private fun WhenFolderDialogRendered_shouldRenderFolderDialogScreenshotTest() {
     AureoleLauncherTheme {
         CompositionLocalProvider(
             LocalHomeUiState provides MainUiState(),
+            LocalLeftHanded provides (MainUiState()).isLeftHandedMode,
             LocalHomeActions provides createMockActions()
         ) {
             FolderDialog(
@@ -203,14 +208,13 @@ private fun WhenOpenedFolderPopupRendered_shouldRenderPopupScreenshotTest() {
     )
     val actions = FolderPopupActions(
         onDismiss = {},
-        onAppClick = {},
-        onAddAppsClick = {},
-        onEditFolderClick = {}
+        onAppClick = {}
     )
 
     AureoleLauncherTheme {
         CompositionLocalProvider(
             LocalHomeUiState provides MainUiState(),
+            LocalLeftHanded provides (MainUiState()).isLeftHandedMode,
             LocalHomeActions provides createMockActions()
         ) {
             OpenedFolderPopup(

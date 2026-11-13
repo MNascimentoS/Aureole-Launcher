@@ -44,6 +44,7 @@ import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.core.designsystem.utils.LocalHazeState
+import dev.mnascimentos.aureole.core.designsystem.utils.glassBlurRadius
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.FolderPopupActions
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.FolderPopupMetrics
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.GridFolderPopupParams
@@ -59,28 +60,7 @@ fun GridFolderPopup(
     params: GridFolderPopupParams,
     modifier: Modifier = Modifier
 ) {
-    Column(
-        modifier = modifier.fillMaxWidth(),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        if (params.folder.name.isNotBlank()) {
-            Text(
-                text = params.folder.name,
-                style = AureoleDS.typography.titleLarge,
-                fontWeight = FontWeight.Bold,
-                color = AureoleDS.colors.onSurfaceHigh,
-                textAlign = TextAlign.Center,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = AureoleDS.dimens.medium)
-            )
-        }
-
-        GridFolderContainer(
-            params = params,
-            modifier = Modifier.fillMaxWidth()
-        )
-    }
+    GridFolderContainer(params = params, modifier = modifier.fillMaxWidth())
 }
 
 @Composable
@@ -95,7 +75,7 @@ private fun GridFolderContainer(
         Modifier.hazeEffect(
             state = effectiveHazeState,
             style = HazeStyle(
-                blurRadius = FolderPopupMetrics.HazeBlurRadius,
+                blurRadius = glassBlurRadius(FolderPopupMetrics.HazeBlurRadius),
                 tint = HazeTint(Color.Black.copy(alpha = POPUP_HAZE_ALPHA))
             )
         ) { blurEnabled = true }
@@ -115,12 +95,18 @@ private fun GridFolderContainer(
             .padding(AureoleDS.dimens.medium),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        OpenedFolderActions(
-            isVisible = params.isActionsVisible,
-            onAddAppsClick = params.actions.onAddAppsClick,
-            onEditFolderClick = params.actions.onEditFolderClick
-        )
-
+        if (params.folder.name.isNotBlank()) {
+            Text(
+                text = params.folder.name,
+                style = AureoleDS.typography.titleLarge,
+                fontWeight = FontWeight.Bold,
+                color = AureoleDS.colors.onSurfaceHigh,
+                textAlign = TextAlign.Center,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = AureoleDS.dimens.medium)
+            )
+        }
         if (params.appsInFolder.isEmpty()) {
             EmptyFolderGridContent(maxListHeightDp = FolderPopupMetrics.HeightMax)
         } else {
@@ -238,14 +224,7 @@ private fun GridFolderPopupPreview() {
             params = GridFolderPopupParams(
                 folder = AppFolder(id = "1", panelId = "1", name = "Preview Folder"),
                 appsInFolder = emptyList(),
-                actions = FolderPopupActions(
-                    onDismiss = {},
-                    onAppClick = {},
-                    onAddAppsClick = {},
-                    onEditFolderClick = {}
-                ),
-                isActionsVisible = false,
-                onToggleActions = {},
+                actions = FolderPopupActions(onDismiss = {}, onAppClick = {}),
                 hazeState = null,
                 isHazeEnabled = false
             )

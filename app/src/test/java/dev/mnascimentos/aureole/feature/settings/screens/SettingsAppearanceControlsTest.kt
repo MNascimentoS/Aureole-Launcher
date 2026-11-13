@@ -3,16 +3,23 @@ package dev.mnascimentos.aureole.feature.settings.screens
 import androidx.compose.ui.test.junit4.v2.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.performScrollTo
+import dev.mnascimentos.aureole.core.designsystem.model.GlassLevel
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.feature.settings.model.AppearanceDialogFlags
+import dev.mnascimentos.aureole.feature.settings.model.CardsGlassDraft
 import dev.mnascimentos.aureole.feature.settings.model.SettingsScreenActions
 import dev.mnascimentos.aureole.feature.settings.model.SettingsUiState
+import dev.mnascimentos.aureole.feature.settings.model.toCardsGlassDraft
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
+
+private const val DISMISS_ANIMATION_MS = 500L
+private const val DEFAULT_SEED = 0xFF112233.toInt()
 
 @RunWith(RobolectricTestRunner::class)
 class SettingsAppearanceControlsTest {
@@ -25,7 +32,7 @@ class SettingsAppearanceControlsTest {
         composeTestRule.setContent {
             AureoleLauncherTheme {
                 GlassAndBlurRow(
-                    uiState = SettingsUiState(isHazeEnabled = false, hazeOpacity = 0.0f),
+                    uiState = SettingsUiState(isHazeEnabled = false),
                     onClick = {}
                 )
             }
@@ -34,24 +41,24 @@ class SettingsAppearanceControlsTest {
     }
 
     @Test
-    fun `when GlassAndBlurRow has low opacity, should display Low`() {
+    fun `when GlassAndBlurRow has low level, should display Light`() {
         composeTestRule.setContent {
             AureoleLauncherTheme {
                 GlassAndBlurRow(
-                    uiState = SettingsUiState(isHazeEnabled = true, hazeOpacity = 0.20f),
+                    uiState = SettingsUiState(isHazeEnabled = true, hazeBlurLevel = GlassLevel.LOW),
                     onClick = {}
                 )
             }
         }
-        composeTestRule.onNodeWithText("Low").assertExists()
+        composeTestRule.onNodeWithText("Light").assertExists()
     }
 
     @Test
-    fun `when GlassAndBlurRow has medium opacity, should display Medium`() {
+    fun `when GlassAndBlurRow has medium level, should display Medium`() {
         composeTestRule.setContent {
             AureoleLauncherTheme {
                 GlassAndBlurRow(
-                    uiState = SettingsUiState(isHazeEnabled = true, hazeOpacity = 0.50f),
+                    uiState = SettingsUiState(isHazeEnabled = true, hazeBlurLevel = GlassLevel.MEDIUM),
                     onClick = {}
                 )
             }
@@ -60,11 +67,11 @@ class SettingsAppearanceControlsTest {
     }
 
     @Test
-    fun `when GlassAndBlurRow has max opacity, should display Max`() {
+    fun `when GlassAndBlurRow has max level, should display Max`() {
         composeTestRule.setContent {
             AureoleLauncherTheme {
                 GlassAndBlurRow(
-                    uiState = SettingsUiState(isHazeEnabled = true, hazeOpacity = 0.90f),
+                    uiState = SettingsUiState(isHazeEnabled = true, hazeBlurLevel = GlassLevel.MAX),
                     onClick = {}
                 )
             }
@@ -141,27 +148,28 @@ class SettingsAppearanceControlsTest {
     }
 
     @Test
-    fun `when setBg flag is true, clicking solid color should trigger color picker`() {
-        var colorPickerOpened = false
+    fun `when setBg flag is true, applying the solid color should save the seed color`() {
+        var savedColor: Int? = null
         var dismissCalled = false
         val flags = AppearanceDialogFlags(showSetBg = true)
         val actions = SettingsScreenActions(
-            onOpenColorPickerDialog = { colorPickerOpened = true }
+            onSelectManualSeedColor = { savedColor = it }
         )
 
         composeTestRule.setContent {
             AureoleLauncherTheme {
                 AppearanceDialogs(
                     flags = flags,
-                    uiState = SettingsUiState(),
+                    uiState = SettingsUiState(manualSeedColor = DEFAULT_SEED),
                     actions = actions,
                     onDismissDialog = { dismissCalled = true }
                 )
             }
         }
 
-        composeTestRule.onNodeWithText("Solid color").performClick()
-        assertTrue(colorPickerOpened)
+        composeTestRule.onNodeWithText("Apply").performClick()
+        composeTestRule.mainClock.advanceTimeBy(DISMISS_ANIMATION_MS)
+        assertEquals(DEFAULT_SEED, savedColor)
         assertTrue(dismissCalled)
     }
 
@@ -186,89 +194,76 @@ class SettingsAppearanceControlsTest {
         }
 
         composeTestRule.onNodeWithText("Custom image").performClick()
+        composeTestRule.onNodeWithText("Apply").performClick()
+        composeTestRule.mainClock.advanceTimeBy(DISMISS_ANIMATION_MS)
         assertTrue(wallpaperChangeClicked)
         assertTrue(dismissCalled)
     }
 
     @Test
-    fun `when blur flag is true, should handle blur selection and toggle haze state`() {
-        var toggleHazeCalled = false
-        var hazeOpacity = -1f
-        var dismissCalled = false
-        val flags = AppearanceDialogFlags(showBlur = true)
-        val state = SettingsUiState(isHazeEnabled = false, hazeOpacity = 0.0f)
-        val actions = SettingsScreenActions(
-            onToggleHaze = { toggleHazeCalled = true },
-            onHazeOpacitySelected = { hazeOpacity = it }
-        )
+    fun `when cardsGlass flag is true, should apply every tap on the spot`() {
+        val applied = mutableListOf<CardsGlassDraft>()
+        val actions = SettingsScreenActions(onApplyCardsGlass = { applied += it })
 
         composeTestRule.setContent {
             AureoleLauncherTheme {
                 AppearanceDialogs(
-                    flags = flags,
-                    uiState = state,
+                    flags = AppearanceDialogFlags(showCardsGlass = true),
+                    uiState = SettingsUiState(cornerRadiusDp = 16, isHazeEnabled = true),
                     actions = actions,
+                    onDismissDialog = {}
+                )
+            }
+        }
+
+        composeTestRule.onNodeWithText("Cards and glass").assertExists()
+        composeTestRule.onNodeWithText("8").performScrollTo().performClick()
+        composeTestRule.onNodeWithText("Max").performScrollTo().performClick()
+        composeTestRule.onNodeWithText("Solid").performScrollTo().performClick()
+
+        assertEquals(CardsGlassDraft(radiusDp = 8, glass = GlassLevel.MAX, opacity = 0.9f), applied.last())
+        assertEquals(3, applied.size)
+    }
+
+    @Test
+    fun `when tapping Done on the cardsGlass sheet, should close and hand back the opening values`() {
+        var closedWith: CardsGlassDraft? = null
+        var dismissCalled = false
+        val opening = SettingsUiState(cornerRadiusDp = 16, isHazeEnabled = true)
+
+        composeTestRule.setContent {
+            AureoleLauncherTheme {
+                AppearanceDialogs(
+                    flags = AppearanceDialogFlags(showCardsGlass = true),
+                    uiState = opening,
+                    actions = SettingsScreenActions(onCardsGlassClosed = { closedWith = it }),
                     onDismissDialog = { dismissCalled = true }
                 )
             }
         }
 
-        composeTestRule.onNodeWithText("Medium").performClick()
-        assertTrue(toggleHazeCalled)
-        assertEquals(0.50f, hazeOpacity)
+        composeTestRule.onNodeWithText("8").performScrollTo().performClick()
+        composeTestRule.onNodeWithText("Done").performClick()
+        composeTestRule.mainClock.advanceTimeBy(DISMISS_ANIMATION_MS)
+
+        assertEquals(opening.toCardsGlassDraft(), closedWith)
         assertTrue(dismissCalled)
     }
 
     @Test
-    fun `when blur flag is true and haze is enabled, disabling blur should toggle haze and set opacity to 0`() {
-        var toggleHazeCalled = false
-        var hazeOpacity = -1f
-        var dismissCalled = false
-        val flags = AppearanceDialogFlags(showBlur = true)
-        val state = SettingsUiState(isHazeEnabled = true, hazeOpacity = 0.5f)
-        val actions = SettingsScreenActions(
-            onToggleHaze = { toggleHazeCalled = true },
-            onHazeOpacitySelected = { hazeOpacity = it }
-        )
-
+    fun `the cardsGlass sheet has no Apply or Cancel button`() {
         composeTestRule.setContent {
             AureoleLauncherTheme {
                 AppearanceDialogs(
-                    flags = flags,
-                    uiState = state,
-                    actions = actions,
-                    onDismissDialog = { dismissCalled = true }
-                )
-            }
-        }
-
-        composeTestRule.onNodeWithText("None").performClick()
-        assertTrue(toggleHazeCalled)
-        assertEquals(0.0f, hazeOpacity)
-        assertTrue(dismissCalled)
-    }
-
-    @Test
-    fun `when borderRadius flag is true, should render PickBorderRadiusBottomSheet and handle selection`() {
-        var selectedRadius = -1
-        var dismissCalled = false
-        val flags = AppearanceDialogFlags(showBorderRadius = true)
-        val actions = SettingsScreenActions(onSelectCornerRadius = { selectedRadius = it })
-
-        composeTestRule.setContent {
-            AureoleLauncherTheme {
-                AppearanceDialogs(
-                    flags = flags,
+                    flags = AppearanceDialogFlags(showCardsGlass = true),
                     uiState = SettingsUiState(),
-                    actions = actions,
-                    onDismissDialog = { dismissCalled = true }
+                    actions = SettingsScreenActions(),
+                    onDismissDialog = {}
                 )
             }
         }
 
-        composeTestRule.onNodeWithText("Change Border").assertExists()
-        composeTestRule.onNodeWithText("Standard (16 dp)").performClick()
-        assertEquals(16, selectedRadius)
-        assertTrue(dismissCalled)
+        composeTestRule.onNodeWithText("Apply").assertDoesNotExist()
+        composeTestRule.onNodeWithText("Cancel").assertDoesNotExist()
     }
 }

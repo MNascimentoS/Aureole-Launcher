@@ -18,8 +18,7 @@ internal fun HomeScreenQuickButtonOverlays(
         QuickButtonSettingsBottomSheet(
             uiState = uiState,
             actions = actions,
-            onDismissRequest = actions.onCloseQuickButtonSettings,
-            hazeState = hazeState
+            onDismissRequest = actions.onCloseQuickButtonSettings
         )
     }
 

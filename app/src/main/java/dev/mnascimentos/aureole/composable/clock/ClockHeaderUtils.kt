@@ -1,8 +1,11 @@
 package dev.mnascimentos.aureole.composable.clock
 
 import android.graphics.Typeface
+import android.icu.text.DateTimePatternGenerator
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.text.style.TextAlign
+import dev.mnascimentos.aureole.composable.clock.model.clockDateSkeleton
+import java.util.Locale
 
 internal object ClockHeaderUtils {
 
@@ -14,13 +17,10 @@ internal object ClockHeaderUtils {
         }
     }
 
-    fun resolveClockDatePattern(dateFormat: String): String {
-        return when (dateFormat.uppercase()) {
-            "SHORT" -> "EEE, d MMM"
-            "NUMERIC" -> "dd/MM/yyyy"
-            "ISO" -> "yyyy-MM-dd"
-            else -> "EEEE, d 'de' MMMM"
-        }
+    /** The date follows [locale] (order and language of weekday, day and month), so it never mixes languages. */
+    fun resolveClockDatePattern(dateFormat: String, locale: Locale = Locale.getDefault()): String {
+        if (dateFormat.equals("ISO", ignoreCase = true)) return "yyyy-MM-dd"
+        return DateTimePatternGenerator.getInstance(locale).getBestPattern(clockDateSkeleton(dateFormat))
     }
 
     fun resolveClockAlignments(alignment: String): Pair<Alignment.Horizontal, TextAlign> {

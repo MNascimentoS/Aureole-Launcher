@@ -5,20 +5,29 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.v2.createComposeRule
+import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollTo
 import dev.mnascimentos.aureole.core.data.model.AppInfo
+import dev.mnascimentos.aureole.core.data.model.QuickButtonAppearance
+import dev.mnascimentos.aureole.core.data.model.QuickButtonIcon
 import dev.mnascimentos.aureole.core.data.model.QuickButtonModel
 import dev.mnascimentos.aureole.core.data.model.QuickButtonShortcuts
 import dev.mnascimentos.aureole.core.data.model.ShortcutAction
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
+import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
 import dev.mnascimentos.aureole.feature.home.model.createDefaultHomeScreenActions
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNull
+import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
+
+private const val DISMISS_ANIMATION_MS = 500L
 
 @RunWith(RobolectricTestRunner::class)
 class QuickButtonAppearanceBottomSheetTest {
@@ -59,53 +68,63 @@ class QuickButtonAppearanceBottomSheetTest {
 
         // Assert
         composeTestRule.onNodeWithText("Quick button").assertIsDisplayed()
-        composeTestRule.onNodeWithText("Background color").assertIsDisplayed()
+        composeTestRule.onNodeWithText("BACKGROUND COLOR").performScrollTo().assertIsDisplayed()
     }
 
-    @Test
-    fun `when background color row is clicked, should show color picker dialog`() {
-        // Arrange
+    private fun setAppearanceSheet(actions: HomeScreenActions, dismissed: MutableList<Unit> = mutableListOf()) {
         val uiState = MainUiState(
-            activeQuickButtonModel = QuickButtonModel(),
-            isHazeEnabled = false
+            activeQuickButtonModel = QuickButtonModel(appearance = QuickButtonAppearance(strokeEnabled = false))
         )
-
-        // Act
         composeTestRule.setContent {
             AureoleLauncherTheme {
                 QuickButtonAppearanceBottomSheet(
                     uiState = uiState,
-                    actions = createDefaultHomeScreenActions(),
-                    onDismissRequest = {}
+                    actions = actions,
+                    onDismissRequest = { dismissed += Unit }
                 )
             }
         }
-
-        // Assert
-        composeTestRule.onNodeWithText("Background color").performClick()
-        composeTestRule.onNodeWithText("Choose Primary Color").assertIsDisplayed()
     }
 
     @Test
-    fun `when icon row is clicked, should show icon picker dialog`() {
-        // Arrange
-        val uiState = MainUiState(
-            activeQuickButtonModel = QuickButtonModel()
+    fun `when toggling the stroke, should not write the button until Save is tapped`() {
+        var saved: QuickButtonAppearance? = null
+        setAppearanceSheet(createDefaultHomeScreenActions().copy(onUpdateQuickButtonAppearance = { saved = it }))
+
+        composeTestRule.onNodeWithText("Stroke").performScrollTo().performClick()
+        composeTestRule.onNodeWithText("STROKE COLOR").assertExists()
+        assertNull(saved)
+
+        composeTestRule.onNodeWithText("Save").performClick()
+        assertTrue(saved!!.strokeEnabled)
+    }
+
+    @Test
+    fun `when cancelling after editing, should drop the draft and close`() {
+        var saved: QuickButtonAppearance? = null
+        val dismissed = mutableListOf<Unit>()
+        setAppearanceSheet(
+            createDefaultHomeScreenActions().copy(onUpdateQuickButtonAppearance = { saved = it }),
+            dismissed
         )
 
-        // Act
-        composeTestRule.setContent {
-            AureoleLauncherTheme {
-                QuickButtonAppearanceBottomSheet(
-                    uiState = uiState,
-                    actions = createDefaultHomeScreenActions(),
-                    onDismissRequest = {}
-                )
-            }
-        }
+        composeTestRule.onNodeWithText("Stroke").performScrollTo().performClick()
+        composeTestRule.onNodeWithText("Cancel").performClick()
+        composeTestRule.mainClock.advanceTimeBy(DISMISS_ANIMATION_MS)
 
-        // Assert
-        composeTestRule.onNodeWithText("Icon").performScrollTo().performClick()
-        composeTestRule.onNodeWithText("Select Icon").assertIsDisplayed()
+        assertNull(saved)
+        assertEquals(1, dismissed.size)
+    }
+
+    @Test
+    fun `when an icon of the inline grid is tapped, should save it with Save and not before`() {
+        var saved: QuickButtonAppearance? = null
+        setAppearanceSheet(createDefaultHomeScreenActions().copy(onUpdateQuickButtonAppearance = { saved = it }))
+
+        composeTestRule.onNodeWithContentDescription(QuickButtonIcon.STAR.name).performScrollTo().performClick()
+        assertNull(saved)
+
+        composeTestRule.onNodeWithText("Save").performClick()
+        assertEquals(QuickButtonIcon.STAR, saved!!.icon)
     }
 }

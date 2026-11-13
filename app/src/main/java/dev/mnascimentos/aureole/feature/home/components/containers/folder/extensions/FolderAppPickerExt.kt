@@ -31,12 +31,14 @@ fun togglePackageSelection(selectedPackages: MutableList<String>, pkg: String) {
     }
 }
 
-/** Moves the package at [index] one place up; out of range or already first changes nothing. */
-fun MutableList<String>.moveUp(index: Int) {
-    if (index > 0 && index < size) add(index - 1, removeAt(index))
-}
-
-/** Moves the package at [index] one place down; out of range or already last changes nothing. */
-fun MutableList<String>.moveDown(index: Int) {
-    if (index >= 0 && index < size - 1) add(index + 1, removeAt(index))
+/**
+ * Applies a swap of the tray to [selectedPackages]: the app at [from] of [trayPackages] takes the place of the
+ * app at [to]. The tray skips packages that are not installed, so its indexes are mapped to the selection
+ * through the packages. Out of range or the same place changes nothing.
+ */
+fun moveTrayApp(selectedPackages: MutableList<String>, trayPackages: List<String>, from: Int, to: Int) {
+    val fromIndex = trayPackages.getOrNull(from)?.let(selectedPackages::indexOf) ?: -1
+    val toIndex = trayPackages.getOrNull(to)?.let(selectedPackages::indexOf) ?: -1
+    if (fromIndex < 0 || toIndex < 0 || fromIndex == toIndex) return
+    selectedPackages.add(toIndex, selectedPackages.removeAt(fromIndex))
 }

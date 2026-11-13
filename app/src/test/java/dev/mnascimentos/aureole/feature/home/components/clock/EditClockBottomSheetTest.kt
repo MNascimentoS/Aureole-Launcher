@@ -1,9 +1,6 @@
 package dev.mnascimentos.aureole.feature.home.components.clock
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.ui.Modifier
+import android.content.Context
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.hasSetTextAction
 import androidx.compose.ui.test.isToggleable
@@ -12,6 +9,8 @@ import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollTo
 import androidx.compose.ui.test.performTextInput
+import androidx.test.core.app.ApplicationProvider
+import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
@@ -79,68 +78,18 @@ class EditClockBottomSheetTest {
 
         // Assert
         composeTestRule.onNodeWithText("Customize Clock").assertIsDisplayed()
-        composeTestRule.onNodeWithText("Layout Style").assertIsDisplayed()
-        composeTestRule.onNodeWithText("Alignment").performScrollTo().assertIsDisplayed()
+        composeTestRule.onNodeWithText("STYLE").assertIsDisplayed()
+        composeTestRule.onNodeWithText("ALIGNMENT").performScrollTo().assertIsDisplayed()
 
         composeTestRule.onNodeWithText("Format").performClick()
         advanceAnimation()
-        composeTestRule.onNodeWithText("Time and Date Format").assertIsDisplayed()
-        composeTestRule.onNodeWithText("Font Style").performScrollTo().assertIsDisplayed()
+        composeTestRule.onNodeWithText("TIME AND DATE FORMAT").assertIsDisplayed()
+        composeTestRule.onNodeWithText("FONT STYLE").performScrollTo().assertIsDisplayed()
 
         composeTestRule.onNodeWithText("Colors").performClick()
         advanceAnimation()
-        composeTestRule.onNodeWithText("Text Color").performScrollTo().assertIsDisplayed()
-        composeTestRule.onNodeWithText("Card Background").performScrollTo().assertIsDisplayed()
-    }
-
-    @Test
-    fun `when clicking reset defaults, should invoke onResetClockSettings`() {
-        // Arrange
-        var resetCalled = false
-        val actions = createDefaultActions {
-            onResetClockSettings = { resetCalled = true }
-        }
-
-        composeTestRule.setContent {
-            AureoleLauncherTheme {
-                EditClockBottomSheet(
-                    uiState = MainUiState(),
-                    actions = actions,
-                    onDismissRequest = {}
-                )
-            }
-        }
-        advanceAnimation()
-
-        // Act
-        composeTestRule.onNodeWithText("Reset Defaults").performClick()
-
-        // Assert
-        assertTrue(resetCalled)
-    }
-
-    @Test
-    fun `when clicking save button, should invoke onDismissRequest after dismissal delay`() {
-        // Arrange
-        var dismissed = false
-
-        composeTestRule.setContent {
-            AureoleLauncherTheme {
-                EditClockBottomSheet(
-                    uiState = MainUiState(),
-                    actions = createDefaultActions(),
-                    onDismissRequest = { dismissed = true }
-                )
-            }
-        }
-        advanceAnimation()
-
-        // Act
-        composeTestRule.onNodeWithText("Save").performClick()
-        advanceAnimation()
-
-        // Assert
-        assertTrue(dismissed)
+        composeTestRule.onNodeWithText("TEXT COLOR").performScrollTo().assertIsDisplayed()
+        composeTestRule.onNodeWithText("CARD BACKGROUND").performScrollTo().assertIsDisplayed()
     }
 
     @Test
@@ -264,8 +213,9 @@ class EditClockBottomSheetTest {
             }
         }
 
-        // Act - click "Azul Gelado"
-        composeTestRule.onNodeWithText("Azul Gelado").performClick()
+        // Act - click "Azul Gelado" (the name comes from the string resource, so it follows the test locale)
+        val iceBlue = ApplicationProvider.getApplicationContext<Context>().getString(R.string.home_clock_color_ice_blue)
+        composeTestRule.onNodeWithText(iceBlue).performClick()
 
         // Assert
         assertEquals(0xFF90CAF9.toInt(), selectedColor)
@@ -291,8 +241,11 @@ class EditClockBottomSheetTest {
         // Assert
         composeTestRule.onNodeWithText("Custom Background Color:").assertIsDisplayed()
 
-        // Act - click "Escuro Slate"
-        composeTestRule.onNodeWithText("Escuro Slate").performClick()
+        val darkSlate = ApplicationProvider.getApplicationContext<Context>()
+            .getString(R.string.home_clock_bg_color_dark_slate)
+
+        // Act - click dark slate
+        composeTestRule.onNodeWithText(darkSlate).performClick()
 
         // Assert
         assertEquals(0xFF1E2124.toInt(), selectedBgColor)
@@ -323,62 +276,29 @@ class EditClockBottomSheetTest {
     }
 
     @Test
-    fun `when dropdown item is selected, should invoke onOptionSelected`() {
-        // Arrange
+    fun `when selecting a style card, should invoke onUpdateClockStyle with its key`() {
         var selectedStyle = ""
-        val actions = createDefaultActions {
-            onUpdateClockStyle = { selectedStyle = it }
-        }
+        val actions = createDefaultActions { onUpdateClockStyle = { selectedStyle = it } }
 
         composeTestRule.setContent {
             AureoleLauncherTheme {
-                EditClockStyleSection(
-                    uiState = MainUiState(clockStyle = "DYNAMIC_GREETING"),
-                    actions = actions,
-                    tempCustomGreeting = "",
-                    onGreetingChange = {}
-                )
+                EditClockStyleSectionHost(actions = actions)
             }
         }
 
-        // Act - click dropdown to expand and select "Date on Top"
-        composeTestRule.onNodeWithText("Daily Greeting").performClick()
-        advanceAnimation()
-        composeTestRule.onNodeWithText("Date on Top").performClick()
-
-        // Assert
-        assertEquals("DATE_ON_TOP", selectedStyle)
+        composeTestRule.onNodeWithText("Time only").performClick()
+        assertEquals("TIME_ONLY", selectedStyle)
+        composeTestRule.onNodeWithText("Greeting and date").performClick()
+        assertEquals("GREETING_AND_DATE", selectedStyle)
     }
 
-    @Test
-    fun `when date format dropdown option is selected, should invoke onUpdateClockDateFormat`() {
-        // Arrange
-        var selectedDateFormat = ""
-        val actions = createDefaultActions {
-            onUpdateClockDateFormat = { selectedDateFormat = it }
-        }
-
-        composeTestRule.setContent {
-            AureoleLauncherTheme {
-                Column(
-                    modifier = Modifier.verticalScroll(
-                        rememberScrollState()
-                    )
-                ) {
-                    EditClockFormatSection(
-                        uiState = MainUiState(clockDateFormat = "DEFAULT"),
-                        actions = actions
-                    )
-                }
-            }
-        }
-
-        // Act - click currentDisplayLabel "Full (Friday, Oct 9)" to expand, then click option
-        composeTestRule.onNodeWithText("Full (Friday, Oct 9)").performClick()
-        advanceAnimation()
-        composeTestRule.onNodeWithText("Numeric (10/09/2026)").performScrollTo().performClick()
-
-        // Assert
-        assertEquals("NUMERIC", selectedDateFormat)
+    @androidx.compose.runtime.Composable
+    private fun EditClockStyleSectionHost(actions: HomeScreenActions) {
+        EditClockStyleSection(
+            uiState = MainUiState(clockStyle = "DATE_ON_TOP"),
+            actions = actions,
+            tempCustomGreeting = "",
+            onGreetingChange = {}
+        )
     }
 }

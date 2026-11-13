@@ -7,6 +7,7 @@ import androidx.compose.ui.test.onRoot
 import androidx.compose.ui.test.performTouchInput
 import androidx.compose.ui.test.swipeUp
 import dev.mnascimentos.aureole.core.data.model.OnboardingStage
+import dev.mnascimentos.aureole.core.designsystem.model.LocalLeftHanded
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.feature.home.components.onboarding.model.OnboardingUiState
 import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
@@ -32,6 +33,7 @@ class MainScaffoldOnboardingTest {
             AureoleLauncherTheme {
                 CompositionLocalProvider(
                     LocalHomeUiState provides uiState,
+                    LocalLeftHanded provides uiState.isLeftHandedMode,
                     LocalHomeActions provides actions
                 ) {
                     MainScaffold(appWidgetHost = null, onWidgetSelected = {})
