@@ -8,7 +8,6 @@ import dev.mnascimentos.aureole.feature.home.grid.GridDefaults
 import dev.mnascimentos.aureole.feature.home.grid.GridEngineUtils
 import dev.mnascimentos.aureole.feature.home.grid.extensions.addGridItem
 import dev.mnascimentos.aureole.feature.home.grid.extensions.enterGridEditMode
-import dev.mnascimentos.aureole.feature.home.grid.extensions.landscapeFromPortrait
 import dev.mnascimentos.aureole.feature.home.grid.extensions.loadGridItemsNow
 import dev.mnascimentos.aureole.feature.home.grid.extensions.withNewGridItemInEditMode
 import dev.mnascimentos.aureole.feature.home.grid.model.GridItemSpec
@@ -26,21 +25,21 @@ internal fun HomeViewModel.startWithEmptyHome() {
     loadGridItemsNow(uiState.value.isLandscape)
 }
 
-/** Leaving the checklist with nothing built must not leave the home empty: use the default layout. */
+/**
+ * Leaving the checklist with nothing built must not leave the home empty: portrait gets the default layout and
+ * landscape the onboarding one (the default, with the portrait widgets and settings). A layout that already has
+ * items is never touched.
+ */
 internal fun HomeViewModel.applyDefaultLayoutWhereEmpty() {
     val state = uiState.value
     val isLeftHanded = settingsRepository.isLeftHandedMode
-    mapOf(false to state.portraitGridItems, true to state.landscapeGridItems)
-        .filterValues { it.isEmpty() }
-        .keys
-        .forEach { isLandscape ->
-            val items = if (isLandscape && state.portraitGridItems.isNotEmpty()) {
-                landscapeFromPortrait(state.portraitGridItems, isLeftHanded)
-            } else {
-                GridDefaults.getDefaultGridItems(isLandscape, isLeftHanded)
-            }
-            gridRepository.saveGridItems(items, isLandscape)
-        }
+    val portrait = state.portraitGridItems.ifEmpty {
+        GridDefaults.getDefaultGridItems(isLandscape = false, isLeftHanded = isLeftHanded)
+            .also { gridRepository.saveGridItems(it, isLandscape = false) }
+    }
+    if (state.landscapeGridItems.isEmpty()) {
+        gridRepository.saveGridItems(onboardingLandscapeLayout(portrait, isLeftHanded), isLandscape = true)
+    }
     loadGridItemsNow(state.isLandscape)
 }
 

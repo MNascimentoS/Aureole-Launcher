@@ -15,7 +15,10 @@ import java.util.UUID
 internal fun HomeViewModel.ensureAppsOnCompletion(previous: MainUiState) {
     val isCompletedNow = previous.onboarding.stage != OnboardingStage.COMPLETED &&
         uiState.value.onboarding.stage == OnboardingStage.COMPLETED
-    if (isCompletedNow) ensureAppsComponent()
+    if (!isCompletedNow) return
+    // Before the apps list is added: that would make an empty landscape look built.
+    applyDefaultLayoutWhereEmpty()
+    ensureAppsComponent()
 }
 
 /**
