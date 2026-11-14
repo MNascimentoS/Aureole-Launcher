@@ -117,7 +117,7 @@ class ClockHeaderContentTest {
     }
 
     @Test
-    fun `when rendering clock header content with compact height, should render without throwing`() {
+    fun `when rendering clock header content with compact height, should hide the greeting that does not fit`() {
         // Arrange & Act
         composeTestRule.setContent {
             AureoleLauncherTheme {
@@ -138,7 +138,7 @@ class ClockHeaderContentTest {
         }
 
         // Assert
-        composeTestRule.onNodeWithText("Saudacao Compacta").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Saudacao Compacta").assertDoesNotExist()
     }
 
     @Test

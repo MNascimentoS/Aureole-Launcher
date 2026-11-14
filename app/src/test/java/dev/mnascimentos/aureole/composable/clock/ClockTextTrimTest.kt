@@ -29,8 +29,8 @@ class ClockTextTrimTest {
             fullPx = with(LocalDensity.current) { BOX_DP.dp.roundToPx() }
             Box(
                 Modifier
-                    .trimVerticalBands(topRatio = 0.25f, bottomRatio = 0.25f)
                     .onSizeChanged { size = it }
+                    .trimVerticalBands(topRatio = 0.25f, bottomRatio = 0.25f)
             ) {
                 Box(Modifier.size(BOX_DP.dp))
             }
