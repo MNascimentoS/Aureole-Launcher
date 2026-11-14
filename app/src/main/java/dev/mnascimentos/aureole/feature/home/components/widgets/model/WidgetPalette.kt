@@ -114,7 +114,7 @@ private val NEUTRAL2_IDS = listOf(
  * Maps every system accent/neutral color a widget may use to the matching tone of the Aureole [palette]: the lightest
  * shade is white, the darkest is black and the middle one is the palette color itself.
  */
-@RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
+@RequiresApi(Build.VERSION_CODES.S)
 fun buildWidgetColorMap(palette: WidgetPalette): Map<Int, Int> = buildMap {
     putRamp(ACCENT1_IDS, palette.accent1)
     putRamp(ACCENT2_IDS, palette.accent2)

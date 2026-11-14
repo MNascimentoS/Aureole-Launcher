@@ -205,7 +205,7 @@ private fun AppearanceMenuItems(
             onCheckedChange = { actions.onToggleThemedAppIcons() },
             leadingContent = { AureoleDS.icons.AppSelect() }
         )
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             WidgetThemeColorsToggle(uiState, actions)
         }
     }

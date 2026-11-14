@@ -5,7 +5,7 @@ import androidx.annotation.RequiresApi
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
-@RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
+@RequiresApi(Build.VERSION_CODES.S)
 class WidgetColorMapTest {
     private val palette = WidgetPalette(
         accent1 = 0xFF3366CC.toInt(),

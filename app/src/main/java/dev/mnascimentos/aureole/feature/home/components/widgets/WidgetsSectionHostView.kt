@@ -123,7 +123,7 @@ internal fun applyWidgetThemeColors(
     palette: WidgetPalette,
     hadOverride: Boolean
 ): Boolean {
-    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.UPSIDE_DOWN_CAKE || view !is AppWidgetHostView) return false
+    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S || view !is AppWidgetHostView) return false
     if (!enabled && !hadOverride) return false
     val mapping = SparseIntArray()
     if (enabled) buildWidgetColorMap(palette).forEach { (resId, color) -> mapping.put(resId, color) }
