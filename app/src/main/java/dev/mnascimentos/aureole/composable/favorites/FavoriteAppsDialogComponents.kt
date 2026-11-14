@@ -26,7 +26,6 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.dp
 import androidx.core.graphics.drawable.toDrawable
 import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.composable.appitem.AureoleAppIcon
@@ -105,7 +104,7 @@ fun FavoriteAppDragHandle(modifier: Modifier = Modifier) {
     }
     Box(
         modifier = modifier
-            .size(width = HANDLE_WIDTH, height = HANDLE_HEIGHT)
+            .size(width = AureoleDS.dimens.dragHandleWidth, height = AureoleDS.dimens.dragHandleHeight)
             .clip(shape)
             .background(background)
             .border(AureoleDS.dimens.borderMinimal, AureoleDS.colors.outline.copy(alpha = 0.5f), shape)
@@ -170,12 +169,6 @@ fun RemainingAppRow(
         )
     }
 }
-
-/** Width of the drag handle hit area; a layout constraint of this handle only, not a shared dimension. */
-private val HANDLE_WIDTH = 44.dp
-
-/** Height of the drag handle hit area; a layout constraint of this handle only, not a shared dimension. */
-private val HANDLE_HEIGHT = 38.dp
 
 @AureolePreview
 @Composable

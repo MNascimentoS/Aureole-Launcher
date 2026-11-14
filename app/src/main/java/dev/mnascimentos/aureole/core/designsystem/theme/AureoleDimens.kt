@@ -32,6 +32,14 @@ data class AureoleDimens(
     val quickActionIconSize: Dp = 50.dp,
     val sizeLarge: Dp = 68.dp,
     val sizeExtraLarge: Dp = 120.dp,
+    val controlHeight: Dp = 44.dp,
+    val dragHandleWidth: Dp = 44.dp,
+    val dragHandleHeight: Dp = 38.dp,
+    val clockLineHeightLarge: Dp = 14.dp,
+    val dashLength: Dp = 6.dp,
+    val floatingElevation: Dp = 8.dp,
+    val previewListMaxHeight: Dp = 300.dp,
+    val shortcutTileHeight: Dp = 92.dp,
 
     // 02. Ícones
     val iconXSmall: Dp = 12.dp,

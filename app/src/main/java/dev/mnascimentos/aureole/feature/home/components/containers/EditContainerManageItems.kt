@@ -30,7 +30,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.composable.dialogs.CreateFolderDialog
 import dev.mnascimentos.aureole.composable.mirror.LeftHandMirror
@@ -48,9 +47,6 @@ import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.components.containers.model.ManageItemRowParams
-
-/** Tallest the list of items gets before it scrolls: the sheet itself does not scroll. */
-private val MANAGE_LIST_MAX_HEIGHT = 300.dp
 
 @Composable
 internal fun ManageItemsContent(
@@ -254,7 +250,7 @@ private fun ReorderableManageItems(state: EditContainerState, allApps: List<AppI
     val autoScroll = rememberReorderAutoScroll(scrollState)
     Column(
         modifier = Modifier
-            .heightIn(max = MANAGE_LIST_MAX_HEIGHT)
+            .heightIn(max = AureoleDS.dimens.previewListMaxHeight)
             .fillMaxWidth()
             .reorderAutoScrollViewport(autoScroll)
             .verticalScroll(scrollState)

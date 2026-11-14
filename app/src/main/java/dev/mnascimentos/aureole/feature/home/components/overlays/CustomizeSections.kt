@@ -23,7 +23,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.LayoutDirection
-import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.composable.menu.AureoleMenuSectionLabel
 import dev.mnascimentos.aureole.composable.mirror.LeftHandMirror
@@ -37,8 +36,6 @@ import dev.mnascimentos.aureole.feature.home.components.overlays.model.Customize
 import dev.mnascimentos.aureole.feature.home.components.overlays.model.CustomizeAdjustItem
 
 private object CustomizeMetrics {
-    /** Height of the "Add" tile: sized so the icon, the two-line label and the badge fit; no other tile shares it. */
-    val TileHeight = 92.dp
     const val CARD_ALPHA = 0.5f
 }
 
@@ -128,7 +125,7 @@ internal fun CustomizeAddSection(
 private fun AddTile(item: CustomizeAddItem, onClick: () -> Unit, modifier: Modifier = Modifier) {
     Column(
         modifier = modifier
-            .height(CustomizeMetrics.TileHeight)
+            .height(AureoleDS.dimens.shortcutTileHeight)
             .clip(RoundedCornerShape(AureoleDS.dimens.radiusMedium))
             .background(AureoleDS.colors.surfaceVariant.copy(alpha = CustomizeMetrics.CARD_ALPHA))
             .clickable(role = Role.Button, onClick = onClick)
