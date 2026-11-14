@@ -4,6 +4,7 @@ import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import dev.chrisbanes.haze.HazeState
+import dev.mnascimentos.aureole.composable.favorites.model.AppsListSections
 import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
 
 object FavoritesPreviewMetrics {

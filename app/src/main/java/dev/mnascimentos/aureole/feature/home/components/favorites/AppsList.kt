@@ -25,6 +25,8 @@ import dev.mnascimentos.aureole.composable.appitem.AppListSkeletonComponent
 import dev.mnascimentos.aureole.composable.appitem.model.AppItemRowActions
 import dev.mnascimentos.aureole.composable.appitem.model.AppItemRowConfig
 import dev.mnascimentos.aureole.composable.clock.model.ClockHazeConfig
+import dev.mnascimentos.aureole.composable.favorites.model.APPS_LIST_MAX_OTHERS_IN_SCROLL_VIEW
+import dev.mnascimentos.aureole.composable.favorites.model.appsListSections
 import dev.mnascimentos.aureole.composable.menu.AureoleMenuSectionLabel
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.designsystem.model.LocalLeftHanded
@@ -35,13 +37,11 @@ import dev.mnascimentos.aureole.core.designsystem.utils.fadingEdges
 import dev.mnascimentos.aureole.feature.home.components.appsdrawer.appitem.HomeAppItemRow
 import dev.mnascimentos.aureole.feature.home.components.clock.HomeClockHeader
 import dev.mnascimentos.aureole.feature.home.components.favorites.extensions.shouldShowLabels
-import dev.mnascimentos.aureole.feature.home.components.favorites.model.APPS_LIST_MAX_OTHERS_IN_SCROLL_VIEW
 import dev.mnascimentos.aureole.feature.home.components.favorites.model.AppsListParams
 import dev.mnascimentos.aureole.feature.home.components.favorites.model.FavoritesListConfig
 import dev.mnascimentos.aureole.feature.home.components.favorites.model.FavoritesListOptions
 import dev.mnascimentos.aureole.feature.home.components.favorites.model.FavoritesPreviewMetrics
 import dev.mnascimentos.aureole.feature.home.components.favorites.model.ScrollableAppsListParams
-import dev.mnascimentos.aureole.feature.home.components.favorites.model.appsListSections
 import dev.mnascimentos.aureole.feature.home.components.widgets.StackedWidgetSection
 import dev.mnascimentos.aureole.feature.home.components.widgets.model.StackedWidgetConfig
 import dev.mnascimentos.aureole.feature.home.model.LocalHomeActions
