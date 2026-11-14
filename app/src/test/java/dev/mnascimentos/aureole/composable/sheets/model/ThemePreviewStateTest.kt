@@ -81,4 +81,26 @@ class ThemePreviewStateTest {
         assertEquals("Istok Web", fontNameOf(IstokWebFontFamily))
         assertEquals("Istok Web", fontNameOf(androidx.compose.ui.text.font.FontFamily.Cursive))
     }
+
+    @Test
+    fun `applying with no tap should save the palette already shown as selected`() {
+        assertEquals("Frostbite", resolveAppliedPalette(pendingName = null, selectedName = "Frostbite")?.name)
+    }
+
+    @Test
+    fun `applying with a tap should save the tapped palette`() {
+        val tapped = other.name
+
+        assertEquals(tapped, resolveAppliedPalette(pendingName = tapped, selectedName = "Frostbite")?.name)
+    }
+
+    @Test
+    fun `applying with no tap should save the font already shown as selected`() {
+        assertEquals("Istok Web", resolveAppliedFont(pendingName = null, selectedName = "Istok Web"))
+    }
+
+    @Test
+    fun `applying with a tap should save the tapped font`() {
+        assertEquals("Roboto", resolveAppliedFont(pendingName = "Roboto", selectedName = "Istok Web"))
+    }
 }
