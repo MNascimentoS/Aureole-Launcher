@@ -53,18 +53,14 @@ internal fun ClockHeaderContent(params: ClockHeaderContentParams) {
         greetingAllowed = params.clockStyle != "TIME_ONLY" && params.clockStyle != "DATE_ON_TOP",
         hasDate = params.clockStyle != "TIME_ONLY"
     )
-    val showGreeting = sizing.showGreeting
 
     val isCompact = params.maxHeight < COMPACT_CONTAINER_HEIGHT_DP.dp
     val greetingSize = if (isCompact) GREETING_SIZE_COMPACT else GREETING_SIZE_NORMAL
     val dateSize = if (isCompact) DATE_SIZE_COMPACT else DATE_SIZE_NORMAL
 
-    val clockTextSizePx = sizing.textSizePx
-
     val fontSpec = ClockFontSpec.fromKey(params.fontFamily)
     val typeface = fontSpec.timeTypeface()
     val dateTypeface = fontSpec.dateTypeface()
-    val greetingFamily = fontSpec.fontFamily()
     val (format12, format24) = ClockHeaderUtils.resolveClockTimeFormats(params.timeFormat)
     val datePattern = ClockHeaderUtils.resolveClockDatePattern(params.dateFormat, LocalConfiguration.current.locales[0])
 
@@ -82,11 +78,11 @@ internal fun ClockHeaderContent(params: ClockHeaderContentParams) {
             )
         }
 
-        if (showGreeting) {
+        if (sizing.showGreeting) {
             ClockGreetingDisplay(
                 greeting = params.greeting,
                 greetingSizeSp = greetingSize,
-                fontFamily = greetingFamily,
+                fontFamily = fontSpec.fontFamily(),
                 textColor = params.composeTextColor,
                 textAlign = textAlign
             )
@@ -95,7 +91,7 @@ internal fun ClockHeaderContent(params: ClockHeaderContentParams) {
         ClockTimeDisplay(
             params = ClockTimeDisplayParams(
                 colorPrimary = params.colorPrimary,
-                textSizePx = clockTextSizePx,
+                textSizePx = sizing.textSizePx,
                 format12 = format12,
                 format24 = format24,
                 typeface = typeface,

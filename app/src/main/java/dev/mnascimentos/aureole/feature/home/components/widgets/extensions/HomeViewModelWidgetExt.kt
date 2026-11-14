@@ -5,7 +5,6 @@ import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.core.data.model.LauncherItemState
 import dev.mnascimentos.aureole.core.data.model.LauncherItemType
 import dev.mnascimentos.aureole.feature.home.HomeViewModel
-import dev.mnascimentos.aureole.feature.home.components.widgets.model.widgetDotsKey
 import dev.mnascimentos.aureole.feature.home.grid.extensions.addGridItem
 import dev.mnascimentos.aureole.feature.home.grid.extensions.dismissGridError
 import dev.mnascimentos.aureole.feature.home.grid.model.GridItemSpec
@@ -42,14 +41,6 @@ fun HomeViewModel.loadWidgetSettings() {
             widgetStackDots = dotsMap
         )
     }
-}
-
-/** Fills both orientations of a group; landscape inherits the portrait value until it is toggled. */
-private fun HomeViewModel.putDots(dotsMap: MutableMap<String, Boolean>, stackId: String) {
-    val portraitKey = widgetDotsKey(stackId, isLandscape = false)
-    val landscapeKey = widgetDotsKey(stackId, isLandscape = true)
-    dotsMap[portraitKey] = widgetRepository.getWidgetDotsState(portraitKey)
-    dotsMap[landscapeKey] = widgetRepository.getWidgetDotsState(landscapeKey, fallbackKey = portraitKey)
 }
 
 fun HomeViewModel.setWidgetRowHeight(height: Dp) {

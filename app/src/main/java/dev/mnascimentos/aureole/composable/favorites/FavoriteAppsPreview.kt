@@ -18,20 +18,11 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.composable.appitem.AppItemRow
-import dev.mnascimentos.aureole.composable.appitem.model.AppItemRowConfig
-import dev.mnascimentos.aureole.composable.favorites.model.AppsListSections
+import dev.mnascimentos.aureole.composable.favorites.model.FavoriteAppsPreviewParams
 import dev.mnascimentos.aureole.composable.menu.AureoleMenuSectionLabel
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
-
-/** What the preview frame of "Choose favorites" draws: the list as the Home shows it. */
-data class FavoriteAppsPreviewParams(
-    val sections: AppsListSections,
-    /** Section labels on, as on the Home: only with "Show all apps" on and "Show labels" on. */
-    val hasLabels: Boolean,
-    val rowConfig: AppItemRowConfig
-)
 
 @Composable
 internal fun FavoriteAppsPreviewContent(params: FavoriteAppsPreviewParams) {

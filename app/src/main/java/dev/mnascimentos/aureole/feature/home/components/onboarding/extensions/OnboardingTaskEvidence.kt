@@ -33,9 +33,9 @@ internal val MainUiState.isTaskInProgress: Boolean
     get() = isGridEditMode || isTaskEditorOpen
 
 /**
- * Whether the home shows what [task] asks for once its screen closed: a clock, an apps list with favorites or showing every app, a
- * widget in the stack. The container task has its own confirmation, the editor's Save (even with it empty), so
- * leaving the editor any other way leaves the task pending.
+ * Whether the home shows what [task] asks for once its screen closed: a clock, an apps list with favorites or showing
+ * every app, a widget in the stack. The container task has its own confirmation, the editor's Save (even with it
+ * empty), so leaving the editor any other way leaves the task pending.
  */
 internal fun MainUiState.meetsRequirement(task: OnboardingTask): Boolean = when (task) {
     OnboardingTask.ADD_CLOCK -> gridItems.any { it.safeType == LauncherItemType.CLOCK }

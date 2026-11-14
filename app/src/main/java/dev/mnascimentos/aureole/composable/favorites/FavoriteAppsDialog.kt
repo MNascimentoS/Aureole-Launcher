@@ -12,6 +12,7 @@ import androidx.compose.ui.res.stringResource
 import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.composable.favorites.model.FavoriteAppsDialogActions
 import dev.mnascimentos.aureole.composable.favorites.model.FavoriteAppsDialogConfig
+import dev.mnascimentos.aureole.composable.favorites.model.FavoriteAppsPreviewParams
 import dev.mnascimentos.aureole.composable.favorites.model.appsListSections
 import dev.mnascimentos.aureole.composable.preview.AureolePreviewFrame
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleEditOverlay

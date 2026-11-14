@@ -10,7 +10,9 @@ const val GREETING_TRIM_BOTTOM = 0.10f
 private const val TIME_HEIGHT_FACTOR = 0.95f * (1f - TIME_TRIM_TOP - TIME_TRIM_BOTTOM)
 private const val DATE_RESERVE_DP = 20f * (1f - DATE_TRIM_TOP)
 private const val GREETING_RESERVE_DP = 22f * (1f - GREETING_TRIM_TOP - GREETING_TRIM_BOTTOM)
-private val TIME_SIZES_PX = listOf(68f, 56f)
+private const val LARGE_TIME_SIZE_PX = 68f
+private const val MEDIUM_TIME_SIZE_PX = 56f
+private val TIME_SIZES_PX = listOf(LARGE_TIME_SIZE_PX, MEDIUM_TIME_SIZE_PX)
 private const val SMALLEST_TIME_SIZE_PX = 42f
 
 /** What the clock header draws for a given height: the size of the time and whether the greeting fits. */

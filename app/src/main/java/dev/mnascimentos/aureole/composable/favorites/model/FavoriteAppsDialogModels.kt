@@ -96,3 +96,11 @@ data class FavoriteAppsBodyParams(
     val filteredFavorites: List<AppInfo>,
     val filteredRemaining: List<AppInfo>
 )
+
+/** What the preview frame of "Choose favorites" draws: the list as the Home shows it. */
+data class FavoriteAppsPreviewParams(
+    val sections: AppsListSections,
+    /** Section labels on, as on the Home: only with "Show all apps" on and "Show labels" on. */
+    val hasLabels: Boolean,
+    val rowConfig: AppItemRowConfig
+)
