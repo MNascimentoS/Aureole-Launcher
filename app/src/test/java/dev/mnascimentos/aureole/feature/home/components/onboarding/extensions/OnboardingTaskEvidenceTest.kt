@@ -14,7 +14,7 @@ import org.junit.Test
 
 class OnboardingTaskEvidenceTest {
 
-    private val appsList = LauncherItemState(id = "list", type = LauncherItemType.APPS_LIST)
+    private val appsList = LauncherItemState(id = "list", type = LauncherItemType.APPS_LIST, showAllApps = false)
     private val container = LauncherItemState(id = "c", type = LauncherItemType.SHORTCUTS_CONTAINER)
     private val widgetList = LauncherItemState(id = "stack", type = LauncherItemType.WIDGET_LIST)
 
@@ -79,6 +79,16 @@ class OnboardingTaskEvidenceTest {
         assertFalse(newListNoInherit.meetsRequirement(OnboardingTask.ADD_FAVORITE_APPS))
         assertFalse(emptyOwn.meetsRequirement(OnboardingTask.ADD_FAVORITE_APPS))
         assertFalse(noList.meetsRequirement(OnboardingTask.ADD_FAVORITE_APPS))
+    }
+
+    @Test
+    fun `when the apps list shows every app without favorites, should meet the favorites task`() {
+        val showingAll = appsList.copy(showAllApps = true)
+        val legacy = appsList.copy(showAllApps = null)
+
+        assertTrue(MainUiState(gridItems = listOf(showingAll)).meetsRequirement(OnboardingTask.ADD_FAVORITE_APPS))
+        assertTrue(MainUiState(gridItems = listOf(legacy)).meetsRequirement(OnboardingTask.ADD_FAVORITE_APPS))
+        assertFalse(MainUiState(gridItems = listOf(appsList)).meetsRequirement(OnboardingTask.ADD_FAVORITE_APPS))
     }
 
     @Test

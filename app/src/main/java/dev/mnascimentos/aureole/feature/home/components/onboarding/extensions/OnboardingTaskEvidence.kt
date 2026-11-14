@@ -33,7 +33,7 @@ internal val MainUiState.isTaskInProgress: Boolean
     get() = isGridEditMode || isTaskEditorOpen
 
 /**
- * Whether the home shows what [task] asks for once its screen closed: a clock, an apps list with favorites, a
+ * Whether the home shows what [task] asks for once its screen closed: a clock, an apps list with favorites or showing every app, a
  * widget in the stack. The container task has its own confirmation, the editor's Save (even with it empty), so
  * leaving the editor any other way leaves the task pending.
  */
@@ -50,9 +50,12 @@ internal fun MainUiState.meetsRequirement(task: OnboardingTask): Boolean = when 
 internal fun MainUiState.hasFavorites(item: LauncherItemState): Boolean =
     favoritesOf(item.id).isNotEmpty()
 
-/** An apps list with at least one favorite, on the home or inside a scroll group. */
+/**
+ * An apps list that already puts apps on the home: with at least one favorite or with "show all apps" on, on the
+ * home or inside a scroll group.
+ */
 private fun MainUiState.hasAppsListWithFavorites(item: LauncherItemState): Boolean =
-    (item.safeType == LauncherItemType.APPS_LIST && hasFavorites(item)) ||
+    (item.safeType == LauncherItemType.APPS_LIST && (hasFavorites(item) || item.isShowingAllApps)) ||
         item.safeChildren.any { hasAppsListWithFavorites(it) }
 
 private fun MainUiState.hasWidget(item: LauncherItemState): Boolean {
