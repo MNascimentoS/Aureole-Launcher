@@ -18,16 +18,10 @@ data class MiniHomeFavorite(
  *
  * @property time Sample clock time.
  * @property date Sample date line.
- * @property favorites Favorites listed above the dock.
- * @property dockSize Number of icons in the dock.
+ * @property favorites Favorites listed under the clock.
  */
 data class MiniHomeContent(
     val time: String,
     val date: String,
-    val favorites: List<MiniHomeFavorite>,
-    val dockSize: Int = DEFAULT_DOCK_SIZE
-) {
-    companion object {
-        const val DEFAULT_DOCK_SIZE = 4
-    }
-}
+    val favorites: List<MiniHomeFavorite>
+)

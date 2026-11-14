@@ -16,8 +16,6 @@ import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.drawBehind
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
@@ -36,15 +34,12 @@ private const val MINI_HOME_ASPECT_RATIO = 300f / 168f
 private const val MINI_HOME_WIDTH_FRACTION = 0.85f
 private const val VARIANT_GLOW_ALPHA = 0.7f
 private const val BORDER_ALPHA = 0.3f
-private const val DOCK_DIVIDER_ALPHA = 0.08f
-private const val DOCK_BORDER_PX = 1f
 private const val PHONE_HEX = 0xFF2E8B3A
 private const val MESSAGES_HEX = 0xFFF28A0F
 private const val CAMERA_HEX = 0xFF1F63C2
-private const val BROWSER_HEX = 0xFFE0453A
 
 /**
- * Stateless miniature of the home screen (clock, date, four apps and a four-icon dock) drawn with the tokens of the
+ * Stateless miniature of the home screen (clock, date and three apps) drawn with the tokens of the
  * current `AureoleDS` theme, so wrapping it in another theme previews that theme.
  *
  * @param content Sample content to draw.
@@ -82,31 +77,6 @@ fun AureoleMiniHome(
             isLeftHanded = isLeftHanded,
             modifier = Modifier.weight(1f)
         )
-        MiniHomeDock(dockSize = content.dockSize)
-    }
-}
-
-/** Dock strip: [dockSize] icon tiles evenly spaced under a thin top border. */
-@Composable
-private fun MiniHomeDock(dockSize: Int, modifier: Modifier = Modifier) {
-    val dividerColor = AureoleDS.colors.onSurfaceHigh.copy(alpha = DOCK_DIVIDER_ALPHA)
-    Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .drawBehind {
-                drawLine(dividerColor, Offset.Zero, Offset(size.width, 0f), strokeWidth = DOCK_BORDER_PX)
-            }
-            .padding(vertical = AureoleDS.dimens.xxSmall),
-        horizontalArrangement = Arrangement.SpaceAround
-    ) {
-        repeat(dockSize) {
-            Box(
-                modifier = Modifier
-                    .size(AureoleDS.dimens.iconLarge)
-                    .clip(RoundedCornerShape(AureoleDS.dimens.radiusXSmall))
-                    .background(AureoleDS.colors.surface)
-            )
-        }
     }
 }
 
@@ -190,8 +160,7 @@ fun sampleMiniHomeContent(): MiniHomeContent = MiniHomeContent(
     favorites = listOf(
         MiniHomeFavorite(stringResource(R.string.settings_appearance_minihome_phone), Color(PHONE_HEX)),
         MiniHomeFavorite(stringResource(R.string.settings_appearance_minihome_messages), Color(MESSAGES_HEX)),
-        MiniHomeFavorite(stringResource(R.string.settings_appearance_minihome_camera), Color(CAMERA_HEX)),
-        MiniHomeFavorite(stringResource(R.string.settings_appearance_minihome_browser), Color(BROWSER_HEX))
+        MiniHomeFavorite(stringResource(R.string.settings_appearance_minihome_camera), Color(CAMERA_HEX))
     )
 )
 

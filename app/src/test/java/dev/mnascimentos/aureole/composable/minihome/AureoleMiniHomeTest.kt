@@ -28,12 +28,12 @@ class AureoleMiniHomeTest {
     }
 
     @Test
-    fun `should show the clock, the date and four apps`() {
+    fun `should show the clock, the date and three apps`() {
         setMiniHome(isLeftHanded = false)
 
         composeTestRule.onAllNodesWithText("09:41").assertCountEquals(1)
         composeTestRule.onAllNodesWithText("Tuesday, November 10").assertCountEquals(1)
-        listOf("Phone", "Messages", "Camera", "Browser").forEach {
+        listOf("Phone", "Messages", "Camera").forEach {
             composeTestRule.onAllNodesWithText(it).assertCountEquals(1)
         }
     }
