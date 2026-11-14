@@ -204,6 +204,7 @@ private fun ClockTimeDisplay(params: ClockTimeDisplayParams) {
                 setTextColor(params.colorPrimary)
                 typeface = params.typeface
                 textAlignment = textClockAlignment
+                includeFontPadding = false
             }
         },
         update = { clock ->
@@ -213,6 +214,7 @@ private fun ClockTimeDisplay(params: ClockTimeDisplayParams) {
             clock.setTextColor(params.colorPrimary)
             clock.typeface = params.typeface
             clock.textAlignment = textClockAlignment
+            clock.includeFontPadding = false
         }
     )
 }
