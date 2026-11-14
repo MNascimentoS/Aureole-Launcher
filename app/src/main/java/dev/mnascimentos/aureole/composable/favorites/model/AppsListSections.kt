@@ -1,4 +1,4 @@
-package dev.mnascimentos.aureole.feature.home.components.favorites.model
+package dev.mnascimentos.aureole.composable.favorites.model
 
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 
