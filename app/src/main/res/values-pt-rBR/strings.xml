@@ -186,6 +186,8 @@
     <!-- Favorites Dialog -->
     <string name="home_favorites_choose">Escolher favoritos</string>
     <string name="home_apps_list_show_all">Mostrar todos os apps</string>
+    <string name="home_favorites_show_labels">Mostrar rótulos</string>
+    <string name="home_favorites_show_labels_summary">“Favoritos” e “Todos os apps”</string>
     <string name="home_favorites_count">Favoritos (%1$d)</string>
     <string name="home_favorites_disable_all">Remover todos</string>
     <string name="home_favorites_none_selected">Nenhum aplicativo favorito selecionado.</string>

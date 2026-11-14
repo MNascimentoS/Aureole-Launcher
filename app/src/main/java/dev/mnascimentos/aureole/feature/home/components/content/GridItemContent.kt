@@ -89,7 +89,8 @@ fun GridAppsListContent(
                 containerId = params.item.id,
                 showHeadersAndWidgets = false,
                 isInsideScrollView = isInScrollView,
-                showAllApps = params.item.isShowingAllApps
+                showAllApps = params.item.isShowingAllApps,
+                showLabels = params.item.isShowingLabels
             ),
             modifier = listModifier
         )

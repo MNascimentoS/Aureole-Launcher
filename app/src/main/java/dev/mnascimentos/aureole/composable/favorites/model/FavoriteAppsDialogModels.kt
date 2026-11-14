@@ -10,6 +10,12 @@ data class ShowAllAppsParams(
     val onCheckedChange: (Boolean) -> Unit
 )
 
+/** The "Show labels" switch of a home apps list: whether it is on and what flips it. */
+data class ShowLabelsParams(
+    val checked: Boolean,
+    val onCheckedChange: (Boolean) -> Unit
+)
+
 /** What the subtitle of "Choose favorites" says about the Home. */
 enum class FavoritesMenuSubtitle {
     /** No favorites: the Home lists every app. */
@@ -44,7 +50,9 @@ data class FavoriteAppsDialogConfig(
     /** The apps have not arrived yet: the list shows its skeleton. */
     val isLoading: Boolean = false,
     /** The "Show all apps" switch of a home apps list; null (Settings) leaves the menu without it. */
-    val showAllApps: ShowAllAppsParams? = null
+    val showAllApps: ShowAllAppsParams? = null,
+    /** The "Show labels" switch of a home apps list; null leaves the menu without it. */
+    val showLabels: ShowLabelsParams? = null
 )
 
 data class FavoriteAppsDialogActions(

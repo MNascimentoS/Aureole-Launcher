@@ -4,8 +4,10 @@ import android.appwidget.AppWidgetHost
 import android.content.ComponentName
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
@@ -32,6 +34,7 @@ import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.core.designsystem.utils.fadingEdges
 import dev.mnascimentos.aureole.feature.home.components.appsdrawer.appitem.HomeAppItemRow
 import dev.mnascimentos.aureole.feature.home.components.clock.HomeClockHeader
+import dev.mnascimentos.aureole.feature.home.components.favorites.extensions.shouldShowLabels
 import dev.mnascimentos.aureole.feature.home.components.favorites.model.APPS_LIST_MAX_OTHERS_IN_SCROLL_VIEW
 import dev.mnascimentos.aureole.feature.home.components.favorites.model.AppsListParams
 import dev.mnascimentos.aureole.feature.home.components.favorites.model.FavoritesListConfig
@@ -74,7 +77,8 @@ fun AppsList(
         sections = sections,
         actions = actions,
         containerId = containerId,
-        isLeftHandedMode = uiState.isLeftHandedMode
+        isLeftHandedMode = uiState.isLeftHandedMode,
+        hasLabels = shouldShowLabels(options.showAllApps, options.showLabels)
     )
     when {
         options.showAllApps && uiState.isAppsLoading ->
@@ -147,7 +151,7 @@ private fun LazyListScope.appsListItems(list: AppsListParams) {
         }
         return
     }
-    if (sections.showsAll && sections.favorites.isNotEmpty()) {
+    if (list.hasLabels && sections.showsAll && sections.favorites.isNotEmpty()) {
         item(key = "section_favorites", contentType = "section_label") {
             AppsListSectionLabel(stringResource(R.string.home_apps_list_section_favorites))
         }
@@ -155,10 +159,12 @@ private fun LazyListScope.appsListItems(list: AppsListParams) {
     items(items = sections.favorites, key = { "fav_${it.packageName}" }, contentType = { "app_row" }) { app ->
         AppsListRow(app = app, isFavorite = true, list = list)
     }
-    if (sections.showsAll) {
+    if (list.hasLabels && sections.showsAll) {
         item(key = "section_all", contentType = "section_label") {
             AppsListSectionLabel(stringResource(R.string.home_apps_list_section_all))
         }
+    } else if (sections.showsAll && sections.favorites.isNotEmpty() && sections.others.isNotEmpty()) {
+        item(key = "section_gap", contentType = "section_gap") { AppsListSectionGap() }
     }
     items(items = sections.others, key = { "all_${it.packageName}" }, contentType = { "app_row" }) { app ->
         AppsListRow(app = app, isFavorite = false, list = list)
@@ -173,11 +179,15 @@ private fun NonScrollableAppsList(list: AppsListParams, modifier: Modifier = Mod
             FavoritesEmptyHint(onClick = { list.actions.onOpenFavoritePicker(list.containerId) })
             return@Column
         }
-        if (sections.showsAll && sections.favorites.isNotEmpty()) {
+        if (list.hasLabels && sections.showsAll && sections.favorites.isNotEmpty()) {
             AppsListSectionLabel(stringResource(R.string.home_apps_list_section_favorites))
         }
         sections.favorites.forEach { app -> AppsListRow(app = app, isFavorite = true, list = list) }
-        if (sections.showsAll) AppsListSectionLabel(stringResource(R.string.home_apps_list_section_all))
+        if (list.hasLabels && sections.showsAll) {
+            AppsListSectionLabel(stringResource(R.string.home_apps_list_section_all))
+        } else if (sections.showsAll && sections.favorites.isNotEmpty() && sections.others.isNotEmpty()) {
+            AppsListSectionGap()
+        }
         sections.others.forEach { app -> AppsListRow(app = app, isFavorite = false, list = list) }
     }
 }
@@ -201,6 +211,12 @@ private fun AppsListRow(app: AppInfo, isFavorite: Boolean, list: AppsListParams)
             onUninstallClick = { actions.onUninstallAppClick(it) }
         )
     )
+}
+
+/** The space that replaces the labels, so favorites and the other apps stay apart. */
+@Composable
+private fun AppsListSectionGap() {
+    Spacer(modifier = Modifier.height(AureoleDS.dimens.medium))
 }
 
 @Composable
