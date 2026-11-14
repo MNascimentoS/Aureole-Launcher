@@ -3,14 +3,38 @@ package dev.mnascimentos.aureole.feature.home.components.onboarding.extensions
 import dev.mnascimentos.aureole.core.data.model.LauncherItemState
 import dev.mnascimentos.aureole.core.data.model.LauncherItemType
 import dev.mnascimentos.aureole.feature.home.grid.GridDefaults
+import dev.mnascimentos.aureole.feature.home.grid.GridEngineUtils
+import dev.mnascimentos.aureole.feature.home.grid.model.GridLimits
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class OnboardingLandscapeLayoutTest {
 
-    private fun portraitItem(type: LauncherItemType, id: String, children: List<LauncherItemState> = emptyList()) =
-        LauncherItemState(id = id, type = type, col = 3, row = 3, colSpan = 5, rowSpan = 5, children = children)
+    private val allTypes = listOf(
+        LauncherItemType.CLOCK,
+        LauncherItemType.APPS_LIST,
+        LauncherItemType.WIDGET_LIST,
+        LauncherItemType.SHORTCUTS_CONTAINER
+    )
+
+    private fun portraitItem(type: LauncherItemType, children: List<LauncherItemState> = emptyList()) =
+        LauncherItemState(
+            id = "p_${type.name}",
+            type = type,
+            col = 3,
+            row = 3,
+            colSpan = 5,
+            rowSpan = 5,
+            children = children
+        )
+
+    private fun portrait(vararg types: LauncherItemType) = types.map { portraitItem(it) }
+
+    private fun List<LauncherItemState>.of(type: LauncherItemType) = single { it.safeType == type }
+
+    private fun LauncherItemState.box() = listOf(col, row, colSpan, rowSpan)
 
     @Test
     fun `with nothing in portrait, should be the default landscape layout`() {
@@ -21,56 +45,118 @@ class OnboardingLandscapeLayoutTest {
     }
 
     @Test
-    fun `should show all apps in the apps list`() {
-        val portrait = listOf(portraitItem(LauncherItemType.APPS_LIST, "my_apps").copy(showAllApps = false))
+    fun `with everything in portrait, should sit where the default landscape layout puts it`() {
+        val layout = onboardingLandscapeLayout(portrait(*allTypes.toTypedArray()), isLeftHanded = false)
 
-        val apps = onboardingLandscapeLayout(portrait, isLeftHanded = false)
-            .single { it.safeType == LauncherItemType.APPS_LIST }
-
-        assertEquals(true, apps.showAllApps)
-        assertEquals("my_apps", apps.id)
+        GridDefaults.getDefaultGridItems(isLandscape = true, isLeftHanded = false).forEach { slot ->
+            assertEquals(slot.box(), layout.of(slot.safeType).box())
+        }
     }
 
     @Test
-    fun `a portrait widget stack should bring its children and keep the default spot`() {
-        val child = LauncherItemState(id = "calendar", type = LauncherItemType.WIDGET_LIST, widgetId = 7)
-        val portrait = listOf(portraitItem(LauncherItemType.WIDGET_LIST, "stack", children = listOf(child)))
-        val defaultWidgets = GridDefaults.getDefaultItem(LauncherItemType.WIDGET_LIST, true, false)!!
+    fun `without a clock, the apps list should take the whole left column`() {
+        val layout = onboardingLandscapeLayout(
+            portrait(LauncherItemType.APPS_LIST, LauncherItemType.WIDGET_LIST, LauncherItemType.SHORTCUTS_CONTAINER),
+            isLeftHanded = false
+        )
 
-        val widgets = onboardingLandscapeLayout(portrait, isLeftHanded = false)
-            .single { it.safeType == LauncherItemType.WIDGET_LIST }
+        assertEquals(listOf(0, 0, 10, 20), layout.of(LauncherItemType.APPS_LIST).box())
+    }
+
+    @Test
+    fun `without a clock and without apps, the widgets should grow to the left`() {
+        val layout = onboardingLandscapeLayout(
+            portrait(LauncherItemType.WIDGET_LIST, LauncherItemType.SHORTCUTS_CONTAINER),
+            isLeftHanded = false
+        )
+
+        assertEquals(listOf(0, 0, 26, 20), layout.of(LauncherItemType.WIDGET_LIST).box())
+        assertEquals(listOf(26, 0, 4, 20), layout.of(LauncherItemType.SHORTCUTS_CONTAINER).box())
+    }
+
+    @Test
+    fun `without widgets, the container should fill the center`() {
+        val layout = onboardingLandscapeLayout(
+            portrait(LauncherItemType.CLOCK, LauncherItemType.APPS_LIST, LauncherItemType.SHORTCUTS_CONTAINER),
+            isLeftHanded = false
+        )
+
+        assertEquals(listOf(10, 0, 20, 20), layout.of(LauncherItemType.SHORTCUTS_CONTAINER).box())
+    }
+
+    @Test
+    fun `without a container, the widgets should grow to the right`() {
+        val layout = onboardingLandscapeLayout(
+            portrait(LauncherItemType.CLOCK, LauncherItemType.APPS_LIST, LauncherItemType.WIDGET_LIST),
+            isLeftHanded = false
+        )
+
+        assertEquals(listOf(10, 0, 20, 20), layout.of(LauncherItemType.WIDGET_LIST).box())
+    }
+
+    @Test
+    fun `items the user did not add should not come along`() {
+        val layout = onboardingLandscapeLayout(portrait(LauncherItemType.CLOCK), isLeftHanded = false)
+
+        assertEquals(listOf(LauncherItemType.CLOCK), layout.map { it.safeType })
+        assertEquals(listOf(0, 0, 30, 20), layout.single().box())
+    }
+
+    @Test
+    fun `an item type with no spot in the default layout should be left out`() {
+        val layout = onboardingLandscapeLayout(
+            portrait(LauncherItemType.CLOCK, LauncherItemType.SINGLE_APP_WIDGET),
+            isLeftHanded = false
+        )
+
+        assertTrue(layout.none { it.safeType == LauncherItemType.SINGLE_APP_WIDGET })
+    }
+
+    @Test
+    fun `should show all apps in the apps list and keep the ids`() {
+        val apps = portraitItem(LauncherItemType.APPS_LIST).copy(showAllApps = false)
+
+        val result = onboardingLandscapeLayout(listOf(apps), isLeftHanded = false).single()
+
+        assertEquals(true, result.showAllApps)
+        assertEquals("p_APPS_LIST", result.id)
+    }
+
+    @Test
+    fun `a portrait widget stack should bring its children`() {
+        val child = LauncherItemState(id = "calendar", type = LauncherItemType.WIDGET_LIST, widgetId = 7)
+        val stack = portraitItem(LauncherItemType.WIDGET_LIST, children = listOf(child))
+
+        val widgets = onboardingLandscapeLayout(listOf(stack), isLeftHanded = false).single()
 
         assertEquals(listOf(child), widgets.safeChildren)
-        assertEquals("stack", widgets.id)
-        assertEquals(
-            listOf(defaultWidgets.col, defaultWidgets.row, defaultWidgets.colSpan, defaultWidgets.rowSpan),
-            listOf(widgets.col, widgets.row, widgets.colSpan, widgets.rowSpan)
-        )
     }
 
     @Test
-    fun `the container should keep its id so it shares the items`() {
-        val portrait = listOf(portraitItem(LauncherItemType.SHORTCUTS_CONTAINER, "panel_1"))
+    fun `left-handed should mirror the layout`() {
+        val layout = onboardingLandscapeLayout(portrait(*allTypes.toTypedArray()), isLeftHanded = true)
 
-        val container = onboardingLandscapeLayout(portrait, isLeftHanded = false)
-            .single { it.safeType == LauncherItemType.SHORTCUTS_CONTAINER }
-
-        assertEquals("panel_1", container.id)
+        GridDefaults.getDefaultGridItems(isLandscape = true, isLeftHanded = true).forEach { slot ->
+            assertEquals(slot.box(), layout.of(slot.safeType).box())
+        }
     }
 
     @Test
-    fun `left-handed should mirror the default spots`() {
-        val layout = onboardingLandscapeLayout(emptyList(), isLeftHanded = true)
+    fun `every combination should stay in bounds without overlapping`() {
+        val limits = GridLimits(GridEngineUtils.LANDSCAPE_MAX_COLS, GridEngineUtils.LANDSCAPE_MAX_ROWS)
+        for (mask in 1 until (1 shl allTypes.size)) {
+            val types = allTypes.filterIndexed { index, _ -> mask and (1 shl index) != 0 }
+            listOf(false, true).forEach { leftHanded ->
+                val layout = onboardingLandscapeLayout(types.map { portraitItem(it) }, leftHanded)
 
-        assertEquals(GridDefaults.getDefaultGridItems(isLandscape = true, isLeftHanded = true), layout)
-    }
-
-    @Test
-    fun `an item type that the default layout has no spot for should be left out`() {
-        val portrait = listOf(portraitItem(LauncherItemType.SINGLE_APP_WIDGET, "extra"))
-
-        val layout = onboardingLandscapeLayout(portrait, isLeftHanded = false)
-
-        assertTrue(layout.none { it.id == "extra" })
+                layout.forEach { item ->
+                    assertTrue(
+                        "$types",
+                        GridEngineUtils.isWithinBounds(item.col, item.row, item.colSpan, item.rowSpan, limits)
+                    )
+                    assertFalse("$types", GridEngineUtils.checkCollisionWithOthers(item, layout))
+                }
+            }
+        }
     }
 }
