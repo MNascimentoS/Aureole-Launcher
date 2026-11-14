@@ -1,6 +1,5 @@
 package dev.mnascimentos.aureole.feature.settings.screens
 
-import android.os.Build
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -205,26 +204,7 @@ private fun AppearanceMenuItems(
             onCheckedChange = { actions.onToggleThemedAppIcons() },
             leadingContent = { AureoleDS.icons.AppSelect() }
         )
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            WidgetThemeColorsToggle(uiState, actions)
-        }
     }
-}
-
-@Composable
-private fun WidgetThemeColorsToggle(uiState: SettingsUiState, actions: SettingsScreenActions) {
-    SettingsToggleItem(
-        title = stringResource(R.string.settings_appearance_widget_theme_colors),
-        checked = uiState.isWidgetThemeColorsEnabled,
-        onCheckedChange = { actions.onToggleWidgetThemeColors() },
-        leadingContent = { AureoleDS.icons.StrokeColor() }
-    )
-    AureoleText(
-        text = stringResource(R.string.settings_appearance_widget_theme_colors_desc),
-        color = AureoleDS.colors.onSurfaceLow,
-        modifier = Modifier.padding(horizontal = AureoleDS.dimens.small),
-        format = AureoleTextFormatParams(style = AureoleDS.typography.bodySmall)
-    )
 }
 
 @Composable

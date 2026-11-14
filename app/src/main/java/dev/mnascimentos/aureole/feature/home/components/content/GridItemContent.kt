@@ -1,6 +1,13 @@
 package dev.mnascimentos.aureole.feature.home.components.content
 
+import android.annotation.SuppressLint
 import android.appwidget.AppWidgetHost
+import android.appwidget.AppWidgetHostView
+import android.appwidget.AppWidgetManager
+import android.content.Context
+import android.os.Bundle
+import android.view.View
+import android.widget.TextView
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.foundation.gestures.awaitEachGesture
 import androidx.compose.foundation.gestures.awaitFirstDown
@@ -12,9 +19,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.input.pointer.PointerEventPass
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.rememberNestedScrollInteropConnection
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.viewinterop.AndroidView
 import dev.chrisbanes.haze.HazeState
 import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.composable.LocalHomeUiState
@@ -44,6 +54,8 @@ import timber.log.Timber
 
 private const val LONG_PRESS_MARGIN_MS = 50L
 private const val MIN_LONG_PRESS_TIMEOUT_MS = 200L
+private const val DEFAULT_WIDGET_MIN_WIDTH = 100
+private const val DEFAULT_WIDGET_MAX_HEIGHT = 360
 
 /** The clock [item] of the grid, drawn with the config saved for its id. */
 @Composable
@@ -213,9 +225,55 @@ fun SingleAppWidgetContent(
             }
     ) {
         if (item.widgetId != null && item.widgetId != -1) {
-            SingleWidgetHostView(item.widgetId, appWidgetHost)
+            AndroidView(
+                factory = { context -> createSingleWidgetView(context, item.widgetId, appWidgetHost) },
+                update = { view -> updateSingleWidgetView(view, item.widgetId) },
+                modifier = Modifier.fillMaxSize().nestedScroll(rememberNestedScrollInteropConnection())
+            )
         } else {
             UnconfiguredWidgetPlaceholder()
+        }
+    }
+}
+
+@SuppressLint("SetTextI18n")
+private fun createSingleWidgetView(context: Context, widgetId: Int, appWidgetHost: AppWidgetHost?): View {
+    if (appWidgetHost == null) {
+        return TextView(
+            context
+        ).apply { text = context.getString(R.string.home_grid_widget_label) }
+    }
+    val appWidgetManager = AppWidgetManager.getInstance(context)
+    val appWidgetInfo = appWidgetManager.getAppWidgetInfo(widgetId)
+    return if (appWidgetInfo != null) {
+        val widthDp = (context.resources.configuration.screenWidthDp).coerceAtLeast(DEFAULT_WIDGET_MIN_WIDTH)
+        val options = Bundle().apply {
+            putInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH, appWidgetInfo.minWidth)
+            putInt(AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT, appWidgetInfo.minHeight)
+            putInt(AppWidgetManager.OPTION_APPWIDGET_MAX_WIDTH, widthDp)
+            putInt(AppWidgetManager.OPTION_APPWIDGET_MAX_HEIGHT, DEFAULT_WIDGET_MAX_HEIGHT)
+        }
+        appWidgetManager.updateAppWidgetOptions(widgetId, options)
+        appWidgetHost.createView(context, widgetId, appWidgetInfo)
+    } else {
+        TextView(context).apply { text = context.getString(R.string.home_grid_widget_label) }
+    }
+}
+
+private fun updateSingleWidgetView(view: View, widgetId: Int) {
+    val widthDp = view.context.resources.configuration.screenWidthDp
+    if (view is AppWidgetHostView && view.tag != widthDp) {
+        view.tag = widthDp
+        val appWidgetManager = AppWidgetManager.getInstance(view.context)
+        val appWidgetInfo = appWidgetManager.getAppWidgetInfo(widgetId)
+        if (appWidgetInfo != null) {
+            val options = Bundle().apply {
+                putInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH, appWidgetInfo.minWidth)
+                putInt(AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT, appWidgetInfo.minHeight)
+                putInt(AppWidgetManager.OPTION_APPWIDGET_MAX_WIDTH, widthDp.coerceAtLeast(DEFAULT_WIDGET_MIN_WIDTH))
+                putInt(AppWidgetManager.OPTION_APPWIDGET_MAX_HEIGHT, DEFAULT_WIDGET_MAX_HEIGHT)
+            }
+            appWidgetManager.updateAppWidgetOptions(widgetId, options)
         }
     }
 }

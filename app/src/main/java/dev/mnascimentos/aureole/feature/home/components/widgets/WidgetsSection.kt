@@ -194,13 +194,9 @@ private fun WidgetHostItem(
                 }
             }
     ) {
-        val applyThemeColors = rememberWidgetThemeColorsApplier()
         AndroidView(
             factory = { context -> createWidgetHostView(context, appWidgetHost, widgetId) },
-            update = { view ->
-                updateWidgetHostView(view, widgetId)
-                applyThemeColors(view)
-            },
+            update = { view -> updateWidgetHostView(view, widgetId) },
             modifier = Modifier.fillMaxSize().nestedScroll(rememberNestedScrollInteropConnection())
         )
     }

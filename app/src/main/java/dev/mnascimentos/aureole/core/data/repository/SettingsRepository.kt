@@ -158,10 +158,6 @@ class SettingsRepository(private val context: Context) {
         get() = prefs.getBoolean(KEY_USE_THEMED_APP_ICONS, false)
         set(value) = prefs.edit { putBoolean(KEY_USE_THEMED_APP_ICONS, value) }
 
-    var isWidgetThemeColorsEnabled: Boolean
-        get() = prefs.getBoolean(KEY_WIDGET_THEME_COLORS, false)
-        set(value) = prefs.edit { putBoolean(KEY_WIDGET_THEME_COLORS, value) }
-
     var isAlphabetScrubberDisabled: Boolean
         get() = prefs.getBoolean(KEY_DISABLE_ALPHABET_SCRUBBER, false)
         set(value) = prefs.edit { putBoolean(KEY_DISABLE_ALPHABET_SCRUBBER, value) }
@@ -374,7 +370,6 @@ class SettingsRepository(private val context: Context) {
         private const val KEY_HEADER_OFFSET_PERCENT = "header_offset_percent"
         private const val KEY_CORNER_RADIUS_DP = "corner_radius_dp"
         private const val KEY_USE_THEMED_APP_ICONS = "use_themed_app_icons"
-        private const val KEY_WIDGET_THEME_COLORS = "widget_theme_colors"
         private const val KEY_DISABLE_ALPHABET_SCRUBBER = "disable_alphabet_scrubber"
         private const val KEY_SHOW_SETTINGS_BUTTON_IN_ALL_APPS = "show_settings_button_in_all_apps"
         private const val KEY_SETTINGS_BUTTON_POSITION = "settings_button_position"

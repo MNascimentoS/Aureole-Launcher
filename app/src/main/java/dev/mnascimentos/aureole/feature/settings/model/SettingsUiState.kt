@@ -52,7 +52,6 @@ data class SettingsUiState(
     val headerOffsetPercent: Int = 10,
     val cornerRadiusDp: Int = SettingsRepository.DEFAULT_CORNER_RADIUS_DP,
     val isThemedAppIconsEnabled: Boolean = false,
-    val isWidgetThemeColorsEnabled: Boolean = false,
     val isAlphabetScrubberDisabled: Boolean = false,
     val showSettingsButtonInAllApps: Boolean = true,
     val settingsButtonPosition: String = "Right",

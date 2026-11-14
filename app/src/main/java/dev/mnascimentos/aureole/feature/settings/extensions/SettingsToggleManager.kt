@@ -22,8 +22,7 @@ internal object SettingsToggleManager {
             SettingToggle.SHOW_SEARCH_BAR_IN_ALL_APPS -> toggleGroupTwo(vm, toggle)
             SettingToggle.DYNAMIC_WALLPAPER,
             SettingToggle.IN_APP_UPDATE,
-            SettingToggle.THEMED_APP_ICONS,
-            SettingToggle.WIDGET_THEME_COLORS -> toggleGroupThree(vm, toggle)
+            SettingToggle.THEMED_APP_ICONS -> toggleGroupThree(vm, toggle)
         }
     }
 
@@ -126,11 +125,6 @@ internal object SettingsToggleManager {
                 val newValue = !vm.uiState.value.isThemedAppIconsEnabled
                 vm.settingsRepository.isThemedAppIconsEnabled = newValue
                 vm.updateUiState { it.copy(isThemedAppIconsEnabled = newValue) }
-            }
-            SettingToggle.WIDGET_THEME_COLORS -> {
-                val newValue = !vm.uiState.value.isWidgetThemeColorsEnabled
-                vm.settingsRepository.isWidgetThemeColorsEnabled = newValue
-                vm.updateUiState { it.copy(isWidgetThemeColorsEnabled = newValue) }
             }
             else -> {}
         }

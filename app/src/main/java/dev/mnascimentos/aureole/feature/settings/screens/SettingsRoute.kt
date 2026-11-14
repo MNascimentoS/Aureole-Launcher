@@ -117,7 +117,6 @@ private fun applyToggleActions(viewModel: SettingsViewModel, base: SettingsScree
         onToggleHaze = { viewModel.toggleSetting(SettingToggle.HAZE) },
         onToggleInAppUpdate = { viewModel.toggleSetting(SettingToggle.IN_APP_UPDATE) },
         onToggleThemedAppIcons = { viewModel.toggleSetting(SettingToggle.THEMED_APP_ICONS) },
-        onToggleWidgetThemeColors = { viewModel.toggleSetting(SettingToggle.WIDGET_THEME_COLORS) },
         onToggleDisableAlphabetScrubber = { viewModel.toggleSetting(SettingToggle.DISABLE_ALPHABET_SCRUBBER) },
         onToggleShowSettingsButtonInAllApps = {
             viewModel.toggleSetting(
