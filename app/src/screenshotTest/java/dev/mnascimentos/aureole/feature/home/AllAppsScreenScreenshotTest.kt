@@ -92,6 +92,7 @@ private fun AllAppsScreenWithSearchQueryScreenshotTest() {
         apps = listOf(sampleApp),
         filteredApps = listOf(sampleApp),
         searchQuery = "Cam",
+        appliedSearchQuery = "Cam",
         alphabet = listOf('C'),
         isLoading = false,
         isHazeEnabled = false
@@ -119,6 +120,7 @@ private fun AllAppsScreenWithEmptySearchQueryScreenshotTest() {
         apps = emptyList(),
         filteredApps = emptyList(),
         searchQuery = "XYZNonExistent",
+        appliedSearchQuery = "XYZNonExistent",
         alphabet = emptyList(),
         isLoading = false,
         isHazeEnabled = false
