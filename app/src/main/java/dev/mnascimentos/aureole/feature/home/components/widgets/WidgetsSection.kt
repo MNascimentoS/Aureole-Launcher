@@ -24,6 +24,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.input.pointer.PointerEventPass
 import androidx.compose.ui.input.pointer.pointerInput
@@ -35,6 +36,7 @@ import dev.mnascimentos.aureole.composable.LocalHomeUiState
 import dev.mnascimentos.aureole.composable.widgets.AddWidgetButton
 import dev.mnascimentos.aureole.composable.widgets.WidgetPositionIndicatorBar
 import dev.mnascimentos.aureole.core.designsystem.model.LocalLeftHanded
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleColors
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
@@ -43,6 +45,7 @@ import dev.mnascimentos.aureole.core.designsystem.utils.LocalSharedTransitionSco
 import dev.mnascimentos.aureole.feature.home.components.widgets.model.PagerContentParams
 import dev.mnascimentos.aureole.feature.home.components.widgets.model.StackedWidgetConfig
 import dev.mnascimentos.aureole.feature.home.components.widgets.model.StackedWidgetPagerParams
+import dev.mnascimentos.aureole.feature.home.components.widgets.model.WidgetPalette
 import dev.mnascimentos.aureole.feature.home.components.widgets.model.isWidgetDotsEnabled
 import dev.mnascimentos.aureole.feature.home.model.LocalHomeActions
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
@@ -194,9 +197,15 @@ private fun WidgetHostItem(
                 }
             }
     ) {
+        val themeColors = LocalHomeUiState.current.isWidgetThemeColorsEnabled
+        val palette = AureoleDS.colors.toWidgetPalette()
+        val hadOverride = remember { booleanArrayOf(false) }
         AndroidView(
             factory = { context -> createWidgetHostView(context, appWidgetHost, widgetId) },
-            update = { view -> updateWidgetHostView(view, widgetId) },
+            update = { view ->
+                updateWidgetHostView(view, widgetId)
+                hadOverride[0] = applyWidgetThemeColors(view, themeColors, palette, hadOverride[0])
+            },
             modifier = Modifier.fillMaxSize().nestedScroll(rememberNestedScrollInteropConnection())
         )
     }
@@ -237,3 +246,11 @@ private fun StackedWidgetSectionPreview() {
         }
     }
 }
+
+private fun AureoleColors.toWidgetPalette() = WidgetPalette(
+    accent1 = onSurfaceMedium.toArgb(),
+    accent2 = onSurfaceLow.toArgb(),
+    accent3 = outline.toArgb(),
+    neutral1 = surface.toArgb(),
+    neutral2 = surfaceVariant.toArgb()
+)

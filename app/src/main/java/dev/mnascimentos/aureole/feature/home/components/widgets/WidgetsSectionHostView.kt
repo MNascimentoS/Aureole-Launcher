@@ -6,13 +6,17 @@ import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProviderInfo
 import android.content.Context
 import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
+import android.util.SparseIntArray
 import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.TextView
 import dev.mnascimentos.aureole.R
+import dev.mnascimentos.aureole.feature.home.components.widgets.model.WidgetPalette
+import dev.mnascimentos.aureole.feature.home.components.widgets.model.buildWidgetColorMap
 import timber.log.Timber
 
 private const val WIDGET_NOT_AVAILABLE_TEXT = "Widget indisponível"
@@ -106,4 +110,23 @@ internal fun createErrorWidgetView(context: Context, message: String): TextView 
         setTextColor(Color.WHITE)
         gravity = Gravity.CENTER
     }
+}
+
+/**
+ * Swaps the system's Material You colors inside [view] for the Aureole [palette] while [enabled], and back to the
+ * system ones when turned off. Returns whether [view] now carries an override, so the caller skips a useless
+ * re-inflation of widgets that never had one.
+ */
+internal fun applyWidgetThemeColors(
+    view: View,
+    enabled: Boolean,
+    palette: WidgetPalette,
+    hadOverride: Boolean
+): Boolean {
+    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.UPSIDE_DOWN_CAKE || view !is AppWidgetHostView) return false
+    if (!enabled && !hadOverride) return false
+    val mapping = SparseIntArray()
+    if (enabled) buildWidgetColorMap(palette).forEach { (resId, color) -> mapping.put(resId, color) }
+    view.setColorResources(mapping)
+    return enabled
 }

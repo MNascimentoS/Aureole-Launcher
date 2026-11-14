@@ -99,6 +99,8 @@
     <string name="settings_appearance_pick_font">Pick Font</string>
     <string name="settings_appearance_color_palette">Color palette</string>
     <string name="settings_appearance_custom_colors">Custom colors</string>
+    <string name="settings_appearance_widget_theme_colors">Theme colors in widgets</string>
+    <string name="settings_appearance_widget_theme_colors_desc">Widgets that follow the system colors use the Aureole theme colors. Widgets with fixed colors do not change.</string>
     <string name="settings_appearance_themed_icons">Themed icons</string>
     <string name="settings_appearance_image_scale">Image scale</string>
 

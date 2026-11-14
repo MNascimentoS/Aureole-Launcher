@@ -67,6 +67,7 @@ data class MainUiState(
     val glassLevel: GlassLevel = GlassLevel.MEDIUM,
     val isInAppUpdateEnabled: Boolean = true,
     val isThemedAppIconsEnabled: Boolean = false,
+    val isWidgetThemeColorsEnabled: Boolean = false,
     val isAlphabetScrubberDisabled: Boolean = false,
     val showSettingsButtonInAllApps: Boolean = true,
     val settingsButtonPosition: String = "Right",

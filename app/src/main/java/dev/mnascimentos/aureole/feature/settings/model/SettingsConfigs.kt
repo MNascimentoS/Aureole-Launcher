@@ -56,6 +56,7 @@ data class SettingsScreenActions(
     val onToggleInAppUpdate: () -> Unit = {},
     val onHeaderOffsetChanged: (Int) -> Unit = {},
     val onToggleThemedAppIcons: () -> Unit = {},
+    val onToggleWidgetThemeColors: () -> Unit = {},
     val onToggleDisableAlphabetScrubber: () -> Unit = {},
     val onOpenResetGridDialog: () -> Unit = {},
     val onConfirmResetGrid: () -> Unit = {},

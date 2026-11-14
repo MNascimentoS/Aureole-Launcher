@@ -82,6 +82,7 @@ class SettingsViewModel(
                 hazeBlurLevel = glassLevelOf(settingsRepository.hazeBlurLevel),
                 isInAppUpdateEnabled = settingsRepository.isInAppUpdateEnabled,
                 isThemedAppIconsEnabled = settingsRepository.isThemedAppIconsEnabled,
+                isWidgetThemeColorsEnabled = settingsRepository.isWidgetThemeColorsEnabled,
                 isAlphabetScrubberDisabled = settingsRepository.isAlphabetScrubberDisabled,
                 showSettingsButtonInAllApps = settingsRepository.showSettingsButtonInAllApps,
                 settingsButtonPosition = settingsRepository.settingsButtonPosition,
