@@ -55,14 +55,17 @@ class WidgetRepository(private val context: Context) {
         }
     }
 
-    fun getWidgetDotsState(stackId: String): Boolean {
+    /** Reads the dots of [key]; when it was never saved, inherits [fallbackKey] (or on). */
+    fun getWidgetDotsState(key: String, fallbackKey: String? = null): Boolean {
         val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
-        return prefs.getBoolean("${KEY_WIDGET_DOTS_PREFIX}_$stackId", true)
+        val saved = "${KEY_WIDGET_DOTS_PREFIX}_$key"
+        if (prefs.contains(saved) || fallbackKey == null) return prefs.getBoolean(saved, true)
+        return prefs.getBoolean("${KEY_WIDGET_DOTS_PREFIX}_$fallbackKey", true)
     }
 
-    fun setWidgetDotsState(stackId: String, showDots: Boolean) {
+    fun setWidgetDotsState(key: String, showDots: Boolean) {
         context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE).edit {
-            putBoolean("${KEY_WIDGET_DOTS_PREFIX}_$stackId", showDots)
+            putBoolean("${KEY_WIDGET_DOTS_PREFIX}_$key", showDots)
         }
     }
 

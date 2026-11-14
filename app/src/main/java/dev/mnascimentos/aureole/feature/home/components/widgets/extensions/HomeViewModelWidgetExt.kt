@@ -5,6 +5,7 @@ import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.core.data.model.LauncherItemState
 import dev.mnascimentos.aureole.core.data.model.LauncherItemType
 import dev.mnascimentos.aureole.feature.home.HomeViewModel
+import dev.mnascimentos.aureole.feature.home.components.widgets.model.widgetDotsKey
 import dev.mnascimentos.aureole.feature.home.grid.extensions.addGridItem
 import dev.mnascimentos.aureole.feature.home.grid.extensions.dismissGridError
 import dev.mnascimentos.aureole.feature.home.grid.model.GridItemSpec
@@ -13,13 +14,12 @@ import dev.mnascimentos.aureole.feature.home.model.getWidgetIdsForStack
 fun HomeViewModel.loadWidgetSettings() {
     val topIds = widgetRepository.getWidgetIdsForStack("top_widgets")
     val savedHeight = widgetRepository.getSavedWidgetRowHeight()
-    val topDots = widgetRepository.getWidgetDotsState("top_widgets")
 
     val widgetMap = mutableMapOf<String, List<Int>>()
     widgetMap["top_widgets"] = topIds
 
     val dotsMap = mutableMapOf<String, Boolean>()
-    dotsMap["top_widgets"] = topDots
+    putDots(dotsMap, "top_widgets")
 
     val allItems = uiState.value.portraitGridItems + uiState.value.landscapeGridItems
     fun processItem(item: LauncherItemState) {
@@ -28,7 +28,7 @@ fun HomeViewModel.loadWidgetSettings() {
         if (isWidgetType) {
             val stackId = item.safeId
             widgetMap[stackId] = widgetRepository.getWidgetIdsForStack(stackId)
-            dotsMap[stackId] = widgetRepository.getWidgetDotsState(stackId)
+            putDots(dotsMap, stackId)
         }
         item.safeChildren.forEach { child -> processItem(child) }
     }
@@ -42,6 +42,14 @@ fun HomeViewModel.loadWidgetSettings() {
             widgetStackDots = dotsMap
         )
     }
+}
+
+/** Fills both orientations of a group; landscape inherits the portrait value until it is toggled. */
+private fun HomeViewModel.putDots(dotsMap: MutableMap<String, Boolean>, stackId: String) {
+    val portraitKey = widgetDotsKey(stackId, isLandscape = false)
+    val landscapeKey = widgetDotsKey(stackId, isLandscape = true)
+    dotsMap[portraitKey] = widgetRepository.getWidgetDotsState(portraitKey)
+    dotsMap[landscapeKey] = widgetRepository.getWidgetDotsState(landscapeKey, fallbackKey = portraitKey)
 }
 
 fun HomeViewModel.setWidgetRowHeight(height: Dp) {

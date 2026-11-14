@@ -57,6 +57,7 @@ import dev.mnascimentos.aureole.feature.home.components.scrubber.model.isHomeDra
 import dev.mnascimentos.aureole.feature.home.components.widgets.EditWidgetGroupScreen
 import dev.mnascimentos.aureole.feature.home.components.widgets.model.EditWidgetGroupActions
 import dev.mnascimentos.aureole.feature.home.components.widgets.model.EditWidgetGroupParams
+import dev.mnascimentos.aureole.feature.home.components.widgets.model.isWidgetDotsEnabled
 import dev.mnascimentos.aureole.feature.home.extensions.rememberHomeScreenExclusion
 import dev.mnascimentos.aureole.feature.home.grid.AddContainerDialog
 import dev.mnascimentos.aureole.feature.home.grid.EditGridItemDialog
@@ -294,7 +295,7 @@ private fun HomeEditGridItemOverlay(config: HomeOverlaysConfig) {
                     item = editingItem,
                     widgets = config.uiState.getWidgetIdsForStack(editingItem.id),
                     appWidgetHost = config.appWidgetHost,
-                    isIndicatorEnabled = config.uiState.widgetStackDots[editingItem.id] ?: true,
+                    isIndicatorEnabled = config.uiState.isWidgetDotsEnabled(editingItem.id),
                     hazeState = if (config.uiState.isHazeEnabled) config.hazeState else null
                 ),
                 actions = EditWidgetGroupActions(

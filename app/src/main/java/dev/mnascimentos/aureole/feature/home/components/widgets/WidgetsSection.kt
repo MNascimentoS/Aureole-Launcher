@@ -43,6 +43,7 @@ import dev.mnascimentos.aureole.core.designsystem.utils.LocalSharedTransitionSco
 import dev.mnascimentos.aureole.feature.home.components.widgets.model.PagerContentParams
 import dev.mnascimentos.aureole.feature.home.components.widgets.model.StackedWidgetConfig
 import dev.mnascimentos.aureole.feature.home.components.widgets.model.StackedWidgetPagerParams
+import dev.mnascimentos.aureole.feature.home.components.widgets.model.isWidgetDotsEnabled
 import dev.mnascimentos.aureole.feature.home.model.LocalHomeActions
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
 import dev.mnascimentos.aureole.feature.home.model.getWidgetIdsForStack
@@ -65,7 +66,7 @@ fun StackedWidgetSection(
     val pageCount = widgetIds.size
     val pagerState = rememberPagerState(pageCount = { pageCount })
 
-    val showDotsForStack = uiState.widgetStackDots[stackId] ?: true
+    val showDotsForStack = uiState.isWidgetDotsEnabled(stackId)
 
     Column(
         modifier = modifier.fillMaxSize(),

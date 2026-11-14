@@ -3,6 +3,7 @@ package dev.mnascimentos.aureole.feature.home.components.overlays.extensions
 import dev.mnascimentos.aureole.core.data.model.AppFolder
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.feature.home.HomeViewModel
+import dev.mnascimentos.aureole.feature.home.components.widgets.model.widgetDotsKey
 import dev.mnascimentos.aureole.feature.home.model.ContainerAppBottomSheetState
 import dev.mnascimentos.aureole.feature.home.model.ContainerFolderBottomSheetState
 import dev.mnascimentos.aureole.feature.home.model.FolderAppBottomSheetState
@@ -41,12 +42,13 @@ fun HomeViewModel.closeWidgetStackBottomSheet() {
 }
 
 fun HomeViewModel.toggleWidgetStackDots(stackId: String) {
+    val key = widgetDotsKey(stackId, uiState.value.isLandscape)
     val currentMap = uiState.value.widgetStackDots
-    val currentVal = currentMap[stackId] ?: widgetRepository.getWidgetDotsState(stackId)
+    val currentVal = currentMap[key] ?: widgetRepository.getWidgetDotsState(key, fallbackKey = stackId)
     val newVal = !currentVal
-    val updatedMap = currentMap + (stackId to newVal)
+    val updatedMap = currentMap + (key to newVal)
     updateUiState { it.copy(widgetStackDots = updatedMap) }
-    widgetRepository.setWidgetDotsState(stackId, newVal)
+    widgetRepository.setWidgetDotsState(key, newVal)
 }
 
 fun HomeViewModel.openEditFolderForFolder(folder: AppFolder) {

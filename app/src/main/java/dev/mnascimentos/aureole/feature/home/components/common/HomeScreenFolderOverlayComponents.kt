@@ -49,6 +49,7 @@ import dev.mnascimentos.aureole.feature.home.components.quickbutton.HomeScreenQu
 import dev.mnascimentos.aureole.feature.home.components.widgets.EditWidgetGroupScreen
 import dev.mnascimentos.aureole.feature.home.components.widgets.model.EditWidgetGroupActions
 import dev.mnascimentos.aureole.feature.home.components.widgets.model.EditWidgetGroupParams
+import dev.mnascimentos.aureole.feature.home.components.widgets.model.isWidgetDotsEnabled
 import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
 import dev.mnascimentos.aureole.feature.home.model.getWidgetIdsForStack
@@ -128,7 +129,7 @@ private fun WidgetStackOverlay(
                 item = item,
                 widgets = uiState.getWidgetIdsForStack(state.stackId),
                 appWidgetHost = appWidgetHost,
-                isIndicatorEnabled = uiState.widgetStackDots[state.stackId] ?: true,
+                isIndicatorEnabled = uiState.isWidgetDotsEnabled(state.stackId),
                 hazeState = if (uiState.isHazeEnabled) hazeState else null
             ),
             actions = EditWidgetGroupActions(
