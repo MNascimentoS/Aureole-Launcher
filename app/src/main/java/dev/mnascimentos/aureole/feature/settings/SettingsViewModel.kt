@@ -76,6 +76,7 @@ class SettingsViewModel(
                 isDynamicWallpaperEnabled = settingsRepository.isDynamicWallpaperEnabled,
                 manualSeedColor = settingsRepository.manualSeedColor,
                 selectedThemeName = settingsRepository.selectedThemeName,
+                selectedFontName = settingsRepository.selectedFontName,
                 isHazeEnabled = settingsRepository.isHazeEnabled,
                 isHazeSupported = settingsRepository.isHazeSupported,
                 hazeOpacity = settingsRepository.hazeOpacity,
