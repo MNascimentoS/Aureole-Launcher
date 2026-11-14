@@ -128,5 +128,8 @@ internal fun applyWidgetThemeColors(
     val mapping = SparseIntArray()
     if (enabled) buildWidgetColorMap(palette).forEach { (resId, color) -> mapping.put(resId, color) }
     view.setColorResources(mapping)
+    Timber.tag(
+        "WidgetTheme"
+    ).d("setColorResources enabled=%s entries=%d host=%s", enabled, mapping.size(), view.appWidgetInfo?.provider)
     return enabled
 }
