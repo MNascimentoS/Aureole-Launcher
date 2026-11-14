@@ -16,25 +16,19 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import dev.mnascimentos.aureole.composable.clock.model.ClockFontSpec
 import dev.mnascimentos.aureole.composable.clock.model.ClockHeaderContentParams
 import dev.mnascimentos.aureole.composable.clock.model.ClockTimeDisplayParams
+import dev.mnascimentos.aureole.composable.clock.model.chooseClockSizing
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 
-private const val MIN_GREETING_HEIGHT_DP = 100
 private const val COMPACT_CONTAINER_HEIGHT_DP = 90
-private const val MAX_CONTAINER_HEIGHT_DP = 140
-
-private const val CLOCK_TEXT_SIZE_SMALL_PX = 42f
-private const val CLOCK_TEXT_SIZE_NORMAL_PX = 56f
-private const val CLOCK_TEXT_SIZE_LARGE_PX = 68f
 
 private const val GREETING_SIZE_COMPACT = 12f
 private const val GREETING_SIZE_NORMAL = 14f
@@ -43,23 +37,18 @@ private const val DATE_SIZE_NORMAL = 13f
 
 private const val GREETING_CROSSFADE_DURATION_MS = 500
 
-private fun shouldShowGreeting(params: ClockHeaderContentParams): Boolean = when (params.clockStyle) {
-    "TIME_ONLY", "DATE_ON_TOP" -> false
-    "GREETING_AND_DATE", "CUSTOM_GREETING" -> true
-    else -> params.maxHeight >= MIN_GREETING_HEIGHT_DP.dp
-}
-
 @Composable
 internal fun ClockHeaderContent(params: ClockHeaderContentParams) {
     val (horizontalAlignment, textAlign) = ClockHeaderUtils.resolveClockAlignments(params.alignment)
 
-    val showGreeting = shouldShowGreeting(params)
+    val sizing = chooseClockSizing(params.maxHeight.value, params.clockStyle)
+    val showGreeting = sizing.showGreeting
 
     val isCompact = params.maxHeight < COMPACT_CONTAINER_HEIGHT_DP.dp
     val greetingSize = if (isCompact) GREETING_SIZE_COMPACT else GREETING_SIZE_NORMAL
     val dateSize = if (isCompact) DATE_SIZE_COMPACT else DATE_SIZE_NORMAL
 
-    val clockTextSizePx = clockTextSizePx(params.maxHeight)
+    val clockTextSizePx = sizing.timeSizePx
 
     val fontSpec = ClockFontSpec.fromKey(params.fontFamily)
     val typeface = fontSpec.timeTypeface()
@@ -113,12 +102,6 @@ internal fun ClockHeaderContent(params: ClockHeaderContentParams) {
             )
         }
     }
-}
-
-private fun clockTextSizePx(maxHeight: Dp): Float = when {
-    maxHeight < COMPACT_CONTAINER_HEIGHT_DP.dp -> CLOCK_TEXT_SIZE_SMALL_PX
-    maxHeight > MAX_CONTAINER_HEIGHT_DP.dp -> CLOCK_TEXT_SIZE_LARGE_PX
-    else -> CLOCK_TEXT_SIZE_NORMAL_PX
 }
 
 @Composable
