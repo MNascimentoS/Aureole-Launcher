@@ -42,6 +42,13 @@ fun String.basePaletteName(): String = removeSuffix(LIGHT_SUFFIX).trim()
 fun findBasePalette(name: String): ThemePalette? =
     allPalettes.firstOrNull { it.name.equals(name.basePaletteName(), ignoreCase = true) }
 
+/** The palette "Apply" saves: the one tapped, or, with no tap, the one already shown as selected. */
+fun resolveAppliedPalette(pendingName: String?, selectedName: String): ThemePalette? =
+    findBasePalette(pendingName ?: selectedName)
+
+/** The font "Apply" saves: the one tapped, or, with no tap, the one already shown as selected. */
+fun resolveAppliedFont(pendingName: String?, selectedName: String): String = pendingName ?: selectedName
+
 /** Name of the font in `AvailableFonts` that matches [family]; falls back to the default font. */
 fun fontNameOf(family: FontFamily): String =
     AvailableFonts.entries.firstOrNull { it.value == family }?.key ?: DEFAULT_FONT_NAME

@@ -16,8 +16,8 @@ import dev.mnascimentos.aureole.composable.sheets.model.ThemePreviewOverlayParam
 import dev.mnascimentos.aureole.composable.sheets.model.ThemePreviewState
 import dev.mnascimentos.aureole.composable.sheets.model.basePaletteName
 import dev.mnascimentos.aureole.composable.sheets.model.discard
-import dev.mnascimentos.aureole.composable.sheets.model.findBasePalette
 import dev.mnascimentos.aureole.composable.sheets.model.fontNameOf
+import dev.mnascimentos.aureole.composable.sheets.model.resolveAppliedPalette
 import dev.mnascimentos.aureole.core.designsystem.palette.ThemePalette
 import dev.mnascimentos.aureole.core.designsystem.palette.allPalettes
 import dev.mnascimentos.aureole.core.designsystem.palette.toLight
@@ -58,7 +58,7 @@ fun PickPaletteBottomSheet(
             title = stringResource(R.string.settings_appearance_pick_palette_title),
             base = base,
             pending = pending,
-            onApply = { pending.palette?.name?.let(::findBasePalette)?.let(onPaletteSelected) },
+            onApply = { resolveAppliedPalette(pending.palette?.name, selectedPaletteName)?.let(onPaletteSelected) },
             onDismissRequest = {
                 pending = pending.discard()
                 onDismissRequest()
