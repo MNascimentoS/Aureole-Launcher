@@ -5,6 +5,7 @@ import dev.mnascimentos.aureole.core.data.db.ContainerDao
 import dev.mnascimentos.aureole.core.data.db.FavoriteContainerDao
 import dev.mnascimentos.aureole.core.data.db.FolderDao
 import dev.mnascimentos.aureole.core.data.repository.AppRepository
+import dev.mnascimentos.aureole.core.data.repository.ClockConfigRepository
 import dev.mnascimentos.aureole.core.data.repository.ContainerRepository
 import dev.mnascimentos.aureole.core.data.repository.FavoriteContainerRepository
 import dev.mnascimentos.aureole.core.data.repository.FolderRepository
@@ -24,6 +25,7 @@ import org.koin.android.ext.koin.androidContext
 import org.koin.core.module.dsl.bind
 import org.koin.core.module.dsl.factoryOf
 import org.koin.core.module.dsl.singleOf
+import org.koin.core.module.dsl.viewModel
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 
@@ -46,6 +48,7 @@ val appModule = module {
     }
     single<ContainerRepository> { ContainerRepository(get<ContainerDao>(), get<FolderDao>()) }
     singleOf(::GridRepository)
+    single { ClockConfigRepository(androidContext(), get<GridRepository>(), get<SettingsRepository>()) }
     factoryOf(::HomeRepositories)
     factoryOf(::UndoController)
 
@@ -53,7 +56,7 @@ val appModule = module {
     singleOf(::SpkiPinValidator)
     singleOf(::ApiClient)
 
-    viewModelOf(::HomeViewModel)
+    viewModel { HomeViewModel(get<HomeRepositories>(), get<UndoController>()) }
     viewModelOf(::SettingsViewModel)
     viewModelOf(::WidgetPickerViewModel)
 }

@@ -5,6 +5,7 @@ import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.composable.undo.model.UndoSnackbarState
 import dev.mnascimentos.aureole.core.data.model.AppFolder
 import dev.mnascimentos.aureole.core.data.model.AppInfo
+import dev.mnascimentos.aureole.core.data.model.ClockConfig
 import dev.mnascimentos.aureole.core.data.model.ContainerModel
 import dev.mnascimentos.aureole.core.data.model.LauncherItemState
 import dev.mnascimentos.aureole.core.data.model.QuickButtonModel
@@ -47,6 +48,8 @@ data class MainUiState(
     val clockDateFormat: String = SettingsRepository.DEFAULT_CLOCK_DATE_FORMAT,
     val clockTextColor: Int = 0,
     val clockBackgroundColor: Int = 0,
+    /** The look of each clock on the grid by item id; a clock missing here uses the clock fields above. */
+    val clockConfigs: Map<String, ClockConfig> = emptyMap(),
     val showContainerAddFolderButton: Boolean = true,
     val containerPosition: String = "Center",
     val showFolderLabels: Boolean = false,
@@ -80,8 +83,6 @@ data class MainUiState(
     val favoriteAppPackages: List<String> = emptyList(),
     val containerFavorites: Map<String, List<String>> = emptyMap(),
     val activeFavoriteContainerId: String? = null,
-    /** Favorites list the Customize sheet just placed; it leaves the home if the picker closes empty. */
-    val customizeFavoritesListId: String? = null,
     val folders: List<AppFolder> = emptyList(),
     val favoriteApps: List<AppInfo> = emptyList(),
 
@@ -117,6 +118,8 @@ data class MainUiState(
     val showAddContainerDialog: Boolean = false,
     val showCustomizeBottomSheet: Boolean = false,
     val showEditClockBottomSheet: Boolean = false,
+    /** The grid item id of the clock the clock editor changes; null edits the clock fields above (the default). */
+    val editingClockId: String? = null,
     val showQuickButtonSettingsBottomSheet: Boolean = false,
     val showQuickButtonAppearanceBottomSheet: Boolean = false,
     val showShortcutSelectionBottomSheet: Boolean = false,
@@ -131,6 +134,7 @@ data class MainUiState(
     val containers: Map<String, ContainerModel> = emptyMap(),
     val editingContainerId: String? = null,
     val isEditContainerDialogVisible: Boolean = false,
+    val editContainerOpenCount: Int = 0,
 
     // Contextual Bottom Sheets
     val activeContainerAppBottomSheet: ContainerAppBottomSheetState? = null,
@@ -177,6 +181,16 @@ val MainUiState.isAppsLoading: Boolean
     get() = isLoading && apps.isEmpty()
 
 val MainUiState.isHomeOverlayActive: Boolean
+    get() = isAllAppsDrawerOpen || hasOverlayBesidesDrawer
+
+/**
+ * The all-apps drawer is open with nothing above it (sheet, folder, search, dialog or onboarding), so the
+ * alphabet scrubber is the only thing that needs the system back gesture off its edge.
+ */
+val MainUiState.isScrubberEdgeActive: Boolean
+    get() = isAllAppsDrawerOpen && !hasOverlayBesidesDrawer && !onboarding.blocksHome
+
+private val MainUiState.hasOverlayBesidesDrawer: Boolean
     get() {
         val isFolderActive = activeFolder != null ||
             isCreateFolderDialogVisible ||
@@ -188,7 +202,6 @@ val MainUiState.isHomeOverlayActive: Boolean
             showQuickButtonSettingsBottomSheet ||
             showQuickButtonAppearanceBottomSheet ||
             showShortcutSelectionBottomSheet ||
-            isAllAppsDrawerOpen ||
             searchQuery.isNotEmpty() ||
             isFolderActive
         val isWidgetActive = showWidgetPicker ||

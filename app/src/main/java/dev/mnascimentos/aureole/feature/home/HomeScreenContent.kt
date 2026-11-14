@@ -2,6 +2,7 @@ package dev.mnascimentos.aureole.feature.home
 
 import android.appwidget.AppWidgetHost
 import android.content.res.Configuration
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
@@ -13,11 +14,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
 import dev.chrisbanes.haze.HazeState
-import dev.mnascimentos.aureole.core.data.model.AppFolder
+import dev.mnascimentos.aureole.composable.LocalHomeUiState
 import dev.mnascimentos.aureole.core.data.model.LauncherItemState
-import dev.mnascimentos.aureole.core.data.model.LauncherItemType
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
-import dev.mnascimentos.aureole.feature.home.components.containers.model.ContainerConfig
+import dev.mnascimentos.aureole.feature.home.components.HomeTopGrabZone
 import dev.mnascimentos.aureole.feature.home.components.content.GridItemContent
 import dev.mnascimentos.aureole.feature.home.components.favorites.model.FavoritesListConfig
 import dev.mnascimentos.aureole.feature.home.components.widgets.model.StackedWidgetConfig
@@ -27,7 +27,6 @@ import dev.mnascimentos.aureole.feature.home.grid.model.GridEditConfig
 import dev.mnascimentos.aureole.feature.home.grid.model.GridLimits
 import dev.mnascimentos.aureole.feature.home.model.GridItemContentParams
 import dev.mnascimentos.aureole.feature.home.model.LocalHomeActions
-import dev.mnascimentos.aureole.feature.home.model.LocalHomeUiState
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
 
 internal fun getGridLimits(orientation: Int): GridLimits {
@@ -90,75 +89,28 @@ internal fun MainHomeLayout(
     val currentLimits = getGridLimits(configuration.orientation)
     val currentItems = getGridItemsForOrientation(isLandscape, uiState)
 
-    DynamicGridContainer(
-        items = currentItems,
-        config = GridEditConfig(isEditMode = uiState.isGridEditMode, limits = currentLimits),
-        actions = actions,
-        modifier = Modifier
-            .fillMaxSize()
-            .statusBarsPadding()
-            .navigationBarsPadding()
-            .padding(horizontal = AureoleDS.dimens.xSmall)
-            .padding(top = AureoleDS.dimens.large, bottom = AureoleDS.dimens.xSmall)
-    ) { item ->
-        val currentContainerConfig = buildContainerConfig(item, uiState, hazeState)
-
-        GridItemContent(
-            GridItemContentParams(
-                item = item,
-                favConfig = favConfig,
-                appWidgetHost = appWidgetHost,
-                stackedWidgetConfig = stackedWidgetConfig,
-                containerConfig = currentContainerConfig
+    Box(modifier = Modifier.fillMaxSize()) {
+        DynamicGridContainer(
+            items = currentItems,
+            config = GridEditConfig(isEditMode = uiState.isGridEditMode, limits = currentLimits),
+            actions = actions,
+            modifier = Modifier
+                .fillMaxSize()
+                .statusBarsPadding()
+                .navigationBarsPadding()
+                .padding(horizontal = AureoleDS.dimens.xSmall)
+                .padding(top = AureoleDS.dimens.homeTopGrabZone, bottom = AureoleDS.dimens.xSmall)
+        ) { item ->
+            GridItemContent(
+                GridItemContentParams(
+                    item = item,
+                    favConfig = favConfig,
+                    appWidgetHost = appWidgetHost,
+                    stackedWidgetConfig = stackedWidgetConfig,
+                    hazeState = hazeState
+                )
             )
-        )
-    }
-}
-
-internal fun buildContainerConfig(
-    item: LauncherItemState,
-    uiState: MainUiState,
-    hazeState: HazeState
-): ContainerConfig {
-    val panelModel = uiState.containers[item.id]
-    return if (item.safeType == LauncherItemType.SHORTCUTS_CONTAINER && panelModel != null) {
-        ContainerConfig(
-            panelId = panelModel.id,
-            title = panelModel.title,
-            items = panelModel.items,
-            folders = panelModel.folders,
-            appPackageNames = panelModel.appPackageNames,
-            openedFolderId = uiState.openedFolderId,
-            position = panelModel.position,
-            orientation = panelModel.orientation,
-            showFolderLabels = panelModel.showFolderLabels,
-            showAddFolderButton = panelModel.showAddFolderButton,
-            isBackgroundEnabled = panelModel.isBackgroundEnabled,
-            isExpandCell = panelModel.isExpandCell,
-            isGridFolderEnabled = panelModel.isGridFolderEnabled,
-            hideText = panelModel.hideText,
-            textColor = panelModel.textColor,
-            backgroundColor = panelModel.backgroundColor,
-            strokeEnabled = panelModel.strokeEnabled,
-            strokeColor = panelModel.strokeColor,
-            folderColor = panelModel.folderColor,
-            folderStrokeEnabled = panelModel.folderStrokeEnabled,
-            scrollUpShortcut = panelModel.scrollUpShortcut,
-            scrollDownShortcut = panelModel.scrollDownShortcut,
-            hazeState = hazeState
-        )
-    } else {
-        ContainerConfig(
-            panelId = item.id,
-            folders = emptyList<AppFolder>(),
-            openedFolderId = uiState.openedFolderId,
-            position = uiState.containerPosition,
-            orientation = "Vertical",
-            showFolderLabels = uiState.showFolderLabels,
-            showAddFolderButton = uiState.showContainerAddFolderButton,
-            isBackgroundEnabled = uiState.isContainerBackgroundEnabled,
-            isExpandCell = uiState.isContainerExpandCell,
-            hazeState = hazeState
-        )
+        }
+        HomeTopGrabZone(enabled = !uiState.isGridEditMode, onLongPress = actions.onOpenCustomizeBottomSheet)
     }
 }

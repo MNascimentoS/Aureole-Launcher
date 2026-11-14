@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.provider.Settings
+import androidx.core.net.toUri
 import timber.log.Timber
 import java.lang.reflect.InvocationTargetException
 
@@ -26,6 +27,15 @@ object IntentUtils {
         } catch (e: SecurityException) {
             Timber.tag(TAG).w(e, "Security exception for app info")
         }
+    }
+
+    fun openUrl(context: Context, url: String) {
+        runCatching {
+            val intent = Intent(Intent.ACTION_VIEW, url.toUri()).apply {
+                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            }
+            context.startActivity(intent)
+        }.onFailure { Timber.tag(TAG).w(it, "Could not open url $url") }
     }
 
     fun uninstallApp(context: Context, packageName: String) {

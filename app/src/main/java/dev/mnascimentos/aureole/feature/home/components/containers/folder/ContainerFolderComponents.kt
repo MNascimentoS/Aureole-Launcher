@@ -2,7 +2,6 @@ package dev.mnascimentos.aureole.feature.home.components.containers.folder
 
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
@@ -33,6 +32,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import dev.mnascimentos.aureole.R
+import dev.mnascimentos.aureole.composable.LocalHomeUiState
+import dev.mnascimentos.aureole.composable.appitem.AureoleAppIcon
+import dev.mnascimentos.aureole.composable.appitem.model.AureoleAppIconParams
 import dev.mnascimentos.aureole.composable.dialogs.FolderIconRegistry
 import dev.mnascimentos.aureole.composable.dialogs.model.FolderButtonMetrics
 import dev.mnascimentos.aureole.core.data.model.AppFolder
@@ -55,7 +57,6 @@ import dev.mnascimentos.aureole.feature.home.components.quickbutton.launchSystem
 import dev.mnascimentos.aureole.feature.home.components.quickbutton.launchVoiceAssistant
 import dev.mnascimentos.aureole.feature.home.components.quickbutton.model.QuickButtonGridItemCallbacks
 import dev.mnascimentos.aureole.feature.home.model.LocalHomeActions
-import dev.mnascimentos.aureole.feature.home.model.LocalHomeUiState
 import dev.mnascimentos.aureole.util.IntentUtils
 
 private const val FOLDER_BG_INACTIVE_ALPHA = 0.85f
@@ -271,10 +272,6 @@ fun ContainerAppItem(
     val onLongClick = params.onLongClick
 
     val uiState = LocalHomeUiState.current
-    val bitmap = app.getDisplayIconBitmap(
-        isThemed = uiState.isThemedAppIconsEnabled,
-        tintColor = AureoleDS.colors.onSurfaceMedium
-    )
     val buttonSize = if (isBackgroundEnabled) {
         FolderButtonMetrics.SmallSize
     } else {
@@ -303,10 +300,14 @@ fun ContainerAppItem(
                 .padding(imgPadding),
             contentAlignment = Alignment.Center
         ) {
-            Image(
-                bitmap = bitmap,
-                contentDescription = app.label,
-                modifier = Modifier.fillMaxSize()
+            AureoleAppIcon(
+                app = app,
+                modifier = Modifier.fillMaxSize(),
+                params = AureoleAppIconParams(
+                    isThemed = uiState.isThemedAppIconsEnabled,
+                    showThemedBox = false,
+                    contentDescription = app.label
+                )
             )
         }
 

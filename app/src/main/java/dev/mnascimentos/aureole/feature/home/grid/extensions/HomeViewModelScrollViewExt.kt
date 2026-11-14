@@ -1,10 +1,15 @@
 package dev.mnascimentos.aureole.feature.home.grid.extensions
 
+import androidx.lifecycle.viewModelScope
 import dev.mnascimentos.aureole.core.data.model.LauncherItemState
 import dev.mnascimentos.aureole.core.data.model.LauncherItemType
 import dev.mnascimentos.aureole.core.data.model.ScrollOrientation
 import dev.mnascimentos.aureole.feature.home.HomeViewModel
+import dev.mnascimentos.aureole.feature.home.components.containers.extensions.dropContainers
+import dev.mnascimentos.aureole.feature.home.components.containers.extensions.ensureContainer
+import dev.mnascimentos.aureole.feature.home.components.containers.extensions.refreshContainerInState
 import dev.mnascimentos.aureole.feature.home.grid.GridDefaults
+import kotlinx.coroutines.launch
 import java.util.UUID
 
 private const val MAX_CHILD_SPAN = 3
@@ -34,11 +39,19 @@ fun HomeViewModel.updateScrollViewOrientation(parentId: String, orientation: Scr
     }
 }
 
-fun HomeViewModel.addChildToScrollView(parentId: String, type: LauncherItemType, widgetId: Int? = null) {
+fun HomeViewModel.addChildToScrollView(
+    parentId: String,
+    type: LauncherItemType,
+    widgetId: Int? = null,
+    childId: String = UUID.randomUUID().toString()
+) {
+    if (type == LauncherItemType.SHORTCUTS_CONTAINER) {
+        viewModelScope.launch { refreshContainerInState(ensureContainer(childId)) }
+    }
     updateUiState { state ->
         val (defaultSpans, defaultMinSpans) = GridDefaults.getDefaultSpanForType(type)
         val newChild = LauncherItemState(
-            id = UUID.randomUUID().toString(),
+            id = childId,
             type = type,
             col = 0,
             row = 0,
@@ -120,6 +133,12 @@ fun HomeViewModel.resizeChildInScrollView(
 }
 
 fun HomeViewModel.removeChildFromScrollView(parentId: String, childId: String) {
+    val removed = uiState.value.gridItems.find { it.id == parentId }?.safeChildren?.find { it.id == childId }
+    removeChildFromScrollViewState(parentId, childId)
+    if (removed != null) dropContainers(listOf(removed))
+}
+
+private fun HomeViewModel.removeChildFromScrollViewState(parentId: String, childId: String) {
     updateUiState { state ->
         val updatedItems = state.gridItems.map { item ->
             if (item.id == parentId) {

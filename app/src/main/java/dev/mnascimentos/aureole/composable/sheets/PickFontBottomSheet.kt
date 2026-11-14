@@ -15,6 +15,7 @@ import dev.mnascimentos.aureole.composable.sheets.model.ThemePickerSheetOptions
 import dev.mnascimentos.aureole.composable.sheets.model.ThemePreviewOverlayParams
 import dev.mnascimentos.aureole.composable.sheets.model.ThemePreviewState
 import dev.mnascimentos.aureole.composable.sheets.model.discard
+import dev.mnascimentos.aureole.composable.sheets.model.resolveAppliedFont
 import dev.mnascimentos.aureole.core.designsystem.model.LocalLeftHanded
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
@@ -54,7 +55,7 @@ fun PickFontBottomSheet(
             title = stringResource(R.string.settings_appearance_pick_font),
             base = base,
             pending = pending,
-            onApply = { pending.fontName?.let(onFontSelected) },
+            onApply = { onFontSelected(resolveAppliedFont(pending.fontName, selectedFontName)) },
             onDismissRequest = {
                 pending = pending.discard()
                 onDismissRequest()

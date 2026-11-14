@@ -9,12 +9,16 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import dev.mnascimentos.aureole.composable.LocalHomeUiState
 import dev.mnascimentos.aureole.composable.appitem.model.AppItemRowConfig
 import dev.mnascimentos.aureole.composable.favorites.FavoriteAppsDialog
 import dev.mnascimentos.aureole.composable.favorites.model.FavoriteAppsDialogActions
 import dev.mnascimentos.aureole.composable.favorites.model.FavoriteAppsDialogConfig
+import dev.mnascimentos.aureole.composable.favorites.model.ShowAllAppsParams
+import dev.mnascimentos.aureole.composable.favorites.model.ShowLabelsParams
 import dev.mnascimentos.aureole.composable.sheets.ReleaseNotesBottomSheet
 import dev.mnascimentos.aureole.core.designsystem.utils.LocalHazeState
+import dev.mnascimentos.aureole.feature.home.components.favorites.extensions.findAppsList
 import dev.mnascimentos.aureole.feature.home.components.onboarding.OnboardingHostComponent
 import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.rememberTouchExplorationEnabled
 import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.toOnboardingHostParams
@@ -24,8 +28,8 @@ import dev.mnascimentos.aureole.feature.home.components.widgets.WidgetPickerScre
 import dev.mnascimentos.aureole.feature.home.components.widgets.model.WidgetPickerScreenParams
 import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
 import dev.mnascimentos.aureole.feature.home.model.LocalHomeActions
-import dev.mnascimentos.aureole.feature.home.model.LocalHomeUiState
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
+import dev.mnascimentos.aureole.feature.home.model.favoritesOf
 import dev.mnascimentos.aureole.feature.home.model.isAppsLoading
 
 @Composable
@@ -90,9 +94,11 @@ private fun WidgetPickerOverlay(
             params = WidgetPickerScreenParams(
                 isBlurEnabled = uiState.isHazeEnabled,
                 hazeState = LocalHazeState.current,
+                // Select first: the onboarding judges its widget task when the picker closes, so the widget
+                // (or its bind screen) must already be there, else the task fails and drops the widget list.
                 onWidgetSelected = { provider ->
-                    onDismiss()
                     onWidgetSelected(provider)
+                    onDismiss()
                 },
                 onDismiss = onDismiss
             )
@@ -107,11 +113,9 @@ private fun FavoritePickerOverlay(
 ) {
     if (uiState.showFavoritePickerDialog) {
         val containerId = uiState.activeFavoriteContainerId
-        val favPackages = if (containerId != null && uiState.containerFavorites.containsKey(containerId)) {
-            uiState.containerFavorites[containerId] ?: uiState.favoriteAppPackages
-        } else {
-            uiState.favoriteAppPackages
-        }
+        val favPackages = uiState.favoritesOf(containerId)
+        // Only a home apps list has the switch; the drawer's favorites (no id) keep the plain menu.
+        val appsList = containerId?.let { uiState.gridItems.findAppsList(it) }
 
         FavoriteAppsDialog(
             config = FavoriteAppsDialogConfig(
@@ -122,12 +126,30 @@ private fun FavoritePickerOverlay(
                 rowConfig = AppItemRowConfig(
                     isThemedAppIconsEnabled = uiState.isThemedAppIconsEnabled,
                     isLeftHandedMode = uiState.isLeftHandedMode
-                )
+                ),
+                showAllApps = appsList?.let { list ->
+                    ShowAllAppsParams(
+                        checked = list.isShowingAllApps,
+                        onCheckedChange = { show -> actions.onSetShowAllApps(list.id, show) }
+                    )
+                },
+                showLabels = appsList?.let { list ->
+                    ShowLabelsParams(
+                        checked = list.isShowingLabels,
+                        onCheckedChange = { show -> actions.onSetShowLabels(list.id, show) }
+                    )
+                }
             ),
             actions = FavoriteAppsDialogActions(
                 onToggleFavorite = { pkg -> actions.onToggleFavoriteWithContainer(pkg, containerId) },
                 onUpdateFavoritePackages = { cId, pkgs -> actions.onUpdateFavoritePackages(cId, pkgs) },
                 onSettingsClick = actions.onSettingsClick,
+                onCustomizeHome = appsList?.let {
+                    {
+                        actions.onDismissFavoritePicker()
+                        actions.onOpenCustomizeBottomSheet()
+                    }
+                },
                 onDismiss = actions.onDismissFavoritePicker
             )
         )

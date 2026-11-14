@@ -1,36 +1,55 @@
 package dev.mnascimentos.aureole.feature.home.grid.extensions
 
 import dev.mnascimentos.aureole.core.data.model.LauncherItemState
-import dev.mnascimentos.aureole.core.data.model.LauncherItemType
 import dev.mnascimentos.aureole.core.data.repository.GridRepository
 import dev.mnascimentos.aureole.feature.home.HomeViewModel
 import dev.mnascimentos.aureole.feature.home.components.containers.extensions.loadContainers
 import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.abandonPendingTask
+import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.keepingCreatedAppsList
 import dev.mnascimentos.aureole.feature.home.grid.GridEngineUtils
 import dev.mnascimentos.aureole.feature.home.grid.model.GridLimits
-import dev.mnascimentos.aureole.feature.home.model.MainUiState
+import dev.mnascimentos.aureole.feature.home.grid.model.LoadedGrid
+import dev.mnascimentos.aureole.feature.home.grid.model.withGridOrientation
+import dev.mnascimentos.aureole.feature.home.grid.model.withLoadedGrid
+import kotlinx.coroutines.withContext
 
 internal fun HomeViewModel.getGridRepository(): GridRepository {
     return gridRepository
 }
 
+/** Reads both layouts off the main thread; only the latest call applies its result. */
 fun HomeViewModel.loadGridItems(isLandscape: Boolean = false) {
     if (uiState.value.isGridEditMode) return
+    gridLoads.launch {
+        val loaded = withContext(gridLoadDispatcher) { readGridLayouts(isLandscape) }
+        applyLoadedGrid(loaded, isLandscape)
+    }
+}
+
+/**
+ * Same as [loadGridItems] but on the calling thread and done when it returns, for flows that read the state right
+ * after loading (the onboarding dismiss). It also drops any load still in flight, whose result would be older.
+ */
+internal fun HomeViewModel.loadGridItemsNow(isLandscape: Boolean = false) {
+    if (uiState.value.isGridEditMode) return
+    gridLoads.cancel()
+    applyLoadedGrid(readGridLayouts(isLandscape), isLandscape)
+}
+
+private fun HomeViewModel.readGridLayouts(isLandscape: Boolean): LoadedGrid {
     val isLeftHanded = settingsRepository.isLeftHandedMode
     val portraitItems = getGridRepository().getGridItems(isLandscape = false, isLeftHanded = isLeftHanded)
     val landscapeItems = getGridRepository().getGridItems(isLandscape = true, isLeftHanded = isLeftHanded)
-    updateUiState {
-        it.copy(
-            portraitGridItems = portraitItems,
-            landscapeGridItems = landscapeItems,
-            gridItems = if (isLandscape) landscapeItems else portraitItems,
-            isLandscape = isLandscape
-        )
-    }
+        .let { saved -> if (isLandscape) orFirstLandscapeLayout(saved, portraitItems, isLeftHanded) else saved }
+    return LoadedGrid(portraitItems, landscapeItems)
+}
+
+private fun HomeViewModel.applyLoadedGrid(loaded: LoadedGrid, isLandscape: Boolean) {
+    updateUiState { it.withLoadedGrid(loaded, isLandscape) }
     // A reset or the default layout can bring a container that has no entity yet.
-    val hasMissingContainer = (portraitItems + landscapeItems).any {
-        it.safeType == LauncherItemType.SHORTCUTS_CONTAINER && it.id !in uiState.value.containers
-    }
+    val hasMissingContainer = (loaded.portrait + loaded.landscape)
+        .missingContainerIds(uiState.value.containers.keys)
+        .isNotEmpty()
     if (hasMissingContainer) loadContainers()
 }
 
@@ -45,10 +64,16 @@ fun HomeViewModel.enterGridEditMode() {
     }
 }
 
+/** Goes back to the layout the edit started from; the favorites task keeps the apps list it created (saved). */
 fun HomeViewModel.cancelGridEditMode() {
+    var keptAppsList: List<LauncherItemState>? = null
     updateUiState { state ->
-        val restoredPortrait = state.cachedPortraitGridItems ?: state.portraitGridItems
-        val restoredLandscape = state.cachedLandscapeGridItems ?: state.landscapeGridItems
+        val cachedPortrait = state.cachedPortraitGridItems ?: state.portraitGridItems
+        val cachedLandscape = state.cachedLandscapeGridItems ?: state.landscapeGridItems
+        val kept = state.keepingCreatedAppsList(if (state.isLandscape) cachedLandscape else cachedPortrait)
+        keptAppsList = kept
+        val restoredPortrait = if (kept != null && !state.isLandscape) kept else cachedPortrait
+        val restoredLandscape = if (kept != null && state.isLandscape) kept else cachedLandscape
         val restoredGridItems = if (state.isLandscape) restoredLandscape else restoredPortrait
         state.copy(
             isGridEditMode = false,
@@ -62,145 +87,34 @@ fun HomeViewModel.cancelGridEditMode() {
             onboarding = state.onboarding.abandonPendingTask()
         )
     }
-}
-
-fun HomeViewModel.saveGridEditMode() {
-    val portraitToSave = uiState.value.portraitGridItems
-    val landscapeToSave = uiState.value.landscapeGridItems
-    getGridRepository().saveGridItems(portraitToSave, isLandscape = false)
-    getGridRepository().saveGridItems(landscapeToSave, isLandscape = true)
-    updateUiState {
-        it.copy(
-            isGridEditMode = false,
-            cachedPortraitGridItems = null,
-            cachedLandscapeGridItems = null,
-            cachedGridItems = null
-        )
-    }
+    keptAppsList?.let { getGridRepository().saveGridItems(it, uiState.value.isLandscape) }
 }
 
 fun HomeViewModel.updateGridItemsOrientation(maxCols: Int, maxRows: Int) {
     val limits = GridLimits(maxCols, maxRows)
     val isLandscape = (maxCols == GridEngineUtils.LANDSCAPE_MAX_COLS)
+    val current = uiState.value
+    if (current.isLandscape == isLandscape && current.gridLimits == limits) return
 
-    updateUiState { state ->
-        if (state.isLandscape == isLandscape && state.gridLimits == limits) {
-            return@updateUiState state
-        }
-
-        val portraitItems = if (state.portraitGridItems.isNotEmpty()) {
-            state.portraitGridItems
-        } else {
-            getGridRepository().getGridItems(isLandscape = false, isLeftHanded = state.isLeftHandedMode)
-        }
-
-        val landscapeItems = if (state.landscapeGridItems.isNotEmpty()) {
-            state.landscapeGridItems
-        } else {
-            getGridRepository().getGridItems(isLandscape = true, isLeftHanded = state.isLeftHandedMode)
-        }
-
-        val activeItems = if (isLandscape) landscapeItems else portraitItems
-        val constrainedActiveItems = GridEngineUtils.constrainItemsToBounds(activeItems, limits)
-
-        val newPortrait = if (!isLandscape) constrainedActiveItems else portraitItems
-        val newLandscape = if (isLandscape) constrainedActiveItems else landscapeItems
-
-        if (!state.isGridEditMode && activeItems != constrainedActiveItems) {
-            getGridRepository().saveGridItems(constrainedActiveItems, isLandscape)
-        }
-
-        state.copy(
-            gridItems = constrainedActiveItems,
-            portraitGridItems = newPortrait,
-            landscapeGridItems = newLandscape,
-            gridLimits = limits,
-            isLandscape = isLandscape
-        )
+    // Disk is read here, outside the state lambda, and only for a layout that is not in memory yet.
+    val portraitFallback = if (current.portraitGridItems.isEmpty()) {
+        getGridRepository().getGridItems(isLandscape = false, isLeftHanded = current.isLeftHandedMode)
+    } else {
+        emptyList()
     }
-}
-
-internal fun updateActiveGridItemsInState(
-    state: MainUiState,
-    updatedList: List<LauncherItemState>
-): MainUiState {
-    val newPortrait = if (!state.isLandscape) updatedList else state.portraitGridItems
-    val newLandscape = if (state.isLandscape) updatedList else state.landscapeGridItems
-    return state.copy(
-        gridItems = updatedList,
-        portraitGridItems = newPortrait,
-        landscapeGridItems = newLandscape
-    )
-}
-
-fun HomeViewModel.moveGridItem(id: String, newCol: Int, newRow: Int) {
-    updateUiState { state ->
-        val currentItems = state.gridItems
-        val targetIndex = currentItems.indexOfFirst { it.id == id }
-        if (targetIndex != -1) {
-            val item = currentItems[targetIndex]
-            val updatedItem = item.copy(col = newCol, row = newRow)
-
-            val otherItems = currentItems.filterNot { it.id == id }
-            val hasCollision = GridEngineUtils.checkCollisionWithOthers(updatedItem, otherItems)
-
-            val withinBounds = GridEngineUtils.isWithinBounds(
-                newCol,
-                newRow,
-                item.colSpan,
-                item.rowSpan,
-                state.gridLimits
-            )
-            if (!hasCollision && withinBounds) {
-                val updatedList = currentItems.toMutableList().apply {
-                    this[targetIndex] = updatedItem
-                }
-                if (!state.isGridEditMode) {
-                    getGridRepository().saveGridItems(updatedList, state.isLandscape)
-                }
-                updateActiveGridItemsInState(state, updatedList)
-            } else {
-                state
-            }
-        } else {
-            state
-        }
+    val landscapeFallback = if (current.landscapeGridItems.isEmpty()) {
+        getGridRepository().getGridItems(isLandscape = true, isLeftHanded = current.isLeftHandedMode)
+    } else {
+        emptyList()
     }
-}
-
-fun HomeViewModel.resizeGridItem(id: String, newColSpan: Int, newRowSpan: Int) {
+    var itemsToSave: List<LauncherItemState>? = null
     updateUiState { state ->
-        val currentItems = state.gridItems
-        val targetIndex = currentItems.indexOfFirst { it.id == id }
-        if (targetIndex != -1) {
-            val item = currentItems[targetIndex]
-            val updatedItem = item.copy(colSpan = newColSpan, rowSpan = newRowSpan)
-
-            val otherItems = currentItems.filterNot { it.id == id }
-            val hasCollision = GridEngineUtils.checkCollisionWithOthers(updatedItem, otherItems)
-
-            val withinBounds = GridEngineUtils.isWithinBounds(
-                item.col,
-                item.row,
-                newColSpan,
-                newRowSpan,
-                state.gridLimits
-            )
-            if (!hasCollision && withinBounds) {
-                val updatedList = currentItems.toMutableList().apply {
-                    this[targetIndex] = updatedItem
-                }
-                if (!state.isGridEditMode) {
-                    getGridRepository().saveGridItems(updatedList, state.isLandscape)
-                }
-                updateActiveGridItemsInState(state, updatedList)
-            } else {
-                state
-            }
-        } else {
-            state
-        }
+        val loaded = LoadedGrid(portraitFallback, landscapeFallback)
+        val result = state.withGridOrientation(loaded, limits, isLandscape)
+        itemsToSave = result.itemsToSave
+        result.state
     }
+    itemsToSave?.let { getGridRepository().saveGridItems(it, isLandscape) }
 }
 
 fun HomeViewModel.resetGridItems() {

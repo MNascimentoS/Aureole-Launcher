@@ -5,13 +5,14 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Build
 import androidx.annotation.VisibleForTesting
 import androidx.core.content.edit
 import androidx.core.net.toUri
 import dev.mnascimentos.aureole.core.data.db.AppDatabase
+import dev.mnascimentos.aureole.core.data.image.decodeWallpaperBitmap
+import dev.mnascimentos.aureole.core.data.model.ClockConfig
 import dev.mnascimentos.aureole.core.designsystem.utils.HazeUtils
 import timber.log.Timber
 import java.io.File
@@ -256,12 +257,17 @@ class SettingsRepository(private val context: Context) {
         .getOrDefault(false)
 
     private fun writeCustomWallpaper(uri: Uri): Boolean {
-        val bitmap = context.contentResolver.openInputStream(uri)
-            ?.use { BitmapFactory.decodeStream(it) } ?: return false
+        val screen = context.resources.displayMetrics
+        val bitmap = decodeWallpaperBitmap(
+            context.contentResolver,
+            uri,
+            target = maxOf(screen.widthPixels, screen.heightPixels)
+        ) ?: return false
         val file = File(context.filesDir, "custom_wallpaper.jpg")
         FileOutputStream(file).use { out ->
             bitmap.compress(Bitmap.CompressFormat.JPEG, JPEG_QUALITY, out)
         }
+        bitmap.recycle()
         customWallpaperPath = file.absolutePath
         isCustomWallpaperSet = true
         return true
@@ -306,6 +312,7 @@ class SettingsRepository(private val context: Context) {
 
         listOf(
             "aureole_grid_prefs",
+            ClockConfigRepository.PREFS_NAME,
             "aureole_settings_prefs",
             "aureole_widget_prefs",
             "${context.packageName}_preferences"
@@ -338,11 +345,11 @@ class SettingsRepository(private val context: Context) {
         private const val KEY_CLOCK_TEXT_COLOR = "clock_text_color"
         private const val KEY_CLOCK_BACKGROUND_COLOR = "clock_background_color"
 
-        const val DEFAULT_CLOCK_STYLE = "DATE_ON_TOP"
-        const val DEFAULT_CLOCK_ALIGNMENT = "CENTER"
-        const val DEFAULT_CLOCK_FONT_FAMILY = "SANS_SERIF"
-        const val DEFAULT_CLOCK_TIME_FORMAT = "SYSTEM"
-        const val DEFAULT_CLOCK_DATE_FORMAT = "DEFAULT"
+        const val DEFAULT_CLOCK_STYLE = ClockConfig.DEFAULT_STYLE
+        const val DEFAULT_CLOCK_ALIGNMENT = ClockConfig.DEFAULT_ALIGNMENT
+        const val DEFAULT_CLOCK_FONT_FAMILY = ClockConfig.DEFAULT_FONT_FAMILY
+        const val DEFAULT_CLOCK_TIME_FORMAT = ClockConfig.DEFAULT_TIME_FORMAT
+        const val DEFAULT_CLOCK_DATE_FORMAT = ClockConfig.DEFAULT_DATE_FORMAT
         private const val KEY_SHOW_CONTAINER_ADD_FOLDER_BUTTON = "show_container_add_folder_button"
         private const val KEY_CONTAINER_POSITION = "container_position"
         private const val KEY_SHOW_FOLDER_LABELS = "show_folder_labels"

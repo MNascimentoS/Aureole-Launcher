@@ -34,6 +34,7 @@ import androidx.compose.ui.platform.rememberNestedScrollInteropConnection
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import dev.mnascimentos.aureole.R
+import dev.mnascimentos.aureole.composable.LocalHomeUiState
 import dev.mnascimentos.aureole.core.data.model.LauncherItemType
 import dev.mnascimentos.aureole.core.data.model.ScrollOrientation
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
@@ -48,7 +49,6 @@ import dev.mnascimentos.aureole.feature.home.components.content.model.ScrollView
 import dev.mnascimentos.aureole.feature.home.model.GridItemContentParams
 import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
 import dev.mnascimentos.aureole.feature.home.model.LocalHomeActions
-import dev.mnascimentos.aureole.feature.home.model.LocalHomeUiState
 import dev.mnascimentos.aureole.feature.home.model.ScrollViewChildItemParams
 import dev.mnascimentos.aureole.feature.home.model.ScrollViewContentParams
 import dev.mnascimentos.aureole.feature.home.model.VerticalScrollViewContentParams
@@ -62,7 +62,6 @@ fun ScrollViewContainerContent(
     val favConfig = params.favConfig
     val appWidgetHost = params.appWidgetHost
     val stackedWidgetConfig = params.stackedWidgetConfig
-    val containerConfig = params.containerConfig
     val isVertical = item.safeScrollOrientation == ScrollOrientation.VERTICAL
     val scrollState = rememberScrollState()
     val nestedScrollInterop = rememberNestedScrollInteropConnection()
@@ -82,7 +81,7 @@ fun ScrollViewContainerContent(
                     favConfig = favConfig,
                     appWidgetHost = appWidgetHost,
                     stackedWidgetConfig = stackedWidgetConfig,
-                    containerConfig = containerConfig,
+                    hazeState = params.hazeState,
                     scrollState = scrollState
                 )
             )
@@ -93,7 +92,7 @@ fun ScrollViewContainerContent(
                     favConfig = favConfig,
                     appWidgetHost = appWidgetHost,
                     stackedWidgetConfig = stackedWidgetConfig,
-                    containerConfig = containerConfig
+                    hazeState = params.hazeState
                 )
             )
         }
@@ -154,7 +153,7 @@ private fun VerticalScrollViewContent(params: VerticalScrollViewContentParams) {
                     favConfig = params.favConfig,
                     appWidgetHost = params.appWidgetHost,
                     stackedWidgetConfig = params.stackedWidgetConfig,
-                    containerConfig = params.containerConfig,
+                    hazeState = params.hazeState,
                     isVertical = true
                 )
             )
@@ -186,7 +185,7 @@ private fun HorizontalScrollViewContent(params: ScrollViewContentParams) {
                     favConfig = params.favConfig,
                     appWidgetHost = params.appWidgetHost,
                     stackedWidgetConfig = params.stackedWidgetConfig,
-                    containerConfig = params.containerConfig,
+                    hazeState = params.hazeState,
                     isVertical = false
                 )
             )
@@ -223,7 +222,7 @@ private fun ScrollViewChildItem(params: ScrollViewChildItemParams) {
                 favConfig = params.favConfig,
                 appWidgetHost = params.appWidgetHost,
                 stackedWidgetConfig = params.stackedWidgetConfig,
-                containerConfig = params.containerConfig,
+                hazeState = params.hazeState,
                 isInScrollView = true
             )
         )

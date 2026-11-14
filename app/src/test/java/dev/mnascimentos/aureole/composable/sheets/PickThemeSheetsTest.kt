@@ -80,13 +80,24 @@ class PickThemeSheetsTest {
     }
 
     @Test
-    fun `Apply without a choice only closes`() {
+    fun `Apply without a choice applies the palette already shown as selected`() {
         renderPalette()
 
         composeTestRule.onNodeWithText("Apply").performClick()
         composeTestRule.waitForIdle()
 
-        assertEquals(emptyList<String>(), applied)
+        assertEquals(1, applied.size)
+        assertEquals(1, dismissCount)
+    }
+
+    @Test
+    fun `Apply without a choice applies the font already shown as selected`() {
+        renderFont()
+
+        composeTestRule.onNodeWithText("Apply").performClick()
+        composeTestRule.waitForIdle()
+
+        assertEquals(1, applied.size)
         assertEquals(1, dismissCount)
     }
 

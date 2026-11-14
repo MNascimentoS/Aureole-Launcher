@@ -2,6 +2,7 @@ package dev.mnascimentos.aureole.feature.home.components.appsdrawer
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -15,7 +16,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -24,11 +24,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.Dp
 import dev.chrisbanes.haze.HazeState
 import dev.chrisbanes.haze.HazeStyle
 import dev.chrisbanes.haze.HazeTint
 import dev.chrisbanes.haze.hazeEffect
 import dev.mnascimentos.aureole.R
+import dev.mnascimentos.aureole.composable.LocalHomeUiState
 import dev.mnascimentos.aureole.composable.appitem.AppListSkeletonComponent
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleFloatingSearchBar
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleFloatingSearchBarParams
@@ -40,8 +42,9 @@ import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.core.designsystem.utils.fadingEdges
 import dev.mnascimentos.aureole.core.designsystem.utils.glassBlurRadius
 import dev.mnascimentos.aureole.feature.home.components.appsdrawer.model.AppsDrawerMetrics
+import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
 import dev.mnascimentos.aureole.feature.home.model.LocalHomeActions
-import dev.mnascimentos.aureole.feature.home.model.LocalHomeUiState
+import dev.mnascimentos.aureole.feature.home.model.MainUiState
 import dev.mnascimentos.aureole.feature.home.model.isAppsLoading
 import dev.mnascimentos.aureole.util.percentToFraction
 
@@ -62,8 +65,9 @@ fun AppsListDrawer(
 
     val baseBgColor = AureoleDS.colors.background
     val hasHaze = uiState.isHazeEnabled && (hazeState != null)
+    val blurRadius = glassBlurRadius(AppsDrawerMetrics.HazeBlurRadius)
     val hazeModifier =
-        Modifier.buildDrawerHaze(hasHaze, hazeState, baseBgColor, uiState.hazeOpacity)
+        Modifier.buildDrawerHaze(hasHaze, hazeState, baseBgColor, uiState.hazeOpacity, blurRadius)
     val drawerBgColor = if (hasHaze) Color.Transparent else baseBgColor
 
     var isSearchExpanded by remember { mutableStateOf(uiState.searchQuery.isNotEmpty()) }
@@ -104,56 +108,24 @@ fun AppsListDrawer(
         }
 
         if (uiState.showSearchBarInAllApps) {
-            val alignModifier = if (isSearchExpanded) {
-                Modifier
-                    .align(Alignment.TopCenter)
-                    .statusBarsPadding()
-            } else {
-                val align = if (uiState.isLeftHandedMode) Alignment.BottomStart else Alignment.BottomEnd
-                Modifier
-                    .align(align)
-                    .navigationBarsPadding()
-                    .imePadding()
-            }
-
-            Box(
-                modifier = alignModifier
-                    .fillMaxWidth()
-                    .padding(horizontal = AureoleDS.dimens.large, vertical = AureoleDS.dimens.medium),
-                contentAlignment = when {
-                    isSearchExpanded -> Alignment.TopCenter
-                    uiState.isLeftHandedMode -> Alignment.BottomStart
-                    else -> Alignment.BottomEnd
-                }
-            ) {
-                AureoleFloatingSearchBar(
-                    state = AureoleSearchBarState(
-                        query = uiState.searchQuery,
-                        onQueryChange = actions.onSearchQueryChanged,
-                        isExpanded = isSearchExpanded,
-                        onExpandedChange = { isSearchExpanded = it }
-                    ),
-                    params = AureoleFloatingSearchBarParams(
-                        placeholder = stringResource(R.string.home_apps_search_placeholder),
-                        hazeConfig = AureoleSearchBarHazeConfig(
-                            state = hazeState,
-                            isEnabled = uiState.isHazeEnabled,
-                            opacity = uiState.hazeOpacity
-                        )
-                    )
-                )
-            }
+            AppsDrawerSearchBar(
+                uiState = uiState,
+                actions = actions,
+                isSearchExpanded = isSearchExpanded,
+                onExpandedChange = { isSearchExpanded = it },
+                hazeState = hazeState
+            )
         }
     }
 }
 
-@Composable
-@ReadOnlyComposable
+/** Drawer glass; [blurRadius] is read by the caller so no composition local is read conditionally. */
 private fun Modifier.buildDrawerHaze(
     hasHaze: Boolean,
     hazeState: HazeState?,
     baseBgColor: Color,
-    hazeOpacity: Float
+    hazeOpacity: Float,
+    blurRadius: Dp
 ): Modifier {
     if (!hasHaze || hazeState == null) return this
     val tintAlpha = (hazeOpacity * DRAWER_HAZE_TINT_FACTOR).coerceIn(
@@ -164,7 +136,7 @@ private fun Modifier.buildDrawerHaze(
         Modifier.hazeEffect(
             state = hazeState,
             style = HazeStyle(
-                blurRadius = glassBlurRadius(AppsDrawerMetrics.HazeBlurRadius),
+                blurRadius = blurRadius,
                 tint = HazeTint(baseBgColor.copy(alpha = tintAlpha))
             )
         ) {
@@ -179,6 +151,55 @@ private fun AppsListSectionDrawerPreview() {
     AureoleLauncherTheme {
         AppsListDrawer(
             listState = rememberLazyListState()
+        )
+    }
+}
+
+@Composable
+private fun BoxScope.AppsDrawerSearchBar(
+    uiState: MainUiState,
+    actions: HomeScreenActions,
+    isSearchExpanded: Boolean,
+    onExpandedChange: (Boolean) -> Unit,
+    hazeState: HazeState?
+) {
+    val alignModifier = if (isSearchExpanded) {
+        Modifier
+            .align(Alignment.TopCenter)
+            .statusBarsPadding()
+    } else {
+        val align = if (uiState.isLeftHandedMode) Alignment.BottomStart else Alignment.BottomEnd
+        Modifier
+            .align(align)
+            .navigationBarsPadding()
+            .imePadding()
+    }
+
+    Box(
+        modifier = alignModifier
+            .fillMaxWidth()
+            .padding(horizontal = AureoleDS.dimens.large, vertical = AureoleDS.dimens.medium),
+        contentAlignment = when {
+            isSearchExpanded -> Alignment.TopCenter
+            uiState.isLeftHandedMode -> Alignment.BottomStart
+            else -> Alignment.BottomEnd
+        }
+    ) {
+        AureoleFloatingSearchBar(
+            state = AureoleSearchBarState(
+                query = uiState.searchQuery,
+                onQueryChange = actions.onSearchQueryChanged,
+                isExpanded = isSearchExpanded,
+                onExpandedChange = onExpandedChange
+            ),
+            params = AureoleFloatingSearchBarParams(
+                placeholder = stringResource(R.string.home_apps_search_placeholder),
+                hazeConfig = AureoleSearchBarHazeConfig(
+                    state = hazeState,
+                    isEnabled = uiState.isHazeEnabled,
+                    opacity = uiState.hazeOpacity
+                )
+            )
         )
     }
 }

@@ -96,7 +96,10 @@ private fun OnboardingSurfaceContent(
             actions = actions,
             glass = params.glass
         )
-        OnboardingSurface.CELEBRATION -> OnboardingCelebrationComponent(onFinished = actions.onFinishCelebration)
+        OnboardingSurface.CELEBRATION -> OnboardingCelebrationComponent(
+            onFinished = actions.onFinishCelebration,
+            glass = params.glass
+        )
         OnboardingSurface.NONE -> Unit
     }
 }

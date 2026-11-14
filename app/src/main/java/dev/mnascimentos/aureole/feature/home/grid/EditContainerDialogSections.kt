@@ -74,7 +74,7 @@ internal fun EditDialogTypeActionSection(
 ) {
     val (text, onClick) = when (item.type) {
         LauncherItemType.CLOCK -> stringResource(R.string.home_grid_customize_clock) to {
-            actions.onOpenEditClockBottomSheet()
+            actions.onOpenEditClockBottomSheet(item.id)
             onDismissRequest()
         }
         LauncherItemType.APPS_LIST -> stringResource(R.string.home_grid_edit_favorites) to {
@@ -106,7 +106,7 @@ internal fun EditDialogTypeActionSection(
 
 /** Icon of the type specific row: Layout for the side panel, Click, Star and Calendar. */
 @Composable
-private fun TypeActionIcon(type: LauncherItemType?, modifier: Modifier, tint: Color) {
+private fun TypeActionIcon(type: LauncherItemType?, tint: Color, modifier: Modifier = Modifier) {
     when (type) {
         LauncherItemType.CLOCK -> AureoleDS.icons.Calendar(modifier = modifier, tint = tint)
         LauncherItemType.APPS_LIST -> AureoleDS.icons.Star(modifier = modifier, tint = tint)

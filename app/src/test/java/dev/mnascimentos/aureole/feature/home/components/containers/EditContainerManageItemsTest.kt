@@ -5,6 +5,7 @@ import android.graphics.drawable.ColorDrawable
 import androidx.compose.ui.semantics.SemanticsActions
 import androidx.compose.ui.test.ExperimentalTestApi
 import androidx.compose.ui.test.SemanticsMatcher
+import androidx.compose.ui.test.assertCountEquals
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.v2.createComposeRule
 import androidx.compose.ui.test.onAllNodesWithContentDescription
@@ -86,7 +87,7 @@ class EditContainerManageItemsTest {
             }
         }
 
-        composeTestRule.onNodeWithText("No component added yet.").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Add apps, folders or quick buttons above.").assertIsDisplayed()
         composeTestRule.onNodeWithText("Back").assertIsDisplayed().performClick()
         assertTrue(backClicked)
     }
@@ -113,6 +114,50 @@ class EditContainerManageItemsTest {
         composeTestRule.onNodeWithText("Folder").assertIsDisplayed().performClick()
 
         composeTestRule.onAllNodesWithText("New Folder")[0].assertIsDisplayed()
+    }
+
+    private fun setManageItems(state: EditContainerState, onBack: () -> Unit = {}) {
+        composeTestRule.setContent {
+            AureoleLauncherTheme {
+                ManageItemsContent(state = state, allApps = listOf(sampleApp), onBack = onBack)
+            }
+        }
+    }
+
+    private fun emptyState() = EditContainerState(
+        panel = ContainerModel(id = "p1"),
+        options = createDefaultOptionsState(),
+        itemsList = emptyList(),
+        folders = emptyList()
+    )
+
+    @Test
+    fun `when creating a folder from the form, should add it to the list and close the form`() {
+        val state = emptyState()
+        setManageItems(state)
+
+        composeTestRule.onNodeWithText("Folder").performClick()
+        composeTestRule.onNodeWithText("Create").performClick()
+
+        assertEquals(1, state.folders.size)
+        assertEquals(1, state.itemsList.size)
+        composeTestRule.onAllNodesWithText("Create").assertCountEquals(0)
+    }
+
+    @Test
+    fun `when cancelling the folder form, should close only the form and keep the content`() {
+        var backClicked = false
+        val state = emptyState()
+        setManageItems(state, onBack = { backClicked = true })
+
+        composeTestRule.onNodeWithText("Folder").performClick()
+        composeTestRule.onAllNodesWithText("New Folder")[0].assertIsDisplayed()
+        composeTestRule.onNodeWithText("Cancel").performClick()
+
+        composeTestRule.onAllNodesWithText("New Folder").assertCountEquals(0)
+        composeTestRule.onNodeWithText("Back").assertIsDisplayed()
+        assertTrue(state.folders.isEmpty())
+        assertTrue(!backClicked)
     }
 
     @Test
@@ -191,5 +236,25 @@ class EditContainerManageItemsTest {
 
         composeTestRule.onAllNodesWithContentDescription("Remove")[0].performClick()
         assertEquals(listOf("a"), state.itemsList.map { it.id })
+    }
+
+    @Test
+    fun `manage items shows the add and items sections with the count`() {
+        val state = EditContainerState(
+            panel = ContainerModel(id = "p1"),
+            options = createDefaultOptionsState(),
+            itemsList = emptyList(),
+            folders = emptyList()
+        )
+
+        composeTestRule.setContent {
+            AureoleLauncherTheme {
+                ManageItemsContent(state = state, allApps = listOf(sampleApp), onBack = {})
+            }
+        }
+
+        composeTestRule.onNodeWithText("ADD").assertIsDisplayed()
+        composeTestRule.onNodeWithText("ITEMS").assertIsDisplayed()
+        composeTestRule.onNodeWithText("0").assertIsDisplayed()
     }
 }

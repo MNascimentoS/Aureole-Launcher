@@ -102,7 +102,7 @@ private fun MenuRowTexts(params: MenuRowParams, titleColor: Color, modifier: Mod
                 color = AureoleDS.colors.onSurfaceLow,
                 format = AureoleTextFormatParams(
                     style = AureoleDS.typography.bodySmall.copy(textDirection = TextDirection.Content),
-                    maxLines = 1,
+                    maxLines = params.subtitleMaxLines,
                     overflow = TextOverflow.Ellipsis
                 )
             )

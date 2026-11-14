@@ -2,28 +2,18 @@ package dev.mnascimentos.aureole.feature.home.components.overlays
 
 import androidx.compose.runtime.Composable
 import com.android.tools.screenshot.PreviewTest
-import dev.mnascimentos.aureole.core.data.model.LauncherItemState
-import dev.mnascimentos.aureole.core.data.model.LauncherItemType
+import dev.mnascimentos.aureole.composable.ProvideHomeUiState
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.createSampleHomeData
-import dev.mnascimentos.aureole.feature.home.model.ProvideHomeUiState
 
-/** Customize sheet with the clock and all apps already on the home: right-handed and left-handed. */
+/** Customize sheet (eight tiles, no header logo): right-handed and left-handed. */
 class CustomizeBottomSheetOneHandScreenshotTest {
 
     @Composable
-    private fun CustomizeSheet(isLeftHanded: Boolean, withItemsOnHome: Boolean) {
+    private fun CustomizeSheet(isLeftHanded: Boolean) {
         val sampleData = createSampleHomeData()
-        val onHome = if (withItemsOnHome) {
-            listOf(
-                LauncherItemState(id = "clock", type = LauncherItemType.CLOCK),
-                LauncherItemState(id = "all", type = LauncherItemType.ALL_APPS_LIST)
-            )
-        } else {
-            emptyList()
-        }
-        val uiState = sampleData.uiState.copy(isLeftHandedMode = isLeftHanded, gridItems = onHome)
+        val uiState = sampleData.uiState.copy(isLeftHandedMode = isLeftHanded)
         AureoleLauncherTheme {
             ProvideHomeUiState(uiState) {
                 CustomizeBottomSheet(uiState = uiState, actions = sampleData.actions, onDismissRequest = {})
@@ -35,20 +25,13 @@ class CustomizeBottomSheetOneHandScreenshotTest {
     @AureolePreview
     @Composable
     private fun CustomizeSheetRightHanded() {
-        CustomizeSheet(isLeftHanded = false, withItemsOnHome = true)
+        CustomizeSheet(isLeftHanded = false)
     }
 
     @PreviewTest
     @AureolePreview
     @Composable
     private fun CustomizeSheetLeftHanded() {
-        CustomizeSheet(isLeftHanded = true, withItemsOnHome = true)
-    }
-
-    @PreviewTest
-    @AureolePreview
-    @Composable
-    private fun CustomizeSheetEmptyHome() {
-        CustomizeSheet(isLeftHanded = false, withItemsOnHome = false)
+        CustomizeSheet(isLeftHanded = true)
     }
 }

@@ -20,6 +20,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -83,7 +84,11 @@ fun EditWidgetGroupPreviewCarousel(
         val cardWidth = widgetCardWidth(maxWidth.value, margin.value, spacing.value).dp
         val cardSize = DpSize(cardWidth, widgetCardHeight(cardWidth.value).dp)
         val slotPx = with(LocalDensity.current) { (cardWidth + spacing).toPx() }
-        val scrolledPage = widgetPreviewPage(params.scrollState.value, slotPx, widgets.size)
+        val scrollState = params.scrollState
+        val widgetCount = widgets.size
+        val scrolledPage by remember(scrollState, slotPx, widgetCount) {
+            derivedStateOf { widgetPreviewPage(scrollState.value, slotPx, widgetCount) }
+        }
         val currentPage = widgets.indexOf(params.selectedWidgetId).takeIf { it >= 0 } ?: scrolledPage
         RevealSelectedCard(params = params, slotPx = slotPx, cardPx = cardWidth, margin = margin, viewport = maxWidth)
         Column(horizontalAlignment = Alignment.CenterHorizontally) {

@@ -52,8 +52,12 @@ fun rememberAureoleEditOverlayState(
  * hugs its content.
  * @property expandedHeightFraction Fraction of the screen the sheet takes when expanded.
  * @property isLeftHanded Whether the user holds the phone with the left thumb. Callers pass the launcher setting.
- * @property onBackPress Custom back key handler callback.
+ * @property onBackPress Back handler: the back key and gesture. When set it decides what back does (go up a
+ * screen, or close) and the overlay does not hide itself first.
+ * @property onDismiss Handler for drag-down and tap-outside. Falls back to [onBackPress], then to the overlay's
+ * own dismiss request.
  * @property onSettingsClick Settings icon click callback.
+ * @property showHeaderAction Whether the top-end header slot (logo or [headerIcon]) is drawn; false leaves it out.
  * @property headerIcon Optional custom icon for sheet header end action.
  * @property titleIcon Optional icon drawn before the title (menus show what the sheet is about).
  * @property edgeToEdgeContent Whether the sheet content takes the full sheet width, with no horizontal padding;
@@ -68,7 +72,9 @@ data class AureoleEditOverlayConfig(
     val expandedHeightFraction: Float = 0.9f,
     val isLeftHanded: Boolean = false,
     val onBackPress: (() -> Unit)? = null,
+    val onDismiss: (() -> Unit)? = null,
     val onSettingsClick: (() -> Unit)? = null,
+    val showHeaderAction: Boolean = true,
     val headerIcon: (@Composable (Modifier) -> Unit)? = null,
     val titleIcon: (@Composable (Modifier) -> Unit)? = null,
     val edgeToEdgeContent: Boolean = false,
@@ -107,7 +113,8 @@ internal class OverlaySheetDecorations(
     val headerIcon: (@Composable (Modifier) -> Unit)? = null,
     val titleIcon: (@Composable (Modifier) -> Unit)? = null,
     val gestureZone: (@Composable () -> Unit)? = null,
-    val edgeToEdgeContent: Boolean = false
+    val edgeToEdgeContent: Boolean = false,
+    val showHeaderAction: Boolean = true
 )
 
 internal class OverlayDismissState(
@@ -115,3 +122,10 @@ internal class OverlayDismissState(
     val internalVisible: Boolean,
     val triggerDismiss: () -> Unit
 )
+
+/** What drag-down and tap-outside run: [AureoleEditOverlayConfig.onDismiss], else back, else [fallback]. */
+internal fun AureoleEditOverlayConfig.dismissHandler(fallback: () -> Unit): () -> Unit =
+    onDismiss ?: onBackPress ?: fallback
+
+/** What the back key runs: the screen's own [AureoleEditOverlayConfig.onBackPress], else [dismiss]. */
+internal fun AureoleEditOverlayConfig.backHandler(dismiss: () -> Unit): () -> Unit = onBackPress ?: dismiss

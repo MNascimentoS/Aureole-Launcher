@@ -8,7 +8,6 @@ import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
-import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
@@ -24,11 +23,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.pointer.PointerInputChange
 import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.unit.dp
 import dev.chrisbanes.haze.HazeState
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
@@ -36,19 +32,11 @@ import dev.mnascimentos.aureole.feature.home.components.appsdrawer.AppsListDrawe
 import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.isScrubberHintVisible
 import dev.mnascimentos.aureole.feature.home.components.scrubber.CurvedAlphabetScrubber
 import dev.mnascimentos.aureole.feature.home.components.scrubber.model.ScrubberCallbacks
-import dev.mnascimentos.aureole.feature.home.components.scrubber.model.ScrubberDimensions
 import dev.mnascimentos.aureole.feature.home.components.scrubber.model.ScrubberOptions
 import dev.mnascimentos.aureole.feature.home.model.AppsDrawerOverlayConfig
-import dev.mnascimentos.aureole.feature.home.model.HomeDragParams
 import dev.mnascimentos.aureole.feature.home.model.HomeOverlaysConfig
 import dev.mnascimentos.aureole.feature.home.model.ScrubberOverlayConfig
 import kotlinx.coroutines.launch
-import kotlin.math.abs
-
-private const val EDGE_INTENT_THRESHOLD_DP = 28
-private const val VERTICAL_INTENT_THRESHOLD_DP = 36
-private const val SCRUBBER_TOP_RATIO = 1f / 3f
-private const val VERTICAL_GESTURE_RATIO = 1.5f
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
@@ -145,7 +133,8 @@ fun ScrubberOverlay(
             isAlwaysVisible = config.uiState.isAllAppsDrawerOpen,
             isGestureEnabled = config.uiState.isAllAppsDrawerOpen,
             externalTouchY = config.externalTouchY,
-            isHintVisible = config.uiState.isScrubberHintVisible
+            isHintVisible = config.uiState.isScrubberHintVisible,
+            isProminentSelection = true
         ),
         callbacks = ScrubberCallbacks(
             onLetterSelected = { letter ->
@@ -174,134 +163,6 @@ fun ScrubberOverlay(
         ),
         modifier = modifier
     )
-}
-
-fun Modifier.homeDragGestures(
-    params: HomeDragParams
-): Modifier = pointerInput(
-    params.isLeftHandedMode,
-    params.isAlphabetScrubberDisabled,
-    params.screenHeightPx,
-    params.screenWidthPx
-) {
-    var dragStartedOnEdge = false
-    var hasTriggeredGesture = false
-    var totalDragOffset = Offset.Zero
-
-    detectDragGestures(
-        onDragStart = { offset ->
-            totalDragOffset = Offset.Zero
-            hasTriggeredGesture = false
-            dragStartedOnEdge = handleEdgeDragStart(offset, params)
-        },
-        onDragEnd = {
-            params.onExternalTouchYChange(-1f)
-            dragStartedOnEdge = false
-            hasTriggeredGesture = false
-        },
-        onDragCancel = {
-            params.onExternalTouchYChange(-1f)
-            dragStartedOnEdge = false
-            hasTriggeredGesture = false
-        },
-        onDrag = { change, dragAmount ->
-            totalDragOffset += dragAmount
-            val totalDx = totalDragOffset.x
-            val totalDy = totalDragOffset.y
-
-            if (dragStartedOnEdge) {
-                hasTriggeredGesture = handleEdgeDrag(
-                    change = change,
-                    totalDx = totalDx,
-                    totalDy = totalDy,
-                    hasTriggered = hasTriggeredGesture,
-                    params = params
-                )
-            } else {
-                hasTriggeredGesture = handleVerticalGesture(
-                    change = change,
-                    totalDx = totalDx,
-                    totalDy = totalDy,
-                    hasTriggered = hasTriggeredGesture,
-                    params = params
-                )
-            }
-        }
-    )
-}
-
-private fun handleEdgeDragStart(
-    offset: Offset,
-    params: HomeDragParams
-): Boolean {
-    if (params.isAlphabetScrubberDisabled) return false
-    val edgeThreshold = with(params.density) { ScrubberDimensions.EdgeGestureStartWidth.toPx() }
-    return if (params.isLeftHandedMode) {
-        offset.x < edgeThreshold
-    } else {
-        offset.x > params.screenWidthPx - edgeThreshold
-    }
-}
-
-private fun handleEdgeDrag(
-    change: PointerInputChange,
-    totalDx: Float,
-    totalDy: Float,
-    hasTriggered: Boolean,
-    params: HomeDragParams
-): Boolean {
-    var triggered = hasTriggered
-    if (!triggered) {
-        val inwardDrag = if (params.isLeftHandedMode) totalDx else -totalDx
-        val edgeIntentThresholdPx = with(params.density) { EDGE_INTENT_THRESHOLD_DP.dp.toPx() }
-
-        if (inwardDrag > edgeIntentThresholdPx || abs(totalDy) > edgeIntentThresholdPx) {
-            triggered = true
-            if (!params.isAllAppsDrawerOpen) {
-                params.onAllAppsDrawerOpen()
-            }
-        }
-    }
-
-    if (triggered) {
-        change.consume()
-        val scrubberTopYPx = params.screenHeightPx * SCRUBBER_TOP_RATIO
-        params.onExternalTouchYChange(change.position.y - scrubberTopYPx)
-    }
-    return triggered
-}
-
-private fun handleVerticalGesture(
-    change: PointerInputChange,
-    totalDx: Float,
-    totalDy: Float,
-    hasTriggered: Boolean,
-    params: HomeDragParams
-): Boolean {
-    if (params.isAllAppsDrawerOpen || change.isConsumed) {
-        return hasTriggered
-    }
-
-    var triggered = hasTriggered
-    if (!triggered) {
-        val verticalIntentThresholdPx = with(params.density) { VERTICAL_INTENT_THRESHOLD_DP.dp.toPx() }
-        val absX = abs(totalDx)
-        val absY = abs(totalDy)
-
-        if (absY > verticalIntentThresholdPx && absY > VERTICAL_GESTURE_RATIO * absX) {
-            triggered = true
-            change.consume()
-            if (totalDy > 0) {
-                params.onExpandNotificationShade()
-            } else {
-                params.onAllAppsDrawerOpen()
-            }
-        }
-    } else {
-        change.consume()
-    }
-
-    return triggered
 }
 
 @AureolePreview

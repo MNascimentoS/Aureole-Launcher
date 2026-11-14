@@ -48,7 +48,7 @@ fun MainUiState.toOnboardingHostParams(hazeState: HazeState?, isTouchExploration
         ),
         selection = AppearanceSelection(paletteName = selectedThemeName, fontName = selectedFontName),
         isHomeOverlayActive = isHomeOverlayActive,
-        showEditHint = isGridEditMode && onboarding.pendingTask?.gridItemType != null && !isTaskEditorOpen
+        showEditHint = isGridEditMode && onboarding.pendingTask?.isJudgedOnSave == true && !isTaskEditorOpen
     )
 
 /** The faint alphabet shows only while the coach teaches the scrub step. */

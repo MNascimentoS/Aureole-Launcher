@@ -271,12 +271,11 @@ private fun CellBoxConfig.toEditCallbacks(): GridItemEditCallbacks {
         onEditItem = {
             when (item.safeType) {
                 LauncherItemType.CLOCK -> {
-                    actions.onOpenEditClockBottomSheet()
+                    actions.onOpenEditClockBottomSheet(item.id)
                 }
                 LauncherItemType.APPS_LIST -> {
                     actions.onOpenFavoritePicker(item.id)
                 }
-                LauncherItemType.ALL_APPS_LIST -> Unit
                 LauncherItemType.SHORTCUTS_CONTAINER -> {
                     actions.onOpenEditContainerDialog(item.id)
                 }

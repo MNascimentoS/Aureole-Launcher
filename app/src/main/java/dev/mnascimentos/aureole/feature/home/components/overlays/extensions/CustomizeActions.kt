@@ -7,7 +7,9 @@ import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
 /** Runs what tapping [item] in the "Add to home" grid does; the caller closes the sheet afterwards. */
 fun HomeScreenActions.addCustomizeItem(item: CustomizeAddItem) {
     when (item) {
-        CustomizeAddItem.FAVORITES -> onAddFavoritesList()
+        CustomizeAddItem.CLOCK -> onAddClock()
+        CustomizeAddItem.APPS_LIST -> onAddAppsList()
+        CustomizeAddItem.SETTINGS -> onSettingsClick()
         CustomizeAddItem.WIDGET -> {
             onSetIsAddingSingleWidget(true)
             onAddWidgetClick(null)

@@ -17,7 +17,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.composable.optiontile.AureoleOptionTile
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
@@ -27,9 +26,6 @@ import dev.mnascimentos.aureole.feature.home.components.clock.model.ClockStyleLi
 import dev.mnascimentos.aureole.feature.home.components.clock.model.ClockStyleOption
 
 private object StyleCardMetrics {
-    val MiniatureHeight = 44.dp
-    val SmallLineHeight = 4.dp
-    val LargeLineHeight = 14.dp
     const val SMALL_LINE_FRACTION = 0.45f
     const val LARGE_LINE_FRACTION = 0.7f
 }
@@ -81,7 +77,7 @@ private fun StyleMiniature(lines: List<ClockStyleLine>) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .height(StyleCardMetrics.MiniatureHeight),
+            .height(AureoleDS.dimens.controlHeight),
         verticalArrangement = Arrangement.spacedBy(AureoleDS.dimens.xxSmall, Alignment.CenterVertically),
         horizontalAlignment = Alignment.Start
     ) {
@@ -92,7 +88,7 @@ private fun StyleMiniature(lines: List<ClockStyleLine>) {
                     .fillMaxWidth(
                         if (isLarge) StyleCardMetrics.LARGE_LINE_FRACTION else StyleCardMetrics.SMALL_LINE_FRACTION
                     )
-                    .height(if (isLarge) StyleCardMetrics.LargeLineHeight else StyleCardMetrics.SmallLineHeight)
+                    .height(if (isLarge) AureoleDS.dimens.clockLineHeightLarge else AureoleDS.dimens.xxSmall)
                     .clip(RoundedCornerShape(AureoleDS.dimens.minimal))
                     .background(AureoleDS.colors.onSurfaceHigh)
             )

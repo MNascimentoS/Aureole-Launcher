@@ -35,6 +35,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Dp
 import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.composable.SettingsToggleItem
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
@@ -248,26 +249,11 @@ private fun HeaderOffsetWheelPicker(
                 key = { _, itemValue -> itemValue },
                 contentType = { _, _ -> "offset_wheel_item" }
             ) { _, itemValue ->
-                val isSelected = (itemValue == currentCenteredValue)
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(itemHeightDp),
-                    contentAlignment = Alignment.Center
-                ) {
-                    AureoleText(
-                        text = "$itemValue%",
-                        color = if (isSelected) {
-                            AureoleDS.colors.onSurfaceHigh
-                        } else {
-                            AureoleDS.colors.onSurfaceLow.copy(alpha = 0.35f)
-                        },
-                        format = AureoleTextFormatParams(
-                            style = if (isSelected) AureoleDS.typography.bodyLarge else AureoleDS.typography.bodySmall,
-                            fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
-                        )
-                    )
-                }
+                OffsetWheelItem(
+                    text = "$itemValue%",
+                    isSelected = itemValue == currentCenteredValue,
+                    height = itemHeightDp
+                )
             }
         }
     }
@@ -281,6 +267,29 @@ private fun SettingsBehaviorScreenPreview() {
             uiState = SettingsUiState(),
             actions = SettingsScreenActions(),
             onNavigateBack = {}
+        )
+    }
+}
+
+@Composable
+private fun OffsetWheelItem(text: String, isSelected: Boolean, height: Dp) {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(height),
+        contentAlignment = Alignment.Center
+    ) {
+        AureoleText(
+            text = text,
+            color = if (isSelected) {
+                AureoleDS.colors.onSurfaceHigh
+            } else {
+                AureoleDS.colors.onSurfaceLow.copy(alpha = 0.35f)
+            },
+            format = AureoleTextFormatParams(
+                style = if (isSelected) AureoleDS.typography.bodyLarge else AureoleDS.typography.bodySmall,
+                fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
+            )
         )
     }
 }

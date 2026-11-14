@@ -79,7 +79,6 @@
     <string name="settings_advanced_contributors">Colaboradores</string>
     <string name="settings_advanced_privacy_policy">Política de privacidade</string>
     <string name="settings_advanced_terms_of_service">Termos de serviço</string>
-    <string name="settings_advanced_privacy_settings">Configurações de privacidade</string>
     <string name="settings_advanced_open_source_licenses">Licenças de código aberto</string>
     <string name="settings_advanced_uninstall_dialog_title">Desinstalar launcher?</string>
     <string name="settings_advanced_contact_us">Fale conosco</string>
@@ -115,14 +114,13 @@
     <string name="home_customize_adjust_palette">Paleta</string>
     <string name="home_customize_adjust_font">Fonte</string>
     <string name="home_customize_item_clock">Relógio</string>
-    <string name="home_customize_item_favorites">Favoritos</string>
-    <string name="home_customize_item_all_apps">Todos os apps</string>
+    <string name="home_customize_item_apps_list">Lista de apps</string>
     <string name="home_customize_item_container">Container</string>
     <string name="home_customize_item_widget_group">Grupo de widgets</string>
     <string name="home_customize_item_scrollview">Grupo rolável</string>
     <string name="home_customize_item_quick_button">Botão rápido</string>
     <string name="home_customize_item_widget">Widget</string>
-    <string name="home_customize_item_on_home">Já na home</string>
+    <string name="home_customize_item_settings">Configurações</string>
     <string name="home_customize_aureole_settings">Configurações do Aureole</string>
     <string name="settings_advanced_update_new_available">Nova atualização disponível</string>
     <string name="settings_advanced_update_new_body">Uma nova versão do Aureole Launcher está disponível na Google Play. Deseja atualizar agora?</string>
@@ -133,7 +131,6 @@
     <string name="settings_advanced_update_restart_now">Reiniciar agora</string>
     <string name="settings_advanced_update_restart_later">Depois</string>
     <string name="settings_advanced_release_notes_whats_new">O que há de novo</string>
-    <string name="settings_advanced_release_notes_version">Versão %1$s</string>
     <string name="settings_advanced_release_notes_version_current">v%1$s (Atual)</string>
     <string name="settings_advanced_release_notes_version_past">v%1$s</string>
     <string name="settings_advanced_release_notes_tag_new">Novo</string>
@@ -168,7 +165,6 @@
     <string name="home_clock_time_12h">12 Horas</string>
     <string name="home_clock_time_24h">24 Horas</string>
     <string name="home_clock_card_background">Fundo do Cartão</string>
-    <string name="home_clock_restore">Restaurar</string>
     <string name="home_clock_show_background">Mostrar cartão de fundo</string>
     <string name="home_clock_custom_bg_color">Cor de Fundo Personalizada:</string>
     <string name="home_clock_color_default">Padrão</string>
@@ -188,9 +184,10 @@
     <string name="home_clock_greeting_evening">Boa noite</string>
 
     <!-- Favorites Dialog -->
-    <string name="home_favorites_dialog_title">Lista de Aplicativos</string>
-    <string name="home_favorites_edit_shortcuts">Editar atalhos</string>
-    <string name="home_favorites_manage_apps_order">Gerenciar aplicativos e ordem</string>
+    <string name="home_favorites_choose">Escolher favoritos</string>
+    <string name="home_apps_list_show_all">Mostrar todos os apps</string>
+    <string name="home_favorites_show_labels">Mostrar rótulos</string>
+    <string name="home_favorites_show_labels_summary">“Favoritos” e “Todos os apps”</string>
     <string name="home_favorites_count">Favoritos (%1$d)</string>
     <string name="home_favorites_disable_all">Remover todos</string>
     <string name="home_favorites_none_selected">Nenhum aplicativo favorito selecionado.</string>
@@ -199,9 +196,6 @@
     <string name="home_favorites_none_other_found">Nenhum outro aplicativo encontrado.</string>
     <string name="home_favorites_search_placeholder">Buscar aplicativo&#8230;</string>
     <string name="home_favorites_tap_to_select">Toque para selecionar Favoritos</string>
-    <string name="home_favorites_all_apps_divider">\" TODOS OS APPS \"</string>
-    <string name="home_favorites_done">Concluído</string>
-    <string name="home_favorites_back">Voltar</string>
     <string name="home_favorites_remove">Remover dos favoritos</string>
 
     <!-- Widgets -->
@@ -233,7 +227,6 @@
     <string name="home_container_edit_appearance">Aparência</string>
     <string name="home_container_edit_behavior">Comportamento</string>
     <string name="home_container_edit_manage_items">Gerenciar Itens</string>
-    <string name="home_container_edit_save">Salvar</string>
     <string name="home_container_edit_expand_cells">Expandir células</string>
     <string name="home_container_edit_grid_folders">Pastas em grid</string>
     <string name="home_container_edit_bg_enabled">Fundo ativado</string>
@@ -252,8 +245,9 @@
     <string name="home_container_edit_create_folder_btn">Botão de Criar Pasta</string>
     <string name="home_container_edit_folder_labels">Exibir Rótulos das Pastas</string>
     <string name="home_container_edit_grid_folder_mode">Modo de Pasta Expansiva (Grid)</string>
-    <string name="home_container_edit_child_components">Componentes Filhos (%1$d)</string>
-    <string name="home_container_edit_none_added">Nenhum componente adicionado ainda.</string>
+    <string name="home_container_edit_child_components">ITENS</string>
+    <string name="home_container_edit_section_add">ADICIONAR</string>
+    <string name="home_container_edit_none_added">Adicione apps, pastas ou botões rápidos acima.</string>
     <string name="home_container_edit_app_label">App</string>
     <string name="home_container_edit_folder_label">Pasta</string>
     <string name="home_container_edit_add_app">Adicionar App&#8230;</string>
@@ -261,13 +255,12 @@
     <!-- Folders (Additional) -->
     <string name="home_folder_edit_shortcuts">Editar itens da pasta</string>
     <string name="home_folder_edit">Editar pasta</string>
-    <string name="home_folder_rename">Renomear</string>
-    <string name="home_folder_icon_setting">Ícone</string>
     <string name="home_folder_remove">Remover pasta</string>
+    <string name="home_menu_customize_home">Personalizar home</string>
+    <string name="home_menu_customize_home_subtitle">Ajustar, adicionar componentes…</string>
     <string name="home_folder_container_settings">Configurações do Container</string>
     <string name="home_folder_settings">Configurações da Pasta</string>
     <string name="home_folder_is_empty">A pasta está vazia</string>
-    <string name="home_folder_items_saved">Itens da pasta salvos</string>
     <string name="home_container_saved">Configurações do container salvas</string>
 
     <!-- Reusable -->
@@ -278,8 +271,6 @@
     <string name="home_container_add_title">Adicionar Container</string>
     <string name="home_container_add_nested_title">Adicionar ao grupo rolável</string>
     <string name="home_container_add_clock">Relógio</string>
-    <string name="home_container_add_apps_list">Lista de Apps (Favoritos)</string>
-    <string name="home_container_add_all_apps_list">Lista de Todos os Apps</string>
     <string name="home_container_add_shortcuts_container">Container</string>
     <string name="home_container_add_widget_list">Grupo de Widgets do Android</string>
     <string name="home_container_add_quick_button">Botão Rápido</string>
@@ -298,7 +289,7 @@
     <string name="settings_advanced_reset_dialog_title">Redefinir launcher?</string>
     <string name="settings_advanced_reset_layout_title">Redefinir Layout?</string>
     <string name="settings_advanced_reset_dialog_message">Apaga todas as suas configurações e volta ao início. Não dá para desfazer.</string>
-    <string name="settings_advanced_reset_dialog_hold">Segure para redefinir</string>
+    <string name="settings_advanced_reset_dialog_action">Redefinir</string>
     <string name="settings_advanced_reset_layout_message">Os itens voltam para a posição inicial da home.</string>
     <string name="settings_advanced_reset_layout_restore">Restaurar</string>
     <string name="settings_appearance_blur_opacity_low">Baixa</string>
@@ -312,9 +303,23 @@
     <string name="settings_appearance_solid_color">Cor sólida</string>
     <string name="settings_appearance_custom_image">Imagem personalizada</string>
     <string name="settings_appearance_pick_palette_title">Escolher uma paleta</string>
+    <string name="settings_licenses_title">Licenças de código aberto</string>
+    <string name="settings_licenses_section_libraries">Bibliotecas</string>
+    <string name="settings_licenses_section_fonts">Fontes</string>
+    <string name="settings_licenses_section_icons">Ícones</string>
+    <string name="settings_licenses_view_project">Ver projeto</string>
+    <string name="settings_licenses_view_terms">Ver termos</string>
+    <string name="settings_licenses_apache">Apache 2.0</string>
+    <string name="settings_licenses_ofl">SIL OFL 1.1</string>
+    <string name="settings_licenses_terms">Termos de uso</string>
+    <string name="settings_licenses_author_license">%1$s · %2$s</string>
+    <string name="settings_licenses_copyright">Direitos autorais © %1$s</string>
     <string name="settings_contributors_title">Colaboradores</string>
-    <string name="settings_contributors_name">Nome</string>
-    <string name="settings_contributors_subtitle">Algo assim</string>
+    <string name="settings_contributors_aislan_name">Aislan Tavares</string>
+    <string name="settings_contributors_aislan_role">O Sonhador</string>
+    <string name="settings_contributors_mateus_name">Mateus Nascimento</string>
+    <string name="settings_contributors_mateus_role">O Criador</string>
+    <string name="settings_contributors_open_github">Abrir perfil no GitHub</string>
     <string name="home_grid_remove_component">Remover Componente</string>
     <string name="home_grid_customize_clock">Personalizar Relógio</string>
     <string name="home_grid_edit_favorites">Editar Favoritos e Configurações</string>
@@ -324,7 +329,9 @@
     <string name="home_widgets_about_placeholder">Sobre o widget aqui</string>
     <string name="home_widgets_default_title">Widget</string>
     <string name="home_grid_item_clock">Relógio</string>
-    <string name="home_grid_item_favorites">Favoritos</string>
+    <string name="home_grid_item_apps_list">Lista de apps</string>
+    <string name="home_apps_list_section_favorites">Favoritos</string>
+    <string name="home_apps_list_section_all">Todos os apps</string>
     <string name="home_grid_item_shortcuts">Atalhos</string>
     <string name="home_grid_item_widget">Widget</string>
     <string name="home_grid_item_widget_group">Grupo de Widgets</string>
@@ -349,7 +356,6 @@
     <string name="settings_appearance_border_radius_format">%1$d dp</string>
     <string name="favorites_dialog_plus_content_desc">Mais</string>
     <string name="home_grid_scroll_component">Componente</string>
-    <string name="home_quickbutton_open_app_title">Abrir App</string>
 
     <!-- First user experience -->
     <string name="home_onboarding_welcome_title">Bem-vindo ao Aureole</string>
@@ -376,8 +382,16 @@
     <string name="home_onboarding_coach_customize_body">em um espaço vazio da tela para personalizar o que aparece nela.</string>
     <string name="home_onboarding_coach_customize_done">É aqui que você monta sua tela.</string>
     <string name="home_onboarding_checklist_title">Primeiros passos</string>
-    <string name="home_onboarding_checklist_progress">%1$d de %2$d concluídos</string>
-    <string name="home_onboarding_checklist_pill">%1$d/%2$d primeiros passos</string>
+    <plurals name="home_onboarding_checklist_progress">
+        <item quantity="one">%1$d de %2$d etapas</item>
+        <item quantity="many">%1$d de %2$d etapas</item>
+        <item quantity="other">%1$d de %2$d etapas</item>
+    </plurals>
+    <plurals name="home_onboarding_checklist_pill">
+        <item quantity="one">%1$d/%2$d primeiros passos</item>
+        <item quantity="many">%1$d/%2$d primeiros passos</item>
+        <item quantity="other">%1$d/%2$d primeiros passos</item>
+    </plurals>
     <string name="home_onboarding_checklist_minimize">Minimizar</string>
     <string name="home_onboarding_checklist_dismiss">Não mostrar mais</string>
     <string name="home_onboarding_checklist_dismissed">Você pode rever em Configurações › Avançado.</string>
@@ -387,17 +401,18 @@
     <string name="home_onboarding_task_clock">Adicione um &lt;b&gt;relógio&lt;/b&gt;</string>
     <string name="home_onboarding_edit_hint">Arraste para mover, puxe a borda para redimensionar.</string>
     <string name="home_onboarding_edit_save">Salvar</string>
-    <string name="home_onboarding_task_apps">Escolha seus &lt;b&gt;apps&lt;/b&gt;</string>
+    <string name="home_onboarding_task_favorites">Escolha seus &lt;b&gt;favoritos&lt;/b&gt;</string>
     <string name="home_onboarding_task_container">Preencha o &lt;b&gt;container&lt;/b&gt;</string>
     <string name="home_onboarding_task_widget">Adicione &lt;b&gt;widgets&lt;/b&gt;</string>
+    <string name="home_onboarding_task_layout">Ajuste o &lt;b&gt;layout&lt;/b&gt;</string>
+    <string name="home_onboarding_layout_needs_item">Adicione um item primeiro.</string>
+    <string name="home_onboarding_task_skip">Pular</string>
+    <string name="home_onboarding_task_skipped_a11y">%1$s, pulada. Toque para fazer agora</string>
     <string name="home_onboarding_task_settings">Explore mais &lt;b&gt;ajustes&lt;/b&gt;</string>
-    <string name="home_onboarding_picker_hint">Toque em uma paleta ou fonte para testar. Nada muda até você tocar em Aplicar.</string>
-    <string name="home_onboarding_picker_done">Entendi</string>
     <string name="home_onboarding_done_title">Tudo pronto</string>
     <string name="home_onboarding_done_subtitle">Seu Aureole está brilhando. Bom proveito!</string>
     <string name="home_onboarding_task_done_a11y">%1$s, concluído</string>
     <string name="home_onboarding_task_pending_a11y">%1$s, pendente</string>
-    <string name="settings_advanced_replay_onboarding">Rever boas-vindas</string>
     <string name="overlay_sheet_gesture_zone_description">Segure o topo da sheet</string>
     <string name="overlay_sheet_action_expand">Expandir</string>
     <string name="overlay_sheet_action_collapse">Recolher</string>
@@ -460,12 +475,21 @@
     </plurals>
     <string name="home_favorites_menu_all_shown">Sem favoritos: mostra todos os apps</string>
     <string name="home_favorites_manage_drag_hint">Segure e arraste o botão para ordenar</string>
-    <string name="home_favorites_manage_empty_banner">Sem favoritos: a Home mostra todos os %1$d apps. Toque em + para escolher só alguns.</string>
+    <plurals name="home_favorites_manage_empty_banner">
+        <item quantity="one">Sem favoritos: a Home mostra todos os %1$d apps. Toque em + para escolher só alguns.</item>
+        <item quantity="many">Sem favoritos: a Home mostra todos os %1$d apps. Toque em + para escolher só alguns.</item>
+        <item quantity="other">Sem favoritos: a Home mostra todos os %1$d apps. Toque em + para escolher só alguns.</item>
+    </plurals>
     <string name="home_favorites_manage_drag_handle">Reordenar</string>
     <plurals name="home_favorites_menu_count">
         <item quantity="one">%1$d favorito, o resto fica oculto</item>
         <item quantity="many">%1$d favoritos, o resto fica oculto</item>
         <item quantity="other">%1$d favoritos, o resto fica oculto</item>
+    </plurals>
+    <plurals name="home_favorites_menu_count_on_top">
+        <item quantity="one">%1$d favorito no topo, depois todos os apps</item>
+        <item quantity="many">%1$d favoritos no topo, depois todos os apps</item>
+        <item quantity="other">%1$d favoritos no topo, depois todos os apps</item>
     </plurals>
     <string name="settings_appearance_restore_background">Restaurar fundo</string>
     <string name="settings_appearance_background_restored">Fundo restaurado</string>
@@ -502,4 +526,5 @@
     <string name="home_grid_no_space_error">Não há espaço livre suficiente na grade para este container.</string>
     <string name="settings_reset_grid_success">Layout da tela inicial resetado para o padrão</string>
     <string name="settings_wallpaper_load_error">Não foi possível carregar a imagem selecionada</string>
+    <string name="home_container_preview_app_label">App %1$d</string>
 </resources>

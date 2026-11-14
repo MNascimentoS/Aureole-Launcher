@@ -1,11 +1,15 @@
 package dev.mnascimentos.aureole.feature.home.components.widgets
 
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.v2.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.performScrollTo
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.feature.home.components.widgets.model.WidgetStackBottomSheetParams
+import dev.mnascimentos.aureole.feature.home.model.LocalHomeActions
+import dev.mnascimentos.aureole.feature.home.model.createDefaultHomeScreenActions
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Rule
@@ -45,7 +49,7 @@ class WidgetStackBottomSheetTest {
         composeTestRule.onNodeWithText("Widget Group").assertIsDisplayed()
         composeTestRule.onNodeWithText("Resize Group").assertIsDisplayed()
         composeTestRule.onNodeWithText("Toggle Position Indicator").assertIsDisplayed()
-        composeTestRule.onNodeWithText("Remove").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Remove").performScrollTo().assertIsDisplayed()
     }
 
     @Test
@@ -123,9 +127,42 @@ class WidgetStackBottomSheetTest {
         }
         advanceAnimation()
 
-        composeTestRule.onNodeWithText("Remove").performClick()
+        composeTestRule.onNodeWithText("Remove").performScrollTo().performClick()
         advanceAnimation()
         assertTrue(removeCalled)
+        assertTrue(dismissed)
+    }
+
+    @Test
+    fun `when clicking Customize home, should dismiss and open customize`() {
+        var customizeCalled = false
+        var dismissed = false
+
+        composeTestRule.setContent {
+            AureoleLauncherTheme {
+                CompositionLocalProvider(
+                    LocalHomeActions provides createDefaultHomeScreenActions().copy(
+                        onOpenCustomizeBottomSheet = { customizeCalled = true }
+                    )
+                ) {
+                    WidgetStackBottomSheet(
+                        params = WidgetStackBottomSheetParams(
+                            widgetId = 123,
+                            stackId = "top_widgets",
+                            onEditStack = {},
+                            onToggleDots = {},
+                            onRemoveStack = {}
+                        ),
+                        onDismiss = { dismissed = true }
+                    )
+                }
+            }
+        }
+        advanceAnimation()
+
+        composeTestRule.onNodeWithText("Customize home").performClick()
+        advanceAnimation()
+        assertTrue(customizeCalled)
         assertTrue(dismissed)
     }
 }

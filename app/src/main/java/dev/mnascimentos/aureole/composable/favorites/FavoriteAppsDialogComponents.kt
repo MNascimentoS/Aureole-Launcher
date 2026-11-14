@@ -1,7 +1,6 @@
 package dev.mnascimentos.aureole.composable.favorites
 
 import android.content.ComponentName
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -18,7 +17,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -28,9 +26,10 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.dp
 import androidx.core.graphics.drawable.toDrawable
 import dev.mnascimentos.aureole.R
+import dev.mnascimentos.aureole.composable.appitem.AureoleAppIcon
+import dev.mnascimentos.aureole.composable.appitem.model.AureoleAppIconParams
 import dev.mnascimentos.aureole.composable.reorder.model.LocalReorderHandle
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
@@ -44,17 +43,17 @@ import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 
 @Composable
 fun FavoriteAppRowInfo(app: AppInfo, modifier: Modifier = Modifier) {
-    val iconBitmap = remember(app.packageName) { app.getIconBitmap() }
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = modifier.padding(end = AureoleDS.dimens.xSmall)
     ) {
-        Image(
-            bitmap = iconBitmap,
-            contentDescription = app.label,
-            modifier = Modifier
-                .size(AureoleDS.dimens.xLarge)
-                .clip(RoundedCornerShape(AureoleDS.dimens.radiusXSmall))
+        AureoleAppIcon(
+            app = app,
+            size = AureoleDS.dimens.xLarge,
+            params = AureoleAppIconParams(
+                legacyShape = RoundedCornerShape(AureoleDS.dimens.radiusXSmall),
+                contentDescription = app.label
+            )
         )
         Spacer(modifier = Modifier.width(AureoleDS.dimens.xSmall))
         AureoleText(
@@ -105,7 +104,7 @@ fun FavoriteAppDragHandle(modifier: Modifier = Modifier) {
     }
     Box(
         modifier = modifier
-            .size(width = HANDLE_WIDTH, height = HANDLE_HEIGHT)
+            .size(width = AureoleDS.dimens.dragHandleWidth, height = AureoleDS.dimens.dragHandleHeight)
             .clip(shape)
             .background(background)
             .border(AureoleDS.dimens.borderMinimal, AureoleDS.colors.outline.copy(alpha = 0.5f), shape)
@@ -127,7 +126,6 @@ fun RemainingAppRow(
     onToggleFavorite: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val iconBitmap = remember(app.packageName) { app.getIconBitmap() }
     val plusDesc = stringResource(R.string.favorites_dialog_plus_content_desc)
     Row(
         modifier = modifier
@@ -139,12 +137,10 @@ fun RemainingAppRow(
         verticalAlignment = Alignment.CenterVertically
     ) {
         Box {
-            Image(
-                bitmap = iconBitmap,
-                contentDescription = null,
-                modifier = Modifier
-                    .size(AureoleDS.dimens.xLarge)
-                    .clip(RoundedCornerShape(AureoleDS.dimens.radiusXSmall))
+            AureoleAppIcon(
+                app = app,
+                size = AureoleDS.dimens.xLarge,
+                params = AureoleAppIconParams(legacyShape = RoundedCornerShape(AureoleDS.dimens.radiusXSmall))
             )
             Box(
                 modifier = Modifier
@@ -173,9 +169,6 @@ fun RemainingAppRow(
         )
     }
 }
-
-private val HANDLE_WIDTH = 44.dp
-private val HANDLE_HEIGHT = 38.dp
 
 @AureolePreview
 @Composable

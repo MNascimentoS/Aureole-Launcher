@@ -1,6 +1,7 @@
 package dev.mnascimentos.aureole.feature.home
 
 import android.appwidget.AppWidgetHost
+import android.content.res.Configuration
 import android.widget.Toast
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionLayout
@@ -18,19 +19,23 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Dp
 import dev.chrisbanes.haze.hazeSource
 import dev.chrisbanes.haze.rememberHazeState
+import dev.mnascimentos.aureole.composable.LocalHomeUiState
 import dev.mnascimentos.aureole.composable.undo.AureoleUndoSnackbar
 import dev.mnascimentos.aureole.core.data.model.ContainerModel
 import dev.mnascimentos.aureole.core.data.model.LauncherItemType
@@ -48,10 +53,11 @@ import dev.mnascimentos.aureole.feature.home.components.containers.model.EditCon
 import dev.mnascimentos.aureole.feature.home.components.overlays.CustomizeBottomSheet
 import dev.mnascimentos.aureole.feature.home.components.overlays.HomeOverlaysContent
 import dev.mnascimentos.aureole.feature.home.components.overlays.homeDragGestures
+import dev.mnascimentos.aureole.feature.home.components.scrubber.model.isHomeDragAttached
 import dev.mnascimentos.aureole.feature.home.components.widgets.EditWidgetGroupScreen
 import dev.mnascimentos.aureole.feature.home.components.widgets.model.EditWidgetGroupActions
 import dev.mnascimentos.aureole.feature.home.components.widgets.model.EditWidgetGroupParams
-import dev.mnascimentos.aureole.feature.home.extensions.homeScreenExclusion
+import dev.mnascimentos.aureole.feature.home.extensions.rememberHomeScreenExclusion
 import dev.mnascimentos.aureole.feature.home.grid.AddContainerDialog
 import dev.mnascimentos.aureole.feature.home.grid.EditGridItemDialog
 import dev.mnascimentos.aureole.feature.home.model.HomeDragParams
@@ -59,7 +65,6 @@ import dev.mnascimentos.aureole.feature.home.model.HomeOverlaysConfig
 import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
 import dev.mnascimentos.aureole.feature.home.model.HomeScreenBodyConfig
 import dev.mnascimentos.aureole.feature.home.model.LocalHomeActions
-import dev.mnascimentos.aureole.feature.home.model.LocalHomeUiState
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
 import dev.mnascimentos.aureole.feature.home.model.getWidgetIdsForStack
 import dev.mnascimentos.aureole.feature.home.model.isOverlayActive
@@ -81,21 +86,15 @@ fun HomeScreen(
     val currentHeightPx = rememberWidgetRowHeightPx(uiState.widgetRowHeight, density)
 
     var externalTouchY by remember { mutableFloatStateOf(-1f) }
+    var isEdgeScrubbing by remember { mutableStateOf(false) }
     var screenHeightPx by remember { mutableFloatStateOf(0f) }
     var screenWidthPx by remember { mutableFloatStateOf(0f) }
 
-    val dragModifier = Modifier.homeDragGestures(
-        HomeDragParams(
-            isLeftHandedMode = uiState.isLeftHandedMode,
-            isAlphabetScrubberDisabled = uiState.isAlphabetScrubberDisabled,
-            screenHeightPx = screenHeightPx,
-            screenWidthPx = screenWidthPx,
-            isAllAppsDrawerOpen = uiState.isAllAppsDrawerOpen,
-            density = density,
-            onAllAppsDrawerOpen = actions.onAllAppsDrawerOpen,
-            onExpandNotificationShade = actions.onExpandNotificationShade,
-            onExternalTouchYChange = { externalTouchY = it }
-        )
+    val dragModifier = Modifier.homeDragModifier(
+        screenWidthPx = screenWidthPx,
+        screenHeightPx = screenHeightPx,
+        onExternalTouchYChange = { externalTouchY = it },
+        onEdgeScrubChange = { isEdgeScrubbing = it }
     )
 
     val hazeState = LocalHazeState.current ?: rememberHazeState()
@@ -110,8 +109,9 @@ fun HomeScreen(
                         screenHeightPx = it.size.height.toFloat()
                         screenWidthPx = it.size.width.toFloat()
                     }
-                    .homeScreenExclusion(uiState.isOverlayActive)
-                    .then(if (uiState.isOverlayActive) Modifier else dragModifier)
+                    .rememberHomeScreenExclusion(uiState)
+                    // The edge scrub opens the drawer under the finger: keep the gesture alive until it lifts.
+                    .then(if (isHomeDragAttached(uiState.isOverlayActive, isEdgeScrubbing)) dragModifier else Modifier)
             ) {
                 HomeScreenBody(
                     HomeScreenBodyConfig(
@@ -132,6 +132,34 @@ fun HomeScreen(
             }
         }
     }
+}
+
+/** Home vertical swipes and the alphabet edge scrub (RF-20), for the current hand and screen size. */
+@Composable
+private fun Modifier.homeDragModifier(
+    screenWidthPx: Float,
+    screenHeightPx: Float,
+    onExternalTouchYChange: (Float) -> Unit,
+    onEdgeScrubChange: (Boolean) -> Unit
+): Modifier {
+    val uiState = LocalHomeUiState.current
+    val actions = LocalHomeActions.current
+    val isLandscape = LocalConfiguration.current.orientation == Configuration.ORIENTATION_LANDSCAPE
+    return homeDragGestures(
+        HomeDragParams(
+            isLeftHandedMode = uiState.isLeftHandedMode,
+            // No alphabet in landscape, so no edge scrub there either.
+            isAlphabetScrubberDisabled = uiState.isAlphabetScrubberDisabled || isLandscape,
+            screenHeightPx = screenHeightPx,
+            screenWidthPx = screenWidthPx,
+            isAllAppsDrawerOpen = uiState.isAllAppsDrawerOpen,
+            density = LocalDensity.current,
+            onAllAppsDrawerOpen = actions.onAllAppsDrawerOpen,
+            onExpandNotificationShade = actions.onExpandNotificationShade,
+            onExternalTouchYChange = onExternalTouchYChange,
+            onEdgeScrubChange = onEdgeScrubChange
+        )
+    )
 }
 
 @Composable
@@ -294,15 +322,17 @@ private fun HomeEditContainerOverlay(config: HomeOverlaysConfig) {
         val editingPanel = config.uiState.containers[config.uiState.editingContainerId]
             ?: ContainerModel(id = config.uiState.editingContainerId)
 
-        EditContainerScreen(
-            params = EditContainerScreenParams(
-                panel = editingPanel,
-                allApps = config.uiState.apps,
-                hazeState = if (config.uiState.isHazeEnabled) config.hazeState else null,
-                onDismiss = config.actions.onCloseEditContainerDialog,
-                onSave = config.actions.onSaveContainerModel
+        key(editingPanel.id, config.uiState.editContainerOpenCount) {
+            EditContainerScreen(
+                params = EditContainerScreenParams(
+                    panel = editingPanel,
+                    allApps = config.uiState.apps,
+                    hazeState = if (config.uiState.isHazeEnabled) config.hazeState else null,
+                    onDismiss = { config.actions.onCloseEditContainerDialog(editingPanel.id) },
+                    onSave = config.actions.onSaveContainerModel
+                )
             )
-        )
+        }
     }
 }
 

@@ -2,8 +2,14 @@ package dev.mnascimentos.aureole.feature.home.grid.extensions
 
 import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.core.data.model.LauncherItemState
+import dev.mnascimentos.aureole.core.data.model.LauncherItemType
 import dev.mnascimentos.aureole.core.designsystem.model.TextResource
 import dev.mnascimentos.aureole.feature.home.HomeViewModel
+import dev.mnascimentos.aureole.feature.home.components.clock.extensions.dropClockConfig
+import dev.mnascimentos.aureole.feature.home.components.clock.extensions.giveNewClockItsConfig
+import dev.mnascimentos.aureole.feature.home.components.clock.extensions.hasItemOnAnyLayout
+import dev.mnascimentos.aureole.feature.home.components.containers.extensions.dropContainers
+import dev.mnascimentos.aureole.feature.home.components.favorites.extensions.dropFavoritesList
 import dev.mnascimentos.aureole.feature.home.extensions.showUndo
 import dev.mnascimentos.aureole.feature.home.grid.GridDefaults
 import dev.mnascimentos.aureole.feature.home.grid.GridEngineUtils
@@ -25,10 +31,21 @@ fun HomeViewModel.setEditingGridItem(item: LauncherItemState?) {
     updateUiState { it.copy(editingGridItem = item) }
 }
 
+/**
+ * Adds an item of [spec] in the largest free slot (or to the scroll view being filled) and enters edit mode. A new
+ * clock also gets its own config, a copy of the default look.
+ */
 fun HomeViewModel.addGridItem(spec: GridItemSpec) {
+    val newId = UUID.randomUUID().toString()
+    placeGridItem(spec, newId)
+    val isPlacedClock = spec.type == LauncherItemType.CLOCK && uiState.value.hasItemOnAnyLayout(newId)
+    if (isPlacedClock) giveNewClockItsConfig(newId)
+}
+
+private fun HomeViewModel.placeGridItem(spec: GridItemSpec, newId: String) {
     val currentParentId = uiState.value.targetParentContainerId
     if (currentParentId != null) {
-        addChildToScrollView(currentParentId, spec.type, spec.widgetId)
+        addChildToScrollView(currentParentId, spec.type, spec.widgetId, childId = newId)
         return
     }
 
@@ -57,7 +74,7 @@ fun HomeViewModel.addGridItem(spec: GridItemSpec) {
         } else {
             val (actualColSpan, actualRowSpan, slot) = largestSlotResult
             val newItem = LauncherItemState(
-                id = UUID.randomUUID().toString(),
+                id = newId,
                 type = spec.type,
                 col = slot.first,
                 row = slot.second,
@@ -102,12 +119,25 @@ fun HomeViewModel.deleteGridItem(id: String) {
     }
 }
 
-/** Removes the item and offers "Undo", which puts it back in the same cell. */
+/**
+ * Removes the item and offers "Undo", which puts it back in the same cell. A favorites list also loses its saved
+ * favorites right away, a clock its config and a container (or the containers of a scroll group) its items,
+ * folders and config; the undo writes them back (see [dropFavoritesList], [dropClockConfig] and [dropContainers]).
+ */
 fun HomeViewModel.removeGridItemWithUndo(id: String) {
     val item = uiState.value.gridItems.find { it.id == id }
+    val restoreFavorites = if (item?.safeType == LauncherItemType.APPS_LIST) dropFavoritesList(id) else null
     deleteGridItem(id)
     if (item == null) return
-    showUndo(TextResource.fromResId(R.string.home_undo_component_removed)) { restoreGridItem(item) }
+    // After the delete, so a clock with the same id still in the other layout keeps the shared config.
+    val restoreClock = if (item.safeType == LauncherItemType.CLOCK) dropClockConfig(id) else null
+    val restoreContainers = dropContainers(listOf(item))
+    showUndo(TextResource.fromResId(R.string.home_undo_component_removed)) {
+        restoreGridItem(item)
+        restoreFavorites?.invoke()
+        restoreClock?.invoke()
+        restoreContainers()
+    }
 }
 
 internal fun HomeViewModel.restoreGridItem(item: LauncherItemState) {

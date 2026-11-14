@@ -1,7 +1,6 @@
 package dev.mnascimentos.aureole.feature.home.components.containers.folder
 
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
@@ -26,7 +25,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
@@ -37,6 +35,9 @@ import dev.chrisbanes.haze.HazeStyle
 import dev.chrisbanes.haze.HazeTint
 import dev.chrisbanes.haze.hazeEffect
 import dev.mnascimentos.aureole.R
+import dev.mnascimentos.aureole.composable.LocalHomeUiState
+import dev.mnascimentos.aureole.composable.appitem.AureoleAppIcon
+import dev.mnascimentos.aureole.composable.appitem.model.AureoleAppIconParams
 import dev.mnascimentos.aureole.composable.dialogs.model.FolderButtonMetrics
 import dev.mnascimentos.aureole.core.data.model.AppFolder
 import dev.mnascimentos.aureole.core.data.model.AppInfo
@@ -49,7 +50,6 @@ import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.FolderPopupMetrics
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.GridFolderPopupParams
 import dev.mnascimentos.aureole.feature.home.model.LocalHomeActions
-import dev.mnascimentos.aureole.feature.home.model.LocalHomeUiState
 
 private const val GRID_COLUMNS = 4
 private const val POPUP_HAZE_ALPHA = 0.55f
@@ -177,10 +177,6 @@ private fun OpenedFolderSamsungGridAppItem(
     onLongClick: () -> Unit = {}
 ) {
     val uiState = LocalHomeUiState.current
-    val iconBitmap: ImageBitmap = app.getDisplayIconBitmap(
-        isThemed = uiState.isThemedAppIconsEnabled,
-        tintColor = AureoleDS.colors.onSurfaceMedium
-    )
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -196,12 +192,15 @@ private fun OpenedFolderSamsungGridAppItem(
             )
             .padding(vertical = AureoleDS.dimens.xxSmall)
     ) {
-        Image(
-            bitmap = iconBitmap,
-            contentDescription = app.label,
-            modifier = Modifier
-                .size(FolderButtonMetrics.SmallSize)
-                .clip(RoundedCornerShape(AureoleDS.dimens.radiusMedium))
+        AureoleAppIcon(
+            app = app,
+            size = FolderButtonMetrics.SmallSize,
+            params = AureoleAppIconParams(
+                isThemed = uiState.isThemedAppIconsEnabled,
+                showThemedBox = false,
+                legacyShape = RoundedCornerShape(AureoleDS.dimens.radiusMedium),
+                contentDescription = app.label
+            )
         )
         Spacer(modifier = Modifier.height(AureoleDS.dimens.xxSmall))
         Text(

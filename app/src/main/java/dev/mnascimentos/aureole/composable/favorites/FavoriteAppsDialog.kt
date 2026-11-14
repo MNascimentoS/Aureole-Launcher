@@ -25,8 +25,6 @@ import dev.mnascimentos.aureole.composable.appitem.AppItemRow
 import dev.mnascimentos.aureole.composable.appitem.model.AppItemRowConfig
 import dev.mnascimentos.aureole.composable.favorites.model.FavoriteAppsDialogActions
 import dev.mnascimentos.aureole.composable.favorites.model.FavoriteAppsDialogConfig
-import dev.mnascimentos.aureole.composable.favorites.model.FavoriteAppsScreenMode
-import dev.mnascimentos.aureole.composable.favorites.model.backTarget
 import dev.mnascimentos.aureole.composable.preview.AureolePreviewFrame
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleEditOverlay
@@ -47,8 +45,7 @@ private const val PREVIEW_MAX_APPS = 4
 fun FavoriteAppsDialog(
     config: FavoriteAppsDialogConfig,
     actions: FavoriteAppsDialogActions,
-    modifier: Modifier = Modifier,
-    initialMode: FavoriteAppsScreenMode = FavoriteAppsScreenMode.MAIN
+    modifier: Modifier = Modifier
 ) {
     var isVisible by remember { mutableStateOf(true) }
 
@@ -59,62 +56,44 @@ fun FavoriteAppsDialog(
         }
     }
 
-    var currentMode by remember { mutableStateOf(initialMode) }
-    var searchQuery by remember(currentMode) { mutableStateOf("") }
+    var searchQuery by remember { mutableStateOf("") }
 
-    val appMap = remember(config.allApps) {
-        config.allApps.associateBy { it.packageName }
-    }
-
-    val previewFavoriteApps = remember(config.favoriteAppPackages, appMap) {
-        config.favoriteAppPackages.mapNotNull { pkg -> appMap[pkg] }.take(PREVIEW_MAX_APPS)
-    }
-
-    val titleText = when (currentMode) {
-        FavoriteAppsScreenMode.MAIN -> stringResource(R.string.home_favorites_dialog_title)
-        FavoriteAppsScreenMode.MANAGE -> stringResource(R.string.home_favorites_manage_apps_order)
-        FavoriteAppsScreenMode.EDIT_SHORTCUTS -> stringResource(R.string.home_favorites_edit_shortcuts)
-    }
+    val previewFavoriteApps = rememberPreviewFavoriteApps(config)
 
     AureoleEditOverlay(
         onDismissRequest = { isVisible = false },
         modifier = modifier,
         params = AureoleEditOverlayParams(
             config = AureoleEditOverlayConfig(
-                title = titleText,
+                title = stringResource(R.string.home_favorites_choose),
                 isVisible = isVisible,
                 animated = true,
                 isLeftHanded = config.rowConfig.isLeftHandedMode,
                 onSettingsClick = actions.onSettingsClick,
-                onBackPress = { currentMode.backTarget()?.let { currentMode = it } ?: run { isVisible = false } }
+                onBackPress = { isVisible = false }
             ),
             previewContent = {
                 AureolePreviewFrame {
                     FavoriteAppsPreviewContent(previewFavoriteApps = previewFavoriteApps, rowConfig = config.rowConfig)
                 }
             },
-            bottomBarContent = if (currentMode == FavoriteAppsScreenMode.MAIN) {
-                null
-            } else {
-                {
-                    FavoriteAppsBottomBar(
-                        onBack = { currentMode = FavoriteAppsScreenMode.MAIN },
-                        searchQuery = searchQuery,
-                        onSearchQueryChange = { searchQuery = it }
-                    )
-                }
+            bottomBarContent = {
+                FavoriteAppsBottomBar(searchQuery = searchQuery, onSearchQueryChange = { searchQuery = it })
             },
             sheetContent = {
-                FavoriteAppsSheetContent(
-                    currentMode = currentMode,
-                    config = config,
-                    actions = actions,
-                    onModeChange = { currentMode = it },
-                    searchQuery = searchQuery
-                )
+                FavoriteAppsSheetContent(config = config, actions = actions, searchQuery = searchQuery)
             }
         )
     )
+}
+
+/** The first favorites, in their order, shown in the sheet's preview frame. */
+@Composable
+private fun rememberPreviewFavoriteApps(config: FavoriteAppsDialogConfig): List<AppInfo> {
+    val appMap = remember(config.allApps) { config.allApps.associateBy { it.packageName } }
+    return remember(config.favoriteAppPackages, appMap) {
+        config.favoriteAppPackages.mapNotNull { pkg -> appMap[pkg] }.take(PREVIEW_MAX_APPS)
+    }
 }
 
 @Composable

@@ -3,11 +3,12 @@ package dev.mnascimentos.aureole.feature.home.components.onboarding.extensions
 import dev.mnascimentos.aureole.core.data.model.LauncherItemState
 import dev.mnascimentos.aureole.core.data.model.LauncherItemType
 import dev.mnascimentos.aureole.feature.home.HomeViewModel
+import dev.mnascimentos.aureole.feature.home.components.clock.extensions.giveNewClockItsConfig
 import dev.mnascimentos.aureole.feature.home.grid.GridDefaults
 import dev.mnascimentos.aureole.feature.home.grid.GridEngineUtils
 import dev.mnascimentos.aureole.feature.home.grid.extensions.addGridItem
 import dev.mnascimentos.aureole.feature.home.grid.extensions.enterGridEditMode
-import dev.mnascimentos.aureole.feature.home.grid.extensions.loadGridItems
+import dev.mnascimentos.aureole.feature.home.grid.extensions.loadGridItemsNow
 import dev.mnascimentos.aureole.feature.home.grid.extensions.withNewGridItemInEditMode
 import dev.mnascimentos.aureole.feature.home.grid.model.GridItemSpec
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
@@ -21,21 +22,25 @@ internal fun HomeViewModel.startWithEmptyHome() {
     if (gridRepository.hasSavedLayout()) return
     gridRepository.saveGridItems(emptyList(), isLandscape = false)
     gridRepository.saveGridItems(emptyList(), isLandscape = true)
-    loadGridItems(uiState.value.isLandscape)
+    loadGridItemsNow(uiState.value.isLandscape)
 }
 
-/** Leaving the checklist with nothing built must not leave the home empty: use the default layout. */
+/**
+ * Leaving the checklist with nothing built must not leave the home empty: portrait gets the default layout and
+ * landscape the onboarding one (the default, with the portrait widgets and settings). A layout that already has
+ * items is never touched.
+ */
 internal fun HomeViewModel.applyDefaultLayoutWhereEmpty() {
     val state = uiState.value
     val isLeftHanded = settingsRepository.isLeftHandedMode
-    mapOf(false to state.portraitGridItems, true to state.landscapeGridItems)
-        .filterValues { it.isEmpty() }
-        .keys
-        .forEach { isLandscape ->
-            val items = GridDefaults.getDefaultGridItems(isLandscape, isLeftHanded, state.hasAnyFavorites)
-            gridRepository.saveGridItems(items, isLandscape)
-        }
-    loadGridItems(state.isLandscape)
+    val portrait = state.portraitGridItems.ifEmpty {
+        GridDefaults.getDefaultGridItems(isLandscape = false, isLeftHanded = isLeftHanded)
+            .also { gridRepository.saveGridItems(it, isLandscape = false) }
+    }
+    if (state.landscapeGridItems.isEmpty()) {
+        gridRepository.saveGridItems(onboardingLandscapeLayout(portrait, isLeftHanded), isLandscape = true)
+    }
+    loadGridItemsNow(state.isLandscape)
 }
 
 /**
@@ -49,15 +54,26 @@ internal fun HomeViewModel.ensureGridItem(type: LauncherItemType): String? {
         if (!uiState.value.isGridEditMode) enterGridEditMode()
         return existing.id
     }
-    return placeAtDefaultPosition(type) ?: placeInLargestSlot(type)
+    return placeNewGridItem(type)
 }
 
-private fun HomeViewModel.placeAtDefaultPosition(type: LauncherItemType): String? {
+/**
+ * Always adds a new item of [type], even when the home already has one: at the layout's default spot if it is free,
+ * else in the largest free slot. With [alwaysNewId] the id is a fresh UUID, never the layout's stable one, so the
+ * item cannot pick up data that an earlier item with that stable id left behind. A new clock gets its own config.
+ * Null means the grid is full.
+ */
+internal fun HomeViewModel.placeNewGridItem(type: LauncherItemType, alwaysNewId: Boolean = false): String? =
+    (placeAtDefaultPosition(type, alwaysNewId) ?: placeInLargestSlot(type))?.also { id ->
+        if (type == LauncherItemType.CLOCK) giveNewClockItsConfig(id)
+    }
+
+private fun HomeViewModel.placeAtDefaultPosition(type: LauncherItemType, alwaysNewId: Boolean): String? {
     val state = uiState.value
     val default = GridDefaults.getDefaultItem(type, state.isLandscape, settingsRepository.isLeftHandedMode)
     // The stable id can already be in use, for example by an item of another type after a reset.
     val item = default?.let { candidate ->
-        val isIdTaken = state.gridItems.any { it.id == candidate.id }
+        val isIdTaken = alwaysNewId || state.gridItems.any { it.id == candidate.id }
         if (isIdTaken) candidate.copy(id = UUID.randomUUID().toString()) else candidate
     }
     if (item == null || !item.fitsIn(state)) return null

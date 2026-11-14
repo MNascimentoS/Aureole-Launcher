@@ -3,6 +3,7 @@ package dev.mnascimentos.aureole.feature.home.components.common
 import android.content.ComponentName
 import androidx.compose.runtime.Composable
 import androidx.core.graphics.drawable.toDrawable
+import dev.mnascimentos.aureole.composable.ProvideHomeUiState
 import dev.mnascimentos.aureole.composable.appitem.AppItemBottomSheet
 import dev.mnascimentos.aureole.composable.appitem.model.AppItemBottomSheetParams
 import dev.mnascimentos.aureole.composable.appitem.model.AppItemRowActions
@@ -14,7 +15,7 @@ import dev.mnascimentos.aureole.feature.home.model.ContainerAppBottomSheetState
 import dev.mnascimentos.aureole.feature.home.model.FolderAppBottomSheetState
 import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
-import dev.mnascimentos.aureole.feature.home.model.ProvideHomeUiState
+import dev.mnascimentos.aureole.feature.home.model.favoritesOf
 
 @Composable
 internal fun ContainerAppSheetOverlay(uiState: MainUiState, actions: HomeScreenActions) {
@@ -22,8 +23,7 @@ internal fun ContainerAppSheetOverlay(uiState: MainUiState, actions: HomeScreenA
         AppItemBottomSheet(
             params = AppItemBottomSheetParams(
                 app = state.app,
-                isFavorite = state.app.packageName in
-                    (uiState.containerFavorites[state.panelId] ?: uiState.favoriteAppPackages),
+                isFavorite = state.app.packageName in uiState.favoritesOf(state.panelId),
                 onRemoveFromContainer = { actions.onRemoveAppFromContainer(state.panelId, state.app.packageName) },
                 onOpenContainerSettings = { actions.onOpenEditContainerDialog(state.panelId) },
                 actions = AppItemRowActions(

@@ -4,9 +4,7 @@ import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import dev.chrisbanes.haze.HazeState
-import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
-import dev.mnascimentos.aureole.feature.home.model.MainUiState
 
 object FavoritesPreviewMetrics {
     val DefaultHeight: Dp = 160.dp
@@ -19,16 +17,24 @@ data class FavoritesListConfig(
     val hazeState: HazeState? = null
 )
 
+/**
+ * @property containerId The id of the apps list on the home, whose favorites it shows and toggles.
+ * @property showAllApps Whether it lists every other app below its favorites.
+ * @property showLabels Whether the "Favorites" and "All apps" labels show (only with [showAllApps]).
+ */
 data class FavoritesListOptions(
     val containerId: String? = null,
     val showHeadersAndWidgets: Boolean = true,
-    val isInsideScrollView: Boolean = false
+    val isInsideScrollView: Boolean = false,
+    val showAllApps: Boolean = false,
+    val showLabels: Boolean = true
 )
 
-data class NonScrollableFavoritesParams(
-    val uiState: MainUiState,
-    val favoriteApps: List<AppInfo>,
+/** What every row of an apps list needs: the sections to draw and the list whose favorites the rows toggle. */
+data class AppsListParams(
+    val sections: AppsListSections,
     val actions: HomeScreenActions,
-    val favoritePackages: Set<String>,
-    val containerId: String? = null
+    val containerId: String? = null,
+    val isLeftHandedMode: Boolean = false,
+    val hasLabels: Boolean = true
 )

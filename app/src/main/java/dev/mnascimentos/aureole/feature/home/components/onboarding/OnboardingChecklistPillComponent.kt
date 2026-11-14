@@ -13,7 +13,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.style.TextOverflow
 import dev.mnascimentos.aureole.R
@@ -28,6 +28,7 @@ import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.components.onboarding.model.OnboardingGlass
 import dev.mnascimentos.aureole.feature.home.components.onboarding.model.OnboardingMotionSpec
 import dev.mnascimentos.aureole.feature.home.components.onboarding.model.OnboardingUiState
+import dev.mnascimentos.aureole.feature.home.components.onboarding.model.resolvedTasks
 import dev.mnascimentos.aureole.feature.home.components.onboarding.model.taskProgress
 
 /**
@@ -43,7 +44,7 @@ fun OnboardingChecklistPillComponent(
     modifier: Modifier = Modifier
 ) {
     val isMinimized = onboarding.stage == OnboardingStage.CHECKLIST &&
-        !onboarding.isChecklistExpanded && onboarding.activePicker == null
+        !onboarding.isChecklistExpanded && onboarding.activePicker == null && !onboarding.isHomePeeking
     if (!isMinimized || isOtherOverlayActive) return
     Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.BottomCenter) {
         OnboardingGlassCard(
@@ -68,9 +69,10 @@ private fun PillContent(onboarding: OnboardingUiState) {
     ) {
         AureoleHaloProgress(progress = onboarding.taskProgress, size = AureoleDS.dimens.iconLarge)
         AureoleText(
-            text = stringResource(
-                R.string.home_onboarding_checklist_pill,
-                onboarding.completedTasks.size,
+            text = pluralStringResource(
+                R.plurals.home_onboarding_checklist_pill,
+                onboarding.resolvedTasks.size,
+                onboarding.resolvedTasks.size,
                 OnboardingTask.entries.size
             ),
             color = AureoleDS.colors.onSurfaceHigh,

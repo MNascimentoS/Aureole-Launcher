@@ -23,6 +23,7 @@ class OnboardingPreferences(private val prefsProvider: () -> SharedPreferences) 
             stage = parseStage(rawStage),
             completedSteps = readEnumSet(KEY_COMPLETED_STEPS, GestureCoachStep.entries),
             completedTasks = readEnumSet(KEY_COMPLETED_TASKS, OnboardingTask.entries),
+            skippedTasks = readEnumSet(KEY_SKIPPED_TASKS, OnboardingTask.entries),
             isChecklistCollapsed = prefs.getBoolean(KEY_CHECKLIST_COLLAPSED, false)
         )
     }
@@ -32,6 +33,7 @@ class OnboardingPreferences(private val prefsProvider: () -> SharedPreferences) 
             putString(KEY_STAGE, progress.stage.name)
             putString(KEY_COMPLETED_STEPS, progress.completedSteps.toCsv())
             putString(KEY_COMPLETED_TASKS, progress.completedTasks.toCsv())
+            putString(KEY_SKIPPED_TASKS, progress.skippedTasks.toCsv())
             putBoolean(KEY_CHECKLIST_COLLAPSED, progress.isChecklistCollapsed)
         }
     }
@@ -60,6 +62,7 @@ class OnboardingPreferences(private val prefsProvider: () -> SharedPreferences) 
         private const val KEY_STAGE = "onboarding_stage"
         private const val KEY_COMPLETED_STEPS = "onboarding_completed_steps"
         private const val KEY_COMPLETED_TASKS = "onboarding_completed_tasks"
+        private const val KEY_SKIPPED_TASKS = "onboarding_skipped_tasks"
         private const val KEY_CHECKLIST_COLLAPSED = "onboarding_checklist_collapsed"
     }
 }

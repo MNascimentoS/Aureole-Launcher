@@ -16,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import dev.mnascimentos.aureole.R
+import dev.mnascimentos.aureole.composable.LocalHomeUiState
 import dev.mnascimentos.aureole.composable.menu.AureoleSwitchRow
 import dev.mnascimentos.aureole.composable.menu.model.SwitchRowParams
 import dev.mnascimentos.aureole.composable.preview.AureolePreviewFrame
@@ -34,7 +35,6 @@ import dev.mnascimentos.aureole.feature.home.components.widgets.model.EditWidget
 import dev.mnascimentos.aureole.feature.home.components.widgets.model.WidgetMoveParams
 import dev.mnascimentos.aureole.feature.home.components.widgets.model.WidgetStackDraft
 import dev.mnascimentos.aureole.feature.home.components.widgets.model.widgetStepTarget
-import dev.mnascimentos.aureole.feature.home.model.LocalHomeUiState
 import kotlinx.coroutines.delay
 
 private const val ANIMATION_DURATION_MS = 300
@@ -48,7 +48,11 @@ fun EditWidgetGroupScreen(
 ) {
     var isVisible by remember { mutableStateOf(true) }
     val draft = remember { WidgetStackDraft(params.widgets) }
-    remember(params.widgets) { draft.sync(params.widgets) }
+    var syncedWidgets by remember { mutableStateOf(params.widgets) }
+    if (syncedWidgets != params.widgets) {
+        syncedWidgets = params.widgets
+        draft.sync(params.widgets)
+    }
     val scrollState = rememberScrollState()
     val isLeftHanded = LocalHomeUiState.current.isLeftHandedMode
 

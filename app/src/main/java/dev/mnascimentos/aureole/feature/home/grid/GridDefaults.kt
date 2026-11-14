@@ -32,14 +32,16 @@ private const val PORTRAIT_APPS_COL_SPAN = 16
 private const val PORTRAIT_CONTAINER_COL = 16
 private const val PORTRAIT_CONTAINER_COL_SPAN = 4
 
-private const val LANDSCAPE_CLOCK_COL_SPAN = 14
-private const val LANDSCAPE_CLOCK_ROW_SPAN = 7
-private const val LANDSCAPE_WIDGETS_COL = 14
-private const val LANDSCAPE_WIDGETS_COL_SPAN = 12
+// Default landscape layout v4 (30x20 grid): clock and favorites stacked on the left, wide widgets in
+// the middle, shortcuts container on the right edge. Right-handed; left-handed mirrors it.
 private const val LANDSCAPE_FULL_HEIGHT = 20
-private const val LANDSCAPE_APPS_ROW = 7
-private const val LANDSCAPE_APPS_COL_SPAN = 14
-private const val LANDSCAPE_APPS_ROW_SPAN = 13
+private const val LANDSCAPE_CLOCK_COL_SPAN = 10
+private const val LANDSCAPE_CLOCK_ROW_SPAN = 6
+private const val LANDSCAPE_APPS_ROW = 6
+private const val LANDSCAPE_APPS_COL_SPAN = 10
+private const val LANDSCAPE_APPS_ROW_SPAN = 14
+private const val LANDSCAPE_WIDGETS_COL = 10
+private const val LANDSCAPE_WIDGETS_COL_SPAN = 16
 private const val LANDSCAPE_CONTAINER_COL = 26
 private const val LANDSCAPE_CONTAINER_COL_SPAN = 4
 
@@ -82,16 +84,12 @@ object GridDefaults {
     const val APPS_LIST_ITEM_ID = "apps_list_item"
     const val CONTAINER_ITEM_ID = "container_item"
 
-    /** Without favorites, the apps spot holds the all apps list, so the home always shows apps. */
+    /** The default layout; its apps list shows all apps, so the home always shows apps. */
     fun getDefaultGridItems(
         isLandscape: Boolean = false,
-        isLeftHanded: Boolean = false,
-        hasFavorites: Boolean = true
+        isLeftHanded: Boolean = false
     ): List<LauncherItemState> {
-        val items = (if (isLandscape) landscapeItems() else portraitItems()).map { item ->
-            val showsAllApps = !hasFavorites && item.safeType == LauncherItemType.APPS_LIST
-            if (showsAllApps) item.copy(type = LauncherItemType.ALL_APPS_LIST) else item
-        }
+        val items = if (isLandscape) landscapeItems() else portraitItems()
         if (!isLeftHanded) return items
         val maxCols = if (isLandscape) GridEngineUtils.LANDSCAPE_MAX_COLS else GridEngineUtils.PORTRAIT_MAX_COLS
         return items.map { it.copy(col = maxCols - it.col - it.colSpan) }
@@ -104,8 +102,7 @@ object GridDefaults {
         isLeftHanded: Boolean
     ): LauncherItemState? = getDefaultGridItems(
         isLandscape = isLandscape,
-        isLeftHanded = isLeftHanded,
-        hasFavorites = type != LauncherItemType.ALL_APPS_LIST
+        isLeftHanded = isLeftHanded
     ).firstOrNull { it.safeType == type }
 
     private fun portraitItems(): List<LauncherItemState> = listOf(
@@ -172,6 +169,7 @@ object GridDefaults {
         colSpan = colSpan,
         rowSpan = rowSpan,
         minColSpan = DEFAULT_MIN_COL_SPAN,
-        minRowSpan = DEFAULT_MIN_ROW_SPAN
+        minRowSpan = DEFAULT_MIN_ROW_SPAN,
+        showAllApps = if (this == LauncherItemType.APPS_LIST) true else null
     )
 }

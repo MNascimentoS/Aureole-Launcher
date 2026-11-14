@@ -39,9 +39,16 @@ class GridRepository(private val context: Context) {
         return when {
             items == null -> GridDefaults.getDefaultGridItems(isLandscape, isLeftHanded)
             items.isEmpty() -> emptyList()
-            else -> items.filterNotNull().map { item -> sanitizeItem(item) }
+            else -> migrated(items.filterNotNull().map { item -> sanitizeItem(item) }, isLandscape)
                 .ifEmpty { GridDefaults.getDefaultGridItems(isLandscape, isLeftHanded) }
         }
+    }
+
+    /** [items] with the apps lists of an older version migrated, saved back the first time so it runs once. */
+    private fun migrated(items: List<LauncherItemState>, isLandscape: Boolean): List<LauncherItemState> {
+        val migrated = items.map { it.migrateLegacyAppsList() }
+        if (migrated != items) saveGridItems(migrated, isLandscape)
+        return migrated
     }
 
     private fun sanitizeItem(item: LauncherItemState): LauncherItemState {
@@ -58,12 +65,15 @@ class GridRepository(private val context: Context) {
 
     fun saveGridItems(items: List<LauncherItemState>, isLandscape: Boolean = false) {
         val key = if (isLandscape) KEY_LANDSCAPE_GRID_ITEMS else KEY_PORTRAIT_GRID_ITEMS
-        val json = gson.toJson(items)
+        val json = gson.toJson(items.map { it.withExplicitShowAllApps() })
         prefs.edit { putString(key, json) }
     }
 
     fun hasSavedLayout(): Boolean =
         listOf(KEY_GRID_ITEMS, KEY_PORTRAIT_GRID_ITEMS, KEY_LANDSCAPE_GRID_ITEMS).any { prefs.contains(it) }
+
+    /** Whether the user's (or the first run's) landscape layout was ever saved, even as an empty home. */
+    fun hasSavedLandscapeLayout(): Boolean = prefs.contains(KEY_LANDSCAPE_GRID_ITEMS)
 
     fun resetToDefault() {
         prefs.edit {

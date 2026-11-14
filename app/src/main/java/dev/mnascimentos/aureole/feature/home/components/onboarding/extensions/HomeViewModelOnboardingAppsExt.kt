@@ -15,13 +15,17 @@ import java.util.UUID
 internal fun HomeViewModel.ensureAppsOnCompletion(previous: MainUiState) {
     val isCompletedNow = previous.onboarding.stage != OnboardingStage.COMPLETED &&
         uiState.value.onboarding.stage == OnboardingStage.COMPLETED
-    if (isCompletedNow) ensureAppsComponent()
+    if (!isCompletedNow) return
+    // Before the apps list is added: that would make an empty landscape look built.
+    applyDefaultLayoutWhereEmpty()
+    ensureAppsComponent()
 }
 
 /**
- * In both orientations: keeps a favorites list that has favorites or an all apps list; turns an
- * empty favorites list into the all apps list in place; otherwise adds the all apps list at the
- * default apps spot, or in the largest free slot. A full grid gets nothing and no warning.
+ * In both orientations: keeps an apps list that shows all apps or has favorites; turns "Show all apps" on in
+ * the first apps list that shows only favorites but has none, keeping its id and favorites; otherwise adds an
+ * apps list that shows all apps at the default apps spot, or in the largest free slot. A full grid gets nothing
+ * and no warning.
  */
 internal fun HomeViewModel.ensureAppsComponent() {
     val state = uiState.value
@@ -46,13 +50,13 @@ private fun MainUiState.withAppsComponent(
     isLeftHanded: Boolean
 ): List<LauncherItemState> {
     val hasApps = items.any {
-        it.safeType == LauncherItemType.ALL_APPS_LIST || (it.safeType == LauncherItemType.APPS_LIST && hasFavorites(it))
+        it.safeType == LauncherItemType.APPS_LIST && (it.isShowingAllApps || hasFavorites(it))
     }
     val emptyFavorites = items.firstOrNull { it.safeType == LauncherItemType.APPS_LIST }
     return when {
         hasApps -> items
         emptyFavorites != null -> items.map { item ->
-            if (item.id == emptyFavorites.id) item.asAllApps() else item
+            if (item.id == emptyFavorites.id) item.copy(showAllApps = true) else item
         }
         else -> items + listOfNotNull(placeAllApps(items, isLandscape, isLeftHanded))
     }
@@ -63,8 +67,9 @@ private fun placeAllApps(
     isLandscape: Boolean,
     isLeftHanded: Boolean
 ): LauncherItemState? {
-    val default = GridDefaults.getDefaultItem(LauncherItemType.ALL_APPS_LIST, isLandscape, isLeftHanded)
-        ?.asAllApps() ?: return null
+    // A fresh id: the layout's stable one may belong to a list removed earlier, whose favorites are still saved.
+    val default = GridDefaults.getDefaultItem(LauncherItemType.APPS_LIST, isLandscape, isLeftHanded)
+        ?.copy(id = UUID.randomUUID().toString(), showAllApps = true) ?: return null
     val limits = if (isLandscape) {
         GridLimits(GridEngineUtils.LANDSCAPE_MAX_COLS, GridEngineUtils.LANDSCAPE_MAX_ROWS)
     } else {
@@ -76,6 +81,3 @@ private fun placeAllApps(
         default.copy(col = slot.first, row = slot.second, colSpan = colSpan, rowSpan = rowSpan)
     }
 }
-
-private fun LauncherItemState.asAllApps() =
-    copy(id = UUID.randomUUID().toString(), type = LauncherItemType.ALL_APPS_LIST)

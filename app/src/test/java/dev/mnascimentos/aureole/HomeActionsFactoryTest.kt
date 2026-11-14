@@ -17,6 +17,7 @@ import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.data.model.OnboardingStage
 import dev.mnascimentos.aureole.core.data.model.OnboardingTask
 import dev.mnascimentos.aureole.core.data.repository.AppRepository
+import dev.mnascimentos.aureole.core.data.repository.ClockConfigRepository
 import dev.mnascimentos.aureole.core.data.repository.ContainerRepository
 import dev.mnascimentos.aureole.core.data.repository.FavoriteContainerRepository
 import dev.mnascimentos.aureole.core.data.repository.FolderRepository
@@ -158,6 +159,20 @@ class HomeActionsFactoryTest {
     }
 
     @Test
+    fun `when Choose favorites opens, the sheet opens for that list and dismissing closes it`() {
+        val actions = actions()
+
+        actions.onChooseFavorites("list_1")
+        val opened = viewModel.uiState.value
+        assertTrue(opened.showFavoritePickerDialog)
+        assertEquals("list_1", opened.activeFavoriteContainerId)
+
+        actions.onDismissFavoritePicker()
+        val closed = viewModel.uiState.value
+        assertFalse(closed.showFavoritePickerDialog)
+    }
+
+    @Test
     fun `when grid edit mode is entered and cancelled, should toggle edit mode`() {
         val actions = actions()
 
@@ -180,14 +195,16 @@ class HomeActionsFactoryTest {
     }
 
     @Test
-    fun `when the edit clock sheet is opened and closed, should toggle it`() {
+    fun `when the edit clock sheet is opened and closed, should toggle it for the clock it was opened for`() {
         val actions = actions()
 
-        actions.onOpenEditClockBottomSheet()
+        actions.onOpenEditClockBottomSheet("clock_a")
         assertTrue(viewModel.uiState.value.showEditClockBottomSheet)
+        assertEquals("clock_a", viewModel.uiState.value.editingClockId)
 
         actions.onCloseEditClockBottomSheet()
         assertFalse(viewModel.uiState.value.showEditClockBottomSheet)
+        assertNull(viewModel.uiState.value.editingClockId)
     }
 
     @Test
@@ -260,7 +277,8 @@ class HomeActionsFactoryTest {
                 folderRepository = FolderRepository(context),
                 favoriteContainerRepository = FavoriteContainerRepository(context, settingsRepository),
                 containerRepository = ContainerRepository(context),
-                gridRepository = GridRepository(context)
+                gridRepository = GridRepository(context),
+                clockConfigRepository = ClockConfigRepository(context, GridRepository(context), settingsRepository)
             )
         )
     }

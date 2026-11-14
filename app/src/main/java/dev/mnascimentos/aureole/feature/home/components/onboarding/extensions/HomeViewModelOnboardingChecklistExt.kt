@@ -8,10 +8,12 @@ import dev.mnascimentos.aureole.feature.home.components.onboarding.model.Appeara
 import dev.mnascimentos.aureole.feature.home.components.onboarding.model.OnboardingSignal
 
 /**
- * Appearance tasks open their picker on the home. Every other task opens an existing editor, so the
- * list collapses to the pill first: the onboarding is the top layer and must not cover that editor.
+ * Appearance tasks open their picker on the home. Every other task opens its own screen or the edit mode, so
+ * the list collapses to the pill first: the onboarding is the top layer and must not cover it. A skipped task
+ * tapped again is taken back.
  */
 fun HomeViewModel.onTaskClick(task: OnboardingTask) {
+    updateOnboarding(OnboardingStage.CHECKLIST) { unskipping(task) }
     when (task) {
         OnboardingTask.CHOOSE_PALETTE -> openAppearancePicker(AppearancePicker.PALETTE)
         OnboardingTask.CHOOSE_FONT -> openAppearancePicker(AppearancePicker.FONT)

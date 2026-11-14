@@ -1,22 +1,75 @@
 {
-  "plan": "specs/actionsheets-polish/plan.md",
-  "progress": "specs/actionsheets-polish/progress.md",
+  "plan": "specs/bugfixes-0-9-21/PLANO.md",
+  "progress": "specs/bugfixes-0-9-21/PROGRESSO.md",
   "scanRoot": "app",
   "startCommand": "fase",
   "gates": [
-    { "id": "detekt", "label": "detekt", "match": "\\bdetekt\\b", "minutes": 1.5, "required": true },
-    { "id": "unit", "label": "unit", "match": "testDebugUnitTest", "minutes": 5, "required": true },
-    { "id": "jacoco", "label": "cobertura", "match": "jacoco\\w*Verification", "minutes": 6, "required": true },
-    { "id": "shot", "label": "screenshot", "match": "validateDebugScreenshotTest", "minutes": 4, "required": true },
-    { "id": "apk", "label": "assemble", "match": "assembleDebug", "minutes": 2, "required": true }
+    {
+      "id": "detekt",
+      "label": "detekt",
+      "match": "\\bdetekt\\b",
+      "minutes": 1.5,
+      "required": true
+    },
+    {
+      "id": "lint",
+      "label": "lint",
+      "match": "\\blint\\w*Debug\\b",
+      "minutes": 1,
+      "required": true
+    },
+    {
+      "id": "unit",
+      "label": "unit",
+      "match": "testDebugUnitTest",
+      "minutes": 5,
+      "required": true
+    },
+    {
+      "id": "jacoco",
+      "label": "cobertura",
+      "match": "jacoco\\w*Verification",
+      "minutes": 6,
+      "required": true
+    },
+    {
+      "id": "shot",
+      "label": "screenshot",
+      "match": "validateDebugScreenshotTest",
+      "minutes": 4,
+      "required": true
+    },
+    {
+      "id": "apk",
+      "label": "assemble",
+      "match": "assembleDebug",
+      "minutes": 2,
+      "required": true
+    }
   ],
-  "reviewAgents": ["visual-reviewer"],
-  "optionalColumns": ["aparelho"],
+  "reviewAgents": [
+    "visual-reviewer"
+  ],
+  "optionalColumns": [
+    "aparelho"
+  ],
   "agents": {
-    "sheet-gestures": { "minutes": 12, "actions": 40 },
-    "sheet-ui": { "minutes": 10, "actions": 35 },
-    "sheet-chores": { "minutes": 6, "actions": 25 },
-    "visual-reviewer": { "minutes": 2, "actions": 18 }
+    "sheet-gestures": {
+      "minutes": 12,
+      "actions": 40
+    },
+    "sheet-ui": {
+      "minutes": 10,
+      "actions": 35
+    },
+    "sheet-chores": {
+      "minutes": 6,
+      "actions": 25
+    },
+    "visual-reviewer": {
+      "minutes": 2,
+      "actions": 18
+    }
   },
   "tokensPerMinute": 8000,
   "authorized": "all"

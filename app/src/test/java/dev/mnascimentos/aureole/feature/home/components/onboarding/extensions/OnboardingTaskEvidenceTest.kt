@@ -1,12 +1,10 @@
 package dev.mnascimentos.aureole.feature.home.components.onboarding.extensions
 
-import dev.mnascimentos.aureole.core.data.model.AppFolder
-import dev.mnascimentos.aureole.core.data.model.ContainerItemEntity
-import dev.mnascimentos.aureole.core.data.model.ContainerItemType
-import dev.mnascimentos.aureole.core.data.model.ContainerModel
 import dev.mnascimentos.aureole.core.data.model.LauncherItemState
 import dev.mnascimentos.aureole.core.data.model.LauncherItemType
 import dev.mnascimentos.aureole.core.data.model.OnboardingTask
+import dev.mnascimentos.aureole.feature.home.components.onboarding.model.OnboardingUiState
+import dev.mnascimentos.aureole.feature.home.grid.GridDefaults
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
@@ -54,9 +52,21 @@ class OnboardingTaskEvidenceTest {
     }
 
     @Test
+    fun `when the home has new clocks and not the default one, should still meet the clock task`() {
+        val first = LauncherItemState(id = "0b6f6c1e-uuid-a", type = LauncherItemType.CLOCK)
+        val second = LauncherItemState(id = "0b6f6c1e-uuid-b", type = LauncherItemType.CLOCK)
+
+        assertTrue(MainUiState(gridItems = listOf(first, second)).meetsRequirement(OnboardingTask.ADD_CLOCK))
+        assertTrue(MainUiState(gridItems = listOf(second, appsList)).meetsRequirement(OnboardingTask.ADD_CLOCK))
+        assertFalse(MainUiState(gridItems = listOf(appsList)).meetsRequirement(OnboardingTask.ADD_CLOCK))
+    }
+
+    @Test
     fun `when the apps list has its own or global favorites, should meet the favorites task`() {
         val own = MainUiState(gridItems = listOf(appsList), containerFavorites = mapOf("list" to listOf("a")))
-        val global = MainUiState(gridItems = listOf(appsList), favoriteAppPackages = listOf("a"))
+        val legacyList = LauncherItemState(id = GridDefaults.APPS_LIST_ITEM_ID, type = LauncherItemType.APPS_LIST)
+        val global = MainUiState(gridItems = listOf(legacyList), favoriteAppPackages = listOf("a"))
+        val newListNoInherit = MainUiState(gridItems = listOf(appsList), favoriteAppPackages = listOf("a"))
         val emptyOwn = MainUiState(
             gridItems = listOf(appsList),
             favoriteAppPackages = listOf("a"),
@@ -66,20 +76,31 @@ class OnboardingTaskEvidenceTest {
 
         assertTrue(own.meetsRequirement(OnboardingTask.ADD_FAVORITE_APPS))
         assertTrue(global.meetsRequirement(OnboardingTask.ADD_FAVORITE_APPS))
+        assertFalse(newListNoInherit.meetsRequirement(OnboardingTask.ADD_FAVORITE_APPS))
         assertFalse(emptyOwn.meetsRequirement(OnboardingTask.ADD_FAVORITE_APPS))
         assertFalse(noList.meetsRequirement(OnboardingTask.ADD_FAVORITE_APPS))
     }
 
     @Test
-    fun `when leaving the container editor without its save, should not meet the container task`() {
-        val item = ContainerItemEntity(id = "i", panelId = "c", itemType = ContainerItemType.APP, packageName = "a")
-        val withItem = ContainerModel(id = "c", items = listOf(item))
-        val withFolder = ContainerModel(id = "c", folders = listOf(AppFolder(name = "f")))
+    fun `when an apps list inside a scroll group has favorites, should meet the favorites task`() {
+        val group = LauncherItemState(id = "group", type = LauncherItemType.SCROLL_VIEW, children = listOf(appsList))
+        val withFavorites = MainUiState(gridItems = listOf(group), containerFavorites = mapOf("list" to listOf("a")))
+        val withoutFavorites = MainUiState(gridItems = listOf(group))
 
-        listOf(withItem, withFolder).forEach { model ->
-            val state = MainUiState(gridItems = listOf(container), containers = mapOf("c" to model))
-            assertFalse(state.meetsRequirement(OnboardingTask.FILL_CONTAINER))
-        }
+        assertTrue(withFavorites.meetsRequirement(OnboardingTask.ADD_FAVORITE_APPS))
+        assertFalse(withoutFavorites.meetsRequirement(OnboardingTask.ADD_FAVORITE_APPS))
+    }
+
+    @Test
+    fun `when the container editor saved, should meet the container task even empty, else not`() {
+        val saved = MainUiState(
+            gridItems = listOf(container),
+            onboarding = OnboardingUiState(pendingTask = OnboardingTask.FILL_CONTAINER, isPendingTaskSaved = true)
+        )
+        val unsaved = saved.copy(onboarding = saved.onboarding.copy(isPendingTaskSaved = false))
+
+        assertTrue(saved.meetsRequirement(OnboardingTask.FILL_CONTAINER))
+        assertFalse(unsaved.meetsRequirement(OnboardingTask.FILL_CONTAINER))
     }
 
     @Test

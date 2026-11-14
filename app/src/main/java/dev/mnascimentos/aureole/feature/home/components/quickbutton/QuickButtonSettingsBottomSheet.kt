@@ -5,6 +5,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.composable.menu.AureoleMenuListSheet
+import dev.mnascimentos.aureole.composable.menu.customizeHomeEntry
 import dev.mnascimentos.aureole.composable.menu.model.MenuEntry
 import dev.mnascimentos.aureole.composable.menu.model.MenuRowParams
 import dev.mnascimentos.aureole.composable.menu.model.MenuSheetParams
@@ -34,7 +35,6 @@ fun QuickButtonSettingsBottomSheet(
     val activeModel = uiState.activeQuickButtonModel ?: QuickButtonModel()
     val clickSubtitle = clickShortcutLabel(activeModel = activeModel, uiState = uiState)
 
-    val entries = quickButtonEntries(uiState = uiState, actions = actions, clickSubtitle = clickSubtitle)
     AureoleMenuListSheet(
         title = stringResource(R.string.home_quickbutton_settings_title),
         onDismiss = onDismissRequest,
@@ -43,14 +43,20 @@ fun QuickButtonSettingsBottomSheet(
             titleIcon = { m -> AureoleDS.icons.Click(modifier = m, tint = AureoleDS.colors.onSurfaceMedium) },
             onSettingsClick = { actions.onSettingsClick() }
         )
-    ) { entries }
+    ) { dismiss ->
+        quickButtonEntries(uiState = uiState, actions = actions, clickSubtitle = clickSubtitle) {
+            dismiss()
+            actions.onOpenCustomizeBottomSheet()
+        }
+    }
 }
 
 @Composable
 private fun quickButtonEntries(
     uiState: MainUiState,
     actions: HomeScreenActions,
-    clickSubtitle: String
+    clickSubtitle: String,
+    onCustomizeHome: () -> Unit
 ): List<MenuEntry> = listOf(
     MenuEntry.Section(text = stringResource(R.string.home_quickbutton_menu_section)),
     MenuEntry.Row(
@@ -70,6 +76,7 @@ private fun quickButtonEntries(
             showChevron = true
         )
     ),
+    customizeHomeEntry(onCustomizeHome),
     MenuEntry.Row(
         MenuRowParams(
             title = stringResource(R.string.home_quickbutton_remove),

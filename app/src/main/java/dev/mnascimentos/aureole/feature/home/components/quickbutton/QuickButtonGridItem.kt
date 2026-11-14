@@ -1,6 +1,5 @@
 package dev.mnascimentos.aureole.feature.home.components.quickbutton
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.gestures.detectTapGestures
@@ -19,6 +18,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.painterResource
+import dev.mnascimentos.aureole.composable.appitem.AureoleAppIcon
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.data.model.QuickButtonModel
 import dev.mnascimentos.aureole.core.data.model.ShortcutAction
@@ -88,11 +88,7 @@ fun QuickButtonGridItem(
     ) {
         val clickShortcut = model.shortcuts.click
         if (clickShortcut.type == ShortcutType.OPEN_APP && appInfo != null) {
-            Image(
-                bitmap = appInfo.getIconBitmap(),
-                contentDescription = null,
-                modifier = Modifier.size(AureoleDS.dimens.iconXLarge)
-            )
+            AureoleAppIcon(app = appInfo, size = AureoleDS.dimens.iconXLarge)
         } else {
             Icon(
                 painter = painterResource(id = model.appearance.icon.iconRes),

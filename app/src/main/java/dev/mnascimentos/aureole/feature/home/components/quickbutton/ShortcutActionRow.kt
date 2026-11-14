@@ -1,6 +1,5 @@
 package dev.mnascimentos.aureole.feature.home.components.quickbutton
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.size
@@ -10,6 +9,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import dev.mnascimentos.aureole.composable.appitem.AureoleAppIcon
 import dev.mnascimentos.aureole.composable.menu.AureoleRadioRow
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.data.model.ShortcutAction
@@ -56,20 +56,16 @@ private fun ShortcutIconTile(action: ShortcutAction, app: AppInfo?) {
         contentAlignment = Alignment.Center
     ) {
         if (app != null) {
-            Image(
-                bitmap = app.getIconBitmap(),
-                contentDescription = null,
-                modifier = Modifier.size(AureoleDS.dimens.iconLarge)
-            )
+            AureoleAppIcon(app = app, size = AureoleDS.dimens.iconLarge)
         } else {
             val modifier = Modifier.size(AureoleDS.dimens.iconMedium)
-            ShortcutActionIcon(action.type, modifier, AureoleDS.colors.onSurfaceMedium)
+            ShortcutActionIcon(action.type, AureoleDS.colors.onSurfaceMedium, modifier)
         }
     }
 }
 
 @Composable
-private fun ShortcutActionIcon(type: ShortcutType, modifier: Modifier, tint: Color) {
+private fun ShortcutActionIcon(type: ShortcutType, tint: Color, modifier: Modifier = Modifier) {
     when (type) {
         ShortcutType.ALL_APPS -> AureoleDS.icons.AllApps(modifier = modifier, tint = tint)
         ShortcutType.ASSISTANT -> AureoleDS.icons.Star(modifier = modifier, tint = tint)

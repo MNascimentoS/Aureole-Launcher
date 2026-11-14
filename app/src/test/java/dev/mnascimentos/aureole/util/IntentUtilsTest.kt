@@ -26,4 +26,10 @@ class IntentUtilsTest {
         val context = ApplicationProvider.getApplicationContext<Context>()
         IntentUtils.expandNotificationShade(context)
     }
+
+    @Test
+    fun `openUrl should not crash`() {
+        val context = ApplicationProvider.getApplicationContext<Context>()
+        IntentUtils.openUrl(context, "https://example.com")
+    }
 }

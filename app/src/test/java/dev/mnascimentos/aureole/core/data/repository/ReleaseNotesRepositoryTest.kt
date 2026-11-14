@@ -1,5 +1,6 @@
 package dev.mnascimentos.aureole.core.data.repository
 
+import dev.mnascimentos.aureole.core.data.model.ReleaseNoteType
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotNull
@@ -67,5 +68,16 @@ class ReleaseNotesRepositoryTest {
                 }
             }
         }
+    }
+
+    @Test
+    fun `when fetching latest version notes, should be 0_9_30 with the fixes section and the icon radius warning`() {
+        val latest = ReleaseNotesRepository.getLatestVersionNotes()
+
+        assertEquals("0.9.30", latest.versionName)
+        assertTrue(latest.sections.any { section -> section.items.any { it.type == ReleaseNoteType.FIX } })
+        assertTrue(
+            latest.sections.any { section -> section.items.any { it.description.contains("ícones dos apps") } }
+        )
     }
 }

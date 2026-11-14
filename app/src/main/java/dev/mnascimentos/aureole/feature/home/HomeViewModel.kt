@@ -2,7 +2,9 @@ package dev.mnascimentos.aureole.feature.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import dev.mnascimentos.aureole.core.coroutines.LatestJobRunner
 import dev.mnascimentos.aureole.core.data.repository.AppRepository
+import dev.mnascimentos.aureole.core.data.repository.ClockConfigRepository
 import dev.mnascimentos.aureole.core.data.repository.ContainerRepository
 import dev.mnascimentos.aureole.core.data.repository.FavoriteContainerRepository
 import dev.mnascimentos.aureole.core.data.repository.FolderRepository
@@ -12,15 +14,18 @@ import dev.mnascimentos.aureole.core.data.repository.WidgetRepository
 import dev.mnascimentos.aureole.core.designsystem.model.glassLevelOf
 import dev.mnascimentos.aureole.core.undo.UndoController
 import dev.mnascimentos.aureole.feature.home.components.appsdrawer.extensions.updateAppsState
+import dev.mnascimentos.aureole.feature.home.components.clock.extensions.observeClockConfigs
 import dev.mnascimentos.aureole.feature.home.components.containers.extensions.loadContainers
 import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.OnboardingReducer
 import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.confirmPendingTask
 import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.ensureAppsOnCompletion
 import dev.mnascimentos.aureole.feature.home.components.onboarding.model.toProgress
 import dev.mnascimentos.aureole.feature.home.components.widgets.extensions.loadWidgetSettings
-import dev.mnascimentos.aureole.feature.home.grid.extensions.loadGridItems
+import dev.mnascimentos.aureole.feature.home.grid.extensions.loadGridItemsNow
 import dev.mnascimentos.aureole.feature.home.model.HomeRepositories
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -31,6 +36,7 @@ import kotlinx.coroutines.launch
 class HomeViewModel(
     repositories: HomeRepositories,
     internal val undoController: UndoController = UndoController(),
+    internal val gridLoadDispatcher: CoroutineDispatcher = Dispatchers.IO,
 ) : ViewModel() {
     internal val appRepository: AppRepository = repositories.appRepository
     internal val widgetRepository: WidgetRepository = repositories.widgetRepository
@@ -39,6 +45,7 @@ class HomeViewModel(
     internal val favoriteContainerRepository: FavoriteContainerRepository = repositories.favoriteContainerRepository
     internal val containerRepository: ContainerRepository = repositories.containerRepository
     internal val gridRepository: GridRepository = repositories.gridRepository
+    internal val clockConfigRepository: ClockConfigRepository = repositories.clockConfigRepository
 
     private val _uiState = MutableStateFlow(MainUiState())
     val uiState: StateFlow<MainUiState> = _uiState.asStateFlow()
@@ -65,16 +72,27 @@ class HomeViewModel(
     internal var activeVersionCode: Int = 0
     internal var searchJob: Job? = null
 
+    /** Grid loads: a new one cancels the previous, so a late portrait read never overwrites landscape. */
+    internal val gridLoads = LatestJobRunner(viewModelScope)
+
     var isUpdateInProgressOrDismissed: Boolean = false
         internal set
 
     init {
+        migrateClockConfigs()
+        observeClockConfigs()
         loadSettings()
         observeAppsFlow()
-        loadGridItems()
+        // Once, at creation: the first state must hold the saved layout before anything reads it.
+        loadGridItemsNow()
         loadContainers()
         loadWidgetSettings()
         syncApps()
+    }
+
+    /** Gives each clock already on the grid the clock look of the settings, once, off the main thread. */
+    private fun migrateClockConfigs() {
+        viewModelScope.launch(Dispatchers.IO) { clockConfigRepository.ensureMigrated() }
     }
 
     private fun observeAppsFlow() {

@@ -7,9 +7,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.platform.LocalContext
 import com.android.tools.screenshot.PreviewTest
-import dev.mnascimentos.aureole.core.designsystem.model.LocalLeftHanded
+import dev.mnascimentos.aureole.composable.LocalHomeUiState
 import dev.mnascimentos.aureole.core.data.model.AppFolder
 import dev.mnascimentos.aureole.core.data.model.AppInfo
+import dev.mnascimentos.aureole.core.data.model.ClockConfig
+import dev.mnascimentos.aureole.core.data.model.LauncherItemType
+import dev.mnascimentos.aureole.core.designsystem.model.LocalLeftHanded
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.grid.GridDefaults
@@ -17,7 +20,6 @@ import dev.mnascimentos.aureole.feature.home.model.ContainerAppBottomSheetState
 import dev.mnascimentos.aureole.feature.home.model.ContainerFolderBottomSheetState
 import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
 import dev.mnascimentos.aureole.feature.home.model.LocalHomeActions
-import dev.mnascimentos.aureole.feature.home.model.LocalHomeUiState
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
 import dev.mnascimentos.aureole.feature.home.model.WidgetStackBottomSheetState
 
@@ -122,7 +124,9 @@ private fun HomeScreenAppItemBottomSheetScreenshotTest() {
         activeContainerAppBottomSheet = ContainerAppBottomSheetState(
             app = sampleData.apps.first(),
             panelId = "panel_1"
-        )
+        ),
+        // A list only shows its own favorites (a new list starts empty), so the panel owns the sample's.
+        containerFavorites = mapOf("panel_1" to sampleData.uiState.favoriteAppPackages)
     )
 
     AureoleLauncherTheme {
@@ -173,6 +177,46 @@ private fun HomeScreenWidgetStackBottomSheetScreenshotTest() {
         activeWidgetStackBottomSheet = WidgetStackBottomSheetState(
             widgetId = 101,
             stackId = "widget_stack_1"
+        )
+    )
+
+    AureoleLauncherTheme {
+        CompositionLocalProvider(
+            LocalHomeUiState provides customUiState,
+            LocalLeftHanded provides customUiState.isLeftHandedMode,
+            LocalHomeActions provides sampleData.actions
+        ) {
+            HomeScreen(appWidgetHost = AppWidgetHost(context, 1024))
+        }
+    }
+}
+
+/** Two clocks on the home, each drawn with its own config: the default one and a second, different clock. */
+@PreviewTest
+@AureolePreview
+@Composable
+private fun HomeScreenTwoClocksScreenshotTest() {
+    val context = LocalContext.current
+    val sampleData = createSampleHomeData()
+    val secondClockId = "clock_second"
+    // The second clock takes the widgets row.
+    val gridItems = sampleData.uiState.gridItems.map { item ->
+        val isWidgetsRow = item.id == GridDefaults.WIDGETS_ITEM_ID
+        if (isWidgetsRow) item.copy(id = secondClockId, type = LauncherItemType.CLOCK) else item
+    }
+    val customUiState = sampleData.uiState.copy(
+        gridItems = gridItems,
+        portraitGridItems = gridItems,
+        clockConfigs = mapOf(
+            GridDefaults.CLOCK_ITEM_ID to ClockConfig(),
+            secondClockId to ClockConfig(
+                style = "TIME_ONLY",
+                alignment = "END",
+                fontFamily = "SERIF",
+                textColor = 0xFFFFD54F.toInt(),
+                backgroundColor = 0xFF1A237E.toInt(),
+                isBackgroundEnabled = true
+            )
         )
     )
 

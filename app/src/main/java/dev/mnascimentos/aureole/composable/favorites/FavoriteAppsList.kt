@@ -109,7 +109,7 @@ internal fun LazyListScope.favoriteSectionItems(
     if (!isSearching && params.favoritesCount >= MIN_FAVORITES_TO_REORDER) {
         item(key = "fav_drag_hint", contentType = "fav_notice") { FavoriteAppsDragHint() }
     }
-    if (!isSearching && params.favoritesCount == 0) {
+    if (!isSearching && params.favoritesCount == 0 && params.isShowingAllAppsWhenEmpty) {
         item(key = "fav_empty_banner", contentType = "fav_notice") {
             FavoriteAppsEmptyBanner(appCount = params.allAppsCount)
         }

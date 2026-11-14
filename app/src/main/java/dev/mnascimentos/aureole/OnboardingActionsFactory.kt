@@ -17,7 +17,9 @@ import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.se
 import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.showMeGesture
 import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.skipGestures
 import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.skipIntro
+import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.skipTask
 import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.startGridTask
+import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.startLayoutTask
 import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.startOnboarding
 import dev.mnascimentos.aureole.feature.home.components.onboarding.model.OnboardingActions
 import dev.mnascimentos.aureole.feature.home.components.onboarding.model.OnboardingSignal
@@ -25,7 +27,10 @@ import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
 import dev.mnascimentos.aureole.feature.settings.extensions.SettingsIntentUtils
 import dev.mnascimentos.aureole.util.DefaultHomeRoleUtils
 
-/** Maps onboarding callbacks to the view model; grid tasks place their item, then open its editor. */
+/**
+ * Maps onboarding callbacks to the view model. The clock, container, favorites and widget tasks place their item
+ * on the home and open its own screen, with no grid edit mode; the layout step opens the grid edit mode.
+ */
 class OnboardingActionsFactory(
     private val context: Context,
     private val viewModel: HomeViewModel,
@@ -42,6 +47,7 @@ class OnboardingActionsFactory(
         onShowMeGesture = { viewModel.showMeGesture() },
         onAlphabetScrubbed = { viewModel.onOnboardingSignal(OnboardingSignal.ALPHABET_SCRUBBED) },
         onTaskClick = { task -> handleTaskClick(task) },
+        onSkipTask = { task -> viewModel.skipTask(task) },
         onSelectPalette = { name -> viewModel.selectPalette(name) },
         onSelectFont = { name -> viewModel.selectFont(name) },
         onConfirmAppearancePicker = { viewModel.confirmAppearancePicker() },
@@ -58,10 +64,11 @@ class OnboardingActionsFactory(
         when (task) {
             OnboardingTask.SET_DEFAULT_HOME -> requestDefaultHome()
             OnboardingTask.CHOOSE_PALETTE, OnboardingTask.CHOOSE_FONT -> Unit
-            OnboardingTask.ADD_CLOCK -> viewModel.startGridTask(task)?.let { homeActions.onOpenEditClockBottomSheet() }
-            OnboardingTask.ADD_FAVORITE_APPS -> viewModel.startGridTask(task)?.let(homeActions.onOpenFavoritePicker)
+            OnboardingTask.ADD_CLOCK -> viewModel.startGridTask(task)?.let(homeActions.onOpenEditClockBottomSheet)
             OnboardingTask.FILL_CONTAINER -> viewModel.startGridTask(task)?.let(homeActions.onOpenEditContainerDialog)
+            OnboardingTask.ADD_FAVORITE_APPS -> viewModel.startGridTask(task)?.let(homeActions.onChooseFavorites)
             OnboardingTask.ADD_WIDGET -> viewModel.startGridTask(task)?.let(homeActions.onAddWidgetClick)
+            OnboardingTask.ADJUST_LAYOUT -> viewModel.startLayoutTask()
             OnboardingTask.EXPLORE_SETTINGS -> homeActions.onSettingsClick()
         }
     }

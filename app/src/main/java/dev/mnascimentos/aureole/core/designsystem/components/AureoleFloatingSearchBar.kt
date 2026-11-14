@@ -17,12 +17,11 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -82,10 +81,12 @@ fun AureoleFloatingSearchBar(
         }
     }
 
+    val surfaceVariant = AureoleDS.colors.surfaceVariant
     val hazeStyle = HazeStyle(
         blurRadius = glassBlurRadius(SEARCH_BLUR_RADIUS),
-        tint = HazeTint(AureoleDS.colors.surfaceVariant.copy(alpha = params.hazeConfig.opacity)),
+        tint = HazeTint(surfaceVariant.copy(alpha = params.hazeConfig.opacity)),
     )
+    val backgroundColor = searchBarBackgroundColor(params.hazeConfig, surfaceVariant)
 
     AnimatedContent(
         targetState = isExpanded,
@@ -99,7 +100,7 @@ fun AureoleFloatingSearchBar(
             ExpandedSearchRow(
                 state = state,
                 params = ExpandedSearchRowParams(
-                    backgroundColor = getSearchBarBackgroundColor(params.hazeConfig),
+                    backgroundColor = backgroundColor,
                     barHeight = params.sizes.barHeight,
                     placeholder = params.placeholder,
                     focusRequester = params.focusRequester
@@ -111,7 +112,8 @@ fun AureoleFloatingSearchBar(
             CollapsedSearchBubble(
                 onExpand = { state.onExpandedChange(true) },
                 params = params,
-                hazeStyle = hazeStyle
+                hazeStyle = hazeStyle,
+                backgroundColor = backgroundColor
             )
         }
     }
@@ -127,7 +129,7 @@ private fun ExpandedSearchRow(
     val searchBarModifier = Modifier
         .fillMaxWidth()
         .height(params.barHeight)
-        .clip(CircleShape)
+        .clip(RoundedCornerShape(AureoleDS.dimens.radiusFull))
         .then(
             if (hazeConfig.isEnabled && hazeConfig.state != null) {
                 Modifier.hazeEffect(state = hazeConfig.state, style = hazeStyle) { blurEnabled = true }
@@ -212,11 +214,12 @@ private fun ExpandedSearchInputField(
 private fun CollapsedSearchBubble(
     onExpand: () -> Unit,
     params: AureoleFloatingSearchBarParams,
-    hazeStyle: HazeStyle
+    hazeStyle: HazeStyle,
+    backgroundColor: Color
 ) {
     val bubbleModifier = Modifier
         .size(params.sizes.collapsedSize)
-        .clip(CircleShape)
+        .clip(RoundedCornerShape(AureoleDS.dimens.radiusFull))
         .then(
             if (params.hazeConfig.isEnabled && params.hazeConfig.state != null) {
                 Modifier.hazeEffect(state = params.hazeConfig.state, style = hazeStyle) { blurEnabled = true }
@@ -224,7 +227,7 @@ private fun CollapsedSearchBubble(
                 Modifier
             }
         )
-        .background(getSearchBarBackgroundColor(params.hazeConfig))
+        .background(backgroundColor)
         .clickable(onClick = onExpand, role = Role.Button)
 
     Box(
@@ -238,10 +241,8 @@ private fun CollapsedSearchBubble(
     }
 }
 
-@Composable
-@ReadOnlyComposable
-private fun getSearchBarBackgroundColor(hazeConfig: AureoleSearchBarHazeConfig): Color {
-    val surfaceColor = AureoleDS.colors.surfaceVariant
+/** Bar and bubble background: [surfaceColor], translucent when the glass is on. */
+internal fun searchBarBackgroundColor(hazeConfig: AureoleSearchBarHazeConfig, surfaceColor: Color): Color {
     return if (hazeConfig.isEnabled && hazeConfig.state != null) {
         val calculatedAlpha = (hazeConfig.opacity * BUBBLE_ALPHA_SCALE).coerceIn(
             MIN_BUBBLE_ALPHA,

@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -54,31 +53,6 @@ internal fun FavoritesEmptyHint(onClick: () -> Unit) {
                 format = AureoleTextFormatParams(style = AureoleDS.typography.bodyMedium)
             )
         }
-    }
-}
-
-@Composable
-internal fun AllAppsDivider() {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = AureoleDS.dimens.medium, vertical = AureoleDS.dimens.small),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        HorizontalDivider(
-            modifier = Modifier.weight(1f),
-            color = AureoleDS.colors.onSurfaceHigh.copy(alpha = 0.12f)
-        )
-        AureoleText(
-            text = stringResource(R.string.home_favorites_all_apps_divider),
-            color = AureoleDS.colors.onSurfaceMedium.copy(alpha = 0.6f),
-            modifier = Modifier.padding(horizontal = AureoleDS.dimens.xSmall),
-            format = AureoleTextFormatParams(style = AureoleDS.typography.labelSmall)
-        )
-        HorizontalDivider(
-            modifier = Modifier.weight(1f),
-            color = AureoleDS.colors.onSurfaceHigh.copy(alpha = 0.12f)
-        )
     }
 }
 

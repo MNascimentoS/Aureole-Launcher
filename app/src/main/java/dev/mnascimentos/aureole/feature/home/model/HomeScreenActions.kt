@@ -32,8 +32,15 @@ data class HomeScreenActions(
     val onAppInfoClick: (AppInfo) -> Unit = {},
     val onUninstallAppClick: (AppInfo) -> Unit = {},
     val onOpenFavoritePicker: (String?) -> Unit = {},
+    /** Opens the favorites sheet of this apps list straight on "Choose favorites" (the onboarding task). */
+    val onChooseFavorites: (String) -> Unit = {},
     val onDismissFavoritePicker: () -> Unit = {},
-    val onAddFavoritesList: () -> Unit = {},
+    val onAddAppsList: () -> Unit = {},
+    /** Turns "Show all apps" on or off for the apps list with this id, in both orientations. */
+    val onSetShowAllApps: (String, Boolean) -> Unit = { _, _ -> },
+    /** Turns the "Favorites" and "All apps" labels on or off for the apps list with this id. */
+    val onSetShowLabels: (String, Boolean) -> Unit = { _, _ -> },
+    val onAddClock: () -> Unit = {},
     val onSelectPalette: (String) -> Unit = {},
     val onSelectFont: (String) -> Unit = {},
     val onDismissWidgetPicker: () -> Unit = {},
@@ -72,7 +79,7 @@ data class HomeScreenActions(
 
     // Side Panel Actions
     val onOpenEditContainerDialog: (String) -> Unit = {},
-    val onCloseEditContainerDialog: () -> Unit = {},
+    val onCloseEditContainerDialog: (String?) -> Unit = {},
     val onSaveContainerModel: (ContainerModel) -> Unit = {},
     val onDeleteContainerInstance: (String) -> Unit = {},
 
@@ -80,7 +87,8 @@ data class HomeScreenActions(
     val onCloseCustomizeBottomSheet: () -> Unit = {},
 
     // Clock Customization Actions
-    val onOpenEditClockBottomSheet: () -> Unit = {},
+    /** Opens the clock editor for the clock with this grid item id; null edits the default clock look. */
+    val onOpenEditClockBottomSheet: (String?) -> Unit = {},
     val onCloseEditClockBottomSheet: () -> Unit = {},
     val onUpdateClockStyle: (String) -> Unit = {},
     val onUpdateClockCustomGreeting: (String) -> Unit = {},

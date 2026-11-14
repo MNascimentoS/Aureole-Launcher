@@ -2,8 +2,11 @@ package dev.mnascimentos.aureole.feature.settings
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.ui.platform.LocalContext
 import com.android.tools.screenshot.PreviewTest
 import dev.mnascimentos.aureole.composable.ColorPickerDialog
+import dev.mnascimentos.aureole.composable.LocalHomeUiState
+import dev.mnascimentos.aureole.composable.ProvideHomeUiState
 import dev.mnascimentos.aureole.composable.color.model.DefaultPickerColor
 import dev.mnascimentos.aureole.composable.sheets.PickFontBottomSheet
 import dev.mnascimentos.aureole.composable.sheets.PickPaletteBottomSheet
@@ -11,15 +14,14 @@ import dev.mnascimentos.aureole.composable.sheets.SettingsBottomSheet
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
-import dev.mnascimentos.aureole.feature.home.model.LocalHomeUiState
-import dev.mnascimentos.aureole.feature.home.model.ProvideHomeUiState
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
 import dev.mnascimentos.aureole.feature.settings.components.ContainerPositionDialog
+import dev.mnascimentos.aureole.feature.settings.components.FactoryResetBottomSheet
 import dev.mnascimentos.aureole.feature.settings.components.SearchIconPositionDialog
 import dev.mnascimentos.aureole.feature.settings.components.SetBackgroundBottomSheet
 import dev.mnascimentos.aureole.feature.settings.components.SettingsButtonPositionDialog
+import dev.mnascimentos.aureole.feature.settings.components.UninstallBottomSheet
 import dev.mnascimentos.aureole.feature.settings.model.SetBackgroundParams
-import dev.mnascimentos.aureole.feature.settings.screens.FactoryResetDialog
 import dev.mnascimentos.aureole.feature.settings.screens.ResetGridDialog
 
 @PreviewTest
@@ -134,9 +136,18 @@ private fun SettingsBottomSheetScreenshotTest() {
 @PreviewTest
 @AureolePreview
 @Composable
-private fun FactoryResetDialogScreenshotTest() {
+private fun FactoryResetBottomSheetScreenshotTest() {
     AureoleLauncherTheme {
-        FactoryResetDialog()
+        FactoryResetBottomSheet()
+    }
+}
+
+@PreviewTest
+@AureolePreview
+@Composable
+private fun UninstallBottomSheetScreenshotTest() {
+    AureoleLauncherTheme {
+        UninstallBottomSheet(context = LocalContext.current, onDismiss = {})
     }
 }
 

@@ -3,12 +3,17 @@ package dev.mnascimentos.aureole.feature.home.components.containers.extensions
 import androidx.lifecycle.viewModelScope
 import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.core.data.model.ContainerModel
-import dev.mnascimentos.aureole.core.data.model.LauncherItemType
+import dev.mnascimentos.aureole.core.data.model.LauncherItemState
 import dev.mnascimentos.aureole.core.designsystem.model.TextResource
 import dev.mnascimentos.aureole.feature.home.HomeViewModel
+import dev.mnascimentos.aureole.feature.home.components.clock.extensions.hasItemOnAnyLayout
+import dev.mnascimentos.aureole.feature.home.components.containers.model.withEditContainerClosed
+import dev.mnascimentos.aureole.feature.home.components.containers.model.withEditContainerOpened
 import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.confirmContainerTaskOnSave
 import dev.mnascimentos.aureole.feature.home.extensions.showUndo
 import dev.mnascimentos.aureole.feature.home.grid.GridDefaults
+import dev.mnascimentos.aureole.feature.home.grid.extensions.containerIds
+import dev.mnascimentos.aureole.feature.home.grid.extensions.missingContainerIds
 import kotlinx.coroutines.launch
 
 fun HomeViewModel.loadContainers() {
@@ -18,47 +23,77 @@ fun HomeViewModel.loadContainers() {
 
         val state = uiState.value
         (state.gridItems + state.portraitGridItems + state.landscapeGridItems)
-            .filter { it.safeType == LauncherItemType.SHORTCUTS_CONTAINER }
-            .distinctBy { it.id }
-            .forEach { item ->
-                if (!panelsMap.containsKey(item.id)) {
-                    // The default layout's container starts without a background.
-                    val ensured = containerRepository.ensureContainerExists(
-                        panelId = item.id,
-                        isBackgroundEnabled = item.id != GridDefaults.CONTAINER_ITEM_ID
-                    )
-                    panelsMap[item.id] = ensured
-                }
-            }
+            .missingContainerIds(panelsMap.keys)
+            .forEach { id -> panelsMap[id] = ensureContainer(id) }
 
         updateUiState { it.copy(containers = panelsMap) }
     }
 }
 
-fun HomeViewModel.openEditContainerDialog(panelId: String) {
-    viewModelScope.launch {
-        val panel = containerRepository.getContainer(panelId)
-            ?: containerRepository.ensureContainerExists(panelId)
-        val currentMap = uiState.value.containers.toMutableMap()
-        currentMap[panelId] = panel
+/**
+ * Makes sure the container [id] exists, with the initial values: position and expand cell come from the settings
+ * (they only seed a new container), and the default layout's container starts without a background.
+ */
+internal suspend fun HomeViewModel.ensureContainer(id: String): ContainerModel =
+    containerRepository.ensureContainerExists(
+        panelId = id,
+        isBackgroundEnabled = id != GridDefaults.CONTAINER_ITEM_ID,
+        position = settingsRepository.containerPosition,
+        isExpandCell = settingsRepository.isContainerExpandCell
+    )
 
-        updateUiState {
-            it.copy(
-                containers = currentMap,
-                editingContainerId = panelId,
-                isEditContainerDialogVisible = true
-            )
+/**
+ * Erases the containers among [items] (items, folders and config) and returns what puts them back. A container
+ * still on the other layout, or any removal during grid edit (which can be cancelled), is left alone. Same
+ * immediate delete + snapshot undo as `dropFavoritesList`.
+ */
+internal fun HomeViewModel.dropContainers(items: List<LauncherItemState>): () -> Unit {
+    val state = uiState.value
+    val snapshots = if (state.isGridEditMode) {
+        emptyList()
+    } else {
+        items.containerIds().filterNot { state.hasItemOnAnyLayout(it) }.mapNotNull { state.containers[it] }
+    }
+    if (snapshots.isNotEmpty()) {
+        viewModelScope.launch {
+            snapshots.forEach { containerRepository.deleteContainer(it.id) }
+            refreshContainers()
+        }
+    }
+    return {
+        if (snapshots.isNotEmpty()) {
+            viewModelScope.launch {
+                snapshots.forEach { containerRepository.saveContainer(it) }
+                refreshContainers()
+            }
         }
     }
 }
 
-fun HomeViewModel.closeEditContainerDialog() {
-    updateUiState {
-        it.copy(
-            isEditContainerDialogVisible = false,
-            editingContainerId = null
-        )
+/** Puts a container just created in the database into the state, so it renders (empty) at once. */
+internal fun HomeViewModel.refreshContainerInState(model: ContainerModel) {
+    updateUiState { it.copy(containers = it.containers + (model.id to model)) }
+}
+
+private suspend fun HomeViewModel.refreshContainers() {
+    val containers = containerRepository.getAllContainers().associateBy { it.id }
+    val folders = folderRepository.getFolders()
+    updateUiState { it.copy(containers = containers, folders = folders) }
+}
+
+fun HomeViewModel.openEditContainerDialog(panelId: String) {
+    viewModelScope.launch {
+        val panel = containerRepository.getContainer(panelId) ?: ensureContainer(panelId)
+        val currentMap = uiState.value.containers.toMutableMap()
+        currentMap[panelId] = panel
+
+        updateUiState { it.withEditContainerOpened(panelId).copy(containers = currentMap) }
     }
+}
+
+/** Closes the editor; with a [panelId] it only closes if that container is still the one being edited. */
+fun HomeViewModel.closeEditContainerDialog(panelId: String? = null) {
+    updateUiState { it.withEditContainerClosed(panelId) }
 }
 
 fun HomeViewModel.saveContainerModel(panel: ContainerModel) {
@@ -70,12 +105,7 @@ fun HomeViewModel.saveContainerModel(panel: ContainerModel) {
         val updatedFolders = folderRepository.getFolders()
 
         updateUiState {
-            it.copy(
-                containers = updatedPanels,
-                folders = updatedFolders,
-                isEditContainerDialogVisible = false,
-                editingContainerId = null
-            )
+            it.copy(containers = updatedPanels, folders = updatedFolders).withEditContainerClosed(panel.id)
         }
 
         if (previousPanel != null && previousPanel != panel) {

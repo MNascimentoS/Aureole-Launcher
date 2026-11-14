@@ -8,6 +8,7 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import dev.mnascimentos.aureole.core.data.repository.AppRepository
+import dev.mnascimentos.aureole.core.data.repository.ClockConfigRepository
 import dev.mnascimentos.aureole.core.data.repository.ContainerRepository
 import dev.mnascimentos.aureole.core.data.repository.FavoriteContainerRepository
 import dev.mnascimentos.aureole.core.data.repository.FolderRepository
@@ -50,6 +51,7 @@ class WidgetHostManagerTest {
                 favoriteContainerRepository = FavoriteContainerRepository(context, settingsRepository),
                 containerRepository = ContainerRepository(context),
                 gridRepository = GridRepository(context),
+                clockConfigRepository = ClockConfigRepository(context, GridRepository(context), settingsRepository),
             )
         )
         appWidgetHost = object : AppWidgetHost(context, 1024) {

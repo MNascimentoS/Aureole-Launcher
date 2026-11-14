@@ -34,6 +34,7 @@ import androidx.compose.ui.platform.LocalViewConfiguration
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import dev.mnascimentos.aureole.composable.LocalHomeUiState
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.utils.LongPressViewConfiguration
@@ -49,7 +50,6 @@ import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.
 import dev.mnascimentos.aureole.feature.home.components.scrubber.CurvedAlphabetScrubber
 import dev.mnascimentos.aureole.feature.home.components.scrubber.model.ScrubberCallbacks
 import dev.mnascimentos.aureole.feature.home.components.scrubber.model.ScrubberOptions
-import dev.mnascimentos.aureole.feature.home.model.LocalHomeUiState
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 
@@ -117,7 +117,7 @@ internal fun FolderAppPickerBrowseGrid(
         PickerLazyGrid(
             gridState = gridState,
             isSelecting = isSelecting,
-            gridModifier = Modifier
+            modifier = Modifier
                 .thumbSideGutter(gutter, params.isLeftHandedMode)
                 .dragToSelect(onStart = { onDragStart(it) }, onMove = onDragMove, onEnd = onDragEnd)
         ) {
@@ -152,7 +152,7 @@ private fun gridParams(
 private fun PickerLazyGrid(
     gridState: LazyGridState,
     isSelecting: Boolean,
-    gridModifier: Modifier,
+    modifier: Modifier = Modifier,
     content: LazyGridScope.() -> Unit
 ) {
     val baseConfiguration = LocalViewConfiguration.current
@@ -165,7 +165,7 @@ private fun PickerLazyGrid(
             state = gridState,
             modifier = Modifier
                 .fillMaxSize()
-                .then(gridModifier)
+                .then(modifier)
                 .testTag(FOLDER_PICKER_GRID_TEST_TAG),
             userScrollEnabled = !isSelecting,
             verticalArrangement = Arrangement.spacedBy(AureoleDS.dimens.xxSmall),

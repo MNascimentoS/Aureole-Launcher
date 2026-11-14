@@ -3,6 +3,7 @@ package dev.mnascimentos.aureole.feature.home.components.overlays
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.getUnclippedBoundsInRoot
 import androidx.compose.ui.test.junit4.v2.createComposeRule
+import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollTo
@@ -51,15 +52,15 @@ class CustomizeBottomSheetTest {
     }
 
     @Test
-    fun `when favorites is clicked, should ask for a favorites list and dismiss`() {
+    fun `when apps list is clicked, should ask for a new apps list and dismiss`() {
         var asked = false
         var dismissed = false
         show(
-            createDefaultHomeScreenActions().copy(onAddFavoritesList = { asked = true }),
+            createDefaultHomeScreenActions().copy(onAddAppsList = { asked = true }),
             onDismiss = { dismissed = true }
         )
 
-        composeTestRule.onNodeWithText("Favorites").performScrollTo().performClick()
+        composeTestRule.onNodeWithText("Apps list").performScrollTo().performClick()
         composeTestRule.mainClock.advanceTimeBy(DISMISS_WAIT_MS)
 
         assertTrue(asked)
@@ -80,10 +81,6 @@ class CustomizeBottomSheetTest {
         assertEquals(listOf(expected), added)
         assertEquals(1, dismissed)
     }
-
-    @Test
-    fun `when all apps is clicked, should add an all apps list and dismiss`() =
-        assertAddsType("All apps", LauncherItemType.ALL_APPS_LIST)
 
     @Test
     fun `when container is clicked, should add a shortcuts container and dismiss`() =
@@ -116,6 +113,29 @@ class CustomizeBottomSheetTest {
 
         assertTrue(addingSingle)
         assertTrue(pickerOpened)
+    }
+
+    @Test
+    fun `when settings is clicked, should open the Aureole settings and dismiss`() {
+        var opened = 0
+        var dismissed = 0
+        show(
+            createDefaultHomeScreenActions().copy(onSettingsClick = { opened++ }),
+            onDismiss = { dismissed++ }
+        )
+
+        composeTestRule.onNodeWithText("Settings").performScrollTo().performClick()
+        composeTestRule.mainClock.advanceTimeBy(DISMISS_WAIT_MS)
+
+        assertEquals(1, opened)
+        assertEquals(1, dismissed)
+    }
+
+    @Test
+    fun `when rendered, should not draw the header logo that opens settings`() {
+        show()
+
+        composeTestRule.onNodeWithContentDescription("Settings").assertDoesNotExist()
     }
 
     @Test
@@ -155,26 +175,26 @@ class CustomizeBottomSheetTest {
     }
 
     @Test
-    fun `when the clock is already on the home, should keep it tappable`() {
-        var added: LauncherItemType? = null
+    fun `when the clock is already on the home, should keep it tappable to add another clock`() {
+        var added = 0
         val uiState = MainUiState(gridItems = listOf(LauncherItemState(id = "c", type = LauncherItemType.CLOCK)))
-        show(createDefaultHomeScreenActions().copy(onAddGridItem = { type, _, _ -> added = type }), uiState)
+        show(createDefaultHomeScreenActions().copy(onAddClock = { added++ }), uiState)
 
         composeTestRule.onNodeWithText("Clock").performScrollTo().performClick()
 
-        assertEquals(LauncherItemType.CLOCK, added)
+        assertEquals(1, added)
     }
 
     private companion object {
         const val DISMISS_WAIT_MS = 500L
         val LABELS_IN_ORDER = listOf(
             "Clock",
-            "Favorites",
-            "All apps",
+            "Apps list",
             "Container",
             "Widget group",
             "Scrolling group",
-            "Quick button"
+            "Quick button",
+            "Settings"
         )
     }
 }

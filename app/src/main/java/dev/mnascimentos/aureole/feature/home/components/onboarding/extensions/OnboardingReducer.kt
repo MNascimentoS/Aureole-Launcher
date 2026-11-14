@@ -48,7 +48,7 @@ internal object OnboardingReducer {
     fun reduceChecklist(previous: MainUiState, next: MainUiState): MainUiState {
         val onboarding = next.onboarding
         val tasks = onboarding.completedTasks + deriveCompletedTasks(next)
-        if (tasks.containsAll(OnboardingTask.entries)) {
+        if ((tasks + onboarding.skippedTasks).containsAll(OnboardingTask.entries)) {
             return next.copy(
                 onboarding = onboarding.copy(
                     stage = OnboardingStage.COMPLETED,
@@ -64,7 +64,7 @@ internal object OnboardingReducer {
             !previous.onboarding.completedTasks.containsAll(tasks)
         val updated = onboarding.copy(
             completedTasks = tasks,
-            isChecklistExpanded = onboarding.isChecklistExpanded || hasNewTask
+            isChecklistExpanded = onboarding.isChecklistExpanded || (hasNewTask && !onboarding.isHomePeeking)
         )
         return if (updated == onboarding) next else next.copy(onboarding = updated)
     }

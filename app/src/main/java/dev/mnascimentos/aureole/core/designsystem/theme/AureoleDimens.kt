@@ -4,6 +4,7 @@ import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import dev.mnascimentos.aureole.core.data.repository.SettingsRepository
 
 /**
  * Design system dimension tokens for Aureole Launcher based on Figma rules.
@@ -22,13 +23,23 @@ data class AureoleDimens(
     val xLarge: Dp = 32.dp,
     val xxLarge: Dp = 40.dp,
     val minTouchTarget: Dp = 48.dp,
+    val homeTopGrabZone: Dp = 40.dp,
 
     // Specific Sizes
     val itemHeightExtraLarge: Dp = 52.dp,
     val menuRowHeight: Dp = 56.dp,
+    val avatarSize: Dp = 64.dp,
     val quickActionIconSize: Dp = 50.dp,
     val sizeLarge: Dp = 68.dp,
     val sizeExtraLarge: Dp = 120.dp,
+    val controlHeight: Dp = 44.dp,
+    val dragHandleWidth: Dp = 44.dp,
+    val dragHandleHeight: Dp = 38.dp,
+    val clockLineHeightLarge: Dp = 14.dp,
+    val dashLength: Dp = 6.dp,
+    val floatingElevation: Dp = 8.dp,
+    val previewListMaxHeight: Dp = 300.dp,
+    val shortcutTileHeight: Dp = 92.dp,
 
     // 02. Ícones
     val iconXSmall: Dp = 12.dp,
@@ -53,7 +64,30 @@ data class AureoleDimens(
     val radiusMedium: Dp = 16.dp,
     val radiusMediumLarge: Dp = 20.dp,
     val radiusLarge: Dp = 24.dp,
+    val radiusAppIcon: Dp = 12.dp,
     val radiusFull: Dp = 100.dp,
-)
+) {
+    companion object {
+        /**
+         * Derives every radius token from the "Cartões e vidro" corner radius chosen by the user.
+         * The default radius (20 dp) keeps today's visual; 0 makes everything straight, pills included.
+         */
+        fun forCornerRadius(userDp: Int): AureoleDimens {
+            val base = AureoleDimens()
+            val scale = userDp / SettingsRepository.DEFAULT_CORNER_RADIUS_DP.toFloat()
+            return base.copy(
+                radiusMinimal = base.radiusMinimal * scale,
+                radiusXSmall = base.radiusXSmall * scale,
+                radiusSmallCompact = base.radiusSmallCompact * scale,
+                radiusSmall = base.radiusSmall * scale,
+                radiusMedium = base.radiusMedium * scale,
+                radiusMediumLarge = base.radiusMediumLarge * scale,
+                radiusAppIcon = base.radiusAppIcon * scale,
+                radiusLarge = userDp.dp,
+                radiusFull = if (userDp == 0) 0.dp else base.radiusFull
+            )
+        }
+    }
+}
 
 val LocalAureoleDimens = staticCompositionLocalOf { AureoleDimens() }

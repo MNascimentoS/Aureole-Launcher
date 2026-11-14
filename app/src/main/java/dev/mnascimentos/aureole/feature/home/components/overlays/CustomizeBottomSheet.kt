@@ -25,7 +25,6 @@ import dev.mnascimentos.aureole.feature.home.components.onboarding.model.Appeara
 import dev.mnascimentos.aureole.feature.home.components.overlays.extensions.addCustomizeItem
 import dev.mnascimentos.aureole.feature.home.components.overlays.model.CustomizeAdjustItem
 import dev.mnascimentos.aureole.feature.home.components.overlays.model.CustomizeOverlayParams
-import dev.mnascimentos.aureole.feature.home.components.overlays.model.itemsOnHome
 import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
 import kotlinx.coroutines.delay
@@ -95,7 +94,6 @@ private fun CustomizeOverlay(
     modifier: Modifier = Modifier
 ) {
     val onHide = params.onHide
-    val onHome = remember(uiState.gridItems) { itemsOnHome(uiState.gridItems) }
     AureoleEditOverlay(
         onDismissRequest = onHide,
         modifier = modifier,
@@ -104,10 +102,7 @@ private fun CustomizeOverlay(
                 title = stringResource(R.string.home_customize_title),
                 isVisible = params.isVisible,
                 isLeftHanded = uiState.isLeftHandedMode,
-                onSettingsClick = {
-                    actions.onSettingsClick()
-                    onHide()
-                }
+                showHeaderAction = false
             ),
             sheetContent = {
                 Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
@@ -125,7 +120,6 @@ private fun CustomizeOverlay(
                         isLeftHanded = uiState.isLeftHandedMode
                     )
                     CustomizeAddSection(
-                        onHome = onHome,
                         onAdd = { item ->
                             actions.addCustomizeItem(item)
                             onHide()

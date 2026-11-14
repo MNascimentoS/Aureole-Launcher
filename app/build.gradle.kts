@@ -1,4 +1,5 @@
 import io.gitlab.arturbosch.detekt.Detekt
+import java.time.Duration
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
@@ -92,8 +93,8 @@ android {
 
     lint {
         checkReleaseBuilds = false
-        abortOnError = false
-        disable += "InvalidFragmentVersionForActivityResult"
+        abortOnError = true
+        warningsAsErrors = true
         lintConfig = file("lint.xml")
     }
 }
@@ -133,7 +134,11 @@ jacoco {
     toolVersion = "0.8.12"
 }
 
+// A hung test (e.g. runBlocking deadlock on the Robolectric main thread) fails the task instead of stalling the build.
+val testTaskTimeoutMinutes = 10L
+
 tasks.withType<Test>().configureEach {
+    timeout.set(Duration.ofMinutes(testTaskTimeoutMinutes))
     configure<JacocoTaskExtension> {
         isIncludeNoLocationClasses = true
         excludes = listOf("jdk.internal.*")
@@ -152,7 +157,9 @@ val coverageFileFilter = listOf(
     "**/*Database*.*",
     "dev/mnascimentos/aureole/data/db/*",
     "**/ComposableSingletons*.*",
-    "**/*Preview*.*"
+    "**/*Preview*.*",
+    // ViewModels and their extension files are not measured: their Robolectric tests were removed as flaky.
+    "**/*ViewModel*.*"
 )
 
 val coverageClassDirectories = files(
@@ -284,6 +291,7 @@ dependencies {
 
     // AndroidX Core & Lifecycle
     implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.exifinterface)
     implementation(libs.androidx.fragment.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
 

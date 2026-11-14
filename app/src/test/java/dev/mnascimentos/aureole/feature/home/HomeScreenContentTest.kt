@@ -5,14 +5,13 @@ import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.test.junit4.v2.createComposeRule
 import dev.chrisbanes.haze.HazeState
-import dev.mnascimentos.aureole.core.data.model.ContainerModel
+import dev.mnascimentos.aureole.composable.LocalHomeUiState
 import dev.mnascimentos.aureole.core.data.model.LauncherItemState
 import dev.mnascimentos.aureole.core.data.model.LauncherItemType
 import dev.mnascimentos.aureole.core.designsystem.model.LocalLeftHanded
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.feature.home.grid.GridEngineUtils
 import dev.mnascimentos.aureole.feature.home.model.LocalHomeActions
-import dev.mnascimentos.aureole.feature.home.model.LocalHomeUiState
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
 import dev.mnascimentos.aureole.feature.home.model.createDefaultHomeScreenActions
 import org.junit.Assert.assertEquals
@@ -70,49 +69,6 @@ class HomeScreenContentTest {
             listOf(defaultItem),
             getGridItemsForOrientation(isLandscape = false, uiState = emptyOrientationUiState)
         )
-    }
-
-    @Test
-    fun `buildContainerConfig should build config for shortcuts container item`() {
-        val hazeState = HazeState()
-        val item = LauncherItemState(id = "c1", type = LauncherItemType.SHORTCUTS_CONTAINER)
-        val containerModel = ContainerModel(
-            id = "c1",
-            title = "My Container",
-            showFolderLabels = true,
-            isBackgroundEnabled = true
-        )
-        val uiState = MainUiState(
-            containers = mapOf("c1" to containerModel),
-            openedFolderId = "f1"
-        )
-
-        val config = buildContainerConfig(item, uiState, hazeState)
-
-        assertEquals("c1", config.panelId)
-        assertEquals("My Container", config.title)
-        assertEquals("f1", config.openedFolderId)
-        assertEquals(true, config.showFolderLabels)
-        assertEquals(hazeState, config.hazeState)
-    }
-
-    @Test
-    fun `buildContainerConfig should build fallback config for non-container item`() {
-        val hazeState = HazeState()
-        val item = LauncherItemState(id = "clock1", type = LauncherItemType.CLOCK)
-        val uiState = MainUiState(
-            containerPosition = "Center",
-            showFolderLabels = false,
-            isContainerBackgroundEnabled = false
-        )
-
-        val config = buildContainerConfig(item, uiState, hazeState)
-
-        assertEquals("clock1", config.panelId)
-        assertEquals("Center", config.position)
-        assertEquals(false, config.showFolderLabels)
-        assertEquals(false, config.isBackgroundEnabled)
-        assertEquals(hazeState, config.hazeState)
     }
 
     @Test

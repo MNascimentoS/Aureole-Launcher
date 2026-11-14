@@ -1,8 +1,10 @@
 package dev.mnascimentos.aureole.feature.home.components.onboarding
 
+import androidx.compose.ui.test.assertCountEquals
 import androidx.compose.ui.test.assertHasClickAction
 import androidx.compose.ui.test.assertHasNoClickAction
 import androidx.compose.ui.test.junit4.v2.createComposeRule
+import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollTo
@@ -26,17 +28,23 @@ class OnboardingChecklistComponentTest {
 
     private val clickedTasks = mutableListOf<OnboardingTask>()
     private val calls = mutableListOf<String>()
+    private val skippedTasks = mutableListOf<OnboardingTask>()
     private val actions = OnboardingActions(
         onTaskClick = { clickedTasks += it },
+        onSkipTask = { skippedTasks += it },
         onSetChecklistExpanded = { calls += "expanded=$it" },
         onDismissChecklist = { calls += "dismiss" }
     )
 
-    private fun render(completed: Set<OnboardingTask> = emptySet()) {
+    private fun render(completed: Set<OnboardingTask> = emptySet(), skipped: Set<OnboardingTask> = emptySet()) {
         composeTestRule.setContent {
             AureoleLauncherTheme {
                 OnboardingChecklistComponent(
-                    onboarding = OnboardingUiState(stage = OnboardingStage.CHECKLIST, completedTasks = completed),
+                    onboarding = OnboardingUiState(
+                        stage = OnboardingStage.CHECKLIST,
+                        completedTasks = completed,
+                        skippedTasks = skipped
+                    ),
                     actions = actions,
                     glass = OnboardingGlass()
                 )
@@ -62,10 +70,51 @@ class OnboardingChecklistComponentTest {
     }
 
     @Test
-    fun `should count the done tasks out of eight`() {
+    fun `should count the done tasks out of nine`() {
         render(completed = setOf(OnboardingTask.SET_DEFAULT_HOME, OnboardingTask.ADD_WIDGET))
 
-        composeTestRule.onNodeWithText("2 of 8 done").assertExists()
+        composeTestRule.onNodeWithText("2 of 9 steps").assertExists()
+    }
+
+    @Test
+    fun `when the next task is skippable, should show Skip on that row only and skip it`() {
+        render(
+            completed = setOf(
+                OnboardingTask.SET_DEFAULT_HOME,
+                OnboardingTask.CHOOSE_PALETTE,
+                OnboardingTask.CHOOSE_FONT
+            )
+        )
+
+        composeTestRule.onAllNodesWithText("Skip").assertCountEquals(1)
+        composeTestRule.onNodeWithText("Skip").performScrollTo().performClick()
+
+        assertEquals(listOf(OnboardingTask.ADD_CLOCK), skippedTasks)
+    }
+
+    @Test
+    fun `when the next task is not skippable, should show no Skip button`() {
+        render()
+
+        composeTestRule.onAllNodesWithText("Skip").assertCountEquals(0)
+    }
+
+    @Test
+    fun `when a task is skipped, should count it, let the next one lead and still react to taps`() {
+        render(
+            completed = setOf(
+                OnboardingTask.SET_DEFAULT_HOME,
+                OnboardingTask.CHOOSE_PALETTE,
+                OnboardingTask.CHOOSE_FONT
+            ),
+            skipped = setOf(OnboardingTask.ADD_CLOCK)
+        )
+
+        composeTestRule.onNodeWithText("4 of 9 steps").assertExists()
+        composeTestRule.onNodeWithText("Add a clock").assertHasClickAction()
+        composeTestRule.onNodeWithText("Add a clock").performScrollTo().performClick()
+
+        assertEquals(listOf(OnboardingTask.ADD_CLOCK), clickedTasks)
     }
 
     @Test
@@ -91,9 +140,10 @@ class OnboardingChecklistComponentTest {
             OnboardingTask.SET_DEFAULT_HOME to "Set as home app",
             OnboardingTask.CHOOSE_PALETTE to "Pick a color palette",
             OnboardingTask.CHOOSE_FONT to "Pick a font",
-            OnboardingTask.ADD_FAVORITE_APPS to "Add some apps",
+            OnboardingTask.ADD_FAVORITE_APPS to "Choose your favorites",
             OnboardingTask.FILL_CONTAINER to "Fill the container",
             OnboardingTask.ADD_WIDGET to "Add some widgets",
+            OnboardingTask.ADJUST_LAYOUT to "Adjust your layout",
             OnboardingTask.EXPLORE_SETTINGS to "Check more settings"
         )
     }

@@ -10,6 +10,7 @@ import com.google.android.play.core.appupdate.AppUpdateOptions
 import com.google.android.play.core.install.model.AppUpdateType
 import dev.mnascimentos.aureole.feature.home.HomeViewModel
 import dev.mnascimentos.aureole.feature.home.components.appsdrawer.extensions.onSearchQueryChanged
+import dev.mnascimentos.aureole.feature.home.components.clock.extensions.addClock
 import dev.mnascimentos.aureole.feature.home.components.clock.extensions.closeEditClockBottomSheet
 import dev.mnascimentos.aureole.feature.home.components.clock.extensions.openEditClockBottomSheet
 import dev.mnascimentos.aureole.feature.home.components.clock.extensions.resetClockSettings
@@ -31,9 +32,11 @@ import dev.mnascimentos.aureole.feature.home.components.containers.folder.extens
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.extensions.removeAppFromFolder
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.extensions.setAddAppToFolderDialogVisible
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.extensions.setRenameFolderDialogVisible
-import dev.mnascimentos.aureole.feature.home.components.favorites.extensions.addFavoritesList
+import dev.mnascimentos.aureole.feature.home.components.favorites.extensions.addAppsList
 import dev.mnascimentos.aureole.feature.home.components.favorites.extensions.dismissFavoritePicker
+import dev.mnascimentos.aureole.feature.home.components.favorites.extensions.setShowAllApps
 import dev.mnascimentos.aureole.feature.home.components.favorites.extensions.setShowFavoritePicker
+import dev.mnascimentos.aureole.feature.home.components.favorites.extensions.setShowLabels
 import dev.mnascimentos.aureole.feature.home.components.favorites.extensions.toggleFavorite
 import dev.mnascimentos.aureole.feature.home.components.favorites.extensions.updateContainerFavorites
 import dev.mnascimentos.aureole.feature.home.components.favorites.extensions.updateFavoritePackages
@@ -141,7 +144,8 @@ class HomeActionsFactory(
             onUninstallAppClick = { app -> IntentUtils.uninstallApp(context, app.packageName) },
             onOpenFavoritePicker = { containerId -> viewModel.setShowFavoritePicker(true, containerId) },
             onDismissFavoritePicker = { viewModel.dismissFavoritePicker() },
-            onAddFavoritesList = { viewModel.addFavoritesList() },
+            onAddAppsList = { viewModel.addAppsList() },
+            onAddClock = { viewModel.addClock() },
             onSelectPalette = { name -> viewModel.selectPalette(name) },
             onSelectFont = { name -> viewModel.selectFont(name) },
             onDismissWidgetPicker = { viewModel.setShowWidgetPicker(false) },
@@ -189,7 +193,7 @@ class HomeActionsFactory(
             },
             onOpenAddContainerForParent = { pId -> viewModel.openAddContainerForParent(pId) },
             onOpenEditContainerDialog = { id -> viewModel.openEditContainerDialog(id) },
-            onCloseEditContainerDialog = { viewModel.closeEditContainerDialog() },
+            onCloseEditContainerDialog = { panelId -> viewModel.closeEditContainerDialog(panelId) },
             onSaveContainerModel = { model -> viewModel.saveContainerModel(model) },
             onDeleteContainerInstance = { id -> viewModel.deleteContainerInstance(id) }
         )
@@ -214,9 +218,12 @@ class HomeActionsFactory(
             onRemoveAppFromContainer = { panelId, pkg -> viewModel.removeAppFromContainer(panelId, pkg) },
             onRemoveAppFromFolder = { folderId, pkg -> viewModel.removeAppFromFolder(folderId, pkg) },
             onOpenEditFolderForFolder = { folder -> viewModel.openEditFolderForFolder(folder) },
+            onChooseFavorites = { listId -> viewModel.setShowFavoritePicker(true, listId) },
+            onSetShowAllApps = { listId, show -> viewModel.setShowAllApps(listId, show) },
+            onSetShowLabels = { listId, show -> viewModel.setShowLabels(listId, show) },
             onOpenCustomizeBottomSheet = { viewModel.setShowCustomizeBottomSheet(true) },
             onCloseCustomizeBottomSheet = { viewModel.setShowCustomizeBottomSheet(false) },
-            onOpenEditClockBottomSheet = { viewModel.openEditClockBottomSheet() },
+            onOpenEditClockBottomSheet = { clockId -> viewModel.openEditClockBottomSheet(clockId) },
             onCloseEditClockBottomSheet = { viewModel.closeEditClockBottomSheet() },
             onUpdateClockStyle = { style -> viewModel.updateClockStyle(style) },
             onUpdateClockCustomGreeting = { greeting -> viewModel.updateClockCustomGreeting(greeting) },

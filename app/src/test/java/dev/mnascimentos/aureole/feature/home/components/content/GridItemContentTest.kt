@@ -10,19 +10,19 @@ import androidx.compose.ui.test.performClick
 import androidx.compose.ui.unit.dp
 import androidx.test.core.app.ApplicationProvider
 import dev.mnascimentos.aureole.R
+import dev.mnascimentos.aureole.composable.LocalHomeUiState
 import dev.mnascimentos.aureole.core.data.model.AppFolder
+import dev.mnascimentos.aureole.core.data.model.ContainerModel
 import dev.mnascimentos.aureole.core.data.model.LauncherItemState
 import dev.mnascimentos.aureole.core.data.model.LauncherItemType
 import dev.mnascimentos.aureole.core.designsystem.model.LocalLeftHanded
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.FolderViewIntent
-import dev.mnascimentos.aureole.feature.home.components.containers.model.ContainerConfig
 import dev.mnascimentos.aureole.feature.home.components.favorites.model.FavoritesListConfig
 import dev.mnascimentos.aureole.feature.home.components.widgets.model.StackedWidgetConfig
 import dev.mnascimentos.aureole.feature.home.model.GridItemContentParams
 import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
 import dev.mnascimentos.aureole.feature.home.model.LocalHomeActions
-import dev.mnascimentos.aureole.feature.home.model.LocalHomeUiState
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
@@ -72,10 +72,7 @@ class GridItemContentTest {
                 currentHeightDp = 200.dp,
                 currentHeightPx = 200f
             ),
-            containerConfig = ContainerConfig(
-                panelId = "p1",
-                showFolderLabels = true
-            ),
+            hazeState = null,
             isInScrollView = isInScrollView
         )
     }
@@ -271,23 +268,21 @@ class GridItemContentTest {
             onFolderIntent = { intent -> folderIntentReceived = intent }
         )
         val folder = AppFolder(id = "f1", name = "Folder 1")
-        val containerConfig = ContainerConfig(
-            panelId = "p1",
-            folders = listOf(folder),
-            showFolderLabels = true
-        )
+        val containerItem = LauncherItemState(id = "p1", type = LauncherItemType.SHORTCUTS_CONTAINER)
+        val model = ContainerModel(id = "p1", folders = listOf(folder), showFolderLabels = true)
+        val uiState = MainUiState(openedFolderId = null, containers = mapOf("p1" to model))
 
         composeTestRule.setContent {
             AureoleLauncherTheme {
                 CompositionLocalProvider(
-                    LocalHomeUiState provides MainUiState(openedFolderId = null),
-                    LocalLeftHanded provides (MainUiState(openedFolderId = null)).isLeftHandedMode,
+                    LocalHomeUiState provides uiState,
+                    LocalLeftHanded provides uiState.isLeftHandedMode,
                     LocalHomeActions provides actions
                 ) {
                     GridContainerContent(
-                        containerConfig = containerConfig,
-                        uiState = MainUiState(openedFolderId = null),
-                        actions = actions
+                        item = containerItem,
+                        hazeState = null,
+                        uiState = uiState
                     )
                 }
             }
@@ -305,23 +300,21 @@ class GridItemContentTest {
             onFolderIntent = { intent -> folderIntentReceived = intent }
         )
         val folder = AppFolder(id = "f1", name = "Folder 1")
-        val containerConfig = ContainerConfig(
-            panelId = "p1",
-            folders = listOf(folder),
-            showFolderLabels = true
-        )
+        val containerItem = LauncherItemState(id = "p1", type = LauncherItemType.SHORTCUTS_CONTAINER)
+        val model = ContainerModel(id = "p1", folders = listOf(folder), showFolderLabels = true)
+        val uiState = MainUiState(openedFolderId = "f1", containers = mapOf("p1" to model))
 
         composeTestRule.setContent {
             AureoleLauncherTheme {
                 CompositionLocalProvider(
-                    LocalHomeUiState provides MainUiState(openedFolderId = "f1"),
-                    LocalLeftHanded provides (MainUiState(openedFolderId = "f1")).isLeftHandedMode,
+                    LocalHomeUiState provides uiState,
+                    LocalLeftHanded provides uiState.isLeftHandedMode,
                     LocalHomeActions provides actions
                 ) {
                     GridContainerContent(
-                        containerConfig = containerConfig,
-                        uiState = MainUiState(openedFolderId = "f1"),
-                        actions = actions
+                        item = containerItem,
+                        hazeState = null,
+                        uiState = uiState
                     )
                 }
             }
