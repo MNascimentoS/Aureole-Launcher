@@ -8,18 +8,22 @@ import dev.mnascimentos.aureole.composable.appitem.model.AppItemRowConfig
 import dev.mnascimentos.aureole.composable.favorites.FavoriteAppsDialog
 import dev.mnascimentos.aureole.composable.favorites.model.FavoriteAppsDialogActions
 import dev.mnascimentos.aureole.composable.favorites.model.FavoriteAppsDialogConfig
+import dev.mnascimentos.aureole.composable.favorites.model.ShowAllAppsParams
+import dev.mnascimentos.aureole.composable.favorites.model.ShowLabelsParams
 import dev.mnascimentos.aureole.core.designsystem.model.LocalLeftHanded
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.createSampleHomeData
 
 @Composable
-private fun ManageSheetCase(isLeftHanded: Boolean, favorites: List<String>) {
+private fun ManageSheetCase(isLeftHanded: Boolean, favorites: List<String>, withSwitches: Boolean = false) {
     val sampleData = createSampleHomeData()
     val config = FavoriteAppsDialogConfig(
         allApps = sampleData.apps,
         favoriteAppPackages = favorites,
-        rowConfig = AppItemRowConfig(isLeftHandedMode = isLeftHanded)
+        rowConfig = AppItemRowConfig(isLeftHandedMode = isLeftHanded),
+        showAllApps = ShowAllAppsParams(checked = true, onCheckedChange = {}).takeIf { withSwitches },
+        showLabels = ShowLabelsParams(checked = true, onCheckedChange = {}).takeIf { withSwitches }
     )
     AureoleLauncherTheme {
         CompositionLocalProvider(LocalLeftHanded provides isLeftHanded) {
@@ -52,3 +56,9 @@ private fun FavoriteAppsManageSheetLeftHandedScreenshotTest() =
 @Composable
 private fun FavoriteAppsManageSheetEmptyScreenshotTest() =
     ManageSheetCase(isLeftHanded = false, favorites = emptyList())
+
+@PreviewTest
+@AureolePreview
+@Composable
+private fun FavoriteAppsManageSheetShowLabelsScreenshotTest() =
+    ManageSheetCase(isLeftHanded = false, favorites = sampleFavorites, withSwitches = true)

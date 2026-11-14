@@ -42,6 +42,17 @@ internal fun FavoriteAppsListHeader(
                 icon = { m, c -> AureoleDS.icons.AllApps(modifier = m, tint = c) }
             )
         )
+        config.showLabels?.takeIf { showAllApps.checked }?.let { labels ->
+            AureoleSwitchRow(
+                SwitchRowParams(
+                    title = stringResource(R.string.home_favorites_show_labels),
+                    checked = labels.checked,
+                    onCheckedChange = labels.onCheckedChange,
+                    description = stringResource(R.string.home_favorites_show_labels_summary),
+                    icon = { m, c -> AureoleDS.icons.AllApps(modifier = m, tint = c) }
+                )
+            )
+        }
         onCustomizeHome?.let { AureoleMenuRow(customizeHomeRowParams(it)) }
     }
 }

@@ -19,7 +19,7 @@ private const val LIST_HEIGHT_PX = 400f
 
 /** The apps list of the home with [favoriteCount] of the sample apps as its favorites. */
 @Composable
-private fun AppsListCase(favoriteCount: Int, showAllApps: Boolean) {
+private fun AppsListCase(favoriteCount: Int, showAllApps: Boolean, showLabels: Boolean = true) {
     val sample = createSampleHomeData()
     val favorites = sample.uiState.favoriteAppPackages.take(favoriteCount)
     val uiState = sample.uiState.copy(containerFavorites = mapOf(LIST_ID to favorites))
@@ -38,7 +38,8 @@ private fun AppsListCase(favoriteCount: Int, showAllApps: Boolean) {
                 options = FavoritesListOptions(
                     containerId = LIST_ID,
                     showHeadersAndWidgets = false,
-                    showAllApps = showAllApps
+                    showAllApps = showAllApps,
+                    showLabels = showLabels
                 )
             )
         }
@@ -62,3 +63,10 @@ private fun AppsListAllAppsWithoutFavoritesScreenshotTest() = AppsListCase(favor
 @AureolePreview
 @Composable
 private fun AppsListFavoritesOnlyScreenshotTest() = AppsListCase(favoriteCount = 2, showAllApps = false)
+
+/** Labels off: no "Favorites" or "All apps"; favorites on top, a small gap, then the rest. */
+@PreviewTest
+@AureolePreview
+@Composable
+private fun AppsListLabelsOffScreenshotTest() =
+    AppsListCase(favoriteCount = 2, showAllApps = true, showLabels = false)

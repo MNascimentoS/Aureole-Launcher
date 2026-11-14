@@ -36,6 +36,7 @@ import dev.mnascimentos.aureole.feature.home.components.favorites.extensions.add
 import dev.mnascimentos.aureole.feature.home.components.favorites.extensions.dismissFavoritePicker
 import dev.mnascimentos.aureole.feature.home.components.favorites.extensions.setShowAllApps
 import dev.mnascimentos.aureole.feature.home.components.favorites.extensions.setShowFavoritePicker
+import dev.mnascimentos.aureole.feature.home.components.favorites.extensions.setShowLabels
 import dev.mnascimentos.aureole.feature.home.components.favorites.extensions.toggleFavorite
 import dev.mnascimentos.aureole.feature.home.components.favorites.extensions.updateContainerFavorites
 import dev.mnascimentos.aureole.feature.home.components.favorites.extensions.updateFavoritePackages
@@ -219,6 +220,7 @@ class HomeActionsFactory(
             onOpenEditFolderForFolder = { folder -> viewModel.openEditFolderForFolder(folder) },
             onChooseFavorites = { listId -> viewModel.setShowFavoritePicker(true, listId) },
             onSetShowAllApps = { listId, show -> viewModel.setShowAllApps(listId, show) },
+            onSetShowLabels = { listId, show -> viewModel.setShowLabels(listId, show) },
             onOpenCustomizeBottomSheet = { viewModel.setShowCustomizeBottomSheet(true) },
             onCloseCustomizeBottomSheet = { viewModel.setShowCustomizeBottomSheet(false) },
             onOpenEditClockBottomSheet = { clockId -> viewModel.openEditClockBottomSheet(clockId) },

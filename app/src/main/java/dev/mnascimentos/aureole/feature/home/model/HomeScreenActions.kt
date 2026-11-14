@@ -38,6 +38,8 @@ data class HomeScreenActions(
     val onAddAppsList: () -> Unit = {},
     /** Turns "Show all apps" on or off for the apps list with this id, in both orientations. */
     val onSetShowAllApps: (String, Boolean) -> Unit = { _, _ -> },
+    /** Turns the "Favorites" and "All apps" labels on or off for the apps list with this id. */
+    val onSetShowLabels: (String, Boolean) -> Unit = { _, _ -> },
     val onAddClock: () -> Unit = {},
     val onSelectPalette: (String) -> Unit = {},
     val onSelectFont: (String) -> Unit = {},

@@ -15,6 +15,7 @@ import dev.mnascimentos.aureole.composable.favorites.FavoriteAppsDialog
 import dev.mnascimentos.aureole.composable.favorites.model.FavoriteAppsDialogActions
 import dev.mnascimentos.aureole.composable.favorites.model.FavoriteAppsDialogConfig
 import dev.mnascimentos.aureole.composable.favorites.model.ShowAllAppsParams
+import dev.mnascimentos.aureole.composable.favorites.model.ShowLabelsParams
 import dev.mnascimentos.aureole.composable.sheets.ReleaseNotesBottomSheet
 import dev.mnascimentos.aureole.core.designsystem.utils.LocalHazeState
 import dev.mnascimentos.aureole.feature.home.components.favorites.extensions.findAppsList
@@ -130,6 +131,12 @@ private fun FavoritePickerOverlay(
                     ShowAllAppsParams(
                         checked = list.isShowingAllApps,
                         onCheckedChange = { show -> actions.onSetShowAllApps(list.id, show) }
+                    )
+                },
+                showLabels = appsList?.let { list ->
+                    ShowLabelsParams(
+                        checked = list.isShowingLabels,
+                        onCheckedChange = { show -> actions.onSetShowLabels(list.id, show) }
                     )
                 }
             ),

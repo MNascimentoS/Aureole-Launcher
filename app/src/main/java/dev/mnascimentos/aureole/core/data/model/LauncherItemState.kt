@@ -43,6 +43,8 @@ data class LauncherItemState(
     val quickButtonModel: QuickButtonModel? = null,
     /** Apps list only: whether it shows every app below its favorites. Null in memory means on (a new list). */
     val showAllApps: Boolean? = null,
+    /** Apps list only: whether it shows the "Favorites" and "All apps" labels. Null means on (older lists). */
+    val showLabels: Boolean? = null,
     val children: List<LauncherItemState>? = emptyList()
 ) {
     val safeId: String
@@ -60,6 +62,10 @@ data class LauncherItemState(
     /** Whether this apps list shows all apps below its favorites; a new list does. */
     val isShowingAllApps: Boolean
         get() = showAllApps ?: true
+
+    /** Whether this apps list shows its section labels; older lists do. */
+    val isShowingLabels: Boolean
+        get() = showLabels ?: true
 
     val safeChildren: List<LauncherItemState>
         get() = children?.filterNotNull() ?: emptyList()

@@ -20,12 +20,14 @@ data class FavoritesListConfig(
 /**
  * @property containerId The id of the apps list on the home, whose favorites it shows and toggles.
  * @property showAllApps Whether it lists every other app below its favorites.
+ * @property showLabels Whether the "Favorites" and "All apps" labels show (only with [showAllApps]).
  */
 data class FavoritesListOptions(
     val containerId: String? = null,
     val showHeadersAndWidgets: Boolean = true,
     val isInsideScrollView: Boolean = false,
-    val showAllApps: Boolean = false
+    val showAllApps: Boolean = false,
+    val showLabels: Boolean = true
 )
 
 /** What every row of an apps list needs: the sections to draw and the list whose favorites the rows toggle. */
@@ -33,5 +35,6 @@ data class AppsListParams(
     val sections: AppsListSections,
     val actions: HomeScreenActions,
     val containerId: String? = null,
-    val isLeftHandedMode: Boolean = false
+    val isLeftHandedMode: Boolean = false,
+    val hasLabels: Boolean = true
 )
