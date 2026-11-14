@@ -95,6 +95,8 @@ data class MainUiState(
     val isAddAppToFolderDialogVisible: Boolean = false,
     val isRenameFolderDialogVisible: Boolean = false,
     val searchQuery: String = "",
+    /** The query `filteredApps` was computed for: it trails `searchQuery` by the debounce. */
+    val appliedSearchQuery: String = "",
     val showSettingsDialog: Boolean = false,
     val showFavoritePickerDialog: Boolean = false,
     val isAllAppsDrawerOpen: Boolean = false,

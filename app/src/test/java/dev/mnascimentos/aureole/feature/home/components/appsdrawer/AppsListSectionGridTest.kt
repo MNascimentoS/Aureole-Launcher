@@ -104,11 +104,12 @@ class AppsListSectionGridTest {
     }
 
     @Test
-    fun `when searchQuery is not blank, should hide section headers`() {
+    fun `when the applied search query is not blank, should hide section headers`() {
         val uiState = MainUiState(
             apps = listOf(appA1, appB1),
             filteredApps = listOf(appA1),
-            searchQuery = "Alph"
+            searchQuery = "Alph",
+            appliedSearchQuery = "Alph"
         )
         val actions = createDefaultActions()
 
@@ -128,6 +129,34 @@ class AppsListSectionGridTest {
 
         // Letter headers should not exist when searching
         composeTestRule.onNodeWithText("A").assertDoesNotExist()
+        composeTestRule.onNodeWithText("Alpha").assertIsDisplayed()
+    }
+
+    @Test
+    fun `when still typing before the query is applied, should keep the section headers`() {
+        val uiState = MainUiState(
+            apps = listOf(appA1, appB1),
+            filteredApps = listOf(appA1, appB1),
+            searchQuery = "Alph"
+        )
+        val actions = createDefaultActions()
+
+        composeTestRule.setContent {
+            AureoleLauncherTheme {
+                CompositionLocalProvider(
+                    LocalHomeUiState provides uiState,
+                    LocalLeftHanded provides uiState.isLeftHandedMode,
+                    LocalHomeActions provides actions
+                ) {
+                    LazyColumn {
+                        appsListItems(uiState, actions)
+                    }
+                }
+            }
+        }
+
+        // The list still shows the previous result, so its layout does not change until the new one arrives
+        composeTestRule.onNodeWithText("A").assertIsDisplayed()
         composeTestRule.onNodeWithText("Alpha").assertIsDisplayed()
     }
 

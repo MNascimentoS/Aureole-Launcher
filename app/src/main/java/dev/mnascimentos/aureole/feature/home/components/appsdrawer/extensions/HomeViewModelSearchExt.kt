@@ -46,26 +46,37 @@ private val APP_SEARCH_SYNONYMS = mapOf(
     )
 )
 
-internal fun HomeViewModel.applySearchFilter(query: String) {
-    val allApps = uiState.value.apps
+/** What the apps list shows for [appliedQuery]: the filtered apps and the letters that index them. */
+internal data class AppsSearchResult(
+    val appliedQuery: String,
+    val filteredApps: List<AppInfo>,
+    val alphabet: List<Char>,
+    val letterIndexMap: Map<Char, Int>
+)
+
+/** Everything that depends on the query, computed together so the list never shows a mix of two queries. */
+internal fun searchResultFor(allApps: List<AppInfo>, query: String): AppsSearchResult =
     if (query.isBlank()) {
         val (alphabet, indexMap) = computeAlphabetAndIndexMap(allApps)
-        updateUiState {
-            it.copy(
-                filteredApps = allApps,
-                alphabet = alphabet,
-                letterIndexMap = indexMap
-            )
-        }
+        AppsSearchResult(appliedQuery = "", filteredApps = allApps, alphabet = alphabet, letterIndexMap = indexMap)
     } else {
-        val sortedFiltered = filterAppsByQuery(allApps, query)
-        updateUiState {
-            it.copy(
-                filteredApps = sortedFiltered,
-                alphabet = emptyList(),
-                letterIndexMap = emptyMap()
-            )
-        }
+        AppsSearchResult(
+            appliedQuery = query,
+            filteredApps = filterAppsByQuery(allApps, query),
+            alphabet = emptyList(),
+            letterIndexMap = emptyMap()
+        )
+    }
+
+internal fun HomeViewModel.applySearchFilter(query: String) {
+    val result = searchResultFor(uiState.value.apps, query)
+    updateUiState {
+        it.copy(
+            appliedSearchQuery = result.appliedQuery,
+            filteredApps = result.filteredApps,
+            alphabet = result.alphabet,
+            letterIndexMap = result.letterIndexMap
+        )
     }
 }
 
@@ -110,6 +121,7 @@ fun HomeViewModel.updateAppsState(apps: List<AppInfo>) {
         it.copy(
             apps = apps,
             filteredApps = apps,
+            appliedSearchQuery = "",
             favoriteApps = favApps,
             alphabet = alphabet,
             letterIndexMap = indexMap,

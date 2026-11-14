@@ -16,6 +16,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -52,6 +53,18 @@ private const val DRAWER_HAZE_TINT_FACTOR = 0.5f
 private const val DRAWER_HAZE_MIN_ALPHA = 0.15f
 private const val DRAWER_HAZE_MAX_ALPHA = 0.65f
 
+/** Scrolls the list to the top once each time a new query is applied, not on every letter typed. */
+@Composable
+private fun ScrollToTopOnNewSearch(listState: LazyListState, appliedQuery: String) {
+    var lastAppliedQuery by remember { mutableStateOf(appliedQuery) }
+    LaunchedEffect(appliedQuery) {
+        if (appliedQuery != lastAppliedQuery) {
+            lastAppliedQuery = appliedQuery
+            listState.scrollToItem(0)
+        }
+    }
+}
+
 @Composable
 fun AppsListDrawer(
     listState: LazyListState,
@@ -71,6 +84,8 @@ fun AppsListDrawer(
     val drawerBgColor = if (hasHaze) Color.Transparent else baseBgColor
 
     var isSearchExpanded by remember { mutableStateOf(uiState.searchQuery.isNotEmpty()) }
+
+    ScrollToTopOnNewSearch(listState, uiState.appliedSearchQuery)
 
     BoxWithConstraints(
         modifier = modifier

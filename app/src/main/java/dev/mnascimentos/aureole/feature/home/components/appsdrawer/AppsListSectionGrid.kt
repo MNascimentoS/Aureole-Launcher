@@ -47,7 +47,7 @@ fun LazyListScope.appsListItems(
     actions: HomeScreenActions,
 ) {
     val filteredApps = uiState.filteredApps
-    val isSearchQueryBlank = uiState.searchQuery.isBlank()
+    val isSearchQueryBlank = uiState.appliedSearchQuery.isBlank()
 
     itemsIndexed(
         items = filteredApps,
