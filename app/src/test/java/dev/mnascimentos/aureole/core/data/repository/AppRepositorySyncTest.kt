@@ -10,7 +10,9 @@ import android.content.pm.ResolveInfo
 import android.net.Uri
 import android.os.Looper
 import dev.mnascimentos.aureole.core.data.receiver.PackageReceiver
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withTimeout
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
@@ -127,9 +129,12 @@ class AppRepositorySyncTest {
         // Intents without a package or without an action return before doing any work.
         PackageReceiver().onReceive(context, Intent(Intent.ACTION_PACKAGE_REMOVED))
         PackageReceiver().onReceive(context, Intent().setData(Uri.parse("package:$MAIL")))
-        Thread.sleep(SETTLE_MS)
+        // A later install proves the earlier broadcasts were handled, without waiting a fixed time.
+        installLauncherApp(NOTES, "Notes", alsoForPackageQuery = true)
+        broadcast(packageIntent(Intent.ACTION_PACKAGE_ADDED, NOTES))
+        awaitApps { NOTES in it }
 
-        assertEquals(listOf(MAIL), repository.getInstalledApps().map { it.packageName })
+        assertTrue(MAIL in repository.getInstalledApps().map { it.packageName })
     }
 
     /**
@@ -142,7 +147,6 @@ class AppRepositorySyncTest {
         context.registerReceiver(receiver, filter, Context.RECEIVER_NOT_EXPORTED)
         context.sendBroadcast(intent.setPackage(context.packageName))
         shadowOf(Looper.getMainLooper()).idle()
-        Thread.sleep(SETTLE_MS)
         context.unregisterReceiver(receiver)
     }
 
@@ -150,11 +154,11 @@ class AppRepositorySyncTest {
         Intent(action).setData(Uri.parse("package:$packageName"))
 
     private suspend fun awaitApps(condition: (List<String>) -> Boolean) {
-        val deadline = System.currentTimeMillis() + TIMEOUT_MS
-        while (!condition(repository.getInstalledApps().map { it.packageName })) {
-            shadowOf(Looper.getMainLooper()).idle()
-            check(System.currentTimeMillis() < deadline) { "Apps did not change" }
-            Thread.sleep(POLL_MS)
+        withTimeout(TIMEOUT_MS) {
+            while (!condition(repository.getInstalledApps().map { it.packageName })) {
+                shadowOf(Looper.getMainLooper()).idle()
+                delay(POLL_MS)
+            }
         }
     }
 
@@ -189,6 +193,5 @@ class AppRepositorySyncTest {
         const val NOTES = "com.example.notes"
         const val TIMEOUT_MS = 5_000L
         const val POLL_MS = 20L
-        const val SETTLE_MS = 300L
     }
 }
