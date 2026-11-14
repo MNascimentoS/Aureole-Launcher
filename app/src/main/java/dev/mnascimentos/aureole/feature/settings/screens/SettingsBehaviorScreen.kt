@@ -1,5 +1,6 @@
 package dev.mnascimentos.aureole.feature.settings.screens
 
+import android.os.SystemClock
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.gestures.snapping.rememberSnapFlingBehavior
@@ -51,6 +52,7 @@ import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.settings.model.PickerDimensions
 import dev.mnascimentos.aureole.feature.settings.model.SettingsScreenActions
 import dev.mnascimentos.aureole.feature.settings.model.SettingsUiState
+import dev.mnascimentos.aureole.feature.settings.model.isDeliberateTap
 import dev.mnascimentos.aureole.util.percentToFraction
 import kotlin.math.roundToInt
 
@@ -118,6 +120,8 @@ private fun BehaviorMenuItems(
     uiState: SettingsUiState,
     actions: SettingsScreenActions
 ) {
+    val openedAtMs = remember { SystemClock.uptimeMillis() }
+    val deliberate = { isDeliberateTap(openedAtMs, SystemClock.uptimeMillis()) }
     Column(
         verticalArrangement = Arrangement.spacedBy(AureoleDS.dimens.xSmall),
         modifier = Modifier.fillMaxWidth()
@@ -130,35 +134,35 @@ private fun BehaviorMenuItems(
         SettingsToggleItem(
             title = stringResource(R.string.settings_behavior_home_opens_all_apps),
             checked = uiState.homeButtonOpensAllApps,
-            onCheckedChange = { actions.onToggleHomeButtonOpensAllApps() },
+            onCheckedChange = { if (deliberate()) actions.onToggleHomeButtonOpensAllApps() },
             leadingContent = { AureoleDS.icons.Press() }
         )
 
         SettingsToggleItem(
             title = stringResource(R.string.settings_behavior_all_apps_left_side),
             checked = uiState.isLeftHandedMode,
-            onCheckedChange = { actions.onToggleLeftHandedMode() },
+            onCheckedChange = { if (deliberate()) actions.onToggleLeftHandedMode() },
             leadingContent = { AureoleDS.icons.AlignRight() }
         )
 
         SettingsToggleItem(
             title = stringResource(R.string.settings_behavior_show_widget_indicator),
             checked = uiState.showWidgetDots,
-            onCheckedChange = { actions.onToggleShowWidgetDots() },
+            onCheckedChange = { if (deliberate()) actions.onToggleShowWidgetDots() },
             leadingContent = { AureoleDS.icons.Dots() }
         )
 
         SettingsToggleItem(
             title = stringResource(R.string.settings_behavior_disable_alphabet_scrubber),
             checked = uiState.isAlphabetScrubberDisabled,
-            onCheckedChange = { actions.onToggleDisableAlphabetScrubber() },
+            onCheckedChange = { if (deliberate()) actions.onToggleDisableAlphabetScrubber() },
             leadingContent = { AureoleDS.icons.AlignRight() }
         )
 
         SettingsToggleItem(
             title = stringResource(R.string.settings_behavior_check_for_updates),
             checked = uiState.isInAppUpdateEnabled,
-            onCheckedChange = { actions.onToggleInAppUpdate() },
+            onCheckedChange = { if (deliberate()) actions.onToggleInAppUpdate() },
             leadingContent = { AureoleDS.icons.RefreshCcw() }
         )
     }

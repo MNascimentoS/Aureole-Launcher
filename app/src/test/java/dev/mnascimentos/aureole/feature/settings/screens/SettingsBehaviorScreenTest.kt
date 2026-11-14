@@ -5,13 +5,17 @@ import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollTo
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
+import dev.mnascimentos.aureole.feature.settings.model.ENTRY_TAP_GUARD_MS
 import dev.mnascimentos.aureole.feature.settings.model.SettingsScreenActions
 import dev.mnascimentos.aureole.feature.settings.model.SettingsUiState
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
+import org.robolectric.shadows.ShadowSystemClock
+import java.time.Duration
 
 @RunWith(RobolectricTestRunner::class)
 class SettingsBehaviorScreenTest {
@@ -67,6 +71,8 @@ class SettingsBehaviorScreenTest {
             }
         }
 
+        ShadowSystemClock.advanceBy(Duration.ofMillis(ENTRY_TAP_GUARD_MS))
+
         composeTestRule.onNodeWithText("Home opens all apps").performScrollTo().performClick()
         assertTrue(homeOpensAllAppsToggled)
 
@@ -81,5 +87,23 @@ class SettingsBehaviorScreenTest {
 
         composeTestRule.onNodeWithText("Check for updates").performScrollTo().performClick()
         assertTrue(inAppUpdateToggled)
+    }
+
+    @Test
+    fun `when tapping a toggle right after the screen opens, should ignore the tap`() {
+        var toggled = false
+
+        composeTestRule.setContent {
+            AureoleLauncherTheme {
+                SettingsBehaviorScreen(
+                    uiState = SettingsUiState(),
+                    actions = SettingsScreenActions(onToggleDisableAlphabetScrubber = { toggled = true }),
+                    onNavigateBack = {}
+                )
+            }
+        }
+
+        composeTestRule.onNodeWithText("Disable alphabet scrubber").performScrollTo().performClick()
+        assertFalse(toggled)
     }
 }
