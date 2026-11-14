@@ -12,14 +12,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
-
-/** Length of one dash of the placeholder border; a drawing detail of this border only. */
-private val DashLength = 6.dp
 
 /**
  * Dashed rounded border drawn over the content, used as the frame of the container preview. Defaults to the
@@ -30,17 +26,20 @@ fun Modifier.aureoleDashedBorder(
     color: Color = AureoleDS.colors.outline,
     width: Dp = AureoleDS.dimens.borderMinimal,
     cornerRadius: Dp = AureoleDS.dimens.radiusMedium
-): Modifier = drawWithContent {
-    drawContent()
-    val strokePx = width.toPx()
-    val dashPx = DashLength.toPx()
-    drawRoundRect(
-        color = color,
-        topLeft = Offset(strokePx / 2f, strokePx / 2f),
-        size = Size(size.width - strokePx, size.height - strokePx),
-        cornerRadius = CornerRadius(cornerRadius.toPx()),
-        style = Stroke(width = strokePx, pathEffect = PathEffect.dashPathEffect(floatArrayOf(dashPx, dashPx)))
-    )
+): Modifier {
+    val dashLength = AureoleDS.dimens.dashLength
+    return drawWithContent {
+        drawContent()
+        val strokePx = width.toPx()
+        val dashPx = dashLength.toPx()
+        drawRoundRect(
+            color = color,
+            topLeft = Offset(strokePx / 2f, strokePx / 2f),
+            size = Size(size.width - strokePx, size.height - strokePx),
+            cornerRadius = CornerRadius(cornerRadius.toPx()),
+            style = Stroke(width = strokePx, pathEffect = PathEffect.dashPathEffect(floatArrayOf(dashPx, dashPx)))
+        )
+    }
 }
 
 @AureolePreview

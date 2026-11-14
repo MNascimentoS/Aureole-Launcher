@@ -47,14 +47,12 @@ import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
 import dev.mnascimentos.aureole.feature.settings.components.UninstallBottomSheet
+import dev.mnascimentos.aureole.feature.settings.extensions.openLegalPage
 import dev.mnascimentos.aureole.feature.settings.model.LegalPage
 import dev.mnascimentos.aureole.feature.settings.model.SettingsAdvancedDialogActions
 import dev.mnascimentos.aureole.feature.settings.model.SettingsScreenActions
 import dev.mnascimentos.aureole.feature.settings.model.SettingsUiState
-import dev.mnascimentos.aureole.feature.settings.model.legalPageUrl
-import dev.mnascimentos.aureole.util.IntentUtils
 import dev.mnascimentos.aureole.util.percentToFraction
-import java.util.Locale
 
 private const val BOTTOM_SPACER_PERCENT = 0.15f
 
@@ -264,10 +262,6 @@ private fun AdvancedLinksGroup(onNavigateToContributors: () -> Unit, onNavigateT
             )
         )
     }
-}
-
-private fun openLegalPage(context: Context, page: LegalPage) {
-    IntentUtils.openUrl(context, legalPageUrl(page, Locale.getDefault()))
 }
 
 @AureolePreview

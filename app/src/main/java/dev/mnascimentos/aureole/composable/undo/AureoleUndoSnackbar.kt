@@ -39,7 +39,6 @@ import androidx.compose.ui.semantics.liveRegion
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.composable.undo.model.UndoSnackbarState
 import dev.mnascimentos.aureole.core.designsystem.model.TextResource
@@ -54,9 +53,6 @@ private const val ENTER_OFFSET_DIVISOR = 3
 private const val FULL = 1f
 private const val EMPTY = 0f
 private const val CENTER = 0.5f
-
-// Prototype: box-shadow 0 8px 24px; keeps the white bar readable over light wallpapers.
-private val SHADOW_ELEVATION = 8.dp
 
 /**
  * Snackbar with a thumb-side "Undo" button and a 3 dp bar that drains over [UndoSnackbarState.durationMs].
@@ -107,7 +103,7 @@ private fun UndoSnackbarBody(
         modifier = Modifier
             .fillMaxWidth()
             .heightIn(min = dimens.itemHeightExtraLarge)
-            .shadow(SHADOW_ELEVATION, RoundedCornerShape(dimens.radiusSmall))
+            .shadow(dimens.floatingElevation, RoundedCornerShape(dimens.radiusSmall))
             .clip(RoundedCornerShape(dimens.radiusSmall))
             .background(AureoleDS.colors.onSurfaceHigh)
     ) {
