@@ -9,7 +9,7 @@ class LegalPageTest {
     @Test
     fun `privacy in portuguese returns pt-br url`() {
         assertEquals(
-            "https://aureole.mnascimentos.dev/privacy/pt-br/",
+            "https://aureolelauncher.app/privacy/pt-br/",
             legalPageUrl(LegalPage.PRIVACY, Locale("pt", "BR"))
         )
     }
@@ -17,7 +17,7 @@ class LegalPageTest {
     @Test
     fun `privacy in english returns en url`() {
         assertEquals(
-            "https://aureole.mnascimentos.dev/privacy/en/",
+            "https://aureolelauncher.app/privacy/en/",
             legalPageUrl(LegalPage.PRIVACY, Locale.ENGLISH)
         )
     }
@@ -25,7 +25,7 @@ class LegalPageTest {
     @Test
     fun `terms in portuguese returns pt-br url`() {
         assertEquals(
-            "https://aureole.mnascimentos.dev/terms/pt-br/",
+            "https://aureolelauncher.app/terms/pt-br/",
             legalPageUrl(LegalPage.TERMS, Locale("pt", "PT"))
         )
     }
@@ -33,7 +33,7 @@ class LegalPageTest {
     @Test
     fun `terms in english returns en url`() {
         assertEquals(
-            "https://aureole.mnascimentos.dev/terms/en/",
+            "https://aureolelauncher.app/terms/en/",
             legalPageUrl(LegalPage.TERMS, Locale.US)
         )
     }
@@ -41,11 +41,11 @@ class LegalPageTest {
     @Test
     fun `any other language falls back to en`() {
         assertEquals(
-            "https://aureole.mnascimentos.dev/privacy/en/",
+            "https://aureolelauncher.app/privacy/en/",
             legalPageUrl(LegalPage.PRIVACY, Locale.JAPANESE)
         )
         assertEquals(
-            "https://aureole.mnascimentos.dev/terms/en/",
+            "https://aureolelauncher.app/terms/en/",
             legalPageUrl(LegalPage.TERMS, Locale.FRANCE)
         )
     }

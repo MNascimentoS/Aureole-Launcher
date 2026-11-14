@@ -16,6 +16,7 @@ import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.settings.extensions.tryUninstall
+import dev.mnascimentos.aureole.feature.settings.model.AppLinks
 
 @Composable
 internal fun UninstallBottomSheet(
@@ -33,7 +34,7 @@ internal fun UninstallBottomSheet(
                 onClick = {
                     dismiss()
                     val intent = Intent(Intent.ACTION_SENDTO).apply {
-                        data = "mailto:aureole@mnascimentos.dev".toUri()
+                        data = AppLinks.mailto(AppLinks.SUPPORT_EMAIL).toUri()
                     }
                     context.startActivity(intent)
                 }
