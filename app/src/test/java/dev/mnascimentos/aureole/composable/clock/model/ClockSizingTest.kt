@@ -9,7 +9,7 @@ class ClockSizingTest {
 
     @Test
     fun `when the container is the onboarding 10x4, should use the normal size with the date and no greeting`() {
-        val sizing = resolveClockSizing(maxHeightDp = 80f, fontScale = 1f, greetingAllowed = true)
+        val sizing = resolveClockSizing(maxHeightDp = 60f, fontScale = 1f, greetingAllowed = true)
 
         assertEquals(56f, sizing.textSizePx)
         assertFalse(sizing.showGreeting)
@@ -46,7 +46,7 @@ class ClockSizingTest {
 
     @Test
     fun `when there is no date, should not reserve room for it`() {
-        assertEquals(68f, resolveClockSizing(70f, 1f, greetingAllowed = false, hasDate = false).textSizePx)
-        assertEquals(56f, resolveClockSizing(70f, 1f, greetingAllowed = false, hasDate = true).textSizePx)
+        assertEquals(68f, resolveClockSizing(50f, 1f, greetingAllowed = false, hasDate = false).textSizePx)
+        assertEquals(42f, resolveClockSizing(50f, 1f, greetingAllowed = false, hasDate = true).textSizePx)
     }
 }

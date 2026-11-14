@@ -23,6 +23,11 @@ import androidx.compose.ui.viewinterop.AndroidView
 import dev.mnascimentos.aureole.composable.clock.model.ClockFontSpec
 import dev.mnascimentos.aureole.composable.clock.model.ClockHeaderContentParams
 import dev.mnascimentos.aureole.composable.clock.model.ClockTimeDisplayParams
+import dev.mnascimentos.aureole.composable.clock.model.DATE_TRIM_TOP
+import dev.mnascimentos.aureole.composable.clock.model.GREETING_TRIM_BOTTOM
+import dev.mnascimentos.aureole.composable.clock.model.GREETING_TRIM_TOP
+import dev.mnascimentos.aureole.composable.clock.model.TIME_TRIM_BOTTOM
+import dev.mnascimentos.aureole.composable.clock.model.TIME_TRIM_TOP
 import dev.mnascimentos.aureole.composable.clock.model.resolveClockSizing
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
@@ -119,6 +124,7 @@ private fun ClockGreetingDisplay(
     textAlign: TextAlign
 ) {
     Crossfade(
+        modifier = Modifier.trimVerticalBands(GREETING_TRIM_TOP, GREETING_TRIM_BOTTOM),
         targetState = greeting,
         animationSpec = tween(GREETING_CROSSFADE_DURATION_MS),
         label = "greeting_fade"
@@ -147,6 +153,7 @@ private fun ClockDateDisplay(
     textAlign: TextAlign
 ) {
     AndroidView(
+        modifier = Modifier.trimVerticalBands(DATE_TRIM_TOP, 0f),
         factory = { ctx ->
             TextClock(ctx).apply {
                 format12Hour = datePattern
@@ -185,6 +192,7 @@ private fun ClockTimeDisplay(params: ClockTimeDisplayParams) {
     }
 
     AndroidView(
+        modifier = Modifier.trimVerticalBands(TIME_TRIM_TOP, TIME_TRIM_BOTTOM),
         factory = { ctx ->
             TextClock(ctx).apply {
                 format12Hour = params.format12
@@ -193,7 +201,6 @@ private fun ClockTimeDisplay(params: ClockTimeDisplayParams) {
                 setTextColor(params.colorPrimary)
                 typeface = params.typeface
                 textAlignment = textClockAlignment
-                includeFontPadding = false
             }
         },
         update = { clock ->
@@ -203,7 +210,6 @@ private fun ClockTimeDisplay(params: ClockTimeDisplayParams) {
             clock.setTextColor(params.colorPrimary)
             clock.typeface = params.typeface
             clock.textAlignment = textClockAlignment
-            clock.includeFontPadding = false
         }
     )
 }
