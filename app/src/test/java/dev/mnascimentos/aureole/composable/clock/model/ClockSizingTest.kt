@@ -8,42 +8,45 @@ import org.junit.Test
 class ClockSizingTest {
 
     @Test
-    fun `when the container is the onboarding 10x4 without room for a greeting, should use the normal size`() {
-        val sizing = chooseClockSizing(maxHeightDp = 90f, clockStyle = "GREETING_AND_DATE")
+    fun `when the container is the onboarding 10x4, should use the normal size with the date and no greeting`() {
+        val sizing = resolveClockSizing(maxHeightDp = 80f, fontScale = 1f, greetingAllowed = true)
 
+        assertEquals(56f, sizing.textSizePx)
         assertFalse(sizing.showGreeting)
-        assertEquals(56f, sizing.timeSizePx)
     }
 
     @Test
-    fun `when the container is tall with a greeting, should use the large size`() {
-        val sizing = chooseClockSizing(maxHeightDp = 160f, clockStyle = "GREETING_AND_DATE")
+    fun `when the container is tall, should use the large size with the greeting`() {
+        val sizing = resolveClockSizing(maxHeightDp = 160f, fontScale = 1f, greetingAllowed = true)
 
+        assertEquals(68f, sizing.textSizePx)
         assertTrue(sizing.showGreeting)
-        assertEquals(68f, sizing.timeSizePx)
     }
 
     @Test
     fun `when the container is at the minimum, should use the small size`() {
-        assertEquals(42f, chooseClockSizing(maxHeightDp = 50f, clockStyle = "DATE_ON_TOP").timeSizePx)
-        assertEquals(42f, chooseClockSizing(maxHeightDp = 10f, clockStyle = "TIME_ONLY").timeSizePx)
+        val sizing = resolveClockSizing(maxHeightDp = 40f, fontScale = 1f, greetingAllowed = true)
+
+        assertEquals(42f, sizing.textSizePx)
+        assertFalse(sizing.showGreeting)
     }
 
     @Test
-    fun `when the style is time only or date on top, should never show the greeting`() {
-        assertFalse(chooseClockSizing(200f, "TIME_ONLY").showGreeting)
-        assertFalse(chooseClockSizing(200f, "DATE_ON_TOP").showGreeting)
+    fun `when the style does not allow a greeting, should never show it`() {
+        assertFalse(resolveClockSizing(200f, 1f, greetingAllowed = false).showGreeting)
     }
 
     @Test
-    fun `when the style asks for a greeting but the height is under 100dp, should hide it`() {
-        assertFalse(chooseClockSizing(99f, "CUSTOM_GREETING").showGreeting)
-        assertTrue(chooseClockSizing(100f, "CUSTOM_GREETING").showGreeting)
+    fun `when the font scale grows, should step the size down or drop the greeting`() {
+        val normal = resolveClockSizing(maxHeightDp = 100f, fontScale = 1f, greetingAllowed = true)
+        val scaled = resolveClockSizing(maxHeightDp = 100f, fontScale = 1.3f, greetingAllowed = true)
+
+        assertTrue(normal.textSizePx > scaled.textSizePx || normal.showGreeting && !scaled.showGreeting)
     }
 
     @Test
-    fun `when the time block would not fit, should step down a size`() {
-        // 68*0.95 + 20 = 84.6 does not fit in 80; 56*0.95 + 20 = 73.2 does.
-        assertEquals(56f, chooseClockSizing(80f, "DATE_ON_TOP").timeSizePx)
+    fun `when there is no date, should not reserve room for it`() {
+        assertEquals(68f, resolveClockSizing(70f, 1f, greetingAllowed = false, hasDate = false).textSizePx)
+        assertEquals(56f, resolveClockSizing(70f, 1f, greetingAllowed = false, hasDate = true).textSizePx)
     }
 }

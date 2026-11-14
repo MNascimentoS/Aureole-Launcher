@@ -12,6 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -22,7 +23,7 @@ import androidx.compose.ui.viewinterop.AndroidView
 import dev.mnascimentos.aureole.composable.clock.model.ClockFontSpec
 import dev.mnascimentos.aureole.composable.clock.model.ClockHeaderContentParams
 import dev.mnascimentos.aureole.composable.clock.model.ClockTimeDisplayParams
-import dev.mnascimentos.aureole.composable.clock.model.chooseClockSizing
+import dev.mnascimentos.aureole.composable.clock.model.resolveClockSizing
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
@@ -41,14 +42,19 @@ private const val GREETING_CROSSFADE_DURATION_MS = 500
 internal fun ClockHeaderContent(params: ClockHeaderContentParams) {
     val (horizontalAlignment, textAlign) = ClockHeaderUtils.resolveClockAlignments(params.alignment)
 
-    val sizing = chooseClockSizing(params.maxHeight.value, params.clockStyle)
+    val sizing = resolveClockSizing(
+        maxHeightDp = params.maxHeight.value,
+        fontScale = LocalDensity.current.fontScale,
+        greetingAllowed = params.clockStyle != "TIME_ONLY" && params.clockStyle != "DATE_ON_TOP",
+        hasDate = params.clockStyle != "TIME_ONLY"
+    )
     val showGreeting = sizing.showGreeting
 
     val isCompact = params.maxHeight < COMPACT_CONTAINER_HEIGHT_DP.dp
     val greetingSize = if (isCompact) GREETING_SIZE_COMPACT else GREETING_SIZE_NORMAL
     val dateSize = if (isCompact) DATE_SIZE_COMPACT else DATE_SIZE_NORMAL
 
-    val clockTextSizePx = sizing.timeSizePx
+    val clockTextSizePx = sizing.textSizePx
 
     val fontSpec = ClockFontSpec.fromKey(params.fontFamily)
     val typeface = fontSpec.timeTypeface()
