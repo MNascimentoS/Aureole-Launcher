@@ -186,6 +186,13 @@ val MainUiState.isHomeOverlayActive: Boolean
     get() = isAllAppsDrawerOpen || hasOverlayBesidesDrawer
 
 /**
+ * The update prompts wait for the plain home: no drawer, sheet, dialog, folder, search or onboarding step in front.
+ * The pending prompt is kept and shows once the person is back on the home.
+ */
+val MainUiState.canShowUpdatePrompt: Boolean
+    get() = !isHomeOverlayActive && !showSettingsDialog && !onboarding.blocksHome
+
+/**
  * The all-apps drawer is open with nothing above it (sheet, folder, search, dialog or onboarding), so the
  * alphabet scrubber is the only thing that needs the system back gesture off its edge.
  */
