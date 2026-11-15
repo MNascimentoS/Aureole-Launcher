@@ -23,7 +23,7 @@
   <a href="https://play.google.com/store/apps/details?id=dev.mnascimentos.aureole">Google Play</a> ·
   <a href="https://aureolelauncher.app/privacy/pt-br/">Privacidade</a> ·
   <a href="https://aureolelauncher.app/terms/pt-br/">Termos de uso</a> ·
-  <a href="https://forms.gle/pTAbd1ybBdr1QSpj7">Sugestões e bugs</a> ·
+  <a href="https://thisaislan.github.io/ref/?alpf">Sugestões e bugs</a> ·
   <a href="#english">English</a>
 </p>
 
@@ -160,6 +160,6 @@ O site do projeto fica em [`docs/`](docs) (HTML e CSS estáticos, em português 
 - Built for one hand, with a left-handed mode
 - Only technical crash reports leave the device (Firebase Crashlytics)
 
-[Google Play](https://play.google.com/store/apps/details?id=dev.mnascimentos.aureole) · [Website](https://aureolelauncher.app/en/) · [Privacy](https://aureolelauncher.app/privacy/en/) · [Terms](https://aureolelauncher.app/terms/en/) · [Suggestions and bugs](https://forms.gle/t1TyUcBTj2xiRJqE8)
+[Google Play](https://play.google.com/store/apps/details?id=dev.mnascimentos.aureole) · [Website](https://aureolelauncher.app/en/) · [Privacy](https://aureolelauncher.app/privacy/en/) · [Terms](https://aureolelauncher.app/terms/en/) · [Suggestions and bugs](https://thisaislan.github.io/ref/?alef)
 
 The developer sections above (stack, structure, conventions and Gradle commands) apply as they are.
