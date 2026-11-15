@@ -313,3 +313,5 @@ button.btn{font:inherit;font-weight:600;font-size:15px;cursor:pointer}
 .app h3{margin-top:3px}
 @media (max-width:1000px){.groups{column-count:2}}
 @media (max-width:760px){.groups{column-count:1}.group{margin-bottom:32px}}
+.contact-actions{display:flex;align-items:center;gap:28px;flex-wrap:wrap}
+@media(max-width:640px){.contact-actions{gap:18px}}
