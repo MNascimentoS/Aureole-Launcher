@@ -29,6 +29,7 @@ import dev.mnascimentos.aureole.feature.home.components.widgets.model.WidgetPick
 import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
 import dev.mnascimentos.aureole.feature.home.model.LocalHomeActions
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
+import dev.mnascimentos.aureole.feature.home.model.canShowUpdatePrompt
 import dev.mnascimentos.aureole.feature.home.model.favoritesOf
 import dev.mnascimentos.aureole.feature.home.model.isAppsLoading
 
@@ -161,14 +162,15 @@ private fun InAppUpdateOverlay(
     uiState: MainUiState,
     actions: HomeScreenActions
 ) {
-    if (uiState.showUpdateAvailableDialog) {
+    val canShow = uiState.canShowUpdatePrompt
+    if (uiState.showUpdateAvailableDialog && canShow) {
         UpdateAvailableDialog(
             onConfirmUpdate = actions.onStartInAppUpdate,
             onDismiss = actions.onDismissUpdateDialog
         )
     }
 
-    if (uiState.showUpdateDownloadedDialog) {
+    if (uiState.showUpdateDownloadedDialog && canShow) {
         UpdateDownloadedDialog(
             onConfirmRestart = actions.onCompleteInAppUpdate,
             onDismiss = actions.onDismissUpdateDialog
