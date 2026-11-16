@@ -13,10 +13,12 @@ import dev.mnascimentos.aureole.core.undo.UndoController
 import dev.mnascimentos.aureole.feature.settings.extensions.SettingsToggleManager
 import dev.mnascimentos.aureole.feature.settings.extensions.applySettingValue
 import dev.mnascimentos.aureole.feature.settings.extensions.checkDefaultLauncher
+import dev.mnascimentos.aureole.feature.settings.extensions.offerCustomWallpaperUndo
 import dev.mnascimentos.aureole.feature.settings.model.SettingToggle
 import dev.mnascimentos.aureole.feature.settings.model.SettingValue
 import dev.mnascimentos.aureole.feature.settings.model.SettingsDialog
 import dev.mnascimentos.aureole.feature.settings.model.SettingsUiState
+import dev.mnascimentos.aureole.feature.settings.model.toSeedSnapshot
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -125,11 +127,14 @@ class SettingsViewModel(
 
     fun setCustomWallpaper(uriString: String) {
         viewModelScope.launch {
-            val success = withContext(Dispatchers.IO) {
-                settingsRepository.saveCustomWallpaper(uriString)
+            val before = _uiState.value.toSeedSnapshot().customWallpaperPath
+            val (success, kept) = withContext(Dispatchers.IO) {
+                val kept = before != null && settingsRepository.wallpaperStash.keepCopy(before)
+                settingsRepository.saveCustomWallpaper(uriString) to kept
             }
 
             if (success) {
+                if (before == null || kept) offerCustomWallpaperUndo(before, kept)
                 _uiState.update {
                     it.copy(
                         isCustomWallpaperSet = true,

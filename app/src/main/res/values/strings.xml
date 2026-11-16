@@ -5,7 +5,6 @@
     <!-- Common -->
     <string name="core_common_cancel">Cancel</string>
     <string name="core_common_save">Save</string>
-    <string name="core_common_confirm">Confirm</string>
     <string name="core_common_create">Create</string>
     <string name="core_common_understood">Got it</string>
 
@@ -347,8 +346,6 @@
     <string name="settings_cards_glass_level_low">Light</string>
     <string name="settings_cards_glass_level_medium">Medium</string>
     <string name="settings_cards_glass_level_max">Max</string>
-    <string name="settings_cards_glass_done">Done</string>
-    <string name="settings_cards_glass_changed">Cards and glass changed</string>
     <string name="settings_cards_glass_preview_date">Tue, Nov 10</string>
     <string name="settings_appearance_glass_effect">Glass effect</string>
     <string name="settings_appearance_change_border">Change Border</string>
@@ -414,6 +411,26 @@
     <string name="overlay_sheet_action_expand">Expand</string>
     <string name="overlay_sheet_action_collapse">Collapse</string>
     <string name="overlay_sheet_action_settings">Aureole settings</string>
+    <string name="undo_background_changed">Background changed</string>
+    <string name="undo_palette_changed">Palette changed</string>
+    <string name="undo_font_changed">Font changed</string>
+    <string name="undo_color_changed">Color changed</string>
+    <string name="undo_quick_button_changed">Quick button updated</string>
+    <string name="undo_cards_glass_changed">Cards and glass updated</string>
+    <string name="undo_folder_changed">Folder updated</string>
+    <string name="settings_background_section_theme">From your theme</string>
+    <string name="settings_background_section_palettes">Palettes</string>
+    <string name="settings_background_section_tones">Tones</string>
+    <string name="settings_background_section_vivid">Vivid</string>
+    <string name="settings_background_category_cold">Cold</string>
+    <string name="settings_background_category_cool">Cool</string>
+    <string name="settings_background_category_neutral">Neutral</string>
+    <string name="settings_background_category_warm">Warm</string>
+    <string name="settings_background_swatch_background">Background</string>
+    <string name="settings_background_swatch_surface">Surface</string>
+    <string name="settings_background_swatch_variant">Variant</string>
+    <string name="settings_background_swatch_outline">Outline</string>
+    <string name="settings_background_light_warning">This color makes a light theme</string>
     <string name="home_undo_action">Undo</string>
     <string name="home_undo_removed_from_folder">%1$s left the folder</string>
     <string name="home_undo_favorite_added">%1$s added to favorites</string>
@@ -422,10 +439,6 @@
     <string name="home_quickbutton_search_placeholder">Search shortcut or app&#8230;</string>
     <string name="core_common_search_best_hint">best result below &#183; &#8629; picks</string>
     <string name="core_common_search_empty">Nothing with &#8220;%1$s&#8221;.</string>
-    <plurals name="home_folder_picker_save_count">
-        <item quantity="one">Save %1$d app</item>
-        <item quantity="other">Save %1$d apps</item>
-    </plurals>
     <string name="home_folder_picker_tray_label">Selected · hold and drag to reorder</string>
     <string name="home_clock_tab_style">Style</string>
     <string name="home_clock_tab_format">Format</string>
@@ -436,7 +449,6 @@
     <!-- Appearance: palette and font with live preview -->
     <string name="settings_appearance_palette_section_label">Dark · tap to preview</string>
     <string name="settings_appearance_font_section_label">Launcher font</string>
-    <string name="settings_appearance_apply">Apply</string>
     <string name="settings_appearance_palette_chip_description">Palette %1$s</string>
     <string name="settings_appearance_font_chip_description">Font %1$s</string>
     <string name="settings_appearance_font_chip_sample">Aa</string>

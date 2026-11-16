@@ -1,7 +1,7 @@
 # Ajustes de sheets e Ajustes: plano
 
 **Base:** `main` em `c0b2ee8` (0.9.36.327) · **Spec:** `SPEC.md` · **Protótipo:** `prototipo.html` (11 telas) ·
-**Decisões:** `DECISOES.md` (todas respondidas em 16/11) · **Como rodar:** `EXECUTAR.md`
+**Decisões:** `DECISOES.md` (D-01 a D-06 respondidas em 16/11; D-07 com padrão) · **Como rodar:** `EXECUTAR.md`
 
 ## Regras de execução (valem para todas as fases)
 
@@ -26,11 +26,11 @@
 | # | Fase | Modelo | Agente | Requisitos | Tempo | Tokens |
 |---|---|---|---|---|---|---|
 | 1 | **Polimento visual:** Personalizar, cabeçalho das sheets, Ajustes (rodapé e paisagem), Avançado, coach (texto e mão), ícones Add New e Home | **Sonnet** | `sheet-ui` | RF-01 a RF-07, RF-17, RF-19, RF-20, RF-21 | 1,5–2,5 h | 100–150k |
-| 2 | **Salvar ao fechar + Desfazer** nas sheets de edição | **Sonnet** | `sheet-ui` | RF-11 a RF-14 | 2–3,5 h | 140–220k |
+| 2 | **Salvar ao fechar + Desfazer** nas sheets de edição; picker de cor do fundo novo | **Sonnet** | `sheet-ui` | RF-11 a RF-14, RF-22 | 2,5–4 h | 160–250k |
 | 3 | **Movimento:** sheet sobe ao abrir, sheet elástica, checklist → pílula, lista de apps pela borda ou por baixo | **Opus** | `sheet-gestures` | RF-08 a RF-10, RF-15, RF-16, RF-18 | 2,5–4 h | 160–250k |
 | 4 | **Gates, correções e revisão visual** (todas as fases juntas) | **Sonnet** + `visual-reviewer` (**Opus**) | `sheet-chores` | todos | 1–2 h | 60–120k |
 
-**Total:** 7–12 h de agente e 0,46–0,74 M de tokens. **Ordem:** 1 → 2 → 3 → 4.
+**Total:** 7,5–12,5 h de agente e 0,48–0,77 M de tokens. **Ordem:** 1 → 2 → 3 → 4.
 A fase 2 vem antes da 3 para o Sonnet fazer os dois blocos seguidos. As duas mexem em partes diferentes das sheets
 (a 2 nos editores, `AureoleConfirmOverlay` e `ThemePreviewOverlay`; a 3 no `AureoleEditOverlay` e na física), e os
 screenshots só são regenerados uma vez, na fase 4.
@@ -43,6 +43,7 @@ screenshots só são regenerados uma vez, na fase 4.
 - **D-04** **Todo fechamento salva** (tocar fora, voltar, arrastar para baixo).
 - **D-05** Editar pasta e Apps da pasta **salvam ao fechar** com Desfazer.
 - **D-06** Ícone Add New **só no botão de adicionar do container**.
+- **D-07** Picker de cor do fundo: tom de cada paleta = **variante** (padrão, se não houver resposta).
 
 ---
 
@@ -109,7 +110,7 @@ screenshots só são regenerados uma vez, na fase 4.
 
 ## Fase 2: salvar ao fechar + Desfazer
 
-**Modelo:** Sonnet · **Requisitos:** RF-11, RF-12, RF-13, RF-14 · **Depende de:** fase 1
+**Modelo:** Sonnet · **Requisitos:** RF-11, RF-12, RF-13, RF-14, RF-22 · **Depende de:** fase 1
 
 ### Entrega
 
@@ -134,7 +135,21 @@ screenshots só são regenerados uma vez, na fase 4.
    - `FolderFormDialog.kt`: modo edição salva ao fechar; modo criar mantém **só** o botão "Criar" (D-03), sem Cancelar.
    - `FolderAppPickerDialog.kt`: salva ao fechar com Desfazer (D-05).
 5. **Fica com botão:** `AureoleConfirmDialog` (Redefinir, Desinstalar, com segurar) e Criar pasta.
-6. **Limpeza:** tirar strings órfãs (`settings_appearance_apply`, `settings_cards_glass_done`, `core_common_confirm`,
+6. **Picker de cor do fundo** (RF-22, `SettingsAppearanceDialogs.kt`, `BackgroundTypeCards.kt`, `composable/color/`):
+   - Dados puros em `composable/color/model/BackgroundSwatches.kt`: `themeSwatches(colors: AureoleColors)` (4, com
+     rótulo), `paletteSwatches(category, tone)` a partir de `allPalettes` (sem o Frostbite repetido; categoria por
+     paleta: criar `PaletteCategory { COLD, COOL, NEUTRAL, WARM }` e marcar cada preset em `ThemePalettePresets.kt`,
+     que hoje só tem comentários de seção), `toneRamp(hue)` = 7 tons com saturação 0,32 e luminosidade
+     0,08 / 0,14 / 0,22 / 0,32 / 0,45 / 0,62 / 0,80, e `isLightBackground(color)` (luminância ≥ 0,5, a mesma regra do
+     `buildSeedAureoleColors`). Testes para as quatro.
+   - UI: seções "Do seu tema", "Paletas" (chips de categoria + `LazyRow`), "Tons" (+ `AureoleHueSlider` que move a
+     rampa), "Vivas" (`RecommendedColors`). Rótulos de seção com `SheetSectionLabel`. Ao tocar numa paleta, o nome
+     aparece numa linha abaixo das bolinhas (não em tooltip). Aviso de tema claro com `onSurfaceLow`.
+   - A categoria aberta ao abrir a sheet é a da cor atual, se ela for o tom de alguma paleta; senão, Frias.
+   - Strings (EN/pt-BR): seções, categorias, rótulos do tema (Background/Fundo, Surface/Superfície, Variant/Variante,
+     Outline/Contorno) e o aviso "This color makes a light theme" / "Essa cor gera um tema claro".
+   - Continua salvando ao fechar (item 4) e passando pelo `onSelectManualSeedColor`.
+7. **Limpeza:** tirar strings órfãs (`settings_appearance_apply`, `settings_cards_glass_done`, `core_common_confirm`,
    `home_folder_picker_save_count`, se ninguém mais usar). `AureoleConfirmOverlay` fica para os casos do item 5.
 
 ### Testes da fase
@@ -144,8 +159,10 @@ screenshots só são regenerados uma vez, na fase 4.
   (`ThemePreviewStateTest`, `ColorPickerDialogTest`, `QuickButtonAppearanceBottomSheetTest`, `CardsGlassModelsTest`,
   `UndoControllerTest`, testes de pasta).
 - Fundo: desfazer de cor sólida volta a cor; desfazer de imagem usa o `wallpaperStash` e expirar descarta.
+- `BackgroundSwatches`: 4 tons do tema; 100 paletas somadas nas 4 categorias; rampa com 7 tons crescentes na mesma
+  matiz; `isLightBackground` (branco sim, `#12181D` não).
 
-**Commit:** `feat(ajustes-sheets-settings): sheets de edição salvam ao fechar com desfazer (fase 2)`
+**Commit:** `feat(ajustes-sheets-settings): sheets de edição salvam ao fechar com desfazer e picker de fundo novo (fase 2)`
 
 ---
 
@@ -228,7 +245,7 @@ screenshots só são regenerados uma vez, na fase 4.
    `./gradlew validateDebugScreenshotTest` → `./gradlew assembleDebug`.
 2. Falhou: corrigir na causa (sem `@Suppress`, baseline ou regra afrouxada), rodar de novo o gate que falhou e os
    seguintes. Nunca editar com build rodando.
-3. `visual-reviewer` compara os screenshots regenerados com as telas 1, 3, 4, 5, 6 e 11 do protótipo e dá
+3. `visual-reviewer` compara os screenshots regenerados com as telas 1, 3, 4, 5, 6, 11 e 12 do protótipo e dá
    **igual**/**quase**/**diferente** por tela; ajustar o que for **diferente** e repetir os gates afetados.
 4. **Commit:** `chore(ajustes-sheets-settings): gates e screenshots (fase 4)`. Sem atribuição. Sem push.
 5. Atualizar `PROGRESSO.md` (Gates e Visual) e entregar o relatório final (formato em `EXECUTAR.md`).
@@ -240,6 +257,7 @@ screenshots só são regenerados uma vez, na fase 4.
   máximo sem sobrepor o rodapé. Avançado na ordem nova, links maiores, "Novidades" e "Launcher padrão" com o ícone de casa novo (também no checklist).
 - Coach: texto "Toque em voltar para fechar"; a mão da borda entra visivelmente antes de descer (destro e canhoto).
 - Container: botão de adicionar com o ícone Add New.
+- Picker de cor do fundo: tons do tema, paletas por grupo, tons + matiz, vivas; aviso de tema claro.
 - Fundo, Paleta, Fonte, Cor, Botão rápido, Cartões, Editar pasta, Apps da pasta: mudar e fechar por toque fora, voltar
   e arrastar; Desfazer em cada um; abrir e fechar sem mudar não mostra snackbar. Criar pasta só com "Criar".
 - Sheets sobem de baixo e descem ao fechar; elástico no Personalizar; expandir só até o conteúdo; nada quebrou em

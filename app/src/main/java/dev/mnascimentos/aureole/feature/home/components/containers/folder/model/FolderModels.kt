@@ -36,7 +36,9 @@ data class FolderAppPickerBodyParams(
     val isSearching: Boolean = false,
     val searchResults: List<AppInfo> = emptyList(),
     val trayApps: List<AppInfo> = emptyList(),
-    val isLeftHandedMode: Boolean = false
+    val isLeftHandedMode: Boolean = false,
+    /** Packages the folder had when the picker opened; closing saves only when the selection differs. */
+    val initialPackages: List<String> = emptyList()
 )
 
 data class FolderAppPickerFooterParams(

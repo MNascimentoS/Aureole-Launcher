@@ -56,19 +56,13 @@ fun CustomizeBottomSheet(
         when (picker) {
             AppearancePicker.PALETTE -> PickPaletteBottomSheet(
                 selectedPaletteName = uiState.selectedThemeName,
-                onPaletteSelected = {
-                    picker = null
-                    actions.onSelectPalette(it.name)
-                },
+                onPaletteSelected = { actions.onSelectPalette(it.name) },
                 onDismissRequest = { picker = null },
                 modifier = modifier
             )
             AppearancePicker.FONT -> PickFontBottomSheet(
                 selectedFontName = uiState.selectedFontName,
-                onFontSelected = {
-                    picker = null
-                    actions.onSelectFont(it)
-                },
+                onFontSelected = { actions.onSelectFont(it) },
                 onDismissRequest = { picker = null },
                 modifier = modifier
             )

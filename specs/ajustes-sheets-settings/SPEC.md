@@ -88,6 +88,12 @@ Ajustes retrato, Ajustes paisagem, Avançado, Definir plano de fundo).
 - [ ] **RF-13** Telas convertidas: Definir plano de fundo, Paleta, Fonte, Seletor de cor (cor de destaque),
   Aparência do botão rápido, Cartões e vidro, Editar pasta e Apps da pasta (D-05). "Imagem personalizada"
   abre o seletor de fotos ao tocar no cartão; o desfazer da imagem reaproveita o `wallpaperStash`. (fase 2)
+- [ ] **RF-22** Picker de cor do fundo (Definir plano de fundo, cor sólida) com tons que funcionam como fundo, nesta
+  ordem: **Do seu tema** (fundo, superfície, variante e contorno da paleta atual, com rótulo); **Paletas** (um tom de
+  cada uma das 100 paletas, filtradas por Frias / Frescas / Neutras / Quentes, rolagem horizontal; o nome da paleta
+  aparece ao tocar); **Tons** (7 tons, do escuro ao claro, da cor escolhida, mais a barra de matiz para criar o seu);
+  **Vivas** (as 12 de hoje). Quando a cor escolhida gera tema claro (luminância ≥ 0,5), um aviso curto embaixo. A
+  prévia mostra a paleta derivada (fundo, cartão e texto), como hoje. Qual tom de cada paleta entra: D-07. (fase 2)
 - [ ] **RF-14** Continuam com botão: confirmações destrutivas (`AureoleConfirmDialog`: redefinir, desinstalar, com
   segurar) e Criar pasta, que fica só com o botão "Criar" (D-03). (fase 2)
 

@@ -1,6 +1,6 @@
 # Como executar: ajustes-sheets-settings
 
-Tudo decidido (D-01 a D-06). O Claude Code roda as 4 fases em sequência, sem parar: Sonnet nas fases 1 e 2, Opus na
+D-01 a D-06 decididas; D-07 segue o padrão (variante) se não houver resposta. O Claude Code roda as 4 fases em sequência, sem parar: Sonnet nas fases 1 e 2, Opus na
 fase 3, gates só na fase 4. Um commit por fase, sem atribuição, sem push. Você só verifica no fim.
 
 ## Antes de rodar (1 min)
@@ -47,7 +47,7 @@ Regras (valem para todas as fases):
 
 Fase 4: gates na ordem do PLANO.md (detekt --auto-correct, lintDebug, testDebugUnitTest,
 jacocoTestCoverageVerification, updateDebugScreenshotTest, validateDebugScreenshotTest, assembleDebug), corrigindo na
-causa até todos passarem. Depois, revisão visual dos screenshots contra as telas 1, 3, 4, 5, 6 e 11 do protótipo
+causa até todos passarem. Depois, revisão visual dos screenshots contra as telas 1, 3, 4, 5, 6, 11 e 12 do protótipo
 (igual / quase / diferente), ajustes do que for "diferente", gates afetados de novo, commit da fase 4.
 
 No fim, confira e me entregue:

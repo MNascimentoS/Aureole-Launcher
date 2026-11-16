@@ -5,7 +5,6 @@
     <!-- Common -->
     <string name="core_common_cancel">Cancelar</string>
     <string name="core_common_save">Salvar</string>
-    <string name="core_common_confirm">Confirmar</string>
     <string name="core_common_create">Criar</string>
     <string name="core_common_understood">Entendido</string>
 
@@ -348,8 +347,6 @@
     <string name="settings_cards_glass_level_low">Leve</string>
     <string name="settings_cards_glass_level_medium">Médio</string>
     <string name="settings_cards_glass_level_max">Máx.</string>
-    <string name="settings_cards_glass_done">Pronto</string>
-    <string name="settings_cards_glass_changed">Cartões e vidro alterados</string>
     <string name="settings_cards_glass_preview_date">Ter, 10 nov</string>
     <string name="settings_appearance_glass_effect">Efeito de vidro</string>
     <string name="settings_appearance_change_border">Alterar Borda</string>
@@ -417,6 +414,26 @@
     <string name="overlay_sheet_action_expand">Expandir</string>
     <string name="overlay_sheet_action_collapse">Recolher</string>
     <string name="overlay_sheet_action_settings">Ajustes do Aureole</string>
+    <string name="undo_background_changed">Fundo alterado</string>
+    <string name="undo_palette_changed">Paleta alterada</string>
+    <string name="undo_font_changed">Fonte alterada</string>
+    <string name="undo_color_changed">Cor alterada</string>
+    <string name="undo_quick_button_changed">Botão rápido atualizado</string>
+    <string name="undo_cards_glass_changed">Cartões e vidro atualizados</string>
+    <string name="undo_folder_changed">Pasta atualizada</string>
+    <string name="settings_background_section_theme">Do seu tema</string>
+    <string name="settings_background_section_palettes">Paletas</string>
+    <string name="settings_background_section_tones">Tons</string>
+    <string name="settings_background_section_vivid">Vivas</string>
+    <string name="settings_background_category_cold">Frias</string>
+    <string name="settings_background_category_cool">Frescas</string>
+    <string name="settings_background_category_neutral">Neutras</string>
+    <string name="settings_background_category_warm">Quentes</string>
+    <string name="settings_background_swatch_background">Fundo</string>
+    <string name="settings_background_swatch_surface">Superfície</string>
+    <string name="settings_background_swatch_variant">Variante</string>
+    <string name="settings_background_swatch_outline">Contorno</string>
+    <string name="settings_background_light_warning">Essa cor gera um tema claro</string>
     <string name="home_undo_action">Desfazer</string>
     <string name="home_undo_removed_from_folder">%1$s saiu da pasta</string>
     <string name="home_undo_favorite_added">%1$s nos favoritos</string>
@@ -425,11 +442,6 @@
     <string name="home_quickbutton_search_placeholder">Buscar atalho ou app&#8230;</string>
     <string name="core_common_search_best_hint">melhor resultado embaixo &#183; &#8629; escolhe</string>
     <string name="core_common_search_empty">Nada com &#8220;%1$s&#8221;.</string>
-    <plurals name="home_folder_picker_save_count">
-        <item quantity="one">Salvar %1$d app</item>
-        <item quantity="many">Salvar %1$d apps</item>
-        <item quantity="other">Salvar %1$d apps</item>
-    </plurals>
     <string name="home_folder_picker_tray_label">Escolhidos · segure e arraste para ordenar</string>
     <string name="home_clock_tab_style">Estilo</string>
     <string name="home_clock_tab_format">Formato</string>
@@ -440,7 +452,6 @@
     <!-- Appearance: palette and font with live preview -->
     <string name="settings_appearance_palette_section_label">Escuras · toque para ver na hora</string>
     <string name="settings_appearance_font_section_label">Fonte do launcher</string>
-    <string name="settings_appearance_apply">Aplicar</string>
     <string name="settings_appearance_palette_chip_description">Paleta %1$s</string>
     <string name="settings_appearance_font_chip_description">Fonte %1$s</string>
     <string name="settings_appearance_font_chip_sample">Aa</string>

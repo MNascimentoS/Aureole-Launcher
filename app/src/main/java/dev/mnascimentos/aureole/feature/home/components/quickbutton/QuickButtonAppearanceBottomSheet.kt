@@ -15,8 +15,8 @@ import androidx.compose.ui.res.stringResource
 import dev.chrisbanes.haze.HazeState
 import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.composable.preview.AureolePreviewFrame
-import dev.mnascimentos.aureole.composable.sheets.AureoleConfirmOverlay
-import dev.mnascimentos.aureole.composable.sheets.model.ConfirmOverlayParams
+import dev.mnascimentos.aureole.composable.sheets.AureoleAutoSaveOverlay
+import dev.mnascimentos.aureole.composable.sheets.model.AutoSaveOverlayParams
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.data.model.QuickButtonModel
 import dev.mnascimentos.aureole.core.data.model.ShortcutType
@@ -28,8 +28,8 @@ import dev.mnascimentos.aureole.feature.home.model.MainUiState
 
 /**
  * Quick button appearance editor in an edit overlay. The edits go to a draft that the live preview anchored above
- * the sheet follows; Save writes it to the button and Cancel (or swiping down) drops it. The filled button is on
- * the thumb side.
+ * the sheet follows; closing the sheet (tap outside, back, swipe down) writes it to the button when it changed, and
+ * the caller offers an "Undo".
  */
 @Composable
 fun QuickButtonAppearanceBottomSheet(
@@ -51,11 +51,11 @@ fun QuickButtonAppearanceBottomSheet(
         }
     }
 
-    AureoleConfirmOverlay(
-        params = ConfirmOverlayParams(
+    AureoleAutoSaveOverlay(
+        params = AutoSaveOverlayParams(
             title = stringResource(R.string.home_quickbutton_appearance_title),
-            primaryLabel = stringResource(R.string.core_common_save),
-            onPrimary = { actions.onUpdateQuickButtonAppearance(draft) },
+            isChanged = { draft != activeModel.appearance },
+            onCommit = { actions.onUpdateQuickButtonAppearance(draft) },
             onDismissRequest = onDismissRequest,
             isLeftHanded = uiState.isLeftHandedMode,
             onSettingsClick = { actions.onSettingsClick() },

@@ -157,6 +157,24 @@
   .srcbtns{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
   .srcbtns button{all:unset;cursor:pointer;background:#262b31;border-radius:99px;padding:5px 12px;font-size:13px;color:var(--mid)}
   .srcbtns button:hover{color:var(--hi)}
+
+  /* 12 color picker */
+  .cp .sheet{padding-bottom:44px}
+  .cp .types div{height:52px;flex-direction:row;gap:8px}
+  .cp .row{display:flex;gap:10px;align-items:center;overflow-x:auto;padding:4px 2px 6px;scrollbar-width:none}
+  .cp .sw2{flex:none;width:38px;height:38px;border-radius:50%;cursor:pointer;position:relative;overflow:hidden;outline-offset:3px}
+  .cp .sw2.on{outline:3px solid var(--hi)}
+  .cp .sw2 b{position:absolute;right:0;top:0;bottom:0;width:50%}
+  .cp .lbl{font-size:10px;color:var(--low);text-align:center;width:44px;flex:none}
+  .cp .themeRow{display:flex;gap:6px}
+  .cp .themeRow>div{display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer}
+  .cp .chips{display:flex;gap:6px;margin:2px 0 4px}
+  .cp .chips span{font-size:11px;padding:3px 10px;border-radius:99px;background:var(--card);color:var(--mid);cursor:pointer}
+  .cp .chips span.on{background:var(--hi);color:#1b1f23}
+  .cp .hue{height:22px;border-radius:99px;background:linear-gradient(90deg,#f33,#fb3,#9f3,#3f9,#3cf,#36f,#93f,#f3b,#f33);position:relative;margin:6px 4px 2px;cursor:pointer}
+  .cp .hue i{position:absolute;top:-3px;width:28px;height:28px;border-radius:50%;border:3px solid #fff;transform:translateX(-50%);box-shadow:0 1px 4px #0008}
+  .cp .scroll{max-height:330px;overflow-y:auto;scrollbar-width:none}
+  .cp .warn{font-size:11px;color:#ffd36a;padding:2px 4px}
   @media (max-width:900px){section{grid-template-columns:1fr}}
 </style>
 </head>
@@ -170,7 +188,7 @@
 </header>
 <nav class="toc">
   <a href="#s1">1 · Personalizar</a><a href="#s2">2 · Sheet elástica</a><a href="#s3">3 · Rodapé dos Ajustes</a>
-  <a href="#s4">4 · Paisagem</a><a href="#s5">5 · Avançado</a><a href="#s6">6 · Salvar ao fechar</a><a href="#s7">7 · Checklist → pílula</a><a href="#s8">8 · Abrir a sheet</a><a href="#s9">9 · Lista de apps</a><a href="#s10">10 · Mão do coach</a><a href="#s11">11 · Ícone Add New</a>
+  <a href="#s4">4 · Paisagem</a><a href="#s5">5 · Avançado</a><a href="#s6">6 · Salvar ao fechar</a><a href="#s7">7 · Checklist → pílula</a><a href="#s8">8 · Abrir a sheet</a><a href="#s9">9 · Lista de apps</a><a href="#s10">10 · Mão do coach</a><a href="#s11">11 · Ícone Add New</a><a href="#s12">12 · Cor do fundo</a>
 </nav>
 
 <!-- 1 -->
@@ -376,6 +394,28 @@
   <div class="stage">
     <div><div class="phone"><div class="screen"><div class="homebg"><div class="clock">12:22</div></div><div style="position:absolute;left:20px;right:20px;top:200px;border:1px dashed #4c86d8;border-radius:22px;padding:16px;background:rgba(74,84,94,.35);display:grid;grid-template-columns:repeat(4,1fr);gap:14px;justify-items:center"><div style="width:52px;height:52px;border-radius:14px;background:#3f8a49"></div><div style="width:52px;height:52px;border-radius:14px;background:#e7873a"></div><div style="width:52px;height:52px;border-radius:14px;background:#3a6fd1"></div><div class="hl" style="width:52px;height:52px;border-radius:16px;background:rgba(90,100,112,.6);display:flex;align-items:center;justify-content:center"><svg viewBox="0 0 24 24" width="26" height="26"><path d="M5,3H19A2,2 0,0 1,21,5V19A2,2 0,0 1,19,21H5A2,2 0,0 1,3,19V5A2,2 0,0 1,5,3ZM12,7.5V16.5M7.5,12H16.5" stroke="#c3cad1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg></div></div></div></div><div class="cap">Antes</div></div>
     <div><div class="phone"><div class="screen"><div class="homebg"><div class="clock">12:22</div></div><div style="position:absolute;left:20px;right:20px;top:200px;border:1px dashed #4c86d8;border-radius:22px;padding:16px;background:rgba(74,84,94,.35);display:grid;grid-template-columns:repeat(4,1fr);gap:14px;justify-items:center"><div style="width:52px;height:52px;border-radius:14px;background:#3f8a49"></div><div style="width:52px;height:52px;border-radius:14px;background:#e7873a"></div><div style="width:52px;height:52px;border-radius:14px;background:#3a6fd1"></div><div class="hl" style="width:52px;height:52px;border-radius:16px;background:rgba(90,100,112,.6);display:flex;align-items:center;justify-content:center"><svg viewBox="0 0 24 24" width="26" height="26"><path d="M3,9.5V6A3,3 0,0 1,6,3H9.5M14.5,3H18A3,3 0,0 1,21,6V9.5M21,14.5V18A3,3 0,0 1,18,21H14.5M9.5,21H6A3,3 0,0 1,3,18V14.5M12,7.5V16.5M7.5,12H16.5" stroke="#c3cad1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg></div></div></div></div><div class="cap">Depois</div></div>
+  </div>
+</section>
+
+<!-- 12 -->
+<section id="s12">
+  <div class="info">
+    <h2>12 · Cor do fundo</h2>
+    <span class="rf">RF-22</span><span class="rf">fase 2</span>
+    <p>A cor sólida vira o fundo e gera a paleta "Custom" (superfícies e texto saem dela). Hoje só há 12 cores vivas;
+    as claras (branco, amarelo) viram um tema claro sem querer. O picker novo põe primeiro os tons que funcionam como fundo:</p>
+    <ul>
+      <li><b>Do seu tema:</b> fundo, superfície, variante e contorno da paleta atual.</li>
+      <li><b>Paletas:</b> o tom de cada uma das 100 paletas, por grupo (Frias, Frescas, Neutras, Quentes). O nome aparece ao tocar.</li>
+      <li><b>Tons:</b> 7 tons (escuro → claro) da cor escolhida, com a barra de matiz para criar o seu.</li>
+      <li><b>Vivas:</b> as 12 de hoje, por último.</li>
+      <li>Aviso quando a cor gera tema claro.</li>
+    </ul>
+    <p>D-07: qual tom de cada paleta vira o fundo?</p>
+    <div class="seg" data-target="cp"><button data-v="ba">Fundo</button><button data-v="su">Superfície</button><button data-v="sv" class="on">Variante</button></div>
+  </div>
+  <div class="stage">
+    <div><div class="phone"><div class="screen cp" id="cp"></div></div><div class="cap" id="cpCap">Frostbite (atual)</div></div>
   </div>
 </section>
 
@@ -768,6 +808,53 @@ renders.ad('new');
   }
   const t0=performance.now();
   frame(document.getElementById('hand0'),false,t0); frame(document.getElementById('hand1'),true,t0);
+})();
+
+/* 12 · Background color picker */
+(()=>{
+  const PAL=[{"n":"Abyss","c":"COLD","on":"#E0F7FA","sv":"#006064","su":"#00363A","ba":"#001F20"},{"n":"Tidepool","c":"COLD","on":"#A2D7D5","sv":"#1A343C","su":"#122228","ba":"#0A1418"},{"n":"Midnight Fog","c":"COLD","on":"#F8F8F2","sv":"#282A36","su":"#1A1C25","ba":"#0D0E14"},{"n":"Neon Dusk","c":"COLD","on":"#F8F8F2","sv":"#383830","su":"#272822","ba":"#1A1B17"},{"n":"Phantom Blue","c":"COLD","on":"#F2FAEF","sv":"#111F33","su":"#0A131F","ba":"#050A10"},{"n":"Steel","c":"COLD","on":"#ECEFF1","sv":"#455A64","su":"#37474F","ba":"#263238"},{"n":"Sky","c":"COLD","on":"#E1F5FE","sv":"#0277BD","su":"#01579B","ba":"#001F3F"},{"n":"Navy","c":"COLD","on":"#E3F2FD","sv":"#1565C0","su":"#0D47A1","ba":"#001F3F"},{"n":"Oceanic","c":"COLD","on":"#E0F3F4","sv":"#395758","su":"#213434","ba":"#101A1A"},{"n":"Aqua","c":"COLD","on":"#E0F7FA","sv":"#0097A7","su":"#006064","ba":"#00363A"},{"n":"Storm","c":"COLD","on":"#ECEFF1","sv":"#37474F","su":"#263238","ba":"#12181D"},{"n":"Fog","c":"COLD","on":"#ECEFF1","sv":"#607D8B","su":"#455A64","ba":"#263238"},{"n":"Slate","c":"COLD","on":"#ECEFF1","sv":"#455A64","su":"#37474F","ba":"#263238"},{"n":"Glacier","c":"COLD","on":"#E8F4F8","sv":"#2D5F78","su":"#1A3A4A","ba":"#0D1E26"},{"n":"Arctic","c":"COLD","on":"#F0F8FF","sv":"#3D7A9A","su":"#1F4A60","ba":"#0A2530"},{"n":"Denim","c":"COLD","on":"#E8EDF5","sv":"#3A4D6B","su":"#1F2D42","ba":"#0D1420"},{"n":"Cobalt","c":"COLD","on":"#E0E8FF","sv":"#1F3A7A","su":"#0D1F4A","ba":"#050D20"},{"n":"Sapphire","c":"COLD","on":"#E3E8FF","sv":"#2A3A7A","su":"#15204A","ba":"#080D20"},{"n":"Indigo","c":"COLD","on":"#E8E0FF","sv":"#3A1F7A","su":"#200D4A","ba":"#0D0520"},{"n":"Violet","c":"COLD","on":"#F3E5F5","sv":"#5C2A70","su":"#351845","ba":"#1A0A20"},{"n":"Amethyst","c":"COLD","on":"#EFE7F5","sv":"#544A5E","su":"#312C36","ba":"#19151C"},{"n":"Lavender","c":"COOL","on":"#F3E5F5","sv":"#8E24AA","su":"#6A1B9A","ba":"#311B92"},{"n":"Lilac","c":"COOL","on":"#F5F0FA","sv":"#6E4AA0","su":"#452878","ba":"#201040"},{"n":"Wisteria","c":"COOL","on":"#F0E8F8","sv":"#684A88","su":"#403060","ba":"#1C1428"},{"n":"Mint","c":"COOL","on":"#E0F7FA","sv":"#00838F","su":"#006064","ba":"#00363A"},{"n":"Seedling","c":"COOL","on":"#E3F2E9","sv":"#2D5A42","su":"#1A3628","ba":"#0D1A14"},{"n":"Forest","c":"COOL","on":"#E3F2E9","sv":"#405A4A","su":"#26362C","ba":"#121A15"},{"n":"Moss","c":"COOL","on":"#F1F8E9","sv":"#558B2F","su":"#33691E","ba":"#1B5E20"},{"n":"Emerald","c":"COOL","on":"#E8F8E8","sv":"#1A7A1A","su":"#0D4A0D","ba":"#052005"},{"n":"Jade","c":"COOL","on":"#E0F0E8","sv":"#1F5A42","su":"#0D3528","ba":"#051A14"},{"n":"Sage","c":"COOL","on":"#EEF2E8","sv":"#4E6040","su":"#2E3A24","ba":"#141A0E"},{"n":"Eucalyptus","c":"COOL","on":"#E8F0EC","sv":"#3A5A4E","su":"#1F3528","ba":"#0D1A14"},{"n":"Teal","c":"COOL","on":"#E0F2F0","sv":"#1F5A54","su":"#0D352F","ba":"#051A18"},{"n":"Monochrome","c":"COOL","on":"#F0F0F0","sv":"#4D4D4D","su":"#2E2E2E","ba":"#141414"},{"n":"Ash","c":"COOL","on":"#F5F5F5","sv":"#424242","su":"#212121","ba":"#000000"},{"n":"Charcoal","c":"COOL","on":"#FAFAFA","sv":"#424242","su":"#212121","ba":"#121212"},{"n":"Drained","c":"COOL","on":"#F5F5F5","sv":"#757575","su":"#424242","ba":"#212121"},{"n":"Twilight","c":"COOL","on":"#ABB2BF","sv":"#3E4451","su":"#282C34","ba":"#1B1F23"},{"n":"Fjord","c":"COOL","on":"#ECEFF4","sv":"#4C566A","su":"#3B4252","ba":"#2E3440"},{"n":"Dusk","c":"NEUTRAL","on":"#EDE7F6","sv":"#673AB7","su":"#512DA8","ba":"#311B92"},{"n":"Periwinkle","c":"NEUTRAL","on":"#E8E8F8","sv":"#505088","su":"#303060","ba":"#14143A"},{"n":"Petal","c":"NEUTRAL","on":"#F8E8F0","sv":"#885868","su":"#5A3840","ba":"#28181E"},{"n":"Orchid","c":"NEUTRAL","on":"#F5E0F0","sv":"#783868","su":"#4A2040","ba":"#201018"},{"n":"Plum","c":"NEUTRAL","on":"#F0E0E8","sv":"#603858","su":"#3A2030","ba":"#181018"},{"n":"Grape","c":"NEUTRAL","on":"#E8E0F0","sv":"#503878","su":"#2E1A50","ba":"#140828"},{"n":"Mulberry","c":"NEUTRAL","on":"#E8D8E8","sv":"#502850","su":"#2E1430","ba":"#140818"},{"n":"Boysenberry","c":"NEUTRAL","on":"#E0D0E0","sv":"#482848","su":"#281428","ba":"#100810"},{"n":"Neon City","c":"NEUTRAL","on":"#F8F8F2","sv":"#1A0033","su":"#0D001A","ba":"#05000A"},{"n":"Sandstone","c":"NEUTRAL","on":"#F5EDE6","sv":"#58483D","su":"#382D25","ba":"#1C1612"},{"n":"Earth","c":"NEUTRAL","on":"#F7EEE7","sv":"#5A4739","su":"#35291F","ba":"#19140F"},{"n":"Olive","c":"NEUTRAL","on":"#F5F3E6","sv":"#514E3F","su":"#302E25","ba":"#171612"},{"n":"Dusty Rose","c":"NEUTRAL","on":"#F5E6E8","sv":"#584346","su":"#382A2C","ba":"#1C1415"},{"n":"Rose","c":"NEUTRAL","on":"#F9E8F0","sv":"#5C3F50","su":"#362430","ba":"#1A1017"},{"n":"Taupe","c":"WARM","on":"#F0EAE8","sv":"#605048","su":"#3A3028","ba":"#1A1612"},{"n":"Clay","c":"WARM","on":"#F5E8E0","sv":"#685048","su":"#403028","ba":"#1C1410"},{"n":"Bronze","c":"WARM","on":"#F0E8D8","sv":"#685838","su":"#403020","ba":"#1C1408"},{"n":"Copper","c":"WARM","on":"#F8E8D8","sv":"#785838","su":"#503820","ba":"#281808"},{"n":"Driftwood","c":"WARM","on":"#F0ECE8","sv":"#605048","su":"#3A3028","ba":"#1A1610"},{"n":"Moss Stone","c":"WARM","on":"#E8E8E0","sv":"#505048","su":"#2E2E28","ba":"#121210"},{"n":"Mocha","c":"WARM","on":"#F0E8E0","sv":"#685048","su":"#403028","ba":"#1C1410"},{"n":"Latte","c":"WARM","on":"#F5F0E8","sv":"#706058","su":"#483828","ba":"#201810"},{"n":"Caramel","c":"WARM","on":"#F8E8D0","sv":"#886848","su":"#604830","ba":"#302010"},{"n":"Ember Tail","c":"WARM","on":"#FFE0B2","sv":"#BF360C","su":"#7F2400","ba":"#3E1200"},{"n":"Sunshine","c":"WARM","on":"#FFF9E6","sv":"#665133","su":"#3D2F1C","ba":"#1F170E"},{"n":"Gold","c":"WARM","on":"#FFFDE7","sv":"#F9A825","su":"#F57F17","ba":"#3E2723"},{"n":"Citrus","c":"WARM","on":"#FFF8E1","sv":"#FF8F00","su":"#E65100","ba":"#3E2723"},{"n":"Peach","c":"WARM","on":"#FFF3E0","sv":"#FB8C00","su":"#EF6C00","ba":"#3E2723"},{"n":"Coral Reef","c":"WARM","on":"#FBE9E7","sv":"#D84315","su":"#BF360C","ba":"#3E2723"},{"n":"Cherry Blossom","c":"WARM","on":"#FFF0F5","sv":"#DB7093","su":"#C71585","ba":"#4A0E2E"},{"n":"Bubblegum","c":"WARM","on":"#FCE4EC","sv":"#4A148C","su":"#311B92","ba":"#1A0A2E"},{"n":"Berry","c":"WARM","on":"#FCE4EC","sv":"#C2185B","su":"#880E4F","ba":"#4A148C"},{"n":"Round Pink","c":"WARM","on":"#FFF0F5","sv":"#E05070","su":"#A02040","ba":"#400010"},{"n":"Crimson","c":"WARM","on":"#FCE8EA","sv":"#5E3E42","su":"#362326","ba":"#1A1012"},{"n":"Shadow Grin","c":"WARM","on":"#E8D8F0","sv":"#583868","su":"#301840","ba":"#140820"},{"n":"Volt Amber","c":"WARM","on":"#FEF5A3","sv":"#811E09","su":"#4A1206","ba":"#1F0802"},{"n":"Phantom Red","c":"WARM","on":"#F2FAEF","sv":"#732424","su":"#3D1212","ba":"#1A0808"},{"n":"Wine","c":"WARM","on":"#F8BBD0","sv":"#880E4F","su":"#4A148C","ba":"#1A0A2E"},{"n":"Blush","c":"WARM","on":"#FCE8E8","sv":"#A04040","su":"#702828","ba":"#381010"},{"n":"Magenta","c":"WARM","on":"#FCE0F0","sv":"#901858","su":"#580830","ba":"#200410"},{"n":"Fuchsia","c":"WARM","on":"#F8D8F0","sv":"#781868","su":"#480838","ba":"#180410"},{"n":"Rose Gold","c":"WARM","on":"#F8E8E0","sv":"#905040","su":"#603028","ba":"#281410"},{"n":"Sunset","c":"WARM","on":"#FFE8D0","sv":"#C03020","su":"#801810","ba":"#300808"},{"n":"Amber","c":"WARM","on":"#FFF0D0","sv":"#C06820","su":"#804010","ba":"#301808"},{"n":"Honey","c":"WARM","on":"#FFF8E0","sv":"#C08830","su":"#805818","ba":"#302008"},{"n":"Marigold","c":"WARM","on":"#FFF8D0","sv":"#C08018","su":"#805008","ba":"#301808"},{"n":"Tangerine","c":"WARM","on":"#FFE8D0","sv":"#C05020","su":"#803010","ba":"#301008"},{"n":"Papaya","c":"WARM","on":"#FFE0C0","sv":"#C05018","su":"#802808","ba":"#300C08"},{"n":"Flamingo","c":"WARM","on":"#FFD8D8","sv":"#C02828","su":"#801010","ba":"#300808"},{"n":"Salmon","c":"WARM","on":"#FFE0D0","sv":"#C05038","su":"#802818","ba":"#300C08"},{"n":"Melon","c":"WARM","on":"#FFE8D8","sv":"#C06838","su":"#803818","ba":"#301408"},{"n":"Watermelon","c":"WARM","on":"#FFD8E0","sv":"#C02038","su":"#800818","ba":"#300408"},{"n":"Strawberry","c":"WARM","on":"#FFD8D8","sv":"#C01818","su":"#800808","ba":"#300000"},{"n":"Raspberry","c":"WARM","on":"#F8D0D8","sv":"#882038","su":"#501020","ba":"#180408"},{"n":"Cherry","c":"WARM","on":"#F8D0D0","sv":"#882020","su":"#501010","ba":"#180000"},{"n":"Poppy","c":"WARM","on":"#FFD8D0","sv":"#C03020","su":"#801810","ba":"#300808"},{"n":"Brick","c":"WARM","on":"#E8D0C0","sv":"#704028","su":"#482818","ba":"#180C08"},{"n":"Rust","c":"WARM","on":"#E8D0B8","sv":"#704020","su":"#482810","ba":"#180C08"},{"n":"Terracotta","c":"WARM","on":"#F0D8C8","sv":"#784028","su":"#503018","ba":"#201008"},{"n":"Sienna","c":"WARM","on":"#E8D0B8","sv":"#704010","su":"#482808","ba":"#180C00"},{"n":"Mahogany","c":"WARM","on":"#E0C8B8","sv":"#603820","su":"#381810","ba":"#140808"}];
+  const CATS=[['COLD','Frias'],['COOL','Frescas'],['NEUTRAL','Neutras'],['WARM','Quentes']];
+  const THEME=[['#12181D','Fundo'],['#2B373E','Superfície'],['#4A5D6B','Variante'],['#7D96AA','Contorno']];
+  const VIVID=['#FFFFFF','#90CAF9','#E1BEE7','#FFE082','#A5D6A7','#FFAB91','#455A64','#C62828','#1E88E5','#2E7D32','#F57F17','#7E57C2'];
+  let tone='sv', cat='COLD', seed='#12181D', hue=205, label='Frostbite (atual)';
+  const scr=document.getElementById('cp'), cap=document.getElementById('cpCap');
+  const hex2hsl=h=>{let r=parseInt(h.slice(1,3),16)/255,g=parseInt(h.slice(3,5),16)/255,b=parseInt(h.slice(5,7),16)/255;const mx=Math.max(r,g,b),mn=Math.min(r,g,b);let H=0,S=0,L=(mx+mn)/2;if(mx!==mn){const d=mx-mn;S=L>.5?d/(2-mx-mn):d/(mx+mn);H=mx===r?(g-b)/d+(g<b?6:0):mx===g?(b-r)/d+2:(r-g)/d+4;H*=60;}return [H,S,L];};
+  const hsl2hex=(h,s,l)=>{const k=n=>(n+h/30)%12,a=s*Math.min(l,1-l),f=n=>l-a*Math.max(-1,Math.min(k(n)-3,Math.min(9-k(n),1)));return '#'+[f(0),f(8),f(4)].map(x=>Math.round(x*255).toString(16).padStart(2,'0')).join('');};
+  const lum=h=>{const c=[1,3,5].map(i=>{let v=parseInt(h.slice(i,i+2),16)/255;return v<=.03928?v/12.92:Math.pow((v+.055)/1.055,2.4)});return .2126*c[0]+.7152*c[1]+.0722*c[2];};
+  function derive(sd){const [H,S,L]=hex2hsl(sd);const dark=lum(sd)<.5,o=dark?1:-1,adj=d=>Math.min(1,Math.max(0,L+o*d));
+    return {bg:sd,su:hsl2hex(H,S,adj(.08)),sv:hsl2hex(H,S,adj(.16)),on:dark?'#ffffff':'#101418',dark};}
+  const tones=()=>[.08,.14,.22,.32,.45,.62,.8].map(l=>hsl2hex(hue,.32,l));
+  const sw=(c,on,extra='',attr='')=>`<div class="sw2 ${on?'on':''}" ${attr} style="background:${c}">${extra}</div>`;
+  function render(){
+    const d=derive(seed);
+    const list=PAL.filter(p=>p.c===cat);
+    scr.innerHTML=`<div class="homebg" style="background:${d.bg}"></div>
+      <div class="mini" style="background:${d.su};top:44px;height:150px"><div class="t" style="color:${d.on}">09:41</div><div class="d" style="color:${d.on}">Segunda, 16 de novembro</div>
+      <div class="apps">${[['Telefone','#3f8a49'],['Mensagens','#e7873a'],['Câmera','#3a6fd1']].map(([n,c])=>`<div style="color:${d.on}"><i style="background:${c}"></i>${n}</div>`).join('')}</div></div>
+      <div class="sheet"><div class="gz"></div><div class="title new" style="padding-bottom:10px">Definir plano de fundo</div>
+      <div class="content scroll">
+        <div class="types"><div class="on">${ic('drop',18)}Cor sólida</div><div>${ic('image',18)}Imagem</div></div>
+        <div class="label">Do seu tema</div>
+        <div class="themeRow">${THEME.map(([c,n])=>`<div data-seed="${c}" data-name="Frostbite · ${n}">${sw(c,seed===c)}<span class="lbl">${n}</span></div>`).join('')}</div>
+        <div class="label">Paletas</div>
+        <div class="chips">${CATS.map(([k,n])=>`<span data-cat="${k}" class="${k===cat?'on':''}">${n}</span>`).join('')}</div>
+        <div class="row">${list.map(p=>sw(p[tone],seed===p[tone],`<b style="background:${p.on};left:50%;top:50%;width:8px;height:8px;border-radius:50%;transform:translate(-50%,-50%)"></b>`,`data-seed="${p[tone]}" data-name="${p.n}"`)).join('')}</div>
+        <div class="label">Tons</div>
+        <div class="row">${tones().map(c=>sw(c,seed===c,'',`data-seed="${c}" data-name="Tom ${c.toUpperCase()}"`)).join('')}</div>
+        <div class="hue" id="cpHue"><i style="left:${hue/360*100}%;background:${hsl2hex(hue,.32,.45)}"></i></div>
+        <div class="label">Vivas</div>
+        <div class="row">${VIVID.map(c=>sw(c,seed===c,'',`data-seed="${c}" data-name="${c}"`)).join('')}</div>
+        ${d.dark?'':'<div class="warn">Essa cor gera um tema claro (texto escuro).</div>'}
+        <div style="height:10px"></div>
+      </div></div>`+navbar();
+    scr.querySelectorAll('[data-seed]').forEach(n=>n.onclick=()=>{seed=n.dataset.seed;label=n.dataset.name;const st=scr.querySelector('.scroll').scrollTop;render();scr.querySelector('.scroll').scrollTop=st;cap.textContent=label+' → fundo '+seed.toUpperCase();});
+    scr.querySelectorAll('[data-cat]').forEach(n=>n.onclick=()=>{cat=n.dataset.cat;const st=scr.querySelector('.scroll').scrollTop;render();scr.querySelector('.scroll').scrollTop=st;});
+    const hb=document.getElementById('cpHue');
+    const setHue=e=>{const r=hb.getBoundingClientRect();hue=Math.max(0,Math.min(359,(e.clientX-r.left)/r.width*360));seed=tones()[1];label='Tom personalizado';const st=scr.querySelector('.scroll').scrollTop;render();scr.querySelector('.scroll').scrollTop=st;cap.textContent='matiz '+Math.round(hue)+'° → tons atualizados';};
+    hb.onclick=setHue;
+  }
+  renders.cp=v=>{tone=v;render();cap.textContent='tom da paleta: '+({ba:'fundo',su:'superfície',sv:'variante'})[v];};
+  render();
 })();
 </script>
 </body>

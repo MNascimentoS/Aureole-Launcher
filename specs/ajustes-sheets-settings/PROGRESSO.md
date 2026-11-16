@@ -5,8 +5,8 @@ vez, no fim). Aparelho é o teste do Mateus.
 
 | # | Fase | Modelo | Estimativa | Feita | Gates | Visual | Aparelho |
 |---|---|---|---|---|---|---|---|
-| 1 | Polimento visual: Personalizar, cabeçalho, Ajustes, Avançado, coach, ícones Add New e Home | Sonnet | 1,5–2,5 h | [x] | [ ] | [ ] | [ ] |
-| 2 | Salvar ao fechar + Desfazer nas sheets de edição | Sonnet | 2–3,5 h | [ ] | [ ] | [ ] | [ ] |
+| 1 | Polimento visual: Personalizar, cabeçalho, Ajustes, Avançado, coach, ícones Add New e Home | Sonnet | 1,5–2,5 h | [ ] | [ ] | [ ] | [ ] |
+| 2 | Salvar ao fechar + Desfazer nas sheets de edição; picker de cor do fundo | Sonnet | 2,5–4 h | [x] | [ ] | [ ] | [ ] |
 | 3 | Movimento: sheet sobe e estica, checklist → pílula, lista pela borda ou por baixo | Opus | 2,5–4 h | [ ] | [ ] | [ ] | [ ] |
 | 4 | Gates, correções e revisão visual | Sonnet + Opus | 1–2 h | [ ] | [ ] | [ ] | [ ] |
 
@@ -14,13 +14,13 @@ vez, no fim). Aparelho é o teste do Mateus.
 
 (cada fase escreve aqui: o que mudou, testes da fase, o que ficou faltando)
 
-### Fase 1: polimento visual
+### Fase 2: salvar ao fechar + Desfazer, picker de cor do fundo
 
-- Personalizar: `Spacer(large)` no topo de `CustomizeAddSection`; tile Configurações com `AureoleIcons.Logo` (largura `iconHuge`, 128:73).
-- Cabeçalho das sheets: `titleLarge` bold e `top = small` (todas, D-01).
-- Ajustes raiz: coluna com `heightIn(min = maxHeight)` e `Spacer(weight(1f))`, "Muito obrigado!" a `xLarge` do fundo; paisagem em dois painéis (D-02) via `settingsLayoutFor` (`SettingsLayout.kt`). Avançado, Aparência e Comportamento centralizados com `settingsContentMaxWidth = 480.dp`.
-- Avançado: nova ordem, links em `bodyMedium` com alvo de 48 dp; strings "What's new"/"Novidades" e "Default launcher"/"Launcher padrão".
-- Coach: texto "Press back to close" / "Toque em voltar para fechar"; mão da borda com `edgeScrubPoint` + `EdgeScrubPath` (pull 56 dp, pausa, "L" em dois segmentos, loop 2300 ms); `HAND_EDGE_INSET` removido.
-- Ícone `ic_aureole_add_new` e `AureoleIcons.AddNew` só em `ContainerAddFolderButton` (D-06).
-- Testes (passam): `SettingsLayoutTest`, `EdgeScrubPointTest`, `SettingsAdvancedScreenTest` (ordem), `SettingsRootScreenTest` (retrato e paisagem), `CustomizeBottomSheetTest`, `GestureCoachComponentTest`. Screenshot tests novos (não gerados): `SettingsLandscapeScreenshotTest`, `ContainerAddButtonScreenshotTest`.
-- Ficou faltando: nada. Em paisagem o Avançado/Aparência/Comportamento só limitam largura (sem centralizar na vertical).
+- `AureoleAutoSaveOverlay` + `AutoSaveOverlayParams` + `closeOutcome`: o ponto único de fechamento é o `onDismissRequest` do `AureoleEditOverlay` (tocar fora, voltar e arrastar passam por ele depois da saída); salva uma vez se `isChanged()`, depois chama `onDismissRequest`. Sem mexer na animação.
+- Convertidas: Paleta e Fonte (`ThemePreviewOverlay`), Fundo, Seletor de cor, Botão rápido, Cartões e vidro, Editar pasta (D-03: Criar pasta continua só com "Criar") e Apps da pasta (D-05).
+- Desfazer: `changeManualSeedColor` (cor e fundo; usa o `wallpaperStash` para devolver a imagem que a cor substitui), `changeTheme`, `changeFont` nos Ajustes; `changePalette`/`changeFont` na Home; `onUpdateQuickButtonAppearance`, `renameFolder`, `saveFolderApps` com undo no `HomeViewModel`. Imagem personalizada: o cartão abre o seletor na hora; `setCustomWallpaper` guarda cópia da imagem anterior (`WallpaperUndoStash.keepCopy`) e oferece Desfazer (volta à imagem anterior ou à cor sólida).
+- RF-22: `BackgroundSwatches.kt` (`themeSwatches`, `paletteSwatches`, `toneRamp`, `isLightBackground`, `initialPaletteCategory`), `PaletteCategory` em `ThemePalette` (marcada em cada preset pela seção; Frostbite = COLD), UI em `BackgroundColorSections.kt` (Do seu tema, Paletas com chips e LazyRow, Tons + matiz, Vivas, aviso de tema claro). D-07 sem resposta: usado o padrão, tom "variante" (`surfaceVariant`), em `PaletteTone.VARIANT`.
+- Strings novas `undo_*` e `settings_background_*` (EN e pt-BR); removidas as órfãs (`settings_appearance_apply`, `settings_cards_glass_done`, `core_common_confirm`, `home_folder_picker_save_count`, `settings_cards_glass_changed`).
+- Onboarding: fechar o picker de paleta/fonte sem mudar continua sendo "desistir" (`onDismissAppearancePicker`); mudando, aplica e confirma, como antes.
+- Testes novos (passam): `AureoleAutoSaveOverlayTest`, `AutoSaveOverlayParamsTest`, `BackgroundSwatchesTest`, `BackgroundChoiceTest` (reescrito), `AppearanceUndoTest`, `FolderFormModelsTest`, `ThemePreviewStateTest`.
+- Ficou faltando (fase 4): testes de UI antigos ainda clicam nos botões que saíram (Apply/Save/Done/Confirm/"Save N apps"/Cancel das sheets convertidas) e não foram atualizados nem rodados: `ColorPickerDialogTest`, `FolderFormDialogTest` (modo edição), `PickThemeSheetsTest`, `PickFontBottomSheetTest`, `FolderAppPickerGridTest`, `FolderAppPickerSearchTest`, `FolderBranchCoverageTest`, `FolderComponentsTest`, `HomeScreenFolderOverlaysTest`, `QuickButtonAppearanceBottomSheetTest`, `SettingsAppearanceDialogsTest`, `SettingsAppearanceControlsTest`, `SettingsScreenTest`, `OnboardingAppearancePickerComponentTest`. Também sem teste: os extensores de ViewModel com undo (`changeManualSeedColor` etc.) e `WallpaperUndoStash.keepCopy`. Screenshot tests de Cartões só ganharam `onCommit = {}`; referências a regenerar.

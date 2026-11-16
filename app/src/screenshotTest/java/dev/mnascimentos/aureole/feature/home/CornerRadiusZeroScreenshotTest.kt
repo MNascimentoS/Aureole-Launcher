@@ -104,6 +104,7 @@ private fun CardsGlassSheetRadiusZeroScreenshotTest() = StraightTheme {
             params = CardsGlassParams(
                 initial = CardsGlassDraft(STRAIGHT_RADIUS_DP, GlassLevel.MEDIUM, BlurOpacity.MEDIUM.value),
                 onChange = {},
+                onCommit = {},
                 onDismissRequest = {},
                 isLeftHanded = false
             )

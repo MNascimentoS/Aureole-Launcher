@@ -30,8 +30,8 @@ import dev.mnascimentos.aureole.composable.color.model.formatHex
 import dev.mnascimentos.aureole.composable.color.model.hueOf
 import dev.mnascimentos.aureole.composable.mirror.LeftHandMirror
 import dev.mnascimentos.aureole.composable.preview.AureolePreviewFrame
-import dev.mnascimentos.aureole.composable.sheets.AureoleConfirmOverlay
-import dev.mnascimentos.aureole.composable.sheets.model.ConfirmOverlayParams
+import dev.mnascimentos.aureole.composable.sheets.AureoleAutoSaveOverlay
+import dev.mnascimentos.aureole.composable.sheets.model.AutoSaveOverlayParams
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
@@ -40,7 +40,7 @@ import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 
 /**
  * Color picker in an edit overlay: the chosen color and its hex sit anchored above the sheet, the recommended
- * colors and the hue slider inside it, and Cancel / Confirm below, the filled button on the thumb side.
+ * colors and the hue slider inside it. Closing the sheet saves the color when it differs from the one it opened with.
  */
 @Composable
 fun ColorPickerDialog(
@@ -53,11 +53,11 @@ fun ColorPickerDialog(
     var selectedColor by remember { mutableIntStateOf(initialColor) }
     var hue by remember { mutableFloatStateOf(hueOf(initialColor)) }
 
-    AureoleConfirmOverlay(
-        params = ConfirmOverlayParams(
+    AureoleAutoSaveOverlay(
+        params = AutoSaveOverlayParams(
             title = stringResource(R.string.settings_appearance_color_picker_primary),
-            primaryLabel = stringResource(R.string.core_common_confirm),
-            onPrimary = { onColorSelected(selectedColor) },
+            isChanged = { selectedColor != initialColor },
+            onCommit = { onColorSelected(selectedColor) },
             onDismissRequest = onDismiss,
             isLeftHanded = isLeftHanded
         ),

@@ -18,48 +18,40 @@ import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.LayoutDirection
 import dev.mnascimentos.aureole.R
-import dev.mnascimentos.aureole.composable.color.AureoleColorSwatches
 import dev.mnascimentos.aureole.composable.color.model.DefaultPickerColor
-import dev.mnascimentos.aureole.composable.color.model.RecommendedColors
 import dev.mnascimentos.aureole.composable.minihome.AureoleMiniHome
 import dev.mnascimentos.aureole.composable.minihome.sampleMiniHomeContent
-import dev.mnascimentos.aureole.composable.mirror.LeftHandMirror
-import dev.mnascimentos.aureole.composable.sheets.AureoleConfirmOverlay
-import dev.mnascimentos.aureole.composable.sheets.model.ConfirmOverlayParams
+import dev.mnascimentos.aureole.composable.sheets.AureoleAutoSaveOverlay
+import dev.mnascimentos.aureole.composable.sheets.model.AutoSaveOverlayParams
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
-import dev.mnascimentos.aureole.feature.settings.model.BackgroundApplyAction
 import dev.mnascimentos.aureole.feature.settings.model.BackgroundDraft
 import dev.mnascimentos.aureole.feature.settings.model.BackgroundType
 import dev.mnascimentos.aureole.feature.settings.model.SetBackgroundParams
-import dev.mnascimentos.aureole.feature.settings.model.applyAction
+import dev.mnascimentos.aureole.feature.settings.model.backgroundColorToSave
 import dev.mnascimentos.aureole.feature.settings.model.initialBackgroundDraft
 
 /**
  * Background editor in an edit overlay: the type (solid color or custom image) and, for a solid color, the
- * swatches, with the mini-home anchored above the sheet on the chosen color. Nothing changes until Apply, which
- * saves the color or opens the photo picker; Cancel only closes.
+ * swatches, with the mini-home anchored above the sheet on the chosen color. Closing the sheet saves the color
+ * when it changed; the custom image card opens the photo picker right away.
  */
 @Composable
 fun SetBackgroundBottomSheet(
     params: SetBackgroundParams,
     modifier: Modifier = Modifier
 ) {
-    var draft by remember { mutableStateOf(initialBackgroundDraft(params.isCustomImageSet, params.currentColor)) }
+    val initial = remember { initialBackgroundDraft(params.isCustomImageSet, params.currentColor) }
+    var draft by remember { mutableStateOf(initial) }
 
-    AureoleConfirmOverlay(
-        params = ConfirmOverlayParams(
+    AureoleAutoSaveOverlay(
+        params = AutoSaveOverlayParams(
             title = stringResource(R.string.settings_appearance_set_background_title),
-            primaryLabel = stringResource(R.string.settings_appearance_apply),
-            onPrimary = {
-                when (val action = draft.applyAction()) {
-                    is BackgroundApplyAction.SaveColor -> params.onSolidColorSelected(action.color)
-                    BackgroundApplyAction.PickImage -> params.onCustomImageClick()
-                }
-            },
+            isChanged = { backgroundColorToSave(initial, draft) != null },
+            onCommit = { backgroundColorToSave(initial, draft)?.let(params.onSolidColorSelected) },
             onDismissRequest = params.onDismissRequest,
             isLeftHanded = params.isLeftHanded
         ),
@@ -75,20 +67,18 @@ fun SetBackgroundBottomSheet(
             )
             BackgroundTypeCards(
                 selected = draft.type,
-                onSelect = { draft = draft.copy(type = it) },
+                onSelect = {
+                    draft = draft.copy(type = it)
+                    if (it == BackgroundType.CUSTOM_IMAGE) params.onCustomImageClick()
+                },
                 isLeftHanded = params.isLeftHanded
             )
             if (draft.type == BackgroundType.SOLID_COLOR) {
-                SheetSectionLabel(
-                    text = stringResource(R.string.settings_appearance_background_color)
+                BackgroundColorSections(
+                    selected = draft.color,
+                    onSelect = { draft = draft.copy(color = it) },
+                    isLeftHanded = params.isLeftHanded
                 )
-                LeftHandMirror(isLeftHanded = params.isLeftHanded) {
-                    AureoleColorSwatches(
-                        colors = RecommendedColors,
-                        selected = draft.color,
-                        onSelect = { draft = draft.copy(color = it) }
-                    )
-                }
             }
         }
     }

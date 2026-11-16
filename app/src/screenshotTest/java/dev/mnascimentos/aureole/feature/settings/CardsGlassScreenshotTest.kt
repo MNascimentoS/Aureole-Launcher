@@ -24,6 +24,7 @@ private fun CardsGlassCase(draft: CardsGlassDraft, isLeftHanded: Boolean) {
                 params = CardsGlassParams(
                     initial = draft,
                     onChange = {},
+                    onCommit = {},
                     onDismissRequest = {},
                     isLeftHanded = isLeftHanded
                 )

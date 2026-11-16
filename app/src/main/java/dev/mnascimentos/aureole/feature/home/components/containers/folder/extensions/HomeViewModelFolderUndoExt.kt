@@ -23,3 +23,13 @@ private suspend fun HomeViewModel.restoreFolder(folder: AppFolder) {
     folderRepository.addFolder(folder)
     refreshFolders()
 }
+
+/** Offers "Undo" for a folder edit; [restore] writes the previous values back and the folders are reloaded. */
+internal fun HomeViewModel.offerFolderUndo(restore: suspend () -> Unit) {
+    showUndo(TextResource.fromResId(R.string.undo_folder_changed)) {
+        viewModelScope.launch {
+            restore()
+            refreshFolders()
+        }
+    }
+}

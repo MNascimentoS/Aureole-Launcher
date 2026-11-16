@@ -30,8 +30,8 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.composable.controls.AureoleSegmentedControl
-import dev.mnascimentos.aureole.composable.sheets.AureoleConfirmOverlay
-import dev.mnascimentos.aureole.composable.sheets.model.ConfirmOverlayParams
+import dev.mnascimentos.aureole.composable.sheets.AureoleAutoSaveOverlay
+import dev.mnascimentos.aureole.composable.sheets.model.AutoSaveOverlayParams
 import dev.mnascimentos.aureole.composable.sheets.model.fontNameOf
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
@@ -51,8 +51,8 @@ private const val CHIP_INACTIVE_ALPHA = 0.5f
 /**
  * "Cards and glass" editor in an edit overlay: corner radius of the cards, glass (blur) level and blur opacity in
  * one place. Every tap applies on the spot (`params.onChange`) and the sample cards above the sheet and the sheet
- * itself are drawn with the draft. Only "Done", at the thumb side, closes it (swiping down and tapping outside
- * close too); the caller gets the opening values back to offer an undo.
+ * itself are drawn with the draft. Closing (tap outside, back, swipe down) hands the opening values back, when
+ * something changed, so the caller can offer an undo.
  */
 @Composable
 fun CardsGlassBottomSheet(
@@ -69,14 +69,13 @@ fun CardsGlassBottomSheet(
         aureoleDimens = AureoleDS.dimens.copy(radiusLarge = draft.radiusDp.dp)
     )
     AureoleLauncherTheme(config = config) {
-        AureoleConfirmOverlay(
-            params = ConfirmOverlayParams(
+        AureoleAutoSaveOverlay(
+            params = AutoSaveOverlayParams(
                 title = stringResource(R.string.settings_cards_glass_title),
-                primaryLabel = stringResource(R.string.settings_cards_glass_done),
-                onPrimary = {},
-                onDismissRequest = { params.onDismissRequest(start) },
-                isLeftHanded = params.isLeftHanded,
-                hasSecondary = false
+                isChanged = { draft != start },
+                onCommit = { params.onCommit(start) },
+                onDismissRequest = params.onDismissRequest,
+                isLeftHanded = params.isLeftHanded
             ),
             modifier = modifier,
             preview = {
@@ -184,6 +183,7 @@ private fun CardsGlassBottomSheetPreview() {
             params = CardsGlassParams(
                 initial = CardsGlassDraft(radiusDp = 16, glass = GlassLevel.MEDIUM, opacity = BlurOpacity.MEDIUM.value),
                 onChange = {},
+                onCommit = {},
                 onDismissRequest = {}
             )
         )

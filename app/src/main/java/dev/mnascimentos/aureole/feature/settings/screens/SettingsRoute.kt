@@ -7,7 +7,11 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
+import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.feature.settings.SettingsViewModel
+import dev.mnascimentos.aureole.feature.settings.extensions.changeFont
+import dev.mnascimentos.aureole.feature.settings.extensions.changeManualSeedColor
+import dev.mnascimentos.aureole.feature.settings.extensions.changeTheme
 import dev.mnascimentos.aureole.feature.settings.extensions.SettingsIntentUtils
 import dev.mnascimentos.aureole.feature.settings.extensions.createFolder
 import dev.mnascimentos.aureole.feature.settings.extensions.finishCardsGlass
@@ -73,15 +77,12 @@ private fun buildSettingsScreenActions(
         onUndo = viewModel::onUndo,
         onUndoExpired = viewModel::onUndoExpired,
         onClearErrorMessage = { viewModel.clearErrorMessage() },
-        onSelectManualSeedColor = { color ->
-            viewModel.setSettingValue(SettingValue.ManualSeedColor(color))
+        onSelectManualSeedColor = { color -> viewModel.changeManualSeedColor(color, R.string.undo_color_changed) },
+        onSelectBackgroundColor = { color ->
+            viewModel.changeManualSeedColor(color, R.string.undo_background_changed)
         },
-        onSelectTheme = { themeName ->
-            viewModel.setSettingValue(SettingValue.SelectedTheme(themeName))
-        },
-        onSelectFont = { fontName ->
-            viewModel.setSettingValue(SettingValue.SelectedFont(fontName))
-        },
+        onSelectTheme = viewModel::changeTheme,
+        onSelectFont = viewModel::changeFont,
         onSelectWallpaperScaleType = { scaleType ->
             viewModel.setSettingValue(SettingValue.WallpaperScaleType(scaleType))
         },

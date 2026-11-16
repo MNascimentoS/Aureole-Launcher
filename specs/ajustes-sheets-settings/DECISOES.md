@@ -34,3 +34,7 @@ resposta: Salvar ao fechar + Desfazer (16/11 14:24)
 opções: Todos os botões de adicionar | Só o botão do container
 trava: fase 1
 resposta: Só o botão do container (16/11 14:24)
+
+## D-07 No picker de cor do fundo, qual tom de cada paleta aparece (e vira o fundo)? (padrão: variante)
+opções: Variante (surfaceVariant) | Superfície (surface) | Fundo (background)
+trava: fase 2

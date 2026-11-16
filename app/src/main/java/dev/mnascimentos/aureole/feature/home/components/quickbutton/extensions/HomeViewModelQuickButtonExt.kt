@@ -79,7 +79,9 @@ fun HomeViewModel.onCloseShortcutSelection() {
     }
 }
 
+/** Saves the appearance and offers an "Undo" that brings back the previous one. */
 fun HomeViewModel.onUpdateQuickButtonAppearance(appearance: QuickButtonAppearance) {
+    val previous = uiState.value.activeQuickButtonModel?.appearance
     updateUiState { state ->
         val currentModel = state.activeQuickButtonModel ?: return@updateUiState state
         val updatedModel = currentModel.copy(appearance = appearance)
@@ -89,6 +91,11 @@ fun HomeViewModel.onUpdateQuickButtonAppearance(appearance: QuickButtonAppearanc
     val id = state.activeQuickButtonId ?: return
     val model = state.activeQuickButtonModel ?: return
     saveQuickButtonModel(id, model)
+    if (previous != null && previous != appearance) {
+        showUndo(TextResource.fromResId(R.string.undo_quick_button_changed)) {
+            applyQuickButtonModel(id) { it.copy(appearance = previous) }
+        }
+    }
 }
 
 fun HomeViewModel.onUpdateQuickButtonShortcuts(shortcuts: QuickButtonShortcuts) {
@@ -117,13 +124,17 @@ fun HomeViewModel.onUpdateQuickButtonShortcuts(shortcuts: QuickButtonShortcuts) 
 }
 
 private fun HomeViewModel.applyQuickButtonShortcuts(buttonId: String, shortcuts: QuickButtonShortcuts) {
+    applyQuickButtonModel(buttonId) { it.copy(shortcuts = shortcuts) }
+}
+
+private fun HomeViewModel.applyQuickButtonModel(buttonId: String, change: (QuickButtonModel) -> QuickButtonModel) {
     val state = uiState.value
     val model = if (state.activeQuickButtonId == buttonId) state.activeQuickButtonModel else null
     val target = model
         ?: QuickButtonUtils.findItemById(state.gridItems, buttonId)?.quickButtonModel
         ?: QuickButtonUtils.findQuickButtonInContainers(state.containers.values, buttonId)
         ?: return
-    val updated = target.copy(shortcuts = shortcuts)
+    val updated = change(target)
     if (model != null) {
         updateUiState { it.copy(activeQuickButtonModel = updated) }
     }

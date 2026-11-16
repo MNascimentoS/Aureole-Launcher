@@ -17,6 +17,7 @@ import dev.mnascimentos.aureole.composable.sheets.model.ThemePreviewState
 import dev.mnascimentos.aureole.composable.sheets.model.basePaletteName
 import dev.mnascimentos.aureole.composable.sheets.model.discard
 import dev.mnascimentos.aureole.composable.sheets.model.fontNameOf
+import dev.mnascimentos.aureole.composable.sheets.model.isPaletteChanged
 import dev.mnascimentos.aureole.composable.sheets.model.resolveAppliedPalette
 import dev.mnascimentos.aureole.core.designsystem.palette.ThemePalette
 import dev.mnascimentos.aureole.core.designsystem.palette.allPalettes
@@ -30,8 +31,8 @@ private const val PALETTE_COLUMNS = 3
 
 /**
  * Palette picker with a live preview: tapping a palette repaints the mini-home and the sheet at once, and
- * nothing is persisted until Apply, which calls [onPaletteSelected] with the chosen palette and closes.
- * Cancel, swiping down and tapping outside only call [onDismissRequest]. [options] adds a footer and the
+ * nothing is persisted until the sheet closes. Closing with a different palette calls [onPaletteSelected] and then
+ * [onDismissRequest]; closing without a change only calls [onDismissRequest]. [options] adds a footer and the
  * Aureole logo in the header.
  */
 @Composable
@@ -58,7 +59,8 @@ fun PickPaletteBottomSheet(
             title = stringResource(R.string.settings_appearance_pick_palette_title),
             base = base,
             pending = pending,
-            onApply = { resolveAppliedPalette(pending.palette?.name, selectedPaletteName)?.let(onPaletteSelected) },
+            isChanged = { pending.isPaletteChanged(selectedPaletteName) },
+            onCommit = { resolveAppliedPalette(pending.palette?.name, selectedPaletteName)?.let(onPaletteSelected) },
             onDismissRequest = {
                 pending = pending.discard()
                 onDismissRequest()

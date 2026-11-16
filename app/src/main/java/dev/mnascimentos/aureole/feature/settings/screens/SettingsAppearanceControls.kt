@@ -117,10 +117,7 @@ internal fun AppearanceDialogs(
     if (flags.showPalette) {
         PickPaletteBottomSheet(
             selectedPaletteName = uiState.selectedThemeName,
-            onPaletteSelected = { palette ->
-                onDismissDialog()
-                actions.onSelectTheme(palette.name)
-            },
+            onPaletteSelected = { palette -> actions.onSelectTheme(palette.name) },
             onDismissRequest = onDismissDialog
         )
     }
@@ -128,10 +125,7 @@ internal fun AppearanceDialogs(
     if (flags.showFont) {
         PickFontBottomSheet(
             selectedFontName = uiState.selectedFontName,
-            onFontSelected = { fontName ->
-                onDismissDialog()
-                actions.onSelectFont(fontName)
-            },
+            onFontSelected = { fontName -> actions.onSelectFont(fontName) },
             onDismissRequest = onDismissDialog
         )
     }
@@ -141,7 +135,7 @@ internal fun AppearanceDialogs(
             params = SetBackgroundParams(
                 currentColor = uiState.manualSeedColor,
                 isCustomImageSet = uiState.isCustomWallpaperSet,
-                onSolidColorSelected = actions.onSelectManualSeedColor,
+                onSolidColorSelected = actions.onSelectBackgroundColor,
                 onCustomImageClick = actions.onChangeWallpaperClick,
                 onDismissRequest = onDismissDialog,
                 isLeftHanded = uiState.isLeftHandedMode
@@ -154,10 +148,8 @@ internal fun AppearanceDialogs(
             params = CardsGlassParams(
                 initial = uiState.toCardsGlassDraft(),
                 onChange = actions.onApplyCardsGlass,
-                onDismissRequest = { before ->
-                    actions.onCardsGlassClosed(before)
-                    onDismissDialog()
-                },
+                onCommit = actions.onCardsGlassClosed,
+                onDismissRequest = onDismissDialog,
                 isLeftHanded = uiState.isLeftHandedMode
             )
         )

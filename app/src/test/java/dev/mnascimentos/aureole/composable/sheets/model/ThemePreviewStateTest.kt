@@ -103,4 +103,21 @@ class ThemePreviewStateTest {
     fun `applying with a tap should save the tapped font`() {
         assertEquals("Roboto", resolveAppliedFont(pendingName = "Roboto", selectedName = "Istok Web"))
     }
+
+    @Test
+    fun `a tapped palette other than the selected one is a change`() {
+        val state = ThemePreviewState(palette = other)
+
+        assertTrue(state.isPaletteChanged(selectedName = "Zzz"))
+        assertFalse(state.isPaletteChanged(selectedName = other.name))
+        assertFalse(state.isPaletteChanged(selectedName = other.toLight().name))
+        assertFalse(ThemePreviewState().isPaletteChanged(selectedName = "Zzz"))
+    }
+
+    @Test
+    fun `a tapped font other than the selected one is a change`() {
+        assertTrue(ThemePreviewState(fontName = "Roboto").isFontChanged("Istok Web"))
+        assertFalse(ThemePreviewState(fontName = "Roboto").isFontChanged("Roboto"))
+        assertFalse(ThemePreviewState().isFontChanged("Roboto"))
+    }
 }

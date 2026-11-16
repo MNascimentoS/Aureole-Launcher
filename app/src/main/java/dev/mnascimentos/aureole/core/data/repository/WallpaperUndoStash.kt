@@ -37,6 +37,15 @@ class WallpaperUndoStash(
         return if (moved) path else null
     }
 
+    /**
+     * Keeps a copy of the custom image at [path] aside, because a new image is about to overwrite it. Returns false
+     * when it could not be copied (then there is nothing to bring back).
+     */
+    fun keepCopy(path: String): Boolean = runCatching {
+        File(path).copyTo(stashedFile, overwrite = true)
+        stashedSystemFile.delete()
+    }.isSuccess
+
     /** Puts the file kept aside back at [path], reapplies the system wallpaper and turns the custom one on again. */
     fun undo(path: String): Boolean {
         val moved = stashedFile.renameTo(File(path))

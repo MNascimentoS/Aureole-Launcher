@@ -18,13 +18,18 @@ import dev.mnascimentos.aureole.core.designsystem.theme.AureoleColors
 data class ThemePalette(
     val name: String,
     val colors: AureoleColors,
+    val category: PaletteCategory = PaletteCategory.NEUTRAL,
 )
+
+/** Family of a preset palette, used to filter the palettes in the background color picker. */
+enum class PaletteCategory { COLD, COOL, NEUTRAL, WARM }
 
 /**
  * Builds the light variant of a dark palette by mirroring the tonal ramp.
  */
 fun ThemePalette.toLight(): ThemePalette = ThemePalette(
     name = "$name Light",
+    category = category,
     colors = AureoleColors(
         onSurfaceHigh = colors.background,
         onSurfaceMedium = colors.surface,
@@ -38,6 +43,7 @@ fun ThemePalette.toLight(): ThemePalette = ThemePalette(
 
 val frostbitePalette = ThemePalette(
     name = "Frostbite",
+    category = PaletteCategory.COLD,
     colors = AureoleColors(
         onSurfaceHigh = Color(0xFFFFFFFF),
         onSurfaceMedium = Color(0xFFC5D8E8),
