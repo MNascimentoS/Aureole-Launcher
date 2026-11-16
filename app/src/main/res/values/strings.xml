@@ -71,9 +71,9 @@
 
     <!-- Settings Advanced -->
     <string name="settings_advanced_title">Advanced</string>
-    <string name="settings_advanced_set_default_launcher">Set as default launcher</string>
+    <string name="settings_advanced_set_default_launcher">Default launcher</string>
     <string name="settings_advanced_app_info">App info</string>
-    <string name="settings_advanced_whats_new">What\'s new (Release notes)</string>
+    <string name="settings_advanced_whats_new">What\'s new</string>
     <string name="settings_advanced_reset_launcher">Reset launcher</string>
     <string name="settings_advanced_uninstall_launcher">Uninstall launcher</string>
     <string name="settings_advanced_contributors">Contributors</string>
@@ -372,7 +372,7 @@
     <string name="home_onboarding_coach_success">Nice!</string>
     <string name="home_onboarding_coach_apps_title">Swipe up</string>
     <string name="home_onboarding_coach_apps_body">to see all your apps. The Home button also opens and closes the list.</string>
-    <string name="home_onboarding_coach_apps_done">Your apps live here. Tap outside to close.</string>
+    <string name="home_onboarding_coach_apps_done">Your apps live here. Press back to close.</string>
     <string name="home_onboarding_coach_scrub_title_right">Swipe along the right edge</string>
     <string name="home_onboarding_coach_scrub_title_left">Swipe along the left edge</string>
     <string name="home_onboarding_coach_scrub_body">and slide down to jump straight to a letter.</string>

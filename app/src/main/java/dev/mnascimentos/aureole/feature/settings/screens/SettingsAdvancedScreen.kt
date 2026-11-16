@@ -5,17 +5,22 @@ import android.content.Intent
 import android.net.Uri
 import android.provider.Settings
 import androidx.activity.compose.BackHandler
+import androidx.annotation.StringRes
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -29,6 +34,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import dev.mnascimentos.aureole.R
@@ -118,7 +124,8 @@ private fun SettingsAdvancedContent(
     BoxWithConstraints(
         modifier = Modifier
             .fillMaxSize()
-            .padding(innerPadding)
+            .padding(innerPadding),
+        contentAlignment = Alignment.TopCenter
     ) {
         val topSpacerHeight = (maxHeight * uiState.headerOffsetPercent.percentToFraction())
             .coerceAtLeast(AureoleDS.dimens.medium)
@@ -127,7 +134,9 @@ private fun SettingsAdvancedContent(
 
         Column(
             modifier = Modifier
-                .fillMaxSize()
+                .fillMaxHeight()
+                .widthIn(max = AureoleDS.dimens.settingsContentMaxWidth)
+                .fillMaxWidth()
                 .statusBarsPadding()
                 .verticalScroll(rememberScrollState())
                 .padding(horizontal = AureoleDS.dimens.iconXLargeMedium),
@@ -179,12 +188,6 @@ private fun AdvancedItemsGroup(
         modifier = Modifier.fillMaxWidth()
     ) {
         SettingsActionItem(
-            title = stringResource(R.string.settings_advanced_set_default_launcher),
-            leadingContent = { AureoleDS.icons.Home() },
-            onClick = { actions.onSetDefaultLauncherClick() }
-        )
-
-        SettingsActionItem(
             title = stringResource(R.string.settings_advanced_app_info),
             leadingContent = { AureoleDS.icons.Info() },
             onClick = {
@@ -200,6 +203,12 @@ private fun AdvancedItemsGroup(
             title = stringResource(R.string.settings_advanced_whats_new),
             leadingContent = { AureoleDS.icons.Smile() },
             onClick = onOpenReleaseNotesDialog
+        )
+
+        SettingsActionItem(
+            title = stringResource(R.string.settings_advanced_set_default_launcher),
+            leadingContent = { AureoleDS.icons.Home() },
+            onClick = { actions.onSetDefaultLauncherClick() }
         )
 
         SettingsActionItem(
@@ -219,45 +228,30 @@ private fun AdvancedItemsGroup(
 @Composable
 private fun AdvancedLinksGroup(onNavigateToContributors: () -> Unit, onNavigateToLicenses: () -> Unit) {
     val context = LocalContext.current
-    Column(
+    Column(modifier = Modifier.fillMaxWidth()) {
+        AdvancedLink(R.string.settings_advanced_contributors, onNavigateToContributors)
+        AdvancedLink(R.string.settings_advanced_privacy_policy) { openLegalPage(context, LegalPage.PRIVACY) }
+        AdvancedLink(R.string.settings_advanced_terms_of_service) { openLegalPage(context, LegalPage.TERMS) }
+        AdvancedLink(R.string.settings_advanced_open_source_licenses, onNavigateToLicenses)
+    }
+}
+
+/** Footer link: 16 sp text inside a 48 dp touch target, text centered vertically. */
+@Composable
+private fun AdvancedLink(@StringRes textRes: Int, onClick: () -> Unit) {
+    Box(
         modifier = Modifier
             .fillMaxWidth()
+            .heightIn(min = AureoleDS.dimens.minTouchTarget)
+            .clickable(role = Role.Button, onClick = onClick)
             .padding(start = AureoleDS.dimens.xSmall),
-        verticalArrangement = Arrangement.spacedBy(AureoleDS.dimens.xSmall)
+        contentAlignment = Alignment.CenterStart
     ) {
         AureoleText(
-            text = stringResource(R.string.settings_advanced_contributors),
+            text = stringResource(textRes),
             color = AureoleDS.colors.onSurfaceLow,
-            modifier = Modifier.clickable { onNavigateToContributors() },
             format = AureoleTextFormatParams(
-                style = AureoleDS.typography.bodySmall,
-                fontWeight = FontWeight.Normal
-            )
-        )
-        AureoleText(
-            text = stringResource(R.string.settings_advanced_privacy_policy),
-            color = AureoleDS.colors.onSurfaceLow,
-            modifier = Modifier.clickable { openLegalPage(context, LegalPage.PRIVACY) },
-            format = AureoleTextFormatParams(
-                style = AureoleDS.typography.bodySmall,
-                fontWeight = FontWeight.Normal
-            )
-        )
-        AureoleText(
-            text = stringResource(R.string.settings_advanced_terms_of_service),
-            color = AureoleDS.colors.onSurfaceLow,
-            modifier = Modifier.clickable { openLegalPage(context, LegalPage.TERMS) },
-            format = AureoleTextFormatParams(
-                style = AureoleDS.typography.bodySmall,
-                fontWeight = FontWeight.Normal
-            )
-        )
-        AureoleText(
-            text = stringResource(R.string.settings_advanced_open_source_licenses),
-            color = AureoleDS.colors.onSurfaceLow,
-            modifier = Modifier.clickable { onNavigateToLicenses() },
-            format = AureoleTextFormatParams(
-                style = AureoleDS.typography.bodySmall,
+                style = AureoleDS.typography.bodyMedium,
                 fontWeight = FontWeight.Normal
             )
         )

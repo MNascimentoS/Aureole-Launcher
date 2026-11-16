@@ -58,6 +58,12 @@ fun AureoleIcons.Add(
 ) { AureoleIcon(R.drawable.ic_aureole_add, modifier, tint) }
 
 @Composable
+fun AureoleIcons.AddNew(
+    modifier: Modifier = Modifier,
+    tint: Color? = null
+) { AureoleIcon(R.drawable.ic_aureole_add_new, modifier, tint) }
+
+@Composable
 fun AureoleIcons.Plus(
     modifier: Modifier = Modifier,
     tint: Color? = null

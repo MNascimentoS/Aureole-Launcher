@@ -71,9 +71,9 @@
 
     <!-- Settings Advanced -->
     <string name="settings_advanced_title">Avançado</string>
-    <string name="settings_advanced_set_default_launcher">Definir como launcher padrão</string>
+    <string name="settings_advanced_set_default_launcher">Launcher padrão</string>
     <string name="settings_advanced_app_info">Informações do app</string>
-    <string name="settings_advanced_whats_new">O que há de novo (Notas da versão)</string>
+    <string name="settings_advanced_whats_new">Novidades</string>
     <string name="settings_advanced_reset_launcher">Redefinir launcher</string>
     <string name="settings_advanced_uninstall_launcher">Desinstalar launcher</string>
     <string name="settings_advanced_contributors">Colaboradores</string>
@@ -373,7 +373,7 @@
     <string name="home_onboarding_coach_success">Isso aí!</string>
     <string name="home_onboarding_coach_apps_title">Deslize para cima</string>
     <string name="home_onboarding_coach_apps_body">para ver todos os seus apps. O botão Início também abre e fecha a lista.</string>
-    <string name="home_onboarding_coach_apps_done">Seus apps estão aqui. Toque fora para fechar.</string>
+    <string name="home_onboarding_coach_apps_done">Seus apps estão aqui. Toque em voltar para fechar.</string>
     <string name="home_onboarding_coach_scrub_title_right">Deslize na borda direita</string>
     <string name="home_onboarding_coach_scrub_title_left">Deslize na borda esquerda</string>
     <string name="home_onboarding_coach_scrub_body">e desça o dedo para pular direto para uma letra.</string>

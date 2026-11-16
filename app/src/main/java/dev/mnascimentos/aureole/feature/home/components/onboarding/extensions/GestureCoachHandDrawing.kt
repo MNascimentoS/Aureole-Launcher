@@ -8,6 +8,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
+import dev.mnascimentos.aureole.feature.home.components.onboarding.model.EdgeScrubPath
 import dev.mnascimentos.aureole.feature.home.components.onboarding.model.OnboardingMotionSpec
 import dev.mnascimentos.aureole.feature.home.components.scrubber.model.ScrubberDimensions
 
@@ -16,10 +17,6 @@ private const val TRAIL_ALPHA = 0.35f
 private const val SWIPE_START_Y = 0.78f
 private const val PRESS_Y = 0.6f
 private const val FADE_OUT_START = 0.8f
-
-// Edge scrub: the first third pulls in from the edge, the next half slides down.
-private const val EDGE_PULL_PORTION = 1f / 3
-private const val EDGE_SLIDE_PORTION = 0.5f
 
 private fun fadeFor(phase: Float, loopMs: Int): Float {
     val appear = OnboardingMotionSpec.HAND_APPEAR_MS.toFloat() / loopMs
@@ -44,25 +41,38 @@ internal fun DrawScope.drawSwipeUp(phase: State<Float>, loopMs: Int, color: Colo
     drawFinger(finger, alpha, color)
 }
 
-internal fun DrawScope.drawEdgeScrub(phase: State<Float>, isLeftHandedMode: Boolean, color: Color) {
-    val inset = OnboardingMotionSpec.HAND_EDGE_INSET.toPx()
-    val edgeX = if (isLeftHandedMode) inset else size.width - inset
-    val inward = if (isLeftHandedMode) 1f else -1f
-    val pullPhase = (phase.value / EDGE_PULL_PORTION).coerceIn(0f, 1f)
-    val slideRaw = (phase.value - EDGE_PULL_PORTION) / EDGE_SLIDE_PORTION
-    val slidePhase = FastOutSlowInEasing.transform(slideRaw.coerceIn(0f, 1f))
-    val (startY, endY) = scrubberHintPath(size.height, ScrubberDimensions.PaddingBottom.toPx())
-    val x = edgeX + inward * ScrubberDimensions.EdgeGestureStartWidth.toPx() * pullPhase
-    val y = startY + (endY - startY) * slidePhase
-    val alpha = fadeFor(phase.value, OnboardingMotionSpec.HAND_EDGE_LOOP_MS)
-    drawLine(
-        color.copy(alpha = TRAIL_ALPHA * alpha),
-        Offset(x, startY),
-        Offset(x, y),
-        OnboardingMotionSpec.HAND_TRAIL_WIDTH.toPx(),
-        StrokeCap.Round
+/** Finger position of the edge scrub hint at [phase] (0..1): pull in from the edge, pause, then slide down. */
+internal fun edgeScrubPoint(phase: Float, path: EdgeScrubPath): Offset {
+    val pullRaw = phase / OnboardingMotionSpec.HAND_EDGE_PULL_END
+    val pull = FastOutSlowInEasing.transform(pullRaw.coerceIn(0f, 1f))
+    val slideSpan = OnboardingMotionSpec.HAND_EDGE_SLIDE_END - OnboardingMotionSpec.HAND_EDGE_SLIDE_START
+    val slideRaw = (phase - OnboardingMotionSpec.HAND_EDGE_SLIDE_START) / slideSpan
+    val slide = FastOutSlowInEasing.transform(slideRaw.coerceIn(0f, 1f))
+    return Offset(
+        x = path.edgeX + path.inwardSign * path.pullPx * pull,
+        y = path.startY + (path.endY - path.startY) * slide
     )
-    drawFinger(Offset(x, y), alpha, color)
+}
+
+internal fun DrawScope.drawEdgeScrub(phase: State<Float>, isLeftHandedMode: Boolean, color: Color) {
+    val (startY, endY) = scrubberHintPath(size.height, ScrubberDimensions.PaddingBottom.toPx())
+    val path = EdgeScrubPath(
+        edgeX = if (isLeftHandedMode) 0f else size.width,
+        inwardSign = if (isLeftHandedMode) 1f else -1f,
+        pullPx = OnboardingMotionSpec.HAND_EDGE_PULL_TRAVEL.toPx(),
+        startY = startY,
+        endY = endY
+    )
+    val finger = edgeScrubPoint(phase.value, path)
+    val alpha = fadeFor(phase.value, OnboardingMotionSpec.HAND_EDGE_LOOP_MS)
+    val trailColor = color.copy(alpha = TRAIL_ALPHA * alpha)
+    val trailWidth = OnboardingMotionSpec.HAND_TRAIL_WIDTH.toPx()
+    // Two segments draw the whole "L": edge to the pulled point, then the pulled point to the finger.
+    drawLine(trailColor, Offset(path.edgeX, startY), Offset(finger.x, startY), trailWidth, StrokeCap.Round)
+    if (finger.y > startY) {
+        drawLine(trailColor, Offset(path.pulledX, startY), finger, trailWidth, StrokeCap.Round)
+    }
+    drawFinger(finger, alpha, color)
 }
 
 internal fun DrawScope.drawPressAndHold(phase: State<Float>, loopMs: Int, color: Color) {

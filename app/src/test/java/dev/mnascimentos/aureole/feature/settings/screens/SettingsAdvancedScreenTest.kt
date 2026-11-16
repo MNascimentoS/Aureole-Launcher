@@ -1,5 +1,6 @@
 package dev.mnascimentos.aureole.feature.settings.screens
 
+import androidx.compose.ui.test.getUnclippedBoundsInRoot
 import androidx.compose.ui.test.junit4.v2.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
@@ -7,6 +8,7 @@ import androidx.compose.ui.test.performScrollTo
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.feature.settings.model.SettingsScreenActions
 import dev.mnascimentos.aureole.feature.settings.model.SettingsUiState
+import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
@@ -33,9 +35,9 @@ class SettingsAdvancedScreenTest {
         }
 
         composeTestRule.onNodeWithText("Advanced").assertExists()
-        composeTestRule.onNodeWithText("Set as default launcher").assertExists()
+        composeTestRule.onNodeWithText("Default launcher").assertExists()
         composeTestRule.onNodeWithText("App info").assertExists()
-        composeTestRule.onNodeWithText("What's new (Release notes)").assertExists()
+        composeTestRule.onNodeWithText("What's new").assertExists()
         composeTestRule.onNodeWithText("Reset launcher").assertExists()
         composeTestRule.onNodeWithText("Uninstall launcher").assertExists()
         composeTestRule.onNodeWithText("Contributors").assertExists()
@@ -66,7 +68,7 @@ class SettingsAdvancedScreenTest {
             }
         }
 
-        composeTestRule.onNodeWithText("Set as default launcher").performScrollTo().performClick()
+        composeTestRule.onNodeWithText("Default launcher").performScrollTo().performClick()
         assertTrue(defaultLauncherClicked)
 
         composeTestRule.onNodeWithText("App info").performScrollTo().performClick()
@@ -109,7 +111,7 @@ class SettingsAdvancedScreenTest {
             }
         }
 
-        composeTestRule.onNodeWithText("What's new (Release notes)").performScrollTo().performClick()
+        composeTestRule.onNodeWithText("What's new").performScrollTo().performClick()
         composeTestRule.onNodeWithText("Got it").assertExists()
     }
 
@@ -132,5 +134,24 @@ class SettingsAdvancedScreenTest {
 
         composeTestRule.onNodeWithText("Uninstall launcher").performScrollTo().performClick()
         composeTestRule.onNodeWithText("Uninstall").performClick()
+    }
+
+    @Test
+    fun `when rendering, should list the five items in the new order`() {
+        composeTestRule.setContent {
+            AureoleLauncherTheme {
+                SettingsAdvancedScreen(
+                    uiState = SettingsUiState(),
+                    actions = SettingsScreenActions(),
+                    onNavigateToContributors = {},
+                    onNavigateBack = {}
+                )
+            }
+        }
+
+        val titles = listOf("App info", "What's new", "Default launcher", "Reset launcher", "Uninstall launcher")
+        val tops = titles.map { composeTestRule.onNodeWithText(it).getUnclippedBoundsInRoot().top }
+        assertEquals(tops.sorted(), tops)
+        assertEquals(tops.distinct(), tops)
     }
 }

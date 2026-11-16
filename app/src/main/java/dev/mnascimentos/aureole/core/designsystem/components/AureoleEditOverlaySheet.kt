@@ -322,7 +322,12 @@ private fun OverlaySheetHeader(
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(start = AureoleDS.dimens.small, end = AureoleDS.dimens.small, bottom = AureoleDS.dimens.medium),
+            .padding(
+                start = AureoleDS.dimens.small,
+                top = AureoleDS.dimens.small,
+                end = AureoleDS.dimens.small,
+                bottom = AureoleDS.dimens.medium
+            ),
         contentAlignment = Alignment.Center
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
@@ -340,7 +345,7 @@ private fun OverlaySheetHeader(
             }
             Text(
                 text = title,
-                style = AureoleDS.typography.titleMedium,
+                style = AureoleDS.typography.titleLarge,
                 fontWeight = FontWeight.Bold,
                 color = AureoleDS.colors.onSurfaceHigh,
                 textAlign = TextAlign.Center

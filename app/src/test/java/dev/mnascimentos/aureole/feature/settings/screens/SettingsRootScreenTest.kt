@@ -1,5 +1,6 @@
 package dev.mnascimentos.aureole.feature.settings.screens
 
+import androidx.compose.ui.test.getUnclippedBoundsInRoot
 import androidx.compose.ui.test.junit4.v2.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
@@ -7,6 +8,7 @@ import androidx.compose.ui.test.performScrollTo
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.feature.settings.model.SettingsUiState
 import org.junit.Assert.assertTrue
+import org.robolectric.annotation.Config
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -80,5 +82,29 @@ class SettingsRootScreenTest {
 
         composeTestRule.onNodeWithText("Aureole").performScrollTo().performClick()
         composeTestRule.onNodeWithText("Got it").assertExists()
+    }
+
+    @Test
+    fun `in portrait, thank you line should sit below the options`() = assertThankYouBelowOptions()
+
+    @Test
+    @Config(qualifiers = "w891dp-h411dp")
+    fun `in landscape, thank you line should sit below the options`() = assertThankYouBelowOptions()
+
+    private fun assertThankYouBelowOptions() {
+        composeTestRule.setContent {
+            AureoleLauncherTheme {
+                SettingsRootScreen(
+                    uiState = SettingsUiState(),
+                    onNavigateToBehavior = {},
+                    onNavigateToAppearance = {},
+                    onNavigateToAdvanced = {}
+                )
+            }
+        }
+
+        val advancedBottom = composeTestRule.onNodeWithText("Advanced").getUnclippedBoundsInRoot().bottom
+        val thankYouTop = composeTestRule.onNodeWithText("Thank you!").getUnclippedBoundsInRoot().top
+        assertTrue(thankYouTop >= advancedBottom)
     }
 }
