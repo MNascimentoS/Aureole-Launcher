@@ -47,3 +47,10 @@ vez, no fim). Aparelho é o teste do Mateus.
 
 - Ícone Home no checklist: no screenshot o passo já está concluído (mostra o check), então a casa só aparece no Avançado.
 - Gates de novo após o ajuste: detekt, lintDebug, testDebugUnitTest, updateDebugScreenshotTest (3 referências de Definir plano de fundo), validateDebugScreenshotTest, assembleDebug: todos passaram.
+
+### Fase 1 (complemento): RF-23
+
+- `SettingsContributorsScreen.kt`: removido o `statusBarsPadding()` duplicado; fica só `padding(innerPadding)` (o `Scaffold` já traz a margem das barras). Sem `headerOffsetPercent`/`topSpacerHeight` na tela (não havia). Bloco título + lista segue com `Arrangement.Center` + `CenterHorizontally`; o PNG `SettingsContributorsScreenScreenshotTest` (retrato) confirma o bloco no centro vertical e horizontal.
+- `SettingsLicensesScreen.kt`: tinha a margem dobrada de fato (`statusBarsPadding()` + `navigationBarsPadding()` + `innerPadding`); removidos os dois primeiros, fica `padding(innerPadding)`. Nas telas com deslocamento nada foi mexido.
+- Screenshot: o teste de Colaboradores em retrato já existia; a referência não mudou (o preview não tem insets de barra, então o ganho aparece só no aparelho).
+- Gates: compileDebugKotlin, detekt (0 issues), lintDebug, testDebugUnitTest, updateDebugScreenshotTest, validateDebugScreenshotTest, assembleDebug: todos passaram.
