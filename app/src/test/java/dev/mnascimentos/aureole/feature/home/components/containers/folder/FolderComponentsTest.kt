@@ -13,6 +13,7 @@ import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollTo
 import androidx.compose.ui.test.performTextInput
+import androidx.compose.ui.test.performTextReplacement
 import androidx.core.graphics.drawable.toDrawable
 import dev.chrisbanes.haze.HazeState
 import dev.mnascimentos.aureole.composable.LocalHomeUiState
@@ -33,6 +34,7 @@ import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.
 import dev.mnascimentos.aureole.feature.home.model.LocalHomeActions
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
 import dev.mnascimentos.aureole.feature.home.model.createDefaultHomeScreenActions
+import dev.mnascimentos.aureole.testing.closeOverlayWithBack
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Rule
@@ -40,8 +42,6 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
-
-private const val DISMISS_ANIMATION_MS = 500L
 
 private const val SHEET_ENTER_MS = 1000L
 
@@ -258,9 +258,10 @@ class FolderComponentsTest {
         composeTestRule.onNodeWithText("Delete folder").performClick()
         assertTrue(deleted)
 
-        // Click Save
-        composeTestRule.onNodeWithText("Save", substring = true).performClick()
-        assertEquals("Social", savedName)
+        // Closing saves what changed: the new name.
+        composeTestRule.onNode(hasSetTextAction()).performTextReplacement("Social Media")
+        composeTestRule.closeOverlayWithBack()
+        assertEquals("Social Media", savedName)
     }
 
     // --- FolderDialog Tests ---
@@ -336,9 +337,10 @@ class FolderComponentsTest {
         composeTestRule.onAllNodesWithText("Test App").assertCountEquals(2)
         composeTestRule.onNodeWithText("Browser").assertIsDisplayed()
 
-        // Click Save
-        composeTestRule.onNodeWithText("Save", substring = true).performClick()
-        assertEquals(listOf(sampleApp.packageName), savedPackages)
+        // Closing saves what changed: the app marked now joins the one already in the folder.
+        composeTestRule.onNodeWithText("Browser").performClick()
+        composeTestRule.closeOverlayWithBack()
+        assertEquals(setOf(sampleApp.packageName, otherApp.packageName), savedPackages.toSet())
     }
 
     // --- OpenedFolderActionsAndList & OpenedFolderPopup Tests ---
@@ -458,8 +460,7 @@ class FolderComponentsTest {
             }
         }
 
-        composeTestRule.onNodeWithText("Cancel").performClick()
-        composeTestRule.mainClock.advanceTimeBy(DISMISS_ANIMATION_MS)
+        composeTestRule.closeOverlayWithBack()
         assertTrue(dismissed)
     }
 

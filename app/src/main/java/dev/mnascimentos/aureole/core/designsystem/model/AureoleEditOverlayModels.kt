@@ -62,6 +62,8 @@ fun rememberAureoleEditOverlayState(
  * @property titleIcon Optional icon drawn before the title (menus show what the sheet is about).
  * @property edgeToEdgeContent Whether the sheet content takes the full sheet width, with no horizontal padding;
  * the content then pads itself (a pager needs this so its pages do not clip at the margin mid-swipe).
+ * @property hasExternalBackdrop True when the screen around draws the dimmed, blurred backdrop itself (a screen
+ * that swaps one sheet for another keeps one backdrop for both, so it does not flash between them).
  */
 data class AureoleEditOverlayConfig(
     val title: String? = null,
@@ -78,6 +80,7 @@ data class AureoleEditOverlayConfig(
     val headerIcon: (@Composable (Modifier) -> Unit)? = null,
     val titleIcon: (@Composable (Modifier) -> Unit)? = null,
     val edgeToEdgeContent: Boolean = false,
+    val hasExternalBackdrop: Boolean = false,
 )
 
 /**

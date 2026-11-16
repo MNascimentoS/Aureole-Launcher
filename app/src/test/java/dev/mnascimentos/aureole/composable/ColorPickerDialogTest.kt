@@ -5,11 +5,11 @@ import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.isSelectable
 import androidx.compose.ui.test.junit4.v2.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
-import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performSemanticsAction
 import dev.mnascimentos.aureole.composable.color.model.RecommendedColors
 import dev.mnascimentos.aureole.composable.color.model.formatHex
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
+import dev.mnascimentos.aureole.testing.closeOverlayWithBack
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
@@ -17,8 +17,6 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
-
-private const val DISMISS_ANIMATION_MS = 500L
 
 @RunWith(RobolectricTestRunner::class)
 class ColorPickerDialogTest {
@@ -47,37 +45,26 @@ class ColorPickerDialogTest {
     }
 
     @Test
-    fun `when confirming without changes, should return the initial color`() {
+    fun `when closing without changes, should not return a color`() {
         var selected: Int? = null
-        setPicker(onSelected = { selected = it })
+        var dismissed = false
+        setPicker(onSelected = { selected = it }, onDismiss = { dismissed = true })
 
-        composeTestRule.onNodeWithText("Confirm").performClick()
+        composeTestRule.closeOverlayWithBack()
 
-        assertEquals(RecommendedColors[1], selected)
+        assertTrue(dismissed)
+        assertNull(selected)
     }
 
     @Test
-    fun `when picking a swatch, should update the preview and confirm that color`() {
+    fun `when picking a swatch and closing, should update the preview and save that color`() {
         var selected: Int? = null
         setPicker(onSelected = { selected = it })
 
         composeTestRule.onAllNodes(isSelectable())[0].performSemanticsAction(SemanticsActions.OnClick)
         composeTestRule.onNodeWithText(formatHex(RecommendedColors[0])).assertIsDisplayed()
-        composeTestRule.onNodeWithText("Confirm").performClick()
+        composeTestRule.closeOverlayWithBack()
 
         assertEquals(RecommendedColors[0], selected)
-    }
-
-    @Test
-    fun `when cancelling, should close without a color`() {
-        var selected: Int? = null
-        var dismissed = false
-        setPicker(onSelected = { selected = it }, onDismiss = { dismissed = true })
-
-        composeTestRule.onNodeWithText("Cancel").performClick()
-        composeTestRule.mainClock.advanceTimeBy(DISMISS_ANIMATION_MS)
-
-        assertTrue(dismissed)
-        assertNull(selected)
     }
 }

@@ -10,6 +10,8 @@ import dev.mnascimentos.aureole.core.designsystem.model.TextResource
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.feature.settings.model.SettingsScreenActions
 import dev.mnascimentos.aureole.feature.settings.model.SettingsUiState
+import dev.mnascimentos.aureole.testing.SHEET_SLIDE_IN_MS
+import dev.mnascimentos.aureole.testing.closeOverlayWithBack
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
@@ -57,8 +59,7 @@ class SettingsScreenTest {
         }
 
         composeTestRule.onNodeWithText("Choose Primary Color").assertIsDisplayed()
-        composeTestRule.onNodeWithText("Cancel").performClick()
-        composeTestRule.mainClock.advanceTimeBy(DISMISS_ANIMATION_MS)
+        composeTestRule.closeOverlayWithBack()
         assertTrue(dismissCalled)
     }
 
@@ -77,8 +78,7 @@ class SettingsScreenTest {
         }
 
         composeTestRule.onNodeWithText("Create").assertExists()
-        composeTestRule.onNodeWithText("Cancel").performClick()
-        composeTestRule.mainClock.advanceTimeBy(DISMISS_ANIMATION_MS)
+        composeTestRule.closeOverlayWithBack()
         assertTrue(dismissCalled)
     }
 
@@ -156,6 +156,7 @@ class SettingsScreenTest {
             }
         }
 
+        composeTestRule.mainClock.advanceTimeBy(SHEET_SLIDE_IN_MS)
         composeTestRule.onNodeWithText("Reset launcher?").assertIsDisplayed()
         composeTestRule.onNodeWithText("Reset").performClick()
         assertFalse(factoryResetConfirmed)

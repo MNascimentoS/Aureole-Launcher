@@ -11,7 +11,14 @@ import dev.mnascimentos.aureole.core.designsystem.theme.AureoleColors
 
 private const val RAMP_SATURATION = 0.32f
 private const val LIGHT_LUMINANCE = 0.5f
-private val RampLightness = floatArrayOf(0.08f, 0.14f, 0.22f, 0.32f, 0.45f, 0.62f, 0.80f)
+private const val RAMP_L0 = 0.08f
+private const val RAMP_L1 = 0.14f
+private const val RAMP_L2 = 0.22f
+private const val RAMP_L3 = 0.32f
+private const val RAMP_L4 = 0.45f
+private const val RAMP_L5 = 0.62f
+private const val RAMP_L6 = 0.80f
+private val RampLightness = floatArrayOf(RAMP_L0, RAMP_L1, RAMP_L2, RAMP_L3, RAMP_L4, RAMP_L5, RAMP_L6)
 
 /** A color of the current theme offered as a background, with the name of its role. */
 data class ThemeSwatch(@StringRes val labelRes: Int, val color: Int)

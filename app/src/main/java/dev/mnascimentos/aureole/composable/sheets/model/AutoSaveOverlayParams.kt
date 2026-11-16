@@ -13,6 +13,7 @@ import dev.chrisbanes.haze.HazeState
  * @property isLeftHanded Mirrors the sheet for the left thumb.
  * @property onSettingsClick Opens the Aureole settings from the header logo; null hides the logo.
  * @property hazeState Blur state of the screen behind the overlay.
+ * @property hasExternalBackdrop True when the screen around draws the backdrop itself.
  */
 data class AutoSaveOverlayParams(
     val title: String,
@@ -21,7 +22,8 @@ data class AutoSaveOverlayParams(
     val onDismissRequest: () -> Unit,
     val isLeftHanded: Boolean = false,
     val onSettingsClick: (() -> Unit)? = null,
-    val hazeState: HazeState? = null
+    val hazeState: HazeState? = null,
+    val hasExternalBackdrop: Boolean = false
 )
 
 /** What closing an auto-save sheet has to do. */

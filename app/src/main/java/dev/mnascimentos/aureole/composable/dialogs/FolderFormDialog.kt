@@ -65,16 +65,7 @@ fun FolderFormDialog(
     val resolvedName = { resolveFolderName(folderName, placeholderName) }
     val save = { onSave(resolvedName(), selectedIcon) }
     val title = stringResource(if (isEditing) R.string.home_folder_edit_title else R.string.home_folder_new_title)
-    val preview: @Composable BoxScope.() -> Unit = {
-        AureolePreviewFrame(modifier = Modifier.align(Alignment.Center)) {
-            FolderIconPreview(
-                folderName = folderName,
-                selectedIcon = selectedIcon,
-                label = resolvedName(),
-                modifier = Modifier.fillMaxWidth()
-            )
-        }
-    }
+    val preview: @Composable BoxScope.() -> Unit = { FolderFormPreview(folderName, selectedIcon, resolvedName()) }
     val nameField: @Composable ColumnScope.() -> Unit = {
         FolderNameField(
             value = folderName,
@@ -84,16 +75,10 @@ fun FolderFormDialog(
     }
     val body: @Composable ColumnScope.() -> Unit = {
         FolderFormSheetBody(
-            state = FolderFormSheetState(
-                picker = FolderIconPickerState(selectedIcon, category),
-                showDelete = isEditing && onDelete != null
-            ),
+            state = FolderFormSheetState(FolderIconPickerState(selectedIcon, category), isEditing && onDelete != null),
             actions = FolderFormSheetActions(
-                picker = FolderIconPickerActions(
-                    onIconSelected = { selectedIcon = it },
-                    onCategorySelected = { category = it }
-                ),
-                onDelete = onDelete
+                FolderIconPickerActions({ selectedIcon = it }, { category = it }),
+                onDelete
             ),
             isLeftHanded = isLeftHanded
         )
@@ -160,6 +145,18 @@ private fun FolderFormSheetBody(
             state = state.picker,
             actions = actions.picker,
             isLeftHanded = isLeftHanded
+        )
+    }
+}
+
+@Composable
+private fun BoxScope.FolderFormPreview(folderName: String, selectedIcon: String?, label: String) {
+    AureolePreviewFrame(modifier = Modifier.align(Alignment.Center)) {
+        FolderIconPreview(
+            folderName = folderName,
+            selectedIcon = selectedIcon,
+            label = label,
+            modifier = Modifier.fillMaxWidth()
         )
     }
 }

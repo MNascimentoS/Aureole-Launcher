@@ -13,6 +13,7 @@ import dev.mnascimentos.aureole.core.designsystem.theme.AureoleThemeConfig
  * @property onDismissRequest Called when the overlay closes, whichever way it closed.
  * @property onSettingsClick Opens the Aureole settings from the header logo; null hides the logo (used inside
  * the settings themselves, where it would be circular).
+ * @property hasExternalBackdrop True when the screen around draws the backdrop itself.
  */
 data class ThemePreviewOverlayParams(
     val title: String,
@@ -21,5 +22,6 @@ data class ThemePreviewOverlayParams(
     val isChanged: () -> Boolean,
     val onCommit: () -> Unit,
     val onDismissRequest: () -> Unit,
-    val onSettingsClick: (() -> Unit)? = null
+    val onSettingsClick: (() -> Unit)? = null,
+    val hasExternalBackdrop: Boolean = false
 )

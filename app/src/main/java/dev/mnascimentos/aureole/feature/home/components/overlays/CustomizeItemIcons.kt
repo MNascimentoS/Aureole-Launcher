@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -45,7 +46,10 @@ internal fun CustomizeItemIcon(item: CustomizeAddItem, tint: Color, modifier: Mo
         CustomizeAddItem.QUICK_BUTTON -> icons.Click(modifier, tint)
         CustomizeAddItem.WIDGET -> icons.Plus(modifier, tint)
         CustomizeAddItem.SETTINGS -> icons.Logo(
-            modifier = Modifier.width(AureoleDS.dimens.iconHuge).aspectRatio(LOGO_ASPECT_RATIO),
+            modifier = modifier
+                .wrapContentSize(unbounded = true)
+                .width(AureoleDS.dimens.iconHuge)
+                .aspectRatio(LOGO_ASPECT_RATIO),
             tint = tint
         )
     }

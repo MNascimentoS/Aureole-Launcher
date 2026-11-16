@@ -30,6 +30,7 @@ object OnboardingMotionSpec {
     const val HAND_APPEAR_MS = 150
     const val HAND_SWIPE_TRAVEL = 0.3f
     const val HAND_EDGE_LOOP_MS = 2300
+
     // Edge scrub phases: pull in from the edge, short pause, then slide down.
     const val HAND_EDGE_PULL_END = 0.30f
     const val HAND_EDGE_SLIDE_START = 0.38f

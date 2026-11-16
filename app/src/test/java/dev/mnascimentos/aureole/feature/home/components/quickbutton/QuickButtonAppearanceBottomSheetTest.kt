@@ -19,6 +19,7 @@ import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
 import dev.mnascimentos.aureole.feature.home.model.createDefaultHomeScreenActions
+import dev.mnascimentos.aureole.testing.closeOverlayWithBack
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
@@ -26,8 +27,6 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
-
-private const val DISMISS_ANIMATION_MS = 500L
 
 @RunWith(RobolectricTestRunner::class)
 class QuickButtonAppearanceBottomSheetTest {
@@ -87,7 +86,7 @@ class QuickButtonAppearanceBottomSheetTest {
     }
 
     @Test
-    fun `when toggling the stroke, should not write the button until Save is tapped`() {
+    fun `when toggling the stroke, should not write the button until the sheet closes`() {
         var saved: QuickButtonAppearance? = null
         setAppearanceSheet(createDefaultHomeScreenActions().copy(onUpdateQuickButtonAppearance = { saved = it }))
 
@@ -95,12 +94,12 @@ class QuickButtonAppearanceBottomSheetTest {
         composeTestRule.onNodeWithText("STROKE COLOR").assertExists()
         assertNull(saved)
 
-        composeTestRule.onNodeWithText("Save").performClick()
+        composeTestRule.closeOverlayWithBack()
         assertTrue(saved!!.strokeEnabled)
     }
 
     @Test
-    fun `when cancelling after editing, should drop the draft and close`() {
+    fun `when closing after editing, should save the draft once and close`() {
         var saved: QuickButtonAppearance? = null
         val dismissed = mutableListOf<Unit>()
         setAppearanceSheet(
@@ -109,22 +108,21 @@ class QuickButtonAppearanceBottomSheetTest {
         )
 
         composeTestRule.onNodeWithText("Stroke").performScrollTo().performClick()
-        composeTestRule.onNodeWithText("Cancel").performClick()
-        composeTestRule.mainClock.advanceTimeBy(DISMISS_ANIMATION_MS)
+        composeTestRule.closeOverlayWithBack()
 
-        assertNull(saved)
+        assertTrue(saved!!.strokeEnabled)
         assertEquals(1, dismissed.size)
     }
 
     @Test
-    fun `when an icon of the inline grid is tapped, should save it with Save and not before`() {
+    fun `when an icon of the inline grid is tapped, should save it when the sheet closes and not before`() {
         var saved: QuickButtonAppearance? = null
         setAppearanceSheet(createDefaultHomeScreenActions().copy(onUpdateQuickButtonAppearance = { saved = it }))
 
         composeTestRule.onNodeWithContentDescription(QuickButtonIcon.STAR.name).performScrollTo().performClick()
         assertNull(saved)
 
-        composeTestRule.onNodeWithText("Save").performClick()
+        composeTestRule.closeOverlayWithBack()
         assertEquals(QuickButtonIcon.STAR, saved!!.icon)
     }
 }

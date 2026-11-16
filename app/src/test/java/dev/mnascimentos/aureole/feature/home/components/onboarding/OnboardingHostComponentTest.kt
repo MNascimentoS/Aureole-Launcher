@@ -60,7 +60,7 @@ class OnboardingHostComponentTest {
     fun `when a picker is open, should show it instead of the list`() {
         render(OnboardingUiState(stage = OnboardingStage.CHECKLIST, activePicker = AppearancePicker.PALETTE))
 
-        composeTestRule.onNodeWithText("Apply").assertExists()
+        composeTestRule.onNodeWithText("Pick a palette").assertExists()
         composeTestRule.onNodeWithText("First steps").assertDoesNotExist()
     }
 

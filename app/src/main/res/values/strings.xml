@@ -4,7 +4,6 @@
 
     <!-- Common -->
     <string name="core_common_cancel">Cancel</string>
-    <string name="core_common_save">Save</string>
     <string name="core_common_create">Create</string>
     <string name="core_common_understood">Got it</string>
 
@@ -497,7 +496,6 @@
     <string name="settings_appearance_restore_background">Restore background</string>
     <string name="settings_appearance_background_restored">Background restored</string>
     <string name="settings_appearance_background_type">Type</string>
-    <string name="settings_appearance_background_color">Color</string>
     <string name="home_folder_form_delete">Delete folder</string>
     <string name="home_quickbutton_category_aureole">Aureole</string>
     <string name="home_quickbutton_category_system">System</string>

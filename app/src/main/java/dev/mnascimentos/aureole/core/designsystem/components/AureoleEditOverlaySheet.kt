@@ -44,6 +44,7 @@ import androidx.compose.ui.unit.dp
 import dev.chrisbanes.haze.HazeState
 import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.core.designsystem.icons.Logo
+import dev.mnascimentos.aureole.core.designsystem.model.AnchoredSheetState
 import dev.mnascimentos.aureole.core.designsystem.model.AureoleEditOverlayParams
 import dev.mnascimentos.aureole.core.designsystem.model.OverlaySheetDecorations
 import dev.mnascimentos.aureole.core.designsystem.model.OverlaySheetMotion
@@ -54,7 +55,6 @@ import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.core.designsystem.utils.LocalHazeState
-import dev.mnascimentos.aureole.core.designsystem.utils.LocalOverlayBackdropProvided
 import dev.mnascimentos.aureole.core.designsystem.utils.expandFractionOf
 import dev.mnascimentos.aureole.core.designsystem.utils.scrimTapToDismiss
 import kotlin.math.roundToInt
@@ -84,19 +84,18 @@ internal fun OverlayContentBox(
 ) {
     val localHaze = LocalHazeState.current
     val effectiveHazeState = hazeState ?: localHaze
-    val isBackdropProvided = LocalOverlayBackdropProvided.current
 
     BoxWithConstraints(
         modifier = Modifier
             .fillMaxSize()
             .scrimTapToDismiss(stateData.triggerDismiss)
     ) {
-        if (!isBackdropProvided) {
+        if (!params.config.hasExternalBackdrop) {
             AureoleOverlayBackdrop(
                 hazeState = effectiveHazeState,
                 modifier = Modifier
                     .fillMaxSize()
-                    .then(fadeWith(stateData))
+                    .fadeWith(stateData)
             )
         }
         val density = LocalDensity.current
@@ -113,14 +112,12 @@ internal fun OverlayContentBox(
         val motion = remember { OverlaySheetMotion() }
 
         AnchoredPreviewLayout(
-            bounds = bounds,
-            motion = motion,
-            isExpanded = stateData.isExpanded,
+            state = AnchoredSheetState(bounds, motion, stateData.isExpanded),
             hiddenFraction = rememberSheetHiddenFraction(stateData),
             preview = {
                 PreviewSlot(
                     previewContent = params.previewContent,
-                    fadeModifier = fadeWith(stateData),
+                    modifier = Modifier.fadeWith(stateData),
                     expandFraction = { expandFractionOf(motion, stateData.isExpanded, bounds) }
                 )
             },
@@ -137,15 +134,16 @@ internal fun OverlayContentBox(
 }
 
 /** Fades with the overlay as it opens and closes; nothing when animations are off. */
-@Composable
-private fun fadeWith(stateData: OverlaySheetStateData): Modifier {
-    if (!stateData.effectiveAnimated) return Modifier
-    return with(stateData.animScope) {
-        Modifier.animateEnterExit(
-            enter = fadeIn(tween(ANIMATION_DURATION_MS)),
-            exit = fadeOut(tween(ANIMATION_DURATION_MS))
-        )
-    }
+private fun Modifier.fadeWith(stateData: OverlaySheetStateData): Modifier {
+    if (!stateData.effectiveAnimated) return this
+    return then(
+        with(stateData.animScope) {
+            Modifier.animateEnterExit(
+                enter = fadeIn(tween(ANIMATION_DURATION_MS)),
+                exit = fadeOut(tween(ANIMATION_DURATION_MS))
+            )
+        }
+    )
 }
 
 /**
@@ -180,13 +178,12 @@ private fun rememberSheetHiddenFraction(stateData: OverlaySheetStateData): () ->
  */
 @Composable
 private fun AnchoredPreviewLayout(
-    bounds: SheetBounds,
-    motion: OverlaySheetMotion,
-    isExpanded: Boolean,
+    state: AnchoredSheetState,
     hiddenFraction: () -> Float,
     preview: @Composable () -> Unit,
     sheet: @Composable () -> Unit
 ) {
+    val (bounds, motion, isExpanded) = state
     val density = LocalDensity.current
     val previewGapPx = with(density) { AureoleDS.dimens.medium.roundToPx() }
     val previewTopPaddingPx = with(density) { AureoleDS.dimens.large.roundToPx() }
@@ -231,13 +228,12 @@ private fun AnchoredPreviewLayout(
 @Composable
 private fun PreviewSlot(
     previewContent: (@Composable BoxScope.() -> Unit)?,
-    fadeModifier: Modifier,
-    expandFraction: () -> Float
+    expandFraction: () -> Float,
+    modifier: Modifier = Modifier
 ) {
     Box(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
-            .then(fadeModifier)
             .graphicsLayer { alpha = 1f - expandFraction() },
         contentAlignment = Alignment.BottomCenter
     ) {

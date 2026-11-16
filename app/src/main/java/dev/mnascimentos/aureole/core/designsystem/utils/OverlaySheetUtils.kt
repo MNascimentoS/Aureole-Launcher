@@ -1,7 +1,6 @@
 package dev.mnascimentos.aureole.core.designsystem.utils
 
 import androidx.compose.foundation.gestures.detectTapGestures
-import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
 import dev.mnascimentos.aureole.core.designsystem.model.OverlaySheetMotion
@@ -22,14 +21,7 @@ internal fun Modifier.scrimTapToDismiss(onDismiss: () -> Unit): Modifier {
 internal fun expandFractionOf(motion: OverlaySheetMotion, isExpanded: Boolean, bounds: SheetBounds): Float {
     val currentHeight = motion.currentHeight(isExpanded, bounds)
     val restHeight = motion.restOrFallback(bounds)
-    val expandedHeight = motion.expandedHeight(bounds) ?: return 0f
-    if (expandedHeight <= restHeight) return 0f
+    val expandedHeight = motion.expandedHeight(bounds)
+    if (expandedHeight == null || expandedHeight <= restHeight) return 0f
     return ((currentHeight - restHeight) / (expandedHeight - restHeight)).coerceIn(0f, 1f)
 }
-
-/**
- * Whether an [AureoleEditOverlay][dev.mnascimentos.aureole.core.designsystem.components.AureoleEditOverlay]
- * leaves its dimmed, blurred backdrop to the screen around it. A screen that swaps one sheet for another
- * provides true and draws one backdrop for both, so it does not flash between them.
- */
-val LocalOverlayBackdropProvided = staticCompositionLocalOf { false }

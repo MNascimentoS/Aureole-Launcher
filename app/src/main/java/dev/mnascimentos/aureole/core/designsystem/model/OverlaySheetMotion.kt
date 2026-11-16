@@ -1,8 +1,5 @@
 package dev.mnascimentos.aureole.core.designsystem.model
 
-import androidx.compose.animation.core.Spring
-import androidx.compose.animation.core.animate
-import androidx.compose.animation.core.spring
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -30,6 +27,9 @@ internal class OverlaySheetMotion {
      * content has no intrinsic height (lazy lists), which keeps the full expanded height.
      */
     var contentFullHeight by mutableStateOf<Float?>(null)
+
+    /** Width and height (packed) the content had when [contentFullHeight] was measured; zero until then. */
+    var contentMeasuredSize = 0L
 
     var settleJob: Job? = null
 
@@ -113,40 +113,6 @@ internal class OverlaySheetMotion {
             canExpand = expanded != null
         )
     }
-
-    suspend fun animateHeight(from: Float, to: Float) {
-        animate(
-            initialValue = from,
-            targetValue = to,
-            animationSpec = spring(
-                dampingRatio = Spring.DampingRatioNoBouncy,
-                stiffness = Spring.StiffnessMediumLow
-            )
-        ) { value, _ -> pinnedHeight = value }
-        pinnedHeight = null
-    }
-
-    /** Goes up to [peak] when it is above [from], then springs back to [rest] with a small bounce. */
-    suspend fun animateSpringBack(from: Float, peak: Float, rest: Float) {
-        var start = from
-        if (peak > from) {
-            animate(
-                initialValue = from,
-                targetValue = peak,
-                animationSpec = spring(dampingRatio = Spring.DampingRatioNoBouncy, stiffness = Spring.StiffnessHigh)
-            ) { value, _ -> pinnedHeight = value }
-            start = peak
-        }
-        animate(
-            initialValue = start,
-            targetValue = rest,
-            animationSpec = spring(
-                dampingRatio = Spring.DampingRatioMediumBouncy,
-                stiffness = Spring.StiffnessMedium
-            )
-        ) { value, _ -> pinnedHeight = value }
-        pinnedHeight = null
-    }
 }
 
 /**
@@ -195,7 +161,7 @@ internal class OverlaySheetController(
     /** Height the sheet grows to: the expanded one, or the rest height when the content already fits. */
     fun expandedHeight(): Float = motion.expandedHeight(bounds) ?: motion.restOrFallback(bounds)
 
-    fun canExpand(): Boolean = motion.canExpand(bounds)
+    val canExpand: Boolean get() = motion.canExpand(bounds)
 
     /** Settles the sheet after the finger lifts with [velocityPx] pixels per second (positive = down). */
     fun onRelease(velocityPx: Float) {
@@ -209,7 +175,8 @@ internal class OverlaySheetController(
 
     private fun settleAtRest(isFlungUp: Boolean) {
         val isStretched = motion.currentHeight(expanded, bounds) > motion.restOrFallback(bounds)
-        if (!expanded && !motion.canExpand(bounds) && (isStretched || isFlungUp)) {
+        val needsSpringBack = isStretched || isFlungUp
+        if (!expanded && !canExpand && needsSpringBack) {
             springBack(bounce = isFlungUp)
         } else {
             settleTo(expand = false)

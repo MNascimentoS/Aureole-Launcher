@@ -42,7 +42,11 @@ fun AureoleColorSwatches(
         verticalArrangement = Arrangement.spacedBy(AureoleDS.dimens.small)
     ) {
         colors.forEach { colorInt ->
-            AureoleColorSwatch(colorInt = colorInt, isSelected = selected == colorInt, onSelect = { onSelect(colorInt) })
+            AureoleColorSwatch(
+                colorInt = colorInt,
+                isSelected = selected == colorInt,
+                onSelect = { onSelect(colorInt) }
+            )
         }
     }
 }

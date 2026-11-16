@@ -9,10 +9,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.feature.settings.SettingsViewModel
+import dev.mnascimentos.aureole.feature.settings.extensions.SettingsIntentUtils
 import dev.mnascimentos.aureole.feature.settings.extensions.changeFont
 import dev.mnascimentos.aureole.feature.settings.extensions.changeManualSeedColor
 import dev.mnascimentos.aureole.feature.settings.extensions.changeTheme
-import dev.mnascimentos.aureole.feature.settings.extensions.SettingsIntentUtils
 import dev.mnascimentos.aureole.feature.settings.extensions.createFolder
 import dev.mnascimentos.aureole.feature.settings.extensions.finishCardsGlass
 import dev.mnascimentos.aureole.feature.settings.extensions.onUndo

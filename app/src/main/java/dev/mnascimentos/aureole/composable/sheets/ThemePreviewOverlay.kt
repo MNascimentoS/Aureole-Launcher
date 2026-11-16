@@ -40,7 +40,8 @@ internal fun ThemePreviewOverlay(
                 onCommit = params.onCommit,
                 onDismissRequest = params.onDismissRequest,
                 isLeftHanded = isLeftHanded,
-                onSettingsClick = params.onSettingsClick
+                onSettingsClick = params.onSettingsClick,
+                hasExternalBackdrop = params.hasExternalBackdrop
             ),
             modifier = modifier,
             preview = {

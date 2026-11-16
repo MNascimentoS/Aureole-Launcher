@@ -4,7 +4,6 @@
 
     <!-- Common -->
     <string name="core_common_cancel">Cancelar</string>
-    <string name="core_common_save">Salvar</string>
     <string name="core_common_create">Criar</string>
     <string name="core_common_understood">Entendido</string>
 
@@ -504,7 +503,6 @@
     <string name="settings_appearance_restore_background">Restaurar fundo</string>
     <string name="settings_appearance_background_restored">Fundo restaurado</string>
     <string name="settings_appearance_background_type">Tipo</string>
-    <string name="settings_appearance_background_color">Cor</string>
     <string name="home_folder_form_delete">Excluir pasta</string>
     <string name="home_quickbutton_category_aureole">Aureole</string>
     <string name="home_quickbutton_category_system">Sistema</string>

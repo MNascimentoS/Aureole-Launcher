@@ -59,26 +59,6 @@ fun HomeViewModel.onCloseQuickButtonAppearance() {
     }
 }
 
-fun HomeViewModel.onOpenShortcutSelection(type: String) {
-    updateUiState { state ->
-        state.copy(
-            showQuickButtonSettingsBottomSheet = false,
-            showShortcutSelectionBottomSheet = true,
-            editingShortcutType = type
-        )
-    }
-}
-
-fun HomeViewModel.onCloseShortcutSelection() {
-    updateUiState { state ->
-        state.copy(
-            showShortcutSelectionBottomSheet = false,
-            editingShortcutType = null,
-            showQuickButtonSettingsBottomSheet = true
-        )
-    }
-}
-
 /** Saves the appearance and offers an "Undo" that brings back the previous one. */
 fun HomeViewModel.onUpdateQuickButtonAppearance(appearance: QuickButtonAppearance) {
     val previous = uiState.value.activeQuickButtonModel?.appearance

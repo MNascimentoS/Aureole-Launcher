@@ -21,17 +21,17 @@ import androidx.compose.ui.res.stringResource
 import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.composable.sheets.PickFontBottomSheet
 import dev.mnascimentos.aureole.composable.sheets.PickPaletteBottomSheet
+import dev.mnascimentos.aureole.composable.sheets.model.ThemePickerSheetOptions
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleEditOverlay
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleOverlayBackdrop
 import dev.mnascimentos.aureole.core.designsystem.model.AureoleEditOverlayConfig
 import dev.mnascimentos.aureole.core.designsystem.model.AureoleEditOverlayParams
 import dev.mnascimentos.aureole.core.designsystem.model.AureoleEditOverlayState
-import dev.mnascimentos.aureole.core.designsystem.model.rememberAureoleEditOverlayState
 import dev.mnascimentos.aureole.core.designsystem.model.LocalLeftHanded
+import dev.mnascimentos.aureole.core.designsystem.model.rememberAureoleEditOverlayState
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.core.designsystem.utils.LocalHazeState
-import dev.mnascimentos.aureole.core.designsystem.utils.LocalOverlayBackdropProvided
 import dev.mnascimentos.aureole.feature.home.components.onboarding.model.AppearancePicker
 import dev.mnascimentos.aureole.feature.home.components.overlays.extensions.addCustomizeItem
 import dev.mnascimentos.aureole.feature.home.components.overlays.model.CustomizeAdjustItem
@@ -71,8 +71,7 @@ fun CustomizeBottomSheet(
     // the Customize sheet slides down while the picker slides up, and back.
     val isBackdropVisible = isVisible && (picker != null || customizeState.internalVisible)
     CompositionLocalProvider(
-        LocalLeftHanded provides uiState.isLeftHandedMode,
-        LocalOverlayBackdropProvided provides true
+        LocalLeftHanded provides uiState.isLeftHandedMode
     ) {
         Box(modifier = modifier.fillMaxSize()) {
             AnimatedVisibility(
@@ -113,12 +112,14 @@ private fun CustomizePicker(
         AppearancePicker.PALETTE -> PickPaletteBottomSheet(
             selectedPaletteName = uiState.selectedThemeName,
             onPaletteSelected = { actions.onSelectPalette(it.name) },
-            onDismissRequest = onClose
+            onDismissRequest = onClose,
+            options = ThemePickerSheetOptions(hasExternalBackdrop = true)
         )
         AppearancePicker.FONT -> PickFontBottomSheet(
             selectedFontName = uiState.selectedFontName,
             onFontSelected = { actions.onSelectFont(it) },
-            onDismissRequest = onClose
+            onDismissRequest = onClose,
+            options = ThemePickerSheetOptions(hasExternalBackdrop = true)
         )
         null -> Unit
     }
@@ -140,7 +141,8 @@ private fun CustomizeOverlay(
                 title = stringResource(R.string.home_customize_title),
                 isVisible = params.isVisible,
                 isLeftHanded = uiState.isLeftHandedMode,
-                showHeaderAction = false
+                showHeaderAction = false,
+                hasExternalBackdrop = true
             ),
             sheetContent = {
                 Column(modifier = Modifier.verticalScroll(rememberScrollState())) {

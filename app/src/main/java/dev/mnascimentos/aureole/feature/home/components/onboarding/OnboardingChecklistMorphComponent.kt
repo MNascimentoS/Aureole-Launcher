@@ -63,14 +63,13 @@ fun OnboardingChecklistMorphComponent(
             transitionSpec = { checklistMorphTransform() },
             label = "checklistMorph"
         ) { state ->
-            val shared = checklistSharedModifiers(this)
+            val shared = checklistSharedModifiers(this, animateEntrance = !state.cameFromPill)
             when (state.morph) {
                 ChecklistMorph.EXPANDED -> OnboardingChecklistComponent(
                     onboarding = onboarding,
                     actions = actions,
                     glass = glass,
-                    shared = shared,
-                    animateEntrance = !state.cameFromPill
+                    shared = shared
                 )
                 ChecklistMorph.MINIMIZED -> OnboardingChecklistPill(
                     onboarding = onboarding,
@@ -100,7 +99,10 @@ private fun AnimatedContentTransitionScope<ChecklistMorphTarget>.checklistMorphT
 
 @OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
-private fun SharedTransitionScope.checklistSharedModifiers(scope: AnimatedVisibilityScope): ChecklistSharedModifiers {
+private fun SharedTransitionScope.checklistSharedModifiers(
+    scope: AnimatedVisibilityScope,
+    animateEntrance: Boolean
+): ChecklistSharedModifiers {
     val boundsTransform = BoundsTransform { _, _ ->
         spring(dampingRatio = OnboardingMotionSpec.PILL_DAMPING, stiffness = OnboardingMotionSpec.CHECKLIST_STIFFNESS)
     }
@@ -128,7 +130,8 @@ private fun SharedTransitionScope.checklistSharedModifiers(scope: AnimatedVisibi
             renderInOverlayDuringTransition = false
         ),
         fading = with(scope) { Modifier.animateEnterExit(enter = fadeIn(listFade), exit = fadeOut(listFade)) },
-        backdrop = with(scope) { Modifier.animateEnterExit(enter = fadeIn(fadeSpring), exit = fadeOut(fadeSpring)) }
+        backdrop = with(scope) { Modifier.animateEnterExit(enter = fadeIn(fadeSpring), exit = fadeOut(fadeSpring)) },
+        animateEntrance = animateEntrance
     )
 }
 

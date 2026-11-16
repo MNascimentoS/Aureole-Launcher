@@ -22,6 +22,7 @@ import androidx.compose.ui.semantics.customActions
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.R
+import dev.mnascimentos.aureole.core.designsystem.model.GestureZoneState
 import dev.mnascimentos.aureole.core.designsystem.model.SheetHandleAction
 import dev.mnascimentos.aureole.core.designsystem.model.sheetHandleActions
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
@@ -51,12 +52,10 @@ private const val GESTURE_ZONE_HEIGHT_DP = 20
  */
 @Composable
 internal fun OverlaySheetGestureZone(
-    isExpanded: Boolean,
-    isLeftHanded: Boolean,
+    state: GestureZoneState,
     onToggleExpanded: () -> Unit,
     onSettingsClick: (() -> Unit)?,
-    modifier: Modifier = Modifier,
-    canExpand: Boolean = true
+    modifier: Modifier = Modifier
 ) {
     val haptics = LocalHapticFeedback.current
     val currentToggle by rememberUpdatedState(onToggleExpanded)
@@ -69,7 +68,12 @@ internal fun OverlaySheetGestureZone(
         Unit
     }
     val description = stringResource(R.string.overlay_sheet_gesture_zone_description)
-    val actions = sheetHandleActions(isExpanded, onSettingsClick != null, isLeftHanded, canExpand).map { action ->
+    val actions = sheetHandleActions(
+        state.isExpanded,
+        onSettingsClick != null,
+        state.isLeftHanded,
+        state.canExpand
+    ).map { action ->
         CustomAccessibilityAction(gestureZoneActionLabel(action)) {
             if (action == SheetHandleAction.Settings) onSettingsClick?.invoke() else onToggleExpanded()
             true
@@ -118,8 +122,7 @@ private fun gestureZoneActionLabel(action: SheetHandleAction): String {
 private fun OverlaySheetGestureZonePreview() {
     AureoleLauncherTheme {
         OverlaySheetGestureZone(
-            isExpanded = false,
-            isLeftHanded = false,
+            state = GestureZoneState(isExpanded = false, isLeftHanded = false),
             onToggleExpanded = {},
             onSettingsClick = {}
         )

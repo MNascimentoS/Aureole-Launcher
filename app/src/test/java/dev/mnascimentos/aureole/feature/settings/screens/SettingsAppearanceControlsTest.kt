@@ -5,13 +5,16 @@ import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollTo
 import dev.mnascimentos.aureole.core.designsystem.model.GlassLevel
+import dev.mnascimentos.aureole.core.designsystem.palette.allPalettes
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.feature.settings.model.AppearanceDialogFlags
 import dev.mnascimentos.aureole.feature.settings.model.CardsGlassDraft
 import dev.mnascimentos.aureole.feature.settings.model.SettingsScreenActions
 import dev.mnascimentos.aureole.feature.settings.model.SettingsUiState
 import dev.mnascimentos.aureole.feature.settings.model.toCardsGlassDraft
+import dev.mnascimentos.aureole.testing.closeOverlayWithBack
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
@@ -116,9 +119,9 @@ class SettingsAppearanceControlsTest {
         }
 
         composeTestRule.onNodeWithText("Pick a palette").assertExists()
-        composeTestRule.onNodeWithText("Frostbite").performClick()
-        composeTestRule.onNodeWithText("Apply").performClick()
-        assertEquals("Frostbite", selectedTheme)
+        composeTestRule.onNodeWithText(allPalettes[1].name).performClick()
+        composeTestRule.closeOverlayWithBack()
+        assertEquals(allPalettes[1].name, selectedTheme)
         assertTrue(dismissCalled)
     }
 
@@ -141,14 +144,14 @@ class SettingsAppearanceControlsTest {
         }
 
         composeTestRule.onNodeWithText("Pick Font").assertExists()
-        composeTestRule.onNodeWithText("Istok Web").performClick()
-        composeTestRule.onNodeWithText("Apply").performClick()
-        assertEquals("Istok Web", selectedFont)
+        composeTestRule.onNodeWithText("Roboto").performClick()
+        composeTestRule.closeOverlayWithBack()
+        assertEquals("Roboto", selectedFont)
         assertTrue(dismissCalled)
     }
 
     @Test
-    fun `when setBg flag is true, applying the solid color should save the seed color`() {
+    fun `when setBg flag is true, closing without a change should save no seed color`() {
         var savedColor: Int? = null
         var dismissCalled = false
         val flags = AppearanceDialogFlags(showSetBg = true)
@@ -167,9 +170,8 @@ class SettingsAppearanceControlsTest {
             }
         }
 
-        composeTestRule.onNodeWithText("Apply").performClick()
-        composeTestRule.mainClock.advanceTimeBy(DISMISS_ANIMATION_MS)
-        assertEquals(DEFAULT_SEED, savedColor)
+        composeTestRule.closeOverlayWithBack()
+        assertNull(savedColor)
         assertTrue(dismissCalled)
     }
 
@@ -194,7 +196,7 @@ class SettingsAppearanceControlsTest {
         }
 
         composeTestRule.onNodeWithText("Custom image").performClick()
-        composeTestRule.onNodeWithText("Apply").performClick()
+        composeTestRule.closeOverlayWithBack()
         composeTestRule.mainClock.advanceTimeBy(DISMISS_ANIMATION_MS)
         assertTrue(wallpaperChangeClicked)
         assertTrue(dismissCalled)
@@ -226,7 +228,7 @@ class SettingsAppearanceControlsTest {
     }
 
     @Test
-    fun `when tapping Done on the cardsGlass sheet, should close and hand back the opening values`() {
+    fun `when closing the cardsGlass sheet, should close and hand back the opening values`() {
         var closedWith: CardsGlassDraft? = null
         var dismissCalled = false
         val opening = SettingsUiState(cornerRadiusDp = 16, isHazeEnabled = true)
@@ -243,7 +245,7 @@ class SettingsAppearanceControlsTest {
         }
 
         composeTestRule.onNodeWithText("8").performScrollTo().performClick()
-        composeTestRule.onNodeWithText("Done").performClick()
+        composeTestRule.closeOverlayWithBack()
         composeTestRule.mainClock.advanceTimeBy(DISMISS_ANIMATION_MS)
 
         assertEquals(opening.toCardsGlassDraft(), closedWith)

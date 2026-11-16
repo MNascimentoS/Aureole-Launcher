@@ -51,8 +51,8 @@ private const val SCRIM_ALPHA = 0.45f
 /**
  * "First steps" list over a scrim. It rises from below the screen with the Figma overshoot and
  * settles in the upper third; tapping the scrim minimizes it to the pill. Inside the checklist morph, [shared]
- * ties the card, the halo and the progress text to the pill, and [animateEntrance] is false when the list grows
- * back out of the pill instead of rising.
+ * ties the card, the halo and the progress text to the pill, and its `animateEntrance` is false when the list
+ * grows back out of the pill instead of rising.
  */
 @Composable
 fun OnboardingChecklistComponent(
@@ -60,8 +60,7 @@ fun OnboardingChecklistComponent(
     actions: OnboardingActions,
     glass: OnboardingGlass,
     modifier: Modifier = Modifier,
-    shared: ChecklistSharedModifiers = ChecklistSharedModifiers(),
-    animateEntrance: Boolean = true
+    shared: ChecklistSharedModifiers = ChecklistSharedModifiers()
 ) {
     Box(
         modifier = modifier
@@ -93,7 +92,7 @@ fun OnboardingChecklistComponent(
                 ChecklistCardContent(onboarding = onboarding, actions = actions, shared = shared)
             }
         }
-        if (animateEntrance) {
+        if (shared.animateEntrance) {
             OnboardingCardEntrance(
                 fromTop = false,
                 damping = OnboardingMotionSpec.CHECKLIST_DAMPING,

@@ -45,6 +45,7 @@ import dev.mnascimentos.aureole.feature.home.model.LocalHomeActions
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
 import dev.mnascimentos.aureole.feature.home.model.WidgetStackBottomSheetState
 import dev.mnascimentos.aureole.feature.home.model.createDefaultHomeScreenActions
+import dev.mnascimentos.aureole.testing.closeOverlayWithBack
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Rule
@@ -290,7 +291,7 @@ class FolderBranchCoverageTest {
         // scrim and closes the overlay, so the tile and the button are pressed through their semantics.
         composeTestRule.onAllNodes(iconTile)[0].performSemanticsAction(SemanticsActions.OnClick)
 
-        composeTestRule.onNodeWithText("Save").performSemanticsAction(SemanticsActions.OnClick)
+        composeTestRule.closeOverlayWithBack()
         assertEquals("build", selectedIconResult)
     }
 
@@ -695,7 +696,7 @@ class FolderBranchCoverageTest {
         // Tap App Two in the grid to add it
         composeTestRule.onNodeWithText("App Two").performClick()
 
-        composeTestRule.onNodeWithText("Save", substring = true).performClick()
+        composeTestRule.closeOverlayWithBack()
         assertEquals(listOf(app1.packageName, app2.packageName), savedList)
     }
 

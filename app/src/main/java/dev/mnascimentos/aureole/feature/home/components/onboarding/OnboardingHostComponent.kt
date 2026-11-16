@@ -19,9 +19,9 @@ import androidx.compose.ui.platform.LocalHapticFeedback
 import dev.mnascimentos.aureole.core.data.model.OnboardingStage
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
+import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.hostSurface
 import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.isIdle
 import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.successCount
-import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.hostSurface
 import dev.mnascimentos.aureole.feature.home.components.onboarding.model.OnboardingActions
 import dev.mnascimentos.aureole.feature.home.components.onboarding.model.OnboardingHostParams
 import dev.mnascimentos.aureole.feature.home.components.onboarding.model.OnboardingMotionSpec

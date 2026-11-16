@@ -65,7 +65,8 @@ fun PickPaletteBottomSheet(
                 pending = pending.discard()
                 onDismissRequest()
             },
-            onSettingsClick = options.onSettingsClick
+            onSettingsClick = options.onSettingsClick,
+            hasExternalBackdrop = options.hasExternalBackdrop
         ),
         modifier = modifier
     ) {

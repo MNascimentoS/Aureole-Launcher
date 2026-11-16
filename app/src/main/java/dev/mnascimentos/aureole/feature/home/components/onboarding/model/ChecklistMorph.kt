@@ -30,11 +30,13 @@ class ChecklistMorphHistory {
  * @property progressText "0 of 9 steps", which turns into the pill text.
  * @property fading Title, rows and footer: they fade out before the card shrinks.
  * @property backdrop The dimmed screen behind the list, which fades with it.
+ * @property animateEntrance False when the list grows back out of the pill instead of rising from below.
  */
 class ChecklistSharedModifiers(
     val card: Modifier = Modifier,
     val halo: Modifier = Modifier,
     val progressText: Modifier = Modifier,
     val fading: Modifier = Modifier,
-    val backdrop: Modifier = Modifier
+    val backdrop: Modifier = Modifier,
+    val animateEntrance: Boolean = true
 )

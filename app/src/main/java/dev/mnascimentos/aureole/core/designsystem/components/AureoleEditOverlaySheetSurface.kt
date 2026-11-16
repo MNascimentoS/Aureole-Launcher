@@ -34,6 +34,7 @@ import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.unit.Velocity
 import dev.mnascimentos.aureole.core.designsystem.model.AureoleEditOverlayConfig
 import dev.mnascimentos.aureole.core.designsystem.model.AureoleEditOverlayParams
+import dev.mnascimentos.aureole.core.designsystem.model.GestureZoneState
 import dev.mnascimentos.aureole.core.designsystem.model.OverlaySheetController
 import dev.mnascimentos.aureole.core.designsystem.model.OverlaySheetDecorations
 import dev.mnascimentos.aureole.core.designsystem.model.OverlaySheetEvents
@@ -105,11 +106,9 @@ internal fun SheetSurface(
                 showHeaderAction = config.showHeaderAction,
                 gestureZone = {
                     OverlaySheetGestureZone(
-                        isExpanded = isExpanded,
-                        isLeftHanded = config.isLeftHanded,
+                        state = GestureZoneState(isExpanded, config.isLeftHanded, motion.canExpand(bounds)),
                         onToggleExpanded = controller::toggle,
-                        onSettingsClick = config.onSettingsClick,
-                        canExpand = motion.canExpand(bounds)
+                        onSettingsClick = config.onSettingsClick
                     )
                 }
             )
@@ -156,7 +155,12 @@ private fun Modifier.sheetHeight(motion: OverlaySheetMotion, isExpanded: Boolean
             constraints.copy(minHeight = fixed, maxHeight = fixed)
         }
         val placeable = measurable.measure(childConstraints)
-        if (fixed == null) motion.contentFullHeight = measurable.fullHeightOrNull(placeable.width, placeable.height)
+        // Asking for the intrinsic height invalidates the layout again, so it is asked only when the size changed.
+        val measuredSize = (placeable.width.toLong() shl Int.SIZE_BITS) or placeable.height.toLong()
+        if (fixed == null && motion.contentMeasuredSize != measuredSize) {
+            motion.contentMeasuredSize = measuredSize
+            motion.contentFullHeight = measurable.fullHeightOrNull(placeable.width, placeable.height)
+        }
         layout(placeable.width, placeable.height) { placeable.place(0, 0) }
     }
 }
@@ -191,7 +195,7 @@ private fun sheetNestedScrollConnection(controller: OverlaySheetController): Nes
         override fun onPostScroll(consumed: Offset, available: Offset, source: NestedScrollSource): Offset {
             val canShrink = available.y > 0f && controller.currentHeight() > 0f
             // A sheet whose content fits stretches with what the content could not scroll.
-            val canStretch = available.y < 0f && !controller.canExpand()
+            val canStretch = available.y < 0f && !controller.canExpand
             if (source != NestedScrollSource.UserInput || !(canShrink || canStretch)) return Offset.Zero
             return Offset(0f, controller.scrollBy(available.y))
         }

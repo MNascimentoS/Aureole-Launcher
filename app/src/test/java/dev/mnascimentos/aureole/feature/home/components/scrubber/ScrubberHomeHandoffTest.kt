@@ -114,7 +114,7 @@ class ScrubberHomeHandoffTest {
             )
         )
         val actions = createDefaultHomeScreenActions().copy(
-            onAllAppsDrawerOpen = { uiState = uiState.copy(isAllAppsDrawerOpen = true) }
+            onAllAppsDrawerOpenFromEdge = { uiState = uiState.copy(isAllAppsDrawerOpen = true) }
         )
         composeTestRule.setContent {
             AureoleLauncherTheme {

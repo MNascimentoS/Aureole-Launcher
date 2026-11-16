@@ -15,6 +15,7 @@ import dev.mnascimentos.aureole.core.data.model.AppFolder
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
+import dev.mnascimentos.aureole.testing.closeOverlayWithBack
 import org.junit.Assert.assertEquals
 import org.junit.Rule
 import org.junit.Test
@@ -75,14 +76,14 @@ class FolderAppPickerSearchTest {
     }
 
     @Test
-    fun `enter marks the best result and save reports it`() {
+    fun `enter marks the best result and closing the sheet reports it`() {
         var saved = emptyList<String>()
         setPicker(emptyList(), onSave = { saved = it })
         search("cam")
 
         composeTestRule.onNode(hasSetTextAction()).performImeAction()
         composeTestRule.waitForIdle()
-        composeTestRule.onNodeWithText("Save 1 app").performClick()
+        composeTestRule.closeOverlayWithBack()
 
         assertEquals(listOf("com.camcorder"), saved)
     }
@@ -95,7 +96,7 @@ class FolderAppPickerSearchTest {
 
         composeTestRule.onNode(hasSetTextAction()).performImeAction()
         composeTestRule.waitForIdle()
-        composeTestRule.onNodeWithText("Save 0 apps").performClick()
+        composeTestRule.closeOverlayWithBack()
 
         assertEquals(emptyList<String>(), saved)
     }
@@ -108,7 +109,7 @@ class FolderAppPickerSearchTest {
         composeTestRule.onNode(hasSetTextAction()).performTextInput("gal")
         composeTestRule.onNode(hasSetTextAction()).performImeAction()
         composeTestRule.waitForIdle()
-        composeTestRule.onNodeWithText("Save", substring = true).performClick()
+        composeTestRule.closeOverlayWithBack()
 
         assertEquals(listOf("com.gallery"), saved)
     }
@@ -121,9 +122,9 @@ class FolderAppPickerSearchTest {
 
         composeTestRule.onNode(hasSetTextAction()).performImeAction()
         composeTestRule.waitForIdle()
-        composeTestRule.onNodeWithText("Save 1 app").performClick()
+        composeTestRule.closeOverlayWithBack()
 
-        assertEquals(listOf("com.gallery"), saved)
+        assertEquals("closing with nothing changed saves nothing", listOf("x"), saved)
     }
 
     @Test
@@ -134,15 +135,16 @@ class FolderAppPickerSearchTest {
 
         composeTestRule.onNodeWithText("Gallery").assertIsDisplayed()
         composeTestRule.onNodeWithContentDescription("Remove").assertIsDisplayed().performClick()
-        composeTestRule.onNodeWithText("Save 0 apps").performClick()
+        composeTestRule.closeOverlayWithBack()
 
         assertEquals(emptyList<String>(), saved)
     }
 
     @Test
-    fun `left handed mode still renders the save button`() {
+    fun `left handed mode renders the sheet with no save button`() {
         setPicker(listOf("com.gallery"), onSave = {}, isLeftHanded = true)
 
-        composeTestRule.onNodeWithText("Save 1 app").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Apps in Folder: Media").assertExists()
+        composeTestRule.onNodeWithText("Save 1 app").assertDoesNotExist()
     }
 }

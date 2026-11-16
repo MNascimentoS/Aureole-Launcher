@@ -8,6 +8,7 @@ import androidx.compose.ui.test.performTouchInput
 import dev.mnascimentos.aureole.composable.menu.model.MENU_HOLD_MS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.feature.settings.model.SettingsScreenActions
+import dev.mnascimentos.aureole.testing.SHEET_SLIDE_IN_MS
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Rule
@@ -33,6 +34,7 @@ class FactoryResetBottomSheetTest {
             }
         }
 
+        composeTestRule.mainClock.advanceTimeBy(SHEET_SLIDE_IN_MS)
         composeTestRule.onNodeWithText("Reset launcher?").assertIsDisplayed()
         composeTestRule.onNodeWithText("Reset").performClick()
         composeTestRule.mainClock.advanceTimeBy(MENU_HOLD_MS + HOLD_MARGIN_MS)

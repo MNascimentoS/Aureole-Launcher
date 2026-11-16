@@ -162,7 +162,9 @@ private fun SettingsTwoPanes(
             Box(modifier = Modifier.weight(1f), contentAlignment = Alignment.Center) {
                 SettingsNavigationList(navigation)
             }
-            SettingsThankYou(modifier = Modifier.padding(top = AureoleDS.dimens.large, bottom = AureoleDS.dimens.xLarge))
+            SettingsThankYou(
+                modifier = Modifier.padding(top = AureoleDS.dimens.large, bottom = AureoleDS.dimens.xLarge)
+            )
         }
     }
 }
