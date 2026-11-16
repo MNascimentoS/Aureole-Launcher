@@ -5,10 +5,10 @@ vez, no fim). Aparelho é o teste do Mateus.
 
 | # | Fase | Modelo | Estimativa | Feita | Gates | Visual | Aparelho |
 |---|---|---|---|---|---|---|---|
-| 1 | Polimento visual: Personalizar, cabeçalho, Ajustes, Avançado, coach, ícones Add New e Home | Sonnet | 1,5–2,5 h | [ ] | [ ] | [ ] | [ ] |
-| 2 | Salvar ao fechar + Desfazer nas sheets de edição; picker de cor do fundo | Sonnet | 2,5–4 h | [ ] | [ ] | [ ] | [ ] |
-| 3 | Movimento: sheet sobe e estica, checklist → pílula, lista pela borda ou por baixo | Opus | 2,5–4 h | [ ] | [ ] | [ ] | [ ] |
-| 4 | Gates, correções e revisão visual | Sonnet + Opus | 1–2 h | [x] | [ ] | [ ] | [ ] |
+| 1 | Polimento visual: Personalizar, cabeçalho, Ajustes, Avançado, coach, ícones Add New e Home | Sonnet | 1,5–2,5 h | [ ] | [x] | [ ] | [ ] |
+| 2 | Salvar ao fechar + Desfazer nas sheets de edição; picker de cor do fundo | Sonnet | 2,5–4 h | [ ] | [x] | [ ] | [ ] |
+| 3 | Movimento: sheet sobe e estica, checklist → pílula, lista pela borda ou por baixo | Opus | 2,5–4 h | [ ] | [x] | [ ] | [ ] |
+| 4 | Gates, correções e revisão visual | Sonnet + Opus | 1–2 h | [x] | [x] | [ ] | [ ] |
 | 5 | Exploração dos Ajustes (sem código): propostas da IA | Opus | 20–40 min | [ ] | — | — | — |
 
 ## Notas por fase
