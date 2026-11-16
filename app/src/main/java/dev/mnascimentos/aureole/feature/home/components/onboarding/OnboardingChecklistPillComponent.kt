@@ -25,6 +25,8 @@ import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatPa
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
+import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.isChecklistMinimized
+import dev.mnascimentos.aureole.feature.home.components.onboarding.model.ChecklistSharedModifiers
 import dev.mnascimentos.aureole.feature.home.components.onboarding.model.OnboardingGlass
 import dev.mnascimentos.aureole.feature.home.components.onboarding.model.OnboardingMotionSpec
 import dev.mnascimentos.aureole.feature.home.components.onboarding.model.OnboardingUiState
@@ -43,9 +45,22 @@ fun OnboardingChecklistPillComponent(
     onExpand: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val isMinimized = onboarding.stage == OnboardingStage.CHECKLIST &&
-        !onboarding.isChecklistExpanded && onboarding.activePicker == null && !onboarding.isHomePeeking
-    if (!isMinimized || isOtherOverlayActive) return
+    if (!onboarding.isChecklistMinimized || isOtherOverlayActive) return
+    OnboardingChecklistPill(onboarding = onboarding, glass = glass, onExpand = onExpand, modifier = modifier)
+}
+
+/**
+ * The pill itself, with no visibility rules. Inside the checklist morph, [shared] ties its outline, halo and text
+ * to the open list.
+ */
+@Composable
+internal fun OnboardingChecklistPill(
+    onboarding: OnboardingUiState,
+    glass: OnboardingGlass,
+    onExpand: () -> Unit,
+    modifier: Modifier = Modifier,
+    shared: ChecklistSharedModifiers = ChecklistSharedModifiers()
+) {
     Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.BottomCenter) {
         OnboardingGlassCard(
             glass = glass,
@@ -53,21 +68,26 @@ fun OnboardingChecklistPillComponent(
                 .widthIn(max = OnboardingMotionSpec.CHECKLIST_MAX_WIDTH)
                 .navigationBarsPadding()
                 .padding(AureoleDS.dimens.medium)
+                .then(shared.card)
                 .clip(RoundedCornerShape(AureoleDS.dimens.radiusFull))
                 .clickable(role = Role.Button, onClick = onExpand)
         ) {
-            PillContent(onboarding = onboarding)
+            PillContent(onboarding = onboarding, shared = shared)
         }
     }
 }
 
 @Composable
-private fun PillContent(onboarding: OnboardingUiState) {
+private fun PillContent(onboarding: OnboardingUiState, shared: ChecklistSharedModifiers) {
     Row(
         horizontalArrangement = Arrangement.spacedBy(AureoleDS.dimens.small),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        AureoleHaloProgress(progress = onboarding.taskProgress, size = AureoleDS.dimens.iconLarge)
+        AureoleHaloProgress(
+            progress = onboarding.taskProgress,
+            modifier = shared.halo,
+            size = AureoleDS.dimens.iconLarge
+        )
         AureoleText(
             text = pluralStringResource(
                 R.plurals.home_onboarding_checklist_pill,
@@ -75,6 +95,7 @@ private fun PillContent(onboarding: OnboardingUiState) {
                 onboarding.resolvedTasks.size,
                 OnboardingTask.entries.size
             ),
+            modifier = shared.progressText,
             color = AureoleDS.colors.onSurfaceHigh,
             format = AureoleTextFormatParams(
                 style = AureoleDS.typography.text,

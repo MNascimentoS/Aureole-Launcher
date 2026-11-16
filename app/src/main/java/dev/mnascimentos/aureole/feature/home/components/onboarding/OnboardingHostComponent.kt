@@ -21,7 +21,7 @@ import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.isIdle
 import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.successCount
-import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.visibleSurface
+import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.hostSurface
 import dev.mnascimentos.aureole.feature.home.components.onboarding.model.OnboardingActions
 import dev.mnascimentos.aureole.feature.home.components.onboarding.model.OnboardingHostParams
 import dev.mnascimentos.aureole.feature.home.components.onboarding.model.OnboardingMotionSpec
@@ -29,8 +29,8 @@ import dev.mnascimentos.aureole.feature.home.components.onboarding.model.Onboard
 import dev.mnascimentos.aureole.feature.home.components.onboarding.model.OnboardingUiState
 
 /**
- * Top layer of the home: routes the onboarding stage to its surface, plus the minimized pill and the
- * appearance pickers. Draws nothing once the tour is over.
+ * Top layer of the home: routes the onboarding stage to its surface, plus the checklist (which minimizes into
+ * its pill) and the appearance pickers. Draws nothing once the tour is over.
  */
 @Composable
 fun OnboardingHostComponent(
@@ -43,7 +43,7 @@ fun OnboardingHostComponent(
     OnboardingSuccessHaptics(successCount = onboarding.successCount)
     Box(modifier = modifier.fillMaxSize()) {
         AnimatedContent(
-            targetState = onboarding.visibleSurface,
+            targetState = onboarding.hostSurface,
             transitionSpec = {
                 fadeIn(tween(OnboardingMotionSpec.TEXT_ENTER_MS)) togetherWith
                     fadeOut(tween(OnboardingMotionSpec.WELCOME_EXIT_MS))
@@ -52,11 +52,11 @@ fun OnboardingHostComponent(
         ) { surface ->
             OnboardingSurfaceContent(surface = surface, params = params, actions = actions)
         }
-        OnboardingChecklistPillComponent(
+        OnboardingChecklistMorphComponent(
             onboarding = onboarding,
             isOtherOverlayActive = params.isHomeOverlayActive,
             glass = params.glass,
-            onExpand = { actions.onSetChecklistExpanded(true) }
+            actions = actions
         )
         OnboardingEditHintComponent(
             isVisible = params.showEditHint,
@@ -91,16 +91,12 @@ private fun OnboardingSurfaceContent(
             glass = params.glass,
             config = params.coachConfig
         )
-        OnboardingSurface.CHECKLIST -> OnboardingChecklistComponent(
-            onboarding = onboarding,
-            actions = actions,
-            glass = params.glass
-        )
         OnboardingSurface.CELEBRATION -> OnboardingCelebrationComponent(
             onFinished = actions.onFinishCelebration,
             glass = params.glass
         )
-        OnboardingSurface.NONE -> Unit
+        // The checklist has its own layer, which turns it into the pill.
+        OnboardingSurface.CHECKLIST, OnboardingSurface.NONE -> Unit
     }
 }
 

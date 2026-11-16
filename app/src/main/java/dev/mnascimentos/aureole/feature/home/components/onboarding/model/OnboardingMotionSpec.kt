@@ -43,6 +43,8 @@ object OnboardingMotionSpec {
     val HAND_TRAIL_WIDTH = 4.dp
 
     // Checklist (Figma "Animation" frame)
+    // Minimizing: rows, title and footer fade out this fast, before the card shrinks into the pill.
+    const val CHECKLIST_LIST_FADE_MS = 120
     const val CHECKLIST_DAMPING = 0.65f
     const val CHECKLIST_STIFFNESS = 180f
     const val CHECKLIST_STAGGER_MS = 60

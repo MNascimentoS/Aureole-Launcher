@@ -156,6 +156,7 @@ private fun Modifier.homeDragModifier(
             isAllAppsDrawerOpen = uiState.isAllAppsDrawerOpen,
             density = LocalDensity.current,
             onAllAppsDrawerOpen = actions.onAllAppsDrawerOpen,
+            onAllAppsDrawerOpenFromEdge = actions.onAllAppsDrawerOpenFromEdge,
             onExpandNotificationShade = actions.onExpandNotificationShade,
             onExternalTouchYChange = onExternalTouchYChange,
             onEdgeScrubChange = onEdgeScrubChange

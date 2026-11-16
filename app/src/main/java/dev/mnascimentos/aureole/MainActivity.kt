@@ -165,7 +165,7 @@ class MainActivity : ComponentActivity() {
             } else if (state.onboarding.isBlocking) {
                 return
             } else if (state.homeButtonOpensAllApps) {
-                viewModel.setAllAppsDrawerOpen(!state.isAllAppsDrawerOpen, fromHomeButton = true)
+                viewModel.setAllAppsDrawerOpen(!state.isAllAppsDrawerOpen)
             } else {
                 viewModel.setAllAppsDrawerOpen(false)
             }

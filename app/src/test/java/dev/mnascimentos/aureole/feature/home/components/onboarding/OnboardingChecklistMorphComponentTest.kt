@@ -1,0 +1,103 @@
+package dev.mnascimentos.aureole.feature.home.components.onboarding
+
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshots.Snapshot
+import androidx.compose.ui.test.junit4.v2.createComposeRule
+import androidx.compose.ui.test.onNodeWithText
+import androidx.compose.ui.test.performClick
+import dev.mnascimentos.aureole.core.data.model.OnboardingStage
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
+import dev.mnascimentos.aureole.feature.home.components.onboarding.model.OnboardingActions
+import dev.mnascimentos.aureole.feature.home.components.onboarding.model.OnboardingGlass
+import dev.mnascimentos.aureole.feature.home.components.onboarding.model.OnboardingUiState
+import org.junit.Assert.assertEquals
+import org.junit.Rule
+import org.junit.Test
+import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
+
+private const val TITLE = "First steps"
+private const val PILL_TEXT = "0/9 first steps"
+private const val MID_TRANSITION_MS = 80L
+private const val SETTLE_MS = 3_000L
+
+@RunWith(RobolectricTestRunner::class)
+class OnboardingChecklistMorphComponentTest {
+
+    @get:Rule
+    val composeTestRule = createComposeRule()
+
+    private var onboarding by mutableStateOf(
+        OnboardingUiState(stage = OnboardingStage.CHECKLIST, isChecklistExpanded = true)
+    )
+    private val expandedCalls = mutableListOf<Boolean>()
+
+    private fun render(isOtherOverlayActive: Boolean = false) {
+        composeTestRule.setContent {
+            AureoleLauncherTheme {
+                OnboardingChecklistMorphComponent(
+                    onboarding = onboarding,
+                    isOtherOverlayActive = isOtherOverlayActive,
+                    glass = OnboardingGlass(),
+                    actions = OnboardingActions(onSetChecklistExpanded = { expandedCalls += it })
+                )
+            }
+        }
+        composeTestRule.waitForIdle()
+    }
+
+    private fun switchTo(expanded: Boolean) {
+        composeTestRule.mainClock.autoAdvance = false
+        onboarding = onboarding.copy(isChecklistExpanded = expanded)
+        Snapshot.sendApplyNotifications()
+        composeTestRule.mainClock.advanceTimeByFrame()
+        composeTestRule.mainClock.advanceTimeBy(MID_TRANSITION_MS)
+    }
+
+    private fun settle() {
+        composeTestRule.mainClock.advanceTimeBy(SETTLE_MS)
+        composeTestRule.mainClock.autoAdvance = true
+        composeTestRule.waitForIdle()
+    }
+
+    @Test
+    fun `when minimized, the card should turn into the pill`() {
+        render()
+        composeTestRule.onNodeWithText(TITLE).assertExists()
+
+        switchTo(expanded = false)
+        // Mid-way both ends are composed: the card shrinking and the pill growing in its place.
+        composeTestRule.onNodeWithText(PILL_TEXT).assertExists()
+        settle()
+
+        composeTestRule.onNodeWithText(TITLE).assertDoesNotExist()
+        composeTestRule.onNodeWithText(PILL_TEXT).assertExists()
+    }
+
+    @Test
+    fun `when the pill is tapped and the list reopens, should end with the list`() {
+        onboarding = onboarding.copy(isChecklistExpanded = false)
+        render()
+
+        composeTestRule.onNodeWithText(PILL_TEXT).performClick()
+        assertEquals(listOf(true), expandedCalls)
+
+        switchTo(expanded = true)
+        composeTestRule.onNodeWithText(TITLE).assertExists()
+        settle()
+
+        composeTestRule.onNodeWithText(PILL_TEXT).assertDoesNotExist()
+        composeTestRule.onNodeWithText(TITLE).assertExists()
+    }
+
+    @Test
+    fun `when another overlay is open, should not show the pill`() {
+        onboarding = onboarding.copy(isChecklistExpanded = false)
+        render(isOtherOverlayActive = true)
+
+        composeTestRule.onNodeWithText(PILL_TEXT).assertDoesNotExist()
+        composeTestRule.onNodeWithText(TITLE).assertDoesNotExist()
+    }
+}

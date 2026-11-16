@@ -99,11 +99,17 @@ class AureoleEditOverlayParams(
  * Sheet heights in pixels, resolved from the screen height and [AureoleEditOverlayConfig].
  *
  * @property restMaxPx Largest height the sheet takes at rest.
- * @property expandedPx Height of the expanded sheet.
+ * @property expandedPx Largest height of the expanded sheet; it stops at its content when that is shorter.
+ * @property elasticLimitPx Most the sheet stretches above rest when its content already fits.
+ * @property bouncePx How high the short bounce goes when the sheet cannot expand (double tap, fling up).
+ * @property fitSlackPx How much taller than the rest height the content may be and still count as fitting.
  */
 internal data class SheetBounds(
     val restMaxPx: Float,
-    val expandedPx: Float
+    val expandedPx: Float,
+    val elasticLimitPx: Float = 0f,
+    val bouncePx: Float = 0f,
+    val fitSlackPx: Float = 0f
 )
 
 /**

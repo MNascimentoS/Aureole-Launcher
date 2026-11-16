@@ -38,3 +38,7 @@ resposta: Só o botão do container (16/11 14:24)
 ## D-07 No picker de cor do fundo, qual tom de cada paleta aparece (e vira o fundo)? (padrão: variante)
 opções: Variante (surfaceVariant) | Superfície (surface) | Fundo (background)
 trava: fase 2
+
+## D-08 Voltar da Paleta/Fonte para o Personalizar: em sequência ou ao mesmo tempo?
+opções: Em sequência (a do picker desce, depois o Personalizar sobe) | Ao mesmo tempo (uma desce enquanto a outra sobe)
+trava: fase 3

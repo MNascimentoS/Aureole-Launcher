@@ -37,14 +37,17 @@ private const val GESTURE_ZONE_HEIGHT_DP = 20
 /**
  * Invisible gesture strip across the top of the overlay sheet; nothing is drawn.
  *
- * Double tap toggles between the rest and expanded heights; holding it opens the settings. Dragging is
- * handled by the sheet surface around it, so a drag that starts on the strip resizes the sheet too.
+ * Double tap toggles between the rest and expanded heights (a short bounce when the content already fits); holding
+ * it opens the settings. Dragging is handled by the sheet surface around it, so a drag that starts on the strip
+ * resizes the sheet too.
  * TalkBack gets the same gestures as custom actions.
  *
  * @param isExpanded Whether the sheet is expanded, to label the resize action.
  * @param isLeftHanded Thumb side; sets the order of the accessibility actions.
- * @param onToggleExpanded Switches between rest and expanded. Owns the segment tick.
+ * @param onToggleExpanded Switches between rest and expanded (or bounces when the sheet cannot expand). Owns the
+ * segment tick.
  * @param onSettingsClick Opens the Aureole settings; null hides the action and disables holding.
+ * @param canExpand False when the content already fits at rest: TalkBack then gets no "Expand" action.
  */
 @Composable
 internal fun OverlaySheetGestureZone(
@@ -52,7 +55,8 @@ internal fun OverlaySheetGestureZone(
     isLeftHanded: Boolean,
     onToggleExpanded: () -> Unit,
     onSettingsClick: (() -> Unit)?,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    canExpand: Boolean = true
 ) {
     val haptics = LocalHapticFeedback.current
     val currentToggle by rememberUpdatedState(onToggleExpanded)
@@ -65,7 +69,7 @@ internal fun OverlaySheetGestureZone(
         Unit
     }
     val description = stringResource(R.string.overlay_sheet_gesture_zone_description)
-    val actions = sheetHandleActions(isExpanded, onSettingsClick != null, isLeftHanded).map { action ->
+    val actions = sheetHandleActions(isExpanded, onSettingsClick != null, isLeftHanded, canExpand).map { action ->
         CustomAccessibilityAction(gestureZoneActionLabel(action)) {
             if (action == SheetHandleAction.Settings) onSettingsClick?.invoke() else onToggleExpanded()
             true

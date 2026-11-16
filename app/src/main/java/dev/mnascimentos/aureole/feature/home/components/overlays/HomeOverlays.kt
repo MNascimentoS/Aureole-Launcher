@@ -33,9 +33,12 @@ import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.is
 import dev.mnascimentos.aureole.feature.home.components.scrubber.CurvedAlphabetScrubber
 import dev.mnascimentos.aureole.feature.home.components.scrubber.model.ScrubberCallbacks
 import dev.mnascimentos.aureole.feature.home.components.scrubber.model.ScrubberOptions
+import dev.mnascimentos.aureole.feature.home.model.AllAppsOpenSource
 import dev.mnascimentos.aureole.feature.home.model.AppsDrawerOverlayConfig
+import dev.mnascimentos.aureole.feature.home.model.DrawerMotion
 import dev.mnascimentos.aureole.feature.home.model.HomeOverlaysConfig
 import dev.mnascimentos.aureole.feature.home.model.ScrubberOverlayConfig
+import dev.mnascimentos.aureole.feature.home.model.drawerMotionFor
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalLayoutApi::class)
@@ -47,7 +50,7 @@ fun BoxScope.HomeOverlaysContent(
     AppsDrawerOverlay(
         config = AppsDrawerOverlayConfig(
             isAllAppsDrawerOpen = config.uiState.isAllAppsDrawerOpen,
-            isOpenedFromBottom = config.uiState.isAllAppsOpenedFromBottom,
+            openSource = config.uiState.allAppsOpenSource,
             isLeftHandedMode = config.uiState.isLeftHandedMode,
             listState = config.listState,
             hazeState = config.hazeState,
@@ -82,16 +85,16 @@ fun AppsDrawerOverlay(
     config: AppsDrawerOverlayConfig,
     modifier: Modifier = Modifier,
 ) {
-    val enterTransition = if (config.isOpenedFromBottom) {
-        fadeIn() + slideInVertically { it }
-    } else {
-        fadeIn() + slideInHorizontally { if (config.isLeftHandedMode) -it / 2 else it / 2 }
+    val enterTransition = when (drawerMotionFor(config.openSource, config.isLeftHandedMode)) {
+        DrawerMotion.FROM_BOTTOM -> fadeIn() + slideInVertically { it }
+        DrawerMotion.FROM_RIGHT -> fadeIn() + slideInHorizontally { it }
+        DrawerMotion.FROM_LEFT -> fadeIn() + slideInHorizontally { -it }
     }
 
-    val exitTransition = if (config.isOpenedFromBottom) {
-        fadeOut() + slideOutVertically { it }
-    } else {
-        fadeOut() + slideOutHorizontally { if (config.isLeftHandedMode) -it / 2 else it / 2 }
+    val exitTransition = when (drawerMotionFor(config.openSource, config.isLeftHandedMode)) {
+        DrawerMotion.FROM_BOTTOM -> fadeOut() + slideOutVertically { it }
+        DrawerMotion.FROM_RIGHT -> fadeOut() + slideOutHorizontally { it }
+        DrawerMotion.FROM_LEFT -> fadeOut() + slideOutHorizontally { -it }
     }
 
     AnimatedVisibility(
@@ -140,7 +143,7 @@ fun ScrubberOverlay(
             onLetterSelected = { letter ->
                 config.actions.onboarding.onAlphabetScrubbed()
                 if (!config.uiState.isAllAppsDrawerOpen) {
-                    config.actions.onAllAppsDrawerOpen()
+                    config.actions.onAllAppsDrawerOpenFromEdge()
                 }
                 config.uiState.letterIndexMap[letter]?.let { targetIndex ->
                     if (targetIndex != lastScrolledIndex) {
@@ -153,7 +156,7 @@ fun ScrubberOverlay(
             },
             onInteractionStarted = {
                 if (!config.uiState.isAllAppsDrawerOpen) {
-                    config.actions.onAllAppsDrawerOpen()
+                    config.actions.onAllAppsDrawerOpenFromEdge()
                 }
             },
             onInteractionEnded = {
@@ -172,7 +175,7 @@ private fun AppsDrawerOverlayPreview() {
         AppsDrawerOverlay(
             config = AppsDrawerOverlayConfig(
                 isAllAppsDrawerOpen = true,
-                isOpenedFromBottom = false,
+                openSource = AllAppsOpenSource.EDGE,
                 isLeftHandedMode = false,
                 listState = rememberLazyListState(),
                 hazeState = remember { HazeState() },

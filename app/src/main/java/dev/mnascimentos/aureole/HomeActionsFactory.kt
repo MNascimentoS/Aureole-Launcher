@@ -95,6 +95,7 @@ import dev.mnascimentos.aureole.feature.home.grid.extensions.setShowAddContainer
 import dev.mnascimentos.aureole.feature.home.grid.extensions.updateGridItemsOrientation
 import dev.mnascimentos.aureole.feature.home.grid.extensions.updateScrollViewOrientation
 import dev.mnascimentos.aureole.feature.home.grid.model.GridItemSpec
+import dev.mnascimentos.aureole.feature.home.model.AllAppsOpenSource
 import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
 import dev.mnascimentos.aureole.feature.settings.SettingsActivity
 import dev.mnascimentos.aureole.util.IntentUtils
@@ -137,6 +138,7 @@ class HomeActionsFactory(
             },
             onAllAppsDrawerClose = { viewModel.setAllAppsDrawerOpen(false) },
             onAllAppsDrawerOpen = { viewModel.setAllAppsDrawerOpen(true) },
+            onAllAppsDrawerOpenFromEdge = { viewModel.setAllAppsDrawerOpen(true, AllAppsOpenSource.EDGE) },
             onToggleFavorite = { pkg -> viewModel.toggleFavorite(pkg) },
             onToggleFavoriteWithContainer = { pkg, containerId -> viewModel.toggleFavorite(pkg, containerId) },
             onUpdateFavoritePackages = { containerId, pkgs -> handleUpdateFavoritePackages(containerId, pkgs) },

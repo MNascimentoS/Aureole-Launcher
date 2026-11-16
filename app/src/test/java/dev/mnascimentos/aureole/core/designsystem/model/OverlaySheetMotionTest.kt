@@ -1,6 +1,7 @@
 package dev.mnascimentos.aureole.core.designsystem.model
 
 import androidx.compose.runtime.MonotonicFrameClock
+import dev.mnascimentos.aureole.core.designsystem.utils.expandFractionOf
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.TestScope
@@ -14,6 +15,13 @@ import org.junit.Test
 
 private const val FRAME_NANOS = 16_000_000L
 private val BOUNDS = SheetBounds(restMaxPx = 600f, expandedPx = 900f)
+private val ELASTIC_BOUNDS = SheetBounds(
+    restMaxPx = 600f,
+    expandedPx = 900f,
+    elasticLimitPx = 64f,
+    bouncePx = 24f,
+    fitSlackPx = 8f
+)
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class OverlaySheetMotionTest {
@@ -165,5 +173,121 @@ class OverlaySheetMotionTest {
         }
         withContext(clock) { motion.animateHeight(from = 400f, to = 900f) }
         assertNull(motion.pinnedHeight)
+    }
+
+    private fun fittingMotion() = OverlaySheetMotion().apply {
+        restHeight = 400f
+        contentFullHeight = 400f
+    }
+
+    private fun fittingController(motion: OverlaySheetMotion, scope: TestScope = TestScope()) =
+        OverlaySheetController(motion, ELASTIC_BOUNDS, false, events, scope, density = 1f)
+
+    @Test
+    fun `when the content fits, should not expand`() {
+        val motion = fittingMotion()
+        assertFalse(motion.canExpand(ELASTIC_BOUNDS))
+        assertNull(motion.expandedHeight(ELASTIC_BOUNDS))
+        assertEquals(400f, motion.settledHeight(isExpanded = true, bounds = ELASTIC_BOUNDS))
+    }
+
+    @Test
+    fun `when a little content is below, should expand only to the content`() {
+        val motion = OverlaySheetMotion().apply {
+            restHeight = 400f
+            contentFullHeight = 700f
+        }
+        assertEquals(700f, motion.expandedHeight(ELASTIC_BOUNDS))
+        assertEquals(700f, motion.fixedHeight(isExpanded = true, bounds = ELASTIC_BOUNDS))
+        motion.dragBy(delta = -2000f, isExpanded = false, bounds = ELASTIC_BOUNDS)
+        assertEquals(700f, motion.pinnedHeight)
+    }
+
+    @Test
+    fun `when the content fits and is pulled up, should stretch below the elastic limit`() {
+        val motion = fittingMotion()
+        motion.dragBy(delta = -30f, isExpanded = false, bounds = ELASTIC_BOUNDS)
+        val small = motion.pinnedHeight!!
+        motion.dragBy(delta = -5000f, isExpanded = false, bounds = ELASTIC_BOUNDS)
+        val large = motion.pinnedHeight!!
+        assertTrue(small > 400f && small < 430f)
+        assertTrue(large > small && large < 400f + ELASTIC_BOUNDS.elasticLimitPx)
+    }
+
+    @Test
+    fun `when the stretched sheet is pulled back down, should follow the finger back to rest`() {
+        val motion = fittingMotion()
+        motion.dragBy(delta = -100f, isExpanded = false, bounds = ELASTIC_BOUNDS)
+        motion.dragBy(delta = 100f, isExpanded = false, bounds = ELASTIC_BOUNDS)
+        assertEquals(400f, motion.pinnedHeight!!, 0.5f)
+        motion.dragBy(delta = 50f, isExpanded = false, bounds = ELASTIC_BOUNDS)
+        assertEquals(350f, motion.pinnedHeight!!, 0.5f)
+    }
+
+    @Test
+    fun `when the content fits, stretching and releasing should not tick nor expand`() {
+        val scope = TestScope(StandardTestDispatcher())
+        val motion = fittingMotion()
+        val controller = fittingController(motion, scope)
+        controller.onDrag(-300f)
+        controller.onRelease(velocityPx = 0f)
+        assertEquals(0, tickCount)
+        assertTrue(expandedChanges.isEmpty())
+        assertFalse(controller.isExpanded)
+        assertTrue(motion.settleJob?.isActive == true)
+    }
+
+    @Test
+    fun `when the content fits and is flung up, should bounce back without expanding`() {
+        val motion = fittingMotion()
+        val controller = fittingController(motion)
+        controller.onDrag(-10f)
+        controller.onRelease(velocityPx = -3000f)
+        assertTrue(expandedChanges.isEmpty())
+        assertEquals(0, tickCount)
+        assertEquals(0, dismissCount)
+    }
+
+    @Test
+    fun `when the content fits and is double tapped, should bounce and stay at rest`() {
+        val motion = fittingMotion()
+        val controller = fittingController(motion)
+        controller.toggle()
+        assertFalse(controller.isExpanded)
+        assertTrue(expandedChanges.isEmpty())
+        assertEquals(0, tickCount)
+    }
+
+    @Test
+    fun `when the content fits and is pulled down, should still dismiss`() {
+        val motion = fittingMotion()
+        val controller = fittingController(motion)
+        controller.onDrag(300f)
+        controller.onRelease(velocityPx = 0f)
+        assertEquals(1, dismissCount)
+    }
+
+    @Test
+    fun `when the stretch springs back, should end at rest and unpin`() = runTest {
+        val motion = fittingMotion()
+        var frame = 0L
+        val clock = object : MonotonicFrameClock {
+            override suspend fun <R> withFrameNanos(onFrame: (Long) -> R): R {
+                frame += FRAME_NANOS
+                return onFrame(frame)
+            }
+        }
+        withContext(clock) { motion.animateSpringBack(from = 430f, peak = 440f, rest = 400f) }
+        assertNull(motion.pinnedHeight)
+    }
+
+    @Test
+    fun `when stretched, the preview should not fade`() {
+        val motion = fittingMotion()
+        motion.dragBy(delta = -200f, isExpanded = false, bounds = ELASTIC_BOUNDS)
+        assertEquals(0f, expandFractionOf(motion, isExpanded = false, bounds = ELASTIC_BOUNDS))
+        val expandable = OverlaySheetMotion().apply { restHeight = 400f }
+        expandable.dragBy(delta = -250f, isExpanded = false, bounds = ELASTIC_BOUNDS)
+        assertEquals(0.5f, expandFractionOf(expandable, isExpanded = false, bounds = ELASTIC_BOUNDS), 0.001f)
     }
 }

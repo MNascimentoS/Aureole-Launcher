@@ -26,6 +26,8 @@ data class HomeScreenActions(
     val onSettingsClick: () -> Unit,
     val onAllAppsDrawerClose: () -> Unit,
     val onAllAppsDrawerOpen: () -> Unit,
+    /** Opens the apps list from the alphabet edge, so it slides in from that side. */
+    val onAllAppsDrawerOpenFromEdge: () -> Unit = onAllAppsDrawerOpen,
     val onToggleFavorite: (String) -> Unit = {},
     val onToggleFavoriteWithContainer: (String, String?) -> Unit = { _, _ -> },
     val onUpdateFavoritePackages: (String?, List<String>) -> Unit = { _, _ -> },

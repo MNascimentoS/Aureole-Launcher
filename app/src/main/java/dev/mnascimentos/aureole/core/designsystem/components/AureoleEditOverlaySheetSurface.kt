@@ -26,6 +26,7 @@ import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
 import androidx.compose.ui.input.nestedscroll.NestedScrollSource
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.layout.IntrinsicMeasurable
 import androidx.compose.ui.layout.layout
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
@@ -107,7 +108,8 @@ internal fun SheetSurface(
                         isExpanded = isExpanded,
                         isLeftHanded = config.isLeftHanded,
                         onToggleExpanded = controller::toggle,
-                        onSettingsClick = config.onSettingsClick
+                        onSettingsClick = config.onSettingsClick,
+                        canExpand = motion.canExpand(bounds)
                     )
                 }
             )
@@ -142,7 +144,8 @@ private fun rememberSheetController(
 
 /**
  * Sizes the sheet in the layout phase, so a drag only relayouts it: a fixed height while it is held,
- * settling or expanded, and up to the rest height (hugging the content) otherwise.
+ * settling or expanded, and up to the rest height (hugging the content) otherwise. At rest it also measures how
+ * tall the content would be, which tells whether the sheet can expand and how far.
  */
 private fun Modifier.sheetHeight(motion: OverlaySheetMotion, isExpanded: Boolean, bounds: SheetBounds): Modifier {
     return layout { measurable, constraints ->
@@ -153,13 +156,29 @@ private fun Modifier.sheetHeight(motion: OverlaySheetMotion, isExpanded: Boolean
             constraints.copy(minHeight = fixed, maxHeight = fixed)
         }
         val placeable = measurable.measure(childConstraints)
+        if (fixed == null) motion.contentFullHeight = measurable.fullHeightOrNull(placeable.width, placeable.height)
         layout(placeable.width, placeable.height) { placeable.place(0, 0) }
     }
 }
 
 /**
+ * Height the sheet would take with no limit, from its intrinsic height; null for content that has none (lazy lists
+ * and other subcomposed layouts refuse intrinsic measurement). Never less than [measuredHeight]: a sheet whose
+ * bottom bar pushes it taller than its content already shows everything.
+ */
+private fun IntrinsicMeasurable.fullHeightOrNull(width: Int, measuredHeight: Int): Float? {
+    val full = try {
+        maxIntrinsicHeight(width)
+    } catch (ignored: IllegalStateException) {
+        return null
+    }
+    return full.coerceAtLeast(measuredHeight).toFloat()
+}
+
+/**
  * Lets the content scroll resize the sheet: scrolling up grows it to the expanded height before the
- * content scrolls, and pulling down at the top of the content shrinks it, down to closing.
+ * content scrolls (or stretches it, when the content already fits), and pulling down at the top of the content
+ * shrinks it, down to closing.
  */
 private fun sheetNestedScrollConnection(controller: OverlaySheetController): NestedScrollConnection {
     return object : NestedScrollConnection {
@@ -171,7 +190,9 @@ private fun sheetNestedScrollConnection(controller: OverlaySheetController): Nes
 
         override fun onPostScroll(consumed: Offset, available: Offset, source: NestedScrollSource): Offset {
             val canShrink = available.y > 0f && controller.currentHeight() > 0f
-            if (source != NestedScrollSource.UserInput || !canShrink) return Offset.Zero
+            // A sheet whose content fits stretches with what the content could not scroll.
+            val canStretch = available.y < 0f && !controller.canExpand()
+            if (source != NestedScrollSource.UserInput || !(canShrink || canStretch)) return Offset.Zero
             return Offset(0f, controller.scrollBy(available.y))
         }
 
