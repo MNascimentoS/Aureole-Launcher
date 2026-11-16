@@ -5,10 +5,10 @@ vez, no fim). Aparelho é o teste do Mateus.
 
 | # | Fase | Modelo | Estimativa | Feita | Gates | Visual | Aparelho |
 |---|---|---|---|---|---|---|---|
-| 1 | Polimento visual: Personalizar, cabeçalho, Ajustes, Avançado, coach, ícones Add New e Home | Sonnet | 1,5–2,5 h | [ ] | [x] | [ ] | [ ] |
-| 2 | Salvar ao fechar + Desfazer nas sheets de edição; picker de cor do fundo | Sonnet | 2,5–4 h | [ ] | [x] | [ ] | [ ] |
-| 3 | Movimento: sheet sobe e estica, checklist → pílula, lista pela borda ou por baixo | Opus | 2,5–4 h | [ ] | [x] | [ ] | [ ] |
-| 4 | Gates, correções e revisão visual | Sonnet + Opus | 1–2 h | [x] | [x] | [ ] | [ ] |
+| 1 | Polimento visual: Personalizar, cabeçalho, Ajustes, Avançado, coach, ícones Add New e Home | Sonnet | 1,5–2,5 h | [ ] | [x] | [x] | [ ] |
+| 2 | Salvar ao fechar + Desfazer nas sheets de edição; picker de cor do fundo | Sonnet | 2,5–4 h | [ ] | [x] | [x] | [ ] |
+| 3 | Movimento: sheet sobe e estica, checklist → pílula, lista pela borda ou por baixo | Opus | 2,5–4 h | [ ] | [x] | [x] | [ ] |
+| 4 | Gates, correções e revisão visual | Sonnet + Opus | 1–2 h | [x] | [x] | [x] | [ ] |
 | 5 | Exploração dos Ajustes (sem código): propostas da IA | Opus | 20–40 min | [ ] | — | — | — |
 
 ## Notas por fase
@@ -32,3 +32,18 @@ vez, no fim). Aparelho é o teste do Mateus.
 - **Lint:** `LocalOverlayBackdropProvided` (CompositionLocal novo) saiu: virou `hasExternalBackdrop` em `AureoleEditOverlayConfig`/`AutoSaveOverlayParams`/`ThemePreviewOverlayParams`/`ThemePickerSheetOptions` (sem mexer no `lint.xml`); `fadeWith` virou extensão de `Modifier`; logo do Personalizar usa o `modifier` recebido; strings `core_common_save` e `settings_appearance_background_color` removidas (sem uso).
 - **Testes atualizados** (salvar ao fechar, sem botões): helper `testing/OverlayTestExt.kt` (`closeOverlayWithBack`, usa o dispatcher de voltar da raiz mais acima); ColorPickerDialog, FolderFormDialog (+2 testes), PickThemeSheets, PickFont, FolderAppPicker Grid/Search, FolderBranchCoverage, FolderComponents, HomeScreenFolderOverlays, QuickButtonAppearance, SettingsAppearanceDialogs/Controls, SettingsScreen, OnboardingAppearancePicker, OnboardingHost, EditContainerManageItems, FactoryResetBottomSheet (a sheet agora sobe: avança o relógio), ScrubberHomeHandoff (usa `onAllAppsDrawerOpenFromEdge`). No grid da pasta tirou-se o `LocalInspectionMode` (sem animação não há botão voltar).
 - **Ficou faltando:** testes JVM puros para as extensões de ViewModel com Desfazer e `WallpaperUndoStash.keepCopy` (o jacoco passou sem eles); revisão visual (outro agente); o checklist do aparelho; "um só halo" sem asserção direta.
+
+### Fase 4: revisão visual (protótipo × screenshots)
+
+| Tela do protótipo | Screenshot | Veredito |
+|---|---|---|
+| 1 · Personalizar | `CustomizeSheetRightHanded` | igual: título 20 sp com respiro, 24 dp entre Ajustar e Adicionar à home, logo no tile Configurações |
+| 3 · Rodapé dos Ajustes | `SettingsRootScreenScreenshotTest` | igual: "Thank you!" preso embaixo |
+| 4 · Paisagem | `SettingsRootScreenLandscapeScreenshotTest` | igual: dois painéis, rodapé sob as opções |
+| 5 · Avançado | `SettingsAdvancedScreenScreenshotTest` | igual: ordem nova, textos curtos, casa nova, links 16 sp |
+| 6 · Salvar ao fechar | `SetBackgroundRightHanded` | quase: sem botões, como no protótipo; snackbar não tem screenshot |
+| 11 · Add New | `ContainerAddButtonScreenshotTest` | igual |
+| 12 · Cor do fundo | `SetBackgroundRightHanded` | diferente → ajustado: o tom "Superfície" tinha a cor da sheet e sumia; os tons do tema ganharam contorno fino (`outline`). Resta "quase": chips de categoria largos, sem o ponto no centro das paletas, ícone de lápis em "Imagem" |
+
+- Ícone Home no checklist: no screenshot o passo já está concluído (mostra o check), então a casa só aparece no Avançado.
+- Gates de novo após o ajuste: detekt, lintDebug, testDebugUnitTest, updateDebugScreenshotTest (3 referências de Definir plano de fundo), validateDebugScreenshotTest, assembleDebug: todos passaram.
