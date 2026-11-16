@@ -5,7 +5,7 @@ vez, no fim). Aparelho é o teste do Mateus.
 
 | # | Fase | Modelo | Estimativa | Feita | Gates | Visual | Aparelho |
 |---|---|---|---|---|---|---|---|
-| 1 | Polimento visual: Personalizar, cabeçalho, Ajustes, Avançado, coach, ícones Add New e Home | Sonnet | 1,5–2,5 h | [ ] | [ ] | [ ] | [ ] |
+| 1 | Polimento visual: Personalizar, cabeçalho, Ajustes, Avançado, coach, ícones Add New e Home | Sonnet | 1,5–2,5 h | [x] | [ ] | [ ] | [ ] |
 | 2 | Salvar ao fechar + Desfazer nas sheets de edição; picker de cor do fundo | Sonnet | 2,5–4 h | [x] | [ ] | [ ] | [ ] |
 | 3 | Movimento: sheet sobe e estica, checklist → pílula, lista pela borda ou por baixo | Opus | 2,5–4 h | [ ] | [ ] | [ ] | [ ] |
 | 4 | Gates, correções e revisão visual | Sonnet + Opus | 1–2 h | [ ] | [ ] | [ ] | [ ] |
@@ -13,6 +13,10 @@ vez, no fim). Aparelho é o teste do Mateus.
 ## Notas por fase
 
 (cada fase escreve aqui: o que mudou, testes da fase, o que ficou faltando)
+
+### Fase 1 (complemento): RF-21 ícone Home
+
+- `ic_aureole_home` agora é vetor de traço (`res/drawable/ic_aureole_home.xml`, copiado de `assets/`); apagados os 5 `.webp`. `AureoleIcons.Home` não mudou (usa o mesmo id e aplica `tint`). Usos: Launcher padrão (`SettingsAdvancedScreen`) e "Definir como app da home" (`OnboardingChecklistItemComponent`); `QuickButtonIcon.HOME` também aponta para o mesmo recurso e passa a ter o desenho novo. Nenhum teste dependia do desenho; screenshots de Ajustes/checklist precisam regenerar referências (fase 4).
 
 ### Fase 2: salvar ao fechar + Desfazer, picker de cor do fundo
 
