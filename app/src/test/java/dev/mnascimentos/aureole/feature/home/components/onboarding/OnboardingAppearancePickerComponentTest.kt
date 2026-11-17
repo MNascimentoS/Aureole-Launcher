@@ -29,7 +29,7 @@ class OnboardingAppearancePickerComponentTest {
         onSelectPalette = { calls += "palette=$it" },
         onSelectFont = { calls += "font=$it" },
         onConfirmAppearancePicker = { calls += "confirm" },
-        onDismissAppearancePicker = { calls += "dismiss" }
+        onDismissAppearancePicker = { calls += "dismiss=$it" }
     )
 
     private fun render(picker: AppearancePicker?) {
@@ -71,13 +71,24 @@ class OnboardingAppearancePickerComponentTest {
     }
 
     @Test
-    fun `when the sheet closes without a change, should give up without confirming`() {
+    fun `when the sheet closes without a tap, should report a dismiss with no preview`() {
         render(AppearancePicker.PALETTE)
 
         composeTestRule.closeOverlayWithBack()
         composeTestRule.waitForIdle()
 
-        assertEquals(listOf("dismiss"), calls)
+        assertEquals(listOf("dismiss=false"), calls)
+    }
+
+    @Test
+    fun `when the current palette is tapped and the sheet closes, should report a dismiss with preview`() {
+        render(AppearancePicker.PALETTE)
+
+        composeTestRule.onNodeWithText("Frostbite").performClick()
+        composeTestRule.closeOverlayWithBack()
+        composeTestRule.waitForIdle()
+
+        assertEquals(listOf("dismiss=true"), calls)
     }
 
     @Test

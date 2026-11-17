@@ -8,21 +8,21 @@ import dev.mnascimentos.aureole.feature.home.grid.GridDefaults
 import dev.mnascimentos.aureole.feature.home.grid.GridEngineUtils
 import dev.mnascimentos.aureole.feature.home.grid.model.SlotSearchRequest
 
-private const val CLOCK_COLS = 10
-private const val CLOCK_ROWS = 4
 private const val CONTAINER_COLS = 4
 private const val CONTAINER_ROWS = 6
 
 /**
- * The size an onboarding item gets until the layout step, so no item takes the whole home: in portrait a clock
- * 10x4 and a container 4x6 cells (a widget list keeps its default); in landscape the smallest the type accepts.
+ * The size an onboarding item gets until the layout step, so no item takes the whole home: in portrait a container
+ * 4x6 cells and the clock the size of the default layout's (20x6); in landscape the smallest the type accepts.
  * Other types keep their default size.
  */
 internal fun onboardingDefaultSize(type: LauncherItemType, isLandscape: Boolean = false): OnboardingItemSize {
     val (default, minimum) = GridDefaults.getDefaultSpanForType(type)
     return when {
         isLandscape && type in COMPACT_TYPES -> OnboardingItemSize(minimum.first, minimum.second)
-        type == LauncherItemType.CLOCK -> OnboardingItemSize(CLOCK_COLS, CLOCK_ROWS)
+        type == LauncherItemType.CLOCK -> GridDefaults.getDefaultItem(type, isLandscape = false, isLeftHanded = false)
+            ?.let { OnboardingItemSize(it.colSpan, it.rowSpan) }
+            ?: OnboardingItemSize(default.first, default.second)
         type == LauncherItemType.SHORTCUTS_CONTAINER -> OnboardingItemSize(CONTAINER_COLS, CONTAINER_ROWS)
         else -> OnboardingItemSize(default.first, default.second)
     }

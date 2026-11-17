@@ -68,7 +68,10 @@ fun PickFontBottomSheet(
     ) {
         FontPickerGrid(
             shownFont = shownFont,
-            onSelect = { fontName -> pending = pending.copy(fontName = fontName) },
+            onSelect = { fontName ->
+                options.onPreview()
+                pending = pending.copy(fontName = fontName)
+            },
             footer = options.footer
         )
     }

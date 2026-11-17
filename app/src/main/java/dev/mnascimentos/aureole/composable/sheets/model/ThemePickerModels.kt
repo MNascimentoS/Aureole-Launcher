@@ -9,11 +9,13 @@ import androidx.compose.runtime.Composable
  * @property onSettingsClick Opens the Aureole settings from the header logo; null hides the logo (used inside
  * the settings themselves, where it would be circular).
  * @property hasExternalBackdrop True when the screen around draws the backdrop itself.
+ * @property onPreview Called when the user taps an option to preview it (even one equal to the current).
  */
 data class ThemePickerSheetOptions(
     val footer: (@Composable () -> Unit)? = null,
     val onSettingsClick: (() -> Unit)? = null,
-    val hasExternalBackdrop: Boolean = false
+    val hasExternalBackdrop: Boolean = false,
+    val onPreview: () -> Unit = {}
 )
 
 /**

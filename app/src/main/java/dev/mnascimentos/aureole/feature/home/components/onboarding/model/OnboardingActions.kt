@@ -16,7 +16,8 @@ data class OnboardingActions(
     val onSelectPalette: (String) -> Unit = {},
     val onSelectFont: (String) -> Unit = {},
     val onConfirmAppearancePicker: () -> Unit = {},
-    val onDismissAppearancePicker: () -> Unit = {},
+    /** The picker closed without applying; the flag tells whether the user had tapped an option. */
+    val onDismissAppearancePicker: (hadPreview: Boolean) -> Unit = {},
     val onSetChecklistExpanded: (Boolean) -> Unit = {},
     val onDismissChecklist: () -> Unit = {},
     val onFinishCelebration: () -> Unit = {},

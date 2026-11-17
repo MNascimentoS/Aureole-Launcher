@@ -17,8 +17,9 @@ import dev.mnascimentos.aureole.feature.home.components.onboarding.model.Onboard
 
 /**
  * Palette or font picker opened from the checklist, right on the home. Tapping an option only previews it;
- * "Apply" saves the choice and confirms the task, so the checklist moves on to the next one. Cancelling or
- * closing without applying gives the task up.
+ * "Apply" saves the choice and confirms the task, so the checklist moves on to the next one. Closing without
+ * applying keeps what was previewed, or the default (Frostbite / Istok Web) when nothing was tapped, and confirms
+ * the task the same way.
  */
 @Composable
 fun OnboardingAppearancePickerComponent(
@@ -30,9 +31,11 @@ fun OnboardingAppearancePickerComponent(
     if (picker == null) return
     // The sheet also reports a dismiss while it closes after "Apply": that one is not giving up.
     var isApplied by remember(picker) { mutableStateOf(false) }
-    val onDismiss = { if (!isApplied) actions.onDismissAppearancePicker() }
+    var hasPreview by remember(picker) { mutableStateOf(false) }
+    val onDismiss = { if (!isApplied) actions.onDismissAppearancePicker(hasPreview) }
     val options = ThemePickerSheetOptions(
-        onSettingsClick = actions.onOpenSettings
+        onSettingsClick = actions.onOpenSettings,
+        onPreview = { hasPreview = true }
     )
     when (picker) {
         AppearancePicker.PALETTE -> PickPaletteBottomSheet(

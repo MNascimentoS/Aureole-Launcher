@@ -32,15 +32,15 @@ class OnboardingItemPlacementTest {
     )
 
     @Test
-    fun `when in portrait, should give the clock 10x4, the container 4x6 and the widget list its default`() {
-        assertEquals(OnboardingItemSize(10, 4), onboardingDefaultSize(LauncherItemType.CLOCK, isLandscape = false))
+    fun `when in portrait, should give the clock 20x6, the container 4x6 and the widget list its default`() {
+        assertEquals(OnboardingItemSize(20, 6), onboardingDefaultSize(LauncherItemType.CLOCK, isLandscape = false))
         assertEquals(
             OnboardingItemSize(4, 6),
             onboardingDefaultSize(LauncherItemType.SHORTCUTS_CONTAINER, isLandscape = false)
         )
         assertEquals(OnboardingItemSize(14, 6), onboardingDefaultSize(LauncherItemType.WIDGET_LIST, false))
-        val clockDefault = GridDefaults.getDefaultSpanForType(LauncherItemType.CLOCK).first
-        assertTrue(10 * 4 < clockDefault.first * clockDefault.second)
+        val layoutClock = GridDefaults.getDefaultItem(LauncherItemType.CLOCK, false, false)!!
+        assertEquals(OnboardingItemSize(layoutClock.colSpan, layoutClock.rowSpan), onboardingDefaultSize(LauncherItemType.CLOCK))
     }
 
     @Test
@@ -73,8 +73,16 @@ class OnboardingItemPlacementTest {
 
         assertEquals(0, item?.col)
         assertEquals(4, item?.row)
-        assertEquals(10, item?.colSpan)
-        assertEquals(4, item?.rowSpan)
+        assertEquals(20, item?.colSpan)
+        assertEquals(6, item?.rowSpan)
+    }
+
+    @Test
+    fun `when the default spot is free, should place the clock at the layout's spot and size`() {
+        val item = placeOnboardingItem(request(LauncherItemType.CLOCK))
+
+        val default = GridDefaults.getDefaultItem(LauncherItemType.CLOCK, false, false)!!
+        assertEquals(listOf(default.col, default.row, 20, 6), listOf(item?.col, item?.row, item?.colSpan, item?.rowSpan))
     }
 
     @Test

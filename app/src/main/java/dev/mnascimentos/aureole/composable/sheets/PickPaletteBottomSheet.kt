@@ -72,7 +72,10 @@ fun PickPaletteBottomSheet(
     ) {
         PalettePickerGrid(
             shownName = shownName,
-            onSelect = { active -> pending = pending.copy(palette = active) },
+            onSelect = { active ->
+                options.onPreview()
+                pending = pending.copy(palette = active)
+            },
             footer = options.footer
         )
     }
