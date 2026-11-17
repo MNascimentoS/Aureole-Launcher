@@ -46,6 +46,12 @@
     <string name="home_quickbutton_stroke_color">Stroke color</string>
     <string name="home_quickbutton_icon">Icon</string>
     <string name="home_quickbutton_icon_color">Icon color</string>
+    <string name="home_quickbutton_tab_icon">Icon</string>
+    <string name="home_quickbutton_tab_colors">Colors</string>
+    <string name="home_quickbutton_tabs_label">What to edit</string>
+    <string name="home_quickbutton_color_target_label">Which color to change</string>
+    <string name="home_quickbutton_show_name">Show name on the home</string>
+    <string name="home_quickbutton_low_contrast">Low contrast: the icon may be hard to see</string>
 
     <!-- Colors / Theming -->
 

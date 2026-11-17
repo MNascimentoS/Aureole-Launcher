@@ -57,6 +57,8 @@ import dev.mnascimentos.aureole.feature.home.components.quickbutton.launchAppPac
 import dev.mnascimentos.aureole.feature.home.components.quickbutton.launchSystemIntent
 import dev.mnascimentos.aureole.feature.home.components.quickbutton.launchVoiceAssistant
 import dev.mnascimentos.aureole.feature.home.components.quickbutton.model.QuickButtonGridItemCallbacks
+import dev.mnascimentos.aureole.feature.home.components.quickbutton.model.defaultName
+import dev.mnascimentos.aureole.feature.home.components.quickbutton.model.resolvedName
 import dev.mnascimentos.aureole.feature.home.model.LocalHomeActions
 import dev.mnascimentos.aureole.util.IntentUtils
 
@@ -368,7 +370,11 @@ fun ContainerQuickButtonItem(
             )
         }
 
-        if (config.showFolderLabels) {
+        if (quickButtonModel.appearance.showLabel) {
+            ContainerFolderLabel(
+                name = quickButtonModel.appearance.resolvedName(quickButtonModel.defaultName(appInfo?.label))
+            )
+        } else if (config.showFolderLabels) {
             ContainerFolderLabel(name = stringResource(R.string.home_grid_item_quick_button))
         }
     }

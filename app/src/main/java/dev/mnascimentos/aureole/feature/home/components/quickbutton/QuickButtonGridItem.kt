@@ -17,15 +17,20 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import dev.mnascimentos.aureole.composable.appitem.AureoleAppIcon
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.data.model.QuickButtonModel
 import dev.mnascimentos.aureole.core.data.model.ShortcutAction
 import dev.mnascimentos.aureole.core.data.model.ShortcutType
+import dev.mnascimentos.aureole.core.designsystem.palette.readableOn
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.components.quickbutton.model.QuickButtonGridItemCallbacks
+import dev.mnascimentos.aureole.feature.home.components.quickbutton.model.defaultName
+import dev.mnascimentos.aureole.feature.home.components.quickbutton.model.resolvedName
 
 @Composable
 fun QuickButtonGridItem(
@@ -33,14 +38,16 @@ fun QuickButtonGridItem(
     onAction: (ShortcutAction) -> Unit,
     onLongPress: () -> Unit,
     modifier: Modifier = Modifier,
-    appInfo: AppInfo? = null
+    appInfo: AppInfo? = null,
+    outlineIcon: Boolean = false
 ) {
     QuickButtonGridItem(
         model = model,
         shape = RoundedCornerShape(AureoleDS.dimens.radiusMedium),
         callbacks = QuickButtonGridItemCallbacks(onAction = onAction, onLongPress = onLongPress),
         modifier = modifier,
-        appInfo = appInfo
+        appInfo = appInfo,
+        outlineIcon = outlineIcon
     )
 }
 
@@ -50,7 +57,8 @@ fun QuickButtonGridItem(
     shape: Shape,
     callbacks: QuickButtonGridItemCallbacks,
     modifier: Modifier = Modifier,
-    appInfo: AppInfo? = null
+    appInfo: AppInfo? = null,
+    outlineIcon: Boolean = false
 ) {
     val currentModel by rememberUpdatedState(model)
     val currentOnAction by rememberUpdatedState(callbacks.onAction)
@@ -69,8 +77,12 @@ fun QuickButtonGridItem(
         baseModifier
     }
 
+    // The name (or the click action) is what TalkBack reads for the button (botao-rapido RF-01).
+    val name = model.appearance.resolvedName(model.defaultName(appInfo?.label))
+
     Box(
         modifier = strokeModifier
+            .semantics { contentDescription = name }
             .pointerInput(Unit) {
                 detectTapGestures(
                     onTap = { currentOnAction(currentModel.shortcuts.click) },
@@ -83,8 +95,17 @@ fun QuickButtonGridItem(
         if (clickShortcut.type == ShortcutType.OPEN_APP && appInfo != null) {
             AureoleAppIcon(app = appInfo, size = AureoleDS.dimens.iconXLarge)
         } else {
+            if (outlineIcon) {
+                // Low contrast (RF-06): a slightly larger copy in a readable color sits behind the icon as its outline.
+                Icon(
+                    painter = painterResource(id = model.appearance.iconRes),
+                    contentDescription = null,
+                    tint = readableOn(backgroundColor, AureoleDS.colors),
+                    modifier = Modifier.size(AureoleDS.dimens.iconXLarge + AureoleDS.dimens.xxSmall)
+                )
+            }
             Icon(
-                painter = painterResource(id = model.appearance.icon.iconRes),
+                painter = painterResource(id = model.appearance.iconRes),
                 contentDescription = null,
                 tint = model.appearance.iconColor.resolve(AureoleDS.colors),
                 modifier = Modifier.size(AureoleDS.dimens.iconXLarge)

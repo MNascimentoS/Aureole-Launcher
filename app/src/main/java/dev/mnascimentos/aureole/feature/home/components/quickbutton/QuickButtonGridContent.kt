@@ -5,7 +5,9 @@ import android.content.Context
 import android.content.Intent
 import android.provider.MediaStore
 import android.provider.Settings
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
@@ -22,6 +24,9 @@ import dev.mnascimentos.aureole.core.data.model.QuickButtonModel
 import dev.mnascimentos.aureole.core.data.model.ShortcutType
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
+import dev.mnascimentos.aureole.feature.home.components.containers.folder.ContainerFolderLabel
+import dev.mnascimentos.aureole.feature.home.components.quickbutton.model.defaultName
+import dev.mnascimentos.aureole.feature.home.components.quickbutton.model.resolvedName
 import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
 import dev.mnascimentos.aureole.util.IntentUtils
 import timber.log.Timber
@@ -44,9 +49,10 @@ fun GridQuickButtonContent(
         }
     }
 
-    Box(
+    Column(
         modifier = modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
     ) {
         Box(modifier = Modifier.size(FolderButtonMetrics.MediumSize)) {
             QuickButtonGridItem(
@@ -67,6 +73,9 @@ fun GridQuickButtonContent(
                     actions.onOpenQuickButtonSettings(item.id)
                 }
             )
+        }
+        if (model.appearance.showLabel) {
+            ContainerFolderLabel(name = model.appearance.resolvedName(model.defaultName(appInfo?.label)))
         }
     }
 }

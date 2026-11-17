@@ -3,24 +3,30 @@ package dev.mnascimentos.aureole.feature.home.components.quickbutton
 import android.content.ComponentName
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
+import androidx.compose.ui.test.assertCountEquals
 import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.junit4.v2.createComposeRule
+import androidx.compose.ui.test.isSelectable
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollTo
+import androidx.compose.ui.test.performTextInput
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.data.model.QuickButtonAppearance
-import dev.mnascimentos.aureole.core.data.model.QuickButtonIcon
 import dev.mnascimentos.aureole.core.data.model.QuickButtonModel
 import dev.mnascimentos.aureole.core.data.model.QuickButtonShortcuts
 import dev.mnascimentos.aureole.core.data.model.ShortcutAction
+import dev.mnascimentos.aureole.core.designsystem.icons.AureoleIconCatalog
+import dev.mnascimentos.aureole.core.designsystem.palette.ThemeColorRef
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
 import dev.mnascimentos.aureole.feature.home.model.createDefaultHomeScreenActions
 import dev.mnascimentos.aureole.testing.closeOverlayWithBack
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotEquals
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Rule
@@ -67,7 +73,8 @@ class QuickButtonAppearanceBottomSheetTest {
 
         // Assert
         composeTestRule.onNodeWithText("Quick button").assertIsDisplayed()
-        composeTestRule.onNodeWithText("BACKGROUND COLOR").performScrollTo().assertIsDisplayed()
+        composeTestRule.onNodeWithText("Colors").performClick()
+        composeTestRule.onNodeWithText("Background color").assertIsDisplayed()
     }
 
     private fun setAppearanceSheet(actions: HomeScreenActions, dismissed: MutableList<Unit> = mutableListOf()) {
@@ -90,6 +97,7 @@ class QuickButtonAppearanceBottomSheetTest {
         var saved: QuickButtonAppearance? = null
         setAppearanceSheet(createDefaultHomeScreenActions().copy(onUpdateQuickButtonAppearance = { saved = it }))
 
+        composeTestRule.onNodeWithText("Colors").performClick()
         composeTestRule.onNodeWithText("Stroke").performScrollTo().performClick()
         composeTestRule.onNodeWithText("STROKE COLOR").assertExists()
         assertNull(saved)
@@ -107,6 +115,7 @@ class QuickButtonAppearanceBottomSheetTest {
             dismissed
         )
 
+        composeTestRule.onNodeWithText("Colors").performClick()
         composeTestRule.onNodeWithText("Stroke").performScrollTo().performClick()
         composeTestRule.closeOverlayWithBack()
 
@@ -115,14 +124,88 @@ class QuickButtonAppearanceBottomSheetTest {
     }
 
     @Test
-    fun `when an icon of the inline grid is tapped, should save it when the sheet closes and not before`() {
+    fun `when an icon of the catalog is tapped, should save it when the sheet closes and not before`() {
         var saved: QuickButtonAppearance? = null
         setAppearanceSheet(createDefaultHomeScreenActions().copy(onUpdateQuickButtonAppearance = { saved = it }))
 
-        composeTestRule.onNodeWithContentDescription(QuickButtonIcon.STAR.name).performScrollTo().performClick()
+        composeTestRule.onAllNodes(isSelectable())[AureoleIconCatalog.categories.size + 1].performClick()
         assertNull(saved)
 
         composeTestRule.closeOverlayWithBack()
-        assertEquals(QuickButtonIcon.STAR, saved!!.icon)
+        assertNotEquals(QuickButtonAppearance().icon, saved!!.icon)
+    }
+
+    @Test
+    fun `when a name is typed, should save it trimmed when the sheet closes`() {
+        var saved: QuickButtonAppearance? = null
+        setAppearanceSheet(createDefaultHomeScreenActions().copy(onUpdateQuickButtonAppearance = { saved = it }))
+
+        composeTestRule.onNodeWithContentDescription("Name, Name it, edit").performTextInput("  Mail ")
+        assertNull(saved)
+
+        composeTestRule.closeOverlayWithBack()
+        assertEquals("Mail", saved!!.label)
+    }
+
+    @Test
+    fun `when nothing changes, should not save and should close`() {
+        var saved: QuickButtonAppearance? = null
+        val dismissed = mutableListOf<Unit>()
+        setAppearanceSheet(
+            createDefaultHomeScreenActions().copy(onUpdateQuickButtonAppearance = { saved = it }),
+            dismissed
+        )
+
+        composeTestRule.closeOverlayWithBack()
+
+        assertNull(saved)
+        assertEquals(1, dismissed.size)
+    }
+
+    @Test
+    fun `when icon and background have a low contrast, should warn in the preview`() {
+        setSheetWith(QuickButtonAppearance(iconColor = ThemeColorRef.Fixed(1), backgroundColor = ThemeColorRef.Fixed(1)))
+
+        composeTestRule.onNodeWithText("Low contrast: the icon may be hard to see").assertIsDisplayed()
+    }
+
+    @Test
+    fun `when the colors contrast, should not warn`() {
+        setSheetWith(QuickButtonAppearance())
+
+        composeTestRule.onNodeWithText("Low contrast: the icon may be hard to see").assertDoesNotExist()
+    }
+
+    @Test
+    fun `when Show name is on, should draw the name under the button, else not`() {
+        setSheetWith(QuickButtonAppearance(label = "Mail", showLabel = true))
+        // One in the name pill, one under the button.
+        composeTestRule.onAllNodesWithText("Mail").assertCountEquals(2)
+    }
+
+    @Test
+    fun `when Show name is on without a name, should draw the name of the click action`() {
+        setSheetWith(QuickButtonAppearance(showLabel = true))
+        composeTestRule.onNodeWithText("All apps").assertIsDisplayed()
+    }
+
+    @Test
+    fun `when Show name is off, should not draw the name under the button`() {
+        setSheetWith(QuickButtonAppearance(label = "Mail", showLabel = false))
+        // Only the name pill has it.
+        composeTestRule.onAllNodesWithText("Mail").assertCountEquals(1)
+    }
+
+    private fun setSheetWith(appearance: QuickButtonAppearance) {
+        val uiState = MainUiState(activeQuickButtonModel = QuickButtonModel(appearance = appearance))
+        composeTestRule.setContent {
+            AureoleLauncherTheme {
+                QuickButtonAppearanceBottomSheet(
+                    uiState = uiState,
+                    actions = createDefaultHomeScreenActions(),
+                    onDismissRequest = {}
+                )
+            }
+        }
     }
 }

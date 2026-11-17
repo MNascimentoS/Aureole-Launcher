@@ -22,6 +22,3 @@ internal fun QuickButtonAppearance.withColor(target: QuickButtonColorTarget, col
         QuickButtonColorTarget.STROKE -> copy(strokeColor = color)
         QuickButtonColorTarget.ICON -> copy(iconColor = color)
     }
-
-/** Columns of the inline icon grid: five tiles of at least 44 dp each fit the sheet width. */
-internal const val QUICK_BUTTON_ICON_COLUMNS = 5
