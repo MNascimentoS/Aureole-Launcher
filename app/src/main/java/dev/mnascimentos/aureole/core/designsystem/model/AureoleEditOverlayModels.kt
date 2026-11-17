@@ -71,6 +71,8 @@ fun rememberAureoleEditOverlayState(
  * @property isLocked A showcase: back, drag-down, tap-outside, the gesture zone and the header logo do nothing; only
  * the caller closes the overlay (through [isVisible]). Touches around the sheet still stop at the overlay.
  * @property headerAccessory Drawn in the header slot in place of the logo, not clickable (the showcase ring).
+ * @property headerLeadingAction Drawn in the 48 dp slot across from the logo, at the start of the title line (the
+ * end, left-handed): a shortcut of the sheet, such as the "Customize home" pencil of "Choose favorites".
  */
 data class AureoleEditOverlayConfig(
     val title: String? = null,
@@ -92,6 +94,7 @@ data class AureoleEditOverlayConfig(
     val dismissOnTapOutside: Boolean = true,
     val isLocked: Boolean = false,
     val headerAccessory: (@Composable () -> Unit)? = null,
+    val headerLeadingAction: (@Composable () -> Unit)? = null,
 )
 
 /**
@@ -138,7 +141,9 @@ internal class OverlaySheetDecorations(
     /** Left-handed: the logo goes to the start of the title line. */
     val isLeftHanded: Boolean = false,
     /** Replaces the logo in the header slot, with no click (see [AureoleEditOverlayConfig.headerAccessory]). */
-    val headerAccessory: (@Composable () -> Unit)? = null
+    val headerAccessory: (@Composable () -> Unit)? = null,
+    /** The slot across from the logo (see [AureoleEditOverlayConfig.headerLeadingAction]). */
+    val headerLeadingAction: (@Composable () -> Unit)? = null
 )
 
 internal class OverlayDismissState(

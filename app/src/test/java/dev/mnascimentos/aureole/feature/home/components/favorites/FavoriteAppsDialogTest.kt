@@ -9,12 +9,14 @@ import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onFirst
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
+import androidx.compose.ui.test.performClick
 import dev.mnascimentos.aureole.composable.favorites.FavoriteAppsDialog
 import dev.mnascimentos.aureole.composable.favorites.model.FavoriteAppsDialogActions
 import dev.mnascimentos.aureole.composable.favorites.model.FavoriteAppsDialogConfig
 import dev.mnascimentos.aureole.composable.favorites.model.ShowAllAppsParams
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
+import org.junit.Assert.assertEquals
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -132,5 +134,36 @@ class FavoriteAppsDialogTest {
         }
 
         composeTestRule.onNodeWithContentDescription("Aureole settings").assertIsDisplayed()
+    }
+
+    @Test
+    fun `when opened from the home, the pencil on the title line opens Customize home`() {
+        var opened = 0
+        composeTestRule.setContent {
+            AureoleLauncherTheme {
+                FavoriteAppsDialog(
+                    config = FavoriteAppsDialogConfig(allApps = emptyList(), favoriteAppPackages = emptyList()),
+                    actions = FavoriteAppsDialogActions(onSettingsClick = {}, onCustomizeHome = { opened++ })
+                )
+            }
+        }
+
+        composeTestRule.onNodeWithContentDescription("Customize home").assertIsDisplayed().performClick()
+
+        assertEquals(1, opened)
+    }
+
+    @Test
+    fun `when opened from Settings, should have no pencil`() {
+        composeTestRule.setContent {
+            AureoleLauncherTheme {
+                FavoriteAppsDialog(
+                    config = FavoriteAppsDialogConfig(allApps = emptyList(), favoriteAppPackages = emptyList()),
+                    actions = FavoriteAppsDialogActions(onToggleFavorite = {}, onDismiss = {})
+                )
+            }
+        }
+
+        composeTestRule.onNodeWithContentDescription("Customize home").assertDoesNotExist()
     }
 }

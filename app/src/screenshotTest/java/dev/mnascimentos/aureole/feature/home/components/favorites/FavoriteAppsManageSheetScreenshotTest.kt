@@ -12,11 +12,17 @@ import dev.mnascimentos.aureole.composable.favorites.model.ShowAllAppsParams
 import dev.mnascimentos.aureole.composable.favorites.model.ShowLabelsParams
 import dev.mnascimentos.aureole.core.designsystem.model.LocalLeftHanded
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
+import dev.mnascimentos.aureole.core.designsystem.utils.AureoleLandscapePreview
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.createSampleHomeData
 
 @Composable
-private fun ManageSheetCase(isLeftHanded: Boolean, favorites: List<String>, withSwitches: Boolean = false) {
+private fun ManageSheetCase(
+    isLeftHanded: Boolean,
+    favorites: List<String>,
+    withSwitches: Boolean = false,
+    fromHome: Boolean = false
+) {
     val sampleData = createSampleHomeData()
     val config = FavoriteAppsDialogConfig(
         allApps = sampleData.apps,
@@ -30,7 +36,11 @@ private fun ManageSheetCase(isLeftHanded: Boolean, favorites: List<String>, with
             ProvideHomeUiState(sampleData.uiState.copy(isLeftHandedMode = isLeftHanded)) {
                 FavoriteAppsDialog(
                     config = config,
-                    actions = FavoriteAppsDialogActions(onDismiss = {})
+                    actions = if (fromHome) {
+                        FavoriteAppsDialogActions(onDismiss = {}, onSettingsClick = {}, onCustomizeHome = {})
+                    } else {
+                        FavoriteAppsDialogActions(onDismiss = {})
+                    }
                 )
             }
         }
@@ -62,3 +72,39 @@ private fun FavoriteAppsManageSheetEmptyScreenshotTest() =
 @Composable
 private fun FavoriteAppsManageSheetShowLabelsScreenshotTest() =
     ManageSheetCase(isLeftHanded = false, favorites = sampleFavorites, withSwitches = true)
+
+private val threeFavorites = listOf("com.example.phone", "com.example.messages", "com.example.camera")
+
+/** From the home (favoritos-redesign): pencil and logo on the title, chips, sticky headers, 3 favorites. */
+@PreviewTest
+@AureolePreview
+@Composable
+private fun FavoriteAppsHomeSheetThreeFavoritesScreenshotTest() =
+    ManageSheetCase(isLeftHanded = false, favorites = threeFavorites, withSwitches = true, fromHome = true)
+
+/** From the home without favorites: the one-line notice over the list. */
+@PreviewTest
+@AureolePreview
+@Composable
+private fun FavoriteAppsHomeSheetNoFavoritesScreenshotTest() =
+    ManageSheetCase(isLeftHanded = false, favorites = emptyList(), withSwitches = true, fromHome = true)
+
+/** Left-handed: the logo goes to the start of the title line and the pencil to the end. */
+@PreviewTest
+@AureolePreview
+@Composable
+private fun FavoriteAppsHomeSheetLeftHandedScreenshotTest() =
+    ManageSheetCase(isLeftHanded = true, favorites = threeFavorites, withSwitches = true, fromHome = true)
+
+/** Landscape: preview on the left, sheet on the right, apps visible without scrolling (RF-05). */
+@PreviewTest
+@AureoleLandscapePreview
+@Composable
+private fun FavoriteAppsHomeSheetLandscapeThreeFavoritesScreenshotTest() =
+    ManageSheetCase(isLeftHanded = false, favorites = threeFavorites, withSwitches = true, fromHome = true)
+
+@PreviewTest
+@AureoleLandscapePreview
+@Composable
+private fun FavoriteAppsHomeSheetLandscapeNoFavoritesScreenshotTest() =
+    ManageSheetCase(isLeftHanded = false, favorites = emptyList(), withSwitches = true, fromHome = true)

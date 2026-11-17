@@ -1,16 +1,17 @@
 package dev.mnascimentos.aureole.composable.favorites
 
-import androidx.compose.ui.test.assertCountEquals
 import androidx.compose.ui.test.assertIsDisplayed
-import androidx.compose.ui.test.assertIsOff
-import androidx.compose.ui.test.assertIsOn
+import androidx.compose.ui.test.assertIsEnabled
+import androidx.compose.ui.test.assertIsNotEnabled
+import androidx.compose.ui.test.assertIsNotSelected
+import androidx.compose.ui.test.assertIsSelected
 import androidx.compose.ui.test.junit4.v2.createComposeRule
-import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import dev.mnascimentos.aureole.composable.favorites.model.FavoriteAppsDialogActions
 import dev.mnascimentos.aureole.composable.favorites.model.FavoriteAppsDialogConfig
 import dev.mnascimentos.aureole.composable.favorites.model.ShowAllAppsParams
+import dev.mnascimentos.aureole.composable.favorites.model.ShowLabelsParams
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import org.junit.Assert.assertEquals
 import org.junit.Rule
@@ -38,11 +39,14 @@ class FavoriteAppsDialogSectionsTest {
     private fun homeList(
         favorites: List<String>,
         checked: Boolean,
-        onCheckedChange: (Boolean) -> Unit = {}
+        onCheckedChange: (Boolean) -> Unit = {},
+        labels: Boolean = true,
+        onLabelsChange: (Boolean) -> Unit = {}
     ) = FavoriteAppsDialogConfig(
         allApps = emptyList(),
         favoriteAppPackages = favorites,
-        showAllApps = ShowAllAppsParams(checked = checked, onCheckedChange = onCheckedChange)
+        showAllApps = ShowAllAppsParams(checked = checked, onCheckedChange = onCheckedChange),
+        showLabels = ShowLabelsParams(checked = labels, onCheckedChange = onLabelsChange)
     )
 
     @Test
@@ -66,15 +70,15 @@ class FavoriteAppsDialogSectionsTest {
     }
 
     @Test
-    fun `a home apps list shows the switch on top with the on-top subtitle while it is on`() {
-        setSheet(homeList(favorites = listOf("a", "b"), checked = true))
+    fun `a home apps list shows both options as chips on one line`() {
+        setSheet(homeList(favorites = listOf("a", "b"), checked = true, labels = true))
 
-        composeTestRule.onNodeWithText("Show all apps").assertIsDisplayed().assertIsOn()
-        composeTestRule.onNodeWithText("2 favorites on top, then all apps").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Show all apps").assertIsDisplayed().assertIsSelected()
+        composeTestRule.onNodeWithText("Labels").assertIsDisplayed().assertIsSelected().assertIsEnabled()
     }
 
     @Test
-    fun `tapping the switch reports the new value at once`() {
+    fun `tapping Show all apps reports the new value at once`() {
         val values = mutableListOf<Boolean>()
         setSheet(homeList(favorites = emptyList(), checked = true, onCheckedChange = { values += it }))
 
@@ -84,45 +88,68 @@ class FavoriteAppsDialogSectionsTest {
     }
 
     @Test
-    fun `with the switch off and no favorites, the subtitle says none is selected`() {
-        setSheet(homeList(favorites = emptyList(), checked = false))
+    fun `tapping Labels reports the new value while all apps are shown`() {
+        val values = mutableListOf<Boolean>()
+        setSheet(homeList(favorites = emptyList(), checked = true, labels = true, onLabelsChange = { values += it }))
 
-        composeTestRule.onNodeWithText("Show all apps").assertIsOff()
-        // The switch subtitle and the empty list message use the same text.
-        composeTestRule.onAllNodesWithText("No favorite app selected.", substring = true).assertCountEquals(2)
+        composeTestRule.onNodeWithText("Labels").performClick()
+
+        assertEquals(listOf(false), values)
     }
 
     @Test
-    fun `with the switch on and no favorites, the subtitle says the Home shows all apps`() {
+    fun `Labels is disabled with Show all apps off`() {
+        setSheet(homeList(favorites = listOf("a"), checked = false, labels = true))
+
+        composeTestRule.onNodeWithText("Show all apps").assertIsNotSelected()
+        composeTestRule.onNodeWithText("Labels").assertIsDisplayed().assertIsNotEnabled()
+    }
+
+    @Test
+    fun `without favorites and Show all apps on, the notice says the Home shows all apps`() {
         setSheet(homeList(favorites = emptyList(), checked = true))
 
-        composeTestRule.onNodeWithText("No favorites: shows all apps").assertIsDisplayed()
+        composeTestRule.onNodeWithText("No favorites: the Home shows all 0 apps.").assertIsDisplayed()
     }
 
     @Test
-    fun `with the switch off and favorites, the subtitle uses the plural and singular count`() {
+    fun `without favorites and Show all apps off, the notice says the list stays empty`() {
+        setSheet(homeList(favorites = emptyList(), checked = false))
+
+        composeTestRule.onNodeWithText("No favorites: the list stays empty on the Home.").assertIsDisplayed()
+        composeTestRule.onNodeWithText("No favorites: the Home shows all 0 apps.").assertDoesNotExist()
+    }
+
+    @Test
+    fun `with favorites there is no notice`() {
         setSheet(homeList(favorites = listOf("a"), checked = false))
 
-        composeTestRule.onNodeWithText("1 favorite, the rest stays hidden").assertIsDisplayed()
+        composeTestRule.onNodeWithText("No favorites", substring = true).assertDoesNotExist()
     }
 
     @Test
-    fun `Customize home shows below the switch and opens the customization`() {
-        var opened = 0
+    fun `the Settings sheet has no chips and keeps the notice of all apps`() {
+        setSheet(FavoriteAppsDialogConfig(allApps = emptyList(), favoriteAppPackages = emptyList()))
+
+        composeTestRule.onNodeWithText("Labels").assertDoesNotExist()
+        composeTestRule.onNodeWithText("No favorites: the Home shows all 0 apps.").assertIsDisplayed()
+    }
+
+    @Test
+    fun `Customize home is not a row of the list anymore`() {
         setSheet(
             homeList(favorites = listOf("a"), checked = true),
-            FavoriteAppsDialogActions(onCustomizeHome = { opened++ })
+            FavoriteAppsDialogActions(onCustomizeHome = {})
         )
 
-        composeTestRule.onNodeWithText("Customize home").assertIsDisplayed().performClick()
-
-        assertEquals(1, opened)
+        composeTestRule.onNodeWithText("Customize home").assertDoesNotExist()
     }
 
     @Test
-    fun `Customize home is left out when the sheet has no action for it`() {
-        setSheet(homeList(favorites = listOf("a"), checked = true))
+    fun `both sections show their headers with the count`() {
+        setSheet(homeList(favorites = emptyList(), checked = true))
 
-        composeTestRule.onNodeWithText("Customize home").assertDoesNotExist()
+        composeTestRule.onNodeWithText("Favorites · 0").assertIsDisplayed()
+        composeTestRule.onNodeWithText("All apps · 0").assertIsDisplayed()
     }
 }

@@ -110,6 +110,7 @@ internal fun SheetSurface(
                 showHeaderAction = config.showHeaderAction && config.host.showHeaderAction,
                 isLeftHanded = config.isLeftHanded,
                 headerAccessory = config.headerAccessory,
+                headerLeadingAction = config.headerLeadingAction,
                 gestureZone = {
                     OverlaySheetGestureZone(
                         state = GestureZoneState(isExpanded, config.isLeftHanded, motion.canExpand(bounds)),

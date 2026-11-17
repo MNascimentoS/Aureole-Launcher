@@ -30,7 +30,6 @@
     <string name="home_folder_apps_in_folder">Apps in Folder: %1$s</string>
     <string name="home_folder_no_apps_in_folder">No apps in the folder.</string>
     <string name="core_common_no_apps_found">No apps found.</string>
-    <string name="home_folder_other_apps_count">Other Apps (%1$d)</string>
     <string name="home_folder_picker_drag_hint">Hold an app and slide to mark several</string>
     <string name="core_common_search_app_placeholder">Search app&#8230;</string>
 
@@ -203,9 +202,6 @@
     <!-- Favorites Dialog -->
     <string name="home_favorites_choose">Choose favorites</string>
     <string name="home_apps_list_show_all">Show all apps</string>
-    <string name="home_favorites_show_labels">Show labels</string>
-    <string name="home_favorites_show_labels_summary">“Favorites” and “All apps”</string>
-    <string name="home_favorites_count">Favorites (%1$d)</string>
     <string name="home_favorites_disable_all">Remove all</string>
     <string name="home_favorites_none_selected">No favorite app selected.</string>
     <string name="home_favorites_none_found">No favorite found.</string>
@@ -490,21 +486,16 @@
         <item quantity="one">%1$d component</item>
         <item quantity="other">%1$d components</item>
     </plurals>
-    <string name="home_favorites_menu_all_shown">No favorites: shows all apps</string>
-    <string name="home_favorites_manage_drag_hint">Hold and drag the button to reorder</string>
-    <plurals name="home_favorites_manage_empty_banner">
-        <item quantity="one">No favorites: the Home shows all %1$d apps. Tap + to pick only some.</item>
-        <item quantity="other">No favorites: the Home shows all %1$d apps. Tap + to pick only some.</item>
+    <string name="home_favorites_chip_labels">Labels</string>
+    <string name="home_favorites_section_title">Favorites · %1$d</string>
+    <string name="home_favorites_section_all_title">All apps · %1$d</string>
+    <string name="home_favorites_section_reorder_hint">hold ⋮⋮ to reorder</string>
+    <string name="home_favorites_empty_notice_empty">No favorites: the list stays empty on the Home.</string>
+    <plurals name="home_favorites_empty_notice_all">
+        <item quantity="one">No favorites: the Home shows all %1$d apps.</item>
+        <item quantity="other">No favorites: the Home shows all %1$d apps.</item>
     </plurals>
     <string name="home_favorites_manage_drag_handle">Reorder</string>
-    <plurals name="home_favorites_menu_count">
-        <item quantity="one">%1$d favorite, the rest stays hidden</item>
-        <item quantity="other">%1$d favorites, the rest stay hidden</item>
-    </plurals>
-    <plurals name="home_favorites_menu_count_on_top">
-        <item quantity="one">%1$d favorite on top, then all apps</item>
-        <item quantity="other">%1$d favorites on top, then all apps</item>
-    </plurals>
     <string name="settings_appearance_restore_background">Restore background</string>
     <string name="settings_appearance_background_restored">Background restored</string>
     <string name="settings_appearance_background_type">Type</string>

@@ -55,7 +55,10 @@ fun FavoriteAppsDialog(
                 animated = true,
                 isLeftHanded = config.rowConfig.isLeftHandedMode,
                 onSettingsClick = actions.onSettingsClick,
-                onBackPress = { isVisible = false }
+                onBackPress = { isVisible = false },
+                headerLeadingAction = actions.onCustomizeHome?.let { onCustomizeHome ->
+                    { FavoriteAppsCustomizeHomeButton(onClick = onCustomizeHome) }
+                }
             ),
             previewContent = {
                 AureolePreviewFrame {

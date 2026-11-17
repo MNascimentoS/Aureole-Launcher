@@ -30,7 +30,6 @@
     <string name="home_folder_apps_in_folder">Apps na Pasta: %1$s</string>
     <string name="home_folder_no_apps_in_folder">Nenhum aplicativo na pasta.</string>
     <string name="core_common_no_apps_found">Nenhum aplicativo encontrado.</string>
-    <string name="home_folder_other_apps_count">Outros Aplicativos (%1$d)</string>
     <string name="home_folder_picker_drag_hint">Segure um app e deslize para marcar vários</string>
     <string name="core_common_search_app_placeholder">Buscar aplicativo&#8230;</string>
 
@@ -203,9 +202,6 @@
     <!-- Favorites Dialog -->
     <string name="home_favorites_choose">Escolher favoritos</string>
     <string name="home_apps_list_show_all">Mostrar todos os apps</string>
-    <string name="home_favorites_show_labels">Mostrar rótulos</string>
-    <string name="home_favorites_show_labels_summary">“Favoritos” e “Todos os apps”</string>
-    <string name="home_favorites_count">Favoritos (%1$d)</string>
     <string name="home_favorites_disable_all">Remover todos</string>
     <string name="home_favorites_none_selected">Nenhum aplicativo favorito selecionado.</string>
     <string name="home_favorites_none_found">Nenhum favorito encontrado.</string>
@@ -494,24 +490,17 @@
         <item quantity="many">%1$d componentes</item>
         <item quantity="other">%1$d componentes</item>
     </plurals>
-    <string name="home_favorites_menu_all_shown">Sem favoritos: mostra todos os apps</string>
-    <string name="home_favorites_manage_drag_hint">Segure e arraste o botão para ordenar</string>
-    <plurals name="home_favorites_manage_empty_banner">
-        <item quantity="one">Sem favoritos: a Home mostra todos os %1$d apps. Toque em + para escolher só alguns.</item>
-        <item quantity="many">Sem favoritos: a Home mostra todos os %1$d apps. Toque em + para escolher só alguns.</item>
-        <item quantity="other">Sem favoritos: a Home mostra todos os %1$d apps. Toque em + para escolher só alguns.</item>
+    <string name="home_favorites_chip_labels">Rótulos</string>
+    <string name="home_favorites_section_title">Favoritos · %1$d</string>
+    <string name="home_favorites_section_all_title">Todos os apps · %1$d</string>
+    <string name="home_favorites_section_reorder_hint">segure ⋮⋮ para ordenar</string>
+    <string name="home_favorites_empty_notice_empty">Sem favoritos: a lista fica vazia na Home.</string>
+    <plurals name="home_favorites_empty_notice_all">
+        <item quantity="one">Sem favoritos: a Home mostra todos os %1$d apps.</item>
+        <item quantity="many">Sem favoritos: a Home mostra todos os %1$d apps.</item>
+        <item quantity="other">Sem favoritos: a Home mostra todos os %1$d apps.</item>
     </plurals>
     <string name="home_favorites_manage_drag_handle">Reordenar</string>
-    <plurals name="home_favorites_menu_count">
-        <item quantity="one">%1$d favorito, o resto fica oculto</item>
-        <item quantity="many">%1$d favoritos, o resto fica oculto</item>
-        <item quantity="other">%1$d favoritos, o resto fica oculto</item>
-    </plurals>
-    <plurals name="home_favorites_menu_count_on_top">
-        <item quantity="one">%1$d favorito no topo, depois todos os apps</item>
-        <item quantity="many">%1$d favoritos no topo, depois todos os apps</item>
-        <item quantity="other">%1$d favoritos no topo, depois todos os apps</item>
-    </plurals>
     <string name="settings_appearance_restore_background">Restaurar fundo</string>
     <string name="settings_appearance_background_restored">Fundo restaurado</string>
     <string name="settings_appearance_background_type">Tipo</string>

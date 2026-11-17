@@ -59,7 +59,9 @@ private fun FavoriteAppsPreviewList(params: FavoriteAppsPreviewParams) {
     val sections = params.sections
     val showFavoritesLabel = params.hasLabels && sections.showsAll && sections.favorites.isNotEmpty()
     val showAllLabel = params.hasLabels && sections.showsAll
+    // The sheet is the only scroll of the screen (RF-01): the preview shows a few rows and does not scroll.
     LazyColumn(
+        userScrollEnabled = false,
         verticalArrangement = Arrangement.spacedBy(AureoleDS.dimens.minimal),
         modifier = Modifier.fillMaxWidth()
     ) {

@@ -48,16 +48,18 @@ import dev.mnascimentos.aureole.core.designsystem.utils.rememberSystemAnimations
  * Title line of the overlay sheet (RF-05, RF-19). With an [action] (the logo), the line is a Row of a 48 dp slot,
  * the title and another 48 dp slot: the logo sits in one slot, centered on the title line, and the other stays empty
  * so the title keeps the center of the sheet and never runs under the logo (a long one is cut). Left-handed mirrors
- * it: the logo goes to the start. Without an action the title takes the whole width.
+ * it: the logo goes to the start. A [leadingAction] (a shortcut of the sheet) fills the slot across from the logo,
+ * and mirrors with it. Without any action the title takes the whole width.
  */
 @Composable
 internal fun OverlaySheetHeader(
     title: String,
     titleIcon: (@Composable (Modifier) -> Unit)? = null,
     action: (@Composable () -> Unit)? = null,
-    isLeftHanded: Boolean = false
+    isLeftHanded: Boolean = false,
+    leadingAction: (@Composable () -> Unit)? = null
 ) {
-    val hasAction = action != null
+    val hasAction = action != null || leadingAction != null
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -70,11 +72,11 @@ internal fun OverlaySheetHeader(
             ),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        if (action != null) HeaderSlot(content = action.takeIf { isLeftHanded })
+        if (hasAction) HeaderSlot(content = if (isLeftHanded) action else leadingAction)
         Box(modifier = Modifier.weight(1f), contentAlignment = Alignment.Center) {
             HeaderTitle(title = title, titleIcon = titleIcon)
         }
-        if (action != null) HeaderSlot(content = action.takeUnless { isLeftHanded })
+        if (hasAction) HeaderSlot(content = if (isLeftHanded) leadingAction else action)
     }
 }
 

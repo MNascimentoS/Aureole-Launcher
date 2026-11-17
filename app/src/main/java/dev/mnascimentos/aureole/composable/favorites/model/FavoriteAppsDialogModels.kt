@@ -16,32 +16,6 @@ data class ShowLabelsParams(
     val onCheckedChange: (Boolean) -> Unit
 )
 
-/** What the subtitle of "Choose favorites" says about the Home. */
-enum class FavoritesMenuSubtitle {
-    /** No favorites: the Home lists every app. */
-    ALL_SHOWN,
-
-    /** No favorites and the list shows only them: nothing is picked yet. */
-    NONE_SELECTED,
-
-    /** "N favorites, the rest stays hidden". */
-    COUNT,
-
-    /** "N favorites on top, then all apps". */
-    COUNT_ON_TOP
-}
-
-/**
- * The subtitle of "Choose favorites" for [favoriteCount] favorites. [showAllApps] is the list's switch, or null when
- * the sheet has none (the global favorites in Settings), which keeps the old wording.
- */
-fun favoritesMenuSubtitle(favoriteCount: Int, showAllApps: Boolean?): FavoritesMenuSubtitle = when {
-    favoriteCount == 0 && showAllApps == false -> FavoritesMenuSubtitle.NONE_SELECTED
-    favoriteCount == 0 -> FavoritesMenuSubtitle.ALL_SHOWN
-    showAllApps == true -> FavoritesMenuSubtitle.COUNT_ON_TOP
-    else -> FavoritesMenuSubtitle.COUNT
-}
-
 data class FavoriteAppsDialogConfig(
     val allApps: List<AppInfo>,
     val favoriteAppPackages: List<String>,
@@ -59,7 +33,7 @@ data class FavoriteAppsDialogActions(
     val onToggleFavorite: (String) -> Unit = {},
     val onUpdateFavoritePackages: (String?, List<String>) -> Unit = { _, _ -> },
     val onSettingsClick: (() -> Unit)? = null,
-    /** "Customize home" row at the top of the list; null (Settings, drawer favorites) leaves it out. */
+    /** Pencil "Customize home" at the start of the title line; null (Settings, drawer favorites) leaves it out. */
     val onCustomizeHome: (() -> Unit)? = null,
     val onDismiss: () -> Unit = {}
 )
@@ -68,12 +42,8 @@ data class FavoriteAppsDialogActions(
 data class FavoriteSectionParams(
     val filteredFavorites: List<AppInfo>,
     val searchQuery: String,
-    /** Favorites before the search filter; the drag hint needs two, the empty banner none. */
+    /** Favorites before the search filter; the reorder hint of the header needs two. */
     val favoritesCount: Int = filteredFavorites.size,
-    /** Apps the Home lists while there are no favorites. */
-    val allAppsCount: Int = 0,
-    /** The Home lists every app while there are no favorites, so the empty banner says so; off with the switch off. */
-    val isShowingAllAppsWhenEmpty: Boolean = true,
     /** Auto scroll of the list around the favorites, so a held favorite near its edges scrolls it. */
     val autoScroll: ReorderAutoScroll? = null
 )

@@ -265,7 +265,8 @@ internal fun OverlaySheetBody(
                             { OverlaySheetHeaderLogo(onClick = onSettingsClick, headerIcon = decorations.headerIcon) }
                         }
                     },
-                    isLeftHanded = decorations.isLeftHanded
+                    isLeftHanded = decorations.isLeftHanded,
+                    leadingAction = decorations.headerLeadingAction
                 )
             }
             if (sheetContent != null) {
