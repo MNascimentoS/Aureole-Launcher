@@ -66,14 +66,6 @@
   .wheel span{font-size:9px;color:var(--out);opacity:.7}
   .wheel b{font-size:14px;color:var(--hi)}
   .val{flex:none;font-size:12px;color:var(--low)}
-  .bs{position:absolute;left:0;right:0;bottom:30px;background:var(--surface);border-radius:22px 22px 0 0;box-shadow:0 -6px 24px rgba(0,0,0,.35);display:flex;flex-direction:column}
-  .bs .gzh{height:14px;flex:none}
-  .bs .bt{font-size:16px;font-weight:700;text-align:center;padding:8px 0 6px;flex:none}
-  .bs .bc{overflow:auto;padding:0 10px 10px;scrollbar-width:none;flex:1}
-  .dim{position:absolute;inset:22px 0 30px;background:rgba(5,8,10,.6)}
-  .pv{position:absolute;left:28px;right:28px}
-  .card.plain{padding:14px 16px}
-  .card.plain .tx b{font-size:15px}
   svg.i{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
   svg.logo{fill:currentColor}
   .inv{max-width:1300px;margin:auto;padding:4px 18px 30px;color:var(--mid);font-size:13px}
@@ -90,7 +82,7 @@
   Nada foi removido: o inventário no fim mostra onde cada item foi parar em cada direção. Role os aparelhos para o lado.</p>
 </header>
 <div class="tabs" id="tabs">
-  <button data-v="A" class="on">A · Home viva</button><button data-v="B">B · Cartões ✓</button><button data-v="C">C · No polegar</button>
+  <button data-v="A" class="on">A · Home viva</button><button data-v="B">B · Cartões com resumo</button><button data-v="C">C · No polegar</button>
 </div>
 <div class="desc" id="desc"></div>
 <div class="row" id="row"></div>
@@ -153,8 +145,17 @@ A:{desc:`<b>A · Home viva.</b> Uma tela só. No topo, a mini-home mostra o tema
   ['Raiz (rolando)',`<div class="body"><div class="lbl">Cartões e vidro</div>${G.vidro}<div class="lbl">Gestos e lista de apps</div>${G.gestos}<div class="lbl">Tela inicial</div>${G.tela}</div>`],
   ['Raiz (fim)',`<div class="body"><div class="lbl">Sistema</div>${G.sistema}<div class="lbl">Zona de cuidado</div>${G.perigo}${legal}<div class="thanks">Muito obrigado!</div></div>`],
  ]},
-B:{desc:`<b>B · Cartões (escolhida).</b> A raiz mantém o logo e mostra as três áreas como cartões, sem tags e sem setinha, no estilo das linhas de hoje. Aparência, Comportamento e Avançado abrem como <b>bottom sheet</b> por cima da raiz: reaproveita o <code>AureoleEditOverlay</code>, a prévia (mini-home em cima da sheet de Aparência) e todos os componentes das sheets. No Avançado, a Zona de cuidado fica no fim (rola por Sobre e Colaboradores antes), e Redefinir e Desinstalar pedem "Segure para confirmar".`,
- phones:[]},
+B:{desc:`<b>B · Cartões com resumo.</b> A raiz continua com o logo, mas cada área vira um cartão que mostra o estado atual (paleta, fonte, vidro; lado da mão; versão). Dentro, cada subtela tem o título centralizado na barra de cima, sem botão de voltar (volta pelo gesto do sistema), e abre com a mini-home e grupos com rótulo, como as sheets. Mais cliques que a A, porém a raiz explica o app de relance.`,
+ phones:[
+  ['Raiz',`<div class="body"><div class="hdr">${LOGO(70,40)}<h2>Aureole</h2><div class="v">Versão 0.9.36.327</div></div>
+    <div class="card">${ic('edit',22)}<div class="tx"><b>Aparência</b><span>Cores, fundo, fonte e vidro</span><div class="chips"><i>Frostbite</i><i>Istok Web</i><i>Vidro médio</i><i>Cantos 20 dp</i></div></div><span class="ch">›</span></div>
+    <div class="card">${ic('hand',22)}<div class="tx"><b>Comportamento</b><span>Gestos, lista e tela inicial</span><div class="chips"><i>Destro</i><i>Início abre a lista</i><i>A–Z ligado</i></div></div><span class="ch">›</span></div>
+    <div class="card">${ic('dots',22)}<div class="tx"><b>Avançado</b><span>Sistema, informações e legal</span><div class="chips"><i>Launcher padrão ✓</i><i>0.9.36</i></div></div><span class="ch">›</span></div>
+    <div class="thanks" style="padding-top:18px">Muito obrigado!</div></div>`],
+  ['Aparência',`<div class="body"><div class="t1">Aparência</div>${mini()}<div class="lbl">Tema</div><div class="grp">${row('fill','Paleta de cores','Frostbite')}${row('drop','Cores personalizadas','Cor base')}${row('font','Alterar fonte','Istok Web')}${row('apps','Ícones temáticos','',SW(true))}</div><div class="lbl">Fundo</div><div class="grp">${row('image','Definir plano de fundo','Cor sólida')}${row('scale','Escala da imagem','Toque para alternar',VAL('Preencher'))}${row('undo','Restaurar fundo','','')}</div><div class="lbl">Cartões e vidro</div>${G.vidro}</div>`],
+  ['Comportamento',`<div class="body"><div class="t1">Comportamento</div><div class="lbl">Gestos e lista de apps</div>${G.gestos}<div class="lbl">Tela inicial</div>${G.tela}<div class="lbl">Atualizações</div><div class="grp">${row('refresh','Verificar atualizações','Última: hoje','')}</div></div>`],
+  ['Avançado',`<div class="body"><div class="t1">Avançado</div><div class="lbl">Sistema</div><div class="grp">${row('info','Informações do app')}${row('smile','Novidades')}${row('home','Launcher padrão','','')}</div><div class="lbl">Zona de cuidado</div>${G.perigo}<div class="lbl">Sobre</div><div class="grp">${row('users','Colaboradores')}${row('doc','Política de privacidade')}${row('doc','Termos de serviço')}${row('doc','Licenças de código aberto')}</div></div>`],
+ ]},
 C:{desc:`<b>C · No polegar.</b> O conteúdo fica na metade de baixo, onde o polegar alcança (o mesmo princípio das sheets). Em cima, só o logo pequeno e a mini-home; embaixo, a busca "Buscar ajuste" e abas Aparência / Comportamento / Avançado que trocam a lista sem navegar. Melhor para uma mão; a busca resolve os 27 itens sem decorar onde ficam.`,
  phones:[
   ['Aparência',`<div class="body" style="padding-bottom:0"><div class="hdrS">${LOGO(34,19)}<div><h2>Aureole</h2><div class="v">Versão 0.9.36.327</div></div></div>${mini()}</div>
@@ -172,58 +173,39 @@ C:{desc:`<b>C · No polegar.</b> O conteúdo fica na metade de baixo, onde o pol
  ]}
 };
 
-
-const ROOT_B=()=>`<div class="body"><div class="hdr" style="padding-top:34px">${LOGO(80,46)}<h2>Aureole</h2><div class="v">Versão 0.9.36.327</div></div><div style="height:18px"></div>
-  <div class="card plain">${ic('edit',22)}<div class="tx"><b>Aparência</b><span>Cores, fundo, fonte e vidro</span></div></div>
-  <div class="card plain">${ic('list',22)}<div class="tx"><b>Comportamento</b><span>Gestos, lista e tela inicial</span></div></div>
-  <div class="card plain">${ic('dots',22)}<div class="tx"><b>Avançado</b><span>Sistema, informações e legal</span></div></div>
-  <div class="thanks" style="position:absolute;left:0;right:0;bottom:26px">Muito obrigado!</div></div>`;
-const SHEET=(title,top,content,preview='',end=false)=>`${ROOT_B()}<div class="dim"></div>${preview}<div class="bs" style="top:${top}px"><div class="gzh"></div><div class="bt">${title}</div><div class="bc ${end?'end':''}">${content}</div></div>`;
-const DANGER=`<div class="grp">${row('undo','Redefinir launcher','Segure para confirmar','','danger')}${row('trash','Desinstalar launcher','Segure para confirmar','','danger')}</div>`;
-const ABOUT=`<div class="grp">${row('users','Colaboradores')}${row('doc','Política de privacidade')}${row('doc','Termos de serviço')}${row('doc','Licenças de código aberto')}</div>`;
-V.B.phones=[
-  ['Raiz', ROOT_B()],
-  ['Aparência (sheet com prévia)', SHEET('Aparência',212,`<div class="lbl">Tema</div><div class="grp">${row('fill','Paleta de cores','Frostbite')}${row('drop','Cores personalizadas','Cor base')}${row('font','Alterar fonte','Istok Web')}${row('apps','Ícones temáticos','',SW(true))}</div><div class="lbl">Fundo</div><div class="grp">${row('image','Definir plano de fundo','Cor sólida')}${row('scale','Escala da imagem','Toque para alternar',VAL('Preencher'))}${row('undo','Restaurar fundo','','')}</div><div class="lbl">Cartões e vidro</div>${G.vidro}`,
-     `<div class="pv" style="top:40px"><div class="mini" style="margin:0">${''}<div class="c">09:41</div><div class="d">Segunda, 16 de novembro</div><div class="a"><i style="background:#3f8a49"></i><i style="background:#e7873a"></i><i style="background:#3a6fd1"></i><i style="background:#7d58bd"></i></div></div></div>`)],
-  ['Comportamento (sheet)', SHEET('Comportamento',150,`<div class="lbl">Gestos e lista de apps</div>${G.gestos}<div class="lbl">Tela inicial</div>${G.tela}<div class="lbl">Atualizações</div><div class="grp">${row('refresh','Verificar atualizações','Última: hoje','')}</div>`)],
-  ['Avançado (sheet, topo)', SHEET('Avançado',150,`<div class="lbl">Sistema</div><div class="grp">${row('info','Informações do app')}${row('smile','Novidades')}${row('home','Launcher padrão','','')}</div><div class="lbl">Sobre</div>${ABOUT}<div class="lbl">Zona de cuidado</div>${DANGER}`)],
-  ['Avançado (rolado até o fim)', SHEET('Avançado',150,`<div class="lbl">Sistema</div><div class="grp">${row('info','Informações do app')}${row('smile','Novidades')}${row('home','Launcher padrão','','')}</div><div class="lbl">Sobre</div>${ABOUT}<div class="lbl">Zona de cuidado</div>${DANGER}<div style="height:8px"></div>`,'',true)],
-];
-
 const INV=[
  ['Logo, nome, versão → notas','Cabeçalho pequeno no topo','Topo da raiz','Cabeçalho pequeno'],
- ['Muito obrigado!','Fim da rolagem','Fim da raiz (preso embaixo)','Aba Avançado'],
- ['Paleta de cores','Tile','Sheet Aparência › Tema','Tile (aba Aparência)'],
- ['Cores personalizadas','Seção Aparência','Sheet Aparência › Tema','Aba Aparência'],
- ['Alterar fonte','Tile','Sheet Aparência › Tema','Tile'],
- ['Definir plano de fundo','Tile','Sheet Aparência › Fundo','Tile'],
- ['Restaurar fundo','Seção Aparência','Sheet Aparência › Fundo','Aba Aparência'],
- ['Escala da imagem','Seção Aparência','Sheet Aparência › Fundo','Aba Aparência'],
- ['Ícones temáticos','Seção Aparência','Sheet Aparência › Tema','Aba Aparência'],
- ['Cartões e vidro (borda, raio, efeito)','Tile + seção','Sheet Aparência › Cartões e vidro','Tile + aba Aparência'],
- ['Home abre todos os apps','Gestos e lista','Sheet Comportamento › Gestos','Aba Comportamento'],
- ['Todos os apps do lado esquerdo','Gestos e lista','Sheet Comportamento › Gestos','Aba Comportamento'],
- ['Desativar rolagem alfabética','Gestos e lista','Sheet Comportamento › Gestos','Aba Comportamento'],
- ['Exibir indicador de widgets','Tela inicial','Sheet Comportamento › Tela inicial','Aba Comportamento'],
- ['Deslocamento do cabeçalho','Tela inicial','Sheet Comportamento › Tela inicial','Aba Comportamento'],
- ['Verificar atualizações','Sistema','Sheet Comportamento › Atualizações','Aba Comportamento'],
- ['Informações do app','Sistema','Sheet Avançado › Sistema','Aba Avançado'],
- ['Novidades','Sistema','Sheet Avançado › Sistema','Aba Avançado'],
- ['Launcher padrão','Sistema','Sheet Avançado › Sistema','Aba Avançado'],
- ['Redefinir launcher','Zona de cuidado','Sheet Avançado › Zona de cuidado (fim)','Aba Avançado'],
- ['Desinstalar launcher','Zona de cuidado','Sheet Avançado › Zona de cuidado (fim)','Aba Avançado'],
- ['Colaboradores, Privacidade, Termos, Licenças','Rodapé','Sheet Avançado › Sobre','Rodapé da aba Avançado'],
+ ['Muito obrigado!','Fim da rolagem','Fim da raiz','Aba Avançado'],
+ ['Paleta de cores','Tile','Aparência › Tema','Tile (aba Aparência)'],
+ ['Cores personalizadas','Seção Aparência','Aparência › Tema','Aba Aparência'],
+ ['Alterar fonte','Tile','Aparência › Tema','Tile'],
+ ['Definir plano de fundo','Tile','Aparência › Fundo','Tile'],
+ ['Restaurar fundo','Seção Aparência','Aparência › Fundo','Aba Aparência'],
+ ['Escala da imagem','Seção Aparência','Aparência › Fundo','Aba Aparência'],
+ ['Ícones temáticos','Seção Aparência','Aparência › Tema','Aba Aparência'],
+ ['Cartões e vidro (borda, raio, efeito)','Tile + seção','Aparência › Cartões e vidro','Tile + aba Aparência'],
+ ['Home abre todos os apps','Gestos e lista','Comportamento › Gestos','Aba Comportamento'],
+ ['Todos os apps do lado esquerdo','Gestos e lista','Comportamento › Gestos','Aba Comportamento'],
+ ['Desativar rolagem alfabética','Gestos e lista','Comportamento › Gestos','Aba Comportamento'],
+ ['Exibir indicador de widgets','Tela inicial','Comportamento › Tela inicial','Aba Comportamento'],
+ ['Deslocamento do cabeçalho','Tela inicial','Comportamento › Tela inicial','Aba Comportamento'],
+ ['Verificar atualizações','Sistema','Comportamento › Atualizações','Aba Comportamento'],
+ ['Informações do app','Sistema','Avançado › Sistema','Aba Avançado'],
+ ['Novidades','Sistema','Avançado › Sistema','Aba Avançado'],
+ ['Launcher padrão','Sistema','Avançado › Sistema','Aba Avançado'],
+ ['Redefinir launcher','Zona de cuidado','Avançado › Zona de cuidado','Aba Avançado'],
+ ['Desinstalar launcher','Zona de cuidado','Avançado › Zona de cuidado','Aba Avançado'],
+ ['Colaboradores, Privacidade, Termos, Licenças','Rodapé','Avançado › Sobre','Rodapé da aba Avançado'],
 ];
-document.getElementById('inv').innerHTML=`<table><tr><td><b>Item de hoje</b></td><td><b>A</b></td><td><b>B (escolhida)</b></td><td><b>C</b></td></tr>${INV.map(r=>`<tr>${r.map(c=>`<td>${c}</td>`).join('')}</tr>`).join('')}</table>`;
+document.getElementById('inv').innerHTML=`<table><tr><td><b>Item de hoje</b></td><td><b>A</b></td><td><b>B</b></td><td><b>C</b></td></tr>${INV.map(r=>`<tr>${r.map(c=>`<td>${c}</td>`).join('')}</tr>`).join('')}</table>`;
 
 function show(v){
   document.querySelectorAll('#tabs button').forEach(b=>b.classList.toggle('on',b.dataset.v===v));
   document.getElementById('desc').innerHTML=V[v].desc;
   document.getElementById('row').innerHTML=V[v].phones.map(([c,h])=>phone(c,h)).join('');
-  document.querySelectorAll('.bc.end').forEach(e=>e.scrollTop=e.scrollHeight);
 }
 document.getElementById('tabs').onclick=e=>{const b=e.target.closest('button'); if(b) show(b.dataset.v);};
-show('B');
+show('A');
 document.addEventListener('wheel',e=>{const w=e.target.closest('[data-wheel]'); if(!w) return; e.preventDefault(); let n=+w.dataset.wheel+(e.deltaY>0?1:-1); n=Math.max(0,Math.min(30,n)); w.dataset.wheel=n; w.innerHTML=`<span>${n-1}%</span><b>${n}%</b><span>${n+1}%</span>`;},{passive:false});
 let ty=null;document.addEventListener('touchstart',e=>{if(e.target.closest('[data-wheel]'))ty=e.touches[0].clientY;},{passive:true});
 document.addEventListener('touchmove',e=>{const w=e.target.closest('[data-wheel]'); if(!w||ty==null) return; const d=ty-e.touches[0].clientY; if(Math.abs(d)<14) return; ty=e.touches[0].clientY; let n=Math.max(0,Math.min(30,+w.dataset.wheel+(d>0?1:-1))); w.dataset.wheel=n; w.innerHTML=`<span>${n-1}%</span><b>${n}%</b><span>${n+1}%</span>`;},{passive:true});
