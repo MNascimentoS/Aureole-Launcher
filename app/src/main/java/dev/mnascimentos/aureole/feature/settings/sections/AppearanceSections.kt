@@ -112,7 +112,11 @@ private fun BackgroundGroup(
             AureoleMenuRow(
                 MenuRowParams(
                     title = stringResource(R.string.settings_appearance_image_scale),
-                    subtitle = uiState.wallpaperScaleType,
+                    subtitle = if (uiState.wallpaperAdjustments.hasFraming) {
+                        stringResource(R.string.settings_appearance_custom_framing)
+                    } else {
+                        uiState.wallpaperScaleType
+                    },
                     icon = { m, c -> AureoleDS.icons.Layout(modifier = m, tint = c) },
                     onClick = { actions.onSelectWallpaperScaleType(nextWallpaperScaleType(uiState.wallpaperScaleType)) }
                 )

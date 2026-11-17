@@ -34,7 +34,10 @@ private fun SettingsViewModel.restoreSeed(before: SeedSnapshot, stashedPath: Str
             withContext(Dispatchers.IO) { settingsRepository.wallpaperStash.undo(stashedPath) }
         settingsRepository.selectedThemeName = before.themeName
         settingsRepository.manualSeedColor = before.seedColor
-        updateUiState { it.withSeedSnapshot(before, keepWallpaper = restored) }
+        updateUiState {
+            it.withSeedSnapshot(before, keepWallpaper = restored)
+                .copy(wallpaperAdjustments = settingsRepository.wallpaperAdjustments)
+        }
     }
 }
 
@@ -72,7 +75,11 @@ private fun SettingsViewModel.undoCustomWallpaper(before: String?, kept: Boolean
             withContext(Dispatchers.IO) { settingsRepository.wallpaperStash.undo(before) }
         if (!restored) withContext(Dispatchers.IO) { settingsRepository.clearCustomWallpaper() }
         updateUiState {
-            it.copy(isCustomWallpaperSet = restored, customWallpaperPath = before.takeIf { restored })
+            it.copy(
+                isCustomWallpaperSet = restored,
+                customWallpaperPath = before.takeIf { restored },
+                wallpaperAdjustments = settingsRepository.wallpaperAdjustments
+            )
         }
     }
 }

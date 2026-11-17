@@ -1,5 +1,6 @@
 package dev.mnascimentos.aureole.feature.settings.extensions
 
+import dev.mnascimentos.aureole.core.data.model.WallpaperAdjustments
 import dev.mnascimentos.aureole.core.designsystem.palette.resolveThemeSeedColor
 import dev.mnascimentos.aureole.feature.settings.SettingsViewModel
 import dev.mnascimentos.aureole.feature.settings.model.CardsGlassDraft
@@ -34,7 +35,8 @@ private fun SettingsViewModel.handleManualSeedColor(color: Int) {
             manualSeedColor = color,
             selectedThemeName = "Custom",
             isCustomWallpaperSet = false,
-            customWallpaperPath = null
+            customWallpaperPath = null,
+            wallpaperAdjustments = WallpaperAdjustments.DEFAULT
         )
     }
 }
@@ -68,7 +70,10 @@ private fun SettingsViewModel.handleSearchIconPosition(position: String) {
 
 private fun SettingsViewModel.handleWallpaperScaleType(scaleType: String) {
     settingsRepository.wallpaperScaleType = scaleType
-    updateUiState { it.copy(wallpaperScaleType = scaleType) }
+    // The saved framing wins over "Image scale" (D-01); tapping the row drops it and keeps dim and blur.
+    val adjustments = settingsRepository.wallpaperAdjustments.withoutFraming()
+    settingsRepository.wallpaperAdjustments = adjustments
+    updateUiState { it.copy(wallpaperScaleType = scaleType, wallpaperAdjustments = adjustments) }
 }
 
 private fun SettingsViewModel.handleCardsGlass(draft: CardsGlassDraft) {

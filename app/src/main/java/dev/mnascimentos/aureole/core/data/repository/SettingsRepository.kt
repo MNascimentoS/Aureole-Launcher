@@ -13,7 +13,9 @@ import androidx.core.net.toUri
 import dev.mnascimentos.aureole.core.data.db.AppDatabase
 import dev.mnascimentos.aureole.core.data.image.decodeWallpaperBitmap
 import dev.mnascimentos.aureole.core.data.model.ClockConfig
+import dev.mnascimentos.aureole.core.data.model.WallpaperAdjustments
 import dev.mnascimentos.aureole.core.designsystem.utils.HazeUtils
+import dev.mnascimentos.aureole.core.image.BlurredWallpaperCache
 import timber.log.Timber
 import java.io.File
 import java.io.FileOutputStream
@@ -229,6 +231,18 @@ class SettingsRepository(private val context: Context) {
         get() = prefs.getString(KEY_WALLPAPER_SCALE_TYPE, "Crop") ?: "Crop"
         set(value) = prefs.edit { putString(KEY_WALLPAPER_SCALE_TYPE, value) }
 
+    /** How the custom photo is framed, dimmed and blurred; absent means the classic look (RF-11). */
+    var wallpaperAdjustments: WallpaperAdjustments
+        get() = WallpaperAdjustments.fromJson(prefs.getString(KEY_WALLPAPER_ADJUSTMENTS, null))
+        set(value) = prefs.edit {
+            val adjustments = value.coerced()
+            if (adjustments.isDefault) {
+                remove(KEY_WALLPAPER_ADJUSTMENTS)
+            } else {
+                putString(KEY_WALLPAPER_ADJUSTMENTS, adjustments.toJson())
+            }
+        }
+
     var lastSeenVersionCode: Int
         get() = prefs.getInt(KEY_LAST_SEEN_VERSION_CODE, 0)
         set(value) = prefs.edit { putInt(KEY_LAST_SEEN_VERSION_CODE, value) }
@@ -249,7 +263,9 @@ class SettingsRepository(private val context: Context) {
         prefs.edit {
             putBoolean(KEY_IS_CUSTOM_WALLPAPER_SET, false)
             remove(KEY_CUSTOM_WALLPAPER_PATH)
+            remove(KEY_WALLPAPER_ADJUSTMENTS)
         }
+        BlurredWallpaperCache.clear(context)
     }
 
     fun saveCustomWallpaper(uriString: String): Boolean = runCatching { writeCustomWallpaper(uriString.toUri()) }
@@ -270,6 +286,8 @@ class SettingsRepository(private val context: Context) {
         bitmap.recycle()
         customWallpaperPath = file.absolutePath
         isCustomWallpaperSet = true
+        wallpaperAdjustments = WallpaperAdjustments.DEFAULT
+        BlurredWallpaperCache.clear(context)
         return true
     }
 
@@ -322,6 +340,7 @@ class SettingsRepository(private val context: Context) {
 
         context.cacheDir.deleteRecursively()
         File(context.filesDir, "custom_wallpaper.jpg").delete()
+        BlurredWallpaperCache.clear(context)
     }
 
     private val prefs
@@ -360,6 +379,7 @@ class SettingsRepository(private val context: Context) {
         private const val KEY_IS_CUSTOM_WALLPAPER_SET = "is_custom_wallpaper_set"
         private const val KEY_CUSTOM_WALLPAPER_PATH = "custom_wallpaper_path"
         private const val KEY_WALLPAPER_SCALE_TYPE = "wallpaper_scale_type"
+        private const val KEY_WALLPAPER_ADJUSTMENTS = "wallpaper_adjustments"
         private const val KEY_USE_WALLPAPER_COLORS = "use_wallpaper_colors"
         private const val KEY_MANUAL_SEED_COLOR = "manual_seed_color"
         private const val KEY_HAZE_ENABLED = "haze_enabled"

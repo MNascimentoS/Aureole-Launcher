@@ -2,6 +2,7 @@ package dev.mnascimentos.aureole.feature.settings.model
 
 import dev.mnascimentos.aureole.composable.undo.model.UndoSnackbarState
 import dev.mnascimentos.aureole.core.data.model.AppInfo
+import dev.mnascimentos.aureole.core.data.model.WallpaperAdjustments
 import dev.mnascimentos.aureole.core.data.repository.SettingsRepository
 import dev.mnascimentos.aureole.core.designsystem.model.GlassLevel
 import dev.mnascimentos.aureole.core.designsystem.model.TextResource
@@ -37,6 +38,7 @@ data class SettingsUiState(
     val isCustomWallpaperSet: Boolean = false,
     val customWallpaperPath: String? = null,
     val wallpaperScaleType: String = "Crop",
+    val wallpaperAdjustments: WallpaperAdjustments = WallpaperAdjustments.DEFAULT,
     val showResetGridDialog: Boolean = false,
     val showCreateFolderDialog: Boolean = false,
     val isDynamicWallpaperEnabled: Boolean = false,

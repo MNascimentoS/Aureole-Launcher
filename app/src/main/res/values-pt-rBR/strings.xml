@@ -96,6 +96,7 @@
     <string name="settings_appearance_color_palette">Paleta de cores</string>
     <string name="settings_appearance_themed_icons">Ícones temáticos</string>
     <string name="settings_appearance_image_scale">Escala da imagem</string>
+    <string name="settings_appearance_custom_framing">Enquadramento personalizado</string>
 
     <!-- Apps Drawer -->
     <string name="home_apps_search_placeholder">Buscar aplicativos</string>

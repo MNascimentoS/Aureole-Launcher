@@ -75,6 +75,7 @@ class SettingsViewModel(
                 isCustomWallpaperSet = settingsRepository.isCustomWallpaperSet,
                 customWallpaperPath = settingsRepository.customWallpaperPath,
                 wallpaperScaleType = settingsRepository.wallpaperScaleType,
+                wallpaperAdjustments = settingsRepository.wallpaperAdjustments,
                 isDynamicWallpaperEnabled = settingsRepository.isDynamicWallpaperEnabled,
                 manualSeedColor = settingsRepository.manualSeedColor,
                 selectedThemeName = settingsRepository.selectedThemeName,
@@ -137,6 +138,7 @@ class SettingsViewModel(
                     it.copy(
                         isCustomWallpaperSet = true,
                         customWallpaperPath = settingsRepository.customWallpaperPath,
+                        wallpaperAdjustments = settingsRepository.wallpaperAdjustments,
                         errorMessage = null
                     )
                 }

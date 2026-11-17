@@ -1,10 +1,12 @@
 package dev.mnascimentos.aureole.core.data.repository
 
 import android.content.Context
+import dev.mnascimentos.aureole.core.data.model.WallpaperAdjustments
 import java.io.File
 
 private const val STASHED_WALLPAPER_NAME = "custom_wallpaper_undo.jpg"
 private const val STASHED_SYSTEM_NAME = "system_wallpaper_undo.jpg"
+private const val STASHED_ADJUSTMENTS_NAME = "wallpaper_adjustments_undo.json"
 
 /**
  * Lets "Restore background" be undone: the custom wallpaper file is moved aside instead of deleted, and moved back
@@ -17,6 +19,12 @@ class WallpaperUndoStash(
 ) {
     private val stashedFile get() = File(context.filesDir, STASHED_WALLPAPER_NAME)
     private val stashedSystemFile get() = File(context.filesDir, STASHED_SYSTEM_NAME)
+    private val stashedAdjustmentsFile get() = File(context.filesDir, STASHED_ADJUSTMENTS_NAME)
+
+    private fun stashAdjustments() {
+        val current = settings.wallpaperAdjustments
+        if (current.isDefault) stashedAdjustmentsFile.delete() else stashedAdjustmentsFile.writeText(current.toJson())
+    }
 
     /**
      * Restores the default background: moves the custom wallpaper file aside, turns the custom wallpaper off and
@@ -28,12 +36,14 @@ class WallpaperUndoStash(
         val file = path?.let(::File)?.takeIf { it.exists() }
         val moved = file != null && file.renameTo(stashedFile)
         if (moved) {
+            stashAdjustments()
             stashedSystemFile.delete()
             if (!systemWallpaper().save(stashedSystemFile)) stashedSystemFile.delete()
             systemWallpaper().clear()
         }
         settings.isCustomWallpaperSet = false
         settings.customWallpaperPath = null
+        settings.wallpaperAdjustments = WallpaperAdjustments.DEFAULT
         return if (moved) path else null
     }
 
@@ -43,6 +53,7 @@ class WallpaperUndoStash(
      */
     fun keepCopy(path: String): Boolean = runCatching {
         File(path).copyTo(stashedFile, overwrite = true)
+        stashAdjustments()
         stashedSystemFile.delete()
     }.isSuccess
 
@@ -54,6 +65,10 @@ class WallpaperUndoStash(
             stashedSystemFile.delete()
             settings.customWallpaperPath = path
             settings.isCustomWallpaperSet = true
+            settings.wallpaperAdjustments = WallpaperAdjustments.fromJson(
+                stashedAdjustmentsFile.takeIf { it.exists() }?.readText()
+            )
+            stashedAdjustmentsFile.delete()
         }
         return moved
     }
@@ -62,5 +77,6 @@ class WallpaperUndoStash(
     fun discard() {
         stashedFile.delete()
         stashedSystemFile.delete()
+        stashedAdjustmentsFile.delete()
     }
 }
