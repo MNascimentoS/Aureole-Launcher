@@ -62,8 +62,6 @@
     <string name="settings_root_thank_you">Thank you!</string>
     <string name="settings_root_title">Aureole</string>
     <string name="settings_root_version">Version %1$s</string>
-    <string name="settings_root_update_checking">Checking for updates</string>
-    <string name="settings_root_update_downloading">Downloading the update</string>
     <string name="settings_root_appearance_title">Appearance</string>
     <string name="settings_root_appearance_subtitle">Colors, background, font, and glass</string>
     <string name="settings_root_behavior_title">Behavior</string>

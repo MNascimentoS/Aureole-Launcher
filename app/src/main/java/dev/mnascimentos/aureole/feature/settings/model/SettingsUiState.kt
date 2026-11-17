@@ -53,8 +53,6 @@ data class SettingsUiState(
     val hazeOpacity: Float = 0.5f,
     val hazeBlurLevel: GlassLevel = GlassLevel.MEDIUM,
     val isInAppUpdateEnabled: Boolean = true,
-    /** The ring around the logo of the Settings root while an update is checked or downloaded. */
-    val updateRing: SettingsUpdateRing = SettingsUpdateRing.Hidden,
     val headerOffsetPercent: Int = 10,
     val cornerRadiusDp: Int = SettingsRepository.DEFAULT_CORNER_RADIUS_DP,
     val isThemedAppIconsEnabled: Boolean = false,
