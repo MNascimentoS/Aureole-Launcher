@@ -66,6 +66,7 @@
     <string name="settings_root_behavior_subtitle">Gestures, list, and home screen</string>
     <string name="settings_root_advanced_title">Advanced</string>
     <string name="settings_root_advanced_subtitle">System, about, and credits</string>
+    <string name="settings_root_open_panel">open panel</string>
 
     <!-- Settings Advanced -->
     <string name="settings_advanced_title">Advanced</string>

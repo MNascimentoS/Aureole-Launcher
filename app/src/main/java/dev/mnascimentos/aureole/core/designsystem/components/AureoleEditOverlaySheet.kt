@@ -46,6 +46,7 @@ import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.core.designsystem.icons.Logo
 import dev.mnascimentos.aureole.core.designsystem.model.AnchoredSheetState
 import dev.mnascimentos.aureole.core.designsystem.model.AureoleEditOverlayParams
+import dev.mnascimentos.aureole.core.designsystem.model.LocalOverlayExternalBackdrop
 import dev.mnascimentos.aureole.core.designsystem.model.OverlaySheetDecorations
 import dev.mnascimentos.aureole.core.designsystem.model.OverlaySheetMotion
 import dev.mnascimentos.aureole.core.designsystem.model.OverlaySheetStateData
@@ -90,7 +91,7 @@ internal fun OverlayContentBox(
             .fillMaxSize()
             .scrimTapToDismiss(stateData.triggerDismiss)
     ) {
-        if (!params.config.hasExternalBackdrop) {
+        if (!params.config.hasExternalBackdrop && !LocalOverlayExternalBackdrop.current) {
             AureoleOverlayBackdrop(
                 hazeState = effectiveHazeState,
                 modifier = Modifier
@@ -220,7 +221,8 @@ private fun AnchoredPreviewLayout(
                     anchoredPreviewTop(sheetTop, previewGapPx, placeable.height, previewTopPaddingPx)
                 )
             }
-            sheetPlaceables.forEach { it.placeRelative(0, sheetTop) }
+            // Centered: a sheet narrower than the screen (LocalOverlaySheetMaxWidth) sits in the middle.
+            sheetPlaceables.forEach { it.placeRelative((constraints.maxWidth - it.width) / 2, sheetTop) }
         }
     }
 }

@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.only
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -35,6 +36,7 @@ import androidx.compose.ui.unit.Velocity
 import dev.mnascimentos.aureole.core.designsystem.model.AureoleEditOverlayConfig
 import dev.mnascimentos.aureole.core.designsystem.model.AureoleEditOverlayParams
 import dev.mnascimentos.aureole.core.designsystem.model.GestureZoneState
+import dev.mnascimentos.aureole.core.designsystem.model.LocalOverlaySheetMaxWidth
 import dev.mnascimentos.aureole.core.designsystem.model.OverlaySheetController
 import dev.mnascimentos.aureole.core.designsystem.model.OverlaySheetDecorations
 import dev.mnascimentos.aureole.core.designsystem.model.OverlaySheetEvents
@@ -72,6 +74,7 @@ internal fun SheetSurface(
 
     Surface(
         modifier = modifier
+            .widthIn(max = LocalOverlaySheetMaxWidth.current)
             .fillMaxWidth()
             .windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Bottom))
             .sheetHeight(motion, isExpanded, bounds)

@@ -84,7 +84,7 @@ private fun ThemeGroup(
                 title = stringResource(R.string.settings_appearance_custom_colors),
                 icon = { m, _ -> SeedSwatch(color = uiState.manualSeedColor, modifier = m) },
                 showChevron = true,
-                onClick = { actions.onOpenColorPickerDialog() }
+                onClick = dialogActions.onShowCustomColorsDialog
             )
         )
         AureoleMenuRow(

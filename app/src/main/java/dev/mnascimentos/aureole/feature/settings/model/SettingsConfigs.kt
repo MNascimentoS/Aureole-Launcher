@@ -61,7 +61,6 @@ data class SettingsScreenActions(
     val onConfirmResetGrid: () -> Unit = {},
     val onDismissResetGridDialog: () -> Unit = {},
     val onOpenFactoryResetDialog: () -> Unit = {},
-    val onNavigateToLicenses: () -> Unit = {},
     val onConfirmFactoryReset: () -> Unit = {},
     val onDismissFactoryResetDialog: () -> Unit = {},
     val onToggleShowSettingsButtonInAllApps: () -> Unit = {},

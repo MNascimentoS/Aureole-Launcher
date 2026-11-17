@@ -7,8 +7,9 @@ import androidx.compose.ui.test.performScrollTo
 import dev.mnascimentos.aureole.core.designsystem.model.GlassLevel
 import dev.mnascimentos.aureole.core.designsystem.palette.allPalettes
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
-import dev.mnascimentos.aureole.feature.settings.model.AppearanceDialogFlags
+import dev.mnascimentos.aureole.feature.settings.components.SettingsChildSheet
 import dev.mnascimentos.aureole.feature.settings.model.CardsGlassDraft
+import dev.mnascimentos.aureole.feature.settings.model.SettingsChildKind
 import dev.mnascimentos.aureole.feature.settings.model.SettingsScreenActions
 import dev.mnascimentos.aureole.feature.settings.model.SettingsUiState
 import dev.mnascimentos.aureole.feature.settings.model.toCardsGlassDraft
@@ -101,19 +102,19 @@ class SettingsAppearanceControlsTest {
     }
 
     @Test
-    fun `when palette flag is true, should render PickPaletteBottomSheet and handle selection`() {
+    fun `when palette sheet is open, should render PickPaletteBottomSheet and handle selection`() {
         var selectedTheme = ""
         var dismissCalled = false
-        val flags = AppearanceDialogFlags(showPalette = true)
+        val kind = SettingsChildKind.PALETTE
         val actions = SettingsScreenActions(onSelectTheme = { selectedTheme = it })
 
         composeTestRule.setContent {
             AureoleLauncherTheme {
-                AppearanceDialogs(
-                    flags = flags,
+                SettingsChildSheet(
+                    kind = kind,
                     uiState = SettingsUiState(),
                     actions = actions,
-                    onDismissDialog = { dismissCalled = true }
+                    onClose = { dismissCalled = true }
                 )
             }
         }
@@ -126,19 +127,19 @@ class SettingsAppearanceControlsTest {
     }
 
     @Test
-    fun `when font flag is true, should render PickFontBottomSheet and handle selection`() {
+    fun `when font sheet is open, should render PickFontBottomSheet and handle selection`() {
         var selectedFont = ""
         var dismissCalled = false
-        val flags = AppearanceDialogFlags(showFont = true)
+        val kind = SettingsChildKind.FONT
         val actions = SettingsScreenActions(onSelectFont = { selectedFont = it })
 
         composeTestRule.setContent {
             AureoleLauncherTheme {
-                AppearanceDialogs(
-                    flags = flags,
+                SettingsChildSheet(
+                    kind = kind,
                     uiState = SettingsUiState(),
                     actions = actions,
-                    onDismissDialog = { dismissCalled = true }
+                    onClose = { dismissCalled = true }
                 )
             }
         }
@@ -151,21 +152,21 @@ class SettingsAppearanceControlsTest {
     }
 
     @Test
-    fun `when setBg flag is true, closing without a change should save no seed color`() {
+    fun `when setBg sheet is open, closing without a change should save no seed color`() {
         var savedColor: Int? = null
         var dismissCalled = false
-        val flags = AppearanceDialogFlags(showSetBg = true)
+        val kind = SettingsChildKind.BACKGROUND
         val actions = SettingsScreenActions(
             onSelectManualSeedColor = { savedColor = it }
         )
 
         composeTestRule.setContent {
             AureoleLauncherTheme {
-                AppearanceDialogs(
-                    flags = flags,
+                SettingsChildSheet(
+                    kind = kind,
                     uiState = SettingsUiState(manualSeedColor = DEFAULT_SEED),
                     actions = actions,
-                    onDismissDialog = { dismissCalled = true }
+                    onClose = { dismissCalled = true }
                 )
             }
         }
@@ -176,21 +177,21 @@ class SettingsAppearanceControlsTest {
     }
 
     @Test
-    fun `when setBg flag is true, clicking custom image should trigger wallpaper change`() {
+    fun `when setBg sheet is open, clicking custom image should trigger wallpaper change`() {
         var wallpaperChangeClicked = false
         var dismissCalled = false
-        val flags = AppearanceDialogFlags(showSetBg = true)
+        val kind = SettingsChildKind.BACKGROUND
         val actions = SettingsScreenActions(
             onChangeWallpaperClick = { wallpaperChangeClicked = true }
         )
 
         composeTestRule.setContent {
             AureoleLauncherTheme {
-                AppearanceDialogs(
-                    flags = flags,
+                SettingsChildSheet(
+                    kind = kind,
                     uiState = SettingsUiState(),
                     actions = actions,
-                    onDismissDialog = { dismissCalled = true }
+                    onClose = { dismissCalled = true }
                 )
             }
         }
@@ -203,17 +204,17 @@ class SettingsAppearanceControlsTest {
     }
 
     @Test
-    fun `when cardsGlass flag is true, should apply every tap on the spot`() {
+    fun `when cardsGlass sheet is open, should apply every tap on the spot`() {
         val applied = mutableListOf<CardsGlassDraft>()
         val actions = SettingsScreenActions(onApplyCardsGlass = { applied += it })
 
         composeTestRule.setContent {
             AureoleLauncherTheme {
-                AppearanceDialogs(
-                    flags = AppearanceDialogFlags(showCardsGlass = true),
+                SettingsChildSheet(
+                    kind = SettingsChildKind.CARDS_GLASS,
                     uiState = SettingsUiState(cornerRadiusDp = 16, isHazeEnabled = true),
                     actions = actions,
-                    onDismissDialog = {}
+                    onClose = {}
                 )
             }
         }
@@ -235,11 +236,11 @@ class SettingsAppearanceControlsTest {
 
         composeTestRule.setContent {
             AureoleLauncherTheme {
-                AppearanceDialogs(
-                    flags = AppearanceDialogFlags(showCardsGlass = true),
+                SettingsChildSheet(
+                    kind = SettingsChildKind.CARDS_GLASS,
                     uiState = opening,
                     actions = SettingsScreenActions(onCardsGlassClosed = { closedWith = it }),
-                    onDismissDialog = { dismissCalled = true }
+                    onClose = { dismissCalled = true }
                 )
             }
         }
@@ -256,16 +257,36 @@ class SettingsAppearanceControlsTest {
     fun `the cardsGlass sheet has no Apply or Cancel button`() {
         composeTestRule.setContent {
             AureoleLauncherTheme {
-                AppearanceDialogs(
-                    flags = AppearanceDialogFlags(showCardsGlass = true),
+                SettingsChildSheet(
+                    kind = SettingsChildKind.CARDS_GLASS,
                     uiState = SettingsUiState(),
                     actions = SettingsScreenActions(),
-                    onDismissDialog = {}
+                    onClose = {}
                 )
             }
         }
 
         composeTestRule.onNodeWithText("Apply").assertDoesNotExist()
         composeTestRule.onNodeWithText("Cancel").assertDoesNotExist()
+    }
+
+    @Test
+    fun `when custom colors sheet is open, should show the color picker and close through back`() {
+        var dismissCalled = false
+
+        composeTestRule.setContent {
+            AureoleLauncherTheme {
+                SettingsChildSheet(
+                    kind = SettingsChildKind.CUSTOM_COLORS,
+                    uiState = SettingsUiState(),
+                    actions = SettingsScreenActions(),
+                    onClose = { dismissCalled = true }
+                )
+            }
+        }
+
+        composeTestRule.onNodeWithText("Choose Primary Color").assertExists()
+        composeTestRule.closeOverlayWithBack()
+        assertTrue(dismissCalled)
     }
 }

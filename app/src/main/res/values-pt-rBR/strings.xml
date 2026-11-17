@@ -66,6 +66,7 @@
     <string name="settings_root_behavior_subtitle">Gestos, lista e tela inicial</string>
     <string name="settings_root_advanced_title">Avançado</string>
     <string name="settings_root_advanced_subtitle">Sistema, sobre o app e créditos</string>
+    <string name="settings_root_open_panel">abrir painel</string>
 
     <!-- Settings Advanced -->
     <string name="settings_advanced_title">Avançado</string>

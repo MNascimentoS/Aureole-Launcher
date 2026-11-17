@@ -1,19 +1,13 @@
-package dev.mnascimentos.aureole.feature.settings.screens
+package dev.mnascimentos.aureole.feature.settings.components
 
-import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -21,60 +15,39 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import dev.mnascimentos.aureole.R
+import dev.mnascimentos.aureole.composable.menu.AureoleMenuSheet
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
-import dev.mnascimentos.aureole.feature.settings.components.ContributorAvatar
 import dev.mnascimentos.aureole.feature.settings.model.Contributor
 import dev.mnascimentos.aureole.feature.settings.model.Contributors
 import dev.mnascimentos.aureole.util.IntentUtils
 
-@OptIn(ExperimentalMaterial3Api::class)
+/** "Contributors" as a sheet: the people behind Aureole, centered; tapping one opens their GitHub profile. */
 @Composable
-fun SettingsContributorsScreen(
-    onNavigateBack: () -> Unit,
-    modifier: Modifier = Modifier,
+fun ContributorsBottomSheet(
+    onDismissRequest: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
-    BackHandler(onBack = onNavigateBack)
     val context = LocalContext.current
-
-    Scaffold(
-        modifier = modifier,
-        containerColor = AureoleDS.colors.surface
-    ) { innerPadding ->
+    AureoleMenuSheet(
+        title = stringResource(R.string.settings_contributors_title),
+        onDismiss = onDismissRequest,
+        modifier = modifier
+    ) {
         Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding)
-                .padding(horizontal = AureoleDS.dimens.large),
-            verticalArrangement = Arrangement.Center,
+            modifier = Modifier.fillMaxWidth(),
+            verticalArrangement = Arrangement.spacedBy(AureoleDS.dimens.medium),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            AureoleText(
-                text = stringResource(R.string.settings_contributors_title),
-                color = AureoleDS.colors.onSurfaceMedium,
-                modifier = Modifier.fillMaxWidth(),
-                format = AureoleTextFormatParams(
-                    style = AureoleDS.typography.titleMedium,
-                    fontWeight = FontWeight.Bold,
-                    textAlign = TextAlign.Center
+            Contributors.forEach { contributor ->
+                ContributorRow(
+                    contributor = contributor,
+                    onClick = { IntentUtils.openUrl(context, contributor.githubUrl) }
                 )
-            )
-
-            Spacer(modifier = Modifier.height(AureoleDS.dimens.large))
-
-            Column(verticalArrangement = Arrangement.spacedBy(AureoleDS.dimens.medium)) {
-                Contributors.forEach { contributor ->
-                    ContributorRow(
-                        contributor = contributor,
-                        onClick = { IntentUtils.openUrl(context, contributor.githubUrl) }
-                    )
-                }
             }
         }
     }
@@ -114,10 +87,8 @@ private fun ContributorRow(contributor: Contributor, onClick: () -> Unit) {
 
 @AureolePreview
 @Composable
-private fun SettingsContributorsScreenPreview() {
+private fun ContributorsBottomSheetPreview() {
     AureoleLauncherTheme {
-        SettingsContributorsScreen(
-            onNavigateBack = {}
-        )
+        ContributorsBottomSheet(onDismissRequest = {})
     }
 }

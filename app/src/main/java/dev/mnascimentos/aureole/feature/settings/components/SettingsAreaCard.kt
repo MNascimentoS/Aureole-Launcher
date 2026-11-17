@@ -15,9 +15,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
+import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
 import dev.mnascimentos.aureole.core.designsystem.icons.Edit
@@ -29,7 +31,7 @@ private const val CARD_FILL_ALPHA = 0.45f
 
 /**
  * A card of the Settings root: icon, title and subtitle on a rounded card. No chevron and no value tags: the whole
- * card is the button that opens the area.
+ * card is the button that opens the area, announced as "open panel" (it opens a sheet).
  */
 @Composable
 internal fun SettingsAreaCard(
@@ -44,7 +46,11 @@ internal fun SettingsAreaCard(
             .fillMaxWidth()
             .clip(RoundedCornerShape(AureoleDS.dimens.radiusLarge))
             .background(AureoleDS.colors.surfaceVariant.copy(alpha = CARD_FILL_ALPHA))
-            .clickable(role = Role.Button, onClick = onClick)
+            .clickable(
+                onClickLabel = stringResource(R.string.settings_root_open_panel),
+                role = Role.Button,
+                onClick = onClick
+            )
             .semantics(mergeDescendants = true) {}
             .heightIn(min = AureoleDS.dimens.minTouchTarget)
             .padding(horizontal = AureoleDS.dimens.medium, vertical = AureoleDS.dimens.medium),

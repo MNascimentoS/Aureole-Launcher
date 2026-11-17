@@ -3,13 +3,20 @@ package dev.mnascimentos.aureole.feature.settings.sections
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.test.junit4.v2.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
+import dev.mnascimentos.aureole.feature.settings.components.SettingsSheetHost
 import dev.mnascimentos.aureole.feature.settings.model.AppearanceMenuDialogActions
 import dev.mnascimentos.aureole.feature.settings.model.SettingsAdvancedDialogActions
+import dev.mnascimentos.aureole.feature.settings.model.SettingsArea
 import dev.mnascimentos.aureole.feature.settings.model.SettingsScreenActions
+import dev.mnascimentos.aureole.feature.settings.model.SettingsSheet
 import dev.mnascimentos.aureole.feature.settings.model.SettingsUiState
 import dev.mnascimentos.aureole.feature.settings.screens.SettingsRootScreen
 import org.junit.Assert.assertEquals
@@ -74,5 +81,32 @@ class SettingsInventoryTest {
         }
         rootItems.forEach { composeTestRule.onNodeWithText(it).assertExists() }
         assertEquals(27, appearanceItems.size + behaviorItems.size + advancedItems.size + rootItems.size)
+    }
+
+    @Test
+    fun `each area sheet of the host shows its items`() {
+        val areas = listOf(
+            SettingsArea.APPEARANCE to appearanceItems,
+            SettingsArea.BEHAVIOR to behaviorItems,
+            SettingsArea.ADVANCED to advancedItems
+        )
+        var area by mutableStateOf(SettingsArea.APPEARANCE)
+        composeTestRule.setContent {
+            AureoleLauncherTheme {
+                key(area) {
+                    SettingsSheetHost(
+                        uiState = SettingsUiState(isCustomWallpaperSet = true),
+                        actions = SettingsScreenActions(),
+                        onNavigateToLicenses = {},
+                        initialSheet = SettingsSheet.Area(area)
+                    ) { }
+                }
+            }
+        }
+        areas.forEach { (shown, items) ->
+            area = shown
+            composeTestRule.waitForIdle()
+            items.forEach { composeTestRule.onNodeWithText(it).assertExists() }
+        }
     }
 }
