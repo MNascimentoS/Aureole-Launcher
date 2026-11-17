@@ -94,7 +94,9 @@ data class FolderFormBodyActions(
 data class FolderFormParams(
     val folder: AppFolder? = null,
     val onDelete: (() -> Unit)? = null,
-    val pickAppsOnCreate: Boolean = true
+    val pickAppsOnCreate: Boolean = true,
+    /** What the sheet opens on: the form, or straight on the grid of every icon. */
+    val initialMode: FolderFormMode = FolderFormMode.FORM
 )
 
 /** Callbacks of the content of the folder form sheet, which switches between the form and the grid of icons. */

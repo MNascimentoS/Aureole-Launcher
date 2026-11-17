@@ -74,7 +74,7 @@ fun FolderFormSheet(
     val placeholder = stringResource(R.string.home_folder_name_placeholder)
     val initial = remember { initialFolderDraft(params.folder) }
     var draft by remember { mutableStateOf(initial) }
-    var mode by remember { mutableStateOf(FolderFormMode.FORM) }
+    var mode by remember { mutableStateOf(params.initialMode) }
     val save = { onSave(draft.toDetails(placeholder)) }
     val title = stringResource(folderFormTitleRes(mode, isEditing))
     val preview: @Composable BoxScope.() -> Unit = {

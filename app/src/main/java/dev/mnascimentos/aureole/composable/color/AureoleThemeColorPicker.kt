@@ -11,8 +11,7 @@ import dev.mnascimentos.aureole.composable.color.model.fixedPaletteColor
 import dev.mnascimentos.aureole.composable.color.model.isThemeRoleSelected
 import dev.mnascimentos.aureole.composable.color.model.themeRoleOf
 import dev.mnascimentos.aureole.composable.color.model.themeRoleSwatches
-import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
-import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
+import dev.mnascimentos.aureole.composable.menu.AureoleMenuSectionLabel
 import dev.mnascimentos.aureole.core.designsystem.palette.ThemeColorRef
 import dev.mnascimentos.aureole.core.designsystem.palette.ThemeColorRole
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
@@ -24,6 +23,7 @@ import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
  * of the current theme (saved as a [ThemeColorRef.Role], so they change with the theme) and "From other palettes"
  * one tone of each palette by family (saved as a [ThemeColorRef.Fixed]). Stateless: [selected] is marked and the
  * choice goes to [onSelect]; a null [selected] marks nothing. Resolve the result with [ThemeColorRef.resolve].
+ * Its labels are the menu section labels, as the label of the sheet above it (same inset and style).
  */
 @Composable
 fun AureoleThemeColorPicker(
@@ -32,28 +32,18 @@ fun AureoleThemeColorPicker(
     modifier: Modifier = Modifier
 ) {
     Column(modifier = modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(AureoleDS.dimens.xSmall)) {
-        SectionLabel(text = stringResource(R.string.settings_background_section_theme))
+        AureoleMenuSectionLabel(text = stringResource(R.string.settings_background_section_theme))
         AureoleThemeSwatchRow(
             swatches = themeRoleSwatches(AureoleDS.colors),
             isSelected = { isThemeRoleSelected(it, selected) },
             onSelect = { swatch -> themeRoleOf(swatch)?.let { onSelect(ThemeColorRef.Role(it)) } }
         )
-        SectionLabel(text = stringResource(R.string.theme_color_section_other_palettes))
+        AureoleMenuSectionLabel(text = stringResource(R.string.theme_color_section_other_palettes))
         AureolePaletteSwatchRow(
             selected = fixedPaletteColor(selected),
             onSelect = { onSelect(ThemeColorRef.Fixed(it)) }
         )
     }
-}
-
-@Composable
-private fun SectionLabel(text: String) {
-    AureoleText(
-        text = text.uppercase(),
-        color = AureoleDS.colors.onSurfaceMedium,
-        modifier = Modifier.fillMaxWidth(),
-        format = AureoleTextFormatParams(style = AureoleDS.typography.labelSmall)
-    )
 }
 
 @AureolePreview

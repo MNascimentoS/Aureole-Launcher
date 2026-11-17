@@ -1,5 +1,6 @@
 package dev.mnascimentos.aureole.composable.dialogs
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
@@ -7,7 +8,12 @@ import androidx.compose.ui.Modifier
 import com.android.tools.screenshot.PreviewTest
 import dev.mnascimentos.aureole.composable.ProvideHomeUiState
 import dev.mnascimentos.aureole.composable.dialogs.model.FOLDER_EMOJIS
+import dev.mnascimentos.aureole.composable.dialogs.model.FolderFormBodyActions
+import dev.mnascimentos.aureole.composable.dialogs.model.FolderFormBodyState
 import dev.mnascimentos.aureole.composable.dialogs.model.FolderFormDraft
+import dev.mnascimentos.aureole.composable.dialogs.model.FolderFormMode
+import dev.mnascimentos.aureole.composable.dialogs.model.FolderFormParams
+import dev.mnascimentos.aureole.composable.dialogs.model.initialFolderDraft
 import dev.mnascimentos.aureole.core.data.model.AppFolder
 import dev.mnascimentos.aureole.core.data.model.FolderIconType
 import dev.mnascimentos.aureole.core.designsystem.palette.ThemeColorRef
@@ -21,14 +27,21 @@ import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
 
 @Composable
-private fun FolderFormCase(isLeftHanded: Boolean, folder: AppFolder?) {
+private fun FolderFormCase(
+    isLeftHanded: Boolean,
+    folder: AppFolder?,
+    initialMode: FolderFormMode = FolderFormMode.FORM
+) {
     ProvideHomeUiState(MainUiState(isLeftHandedMode = isLeftHanded)) {
         AureoleLauncherTheme {
-            FolderFormDialog(
-                folder = folder,
+            FolderFormSheet(
+                params = FolderFormParams(
+                    folder = folder,
+                    onDelete = if (folder != null) ({}) else null,
+                    initialMode = initialMode
+                ),
                 onDismiss = {},
-                onSave = {},
-                onDelete = if (folder != null) ({}) else null
+                onSave = {}
             )
         }
     }
@@ -114,6 +127,43 @@ private fun FolderFormEditOtherThemeScreenshotTest() {
             )
         ) {
             FolderFormDialog(folder = SampleFolder, onDismiss = {}, onSave = {}, onDelete = {})
+        }
+    }
+}
+
+/**
+ * "All icons" inside the sheet (pasta-form RF-01/RF-02/RF-05, RF-15): the shared AureoleIconCatalogGrid with the
+ * chips fixed on top, the category name stuck over the grid and the saved icon filled.
+ */
+@PreviewTest
+@AureolePreview
+@Composable
+private fun FolderAllIconsRightHandedScreenshotTest() =
+    FolderFormCase(isLeftHanded = false, folder = SampleFolder, initialMode = FolderFormMode.ALL_ICONS)
+
+@PreviewTest
+@AureolePreview
+@Composable
+private fun FolderAllIconsLeftHandedScreenshotTest() =
+    FolderFormCase(isLeftHanded = true, folder = SampleFolder, initialMode = FolderFormMode.ALL_ICONS)
+
+/** The end of the edit form, which the sheet only shows after scrolling: "Delete folder" last, after a divider (RF-06). */
+@PreviewTest
+@AureolePreview
+@Composable
+private fun FolderFormDeleteAtEndScreenshotTest() {
+    ProvideHomeUiState(MainUiState()) {
+        AureoleLauncherTheme {
+            Column(
+                modifier = Modifier
+                    .background(AureoleDS.colors.surface)
+                    .padding(AureoleDS.dimens.small)
+            ) {
+                FolderFormBody(
+                    state = FolderFormBodyState(draft = initialFolderDraft(SampleFolder), showDelete = true),
+                    actions = FolderFormBodyActions(onDraftChange = {}, onOpenAllIcons = {}, onDelete = {})
+                )
+            }
         }
     }
 }
