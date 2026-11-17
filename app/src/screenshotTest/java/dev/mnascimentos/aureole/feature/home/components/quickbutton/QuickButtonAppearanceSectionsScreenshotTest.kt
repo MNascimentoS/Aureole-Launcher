@@ -34,7 +34,7 @@ private fun QuickButtonAppearanceSheetContentScreenshotTest() {
 @Composable
 private fun QuickButtonAppearanceColorsTabScreenshotTest() {
     AureoleLauncherTheme {
-        Column(modifier = Modifier.height(AureoleDS.dimens.sizeExtraLarge * 4)) {
+        Column(modifier = Modifier.height(AureoleDS.dimens.sizeExtraLarge * COLORS_TAB_HEIGHT_STEPS)) {
             QuickButtonAppearanceSheetContent(
                 activeModel = QuickButtonModel(
                     appearance = QuickButtonAppearance(
@@ -49,3 +49,6 @@ private fun QuickButtonAppearanceColorsTabScreenshotTest() {
         }
     }
 }
+
+/** Tall enough for the switches at the end of the Colors tab (Stroke, Show name on the home). */
+private const val COLORS_TAB_HEIGHT_STEPS = 5

@@ -40,6 +40,7 @@ fun QuickButtonGridItem(
 ) {
     val appInfo = style.appInfo
     val outlineIcon = style.outlineIcon
+    val iconSize = style.iconSize ?: AureoleDS.dimens.iconXLarge
     val shape = style.shape ?: RoundedCornerShape(AureoleDS.dimens.radiusMedium)
     val currentModel by rememberUpdatedState(model)
     val currentOnAction by rememberUpdatedState(callbacks.onAction)
@@ -74,7 +75,7 @@ fun QuickButtonGridItem(
     ) {
         val clickShortcut = model.shortcuts.click
         if (clickShortcut.type == ShortcutType.OPEN_APP && appInfo != null) {
-            AureoleAppIcon(app = appInfo, size = AureoleDS.dimens.iconXLarge)
+            AureoleAppIcon(app = appInfo, size = iconSize)
         } else {
             if (outlineIcon) {
                 // Low contrast (RF-06): a slightly larger copy in a readable color sits behind the icon as its outline.
@@ -82,14 +83,14 @@ fun QuickButtonGridItem(
                     painter = painterResource(id = model.appearance.iconRes),
                     contentDescription = null,
                     tint = readableOn(backgroundColor, AureoleDS.colors),
-                    modifier = Modifier.size(AureoleDS.dimens.iconXLarge + AureoleDS.dimens.xxSmall)
+                    modifier = Modifier.size(iconSize + AureoleDS.dimens.xxSmall)
                 )
             }
             Icon(
                 painter = painterResource(id = model.appearance.iconRes),
                 contentDescription = null,
                 tint = model.appearance.iconColor.resolve(AureoleDS.colors),
-                modifier = Modifier.size(AureoleDS.dimens.iconXLarge)
+                modifier = Modifier.size(iconSize)
             )
         }
     }

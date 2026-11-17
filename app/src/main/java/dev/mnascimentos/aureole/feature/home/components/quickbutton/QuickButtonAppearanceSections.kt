@@ -1,43 +1,30 @@
 package dev.mnascimentos.aureole.feature.home.components.quickbutton
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.text.font.FontWeight
 import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.composable.color.AureoleThemeColorPicker
 import dev.mnascimentos.aureole.composable.controls.AureoleSegmentedControl
 import dev.mnascimentos.aureole.composable.icons.AureoleIconCatalogGrid
 import dev.mnascimentos.aureole.composable.menu.AureoleMenuSectionLabel
-import dev.mnascimentos.aureole.composable.mirror.LeftHandMirror
+import dev.mnascimentos.aureole.composable.menu.AureoleSwitchRow
+import dev.mnascimentos.aureole.composable.menu.model.SwitchRowParams
 import dev.mnascimentos.aureole.core.data.model.QuickButtonAppearance
 import dev.mnascimentos.aureole.core.data.model.QuickButtonModel
-import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
-import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
 import dev.mnascimentos.aureole.core.designsystem.icons.Stroke
 import dev.mnascimentos.aureole.core.designsystem.icons.Text
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
@@ -118,11 +105,13 @@ private fun ColumnScope.QuickButtonColorsTab(
             selected = appearance.colorOf(target),
             onSelect = { onUpdateAppearance(appearance.withColor(target, it)) }
         )
-        AppearanceToggleRow(
-            title = stringResource(R.string.home_quickbutton_stroke),
-            icon = { m -> AureoleDS.icons.Stroke(m) },
-            isChecked = appearance.strokeEnabled,
-            onToggle = { onUpdateAppearance(appearance.copy(strokeEnabled = !appearance.strokeEnabled)) }
+        AureoleSwitchRow(
+            SwitchRowParams(
+                title = stringResource(R.string.home_quickbutton_stroke),
+                checked = appearance.strokeEnabled,
+                onCheckedChange = { onUpdateAppearance(appearance.copy(strokeEnabled = it)) },
+                icon = { m, tint -> AureoleDS.icons.Stroke(m, tint = tint) }
+            )
         )
         if (appearance.strokeEnabled) {
             AureoleMenuSectionLabel(text = stringResource(R.string.home_quickbutton_stroke_color))
@@ -131,11 +120,13 @@ private fun ColumnScope.QuickButtonColorsTab(
                 onSelect = { onUpdateAppearance(appearance.withColor(QuickButtonColorTarget.STROKE, it)) }
             )
         }
-        AppearanceToggleRow(
-            title = stringResource(R.string.home_quickbutton_show_name),
-            icon = { m -> AureoleDS.icons.Text(m) },
-            isChecked = appearance.showLabel,
-            onToggle = { onUpdateAppearance(appearance.copy(showLabel = !appearance.showLabel)) }
+        AureoleSwitchRow(
+            SwitchRowParams(
+                title = stringResource(R.string.home_quickbutton_show_name),
+                checked = appearance.showLabel,
+                onCheckedChange = { onUpdateAppearance(appearance.copy(showLabel = it)) },
+                icon = { m, tint -> AureoleDS.icons.Text(m, tint = tint) }
+            )
         )
     }
 }
@@ -143,56 +134,6 @@ private fun ColumnScope.QuickButtonColorsTab(
 private fun colorTargetLabelRes(target: QuickButtonColorTarget): Int = when (target) {
     QuickButtonColorTarget.ICON -> R.string.home_quickbutton_icon_color
     else -> R.string.home_quickbutton_bg_color
-}
-
-@Composable
-internal fun AppearanceToggleRow(
-    title: String,
-    icon: @Composable (Modifier) -> Unit,
-    isChecked: Boolean,
-    onToggle: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    LeftHandMirror {
-        Row(
-            modifier = modifier
-                .fillMaxWidth()
-                .clip(RoundedCornerShape(AureoleDS.dimens.radiusMedium))
-                .clickable { onToggle() }
-                .padding(horizontal = AureoleDS.dimens.medium, vertical = AureoleDS.dimens.medium),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            icon(Modifier.size(AureoleDS.dimens.iconMedium))
-            Spacer(modifier = Modifier.width(AureoleDS.dimens.medium))
-            AureoleText(
-                text = title,
-                color = AureoleDS.colors.onSurfaceHigh,
-                format = AureoleTextFormatParams(
-                    style = AureoleDS.typography.bodyMedium,
-                    fontWeight = FontWeight.Medium
-                ),
-                modifier = Modifier.weight(1f)
-            )
-            Box(
-                modifier = Modifier
-                    .size(AureoleDS.dimens.iconLarge)
-                    .border(
-                        width = AureoleDS.dimens.minimal,
-                        color = if (isChecked) AureoleDS.colors.onSurfaceHigh else AureoleDS.colors.onSurfaceLow,
-                        shape = RoundedCornerShape(AureoleDS.dimens.radiusMinimal)
-                    ),
-                contentAlignment = Alignment.Center
-            ) {
-                if (isChecked) {
-                    Box(
-                        modifier = Modifier.size(
-                            AureoleDS.dimens.iconSmallCompact
-                        ).background(AureoleDS.colors.onSurfaceHigh, RoundedCornerShape(AureoleDS.dimens.minimal))
-                    )
-                }
-            }
-        }
-    }
 }
 
 @AureolePreview
@@ -204,27 +145,6 @@ private fun QuickButtonAppearanceSheetContentPreview() {
                 activeModel = QuickButtonModel(appearance = QuickButtonAppearance(strokeEnabled = true)),
                 onUpdateAppearance = {},
                 initialTab = QuickButtonSheetTab.COLORS
-            )
-        }
-    }
-}
-
-@AureolePreview
-@Composable
-private fun AppearanceToggleRowPreview() {
-    AureoleLauncherTheme {
-        Column {
-            AppearanceToggleRow(
-                title = "Preview Toggle Row Checked",
-                icon = { m -> AureoleDS.icons.Stroke(m) },
-                isChecked = true,
-                onToggle = {},
-            )
-            AppearanceToggleRow(
-                title = "Preview Toggle Row Unchecked",
-                icon = { m -> AureoleDS.icons.Stroke(m) },
-                isChecked = false,
-                onToggle = {},
             )
         }
     }

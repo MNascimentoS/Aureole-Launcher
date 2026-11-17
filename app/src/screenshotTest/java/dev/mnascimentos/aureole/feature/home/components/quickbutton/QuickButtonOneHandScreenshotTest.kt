@@ -5,7 +5,10 @@ import androidx.compose.runtime.CompositionLocalProvider
 import com.android.tools.screenshot.PreviewTest
 import dev.mnascimentos.aureole.composable.LocalHomeUiState
 import dev.mnascimentos.aureole.composable.ProvideHomeUiState
+import dev.mnascimentos.aureole.core.data.model.QuickButtonAppearance
 import dev.mnascimentos.aureole.core.data.model.QuickButtonModel
+import dev.mnascimentos.aureole.core.designsystem.palette.ThemeColorRef
+import dev.mnascimentos.aureole.core.designsystem.palette.ThemeColorRole
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
@@ -25,8 +28,12 @@ private fun dummyActions() = HomeScreenActions(
 )
 
 @Composable
-private fun QuickButtonSheetCase(isLeftHanded: Boolean, content: @Composable (MainUiState) -> Unit) {
-    val uiState = MainUiState(activeQuickButtonModel = QuickButtonModel(), isLeftHandedMode = isLeftHanded)
+private fun QuickButtonSheetCase(
+    isLeftHanded: Boolean,
+    model: QuickButtonModel = QuickButtonModel(),
+    content: @Composable (MainUiState) -> Unit
+) {
+    val uiState = MainUiState(activeQuickButtonModel = model, isLeftHandedMode = isLeftHanded)
     ProvideHomeUiState(uiState) {
         AureoleLauncherTheme { content(uiState) }
     }
@@ -60,4 +67,20 @@ private fun QuickButtonSettingsRightHandedScreenshotTest() = QuickButtonSheetCas
 @Composable
 private fun QuickButtonSettingsLeftHandedScreenshotTest() = QuickButtonSheetCase(isLeftHanded = true) {
     QuickButtonSettingsBottomSheet(uiState = it, actions = dummyActions(), onDismissRequest = {})
+}
+
+/** Icon and background in the same theme color: the preview warns and outlines the icon (botao-rapido RF-06). */
+@PreviewTest
+@AureolePreview
+@Composable
+private fun QuickButtonAppearanceLowContrastScreenshotTest() = QuickButtonSheetCase(
+    isLeftHanded = false,
+    model = QuickButtonModel(
+        appearance = QuickButtonAppearance(
+            iconColor = ThemeColorRef.Role(ThemeColorRole.VARIANT),
+            backgroundColor = ThemeColorRef.Role(ThemeColorRole.VARIANT)
+        )
+    )
+) {
+    QuickButtonAppearanceBottomSheet(uiState = it, actions = dummyActions(), onDismissRequest = {})
 }

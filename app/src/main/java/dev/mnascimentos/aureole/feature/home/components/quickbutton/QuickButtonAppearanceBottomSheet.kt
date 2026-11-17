@@ -119,7 +119,12 @@ private fun QuickButtonSheetPreview(
             QuickButtonGridItem(
                 model = model,
                 callbacks = NoQuickButtonCallbacks,
-                style = QuickButtonGridItemStyle(appInfo = appInfo, outlineIcon = lowContrast)
+                // ~1/3 of the tile, as the folder preview (the 72 dp tile with a 24 dp icon).
+                style = QuickButtonGridItemStyle(
+                    appInfo = appInfo,
+                    outlineIcon = lowContrast,
+                    iconSize = AureoleDS.dimens.iconLarge
+                )
             )
         }
         if (appearance.showLabel) {
