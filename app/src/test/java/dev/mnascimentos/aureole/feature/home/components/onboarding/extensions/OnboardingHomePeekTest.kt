@@ -16,7 +16,10 @@ import org.junit.Assert.assertSame
 import org.junit.Assert.assertTrue
 import org.junit.Test
 
-/** The home peek after a task screen (RF-41; 1,4 s, bubble and outline in RF-13/14) and "Apply" on the appearance pickers (RF-39), in plain JVM. */
+/**
+ * The home peek after a task screen (RF-41; 1,4 s, bubble and outline in RF-13/14) and "Apply" on the appearance
+ * pickers (RF-39), in plain JVM.
+ */
 class OnboardingHomePeekTest {
 
     private val checklist = OnboardingUiState(stage = OnboardingStage.CHECKLIST, isChecklistExpanded = false)

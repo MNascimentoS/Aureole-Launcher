@@ -40,7 +40,10 @@ class OnboardingItemPlacementTest {
         )
         assertEquals(OnboardingItemSize(14, 6), onboardingDefaultSize(LauncherItemType.WIDGET_LIST, false))
         val layoutClock = GridDefaults.getDefaultItem(LauncherItemType.CLOCK, false, false)!!
-        assertEquals(OnboardingItemSize(layoutClock.colSpan, layoutClock.rowSpan), onboardingDefaultSize(LauncherItemType.CLOCK))
+        assertEquals(
+            OnboardingItemSize(layoutClock.colSpan, layoutClock.rowSpan),
+            onboardingDefaultSize(LauncherItemType.CLOCK)
+        )
     }
 
     @Test
@@ -82,7 +85,10 @@ class OnboardingItemPlacementTest {
         val item = placeOnboardingItem(request(LauncherItemType.CLOCK))
 
         val default = GridDefaults.getDefaultItem(LauncherItemType.CLOCK, false, false)!!
-        assertEquals(listOf(default.col, default.row, 20, 6), listOf(item?.col, item?.row, item?.colSpan, item?.rowSpan))
+        assertEquals(
+            listOf(default.col, default.row, 20, 6),
+            listOf(item?.col, item?.row, item?.colSpan, item?.rowSpan)
+        )
     }
 
     @Test

@@ -37,9 +37,9 @@ import dev.mnascimentos.aureole.feature.home.grid.model.DynamicGridItemsParams
 import dev.mnascimentos.aureole.feature.home.grid.model.GridCellParams
 import dev.mnascimentos.aureole.feature.home.grid.model.GridEditConfig
 import dev.mnascimentos.aureole.feature.home.grid.model.GridEditModifierArgs
+import dev.mnascimentos.aureole.feature.home.grid.model.GridGestureTracker
 import dev.mnascimentos.aureole.feature.home.grid.model.GridItemEditCallbacks
 import dev.mnascimentos.aureole.feature.home.grid.model.GridMetricsTuple
-import dev.mnascimentos.aureole.feature.home.grid.model.LocalGridGestureTracker
 import dev.mnascimentos.aureole.feature.home.grid.model.ResizeHandleCallbacks
 import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
 
@@ -160,12 +160,7 @@ private fun GridItemCell(
     val animOffset = remember { Animatable(Offset.Zero, Offset.VectorConverter) }
     val wDp = (params.cellWidthDp * item.colSpan) + with(LocalDensity.current) { resizeExtra.x.toDp() }
     val hDp = (params.cellHeightDp * item.rowSpan) + with(LocalDensity.current) { resizeExtra.y.toDp() }
-    val gestureTracker = LocalGridGestureTracker.current
-    val isGesturing = isDragging || isResizing
-    DisposableEffect(isGesturing, gestureTracker) {
-        if (isGesturing) gestureTracker?.begin()
-        onDispose { if (isGesturing) gestureTracker?.end() }
-    }
+    GestureTrackerEffect(actions.gridGestureTracker, isGesturing = isDragging || isResizing)
     val editModifier = Modifier.rememberGridCellEditModifier(
         GridEditModifierArgs(
             params = params,
@@ -208,6 +203,15 @@ private fun GridItemCell(
             content = content
         )
     )
+}
+
+/** Tells the grid gesture tracker a drag or resize of this cell is on while [isGesturing] is true. */
+@Composable
+private fun GestureTrackerEffect(tracker: GridGestureTracker, isGesturing: Boolean) {
+    DisposableEffect(isGesturing, tracker) {
+        if (isGesturing) tracker.begin()
+        onDispose { if (isGesturing) tracker.end() }
+    }
 }
 
 private fun rememberCellCallbacks(

@@ -3,7 +3,6 @@ package dev.mnascimentos.aureole.feature.home.grid.model
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.staticCompositionLocalOf
 
 /**
  * Counts the grid cells being dragged or resized right now, so layers above the grid (the onboarding save pill)
@@ -23,6 +22,3 @@ class GridGestureTracker {
         activeCount = (activeCount - 1).coerceAtLeast(0)
     }
 }
-
-/** Provided by the home scaffold; null where nobody listens (previews, tests). */
-val LocalGridGestureTracker = staticCompositionLocalOf<GridGestureTracker?> { null }

@@ -82,11 +82,13 @@ internal fun HomeViewModel.placeSilently(type: LauncherItemType): String? {
  */
 private fun HomeViewModel.saveOnboardingContainer(id: String) {
     viewModelScope.launch {
-        containerRepository.saveContainer(onboardingContainerModel(
+        containerRepository.saveContainer(
+            onboardingContainerModel(
                 id = id,
                 position = settingsRepository.containerPosition,
                 isExpandCell = settingsRepository.isContainerExpandCell
-            ))
+            )
+        )
         loadContainers()
     }
 }

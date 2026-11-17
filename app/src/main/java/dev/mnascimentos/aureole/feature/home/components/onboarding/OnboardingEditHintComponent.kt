@@ -33,7 +33,6 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.ui.text.font.FontWeight
-import kotlinx.coroutines.delay
 import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
@@ -48,7 +47,8 @@ import dev.mnascimentos.aureole.feature.home.components.onboarding.model.EditHin
 import dev.mnascimentos.aureole.feature.home.components.onboarding.model.EditHintEdge
 import dev.mnascimentos.aureole.feature.home.components.onboarding.model.EditHintSaveParams
 import dev.mnascimentos.aureole.feature.home.components.onboarding.model.OnboardingMotionSpec
-import dev.mnascimentos.aureole.feature.home.grid.model.LocalGridGestureTracker
+import dev.mnascimentos.aureole.feature.home.model.LocalHomeActions
+import kotlinx.coroutines.delay
 
 private const val GESTURE_PILL_ALPHA = 0.25f
 
@@ -63,7 +63,7 @@ fun OnboardingEditHintComponent(
     onSave: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val isGesturing = LocalGridGestureTracker.current?.isGesturing == true
+    val isGesturing = LocalHomeActions.current.gridGestureTracker.isGesturing
     var isFolded by remember { mutableStateOf(false) }
     LaunchedEffect(config.isVisible) {
         if (config.isVisible && !isFolded) {

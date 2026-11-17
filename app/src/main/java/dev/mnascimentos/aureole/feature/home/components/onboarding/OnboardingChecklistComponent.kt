@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
@@ -150,8 +151,7 @@ private fun ChecklistHeader(onboarding: OnboardingUiState, shared: ChecklistShar
     ) {
         AureoleLogoRing(
             progress = onboarding.taskProgress,
-            modifier = shared.halo,
-            size = AureoleDS.dimens.iconXLarge,
+            modifier = shared.halo.size(AureoleDS.dimens.iconXLarge),
             // Same ring, bigger logo inside (RF-14).
             logoFraction = LOGO_RING_LOGO_FRACTION_LARGE,
             contentDescription = progressText

@@ -9,7 +9,8 @@ import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.EDIT_HINT_TEXT_MS
 import dev.mnascimentos.aureole.feature.home.components.onboarding.model.EditHintConfig
 import dev.mnascimentos.aureole.feature.home.grid.model.GridGestureTracker
-import dev.mnascimentos.aureole.feature.home.grid.model.LocalGridGestureTracker
+import dev.mnascimentos.aureole.feature.home.model.LocalHomeActions
+import dev.mnascimentos.aureole.feature.home.model.createDefaultHomeScreenActions
 import org.junit.Assert.assertEquals
 import org.junit.Rule
 import org.junit.Test
@@ -24,12 +25,16 @@ class OnboardingEditHintComponentTest {
 
     private var saveCount = 0
 
-    private fun render(isVisible: Boolean, tracker: GridGestureTracker? = null) {
+    private fun render(isVisible: Boolean, tracker: GridGestureTracker = GridGestureTracker()) {
         composeTestRule.mainClock.autoAdvance = false
         composeTestRule.setContent {
             AureoleLauncherTheme {
-                CompositionLocalProvider(LocalGridGestureTracker provides tracker) {
-                    OnboardingEditHintComponent(config = EditHintConfig(isVisible = isVisible), onSave = { saveCount++ })
+                val actions = createDefaultHomeScreenActions().copy(gridGestureTracker = tracker)
+                CompositionLocalProvider(LocalHomeActions provides actions) {
+                    OnboardingEditHintComponent(
+                        config = EditHintConfig(isVisible = isVisible),
+                        onSave = { saveCount++ }
+                    )
                 }
             }
         }
@@ -61,13 +66,19 @@ class OnboardingEditHintComponentTest {
         val tracker = GridGestureTracker()
         render(isVisible = true, tracker = tracker)
 
-        composeTestRule.runOnUiThread { tracker.begin(); Snapshot.sendApplyNotifications() }
+        composeTestRule.runOnUiThread {
+            tracker.begin()
+            Snapshot.sendApplyNotifications()
+        }
         composeTestRule.mainClock.advanceTimeBy(100)
         composeTestRule.onNodeWithText(HINT).assertDoesNotExist()
         composeTestRule.onNodeWithText("Save").performClick()
         assertEquals(0, saveCount)
 
-        composeTestRule.runOnUiThread { tracker.end(); Snapshot.sendApplyNotifications() }
+        composeTestRule.runOnUiThread {
+            tracker.end()
+            Snapshot.sendApplyNotifications()
+        }
         composeTestRule.mainClock.advanceTimeBy(100)
         composeTestRule.onNodeWithText("Save").performClick()
         assertEquals(1, saveCount)

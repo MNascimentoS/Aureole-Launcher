@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -70,8 +71,7 @@ internal fun OnboardingPeekBubble(
         ) {
             AureoleLogoRing(
                 progress = progress,
-                modifier = shared.halo,
-                size = AureoleDS.dimens.iconHuge,
+                modifier = shared.halo.size(AureoleDS.dimens.iconHuge),
                 logoFraction = LOGO_RING_LOGO_FRACTION_LARGE,
                 isProgressAnimated = false
             )
@@ -79,12 +79,14 @@ internal fun OnboardingPeekBubble(
     }
 }
 
+private val PREVIEW_PROGRESSES = listOf(0f, 1f / 2, 1f)
+
 @AureolePreview
 @Composable
 private fun OnboardingPeekBubblePreview() {
     AureoleLauncherTheme {
         Row {
-            listOf(0f, 0.5f, 1f).forEach { progress ->
+            PREVIEW_PROGRESSES.forEach { progress ->
                 Box(modifier = Modifier.weight(1f)) {
                     OnboardingPeekBubble(progress = progress, glass = OnboardingGlass())
                 }

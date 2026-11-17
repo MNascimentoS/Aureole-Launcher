@@ -116,7 +116,10 @@ private fun SharedTransitionScope.checklistSharedModifiers(
         if (isBubbleMotion) {
             tween(OnboardingMotionSpec.BUBBLE_MORPH_MS, easing = FastOutSlowInEasing)
         } else {
-            spring(dampingRatio = OnboardingMotionSpec.PILL_DAMPING, stiffness = OnboardingMotionSpec.CHECKLIST_STIFFNESS)
+            spring(
+                dampingRatio = OnboardingMotionSpec.PILL_DAMPING,
+                stiffness = OnboardingMotionSpec.CHECKLIST_STIFFNESS
+            )
         }
     }
     val fadeSpring = spring<Float>(stiffness = OnboardingMotionSpec.CHECKLIST_STIFFNESS)

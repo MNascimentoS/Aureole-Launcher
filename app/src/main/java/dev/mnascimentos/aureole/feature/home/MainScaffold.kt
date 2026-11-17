@@ -7,8 +7,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import dev.mnascimentos.aureole.composable.LocalHomeUiState
@@ -28,8 +26,6 @@ import dev.mnascimentos.aureole.feature.home.components.overlays.UpdateAvailable
 import dev.mnascimentos.aureole.feature.home.components.overlays.UpdateDownloadedDialog
 import dev.mnascimentos.aureole.feature.home.components.widgets.WidgetPickerScreen
 import dev.mnascimentos.aureole.feature.home.components.widgets.model.WidgetPickerScreenParams
-import dev.mnascimentos.aureole.feature.home.grid.model.GridGestureTracker
-import dev.mnascimentos.aureole.feature.home.grid.model.LocalGridGestureTracker
 import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
 import dev.mnascimentos.aureole.feature.home.model.LocalHomeActions
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
@@ -42,17 +38,6 @@ fun MainScaffold(
     appWidgetHost: AppWidgetHost?,
     onWidgetSelected: (AppWidgetProviderInfo) -> Unit,
     modifier: Modifier = Modifier
-) {
-    CompositionLocalProvider(LocalGridGestureTracker provides remember { GridGestureTracker() }) {
-        MainScaffoldContent(appWidgetHost, onWidgetSelected, modifier)
-    }
-}
-
-@Composable
-private fun MainScaffoldContent(
-    appWidgetHost: AppWidgetHost?,
-    onWidgetSelected: (AppWidgetProviderInfo) -> Unit,
-    modifier: Modifier
 ) {
     val uiState = LocalHomeUiState.current
     val actions = LocalHomeActions.current

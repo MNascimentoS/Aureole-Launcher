@@ -11,6 +11,7 @@ import dev.mnascimentos.aureole.core.data.model.QuickButtonShortcuts
 import dev.mnascimentos.aureole.core.data.model.ScrollOrientation
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.FolderViewIntent
 import dev.mnascimentos.aureole.feature.home.components.onboarding.model.OnboardingActions
+import dev.mnascimentos.aureole.feature.home.grid.model.GridGestureTracker
 
 data class HomeScreenActions(
     val onWidgetRowHeightChanged: (Dp) -> Unit,
@@ -129,4 +130,7 @@ data class HomeScreenActions(
     val onOpenEditFolderForFolder: (AppFolder) -> Unit = {},
 
     val onboarding: OnboardingActions = OnboardingActions(),
+
+    /** Counts the grid cells being dragged or resized, for the layers above the grid that step aside meanwhile. */
+    val gridGestureTracker: GridGestureTracker = GridGestureTracker(),
 )

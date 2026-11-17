@@ -18,10 +18,8 @@ val OnboardingTask.gridItemType: LauncherItemType?
 
 /** The item [task] worked on, outlined in the peek: the one it created, else the first home item of its type. */
 internal fun MainUiState.taskItemId(task: OnboardingTask): String? {
-    val created = onboarding.createdItemId
-    if (created != null) return created
-    val type = task.gridItemType ?: return null
-    return gridItems.firstOrNull { it.safeType == type }?.id
+    val type = task.gridItemType
+    return onboarding.createdItemId ?: type?.let { wanted -> gridItems.firstOrNull { it.safeType == wanted }?.id }
 }
 
 /** Tasks judged when their own screen or the grid edit mode closes: the item tasks and the layout step. */
