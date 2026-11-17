@@ -58,7 +58,7 @@ fun QuickButtonAppearanceBottomSheet(
             onCommit = { actions.onUpdateQuickButtonAppearance(draft) },
             onDismissRequest = onDismissRequest,
             isLeftHanded = uiState.isLeftHandedMode,
-            onSettingsClick = { actions.onSettingsClick() },
+            // Item editors have no logo on the title line (RF-05b).
             hazeState = if (uiState.isHazeEnabled) hazeState else null
         ),
         modifier = modifier,

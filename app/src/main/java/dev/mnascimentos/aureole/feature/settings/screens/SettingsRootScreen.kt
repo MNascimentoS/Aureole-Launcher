@@ -1,5 +1,6 @@
 package dev.mnascimentos.aureole.feature.settings.screens
 
+import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -31,12 +32,14 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.composable.sheets.ReleaseNotesBottomSheet
+import dev.mnascimentos.aureole.core.designsystem.components.AureoleLogoRing
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
 import dev.mnascimentos.aureole.core.designsystem.icons.Advanced
 import dev.mnascimentos.aureole.core.designsystem.icons.Edit
 import dev.mnascimentos.aureole.core.designsystem.icons.Logo
 import dev.mnascimentos.aureole.core.designsystem.icons.Star
+import dev.mnascimentos.aureole.core.designsystem.model.LOGO_RING_LOGO_FRACTION_LARGE
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
@@ -45,6 +48,8 @@ import dev.mnascimentos.aureole.feature.settings.extensions.getVersionName
 import dev.mnascimentos.aureole.feature.settings.model.SettingsLayout
 import dev.mnascimentos.aureole.feature.settings.model.SettingsNavigationActions
 import dev.mnascimentos.aureole.feature.settings.model.SettingsUiState
+import dev.mnascimentos.aureole.feature.settings.model.SettingsUpdateRing
+import dev.mnascimentos.aureole.feature.settings.model.ringProgress
 import dev.mnascimentos.aureole.feature.settings.model.settingsLayoutFor
 import dev.mnascimentos.aureole.util.percentToFraction
 
@@ -70,7 +75,13 @@ fun SettingsRootScreen(
                 .fillMaxSize()
                 .padding(innerPadding)
         ) {
-            val onHeaderClick = { showReleaseNotes = true }
+            val header: @Composable () -> Unit = {
+                SettingsHeader(
+                    versionName = versionName,
+                    updateRing = uiState.updateRing,
+                    onClick = { showReleaseNotes = true }
+                )
+            }
             val navigation = SettingsNavigationActions(
                 onNavigateToBehavior = onNavigateToBehavior,
                 onNavigateToAppearance = onNavigateToAppearance,
@@ -78,18 +89,16 @@ fun SettingsRootScreen(
             )
             when (settingsLayoutFor(maxWidth.value, maxHeight.value)) {
                 SettingsLayout.SINGLE_COLUMN -> SettingsSingleColumn(
-                    versionName = versionName,
+                    header = header,
                     topSpacerHeight = (maxHeight * uiState.headerOffsetPercent.percentToFraction())
                         .coerceAtLeast(AureoleDS.dimens.medium),
                     areaHeight = maxHeight,
-                    navigation = navigation,
-                    onHeaderClick = onHeaderClick
+                    navigation = navigation
                 )
                 SettingsLayout.TWO_PANES -> SettingsTwoPanes(
-                    versionName = versionName,
+                    header = header,
                     areaHeight = maxHeight,
-                    navigation = navigation,
-                    onHeaderClick = onHeaderClick
+                    navigation = navigation
                 )
             }
         }
@@ -105,11 +114,10 @@ fun SettingsRootScreen(
 /** Portrait: header, options and the thank-you line pinned to the bottom (or right after the options when tall). */
 @Composable
 private fun SettingsSingleColumn(
-    versionName: String,
+    header: @Composable () -> Unit,
     topSpacerHeight: Dp,
     areaHeight: Dp,
-    navigation: SettingsNavigationActions,
-    onHeaderClick: () -> Unit
+    navigation: SettingsNavigationActions
 ) {
     Column(
         modifier = Modifier
@@ -120,7 +128,7 @@ private fun SettingsSingleColumn(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Spacer(modifier = Modifier.height(topSpacerHeight))
-        SettingsHeader(versionName = versionName, onClick = onHeaderClick)
+        header()
         Spacer(modifier = Modifier.height(AureoleDS.dimens.xxLarge))
         SettingsNavigationList(navigation)
         Spacer(modifier = Modifier.weight(1f))
@@ -131,10 +139,9 @@ private fun SettingsSingleColumn(
 /** Landscape: header on the left, options and the thank-you line on the right, both centered vertically. */
 @Composable
 private fun SettingsTwoPanes(
-    versionName: String,
+    header: @Composable () -> Unit,
     areaHeight: Dp,
-    navigation: SettingsNavigationActions,
-    onHeaderClick: () -> Unit
+    navigation: SettingsNavigationActions
 ) {
     Row(
         modifier = Modifier.fillMaxSize().padding(horizontal = AureoleDS.dimens.xLarge),
@@ -147,7 +154,7 @@ private fun SettingsTwoPanes(
                 .heightIn(min = areaHeight),
             contentAlignment = Alignment.Center
         ) {
-            SettingsHeader(versionName = versionName, onClick = onHeaderClick)
+            header()
         }
         Column(
             modifier = Modifier
@@ -182,6 +189,7 @@ private fun SettingsThankYou(modifier: Modifier = Modifier) {
 @Composable
 private fun SettingsHeader(
     versionName: String,
+    updateRing: SettingsUpdateRing,
     onClick: () -> Unit
 ) {
     Box(
@@ -191,10 +199,7 @@ private fun SettingsHeader(
         contentAlignment = Alignment.Center
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            AureoleDS.icons.Logo(
-                modifier = Modifier.size(AureoleDS.dimens.sizeExtraLarge, AureoleDS.dimens.sizeLarge),
-                tint = AureoleDS.colors.onSurfaceHigh
-            )
+            SettingsHeaderLogo(updateRing = updateRing)
             Spacer(modifier = Modifier.height(AureoleDS.dimens.xLarge))
             AureoleText(
                 text = stringResource(R.string.settings_root_title),
@@ -210,6 +215,38 @@ private fun SettingsHeader(
                 color = AureoleDS.colors.outline,
                 format = AureoleTextFormatParams(style = AureoleDS.typography.bodyMedium)
             )
+        }
+    }
+}
+
+/**
+ * The big logo of the Settings root. While an update is checked or downloaded it turns into the logo ring (RF-13),
+ * in the same box, so nothing around it moves.
+ */
+@Composable
+private fun SettingsHeaderLogo(updateRing: SettingsUpdateRing) {
+    Crossfade(
+        targetState = updateRing == SettingsUpdateRing.Hidden,
+        label = "settingsHeaderLogo",
+        modifier = Modifier.size(AureoleDS.dimens.sizeExtraLarge, AureoleDS.dimens.sizeLarge)
+    ) { isHidden ->
+        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            if (isHidden) {
+                AureoleDS.icons.Logo(modifier = Modifier.fillMaxSize(), tint = AureoleDS.colors.onSurfaceHigh)
+            } else {
+                AureoleLogoRing(
+                    progress = updateRing.ringProgress,
+                    size = AureoleDS.dimens.sizeLarge,
+                    logoFraction = LOGO_RING_LOGO_FRACTION_LARGE,
+                    contentDescription = stringResource(
+                        if (updateRing is SettingsUpdateRing.Downloading) {
+                            R.string.settings_root_update_downloading
+                        } else {
+                            R.string.settings_root_update_checking
+                        }
+                    )
+                )
+            }
         }
     }
 }
@@ -237,6 +274,19 @@ private fun SettingsNavigationList(navigation: SettingsNavigationActions) {
             title = stringResource(R.string.settings_root_advanced_title),
             subtitle = stringResource(R.string.settings_root_advanced_subtitle),
             onClick = navigation.onNavigateToAdvanced
+        )
+    }
+}
+
+@AureolePreview
+@Composable
+private fun SettingsRootScreenUpdatingPreview() {
+    AureoleLauncherTheme {
+        SettingsRootScreen(
+            uiState = SettingsUiState(updateRing = SettingsUpdateRing.Downloading(fraction = 0.4f)),
+            onNavigateToBehavior = {},
+            onNavigateToAppearance = {},
+            onNavigateToAdvanced = {}
         )
     }
 }

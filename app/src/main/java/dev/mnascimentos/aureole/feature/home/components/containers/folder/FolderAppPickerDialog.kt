@@ -29,7 +29,6 @@ import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.FolderAppPickerFooterActions
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.FolderAppPickerFooterParams
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.sortedForPickerGrid
-import dev.mnascimentos.aureole.feature.home.model.LocalHomeActions
 import kotlinx.coroutines.delay
 
 private const val SEARCH_DEBOUNCE_MS = 300L
@@ -52,8 +51,7 @@ fun FolderAppPickerDialog(
         allApps = allApps,
         callbacks = FolderAppPickerCallbacks(
             onDismiss = onDismiss,
-            onSave = onSave,
-            onSettingsClick = LocalHomeActions.current.onSettingsClick
+            onSave = onSave
         ),
         isLeftHandedMode = LocalHomeUiState.current.isLeftHandedMode,
         modifier = modifier
@@ -131,8 +129,8 @@ internal fun FolderAppPickerDialogBody(
             isChanged = { selectedPackages.toList() != params.initialPackages },
             onCommit = { callbacks.onSave(selectedPackages.toList()) },
             onDismissRequest = callbacks.onDismiss,
-            isLeftHanded = params.isLeftHandedMode,
-            onSettingsClick = callbacks.onSettingsClick
+            // Part of the folder editor: no logo on the title line (RF-05b).
+            isLeftHanded = params.isLeftHandedMode
         ),
         modifier = modifier,
         bottomExtra = {

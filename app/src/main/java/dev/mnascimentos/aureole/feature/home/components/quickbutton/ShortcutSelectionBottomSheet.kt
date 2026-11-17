@@ -159,7 +159,9 @@ private fun ShortcutSelectionOverlay(
                     isVisible = params.isVisible,
                     animated = true,
                     isLeftHanded = params.uiState.isLeftHandedMode,
-                    onSettingsClick = callbacks.onSettingsClick
+                    onSettingsClick = callbacks.onSettingsClick,
+                    // Part of the quick button editor: no logo on the title line (RF-05b).
+                    showHeaderAction = false
                 ),
                 previewContent = {
                     ShortcutSelectionPreview(

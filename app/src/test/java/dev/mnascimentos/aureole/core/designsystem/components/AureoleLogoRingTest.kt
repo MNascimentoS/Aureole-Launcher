@@ -12,15 +12,15 @@ import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 
 @RunWith(RobolectricTestRunner::class)
-class AureoleHaloProgressTest {
+class AureoleLogoRingTest {
 
     @get:Rule
     val composeTestRule = createComposeRule()
 
-    private fun render(progress: Float, description: String? = null) {
+    private fun render(progress: Float?, description: String? = null) {
         composeTestRule.setContent {
             AureoleLauncherTheme {
-                AureoleHaloProgress(progress = progress, contentDescription = description)
+                AureoleLogoRing(progress = progress, contentDescription = description)
             }
         }
     }
@@ -45,5 +45,13 @@ class AureoleHaloProgressTest {
         render(progress = -1f)
 
         composeTestRule.onNode(hasProgressBarRangeInfo(ProgressBarRangeInfo(0f, 0f..1f))).assertExists()
+    }
+
+    @Test
+    fun `when progress is null, should expose an indeterminate progress`() {
+        render(progress = null, description = "Checking")
+
+        composeTestRule.onNode(hasProgressBarRangeInfo(ProgressBarRangeInfo.Indeterminate)).assertExists()
+        composeTestRule.onNode(hasContentDescription("Checking")).assertIsDisplayed()
     }
 }

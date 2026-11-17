@@ -141,7 +141,11 @@ private fun CustomizeOverlay(
                 title = stringResource(R.string.home_customize_title),
                 isVisible = params.isVisible,
                 isLeftHanded = uiState.isLeftHandedMode,
-                showHeaderAction = false,
+                // The logo on the title line opens the settings, as in the other home sheets (RF-05b).
+                onSettingsClick = {
+                    actions.onSettingsClick()
+                    onHide()
+                },
                 hasExternalBackdrop = true
             ),
             sheetContent = {

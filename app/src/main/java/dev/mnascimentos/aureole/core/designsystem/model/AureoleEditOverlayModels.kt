@@ -57,7 +57,8 @@ fun rememberAureoleEditOverlayState(
  * @property onDismiss Handler for drag-down and tap-outside. Falls back to [onBackPress], then to the overlay's
  * own dismiss request.
  * @property onSettingsClick Settings icon click callback.
- * @property showHeaderAction Whether the top-end header slot (logo or [headerIcon]) is drawn; false leaves it out.
+ * @property showHeaderAction Whether the header logo (or [headerIcon]) is drawn on the title line; false leaves it
+ * out, and so does a null [onSettingsClick] without a [headerIcon].
  * @property headerIcon Optional custom icon for sheet header end action.
  * @property titleIcon Optional icon drawn before the title (menus show what the sheet is about).
  * @property edgeToEdgeContent Whether the sheet content takes the full sheet width, with no horizontal padding;
@@ -128,7 +129,9 @@ internal class OverlaySheetDecorations(
     val titleIcon: (@Composable (Modifier) -> Unit)? = null,
     val gestureZone: (@Composable () -> Unit)? = null,
     val edgeToEdgeContent: Boolean = false,
-    val showHeaderAction: Boolean = true
+    val showHeaderAction: Boolean = true,
+    /** Left-handed: the logo goes to the start of the title line. */
+    val isLeftHanded: Boolean = false
 )
 
 internal class OverlayDismissState(

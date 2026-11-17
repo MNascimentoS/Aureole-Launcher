@@ -78,9 +78,8 @@ data class FolderAppPickerFooterActions(
     val onMove: (from: Int, to: Int) -> Unit
 )
 
-/** What the picker does when it closes: [onSave] gets the chosen packages in order; the logo opens the settings. */
+/** What the picker does when it closes: [onSave] gets the chosen packages in order. */
 data class FolderAppPickerCallbacks(
     val onDismiss: () -> Unit,
-    val onSave: (List<String>) -> Unit,
-    val onSettingsClick: (() -> Unit)? = null
+    val onSave: (List<String>) -> Unit
 )

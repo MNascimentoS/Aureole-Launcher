@@ -28,9 +28,10 @@ import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.core.data.model.OnboardingTask
-import dev.mnascimentos.aureole.core.designsystem.components.AureoleHaloProgress
+import dev.mnascimentos.aureole.core.designsystem.components.AureoleLogoRing
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
+import dev.mnascimentos.aureole.core.designsystem.model.LOGO_RING_LOGO_FRACTION_LARGE
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
@@ -147,10 +148,12 @@ private fun ChecklistHeader(onboarding: OnboardingUiState, shared: ChecklistShar
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier.padding(bottom = AureoleDS.dimens.xSmall)
     ) {
-        AureoleHaloProgress(
+        AureoleLogoRing(
             progress = onboarding.taskProgress,
             modifier = shared.halo,
             size = AureoleDS.dimens.iconXLarge,
+            // Same ring, bigger logo inside (RF-14).
+            logoFraction = LOGO_RING_LOGO_FRACTION_LARGE,
             contentDescription = progressText
         )
         Column {

@@ -19,6 +19,7 @@ import dev.mnascimentos.aureole.feature.settings.model.SettingToggle
 import dev.mnascimentos.aureole.feature.settings.model.SettingValue
 import dev.mnascimentos.aureole.feature.settings.model.SettingsDialog
 import dev.mnascimentos.aureole.feature.settings.model.SettingsUiState
+import dev.mnascimentos.aureole.feature.settings.model.SettingsUpdateRing
 import dev.mnascimentos.aureole.feature.settings.model.pendingPhotoSwapOf
 import dev.mnascimentos.aureole.feature.settings.model.toSeedSnapshot
 import kotlinx.coroutines.Dispatchers
@@ -45,6 +46,11 @@ class SettingsViewModel(
 
     internal fun updateUiState(transform: (SettingsUiState) -> SettingsUiState) {
         _uiState.update(transform)
+    }
+
+    /** Shows what the in-app update is doing on the logo of the Settings root. */
+    fun setUpdateRing(ring: SettingsUpdateRing) {
+        _uiState.update { it.copy(updateRing = ring) }
     }
 
     /** Publishes the controller's current offer (or none) to [uiState]. */

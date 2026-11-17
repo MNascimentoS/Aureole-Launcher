@@ -8,11 +8,13 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import com.google.android.play.core.appupdate.AppUpdateManagerFactory
 import dev.mnascimentos.aureole.core.designsystem.palette.getPaletteByName
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDimens
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleThemeConfig
 import dev.mnascimentos.aureole.core.lifecycle.SettingsLifecycleObserver
+import dev.mnascimentos.aureole.core.lifecycle.SettingsUpdateRingObserver
 import dev.mnascimentos.aureole.feature.settings.screens.SettingsRoute
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -25,6 +27,7 @@ class SettingsActivity : ComponentActivity() {
         enableEdgeToEdge()
 
         lifecycle.addObserver(SettingsLifecycleObserver(viewModel))
+        lifecycle.addObserver(SettingsUpdateRingObserver(AppUpdateManagerFactory.create(this), viewModel))
 
         setContent {
             val uiState by viewModel.uiState.collectAsState()

@@ -38,7 +38,9 @@ internal fun ContainerFolderBottomSheet(
         modifier = modifier,
         params = MenuSheetParams(
             titleIcon = { m -> AureoleDS.icons.Folder(modifier = m, tint = AureoleDS.colors.onSurfaceMedium) },
-            onSettingsClick = params.onOpenSettings
+            onSettingsClick = params.onOpenSettings,
+            // Item editors have no logo on the title line (RF-05b); the handle still opens the settings.
+            showHeaderAction = false
         )
     ) { dismiss ->
         folderMenuEntries(params) {

@@ -13,12 +13,14 @@ import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 @PreviewTest
 @AureolePreview
 @Composable
-private fun AureoleHaloProgressScreenshotTest() {
+private fun AureoleLogoRingScreenshotTest() {
     AureoleLauncherTheme {
         Row(horizontalArrangement = Arrangement.spacedBy(16.dp), modifier = Modifier.padding(16.dp)) {
-            AureoleHaloProgress(progress = 0f)
-            AureoleHaloProgress(progress = 0.5f)
-            AureoleHaloProgress(progress = 1f, size = 72.dp)
+            AureoleLogoRing(progress = 0f)
+            AureoleLogoRing(progress = 0.5f)
+            AureoleLogoRing(progress = 1f, size = 72.dp)
+            // Previews draw a still ring: the indeterminate arc at its resting angle.
+            AureoleLogoRing(progress = null)
         }
     }
 }

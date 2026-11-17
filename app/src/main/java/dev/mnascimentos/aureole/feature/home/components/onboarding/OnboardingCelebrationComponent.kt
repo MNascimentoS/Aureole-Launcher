@@ -26,7 +26,7 @@ import androidx.compose.ui.semantics.liveRegion
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
 import dev.mnascimentos.aureole.R
-import dev.mnascimentos.aureole.core.designsystem.components.AureoleHaloProgress
+import dev.mnascimentos.aureole.core.designsystem.components.AureoleLogoRing
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
@@ -94,7 +94,7 @@ fun OnboardingCelebrationComponent(
                 verticalArrangement = Arrangement.spacedBy(AureoleDS.dimens.small),
                 modifier = Modifier.fillMaxWidth()
             ) {
-                AureoleHaloProgress(progress = halo.value)
+                AureoleLogoRing(progress = halo.value)
                 AureoleText(
                     text = stringResource(R.string.home_onboarding_done_title),
                     color = AureoleDS.colors.onSurfaceHigh,

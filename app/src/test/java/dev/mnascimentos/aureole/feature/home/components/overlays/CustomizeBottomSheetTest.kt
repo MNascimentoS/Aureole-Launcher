@@ -132,10 +132,19 @@ class CustomizeBottomSheetTest {
     }
 
     @Test
-    fun `when rendered, should not draw the header logo that opens settings`() {
-        show()
+    fun `when the header logo is tapped, should open the Aureole settings and dismiss`() {
+        var opened = 0
+        var dismissed = 0
+        show(
+            createDefaultHomeScreenActions().copy(onSettingsClick = { opened++ }),
+            onDismiss = { dismissed++ }
+        )
 
-        composeTestRule.onNodeWithContentDescription("Settings").assertDoesNotExist()
+        composeTestRule.onNodeWithContentDescription("Aureole settings").performClick()
+        composeTestRule.mainClock.advanceTimeBy(DISMISS_WAIT_MS)
+
+        assertEquals(1, opened)
+        assertEquals(1, dismissed)
     }
 
     @Test

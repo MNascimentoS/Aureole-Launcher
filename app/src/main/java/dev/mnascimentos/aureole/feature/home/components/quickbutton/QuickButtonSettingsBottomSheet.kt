@@ -41,7 +41,9 @@ fun QuickButtonSettingsBottomSheet(
         modifier = modifier,
         params = MenuSheetParams(
             titleIcon = { m -> AureoleDS.icons.Click(modifier = m, tint = AureoleDS.colors.onSurfaceMedium) },
-            onSettingsClick = { actions.onSettingsClick() }
+            onSettingsClick = { actions.onSettingsClick() },
+            // Item editors have no logo on the title line (RF-05b); the handle still opens the settings.
+            showHeaderAction = false
         )
     ) { dismiss ->
         quickButtonEntries(uiState = uiState, actions = actions, clickSubtitle = clickSubtitle) {

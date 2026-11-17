@@ -7,6 +7,7 @@ import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.v2.createComposeRule
 import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onFirst
+import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
 import dev.mnascimentos.aureole.composable.favorites.FavoriteAppsDialog
 import dev.mnascimentos.aureole.composable.favorites.model.FavoriteAppsDialogActions
@@ -101,5 +102,35 @@ class FavoriteAppsDialogTest {
         }
 
         composeTestRule.onNodeWithText("Show all apps").assertIsDisplayed()
+    }
+
+    @Test
+    fun `when opened from Settings, should have neither the logo nor Customize home`() {
+        // The Settings sheet passes no settings shortcut, no Customize home and no switches (RF-04, RF-07).
+        composeTestRule.setContent {
+            AureoleLauncherTheme {
+                FavoriteAppsDialog(
+                    config = FavoriteAppsDialogConfig(allApps = emptyList(), favoriteAppPackages = emptyList()),
+                    actions = FavoriteAppsDialogActions(onToggleFavorite = {}, onDismiss = {})
+                )
+            }
+        }
+
+        composeTestRule.onNodeWithContentDescription("Aureole settings").assertDoesNotExist()
+        composeTestRule.onNodeWithText("Customize home").assertDoesNotExist()
+    }
+
+    @Test
+    fun `when opened from the home, should show the logo on the title line`() {
+        composeTestRule.setContent {
+            AureoleLauncherTheme {
+                FavoriteAppsDialog(
+                    config = FavoriteAppsDialogConfig(allApps = emptyList(), favoriteAppPackages = emptyList()),
+                    actions = FavoriteAppsDialogActions(onSettingsClick = {})
+                )
+            }
+        }
+
+        composeTestRule.onNodeWithContentDescription("Aureole settings").assertIsDisplayed()
     }
 }

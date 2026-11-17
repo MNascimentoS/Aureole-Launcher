@@ -10,7 +10,6 @@ import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.runtime.Composable
@@ -39,6 +38,7 @@ import dev.mnascimentos.aureole.feature.home.components.containers.folder.Contai
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.EditFolderDialog
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.FolderAppPickerDialog
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.OpenedFolderOverlayUtils
+import dev.mnascimentos.aureole.feature.home.components.containers.folder.OpenedFolderPlacementLayout
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.OpenedFolderPopup
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.ContainerFolderBottomSheetParams
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.FolderPopupActions
@@ -205,33 +205,34 @@ private fun OpenedFolderOverlayContent(
         actions = actions,
         isGridFolderEnabled = isGridFolderEnabled
     ) {
-        val topInsetDp = WindowInsets.statusBars.asPaddingValues().calculateTopPadding()
-        val clampedTopDp = OpenedFolderOverlayUtils.calculateClampedTopDp(
-            uiState.activeFolderTopYPx,
-            params.screenHeightPx,
-            params.screenDensity,
-            topInsetDp
-        )
-        val align = OpenedFolderOverlayUtils.resolvePopupAlignment(
-            isGridFolderEnabled,
-            uiState.isLeftHandedMode
+        val density = LocalDensity.current
+        val anchorTopPx = OpenedFolderOverlayUtils.folderAnchorTopPx(
+            topYPx = uiState.activeFolderTopYPx,
+            statusInsetPx = WindowInsets.statusBars.getTop(density).toFloat(),
+            fallbackPx = with(density) { AureoleDS.dimens.xxLarge.toPx() }
         )
         val popupPadding = with(OpenedFolderOverlayUtils) {
-            Modifier.popupPadding(isGridFolderEnabled, uiState.isLeftHandedMode, clampedTopDp)
+            Modifier.popupPadding(isGridFolderEnabled, uiState.isLeftHandedMode)
         }
 
-        OpenedFolderPopup(
-            config = OpenedFolderPopupConfig(
-                folder = folderToDisplay,
-                allApps = uiState.apps,
-                actions = FolderPopupActions(
-                    onDismiss = { actions.onFolderIntent(FolderViewIntent.CloseFolder) },
-                    onAppClick = { app -> actions.onFolderIntent(FolderViewIntent.LaunchApp(app.packageName)) }
+        OpenedFolderPlacementLayout(
+            anchorTopPx = anchorTopPx,
+            isGridFolder = isGridFolderEnabled,
+            isLeftHanded = uiState.isLeftHandedMode
+        ) {
+            OpenedFolderPopup(
+                config = OpenedFolderPopupConfig(
+                    folder = folderToDisplay,
+                    allApps = uiState.apps,
+                    actions = FolderPopupActions(
+                        onDismiss = { actions.onFolderIntent(FolderViewIntent.CloseFolder) },
+                        onAppClick = { app -> actions.onFolderIntent(FolderViewIntent.LaunchApp(app.packageName)) }
+                    ),
+                    isGridFolderEnabled = isGridFolderEnabled
                 ),
-                isGridFolderEnabled = isGridFolderEnabled
-            ),
-            modifier = Modifier.align(align).then(popupPadding)
-        )
+                modifier = popupPadding
+            )
+        }
     }
 }
 
