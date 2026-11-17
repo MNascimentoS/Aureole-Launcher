@@ -142,7 +142,7 @@ internal fun WallpaperEditorZoomTag(zoom: Float, modifier: Modifier = Modifier) 
         modifier = modifier
             .clearAndSetSemantics {}
             .statusBarsPadding()
-            .padding(AureoleDS.dimens.small)
+            .padding(AureoleDS.dimens.large)
             .clip(RoundedCornerShape(AureoleDS.dimens.radiusFull))
             .background(AureoleDS.colors.background.copy(alpha = ZOOM_TAG_ALPHA))
             .padding(horizontal = AureoleDS.dimens.xSmall, vertical = AureoleDS.dimens.xxSmall),

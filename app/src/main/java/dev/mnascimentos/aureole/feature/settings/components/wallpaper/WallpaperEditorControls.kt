@@ -27,6 +27,7 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDirection
 import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.composable.controls.AureoleSegmentedControl
 import dev.mnascimentos.aureole.composable.mirror.LeftHandMirror
@@ -189,7 +190,10 @@ private fun EditorSlider(spec: EditorSliderSpec, onValueChange: (Float) -> Unit)
                 AureoleText(
                     text = spec.valueText,
                     color = AureoleDS.colors.onSurfaceHigh,
-                    format = AureoleTextFormatParams(style = AureoleDS.typography.bodyMedium, textAlign = TextAlign.End)
+                    format = AureoleTextFormatParams(
+                        style = AureoleDS.typography.bodyMedium.copy(textDirection = TextDirection.Ltr),
+                        textAlign = TextAlign.End
+                    )
                 )
             }
         }

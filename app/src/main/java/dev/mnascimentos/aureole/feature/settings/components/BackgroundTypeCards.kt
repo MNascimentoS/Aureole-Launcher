@@ -29,7 +29,7 @@ import dev.mnascimentos.aureole.composable.mirror.LeftHandMirror
 import dev.mnascimentos.aureole.core.data.model.WallpaperAdjustments
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
-import dev.mnascimentos.aureole.core.designsystem.icons.Edit
+import dev.mnascimentos.aureole.core.designsystem.icons.Image
 import dev.mnascimentos.aureole.core.designsystem.icons.StrokeColor
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
@@ -70,7 +70,7 @@ internal fun BackgroundTypeCards(
                 if (photo != null) {
                     BackgroundPhotoContent(photo = photo, label = label)
                 } else {
-                    AureoleDS.icons.Edit(tint = AureoleDS.colors.onSurfaceHigh)
+                    AureoleDS.icons.Image(tint = AureoleDS.colors.onSurfaceHigh)
                     TypeLabel(label)
                 }
             }

@@ -428,6 +428,12 @@ fun AureoleIcons.ImageSwap(
 ) { AureoleIcon(R.drawable.ic_aureole_image_swap, modifier, tint) }
 
 @Composable
+fun AureoleIcons.Image(
+    modifier: Modifier = Modifier,
+    tint: Color? = null
+) { AureoleIcon(R.drawable.ic_aureole_image, modifier, tint) }
+
+@Composable
 internal fun AureoleIcon(
     iconResId: Int,
     modifier: Modifier = Modifier,
