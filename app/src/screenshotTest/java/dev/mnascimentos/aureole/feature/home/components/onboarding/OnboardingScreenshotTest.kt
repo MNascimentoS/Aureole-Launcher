@@ -248,3 +248,30 @@ private fun OnboardingEditHintScreenshotTest() {
         OnboardingEditHintComponent(isVisible = true, glass = OnboardingGlass(), onSave = {})
     }
 }
+
+@PreviewTest
+@AureolePreview
+@Composable
+private fun OnboardingPeekBubbleEmptyScreenshotTest() {
+    AureoleLauncherTheme {
+        OnboardingPeekBubble(progress = 0f, glass = OnboardingGlass())
+    }
+}
+
+@PreviewTest
+@AureolePreview
+@Composable
+private fun OnboardingPeekBubbleHalfScreenshotTest() {
+    AureoleLauncherTheme {
+        OnboardingPeekBubble(progress = 0.5f, glass = OnboardingGlass())
+    }
+}
+
+@PreviewTest
+@AureolePreview
+@Composable
+private fun OnboardingPeekBubbleFullScreenshotTest() {
+    AureoleLauncherTheme {
+        OnboardingPeekBubble(progress = 1f, glass = OnboardingGlass())
+    }
+}

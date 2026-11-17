@@ -36,10 +36,19 @@ val OnboardingUiState.hostSurface: OnboardingSurface
 val OnboardingUiState.isChecklistMinimized: Boolean
     get() = stage == OnboardingStage.CHECKLIST && !isChecklistExpanded && activePicker == null && !isHomePeeking
 
-/** What the checklist layer shows; the pill hides while [isOtherOverlayActive], so it never covers an editor. */
+/** The home shows alone after a task: the bubble sits in the pill's place until the list comes back. */
+val OnboardingUiState.isPeekBubbleShown: Boolean
+    get() = stage == OnboardingStage.CHECKLIST && isHomePeeking && activePicker == null && pendingTask == null
+
+/**
+ * What the checklist layer shows; the pill and the peek bubble hide while [isOtherOverlayActive], so they never
+ * cover an editor.
+ */
 fun OnboardingUiState.checklistMorph(isOtherOverlayActive: Boolean): ChecklistMorph = when {
     visibleSurface == OnboardingSurface.CHECKLIST -> ChecklistMorph.EXPANDED
-    isChecklistMinimized && !isOtherOverlayActive -> ChecklistMorph.MINIMIZED
+    isOtherOverlayActive -> ChecklistMorph.HIDDEN
+    isChecklistMinimized -> ChecklistMorph.MINIMIZED
+    isPeekBubbleShown -> ChecklistMorph.PEEK
     else -> ChecklistMorph.HIDDEN
 }
 

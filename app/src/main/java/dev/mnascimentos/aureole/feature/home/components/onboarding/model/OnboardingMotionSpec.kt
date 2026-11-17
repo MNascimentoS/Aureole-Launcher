@@ -54,6 +54,14 @@ object OnboardingMotionSpec {
     const val PILL_DAMPING = 0.8f
     val CHECKLIST_MAX_WIDTH = 420.dp
 
+    // Peek bubble (RF-13): it opens into the list (or the pill) in one FastOutSlowIn movement, and the rows fade in
+    // once ~45% of it has run. The item the task left is outlined, and the outline fades with the peek.
+    const val BUBBLE_MORPH_MS = 550
+    const val BUBBLE_LIST_FADE_DELAY_MS = 250
+    const val BUBBLE_LIST_FADE_MS = 300
+    const val PEEK_OUTLINE_FADE_MS = 400
+    const val PEEK_OUTLINE_ALPHA = 0.6f
+
     // Celebration
     const val CELEBRATION_MS = 4500L
     const val CELEBRATION_BURST_MS = 2600

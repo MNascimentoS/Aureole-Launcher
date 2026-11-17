@@ -80,10 +80,12 @@ internal fun SheetSurface(
             .onSizeChanged { size ->
                 if (motion.fixedHeight(isExpanded, bounds) == null) motion.restHeight = size.height.toFloat()
             }
-            .nestedScroll(nestedScrollConnection)
+            // Locked (a showcase), the sheet stays put: no resize by scrolling or dragging.
+            .then(if (config.isLocked) Modifier else Modifier.nestedScroll(nestedScrollConnection))
             .draggable(
                 state = draggableState,
                 orientation = Orientation.Vertical,
+                enabled = !config.isLocked,
                 onDragStarted = { controller.onDragStarted() },
                 onDragStopped = { velocity -> controller.onRelease(velocity) }
             )
@@ -107,11 +109,12 @@ internal fun SheetSurface(
                 edgeToEdgeContent = config.edgeToEdgeContent,
                 showHeaderAction = config.showHeaderAction && config.host.showHeaderAction,
                 isLeftHanded = config.isLeftHanded,
+                headerAccessory = config.headerAccessory,
                 gestureZone = {
                     OverlaySheetGestureZone(
                         state = GestureZoneState(isExpanded, config.isLeftHanded, motion.canExpand(bounds)),
-                        onToggleExpanded = controller::toggle,
-                        onSettingsClick = config.onSettingsClick
+                        onToggleExpanded = if (config.isLocked) ({}) else controller::toggle,
+                        onSettingsClick = config.onSettingsClick.takeUnless { config.isLocked }
                     )
                 }
             )

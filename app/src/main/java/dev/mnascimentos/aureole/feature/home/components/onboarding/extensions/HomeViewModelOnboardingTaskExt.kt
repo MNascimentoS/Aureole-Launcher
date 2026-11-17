@@ -109,6 +109,7 @@ fun HomeViewModel.onReturnedToHome() {
  */
 internal fun HomeViewModel.completeTask(task: OnboardingTask, hasPeek: Boolean = false) {
     updateUiState { state ->
+        val itemId = state.taskItemId(task)
         val onboarding = state.onboarding.copy(
             completedTasks = state.onboarding.completedTasks + task,
             skippedTasks = state.onboarding.skippedTasks - task,
@@ -117,7 +118,7 @@ internal fun HomeViewModel.completeTask(task: OnboardingTask, hasPeek: Boolean =
             isPendingTaskSaved = false,
             isChecklistExpanded = true
         )
-        state.copy(onboarding = if (hasPeek) onboarding.peekingHome() else onboarding)
+        state.copy(onboarding = if (hasPeek) onboarding.peekingHome(itemId) else onboarding)
     }
 }
 

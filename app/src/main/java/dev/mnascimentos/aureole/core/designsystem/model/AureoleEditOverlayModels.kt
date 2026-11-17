@@ -68,6 +68,9 @@ fun rememberAureoleEditOverlayState(
  * @property host What the screen hosting several overlays decides for all of them (see [OverlayHostSpec]).
  * @property dismissOnTapOutside Whether a tap outside the sheet closes it. False lets the touches around the sheet
  * reach what is drawn behind the overlay (the photo editor moves the photo there).
+ * @property isLocked A showcase: back, drag-down, tap-outside, the gesture zone and the header logo do nothing; only
+ * the caller closes the overlay (through [isVisible]). Touches around the sheet still stop at the overlay.
+ * @property headerAccessory Drawn in the header slot in place of the logo, not clickable (the showcase ring).
  */
 data class AureoleEditOverlayConfig(
     val title: String? = null,
@@ -87,6 +90,8 @@ data class AureoleEditOverlayConfig(
     val hasExternalBackdrop: Boolean = false,
     val host: OverlayHostSpec = OverlayHostSpec(),
     val dismissOnTapOutside: Boolean = true,
+    val isLocked: Boolean = false,
+    val headerAccessory: (@Composable () -> Unit)? = null,
 )
 
 /**
@@ -131,7 +136,9 @@ internal class OverlaySheetDecorations(
     val edgeToEdgeContent: Boolean = false,
     val showHeaderAction: Boolean = true,
     /** Left-handed: the logo goes to the start of the title line. */
-    val isLeftHanded: Boolean = false
+    val isLeftHanded: Boolean = false,
+    /** Replaces the logo in the header slot, with no click (see [AureoleEditOverlayConfig.headerAccessory]). */
+    val headerAccessory: (@Composable () -> Unit)? = null
 )
 
 internal class OverlayDismissState(
@@ -146,3 +153,6 @@ internal fun AureoleEditOverlayConfig.dismissHandler(fallback: () -> Unit): () -
 
 /** What the back key runs: the screen's own [AureoleEditOverlayConfig.onBackPress], else [dismiss]. */
 internal fun AureoleEditOverlayConfig.backHandler(dismiss: () -> Unit): () -> Unit = onBackPress ?: dismiss
+
+/** What back, drag-down and tap-outside start: [dismiss], or nothing while [AureoleEditOverlayConfig.isLocked]. */
+internal fun AureoleEditOverlayConfig.userDismiss(dismiss: () -> Unit): () -> Unit = if (isLocked) ({}) else dismiss

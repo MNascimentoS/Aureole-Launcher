@@ -25,6 +25,7 @@ import dev.mnascimentos.aureole.core.designsystem.model.OverlaySheetStateData
 import dev.mnascimentos.aureole.core.designsystem.model.backHandler
 import dev.mnascimentos.aureole.core.designsystem.model.dismissHandler
 import dev.mnascimentos.aureole.core.designsystem.model.rememberAureoleEditOverlayState
+import dev.mnascimentos.aureole.core.designsystem.model.userDismiss
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
@@ -68,8 +69,10 @@ fun AureoleEditOverlay(
         onDismissRequest = onDismissRequest
     )
 
+    // A locked overlay (a showcase) still swallows back, drag-down and tap-outside, but they do nothing.
+    val userDismiss = config.userDismiss(overlayState.triggerDismiss)
     if (!isInspection) {
-        val backAction by rememberUpdatedState(config.backHandler(overlayState.triggerDismiss))
+        val backAction by rememberUpdatedState(config.userDismiss(config.backHandler(overlayState.triggerDismiss)))
         BackHandler(enabled = config.isVisible && state.internalVisible) { backAction() }
     }
 
@@ -87,7 +90,7 @@ fun AureoleEditOverlay(
                     isExpanded = state.isExpanded,
                     onExpandedChanged = { state.isExpanded = it },
                     effectiveAnimated = effectiveAnimated,
-                    triggerDismiss = overlayState.triggerDismiss,
+                    triggerDismiss = userDismiss,
                     animScope = this
                 ),
                 params = params,

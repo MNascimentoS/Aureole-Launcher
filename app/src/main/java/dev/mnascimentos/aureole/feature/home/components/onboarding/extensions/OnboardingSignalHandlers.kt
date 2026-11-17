@@ -46,13 +46,16 @@ internal fun OnboardingUiState.abandonPendingTask(): OnboardingUiState {
     return copy(pendingTask = null, createdItemId = null, isPendingTaskSaved = false, isChecklistExpanded = true)
 }
 
-/** The task's screen closed: hides the list and the pill so the home shows alone until [endingHomePeek]. */
-internal fun OnboardingUiState.peekingHome(): OnboardingUiState =
-    copy(isChecklistExpanded = false, isHomePeeking = true)
+/**
+ * The task's screen closed: hides the list and the pill so the home shows alone until [endingHomePeek], with the
+ * bubble in the pill's place and [itemId] (the item the task left, if it succeeded) outlined.
+ */
+internal fun OnboardingUiState.peekingHome(itemId: String? = null): OnboardingUiState =
+    copy(isChecklistExpanded = false, isHomePeeking = true, peekItemId = itemId)
 
 /** The peek is over: the list comes back, unless the tour moved on or the user already opened something else. */
 internal fun OnboardingUiState.endingHomePeek(): OnboardingUiState {
     if (!isHomePeeking) return this
     val canReopen = stage == OnboardingStage.CHECKLIST && pendingTask == null && activePicker == null
-    return copy(isHomePeeking = false, isChecklistExpanded = isChecklistExpanded || canReopen)
+    return copy(isHomePeeking = false, peekItemId = null, isChecklistExpanded = isChecklistExpanded || canReopen)
 }

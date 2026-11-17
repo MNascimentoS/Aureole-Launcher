@@ -53,6 +53,7 @@ import dev.mnascimentos.aureole.feature.home.components.containers.model.EditCon
 import dev.mnascimentos.aureole.feature.home.components.overlays.CustomizeBottomSheet
 import dev.mnascimentos.aureole.feature.home.components.overlays.HomeOverlaysContent
 import dev.mnascimentos.aureole.feature.home.components.overlays.homeDragGestures
+import dev.mnascimentos.aureole.feature.home.components.overlays.model.isCustomizeShowcase
 import dev.mnascimentos.aureole.feature.home.components.scrubber.model.isHomeDragAttached
 import dev.mnascimentos.aureole.feature.home.components.widgets.EditWidgetGroupScreen
 import dev.mnascimentos.aureole.feature.home.components.widgets.model.EditWidgetGroupActions
@@ -243,7 +244,8 @@ private fun HomeOverlaysDialogsAndErrors(config: HomeOverlaysConfig) {
         CustomizeBottomSheet(
             uiState = config.uiState,
             actions = config.actions,
-            onDismissRequest = config.actions.onCloseCustomizeBottomSheet
+            onDismissRequest = config.actions.onCloseCustomizeBottomSheet,
+            isShowcase = config.uiState.isCustomizeShowcase
         )
     }
 

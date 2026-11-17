@@ -30,15 +30,41 @@ class ChecklistMorphTest {
     }
 
     @Test
-    fun `when a picker is open or the home peeks, should hide the layer`() {
+    fun `when a picker is open, should hide the layer`() {
         assertEquals(
             ChecklistMorph.HIDDEN,
             checklist.copy(activePicker = AppearancePicker.FONT).checklistMorph(isOtherOverlayActive = false)
         )
+    }
+
+    @Test
+    fun `when the home peeks, should show the bubble unless something else is open`() {
+        val peeking = checklist.copy(isChecklistExpanded = false, isHomePeeking = true)
+
+        assertEquals(ChecklistMorph.PEEK, peeking.checklistMorph(isOtherOverlayActive = false))
+        assertEquals(ChecklistMorph.HIDDEN, peeking.checklistMorph(isOtherOverlayActive = true))
         assertEquals(
             ChecklistMorph.HIDDEN,
-            checklist.copy(isChecklistExpanded = false, isHomePeeking = true).checklistMorph(false)
+            peeking.copy(activePicker = AppearancePicker.PALETTE).checklistMorph(isOtherOverlayActive = false)
         )
+        assertEquals(
+            ChecklistMorph.HIDDEN,
+            peeking.copy(stage = OnboardingStage.COMPLETED).checklistMorph(isOtherOverlayActive = false)
+        )
+    }
+
+    @Test
+    fun `when the bubble opens into the list or the pill, should use the bubble motion`() {
+        val bubble = nextMorphTarget(previous = null, morph = ChecklistMorph.PEEK)
+
+        val list = nextMorphTarget(previous = bubble, morph = ChecklistMorph.EXPANDED)
+        val pill = nextMorphTarget(previous = bubble, morph = ChecklistMorph.MINIMIZED)
+
+        assertTrue(bubble.usesBubbleMotion)
+        assertTrue(list.cameFromBubble && list.usesBubbleMotion)
+        assertFalse(list.cameFromPill)
+        assertTrue(pill.cameFromBubble)
+        assertFalse(nextMorphTarget(previous = pill, morph = ChecklistMorph.EXPANDED).usesBubbleMotion)
     }
 
     @Test

@@ -51,6 +51,8 @@ private const val SPIN_MS = 1100
  * @param size Outer diameter of the ring.
  * @param logoFraction Logo width as a share of [size].
  * @param contentDescription Accessibility label announced with the progress value.
+ * @param isProgressAnimated False draws [progress] as given, for a caller that already moves it on a clock (a
+ * countdown that must fill linearly); true eases each change with a spring.
  */
 @Composable
 fun AureoleLogoRing(
@@ -59,6 +61,7 @@ fun AureoleLogoRing(
     size: Dp = AureoleDS.dimens.iconHuge,
     logoFraction: Float = LOGO_RING_LOGO_FRACTION,
     contentDescription: String? = null,
+    isProgressAnimated: Boolean = true,
 ) {
     val target = logoRingSweepFraction(progress)
     val animated = animateFloatAsState(
@@ -66,7 +69,7 @@ fun AureoleLogoRing(
         animationSpec = spring(stiffness = Spring.StiffnessLow),
         label = "logoRingProgress"
     )
-    val isInspection = LocalInspectionMode.current
+    val drawsTarget = LocalInspectionMode.current || !isProgressAnimated
     val spin = rememberRingSpin(isLogoRingSpinning(progress, rememberSystemAnimationsEnabled()))
     val trackColor = AureoleDS.colors.outline.copy(alpha = TRACK_ALPHA)
     val progressColor = AureoleDS.colors.onSurfaceHigh
@@ -81,7 +84,7 @@ fun AureoleLogoRing(
     ) {
         Canvas(modifier = Modifier.matchParentSize()) {
             // Read in the draw phase so the spring and the spin redraw without recomposing.
-            val shown = if (isInspection) target else animated.value
+            val shown = if (drawsTarget) target else animated.value
             val stroke = this.size.minDimension * STROKE_FRACTION
             val topLeft = Offset(stroke / 2, stroke / 2)
             val arcSize = Size(this.size.width - stroke, this.size.height - stroke)

@@ -249,18 +249,21 @@ internal fun OverlaySheetBody(
         Column(modifier = Modifier.weight(1f, fill = hasBottomBar)) {
             decorations.gestureZone?.invoke()
             if (title != null) {
+                val accessory = decorations.headerAccessory
                 val showAction = hasHeaderAction(
                     showHeaderAction = decorations.showHeaderAction,
                     hasClick = onSettingsClick != null,
-                    hasCustomIcon = decorations.headerIcon != null
+                    hasCustomIcon = decorations.headerIcon != null || accessory != null
                 )
                 OverlaySheetHeader(
                     title = title,
                     titleIcon = decorations.titleIcon,
-                    action = if (showAction) {
-                        { OverlaySheetHeaderLogo(onClick = onSettingsClick, headerIcon = decorations.headerIcon) }
-                    } else {
-                        null
+                    action = when {
+                        !showAction -> null
+                        accessory != null -> accessory
+                        else -> {
+                            { OverlaySheetHeaderLogo(onClick = onSettingsClick, headerIcon = decorations.headerIcon) }
+                        }
                     },
                     isLeftHanded = decorations.isLeftHanded
                 )
