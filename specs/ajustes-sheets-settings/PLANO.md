@@ -18,19 +18,20 @@
    `@Suppress`, `AureoleDS` para cores/dimens/ícones, strings em EN e pt-BR, `@AureolePreview` privado.
 5. Ao fim de cada fase, escrever as notas dela em `PROGRESSO.md` (o que mudou, o que ficou faltando) e marcar "Feita".
    Gates e Visual fecham na fase 4; Aparelho é o teste do Mateus.
-6. Dúvida de produto nova: escrever em `DECISOES.md` (`## D-07 …`, `opções:`, `trava:`), seguir com a opção mais
+6. Dúvida de produto nova: escrever em `DECISOES.md` (`## D-08 …`, `opções:`, `trava:`), seguir com a opção mais
    conservadora e citar no relatório final. Não parar a execução.
 
 ## Resumo
 
 | # | Fase | Modelo | Agente | Requisitos | Tempo | Tokens |
 |---|---|---|---|---|---|---|
-| 1 | **Polimento visual:** Personalizar, cabeçalho das sheets, Ajustes (rodapé e paisagem), Avançado, coach (texto e mão), ícones Add New e Home | **Sonnet** | `sheet-ui` | RF-01 a RF-07, RF-17, RF-19, RF-20, RF-21 | 1,5–2,5 h | 100–150k |
+| 1 | **Polimento visual:** Personalizar, cabeçalho das sheets, Ajustes (rodapé e paisagem), Avançado, coach (texto e mão), ícones Add New e Home | **Sonnet** | `sheet-ui` | RF-01 a RF-07, RF-17, RF-19 a RF-21, RF-23 | 1,5–2,5 h | 100–150k |
 | 2 | **Salvar ao fechar + Desfazer** nas sheets de edição; picker de cor do fundo novo | **Sonnet** | `sheet-ui` | RF-11 a RF-14, RF-22 | 2,5–4 h | 160–250k |
 | 3 | **Movimento:** sheet sobe ao abrir, sheet elástica, checklist → pílula, lista de apps pela borda ou por baixo | **Opus** | `sheet-gestures` | RF-08 a RF-10, RF-15, RF-16, RF-18 | 2,5–4 h | 160–250k |
 | 4 | **Gates, correções e revisão visual** (todas as fases juntas) | **Sonnet** + `visual-reviewer` (**Opus**) | `sheet-chores` | todos | 1–2 h | 60–120k |
+| 5 | **Exploração, sem código:** propostas da IA para reorganizar os Ajustes e as subtelas | **Opus** | `general-purpose` | — (spec `ajustes-redesign`) | 20–40 min | 40–80k |
 
-**Total:** 7,5–12,5 h de agente e 0,48–0,77 M de tokens. **Ordem:** 1 → 2 → 3 → 4.
+**Total:** 7,5–12,5 h de agente e 0,48–0,77 M de tokens. **Ordem:** 1 → 2 → 3 → 4 → 5. A fase 5 não mexe em código e não afeta os gates.
 A fase 2 vem antes da 3 para o Sonnet fazer os dois blocos seguidos. As duas mexem em partes diferentes das sheets
 (a 2 nos editores, `AureoleConfirmOverlay` e `ThemePreviewOverlay`; a 3 no `AureoleEditOverlay` e na física), e os
 screenshots só são regenerados uma vez, na fase 4.
@@ -51,7 +52,7 @@ screenshots só são regenerados uma vez, na fase 4.
 
 ## Fase 1: polimento visual
 
-**Modelo:** Sonnet · **Requisitos:** RF-01, RF-02, RF-03, RF-04, RF-05, RF-06, RF-07, RF-17, RF-19, RF-20, RF-21 · **Depende de:** nada
+**Modelo:** Sonnet · **Requisitos:** RF-01, RF-02, RF-03, RF-04, RF-05, RF-06, RF-07, RF-17, RF-19, RF-20, RF-21, RF-23 · **Depende de:** nada
 
 ### Entrega
 
@@ -93,8 +94,18 @@ screenshots só são regenerados uma vez, na fase 4.
     `ic_aureole_home.webp` em 5 densidades: apagar os `.webp` e pôr `res/drawable/ic_aureole_home.xml`). Aparece no
     Launcher padrão (`SettingsAdvancedScreen.kt`) e em "Definir como app da home" (`OnboardingChecklistItemComponent.kt`).
 
+11. **Colaboradores centralizado** (RF-23, `SettingsContributorsScreen.kt`):
+    - Não aplicar `headerOffsetPercent` nesta tela (nem `topSpacerHeight` derivado dele). Na `main` ela não usa; se a
+      versão da branch usar, remover. O deslocamento continua só na raiz, Aparência, Comportamento e Avançado.
+    - Tirar o `statusBarsPadding()` e deixar só `padding(innerPadding)` (o `Scaffold` já traz a margem das barras);
+      manter `Arrangement.Center` + `Alignment.CenterHorizontally` para o bloco título + lista ficar no centro.
+    - Licenças usa o mesmo par `innerPadding` + `statusBarsPadding()`: conferir no preview e corrigir igual se sobrar
+      espaço no topo. Nas telas com deslocamento, não mexer no cálculo do deslocamento; só tirar a margem dobrada se
+      ela existir de fato. Anotar em `PROGRESSO.md` o que foi corrigido.
+
 ### Testes da fase (rodar só estes, com `--tests`)
 
+- Screenshot test novo de Colaboradores (retrato) mostrando o bloco no centro.
 - `settingsLayoutFor`: retrato, paisagem, quadrado.
 - `edgeScrubPoint`: começa na borda; ao fim do puxar está 56 dp para dentro na mesma altura; parado na pausa; termina
   no `endY`; canhoto espelha o x.
@@ -250,9 +261,28 @@ screenshots só são regenerados uma vez, na fase 4.
 4. **Commit:** `chore(ajustes-sheets-settings): gates e screenshots (fase 4)`. Sem atribuição. Sem push.
 5. Atualizar `PROGRESSO.md` (Gates e Visual) e entregar o relatório final (formato em `EXECUTAR.md`).
 
+## Fase 5: exploração dos Ajustes (sem código)
+
+**Modelo:** Opus · **Depende de:** fase 4 · **Saída:** `specs/ajustes-redesign/PROPOSTAS-IA.md` (+ imagens opcionais)
+
+Pedir à IA que olhe as telas de Ajustes (raiz, Aparência, Comportamento, Avançado, Colaboradores, Licenças) **depois**
+das fases 1 a 4 e proponha como reorganizá-las com base nas outras telas do app (sheets, Personalizar, menus,
+linhas com ícone, prévia viva, lado do polegar), **mudando coisas de lugar e reagrupando, sem remover nada**.
+
+- Ler `specs/ajustes-redesign/IDEIA.md` (inventário completo e as 3 direções que já existem em
+  `specs/ajustes-redesign/prototipo.html`). Trazer pelo menos 2 propostas **diferentes** das 3 que já existem, e uma
+  opinião curta sobre as 3 existentes (o que aproveitaria de cada uma).
+- Cada proposta: nome, ideia em 2–3 frases, árvore de navegação (raiz → subtelas → itens), tabela "item de hoje →
+  onde fica", o que melhora e o que piora (cliques, uma mão, descoberta), e o custo estimado de implementar.
+- Pode ilustrar: um `PROPOSTAS-IA.html` com mockups em HTML/CSS na mesma linha do `prototipo.html`, ou prints de
+  previews Compose descartáveis feitos **fora** do código do app (nada em `app/src/`). Não mudar código do app.
+- Conferir que todos os itens do inventário aparecem em cada proposta (checklist no fim do arquivo).
+- **Commit:** `docs(ajustes-redesign): propostas de reorganização dos Ajustes (fase 5)`. Sem atribuição. Sem push.
+
 ## Checklist do aparelho (Mateus, depois da fase 4)
 
 - Personalizar: espaço maior, título maior, logo no tile Configurações.
+- Colaboradores: título e lista no centro da tela, sem espaço extra em cima.
 - Ajustes: "Muito obrigado!" preso embaixo; girar a tela na raiz (dois painéis) e no Avançado; fonte do sistema no
   máximo sem sobrepor o rodapé. Avançado na ordem nova, links maiores, "Novidades" e "Launcher padrão" com o ícone de casa novo (também no checklist).
 - Coach: texto "Toque em voltar para fechar"; a mão da borda entra visivelmente antes de descer (destro e canhoto).

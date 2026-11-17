@@ -30,6 +30,10 @@ Ajustes retrato, Ajustes paisagem, Avançado, Definir plano de fundo).
 - [ ] **RF-05** Ajustes em paisagem: dois painéis (D-02, decidido): cabeçalho (logo, nome, versão) à esquerda e
   opções à direita, os dois centralizados na vertical e visíveis sem rolar; "Muito obrigado!" embaixo do painel das opções. As telas
   Avançado, Aparência e Comportamento também centralizam o conteúdo em paisagem com largura máxima. (fase 1)
+- [ ] **RF-23** Colaboradores: título e lista centralizados na tela (na vertical e na horizontal), **sem** o
+  "Deslocamento do cabeçalho" (esse ajuste vale só para raiz, Aparência, Comportamento e Avançado). Hoje sobra espaço
+  em cima; no código da `main` a tela também soma duas vezes a margem da barra de status (`statusBarsPadding()` +
+  `innerPadding` do `Scaffold`). (fase 1)
 - [ ] **RF-06** Avançado: links do rodapé (Colaboradores, Política de privacidade, Termos de serviço, Licenças de
   código aberto) em `bodyMedium` (16 sp, hoje `bodySmall` 12 sp) com área de toque de 48 dp. (fase 1)
 - [ ] **RF-07** Avançado: nova ordem — Informações do app, Novidades, Launcher padrão, Redefinir launcher,

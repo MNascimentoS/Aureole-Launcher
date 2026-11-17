@@ -27,6 +27,7 @@ Ordem e modelo (cada fase em um subagente com o modelo indicado, uma de cada vez
   2. Fase 2 – Salvar ao fechar + Desfazer . subagente com model "sonnet"
   3. Fase 3 – Movimento .................... subagente com model "opus"
   4. Fase 4 – Gates, correções, visual ..... subagente com model "sonnet"; a revisão visual em um subagente "opus"
+  5. Fase 5 – Exploração dos Ajustes ...... subagente com model "opus", sem mexer em código (ver PLANO.md)
 Passe a cada subagente: o texto da fase no PLANO.md, os RF dela no SPEC.md, as decisões, e as Regras de execução.
 
 Regras (valem para todas as fases):
@@ -41,7 +42,7 @@ Regras (valem para todas as fases):
   um corpo curto com o que mudou. NUNCA git push.
 - Regras do projeto: MAX-500 linhas (800 em testes), sem @Suppress, sem baseline, sem afrouxar regra, AureoleDS para
   cores/dimens/ícones, toda string nova em values/ e values-pt-rBR/, @AureolePreview privado em componente novo.
-- Dúvida de produto nova: registre em DECISOES.md como D-07+, siga com a opção mais conservadora e continue.
+- Dúvida de produto nova: registre em DECISOES.md como D-08+, siga com a opção mais conservadora e continue.
 - Se uma fase não conseguir terminar um item, registre em PROGRESSO.md ("Ficou faltando"), faça o commit do que
   ficou pronto e siga para a próxima fase. Não pare a execução.
 
@@ -55,8 +56,9 @@ No fim, confira e me entregue:
 2. git log --format=%B <ponto de partida>..HEAD | grep -iE "co-authored|generated with|claude" deve sair vazio;
 3. tabela dos 7 gates com passou/falhou e tempo;
 4. veredito visual por tela;
-5. o que ficou faltando por fase e decisões novas (D-07+), se houver;
-6. o checklist do aparelho do PLANO.md, para eu testar.
+5. o que ficou faltando por fase e decisões novas (D-08+), se houver;
+6. o checklist do aparelho do PLANO.md, para eu testar;
+7. um resumo de 3–5 linhas das propostas da fase 5 e o caminho de specs/ajustes-redesign/PROPOSTAS-IA.md.
 ```
 
 ## Depois que terminar
@@ -64,3 +66,17 @@ No fim, confira e me entregue:
 - Conferir o relatório final e `PROGRESSO.md`.
 - Rodar no aparelho o checklist do fim do `PLANO.md` e marcar a coluna "Aparelho".
 - O push fica com você (ex.: junto da próxima `release/0.9.x`).
+
+## Retomar uma execução já em andamento (a spec mudou no meio)
+
+Colar na sessão do Claude Code que já está rodando:
+
+```
+A spec specs/ajustes-sheets-settings/ foi atualizada. Releia agora SPEC.md, PLANO.md, DECISOES.md e EXECUTAR.md
+(as versões em disco) antes de continuar. Novidades: RF-20 (ícone Add New só no container), RF-21 (ícone Home novo,
+assets/ic_aureole_home.xml), RF-22 (picker de cor do fundo, fase 2) e D-01 a D-07 (D-07 sem resposta: siga o
+padrão, variante) e a fase 5 nova (exploração dos Ajustes, sem código, no fim). Se alguma fase já commitada não cobre um RF novo dela, implemente o que falta e faça um commit
+complementar "feat(ajustes-sheets-settings): <resumo> (fase N)". Depois siga a ordem e as regras do PLANO.md:
+fases restantes, gates só na fase 4, fase 5 sem código, um commit por fase sem nenhuma linha de atribuição, sem push. No fim, o
+relatório pedido em EXECUTAR.md.
+```
