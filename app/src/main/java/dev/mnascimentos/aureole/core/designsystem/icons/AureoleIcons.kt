@@ -410,6 +410,24 @@ fun AureoleIcons.Unchecked(
 ) { AureoleIcon(R.drawable.ic_aureole_check_unselected, modifier, tint) }
 
 @Composable
+fun AureoleIcons.Crosshair(
+    modifier: Modifier = Modifier,
+    tint: Color? = null
+) { AureoleIcon(R.drawable.ic_aureole_center, modifier, tint) }
+
+@Composable
+fun AureoleIcons.RotateClockwise(
+    modifier: Modifier = Modifier,
+    tint: Color? = null
+) { AureoleIcon(R.drawable.ic_aureole_rotate_cw, modifier, tint) }
+
+@Composable
+fun AureoleIcons.ImageSwap(
+    modifier: Modifier = Modifier,
+    tint: Color? = null
+) { AureoleIcon(R.drawable.ic_aureole_image_swap, modifier, tint) }
+
+@Composable
 internal fun AureoleIcon(
     iconResId: Int,
     modifier: Modifier = Modifier,

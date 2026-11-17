@@ -33,6 +33,7 @@ import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.settings.model.BackgroundDraft
+import dev.mnascimentos.aureole.feature.settings.model.BackgroundPhotoCard
 import dev.mnascimentos.aureole.feature.settings.model.BackgroundType
 import dev.mnascimentos.aureole.feature.settings.model.SetBackgroundParams
 import dev.mnascimentos.aureole.feature.settings.model.backgroundColorToSave
@@ -41,7 +42,8 @@ import dev.mnascimentos.aureole.feature.settings.model.initialBackgroundDraft
 /**
  * Background editor in an edit overlay: the type (solid color or custom image) and, for a solid color, the
  * swatches, with the mini-home anchored above the sheet on the chosen color. Closing the sheet saves the color
- * when it changed; the custom image card opens the photo picker right away.
+ * when it changed. Without a photo the custom image card opens the photo picker right away; with one, it shows the
+ * photo with "Edit photo" and "Change photo" (RF-02).
  */
 @Composable
 fun SetBackgroundBottomSheet(
@@ -70,13 +72,28 @@ fun SetBackgroundBottomSheet(
             SheetSectionLabel(
                 text = stringResource(R.string.settings_appearance_background_type)
             )
+            val photo = params.customImagePath?.takeIf { params.isCustomImageSet }?.let { path ->
+                BackgroundPhotoCard(
+                    path = path,
+                    adjustments = params.adjustments,
+                    onEdit = {
+                        draft = draft.copy(type = BackgroundType.CUSTOM_IMAGE)
+                        params.onEditPhotoClick()
+                    },
+                    onChange = {
+                        draft = draft.copy(type = BackgroundType.CUSTOM_IMAGE)
+                        params.onCustomImageClick()
+                    }
+                )
+            }
             BackgroundTypeCards(
                 selected = draft.type,
                 onSelect = {
                     draft = draft.copy(type = it)
-                    if (it == BackgroundType.CUSTOM_IMAGE) params.onCustomImageClick()
+                    if (it == BackgroundType.CUSTOM_IMAGE && photo == null) params.onCustomImageClick()
                 },
-                isLeftHanded = params.isLeftHanded
+                isLeftHanded = params.isLeftHanded,
+                photo = photo
             )
             if (draft.type == BackgroundType.SOLID_COLOR) {
                 BackgroundColorSections(

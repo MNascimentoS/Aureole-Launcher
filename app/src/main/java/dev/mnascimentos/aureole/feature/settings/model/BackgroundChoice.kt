@@ -1,5 +1,6 @@
 package dev.mnascimentos.aureole.feature.settings.model
 
+import dev.mnascimentos.aureole.core.data.model.WallpaperAdjustments
 import dev.mnascimentos.aureole.core.designsystem.model.OverlayHostSpec
 
 /** What the home background is made of. */
@@ -40,10 +41,13 @@ fun backgroundColorToSave(initial: BackgroundDraft, current: BackgroundDraft): I
  * @property currentColor Color the sheet opens on.
  * @property isCustomImageSet Whether a custom image is the current background.
  * @property onSolidColorSelected Called with the color when the sheet closes on a changed solid color.
- * @property onCustomImageClick Called when the custom-image card is tapped (opens the photo picker at once).
+ * @property onCustomImageClick Opens the photo picker: the custom-image card without a photo yet, or "Change photo".
  * @property onDismissRequest Called when the sheet has closed, whichever way it closed.
  * @property isLeftHanded Puts the first card under the left thumb.
  * @property host What the settings host decides for its sheets.
+ * @property customImagePath The photo applied, for the thumbnail of its card; null shows the plain card.
+ * @property adjustments Saved adjustments of that photo, for the thumbnail.
+ * @property onEditPhotoClick "Edit photo": opens the editor with the current adjustments.
  */
 data class SetBackgroundParams(
     val currentColor: Int,
@@ -52,5 +56,8 @@ data class SetBackgroundParams(
     val onCustomImageClick: () -> Unit,
     val onDismissRequest: () -> Unit,
     val isLeftHanded: Boolean = false,
-    val host: OverlayHostSpec = OverlayHostSpec()
+    val host: OverlayHostSpec = OverlayHostSpec(),
+    val customImagePath: String? = null,
+    val adjustments: WallpaperAdjustments = WallpaperAdjustments.DEFAULT,
+    val onEditPhotoClick: () -> Unit = {}
 )

@@ -65,6 +65,8 @@ fun rememberAureoleEditOverlayState(
  * @property hasExternalBackdrop True when the screen around draws the dimmed, blurred backdrop itself (a screen
  * that swaps one sheet for another keeps one backdrop for both, so it does not flash between them).
  * @property host What the screen hosting several overlays decides for all of them (see [OverlayHostSpec]).
+ * @property dismissOnTapOutside Whether a tap outside the sheet closes it. False lets the touches around the sheet
+ * reach what is drawn behind the overlay (the photo editor moves the photo there).
  */
 data class AureoleEditOverlayConfig(
     val title: String? = null,
@@ -83,6 +85,7 @@ data class AureoleEditOverlayConfig(
     val edgeToEdgeContent: Boolean = false,
     val hasExternalBackdrop: Boolean = false,
     val host: OverlayHostSpec = OverlayHostSpec(),
+    val dismissOnTapOutside: Boolean = true,
 )
 
 /**

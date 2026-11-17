@@ -65,8 +65,12 @@ fun SettingsViewModel.changeFont(fontName: String) {
  * Offers the "Undo" of a custom image just picked. [before] is the path of the image it replaced (kept aside when
  * [kept]) or null when the background was a solid color.
  */
-internal fun SettingsViewModel.offerCustomWallpaperUndo(before: String?, kept: Boolean) {
-    showUndo(TextResource.fromResId(R.string.undo_background_changed)) { undoCustomWallpaper(before, kept) }
+internal fun SettingsViewModel.offerCustomWallpaperUndo(
+    before: String?,
+    kept: Boolean,
+    message: TextResource = TextResource.fromResId(R.string.undo_background_changed)
+) {
+    showUndo(message) { undoCustomWallpaper(before, kept) }
 }
 
 private fun SettingsViewModel.undoCustomWallpaper(before: String?, kept: Boolean) {

@@ -13,11 +13,12 @@ import dev.mnascimentos.aureole.core.undo.UndoController
 import dev.mnascimentos.aureole.feature.settings.extensions.SettingsToggleManager
 import dev.mnascimentos.aureole.feature.settings.extensions.applySettingValue
 import dev.mnascimentos.aureole.feature.settings.extensions.checkDefaultLauncher
-import dev.mnascimentos.aureole.feature.settings.extensions.offerCustomWallpaperUndo
+import dev.mnascimentos.aureole.feature.settings.model.PendingPhotoSwap
 import dev.mnascimentos.aureole.feature.settings.model.SettingToggle
 import dev.mnascimentos.aureole.feature.settings.model.SettingValue
 import dev.mnascimentos.aureole.feature.settings.model.SettingsDialog
 import dev.mnascimentos.aureole.feature.settings.model.SettingsUiState
+import dev.mnascimentos.aureole.feature.settings.model.pendingPhotoSwapOf
 import dev.mnascimentos.aureole.feature.settings.model.toSeedSnapshot
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -37,6 +38,9 @@ class SettingsViewModel(
 
     private val _uiState = MutableStateFlow(SettingsUiState())
     val uiState: StateFlow<SettingsUiState> = _uiState.asStateFlow()
+
+    /** The photo just picked, whose "Undo" is offered when the editor that opened for it closes. */
+    internal var pendingPhotoSwap: PendingPhotoSwap? = null
 
     internal fun updateUiState(transform: (SettingsUiState) -> SettingsUiState) {
         _uiState.update(transform)
@@ -133,12 +137,14 @@ class SettingsViewModel(
             }
 
             if (success) {
-                if (before == null || kept) offerCustomWallpaperUndo(before, kept)
+                // The editor opens on the new photo (RF-01); its close offers the undo of the swap.
+                pendingPhotoSwap = pendingPhotoSwapOf(before, kept)
                 _uiState.update {
                     it.copy(
                         isCustomWallpaperSet = true,
                         customWallpaperPath = settingsRepository.customWallpaperPath,
                         wallpaperAdjustments = settingsRepository.wallpaperAdjustments,
+                        isWallpaperEditorRequested = true,
                         errorMessage = null
                     )
                 }

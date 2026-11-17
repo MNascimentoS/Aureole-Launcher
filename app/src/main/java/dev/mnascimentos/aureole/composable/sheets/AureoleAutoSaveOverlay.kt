@@ -35,7 +35,7 @@ fun AureoleAutoSaveOverlay(
     bottomExtra: (@Composable ColumnScope.() -> Unit)? = null,
     content: @Composable ColumnScope.() -> Unit
 ) {
-    val overlayState = rememberAureoleEditOverlayState()
+    val overlayState = params.overlayState ?: rememberAureoleEditOverlayState()
     val current by rememberUpdatedState(params)
     var committed by remember { mutableStateOf(false) }
     AureoleEditOverlay(
@@ -57,7 +57,8 @@ fun AureoleAutoSaveOverlay(
                 isLeftHanded = params.isLeftHanded,
                 onSettingsClick = params.onSettingsClick,
                 hasExternalBackdrop = params.hasExternalBackdrop,
-                host = params.host
+                host = params.host,
+                dismissOnTapOutside = params.dismissOnTapOutside
             ),
             previewContent = preview,
             bottomBarContent = bottomExtra,

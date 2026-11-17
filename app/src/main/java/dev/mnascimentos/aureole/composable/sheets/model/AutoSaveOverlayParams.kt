@@ -1,6 +1,7 @@
 package dev.mnascimentos.aureole.composable.sheets.model
 
 import dev.chrisbanes.haze.HazeState
+import dev.mnascimentos.aureole.core.designsystem.model.AureoleEditOverlayState
 import dev.mnascimentos.aureole.core.designsystem.model.OverlayHostSpec
 
 /**
@@ -16,6 +17,9 @@ import dev.mnascimentos.aureole.core.designsystem.model.OverlayHostSpec
  * @property hazeState Blur state of the screen behind the overlay.
  * @property hasExternalBackdrop True when the screen around draws the backdrop itself.
  * @property host What the screen hosting several overlays decides for all of them.
+ * @property dismissOnTapOutside Whether a tap outside the sheet closes (and saves) it.
+ * @property overlayState State of the sheet, for a caller that follows it while it opens and closes; null keeps
+ * one inside.
  */
 data class AutoSaveOverlayParams(
     val title: String,
@@ -26,7 +30,9 @@ data class AutoSaveOverlayParams(
     val onSettingsClick: (() -> Unit)? = null,
     val hazeState: HazeState? = null,
     val hasExternalBackdrop: Boolean = false,
-    val host: OverlayHostSpec = OverlayHostSpec()
+    val host: OverlayHostSpec = OverlayHostSpec(),
+    val dismissOnTapOutside: Boolean = true,
+    val overlayState: AureoleEditOverlayState? = null
 )
 
 /** What closing an auto-save sheet has to do. */

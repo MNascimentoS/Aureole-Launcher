@@ -97,6 +97,26 @@
     <string name="settings_appearance_themed_icons">Themed icons</string>
     <string name="settings_appearance_image_scale">Image scale</string>
     <string name="settings_appearance_custom_framing">Custom framing</string>
+    <string name="undo_wallpaper_adjusted">Background photo adjusted</string>
+    <string name="settings_wallpaper_editor_title">Edit photo</string>
+    <string name="settings_wallpaper_change_photo">Change photo</string>
+    <string name="settings_wallpaper_editor_tabs">Photo adjustments</string>
+    <string name="settings_wallpaper_editor_tab_frame">Frame</string>
+    <string name="settings_wallpaper_editor_tab_dim">Dim</string>
+    <string name="settings_wallpaper_editor_tab_blur">Blur</string>
+    <string name="settings_wallpaper_editor_center">Center</string>
+    <string name="settings_wallpaper_editor_rotate">Rotate 90°</string>
+    <string name="settings_wallpaper_editor_reset">Reset</string>
+    <string name="settings_wallpaper_editor_dim_value">%1$d%%</string>
+    <string name="settings_wallpaper_editor_blur_value">%1$d dp</string>
+    <string name="settings_wallpaper_editor_zoom_value">%1$.1fx</string>
+    <string name="settings_wallpaper_editor_photo">Photo framing</string>
+    <string name="settings_wallpaper_editor_zoom_in">Zoom in</string>
+    <string name="settings_wallpaper_editor_zoom_out">Zoom out</string>
+    <string name="settings_wallpaper_editor_move_up">Move up</string>
+    <string name="settings_wallpaper_editor_move_down">Move down</string>
+    <string name="settings_wallpaper_editor_move_left">Move left</string>
+    <string name="settings_wallpaper_editor_move_right">Move right</string>
 
     <!-- Apps Drawer -->
     <string name="home_apps_search_placeholder">Search</string>

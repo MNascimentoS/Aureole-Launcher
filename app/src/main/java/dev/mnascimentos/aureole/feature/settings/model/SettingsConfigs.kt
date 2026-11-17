@@ -1,6 +1,7 @@
 package dev.mnascimentos.aureole.feature.settings.model
 
 import androidx.compose.ui.graphics.vector.ImageVector
+import dev.mnascimentos.aureole.core.data.model.WallpaperAdjustments
 
 data class PreferenceItemConfig(
     val title: String,
@@ -69,4 +70,6 @@ data class SettingsScreenActions(
     val onSelectWallpaperScaleType: (String) -> Unit = {},
     val onApplyCardsGlass: (CardsGlassDraft) -> Unit = {},
     val onCardsGlassClosed: (CardsGlassDraft) -> Unit = {},
+    val onWallpaperEditorOpened: () -> Unit = {},
+    val onWallpaperEditorClosed: (before: WallpaperAdjustments, after: WallpaperAdjustments) -> Unit = { _, _ -> },
 )

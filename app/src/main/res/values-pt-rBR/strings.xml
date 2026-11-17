@@ -97,6 +97,26 @@
     <string name="settings_appearance_themed_icons">Ícones temáticos</string>
     <string name="settings_appearance_image_scale">Escala da imagem</string>
     <string name="settings_appearance_custom_framing">Enquadramento personalizado</string>
+    <string name="undo_wallpaper_adjusted">Foto do fundo ajustada</string>
+    <string name="settings_wallpaper_editor_title">Editar foto</string>
+    <string name="settings_wallpaper_change_photo">Trocar foto</string>
+    <string name="settings_wallpaper_editor_tabs">Ajustes da foto</string>
+    <string name="settings_wallpaper_editor_tab_frame">Enquadrar</string>
+    <string name="settings_wallpaper_editor_tab_dim">Escurecer</string>
+    <string name="settings_wallpaper_editor_tab_blur">Desfoque</string>
+    <string name="settings_wallpaper_editor_center">Centralizar</string>
+    <string name="settings_wallpaper_editor_rotate">Girar 90°</string>
+    <string name="settings_wallpaper_editor_reset">Redefinir</string>
+    <string name="settings_wallpaper_editor_dim_value">%1$d%%</string>
+    <string name="settings_wallpaper_editor_blur_value">%1$d dp</string>
+    <string name="settings_wallpaper_editor_zoom_value">%1$.1fx</string>
+    <string name="settings_wallpaper_editor_photo">Enquadramento da foto</string>
+    <string name="settings_wallpaper_editor_zoom_in">Aproximar</string>
+    <string name="settings_wallpaper_editor_zoom_out">Afastar</string>
+    <string name="settings_wallpaper_editor_move_up">Mover para cima</string>
+    <string name="settings_wallpaper_editor_move_down">Mover para baixo</string>
+    <string name="settings_wallpaper_editor_move_left">Mover para a esquerda</string>
+    <string name="settings_wallpaper_editor_move_right">Mover para a direita</string>
 
     <!-- Apps Drawer -->
     <string name="home_apps_search_placeholder">Buscar aplicativos</string>

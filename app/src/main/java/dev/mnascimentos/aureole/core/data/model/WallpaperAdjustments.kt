@@ -1,9 +1,16 @@
 package dev.mnascimentos.aureole.core.data.model
 
-private const val MIN_ZOOM = 1f
-private const val MAX_ZOOM = 5f
-private const val MAX_DIM = 0.7f
-private const val MAX_BLUR_DP = 25f
+/** Smallest zoom: the photo just covers the screen. */
+const val WALLPAPER_MIN_ZOOM = 1f
+
+/** Largest zoom over the "cover the screen" size. */
+const val WALLPAPER_MAX_ZOOM = 5f
+
+/** Strongest dim layer over the photo. */
+const val WALLPAPER_MAX_DIM = 0.7f
+
+/** Strongest blur, in dp. */
+const val WALLPAPER_MAX_BLUR_DP = 25f
 private const val CENTER = 0.5f
 private const val DEFAULT_DIM = 0.3f
 private const val FULL_TURN = 360
@@ -21,7 +28,7 @@ private val NUMBER = "-?[0-9]+(?:\\.[0-9]+)?(?:[eE][-+]?[0-9]+)?"
  * @property blurDp Blur radius in dp, 0..25.
  */
 data class WallpaperAdjustments(
-    val zoom: Float = MIN_ZOOM,
+    val zoom: Float = WALLPAPER_MIN_ZOOM,
     val focusX: Float = CENTER,
     val focusY: Float = CENTER,
     val rotation: Int = 0,
@@ -30,12 +37,12 @@ data class WallpaperAdjustments(
 ) {
     /** Same values forced into their valid ranges; a rotation that is not a quarter turn snaps to the nearest one. */
     fun coerced(): WallpaperAdjustments = WallpaperAdjustments(
-        zoom = zoom.coerceIn(MIN_ZOOM, MAX_ZOOM),
+        zoom = zoom.coerceIn(WALLPAPER_MIN_ZOOM, WALLPAPER_MAX_ZOOM),
         focusX = focusX.coerceIn(0f, 1f),
         focusY = focusY.coerceIn(0f, 1f),
         rotation = Math.floorMod(Math.round(rotation / QUARTER_TURN.toFloat()) * QUARTER_TURN, FULL_TURN),
-        dim = dim.coerceIn(0f, MAX_DIM),
-        blurDp = blurDp.coerceIn(0f, MAX_BLUR_DP)
+        dim = dim.coerceIn(0f, WALLPAPER_MAX_DIM),
+        blurDp = blurDp.coerceIn(0f, WALLPAPER_MAX_BLUR_DP)
     )
 
     /** True when nothing differs from the launcher's classic look (cover, centered, 30% dim, no blur). */
@@ -43,10 +50,11 @@ data class WallpaperAdjustments(
 
     /** True when zoom, position or rotation differ from the plain "cover and center" framing. */
     val hasFraming: Boolean
-        get() = zoom != MIN_ZOOM || focusX != CENTER || focusY != CENTER || rotation != 0
+        get() = zoom != WALLPAPER_MIN_ZOOM || focusX != CENTER || focusY != CENTER || rotation != 0
 
     /** Same dim and blur with the framing back to the default. */
-    fun withoutFraming(): WallpaperAdjustments = copy(zoom = MIN_ZOOM, focusX = CENTER, focusY = CENTER, rotation = 0)
+    fun withoutFraming(): WallpaperAdjustments =
+        copy(zoom = WALLPAPER_MIN_ZOOM, focusX = CENTER, focusY = CENTER, rotation = 0)
 
     /** A small JSON object; read back by [fromJson]. */
     fun toJson(): String =

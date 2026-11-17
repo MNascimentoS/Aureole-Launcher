@@ -88,10 +88,15 @@ internal fun OverlayContentBox(
     val localHaze = LocalHazeState.current
     val effectiveHazeState = hazeState ?: localHaze
 
+    val tapOutside = if (params.config.dismissOnTapOutside) {
+        Modifier.scrimTapToDismiss(stateData.triggerDismiss)
+    } else {
+        Modifier
+    }
     BoxWithConstraints(
         modifier = Modifier
             .fillMaxSize()
-            .scrimTapToDismiss(stateData.triggerDismiss)
+            .then(tapOutside)
     ) {
         if (!params.config.hasExternalBackdrop && !params.config.host.hasExternalBackdrop) {
             AureoleOverlayBackdrop(

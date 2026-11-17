@@ -9,7 +9,12 @@ private const val SEPARATOR = ":"
 /** The sheet as text, to survive a rotation or a trip to the licenses screen; null for the root. */
 fun encodeSettingsSheet(sheet: SettingsSheet?): String? = when (sheet) {
     is SettingsSheet.Area -> listOfNotNull(AREA_TAG, sheet.area.name, sheet.inner?.name).joinToString(SEPARATOR)
-    is SettingsSheet.Child -> listOf(CHILD_TAG, sheet.kind.name, sheet.returnTo?.name.orEmpty()).joinToString(SEPARATOR)
+    is SettingsSheet.Child -> listOfNotNull(
+        CHILD_TAG,
+        sheet.kind.name,
+        sheet.returnTo?.name.orEmpty(),
+        sheet.parent?.name
+    ).joinToString(SEPARATOR)
     null -> null
 }
 
@@ -22,7 +27,11 @@ fun decodeSettingsSheet(text: String?): SettingsSheet? {
             SettingsSheet.Area(area, inner)
         }
         CHILD_TAG -> parts.getOrNull(1)?.let(::childNamed)?.let { kind ->
-            SettingsSheet.Child(kind, returnTo = parts.getOrNull(2)?.let(::areaNamed))
+            SettingsSheet.Child(
+                kind,
+                returnTo = parts.getOrNull(2)?.let(::areaNamed),
+                parent = parts.getOrNull(3)?.let(::childNamed)
+            )
         }
         else -> null
     }

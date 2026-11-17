@@ -39,6 +39,7 @@ data class SettingsUiState(
     val customWallpaperPath: String? = null,
     val wallpaperScaleType: String = "Crop",
     val wallpaperAdjustments: WallpaperAdjustments = WallpaperAdjustments.DEFAULT,
+    val isWallpaperEditorRequested: Boolean = false,
     val showResetGridDialog: Boolean = false,
     val showCreateFolderDialog: Boolean = false,
     val isDynamicWallpaperEnabled: Boolean = false,

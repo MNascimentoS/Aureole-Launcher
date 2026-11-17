@@ -243,6 +243,18 @@ class SettingsRepository(private val context: Context) {
             }
         }
 
+    /**
+     * Makes the blurred copy of the photo on Android 9-11 right after the editor saves (RF-09), so the home finds it
+     * ready. Same radius as the home draws it with: the saved blur in px of this screen. Nothing to do on Android 12+,
+     * which blurs live, or without a photo or a blur. Runs on the caller's thread: call it off the main one.
+     */
+    fun prepareBlurredWallpaper() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) return
+        val path = customWallpaperPath?.takeIf { isCustomWallpaperSet && it.isNotEmpty() } ?: return
+        val blurPx = (wallpaperAdjustments.blurDp * context.resources.displayMetrics.density).toInt()
+        BlurredWallpaperCache.obtain(context, File(path), blurPx)
+    }
+
     var lastSeenVersionCode: Int
         get() = prefs.getInt(KEY_LAST_SEEN_VERSION_CODE, 0)
         set(value) = prefs.edit { putInt(KEY_LAST_SEEN_VERSION_CODE, value) }

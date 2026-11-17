@@ -103,6 +103,12 @@ fun SettingsSheetHost(
     val hazeState = remember { HazeState() }
     val overlayHost = settingsOverlayHost()
 
+    OpenEditorOnRequest(
+        isRequested = uiState.isWallpaperEditorRequested,
+        onOpen = { dispatch(SettingsSheetEvent.OpenChild(SettingsChildKind.WALLPAPER_EDITOR)) },
+        onOpened = actions.onWallpaperEditorOpened
+    )
+
     // The open sheet handles back itself; this one catches a second back while the area is sliding out, so it
     // does not leave the settings. A child sliding out is left alone: it still has to save.
     BackHandler(enabled = sheet != null) {
@@ -142,15 +148,7 @@ fun SettingsSheetHost(
                     }
                 )
             }
-            (sheet as? SettingsSheet.Child)?.let { child ->
-                SettingsChildSheet(
-                    kind = child.kind,
-                    uiState = uiState,
-                    actions = actions,
-                    host = overlayHost,
-                    onClose = { dispatch(SettingsSheetEvent.CloseChild(child.kind)) }
-                )
-            }
+            (sheet as? SettingsSheet.Child)?.let { child -> OpenChild(child, params, overlayHost, dispatch) }
         }
     }
 }

@@ -15,6 +15,7 @@ import dev.mnascimentos.aureole.feature.settings.extensions.changeManualSeedColo
 import dev.mnascimentos.aureole.feature.settings.extensions.changeTheme
 import dev.mnascimentos.aureole.feature.settings.extensions.createFolder
 import dev.mnascimentos.aureole.feature.settings.extensions.finishCardsGlass
+import dev.mnascimentos.aureole.feature.settings.extensions.finishWallpaperEditor
 import dev.mnascimentos.aureole.feature.settings.extensions.onUndo
 import dev.mnascimentos.aureole.feature.settings.extensions.onUndoExpired
 import dev.mnascimentos.aureole.feature.settings.extensions.performFactoryReset
@@ -22,6 +23,7 @@ import dev.mnascimentos.aureole.feature.settings.extensions.resetGridLayout
 import dev.mnascimentos.aureole.feature.settings.extensions.restoreDefaultWallpaper
 import dev.mnascimentos.aureole.feature.settings.extensions.selectPosition
 import dev.mnascimentos.aureole.feature.settings.extensions.toggleFavorite
+import dev.mnascimentos.aureole.feature.settings.extensions.wallpaperEditorOpened
 import dev.mnascimentos.aureole.feature.settings.model.PositionKind
 import dev.mnascimentos.aureole.feature.settings.model.SettingToggle
 import dev.mnascimentos.aureole.feature.settings.model.SettingValue
@@ -89,6 +91,8 @@ private fun buildSettingsScreenActions(
             viewModel.setSettingValue(SettingValue.CardsGlass(draft))
         },
         onCardsGlassClosed = viewModel::finishCardsGlass,
+        onWallpaperEditorOpened = viewModel::wallpaperEditorOpened,
+        onWallpaperEditorClosed = viewModel::finishWallpaperEditor,
         onHeaderOffsetChanged = viewModel::setHeaderOffsetPercent,
         onConfirmResetGrid = { viewModel.resetGridLayout() },
     )
