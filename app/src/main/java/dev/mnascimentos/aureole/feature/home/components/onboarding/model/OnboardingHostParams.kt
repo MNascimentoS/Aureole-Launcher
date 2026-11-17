@@ -19,5 +19,7 @@ data class OnboardingHostParams(
     /** A home sheet, dialog or drawer is open: the pill must not cover it. */
     val isHomeOverlayActive: Boolean = false,
     /** A grid task waits in edit mode with no editor on top: show how to adjust and save. */
-    val showEditHint: Boolean = false
+    val showEditHint: Boolean = false,
+    /** Rows the grid items cover, to keep the edit hint off the item being adjusted. */
+    val editHintGrid: EditHintGrid = EditHintGrid()
 )

@@ -22,6 +22,7 @@ import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.hostSurface
 import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.isIdle
 import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.successCount
+import dev.mnascimentos.aureole.feature.home.components.onboarding.model.EditHintConfig
 import dev.mnascimentos.aureole.feature.home.components.onboarding.model.OnboardingActions
 import dev.mnascimentos.aureole.feature.home.components.onboarding.model.OnboardingHostParams
 import dev.mnascimentos.aureole.feature.home.components.onboarding.model.OnboardingMotionSpec
@@ -59,8 +60,13 @@ fun OnboardingHostComponent(
             actions = actions
         )
         OnboardingEditHintComponent(
-            isVisible = params.showEditHint,
-            glass = params.glass,
+            config = EditHintConfig(
+                isVisible = params.showEditHint,
+                glass = params.glass,
+                grid = params.editHintGrid,
+                isLandscape = params.coachConfig.isLandscape,
+                isLeftHanded = params.coachConfig.isLeftHandedMode
+            ),
             onSave = actions.onSaveGridEdit
         )
         OnboardingAppearancePickerComponent(

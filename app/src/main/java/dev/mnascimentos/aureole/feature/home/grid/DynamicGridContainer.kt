@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
@@ -38,6 +39,7 @@ import dev.mnascimentos.aureole.feature.home.grid.model.GridEditConfig
 import dev.mnascimentos.aureole.feature.home.grid.model.GridEditModifierArgs
 import dev.mnascimentos.aureole.feature.home.grid.model.GridItemEditCallbacks
 import dev.mnascimentos.aureole.feature.home.grid.model.GridMetricsTuple
+import dev.mnascimentos.aureole.feature.home.grid.model.LocalGridGestureTracker
 import dev.mnascimentos.aureole.feature.home.grid.model.ResizeHandleCallbacks
 import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
 
@@ -158,6 +160,12 @@ private fun GridItemCell(
     val animOffset = remember { Animatable(Offset.Zero, Offset.VectorConverter) }
     val wDp = (params.cellWidthDp * item.colSpan) + with(LocalDensity.current) { resizeExtra.x.toDp() }
     val hDp = (params.cellHeightDp * item.rowSpan) + with(LocalDensity.current) { resizeExtra.y.toDp() }
+    val gestureTracker = LocalGridGestureTracker.current
+    val isGesturing = isDragging || isResizing
+    DisposableEffect(isGesturing, gestureTracker) {
+        if (isGesturing) gestureTracker?.begin()
+        onDispose { if (isGesturing) gestureTracker?.end() }
+    }
     val editModifier = Modifier.rememberGridCellEditModifier(
         GridEditModifierArgs(
             params = params,

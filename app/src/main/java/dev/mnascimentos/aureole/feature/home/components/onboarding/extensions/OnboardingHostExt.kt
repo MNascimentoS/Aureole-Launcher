@@ -11,6 +11,7 @@ import dev.mnascimentos.aureole.feature.home.components.onboarding.model.Onboard
 import dev.mnascimentos.aureole.feature.home.components.onboarding.model.OnboardingSurface
 import dev.mnascimentos.aureole.feature.home.components.onboarding.model.OnboardingUiState
 import dev.mnascimentos.aureole.feature.home.components.onboarding.model.currentGestureStep
+import dev.mnascimentos.aureole.feature.home.grid.GridEngineUtils
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
 import dev.mnascimentos.aureole.feature.home.model.isHomeOverlayActive
 
@@ -73,7 +74,10 @@ fun MainUiState.toOnboardingHostParams(hazeState: HazeState?, isTouchExploration
         ),
         selection = AppearanceSelection(paletteName = selectedThemeName, fontName = selectedFontName),
         isHomeOverlayActive = isHomeOverlayActive,
-        showEditHint = isGridEditMode && onboarding.pendingTask?.isJudgedOnSave == true && !isTaskEditorOpen
+        showEditHint = isGridEditMode && onboarding.pendingTask?.isJudgedOnSave == true && !isTaskEditorOpen,
+        editHintGrid = gridItems.toEditHintGrid(
+            maxRows = if (isLandscape) GridEngineUtils.LANDSCAPE_MAX_ROWS else GridEngineUtils.PORTRAIT_MAX_ROWS
+        )
     )
 
 /** The faint alphabet shows only while the coach teaches the scrub step. */

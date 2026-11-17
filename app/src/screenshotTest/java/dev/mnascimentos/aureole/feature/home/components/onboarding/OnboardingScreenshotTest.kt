@@ -11,6 +11,7 @@ import dev.mnascimentos.aureole.feature.home.components.onboarding.model.Appeara
 import dev.mnascimentos.aureole.feature.home.components.onboarding.model.AppearanceSelection
 import dev.mnascimentos.aureole.feature.home.components.onboarding.model.GestureCoachConfig
 import dev.mnascimentos.aureole.feature.home.components.onboarding.model.OnboardingActions
+import dev.mnascimentos.aureole.feature.home.components.onboarding.model.EditHintConfig
 import dev.mnascimentos.aureole.feature.home.components.onboarding.model.OnboardingGlass
 import dev.mnascimentos.aureole.feature.home.components.onboarding.model.OnboardingUiState
 
@@ -245,7 +246,7 @@ private fun OnboardingCelebrationScreenshotTest() {
 @Composable
 private fun OnboardingEditHintScreenshotTest() {
     AureoleLauncherTheme {
-        OnboardingEditHintComponent(isVisible = true, glass = OnboardingGlass(), onSave = {})
+        OnboardingEditHintComponent(config = EditHintConfig(isVisible = true), onSave = {})
     }
 }
 
