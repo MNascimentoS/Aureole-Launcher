@@ -64,7 +64,7 @@ fun OnboardingEditHintComponent(
     modifier: Modifier = Modifier
 ) {
     val isGesturing = LocalHomeActions.current.gridGestureTracker.isGesturing
-    var isFolded by remember { mutableStateOf(false) }
+    var isFolded by remember { mutableStateOf(config.startsFolded) }
     LaunchedEffect(config.isVisible) {
         if (config.isVisible && !isFolded) {
             delay(EDIT_HINT_TEXT_MS)

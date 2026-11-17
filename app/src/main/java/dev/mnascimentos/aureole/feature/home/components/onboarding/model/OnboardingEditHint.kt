@@ -12,13 +12,17 @@ data class EditHintGrid(
 /** The rows an item covers: all the hint needs to avoid it. */
 data class EditHintItem(val row: Int, val rowSpan: Int)
 
-/** Everything the edit hint reads: whether it shows, the glass, the grid under it and the thumb side. */
+/**
+ * Everything the edit hint reads: whether it shows, the glass, the grid under it and the thumb side.
+ * [startsFolded] opens it already as the bare save pill (the state it reaches after 3 s or the first gesture).
+ */
 data class EditHintConfig(
     val isVisible: Boolean,
     val glass: OnboardingGlass = OnboardingGlass(),
     val grid: EditHintGrid = EditHintGrid(),
     val isLandscape: Boolean = false,
-    val isLeftHanded: Boolean = false
+    val isLeftHanded: Boolean = false,
+    val startsFolded: Boolean = false
 )
 
 /** Labels and state of the save pill. */
