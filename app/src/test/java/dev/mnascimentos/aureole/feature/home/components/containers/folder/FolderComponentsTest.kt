@@ -597,7 +597,6 @@ class FolderComponentsTest {
             ) {
                 AureoleLauncherTheme {
                     HomeScreenFolderOverlays(
-                        screenHeightPx = 1920f,
                         hazeState = hazeState
                     )
                 }

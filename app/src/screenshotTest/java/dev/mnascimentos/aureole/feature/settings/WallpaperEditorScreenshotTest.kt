@@ -2,13 +2,14 @@ package dev.mnascimentos.aureole.feature.settings
 
 import androidx.compose.runtime.Composable
 import com.android.tools.screenshot.PreviewTest
-import dev.mnascimentos.aureole.composable.color.model.DefaultPickerColor
 import dev.mnascimentos.aureole.core.data.model.WallpaperAdjustments
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
-import dev.mnascimentos.aureole.feature.settings.components.SetBackgroundBottomSheet
 import dev.mnascimentos.aureole.feature.settings.components.wallpaper.WallpaperEditorOverlay
-import dev.mnascimentos.aureole.feature.settings.model.SetBackgroundParams
+import dev.mnascimentos.aureole.feature.settings.model.SettingsArea
+import dev.mnascimentos.aureole.feature.settings.model.SettingsInnerKind
+import dev.mnascimentos.aureole.feature.settings.model.SettingsSheet
+import dev.mnascimentos.aureole.feature.settings.model.SettingsUiState
 import dev.mnascimentos.aureole.feature.settings.model.WallpaperEditorParams
 import dev.mnascimentos.aureole.feature.settings.model.WallpaperEditorTab
 
@@ -66,20 +67,15 @@ private fun WallpaperEditorBlurLeftHandedScreenshotTest() = EditorCase(Wallpaper
 
 @Composable
 private fun PhotoCardCase(isLeftHanded: Boolean) {
-    AureoleLauncherTheme {
-        SetBackgroundBottomSheet(
-            SetBackgroundParams(
-                currentColor = DefaultPickerColor,
-                isCustomImageSet = true,
-                onSolidColorSelected = {},
-                onCustomImageClick = {},
-                onDismissRequest = {},
-                isLeftHanded = isLeftHanded,
-                customImagePath = "",
-                adjustments = EDITED
-            )
+    SettingsSheetScreenshot(
+        sheet = SettingsSheet.Area(SettingsArea.APPEARANCE, inner = SettingsInnerKind.BACKGROUND),
+        uiState = SettingsUiState(
+            isLeftHandedMode = isLeftHanded,
+            isCustomWallpaperSet = true,
+            customWallpaperPath = "",
+            wallpaperAdjustments = EDITED
         )
-    }
+    )
 }
 
 /** "Custom image" card with the thumbnail and the Edit photo / Change photo buttons; both cards equally tall. */

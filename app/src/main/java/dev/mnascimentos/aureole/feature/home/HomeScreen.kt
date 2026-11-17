@@ -230,7 +230,6 @@ private fun BoxScope.HomeScreenBody(
     HomeOverlaysContent(overlaysConfig)
 
     HomeScreenFolderOverlays(
-        screenHeightPx = config.screenHeightPx,
         hazeState = config.hazeState,
         appWidgetHost = config.appWidgetHost
     )

@@ -2,27 +2,23 @@ package dev.mnascimentos.aureole.feature.settings
 
 import androidx.compose.runtime.Composable
 import com.android.tools.screenshot.PreviewTest
-import dev.mnascimentos.aureole.composable.color.model.DefaultPickerColor
-import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
-import dev.mnascimentos.aureole.feature.settings.components.SetBackgroundBottomSheet
 import dev.mnascimentos.aureole.feature.settings.model.LockScreenOption
-import dev.mnascimentos.aureole.feature.settings.model.SetBackgroundParams
+import dev.mnascimentos.aureole.feature.settings.model.SettingsArea
+import dev.mnascimentos.aureole.feature.settings.model.SettingsInnerKind
+import dev.mnascimentos.aureole.feature.settings.model.SettingsSheet
+import dev.mnascimentos.aureole.feature.settings.model.SettingsUiState
 
 @Composable
 private fun LockScreenCase(option: LockScreenOption) {
-    AureoleLauncherTheme {
-        SetBackgroundBottomSheet(
-            SetBackgroundParams(
-                currentColor = DefaultPickerColor,
-                isCustomImageSet = false,
-                onSolidColorSelected = {},
-                onCustomImageClick = {},
-                onDismissRequest = {},
-                lockScreen = option
-            )
+    SettingsSheetScreenshot(
+        sheet = SettingsSheet.Area(SettingsArea.APPEARANCE, inner = SettingsInnerKind.BACKGROUND),
+        uiState = SettingsUiState(
+            applyToLockScreen = option.checked,
+            canSetWallpaper = option.isAvailable,
+            isLockScreenNoticeSeen = option.isNoticeSeen
         )
-    }
+    )
 }
 
 /** Background sheet with "Also use on lock screen" on. */

@@ -163,7 +163,6 @@ class HomeScreenFolderOverlaysTest {
             AureoleLauncherTheme {
                 OpenedFolderOverlay(
                     uiState = uiState,
-                    screenHeightPx = 1920f,
                     hazeState = hazeState,
                     actions = actions
                 )
@@ -189,7 +188,6 @@ class HomeScreenFolderOverlaysTest {
             AureoleLauncherTheme {
                 OpenedFolderOverlay(
                     uiState = uiState,
-                    screenHeightPx = 1920f,
                     hazeState = hazeState,
                     actions = actions
                 )
@@ -227,7 +225,6 @@ class HomeScreenFolderOverlaysTest {
             ) {
                 AureoleLauncherTheme {
                     HomeScreenFolderOverlays(
-                        screenHeightPx = 1920f,
                         hazeState = HazeState()
                     )
                 }
@@ -259,7 +256,6 @@ class HomeScreenFolderOverlaysTest {
             ) {
                 AureoleLauncherTheme {
                     HomeScreenFolderOverlays(
-                        screenHeightPx = 1920f,
                         hazeState = HazeState()
                     )
                 }
@@ -292,7 +288,6 @@ class HomeScreenFolderOverlaysTest {
             ) {
                 AureoleLauncherTheme {
                     HomeScreenFolderOverlays(
-                        screenHeightPx = 1920f,
                         hazeState = HazeState()
                     )
                 }

@@ -70,7 +70,7 @@ class WidgetRepository(private val context: Context) {
         }
     }
 
-    /** Saves the dots off for portrait and landscape of every group in [stackIds] (migration of the old global switch). */
+    /** Saves the dots off, portrait and landscape, of every group in [stackIds] (migration of the old switch). */
     fun turnDotsOff(stackIds: Collection<String>) {
         context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE).edit {
             stackIds.forEach { id ->

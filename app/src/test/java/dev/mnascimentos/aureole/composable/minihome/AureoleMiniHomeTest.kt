@@ -6,6 +6,7 @@ import androidx.compose.ui.test.junit4.v2.createComposeRule
 import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.unit.dp
+import dev.mnascimentos.aureole.composable.minihome.model.MiniHomeFavoritesLayout
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import org.junit.Assert.assertTrue
 import org.junit.Rule
@@ -22,7 +23,10 @@ class AureoleMiniHomeTest {
     private fun setMiniHome(isLeftHanded: Boolean) {
         composeTestRule.setContent {
             AureoleLauncherTheme {
-                AureoleMiniHome(content = sampleMiniHomeContent(), isLeftHanded = isLeftHanded)
+                AureoleMiniHome(
+                    content = sampleMiniHomeContent(),
+                    layout = MiniHomeFavoritesLayout(isLeftHanded = isLeftHanded)
+                )
             }
         }
     }

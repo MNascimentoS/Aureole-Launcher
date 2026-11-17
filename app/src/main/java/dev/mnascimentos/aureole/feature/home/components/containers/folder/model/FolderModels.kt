@@ -49,8 +49,6 @@ data class FolderAppPickerFooterParams(
 data class OpenedFolderOverlayParams(
     val uiState: MainUiState,
     val folderToDisplay: AppFolder,
-    val screenHeightPx: Float,
-    val screenDensity: Float,
     val hazeState: HazeState
 )
 

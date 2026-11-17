@@ -5,7 +5,6 @@ import androidx.compose.runtime.CompositionLocalProvider
 import com.android.tools.screenshot.PreviewTest
 import dev.mnascimentos.aureole.composable.LocalHomeUiState
 import dev.mnascimentos.aureole.composable.ProvideHomeUiState
-import dev.mnascimentos.aureole.composable.color.model.DefaultPickerColor
 import dev.mnascimentos.aureole.composable.sheets.PickFontBottomSheet
 import dev.mnascimentos.aureole.composable.sheets.PickPaletteBottomSheet
 import dev.mnascimentos.aureole.composable.sheets.SettingsBottomSheet
@@ -15,9 +14,7 @@ import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
 import dev.mnascimentos.aureole.feature.settings.components.ContainerPositionDialog
 import dev.mnascimentos.aureole.feature.settings.components.SearchIconPositionDialog
-import dev.mnascimentos.aureole.feature.settings.components.SetBackgroundBottomSheet
 import dev.mnascimentos.aureole.feature.settings.components.SettingsButtonPositionDialog
-import dev.mnascimentos.aureole.feature.settings.model.SetBackgroundParams
 import dev.mnascimentos.aureole.feature.settings.screens.ResetGridDialog
 
 @PreviewTest
@@ -81,23 +78,6 @@ private fun PickFontBottomSheetScreenshotTest() {
             selectedFontName = "Istok Web",
             onFontSelected = {},
             onDismissRequest = {}
-        )
-    }
-}
-
-@PreviewTest
-@AureolePreview
-@Composable
-private fun SetBackgroundBottomSheetScreenshotTest() {
-    AureoleLauncherTheme {
-        SetBackgroundBottomSheet(
-            SetBackgroundParams(
-                currentColor = DefaultPickerColor,
-                isCustomImageSet = false,
-                onSolidColorSelected = {},
-                onCustomImageClick = {},
-                onDismissRequest = {}
-            )
         )
     }
 }

@@ -47,30 +47,23 @@ internal fun AppearanceAreaSheet(
     list: @Composable () -> Unit
 ) {
     val uiState = host.uiState
-    val actions = host.actions
-    val area = spec.area
-    var draft by rememberSaveable(area, stateSaver = AppearanceDraftSaver) { mutableStateOf(AppearanceDraft()) }
-    var background by rememberSaveable(area, stateSaver = BackgroundDraftSaver) {
+    var draft by rememberSaveable(spec.area, stateSaver = AppearanceDraftSaver) { mutableStateOf(AppearanceDraft()) }
+    var background by rememberSaveable(spec.area, stateSaver = BackgroundDraftSaver) {
         mutableStateOf<BackgroundDraft?>(null)
     }
     var lockDialog by remember { mutableStateOf<LockScreenDialog?>(null) }
     val save: (SettingsInnerKind?) -> Unit = { leaving ->
-        val saved = draft.saveOnLeaving(leaving, uiState.selectedThemeName, uiState.selectedFontName)
-        saved.paletteName?.let(actions.onSelectTheme)
-        saved.fontName?.let(actions.onSelectFont)
-        draft = saved.rest
-        backgroundColorOnLeaving(leaving, background, uiState.isCustomWallpaperSet, uiState.manualSeedColor)
-            ?.let(actions.onSelectBackgroundColor)
+        draft = applyAppearanceSave(leaving, draft, background, host)
         if (leavingSavesBackground(leaving)) background = null
     }
-    val backgroundParams = uiState.toBackgroundParams(actions) {
+    val backgroundParams = uiState.toBackgroundParams(host.actions) {
         dispatch(SettingsSheetEvent.OpenChild(SettingsChildKind.WALLPAPER_EDITOR))
     }
     val shownBackground = shownBackgroundDraft(background, uiState.isCustomWallpaperSet, uiState.manualSeedColor)
     val events = AreaSheetEvents(
         onClosed = {
             save(null)
-            dispatch(SettingsSheetEvent.CloseArea(area))
+            dispatch(SettingsSheetEvent.CloseArea(spec.area))
         },
         onBackFromInner = {
             save(spec.inner)
@@ -110,6 +103,25 @@ internal fun AppearanceAreaSheet(
             )
         }
     }
+}
+
+/**
+ * Saves what leaving [leaving] keeps: the palette and font of [draft] and the background of [background], through
+ * the settings actions of [host]. Returns what is left of the draft.
+ */
+private fun applyAppearanceSave(
+    leaving: SettingsInnerKind?,
+    draft: AppearanceDraft,
+    background: BackgroundDraft?,
+    host: SettingsSheetHostParams
+): AppearanceDraft {
+    val uiState = host.uiState
+    val saved = draft.saveOnLeaving(leaving, uiState.selectedThemeName, uiState.selectedFontName)
+    saved.paletteName?.let(host.actions.onSelectTheme)
+    saved.fontName?.let(host.actions.onSelectFont)
+    backgroundColorOnLeaving(leaving, background, uiState.isCustomWallpaperSet, uiState.manualSeedColor)
+        ?.let(host.actions.onSelectBackgroundColor)
+    return saved.rest
 }
 
 @AureolePreview

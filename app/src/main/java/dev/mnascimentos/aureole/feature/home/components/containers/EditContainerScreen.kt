@@ -162,9 +162,7 @@ private fun EditContainerSheetContent(
         EditContainerScreenMode.MAIN -> {
             MainSettingsContent(
                 componentCount = state.itemsList.size,
-                onAppearanceClick = { onModeChange(EditContainerScreenMode.APPEARANCE) },
-                onBehaviorClick = { onModeChange(EditContainerScreenMode.BEHAVIOR) },
-                onManageItemsClick = { onModeChange(EditContainerScreenMode.MANAGE_ITEMS) },
+                onOpenMode = onModeChange,
                 onCustomizeHome = onCustomizeHome
             )
         }

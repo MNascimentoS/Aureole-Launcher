@@ -81,9 +81,7 @@ private fun MainContentCase(isLeftHanded: Boolean) {
             ) {
                 MainSettingsContent(
                     componentCount = 4,
-                    onAppearanceClick = {},
-                    onBehaviorClick = {},
-                    onManageItemsClick = {}
+                    onOpenMode = {}
                 )
             }
         }

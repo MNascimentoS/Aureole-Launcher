@@ -14,8 +14,6 @@ import dev.mnascimentos.aureole.core.data.db.AppDatabase
 import dev.mnascimentos.aureole.core.data.image.decodeWallpaperBitmap
 import dev.mnascimentos.aureole.core.data.model.ClockConfig
 import dev.mnascimentos.aureole.core.data.model.WallpaperAdjustments
-import dev.mnascimentos.aureole.core.designsystem.palette.resolveThemeSeedColor
-import dev.mnascimentos.aureole.core.designsystem.palette.vividBackgroundReplacement
 import dev.mnascimentos.aureole.core.designsystem.utils.HazeUtils
 import dev.mnascimentos.aureole.core.image.BlurredWallpaperCache
 import timber.log.Timber
@@ -124,45 +122,9 @@ class SettingsRepository(private val context: Context) {
         get() = prefs.getBoolean(KEY_HOME_OPENS_ALL_APPS, true)
         set(value) = prefs.edit { putBoolean(KEY_HOME_OPENS_ALL_APPS, value) }
 
-    /**
-     * Migration of the removed "show all apps on Home" switch: true once, when the user had turned it on, so the
-     * caller clears the saved favorites (an empty favorites list now means "show all"). The old key is deleted, so
-     * later calls return false. A switch that was never saved keeps the favorites: the Home never listed all apps.
-     */
-    fun consumeLegacyShowAllApps(): Boolean {
-        val wasOn = prefs.getBoolean(KEY_LEGACY_SHOW_ALL_APPS_ON_HOME, false)
-        if (prefs.contains(KEY_LEGACY_SHOW_ALL_APPS_ON_HOME)) prefs.edit { remove(KEY_LEGACY_SHOW_ALL_APPS_ON_HOME) }
-        return wasOn
-    }
-
     var isWidgetRowEnabled: Boolean
         get() = prefs.getBoolean(KEY_WIDGET_ROW_ENABLED, true)
         set(value) = prefs.edit { putBoolean(KEY_WIDGET_ROW_ENABLED, value) }
-
-    /**
-     * One-time migration of the removed global widget indicator switch: returns true when it was saved as off,
-     * and always erases the key so this answers only once.
-     */
-    fun consumeLegacyWidgetDotsOff(): Boolean {
-        if (!prefs.contains(KEY_LEGACY_SHOW_WIDGET_DOTS)) return false
-        val wasOff = !prefs.getBoolean(KEY_LEGACY_SHOW_WIDGET_DOTS, true)
-        prefs.edit { remove(KEY_LEGACY_SHOW_WIDGET_DOTS) }
-        return wasOff
-    }
-
-    /**
-     * One-time migration of the removed "Vivid" background swatches (RF-03 of polimento-ui): a background saved from
-     * one of [vividColors] becomes the default palette (see [vividBackgroundReplacement]). Runs once; later calls do
-     * nothing.
-     */
-    fun migrateVividBackground(vividColors: Collection<Int>) {
-        if (prefs.getBoolean(KEY_VIVID_BACKGROUND_MIGRATED, false)) return
-        vividBackgroundReplacement(selectedThemeName, manualSeedColor, vividColors)?.let { themeName ->
-            selectedThemeName = themeName
-            manualSeedColor = resolveThemeSeedColor(themeName)
-        }
-        prefs.edit { putBoolean(KEY_VIVID_BACKGROUND_MIGRATED, true) }
-    }
 
     var isInAppUpdateEnabled: Boolean
         get() = prefs.getBoolean(KEY_IN_APP_UPDATE_ENABLED, true)
@@ -391,7 +353,7 @@ class SettingsRepository(private val context: Context) {
         BlurredWallpaperCache.clear(context)
     }
 
-    private val prefs
+    internal val prefs
         get() = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
 
     companion object {
@@ -422,7 +384,6 @@ class SettingsRepository(private val context: Context) {
         private const val KEY_SHOW_FOLDER_LABELS = "show_folder_labels"
         private const val KEY_FAVORITE_APPS = "favorite_apps"
         private const val KEY_HOME_OPENS_ALL_APPS = "home_opens_all_apps"
-        private const val KEY_LEGACY_SHOW_ALL_APPS_ON_HOME = "show_all_apps_on_home"
         private const val KEY_WIDGET_ROW_ENABLED = "widget_row_enabled"
         private const val KEY_IS_CUSTOM_WALLPAPER_SET = "is_custom_wallpaper_set"
         private const val KEY_CUSTOM_WALLPAPER_PATH = "custom_wallpaper_path"
@@ -435,8 +396,6 @@ class SettingsRepository(private val context: Context) {
         private const val KEY_HAZE_ENABLED = "haze_enabled"
         private const val KEY_HAZE_OPACITY = "haze_opacity"
         private const val KEY_HAZE_BLUR_LEVEL = "haze_blur_level"
-        private const val KEY_LEGACY_SHOW_WIDGET_DOTS = "show_widget_dots"
-        private const val KEY_VIVID_BACKGROUND_MIGRATED = "vivid_background_migrated"
         private const val KEY_IN_APP_UPDATE_ENABLED = "in_app_update_enabled"
         private const val KEY_HEADER_OFFSET_PERCENT = "header_offset_percent"
         private const val KEY_CORNER_RADIUS_DP = "corner_radius_dp"

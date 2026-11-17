@@ -159,11 +159,9 @@ internal fun CreateFolderOverlay(
 @Composable
 internal fun OpenedFolderOverlay(
     uiState: MainUiState,
-    screenHeightPx: Float,
     hazeState: HazeState,
     actions: HomeScreenActions
 ) {
-    val density = LocalDensity.current
     var lastFolder by remember { mutableStateOf<AppFolder?>(null) }
     val activeFolder = uiState.activeFolder
     if (activeFolder != null) lastFolder = activeFolder
@@ -182,8 +180,6 @@ internal fun OpenedFolderOverlay(
                 params = OpenedFolderOverlayParams(
                     uiState = uiState,
                     folderToDisplay = folderToDisplay,
-                    screenHeightPx = screenHeightPx,
-                    screenDensity = density.density,
                     hazeState = hazeState
                 ),
                 actions = actions

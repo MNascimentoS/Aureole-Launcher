@@ -249,24 +249,25 @@ internal fun OverlaySheetBody(
         Column(modifier = Modifier.weight(1f, fill = hasBottomBar)) {
             decorations.gestureZone?.invoke()
             if (title != null) {
-                val accessory = decorations.headerAccessory
+                val slots = decorations.headerSlots
+                val accessory = slots.accessory
                 val showAction = hasHeaderAction(
                     showHeaderAction = decorations.showHeaderAction,
                     hasClick = onSettingsClick != null,
-                    hasCustomIcon = decorations.headerIcon != null || accessory != null
+                    hasCustomIcon = slots.headerIcon != null || accessory != null
                 )
                 OverlaySheetHeader(
                     title = title,
-                    titleIcon = decorations.titleIcon,
+                    titleIcon = slots.titleIcon,
                     action = when {
                         !showAction -> null
                         accessory != null -> accessory
                         else -> {
-                            { OverlaySheetHeaderLogo(onClick = onSettingsClick, headerIcon = decorations.headerIcon) }
+                            { OverlaySheetHeaderLogo(onClick = onSettingsClick, headerIcon = slots.headerIcon) }
                         }
                     },
                     isLeftHanded = decorations.isLeftHanded,
-                    leadingAction = decorations.headerLeadingAction
+                    leadingAction = slots.leadingAction
                 )
             }
             if (sheetContent != null) {

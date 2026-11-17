@@ -16,7 +16,6 @@ import dev.mnascimentos.aureole.feature.home.model.MainUiState
 
 @Composable
 fun HomeScreenFolderOverlays(
-    screenHeightPx: Float,
     hazeState: HazeState,
     appWidgetHost: AppWidgetHost? = null
 ) {
@@ -32,7 +31,6 @@ fun HomeScreenFolderOverlays(
 
     OpenedFolderOverlay(
         uiState = uiState,
-        screenHeightPx = screenHeightPx,
         hazeState = hazeState,
         actions = actions
     )
@@ -77,10 +75,7 @@ private fun HomeScreenFolderOverlaysPreview() {
             LocalLeftHanded provides (MainUiState()).isLeftHandedMode,
             LocalHomeActions provides mockActions
         ) {
-            HomeScreenFolderOverlays(
-                screenHeightPx = 1920f,
-                hazeState = hazeState
-            )
+            HomeScreenFolderOverlays(hazeState = hazeState)
         }
     }
 }

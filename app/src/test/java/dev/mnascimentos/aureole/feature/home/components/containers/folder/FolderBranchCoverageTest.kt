@@ -729,7 +729,6 @@ class FolderBranchCoverageTest {
                 AureoleLauncherTheme {
                     OpenedFolderOverlay(
                         uiState = uiState,
-                        screenHeightPx = 1920f,
                         hazeState = hazeState,
                         actions = actions
                     )

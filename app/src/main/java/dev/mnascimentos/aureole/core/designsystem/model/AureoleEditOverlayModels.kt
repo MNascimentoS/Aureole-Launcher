@@ -133,17 +133,24 @@ internal data class SheetBounds(
  * Extra slots of the sheet body: a custom header icon and the invisible gesture zone above the header.
  */
 internal class OverlaySheetDecorations(
-    val headerIcon: (@Composable (Modifier) -> Unit)? = null,
-    val titleIcon: (@Composable (Modifier) -> Unit)? = null,
     val gestureZone: (@Composable () -> Unit)? = null,
     val edgeToEdgeContent: Boolean = false,
     val showHeaderAction: Boolean = true,
     /** Left-handed: the logo goes to the start of the title line. */
     val isLeftHanded: Boolean = false,
-    /** Replaces the logo in the header slot, with no click (see [AureoleEditOverlayConfig.headerAccessory]). */
-    val headerAccessory: (@Composable () -> Unit)? = null,
-    /** The slot across from the logo (see [AureoleEditOverlayConfig.headerLeadingAction]). */
-    val headerLeadingAction: (@Composable () -> Unit)? = null
+    val headerSlots: OverlayHeaderSlots = OverlayHeaderSlots()
+)
+
+/**
+ * The optional header slots: the [headerIcon] and [titleIcon] of the config; [accessory] replaces the logo in the
+ * header slot, with no click (see [AureoleEditOverlayConfig.headerAccessory]); [leadingAction] is the slot across
+ * from the logo (see [AureoleEditOverlayConfig.headerLeadingAction]).
+ */
+internal class OverlayHeaderSlots(
+    val headerIcon: (@Composable (Modifier) -> Unit)? = null,
+    val titleIcon: (@Composable (Modifier) -> Unit)? = null,
+    val accessory: (@Composable () -> Unit)? = null,
+    val leadingAction: (@Composable () -> Unit)? = null
 )
 
 internal class OverlayDismissState(

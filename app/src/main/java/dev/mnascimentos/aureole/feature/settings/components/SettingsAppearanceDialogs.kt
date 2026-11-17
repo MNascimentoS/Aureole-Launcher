@@ -1,6 +1,5 @@
 package dev.mnascimentos.aureole.feature.settings.components
 
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -10,70 +9,27 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDirection
 import dev.mnascimentos.aureole.R
-import dev.mnascimentos.aureole.composable.color.model.DefaultPickerColor
 import dev.mnascimentos.aureole.composable.minihome.AureoleMiniHome
+import dev.mnascimentos.aureole.composable.minihome.model.MiniHomeFavoritesLayout
 import dev.mnascimentos.aureole.composable.minihome.sampleMiniHomeContent
 import dev.mnascimentos.aureole.composable.mirror.LeftHandMirror
-import dev.mnascimentos.aureole.composable.sheets.AureoleAutoSaveOverlay
-import dev.mnascimentos.aureole.composable.sheets.model.AutoSaveOverlayParams
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
 import dev.mnascimentos.aureole.core.designsystem.model.LocalLeftHanded
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
-import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
-import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.settings.model.BackgroundDraft
 import dev.mnascimentos.aureole.feature.settings.model.BackgroundPhotoCard
 import dev.mnascimentos.aureole.feature.settings.model.BackgroundType
 import dev.mnascimentos.aureole.feature.settings.model.LockScreenDialog
 import dev.mnascimentos.aureole.feature.settings.model.SetBackgroundParams
-import dev.mnascimentos.aureole.feature.settings.model.backgroundColorToSave
-import dev.mnascimentos.aureole.feature.settings.model.initialBackgroundDraft
 import dev.mnascimentos.aureole.feature.settings.model.lockScreenDialogFor
-
-/**
- * Background editor in its own edit overlay, the same content the Appearance sheet shows inside itself
- * ([BackgroundPickerContent]): the type (solid color or custom image) and, for a solid color, the swatches, with the
- * mini-home anchored above the sheet on the chosen color or photo. Closing the sheet saves the color when it changed.
- */
-@Composable
-fun SetBackgroundBottomSheet(
-    params: SetBackgroundParams,
-    modifier: Modifier = Modifier
-) {
-    val initial = remember { initialBackgroundDraft(params.isCustomImageSet, params.currentColor) }
-    var draft by remember { mutableStateOf(initial) }
-    var lockDialog by remember { mutableStateOf<LockScreenDialog?>(null) }
-
-    Box(modifier = modifier) {
-        AureoleAutoSaveOverlay(
-            params = AutoSaveOverlayParams(
-                title = stringResource(R.string.settings_appearance_set_background_title),
-                isChanged = { backgroundColorToSave(initial, draft) != null },
-                onCommit = { backgroundColorToSave(initial, draft)?.let(params.onSolidColorSelected) },
-                onDismissRequest = params.onDismissRequest,
-                isLeftHanded = params.isLeftHanded,
-                host = params.host
-            ),
-            preview = {
-                BackgroundMiniHome(draft = draft, params = params, modifier = Modifier.align(Alignment.Center))
-            }
-        ) {
-            BackgroundPickerContent(params, draft, onDraftChange = { draft = it }, onLockDialog = { lockDialog = it })
-        }
-        LockScreenDialogs(dialog = lockDialog, option = params.lockScreen, onDismiss = { lockDialog = null })
-    }
-}
 
 /**
  * The background choices (RF-02 of polimento-ui): TYPE with the two cards, the lock screen switch as a plain row
@@ -148,9 +104,8 @@ internal fun BackgroundMiniHome(
     AureoleMiniHome(
         content = sampleMiniHomeContent(),
         modifier = modifier,
-        isLeftHanded = LocalLeftHanded.current,
+        layout = MiniHomeFavoritesLayout(isLeftHanded = LocalLeftHanded.current, themedIcons = themedIcons),
         backgroundColor = draft?.takeIf { it.type == BackgroundType.SOLID_COLOR }?.let { Color(it.color) },
-        themedIcons = themedIcons,
         backdrop = photoPath?.let { path -> { WallpaperPhotoLayer(path = path, adjustments = params.adjustments) } }
     )
 }
@@ -182,22 +137,6 @@ internal fun SheetSectionLabel(text: String, modifier: Modifier = Modifier) {
             format = AureoleTextFormatParams(
                 style = AureoleDS.typography.labelSmall.copy(textDirection = TextDirection.Content),
                 textAlign = align
-            )
-        )
-    }
-}
-
-@AureolePreview
-@Composable
-private fun SetBackgroundBottomSheetPreview() {
-    AureoleLauncherTheme {
-        SetBackgroundBottomSheet(
-            params = SetBackgroundParams(
-                currentColor = DefaultPickerColor,
-                isCustomImageSet = false,
-                onSolidColorSelected = {},
-                onCustomImageClick = {},
-                onDismissRequest = {}
             )
         )
     }

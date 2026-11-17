@@ -36,6 +36,7 @@ import androidx.compose.ui.unit.Velocity
 import dev.mnascimentos.aureole.core.designsystem.model.AureoleEditOverlayConfig
 import dev.mnascimentos.aureole.core.designsystem.model.AureoleEditOverlayParams
 import dev.mnascimentos.aureole.core.designsystem.model.GestureZoneState
+import dev.mnascimentos.aureole.core.designsystem.model.OverlayHeaderSlots
 import dev.mnascimentos.aureole.core.designsystem.model.OverlaySheetController
 import dev.mnascimentos.aureole.core.designsystem.model.OverlaySheetDecorations
 import dev.mnascimentos.aureole.core.designsystem.model.OverlaySheetEvents
@@ -104,13 +105,15 @@ internal fun SheetSurface(
             bottomBarContent = params.bottomBarContent,
             sheetContent = params.sheetContent,
             decorations = OverlaySheetDecorations(
-                headerIcon = config.headerIcon,
-                titleIcon = config.titleIcon,
                 edgeToEdgeContent = config.edgeToEdgeContent,
                 showHeaderAction = config.showHeaderAction && config.host.showHeaderAction,
                 isLeftHanded = config.isLeftHanded,
-                headerAccessory = config.headerAccessory,
-                headerLeadingAction = config.headerLeadingAction,
+                headerSlots = OverlayHeaderSlots(
+                    headerIcon = config.headerIcon,
+                    titleIcon = config.titleIcon,
+                    accessory = config.headerAccessory,
+                    leadingAction = config.headerLeadingAction
+                ),
                 gestureZone = {
                     OverlaySheetGestureZone(
                         state = GestureZoneState(isExpanded, config.isLeftHanded, motion.canExpand(bounds)),

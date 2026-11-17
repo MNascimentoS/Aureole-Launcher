@@ -51,8 +51,8 @@ private const val CAMERA_HEX = 0xFF1F63C2
  * @param content Sample content to draw.
  * @param modifier Modifier applied to the root.
  * @param backgroundColor Fill of the mini-home; null keeps the theme background.
- * @param themedIcons Draws the apps with the themed icon look of the home (the "Themed icons" setting).
- * @param isLeftHanded Puts the apps on the side opposite to the thumb: left for right-handed (icon first), right
+ * @param layout Side of the apps and the themed icon look of the home (the "Themed icons" setting). Puts the apps
+ *   on the side opposite to the thumb: left for right-handed (icon first), right
  *   for left-handed (label first). The default is the right-handed layout.
  * @param backdrop Drawn under the clock and the apps, in place of the theme glow (the background photo).
  */
@@ -60,9 +60,8 @@ private const val CAMERA_HEX = 0xFF1F63C2
 fun AureoleMiniHome(
     content: MiniHomeContent,
     modifier: Modifier = Modifier,
-    isLeftHanded: Boolean = false,
+    layout: MiniHomeFavoritesLayout = MiniHomeFavoritesLayout(),
     backgroundColor: Color? = null,
-    themedIcons: Boolean = false,
     backdrop: (@Composable () -> Unit)? = null
 ) {
     val shape = RoundedCornerShape(AureoleDS.dimens.radiusLarge)
@@ -91,7 +90,7 @@ fun AureoleMiniHome(
             MiniHomeClock(content)
             MiniHomeFavorites(
                 favorites = content.favorites,
-                layout = MiniHomeFavoritesLayout(isLeftHanded = isLeftHanded, themedIcons = themedIcons),
+                layout = layout,
                 modifier = Modifier.weight(1f)
             )
         }
@@ -218,7 +217,10 @@ private fun AureoleMiniHomePreview() {
 private fun AureoleMiniHomeThemedIconsPreview() {
     AureoleLauncherTheme {
         Box(modifier = Modifier.padding(AureoleDS.dimens.medium)) {
-            AureoleMiniHome(content = sampleMiniHomeContent(), themedIcons = true)
+            AureoleMiniHome(
+                content = sampleMiniHomeContent(),
+                layout = MiniHomeFavoritesLayout(themedIcons = true)
+            )
         }
     }
 }

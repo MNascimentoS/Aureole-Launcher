@@ -12,6 +12,7 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
@@ -25,7 +26,6 @@ import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.progressBarRangeInfo
 import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.unit.Dp
 import dev.mnascimentos.aureole.core.designsystem.icons.Logo
 import dev.mnascimentos.aureole.core.designsystem.model.LOGO_RING_LOGO_FRACTION
 import dev.mnascimentos.aureole.core.designsystem.model.isLogoRingSpinning
@@ -47,9 +47,9 @@ private const val SPIN_MS = 1100
  *
  * @param progress Completed fraction, clamped to 0..1 and animated with a spring; `null` is a wait with no known
  * end, and the arc spins. With the system animations off the arc stands still.
- * @param modifier The modifier to be applied to the layout.
- * @param size Outer diameter of the ring.
- * @param logoFraction Logo width as a share of [size].
+ * @param modifier The modifier to be applied to the layout; give it a `size` to set the outer diameter of the ring
+ * (a default one applies without it).
+ * @param logoFraction Logo width as a share of the ring diameter.
  * @param contentDescription Accessibility label announced with the progress value.
  * @param isProgressAnimated False draws [progress] as given, for a caller that already moves it on a clock (a
  * countdown that must fill linearly); true eases each change with a spring.
@@ -58,7 +58,6 @@ private const val SPIN_MS = 1100
 fun AureoleLogoRing(
     progress: Float?,
     modifier: Modifier = Modifier,
-    size: Dp = AureoleDS.dimens.iconHuge,
     logoFraction: Float = LOGO_RING_LOGO_FRACTION,
     contentDescription: String? = null,
     isProgressAnimated: Boolean = true,
@@ -75,7 +74,7 @@ fun AureoleLogoRing(
     val progressColor = AureoleDS.colors.onSurfaceHigh
     Box(
         modifier = modifier
-            .size(size)
+            .size(AureoleDS.dimens.iconHuge)
             .semantics {
                 progressBarRangeInfo = logoRingRangeInfo(progress)
                 contentDescription?.let { this.contentDescription = it }
@@ -99,7 +98,7 @@ fun AureoleLogoRing(
                 style = Stroke(stroke, cap = StrokeCap.Round)
             )
         }
-        AureoleDS.icons.Logo(modifier = Modifier.size(size * logoFraction), tint = progressColor)
+        AureoleDS.icons.Logo(modifier = Modifier.fillMaxSize(logoFraction), tint = progressColor)
     }
 }
 

@@ -7,6 +7,7 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
@@ -220,7 +221,7 @@ private fun CustomizeShowcaseRing(progress: FloatState) {
     // The header slot already centers it in 48 dp, on the title line.
     AureoleLogoRing(
         progress = progress.floatValue,
-        size = AureoleDS.dimens.iconXLargeMedium,
+        modifier = Modifier.size(AureoleDS.dimens.iconXLargeMedium),
         logoFraction = LOGO_RING_LOGO_FRACTION_LARGE,
         isProgressAnimated = false
     )

@@ -58,6 +58,6 @@ fun miniHomeIconFill(
  * @property themedIcons Icons with the themed look of the home.
  */
 data class MiniHomeFavoritesLayout(
-    val isLeftHanded: Boolean,
-    val themedIcons: Boolean
+    val isLeftHanded: Boolean = false,
+    val themedIcons: Boolean = false
 )
