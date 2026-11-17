@@ -24,6 +24,7 @@ fun SettingsViewModel.changeManualSeedColor(color: Int, @StringRes message: Int)
             withContext(Dispatchers.IO) { settingsRepository.wallpaperStash.restoreDefaultKeepingUndo() }
         }
         setSettingValue(SettingValue.ManualSeedColor(color))
+        applyLockScreen()
         showUndo(TextResource.fromResId(message)) { restoreSeed(before, stashedPath) }
     }
 }
@@ -38,6 +39,7 @@ private fun SettingsViewModel.restoreSeed(before: SeedSnapshot, stashedPath: Str
             it.withSeedSnapshot(before, keepWallpaper = restored)
                 .copy(wallpaperAdjustments = settingsRepository.wallpaperAdjustments)
         }
+        applyLockScreen(undo = true)
     }
 }
 
@@ -85,5 +87,6 @@ private fun SettingsViewModel.undoCustomWallpaper(before: String?, kept: Boolean
                 wallpaperAdjustments = settingsRepository.wallpaperAdjustments
             )
         }
+        applyLockScreen(undo = true)
     }
 }

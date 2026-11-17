@@ -310,4 +310,8 @@ private class FakeSystemWallpaper : SystemWallpaper {
         applied = source.readText()
         return true
     }
+
+    override fun applyLock(bitmap: Bitmap): Boolean = true
+    override fun clearLock(): Boolean = true
+    override fun canSetWallpaper(): Boolean = true
 }

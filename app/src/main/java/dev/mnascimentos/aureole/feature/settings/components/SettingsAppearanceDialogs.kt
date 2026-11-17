@@ -1,6 +1,7 @@
 package dev.mnascimentos.aureole.feature.settings.components
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.rememberScrollState
@@ -35,9 +36,11 @@ import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.settings.model.BackgroundDraft
 import dev.mnascimentos.aureole.feature.settings.model.BackgroundPhotoCard
 import dev.mnascimentos.aureole.feature.settings.model.BackgroundType
+import dev.mnascimentos.aureole.feature.settings.model.LockScreenDialog
 import dev.mnascimentos.aureole.feature.settings.model.SetBackgroundParams
 import dev.mnascimentos.aureole.feature.settings.model.backgroundColorToSave
 import dev.mnascimentos.aureole.feature.settings.model.initialBackgroundDraft
+import dev.mnascimentos.aureole.feature.settings.model.lockScreenDialogFor
 
 /**
  * Background editor in an edit overlay: the type (solid color or custom image) and, for a solid color, the
@@ -52,7 +55,24 @@ fun SetBackgroundBottomSheet(
 ) {
     val initial = remember { initialBackgroundDraft(params.isCustomImageSet, params.currentColor) }
     var draft by remember { mutableStateOf(initial) }
+    var lockDialog by remember { mutableStateOf<LockScreenDialog?>(null) }
 
+    Box(modifier = modifier) {
+        BackgroundSheetOverlay(params, draft, initial, onDraftChange = { draft = it }) {
+            lockDialog = it
+        }
+        LockScreenDialogs(dialog = lockDialog, option = params.lockScreen, onDismiss = { lockDialog = null })
+    }
+}
+
+@Composable
+private fun BackgroundSheetOverlay(
+    params: SetBackgroundParams,
+    draft: BackgroundDraft,
+    initial: BackgroundDraft,
+    onDraftChange: (BackgroundDraft) -> Unit,
+    onLockDialog: (LockScreenDialog?) -> Unit
+) {
     AureoleAutoSaveOverlay(
         params = AutoSaveOverlayParams(
             title = stringResource(R.string.settings_appearance_set_background_title),
@@ -62,46 +82,60 @@ fun SetBackgroundBottomSheet(
             isLeftHanded = params.isLeftHanded,
             host = params.host
         ),
-        modifier = modifier,
         preview = { BackgroundPreview(draft = draft, modifier = Modifier.align(Alignment.Center)) }
     ) {
-        Column(
-            verticalArrangement = Arrangement.spacedBy(AureoleDS.dimens.small),
-            modifier = Modifier.fillMaxWidth().verticalScroll(rememberScrollState())
-        ) {
-            SheetSectionLabel(
-                text = stringResource(R.string.settings_appearance_background_type)
-            )
-            val photo = params.customImagePath?.takeIf { params.isCustomImageSet }?.let { path ->
-                BackgroundPhotoCard(
-                    path = path,
-                    adjustments = params.adjustments,
-                    onEdit = {
-                        draft = draft.copy(type = BackgroundType.CUSTOM_IMAGE)
-                        params.onEditPhotoClick()
-                    },
-                    onChange = {
-                        draft = draft.copy(type = BackgroundType.CUSTOM_IMAGE)
-                        params.onCustomImageClick()
-                    }
-                )
-            }
-            BackgroundTypeCards(
-                selected = draft.type,
-                onSelect = {
-                    draft = draft.copy(type = it)
-                    if (it == BackgroundType.CUSTOM_IMAGE && photo == null) params.onCustomImageClick()
+        BackgroundSheetContent(params, draft, onDraftChange, onLockDialog)
+    }
+}
+
+@Composable
+private fun BackgroundSheetContent(
+    params: SetBackgroundParams,
+    draft: BackgroundDraft,
+    onDraftChange: (BackgroundDraft) -> Unit,
+    onLockDialog: (LockScreenDialog?) -> Unit
+) {
+    Column(
+        verticalArrangement = Arrangement.spacedBy(AureoleDS.dimens.small),
+        modifier = Modifier.fillMaxWidth().verticalScroll(rememberScrollState())
+    ) {
+        SheetSectionLabel(text = stringResource(R.string.settings_appearance_background_type))
+        val photo = params.customImagePath?.takeIf { params.isCustomImageSet }?.let { path ->
+            BackgroundPhotoCard(
+                path = path,
+                adjustments = params.adjustments,
+                onEdit = {
+                    onDraftChange(draft.copy(type = BackgroundType.CUSTOM_IMAGE))
+                    params.onEditPhotoClick()
                 },
-                isLeftHanded = params.isLeftHanded,
-                photo = photo
+                onChange = {
+                    onDraftChange(draft.copy(type = BackgroundType.CUSTOM_IMAGE))
+                    params.onCustomImageClick()
+                }
             )
-            if (draft.type == BackgroundType.SOLID_COLOR) {
-                BackgroundColorSections(
-                    selected = draft.color,
-                    onSelect = { draft = draft.copy(color = it) },
-                    isLeftHanded = params.isLeftHanded
-                )
+        }
+        BackgroundTypeCards(
+            selected = draft.type,
+            onSelect = {
+                onDraftChange(draft.copy(type = it))
+                if (it == BackgroundType.CUSTOM_IMAGE && photo == null) params.onCustomImageClick()
+            },
+            isLeftHanded = params.isLeftHanded,
+            photo = photo
+        )
+        BackgroundLockScreenRow(
+            option = params.lockScreen,
+            onToggle = { turnOn ->
+                val dialog = lockScreenDialogFor(turnOn, params.lockScreen.isNoticeSeen)
+                if (dialog == null) params.lockScreen.onTurnOn() else onLockDialog(dialog)
             }
+        )
+        if (draft.type == BackgroundType.SOLID_COLOR) {
+            BackgroundColorSections(
+                selected = draft.color,
+                onSelect = { onDraftChange(draft.copy(color = it)) },
+                isLeftHanded = params.isLeftHanded
+            )
         }
     }
 }

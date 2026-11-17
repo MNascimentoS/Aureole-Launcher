@@ -7,6 +7,8 @@ import java.io.File
 private const val STASHED_WALLPAPER_NAME = "custom_wallpaper_undo.jpg"
 private const val STASHED_SYSTEM_NAME = "system_wallpaper_undo.jpg"
 private const val STASHED_ADJUSTMENTS_NAME = "wallpaper_adjustments_undo.json"
+private const val LOCK_IMAGE_NAME = "lock_wallpaper.png"
+private const val STASHED_LOCK_IMAGE_NAME = "lock_wallpaper_undo.png"
 
 /**
  * Lets "Restore background" be undone: the custom wallpaper file is moved aside instead of deleted, and moved back
@@ -20,6 +22,23 @@ class WallpaperUndoStash(
     private val stashedFile get() = File(context.filesDir, STASHED_WALLPAPER_NAME)
     private val stashedSystemFile get() = File(context.filesDir, STASHED_SYSTEM_NAME)
     private val stashedAdjustmentsFile get() = File(context.filesDir, STASHED_ADJUSTMENTS_NAME)
+
+    /** The last image Aureole put on the lock screen. */
+    val lockImageFile get() = File(context.filesDir, LOCK_IMAGE_NAME)
+    private val stashedLockImageFile get() = File(context.filesDir, STASHED_LOCK_IMAGE_NAME)
+
+    /** Keeps the current lock image aside, because a new one is about to overwrite it (RF-17). */
+    fun keepLockImage() {
+        stashedLockImageFile.delete()
+        if (lockImageFile.exists()) runCatching { lockImageFile.copyTo(stashedLockImageFile, overwrite = true) }
+    }
+
+    /** Puts the lock image kept aside back as the current one and returns it, or null when none was kept. */
+    fun takeLockImageBack(): File? {
+        val kept = stashedLockImageFile.takeIf { it.exists() } ?: return null
+        lockImageFile.delete()
+        return if (kept.renameTo(lockImageFile)) lockImageFile else null
+    }
 
     private fun stashAdjustments() {
         val current = settings.wallpaperAdjustments
@@ -78,5 +97,6 @@ class WallpaperUndoStash(
         stashedFile.delete()
         stashedSystemFile.delete()
         stashedAdjustmentsFile.delete()
+        stashedLockImageFile.delete()
     }
 }

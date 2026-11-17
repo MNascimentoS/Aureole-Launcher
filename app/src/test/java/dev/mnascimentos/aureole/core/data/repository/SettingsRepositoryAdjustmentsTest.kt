@@ -136,4 +136,7 @@ private class SilentSystemWallpaper : SystemWallpaper {
     override fun clear(): Boolean = true
     override fun save(target: File): Boolean = false
     override fun apply(source: File): Boolean = true
+    override fun applyLock(bitmap: Bitmap): Boolean = true
+    override fun clearLock(): Boolean = true
+    override fun canSetWallpaper(): Boolean = true
 }

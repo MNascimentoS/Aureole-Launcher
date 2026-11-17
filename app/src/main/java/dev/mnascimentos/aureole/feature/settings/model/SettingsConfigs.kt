@@ -71,5 +71,7 @@ data class SettingsScreenActions(
     val onApplyCardsGlass: (CardsGlassDraft) -> Unit = {},
     val onCardsGlassClosed: (CardsGlassDraft) -> Unit = {},
     val onWallpaperEditorOpened: () -> Unit = {},
+    val onLockScreenTurnOn: () -> Unit = {},
+    val onLockScreenTurnOff: (restoreSystem: Boolean) -> Unit = {},
     val onWallpaperEditorClosed: (before: WallpaperAdjustments, after: WallpaperAdjustments) -> Unit = { _, _ -> },
 )

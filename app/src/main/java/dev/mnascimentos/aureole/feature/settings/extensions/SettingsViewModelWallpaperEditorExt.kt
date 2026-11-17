@@ -22,17 +22,18 @@ fun SettingsViewModel.finishWallpaperEditor(before: WallpaperAdjustments, after:
     val swap = pendingPhotoSwap
     pendingPhotoSwap = null
     val close = wallpaperEditorCloseOf(before, after, photoSwapped = swap != null)
-    if (close.save) saveWallpaperAdjustments(after)
+    if (close.save) saveWallpaperAdjustments(after) else if (swap != null) applyLockScreen()
     val message = close.message?.let { TextResource.fromResId(it) } ?: return
     when (close.undo) {
-        WallpaperEditorUndo.ADJUSTMENTS -> showUndo(message) { saveWallpaperAdjustments(before) }
+        WallpaperEditorUndo.ADJUSTMENTS -> showUndo(message) { saveWallpaperAdjustments(before, isUndo = true) }
         WallpaperEditorUndo.PHOTO -> swap?.let { offerCustomWallpaperUndo(it.previousPath, it.kept, message) }
         WallpaperEditorUndo.NONE -> Unit
     }
 }
 
-private fun SettingsViewModel.saveWallpaperAdjustments(adjustments: WallpaperAdjustments) {
+private fun SettingsViewModel.saveWallpaperAdjustments(adjustments: WallpaperAdjustments, isUndo: Boolean = false) {
     settingsRepository.wallpaperAdjustments = adjustments
     updateUiState { it.copy(wallpaperAdjustments = settingsRepository.wallpaperAdjustments) }
     viewModelScope.launch(Dispatchers.IO) { settingsRepository.prepareBlurredWallpaper() }
+    applyLockScreen(undo = isUndo)
 }

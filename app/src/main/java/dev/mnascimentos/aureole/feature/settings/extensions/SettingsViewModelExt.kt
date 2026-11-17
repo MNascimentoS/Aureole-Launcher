@@ -27,6 +27,7 @@ fun SettingsViewModel.restoreDefaultWallpaper() {
                 wallpaperAdjustments = WallpaperAdjustments.DEFAULT
             )
         }
+        applyLockScreen()
         if (previousPath != null) {
             showUndo(TextResource.fromResId(R.string.settings_appearance_background_restored)) {
                 undoRestoreWallpaper(previousPath)
@@ -46,6 +47,7 @@ private fun SettingsViewModel.undoRestoreWallpaper(path: String) {
                     wallpaperAdjustments = settingsRepository.wallpaperAdjustments
                 )
             }
+            applyLockScreen(undo = true)
         }
     }
 }

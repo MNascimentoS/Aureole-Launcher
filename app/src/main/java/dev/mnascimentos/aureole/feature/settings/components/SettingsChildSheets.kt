@@ -11,6 +11,7 @@ import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.settings.components.wallpaper.WallpaperEditorOverlay
 import dev.mnascimentos.aureole.feature.settings.model.CardsGlassParams
 import dev.mnascimentos.aureole.feature.settings.model.ChildSheetLinks
+import dev.mnascimentos.aureole.feature.settings.model.LockScreenOption
 import dev.mnascimentos.aureole.feature.settings.model.SetBackgroundParams
 import dev.mnascimentos.aureole.feature.settings.model.SettingsChildKind
 import dev.mnascimentos.aureole.feature.settings.model.SettingsScreenActions
@@ -48,7 +49,14 @@ internal fun SettingsChildSheet(
                 host = host,
                 customImagePath = uiState.customWallpaperPath,
                 adjustments = uiState.wallpaperAdjustments,
-                onEditPhotoClick = links.onOpenEditor
+                onEditPhotoClick = links.onOpenEditor,
+                lockScreen = LockScreenOption(
+                    checked = uiState.applyToLockScreen,
+                    isAvailable = uiState.canSetWallpaper,
+                    isNoticeSeen = uiState.isLockScreenNoticeSeen,
+                    onTurnOn = actions.onLockScreenTurnOn,
+                    onTurnOff = actions.onLockScreenTurnOff
+                )
             )
         )
         SettingsChildKind.WALLPAPER_EDITOR -> WallpaperEditorOverlay(

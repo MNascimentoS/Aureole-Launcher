@@ -60,7 +60,10 @@ fun AureoleConfirmOverlay(
                                 overlayState.internalVisible = false
                             },
                             secondaryLabel = cancelLabel,
-                            onSecondary = { overlayState.internalVisible = false },
+                            onSecondary = {
+                                params.onSecondary?.invoke()
+                                overlayState.internalVisible = false
+                            },
                             primaryHoldMs = params.primaryHoldMs
                         ),
                         isLeftHanded = params.isLeftHanded != params.isPrimaryAwayFromThumb

@@ -54,11 +54,13 @@ fun holdProgress(elapsedMs: Long, holdMs: Long = MENU_HOLD_MS): Float =
  * @property onCheckedChange Called with the new state when the row is tapped.
  * @property description Optional second line under the title.
  * @property icon Optional leading icon drawn centered in a fixed column; receives the modifier and the tint.
+ * @property enabled False dims the row and ignores taps (the description then says why).
  */
 data class SwitchRowParams(
     val title: String,
     val checked: Boolean,
     val onCheckedChange: (Boolean) -> Unit,
     val description: String? = null,
-    val icon: (@Composable (Modifier, Color) -> Unit)? = null
+    val icon: (@Composable (Modifier, Color) -> Unit)? = null,
+    val enabled: Boolean = true
 )

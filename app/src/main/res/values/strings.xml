@@ -539,6 +539,17 @@
     <string name="home_grid_no_space_error">Not enough free space on the grid for this container.</string>
     <string name="settings_reset_grid_success">Home screen layout reset to default</string>
     <string name="settings_wallpaper_load_error">Could not load the selected image</string>
+    <string name="settings_lock_screen_title">Also use on lock screen</string>
+    <string name="settings_lock_screen_unavailable">Your device doesn\'t allow changing the wallpaper.</string>
+    <string name="settings_lock_screen_notice_title">Use on lock screen?</string>
+    <string name="settings_lock_screen_notice_message">Android doesn\'t let Aureole keep your current lock screen image, so turning this off won\'t bring it back.</string>
+    <string name="settings_lock_screen_notice_confirm">Use anyway</string>
+    <string name="settings_lock_screen_notice_cancel">Not now</string>
+    <string name="settings_lock_screen_off_title">Stop using on lock screen?</string>
+    <string name="settings_lock_screen_off_message">Keep the lock screen as it is, or go back to the system wallpaper?</string>
+    <string name="settings_lock_screen_off_keep">Keep as is</string>
+    <string name="settings_lock_screen_off_restore">Back to system wallpaper</string>
+    <string name="settings_lock_screen_error">Couldn\'t change the lock screen</string>
     <string name="home_container_preview_app_label">App %1$d</string>
     <string name="settings_section_theme">Theme</string>
     <string name="settings_section_background">Background</string>

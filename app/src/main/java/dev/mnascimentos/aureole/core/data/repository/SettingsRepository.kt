@@ -227,6 +227,16 @@ class SettingsRepository(private val context: Context) {
         get() = prefs.getString(KEY_CUSTOM_WALLPAPER_PATH, null)
         set(value) = prefs.edit { putString(KEY_CUSTOM_WALLPAPER_PATH, value) }
 
+    /** "Also use on lock screen" (RF-13); off until the user turns it on. */
+    var applyToLockScreen: Boolean
+        get() = prefs.getBoolean(KEY_APPLY_TO_LOCK_SCREEN, false)
+        set(value) = prefs.edit { putBoolean(KEY_APPLY_TO_LOCK_SCREEN, value) }
+
+    /** Whether the one-time warning about the lock screen image (RF-15) was already shown. */
+    var isLockScreenNoticeSeen: Boolean
+        get() = prefs.getBoolean(KEY_LOCK_SCREEN_NOTICE_SEEN, false)
+        set(value) = prefs.edit { putBoolean(KEY_LOCK_SCREEN_NOTICE_SEEN, value) }
+
     var wallpaperScaleType: String
         get() = prefs.getString(KEY_WALLPAPER_SCALE_TYPE, "Crop") ?: "Crop"
         set(value) = prefs.edit { putString(KEY_WALLPAPER_SCALE_TYPE, value) }
@@ -260,6 +270,9 @@ class SettingsRepository(private val context: Context) {
         set(value) = prefs.edit { putInt(KEY_LAST_SEEN_VERSION_CODE, value) }
 
     val onboarding: OnboardingPreferences by lazy { OnboardingPreferences { prefs } }
+
+    /** Puts the home background on the lock screen too, when [applyToLockScreen] is on. */
+    val lockScreen: LockScreenWallpaper by lazy { LockScreenWallpaper(context, this) { systemWallpaper } }
 
     /** Keeps the custom wallpaper aside while a "Restore background" can still be undone. */
     val wallpaperStash: WallpaperUndoStash by lazy { WallpaperUndoStash(context, this) { systemWallpaper } }
@@ -392,6 +405,8 @@ class SettingsRepository(private val context: Context) {
         private const val KEY_CUSTOM_WALLPAPER_PATH = "custom_wallpaper_path"
         private const val KEY_WALLPAPER_SCALE_TYPE = "wallpaper_scale_type"
         private const val KEY_WALLPAPER_ADJUSTMENTS = "wallpaper_adjustments"
+        private const val KEY_APPLY_TO_LOCK_SCREEN = "apply_to_lock_screen"
+        private const val KEY_LOCK_SCREEN_NOTICE_SEEN = "lock_screen_notice_seen"
         private const val KEY_USE_WALLPAPER_COLORS = "use_wallpaper_colors"
         private const val KEY_MANUAL_SEED_COLOR = "manual_seed_color"
         private const val KEY_HAZE_ENABLED = "haze_enabled"

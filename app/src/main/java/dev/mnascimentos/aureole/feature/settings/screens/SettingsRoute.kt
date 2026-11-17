@@ -23,6 +23,8 @@ import dev.mnascimentos.aureole.feature.settings.extensions.resetGridLayout
 import dev.mnascimentos.aureole.feature.settings.extensions.restoreDefaultWallpaper
 import dev.mnascimentos.aureole.feature.settings.extensions.selectPosition
 import dev.mnascimentos.aureole.feature.settings.extensions.toggleFavorite
+import dev.mnascimentos.aureole.feature.settings.extensions.turnLockScreenOff
+import dev.mnascimentos.aureole.feature.settings.extensions.turnLockScreenOn
 import dev.mnascimentos.aureole.feature.settings.extensions.wallpaperEditorOpened
 import dev.mnascimentos.aureole.feature.settings.model.PositionKind
 import dev.mnascimentos.aureole.feature.settings.model.SettingToggle
@@ -92,6 +94,8 @@ private fun buildSettingsScreenActions(
         },
         onCardsGlassClosed = viewModel::finishCardsGlass,
         onWallpaperEditorOpened = viewModel::wallpaperEditorOpened,
+        onLockScreenTurnOn = viewModel::turnLockScreenOn,
+        onLockScreenTurnOff = viewModel::turnLockScreenOff,
         onWallpaperEditorClosed = viewModel::finishWallpaperEditor,
         onHeaderOffsetChanged = viewModel::setHeaderOffsetPercent,
         onConfirmResetGrid = { viewModel.resetGridLayout() },

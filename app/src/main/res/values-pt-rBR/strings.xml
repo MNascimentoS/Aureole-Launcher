@@ -546,6 +546,17 @@
     <string name="home_grid_no_space_error">Não há espaço livre suficiente na grade para este container.</string>
     <string name="settings_reset_grid_success">Layout da tela inicial resetado para o padrão</string>
     <string name="settings_wallpaper_load_error">Não foi possível carregar a imagem selecionada</string>
+    <string name="settings_lock_screen_title">Usar também na tela de bloqueio</string>
+    <string name="settings_lock_screen_unavailable">Este aparelho não permite trocar o papel de parede.</string>
+    <string name="settings_lock_screen_notice_title">Usar na tela de bloqueio?</string>
+    <string name="settings_lock_screen_notice_message">O Android não deixa o Aureole guardar a imagem atual da tela de bloqueio, então desligar não volta a anterior.</string>
+    <string name="settings_lock_screen_notice_confirm">Usar mesmo assim</string>
+    <string name="settings_lock_screen_notice_cancel">Agora não</string>
+    <string name="settings_lock_screen_off_title">Parar de usar na tela de bloqueio?</string>
+    <string name="settings_lock_screen_off_message">Manter a tela de bloqueio como está ou voltar ao papel de parede do sistema?</string>
+    <string name="settings_lock_screen_off_keep">Manter como está</string>
+    <string name="settings_lock_screen_off_restore">Voltar ao fundo do sistema</string>
+    <string name="settings_lock_screen_error">Não deu para mudar a tela de bloqueio</string>
     <string name="home_container_preview_app_label">App %1$d</string>
     <string name="settings_section_theme">Tema</string>
     <string name="settings_section_background">Fundo</string>

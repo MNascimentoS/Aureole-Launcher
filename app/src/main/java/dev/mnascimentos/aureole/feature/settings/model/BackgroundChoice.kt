@@ -48,6 +48,7 @@ fun backgroundColorToSave(initial: BackgroundDraft, current: BackgroundDraft): I
  * @property customImagePath The photo applied, for the thumbnail of its card; null shows the plain card.
  * @property adjustments Saved adjustments of that photo, for the thumbnail.
  * @property onEditPhotoClick "Edit photo": opens the editor with the current adjustments.
+ * @property lockScreen The "Also use on lock screen" switch.
  */
 data class SetBackgroundParams(
     val currentColor: Int,
@@ -59,5 +60,6 @@ data class SetBackgroundParams(
     val host: OverlayHostSpec = OverlayHostSpec(),
     val customImagePath: String? = null,
     val adjustments: WallpaperAdjustments = WallpaperAdjustments.DEFAULT,
-    val onEditPhotoClick: () -> Unit = {}
+    val onEditPhotoClick: () -> Unit = {},
+    val lockScreen: LockScreenOption = LockScreenOption()
 )

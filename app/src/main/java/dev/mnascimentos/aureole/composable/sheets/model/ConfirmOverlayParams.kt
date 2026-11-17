@@ -18,6 +18,8 @@ import dev.chrisbanes.haze.HazeState
  * many milliseconds of holding), for actions that cannot be undone.
  * @property isPrimaryAwayFromThumb Puts the filled button on the side opposite to the thumb, so a destructive
  * action is never the easiest one to hit.
+ * @property onSecondary Called when the outlined button is tapped; the overlay then closes. Swiping down and tapping
+ * outside do not call it.
  */
 data class ConfirmOverlayParams(
     val title: String,
@@ -30,5 +32,6 @@ data class ConfirmOverlayParams(
     val onSettingsClick: (() -> Unit)? = null,
     val hazeState: HazeState? = null,
     val primaryHoldMs: Long? = null,
-    val isPrimaryAwayFromThumb: Boolean = false
+    val isPrimaryAwayFromThumb: Boolean = false,
+    val onSecondary: (() -> Unit)? = null
 )

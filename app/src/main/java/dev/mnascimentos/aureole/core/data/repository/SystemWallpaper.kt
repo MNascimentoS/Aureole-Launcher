@@ -2,6 +2,7 @@ package dev.mnascimentos.aureole.core.data.repository
 
 import android.app.WallpaperManager
 import android.content.Context
+import android.graphics.Bitmap
 import timber.log.Timber
 import java.io.File
 import java.io.FileInputStream
@@ -22,6 +23,15 @@ interface SystemWallpaper {
 
     /** Sets [source] as the system wallpaper again. False when it could not be applied. */
     fun apply(source: File): Boolean
+
+    /** Sets [bitmap] as the lock screen wallpaper only. False when it could not be applied. */
+    fun applyLock(bitmap: Bitmap): Boolean
+
+    /** Gives the lock screen back to the system wallpaper. False when the device refused. */
+    fun clearLock(): Boolean
+
+    /** False on devices that do not let apps change the wallpaper (managed devices, unsupported builds). */
+    fun canSetWallpaper(): Boolean
 }
 
 class PlatformSystemWallpaper(private val context: Context) : SystemWallpaper {
@@ -46,6 +56,20 @@ class PlatformSystemWallpaper(private val context: Context) : SystemWallpaper {
         if (!source.exists()) return@guarded false
         source.inputStream().use { manager.setStream(it, null, true, WallpaperManager.FLAG_SYSTEM) }
         true
+    }
+
+    override fun applyLock(bitmap: Bitmap): Boolean = guarded("setting lock") {
+        manager.setBitmap(bitmap, null, true, WallpaperManager.FLAG_LOCK)
+        true
+    }
+
+    override fun clearLock(): Boolean = guarded("clearing lock") {
+        manager.clear(WallpaperManager.FLAG_LOCK)
+        true
+    }
+
+    override fun canSetWallpaper(): Boolean = guarded("checking") {
+        manager.isWallpaperSupported && manager.isSetWallpaperAllowed
     }
 
     private inline fun guarded(action: String, block: () -> Boolean): Boolean = try {
