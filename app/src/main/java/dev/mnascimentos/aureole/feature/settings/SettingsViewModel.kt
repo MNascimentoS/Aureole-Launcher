@@ -105,10 +105,8 @@ class SettingsViewModel(
             when (dialog) {
                 SettingsDialog.FAVORITE_PICKER -> it.copy(showFavoritePickerDialog = visible)
                 SettingsDialog.CONTAINER_POSITION -> it.copy(showContainerPositionDialog = visible)
-                SettingsDialog.COLOR_PICKER -> it.copy(showColorPickerDialog = visible)
                 SettingsDialog.CREATE_FOLDER -> it.copy(showCreateFolderDialog = visible)
                 SettingsDialog.RESET_GRID -> it.copy(showResetGridDialog = visible)
-                SettingsDialog.FACTORY_RESET -> it.copy(showFactoryResetDialog = visible)
                 SettingsDialog.SETTINGS_BUTTON_POSITION -> it.copy(showSettingsButtonPositionDialog = visible)
                 SettingsDialog.SEARCH_ICON_POSITION -> it.copy(showSearchIconPositionDialog = visible)
             }

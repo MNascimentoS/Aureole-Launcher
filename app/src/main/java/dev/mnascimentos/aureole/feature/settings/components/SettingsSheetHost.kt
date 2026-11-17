@@ -6,6 +6,7 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.ScrollState
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -44,10 +45,15 @@ import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.core.designsystem.utils.LocalHazeState
+import dev.mnascimentos.aureole.feature.settings.model.AppearanceDraft
+import dev.mnascimentos.aureole.feature.settings.model.AppearanceDraftSaver
 import dev.mnascimentos.aureole.feature.settings.model.AppearanceMenuDialogActions
+import dev.mnascimentos.aureole.feature.settings.model.AreaSheetEvents
+import dev.mnascimentos.aureole.feature.settings.model.AreaSheetSpec
 import dev.mnascimentos.aureole.feature.settings.model.SettingsAdvancedDialogActions
 import dev.mnascimentos.aureole.feature.settings.model.SettingsArea
 import dev.mnascimentos.aureole.feature.settings.model.SettingsChildKind
+import dev.mnascimentos.aureole.feature.settings.model.SettingsInnerKind
 import dev.mnascimentos.aureole.feature.settings.model.SettingsScreenActions
 import dev.mnascimentos.aureole.feature.settings.model.SettingsSheet
 import dev.mnascimentos.aureole.feature.settings.model.SettingsSheetEvent
@@ -55,8 +61,9 @@ import dev.mnascimentos.aureole.feature.settings.model.SettingsSheetSaver
 import dev.mnascimentos.aureole.feature.settings.model.SettingsUiState
 import dev.mnascimentos.aureole.feature.settings.model.area
 import dev.mnascimentos.aureole.feature.settings.model.reduceSettingsSheet
-import dev.mnascimentos.aureole.feature.settings.model.settingsAreaHasPreview
-import dev.mnascimentos.aureole.feature.settings.model.settingsAreaTitle
+import dev.mnascimentos.aureole.feature.settings.model.saveOnLeaving
+import dev.mnascimentos.aureole.feature.settings.model.settingsAreaHasInner
+import dev.mnascimentos.aureole.feature.settings.model.settingsSheetTitle
 import dev.mnascimentos.aureole.feature.settings.sections.AdvancedSections
 import dev.mnascimentos.aureole.feature.settings.sections.AppearanceSections
 import dev.mnascimentos.aureole.feature.settings.sections.BehaviorSections
@@ -122,14 +129,21 @@ fun SettingsSheetHost(
                 AureoleOverlayBackdrop(hazeState = hazeState, modifier = Modifier.fillMaxSize())
             }
             if (area != null) {
-                AreaSheet(
-                    area = area,
-                    isVisible = sheet is SettingsSheet.Area,
+                OpenArea(
+                    spec = AreaSheetSpec(
+                        area = area,
+                        inner = (sheet as? SettingsSheet.Area)?.inner,
+                        isVisible = sheet is SettingsSheet.Area
+                    ),
+                    uiState = uiState,
+                    actions = actions,
                     state = areaState,
-                    scroll = areaScroll[0],
-                    onScrolled = { areaScroll[0] = it },
-                    onClosed = { dispatch(SettingsSheetEvent.CloseArea(area)) },
-                    content = { AreaSections(area, uiState, actions, dispatch, onNavigateToLicenses) }
+                    dispatch = dispatch,
+                    list = {
+                        ScrolledAreaList(scroll = areaScroll) {
+                            AreaSections(area, uiState, actions, dispatch, onNavigateToLicenses)
+                        }
+                    }
                 )
             }
             (sheet as? SettingsSheet.Child)?.let { child ->
@@ -151,55 +165,116 @@ private fun isBackdropVisible(sheet: SettingsSheet?, isAreaShown: Boolean): Bool
     null -> false
 }
 
+/**
+ * The open area sheet. Appearance keeps the palette or font tapped in its pickers as a draft, drawn live in the
+ * sheet and its preview: going back from a picker saves that choice and keeps the sheet; closing the sheet saves
+ * what is left, with the usual Undo.
+ */
+@Composable
+private fun OpenArea(
+    spec: AreaSheetSpec,
+    uiState: SettingsUiState,
+    actions: SettingsScreenActions,
+    state: AureoleEditOverlayState,
+    dispatch: (SettingsSheetEvent) -> Unit,
+    list: @Composable () -> Unit
+) {
+    val area = spec.area
+    if (!settingsAreaHasInner(area)) {
+        AreaSheet(
+            spec = spec,
+            state = state,
+            events = AreaSheetEvents(onClosed = { dispatch(SettingsSheetEvent.CloseArea(area)) }, onBackFromInner = {}),
+            content = { list() }
+        )
+        return
+    }
+    var draft by rememberSaveable(area, stateSaver = AppearanceDraftSaver) { mutableStateOf(AppearanceDraft()) }
+    val save: (SettingsInnerKind?) -> Unit = { leaving ->
+        val saved = draft.saveOnLeaving(leaving, uiState.selectedThemeName, uiState.selectedFontName)
+        saved.paletteName?.let(actions.onSelectTheme)
+        saved.fontName?.let(actions.onSelectFont)
+        draft = saved.rest
+    }
+    AppearanceDraftTheme(draft = draft) {
+        AreaSheet(
+            spec = spec,
+            state = state,
+            events = AreaSheetEvents(
+                onClosed = {
+                    save(null)
+                    dispatch(SettingsSheetEvent.CloseArea(area))
+                },
+                onBackFromInner = {
+                    save(spec.inner)
+                    dispatch(SettingsSheetEvent.Back)
+                }
+            ),
+            preview = {
+                AureoleMiniHome(
+                    content = sampleMiniHomeContent(),
+                    isLeftHanded = LocalLeftHanded.current,
+                    themedIcons = uiState.isThemedAppIconsEnabled,
+                    modifier = Modifier.align(Alignment.Center)
+                )
+            }
+        ) { inner ->
+            AreaSheetContentSwitch(
+                inner = inner,
+                list = list,
+                picker = { kind ->
+                    AppearancePicker(kind = kind, uiState = uiState, draft = draft, onDraftChange = { draft = it })
+                }
+            )
+        }
+    }
+}
+
 @Composable
 private fun AreaSheet(
-    area: SettingsArea,
-    isVisible: Boolean,
+    spec: AreaSheetSpec,
     state: AureoleEditOverlayState,
-    scroll: Int,
-    onScrolled: (Int) -> Unit,
-    onClosed: () -> Unit,
-    content: @Composable () -> Unit
+    events: AreaSheetEvents,
+    preview: (@Composable BoxScope.() -> Unit)? = null,
+    content: @Composable (SettingsInnerKind?) -> Unit
 ) {
     val isLeftHanded = LocalLeftHanded.current
     AureoleEditOverlay(
         state = state,
-        onDismissRequest = onClosed,
+        onDismissRequest = events.onClosed,
         params = AureoleEditOverlayParams(
             config = AureoleEditOverlayConfig(
-                title = stringResource(settingsAreaTitle(area)),
-                isVisible = isVisible,
+                title = stringResource(settingsSheetTitle(spec.area, spec.inner)),
+                isVisible = spec.isVisible,
                 isLeftHanded = isLeftHanded,
+                // With a picker inside, back brings the list back; tap outside and drag still close the sheet.
+                onBackPress = if (spec.inner != null) events.onBackFromInner else null,
+                onDismiss = events.onClosed,
                 showHeaderAction = false,
                 hasExternalBackdrop = true
             ),
-            previewContent = if (settingsAreaHasPreview(area)) {
-                {
-                    AureoleMiniHome(
-                        content = sampleMiniHomeContent(),
-                        isLeftHanded = isLeftHanded,
-                        modifier = Modifier.align(Alignment.Center)
-                    )
-                }
-            } else {
-                null
-            },
-            sheetContent = {
-                val scrollState = rememberScrollState(initial = scroll)
-                RestoreAreaScroll(scrollState = scrollState, saved = scroll, onScrolled = onScrolled)
-                Column(modifier = Modifier.verticalScroll(scrollState)) {
-                    content()
-                    Spacer(modifier = Modifier.height(AureoleDS.dimens.large))
-                }
-            }
+            previewContent = preview,
+            sheetContent = { content(spec.inner) }
         )
     )
 }
 
+/** The list of an area, scrolling inside the sheet; its scroll is kept in [scroll] for the way back. */
+@Composable
+private fun ScrolledAreaList(scroll: IntArray, content: @Composable () -> Unit) {
+    val saved = scroll[0]
+    val scrollState = rememberScrollState(initial = saved)
+    RestoreAreaScroll(scrollState = scrollState, saved = saved, onScrolled = { scroll[0] = it })
+    Column(modifier = Modifier.verticalScroll(scrollState)) {
+        content()
+        Spacer(modifier = Modifier.height(AureoleDS.dimens.large))
+    }
+}
+
 /**
- * The area content leaves the composition while a child sheet is up. When it comes back, the saved scroll is put
- * back once the content is laid out far enough to hold it (a scroll set before that is clamped), and from then on
- * every scroll is saved.
+ * The area list leaves the composition while a child sheet or a picker is up. When it comes back, the saved scroll
+ * is put back once the content is laid out far enough to hold it (a scroll set before that is clamped), and from then
+ * on every scroll is saved.
  */
 @Composable
 private fun RestoreAreaScroll(scrollState: ScrollState, saved: Int, onScrolled: (Int) -> Unit) {
@@ -230,9 +305,8 @@ private fun AreaSections(
             dialogActions = AppearanceMenuDialogActions(
                 onShowSetBackgroundDialog = open(SettingsChildKind.BACKGROUND),
                 onShowCardsGlassDialog = open(SettingsChildKind.CARDS_GLASS),
-                onShowPaletteDialog = open(SettingsChildKind.PALETTE),
-                onShowFontDialog = open(SettingsChildKind.FONT),
-                onShowCustomColorsDialog = open(SettingsChildKind.CUSTOM_COLORS)
+                onShowPaletteDialog = { dispatch(SettingsSheetEvent.OpenInner(SettingsInnerKind.PALETTE)) },
+                onShowFontDialog = { dispatch(SettingsSheetEvent.OpenInner(SettingsInnerKind.FONT)) }
             )
         )
         SettingsArea.BEHAVIOR -> BehaviorSections(uiState = uiState, actions = actions)

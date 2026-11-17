@@ -47,11 +47,13 @@ import dev.mnascimentos.aureole.core.designsystem.icons.Logo
 import dev.mnascimentos.aureole.core.designsystem.model.AnchoredSheetState
 import dev.mnascimentos.aureole.core.designsystem.model.AureoleEditOverlayParams
 import dev.mnascimentos.aureole.core.designsystem.model.LocalOverlayExternalBackdrop
+import dev.mnascimentos.aureole.core.designsystem.model.OverlayLayout
 import dev.mnascimentos.aureole.core.designsystem.model.OverlaySheetDecorations
 import dev.mnascimentos.aureole.core.designsystem.model.OverlaySheetMotion
 import dev.mnascimentos.aureole.core.designsystem.model.OverlaySheetStateData
 import dev.mnascimentos.aureole.core.designsystem.model.SheetBounds
 import dev.mnascimentos.aureole.core.designsystem.model.anchoredPreviewTop
+import dev.mnascimentos.aureole.core.designsystem.model.overlayLayoutFor
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
@@ -101,9 +103,20 @@ internal fun OverlayContentBox(
         }
         val density = LocalDensity.current
         val screenHeightPx = with(density) { maxHeight.toPx() }
+        val overlayLayout = overlayLayoutFor(
+            width = with(density) { maxWidth.toPx() },
+            height = screenHeightPx,
+            hasPreview = params.previewContent != null
+        )
+        // Next to the preview the sheet may take the whole height at rest: there is nothing above it to leave room.
+        val restFraction = if (overlayLayout == OverlayLayout.SIDE_BY_SIDE) {
+            params.config.expandedHeightFraction
+        } else {
+            params.config.restHeightFraction
+        }
         val bounds = with(density) {
             SheetBounds(
-                restMaxPx = screenHeightPx * params.config.restHeightFraction,
+                restMaxPx = screenHeightPx * restFraction,
                 expandedPx = screenHeightPx * params.config.expandedHeightFraction,
                 elasticLimitPx = SHEET_ELASTIC_LIMIT.toPx(),
                 bouncePx = SHEET_BOUNCE.toPx(),
@@ -112,25 +125,22 @@ internal fun OverlayContentBox(
         }
         val motion = remember { OverlaySheetMotion() }
 
-        AnchoredPreviewLayout(
-            state = AnchoredSheetState(bounds, motion, stateData.isExpanded),
-            hiddenFraction = rememberSheetHiddenFraction(stateData),
-            preview = {
-                PreviewSlot(
-                    previewContent = params.previewContent,
-                    modifier = Modifier.fadeWith(stateData),
-                    expandFraction = { expandFractionOf(motion, stateData.isExpanded, bounds) }
-                )
-            },
-            sheet = {
-                SheetSurface(
-                    stateData = stateData,
-                    params = params,
-                    bounds = bounds,
-                    motion = motion
-                )
-            }
-        )
+        val state = AnchoredSheetState(bounds, motion, stateData.isExpanded)
+        val hiddenFraction = rememberSheetHiddenFraction(stateData)
+        val preview: @Composable () -> Unit = {
+            PreviewSlot(
+                previewContent = params.previewContent,
+                modifier = Modifier.fadeWith(stateData),
+                expandFraction = { expandFractionOf(motion, stateData.isExpanded, bounds) }
+            )
+        }
+        val sheet: @Composable () -> Unit = {
+            SheetSurface(stateData = stateData, params = params, bounds = bounds, motion = motion)
+        }
+        when (overlayLayout) {
+            OverlayLayout.STACKED -> AnchoredPreviewLayout(state, hiddenFraction, preview, sheet)
+            OverlayLayout.SIDE_BY_SIDE -> SideBySidePreviewLayout(state, hiddenFraction, preview, sheet)
+        }
     }
 }
 

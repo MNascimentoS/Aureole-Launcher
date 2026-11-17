@@ -2,9 +2,7 @@ package dev.mnascimentos.aureole.feature.settings
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.ui.platform.LocalContext
 import com.android.tools.screenshot.PreviewTest
-import dev.mnascimentos.aureole.composable.ColorPickerDialog
 import dev.mnascimentos.aureole.composable.LocalHomeUiState
 import dev.mnascimentos.aureole.composable.ProvideHomeUiState
 import dev.mnascimentos.aureole.composable.color.model.DefaultPickerColor
@@ -16,26 +14,11 @@ import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
 import dev.mnascimentos.aureole.feature.settings.components.ContainerPositionDialog
-import dev.mnascimentos.aureole.feature.settings.components.FactoryResetBottomSheet
 import dev.mnascimentos.aureole.feature.settings.components.SearchIconPositionDialog
 import dev.mnascimentos.aureole.feature.settings.components.SetBackgroundBottomSheet
 import dev.mnascimentos.aureole.feature.settings.components.SettingsButtonPositionDialog
-import dev.mnascimentos.aureole.feature.settings.components.UninstallBottomSheet
 import dev.mnascimentos.aureole.feature.settings.model.SetBackgroundParams
 import dev.mnascimentos.aureole.feature.settings.screens.ResetGridDialog
-
-@PreviewTest
-@AureolePreview
-@Composable
-private fun ColorPickerDialogScreenshotTest() {
-    AureoleLauncherTheme {
-        ColorPickerDialog(
-            initialColor = 0xFF1B65C0.toInt(),
-            onColorSelected = {},
-            onDismiss = {}
-        )
-    }
-}
 
 @PreviewTest
 @AureolePreview
@@ -130,24 +113,6 @@ private fun SettingsBottomSheetScreenshotTest() {
         ) {
             AureoleText("Sample Content")
         }
-    }
-}
-
-@PreviewTest
-@AureolePreview
-@Composable
-private fun FactoryResetBottomSheetScreenshotTest() {
-    AureoleLauncherTheme {
-        FactoryResetBottomSheet()
-    }
-}
-
-@PreviewTest
-@AureolePreview
-@Composable
-private fun UninstallBottomSheetScreenshotTest() {
-    AureoleLauncherTheme {
-        UninstallBottomSheet(context = LocalContext.current, onDismiss = {})
     }
 }
 

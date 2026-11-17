@@ -4,13 +4,10 @@ import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.v2.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
-import androidx.compose.ui.test.performTouchInput
-import dev.mnascimentos.aureole.composable.menu.model.MENU_HOLD_MS
 import dev.mnascimentos.aureole.core.designsystem.model.TextResource
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.feature.settings.model.SettingsScreenActions
 import dev.mnascimentos.aureole.feature.settings.model.SettingsUiState
-import dev.mnascimentos.aureole.testing.SHEET_SLIDE_IN_MS
 import dev.mnascimentos.aureole.testing.closeOverlayWithBack
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
@@ -21,7 +18,6 @@ import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 
 private const val DISMISS_ANIMATION_MS = 500L
-private const val HOLD_MARGIN_MS = 100L
 
 @RunWith(RobolectricTestRunner::class)
 class SettingsScreenTest {
@@ -42,25 +38,6 @@ class SettingsScreenTest {
         }
 
         composeTestRule.waitForIdle()
-    }
-
-    @Test
-    fun `when showColorPickerDialog is true, should render color picker dialog`() {
-        var dismissCalled = false
-        val state = SettingsUiState(showColorPickerDialog = true)
-        val actions = SettingsScreenActions(
-            onDismissColorPickerDialog = { dismissCalled = true }
-        )
-
-        composeTestRule.setContent {
-            AureoleLauncherTheme {
-                SettingsScreen(uiState = state, actions = actions)
-            }
-        }
-
-        composeTestRule.onNodeWithText("Choose Primary Color").assertIsDisplayed()
-        composeTestRule.closeOverlayWithBack()
-        assertTrue(dismissCalled)
     }
 
     @Test
@@ -125,45 +102,5 @@ class SettingsScreenTest {
         composeTestRule.mainClock.advanceTimeBy(DISMISS_ANIMATION_MS)
         assertFalse(confirmCalled)
         assertEquals(1, dismissCount)
-    }
-
-    @Test
-    fun `when secondary dialog flags are true, should handle position selections and factory reset`() {
-        var selectedPos: String? = null
-        var selectedBtnPos: String? = null
-        var selectedSearchPos: String? = null
-        var factoryResetConfirmed = false
-        var factoryResetDismissed = false
-
-        val state = SettingsUiState(
-            showContainerPositionDialog = true,
-            showSettingsButtonPositionDialog = true,
-            showSearchIconPositionDialog = true,
-            showFactoryResetDialog = true
-        )
-        val actions = SettingsScreenActions(
-            onContainerPositionSelected = { selectedPos = it },
-            onSettingsButtonPositionSelected = { selectedBtnPos = it },
-            onSearchIconPositionSelected = { selectedSearchPos = it },
-            onConfirmFactoryReset = { factoryResetConfirmed = true },
-            onDismissFactoryResetDialog = { factoryResetDismissed = true }
-        )
-
-        composeTestRule.mainClock.autoAdvance = false
-        composeTestRule.setContent {
-            AureoleLauncherTheme {
-                SettingsScreen(uiState = state, actions = actions)
-            }
-        }
-
-        composeTestRule.mainClock.advanceTimeBy(SHEET_SLIDE_IN_MS)
-        composeTestRule.onNodeWithText("Reset launcher?").assertIsDisplayed()
-        composeTestRule.onNodeWithText("Reset").performClick()
-        assertFalse(factoryResetConfirmed)
-
-        composeTestRule.onNodeWithText("Reset").performTouchInput { down(center) }
-        composeTestRule.mainClock.advanceTimeBy(MENU_HOLD_MS + HOLD_MARGIN_MS)
-        assertTrue(factoryResetConfirmed)
-        assertFalse(factoryResetDismissed)
     }
 }

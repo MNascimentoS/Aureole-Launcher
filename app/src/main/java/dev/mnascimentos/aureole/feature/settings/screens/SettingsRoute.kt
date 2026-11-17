@@ -77,7 +77,6 @@ private fun buildSettingsScreenActions(
         onUndo = viewModel::onUndo,
         onUndoExpired = viewModel::onUndoExpired,
         onClearErrorMessage = { viewModel.clearErrorMessage() },
-        onSelectManualSeedColor = { color -> viewModel.changeManualSeedColor(color, R.string.undo_color_changed) },
         onSelectBackgroundColor = { color ->
             viewModel.changeManualSeedColor(color, R.string.undo_background_changed)
         },
@@ -140,12 +139,8 @@ private fun applyDialogActions(viewModel: SettingsViewModel, base: SettingsScree
         onContainerPositionSelected = { pos -> viewModel.selectPosition(PositionKind.CONTAINER, pos) },
         onOpenResetGridDialog = { viewModel.setDialogVisible(SettingsDialog.RESET_GRID, true) },
         onDismissResetGridDialog = { viewModel.setDialogVisible(SettingsDialog.RESET_GRID, false) },
-        onOpenFactoryResetDialog = { viewModel.setDialogVisible(SettingsDialog.FACTORY_RESET, true) },
-        onDismissFactoryResetDialog = { viewModel.setDialogVisible(SettingsDialog.FACTORY_RESET, false) },
         onConfirmFactoryReset = { viewModel.performFactoryReset() },
         onOpenFavoritePickerClick = { viewModel.setDialogVisible(SettingsDialog.FAVORITE_PICKER, true) },
-        onOpenColorPickerDialog = { viewModel.setDialogVisible(SettingsDialog.COLOR_PICKER, true) },
-        onDismissColorPickerDialog = { viewModel.setDialogVisible(SettingsDialog.COLOR_PICKER, false) },
         onAddFolderClick = { viewModel.setDialogVisible(SettingsDialog.CREATE_FOLDER, true) },
         onDismissCreateFolderDialog = { viewModel.setDialogVisible(SettingsDialog.CREATE_FOLDER, false) },
         onOpenSettingsButtonPositionDialog = {

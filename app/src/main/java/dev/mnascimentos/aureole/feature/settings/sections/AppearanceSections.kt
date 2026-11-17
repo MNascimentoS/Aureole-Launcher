@@ -1,15 +1,9 @@
 package dev.mnascimentos.aureole.feature.settings.sections
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.composable.menu.AureoleMenuRow
@@ -47,8 +41,7 @@ fun AppearanceSections(
     modifier: Modifier = Modifier
 ) {
     Column(
-        modifier = modifier.fillMaxWidth(),
-        verticalArrangement = Arrangement.spacedBy(AureoleDS.dimens.small)
+        modifier = modifier.fillMaxWidth()
     ) {
         ThemeGroup(uiState = uiState, actions = actions, dialogActions = dialogActions)
         BackgroundGroup(
@@ -69,7 +62,7 @@ private fun ThemeGroup(
     actions: SettingsScreenActions,
     dialogActions: AppearanceMenuDialogActions
 ) {
-    SettingsSectionGroup(label = stringResource(R.string.settings_section_theme)) {
+    SettingsSectionGroup(label = stringResource(R.string.settings_section_theme), isFirst = true) {
         AureoleMenuRow(
             MenuRowParams(
                 title = stringResource(R.string.settings_appearance_color_palette),
@@ -77,14 +70,6 @@ private fun ThemeGroup(
                 icon = { m, c -> AureoleDS.icons.Dots(modifier = m, tint = c) },
                 showChevron = true,
                 onClick = dialogActions.onShowPaletteDialog
-            )
-        )
-        AureoleMenuRow(
-            MenuRowParams(
-                title = stringResource(R.string.settings_appearance_custom_colors),
-                icon = { m, _ -> SeedSwatch(color = uiState.manualSeedColor, modifier = m) },
-                showChevron = true,
-                onClick = dialogActions.onShowCustomColorsDialog
             )
         )
         AureoleMenuRow(
@@ -141,12 +126,6 @@ private fun BackgroundGroup(
             )
         }
     }
-}
-
-/** The seed color as a dot, in the icon column of "Custom colors". */
-@Composable
-private fun SeedSwatch(color: Int, modifier: Modifier = Modifier) {
-    Box(modifier = modifier.clip(CircleShape).background(Color(color)))
 }
 
 @AureolePreview

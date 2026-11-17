@@ -54,7 +54,6 @@ fun SettingsViewModel.resetGridLayout() {
 
 fun SettingsViewModel.performFactoryReset() {
     viewModelScope.launch {
-        updateUiState { it.copy(showFactoryResetDialog = false) }
         withContext(Dispatchers.IO) {
             settingsRepository.performFactoryReset()
         }

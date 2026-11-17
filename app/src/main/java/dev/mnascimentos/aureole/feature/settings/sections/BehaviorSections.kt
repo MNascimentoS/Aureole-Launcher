@@ -44,10 +44,9 @@ fun BehaviorSections(
 ) {
     val deliberate = rememberDeliberateTap()
     Column(
-        modifier = modifier.fillMaxWidth(),
-        verticalArrangement = Arrangement.spacedBy(AureoleDS.dimens.small)
+        modifier = modifier.fillMaxWidth()
     ) {
-        SettingsSectionGroup(label = stringResource(R.string.settings_section_gestures)) {
+        SettingsSectionGroup(label = stringResource(R.string.settings_section_gestures), isFirst = true) {
             AureoleSwitchRow(
                 SwitchRowParams(
                     title = stringResource(R.string.settings_behavior_home_opens_all_apps),

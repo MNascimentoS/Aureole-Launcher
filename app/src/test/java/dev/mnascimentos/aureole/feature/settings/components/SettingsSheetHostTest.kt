@@ -5,6 +5,7 @@ import androidx.compose.ui.semantics.SemanticsActions
 import androidx.compose.ui.semantics.getOrNull
 import androidx.compose.ui.test.SemanticsMatcher
 import androidx.compose.ui.test.assert
+import androidx.compose.ui.test.click
 import androidx.compose.ui.test.getUnclippedBoundsInRoot
 import androidx.compose.ui.test.hasClickAction
 import androidx.compose.ui.test.hasText
@@ -13,7 +14,9 @@ import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollTo
+import androidx.compose.ui.test.performTouchInput
 import androidx.compose.ui.unit.Dp
+import dev.mnascimentos.aureole.core.designsystem.palette.allPalettes
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.feature.settings.SettingsNavGraph
 import dev.mnascimentos.aureole.feature.settings.model.SettingsScreenActions
@@ -26,6 +29,9 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
+
+/** Long enough for a sheet to slide out. */
+private const val OVERLAY_CLOSE_ANIMATION_MS = 500L
 
 /** The settings root with its areas as sheets: opening, swapping in place, the full-screen licenses and back. */
 @RunWith(RobolectricTestRunner::class)
@@ -81,18 +87,65 @@ class SettingsSheetHostTest {
     }
 
     @Test
-    fun `Palette swaps in place of Appearance and closing brings Appearance back`() {
+    fun `Palette opens inside the Appearance sheet, keeping the preview, and back brings the list`() {
         setSettings()
         openArea("Appearance")
 
         composeTestRule.onNodeWithText("Color palette").performScrollTo().performClick()
         composeTestRule.waitForIdle()
-        composeTestRule.onNodeWithText("Pick a palette").assertExists()
+        composeTestRule.onNodeWithText("DARK · TAP TO PREVIEW").assertExists()
+        composeTestRule.onNodeWithText("Pick a palette").assertDoesNotExist()
         composeTestRule.onNodeWithText("Themed icons").assertDoesNotExist()
+        composeTestRule.onNodeWithText("09:41").assertExists()
 
         composeTestRule.closeOverlayWithBack()
-        composeTestRule.onNodeWithText("Pick a palette").assertDoesNotExist()
+        composeTestRule.onNodeWithText("DARK · TAP TO PREVIEW").assertDoesNotExist()
         composeTestRule.onNodeWithText("Themed icons").assertExists()
+        assertFalse(leftSettings)
+    }
+
+    @Test
+    fun `back from the palette saves the tapped palette and keeps the sheet open`() {
+        val saved = mutableListOf<String>()
+        setSettings(
+            uiState = SettingsUiState(selectedThemeName = allPalettes[0].name),
+            actions = SettingsScreenActions(onSelectTheme = { saved += it })
+        )
+        openArea("Appearance")
+        composeTestRule.onNodeWithText("Color palette").performScrollTo().performClick()
+        composeTestRule.waitForIdle()
+
+        composeTestRule.onNodeWithText(allPalettes[1].name).performScrollTo().performClick()
+        assertTrue(saved.isEmpty())
+
+        composeTestRule.closeOverlayWithBack()
+        assertEquals(listOf(allPalettes[1].name), saved)
+        composeTestRule.onNodeWithText("Themed icons").assertExists()
+    }
+
+    @Test
+    fun `closing the sheet from inside the font picker saves the font and leaves to the root`() {
+        val saved = mutableListOf<String>()
+        setSettings(actions = SettingsScreenActions(onSelectFont = { saved += it }))
+        openArea("Appearance")
+        composeTestRule.onNodeWithText("Change font").performScrollTo().performClick()
+        composeTestRule.waitForIdle()
+        composeTestRule.onNodeWithText("Roboto").performScrollTo().performClick()
+
+        closeAreaByTappingOutside()
+
+        assertEquals(listOf("Roboto"), saved)
+        composeTestRule.onNodeWithText("Roboto").assertDoesNotExist()
+        composeTestRule.onNodeWithText("Thank you!").assertExists()
+        assertFalse(leftSettings)
+    }
+
+    /** Taps outside the sheet (on the preview, which takes no taps), which closes it like a drag down. */
+    private fun closeAreaByTappingOutside() {
+        composeTestRule.onNodeWithText("09:41").performTouchInput { click() }
+        composeTestRule.waitForIdle()
+        composeTestRule.mainClock.advanceTimeBy(OVERLAY_CLOSE_ANIMATION_MS)
+        composeTestRule.waitForIdle()
     }
 
     @Test
@@ -121,13 +174,11 @@ class SettingsSheetHostTest {
     }
 
     @Test
-    fun `Custom colors opens the color picker in place of Appearance`() {
+    fun `Custom colors is gone from Appearance`() {
         setSettings()
         openArea("Appearance")
-        composeTestRule.onNodeWithText("Custom colors").performScrollTo().performClick()
-        composeTestRule.waitForIdle()
-        composeTestRule.onNodeWithText("Choose Primary Color").assertExists()
-        composeTestRule.onNodeWithText("Color palette").assertDoesNotExist()
+        composeTestRule.onNodeWithText("Custom colors").assertDoesNotExist()
+        composeTestRule.onNodeWithText("Set Background").assertExists()
     }
 
     @Test
@@ -193,15 +244,15 @@ class SettingsSheetHostTest {
     }
 
     @Test
-    fun `back walks from the child to the area, to the root and then out`() {
+    fun `back walks from the picker to the list, to the root and then out`() {
         setSettings()
         openArea("Appearance")
         composeTestRule.onNodeWithText("Change font").performScrollTo().performClick()
         composeTestRule.waitForIdle()
-        composeTestRule.onNodeWithText("Pick Font").assertExists()
+        composeTestRule.onNodeWithText("LAUNCHER FONT").assertExists()
 
         composeTestRule.closeOverlayWithBack()
-        composeTestRule.onNodeWithText("Pick Font").assertDoesNotExist()
+        composeTestRule.onNodeWithText("LAUNCHER FONT").assertDoesNotExist()
         composeTestRule.onNodeWithText("Color palette").assertExists()
         assertFalse(leftSettings)
 

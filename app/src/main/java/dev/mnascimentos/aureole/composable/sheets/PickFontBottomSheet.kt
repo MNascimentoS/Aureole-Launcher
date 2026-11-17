@@ -48,7 +48,6 @@ fun PickFontBottomSheet(
         aureoleIcons = AureoleDS.icons,
         aureoleDimens = AureoleDS.dimens
     )
-    val isLeftHanded = LocalLeftHanded.current
     val shownFont = pending.fontName ?: selectedFontName
 
     ThemePreviewOverlay(
@@ -67,21 +66,41 @@ fun PickFontBottomSheet(
         ),
         modifier = modifier
     ) {
-        ThemePickerGrid(
-            params = ThemePickerGridParams(
-                label = stringResource(R.string.settings_appearance_font_section_label),
-                columns = FONT_COLUMNS,
-                footer = options.footer
+        FontPickerGrid(
+            shownFont = shownFont,
+            onSelect = { fontName -> pending = pending.copy(fontName = fontName) },
+            footer = options.footer
+        )
+    }
+}
+
+/**
+ * Body of the font picker without its sheet: the label and the grid of fonts, [shownFont] marked. The Appearance
+ * sheet of the settings shows it inside itself.
+ */
+@Composable
+internal fun FontPickerGrid(
+    shownFont: String,
+    onSelect: (String) -> Unit,
+    modifier: Modifier = Modifier,
+    footer: (@Composable () -> Unit)? = null
+) {
+    val isLeftHanded = LocalLeftHanded.current
+    ThemePickerGrid(
+        params = ThemePickerGridParams(
+            label = stringResource(R.string.settings_appearance_font_section_label),
+            columns = FONT_COLUMNS,
+            footer = footer
+        ),
+        modifier = modifier
+    ) {
+        items(items = AvailableFonts.keys.toList(), key = { it }, contentType = { "font_chip" }) { fontName ->
+            FontChip(
+                fontName = fontName,
+                isSelected = fontName == shownFont,
+                onSelect = { onSelect(fontName) },
+                isLeftHanded = isLeftHanded
             )
-        ) {
-            items(items = AvailableFonts.keys.toList(), key = { it }, contentType = { "font_chip" }) { fontName ->
-                FontChip(
-                    fontName = fontName,
-                    isSelected = fontName == shownFont,
-                    onSelect = { pending = pending.copy(fontName = fontName) },
-                    isLeftHanded = isLeftHanded
-                )
-            }
         }
     }
 }

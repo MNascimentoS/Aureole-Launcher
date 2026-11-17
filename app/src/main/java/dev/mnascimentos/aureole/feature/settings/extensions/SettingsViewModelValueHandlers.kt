@@ -34,8 +34,7 @@ private fun SettingsViewModel.handleManualSeedColor(color: Int) {
             manualSeedColor = color,
             selectedThemeName = "Custom",
             isCustomWallpaperSet = false,
-            customWallpaperPath = null,
-            showColorPickerDialog = false
+            customWallpaperPath = null
         )
     }
 }

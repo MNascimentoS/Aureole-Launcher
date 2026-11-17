@@ -5,7 +5,6 @@ import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollTo
 import dev.mnascimentos.aureole.core.designsystem.model.GlassLevel
-import dev.mnascimentos.aureole.core.designsystem.palette.allPalettes
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.feature.settings.components.SettingsChildSheet
 import dev.mnascimentos.aureole.feature.settings.model.CardsGlassDraft
@@ -102,62 +101,12 @@ class SettingsAppearanceControlsTest {
     }
 
     @Test
-    fun `when palette sheet is open, should render PickPaletteBottomSheet and handle selection`() {
-        var selectedTheme = ""
-        var dismissCalled = false
-        val kind = SettingsChildKind.PALETTE
-        val actions = SettingsScreenActions(onSelectTheme = { selectedTheme = it })
-
-        composeTestRule.setContent {
-            AureoleLauncherTheme {
-                SettingsChildSheet(
-                    kind = kind,
-                    uiState = SettingsUiState(),
-                    actions = actions,
-                    onClose = { dismissCalled = true }
-                )
-            }
-        }
-
-        composeTestRule.onNodeWithText("Pick a palette").assertExists()
-        composeTestRule.onNodeWithText(allPalettes[1].name).performClick()
-        composeTestRule.closeOverlayWithBack()
-        assertEquals(allPalettes[1].name, selectedTheme)
-        assertTrue(dismissCalled)
-    }
-
-    @Test
-    fun `when font sheet is open, should render PickFontBottomSheet and handle selection`() {
-        var selectedFont = ""
-        var dismissCalled = false
-        val kind = SettingsChildKind.FONT
-        val actions = SettingsScreenActions(onSelectFont = { selectedFont = it })
-
-        composeTestRule.setContent {
-            AureoleLauncherTheme {
-                SettingsChildSheet(
-                    kind = kind,
-                    uiState = SettingsUiState(),
-                    actions = actions,
-                    onClose = { dismissCalled = true }
-                )
-            }
-        }
-
-        composeTestRule.onNodeWithText("Pick Font").assertExists()
-        composeTestRule.onNodeWithText("Roboto").performClick()
-        composeTestRule.closeOverlayWithBack()
-        assertEquals("Roboto", selectedFont)
-        assertTrue(dismissCalled)
-    }
-
-    @Test
     fun `when setBg sheet is open, closing without a change should save no seed color`() {
         var savedColor: Int? = null
         var dismissCalled = false
         val kind = SettingsChildKind.BACKGROUND
         val actions = SettingsScreenActions(
-            onSelectManualSeedColor = { savedColor = it }
+            onSelectBackgroundColor = { savedColor = it }
         )
 
         composeTestRule.setContent {
@@ -268,25 +217,5 @@ class SettingsAppearanceControlsTest {
 
         composeTestRule.onNodeWithText("Apply").assertDoesNotExist()
         composeTestRule.onNodeWithText("Cancel").assertDoesNotExist()
-    }
-
-    @Test
-    fun `when custom colors sheet is open, should show the color picker and close through back`() {
-        var dismissCalled = false
-
-        composeTestRule.setContent {
-            AureoleLauncherTheme {
-                SettingsChildSheet(
-                    kind = SettingsChildKind.CUSTOM_COLORS,
-                    uiState = SettingsUiState(),
-                    actions = SettingsScreenActions(),
-                    onClose = { dismissCalled = true }
-                )
-            }
-        }
-
-        composeTestRule.onNodeWithText("Choose Primary Color").assertExists()
-        composeTestRule.closeOverlayWithBack()
-        assertTrue(dismissCalled)
     }
 }

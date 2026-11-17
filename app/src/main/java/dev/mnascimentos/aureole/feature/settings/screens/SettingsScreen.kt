@@ -16,7 +16,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import dev.mnascimentos.aureole.R
-import dev.mnascimentos.aureole.composable.ColorPickerDialog
 import dev.mnascimentos.aureole.composable.ProvideHomeUiState
 import dev.mnascimentos.aureole.composable.dialogs.CreateFolderDialog
 import dev.mnascimentos.aureole.composable.favorites.FavoriteAppsDialog
@@ -32,7 +31,6 @@ import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
 import dev.mnascimentos.aureole.feature.settings.SettingsNavGraph
 import dev.mnascimentos.aureole.feature.settings.components.ContainerPositionDialog
-import dev.mnascimentos.aureole.feature.settings.components.FactoryResetBottomSheet
 import dev.mnascimentos.aureole.feature.settings.components.SearchIconPositionDialog
 import dev.mnascimentos.aureole.feature.settings.components.SettingsButtonPositionDialog
 import dev.mnascimentos.aureole.feature.settings.model.SettingsScreenActions
@@ -89,15 +87,6 @@ private fun SettingsDialogsPrimary(
     uiState: SettingsUiState,
     actions: SettingsScreenActions
 ) {
-    if (uiState.showColorPickerDialog) {
-        ColorPickerDialog(
-            initialColor = uiState.manualSeedColor,
-            onColorSelected = actions.onSelectManualSeedColor,
-            onDismiss = actions.onDismissColorPickerDialog,
-            isLeftHanded = uiState.isLeftHandedMode
-        )
-    }
-
     if (uiState.showCreateFolderDialog) {
         ProvideHomeUiState(MainUiState(isLeftHandedMode = uiState.isLeftHandedMode)) {
             CreateFolderDialog(
@@ -134,12 +123,6 @@ private fun SettingsDialogsSecondary(
 ) {
     ProvideHomeUiState(MainUiState(isLeftHandedMode = uiState.isLeftHandedMode)) {
         SettingsPositionSheets(uiState = uiState, actions = actions)
-    }
-
-    if (uiState.showFactoryResetDialog) {
-        ProvideHomeUiState(MainUiState(isLeftHandedMode = uiState.isLeftHandedMode)) {
-            FactoryResetBottomSheet(actions = actions)
-        }
     }
 }
 

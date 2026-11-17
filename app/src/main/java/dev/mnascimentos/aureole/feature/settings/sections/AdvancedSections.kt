@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.provider.Settings
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -51,13 +50,12 @@ fun AdvancedSections(
 ) {
     val context = LocalContext.current
     Column(
-        modifier = modifier.fillMaxWidth(),
-        verticalArrangement = Arrangement.spacedBy(AureoleDS.dimens.small)
+        modifier = modifier.fillMaxWidth()
     ) {
         SystemGroup(uiState = uiState, actions = actions, context = context, dialogActions = dialogActions)
         AboutGroup(context = context, dialogActions = dialogActions)
         HorizontalDivider(
-            modifier = Modifier.padding(top = AureoleDS.dimens.xSmall),
+            modifier = Modifier.padding(top = AureoleDS.dimens.large),
             thickness = AureoleDS.dimens.borderMinimal,
             color = AureoleDS.colors.outline.copy(alpha = DIVIDER_ALPHA)
         )
@@ -73,7 +71,7 @@ private fun SystemGroup(
     dialogActions: SettingsAdvancedDialogActions
 ) {
     val deliberate = rememberDeliberateTap()
-    SettingsSectionGroup(label = stringResource(R.string.settings_section_system)) {
+    SettingsSectionGroup(label = stringResource(R.string.settings_section_system), isFirst = true) {
         AureoleMenuRow(
             MenuRowParams(
                 title = stringResource(R.string.settings_advanced_app_info),

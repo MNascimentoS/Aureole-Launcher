@@ -36,7 +36,8 @@ import dev.mnascimentos.aureole.core.designsystem.utils.LocalAnimatedVisibilityS
  * Supports background blur via Haze, a sheet that slides up from below the screen, rests hugging its content (up
  * to 60% of the screen) and expands up to its content (at most 90%) or, when the content already fits, stretches
  * with resistance and springs back, swipe-down dismiss, an invisible gesture zone at the top (double tap to resize,
- * hold for settings), a preview anchored above the sheet, bottom bar actions and custom sheet layout.
+ * hold for settings), a preview anchored above the sheet, bottom bar actions and custom sheet layout. In landscape,
+ * an overlay with a preview puts it on the left and the sheet on the right (`overlayLayoutFor`).
  *
  * @param modifier The [Modifier] applied to the root overlay layout.
  * @param state The [AureoleEditOverlayState] holding the internal visibility and whether the sheet is expanded.

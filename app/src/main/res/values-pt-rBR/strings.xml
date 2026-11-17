@@ -51,7 +51,6 @@
     <string name="home_quickbutton_icon_color">Cor do ícone</string>
 
     <!-- Colors / Theming -->
-    <string name="settings_appearance_colors_recommended">Cores Recomendadas</string>
 
     <!-- Settings -->
     <string name="settings_root_header">Configurações</string>
@@ -79,8 +78,6 @@
     <string name="settings_advanced_privacy_policy">Política de privacidade</string>
     <string name="settings_advanced_terms_of_service">Termos de serviço</string>
     <string name="settings_advanced_open_source_licenses">Licenças de código aberto</string>
-    <string name="settings_advanced_uninstall_dialog_title">Desinstalar launcher?</string>
-    <string name="settings_advanced_contact_us">Fale conosco</string>
 
     <!-- Settings Behavior -->
     <string name="settings_behavior_title">Comportamento</string>
@@ -97,7 +94,6 @@
     <string name="settings_appearance_change_font">Alterar fonte</string>
     <string name="settings_appearance_pick_font">Escolher Fonte</string>
     <string name="settings_appearance_color_palette">Paleta de cores</string>
-    <string name="settings_appearance_custom_colors">Cores personalizadas</string>
     <string name="settings_appearance_themed_icons">Ícones temáticos</string>
     <string name="settings_appearance_image_scale">Escala da imagem</string>
 
@@ -263,8 +259,6 @@
     <string name="home_container_saved">Configurações do container salvas</string>
 
     <!-- Reusable -->
-    <string name="settings_appearance_color_picker_primary">Escolher Cor Primária</string>
-    <string name="settings_appearance_color_picker_custom_hue">Ajuste Personalizado (Matiz)</string>
 
     <!-- Grid & Containers -->
     <string name="home_container_add_title">Adicionar Container</string>
@@ -285,10 +279,7 @@
     <string name="home_grid_widget_unconfigured">Widget não configurado</string>
 
     <!-- New Strings for Task 1 -->
-    <string name="settings_advanced_reset_dialog_title">Redefinir launcher?</string>
     <string name="settings_advanced_reset_layout_title">Redefinir Layout?</string>
-    <string name="settings_advanced_reset_dialog_message">Apaga todas as suas configurações e volta ao início. Não dá para desfazer.</string>
-    <string name="settings_advanced_reset_dialog_action">Redefinir</string>
     <string name="settings_advanced_reset_layout_message">Os itens voltam para a posição inicial da home.</string>
     <string name="settings_advanced_reset_layout_restore">Restaurar</string>
     <string name="settings_appearance_blur_opacity_low">Baixa</string>
@@ -417,7 +408,6 @@
     <string name="undo_background_changed">Fundo alterado</string>
     <string name="undo_palette_changed">Paleta alterada</string>
     <string name="undo_font_changed">Fonte alterada</string>
-    <string name="undo_color_changed">Cor alterada</string>
     <string name="undo_quick_button_changed">Botão rápido atualizado</string>
     <string name="undo_cards_glass_changed">Cartões e vidro atualizados</string>
     <string name="undo_folder_changed">Pasta atualizada</string>

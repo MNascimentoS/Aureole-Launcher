@@ -38,7 +38,6 @@ data class SettingsUiState(
     val customWallpaperPath: String? = null,
     val wallpaperScaleType: String = "Crop",
     val showResetGridDialog: Boolean = false,
-    val showFactoryResetDialog: Boolean = false,
     val showCreateFolderDialog: Boolean = false,
     val isDynamicWallpaperEnabled: Boolean = false,
     val manualSeedColor: Int = SettingsRepository.DEFAULT_SEED_COLOR,
@@ -59,7 +58,6 @@ data class SettingsUiState(
     val searchIconPosition: String = "Left",
     val showSettingsButtonPositionDialog: Boolean = false,
     val showSearchIconPositionDialog: Boolean = false,
-    val showColorPickerDialog: Boolean = false,
     /** The pending "Undo" offer shown at the bottom of the screen. */
     val undoSnackbar: UndoSnackbarState? = null,
     val shouldFinishActivity: Boolean = false,

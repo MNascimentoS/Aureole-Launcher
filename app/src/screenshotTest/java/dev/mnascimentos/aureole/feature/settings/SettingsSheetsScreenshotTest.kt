@@ -7,6 +7,7 @@ import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.settings.components.SettingsSheetHost
 import dev.mnascimentos.aureole.feature.settings.model.SettingsArea
 import dev.mnascimentos.aureole.feature.settings.model.SettingsChildKind
+import dev.mnascimentos.aureole.feature.settings.model.SettingsInnerKind
 import dev.mnascimentos.aureole.feature.settings.model.SettingsScreenActions
 import dev.mnascimentos.aureole.feature.settings.model.SettingsSheet
 import dev.mnascimentos.aureole.feature.settings.model.SettingsUiState
@@ -84,3 +85,41 @@ private fun SettingsContributorsSheetScreenshotTest() {
         sheet = SettingsSheet.Child(SettingsChildKind.CONTRIBUTORS, returnTo = SettingsArea.ADVANCED)
     )
 }
+
+/** Palette inside the Appearance sheet (D-09): the same sheet and preview, the grid in place of the list. */
+@PreviewTest
+@AureolePreview
+@Composable
+private fun SettingsAppearancePaletteInnerScreenshotTest() {
+    SettingsSheetScreenshot(sheet = SettingsSheet.Area(SettingsArea.APPEARANCE, inner = SettingsInnerKind.PALETTE))
+}
+
+/** Font inside the Appearance sheet. */
+@PreviewTest
+@AureolePreview
+@Composable
+private fun SettingsAppearanceFontInnerScreenshotTest() {
+    SettingsSheetScreenshot(sheet = SettingsSheet.Area(SettingsArea.APPEARANCE, inner = SettingsInnerKind.FONT))
+}
+
+/** Themed icons on: the apps of the preview take the themed look of the home. */
+@PreviewTest
+@AureolePreview
+@Composable
+private fun SettingsAppearanceThemedIconsScreenshotTest() {
+    SettingsSheetScreenshot(
+        sheet = SettingsSheet.Area(SettingsArea.APPEARANCE),
+        uiState = SettingsUiState(isThemedAppIconsEnabled = true)
+    )
+}
+
+/** Advanced with the `large` space above every section label but the first (RF-15), down to the Care zone. */
+@PreviewTest
+@AureolePreview
+@Composable
+private fun SettingsAdvancedSheetSectionSpacingScreenshotTest() {
+    SettingsSheetScreenshot(sheet = SettingsSheet.Area(SettingsArea.ADVANCED), scroll = ADVANCED_MID_SCROLL)
+}
+
+/** Scroll that puts the About and Care zone labels on screen. */
+private const val ADVANCED_MID_SCROLL = 400

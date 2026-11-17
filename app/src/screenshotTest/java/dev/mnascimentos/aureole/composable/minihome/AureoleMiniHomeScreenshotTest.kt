@@ -10,10 +10,10 @@ import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 
 @Composable
-private fun MiniHomeCase(isLeftHanded: Boolean) {
+private fun MiniHomeCase(isLeftHanded: Boolean, themedIcons: Boolean = false) {
     AureoleLauncherTheme {
         Box(modifier = Modifier.padding(AureoleDS.dimens.medium)) {
-            AureoleMiniHome(content = sampleMiniHomeContent(), isLeftHanded = isLeftHanded)
+            AureoleMiniHome(content = sampleMiniHomeContent(), isLeftHanded = isLeftHanded, themedIcons = themedIcons)
         }
     }
 }
@@ -27,3 +27,9 @@ private fun AureoleMiniHomeRightHandedScreenshotTest() = MiniHomeCase(isLeftHand
 @AureolePreview
 @Composable
 private fun AureoleMiniHomeLeftHandedScreenshotTest() = MiniHomeCase(isLeftHanded = true)
+
+/** Themed icons on: the tiles and glyphs of the home's themed icons. */
+@PreviewTest
+@AureolePreview
+@Composable
+private fun AureoleMiniHomeThemedIconsScreenshotTest() = MiniHomeCase(isLeftHanded = false, themedIcons = true)

@@ -16,17 +16,23 @@ import dev.mnascimentos.aureole.feature.settings.model.isDeliberateTap
 
 private const val GROUP_FILL_ALPHA = 0.45f
 
-/** A labeled group of rows on a card, the building block of the Appearance, Behavior and Advanced sections. */
+/**
+ * A labeled group of rows on a card, the building block of the Appearance, Behavior and Advanced sections. Every
+ * label but the first ([isFirst]) has `large` space above it, so the groups read apart.
+ */
 @Composable
 internal fun SettingsSectionGroup(
     label: String,
     modifier: Modifier = Modifier,
+    isFirst: Boolean = false,
     content: @Composable () -> Unit
 ) {
     Column(modifier = modifier.fillMaxWidth()) {
         SheetSectionLabel(
             text = label,
-            modifier = Modifier.padding(start = AureoleDS.dimens.xxSmall, bottom = AureoleDS.dimens.xSmall)
+            modifier = Modifier
+                .then(if (isFirst) Modifier else Modifier.padding(top = AureoleDS.dimens.large))
+                .padding(start = AureoleDS.dimens.xxSmall, bottom = AureoleDS.dimens.xSmall)
         )
         Column(
             modifier = Modifier

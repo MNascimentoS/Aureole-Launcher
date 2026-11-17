@@ -10,13 +10,6 @@ import org.robolectric.RobolectricTestRunner
 class ColorPickerModelsTest {
 
     @Test
-    fun `formatHex drops the alpha and upper-cases the digits`() {
-        assertEquals("#90CAF9", formatHex(0xFF90CAF9.toInt()))
-        assertEquals("#80000A", formatHex(0x80000A.toInt()))
-        assertEquals("#FFFFFF", formatHex(0x00FFFFFF))
-    }
-
-    @Test
     fun `there are twelve recommended colors and the default is one of them`() {
         assertEquals(12, RecommendedColors.size)
         assertEquals(RecommendedColors.size, RecommendedColors.toSet().size)

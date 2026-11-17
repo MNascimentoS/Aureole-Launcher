@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -22,8 +23,13 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import dev.mnascimentos.aureole.R
+import dev.mnascimentos.aureole.composable.appitem.model.THEMED_BOX_PADDING_RATIO
+import dev.mnascimentos.aureole.composable.appitem.model.themedIconStyleOf
 import dev.mnascimentos.aureole.composable.minihome.model.MiniHomeContent
 import dev.mnascimentos.aureole.composable.minihome.model.MiniHomeFavorite
+import dev.mnascimentos.aureole.composable.minihome.model.MiniHomeFavoritesLayout
+import dev.mnascimentos.aureole.composable.minihome.model.MiniHomeIconFill
+import dev.mnascimentos.aureole.composable.minihome.model.miniHomeIconFill
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
@@ -45,6 +51,7 @@ private const val CAMERA_HEX = 0xFF1F63C2
  * @param content Sample content to draw.
  * @param modifier Modifier applied to the root.
  * @param backgroundColor Fill of the mini-home; null keeps the theme background.
+ * @param themedIcons Draws the apps with the themed icon look of the home (the "Themed icons" setting).
  * @param isLeftHanded Puts the apps on the side opposite to the thumb: left for right-handed (icon first), right
  *   for left-handed (label first). The default is the right-handed layout, which the background preview also uses.
  */
@@ -53,7 +60,8 @@ fun AureoleMiniHome(
     content: MiniHomeContent,
     modifier: Modifier = Modifier,
     isLeftHanded: Boolean = false,
-    backgroundColor: Color? = null
+    backgroundColor: Color? = null,
+    themedIcons: Boolean = false
 ) {
     val shape = RoundedCornerShape(AureoleDS.dimens.radiusLarge)
     val colors = AureoleDS.colors
@@ -74,7 +82,7 @@ fun AureoleMiniHome(
         MiniHomeClock(content)
         MiniHomeFavorites(
             favorites = content.favorites,
-            isLeftHanded = isLeftHanded,
+            layout = MiniHomeFavoritesLayout(isLeftHanded = isLeftHanded, themedIcons = themedIcons),
             modifier = Modifier.weight(1f)
         )
     }
@@ -103,9 +111,11 @@ private fun MiniHomeClock(content: MiniHomeContent) {
 @Composable
 private fun MiniHomeFavorites(
     favorites: List<MiniHomeFavorite>,
-    isLeftHanded: Boolean,
+    layout: MiniHomeFavoritesLayout,
     modifier: Modifier = Modifier
 ) {
+    val isLeftHanded = layout.isLeftHanded
+    val themed = themedIconStyleOf(AureoleDS.colors.surfaceVariant, AureoleDS.colors.onSurfaceMedium)
     Column(
         modifier = modifier
             .fillMaxWidth()
@@ -115,21 +125,18 @@ private fun MiniHomeFavorites(
         horizontalAlignment = if (isLeftHanded) Alignment.End else Alignment.Start
     ) {
         favorites.forEach { favorite ->
-            MiniHomeFavoriteRow(favorite = favorite, iconFirst = !isLeftHanded)
+            MiniHomeFavoriteRow(
+                favorite = favorite,
+                fill = miniHomeIconFill(favorite, layout.themedIcons, themed),
+                iconFirst = !isLeftHanded
+            )
         }
     }
 }
 
 @Composable
-private fun MiniHomeFavoriteRow(favorite: MiniHomeFavorite, iconFirst: Boolean) {
-    val icon = @Composable {
-        Box(
-            modifier = Modifier
-                .size(AureoleDS.dimens.iconMedium)
-                .clip(RoundedCornerShape(AureoleDS.dimens.radiusMinimal))
-                .background(favorite.color)
-        )
-    }
+private fun MiniHomeFavoriteRow(favorite: MiniHomeFavorite, fill: MiniHomeIconFill, iconFirst: Boolean) {
+    val icon = @Composable { MiniHomeIcon(fill) }
     val label = @Composable {
         AureoleText(
             text = favorite.name,
@@ -147,6 +154,28 @@ private fun MiniHomeFavoriteRow(favorite: MiniHomeFavorite, iconFirst: Boolean) 
         } else {
             label()
             icon()
+        }
+    }
+}
+
+/** A favorite icon: a colored tile, or the themed tile with its glyph inside (same padding as the home). */
+@Composable
+private fun MiniHomeIcon(fill: MiniHomeIconFill) {
+    val size = AureoleDS.dimens.iconMedium
+    Box(
+        modifier = Modifier
+            .size(size)
+            .clip(RoundedCornerShape(AureoleDS.dimens.radiusMinimal))
+            .background(fill.tile)
+            .padding(size * THEMED_BOX_PADDING_RATIO)
+    ) {
+        fill.glyph?.let { glyph ->
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .clip(RoundedCornerShape(AureoleDS.dimens.radiusMinimal))
+                    .background(glyph)
+            )
         }
     }
 }
@@ -170,6 +199,16 @@ private fun AureoleMiniHomePreview() {
     AureoleLauncherTheme {
         Box(modifier = Modifier.padding(AureoleDS.dimens.medium)) {
             AureoleMiniHome(content = sampleMiniHomeContent())
+        }
+    }
+}
+
+@AureolePreview
+@Composable
+private fun AureoleMiniHomeThemedIconsPreview() {
+    AureoleLauncherTheme {
+        Box(modifier = Modifier.padding(AureoleDS.dimens.medium)) {
+            AureoleMiniHome(content = sampleMiniHomeContent(), themedIcons = true)
         }
     }
 }

@@ -70,22 +70,44 @@ fun PickPaletteBottomSheet(
         ),
         modifier = modifier
     ) {
-        ThemePickerGrid(
-            params = ThemePickerGridParams(
-                label = stringResource(R.string.settings_appearance_palette_section_label),
-                columns = PALETTE_COLUMNS,
-                footer = options.footer
+        PalettePickerGrid(
+            shownName = shownName,
+            onSelect = { active -> pending = pending.copy(palette = active) },
+            footer = options.footer
+        )
+    }
+}
+
+/**
+ * Body of the palette picker without its sheet: the label and the grid of palettes, [shownName] marked. [onSelect]
+ * gets the palette as displayed (the light variant on a light system). The Appearance sheet of the settings shows it
+ * inside itself.
+ */
+@Composable
+internal fun PalettePickerGrid(
+    shownName: String,
+    onSelect: (ThemePalette) -> Unit,
+    modifier: Modifier = Modifier,
+    footer: (@Composable () -> Unit)? = null
+) {
+    val isDarkTheme = isSystemInDarkTheme()
+    val shownBase = shownName.basePaletteName()
+    ThemePickerGrid(
+        params = ThemePickerGridParams(
+            label = stringResource(R.string.settings_appearance_palette_section_label),
+            columns = PALETTE_COLUMNS,
+            footer = footer
+        ),
+        modifier = modifier
+    ) {
+        items(items = allPalettes, key = { it.name }, contentType = { "palette_chip" }) { basePalette ->
+            val active = if (isDarkTheme) basePalette else basePalette.toLight()
+            PaletteChip(
+                palette = active,
+                displayName = basePalette.name,
+                isSelected = basePalette.name.equals(shownBase, ignoreCase = true),
+                onSelect = { onSelect(active) }
             )
-        ) {
-            items(items = allPalettes, key = { it.name }, contentType = { "palette_chip" }) { basePalette ->
-                val active = if (isDarkTheme) basePalette else basePalette.toLight()
-                PaletteChip(
-                    palette = active,
-                    displayName = basePalette.name,
-                    isSelected = basePalette.name.equals(shownName, ignoreCase = true),
-                    onSelect = { pending = pending.copy(palette = active) }
-                )
-            }
         }
     }
 }
