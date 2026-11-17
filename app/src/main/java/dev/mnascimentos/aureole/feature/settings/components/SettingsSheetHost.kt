@@ -159,7 +159,8 @@ fun SettingsSheetHost(
 @Composable
 private fun settingsOverlayHost() = OverlayHostSpec(
     maxSheetWidth = AureoleDS.dimens.settingsContentMaxWidth,
-    hasExternalBackdrop = true
+    hasExternalBackdrop = true,
+    isTallInLandscape = true
 )
 
 /** The backdrop stays while any sheet is up, through a swap, and fades as soon as the last one starts to leave. */

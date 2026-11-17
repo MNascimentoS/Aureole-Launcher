@@ -10,7 +10,7 @@ import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import dev.mnascimentos.aureole.composable.sheets.FontPickerGrid
@@ -60,7 +60,8 @@ internal fun AreaSheetContentSwitch(
     AnimatedContent(
         targetState = inner,
         transitionSpec = { innerSlide() },
-        modifier = Modifier.fillMaxWidth(),
+        // Fills the sheet: the list and each picker give it the same height, so the preview above does not jump.
+        modifier = Modifier.fillMaxSize(),
         label = "areaInner"
     ) { shown ->
         if (shown == null) list() else picker(shown)

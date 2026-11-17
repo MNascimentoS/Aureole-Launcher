@@ -57,3 +57,18 @@ fun sideBySideColumns(
         sheetWidth = sheetWidth
     )
 }
+
+/**
+ * Fraction of the screen height the sheet takes at rest: [expanded] next to a preview (nothing above it to leave
+ * room for) and, when the host asks ([OverlayHostSpec.isTallInLandscape]), in any landscape screen; otherwise [rest].
+ */
+fun sheetRestFraction(
+    layout: OverlayLayout,
+    isLandscape: Boolean,
+    host: OverlayHostSpec,
+    fractions: Pair<Float, Float>
+): Float {
+    val (rest, expanded) = fractions
+    val isTall = layout == OverlayLayout.SIDE_BY_SIDE || (isLandscape && host.isTallInLandscape)
+    return if (isTall) expanded else rest
+}

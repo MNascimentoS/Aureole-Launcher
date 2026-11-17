@@ -2,7 +2,9 @@ package dev.mnascimentos.aureole.feature.settings.components
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -28,7 +30,10 @@ import dev.mnascimentos.aureole.feature.settings.model.Contributor
 import dev.mnascimentos.aureole.feature.settings.model.Contributors
 import dev.mnascimentos.aureole.util.IntentUtils
 
-/** "Contributors" as a sheet: the people behind Aureole, centered; tapping one opens their GitHub profile. */
+/**
+ * "Contributors" as a sheet: the people behind Aureole, as a centered block with the rows aligned at the start;
+ * tapping one opens their GitHub profile.
+ */
 @Composable
 fun ContributorsBottomSheet(
     onDismissRequest: () -> Unit,
@@ -40,18 +45,21 @@ fun ContributorsBottomSheet(
         title = stringResource(R.string.settings_contributors_title),
         onDismiss = onDismissRequest,
         modifier = modifier,
-        params = MenuSheetParams(host = host)
+        params = MenuSheetParams(host = host, showHeaderAction = false)
     ) {
-        Column(
-            modifier = Modifier.fillMaxWidth(),
-            verticalArrangement = Arrangement.spacedBy(AureoleDS.dimens.medium),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Contributors.forEach { contributor ->
-                ContributorRow(
-                    contributor = contributor,
-                    onClick = { IntentUtils.openUrl(context, contributor.githubUrl) }
-                )
+        // The block is centered; the rows start at the same edge inside it, so the avatars line up.
+        Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+            Column(
+                modifier = Modifier.width(IntrinsicSize.Max),
+                verticalArrangement = Arrangement.spacedBy(AureoleDS.dimens.medium),
+                horizontalAlignment = Alignment.Start
+            ) {
+                Contributors.forEach { contributor ->
+                    ContributorRow(
+                        contributor = contributor,
+                        onClick = { IntentUtils.openUrl(context, contributor.githubUrl) }
+                    )
+                }
             }
         }
     }

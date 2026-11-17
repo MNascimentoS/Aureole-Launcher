@@ -173,6 +173,26 @@ class SettingsSheetHostTest {
         return glassTop - with(density) { titleTop.toDp() }
     }
 
+    /** Top of the mini-home preview, in dp. */
+    private fun previewTop(): Float = composeTestRule.onNodeWithText("09:41").getUnclippedBoundsInRoot().top.value
+
+    @Test
+    fun `the preview stays at the same height in the list, the palette and the font picker`() {
+        setSettings()
+        openArea("Appearance")
+        val listTop = previewTop()
+
+        composeTestRule.onNodeWithText("Color palette").performScrollTo().performClick()
+        composeTestRule.waitForIdle()
+        assertEquals(listTop, previewTop(), 0.5f)
+
+        composeTestRule.closeOverlayWithBack()
+        composeTestRule.onNodeWithText("Change font").performScrollTo().performClick()
+        composeTestRule.waitForIdle()
+        composeTestRule.onNodeWithText("Roboto").assertExists()
+        assertEquals(listTop, previewTop(), 0.5f)
+    }
+
     @Test
     fun `Custom colors is gone from Appearance`() {
         setSettings()

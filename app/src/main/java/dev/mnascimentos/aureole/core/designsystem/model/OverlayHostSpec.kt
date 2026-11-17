@@ -10,8 +10,11 @@ import androidx.compose.ui.unit.Dp
  * stretch from edge to edge. Unspecified: full width.
  * @property hasExternalBackdrop True when the screen around draws the dimmed backdrop of every overlay it hosts,
  * so swapping one sheet for another does not flash the screen behind.
+ * @property isTallInLandscape True when, in landscape, a sheet with no preview may rest as tall as one with a
+ * preview (it still hugs its content when shorter), so a long list is not squeezed into a short sheet.
  */
 data class OverlayHostSpec(
     val maxSheetWidth: Dp = Dp.Unspecified,
-    val hasExternalBackdrop: Boolean = false
+    val hasExternalBackdrop: Boolean = false,
+    val isTallInLandscape: Boolean = false
 )

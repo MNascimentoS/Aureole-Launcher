@@ -52,4 +52,26 @@ class OverlayLayoutTest {
         assertEquals(0, columns.sheetWidth)
         assertEquals(0, columns.previewWidth)
     }
+
+    @Test
+    fun `next to a preview the sheet rests as tall as expanded`() {
+        val fractions = 0.6f to 0.9f
+        val tall = sheetRestFraction(OverlayLayout.SIDE_BY_SIDE, true, OverlayHostSpec(), fractions)
+        assertEquals(0.9f, tall, 0f)
+    }
+
+    @Test
+    fun `a landscape sheet with no preview rests tall only when the host asks`() {
+        val fractions = 0.6f to 0.9f
+        val plain = sheetRestFraction(OverlayLayout.STACKED, true, OverlayHostSpec(), fractions)
+        val asked = sheetRestFraction(OverlayLayout.STACKED, true, OverlayHostSpec(isTallInLandscape = true), fractions)
+        assertEquals(0.6f, plain, 0f)
+        assertEquals(0.9f, asked, 0f)
+    }
+
+    @Test
+    fun `portrait keeps the rest fraction even when the host asks for tall landscape sheets`() {
+        val host = OverlayHostSpec(isTallInLandscape = true)
+        assertEquals(0.6f, sheetRestFraction(OverlayLayout.STACKED, false, host, 0.6f to 0.9f), 0f)
+    }
 }

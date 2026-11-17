@@ -16,15 +16,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDirection
 import androidx.compose.ui.unit.LayoutDirection
 import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.composable.color.model.DefaultPickerColor
 import dev.mnascimentos.aureole.composable.minihome.AureoleMiniHome
 import dev.mnascimentos.aureole.composable.minihome.sampleMiniHomeContent
+import dev.mnascimentos.aureole.composable.mirror.LeftHandMirror
 import dev.mnascimentos.aureole.composable.sheets.AureoleAutoSaveOverlay
 import dev.mnascimentos.aureole.composable.sheets.model.AutoSaveOverlayParams
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
+import dev.mnascimentos.aureole.core.designsystem.model.LocalLeftHanded
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
@@ -94,14 +98,22 @@ private fun BackgroundPreview(draft: BackgroundDraft, modifier: Modifier = Modif
     }
 }
 
+/** A small uppercase label above a group of rows; mirrored in the left-handed mode, like the rows below it. */
 @Composable
 internal fun SheetSectionLabel(text: String, modifier: Modifier = Modifier) {
-    AureoleText(
-        text = text.uppercase(),
-        color = AureoleDS.colors.onSurfaceMedium,
-        modifier = modifier.fillMaxWidth(),
-        format = AureoleTextFormatParams(style = AureoleDS.typography.labelSmall)
-    )
+    // The paragraph follows its own text (as in the radio rows), so its side is set explicitly.
+    val align = if (LocalLeftHanded.current) TextAlign.End else TextAlign.Start
+    LeftHandMirror {
+        AureoleText(
+            text = text.uppercase(),
+            color = AureoleDS.colors.onSurfaceMedium,
+            modifier = modifier.fillMaxWidth(),
+            format = AureoleTextFormatParams(
+                style = AureoleDS.typography.labelSmall.copy(textDirection = TextDirection.Content),
+                textAlign = align
+            )
+        )
+    }
 }
 
 @AureolePreview

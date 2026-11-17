@@ -38,7 +38,8 @@ data class MenuSheetParams(
     val titleIcon: (@Composable (Modifier) -> Unit)? = null,
     val onSettingsClick: (() -> Unit)? = null,
     val bottomBar: (@Composable () -> Unit)? = null,
-    val host: OverlayHostSpec = OverlayHostSpec()
+    val host: OverlayHostSpec = OverlayHostSpec(),
+    val showHeaderAction: Boolean = true
 )
 
 /** Fraction (0 to 1) of a hold that has elapsed. */

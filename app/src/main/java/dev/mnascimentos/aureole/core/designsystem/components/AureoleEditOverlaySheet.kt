@@ -53,6 +53,7 @@ import dev.mnascimentos.aureole.core.designsystem.model.OverlaySheetStateData
 import dev.mnascimentos.aureole.core.designsystem.model.SheetBounds
 import dev.mnascimentos.aureole.core.designsystem.model.anchoredPreviewTop
 import dev.mnascimentos.aureole.core.designsystem.model.overlayLayoutFor
+import dev.mnascimentos.aureole.core.designsystem.model.sheetRestFraction
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
@@ -107,12 +108,12 @@ internal fun OverlayContentBox(
             height = screenHeightPx,
             hasPreview = params.previewContent != null
         )
-        // Next to the preview the sheet may take the whole height at rest: there is nothing above it to leave room.
-        val restFraction = if (overlayLayout == OverlayLayout.SIDE_BY_SIDE) {
-            params.config.expandedHeightFraction
-        } else {
-            params.config.restHeightFraction
-        }
+        val restFraction = sheetRestFraction(
+            layout = overlayLayout,
+            isLandscape = maxWidth > maxHeight,
+            host = params.config.host,
+            fractions = params.config.restHeightFraction to params.config.expandedHeightFraction
+        )
         val bounds = with(density) {
             SheetBounds(
                 restMaxPx = screenHeightPx * restFraction,
