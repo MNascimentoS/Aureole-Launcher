@@ -74,7 +74,6 @@ class SettingsViewModel(
                 showFolderLabels = settingsRepository.showFolderLabels,
                 homeButtonOpensAllApps = settingsRepository.homeButtonOpensAllApps,
                 isWidgetRowEnabled = settingsRepository.isWidgetRowEnabled,
-                showWidgetDots = settingsRepository.showWidgetDots,
                 favoriteAppPackages = settingsRepository.favoriteAppPackages,
                 isCustomWallpaperSet = settingsRepository.isCustomWallpaperSet,
                 customWallpaperPath = settingsRepository.customWallpaperPath,

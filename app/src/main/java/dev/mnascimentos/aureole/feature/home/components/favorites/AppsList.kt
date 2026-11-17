@@ -130,7 +130,6 @@ private fun ScrollableAppsList(params: ScrollableAppsListParams) {
                             topWidgetIds = uiState.topWidgetIds,
                             currentHeightDp = config.currentHeightDp,
                             currentHeightPx = config.currentHeightPx,
-                            showWidgetDots = uiState.showWidgetDots,
                             hazeState = config.hazeState,
                         ),
                         appWidgetHost = params.appWidgetHost

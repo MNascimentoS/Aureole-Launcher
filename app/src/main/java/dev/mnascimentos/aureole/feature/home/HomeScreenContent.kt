@@ -81,7 +81,6 @@ internal fun MainHomeLayout(
         topWidgetIds = uiState.topWidgetIds,
         currentHeightDp = currentHeightDp,
         currentHeightPx = currentHeightPx,
-        showWidgetDots = uiState.showWidgetDots,
         hazeState = hazeState
     )
 

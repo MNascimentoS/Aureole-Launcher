@@ -102,7 +102,12 @@ fun EditContainerScreen(
                         currentMode = currentMode,
                         state = state,
                         allApps = params.allApps,
-                        onModeChange = { currentMode = it }
+                        onModeChange = { currentMode = it },
+                        onCustomizeHome = {
+                            // Saves what is being edited (like any close), then opens Customize.
+                            closer.closeOnce()
+                            homeActions.onOpenCustomizeBottomSheet()
+                        }
                     )
                 }
             )
@@ -150,7 +155,8 @@ private fun EditContainerSheetContent(
     currentMode: EditContainerScreenMode,
     state: EditContainerState,
     allApps: List<AppInfo>,
-    onModeChange: (EditContainerScreenMode) -> Unit
+    onModeChange: (EditContainerScreenMode) -> Unit,
+    onCustomizeHome: () -> Unit
 ) {
     when (currentMode) {
         EditContainerScreenMode.MAIN -> {
@@ -158,7 +164,8 @@ private fun EditContainerSheetContent(
                 componentCount = state.itemsList.size,
                 onAppearanceClick = { onModeChange(EditContainerScreenMode.APPEARANCE) },
                 onBehaviorClick = { onModeChange(EditContainerScreenMode.BEHAVIOR) },
-                onManageItemsClick = { onModeChange(EditContainerScreenMode.MANAGE_ITEMS) }
+                onManageItemsClick = { onModeChange(EditContainerScreenMode.MANAGE_ITEMS) },
+                onCustomizeHome = onCustomizeHome
             )
         }
         EditContainerScreenMode.APPEARANCE, EditContainerScreenMode.BEHAVIOR -> {

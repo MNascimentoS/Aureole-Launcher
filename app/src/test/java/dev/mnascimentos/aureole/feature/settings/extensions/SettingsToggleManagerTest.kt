@@ -34,14 +34,6 @@ class SettingsToggleManagerTest {
     }
 
     @Test
-    fun `toggle SHOW_WIDGET_DOTS should flip showWidgetDots state`() {
-        val initial = viewModel.uiState.value.showWidgetDots
-        SettingsToggleManager.toggleSetting(viewModel, SettingToggle.SHOW_WIDGET_DOTS)
-        assertEquals(!initial, viewModel.uiState.value.showWidgetDots)
-        assertEquals(!initial, settingsRepository.showWidgetDots)
-    }
-
-    @Test
     fun `toggle HAZE when supported should flip isHazeEnabled state`() {
         if (!settingsRepository.isHazeSupported) {
             return

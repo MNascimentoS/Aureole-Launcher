@@ -105,7 +105,7 @@ internal fun SheetSurface(
                 headerIcon = config.headerIcon,
                 titleIcon = config.titleIcon,
                 edgeToEdgeContent = config.edgeToEdgeContent,
-                showHeaderAction = config.showHeaderAction,
+                showHeaderAction = config.showHeaderAction && config.host.showHeaderAction,
                 gestureZone = {
                     OverlaySheetGestureZone(
                         state = GestureZoneState(isExpanded, config.isLeftHanded, motion.canExpand(bounds)),

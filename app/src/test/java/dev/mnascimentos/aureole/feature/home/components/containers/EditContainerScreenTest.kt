@@ -101,7 +101,7 @@ class EditContainerScreenTest {
             }
         }
 
-        composeTestRule.onNodeWithText("Container settings").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Container").assertIsDisplayed()
     }
 
     @Test
@@ -128,7 +128,7 @@ class EditContainerScreenTest {
             }
         }
 
-        composeTestRule.onNodeWithText("Container settings").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Container").assertIsDisplayed()
     }
 
     @Test

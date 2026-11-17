@@ -20,6 +20,7 @@ import dev.mnascimentos.aureole.composable.appitem.model.AppItemRowActions
 import dev.mnascimentos.aureole.composable.appitem.model.AureoleAppIconParams
 import dev.mnascimentos.aureole.composable.menu.AureoleMenuListSheet
 import dev.mnascimentos.aureole.composable.menu.AureoleMenuRow
+import dev.mnascimentos.aureole.composable.menu.customizeHomeEntry
 import dev.mnascimentos.aureole.composable.menu.model.MenuEntry
 import dev.mnascimentos.aureole.composable.menu.model.MenuRowParams
 import dev.mnascimentos.aureole.composable.menu.model.MenuSheetParams
@@ -89,6 +90,14 @@ private fun appMenuEntries(
     }
     addAll(appActionEntries(params = params, onDismiss = onDismiss, context = context))
     addAll(appNavEntries(params = params, onDismiss = onDismiss))
+    params.actions.onCustomizeHome?.let { customize ->
+        add(
+            customizeHomeEntry {
+                onDismiss()
+                customize()
+            }
+        )
+    }
     addAll(appDestructiveEntries(params = params, onDismiss = onDismiss, context = context))
 }
 

@@ -30,7 +30,6 @@ data class MainUiState(
     val targetWidgetStackId: String? = null,
     val widgetRowHeight: Dp = 160.dp,
     val isWidgetRowEnabled: Boolean = true,
-    val showWidgetDots: Boolean = true,
     val showWidgetPicker: Boolean = false,
     val pendingWidgetId: Int = -1,
 

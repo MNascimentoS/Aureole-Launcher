@@ -7,6 +7,7 @@ import android.os.Build
 import androidx.core.content.edit
 import dev.mnascimentos.aureole.feature.home.components.widgets.model.WidgetAppGroup
 import dev.mnascimentos.aureole.feature.home.components.widgets.model.WidgetVariant
+import dev.mnascimentos.aureole.feature.home.components.widgets.model.widgetDotsKey
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import timber.log.Timber
@@ -66,6 +67,16 @@ class WidgetRepository(private val context: Context) {
     fun setWidgetDotsState(key: String, showDots: Boolean) {
         context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE).edit {
             putBoolean("${KEY_WIDGET_DOTS_PREFIX}_$key", showDots)
+        }
+    }
+
+    /** Saves the dots off for portrait and landscape of every group in [stackIds] (migration of the old global switch). */
+    fun turnDotsOff(stackIds: Collection<String>) {
+        context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE).edit {
+            stackIds.forEach { id ->
+                putBoolean("${KEY_WIDGET_DOTS_PREFIX}_${widgetDotsKey(id, isLandscape = false)}", false)
+                putBoolean("${KEY_WIDGET_DOTS_PREFIX}_${widgetDotsKey(id, isLandscape = true)}", false)
+            }
         }
     }
 

@@ -51,7 +51,7 @@ fun AureoleSwitchRow(params: SwitchRowParams, modifier: Modifier = Modifier) {
             Column(modifier = Modifier.weight(1f)) {
                 AureoleText(
                     text = params.title,
-                    color = if (params.enabled) AureoleDS.colors.onSurfaceHigh else AureoleDS.colors.onSurfaceLow,
+                    color = if (params.enabled) menuRowTitleColor(isDestructive = false) else AureoleDS.colors.onSurfaceLow,
                     format = AureoleTextFormatParams(
                         style = AureoleDS.typography.bodyLarge.copy(textDirection = TextDirection.Content)
                     )

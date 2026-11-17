@@ -8,6 +8,7 @@ import androidx.compose.ui.res.stringResource
 import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.composable.menu.AureoleMenuRow
 import dev.mnascimentos.aureole.composable.menu.AureoleMenuSectionLabel
+import dev.mnascimentos.aureole.composable.menu.customizeHomeRowParams
 import dev.mnascimentos.aureole.composable.menu.model.MenuRowParams
 import dev.mnascimentos.aureole.core.designsystem.icons.AllApps
 import dev.mnascimentos.aureole.core.designsystem.icons.Click
@@ -26,7 +27,8 @@ internal fun MainSettingsContent(
     onAppearanceClick: () -> Unit,
     onBehaviorClick: () -> Unit,
     onManageItemsClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onCustomizeHome: (() -> Unit)? = null
 ) {
     Column(modifier = modifier) {
         AureoleMenuSectionLabel(text = stringResource(R.string.home_container_edit_options_label))
@@ -61,6 +63,7 @@ internal fun MainSettingsContent(
                 showChevron = true
             )
         )
+        onCustomizeHome?.let { AureoleMenuRow(customizeHomeRowParams(it)) }
     }
 }
 
@@ -72,7 +75,8 @@ private fun MainSettingsContentPreview() {
             componentCount = 4,
             onAppearanceClick = {},
             onBehaviorClick = {},
-            onManageItemsClick = {}
+            onManageItemsClick = {},
+            onCustomizeHome = {}
         )
     }
 }

@@ -50,7 +50,6 @@ data class SettingsScreenActions(
     val onDismissCreateFolderDialog: () -> Unit = {},
     val onSubmitCreateFolder: (String) -> Unit = {},
     val onToggleHaze: () -> Unit = {},
-    val onToggleShowWidgetDots: () -> Unit = {},
     val onToggleInAppUpdate: () -> Unit = {},
     val onHeaderOffsetChanged: (Int) -> Unit = {},
     val onToggleThemedAppIcons: () -> Unit = {},

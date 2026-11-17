@@ -71,7 +71,6 @@ data class StackedWidgetConfig(
     val topWidgetIds: List<Int>,
     val currentHeightDp: Dp,
     val currentHeightPx: Float,
-    val showWidgetDots: Boolean = true,
     val hazeState: HazeState? = null
 )
 

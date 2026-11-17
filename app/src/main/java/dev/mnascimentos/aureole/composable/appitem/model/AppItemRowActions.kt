@@ -7,5 +7,7 @@ data class AppItemRowActions(
     val onEditFavoritesClick: (() -> Unit)? = null,
     val onAppInfoClick: ((AppInfo) -> Unit)? = null,
     val onUninstallClick: ((AppInfo) -> Unit)? = null,
-    val onOpenSettings: (() -> Unit)? = null
+    val onOpenSettings: (() -> Unit)? = null,
+    /** Opens Customize home; null leaves the "Customize home" row out of the app menu. */
+    val onCustomizeHome: (() -> Unit)? = null
 )

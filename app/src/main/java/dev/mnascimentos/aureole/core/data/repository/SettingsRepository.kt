@@ -137,9 +137,16 @@ class SettingsRepository(private val context: Context) {
         get() = prefs.getBoolean(KEY_WIDGET_ROW_ENABLED, true)
         set(value) = prefs.edit { putBoolean(KEY_WIDGET_ROW_ENABLED, value) }
 
-    var showWidgetDots: Boolean
-        get() = prefs.getBoolean(KEY_SHOW_WIDGET_DOTS, true)
-        set(value) = prefs.edit { putBoolean(KEY_SHOW_WIDGET_DOTS, value) }
+    /**
+     * One-time migration of the removed global widget indicator switch: returns true when it was saved as off,
+     * and always erases the key so this answers only once.
+     */
+    fun consumeLegacyWidgetDotsOff(): Boolean {
+        if (!prefs.contains(KEY_LEGACY_SHOW_WIDGET_DOTS)) return false
+        val wasOff = !prefs.getBoolean(KEY_LEGACY_SHOW_WIDGET_DOTS, true)
+        prefs.edit { remove(KEY_LEGACY_SHOW_WIDGET_DOTS) }
+        return wasOff
+    }
 
     var isInAppUpdateEnabled: Boolean
         get() = prefs.getBoolean(KEY_IN_APP_UPDATE_ENABLED, true)
@@ -412,7 +419,7 @@ class SettingsRepository(private val context: Context) {
         private const val KEY_HAZE_ENABLED = "haze_enabled"
         private const val KEY_HAZE_OPACITY = "haze_opacity"
         private const val KEY_HAZE_BLUR_LEVEL = "haze_blur_level"
-        private const val KEY_SHOW_WIDGET_DOTS = "show_widget_dots"
+        private const val KEY_LEGACY_SHOW_WIDGET_DOTS = "show_widget_dots"
         private const val KEY_IN_APP_UPDATE_ENABLED = "in_app_update_enabled"
         private const val KEY_HEADER_OFFSET_PERCENT = "header_offset_percent"
         private const val KEY_CORNER_RADIUS_DP = "corner_radius_dp"

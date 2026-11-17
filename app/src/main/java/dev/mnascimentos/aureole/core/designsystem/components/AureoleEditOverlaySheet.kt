@@ -39,6 +39,7 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.dp
 import dev.chrisbanes.haze.HazeState
@@ -266,7 +267,8 @@ internal fun OverlaySheetBody(
                 if (title != null) {
                     OverlaySheetHeader(
                         title = title,
-                        titleIcon = decorations.titleIcon
+                        titleIcon = decorations.titleIcon,
+                        hasHeaderAction = decorations.showHeaderAction
                     )
                 }
                 if (sheetContent != null) {
@@ -344,8 +346,11 @@ private fun OverlaySheetSettingsSlot(
 @Composable
 private fun OverlaySheetHeader(
     title: String,
-    titleIcon: (@Composable (Modifier) -> Unit)? = null
+    titleIcon: (@Composable (Modifier) -> Unit)? = null,
+    hasHeaderAction: Boolean = true
 ) {
+    // Empty 48 dp slots on both sides keep the title centered and out from under the logo; a long one is cut.
+    val slot = if (hasHeaderAction) AureoleDS.dimens.minTouchTarget else 0.dp
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -357,7 +362,7 @@ private fun OverlaySheetHeader(
             ),
         contentAlignment = Alignment.Center
     ) {
-        Row(verticalAlignment = Alignment.CenterVertically) {
+        Row(modifier = Modifier.padding(horizontal = slot), verticalAlignment = Alignment.CenterVertically) {
             if (titleIcon != null) {
                 Box(
                     modifier = Modifier
@@ -375,7 +380,10 @@ private fun OverlaySheetHeader(
                 style = AureoleDS.typography.titleLarge,
                 fontWeight = FontWeight.Bold,
                 color = AureoleDS.colors.onSurfaceHigh,
-                textAlign = TextAlign.Center
+                textAlign = TextAlign.Center,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                modifier = Modifier.weight(1f, fill = false)
             )
         }
     }

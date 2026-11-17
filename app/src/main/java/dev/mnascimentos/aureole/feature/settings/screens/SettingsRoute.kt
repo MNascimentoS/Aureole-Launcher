@@ -112,7 +112,6 @@ private fun applyToggleActions(viewModel: SettingsViewModel, base: SettingsScree
     return base.copy(
         onToggleHomeButtonOpensAllApps = { viewModel.toggleSetting(SettingToggle.HOME_OPENS_ALL_APPS) },
         onToggleWidgetRow = { viewModel.toggleSetting(SettingToggle.WIDGET_ROW) },
-        onToggleShowWidgetDots = { viewModel.toggleSetting(SettingToggle.SHOW_WIDGET_DOTS) },
         onToggleContainerBackground = { viewModel.toggleSetting(SettingToggle.CONTAINER_BACKGROUND) },
         onToggleContainerExpandCell = { viewModel.toggleSetting(SettingToggle.CONTAINER_EXPAND_CELL) },
         onToggleClockBackground = { viewModel.toggleSetting(SettingToggle.CLOCK_BACKGROUND) },

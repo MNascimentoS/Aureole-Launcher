@@ -29,7 +29,6 @@ data class SettingsUiState(
     val showFolderLabels: Boolean = false,
     val homeButtonOpensAllApps: Boolean = true,
     val isWidgetRowEnabled: Boolean = true,
-    val showWidgetDots: Boolean = true,
     val favoriteAppPackages: List<String> = emptyList(),
     val allApps: List<AppInfo> = emptyList(),
     val isDefaultLauncher: Boolean = false,

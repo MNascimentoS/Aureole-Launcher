@@ -142,7 +142,6 @@ class HomeViewModel(
                     showFolderLabels = settingsRepository.showFolderLabels,
                     homeButtonOpensAllApps = settingsRepository.homeButtonOpensAllApps,
                     isWidgetRowEnabled = settingsRepository.isWidgetRowEnabled,
-                    showWidgetDots = settingsRepository.showWidgetDots,
                     favoriteAppPackages = settingsRepository.favoriteAppPackages,
                     containerFavorites = containerFavsMap,
                     folders = savedFolders,
