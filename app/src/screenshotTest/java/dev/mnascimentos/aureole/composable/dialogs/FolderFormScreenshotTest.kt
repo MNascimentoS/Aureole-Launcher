@@ -12,8 +12,11 @@ import dev.mnascimentos.aureole.core.data.model.AppFolder
 import dev.mnascimentos.aureole.core.data.model.FolderIconType
 import dev.mnascimentos.aureole.core.designsystem.palette.ThemeColorRef
 import dev.mnascimentos.aureole.core.designsystem.palette.ThemeColorRole
+import dev.mnascimentos.aureole.core.designsystem.palette.getPaletteByName
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleThemeConfig
+import dev.mnascimentos.aureole.core.designsystem.utils.AureoleLandscapePreview
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
 
@@ -83,6 +86,34 @@ private fun FolderFormPreviewTileScreenshotTest() {
                 label = "Bank",
                 onNameChange = {}
             )
+        }
+    }
+}
+
+/** Landscape: the folder on one side, the sheet on the other (pasta-form RF-05). */
+@PreviewTest
+@AureoleLandscapePreview
+@Composable
+private fun FolderFormNewLandscapeScreenshotTest() = FolderFormCase(isLeftHanded = false, folder = null)
+
+@PreviewTest
+@AureoleLandscapePreview
+@Composable
+private fun FolderFormEditLandscapeScreenshotTest() = FolderFormCase(isLeftHanded = false, folder = SampleFolder)
+
+/** The color of the folder is a theme color: the same folder under another palette takes that palette's color. */
+@PreviewTest
+@AureolePreview
+@Composable
+private fun FolderFormEditOtherThemeScreenshotTest() {
+    ProvideHomeUiState(MainUiState()) {
+        AureoleLauncherTheme(
+            AureoleThemeConfig(
+                darkTheme = true,
+                aureoleColors = getPaletteByName("Neon Dusk", isDarkTheme = true).colors
+            )
+        ) {
+            FolderFormDialog(folder = SampleFolder, onDismiss = {}, onSave = {}, onDelete = {})
         }
     }
 }
