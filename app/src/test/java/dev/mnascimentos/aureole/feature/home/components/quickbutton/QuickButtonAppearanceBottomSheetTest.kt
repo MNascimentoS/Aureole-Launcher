@@ -5,9 +5,9 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import androidx.compose.ui.test.assertCountEquals
 import androidx.compose.ui.test.assertIsDisplayed
-import androidx.compose.ui.test.onAllNodesWithText
-import androidx.compose.ui.test.junit4.v2.createComposeRule
 import androidx.compose.ui.test.isSelectable
+import androidx.compose.ui.test.junit4.v2.createComposeRule
+import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
@@ -164,7 +164,9 @@ class QuickButtonAppearanceBottomSheetTest {
 
     @Test
     fun `when icon and background have a low contrast, should warn in the preview`() {
-        setSheetWith(QuickButtonAppearance(iconColor = ThemeColorRef.Fixed(1), backgroundColor = ThemeColorRef.Fixed(1)))
+        setSheetWith(
+            QuickButtonAppearance(iconColor = ThemeColorRef.Fixed(1), backgroundColor = ThemeColorRef.Fixed(1))
+        )
 
         composeTestRule.onNodeWithText("Low contrast: the icon may be hard to see").assertIsDisplayed()
     }

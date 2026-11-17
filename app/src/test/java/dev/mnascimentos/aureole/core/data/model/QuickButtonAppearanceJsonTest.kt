@@ -75,7 +75,10 @@ class QuickButtonAppearanceJsonTest {
             showLabel = true
         )
 
-        val model = gson.fromJson(gson.toJson(QuickButtonModel(id = "q", appearance = appearance)), QuickButtonModel::class.java)
+        val model = gson.fromJson(
+            gson.toJson(QuickButtonModel(id = "q", appearance = appearance)),
+            QuickButtonModel::class.java
+        )
 
         assertEquals(appearance, model.appearance)
     }

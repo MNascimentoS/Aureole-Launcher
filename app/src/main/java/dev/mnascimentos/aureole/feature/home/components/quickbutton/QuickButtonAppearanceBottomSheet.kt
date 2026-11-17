@@ -28,7 +28,9 @@ import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.ContainerFolderLabel
+import dev.mnascimentos.aureole.feature.home.components.quickbutton.model.NoQuickButtonCallbacks
 import dev.mnascimentos.aureole.feature.home.components.quickbutton.model.QuickButtonAppearanceMetrics
+import dev.mnascimentos.aureole.feature.home.components.quickbutton.model.QuickButtonGridItemStyle
 import dev.mnascimentos.aureole.feature.home.components.quickbutton.model.defaultName
 import dev.mnascimentos.aureole.feature.home.components.quickbutton.model.isLowContrast
 import dev.mnascimentos.aureole.feature.home.components.quickbutton.model.normalized
@@ -116,10 +118,8 @@ private fun QuickButtonSheetPreview(
         Box(modifier = Modifier.size(QuickButtonAppearanceMetrics.PreviewItemSize)) {
             QuickButtonGridItem(
                 model = model,
-                appInfo = appInfo,
-                onAction = {},
-                onLongPress = {},
-                outlineIcon = lowContrast
+                callbacks = NoQuickButtonCallbacks,
+                style = QuickButtonGridItemStyle(appInfo = appInfo, outlineIcon = lowContrast)
             )
         }
         if (appearance.showLabel) {

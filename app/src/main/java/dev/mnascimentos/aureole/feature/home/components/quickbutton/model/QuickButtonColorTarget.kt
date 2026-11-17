@@ -16,7 +16,10 @@ internal fun QuickButtonAppearance.colorOf(target: QuickButtonColorTarget): Them
 }
 
 /** This appearance with the color of [target] replaced by [color]; the other colors are kept. */
-internal fun QuickButtonAppearance.withColor(target: QuickButtonColorTarget, color: ThemeColorRef): QuickButtonAppearance =
+internal fun QuickButtonAppearance.withColor(
+    target: QuickButtonColorTarget,
+    color: ThemeColorRef
+): QuickButtonAppearance =
     when (target) {
         QuickButtonColorTarget.BACKGROUND -> copy(backgroundColor = color)
         QuickButtonColorTarget.STROKE -> copy(strokeColor = color)

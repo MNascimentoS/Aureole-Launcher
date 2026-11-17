@@ -20,6 +20,7 @@ import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatPa
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
+import dev.mnascimentos.aureole.feature.home.components.quickbutton.model.NoQuickButtonCallbacks
 import dev.mnascimentos.aureole.feature.home.components.quickbutton.model.QuickButtonAppearanceMetrics
 
 /**
@@ -38,7 +39,7 @@ internal fun ShortcutSelectionPreview(
             verticalArrangement = Arrangement.spacedBy(AureoleDS.dimens.small)
         ) {
             Box(modifier = Modifier.size(QuickButtonAppearanceMetrics.PreviewItemSize)) {
-                QuickButtonGridItem(model = model, onAction = {}, onLongPress = {})
+                QuickButtonGridItem(model = model, callbacks = NoQuickButtonCallbacks)
             }
             AureoleText(
                 text = pillText,

@@ -10,6 +10,7 @@ import dev.mnascimentos.aureole.core.data.model.QuickButtonAppearance
 import dev.mnascimentos.aureole.core.data.model.QuickButtonModel
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
+import dev.mnascimentos.aureole.feature.home.components.quickbutton.model.NoQuickButtonCallbacks
 import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
 import dev.mnascimentos.aureole.feature.home.model.createDefaultHomeScreenActions
@@ -20,11 +21,7 @@ import dev.mnascimentos.aureole.feature.home.model.createDefaultHomeScreenAction
 private fun QuickButtonGridItemScreenshotTest() {
     AureoleLauncherTheme {
         Box(modifier = Modifier.size(100.dp)) {
-            QuickButtonGridItem(
-                model = QuickButtonModel(),
-                onAction = {},
-                onLongPress = {}
-            )
+            QuickButtonGridItem(model = QuickButtonModel(), callbacks = NoQuickButtonCallbacks)
         }
     }
 }

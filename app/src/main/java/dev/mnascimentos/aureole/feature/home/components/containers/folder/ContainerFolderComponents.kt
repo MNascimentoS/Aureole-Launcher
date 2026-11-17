@@ -53,14 +53,12 @@ import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.ContainerFolderItemParams
 import dev.mnascimentos.aureole.feature.home.components.containers.model.ContainerConfig
 import dev.mnascimentos.aureole.feature.home.components.quickbutton.QuickButtonGridItem
-import dev.mnascimentos.aureole.feature.home.components.quickbutton.launchAppPackage
-import dev.mnascimentos.aureole.feature.home.components.quickbutton.launchSystemIntent
-import dev.mnascimentos.aureole.feature.home.components.quickbutton.launchVoiceAssistant
 import dev.mnascimentos.aureole.feature.home.components.quickbutton.model.QuickButtonGridItemCallbacks
+import dev.mnascimentos.aureole.feature.home.components.quickbutton.model.QuickButtonGridItemStyle
 import dev.mnascimentos.aureole.feature.home.components.quickbutton.model.defaultName
 import dev.mnascimentos.aureole.feature.home.components.quickbutton.model.resolvedName
+import dev.mnascimentos.aureole.feature.home.components.quickbutton.runQuickButtonAction
 import dev.mnascimentos.aureole.feature.home.model.LocalHomeActions
-import dev.mnascimentos.aureole.util.IntentUtils
 
 private const val FOLDER_BG_INACTIVE_ALPHA = 0.85f
 
@@ -349,24 +347,11 @@ fun ContainerQuickButtonItem(
         ) {
             QuickButtonGridItem(
                 model = quickButtonModel,
-                appInfo = appInfo,
-                shape = RoundedCornerShape(cornerRadius),
                 callbacks = QuickButtonGridItemCallbacks(
-                    onAction = { shortcutAction ->
-                        when (shortcutAction.type) {
-                            ShortcutType.ALL_APPS -> actions.onAllAppsDrawerOpen()
-                            ShortcutType.ASSISTANT -> launchVoiceAssistant(context)
-                            ShortcutType.SETTINGS -> actions.onSettingsClick()
-                            ShortcutType.NOTIFICATIONS -> IntentUtils.expandNotificationShade(context)
-                            ShortcutType.OPEN_APP -> launchAppPackage(context, shortcutAction.target)
-                            ShortcutType.SYSTEM_INTENT -> launchSystemIntent(context, shortcutAction.target)
-                            ShortcutType.NONE -> { /* Do nothing */ }
-                        }
-                    },
-                    onLongPress = {
-                        actions.onOpenQuickButtonSettings(quickButtonModel.id)
-                    }
-                )
+                    onAction = { runQuickButtonAction(context, actions, it) },
+                    onLongPress = { actions.onOpenQuickButtonSettings(quickButtonModel.id) }
+                ),
+                style = QuickButtonGridItemStyle(shape = RoundedCornerShape(cornerRadius), appInfo = appInfo)
             )
         }
 

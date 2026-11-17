@@ -21,10 +21,13 @@ import dev.mnascimentos.aureole.composable.LocalHomeUiState
 import dev.mnascimentos.aureole.composable.dialogs.model.FolderButtonMetrics
 import dev.mnascimentos.aureole.core.data.model.LauncherItemState
 import dev.mnascimentos.aureole.core.data.model.QuickButtonModel
+import dev.mnascimentos.aureole.core.data.model.ShortcutAction
 import dev.mnascimentos.aureole.core.data.model.ShortcutType
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.ContainerFolderLabel
+import dev.mnascimentos.aureole.feature.home.components.quickbutton.model.QuickButtonGridItemCallbacks
+import dev.mnascimentos.aureole.feature.home.components.quickbutton.model.QuickButtonGridItemStyle
 import dev.mnascimentos.aureole.feature.home.components.quickbutton.model.defaultName
 import dev.mnascimentos.aureole.feature.home.components.quickbutton.model.resolvedName
 import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
@@ -57,26 +60,29 @@ fun GridQuickButtonContent(
         Box(modifier = Modifier.size(FolderButtonMetrics.MediumSize)) {
             QuickButtonGridItem(
                 model = model,
-                appInfo = appInfo,
-                onAction = { shortcutAction ->
-                    when (shortcutAction.type) {
-                        ShortcutType.ALL_APPS -> actions.onAllAppsDrawerOpen()
-                        ShortcutType.ASSISTANT -> launchVoiceAssistant(context)
-                        ShortcutType.SETTINGS -> actions.onSettingsClick()
-                        ShortcutType.NOTIFICATIONS -> IntentUtils.expandNotificationShade(context)
-                        ShortcutType.OPEN_APP -> launchAppPackage(context, shortcutAction.target)
-                        ShortcutType.SYSTEM_INTENT -> launchSystemIntent(context, shortcutAction.target)
-                        ShortcutType.NONE -> { /* Do nothing */ }
-                    }
-                },
-                onLongPress = {
-                    actions.onOpenQuickButtonSettings(item.id)
-                }
+                callbacks = QuickButtonGridItemCallbacks(
+                    onAction = { runQuickButtonAction(context, actions, it) },
+                    onLongPress = { actions.onOpenQuickButtonSettings(item.id) }
+                ),
+                style = QuickButtonGridItemStyle(appInfo = appInfo)
             )
         }
         if (model.appearance.showLabel) {
             ContainerFolderLabel(name = model.appearance.resolvedName(model.defaultName(appInfo?.label)))
         }
+    }
+}
+
+/** Runs what a tap on a quick button does: [action] is its click shortcut. */
+internal fun runQuickButtonAction(context: Context, actions: HomeScreenActions, action: ShortcutAction) {
+    when (action.type) {
+        ShortcutType.ALL_APPS -> actions.onAllAppsDrawerOpen()
+        ShortcutType.ASSISTANT -> launchVoiceAssistant(context)
+        ShortcutType.SETTINGS -> actions.onSettingsClick()
+        ShortcutType.NOTIFICATIONS -> IntentUtils.expandNotificationShade(context)
+        ShortcutType.OPEN_APP -> launchAppPackage(context, action.target)
+        ShortcutType.SYSTEM_INTENT -> launchSystemIntent(context, action.target)
+        ShortcutType.NONE -> Unit
     }
 }
 

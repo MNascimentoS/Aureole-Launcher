@@ -28,7 +28,7 @@ internal fun quickButtonColorTargetIndex(target: QuickButtonColorTarget): Int =
 internal fun quickButtonColorTargetAt(index: Int): QuickButtonColorTarget =
     QUICK_BUTTON_COLOR_TARGETS.getOrElse(index) { QuickButtonColorTarget.ICON }
 
-/** True when [icon] over [background] has a contrast below [LOW_CONTRAST_RATIO] (a translucent background is read as opaque). */
+/** True when [icon] over [background] has a contrast below [LOW_CONTRAST_RATIO] (translucent reads as opaque). */
 internal fun isLowContrast(icon: Color, background: Color): Boolean {
     val a = icon.copy(alpha = 1f).luminance()
     val b = background.copy(alpha = 1f).luminance()

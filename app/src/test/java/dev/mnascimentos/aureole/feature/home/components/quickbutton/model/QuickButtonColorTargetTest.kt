@@ -20,7 +20,10 @@ class QuickButtonColorTargetTest {
 
     @Test
     fun `when replacing a color, should change only the color of the target`() {
-        assertEquals(appearance.copy(backgroundColor = ref(9)), appearance.withColor(QuickButtonColorTarget.BACKGROUND, ref(9)))
+        assertEquals(
+            appearance.copy(backgroundColor = ref(9)),
+            appearance.withColor(QuickButtonColorTarget.BACKGROUND, ref(9))
+        )
         assertEquals(appearance.copy(strokeColor = ref(9)), appearance.withColor(QuickButtonColorTarget.STROKE, ref(9)))
         assertEquals(appearance.copy(iconColor = ref(9)), appearance.withColor(QuickButtonColorTarget.ICON, ref(9)))
     }
