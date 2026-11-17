@@ -151,8 +151,8 @@ private fun ChecklistHeader(onboarding: OnboardingUiState, shared: ChecklistShar
     ) {
         AureoleLogoRing(
             progress = onboarding.taskProgress,
-            modifier = shared.halo.size(AureoleDS.dimens.iconXLarge),
-            // Same ring, bigger logo inside (RF-14).
+            // ~40 dp of logo in a 64 dp ring, as in the prototype (RF-14): the ring grows so the logo can.
+            modifier = shared.halo.size(AureoleDS.dimens.avatarSize),
             logoFraction = LOGO_RING_LOGO_FRACTION_LARGE,
             contentDescription = progressText
         )

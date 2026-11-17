@@ -8,7 +8,7 @@ const val LOGO_RING_INDETERMINATE_SWEEP = 0.28f
 /** Logo width as a share of the ring diameter. */
 const val LOGO_RING_LOGO_FRACTION = 0.5f
 
-/** Larger logo for a ring that is the header of a card (the "First steps" checklist), with the same ring. */
+/** Larger logo for a ring that is the header of a card (the "First steps" checklist: ~40 dp in a 64 dp ring). */
 const val LOGO_RING_LOGO_FRACTION_LARGE = 0.62f
 
 /**

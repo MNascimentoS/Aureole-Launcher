@@ -75,5 +75,25 @@ private fun HeaderWithRuler(isLeftHanded: Boolean) {
     }
 }
 
+/** RF-19: a title longer than the line is cut with an ellipsis between the 48 dp slots, never under the logo. */
+@PreviewTest
+@AureolePreview
+@Composable
+private fun OverlaySheetHeaderLongTitleScreenshotTest() {
+    AureoleLauncherTheme {
+        Column {
+            listOf(false, true).forEach { isLeftHanded ->
+                OverlaySheetBody(
+                    title = "Settings of the container on the left side of the home screen",
+                    onSettingsClick = {},
+                    bottomBarContent = null,
+                    sheetContent = null,
+                    decorations = OverlaySheetDecorations(isLeftHanded = isLeftHanded)
+                )
+            }
+        }
+    }
+}
+
 private val TITLE_LINE_CENTER = 32.dp
 
