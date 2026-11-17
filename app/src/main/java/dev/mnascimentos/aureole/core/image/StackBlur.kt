@@ -14,9 +14,12 @@ private const val MASK = 0xFF
  */
 object StackBlur {
 
+    private fun holds(pixels: IntArray, width: Int, height: Int) =
+        width >= 1 && height >= 1 && pixels.size >= width * height
+
     /** Blurs [pixels] (ARGB_8888, row by row) of [width] x [height] in place with [radius] px and returns it. */
     fun blur(pixels: IntArray, width: Int, height: Int, radius: Int): IntArray {
-        if (radius < 1 || width < 1 || height < 1 || pixels.size < width * height) return pixels
+        if (radius < 1 || !holds(pixels, width, height)) return pixels
         val half = min(max(radius / 2, 1), max(width, height))
         val planes = Array(CHANNELS) { c ->
             val shift = BITS * (CHANNELS - 1 - c)

@@ -12,11 +12,11 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.LocalContext
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
-import coil.size.Size as CoilSize
 import dev.mnascimentos.aureole.core.image.WallpaperPreviewBlur
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.File
+import coil.size.Size as CoilSize
 
 /** Whether this Android blurs live (12+); below it the editor shows a small pre-blurred copy. */
 internal val hasLiveBlur: Boolean get() = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
@@ -47,8 +47,8 @@ internal fun rememberPreviewBlurPainter(path: String?, blurPx: Int): Painter? {
     }
     val blurred by produceState<Bitmap?>(initialValue = null, source, blurPx) {
         val small = source
-        value = if (small == null || blurPx < 1) null else withContext(Dispatchers.Default) {
-            WallpaperPreviewBlur.blurred(small, blurPx)
+        value = small?.takeIf { blurPx >= 1 }?.let {
+            withContext(Dispatchers.Default) { WallpaperPreviewBlur.blurred(it, blurPx) }
         }
     }
     return remember(blurred) { blurred?.let { BitmapPainter(it.asImageBitmap()) } }

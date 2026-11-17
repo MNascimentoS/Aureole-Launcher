@@ -1,8 +1,5 @@
 package dev.mnascimentos.aureole.feature.settings.model
 
-import androidx.annotation.StringRes
-import dev.mnascimentos.aureole.R
-
 /** The three areas of the settings root, each opened as a bottom sheet over it. */
 enum class SettingsArea { APPEARANCE, BEHAVIOR, ADVANCED }
 
@@ -103,24 +100,8 @@ private fun SettingsSheet?.afterBack(): SettingsSheet? = when (this) {
 private fun SettingsSheet.Child.backToArea(): SettingsSheet? =
     parent?.let { SettingsSheet.Child(it, returnTo) } ?: returnTo?.let { SettingsSheet.Area(it) }
 
-/** Title of the area sheet. */
-@StringRes
-fun settingsAreaTitle(area: SettingsArea): Int = when (area) {
-    SettingsArea.APPEARANCE -> R.string.settings_appearance_title
-    SettingsArea.BEHAVIOR -> R.string.settings_behavior_title
-    SettingsArea.ADVANCED -> R.string.settings_advanced_title
-}
-
 /**
  * Only the Appearance sheet has pickers inside it (D-09) and the mini-home preview above it (D-04), which shows what
  * those pickers choose.
  */
 fun settingsAreaHasInner(area: SettingsArea): Boolean = area == SettingsArea.APPEARANCE
-
-/** Title of the sheet: the picker shown inside it, or the area. */
-@StringRes
-fun settingsSheetTitle(area: SettingsArea, inner: SettingsInnerKind?): Int = when (inner) {
-    SettingsInnerKind.PALETTE -> R.string.settings_appearance_color_palette
-    SettingsInnerKind.FONT -> R.string.home_customize_adjust_font
-    null -> settingsAreaTitle(area)
-}

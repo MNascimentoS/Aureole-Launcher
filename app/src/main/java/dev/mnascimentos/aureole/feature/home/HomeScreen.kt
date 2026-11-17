@@ -198,8 +198,7 @@ private fun BoxScope.HomeScreenBody(
             .then(homeContentHazeModifier)
     ) {
         WallpaperBackground(
-            isCustomWallpaperSet = config.uiState.isCustomWallpaperSet,
-            customWallpaperPath = config.uiState.customWallpaperPath,
+            customWallpaperPath = config.uiState.customWallpaperPath.takeIf { config.uiState.isCustomWallpaperSet },
             wallpaperScaleType = config.uiState.wallpaperScaleType,
             adjustments = config.uiState.wallpaperAdjustments,
             hazeState = config.hazeState

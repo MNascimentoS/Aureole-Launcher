@@ -15,7 +15,7 @@ private const val CENTER = 0.5f
 private const val DEFAULT_DIM = 0.3f
 private const val FULL_TURN = 360
 private const val QUARTER_TURN = 90
-private val NUMBER = "-?[0-9]+(?:\\.[0-9]+)?(?:[eE][-+]?[0-9]+)?"
+private const val NUMBER = "-?[0-9]+(?:\\.[0-9]+)?(?:[eE][-+]?[0-9]+)?"
 
 /**
  * How the custom photo is framed and tinted, kept apart from the original photo so editing again loses nothing.

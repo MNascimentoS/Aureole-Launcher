@@ -50,7 +50,6 @@ import dev.mnascimentos.aureole.core.designsystem.model.OverlayLayout
 import dev.mnascimentos.aureole.core.designsystem.model.OverlaySheetDecorations
 import dev.mnascimentos.aureole.core.designsystem.model.OverlaySheetMotion
 import dev.mnascimentos.aureole.core.designsystem.model.OverlaySheetStateData
-import dev.mnascimentos.aureole.core.designsystem.model.SheetBounds
 import dev.mnascimentos.aureole.core.designsystem.model.anchoredPreviewTop
 import dev.mnascimentos.aureole.core.designsystem.model.overlayLayoutFor
 import dev.mnascimentos.aureole.core.designsystem.model.sheetRestFraction
@@ -69,15 +68,6 @@ private const val SHEET_EXIT_MS = 250
 
 /** Lets the entry spring settle to the pixel instead of stopping 1% short. */
 private const val SHEET_SLIDE_THRESHOLD = 0.001f
-
-/** Most a sheet whose content already fits stretches above rest. */
-private val SHEET_ELASTIC_LIMIT = 64.dp
-
-/** Height of the short bounce of a sheet that cannot expand. */
-private val SHEET_BOUNCE = 24.dp
-
-/** Content up to this much taller than the rest height still counts as fitting. */
-private val SHEET_FIT_SLACK = 8.dp
 
 @Composable
 internal fun OverlayContentBox(
@@ -119,15 +109,7 @@ internal fun OverlayContentBox(
             host = params.config.host,
             fractions = params.config.restHeightFraction to params.config.expandedHeightFraction
         )
-        val bounds = with(density) {
-            SheetBounds(
-                restMaxPx = screenHeightPx * restFraction,
-                expandedPx = screenHeightPx * params.config.expandedHeightFraction,
-                elasticLimitPx = SHEET_ELASTIC_LIMIT.toPx(),
-                bouncePx = SHEET_BOUNCE.toPx(),
-                fitSlackPx = SHEET_FIT_SLACK.toPx()
-            )
-        }
+        val bounds = sheetBoundsFor(density, screenHeightPx, restFraction, params.config.expandedHeightFraction)
         val motion = remember { OverlaySheetMotion() }
 
         val state = AnchoredSheetState(bounds, motion, stateData.isExpanded)

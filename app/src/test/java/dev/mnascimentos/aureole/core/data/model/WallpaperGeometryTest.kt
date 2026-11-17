@@ -133,12 +133,20 @@ class WallpaperGeometryTest {
     fun `rect stays inside the photo for many rotations zooms and focuses`() {
         val images = listOf(Size(1000f, 2000f), Size(2000f, 1000f), Size(1500f, 1500f))
         val views = listOf(portrait, landscape)
-        for (image in images) for (view in views) for (rotation in listOf(0, 90, 180, 270)) {
-            for (zoom in listOf(1f, 1.7f, 5f)) for (fx in listOf(0f, 0.5f, 1f)) for (fy in listOf(0f, 0.5f, 1f)) {
-                val rect = WallpaperGeometry.visibleRect(image, view, WallpaperAdjustments(zoom, fx, fy, rotation))
-                assertTrue(rect.left >= -delta && rect.top >= -delta)
-                assertTrue(rect.right <= 1f + delta && rect.bottom <= 1f + delta)
+        val focuses = listOf(0f, 0.5f, 1f)
+        val cases = images.flatMap { image -> views.map { image to it } }.flatMap { (image, view) ->
+            listOf(0, 90, 180, 270).flatMap { rotation ->
+                listOf(1f, 1.7f, 5f).flatMap { zoom ->
+                    focuses.flatMap { fx ->
+                        focuses.map { fy -> Triple(image, view, WallpaperAdjustments(zoom, fx, fy, rotation)) }
+                    }
+                }
             }
+        }
+        cases.forEach { (image, view, adjustments) ->
+            val rect = WallpaperGeometry.visibleRect(image, view, adjustments)
+            assertTrue(rect.left >= -delta && rect.top >= -delta)
+            assertTrue(rect.right <= 1f + delta && rect.bottom <= 1f + delta)
         }
     }
 }

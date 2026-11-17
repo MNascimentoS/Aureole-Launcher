@@ -16,13 +16,13 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.LocalContext
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
-import coil.size.Size as CoilSize
 import dev.mnascimentos.aureole.core.data.model.WallpaperAdjustments
 import dev.mnascimentos.aureole.core.data.model.WallpaperGeometry
 import dev.mnascimentos.aureole.core.image.BlurredWallpaperCache
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.File
+import coil.size.Size as CoilSize
 
 /**
  * The photo drawn through [WallpaperGeometry.visibleRect]: rotated, scaled so the view just covers its visible part

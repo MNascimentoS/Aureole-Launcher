@@ -20,6 +20,7 @@ import kotlin.math.max
 import kotlin.math.min
 
 private const val TAG = "LockScreenWallpaper"
+private const val PNG_QUALITY = 100
 
 /**
  * Puts the home background (without the apps) on the Android lock screen when the user turned
@@ -76,7 +77,7 @@ class LockScreenWallpaper(
 
     private fun saveImage(bitmap: Bitmap) {
         runCatching {
-            FileOutputStream(stash.lockImageFile).use { bitmap.compress(Bitmap.CompressFormat.PNG, 100, it) }
+            FileOutputStream(stash.lockImageFile).use { bitmap.compress(Bitmap.CompressFormat.PNG, PNG_QUALITY, it) }
         }.onFailure { Timber.tag(TAG).w(it, "Could not keep the lock screen image") }
     }
 

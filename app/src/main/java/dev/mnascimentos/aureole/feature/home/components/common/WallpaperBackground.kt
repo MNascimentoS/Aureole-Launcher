@@ -25,7 +25,6 @@ import java.io.File
 
 @Composable
 fun WallpaperBackground(
-    isCustomWallpaperSet: Boolean,
     customWallpaperPath: String?,
     hazeState: HazeState,
     modifier: Modifier = Modifier,
@@ -35,7 +34,7 @@ fun WallpaperBackground(
     val hazeModifier = Modifier.hazeSource(state = hazeState)
 
     Box(modifier = modifier.fillMaxSize().then(hazeModifier)) {
-        if (isCustomWallpaperSet && !customWallpaperPath.isNullOrEmpty()) {
+        if (!customWallpaperPath.isNullOrEmpty()) {
             CustomWallpaper(File(customWallpaperPath), wallpaperScaleType, adjustments)
         } else {
             Box(
@@ -64,27 +63,29 @@ private fun CustomWallpaper(file: File, scaleType: String, adjustments: Wallpape
     } else {
         Modifier
     }
-    Box(modifier = Modifier.fillMaxSize().then(blurModifier)) {
-        if (adjustments.hasFraming) {
-            FramedWallpaperImage(file = source, adjustments = adjustments, modifier = Modifier.fillMaxSize())
-        } else {
-            AsyncImage(
-                model = source,
-                contentDescription = null,
-                contentScale = when (scaleType) {
-                    "Fit" -> ContentScale.Fit
-                    "Fill" -> ContentScale.FillBounds
-                    else -> ContentScale.Crop
-                },
-                modifier = Modifier.fillMaxSize()
-            )
+    Box(modifier = Modifier.fillMaxSize()) {
+        Box(modifier = Modifier.fillMaxSize().then(blurModifier)) {
+            if (adjustments.hasFraming) {
+                FramedWallpaperImage(file = source, adjustments = adjustments, modifier = Modifier.fillMaxSize())
+            } else {
+                AsyncImage(
+                    model = source,
+                    contentDescription = null,
+                    contentScale = when (scaleType) {
+                        "Fit" -> ContentScale.Fit
+                        "Fill" -> ContentScale.FillBounds
+                        else -> ContentScale.Crop
+                    },
+                    modifier = Modifier.fillMaxSize()
+                )
+            }
         }
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color.Black.copy(alpha = adjustments.dim))
+        )
     }
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color.Black.copy(alpha = adjustments.dim))
-    )
 }
 
 @AureolePreview
@@ -92,7 +93,6 @@ private fun CustomWallpaper(file: File, scaleType: String, adjustments: Wallpape
 private fun WallpaperBackgroundPreview() {
     AureoleLauncherTheme {
         WallpaperBackground(
-            isCustomWallpaperSet = false,
             customWallpaperPath = null,
             hazeState = HazeState()
         )
