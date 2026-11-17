@@ -1,47 +1,29 @@
 package dev.mnascimentos.aureole.feature.settings.components
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ExperimentalLayoutApi
-import androidx.compose.foundation.layout.FlowRow
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.selection.selectable
-import androidx.compose.foundation.selection.selectableGroup
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.semantics.Role
-import androidx.compose.ui.text.style.TextAlign
 import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.composable.color.AureoleColorSwatch
 import dev.mnascimentos.aureole.composable.color.AureoleHueSlider
-import dev.mnascimentos.aureole.composable.color.model.PaletteSwatch
+import dev.mnascimentos.aureole.composable.color.AureolePaletteSwatchRow
+import dev.mnascimentos.aureole.composable.color.AureoleThemeSwatchRow
 import dev.mnascimentos.aureole.composable.color.model.hueOf
-import dev.mnascimentos.aureole.composable.color.model.initialPaletteCategory
 import dev.mnascimentos.aureole.composable.color.model.isLightBackground
-import dev.mnascimentos.aureole.composable.color.model.paletteSwatches
 import dev.mnascimentos.aureole.composable.color.model.themeSwatches
 import dev.mnascimentos.aureole.composable.color.model.toneRamp
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
-import dev.mnascimentos.aureole.core.designsystem.palette.PaletteCategory
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
@@ -59,9 +41,13 @@ internal fun BackgroundColorSections(
 ) {
     Column(modifier = modifier.fillMaxWidth()) {
         SheetSectionHeading(text = stringResource(R.string.settings_background_section_theme))
-        ThemeSwatchRow(selected = selected, onSelect = onSelect)
+        AureoleThemeSwatchRow(
+            swatches = themeSwatches(AureoleDS.colors),
+            isSelected = { it.color == selected },
+            onSelect = { onSelect(it.color) }
+        )
         SheetSectionHeading(text = stringResource(R.string.settings_background_section_palettes))
-        PaletteSwatchRow(selected = selected, onSelect = onSelect)
+        AureolePaletteSwatchRow(selected = selected, onSelect = onSelect)
         SheetSectionHeading(text = stringResource(R.string.settings_background_section_tones))
         ToneRamp(selected = selected, onSelect = onSelect)
         if (isLightBackground(selected)) {
@@ -71,99 +57,6 @@ internal fun BackgroundColorSections(
                 format = AureoleTextFormatParams(style = AureoleDS.typography.bodySmall),
                 modifier = Modifier.padding(top = AureoleDS.dimens.small)
             )
-        }
-    }
-}
-
-@OptIn(ExperimentalLayoutApi::class)
-@Composable
-private fun ThemeSwatchRow(selected: Int, onSelect: (Int) -> Unit) {
-    val swatches = themeSwatches(AureoleDS.colors)
-    FlowRow(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(AureoleDS.dimens.medium),
-        verticalArrangement = Arrangement.spacedBy(AureoleDS.dimens.small)
-    ) {
-        swatches.forEach { swatch ->
-            Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                // Theme tones match the sheet itself (Surface is the sheet color): a thin outline keeps them visible.
-                AureoleColorSwatch(
-                    colorInt = swatch.color,
-                    isSelected = selected == swatch.color,
-                    onSelect = { onSelect(swatch.color) },
-                    modifier = Modifier.border(AureoleDS.dimens.borderMinimal, AureoleDS.colors.outline, CircleShape)
-                )
-                AureoleText(
-                    text = stringResource(swatch.labelRes),
-                    color = AureoleDS.colors.onSurfaceMedium,
-                    format = AureoleTextFormatParams(style = AureoleDS.typography.labelSmall, maxLines = 1)
-                )
-            }
-        }
-    }
-}
-
-@Composable
-private fun PaletteSwatchRow(selected: Int, onSelect: (Int) -> Unit) {
-    var category by remember { mutableStateOf(initialPaletteCategory(selected)) }
-    val swatches = remember(category) { paletteSwatches(category) }
-    val shownName = swatches.firstOrNull { it.color == selected }?.paletteName
-    Column(verticalArrangement = Arrangement.spacedBy(AureoleDS.dimens.xSmall)) {
-        CategoryChips(selected = category, onSelect = { category = it })
-        LazyRow(horizontalArrangement = Arrangement.spacedBy(AureoleDS.dimens.small)) {
-            items(items = swatches, key = PaletteSwatch::paletteName) { swatch ->
-                AureoleColorSwatch(
-                    colorInt = swatch.color,
-                    isSelected = selected == swatch.color,
-                    onSelect = { onSelect(swatch.color) }
-                )
-            }
-        }
-        AureoleText(
-            text = shownName.orEmpty(),
-            color = AureoleDS.colors.onSurfaceMedium,
-            format = AureoleTextFormatParams(style = AureoleDS.typography.bodySmall, maxLines = 1)
-        )
-    }
-}
-
-private fun PaletteCategory.labelRes(): Int = when (this) {
-    PaletteCategory.COLD -> R.string.settings_background_category_cold
-    PaletteCategory.COOL -> R.string.settings_background_category_cool
-    PaletteCategory.NEUTRAL -> R.string.settings_background_category_neutral
-    PaletteCategory.WARM -> R.string.settings_background_category_warm
-}
-
-@Composable
-private fun CategoryChips(selected: PaletteCategory, onSelect: (PaletteCategory) -> Unit) {
-    val shape = RoundedCornerShape(AureoleDS.dimens.radiusMedium)
-    Row(
-        modifier = Modifier.fillMaxWidth().selectableGroup(),
-        horizontalArrangement = Arrangement.spacedBy(AureoleDS.dimens.xSmall)
-    ) {
-        PaletteCategory.entries.forEach { category ->
-            val isSelected = category == selected
-            Box(
-                modifier = Modifier
-                    .weight(1f)
-                    .height(AureoleDS.dimens.minTouchTarget)
-                    .clip(shape)
-                    .background(
-                        if (isSelected) AureoleDS.colors.onSurfaceHigh else AureoleDS.colors.surfaceVariant
-                    )
-                    .selectable(selected = isSelected, role = Role.RadioButton, onClick = { onSelect(category) }),
-                contentAlignment = Alignment.Center
-            ) {
-                AureoleText(
-                    text = stringResource(category.labelRes()),
-                    color = if (isSelected) AureoleDS.colors.surface else AureoleDS.colors.onSurfaceMedium,
-                    format = AureoleTextFormatParams(
-                        style = AureoleDS.typography.bodySmall,
-                        maxLines = 1,
-                        textAlign = TextAlign.Center
-                    )
-                )
-            }
         }
     }
 }

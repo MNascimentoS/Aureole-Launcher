@@ -22,6 +22,9 @@ data class FolderEntity(
     val icon: String? = null,
     @ColumnInfo(name = "display_as_grid")
     val displayAsGrid: Boolean = false,
+    @ColumnInfo(name = "icon_type", defaultValue = "ICON")
+    val iconType: FolderIconType = FolderIconType.ICON,
+    val emoji: String? = null,
     @ColumnInfo(name = "created_at")
     val createdAt: Long = System.currentTimeMillis()
 )

@@ -440,6 +440,8 @@
     <string name="settings_background_swatch_surface">Superfície</string>
     <string name="settings_background_swatch_variant">Variante</string>
     <string name="settings_background_swatch_outline">Contorno</string>
+    <string name="settings_background_swatch_accent">Destaque</string>
+    <string name="theme_color_section_other_palettes">De outras paletas</string>
     <string name="settings_background_light_warning">Essa cor gera um tema claro</string>
     <string name="home_undo_action">Desfazer</string>
     <string name="home_undo_removed_from_folder">%1$s saiu da pasta</string>
@@ -532,6 +534,7 @@
     <string name="folder_icon_cat_health">Saúde</string>
     <string name="folder_icon_cat_travel">Viagem</string>
     <string name="folder_icon_cat_tools">Ferramentas</string>
+    <string name="folder_icon_cat_actions">Ações</string>
     <string name="home_grid_no_space_error">Não há espaço livre suficiente na grade para este container.</string>
     <string name="settings_reset_grid_success">Layout da tela inicial resetado para o padrão</string>
     <string name="settings_wallpaper_load_error">Não foi possível carregar a imagem selecionada</string>

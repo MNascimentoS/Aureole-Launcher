@@ -35,7 +35,6 @@ import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.composable.LocalHomeUiState
 import dev.mnascimentos.aureole.composable.appitem.AureoleAppIcon
 import dev.mnascimentos.aureole.composable.appitem.model.AureoleAppIconParams
-import dev.mnascimentos.aureole.composable.dialogs.FolderIconRegistry
 import dev.mnascimentos.aureole.composable.dialogs.model.FolderButtonMetrics
 import dev.mnascimentos.aureole.core.data.model.AppFolder
 import dev.mnascimentos.aureole.core.data.model.QuickButtonModel
@@ -188,7 +187,7 @@ fun ContainerFolderButton(
         modifier = modifier
             .size(buttonSize)
             .clip(RoundedCornerShape(cornerRadius))
-            .background(params.containerColor)
+            .background(folderOwnColor(params.folder) ?: params.containerColor)
             .onGloballyPositioned { coordinates ->
                 onPositionedY(coordinates.positionInWindow().y)
             }
@@ -217,22 +216,12 @@ private fun FolderIconOrTextContent(
     iconSize: Dp,
     textColor: Color
 ) {
-    if (folder.icon != null) {
-        FolderIconRegistry.RenderIcon(
-            name = folder.icon,
-            modifier = Modifier.size(iconSize),
-            tint = textColor
-        )
-    } else {
-        AureoleText(
-            text = folder.name.take(1).uppercase(),
-            color = textColor,
-            format = AureoleTextFormatParams(
-                style = AureoleDS.typography.titleLarge,
-                fontWeight = FontWeight.Bold
-            )
-        )
-    }
+    FolderGlyph(
+        folder = folder,
+        size = iconSize,
+        tint = textColor,
+        letterStyle = AureoleDS.typography.titleLarge
+    )
 }
 
 @Composable

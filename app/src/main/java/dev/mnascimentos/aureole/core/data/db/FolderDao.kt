@@ -32,10 +32,12 @@ interface FolderDao {
             id = appFolder.id,
             panelId = appFolder.panelId,
             name = appFolder.name,
-            color = null,
+            color = appFolder.color?.toJson(),
             iconFallback = appFolder.iconPackage,
             icon = appFolder.icon,
-            displayAsGrid = appFolder.displayAsGrid
+            displayAsGrid = appFolder.displayAsGrid,
+            iconType = appFolder.iconType,
+            emoji = appFolder.emoji
         )
         insertFolderEntity(folderEntity)
         deleteFolderItems(appFolder.id)

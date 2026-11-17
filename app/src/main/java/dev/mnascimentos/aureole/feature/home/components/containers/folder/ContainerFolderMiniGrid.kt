@@ -16,16 +16,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.text.font.FontWeight
 import androidx.core.graphics.drawable.toDrawable
 import dev.mnascimentos.aureole.composable.appitem.AureoleAppIcon
 import dev.mnascimentos.aureole.composable.appitem.model.AureoleAppIconParams
-import dev.mnascimentos.aureole.composable.dialogs.FolderIconRegistry
 import dev.mnascimentos.aureole.composable.dialogs.model.FolderButtonMetrics
 import dev.mnascimentos.aureole.core.data.model.AppFolder
 import dev.mnascimentos.aureole.core.data.model.AppInfo
-import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
-import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
@@ -50,7 +46,7 @@ fun FolderMiniGridPreview(
         modifier = modifier
             .size(FolderButtonMetrics.SmallSize)
             .clip(RoundedCornerShape(AureoleDS.dimens.radiusMedium))
-            .background(AureoleDS.colors.surfaceVariant.copy(alpha = 0.85f))
+            .background(folderOwnColor(folder) ?: AureoleDS.colors.surfaceVariant.copy(alpha = 0.85f))
             .padding(AureoleDS.dimens.borderMax),
         contentAlignment = Alignment.Center
     ) {
@@ -64,19 +60,12 @@ fun FolderMiniGridPreview(
 
 @Composable
 private fun EmptyFolderMiniGridPreview(folder: AppFolder) {
-    if (folder.icon != null) {
-        FolderIconRegistry.RenderIcon(
-            name = folder.icon,
-            modifier = Modifier.size(AureoleDS.dimens.iconLarge),
-            tint = AureoleDS.colors.onSurfaceMedium
-        )
-    } else {
-        AureoleText(
-            text = folder.name.take(1).uppercase(),
-            color = AureoleDS.colors.onSurfaceMedium,
-            format = AureoleTextFormatParams(style = AureoleDS.typography.titleMedium, fontWeight = FontWeight.Bold)
-        )
-    }
+    FolderGlyph(
+        folder = folder,
+        size = AureoleDS.dimens.iconLarge,
+        tint = AureoleDS.colors.onSurfaceMedium,
+        letterStyle = AureoleDS.typography.titleMedium
+    )
 }
 
 @Composable
