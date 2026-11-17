@@ -1,6 +1,12 @@
 package dev.mnascimentos.aureole.feature.home.components.overlays
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
@@ -15,12 +21,17 @@ import androidx.compose.ui.res.stringResource
 import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.composable.sheets.PickFontBottomSheet
 import dev.mnascimentos.aureole.composable.sheets.PickPaletteBottomSheet
+import dev.mnascimentos.aureole.composable.sheets.model.ThemePickerSheetOptions
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleEditOverlay
+import dev.mnascimentos.aureole.core.designsystem.components.AureoleOverlayBackdrop
 import dev.mnascimentos.aureole.core.designsystem.model.AureoleEditOverlayConfig
 import dev.mnascimentos.aureole.core.designsystem.model.AureoleEditOverlayParams
+import dev.mnascimentos.aureole.core.designsystem.model.AureoleEditOverlayState
 import dev.mnascimentos.aureole.core.designsystem.model.LocalLeftHanded
+import dev.mnascimentos.aureole.core.designsystem.model.rememberAureoleEditOverlayState
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
+import dev.mnascimentos.aureole.core.designsystem.utils.LocalHazeState
 import dev.mnascimentos.aureole.feature.home.components.onboarding.model.AppearancePicker
 import dev.mnascimentos.aureole.feature.home.components.overlays.extensions.addCustomizeItem
 import dev.mnascimentos.aureole.feature.home.components.overlays.model.CustomizeAdjustItem
@@ -31,6 +42,9 @@ import kotlinx.coroutines.delay
 
 /** Lets the sheet slide out before the caller removes it. */
 private const val DISMISS_DELAY_MS = 300L
+
+/** Same fade as the backdrop of a single sheet. */
+private const val BACKDROP_FADE_MS = 300
 
 /**
  * Customize sheet: "Adjust" (Layout, Palette, Font) above "Add to home". Palette and Font open the existing
@@ -45,6 +59,7 @@ fun CustomizeBottomSheet(
 ) {
     var isVisible by remember { mutableStateOf(true) }
     var picker by remember { mutableStateOf<AppearancePicker?>(null) }
+    val customizeState = rememberAureoleEditOverlayState()
     if (!isVisible) {
         LaunchedEffect(isVisible) {
             delay(DISMISS_DELAY_MS)
@@ -52,37 +67,61 @@ fun CustomizeBottomSheet(
         }
     }
 
-    CompositionLocalProvider(LocalLeftHanded provides uiState.isLeftHandedMode) {
-        when (picker) {
-            AppearancePicker.PALETTE -> PickPaletteBottomSheet(
-                selectedPaletteName = uiState.selectedThemeName,
-                onPaletteSelected = {
-                    picker = null
-                    actions.onSelectPalette(it.name)
-                },
-                onDismissRequest = { picker = null },
-                modifier = modifier
-            )
-            AppearancePicker.FONT -> PickFontBottomSheet(
-                selectedFontName = uiState.selectedFontName,
-                onFontSelected = {
-                    picker = null
-                    actions.onSelectFont(it)
-                },
-                onDismissRequest = { picker = null },
-                modifier = modifier
-            )
-            null -> CustomizeOverlay(
+    // One backdrop for the Customize sheet and the pickers it opens, so swapping them does not flash the home:
+    // the Customize sheet slides down while the picker slides up, and back.
+    val isBackdropVisible = isVisible && (picker != null || customizeState.internalVisible)
+    CompositionLocalProvider(
+        LocalLeftHanded provides uiState.isLeftHandedMode
+    ) {
+        Box(modifier = modifier.fillMaxSize()) {
+            AnimatedVisibility(
+                visible = isBackdropVisible,
+                enter = fadeIn(tween(BACKDROP_FADE_MS)),
+                exit = fadeOut(tween(BACKDROP_FADE_MS))
+            ) {
+                AureoleOverlayBackdrop(hazeState = LocalHazeState.current, modifier = Modifier.fillMaxSize())
+            }
+            CustomizeOverlay(
                 uiState = uiState,
                 actions = actions,
                 params = CustomizeOverlayParams(
-                    isVisible = isVisible,
+                    isVisible = isVisible && picker == null,
                     onHide = { isVisible = false },
                     onPick = { picker = it }
                 ),
-                modifier = modifier
+                state = customizeState
+            )
+            CustomizePicker(
+                picker = picker,
+                uiState = uiState,
+                actions = actions,
+                onClose = { picker = null }
             )
         }
+    }
+}
+
+@Composable
+private fun CustomizePicker(
+    picker: AppearancePicker?,
+    uiState: MainUiState,
+    actions: HomeScreenActions,
+    onClose: () -> Unit
+) {
+    when (picker) {
+        AppearancePicker.PALETTE -> PickPaletteBottomSheet(
+            selectedPaletteName = uiState.selectedThemeName,
+            onPaletteSelected = { actions.onSelectPalette(it.name) },
+            onDismissRequest = onClose,
+            options = ThemePickerSheetOptions(hasExternalBackdrop = true)
+        )
+        AppearancePicker.FONT -> PickFontBottomSheet(
+            selectedFontName = uiState.selectedFontName,
+            onFontSelected = { actions.onSelectFont(it) },
+            onDismissRequest = onClose,
+            options = ThemePickerSheetOptions(hasExternalBackdrop = true)
+        )
+        null -> Unit
     }
 }
 
@@ -91,18 +130,19 @@ private fun CustomizeOverlay(
     uiState: MainUiState,
     actions: HomeScreenActions,
     params: CustomizeOverlayParams,
-    modifier: Modifier = Modifier
+    state: AureoleEditOverlayState
 ) {
     val onHide = params.onHide
     AureoleEditOverlay(
         onDismissRequest = onHide,
-        modifier = modifier,
+        state = state,
         params = AureoleEditOverlayParams(
             config = AureoleEditOverlayConfig(
                 title = stringResource(R.string.home_customize_title),
                 isVisible = params.isVisible,
                 isLeftHanded = uiState.isLeftHandedMode,
-                showHeaderAction = false
+                showHeaderAction = false,
+                hasExternalBackdrop = true
             ),
             sheetContent = {
                 Column(modifier = Modifier.verticalScroll(rememberScrollState())) {

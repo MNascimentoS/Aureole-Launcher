@@ -9,6 +9,7 @@ import dev.mnascimentos.aureole.core.designsystem.theme.AvailableFonts
 import dev.mnascimentos.aureole.feature.home.components.onboarding.model.AppearancePicker
 import dev.mnascimentos.aureole.feature.home.components.onboarding.model.AppearanceSelection
 import dev.mnascimentos.aureole.feature.home.components.onboarding.model.OnboardingActions
+import dev.mnascimentos.aureole.testing.closeOverlayWithBack
 import org.junit.Assert.assertEquals
 import org.junit.Rule
 import org.junit.Test
@@ -44,37 +45,36 @@ class OnboardingAppearancePickerComponentTest {
     }
 
     @Test
-    fun `when a palette is tapped, should only preview it until Apply`() {
-        val palette = allPalettes.first().name
+    fun `when a palette is tapped, should only preview it until the sheet closes`() {
+        val palette = allPalettes[1].name
         render(AppearancePicker.PALETTE)
 
         composeTestRule.onNodeWithText(palette).performClick()
         assertEquals(emptyList<String>(), calls)
 
-        composeTestRule.onNodeWithText("Apply").performClick()
+        composeTestRule.closeOverlayWithBack()
         composeTestRule.waitForIdle()
 
         assertEquals(listOf("palette=$palette", "confirm"), calls)
     }
 
     @Test
-    fun `when a font is tapped and Apply is pressed, should apply it and confirm`() {
-        val font = AvailableFonts.keys.first()
+    fun `when a font is tapped and the sheet closes, should apply it and confirm`() {
+        val font = AvailableFonts.keys.elementAt(1)
         render(AppearancePicker.FONT)
 
         composeTestRule.onNodeWithText(font).performClick()
-        composeTestRule.onNodeWithText("Apply").performClick()
+        composeTestRule.closeOverlayWithBack()
         composeTestRule.waitForIdle()
 
         assertEquals(listOf("font=$font", "confirm"), calls)
     }
 
     @Test
-    fun `when a palette is previewed and Cancel is pressed, should give up without confirming`() {
+    fun `when the sheet closes without a change, should give up without confirming`() {
         render(AppearancePicker.PALETTE)
 
-        composeTestRule.onNodeWithText(allPalettes.first().name).performClick()
-        composeTestRule.onNodeWithText("Cancel").performClick()
+        composeTestRule.closeOverlayWithBack()
         composeTestRule.waitForIdle()
 
         assertEquals(listOf("dismiss"), calls)

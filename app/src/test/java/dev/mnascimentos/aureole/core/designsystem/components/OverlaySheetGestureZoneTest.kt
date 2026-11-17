@@ -1,6 +1,12 @@
 package dev.mnascimentos.aureole.core.designsystem.components
 
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.semantics.SemanticsActions
+import androidx.compose.ui.semantics.getOrNull
 import androidx.compose.ui.test.ExperimentalTestApi
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.doubleClick
@@ -26,6 +32,7 @@ import org.robolectric.RobolectricTestRunner
 private const val GESTURE_ZONE = "Hold the top of the sheet"
 private const val LONG_PRESS_MS = 800L
 private const val SWIPE_DISTANCE_PX = 600f
+private const val TALL_ROWS = 60
 
 @OptIn(ExperimentalTestApi::class)
 @RunWith(RobolectricTestRunner::class)
@@ -36,7 +43,8 @@ class OverlaySheetGestureZoneTest {
 
     private var settingsClicks = 0
 
-    private fun setOverlay(state: AureoleEditOverlayState, isLeftHanded: Boolean = false) {
+    /** [isTall] fills the sheet with more rows than fit at rest, so it can expand; otherwise the content fits. */
+    private fun setOverlay(state: AureoleEditOverlayState, isLeftHanded: Boolean = false, isTall: Boolean = true) {
         composeTestRule.setContent {
             AureoleLauncherTheme {
                 AureoleEditOverlay(
@@ -50,11 +58,21 @@ class OverlaySheetGestureZoneTest {
                         ),
                         previewContent = { Text("Zone Preview") },
                         bottomBarContent = { Text("Zone Footer") },
-                        sheetContent = { Text("Zone Content") }
+                        sheetContent = {
+                            Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
+                                Text("Zone Content")
+                                if (isTall) repeat(TALL_ROWS) { Text("Row $it") }
+                            }
+                        }
                     )
                 )
             }
         }
+    }
+
+    private fun gestureZoneActionLabels(): List<String> {
+        val config = composeTestRule.onNodeWithContentDescription(GESTURE_ZONE).fetchSemanticsNode().config
+        return config.getOrNull(SemanticsActions.CustomActions).orEmpty().map { it.label }
     }
 
     @Test
@@ -131,6 +149,47 @@ class OverlaySheetGestureZoneTest {
         setOverlay(AureoleEditOverlayState(initialExpanded = true))
 
         composeTestRule.onNodeWithText("Zone Content").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Zone Footer").assertIsDisplayed()
+    }
+
+    @Test
+    fun `when the content fits, should not offer expand`() {
+        setOverlay(AureoleEditOverlayState(), isTall = false)
+        composeTestRule.waitForIdle()
+
+        assertEquals(listOf("Aureole settings"), gestureZoneActionLabels())
+    }
+
+    @Test
+    fun `when the content does not fit, should offer expand`() {
+        setOverlay(AureoleEditOverlayState())
+        composeTestRule.waitForIdle()
+
+        assertEquals(listOf("Expand", "Aureole settings"), gestureZoneActionLabels())
+    }
+
+    @Test
+    fun `when the content fits and the gesture zone is double tapped, should stay at rest`() {
+        val state = AureoleEditOverlayState()
+        setOverlay(state, isTall = false)
+
+        composeTestRule.onNodeWithContentDescription(GESTURE_ZONE).performTouchInput { doubleClick() }
+        composeTestRule.waitForIdle()
+
+        assertFalse(state.isExpanded)
+        composeTestRule.onNodeWithText("Zone Content").assertIsDisplayed()
+    }
+
+    @Test
+    fun `when the content fits and the sheet is swiped up, should spring back without expanding`() {
+        val state = AureoleEditOverlayState()
+        setOverlay(state, isTall = false)
+
+        composeTestRule.onNodeWithText("Zone Overlay")
+            .performTouchInput { swipeUp(startY = centerY, endY = centerY - SWIPE_DISTANCE_PX) }
+        composeTestRule.waitForIdle()
+
+        assertFalse(state.isExpanded)
         composeTestRule.onNodeWithText("Zone Footer").assertIsDisplayed()
     }
 }

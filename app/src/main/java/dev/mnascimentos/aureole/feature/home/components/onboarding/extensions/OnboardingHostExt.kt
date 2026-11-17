@@ -4,6 +4,7 @@ import dev.chrisbanes.haze.HazeState
 import dev.mnascimentos.aureole.core.data.model.GestureCoachStep
 import dev.mnascimentos.aureole.core.data.model.OnboardingStage
 import dev.mnascimentos.aureole.feature.home.components.onboarding.model.AppearanceSelection
+import dev.mnascimentos.aureole.feature.home.components.onboarding.model.ChecklistMorph
 import dev.mnascimentos.aureole.feature.home.components.onboarding.model.GestureCoachConfig
 import dev.mnascimentos.aureole.feature.home.components.onboarding.model.OnboardingGlass
 import dev.mnascimentos.aureole.feature.home.components.onboarding.model.OnboardingHostParams
@@ -26,6 +27,21 @@ val OnboardingUiState.visibleSurface: OnboardingSurface
         }
         OnboardingStage.COMPLETED -> if (isCelebrating) OnboardingSurface.CELEBRATION else OnboardingSurface.NONE
     }
+
+/** The surface of the host's crossfade; the checklist is drawn by its own layer, which turns it into the pill. */
+val OnboardingUiState.hostSurface: OnboardingSurface
+    get() = visibleSurface.takeUnless { it == OnboardingSurface.CHECKLIST } ?: OnboardingSurface.NONE
+
+/** The list is minimized to the pill: nothing else of the tour covers the home. */
+val OnboardingUiState.isChecklistMinimized: Boolean
+    get() = stage == OnboardingStage.CHECKLIST && !isChecklistExpanded && activePicker == null && !isHomePeeking
+
+/** What the checklist layer shows; the pill hides while [isOtherOverlayActive], so it never covers an editor. */
+fun OnboardingUiState.checklistMorph(isOtherOverlayActive: Boolean): ChecklistMorph = when {
+    visibleSurface == OnboardingSurface.CHECKLIST -> ChecklistMorph.EXPANDED
+    isChecklistMinimized && !isOtherOverlayActive -> ChecklistMorph.MINIMIZED
+    else -> ChecklistMorph.HIDDEN
+}
 
 /** Nothing to draw: the usual case once the tour is over, kept free of any onboarding layer. */
 val OnboardingUiState.isIdle: Boolean

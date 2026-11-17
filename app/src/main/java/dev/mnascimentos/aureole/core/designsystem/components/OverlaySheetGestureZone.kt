@@ -22,6 +22,7 @@ import androidx.compose.ui.semantics.customActions
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.R
+import dev.mnascimentos.aureole.core.designsystem.model.GestureZoneState
 import dev.mnascimentos.aureole.core.designsystem.model.SheetHandleAction
 import dev.mnascimentos.aureole.core.designsystem.model.sheetHandleActions
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
@@ -37,19 +38,21 @@ private const val GESTURE_ZONE_HEIGHT_DP = 20
 /**
  * Invisible gesture strip across the top of the overlay sheet; nothing is drawn.
  *
- * Double tap toggles between the rest and expanded heights; holding it opens the settings. Dragging is
- * handled by the sheet surface around it, so a drag that starts on the strip resizes the sheet too.
+ * Double tap toggles between the rest and expanded heights (a short bounce when the content already fits); holding
+ * it opens the settings. Dragging is handled by the sheet surface around it, so a drag that starts on the strip
+ * resizes the sheet too.
  * TalkBack gets the same gestures as custom actions.
  *
  * @param isExpanded Whether the sheet is expanded, to label the resize action.
  * @param isLeftHanded Thumb side; sets the order of the accessibility actions.
- * @param onToggleExpanded Switches between rest and expanded. Owns the segment tick.
+ * @param onToggleExpanded Switches between rest and expanded (or bounces when the sheet cannot expand). Owns the
+ * segment tick.
  * @param onSettingsClick Opens the Aureole settings; null hides the action and disables holding.
+ * @param canExpand False when the content already fits at rest: TalkBack then gets no "Expand" action.
  */
 @Composable
 internal fun OverlaySheetGestureZone(
-    isExpanded: Boolean,
-    isLeftHanded: Boolean,
+    state: GestureZoneState,
     onToggleExpanded: () -> Unit,
     onSettingsClick: (() -> Unit)?,
     modifier: Modifier = Modifier
@@ -65,7 +68,12 @@ internal fun OverlaySheetGestureZone(
         Unit
     }
     val description = stringResource(R.string.overlay_sheet_gesture_zone_description)
-    val actions = sheetHandleActions(isExpanded, onSettingsClick != null, isLeftHanded).map { action ->
+    val actions = sheetHandleActions(
+        state.isExpanded,
+        onSettingsClick != null,
+        state.isLeftHanded,
+        state.canExpand
+    ).map { action ->
         CustomAccessibilityAction(gestureZoneActionLabel(action)) {
             if (action == SheetHandleAction.Settings) onSettingsClick?.invoke() else onToggleExpanded()
             true
@@ -114,8 +122,7 @@ private fun gestureZoneActionLabel(action: SheetHandleAction): String {
 private fun OverlaySheetGestureZonePreview() {
     AureoleLauncherTheme {
         OverlaySheetGestureZone(
-            isExpanded = false,
-            isLeftHanded = false,
+            state = GestureZoneState(isExpanded = false, isLeftHanded = false),
             onToggleExpanded = {},
             onSettingsClick = {}
         )

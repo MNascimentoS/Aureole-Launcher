@@ -21,6 +21,7 @@ import dev.mnascimentos.aureole.core.data.model.ContainerModel
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.feature.home.components.containers.model.ContainerOptionsState
 import dev.mnascimentos.aureole.feature.home.components.containers.model.ManageItemRowParams
+import dev.mnascimentos.aureole.testing.closeOverlayWithBack
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Rule
@@ -145,14 +146,14 @@ class EditContainerManageItemsTest {
     }
 
     @Test
-    fun `when cancelling the folder form, should close only the form and keep the content`() {
+    fun `when closing the folder form without creating, should close only the form and keep the content`() {
         var backClicked = false
         val state = emptyState()
         setManageItems(state, onBack = { backClicked = true })
 
         composeTestRule.onNodeWithText("Folder").performClick()
         composeTestRule.onAllNodesWithText("New Folder")[0].assertIsDisplayed()
-        composeTestRule.onNodeWithText("Cancel").performClick()
+        composeTestRule.closeOverlayWithBack()
 
         composeTestRule.onAllNodesWithText("New Folder").assertCountEquals(0)
         composeTestRule.onNodeWithText("Back").assertIsDisplayed()

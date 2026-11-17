@@ -58,6 +58,12 @@ fun AureoleIcons.Add(
 ) { AureoleIcon(R.drawable.ic_aureole_add, modifier, tint) }
 
 @Composable
+fun AureoleIcons.AddNew(
+    modifier: Modifier = Modifier,
+    tint: Color? = null
+) { AureoleIcon(R.drawable.ic_aureole_add_new, modifier, tint) }
+
+@Composable
 fun AureoleIcons.Plus(
     modifier: Modifier = Modifier,
     tint: Color? = null
@@ -233,6 +239,18 @@ fun AureoleIcons.Info(
     tint: Color? = null
 ) { AureoleIcon(R.drawable.ic_aureole_info, modifier, tint) }
 
+@Composable
+fun AureoleIcons.Users(
+    modifier: Modifier = Modifier,
+    tint: Color? = null
+) { AureoleIcon(R.drawable.ic_aureole_users, modifier, tint) }
+
+@Composable
+fun AureoleIcons.Doc(
+    modifier: Modifier = Modifier,
+    tint: Color? = null
+) { AureoleIcon(R.drawable.ic_aureole_doc, modifier, tint) }
+
 // Set C
 @Composable
 fun AureoleIcons.Keyboard(
@@ -390,6 +408,30 @@ fun AureoleIcons.Unchecked(
     modifier: Modifier = Modifier,
     tint: Color? = null
 ) { AureoleIcon(R.drawable.ic_aureole_check_unselected, modifier, tint) }
+
+@Composable
+fun AureoleIcons.Crosshair(
+    modifier: Modifier = Modifier,
+    tint: Color? = null
+) { AureoleIcon(R.drawable.ic_aureole_center, modifier, tint) }
+
+@Composable
+fun AureoleIcons.RotateClockwise(
+    modifier: Modifier = Modifier,
+    tint: Color? = null
+) { AureoleIcon(R.drawable.ic_aureole_rotate_cw, modifier, tint) }
+
+@Composable
+fun AureoleIcons.ImageSwap(
+    modifier: Modifier = Modifier,
+    tint: Color? = null
+) { AureoleIcon(R.drawable.ic_aureole_image_swap, modifier, tint) }
+
+@Composable
+fun AureoleIcons.Image(
+    modifier: Modifier = Modifier,
+    tint: Color? = null
+) { AureoleIcon(R.drawable.ic_aureole_image, modifier, tint) }
 
 @Composable
 internal fun AureoleIcon(

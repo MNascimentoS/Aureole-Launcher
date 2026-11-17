@@ -1,11 +1,13 @@
 package dev.mnascimentos.aureole.core.designsystem.components
 
-import androidx.compose.animation.AnimatedVisibilityScope
+import androidx.compose.animation.EnterExitState
+import androidx.compose.animation.core.FastOutLinearInEasing
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
-import androidx.compose.animation.scaleIn
-import androidx.compose.animation.scaleOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -28,7 +30,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.platform.LocalDensity
@@ -41,27 +42,32 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.dp
 import dev.chrisbanes.haze.HazeState
-import dev.chrisbanes.haze.HazeStyle
-import dev.chrisbanes.haze.HazeTint
-import dev.chrisbanes.haze.hazeEffect
 import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.core.designsystem.icons.Logo
+import dev.mnascimentos.aureole.core.designsystem.model.AnchoredSheetState
 import dev.mnascimentos.aureole.core.designsystem.model.AureoleEditOverlayParams
+import dev.mnascimentos.aureole.core.designsystem.model.OverlayLayout
 import dev.mnascimentos.aureole.core.designsystem.model.OverlaySheetDecorations
 import dev.mnascimentos.aureole.core.designsystem.model.OverlaySheetMotion
 import dev.mnascimentos.aureole.core.designsystem.model.OverlaySheetStateData
-import dev.mnascimentos.aureole.core.designsystem.model.SheetBounds
 import dev.mnascimentos.aureole.core.designsystem.model.anchoredPreviewTop
+import dev.mnascimentos.aureole.core.designsystem.model.overlayLayoutFor
+import dev.mnascimentos.aureole.core.designsystem.model.sheetRestFraction
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.core.designsystem.utils.LocalHazeState
 import dev.mnascimentos.aureole.core.designsystem.utils.expandFractionOf
-import dev.mnascimentos.aureole.core.designsystem.utils.glassBlurRadius
 import dev.mnascimentos.aureole.core.designsystem.utils.scrimTapToDismiss
 import kotlin.math.roundToInt
 
 private const val ANIMATION_DURATION_MS = 300
+
+/** The sheet slides out faster than it comes in. */
+private const val SHEET_EXIT_MS = 250
+
+/** Lets the entry spring settle to the pixel instead of stopping 1% short. */
+private const val SHEET_SLIDE_THRESHOLD = 0.001f
 
 @Composable
 internal fun OverlayContentBox(
@@ -72,71 +78,111 @@ internal fun OverlayContentBox(
     val localHaze = LocalHazeState.current
     val effectiveHazeState = hazeState ?: localHaze
 
-    val hazeModifier = if (effectiveHazeState != null) {
-        Modifier.hazeEffect(
-            state = effectiveHazeState,
-            style = HazeStyle(
-                blurRadius = glassBlurRadius(AureoleDS.dimens.xLarge),
-                tint = HazeTint(Color.Black.copy(alpha = 0.55f))
-            )
-        ) { blurEnabled = true }
+    val tapOutside = if (params.config.dismissOnTapOutside) {
+        Modifier.scrimTapToDismiss(stateData.triggerDismiss)
     } else {
-        Modifier.Companion
+        Modifier
     }
-    val backgroundColor = if (effectiveHazeState != null) Color.Transparent else Color.Black
-
     BoxWithConstraints(
         modifier = Modifier
             .fillMaxSize()
-            .then(hazeModifier)
-            .background(backgroundColor)
-            .scrimTapToDismiss(stateData.triggerDismiss)
+            .then(tapOutside)
     ) {
+        if (!params.config.hasExternalBackdrop && !params.config.host.hasExternalBackdrop) {
+            AureoleOverlayBackdrop(
+                hazeState = effectiveHazeState,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .fadeWith(stateData)
+            )
+        }
         val density = LocalDensity.current
         val screenHeightPx = with(density) { maxHeight.toPx() }
-        val bounds = SheetBounds(
-            restMaxPx = screenHeightPx * params.config.restHeightFraction,
-            expandedPx = screenHeightPx * params.config.expandedHeightFraction
+        val overlayLayout = overlayLayoutFor(
+            width = with(density) { maxWidth.toPx() },
+            height = screenHeightPx,
+            hasPreview = params.previewContent != null
         )
+        val restFraction = sheetRestFraction(
+            layout = overlayLayout,
+            isLandscape = maxWidth > maxHeight,
+            host = params.config.host,
+            fractions = params.config.restHeightFraction to params.config.expandedHeightFraction
+        )
+        val bounds = sheetBoundsFor(density, screenHeightPx, restFraction, params.config.expandedHeightFraction)
         val motion = remember { OverlaySheetMotion() }
 
-        AnchoredPreviewLayout(
-            bounds = bounds,
-            motion = motion,
-            isExpanded = stateData.isExpanded,
-            preview = {
-                PreviewSlot(
-                    previewContent = params.previewContent,
-                    effectiveAnimated = stateData.effectiveAnimated,
-                    animScope = stateData.animScope,
-                    expandFraction = { expandFractionOf(motion, stateData.isExpanded, bounds) }
-                )
-            },
-            sheet = {
-                SheetSurface(
-                    stateData = stateData,
-                    params = params,
-                    bounds = bounds,
-                    motion = motion
-                )
-            }
-        )
+        val state = AnchoredSheetState(bounds, motion, stateData.isExpanded)
+        val maxSheetWidth = params.config.host.maxSheetWidth
+        val hiddenFraction = rememberSheetHiddenFraction(stateData)
+        val preview: @Composable () -> Unit = {
+            PreviewSlot(
+                previewContent = params.previewContent,
+                modifier = Modifier.fadeWith(stateData),
+                expandFraction = { expandFractionOf(motion, stateData.isExpanded, bounds) }
+            )
+        }
+        val sheet: @Composable () -> Unit = {
+            SheetSurface(stateData = stateData, params = params, bounds = bounds, motion = motion)
+        }
+        when (overlayLayout) {
+            OverlayLayout.STACKED -> AnchoredPreviewLayout(state, hiddenFraction, preview, sheet)
+            OverlayLayout.SIDE_BY_SIDE -> SideBySidePreviewLayout(state, maxSheetWidth, hiddenFraction, preview, sheet)
+        }
     }
+}
+
+/** Fades with the overlay as it opens and closes; nothing when animations are off. */
+private fun Modifier.fadeWith(stateData: OverlaySheetStateData): Modifier {
+    if (!stateData.effectiveAnimated) return this
+    return then(
+        with(stateData.animScope) {
+            Modifier.animateEnterExit(
+                enter = fadeIn(tween(ANIMATION_DURATION_MS)),
+                exit = fadeOut(tween(ANIMATION_DURATION_MS))
+            )
+        }
+    )
+}
+
+/**
+ * How much of the sheet is still below the screen while the overlay opens (1 → 0) or closes (0 → 1). Read in the
+ * layout, so the slide only moves the sheet and the preview. Always 0 when animations are off.
+ */
+@Composable
+private fun rememberSheetHiddenFraction(stateData: OverlaySheetStateData): () -> Float {
+    if (!stateData.effectiveAnimated) return { 0f }
+    val shown = stateData.animScope.transition.animateFloat(
+        transitionSpec = {
+            if (targetState == EnterExitState.Visible) {
+                spring(
+                    dampingRatio = Spring.DampingRatioNoBouncy,
+                    stiffness = Spring.StiffnessMediumLow,
+                    visibilityThreshold = SHEET_SLIDE_THRESHOLD
+                )
+            } else {
+                tween(durationMillis = SHEET_EXIT_MS, easing = FastOutLinearInEasing)
+            }
+        },
+        label = "sheetSlide"
+    ) { state -> if (state == EnterExitState.Visible) 1f else 0f }
+    return remember(shown) { { 1f - shown.value } }
 }
 
 /**
  * Places the sheet at the bottom and the preview right above the sheet's real top, measured in the same
- * layout pass. The preview follows the sheet while it is dragged, settles or expands over it, and keeps
- * the size it gets above the sheet at rest.
+ * layout pass. The preview follows the sheet while it is dragged, settles, expands over it or slides in and
+ * out with the overlay ([hiddenFraction] of the sheet height below its place), and keeps the size it gets above
+ * the sheet at rest.
  */
 @Composable
 private fun AnchoredPreviewLayout(
-    bounds: SheetBounds,
-    motion: OverlaySheetMotion,
-    isExpanded: Boolean,
+    state: AnchoredSheetState,
+    hiddenFraction: () -> Float,
     preview: @Composable () -> Unit,
     sheet: @Composable () -> Unit
 ) {
+    val (bounds, motion, isExpanded) = state
     val density = LocalDensity.current
     val previewGapPx = with(density) { AureoleDS.dimens.medium.roundToPx() }
     val previewTopPaddingPx = with(density) { AureoleDS.dimens.large.roundToPx() }
@@ -165,14 +211,16 @@ private fun AnchoredPreviewLayout(
         }
 
         layout(constraints.maxWidth, layoutHeight) {
-            val sheetTop = layoutHeight - sheetHeight + motion.translation(bounds).roundToInt()
+            val slide = (hiddenFraction() * sheetHeight).roundToInt()
+            val sheetTop = layoutHeight - sheetHeight + motion.translation(bounds).roundToInt() + slide
             previewPlaceables.forEach { placeable ->
                 placeable.placeRelative(
                     0,
                     anchoredPreviewTop(sheetTop, previewGapPx, placeable.height, previewTopPaddingPx)
                 )
             }
-            sheetPlaceables.forEach { it.placeRelative(0, sheetTop) }
+            // Centered: a sheet narrower than the screen (OverlayHostSpec.maxSheetWidth) sits in the middle.
+            sheetPlaceables.forEach { it.placeRelative((constraints.maxWidth - it.width) / 2, sheetTop) }
         }
     }
 }
@@ -180,33 +228,12 @@ private fun AnchoredPreviewLayout(
 @Composable
 private fun PreviewSlot(
     previewContent: (@Composable BoxScope.() -> Unit)?,
-    effectiveAnimated: Boolean,
-    animScope: AnimatedVisibilityScope,
-    expandFraction: () -> Float
+    expandFraction: () -> Float,
+    modifier: Modifier = Modifier
 ) {
-    val previewModifier = if (effectiveAnimated) {
-        with(animScope) {
-            Modifier.animateEnterExit(
-                enter = fadeIn(tween(ANIMATION_DURATION_MS)) +
-                    scaleIn(
-                        initialScale = 0.75f,
-                        animationSpec = tween(ANIMATION_DURATION_MS)
-                    ),
-                exit = fadeOut(tween(ANIMATION_DURATION_MS)) +
-                    scaleOut(
-                        targetScale = 0.75f,
-                        animationSpec = tween(ANIMATION_DURATION_MS)
-                    )
-            )
-        }
-    } else {
-        Modifier.Companion
-    }
-
     Box(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
-            .then(previewModifier)
             .graphicsLayer { alpha = 1f - expandFraction() },
         contentAlignment = Alignment.BottomCenter
     ) {
@@ -322,7 +349,12 @@ private fun OverlaySheetHeader(
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(start = AureoleDS.dimens.small, end = AureoleDS.dimens.small, bottom = AureoleDS.dimens.medium),
+            .padding(
+                start = AureoleDS.dimens.small,
+                top = AureoleDS.dimens.small,
+                end = AureoleDS.dimens.small,
+                bottom = AureoleDS.dimens.medium
+            ),
         contentAlignment = Alignment.Center
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
@@ -340,7 +372,7 @@ private fun OverlaySheetHeader(
             }
             Text(
                 text = title,
-                style = AureoleDS.typography.titleMedium,
+                style = AureoleDS.typography.titleLarge,
                 fontWeight = FontWeight.Bold,
                 color = AureoleDS.colors.onSurfaceHigh,
                 textAlign = TextAlign.Center

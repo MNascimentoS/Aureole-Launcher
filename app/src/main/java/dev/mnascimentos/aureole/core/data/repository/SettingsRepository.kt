@@ -13,7 +13,9 @@ import androidx.core.net.toUri
 import dev.mnascimentos.aureole.core.data.db.AppDatabase
 import dev.mnascimentos.aureole.core.data.image.decodeWallpaperBitmap
 import dev.mnascimentos.aureole.core.data.model.ClockConfig
+import dev.mnascimentos.aureole.core.data.model.WallpaperAdjustments
 import dev.mnascimentos.aureole.core.designsystem.utils.HazeUtils
+import dev.mnascimentos.aureole.core.image.BlurredWallpaperCache
 import timber.log.Timber
 import java.io.File
 import java.io.FileOutputStream
@@ -225,15 +227,52 @@ class SettingsRepository(private val context: Context) {
         get() = prefs.getString(KEY_CUSTOM_WALLPAPER_PATH, null)
         set(value) = prefs.edit { putString(KEY_CUSTOM_WALLPAPER_PATH, value) }
 
+    /** "Also use on lock screen" (RF-13); off until the user turns it on. */
+    var applyToLockScreen: Boolean
+        get() = prefs.getBoolean(KEY_APPLY_TO_LOCK_SCREEN, false)
+        set(value) = prefs.edit { putBoolean(KEY_APPLY_TO_LOCK_SCREEN, value) }
+
+    /** Whether the one-time warning about the lock screen image (RF-15) was already shown. */
+    var isLockScreenNoticeSeen: Boolean
+        get() = prefs.getBoolean(KEY_LOCK_SCREEN_NOTICE_SEEN, false)
+        set(value) = prefs.edit { putBoolean(KEY_LOCK_SCREEN_NOTICE_SEEN, value) }
+
     var wallpaperScaleType: String
         get() = prefs.getString(KEY_WALLPAPER_SCALE_TYPE, "Crop") ?: "Crop"
         set(value) = prefs.edit { putString(KEY_WALLPAPER_SCALE_TYPE, value) }
+
+    /** How the custom photo is framed, dimmed and blurred; absent means the classic look (RF-11). */
+    var wallpaperAdjustments: WallpaperAdjustments
+        get() = WallpaperAdjustments.fromJson(prefs.getString(KEY_WALLPAPER_ADJUSTMENTS, null))
+        set(value) = prefs.edit {
+            val adjustments = value.coerced()
+            if (adjustments.isDefault) {
+                remove(KEY_WALLPAPER_ADJUSTMENTS)
+            } else {
+                putString(KEY_WALLPAPER_ADJUSTMENTS, adjustments.toJson())
+            }
+        }
+
+    /**
+     * Makes the blurred copy of the photo on Android 9-11 right after the editor saves (RF-09), so the home finds it
+     * ready. Same radius as the home draws it with: the saved blur in px of this screen. Nothing to do on Android 12+,
+     * which blurs live, or without a photo or a blur. Runs on the caller's thread: call it off the main one.
+     */
+    fun prepareBlurredWallpaper() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) return
+        val path = customWallpaperPath?.takeIf { isCustomWallpaperSet && it.isNotEmpty() } ?: return
+        val blurPx = (wallpaperAdjustments.blurDp * context.resources.displayMetrics.density).toInt()
+        BlurredWallpaperCache.obtain(context, File(path), blurPx)
+    }
 
     var lastSeenVersionCode: Int
         get() = prefs.getInt(KEY_LAST_SEEN_VERSION_CODE, 0)
         set(value) = prefs.edit { putInt(KEY_LAST_SEEN_VERSION_CODE, value) }
 
     val onboarding: OnboardingPreferences by lazy { OnboardingPreferences { prefs } }
+
+    /** Puts the home background on the lock screen too, when [applyToLockScreen] is on. */
+    val lockScreen: LockScreenWallpaper by lazy { LockScreenWallpaper(context, this) { systemWallpaper } }
 
     /** Keeps the custom wallpaper aside while a "Restore background" can still be undone. */
     val wallpaperStash: WallpaperUndoStash by lazy { WallpaperUndoStash(context, this) { systemWallpaper } }
@@ -249,7 +288,9 @@ class SettingsRepository(private val context: Context) {
         prefs.edit {
             putBoolean(KEY_IS_CUSTOM_WALLPAPER_SET, false)
             remove(KEY_CUSTOM_WALLPAPER_PATH)
+            remove(KEY_WALLPAPER_ADJUSTMENTS)
         }
+        BlurredWallpaperCache.clear(context)
     }
 
     fun saveCustomWallpaper(uriString: String): Boolean = runCatching { writeCustomWallpaper(uriString.toUri()) }
@@ -270,6 +311,8 @@ class SettingsRepository(private val context: Context) {
         bitmap.recycle()
         customWallpaperPath = file.absolutePath
         isCustomWallpaperSet = true
+        wallpaperAdjustments = WallpaperAdjustments.DEFAULT
+        BlurredWallpaperCache.clear(context)
         return true
     }
 
@@ -322,6 +365,7 @@ class SettingsRepository(private val context: Context) {
 
         context.cacheDir.deleteRecursively()
         File(context.filesDir, "custom_wallpaper.jpg").delete()
+        BlurredWallpaperCache.clear(context)
     }
 
     private val prefs
@@ -360,6 +404,9 @@ class SettingsRepository(private val context: Context) {
         private const val KEY_IS_CUSTOM_WALLPAPER_SET = "is_custom_wallpaper_set"
         private const val KEY_CUSTOM_WALLPAPER_PATH = "custom_wallpaper_path"
         private const val KEY_WALLPAPER_SCALE_TYPE = "wallpaper_scale_type"
+        private const val KEY_WALLPAPER_ADJUSTMENTS = "wallpaper_adjustments"
+        private const val KEY_APPLY_TO_LOCK_SCREEN = "apply_to_lock_screen"
+        private const val KEY_LOCK_SCREEN_NOTICE_SEEN = "lock_screen_notice_seen"
         private const val KEY_USE_WALLPAPER_COLORS = "use_wallpaper_colors"
         private const val KEY_MANUAL_SEED_COLOR = "manual_seed_color"
         private const val KEY_HAZE_ENABLED = "haze_enabled"

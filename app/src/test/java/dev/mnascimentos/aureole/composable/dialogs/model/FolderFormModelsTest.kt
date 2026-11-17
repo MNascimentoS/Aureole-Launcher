@@ -1,5 +1,6 @@
 package dev.mnascimentos.aureole.composable.dialogs.model
 
+import dev.mnascimentos.aureole.core.data.model.AppFolder
 import dev.mnascimentos.aureole.core.designsystem.icons.AureoleFolderIcons
 import dev.mnascimentos.aureole.core.designsystem.icons.FolderIconCategory
 import org.junit.Assert.assertEquals
@@ -88,5 +89,19 @@ class FolderFormModelsTest {
     @Test
     fun `every catalog key resolves to itself`() {
         AureoleFolderIcons.all.forEach { assertEquals(it.key, resolveFolderIconKey(it.key)) }
+    }
+
+    @Test
+    fun `a new folder never counts as a change to save on close`() {
+        assertFalse(folderDetailsChanged(null, "Work", "x"))
+    }
+
+    @Test
+    fun `an edited folder is changed by a new name or a new icon only`() {
+        val folder = AppFolder(id = "1", name = "Work", icon = "a")
+
+        assertFalse(folderDetailsChanged(folder, "Work", "a"))
+        assertTrue(folderDetailsChanged(folder, "Play", "a"))
+        assertTrue(folderDetailsChanged(folder, "Work", "b"))
     }
 }

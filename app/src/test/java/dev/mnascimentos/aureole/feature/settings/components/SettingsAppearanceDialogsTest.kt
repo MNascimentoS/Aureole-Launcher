@@ -4,16 +4,19 @@ import androidx.compose.ui.semantics.SemanticsActions
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.isSelectable
 import androidx.compose.ui.test.junit4.v2.createComposeRule
+import androidx.compose.ui.test.onLast
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performSemanticsAction
 import dev.mnascimentos.aureole.composable.color.model.RecommendedColors
 import dev.mnascimentos.aureole.composable.sheets.PickPaletteBottomSheet
 import dev.mnascimentos.aureole.core.designsystem.palette.ThemePalette
+import dev.mnascimentos.aureole.core.designsystem.palette.allPalettes
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.feature.settings.model.SetBackgroundParams
-import org.junit.Assert.assertEquals
+import dev.mnascimentos.aureole.testing.closeOverlayWithBack
 import org.junit.Assert.assertFalse
+import org.junit.Assert.assertNotEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
@@ -21,8 +24,6 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
-
-private const val DISMISS_ANIMATION_MS = 500L
 
 @RunWith(RobolectricTestRunner::class)
 class SettingsAppearanceDialogsTest {
@@ -52,40 +53,48 @@ class SettingsAppearanceDialogsTest {
     }
 
     @Test
-    fun `when applying the solid color type, should save the current color and not open the picker`() {
+    fun `when closing without a change, should save nothing, not open the picker and dismiss`() {
         var color: Int? = null
         var imageClicked = false
-        setBackgroundSheet(onSolid = { color = it }, onImage = { imageClicked = true })
+        var dismissed = false
+        setBackgroundSheet(
+            onSolid = { color = it },
+            onImage = { imageClicked = true },
+            onDismiss = { dismissed = true }
+        )
 
         composeTestRule.onNodeWithText("Set background").assertIsDisplayed()
-        composeTestRule.onNodeWithText("Apply").performClick()
+        composeTestRule.closeOverlayWithBack()
 
-        assertEquals(RecommendedColors[1], color)
+        assertNull(color)
         assertFalse(imageClicked)
+        assertTrue(dismissed)
     }
 
     @Test
-    fun `when picking a swatch and applying, should save the swatch color`() {
+    fun `when picking a swatch and closing, should save the swatch color`() {
         var color: Int? = null
         setBackgroundSheet(onSolid = { color = it })
 
         // The swatch can sit outside the test window, where a touch would hit the scrim: use the semantic click.
-        composeTestRule.onAllNodes(isSelectable())[4].performSemanticsAction(SemanticsActions.OnClick)
-        composeTestRule.onNodeWithText("Apply").performClick()
+        composeTestRule.onAllNodes(isSelectable()).onLast().performSemanticsAction(SemanticsActions.OnClick)
+        composeTestRule.closeOverlayWithBack()
 
-        assertEquals(RecommendedColors[2], color)
+        assertNotNull(color)
+        assertNotEquals(RecommendedColors[1], color)
     }
 
     @Test
-    fun `when choosing the custom image type and applying, should open the photo picker`() {
+    fun `when choosing the custom image type, should open the photo picker right away and save no color`() {
         var color: Int? = null
         var imageClicked = false
         setBackgroundSheet(onSolid = { color = it }, onImage = { imageClicked = true })
 
         composeTestRule.onNodeWithText("Custom image").performClick()
-        composeTestRule.onNodeWithText("Apply").performClick()
-
         assertTrue(imageClicked)
+
+        composeTestRule.closeOverlayWithBack()
+
         assertNull(color)
     }
 
@@ -94,19 +103,6 @@ class SettingsAppearanceDialogsTest {
         setBackgroundSheet(isCustomImageSet = true)
 
         composeTestRule.onNodeWithText("COLOR").assertDoesNotExist()
-    }
-
-    @Test
-    fun `when cancelling, should close without saving anything`() {
-        var color: Int? = null
-        var dismissed = false
-        setBackgroundSheet(onSolid = { color = it }, onDismiss = { dismissed = true })
-
-        composeTestRule.onNodeWithText("Cancel").performClick()
-        composeTestRule.mainClock.advanceTimeBy(DISMISS_ANIMATION_MS)
-
-        assertTrue(dismissed)
-        assertNull(color)
     }
 
     @Test
@@ -124,8 +120,8 @@ class SettingsAppearanceDialogsTest {
         }
 
         composeTestRule.onNodeWithText("Pick a palette").assertIsDisplayed()
-        composeTestRule.onNodeWithText("Frostbite").performClick()
-        composeTestRule.onNodeWithText("Apply").performClick()
+        composeTestRule.onNodeWithText(allPalettes[1].name).performClick()
+        composeTestRule.closeOverlayWithBack()
         assertNotNull(selectedPalette)
     }
 }

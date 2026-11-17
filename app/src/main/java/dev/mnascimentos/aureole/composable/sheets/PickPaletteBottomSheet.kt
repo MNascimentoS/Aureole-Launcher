@@ -17,6 +17,7 @@ import dev.mnascimentos.aureole.composable.sheets.model.ThemePreviewState
 import dev.mnascimentos.aureole.composable.sheets.model.basePaletteName
 import dev.mnascimentos.aureole.composable.sheets.model.discard
 import dev.mnascimentos.aureole.composable.sheets.model.fontNameOf
+import dev.mnascimentos.aureole.composable.sheets.model.isPaletteChanged
 import dev.mnascimentos.aureole.composable.sheets.model.resolveAppliedPalette
 import dev.mnascimentos.aureole.core.designsystem.palette.ThemePalette
 import dev.mnascimentos.aureole.core.designsystem.palette.allPalettes
@@ -30,8 +31,8 @@ private const val PALETTE_COLUMNS = 3
 
 /**
  * Palette picker with a live preview: tapping a palette repaints the mini-home and the sheet at once, and
- * nothing is persisted until Apply, which calls [onPaletteSelected] with the chosen palette and closes.
- * Cancel, swiping down and tapping outside only call [onDismissRequest]. [options] adds a footer and the
+ * nothing is persisted until the sheet closes. Closing with a different palette calls [onPaletteSelected] and then
+ * [onDismissRequest]; closing without a change only calls [onDismissRequest]. [options] adds a footer and the
  * Aureole logo in the header.
  */
 @Composable
@@ -58,31 +59,55 @@ fun PickPaletteBottomSheet(
             title = stringResource(R.string.settings_appearance_pick_palette_title),
             base = base,
             pending = pending,
-            onApply = { resolveAppliedPalette(pending.palette?.name, selectedPaletteName)?.let(onPaletteSelected) },
+            isChanged = { pending.isPaletteChanged(selectedPaletteName) },
+            onCommit = { resolveAppliedPalette(pending.palette?.name, selectedPaletteName)?.let(onPaletteSelected) },
             onDismissRequest = {
                 pending = pending.discard()
                 onDismissRequest()
             },
-            onSettingsClick = options.onSettingsClick
+            onSettingsClick = options.onSettingsClick,
+            hasExternalBackdrop = options.hasExternalBackdrop
         ),
         modifier = modifier
     ) {
-        ThemePickerGrid(
-            params = ThemePickerGridParams(
-                label = stringResource(R.string.settings_appearance_palette_section_label),
-                columns = PALETTE_COLUMNS,
-                footer = options.footer
+        PalettePickerGrid(
+            shownName = shownName,
+            onSelect = { active -> pending = pending.copy(palette = active) },
+            footer = options.footer
+        )
+    }
+}
+
+/**
+ * Body of the palette picker without its sheet: the label and the grid of palettes, [shownName] marked. [onSelect]
+ * gets the palette as displayed (the light variant on a light system). The Appearance sheet of the settings shows it
+ * inside itself.
+ */
+@Composable
+internal fun PalettePickerGrid(
+    shownName: String,
+    onSelect: (ThemePalette) -> Unit,
+    modifier: Modifier = Modifier,
+    footer: (@Composable () -> Unit)? = null
+) {
+    val isDarkTheme = isSystemInDarkTheme()
+    val shownBase = shownName.basePaletteName()
+    ThemePickerGrid(
+        params = ThemePickerGridParams(
+            label = stringResource(R.string.settings_appearance_palette_section_label),
+            columns = PALETTE_COLUMNS,
+            footer = footer
+        ),
+        modifier = modifier
+    ) {
+        items(items = allPalettes, key = { it.name }, contentType = { "palette_chip" }) { basePalette ->
+            val active = if (isDarkTheme) basePalette else basePalette.toLight()
+            PaletteChip(
+                palette = active,
+                displayName = basePalette.name,
+                isSelected = basePalette.name.equals(shownBase, ignoreCase = true),
+                onSelect = { onSelect(active) }
             )
-        ) {
-            items(items = allPalettes, key = { it.name }, contentType = { "palette_chip" }) { basePalette ->
-                val active = if (isDarkTheme) basePalette else basePalette.toLight()
-                PaletteChip(
-                    palette = active,
-                    displayName = basePalette.name,
-                    isSelected = basePalette.name.equals(shownName, ignoreCase = true),
-                    onSelect = { pending = pending.copy(palette = active) }
-                )
-            }
         }
     }
 }

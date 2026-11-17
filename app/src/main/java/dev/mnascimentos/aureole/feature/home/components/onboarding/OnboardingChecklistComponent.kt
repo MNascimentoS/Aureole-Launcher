@@ -36,6 +36,7 @@ import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.nextPendingTask
 import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.rememberOnboardingLoopsEnabled
+import dev.mnascimentos.aureole.feature.home.components.onboarding.model.ChecklistSharedModifiers
 import dev.mnascimentos.aureole.feature.home.components.onboarding.model.OnboardingActions
 import dev.mnascimentos.aureole.feature.home.components.onboarding.model.OnboardingGlass
 import dev.mnascimentos.aureole.feature.home.components.onboarding.model.OnboardingMotionSpec
@@ -49,69 +50,90 @@ private const val SCRIM_ALPHA = 0.45f
 
 /**
  * "First steps" list over a scrim. It rises from below the screen with the Figma overshoot and
- * settles in the upper third; tapping the scrim minimizes it to the pill.
+ * settles in the upper third; tapping the scrim minimizes it to the pill. Inside the checklist morph, [shared]
+ * ties the card, the halo and the progress text to the pill, and its `animateEntrance` is false when the list
+ * grows back out of the pill instead of rising.
  */
 @Composable
 fun OnboardingChecklistComponent(
     onboarding: OnboardingUiState,
     actions: OnboardingActions,
     glass: OnboardingGlass,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    shared: ChecklistSharedModifiers = ChecklistSharedModifiers()
 ) {
     Box(
         modifier = modifier
             .fillMaxSize()
-            .background(AureoleDS.colors.background.copy(alpha = SCRIM_ALPHA))
             .clickable(interactionSource = remember { MutableInteractionSource() }, indication = null) {
                 actions.onSetChecklistExpanded(false)
             },
         contentAlignment = Alignment.TopCenter
     ) {
-        OnboardingCardEntrance(
-            fromTop = false,
-            damping = OnboardingMotionSpec.CHECKLIST_DAMPING,
-            stiffness = OnboardingMotionSpec.CHECKLIST_STIFFNESS,
+        Box(
             modifier = Modifier
-                .widthIn(max = OnboardingMotionSpec.CHECKLIST_MAX_WIDTH)
-                .statusBarsPadding()
-                .padding(horizontal = AureoleDS.dimens.medium, vertical = AureoleDS.dimens.xxLarge)
-        ) {
+                .matchParentSize()
+                .then(shared.backdrop)
+                .background(AureoleDS.colors.background.copy(alpha = SCRIM_ALPHA))
+        )
+        val placement = Modifier
+            .widthIn(max = OnboardingMotionSpec.CHECKLIST_MAX_WIDTH)
+            .statusBarsPadding()
+            .padding(horizontal = AureoleDS.dimens.medium, vertical = AureoleDS.dimens.xxLarge)
+        val card: @Composable () -> Unit = {
             OnboardingGlassCard(
                 glass = glass,
                 modifier = Modifier
                     .fillMaxWidth()
+                    .then(shared.card)
                     // Taps on the card itself must not reach the scrim and minimize the list.
                     .clickable(interactionSource = remember { MutableInteractionSource() }, indication = null) {}
             ) {
-                ChecklistCardContent(onboarding = onboarding, actions = actions)
+                ChecklistCardContent(onboarding = onboarding, actions = actions, shared = shared)
             }
+        }
+        if (shared.animateEntrance) {
+            OnboardingCardEntrance(
+                fromTop = false,
+                damping = OnboardingMotionSpec.CHECKLIST_DAMPING,
+                stiffness = OnboardingMotionSpec.CHECKLIST_STIFFNESS,
+                modifier = placement
+            ) { card() }
+        } else {
+            Box(modifier = placement) { card() }
         }
     }
 }
 
 @Composable
-private fun ChecklistCardContent(onboarding: OnboardingUiState, actions: OnboardingActions) {
+private fun ChecklistCardContent(
+    onboarding: OnboardingUiState,
+    actions: OnboardingActions,
+    shared: ChecklistSharedModifiers
+) {
     val next = onboarding.nextPendingTask
     Column(
         modifier = Modifier.verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.spacedBy(AureoleDS.dimens.xSmall)
     ) {
-        ChecklistHeader(onboarding = onboarding)
+        ChecklistHeader(onboarding = onboarding, shared = shared)
         OnboardingTask.entries.forEachIndexed { index, task ->
             OnboardingChecklistItemComponent(
                 task = task,
                 status = onboarding.statusOf(task, next),
                 onClick = actions.onTaskClick,
                 onSkip = actions.onSkipTask,
-                modifier = Modifier.checklistItemEntrance(staggerIndex = index)
+                modifier = Modifier
+                    .checklistItemEntrance(staggerIndex = index)
+                    .then(shared.fading)
             )
         }
-        ChecklistFooter(actions = actions)
+        ChecklistFooter(actions = actions, modifier = shared.fading)
     }
 }
 
 @Composable
-private fun ChecklistHeader(onboarding: OnboardingUiState) {
+private fun ChecklistHeader(onboarding: OnboardingUiState, shared: ChecklistSharedModifiers) {
     val total = OnboardingTask.entries.size
     val progressText =
         pluralStringResource(
@@ -127,17 +149,20 @@ private fun ChecklistHeader(onboarding: OnboardingUiState) {
     ) {
         AureoleHaloProgress(
             progress = onboarding.taskProgress,
+            modifier = shared.halo,
             size = AureoleDS.dimens.iconXLarge,
             contentDescription = progressText
         )
         Column {
             AureoleText(
                 text = stringResource(R.string.home_onboarding_checklist_title),
+                modifier = shared.fading,
                 color = AureoleDS.colors.onSurfaceHigh,
                 format = AureoleTextFormatParams(style = AureoleDS.typography.titleLarge)
             )
             AureoleText(
                 text = progressText,
+                modifier = shared.progressText,
                 color = AureoleDS.colors.onSurfaceMedium,
                 format = AureoleTextFormatParams(style = AureoleDS.typography.text)
             )
@@ -146,10 +171,10 @@ private fun ChecklistHeader(onboarding: OnboardingUiState) {
 }
 
 @Composable
-private fun ChecklistFooter(actions: OnboardingActions) {
+private fun ChecklistFooter(actions: OnboardingActions, modifier: Modifier = Modifier) {
     val context = LocalContext.current
     val dismissedMessage = stringResource(R.string.home_onboarding_checklist_dismissed)
-    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+    Row(modifier = modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
         OnboardingTextButton(
             text = stringResource(R.string.home_onboarding_checklist_dismiss),
             onClick = {

@@ -9,13 +9,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.core.graphics.drawable.toDrawable
 import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.composable.LocalHomeUiState
-import dev.mnascimentos.aureole.composable.sheets.AureoleConfirmOverlay
-import dev.mnascimentos.aureole.composable.sheets.model.ConfirmOverlayParams
+import dev.mnascimentos.aureole.composable.sheets.AureoleAutoSaveOverlay
+import dev.mnascimentos.aureole.composable.sheets.model.AutoSaveOverlayParams
 import dev.mnascimentos.aureole.core.data.model.AppFolder
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
@@ -36,9 +35,9 @@ import kotlinx.coroutines.delay
 private const val SEARCH_DEBOUNCE_MS = 300L
 
 /**
- * Picker of the apps of a folder on the shared confirm overlay (sheet at rest height, centered title with the logo,
- * Cancel / "Save N apps" in equal widths on the thumb side). The grid with drag-to-mark and the A-Z strip scroll in
- * the sheet; the tray of chosen apps and the search field stay glued to the action row (and the keyboard).
+ * Picker of the apps of a folder on the auto-save overlay (sheet at rest height, centered title with the logo, no
+ * buttons: closing saves the selection when it changed). The grid with drag-to-mark and the A-Z strip scroll in
+ * the sheet; the tray of chosen apps and the search field stay below it (and above the keyboard).
  */
 @Composable
 fun FolderAppPickerDialog(
@@ -104,7 +103,8 @@ private fun FolderAppPickerDialogContent(
             isSearching = isSearching,
             searchResults = searchResults,
             trayApps = selectedApps,
-            isLeftHandedMode = isLeftHandedMode
+            isLeftHandedMode = isLeftHandedMode,
+            initialPackages = folder.appPackageNames
         ),
         onSearchQueryChange = { searchQuery = it },
         // Enter uses the best of what is typed right now, not of the debounced query.
@@ -125,15 +125,11 @@ internal fun FolderAppPickerDialogBody(
     val selectedPackages = params.selectedPackages
     val onToggleSelect = { pkg: String -> togglePackageSelection(selectedPackages, pkg) }
 
-    AureoleConfirmOverlay(
-        params = ConfirmOverlayParams(
+    AureoleAutoSaveOverlay(
+        params = AutoSaveOverlayParams(
             title = stringResource(R.string.home_folder_apps_in_folder, params.folderName),
-            primaryLabel = pluralStringResource(
-                R.plurals.home_folder_picker_save_count,
-                selectedPackages.size,
-                selectedPackages.size
-            ),
-            onPrimary = { callbacks.onSave(selectedPackages.toList()) },
+            isChanged = { selectedPackages.toList() != params.initialPackages },
+            onCommit = { callbacks.onSave(selectedPackages.toList()) },
             onDismissRequest = callbacks.onDismiss,
             isLeftHanded = params.isLeftHandedMode,
             onSettingsClick = callbacks.onSettingsClick

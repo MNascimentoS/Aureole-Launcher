@@ -37,7 +37,12 @@ fun AureoleSwitchRow(params: SwitchRowParams, modifier: Modifier = Modifier) {
             modifier = modifier
                 .fillMaxWidth()
                 .heightIn(min = AureoleDS.dimens.menuRowHeight)
-                .toggleable(value = params.checked, role = Role.Switch, onValueChange = params.onCheckedChange)
+                .toggleable(
+                    value = params.checked,
+                    enabled = params.enabled,
+                    role = Role.Switch,
+                    onValueChange = params.onCheckedChange
+                )
                 .padding(horizontal = AureoleDS.dimens.xxSmall, vertical = AureoleDS.dimens.xSmall),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(AureoleDS.dimens.small)
@@ -46,7 +51,7 @@ fun AureoleSwitchRow(params: SwitchRowParams, modifier: Modifier = Modifier) {
             Column(modifier = Modifier.weight(1f)) {
                 AureoleText(
                     text = params.title,
-                    color = AureoleDS.colors.onSurfaceHigh,
+                    color = if (params.enabled) AureoleDS.colors.onSurfaceHigh else AureoleDS.colors.onSurfaceLow,
                     format = AureoleTextFormatParams(
                         style = AureoleDS.typography.bodyLarge.copy(textDirection = TextDirection.Content)
                     )
@@ -63,7 +68,7 @@ fun AureoleSwitchRow(params: SwitchRowParams, modifier: Modifier = Modifier) {
             }
             // The switch thumb must not flip with the mirror, or an ON switch looks OFF.
             CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
-                Switch(checked = params.checked, onCheckedChange = null)
+                Switch(checked = params.checked, onCheckedChange = null, enabled = params.enabled)
             }
         }
     }

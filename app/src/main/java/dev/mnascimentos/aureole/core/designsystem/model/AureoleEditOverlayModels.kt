@@ -62,6 +62,11 @@ fun rememberAureoleEditOverlayState(
  * @property titleIcon Optional icon drawn before the title (menus show what the sheet is about).
  * @property edgeToEdgeContent Whether the sheet content takes the full sheet width, with no horizontal padding;
  * the content then pads itself (a pager needs this so its pages do not clip at the margin mid-swipe).
+ * @property hasExternalBackdrop True when the screen around draws the dimmed, blurred backdrop itself (a screen
+ * that swaps one sheet for another keeps one backdrop for both, so it does not flash between them).
+ * @property host What the screen hosting several overlays decides for all of them (see [OverlayHostSpec]).
+ * @property dismissOnTapOutside Whether a tap outside the sheet closes it. False lets the touches around the sheet
+ * reach what is drawn behind the overlay (the photo editor moves the photo there).
  */
 data class AureoleEditOverlayConfig(
     val title: String? = null,
@@ -78,6 +83,9 @@ data class AureoleEditOverlayConfig(
     val headerIcon: (@Composable (Modifier) -> Unit)? = null,
     val titleIcon: (@Composable (Modifier) -> Unit)? = null,
     val edgeToEdgeContent: Boolean = false,
+    val hasExternalBackdrop: Boolean = false,
+    val host: OverlayHostSpec = OverlayHostSpec(),
+    val dismissOnTapOutside: Boolean = true,
 )
 
 /**
@@ -99,11 +107,17 @@ class AureoleEditOverlayParams(
  * Sheet heights in pixels, resolved from the screen height and [AureoleEditOverlayConfig].
  *
  * @property restMaxPx Largest height the sheet takes at rest.
- * @property expandedPx Height of the expanded sheet.
+ * @property expandedPx Largest height of the expanded sheet; it stops at its content when that is shorter.
+ * @property elasticLimitPx Most the sheet stretches above rest when its content already fits.
+ * @property bouncePx How high the short bounce goes when the sheet cannot expand (double tap, fling up).
+ * @property fitSlackPx How much taller than the rest height the content may be and still count as fitting.
  */
 internal data class SheetBounds(
     val restMaxPx: Float,
-    val expandedPx: Float
+    val expandedPx: Float,
+    val elasticLimitPx: Float = 0f,
+    val bouncePx: Float = 0f,
+    val fitSlackPx: Float = 0f
 )
 
 /**

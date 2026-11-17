@@ -156,6 +156,7 @@ private fun Modifier.homeDragModifier(
             isAllAppsDrawerOpen = uiState.isAllAppsDrawerOpen,
             density = LocalDensity.current,
             onAllAppsDrawerOpen = actions.onAllAppsDrawerOpen,
+            onAllAppsDrawerOpenFromEdge = actions.onAllAppsDrawerOpenFromEdge,
             onExpandNotificationShade = actions.onExpandNotificationShade,
             onExternalTouchYChange = onExternalTouchYChange,
             onEdgeScrubChange = onEdgeScrubChange
@@ -197,9 +198,9 @@ private fun BoxScope.HomeScreenBody(
             .then(homeContentHazeModifier)
     ) {
         WallpaperBackground(
-            isCustomWallpaperSet = config.uiState.isCustomWallpaperSet,
-            customWallpaperPath = config.uiState.customWallpaperPath,
+            customWallpaperPath = config.uiState.customWallpaperPath.takeIf { config.uiState.isCustomWallpaperSet },
             wallpaperScaleType = config.uiState.wallpaperScaleType,
+            adjustments = config.uiState.wallpaperAdjustments,
             hazeState = config.hazeState
         )
 

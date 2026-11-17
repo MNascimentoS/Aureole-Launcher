@@ -20,15 +20,44 @@ internal enum class SheetDetentTarget { Rest, Expanded, Dismiss }
  * @param rest Height of the sheet at rest.
  * @param expanded Height of the expanded sheet.
  * @param velocity Release speed in dp per second; positive means the finger moved down.
+ * @param canExpand False when the content already fits at rest: the sheet then never settles expanded.
  */
-internal fun resolveDetent(height: Float, rest: Float, expanded: Float, velocity: Float): SheetDetentTarget {
-    return when {
-        velocity <= -FLING_VELOCITY_DP_PER_SECOND -> SheetDetentTarget.Expanded
+internal fun resolveDetent(
+    height: Float,
+    rest: Float,
+    expanded: Float,
+    velocity: Float,
+    canExpand: Boolean = true
+): SheetDetentTarget {
+    val target = when {
+        isFlingUp(velocity) -> SheetDetentTarget.Expanded
         velocity >= FLING_VELOCITY_DP_PER_SECOND -> flingDownTarget(height, rest)
         height < rest * DISMISS_FRACTION_OF_REST -> SheetDetentTarget.Dismiss
         height - rest <= expanded - height -> SheetDetentTarget.Rest
         else -> SheetDetentTarget.Expanded
     }
+    return if (!canExpand && target == SheetDetentTarget.Expanded) SheetDetentTarget.Rest else target
+}
+
+/** Whether a release at [velocity] dp per second (positive = down) is a fling up. */
+internal fun isFlingUp(velocity: Float): Boolean = velocity <= -FLING_VELOCITY_DP_PER_SECOND
+
+/**
+ * Height the sheet expands to, or null when it cannot expand.
+ *
+ * When everything the sheet holds already shows at [rest] (with [slack] of tolerance) there is nothing to
+ * expand to. With a little more content the sheet expands only to [contentFull], never past [expanded].
+ * An unknown [contentFull] (lazy content, which has no intrinsic height) keeps the full [expanded] height.
+ *
+ * @param rest Height of the sheet at rest.
+ * @param expanded Largest expanded height (90% of the screen).
+ * @param contentFull Height the sheet would take to show all of its content, or null when unknown.
+ * @param slack How much taller than [rest] the content may be and still count as fitting.
+ */
+internal fun expandTarget(rest: Float, expanded: Float, contentFull: Float?, slack: Float = 0f): Float? {
+    if (contentFull == null) return expanded
+    if (contentFull <= rest + slack) return null
+    return minOf(expanded, contentFull).takeIf { it > rest }
 }
 
 private fun flingDownTarget(height: Float, rest: Float): SheetDetentTarget {

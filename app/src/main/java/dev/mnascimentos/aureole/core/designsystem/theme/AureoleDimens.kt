@@ -40,6 +40,8 @@ data class AureoleDimens(
     val floatingElevation: Dp = 8.dp,
     val previewListMaxHeight: Dp = 300.dp,
     val shortcutTileHeight: Dp = 92.dp,
+    val settingsContentMaxWidth: Dp = 480.dp,
+    val backgroundThumbHeight: Dp = 84.dp,
 
     // 02. Ícones
     val iconXSmall: Dp = 12.dp,

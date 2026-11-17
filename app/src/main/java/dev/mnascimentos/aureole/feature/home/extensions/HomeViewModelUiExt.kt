@@ -4,6 +4,8 @@ import dev.mnascimentos.aureole.feature.home.HomeViewModel
 import dev.mnascimentos.aureole.feature.home.components.appsdrawer.extensions.applySearchFilter
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.extensions.onFolderIntent
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.FolderViewIntent
+import dev.mnascimentos.aureole.feature.home.model.AllAppsOpenSource
+import dev.mnascimentos.aureole.feature.home.model.withAllAppsDrawer
 
 // --- Settings & Side Panel Actions ---
 
@@ -34,16 +36,12 @@ fun HomeViewModel.setShowSettingsDialog(show: Boolean) {
     updateUiState { it.copy(showSettingsDialog = show) }
 }
 
-fun HomeViewModel.setAllAppsDrawerOpen(open: Boolean, fromHomeButton: Boolean = false) {
+/** Opens or closes the apps list; [source] says where it comes in from (the edge scrub passes EDGE). */
+fun HomeViewModel.setAllAppsDrawerOpen(open: Boolean, source: AllAppsOpenSource = AllAppsOpenSource.BOTTOM) {
     if (open) {
         onFolderIntent(FolderViewIntent.CloseFolder)
     }
-    updateUiState {
-        it.copy(
-            isAllAppsDrawerOpen = open,
-            isAllAppsOpenedFromBottom = if (open) fromHomeButton else it.isAllAppsOpenedFromBottom,
-        )
-    }
+    updateUiState { it.withAllAppsDrawer(open, source) }
     if (open) {
         updateUiState { it.copy(searchQuery = "") }
         applySearchFilter("")

@@ -15,6 +15,7 @@ import dev.mnascimentos.aureole.composable.sheets.model.ThemePickerSheetOptions
 import dev.mnascimentos.aureole.composable.sheets.model.ThemePreviewOverlayParams
 import dev.mnascimentos.aureole.composable.sheets.model.ThemePreviewState
 import dev.mnascimentos.aureole.composable.sheets.model.discard
+import dev.mnascimentos.aureole.composable.sheets.model.isFontChanged
 import dev.mnascimentos.aureole.composable.sheets.model.resolveAppliedFont
 import dev.mnascimentos.aureole.core.designsystem.model.LocalLeftHanded
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
@@ -27,8 +28,8 @@ private const val FONT_COLUMNS = 2
 
 /**
  * Font picker with a live preview: tapping a font rewrites the mini-home and the sheet in it at once, and
- * nothing is persisted until Apply, which calls [onFontSelected] with the chosen font and closes.
- * Cancel, swiping down and tapping outside only call [onDismissRequest]. [options] adds a footer and the
+ * nothing is persisted until the sheet closes. Closing with a different font calls [onFontSelected] and then
+ * [onDismissRequest]; closing without a change only calls [onDismissRequest]. [options] adds a footer and the
  * Aureole logo in the header.
  */
 @Composable
@@ -47,7 +48,6 @@ fun PickFontBottomSheet(
         aureoleIcons = AureoleDS.icons,
         aureoleDimens = AureoleDS.dimens
     )
-    val isLeftHanded = LocalLeftHanded.current
     val shownFont = pending.fontName ?: selectedFontName
 
     ThemePreviewOverlay(
@@ -55,30 +55,52 @@ fun PickFontBottomSheet(
             title = stringResource(R.string.settings_appearance_pick_font),
             base = base,
             pending = pending,
-            onApply = { onFontSelected(resolveAppliedFont(pending.fontName, selectedFontName)) },
+            isChanged = { pending.isFontChanged(selectedFontName) },
+            onCommit = { onFontSelected(resolveAppliedFont(pending.fontName, selectedFontName)) },
             onDismissRequest = {
                 pending = pending.discard()
                 onDismissRequest()
             },
-            onSettingsClick = options.onSettingsClick
+            onSettingsClick = options.onSettingsClick,
+            hasExternalBackdrop = options.hasExternalBackdrop
         ),
         modifier = modifier
     ) {
-        ThemePickerGrid(
-            params = ThemePickerGridParams(
-                label = stringResource(R.string.settings_appearance_font_section_label),
-                columns = FONT_COLUMNS,
-                footer = options.footer
+        FontPickerGrid(
+            shownFont = shownFont,
+            onSelect = { fontName -> pending = pending.copy(fontName = fontName) },
+            footer = options.footer
+        )
+    }
+}
+
+/**
+ * Body of the font picker without its sheet: the label and the grid of fonts, [shownFont] marked. The Appearance
+ * sheet of the settings shows it inside itself.
+ */
+@Composable
+internal fun FontPickerGrid(
+    shownFont: String,
+    onSelect: (String) -> Unit,
+    modifier: Modifier = Modifier,
+    footer: (@Composable () -> Unit)? = null
+) {
+    val isLeftHanded = LocalLeftHanded.current
+    ThemePickerGrid(
+        params = ThemePickerGridParams(
+            label = stringResource(R.string.settings_appearance_font_section_label),
+            columns = FONT_COLUMNS,
+            footer = footer
+        ),
+        modifier = modifier
+    ) {
+        items(items = AvailableFonts.keys.toList(), key = { it }, contentType = { "font_chip" }) { fontName ->
+            FontChip(
+                fontName = fontName,
+                isSelected = fontName == shownFont,
+                onSelect = { onSelect(fontName) },
+                isLeftHanded = isLeftHanded
             )
-        ) {
-            items(items = AvailableFonts.keys.toList(), key = { it }, contentType = { "font_chip" }) { fontName ->
-                FontChip(
-                    fontName = fontName,
-                    isSelected = fontName == shownFont,
-                    onSelect = { pending = pending.copy(fontName = fontName) },
-                    isLeftHanded = isLeftHanded
-                )
-            }
         }
     }
 }

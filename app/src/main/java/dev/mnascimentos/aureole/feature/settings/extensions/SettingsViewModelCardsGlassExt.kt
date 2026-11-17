@@ -13,7 +13,7 @@ import dev.mnascimentos.aureole.feature.settings.model.toCardsGlassDraft
  */
 fun SettingsViewModel.finishCardsGlass(before: CardsGlassDraft) {
     if (uiState.value.toCardsGlassDraft() == before) return
-    showUndo(TextResource.fromResId(R.string.settings_cards_glass_changed)) {
+    showUndo(TextResource.fromResId(R.string.undo_cards_glass_changed)) {
         setSettingValue(SettingValue.CardsGlass(before))
     }
 }

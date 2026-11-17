@@ -1,7 +1,9 @@
 package dev.mnascimentos.aureole.composable.dialogs
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
@@ -20,12 +22,15 @@ import dev.mnascimentos.aureole.composable.dialogs.model.FolderFormSheetActions
 import dev.mnascimentos.aureole.composable.dialogs.model.FolderFormSheetState
 import dev.mnascimentos.aureole.composable.dialogs.model.FolderIconPickerActions
 import dev.mnascimentos.aureole.composable.dialogs.model.FolderIconPickerState
+import dev.mnascimentos.aureole.composable.dialogs.model.folderDetailsChanged
 import dev.mnascimentos.aureole.composable.dialogs.model.initialFolderIconCategory
 import dev.mnascimentos.aureole.composable.dialogs.model.resolveFolderName
 import dev.mnascimentos.aureole.composable.menu.AureoleMenuRow
 import dev.mnascimentos.aureole.composable.menu.model.MenuRowParams
 import dev.mnascimentos.aureole.composable.preview.AureolePreviewFrame
+import dev.mnascimentos.aureole.composable.sheets.AureoleAutoSaveOverlay
 import dev.mnascimentos.aureole.composable.sheets.AureoleConfirmOverlay
+import dev.mnascimentos.aureole.composable.sheets.model.AutoSaveOverlayParams
 import dev.mnascimentos.aureole.composable.sheets.model.ConfirmOverlayParams
 import dev.mnascimentos.aureole.core.data.model.AppFolder
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
@@ -38,8 +43,9 @@ import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 
 /**
  * New / edit folder form in an edit overlay: the folder (icon and name) is anchored above the sheet and follows
- * what is typed, the icon grid scrolls inside it, and the name field sits glued to the Cancel / Create (Save)
- * row, which rides above the keyboard. The filled button is on the thumb side.
+ * what is typed, the icon grid scrolls inside it, and the name field rides above the keyboard.
+ * Editing has no buttons: closing the sheet saves the changes. Creating keeps a single "Create" button, because a
+ * new folder needs a deliberate confirmation (closing the sheet discards it).
  */
 @Composable
 fun FolderFormDialog(
@@ -56,49 +62,56 @@ fun FolderFormDialog(
     // A new folder opens with the plain folder icon marked, not with none.
     var selectedIcon by remember { mutableStateOf(if (isEditing) folder?.icon else FOLDER_ICON_FALLBACK) }
     var category by remember { mutableStateOf(initialFolderIconCategory(selectedIcon)) }
-
-    AureoleConfirmOverlay(
-        params = ConfirmOverlayParams(
-            title = stringResource(if (isEditing) R.string.home_folder_edit_title else R.string.home_folder_new_title),
-            primaryLabel = stringResource(if (isEditing) R.string.core_common_save else R.string.core_common_create),
-            onPrimary = { onSave(resolveFolderName(folderName, placeholderName), selectedIcon) },
-            onDismissRequest = onDismiss,
-            isLeftHanded = isLeftHanded
-        ),
-        modifier = modifier,
-        preview = {
-            AureolePreviewFrame(
-                modifier = Modifier.align(Alignment.Center)
-            ) {
-                FolderIconPreview(
-                    folderName = folderName,
-                    selectedIcon = selectedIcon,
-                    label = resolveFolderName(folderName, placeholderName),
-                    modifier = Modifier.fillMaxWidth()
-                )
-            }
-        },
-        bottomExtra = {
-            FolderNameField(
-                value = folderName,
-                onValueChange = { folderName = it },
-                modifier = Modifier.padding(bottom = AureoleDS.dimens.xSmall)
-            )
-        }
-    ) {
+    val resolvedName = { resolveFolderName(folderName, placeholderName) }
+    val save = { onSave(resolvedName(), selectedIcon) }
+    val title = stringResource(if (isEditing) R.string.home_folder_edit_title else R.string.home_folder_new_title)
+    val preview: @Composable BoxScope.() -> Unit = { FolderFormPreview(folderName, selectedIcon, resolvedName()) }
+    val nameField: @Composable ColumnScope.() -> Unit = {
+        FolderNameField(
+            value = folderName,
+            onValueChange = { folderName = it },
+            modifier = Modifier.padding(bottom = AureoleDS.dimens.xSmall)
+        )
+    }
+    val body: @Composable ColumnScope.() -> Unit = {
         FolderFormSheetBody(
-            state = FolderFormSheetState(
-                picker = FolderIconPickerState(selectedIcon, category),
-                showDelete = isEditing && onDelete != null
-            ),
+            state = FolderFormSheetState(FolderIconPickerState(selectedIcon, category), isEditing && onDelete != null),
             actions = FolderFormSheetActions(
-                picker = FolderIconPickerActions(
-                    onIconSelected = { selectedIcon = it },
-                    onCategorySelected = { category = it }
-                ),
-                onDelete = onDelete
+                FolderIconPickerActions({ selectedIcon = it }, { category = it }),
+                onDelete
             ),
             isLeftHanded = isLeftHanded
+        )
+    }
+
+    if (isEditing) {
+        AureoleAutoSaveOverlay(
+            params = AutoSaveOverlayParams(
+                title = title,
+                isChanged = { folderDetailsChanged(folder, resolvedName(), selectedIcon) },
+                onCommit = save,
+                onDismissRequest = onDismiss,
+                isLeftHanded = isLeftHanded
+            ),
+            modifier = modifier,
+            preview = preview,
+            bottomExtra = nameField,
+            content = body
+        )
+    } else {
+        AureoleConfirmOverlay(
+            params = ConfirmOverlayParams(
+                title = title,
+                primaryLabel = stringResource(R.string.core_common_create),
+                onPrimary = save,
+                onDismissRequest = onDismiss,
+                isLeftHanded = isLeftHanded,
+                hasSecondary = false
+            ),
+            modifier = modifier,
+            preview = preview,
+            bottomExtra = nameField,
+            content = body
         )
     }
 }
@@ -132,6 +145,18 @@ private fun FolderFormSheetBody(
             state = state.picker,
             actions = actions.picker,
             isLeftHanded = isLeftHanded
+        )
+    }
+}
+
+@Composable
+private fun BoxScope.FolderFormPreview(folderName: String, selectedIcon: String?, label: String) {
+    AureolePreviewFrame(modifier = Modifier.align(Alignment.Center)) {
+        FolderIconPreview(
+            folderName = folderName,
+            selectedIcon = selectedIcon,
+            label = label,
+            modifier = Modifier.fillMaxWidth()
         )
     }
 }

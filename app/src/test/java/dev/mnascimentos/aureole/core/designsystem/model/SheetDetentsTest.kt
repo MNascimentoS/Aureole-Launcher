@@ -2,6 +2,7 @@ package dev.mnascimentos.aureole.core.designsystem.model
 
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
+import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
 
@@ -146,5 +147,60 @@ class SheetDetentsTest {
     @Test
     fun `when there is room above the sheet, should ignore the min top`() {
         assertEquals(660, anchoredPreviewTop(sheetTop = 1000, gap = 40, previewHeight = 300, minTop = 64))
+    }
+
+    @Test
+    fun `when the content fits at rest, should not expand`() {
+        assertNull(expandTarget(rest = REST, expanded = EXPANDED, contentFull = REST))
+    }
+
+    @Test
+    fun `when the content is within the slack of rest, should still count as fitting`() {
+        assertNull(expandTarget(rest = REST, expanded = EXPANDED, contentFull = REST + 6f, slack = 8f))
+    }
+
+    @Test
+    fun `when a little content is below, should expand only to the content`() {
+        assertEquals(700f, expandTarget(rest = REST, expanded = EXPANDED, contentFull = 700f, slack = 8f))
+    }
+
+    @Test
+    fun `when much content is below, should expand to the full expanded height`() {
+        assertEquals(EXPANDED, expandTarget(rest = REST, expanded = EXPANDED, contentFull = 3000f, slack = 8f))
+    }
+
+    @Test
+    fun `when the content height is unknown, should keep the full expanded height`() {
+        assertEquals(EXPANDED, expandTarget(rest = REST, expanded = EXPANDED, contentFull = null, slack = 8f))
+    }
+
+    @Test
+    fun `when the sheet cannot expand, a fling up should settle at rest`() {
+        assertEquals(
+            SheetDetentTarget.Rest,
+            resolveDetent(height = 650f, rest = REST, expanded = REST, velocity = STRONG_UP, canExpand = false)
+        )
+    }
+
+    @Test
+    fun `when the sheet cannot expand, a release up high should settle at rest`() {
+        assertEquals(
+            SheetDetentTarget.Rest,
+            resolveDetent(height = 890f, rest = REST, expanded = EXPANDED, velocity = 0f, canExpand = false)
+        )
+    }
+
+    @Test
+    fun `when the sheet cannot expand, a release low should still dismiss`() {
+        assertEquals(
+            SheetDetentTarget.Dismiss,
+            resolveDetent(height = 100f, rest = REST, expanded = REST, velocity = 0f, canExpand = false)
+        )
+    }
+
+    @Test
+    fun `when flung up, should count as a fling up only past the threshold`() {
+        assertTrue(isFlingUp(STRONG_UP))
+        assertFalse(isFlingUp(-SLOW))
     }
 }

@@ -16,13 +16,12 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.core.graphics.drawable.toDrawable
 import dev.mnascimentos.aureole.composable.appitem.model.AureoleAppIconParams
+import dev.mnascimentos.aureole.composable.appitem.model.THEMED_BOX_PADDING_RATIO
+import dev.mnascimentos.aureole.composable.appitem.model.themedIconStyleOf
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
-
-private const val THEMED_BOX_ALPHA = 0.85f
-private const val THEMED_BOX_PADDING_RATIO = 0.19f
 
 /**
  * The only way the UI draws an app icon. Full bleed (adaptive) icons are clipped with
@@ -37,14 +36,15 @@ fun AureoleAppIcon(
     params: AureoleAppIconParams = AureoleAppIconParams()
 ) {
     val sized = if (size == Dp.Unspecified) modifier else modifier.size(size)
-    val bitmap = app.getDisplayIconBitmap(isThemed = params.isThemed, tintColor = AureoleDS.colors.onSurfaceMedium)
+    val themed = themedIconStyleOf(AureoleDS.colors.surfaceVariant, AureoleDS.colors.onSurfaceMedium)
+    val bitmap = app.getDisplayIconBitmap(isThemed = params.isThemed, tintColor = themed.tint)
 
     if (params.isThemed && params.showThemedBox) {
         val padding = if (size == Dp.Unspecified) AureoleDS.dimens.xSmall else size * THEMED_BOX_PADDING_RATIO
         Box(
             modifier = sized
                 .clip(RoundedCornerShape(AureoleDS.dimens.radiusSmall))
-                .background(AureoleDS.colors.surfaceVariant.copy(alpha = THEMED_BOX_ALPHA))
+                .background(themed.tile)
                 .padding(padding),
             contentAlignment = Alignment.Center
         ) {

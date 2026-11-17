@@ -34,7 +34,8 @@ fun AureoleConfirmDialog(
             isLeftHanded = LocalLeftHanded.current,
             secondaryLabel = params.cancelLabel,
             primaryHoldMs = params.holdMs,
-            isPrimaryAwayFromThumb = params.holdMs != null
+            isPrimaryAwayFromThumb = params.holdMs != null,
+            onSecondary = params.onCancel
         )
     ) {
         AureoleText(

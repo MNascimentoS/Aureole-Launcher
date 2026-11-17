@@ -6,12 +6,15 @@ import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollTo
 import dev.mnascimentos.aureole.core.designsystem.model.GlassLevel
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
-import dev.mnascimentos.aureole.feature.settings.model.AppearanceDialogFlags
+import dev.mnascimentos.aureole.feature.settings.components.SettingsChildSheet
 import dev.mnascimentos.aureole.feature.settings.model.CardsGlassDraft
+import dev.mnascimentos.aureole.feature.settings.model.SettingsChildKind
 import dev.mnascimentos.aureole.feature.settings.model.SettingsScreenActions
 import dev.mnascimentos.aureole.feature.settings.model.SettingsUiState
 import dev.mnascimentos.aureole.feature.settings.model.toCardsGlassDraft
+import dev.mnascimentos.aureole.testing.closeOverlayWithBack
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
@@ -98,120 +101,69 @@ class SettingsAppearanceControlsTest {
     }
 
     @Test
-    fun `when palette flag is true, should render PickPaletteBottomSheet and handle selection`() {
-        var selectedTheme = ""
-        var dismissCalled = false
-        val flags = AppearanceDialogFlags(showPalette = true)
-        val actions = SettingsScreenActions(onSelectTheme = { selectedTheme = it })
-
-        composeTestRule.setContent {
-            AureoleLauncherTheme {
-                AppearanceDialogs(
-                    flags = flags,
-                    uiState = SettingsUiState(),
-                    actions = actions,
-                    onDismissDialog = { dismissCalled = true }
-                )
-            }
-        }
-
-        composeTestRule.onNodeWithText("Pick a palette").assertExists()
-        composeTestRule.onNodeWithText("Frostbite").performClick()
-        composeTestRule.onNodeWithText("Apply").performClick()
-        assertEquals("Frostbite", selectedTheme)
-        assertTrue(dismissCalled)
-    }
-
-    @Test
-    fun `when font flag is true, should render PickFontBottomSheet and handle selection`() {
-        var selectedFont = ""
-        var dismissCalled = false
-        val flags = AppearanceDialogFlags(showFont = true)
-        val actions = SettingsScreenActions(onSelectFont = { selectedFont = it })
-
-        composeTestRule.setContent {
-            AureoleLauncherTheme {
-                AppearanceDialogs(
-                    flags = flags,
-                    uiState = SettingsUiState(),
-                    actions = actions,
-                    onDismissDialog = { dismissCalled = true }
-                )
-            }
-        }
-
-        composeTestRule.onNodeWithText("Pick Font").assertExists()
-        composeTestRule.onNodeWithText("Istok Web").performClick()
-        composeTestRule.onNodeWithText("Apply").performClick()
-        assertEquals("Istok Web", selectedFont)
-        assertTrue(dismissCalled)
-    }
-
-    @Test
-    fun `when setBg flag is true, applying the solid color should save the seed color`() {
+    fun `when setBg sheet is open, closing without a change should save no seed color`() {
         var savedColor: Int? = null
         var dismissCalled = false
-        val flags = AppearanceDialogFlags(showSetBg = true)
+        val kind = SettingsChildKind.BACKGROUND
         val actions = SettingsScreenActions(
-            onSelectManualSeedColor = { savedColor = it }
+            onSelectBackgroundColor = { savedColor = it }
         )
 
         composeTestRule.setContent {
             AureoleLauncherTheme {
-                AppearanceDialogs(
-                    flags = flags,
+                SettingsChildSheet(
+                    kind = kind,
                     uiState = SettingsUiState(manualSeedColor = DEFAULT_SEED),
                     actions = actions,
-                    onDismissDialog = { dismissCalled = true }
+                    onClose = { dismissCalled = true }
                 )
             }
         }
 
-        composeTestRule.onNodeWithText("Apply").performClick()
-        composeTestRule.mainClock.advanceTimeBy(DISMISS_ANIMATION_MS)
-        assertEquals(DEFAULT_SEED, savedColor)
+        composeTestRule.closeOverlayWithBack()
+        assertNull(savedColor)
         assertTrue(dismissCalled)
     }
 
     @Test
-    fun `when setBg flag is true, clicking custom image should trigger wallpaper change`() {
+    fun `when setBg sheet is open, clicking custom image should trigger wallpaper change`() {
         var wallpaperChangeClicked = false
         var dismissCalled = false
-        val flags = AppearanceDialogFlags(showSetBg = true)
+        val kind = SettingsChildKind.BACKGROUND
         val actions = SettingsScreenActions(
             onChangeWallpaperClick = { wallpaperChangeClicked = true }
         )
 
         composeTestRule.setContent {
             AureoleLauncherTheme {
-                AppearanceDialogs(
-                    flags = flags,
+                SettingsChildSheet(
+                    kind = kind,
                     uiState = SettingsUiState(),
                     actions = actions,
-                    onDismissDialog = { dismissCalled = true }
+                    onClose = { dismissCalled = true }
                 )
             }
         }
 
         composeTestRule.onNodeWithText("Custom image").performClick()
-        composeTestRule.onNodeWithText("Apply").performClick()
+        composeTestRule.closeOverlayWithBack()
         composeTestRule.mainClock.advanceTimeBy(DISMISS_ANIMATION_MS)
         assertTrue(wallpaperChangeClicked)
         assertTrue(dismissCalled)
     }
 
     @Test
-    fun `when cardsGlass flag is true, should apply every tap on the spot`() {
+    fun `when cardsGlass sheet is open, should apply every tap on the spot`() {
         val applied = mutableListOf<CardsGlassDraft>()
         val actions = SettingsScreenActions(onApplyCardsGlass = { applied += it })
 
         composeTestRule.setContent {
             AureoleLauncherTheme {
-                AppearanceDialogs(
-                    flags = AppearanceDialogFlags(showCardsGlass = true),
+                SettingsChildSheet(
+                    kind = SettingsChildKind.CARDS_GLASS,
                     uiState = SettingsUiState(cornerRadiusDp = 16, isHazeEnabled = true),
                     actions = actions,
-                    onDismissDialog = {}
+                    onClose = {}
                 )
             }
         }
@@ -226,24 +178,24 @@ class SettingsAppearanceControlsTest {
     }
 
     @Test
-    fun `when tapping Done on the cardsGlass sheet, should close and hand back the opening values`() {
+    fun `when closing the cardsGlass sheet, should close and hand back the opening values`() {
         var closedWith: CardsGlassDraft? = null
         var dismissCalled = false
         val opening = SettingsUiState(cornerRadiusDp = 16, isHazeEnabled = true)
 
         composeTestRule.setContent {
             AureoleLauncherTheme {
-                AppearanceDialogs(
-                    flags = AppearanceDialogFlags(showCardsGlass = true),
+                SettingsChildSheet(
+                    kind = SettingsChildKind.CARDS_GLASS,
                     uiState = opening,
                     actions = SettingsScreenActions(onCardsGlassClosed = { closedWith = it }),
-                    onDismissDialog = { dismissCalled = true }
+                    onClose = { dismissCalled = true }
                 )
             }
         }
 
         composeTestRule.onNodeWithText("8").performScrollTo().performClick()
-        composeTestRule.onNodeWithText("Done").performClick()
+        composeTestRule.closeOverlayWithBack()
         composeTestRule.mainClock.advanceTimeBy(DISMISS_ANIMATION_MS)
 
         assertEquals(opening.toCardsGlassDraft(), closedWith)
@@ -254,11 +206,11 @@ class SettingsAppearanceControlsTest {
     fun `the cardsGlass sheet has no Apply or Cancel button`() {
         composeTestRule.setContent {
             AureoleLauncherTheme {
-                AppearanceDialogs(
-                    flags = AppearanceDialogFlags(showCardsGlass = true),
+                SettingsChildSheet(
+                    kind = SettingsChildKind.CARDS_GLASS,
                     uiState = SettingsUiState(),
                     actions = SettingsScreenActions(),
-                    onDismissDialog = {}
+                    onClose = {}
                 )
             }
         }

@@ -7,10 +7,15 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
+import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.feature.settings.SettingsViewModel
 import dev.mnascimentos.aureole.feature.settings.extensions.SettingsIntentUtils
+import dev.mnascimentos.aureole.feature.settings.extensions.changeFont
+import dev.mnascimentos.aureole.feature.settings.extensions.changeManualSeedColor
+import dev.mnascimentos.aureole.feature.settings.extensions.changeTheme
 import dev.mnascimentos.aureole.feature.settings.extensions.createFolder
 import dev.mnascimentos.aureole.feature.settings.extensions.finishCardsGlass
+import dev.mnascimentos.aureole.feature.settings.extensions.finishWallpaperEditor
 import dev.mnascimentos.aureole.feature.settings.extensions.onUndo
 import dev.mnascimentos.aureole.feature.settings.extensions.onUndoExpired
 import dev.mnascimentos.aureole.feature.settings.extensions.performFactoryReset
@@ -18,6 +23,9 @@ import dev.mnascimentos.aureole.feature.settings.extensions.resetGridLayout
 import dev.mnascimentos.aureole.feature.settings.extensions.restoreDefaultWallpaper
 import dev.mnascimentos.aureole.feature.settings.extensions.selectPosition
 import dev.mnascimentos.aureole.feature.settings.extensions.toggleFavorite
+import dev.mnascimentos.aureole.feature.settings.extensions.turnLockScreenOff
+import dev.mnascimentos.aureole.feature.settings.extensions.turnLockScreenOn
+import dev.mnascimentos.aureole.feature.settings.extensions.wallpaperEditorOpened
 import dev.mnascimentos.aureole.feature.settings.model.PositionKind
 import dev.mnascimentos.aureole.feature.settings.model.SettingToggle
 import dev.mnascimentos.aureole.feature.settings.model.SettingValue
@@ -73,15 +81,11 @@ private fun buildSettingsScreenActions(
         onUndo = viewModel::onUndo,
         onUndoExpired = viewModel::onUndoExpired,
         onClearErrorMessage = { viewModel.clearErrorMessage() },
-        onSelectManualSeedColor = { color ->
-            viewModel.setSettingValue(SettingValue.ManualSeedColor(color))
+        onSelectBackgroundColor = { color ->
+            viewModel.changeManualSeedColor(color, R.string.undo_background_changed)
         },
-        onSelectTheme = { themeName ->
-            viewModel.setSettingValue(SettingValue.SelectedTheme(themeName))
-        },
-        onSelectFont = { fontName ->
-            viewModel.setSettingValue(SettingValue.SelectedFont(fontName))
-        },
+        onSelectTheme = viewModel::changeTheme,
+        onSelectFont = viewModel::changeFont,
         onSelectWallpaperScaleType = { scaleType ->
             viewModel.setSettingValue(SettingValue.WallpaperScaleType(scaleType))
         },
@@ -89,6 +93,10 @@ private fun buildSettingsScreenActions(
             viewModel.setSettingValue(SettingValue.CardsGlass(draft))
         },
         onCardsGlassClosed = viewModel::finishCardsGlass,
+        onWallpaperEditorOpened = viewModel::wallpaperEditorOpened,
+        onLockScreenTurnOn = viewModel::turnLockScreenOn,
+        onLockScreenTurnOff = viewModel::turnLockScreenOff,
+        onWallpaperEditorClosed = viewModel::finishWallpaperEditor,
         onHeaderOffsetChanged = viewModel::setHeaderOffsetPercent,
         onConfirmResetGrid = { viewModel.resetGridLayout() },
     )
@@ -139,12 +147,8 @@ private fun applyDialogActions(viewModel: SettingsViewModel, base: SettingsScree
         onContainerPositionSelected = { pos -> viewModel.selectPosition(PositionKind.CONTAINER, pos) },
         onOpenResetGridDialog = { viewModel.setDialogVisible(SettingsDialog.RESET_GRID, true) },
         onDismissResetGridDialog = { viewModel.setDialogVisible(SettingsDialog.RESET_GRID, false) },
-        onOpenFactoryResetDialog = { viewModel.setDialogVisible(SettingsDialog.FACTORY_RESET, true) },
-        onDismissFactoryResetDialog = { viewModel.setDialogVisible(SettingsDialog.FACTORY_RESET, false) },
         onConfirmFactoryReset = { viewModel.performFactoryReset() },
         onOpenFavoritePickerClick = { viewModel.setDialogVisible(SettingsDialog.FAVORITE_PICKER, true) },
-        onOpenColorPickerDialog = { viewModel.setDialogVisible(SettingsDialog.COLOR_PICKER, true) },
-        onDismissColorPickerDialog = { viewModel.setDialogVisible(SettingsDialog.COLOR_PICKER, false) },
         onAddFolderClick = { viewModel.setDialogVisible(SettingsDialog.CREATE_FOLDER, true) },
         onDismissCreateFolderDialog = { viewModel.setDialogVisible(SettingsDialog.CREATE_FOLDER, false) },
         onOpenSettingsButtonPositionDialog = {

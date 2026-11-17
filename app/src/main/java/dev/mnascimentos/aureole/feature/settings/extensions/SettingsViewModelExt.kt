@@ -2,6 +2,7 @@ package dev.mnascimentos.aureole.feature.settings.extensions
 
 import androidx.lifecycle.viewModelScope
 import dev.mnascimentos.aureole.R
+import dev.mnascimentos.aureole.core.data.model.WallpaperAdjustments
 import dev.mnascimentos.aureole.core.designsystem.model.TextResource
 import dev.mnascimentos.aureole.feature.settings.SettingsViewModel
 import kotlinx.coroutines.Dispatchers
@@ -20,8 +21,13 @@ fun SettingsViewModel.restoreDefaultWallpaper() {
             settingsRepository.wallpaperStash.restoreDefaultKeepingUndo()
         }
         updateUiState {
-            it.copy(isCustomWallpaperSet = false, customWallpaperPath = null)
+            it.copy(
+                isCustomWallpaperSet = false,
+                customWallpaperPath = null,
+                wallpaperAdjustments = WallpaperAdjustments.DEFAULT
+            )
         }
+        applyLockScreen()
         if (previousPath != null) {
             showUndo(TextResource.fromResId(R.string.settings_appearance_background_restored)) {
                 undoRestoreWallpaper(previousPath)
@@ -34,7 +40,14 @@ private fun SettingsViewModel.undoRestoreWallpaper(path: String) {
     viewModelScope.launch {
         val restored = withContext(Dispatchers.IO) { settingsRepository.wallpaperStash.undo(path) }
         if (restored) {
-            updateUiState { it.copy(isCustomWallpaperSet = true, customWallpaperPath = path) }
+            updateUiState {
+                it.copy(
+                    isCustomWallpaperSet = true,
+                    customWallpaperPath = path,
+                    wallpaperAdjustments = settingsRepository.wallpaperAdjustments
+                )
+            }
+            applyLockScreen(undo = true)
         }
     }
 }
@@ -54,7 +67,6 @@ fun SettingsViewModel.resetGridLayout() {
 
 fun SettingsViewModel.performFactoryReset() {
     viewModelScope.launch {
-        updateUiState { it.copy(showFactoryResetDialog = false) }
         withContext(Dispatchers.IO) {
             settingsRepository.performFactoryReset()
         }

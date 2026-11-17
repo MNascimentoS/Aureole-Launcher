@@ -42,15 +42,25 @@ fun AureoleColorSwatches(
         verticalArrangement = Arrangement.spacedBy(AureoleDS.dimens.small)
     ) {
         colors.forEach { colorInt ->
-            ColorSwatch(colorInt = colorInt, isSelected = selected == colorInt, onSelect = { onSelect(colorInt) })
+            AureoleColorSwatch(
+                colorInt = colorInt,
+                isSelected = selected == colorInt,
+                onSelect = { onSelect(colorInt) }
+            )
         }
     }
 }
 
+/** One round swatch: a ring and a check when [isSelected]. */
 @Composable
-private fun ColorSwatch(colorInt: Int, isSelected: Boolean, onSelect: () -> Unit) {
+fun AureoleColorSwatch(
+    colorInt: Int,
+    isSelected: Boolean,
+    onSelect: () -> Unit,
+    modifier: Modifier = Modifier
+) {
     Box(
-        modifier = Modifier
+        modifier = modifier
             .size(AureoleDS.dimens.xxLarge)
             .clip(CircleShape)
             .background(Color(colorInt))

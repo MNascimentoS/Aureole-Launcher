@@ -5,7 +5,6 @@ import androidx.core.graphics.ColorUtils
 private const val CUSTOM_SATURATION = 0.65f
 private const val CUSTOM_LIGHTNESS = 0.45f
 private const val HSL_COMPONENTS_COUNT = 3
-private const val RGB_MASK = 0xFFFFFF
 
 /** Maximum hue of the custom slider, in degrees. */
 const val MAX_HUE = 360f
@@ -19,9 +18,6 @@ val RecommendedColors: List<Int> = listOf(
 
 /** Color shown when nothing else was chosen. */
 val DefaultPickerColor: Int = RecommendedColors[1]
-
-/** "#90CAF9": the color without alpha, in upper-case hex. */
-fun formatHex(color: Int): String = "#%06X".format(color and RGB_MASK)
 
 /** The color of the custom slider at [hue] degrees: the fixed saturation and lightness of the picker. */
 fun colorForHue(hue: Float): Int =

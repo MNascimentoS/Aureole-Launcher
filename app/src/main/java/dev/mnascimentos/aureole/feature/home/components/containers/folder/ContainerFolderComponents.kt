@@ -42,7 +42,7 @@ import dev.mnascimentos.aureole.core.data.model.QuickButtonModel
 import dev.mnascimentos.aureole.core.data.model.ShortcutType
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
-import dev.mnascimentos.aureole.core.designsystem.icons.Add
+import dev.mnascimentos.aureole.core.designsystem.icons.AddNew
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
@@ -88,7 +88,7 @@ fun ContainerAddFolderButton(
             .semantics(mergeDescendants = true) {},
         contentAlignment = Alignment.Center
     ) {
-        AureoleDS.icons.Add(
+        AureoleDS.icons.AddNew(
             tint = AureoleDS.colors.onSurfaceMedium,
             modifier = Modifier.size(iconSize)
         )

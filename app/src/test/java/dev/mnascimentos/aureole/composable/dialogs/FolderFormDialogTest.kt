@@ -8,8 +8,10 @@ import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTextInput
+import androidx.compose.ui.test.performTextReplacement
 import dev.mnascimentos.aureole.core.data.model.AppFolder
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
+import dev.mnascimentos.aureole.testing.closeOverlayWithBack
 import org.junit.Assert.assertEquals
 import org.junit.Rule
 import org.junit.Test
@@ -59,7 +61,7 @@ class FolderFormDialogTest {
     }
 
     @Test
-    fun `when editing, should show Save, the folder name and the delete row`() {
+    fun `when editing, should show the folder name and the delete row with no Save button`() {
         var deleted = false
         composeTestRule.setContent {
             AureoleLauncherTheme {
@@ -73,10 +75,47 @@ class FolderFormDialogTest {
         }
 
         composeTestRule.onNodeWithText("Edit Folder").assertIsDisplayed()
-        composeTestRule.onNodeWithText("Save").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Save").assertDoesNotExist()
         composeTestRule.onNodeWithText("Delete folder").performClick()
 
         assertEquals(true, deleted)
+    }
+
+    @Test
+    fun `when editing and changing the name, closing should save the new name once`() {
+        val saved = mutableListOf<String>()
+        composeTestRule.setContent {
+            AureoleLauncherTheme {
+                FolderFormDialog(
+                    folder = AppFolder(id = "1", name = "Tools"),
+                    onDismiss = {},
+                    onSave = { name, _ -> saved += name }
+                )
+            }
+        }
+
+        composeTestRule.onNode(hasSetTextAction()).performTextReplacement("Work tools")
+        composeTestRule.closeOverlayWithBack()
+
+        assertEquals(listOf("Work tools"), saved)
+    }
+
+    @Test
+    fun `when editing without a change, closing should not save`() {
+        val saved = mutableListOf<String>()
+        composeTestRule.setContent {
+            AureoleLauncherTheme {
+                FolderFormDialog(
+                    folder = AppFolder(id = "1", name = "Tools"),
+                    onDismiss = {},
+                    onSave = { name, _ -> saved += name }
+                )
+            }
+        }
+
+        composeTestRule.closeOverlayWithBack()
+
+        assertEquals(emptyList<String>(), saved)
     }
 
     @Test

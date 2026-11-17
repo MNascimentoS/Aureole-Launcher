@@ -4,8 +4,6 @@
 
     <!-- Common -->
     <string name="core_common_cancel">Cancelar</string>
-    <string name="core_common_save">Salvar</string>
-    <string name="core_common_confirm">Confirmar</string>
     <string name="core_common_create">Criar</string>
     <string name="core_common_understood">Entendido</string>
 
@@ -53,7 +51,6 @@
     <string name="home_quickbutton_icon_color">Cor do ícone</string>
 
     <!-- Colors / Theming -->
-    <string name="settings_appearance_colors_recommended">Cores Recomendadas</string>
 
     <!-- Settings -->
     <string name="settings_root_header">Configurações</string>
@@ -63,25 +60,24 @@
     <string name="settings_root_title">Aureole</string>
     <string name="settings_root_version">Versão %1$s</string>
     <string name="settings_root_appearance_title">Aparência</string>
-    <string name="settings_root_appearance_subtitle">Cores, temas e layout</string>
+    <string name="settings_root_appearance_subtitle">Cores, fundo, fonte e vidro</string>
     <string name="settings_root_behavior_title">Comportamento</string>
-    <string name="settings_root_behavior_subtitle">Gestos, botões e controles</string>
+    <string name="settings_root_behavior_subtitle">Gestos, lista e tela inicial</string>
     <string name="settings_root_advanced_title">Avançado</string>
-    <string name="settings_root_advanced_subtitle">Ferramentas de sistema e informações legais</string>
+    <string name="settings_root_advanced_subtitle">Sistema, sobre o app e créditos</string>
+    <string name="settings_root_open_panel">abrir painel</string>
 
     <!-- Settings Advanced -->
     <string name="settings_advanced_title">Avançado</string>
-    <string name="settings_advanced_set_default_launcher">Definir como launcher padrão</string>
+    <string name="settings_advanced_set_default_launcher">Launcher padrão</string>
     <string name="settings_advanced_app_info">Informações do app</string>
-    <string name="settings_advanced_whats_new">O que há de novo (Notas da versão)</string>
+    <string name="settings_advanced_whats_new">Novidades</string>
     <string name="settings_advanced_reset_launcher">Redefinir launcher</string>
     <string name="settings_advanced_uninstall_launcher">Desinstalar launcher</string>
     <string name="settings_advanced_contributors">Colaboradores</string>
     <string name="settings_advanced_privacy_policy">Política de privacidade</string>
     <string name="settings_advanced_terms_of_service">Termos de serviço</string>
     <string name="settings_advanced_open_source_licenses">Licenças de código aberto</string>
-    <string name="settings_advanced_uninstall_dialog_title">Desinstalar launcher?</string>
-    <string name="settings_advanced_contact_us">Fale conosco</string>
 
     <!-- Settings Behavior -->
     <string name="settings_behavior_title">Comportamento</string>
@@ -98,9 +94,29 @@
     <string name="settings_appearance_change_font">Alterar fonte</string>
     <string name="settings_appearance_pick_font">Escolher Fonte</string>
     <string name="settings_appearance_color_palette">Paleta de cores</string>
-    <string name="settings_appearance_custom_colors">Cores personalizadas</string>
     <string name="settings_appearance_themed_icons">Ícones temáticos</string>
     <string name="settings_appearance_image_scale">Escala da imagem</string>
+    <string name="settings_appearance_custom_framing">Enquadramento personalizado</string>
+    <string name="undo_wallpaper_adjusted">Foto do fundo ajustada</string>
+    <string name="settings_wallpaper_editor_title">Editar foto</string>
+    <string name="settings_wallpaper_change_photo">Trocar foto</string>
+    <string name="settings_wallpaper_editor_tabs">Ajustes da foto</string>
+    <string name="settings_wallpaper_editor_tab_frame">Enquadrar</string>
+    <string name="settings_wallpaper_editor_tab_dim">Escurecer</string>
+    <string name="settings_wallpaper_editor_tab_blur">Desfoque</string>
+    <string name="settings_wallpaper_editor_center">Centralizar</string>
+    <string name="settings_wallpaper_editor_rotate">Girar 90°</string>
+    <string name="settings_wallpaper_editor_reset">Redefinir</string>
+    <string name="settings_wallpaper_editor_dim_value">%1$d%%</string>
+    <string name="settings_wallpaper_editor_blur_value">%1$d dp</string>
+    <string name="settings_wallpaper_editor_zoom_value">%1$.1fx</string>
+    <string name="settings_wallpaper_editor_photo">Enquadramento da foto</string>
+    <string name="settings_wallpaper_editor_zoom_in">Aproximar</string>
+    <string name="settings_wallpaper_editor_zoom_out">Afastar</string>
+    <string name="settings_wallpaper_editor_move_up">Mover para cima</string>
+    <string name="settings_wallpaper_editor_move_down">Mover para baixo</string>
+    <string name="settings_wallpaper_editor_move_left">Mover para a esquerda</string>
+    <string name="settings_wallpaper_editor_move_right">Mover para a direita</string>
 
     <!-- Apps Drawer -->
     <string name="home_apps_search_placeholder">Buscar aplicativos</string>
@@ -264,8 +280,6 @@
     <string name="home_container_saved">Configurações do container salvas</string>
 
     <!-- Reusable -->
-    <string name="settings_appearance_color_picker_primary">Escolher Cor Primária</string>
-    <string name="settings_appearance_color_picker_custom_hue">Ajuste Personalizado (Matiz)</string>
 
     <!-- Grid & Containers -->
     <string name="home_container_add_title">Adicionar Container</string>
@@ -286,10 +300,7 @@
     <string name="home_grid_widget_unconfigured">Widget não configurado</string>
 
     <!-- New Strings for Task 1 -->
-    <string name="settings_advanced_reset_dialog_title">Redefinir launcher?</string>
     <string name="settings_advanced_reset_layout_title">Redefinir Layout?</string>
-    <string name="settings_advanced_reset_dialog_message">Apaga todas as suas configurações e volta ao início. Não dá para desfazer.</string>
-    <string name="settings_advanced_reset_dialog_action">Redefinir</string>
     <string name="settings_advanced_reset_layout_message">Os itens voltam para a posição inicial da home.</string>
     <string name="settings_advanced_reset_layout_restore">Restaurar</string>
     <string name="settings_appearance_blur_opacity_low">Baixa</string>
@@ -348,8 +359,6 @@
     <string name="settings_cards_glass_level_low">Leve</string>
     <string name="settings_cards_glass_level_medium">Médio</string>
     <string name="settings_cards_glass_level_max">Máx.</string>
-    <string name="settings_cards_glass_done">Pronto</string>
-    <string name="settings_cards_glass_changed">Cartões e vidro alterados</string>
     <string name="settings_cards_glass_preview_date">Ter, 10 nov</string>
     <string name="settings_appearance_glass_effect">Efeito de vidro</string>
     <string name="settings_appearance_change_border">Alterar Borda</string>
@@ -373,7 +382,7 @@
     <string name="home_onboarding_coach_success">Isso aí!</string>
     <string name="home_onboarding_coach_apps_title">Deslize para cima</string>
     <string name="home_onboarding_coach_apps_body">para ver todos os seus apps. O botão Início também abre e fecha a lista.</string>
-    <string name="home_onboarding_coach_apps_done">Seus apps estão aqui. Toque fora para fechar.</string>
+    <string name="home_onboarding_coach_apps_done">Seus apps estão aqui. Toque em voltar para fechar.</string>
     <string name="home_onboarding_coach_scrub_title_right">Deslize na borda direita</string>
     <string name="home_onboarding_coach_scrub_title_left">Deslize na borda esquerda</string>
     <string name="home_onboarding_coach_scrub_body">e desça o dedo para pular direto para uma letra.</string>
@@ -417,6 +426,25 @@
     <string name="overlay_sheet_action_expand">Expandir</string>
     <string name="overlay_sheet_action_collapse">Recolher</string>
     <string name="overlay_sheet_action_settings">Ajustes do Aureole</string>
+    <string name="undo_background_changed">Fundo alterado</string>
+    <string name="undo_palette_changed">Paleta alterada</string>
+    <string name="undo_font_changed">Fonte alterada</string>
+    <string name="undo_quick_button_changed">Botão rápido atualizado</string>
+    <string name="undo_cards_glass_changed">Cartões e vidro atualizados</string>
+    <string name="undo_folder_changed">Pasta atualizada</string>
+    <string name="settings_background_section_theme">Do seu tema</string>
+    <string name="settings_background_section_palettes">Paletas</string>
+    <string name="settings_background_section_tones">Tons</string>
+    <string name="settings_background_section_vivid">Vivas</string>
+    <string name="settings_background_category_cold">Frias</string>
+    <string name="settings_background_category_cool">Frescas</string>
+    <string name="settings_background_category_neutral">Neutras</string>
+    <string name="settings_background_category_warm">Quentes</string>
+    <string name="settings_background_swatch_background">Fundo</string>
+    <string name="settings_background_swatch_surface">Superfície</string>
+    <string name="settings_background_swatch_variant">Variante</string>
+    <string name="settings_background_swatch_outline">Contorno</string>
+    <string name="settings_background_light_warning">Essa cor gera um tema claro</string>
     <string name="home_undo_action">Desfazer</string>
     <string name="home_undo_removed_from_folder">%1$s saiu da pasta</string>
     <string name="home_undo_favorite_added">%1$s nos favoritos</string>
@@ -425,11 +453,6 @@
     <string name="home_quickbutton_search_placeholder">Buscar atalho ou app&#8230;</string>
     <string name="core_common_search_best_hint">melhor resultado embaixo &#183; &#8629; escolhe</string>
     <string name="core_common_search_empty">Nada com &#8220;%1$s&#8221;.</string>
-    <plurals name="home_folder_picker_save_count">
-        <item quantity="one">Salvar %1$d app</item>
-        <item quantity="many">Salvar %1$d apps</item>
-        <item quantity="other">Salvar %1$d apps</item>
-    </plurals>
     <string name="home_folder_picker_tray_label">Escolhidos · segure e arraste para ordenar</string>
     <string name="home_clock_tab_style">Estilo</string>
     <string name="home_clock_tab_format">Formato</string>
@@ -440,7 +463,6 @@
     <!-- Appearance: palette and font with live preview -->
     <string name="settings_appearance_palette_section_label">Escuras · toque para ver na hora</string>
     <string name="settings_appearance_font_section_label">Fonte do launcher</string>
-    <string name="settings_appearance_apply">Aplicar</string>
     <string name="settings_appearance_palette_chip_description">Paleta %1$s</string>
     <string name="settings_appearance_font_chip_description">Fonte %1$s</string>
     <string name="settings_appearance_font_chip_sample">Aa</string>
@@ -493,7 +515,6 @@
     <string name="settings_appearance_restore_background">Restaurar fundo</string>
     <string name="settings_appearance_background_restored">Fundo restaurado</string>
     <string name="settings_appearance_background_type">Tipo</string>
-    <string name="settings_appearance_background_color">Cor</string>
     <string name="home_folder_form_delete">Excluir pasta</string>
     <string name="home_quickbutton_category_aureole">Aureole</string>
     <string name="home_quickbutton_category_system">Sistema</string>
@@ -525,5 +546,24 @@
     <string name="home_grid_no_space_error">Não há espaço livre suficiente na grade para este container.</string>
     <string name="settings_reset_grid_success">Layout da tela inicial resetado para o padrão</string>
     <string name="settings_wallpaper_load_error">Não foi possível carregar a imagem selecionada</string>
+    <string name="settings_lock_screen_title">Usar também na tela de bloqueio</string>
+    <string name="settings_lock_screen_unavailable">Este aparelho não permite trocar o papel de parede.</string>
+    <string name="settings_lock_screen_notice_title">Usar na tela de bloqueio?</string>
+    <string name="settings_lock_screen_notice_message">O Android não deixa o Aureole guardar a imagem atual da tela de bloqueio, então desligar não volta a anterior.</string>
+    <string name="settings_lock_screen_notice_confirm">Usar mesmo assim</string>
+    <string name="settings_lock_screen_notice_cancel">Agora não</string>
+    <string name="settings_lock_screen_off_title">Parar de usar na tela de bloqueio?</string>
+    <string name="settings_lock_screen_off_message">Manter a tela de bloqueio como está ou voltar ao papel de parede do sistema?</string>
+    <string name="settings_lock_screen_off_keep">Manter como está</string>
+    <string name="settings_lock_screen_off_restore">Voltar ao fundo do sistema</string>
+    <string name="settings_lock_screen_error">Não deu para mudar a tela de bloqueio</string>
     <string name="home_container_preview_app_label">App %1$d</string>
+    <string name="settings_section_theme">Tema</string>
+    <string name="settings_section_background">Fundo</string>
+    <string name="settings_section_cards_glass">Cartões e vidro</string>
+    <string name="settings_section_gestures">Gestos e lista de apps</string>
+    <string name="settings_section_home_screen">Tela inicial</string>
+    <string name="settings_section_system">Sistema</string>
+    <string name="settings_section_about">Sobre</string>
+    <string name="settings_section_care_zone">Zona de cuidado</string>
 </resources>

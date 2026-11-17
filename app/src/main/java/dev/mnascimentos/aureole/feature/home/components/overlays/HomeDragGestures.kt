@@ -135,7 +135,7 @@ private suspend fun AwaitPointerEventScope.runEdgeScrub(
 ) {
     params.onEdgeScrubChange(true)
     try {
-        if (!params.isAllAppsDrawerOpen) params.onAllAppsDrawerOpen()
+        if (!params.isAllAppsDrawerOpen) params.onAllAppsDrawerOpenFromEdge()
         params.onExternalTouchYChange(bounds.toLocalY(startY))
         var isPressed = true
         while (isPressed) {

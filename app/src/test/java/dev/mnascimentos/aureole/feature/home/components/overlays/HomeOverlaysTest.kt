@@ -22,6 +22,7 @@ import androidx.compose.ui.unit.Density
 import dev.chrisbanes.haze.HazeState
 import dev.mnascimentos.aureole.composable.ProvideHomeUiState
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
+import dev.mnascimentos.aureole.feature.home.model.AllAppsOpenSource
 import dev.mnascimentos.aureole.feature.home.model.AppsDrawerOverlayConfig
 import dev.mnascimentos.aureole.feature.home.model.HomeDragParams
 import dev.mnascimentos.aureole.feature.home.model.HomeOverlaysConfig
@@ -118,7 +119,7 @@ class HomeOverlaysTest {
 
         val config = AppsDrawerOverlayConfig(
             isAllAppsDrawerOpen = true,
-            isOpenedFromBottom = false,
+            openSource = AllAppsOpenSource.EDGE,
             isLeftHandedMode = false,
             listState = LazyListState(),
             hazeState = HazeState(),
@@ -143,7 +144,7 @@ class HomeOverlaysTest {
     fun `when apps drawer overlay is open from bottom and left handed, should render drawer`() {
         val config = AppsDrawerOverlayConfig(
             isAllAppsDrawerOpen = true,
-            isOpenedFromBottom = true,
+            openSource = AllAppsOpenSource.BOTTOM,
             isLeftHandedMode = true,
             listState = LazyListState(),
             hazeState = HazeState(),

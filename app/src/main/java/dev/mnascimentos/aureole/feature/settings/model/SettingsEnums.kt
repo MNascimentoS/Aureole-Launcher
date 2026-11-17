@@ -23,10 +23,8 @@ enum class SettingToggle {
 enum class SettingsDialog {
     FAVORITE_PICKER,
     CONTAINER_POSITION,
-    COLOR_PICKER,
     CREATE_FOLDER,
     RESET_GRID,
-    FACTORY_RESET,
     SETTINGS_BUTTON_POSITION,
     SEARCH_ICON_POSITION
 }

@@ -7,7 +7,6 @@ import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.hapticfeedback.HapticFeedback
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
-import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.SemanticsProperties
 import androidx.compose.ui.test.SemanticsMatcher
@@ -20,7 +19,6 @@ import androidx.compose.ui.test.hasTestTag
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.v2.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
-import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTouchInput
 import androidx.core.graphics.drawable.toDrawable
@@ -31,6 +29,7 @@ import dev.mnascimentos.aureole.core.designsystem.model.LocalLeftHanded
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.FOLDER_PICKER_GRID_TEST_TAG
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
+import dev.mnascimentos.aureole.testing.closeOverlayWithBack
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Rule
@@ -71,7 +70,6 @@ class FolderAppPickerGridTest {
     ) {
         composeTestRule.setContent {
             CompositionLocalProvider(
-                LocalInspectionMode provides true,
                 LocalHapticFeedback provides fakeHaptics,
                 LocalHomeUiState provides MainUiState(),
                 LocalLeftHanded provides (MainUiState()).isLeftHandedMode
@@ -120,7 +118,7 @@ class FolderAppPickerGridTest {
         setPicker(firstRow, onSave = { saved = it })
 
         holdAndSlide("Alpha", "Bravo", "Charlie")
-        composeTestRule.onNodeWithText("Save 3 apps").performClick()
+        composeTestRule.closeOverlayWithBack()
 
         assertEquals(listOf("pkg.alpha", "pkg.bravo", "pkg.charlie"), saved)
         assertEquals(3, ticks.count { it == HapticFeedbackType.SegmentTick })
@@ -132,7 +130,7 @@ class FolderAppPickerGridTest {
         setPicker(firstRow, selected = listOf("pkg.alpha", "pkg.bravo", "pkg.delta"), onSave = { saved = it })
 
         holdAndSlide("Alpha", "Bravo")
-        composeTestRule.onNodeWithText("Save 1 app").performClick()
+        composeTestRule.closeOverlayWithBack()
 
         assertEquals(listOf("pkg.delta"), saved)
     }
@@ -146,7 +144,7 @@ class FolderAppPickerGridTest {
             .assert(SemanticsMatcher.expectValue(SemanticsProperties.Role, Role.Checkbox))
             .assertIsOff()
             .performClick()
-        composeTestRule.onNodeWithText("Save 1 app").performClick()
+        composeTestRule.closeOverlayWithBack()
 
         assertEquals(listOf("pkg.charlie"), saved)
     }

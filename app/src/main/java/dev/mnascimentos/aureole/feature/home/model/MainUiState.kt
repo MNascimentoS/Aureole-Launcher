@@ -9,6 +9,7 @@ import dev.mnascimentos.aureole.core.data.model.ClockConfig
 import dev.mnascimentos.aureole.core.data.model.ContainerModel
 import dev.mnascimentos.aureole.core.data.model.LauncherItemState
 import dev.mnascimentos.aureole.core.data.model.QuickButtonModel
+import dev.mnascimentos.aureole.core.data.model.WallpaperAdjustments
 import dev.mnascimentos.aureole.core.data.repository.SettingsRepository
 import dev.mnascimentos.aureole.core.designsystem.model.GlassLevel
 import dev.mnascimentos.aureole.core.designsystem.model.TextResource
@@ -57,6 +58,7 @@ data class MainUiState(
     val isCustomWallpaperSet: Boolean = false,
     val customWallpaperPath: String? = null,
     val wallpaperScaleType: String = "Crop",
+    val wallpaperAdjustments: WallpaperAdjustments = WallpaperAdjustments.DEFAULT,
     val isDynamicWallpaperEnabled: Boolean = false,
     val manualSeedColor: Int = SettingsRepository.DEFAULT_SEED_COLOR,
     val selectedThemeName: String = "Frostbite",
@@ -100,7 +102,8 @@ data class MainUiState(
     val showSettingsDialog: Boolean = false,
     val showFavoritePickerDialog: Boolean = false,
     val isAllAppsDrawerOpen: Boolean = false,
-    val isAllAppsOpenedFromBottom: Boolean = false,
+    /** The shortcut that opened the apps list; kept while it closes so it leaves the same way. */
+    val allAppsOpenSource: AllAppsOpenSource = AllAppsOpenSource.BOTTOM,
     val activeWidgetId: Int? = null,
     val activeWidgetTopYPx: Float = 0f,
     val showWidgetPopup: Boolean = false,

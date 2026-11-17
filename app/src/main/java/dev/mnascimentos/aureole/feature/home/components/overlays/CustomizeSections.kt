@@ -100,6 +100,7 @@ internal fun CustomizeAddSection(
     modifier: Modifier = Modifier
 ) {
     Column(modifier = modifier.fillMaxWidth()) {
+        Spacer(modifier = Modifier.height(AureoleDS.dimens.large))
         AureoleMenuSectionLabel(text = stringResource(R.string.home_customize_section_add))
         LeftHandMirror(isLeftHanded) {
             Column(verticalArrangement = Arrangement.spacedBy(AureoleDS.dimens.xSmall)) {

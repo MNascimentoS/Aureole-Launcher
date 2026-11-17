@@ -71,13 +71,24 @@ class ReleaseNotesRepositoryTest {
     }
 
     @Test
-    fun `when fetching latest version notes, should be 0_9_30 with the fixes section and the icon radius warning`() {
+    fun `when fetching latest version notes, should be 0_9_38 with the save on close and undo note`() {
         val latest = ReleaseNotesRepository.getLatestVersionNotes()
 
-        assertEquals("0.9.30", latest.versionName)
-        assertTrue(latest.sections.any { section -> section.items.any { it.type == ReleaseNoteType.FIX } })
+        assertEquals("0.9.38", latest.versionName)
+        assertTrue(latest.sections.any { section -> section.items.any { it.type == ReleaseNoteType.FEATURE } })
         assertTrue(
-            latest.sections.any { section -> section.items.any { it.description.contains("ícones dos apps") } }
+            latest.sections.any { section -> section.items.any { it.description.contains("Desfazer") } }
+        )
+    }
+
+    @Test
+    fun `when listing versions, 0_9_30 stays as the previous one with its fixes and icon radius warning`() {
+        val previous = ReleaseNotesRepository.getReleaseNotes().first { it.versionName == "0.9.30" }
+
+        assertFalse(previous.isCurrent)
+        assertTrue(previous.sections.any { section -> section.items.any { it.type == ReleaseNoteType.FIX } })
+        assertTrue(
+            previous.sections.any { section -> section.items.any { it.description.contains("ícones dos apps") } }
         )
     }
 }

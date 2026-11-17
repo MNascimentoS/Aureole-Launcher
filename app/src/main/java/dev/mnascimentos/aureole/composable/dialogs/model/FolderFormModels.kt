@@ -1,6 +1,7 @@
 package dev.mnascimentos.aureole.composable.dialogs.model
 
 import androidx.compose.ui.unit.dp
+import dev.mnascimentos.aureole.core.data.model.AppFolder
 import dev.mnascimentos.aureole.core.designsystem.icons.AureoleFolderIcons
 import dev.mnascimentos.aureole.core.designsystem.icons.FolderIconCategory
 
@@ -27,6 +28,10 @@ data class FolderFormConfig(
 
 /** Name that is saved and shown in the preview: the typed text, trimmed, or [placeholder] when it is blank. */
 fun resolveFolderName(raw: String, placeholder: String): String = raw.ifBlank { placeholder }.trim()
+
+/** True when the edit form holds a name or icon different from the ones [folder] has; false for a new folder. */
+fun folderDetailsChanged(folder: AppFolder?, name: String, icon: String?): Boolean =
+    folder != null && (name != folder.name || icon != folder.icon)
 
 /** Keys of the icons of [category], in catalog order. */
 fun folderIconKeys(category: FolderIconCategory): List<String> =

@@ -6,6 +6,7 @@ import androidx.compose.ui.test.performClick
 import dev.mnascimentos.aureole.core.designsystem.palette.ThemePalette
 import dev.mnascimentos.aureole.core.designsystem.palette.allPalettes
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
+import dev.mnascimentos.aureole.testing.closeOverlayWithBack
 import org.junit.Assert.assertEquals
 import org.junit.Rule
 import org.junit.Test
@@ -56,72 +57,56 @@ class PickThemeSheetsTest {
     }
 
     @Test
-    fun `Apply calls the callback once with the tapped palette and closes`() {
+    fun `closing after tapping a palette saves it once and closes`() {
         renderPalette()
 
         composeTestRule.onNodeWithText(allPalettes[1].name).performClick()
-        composeTestRule.onNodeWithText("Apply").performClick()
-        composeTestRule.waitForIdle()
+        composeTestRule.closeOverlayWithBack()
 
         assertEquals(listOf(allPalettes[1].name), applied)
         assertEquals(1, dismissCount)
     }
 
     @Test
-    fun `Cancel after tapping a palette only dismisses`() {
+    fun `closing without a choice only dismisses the palette sheet`() {
         renderPalette()
 
-        composeTestRule.onNodeWithText(allPalettes[1].name).performClick()
-        composeTestRule.onNodeWithText("Cancel").performClick()
-        composeTestRule.waitForIdle()
+        composeTestRule.closeOverlayWithBack()
 
         assertEquals(emptyList<String>(), applied)
         assertEquals(1, dismissCount)
     }
 
     @Test
-    fun `Apply without a choice applies the palette already shown as selected`() {
-        renderPalette()
-
-        composeTestRule.onNodeWithText("Apply").performClick()
-        composeTestRule.waitForIdle()
-
-        assertEquals(1, applied.size)
-        assertEquals(1, dismissCount)
-    }
-
-    @Test
-    fun `Apply without a choice applies the font already shown as selected`() {
+    fun `closing without a choice only dismisses the font sheet`() {
         renderFont()
 
-        composeTestRule.onNodeWithText("Apply").performClick()
-        composeTestRule.waitForIdle()
+        composeTestRule.closeOverlayWithBack()
 
-        assertEquals(1, applied.size)
+        assertEquals(emptyList<String>(), applied)
         assertEquals(1, dismissCount)
     }
 
     @Test
-    fun `tapping a font does not call the callback until Apply`() {
+    fun `tapping a font does not call the callback until the sheet closes`() {
         renderFont()
 
         composeTestRule.onNodeWithText("Roboto").performClick()
         assertEquals(emptyList<String>(), applied)
 
-        composeTestRule.onNodeWithText("Apply").performClick()
-        composeTestRule.waitForIdle()
+        composeTestRule.closeOverlayWithBack()
 
         assertEquals(listOf("Roboto"), applied)
         assertEquals(1, dismissCount)
     }
 
     @Test
-    fun `Cancel after tapping a font only dismisses`() {
+    fun `tapping back to the font already applied closes without saving`() {
         renderFont()
 
         composeTestRule.onNodeWithText("Roboto").performClick()
-        composeTestRule.onNodeWithText("Cancel").performClick()
-        composeTestRule.waitForIdle()
+        composeTestRule.onNodeWithText("Istok Web").performClick()
+        composeTestRule.closeOverlayWithBack()
 
         assertEquals(emptyList<String>(), applied)
         assertEquals(1, dismissCount)

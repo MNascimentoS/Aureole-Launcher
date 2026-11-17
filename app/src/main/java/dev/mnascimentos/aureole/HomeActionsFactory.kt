@@ -41,8 +41,6 @@ import dev.mnascimentos.aureole.feature.home.components.favorites.extensions.tog
 import dev.mnascimentos.aureole.feature.home.components.favorites.extensions.updateContainerFavorites
 import dev.mnascimentos.aureole.feature.home.components.favorites.extensions.updateFavoritePackages
 import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.onOnboardingSignal
-import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.selectFont
-import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.selectPalette
 import dev.mnascimentos.aureole.feature.home.components.onboarding.model.OnboardingSignal
 import dev.mnascimentos.aureole.feature.home.components.overlays.extensions.closeContainerAppBottomSheet
 import dev.mnascimentos.aureole.feature.home.components.overlays.extensions.closeContainerFolderBottomSheet
@@ -72,6 +70,8 @@ import dev.mnascimentos.aureole.feature.home.components.widgets.extensions.setSh
 import dev.mnascimentos.aureole.feature.home.components.widgets.extensions.setShowWidgetResizeDialog
 import dev.mnascimentos.aureole.feature.home.components.widgets.extensions.setTargetWidgetStackId
 import dev.mnascimentos.aureole.feature.home.components.widgets.extensions.setWidgetRowHeight
+import dev.mnascimentos.aureole.feature.home.extensions.changeFont
+import dev.mnascimentos.aureole.feature.home.extensions.changePalette
 import dev.mnascimentos.aureole.feature.home.extensions.onUndo
 import dev.mnascimentos.aureole.feature.home.extensions.onUndoExpired
 import dev.mnascimentos.aureole.feature.home.extensions.setAllAppsDrawerOpen
@@ -95,6 +95,7 @@ import dev.mnascimentos.aureole.feature.home.grid.extensions.setShowAddContainer
 import dev.mnascimentos.aureole.feature.home.grid.extensions.updateGridItemsOrientation
 import dev.mnascimentos.aureole.feature.home.grid.extensions.updateScrollViewOrientation
 import dev.mnascimentos.aureole.feature.home.grid.model.GridItemSpec
+import dev.mnascimentos.aureole.feature.home.model.AllAppsOpenSource
 import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
 import dev.mnascimentos.aureole.feature.settings.SettingsActivity
 import dev.mnascimentos.aureole.util.IntentUtils
@@ -137,6 +138,7 @@ class HomeActionsFactory(
             },
             onAllAppsDrawerClose = { viewModel.setAllAppsDrawerOpen(false) },
             onAllAppsDrawerOpen = { viewModel.setAllAppsDrawerOpen(true) },
+            onAllAppsDrawerOpenFromEdge = { viewModel.setAllAppsDrawerOpen(true, AllAppsOpenSource.EDGE) },
             onToggleFavorite = { pkg -> viewModel.toggleFavorite(pkg) },
             onToggleFavoriteWithContainer = { pkg, containerId -> viewModel.toggleFavorite(pkg, containerId) },
             onUpdateFavoritePackages = { containerId, pkgs -> handleUpdateFavoritePackages(containerId, pkgs) },
@@ -146,8 +148,8 @@ class HomeActionsFactory(
             onDismissFavoritePicker = { viewModel.dismissFavoritePicker() },
             onAddAppsList = { viewModel.addAppsList() },
             onAddClock = { viewModel.addClock() },
-            onSelectPalette = { name -> viewModel.selectPalette(name) },
-            onSelectFont = { name -> viewModel.selectFont(name) },
+            onSelectPalette = { name -> viewModel.changePalette(name) },
+            onSelectFont = { name -> viewModel.changeFont(name) },
             onDismissWidgetPicker = { viewModel.setShowWidgetPicker(false) },
             onDismissReleaseNotes = { viewModel.dismissReleaseNotes() },
             onOpenWidgetPopup = { id, y -> viewModel.openWidgetPopup(id, y) },

@@ -32,7 +32,7 @@ fun resolvePreviewConfig(base: AureoleThemeConfig, pending: ThemePreviewState): 
 fun isDirty(base: AureoleThemeConfig, pending: ThemePreviewState): Boolean =
     resolvePreviewConfig(base, pending) != base
 
-/** Discarding (Cancel, swipe down, tap outside) goes back to the initial state: nothing pending. */
+/** Resets to the initial state once the sheet is gone: nothing pending. */
 fun ThemePreviewState.discard(): ThemePreviewState = ThemePreviewState()
 
 /** Palette name without the " Light" suffix that `toLight()` adds. */
@@ -42,11 +42,18 @@ fun String.basePaletteName(): String = removeSuffix(LIGHT_SUFFIX).trim()
 fun findBasePalette(name: String): ThemePalette? =
     allPalettes.firstOrNull { it.name.equals(name.basePaletteName(), ignoreCase = true) }
 
-/** The palette "Apply" saves: the one tapped, or, with no tap, the one already shown as selected. */
+/** True when a palette was tapped and it is not the one already selected. */
+fun ThemePreviewState.isPaletteChanged(selectedName: String): Boolean =
+    palette?.name?.basePaletteName()?.equals(selectedName.basePaletteName(), ignoreCase = true) == false
+
+/** True when a font was tapped and it is not the one already selected. */
+fun ThemePreviewState.isFontChanged(selectedName: String): Boolean = fontName != null && fontName != selectedName
+
+/** The palette closing saves: the one tapped, or, with no tap, the one already shown as selected. */
 fun resolveAppliedPalette(pendingName: String?, selectedName: String): ThemePalette? =
     findBasePalette(pendingName ?: selectedName)
 
-/** The font "Apply" saves: the one tapped, or, with no tap, the one already shown as selected. */
+/** The font closing saves: the one tapped, or, with no tap, the one already shown as selected. */
 fun resolveAppliedFont(pendingName: String?, selectedName: String): String = pendingName ?: selectedName
 
 /** Name of the font in `AvailableFonts` that matches [family]; falls back to the default font. */

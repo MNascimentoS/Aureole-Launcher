@@ -14,10 +14,14 @@ internal fun Modifier.scrimTapToDismiss(onDismiss: () -> Unit): Modifier {
     return pointerInput(onDismiss) { detectTapGestures(onTap = { onDismiss() }) }
 }
 
-/** How far the sheet is from rest (0) to expanded (1); read while drawing, so a drag does not recompose. */
+/**
+ * How far the sheet is from rest (0) to expanded (1); read while drawing, so a drag does not recompose. Stays at
+ * 0 while a sheet that cannot expand stretches, so the preview above it does not fade.
+ */
 internal fun expandFractionOf(motion: OverlaySheetMotion, isExpanded: Boolean, bounds: SheetBounds): Float {
     val currentHeight = motion.currentHeight(isExpanded, bounds)
     val restHeight = motion.restOrFallback(bounds)
-    if (bounds.expandedPx <= restHeight) return 0f
-    return ((currentHeight - restHeight) / (bounds.expandedPx - restHeight)).coerceIn(0f, 1f)
+    val expandedHeight = motion.expandedHeight(bounds)
+    if (expandedHeight == null || expandedHeight <= restHeight) return 0f
+    return ((currentHeight - restHeight) / (expandedHeight - restHeight)).coerceIn(0f, 1f)
 }

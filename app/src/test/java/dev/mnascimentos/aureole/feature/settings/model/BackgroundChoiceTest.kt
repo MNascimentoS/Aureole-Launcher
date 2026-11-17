@@ -1,6 +1,7 @@
 package dev.mnascimentos.aureole.feature.settings.model
 
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNull
 import org.junit.Test
 
 class BackgroundChoiceTest {
@@ -21,16 +22,30 @@ class BackgroundChoiceTest {
     }
 
     @Test
-    fun `applying the solid color type saves the draft color`() {
-        val action = BackgroundDraft(BackgroundType.SOLID_COLOR, color = 42).applyAction()
+    fun `a new solid color is saved on close`() {
+        val initial = BackgroundDraft(BackgroundType.SOLID_COLOR, color = 1)
 
-        assertEquals(BackgroundApplyAction.SaveColor(42), action)
+        assertEquals(42, backgroundColorToSave(initial, BackgroundDraft(BackgroundType.SOLID_COLOR, color = 42)))
     }
 
     @Test
-    fun `applying the custom image type opens the photo picker`() {
-        val action = BackgroundDraft(BackgroundType.CUSTOM_IMAGE, color = 42).applyAction()
+    fun `the same solid color saves nothing`() {
+        val draft = BackgroundDraft(BackgroundType.SOLID_COLOR, color = 1)
 
-        assertEquals(BackgroundApplyAction.PickImage, action)
+        assertNull(backgroundColorToSave(draft, draft))
+    }
+
+    @Test
+    fun `the custom image type saves nothing because the picker saves it`() {
+        val initial = BackgroundDraft(BackgroundType.SOLID_COLOR, color = 1)
+
+        assertNull(backgroundColorToSave(initial, BackgroundDraft(BackgroundType.CUSTOM_IMAGE, color = 2)))
+    }
+
+    @Test
+    fun `going from the image back to a solid color saves that color`() {
+        val initial = BackgroundDraft(BackgroundType.CUSTOM_IMAGE, color = 7)
+
+        assertEquals(7, backgroundColorToSave(initial, BackgroundDraft(BackgroundType.SOLID_COLOR, color = 7)))
     }
 }

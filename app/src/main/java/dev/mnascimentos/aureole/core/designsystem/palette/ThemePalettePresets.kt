@@ -17,6 +17,7 @@ internal val presetPalettes = listOf(
     // ============ COLD ============
     ThemePalette(
         name = "Abyss",
+        category = PaletteCategory.COLD,
         colors = AureoleColors(
             onSurfaceHigh = Color(0xFFE0F7FA),
             onSurfaceMedium = Color(0xFF80DEEA),
@@ -29,6 +30,7 @@ internal val presetPalettes = listOf(
     ),
     ThemePalette(
         name = "Tidepool",
+        category = PaletteCategory.COLD,
         colors = AureoleColors(
             onSurfaceHigh = Color(0xFFA2D7D5),
             onSurfaceMedium = Color(0xFF8BC5CD),
@@ -41,6 +43,7 @@ internal val presetPalettes = listOf(
     ),
     ThemePalette(
         name = "Midnight Fog",
+        category = PaletteCategory.COLD,
         colors = AureoleColors(
             onSurfaceHigh = Color(0xFFF8F8F2),
             onSurfaceMedium = Color(0xFF8BE9FD),
@@ -53,6 +56,7 @@ internal val presetPalettes = listOf(
     ),
     ThemePalette(
         name = "Neon Dusk",
+        category = PaletteCategory.COLD,
         colors = AureoleColors(
             onSurfaceHigh = Color(0xFFF8F8F2),
             onSurfaceMedium = Color(0xFF66D9EF),
@@ -65,6 +69,7 @@ internal val presetPalettes = listOf(
     ),
     ThemePalette(
         name = "Phantom Blue",
+        category = PaletteCategory.COLD,
         colors = AureoleColors(
             onSurfaceHigh = Color(0xFFF2FAEF),
             onSurfaceMedium = Color(0xFFA7DADC),
@@ -77,6 +82,7 @@ internal val presetPalettes = listOf(
     ),
     ThemePalette(
         name = "Steel",
+        category = PaletteCategory.COLD,
         colors = AureoleColors(
             onSurfaceHigh = Color(0xFFECEFF1),
             onSurfaceMedium = Color(0xFFCFD8DC),
@@ -89,6 +95,7 @@ internal val presetPalettes = listOf(
     ),
     ThemePalette(
         name = "Sky",
+        category = PaletteCategory.COLD,
         colors = AureoleColors(
             onSurfaceHigh = Color(0xFFE1F5FE),
             onSurfaceMedium = Color(0xFF81D4FA),
@@ -101,6 +108,7 @@ internal val presetPalettes = listOf(
     ),
     ThemePalette(
         name = "Navy",
+        category = PaletteCategory.COLD,
         colors = AureoleColors(
             onSurfaceHigh = Color(0xFFE3F2FD),
             onSurfaceMedium = Color(0xFF90CAF9),
@@ -113,6 +121,7 @@ internal val presetPalettes = listOf(
     ),
     ThemePalette(
         name = "Oceanic",
+        category = PaletteCategory.COLD,
         colors = AureoleColors(
             onSurfaceHigh = Color(0xFFE0F3F4),
             onSurfaceMedium = Color(0xFFB2D8DA),
@@ -125,6 +134,7 @@ internal val presetPalettes = listOf(
     ),
     ThemePalette(
         name = "Aqua",
+        category = PaletteCategory.COLD,
         colors = AureoleColors(
             onSurfaceHigh = Color(0xFFE0F7FA),
             onSurfaceMedium = Color(0xFFB2EBF2),
@@ -137,6 +147,7 @@ internal val presetPalettes = listOf(
     ),
     ThemePalette(
         name = "Storm",
+        category = PaletteCategory.COLD,
         colors = AureoleColors(
             onSurfaceHigh = Color(0xFFECEFF1),
             onSurfaceMedium = Color(0xFFB0BEC5),
@@ -149,6 +160,7 @@ internal val presetPalettes = listOf(
     ),
     ThemePalette(
         name = "Fog",
+        category = PaletteCategory.COLD,
         colors = AureoleColors(
             onSurfaceHigh = Color(0xFFECEFF1),
             onSurfaceMedium = Color(0xFFCFD8DC),
@@ -161,6 +173,7 @@ internal val presetPalettes = listOf(
     ),
     ThemePalette(
         name = "Slate",
+        category = PaletteCategory.COLD,
         colors = AureoleColors(
             onSurfaceHigh = Color(0xFFECEFF1),
             onSurfaceMedium = Color(0xFFCFD8DC),
@@ -173,6 +186,7 @@ internal val presetPalettes = listOf(
     ),
     ThemePalette(
         name = "Glacier",
+        category = PaletteCategory.COLD,
         colors = AureoleColors(
             onSurfaceHigh = Color(0xFFE8F4F8),
             onSurfaceMedium = Color(0xFFB8DCE8),
@@ -185,6 +199,7 @@ internal val presetPalettes = listOf(
     ),
     ThemePalette(
         name = "Arctic",
+        category = PaletteCategory.COLD,
         colors = AureoleColors(
             onSurfaceHigh = Color(0xFFF0F8FF),
             onSurfaceMedium = Color(0xFFD6EDF8),
@@ -197,6 +212,7 @@ internal val presetPalettes = listOf(
     ),
     ThemePalette(
         name = "Denim",
+        category = PaletteCategory.COLD,
         colors = AureoleColors(
             onSurfaceHigh = Color(0xFFE8EDF5),
             onSurfaceMedium = Color(0xFFC5D0E0),
@@ -209,6 +225,7 @@ internal val presetPalettes = listOf(
     ),
     ThemePalette(
         name = "Cobalt",
+        category = PaletteCategory.COLD,
         colors = AureoleColors(
             onSurfaceHigh = Color(0xFFE0E8FF),
             onSurfaceMedium = Color(0xFFB3C6F0),
@@ -221,6 +238,7 @@ internal val presetPalettes = listOf(
     ),
     ThemePalette(
         name = "Sapphire",
+        category = PaletteCategory.COLD,
         colors = AureoleColors(
             onSurfaceHigh = Color(0xFFE3E8FF),
             onSurfaceMedium = Color(0xFFB8C4F0),
@@ -233,6 +251,7 @@ internal val presetPalettes = listOf(
     ),
     ThemePalette(
         name = "Indigo",
+        category = PaletteCategory.COLD,
         colors = AureoleColors(
             onSurfaceHigh = Color(0xFFE8E0FF),
             onSurfaceMedium = Color(0xFFC4B3F0),
@@ -245,6 +264,7 @@ internal val presetPalettes = listOf(
     ),
     ThemePalette(
         name = "Violet",
+        category = PaletteCategory.COLD,
         colors = AureoleColors(
             onSurfaceHigh = Color(0xFFF3E5F5),
             onSurfaceMedium = Color(0xFFD6B8E8),
@@ -257,6 +277,7 @@ internal val presetPalettes = listOf(
     ),
     ThemePalette(
         name = "Amethyst",
+        category = PaletteCategory.COLD,
         colors = AureoleColors(
             onSurfaceHigh = Color(0xFFEFE7F5),
             onSurfaceMedium = Color(0xFFD0C3E0),
@@ -271,6 +292,7 @@ internal val presetPalettes = listOf(
     // ============ COOL ============
     ThemePalette(
         name = "Lavender",
+        category = PaletteCategory.COOL,
         colors = AureoleColors(
             onSurfaceHigh = Color(0xFFF3E5F5),
             onSurfaceMedium = Color(0xFFE1BEE7),
@@ -283,6 +305,7 @@ internal val presetPalettes = listOf(
     ),
     ThemePalette(
         name = "Lilac",
+        category = PaletteCategory.COOL,
         colors = AureoleColors(
             onSurfaceHigh = Color(0xFFF5F0FA),
             onSurfaceMedium = Color(0xFFE0D0F0),
@@ -295,6 +318,7 @@ internal val presetPalettes = listOf(
     ),
     ThemePalette(
         name = "Wisteria",
+        category = PaletteCategory.COOL,
         colors = AureoleColors(
             onSurfaceHigh = Color(0xFFF0E8F8),
             onSurfaceMedium = Color(0xFFD8C0E8),
@@ -307,6 +331,7 @@ internal val presetPalettes = listOf(
     ),
     ThemePalette(
         name = "Mint",
+        category = PaletteCategory.COOL,
         colors = AureoleColors(
             onSurfaceHigh = Color(0xFFE0F7FA),
             onSurfaceMedium = Color(0xFF80DEEA),
@@ -319,6 +344,7 @@ internal val presetPalettes = listOf(
     ),
     ThemePalette(
         name = "Seedling",
+        category = PaletteCategory.COOL,
         colors = AureoleColors(
             onSurfaceHigh = Color(0xFFE3F2E9),
             onSurfaceMedium = Color(0xFFB8D8C4),
@@ -331,6 +357,7 @@ internal val presetPalettes = listOf(
     ),
     ThemePalette(
         name = "Forest",
+        category = PaletteCategory.COOL,
         colors = AureoleColors(
             onSurfaceHigh = Color(0xFFE3F2E9),
             onSurfaceMedium = Color(0xFFB8D8C4),
@@ -343,6 +370,7 @@ internal val presetPalettes = listOf(
     ),
     ThemePalette(
         name = "Moss",
+        category = PaletteCategory.COOL,
         colors = AureoleColors(
             onSurfaceHigh = Color(0xFFF1F8E9),
             onSurfaceMedium = Color(0xFFDCEDC8),
@@ -355,6 +383,7 @@ internal val presetPalettes = listOf(
     ),
     ThemePalette(
         name = "Emerald",
+        category = PaletteCategory.COOL,
         colors = AureoleColors(
             onSurfaceHigh = Color(0xFFE8F8E8),
             onSurfaceMedium = Color(0xFFB8E8B8),
@@ -367,6 +396,7 @@ internal val presetPalettes = listOf(
     ),
     ThemePalette(
         name = "Jade",
+        category = PaletteCategory.COOL,
         colors = AureoleColors(
             onSurfaceHigh = Color(0xFFE0F0E8),
             onSurfaceMedium = Color(0xFFA8D8C0),
@@ -379,6 +409,7 @@ internal val presetPalettes = listOf(
     ),
     ThemePalette(
         name = "Sage",
+        category = PaletteCategory.COOL,
         colors = AureoleColors(
             onSurfaceHigh = Color(0xFFEEF2E8),
             onSurfaceMedium = Color(0xFFD0DCC0),
@@ -391,6 +422,7 @@ internal val presetPalettes = listOf(
     ),
     ThemePalette(
         name = "Eucalyptus",
+        category = PaletteCategory.COOL,
         colors = AureoleColors(
             onSurfaceHigh = Color(0xFFE8F0EC),
             onSurfaceMedium = Color(0xFFC0D8CC),
@@ -403,6 +435,7 @@ internal val presetPalettes = listOf(
     ),
     ThemePalette(
         name = "Teal",
+        category = PaletteCategory.COOL,
         colors = AureoleColors(
             onSurfaceHigh = Color(0xFFE0F2F0),
             onSurfaceMedium = Color(0xFFA8D8D0),
@@ -415,6 +448,7 @@ internal val presetPalettes = listOf(
     ),
     ThemePalette(
         name = "Monochrome",
+        category = PaletteCategory.COOL,
         colors = AureoleColors(
             onSurfaceHigh = Color(0xFFF0F0F0),
             onSurfaceMedium = Color(0xFFD1D1D1),
@@ -427,6 +461,7 @@ internal val presetPalettes = listOf(
     ),
     ThemePalette(
         name = "Ash",
+        category = PaletteCategory.COOL,
         colors = AureoleColors(
             onSurfaceHigh = Color(0xFFF5F5F5),
             onSurfaceMedium = Color(0xFFE0E0E0),
@@ -439,6 +474,7 @@ internal val presetPalettes = listOf(
     ),
     ThemePalette(
         name = "Charcoal",
+        category = PaletteCategory.COOL,
         colors = AureoleColors(
             onSurfaceHigh = Color(0xFFFAFAFA),
             onSurfaceMedium = Color(0xFFE0E0E0),
@@ -451,6 +487,7 @@ internal val presetPalettes = listOf(
     ),
     ThemePalette(
         name = "Drained",
+        category = PaletteCategory.COOL,
         colors = AureoleColors(
             onSurfaceHigh = Color(0xFFF5F5F5),
             onSurfaceMedium = Color(0xFFE0E0E0),
@@ -463,6 +500,7 @@ internal val presetPalettes = listOf(
     ),
     ThemePalette(
         name = "Twilight",
+        category = PaletteCategory.COOL,
         colors = AureoleColors(
             onSurfaceHigh = Color(0xFFABB2BF),
             onSurfaceMedium = Color(0xFF98C379),
@@ -475,6 +513,7 @@ internal val presetPalettes = listOf(
     ),
     ThemePalette(
         name = "Fjord",
+        category = PaletteCategory.COOL,
         colors = AureoleColors(
             onSurfaceHigh = Color(0xFFECEFF4),
             onSurfaceMedium = Color(0xFFD8DEE9),
@@ -489,6 +528,7 @@ internal val presetPalettes = listOf(
     // ============ NEUTRAL ============
     ThemePalette(
         name = "Dusk",
+        category = PaletteCategory.NEUTRAL,
         colors = AureoleColors(
             onSurfaceHigh = Color(0xFFEDE7F6),
             onSurfaceMedium = Color(0xFFD1C4E9),
@@ -501,6 +541,7 @@ internal val presetPalettes = listOf(
     ),
     ThemePalette(
         name = "Periwinkle",
+        category = PaletteCategory.NEUTRAL,
         colors = AureoleColors(
             onSurfaceHigh = Color(0xFFE8E8F8),
             onSurfaceMedium = Color(0xFFC8C8E8),
@@ -513,6 +554,7 @@ internal val presetPalettes = listOf(
     ),
     ThemePalette(
         name = "Petal",
+        category = PaletteCategory.NEUTRAL,
         colors = AureoleColors(
             onSurfaceHigh = Color(0xFFF8E8F0),
             onSurfaceMedium = Color(0xFFE8C8D8),
@@ -525,6 +567,7 @@ internal val presetPalettes = listOf(
     ),
     ThemePalette(
         name = "Orchid",
+        category = PaletteCategory.NEUTRAL,
         colors = AureoleColors(
             onSurfaceHigh = Color(0xFFF5E0F0),
             onSurfaceMedium = Color(0xFFE0B8D8),
@@ -537,6 +580,7 @@ internal val presetPalettes = listOf(
     ),
     ThemePalette(
         name = "Plum",
+        category = PaletteCategory.NEUTRAL,
         colors = AureoleColors(
             onSurfaceHigh = Color(0xFFF0E0E8),
             onSurfaceMedium = Color(0xFFD8B8C8),
@@ -549,6 +593,7 @@ internal val presetPalettes = listOf(
     ),
     ThemePalette(
         name = "Grape",
+        category = PaletteCategory.NEUTRAL,
         colors = AureoleColors(
             onSurfaceHigh = Color(0xFFE8E0F0),
             onSurfaceMedium = Color(0xFFC8B8D8),
@@ -561,6 +606,7 @@ internal val presetPalettes = listOf(
     ),
     ThemePalette(
         name = "Mulberry",
+        category = PaletteCategory.NEUTRAL,
         colors = AureoleColors(
             onSurfaceHigh = Color(0xFFE8D8E8),
             onSurfaceMedium = Color(0xFFC8A8C8),
@@ -573,6 +619,7 @@ internal val presetPalettes = listOf(
     ),
     ThemePalette(
         name = "Boysenberry",
+        category = PaletteCategory.NEUTRAL,
         colors = AureoleColors(
             onSurfaceHigh = Color(0xFFE0D0E0),
             onSurfaceMedium = Color(0xFFC0A0C0),
@@ -585,6 +632,7 @@ internal val presetPalettes = listOf(
     ),
     ThemePalette(
         name = "Neon City",
+        category = PaletteCategory.NEUTRAL,
         colors = AureoleColors(
             onSurfaceHigh = Color(0xFFF8F8F2),
             onSurfaceMedium = Color(0xFFFF2A6D),
@@ -597,6 +645,7 @@ internal val presetPalettes = listOf(
     ),
     ThemePalette(
         name = "Sandstone",
+        category = PaletteCategory.NEUTRAL,
         colors = AureoleColors(
             onSurfaceHigh = Color(0xFFF5EDE6),
             onSurfaceMedium = Color(0xFFD4C0B0),
@@ -609,6 +658,7 @@ internal val presetPalettes = listOf(
     ),
     ThemePalette(
         name = "Earth",
+        category = PaletteCategory.NEUTRAL,
         colors = AureoleColors(
             onSurfaceHigh = Color(0xFFF7EEE7),
             onSurfaceMedium = Color(0xFFE0C9B5),
@@ -621,6 +671,7 @@ internal val presetPalettes = listOf(
     ),
     ThemePalette(
         name = "Olive",
+        category = PaletteCategory.NEUTRAL,
         colors = AureoleColors(
             onSurfaceHigh = Color(0xFFF5F3E6),
             onSurfaceMedium = Color(0xFFD6D2B5),
@@ -633,6 +684,7 @@ internal val presetPalettes = listOf(
     ),
     ThemePalette(
         name = "Dusty Rose",
+        category = PaletteCategory.NEUTRAL,
         colors = AureoleColors(
             onSurfaceHigh = Color(0xFFF5E6E8),
             onSurfaceMedium = Color(0xFFD4B5B9),
@@ -645,6 +697,7 @@ internal val presetPalettes = listOf(
     ),
     ThemePalette(
         name = "Rose",
+        category = PaletteCategory.NEUTRAL,
         colors = AureoleColors(
             onSurfaceHigh = Color(0xFFF9E8F0),
             onSurfaceMedium = Color(0xFFE4C0D2),
@@ -659,6 +712,7 @@ internal val presetPalettes = listOf(
     // ============ WARM ============
     ThemePalette(
         name = "Taupe",
+        category = PaletteCategory.WARM,
         colors = AureoleColors(
             onSurfaceHigh = Color(0xFFF0EAE8),
             onSurfaceMedium = Color(0xFFD8CCC8),
@@ -671,6 +725,7 @@ internal val presetPalettes = listOf(
     ),
     ThemePalette(
         name = "Clay",
+        category = PaletteCategory.WARM,
         colors = AureoleColors(
             onSurfaceHigh = Color(0xFFF5E8E0),
             onSurfaceMedium = Color(0xFFE0C8B8),
@@ -683,6 +738,7 @@ internal val presetPalettes = listOf(
     ),
     ThemePalette(
         name = "Bronze",
+        category = PaletteCategory.WARM,
         colors = AureoleColors(
             onSurfaceHigh = Color(0xFFF0E8D8),
             onSurfaceMedium = Color(0xFFD8C8A8),
@@ -695,6 +751,7 @@ internal val presetPalettes = listOf(
     ),
     ThemePalette(
         name = "Copper",
+        category = PaletteCategory.WARM,
         colors = AureoleColors(
             onSurfaceHigh = Color(0xFFF8E8D8),
             onSurfaceMedium = Color(0xFFE8C8A8),
@@ -707,6 +764,7 @@ internal val presetPalettes = listOf(
     ),
     ThemePalette(
         name = "Driftwood",
+        category = PaletteCategory.WARM,
         colors = AureoleColors(
             onSurfaceHigh = Color(0xFFF0ECE8),
             onSurfaceMedium = Color(0xFFD8D0C8),
@@ -719,6 +777,7 @@ internal val presetPalettes = listOf(
     ),
     ThemePalette(
         name = "Moss Stone",
+        category = PaletteCategory.WARM,
         colors = AureoleColors(
             onSurfaceHigh = Color(0xFFE8E8E0),
             onSurfaceMedium = Color(0xFFC8C8B8),
@@ -731,6 +790,7 @@ internal val presetPalettes = listOf(
     ),
     ThemePalette(
         name = "Mocha",
+        category = PaletteCategory.WARM,
         colors = AureoleColors(
             onSurfaceHigh = Color(0xFFF0E8E0),
             onSurfaceMedium = Color(0xFFD8C8B8),
@@ -743,6 +803,7 @@ internal val presetPalettes = listOf(
     ),
     ThemePalette(
         name = "Latte",
+        category = PaletteCategory.WARM,
         colors = AureoleColors(
             onSurfaceHigh = Color(0xFFF5F0E8),
             onSurfaceMedium = Color(0xFFE0D0C0),
@@ -755,6 +816,7 @@ internal val presetPalettes = listOf(
     ),
     ThemePalette(
         name = "Caramel",
+        category = PaletteCategory.WARM,
         colors = AureoleColors(
             onSurfaceHigh = Color(0xFFF8E8D0),
             onSurfaceMedium = Color(0xFFE8D0B0),
@@ -767,6 +829,7 @@ internal val presetPalettes = listOf(
     ),
     ThemePalette(
         name = "Ember Tail",
+        category = PaletteCategory.WARM,
         colors = AureoleColors(
             onSurfaceHigh = Color(0xFFFFE0B2),
             onSurfaceMedium = Color(0xFFFFB74D),
@@ -779,6 +842,7 @@ internal val presetPalettes = listOf(
     ),
     ThemePalette(
         name = "Sunshine",
+        category = PaletteCategory.WARM,
         colors = AureoleColors(
             onSurfaceHigh = Color(0xFFFFF9E6),
             onSurfaceMedium = Color(0xFFF2DCA6),
@@ -791,6 +855,7 @@ internal val presetPalettes = listOf(
     ),
     ThemePalette(
         name = "Gold",
+        category = PaletteCategory.WARM,
         colors = AureoleColors(
             onSurfaceHigh = Color(0xFFFFFDE7),
             onSurfaceMedium = Color(0xFFFFF9C4),
@@ -803,6 +868,7 @@ internal val presetPalettes = listOf(
     ),
     ThemePalette(
         name = "Citrus",
+        category = PaletteCategory.WARM,
         colors = AureoleColors(
             onSurfaceHigh = Color(0xFFFFF8E1),
             onSurfaceMedium = Color(0xFFFFECB3),
@@ -815,6 +881,7 @@ internal val presetPalettes = listOf(
     ),
     ThemePalette(
         name = "Peach",
+        category = PaletteCategory.WARM,
         colors = AureoleColors(
             onSurfaceHigh = Color(0xFFFFF3E0),
             onSurfaceMedium = Color(0xFFFFE0B2),
@@ -827,6 +894,7 @@ internal val presetPalettes = listOf(
     ),
     ThemePalette(
         name = "Coral Reef",
+        category = PaletteCategory.WARM,
         colors = AureoleColors(
             onSurfaceHigh = Color(0xFFFBE9E7),
             onSurfaceMedium = Color(0xFFFFAB91),
@@ -839,6 +907,7 @@ internal val presetPalettes = listOf(
     ),
     ThemePalette(
         name = "Cherry Blossom",
+        category = PaletteCategory.WARM,
         colors = AureoleColors(
             onSurfaceHigh = Color(0xFFFFF0F5),
             onSurfaceMedium = Color(0xFFFFD1DC),
@@ -851,6 +920,7 @@ internal val presetPalettes = listOf(
     ),
     ThemePalette(
         name = "Bubblegum",
+        category = PaletteCategory.WARM,
         colors = AureoleColors(
             onSurfaceHigh = Color(0xFFFCE4EC),
             onSurfaceMedium = Color(0xFFF48FB1),
@@ -863,6 +933,7 @@ internal val presetPalettes = listOf(
     ),
     ThemePalette(
         name = "Berry",
+        category = PaletteCategory.WARM,
         colors = AureoleColors(
             onSurfaceHigh = Color(0xFFFCE4EC),
             onSurfaceMedium = Color(0xFFF8BBD0),
@@ -875,6 +946,7 @@ internal val presetPalettes = listOf(
     ),
     ThemePalette(
         name = "Round Pink",
+        category = PaletteCategory.WARM,
         colors = AureoleColors(
             onSurfaceHigh = Color(0xFFFFF0F5),
             onSurfaceMedium = Color(0xFFFFD1DC),
@@ -887,6 +959,7 @@ internal val presetPalettes = listOf(
     ),
     ThemePalette(
         name = "Crimson",
+        category = PaletteCategory.WARM,
         colors = AureoleColors(
             onSurfaceHigh = Color(0xFFFCE8EA),
             onSurfaceMedium = Color(0xFFE8BCC1),
@@ -899,6 +972,7 @@ internal val presetPalettes = listOf(
     ),
     ThemePalette(
         name = "Shadow Grin",
+        category = PaletteCategory.WARM,
         colors = AureoleColors(
             onSurfaceHigh = Color(0xFFE8D8F0),
             onSurfaceMedium = Color(0xFFC8A8D8),
@@ -911,6 +985,7 @@ internal val presetPalettes = listOf(
     ),
     ThemePalette(
         name = "Volt Amber",
+        category = PaletteCategory.WARM,
         colors = AureoleColors(
             onSurfaceHigh = Color(0xFFFEF5A3),
             onSurfaceMedium = Color(0xFFFAD61D),
@@ -923,6 +998,7 @@ internal val presetPalettes = listOf(
     ),
     ThemePalette(
         name = "Phantom Red",
+        category = PaletteCategory.WARM,
         colors = AureoleColors(
             onSurfaceHigh = Color(0xFFF2FAEF),
             onSurfaceMedium = Color(0xFFE63746),
@@ -935,6 +1011,7 @@ internal val presetPalettes = listOf(
     ),
     ThemePalette(
         name = "Wine",
+        category = PaletteCategory.WARM,
         colors = AureoleColors(
             onSurfaceHigh = Color(0xFFF8BBD0),
             onSurfaceMedium = Color(0xFFF06292),
@@ -947,6 +1024,7 @@ internal val presetPalettes = listOf(
     ),
     ThemePalette(
         name = "Blush",
+        category = PaletteCategory.WARM,
         colors = AureoleColors(
             onSurfaceHigh = Color(0xFFFCE8E8),
             onSurfaceMedium = Color(0xFFF0C0C0),
@@ -959,6 +1037,7 @@ internal val presetPalettes = listOf(
     ),
     ThemePalette(
         name = "Magenta",
+        category = PaletteCategory.WARM,
         colors = AureoleColors(
             onSurfaceHigh = Color(0xFFFCE0F0),
             onSurfaceMedium = Color(0xFFF0B0D8),
@@ -971,6 +1050,7 @@ internal val presetPalettes = listOf(
     ),
     ThemePalette(
         name = "Fuchsia",
+        category = PaletteCategory.WARM,
         colors = AureoleColors(
             onSurfaceHigh = Color(0xFFF8D8F0),
             onSurfaceMedium = Color(0xFFE8A8D8),
@@ -983,6 +1063,7 @@ internal val presetPalettes = listOf(
     ),
     ThemePalette(
         name = "Rose Gold",
+        category = PaletteCategory.WARM,
         colors = AureoleColors(
             onSurfaceHigh = Color(0xFFF8E8E0),
             onSurfaceMedium = Color(0xFFE8C8B8),
@@ -995,6 +1076,7 @@ internal val presetPalettes = listOf(
     ),
     ThemePalette(
         name = "Sunset",
+        category = PaletteCategory.WARM,
         colors = AureoleColors(
             onSurfaceHigh = Color(0xFFFFE8D0),
             onSurfaceMedium = Color(0xFFFFC8A0),
@@ -1007,6 +1089,7 @@ internal val presetPalettes = listOf(
     ),
     ThemePalette(
         name = "Amber",
+        category = PaletteCategory.WARM,
         colors = AureoleColors(
             onSurfaceHigh = Color(0xFFFFF0D0),
             onSurfaceMedium = Color(0xFFFFD8A0),
@@ -1019,6 +1102,7 @@ internal val presetPalettes = listOf(
     ),
     ThemePalette(
         name = "Honey",
+        category = PaletteCategory.WARM,
         colors = AureoleColors(
             onSurfaceHigh = Color(0xFFFFF8E0),
             onSurfaceMedium = Color(0xFFFFE8B0),
@@ -1031,6 +1115,7 @@ internal val presetPalettes = listOf(
     ),
     ThemePalette(
         name = "Marigold",
+        category = PaletteCategory.WARM,
         colors = AureoleColors(
             onSurfaceHigh = Color(0xFFFFF8D0),
             onSurfaceMedium = Color(0xFFFFE8A0),
@@ -1043,6 +1128,7 @@ internal val presetPalettes = listOf(
     ),
     ThemePalette(
         name = "Tangerine",
+        category = PaletteCategory.WARM,
         colors = AureoleColors(
             onSurfaceHigh = Color(0xFFFFE8D0),
             onSurfaceMedium = Color(0xFFFFC8A0),
@@ -1055,6 +1141,7 @@ internal val presetPalettes = listOf(
     ),
     ThemePalette(
         name = "Papaya",
+        category = PaletteCategory.WARM,
         colors = AureoleColors(
             onSurfaceHigh = Color(0xFFFFE0C0),
             onSurfaceMedium = Color(0xFFFFC090),
@@ -1067,6 +1154,7 @@ internal val presetPalettes = listOf(
     ),
     ThemePalette(
         name = "Flamingo",
+        category = PaletteCategory.WARM,
         colors = AureoleColors(
             onSurfaceHigh = Color(0xFFFFD8D8),
             onSurfaceMedium = Color(0xFFFFB0B0),
@@ -1079,6 +1167,7 @@ internal val presetPalettes = listOf(
     ),
     ThemePalette(
         name = "Salmon",
+        category = PaletteCategory.WARM,
         colors = AureoleColors(
             onSurfaceHigh = Color(0xFFFFE0D0),
             onSurfaceMedium = Color(0xFFFFC0A8),
@@ -1091,6 +1180,7 @@ internal val presetPalettes = listOf(
     ),
     ThemePalette(
         name = "Melon",
+        category = PaletteCategory.WARM,
         colors = AureoleColors(
             onSurfaceHigh = Color(0xFFFFE8D8),
             onSurfaceMedium = Color(0xFFFFD0B0),
@@ -1103,6 +1193,7 @@ internal val presetPalettes = listOf(
     ),
     ThemePalette(
         name = "Watermelon",
+        category = PaletteCategory.WARM,
         colors = AureoleColors(
             onSurfaceHigh = Color(0xFFFFD8E0),
             onSurfaceMedium = Color(0xFFFFB0C0),
@@ -1115,6 +1206,7 @@ internal val presetPalettes = listOf(
     ),
     ThemePalette(
         name = "Strawberry",
+        category = PaletteCategory.WARM,
         colors = AureoleColors(
             onSurfaceHigh = Color(0xFFFFD8D8),
             onSurfaceMedium = Color(0xFFFFA8A8),
@@ -1127,6 +1219,7 @@ internal val presetPalettes = listOf(
     ),
     ThemePalette(
         name = "Raspberry",
+        category = PaletteCategory.WARM,
         colors = AureoleColors(
             onSurfaceHigh = Color(0xFFF8D0D8),
             onSurfaceMedium = Color(0xFFE8A0B0),
@@ -1139,6 +1232,7 @@ internal val presetPalettes = listOf(
     ),
     ThemePalette(
         name = "Cherry",
+        category = PaletteCategory.WARM,
         colors = AureoleColors(
             onSurfaceHigh = Color(0xFFF8D0D0),
             onSurfaceMedium = Color(0xFFE8A0A0),
@@ -1151,6 +1245,7 @@ internal val presetPalettes = listOf(
     ),
     ThemePalette(
         name = "Poppy",
+        category = PaletteCategory.WARM,
         colors = AureoleColors(
             onSurfaceHigh = Color(0xFFFFD8D0),
             onSurfaceMedium = Color(0xFFFFB0A0),
@@ -1163,6 +1258,7 @@ internal val presetPalettes = listOf(
     ),
     ThemePalette(
         name = "Brick",
+        category = PaletteCategory.WARM,
         colors = AureoleColors(
             onSurfaceHigh = Color(0xFFE8D0C0),
             onSurfaceMedium = Color(0xFFD0A890),
@@ -1175,6 +1271,7 @@ internal val presetPalettes = listOf(
     ),
     ThemePalette(
         name = "Rust",
+        category = PaletteCategory.WARM,
         colors = AureoleColors(
             onSurfaceHigh = Color(0xFFE8D0B8),
             onSurfaceMedium = Color(0xFFD0A888),
@@ -1187,6 +1284,7 @@ internal val presetPalettes = listOf(
     ),
     ThemePalette(
         name = "Terracotta",
+        category = PaletteCategory.WARM,
         colors = AureoleColors(
             onSurfaceHigh = Color(0xFFF0D8C8),
             onSurfaceMedium = Color(0xFFD8B098),
@@ -1199,6 +1297,7 @@ internal val presetPalettes = listOf(
     ),
     ThemePalette(
         name = "Sienna",
+        category = PaletteCategory.WARM,
         colors = AureoleColors(
             onSurfaceHigh = Color(0xFFE8D0B8),
             onSurfaceMedium = Color(0xFFD0A880),
@@ -1211,6 +1310,7 @@ internal val presetPalettes = listOf(
     ),
     ThemePalette(
         name = "Mahogany",
+        category = PaletteCategory.WARM,
         colors = AureoleColors(
             onSurfaceHigh = Color(0xFFE0C8B8),
             onSurfaceMedium = Color(0xFFC8A088),

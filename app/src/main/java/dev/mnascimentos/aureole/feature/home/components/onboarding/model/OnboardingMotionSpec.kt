@@ -29,16 +29,23 @@ object OnboardingMotionSpec {
     const val HAND_SWIPE_LOOP_MS = 1800
     const val HAND_APPEAR_MS = 150
     const val HAND_SWIPE_TRAVEL = 0.3f
-    const val HAND_EDGE_LOOP_MS = 1900
+    const val HAND_EDGE_LOOP_MS = 2300
+
+    // Edge scrub phases: pull in from the edge, short pause, then slide down.
+    const val HAND_EDGE_PULL_END = 0.30f
+    const val HAND_EDGE_SLIDE_START = 0.38f
+    const val HAND_EDGE_SLIDE_END = 0.83f
     const val HAND_PRESS_LOOP_MS = 1800
     const val HAND_PRESS_FILL_MS = 600
     const val SHOW_ME_DELAY_MS = 8_000L
     val HAND_FINGER_RADIUS = 18.dp
-    val HAND_EDGE_INSET = 6.dp
+    val HAND_EDGE_PULL_TRAVEL = 56.dp
     val HAND_PRESS_RING_GAP = 10.dp
     val HAND_TRAIL_WIDTH = 4.dp
 
     // Checklist (Figma "Animation" frame)
+    // Minimizing: rows, title and footer fade out this fast, before the card shrinks into the pill.
+    const val CHECKLIST_LIST_FADE_MS = 120
     const val CHECKLIST_DAMPING = 0.65f
     const val CHECKLIST_STIFFNESS = 180f
     const val CHECKLIST_STAGGER_MS = 60

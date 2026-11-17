@@ -8,10 +8,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.v2.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
+import androidx.compose.ui.test.onRoot
 import dev.mnascimentos.aureole.core.designsystem.model.AureoleEditOverlayConfig
 import dev.mnascimentos.aureole.core.designsystem.model.AureoleEditOverlayParams
 import dev.mnascimentos.aureole.core.designsystem.model.rememberAureoleEditOverlayState
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -139,5 +142,59 @@ class AureoleEditOverlayTest {
         composeTestRule.onNodeWithText("Unbounded Title").assertExists()
         composeTestRule.onNodeWithText("Unbounded Preview").assertExists()
         composeTestRule.onNodeWithText("Unbounded Sheet").assertExists()
+    }
+
+    @Test
+    fun `when the overlay opens animated, the sheet should rise from below the screen to rest`() {
+        composeTestRule.mainClock.autoAdvance = false
+        composeTestRule.setContent {
+            AureoleLauncherTheme {
+                AureoleEditOverlay(
+                    onDismissRequest = {},
+                    params = AureoleEditOverlayParams(
+                        config = AureoleEditOverlayConfig(title = "Rising Title", animated = true),
+                        sheetContent = { Text("Rising Sheet") }
+                    )
+                )
+            }
+        }
+        composeTestRule.mainClock.advanceTimeByFrame()
+        val screenBottom = composeTestRule.onRoot().fetchSemanticsNode().boundsInRoot.bottom
+        val firstTop = sheetTitleTop()
+
+        composeTestRule.mainClock.advanceTimeBy(OPEN_SETTLE_MS)
+        val restTop = sheetTitleTop()
+
+        assertTrue("first frame below the screen: $firstTop >= $screenBottom", firstTop >= screenBottom)
+        assertTrue("last frame at rest: $restTop < $screenBottom", restTop < screenBottom)
+        composeTestRule.mainClock.advanceTimeBy(OPEN_SETTLE_MS)
+        assertEquals(restTop, sheetTitleTop(), 0.5f)
+    }
+
+    @Test
+    fun `when the overlay opens with animations off, the sheet should already be at rest`() {
+        composeTestRule.mainClock.autoAdvance = false
+        composeTestRule.setContent {
+            AureoleLauncherTheme {
+                AureoleEditOverlay(
+                    onDismissRequest = {},
+                    params = AureoleEditOverlayParams(
+                        config = AureoleEditOverlayConfig(title = "Rising Title", animated = false),
+                        sheetContent = { Text("Rising Sheet") }
+                    )
+                )
+            }
+        }
+        composeTestRule.mainClock.advanceTimeByFrame()
+
+        val screenBottom = composeTestRule.onRoot().fetchSemanticsNode().boundsInRoot.bottom
+        assertTrue(sheetTitleTop() < screenBottom)
+    }
+
+    private fun sheetTitleTop(): Float =
+        composeTestRule.onNodeWithText("Rising Title").fetchSemanticsNode().boundsInRoot.top
+
+    private companion object {
+        const val OPEN_SETTLE_MS = 2_000L
     }
 }

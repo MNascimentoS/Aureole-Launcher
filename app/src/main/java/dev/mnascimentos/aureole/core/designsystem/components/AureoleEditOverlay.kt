@@ -2,10 +2,9 @@ package dev.mnascimentos.aureole.core.designsystem.components
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.core.MutableTransitionState
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -31,14 +30,14 @@ import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.core.designsystem.utils.LocalAnimatedVisibilityScope
 
-private const val ANIMATION_DURATION_MS = 300
-
 /**
  * Fullscreen modal overlay sheet for edit mode features (such as container/clock/widget group editing).
  *
- * Supports background blur via Haze, a sheet that rests hugging its content (up to 60% of the screen) and
- * expands to 90%, swipe-down dismiss, an invisible gesture zone at the top (double tap to resize, hold for
- * settings), a preview anchored above the sheet, bottom bar actions and custom sheet layout.
+ * Supports background blur via Haze, a sheet that slides up from below the screen, rests hugging its content (up
+ * to 60% of the screen) and expands up to its content (at most 90%) or, when the content already fits, stretches
+ * with resistance and springs back, swipe-down dismiss, an invisible gesture zone at the top (double tap to resize,
+ * hold for settings), a preview anchored above the sheet, bottom bar actions and custom sheet layout. In landscape,
+ * an overlay with a preview puts it on the left and the sheet on the right (`overlayLayoutFor`).
  *
  * @param modifier The [Modifier] applied to the root overlay layout.
  * @param state The [AureoleEditOverlayState] holding the internal visibility and whether the sheet is expanded.
@@ -74,10 +73,12 @@ fun AureoleEditOverlay(
         BackHandler(enabled = config.isVisible && state.internalVisible) { backAction() }
     }
 
+    // The pieces animate on their own: the backdrop and the preview fade, the sheet slides up from below the
+    // screen and back down from wherever it is (mid-drag included). See OverlayContentBox.
     AnimatedVisibility(
         visibleState = overlayState.visibleState,
-        enter = fadeIn(animationSpec = tween(ANIMATION_DURATION_MS)),
-        exit = fadeOut(animationSpec = tween(ANIMATION_DURATION_MS)),
+        enter = EnterTransition.None,
+        exit = ExitTransition.None,
         modifier = modifier.fillMaxSize()
     ) {
         CompositionLocalProvider(LocalAnimatedVisibilityScope provides this) {

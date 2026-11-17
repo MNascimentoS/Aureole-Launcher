@@ -3,6 +3,7 @@ package dev.mnascimentos.aureole.feature.settings.model
 import androidx.annotation.StringRes
 import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.core.designsystem.model.GlassLevel
+import dev.mnascimentos.aureole.core.designsystem.model.OverlayHostSpec
 import kotlin.math.abs
 
 private const val OPACITY_TOLERANCE = 0.01f
@@ -34,7 +35,7 @@ enum class BlurOpacity(val value: Float, @StringRes val labelRes: Int) {
 }
 
 /**
- * What the user is trying in the "Cards and glass" sheet before tapping Apply.
+ * What the user is trying in the "Cards and glass" sheet; every tap already applies it.
  *
  * @property radiusDp Corner radius of the cards, as stored (it may lie between two chips).
  * @property glass Glass level; [GlassLevel.NONE] means the blur is off.
@@ -51,14 +52,18 @@ data class CardsGlassDraft(
  *
  * @property initial Values applied when the sheet opened; kept as the "before" of the undo.
  * @property onChange Called with the draft on every tap: the change applies on the spot.
- * @property onDismissRequest Called when the sheet closes, whichever way it closed, with the values it opened with.
- * @property isLeftHanded Puts Done under the left thumb.
+ * @property onCommit Called once when the sheet closes after a change, with the values it opened with.
+ * @property onDismissRequest Called when the sheet has closed, whichever way it closed.
+ * @property isLeftHanded Puts the controls under the left thumb.
+ * @property host What the settings host decides for its sheets.
  */
 data class CardsGlassParams(
     val initial: CardsGlassDraft,
     val onChange: (CardsGlassDraft) -> Unit,
-    val onDismissRequest: (CardsGlassDraft) -> Unit,
-    val isLeftHanded: Boolean = false
+    val onCommit: (CardsGlassDraft) -> Unit,
+    val onDismissRequest: () -> Unit,
+    val isLeftHanded: Boolean = false,
+    val host: OverlayHostSpec = OverlayHostSpec()
 )
 
 /** Draft that reflects what is applied now: the blur is [GlassLevel.NONE] when it is off. */

@@ -1,74 +1,32 @@
 package dev.mnascimentos.aureole.feature.settings.screens
 
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.minimumInteractiveComponentSize
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.semantics.Role
-import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.text.font.FontWeight
 import dev.mnascimentos.aureole.R
-import dev.mnascimentos.aureole.composable.sheets.PickFontBottomSheet
-import dev.mnascimentos.aureole.composable.sheets.PickPaletteBottomSheet
-import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
-import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
+import dev.mnascimentos.aureole.composable.menu.AureoleMenuRow
+import dev.mnascimentos.aureole.composable.menu.model.MenuRowParams
 import dev.mnascimentos.aureole.core.designsystem.icons.Corners
 import dev.mnascimentos.aureole.core.designsystem.icons.Glass
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
-import dev.mnascimentos.aureole.feature.settings.components.CardsGlassBottomSheet
-import dev.mnascimentos.aureole.feature.settings.components.SetBackgroundBottomSheet
-import dev.mnascimentos.aureole.feature.settings.model.AppearanceDialogFlags
-import dev.mnascimentos.aureole.feature.settings.model.CardsGlassParams
-import dev.mnascimentos.aureole.feature.settings.model.SetBackgroundParams
-import dev.mnascimentos.aureole.feature.settings.model.SettingsScreenActions
 import dev.mnascimentos.aureole.feature.settings.model.SettingsUiState
-import dev.mnascimentos.aureole.feature.settings.model.shownGlassLevel
-import dev.mnascimentos.aureole.feature.settings.model.toCardsGlassDraft
+import dev.mnascimentos.aureole.feature.settings.model.glassSummary
 
 @Composable
 internal fun GlassAndBlurRow(
     uiState: SettingsUiState,
     onClick: () -> Unit
 ) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .minimumInteractiveComponentSize()
-            .clip(RoundedCornerShape(AureoleDS.dimens.radiusMedium))
-            .clickable(
-                onClick = onClick,
-                role = Role.Button
-            )
-            .semantics(mergeDescendants = true) {}
-            .padding(vertical = AureoleDS.dimens.xSmall, horizontal = AureoleDS.dimens.small),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        AureoleDS.icons.Glass(
-            tint = AureoleDS.colors.onSurfaceMedium,
-            modifier = Modifier.padding(end = AureoleDS.dimens.iconMedium).size(AureoleDS.dimens.iconMedium)
+    AureoleMenuRow(
+        MenuRowParams(
+            title = stringResource(R.string.settings_appearance_glass_effect),
+            subtitle = stringResource(glassSummary(uiState)),
+            icon = { m, c -> AureoleDS.icons.Glass(modifier = m, tint = c) },
+            showChevron = true,
+            onClick = onClick
         )
-        AureoleText(
-            text = stringResource(R.string.settings_appearance_glass_effect),
-            color = AureoleDS.colors.onSurfaceMedium,
-            modifier = Modifier.weight(1f),
-            format = AureoleTextFormatParams(style = AureoleDS.typography.bodyLarge, fontWeight = FontWeight.Normal)
-        )
-        AureoleText(
-            text = stringResource(uiState.shownGlassLevel().labelRes),
-            color = AureoleDS.colors.onSurfaceLow,
-            format = AureoleTextFormatParams(style = AureoleDS.typography.bodyLarge)
-        )
-    }
+    )
 }
 
 @Composable
@@ -76,92 +34,15 @@ internal fun ChangeBorderRow(
     cornerRadiusDp: Int,
     onClick: () -> Unit
 ) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .minimumInteractiveComponentSize()
-            .clip(RoundedCornerShape(AureoleDS.dimens.radiusMedium))
-            .clickable(
-                onClick = onClick,
-                role = Role.Button
-            )
-            .semantics(mergeDescendants = true) {}
-            .padding(vertical = AureoleDS.dimens.xSmall, horizontal = AureoleDS.dimens.small),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        AureoleDS.icons.Corners(
-            tint = AureoleDS.colors.onSurfaceMedium,
-            modifier = Modifier.padding(end = AureoleDS.dimens.iconMedium).size(AureoleDS.dimens.iconMedium)
+    AureoleMenuRow(
+        MenuRowParams(
+            title = stringResource(R.string.settings_appearance_change_border),
+            subtitle = stringResource(R.string.settings_appearance_border_radius_format, cornerRadiusDp),
+            icon = { m, c -> AureoleDS.icons.Corners(modifier = m, tint = c) },
+            showChevron = true,
+            onClick = onClick
         )
-        AureoleText(
-            text = stringResource(R.string.settings_appearance_change_border),
-            color = AureoleDS.colors.onSurfaceMedium,
-            modifier = Modifier.weight(1f),
-            format = AureoleTextFormatParams(style = AureoleDS.typography.bodyLarge, fontWeight = FontWeight.Normal)
-        )
-        AureoleText(
-            text = stringResource(R.string.settings_appearance_border_radius_format, cornerRadiusDp),
-            color = AureoleDS.colors.onSurfaceLow,
-            format = AureoleTextFormatParams(style = AureoleDS.typography.bodyLarge)
-        )
-    }
-}
-
-@Composable
-internal fun AppearanceDialogs(
-    flags: AppearanceDialogFlags,
-    uiState: SettingsUiState,
-    actions: SettingsScreenActions,
-    onDismissDialog: () -> Unit
-) {
-    if (flags.showPalette) {
-        PickPaletteBottomSheet(
-            selectedPaletteName = uiState.selectedThemeName,
-            onPaletteSelected = { palette ->
-                onDismissDialog()
-                actions.onSelectTheme(palette.name)
-            },
-            onDismissRequest = onDismissDialog
-        )
-    }
-
-    if (flags.showFont) {
-        PickFontBottomSheet(
-            selectedFontName = uiState.selectedFontName,
-            onFontSelected = { fontName ->
-                onDismissDialog()
-                actions.onSelectFont(fontName)
-            },
-            onDismissRequest = onDismissDialog
-        )
-    }
-
-    if (flags.showSetBg) {
-        SetBackgroundBottomSheet(
-            params = SetBackgroundParams(
-                currentColor = uiState.manualSeedColor,
-                isCustomImageSet = uiState.isCustomWallpaperSet,
-                onSolidColorSelected = actions.onSelectManualSeedColor,
-                onCustomImageClick = actions.onChangeWallpaperClick,
-                onDismissRequest = onDismissDialog,
-                isLeftHanded = uiState.isLeftHandedMode
-            )
-        )
-    }
-
-    if (flags.showCardsGlass) {
-        CardsGlassBottomSheet(
-            params = CardsGlassParams(
-                initial = uiState.toCardsGlassDraft(),
-                onChange = actions.onApplyCardsGlass,
-                onDismissRequest = { before ->
-                    actions.onCardsGlassClosed(before)
-                    onDismissDialog()
-                },
-                isLeftHanded = uiState.isLeftHandedMode
-            )
-        )
-    }
+    )
 }
 
 @AureolePreview

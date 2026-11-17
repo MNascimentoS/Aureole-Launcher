@@ -60,7 +60,9 @@ fun AureoleMenuSheet(
                 isVisible = isVisible,
                 isLeftHanded = LocalLeftHanded.current,
                 onSettingsClick = params.onSettingsClick,
-                titleIcon = params.titleIcon
+                titleIcon = params.titleIcon,
+                host = params.host,
+                showHeaderAction = params.showHeaderAction
             ),
             bottomBarContent = bottomBar?.let { bar -> { bar() } },
             sheetContent = {

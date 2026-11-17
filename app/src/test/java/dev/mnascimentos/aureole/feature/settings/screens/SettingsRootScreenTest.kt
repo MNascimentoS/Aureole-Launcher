@@ -1,5 +1,7 @@
 package dev.mnascimentos.aureole.feature.settings.screens
 
+import androidx.compose.ui.test.assertHasClickAction
+import androidx.compose.ui.test.getUnclippedBoundsInRoot
 import androidx.compose.ui.test.junit4.v2.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
@@ -11,6 +13,7 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
+import org.robolectric.annotation.Config
 
 @RunWith(RobolectricTestRunner::class)
 class SettingsRootScreenTest {
@@ -66,6 +69,29 @@ class SettingsRootScreenTest {
     }
 
     @Test
+    fun `should show the three area cards with the new subtitles and no value tags`() {
+        composeTestRule.setContent {
+            AureoleLauncherTheme {
+                SettingsRootScreen(
+                    uiState = SettingsUiState(),
+                    onNavigateToBehavior = {},
+                    onNavigateToAppearance = {},
+                    onNavigateToAdvanced = {}
+                )
+            }
+        }
+
+        composeTestRule.onNodeWithText("Colors, background, font, and glass").assertExists()
+        composeTestRule.onNodeWithText("Gestures, list, and home screen").assertExists()
+        composeTestRule.onNodeWithText("System, about, and credits").assertExists()
+        composeTestRule.onNodeWithText("Frostbite").assertDoesNotExist()
+        composeTestRule.onNodeWithText("Istok Web").assertDoesNotExist()
+        listOf("Appearance", "Behavior", "Advanced").forEach {
+            composeTestRule.onNodeWithText(it).assertHasClickAction()
+        }
+    }
+
+    @Test
     fun `when clicking header, should open release notes overlay`() {
         composeTestRule.setContent {
             AureoleLauncherTheme {
@@ -80,5 +106,29 @@ class SettingsRootScreenTest {
 
         composeTestRule.onNodeWithText("Aureole").performScrollTo().performClick()
         composeTestRule.onNodeWithText("Got it").assertExists()
+    }
+
+    @Test
+    fun `in portrait, thank you line should sit below the options`() = assertThankYouBelowOptions()
+
+    @Test
+    @Config(qualifiers = "w891dp-h411dp")
+    fun `in landscape, thank you line should sit below the options`() = assertThankYouBelowOptions()
+
+    private fun assertThankYouBelowOptions() {
+        composeTestRule.setContent {
+            AureoleLauncherTheme {
+                SettingsRootScreen(
+                    uiState = SettingsUiState(),
+                    onNavigateToBehavior = {},
+                    onNavigateToAppearance = {},
+                    onNavigateToAdvanced = {}
+                )
+            }
+        }
+
+        val advancedBottom = composeTestRule.onNodeWithText("Advanced").getUnclippedBoundsInRoot().bottom
+        val thankYouTop = composeTestRule.onNodeWithText("Thank you!").getUnclippedBoundsInRoot().top
+        assertTrue(thankYouTop >= advancedBottom)
     }
 }

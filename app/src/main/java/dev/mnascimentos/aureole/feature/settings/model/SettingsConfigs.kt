@@ -1,6 +1,7 @@
 package dev.mnascimentos.aureole.feature.settings.model
 
 import androidx.compose.ui.graphics.vector.ImageVector
+import dev.mnascimentos.aureole.core.data.model.WallpaperAdjustments
 
 data class PreferenceItemConfig(
     val title: String,
@@ -10,12 +11,11 @@ data class PreferenceItemConfig(
 )
 
 /**
- * Dialog actions for [SettingsAdvancedScreen].
+ * Navigation and sheet actions of the Advanced sections.
  */
 data class SettingsAdvancedDialogActions(
     val onNavigateToContributors: () -> Unit,
     val onNavigateToLicenses: () -> Unit,
-    val onOpenUninstallDialog: () -> Unit,
     val onOpenReleaseNotesDialog: () -> Unit
 )
 
@@ -38,11 +38,9 @@ data class SettingsScreenActions(
     val onContainerPositionSelected: (String) -> Unit = {},
     val onToggleLeftHandedMode: () -> Unit = {},
     val onToggleDynamicWallpaper: () -> Unit = {},
-    val onOpenColorPickerDialog: () -> Unit = {},
-    val onSelectManualSeedColor: (Int) -> Unit = {},
+    val onSelectBackgroundColor: (Int) -> Unit = {},
     val onSelectTheme: (String) -> Unit = {},
     val onSelectFont: (String) -> Unit = {},
-    val onDismissColorPickerDialog: () -> Unit = {},
     val onChangeWallpaperClick: () -> Unit = {},
     val onRestoreDefaultWallpaperClick: () -> Unit = {},
     val onUndo: () -> Unit = {},
@@ -60,10 +58,7 @@ data class SettingsScreenActions(
     val onOpenResetGridDialog: () -> Unit = {},
     val onConfirmResetGrid: () -> Unit = {},
     val onDismissResetGridDialog: () -> Unit = {},
-    val onOpenFactoryResetDialog: () -> Unit = {},
-    val onNavigateToLicenses: () -> Unit = {},
     val onConfirmFactoryReset: () -> Unit = {},
-    val onDismissFactoryResetDialog: () -> Unit = {},
     val onToggleShowSettingsButtonInAllApps: () -> Unit = {},
     val onOpenSettingsButtonPositionDialog: () -> Unit = {},
     val onDismissSettingsButtonPositionDialog: () -> Unit = {},
@@ -75,4 +70,8 @@ data class SettingsScreenActions(
     val onSelectWallpaperScaleType: (String) -> Unit = {},
     val onApplyCardsGlass: (CardsGlassDraft) -> Unit = {},
     val onCardsGlassClosed: (CardsGlassDraft) -> Unit = {},
+    val onWallpaperEditorOpened: () -> Unit = {},
+    val onLockScreenTurnOn: () -> Unit = {},
+    val onLockScreenTurnOff: (restoreSystem: Boolean) -> Unit = {},
+    val onWallpaperEditorClosed: (before: WallpaperAdjustments, after: WallpaperAdjustments) -> Unit = { _, _ -> },
 )

@@ -37,14 +37,24 @@ internal suspend fun HomeViewModel.createNewFolder(name: String, icon: String? =
     refreshFoldersAndOpen(newFolder.id)
 }
 
+/** Saves the apps of the folder and offers an "Undo" that puts the previous apps back. */
 internal suspend fun HomeViewModel.saveFolderApps(intent: FolderViewIntent.SaveFolderApps) {
+    val before = uiState.value.folders.find { it.id == intent.folderId }
     folderRepository.updateFolderApps(intent.folderId, intent.selectedPackageNames)
     refreshFoldersAndOpen(intent.folderId)
     updateUiState { it.copy(isAddAppToFolderDialogVisible = false) }
+    if (before != null && before.appPackageNames != intent.selectedPackageNames) {
+        offerFolderUndo { folderRepository.updateFolderApps(before.id, before.appPackageNames) }
+    }
 }
 
+/** Saves the name and icon of the folder and offers an "Undo" that puts the previous ones back. */
 internal suspend fun HomeViewModel.renameFolder(intent: FolderViewIntent.RenameFolder) {
+    val before = uiState.value.folders.find { it.id == intent.folderId }
     folderRepository.updateFolderDetails(intent.folderId, intent.newName, intent.icon)
     refreshFoldersAndOpen(intent.folderId)
     updateUiState { it.copy(isRenameFolderDialogVisible = false) }
+    if (before != null && (before.name != intent.newName || before.icon != intent.icon)) {
+        offerFolderUndo { folderRepository.updateFolderDetails(before.id, before.name, before.icon) }
+    }
 }

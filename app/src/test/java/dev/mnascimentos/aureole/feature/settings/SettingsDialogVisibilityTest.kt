@@ -28,10 +28,8 @@ class SettingsDialogVisibilityTest {
     private fun SettingsUiState.isShowing(dialog: SettingsDialog): Boolean = when (dialog) {
         SettingsDialog.FAVORITE_PICKER -> showFavoritePickerDialog
         SettingsDialog.CONTAINER_POSITION -> showContainerPositionDialog
-        SettingsDialog.COLOR_PICKER -> showColorPickerDialog
         SettingsDialog.CREATE_FOLDER -> showCreateFolderDialog
         SettingsDialog.RESET_GRID -> showResetGridDialog
-        SettingsDialog.FACTORY_RESET -> showFactoryResetDialog
         SettingsDialog.SETTINGS_BUTTON_POSITION -> showSettingsButtonPositionDialog
         SettingsDialog.SEARCH_ICON_POSITION -> showSearchIconPositionDialog
     }

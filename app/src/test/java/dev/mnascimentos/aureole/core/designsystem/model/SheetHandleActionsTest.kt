@@ -36,4 +36,20 @@ class SheetHandleActionsTest {
             sheetHandleActions(isExpanded = true, hasSettings = false, isLeftHanded = true)
         )
     }
+
+    @Test
+    fun `when the sheet cannot expand, should not offer expand`() {
+        assertEquals(
+            listOf(SheetHandleAction.Settings),
+            sheetHandleActions(isExpanded = false, hasSettings = true, isLeftHanded = false, canExpand = false)
+        )
+    }
+
+    @Test
+    fun `when the sheet cannot expand and has no settings, should offer nothing`() {
+        assertEquals(
+            emptyList<SheetHandleAction>(),
+            sheetHandleActions(isExpanded = false, hasSettings = false, isLeftHanded = true, canExpand = false)
+        )
+    }
 }

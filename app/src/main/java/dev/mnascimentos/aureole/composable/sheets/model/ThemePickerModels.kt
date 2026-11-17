@@ -8,10 +8,12 @@ import androidx.compose.runtime.Composable
  * @property footer Content below the grid, such as the onboarding hint.
  * @property onSettingsClick Opens the Aureole settings from the header logo; null hides the logo (used inside
  * the settings themselves, where it would be circular).
+ * @property hasExternalBackdrop True when the screen around draws the backdrop itself.
  */
 data class ThemePickerSheetOptions(
     val footer: (@Composable () -> Unit)? = null,
-    val onSettingsClick: (() -> Unit)? = null
+    val onSettingsClick: (() -> Unit)? = null,
+    val hasExternalBackdrop: Boolean = false
 )
 
 /**

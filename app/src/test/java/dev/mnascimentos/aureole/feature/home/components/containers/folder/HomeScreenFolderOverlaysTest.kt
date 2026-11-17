@@ -6,7 +6,6 @@ import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.v2.createComposeRule
 import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onNodeWithText
-import androidx.compose.ui.test.performClick
 import androidx.core.graphics.drawable.toDrawable
 import dev.chrisbanes.haze.HazeState
 import dev.mnascimentos.aureole.composable.LocalHomeUiState
@@ -26,14 +25,13 @@ import dev.mnascimentos.aureole.feature.home.model.FolderAppBottomSheetState
 import dev.mnascimentos.aureole.feature.home.model.LocalHomeActions
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
 import dev.mnascimentos.aureole.feature.home.model.createDefaultHomeScreenActions
+import dev.mnascimentos.aureole.testing.closeOverlayWithBack
 import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
-
-private const val DISMISS_ANIMATION_MS = 500L
 
 private const val SHEET_ENTER_MS = 1000L
 
@@ -78,8 +76,7 @@ class HomeScreenFolderOverlaysTest {
         }
 
         composeTestRule.onAllNodesWithText("New Folder")[0].assertIsDisplayed()
-        composeTestRule.onNodeWithText("Cancel").performClick()
-        composeTestRule.mainClock.advanceTimeBy(DISMISS_ANIMATION_MS)
+        composeTestRule.closeOverlayWithBack()
         assertTrue(createClosed)
     }
 
@@ -123,8 +120,7 @@ class HomeScreenFolderOverlaysTest {
         composeTestRule.mainClock.advanceTimeBy(SHEET_ENTER_MS)
 
         composeTestRule.onNodeWithText("Apps in Folder: Media").assertIsDisplayed()
-        composeTestRule.onNodeWithText("Cancel").performClick()
-        composeTestRule.mainClock.advanceTimeBy(DISMISS_ANIMATION_MS)
+        composeTestRule.closeOverlayWithBack()
         assertTrue(addAppClosed)
     }
 
@@ -150,8 +146,7 @@ class HomeScreenFolderOverlaysTest {
         }
 
         composeTestRule.onNodeWithText("Edit Folder").assertIsDisplayed()
-        composeTestRule.onNodeWithText("Cancel").performClick()
-        composeTestRule.mainClock.advanceTimeBy(DISMISS_ANIMATION_MS)
+        composeTestRule.closeOverlayWithBack()
         assertTrue(renameClosed)
     }
 

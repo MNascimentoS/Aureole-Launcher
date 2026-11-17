@@ -3,6 +3,7 @@ package dev.mnascimentos.aureole.feature.home.components.quickbutton.extensions
 import dev.mnascimentos.aureole.core.data.model.QuickButtonModel
 import dev.mnascimentos.aureole.core.data.model.QuickButtonShortcuts
 import dev.mnascimentos.aureole.core.data.model.ShortcutAction
+import dev.mnascimentos.aureole.feature.home.HomeViewModel
 
 fun resolveEditingShortcut(type: String?, model: QuickButtonModel): ShortcutAction {
     return when (type) {
@@ -32,4 +33,24 @@ fun QuickButtonShortcuts.withShortcut(type: String?, action: ShortcutAction): Qu
     "swipeLeft" -> copy(swipeLeft = action)
     "swipeRight" -> copy(swipeRight = action)
     else -> this
+}
+
+fun HomeViewModel.onOpenShortcutSelection(type: String) {
+    updateUiState { state ->
+        state.copy(
+            showQuickButtonSettingsBottomSheet = false,
+            showShortcutSelectionBottomSheet = true,
+            editingShortcutType = type
+        )
+    }
+}
+
+fun HomeViewModel.onCloseShortcutSelection() {
+    updateUiState { state ->
+        state.copy(
+            showShortcutSelectionBottomSheet = false,
+            editingShortcutType = null,
+            showQuickButtonSettingsBottomSheet = true
+        )
+    }
 }

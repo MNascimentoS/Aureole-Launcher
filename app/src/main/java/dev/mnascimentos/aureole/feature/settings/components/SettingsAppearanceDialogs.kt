@@ -1,6 +1,7 @@
 package dev.mnascimentos.aureole.feature.settings.components
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.rememberScrollState
@@ -16,80 +17,125 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDirection
 import androidx.compose.ui.unit.LayoutDirection
 import dev.mnascimentos.aureole.R
-import dev.mnascimentos.aureole.composable.color.AureoleColorSwatches
 import dev.mnascimentos.aureole.composable.color.model.DefaultPickerColor
-import dev.mnascimentos.aureole.composable.color.model.RecommendedColors
 import dev.mnascimentos.aureole.composable.minihome.AureoleMiniHome
 import dev.mnascimentos.aureole.composable.minihome.sampleMiniHomeContent
 import dev.mnascimentos.aureole.composable.mirror.LeftHandMirror
-import dev.mnascimentos.aureole.composable.sheets.AureoleConfirmOverlay
-import dev.mnascimentos.aureole.composable.sheets.model.ConfirmOverlayParams
+import dev.mnascimentos.aureole.composable.sheets.AureoleAutoSaveOverlay
+import dev.mnascimentos.aureole.composable.sheets.model.AutoSaveOverlayParams
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
+import dev.mnascimentos.aureole.core.designsystem.model.LocalLeftHanded
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
-import dev.mnascimentos.aureole.feature.settings.model.BackgroundApplyAction
 import dev.mnascimentos.aureole.feature.settings.model.BackgroundDraft
+import dev.mnascimentos.aureole.feature.settings.model.BackgroundPhotoCard
 import dev.mnascimentos.aureole.feature.settings.model.BackgroundType
+import dev.mnascimentos.aureole.feature.settings.model.LockScreenDialog
 import dev.mnascimentos.aureole.feature.settings.model.SetBackgroundParams
-import dev.mnascimentos.aureole.feature.settings.model.applyAction
+import dev.mnascimentos.aureole.feature.settings.model.backgroundColorToSave
 import dev.mnascimentos.aureole.feature.settings.model.initialBackgroundDraft
+import dev.mnascimentos.aureole.feature.settings.model.lockScreenDialogFor
 
 /**
  * Background editor in an edit overlay: the type (solid color or custom image) and, for a solid color, the
- * swatches, with the mini-home anchored above the sheet on the chosen color. Nothing changes until Apply, which
- * saves the color or opens the photo picker; Cancel only closes.
+ * swatches, with the mini-home anchored above the sheet on the chosen color. Closing the sheet saves the color
+ * when it changed. Without a photo the custom image card opens the photo picker right away; with one, it shows the
+ * photo with "Edit photo" and "Change photo" (RF-02).
  */
 @Composable
 fun SetBackgroundBottomSheet(
     params: SetBackgroundParams,
     modifier: Modifier = Modifier
 ) {
-    var draft by remember { mutableStateOf(initialBackgroundDraft(params.isCustomImageSet, params.currentColor)) }
+    val initial = remember { initialBackgroundDraft(params.isCustomImageSet, params.currentColor) }
+    var draft by remember { mutableStateOf(initial) }
+    var lockDialog by remember { mutableStateOf<LockScreenDialog?>(null) }
 
-    AureoleConfirmOverlay(
-        params = ConfirmOverlayParams(
+    Box(modifier = modifier) {
+        BackgroundSheetOverlay(params, draft, initial, onDraftChange = { draft = it }) {
+            lockDialog = it
+        }
+        LockScreenDialogs(dialog = lockDialog, option = params.lockScreen, onDismiss = { lockDialog = null })
+    }
+}
+
+@Composable
+private fun BackgroundSheetOverlay(
+    params: SetBackgroundParams,
+    draft: BackgroundDraft,
+    initial: BackgroundDraft,
+    onDraftChange: (BackgroundDraft) -> Unit,
+    onLockDialog: (LockScreenDialog?) -> Unit
+) {
+    AureoleAutoSaveOverlay(
+        params = AutoSaveOverlayParams(
             title = stringResource(R.string.settings_appearance_set_background_title),
-            primaryLabel = stringResource(R.string.settings_appearance_apply),
-            onPrimary = {
-                when (val action = draft.applyAction()) {
-                    is BackgroundApplyAction.SaveColor -> params.onSolidColorSelected(action.color)
-                    BackgroundApplyAction.PickImage -> params.onCustomImageClick()
-                }
-            },
+            isChanged = { backgroundColorToSave(initial, draft) != null },
+            onCommit = { backgroundColorToSave(initial, draft)?.let(params.onSolidColorSelected) },
             onDismissRequest = params.onDismissRequest,
-            isLeftHanded = params.isLeftHanded
+            isLeftHanded = params.isLeftHanded,
+            host = params.host
         ),
-        modifier = modifier,
         preview = { BackgroundPreview(draft = draft, modifier = Modifier.align(Alignment.Center)) }
     ) {
-        Column(
-            verticalArrangement = Arrangement.spacedBy(AureoleDS.dimens.small),
-            modifier = Modifier.fillMaxWidth().verticalScroll(rememberScrollState())
-        ) {
-            SheetSectionLabel(
-                text = stringResource(R.string.settings_appearance_background_type)
+        BackgroundSheetContent(params, draft, onDraftChange, onLockDialog)
+    }
+}
+
+@Composable
+private fun BackgroundSheetContent(
+    params: SetBackgroundParams,
+    draft: BackgroundDraft,
+    onDraftChange: (BackgroundDraft) -> Unit,
+    onLockDialog: (LockScreenDialog?) -> Unit
+) {
+    Column(
+        verticalArrangement = Arrangement.spacedBy(AureoleDS.dimens.small),
+        modifier = Modifier.fillMaxWidth().verticalScroll(rememberScrollState())
+    ) {
+        SheetSectionLabel(text = stringResource(R.string.settings_appearance_background_type))
+        val photo = params.customImagePath?.takeIf { params.isCustomImageSet }?.let { path ->
+            BackgroundPhotoCard(
+                path = path,
+                adjustments = params.adjustments,
+                onEdit = {
+                    onDraftChange(draft.copy(type = BackgroundType.CUSTOM_IMAGE))
+                    params.onEditPhotoClick()
+                },
+                onChange = {
+                    onDraftChange(draft.copy(type = BackgroundType.CUSTOM_IMAGE))
+                    params.onCustomImageClick()
+                }
             )
-            BackgroundTypeCards(
-                selected = draft.type,
-                onSelect = { draft = draft.copy(type = it) },
+        }
+        BackgroundTypeCards(
+            selected = draft.type,
+            onSelect = {
+                onDraftChange(draft.copy(type = it))
+                if (it == BackgroundType.CUSTOM_IMAGE && photo == null) params.onCustomImageClick()
+            },
+            isLeftHanded = params.isLeftHanded,
+            photo = photo
+        )
+        BackgroundLockScreenRow(
+            option = params.lockScreen,
+            onToggle = { turnOn ->
+                val dialog = lockScreenDialogFor(turnOn, params.lockScreen.isNoticeSeen)
+                if (dialog == null) params.lockScreen.onTurnOn() else onLockDialog(dialog)
+            }
+        )
+        if (draft.type == BackgroundType.SOLID_COLOR) {
+            BackgroundColorSections(
+                selected = draft.color,
+                onSelect = { onDraftChange(draft.copy(color = it)) },
                 isLeftHanded = params.isLeftHanded
             )
-            if (draft.type == BackgroundType.SOLID_COLOR) {
-                SheetSectionLabel(
-                    text = stringResource(R.string.settings_appearance_background_color)
-                )
-                LeftHandMirror(isLeftHanded = params.isLeftHanded) {
-                    AureoleColorSwatches(
-                        colors = RecommendedColors,
-                        selected = draft.color,
-                        onSelect = { draft = draft.copy(color = it) }
-                    )
-                }
-            }
         }
     }
 }
@@ -103,14 +149,22 @@ private fun BackgroundPreview(draft: BackgroundDraft, modifier: Modifier = Modif
     }
 }
 
+/** A small uppercase label above a group of rows; mirrored in the left-handed mode, like the rows below it. */
 @Composable
 internal fun SheetSectionLabel(text: String, modifier: Modifier = Modifier) {
-    AureoleText(
-        text = text.uppercase(),
-        color = AureoleDS.colors.onSurfaceMedium,
-        modifier = modifier.fillMaxWidth(),
-        format = AureoleTextFormatParams(style = AureoleDS.typography.labelSmall)
-    )
+    // The paragraph follows its own text (as in the radio rows), so its side is set explicitly.
+    val align = if (LocalLeftHanded.current) TextAlign.End else TextAlign.Start
+    LeftHandMirror {
+        AureoleText(
+            text = text.uppercase(),
+            color = AureoleDS.colors.onSurfaceMedium,
+            modifier = modifier.fillMaxWidth(),
+            format = AureoleTextFormatParams(
+                style = AureoleDS.typography.labelSmall.copy(textDirection = TextDirection.Content),
+                textAlign = align
+            )
+        )
+    }
 }
 
 @AureolePreview

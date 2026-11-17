@@ -19,6 +19,8 @@ data class HomeDragParams(
     val density: Density,
     val onAllAppsDrawerOpen: () -> Unit,
     val onExpandNotificationShade: () -> Unit,
+    /** Opens the apps list from the alphabet edge (the edge scrub), so it slides in from that side. */
+    val onAllAppsDrawerOpenFromEdge: () -> Unit = onAllAppsDrawerOpen,
     /** Y of the finger inside the letters column while an edge scrub runs; -1 when it ends. */
     val onExternalTouchYChange: (Float) -> Unit,
     /** An edge scrub started (true) or ended (false): the home keeps this modifier on while it runs. */
@@ -62,7 +64,7 @@ data class HomeScreenBodyConfig(
 
 data class AppsDrawerOverlayConfig(
     val isAllAppsDrawerOpen: Boolean,
-    val isOpenedFromBottom: Boolean,
+    val openSource: AllAppsOpenSource,
     val isLeftHandedMode: Boolean,
     val listState: LazyListState,
     val hazeState: HazeState,

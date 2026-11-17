@@ -1,8 +1,5 @@
 package dev.mnascimentos.aureole.core.designsystem.model
 
-import androidx.compose.animation.core.Spring
-import androidx.compose.animation.core.animate
-import androidx.compose.animation.core.spring
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -25,18 +22,39 @@ internal class OverlaySheetMotion {
     /** Height of the whole sheet slot at rest, bottom inset included. Sizes the preview above it. */
     var restOuterHeight = 0
 
+    /**
+     * Height the sheet would take to show all of its content, measured at rest; null while unknown or when the
+     * content has no intrinsic height (lazy lists), which keeps the full expanded height.
+     */
+    var contentFullHeight by mutableStateOf<Float?>(null)
+
+    /** Width and height (packed) the content had when [contentFullHeight] was measured; zero until then. */
+    var contentMeasuredSize = 0L
+
     var settleJob: Job? = null
+
+    /** Finger height behind the elastic stretch, and the stretched height it produced. */
+    private var rawHeight: Float? = null
+    private var stretchedFrom: Float? = null
 
     fun restOrFallback(bounds: SheetBounds): Float {
         return if (restHeight > 0f) restHeight.coerceAtMost(bounds.restMaxPx) else bounds.restMaxPx
     }
+
+    /** Height the sheet expands to, or null when its content already fits at rest. */
+    fun expandedHeight(bounds: SheetBounds): Float? {
+        return expandTarget(restOrFallback(bounds), bounds.expandedPx, contentFullHeight, bounds.fitSlackPx)
+    }
+
+    fun canExpand(bounds: SheetBounds): Boolean = expandedHeight(bounds) != null
 
     fun currentHeight(isExpanded: Boolean, bounds: SheetBounds): Float {
         return pinnedHeight ?: settledHeight(isExpanded, bounds)
     }
 
     fun settledHeight(isExpanded: Boolean, bounds: SheetBounds): Float {
-        return if (isExpanded) bounds.expandedPx else restOrFallback(bounds)
+        val expanded = if (isExpanded) expandedHeight(bounds) else null
+        return expanded ?: restOrFallback(bounds)
     }
 
     /** Fixed height for the sheet layout, or null when it hugs its content (at rest). */
@@ -44,7 +62,7 @@ internal class OverlaySheetMotion {
         val pinned = pinnedHeight
         return when {
             pinned != null -> pinned.coerceAtLeast(restOrFallback(bounds))
-            isExpanded -> bounds.expandedPx
+            isExpanded -> expandedHeight(bounds)
             else -> null
         }
     }
@@ -57,33 +75,43 @@ internal class OverlaySheetMotion {
 
     /**
      * Moves the sheet by a finger [delta] (positive = down) and returns whether it crossed a detent.
+     *
+     * When the content fits at rest the sheet cannot expand: above rest it stretches with resistance, up to
+     * [SheetBounds.elasticLimitPx], and the stretched top is not a detent.
      */
     fun dragBy(delta: Float, isExpanded: Boolean, bounds: SheetBounds): Boolean {
         val previous = currentHeight(isExpanded, bounds)
-        val next = (previous - delta).coerceIn(0f, bounds.expandedPx)
+        val rest = restOrFallback(bounds)
+        val expanded = expandedHeight(bounds)
+        val next = if (expanded != null) {
+            (previous - delta).coerceIn(0f, expanded)
+        } else {
+            stretchBy(delta, previous, rest, bounds.elasticLimitPx)
+        }
         pinnedHeight = next
-        return crossedDetent(previous, next, listOf(restOrFallback(bounds), bounds.expandedPx))
+        val detents = if (expanded != null) listOf(rest, expanded) else listOf(rest)
+        return crossedDetent(previous, next, detents)
+    }
+
+    private fun stretchBy(delta: Float, previous: Float, rest: Float, limitPx: Float): Float {
+        val raw = rawHeight?.takeIf { stretchedFrom == previous } ?: unstretchedHeight(previous, rest, limitPx)
+        val nextRaw = (raw - delta).coerceAtLeast(0f)
+        val next = stretchedHeight(nextRaw, rest, limitPx)
+        rawHeight = nextRaw
+        stretchedFrom = next
+        return next
     }
 
     fun release(velocity: Float, isExpanded: Boolean, bounds: SheetBounds): SheetDetentTarget {
+        val rest = restOrFallback(bounds)
+        val expanded = expandedHeight(bounds)
         return resolveDetent(
             height = currentHeight(isExpanded, bounds),
-            rest = restOrFallback(bounds),
-            expanded = bounds.expandedPx,
-            velocity = velocity
+            rest = rest,
+            expanded = expanded ?: rest,
+            velocity = velocity,
+            canExpand = expanded != null
         )
-    }
-
-    suspend fun animateHeight(from: Float, to: Float) {
-        animate(
-            initialValue = from,
-            targetValue = to,
-            animationSpec = spring(
-                dampingRatio = Spring.DampingRatioNoBouncy,
-                stiffness = Spring.StiffnessMediumLow
-            )
-        ) { value, _ -> pinnedHeight = value }
-        pinnedHeight = null
     }
 }
 
@@ -130,7 +158,10 @@ internal class OverlaySheetController(
 
     fun currentHeight(): Float = motion.currentHeight(expanded, bounds)
 
-    fun expandedHeight(): Float = bounds.expandedPx
+    /** Height the sheet grows to: the expanded one, or the rest height when the content already fits. */
+    fun expandedHeight(): Float = motion.expandedHeight(bounds) ?: motion.restOrFallback(bounds)
+
+    val canExpand: Boolean get() = motion.canExpand(bounds)
 
     /** Settles the sheet after the finger lifts with [velocityPx] pixels per second (positive = down). */
     fun onRelease(velocityPx: Float) {
@@ -138,12 +169,23 @@ internal class OverlaySheetController(
         when (motion.release(velocity, expanded, bounds)) {
             SheetDetentTarget.Dismiss -> events.onDismiss()
             SheetDetentTarget.Expanded -> settleTo(expand = true)
-            SheetDetentTarget.Rest -> settleTo(expand = false)
+            SheetDetentTarget.Rest -> settleAtRest(isFlingUp(velocity))
         }
     }
 
+    private fun settleAtRest(isFlungUp: Boolean) {
+        val isStretched = motion.currentHeight(expanded, bounds) > motion.restOrFallback(bounds)
+        val needsSpringBack = isStretched || isFlungUp
+        if (!expanded && !canExpand && needsSpringBack) {
+            springBack(bounce = isFlungUp)
+        } else {
+            settleTo(expand = false)
+        }
+    }
+
+    /** Double tap: expands or collapses; a sheet whose content already fits only bounces. */
     fun toggle() {
-        settleTo(expand = !expanded)
+        if (!expanded && !motion.canExpand(bounds)) springBack(bounce = true) else settleTo(expand = !expanded)
     }
 
     fun settleTo(expand: Boolean) {
@@ -154,6 +196,15 @@ internal class OverlaySheetController(
         val to = motion.settledHeight(expand, bounds)
         motion.settleJob?.cancel()
         motion.settleJob = scope.launch { motion.animateHeight(from, to) }
+    }
+
+    /** Back to rest from the elastic stretch, with no tick: the stretched top is not a detent. */
+    private fun springBack(bounce: Boolean) {
+        val from = motion.currentHeight(expanded, bounds)
+        val rest = motion.restOrFallback(bounds)
+        val peak = if (bounce) maxOf(from, rest + bounds.bouncePx) else from
+        motion.settleJob?.cancel()
+        motion.settleJob = scope.launch { motion.animateSpringBack(from, peak, rest) }
     }
 }
 

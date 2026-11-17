@@ -185,6 +185,42 @@ private fun OnboardingChecklistPillScreenshotTest() {
 @PreviewTest
 @AureolePreview
 @Composable
+private fun OnboardingChecklistMorphMinimizedScreenshotTest() {
+    AureoleLauncherTheme {
+        OnboardingChecklistMorphComponent(
+            onboarding = OnboardingUiState(
+                stage = OnboardingStage.CHECKLIST,
+                isChecklistExpanded = false,
+                completedTasks = setOf(OnboardingTask.SET_DEFAULT_HOME, OnboardingTask.CHOOSE_PALETTE)
+            ),
+            isOtherOverlayActive = false,
+            glass = OnboardingGlass(),
+            actions = OnboardingActions()
+        )
+    }
+}
+
+@PreviewTest
+@AureolePreview
+@Composable
+private fun OnboardingChecklistMorphExpandedScreenshotTest() {
+    AureoleLauncherTheme {
+        OnboardingChecklistMorphComponent(
+            onboarding = OnboardingUiState(
+                stage = OnboardingStage.CHECKLIST,
+                isChecklistExpanded = true,
+                completedTasks = setOf(OnboardingTask.SET_DEFAULT_HOME)
+            ),
+            isOtherOverlayActive = false,
+            glass = OnboardingGlass(),
+            actions = OnboardingActions()
+        )
+    }
+}
+
+@PreviewTest
+@AureolePreview
+@Composable
 private fun OnboardingPalettePickerScreenshotTest() {
     AureoleLauncherTheme {
         OnboardingAppearancePickerComponent(
