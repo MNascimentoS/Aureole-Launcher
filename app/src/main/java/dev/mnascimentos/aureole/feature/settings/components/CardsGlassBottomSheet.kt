@@ -75,7 +75,8 @@ fun CardsGlassBottomSheet(
                 isChanged = { draft != start },
                 onCommit = { params.onCommit(start) },
                 onDismissRequest = params.onDismissRequest,
-                isLeftHanded = params.isLeftHanded
+                isLeftHanded = params.isLeftHanded,
+                host = params.host
             ),
             modifier = modifier,
             preview = {

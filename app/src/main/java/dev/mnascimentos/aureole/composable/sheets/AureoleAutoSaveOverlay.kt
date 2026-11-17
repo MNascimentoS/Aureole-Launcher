@@ -56,7 +56,8 @@ fun AureoleAutoSaveOverlay(
                 hazeState = params.hazeState,
                 isLeftHanded = params.isLeftHanded,
                 onSettingsClick = params.onSettingsClick,
-                hasExternalBackdrop = params.hasExternalBackdrop
+                hasExternalBackdrop = params.hasExternalBackdrop,
+                host = params.host
             ),
             previewContent = preview,
             bottomBarContent = bottomExtra,

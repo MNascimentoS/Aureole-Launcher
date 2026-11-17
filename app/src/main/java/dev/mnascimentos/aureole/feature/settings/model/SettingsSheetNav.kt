@@ -1,7 +1,6 @@
 package dev.mnascimentos.aureole.feature.settings.model
 
 import androidx.annotation.StringRes
-import androidx.compose.runtime.saveable.Saver
 import dev.mnascimentos.aureole.R
 
 /** The three areas of the settings root, each opened as a bottom sheet over it. */
@@ -61,17 +60,25 @@ val SettingsSheet?.area: SettingsArea?
 fun reduceSettingsSheet(state: SettingsSheet?, event: SettingsSheetEvent): SettingsSheet? = when (event) {
     is SettingsSheetEvent.OpenArea -> SettingsSheet.Area(event.area)
     is SettingsSheetEvent.OpenChild -> SettingsSheet.Child(event.kind, returnTo = state.area)
-    is SettingsSheetEvent.OpenInner ->
-        if (state is SettingsSheet.Area && settingsAreaHasInner(state.area)) state.copy(inner = event.kind) else state
-    is SettingsSheetEvent.CloseChild ->
-        if (state is SettingsSheet.Child && state.kind == event.kind) state.backToArea() else state
-    is SettingsSheetEvent.CloseArea ->
-        if (state is SettingsSheet.Area && state.area == event.area) null else state
-    SettingsSheetEvent.Back -> when (state) {
-        is SettingsSheet.Child -> state.backToArea()
-        is SettingsSheet.Area -> if (state.inner != null) state.copy(inner = null) else null
-        null -> null
-    }
+    is SettingsSheetEvent.OpenInner -> state.withInner(event.kind)
+    is SettingsSheetEvent.CloseChild -> state.afterChildClosed(event.kind)
+    is SettingsSheetEvent.CloseArea -> state.afterAreaClosed(event.area)
+    SettingsSheetEvent.Back -> state.afterBack()
+}
+
+private fun SettingsSheet?.withInner(kind: SettingsInnerKind): SettingsSheet? =
+    if (this is SettingsSheet.Area && settingsAreaHasInner(area)) copy(inner = kind) else this
+
+private fun SettingsSheet?.afterChildClosed(kind: SettingsChildKind): SettingsSheet? =
+    if (this is SettingsSheet.Child && this.kind == kind) backToArea() else this
+
+private fun SettingsSheet?.afterAreaClosed(closed: SettingsArea): SettingsSheet? =
+    if (this is SettingsSheet.Area && area == closed) null else this
+
+private fun SettingsSheet?.afterBack(): SettingsSheet? = when (this) {
+    is SettingsSheet.Child -> backToArea()
+    is SettingsSheet.Area -> if (inner != null) copy(inner = null) else null
+    null -> null
 }
 
 private fun SettingsSheet.Child.backToArea(): SettingsSheet? = returnTo?.let { SettingsSheet.Area(it) }
@@ -97,41 +104,3 @@ fun settingsSheetTitle(area: SettingsArea, inner: SettingsInnerKind?): Int = whe
     SettingsInnerKind.FONT -> R.string.home_customize_adjust_font
     null -> settingsAreaTitle(area)
 }
-
-private const val AREA_TAG = "area"
-private const val CHILD_TAG = "child"
-private const val SEPARATOR = ":"
-
-/** The sheet as text, to survive a rotation or a trip to the licenses screen; null for the root. */
-fun encodeSettingsSheet(sheet: SettingsSheet?): String? = when (sheet) {
-    is SettingsSheet.Area -> listOfNotNull(AREA_TAG, sheet.area.name, sheet.inner?.name).joinToString(SEPARATOR)
-    is SettingsSheet.Child -> listOf(CHILD_TAG, sheet.kind.name, sheet.returnTo?.name.orEmpty()).joinToString(SEPARATOR)
-    null -> null
-}
-
-/** Reads back [encodeSettingsSheet]; anything it does not know is the root. */
-fun decodeSettingsSheet(text: String?): SettingsSheet? {
-    val parts = text?.split(SEPARATOR) ?: return null
-    return when (parts.firstOrNull()) {
-        AREA_TAG -> parts.getOrNull(1)?.let(::areaNamed)?.let { area ->
-            val inner = parts.getOrNull(2)?.let(::innerNamed)?.takeIf { settingsAreaHasInner(area) }
-            SettingsSheet.Area(area, inner)
-        }
-        CHILD_TAG -> parts.getOrNull(1)?.let(::childNamed)?.let { kind ->
-            SettingsSheet.Child(kind, returnTo = parts.getOrNull(2)?.let(::areaNamed))
-        }
-        else -> null
-    }
-}
-
-private fun areaNamed(name: String): SettingsArea? = SettingsArea.entries.firstOrNull { it.name == name }
-
-private fun childNamed(name: String): SettingsChildKind? = SettingsChildKind.entries.firstOrNull { it.name == name }
-
-private fun innerNamed(name: String): SettingsInnerKind? = SettingsInnerKind.entries.firstOrNull { it.name == name }
-
-/** Saves the sheet in the saved state of the settings root. */
-val SettingsSheetSaver: Saver<SettingsSheet?, String> = Saver(
-    save = { encodeSettingsSheet(it) },
-    restore = { decodeSettingsSheet(it) }
-)

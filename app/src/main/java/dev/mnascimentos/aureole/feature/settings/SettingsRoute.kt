@@ -8,6 +8,7 @@ import androidx.navigation.compose.rememberNavController
 import dev.mnascimentos.aureole.feature.settings.components.SettingsSheetHost
 import dev.mnascimentos.aureole.feature.settings.model.SettingsArea
 import dev.mnascimentos.aureole.feature.settings.model.SettingsScreenActions
+import dev.mnascimentos.aureole.feature.settings.model.SettingsSheetHostParams
 import dev.mnascimentos.aureole.feature.settings.model.SettingsUiState
 import dev.mnascimentos.aureole.feature.settings.screens.SettingsLicensesScreen
 import dev.mnascimentos.aureole.feature.settings.screens.SettingsRootScreen
@@ -30,9 +31,11 @@ fun SettingsNavGraph(
     ) {
         composable(SettingsRoute.Root.route) {
             SettingsSheetHost(
-                uiState = uiState,
-                actions = actions,
-                onNavigateToLicenses = { navController.navigate(SettingsRoute.Licenses.route) }
+                params = SettingsSheetHostParams(
+                    uiState = uiState,
+                    actions = actions,
+                    onNavigateToLicenses = { navController.navigate(SettingsRoute.Licenses.route) }
+                )
             ) { onOpenArea ->
                 SettingsRootScreen(
                     uiState = uiState,

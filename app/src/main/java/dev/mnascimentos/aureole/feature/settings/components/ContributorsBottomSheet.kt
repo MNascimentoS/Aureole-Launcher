@@ -17,8 +17,10 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.semantics
 import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.composable.menu.AureoleMenuSheet
+import dev.mnascimentos.aureole.composable.menu.model.MenuSheetParams
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
+import dev.mnascimentos.aureole.core.designsystem.model.OverlayHostSpec
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
@@ -30,13 +32,15 @@ import dev.mnascimentos.aureole.util.IntentUtils
 @Composable
 fun ContributorsBottomSheet(
     onDismissRequest: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    host: OverlayHostSpec = OverlayHostSpec()
 ) {
     val context = LocalContext.current
     AureoleMenuSheet(
         title = stringResource(R.string.settings_contributors_title),
         onDismiss = onDismissRequest,
-        modifier = modifier
+        modifier = modifier,
+        params = MenuSheetParams(host = host)
     ) {
         Column(
             modifier = Modifier.fillMaxWidth(),

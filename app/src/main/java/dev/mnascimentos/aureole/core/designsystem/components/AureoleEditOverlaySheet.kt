@@ -46,7 +46,6 @@ import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.core.designsystem.icons.Logo
 import dev.mnascimentos.aureole.core.designsystem.model.AnchoredSheetState
 import dev.mnascimentos.aureole.core.designsystem.model.AureoleEditOverlayParams
-import dev.mnascimentos.aureole.core.designsystem.model.LocalOverlayExternalBackdrop
 import dev.mnascimentos.aureole.core.designsystem.model.OverlayLayout
 import dev.mnascimentos.aureole.core.designsystem.model.OverlaySheetDecorations
 import dev.mnascimentos.aureole.core.designsystem.model.OverlaySheetMotion
@@ -93,7 +92,7 @@ internal fun OverlayContentBox(
             .fillMaxSize()
             .scrimTapToDismiss(stateData.triggerDismiss)
     ) {
-        if (!params.config.hasExternalBackdrop && !LocalOverlayExternalBackdrop.current) {
+        if (!params.config.hasExternalBackdrop && !params.config.host.hasExternalBackdrop) {
             AureoleOverlayBackdrop(
                 hazeState = effectiveHazeState,
                 modifier = Modifier
@@ -126,6 +125,7 @@ internal fun OverlayContentBox(
         val motion = remember { OverlaySheetMotion() }
 
         val state = AnchoredSheetState(bounds, motion, stateData.isExpanded)
+        val maxSheetWidth = params.config.host.maxSheetWidth
         val hiddenFraction = rememberSheetHiddenFraction(stateData)
         val preview: @Composable () -> Unit = {
             PreviewSlot(
@@ -139,7 +139,7 @@ internal fun OverlayContentBox(
         }
         when (overlayLayout) {
             OverlayLayout.STACKED -> AnchoredPreviewLayout(state, hiddenFraction, preview, sheet)
-            OverlayLayout.SIDE_BY_SIDE -> SideBySidePreviewLayout(state, hiddenFraction, preview, sheet)
+            OverlayLayout.SIDE_BY_SIDE -> SideBySidePreviewLayout(state, maxSheetWidth, hiddenFraction, preview, sheet)
         }
     }
 }
@@ -231,7 +231,7 @@ private fun AnchoredPreviewLayout(
                     anchoredPreviewTop(sheetTop, previewGapPx, placeable.height, previewTopPaddingPx)
                 )
             }
-            // Centered: a sheet narrower than the screen (LocalOverlaySheetMaxWidth) sits in the middle.
+            // Centered: a sheet narrower than the screen (OverlayHostSpec.maxSheetWidth) sits in the middle.
             sheetPlaceables.forEach { it.placeRelative((constraints.maxWidth - it.width) / 2, sheetTop) }
         }
     }

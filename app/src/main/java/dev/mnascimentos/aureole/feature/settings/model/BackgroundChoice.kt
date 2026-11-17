@@ -1,5 +1,7 @@
 package dev.mnascimentos.aureole.feature.settings.model
 
+import dev.mnascimentos.aureole.core.designsystem.model.OverlayHostSpec
+
 /** What the home background is made of. */
 enum class BackgroundType { SOLID_COLOR, CUSTOM_IMAGE }
 
@@ -41,6 +43,7 @@ fun backgroundColorToSave(initial: BackgroundDraft, current: BackgroundDraft): I
  * @property onCustomImageClick Called when the custom-image card is tapped (opens the photo picker at once).
  * @property onDismissRequest Called when the sheet has closed, whichever way it closed.
  * @property isLeftHanded Puts the first card under the left thumb.
+ * @property host What the settings host decides for its sheets.
  */
 data class SetBackgroundParams(
     val currentColor: Int,
@@ -48,5 +51,6 @@ data class SetBackgroundParams(
     val onSolidColorSelected: (Int) -> Unit,
     val onCustomImageClick: () -> Unit,
     val onDismissRequest: () -> Unit,
-    val isLeftHanded: Boolean = false
+    val isLeftHanded: Boolean = false,
+    val host: OverlayHostSpec = OverlayHostSpec()
 )

@@ -64,6 +64,7 @@ fun rememberAureoleEditOverlayState(
  * the content then pads itself (a pager needs this so its pages do not clip at the margin mid-swipe).
  * @property hasExternalBackdrop True when the screen around draws the dimmed, blurred backdrop itself (a screen
  * that swaps one sheet for another keeps one backdrop for both, so it does not flash between them).
+ * @property host What the screen hosting several overlays decides for all of them (see [OverlayHostSpec]).
  */
 data class AureoleEditOverlayConfig(
     val title: String? = null,
@@ -81,6 +82,7 @@ data class AureoleEditOverlayConfig(
     val titleIcon: (@Composable (Modifier) -> Unit)? = null,
     val edgeToEdgeContent: Boolean = false,
     val hasExternalBackdrop: Boolean = false,
+    val host: OverlayHostSpec = OverlayHostSpec(),
 )
 
 /**

@@ -16,7 +16,6 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.Dp
 import dev.mnascimentos.aureole.core.designsystem.model.AnchoredSheetState
-import dev.mnascimentos.aureole.core.designsystem.model.LocalOverlaySheetMaxWidth
 import dev.mnascimentos.aureole.core.designsystem.model.OverlaySheetMotion
 import dev.mnascimentos.aureole.core.designsystem.model.SheetBounds
 import dev.mnascimentos.aureole.core.designsystem.model.sideBySideColumns
@@ -28,12 +27,13 @@ import kotlin.math.roundToInt
 /**
  * Landscape layout of an overlay with a preview: the preview in the left column, centered on both axes, and the
  * sheet in the right column, held at the bottom like in portrait (drag, slide and close work the same) and as tall
- * as the screen allows, so nothing is cut. The sheet is at most `LocalOverlaySheetMaxWidth` wide, or
+ * as the screen allows, so nothing is cut. The sheet is at most [hostMaxSheetWidth] wide, or
  * `settingsContentMaxWidth` when the screen sets no width.
  */
 @Composable
 internal fun SideBySidePreviewLayout(
     state: AnchoredSheetState,
+    hostMaxSheetWidth: Dp,
     hiddenFraction: () -> Float,
     preview: @Composable () -> Unit,
     sheet: @Composable () -> Unit
@@ -42,7 +42,7 @@ internal fun SideBySidePreviewLayout(
     val density = LocalDensity.current
     val layoutDirection = LocalLayoutDirection.current
     val safe = WindowInsets.safeDrawing
-    val maxSheetWidth = LocalOverlaySheetMaxWidth.current.takeIf { it != Dp.Unspecified }
+    val maxSheetWidth = hostMaxSheetWidth.takeIf { it != Dp.Unspecified }
         ?: AureoleDS.dimens.settingsContentMaxWidth
     val gapPx = with(density) { AureoleDS.dimens.medium.roundToPx() }
     val maxSheetWidthPx = with(density) { maxSheetWidth.roundToPx() }
@@ -97,6 +97,7 @@ private fun SideBySidePreviewLayoutPreview() {
                 motion = remember { OverlaySheetMotion() },
                 isExpanded = false
             ),
+            hostMaxSheetWidth = Dp.Unspecified,
             hiddenFraction = { 0f },
             preview = {
                 Box(

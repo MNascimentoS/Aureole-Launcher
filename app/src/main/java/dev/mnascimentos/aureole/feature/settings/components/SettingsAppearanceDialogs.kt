@@ -53,7 +53,8 @@ fun SetBackgroundBottomSheet(
             isChanged = { backgroundColorToSave(initial, draft) != null },
             onCommit = { backgroundColorToSave(initial, draft)?.let(params.onSolidColorSelected) },
             onDismissRequest = params.onDismissRequest,
-            isLeftHanded = params.isLeftHanded
+            isLeftHanded = params.isLeftHanded,
+            host = params.host
         ),
         modifier = modifier,
         preview = { BackgroundPreview(draft = draft, modifier = Modifier.align(Alignment.Center)) }

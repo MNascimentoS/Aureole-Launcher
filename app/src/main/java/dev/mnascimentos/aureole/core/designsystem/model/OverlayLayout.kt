@@ -1,6 +1,9 @@
 package dev.mnascimentos.aureole.core.designsystem.model
 
 /** Share of the free width the sheet takes next to the preview (the prototype splits 1 : 1.15). */
+/** Gaps across the width: before the preview, between the two and after the sheet. */
+private const val GAPS_ACROSS = 3
+
 private const val SIDE_SHEET_SHARE = 1.15f / 2.15f
 
 /** How an edit overlay lays out its preview and its sheet. */
@@ -43,7 +46,7 @@ fun sideBySideColumns(
     maxSheetWidth: Int
 ): SideBySideColumns {
     val (insetStart, insetEnd) = insets
-    val free = (width - insetStart - insetEnd - gap * 3).coerceAtLeast(0)
+    val free = (width - insetStart - insetEnd - gap * GAPS_ACROSS).coerceAtLeast(0)
     val sheetWidth = minOf((free * SIDE_SHEET_SHARE).toInt(), maxSheetWidth.coerceAtLeast(0))
     val previewStart = insetStart + gap
     val previewWidth = free - sheetWidth

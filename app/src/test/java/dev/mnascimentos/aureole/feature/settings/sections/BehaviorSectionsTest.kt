@@ -47,8 +47,13 @@ class BehaviorSectionsTest {
     fun `lists the two groups with their rows`() {
         render()
         listOf(
-            "GESTURES AND APP LIST", "Home opens all apps", "All apps on left side", "Disable alphabet scrubber",
-            "HOME SCREEN", "Show widget indicator", "Header offset"
+            "GESTURES AND APP LIST",
+            "Home opens all apps",
+            "All apps on left side",
+            "Disable alphabet scrubber",
+            "HOME SCREEN",
+            "Show widget indicator",
+            "Header offset"
         ).forEach { composeTestRule.onNodeWithText(it).assertExists() }
         val gestures = composeTestRule.onNodeWithText("GESTURES AND APP LIST").getUnclippedBoundsInRoot().top
         val home = composeTestRule.onNodeWithText("HOME SCREEN").getUnclippedBoundsInRoot().top

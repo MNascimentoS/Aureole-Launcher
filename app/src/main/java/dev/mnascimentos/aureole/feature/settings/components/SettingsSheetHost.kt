@@ -6,8 +6,8 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.ScrollState
-import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -39,8 +39,7 @@ import dev.mnascimentos.aureole.core.designsystem.model.AureoleEditOverlayConfig
 import dev.mnascimentos.aureole.core.designsystem.model.AureoleEditOverlayParams
 import dev.mnascimentos.aureole.core.designsystem.model.AureoleEditOverlayState
 import dev.mnascimentos.aureole.core.designsystem.model.LocalLeftHanded
-import dev.mnascimentos.aureole.core.designsystem.model.LocalOverlayExternalBackdrop
-import dev.mnascimentos.aureole.core.designsystem.model.LocalOverlaySheetMaxWidth
+import dev.mnascimentos.aureole.core.designsystem.model.OverlayHostSpec
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
@@ -57,6 +56,7 @@ import dev.mnascimentos.aureole.feature.settings.model.SettingsInnerKind
 import dev.mnascimentos.aureole.feature.settings.model.SettingsScreenActions
 import dev.mnascimentos.aureole.feature.settings.model.SettingsSheet
 import dev.mnascimentos.aureole.feature.settings.model.SettingsSheetEvent
+import dev.mnascimentos.aureole.feature.settings.model.SettingsSheetHostParams
 import dev.mnascimentos.aureole.feature.settings.model.SettingsSheetSaver
 import dev.mnascimentos.aureole.feature.settings.model.SettingsUiState
 import dev.mnascimentos.aureole.feature.settings.model.area
@@ -82,28 +82,26 @@ private const val BACKDROP_FADE_MS = 300
  * scroll, when that one closes. Every move goes through [reduceSettingsSheet]. One blurred backdrop sits behind all
  * of them, so a swap does not flash the root; in landscape the sheets are narrow and centered.
  *
+ * @param params State, actions and the first frame of the sheets.
  * @param root The root screen, given the callback that opens an area.
- * @param initialSheet Sheet open on the first frame (previews and screenshot tests).
- * @param initialScroll Scroll of that area on the first frame, clamped to its end.
  */
 @Composable
 fun SettingsSheetHost(
-    uiState: SettingsUiState,
-    actions: SettingsScreenActions,
-    onNavigateToLicenses: () -> Unit,
+    params: SettingsSheetHostParams,
     modifier: Modifier = Modifier,
-    initialSheet: SettingsSheet? = null,
-    initialScroll: Int = 0,
     root: @Composable (onOpenArea: (SettingsArea) -> Unit) -> Unit
 ) {
-    var sheet by rememberSaveable(stateSaver = SettingsSheetSaver) { mutableStateOf(initialSheet) }
+    val uiState = params.uiState
+    val actions = params.actions
+    var sheet by rememberSaveable(stateSaver = SettingsSheetSaver) { mutableStateOf(params.initialSheet) }
     val dispatch: (SettingsSheetEvent) -> Unit = { event -> sheet = reduceSettingsSheet(sheet, event) }
     val area = sheet.area
     // One overlay state and one scroll per opening of an area: a child swapped in keeps both for the way back.
     val areaState = remember(area) { AureoleEditOverlayState() }
     // A plain array, not a state: saving the scroll must not recompose the host on every pixel.
-    val areaScroll = rememberSaveable(area) { intArrayOf(initialScroll) }
+    val areaScroll = rememberSaveable(area) { intArrayOf(params.initialScroll) }
     val hazeState = remember { HazeState() }
+    val overlayHost = settingsOverlayHost()
 
     // The open sheet handles back itself; this one catches a second back while the area is sliding out, so it
     // does not leave the settings. A child sliding out is left alone: it still has to save.
@@ -117,9 +115,7 @@ fun SettingsSheetHost(
         }
         CompositionLocalProvider(
             LocalHazeState provides hazeState,
-            LocalLeftHanded provides uiState.isLeftHandedMode,
-            LocalOverlayExternalBackdrop provides true,
-            LocalOverlaySheetMaxWidth provides AureoleDS.dimens.settingsContentMaxWidth
+            LocalLeftHanded provides uiState.isLeftHandedMode
         ) {
             AnimatedVisibility(
                 visible = isBackdropVisible(sheet, areaState.internalVisible),
@@ -133,15 +129,15 @@ fun SettingsSheetHost(
                     spec = AreaSheetSpec(
                         area = area,
                         inner = (sheet as? SettingsSheet.Area)?.inner,
-                        isVisible = sheet is SettingsSheet.Area
+                        isVisible = sheet is SettingsSheet.Area,
+                        overlayHost = overlayHost
                     ),
-                    uiState = uiState,
-                    actions = actions,
+                    host = params,
                     state = areaState,
                     dispatch = dispatch,
                     list = {
                         ScrolledAreaList(scroll = areaScroll) {
-                            AreaSections(area, uiState, actions, dispatch, onNavigateToLicenses)
+                            AreaSections(area, uiState, actions, dispatch, params.onNavigateToLicenses)
                         }
                     }
                 )
@@ -151,12 +147,20 @@ fun SettingsSheetHost(
                     kind = child.kind,
                     uiState = uiState,
                     actions = actions,
+                    host = overlayHost,
                     onClose = { dispatch(SettingsSheetEvent.CloseChild(child.kind)) }
                 )
             }
         }
     }
 }
+
+/** One backdrop for every sheet, and sheets no wider than the settings content (narrow and centered in landscape). */
+@Composable
+private fun settingsOverlayHost() = OverlayHostSpec(
+    maxSheetWidth = AureoleDS.dimens.settingsContentMaxWidth,
+    hasExternalBackdrop = true
+)
 
 /** The backdrop stays while any sheet is up, through a swap, and fades as soon as the last one starts to leave. */
 private fun isBackdropVisible(sheet: SettingsSheet?, isAreaShown: Boolean): Boolean = when (sheet) {
@@ -173,12 +177,13 @@ private fun isBackdropVisible(sheet: SettingsSheet?, isAreaShown: Boolean): Bool
 @Composable
 private fun OpenArea(
     spec: AreaSheetSpec,
-    uiState: SettingsUiState,
-    actions: SettingsScreenActions,
+    host: SettingsSheetHostParams,
     state: AureoleEditOverlayState,
     dispatch: (SettingsSheetEvent) -> Unit,
     list: @Composable () -> Unit
 ) {
+    val uiState = host.uiState
+    val actions = host.actions
     val area = spec.area
     if (!settingsAreaHasInner(area)) {
         AreaSheet(
@@ -247,6 +252,7 @@ private fun AreaSheet(
                 title = stringResource(settingsSheetTitle(spec.area, spec.inner)),
                 isVisible = spec.isVisible,
                 isLeftHanded = isLeftHanded,
+                host = spec.overlayHost,
                 // With a picker inside, back brings the list back; tap outside and drag still close the sheet.
                 onBackPress = if (spec.inner != null) events.onBackFromInner else null,
                 onDismiss = events.onClosed,
@@ -327,10 +333,12 @@ private fun AreaSections(
 private fun SettingsSheetHostPreview() {
     AureoleLauncherTheme {
         SettingsSheetHost(
-            uiState = SettingsUiState(),
-            actions = SettingsScreenActions(),
-            onNavigateToLicenses = {},
-            initialSheet = SettingsSheet.Area(SettingsArea.APPEARANCE)
+            params = SettingsSheetHostParams(
+                uiState = SettingsUiState(),
+                actions = SettingsScreenActions(),
+                onNavigateToLicenses = {},
+                initialSheet = SettingsSheet.Area(SettingsArea.APPEARANCE)
+            )
         ) {
             AureoleText(text = stringResource(R.string.settings_root_title), color = AureoleDS.colors.onSurfaceHigh)
         }

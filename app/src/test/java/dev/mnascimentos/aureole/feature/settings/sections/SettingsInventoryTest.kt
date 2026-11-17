@@ -17,6 +17,7 @@ import dev.mnascimentos.aureole.feature.settings.model.SettingsAdvancedDialogAct
 import dev.mnascimentos.aureole.feature.settings.model.SettingsArea
 import dev.mnascimentos.aureole.feature.settings.model.SettingsScreenActions
 import dev.mnascimentos.aureole.feature.settings.model.SettingsSheet
+import dev.mnascimentos.aureole.feature.settings.model.SettingsSheetHostParams
 import dev.mnascimentos.aureole.feature.settings.model.SettingsUiState
 import dev.mnascimentos.aureole.feature.settings.screens.SettingsRootScreen
 import org.junit.Assert.assertEquals
@@ -36,13 +37,21 @@ class SettingsInventoryTest {
     val composeTestRule = createComposeRule()
 
     private val appearanceItems = listOf(
-        "Color palette", "Change font", "Themed icons",
-        "Set Background", "Image scale", "Restore background",
-        "Change Border", "Glass effect"
+        "Color palette",
+        "Change font",
+        "Themed icons",
+        "Set Background",
+        "Image scale",
+        "Restore background",
+        "Change Border",
+        "Glass effect"
     )
     private val behaviorItems = listOf(
-        "Home opens all apps", "All apps on left side", "Disable alphabet scrubber",
-        "Show widget indicator", "Header offset"
+        "Home opens all apps",
+        "All apps on left side",
+        "Disable alphabet scrubber",
+        "Show widget indicator",
+        "Header offset"
     )
     private val advancedItems = listOf(
         "App info", "What's new", "Default launcher", "Check for updates",
@@ -98,10 +107,12 @@ class SettingsInventoryTest {
             AureoleLauncherTheme {
                 key(area) {
                     SettingsSheetHost(
-                        uiState = SettingsUiState(isCustomWallpaperSet = true),
-                        actions = SettingsScreenActions(),
-                        onNavigateToLicenses = {},
-                        initialSheet = SettingsSheet.Area(area)
+                        params = SettingsSheetHostParams(
+                            uiState = SettingsUiState(isCustomWallpaperSet = true),
+                            actions = SettingsScreenActions(),
+                            onNavigateToLicenses = {},
+                            initialSheet = SettingsSheet.Area(area)
+                        )
                     ) { }
                 }
             }

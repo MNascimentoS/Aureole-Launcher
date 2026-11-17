@@ -1,6 +1,7 @@
 package dev.mnascimentos.aureole.composable.sheets.model
 
 import dev.chrisbanes.haze.HazeState
+import dev.mnascimentos.aureole.core.designsystem.model.OverlayHostSpec
 
 /**
  * Parameters of `AureoleAutoSaveOverlay`.
@@ -14,6 +15,7 @@ import dev.chrisbanes.haze.HazeState
  * @property onSettingsClick Opens the Aureole settings from the header logo; null hides the logo.
  * @property hazeState Blur state of the screen behind the overlay.
  * @property hasExternalBackdrop True when the screen around draws the backdrop itself.
+ * @property host What the screen hosting several overlays decides for all of them.
  */
 data class AutoSaveOverlayParams(
     val title: String,
@@ -23,7 +25,8 @@ data class AutoSaveOverlayParams(
     val isLeftHanded: Boolean = false,
     val onSettingsClick: (() -> Unit)? = null,
     val hazeState: HazeState? = null,
-    val hasExternalBackdrop: Boolean = false
+    val hasExternalBackdrop: Boolean = false,
+    val host: OverlayHostSpec = OverlayHostSpec()
 )
 
 /** What closing an auto-save sheet has to do. */

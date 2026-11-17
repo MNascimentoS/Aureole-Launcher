@@ -10,6 +10,7 @@ import dev.mnascimentos.aureole.feature.settings.model.SettingsChildKind
 import dev.mnascimentos.aureole.feature.settings.model.SettingsInnerKind
 import dev.mnascimentos.aureole.feature.settings.model.SettingsScreenActions
 import dev.mnascimentos.aureole.feature.settings.model.SettingsSheet
+import dev.mnascimentos.aureole.feature.settings.model.SettingsSheetHostParams
 import dev.mnascimentos.aureole.feature.settings.model.SettingsUiState
 import dev.mnascimentos.aureole.feature.settings.screens.SettingsRootScreen
 
@@ -22,11 +23,13 @@ internal fun SettingsSheetScreenshot(
 ) {
     AureoleLauncherTheme {
         SettingsSheetHost(
-            uiState = uiState,
-            actions = SettingsScreenActions(),
-            onNavigateToLicenses = {},
-            initialSheet = sheet,
-            initialScroll = scroll
+            params = SettingsSheetHostParams(
+                uiState = uiState,
+                actions = SettingsScreenActions(),
+                onNavigateToLicenses = {},
+                initialSheet = sheet,
+                initialScroll = scroll
+            )
         ) { onOpenArea ->
             SettingsRootScreen(
                 uiState = uiState,

@@ -1,0 +1,17 @@
+package dev.mnascimentos.aureole.core.designsystem.model
+
+import androidx.compose.ui.unit.Dp
+
+/**
+ * What a screen that hosts several overlays (the settings) decides for all of them; the default leaves an overlay
+ * as it is on its own.
+ *
+ * @property maxSheetWidth Widest an overlay sheet gets, centered on the screen, so in landscape the sheets do not
+ * stretch from edge to edge. Unspecified: full width.
+ * @property hasExternalBackdrop True when the screen around draws the dimmed backdrop of every overlay it hosts,
+ * so swapping one sheet for another does not flash the screen behind.
+ */
+data class OverlayHostSpec(
+    val maxSheetWidth: Dp = Dp.Unspecified,
+    val hasExternalBackdrop: Boolean = false
+)

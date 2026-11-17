@@ -3,6 +3,7 @@ package dev.mnascimentos.aureole.composable.menu.model
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import dev.mnascimentos.aureole.core.designsystem.model.OverlayHostSpec
 
 /** How long the user has to hold a row that [MenuRowParams.requiresHold] before it fires. */
 const val MENU_HOLD_MS = 1000L
@@ -36,7 +37,8 @@ data class MenuRowParams(
 data class MenuSheetParams(
     val titleIcon: (@Composable (Modifier) -> Unit)? = null,
     val onSettingsClick: (() -> Unit)? = null,
-    val bottomBar: (@Composable () -> Unit)? = null
+    val bottomBar: (@Composable () -> Unit)? = null,
+    val host: OverlayHostSpec = OverlayHostSpec()
 )
 
 /** Fraction (0 to 1) of a hold that has elapsed. */

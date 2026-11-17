@@ -2,6 +2,7 @@ package dev.mnascimentos.aureole.feature.settings.components
 
 import androidx.compose.runtime.Composable
 import dev.mnascimentos.aureole.composable.sheets.ReleaseNotesBottomSheet
+import dev.mnascimentos.aureole.core.designsystem.model.OverlayHostSpec
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.settings.model.CardsGlassParams
@@ -21,6 +22,7 @@ internal fun SettingsChildSheet(
     kind: SettingsChildKind,
     uiState: SettingsUiState,
     actions: SettingsScreenActions,
+    host: OverlayHostSpec = OverlayHostSpec(),
     onClose: () -> Unit
 ) {
     when (kind) {
@@ -31,7 +33,8 @@ internal fun SettingsChildSheet(
                 onSolidColorSelected = actions.onSelectBackgroundColor,
                 onCustomImageClick = actions.onChangeWallpaperClick,
                 onDismissRequest = onClose,
-                isLeftHanded = uiState.isLeftHandedMode
+                isLeftHanded = uiState.isLeftHandedMode,
+                host = host
             )
         )
         SettingsChildKind.CARDS_GLASS -> CardsGlassBottomSheet(
@@ -40,11 +43,12 @@ internal fun SettingsChildSheet(
                 onChange = actions.onApplyCardsGlass,
                 onCommit = actions.onCardsGlassClosed,
                 onDismissRequest = onClose,
-                isLeftHanded = uiState.isLeftHandedMode
+                isLeftHanded = uiState.isLeftHandedMode,
+                host = host
             )
         )
-        SettingsChildKind.RELEASE_NOTES -> ReleaseNotesBottomSheet(onDismissRequest = onClose)
-        SettingsChildKind.CONTRIBUTORS -> ContributorsBottomSheet(onDismissRequest = onClose)
+        SettingsChildKind.RELEASE_NOTES -> ReleaseNotesBottomSheet(onDismissRequest = onClose, host = host)
+        SettingsChildKind.CONTRIBUTORS -> ContributorsBottomSheet(onDismissRequest = onClose, host = host)
     }
 }
 
@@ -56,6 +60,7 @@ private fun SettingsChildSheetPreview() {
             kind = SettingsChildKind.CONTRIBUTORS,
             uiState = SettingsUiState(),
             actions = SettingsScreenActions(),
+            host = OverlayHostSpec(),
             onClose = {}
         )
     }

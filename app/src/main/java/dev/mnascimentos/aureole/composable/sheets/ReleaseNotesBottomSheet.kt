@@ -30,6 +30,7 @@ import dev.mnascimentos.aureole.core.data.model.ReleaseNoteVersion
 import dev.mnascimentos.aureole.core.data.repository.ReleaseNotesRepository
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
+import dev.mnascimentos.aureole.core.designsystem.model.OverlayHostSpec
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
@@ -44,6 +45,7 @@ private const val CHIP_ALPHA = 0.5f
 fun ReleaseNotesBottomSheet(
     onDismissRequest: () -> Unit,
     modifier: Modifier = Modifier,
+    host: OverlayHostSpec = OverlayHostSpec(),
     allVersions: List<ReleaseNoteVersion> = remember { ReleaseNotesRepository.getReleaseNotes() }
 ) {
     var selectedName by remember { mutableStateOf(initialReleaseVersionName(allVersions)) }
@@ -54,6 +56,7 @@ fun ReleaseNotesBottomSheet(
         onDismiss = onDismissRequest,
         modifier = modifier,
         params = MenuSheetParams(
+            host = host,
             bottomBar = {
                 ReleaseNotesBottomBar(
                     versions = allVersions,
