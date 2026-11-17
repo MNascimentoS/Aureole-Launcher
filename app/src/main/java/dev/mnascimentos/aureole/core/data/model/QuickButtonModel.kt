@@ -2,7 +2,11 @@ package dev.mnascimentos.aureole.core.data.model
 
 import androidx.annotation.DrawableRes
 import androidx.annotation.Keep
+import com.google.gson.annotations.JsonAdapter
 import dev.mnascimentos.aureole.R
+import dev.mnascimentos.aureole.core.designsystem.icons.AureoleIconCatalog
+import dev.mnascimentos.aureole.core.designsystem.palette.ThemeColorRef
+import dev.mnascimentos.aureole.core.designsystem.palette.ThemeColorRole
 
 @Keep
 enum class QuickButtonIcon(@DrawableRes val iconRes: Int) {
@@ -36,14 +40,33 @@ enum class QuickButtonIcon(@DrawableRes val iconRes: Int) {
     WARNING(R.drawable.ic_aureole_placeholder)
 }
 
+/** Catalog key of the icon a new quick button starts with. */
+internal val DEFAULT_QUICK_BUTTON_ICON_KEY: String = AureoleIconCatalog.actionKey(QuickButtonIcon.ADD)
+
+/**
+ * Look of a quick button. [icon] is a key of [AureoleIconCatalog]; the colors follow the theme or are fixed
+ * ([ThemeColorRef]). [label] is the name shown on the home when [showLabel] is on, and always the TalkBack
+ * description; null means the name of the click action. Old saves (enum icon name, ARGB numbers) are read by
+ * the adapters in `QuickButtonJsonAdapters.kt` without changing the look.
+ */
 @Keep
 data class QuickButtonAppearance(
-    val backgroundColor: Int = 0,
+    @field:JsonAdapter(BackgroundColorRefAdapter::class, nullSafe = false)
+    val backgroundColor: ThemeColorRef = ThemeColorRef.Role(ThemeColorRole.VARIANT),
     val strokeEnabled: Boolean = false,
-    val strokeColor: Int = 0xFFFFFFFF.toInt(),
-    val icon: QuickButtonIcon = QuickButtonIcon.ADD,
-    val iconColor: Int = 0xFFFFFFFF.toInt()
-)
+    @field:JsonAdapter(WhiteColorRefAdapter::class, nullSafe = false)
+    val strokeColor: ThemeColorRef = ThemeColorRef.Fixed(0xFFFFFFFF.toInt()),
+    @field:JsonAdapter(QuickButtonIconKeyAdapter::class, nullSafe = false)
+    val icon: String = DEFAULT_QUICK_BUTTON_ICON_KEY,
+    @field:JsonAdapter(WhiteColorRefAdapter::class, nullSafe = false)
+    val iconColor: ThemeColorRef = ThemeColorRef.Fixed(0xFFFFFFFF.toInt()),
+    val label: String? = null,
+    val showLabel: Boolean = false
+) {
+    /** Drawable of [icon]; the default icon when the key is unknown. */
+    val iconRes: Int
+        get() = AureoleIconCatalog.resFor(icon) ?: QuickButtonIcon.ADD.iconRes
+}
 
 @Keep
 enum class ShortcutType {

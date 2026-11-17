@@ -14,7 +14,6 @@ import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.painterResource
@@ -57,13 +56,7 @@ fun QuickButtonGridItem(
     val currentOnAction by rememberUpdatedState(callbacks.onAction)
     val currentOnLongPress by rememberUpdatedState(callbacks.onLongPress)
 
-    val isDefaultBg = model.appearance.backgroundColor == 0 ||
-        model.appearance.backgroundColor == 0xFF455A64.toInt()
-    val backgroundColor = if (isDefaultBg) {
-        AureoleDS.colors.surfaceVariant
-    } else {
-        Color(model.appearance.backgroundColor)
-    }
+    val backgroundColor = model.appearance.backgroundColor.resolve(AureoleDS.colors)
 
     val baseModifier = modifier
         .fillMaxSize()
@@ -71,7 +64,7 @@ fun QuickButtonGridItem(
         .background(backgroundColor)
 
     val strokeModifier = if (model.appearance.strokeEnabled) {
-        baseModifier.border(AureoleDS.dimens.minimal, Color(model.appearance.strokeColor), shape)
+        baseModifier.border(AureoleDS.dimens.minimal, model.appearance.strokeColor.resolve(AureoleDS.colors), shape)
     } else {
         baseModifier
     }
@@ -93,7 +86,7 @@ fun QuickButtonGridItem(
             Icon(
                 painter = painterResource(id = model.appearance.icon.iconRes),
                 contentDescription = null,
-                tint = Color(model.appearance.iconColor),
+                tint = model.appearance.iconColor.resolve(AureoleDS.colors),
                 modifier = Modifier.size(AureoleDS.dimens.iconXLarge)
             )
         }

@@ -21,6 +21,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
@@ -37,7 +38,9 @@ import dev.mnascimentos.aureole.core.data.model.QuickButtonIcon
 import dev.mnascimentos.aureole.core.data.model.QuickButtonModel
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
+import dev.mnascimentos.aureole.core.designsystem.icons.AureoleIconCatalog
 import dev.mnascimentos.aureole.core.designsystem.icons.Stroke
+import dev.mnascimentos.aureole.core.designsystem.palette.ThemeColorRef
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
@@ -62,8 +65,9 @@ internal fun QuickButtonAppearanceSheetContent(
         AureoleMenuSectionLabel(text = stringResource(R.string.home_quickbutton_icon))
         LeftHandMirror {
             QuickButtonIconGrid(
-                selectedIcon = appearance.icon,
-                onIconSelected = { onUpdateAppearance(appearance.copy(icon = it)) }
+                selectedIcon = QuickButtonIcon.entries.firstOrNull { AureoleIconCatalog.actionKey(it) == appearance.icon }
+                    ?: QuickButtonIcon.ADD,
+                onIconSelected = { onUpdateAppearance(appearance.copy(icon = AureoleIconCatalog.actionKey(it))) }
             )
         }
         ColorSection(
@@ -107,8 +111,8 @@ private fun ColorSection(
     LeftHandMirror {
         AureoleColorSwatches(
             colors = RecommendedColors,
-            selected = appearance.colorOf(target),
-            onSelect = { onUpdateAppearance(appearance.withColor(target, it)) },
+            selected = appearance.colorOf(target).resolve(AureoleDS.colors).toArgb(),
+            onSelect = { onUpdateAppearance(appearance.withColor(target, ThemeColorRef.Fixed(it))) },
             modifier = Modifier.padding(horizontal = AureoleDS.dimens.xxSmall)
         )
     }

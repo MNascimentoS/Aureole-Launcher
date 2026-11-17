@@ -9,6 +9,8 @@ import androidx.compose.ui.test.performScrollTo
 import dev.mnascimentos.aureole.core.data.model.QuickButtonAppearance
 import dev.mnascimentos.aureole.core.data.model.QuickButtonIcon
 import dev.mnascimentos.aureole.core.data.model.QuickButtonModel
+import dev.mnascimentos.aureole.core.designsystem.icons.AureoleIconCatalog
+import dev.mnascimentos.aureole.core.designsystem.palette.ThemeColorRef
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
@@ -57,11 +59,11 @@ class QuickButtonAppearanceSectionsTest {
     @Test
     fun `when an icon is tapped, should report the appearance with that icon and keep the rest`() {
         var updated: QuickButtonAppearance? = null
-        val appearance = QuickButtonAppearance(strokeEnabled = true, iconColor = 0xFF123456.toInt())
+        val appearance = QuickButtonAppearance(strokeEnabled = true, iconColor = ThemeColorRef.Fixed(0xFF123456.toInt()))
         setContent(QuickButtonModel(appearance = appearance)) { updated = it }
 
         composeTestRule.onNodeWithContentDescription(QuickButtonIcon.STAR.name).performScrollTo().performClick()
 
-        assertEquals(appearance.copy(icon = QuickButtonIcon.STAR), updated)
+        assertEquals(appearance.copy(icon = AureoleIconCatalog.actionKey(QuickButtonIcon.STAR)), updated)
     }
 }
