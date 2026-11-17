@@ -8,6 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import com.android.tools.screenshot.PreviewTest
 import dev.mnascimentos.aureole.composable.LocalHomeUiState
+import dev.mnascimentos.aureole.core.data.model.AppFolder
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.designsystem.model.LocalLeftHanded
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
@@ -79,6 +80,40 @@ private fun ContainerLayoutsScreenshotTest() {
                     )
                 )
             }
+        }
+    }
+}
+
+/** The container after the onboarding places four folders in it (ajustes-onboarding RF-12). */
+@PreviewTest
+@AureolePreview
+@Composable
+private fun ContainerFourFoldersScreenshotTest() {
+    val folders = listOf(
+        "Bank" to "account_balance",
+        "Work" to "work",
+        "Games" to "sports_esports",
+        "Travel" to "flight"
+    ).mapIndexed { index, (name, icon) -> AppFolder(id = "f$index", name = name, icon = icon) }
+    AureoleLauncherTheme {
+        CompositionLocalProvider(
+            LocalHomeUiState provides MainUiState(),
+            LocalLeftHanded provides false,
+            LocalHomeActions provides mockHomeScreenActions()
+        ) {
+            ContainerColumn(
+                config = ContainerConfig(
+                    panelId = "preview_four_folders",
+                    folders = folders,
+                    showFolderLabels = true,
+                    isBackgroundEnabled = true
+                ),
+                columnConfig = ContainerColumnConfig(
+                    backgroundColor = AureoleDS.colors.surface,
+                    verticalArrangement = Arrangement.Center,
+                    onFolderClick = { _, _ -> }
+                )
+            )
         }
     }
 }
