@@ -57,7 +57,9 @@ fun FavoriteAppsDialog(
                 onSettingsClick = actions.onSettingsClick,
                 onBackPress = { isVisible = false },
                 headerLeadingAction = actions.onCustomizeHome?.let { onCustomizeHome ->
-                    { FavoriteAppsCustomizeHomeButton(onClick = onCustomizeHome) }
+                    {
+                        FavoriteAppsCustomizeHomeButton(onClick = onCustomizeHome)
+                    }
                 }
             ),
             previewContent = {
