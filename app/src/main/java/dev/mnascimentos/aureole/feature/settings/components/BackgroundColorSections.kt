@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.selection.selectable
@@ -30,17 +31,14 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.style.TextAlign
 import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.composable.color.AureoleColorSwatch
-import dev.mnascimentos.aureole.composable.color.AureoleColorSwatches
 import dev.mnascimentos.aureole.composable.color.AureoleHueSlider
 import dev.mnascimentos.aureole.composable.color.model.PaletteSwatch
-import dev.mnascimentos.aureole.composable.color.model.RecommendedColors
 import dev.mnascimentos.aureole.composable.color.model.hueOf
 import dev.mnascimentos.aureole.composable.color.model.initialPaletteCategory
 import dev.mnascimentos.aureole.composable.color.model.isLightBackground
 import dev.mnascimentos.aureole.composable.color.model.paletteSwatches
 import dev.mnascimentos.aureole.composable.color.model.themeSwatches
 import dev.mnascimentos.aureole.composable.color.model.toneRamp
-import dev.mnascimentos.aureole.composable.mirror.LeftHandMirror
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
 import dev.mnascimentos.aureole.core.designsystem.palette.PaletteCategory
@@ -50,35 +48,28 @@ import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 
 /**
  * Solid color choices of the background sheet, in order: the tones of the current theme, one tone of each palette
- * (filtered by family), a ramp of seven tones of one hue with a slider to move it, and the vivid presets. A short
- * note shows when the chosen color makes a light theme.
+ * (filtered by family) and a ramp of seven tones of one hue with a slider to move it. Each label has the space of
+ * [SheetSectionHeading] above it. A short note shows when the chosen color makes a light theme.
  */
 @Composable
 internal fun BackgroundColorSections(
     selected: Int,
     onSelect: (Int) -> Unit,
-    modifier: Modifier = Modifier,
-    isLeftHanded: Boolean = false
+    modifier: Modifier = Modifier
 ) {
-    Column(
-        modifier = modifier.fillMaxWidth(),
-        verticalArrangement = Arrangement.spacedBy(AureoleDS.dimens.small)
-    ) {
-        SheetSectionLabel(text = stringResource(R.string.settings_background_section_theme))
+    Column(modifier = modifier.fillMaxWidth()) {
+        SheetSectionHeading(text = stringResource(R.string.settings_background_section_theme))
         ThemeSwatchRow(selected = selected, onSelect = onSelect)
-        SheetSectionLabel(text = stringResource(R.string.settings_background_section_palettes))
+        SheetSectionHeading(text = stringResource(R.string.settings_background_section_palettes))
         PaletteSwatchRow(selected = selected, onSelect = onSelect)
-        SheetSectionLabel(text = stringResource(R.string.settings_background_section_tones))
+        SheetSectionHeading(text = stringResource(R.string.settings_background_section_tones))
         ToneRamp(selected = selected, onSelect = onSelect)
-        SheetSectionLabel(text = stringResource(R.string.settings_background_section_vivid))
-        LeftHandMirror(isLeftHanded = isLeftHanded) {
-            AureoleColorSwatches(colors = RecommendedColors, selected = selected, onSelect = onSelect)
-        }
         if (isLightBackground(selected)) {
             AureoleText(
                 text = stringResource(R.string.settings_background_light_warning),
                 color = AureoleDS.colors.onSurfaceLow,
-                format = AureoleTextFormatParams(style = AureoleDS.typography.bodySmall)
+                format = AureoleTextFormatParams(style = AureoleDS.typography.bodySmall),
+                modifier = Modifier.padding(top = AureoleDS.dimens.small)
             )
         }
     }
@@ -190,10 +181,12 @@ private fun ToneRamp(selected: Int, onSelect: (Int) -> Unit) {
     }
 }
 
+private const val PREVIEW_COLOR = 0xFF2B373E.toInt()
+
 @AureolePreview
 @Composable
 private fun BackgroundColorSectionsPreview() {
     AureoleLauncherTheme {
-        BackgroundColorSections(selected = RecommendedColors[1], onSelect = {})
+        BackgroundColorSections(selected = PREVIEW_COLOR, onSelect = {})
     }
 }

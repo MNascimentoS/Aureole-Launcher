@@ -16,5 +16,6 @@ fun settingsAreaTitle(area: SettingsArea): Int = when (area) {
 fun settingsSheetTitle(area: SettingsArea, inner: SettingsInnerKind?): Int = when (inner) {
     SettingsInnerKind.PALETTE -> R.string.settings_appearance_color_palette
     SettingsInnerKind.FONT -> R.string.home_customize_adjust_font
+    SettingsInnerKind.BACKGROUND -> R.string.settings_appearance_set_background_title
     null -> settingsAreaTitle(area)
 }

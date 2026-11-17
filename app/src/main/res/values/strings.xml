@@ -431,7 +431,6 @@
     <string name="settings_background_section_theme">From your theme</string>
     <string name="settings_background_section_palettes">Palettes</string>
     <string name="settings_background_section_tones">Tones</string>
-    <string name="settings_background_section_vivid">Vivid</string>
     <string name="settings_background_category_cold">Cold</string>
     <string name="settings_background_category_cool">Cool</string>
     <string name="settings_background_category_neutral">Neutral</string>

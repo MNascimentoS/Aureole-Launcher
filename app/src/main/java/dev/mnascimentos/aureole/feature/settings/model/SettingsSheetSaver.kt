@@ -5,7 +5,7 @@ import androidx.compose.runtime.saveable.Saver
 private const val AREA_TAG = "area"
 private const val CHILD_TAG = "child"
 private const val SEPARATOR = ":"
-private const val PARENT_INDEX = 3
+private const val RETURN_INNER_INDEX = 3
 
 /** The sheet as text, to survive a rotation or a trip to the licenses screen; null for the root. */
 fun encodeSettingsSheet(sheet: SettingsSheet?): String? = when (sheet) {
@@ -14,7 +14,7 @@ fun encodeSettingsSheet(sheet: SettingsSheet?): String? = when (sheet) {
         CHILD_TAG,
         sheet.kind.name,
         sheet.returnTo?.name.orEmpty(),
-        sheet.parent?.name
+        sheet.returnInner?.name
     ).joinToString(SEPARATOR)
     null -> null
 }
@@ -28,10 +28,12 @@ fun decodeSettingsSheet(text: String?): SettingsSheet? {
             SettingsSheet.Area(area, inner)
         }
         CHILD_TAG -> parts.getOrNull(1)?.let(::childNamed)?.let { kind ->
+            val returnTo = parts.getOrNull(2)?.let(::areaNamed)
             SettingsSheet.Child(
                 kind,
-                returnTo = parts.getOrNull(2)?.let(::areaNamed),
-                parent = parts.getOrNull(PARENT_INDEX)?.let(::childNamed)
+                returnTo = returnTo,
+                returnInner = parts.getOrNull(RETURN_INNER_INDEX)?.let(::innerNamed)
+                    ?.takeIf { returnTo != null && settingsAreaHasInner(returnTo) }
             )
         }
         else -> null

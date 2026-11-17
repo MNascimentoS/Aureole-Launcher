@@ -14,6 +14,8 @@ import dev.mnascimentos.aureole.core.data.db.AppDatabase
 import dev.mnascimentos.aureole.core.data.image.decodeWallpaperBitmap
 import dev.mnascimentos.aureole.core.data.model.ClockConfig
 import dev.mnascimentos.aureole.core.data.model.WallpaperAdjustments
+import dev.mnascimentos.aureole.core.designsystem.palette.resolveThemeSeedColor
+import dev.mnascimentos.aureole.core.designsystem.palette.vividBackgroundReplacement
 import dev.mnascimentos.aureole.core.designsystem.utils.HazeUtils
 import dev.mnascimentos.aureole.core.image.BlurredWallpaperCache
 import timber.log.Timber
@@ -146,6 +148,20 @@ class SettingsRepository(private val context: Context) {
         val wasOff = !prefs.getBoolean(KEY_LEGACY_SHOW_WIDGET_DOTS, true)
         prefs.edit { remove(KEY_LEGACY_SHOW_WIDGET_DOTS) }
         return wasOff
+    }
+
+    /**
+     * One-time migration of the removed "Vivid" background swatches (RF-03 of polimento-ui): a background saved from
+     * one of [vividColors] becomes the default palette (see [vividBackgroundReplacement]). Runs once; later calls do
+     * nothing.
+     */
+    fun migrateVividBackground(vividColors: Collection<Int>) {
+        if (prefs.getBoolean(KEY_VIVID_BACKGROUND_MIGRATED, false)) return
+        vividBackgroundReplacement(selectedThemeName, manualSeedColor, vividColors)?.let { themeName ->
+            selectedThemeName = themeName
+            manualSeedColor = resolveThemeSeedColor(themeName)
+        }
+        prefs.edit { putBoolean(KEY_VIVID_BACKGROUND_MIGRATED, true) }
     }
 
     var isInAppUpdateEnabled: Boolean
@@ -420,6 +436,7 @@ class SettingsRepository(private val context: Context) {
         private const val KEY_HAZE_OPACITY = "haze_opacity"
         private const val KEY_HAZE_BLUR_LEVEL = "haze_blur_level"
         private const val KEY_LEGACY_SHOW_WIDGET_DOTS = "show_widget_dots"
+        private const val KEY_VIVID_BACKGROUND_MIGRATED = "vivid_background_migrated"
         private const val KEY_IN_APP_UPDATE_ENABLED = "in_app_update_enabled"
         private const val KEY_HEADER_OFFSET_PERCENT = "header_offset_percent"
         private const val KEY_CORNER_RADIUS_DP = "corner_radius_dp"

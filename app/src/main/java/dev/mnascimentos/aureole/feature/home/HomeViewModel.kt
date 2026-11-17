@@ -2,6 +2,7 @@ package dev.mnascimentos.aureole.feature.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import dev.mnascimentos.aureole.composable.color.model.RecommendedColors
 import dev.mnascimentos.aureole.core.coroutines.LatestJobRunner
 import dev.mnascimentos.aureole.core.data.repository.AppRepository
 import dev.mnascimentos.aureole.core.data.repository.ClockConfigRepository
@@ -118,6 +119,7 @@ class HomeViewModel(
     }
 
     fun loadSettings() {
+        settingsRepository.migrateVividBackground(RecommendedColors)
         viewModelScope.launch {
             favoriteContainerRepository.migrateLegacyShowAllApps()
             val containerFavsMap = favoriteContainerRepository.getAllContainerFavorites()

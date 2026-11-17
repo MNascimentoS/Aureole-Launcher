@@ -59,11 +59,9 @@ data class BackgroundPhotoCard(
  * What the settings host hands to the sheet an area opened.
  *
  * @property host Width and backdrop decided by the host.
- * @property onOpenEditor Swaps the background sheet for the photo editor, which comes back to it on close.
  */
 data class ChildSheetLinks(
-    val host: OverlayHostSpec = OverlayHostSpec(),
-    val onOpenEditor: () -> Unit = {}
+    val host: OverlayHostSpec = OverlayHostSpec()
 )
 
 /** Name of [tab] in the sheet. */

@@ -79,15 +79,16 @@ private fun AnimatedContentTransitionScope<SettingsInnerKind?>.innerSlide(): Con
 }
 
 /**
- * The palette or font picker inside the Appearance sheet. A tap only changes the [draft] ([onDraftChange]); the
- * sheet saves it when the picker goes back to the list or the sheet closes.
+ * The palette, font or [background] picker inside the Appearance sheet. A tap only changes the [draft]
+ * ([onDraftChange]); the sheet saves it when the picker goes back to the list or the sheet closes.
  */
 @Composable
 internal fun AppearancePicker(
     kind: SettingsInnerKind,
     uiState: SettingsUiState,
     draft: AppearanceDraft,
-    onDraftChange: (AppearanceDraft) -> Unit
+    onDraftChange: (AppearanceDraft) -> Unit,
+    background: @Composable () -> Unit = {}
 ) {
     when (kind) {
         SettingsInnerKind.PALETTE -> PalettePickerGrid(
@@ -98,6 +99,7 @@ internal fun AppearancePicker(
             shownFont = draft.fontName ?: uiState.selectedFontName,
             onSelect = { font -> onDraftChange(draft.copy(fontName = font)) }
         )
+        SettingsInnerKind.BACKGROUND -> background()
     }
 }
 
@@ -110,7 +112,12 @@ private fun AppearancePickerPreview() {
                 inner = SettingsInnerKind.PALETTE,
                 list = {},
                 picker = { kind ->
-                    AppearancePicker(kind = kind, uiState = SettingsUiState(), draft = AppearanceDraft()) {}
+                    AppearancePicker(
+                        kind = kind,
+                        uiState = SettingsUiState(),
+                        draft = AppearanceDraft(),
+                        onDraftChange = {}
+                    )
                 }
             )
         }

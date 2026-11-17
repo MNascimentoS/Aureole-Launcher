@@ -434,7 +434,6 @@
     <string name="settings_background_section_theme">Do seu tema</string>
     <string name="settings_background_section_palettes">Paletas</string>
     <string name="settings_background_section_tones">Tons</string>
-    <string name="settings_background_section_vivid">Vivas</string>
     <string name="settings_background_category_cold">Frias</string>
     <string name="settings_background_category_cool">Frescas</string>
     <string name="settings_background_category_neutral">Neutras</string>

@@ -14,7 +14,6 @@ import dev.mnascimentos.aureole.feature.settings.model.SettingsUiState
 import dev.mnascimentos.aureole.feature.settings.model.toCardsGlassDraft
 import dev.mnascimentos.aureole.testing.closeOverlayWithBack
 import org.junit.Assert.assertEquals
-import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
@@ -22,7 +21,6 @@ import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 
 private const val DISMISS_ANIMATION_MS = 500L
-private const val DEFAULT_SEED = 0xFF112233.toInt()
 
 @RunWith(RobolectricTestRunner::class)
 class SettingsAppearanceControlsTest {
@@ -98,58 +96,6 @@ class SettingsAppearanceControlsTest {
         composeTestRule.onNodeWithText("16 dp").assertExists()
         composeTestRule.onNodeWithText("Change Border").performClick()
         assertTrue(clicked)
-    }
-
-    @Test
-    fun `when setBg sheet is open, closing without a change should save no seed color`() {
-        var savedColor: Int? = null
-        var dismissCalled = false
-        val kind = SettingsChildKind.BACKGROUND
-        val actions = SettingsScreenActions(
-            onSelectBackgroundColor = { savedColor = it }
-        )
-
-        composeTestRule.setContent {
-            AureoleLauncherTheme {
-                SettingsChildSheet(
-                    kind = kind,
-                    uiState = SettingsUiState(manualSeedColor = DEFAULT_SEED),
-                    actions = actions,
-                    onClose = { dismissCalled = true }
-                )
-            }
-        }
-
-        composeTestRule.closeOverlayWithBack()
-        assertNull(savedColor)
-        assertTrue(dismissCalled)
-    }
-
-    @Test
-    fun `when setBg sheet is open, clicking custom image should trigger wallpaper change`() {
-        var wallpaperChangeClicked = false
-        var dismissCalled = false
-        val kind = SettingsChildKind.BACKGROUND
-        val actions = SettingsScreenActions(
-            onChangeWallpaperClick = { wallpaperChangeClicked = true }
-        )
-
-        composeTestRule.setContent {
-            AureoleLauncherTheme {
-                SettingsChildSheet(
-                    kind = kind,
-                    uiState = SettingsUiState(),
-                    actions = actions,
-                    onClose = { dismissCalled = true }
-                )
-            }
-        }
-
-        composeTestRule.onNodeWithText("Custom image").performClick()
-        composeTestRule.closeOverlayWithBack()
-        composeTestRule.mainClock.advanceTimeBy(DISMISS_ANIMATION_MS)
-        assertTrue(wallpaperChangeClicked)
-        assertTrue(dismissCalled)
     }
 
     @Test
