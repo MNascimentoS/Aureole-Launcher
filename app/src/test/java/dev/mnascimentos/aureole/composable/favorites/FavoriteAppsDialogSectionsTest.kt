@@ -1,11 +1,14 @@
 package dev.mnascimentos.aureole.composable.favorites
 
+import androidx.compose.foundation.layout.Column
+import androidx.compose.ui.test.assertCountEquals
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertIsEnabled
 import androidx.compose.ui.test.assertIsNotEnabled
 import androidx.compose.ui.test.assertIsNotSelected
 import androidx.compose.ui.test.assertIsSelected
 import androidx.compose.ui.test.junit4.v2.createComposeRule
+import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import dev.mnascimentos.aureole.composable.favorites.model.FavoriteAppsDialogActions
@@ -151,5 +154,41 @@ class FavoriteAppsDialogSectionsTest {
 
         composeTestRule.onNodeWithText("Favorites · 0").assertIsDisplayed()
         composeTestRule.onNodeWithText("All apps · 0").assertIsDisplayed()
+    }
+
+    @Test
+    fun `without favorites the notice is the only text, no second empty message`() {
+        setSheet(homeList(favorites = emptyList(), checked = true))
+
+        composeTestRule.onNodeWithText("No favorites: the Home shows all 0 apps.").assertIsDisplayed()
+        composeTestRule.onNodeWithText("No favorite app selected.").assertDoesNotExist()
+    }
+
+    @Test
+    fun `favorites that are no longer installed still show the empty message`() {
+        setSheet(homeList(favorites = listOf("gone"), checked = true))
+
+        composeTestRule.onNodeWithText("No favorite app selected.").assertIsDisplayed()
+    }
+
+    @Test
+    fun `in landscape the chips leave the list and sit next to the search`() {
+        val config = homeList(favorites = listOf("a"), checked = true)
+        composeTestRule.setContent {
+            AureoleLauncherTheme {
+                Column {
+                    FavoriteAppsBottomBar(options = config)
+                    FavoriteAppsSheetContent(
+                        config = config,
+                        actions = FavoriteAppsDialogActions(),
+                        showOptions = false
+                    )
+                }
+            }
+        }
+
+        composeTestRule.onAllNodesWithText("Show all apps").assertCountEquals(1)
+        composeTestRule.onAllNodesWithText("Labels").assertCountEquals(1)
+        composeTestRule.onNodeWithText("Search app…").assertIsDisplayed()
     }
 }

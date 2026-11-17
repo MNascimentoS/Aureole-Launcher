@@ -49,7 +49,7 @@ class FavoriteAppsListTest {
     )
 
     @Test
-    fun `when favoriteSectionItems is called with empty list and empty search, should display empty message`() {
+    fun `with no favorites and empty search, only the header shows (the notice above says it)`() {
         val params = FavoriteSectionParams(
             filteredFavorites = emptyList(),
             searchQuery = ""
@@ -64,6 +64,25 @@ class FavoriteAppsListTest {
         }
 
         composeTestRule.onNodeWithText("Favorites · 0").assertIsDisplayed()
+        composeTestRule.onNodeWithText("No favorite app selected.").assertDoesNotExist()
+    }
+
+    @Test
+    fun `with saved favorites none of which is installed, the empty message shows`() {
+        val params = FavoriteSectionParams(
+            filteredFavorites = emptyList(),
+            searchQuery = "",
+            favoritesCount = 2
+        )
+
+        composeTestRule.setContent {
+            AureoleLauncherTheme {
+                LazyColumn {
+                    favoriteSectionItems(params = params, actions = noActions)
+                }
+            }
+        }
+
         composeTestRule.onNodeWithText("No favorite app selected.").assertIsDisplayed()
     }
 

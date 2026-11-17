@@ -1,7 +1,9 @@
 package dev.mnascimentos.aureole.composable.favorites
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -11,6 +13,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import dev.mnascimentos.aureole.composable.appitem.AppListSkeletonComponent
 import dev.mnascimentos.aureole.composable.favorites.model.FavoriteAppsBodyParams
@@ -32,10 +35,30 @@ import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import kotlinx.coroutines.delay
 
-/** The footer of the sheet: the search field. The sheet has no back button; the system back closes it. */
+/**
+ * The footer of the sheet: the search field and, when [options] is given (landscape, RF-05), the options chips on
+ * the same line, so the top of the sheet is only the title and the list shows without scrolling. The sheet has no
+ * back button; the system back closes it.
+ */
 @Composable
-internal fun FavoriteAppsBottomBar(searchQuery: String = "", onSearchQueryChange: (String) -> Unit = {}) {
-    FavoriteAppsSearchInput(query = searchQuery, onQueryChange = onSearchQueryChange)
+internal fun FavoriteAppsBottomBar(
+    searchQuery: String = "",
+    onSearchQueryChange: (String) -> Unit = {},
+    options: FavoriteAppsDialogConfig? = null
+) {
+    if (options?.showAllApps == null) {
+        FavoriteAppsSearchInput(query = searchQuery, onQueryChange = onSearchQueryChange)
+        return
+    }
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(AureoleDS.dimens.xSmall)
+    ) {
+        FavoriteAppsListHeader(config = options)
+        Box(modifier = Modifier.weight(1f)) {
+            FavoriteAppsSearchInput(query = searchQuery, onQueryChange = onSearchQueryChange)
+        }
+    }
 }
 
 /** The single "Choose favorites" screen: one list with the options chips over the apps to pick and order. */
@@ -43,9 +66,10 @@ internal fun FavoriteAppsBottomBar(searchQuery: String = "", onSearchQueryChange
 internal fun FavoriteAppsSheetContent(
     config: FavoriteAppsDialogConfig,
     actions: FavoriteAppsDialogActions,
-    searchQuery: String = ""
+    searchQuery: String = "",
+    showOptions: Boolean = true
 ) {
-    FavoriteAppsDialogContent(config = config, actions = actions, searchQuery = searchQuery)
+    FavoriteAppsDialogContent(config = config, actions = actions, searchQuery = searchQuery, showOptions = showOptions)
 }
 
 private const val SEARCH_DEBOUNCE_DELAY_MS = 300L
@@ -54,7 +78,8 @@ private const val SEARCH_DEBOUNCE_DELAY_MS = 300L
 private fun FavoriteAppsDialogContent(
     config: FavoriteAppsDialogConfig,
     actions: FavoriteAppsDialogActions,
-    searchQuery: String
+    searchQuery: String,
+    showOptions: Boolean
 ) {
     var debouncedQuery by remember { mutableStateOf("") }
 
@@ -74,7 +99,8 @@ private fun FavoriteAppsDialogContent(
             actions = actions,
             searchQuery = searchQuery,
             filteredFavorites = filtered.favorites,
-            filteredRemaining = filtered.remaining
+            filteredRemaining = filtered.remaining,
+            showOptions = showOptions
         )
     )
 }
@@ -101,7 +127,7 @@ private fun FavoriteAppsDialogBody(
     // The search lives in the footer of the sheet (see FavoriteAppsBottomBar), below the divider.
     Column(modifier = Modifier.fillMaxWidth()) {
         if (config.isLoading) {
-            FavoriteAppsListHeader(config = config)
+            if (params.showOptions) FavoriteAppsListHeader(config = config)
             AppListSkeletonComponent(modifier = Modifier.weight(1f))
         } else {
             LeftHandMirror {
@@ -141,7 +167,7 @@ private fun FavoriteAppsSections(
         verticalArrangement = Arrangement.spacedBy(AureoleDS.dimens.xSmall)
     ) {
         val config = params.config
-        if (config.showAllApps != null) {
+        if (config.showAllApps != null && params.showOptions) {
             item(key = "options", contentType = "options") { FavoriteAppsListHeader(config = config) }
         }
         favoritesEmptyNotice(

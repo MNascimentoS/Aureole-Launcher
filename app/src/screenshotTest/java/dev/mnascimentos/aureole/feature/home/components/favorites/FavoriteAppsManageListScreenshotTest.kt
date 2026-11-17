@@ -18,13 +18,14 @@ import dev.mnascimentos.aureole.composable.LocalHomeUiState
 import dev.mnascimentos.aureole.composable.ProvideHomeUiState
 import dev.mnascimentos.aureole.composable.favorites.FavoriteAppRow
 import dev.mnascimentos.aureole.composable.favorites.FavoriteAppsEmptyNotice
-import dev.mnascimentos.aureole.composable.favorites.FavoriteSectionHeader
 import dev.mnascimentos.aureole.composable.favorites.FavoriteAppsSheetContent
+import dev.mnascimentos.aureole.composable.favorites.FavoriteSectionHeader
 import dev.mnascimentos.aureole.composable.favorites.RemainingAppRow
 import dev.mnascimentos.aureole.composable.favorites.model.FavoriteAppsDialogActions
 import dev.mnascimentos.aureole.composable.favorites.model.FavoriteAppsDialogConfig
 import dev.mnascimentos.aureole.composable.favorites.model.FavoritesEmptyNotice
 import dev.mnascimentos.aureole.composable.favorites.model.ShowAllAppsParams
+import dev.mnascimentos.aureole.composable.favorites.model.ShowLabelsParams
 import dev.mnascimentos.aureole.composable.mirror.LeftHandMirror
 import dev.mnascimentos.aureole.composable.reorder.model.LocalReorderHandle
 import dev.mnascimentos.aureole.composable.reorder.model.ReorderHandle
@@ -60,7 +61,8 @@ private fun FavoritesManageCase(isLeftHanded: Boolean, favoriteCount: Int = 4) {
                     config = FavoriteAppsDialogConfig(
                         allApps = favoriteSampleApps,
                         favoriteAppPackages = favoriteSampleApps.take(favoriteCount).map { it.packageName },
-                        showAllApps = ShowAllAppsParams(checked = true, onCheckedChange = {})
+                        showAllApps = ShowAllAppsParams(checked = true, onCheckedChange = {}),
+                        showLabels = ShowLabelsParams(checked = true, onCheckedChange = {})
                     ),
                     actions = FavoriteAppsDialogActions(onCustomizeHome = {})
                 )

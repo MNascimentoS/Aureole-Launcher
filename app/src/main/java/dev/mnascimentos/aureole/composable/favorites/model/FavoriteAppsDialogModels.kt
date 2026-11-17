@@ -64,7 +64,9 @@ data class FavoriteAppsBodyParams(
     val actions: FavoriteAppsDialogActions,
     val searchQuery: String,
     val filteredFavorites: List<AppInfo>,
-    val filteredRemaining: List<AppInfo>
+    val filteredRemaining: List<AppInfo>,
+    /** Whether the options chips open the list; false when the footer holds them (landscape, RF-05). */
+    val showOptions: Boolean = true
 )
 
 /** What the preview frame of "Choose favorites" draws: the list as the Home shows it. */
@@ -73,4 +75,16 @@ data class FavoriteAppsPreviewParams(
     /** Section labels on, as on the Home: only with "Show all apps" on and "Show labels" on. */
     val hasLabels: Boolean,
     val rowConfig: AppItemRowConfig
+)
+
+/**
+ * What the "Choose favorites" overlay reads besides its config: whether it shows, the search and whether it lays the
+ * preview and the sheet side by side (landscape), where the options chips go next to the search (RF-05).
+ */
+data class FavoriteAppsOverlayState(
+    val isVisible: Boolean,
+    val onHide: () -> Unit,
+    val searchQuery: String,
+    val onSearchQueryChange: (String) -> Unit,
+    val isSideBySide: Boolean
 )

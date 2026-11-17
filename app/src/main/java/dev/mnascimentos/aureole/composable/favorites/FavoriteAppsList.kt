@@ -142,6 +142,8 @@ internal fun LazyListScope.favoriteSectionItems(
     }
 
     when {
+        // No favorites at all: the one-line notice over the list already says it (RF-03), no second text here.
+        filteredFavorites.isEmpty() && !isSearching && params.favoritesCount == 0 -> Unit
         filteredFavorites.isEmpty() -> item {
             val emptyMsg = if (searchQuery.isBlank()) {
                 stringResource(R.string.home_favorites_none_selected)
@@ -286,7 +288,13 @@ internal fun FavoriteAppsSearchInput(
     OutlinedTextField(
         value = query,
         onValueChange = onQueryChange,
-        placeholder = { AureoleText(stringResource(R.string.home_favorites_search_placeholder)) },
+        placeholder = {
+            // One line, cut with an ellipsis when the chips share the footer (landscape).
+            AureoleText(
+                text = stringResource(R.string.home_favorites_search_placeholder),
+                format = AureoleTextFormatParams(maxLines = 1, overflow = TextOverflow.Ellipsis)
+            )
+        },
         leadingIcon = {
             AureoleDS.icons.Search(
                 tint = AureoleDS.colors.onSurfaceMedium,

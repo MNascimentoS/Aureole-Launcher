@@ -4,7 +4,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.FilterChip
@@ -39,8 +38,7 @@ internal fun FavoriteAppsListHeader(
 ) {
     val showAllApps = config.showAllApps ?: return
     Row(
-        modifier = modifier
-            .fillMaxWidth(),
+        modifier = modifier,
         horizontalArrangement = Arrangement.spacedBy(AureoleDS.dimens.xSmall)
     ) {
         FavoriteAppsOptionChip(
@@ -73,7 +71,13 @@ private fun FavoriteAppsOptionChip(
         enabled = enabled,
         label = { AureoleText(label) },
         leadingIcon = if (selected) {
-            { AureoleDS.icons.Check(modifier = Modifier.size(AureoleDS.dimens.iconSmall)) }
+            {
+                // The icon has its own default tint; the chip's leading icon color does not reach it.
+                AureoleDS.icons.Check(
+                    modifier = Modifier.size(AureoleDS.dimens.iconSmall),
+                    tint = if (enabled) AureoleDS.colors.surface else AureoleDS.colors.onSurfaceLow
+                )
+            }
         } else {
             null
         },
