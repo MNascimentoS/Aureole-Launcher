@@ -61,11 +61,11 @@
     <string name="settings_root_title">Aureole</string>
     <string name="settings_root_version">Version %1$s</string>
     <string name="settings_root_appearance_title">Appearance</string>
-    <string name="settings_root_appearance_subtitle">Colors, themes, and layout</string>
+    <string name="settings_root_appearance_subtitle">Colors, background, font, and glass</string>
     <string name="settings_root_behavior_title">Behavior</string>
-    <string name="settings_root_behavior_subtitle">Gestures, buttons, and controls</string>
+    <string name="settings_root_behavior_subtitle">Gestures, list, and home screen</string>
     <string name="settings_root_advanced_title">Advanced</string>
-    <string name="settings_root_advanced_subtitle">System tools and legal info</string>
+    <string name="settings_root_advanced_subtitle">System, about, and credits</string>
 
     <!-- Settings Advanced -->
     <string name="settings_advanced_title">Advanced</string>
@@ -528,4 +528,12 @@
     <string name="settings_reset_grid_success">Home screen layout reset to default</string>
     <string name="settings_wallpaper_load_error">Could not load the selected image</string>
     <string name="home_container_preview_app_label">App %1$d</string>
+    <string name="settings_section_theme">Theme</string>
+    <string name="settings_section_background">Background</string>
+    <string name="settings_section_cards_glass">Cards and glass</string>
+    <string name="settings_section_gestures">Gestures and app list</string>
+    <string name="settings_section_home_screen">Home screen</string>
+    <string name="settings_section_system">System</string>
+    <string name="settings_section_about">About</string>
+    <string name="settings_section_care_zone">Care zone</string>
 </resources>

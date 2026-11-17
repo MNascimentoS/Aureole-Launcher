@@ -239,6 +239,18 @@ fun AureoleIcons.Info(
     tint: Color? = null
 ) { AureoleIcon(R.drawable.ic_aureole_info, modifier, tint) }
 
+@Composable
+fun AureoleIcons.Users(
+    modifier: Modifier = Modifier,
+    tint: Color? = null
+) { AureoleIcon(R.drawable.ic_aureole_users, modifier, tint) }
+
+@Composable
+fun AureoleIcons.Doc(
+    modifier: Modifier = Modifier,
+    tint: Color? = null
+) { AureoleIcon(R.drawable.ic_aureole_doc, modifier, tint) }
+
 // Set C
 @Composable
 fun AureoleIcons.Keyboard(

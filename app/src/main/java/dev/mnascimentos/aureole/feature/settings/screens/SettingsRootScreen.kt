@@ -1,6 +1,5 @@
 package dev.mnascimentos.aureole.feature.settings.screens
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -25,15 +24,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import dev.mnascimentos.aureole.R
-import dev.mnascimentos.aureole.composable.SettingsMenuItem
-import dev.mnascimentos.aureole.composable.SettingsMenuParams
 import dev.mnascimentos.aureole.composable.sheets.ReleaseNotesBottomSheet
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
@@ -44,6 +40,7 @@ import dev.mnascimentos.aureole.core.designsystem.icons.Star
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
+import dev.mnascimentos.aureole.feature.settings.components.SettingsAreaCard
 import dev.mnascimentos.aureole.feature.settings.extensions.getVersionName
 import dev.mnascimentos.aureole.feature.settings.model.SettingsLayout
 import dev.mnascimentos.aureole.feature.settings.model.SettingsNavigationActions
@@ -221,36 +218,25 @@ private fun SettingsHeader(
 private fun SettingsNavigationList(navigation: SettingsNavigationActions) {
     Column(
         verticalArrangement = Arrangement.spacedBy(AureoleDS.dimens.medium),
-        modifier = Modifier.fillMaxWidth().padding(horizontal = AureoleDS.dimens.xSmall)
+        modifier = Modifier.fillMaxWidth()
     ) {
-        SettingsMenuItem(
-            params = SettingsMenuParams(
-                title = stringResource(R.string.settings_root_appearance_title),
-                subtitle = stringResource(R.string.settings_root_appearance_subtitle),
-                leadingContent = { AureoleDS.icons.Edit() },
-                onClick = navigation.onNavigateToAppearance
-            ),
-            modifier = Modifier.background(Color.Transparent)
+        SettingsAreaCard(
+            icon = { m, c -> AureoleDS.icons.Edit(modifier = m, tint = c) },
+            title = stringResource(R.string.settings_root_appearance_title),
+            subtitle = stringResource(R.string.settings_root_appearance_subtitle),
+            onClick = navigation.onNavigateToAppearance
         )
-
-        SettingsMenuItem(
-            params = SettingsMenuParams(
-                title = stringResource(R.string.settings_root_behavior_title),
-                subtitle = stringResource(R.string.settings_root_behavior_subtitle),
-                leadingContent = { AureoleDS.icons.Star() },
-                onClick = navigation.onNavigateToBehavior
-            ),
-            modifier = Modifier.background(Color.Transparent)
+        SettingsAreaCard(
+            icon = { m, c -> AureoleDS.icons.Star(modifier = m, tint = c) },
+            title = stringResource(R.string.settings_root_behavior_title),
+            subtitle = stringResource(R.string.settings_root_behavior_subtitle),
+            onClick = navigation.onNavigateToBehavior
         )
-
-        SettingsMenuItem(
-            params = SettingsMenuParams(
-                title = stringResource(R.string.settings_root_advanced_title),
-                subtitle = stringResource(R.string.settings_root_advanced_subtitle),
-                leadingContent = { AureoleDS.icons.Advanced() },
-                onClick = navigation.onNavigateToAdvanced
-            ),
-            modifier = Modifier.background(Color.Transparent)
+        SettingsAreaCard(
+            icon = { m, c -> AureoleDS.icons.Advanced(modifier = m, tint = c) },
+            title = stringResource(R.string.settings_root_advanced_title),
+            subtitle = stringResource(R.string.settings_root_advanced_subtitle),
+            onClick = navigation.onNavigateToAdvanced
         )
     }
 }

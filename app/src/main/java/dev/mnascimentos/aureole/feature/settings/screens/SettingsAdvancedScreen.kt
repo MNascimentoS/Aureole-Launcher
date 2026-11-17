@@ -1,14 +1,6 @@
 package dev.mnascimentos.aureole.feature.settings.screens
 
-import android.content.Context
-import android.content.Intent
-import android.net.Uri
-import android.provider.Settings
 import androidx.activity.compose.BackHandler
-import androidx.annotation.StringRes
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -17,7 +9,6 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.widthIn
@@ -32,32 +23,22 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.composable.ProvideHomeUiState
-import dev.mnascimentos.aureole.composable.SettingsActionItem
 import dev.mnascimentos.aureole.composable.sheets.ReleaseNotesBottomSheet
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
-import dev.mnascimentos.aureole.core.designsystem.icons.Delete
-import dev.mnascimentos.aureole.core.designsystem.icons.Home
-import dev.mnascimentos.aureole.core.designsystem.icons.Info
-import dev.mnascimentos.aureole.core.designsystem.icons.Smile
-import dev.mnascimentos.aureole.core.designsystem.icons.Undo
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
-import dev.mnascimentos.aureole.feature.settings.components.UninstallBottomSheet
-import dev.mnascimentos.aureole.feature.settings.extensions.openLegalPage
-import dev.mnascimentos.aureole.feature.settings.model.LegalPage
 import dev.mnascimentos.aureole.feature.settings.model.SettingsAdvancedDialogActions
 import dev.mnascimentos.aureole.feature.settings.model.SettingsScreenActions
 import dev.mnascimentos.aureole.feature.settings.model.SettingsUiState
+import dev.mnascimentos.aureole.feature.settings.sections.AdvancedSections
 import dev.mnascimentos.aureole.util.percentToFraction
 
 private const val BOTTOM_SPACER_PERCENT = 0.15f
@@ -73,8 +54,6 @@ fun SettingsAdvancedScreen(
 ) {
     BackHandler(onBack = onNavigateBack)
 
-    val context = LocalContext.current
-    var showUninstallDialog by remember { mutableStateOf(false) }
     var showReleaseNotesDialog by remember { mutableStateOf(false) }
 
     Scaffold(
@@ -84,24 +63,13 @@ fun SettingsAdvancedScreen(
         SettingsAdvancedContent(
             uiState = uiState,
             actions = actions,
-            context = context,
             innerPadding = innerPadding,
             dialogActions = SettingsAdvancedDialogActions(
                 onNavigateToContributors = onNavigateToContributors,
                 onNavigateToLicenses = actions.onNavigateToLicenses,
-                onOpenUninstallDialog = { showUninstallDialog = true },
                 onOpenReleaseNotesDialog = { showReleaseNotesDialog = true }
             )
         )
-
-        if (showUninstallDialog) {
-            ProvideHomeUiState(MainUiState(isLeftHandedMode = uiState.isLeftHandedMode)) {
-                UninstallBottomSheet(
-                    context = context,
-                    onDismiss = { showUninstallDialog = false }
-                )
-            }
-        }
 
         if (showReleaseNotesDialog) {
             ProvideHomeUiState(MainUiState(isLeftHandedMode = uiState.isLeftHandedMode)) {
@@ -117,7 +85,6 @@ fun SettingsAdvancedScreen(
 private fun SettingsAdvancedContent(
     uiState: SettingsUiState,
     actions: SettingsScreenActions,
-    context: Context,
     innerPadding: PaddingValues,
     dialogActions: SettingsAdvancedDialogActions
 ) {
@@ -157,104 +124,14 @@ private fun SettingsAdvancedContent(
 
             Spacer(modifier = Modifier.height(AureoleDS.dimens.large))
 
-            AdvancedItemsGroup(
+            AdvancedSections(
+                uiState = uiState,
                 actions = actions,
-                context = context,
-                onOpenUninstallDialog = dialogActions.onOpenUninstallDialog,
-                onOpenReleaseNotesDialog = dialogActions.onOpenReleaseNotesDialog
-            )
-
-            Spacer(modifier = Modifier.height(AureoleDS.dimens.large))
-
-            AdvancedLinksGroup(
-                onNavigateToContributors = dialogActions.onNavigateToContributors,
-                onNavigateToLicenses = dialogActions.onNavigateToLicenses
+                dialogActions = dialogActions
             )
 
             Spacer(modifier = Modifier.height(bottomSpacerHeight))
         }
-    }
-}
-
-@Composable
-private fun AdvancedItemsGroup(
-    actions: SettingsScreenActions,
-    context: Context,
-    onOpenUninstallDialog: () -> Unit,
-    onOpenReleaseNotesDialog: () -> Unit
-) {
-    Column(
-        verticalArrangement = Arrangement.spacedBy(AureoleDS.dimens.xSmall),
-        modifier = Modifier.fillMaxWidth()
-    ) {
-        SettingsActionItem(
-            title = stringResource(R.string.settings_advanced_app_info),
-            leadingContent = { AureoleDS.icons.Info() },
-            onClick = {
-                val intent = Intent(
-                    Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
-                    Uri.fromParts("package", context.packageName, null)
-                )
-                context.startActivity(intent)
-            }
-        )
-
-        SettingsActionItem(
-            title = stringResource(R.string.settings_advanced_whats_new),
-            leadingContent = { AureoleDS.icons.Smile() },
-            onClick = onOpenReleaseNotesDialog
-        )
-
-        SettingsActionItem(
-            title = stringResource(R.string.settings_advanced_set_default_launcher),
-            leadingContent = { AureoleDS.icons.Home() },
-            onClick = { actions.onSetDefaultLauncherClick() }
-        )
-
-        SettingsActionItem(
-            title = stringResource(R.string.settings_advanced_reset_launcher),
-            leadingContent = { AureoleDS.icons.Undo() },
-            onClick = { actions.onOpenFactoryResetDialog() }
-        )
-
-        SettingsActionItem(
-            title = stringResource(R.string.settings_advanced_uninstall_launcher),
-            leadingContent = { AureoleDS.icons.Delete() },
-            onClick = onOpenUninstallDialog
-        )
-    }
-}
-
-@Composable
-private fun AdvancedLinksGroup(onNavigateToContributors: () -> Unit, onNavigateToLicenses: () -> Unit) {
-    val context = LocalContext.current
-    Column(modifier = Modifier.fillMaxWidth()) {
-        AdvancedLink(R.string.settings_advanced_contributors, onNavigateToContributors)
-        AdvancedLink(R.string.settings_advanced_privacy_policy) { openLegalPage(context, LegalPage.PRIVACY) }
-        AdvancedLink(R.string.settings_advanced_terms_of_service) { openLegalPage(context, LegalPage.TERMS) }
-        AdvancedLink(R.string.settings_advanced_open_source_licenses, onNavigateToLicenses)
-    }
-}
-
-/** Footer link: 16 sp text inside a 48 dp touch target, text centered vertically. */
-@Composable
-private fun AdvancedLink(@StringRes textRes: Int, onClick: () -> Unit) {
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .heightIn(min = AureoleDS.dimens.minTouchTarget)
-            .clickable(role = Role.Button, onClick = onClick)
-            .padding(start = AureoleDS.dimens.xSmall),
-        contentAlignment = Alignment.CenterStart
-    ) {
-        AureoleText(
-            text = stringResource(textRes),
-            color = AureoleDS.colors.onSurfaceLow,
-            format = AureoleTextFormatParams(
-                style = AureoleDS.typography.bodyMedium,
-                fontWeight = FontWeight.Normal
-            )
-        )
     }
 }
 

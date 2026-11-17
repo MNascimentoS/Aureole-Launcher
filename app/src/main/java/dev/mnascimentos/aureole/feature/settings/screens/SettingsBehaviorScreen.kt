@@ -1,66 +1,38 @@
 package dev.mnascimentos.aureole.feature.settings.screens
 
-import android.os.SystemClock
 import androidx.activity.compose.BackHandler
-import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.gestures.snapping.rememberSnapFlingBehavior
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.derivedStateOf
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.Dp
 import dev.mnascimentos.aureole.R
-import dev.mnascimentos.aureole.composable.SettingsToggleItem
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
-import dev.mnascimentos.aureole.core.designsystem.icons.AlignRight
-import dev.mnascimentos.aureole.core.designsystem.icons.Dots
-import dev.mnascimentos.aureole.core.designsystem.icons.Header
-import dev.mnascimentos.aureole.core.designsystem.icons.Press
-import dev.mnascimentos.aureole.core.designsystem.icons.RefreshCcw
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
-import dev.mnascimentos.aureole.feature.settings.model.PickerDimensions
 import dev.mnascimentos.aureole.feature.settings.model.SettingsScreenActions
 import dev.mnascimentos.aureole.feature.settings.model.SettingsUiState
-import dev.mnascimentos.aureole.feature.settings.model.isDeliberateTap
+import dev.mnascimentos.aureole.feature.settings.sections.BehaviorSections
 import dev.mnascimentos.aureole.util.percentToFraction
-import kotlin.math.roundToInt
 
 private const val BOTTOM_SPACER_RATIO = 0.15f
-private const val MIN_OFFSET_PERCENT = 0
-private const val MAX_OFFSET_PERCENT = 60
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -112,157 +84,9 @@ fun SettingsBehaviorScreen(
 
                 Spacer(modifier = Modifier.height(AureoleDS.dimens.large))
 
-                BehaviorMenuItems(uiState = uiState, actions = actions)
+                BehaviorSections(uiState = uiState, actions = actions)
 
                 Spacer(modifier = Modifier.height(bottomSpacerHeight))
-            }
-        }
-    }
-}
-
-@Composable
-private fun BehaviorMenuItems(
-    uiState: SettingsUiState,
-    actions: SettingsScreenActions
-) {
-    val openedAtMs = remember { SystemClock.uptimeMillis() }
-    val deliberate = { isDeliberateTap(openedAtMs, SystemClock.uptimeMillis()) }
-    Column(
-        verticalArrangement = Arrangement.spacedBy(AureoleDS.dimens.xSmall),
-        modifier = Modifier.fillMaxWidth()
-    ) {
-        HeaderOffsetPickerRow(
-            headerOffsetPercent = uiState.headerOffsetPercent,
-            onOffsetChanged = actions.onHeaderOffsetChanged
-        )
-
-        SettingsToggleItem(
-            title = stringResource(R.string.settings_behavior_home_opens_all_apps),
-            checked = uiState.homeButtonOpensAllApps,
-            onCheckedChange = { if (deliberate()) actions.onToggleHomeButtonOpensAllApps() },
-            leadingContent = { AureoleDS.icons.Press() }
-        )
-
-        SettingsToggleItem(
-            title = stringResource(R.string.settings_behavior_all_apps_left_side),
-            checked = uiState.isLeftHandedMode,
-            onCheckedChange = { if (deliberate()) actions.onToggleLeftHandedMode() },
-            leadingContent = { AureoleDS.icons.AlignRight() }
-        )
-
-        SettingsToggleItem(
-            title = stringResource(R.string.settings_behavior_show_widget_indicator),
-            checked = uiState.showWidgetDots,
-            onCheckedChange = { if (deliberate()) actions.onToggleShowWidgetDots() },
-            leadingContent = { AureoleDS.icons.Dots() }
-        )
-
-        SettingsToggleItem(
-            title = stringResource(R.string.settings_behavior_disable_alphabet_scrubber),
-            checked = uiState.isAlphabetScrubberDisabled,
-            onCheckedChange = { if (deliberate()) actions.onToggleDisableAlphabetScrubber() },
-            leadingContent = { AureoleDS.icons.AlignRight() }
-        )
-
-        SettingsToggleItem(
-            title = stringResource(R.string.settings_behavior_check_for_updates),
-            checked = uiState.isInAppUpdateEnabled,
-            onCheckedChange = { if (deliberate()) actions.onToggleInAppUpdate() },
-            leadingContent = { AureoleDS.icons.RefreshCcw() }
-        )
-    }
-}
-
-@Composable
-private fun HeaderOffsetPickerRow(
-    headerOffsetPercent: Int,
-    onOffsetChanged: (Int) -> Unit
-) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = AureoleDS.dimens.xxSmall, horizontal = AureoleDS.dimens.small),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        AureoleDS.icons.Header(
-            tint = AureoleDS.colors.onSurfaceMedium,
-            modifier = Modifier.padding(end = AureoleDS.dimens.medium).size(AureoleDS.dimens.iconMedium)
-        )
-
-        AureoleText(
-            text = stringResource(R.string.settings_behavior_header_offset),
-            color = AureoleDS.colors.onSurfaceMedium,
-            modifier = Modifier.weight(1f),
-            format = AureoleTextFormatParams(style = AureoleDS.typography.bodyLarge, fontWeight = FontWeight.Normal)
-        )
-
-        HeaderOffsetWheelPicker(
-            value = headerOffsetPercent,
-            range = MIN_OFFSET_PERCENT..MAX_OFFSET_PERCENT,
-            onValueChange = onOffsetChanged,
-            modifier = Modifier.height(PickerDimensions.Height).width(PickerDimensions.Width)
-        )
-    }
-}
-
-@OptIn(ExperimentalFoundationApi::class)
-@Composable
-private fun HeaderOffsetWheelPicker(
-    value: Int,
-    range: IntRange,
-    onValueChange: (Int) -> Unit,
-    modifier: Modifier = Modifier
-) {
-    val items = remember(range) { range.toList() }
-    val initialIndex = remember(value, items) { (value - range.first).coerceIn(0, items.size - 1) }
-
-    val itemHeightDp = PickerDimensions.ItemHeight
-    val itemHeightPx = with(LocalDensity.current) { itemHeightDp.toPx() }
-
-    val listState = rememberLazyListState(initialFirstVisibleItemIndex = initialIndex)
-    val snapFlingBehavior = rememberSnapFlingBehavior(lazyListState = listState)
-
-    val currentCenteredIndex by remember {
-        derivedStateOf {
-            if (itemHeightPx <= 0f) {
-                0
-            } else {
-                (listState.firstVisibleItemIndex + (listState.firstVisibleItemScrollOffset / itemHeightPx).roundToInt())
-                    .coerceIn(0, items.size - 1)
-            }
-        }
-    }
-
-    val currentCenteredValue = remember(currentCenteredIndex, items) {
-        items.getOrElse(currentCenteredIndex) { value }
-    }
-
-    LaunchedEffect(currentCenteredValue) {
-        if (currentCenteredValue != value) {
-            onValueChange(currentCenteredValue)
-        }
-    }
-
-    Box(
-        modifier = modifier,
-        contentAlignment = Alignment.Center
-    ) {
-        LazyColumn(
-            state = listState,
-            flingBehavior = snapFlingBehavior,
-            contentPadding = PaddingValues(vertical = itemHeightDp),
-            modifier = Modifier.fillMaxSize()
-        ) {
-            itemsIndexed(
-                items = items,
-                key = { _, itemValue -> itemValue },
-                contentType = { _, _ -> "offset_wheel_item" }
-            ) { _, itemValue ->
-                OffsetWheelItem(
-                    text = "$itemValue%",
-                    isSelected = itemValue == currentCenteredValue,
-                    height = itemHeightDp
-                )
             }
         }
     }
@@ -280,25 +104,3 @@ private fun SettingsBehaviorScreenPreview() {
     }
 }
 
-@Composable
-private fun OffsetWheelItem(text: String, isSelected: Boolean, height: Dp) {
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(height),
-        contentAlignment = Alignment.Center
-    ) {
-        AureoleText(
-            text = text,
-            color = if (isSelected) {
-                AureoleDS.colors.onSurfaceHigh
-            } else {
-                AureoleDS.colors.onSurfaceLow.copy(alpha = 0.35f)
-            },
-            format = AureoleTextFormatParams(
-                style = if (isSelected) AureoleDS.typography.bodyLarge else AureoleDS.typography.bodySmall,
-                fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
-            )
-        )
-    }
-}

@@ -10,12 +10,11 @@ data class PreferenceItemConfig(
 )
 
 /**
- * Dialog actions for [SettingsAdvancedScreen].
+ * Navigation and sheet actions of the Advanced sections.
  */
 data class SettingsAdvancedDialogActions(
     val onNavigateToContributors: () -> Unit,
     val onNavigateToLicenses: () -> Unit,
-    val onOpenUninstallDialog: () -> Unit,
     val onOpenReleaseNotesDialog: () -> Unit
 )
 

@@ -42,7 +42,7 @@ class SettingsBehaviorScreenTest {
         composeTestRule.onNodeWithText("All apps on left side").assertExists()
         composeTestRule.onNodeWithText("Show widget indicator").assertExists()
         composeTestRule.onNodeWithText("Disable alphabet scrubber").assertExists()
-        composeTestRule.onNodeWithText("Check for updates").assertExists()
+        composeTestRule.onNodeWithText("Check for updates").assertDoesNotExist()
     }
 
     @Test
@@ -51,14 +51,12 @@ class SettingsBehaviorScreenTest {
         var leftHandedToggled = false
         var showWidgetDotsToggled = false
         var disableScrubberToggled = false
-        var inAppUpdateToggled = false
 
         val actions = SettingsScreenActions(
             onToggleHomeButtonOpensAllApps = { homeOpensAllAppsToggled = true },
             onToggleLeftHandedMode = { leftHandedToggled = true },
             onToggleShowWidgetDots = { showWidgetDotsToggled = true },
-            onToggleDisableAlphabetScrubber = { disableScrubberToggled = true },
-            onToggleInAppUpdate = { inAppUpdateToggled = true }
+            onToggleDisableAlphabetScrubber = { disableScrubberToggled = true }
         )
 
         composeTestRule.setContent {
@@ -84,9 +82,6 @@ class SettingsBehaviorScreenTest {
 
         composeTestRule.onNodeWithText("Disable alphabet scrubber").performScrollTo().performClick()
         assertTrue(disableScrubberToggled)
-
-        composeTestRule.onNodeWithText("Check for updates").performScrollTo().performClick()
-        assertTrue(inAppUpdateToggled)
     }
 
     @Test

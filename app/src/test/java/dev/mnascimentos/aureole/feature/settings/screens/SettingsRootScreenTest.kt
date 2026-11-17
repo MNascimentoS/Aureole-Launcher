@@ -1,5 +1,6 @@
 package dev.mnascimentos.aureole.feature.settings.screens
 
+import androidx.compose.ui.test.assertHasClickAction
 import androidx.compose.ui.test.getUnclippedBoundsInRoot
 import androidx.compose.ui.test.junit4.v2.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
@@ -65,6 +66,29 @@ class SettingsRootScreenTest {
 
         composeTestRule.onNodeWithText("Advanced").performScrollTo().performClick()
         assertTrue(advancedNavigated)
+    }
+
+    @Test
+    fun `should show the three area cards with the new subtitles and no value tags`() {
+        composeTestRule.setContent {
+            AureoleLauncherTheme {
+                SettingsRootScreen(
+                    uiState = SettingsUiState(),
+                    onNavigateToBehavior = {},
+                    onNavigateToAppearance = {},
+                    onNavigateToAdvanced = {}
+                )
+            }
+        }
+
+        composeTestRule.onNodeWithText("Colors, background, font, and glass").assertExists()
+        composeTestRule.onNodeWithText("Gestures, list, and home screen").assertExists()
+        composeTestRule.onNodeWithText("System, about, and credits").assertExists()
+        composeTestRule.onNodeWithText("Frostbite").assertDoesNotExist()
+        composeTestRule.onNodeWithText("Istok Web").assertDoesNotExist()
+        listOf("Appearance", "Behavior", "Advanced").forEach {
+            composeTestRule.onNodeWithText(it).assertHasClickAction()
+        }
     }
 
     @Test

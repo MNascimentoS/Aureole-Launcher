@@ -61,11 +61,11 @@
     <string name="settings_root_title">Aureole</string>
     <string name="settings_root_version">Versão %1$s</string>
     <string name="settings_root_appearance_title">Aparência</string>
-    <string name="settings_root_appearance_subtitle">Cores, temas e layout</string>
+    <string name="settings_root_appearance_subtitle">Cores, fundo, fonte e vidro</string>
     <string name="settings_root_behavior_title">Comportamento</string>
-    <string name="settings_root_behavior_subtitle">Gestos, botões e controles</string>
+    <string name="settings_root_behavior_subtitle">Gestos, lista e tela inicial</string>
     <string name="settings_root_advanced_title">Avançado</string>
-    <string name="settings_root_advanced_subtitle">Ferramentas de sistema e informações legais</string>
+    <string name="settings_root_advanced_subtitle">Sistema, sobre o app e créditos</string>
 
     <!-- Settings Advanced -->
     <string name="settings_advanced_title">Avançado</string>
@@ -535,4 +535,12 @@
     <string name="settings_reset_grid_success">Layout da tela inicial resetado para o padrão</string>
     <string name="settings_wallpaper_load_error">Não foi possível carregar a imagem selecionada</string>
     <string name="home_container_preview_app_label">App %1$d</string>
+    <string name="settings_section_theme">Tema</string>
+    <string name="settings_section_background">Fundo</string>
+    <string name="settings_section_cards_glass">Cartões e vidro</string>
+    <string name="settings_section_gestures">Gestos e lista de apps</string>
+    <string name="settings_section_home_screen">Tela inicial</string>
+    <string name="settings_section_system">Sistema</string>
+    <string name="settings_section_about">Sobre</string>
+    <string name="settings_section_care_zone">Zona de cuidado</string>
 </resources>

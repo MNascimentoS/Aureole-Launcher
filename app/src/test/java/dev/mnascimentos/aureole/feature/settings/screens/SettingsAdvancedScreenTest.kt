@@ -49,12 +49,10 @@ class SettingsAdvancedScreenTest {
     @Test
     fun `when clicking action items, should trigger callbacks and dialogs`() {
         var defaultLauncherClicked = false
-        var resetLauncherClicked = false
         var contributorsNavigated = false
 
         val actions = SettingsScreenActions(
-            onSetDefaultLauncherClick = { defaultLauncherClicked = true },
-            onOpenFactoryResetDialog = { resetLauncherClicked = true }
+            onSetDefaultLauncherClick = { defaultLauncherClicked = true }
         )
 
         composeTestRule.setContent {
@@ -72,9 +70,6 @@ class SettingsAdvancedScreenTest {
         assertTrue(defaultLauncherClicked)
 
         composeTestRule.onNodeWithText("App info").performScrollTo().performClick()
-
-        composeTestRule.onNodeWithText("Reset launcher").performScrollTo().performClick()
-        assertTrue(resetLauncherClicked)
 
         composeTestRule.onNodeWithText("Contributors").performScrollTo().performClick()
         assertTrue(contributorsNavigated)
@@ -116,7 +111,7 @@ class SettingsAdvancedScreenTest {
     }
 
     @Test
-    fun `when interacting with UninstallBottomSheet, should execute contact us and uninstall actions`() {
+    fun `when rendering, should list the Advanced items in the new order`() {
         composeTestRule.setContent {
             AureoleLauncherTheme {
                 SettingsAdvancedScreen(
@@ -128,28 +123,11 @@ class SettingsAdvancedScreenTest {
             }
         }
 
-        composeTestRule.onNodeWithText("Uninstall launcher").performScrollTo().performClick()
-        composeTestRule.onNodeWithText("Uninstall launcher?").assertExists()
-        composeTestRule.onNodeWithText("Contact us").performClick()
-
-        composeTestRule.onNodeWithText("Uninstall launcher").performScrollTo().performClick()
-        composeTestRule.onNodeWithText("Uninstall").performClick()
-    }
-
-    @Test
-    fun `when rendering, should list the five items in the new order`() {
-        composeTestRule.setContent {
-            AureoleLauncherTheme {
-                SettingsAdvancedScreen(
-                    uiState = SettingsUiState(),
-                    actions = SettingsScreenActions(),
-                    onNavigateToContributors = {},
-                    onNavigateBack = {}
-                )
-            }
-        }
-
-        val titles = listOf("App info", "What's new", "Default launcher", "Reset launcher", "Uninstall launcher")
+        val titles = listOf(
+            "App info", "What's new", "Default launcher", "Check for updates",
+            "Contributors", "Privacy policy", "Terms of service", "Open source licenses",
+            "Reset launcher", "Uninstall launcher"
+        )
         val tops = titles.map { composeTestRule.onNodeWithText(it).getUnclippedBoundsInRoot().top }
         assertEquals(tops.sorted(), tops)
         assertEquals(tops.distinct(), tops)

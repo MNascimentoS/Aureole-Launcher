@@ -1,6 +1,8 @@
 package dev.mnascimentos.aureole.feature.settings.screens
 
 import androidx.compose.ui.test.junit4.v2.createComposeRule
+import androidx.compose.ui.test.assertCountEquals
+import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollTo
@@ -77,7 +79,8 @@ class SettingsAppearanceScreenTest {
         }
 
         composeTestRule.onNodeWithText("Set Background").performScrollTo().performClick()
-        composeTestRule.onNodeWithText("Solid color").assertExists()
+        // The row subtitle and the sheet's type card both say "Solid color".
+        composeTestRule.onAllNodesWithText("Solid color").assertCountEquals(2)
     }
 
     @Test
