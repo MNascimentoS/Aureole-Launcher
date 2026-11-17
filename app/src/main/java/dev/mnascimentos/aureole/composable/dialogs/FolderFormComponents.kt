@@ -121,7 +121,6 @@ fun FolderNamePill(
     var isFocused by remember { mutableStateOf(false) }
     val hint = stringResource(R.string.home_folder_name_hint)
     val description = stringResource(R.string.home_folder_name_a11y, value.ifBlank { hint })
-    val shape = RoundedCornerShape(AureoleDS.dimens.radiusFull)
     LaunchedEffect(autoFocus) {
         if (autoFocus) {
             focusRequester.requestFocus()
@@ -145,48 +144,64 @@ fun FolderNamePill(
             .onFocusChanged { isFocused = it.isFocused }
             .semantics { contentDescription = description },
         decorationBox = { innerTextField ->
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .heightIn(min = AureoleDS.dimens.minTouchTarget)
-                    .clip(shape)
-                    .background(AureoleDS.colors.surfaceVariant.copy(alpha = NAME_PILL_BACKGROUND_ALPHA))
-                    .border(
-                        width = AureoleDS.dimens.borderMinimal,
-                        color = if (isFocused) AureoleDS.colors.onSurfaceHigh else AureoleDS.colors.outline,
-                        shape = shape
-                    )
-                    .padding(start = AureoleDS.dimens.medium, end = AureoleDS.dimens.xxSmall),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Box(modifier = Modifier.weight(1f), contentAlignment = Alignment.CenterStart) {
-                    if (value.isEmpty()) {
-                        AureoleText(
-                            text = hint,
-                            color = AureoleDS.colors.onSurfaceLow,
-                            format = AureoleTextFormatParams(
-                                style = AureoleDS.typography.titleMedium,
-                                textAlign = TextAlign.Start,
-                                maxLines = 1
-                            )
-                        )
+            NamePillDecoration(
+                value = value,
+                isFocused = isFocused,
+                hint = hint,
+                onButtonClick = {
+                    if (isFocused && value.isNotEmpty()) {
+                        onValueChange("")
+                    } else {
+                        focusRequester.requestFocus()
+                        keyboard?.show()
                     }
-                    innerTextField()
-                }
-                NamePillButton(
-                    isClear = isFocused && value.isNotEmpty(),
-                    onClick = {
-                        if (isFocused && value.isNotEmpty()) {
-                            onValueChange("")
-                        } else {
-                            focusRequester.requestFocus()
-                            keyboard?.show()
-                        }
-                    }
-                )
-            }
+                },
+                innerTextField = innerTextField
+            )
         }
     )
+}
+
+/** The pill around the text field of [FolderNamePill]: hint when empty, border that lights up and the pencil / "×". */
+@Composable
+private fun NamePillDecoration(
+    value: String,
+    isFocused: Boolean,
+    hint: String,
+    onButtonClick: () -> Unit,
+    innerTextField: @Composable () -> Unit
+) {
+    val shape = RoundedCornerShape(AureoleDS.dimens.radiusFull)
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .heightIn(min = AureoleDS.dimens.minTouchTarget)
+            .clip(shape)
+            .background(AureoleDS.colors.surfaceVariant.copy(alpha = NAME_PILL_BACKGROUND_ALPHA))
+            .border(
+                width = AureoleDS.dimens.borderMinimal,
+                color = if (isFocused) AureoleDS.colors.onSurfaceHigh else AureoleDS.colors.outline,
+                shape = shape
+            )
+            .padding(start = AureoleDS.dimens.medium, end = AureoleDS.dimens.xxSmall),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Box(modifier = Modifier.weight(1f), contentAlignment = Alignment.CenterStart) {
+            if (value.isEmpty()) {
+                AureoleText(
+                    text = hint,
+                    color = AureoleDS.colors.onSurfaceLow,
+                    format = AureoleTextFormatParams(
+                        style = AureoleDS.typography.titleMedium,
+                        textAlign = TextAlign.Start,
+                        maxLines = 1
+                    )
+                )
+            }
+            innerTextField()
+        }
+        NamePillButton(isClear = isFocused && value.isNotEmpty(), onClick = onButtonClick)
+    }
 }
 
 /** The round button at the end of the name pill: a pencil (edit) or, while typing, a "×" (clear). */

@@ -14,8 +14,13 @@ import androidx.compose.ui.res.stringResource
 import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.composable.dialogs.model.FolderFormBodyActions
 import dev.mnascimentos.aureole.composable.dialogs.model.FolderFormBodyState
+import dev.mnascimentos.aureole.composable.dialogs.model.FolderFormContentActions
+import dev.mnascimentos.aureole.composable.dialogs.model.FolderFormDraft
 import dev.mnascimentos.aureole.composable.dialogs.model.FolderFormMode
+import dev.mnascimentos.aureole.composable.dialogs.model.FolderFormParams
 import dev.mnascimentos.aureole.composable.dialogs.model.effectiveIcon
+import dev.mnascimentos.aureole.composable.dialogs.model.folderFormPrimaryRes
+import dev.mnascimentos.aureole.composable.dialogs.model.folderFormTitleRes
 import dev.mnascimentos.aureole.composable.dialogs.model.initialFolderDraft
 import dev.mnascimentos.aureole.composable.dialogs.model.resolveFolderName
 import dev.mnascimentos.aureole.composable.dialogs.model.toDetails
@@ -46,24 +51,32 @@ fun FolderFormDialog(
     onSave: (FolderDetails) -> Unit,
     modifier: Modifier = Modifier,
     folder: AppFolder? = null,
-    onDelete: (() -> Unit)? = null,
-    pickAppsOnCreate: Boolean = true
+    onDelete: (() -> Unit)? = null
+) {
+    FolderFormSheet(
+        params = FolderFormParams(folder = folder, onDelete = onDelete),
+        onDismiss = onDismiss,
+        onSave = onSave,
+        modifier = modifier
+    )
+}
+
+/** [FolderFormDialog] with every option of [params], including whether creating also opens the app picker. */
+@Composable
+fun FolderFormSheet(
+    params: FolderFormParams,
+    onDismiss: () -> Unit,
+    onSave: (FolderDetails) -> Unit,
+    modifier: Modifier = Modifier
 ) {
     val isLeftHanded = LocalLeftHanded.current
-    val isEditing = folder != null
+    val isEditing = params.folder != null
     val placeholder = stringResource(R.string.home_folder_name_placeholder)
-    val initial = remember { initialFolderDraft(folder) }
+    val initial = remember { initialFolderDraft(params.folder) }
     var draft by remember { mutableStateOf(initial) }
     var mode by remember { mutableStateOf(FolderFormMode.FORM) }
     val save = { onSave(draft.toDetails(placeholder)) }
-
-    val title = stringResource(
-        when {
-            mode == FolderFormMode.ALL_ICONS -> R.string.home_folder_all_icons
-            isEditing -> R.string.home_folder_edit_title
-            else -> R.string.home_folder_new_title
-        }
-    )
+    val title = stringResource(folderFormTitleRes(mode, isEditing))
     val preview: @Composable BoxScope.() -> Unit = {
         FolderFormPreview(
             draft = draft,
@@ -74,27 +87,16 @@ fun FolderFormDialog(
         )
     }
     val body: @Composable ColumnScope.() -> Unit = {
-        if (mode == FolderFormMode.ALL_ICONS) {
-            // Inside the sheet, so it is registered after the overlay's own back handler and wins over it.
-            BackHandler { mode = FolderFormMode.FORM }
-            FolderAllIconsBody(
-                selectedKey = draft.effectiveIcon(),
-                onSelect = {
-                    draft = draft.copy(icon = it, iconType = FolderIconType.ICON)
-                    mode = FolderFormMode.FORM
-                },
-                onBack = { mode = FolderFormMode.FORM }
+        FolderFormContent(
+            draft = draft,
+            mode = mode,
+            showDelete = isEditing && params.onDelete != null,
+            actions = FolderFormContentActions(
+                onDraftChange = { draft = it },
+                onModeChange = { mode = it },
+                onDelete = params.onDelete
             )
-        } else {
-            FolderFormBody(
-                state = FolderFormBodyState(draft = draft, showDelete = isEditing && onDelete != null),
-                actions = FolderFormBodyActions(
-                    onDraftChange = { draft = it },
-                    onOpenAllIcons = { mode = FolderFormMode.ALL_ICONS },
-                    onDelete = onDelete
-                )
-            )
-        }
+        )
     }
 
     if (isEditing) {
@@ -114,9 +116,7 @@ fun FolderFormDialog(
         AureoleConfirmOverlay(
             params = ConfirmOverlayParams(
                 title = title,
-                primaryLabel = stringResource(
-                    if (pickAppsOnCreate) R.string.home_folder_create_pick_apps else R.string.core_common_create
-                ),
+                primaryLabel = stringResource(folderFormPrimaryRes(params.pickAppsOnCreate)),
                 onPrimary = save,
                 onDismissRequest = onDismiss,
                 isLeftHanded = isLeftHanded,
@@ -125,6 +125,37 @@ fun FolderFormDialog(
             modifier = modifier,
             preview = preview,
             content = body
+        )
+    }
+}
+
+/** The form itself or, in [mode] ALL_ICONS, the grid of every icon, whose back and pick return to the form. */
+@Composable
+private fun ColumnScope.FolderFormContent(
+    draft: FolderFormDraft,
+    mode: FolderFormMode,
+    showDelete: Boolean,
+    actions: FolderFormContentActions
+) {
+    if (mode == FolderFormMode.ALL_ICONS) {
+        // Inside the sheet, so it is registered after the overlay's own back handler and wins over it.
+        BackHandler { actions.onModeChange(FolderFormMode.FORM) }
+        FolderAllIconsBody(
+            selectedKey = draft.effectiveIcon(),
+            onSelect = {
+                actions.onDraftChange(draft.copy(icon = it, iconType = FolderIconType.ICON))
+                actions.onModeChange(FolderFormMode.FORM)
+            },
+            onBack = { actions.onModeChange(FolderFormMode.FORM) }
+        )
+    } else {
+        FolderFormBody(
+            state = FolderFormBodyState(draft = draft, showDelete = showDelete),
+            actions = FolderFormBodyActions(
+                onDraftChange = actions.onDraftChange,
+                onOpenAllIcons = { actions.onModeChange(FolderFormMode.ALL_ICONS) },
+                onDelete = actions.onDelete
+            )
         )
     }
 }

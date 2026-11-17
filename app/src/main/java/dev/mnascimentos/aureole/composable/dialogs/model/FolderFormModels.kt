@@ -7,7 +7,6 @@ import dev.mnascimentos.aureole.core.data.model.FolderIconType
 import dev.mnascimentos.aureole.core.data.model.details
 import dev.mnascimentos.aureole.core.designsystem.icons.AureoleIconCatalog
 import dev.mnascimentos.aureole.core.designsystem.palette.ThemeColorRef
-import java.text.BreakIterator
 
 object FolderButtonMetrics {
     val SmallSize = 52.dp
@@ -16,24 +15,6 @@ object FolderButtonMetrics {
     val ContainerMaxWidth = 68.dp
     val GridGap = 18.dp
 }
-
-/** Columns of the emoji grid of the folder form. */
-const val FOLDER_EMOJI_COLUMNS = 6
-
-/** Common emojis offered for a folder; the "+" tile after them opens the keyboard for any other one. */
-val FOLDER_EMOJIS: List<String> = listOf(
-    "💰", // money bag
-    "🏦", // bank
-    "💳", // credit card
-    "📈", // chart
-    "🎮", // video game
-    "🎧", // headphones
-    "📚", // books
-    "✈️", // airplane
-    "🏥", // hospital
-    "🛠️", // tools
-    "💼" // briefcase
-)
 
 /** What the sheet of the folder form shows: the form itself or, in its place, the grid of every icon. */
 enum class FolderFormMode { FORM, ALL_ICONS }
@@ -87,30 +68,6 @@ fun folderLetter(label: String): String = label.trim().take(1).uppercase().ifEmp
 fun toggleFolderColor(current: ThemeColorRef?, tapped: ThemeColorRef): ThemeColorRef? =
     if (current == tapped) null else tapped
 
-/**
- * The emojis the grid lists: [FOLDER_EMOJIS], with [current] in front when it is one typed through the keyboard
- * (the grid keeps its size, so the last common one leaves).
- */
-fun folderEmojiChoices(current: String?): List<String> =
-    if (current.isNullOrBlank() || current in FOLDER_EMOJIS) {
-        FOLDER_EMOJIS
-    } else {
-        listOf(current) + FOLDER_EMOJIS.dropLast(1)
-    }
-
-/**
- * The emoji to keep from what was typed in the emoji field: its last visible character (a whole emoji, skin tone
- * and joined sequences included), or null when nothing but spaces was typed.
- */
-fun lastGrapheme(text: String): String? {
-    val trimmed = text.trim()
-    if (trimmed.isEmpty()) return null
-    val iterator = BreakIterator.getCharacterInstance().apply { setText(trimmed) }
-    val end = iterator.last()
-    val start = iterator.previous()
-    return trimmed.substring(start, end)
-}
-
 /** True when the tile of [key] is the icon [selected] stands for (old keys included). */
 fun isFolderIconMarked(key: String, selected: String?): Boolean =
     selected != null && (AureoleIconCatalog.resolveKey(selected) ?: selected) == key
@@ -130,5 +87,19 @@ data class FolderFormBodyState(
 data class FolderFormBodyActions(
     val onDraftChange: (FolderFormDraft) -> Unit,
     val onOpenAllIcons: () -> Unit,
+    val onDelete: (() -> Unit)?
+)
+
+/** Options of [dev.mnascimentos.aureole.composable.dialogs.FolderFormSheet]: [folder] null creates one. */
+data class FolderFormParams(
+    val folder: AppFolder? = null,
+    val onDelete: (() -> Unit)? = null,
+    val pickAppsOnCreate: Boolean = true
+)
+
+/** Callbacks of the content of the folder form sheet, which switches between the form and the grid of icons. */
+data class FolderFormContentActions(
+    val onDraftChange: (FolderFormDraft) -> Unit,
+    val onModeChange: (FolderFormMode) -> Unit,
     val onDelete: (() -> Unit)?
 )

@@ -227,6 +227,8 @@ private fun IconTile(entry: AureoleIconEntry, isSelected: Boolean, onClick: () -
     }
 }
 
+private const val PREVIEW_ROWS = 3
+
 @AureolePreview
 @Composable
 private fun AureoleIconCatalogGridPreview() {
@@ -234,7 +236,7 @@ private fun AureoleIconCatalogGridPreview() {
         AureoleIconCatalogGrid(
             selectedKey = "work",
             onSelect = {},
-            modifier = Modifier.height(AureoleDS.dimens.sizeExtraLarge * 3).padding(AureoleDS.dimens.medium)
+            modifier = Modifier.height(AureoleDS.dimens.sizeExtraLarge * PREVIEW_ROWS).padding(AureoleDS.dimens.medium)
         )
     }
 }

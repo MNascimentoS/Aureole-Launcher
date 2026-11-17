@@ -2,6 +2,7 @@ package dev.mnascimentos.aureole.composable.dialogs
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.NonRestartableComposable
+import dev.mnascimentos.aureole.composable.dialogs.model.FolderFormParams
 import dev.mnascimentos.aureole.core.data.model.FolderDetails
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
@@ -17,11 +18,10 @@ fun CreateFolderDialog(
     onSubmit: (FolderDetails) -> Unit,
     pickApps: Boolean = true
 ) {
-    FolderFormDialog(
-        folder = null,
+    FolderFormSheet(
+        params = FolderFormParams(pickAppsOnCreate = pickApps),
         onDismiss = onDismiss,
-        onSave = onSubmit,
-        pickAppsOnCreate = pickApps
+        onSave = onSubmit
     )
 }
 

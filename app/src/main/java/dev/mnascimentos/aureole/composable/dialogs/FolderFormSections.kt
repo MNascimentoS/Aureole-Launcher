@@ -22,6 +22,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
@@ -153,8 +154,9 @@ private fun FolderIconSuggestionsSection(
     AureoleMenuRow(
         MenuRowParams(
             title = stringResource(R.string.home_folder_all_icons),
-            subtitle = stringResource(
-                R.string.home_folder_all_icons_count,
+            subtitle = pluralStringResource(
+                R.plurals.home_folder_all_icons_count,
+                AureoleIconCatalog.entries.size,
                 AureoleIconCatalog.entries.size,
                 AureoleIconCatalog.categories.size
             ),

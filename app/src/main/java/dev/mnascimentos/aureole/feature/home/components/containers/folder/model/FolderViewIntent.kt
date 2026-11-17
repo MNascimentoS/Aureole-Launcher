@@ -4,6 +4,7 @@ import dev.mnascimentos.aureole.core.data.model.FolderDetails
 
 sealed interface FolderViewIntent {
     data class OpenCreateFolderDialog(val panelId: String? = null) : FolderViewIntent
+
     /** Creates the folder; [pickApps] then opens the folder's app picker (pasta-form RF-11). */
     data class SubmitFolderName(val details: FolderDetails, val pickApps: Boolean = false) : FolderViewIntent
     data class OpenFolder(val folderId: String, val topYPx: Float = 0f) : FolderViewIntent

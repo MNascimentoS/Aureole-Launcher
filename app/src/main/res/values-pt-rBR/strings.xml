@@ -44,7 +44,6 @@
     <string name="home_quickbutton_bg_color">Cor de fundo</string>
     <string name="home_quickbutton_stroke">Borda</string>
     <string name="home_quickbutton_stroke_color">Cor da borda</string>
-    <string name="home_quickbutton_icon">Ícone</string>
     <string name="home_quickbutton_icon_color">Cor do ícone</string>
     <string name="home_quickbutton_tab_icon">Ícone</string>
     <string name="home_quickbutton_tab_colors">Cores</string>
@@ -571,7 +570,11 @@
     <string name="home_folder_suggested_for">Sugeridos para “%1$s”</string>
     <string name="home_folder_suggested">Sugeridos</string>
     <string name="home_folder_all_icons">Todos os ícones</string>
-    <string name="home_folder_all_icons_count">%1$d ícones em %2$d categorias</string>
+    <plurals name="home_folder_all_icons_count">
+        <item quantity="one">%1$d ícone em %2$d categorias</item>
+        <item quantity="many">%1$d ícones em %2$d categorias</item>
+        <item quantity="other">%1$d ícones em %2$d categorias</item>
+    </plurals>
     <string name="home_folder_all_icons_back">Voltar para a pasta</string>
     <string name="home_folder_letter_note">A primeira letra do nome, na fonte do tema. Muda junto com o nome.</string>
     <string name="home_folder_emoji_more">Outro emoji</string>

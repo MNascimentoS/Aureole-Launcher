@@ -74,11 +74,15 @@ object AureoleIconCatalog {
      */
     fun resolveKey(raw: String?): String? {
         val trimmed = raw?.trim().orEmpty()
-        if (trimmed.isEmpty()) return null
         // An exact upper case enum name is a persisted quick button icon: "FAVORITE" is not the folder key "favorite".
-        QuickButtonIcon.entries.firstOrNull { it.name == trimmed }?.let { return actionKey(it) }
+        val action = QuickButtonIcon.entries.firstOrNull { it.name == trimmed }
         val normalized = trimmed.lowercase().replace(' ', '_')
-        return if (normalized in byKey) normalized else legacyFolderKeys[normalized]
+        return when {
+            trimmed.isEmpty() -> null
+            action != null -> actionKey(action)
+            normalized in byKey -> normalized
+            else -> legacyFolderKeys[normalized]
+        }
     }
 
     fun entryFor(raw: String?): AureoleIconEntry? = resolveKey(raw)?.let(byKey::get)

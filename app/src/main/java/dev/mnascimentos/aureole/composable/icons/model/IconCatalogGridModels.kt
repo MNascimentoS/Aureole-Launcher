@@ -32,14 +32,8 @@ fun iconGridHeaderIndex(items: List<IconGridItem>, category: AureoleIconCategory
 /** Category the cell at [index] belongs to: the one of the nearest header at or above it. */
 fun iconGridCategoryAt(items: List<IconGridItem>, index: Int): AureoleIconCategory? {
     val last = index.coerceIn(0, (items.size - 1).coerceAtLeast(0))
-    for (i in last downTo 0) {
-        when (val item = items.getOrNull(i)) {
-            is IconGridItem.Header -> return item.category
-            is IconGridItem.Icon -> if (i == 0) return item.entry.category
-            null -> return null
-        }
-    }
-    return null
+    val header = (last downTo 0).firstNotNullOfOrNull { (items.getOrNull(it) as? IconGridItem.Header)?.category }
+    return header ?: (items.firstOrNull() as? IconGridItem.Icon)?.entry?.category
 }
 
 /** Cell the grid opens on: the header of the category of [selectedKey] (old keys included), else the first one. */

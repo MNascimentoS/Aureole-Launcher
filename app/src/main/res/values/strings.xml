@@ -44,7 +44,6 @@
     <string name="home_quickbutton_bg_color">Background color</string>
     <string name="home_quickbutton_stroke">Stroke</string>
     <string name="home_quickbutton_stroke_color">Stroke color</string>
-    <string name="home_quickbutton_icon">Icon</string>
     <string name="home_quickbutton_icon_color">Icon color</string>
     <string name="home_quickbutton_tab_icon">Icon</string>
     <string name="home_quickbutton_tab_colors">Colors</string>
@@ -566,7 +565,10 @@
     <string name="home_folder_suggested_for">Suggested for “%1$s”</string>
     <string name="home_folder_suggested">Suggested</string>
     <string name="home_folder_all_icons">All icons</string>
-    <string name="home_folder_all_icons_count">%1$d icons in %2$d categories</string>
+    <plurals name="home_folder_all_icons_count">
+        <item quantity="one">%1$d icon in %2$d categories</item>
+        <item quantity="other">%1$d icons in %2$d categories</item>
+    </plurals>
     <string name="home_folder_all_icons_back">Back to the folder</string>
     <string name="home_folder_letter_note">The first letter of the name, in the theme font. It changes with the name.</string>
     <string name="home_folder_emoji_more">Another emoji</string>

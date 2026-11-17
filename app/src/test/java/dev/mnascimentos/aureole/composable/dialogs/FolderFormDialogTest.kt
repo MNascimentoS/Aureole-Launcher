@@ -16,6 +16,7 @@ import androidx.compose.ui.test.performSemanticsAction
 import androidx.compose.ui.test.performTextInput
 import androidx.compose.ui.test.performTextReplacement
 import dev.mnascimentos.aureole.composable.dialogs.model.FOLDER_EMOJIS
+import dev.mnascimentos.aureole.composable.dialogs.model.FolderFormParams
 import dev.mnascimentos.aureole.core.data.model.AppFolder
 import dev.mnascimentos.aureole.core.data.model.FolderDetails
 import dev.mnascimentos.aureole.core.data.model.FolderIconType
@@ -58,12 +59,10 @@ class FolderFormDialogTest {
     ) {
         composeTestRule.setContent {
             AureoleLauncherTheme {
-                FolderFormDialog(
-                    folder = folder,
+                FolderFormSheet(
+                    params = FolderFormParams(folder = folder, onDelete = onDelete, pickAppsOnCreate = pickApps),
                     onDismiss = {},
-                    onSave = onSave,
-                    onDelete = onDelete,
-                    pickAppsOnCreate = pickApps
+                    onSave = onSave
                 )
             }
         }
