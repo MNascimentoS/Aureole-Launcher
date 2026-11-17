@@ -10,7 +10,9 @@ import dev.mnascimentos.aureole.core.data.model.AppFolder
 import dev.mnascimentos.aureole.core.data.model.ContainerItemEntity
 import dev.mnascimentos.aureole.core.data.model.ContainerItemType
 import dev.mnascimentos.aureole.core.data.model.ContainerModel
+import dev.mnascimentos.aureole.core.data.model.FolderDetails
 import dev.mnascimentos.aureole.core.data.model.QuickButtonModel
+import dev.mnascimentos.aureole.core.data.model.withDetails
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.components.containers.model.ContainerConfig
@@ -102,13 +104,16 @@ internal class EditContainerState(
         }
     }
 
-    fun addFolder(name: String) {
+    fun addFolder(name: String) = addFolder(FolderDetails(name = name))
+
+    /** Adds a new folder with the name and look chosen in the folder form. */
+    fun addFolder(details: FolderDetails) {
         val newFolder = AppFolder(
             id = UUID.randomUUID().toString(),
             panelId = panel.id,
-            name = name,
+            name = details.name,
             displayAsGrid = isGridFolderEnabled
-        )
+        ).withDetails(details)
         folders = folders + newFolder
         itemsList = itemsList + ContainerItemEntity(
             id = UUID.randomUUID().toString(),

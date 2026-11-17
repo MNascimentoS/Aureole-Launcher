@@ -28,6 +28,7 @@ import dev.chrisbanes.haze.hazeEffect
 import dev.mnascimentos.aureole.composable.ProvideHomeUiState
 import dev.mnascimentos.aureole.composable.dialogs.CreateFolderDialog
 import dev.mnascimentos.aureole.core.data.model.AppFolder
+import dev.mnascimentos.aureole.core.data.model.FolderDetails
 import dev.mnascimentos.aureole.core.data.model.LauncherItemState
 import dev.mnascimentos.aureole.core.data.model.LauncherItemType
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
@@ -148,10 +149,10 @@ private fun WidgetStackOverlay(
 internal fun CreateFolderOverlay(
     isVisible: Boolean,
     onCloseFolder: () -> Unit,
-    onSubmitName: (String, String?) -> Unit
+    onSubmit: (FolderDetails) -> Unit
 ) {
     if (isVisible) {
-        CreateFolderDialog(onDismiss = onCloseFolder, onSubmit = onSubmitName)
+        CreateFolderDialog(onDismiss = onCloseFolder, onSubmit = onSubmit, pickApps = true)
     }
 }
 
@@ -308,14 +309,8 @@ internal fun RenameFolderOverlay(
         EditFolderDialog(
             folder = uiState.activeFolder,
             onDismiss = { actions.onSetRenameFolderDialogVisible(false) },
-            onSave = { newName, icon ->
-                actions.onFolderIntent(
-                    FolderViewIntent.RenameFolder(
-                        uiState.activeFolder.id,
-                        newName,
-                        icon
-                    )
-                )
+            onSave = { details ->
+                actions.onFolderIntent(FolderViewIntent.RenameFolder(uiState.activeFolder.id, details))
             },
             onDelete = { actions.onFolderIntent(FolderViewIntent.DeleteFolder(uiState.activeFolder.id)) }
         )
@@ -326,6 +321,6 @@ internal fun RenameFolderOverlay(
 @Composable
 private fun CreateFolderOverlayPreview() {
     AureoleLauncherTheme {
-        CreateFolderOverlay(isVisible = true, onCloseFolder = {}, onSubmitName = { _, _ -> })
+        CreateFolderOverlay(isVisible = true, onCloseFolder = {}, onSubmit = {})
     }
 }

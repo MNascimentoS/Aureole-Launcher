@@ -23,12 +23,8 @@ import dev.mnascimentos.aureole.composable.LocalHomeUiState
 import dev.mnascimentos.aureole.composable.ProvideHomeUiState
 import dev.mnascimentos.aureole.composable.dialogs.CreateFolderDialog
 import dev.mnascimentos.aureole.composable.dialogs.FolderFormDialog
-import dev.mnascimentos.aureole.composable.dialogs.FolderIconGrid
-import dev.mnascimentos.aureole.composable.dialogs.model.FolderIconPickerActions
-import dev.mnascimentos.aureole.composable.dialogs.model.FolderIconPickerState
 import dev.mnascimentos.aureole.core.data.model.AppFolder
 import dev.mnascimentos.aureole.core.data.model.AppInfo
-import dev.mnascimentos.aureole.core.designsystem.icons.FolderIconCategory
 import dev.mnascimentos.aureole.core.designsystem.model.LocalLeftHanded
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.feature.home.components.common.HomeScreenFolderBottomSheetOverlays
@@ -240,32 +236,33 @@ class FolderBranchCoverageTest {
                 FolderFormDialog(
                     folder = null,
                     onDismiss = {},
-                    onSave = { name, _ -> savedName = name },
+                    onSave = { savedName = it.name },
                     onDelete = null
                 )
             }
         }
 
-        // Click Create without typing anything
-        composeTestRule.onNodeWithText("Create").performClick()
+        // Create without typing anything
+        composeTestRule.onNodeWithText("Create and pick apps").performSemanticsAction(SemanticsActions.OnClick)
         assertEquals("New Folder", savedName)
     }
 
     @Test
-    fun `when CreateFolderDialog 2-param overload is used, should trigger submit callback`() {
+    fun `when CreateFolderDialog does not open the app picker, should label the button Create`() {
         var nameSubmitted = ""
 
         composeTestRule.setContent {
             AureoleLauncherTheme {
                 CreateFolderDialog(
                     onDismiss = {},
-                    onSubmit = { nameSubmitted = it }
+                    onSubmit = { nameSubmitted = it.name },
+                    pickApps = false
                 )
             }
         }
 
         composeTestRule.onNode(hasSetTextAction()).performTextInput("Shortcuts")
-        composeTestRule.onNodeWithText("Create").performClick()
+        composeTestRule.onNodeWithText("Create").performSemanticsAction(SemanticsActions.OnClick)
         assertEquals("Shortcuts", nameSubmitted)
     }
 
@@ -273,7 +270,7 @@ class FolderBranchCoverageTest {
         SemanticsMatcher.keyNotDefined(SemanticsProperties.Text)
 
     @Test
-    fun `when selecting icon tiles in FolderIconGrid, should update selected icon state`() {
+    fun `when selecting a suggested icon tile, should save it on close`() {
         var selectedIconResult: String? = "initial"
 
         composeTestRule.setContent {
@@ -281,14 +278,14 @@ class FolderBranchCoverageTest {
                 FolderFormDialog(
                     folder = AppFolder(id = "f1", name = "Tools", icon = "settings"),
                     onDismiss = {},
-                    onSave = { _, icon -> selectedIconResult = icon },
+                    onSave = { selectedIconResult = it.icon },
                     onDelete = {}
                 )
             }
         }
 
-        // The grid starts on the category of "settings" (Tools). On a small test window a touch lands on the
-        // scrim and closes the overlay, so the tile and the button are pressed through their semantics.
+        // "settings" is among the suggestions for "Tools", which start with "build". On a small test window a touch
+        // lands on the scrim and closes the overlay, so the tile is pressed through its semantics.
         composeTestRule.onAllNodes(iconTile)[0].performSemanticsAction(SemanticsActions.OnClick)
 
         composeTestRule.closeOverlayWithBack()
@@ -610,34 +607,36 @@ class FolderBranchCoverageTest {
                 FolderFormDialog(
                     folder = AppFolder(id = "f_empty_name", name = "", icon = null),
                     onDismiss = {},
-                    onSave = { _, _ -> }
+                    onSave = {}
                 )
             }
         }
 
-        // Only the preview shows the initial now: the grid has no letter tile.
+        // A folder without icon opens on Letter: only the preview tile shows the initial of the placeholder.
         composeTestRule.onAllNodesWithText("N").assertCountEquals(1)
     }
 
     @Test
-    fun `when selecting specific icon chip in FolderIconGrid, should update selected icon`() {
+    fun `when opening All icons from the form, should pick from the catalog grid`() {
         var selectedIconResult: String? = null
 
         composeTestRule.setContent {
             AureoleLauncherTheme {
-                FolderIconGrid(
-                    state = FolderIconPickerState(selectedIcon = null, category = FolderIconCategory.WORK),
-                    actions = FolderIconPickerActions(
-                        onIconSelected = { selectedIconResult = it },
-                        onCategorySelected = {}
-                    )
+                FolderFormDialog(
+                    folder = AppFolder(id = "f1", name = "Work", icon = "work"),
+                    onDismiss = {},
+                    onSave = { selectedIconResult = it.icon }
                 )
             }
         }
 
-        // The category chips come first (8), then the icons: the first one of Work is "work".
-        composeTestRule.onAllNodes(hasClickAction())[FolderIconCategory.entries.size].performClick()
-        assertEquals("work", selectedIconResult)
+        composeTestRule.onNodeWithText("All icons").performSemanticsAction(SemanticsActions.OnClick)
+        // The grid opens on Work, the category of the saved icon: its first tile is "work" itself, the second the
+        // next icon of the category.
+        composeTestRule.onAllNodes(iconTile)[1].performSemanticsAction(SemanticsActions.OnClick)
+        composeTestRule.closeOverlayWithBack()
+
+        assertEquals("business_center", selectedIconResult)
     }
 
     // --- 10. FolderAppPickerDialog Search and Empty Branches ---

@@ -2,8 +2,12 @@ package dev.mnascimentos.aureole.composable.dialogs.model
 
 import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.core.data.model.AppFolder
-import dev.mnascimentos.aureole.core.designsystem.icons.AureoleFolderIcons
-import dev.mnascimentos.aureole.core.designsystem.icons.FolderIconCategory
+import dev.mnascimentos.aureole.core.data.model.FolderDetails
+import dev.mnascimentos.aureole.core.data.model.FolderIconType
+import dev.mnascimentos.aureole.core.data.model.details
+import dev.mnascimentos.aureole.core.designsystem.icons.AureoleIconCatalog
+import dev.mnascimentos.aureole.core.designsystem.palette.ThemeColorRef
+import java.text.BreakIterator
 
 object FolderButtonMetrics {
     val SmallSize = 52.dp
@@ -13,76 +17,118 @@ object FolderButtonMetrics {
     val GridGap = 18.dp
 }
 
-/** Columns of the folder icon grid. */
-const val FOLDER_ICON_COLUMNS = 5
+/** Columns of the emoji grid of the folder form. */
+const val FOLDER_EMOJI_COLUMNS = 6
 
-/** Rows of icons visible at once (the half row hints that the grid scrolls); the grid scrolls inside itself. */
-const val FOLDER_ICON_VISIBLE_ROWS = 2.5f
-
-data class FolderFormConfig(
-    val initialName: String,
-    val initialIcon: String?,
-    val isEditing: Boolean,
-    val submitText: String
+/** Common emojis offered for a folder; the "+" tile after them opens the keyboard for any other one. */
+val FOLDER_EMOJIS: List<String> = listOf(
+    "💰", // money bag
+    "🏦", // bank
+    "💳", // credit card
+    "📈", // chart
+    "🎮", // video game
+    "🎧", // headphones
+    "📚", // books
+    "✈️", // airplane
+    "🏥", // hospital
+    "🛠️", // tools
+    "💼" // briefcase
 )
+
+/** What the sheet of the folder form shows: the form itself or, in its place, the grid of every icon. */
+enum class FolderFormMode { FORM, ALL_ICONS }
+
+/**
+ * What the folder form holds while it is open. A null [icon] follows the first suggestion for the name (a new
+ * folder); a null [emoji] shows the first of [FOLDER_EMOJIS]; a null [color] uses the color of the container.
+ */
+data class FolderFormDraft(
+    val name: String,
+    val iconType: FolderIconType = FolderIconType.ICON,
+    val icon: String? = null,
+    val emoji: String? = null,
+    val color: ThemeColorRef? = null,
+)
+
+/**
+ * Draft the form opens with: the details of [folder], or an empty new folder. A saved folder of the icon kind
+ * without an icon shows its letter on the home, so it opens on Letter.
+ */
+fun initialFolderDraft(folder: AppFolder?): FolderFormDraft = folder?.details()?.let {
+    val type = if (it.iconType == FolderIconType.ICON && it.icon == null) FolderIconType.LETTER else it.iconType
+    FolderFormDraft(name = it.name, iconType = type, icon = it.icon, emoji = it.emoji, color = it.color)
+} ?: FolderFormDraft(name = "")
 
 /** Name that is saved and shown in the preview: the typed text, trimmed, or [placeholder] when it is blank. */
 fun resolveFolderName(raw: String, placeholder: String): String = raw.ifBlank { placeholder }.trim()
 
-/** True when the edit form holds a name or icon different from the ones [folder] has; false for a new folder. */
-fun folderDetailsChanged(folder: AppFolder?, name: String, icon: String?): Boolean =
-    folder != null && (name != folder.name || icon != folder.icon)
+/** Icon the draft stands for: the one chosen, else the first suggestion for its name. */
+fun FolderFormDraft.effectiveIcon(): String = icon ?: folderIconSuggestions(name).first()
 
-/** Keys of the icons of [category], in catalog order. */
-fun folderIconKeys(category: FolderIconCategory): List<String> =
-    AureoleFolderIcons.byCategory(category).map { it.key }
-
-/** Keys of [category] split in rows of [FOLDER_ICON_COLUMNS]; the last row is not padded. */
-fun folderIconRows(category: FolderIconCategory): List<List<String>> =
-    folderIconKeys(category).chunked(FOLDER_ICON_COLUMNS)
-
-/** Category shown first: the one of [selectedIcon] (old keys included), or the first category when none is set. */
-fun initialFolderIconCategory(selectedIcon: String?): FolderIconCategory {
-    val key = selectedIcon?.let(::resolveFolderIconKey)
-    return AureoleFolderIcons.all.firstOrNull { it.key == key }?.category ?: FolderIconCategory.entries.first()
-}
+/** Emoji the draft stands for: the one chosen, else the first common one. */
+fun FolderFormDraft.effectiveEmoji(): String = emoji ?: FOLDER_EMOJIS.first()
 
 /**
- * First row of the icon grid to show for [category] so [selectedIcon] is in view: the row before the selected
- * one stays visible for context, and 0 when the icon is not in the category.
+ * What saving the draft writes. Only the kind in use is pinned (a new folder saves the suggested icon); an emoji
+ * chosen earlier is kept even when the folder now shows its icon or letter.
  */
-fun folderIconFirstVisibleRow(category: FolderIconCategory, selectedIcon: String?): Int {
-    val row = folderIconRows(category).indexOfFirst { keys -> keys.any { isFolderIconSelected(it, selectedIcon) } }
-    return (row - 1).coerceAtLeast(0)
+fun FolderFormDraft.toDetails(placeholder: String): FolderDetails = FolderDetails(
+    name = resolveFolderName(name, placeholder),
+    icon = if (iconType == FolderIconType.ICON) effectiveIcon() else icon,
+    iconType = iconType,
+    emoji = if (iconType == FolderIconType.EMOJI) effectiveEmoji() else emoji,
+    color = color
+)
+
+/** First letter of [label] in upper case, or "A" when it is empty. */
+fun folderLetter(label: String): String = label.trim().take(1).uppercase().ifEmpty { "A" }
+
+/** Tapping the marked color again clears it (back to the container color); any other color is chosen. */
+fun toggleFolderColor(current: ThemeColorRef?, tapped: ThemeColorRef): ThemeColorRef? =
+    if (current == tapped) null else tapped
+
+/**
+ * The emojis the grid lists: [FOLDER_EMOJIS], with [current] in front when it is one typed through the keyboard
+ * (the grid keeps its size, so the last common one leaves).
+ */
+fun folderEmojiChoices(current: String?): List<String> =
+    if (current.isNullOrBlank() || current in FOLDER_EMOJIS) {
+        FOLDER_EMOJIS
+    } else {
+        listOf(current) + FOLDER_EMOJIS.dropLast(1)
+    }
+
+/**
+ * The emoji to keep from what was typed in the emoji field: its last visible character (a whole emoji, skin tone
+ * and joined sequences included), or null when nothing but spaces was typed.
+ */
+fun lastGrapheme(text: String): String? {
+    val trimmed = text.trim()
+    if (trimmed.isEmpty()) return null
+    val iterator = BreakIterator.getCharacterInstance().apply { setText(trimmed) }
+    val end = iterator.last()
+    val start = iterator.previous()
+    return trimmed.substring(start, end)
 }
 
-/** Position of [category] among the category chips. */
-fun folderIconCategoryIndex(category: FolderIconCategory): Int = FolderIconCategory.entries.indexOf(category)
+/** True when the tile of [key] is the icon [selected] stands for (old keys included). */
+fun isFolderIconMarked(key: String, selected: String?): Boolean =
+    selected != null && (AureoleIconCatalog.resolveKey(selected) ?: selected) == key
 
-/** True when [iconKey] (or the old key it maps to) is the icon marked in the grid. */
-fun isFolderIconSelected(iconKey: String, selectedIcon: String?): Boolean =
-    selectedIcon != null && resolveFolderIconKey(selectedIcon) == iconKey
+/** Index of [type] in the Icon | Letter | Emoji segmented control, and back. */
+fun folderIconTypeIndex(type: FolderIconType): Int = FolderIconType.entries.indexOf(type)
 
-/** What the icon picker draws: the icon marked in the grid and the category whose icons are listed. */
-data class FolderIconPickerState(
-    val selectedIcon: String?,
-    val category: FolderIconCategory
-)
-
-/** Callbacks of the icon picker. */
-data class FolderIconPickerActions(
-    val onIconSelected: (String) -> Unit,
-    val onCategorySelected: (FolderIconCategory) -> Unit
-)
+fun folderIconTypeAt(index: Int): FolderIconType = FolderIconType.entries.getOrElse(index) { FolderIconType.ICON }
 
 /** What the sheet body of the folder form draws. */
-data class FolderFormSheetState(
-    val picker: FolderIconPickerState,
+data class FolderFormBodyState(
+    val draft: FolderFormDraft,
     val showDelete: Boolean
 )
 
 /** Callbacks of the sheet body of the folder form. */
-data class FolderFormSheetActions(
-    val picker: FolderIconPickerActions,
+data class FolderFormBodyActions(
+    val onDraftChange: (FolderFormDraft) -> Unit,
+    val onOpenAllIcons: () -> Unit,
     val onDelete: (() -> Unit)?
 )

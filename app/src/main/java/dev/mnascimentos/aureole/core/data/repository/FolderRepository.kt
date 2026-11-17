@@ -8,6 +8,10 @@ import com.google.gson.reflect.TypeToken
 import dev.mnascimentos.aureole.core.data.db.AppDatabase
 import dev.mnascimentos.aureole.core.data.db.FolderDao
 import dev.mnascimentos.aureole.core.data.model.AppFolder
+import dev.mnascimentos.aureole.core.data.model.FolderDetails
+import dev.mnascimentos.aureole.core.data.model.FolderDetailsUpdate
+import dev.mnascimentos.aureole.core.data.model.LegacyFolderJson
+import dev.mnascimentos.aureole.core.data.model.details
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import timber.log.Timber
@@ -46,16 +50,21 @@ class FolderRepository(
     }
 
     suspend fun updateFolder(folder: AppFolder) = withContext(Dispatchers.IO) {
-        folderDao.updateFolderDetails(folder.id, folder.name, folder.icon)
+        writeDetails(folder.id, folder.details())
         folderDao.updateFolderItems(folder.id, folder.appPackageNames)
     }
 
-    suspend fun updateFolderDetails(folderId: String, newName: String, icon: String?) = withContext(Dispatchers.IO) {
-        folderDao.updateFolderDetails(folderId, newName, icon)
+    /** Saves the name, icon, kind (icon, letter or emoji), emoji and own color of the folder. */
+    suspend fun updateFolderDetails(folderId: String, details: FolderDetails) = withContext(Dispatchers.IO) {
+        writeDetails(folderId, details)
     }
 
     suspend fun renameFolder(folderId: String, newName: String) = withContext(Dispatchers.IO) {
-        folderDao.updateFolderDetails(folderId, newName, null)
+        folderDao.renameFolder(folderId, newName)
+    }
+
+    private suspend fun writeDetails(folderId: String, details: FolderDetails) {
+        folderDao.updateFolderDetails(FolderDetailsUpdate.of(folderId, details))
     }
 
     suspend fun updateFolderApps(folderId: String, packageNames: List<String>) = withContext(Dispatchers.IO) {
@@ -72,8 +81,10 @@ class FolderRepository(
         if (json.isNullOrBlank()) return emptyList()
 
         return try {
-            val type = object : TypeToken<List<AppFolder>>() {}.type
-            gson.fromJson<List<AppFolder>>(json, type) ?: emptyList()
+            // Read through a nullable mirror: Gson skips Kotlin defaults, so fields the old JSON lacks (the folder
+            // look) would arrive as null in non-null properties.
+            val type = object : TypeToken<List<LegacyFolderJson>>() {}.type
+            gson.fromJson<List<LegacyFolderJson>>(json, type)?.map { it.toAppFolder() }.orEmpty()
         } catch (e: JsonSyntaxException) {
             Timber.tag("FolderRepository").e(e, "Failed to parse legacy folders JSON")
             emptyList()

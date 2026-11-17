@@ -61,10 +61,12 @@ internal fun ManageItemsContent(
         AureoleOverlayWindow(onDismissRequest = { isCreateFolderDialogVisible = false }) {
             CreateFolderDialog(
                 onDismiss = { isCreateFolderDialogVisible = false },
-                onSubmit = { name ->
-                    state.addFolder(name)
+                onSubmit = { details ->
+                    state.addFolder(details)
                     isCreateFolderDialogVisible = false
-                }
+                },
+                // The folder only exists once the container is saved, so there is no app picker to open yet.
+                pickApps = false
             )
         }
     }

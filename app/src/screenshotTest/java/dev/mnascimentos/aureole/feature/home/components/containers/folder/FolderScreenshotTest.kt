@@ -134,7 +134,7 @@ private fun WhenFolderFormDialogRendered_shouldRenderFormDialogScreenshotTest() 
         FolderFormDialog(
             folder = folder,
             onDismiss = {},
-            onSave = { _, _ -> },
+            onSave = {},
             onDelete = {}
         )
     }

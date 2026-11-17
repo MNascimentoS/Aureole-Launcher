@@ -2,6 +2,7 @@ package dev.mnascimentos.aureole.composable.dialogs.model
 
 import dev.mnascimentos.aureole.composable.dialogs.FolderIconRegistry
 import dev.mnascimentos.aureole.core.designsystem.icons.AureoleFolderIcons
+import dev.mnascimentos.aureole.core.designsystem.icons.AureoleIconCatalog
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertNull
@@ -15,19 +16,6 @@ class FolderIconKeysTest {
         "notifications", "edit", "check", "add", "delete", "search", "share", "refresh", "menu", "more_vert",
         "location_on", "create", "date_range", "play", "cart", "build"
     )
-
-    @Test
-    fun `every old key resolves to something that can be drawn`() {
-        oldKeys.forEach { old ->
-            val key = resolveFolderIconKey(old)
-
-            assertTrue(
-                "$old -> $key",
-                AureoleFolderIcons.resFor(key) != null || FolderIconRegistry.icons.containsKey(key)
-            )
-            assertTrue("$old fell back to the folder", key != FOLDER_ICON_FALLBACK)
-        }
-    }
 
     @Test
     fun `old keys that used to show a wrong icon now map to the right one`() {
@@ -61,8 +49,37 @@ class FolderIconKeysTest {
     }
 
     @Test
-    fun `the registry draws exactly the keys that have no catalog drawable`() {
-        assertEquals(LEGACY_FOLDER_ICON_KEYS, FolderIconRegistry.icons.keys)
-        assertTrue(LEGACY_FOLDER_ICON_KEYS.all { AureoleFolderIcons.resFor(it) == null })
+    fun `the registry only keeps the trash can, the one old key the unified catalog cannot draw`() {
+        assertEquals(setOf(FOLDER_ICON_TRASH_KEY), FolderIconRegistry.icons.keys)
+        assertNull(AureoleIconCatalog.resolveKey(FOLDER_ICON_TRASH_KEY))
+    }
+
+    @Test
+    fun `every old key is drawn by the unified catalog or the registry`() {
+        oldKeys.forEach { old ->
+            val key = folderIconCatalogKey(old)
+
+            assertTrue(
+                "$old -> $key",
+                AureoleIconCatalog.resFor(key) != null || FolderIconRegistry.icons.containsKey(key)
+            )
+            assertTrue("$old fell back to the folder", key != FOLDER_ICON_FALLBACK)
+        }
+    }
+
+    @Test
+    fun `catalog keys, enum names and folder names resolve to catalog keys`() {
+        assertEquals("action_edit", folderIconCatalogKey("edit"))
+        assertEquals("action_favorite", folderIconCatalogKey("FAVORITE"))
+        assertEquals("favorite", folderIconCatalogKey("favorite"))
+        assertEquals("sports_esports", folderIconCatalogKey("jogos"))
+        assertEquals("location_on", folderIconCatalogKey("place"))
+        assertEquals(FOLDER_ICON_TRASH_KEY, folderIconCatalogKey("delete"))
+    }
+
+    @Test
+    fun `an unknown or null key draws the folder`() {
+        assertEquals(FOLDER_ICON_FALLBACK, folderIconCatalogKey(null))
+        assertEquals(FOLDER_ICON_FALLBACK, folderIconCatalogKey("nope"))
     }
 }

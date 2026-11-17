@@ -26,11 +26,8 @@ fun HomeScreenFolderOverlays(
     CreateFolderOverlay(
         isVisible = uiState.isCreateFolderDialogVisible,
         onCloseFolder = { actions.onFolderIntent(FolderViewIntent.CloseFolder) },
-        onSubmitName = { folderName, icon ->
-            actions.onFolderIntent(
-                FolderViewIntent.SubmitFolderName(folderName, icon)
-            )
-        }
+        // "Create and pick apps" (pasta-form RF-11): the new folder opens with its app picker.
+        onSubmit = { details -> actions.onFolderIntent(FolderViewIntent.SubmitFolderName(details, pickApps = true)) }
     )
 
     OpenedFolderOverlay(

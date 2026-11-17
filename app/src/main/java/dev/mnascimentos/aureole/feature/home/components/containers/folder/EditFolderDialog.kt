@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.NonRestartableComposable
 import dev.mnascimentos.aureole.composable.dialogs.FolderFormDialog
 import dev.mnascimentos.aureole.core.data.model.AppFolder
+import dev.mnascimentos.aureole.core.data.model.FolderDetails
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 
@@ -12,7 +13,7 @@ import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 fun EditFolderDialog(
     folder: AppFolder,
     onDismiss: () -> Unit,
-    onSave: (name: String, icon: String?) -> Unit,
+    onSave: (FolderDetails) -> Unit,
     onDelete: () -> Unit
 ) {
     FolderFormDialog(
@@ -31,7 +32,7 @@ private fun EditFolderDialogPreview() {
         EditFolderDialog(
             folder = mockFolder,
             onDismiss = {},
-            onSave = { _, _ -> },
+            onSave = {},
             onDelete = {}
         )
     }

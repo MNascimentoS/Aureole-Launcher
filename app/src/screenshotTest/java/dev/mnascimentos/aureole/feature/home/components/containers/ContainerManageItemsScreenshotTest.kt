@@ -80,7 +80,7 @@ private fun ManageItemsFolderFormCase(isLeftHanded: Boolean) {
                         onBack = {}
                     )
                 }
-                CreateFolderDialog(onDismiss = {}, onSubmit = { _, _ -> })
+                CreateFolderDialog(onDismiss = {}, onSubmit = {}, pickApps = false)
             }
         }
     }

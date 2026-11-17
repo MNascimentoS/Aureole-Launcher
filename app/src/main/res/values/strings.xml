@@ -24,9 +24,7 @@
     <!-- Folders -->
     <string name="home_folder_edit_title">Edit Folder</string>
     <string name="home_folder_new_title">New Folder</string>
-    <string name="home_folder_name_label">Folder Name</string>
     <string name="home_folder_name_placeholder">New Folder</string>
-    <string name="home_folder_icon">Folder Icon</string>
     <string name="home_folder_apps_in_folder">Apps in Folder: %1$s</string>
     <string name="home_folder_no_apps_in_folder">No apps in the folder.</string>
     <string name="core_common_no_apps_found">No apps found.</string>
@@ -553,4 +551,22 @@
     <string name="settings_section_system">System</string>
     <string name="settings_section_about">About</string>
     <string name="settings_section_care_zone">Care zone</string>
+    <string name="home_folder_name_hint">Name it</string>
+    <string name="home_folder_name_a11y">Name, %1$s, edit</string>
+    <string name="home_folder_name_clear">Clear name</string>
+    <string name="home_folder_name_edit">Edit name</string>
+    <string name="home_folder_type_label">What the folder shows</string>
+    <string name="home_folder_type_icon">Icon</string>
+    <string name="home_folder_type_letter">Letter</string>
+    <string name="home_folder_type_emoji">Emoji</string>
+    <string name="home_folder_suggested_for">Suggested for “%1$s”</string>
+    <string name="home_folder_suggested">Suggested</string>
+    <string name="home_folder_all_icons">All icons</string>
+    <string name="home_folder_all_icons_count">%1$d icons in %2$d categories</string>
+    <string name="home_folder_all_icons_back">Back to the folder</string>
+    <string name="home_folder_letter_note">The first letter of the name, in the theme font. It changes with the name.</string>
+    <string name="home_folder_emoji_more">Another emoji</string>
+    <string name="home_folder_emoji_hint">Type an emoji</string>
+    <string name="home_folder_color">Folder color</string>
+    <string name="home_folder_create_pick_apps">Create and pick apps</string>
 </resources>

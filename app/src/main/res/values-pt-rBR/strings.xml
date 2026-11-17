@@ -24,9 +24,7 @@
     <!-- Folders -->
     <string name="home_folder_edit_title">Editar Pasta</string>
     <string name="home_folder_new_title">Nova Pasta</string>
-    <string name="home_folder_name_label">Nome da Pasta</string>
     <string name="home_folder_name_placeholder">Nova Pasta</string>
-    <string name="home_folder_icon">Ícone da Pasta</string>
     <string name="home_folder_apps_in_folder">Apps na Pasta: %1$s</string>
     <string name="home_folder_no_apps_in_folder">Nenhum aplicativo na pasta.</string>
     <string name="core_common_no_apps_found">Nenhum aplicativo encontrado.</string>
@@ -558,4 +556,22 @@
     <string name="settings_section_system">Sistema</string>
     <string name="settings_section_about">Sobre</string>
     <string name="settings_section_care_zone">Zona de cuidado</string>
+    <string name="home_folder_name_hint">Dar um nome</string>
+    <string name="home_folder_name_a11y">Nome, %1$s, editar</string>
+    <string name="home_folder_name_clear">Limpar nome</string>
+    <string name="home_folder_name_edit">Editar nome</string>
+    <string name="home_folder_type_label">O que a pasta mostra</string>
+    <string name="home_folder_type_icon">Ícone</string>
+    <string name="home_folder_type_letter">Letra</string>
+    <string name="home_folder_type_emoji">Emoji</string>
+    <string name="home_folder_suggested_for">Sugeridos para “%1$s”</string>
+    <string name="home_folder_suggested">Sugeridos</string>
+    <string name="home_folder_all_icons">Todos os ícones</string>
+    <string name="home_folder_all_icons_count">%1$d ícones em %2$d categorias</string>
+    <string name="home_folder_all_icons_back">Voltar para a pasta</string>
+    <string name="home_folder_letter_note">A primeira letra do nome, na fonte do tema. Muda junto com o nome.</string>
+    <string name="home_folder_emoji_more">Outro emoji</string>
+    <string name="home_folder_emoji_hint">Digite um emoji</string>
+    <string name="home_folder_color">Cor da pasta</string>
+    <string name="home_folder_create_pick_apps">Criar e escolher apps</string>
 </resources>

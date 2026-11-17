@@ -6,6 +6,11 @@ import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import dev.mnascimentos.aureole.core.data.db.AppDatabase
 import dev.mnascimentos.aureole.core.data.model.AppFolder
+import dev.mnascimentos.aureole.core.data.model.FolderDetails
+import dev.mnascimentos.aureole.core.data.model.FolderIconType
+import dev.mnascimentos.aureole.core.data.model.details
+import dev.mnascimentos.aureole.core.designsystem.palette.ThemeColorRef
+import dev.mnascimentos.aureole.core.designsystem.palette.ThemeColorRole
 import kotlinx.coroutines.runBlocking
 import org.junit.After
 import org.junit.Assert.assertEquals
@@ -45,17 +50,41 @@ class FolderRepositoryTest {
         assertEquals(1, folders.size)
         assertEquals("Folder 1", folders.first().name)
 
-        repository.updateFolderDetails("f1", "New Name", "icon1")
+        repository.updateFolderDetails("f1", FolderDetails(name = "New Name", icon = "icon1"))
         repository.updateFolderApps("f1", listOf("pkg1", "pkg2"))
 
         val updated = repository.getFolders().first()
         assertEquals("New Name", updated.name)
+        assertEquals("icon1", updated.icon)
+        assertEquals(listOf("pkg1", "pkg2"), updated.appPackageNames)
 
         repository.renameFolder("f1", "Renamed")
+        assertEquals("Renamed", repository.getFolders().first().name)
+        assertEquals("icon1", repository.getFolders().first().icon)
         repository.updateFolder(folder.copy(name = "Updated"))
+        assertEquals("Updated", repository.getFolders().first().name)
 
         repository.deleteFolder("f1")
         assertTrue(repository.getFolders().isEmpty())
+    }
+
+    @Test
+    fun `editing saves the kind, emoji and own color, and reads them back`() = runBlocking {
+        repository.addFolder(AppFolder(id = "f2", name = "Fun", icon = "star"))
+        val details = FolderDetails(
+            name = "Games",
+            icon = "sports_esports",
+            iconType = FolderIconType.EMOJI,
+            emoji = "\uD83C\uDFAE",
+            color = ThemeColorRef.Role(ThemeColorRole.VARIANT)
+        )
+
+        repository.updateFolderDetails("f2", details)
+        assertEquals(details, repository.getFolders().first().details())
+
+        val back = FolderDetails(name = "Fun", icon = "star", color = ThemeColorRef.Fixed(0xFF336699.toInt()))
+        repository.updateFolderDetails("f2", back)
+        assertEquals(back, repository.getFolders().first().details())
     }
 
     @Test

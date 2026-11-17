@@ -1,117 +1,228 @@
 package dev.mnascimentos.aureole.composable.dialogs
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardCapitalization
+import androidx.compose.ui.text.style.TextAlign
 import dev.mnascimentos.aureole.R
-import dev.mnascimentos.aureole.composable.dialogs.model.FolderButtonMetrics
+import dev.mnascimentos.aureole.composable.dialogs.model.FolderFormDraft
+import dev.mnascimentos.aureole.composable.dialogs.model.effectiveEmoji
+import dev.mnascimentos.aureole.composable.dialogs.model.effectiveIcon
+import dev.mnascimentos.aureole.core.data.model.AppFolder
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
+import dev.mnascimentos.aureole.core.designsystem.icons.Close
 import dev.mnascimentos.aureole.core.designsystem.icons.Edit
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 
-/** The folder as it will look on the Home: the chosen icon (or the first letter of the name) and the name below. */
+private const val NAME_PILL_WIDTH_FRACTION = 0.72f
+private const val NAME_PILL_BACKGROUND_ALPHA = 0.5f
+
+/**
+ * The folder as it will look on the Home, above the sheet: its tile (own color, icon / letter / emoji with an
+ * automatic contrast) and, under it, the name pill where the name is typed (pasta-form RF-08). [label] is the name
+ * that will be saved (the placeholder when the typed one is blank).
+ */
 @Composable
-fun FolderIconPreview(
-    folderName: String,
-    selectedIcon: String?,
+fun FolderFormPreview(
+    draft: FolderFormDraft,
+    label: String,
+    onNameChange: (String) -> Unit,
     modifier: Modifier = Modifier,
-    label: String = folderName
+    autoFocus: Boolean = false
 ) {
-    Column(modifier = modifier, horizontalAlignment = Alignment.CenterHorizontally) {
-        Box(
-            modifier = Modifier
-                .size(FolderButtonMetrics.SmallSize)
-                .clip(RoundedCornerShape(AureoleDS.dimens.radiusMedium))
-                .background(AureoleDS.colors.surfaceVariant),
-            contentAlignment = Alignment.Center
-        ) {
-            FolderTileContent(icon = selectedIcon, letter = label.take(1).uppercase().ifEmpty { "A" })
-        }
-        AureoleText(
-            text = label,
-            color = AureoleDS.colors.onSurfaceHigh,
-            modifier = Modifier.padding(top = AureoleDS.dimens.xxSmall),
-            format = AureoleTextFormatParams(
-                style = AureoleDS.typography.labelMedium,
-                maxLines = 1
-            )
-        )
+    Column(
+        modifier = modifier.fillMaxWidth(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(AureoleDS.dimens.small)
+    ) {
+        FolderPreviewTile(draft = draft, label = label)
+        FolderNamePill(value = draft.name, onValueChange = onNameChange, autoFocus = autoFocus)
     }
 }
 
 @Composable
-private fun FolderTileContent(icon: String?, letter: String) {
-    if (icon != null) {
-        FolderIconRegistry.RenderIcon(
-            name = icon,
+private fun FolderPreviewTile(draft: FolderFormDraft, label: String) {
+    // A throwaway folder with the draft's look, so the tile is drawn exactly like the one on the Home.
+    val folder = AppFolder(
+        name = label,
+        icon = draft.effectiveIcon(),
+        iconType = draft.iconType,
+        emoji = draft.effectiveEmoji(),
+        color = draft.color
+    )
+    Box(
+        modifier = Modifier
+            .size(AureoleDS.dimens.sizeLarge)
+            .clip(RoundedCornerShape(AureoleDS.dimens.radiusMediumLarge))
+            .background(folderOwnColor(folder) ?: AureoleDS.colors.surfaceVariant),
+        contentAlignment = Alignment.Center
+    ) {
+        FolderGlyph(
+            folder = folder,
+            size = AureoleDS.dimens.iconXLargeMedium,
             tint = AureoleDS.colors.onSurfaceHigh,
-            modifier = Modifier.size(AureoleDS.dimens.iconLarge)
-        )
-    } else {
-        AureoleText(
-            text = letter,
-            color = AureoleDS.colors.onSurfaceHigh,
-            format = AureoleTextFormatParams(
-                style = AureoleDS.typography.titleLarge,
-                fontWeight = FontWeight.Bold
-            )
+            letterStyle = AureoleDS.typography.titleLarge
         )
     }
 }
 
-/** Name field of the folder form; sits glued above the action row, so it stays next to the keyboard. */
+/**
+ * Name field in a pill: light background, thin border and a round pencil button at the end. Focused, the border
+ * lights up and the pencil becomes a "×" that clears the name; empty, it shows "Name it". [autoFocus] focuses it
+ * and opens the keyboard as soon as it appears (a new folder).
+ */
 @Composable
-fun FolderNameField(
+fun FolderNamePill(
     value: String,
     onValueChange: (String) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    autoFocus: Boolean = false
 ) {
-    OutlinedTextField(
+    val focusRequester = remember { FocusRequester() }
+    val focusManager = LocalFocusManager.current
+    val keyboard = LocalSoftwareKeyboardController.current
+    var isFocused by remember { mutableStateOf(false) }
+    val hint = stringResource(R.string.home_folder_name_hint)
+    val description = stringResource(R.string.home_folder_name_a11y, value.ifBlank { hint })
+    val shape = RoundedCornerShape(AureoleDS.dimens.radiusFull)
+    LaunchedEffect(autoFocus) {
+        if (autoFocus) {
+            focusRequester.requestFocus()
+            keyboard?.show()
+        }
+    }
+    BasicTextField(
         value = value,
         onValueChange = onValueChange,
-        placeholder = {
-            AureoleText(
-                stringResource(R.string.home_folder_name_label),
-                color = AureoleDS.colors.onSurfaceLow
-            )
-        },
-        leadingIcon = {
-            AureoleDS.icons.Edit(
-                tint = AureoleDS.colors.onSurfaceMedium,
-                modifier = Modifier.size(AureoleDS.dimens.iconMedium)
-            )
-        },
         singleLine = true,
-        shape = RoundedCornerShape(AureoleDS.dimens.radiusMedium),
-        colors = OutlinedTextFieldDefaults.colors(
-            focusedBorderColor = AureoleDS.colors.onSurfaceHigh,
-            unfocusedBorderColor = AureoleDS.colors.outline,
-            focusedTextColor = AureoleDS.colors.onSurfaceHigh,
-            unfocusedTextColor = AureoleDS.colors.onSurfaceHigh
+        textStyle = AureoleDS.typography.titleMedium.copy(color = AureoleDS.colors.onSurfaceHigh),
+        cursorBrush = SolidColor(AureoleDS.colors.onSurfaceHigh),
+        keyboardOptions = KeyboardOptions(
+            capitalization = KeyboardCapitalization.Sentences,
+            imeAction = ImeAction.Done
         ),
-        modifier = modifier.fillMaxWidth()
+        keyboardActions = KeyboardActions(onDone = { focusManager.clearFocus() }),
+        modifier = modifier
+            .fillMaxWidth(NAME_PILL_WIDTH_FRACTION)
+            .focusRequester(focusRequester)
+            .onFocusChanged { isFocused = it.isFocused }
+            .semantics { contentDescription = description },
+        decorationBox = { innerTextField ->
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .heightIn(min = AureoleDS.dimens.minTouchTarget)
+                    .clip(shape)
+                    .background(AureoleDS.colors.surfaceVariant.copy(alpha = NAME_PILL_BACKGROUND_ALPHA))
+                    .border(
+                        width = AureoleDS.dimens.borderMinimal,
+                        color = if (isFocused) AureoleDS.colors.onSurfaceHigh else AureoleDS.colors.outline,
+                        shape = shape
+                    )
+                    .padding(start = AureoleDS.dimens.medium, end = AureoleDS.dimens.xxSmall),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Box(modifier = Modifier.weight(1f), contentAlignment = Alignment.CenterStart) {
+                    if (value.isEmpty()) {
+                        AureoleText(
+                            text = hint,
+                            color = AureoleDS.colors.onSurfaceLow,
+                            format = AureoleTextFormatParams(
+                                style = AureoleDS.typography.titleMedium,
+                                textAlign = TextAlign.Start,
+                                maxLines = 1
+                            )
+                        )
+                    }
+                    innerTextField()
+                }
+                NamePillButton(
+                    isClear = isFocused && value.isNotEmpty(),
+                    onClick = {
+                        if (isFocused && value.isNotEmpty()) {
+                            onValueChange("")
+                        } else {
+                            focusRequester.requestFocus()
+                            keyboard?.show()
+                        }
+                    }
+                )
+            }
+        }
     )
+}
+
+/** The round button at the end of the name pill: a pencil (edit) or, while typing, a "×" (clear). */
+@Composable
+private fun NamePillButton(isClear: Boolean, onClick: () -> Unit) {
+    val label = stringResource(if (isClear) R.string.home_folder_name_clear else R.string.home_folder_name_edit)
+    Box(
+        modifier = Modifier
+            .size(AureoleDS.dimens.xxLarge)
+            .clip(CircleShape)
+            .background(AureoleDS.colors.surfaceVariant)
+            .clickable(role = Role.Button, onClickLabel = label, onClick = onClick)
+            .semantics { contentDescription = label },
+        contentAlignment = Alignment.Center
+    ) {
+        val iconModifier = Modifier.size(AureoleDS.dimens.iconSmall)
+        if (isClear) {
+            AureoleDS.icons.Close(iconModifier, AureoleDS.colors.onSurfaceHigh)
+        } else {
+            AureoleDS.icons.Edit(iconModifier, AureoleDS.colors.onSurfaceHigh)
+        }
+    }
 }
 
 @AureolePreview
 @Composable
-private fun FolderNameFieldPreview() {
+private fun FolderFormPreviewPreview() {
     AureoleLauncherTheme {
-        FolderNameField(value = "Work", onValueChange = {})
+        FolderFormPreview(draft = FolderFormDraft(name = "Bank"), label = "Bank", onNameChange = {})
+    }
+}
+
+@AureolePreview
+@Composable
+private fun FolderNamePillEmptyPreview() {
+    AureoleLauncherTheme {
+        FolderNamePill(value = "", onValueChange = {})
     }
 }

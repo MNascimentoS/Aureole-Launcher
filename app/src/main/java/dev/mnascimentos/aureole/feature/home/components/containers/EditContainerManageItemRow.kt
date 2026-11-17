@@ -16,6 +16,7 @@ import androidx.compose.ui.text.font.FontWeight
 import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.composable.appitem.AureoleAppIcon
 import dev.mnascimentos.aureole.composable.appitem.model.AureoleAppIconParams
+import dev.mnascimentos.aureole.composable.dialogs.FolderBadge
 import dev.mnascimentos.aureole.core.data.model.AppFolder
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.data.model.ContainerItemEntity
@@ -63,7 +64,7 @@ internal fun ManageItemRow(params: ManageItemRowParams) {
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(AureoleDS.dimens.small)
     ) {
-        ManageItemRowIcon(itemType = item.itemType, app = app)
+        ManageItemRowIcon(itemType = item.itemType, app = app, folder = folder)
 
         Text(
             text = title,
@@ -77,10 +78,14 @@ internal fun ManageItemRow(params: ManageItemRowParams) {
 @Composable
 private fun ManageItemRowIcon(
     itemType: ContainerItemType,
-    app: AppInfo?
+    app: AppInfo?,
+    folder: AppFolder?
 ) {
     when (itemType) {
-        ContainerItemType.FOLDER -> {
+        // The folder as it looks on the home: its icon, letter or emoji over its own color.
+        ContainerItemType.FOLDER -> if (folder != null) {
+            FolderBadge(folder = folder, size = AureoleDS.dimens.iconMedium)
+        } else {
             AureoleDS.icons.Folder(
                 tint = AureoleDS.colors.onSurfaceHigh,
                 modifier = Modifier.size(AureoleDS.dimens.iconMedium)

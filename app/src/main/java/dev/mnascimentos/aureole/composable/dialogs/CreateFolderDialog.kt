@@ -2,31 +2,26 @@ package dev.mnascimentos.aureole.composable.dialogs
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.NonRestartableComposable
+import dev.mnascimentos.aureole.core.data.model.FolderDetails
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 
+/**
+ * Sheet that creates a folder. [pickApps] labels its button "Create and pick apps" (the caller opens the app picker
+ * of the new folder); false labels it "Create".
+ */
 @NonRestartableComposable
 @Composable
 fun CreateFolderDialog(
     onDismiss: () -> Unit,
-    onSubmit: (name: String, icon: String?) -> Unit
+    onSubmit: (FolderDetails) -> Unit,
+    pickApps: Boolean = true
 ) {
     FolderFormDialog(
         folder = null,
         onDismiss = onDismiss,
-        onSave = onSubmit
-    )
-}
-
-@NonRestartableComposable
-@Composable
-fun CreateFolderDialog(
-    onDismiss: () -> Unit,
-    onSubmit: (String) -> Unit
-) {
-    CreateFolderDialog(
-        onDismiss = onDismiss,
-        onSubmit = { name, _ -> onSubmit(name) }
+        onSave = onSubmit,
+        pickAppsOnCreate = pickApps
     )
 }
 
@@ -36,7 +31,7 @@ private fun CreateFolderDialogPreview() {
     AureoleLauncherTheme {
         CreateFolderDialog(
             onDismiss = {},
-            onSubmit = { _, _ -> }
+            onSubmit = {}
         )
     }
 }
