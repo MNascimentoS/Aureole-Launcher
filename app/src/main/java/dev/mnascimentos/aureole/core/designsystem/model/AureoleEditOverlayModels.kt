@@ -171,3 +171,10 @@ internal fun AureoleEditOverlayConfig.backHandler(dismiss: () -> Unit): () -> Un
 
 /** What back, drag-down and tap-outside start: [dismiss], or nothing while [AureoleEditOverlayConfig.isLocked]. */
 internal fun AureoleEditOverlayConfig.userDismiss(dismiss: () -> Unit): () -> Unit = if (isLocked) ({}) else dismiss
+
+/** The title line of a sheet header: the [text], the optional [icon] before it and a [subtitle] under it. */
+internal class OverlayHeaderTitle(
+    val text: String,
+    val icon: (@Composable (Modifier) -> Unit)? = null,
+    val subtitle: String? = null
+)

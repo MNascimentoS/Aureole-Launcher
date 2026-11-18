@@ -67,8 +67,7 @@ internal fun EditClockAlignmentSection(
     AureoleSegmentedControl(
         options = ClockAlignmentOption.entries.map { stringResource(it.labelRes) },
         selectedIndex = ClockAlignmentOption.indexOfKey(uiState.clockAlignment),
-        onSelect = { actions.onUpdateClockAlignment(ClockAlignmentOption.entries[it].key) },
-        itemHeight = AureoleDS.dimens.minTouchTarget
+        onSelect = { actions.onUpdateClockAlignment(ClockAlignmentOption.entries[it].key) }
     )
 }
 

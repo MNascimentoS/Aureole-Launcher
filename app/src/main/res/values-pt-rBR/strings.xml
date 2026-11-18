@@ -289,7 +289,6 @@
     <string name="home_container_add_quick_button">Botão Rápido</string>
     <string name="home_container_add_scroll_view">Grupo rolável</string>
 
-    <string name="home_container_edit_scroll_orientation">Orientação do Scroll</string>
     <string name="home_container_edit_vertical">Vertical</string>
     <string name="home_container_edit_horizontal">Horizontal</string>
 
@@ -588,7 +587,6 @@
     <string name="home_shortcut_name_notifications">Notificações</string>
     <string name="home_shortcut_name_none">Nenhum</string>
     <string name="home_shortcut_name_open_app">Abrir app</string>
-    <string name="home_shortcut_name_system_default">Ação do sistema</string>
     <string name="home_shortcut_name_browser">Navegador</string>
     <string name="home_shortcut_name_calculator">Calculadora</string>
     <string name="home_shortcut_name_calendar">Calendário</string>
@@ -612,7 +610,7 @@
     <string name="home_shortcut_unavailable">%1$s (indisponível)</string>
     <string name="home_scrollgroup_section_scroll">Rolagem</string>
     <string name="home_scrollgroup_section_items">Itens</string>
-    <string name="home_scrollgroup_size_cells">%1$d × %2$d células</string>
+    <string name="home_scrollgroup_size_cells">%1$s células</string>
     <string name="home_scrollgroup_height">Altura</string>
     <string name="home_scrollgroup_width">Largura</string>
     <string name="home_scrollgroup_full_list">Lista completa</string>

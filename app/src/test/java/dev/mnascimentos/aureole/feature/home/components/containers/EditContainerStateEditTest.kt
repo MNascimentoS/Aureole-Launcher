@@ -51,7 +51,7 @@ class EditContainerStateEditTest {
         val state = state()
         val id = state.addQuickButton()
 
-        state.updateQuickButtonAppearance(id, QuickButtonAppearance(label = " Lamp "))
+        state.updateQuickButton(id) { it.copy(appearance = QuickButtonAppearance(label = " Lamp ")) }
 
         assertEquals(" Lamp ", state.quickButtons.single().appearance.label)
         assertEquals(" Lamp ", state.itemsList.single().quickButtonModel?.appearance?.label)
@@ -64,7 +64,7 @@ class EditContainerStateEditTest {
         state.addQuickButton()
         val before = state.quickButtons
 
-        state.updateQuickButtonAppearance("missing", QuickButtonAppearance(label = "x"))
+        state.updateQuickButton("missing") { it.copy(appearance = QuickButtonAppearance(label = "x")) }
 
         assertEquals(before, state.quickButtons)
     }

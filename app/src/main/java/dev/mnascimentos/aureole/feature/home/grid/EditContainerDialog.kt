@@ -20,6 +20,7 @@ import dev.mnascimentos.aureole.core.designsystem.icons.ScrollGroup
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
+import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
 import dev.mnascimentos.aureole.feature.home.model.LocalHomeActions
 
 @Composable
@@ -30,23 +31,9 @@ fun EditGridItemDialog(
     modifier: Modifier = Modifier
 ) {
     val actions = LocalHomeActions.current
-    val title = when (item.type) {
-        LauncherItemType.CLOCK -> stringResource(R.string.home_grid_item_clock)
-        LauncherItemType.APPS_LIST -> stringResource(R.string.home_grid_item_apps_list)
-        LauncherItemType.SHORTCUTS_CONTAINER -> stringResource(R.string.home_grid_item_shortcuts)
-        LauncherItemType.SINGLE_APP_WIDGET -> stringResource(R.string.home_grid_item_widget)
-        LauncherItemType.WIDGET_LIST -> stringResource(R.string.home_grid_item_widget_group)
-        LauncherItemType.SCROLL_VIEW -> stringResource(R.string.home_grid_item_scroll_view)
-        LauncherItemType.QUICK_BUTTON -> stringResource(R.string.home_grid_item_quick_button)
-        else -> stringResource(R.string.home_grid_item_container)
-    }
-
+    val title = gridItemTitle(item.type)
     val isScrollView = item.type == LauncherItemType.SCROLL_VIEW
-    val sizeNote = stringResource(R.string.home_grid_current_size, item.colSpan, item.rowSpan)
-    val sizeSubtitle = stringResource(R.string.home_scrollgroup_size_cells, item.colSpan, item.rowSpan)
-    val sectionLabel = stringResource(R.string.home_grid_menu_section)
-    val scrollLabel = stringResource(R.string.home_scrollgroup_section_scroll)
-    val itemsLabel = stringResource(R.string.home_scrollgroup_section_items)
+    val sizeSubtitle = stringResource(R.string.home_scrollgroup_size_cells, "${item.colSpan} × ${item.rowSpan}")
     val deleteParams = editDialogDeleteParams(
         itemId = item.id,
         onDeleteConfirm = onDeleteConfirm,
@@ -66,20 +53,7 @@ fun EditGridItemDialog(
         )
     ) { dismiss ->
         buildList {
-            if (isScrollView) {
-                // The size is the header's second line; the orientation is a setting of the group, not an item action.
-                add(MenuEntry.Section(text = scrollLabel))
-                add(MenuEntry.Content { ScrollViewOrientationSelector(item = item, actions = actions) })
-                add(MenuEntry.Section(text = itemsLabel))
-                add(
-                    MenuEntry.Content {
-                        EditDialogScrollItemsSection(item = item, actions = actions, onDismissRequest = onDismissRequest)
-                    }
-                )
-            } else {
-                add(MenuEntry.Note(text = sizeNote))
-                add(MenuEntry.Section(text = sectionLabel))
-            }
+            addAll(groupEntries(item, actions, onDismissRequest))
             val typeSection = MenuEntry.Content {
                 EditDialogTypeActionSection(item = item, actions = actions, onDismissRequest = onDismissRequest)
             }
@@ -94,6 +68,44 @@ fun EditGridItemDialog(
             add(MenuEntry.Row(deleteParams))
         }
     }
+}
+
+/**
+ * The entries before the item's own actions: a scroll group has its "Scroll" setting and its "Items" (the size is
+ * the header's second line); any other item has the note with its size and the "Item actions" label.
+ */
+@Composable
+private fun groupEntries(
+    item: LauncherItemState,
+    actions: HomeScreenActions,
+    onDismissRequest: () -> Unit
+): List<MenuEntry> {
+    if (item.type != LauncherItemType.SCROLL_VIEW) {
+        return listOf(
+            MenuEntry.Note(text = stringResource(R.string.home_grid_current_size, item.colSpan, item.rowSpan)),
+            MenuEntry.Section(text = stringResource(R.string.home_grid_menu_section))
+        )
+    }
+    return listOf(
+        MenuEntry.Section(text = stringResource(R.string.home_scrollgroup_section_scroll)),
+        MenuEntry.Content { ScrollViewOrientationSelector(item = item, actions = actions) },
+        MenuEntry.Section(text = stringResource(R.string.home_scrollgroup_section_items)),
+        MenuEntry.Content {
+            EditDialogScrollItemsSection(item = item, actions = actions, onDismissRequest = onDismissRequest)
+        }
+    )
+}
+
+@Composable
+private fun gridItemTitle(type: LauncherItemType?): String = when (type) {
+    LauncherItemType.CLOCK -> stringResource(R.string.home_grid_item_clock)
+    LauncherItemType.APPS_LIST -> stringResource(R.string.home_grid_item_apps_list)
+    LauncherItemType.SHORTCUTS_CONTAINER -> stringResource(R.string.home_grid_item_shortcuts)
+    LauncherItemType.SINGLE_APP_WIDGET -> stringResource(R.string.home_grid_item_widget)
+    LauncherItemType.WIDGET_LIST -> stringResource(R.string.home_grid_item_widget_group)
+    LauncherItemType.SCROLL_VIEW -> stringResource(R.string.home_grid_item_scroll_view)
+    LauncherItemType.QUICK_BUTTON -> stringResource(R.string.home_grid_item_quick_button)
+    else -> stringResource(R.string.home_grid_item_container)
 }
 
 @Composable

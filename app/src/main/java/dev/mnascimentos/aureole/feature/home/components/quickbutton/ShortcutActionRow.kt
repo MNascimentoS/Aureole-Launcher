@@ -16,9 +16,9 @@ import dev.mnascimentos.aureole.core.data.model.ShortcutAction
 import dev.mnascimentos.aureole.core.data.model.ShortcutType
 import dev.mnascimentos.aureole.core.designsystem.icons.AllApps
 import dev.mnascimentos.aureole.core.designsystem.icons.AppSelect
+import dev.mnascimentos.aureole.core.designsystem.icons.Calendar
 import dev.mnascimentos.aureole.core.designsystem.icons.Close
 import dev.mnascimentos.aureole.core.designsystem.icons.Dots
-import dev.mnascimentos.aureole.core.designsystem.icons.Calendar
 import dev.mnascimentos.aureole.core.designsystem.icons.Folder
 import dev.mnascimentos.aureole.core.designsystem.icons.Image
 import dev.mnascimentos.aureole.core.designsystem.icons.Info
@@ -26,10 +26,10 @@ import dev.mnascimentos.aureole.core.designsystem.icons.Plus
 import dev.mnascimentos.aureole.core.designsystem.icons.Press
 import dev.mnascimentos.aureole.core.designsystem.icons.RotateClockwise
 import dev.mnascimentos.aureole.core.designsystem.icons.Search
-import dev.mnascimentos.aureole.core.designsystem.icons.Text
-import dev.mnascimentos.aureole.core.designsystem.icons.Users
 import dev.mnascimentos.aureole.core.designsystem.icons.Settings
 import dev.mnascimentos.aureole.core.designsystem.icons.Star
+import dev.mnascimentos.aureole.core.designsystem.icons.Text
+import dev.mnascimentos.aureole.core.designsystem.icons.Users
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
@@ -88,7 +88,7 @@ private fun ShortcutActionIcon(action: ShortcutAction, tint: Color, modifier: Mo
 
 /** The DS icon of a system shortcut with no app to take the icon from: one per target, never the placeholder. */
 @Composable
-private fun SystemShortcutIcon(target: String, tint: Color, modifier: Modifier) {
+private fun SystemShortcutIcon(target: String, tint: Color, modifier: Modifier = Modifier) {
     val icons = AureoleDS.icons
     when (target) {
         "Browser", "Search" -> icons.Search(modifier = modifier, tint = tint)

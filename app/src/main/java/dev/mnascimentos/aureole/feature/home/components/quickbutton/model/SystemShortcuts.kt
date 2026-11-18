@@ -12,43 +12,41 @@ import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.data.model.ShortcutAction
 import dev.mnascimentos.aureole.core.data.model.ShortcutType
 
+private fun mainSelector(category: String): () -> Intent = {
+    Intent.makeMainSelectorActivity(
+        Intent.ACTION_MAIN,
+        category
+    )
+}
+
+private val SYSTEM_INTENTS: Map<String, () -> Intent> = mapOf(
+    "Browser" to mainSelector(Intent.CATEGORY_APP_BROWSER),
+    "Calendar" to mainSelector(Intent.CATEGORY_APP_CALENDAR),
+    "Calculator" to mainSelector(Intent.CATEGORY_APP_CALCULATOR),
+    "Contacts" to mainSelector(Intent.CATEGORY_APP_CONTACTS),
+    "Email" to mainSelector(Intent.CATEGORY_APP_EMAIL),
+    "Messages" to mainSelector(Intent.CATEGORY_APP_MESSAGING),
+    "Music Player" to mainSelector(Intent.CATEGORY_APP_MUSIC),
+    "Camera" to { Intent(MediaStore.INTENT_ACTION_STILL_IMAGE_CAMERA) },
+    "Clock" to { Intent(AlarmClock.ACTION_SHOW_ALARMS) },
+    "Dialer" to { Intent(Intent.ACTION_DIAL) },
+    "Search" to { Intent(Intent.ACTION_WEB_SEARCH) },
+    "Settings" to { Intent(Settings.ACTION_SETTINGS) },
+    "Files" to { Intent(Intent.ACTION_OPEN_DOCUMENT).addCategory(Intent.CATEGORY_OPENABLE).setType("*/*") },
+    "Battery Settings" to { Intent(Settings.ACTION_BATTERY_SAVER_SETTINGS) },
+    "Bluetooth Settings" to { Intent(Settings.ACTION_BLUETOOTH_SETTINGS) },
+    "Device Settings" to { Intent(Settings.ACTION_DEVICE_INFO_SETTINGS) },
+    "Display Settings" to { Intent(Settings.ACTION_DISPLAY_SETTINGS) },
+    "Location Settings" to { Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS) },
+    "Sound Settings" to { Intent(Settings.ACTION_SOUND_SETTINGS) },
+    "Wi-Fi Settings" to { Intent(Settings.ACTION_WIFI_SETTINGS) }
+)
+
 /**
  * The intent a system shortcut [target] ("Calendar", "Wi-Fi Settings"...) opens, or null for an unknown target:
  * an unknown target never falls back to Settings. Each one is the most specific intent for what it names.
  */
-internal fun systemIntentFor(target: String): Intent? {
-    val category = when (target) {
-        "Browser" -> Intent.CATEGORY_APP_BROWSER
-        "Calendar" -> Intent.CATEGORY_APP_CALENDAR
-        "Calculator" -> Intent.CATEGORY_APP_CALCULATOR
-        "Contacts" -> Intent.CATEGORY_APP_CONTACTS
-        "Email" -> Intent.CATEGORY_APP_EMAIL
-        "Messages" -> Intent.CATEGORY_APP_MESSAGING
-        "Music Player" -> Intent.CATEGORY_APP_MUSIC
-        else -> null
-    }
-    if (category != null) return Intent.makeMainSelectorActivity(Intent.ACTION_MAIN, category)
-    return when (target) {
-        "Camera" -> Intent(MediaStore.INTENT_ACTION_STILL_IMAGE_CAMERA)
-        "Clock" -> Intent(AlarmClock.ACTION_SHOW_ALARMS)
-        "Dialer" -> Intent(Intent.ACTION_DIAL)
-        "Search" -> Intent(Intent.ACTION_WEB_SEARCH)
-        "Settings" -> Intent(Settings.ACTION_SETTINGS)
-        "Files" -> Intent(Intent.ACTION_OPEN_DOCUMENT).addCategory(Intent.CATEGORY_OPENABLE).setType("*/*")
-        else -> settingsPageIntentFor(target)
-    }
-}
-
-private fun settingsPageIntentFor(target: String): Intent? = when (target) {
-    "Battery Settings" -> Intent(Settings.ACTION_BATTERY_SAVER_SETTINGS)
-    "Bluetooth Settings" -> Intent(Settings.ACTION_BLUETOOTH_SETTINGS)
-    "Device Settings" -> Intent(Settings.ACTION_DEVICE_INFO_SETTINGS)
-    "Display Settings" -> Intent(Settings.ACTION_DISPLAY_SETTINGS)
-    "Location Settings" -> Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
-    "Sound Settings" -> Intent(Settings.ACTION_SOUND_SETTINGS)
-    "Wi-Fi Settings" -> Intent(Settings.ACTION_WIFI_SETTINGS)
-    else -> null
-}
+internal fun systemIntentFor(target: String): Intent? = SYSTEM_INTENTS[target]?.invoke()
 
 /** Package of the app that answers the system shortcut [target] on this device, or null when none does. */
 internal fun PackageManager.systemShortcutPackage(target: String): String? {
@@ -66,33 +64,31 @@ internal fun ShortcutAction.nameRes(): Int? = when (type) {
     ShortcutType.SETTINGS -> R.string.home_shortcut_name_aureole_settings
     ShortcutType.NOTIFICATIONS -> R.string.home_shortcut_name_notifications
     ShortcutType.OPEN_APP -> R.string.home_shortcut_name_open_app
-    ShortcutType.SYSTEM_INTENT -> systemNameRes(target)
+    ShortcutType.SYSTEM_INTENT -> SYSTEM_NAME_RES[target]
 }
 
-@StringRes
-private fun systemNameRes(target: String): Int? = when (target) {
-    "Browser" -> R.string.home_shortcut_name_browser
-    "Calculator" -> R.string.home_shortcut_name_calculator
-    "Calendar" -> R.string.home_shortcut_name_calendar
-    "Camera" -> R.string.home_shortcut_name_camera
-    "Clock" -> R.string.home_shortcut_name_clock
-    "Contacts" -> R.string.home_shortcut_name_contacts
-    "Dialer" -> R.string.home_shortcut_name_dialer
-    "Email" -> R.string.home_shortcut_name_email
-    "Search" -> R.string.home_shortcut_name_search
-    "Settings" -> R.string.home_shortcut_name_settings
-    "Files" -> R.string.home_shortcut_name_files
-    "Messages" -> R.string.home_shortcut_name_messages
-    "Music Player" -> R.string.home_shortcut_name_music
-    "Battery Settings" -> R.string.home_shortcut_name_battery
-    "Bluetooth Settings" -> R.string.home_shortcut_name_bluetooth
-    "Device Settings" -> R.string.home_shortcut_name_device
-    "Display Settings" -> R.string.home_shortcut_name_display
-    "Location Settings" -> R.string.home_shortcut_name_location
-    "Sound Settings" -> R.string.home_shortcut_name_sound
-    "Wi-Fi Settings" -> R.string.home_shortcut_name_wifi
-    else -> null
-}
+private val SYSTEM_NAME_RES: Map<String, Int> = mapOf(
+    "Browser" to R.string.home_shortcut_name_browser,
+    "Calculator" to R.string.home_shortcut_name_calculator,
+    "Calendar" to R.string.home_shortcut_name_calendar,
+    "Camera" to R.string.home_shortcut_name_camera,
+    "Clock" to R.string.home_shortcut_name_clock,
+    "Contacts" to R.string.home_shortcut_name_contacts,
+    "Dialer" to R.string.home_shortcut_name_dialer,
+    "Email" to R.string.home_shortcut_name_email,
+    "Search" to R.string.home_shortcut_name_search,
+    "Settings" to R.string.home_shortcut_name_settings,
+    "Files" to R.string.home_shortcut_name_files,
+    "Messages" to R.string.home_shortcut_name_messages,
+    "Music Player" to R.string.home_shortcut_name_music,
+    "Battery Settings" to R.string.home_shortcut_name_battery,
+    "Bluetooth Settings" to R.string.home_shortcut_name_bluetooth,
+    "Device Settings" to R.string.home_shortcut_name_device,
+    "Display Settings" to R.string.home_shortcut_name_display,
+    "Location Settings" to R.string.home_shortcut_name_location,
+    "Sound Settings" to R.string.home_shortcut_name_sound,
+    "Wi-Fi Settings" to R.string.home_shortcut_name_wifi
+)
 
 /** The shortcut's name in the user's language; the saved target (never translated) when it has no string. */
 internal fun ShortcutAction.localizedName(resources: Resources): String =

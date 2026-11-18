@@ -143,8 +143,14 @@ class EditGridItemDialogTest {
             }
         }
 
-        composeTestRule.onNodeWithText(context.getString(R.string.home_scrollgroup_section_scroll), ignoreCase = true).assertExists()
-        composeTestRule.onNodeWithText(context.getString(R.string.home_scrollgroup_section_items), ignoreCase = true).assertExists()
+        composeTestRule.onNodeWithText(
+            context.getString(R.string.home_scrollgroup_section_scroll),
+            ignoreCase = true
+        ).assertExists()
+        composeTestRule.onNodeWithText(
+            context.getString(R.string.home_scrollgroup_section_items),
+            ignoreCase = true
+        ).assertExists()
         composeTestRule.onNodeWithText(
             context.getString(R.string.home_container_edit_horizontal)
         ).performScrollTo().performClick()

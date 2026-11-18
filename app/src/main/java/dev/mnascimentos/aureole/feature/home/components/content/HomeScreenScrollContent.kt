@@ -6,6 +6,7 @@ import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -20,8 +21,6 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.foundation.layout.BoxWithConstraints
-import androidx.compose.ui.unit.Dp
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -35,6 +34,7 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.rememberNestedScrollInteropConnection
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.Dp
 import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.composable.LocalHomeUiState
 import dev.mnascimentos.aureole.core.data.model.LauncherItemType
@@ -172,33 +172,33 @@ private fun HorizontalScrollViewContent(params: ScrollViewContentParams) {
     val actions = LocalHomeActions.current
     val item = params.item
     BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
-    val pageWidth = maxWidth - AureoleDS.dimens.xSmall * 2
-    Row(
-        modifier = Modifier
-            .fillMaxSize()
-            .horizontalScroll(rememberScrollState())
-            .padding(AureoleDS.dimens.xSmall),
-        horizontalArrangement = Arrangement.spacedBy(AureoleDS.dimens.xSmall),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        item.safeChildren.forEach { childItem ->
-            ScrollViewChildItem(
-                ScrollViewChildItemParams(
-                    parentId = item.id,
-                    childItem = childItem,
-                    favConfig = params.favConfig,
-                    appWidgetHost = params.appWidgetHost,
-                    stackedWidgetConfig = params.stackedWidgetConfig,
-                    hazeState = params.hazeState,
-                    isVertical = false,
-                    pageWidth = pageWidth
+        val pageWidth = maxWidth - AureoleDS.dimens.xSmall * 2
+        Row(
+            modifier = Modifier
+                .fillMaxSize()
+                .horizontalScroll(rememberScrollState())
+                .padding(AureoleDS.dimens.xSmall),
+            horizontalArrangement = Arrangement.spacedBy(AureoleDS.dimens.xSmall),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            item.safeChildren.forEach { childItem ->
+                ScrollViewChildItem(
+                    ScrollViewChildItemParams(
+                        parentId = item.id,
+                        childItem = childItem,
+                        favConfig = params.favConfig,
+                        appWidgetHost = params.appWidgetHost,
+                        stackedWidgetConfig = params.stackedWidgetConfig,
+                        hazeState = params.hazeState,
+                        isVertical = false,
+                        pageWidth = pageWidth
+                    )
                 )
-            )
+            }
+            if (uiState.isGridEditMode) {
+                ScrollViewAddComponentButton(parentId = item.id, actions = actions)
+            }
         }
-        if (uiState.isGridEditMode) {
-            ScrollViewAddComponentButton(parentId = item.id, actions = actions)
-        }
-    }
     }
 }
 

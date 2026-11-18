@@ -31,6 +31,7 @@ import androidx.compose.ui.unit.dp
 import dev.chrisbanes.haze.HazeState
 import dev.mnascimentos.aureole.core.designsystem.model.AnchoredSheetState
 import dev.mnascimentos.aureole.core.designsystem.model.AureoleEditOverlayParams
+import dev.mnascimentos.aureole.core.designsystem.model.OverlayHeaderTitle
 import dev.mnascimentos.aureole.core.designsystem.model.OverlayLayout
 import dev.mnascimentos.aureole.core.designsystem.model.OverlaySheetDecorations
 import dev.mnascimentos.aureole.core.designsystem.model.OverlaySheetMotion
@@ -274,9 +275,7 @@ internal fun OverlaySheetBody(
                     hasCustomIcon = slots.headerIcon != null || accessory != null
                 )
                 OverlaySheetHeader(
-                    title = title,
-                    titleIcon = slots.titleIcon,
-                    subtitle = slots.subtitle,
+                    title = OverlayHeaderTitle(title, slots.titleIcon, slots.subtitle),
                     action = when {
                         !showAction -> null
                         accessory != null -> accessory

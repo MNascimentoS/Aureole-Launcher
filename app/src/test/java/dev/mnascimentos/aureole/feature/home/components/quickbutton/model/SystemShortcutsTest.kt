@@ -55,7 +55,11 @@ class SystemShortcutsTest {
 
     @Test
     fun `only the shortcuts the device answers are offered`() {
-        val options = listOf(ShortcutAction.AllApps, ShortcutAction.systemIntent("Calendar"), ShortcutAction.systemIntent("Camera"))
+        val options = listOf(
+            ShortcutAction.AllApps,
+            ShortcutAction.systemIntent("Calendar"),
+            ShortcutAction.systemIntent("Camera")
+        )
 
         val list = defaultShortcutCandidates(options, ShortcutAction.AllApps, environment(setOf("Calendar")))
 

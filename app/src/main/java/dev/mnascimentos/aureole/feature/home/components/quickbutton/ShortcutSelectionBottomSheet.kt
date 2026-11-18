@@ -10,10 +10,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.res.stringResource
 import dev.chrisbanes.haze.HazeState
 import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.composable.search.AureoleSearchField
+import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.data.model.QuickButtonModel
 import dev.mnascimentos.aureole.core.data.model.ShortcutAction
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleEditOverlay
@@ -26,22 +29,20 @@ import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.components.quickbutton.extensions.resolveEditingShortcut
 import dev.mnascimentos.aureole.feature.home.components.quickbutton.extensions.withShortcut
 import dev.mnascimentos.aureole.feature.home.components.quickbutton.model.ShortcutCategory
+import dev.mnascimentos.aureole.feature.home.components.quickbutton.model.ShortcutEnvironment
+import dev.mnascimentos.aureole.feature.home.components.quickbutton.model.ShortcutSearchCandidate
 import dev.mnascimentos.aureole.feature.home.components.quickbutton.model.ShortcutSelectionCallbacks
 import dev.mnascimentos.aureole.feature.home.components.quickbutton.model.ShortcutSelectionOptions
 import dev.mnascimentos.aureole.feature.home.components.quickbutton.model.ShortcutSelectionSheetParams
 import dev.mnascimentos.aureole.feature.home.components.quickbutton.model.bestShortcutAction
 import dev.mnascimentos.aureole.feature.home.components.quickbutton.model.buildShortcutSearchCandidates
-import dev.mnascimentos.aureole.feature.home.components.quickbutton.model.ShortcutEnvironment
-import dev.mnascimentos.aureole.feature.home.components.quickbutton.model.ShortcutSearchCandidate
-import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.feature.home.components.quickbutton.model.defaultShortcutCandidates
 import dev.mnascimentos.aureole.feature.home.components.quickbutton.model.localizedName
 import dev.mnascimentos.aureole.feature.home.components.quickbutton.model.searchShortcuts
-import dev.mnascimentos.aureole.feature.home.components.quickbutton.model.systemShortcutPackage
-import androidx.compose.ui.platform.LocalContext
 import dev.mnascimentos.aureole.feature.home.components.quickbutton.model.shortcutCategoryOf
 import dev.mnascimentos.aureole.feature.home.components.quickbutton.model.shortcutGestureLabelRes
 import dev.mnascimentos.aureole.feature.home.components.quickbutton.model.shortcutLabel
+import dev.mnascimentos.aureole.feature.home.components.quickbutton.model.systemShortcutPackage
 import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
 import kotlinx.coroutines.delay
@@ -82,14 +83,15 @@ internal fun rememberDefaultShortcutCandidates(
     currentAction: ShortcutAction
 ): List<ShortcutSearchCandidate> {
     val context = LocalContext.current
-    return remember(apps, currentAction) {
+    val resources = LocalResources.current
+    return remember(apps, currentAction, resources) {
         defaultShortcutCandidates(
             DEFAULT_SHORTCUT_OPTIONS,
             currentAction,
             ShortcutEnvironment(
                 apps = apps,
-                nameOf = { it.localizedName(context.resources) },
-                unavailableLabel = { context.getString(R.string.home_shortcut_unavailable, it) },
+                nameOf = { it.localizedName(resources) },
+                unavailableLabel = { resources.getString(R.string.home_shortcut_unavailable, it) },
                 resolvePackage = context.packageManager::systemShortcutPackage
             )
         )
@@ -173,7 +175,7 @@ private fun ShortcutSelectionOverlay(
     } else {
         stringResource(R.string.home_quickbutton_select_shortcut)
     }
-    val resources = LocalContext.current.resources
+    val resources = LocalResources.current
     val pillText = stringResource(
         shortcutGestureLabelRes(params.editingType),
         shortcutLabel(params.currentAction, params.uiState.apps) { it.localizedName(resources) }

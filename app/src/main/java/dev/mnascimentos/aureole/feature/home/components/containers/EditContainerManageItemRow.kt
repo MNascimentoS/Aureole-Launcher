@@ -23,7 +23,6 @@ import dev.mnascimentos.aureole.composable.appitem.model.AureoleAppIconParams
 import dev.mnascimentos.aureole.composable.dialogs.FolderBadge
 import dev.mnascimentos.aureole.core.data.model.AppFolder
 import dev.mnascimentos.aureole.core.data.model.AppInfo
-import dev.mnascimentos.aureole.feature.home.components.quickbutton.model.displayTitle
 import dev.mnascimentos.aureole.core.data.model.ContainerItemEntity
 import dev.mnascimentos.aureole.core.data.model.ContainerItemType
 import dev.mnascimentos.aureole.core.designsystem.icons.AppSelect
@@ -32,6 +31,7 @@ import dev.mnascimentos.aureole.core.designsystem.icons.Click
 import dev.mnascimentos.aureole.core.designsystem.icons.Folder
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.feature.home.components.containers.model.ManageItemRowParams
+import dev.mnascimentos.aureole.feature.home.components.quickbutton.model.displayTitle
 
 private fun resolveFolder(item: ContainerItemEntity, folders: List<AppFolder>): AppFolder? {
     if (item.itemType != ContainerItemType.FOLDER) return null

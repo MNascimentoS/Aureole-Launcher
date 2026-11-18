@@ -3,7 +3,7 @@ package dev.mnascimentos.aureole.feature.home.components.quickbutton.model
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.luminance
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.res.stringResource
 import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.core.data.model.QuickButtonAppearance
@@ -61,7 +61,7 @@ internal fun QuickButtonModel.displayTitle(appLabel: String?): String {
     val clickName = if (click.type == ShortcutType.NONE) {
         stringResource(R.string.home_grid_item_quick_button)
     } else {
-        click.localizedName(LocalContext.current.resources)
+        click.localizedName(LocalResources.current)
     }
     return appearance.resolvedName(defaultName(appLabel, clickName))
 }

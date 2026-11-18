@@ -1,10 +1,10 @@
 package dev.mnascimentos.aureole.feature.home.model
 
-import androidx.compose.ui.unit.Dp
 import android.appwidget.AppWidgetHost
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.ui.unit.Density
+import androidx.compose.ui.unit.Dp
 import dev.chrisbanes.haze.HazeState
 import dev.mnascimentos.aureole.core.data.model.LauncherItemState
 import dev.mnascimentos.aureole.feature.home.components.favorites.model.FavoritesListConfig

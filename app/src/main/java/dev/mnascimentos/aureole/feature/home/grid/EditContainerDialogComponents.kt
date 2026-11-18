@@ -6,11 +6,8 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.layout.size
-import dev.mnascimentos.aureole.composable.controls.AureoleSegmentedControl
-import dev.mnascimentos.aureole.core.designsystem.icons.HorizontalContainer
-import dev.mnascimentos.aureole.core.designsystem.icons.VerticalContainer
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
@@ -19,11 +16,15 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.composable.LocalHomeUiState
+import dev.mnascimentos.aureole.composable.controls.AureoleIconSegmentedControl
+import dev.mnascimentos.aureole.composable.controls.SegmentedOption
 import dev.mnascimentos.aureole.core.data.model.LauncherItemState
 import dev.mnascimentos.aureole.core.data.model.LauncherItemType
 import dev.mnascimentos.aureole.core.data.model.ScrollOrientation
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
+import dev.mnascimentos.aureole.core.designsystem.icons.HorizontalContainer
+import dev.mnascimentos.aureole.core.designsystem.icons.VerticalContainer
 import dev.mnascimentos.aureole.core.designsystem.model.LocalLeftHanded
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
@@ -82,17 +83,20 @@ internal fun ScrollViewOrientationSelector(
 ) {
     val vertical = stringResource(R.string.home_container_edit_vertical)
     val horizontal = stringResource(R.string.home_container_edit_horizontal)
-    AureoleSegmentedControl(
-        options = listOf(vertical, horizontal),
+    AureoleIconSegmentedControl(
+        options = listOf(
+            SegmentedOption(vertical) { tint ->
+                AureoleDS.icons.VerticalContainer(Modifier.size(AureoleDS.dimens.iconSmall), tint)
+            },
+            SegmentedOption(horizontal) { tint ->
+                AureoleDS.icons.HorizontalContainer(Modifier.size(AureoleDS.dimens.iconSmall), tint)
+            }
+        ),
         selectedIndex = if (item.safeScrollOrientation == ScrollOrientation.VERTICAL) 0 else 1,
         onSelect = { index ->
             val orientation = if (index == 0) ScrollOrientation.VERTICAL else ScrollOrientation.HORIZONTAL
             actions.onUpdateScrollViewOrientation(item.id, orientation)
-        },
-        icons = listOf(
-            { tint -> AureoleDS.icons.VerticalContainer(Modifier.size(AureoleDS.dimens.iconSmall), tint) },
-            { tint -> AureoleDS.icons.HorizontalContainer(Modifier.size(AureoleDS.dimens.iconSmall), tint) }
-        )
+        }
     )
 }
 

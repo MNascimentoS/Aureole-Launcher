@@ -1,7 +1,6 @@
 package dev.mnascimentos.aureole.feature.home.grid
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -11,7 +10,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -22,19 +20,12 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.core.data.model.LauncherItemState
-import dev.mnascimentos.aureole.core.data.model.LauncherItemType
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
-import dev.mnascimentos.aureole.core.designsystem.icons.Add
-import dev.mnascimentos.aureole.core.designsystem.icons.AllApps
 import dev.mnascimentos.aureole.core.designsystem.icons.ArrowDown
 import dev.mnascimentos.aureole.core.designsystem.icons.ArrowUp
-import dev.mnascimentos.aureole.core.designsystem.icons.Click
-import dev.mnascimentos.aureole.core.designsystem.icons.Clock
 import dev.mnascimentos.aureole.core.designsystem.icons.Delete
 import dev.mnascimentos.aureole.core.designsystem.icons.Edit
-import dev.mnascimentos.aureole.core.designsystem.icons.MenuIcon
-import dev.mnascimentos.aureole.core.designsystem.icons.VerticalContainer
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.feature.home.grid.model.ScrollViewChildParams
 import dev.mnascimentos.aureole.feature.home.grid.model.effectiveSpan
@@ -193,7 +184,9 @@ private fun ScrollViewChildSizeRow(params: ScrollViewChildParams, actions: HomeS
         )
         return
     }
-    val label = stringResource(if (params.isVertical) R.string.home_scrollgroup_height else R.string.home_scrollgroup_width)
+    val label = stringResource(
+        if (params.isVertical) R.string.home_scrollgroup_height else R.string.home_scrollgroup_width
+    )
     Row(
         modifier = Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically
@@ -238,65 +231,5 @@ private fun adjustChildSpan(params: ScrollViewChildParams, actions: HomeScreenAc
     } else {
         val newSpan = (child.colSpan + delta).coerceAtLeast(1)
         actions.onResizeChildInScrollView(parentId, child.id, newSpan, child.rowSpan)
-    }
-}
-
-private fun handleEditChildClick(
-    child: LauncherItemState,
-    actions: HomeScreenActions,
-    onDismissRequest: () -> Unit
-) {
-    when (child.type) {
-        LauncherItemType.CLOCK -> {
-            actions.onOpenEditClockBottomSheet(child.id)
-            onDismissRequest()
-        }
-        LauncherItemType.SHORTCUTS_CONTAINER,
-        LauncherItemType.SCROLL_VIEW -> {
-            actions.onOpenEditContainerDialog(child.id)
-            onDismissRequest()
-        }
-        LauncherItemType.WIDGET_LIST,
-        LauncherItemType.SINGLE_APP_WIDGET -> {
-            actions.onOpenWidgetStackBottomSheet(null, child.id)
-            onDismissRequest()
-        }
-        LauncherItemType.APPS_LIST -> {
-            actions.onOpenFavoritePicker(child.id)
-            onDismissRequest()
-        }
-        LauncherItemType.QUICK_BUTTON -> {
-            actions.onOpenQuickButtonSettings(child.id)
-            onDismissRequest()
-        }
-        else -> {}
-    }
-}
-
-@Composable
-private fun ChildTypeIcon(type: LauncherItemType?) {
-    val iconModifier = Modifier.size(AureoleDS.dimens.iconMedium)
-    when (type) {
-        LauncherItemType.CLOCK -> AureoleDS.icons.Clock(iconModifier)
-        LauncherItemType.APPS_LIST -> AureoleDS.icons.AllApps(iconModifier)
-        LauncherItemType.SHORTCUTS_CONTAINER -> AureoleDS.icons.MenuIcon(iconModifier)
-        LauncherItemType.WIDGET_LIST -> AureoleDS.icons.Add(iconModifier)
-        LauncherItemType.SCROLL_VIEW -> AureoleDS.icons.VerticalContainer(iconModifier)
-        LauncherItemType.QUICK_BUTTON -> AureoleDS.icons.Click(iconModifier)
-        else -> AureoleDS.icons.Add(iconModifier)
-    }
-}
-
-@Composable
-@ReadOnlyComposable
-private fun getScrollViewChildTitle(type: LauncherItemType?): String {
-    return when (type) {
-        LauncherItemType.CLOCK -> stringResource(R.string.home_container_add_clock)
-        LauncherItemType.APPS_LIST -> stringResource(R.string.home_grid_item_apps_list)
-        LauncherItemType.SHORTCUTS_CONTAINER -> stringResource(R.string.home_grid_item_container)
-        LauncherItemType.WIDGET_LIST -> stringResource(R.string.home_grid_item_widget_group)
-        LauncherItemType.SCROLL_VIEW -> stringResource(R.string.home_container_add_scroll_view)
-        LauncherItemType.QUICK_BUTTON -> stringResource(R.string.home_container_add_quick_button)
-        else -> stringResource(R.string.home_grid_scroll_component)
     }
 }

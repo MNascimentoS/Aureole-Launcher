@@ -40,6 +40,7 @@ import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.core.designsystem.icons.Logo
 import dev.mnascimentos.aureole.core.designsystem.model.HEADER_LOGO_PRESS_MS
 import dev.mnascimentos.aureole.core.designsystem.model.HEADER_LOGO_RELEASE_DAMPING
+import dev.mnascimentos.aureole.core.designsystem.model.OverlayHeaderTitle
 import dev.mnascimentos.aureole.core.designsystem.model.headerLogoPose
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
@@ -57,13 +58,12 @@ import dev.mnascimentos.aureole.core.designsystem.utils.rememberSystemAnimations
  */
 @Composable
 internal fun OverlaySheetHeader(
-    title: String,
-    titleIcon: (@Composable (Modifier) -> Unit)? = null,
-    subtitle: String? = null,
+    title: OverlayHeaderTitle,
     action: (@Composable () -> Unit)? = null,
     isLeftHanded: Boolean = false,
     leadingAction: (@Composable () -> Unit)? = null
 ) {
+    val titleIcon = title.icon
     val hasAction = action != null || leadingAction != null
     val isStartAligned = titleIcon != null
     val startSlot = if (isLeftHanded) action else leadingAction
@@ -81,7 +81,7 @@ internal fun OverlaySheetHeader(
             modifier = Modifier.weight(1f),
             contentAlignment = if (isStartAligned) Alignment.CenterStart else Alignment.Center
         ) {
-            HeaderTitle(title = title, titleIcon = titleIcon, subtitle = subtitle)
+            HeaderTitle(title = title)
         }
         if (drawsEndSlot) HeaderSlot(content = endSlot)
     }
@@ -98,7 +98,9 @@ private fun headerPadding(hasAction: Boolean, drawsStartSlot: Boolean, drawsEndS
     )
 
 @Composable
-private fun HeaderTitle(title: String, titleIcon: (@Composable (Modifier) -> Unit)?, subtitle: String?) {
+private fun HeaderTitle(title: OverlayHeaderTitle) {
+    val titleIcon = title.icon
+    val subtitle = title.subtitle
     Row(verticalAlignment = Alignment.CenterVertically) {
         if (titleIcon != null) {
             Box(
@@ -114,7 +116,7 @@ private fun HeaderTitle(title: String, titleIcon: (@Composable (Modifier) -> Uni
         }
         Column(modifier = Modifier.weight(1f, fill = false)) {
             Text(
-                text = title,
+                text = title.text,
                 style = AureoleDS.typography.titleLarge,
                 fontWeight = FontWeight.Bold,
                 color = AureoleDS.colors.onSurfaceHigh,
@@ -210,7 +212,7 @@ private fun logoSpec(isPressed: Boolean): FiniteAnimationSpec<Float> =
 private fun OverlaySheetHeaderPreview() {
     AureoleLauncherTheme {
         OverlaySheetHeader(
-            title = "Customize",
+            title = OverlayHeaderTitle("Customize"),
             action = { OverlaySheetHeaderLogo(onClick = {}) }
         )
     }
@@ -221,8 +223,10 @@ private fun OverlaySheetHeaderPreview() {
 private fun OverlaySheetHeaderWithIconPreview() {
     AureoleLauncherTheme {
         OverlaySheetHeader(
-            title = "A folder with a long name that is cut before the logo",
-            titleIcon = { m -> Box(modifier = m) },
+            title = OverlayHeaderTitle(
+                text = "A folder with a long name that is cut before the logo",
+                icon = { m -> Box(modifier = m) }
+            ),
             action = { OverlaySheetHeaderLogo(onClick = {}) }
         )
     }

@@ -8,6 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.res.stringResource
 import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.composable.dialogs.FolderFormContent
@@ -27,11 +28,10 @@ import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.components.containers.model.ManageItemsEditor
 import dev.mnascimentos.aureole.feature.home.components.containers.model.ManageItemsPage
 import dev.mnascimentos.aureole.feature.home.components.quickbutton.QuickButtonAppearanceSheetContent
-import dev.mnascimentos.aureole.feature.home.components.quickbutton.QuickButtonShortcutPickerContent
 import dev.mnascimentos.aureole.feature.home.components.quickbutton.QuickButtonSheetPreview
+import dev.mnascimentos.aureole.feature.home.components.quickbutton.QuickButtonShortcutPickerContent
 import dev.mnascimentos.aureole.feature.home.components.quickbutton.ShortcutSelectionPreview
 import dev.mnascimentos.aureole.feature.home.components.quickbutton.model.localizedName
-import androidx.compose.ui.platform.LocalContext
 
 /** Title of "Manage items" for its current page: the list, the folder form or the quick button editor (RF-07). */
 @Composable
@@ -89,7 +89,7 @@ internal fun ManageItemsEditorPreview(
             }
         }
         page is ManageItemsPage.QuickButtonShortcut && quickButton != null -> {
-            val clickName = quickButton.shortcuts.click.localizedName(LocalContext.current.resources)
+            val clickName = quickButton.shortcuts.click.localizedName(LocalResources.current)
             ShortcutSelectionPreview(
                 model = quickButton,
                 pillText = stringResource(R.string.home_quickbutton_gesture_click, clickName)
@@ -102,7 +102,7 @@ internal fun ManageItemsEditorPreview(
                     model = model,
                     appInfo = model.appInfoIn(allApps),
                     onNameChange = { name ->
-                        state.updateQuickButtonAppearance(model.id, model.appearance.copy(label = name))
+                        state.updateQuickButton(model.id) { it.copy(appearance = model.appearance.copy(label = name)) }
                     }
                 )
             }
@@ -139,7 +139,11 @@ internal fun ColumnScope.ManageItemsEditorContent(
         is ManageItemsPage.QuickButtonEditor -> state.quickButton(page.quickButtonId)?.let { model ->
             QuickButtonAppearanceSheetContent(
                 activeModel = model,
-                onUpdateAppearance = { state.updateQuickButtonAppearance(model.id, it) },
+                onUpdateAppearance = { appearance ->
+                    state.updateQuickButton(
+                        model.id
+                    ) { it.copy(appearance = appearance) }
+                },
                 modifier = Modifier.weight(1f, fill = false)
             )
         }
@@ -148,7 +152,7 @@ internal fun ColumnScope.ManageItemsEditorContent(
                 model = model,
                 apps = allApps,
                 onPick = { action ->
-                    state.updateQuickButtonShortcuts(model.id, model.shortcuts.copy(click = action))
+                    state.updateQuickButton(model.id) { it.copy(shortcuts = it.shortcuts.copy(click = action)) }
                     editor.finishQuickButtonCreation()
                 }
             )

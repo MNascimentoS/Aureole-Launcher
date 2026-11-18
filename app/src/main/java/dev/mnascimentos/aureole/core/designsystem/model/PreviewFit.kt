@@ -3,7 +3,7 @@ package dev.mnascimentos.aureole.core.designsystem.model
 /** Smallest the preview above a sheet shrinks before it starts to fade out. */
 internal const val PREVIEW_MIN_SCALE = 0.5f
 
-/** Scale at which the fade starts: from here down to [PREVIEW_MIN_SCALE] the preview fades, so it is gone before it is cut. */
+/** Scale where the fade starts; down to [PREVIEW_MIN_SCALE] the preview fades, gone before it is cut. */
 internal const val PREVIEW_FADE_START_SCALE = 0.75f
 
 /** What the preview above the sheet does as the sheet grows (RF-09). */
