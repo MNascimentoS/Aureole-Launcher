@@ -126,15 +126,21 @@ internal fun EditDialogScrollViewSection(
         verticalArrangement = Arrangement.spacedBy(AureoleDS.dimens.xSmall)
     ) {
         ScrollViewOrientationSelector(item = item, actions = actions)
+        EditDialogScrollItemsSection(item = item, actions = actions, onDismissRequest = onDismissRequest)
+    }
+}
 
-        Spacer(modifier = Modifier.height(AureoleDS.dimens.minimal))
-
-        AureoleText(
-            text = stringResource(R.string.home_container_edit_child_components, item.safeChildren.size),
-            color = AureoleDS.colors.onSurfaceHigh,
-            format = AureoleTextFormatParams(style = AureoleDS.typography.titleMedium, fontWeight = FontWeight.SemiBold)
-        )
-
+/** The "Items" of a scroll group: its children, then the "Add component" button. */
+@Composable
+internal fun EditDialogScrollItemsSection(
+    item: LauncherItemState,
+    actions: HomeScreenActions,
+    onDismissRequest: () -> Unit
+) {
+    Column(
+        modifier = Modifier.fillMaxWidth(),
+        verticalArrangement = Arrangement.spacedBy(AureoleDS.dimens.xSmall)
+    ) {
         EditDialogChildrenListSection(item = item, actions = actions, onDismissRequest = onDismissRequest)
 
         Spacer(modifier = Modifier.height(AureoleDS.dimens.minimal))

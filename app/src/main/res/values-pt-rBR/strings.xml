@@ -610,4 +610,16 @@
     <string name="home_shortcut_name_sound">Configurações de som</string>
     <string name="home_shortcut_name_wifi">Configurações de Wi-Fi</string>
     <string name="home_shortcut_unavailable">%1$s (indisponível)</string>
+    <string name="home_scrollgroup_section_scroll">Rolagem</string>
+    <string name="home_scrollgroup_section_items">Itens</string>
+    <string name="home_scrollgroup_size_cells">%1$d × %2$d células</string>
+    <string name="home_scrollgroup_height">Altura</string>
+    <string name="home_scrollgroup_width">Largura</string>
+    <string name="home_scrollgroup_full_list">Lista completa</string>
+    <string name="home_scrollgroup_move_up">Mover para cima</string>
+    <string name="home_scrollgroup_move_down">Mover para baixo</string>
+    <string name="home_scrollgroup_edit_item">Editar %1$s</string>
+    <string name="home_scrollgroup_remove_item">Remover %1$s</string>
+    <string name="home_scrollgroup_decrease">Diminuir %1$s</string>
+    <string name="home_scrollgroup_increase">Aumentar %1$s</string>
 </resources>

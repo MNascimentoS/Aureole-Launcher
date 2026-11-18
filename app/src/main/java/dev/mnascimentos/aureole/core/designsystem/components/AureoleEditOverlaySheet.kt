@@ -276,6 +276,7 @@ internal fun OverlaySheetBody(
                 OverlaySheetHeader(
                     title = title,
                     titleIcon = slots.titleIcon,
+                    subtitle = slots.subtitle,
                     action = when {
                         !showAction -> null
                         accessory != null -> accessory

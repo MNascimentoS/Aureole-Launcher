@@ -41,8 +41,12 @@ fun EditGridItemDialog(
         else -> stringResource(R.string.home_grid_item_container)
     }
 
+    val isScrollView = item.type == LauncherItemType.SCROLL_VIEW
     val sizeNote = stringResource(R.string.home_grid_current_size, item.colSpan, item.rowSpan)
+    val sizeSubtitle = stringResource(R.string.home_scrollgroup_size_cells, item.colSpan, item.rowSpan)
     val sectionLabel = stringResource(R.string.home_grid_menu_section)
+    val scrollLabel = stringResource(R.string.home_scrollgroup_section_scroll)
+    val itemsLabel = stringResource(R.string.home_scrollgroup_section_items)
     val deleteParams = editDialogDeleteParams(
         itemId = item.id,
         onDeleteConfirm = onDeleteConfirm,
@@ -54,6 +58,7 @@ fun EditGridItemDialog(
         modifier = modifier,
         params = MenuSheetParams(
             titleIcon = { m -> GridItemTypeIcon(type = item.type, modifier = m) },
+            subtitle = sizeSubtitle.takeIf { isScrollView },
             onSettingsClick = {
                 actions.onSettingsClick()
                 onDismissRequest()
@@ -61,13 +66,19 @@ fun EditGridItemDialog(
         )
     ) { dismiss ->
         buildList {
-            add(MenuEntry.Note(text = sizeNote))
-            add(MenuEntry.Section(text = sectionLabel))
-            if (item.type == LauncherItemType.SCROLL_VIEW) {
-                val scrollSection = MenuEntry.Content {
-                    EditDialogScrollViewSection(item = item, actions = actions, onDismissRequest = onDismissRequest)
-                }
-                add(scrollSection)
+            if (isScrollView) {
+                // The size is the header's second line; the orientation is a setting of the group, not an item action.
+                add(MenuEntry.Section(text = scrollLabel))
+                add(MenuEntry.Content { ScrollViewOrientationSelector(item = item, actions = actions) })
+                add(MenuEntry.Section(text = itemsLabel))
+                add(
+                    MenuEntry.Content {
+                        EditDialogScrollItemsSection(item = item, actions = actions, onDismissRequest = onDismissRequest)
+                    }
+                )
+            } else {
+                add(MenuEntry.Note(text = sizeNote))
+                add(MenuEntry.Section(text = sectionLabel))
             }
             val typeSection = MenuEntry.Content {
                 EditDialogTypeActionSection(item = item, actions = actions, onDismissRequest = onDismissRequest)

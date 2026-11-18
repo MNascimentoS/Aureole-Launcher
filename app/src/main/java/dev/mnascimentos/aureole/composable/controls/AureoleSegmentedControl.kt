@@ -36,6 +36,7 @@ private const val INACTIVE_BACKGROUND_ALPHA = 0.5f
  * @param onSelect Called with the index of the tapped segment.
  * @param modifier Modifier applied to the bar.
  * @param itemHeight Height of each segment.
+ * @param icons Optional icon drawn before each label, in the same order as [options], with the segment's content color.
  */
 @Composable
 fun AureoleSegmentedControl(
@@ -43,7 +44,8 @@ fun AureoleSegmentedControl(
     selectedIndex: Int,
     onSelect: (Int) -> Unit,
     modifier: Modifier = Modifier,
-    itemHeight: Dp = AureoleDS.dimens.minTouchTarget
+    itemHeight: Dp = AureoleDS.dimens.minTouchTarget,
+    icons: List<@Composable (Color) -> Unit> = emptyList()
 ) {
     Row(
         modifier = modifier
@@ -59,6 +61,7 @@ fun AureoleSegmentedControl(
                 label = label,
                 isSelected = index == selectedIndex,
                 height = itemHeight,
+                icon = icons.getOrNull(index),
                 onClick = { onSelect(index) }
             )
         }
@@ -66,7 +69,13 @@ fun AureoleSegmentedControl(
 }
 
 @Composable
-private fun RowScope.SegmentItem(label: String, isSelected: Boolean, height: Dp, onClick: () -> Unit) {
+private fun RowScope.SegmentItem(
+    label: String,
+    isSelected: Boolean,
+    height: Dp,
+    icon: (@Composable (Color) -> Unit)?,
+    onClick: () -> Unit
+) {
     val container = if (isSelected) AureoleDS.colors.onSurfaceHigh else Color.Transparent
     val content = if (isSelected) AureoleDS.colors.surface else AureoleDS.colors.onSurfaceLow
     Box(
@@ -78,11 +87,14 @@ private fun RowScope.SegmentItem(label: String, isSelected: Boolean, height: Dp,
             .selectable(selected = isSelected, role = Role.Tab, onClick = onClick),
         contentAlignment = Alignment.Center
     ) {
-        AureoleText(
-            text = label,
-            color = content,
-            format = AureoleTextFormatParams(style = AureoleDS.typography.bodyMedium, maxLines = 1)
-        )
+        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(AureoleDS.dimens.xxSmall)) {
+            icon?.invoke(content)
+            AureoleText(
+                text = label,
+                color = content,
+                format = AureoleTextFormatParams(style = AureoleDS.typography.bodyMedium, maxLines = 1)
+            )
+        }
     }
 }
 

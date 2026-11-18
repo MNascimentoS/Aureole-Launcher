@@ -257,6 +257,10 @@ private fun HomeOverlaysDialogsAndErrors(config: HomeOverlaysConfig) {
         )
     }
 
+    HomeEditGridItemOverlay(config = config)
+    HomeEditContainerOverlay(config = config)
+
+    // Last, so it draws over the edit sheets that open it (the group's "Add component"): always visible and focused.
     if (config.uiState.showAddContainerDialog) {
         AddContainerDialog(
             onDismissRequest = config.actions.onCloseAddContainerDialog,
@@ -272,9 +276,6 @@ private fun HomeOverlaysDialogsAndErrors(config: HomeOverlaysConfig) {
             isNested = (config.uiState.targetParentContainerId != null)
         )
     }
-
-    HomeEditGridItemOverlay(config = config)
-    HomeEditContainerOverlay(config = config)
 
     val context = LocalContext.current
     val gridError = config.uiState.gridErrorMessage?.asString()

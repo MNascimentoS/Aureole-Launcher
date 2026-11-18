@@ -11,6 +11,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -58,6 +59,7 @@ import dev.mnascimentos.aureole.core.designsystem.utils.rememberSystemAnimations
 internal fun OverlaySheetHeader(
     title: String,
     titleIcon: (@Composable (Modifier) -> Unit)? = null,
+    subtitle: String? = null,
     action: (@Composable () -> Unit)? = null,
     isLeftHanded: Boolean = false,
     leadingAction: (@Composable () -> Unit)? = null
@@ -79,7 +81,7 @@ internal fun OverlaySheetHeader(
             modifier = Modifier.weight(1f),
             contentAlignment = if (isStartAligned) Alignment.CenterStart else Alignment.Center
         ) {
-            HeaderTitle(title = title, titleIcon = titleIcon)
+            HeaderTitle(title = title, titleIcon = titleIcon, subtitle = subtitle)
         }
         if (drawsEndSlot) HeaderSlot(content = endSlot)
     }
@@ -96,7 +98,7 @@ private fun headerPadding(hasAction: Boolean, drawsStartSlot: Boolean, drawsEndS
     )
 
 @Composable
-private fun HeaderTitle(title: String, titleIcon: (@Composable (Modifier) -> Unit)?) {
+private fun HeaderTitle(title: String, titleIcon: (@Composable (Modifier) -> Unit)?, subtitle: String?) {
     Row(verticalAlignment = Alignment.CenterVertically) {
         if (titleIcon != null) {
             Box(
@@ -110,16 +112,26 @@ private fun HeaderTitle(title: String, titleIcon: (@Composable (Modifier) -> Uni
             }
             Spacer(modifier = Modifier.width(AureoleDS.dimens.small))
         }
-        Text(
-            text = title,
-            style = AureoleDS.typography.titleLarge,
-            fontWeight = FontWeight.Bold,
-            color = AureoleDS.colors.onSurfaceHigh,
-            textAlign = if (titleIcon != null) TextAlign.Start else TextAlign.Center,
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis,
-            modifier = Modifier.weight(1f, fill = false)
-        )
+        Column(modifier = Modifier.weight(1f, fill = false)) {
+            Text(
+                text = title,
+                style = AureoleDS.typography.titleLarge,
+                fontWeight = FontWeight.Bold,
+                color = AureoleDS.colors.onSurfaceHigh,
+                textAlign = if (titleIcon != null) TextAlign.Start else TextAlign.Center,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
+            if (subtitle != null) {
+                Text(
+                    text = subtitle,
+                    style = AureoleDS.typography.bodyMedium,
+                    color = AureoleDS.colors.onSurfaceMedium,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+            }
+        }
     }
 }
 

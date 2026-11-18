@@ -88,6 +88,8 @@ data class AureoleEditOverlayConfig(
     val showHeaderAction: Boolean = true,
     val headerIcon: (@Composable (Modifier) -> Unit)? = null,
     val titleIcon: (@Composable (Modifier) -> Unit)? = null,
+    /** Secondary line under the title, in the header itself (e.g. the size of the item being edited). */
+    val subtitle: String? = null,
     val edgeToEdgeContent: Boolean = false,
     val hasExternalBackdrop: Boolean = false,
     val host: OverlayHostSpec = OverlayHostSpec(),
@@ -149,6 +151,7 @@ internal class OverlaySheetDecorations(
 internal class OverlayHeaderSlots(
     val headerIcon: (@Composable (Modifier) -> Unit)? = null,
     val titleIcon: (@Composable (Modifier) -> Unit)? = null,
+    val subtitle: String? = null,
     val accessory: (@Composable () -> Unit)? = null,
     val leadingAction: (@Composable () -> Unit)? = null
 )

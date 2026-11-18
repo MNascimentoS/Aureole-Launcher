@@ -111,6 +111,7 @@ internal fun SheetSurface(
                 headerSlots = OverlayHeaderSlots(
                     headerIcon = config.headerIcon,
                     titleIcon = config.titleIcon,
+                    subtitle = config.subtitle,
                     accessory = config.headerAccessory,
                     leadingAction = config.headerLeadingAction
                 ),

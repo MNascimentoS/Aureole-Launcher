@@ -4,7 +4,7 @@ import android.content.Context
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.test.hasClickAction
+import androidx.compose.ui.test.hasContentDescription
 import androidx.compose.ui.test.junit4.v2.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
@@ -57,9 +57,11 @@ class ScrollViewChildEditTest {
         }
     }
 
-    /** The header's first button edits the child, the second removes it. */
-    private fun clickHeaderButton(index: Int) {
-        composeTestRule.onAllNodes(hasClickAction())[index].performClick()
+    /** The edit and the remove buttons are found by their description ("Edit <name>", "Remove <name>"). */
+    private fun clickHeaderButton(descriptionRes: Int) {
+        val context = ApplicationProvider.getApplicationContext<Context>()
+        val prefix = context.getString(descriptionRes, "").trim()
+        composeTestRule.onNode(hasContentDescription(prefix, substring = true)).performClick()
         composeTestRule.waitForIdle()
     }
 
@@ -96,7 +98,7 @@ class ScrollViewChildEditTest {
             composeTestRule.waitForIdle()
             composeTestRule.onNodeWithText(titleAndCall.first).assertExists()
 
-            clickHeaderButton(0)
+            clickHeaderButton(R.string.home_scrollgroup_edit_item)
 
             assertEquals("editing $type", titleAndCall.second, calls.last())
         }
@@ -108,7 +110,7 @@ class ScrollViewChildEditTest {
         val context = ApplicationProvider.getApplicationContext<Context>()
         showCard()
 
-        clickHeaderButton(1)
+        clickHeaderButton(R.string.home_scrollgroup_remove_item)
 
         assertEquals("remove:parent/child", calls.single())
     }

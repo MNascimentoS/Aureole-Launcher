@@ -604,4 +604,16 @@
     <string name="home_shortcut_name_sound">Sound Settings</string>
     <string name="home_shortcut_name_wifi">Wi-Fi Settings</string>
     <string name="home_shortcut_unavailable">%1$s (unavailable)</string>
+    <string name="home_scrollgroup_section_scroll">Scroll</string>
+    <string name="home_scrollgroup_section_items">Items</string>
+    <string name="home_scrollgroup_size_cells">%1$d × %2$d cells</string>
+    <string name="home_scrollgroup_height">Height</string>
+    <string name="home_scrollgroup_width">Width</string>
+    <string name="home_scrollgroup_full_list">Full list</string>
+    <string name="home_scrollgroup_move_up">Move up</string>
+    <string name="home_scrollgroup_move_down">Move down</string>
+    <string name="home_scrollgroup_edit_item">Edit %1$s</string>
+    <string name="home_scrollgroup_remove_item">Remove %1$s</string>
+    <string name="home_scrollgroup_decrease">Decrease %1$s</string>
+    <string name="home_scrollgroup_increase">Increase %1$s</string>
 </resources>

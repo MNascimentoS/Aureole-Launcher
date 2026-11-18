@@ -20,6 +20,8 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.ui.unit.Dp
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -169,6 +171,8 @@ private fun HorizontalScrollViewContent(params: ScrollViewContentParams) {
     val uiState = LocalHomeUiState.current
     val actions = LocalHomeActions.current
     val item = params.item
+    BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
+    val pageWidth = maxWidth - AureoleDS.dimens.xSmall * 2
     Row(
         modifier = Modifier
             .fillMaxSize()
@@ -186,13 +190,15 @@ private fun HorizontalScrollViewContent(params: ScrollViewContentParams) {
                     appWidgetHost = params.appWidgetHost,
                     stackedWidgetConfig = params.stackedWidgetConfig,
                     hazeState = params.hazeState,
-                    isVertical = false
+                    isVertical = false,
+                    pageWidth = pageWidth
                 )
             )
         }
         if (uiState.isGridEditMode) {
             ScrollViewAddComponentButton(parentId = item.id, actions = actions)
         }
+    }
     }
 }
 
@@ -203,6 +209,7 @@ private fun ScrollViewChildItem(params: ScrollViewChildItemParams) {
     val isAppsList = childItem.safeType == LauncherItemType.APPS_LIST
     val childModifier = when {
         isAppsList && isVertical -> Modifier.fillMaxWidth().wrapContentHeight()
+        isAppsList && params.pageWidth != Dp.Unspecified -> Modifier.width(params.pageWidth).fillMaxHeight()
         isVertical -> {
             val childHeightDp = (ScrollChildDimensions.RowHeight * childItem.rowSpan)
                 .coerceAtLeast(ScrollChildDimensions.MinHeight)
@@ -223,7 +230,8 @@ private fun ScrollViewChildItem(params: ScrollViewChildItemParams) {
                 appWidgetHost = params.appWidgetHost,
                 stackedWidgetConfig = params.stackedWidgetConfig,
                 hazeState = params.hazeState,
-                isInScrollView = true
+                isInScrollView = true,
+                isInHorizontalGroup = !isVertical
             )
         )
     }
