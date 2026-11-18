@@ -76,7 +76,7 @@ internal fun ManageItemsContent(
     }
 
     if (editor.isEditing) {
-        Column(modifier = modifier) { ManageItemsEditorContent(editor = editor, state = state) }
+        Column(modifier = modifier) { ManageItemsEditorContent(editor = editor, state = state, allApps = allApps) }
         return
     }
     Column(modifier = modifier) {
@@ -86,7 +86,7 @@ internal fun ManageItemsContent(
             allApps = allApps,
             onOpenCreateFolderDialog = { isCreateFolderDialogVisible = true },
             // A new quick button opens its editor right away, in this same sheet (RF-07).
-            onAddQuickButton = { editor.openQuickButton(state.addQuickButton()) }
+            onAddQuickButton = { editor.openQuickButton(state.addQuickButton(), isNew = true) }
         )
 
         Spacer(modifier = Modifier.height(AureoleDS.dimens.medium))

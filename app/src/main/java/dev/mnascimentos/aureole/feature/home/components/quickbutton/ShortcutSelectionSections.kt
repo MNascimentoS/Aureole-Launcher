@@ -26,7 +26,8 @@ import dev.mnascimentos.aureole.feature.home.model.MainUiState
 @Composable
 internal fun ShortcutSelectionSheetContent(
     params: ShortcutSelectionSheetParams,
-    onApplyShortcut: (ShortcutAction) -> Unit
+    onApplyShortcut: (ShortcutAction) -> Unit,
+    isScrollable: Boolean = true
 ) {
     if (params.searchQuery.isNotBlank()) {
         ShortcutSearchResultsList(
@@ -37,11 +38,13 @@ internal fun ShortcutSelectionSheetContent(
         )
         return
     }
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .verticalScroll(rememberScrollState())
-    ) {
+    // Inside a sheet that already scrolls (the container's "Manage items") the list does not scroll on its own.
+    val listModifier = if (isScrollable) {
+        Modifier.fillMaxSize().verticalScroll(rememberScrollState())
+    } else {
+        Modifier.fillMaxWidth()
+    }
+    Column(modifier = listModifier) {
         if (params.category == ShortcutCategory.APPS) {
             AppSelectionList(
                 apps = params.uiState.apps,

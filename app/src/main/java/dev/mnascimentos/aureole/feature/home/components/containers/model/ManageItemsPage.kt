@@ -11,6 +11,9 @@ sealed interface ManageItemsPage {
     data object ItemList : ManageItemsPage
     data class FolderEditor(val folderId: String) : ManageItemsPage
     data class QuickButtonEditor(val quickButtonId: String) : ManageItemsPage
+
+    /** "Select a shortcut" for the click of a quick button just created, after its appearance (RF-B2). */
+    data class QuickButtonShortcut(val quickButtonId: String) : ManageItemsPage
 }
 
 /** Where back goes from [this] page: the list from an editor, null (leave Manage items) from the list. */

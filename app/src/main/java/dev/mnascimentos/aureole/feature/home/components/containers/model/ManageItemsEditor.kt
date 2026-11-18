@@ -29,9 +29,23 @@ class ManageItemsEditor {
         page = ManageItemsPage.FolderEditor(folder.id)
     }
 
-    /** Opens the editor of the quick button [quickButtonId] in place of the list. */
-    fun openQuickButton(quickButtonId: String) {
+    /**
+     * True from the creation of a quick button until its click shortcut is chosen: leaving its appearance
+     * then goes to "Select a shortcut" instead of the list. Editing an existing button never sets it.
+     */
+    var isCreatingQuickButton: Boolean by mutableStateOf(false)
+        private set
+
+    /** Opens the editor of the quick button [quickButtonId] in place of the list; [isNew] for a button just created. */
+    fun openQuickButton(quickButtonId: String, isNew: Boolean = false) {
+        isCreatingQuickButton = isNew
         page = ManageItemsPage.QuickButtonEditor(quickButtonId)
+    }
+
+    /** The click shortcut of the new button was chosen: creation is over and the list is shown again. */
+    fun finishQuickButtonCreation() {
+        isCreatingQuickButton = false
+        page = ManageItemsPage.ItemList
     }
 
     fun editFolderDraft(draft: FolderFormDraft) {
@@ -40,7 +54,14 @@ class ManageItemsEditor {
 
     /** Back from an editor: shows the list again and returns true; false on the list (the caller handles it). */
     fun back(): Boolean {
-        val target = page.backTarget() ?: return false
+        val current = page
+        val target = when {
+            // Creating: leaving the appearance goes on to the shortcut (D-01); back from there returns to the look.
+            current is ManageItemsPage.QuickButtonEditor && isCreatingQuickButton ->
+                ManageItemsPage.QuickButtonShortcut(current.quickButtonId)
+            current is ManageItemsPage.QuickButtonShortcut -> ManageItemsPage.QuickButtonEditor(current.quickButtonId)
+            else -> current.backTarget()
+        } ?: return false
         page = target
         return true
     }

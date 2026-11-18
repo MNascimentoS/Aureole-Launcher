@@ -32,6 +32,8 @@ import dev.mnascimentos.aureole.feature.home.components.quickbutton.model.Shortc
 import dev.mnascimentos.aureole.feature.home.components.quickbutton.model.bestShortcutAction
 import dev.mnascimentos.aureole.feature.home.components.quickbutton.model.buildShortcutSearchCandidates
 import dev.mnascimentos.aureole.feature.home.components.quickbutton.model.ShortcutEnvironment
+import dev.mnascimentos.aureole.feature.home.components.quickbutton.model.ShortcutSearchCandidate
+import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.feature.home.components.quickbutton.model.defaultShortcutCandidates
 import dev.mnascimentos.aureole.feature.home.components.quickbutton.model.localizedName
 import dev.mnascimentos.aureole.feature.home.components.quickbutton.model.searchShortcuts
@@ -46,7 +48,7 @@ import kotlinx.coroutines.delay
 
 private const val DISMISS_DELAY_MS = 300L
 
-private val DEFAULT_SHORTCUT_OPTIONS = listOf(
+internal val DEFAULT_SHORTCUT_OPTIONS = listOf(
     ShortcutAction.AllApps,
     ShortcutAction.Assistant,
     ShortcutAction.Settings,
@@ -73,6 +75,27 @@ private val DEFAULT_SHORTCUT_OPTIONS = listOf(
     ShortcutAction.None
 )
 
+/** The default shortcuts as the list shows them: names, the icon of the app that answers each, and availability. */
+@Composable
+internal fun rememberDefaultShortcutCandidates(
+    apps: List<AppInfo>,
+    currentAction: ShortcutAction
+): List<ShortcutSearchCandidate> {
+    val context = LocalContext.current
+    return remember(apps, currentAction) {
+        defaultShortcutCandidates(
+            DEFAULT_SHORTCUT_OPTIONS,
+            currentAction,
+            ShortcutEnvironment(
+                apps = apps,
+                nameOf = { it.localizedName(context.resources) },
+                unavailableLabel = { context.getString(R.string.home_shortcut_unavailable, it) },
+                resolvePackage = context.packageManager::systemShortcutPackage
+            )
+        )
+    }
+}
+
 @Composable
 fun ShortcutSelectionBottomSheet(
     uiState: MainUiState,
@@ -95,19 +118,7 @@ fun ShortcutSelectionBottomSheet(
     val editingType = uiState.editingShortcutType
     val currentAction = resolveEditingShortcut(editingType, activeModel)
     var category by remember { mutableStateOf(shortcutCategoryOf(currentAction)) }
-    val context = LocalContext.current
-    val defaultCandidates = remember(uiState.apps, currentAction) {
-        defaultShortcutCandidates(
-            DEFAULT_SHORTCUT_OPTIONS,
-            currentAction,
-            ShortcutEnvironment(
-                apps = uiState.apps,
-                nameOf = { it.localizedName(context.resources) },
-                unavailableLabel = { context.getString(R.string.home_shortcut_unavailable, it) },
-                resolvePackage = context.packageManager::systemShortcutPackage
-            )
-        )
-    }
+    val defaultCandidates = rememberDefaultShortcutCandidates(uiState.apps, currentAction)
     val candidates = remember(defaultCandidates, uiState.apps, category) {
         buildShortcutSearchCandidates(
             defaultCandidates,

@@ -13,6 +13,7 @@ import dev.mnascimentos.aureole.core.data.model.ContainerModel
 import dev.mnascimentos.aureole.core.data.model.FolderDetails
 import dev.mnascimentos.aureole.core.data.model.QuickButtonAppearance
 import dev.mnascimentos.aureole.core.data.model.QuickButtonModel
+import dev.mnascimentos.aureole.core.data.model.QuickButtonShortcuts
 import dev.mnascimentos.aureole.core.data.model.withDetails
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
@@ -160,7 +161,16 @@ internal class EditContainerState(
 
     /** Writes the look chosen in the in-place quick button editor to the button [quickButtonId]. */
     fun updateQuickButtonAppearance(quickButtonId: String, appearance: QuickButtonAppearance) {
-        val updated = quickButtons.find { it.id == quickButtonId }?.copy(appearance = appearance) ?: return
+        updateQuickButton(quickButtonId) { it.copy(appearance = appearance) }
+    }
+
+    /** Writes the shortcuts chosen in the in-place "Select a shortcut" to the button [quickButtonId]. */
+    fun updateQuickButtonShortcuts(quickButtonId: String, shortcuts: QuickButtonShortcuts) {
+        updateQuickButton(quickButtonId) { it.copy(shortcuts = shortcuts) }
+    }
+
+    private fun updateQuickButton(quickButtonId: String, change: (QuickButtonModel) -> QuickButtonModel) {
+        val updated = quickButtons.find { it.id == quickButtonId }?.let(change) ?: return
         quickButtons = quickButtons.map { if (it.id == quickButtonId) updated else it }
         // The entity keeps its model outside equals(), so a new list would compare equal and not be stored:
         // the item's model is updated where it is (the save reads it before the quick button list).

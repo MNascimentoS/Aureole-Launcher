@@ -27,7 +27,11 @@ import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.components.containers.model.ManageItemsEditor
 import dev.mnascimentos.aureole.feature.home.components.containers.model.ManageItemsPage
 import dev.mnascimentos.aureole.feature.home.components.quickbutton.QuickButtonAppearanceSheetContent
+import dev.mnascimentos.aureole.feature.home.components.quickbutton.QuickButtonShortcutPickerContent
 import dev.mnascimentos.aureole.feature.home.components.quickbutton.QuickButtonSheetPreview
+import dev.mnascimentos.aureole.feature.home.components.quickbutton.ShortcutSelectionPreview
+import dev.mnascimentos.aureole.feature.home.components.quickbutton.model.localizedName
+import androidx.compose.ui.platform.LocalContext
 
 /** Title of "Manage items" for its current page: the list, the folder form or the quick button editor (RF-07). */
 @Composable
@@ -36,6 +40,7 @@ internal fun ManageItemsEditor.title(): String = when (page) {
     ManageItemsPage.ItemList -> stringResource(R.string.home_container_edit_manage_items)
     is ManageItemsPage.FolderEditor -> stringResource(folderFormTitleRes(folderMode, isEditing = true))
     is ManageItemsPage.QuickButtonEditor -> stringResource(R.string.home_quickbutton_appearance_title)
+    is ManageItemsPage.QuickButtonShortcut -> stringResource(R.string.home_quickbutton_select_shortcut)
 }
 
 private fun EditContainerState.quickButton(id: String): QuickButtonModel? = quickButtons.find { it.id == id }
@@ -52,6 +57,7 @@ internal fun ManageItemsEditor.showsItemPreview(state: EditContainerState): Bool
     ManageItemsPage.ItemList -> false
     is ManageItemsPage.FolderEditor -> true
     is ManageItemsPage.QuickButtonEditor -> state.quickButton(current.quickButtonId) != null
+    is ManageItemsPage.QuickButtonShortcut -> state.quickButton(current.quickButtonId) != null
 }
 
 /** The preview above the sheet while an item is edited in place: the folder or the button, with its name pill. */
@@ -62,7 +68,11 @@ internal fun ManageItemsEditorPreview(
     allApps: List<AppInfo>
 ) {
     val page = editor.page
-    val quickButton = (page as? ManageItemsPage.QuickButtonEditor)?.let { state.quickButton(it.quickButtonId) }
+    val quickButton = when (page) {
+        is ManageItemsPage.QuickButtonEditor -> state.quickButton(page.quickButtonId)
+        is ManageItemsPage.QuickButtonShortcut -> state.quickButton(page.quickButtonId)
+        else -> null
+    }
     when {
         page is ManageItemsPage.FolderEditor -> {
             val placeholder = stringResource(R.string.home_folder_name_placeholder)
@@ -77,6 +87,13 @@ internal fun ManageItemsEditorPreview(
                     }
                 )
             }
+        }
+        page is ManageItemsPage.QuickButtonShortcut && quickButton != null -> {
+            val clickName = quickButton.shortcuts.click.localizedName(LocalContext.current.resources)
+            ShortcutSelectionPreview(
+                model = quickButton,
+                pillText = stringResource(R.string.home_quickbutton_gesture_click, clickName)
+            )
         }
         page is ManageItemsPage.QuickButtonEditor && quickButton != null -> {
             val model = quickButton
@@ -96,7 +113,11 @@ internal fun ManageItemsEditorPreview(
 
 /** The editor of the item open in [editor], in place of the list, with "Back" to return to it. */
 @Composable
-internal fun ColumnScope.ManageItemsEditorContent(editor: ManageItemsEditor, state: EditContainerState) {
+internal fun ColumnScope.ManageItemsEditorContent(
+    editor: ManageItemsEditor,
+    state: EditContainerState,
+    allApps: List<AppInfo> = emptyList()
+) {
     when (val page = editor.page) {
         ManageItemsPage.ItemList -> Unit
         is ManageItemsPage.FolderEditor -> {
@@ -120,6 +141,16 @@ internal fun ColumnScope.ManageItemsEditorContent(editor: ManageItemsEditor, sta
                 activeModel = model,
                 onUpdateAppearance = { state.updateQuickButtonAppearance(model.id, it) },
                 modifier = Modifier.weight(1f, fill = false)
+            )
+        }
+        is ManageItemsPage.QuickButtonShortcut -> state.quickButton(page.quickButtonId)?.let { model ->
+            QuickButtonShortcutPickerContent(
+                model = model,
+                apps = allApps,
+                onPick = { action ->
+                    state.updateQuickButtonShortcuts(model.id, model.shortcuts.copy(click = action))
+                    editor.finishQuickButtonCreation()
+                }
             )
         }
     }
