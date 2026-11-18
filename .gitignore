@@ -1,6 +1,7 @@
 *.iml
 .gradle
 /local.properties
+/specs
 /credentials.properties
 credentials.properties
 /.idea
