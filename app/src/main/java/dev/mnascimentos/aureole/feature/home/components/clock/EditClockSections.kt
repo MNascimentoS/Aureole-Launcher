@@ -106,13 +106,18 @@ internal fun EditClockFormatSection(
     }
 }
 
-/** Sub-label of the format options ("Time", "Date"): shares the section title's start inset, so both sit on one line. */
+/**
+ * Sub-label of the format options ("Time", "Date"): shares the section title's start inset,
+ * so both sit on one line.
+ */
 @Composable
 private fun FormatSubtitle(text: String) {
     AureoleText(
         text = text,
         color = AureoleDS.colors.onSurfaceMedium,
-        modifier = Modifier.padding(bottom = AureoleDS.dimens.xSmall),
+        modifier = Modifier.padding(
+            bottom = AureoleDS.dimens.small
+        ),
         format = AureoleTextFormatParams(style = AureoleDS.typography.bodySmall)
     )
 }

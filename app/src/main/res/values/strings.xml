@@ -10,7 +10,7 @@
     <!-- Clock -->
     <string name="home_clock_daily_greeting">Daily greeting</string>
     <string name="home_clock_date_on_top">Date on top</string>
-    <string name="home_clock_greeting_and_date">Greeting and date</string>
+    <string name="home_clock_greeting_and_date">Info and date</string>
     <string name="home_clock_custom_text">Custom text</string>
     <string name="home_clock_time_only">Time only</string>
 

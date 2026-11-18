@@ -282,7 +282,7 @@ class EditClockBottomSheetTest {
 
         composeTestRule.onNodeWithText("Time only").performClick()
         assertEquals("TIME_ONLY", selectedStyle)
-        composeTestRule.onNodeWithText("Greeting and date").performClick()
+        composeTestRule.onNodeWithText("Info and date").performClick()
         assertEquals("GREETING_AND_DATE", selectedStyle)
     }
 

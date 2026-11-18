@@ -44,7 +44,7 @@ data class AureoleTypography(
     val smallText: TextStyle = TextStyle(
         fontFamily = fontFamily,
         fontWeight = FontWeight.Normal,
-        fontSize = 13.sp,
+        fontSize = 14.sp,
         lineHeight = 18.2.sp,
         letterSpacing = 0.sp
     ),

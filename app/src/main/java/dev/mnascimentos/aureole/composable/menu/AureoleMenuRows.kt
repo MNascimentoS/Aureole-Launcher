@@ -151,7 +151,6 @@ fun AureoleMenuSectionLabel(
             modifier = modifier
                 .fillMaxWidth()
                 .padding(
-                    start = AureoleDS.dimens.xxSmall,
                     end = AureoleDS.dimens.xxSmall,
                     top = AureoleDS.dimens.small,
                     bottom = AureoleDS.dimens.xSmall
