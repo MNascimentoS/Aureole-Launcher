@@ -23,4 +23,3 @@ fun ContainerItemEntity.editorPage(): ManageItemsPage? = when (itemType) {
     ContainerItemType.QUICK_BUTTON -> (quickButtonId ?: id).let { ManageItemsPage.QuickButtonEditor(it) }
     ContainerItemType.APP -> null
 }
-

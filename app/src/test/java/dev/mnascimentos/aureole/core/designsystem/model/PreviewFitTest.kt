@@ -9,7 +9,10 @@ class PreviewFitTest {
 
     @Test
     fun `when the content fits below the preview, the preview stays`() {
-        assertEquals(PreviewFit(PreviewBehavior.STAYS, 1f, 1f), previewFit(previewHeight = 300f, room = 340f, gap = gap))
+        assertEquals(
+            PreviewFit(PreviewBehavior.STAYS, 1f, 1f),
+            previewFit(previewHeight = 300f, room = 340f, gap = gap)
+        )
         assertEquals(PreviewBehavior.STAYS, previewFit(previewHeight = 300f, room = 900f, gap = gap).behavior)
     }
 

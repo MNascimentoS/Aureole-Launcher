@@ -102,19 +102,23 @@ private fun WidgetPagerCard(widgetId: Int, size: DpSize, params: EditWidgetCarou
     }
 }
 
+private const val PREVIEW_FIRST_ID = 1
+private const val PREVIEW_SELECTED_ID = 2
+private const val PREVIEW_LAST_ID = 3
+
 @AureolePreview
 @Composable
 private fun EditWidgetGroupLandscapePagerPreview() {
     AureoleLauncherTheme {
         EditWidgetGroupLandscapePager(
             params = EditWidgetCarouselParams(
-                currentWidgets = listOf(1, 2, 3),
+                currentWidgets = listOf(PREVIEW_FIRST_ID, PREVIEW_SELECTED_ID, PREVIEW_LAST_ID),
                 appWidgetHost = null,
                 scrollState = rememberScrollState(),
                 isIndicatorEnabled = true,
                 onRemoveWidget = {},
                 onAddWidgetClick = {},
-                selectedWidgetId = 2
+                selectedWidgetId = PREVIEW_SELECTED_ID
             )
         )
     }

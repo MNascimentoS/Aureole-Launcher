@@ -11,6 +11,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -70,13 +71,7 @@ internal fun OverlaySheetHeader(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(
-                start = if (drawsStartSlot) AureoleDS.dimens.zero else AureoleDS.dimens.small,
-                end = if (drawsEndSlot) AureoleDS.dimens.zero else AureoleDS.dimens.small,
-                // The 48 dp slots are taller than the text: less padding keeps the header as tall as before.
-                top = if (hasAction) AureoleDS.dimens.xxSmall else AureoleDS.dimens.small,
-                bottom = if (hasAction) AureoleDS.dimens.xSmall else AureoleDS.dimens.medium
-            ),
+            .padding(headerPadding(hasAction, drawsStartSlot, drawsEndSlot)),
         verticalAlignment = Alignment.CenterVertically
     ) {
         if (drawsStartSlot) HeaderSlot(content = startSlot)
@@ -89,6 +84,16 @@ internal fun OverlaySheetHeader(
         if (drawsEndSlot) HeaderSlot(content = endSlot)
     }
 }
+
+/** The 48 dp slots are taller than the text: less vertical padding keeps the header as tall as before. */
+@Composable
+private fun headerPadding(hasAction: Boolean, drawsStartSlot: Boolean, drawsEndSlot: Boolean): PaddingValues =
+    PaddingValues(
+        start = if (drawsStartSlot) AureoleDS.dimens.zero else AureoleDS.dimens.small,
+        end = if (drawsEndSlot) AureoleDS.dimens.zero else AureoleDS.dimens.small,
+        top = if (hasAction) AureoleDS.dimens.xxSmall else AureoleDS.dimens.small,
+        bottom = if (hasAction) AureoleDS.dimens.xSmall else AureoleDS.dimens.medium
+    )
 
 @Composable
 private fun HeaderTitle(title: String, titleIcon: (@Composable (Modifier) -> Unit)?) {

@@ -41,21 +41,30 @@ internal fun ManageItemsEditor.title(): String = when (page) {
 private fun EditContainerState.quickButton(id: String): QuickButtonModel? = quickButtons.find { it.id == id }
 
 private fun QuickButtonModel.appInfoIn(allApps: List<AppInfo>): AppInfo? =
-    if (shortcuts.click.type == ShortcutType.OPEN_APP) allApps.find { it.packageName == shortcuts.click.target } else null
+    if (shortcuts.click.type == ShortcutType.OPEN_APP) {
+        allApps.find { it.packageName == shortcuts.click.target }
+    } else {
+        null
+    }
 
-/**
- * The preview above the sheet while an item is edited in place: the folder or the button as it will look, with
- * its name pill. Returns false when the list is shown, so the caller draws the container preview instead.
- */
+/** True while an item is edited in place, so the preview above the sheet is the item's and not the container's. */
+internal fun ManageItemsEditor.showsItemPreview(state: EditContainerState): Boolean = when (val current = page) {
+    ManageItemsPage.ItemList -> false
+    is ManageItemsPage.FolderEditor -> true
+    is ManageItemsPage.QuickButtonEditor -> state.quickButton(current.quickButtonId) != null
+}
+
+/** The preview above the sheet while an item is edited in place: the folder or the button, with its name pill. */
 @Composable
 internal fun ManageItemsEditorPreview(
     editor: ManageItemsEditor,
     state: EditContainerState,
     allApps: List<AppInfo>
-): Boolean {
-    when (val page = editor.page) {
-        ManageItemsPage.ItemList -> return false
-        is ManageItemsPage.FolderEditor -> {
+) {
+    val page = editor.page
+    val quickButton = (page as? ManageItemsPage.QuickButtonEditor)?.let { state.quickButton(it.quickButtonId) }
+    when {
+        page is ManageItemsPage.FolderEditor -> {
             val placeholder = stringResource(R.string.home_folder_name_placeholder)
             AureolePreviewFrame {
                 FolderFormPreview(
@@ -69,8 +78,8 @@ internal fun ManageItemsEditorPreview(
                 )
             }
         }
-        is ManageItemsPage.QuickButtonEditor -> {
-            val model = state.quickButton(page.quickButtonId) ?: return false
+        page is ManageItemsPage.QuickButtonEditor && quickButton != null -> {
+            val model = quickButton
             AureolePreviewFrame {
                 QuickButtonSheetPreview(
                     model = model,
@@ -81,8 +90,8 @@ internal fun ManageItemsEditorPreview(
                 )
             }
         }
+        else -> Unit
     }
-    return true
 }
 
 /** The editor of the item open in [editor], in place of the list, with "Back" to return to it. */

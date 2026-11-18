@@ -9,9 +9,9 @@ import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.ke
 import dev.mnascimentos.aureole.feature.home.grid.GridEngineUtils
 import dev.mnascimentos.aureole.feature.home.grid.model.GridLimits
 import dev.mnascimentos.aureole.feature.home.grid.model.LoadedGrid
-import dev.mnascimentos.aureole.feature.home.grid.model.withMeasuredLimits
 import dev.mnascimentos.aureole.feature.home.grid.model.isMeasureChange
 import dev.mnascimentos.aureole.feature.home.grid.model.withLoadedGrid
+import dev.mnascimentos.aureole.feature.home.grid.model.withMeasuredLimits
 import kotlinx.coroutines.withContext
 
 internal fun HomeViewModel.getGridRepository(): GridRepository {

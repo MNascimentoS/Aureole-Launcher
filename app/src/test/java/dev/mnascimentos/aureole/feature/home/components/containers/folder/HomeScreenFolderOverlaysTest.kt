@@ -231,7 +231,7 @@ class HomeScreenFolderOverlaysTest {
             }
         }
 
-        composeTestRule.onNodeWithText("Folder settings").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Media").assertIsDisplayed()
     }
 
     @Test
