@@ -26,7 +26,7 @@ class ShortcutSearchTest {
         ShortcutAction.Settings,
         ShortcutAction.systemIntent("Camera"),
         ShortcutAction.systemIntent("Calendar")
-    )
+    ).map { ShortcutSearchCandidate(action = it, label = it.displayName) }
     private val apps = listOf(app("Câmera Pro", "com.pro"), app("Maps", "com.maps"))
 
     @Test

@@ -23,6 +23,7 @@ import dev.mnascimentos.aureole.composable.appitem.model.AureoleAppIconParams
 import dev.mnascimentos.aureole.composable.dialogs.FolderBadge
 import dev.mnascimentos.aureole.core.data.model.AppFolder
 import dev.mnascimentos.aureole.core.data.model.AppInfo
+import dev.mnascimentos.aureole.feature.home.components.quickbutton.model.displayTitle
 import dev.mnascimentos.aureole.core.data.model.ContainerItemEntity
 import dev.mnascimentos.aureole.core.data.model.ContainerItemType
 import dev.mnascimentos.aureole.core.designsystem.icons.AppSelect
@@ -52,10 +53,13 @@ internal fun ManageItemRow(params: ManageItemRowParams) {
     val folder = resolveFolder(item, params.folders)
     val app = resolveApp(item, params.allApps)
 
+    val quickButtonTitle = item.quickButtonModel?.displayTitle(
+        params.allApps.find { it.packageName == item.quickButtonModel?.shortcuts?.click?.target }?.label
+    )
     val title = when (item.itemType) {
         ContainerItemType.FOLDER -> folder?.name ?: defaultFolderLabel
         ContainerItemType.APP -> app?.label ?: item.packageName ?: defaultAppLabel
-        ContainerItemType.QUICK_BUTTON -> defaultQuickButtonLabel
+        ContainerItemType.QUICK_BUTTON -> quickButtonTitle ?: defaultQuickButtonLabel
     }
 
     val onOpen = params.onOpen

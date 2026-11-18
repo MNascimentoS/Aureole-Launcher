@@ -48,8 +48,8 @@ class QuickButtonSheetModelsTest {
     @Test
     fun `when the click opens an app, should default to the app name, else to the action name`() {
         val model = QuickButtonModel(shortcuts = QuickButtonShortcuts(click = ShortcutAction.openApp("a.b")))
-        assertEquals("Gallery", model.defaultName("Gallery"))
-        assertEquals("All apps", QuickButtonModel().defaultName(null))
+        assertEquals("Gallery", model.defaultName("Gallery", "Open App"))
+        assertEquals("All apps", QuickButtonModel().defaultName(null, "All apps"))
     }
 
     @Test

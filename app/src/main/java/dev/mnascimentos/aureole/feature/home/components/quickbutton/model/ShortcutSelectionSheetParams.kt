@@ -6,7 +6,7 @@ import dev.mnascimentos.aureole.feature.home.model.MainUiState
 internal data class ShortcutSelectionSheetParams(
     val category: ShortcutCategory,
     val currentAction: ShortcutAction,
-    val defaultShortcutOptions: List<ShortcutAction>,
+    val defaultCandidates: List<ShortcutSearchCandidate>,
     val uiState: MainUiState,
     val editingType: String? = null,
     val isVisible: Boolean = true,

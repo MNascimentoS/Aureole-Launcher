@@ -20,7 +20,7 @@ import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.components.quickbutton.model.ShortcutCategory
 import dev.mnascimentos.aureole.feature.home.components.quickbutton.model.ShortcutSearchCandidate
 import dev.mnascimentos.aureole.feature.home.components.quickbutton.model.ShortcutSelectionSheetParams
-import dev.mnascimentos.aureole.feature.home.components.quickbutton.model.shortcutsInCategory
+import dev.mnascimentos.aureole.feature.home.components.quickbutton.model.shortcutCategoryOf
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
 
 @Composable
@@ -78,16 +78,16 @@ private fun DefaultShortcutSelectionList(
     params: ShortcutSelectionSheetParams,
     onApplyShortcut: (ShortcutAction) -> Unit
 ) {
-    val actions = shortcutsInCategory(params.defaultShortcutOptions, params.category)
+    val candidates = params.defaultCandidates.filter { shortcutCategoryOf(it.action) == params.category }
     Column(modifier = Modifier.fillMaxWidth()) {
         if (params.category == ShortcutCategory.AUREOLE) {
             AureoleMenuSectionLabel(text = stringResource(R.string.home_quickbutton_shortcut_section_aureole))
         }
-        actions.forEach { action ->
+        candidates.forEach { candidate ->
             ShortcutActionRow(
-                candidate = ShortcutSearchCandidate(action = action, label = action.displayName),
-                isSelected = params.currentAction == action,
-                onClick = { onApplyShortcut(action) }
+                candidate = candidate,
+                isSelected = params.currentAction == candidate.action,
+                onClick = { onApplyShortcut(candidate.action) }
             )
         }
     }
@@ -101,7 +101,10 @@ private fun ShortcutSelectionSheetContentPreview() {
             params = ShortcutSelectionSheetParams(
                 category = ShortcutCategory.AUREOLE,
                 currentAction = ShortcutAction.AllApps,
-                defaultShortcutOptions = listOf(ShortcutAction.AllApps, ShortcutAction.Settings),
+                defaultCandidates = listOf(
+                    ShortcutSearchCandidate(ShortcutAction.AllApps, "All apps"),
+                    ShortcutSearchCandidate(ShortcutAction.Settings, "Aureole Settings")
+                ),
                 uiState = MainUiState()
             ),
             onApplyShortcut = {}

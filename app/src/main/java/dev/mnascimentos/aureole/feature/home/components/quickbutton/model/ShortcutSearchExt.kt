@@ -6,14 +6,14 @@ import dev.mnascimentos.aureole.core.search.rankByQuery
 
 /** Default shortcuts (or only apps, while picking an app) followed by every app as an "open app" shortcut. */
 internal fun buildShortcutSearchCandidates(
-    defaultOptions: List<ShortcutAction>,
+    defaultCandidates: List<ShortcutSearchCandidate>,
     apps: List<AppInfo>,
     onlyApps: Boolean
 ): List<ShortcutSearchCandidate> {
     val defaults = if (onlyApps) {
         emptyList()
     } else {
-        defaultOptions.map { ShortcutSearchCandidate(action = it, label = it.displayName) }
+        defaultCandidates
     }
     val appCandidates = apps.map {
         ShortcutSearchCandidate(action = ShortcutAction.openApp(it.packageName), label = it.label, app = it)

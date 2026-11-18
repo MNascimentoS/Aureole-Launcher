@@ -31,7 +31,12 @@ import dev.mnascimentos.aureole.feature.home.components.quickbutton.model.Shortc
 import dev.mnascimentos.aureole.feature.home.components.quickbutton.model.ShortcutSelectionSheetParams
 import dev.mnascimentos.aureole.feature.home.components.quickbutton.model.bestShortcutAction
 import dev.mnascimentos.aureole.feature.home.components.quickbutton.model.buildShortcutSearchCandidates
+import dev.mnascimentos.aureole.feature.home.components.quickbutton.model.ShortcutEnvironment
+import dev.mnascimentos.aureole.feature.home.components.quickbutton.model.defaultShortcutCandidates
+import dev.mnascimentos.aureole.feature.home.components.quickbutton.model.localizedName
 import dev.mnascimentos.aureole.feature.home.components.quickbutton.model.searchShortcuts
+import dev.mnascimentos.aureole.feature.home.components.quickbutton.model.systemShortcutPackage
+import androidx.compose.ui.platform.LocalContext
 import dev.mnascimentos.aureole.feature.home.components.quickbutton.model.shortcutCategoryOf
 import dev.mnascimentos.aureole.feature.home.components.quickbutton.model.shortcutGestureLabelRes
 import dev.mnascimentos.aureole.feature.home.components.quickbutton.model.shortcutLabel
@@ -90,9 +95,22 @@ fun ShortcutSelectionBottomSheet(
     val editingType = uiState.editingShortcutType
     val currentAction = resolveEditingShortcut(editingType, activeModel)
     var category by remember { mutableStateOf(shortcutCategoryOf(currentAction)) }
-    val candidates = remember(uiState.apps, category) {
-        buildShortcutSearchCandidates(
+    val context = LocalContext.current
+    val defaultCandidates = remember(uiState.apps, currentAction) {
+        defaultShortcutCandidates(
             DEFAULT_SHORTCUT_OPTIONS,
+            currentAction,
+            ShortcutEnvironment(
+                apps = uiState.apps,
+                nameOf = { it.localizedName(context.resources) },
+                unavailableLabel = { context.getString(R.string.home_shortcut_unavailable, it) },
+                resolvePackage = context.packageManager::systemShortcutPackage
+            )
+        )
+    }
+    val candidates = remember(defaultCandidates, uiState.apps, category) {
+        buildShortcutSearchCandidates(
+            defaultCandidates,
             uiState.apps,
             onlyApps = category == ShortcutCategory.APPS
         )
@@ -108,7 +126,7 @@ fun ShortcutSelectionBottomSheet(
             category = category,
             currentAction = currentAction,
             editingType = editingType,
-            defaultShortcutOptions = DEFAULT_SHORTCUT_OPTIONS,
+            defaultCandidates = defaultCandidates,
             uiState = uiState,
             isVisible = isVisible,
             searchQuery = searchQuery,
@@ -144,9 +162,10 @@ private fun ShortcutSelectionOverlay(
     } else {
         stringResource(R.string.home_quickbutton_select_shortcut)
     }
+    val resources = LocalContext.current.resources
     val pillText = stringResource(
         shortcutGestureLabelRes(params.editingType),
-        shortcutLabel(params.currentAction, params.uiState.apps)
+        shortcutLabel(params.currentAction, params.uiState.apps) { it.localizedName(resources) }
     )
     CompositionLocalProvider(LocalLeftHanded provides params.uiState.isLeftHandedMode) {
         AureoleEditOverlay(

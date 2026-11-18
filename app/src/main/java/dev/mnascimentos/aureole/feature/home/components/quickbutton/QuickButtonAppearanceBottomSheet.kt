@@ -31,10 +31,9 @@ import dev.mnascimentos.aureole.feature.home.components.containers.folder.Contai
 import dev.mnascimentos.aureole.feature.home.components.quickbutton.model.NoQuickButtonCallbacks
 import dev.mnascimentos.aureole.feature.home.components.quickbutton.model.QuickButtonAppearanceMetrics
 import dev.mnascimentos.aureole.feature.home.components.quickbutton.model.QuickButtonGridItemStyle
-import dev.mnascimentos.aureole.feature.home.components.quickbutton.model.defaultName
+import dev.mnascimentos.aureole.feature.home.components.quickbutton.model.displayTitle
 import dev.mnascimentos.aureole.feature.home.components.quickbutton.model.isLowContrast
 import dev.mnascimentos.aureole.feature.home.components.quickbutton.model.normalized
-import dev.mnascimentos.aureole.feature.home.components.quickbutton.model.resolvedName
 import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
 
@@ -128,7 +127,7 @@ internal fun QuickButtonSheetPreview(
             )
         }
         if (appearance.showLabel) {
-            ContainerFolderLabel(name = appearance.resolvedName(model.defaultName(appInfo?.label)))
+            ContainerFolderLabel(name = model.displayTitle(appInfo?.label))
         }
         if (lowContrast) {
             AureoleText(

@@ -37,9 +37,13 @@ fun TextResource.asString(): String = when (this) {
 
 @Composable
 @ReadOnlyComposable
-private fun TextResource.Resource.formatResource(): String = when (args.size) {
-    0 -> stringResource(resId)
-    1 -> stringResource(resId, args[0])
-    2 -> stringResource(resId, args[0], args[1])
-    else -> stringResource(resId, args[0], args[1], args[2])
+private fun TextResource.Resource.formatResource(): String {
+    // An argument may itself be a TextResource (a name that is localized): it is resolved first.
+    val resolved = args.map { if (it is TextResource) it.asString() else it }
+    return when (resolved.size) {
+        0 -> stringResource(resId)
+        1 -> stringResource(resId, resolved[0])
+        2 -> stringResource(resId, resolved[0], resolved[1])
+        else -> stringResource(resId, resolved[0], resolved[1], resolved[2])
+    }
 }

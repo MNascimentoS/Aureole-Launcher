@@ -3,7 +3,9 @@ package dev.mnascimentos.aureole.feature.home.components.quickbutton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.platform.LocalContext
 import dev.mnascimentos.aureole.R
+import dev.mnascimentos.aureole.feature.home.components.quickbutton.model.localizedName
 import dev.mnascimentos.aureole.composable.menu.AureoleMenuListSheet
 import dev.mnascimentos.aureole.composable.menu.customizeHomeEntry
 import dev.mnascimentos.aureole.composable.menu.model.MenuEntry
@@ -93,7 +95,7 @@ private fun quickButtonEntries(
 @Composable
 private fun clickShortcutLabel(activeModel: QuickButtonModel, uiState: MainUiState): String {
     val click = activeModel.shortcuts.click
-    if (click.type != ShortcutType.OPEN_APP) return click.displayName
+    if (click.type != ShortcutType.OPEN_APP) return click.localizedName(LocalContext.current.resources)
     val appLabel = uiState.apps.find { it.packageName == click.target }?.label
     return if (appLabel != null) {
         stringResource(R.string.home_quickbutton_open_app_name, appLabel)

@@ -12,6 +12,7 @@ import dev.mnascimentos.aureole.core.data.model.QuickButtonShortcuts
 import dev.mnascimentos.aureole.core.data.model.ShortcutType
 import dev.mnascimentos.aureole.core.designsystem.model.TextResource
 import dev.mnascimentos.aureole.feature.home.HomeViewModel
+import dev.mnascimentos.aureole.feature.home.components.quickbutton.model.nameRes
 import dev.mnascimentos.aureole.feature.home.extensions.showUndo
 import kotlinx.coroutines.launch
 
@@ -92,10 +93,12 @@ fun HomeViewModel.onUpdateQuickButtonShortcuts(shortcuts: QuickButtonShortcuts) 
     applyQuickButtonShortcuts(buttonId, shortcuts)
     val changed = changedShortcut(previous, shortcuts)
     if (changed != null) {
-        val name = if (changed.type == ShortcutType.OPEN_APP) {
-            state.apps.find { it.packageName == changed.target }?.label ?: changed.target
-        } else {
-            changed.displayName
+        val appLabel = state.apps.find { it.packageName == changed.target }?.label
+        val nameRes = changed.nameRes()
+        val name: TextResource = when {
+            changed.type == ShortcutType.OPEN_APP -> TextResource.fromString(appLabel ?: changed.target)
+            nameRes != null -> TextResource.fromResId(nameRes)
+            else -> TextResource.fromString(changed.target.ifEmpty { changed.displayName })
         }
         showUndo(TextResource.fromResId(R.string.home_undo_shortcut_changed, name)) {
             applyQuickButtonShortcuts(buttonId, previous)

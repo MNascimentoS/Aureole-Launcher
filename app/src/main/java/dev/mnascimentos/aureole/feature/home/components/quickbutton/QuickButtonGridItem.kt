@@ -28,8 +28,7 @@ import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.components.quickbutton.model.NoQuickButtonCallbacks
 import dev.mnascimentos.aureole.feature.home.components.quickbutton.model.QuickButtonGridItemCallbacks
 import dev.mnascimentos.aureole.feature.home.components.quickbutton.model.QuickButtonGridItemStyle
-import dev.mnascimentos.aureole.feature.home.components.quickbutton.model.defaultName
-import dev.mnascimentos.aureole.feature.home.components.quickbutton.model.resolvedName
+import dev.mnascimentos.aureole.feature.home.components.quickbutton.model.displayTitle
 
 @Composable
 fun QuickButtonGridItem(
@@ -60,7 +59,7 @@ fun QuickButtonGridItem(
     }
 
     // The name (or the click action) is what TalkBack reads for the button (botao-rapido RF-01).
-    val name = model.appearance.resolvedName(model.defaultName(appInfo?.label))
+    val name = model.displayTitle(appInfo?.label)
 
     Box(
         modifier = strokeModifier

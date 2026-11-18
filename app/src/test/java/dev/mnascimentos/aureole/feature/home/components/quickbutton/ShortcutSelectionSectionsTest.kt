@@ -9,6 +9,7 @@ import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.data.model.ShortcutAction
+import dev.mnascimentos.aureole.feature.home.components.quickbutton.model.ShortcutSearchCandidate
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.feature.home.components.quickbutton.model.ShortcutCategory
 import dev.mnascimentos.aureole.feature.home.components.quickbutton.model.ShortcutSelectionSheetParams
@@ -33,7 +34,7 @@ class ShortcutSelectionSectionsTest {
         val params = ShortcutSelectionSheetParams(
             category = ShortcutCategory.AUREOLE,
             currentAction = ShortcutAction.AllApps,
-            defaultShortcutOptions = listOf(ShortcutAction.AllApps, ShortcutAction.Settings),
+            defaultCandidates = listOf(ShortcutAction.AllApps, ShortcutAction.Settings).map { ShortcutSearchCandidate(it, it.displayName) },
             uiState = MainUiState()
         )
 
@@ -66,7 +67,7 @@ class ShortcutSelectionSectionsTest {
         val params = ShortcutSelectionSheetParams(
             category = ShortcutCategory.SYSTEM,
             currentAction = ShortcutAction.systemIntent("Camera"),
-            defaultShortcutOptions = listOf(ShortcutAction.AllApps, ShortcutAction.systemIntent("Camera")),
+            defaultCandidates = listOf(ShortcutAction.AllApps, ShortcutAction.systemIntent("Camera")).map { ShortcutSearchCandidate(it, it.displayName) },
             uiState = MainUiState(apps = listOf(app))
         )
 
@@ -104,7 +105,7 @@ class ShortcutSelectionSectionsTest {
         val params = ShortcutSelectionSheetParams(
             category = ShortcutCategory.APPS,
             currentAction = ShortcutAction.None,
-            defaultShortcutOptions = listOf(ShortcutAction.AllApps),
+            defaultCandidates = listOf(ShortcutAction.AllApps).map { ShortcutSearchCandidate(it, it.displayName) },
             uiState = MainUiState(apps = listOf(app1, app2))
         )
 
