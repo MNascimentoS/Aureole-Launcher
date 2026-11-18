@@ -23,17 +23,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
-import dev.mnascimentos.aureole.feature.secretgame.model.SecretGameModifiers
-import dev.mnascimentos.aureole.feature.secretgame.model.SecretGameFrame
-import dev.mnascimentos.aureole.feature.secretgame.components.SecretGameOverlay
-import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.layout.positionInWindow
-import androidx.compose.ui.layout.boundsInWindow
-import androidx.compose.ui.layout.onGloballyPositioned
-import androidx.compose.ui.geometry.Rect
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -49,10 +42,13 @@ import dev.mnascimentos.aureole.core.designsystem.icons.Star
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
-import dev.mnascimentos.aureole.feature.secretgame.components.SecretBestScorePopup
-import dev.mnascimentos.aureole.feature.secretgame.components.rememberSecretGameTrigger
+import dev.mnascimentos.aureole.feature.secretgame.components.SecretGameLayer
+import dev.mnascimentos.aureole.feature.secretgame.components.secretGameTrigger
+import dev.mnascimentos.aureole.feature.secretgame.model.SecretGameHostState
+import dev.mnascimentos.aureole.feature.secretgame.model.SecretGameModifiers
 import dev.mnascimentos.aureole.feature.settings.components.SettingsAreaCard
 import dev.mnascimentos.aureole.feature.settings.extensions.getVersionName
+import dev.mnascimentos.aureole.feature.settings.model.SettingsHeaderParams
 import dev.mnascimentos.aureole.feature.settings.model.SettingsLayout
 import dev.mnascimentos.aureole.feature.settings.model.SettingsNavigationActions
 import dev.mnascimentos.aureole.feature.settings.model.SettingsUiState
@@ -66,29 +62,36 @@ fun SettingsRootScreen(
     onNavigateToBehavior: () -> Unit,
     onNavigateToAppearance: () -> Unit,
     onNavigateToAdvanced: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    SettingsRootScreen(
+        uiState = uiState,
+        navigation = SettingsNavigationActions(onNavigateToBehavior, onNavigateToAppearance, onNavigateToAdvanced),
+        modifier = modifier,
+        onSecretGameOver = {}
+    )
+}
+
+/** The root of Settings; [onSecretGameOver] receives the score of the hidden game (see [SecretGameLayer]). */
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun SettingsRootScreen(
+    uiState: SettingsUiState,
+    navigation: SettingsNavigationActions,
     modifier: Modifier = Modifier,
-    onSecretGameOver: (Int) -> Unit = {}
+    onSecretGameOver: (Int) -> Unit
 ) {
     val context = LocalContext.current
     val versionName = remember(context) { getVersionName(context) }
     var showReleaseNotes by remember { mutableStateOf(false) }
-    var isGameOpen by remember { mutableStateOf(false) }
-    var showBestScore by remember { mutableStateOf(false) }
-    var logoBounds by remember { mutableStateOf<Rect?>(null) }
-    var rootOrigin by remember { mutableStateOf(Offset.Zero) }
-    var gameFrame by remember { mutableStateOf<SecretGameFrame?>(null) }
-    val trigger = rememberSecretGameTrigger(
-        onOpenGame = { isGameOpen = logoBounds != null },
-        onShowBest = { showBestScore = true }
-    )
+    val game = remember { SecretGameHostState() }
     val secret = SecretGameModifiers(
-        thankYou = trigger,
-        logo = Modifier
-            .onGloballyPositioned { logoBounds = it.boundsInWindow() }
-            .graphicsLayer { alpha = if (gameFrame?.settingsLogoVisible == false) 0f else 1f }
+        thankYou = Modifier.secretGameTrigger(game, LocalHapticFeedback.current),
+        logo = game.logoModifier
     )
+    val header = SettingsHeaderParams(versionName, onClick = { showReleaseNotes = true }, secret = secret)
 
-    Box(modifier = modifier.fillMaxSize().onGloballyPositioned { rootOrigin = it.positionInWindow() }) {
+    Box(modifier = modifier.fillMaxSize().then(game.rootModifier)) {
         Scaffold(
             modifier = Modifier,
             containerColor = AureoleDS.colors.surface
@@ -97,40 +100,22 @@ fun SettingsRootScreen(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(innerPadding)
-                    .graphicsLayer { alpha = gameFrame?.settingsAlpha ?: 1f }
+                    .graphicsLayer { alpha = game.settingsAlpha }
             ) {
-                val onHeaderClick = { showReleaseNotes = true }
-                val navigation = SettingsNavigationActions(
-                    onNavigateToBehavior = onNavigateToBehavior,
-                    onNavigateToAppearance = onNavigateToAppearance,
-                    onNavigateToAdvanced = onNavigateToAdvanced
-                )
                 when (settingsLayoutFor(maxWidth.value, maxHeight.value)) {
                     SettingsLayout.SINGLE_COLUMN -> SettingsSingleColumn(
-                        versionName = versionName,
+                        header = header,
                         topSpacerHeight = (maxHeight * uiState.headerOffsetPercent.percentToFraction())
                             .coerceAtLeast(AureoleDS.dimens.medium),
                         areaHeight = maxHeight,
-                        navigation = navigation,
-                        onHeaderClick = onHeaderClick,
-                        secret = secret
+                        navigation = navigation
                     )
                     SettingsLayout.TWO_PANES -> SettingsTwoPanes(
-                        versionName = versionName,
+                        header = header,
                         areaHeight = maxHeight,
-                        navigation = navigation,
-                        onHeaderClick = onHeaderClick,
-                        secret = secret
+                        navigation = navigation
                     )
                 }
-            }
-
-            if (showBestScore) {
-                SecretBestScorePopup(
-                    bestScore = uiState.secretBestScore,
-                    triggerText = stringResource(R.string.settings_root_thank_you),
-                    onDismissRequest = { showBestScore = false }
-                )
             }
 
             if (showReleaseNotes) {
@@ -139,32 +124,17 @@ fun SettingsRootScreen(
                 )
             }
         }
-        val bounds = logoBounds
-        if (isGameOpen && bounds != null) {
-            SecretGameOverlay(
-                logoCenter = bounds.center - rootOrigin,
-                logoWidthPx = bounds.width,
-                bestScore = uiState.secretBestScore,
-                onFrame = { gameFrame = it },
-                onGameOver = onSecretGameOver,
-                onFinished = {
-                    isGameOpen = false
-                    gameFrame = null
-                }
-            )
-        }
+        SecretGameLayer(host = game, bestScore = uiState.secretBestScore, onGameOver = onSecretGameOver)
     }
 }
 
 /** Portrait: header, options and the thank-you line pinned to the bottom (or right after the options when tall). */
 @Composable
 private fun SettingsSingleColumn(
-    versionName: String,
+    header: SettingsHeaderParams,
     topSpacerHeight: Dp,
     areaHeight: Dp,
-    navigation: SettingsNavigationActions,
-    onHeaderClick: () -> Unit,
-    secret: SecretGameModifiers
+    navigation: SettingsNavigationActions
 ) {
     Column(
         modifier = Modifier
@@ -175,12 +145,12 @@ private fun SettingsSingleColumn(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Spacer(modifier = Modifier.height(topSpacerHeight))
-        SettingsHeader(versionName = versionName, onClick = onHeaderClick, logoModifier = secret.logo)
+        SettingsHeader(header)
         Spacer(modifier = Modifier.height(AureoleDS.dimens.xxLarge))
         SettingsNavigationList(navigation)
         Spacer(modifier = Modifier.weight(1f))
         SettingsThankYou(
-            modifier = secret.thankYou.padding(top = AureoleDS.dimens.large, bottom = AureoleDS.dimens.xLarge)
+            modifier = header.secret.thankYou.padding(top = AureoleDS.dimens.large, bottom = AureoleDS.dimens.xLarge)
         )
     }
 }
@@ -188,11 +158,9 @@ private fun SettingsSingleColumn(
 /** Landscape: header on the left, options and the thank-you line on the right, both centered vertically. */
 @Composable
 private fun SettingsTwoPanes(
-    versionName: String,
+    header: SettingsHeaderParams,
     areaHeight: Dp,
-    navigation: SettingsNavigationActions,
-    onHeaderClick: () -> Unit,
-    secret: SecretGameModifiers
+    navigation: SettingsNavigationActions
 ) {
     Row(
         modifier = Modifier.fillMaxSize().padding(horizontal = AureoleDS.dimens.xLarge),
@@ -205,7 +173,7 @@ private fun SettingsTwoPanes(
                 .heightIn(min = areaHeight),
             contentAlignment = Alignment.Center
         ) {
-            SettingsHeader(versionName = versionName, onClick = onHeaderClick, logoModifier = secret.logo)
+            SettingsHeader(header)
         }
         Column(
             modifier = Modifier
@@ -218,7 +186,10 @@ private fun SettingsTwoPanes(
                 SettingsNavigationList(navigation)
             }
             SettingsThankYou(
-                modifier = secret.thankYou.padding(top = AureoleDS.dimens.large, bottom = AureoleDS.dimens.xLarge)
+                modifier = header.secret.thankYou.padding(
+                    top = AureoleDS.dimens.large,
+                    bottom = AureoleDS.dimens.xLarge
+                )
             )
         }
     }
@@ -238,20 +209,16 @@ private fun SettingsThankYou(modifier: Modifier = Modifier) {
 }
 
 @Composable
-private fun SettingsHeader(
-    versionName: String,
-    onClick: () -> Unit,
-    logoModifier: Modifier
-) {
+private fun SettingsHeader(params: SettingsHeaderParams) {
     Box(
         modifier = Modifier
-            .clickable { onClick() }
+            .clickable { params.onClick() }
             .padding(AureoleDS.dimens.medium),
         contentAlignment = Alignment.Center
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             AureoleDS.icons.Logo(
-                modifier = logoModifier.size(AureoleDS.dimens.sizeExtraLarge, AureoleDS.dimens.sizeLarge),
+                modifier = params.secret.logo.size(AureoleDS.dimens.sizeExtraLarge, AureoleDS.dimens.sizeLarge),
                 tint = AureoleDS.colors.onSurfaceHigh
             )
             Spacer(modifier = Modifier.height(AureoleDS.dimens.xLarge))
@@ -265,7 +232,7 @@ private fun SettingsHeader(
             )
             Spacer(modifier = Modifier.height(AureoleDS.dimens.xxSmall))
             AureoleText(
-                text = stringResource(R.string.settings_root_version, versionName),
+                text = stringResource(R.string.settings_root_version, params.versionName),
                 color = AureoleDS.colors.outline,
                 format = AureoleTextFormatParams(style = AureoleDS.typography.bodyMedium)
             )

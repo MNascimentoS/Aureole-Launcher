@@ -1,10 +1,8 @@
 package dev.mnascimentos.aureole.feature.secretgame.model
 
-import dev.mnascimentos.aureole.feature.secretgame.model.SecretGameTuning as T
 import kotlin.math.PI
-import kotlin.math.cos
-import kotlin.math.sin
 import kotlin.random.Random
+import dev.mnascimentos.aureole.feature.secretgame.model.SecretGameTuning as T
 
 /** Velocidade de queda em alturas de tela por segundo, após [seconds] de jogo. */
 fun secretFallSpeed(seconds: Float): Float = minOf(T.SPEED_BASE + T.SPEED_GROWTH * seconds, T.SPEED_MAX)
@@ -62,9 +60,9 @@ private fun SecretGameState.spawnIfDue(seconds: Float, random: Random): SecretGa
 
 internal fun SecretGameState.explode(random: Random): SecretGameState {
     val crashed = faces.firstOrNull { it.id == crashedFaceId }
-    val shipBits = burst(shipX, shipY, T.SHIP_PARTICLES, T.SHIP_BURST, SecretParticleKind.SHIP, random)
+    val shipBits = burst(SecretBurst(shipX, shipY, SecretParticleKind.SHIP, T.SHIP_PARTICLES, T.SHIP_BURST), random)
     val faceBits = crashed?.let {
-        burst(laneX(it.lane), it.y, T.FACE_PARTICLES, T.FACE_BURST, SecretParticleKind.FACE, random)
+        burst(SecretBurst(laneX(it.lane), it.y, SecretParticleKind.FACE, T.FACE_PARTICLES, T.FACE_BURST), random)
     }
     return copy(hasExploded = true, particles = particles + shipBits + faceBits.orEmpty())
 }
@@ -76,49 +74,7 @@ internal fun SecretGameState.maybeSparkle(seconds: Float, random: Random): Secre
     val x = HALF_WIDTH + (random.nextFloat() - HALF) * T.SPARK_SPREAD
     val y = layout.aspect * T.CENTER_Y_FRACTION - T.SPARK_RISE * random.nextFloat()
     val kind = if (random.nextBoolean()) SecretParticleKind.SHIP else SecretParticleKind.FACE
-    return copy(particles = particles + burst(x, y, 1, T.SPARK_BURST, kind, random))
-}
-
-internal fun List<SecretParticle>.advance(seconds: Float): List<SecretParticle> = mapNotNull {
-    val life = it.life - seconds * T.PARTICLE_FADE
-    if (life <= 0f) {
-        null
-    } else {
-        val vy = it.vy + T.GRAVITY * seconds
-        it.copy(x = it.x + it.vx * seconds, y = it.y + vy * seconds, vy = vy, life = life)
-    }
-}
-
-internal fun newStreaks(aspect: Float, random: Random): List<SecretStreak> = List(T.STREAK_COUNT) {
-    SecretStreak(random.nextFloat(), random.nextFloat() * aspect, streakLength(random))
-}
-
-private fun SecretStreak.fall(distance: Float, aspect: Float, random: Random): SecretStreak {
-    val y = y + distance
-    return if (y > aspect) SecretStreak(random.nextFloat(), -length, length) else copy(y = y)
-}
-
-private fun streakLength(random: Random): Float = T.STREAK_MIN_LENGTH + random.nextFloat() * T.STREAK_EXTRA_LENGTH
-
-private fun burst(
-    x: Float,
-    y: Float,
-    count: Int,
-    power: Float,
-    kind: SecretParticleKind,
-    random: Random,
-): List<SecretParticle> = List(count) {
-    val angle = random.nextFloat() * FULL_TURN
-    val speed = (T.BURST_MIN + random.nextFloat()) * power
-    SecretParticle(
-        x = x,
-        y = y,
-        vx = cos(angle) * speed,
-        vy = sin(angle) * speed - T.PARTICLE_LIFT,
-        life = 1f,
-        radius = T.PARTICLE_MIN_RADIUS + random.nextFloat() * T.PARTICLE_EXTRA_RADIUS,
-        kind = kind,
-    )
+    return copy(particles = particles + burst(SecretBurst(x, y, kind, 1, T.SPARK_BURST), random))
 }
 
 internal const val FULL_TURN = (2 * PI).toFloat()

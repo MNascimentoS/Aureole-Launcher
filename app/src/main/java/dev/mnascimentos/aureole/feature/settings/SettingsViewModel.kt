@@ -162,12 +162,6 @@ class SettingsViewModel(
         }
     }
 
-    /** Saves the hidden game's score when it is a new best and publishes the best score. */
-    fun onSecretGameOver(score: Int) {
-        settingsRepository.updateSecretBestScore(score)
-        _uiState.update { it.copy(secretBestScore = settingsRepository.secretBestScore) }
-    }
-
     fun onActivityFinishedHandled() {
         _uiState.update { it.copy(shouldFinishActivity = false) }
     }

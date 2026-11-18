@@ -16,6 +16,7 @@ import dev.mnascimentos.aureole.feature.settings.extensions.changeTheme
 import dev.mnascimentos.aureole.feature.settings.extensions.createFolder
 import dev.mnascimentos.aureole.feature.settings.extensions.finishCardsGlass
 import dev.mnascimentos.aureole.feature.settings.extensions.finishWallpaperEditor
+import dev.mnascimentos.aureole.feature.settings.extensions.onSecretGameOver
 import dev.mnascimentos.aureole.feature.settings.extensions.onUndo
 import dev.mnascimentos.aureole.feature.settings.extensions.onUndoExpired
 import dev.mnascimentos.aureole.feature.settings.extensions.performFactoryReset

@@ -1,6 +1,7 @@
 package dev.mnascimentos.aureole.feature.secretgame.model
 
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 
 /** Cores do jogo, todas vindas do tema: [ship] é a cor do logo de Settings e [face] ela clareada. */
@@ -8,6 +9,19 @@ data class SecretGameColors(val ship: Color, val face: Color)
 
 /** Modificadores que a tela raiz aplica ao "Muito obrigado!" (gatilho) e ao logo (medir e esconder). */
 data class SecretGameModifiers(val thankYou: Modifier = Modifier, val logo: Modifier = Modifier)
+
+/** Where the Settings logo is, in px relative to the overlay, so the game can start from it. */
+data class SecretLogoPlacement(val center: Offset, val widthPx: Float)
+
+/** What the overlay reports: each frame, the final score and the end of the exit animation. */
+data class SecretGameCallbacks(
+    val onFrame: (SecretGameFrame) -> Unit,
+    val onGameOver: (Int) -> Unit,
+    val onFinished: () -> Unit,
+)
+
+/** A line of text on the canvas: [y] is its top, or its middle when [middle]; [size] is a width fraction. */
+data class SecretText(val text: String, val y: Float, val size: Float, val color: Color, val middle: Boolean = false)
 
 /** Medidas de desenho em larguras de tela (tela = 1f); os tempos e o mundo ficam em [SecretGameTuning]. */
 object SecretGameDrawing {

@@ -6,9 +6,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
-import androidx.compose.ui.graphics.Color
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.feature.secretgame.model.SecretFace
 import dev.mnascimentos.aureole.feature.secretgame.model.SecretFaceKind
@@ -99,4 +99,3 @@ private const val ENTER_MID_MS = 1400L
 private const val COUNTDOWN_MS = 800L
 private const val PLAY_MS = 4000L
 private const val RESULT_MS = 1000L
-

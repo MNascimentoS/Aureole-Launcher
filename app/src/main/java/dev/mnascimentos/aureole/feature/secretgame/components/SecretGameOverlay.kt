@@ -32,49 +32,47 @@ import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
+import dev.mnascimentos.aureole.feature.secretgame.model.SecretGameCallbacks
 import dev.mnascimentos.aureole.feature.secretgame.model.SecretGameColors
-import dev.mnascimentos.aureole.feature.secretgame.model.SecretGameDrawing as D
 import dev.mnascimentos.aureole.feature.secretgame.model.SecretGameEngine
 import dev.mnascimentos.aureole.feature.secretgame.model.SecretGameEvent
-import dev.mnascimentos.aureole.feature.secretgame.model.SecretGameFrame
 import dev.mnascimentos.aureole.feature.secretgame.model.SecretGameLayout
 import dev.mnascimentos.aureole.feature.secretgame.model.SecretGamePhase
 import dev.mnascimentos.aureole.feature.secretgame.model.SecretGameStep
-import dev.mnascimentos.aureole.feature.secretgame.model.SecretGameTuning as T
+import dev.mnascimentos.aureole.feature.secretgame.model.SecretLogoPlacement
 import dev.mnascimentos.aureole.feature.secretgame.model.toFrame
+import dev.mnascimentos.aureole.feature.secretgame.model.SecretGameDrawing as D
+import dev.mnascimentos.aureole.feature.secretgame.model.SecretGameTuning as T
 
 private const val NANOS_PER_MS = 1_000_000L
 
 /**
  * The whole hidden game on top of Settings: runs the engine on every frame, handles input, Back, vibration and the
- * app going to the background. [logoCenter] (px, relative to this overlay) and [logoWidthPx] place the Settings logo.
+ * app going to the background. [logo] places the Settings logo.
  */
 @Composable
 fun SecretGameOverlay(
-    logoCenter: Offset,
-    logoWidthPx: Float,
+    logo: SecretLogoPlacement,
     bestScore: Int,
-    onFrame: (SecretGameFrame) -> Unit,
-    onGameOver: (Int) -> Unit,
-    onFinished: () -> Unit,
+    callbacks: SecretGameCallbacks,
     modifier: Modifier = Modifier
 ) {
     BoxWithConstraints(modifier = modifier.fillMaxSize()) {
         val widthPx = constraints.maxWidth.toFloat()
-        val layout = remember(widthPx, logoCenter, logoWidthPx) {
+        val layout = remember(widthPx, logo) {
             SecretGameLayout(
                 aspect = constraints.maxHeight / widthPx,
-                logoX = logoCenter.x / widthPx,
-                logoY = logoCenter.y / widthPx,
-                logoWidth = logoWidthPx / widthPx
+                logoX = logo.center.x / widthPx,
+                logoY = logo.center.y / widthPx,
+                logoWidth = logo.widthPx / widthPx
             )
         }
         val engine = remember { SecretGameEngine() }
         var state by remember { mutableStateOf(engine.start(layout, bestScore)) }
         val haptic = LocalHapticFeedback.current
-        val currentOnFrame by rememberUpdatedState(onFrame)
-        val currentOnGameOver by rememberUpdatedState(onGameOver)
-        val currentOnFinished by rememberUpdatedState(onFinished)
+        val currentOnFrame by rememberUpdatedState(callbacks.onFrame)
+        val currentOnGameOver by rememberUpdatedState(callbacks.onGameOver)
+        val currentOnFinished by rememberUpdatedState(callbacks.onFinished)
         val apply = { step: SecretGameStep ->
             state = step.state
             step.events.forEach { handleEvent(it, haptic, currentOnGameOver) }

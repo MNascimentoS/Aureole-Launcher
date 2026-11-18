@@ -1,7 +1,7 @@
 package dev.mnascimentos.aureole.feature.secretgame.model
 
-import dev.mnascimentos.aureole.feature.secretgame.model.SecretGameTuning as T
 import kotlin.math.sin
+import dev.mnascimentos.aureole.feature.secretgame.model.SecretGameTuning as T
 
 /** Um sprite em larguras de tela: centro ([x], [y]), largura, rotação em radianos e alpha. */
 data class SecretSprite(val x: Float, val y: Float, val width: Float, val rotation: Float, val alpha: Float)
@@ -79,8 +79,13 @@ private fun SecretGameState.enterFrame(base: SecretGameFrame): SecretGameFrame {
         logo = enterLogo(y, spin, morph),
         glow = morphGlow(y, morph),
         ship = if (shipIn > 0f) {
-            SecretSprite(HALF_WIDTH, y, lerp(T.SHIP_WIDTH * T.SHIP_IN_MIN_SCALE, T.SHIP_WIDTH, shipIn),
-                (1f - shipIn) * -FULL_TURN * T.SHIP_IN_TURNS + sway() * descend, shipIn)
+            SecretSprite(
+                HALF_WIDTH,
+                y,
+                lerp(T.SHIP_WIDTH * T.SHIP_IN_MIN_SCALE, T.SHIP_WIDTH, shipIn),
+                (1f - shipIn) * -FULL_TURN * T.SHIP_IN_TURNS + sway() * descend,
+                shipIn
+            )
         } else {
             null
         },
@@ -134,45 +139,6 @@ private fun SecretGameState.explodeFrame(base: SecretGameFrame): SecretGameFrame
             null
         },
     )
-}
-
-private fun SecretGameState.flyingShip(shake: Float) =
-    SecretSprite(shipX + shake, shipY + bob(), T.SHIP_WIDTH, sway() + tilt, 1f)
-
-private fun SecretGameState.faceSprite(face: SecretFace, alpha: Float): SecretFaceSprite {
-    val hover = if (phase == SecretGamePhase.COUNTDOWN) {
-        sin(phaseMs / T.FACE_HOVER_PERIOD_MS + face.wobble) * T.FACE_HOVER
-    } else {
-        0f
-    }
-    val swing = sin(clockMs / MS_PER_SECOND * T.FACE_SWING_FREQ + face.wobble) * T.FACE_SWING
-    return SecretFaceSprite(face.kind, SecretSprite(laneX(face.lane), face.y + hover, T.FACE_SIZE, swing, alpha))
-}
-
-private fun SecretGameState.countdownFrame(): SecretCountdownFrame {
-    val index = (phaseMs / T.COUNT_STEP_MS).toInt().coerceAtMost(T.COUNT_STEPS - 1)
-    val k = (phaseMs % T.COUNT_STEP_MS).toFloat() / T.COUNT_STEP_MS
-    val alpha = if (k < T.COUNT_FADE_FROM) 1f else 1f - (k - T.COUNT_FADE_FROM) / (1f - T.COUNT_FADE_FROM)
-    val scale = T.COUNT_SCALE_FROM - (T.COUNT_SCALE_FROM - 1f) * easeOutCubic(k * T.COUNT_SCALE_SPEED)
-    return SecretCountdownFrame(SecretCountdownLabel.entries[index], alpha, scale)
-}
-
-private fun SecretGameState.resultAlpha(): Float = when {
-    phaseMs < T.RESULT_IN_MS -> progress(phaseMs, 0L, T.RESULT_IN_MS)
-    phaseMs < T.RESULT_IN_MS + T.RESULT_HOLD_MS -> 1f
-    else -> 1f - progress(phaseMs, T.RESULT_IN_MS + T.RESULT_HOLD_MS, T.RESULT_OUT_MS)
-}
-
-private fun SecretGameState.bob(): Float = wave(T.BOB_PERIOD_S) * T.BOB_AMPLITUDE
-
-private fun SecretGameState.sway(): Float = wave(T.SWAY_PERIOD_S) * T.SWAY_AMPLITUDE
-
-private fun SecretGameState.wave(periodSeconds: Float): Float =
-    sin(clockMs / MS_PER_SECOND * FULL_TURN / periodSeconds)
-
-private fun SecretGameState.flame(): Float {
-    val s = clockMs / MS_PER_SECOND
-    return T.FLAME_BASE + T.FLAME_FLICKER * sin(s * T.FLAME_FREQ_A) * sin(s * T.FLAME_FREQ_B)
 }
 
 private const val HALF_WIDTH = 0.5f

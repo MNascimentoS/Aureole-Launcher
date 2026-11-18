@@ -230,7 +230,7 @@
     <string name="home_widget_resize_group">Resize Group</string>
     <string name="home_widget_toggle_indicator">Toggle Position Indicator</string>
     <string name="home_widget_move_label">Move</string>
-    <string name="home_widget_move_position">%1$d of %2$d</string>
+    <string name="home_widget_move_position">%1$d of %2$s</string>
     <string name="home_widget_move_previous">Move %1$s earlier</string>
     <string name="home_widget_move_next">Move %1$s later</string>
     <string name="home_widget_menu_section">Group</string>
@@ -346,7 +346,7 @@
     <string name="home_grid_item_scroll_view">Scrolling group</string>
     <string name="home_grid_item_quick_button">Quick Button</string>
     <string name="home_grid_item_container">Container</string>
-    <string name="home_grid_current_size" tools:ignore="PluralsCandidate">Current size: %1$d x %2$d cells</string>
+    <string name="home_grid_current_size" tools:ignore="PluralsCandidate">Current size: %1$d x %2$s cells</string>
     <string name="settings_cards_glass_title">Cards and glass</string>
     <string name="settings_cards_glass_corners_label">Corners</string>
     <string name="settings_cards_glass_glass_label">Glass (blur)</string>
@@ -389,12 +389,12 @@
     <string name="home_onboarding_coach_customize_done">This is where you build your screen.</string>
     <string name="home_onboarding_checklist_title">First steps</string>
     <plurals name="home_onboarding_checklist_progress">
-        <item quantity="one">%1$d of %2$d steps</item>
-        <item quantity="other">%1$d of %2$d steps</item>
+        <item quantity="one">%1$d of %2$s steps</item>
+        <item quantity="other">%1$d of %2$s steps</item>
     </plurals>
     <plurals name="home_onboarding_checklist_pill">
-        <item quantity="one">%1$d/%2$d first steps</item>
-        <item quantity="other">%1$d/%2$d first steps</item>
+        <item quantity="one">%1$d/%2$s first steps</item>
+        <item quantity="other">%1$d/%2$s first steps</item>
     </plurals>
     <string name="home_onboarding_checklist_minimize">Minimize</string>
     <string name="home_onboarding_checklist_dismiss">Don\'t show again</string>
@@ -566,8 +566,8 @@
     <string name="home_folder_suggested">Suggested</string>
     <string name="home_folder_all_icons">All icons</string>
     <plurals name="home_folder_all_icons_count">
-        <item quantity="one">%1$d icon in %2$d categories</item>
-        <item quantity="other">%1$d icons in %2$d categories</item>
+        <item quantity="one">%1$d icon in %2$s categories</item>
+        <item quantity="other">%1$d icons in %2$s categories</item>
     </plurals>
     <string name="home_folder_all_icons_back">Back to the folder</string>
     <string name="home_folder_letter_note">The first letter of the name, in the theme font. It changes with the name.</string>
@@ -615,7 +615,7 @@
     <string name="home_scrollgroup_decrease">Decrease %1$s</string>
     <string name="home_scrollgroup_increase">Increase %1$s</string>
 <string name="secret_game_best_title">High score</string>
-    <string name="secret_game_best_hint">Tap “%1$s” %2$d times to play.</string>
+    <string name="secret_game_best_hint">Tap “%1$s” %2$s times to play.</string>
     <string name="secret_game_score">Score: %1$d</string>
     <string name="secret_game_new_record">New high score!</string>
     <string name="secret_game_better_luck">Better luck next time…</string>

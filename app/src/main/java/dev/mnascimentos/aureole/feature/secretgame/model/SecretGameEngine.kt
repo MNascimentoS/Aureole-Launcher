@@ -1,8 +1,8 @@
 package dev.mnascimentos.aureole.feature.secretgame.model
 
-import dev.mnascimentos.aureole.feature.secretgame.model.SecretGameTuning as T
 import kotlin.math.pow
 import kotlin.random.Random
+import dev.mnascimentos.aureole.feature.secretgame.model.SecretGameTuning as T
 
 /** Regras e timeline do jogo secreto, sem Android. A UI só chama estas funções e desenha [toFrame]. */
 class SecretGameEngine(private val random: Random = Random.Default) {

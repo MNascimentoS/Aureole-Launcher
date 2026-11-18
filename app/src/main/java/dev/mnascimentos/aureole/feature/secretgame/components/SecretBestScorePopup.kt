@@ -52,7 +52,7 @@ fun SecretBestScoreCard(
         verticalArrangement = Arrangement.spacedBy(AureoleDS.dimens.xSmall)
     ) {
         Icon(
-            painter = painterResource(R.drawable.ic_aureole_game_ship),
+            painter = painterResource(R.drawable.secret_game_ship),
             contentDescription = null,
             tint = AureoleDS.colors.onSurfaceHigh,
             modifier = Modifier.size(AureoleDS.dimens.sizeLarge)
@@ -71,7 +71,11 @@ fun SecretBestScoreCard(
             )
         )
         AureoleText(
-            text = stringResource(R.string.secret_game_best_hint, triggerText, SecretGameTuning.TAPS_TO_OPEN),
+            text = stringResource(
+                R.string.secret_game_best_hint,
+                triggerText,
+                SecretGameTuning.TAPS_TO_OPEN.toString()
+            ),
             color = AureoleDS.colors.onSurfaceMedium,
             modifier = Modifier.padding(top = AureoleDS.dimens.xSmall),
             format = AureoleTextFormatParams(

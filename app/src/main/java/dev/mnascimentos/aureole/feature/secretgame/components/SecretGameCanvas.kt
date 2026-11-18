@@ -1,6 +1,7 @@
 package dev.mnascimentos.aureole.feature.secretgame.components
 
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -9,23 +10,23 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.withTransform
-import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.painter.BitmapPainter
 import androidx.compose.ui.graphics.painter.Painter
-import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
+import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.res.vectorResource
 import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.feature.secretgame.model.SecretFaceKind
 import dev.mnascimentos.aureole.feature.secretgame.model.SecretGameColors
-import dev.mnascimentos.aureole.feature.secretgame.model.SecretGameDrawing as D
 import dev.mnascimentos.aureole.feature.secretgame.model.SecretGameFrame
 import dev.mnascimentos.aureole.feature.secretgame.model.SecretGameTuning
 import dev.mnascimentos.aureole.feature.secretgame.model.SecretParticleKind
 import dev.mnascimentos.aureole.feature.secretgame.model.SecretSprite
+import dev.mnascimentos.aureole.feature.secretgame.model.SecretGameDrawing as D
 
 /** Painters of the sprites, remembered once per canvas. */
 private class SecretPainters(val logo: Painter, val ship: Painter, val creator: Painter, val dreamer: Painter)
@@ -33,7 +34,7 @@ private class SecretPainters(val logo: Painter, val ship: Painter, val creator: 
 @Composable
 private fun rememberSecretPainters(): SecretPainters = SecretPainters(
     logo = rememberVectorPainter(ImageVector.vectorResource(R.drawable.ic_aureole_logo)),
-    ship = rememberVectorPainter(ImageVector.vectorResource(R.drawable.ic_aureole_game_ship)),
+    ship = BitmapPainter(ImageBitmap.imageResource(R.drawable.secret_game_ship)),
     creator = BitmapPainter(ImageBitmap.imageResource(R.drawable.secret_game_creator)),
     dreamer = BitmapPainter(ImageBitmap.imageResource(R.drawable.secret_game_dreamer)),
 )
@@ -47,10 +48,12 @@ fun SecretGameCanvas(
     modifier: Modifier = Modifier
 ) {
     val painters = rememberSecretPainters()
-    Canvas(modifier = modifier.fillMaxSize()) {
-        drawWorld(frame, colors, painters)
+    Box(modifier = modifier.fillMaxSize()) {
+        Canvas(modifier = Modifier.fillMaxSize()) {
+            drawWorld(frame, colors, painters)
+        }
+        SecretGameTexts(frame = frame, colors = colors, aspect = aspect, modifier = Modifier.fillMaxSize())
     }
-    SecretGameTexts(frame = frame, colors = colors, aspect = aspect, modifier = Modifier.fillMaxSize())
 }
 
 private fun DrawScope.drawWorld(frame: SecretGameFrame, colors: SecretGameColors, painters: SecretPainters) {

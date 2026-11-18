@@ -96,3 +96,12 @@ data class SecretTapCounter(val count: Int = 0, val lastTapMs: Long = NO_TAP) {
 fun laneX(lane: Int): Float = (lane + LANE_CENTER) / SecretGameTuning.LANE_COUNT
 
 private const val LANE_CENTER = 0.5f
+
+/** Where and how a burst of particles starts: [count] of [kind] from (x, y) with [power]. */
+internal data class SecretBurst(
+    val x: Float,
+    val y: Float,
+    val kind: SecretParticleKind,
+    val count: Int,
+    val power: Float
+)

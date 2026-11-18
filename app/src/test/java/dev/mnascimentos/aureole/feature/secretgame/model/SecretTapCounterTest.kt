@@ -1,10 +1,10 @@
 package dev.mnascimentos.aureole.feature.secretgame.model
 
-import dev.mnascimentos.aureole.feature.secretgame.model.SecretGameTuning as T
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Test
+import dev.mnascimentos.aureole.feature.secretgame.model.SecretGameTuning as T
 
 class SecretTapCounterTest {
 

@@ -1,12 +1,12 @@
 package dev.mnascimentos.aureole.feature.secretgame.model
 
-import dev.mnascimentos.aureole.feature.secretgame.model.SecretGameTuning as T
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
+import dev.mnascimentos.aureole.feature.secretgame.model.SecretGameTuning as T
 
 class SecretGameFrameTest {
     private val layout = SecretGameLayout(aspect = 2.144f, logoX = 0.5f, logoY = 0.425f, logoWidth = 0.33f)
