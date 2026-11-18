@@ -40,6 +40,8 @@ import dev.mnascimentos.aureole.core.designsystem.icons.Star
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
+import dev.mnascimentos.aureole.feature.secretgame.components.SecretBestScorePopup
+import dev.mnascimentos.aureole.feature.secretgame.components.rememberSecretGameTrigger
 import dev.mnascimentos.aureole.feature.settings.components.SettingsAreaCard
 import dev.mnascimentos.aureole.feature.settings.extensions.getVersionName
 import dev.mnascimentos.aureole.feature.settings.model.SettingsLayout
@@ -55,11 +57,18 @@ fun SettingsRootScreen(
     onNavigateToBehavior: () -> Unit,
     onNavigateToAppearance: () -> Unit,
     onNavigateToAdvanced: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onSecretGameOver: (Int) -> Unit = {}
 ) {
     val context = LocalContext.current
     val versionName = remember(context) { getVersionName(context) }
     var showReleaseNotes by remember { mutableStateOf(false) }
+    var isGameOpen by remember { mutableStateOf(false) }
+    var showBestScore by remember { mutableStateOf(false) }
+    val secretTrigger = rememberSecretGameTrigger(
+        onOpenGame = { isGameOpen = true },
+        onShowBest = { showBestScore = true }
+    )
 
     Scaffold(
         modifier = modifier,
@@ -71,6 +80,7 @@ fun SettingsRootScreen(
                 .padding(innerPadding)
         ) {
             val onHeaderClick = { showReleaseNotes = true }
+            val thankYouModifier = secretTrigger
             val navigation = SettingsNavigationActions(
                 onNavigateToBehavior = onNavigateToBehavior,
                 onNavigateToAppearance = onNavigateToAppearance,
@@ -83,15 +93,25 @@ fun SettingsRootScreen(
                         .coerceAtLeast(AureoleDS.dimens.medium),
                     areaHeight = maxHeight,
                     navigation = navigation,
-                    onHeaderClick = onHeaderClick
+                    onHeaderClick = onHeaderClick,
+                    thankYouModifier = thankYouModifier
                 )
                 SettingsLayout.TWO_PANES -> SettingsTwoPanes(
                     versionName = versionName,
                     areaHeight = maxHeight,
                     navigation = navigation,
-                    onHeaderClick = onHeaderClick
+                    onHeaderClick = onHeaderClick,
+                    thankYouModifier = thankYouModifier
                 )
             }
+        }
+
+        if (showBestScore) {
+            SecretBestScorePopup(
+                bestScore = uiState.secretBestScore,
+                triggerText = stringResource(R.string.settings_root_thank_you),
+                onDismissRequest = { showBestScore = false }
+            )
         }
 
         if (showReleaseNotes) {
@@ -109,7 +129,8 @@ private fun SettingsSingleColumn(
     topSpacerHeight: Dp,
     areaHeight: Dp,
     navigation: SettingsNavigationActions,
-    onHeaderClick: () -> Unit
+    onHeaderClick: () -> Unit,
+    thankYouModifier: Modifier
 ) {
     Column(
         modifier = Modifier
@@ -124,7 +145,9 @@ private fun SettingsSingleColumn(
         Spacer(modifier = Modifier.height(AureoleDS.dimens.xxLarge))
         SettingsNavigationList(navigation)
         Spacer(modifier = Modifier.weight(1f))
-        SettingsThankYou(modifier = Modifier.padding(top = AureoleDS.dimens.large, bottom = AureoleDS.dimens.xLarge))
+        SettingsThankYou(
+            modifier = thankYouModifier.padding(top = AureoleDS.dimens.large, bottom = AureoleDS.dimens.xLarge)
+        )
     }
 }
 
@@ -134,7 +157,8 @@ private fun SettingsTwoPanes(
     versionName: String,
     areaHeight: Dp,
     navigation: SettingsNavigationActions,
-    onHeaderClick: () -> Unit
+    onHeaderClick: () -> Unit,
+    thankYouModifier: Modifier
 ) {
     Row(
         modifier = Modifier.fillMaxSize().padding(horizontal = AureoleDS.dimens.xLarge),
@@ -160,7 +184,7 @@ private fun SettingsTwoPanes(
                 SettingsNavigationList(navigation)
             }
             SettingsThankYou(
-                modifier = Modifier.padding(top = AureoleDS.dimens.large, bottom = AureoleDS.dimens.xLarge)
+                modifier = thankYouModifier.padding(top = AureoleDS.dimens.large, bottom = AureoleDS.dimens.xLarge)
             )
         }
     }

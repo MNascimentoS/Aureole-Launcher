@@ -65,6 +65,7 @@ data class SettingsUiState(
     val showSearchIconPositionDialog: Boolean = false,
     /** The pending "Undo" offer shown at the bottom of the screen. */
     val undoSnackbar: UndoSnackbarState? = null,
+    val secretBestScore: Int = 0,
     val shouldFinishActivity: Boolean = false,
     val errorMessage: TextResource? = null,
 )

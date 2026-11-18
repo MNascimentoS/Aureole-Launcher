@@ -1,0 +1,178 @@
+package dev.mnascimentos.aureole.feature.secretgame.model
+
+import dev.mnascimentos.aureole.feature.secretgame.model.SecretGameTuning as T
+import kotlin.math.sin
+
+/** Um sprite em larguras de tela: centro ([x], [y]), largura, rotação em radianos e alpha. */
+data class SecretSprite(val x: Float, val y: Float, val width: Float, val rotation: Float, val alpha: Float)
+
+data class SecretFaceSprite(val kind: SecretFaceKind, val sprite: SecretSprite)
+
+/** Brilho radial (troca logo → nave e explosão). */
+data class SecretGlow(val x: Float, val y: Float, val radius: Float, val alpha: Float)
+
+/** [draw] desenha as molduras (0..1); [collapse] recolhe para os cantos na explosão (0..1). */
+data class SecretButtonsFrame(val draw: Float, val collapse: Float)
+
+enum class SecretCountdownLabel { THREE, TWO, ONE, GO }
+
+data class SecretCountdownFrame(val label: SecretCountdownLabel, val alpha: Float, val scale: Float)
+
+data class SecretResultFrame(val score: Int, val isNewRecord: Boolean, val alpha: Float)
+
+/** Tudo que a tela desenha num quadro. Sem estado: só leitura de [SecretGameState]. */
+data class SecretGameFrame(
+    val settingsAlpha: Float,
+    val settingsLogoVisible: Boolean,
+    val logo: SecretSprite? = null,
+    val ship: SecretSprite? = null,
+    val flame: Float = 0f,
+    val glow: SecretGlow? = null,
+    val faces: List<SecretFaceSprite> = emptyList(),
+    val buttons: SecretButtonsFrame? = null,
+    val countdown: SecretCountdownFrame? = null,
+    val streaks: List<SecretStreak> = emptyList(),
+    val particles: List<SecretParticle> = emptyList(),
+    val hudScore: Int? = null,
+    val isPaused: Boolean = false,
+    val result: SecretResultFrame? = null,
+)
+
+fun SecretGameState.toFrame(): SecretGameFrame {
+    val base = SecretGameFrame(
+        settingsAlpha = settingsAlpha(),
+        settingsLogoVisible = phase == SecretGamePhase.EXIT || phase == SecretGamePhase.DONE,
+        particles = particles,
+    )
+    return when (phase) {
+        SecretGamePhase.ENTER -> enterFrame(base)
+        SecretGamePhase.INTIMIDATE,
+        SecretGamePhase.COUNTDOWN,
+        SecretGamePhase.PLAY,
+        SecretGamePhase.PAUSED,
+        -> arenaFrame(base)
+        SecretGamePhase.EXPLODE -> explodeFrame(base)
+        SecretGamePhase.RESULT -> base.copy(result = SecretResultFrame(score, isNewRecord, resultAlpha()))
+        SecretGamePhase.EXIT, SecretGamePhase.DONE -> base
+    }
+}
+
+private fun SecretGameState.settingsAlpha(): Float = when (phase) {
+    SecretGamePhase.ENTER -> 1f - progress(phaseMs, 0L, T.HIDE_MS)
+    SecretGamePhase.EXIT -> progress(phaseMs, 0L, T.EXIT_MS)
+    SecretGamePhase.DONE -> 1f
+    else -> 0f
+}
+
+private fun SecretGameState.enterFrame(base: SecretGameFrame): SecretGameFrame {
+    val morphFrom = T.HIDE_MS + T.TO_CENTER_MS
+    val descendFrom = morphFrom + T.MORPH_MS
+    val lead = (T.HIDE_MS * T.TO_CENTER_LEAD).toLong()
+    val toCenter = easeInOutCubic(progress(phaseMs, lead, T.TO_CENTER_MS + T.HIDE_MS - lead))
+    val morph = easeInOutCubic(progress(phaseMs, morphFrom, T.MORPH_MS))
+    val descend = easeInOutCubic(progress(phaseMs, descendFrom, T.DESCEND_MS))
+    val y = lerp(lerp(layout.logoY, layout.aspect * T.CENTER_Y_FRACTION, toCenter), shipY + bob(), descend)
+    val spin = toCenter * T.SPIN_TO_CENTER + morph * morph * FULL_TURN * T.SPIN_TURNS
+    val shipIn = easeOutCubic((morph - T.SHIP_IN_FROM) / T.SHIP_IN_SPAN)
+    val framesFrom = descendFrom + (T.DESCEND_MS * T.FRAMES_LEAD).toLong()
+    return base.copy(
+        logo = enterLogo(y, spin, morph),
+        glow = morphGlow(y, morph),
+        ship = if (shipIn > 0f) {
+            SecretSprite(HALF_WIDTH, y, lerp(T.SHIP_WIDTH * T.SHIP_IN_MIN_SCALE, T.SHIP_WIDTH, shipIn),
+                (1f - shipIn) * -FULL_TURN * T.SHIP_IN_TURNS + sway() * descend, shipIn)
+        } else {
+            null
+        },
+        flame = if (descend > T.FLAME_ON_DESCEND) flame() else 0f,
+        buttons = SecretButtonsFrame(easeInOutCubic(progress(phaseMs, framesFrom, T.FRAMES_MS)), collapse = 0f),
+    )
+}
+
+private fun SecretGameState.enterLogo(y: Float, spin: Float, morph: Float): SecretSprite? {
+    if (morph >= T.LOGO_FADE_END) return null
+    val keep = 1f - morph / T.LOGO_FADE_END
+    return SecretSprite(layout.logoX, y, layout.logoWidth * lerp(T.LOGO_MIN_SCALE, 1f, keep), spin, keep)
+}
+
+private fun morphGlow(y: Float, morph: Float): SecretGlow? {
+    val k = (morph - T.GLOW_FROM) / T.GLOW_SPAN
+    if (k <= 0f || k >= 1f) return null
+    return SecretGlow(HALF_WIDTH, y, T.GLOW_MIN_RADIUS + T.GLOW_RADIUS_GROWTH * k, T.GLOW_ALPHA * (1f - k))
+}
+
+private fun SecretGameState.arenaFrame(base: SecretGameFrame): SecretGameFrame {
+    val inGame = phase == SecretGamePhase.PLAY || phase == SecretGamePhase.PAUSED
+    val facesAlpha = if (phase == SecretGamePhase.INTIMIDATE) progress(phaseMs, 0L, T.INTIMIDATE_FADE_MS) else 1f
+    return base.copy(
+        ship = flyingShip(shake = 0f),
+        flame = flame(),
+        faces = faces.map { faceSprite(it, facesAlpha) },
+        buttons = SecretButtonsFrame(draw = 1f, collapse = 0f),
+        countdown = if (phase == SecretGamePhase.COUNTDOWN) countdownFrame() else null,
+        streaks = if (inGame) streaks else emptyList(),
+        hudScore = if (inGame) score else null,
+        isPaused = phase == SecretGamePhase.PAUSED,
+    )
+}
+
+private fun SecretGameState.explodeFrame(base: SecretGameFrame): SecretGameFrame {
+    val flashK = progress(phaseMs, T.FLASH_FROM_MS, T.FLASH_MS)
+    val flashing = phaseMs in T.FLASH_FROM_MS until T.FLASH_FROM_MS + T.FLASH_MS
+    val othersAlpha = 1f - progress(phaseMs, 0L, T.OTHER_FACES_FADE_MS)
+    val crashedAlpha = 1f - progress(phaseMs, T.CRASH_FACE_FADE_FROM_MS, T.CRASH_FACE_FADE_MS)
+    val alive = phaseMs <= T.BOOM_AT_MS
+    val collapse = easeInOutCubic(progress(phaseMs, T.EXPLODE_MS - T.COLLAPSE_LEAD_MS, T.COLLAPSE_MS))
+    return base.copy(
+        ship = if (alive) flyingShip(shake = sin(clockMs * T.CRASH_SHAKE_FREQ) * T.CRASH_SHAKE) else null,
+        flame = if (alive) flame() else 0f,
+        faces = faces.map { faceSprite(it, if (it.id == crashedFaceId) crashedAlpha else othersAlpha) },
+        buttons = SecretButtonsFrame(draw = 1f, collapse = collapse),
+        glow = if (flashing) {
+            SecretGlow(shipX, shipY, T.FLASH_MIN_RADIUS + T.FLASH_RADIUS_GROWTH * flashK, T.FLASH_ALPHA * (1f - flashK))
+        } else {
+            null
+        },
+    )
+}
+
+private fun SecretGameState.flyingShip(shake: Float) =
+    SecretSprite(shipX + shake, shipY + bob(), T.SHIP_WIDTH, sway() + tilt, 1f)
+
+private fun SecretGameState.faceSprite(face: SecretFace, alpha: Float): SecretFaceSprite {
+    val hover = if (phase == SecretGamePhase.COUNTDOWN) {
+        sin(phaseMs / T.FACE_HOVER_PERIOD_MS + face.wobble) * T.FACE_HOVER
+    } else {
+        0f
+    }
+    val swing = sin(clockMs / MS_PER_SECOND * T.FACE_SWING_FREQ + face.wobble) * T.FACE_SWING
+    return SecretFaceSprite(face.kind, SecretSprite(laneX(face.lane), face.y + hover, T.FACE_SIZE, swing, alpha))
+}
+
+private fun SecretGameState.countdownFrame(): SecretCountdownFrame {
+    val index = (phaseMs / T.COUNT_STEP_MS).toInt().coerceAtMost(T.COUNT_STEPS - 1)
+    val k = (phaseMs % T.COUNT_STEP_MS).toFloat() / T.COUNT_STEP_MS
+    val alpha = if (k < T.COUNT_FADE_FROM) 1f else 1f - (k - T.COUNT_FADE_FROM) / (1f - T.COUNT_FADE_FROM)
+    val scale = T.COUNT_SCALE_FROM - (T.COUNT_SCALE_FROM - 1f) * easeOutCubic(k * T.COUNT_SCALE_SPEED)
+    return SecretCountdownFrame(SecretCountdownLabel.entries[index], alpha, scale)
+}
+
+private fun SecretGameState.resultAlpha(): Float = when {
+    phaseMs < T.RESULT_IN_MS -> progress(phaseMs, 0L, T.RESULT_IN_MS)
+    phaseMs < T.RESULT_IN_MS + T.RESULT_HOLD_MS -> 1f
+    else -> 1f - progress(phaseMs, T.RESULT_IN_MS + T.RESULT_HOLD_MS, T.RESULT_OUT_MS)
+}
+
+private fun SecretGameState.bob(): Float = wave(T.BOB_PERIOD_S) * T.BOB_AMPLITUDE
+
+private fun SecretGameState.sway(): Float = wave(T.SWAY_PERIOD_S) * T.SWAY_AMPLITUDE
+
+private fun SecretGameState.wave(periodSeconds: Float): Float =
+    sin(clockMs / MS_PER_SECOND * FULL_TURN / periodSeconds)
+
+private fun SecretGameState.flame(): Float {
+    val s = clockMs / MS_PER_SECOND
+    return T.FLAME_BASE + T.FLAME_FLICKER * sin(s * T.FLAME_FREQ_A) * sin(s * T.FLAME_FREQ_B)
+}
+
+private const val HALF_WIDTH = 0.5f

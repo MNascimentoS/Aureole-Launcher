@@ -620,4 +620,14 @@
     <string name="home_scrollgroup_remove_item">Remover %1$s</string>
     <string name="home_scrollgroup_decrease">Diminuir %1$s</string>
     <string name="home_scrollgroup_increase">Aumentar %1$s</string>
+<string name="secret_game_best_title">Recorde</string>
+    <string name="secret_game_best_hint">Toque %2$d vezes em “%1$s” para jogar.</string>
+    <string name="secret_game_score">Pontos: %1$d</string>
+    <string name="secret_game_new_record">Novo recorde!</string>
+    <string name="secret_game_better_luck">Mais sorte na próxima…</string>
+    <string name="secret_game_go">VAI!!</string>
+    <string name="secret_game_paused">Pausado</string>
+    <string name="secret_game_tap_to_resume">Toque para continuar</string>
+    <string name="secret_game_move_left">Mover para a esquerda</string>
+    <string name="secret_game_move_right">Mover para a direita</string>
 </resources>

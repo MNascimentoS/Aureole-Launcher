@@ -356,10 +356,22 @@ class SettingsRepository(private val context: Context) {
     internal val prefs
         get() = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
 
+    /** Best score of the hidden game; only [updateSecretBestScore] raises it. */
+    val secretBestScore: Int
+        get() = prefs.getInt(KEY_SECRET_BEST_SCORE, 0)
+
+    /** Saves [score] when it beats the stored best; returns whether it did. */
+    fun updateSecretBestScore(score: Int): Boolean {
+        if (score <= secretBestScore) return false
+        prefs.edit { putInt(KEY_SECRET_BEST_SCORE, score) }
+        return true
+    }
+
     companion object {
         private const val TAG = "SettingsRepository"
         private const val JPEG_QUALITY = 90
         private const val PREFS_NAME = "aureole_settings_prefs"
+        private const val KEY_SECRET_BEST_SCORE = "secret_game_best_score"
         private const val KEY_LEFT_HANDED_MODE = "left_handed_mode"
         private const val KEY_CONTAINER_ENABLED = "container_enabled"
         private const val KEY_CONTAINER_BACKGROUND_ENABLED = "container_background_enabled"
