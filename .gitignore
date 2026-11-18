@@ -2,6 +2,8 @@
 .gradle
 /local.properties
 /specs
+/.claude
+/.gemini
 /credentials.properties
 credentials.properties
 /.idea
