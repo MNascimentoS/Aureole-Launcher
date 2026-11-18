@@ -8,27 +8,20 @@ import dev.mnascimentos.aureole.feature.home.grid.GridDefaults
 import dev.mnascimentos.aureole.feature.home.grid.GridEngineUtils
 import dev.mnascimentos.aureole.feature.home.grid.model.SlotSearchRequest
 
-private const val CONTAINER_COLS = 4
-private const val CONTAINER_ROWS = 6
-
 /**
- * The size an onboarding item gets until the layout step, so no item takes the whole home: in portrait a container
- * 4x6 cells and the clock the size of the default layout's (20x6); in landscape the smallest the type accepts.
- * Other types keep their default size.
+ * The size an onboarding item gets: the clock, the widget list and the container take the size the default
+ * layout gives them in that orientation (the same as "Don't show again"), read from [GridDefaults.getDefaultItem]
+ * so no number is repeated here. Other types keep their default size.
  */
 internal fun onboardingDefaultSize(type: LauncherItemType, isLandscape: Boolean = false): OnboardingItemSize {
-    val (default, minimum) = GridDefaults.getDefaultSpanForType(type)
-    return when {
-        isLandscape && type in COMPACT_TYPES -> OnboardingItemSize(minimum.first, minimum.second)
-        type == LauncherItemType.CLOCK -> GridDefaults.getDefaultItem(type, isLandscape = false, isLeftHanded = false)
-            ?.let { OnboardingItemSize(it.colSpan, it.rowSpan) }
-            ?: OnboardingItemSize(default.first, default.second)
-        type == LauncherItemType.SHORTCUTS_CONTAINER -> OnboardingItemSize(CONTAINER_COLS, CONTAINER_ROWS)
-        else -> OnboardingItemSize(default.first, default.second)
-    }
+    val layoutItem = GridDefaults.getDefaultItem(type, isLandscape = isLandscape, isLeftHanded = false)
+        ?.takeIf { type in LAYOUT_SIZED_TYPES }
+    if (layoutItem != null) return OnboardingItemSize(layoutItem.colSpan, layoutItem.rowSpan)
+    val default = GridDefaults.getDefaultSpanForType(type).first
+    return OnboardingItemSize(default.first, default.second)
 }
 
-private val COMPACT_TYPES = setOf(
+private val LAYOUT_SIZED_TYPES = setOf(
     LauncherItemType.CLOCK,
     LauncherItemType.SHORTCUTS_CONTAINER,
     LauncherItemType.WIDGET_LIST

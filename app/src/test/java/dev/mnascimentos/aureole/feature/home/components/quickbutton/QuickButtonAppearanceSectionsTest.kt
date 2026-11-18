@@ -2,6 +2,7 @@ package dev.mnascimentos.aureole.feature.home.components.quickbutton
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.isSelectable
 import androidx.compose.ui.test.junit4.v2.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
@@ -74,9 +75,9 @@ class QuickButtonAppearanceSectionsTest {
         val appearance = QuickButtonAppearance(iconColor = ThemeColorRef.Fixed(0xFF123456.toInt()))
         setContent(QuickButtonModel(appearance = appearance)) { updated = it }
 
-        // The chips of the categories come first, then the tiles; the first tile is the marked default icon.
-        val firstOtherTile = AureoleIconCatalog.categories.size + 1
-        composeTestRule.onAllNodes(isSelectable())[firstOtherTile].performClick()
+        // The chips of the categories carry their name, the icon tiles no text (how many chips are composed depends
+        // on the width of the edge-to-edge row); the first tile is the marked default icon.
+        composeTestRule.onAllNodes(isSelectable() and !hasText("", substring = true))[1].performClick()
 
         val icon = updated!!.icon
         assertTrue(AureoleIconCatalog.entries.any { it.key == icon })

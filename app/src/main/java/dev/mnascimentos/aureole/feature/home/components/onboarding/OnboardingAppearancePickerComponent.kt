@@ -33,8 +33,9 @@ fun OnboardingAppearancePickerComponent(
     var isApplied by remember(picker) { mutableStateOf(false) }
     var hasPreview by remember(picker) { mutableStateOf(false) }
     val onDismiss = { if (!isApplied) actions.onDismissAppearancePicker(hasPreview) }
+    // Only the Customize showcase has the logo during the onboarding: no settings shortcut, so no logo (RF-03).
     val options = ThemePickerSheetOptions(
-        onSettingsClick = actions.onOpenSettings,
+        onSettingsClick = null,
         onPreview = { hasPreview = true }
     )
     when (picker) {

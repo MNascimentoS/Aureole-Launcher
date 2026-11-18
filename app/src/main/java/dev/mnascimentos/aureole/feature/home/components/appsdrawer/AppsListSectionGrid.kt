@@ -31,7 +31,7 @@ import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleSectionHeader
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
-import dev.mnascimentos.aureole.core.designsystem.icons.Settings
+import dev.mnascimentos.aureole.core.designsystem.icons.Logo
 import dev.mnascimentos.aureole.core.designsystem.model.LocalLeftHanded
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
@@ -103,9 +103,10 @@ private fun LazyListScope.settingsListItem(actions: HomeScreenActions) {
                     .background(AureoleDS.colors.surfaceVariant),
                 contentAlignment = Alignment.Center
             ) {
-                AureoleDS.icons.Settings(
+                // The Aureole logo instead of the gear, in the same circle (RF-08).
+                AureoleDS.icons.Logo(
                     tint = AureoleDS.colors.onSurfaceHigh,
-                    modifier = Modifier.size(AureoleDS.dimens.iconLarge)
+                    modifier = Modifier.size(AureoleDS.dimens.iconMedium)
                 )
             }
 

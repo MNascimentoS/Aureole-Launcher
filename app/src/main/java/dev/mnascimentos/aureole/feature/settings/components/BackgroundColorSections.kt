@@ -22,6 +22,9 @@ import dev.mnascimentos.aureole.composable.color.model.hueOf
 import dev.mnascimentos.aureole.composable.color.model.isLightBackground
 import dev.mnascimentos.aureole.composable.color.model.themeSwatches
 import dev.mnascimentos.aureole.composable.color.model.toneRamp
+import dev.mnascimentos.aureole.composable.sheets.edgeToEdgeRow
+import dev.mnascimentos.aureole.composable.sheets.edgeToEdgeRowPadding
+import dev.mnascimentos.aureole.composable.sheets.sheetContentInset
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
@@ -65,7 +68,12 @@ internal fun BackgroundColorSections(
 private fun ToneRamp(selected: Int, onSelect: (Int) -> Unit) {
     var hue by remember { mutableFloatStateOf(hueOf(selected)) }
     Column(verticalArrangement = Arrangement.spacedBy(AureoleDS.dimens.xSmall)) {
-        LazyRow(horizontalArrangement = Arrangement.spacedBy(AureoleDS.dimens.small)) {
+        val inset = sheetContentInset()
+        LazyRow(
+            modifier = Modifier.fillMaxWidth().edgeToEdgeRow(inset),
+            contentPadding = edgeToEdgeRowPadding(inset),
+            horizontalArrangement = Arrangement.spacedBy(AureoleDS.dimens.small)
+        ) {
             items(items = toneRamp(hue)) { tone ->
                 AureoleColorSwatch(colorInt = tone, isSelected = selected == tone, onSelect = { onSelect(tone) })
             }

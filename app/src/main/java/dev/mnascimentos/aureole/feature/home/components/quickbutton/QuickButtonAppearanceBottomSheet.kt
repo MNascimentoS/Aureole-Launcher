@@ -98,7 +98,7 @@ fun QuickButtonAppearanceBottomSheet(
  * icon barely contrasts with the background (RF-06; the icon gets an outline) and the name pill (RF-01).
  */
 @Composable
-private fun QuickButtonSheetPreview(
+internal fun QuickButtonSheetPreview(
     model: QuickButtonModel,
     appInfo: AppInfo?,
     onNameChange: (String) -> Unit,

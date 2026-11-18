@@ -158,7 +158,7 @@ class OnboardingActionsFactoryTest {
     }
 
     @Test
-    fun `when there is no container, should save a 4x6 one and open its editor, task pending`() {
+    fun `when there is no container, should save a 4x18 one and open its editor, task pending`() {
         actions().onTaskClick(OnboardingTask.FILL_CONTAINER)
 
         val state = viewModel.uiState.value
@@ -166,7 +166,7 @@ class OnboardingActionsFactoryTest {
         assertEquals(listOf("container:${container.id}"), calls)
         assertEquals(LauncherItemType.SHORTCUTS_CONTAINER, container.safeType)
         assertEquals(4, container.colSpan)
-        assertEquals(6, container.rowSpan)
+        assertEquals(18, container.rowSpan)
         assertFalse(state.isGridEditMode)
         assertEquals(OnboardingTask.FILL_CONTAINER, state.onboarding.pendingTask)
         assertEquals(container.id, state.onboarding.createdItemId)

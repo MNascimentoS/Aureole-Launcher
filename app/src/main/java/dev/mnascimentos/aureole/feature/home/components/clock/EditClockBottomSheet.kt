@@ -25,6 +25,7 @@ import androidx.compose.ui.res.stringResource
 import dev.chrisbanes.haze.HazeState
 import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.composable.clock.model.ClockHazeConfig
+import dev.mnascimentos.aureole.composable.showsHomeSheetLogo
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleEditOverlay
 import dev.mnascimentos.aureole.core.designsystem.model.AureoleEditOverlayConfig
 import dev.mnascimentos.aureole.core.designsystem.model.AureoleEditOverlayParams
@@ -117,6 +118,7 @@ internal fun EditClockOverlay(
             config = AureoleEditOverlayConfig(
                 title = stringResource(R.string.home_clock_customize_title),
                 onSettingsClick = { actions.onSettingsClick() },
+                showHeaderAction = showsHomeSheetLogo(),
                 hazeState = effectiveHazeState,
                 isVisible = isVisible,
                 isLeftHanded = clockState.isLeftHandedMode,

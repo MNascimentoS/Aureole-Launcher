@@ -101,7 +101,8 @@ private fun ContainerAppAndFolderOverlays(
                 onOpenSettings = {
                     actions.onCloseContainerFolderBottomSheet()
                     actions.onSettingsClick()
-                }
+                },
+                folder = state.folder
             ),
             onDismiss = actions.onCloseContainerFolderBottomSheet
         )

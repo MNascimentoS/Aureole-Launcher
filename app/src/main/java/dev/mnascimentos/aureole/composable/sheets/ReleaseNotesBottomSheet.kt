@@ -101,8 +101,10 @@ private fun VersionChipsRow(
     onSelect: (ReleaseNoteVersion) -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val inset = sheetContentInset()
     LazyRow(
-        modifier = modifier.fillMaxWidth().padding(vertical = AureoleDS.dimens.xxSmall),
+        modifier = modifier.fillMaxWidth().edgeToEdgeRow(inset).padding(vertical = AureoleDS.dimens.xxSmall),
+        contentPadding = edgeToEdgeRowPadding(inset),
         horizontalArrangement = Arrangement.spacedBy(AureoleDS.dimens.small)
     ) {
         items(items = versions, key = { it.versionName }, contentType = { "version_chip" }) { version ->

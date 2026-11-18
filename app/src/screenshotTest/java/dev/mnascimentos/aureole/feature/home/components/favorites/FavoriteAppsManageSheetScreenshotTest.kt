@@ -37,7 +37,7 @@ private fun ManageSheetCase(
                 FavoriteAppsDialog(
                     config = config,
                     actions = if (fromHome) {
-                        FavoriteAppsDialogActions(onDismiss = {}, onSettingsClick = {}, onCustomizeHome = {})
+                        FavoriteAppsDialogActions(onDismiss = {}, onSettingsClick = {})
                     } else {
                         FavoriteAppsDialogActions(onDismiss = {})
                     }

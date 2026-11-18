@@ -44,4 +44,6 @@ data class ContainerFolderBottomSheetParams(
     val onRemoveFolder: () -> Unit,
     val onOpenContainerSettings: () -> Unit,
     val onOpenSettings: (() -> Unit)? = null,
+    /** The folder the sheet is about: its name is the title and its icon sits before it (D-01). */
+    val folder: AppFolder? = null,
 )

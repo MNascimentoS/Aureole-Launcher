@@ -31,6 +31,7 @@ import dev.mnascimentos.aureole.composable.LocalHomeUiState
 import dev.mnascimentos.aureole.composable.ProvideHomeUiState
 import dev.mnascimentos.aureole.composable.preview.AureolePreviewFrame
 import dev.mnascimentos.aureole.composable.preview.aureoleDashedBorder
+import dev.mnascimentos.aureole.composable.showsHomeSheetLogo
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.data.model.ContainerModel
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleEditOverlay
@@ -43,6 +44,7 @@ import dev.mnascimentos.aureole.feature.home.components.containers.model.Contain
 import dev.mnascimentos.aureole.feature.home.components.containers.model.EditContainerCloser
 import dev.mnascimentos.aureole.feature.home.components.containers.model.EditContainerScreenMode
 import dev.mnascimentos.aureole.feature.home.components.containers.model.EditContainerScreenParams
+import dev.mnascimentos.aureole.feature.home.components.containers.model.ManageItemsEditor
 import dev.mnascimentos.aureole.feature.home.components.containers.model.handleBack
 import dev.mnascimentos.aureole.feature.home.model.LocalHomeActions
 import kotlinx.coroutines.delay
@@ -59,6 +61,7 @@ fun EditContainerScreen(
     val state = rememberEditContainerState(panel)
     var currentMode by remember { mutableStateOf(EditContainerScreenMode.MAIN) }
     var isVisible by remember { mutableStateOf(true) }
+    val itemsEditor = remember { ManageItemsEditor() }
 
     val currentUiState = LocalHomeUiState.current
     val effectiveUiState =
@@ -86,22 +89,36 @@ fun EditContainerScreen(
             modifier = modifier,
             params = AureoleEditOverlayParams(
                 config = AureoleEditOverlayConfig(
-                    title = currentMode.title(),
+                    title = if (currentMode == EditContainerScreenMode.MANAGE_ITEMS) {
+                        itemsEditor.title()
+                    } else {
+                        currentMode.title()
+                    },
                     onSettingsClick = { homeActions.onSettingsClick() },
+                    showHeaderAction = showsHomeSheetLogo(),
                     hazeState = params.hazeState,
                     isVisible = isVisible,
                     animated = true,
                     isLeftHanded = isLeftHanded,
-                    onBackPress = { currentMode.handleBack(closer) { currentMode = it } },
+                    onBackPress = {
+                        // Back from an item editor returns to the list of items, in the same sheet (RF-07).
+                        val wentBack = currentMode == EditContainerScreenMode.MANAGE_ITEMS && itemsEditor.back()
+                        if (!wentBack) currentMode.handleBack(closer) { currentMode = it }
+                    },
                     onDismiss = closer::closeOnce
                 ),
-                previewContent = { EditContainerPreview(state = state) },
+                previewContent = {
+                    val isEditorPreview = currentMode == EditContainerScreenMode.MANAGE_ITEMS &&
+                        ManageItemsEditorPreview(editor = itemsEditor, state = state, allApps = params.allApps)
+                    if (!isEditorPreview) EditContainerPreview(state = state)
+                },
                 bottomBarContent = null,
                 sheetContent = {
                     EditContainerSheetContent(
                         currentMode = currentMode,
                         state = state,
                         allApps = params.allApps,
+                        itemsEditor = itemsEditor,
                         onModeChange = { currentMode = it },
                         onCustomizeHome = {
                             // Saves what is being edited (like any close), then opens Customize.
@@ -155,6 +172,7 @@ private fun EditContainerSheetContent(
     currentMode: EditContainerScreenMode,
     state: EditContainerState,
     allApps: List<AppInfo>,
+    itemsEditor: ManageItemsEditor,
     onModeChange: (EditContainerScreenMode) -> Unit,
     onCustomizeHome: () -> Unit
 ) {
@@ -177,7 +195,8 @@ private fun EditContainerSheetContent(
             ManageItemsContent(
                 state = state,
                 allApps = allApps,
-                onBack = { onModeChange(EditContainerScreenMode.MAIN) }
+                onBack = { onModeChange(EditContainerScreenMode.MAIN) },
+                editor = itemsEditor
             )
         }
     }

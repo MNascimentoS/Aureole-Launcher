@@ -2,6 +2,7 @@ package dev.mnascimentos.aureole.feature.home.components.onboarding.extensions
 
 import dev.chrisbanes.haze.HazeState
 import dev.mnascimentos.aureole.core.data.model.GestureCoachStep
+import dev.mnascimentos.aureole.core.data.model.LauncherItemState
 import dev.mnascimentos.aureole.core.data.model.OnboardingStage
 import dev.mnascimentos.aureole.feature.home.components.onboarding.model.AppearanceSelection
 import dev.mnascimentos.aureole.feature.home.components.onboarding.model.ChecklistMorph
@@ -53,6 +54,13 @@ fun OnboardingUiState.checklistMorph(isOtherOverlayActive: Boolean): ChecklistMo
     else -> ChecklistMorph.HIDDEN
 }
 
+/**
+ * The sheets the onboarding opens (pickers, clock, widgets, favorites, container) leave the Aureole logo out while
+ * it runs; only the Customize showcase, with its ring, has it. Back to the normal rule once the tour is over.
+ */
+val OnboardingUiState.showsSheetLogo: Boolean
+    get() = stage == OnboardingStage.COMPLETED
+
 /** Nothing to draw: the usual case once the tour is over, kept free of any onboarding layer. */
 val OnboardingUiState.isIdle: Boolean
     get() = stage == OnboardingStage.COMPLETED && !isCelebrating
@@ -75,10 +83,22 @@ fun MainUiState.toOnboardingHostParams(hazeState: HazeState?, isTouchExploration
         selection = AppearanceSelection(paletteName = selectedThemeName, fontName = selectedFontName),
         isHomeOverlayActive = isHomeOverlayActive,
         showEditHint = isGridEditMode && onboarding.pendingTask?.isJudgedOnSave == true && !isTaskEditorOpen,
-        editHintGrid = gridItems.toEditHintGrid(
-            maxRows = if (isLandscape) GridEngineUtils.LANDSCAPE_MAX_ROWS else GridEngineUtils.PORTRAIT_MAX_ROWS
+        editHintGrid = editHintItems().toEditHintGrid(
+            maxRows = if (isLandscape) GridEngineUtils.LANDSCAPE_MAX_ROWS else GridEngineUtils.PORTRAIT_MAX_ROWS,
+            maxCols = if (isLandscape) GridEngineUtils.LANDSCAPE_MAX_COLS else GridEngineUtils.PORTRAIT_MAX_COLS
         )
     )
+
+/**
+ * The items the save pill keeps clear of: only the one the pending task places and edits. The rest of the home
+ * (the apps list and the container of the default layout) always fills the bottom, so counting it sent the save to
+ * the top on every edit. The layout step edits no single item, so it keeps the bottom.
+ */
+internal fun MainUiState.editHintItems(): List<LauncherItemState> {
+    val task = onboarding.pendingTask?.takeIf { it.gridItemType != null } ?: return emptyList()
+    val id = taskItemId(task) ?: return emptyList()
+    return gridItems.filter { it.id == id }
+}
 
 /** The faint alphabet shows only while the coach teaches the scrub step. */
 val MainUiState.isScrubberHintVisible: Boolean

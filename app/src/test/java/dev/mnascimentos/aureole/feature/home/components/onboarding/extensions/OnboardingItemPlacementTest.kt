@@ -32,13 +32,13 @@ class OnboardingItemPlacementTest {
     )
 
     @Test
-    fun `when in portrait, should give the clock 20x6, the container 4x6 and the widget list its default`() {
+    fun `when in portrait, should give the clock 20x6, the widget list 20x6 and the container 4x18`() {
         assertEquals(OnboardingItemSize(20, 6), onboardingDefaultSize(LauncherItemType.CLOCK, isLandscape = false))
         assertEquals(
-            OnboardingItemSize(4, 6),
+            OnboardingItemSize(4, 18),
             onboardingDefaultSize(LauncherItemType.SHORTCUTS_CONTAINER, isLandscape = false)
         )
-        assertEquals(OnboardingItemSize(14, 6), onboardingDefaultSize(LauncherItemType.WIDGET_LIST, false))
+        assertEquals(OnboardingItemSize(20, 6), onboardingDefaultSize(LauncherItemType.WIDGET_LIST, false))
         val layoutClock = GridDefaults.getDefaultItem(LauncherItemType.CLOCK, false, false)!!
         assertEquals(
             OnboardingItemSize(layoutClock.colSpan, layoutClock.rowSpan),
@@ -57,7 +57,7 @@ class OnboardingItemPlacementTest {
     }
 
     @Test
-    fun `when the default spot is free, should place the compact item there with the new id`() {
+    fun `when the default spot is free, should place the item there at the layout size with the new id`() {
         val item = placeOnboardingItem(request(LauncherItemType.SHORTCUTS_CONTAINER))
 
         val default = GridDefaults.getDefaultItem(LauncherItemType.SHORTCUTS_CONTAINER, false, false)!!
@@ -65,7 +65,21 @@ class OnboardingItemPlacementTest {
         assertEquals(default.col, item?.col)
         assertEquals(default.row, item?.row)
         assertEquals(4, item?.colSpan)
-        assertEquals(6, item?.rowSpan)
+        assertEquals(18, item?.rowSpan)
+    }
+
+    @Test
+    fun `when the default spot is free, should place the widget list on row 6 at 20x6`() {
+        val item = placeOnboardingItem(request(LauncherItemType.WIDGET_LIST))
+
+        assertEquals(listOf(0, 6, 20, 6), listOf(item?.col, item?.row, item?.colSpan, item?.rowSpan))
+    }
+
+    @Test
+    fun `when left handed, should mirror the container to the first column`() {
+        val item = placeOnboardingItem(request(LauncherItemType.SHORTCUTS_CONTAINER, isLeftHanded = true))
+
+        assertEquals(listOf(0, 12, 4, 18), listOf(item?.col, item?.row, item?.colSpan, item?.rowSpan))
     }
 
     @Test
@@ -116,28 +130,29 @@ class OnboardingItemPlacementTest {
     }
 
     @Test
-    fun `when in landscape, should give the clock, container and widget list the smallest size they accept`() {
+    fun `when in landscape, should give the clock, container and widget list the landscape layout size`() {
         listOf(
             LauncherItemType.CLOCK,
             LauncherItemType.SHORTCUTS_CONTAINER,
             LauncherItemType.WIDGET_LIST
         ).forEach { type ->
-            val minimum = GridDefaults.getDefaultSpanForType(type).second
+            val layout = GridDefaults.getDefaultItem(type, isLandscape = true, isLeftHanded = false)!!
             assertEquals(
-                OnboardingItemSize(minimum.first, minimum.second),
+                OnboardingItemSize(layout.colSpan, layout.rowSpan),
                 onboardingDefaultSize(type, isLandscape = true)
             )
         }
     }
 
     @Test
-    fun `when the grid is landscape, should place the item at the landscape size`() {
+    fun `when the grid is landscape, should place the item at the landscape layout spot and size`() {
         val landscape = GridLimits(GridEngineUtils.LANDSCAPE_MAX_COLS, GridEngineUtils.LANDSCAPE_MAX_ROWS)
 
-        val item = placeOnboardingItem(request(LauncherItemType.CLOCK, limits = landscape).copy(isLandscape = true))
+        val item = placeOnboardingItem(
+            request(LauncherItemType.SHORTCUTS_CONTAINER, limits = landscape).copy(isLandscape = true)
+        )
 
-        assertEquals(1, item?.colSpan)
-        assertEquals(1, item?.rowSpan)
+        assertEquals(listOf(26, 0, 4, 20), listOf(item?.col, item?.row, item?.colSpan, item?.rowSpan))
     }
 
     @Test

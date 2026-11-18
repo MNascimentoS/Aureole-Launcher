@@ -20,10 +20,20 @@ class MainLifecycleObserver(
     private val onResumed: () -> Unit,
 ) : DefaultLifecycleObserver {
 
+    private val orientation = OrientationSync { isLandscape -> viewModel.loadGridItems(isLandscape = isLandscape) }
+
+    private val currentOrientation: Int
+        get() = context.resources.configuration.orientation
+
+    /** A rotation made while the home was stopped may never arrive as a change: check it on the way back. */
+    override fun onStart(owner: LifecycleOwner) {
+        orientation.check(currentOrientation, viewModel.uiState.value.isLandscape)
+    }
+
     override fun onResume(owner: LifecycleOwner) {
         viewModel.loadSettings()
         viewModel.loadApps()
-        viewModel.loadGridItems(isLandscape = isLandscapeOrientation(context.resources.configuration.orientation))
+        orientation.reload(currentOrientation, viewModel.uiState.value.isLandscape)
         val versionCode = getAppVersionCode(context)
         val versionName = getAppVersionName(context)
         // Before release notes: they stay hidden while the onboarding runs.
@@ -35,8 +45,7 @@ class MainLifecycleObserver(
 
     /** Rotation only reloads the grid, and only when the orientation really changed; settings and apps stay. */
     fun onConfigurationChanged(newConfig: Configuration) {
-        val target = landscapeChange(viewModel.uiState.value.isLandscape, newConfig.orientation) ?: return
-        viewModel.loadGridItems(isLandscape = target)
+        orientation.check(newConfig.orientation, viewModel.uiState.value.isLandscape)
     }
 
     override fun onPause(owner: LifecycleOwner) {

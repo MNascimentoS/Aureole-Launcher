@@ -129,9 +129,12 @@ fun FolderFormSheet(
     }
 }
 
-/** The form itself or, in [mode] ALL_ICONS, the grid of every icon, whose back and pick return to the form. */
+/**
+ * The form itself or, in [mode] ALL_ICONS, the grid of every icon, whose back and pick return to the form. Also
+ * drawn in place inside the container's "Manage items" (RF-07).
+ */
 @Composable
-private fun ColumnScope.FolderFormContent(
+internal fun ColumnScope.FolderFormContent(
     draft: FolderFormDraft,
     mode: FolderFormMode,
     showDelete: Boolean,

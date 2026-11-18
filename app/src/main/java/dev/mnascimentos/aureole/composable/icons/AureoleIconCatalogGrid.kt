@@ -22,6 +22,7 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -30,11 +31,13 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.selected
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.unit.LayoutDirection
 import dev.mnascimentos.aureole.composable.icons.model.ICON_GRID_COLUMNS
 import dev.mnascimentos.aureole.composable.icons.model.IconGridItem
 import dev.mnascimentos.aureole.composable.icons.model.chipScrollDelta
@@ -45,6 +48,9 @@ import dev.mnascimentos.aureole.composable.icons.model.iconGridItems
 import dev.mnascimentos.aureole.composable.icons.model.initialIconGridIndex
 import dev.mnascimentos.aureole.composable.icons.model.isIconSelected
 import dev.mnascimentos.aureole.composable.mirror.LeftHandMirror
+import dev.mnascimentos.aureole.composable.sheets.edgeToEdgeRow
+import dev.mnascimentos.aureole.composable.sheets.edgeToEdgeRowPadding
+import dev.mnascimentos.aureole.composable.sheets.sheetContentInset
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
 import dev.mnascimentos.aureole.core.designsystem.icons.AureoleIconCategory
@@ -80,6 +86,8 @@ fun AureoleIconCatalogGrid(
         derivedStateOf { iconGridCategoryAt(items, gridState.firstVisibleItemIndex) ?: categories.first() }
     }
     val scope = rememberCoroutineScope()
+    // The category names keep the reading direction, at the start like every section label (RF-13).
+    val readingDirection = LocalLayoutDirection.current
     LeftHandMirror(isLeftHanded = isLeftHanded) {
         Column(
             modifier = modifier.fillMaxWidth(),
@@ -107,7 +115,7 @@ fun AureoleIconCatalogGrid(
                         contentType = { it::class }
                     ) { item ->
                         when (item) {
-                            is IconGridItem.Header -> CategoryHeader(item.category)
+                            is IconGridItem.Header -> CategoryHeader(item.category, readingDirection)
                             is IconGridItem.Icon -> IconTile(
                                 entry = item.entry,
                                 isSelected = isIconSelected(item.entry, selectedKey),
@@ -116,7 +124,11 @@ fun AureoleIconCatalogGrid(
                         }
                     }
                 }
-                CategoryHeader(category = active, modifier = Modifier.align(Alignment.TopStart))
+                CategoryHeader(
+                    category = active,
+                    readingDirection = readingDirection,
+                    modifier = Modifier.align(Alignment.TopStart)
+                )
             }
         }
     }
@@ -129,7 +141,11 @@ private fun IconGridItem.gridKey(): String = when (this) {
 
 /** Category name row, opaque so the icons scroll under the pinned copy. */
 @Composable
-private fun CategoryHeader(category: AureoleIconCategory, modifier: Modifier = Modifier) {
+private fun CategoryHeader(
+    category: AureoleIconCategory,
+    readingDirection: LayoutDirection,
+    modifier: Modifier = Modifier
+) = CompositionLocalProvider(LocalLayoutDirection provides readingDirection) {
     Box(
         modifier = modifier
             .fillMaxWidth()
@@ -169,10 +185,11 @@ private fun IconCategoryChips(
             if (delta != 0) listState.animateScrollBy(delta.toFloat())
         }
     }
+    val inset = sheetContentInset()
     LazyRow(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier.fillMaxWidth().edgeToEdgeRow(inset),
         state = listState,
-        contentPadding = PaddingValues(horizontal = AureoleDS.dimens.xxSmall),
+        contentPadding = edgeToEdgeRowPadding(inset),
         horizontalArrangement = Arrangement.spacedBy(AureoleDS.dimens.xSmall)
     ) {
         items(categories, key = { it.name }) { category ->

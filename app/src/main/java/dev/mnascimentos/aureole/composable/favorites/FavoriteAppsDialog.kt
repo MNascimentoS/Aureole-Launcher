@@ -18,6 +18,7 @@ import dev.mnascimentos.aureole.composable.favorites.model.FavoriteAppsOverlaySt
 import dev.mnascimentos.aureole.composable.favorites.model.FavoriteAppsPreviewParams
 import dev.mnascimentos.aureole.composable.favorites.model.appsListSections
 import dev.mnascimentos.aureole.composable.preview.AureolePreviewFrame
+import dev.mnascimentos.aureole.composable.showsHomeSheetLogo
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleEditOverlay
 import dev.mnascimentos.aureole.core.designsystem.model.AureoleEditOverlayConfig
 import dev.mnascimentos.aureole.core.designsystem.model.AureoleEditOverlayParams
@@ -90,12 +91,8 @@ private fun FavoriteAppsOverlay(
                 animated = true,
                 isLeftHanded = config.rowConfig.isLeftHandedMode,
                 onSettingsClick = actions.onSettingsClick,
-                onBackPress = state.onHide,
-                headerLeadingAction = actions.onCustomizeHome?.let { onCustomizeHome ->
-                    {
-                        FavoriteAppsCustomizeHomeButton(onClick = onCustomizeHome)
-                    }
-                }
+                showHeaderAction = showsHomeSheetLogo(),
+                onBackPress = state.onHide
             ),
             previewContent = {
                 AureolePreviewFrame {

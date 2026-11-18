@@ -142,7 +142,7 @@ class FavoriteAppsDialogSectionsTest {
     fun `Customize home is not a row of the list anymore`() {
         setSheet(
             homeList(favorites = listOf("a"), checked = true),
-            FavoriteAppsDialogActions(onCustomizeHome = {})
+            FavoriteAppsDialogActions()
         )
 
         composeTestRule.onNodeWithText("Customize home").assertDoesNotExist()

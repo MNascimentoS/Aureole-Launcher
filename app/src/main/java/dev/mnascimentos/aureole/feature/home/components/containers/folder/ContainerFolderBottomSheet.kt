@@ -6,11 +6,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import dev.mnascimentos.aureole.R
+import dev.mnascimentos.aureole.composable.dialogs.FolderGlyph
 import dev.mnascimentos.aureole.composable.menu.AureoleMenuListSheet
 import dev.mnascimentos.aureole.composable.menu.customizeHomeEntry
 import dev.mnascimentos.aureole.composable.menu.model.MenuEntry
 import dev.mnascimentos.aureole.composable.menu.model.MenuRowParams
 import dev.mnascimentos.aureole.composable.menu.model.MenuSheetParams
+import dev.mnascimentos.aureole.core.data.model.AppFolder
 import dev.mnascimentos.aureole.core.designsystem.icons.AllApps
 import dev.mnascimentos.aureole.core.designsystem.icons.Delete
 import dev.mnascimentos.aureole.core.designsystem.icons.Folder
@@ -32,15 +34,27 @@ internal fun ContainerFolderBottomSheet(
     modifier: Modifier = Modifier
 ) {
     val onCustomize = LocalHomeActions.current.onOpenCustomizeBottomSheet
+    val folder = params.folder
     AureoleMenuListSheet(
-        title = stringResource(R.string.home_folder_settings),
+        // The folder's own name and icon, like the app sheet uses the app's (D-01); the logo stays at the end.
+        title = folder?.name?.takeIf { it.isNotBlank() } ?: stringResource(R.string.home_folder_settings),
         onDismiss = onDismiss,
         modifier = modifier,
         params = MenuSheetParams(
-            titleIcon = { m -> AureoleDS.icons.Folder(modifier = m, tint = AureoleDS.colors.onSurfaceMedium) },
-            onSettingsClick = params.onOpenSettings,
-            // Item editors have no logo on the title line (RF-05b); the handle still opens the settings.
-            showHeaderAction = false
+            titleIcon = { m ->
+                if (folder != null) {
+                    FolderGlyph(
+                        folder = folder,
+                        size = AureoleDS.dimens.iconMedium,
+                        tint = AureoleDS.colors.onSurfaceMedium,
+                        letterStyle = AureoleDS.typography.titleMedium,
+                        modifier = m
+                    )
+                } else {
+                    AureoleDS.icons.Folder(modifier = m, tint = AureoleDS.colors.onSurfaceMedium)
+                }
+            },
+            onSettingsClick = params.onOpenSettings
         )
     ) { dismiss ->
         folderMenuEntries(params) {
@@ -94,7 +108,8 @@ private fun ContainerFolderBottomSheetPreview() {
         onIcon = {},
         onRemoveFolder = {},
         onOpenContainerSettings = {},
-        onOpenSettings = {}
+        onOpenSettings = {},
+        folder = AppFolder(id = "f", name = "Fun")
     )
     AureoleLauncherTheme {
         ContainerFolderBottomSheet(

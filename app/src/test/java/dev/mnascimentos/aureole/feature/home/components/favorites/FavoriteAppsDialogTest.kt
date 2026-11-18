@@ -9,14 +9,12 @@ import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onFirst
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
-import androidx.compose.ui.test.performClick
 import dev.mnascimentos.aureole.composable.favorites.FavoriteAppsDialog
 import dev.mnascimentos.aureole.composable.favorites.model.FavoriteAppsDialogActions
 import dev.mnascimentos.aureole.composable.favorites.model.FavoriteAppsDialogConfig
 import dev.mnascimentos.aureole.composable.favorites.model.ShowAllAppsParams
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
-import org.junit.Assert.assertEquals
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -137,20 +135,18 @@ class FavoriteAppsDialogTest {
     }
 
     @Test
-    fun `when opened from the home, the pencil on the title line opens Customize home`() {
-        var opened = 0
+    fun `when opened from the home, should have no Customize home pencil on the title line`() {
         composeTestRule.setContent {
             AureoleLauncherTheme {
                 FavoriteAppsDialog(
                     config = FavoriteAppsDialogConfig(allApps = emptyList(), favoriteAppPackages = emptyList()),
-                    actions = FavoriteAppsDialogActions(onSettingsClick = {}, onCustomizeHome = { opened++ })
+                    actions = FavoriteAppsDialogActions(onSettingsClick = {})
                 )
             }
         }
 
-        composeTestRule.onNodeWithContentDescription("Customize home").assertIsDisplayed().performClick()
-
-        assertEquals(1, opened)
+        composeTestRule.onNodeWithContentDescription("Customize home").assertDoesNotExist()
+        composeTestRule.onNodeWithContentDescription("Aureole settings").assertIsDisplayed()
     }
 
     @Test

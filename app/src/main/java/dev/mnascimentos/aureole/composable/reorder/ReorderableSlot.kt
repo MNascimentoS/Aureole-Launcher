@@ -143,8 +143,9 @@ internal fun ReorderableSlot(
 @ReadOnlyComposable
 internal fun reorderBadgeOverhang(): Dp = AureoleDS.dimens.xSmall
 
+/** The ✕ that removes an item; also on the one-at-a-time widget pager of the stack in landscape. */
 @Composable
-private fun RemoveBadge(onClick: () -> Unit, modifier: Modifier = Modifier) {
+internal fun RemoveBadge(onClick: () -> Unit, modifier: Modifier = Modifier) {
     val label = stringResource(R.string.core_reorder_remove)
     Box(
         modifier = modifier

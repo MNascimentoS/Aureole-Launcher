@@ -1,27 +1,20 @@
 package dev.mnascimentos.aureole.composable.favorites
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.semantics.Role
-import androidx.compose.ui.semantics.contentDescription
-import androidx.compose.ui.semantics.semantics
 import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.composable.favorites.model.FavoriteAppsDialogConfig
 import dev.mnascimentos.aureole.composable.favorites.model.ShowAllAppsParams
 import dev.mnascimentos.aureole.composable.favorites.model.ShowLabelsParams
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.icons.Check
-import dev.mnascimentos.aureole.core.designsystem.icons.Edit
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
@@ -106,41 +99,17 @@ private fun FavoriteAppsOptionChip(
     )
 }
 
-/**
- * The pencil at the start of the title line (RF-02): opens "Customize home". 48 dp of touch around the icon; the
- * overlay mirrors it to the end in the left-handed mode.
- */
-@Composable
-internal fun FavoriteAppsCustomizeHomeButton(onClick: () -> Unit) {
-    val label = stringResource(R.string.home_menu_customize_home)
-    Box(
-        modifier = Modifier
-            .size(AureoleDS.dimens.minTouchTarget)
-            .clickable(role = Role.Button, onClick = onClick)
-            .semantics { contentDescription = label },
-        contentAlignment = Alignment.Center
-    ) {
-        AureoleDS.icons.Edit(
-            tint = AureoleDS.colors.onSurfaceHigh,
-            modifier = Modifier.size(AureoleDS.dimens.iconMedium)
-        )
-    }
-}
-
 @AureolePreview
 @Composable
 private fun FavoriteAppsListHeaderPreview() {
     AureoleLauncherTheme {
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            FavoriteAppsCustomizeHomeButton(onClick = {})
-            FavoriteAppsListHeader(
-                config = FavoriteAppsDialogConfig(
-                    allApps = emptyList(),
-                    favoriteAppPackages = listOf("a", "b", "c"),
-                    showAllApps = ShowAllAppsParams(checked = false, onCheckedChange = {}),
-                    showLabels = ShowLabelsParams(checked = true, onCheckedChange = {})
-                )
+        FavoriteAppsListHeader(
+            config = FavoriteAppsDialogConfig(
+                allApps = emptyList(),
+                favoriteAppPackages = listOf("a", "b", "c"),
+                showAllApps = ShowAllAppsParams(checked = false, onCheckedChange = {}),
+                showLabels = ShowLabelsParams(checked = true, onCheckedChange = {})
             )
-        }
+        )
     }
 }

@@ -30,7 +30,7 @@ import dev.mnascimentos.aureole.core.data.model.LauncherItemState
 import dev.mnascimentos.aureole.core.data.model.LauncherItemType
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
-import dev.mnascimentos.aureole.core.designsystem.icons.Add
+import dev.mnascimentos.aureole.core.designsystem.icons.AddNew
 import dev.mnascimentos.aureole.core.designsystem.icons.Calendar
 import dev.mnascimentos.aureole.core.designsystem.icons.Click
 import dev.mnascimentos.aureole.core.designsystem.icons.Delete
@@ -161,7 +161,7 @@ internal fun EditDialogScrollViewSection(
                     .background(AureoleDS.colors.surface.copy(alpha = 0.6f)),
                 contentAlignment = Alignment.Center
             ) {
-                AureoleDS.icons.Add(
+                AureoleDS.icons.AddNew(
                     tint = AureoleDS.colors.onSurfaceHigh,
                     modifier = Modifier.size(AureoleDS.dimens.iconMedium)
                 )

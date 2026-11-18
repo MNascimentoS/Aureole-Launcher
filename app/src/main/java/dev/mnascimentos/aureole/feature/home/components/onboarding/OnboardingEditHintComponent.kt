@@ -41,16 +41,22 @@ import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.EDIT_HINT_TEXT_MS
+import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.editHintBandCols
 import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.editHintBandRows
 import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.editHintEdge
+import dev.mnascimentos.aureole.feature.home.components.onboarding.model.EditHintBand
 import dev.mnascimentos.aureole.feature.home.components.onboarding.model.EditHintConfig
 import dev.mnascimentos.aureole.feature.home.components.onboarding.model.EditHintEdge
 import dev.mnascimentos.aureole.feature.home.components.onboarding.model.EditHintSaveParams
+import dev.mnascimentos.aureole.feature.home.components.onboarding.model.EditHintSide
 import dev.mnascimentos.aureole.feature.home.components.onboarding.model.OnboardingMotionSpec
 import dev.mnascimentos.aureole.feature.home.model.LocalHomeActions
 import kotlinx.coroutines.delay
 
 private const val GESTURE_PILL_ALPHA = 0.25f
+
+/** Width of the folded save pill with its margin, in touch targets: the part of the edge the pill takes. */
+private const val PILL_WIDTH_IN_TOUCH_TARGETS = 4
 
 /**
  * Shown while a checklist task keeps the grid in edit mode: how to adjust the new item, and the save that
@@ -77,8 +83,16 @@ fun OnboardingEditHintComponent(
         val density = LocalDensity.current
         val navBarDp = with(density) { WindowInsets.navigationBars.getBottom(density).toDp() }
         val bandDp = AureoleDS.dimens.minTouchTarget + AureoleDS.dimens.medium * 2 + navBarDp
-        val bandRows = editHintBandRows(bandDp.value, maxHeight.value, config.grid.maxRows)
-        val edge = editHintEdge(config.grid, bandRows)
+        val band = EditHintBand(
+            rows = editHintBandRows(bandDp.value, maxHeight.value, config.grid.maxRows),
+            cols = editHintBandCols(
+                bandDp = (AureoleDS.dimens.minTouchTarget * PILL_WIDTH_IN_TOUCH_TARGETS).value,
+                totalDp = maxWidth.value,
+                maxCols = config.grid.maxCols,
+                side = config.side
+            )
+        )
+        val edge = editHintEdge(config.grid, band)
         Box(
             modifier = Modifier.fillMaxSize().then(
                 if (edge == EditHintEdge.TOP) Modifier.statusBarsPadding() else Modifier.navigationBarsPadding()
@@ -94,6 +108,13 @@ fun OnboardingEditHintComponent(
         }
     }
 }
+
+private val EditHintConfig.side: EditHintSide
+    get() = when {
+        !isLandscape -> EditHintSide.CENTER
+        isLeftHanded -> EditHintSide.START
+        else -> EditHintSide.END
+    }
 
 private fun EditHintConfig.alignment(edge: EditHintEdge): Alignment = when {
     !isLandscape -> if (edge == EditHintEdge.TOP) Alignment.TopCenter else Alignment.BottomCenter

@@ -9,7 +9,8 @@ import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.ke
 import dev.mnascimentos.aureole.feature.home.grid.GridEngineUtils
 import dev.mnascimentos.aureole.feature.home.grid.model.GridLimits
 import dev.mnascimentos.aureole.feature.home.grid.model.LoadedGrid
-import dev.mnascimentos.aureole.feature.home.grid.model.withGridOrientation
+import dev.mnascimentos.aureole.feature.home.grid.model.withMeasuredLimits
+import dev.mnascimentos.aureole.feature.home.grid.model.isMeasureChange
 import dev.mnascimentos.aureole.feature.home.grid.model.withLoadedGrid
 import kotlinx.coroutines.withContext
 
@@ -92,9 +93,9 @@ fun HomeViewModel.cancelGridEditMode() {
 
 fun HomeViewModel.updateGridItemsOrientation(maxCols: Int, maxRows: Int) {
     val limits = GridLimits(maxCols, maxRows)
-    val isLandscape = (maxCols == GridEngineUtils.LANDSCAPE_MAX_COLS)
+    val measuredLandscape = (maxCols == GridEngineUtils.LANDSCAPE_MAX_COLS)
     val current = uiState.value
-    if (current.isLandscape == isLandscape && current.gridLimits == limits) return
+    if (!current.isMeasureChange(limits, measuredLandscape)) return
 
     // Disk is read here, outside the state lambda, and only for a layout that is not in memory yet.
     val portraitFallback = if (current.portraitGridItems.isEmpty()) {
@@ -110,11 +111,11 @@ fun HomeViewModel.updateGridItemsOrientation(maxCols: Int, maxRows: Int) {
     var itemsToSave: List<LauncherItemState>? = null
     updateUiState { state ->
         val loaded = LoadedGrid(portraitFallback, landscapeFallback)
-        val result = state.withGridOrientation(loaded, limits, isLandscape)
+        val result = state.withMeasuredLimits(loaded, limits, measuredLandscape)
         itemsToSave = result.itemsToSave
         result.state
     }
-    itemsToSave?.let { getGridRepository().saveGridItems(it, isLandscape) }
+    itemsToSave?.let { getGridRepository().saveGridItems(it, uiState.value.isLandscape) }
 }
 
 fun HomeViewModel.resetGridItems() {

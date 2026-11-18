@@ -1,6 +1,7 @@
 package dev.mnascimentos.aureole.feature.home.components.widgets
 
 import android.appwidget.AppWidgetHost
+import android.content.res.Configuration
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -32,6 +33,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.input.pointer.PointerEventPass
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
@@ -48,7 +50,7 @@ import dev.mnascimentos.aureole.composable.reorder.model.ReorderableActions
 import dev.mnascimentos.aureole.composable.reorder.model.ReorderableParams
 import dev.mnascimentos.aureole.composable.reorder.model.move
 import dev.mnascimentos.aureole.composable.widgets.WidgetPositionIndicatorBar
-import dev.mnascimentos.aureole.core.designsystem.icons.Add
+import dev.mnascimentos.aureole.core.designsystem.icons.AddNew
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
@@ -68,7 +70,8 @@ private const val ADD_CARD_BORDER_ALPHA = 0.2f
 private const val ADD_CARD_FILL_ALPHA = 0.35f
 
 /**
- * Live preview of the widget stack; the cards are sized so one and a half show: hold a card and drag it sideways
+ * Live preview of the widget stack (in portrait; landscape shows [EditWidgetGroupLandscapePager]); the cards are
+ * sized so one and a half show: hold a card and drag it sideways
  * to reorder, tap one to select it, ✕ removes it and the "+" card at the end adds a widget. The position bar below
  * follows the scroll.
  */
@@ -77,6 +80,11 @@ fun EditWidgetGroupPreviewCarousel(
     params: EditWidgetCarouselParams,
     modifier: Modifier = Modifier
 ) {
+    // In landscape the preview is a column beside the sheet: one whole widget at a time (RF-11).
+    if (LocalConfiguration.current.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+        EditWidgetGroupLandscapePager(params = params, modifier = modifier)
+        return
+    }
     val widgets = params.currentWidgets
     val spacing = AureoleDS.dimens.small
     val margin = AureoleDS.dimens.medium
@@ -158,7 +166,7 @@ private fun RevealSelectedCard(
 /** One widget of the stack; the card of the page the position bar shows gets a clear border, as on the home. */
 @OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
-private fun WidgetPreviewCard(
+internal fun WidgetPreviewCard(
     widgetId: Int,
     appWidgetHost: AppWidgetHost?,
     isCurrent: Boolean,
@@ -225,7 +233,7 @@ private fun TouchShield() {
 }
 
 @Composable
-private fun AddWidgetCard(size: DpSize, onClick: () -> Unit) {
+internal fun AddWidgetCard(size: DpSize, onClick: () -> Unit) {
     val label = stringResource(R.string.home_widget_add)
     val border = BorderStroke(
         AureoleDS.dimens.borderMinimal,
@@ -246,7 +254,7 @@ private fun AddWidgetCard(size: DpSize, onClick: () -> Unit) {
             },
         contentAlignment = Alignment.Center
     ) {
-        AureoleDS.icons.Add(
+        AureoleDS.icons.AddNew(
             tint = AureoleDS.colors.onSurfaceMedium,
             modifier = Modifier.size(AureoleDS.dimens.iconLarge)
         )

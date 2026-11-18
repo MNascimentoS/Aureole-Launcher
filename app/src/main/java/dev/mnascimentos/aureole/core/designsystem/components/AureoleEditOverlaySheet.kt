@@ -22,6 +22,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.TransformOrigin
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.platform.LocalDensity
@@ -34,9 +35,9 @@ import dev.mnascimentos.aureole.core.designsystem.model.OverlayLayout
 import dev.mnascimentos.aureole.core.designsystem.model.OverlaySheetDecorations
 import dev.mnascimentos.aureole.core.designsystem.model.OverlaySheetMotion
 import dev.mnascimentos.aureole.core.designsystem.model.OverlaySheetStateData
-import dev.mnascimentos.aureole.core.designsystem.model.anchoredPreviewTop
 import dev.mnascimentos.aureole.core.designsystem.model.hasHeaderAction
 import dev.mnascimentos.aureole.core.designsystem.model.overlayLayoutFor
+import dev.mnascimentos.aureole.core.designsystem.model.previewFit
 import dev.mnascimentos.aureole.core.designsystem.model.sheetRestFraction
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
@@ -50,6 +51,10 @@ private const val ANIMATION_DURATION_MS = 300
 
 /** The sheet slides out faster than it comes in. */
 private const val SHEET_EXIT_MS = 250
+
+/** The preview shrinks around its bottom center, so its bottom keeps the gap to the sheet. */
+private const val PREVIEW_PIVOT_X = 0.5f
+private const val PREVIEW_PIVOT_Y = 1f
 
 /** Lets the entry spring settle to the pixel instead of stopping 1% short. */
 private const val SHEET_SLIDE_THRESHOLD = 0.001f
@@ -104,7 +109,12 @@ internal fun OverlayContentBox(
             PreviewSlot(
                 previewContent = params.previewContent,
                 modifier = Modifier.fadeWith(stateData),
-                expandFraction = { expandFractionOf(motion, stateData.isExpanded, bounds) }
+                // Stacked, the layout shrinks or fades the preview only when the sheet needs its room (RF-09).
+                expandFraction = if (overlayLayout == OverlayLayout.STACKED) {
+                    { 0f }
+                } else {
+                    { expandFractionOf(motion, stateData.isExpanded, bounds) }
+                }
             )
         }
         val sheet: @Composable () -> Unit = {
@@ -198,11 +208,15 @@ private fun AnchoredPreviewLayout(
         layout(constraints.maxWidth, layoutHeight) {
             val slide = (hiddenFraction() * sheetHeight).roundToInt()
             val sheetTop = layoutHeight - sheetHeight + motion.translation(bounds).roundToInt() + slide
+            val room = (sheetTop - previewTopPaddingPx).toFloat()
             previewPlaceables.forEach { placeable ->
-                placeable.placeRelative(
-                    0,
-                    anchoredPreviewTop(sheetTop, previewGapPx, placeable.height, previewTopPaddingPx)
-                )
+                val fit = previewFit(placeable.height.toFloat(), room, previewGapPx.toFloat())
+                placeable.placeRelativeWithLayer(0, sheetTop - previewGapPx - placeable.height) {
+                    transformOrigin = TransformOrigin(PREVIEW_PIVOT_X, PREVIEW_PIVOT_Y)
+                    scaleX = fit.scale
+                    scaleY = fit.scale
+                    alpha = fit.alpha
+                }
             }
             // Centered: a sheet narrower than the screen (OverlayHostSpec.maxSheetWidth) sits in the middle.
             sheetPlaceables.forEach { it.placeRelative((constraints.maxWidth - it.width) / 2, sheetTop) }
@@ -229,7 +243,8 @@ private fun PreviewSlot(
 /**
  * Inside of the overlay sheet: gesture zone, header (title and logo on one line) and content at the top, bottom bar
  * at the bottom.
- * When the sheet is taller than its content (expanded), the free space sits between content and bottom bar.
+ * At rest the sheet hugs content and bottom bar; when it is taller than its content (expanded), the free space sits
+ * between content and bottom bar.
  */
 @Composable
 internal fun OverlaySheetBody(
@@ -245,8 +260,10 @@ internal fun OverlaySheetBody(
             .padding(horizontal = AureoleDS.dimens.xxSmall, vertical = AureoleDS.dimens.xxSmall),
         verticalArrangement = Arrangement.SpaceBetween
     ) {
-        val hasBottomBar = bottomBarContent != null
-        Column(modifier = Modifier.weight(1f, fill = hasBottomBar)) {
+        // Never filled: at rest the sheet is as tall as what it shows (no empty band above the buttons of a short
+        // confirmation, RF-10); expanded, SpaceBetween still puts the free space above the bottom bar. The
+        // weight only bounds tall content to the room left by the bottom bar.
+        Column(modifier = Modifier.weight(1f, fill = false)) {
             decorations.gestureZone?.invoke()
             if (title != null) {
                 val slots = decorations.headerSlots
@@ -275,7 +292,7 @@ internal fun OverlaySheetBody(
                 Column(
                     modifier = Modifier
                         .padding(horizontal = contentPadding)
-                        .weight(1f, fill = hasBottomBar)
+                        .weight(1f, fill = false)
                         .fillMaxWidth()
                 ) {
                     sheetContent()

@@ -33,8 +33,6 @@ data class FavoriteAppsDialogActions(
     val onToggleFavorite: (String) -> Unit = {},
     val onUpdateFavoritePackages: (String?, List<String>) -> Unit = { _, _ -> },
     val onSettingsClick: (() -> Unit)? = null,
-    /** Pencil "Customize home" at the start of the title line; null (Settings, drawer favorites) leaves it out. */
-    val onCustomizeHome: (() -> Unit)? = null,
     val onDismiss: () -> Unit = {}
 )
 

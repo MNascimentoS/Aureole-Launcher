@@ -32,6 +32,9 @@ import dev.mnascimentos.aureole.composable.color.model.PaletteSwatch
 import dev.mnascimentos.aureole.composable.color.model.ThemeSwatch
 import dev.mnascimentos.aureole.composable.color.model.initialPaletteCategory
 import dev.mnascimentos.aureole.composable.color.model.paletteSwatches
+import dev.mnascimentos.aureole.composable.sheets.edgeToEdgeRow
+import dev.mnascimentos.aureole.composable.sheets.edgeToEdgeRowPadding
+import dev.mnascimentos.aureole.composable.sheets.sheetContentInset
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
 import dev.mnascimentos.aureole.core.designsystem.palette.PaletteCategory
@@ -89,7 +92,12 @@ fun AureolePaletteSwatchRow(
     val shownName = swatches.firstOrNull { it.color == selected }?.paletteName
     Column(modifier = modifier, verticalArrangement = Arrangement.spacedBy(AureoleDS.dimens.xSmall)) {
         PaletteCategoryChips(selected = category, onSelect = { category = it })
-        LazyRow(horizontalArrangement = Arrangement.spacedBy(AureoleDS.dimens.small)) {
+        val inset = sheetContentInset()
+        LazyRow(
+            modifier = Modifier.fillMaxWidth().edgeToEdgeRow(inset),
+            contentPadding = edgeToEdgeRowPadding(inset),
+            horizontalArrangement = Arrangement.spacedBy(AureoleDS.dimens.small)
+        ) {
             items(items = swatches, key = PaletteSwatch::paletteName) { swatch ->
                 AureoleColorSwatch(
                     colorInt = swatch.color,

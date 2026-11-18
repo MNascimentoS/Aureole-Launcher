@@ -50,6 +50,8 @@ import dev.mnascimentos.aureole.core.designsystem.utils.rememberSystemAnimations
  * so the title keeps the center of the sheet and never runs under the logo (a long one is cut). Left-handed mirrors
  * it: the logo goes to the start. A [leadingAction] (a shortcut of the sheet) fills the slot across from the logo,
  * and mirrors with it. Without any action the title takes the whole width.
+ * With a [titleIcon] (the app or the folder the sheet is about) icon and title sit at the start of the line, with
+ * no empty slot before them, and the logo stays at the end; a long title is cut before the logo.
  */
 @Composable
 internal fun OverlaySheetHeader(
@@ -60,23 +62,31 @@ internal fun OverlaySheetHeader(
     leadingAction: (@Composable () -> Unit)? = null
 ) {
     val hasAction = action != null || leadingAction != null
+    val isStartAligned = titleIcon != null
+    val startSlot = if (isLeftHanded) action else leadingAction
+    val endSlot = if (isLeftHanded) leadingAction else action
+    val drawsStartSlot = hasAction && (!isStartAligned || startSlot != null)
+    val drawsEndSlot = hasAction && (!isStartAligned || endSlot != null)
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .padding(
-                start = if (hasAction) AureoleDS.dimens.zero else AureoleDS.dimens.small,
-                end = if (hasAction) AureoleDS.dimens.zero else AureoleDS.dimens.small,
+                start = if (drawsStartSlot) AureoleDS.dimens.zero else AureoleDS.dimens.small,
+                end = if (drawsEndSlot) AureoleDS.dimens.zero else AureoleDS.dimens.small,
                 // The 48 dp slots are taller than the text: less padding keeps the header as tall as before.
                 top = if (hasAction) AureoleDS.dimens.xxSmall else AureoleDS.dimens.small,
                 bottom = if (hasAction) AureoleDS.dimens.xSmall else AureoleDS.dimens.medium
             ),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        if (hasAction) HeaderSlot(content = if (isLeftHanded) action else leadingAction)
-        Box(modifier = Modifier.weight(1f), contentAlignment = Alignment.Center) {
+        if (drawsStartSlot) HeaderSlot(content = startSlot)
+        Box(
+            modifier = Modifier.weight(1f),
+            contentAlignment = if (isStartAligned) Alignment.CenterStart else Alignment.Center
+        ) {
             HeaderTitle(title = title, titleIcon = titleIcon)
         }
-        if (hasAction) HeaderSlot(content = if (isLeftHanded) leadingAction else action)
+        if (drawsEndSlot) HeaderSlot(content = endSlot)
     }
 }
 
@@ -100,7 +110,7 @@ private fun HeaderTitle(title: String, titleIcon: (@Composable (Modifier) -> Uni
             style = AureoleDS.typography.titleLarge,
             fontWeight = FontWeight.Bold,
             color = AureoleDS.colors.onSurfaceHigh,
-            textAlign = TextAlign.Center,
+            textAlign = if (titleIcon != null) TextAlign.Start else TextAlign.Center,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
             modifier = Modifier.weight(1f, fill = false)
@@ -184,6 +194,18 @@ private fun OverlaySheetHeaderPreview() {
     AureoleLauncherTheme {
         OverlaySheetHeader(
             title = "Customize",
+            action = { OverlaySheetHeaderLogo(onClick = {}) }
+        )
+    }
+}
+
+@AureolePreview
+@Composable
+private fun OverlaySheetHeaderWithIconPreview() {
+    AureoleLauncherTheme {
+        OverlaySheetHeader(
+            title = "A folder with a long name that is cut before the logo",
+            titleIcon = { m -> Box(modifier = m) },
             action = { OverlaySheetHeaderLogo(onClick = {}) }
         )
     }

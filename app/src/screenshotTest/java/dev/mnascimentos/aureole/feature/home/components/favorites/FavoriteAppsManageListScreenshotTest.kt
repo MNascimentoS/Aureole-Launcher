@@ -64,7 +64,7 @@ private fun FavoritesManageCase(isLeftHanded: Boolean, favoriteCount: Int = 4) {
                         showAllApps = ShowAllAppsParams(checked = true, onCheckedChange = {}),
                         showLabels = ShowLabelsParams(checked = true, onCheckedChange = {})
                     ),
-                    actions = FavoriteAppsDialogActions(onCustomizeHome = {})
+                    actions = FavoriteAppsDialogActions()
                 )
             }
         }
