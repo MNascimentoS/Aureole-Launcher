@@ -38,7 +38,7 @@ fun SecretBestScorePopup(
 }
 
 @Composable
-internal fun SecretBestScoreCard(
+fun SecretBestScoreCard(
     bestScore: Int,
     triggerText: String,
     modifier: Modifier = Modifier

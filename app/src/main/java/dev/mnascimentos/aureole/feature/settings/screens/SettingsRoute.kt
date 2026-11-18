@@ -70,6 +70,7 @@ private fun buildSettingsScreenActions(
 ): SettingsScreenActions {
     val baseActions = SettingsScreenActions(
         onBackClick = onFinish,
+        onSecretGameOver = viewModel::onSecretGameOver,
         onSetDefaultLauncherClick = openDefaultLauncherSettings,
         onChangeWallpaperClick = {
             photoPickerLauncher.launch(

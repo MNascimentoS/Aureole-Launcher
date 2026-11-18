@@ -41,7 +41,8 @@ fun SettingsNavGraph(
                     uiState = uiState,
                     onNavigateToBehavior = { onOpenArea(SettingsArea.BEHAVIOR) },
                     onNavigateToAppearance = { onOpenArea(SettingsArea.APPEARANCE) },
-                    onNavigateToAdvanced = { onOpenArea(SettingsArea.ADVANCED) }
+                    onNavigateToAdvanced = { onOpenArea(SettingsArea.ADVANCED) },
+                    onSecretGameOver = actions.onSecretGameOver
                 )
             }
         }
