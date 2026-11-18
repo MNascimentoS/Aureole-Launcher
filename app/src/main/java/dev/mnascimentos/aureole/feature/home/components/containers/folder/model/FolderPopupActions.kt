@@ -4,5 +4,6 @@ import dev.mnascimentos.aureole.core.data.model.AppInfo
 
 data class FolderPopupActions(
     val onDismiss: () -> Unit,
-    val onAppClick: (AppInfo) -> Unit
+    val onAppClick: (AppInfo) -> Unit,
+    val onAddApps: () -> Unit = {}
 )

@@ -84,7 +84,7 @@ private fun FolderAppPickerTray(
         )
         if (apps.isEmpty()) {
             AureoleText(
-                text = stringResource(R.string.home_folder_no_apps_in_folder),
+                text = stringResource(R.string.home_folder_picker_empty),
                 color = AureoleDS.colors.onSurfaceLow,
                 modifier = Modifier.padding(vertical = AureoleDS.dimens.small),
                 format = AureoleTextFormatParams(style = AureoleDS.typography.bodySmall)

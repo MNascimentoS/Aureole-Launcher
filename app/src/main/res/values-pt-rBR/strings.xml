@@ -26,8 +26,9 @@
     <string name="home_folder_new_title">Nova Pasta</string>
     <string name="home_folder_name_placeholder">Nova Pasta</string>
     <string name="home_folder_apps_in_folder">Apps na Pasta: %1$s</string>
-    <string name="home_folder_no_apps_in_folder">Nenhum aplicativo na pasta.</string>
     <string name="core_common_no_apps_found">Nenhum aplicativo encontrado.</string>
+    <string name="home_folder_add_apps">Adicionar apps</string>
+    <string name="home_folder_picker_empty">Nenhum aplicativo na pasta.</string>
     <string name="home_folder_picker_drag_hint">Segure um app e deslize para marcar vários</string>
     <string name="core_common_search_app_placeholder">Buscar aplicativo&#8230;</string>
 
@@ -380,7 +381,7 @@
     <string name="home_onboarding_coach_success">Isso aí!</string>
     <string name="home_onboarding_coach_apps_title">Deslize para cima</string>
     <string name="home_onboarding_coach_apps_body">para ver todos os seus apps. O botão Início também abre e fecha a lista.</string>
-    <string name="home_onboarding_coach_apps_done">Seus apps estão aqui. Toque em voltar para fechar.</string>
+    <string name="home_onboarding_coach_apps_done">Seus apps estão aqui. Deslize para baixo ou toque em voltar para fechar.</string>
     <string name="home_onboarding_coach_scrub_title_right">Deslize na borda direita</string>
     <string name="home_onboarding_coach_scrub_title_left">Deslize na borda esquerda</string>
     <string name="home_onboarding_coach_scrub_body">e desça o dedo para pular direto para uma letra.</string>

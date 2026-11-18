@@ -224,7 +224,8 @@ private fun OpenedFolderOverlayContent(
                     allApps = uiState.apps,
                     actions = FolderPopupActions(
                         onDismiss = { actions.onFolderIntent(FolderViewIntent.CloseFolder) },
-                        onAppClick = { app -> actions.onFolderIntent(FolderViewIntent.LaunchApp(app.packageName)) }
+                        onAppClick = { app -> actions.onFolderIntent(FolderViewIntent.LaunchApp(app.packageName)) },
+                        onAddApps = { actions.onFolderIntent(FolderViewIntent.AddAppToFolder(folderToDisplay.id)) }
                     ),
                     isGridFolderEnabled = isGridFolderEnabled
                 ),

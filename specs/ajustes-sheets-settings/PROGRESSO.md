@@ -5,11 +5,11 @@ vez, no fim). Aparelho é o teste do Mateus.
 
 | # | Fase | Modelo | Estimativa | Feita | Gates | Visual | Aparelho |
 |---|---|---|---|---|---|---|---|
-| 1 | Polimento visual: Personalizar, cabeçalho, Ajustes, Avançado, coach, ícones Add New e Home | Sonnet | 1,5–2,5 h | [ ] | [x] | [x] | [ ] |
-| 2 | Salvar ao fechar + Desfazer nas sheets de edição; picker de cor do fundo | Sonnet | 2,5–4 h | [ ] | [x] | [x] | [ ] |
-| 3 | Movimento: sheet sobe e estica, checklist → pílula, lista pela borda ou por baixo | Opus | 2,5–4 h | [ ] | [x] | [x] | [ ] |
-| 4 | Gates, correções e revisão visual | Sonnet + Opus | 1–2 h | [x] | [x] | [x] | [ ] |
-| 5 | Exploração dos Ajustes (sem código): propostas da IA | Opus | 20–40 min | [ ] | — | — | — |
+| 1 | Polimento visual: Personalizar, cabeçalho, Ajustes, Avançado, coach, ícones Add New e Home | Sonnet | 1,5–2,5 h | [x] | [x] | [x] | [x] |
+| 2 | Salvar ao fechar + Desfazer nas sheets de edição; picker de cor do fundo | Sonnet | 2,5–4 h | [x] | [x] | [x] | [x] |
+| 3 | Movimento: sheet sobe e estica, checklist → pílula, lista pela borda ou por baixo | Opus | 2,5–4 h | [x] | [x] | [x] | [x] |
+| 4 | Gates, correções e revisão visual | Sonnet + Opus | 1–2 h | [x] | [x] | [x] | [x] |
+| 5 | Exploração dos Ajustes (sem código): propostas da IA | Opus | 20–40 min | [x] | — | — | — |
 
 ## Notas por fase
 
@@ -19,11 +19,11 @@ vez, no fim). Aparelho é o teste do Mateus.
 
 | # | Gate | Resultado | Tempo |
 |---|------|-----------|-------|
-| 1 | `detekt --auto-correct` | passou (3 rodadas até 0 issues, mais 3 após ajustes de testes) | 16-19 s cada |
-| 2 | `lintDebug` | passou (0 erros, 0 avisos) | 39 s (1 min 7 s na rodada com erros) |
-| 3 | `testDebugUnitTest` | passou (1665 testes) | 32 s |
+| 1 | `detekt --auto-correct` | passou (3 rodadas até 0 issues, mais 3 após ajustes de testes) | 16-19 s cada | [x] 
+| 2 | `lintDebug` | passou (0 erros, 0 avisos) | 39 s (1 min 7 s na rodada com erros) | [x] 
+| 3 | `testDebugUnitTest` | passou (1665 testes) | 32 s | [x] 
 | 4 | `jacocoTestCoverageVerification` | passou | 2 s (sobre os dados do gate 3) |
-| 5 | `updateDebugScreenshotTest` | passou (referências regeneradas) | 81 s |
+| 5 | `updateDebugScreenshotTest` | passou (referências regeneradas) | 81 s | [x] 
 | 6 | `validateDebugScreenshotTest` | passou | 82 s |
 | 7 | `assembleDebug` | passou | 4 s |
 

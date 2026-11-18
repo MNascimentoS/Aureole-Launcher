@@ -269,10 +269,12 @@ Pedir à IA que olhe as telas de Ajustes (raiz, Aparência, Comportamento, Avan�
 das fases 1 a 4 e proponha como reorganizá-las com base nas outras telas do app (sheets, Personalizar, menus,
 linhas com ícone, prévia viva, lado do polegar), **mudando coisas de lugar e reagrupando, sem remover nada**.
 
-- Ler `specs/ajustes-redesign/IDEIA.md` (inventário completo e as 3 direções que já existem em
-  `specs/ajustes-redesign/prototipo.html`). Trazer pelo menos 2 propostas **diferentes** das 3 que já existem, e uma
-  opinião curta sobre as 3 existentes (o que aproveitaria de cada uma).
-- Cada proposta: nome, ideia em 2–3 frases, árvore de navegação (raiz → subtelas → itens), tabela "item de hoje →
+- Ler `specs/ajustes-redesign/IDEIA.md` (inventário, as 3 direções e a **escolha: B com ajustes**, cartões na raiz e
+  subtelas como bottom sheet) e a aba "B · Cartões ✓" de `specs/ajustes-redesign/prototipo.html`.
+- Entregar: (1) uma crítica da direção B escolhida (riscos, o que falta, detalhes de interação: prévia em
+  Comportamento?, sheet alta do Avançado, acessibilidade, paisagem, canhoto) com sugestões de refinamento; (2) pelo
+  menos 1 alternativa **diferente** das 3 existentes, só para comparação.
+- Cada proposta ou refinamento: nome, ideia em 2–3 frases, árvore de navegação (raiz → subtelas → itens), tabela "item de hoje →
   onde fica", o que melhora e o que piora (cliques, uma mão, descoberta), e o custo estimado de implementar.
 - Pode ilustrar: um `PROPOSTAS-IA.html` com mockups em HTML/CSS na mesma linha do `prototipo.html`, ou prints de
   previews Compose descartáveis feitos **fora** do código do app (nada em `app/src/`). Não mudar código do app.

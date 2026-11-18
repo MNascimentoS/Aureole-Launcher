@@ -1,6 +1,4 @@
 {
-  "plan": "specs/bugfixes-0-9-21/PLANO.md",
-  "progress": "specs/bugfixes-0-9-21/PROGRESSO.md",
   "scanRoot": "app",
   "startCommand": "fase",
   "gates": [

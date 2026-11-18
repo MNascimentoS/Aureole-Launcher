@@ -26,8 +26,9 @@
     <string name="home_folder_new_title">New Folder</string>
     <string name="home_folder_name_placeholder">New Folder</string>
     <string name="home_folder_apps_in_folder">Apps in Folder: %1$s</string>
-    <string name="home_folder_no_apps_in_folder">No apps in the folder.</string>
     <string name="core_common_no_apps_found">No apps found.</string>
+    <string name="home_folder_add_apps">Add apps</string>
+    <string name="home_folder_picker_empty">No apps in the folder.</string>
     <string name="home_folder_picker_drag_hint">Hold an app and slide to mark several</string>
     <string name="core_common_search_app_placeholder">Search app&#8230;</string>
 
@@ -379,7 +380,7 @@
     <string name="home_onboarding_coach_success">Nice!</string>
     <string name="home_onboarding_coach_apps_title">Swipe up</string>
     <string name="home_onboarding_coach_apps_body">to see all your apps. The Home button also opens and closes the list.</string>
-    <string name="home_onboarding_coach_apps_done">Your apps live here. Press back to close.</string>
+    <string name="home_onboarding_coach_apps_done">Your apps are here. Swipe down or press back to close.</string>
     <string name="home_onboarding_coach_scrub_title_right">Swipe along the right edge</string>
     <string name="home_onboarding_coach_scrub_title_left">Swipe along the left edge</string>
     <string name="home_onboarding_coach_scrub_body">and slide down to jump straight to a letter.</string>

@@ -66,6 +66,32 @@
   .wheel span{font-size:9px;color:var(--out);opacity:.7}
   .wheel b{font-size:14px;color:var(--hi)}
   .val{flex:none;font-size:12px;color:var(--low)}
+  .bs{position:absolute;left:0;right:0;bottom:30px;background:var(--surface);border-radius:22px 22px 0 0;box-shadow:0 -6px 24px rgba(0,0,0,.35);display:flex;flex-direction:column}
+  .bs .gzh{height:14px;flex:none}
+  .bs .bt{font-size:16px;font-weight:700;text-align:center;padding:8px 0 6px;flex:none}
+  .bs .bc{overflow:auto;padding:0 10px 10px;scrollbar-width:none;flex:1}
+  .dim{position:absolute;inset:22px 0 30px;background:rgba(5,8,10,.6)}
+  .pv{position:absolute;left:28px;right:28px}
+  .card.plain{padding:14px 16px}
+  .card.plain .tx b{font-size:15px}
+  .bc .lbl{padding-top:6px}
+  .bc .lbl ~ .lbl{padding-top:24px}
+  .phone.land{width:640px;height:300px}
+  .land .nav{left:auto;right:0;top:0;bottom:0;width:30px;height:auto;flex-direction:column}
+  .land .body{right:30px}
+  .lw{position:absolute;top:22px;left:0;right:30px;bottom:0;display:flex;gap:14px;padding:10px 12px 10px 16px}
+  .lw .pvL{flex:1;display:flex;align-items:center;justify-content:center}
+  .lw .pvL .mini{width:100%;max-width:240px;margin:0}
+  .lw .bsR{flex:1.15;background:var(--surface);border-radius:22px;display:flex;flex-direction:column;box-shadow:0 6px 24px rgba(0,0,0,.35);max-width:330px}
+  .grid2{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:2px}
+  .pal{border-radius:14px;padding:6px;background:var(--card);cursor:pointer;font-size:10px;color:var(--mid);text-align:center;border:2px solid transparent}
+  .pal.on{border-color:var(--hi)}
+  .pal i{display:block;height:26px;border-radius:9px;margin-bottom:4px}
+  .fnt{display:flex;align-items:center;justify-content:space-between;padding:10px 12px;border-radius:12px;cursor:pointer}
+  .fnt.on{background:var(--card)}
+  .fnt b{font-weight:400;font-size:15px}
+  .back2{display:flex;align-items:center;gap:6px;color:var(--low);font-size:11px;padding:0 4px 6px}
+  .clickable{cursor:pointer}
   svg.i{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
   svg.logo{fill:currentColor}
   .inv{max-width:1300px;margin:auto;padding:4px 18px 30px;color:var(--mid);font-size:13px}
@@ -82,7 +108,7 @@
   Nada foi removido: o inventário no fim mostra onde cada item foi parar em cada direção. Role os aparelhos para o lado.</p>
 </header>
 <div class="tabs" id="tabs">
-  <button data-v="A" class="on">A · Home viva</button><button data-v="B">B · Cartões com resumo</button><button data-v="C">C · No polegar</button>
+  <button data-v="A" class="on">A · Home viva</button><button data-v="B">B · Cartões ✓</button><button data-v="C">C · No polegar</button>
 </div>
 <div class="desc" id="desc"></div>
 <div class="row" id="row"></div>
@@ -118,7 +144,7 @@ const P={
 const ic=(n,s=18)=>`<svg class="i" viewBox="0 0 24 24" style="width:${s}px;height:${s}px">${P[n]}</svg>`;
 const st='<div class="st"><span>14:57</span><span>◔ ▲ ▮ 62</span></div>';
 const nav='<div class="nav"><span>‹</span><span>○</span><span>|||</span></div>';
-const phone=(cap,inner)=>`<div class="ph"><div class="phone"><div class="scr">${st}${inner}${nav}</div></div><div class="cap">${cap}</div></div>`;
+const phone=(cap,inner,kind)=>`<div class="ph"><div class="phone ${kind||''}"><div class="scr">${st}${inner}${kind==='land'?'<div class="nav"><span>‹</span><span>○</span><span>|||</span></div>':nav}</div></div><div class="cap">${cap}</div></div>`;
 const row=(i,t,sub,trail='<span class="ch">›</span>',cls='')=>`<div class="mr ${cls}"><div class="ic">${ic(i)}</div><div class="tx">${t}${sub?`<small>${sub}</small>`:''}</div>${trail}</div>`;
 const SW=on=>`<span class="sw ${on?'on':''}"></span>`;
 const SL=v=>`<span class="sl" style="--v:${v}"></span>`;
@@ -145,17 +171,8 @@ A:{desc:`<b>A · Home viva.</b> Uma tela só. No topo, a mini-home mostra o tema
   ['Raiz (rolando)',`<div class="body"><div class="lbl">Cartões e vidro</div>${G.vidro}<div class="lbl">Gestos e lista de apps</div>${G.gestos}<div class="lbl">Tela inicial</div>${G.tela}</div>`],
   ['Raiz (fim)',`<div class="body"><div class="lbl">Sistema</div>${G.sistema}<div class="lbl">Zona de cuidado</div>${G.perigo}${legal}<div class="thanks">Muito obrigado!</div></div>`],
  ]},
-B:{desc:`<b>B · Cartões com resumo.</b> A raiz continua com o logo, mas cada área vira um cartão que mostra o estado atual (paleta, fonte, vidro; lado da mão; versão). Dentro, cada subtela tem o título centralizado na barra de cima, sem botão de voltar (volta pelo gesto do sistema), e abre com a mini-home e grupos com rótulo, como as sheets. Mais cliques que a A, porém a raiz explica o app de relance.`,
- phones:[
-  ['Raiz',`<div class="body"><div class="hdr">${LOGO(70,40)}<h2>Aureole</h2><div class="v">Versão 0.9.36.327</div></div>
-    <div class="card">${ic('edit',22)}<div class="tx"><b>Aparência</b><span>Cores, fundo, fonte e vidro</span><div class="chips"><i>Frostbite</i><i>Istok Web</i><i>Vidro médio</i><i>Cantos 20 dp</i></div></div><span class="ch">›</span></div>
-    <div class="card">${ic('hand',22)}<div class="tx"><b>Comportamento</b><span>Gestos, lista e tela inicial</span><div class="chips"><i>Destro</i><i>Início abre a lista</i><i>A–Z ligado</i></div></div><span class="ch">›</span></div>
-    <div class="card">${ic('dots',22)}<div class="tx"><b>Avançado</b><span>Sistema, informações e legal</span><div class="chips"><i>Launcher padrão ✓</i><i>0.9.36</i></div></div><span class="ch">›</span></div>
-    <div class="thanks" style="padding-top:18px">Muito obrigado!</div></div>`],
-  ['Aparência',`<div class="body"><div class="t1">Aparência</div>${mini()}<div class="lbl">Tema</div><div class="grp">${row('fill','Paleta de cores','Frostbite')}${row('drop','Cores personalizadas','Cor base')}${row('font','Alterar fonte','Istok Web')}${row('apps','Ícones temáticos','',SW(true))}</div><div class="lbl">Fundo</div><div class="grp">${row('image','Definir plano de fundo','Cor sólida')}${row('scale','Escala da imagem','Toque para alternar',VAL('Preencher'))}${row('undo','Restaurar fundo','','')}</div><div class="lbl">Cartões e vidro</div>${G.vidro}</div>`],
-  ['Comportamento',`<div class="body"><div class="t1">Comportamento</div><div class="lbl">Gestos e lista de apps</div>${G.gestos}<div class="lbl">Tela inicial</div>${G.tela}<div class="lbl">Atualizações</div><div class="grp">${row('refresh','Verificar atualizações','Última: hoje','')}</div></div>`],
-  ['Avançado',`<div class="body"><div class="t1">Avançado</div><div class="lbl">Sistema</div><div class="grp">${row('info','Informações do app')}${row('smile','Novidades')}${row('home','Launcher padrão','','')}</div><div class="lbl">Zona de cuidado</div>${G.perigo}<div class="lbl">Sobre</div><div class="grp">${row('users','Colaboradores')}${row('doc','Política de privacidade')}${row('doc','Termos de serviço')}${row('doc','Licenças de código aberto')}</div></div>`],
- ]},
+B:{desc:`<b>B · Cartões (escolhida).</b> A raiz mantém o logo e mostra as três áreas como cartões, sem tags e sem setinha, no estilo das linhas de hoje. Aparência, Comportamento e Avançado abrem como <b>bottom sheet</b> por cima da raiz: reaproveita o <code>AureoleEditOverlay</code>, a prévia (mini-home em cima da sheet de Aparência) e todos os componentes das sheets. No Avançado, a Zona de cuidado fica no fim (rola por Sobre e Colaboradores antes), e Redefinir e Desinstalar pedem "Segure para confirmar". <b>Teste no aparelho (17/11):</b> sai "Cores personalizadas"; Paleta e Fonte abrem dentro da própria sheet de Aparência com a mesma prévia (◁ volta para a lista); Ícones temáticos muda os ícones da prévia; mais espaço entre seções; em paisagem, prévia à esquerda e sheet à direita.`,
+ phones:[]},
 C:{desc:`<b>C · No polegar.</b> O conteúdo fica na metade de baixo, onde o polegar alcança (o mesmo princípio das sheets). Em cima, só o logo pequeno e a mini-home; embaixo, a busca "Buscar ajuste" e abas Aparência / Comportamento / Avançado que trocam a lista sem navegar. Melhor para uma mão; a busca resolve os 27 itens sem decorar onde ficam.`,
  phones:[
   ['Aparência',`<div class="body" style="padding-bottom:0"><div class="hdrS">${LOGO(34,19)}<div><h2>Aureole</h2><div class="v">Versão 0.9.36.327</div></div></div>${mini()}</div>
@@ -173,39 +190,88 @@ C:{desc:`<b>C · No polegar.</b> O conteúdo fica na metade de baixo, onde o pol
  ]}
 };
 
+
+const ROOT_B=()=>`<div class="body"><div class="hdr" style="padding-top:34px">${LOGO(80,46)}<h2>Aureole</h2><div class="v">Versão 0.9.36.327</div></div><div style="height:18px"></div>
+  <div class="card plain">${ic('edit',22)}<div class="tx"><b>Aparência</b><span>Cores, fundo, fonte e vidro</span></div></div>
+  <div class="card plain">${ic('list',22)}<div class="tx"><b>Comportamento</b><span>Gestos, lista e tela inicial</span></div></div>
+  <div class="card plain">${ic('dots',22)}<div class="tx"><b>Avançado</b><span>Sistema, sobre o app e créditos</span></div></div>
+  <div class="thanks" style="position:absolute;left:0;right:0;bottom:26px">Muito obrigado!</div></div>`;
+const SHEET=(title,top,content,preview='',end=false)=>`${ROOT_B()}<div class="dim"></div>${preview}<div class="bs" style="top:${top}px"><div class="gzh"></div><div class="bt">${title}</div><div class="bc ${end?'end':''}">${content}</div></div>`;
+const DANGER=`<div class="grp">${row('undo','Redefinir launcher','Segure para confirmar','','danger')}${row('trash','Desinstalar launcher','Segure para confirmar','','danger')}</div>`;
+const ABOUT=`<div class="grp">${row('users','Colaboradores')}${row('doc','Política de privacidade')}${row('doc','Termos de serviço')}${row('doc','Licenças de código aberto')}</div>`;
+const PALS=[['Frostbite',['#12181d','#2b373e','#4a5d6b','#9fc6e6']],['Abyss',['#001f20','#0d3436','#1f5254','#7fd6cf']],['Ember',['#1d1210','#3b2420','#5c3a31','#f0a383']],['Moss',['#121a12','#243324','#3c523b','#a6d39b']],['Iris',['#17142a','#2a2545','#443d6b','#bdb2ff']],['Sand',['#1d1a14','#36302a','#544a3d','#e5cf9f']]];
+const FONTS=['Istok Web','Montserrat','Rubik','Space Grotesk','Andika','Roboto Mono'];
+const APS={view:'list',themed:false,pal:0,font:'Istok Web',scroll:0};
+const ICONC=['#3f8a49','#e7873a','#3a6fd1','#7d58bd'];
+const miniApp=()=>{const p=PALS[APS.pal][1];return `<div class="mini" style="margin:0;background:linear-gradient(160deg,${p[1]},${p[0]});font-family:'${APS.font}',system-ui"><div class="c">09:41</div><div class="d">Segunda, 16 de novembro</div><div class="a">${ICONC.map(c=>`<i style="background:${APS.themed?p[3]:c};${APS.themed?'opacity:.9':''}"></i>`).join('')}</div></div>`;};
+const appList=()=>`<div class="lbl">Tema</div><div class="grp"><div class="clickable" data-go="palette">${row('fill','Paleta de cores',PALS[APS.pal][0])}</div><div class="clickable" data-go="font">${row('font','Alterar fonte',APS.font)}</div><div class="clickable" data-tog="themed">${row('apps','Ícones temáticos','Muda os ícones da prévia',SW(APS.themed))}</div></div><div class="lbl">Fundo</div><div class="grp">${row('image','Definir plano de fundo','Cor sólida')}${row('scale','Escala da imagem','Toque para alternar',VAL('Preencher'))}${row('undo','Restaurar fundo','','')}</div><div class="lbl">Cartões e vidro</div>${G.vidro}`;
+const appInner=()=>APS.view==='palette'
+  ? `<div class="back2">‹ voltar (gesto do sistema) devolve a lista</div><div class="grid2">${PALS.map((p,i)=>`<div class="pal ${i===APS.pal?'on':''}" data-pal="${i}"><i style="background:linear-gradient(90deg,${p[1][1]} 0 50%,${p[1][3]} 50%)"></i>${p[0]}</div>`).join('')}</div>`
+  : APS.view==='font'
+  ? `<div class="back2">‹ voltar (gesto do sistema) devolve a lista</div>${FONTS.map(f=>`<div class="fnt ${f===APS.font?'on':''}" data-font="${f}"><b style="font-family:'${f}',system-ui">${f}</b><span style="color:var(--low);font-size:11px">${f===APS.font?'✓':''}</span></div>`).join('')}`
+  : appList();
+const appTitle=()=>APS.view==='palette'?'Paleta de cores':APS.view==='font'?'Fonte':'Aparência';
+const APP_PORTRAIT=()=>`${ROOT_B()}<div class="dim"></div><div class="pv" style="top:40px" data-pv>${miniApp()}</div><div class="bs" style="top:212px"><div class="gzh"></div><div class="bt" data-title>${appTitle()}</div><div class="bc" data-app>${appInner()}</div></div>`;
+const APP_LAND=()=>`<div class="lw"><div class="pvL" data-pv>${miniApp()}</div><div class="bsR"><div class="gzh"></div><div class="bt" data-title>${appTitle()}</div><div class="bc" data-app>${appInner()}</div></div></div>`;
+V.B.phones=[
+  ['Raiz', ROOT_B()],
+  ['Aparência (toque em Paleta, Fonte e Ícones temáticos)', `<div data-appwrap="p">${APP_PORTRAIT()}</div>`],
+  ['Comportamento (sheet)', SHEET('Comportamento',150,`<div class="lbl">Gestos e lista de apps</div>${G.gestos}<div class="lbl">Tela inicial</div>${G.tela}`)],
+  ['Avançado (sheet, topo)', SHEET('Avançado',150,`<div class="lbl">Sistema</div><div class="grp">${row('info','Informações do app')}${row('smile','Novidades')}${row('home','Launcher padrão','','')}${row('refresh','Verificar atualizações','Última: hoje','')}</div><div class="lbl">Sobre</div>${ABOUT}<div class="lbl">Zona de cuidado</div>${DANGER}`)],
+  ['Avançado (rolado até o fim)', SHEET('Avançado',150,`<div class="lbl">Sistema</div><div class="grp">${row('info','Informações do app')}${row('smile','Novidades')}${row('home','Launcher padrão','','')}${row('refresh','Verificar atualizações','Última: hoje','')}</div><div class="lbl">Sobre</div>${ABOUT}<div class="lbl">Zona de cuidado</div>${DANGER}<div style="height:8px"></div>`,'',true)],
+  ['Aparência em paisagem: prévia à esquerda, sheet à direita', `<div data-appwrap="l">${APP_LAND()}</div>`, 'land'],
+];
+function renderApp(){
+  document.querySelectorAll('[data-appwrap]').forEach(w=>{
+    const land=w.dataset.appwrap==='l';
+    const keep=w.querySelector('[data-app]')?.scrollTop||0;
+    w.innerHTML=land?APP_LAND():APP_PORTRAIT();
+    const bc=w.querySelector('[data-app]'); if(APS.view==='list') bc.scrollTop=APS.scroll; 
+    w.querySelectorAll('[data-go]').forEach(n=>n.onclick=()=>{APS.scroll=bc.scrollTop;APS.view=n.dataset.go;renderApp();});
+    w.querySelectorAll('[data-tog]').forEach(n=>n.onclick=()=>{APS.themed=!APS.themed;APS.scroll=bc.scrollTop;renderApp();});
+    w.querySelectorAll('[data-pal]').forEach(n=>n.onclick=()=>{APS.pal=+n.dataset.pal;renderApp();});
+    w.querySelectorAll('[data-font]').forEach(n=>n.onclick=()=>{APS.font=n.dataset.font;renderApp();});
+    const back=w.closest('.scr')?.querySelector('.nav span');
+    if(back) back.onclick=()=>{ if(APS.view!=='list'){APS.view='list';renderApp();} };
+  });
+}
+
+
 const INV=[
  ['Logo, nome, versão → notas','Cabeçalho pequeno no topo','Topo da raiz','Cabeçalho pequeno'],
- ['Muito obrigado!','Fim da rolagem','Fim da raiz','Aba Avançado'],
- ['Paleta de cores','Tile','Aparência › Tema','Tile (aba Aparência)'],
- ['Cores personalizadas','Seção Aparência','Aparência › Tema','Aba Aparência'],
- ['Alterar fonte','Tile','Aparência › Tema','Tile'],
- ['Definir plano de fundo','Tile','Aparência › Fundo','Tile'],
- ['Restaurar fundo','Seção Aparência','Aparência › Fundo','Aba Aparência'],
- ['Escala da imagem','Seção Aparência','Aparência › Fundo','Aba Aparência'],
- ['Ícones temáticos','Seção Aparência','Aparência › Tema','Aba Aparência'],
- ['Cartões e vidro (borda, raio, efeito)','Tile + seção','Aparência › Cartões e vidro','Tile + aba Aparência'],
- ['Home abre todos os apps','Gestos e lista','Comportamento › Gestos','Aba Comportamento'],
- ['Todos os apps do lado esquerdo','Gestos e lista','Comportamento › Gestos','Aba Comportamento'],
- ['Desativar rolagem alfabética','Gestos e lista','Comportamento › Gestos','Aba Comportamento'],
- ['Exibir indicador de widgets','Tela inicial','Comportamento › Tela inicial','Aba Comportamento'],
- ['Deslocamento do cabeçalho','Tela inicial','Comportamento › Tela inicial','Aba Comportamento'],
- ['Verificar atualizações','Sistema','Comportamento › Atualizações','Aba Comportamento'],
- ['Informações do app','Sistema','Avançado › Sistema','Aba Avançado'],
- ['Novidades','Sistema','Avançado › Sistema','Aba Avançado'],
- ['Launcher padrão','Sistema','Avançado › Sistema','Aba Avançado'],
- ['Redefinir launcher','Zona de cuidado','Avançado › Zona de cuidado','Aba Avançado'],
- ['Desinstalar launcher','Zona de cuidado','Avançado › Zona de cuidado','Aba Avançado'],
- ['Colaboradores, Privacidade, Termos, Licenças','Rodapé','Avançado › Sobre','Rodapé da aba Avançado'],
+ ['Muito obrigado!','Fim da rolagem','Fim da raiz (preso embaixo)','Aba Avançado'],
+ ['Paleta de cores','Tile','Sheet Aparência › Tema','Tile (aba Aparência)'],
+ ['Cores personalizadas','Seção Aparência','Removido (D-08): fica em Fundo → Cor sólida','Aba Aparência'],
+ ['Alterar fonte','Tile','Sheet Aparência › Tema','Tile'],
+ ['Definir plano de fundo','Tile','Sheet Aparência › Fundo','Tile'],
+ ['Restaurar fundo','Seção Aparência','Sheet Aparência › Fundo','Aba Aparência'],
+ ['Escala da imagem','Seção Aparência','Sheet Aparência › Fundo','Aba Aparência'],
+ ['Ícones temáticos','Seção Aparência','Sheet Aparência › Tema','Aba Aparência'],
+ ['Cartões e vidro (borda, raio, efeito)','Tile + seção','Sheet Aparência › Cartões e vidro','Tile + aba Aparência'],
+ ['Home abre todos os apps','Gestos e lista','Sheet Comportamento › Gestos','Aba Comportamento'],
+ ['Todos os apps do lado esquerdo','Gestos e lista','Sheet Comportamento › Gestos','Aba Comportamento'],
+ ['Desativar rolagem alfabética','Gestos e lista','Sheet Comportamento › Gestos','Aba Comportamento'],
+ ['Exibir indicador de widgets','Tela inicial','Sheet Comportamento › Tela inicial','Aba Comportamento'],
+ ['Deslocamento do cabeçalho','Tela inicial','Sheet Comportamento › Tela inicial','Aba Comportamento'],
+ ['Verificar atualizações','Sistema','Sheet Comportamento › Atualizações','Aba Comportamento'],
+ ['Informações do app','Sistema','Sheet Avançado › Sistema','Aba Avançado'],
+ ['Novidades','Sistema','Sheet Avançado › Sistema','Aba Avançado'],
+ ['Launcher padrão','Sistema','Sheet Avançado › Sistema','Aba Avançado'],
+ ['Redefinir launcher','Zona de cuidado','Sheet Avançado › Zona de cuidado (fim)','Aba Avançado'],
+ ['Desinstalar launcher','Zona de cuidado','Sheet Avançado › Zona de cuidado (fim)','Aba Avançado'],
+ ['Colaboradores, Privacidade, Termos, Licenças','Rodapé','Sheet Avançado › Sobre','Rodapé da aba Avançado'],
 ];
-document.getElementById('inv').innerHTML=`<table><tr><td><b>Item de hoje</b></td><td><b>A</b></td><td><b>B</b></td><td><b>C</b></td></tr>${INV.map(r=>`<tr>${r.map(c=>`<td>${c}</td>`).join('')}</tr>`).join('')}</table>`;
+document.getElementById('inv').innerHTML=`<table><tr><td><b>Item de hoje</b></td><td><b>A</b></td><td><b>B (escolhida)</b></td><td><b>C</b></td></tr>${INV.map(r=>`<tr>${r.map(c=>`<td>${c}</td>`).join('')}</tr>`).join('')}</table>`;
 
 function show(v){
   document.querySelectorAll('#tabs button').forEach(b=>b.classList.toggle('on',b.dataset.v===v));
   document.getElementById('desc').innerHTML=V[v].desc;
-  document.getElementById('row').innerHTML=V[v].phones.map(([c,h])=>phone(c,h)).join('');
+  document.getElementById('row').innerHTML=V[v].phones.map(([c,h,k])=>phone(c,h,k)).join('');
+  if(v==='B') renderApp();
+  document.querySelectorAll('.bc.end').forEach(e=>e.scrollTop=e.scrollHeight);
 }
 document.getElementById('tabs').onclick=e=>{const b=e.target.closest('button'); if(b) show(b.dataset.v);};
-show('A');
+show('B');
 document.addEventListener('wheel',e=>{const w=e.target.closest('[data-wheel]'); if(!w) return; e.preventDefault(); let n=+w.dataset.wheel+(e.deltaY>0?1:-1); n=Math.max(0,Math.min(30,n)); w.dataset.wheel=n; w.innerHTML=`<span>${n-1}%</span><b>${n}%</b><span>${n+1}%</span>`;},{passive:false});
 let ty=null;document.addEventListener('touchstart',e=>{if(e.target.closest('[data-wheel]'))ty=e.touches[0].clientY;},{passive:true});
 document.addEventListener('touchmove',e=>{const w=e.target.closest('[data-wheel]'); if(!w||ty==null) return; const d=ty-e.touches[0].clientY; if(Math.abs(d)<14) return; ty=e.touches[0].clientY; let n=Math.max(0,Math.min(30,+w.dataset.wheel+(d>0?1:-1))); w.dataset.wheel=n; w.innerHTML=`<span>${n-1}%</span><b>${n}%</b><span>${n+1}%</span>`;},{passive:true});

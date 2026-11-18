@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Aureole · lote 17/11 · onboarding, favoritos, polimento</title>
+<style>
+  :root{--bg:#15181c;--surface:#2b373e;--sv:#4a5d6b;--card:rgba(74,93,107,.45);--hi:#fff;--mid:#c5d8e8;--low:#9bb4c8;--out:#7d96aa;--back:#12181d}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--hi);font:15px/1.45 "Istok Web",system-ui,-apple-system,Roboto,sans-serif}
+  header{padding:20px 18px 6px;max-width:1300px;margin:auto}
+  h1{margin:0 0 4px;font-size:20px}
+  header p{margin:0;color:var(--mid);font-size:14px;max-width:760px}
+  .tabs{display:flex;gap:6px;padding:12px 18px;max-width:1300px;margin:auto;flex-wrap:wrap;position:sticky;top:0;background:var(--bg);z-index:5}
+  .tabs button{all:unset;cursor:pointer;padding:7px 14px;border-radius:99px;background:#232a31;color:var(--mid);font-size:14px}
+  .tabs button.on{background:var(--hi);color:#111}
+  .desc{max-width:1300px;margin:auto;padding:0 18px;color:var(--mid);font-size:14px}
+  .desc b{color:var(--hi)}
+  .row{display:flex;gap:18px;overflow-x:auto;padding:14px 18px 22px;max-width:1300px;margin:auto;scroll-snap-type:x mandatory}
+  .ph{flex:none;scroll-snap-align:start}
+  .phone{width:290px;height:610px;background:#000;border-radius:30px;padding:8px;position:relative}
+  .scr{width:100%;height:100%;border-radius:23px;overflow:hidden;position:relative;background:var(--surface)}
+  .cap{font-size:12px;color:var(--low);text-align:center;margin-top:6px}
+  .st{height:22px;display:flex;justify-content:space-between;padding:0 14px;font-size:10px;color:var(--mid);align-items:center}
+  .nav{position:absolute;left:0;right:0;bottom:0;height:30px;display:flex;justify-content:space-around;align-items:center;color:var(--mid);font-size:13px;background:rgba(0,0,0,.15)}
+  .body{position:absolute;top:22px;left:0;right:0;bottom:30px;overflow:auto;padding:0 12px;scrollbar-width:none}
+  .lbl{font-size:10px;font-weight:700;letter-spacing:.06em;color:var(--low);text-transform:uppercase;padding:12px 4px 6px}
+  .t1{font-size:17px;font-weight:700;text-align:center;padding:10px 0 4px}
+  .mr{display:flex;align-items:center;gap:10px;min-height:44px;padding:4px 6px;border-radius:12px}
+  .mr .ic{width:28px;display:flex;justify-content:center;color:var(--mid)}
+  .mr .tx{flex:1;font-size:13px;line-height:1.25}
+  .mr .tx small{display:block;color:var(--low);font-size:10.5px}
+  .mr .ch{color:var(--low);font-size:13px}
+  .mr.danger .tx,.mr.danger .ic{color:#f1a7b2}
+  .grp{background:var(--card);border-radius:16px;padding:2px 4px;margin-bottom:6px}
+  .sw{width:30px;height:17px;border-radius:99px;background:var(--sv);position:relative;flex:none}
+  .sw.on{background:#9fc6e6}.sw::after{content:"";position:absolute;top:2px;left:2px;width:13px;height:13px;border-radius:50%;background:#fff}
+  .sw.on::after{left:15px;background:#12181d}
+  .sl{flex:none;width:86px;height:4px;border-radius:9px;background:var(--sv);position:relative}
+  .sl::after{content:"";position:absolute;left:var(--v,40%);top:-5px;width:14px;height:14px;border-radius:50%;background:#fff}
+  .grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+  .tile{height:66px;border-radius:14px;background:var(--card);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font-size:10px;color:var(--mid);text-align:center;line-height:1.1}
+  .mini{border-radius:18px;padding:10px 12px;margin:8px 4px 4px;background:linear-gradient(160deg,#25313c,#151b20)}
+  .mini .c{font-size:28px;font-weight:700;text-align:center}
+  .mini .d{font-size:10px;text-align:center;color:var(--mid)}
+  .mini .a{display:flex;gap:8px;justify-content:center;margin-top:8px}
+  .mini .a i{width:20px;height:20px;border-radius:6px;display:block}
+  .foot{display:flex;flex-wrap:wrap;gap:4px 12px;justify-content:center;font-size:11px;color:var(--low);padding:10px 0 4px}
+  .thanks{text-align:center;color:var(--mid);font-size:12px;padding:8px 0 14px}
+  .hdr{display:flex;flex-direction:column;align-items:center;padding:14px 0 6px}
+  .hdr h2{margin:6px 0 0;font-size:22px}
+  .hdr .v{font-size:11px;color:var(--out)}
+  .hdrS{display:flex;align-items:center;gap:10px;padding:10px 6px}
+  .hdrS h2{margin:0;font-size:17px}.hdrS .v{font-size:10px;color:var(--out)}
+  .card{background:var(--card);border-radius:20px;padding:12px 14px;margin:8px 2px;display:flex;gap:12px;align-items:center}
+  .card .tx{flex:1}.card .tx b{display:block;font-size:15px}.card .tx span{font-size:11px;color:var(--low)}
+  .card .chips{display:flex;gap:4px;margin-top:6px;flex-wrap:wrap}
+  .card .chips i{font-style:normal;font-size:9.5px;padding:2px 7px;border-radius:99px;background:rgba(255,255,255,.08);color:var(--mid)}
+  .back{display:flex;align-items:center;gap:8px;padding:10px 4px 2px;font-size:15px;font-weight:700}
+  .search{display:flex;align-items:center;gap:8px;height:38px;border-radius:99px;background:var(--card);padding:0 12px;color:var(--low);font-size:12px;margin:6px 2px}
+  .segb{display:flex;background:rgba(0,0,0,.25);border-radius:99px;padding:3px;margin:4px 2px 6px}
+  .segb span{flex:1;text-align:center;font-size:11px;padding:6px 0;border-radius:99px;color:var(--mid)}
+  .segb span.on{background:var(--hi);color:#111;font-weight:700}
+  .thumb{position:absolute;left:0;right:0;bottom:30px;padding:0 12px 6px;background:linear-gradient(transparent,var(--surface) 14%)}
+  .wheel{flex:none;width:44px;display:flex;flex-direction:column;align-items:center;line-height:1.15;font-variant-numeric:tabular-nums;cursor:ns-resize;user-select:none}
+  .wheel span{font-size:9px;color:var(--out);opacity:.7}
+  .wheel b{font-size:14px;color:var(--hi)}
+  .val{flex:none;font-size:12px;color:var(--low)}
+  .bs{position:absolute;left:0;right:0;bottom:30px;background:var(--surface);border-radius:22px 22px 0 0;box-shadow:0 -6px 24px rgba(0,0,0,.35);display:flex;flex-direction:column}
+  .bs .gzh{height:14px;flex:none}
+  .bs .bt{font-size:16px;font-weight:700;text-align:center;padding:8px 0 6px;flex:none}
+  .bs .bc{overflow:auto;padding:0 10px 10px;scrollbar-width:none;flex:1}
+  .dim{position:absolute;inset:22px 0 30px;background:rgba(5,8,10,.6)}
+  .pv{position:absolute;left:28px;right:28px}
+  .card.plain{padding:14px 16px}
+  .card.plain .tx b{font-size:15px}
+  .bc .lbl{padding-top:6px}
+  .bc .lbl ~ .lbl{padding-top:24px}
+  .phone.land{width:640px;height:300px}
+  .land .nav{left:auto;right:0;top:0;bottom:0;width:30px;height:auto;flex-direction:column}
+  .land .body{right:30px}
+  .lw{position:absolute;top:22px;left:0;right:30px;bottom:0;display:flex;gap:14px;padding:10px 12px 10px 16px}
+  .lw .pvL{flex:1;display:flex;align-items:center;justify-content:center}
+  .lw .pvL .mini{width:100%;max-width:240px;margin:0}
+  .lw .bsR{flex:1.15;background:var(--surface);border-radius:22px;display:flex;flex-direction:column;box-shadow:0 6px 24px rgba(0,0,0,.35);max-width:330px}
+  .grid2{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:2px}
+  .pal{border-radius:14px;padding:6px;background:var(--card);cursor:pointer;font-size:10px;color:var(--mid);text-align:center;border:2px solid transparent}
+  .pal.on{border-color:var(--hi)}
+  .pal i{display:block;height:26px;border-radius:9px;margin-bottom:4px}
+  .fnt{display:flex;align-items:center;justify-content:space-between;padding:10px 12px;border-radius:12px;cursor:pointer}
+  .fnt.on{background:var(--card)}
+  .fnt b{font-weight:400;font-size:15px}
+  .back2{display:flex;align-items:center;gap:6px;color:var(--low);font-size:11px;padding:0 4px 6px}
+  .clickable{cursor:pointer}
+  svg.i{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+  svg.logo{fill:currentColor}
+  .inv{max-width:1300px;margin:auto;padding:4px 18px 30px;color:var(--mid);font-size:13px}
+  .inv summary{cursor:pointer;color:var(--hi)}
+  .inv table{border-collapse:collapse;margin-top:8px;font-size:12.5px}
+  .inv td{padding:3px 10px 3px 0;border-bottom:1px solid #262d34;vertical-align:top}
+  .tag{display:inline-block;font-size:10px;padding:0 6px;border-radius:5px;background:#33414c;color:var(--mid);margin-left:4px}
+  .tabs button small{opacity:.7;margin-left:4px}
+  .sub{display:flex;gap:6px;padding:0 18px 4px;max-width:1300px;margin:auto}
+  .sub button{all:unset;cursor:pointer;padding:5px 12px;border-radius:99px;background:#1d242a;color:var(--low);font-size:12.5px;border:1px solid #2c363f}
+  .sub button.on{color:var(--hi);border-color:var(--hi)}
+  .home{position:absolute;inset:22px 0 30px;background:radial-gradient(120% 80% at 20% 10%,#22303b,#0e1317 70%)}
+  .gridbg{position:absolute;inset:8px;display:grid;grid-template-columns:repeat(20,1fr);grid-template-rows:repeat(30,1fr);gap:0}
+  .gitem{border-radius:14px;display:flex;align-items:center;justify-content:center;flex-direction:column;position:relative}
+  .gitem.dash{outline:1px dashed rgba(255,255,255,.18)}
+  .clk{font-weight:700;letter-spacing:-.02em;line-height:1}
+  .coach{position:absolute;left:10px;right:10px;top:30px;border-radius:18px;background:rgba(58,72,82,.92);padding:10px 14px;z-index:4}
+  .coach .dots{display:flex;gap:5px;margin-bottom:4px}
+  .coach .dots i{width:12px;height:12px;border-radius:50%;border:1.5px solid #7fc48d;display:block}
+  .coach .dots i.c{background:none}.coach .dots i.n{border-color:#fff;background:#fff;width:6px;height:6px;margin:3px}
+  .coach b{display:block;font-size:15px}.coach span{font-size:12px;color:var(--mid)}
+  .bs.lock .bc,.bs.lock .bt{pointer-events:none}
+  .lockbar{height:3px;border-radius:9px;background:rgba(255,255,255,.12);margin:6px 60px 0;overflow:hidden}
+  .lockbar i{display:block;height:100%;width:0;background:#9fc6e6}
+  .lockhint{font-size:10.5px;color:var(--low);text-align:center;padding-top:4px;display:flex;justify-content:center;gap:5px;align-items:center}
+  .bs.anim{transition:transform .45s cubic-bezier(.3,.7,.2,1)}
+  .bs.down{transform:translateY(105%)}
+  .btn{all:unset;cursor:pointer;font-size:12px;padding:6px 12px;border-radius:99px;background:#26313a;color:var(--hi)}
+  .ck{background:rgba(43,55,62,.95);border-radius:20px;margin:10px;padding:12px 12px 6px;position:absolute;left:0;right:0;top:24px}
+  .ck h3{margin:0;font-size:16px}.ck .p{font-size:11px;color:var(--low)}
+  .ck .it{display:flex;align-items:center;gap:10px;padding:8px 2px;font-size:13px;border-top:1px solid rgba(255,255,255,.05)}
+  .ck .it .b{width:18px;height:18px;border-radius:50%;border:1.5px solid var(--out);flex:none;display:flex;align-items:center;justify-content:center;font-size:11px}
+  .ck .it.done .b{background:#7fc48d;border-color:#7fc48d;color:#10161a}
+  .ck .it.done .t{color:var(--low);text-decoration:line-through}
+  .ck .it .v{margin-left:auto;font-size:10px;padding:2px 7px;border-radius:99px;background:rgba(255,255,255,.08);color:var(--mid)}
+  .ck .it.next{outline:1.5px solid rgba(255,255,255,.5);border-radius:12px;padding-left:6px}
+  .tag2{position:absolute;bottom:8px;left:8px;font-size:9.5px;padding:2px 7px;border-radius:99px;background:rgba(0,0,0,.45);color:var(--mid);z-index:3}
+  .tag2.ok{background:#2f5a3a;color:#cfeed6}.tag2.bad{background:#5a2f36;color:#f5ccd3}
+  .cont{border-radius:16px;display:flex;flex-direction:column;gap:7px;padding:8px 4px;align-items:center;justify-content:space-between}
+  .fold{width:30px;height:30px;border-radius:10px;background:rgba(255,255,255,.12);display:grid;grid-template-columns:1fr 1fr;gap:2px;padding:4px}
+  .fold i{border-radius:3px;display:block}
+  .fold.list{display:flex;align-items:center;justify-content:center;color:var(--mid)}
+  .flab{font-size:8.5px;color:var(--mid);margin-top:-5px}
+  .app{width:22px;height:22px;border-radius:7px;flex:none;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#111}
+  .arow{display:flex;align-items:center;gap:10px;padding:6px 8px;border-radius:12px;font-size:13px}
+  .arow.card2{background:var(--card);margin-bottom:4px}
+  .arow .plus{margin-left:auto;width:22px;height:22px;border-radius:50%;background:rgba(159,198,230,.18);color:#9fc6e6;display:flex;align-items:center;justify-content:center;font-size:15px}
+  .arow .grip{margin-left:auto;color:var(--low);letter-spacing:-2px}
+  .arow .rm{width:22px;height:22px;border-radius:50%;background:rgba(241,167,178,.15);color:#f1a7b2;display:flex;align-items:center;justify-content:center;font-size:14px}
+  .chip{display:inline-flex;align-items:center;gap:5px;font-size:11px;padding:6px 10px;border-radius:99px;background:var(--card);color:var(--mid);cursor:pointer;user-select:none}
+  .chip.on{background:#d9e8f4;color:#10161a;font-weight:700}
+  .chips{display:flex;gap:6px;flex-wrap:wrap;padding:2px 2px 6px}
+  .sticky{position:sticky;top:0;background:var(--surface);z-index:2;display:flex;justify-content:space-between;align-items:center;font-size:12px;font-weight:700;padding:10px 4px 6px;color:var(--hi)}
+  .sticky span{font-weight:400;color:var(--low);font-size:11px}
+  .note{font-size:11px;color:var(--mid);background:rgba(159,198,230,.08);border-radius:10px;padding:7px 10px;margin:0 2px 4px;display:flex;gap:8px;align-items:center}
+  .ttl{display:flex;align-items:center;justify-content:center;position:relative;padding:0!important;margin:10px 0 8px;height:28px;flex:none}
+  .ttl b{line-height:28px}
+  .ttl b{font-size:16px}
+  .ttl .act{position:absolute;right:6px;top:50%;transform:translateY(-50%);width:36px;height:36px;display:flex;align-items:center;justify-content:center;border-radius:12px;color:var(--mid);cursor:pointer}
+  .ttl .act.l{left:6px;right:auto}
+  .ttl .old{position:absolute;right:8px;top:4px;color:var(--hi)}
+  .ring{position:relative;width:36px;height:36px;display:flex;align-items:center;justify-content:center;transition:transform .12s}
+  .ring svg.r{position:absolute;inset:0;transform:rotate(-90deg)}
+  .ring svg.r circle{fill:none;stroke-width:2;stroke-linecap:round}
+  .ring:active{transform:scale(.9)}
+  .ring.spin svg.r{animation:spin 1.1s linear infinite}
+  @keyframes spin{to{transform:rotate(270deg)}}
+  .toast{position:absolute;left:50%;bottom:44px;transform:translateX(-50%);background:#e9f1f7;color:#111;font-size:11px;padding:6px 12px;border-radius:99px;opacity:0;transition:opacity .2s;white-space:nowrap;z-index:9}
+  .toast.on{opacity:1}
+  .sw2{display:flex;gap:6px;overflow:hidden;padding:2px}
+  .sw2 i{width:30px;height:30px;border-radius:50%;flex:none;display:block;border:2px solid transparent}
+  .sw2 i.on{border-color:#fff;box-shadow:inset 0 0 0 2px #2b373e}
+  .sw2 .cap2{font-size:9px;color:var(--mid);text-align:center}
+  .typec{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .typec div{height:62px;border-radius:14px;background:var(--card);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font-size:11px;color:var(--mid)}
+  .typec div.on{outline:2px solid #fff;color:var(--hi)}
+  .hue{height:10px;border-radius:9px;background:linear-gradient(90deg,#e53935,#fdd835,#43a047,#00acc1,#3949ab,#8e24aa,#e53935);margin:10px 4px 4px;position:relative}
+  .hue::after{content:"";position:absolute;left:47%;top:-5px;width:4px;height:20px;border-radius:3px;background:#fff}
+  .pills{display:flex;gap:6px}
+  .pills span{flex:1;text-align:center;font-size:10.5px;padding:8px 0;border-radius:12px;background:var(--card);color:var(--mid)}
+  .pills span.on{background:#fff;color:#111}
+  .gap16{height:16px}
+  .lblS{font-size:10px;font-weight:700;letter-spacing:.06em;color:var(--low);text-transform:uppercase;padding:18px 4px 8px}
+  .lblS:first-child{padding-top:6px}
+  .strike{position:relative;opacity:.55}
+  .strike::after{content:"";position:absolute;left:0;right:0;top:50%;border-top:1.5px solid #f1a7b2}
+  .mrx{display:flex;align-items:center;gap:10px;min-height:44px;padding:4px 6px;font-size:13px}
+  .mrx .ic{width:36px;height:36px;display:flex;align-items:center;justify-content:center;flex:none}
+  .mrx.tq .ic{background:rgba(241,167,178,.16);border-radius:9px}
+  .mrx.danger{color:#f1a7b2}.mrx.danger .ic{color:#f1a7b2}
+  .mrx small{display:block;font-size:10.5px;color:var(--low)}
+  .med{color:var(--mid)}.high{color:var(--hi)}
+  .guide{position:absolute;top:0;bottom:0;border-left:1px dashed #f5d36b;opacity:.8}
+  .legend{font-size:11px;color:var(--low);padding:4px 6px}
+  .halo{width:64px;height:64px;position:relative;display:flex;align-items:center;justify-content:center}
+  .halo svg.r{position:absolute;inset:0;transform:rotate(-90deg)}
+  .demoRing{display:flex;gap:18px;justify-content:center;padding:14px 0;flex-wrap:wrap}
+  .demoRing div{display:flex;flex-direction:column;align-items:center;gap:6px;font-size:10.5px;color:var(--low)}
+  .twoCol{display:flex;gap:10px;height:100%}
+  .twoCol>div{flex:1;min-width:0;overflow:auto;scrollbar-width:none}
+  @media (prefers-reduced-motion: reduce){.bs.anim{transition:none}.ring.spin svg.r{animation:none}}
+  .bsR .bc{flex:1;min-height:0;overflow:auto;padding:0 10px 8px;scrollbar-width:none}
+  .bsR .gzh{display:none}
+  .press .lg{display:flex;transition:transform .45s cubic-bezier(.34,1.56,.64,1)}
+  .press.down .lg{transform:scale(.86) rotate(-18deg);transition:transform .18s ease-out}
+  .press.down{background:rgba(255,255,255,.06)}
+  .press{width:48px!important;height:48px!important;border-radius:50%!important;transition:background .2s}
+  @media (prefers-reduced-motion: reduce){.press .lg{transition:none}}
+  .sw2 i{box-shadow:inset 0 0 0 1px rgba(255,255,255,.18)}
+  .namepill{display:inline-flex;align-items:center;gap:8px;padding:7px 10px 7px 14px;border-radius:99px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.16);font-size:15px;font-weight:700;cursor:text;transition:background .15s,border-color .15s}
+  .namepill:hover{background:rgba(255,255,255,.12)}
+  .namepill .pen{width:24px;height:24px;border-radius:50%;background:rgba(255,255,255,.14);display:flex;align-items:center;justify-content:center;color:var(--hi)}
+  .namepill.focus{border-color:#9fc6e6;background:rgba(159,198,230,.12)}
+  .namepill .caret{color:#9fc6e6;font-weight:400;margin-left:-6px;animation:blink 1s steps(1) infinite}
+  @keyframes blink{50%{opacity:0}}
+  .ttl .act svg.logo{display:block}
+  .mr .tx{color:#d3e1ec}
+  .ttl b{padding:0 52px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%;box-sizing:border-box}
+</style>
+</head>
+<body>
+<header>
+  <h1>Lote 17/11 · 5 specs + teste no aparelho</h1>
+  <p>ajustes-onboarding · favoritos-redesign · polimento-ui (com o anel do logo) · pasta-form · botao-rapido. Role os aparelhos para o lado; botões e chips são clicáveis.</p>
+</header>
+<div class="tabs" id="tabs"></div>
+<div class="sub" id="subs"></div>
+<div class="desc" id="desc"></div>
+<div class="row" id="row"></div>
+<script>
+const LOGO=(w,h)=>`<svg class="logo" viewBox="0 0 128 73" width="${w}" height="${h}"><path d="M92.2754 35.8133C92.3018 35.8545 95.6394 41.0686 95.6396 45.0604C95.6396 49.0681 92.1152 65.4415 74.0127 71.1737C55.9102 76.9057 42.2931 67.6709 38.9287 63.6903C35.5741 59.7209 43.0513 53.5223 43.0938 53.4871C43.127 53.5306 55.7759 70.0227 75.7744 62.0848C95.7515 54.1553 92.2921 35.9007 92.2754 35.8133ZM49.3418 3.33088C68.8859 -5.267 82.0223 4.76219 93.877 11.1287C108.544 19.0057 117.587 15.2728 128 13.9949C128 13.9949 103.349 23.9334 83.3818 31.8074C85.6835 41.1114 80.821 50.9249 71.6221 54.619C62.056 58.4604 51.238 54.304 46.666 45.3162C26.0985 52.1355 0 60.1707 0 60.1707C6.24781 56.0349 20.4569 48.1355 22.5879 43.1229C27.3939 31.8179 29.7974 11.929 49.3418 3.33088ZM80.2539 33.0389C74.2362 35.4045 68.8198 37.5117 64.8809 38.9979C60.4299 40.6773 53.9747 42.8924 46.8418 45.2586C47.6531 46.5004 48.5903 47.637 49.6318 48.6444C55.3917 54.2956 64.1957 55.4927 70.6768 52.2938C78.0877 48.9243 81.915 40.4358 80.2539 33.0389ZM87.79 23.7117C87.79 23.7117 74.653 5.11691 54.4678 13.8397C34.3381 22.5385 38.9035 41.916 38.9287 42.0223L44.8242 39.8123C43.2592 30.9096 48.0875 21.824 56.8584 18.3016C65.9254 14.6606 76.1178 18.2043 81.0498 26.2371L87.79 23.7117ZM77.8711 27.4285C73.7799 21.2433 65.3147 17.9952 57.8037 20.6268C50.906 22.8005 45.4094 29.7403 45.2158 37.7821C45.1964 38.4024 45.2107 39.0265 45.252 39.6522L77.8711 27.4285Z"/></svg>`;
+const P={
+ fill:'<path d="M5 12 12 5l6 6-7 7z"/><path d="M19 15s2 2.2 2 3.5a2 2 0 0 1-4 0C17 17.2 19 15 19 15z"/><path d="M4 21h11"/>',
+ font:'<path d="M5 7V5h10v2M10 5v14M7 19h6M15 12h5M17.5 12v7"/>',
+ image:'<rect x="3" y="4" width="18" height="16" rx="3"/><circle cx="9" cy="10" r="2"/><path d="m3 18 6-5 4 3 3-2 5 4"/>',
+ glass:'<rect x="4" y="4" width="16" height="16" rx="5"/><path d="M8 15 15 8"/>',
+ drop:'<path d="M12 3s6 6.5 6 11a6 6 0 0 1-12 0c0-4.5 6-11 6-11z"/>',
+ undo:'<path d="M9 7 4 12l5 5"/><path d="M4 12h10a6 6 0 0 1 0 12"/>',
+ scale:'<path d="M4 9V4h5M20 15v5h-5M4 4l6 6M20 20l-6-6"/>',
+ apps:'<circle cx="6" cy="6" r="1.4"/><circle cx="12" cy="6" r="1.4"/><circle cx="18" cy="6" r="1.4"/><circle cx="6" cy="12" r="1.4"/><circle cx="12" cy="12" r="1.4"/><circle cx="18" cy="12" r="1.4"/><circle cx="6" cy="18" r="1.4"/><circle cx="12" cy="18" r="1.4"/><circle cx="18" cy="18" r="1.4"/>',
+ corners:'<path d="M4 10V7a3 3 0 0 1 3-3h3M14 4h3a3 3 0 0 1 3 3v3M20 14v3a3 3 0 0 1-3 3h-3M10 20H7a3 3 0 0 1-3-3v-3"/>',
+ home:'<path d="M9,21V15.5A2,2 0,0 1,11,13.5H13A2,2 0,0 1,15,15.5V21H18.5A2,2 0,0 0,20.5,19V10A2,2 0,0 0,19.8,8.5L13.3,3A2,2 0,0 0,10.7,3L4.2,8.5A2,2 0,0 0,3.5,10V19A2,2 0,0 0,5.5,21Z"/>',
+ hand:'<path d="M9 11V5a1.5 1.5 0 0 1 3 0v5l4.3.9a2 2 0 0 1 1.6 2.2L17.2 18a3 3 0 0 1-3 2.5h-2.6a3 3 0 0 1-2.5-1.3L6 15"/>',
+ az:'<path d="M5 18 8 6l3 12M6 14h4M14 6h5l-5 12h5"/>',
+ dots:'<circle cx="6" cy="12" r="1.3"/><circle cx="12" cy="12" r="1.3"/><circle cx="18" cy="12" r="1.3"/>',
+ header:'<path d="M4 5h16M4 9h10M12 14v6M9 17l3 3 3-3"/>',
+ refresh:'<path d="M4 12a8 8 0 0 1 14-5.3L20 9M20 4v5h-5M20 12a8 8 0 0 1-14 5.3L4 15M4 20v-5h5"/>',
+ info:'<circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/>',
+ smile:'<circle cx="12" cy="12" r="9"/><path d="M8.5 14.5a4.5 4.5 0 0 0 7 0M9 9.5h.01M15 9.5h.01"/>',
+ trash:'<path d="M5 7h14M10 7V4h4v3M7 7l1 13h8l1-13"/>',
+ edit:'<path d="M14 4H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><path d="M17 3l4 4-9 9H8v-4z"/>',
+ list:'<rect x="4" y="4" width="16" height="16" rx="3"/><path d="M8 9h8M8 13h8M8 17h5"/>',
+ search:'<circle cx="11" cy="11" r="6"/><path d="m20 20-4-4"/>',
+ users:'<circle cx="9" cy="8" r="3"/><path d="M3 20a6 6 0 0 1 12 0M16 4a3 3 0 0 1 0 6M21 20a6 6 0 0 0-4-5.7"/>',
+ doc:'<path d="M7 3h7l5 5v13H7z"/><path d="M14 3v5h5M10 13h6M10 17h6"/>'
+};
+const ic=(n,s=18)=>`<svg class="i" viewBox="0 0 24 24" style="width:${s}px;height:${s}px">${P[n]}</svg>`;
+const st='<div class="st"><span>14:57</span><span>◔ ▲ ▮ 62</span></div>';
+const nav='<div class="nav"><span>‹</span><span>○</span><span>|||</span></div>';
+const phone=(cap,inner,kind)=>`<div class="ph"><div class="phone ${kind||''}"><div class="scr">${st}${inner}${kind==='land'?'<div class="nav"><span>‹</span><span>○</span><span>|||</span></div>':nav}</div></div><div class="cap">${cap}</div></div>`;
+const row=(i,t,sub,trail='<span class="ch">›</span>',cls='')=>`<div class="mr ${cls}"><div class="ic">${ic(i)}</div><div class="tx">${t}${sub?`<small>${sub}</small>`:''}</div>${trail}</div>`;
+const SW=on=>`<span class="sw ${on?'on':''}"></span>`;
+const SL=v=>`<span class="sl" style="--v:${v}"></span>`;
+const WH=n=>`<span class="wheel" data-wheel="${n}"><span>${n-1}%</span><b>${n}%</b><span>${n+1}%</span></span>`;
+const VAL=t=>`<span class="val">${t}</span>`;
+const mini=()=>`<div class="mini"><div class="c">09:41</div><div class="d">Segunda, 16 de novembro</div><div class="a"><i style="background:#3f8a49"></i><i style="background:#e7873a"></i><i style="background:#3a6fd1"></i><i style="background:#7d58bd"></i></div></div>`;
+const tile=(i,t)=>`<div class="tile">${ic(i,20)}${t}</div>`;
+const legal=`<div class="foot"><span>Colaboradores</span><span>Privacidade</span><span>Termos</span><span>Licenças</span></div>`;
+Object.assign(P,{
+ x:'<path d="M6 6l12 12M18 6 6 18"/>',
+ lock:'<rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/>',
+ move:'<path d="M12 3v18M3 12h18M8 7l4-4 4 4M8 17l4 4 4-4M7 8l-4 4 4 4M17 8l4 4-4 4"/>',
+ clock:'<rect x="4" y="5" width="16" height="15" rx="3"/><path d="M4 10h16M8 3v4M16 3v4"/>',
+ grid:'<circle cx="7" cy="7" r="1.5"/><circle cx="12" cy="7" r="1.5"/><circle cx="17" cy="7" r="1.5"/><circle cx="7" cy="12" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="17" cy="12" r="1.5"/><circle cx="7" cy="17" r="1.5"/><circle cx="12" cy="17" r="1.5"/><circle cx="17" cy="17" r="1.5"/>',
+ cont:'<rect x="8" y="3" width="8" height="18" rx="3"/><path d="M12 7v.5M12 12v.5M12 17v.5"/>',
+ wg:'<rect x="4" y="4" width="7" height="7" rx="2"/><rect x="13" y="4" width="7" height="7" rx="2"/><rect x="4" y="13" width="7" height="7" rx="2"/><rect x="13" y="13" width="7" height="7" rx="2"/>',
+ tap:'<path d="M9 11V6a1.5 1.5 0 0 1 3 0v5M12 10.5V9a1.5 1.5 0 0 1 3 0v3M15 11a1.5 1.5 0 0 1 3 0v3a6 6 0 0 1-6 6h-1a5 5 0 0 1-4-2l-3-4a1.5 1.5 0 0 1 2.3-2L9 14"/>',
+ plus:'<path d="M12 5v14M5 12h14"/>',
+ back:'<path d="M15 5l-7 7 7 7"/>',
+ lockscreen:'<rect x="6" y="3" width="12" height="18" rx="3"/><rect x="9.5" y="11" width="5" height="4" rx="1"/><path d="M10.5 11V9.5a1.5 1.5 0 0 1 3 0V11"/>'
+});
+const APPS=[['99','#ffd51f'],['Agenda','#4285f4'],['Aginet','#16c7d9'],['Banco','#ff7a1a'],['Câmera','#9aa5ad'],['Chrome','#e8453c'],['Drive','#1fa463'],['Fotos','#fbbc05'],['Gmail','#ea4335'],['Maps','#34a853'],['Spotify','#1db954'],['WhatsApp','#25d366']];
+const app=(a,s=22)=>`<span class="app" style="background:${a[1]};width:${s}px;height:${s}px">${a[0][0]}</span>`;
+
+/* ---------- ONBOARDING ---------- */
+const coach=(t,s,done=2)=>`<div class="coach"><div class="dots">${'<i class="c">'.repeat(0)}${[0,1,2].map(i=>i<done?'<i style="background:none;position:relative"><svg viewBox="0 0 12 12" width="12" height="12" style="position:absolute;left:-1.5px;top:-1.5px"><path d="M3 6.2 5.2 8.3 9 4" stroke="#7fc48d" stroke-width="1.6" fill="none"/></svg></i>':'<i class="n"></i>').join('')}</div><b>${t}</b><span>${s}</span></div>`;
+const custSheet=(id,lock)=>`<div class="bs ${lock?'lock anim':''}" id="${id}" style="height:55%">
+  <div class="gzh"></div><div class="ttl" style="padding-top:0"><b>Personalizar</b>${lock?`<span class="act" style="width:48px;height:48px"><span class="ring" id="${id}-ring" style="width:30px;height:30px">${ringSvg(0,30,'#9fc6e6',2).replace('transition:stroke-dashoffset .35s cubic-bezier(.3,.7,.2,1)','')}${LOGO(16,9)}</span></span>`:''}</div>
+  <div class="bc"><div class="lbl">Ajustar</div><div class="grid4" style="grid-template-columns:repeat(3,1fr)">${tile('move','Layout')}${tile('fill','Paleta')}${tile('font','Fonte')}</div>
+  <div class="lbl">Adicionar à home</div><div class="grid4">${tile('clock','Relógio')}${tile('grid','Lista de apps')}${tile('cont','Container')}${tile('wg','Grupo de widgets')}${tile('list','Grupo rolável')}${tile('tap','Botão rápido')}${tile('plus','Widget')}</div></div></div>`;
+const checklist=(rows)=>`<div class="ck"><div style="display:flex;justify-content:space-between;align-items:center"><div><h3>Primeiros passos</h3><div class="p">${rows.filter(r=>r[1]).length} de 9 etapas</div></div>${LOGO(26,15)}</div>${rows.map(r=>`<div class="it ${r[1]?'done':''} ${r[3]?'next':''}"><span class="b">${r[1]?'✓':''}</span><span class="t">${r[0]}</span>${r[2]?`<span class="v">${r[2]}</span>`:''}</div>`).join('')}</div>`;
+const pickerSheet=`<div class="bs" style="height:52%"><div class="gzh"></div><div class="bt">Escolher uma paleta</div><div class="bc"><div class="grid2">${[['Frostbite','#9fc6e6,#2b373e',1],['Aurora','#7fe0c4,#22403a'],['Duna','#e8c48a,#3b3227'],['Ameixa','#c9a2e8,#342a3d'],['Brasa','#f29a7a,#3d2a25'],['Grafite','#c9ced2,#2a2d30']].map(p=>`<div class="pal ${p[2]?'on':''}"><i style="background:linear-gradient(90deg,${p[1]})"></i>${p[0]}</div>`).join('')}</div>
+</div></div></div>`;
+const clockHome=(big)=>`<div class="home"><div class="gridbg">
+ <div class="gitem dash" style="grid-column:1 / span ${big?20:10};grid-row:1 / span ${big?6:4}"><div class="clk" style="font-size:${big?58:30}px">09:41</div><div style="font-size:${big?12:8.5}px;color:var(--mid);margin-top:${big?6:3}px">Segunda, 16 de novembro</div></div>
+ <div class="gitem" style="grid-column:1 / span 16;grid-row:13 / span 17;align-items:flex-start;justify-content:flex-start;padding:8px;gap:10px">${APPS.slice(0,6).map(a=>`<div style="display:flex;gap:8px;align-items:center;font-size:12px">${app(a)}${a[0]}</div>`).join('')}</div>
+ </div><span class="tag2 ${big?'ok':'bad'}">${big?'Depois · 20×6 (igual ao “Não mostrar mais”)':'Hoje · 10×4'}</span></div>`;
+const contHome=(neu)=>{
+ const f=(n,c)=> neu?`<div class="fold">${c.map(x=>`<i style="background:${x}"></i>`).join('')}</div>`:`<div class="fold list">${ic('list',14)}</div><div class="flab">${n}</div>`;
+ return `<div class="home"><div class="gridbg">
+ <div class="gitem" style="grid-column:17 / span 4;grid-row:4 / span 18"><div class="cont" style="height:100%;width:100%;${neu?'':'background:rgba(74,93,107,.55)'}">
+ ${f('Social',['#25d366','#e1306c','#1da1f2','#0088cc'])}${f('Trabalho',['#ea4335','#4285f4','#1fa463','#fbbc05'])}${f('Banco',['#ff7a1a','#7d58bd','#00a86b','#e8453c'])}${f('Jogos',['#9aa5ad','#16c7d9','#ffd51f','#8e24aa'])}
+ <div class="fold list" style="background:none;border:1.5px dashed rgba(255,255,255,.25)">${ic('plus',14)}</div></div></div>
+ <div class="gitem" style="grid-column:1 / span 15;grid-row:4 / span 18;align-items:flex-start;justify-content:flex-start;padding:8px;gap:10px">${APPS.slice(0,7).map(a=>`<div style="display:flex;gap:8px;align-items:center;font-size:12px">${app(a)}${a[0]}</div>`).join('')}</div>
+ </div><span class="tag2 ${neu?'ok':'bad'}">${neu?'Depois · sem fundo, sem rótulos, pasta em grade':'Hoje · com fundo, rótulos, pasta em lista'}</span></div>`};
+
+/* ---------- FAVORITOS ---------- */
+let favCount=0, showAll=true, labels=true;
+const favRows=n=>APPS.slice(0,n).map(a=>`<div class="arow card2">${app(a,26)}${a[0]}<span class="grip">⋮⋮</span><span class="rm">−</span></div>`).join('');
+const allRows=(from,n)=>APPS.slice(from,from+n).map(a=>`<div class="arow">${app(a,26)}${a[0]}<span class="plus">+</span></div>`).join('');
+const favChips=()=>`<div class="chips"><span class="chip ${showAll?'on':''}" data-chip="all">${showAll?'✓ ':''}Mostrar todos os apps</span><span class="chip ${labels?'on':''}" data-chip="lab" style="${showAll?'':'opacity:.4;pointer-events:none'}">${labels?'✓ ':''}Rótulos</span></div>`;
+const favNote=()=>favCount?'':`<div class="note">${ic('info',14)} ${showAll?'Sem favoritos: a home mostra todos os 189 apps.':'Sem favoritos: a lista fica vazia na home.'} Toque em + para escolher.</div>`;
+const favTitle=(extra='')=>`<div class="ttl"><span class="act l" title="Personalizar home">${ic('edit',18)}</span><b>Escolher favoritos</b><span class="act">${LOGO(16,9)}</span>${extra}</div>`;
+const favA=()=>`<div class="bs" style="top:22px;border-radius:0"><div class="gzh" style="height:6px"></div>${favTitle()}
+ <div class="bc" style="padding-bottom:0">${favChips()}${favNote()}
+  <div class="sticky">Favoritos <span>${favCount} · segure ⋮⋮ para ordenar</span></div>${favCount?favRows(favCount):'<div class="legend" style="text-align:center;padding:8px">Nenhum ainda</div>'}
+  <div class="sticky">Todos os apps <span>189</span></div>${allRows(favCount,9)}</div>
+ <div style="padding:6px 10px 10px"><div class="search" style="margin:0">${ic('search',16)} Buscar aplicativo…</div></div></div>`;
+const favAland=()=>`<div class="lw"><div class="pvL"><div class="mini" style="padding:12px"><div style="font-size:9px;letter-spacing:.06em;color:var(--low);margin-bottom:6px">${labels&&showAll?(favCount?'FAVORITOS':'TODOS OS APPS'):''}</div>${APPS.slice(0,4).map(a=>`<div style="display:flex;gap:8px;align-items:center;font-size:12px;padding:3px 0">${app(a,22)}${a[0]}</div>`).join('')}</div></div>
+ <div class="bsR"><div class="ttl" style="padding:8px 0 2px"><span class="act l">${ic('edit',16)}</span><b style="font-size:14px">Escolher favoritos</b><span class="act">${LOGO(16,9)}</span></div>
+ <div class="bc" style="padding:0 10px">${favChips()}<div class="sticky" style="padding-top:4px">Favoritos <span>${favCount}</span></div>${favCount?favRows(favCount):''}<div class="sticky">Todos os apps <span>189</span></div>${allRows(favCount,6)}</div>
+ <div style="padding:4px 10px 8px"><div class="search" style="margin:0;height:32px">${ic('search',14)} Buscar aplicativo…</div></div></div></div>`;
+let bTab=0;
+const favB=()=>`<div class="bs" style="top:22px;border-radius:0"><div class="gzh" style="height:6px"></div>${favTitle()}
+ <div class="segb" style="margin:0 12px 6px"><span class="${bTab?'':'on'}" data-btab="0">Seus favoritos · ${favCount}</span><span class="${bTab?'on':''}" data-btab="1">Adicionar apps</span></div>
+ ${bTab?`<div style="padding:0 10px"><div class="search" style="margin:0 0 4px">${ic('search',16)} Buscar entre 189 apps…</div></div><div class="bc">${allRows(favCount,11)}</div>`:
+ `<div class="bc">${favCount?favRows(favCount):`<div class="note" style="margin-top:4px">${ic('info',14)} Nenhum favorito ainda. Toque em “Adicionar apps”.</div>`}
+  <div class="lblS">Quando a lista estiver vazia</div><div class="grp">${row('apps','Mostrar todos os apps','A home mostra os 189 apps',SW(showAll))}${row('list','Mostrar rótulos','“Favoritos” e “Todos os apps”',SW(labels))}</div></div>`}</div>`;
+const favBland=()=>`<div class="lw"><div class="pvL"><div class="mini" style="padding:12px">${APPS.slice(0,4).map(a=>`<div style="display:flex;gap:8px;align-items:center;font-size:12px;padding:3px 0">${app(a,22)}${a[0]}</div>`).join('')}</div></div>
+ <div class="bsR"><div class="ttl" style="padding:8px 0 2px"><span class="act l">${ic('edit',16)}</span><b style="font-size:14px">Escolher favoritos</b><span class="act">${LOGO(16,9)}</span></div>
+ <div class="segb" style="margin:0 10px 4px"><span class="${bTab?'':'on'}" data-btab="0">Favoritos · ${favCount}</span><span class="${bTab?'on':''}" data-btab="1">Adicionar</span></div>
+ <div class="bc">${bTab?`<div class="search" style="margin:0 0 4px;height:32px">${ic('search',14)} Buscar…</div>${allRows(favCount,5)}`:(favCount?favRows(favCount):`<div class="note">${ic('info',14)} Nenhum favorito ainda.</div>`)+`<div class="grp" style="margin-top:6px">${row('apps','Mostrar todos os apps','',SW(showAll))}${row('list','Mostrar rótulos','',SW(labels))}</div>`}</div></div></div>`;
+
+/* ---------- POLIMENTO ---------- */
+const ringSvg=(p,size=36,col='#9fc6e6',w=2)=>{const r=size/2-w;const c=2*Math.PI*r;return `<svg class="r" viewBox="0 0 ${size} ${size}" width="${size}" height="${size}"><circle cx="${size/2}" cy="${size/2}" r="${r}" stroke="rgba(255,255,255,.12)" stroke-width="${w}" fill="none"/><circle class="arc" cx="${size/2}" cy="${size/2}" r="${r}" stroke="${col}" stroke-width="${w}" stroke-dasharray="${c}" stroke-dashoffset="${c*(1-p)}" fill="none" style="transition:stroke-dashoffset .35s cubic-bezier(.3,.7,.2,1)"/></svg>`};
+const logoBtn=(id)=>`<span class="act press" data-press="${id}" title="Ajustes do Aureole"><span class="lg">${LOGO(16,9)}</span></span>`;
+const swRow=`<div class="sw2">${['#0e1317','#2b373e','#4a5d6b','#9bb4c8'].map((c,i)=>`<div><i class="${i==2?'on':''}" style="background:${c}"></i><div class="cap2">${['Fundo','Superfície','Variante','Contorno'][i]}</div></div>`).join('')}</div>`;
+const fundoBody=(spacing)=>{const L=spacing?'lblS':'lbl';return `
+ <div class="${L}">Tipo</div><div class="typec"><div class="on">${ic('drop',18)}Cor sólida</div><div>${ic('image',18)}Imagem personalizada</div></div>
+ <div class="mr" style="margin-top:${spacing?10:2}px;${spacing?'':'background:rgba(0,0,0,.18);border-radius:0'}"><div class="ic">${ic('lockscreen')}</div><div class="tx">Usar também na tela de bloqueio</div>${SW(false)}</div>
+ <div class="${L}">Do seu tema</div>${swRow}
+ <div class="${L}">Paletas</div><div class="pills"><span class="on">Frias</span><span>Frescas</span><span>Neutras</span><span>Quentes</span></div>
+ <div class="sw2" style="margin-top:8px">${['#2b373e','#0b5f63','#18393d','#2a2a33','#33352c','#152238','#3a4650'].map((c,i)=>`<i class="${i?'':'on'}" style="background:${c}"></i>`).join('')}</div>
+ <div class="${L}">Tons</div><div class="sw2">${['#0f1820','#18242e','#24384a','#36556e','#4f7896','#7ea3c2','#b9cddd'].map(c=>`<i style="background:${c}"></i>`).join('')}</div><div class="hue"></div>
+ ${spacing?'<div style="height:12px"></div>':`<div class="lbl strike">Vivas</div><div class="sw2 strike">${['#fff','#8ec9f9','#e3bfe6','#ffe08a','#a5d6a7','#ffab91'].map(c=>`<i style="background:${c}"></i>`).join('')}</div>`}`};
+const fundoInSheet=(land)=> land?`<div class="lw"><div class="pvL">${mini()}</div><div class="bsR"><div class="ttl" style="padding:8px 0 4px"><b style="font-size:14px">Definir plano de fundo</b></div><div class="bc">${fundoBody(true)}</div></div></div>`:
+ `<div class="home" style="background:linear-gradient(160deg,#25313c,#151b20)"><div style="padding:0 40px">${mini()}</div></div>
+ <div class="bs" style="top:190px"><div class="gzh"></div><div class="ttl" style="padding-top:0"><b>Definir plano de fundo</b></div><div class="bc">${fundoBody(true)}</div></div>`;
+const fundoBefore=`<div class="bs" style="top:22px;border-radius:22px 22px 0 0"><div class="gzh"></div><div class="ttl" style="padding-top:2px"><b>Definir plano de fundo</b><span class="old">${LOGO(16,9)}</span></div><div class="bc">${fundoBody(false)}</div></div><span class="tag2 bad">Hoje · sheet trocada, logo, Vivas, rótulos colados</span>`;
+const advRows=(after)=>{const t=(i,txt,sub)=>`<div class="mrx"><div class="ic med">${ic(i)}</div><div class="${after||sub?'':''}" style="flex:1"><span class="${after?'med':(sub?'high':'med')}">${txt}</span>${sub?`<small>${sub}</small>`:''}</div></div>`;
+ const tsw=(i,txt)=>`<div class="mrx"><div class="ic med">${ic(i)}</div><div style="flex:1"><span class="${after?'med':'high'}">${txt}</span></div>${SW(true)}</div>`;
+ const d=(i,txt)=>`<div class="mrx danger ${after?'':'tq'}"><div class="ic">${ic(i)}</div><div style="flex:1">${txt}<small>Segure para confirmar</small></div></div>`;
+ return `<div class="body" style="padding-top:8px"><div class="lblS">Sistema</div><div class="grp" style="position:relative;padding:4px 6px"><div class="guide" style="left:22px"></div>${t('info','Informações do app','')}${t('home','Launcher padrão','')}${tsw('refresh','Verificar atualizações')}</div>
+ <div class="lblS">Tela inicial ${after?'':''}</div><div class="grp" style="padding:4px 6px">${after?'':`<div class="mrx strike"><div class="ic med">${ic('dots')}</div><div style="flex:1" class="high">Exibir indicador de widgets</div>${SW(true)}</div>`}<div class="mrx"><div class="ic med">${ic('header')}</div><div style="flex:1"><span class="${after?'med':'high'}">Deslocamento do cabeçalho</span><small>Role para ajustar</small></div>${VAL('9%')}</div></div>
+ <div class="lblS">Zona de cuidado</div><div class="grp" style="position:relative;padding:4px 6px"><div class="guide" style="left:22px"></div>${d('undo','Redefinir launcher')}${d('trash','Desinstalar launcher')}</div>
+ <div class="legend">${after?'Linha amarela: o desenho dos ícones começa no mesmo x em todas as linhas.':'Linha amarela: o quadrado vermelho começa antes dos outros ícones.'}</div></div>
+ <span class="tag2 ${after?'ok':'bad'}" style="top:24px;bottom:auto;left:auto;right:8px">${after?'Depois':'Hoje'}</span>`};
+const persHeader=`<div class="home"></div><div class="bs" style="height:62%"><div class="gzh"></div><div class="ttl" style="padding-top:0"><b>Personalizar</b>${logoBtn('p1')}</div>
+ <div class="bc"><div class="lbl">Ajustar</div><div class="grid4" style="grid-template-columns:repeat(3,1fr)">${tile('move','Layout')}${tile('fill','Paleta')}${tile('font','Fonte')}</div><div class="lbl">Adicionar à home</div><div class="grid4">${tile('clock','Relógio')}${tile('grid','Lista de apps')}${tile('cont','Container')}${tile('wg','Grupo de widgets')}</div>
+ <div class="legend" style="margin-top:10px">Segure a logo: ela encolhe e inclina enquanto o dedo está nela; ao soltar volta com mola e os Ajustes abrem. Sem anel aqui.</div></div><div class="toast" id="toast-p1">Abrindo Ajustes…</div></div>`;
+const ringDemo=`<div class="body"><div class="t1">AureoleLogoRing</div><div class="legend" style="text-align:center">Um componente só, em core/designsystem</div>
+ <div class="demoRing">${[[0,'0%'],[.5,'50%'],[1,'100%']].map(p=>`<div><span class="halo">${ringSvg(p[0],64,'#9fc6e6',3)}${LOGO(34,19)}</span>${p[1]}</div>`).join('')}<div><span class="halo ring spin" style="width:64px;height:64px">${ringSvg(.28,64,'#9fc6e6',3)}${LOGO(34,19)}</span>indeterminado</div></div>
+ <div class="lblS">Onde entra (fase 1)</div><div class="grp">${row('info','Raiz dos Ajustes','Indeterminado ao verificar; real no download','')}${row('tap','Vitrine do Personalizar (onboarding)','Anel fecha em 3 s e a sheet desce','')}${row('smile','Fim do onboarding','Anel fecha e vira a celebração','')}</div>
+ <div class="lblS">Checklist: ícone interno maior</div>
+ <div style="display:flex;gap:20px;justify-content:center;padding:6px 0 10px"><div style="text-align:center;font-size:10.5px;color:var(--low)"><span class="halo">${ringSvg(.44,64,'#9fc6e6',3)}${LOGO(28,16)}</span>Hoje</div><div style="text-align:center;font-size:10.5px;color:var(--low)"><span class="halo">${ringSvg(.44,64,'#9fc6e6',3)}${LOGO(40,23)}</span>Depois (halo igual)</div></div></div>`;
+
+
+const peekHome=()=>`<div class="home" style="background:radial-gradient(120% 80% at 20% 10%,#22303b,#0e1317 70%)"><div class="gridbg">
+ <div class="gitem" id="peekItem" style="grid-column:1 / span 20;grid-row:1 / span 6;outline:1.5px solid rgba(159,198,230,0);transition:outline-color .4s"><div class="clk" style="font-size:58px">09:41</div><div style="font-size:12px;color:var(--mid);margin-top:6px">Segunda, 16 de novembro</div></div></div>
+ <div id="morph" style="position:absolute;overflow:hidden;background:rgba(58,72,82,.92);backdrop-filter:blur(8px)">
+  <div id="morphBody" style="position:absolute;left:12px;right:12px;top:12px;opacity:0">
+   <h3 style="margin:0;font-size:16px">Primeiros passos</h3><div style="font-size:11px;color:var(--low)">4 de 9 etapas</div>
+   ${[['Definir como tela inicial',1],['Escolha uma paleta de cores',1],['Escolha uma fonte',1],['Adicione um relógio',1],['Escolha seus favoritos',0,1],['Preencha o container',0],['Adicione widgets',0]].map(r=>`<div style="display:flex;align-items:center;gap:10px;padding:8px 2px;font-size:13px;border-top:1px solid rgba(255,255,255,.05);${r[2]?'outline:1.5px solid rgba(255,255,255,.5);border-radius:12px;padding-left:6px':''}"><span style="width:18px;height:18px;border-radius:50%;flex:none;display:flex;align-items:center;justify-content:center;font-size:11px;${r[1]?'background:#7fc48d;color:#10161a':'border:1.5px solid var(--out)'}">${r[1]?'✓':''}</span><span style="${r[1]?'color:var(--low);text-decoration:line-through':''}">${r[0]}</span></div>`).join('')}
+  </div>
+  <span class="ring" id="morphLogo" style="position:absolute;width:44px;height:44px">${ringSvg(0,44,'#9fc6e6',2.5).replace('transition:stroke-dashoffset .35s cubic-bezier(.3,.7,.2,1)','')}${LOGO(20,11)}</span>
+ </div></div>`;
+function setMorph(st,anim){const m=document.getElementById('morph'),lg=document.getElementById('morphLogo'),body=document.getElementById('morphBody');if(!m)return;
+ const E='cubic-bezier(.2,.8,.2,1)';const T=anim?`all .55s ${E}`:'none';m.style.transition=T;lg.style.transition=T;body.style.transition=anim?`opacity .3s ease ${st?'.25s':'0s'}`:'none';
+ const W=m.parentElement.clientWidth,H=m.parentElement.clientHeight;
+ if(!st){Object.assign(m.style,{left:(W/2-28)+'px',top:(H-22-56)+'px',width:'56px',height:'56px',borderRadius:'28px'});Object.assign(lg.style,{left:'6px',top:'6px'});body.style.opacity=0}
+ else{Object.assign(m.style,{left:'10px',top:'10px',width:(W-20)+'px',height:'330px',borderRadius:'20px'});Object.assign(lg.style,{left:(W-20-52)+'px',top:'6px'});body.style.opacity=1}}
+function playPeek(){const r=document.querySelector('#morph .arc'),it=document.getElementById('peekItem');if(!r)return;
+ setMorph(0,false);document.querySelectorAll('#morphLogo circle').forEach(c=>{c.style.transition='none';c.style.opacity=1});const L=r.getAttribute('stroke-dasharray');r.style.transition='none';r.style.strokeDashoffset=L;it.style.outlineColor='rgba(159,198,230,.7)';
+ requestAnimationFrame(()=>requestAnimationFrame(()=>{r.style.transition='stroke-dashoffset 1.4s linear';r.style.strokeDashoffset='0'}));
+ clearTimeout(window._pk);window._pk=setTimeout(()=>{it.style.outlineColor='rgba(159,198,230,0)';document.querySelectorAll('#morphLogo circle').forEach(c=>{c.style.transition='opacity .3s';c.style.opacity=0});setMorph(1,true)},1450)}
+document.addEventListener('click',e=>{if(e.target.closest('#replayPeek'))playPeek()});
+
+const editHome=(st)=>`<div class="home"><div class="gridbg">
+ <div class="gitem" style="grid-column:1 / span 20;grid-row:1 / span 6;outline:1.5px dashed rgba(159,198,230,.8);${st===1?'transform:scale(1.02);':''}"><div class="clk" style="font-size:58px">09:41</div><div style="font-size:12px;color:var(--mid);margin-top:6px">Segunda, 16 de novembro</div>
+ ${['top:-5px;left:50%','bottom:-5px;left:50%','left:-5px;top:50%','right:-5px;top:50%'].map(p=>`<i style="position:absolute;${p};width:10px;height:10px;border-radius:50%;background:#9fc6e6;transform:translate(${p.includes('left:50%')?'-50%':'0'},${p.includes('top:50%')?'-50%':'0'})"></i>`).join('')}</div></div>
+ ${st===0?`<div style="position:absolute;left:10px;right:10px;bottom:14px;border-radius:20px;background:rgba(58,72,82,.92);padding:10px 10px 10px 14px;display:flex;align-items:center;gap:10px"><span style="flex:1;font-size:12px;color:var(--mid)">Arraste para mover, puxe a borda para redimensionar.</span><span style="padding:9px 16px;border-radius:99px;background:#fff;color:#111;font-weight:700;font-size:13px">Salvar</span></div>`
+ :st===1?`<div style="position:absolute;left:50%;bottom:14px;transform:translateX(-50%);opacity:.25;padding:10px 20px;border-radius:99px;background:#fff;color:#111;font-weight:700;font-size:13px">Salvar</div><span class="tag2" style="bottom:auto;top:250px;left:50%;transform:translateX(-50%)">arrastando: barra some e deixa o toque passar</span>`
+ :`<div style="position:absolute;left:50%;bottom:14px;transform:translateX(-50%);padding:10px 20px;border-radius:99px;background:#fff;color:#111;font-weight:700;font-size:13px;box-shadow:0 6px 20px rgba(0,0,0,.4)">✓ Salvar</div>`}</div>`;
+
+const PH=()=>row('edit','Personalizar home','Ajustar, adicionar componentes…');
+const sheetPhone=(top,title,body)=>`<div class="home"></div><div class="bs" style="top:${top}px"><div class="gzh"></div><div class="ttl" style="padding-top:0"><b>${title}</b><span class="act">${LOGO(16,9)}</span></div><div class="bc">${body}</div></div>`;
+const appMenu=()=>sheetPhone(300,`<span style="display:inline-flex;gap:10px;align-items:center">${app(APPS[0],30)}99</span>`,`${row('info','Informações do app','','')}${row('fill','Adicionar aos favoritos','','')}${row('header','Configurações do painel rápido','')}${PH()}<div style="border-top:1px solid rgba(255,255,255,.08);margin:6px 4px"></div><div class="mrx danger"><div class="ic">${ic('trash')}</div><div style="flex:1">Desinstalar<small>Segure para confirmar</small></div></div>`);
+const stackMenu=()=>sheetPhone(330,'Pilha de widgets',`<div class="mr"><div class="tx" style="font-size:12px">Mover <b>Compromissos</b></div><span class="btn">‹</span><span class="val">1 de 1</span><span class="btn">›</span></div>${row('dots','Mostrar indicador de posição','',SW(true))}${PH()}`);
+const contMenu=()=>sheetPhone(290,'Container',`<div class="lblS" style="padding-top:2px">Opções</div>${row('fill','Aparência','Células, pastas e fundo')}${row('tap','Comportamento','Orientação e alinhamento')}${row('apps','Gerenciar itens','0 componentes')}${PH()}`);
+/* ---------- VIEWS ---------- */
+const V2={
+ onb:{label:'1 · ajustes-onboarding',desc:`<b>specs/ajustes-onboarding.</b> Personalizar em modo vitrine (toque em “Rever”): a logo no título ganha o anel, que fecha em 3 s; aí a sheet desce sozinha. Nada é clicável, sem texto extra. Fechar paleta ou fonte sem escolher = Frostbite e Istok Web, etapa feita. Relógio do onboarding com o tamanho do layout padrão. Container do onboarding sem fundo, sem rótulos e pasta em grade. Depois de adicionar um item, a home fica sozinha um instante: a logo com anel aparece onde fica a pílula do checklist, o anel fecha e a bolha se abre na lista de Primeiros passos (shared element: a bolha cresce até o cartão e a logo viaja para o canto do título).`,
+  phones:()=>[
+   ['Personalizar · vitrine (3 s) <button class="btn" id="replay">↻ Rever</button>',`<div class="home"></div><div id="vit-coach">${coach('Isso aí!','É aqui que você monta sua tela.',3)}</div>${custSheet('vit',true)}`],
+   ['Paleta: fechar sem escolher',`<div class="home"></div>${coach('Escolha uma paleta','Toque numa cor para ver na home.',0).replace('class="coach"','class="coach" style="display:none"')}${pickerSheet}`],
+   ['…e o checklist segue',`<div class="home"></div>${checklist([['Definir como tela inicial',1],['Escolha uma paleta de cores',1,'Frostbite'],['Escolha uma fonte',1,'Istok Web'],['Adicione um relógio',0,'',1],['Escolha seus favoritos',0],['Preencha o container',0]])}`],
+   ['Item adicionado · espiada com anel <button class="btn" id="replayPeek">↻ Rever</button>',peekHome()],
+   ['Ajustar layout · começo',editHome(0)],['…arrastando',editHome(1)],['…depois de 3 s / 1º gesto',editHome(2)],
+   ['Relógio · hoje',clockHome(false)],['Relógio · depois',clockHome(true)],
+   ['Container · hoje',contHome(false)],['Container · depois',contHome(true)]
+  ]},
+ fav:{label:'2 · favoritos-redesign',sub:['A · Lista única ✓'],desc:``,
+  phones:()=>{const n=`<div class="legend" style="padding:0 18px">Teste: <button class="btn" data-fav="0">0 favoritos</button> <button class="btn" data-fav="3">3 favoritos</button> · toque nos chips/abas</div>`;
+   return sub===0?[['A · retrato',favA()],['A · paisagem',favAland(),'land']]:[['B · Seus favoritos / Adicionar',favB()],['B · paisagem',favBland(),'land']]},
+  descs:[`<b>A · Lista única.</b> Um só scroll. Os dois switches viram chips numa linha; “Personalizar home” vira o ícone de lápis no título; o aviso só aparece com 0 favoritos e numa linha. Cabeçalhos “Favoritos” e “Todos os apps” grudam no topo ao rolar. Busca fixa embaixo. Paisagem: prévia à esquerda (RF-16), sheet à direita com o mesmo conteúdo, cabeçalho em ~70 dp, lista visível.`,
+   `<b>B · Duas abas.</b> Segmentado “Seus favoritos · N | Adicionar apps”. Na primeira, a lista para ordenar e as opções (“Quando a lista estiver vazia”) no fim; na segunda, busca no topo e todos os apps com +. Cada aba tem um scroll só. Paisagem igual, com o segmentado no topo da sheet.`]},
+ pol:{label:'3 · polimento-ui',desc:`<b>specs/polimento-ui.</b> Fundo abre dentro da sheet de Aparência (voltar do sistema ou arrastar para baixo devolve para Aparência), com mais respiro entre rótulos, sem Vivas e sem logo. Comportamento sem o indicador global de widgets. Cor dos títulos igual em todas as linhas (com ou sem subtítulo, navegação ou switch). “Personalizar home” também no menu do app, da pilha de widgets e do container. Linha destrutiva sem quadrado. Logo das sheets da home maior, na altura do título, animando enquanto é pressionada (segure nela). O anel vira um componente único.`,
+  phones:()=>[
+   ['Fundo · hoje',fundoBefore],['Fundo · dentro da Aparência',fundoInSheet(false)],['Fundo · paisagem',fundoInSheet(true),'land'],
+   ['Ajustes · hoje',advRows(false)],['Ajustes · depois',advRows(true)],
+   ['App · segurar',appMenu()],['Pilha de widgets',stackMenu()],['Container',contMenu()],
+   ['Logo no título · toque',persHeader],['Anel do Aureole',ringDemo]
+  ]}
+};
+let cur='onb', sub=0;
+var render=function(){
+ const v=V2[cur];
+ document.getElementById('tabs').innerHTML=Object.entries(V2).map(([k,x])=>`<button data-v="${k}" class="${k===cur?'on':''}">${x.label}</button>`).join('');
+ document.getElementById('subs').innerHTML=v.sub?v.sub.map((s,i)=>`<button data-sub="${i}" class="${i===sub?'on':''}">${s}</button>`).join('')+(cur!=='fav'?'':`<span class="legend" style="align-self:center">Teste: <button class="btn" data-fav="0">0 favoritos</button> <button class="btn" data-fav="3">3 favoritos</button></span>`):'';
+ document.getElementById('desc').innerHTML=v.descs?v.descs[sub]:v.desc;
+ document.getElementById('row').innerHTML=v.phones().map(p=>phone(p[0],p[1],p[2])).join('');
+ if(cur==='onb'){playVitrine();playPeek()}
+}
+function playVitrine(){
+ const s=document.getElementById('vit'),r=document.querySelector('#vit-ring .arc'),c=document.getElementById('vit-coach');
+ if(!s) return; s.classList.remove('down'); const L=r.getAttribute('stroke-dasharray'); r.style.transition='none'; r.style.strokeDashoffset=L;
+ c.innerHTML=coach('Isso aí!','É aqui que você monta sua tela.',3);
+ requestAnimationFrame(()=>requestAnimationFrame(()=>{r.style.transition='stroke-dashoffset 3s linear';r.style.strokeDashoffset='0'}));
+ clearTimeout(window._vt); window._vt=setTimeout(()=>{s.classList.add('down');c.innerHTML=coach('Primeiros passos','A lista volta para você continuar.',3)},3050);
+}
+document.addEventListener('click',e=>{
+ const t=e.target.closest('[data-v],[data-sub],[data-chip],[data-btab],[data-fav],#replay,[data-ring]'); if(!t) return;
+ if(t.dataset.v){cur=t.dataset.v;sub=0;render()}
+ else if(t.dataset.sub){sub=+t.dataset.sub;render()}
+ else if(t.dataset.chip){if(t.dataset.chip==='all')showAll=!showAll;else labels=!labels;render()}
+ else if(t.dataset.btab){bTab=+t.dataset.btab;render()}
+ else if(t.dataset.fav){favCount=+t.dataset.fav;render()}
+ else if(t.id==='replay') playVitrine();
+ else if(t.dataset.ring){const a=t.querySelector('.arc');a.style.strokeDashoffset='0';const to=document.getElementById('toast-'+t.dataset.ring);setTimeout(()=>to&&to.classList.add('on'),150);setTimeout(()=>{a.style.strokeDashoffset=a.getAttribute('stroke-dasharray');to&&to.classList.remove('on')},1400)}
+});
+document.addEventListener('pointerdown',e=>{const t=e.target.closest('[data-press]');if(t)t.classList.add('down')});
+const up=e=>{document.querySelectorAll('.press.down').forEach(t=>{t.classList.remove('down');t.classList.add('rel');setTimeout(()=>t.classList.remove('rel'),450);const to=document.getElementById('toast-'+t.dataset.press);if(to){to.classList.add('on');setTimeout(()=>to.classList.remove('on'),1100)}})};
+document.addEventListener('pointerup',up);document.addEventListener('pointercancel',up);
+render();
+/* ---------- PASTA ---------- */
+const CATS=['Trabalho','Social','Mídia','Jogos','Finanças','Saúde','Viagem','Ferramentas'];
+const GL=['edit','doc','list','search','users','smile','image','drop','fill','font','home','hand','az','glass','corners','refresh','info','trash','clock','grid','cont','wg','tap','plus','lock','move','apps','scale','undo','header'];
+let pCat=7, pSel='Ferramentas-1';
+const folderPrev=(name)=>`<div style="display:flex;flex-direction:column;align-items:center;gap:6px"><div style="width:52px;height:52px;border-radius:16px;background:rgba(74,93,107,.7);display:flex;align-items:center;justify-content:center">${ic(GL[(CATS.indexOf(pSel.split('-')[0])*10+ +pSel.split('-')[1])%GL.length],24)}</div><div style="font-size:13px">${name}</div></div>`;
+const iconGrid=(cats)=>cats.map(c=>`<div class="sticky" data-sec="${c}" style="font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:var(--low);font-weight:700">${c}</div><div style="display:grid;grid-template-columns:repeat(5,1fr);gap:8px;padding:0 2px 6px">${Array.from({length:10},(_,i)=>{const k=c+'-'+i;const on=k===pSel;return `<span data-icon="${k}" style="aspect-ratio:1;border-radius:14px;display:flex;align-items:center;justify-content:center;cursor:pointer;background:${on?'#e9f1f7':'var(--card)'};color:${on?'#10161a':'var(--mid)'}">${ic(GL[(CATS.indexOf(c)*10+i)%GL.length],20)}</span>`}).join('')}</div>`).join('');
+const catChips=()=>`<div class="chips" style="flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;padding:2px 0 8px;scroll-padding:0 12px" id="pchips">${CATS.map((c,i)=>`<span class="chip ${i===pCat?'on':''}" data-pcat="${i}" style="flex:none">${c}</span>`).join('')}</div>`;
+const nameField=(v)=>`<div class="search" style="margin:0;border-radius:14px;background:rgba(0,0,0,.2);border:1px solid var(--sv);color:${v?'var(--hi)':'var(--low)'}">${ic('edit',16)} ${v||'Nome da pasta'}</div>`;
+const pastaNew=(edit)=>`<div class="home"><div style="position:absolute;top:70px;left:0;right:0;display:flex;justify-content:center">${folderPrev(edit?'Trabalho':'Nova pasta')}</div></div>
+ <div class="bs" style="top:200px"><div class="gzh"></div><div class="ttl" style="padding-top:0"><b>${edit?'Editar pasta':'Nova pasta'}</b></div>
+ <div style="padding:0 12px">${nameField(edit?'Trabalho':'')}${catChips()}</div>
+ <div class="bc pscroll" style="padding-top:0">${iconGrid(CATS)}${edit?`<div class="mrx danger" style="margin-top:6px"><div class="ic">${ic('trash')}</div><div style="flex:1">Excluir pasta</div></div>`:''}</div>
+ ${edit?'':`<div style="padding:6px 12px 10px"><div style="height:42px;border-radius:99px;background:#fff;color:#111;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px">Criar</div></div>`}</div>`;
+const pastaLand=()=>`<div class="lw"><div class="pvL">${folderPrev('Nova pasta')}</div><div class="bsR"><div class="ttl" style="padding:8px 0 2px"><b style="font-size:14px">Nova pasta</b></div>
+ <div style="padding:0 10px">${nameField('')}${catChips()}</div><div class="bc pscroll">${iconGrid(CATS)}</div>
+ <div style="padding:4px 10px 8px"><div style="height:34px;border-radius:99px;background:#fff;color:#111;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px">Criar</div></div></div></div>`;
+const _pastaOld={label:'x',desc:`<b>specs/pasta-form.</b> Um scroll só: todos os ícones numa grade, agrupados por categoria com o nome grudando no topo. Os chips ficam fixos e servem de atalho (toque = rola até a categoria; rolar a grade acende o chip certo). Nome logo abaixo do título, Criar embaixo, sem buraco no meio. Ícone escolhido preenchido (não só contorno). Toque nos chips e nos ícones.`,
+ phones:()=>[['Nova pasta',pastaNew(false)],['Editar pasta',pastaNew(true)],['Nova pasta · paisagem',pastaLand(),'land']]};
+document.addEventListener('click',e=>{
+ const c=e.target.closest('[data-pcat]'),k=e.target.closest('[data-icon]');
+ if(c){pCat=+c.dataset.pcat;document.querySelectorAll('[data-pcat]').forEach(x=>x.classList.toggle('on',+x.dataset.pcat===pCat));
+  document.querySelectorAll('.pscroll').forEach(sc=>{const h=sc.querySelector(`[data-sec="${CATS[pCat]}"]`);sc.scrollTo({top:h.offsetTop-sc.offsetTop,behavior:'smooth'})});
+  document.querySelectorAll('#pchips').forEach(r=>{const ch=r.children[pCat];r.scrollTo({left:ch.offsetLeft-r.offsetLeft-12,behavior:'smooth'})})}
+ if(k){pSel=k.dataset.icon;const sc=[...document.querySelectorAll('.pscroll')].map(x=>x.scrollTop);render();document.querySelectorAll('.pscroll').forEach((x,i)=>x.scrollTop=sc[i]||0)}
+});
+document.addEventListener('scroll',e=>{const sc=e.target;if(!sc.classList||!sc.classList.contains('pscroll'))return;let idx=0;sc.querySelectorAll('[data-sec]').forEach((h,i)=>{if(h.offsetTop-sc.offsetTop<=sc.scrollTop+4)idx=i});if(idx!==pCat){pCat=idx;document.querySelectorAll('[data-pcat]').forEach(x=>x.classList.toggle('on',+x.dataset.pcat===pCat))}},true);
+
+/* pasta · direções criativas */
+let nameFocus=false;
+const namePill=(name)=>`<div class="namepill ${nameFocus?'focus':''}" data-namefocus>${name?`<span>${name}</span>${nameFocus?'<span class="caret">|</span>':''}`:'<span style="color:var(--low)">Dar um nome</span>'}<span class="pen">${ic(nameFocus?'x':'edit',14)}</span></div>`;
+const FCOL=['#4a5d6b','#3f8a49','#e7873a','#3a6fd1','#7d58bd','#c94f6d','#c9a227'];
+let pName='Banco', pMode=0, pCol=0, pB=null;
+const SUG={'Banco':['wg','lock','doc','scale','info'],'Trabalho':['doc','list','edit','clock','users'],'Jogos':['tap','smile','az','grid','hand']};
+const bigFolder=(name,glyph,col,apps)=>`<div style="display:flex;flex-direction:column;align-items:center;gap:8px">
+ <div style="width:68px;height:68px;border-radius:20px;background:${col};display:flex;align-items:center;justify-content:center;box-shadow:0 8px 24px rgba(0,0,0,.35);position:relative">${glyph}
+ ${apps?`<div style="position:absolute;right:-6px;bottom:-6px;display:flex">${APPS.slice(3,6).map((a,i)=>`<span style="margin-left:-6px;border:2px solid #10161a;border-radius:8px">${app(a,16)}</span>`).join('')}</div>`:''}</div>
+ ${namePill(name)}</div>`;
+const pastaB=()=>{const sug=SUG[pName]||SUG.Banco;const sel=pB||sug[0];return `<div class="home"><div style="position:absolute;top:30px;left:0;right:0;display:flex;justify-content:center">${bigFolder(pName,ic(sel,28),'rgba(74,93,107,.75)',true)}</div><div style="position:absolute;top:150px;width:100%;text-align:center;font-size:10.5px;color:var(--low)">Toque no nome para escrever</div></div>
+ <div class="bs" style="top:206px"><div class="gzh"></div><div class="ttl" style="padding-top:0"><b>Nova pasta</b></div>
+ <div class="bc"><div class="lblS" style="padding-top:2px">Sugeridos para “${pName}”</div>
+ <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:8px">${sug.map(g=>`<span data-pb="${g}" style="aspect-ratio:1;border-radius:14px;display:flex;align-items:center;justify-content:center;cursor:pointer;background:${g===sel?'#e9f1f7':'var(--card)'};color:${g===sel?'#10161a':'var(--mid)'}">${ic(g,22)}</span>`).join('')}</div>
+ <div class="legend" style="padding:6px 2px">Pelo nome e pelos apps que você vai pôr nela.</div>
+ <div class="chips" style="padding-top:8px">${['Banco','Trabalho','Jogos'].map(n=>`<span class="chip ${n===pName?'on':''}" data-pname="${n}">${n}</span>`).join('')}<span class="legend">← teste outro nome</span></div>
+ <div class="mr" style="margin-top:4px"><div class="ic">${ic('grid')}</div><div class="tx">Todos os ícones<small>80 ícones em 8 categorias</small></div><span class="ch">›</span></div></div>
+ <div style="padding:6px 12px 10px"><div style="height:42px;border-radius:99px;background:#fff;color:#111;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px">Criar e escolher apps</div></div></div>`};
+const pastaC=()=>{const col=FCOL[pCol];const glyph=pMode===0?ic('wg',28):pMode===1?'<span style="font-size:30px;font-weight:700">B</span>':'<span style="font-size:30px">💰</span>';return `<div class="home"><div style="position:absolute;top:56px;left:0;right:0;display:flex;justify-content:center">${bigFolder('Banco',glyph,col,false)}</div></div>
+ <div class="bs" style="top:196px"><div class="gzh"></div><div class="ttl" style="padding-top:0"><b>Nova pasta</b></div>
+ <div class="segb" style="margin:0 12px 8px">${['Ícone','Letra','Emoji'].map((t,i)=>`<span class="${i===pMode?'on':''}" data-pmode="${i}">${t}</span>`).join('')}</div>
+ <div class="bc">${pMode===0?`<div style="display:grid;grid-template-columns:repeat(5,1fr);gap:8px">${GL.slice(0,10).map((g,i)=>`<span style="aspect-ratio:1;border-radius:14px;display:flex;align-items:center;justify-content:center;background:${i===0?'#e9f1f7':'var(--card)'};color:${i===0?'#10161a':'var(--mid)'}">${ic(['wg'][i]||g,20)}</span>`).join('')}</div><div class="legend" style="padding:6px 2px">+ busca “carteira, banco…” e as 8 categorias abaixo</div>`:pMode===1?`<div class="legend" style="padding:4px 2px 10px">A primeira letra do nome, na fonte do tema. Muda sozinha se o nome mudar.</div>`:`<div style="display:grid;grid-template-columns:repeat(6,1fr);gap:6px;font-size:22px;text-align:center">${'💰🏦💳📈🎮🎧📚✈️🏥🛠️💼❤️'.match(/./gu).filter(x=>x.trim()&&x!=='️').map((e,i)=>`<span style="padding:6px 0;border-radius:12px;background:${i===0?'rgba(255,255,255,.18)':'transparent'}">${e}</span>`).join('')}</div>`}
+ <div class="lblS">Cor da pasta</div><div class="sw2">${FCOL.map((c,i)=>`<i data-pcol="${i}" class="${i===pCol?'on':''}" style="background:${c};cursor:pointer"></i>`).join('')}</div></div>
+ <div style="padding:6px 12px 10px"><div class="search" style="margin:0 0 8px;border-radius:14px;background:rgba(0,0,0,.2);border:1px solid var(--sv);color:var(--hi)">${ic('edit',16)} Banco</div><div style="height:42px;border-radius:99px;background:#fff;color:#111;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px">Criar</div></div></div>`};
+V2.pasta={label:'4 · pasta-form',sub:['A · Grade única','B · Nome primeiro','C · Estilo livre'],
+ descs:[`<b>A · Grade única (correção).</b> Um scroll só: os 80 ícones numa grade, agrupados por categoria com o nome grudando no topo. Chips fixos como atalho (toque = rola até a categoria; rolar acende o chip). Nome embaixo do título, Criar embaixo, sem buraco. Ícone escolhido preenchido.`,
+ `<b>B · Nome primeiro.</b> O nome se escreve direto embaixo da pasta, como na home (sem campo separado). O app sugere 5 ícones pelo nome (dicionário local: “banco” → carteira, cadeado…) e, na edição, pelos apps que estão dentro. “Todos os ícones” abre a grade da A no lugar. O botão vira “Criar e escolher apps”: cria e já abre o seletor de apps da pasta, que é o passo seguinte de quase todo mundo.`,
+ `<b>C · Estilo livre.</b> A pasta pode ser Ícone, Letra (inicial do nome, na fonte do tema) ou Emoji, e ganha uma cor própria (hoje a cor é uma só para o container todo). É o que mais muda o visual do container, e a que mais mexe no modelo (AppFolder ganha tipo e cor).`],
+ phones:()=>sub===0?[['Nova pasta',pastaNew(false)],['Editar pasta',pastaNew(true)],['Nova pasta · paisagem',pastaLand(),'land']]:sub===1?[['B · nome primeiro',pastaB()]]:[['C · estilo livre',pastaC()]]};
+document.addEventListener('click',e=>{const f=e.target.closest('[data-namefocus]');if(f){nameFocus=!nameFocus;render();return}const t=e.target.closest('[data-pname],[data-pb],[data-pmode],[data-pcol]');if(!t)return;
+ if(t.dataset.pname){pName=t.dataset.pname;pB=null}if(t.dataset.pb)pB=t.dataset.pb;if(t.dataset.pmode)pMode=+t.dataset.pmode;if(t.dataset.pcol)pCol=+t.dataset.pcol;render()});
+
+/* pasta · final: estilo livre + nome primeiro */
+let fTheme=-1, fGroup=0;
+const THEMECOLS=[['Fundo','#0e1317'],['Superfície','#2b373e'],['Variante','#4a5d6b'],['Contorno','#9bb4c8'],['Destaque','#9fc6e6']];
+const GROUPS={Frias:['#2b373e','#0b5f63','#24384a','#3a6fd1','#5b7fa6','#7d58bd'],Frescas:['#1f6f5c','#3f8a49','#6aa84f','#2e9cab','#4fb3a9','#8fbf9f'],Neutras:['#3a3a3a','#55595c','#7a7f84','#8b7d6b','#a39e93','#c9ced2'],Quentes:['#c94f6d','#e7873a','#c9a227','#b5523b','#d97757','#a8445e']};
+const GN=Object.keys(GROUPS);
+const curCol=()=>fTheme>=0?THEMECOLS[fTheme][1]:GROUPS[GN[fGroup]][pCol%6];
+const pastaF=()=>{const col=curCol();const sug=SUG[pName]||SUG.Banco;const sel=pB||sug[0];
+ const glyph=pMode===0?ic(sel,28):pMode===1?`<span style="font-size:30px;font-weight:700">${pName[0]}</span>`:'<span style="font-size:30px">💰</span>';
+ return `<div class="home"><div style="position:absolute;top:30px;left:0;right:0;display:flex;justify-content:center">${bigFolder(pName,glyph,col,false)}</div></div>
+ <div class="bs" style="top:178px"><div class="gzh"></div><div class="ttl" style="padding-top:0"><b>Nova pasta</b></div>
+ <div class="segb" style="margin:0 12px 6px">${['Ícone','Letra','Emoji'].map((t,i)=>`<span class="${i===pMode?'on':''}" data-pmode="${i}">${t}</span>`).join('')}</div>
+ <div class="bc">${pMode===0?`<div class="lblS" style="padding-top:2px">Sugeridos para “${pName}”</div><div style="display:grid;grid-template-columns:repeat(5,1fr);gap:8px">${sug.map(g=>`<span data-pb="${g}" style="aspect-ratio:1;border-radius:14px;display:flex;align-items:center;justify-content:center;cursor:pointer;background:${g===sel?'#e9f1f7':'var(--card)'};color:${g===sel?'#10161a':'var(--mid)'}">${ic(g,22)}</span>`).join('')}</div>
+   <div class="mr" style="margin-top:4px"><div class="ic">${ic('grid')}</div><div class="tx">Todos os ícones<small>80 ícones em 8 categorias</small></div><span class="ch">›</span></div>`
+  :pMode===1?`<div class="legend" style="padding:4px 2px 2px">A primeira letra do nome, na fonte do tema. Muda junto com o nome.</div>`
+  :`<div style="display:grid;grid-template-columns:repeat(6,1fr);gap:6px;font-size:22px;text-align:center">${['💰','🏦','💳','📈','🎮','🎧','📚','✈','🏥','🛠','💼','❤'].map((e,i)=>`<span style="padding:6px 0;border-radius:12px;background:${i===0?'rgba(255,255,255,.18)':'transparent'}">${e}</span>`).join('')}</div>`}
+ <div class="lblS">Cor · do seu tema</div><div class="sw2">${THEMECOLS.map((c,i)=>`<div><i data-ftheme="${i}" class="${i===fTheme?'on':''}" style="background:${c[1]};cursor:pointer"></i><div class="cap2">${c[0]}</div></div>`).join('')}</div>
+ <div class="lblS">Cor · de outras paletas</div><div class="pills">${GN.map((g,i)=>`<span class="${i===fGroup?'on':''}" data-fgroup="${i}" style="cursor:pointer">${g}</span>`).join('')}</div>
+ <div class="sw2" style="margin-top:8px">${GROUPS[GN[fGroup]].map((c,i)=>`<i data-pcol="${i}" class="${fTheme<0&&i===pCol%6?'on':''}" style="background:${c};cursor:pointer"></i>`).join('')}</div>
+ <div class="chips" style="padding-top:12px">${['Banco','Trabalho','Jogos'].map(n=>`<span class="chip ${n===pName?'on':''}" data-pname="${n}">${n}</span>`).join('')}<span class="legend">← teste outro nome</span></div></div>
+ <div style="padding:6px 12px 10px"><div style="height:42px;border-radius:99px;background:#fff;color:#111;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px">Criar e escolher apps</div></div></div>`};
+const pastaFland=()=>`<div class="lw"><div class="pvL">${bigFolder(pName,ic((SUG[pName]||SUG.Banco)[0],28),curCol(),false)}</div><div class="bsR"><div class="ttl" style="padding:8px 0 2px"><b style="font-size:14px">Nova pasta</b></div><div class="segb" style="margin:0 10px 4px">${['Ícone','Letra','Emoji'].map((t,i)=>`<span class="${i===pMode?'on':''}" data-pmode="${i}">${t}</span>`).join('')}</div><div class="bc"><div class="sw2">${THEMECOLS.map(c=>`<i style="background:${c[1]}"></i>`).join('')}</div><div class="legend">… mesmas seções do retrato</div></div><div style="padding:4px 10px 8px"><div style="height:34px;border-radius:99px;background:#fff;color:#111;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px">Criar e escolher apps</div></div></div></div>`;
+V2.pasta={label:'4 · pasta-form',sub:['Escolhida · estilo livre + nome primeiro ✓','A · grade de todos os ícones'],
+ descs:[`<b>Escolhida.</b> Nome escrito direto embaixo da pasta (sem campo separado). A pasta pode ser Ícone (com 5 sugeridos pelo nome e “Todos os ícones” abrindo a grade no lugar), Letra ou Emoji. Cor própria: as cores do seu tema ou de outras paletas (Frias, Frescas, Neutras, Quentes), igual ao Definir plano de fundo. “Criar e escolher apps” cria e já abre o seletor de apps. Toque nos chips, nas abas e nas cores.`,
+  `<b>Todos os ícones.</b> O que abre em “Todos os ícones”: um scroll só, categorias grudando no topo, chips fixos como atalho, ícone marcado preenchido. Também é a tela de edição de pasta.`],
+ phones:()=>sub===0?[['Nova pasta',pastaF()],['Nova pasta · paisagem',pastaFland(),'land']]:[['Todos os ícones',pastaNew(false)],['Editar pasta',pastaNew(true)]]};
+document.addEventListener('click',e=>{const t=e.target.closest('[data-ftheme],[data-fgroup],[data-pcol]');if(!t)return;
+ if(t.dataset.ftheme){fTheme=+t.dataset.ftheme}if(t.dataset.fgroup){fGroup=+t.dataset.fgroup;fTheme=-1}if(t.dataset.pcol){fTheme=-1}render()});
+
+/* ---------- BOTÃO RÁPIDO ---------- */
+const QCATS={'Ações':['plus','edit','x','undo','refresh','trash'],'Navegação':['home','search','apps','list','dots','back'],'Gestos':['tap','hand','move','az'],'Sistema':['info','lock','lockscreen','clock','glass','scale'],'Conteúdo':['image','doc','smile','users','drop','font']};
+let qIcon='plus', qName='Todos os apps', qShow=false, qIconCol=4, qBgCol=2, qTarget=0;
+const QN=Object.keys(QCATS);
+const qPrev=()=>`<div style="display:flex;flex-direction:column;align-items:center;gap:8px"><div style="width:64px;height:64px;border-radius:18px;background:${THEMECOLS[qBgCol][1]};display:flex;align-items:center;justify-content:center;color:${THEMECOLS[qIconCol][1]};box-shadow:0 8px 24px rgba(0,0,0,.35)">${ic(qIcon,30)}</div>
+ ${namePill(qName)}</div>`;
+const qColors=()=>{const lab=['Ícone','Fundo'];const cur=[qIconCol,qBgCol];return `<div class="segb" style="margin:14px 2px 8px">${lab.map((l,i)=>`<span class="${i===qTarget?'on':''}" data-qt="${i}">Cor do ${l.toLowerCase()}</span>`).join('')}</div>
+ <div class="lblS" style="padding-top:4px">Do seu tema</div><div class="sw2">${THEMECOLS.map((c,i)=>`<div><i data-qc="${i}" class="${i===cur[qTarget]?'on':''}" style="background:${c[1]};cursor:pointer"></i><div class="cap2">${c[0]}</div></div>`).join('')}</div>
+ <div class="lblS">De outras paletas</div><div class="pills">${GN.map((g,i)=>`<span class="${i===0?'on':''}">${g}</span>`).join('')}</div><div class="sw2" style="margin-top:8px">${GROUPS.Frias.map(c=>`<i style="background:${c}"></i>`).join('')}</div>`};
+const qGrid=()=>`<div class="chips" style="flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;padding:2px 0 6px">${QN.map((c,i)=>`<span class="chip ${i===0?'on':''}" style="flex:none">${c}</span>`).join('')}</div>`+QN.map(c=>`<div class="sticky" style="font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:var(--low);font-weight:700">${c}</div><div style="display:grid;grid-template-columns:repeat(6,1fr);gap:7px;padding:0 0 6px">${QCATS[c].map(g=>`<span data-qi="${g}" style="aspect-ratio:1;border-radius:12px;display:flex;align-items:center;justify-content:center;cursor:pointer;background:${g===qIcon?'#e9f1f7':'var(--card)'};color:${g===qIcon?'#10161a':'var(--mid)'}">${ic(g,18)}</span>`).join('')}</div>`).join('');
+const qSheet=(tab)=>`<div class="home"><div style="position:absolute;top:30px;left:0;right:0;display:flex;justify-content:center">${qPrev()}</div></div>
+ <div class="bs" style="top:170px"><div class="gzh"></div><div class="ttl" style="padding-top:0"><b>Botão rápido</b></div>
+ <div class="segb" style="margin:0 12px 6px">${['Ícone','Cores'].map((t,i)=>`<span class="${i===tab?'on':''}" data-qtab="${i}">${t}</span>`).join('')}</div>
+ <div class="bc">${tab===0?qGrid():qColors()+`<div class="mr" style="margin-top:10px"><div class="ic">${ic('corners')}</div><div class="tx">Borda</div>${SW(false)}</div><div class="mr"><div class="ic">${ic('font')}</div><div class="tx">Mostrar nome na home<small>Embaixo do botão</small></div><span data-qshow style="cursor:pointer">${SW(qShow)}</span></div>`}</div></div>`;
+let qTab=0;
+V2.quick={label:'5 · botao-rapido',desc:`<b>specs/botao-rapido.</b> Mesmo padrão da pasta: nome escrito direto embaixo do botão na prévia (vale para o TalkBack e, se ligado, aparece na home). Duas abas para não rolar uma tela gigante: <b>Ícone</b> (ícones agrupados em Ações, Navegação, Gestos, Sistema e Conteúdo, com chips de atalho e nome da categoria grudando) e <b>Cores</b> (Cor do ícone | Cor do fundo, com as cores do seu tema, que acompanham a troca de tema, ou de outras paletas; Borda e Mostrar nome). Toque nos ícones, nas abas e nas cores.`,
+ phones:()=>[['Ícone',qSheet(0)],['Cores',qSheet(1)]]};
+document.addEventListener('click',e=>{const t=e.target.closest('[data-qi],[data-qtab],[data-qt],[data-qc],[data-qshow]');if(!t)return;
+ if(t.dataset.qi)qIcon=t.dataset.qi;if(t.dataset.qtab)qTab=+t.dataset.qtab;if(t.dataset.qt)qTarget=+t.dataset.qt;if(t.dataset.qc){if(qTarget)qBgCol=+t.dataset.qc;else qIconCol=+t.dataset.qc}if(t.dataset.qshow!==undefined)qShow=!qShow;render()});
+
+/* ---------- TESTE NO APARELHO 17/11 ---------- */
+P.folder='<path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>';
+P.addnew='<path d="M3 9.5V6a3 3 0 0 1 3-3h3.5M14.5 3H18a3 3 0 0 1 3 3v3.5M21 14.5V18a3 3 0 0 1-3 3h-3.5M9.5 21H6a3 3 0 0 1-3-3v-3.5M12 7.5v9M7.5 12h9"/>';
+P.gear='<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/>';
+const ttlStart=(icon,title,logo)=>`<div class="ttl" style="justify-content:flex-start;padding-left:16px!important"><span style="display:flex;align-items:center;gap:10px;min-width:0;padding-right:52px">${icon}<b style="padding:0;font-size:17px">${title}</b></span>${logo?`<span class="act">${LOGO(16,9)}</span>`:''}</div>`;
+const appSheet=()=>`<div class="home"></div><div class="bs" style="top:300px"><div class="gzh"></div>${ttlStart(`<span style="width:34px;height:34px;border-radius:10px;background:#3a4650;display:flex;align-items:center;justify-content:center">${app(APPS[0],22)}</span>`,'99',true)}
+ <div class="bc">${row('info','Informações do app','','')}${row('fill','Adicionar aos favoritos','','')}${row('header','Configurações do painel rápido','')}${PH()}<div style="border-top:1px solid rgba(255,255,255,.08);margin:6px 4px"></div><div class="mrx danger"><div class="ic">${ic('trash')}</div><div style="flex:1">Desinstalar<small>Segure para confirmar</small></div></div></div></div>`;
+const folderCfg=()=>`<div class="home"></div><div class="bs" style="top:260px"><div class="gzh"></div>${ttlStart(`<span style="width:34px;height:34px;border-radius:10px;background:#3a4650;display:flex;align-items:center;justify-content:center">${ic('folder',18)}</span>`,'Fun',true)}
+ <div class="bc"><div class="lblS" style="padding-top:2px">Pasta</div>${row('apps','Editar itens da pasta','')}${row('edit','Editar pasta','')}${row('cont','Configurações do container','')}${PH()}</div></div>`;
+const favNoPen=()=>`<div class="bs" style="top:22px;border-radius:0"><div class="gzh" style="height:6px"></div><div class="ttl"><b>Escolher favoritos</b><span class="act">${LOGO(16,9)}</span></div>
+ <div class="bc">${favChips()}${favNote()}<div class="sticky">Favoritos <span>0</span></div><div class="legend" style="text-align:center;padding:8px">Nenhum ainda</div><div class="sticky">Todos os apps <span>189</span></div>${allRows(0,7)}</div>
+ <div style="padding:6px 10px 10px"><div class="search" style="margin:0">${ic('search',16)} Buscar aplicativo…</div></div></div>`;
+let gOpen=false;
+const manage=()=>`<div class="home"></div><div class="bs" style="top:150px"><div class="gzh"></div><div class="ttl"><b>Gerenciar itens</b><span class="act">${LOGO(16,9)}</span></div>
+ <div class="bc">${gOpen?`<div class="ttl" style="margin-top:0"><span class="act l" data-gopen>${ic('back',18)}</span><b style="font-size:14px">Botão rápido</b></div><div style="display:flex;justify-content:center;padding:8px 0"><div style="width:56px;height:56px;border-radius:16px;background:#4a5d6b;display:flex;align-items:center;justify-content:center">${ic('plus',26)}</div></div><div style="display:flex;justify-content:center">${namePill('')}</div><div class="segb" style="margin:12px 2px 8px"><span class="on">Ícone</span><span>Cores</span></div><div class="legend">… editor do botão rápido aqui mesmo (aba 5)</div>`:
+ `<div class="lblS" style="padding-top:2px">Adicionar</div><div class="grp" style="padding:10px"><div class="search" style="margin:0 0 8px">${ic('search',16)} Adicionar app…</div>
+ <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">${['Pasta','Botão rápido'].map(t=>`<div style="height:46px;border-radius:14px;border:1px solid var(--sv);display:flex;align-items:center;justify-content:center;gap:8px;font-size:13px;cursor:pointer" ${t==='Botão rápido'?'data-gopen':''}>${ic('addnew',18)}${t}</div>`).join('')}</div></div>
+ <div class="lblS">Itens <span style="float:right">2</span></div>
+ ${[['folder','Fun','Pasta'],['tap','Botão rápido','Botão rápido']].map(r=>`<div class="arow card2" data-gopen style="cursor:pointer">${ic(r[0],18)}<span style="flex:1">${r[1]}<small style="display:block;font-size:10px;color:var(--low)">Toque para editar</small></span><span class="ch">›</span><span class="rm">×</span></div>`).join('')}`}</div></div>`;
+const addWidgetPh=()=>`<div class="home"><div style="position:absolute;left:14px;right:14px;top:120px;height:150px;border-radius:20px;border:1.5px dashed rgba(255,255,255,.25);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px">${ic('addnew',30)}<b>Adicionar widget</b></div>
+ <div style="position:absolute;left:0;right:0;bottom:30px;padding:0 18px"><div style="display:flex;align-items:center;gap:14px"><span style="width:44px;height:44px;border-radius:50%;background:#3a4650;display:flex;align-items:center;justify-content:center">${LOGO(24,14)}</span><span style="color:var(--mid)">Configurações do Aureole</span></div></div>
+ <span class="tag2 ok" style="bottom:auto;top:290px">Ícone de adicionar = o do container · Ajustes = logo</span></div>`;
+const onbDefault=()=>`<div class="home"><div class="gridbg">
+ <div class="gitem dash" style="grid-column:1 / span 20;grid-row:1 / span 6"><div class="clk" style="font-size:52px">09:41</div></div>
+ <div class="gitem dash" style="grid-column:1 / span 20;grid-row:7 / span 6;background:rgba(74,93,107,.35)"><span style="font-size:11px;color:var(--mid)">Widgets · 20×6 (layout padrão)</span></div>
+ <div class="gitem dash" style="grid-column:17 / span 4;grid-row:13 / span 18;flex-direction:column;gap:8px">${['#25d366','#ea4335','#ff7a1a'].map(c=>`<div class="fold" style="background:rgba(255,255,255,.08)"><i style="background:${c}"></i><i style="background:${c}"></i><i style="background:${c}"></i><i style="background:${c}"></i></div>`).join('')}</div>
+ <div class="gitem" style="grid-column:1 / span 16;grid-row:13 / span 18;align-items:flex-start;justify-content:flex-start;padding:8px;gap:10px">${APPS.slice(0,5).map(a=>`<div style="display:flex;gap:8px;align-items:center;font-size:12px">${app(a)}${a[0]}</div>`).join('')}</div></div>
+ <div style="position:absolute;left:50%;bottom:14px;transform:translateX(-50%);padding:10px 20px;border-radius:99px;background:#fff;color:#111;font-weight:700;font-size:13px">✓ Salvar</div></div>`;
+const onbSheetNoLogo=()=>`<div class="home"></div><div class="bs" style="top:330px"><div class="gzh"></div><div class="ttl"><b>Escolher uma paleta</b></div><div class="bc"><div class="legend">No onboarding: sem logo (só a vitrine do Personalizar tem a logo, com o anel).</div></div></div>`;
+V2.dev={label:'6 · teste-aparelho',desc:`<b>specs/teste-aparelho-17-11.</b> Itens do teste no aparelho depois do lote: Salvar embaixo em toda edição do onboarding; widgets e container do onboarding com o tamanho do layout padrão; no onboarding, sheets sem anel não têm logo; Escolher favoritos sem o lápis; cabeçalho com ícone (app, pasta) alinhado no início; ícone de adicionar do container no lugar do “+”; Gerenciar itens edita pasta e botão rápido ali mesmo (toque em “Botão rápido”); “Configurações do Aureole” com a logo.`,
+ phones:()=>[['Onboarding · tamanhos padrão + Salvar',onbDefault()],['Onboarding · sheet sem anel',onbSheetNoLogo()],['Escolher favoritos',favNoPen()],['App · segurar',appSheet()],['Configurações da pasta',folderCfg()],['Gerenciar itens',manage()],['Adicionar widget · lista de apps',addWidgetPh()]]};
+document.addEventListener('click',e=>{if(e.target.closest('[data-gopen]')&&cur==='dev'){gOpen=!gOpen;render()}});
+
+const shortcutScrolled=()=>`<div class="home"><div style="position:absolute;top:30px;left:0;right:0;display:flex;flex-direction:column;align-items:center;gap:8px"><div style="width:64px;height:64px;border-radius:18px;background:#4a5d6b;display:flex;align-items:center;justify-content:center">${ic('addnew',30)}</div><span class="chip" style="background:rgba(58,72,82,.9)">Ao tocar: Todos os apps</span></div></div>
+ <div class="bs" style="top:150px"><div class="gzh"></div><div class="ttl"><b>Selecione um atalho</b></div><div class="bc" style="padding-top:0">
+ <div class="legend" style="text-align:center">↑ lista rolada: a prévia continua, a sheet já cabe</div>
+ ${['Assistente','Buscar','Câmera','Lanterna','Notificações','Configurações rápidas','Bloquear tela'].map(t=>`<div class="arow">${ic('apps',18)}<span style="flex:1">${t}</span><span style="width:18px;height:18px;border-radius:50%;border:1.5px solid var(--out)"></span></div>`).join('')}</div></div>`;
+const smallSheet=()=>`<div class="home"></div><div class="bs" style="top:auto;bottom:30px;height:auto"><div class="gzh"></div><div class="ttl"><b>Atualização pronta</b></div>
+ <div style="padding:0 18px 6px;color:var(--mid);font-size:13px;text-align:center">A versão nova foi baixada. Reiniciar o Aureole para aplicar?</div>
+ <div style="display:flex;gap:10px;padding:12px 16px 16px"><div style="flex:1;height:42px;border-radius:99px;border:1px solid var(--sv);display:flex;align-items:center;justify-content:center;font-size:13px">Depois</div><div style="flex:1;height:42px;border-radius:99px;background:#fff;color:#111;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px">Reiniciar agora</div></div></div>
+ <span class="tag2 ok" style="bottom:auto;top:40px">Altura = conteúdo, sem espaço sobrando</span>`;
+V2.dev.phones=((f)=>()=>f().concat([['Atalho · lista rolada, prévia fica',shortcutScrolled()],['Sheet pequena · atualizar',smallSheet()]]))(V2.dev.phones);
+const _r=render; render=function(){_r(); if(cur==='pasta'){document.querySelectorAll('.pscroll').forEach(sc=>{const h=sc.querySelector(`[data-sec="${CATS[pCat]}"]`);sc.scrollTop=h.offsetTop-sc.offsetTop});document.querySelectorAll('#pchips').forEach(r=>{const ch=r.children[pCat];r.scrollLeft=ch.offsetLeft-r.offsetLeft-12})}};
+render();
+
+</script></body></html>

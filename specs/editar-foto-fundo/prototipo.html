@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Aureole · editar foto do fundo · protótipo</title>
+<style>
+  :root{--bg:#15181c;--surface:#2b373e;--sv:#4a5d6b;--card:rgba(74,93,107,.5);--hi:#fff;--mid:#c5d8e8;--low:#9bb4c8}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--hi);font:15px/1.45 "Istok Web",system-ui,-apple-system,Roboto,sans-serif}
+  header{padding:20px 18px 6px;max-width:1200px;margin:auto}
+  h1{margin:0 0 4px;font-size:20px} header p{margin:0;color:var(--mid);font-size:14px;max-width:780px}
+  .row{display:flex;gap:22px;overflow-x:auto;padding:16px 18px 26px;max-width:1200px;margin:auto}
+  .ph{flex:none}.cap{font-size:12px;color:var(--low);text-align:center;margin-top:6px;max-width:290px}
+  .phone{width:290px;height:610px;background:#000;border-radius:30px;padding:8px}
+  .scr{width:100%;height:100%;border-radius:23px;overflow:hidden;position:relative;background:var(--surface);touch-action:none;user-select:none}
+  .st{position:absolute;top:0;left:0;right:0;height:22px;display:flex;justify-content:space-between;padding:0 14px;font-size:10px;color:#fff;align-items:center;z-index:6;text-shadow:0 1px 2px #0008}
+  .nav{position:absolute;left:0;right:0;bottom:0;height:30px;display:flex;justify-content:space-around;align-items:center;color:#fff;font-size:14px;z-index:6;background:rgba(0,0,0,.25)}
+  .nav span{cursor:pointer;padding:2px 16px;border-radius:8px}.nav span:hover{background:rgba(255,255,255,.12)}
+  .photo{position:absolute;left:0;top:0;transform-origin:50% 50%;will-change:transform;pointer-events:none}
+  .dimL{position:absolute;inset:0;background:#000;pointer-events:none}
+  .ghost{position:absolute;inset:0;pointer-events:none}
+  .ghost .c{position:absolute;top:70px;left:0;right:0;text-align:center;font-size:48px;font-weight:700;color:#fff}
+  .ghost .d{position:absolute;top:128px;left:0;right:0;text-align:center;font-size:11px;color:#fff}
+  .ghost .apps{position:absolute;left:28px;right:28px;top:300px;display:flex;justify-content:space-between}
+  .ghost .apps i{width:42px;height:42px;border-radius:12px;display:block;background:rgba(255,255,255,.85)}
+  .frame{position:absolute;inset:0;border:2px dashed rgba(255,255,255,.55);border-radius:22px;pointer-events:none}
+  .bs{position:absolute;left:0;right:0;bottom:30px;background:var(--surface);border-radius:22px 22px 0 0;padding:0 14px 12px;z-index:5;box-shadow:0 -6px 20px rgba(0,0,0,.35)}
+  .bs .gz{height:14px}.bs .t{text-align:center;font-weight:700;font-size:16px;padding:6px 0 10px}
+  .seg{display:flex;background:rgba(0,0,0,.25);border-radius:99px;padding:3px;margin-bottom:12px}
+  .seg span{flex:1;text-align:center;font-size:12px;padding:6px 0;border-radius:99px;color:var(--mid);cursor:pointer}
+  .seg span.on{background:var(--hi);color:#111;font-weight:700}
+  .pane{min-height:70px}
+  .btns{display:flex;gap:8px}.btn{flex:1;height:44px;border-radius:14px;background:var(--card);display:flex;align-items:center;justify-content:center;gap:6px;font-size:13px;cursor:pointer}
+  .sl{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--mid)}
+  .sl input{flex:1;accent-color:#cfe3ff}
+  .sl b{width:44px;text-align:right;color:var(--hi);font-variant-numeric:tabular-nums}
+  .reset{font-size:12px;color:var(--low);text-align:right;margin-top:8px;cursor:pointer}
+  .hint{position:absolute;top:50px;left:0;right:0;text-align:center;font-size:10.5px;color:#ffd36a;z-index:6;text-shadow:0 1px 2px #000}
+  .zoomTag{position:absolute;right:12px;top:30px;font-size:11px;background:rgba(0,0,0,.45);border-radius:99px;padding:2px 8px;z-index:6}
+  /* settings sheet */
+  .homebg{position:absolute;inset:0;overflow:hidden}
+  .scrim{position:absolute;inset:0;background:rgba(5,8,10,.55)}
+  .lbl{font-size:10px;font-weight:700;letter-spacing:.06em;color:var(--low);text-transform:uppercase;padding:10px 2px 6px}
+  .types{display:flex;gap:8px}
+  .types>div{flex:1;border-radius:16px;background:var(--card);padding:10px;font-size:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;border:2px solid transparent}
+  .types>div.on{border-color:var(--hi)}
+  .thumb{width:100%;height:84px;border-radius:10px;overflow:hidden;position:relative;background:#000}
+  .acts{display:flex;gap:6px;width:100%}.acts span{flex:1;text-align:center;font-size:11px;padding:6px 0;border-radius:99px;background:rgba(255,255,255,.1);cursor:pointer}
+  .acts span.pri{background:var(--hi);color:#111;font-weight:700}
+  .acts{justify-content:center}.acts .ibtn{flex:none;width:40px;height:40px;padding:0;border-radius:50%;display:flex;align-items:center;justify-content:center}
+  .snack{position:absolute;left:10px;right:10px;bottom:40px;background:#f2f5f7;color:#1b1f23;border-radius:12px;min-height:46px;display:flex;align-items:center;padding:0 4px 0 14px;font-size:13px;z-index:7;transform:translateY(16px);opacity:0;transition:.2s;overflow:hidden}
+  .snack.on{transform:none;opacity:1}.snack span{flex:1}
+  .snack button{all:unset;cursor:pointer;font-weight:700;color:#2a5ea8;padding:10px 12px}
+  .snack i{position:absolute;left:0;bottom:0;height:3px;background:#2a5ea8;width:100%}
+  .homeCard{position:absolute;left:18px;right:18px;top:250px;border-radius:20px;background:rgba(43,55,62,.55);backdrop-filter:blur(10px);padding:12px 14px;font-size:12px;color:#fff}
+  .homeCard div{display:flex;align-items:center;gap:8px;margin:6px 0}.homeCard i{width:18px;height:18px;border-radius:5px;display:block}
+  .swr{display:flex;align-items:center;gap:10px;margin-top:14px;padding:10px 12px;border-radius:14px;background:var(--card);font-size:13px;cursor:pointer}
+  .swr .t2{flex:1}.swr small{display:block;color:var(--low);font-size:10.5px}
+  .tg{width:34px;height:20px;border-radius:99px;background:var(--sv);position:relative;flex:none}
+  .tg::after{content:"";position:absolute;top:3px;left:3px;width:14px;height:14px;border-radius:50%;background:#fff;transition:.15s}
+  .tg.on{background:#9fc6e6}.tg.on::after{left:17px;background:#12181d}
+  .dlg{position:absolute;inset:0;background:rgba(0,0,0,.55);z-index:9;display:flex;align-items:center;justify-content:center;padding:18px}
+  .dlg>div{background:var(--surface);border-radius:20px;padding:16px;font-size:13px;color:var(--mid)}
+  .dlg b{display:block;color:#fff;font-size:15px;margin-bottom:6px}
+  .dlg .db{display:flex;flex-direction:column;gap:6px;margin-top:12px}
+  .dlg .db span{text-align:center;padding:10px;border-radius:99px;background:rgba(255,255,255,.1);cursor:pointer;color:#fff}
+  .dlg .db span.pri{background:#fff;color:#111;font-weight:700}
+  .lock .c{position:absolute;top:110px;left:0;right:0;text-align:center;font-size:64px;font-weight:300;color:#fff;letter-spacing:-1px}
+  .lock .d{position:absolute;top:96px;left:0;right:0;text-align:center;font-size:12px;color:#fff}
+  .lock .pad{position:absolute;bottom:60px;left:0;right:0;text-align:center;color:#fff;font-size:22px}
+  .lock .src{position:absolute;top:30px;left:0;right:0;text-align:center;font-size:10.5px;color:#ffd36a;text-shadow:0 1px 2px #000}
+  svg.i{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+  .notes{max-width:1200px;margin:auto;padding:0 18px 30px;color:var(--mid);font-size:13.5px}
+  .notes li{margin:3px 0}
+</style>
+</head>
+<body>
+<header>
+  <h1>Editar foto do fundo</h1>
+  <p><b>1</b> Definir plano de fundo com foto aplicada: miniatura e dois botões de ícone, editar (lápis) e trocar foto. <b>2</b> Editor: arraste a foto,
+  zoom com a roda do mouse, pinça ou toque duplo; abas Enquadrar / Escurecer / Desfoque; feche com ◁ para salvar.
+  <b>3</b> Home com o resultado e o Desfazer. <b>4</b> Tela de bloqueio: ligue "Usar também na tela de bloqueio" no aparelho 1.</p>
+</header>
+<div class="row">
+  <div class="ph"><div class="phone"><div class="scr" id="p1"></div></div><div class="cap">1 · Definir plano de fundo (foto já aplicada)</div></div>
+  <div class="ph"><div class="phone"><div class="scr" id="p2"></div></div><div class="cap" id="cap2">2 · Editor (arraste, roda/pinça para zoom, toque duplo)</div></div>
+  <div class="ph"><div class="phone"><div class="scr" id="p3"></div></div><div class="cap" id="cap3">3 · Home com o fundo salvo</div></div>
+  <div class="ph"><div class="phone"><div class="scr" id="p4"></div></div><div class="cap" id="cap4">4 · Tela de bloqueio do Android</div></div>
+</div>
+<ul class="notes">
+  <li>A foto original não muda: só zoom, foco, rotação, escurecer e desfoque ficam salvos. Abrir de novo parte da original.</li>
+  <li>Nunca aparece borda vazia: o zoom mínimo cobre a tela e o arraste para nas bordas.</li>
+  <li>Escurecer começa em 30% (o valor fixo de hoje). Fotos aplicadas antes da atualização ficam iguais.</li>
+  <li>Android 9–11: o desfoque usa uma cópia desfocada gerada ao salvar (D-02).</li>
+  <li>Tela de bloqueio: recebe o mesmo fundo (foto ajustada ou cor sólida) via <code>WallpaperManager</code> com <code>FLAG_LOCK</code>. O Android não deixa guardar a imagem anterior; por isso o aviso na primeira vez e a escolha ao desligar.</li>
+</ul>
+<script>
+const PHOTO='data:image/svg+xml;utf8,'+encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="800" viewBox="0 0 1200 800">
+<defs><linearGradient id="s" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1d2a55"/><stop offset=".55" stop-color="#d9785a"/><stop offset="1" stop-color="#f4c27a"/></linearGradient>
+<linearGradient id="w" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#e9a070"/><stop offset="1" stop-color="#20304a"/></linearGradient></defs>
+<rect width="1200" height="520" fill="url(#s)"/><circle cx="820" cy="400" r="70" fill="#ffe2a8"/>
+<path d="M0 470 L180 300 L330 430 L520 230 L700 420 L860 330 L1000 440 L1200 280 L1200 560 L0 560Z" fill="#3a2f4a"/>
+<path d="M0 520 L220 400 L420 500 L640 380 L880 500 L1080 420 L1200 480 L1200 560 L0 560Z" fill="#241f33"/>
+<rect y="540" width="1200" height="260" fill="url(#w)"/><rect x="760" y="560" width="120" height="6" fill="#ffe2a8" opacity=".7"/>
+<rect x="780" y="590" width="80" height="5" fill="#ffe2a8" opacity=".5"/><rect x="795" y="620" width="50" height="4" fill="#ffe2a8" opacity=".35"/>
+<path d="M90 800 L130 610 L170 800Z" fill="#141626"/><path d="M1040 800 L1090 580 L1140 800Z" fill="#141626"/></svg>`);
+const IW=1200, IH=800, W=274, H=594;
+const DEF={z:1,fx:.5,fy:.5,rot:0,dim:.3,blur:0};
+let saved={...DEF}, prevSaved=null, ed=null, tab='frame', open=false, lockOn=false, warned=false, lockApplied=null;
+const ic=(p)=>`<svg class="i" viewBox="0 0 24 24">${p}</svg>`;
+function geom(a){const r=a.rot%180!==0, ew=r?IH:IW, eh=r?IW:IH, base=Math.max(W/ew,H/eh), s=base*a.z;
+  const hw=W/s/ew/2, hh=H/s/eh/2; const fx=Math.min(1-hw,Math.max(hw,a.fx)), fy=Math.min(1-hh,Math.max(hh,a.fy));
+  return {s,ew,eh,fx,fy};}
+function photoHTML(a,id){const g=geom(a); const cx=W/2+(.5-g.fx)*g.ew*g.s, cy=H/2+(.5-g.fy)*g.eh*g.s;
+  return `<img class="photo" ${id?`id="${id}"`:''} src="${PHOTO}" width="${IW}" height="${IH}" style="left:${cx-IW/2}px;top:${cy-IH/2}px;transform:rotate(${a.rot}deg) scale(${g.s});filter:blur(${a.blur/g.s}px)"><div class="dimL" style="opacity:${a.dim}"></div>`;}
+const nav='<div class="nav"><span data-back>◁</span><span>○</span><span>|||</span></div>';
+const st='<div class="st"><span>23:56</span><span>◔ ▲ ▮ 61</span></div>';
+
+/* 1 · settings sheet */
+function p1(){document.getElementById('p1').innerHTML=`<div class="homebg">${photoHTML(saved)}</div><div class="scrim"></div>${st}
+ <div class="bs"><div class="gz"></div><div class="t">Definir plano de fundo</div><div class="lbl">Tipo</div>
+ <div class="types"><div>${ic('<path d="M12 3s6 6.5 6 11a6 6 0 0 1-12 0c0-4.5 6-11 6-11z"/>')}Cor sólida</div>
+ <div class="on"><div class="thumb">${thumb()}</div><span>Imagem personalizada</span><div class="acts"><span class="pri ibtn" id="edit" title="Editar foto" aria-label="Editar foto">${ic('<path d="M14 4H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><path d="M17 3l4 4-9 9H8v-4z"/>')}</span><span class="ibtn" title="Trocar foto" aria-label="Trocar foto">${ic('<rect x="3" y="5" width="13" height="11" rx="2"/><path d="m3 14 4-3 3 2 2-1 4 3"/><path d="M19 9v9a2 2 0 0 1-2 2H8"/><path d="m11 18-3 2 3 2"/>')}</span></div></div></div>
+ <div class="swr" id="lk"><div class="t2">Usar também na tela de bloqueio<small>Cor sólida e foto, com os ajustes</small></div><span class="tg ${lockOn?'on':''}"></span></div>
+ <div style="height:60px"></div></div>${nav}`;
+ document.getElementById('edit').onclick=openEditor;
+ document.getElementById('lk').onclick=toggleLock;}
+function dialog(title,text,opts){const el=document.getElementById('p1'); const d=document.createElement('div'); d.className='dlg';
+ d.innerHTML=`<div><b>${title}</b>${text}<div class="db">${opts.map((o,i)=>`<span class="${i===0?'pri':''}" data-i="${i}">${o[0]}</span>`).join('')}</div></div>`;
+ d.querySelectorAll('[data-i]').forEach(n=>n.onclick=()=>{d.remove(); opts[+n.dataset.i][1]();}); el.appendChild(d);}
+function toggleLock(){
+ if(!lockOn){ const go=()=>{lockOn=true; warned=true; lockApplied={...saved}; p1(); p4('aplicado agora');};
+   if(warned) go(); else dialog('Tela de bloqueio','O Android não deixa o Aureole guardar a imagem atual da tela de bloqueio, então desligar não volta a anterior.',[['Usar mesmo assim',go],['Agora não',()=>{}]]);
+ } else dialog('Desligar na tela de bloqueio','O que fazer com a tela de bloqueio agora?',[['Manter como está',()=>{lockOn=false;p1();p4('mantida');}],['Voltar ao fundo do sistema',()=>{lockOn=false;lockApplied=null;p1();p4('fundo do sistema');}]]);
+}
+function p4(note){const el=document.getElementById('p4');
+ const bg=lockApplied?`<div class="homebg">${photoHTML(lockApplied)}</div>`:`<div class="homebg" style="background:linear-gradient(160deg,#3b4a6b,#151a2a)"></div>`;
+ el.innerHTML=`${bg}${st}<div class="lock"><div class="src">${lockApplied?'fundo do Aureole':'papel de parede do sistema'}${note?' · '+note:''}</div><div class="d">Terça, 17 de novembro</div><div class="c">00:00</div><div class="pad">🔒</div></div><div class="nav"><span>◁</span><span>○</span><span>|||</span></div>`;}
+function thumb(){const g=geom(saved), k=126/W; return `<div style="position:absolute;left:0;top:0;width:${W}px;height:${H}px;transform:scale(${k});transform-origin:0 0">${photoHTML(saved)}</div>`;}
+
+/* 2 · editor */
+function openEditor(){ed={...saved}; open=true; renderEd(); document.getElementById('cap2').textContent='2 · Editor aberto: ajuste e feche com ◁';}
+function renderEd(){const el=document.getElementById('p2');
+ if(!open){el.innerHTML=`<div class="homebg" style="background:#1b2228"></div>${st}<div style="position:absolute;top:240px;left:0;right:0;text-align:center;color:var(--low);font-size:13px">Toque em "Editar foto"<br>no aparelho 1</div>${nav}`;return;}
+ const g=geom(ed);
+ el.innerHTML=`<div class="homebg" id="ph">${photoHTML(ed,'img')}</div>
+ <div class="ghost" style="opacity:.42"><div class="c">09:41</div><div class="d">Segunda, 16 de novembro</div><div class="apps"><i></i><i></i><i></i><i></i></div></div>
+ <div class="frame"></div>${st}<div class="zoomTag">${ed.z.toFixed(1)}x</div><div class="hint">arraste · pinça ou roda para zoom · toque duplo</div>
+ <div class="bs"><div class="gz"></div><div class="t">Editar foto</div>
+  <div class="seg">${[['frame','Enquadrar'],['dim','Escurecer'],['blur','Desfoque']].map(([k,n])=>`<span data-tab="${k}" class="${tab===k?'on':''}">${n}</span>`).join('')}</div>
+  <div class="pane">${tab==='frame'?`<div class="btns"><div class="btn" id="center">${ic('<circle cx="12" cy="12" r="3"/><path d="M12 2v4M12 18v4M2 12h4M18 12h4"/>')}Centralizar</div><div class="btn" id="rot">${ic('<path d="M20 12a8 8 0 1 1-3-6.2M20 4v5h-5"/>')}Girar 90°</div></div>`
+   : tab==='dim'?`<div class="sl">Escurecer<input type="range" min="0" max="70" value="${Math.round(ed.dim*100)}" id="sd"><b>${Math.round(ed.dim*100)}%</b></div>`
+   :`<div class="sl">Desfoque<input type="range" min="0" max="25" value="${ed.blur}" id="sb"><b>${ed.blur} dp</b></div>`}
+   <div class="reset" id="reset">Redefinir</div></div></div>${nav}`;
+ el.querySelectorAll('[data-tab]').forEach(n=>n.onclick=()=>{tab=n.dataset.tab;renderEd();});
+ const c=document.getElementById('center'); if(c) c.onclick=()=>{ed.fx=.5;ed.fy=.5;renderEd();};
+ const r=document.getElementById('rot'); if(r) r.onclick=()=>{ed.rot=(ed.rot+90)%360;renderEd();};
+ const sd=document.getElementById('sd'); if(sd) sd.oninput=()=>{ed.dim=sd.value/100;soft();sd.nextElementSibling.textContent=sd.value+'%';};
+ const sb=document.getElementById('sb'); if(sb) sb.oninput=()=>{ed.blur=+sb.value;soft();sb.nextElementSibling.textContent=sb.value+' dp';};
+ document.getElementById('reset').onclick=()=>{ed={...DEF};renderEd();};
+ el.querySelector('[data-back]').onclick=closeEd;
+ bindGestures(el);
+}
+function soft(){const ph=document.getElementById('ph'); if(ph) ph.innerHTML=photoHTML(ed,'img'); const zt=document.querySelector('#p2 .zoomTag'); if(zt) zt.textContent=ed.z.toFixed(1)+'x';}
+function clampEd(){const g=geom(ed); ed.fx=g.fx; ed.fy=g.fy; ed.z=Math.min(5,Math.max(1,ed.z));}
+function bindGestures(el){
+ const area=el; let drag=null, pts=new Map(), pinch0=null, lastTap=0;
+ area.onpointerdown=e=>{ if(e.target.closest('.bs,.nav')) return; area.setPointerCapture(e.pointerId); pts.set(e.pointerId,{x:e.clientX,y:e.clientY});
+   if(pts.size===1){ const now=Date.now(); if(now-lastTap<300){ const rc=area.getBoundingClientRect(); zoomAt(ed.z<1.5?2:1,e.clientX-rc.left,e.clientY-rc.top); lastTap=0; return;} lastTap=now; drag={x:e.clientX,y:e.clientY,fx:ed.fx,fy:ed.fy}; }
+   if(pts.size===2){ const [a,b]=[...pts.values()]; pinch0={d:Math.hypot(a.x-b.x,a.y-b.y),z:ed.z}; drag=null; } };
+ area.onpointermove=e=>{ if(!pts.has(e.pointerId)) return; pts.set(e.pointerId,{x:e.clientX,y:e.clientY});
+   if(pinch0&&pts.size===2){ const [a,b]=[...pts.values()]; ed.z=pinch0.z*Math.hypot(a.x-b.x,a.y-b.y)/pinch0.d; clampEd(); soft(); return; }
+   if(drag){ const g=geom(ed); ed.fx=drag.fx-(e.clientX-drag.x)/(g.ew*g.s); ed.fy=drag.fy-(e.clientY-drag.y)/(g.eh*g.s); clampEd(); soft(); } };
+ const up=e=>{pts.delete(e.pointerId); if(pts.size<2) pinch0=null; if(pts.size===0) drag=null;};
+ area.onpointerup=up; area.onpointercancel=up;
+ area.onwheel=e=>{ if(e.target.closest('.bs')) return; e.preventDefault(); const rc=area.getBoundingClientRect(); zoomAt(ed.z*(e.deltaY<0?1.12:1/1.12),e.clientX-rc.left,e.clientY-rc.top); };
+}
+function zoomAt(nz,px,py){ const g0=geom(ed); const ix=g0.fx+(px-W/2)/(g0.ew*g0.s), iy=g0.fy+(py-H/2)/(g0.eh*g0.s);
+ ed.z=Math.min(5,Math.max(1,nz)); const g1=geom({...ed,fx:.5,fy:.5}); ed.fx=ix-(px-W/2)/(g1.ew*g1.s); ed.fy=iy-(py-H/2)/(g1.eh*g1.s); clampEd(); soft(); }
+function closeEd(){ if(!open) return; open=false; const changed=JSON.stringify(ed)!==JSON.stringify(saved);
+ if(changed){prevSaved={...saved}; saved={...ed}; if(lockOn) lockApplied={...saved};} renderEd(); p1(); p3(changed); p4(changed&&lockOn?'atualizada':'');
+ document.getElementById('cap2').textContent=changed?'2 · Fechou: salvou ao fechar':'2 · Fechou sem mudança: sem snackbar';}
+
+/* 3 · home */
+let tm=null;
+function p3(showSnack){const el=document.getElementById('p3');
+ el.innerHTML=`<div class="homebg">${photoHTML(saved)}</div>${st}<div class="ghost"><div class="c">09:41</div><div class="d">Segunda, 16 de novembro</div></div>
+ <div class="homeCard"><div><i style="background:#3f8a49"></i>Telefone</div><div><i style="background:#e7873a"></i>Mensagens</div><div><i style="background:#3a6fd1"></i>Câmera</div><div><i style="background:#7d58bd"></i>Spotify</div></div>
+ <div class="snack" id="sn"><span>Foto do fundo ajustada</span><button id="undo">Desfazer</button><i id="bar"></i></div>${nav}`;
+ if(showSnack){const sn=document.getElementById('sn'), bar=document.getElementById('bar'); requestAnimationFrame(()=>{sn.classList.add('on'); bar.style.transition='width 4s linear'; requestAnimationFrame(()=>bar.style.width='0%');});
+  clearTimeout(tm); tm=setTimeout(()=>sn.classList.remove('on'),4000);
+  document.getElementById('undo').onclick=()=>{saved={...prevSaved}; if(lockOn) lockApplied={...saved}; p1(); p3(false); p4(lockOn?'desfeita':''); document.getElementById('cap3').textContent='3 · Desfeito: ajustes anteriores de volta';};
+  document.getElementById('cap3').textContent='3 · Home com o fundo salvo + Desfazer (4 s)';}
+}
+p1(); renderEd(); p3(false); p4('');
+</script>
+</body>
+</html>

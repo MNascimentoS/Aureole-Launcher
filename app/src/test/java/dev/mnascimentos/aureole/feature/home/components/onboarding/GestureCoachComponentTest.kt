@@ -145,7 +145,7 @@ class GestureCoachComponentTest {
         )
 
         composeTestRule.onNodeWithText("Nice!").assertExists()
-        composeTestRule.onNodeWithText("Your apps live here. Press back to close.").assertExists()
+        composeTestRule.onNodeWithText("Your apps are here. Swipe down or press back to close.").assertExists()
         composeTestRule.onNodeWithText("Skip").assertDoesNotExist()
         composeTestRule.onNodeWithText("Show me").assertDoesNotExist()
     }
