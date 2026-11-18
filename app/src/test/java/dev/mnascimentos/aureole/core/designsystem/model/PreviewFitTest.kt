@@ -1,6 +1,7 @@
 package dev.mnascimentos.aureole.core.designsystem.model
 
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class PreviewFitTest {
@@ -28,23 +29,42 @@ class PreviewFitTest {
     }
 
     @Test
-    fun `when the content needs the room, the preview fades out at its smallest`() {
-        val half = previewFit(previewHeight = 300f, room = gap + 75f, gap = gap)
-        val gone = previewFit(previewHeight = 300f, room = gap, gap = gap)
-
-        assertEquals(PreviewBehavior.HIDES, half.behavior)
-        assertEquals(PREVIEW_MIN_SCALE, half.scale, 0f)
-        assertEquals(0.5f, half.alpha, 0.001f)
-        assertEquals(0f, gone.alpha, 0f)
-        assertEquals(0f, previewFit(previewHeight = 300f, room = 0f, gap = gap).alpha, 0f)
+    fun `when the scaled top does not fit, the preview has alpha 0`() {
+        listOf(gap + 100f, gap + 75f, gap, 0f, -50f).forEach { room ->
+            val fit = previewFit(previewHeight = 300f, room = room, gap = gap)
+            assertEquals(0f, fit.alpha, 0f)
+        }
+        assertEquals(PreviewBehavior.HIDES, previewFit(previewHeight = 300f, room = gap + 100f, gap = gap).behavior)
+        assertEquals(PREVIEW_MIN_SCALE, previewFit(300f, gap, gap).scale, 0f)
     }
 
     @Test
-    fun `the fade starts where the shrink ends`() {
-        val atMin = previewFit(previewHeight = 300f, room = gap + 300f * PREVIEW_MIN_SCALE, gap = gap)
+    fun `the preview fades while it shrinks to its smallest, never visible when cut`() {
+        val mid = previewFit(previewHeight = 300f, room = gap + 300f * 0.625f, gap = gap)
 
-        assertEquals(PreviewBehavior.SHRINKS, atMin.behavior)
-        assertEquals(1f, atMin.alpha, 0f)
+        assertEquals(PreviewBehavior.SHRINKS, mid.behavior)
+        assertEquals(0.5f, mid.alpha, 0.001f)
+        // Whatever the room, visible means the scaled preview fits under the top padding.
+        (0..400).forEach { room ->
+            val fit = previewFit(previewHeight = 300f, room = room.toFloat(), gap = gap)
+            if (fit.alpha > 0f) assertTrue(300f * fit.scale <= room - gap + 0.01f)
+        }
+    }
+
+    @Test
+    fun `alpha and scale are continuous at the boundaries`() {
+        val h = 300f
+        fun at(room: Float) = previewFit(h, room, gap)
+        val fadeRoom = gap + h * PREVIEW_FADE_START_SCALE
+        val minRoom = gap + h * PREVIEW_MIN_SCALE
+        listOf(h + gap, fadeRoom, minRoom).forEach { edge ->
+            val below = at(edge - 0.01f)
+            val above = at(edge + 0.01f)
+            assertEquals(above.alpha, below.alpha, 0.001f)
+            assertEquals(above.scale, below.scale, 0.001f)
+        }
+        assertEquals(1f, at(fadeRoom).alpha, 0.001f)
+        assertEquals(0f, at(minRoom).alpha, 0.001f)
     }
 
     @Test
