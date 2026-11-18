@@ -28,6 +28,7 @@ import dev.mnascimentos.aureole.core.data.model.ContainerItemType
 import dev.mnascimentos.aureole.core.designsystem.icons.AppSelect
 import dev.mnascimentos.aureole.core.designsystem.icons.ChevronRight
 import dev.mnascimentos.aureole.core.designsystem.icons.Click
+import dev.mnascimentos.aureole.core.designsystem.icons.DragHandle
 import dev.mnascimentos.aureole.core.designsystem.icons.Folder
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.feature.home.components.containers.model.ManageItemRowParams
@@ -73,6 +74,11 @@ internal fun ManageItemRow(params: ManageItemRowParams) {
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(AureoleDS.dimens.small)
     ) {
+        AureoleDS.icons.DragHandle(
+            tint = AureoleDS.colors.onSurfaceMedium,
+            modifier = Modifier.size(AureoleDS.dimens.iconSmall)
+        )
+
         ManageItemRowIcon(itemType = item.itemType, app = app, folder = folder)
 
         Text(

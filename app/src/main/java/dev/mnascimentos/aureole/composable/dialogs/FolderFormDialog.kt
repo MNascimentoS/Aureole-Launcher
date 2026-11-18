@@ -83,7 +83,7 @@ fun FolderFormSheet(
             label = resolveFolderName(draft.name, placeholder),
             onNameChange = { draft = draft.copy(name = it) },
             modifier = Modifier.align(Alignment.Center),
-            autoFocus = !isEditing
+            autoFocus = false
         )
     }
     val body: @Composable ColumnScope.() -> Unit = {

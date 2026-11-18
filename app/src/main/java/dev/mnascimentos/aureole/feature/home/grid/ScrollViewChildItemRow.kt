@@ -1,6 +1,7 @@
 package dev.mnascimentos.aureole.feature.home.grid
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -174,29 +175,18 @@ private fun ScrollViewChildReorderArrows(params: ScrollViewChildParams, actions:
 private fun ScrollViewChildSizeRow(params: ScrollViewChildParams, actions: HomeScreenActions) {
     val span = params.child.effectiveSpan(params.isVertical)
     if (span == null) {
-        AureoleText(
-            text = stringResource(R.string.home_scrollgroup_full_list),
-            color = AureoleDS.colors.onSurfaceMedium,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = AureoleDS.dimens.iconXLarge, bottom = AureoleDS.dimens.xSmall),
-            format = AureoleTextFormatParams(style = AureoleDS.typography.bodyMedium)
-        )
         return
     }
     val label = stringResource(
         if (params.isVertical) R.string.home_scrollgroup_height else R.string.home_scrollgroup_width
     )
     Row(
-        modifier = Modifier.fillMaxWidth(),
-        verticalAlignment = Alignment.CenterVertically
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(bottom = AureoleDS.dimens.xSmall),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.End
     ) {
-        AureoleText(
-            text = label,
-            color = AureoleDS.colors.onSurfaceMedium,
-            modifier = Modifier.weight(1f),
-            format = AureoleTextFormatParams(style = AureoleDS.typography.bodyMedium)
-        )
         TouchButton(
             description = stringResource(R.string.home_scrollgroup_decrease, label),
             onClick = { adjustChildSpan(params, actions, -1) }

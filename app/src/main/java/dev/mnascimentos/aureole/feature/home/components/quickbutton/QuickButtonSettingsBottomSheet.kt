@@ -15,6 +15,7 @@ import dev.mnascimentos.aureole.core.data.model.ShortcutType
 import dev.mnascimentos.aureole.core.designsystem.icons.Click
 import dev.mnascimentos.aureole.core.designsystem.icons.ColorFill
 import dev.mnascimentos.aureole.core.designsystem.icons.Delete
+import dev.mnascimentos.aureole.core.designsystem.icons.VerticalContainer
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
@@ -77,6 +78,18 @@ private fun quickButtonEntries(
             title = stringResource(R.string.home_quickbutton_appearance),
             onClick = { actions.onOpenQuickButtonAppearance() },
             icon = { m, c -> AureoleDS.icons.ColorFill(modifier = m, tint = c) },
+            showChevron = true
+        )
+    ),
+    MenuEntry.Row(
+        MenuRowParams(
+            title = stringResource(R.string.home_folder_container_settings),
+            onClick = {
+                uiState.activeQuickButtonId?.let {
+                    actions.onOpenEditContainerDialog(it)
+                }
+            },
+            icon = { m, c -> AureoleDS.icons.VerticalContainer(modifier = m, tint = c) },
             showChevron = true
         )
     ),
