@@ -48,6 +48,8 @@ data class MainUiState(
     val clockDateFormat: String = SettingsRepository.DEFAULT_CLOCK_DATE_FORMAT,
     val clockTextColor: Int = 0,
     val clockBackgroundColor: Int = 0,
+    val clockTextColorRef: String? = null,
+    val clockBackgroundColorRef: String? = null,
     /** The look of each clock on the grid by item id; a clock missing here uses the clock fields above. */
     val clockConfigs: Map<String, ClockConfig> = emptyMap(),
     val showContainerAddFolderButton: Boolean = true,

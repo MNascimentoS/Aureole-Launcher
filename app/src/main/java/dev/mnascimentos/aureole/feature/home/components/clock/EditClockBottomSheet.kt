@@ -45,25 +45,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.launch
 
-internal val PRESET_TEXT_COLORS = listOf(
-    Pair(R.string.home_clock_color_default, 0),
-    Pair(R.string.home_clock_color_ice_blue, 0xFF90CAF9.toInt()),
-    Pair(R.string.home_clock_color_lavender, 0xFFE1BEE7.toInt()),
-    Pair(R.string.home_clock_color_white, 0xFFFFFFFF.toInt()),
-    Pair(R.string.home_clock_color_gold, 0xFFFFE082.toInt()),
-    Pair(R.string.home_clock_color_mint, 0xFFA5D6A7.toInt()),
-    Pair(R.string.home_clock_color_coral, 0xFFFFAB91.toInt())
-)
-
-internal val PRESET_BG_COLORS = listOf(
-    Pair(R.string.home_clock_color_default, 0),
-    Pair(R.string.home_clock_bg_color_dark_slate, 0xFF1E2124.toInt()),
-    Pair(R.string.home_clock_bg_color_deep_purple, 0xFF281C74.toInt()),
-    Pair(R.string.home_clock_bg_color_night_blue, 0xFF1A237E.toInt()),
-    Pair(R.string.home_clock_bg_color_wine, 0xFF4A148C.toInt()),
-    Pair(R.string.home_clock_bg_color_dark_green, 0xFF1B5E20.toInt())
-)
-
 private const val DISMISS_DELAY_MS = 300L
 
 @Composable

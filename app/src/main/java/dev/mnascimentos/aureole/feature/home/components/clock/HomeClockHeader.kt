@@ -7,6 +7,9 @@ import dev.mnascimentos.aureole.composable.clock.ClockHeader
 import dev.mnascimentos.aureole.composable.clock.model.ClockHazeConfig
 import dev.mnascimentos.aureole.composable.clock.model.ClockHeaderConfig
 import dev.mnascimentos.aureole.composable.clock.model.ResolvedClockConfig
+import dev.mnascimentos.aureole.composable.clock.model.resolveClockColor
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleColors
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
@@ -21,7 +24,7 @@ fun HomeClockHeader(
 ) {
     val uiState = LocalHomeUiState.current
     ClockHeader(
-        resolvedConfig = resolveClockConfig(config, uiState),
+        resolvedConfig = resolveClockConfig(config, uiState, AureoleDS.colors),
         modifier = modifier,
         hazeConfig = resolveClockHazeConfig(hazeConfig, uiState, config),
         onClick = onClick,
@@ -29,7 +32,11 @@ fun HomeClockHeader(
     )
 }
 
-internal fun resolveClockConfig(config: ClockHeaderConfig, uiState: MainUiState): ResolvedClockConfig {
+internal fun resolveClockConfig(
+    config: ClockHeaderConfig,
+    uiState: MainUiState,
+    colors: AureoleColors? = null
+): ResolvedClockConfig {
     return ResolvedClockConfig(
         style = config.style ?: uiState.clockStyle,
         customGreeting = config.customGreeting ?: uiState.clockCustomGreeting,
@@ -37,8 +44,20 @@ internal fun resolveClockConfig(config: ClockHeaderConfig, uiState: MainUiState)
         fontFamily = config.fontFamily ?: uiState.clockFontFamily,
         timeFormat = config.timeFormat ?: uiState.clockTimeFormat,
         dateFormat = config.dateFormat ?: uiState.clockDateFormat,
-        textColor = config.textColor ?: uiState.clockTextColor,
-        backgroundColor = config.backgroundColor ?: uiState.clockBackgroundColor
+        textColor = resolveClockColor(
+            legacyArgb = config.textColor ?: uiState.clockTextColor,
+            refJson = if (config.textColor != null) config.textColorRef else uiState.clockTextColorRef,
+            colors = colors
+        ),
+        backgroundColor = resolveClockColor(
+            legacyArgb = config.backgroundColor ?: uiState.clockBackgroundColor,
+            refJson = if (config.backgroundColor != null) {
+                config.backgroundColorRef
+            } else {
+                uiState.clockBackgroundColorRef
+            },
+            colors = colors
+        )
     )
 }
 

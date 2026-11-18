@@ -1,5 +1,6 @@
 package dev.mnascimentos.aureole.composable.color
 
+import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -7,6 +8,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import dev.mnascimentos.aureole.R
+import dev.mnascimentos.aureole.composable.color.model.ThemeDefaultOption
+import dev.mnascimentos.aureole.composable.color.model.ThemeSwatch
 import dev.mnascimentos.aureole.composable.color.model.fixedPaletteColor
 import dev.mnascimentos.aureole.composable.color.model.isThemeRoleSelected
 import dev.mnascimentos.aureole.composable.color.model.themeRoleOf
@@ -29,20 +32,41 @@ import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 fun AureoleThemeColorPicker(
     selected: ThemeColorRef?,
     onSelect: (ThemeColorRef) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    defaultOption: ThemeDefaultOption? = null
 ) {
-    Column(modifier = modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(AureoleDS.dimens.xSmall)) {
-        AureoleMenuSectionLabel(text = stringResource(R.string.settings_background_section_theme))
-        AureoleThemeSwatchRow(
-            swatches = themeRoleSwatches(AureoleDS.colors),
-            isSelected = { isThemeRoleSelected(it, selected) },
-            onSelect = { swatch -> themeRoleOf(swatch)?.let { onSelect(ThemeColorRef.Role(it)) } }
-        )
-        AureoleMenuSectionLabel(text = stringResource(R.string.theme_color_section_other_palettes))
-        AureolePaletteSwatchRow(
-            selected = fixedPaletteColor(selected),
-            onSelect = { onSelect(ThemeColorRef.Fixed(it)) }
-        )
+    // Section label to content 8 dp, between sections 16 dp (clock-colors RF-D8).
+    Column(modifier = modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(AureoleDS.dimens.medium)) {
+        if (defaultOption != null) {
+            PickerSection(R.string.theme_color_section_default) {
+                AureoleThemeSwatchRow(
+                    swatches = listOf(ThemeSwatch(R.string.theme_color_swatch_default, defaultOption.color)),
+                    isSelected = { defaultOption.isSelected },
+                    onSelect = { defaultOption.onSelect() }
+                )
+            }
+        }
+        PickerSection(R.string.settings_background_section_theme) {
+            AureoleThemeSwatchRow(
+                swatches = themeRoleSwatches(AureoleDS.colors),
+                isSelected = { isThemeRoleSelected(it, selected) },
+                onSelect = { swatch -> themeRoleOf(swatch)?.let { onSelect(ThemeColorRef.Role(it)) } }
+            )
+        }
+        PickerSection(R.string.theme_color_section_other_palettes) {
+            AureolePaletteSwatchRow(
+                selected = fixedPaletteColor(selected),
+                onSelect = { onSelect(ThemeColorRef.Fixed(it)) }
+            )
+        }
+    }
+}
+
+@Composable
+private fun PickerSection(@StringRes label: Int, content: @Composable () -> Unit) {
+    Column(verticalArrangement = Arrangement.spacedBy(AureoleDS.dimens.xSmall)) {
+        AureoleMenuSectionLabel(text = stringResource(label))
+        content()
     }
 }
 

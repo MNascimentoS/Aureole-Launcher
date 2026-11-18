@@ -59,7 +59,7 @@ class EditClockPagerTest {
         settle()
 
         composeTestRule.onNode(hasText("Colors") and isSelectable()).assertIsSelected()
-        composeTestRule.onNodeWithText("TEXT COLOR").assertExists()
+        composeTestRule.onNodeWithText("Card").assertExists()
     }
 
     @Test

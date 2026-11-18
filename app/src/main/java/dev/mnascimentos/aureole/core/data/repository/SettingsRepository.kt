@@ -85,6 +85,15 @@ class SettingsRepository(private val context: Context) {
         get() = prefs.getInt(KEY_CLOCK_BACKGROUND_COLOR, 0)
         set(value) = prefs.edit { putInt(KEY_CLOCK_BACKGROUND_COLOR, value) }
 
+    /** ThemeColorRef JSON of the clock text color; null until one is picked (then [clockTextColor] rules). */
+    var clockTextColorRef: String?
+        get() = prefs.getString(KEY_CLOCK_TEXT_COLOR_REF, null)
+        set(value) = prefs.edit { putString(KEY_CLOCK_TEXT_COLOR_REF, value) }
+
+    var clockBackgroundColorRef: String?
+        get() = prefs.getString(KEY_CLOCK_BACKGROUND_COLOR_REF, null)
+        set(value) = prefs.edit { putString(KEY_CLOCK_BACKGROUND_COLOR_REF, value) }
+
     fun resetClockSettings() {
         prefs.edit {
             putBoolean(KEY_CLOCK_BACKGROUND_ENABLED, false)
@@ -96,6 +105,8 @@ class SettingsRepository(private val context: Context) {
             putString(KEY_CLOCK_DATE_FORMAT, DEFAULT_CLOCK_DATE_FORMAT)
             putInt(KEY_CLOCK_TEXT_COLOR, 0)
             putInt(KEY_CLOCK_BACKGROUND_COLOR, 0)
+            remove(KEY_CLOCK_TEXT_COLOR_REF)
+            remove(KEY_CLOCK_BACKGROUND_COLOR_REF)
         }
     }
 
@@ -384,6 +395,8 @@ class SettingsRepository(private val context: Context) {
         private const val KEY_CLOCK_TIME_FORMAT = "clock_time_format"
         private const val KEY_CLOCK_DATE_FORMAT = "clock_date_format"
         private const val KEY_CLOCK_TEXT_COLOR = "clock_text_color"
+        private const val KEY_CLOCK_TEXT_COLOR_REF = "clock_text_color_ref"
+        private const val KEY_CLOCK_BACKGROUND_COLOR_REF = "clock_background_color_ref"
         private const val KEY_CLOCK_BACKGROUND_COLOR = "clock_background_color"
 
         const val DEFAULT_CLOCK_STYLE = ClockConfig.DEFAULT_STYLE

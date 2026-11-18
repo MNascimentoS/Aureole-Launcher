@@ -128,7 +128,5 @@ private fun ColumnScope.EditClockFormatPage(params: EditClockPagerParams) {
 
 @Composable
 private fun ColumnScope.EditClockColorsPage(uiState: MainUiState, actions: HomeScreenActions) {
-    EditClockTextColorSection(uiState = uiState, actions = actions)
-    Spacer(modifier = Modifier.height(AureoleDS.dimens.medium))
-    EditClockBackgroundSection(uiState = uiState, actions = actions)
+    EditClockColorsSection(uiState = uiState, actions = actions)
 }

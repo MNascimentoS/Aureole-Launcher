@@ -9,6 +9,7 @@ import dev.mnascimentos.aureole.core.data.model.LauncherItemType
 import dev.mnascimentos.aureole.core.data.model.QuickButtonAppearance
 import dev.mnascimentos.aureole.core.data.model.QuickButtonShortcuts
 import dev.mnascimentos.aureole.core.data.model.ScrollOrientation
+import dev.mnascimentos.aureole.core.designsystem.palette.ThemeColorRef
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.FolderViewIntent
 import dev.mnascimentos.aureole.feature.home.components.onboarding.model.OnboardingActions
 import dev.mnascimentos.aureole.feature.home.grid.model.GridGestureTracker
@@ -99,8 +100,8 @@ data class HomeScreenActions(
     val onUpdateClockFontFamily: (String) -> Unit = {},
     val onUpdateClockTimeFormat: (String) -> Unit = {},
     val onUpdateClockDateFormat: (String) -> Unit = {},
-    val onUpdateClockTextColor: (Int) -> Unit = {},
-    val onUpdateClockBackgroundColor: (Int) -> Unit = {},
+    val onUpdateClockTextColor: (ThemeColorRef?) -> Unit = {},
+    val onUpdateClockBackgroundColor: (ThemeColorRef?) -> Unit = {},
     val onToggleClockBackground: () -> Unit = {},
     val onResetClockSettings: () -> Unit = {},
 

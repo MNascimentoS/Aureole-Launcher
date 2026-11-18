@@ -170,7 +170,6 @@
     <string name="home_clock_align_left">Esquerda</string>
     <string name="home_clock_align_center">Centro</string>
     <string name="home_clock_align_right">Direita</string>
-    <string name="home_clock_text_color">Cor do Texto</string>
     <string name="home_clock_font_style">Estilo da Fonte</string>
     <string name="home_clock_font_default">Padrão do tema</string>
     <string name="home_clock_font_bold">Negrito</string>
@@ -182,21 +181,7 @@
     <string name="home_clock_time_system">Sistema</string>
     <string name="home_clock_time_12h">12 Horas</string>
     <string name="home_clock_time_24h">24 Horas</string>
-    <string name="home_clock_card_background">Fundo do Cartão</string>
     <string name="home_clock_show_background">Mostrar cartão de fundo</string>
-    <string name="home_clock_custom_bg_color">Cor de Fundo Personalizada:</string>
-    <string name="home_clock_color_default">Padrão</string>
-    <string name="home_clock_color_ice_blue">Azul Gelado</string>
-    <string name="home_clock_color_lavender">Lavanda</string>
-    <string name="home_clock_color_white">Branco</string>
-    <string name="home_clock_color_gold">Ouro</string>
-    <string name="home_clock_color_mint">Menta</string>
-    <string name="home_clock_color_coral">Coral</string>
-    <string name="home_clock_bg_color_dark_slate">Escuro Slate</string>
-    <string name="home_clock_bg_color_deep_purple">Roxo Profundo</string>
-    <string name="home_clock_bg_color_night_blue">Azul Noturno</string>
-    <string name="home_clock_bg_color_wine">Vinho</string>
-    <string name="home_clock_bg_color_dark_green">Verde Escuro</string>
     <string name="home_clock_greeting_morning">Bom dia</string>
     <string name="home_clock_greeting_afternoon">Boa tarde</string>
     <string name="home_clock_greeting_evening">Boa noite</string>
@@ -630,4 +615,9 @@
     <string name="secret_game_tap_to_resume">Toque para continuar</string>
     <string name="secret_game_move_left">Mover para a esquerda</string>
     <string name="secret_game_move_right">Mover para a direita</string>
+    <string name="home_clock_color_target_text">Texto</string>
+    <string name="home_clock_color_target_card">Cartão</string>
+    <string name="home_clock_color_target_label">Alvo da cor</string>
+    <string name="theme_color_section_default">Padrão</string>
+    <string name="theme_color_swatch_default">Tema</string>
 </resources>

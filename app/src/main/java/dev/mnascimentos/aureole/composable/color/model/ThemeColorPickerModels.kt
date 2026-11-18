@@ -31,3 +31,6 @@ fun isThemeRoleSelected(swatch: ThemeSwatch, selected: ThemeColorRef?): Boolean 
 
 /** The ARGB color of [selected] when it is a fixed color of another palette, else null (a role or nothing). */
 fun fixedPaletteColor(selected: ThemeColorRef?): Int? = (selected as? ThemeColorRef.Fixed)?.argb
+
+/** The "Theme default" choice of a picker whose value may be unset: [color] is what the theme gives. */
+data class ThemeDefaultOption(val color: Int, val isSelected: Boolean, val onSelect: () -> Unit)

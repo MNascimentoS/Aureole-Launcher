@@ -17,6 +17,8 @@ data class ClockConfig(
     val dateFormat: String = DEFAULT_DATE_FORMAT,
     val textColor: Int = 0,
     val backgroundColor: Int = 0,
+    val textColorRef: String? = null,
+    val backgroundColorRef: String? = null,
     val isBackgroundEnabled: Boolean = false
 ) {
     companion object {

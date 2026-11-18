@@ -140,6 +140,8 @@ class HomeViewModel(
                     clockDateFormat = settingsRepository.clockDateFormat,
                     clockTextColor = settingsRepository.clockTextColor,
                     clockBackgroundColor = settingsRepository.clockBackgroundColor,
+                    clockTextColorRef = settingsRepository.clockTextColorRef,
+                    clockBackgroundColorRef = settingsRepository.clockBackgroundColorRef,
                     showContainerAddFolderButton = settingsRepository.showContainerAddFolderButton,
                     containerPosition = settingsRepository.containerPosition,
                     showFolderLabels = settingsRepository.showFolderLabels,

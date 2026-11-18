@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.selection.selectable
@@ -27,6 +28,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.composable.color.model.PaletteSwatch
 import dev.mnascimentos.aureole.composable.color.model.ThemeSwatch
@@ -70,7 +72,13 @@ fun AureoleThemeSwatchRow(
                 AureoleText(
                     text = stringResource(swatch.labelRes),
                     color = AureoleDS.colors.onSurfaceMedium,
-                    format = AureoleTextFormatParams(style = AureoleDS.typography.labelSmall, maxLines = 1)
+                    modifier = Modifier.width(AureoleDS.dimens.swatchLabelWidth),
+                    format = AureoleTextFormatParams(
+                        style = AureoleDS.typography.labelSmall,
+                        textAlign = TextAlign.Center,
+                        overflow = TextOverflow.Ellipsis,
+                        maxLines = 1
+                    )
                 )
             }
         }

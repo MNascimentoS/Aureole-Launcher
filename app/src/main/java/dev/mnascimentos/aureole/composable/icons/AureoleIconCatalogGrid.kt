@@ -57,9 +57,9 @@ import dev.mnascimentos.aureole.core.designsystem.icons.AureoleIconCategory
 import dev.mnascimentos.aureole.core.designsystem.icons.AureoleIconEntry
 import dev.mnascimentos.aureole.core.designsystem.model.LocalLeftHanded
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
-import dev.mnascimentos.aureole.core.designsystem.utils.fadingEdges
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
+import dev.mnascimentos.aureole.core.designsystem.utils.fadingEdges
 import kotlinx.coroutines.launch
 
 /**

@@ -29,9 +29,9 @@ import dev.mnascimentos.aureole.core.data.model.QuickButtonModel
 import dev.mnascimentos.aureole.core.designsystem.icons.Stroke
 import dev.mnascimentos.aureole.core.designsystem.icons.Text
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
-import dev.mnascimentos.aureole.core.designsystem.utils.fadingEdges
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
+import dev.mnascimentos.aureole.core.designsystem.utils.fadingEdges
 import dev.mnascimentos.aureole.feature.home.components.quickbutton.model.QUICK_BUTTON_COLOR_TARGETS
 import dev.mnascimentos.aureole.feature.home.components.quickbutton.model.QuickButtonColorTarget
 import dev.mnascimentos.aureole.feature.home.components.quickbutton.model.QuickButtonSheetTab
@@ -44,9 +44,10 @@ import dev.mnascimentos.aureole.feature.home.components.quickbutton.model.withCo
 
 /**
  * Body of the quick button sheet (botao-rapido RF-03): one tab with its own single scroll and, fixed under it, the
- * DS tab bar Icon | Colors (RF-E1). Icon is the shared catalog grid (RF-04); Colors holds "Icon color | Background color" with
- * the shared theme color picker (RF-05), the stroke and "Show name on the home" (RF-02). Every choice updates the
- * draft through [onUpdateAppearance]. Give it a bounded height (the sheet does), since the grid scrolls by itself.
+ * DS tab bar Icon | Colors (RF-E1). Icon is the shared catalog grid (RF-04); Colors holds
+ * "Icon color | Background color" with the shared theme color picker (RF-05), the stroke and "Show name on the
+ * home" (RF-02). Every choice updates the draft through [onUpdateAppearance]. Give it a bounded height (the sheet
+ * does), since the grid scrolls by itself.
  */
 @Composable
 internal fun QuickButtonAppearanceSheetContent(
