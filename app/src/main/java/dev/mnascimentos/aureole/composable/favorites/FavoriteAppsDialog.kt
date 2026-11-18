@@ -29,7 +29,6 @@ import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import kotlinx.coroutines.delay
 
 private const val DISMISS_DELAY_MS = 300L
-private const val PREVIEW_MAX_APPS = 4
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -124,7 +123,7 @@ private fun rememberPreviewParams(config: FavoriteAppsDialogConfig): FavoriteApp
     val showAll = config.showAllApps?.checked ?: false
     val hasLabels = showAll && (config.showLabels?.checked ?: true)
     val sections = remember(config.allApps, config.favoriteAppPackages, showAll) {
-        appsListSections(config.allApps, config.favoriteAppPackages, showAll, PREVIEW_MAX_APPS)
+        appsListSections(config.allApps, config.favoriteAppPackages, showAll)
     }
     return FavoriteAppsPreviewParams(sections = sections, hasLabels = hasLabels, rowConfig = config.rowConfig)
 }

@@ -48,12 +48,23 @@ class OnboardingItemPlacementTest {
 
     @Test
     fun `when the type has no compact size, should keep its default size`() {
-        val default = GridDefaults.getDefaultSpanForType(LauncherItemType.APPS_LIST).first
+        val default = GridDefaults.getDefaultSpanForType(LauncherItemType.QUICK_BUTTON).first
 
         assertEquals(
             OnboardingItemSize(default.first, default.second),
-            onboardingDefaultSize(LauncherItemType.APPS_LIST)
+            onboardingDefaultSize(LauncherItemType.QUICK_BUTTON)
         )
+    }
+
+    @Test
+    fun `when adding the apps list, should give it the size the default layout gives it in each orientation`() {
+        listOf(false, true).forEach { isLandscape ->
+            val layout = GridDefaults.getDefaultItem(LauncherItemType.APPS_LIST, isLandscape, false)!!
+            assertEquals(
+                OnboardingItemSize(layout.colSpan, layout.rowSpan),
+                onboardingDefaultSize(LauncherItemType.APPS_LIST, isLandscape)
+            )
+        }
     }
 
     @Test
@@ -134,7 +145,8 @@ class OnboardingItemPlacementTest {
         listOf(
             LauncherItemType.CLOCK,
             LauncherItemType.SHORTCUTS_CONTAINER,
-            LauncherItemType.WIDGET_LIST
+            LauncherItemType.WIDGET_LIST,
+            LauncherItemType.APPS_LIST
         ).forEach { type ->
             val layout = GridDefaults.getDefaultItem(type, isLandscape = true, isLeftHanded = false)!!
             assertEquals(

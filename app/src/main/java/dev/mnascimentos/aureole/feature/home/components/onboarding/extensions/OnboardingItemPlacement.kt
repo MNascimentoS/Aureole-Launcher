@@ -9,8 +9,8 @@ import dev.mnascimentos.aureole.feature.home.grid.GridEngineUtils
 import dev.mnascimentos.aureole.feature.home.grid.model.SlotSearchRequest
 
 /**
- * The size an onboarding item gets: the clock, the widget list and the container take the size the default
- * layout gives them in that orientation (the same as "Don't show again"), read from [GridDefaults.getDefaultItem]
+ * The size an onboarding item gets: the clock, the widget list, the apps list and the container take the size
+ * the default layout gives them in that orientation (the same as "Don't show again"), read from [GridDefaults.getDefaultItem]
  * so no number is repeated here. Other types keep their default size.
  */
 internal fun onboardingDefaultSize(type: LauncherItemType, isLandscape: Boolean = false): OnboardingItemSize {
@@ -24,7 +24,8 @@ internal fun onboardingDefaultSize(type: LauncherItemType, isLandscape: Boolean 
 private val LAYOUT_SIZED_TYPES = setOf(
     LauncherItemType.CLOCK,
     LauncherItemType.SHORTCUTS_CONTAINER,
-    LauncherItemType.WIDGET_LIST
+    LauncherItemType.WIDGET_LIST,
+    LauncherItemType.APPS_LIST
 )
 
 /**
