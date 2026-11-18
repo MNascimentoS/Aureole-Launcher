@@ -94,7 +94,7 @@ private fun headerPadding(hasAction: Boolean, drawsStartSlot: Boolean, drawsEndS
         start = if (drawsStartSlot) AureoleDS.dimens.zero else AureoleDS.dimens.small,
         end = if (drawsEndSlot) AureoleDS.dimens.zero else AureoleDS.dimens.small,
         top = if (hasAction) AureoleDS.dimens.xxSmall else AureoleDS.dimens.small,
-        bottom = if (hasAction) AureoleDS.dimens.xSmall else AureoleDS.dimens.medium
+        bottom = if (hasAction) AureoleDS.dimens.zero else AureoleDS.dimens.sheetHeaderGap
     )
 
 @Composable
@@ -146,7 +146,7 @@ private fun HeaderSlot(content: (@Composable () -> Unit)?) {
 }
 
 /**
- * The logo of the sheet header (or [headerIcon] in its place): ~16 dp wide in a 48 dp touch area. While the finger
+ * The logo of the sheet header (or [headerIcon] in its place): ~20 dp wide in a 48 dp touch area. While the finger
  * is on it, it shrinks and tilts over a light circle; it springs back on release and [onClick] runs then.
  * Dragging the finger away only brings it back. With the system animations off it does not move (RF-06, D-09).
  */
@@ -185,7 +185,7 @@ internal fun OverlaySheetHeaderLogo(
                 .background(AureoleDS.colors.surfaceVariant, CircleShape)
         )
         val iconModifier = Modifier
-            .size(AureoleDS.dimens.iconSmall)
+            .size(AureoleDS.dimens.sheetHeaderLogo)
             .graphicsLayer {
                 scaleX = scale
                 scaleY = scale

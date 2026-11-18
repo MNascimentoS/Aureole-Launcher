@@ -19,6 +19,7 @@ import androidx.compose.ui.semantics.semantics
 import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.composable.color.AureoleThemeColorPicker
 import dev.mnascimentos.aureole.composable.controls.AureoleSegmentedControl
+import dev.mnascimentos.aureole.composable.controls.AureoleSheetTabBar
 import dev.mnascimentos.aureole.composable.icons.AureoleIconCatalogGrid
 import dev.mnascimentos.aureole.composable.menu.AureoleMenuSectionLabel
 import dev.mnascimentos.aureole.composable.menu.AureoleSwitchRow
@@ -28,6 +29,7 @@ import dev.mnascimentos.aureole.core.data.model.QuickButtonModel
 import dev.mnascimentos.aureole.core.designsystem.icons.Stroke
 import dev.mnascimentos.aureole.core.designsystem.icons.Text
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
+import dev.mnascimentos.aureole.core.designsystem.utils.fadingEdges
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.components.quickbutton.model.QUICK_BUTTON_COLOR_TARGETS
@@ -41,8 +43,8 @@ import dev.mnascimentos.aureole.feature.home.components.quickbutton.model.quickB
 import dev.mnascimentos.aureole.feature.home.components.quickbutton.model.withColor
 
 /**
- * Body of the quick button sheet (botao-rapido RF-03): a segmented Icon | Colors on top and, under it, one tab with
- * its own single scroll. Icon is the shared catalog grid (RF-04); Colors holds "Icon color | Background color" with
+ * Body of the quick button sheet (botao-rapido RF-03): one tab with its own single scroll and, fixed under it, the
+ * DS tab bar Icon | Colors (RF-E1). Icon is the shared catalog grid (RF-04); Colors holds "Icon color | Background color" with
  * the shared theme color picker (RF-05), the stroke and "Show name on the home" (RF-02). Every choice updates the
  * draft through [onUpdateAppearance]. Give it a bounded height (the sheet does), since the grid scrolls by itself.
  */
@@ -56,15 +58,6 @@ internal fun QuickButtonAppearanceSheetContent(
     var tabIndex by rememberSaveable { mutableIntStateOf(quickButtonSheetTabIndex(initialTab)) }
     val tabsLabel = stringResource(R.string.home_quickbutton_tabs_label)
     Column(modifier = modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(AureoleDS.dimens.xSmall)) {
-        AureoleSegmentedControl(
-            options = listOf(
-                stringResource(R.string.home_quickbutton_tab_icon),
-                stringResource(R.string.home_quickbutton_tab_colors)
-            ),
-            selectedIndex = tabIndex,
-            onSelect = { tabIndex = it },
-            modifier = Modifier.semantics { contentDescription = tabsLabel }
-        )
         when (quickButtonSheetTabAt(tabIndex)) {
             QuickButtonSheetTab.ICON -> AureoleIconCatalogGrid(
                 selectedKey = activeModel.appearance.icon,
@@ -76,6 +69,15 @@ internal fun QuickButtonAppearanceSheetContent(
                 onUpdateAppearance = onUpdateAppearance
             )
         }
+        AureoleSheetTabBar(
+            labels = listOf(
+                stringResource(R.string.home_quickbutton_tab_icon),
+                stringResource(R.string.home_quickbutton_tab_colors)
+            ),
+            selectedIndex = tabIndex,
+            description = tabsLabel,
+            onSelect = { tabIndex = it }
+        )
     }
 }
 
@@ -87,11 +89,13 @@ private fun ColumnScope.QuickButtonColorsTab(
     var targetIndex by rememberSaveable { mutableIntStateOf(0) }
     val target = quickButtonColorTargetAt(targetIndex)
     val targetLabel = stringResource(R.string.home_quickbutton_color_target_label)
+    val scrollState = rememberScrollState()
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .weight(1f, fill = false)
-            .verticalScroll(rememberScrollState())
+            .fadingEdges(scrollState, AureoleDS.dimens.fadingEdge)
+            .verticalScroll(scrollState)
             .padding(bottom = AureoleDS.dimens.xSmall),
         verticalArrangement = Arrangement.spacedBy(AureoleDS.dimens.xSmall)
     ) {

@@ -57,6 +57,7 @@ import dev.mnascimentos.aureole.core.designsystem.icons.AureoleIconCategory
 import dev.mnascimentos.aureole.core.designsystem.icons.AureoleIconEntry
 import dev.mnascimentos.aureole.core.designsystem.model.LocalLeftHanded
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
+import dev.mnascimentos.aureole.core.designsystem.utils.fadingEdges
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import kotlinx.coroutines.launch
@@ -103,6 +104,7 @@ fun AureoleIconCatalogGrid(
             Box(modifier = Modifier.fillMaxWidth().weight(1f, fill = false)) {
                 LazyVerticalGrid(
                     columns = GridCells.Fixed(ICON_GRID_COLUMNS),
+                    modifier = Modifier.fadingEdges(gridState, AureoleDS.dimens.fadingEdge),
                     state = gridState,
                     horizontalArrangement = Arrangement.spacedBy(AureoleDS.dimens.xSmall),
                     verticalArrangement = Arrangement.spacedBy(AureoleDS.dimens.xSmall),

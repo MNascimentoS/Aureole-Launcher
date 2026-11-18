@@ -36,10 +36,10 @@ import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 
 private const val COMPACT_CONTAINER_HEIGHT_DP = 90
 
-private const val GREETING_SIZE_COMPACT = 12f
-private const val GREETING_SIZE_NORMAL = 14f
-private const val DATE_SIZE_COMPACT = 11f
-private const val DATE_SIZE_NORMAL = 13f
+private const val GREETING_SIZE_COMPACT = 13f
+private const val GREETING_SIZE_NORMAL = 15f
+private const val DATE_SIZE_COMPACT = 12f
+private const val DATE_SIZE_NORMAL = 14f
 
 private const val GREETING_CROSSFADE_DURATION_MS = 500
 

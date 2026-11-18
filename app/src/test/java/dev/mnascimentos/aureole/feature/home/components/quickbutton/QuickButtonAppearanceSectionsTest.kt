@@ -39,9 +39,9 @@ class QuickButtonAppearanceSectionsTest {
         }
     }
 
-    /** Selectable nodes of the Colors tab: 2 tabs, 2 color targets, then the theme roles in [ThemeColorRole] order. */
+    /** Selectable nodes of the Colors tab: 2 color targets, then the theme roles in [ThemeColorRole] order. */
     private fun tapThemeRole(role: ThemeColorRole) {
-        composeTestRule.onAllNodes(isSelectable())[4 + role.ordinal].performClick()
+        composeTestRule.onAllNodes(isSelectable())[2 + role.ordinal].performClick()
     }
 
     private fun openColors() = composeTestRule.onNodeWithText("Colors").performClick()
