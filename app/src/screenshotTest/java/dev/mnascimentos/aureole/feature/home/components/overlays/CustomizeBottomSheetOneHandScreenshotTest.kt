@@ -11,12 +11,17 @@ import dev.mnascimentos.aureole.feature.home.createSampleHomeData
 class CustomizeBottomSheetOneHandScreenshotTest {
 
     @Composable
-    private fun CustomizeSheet(isLeftHanded: Boolean) {
+    private fun CustomizeSheet(isLeftHanded: Boolean, isShowcase: Boolean = false) {
         val sampleData = createSampleHomeData()
         val uiState = sampleData.uiState.copy(isLeftHandedMode = isLeftHanded)
         AureoleLauncherTheme {
             ProvideHomeUiState(uiState) {
-                CustomizeBottomSheet(uiState = uiState, actions = sampleData.actions, onDismissRequest = {})
+                CustomizeBottomSheet(
+                    uiState = uiState,
+                    actions = sampleData.actions,
+                    onDismissRequest = {},
+                    isShowcase = isShowcase
+                )
             }
         }
     }
@@ -33,5 +38,13 @@ class CustomizeBottomSheetOneHandScreenshotTest {
     @Composable
     private fun CustomizeSheetLeftHanded() {
         CustomizeSheet(isLeftHanded = true)
+    }
+
+    /** Showcase of the onboarding (ajustes-onboarding RF-01/RF-02): the logo of the title inside its ring. */
+    @PreviewTest
+    @AureolePreview
+    @Composable
+    private fun CustomizeSheetShowcase() {
+        CustomizeSheet(isLeftHanded = false, isShowcase = true)
     }
 }

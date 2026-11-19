@@ -29,11 +29,19 @@ class CustomizeBottomSheetTest {
     private fun show(
         actions: HomeScreenActions = createDefaultHomeScreenActions(),
         uiState: MainUiState = MainUiState(),
-        onDismiss: () -> Unit = {}
+        onDismiss: () -> Unit = {},
+        isShowcase: Boolean = false
     ) {
+        // The showcase runs on the frame clock: an auto-advancing clock would play all 3 s before the test starts.
+        if (isShowcase) composeTestRule.mainClock.autoAdvance = false
         composeTestRule.setContent {
             AureoleLauncherTheme {
-                CustomizeBottomSheet(uiState = uiState, actions = actions, onDismissRequest = onDismiss)
+                CustomizeBottomSheet(
+                    uiState = uiState,
+                    actions = actions,
+                    onDismissRequest = onDismiss,
+                    isShowcase = isShowcase
+                )
             }
         }
     }
@@ -132,10 +140,19 @@ class CustomizeBottomSheetTest {
     }
 
     @Test
-    fun `when rendered, should not draw the header logo that opens settings`() {
-        show()
+    fun `when the header logo is tapped, should open the Aureole settings and dismiss`() {
+        var opened = 0
+        var dismissed = 0
+        show(
+            createDefaultHomeScreenActions().copy(onSettingsClick = { opened++ }),
+            onDismiss = { dismissed++ }
+        )
 
-        composeTestRule.onNodeWithContentDescription("Settings").assertDoesNotExist()
+        composeTestRule.onNodeWithContentDescription("Aureole settings").performClick()
+        composeTestRule.mainClock.advanceTimeBy(DISMISS_WAIT_MS)
+
+        assertEquals(1, opened)
+        assertEquals(1, dismissed)
     }
 
     @Test
@@ -185,7 +202,61 @@ class CustomizeBottomSheetTest {
         assertEquals(1, added)
     }
 
+    @Test
+    fun `when shown as a showcase, no tile should respond and the logo should not open the settings`() {
+        val added = mutableListOf<LauncherItemType>()
+        var settings = 0
+        var editMode = false
+        var dismissed = 0
+        show(
+            createDefaultHomeScreenActions().copy(
+                onAddGridItem = { type, _, _ -> added += type },
+                onSettingsClick = { settings++ },
+                onEnterGridEditMode = { editMode = true }
+            ),
+            onDismiss = { dismissed++ },
+            isShowcase = true
+        )
+        composeTestRule.mainClock.advanceTimeBy(OPEN_MS)
+
+        composeTestRule.onNodeWithText("Layout").performClick()
+        composeTestRule.onNodeWithText("Palette").performClick()
+        composeTestRule.mainClock.advanceTimeBy(SHOWCASE_HALF_MS)
+
+        composeTestRule.onNodeWithContentDescription("Aureole settings").assertDoesNotExist()
+        composeTestRule.onNodeWithText("Pick a palette").assertDoesNotExist()
+        assertTrue(added.isEmpty())
+        assertEquals(0, settings)
+        assertEquals(false, editMode)
+        assertEquals(0, dismissed)
+    }
+
+    @Test
+    fun `when the showcase time runs out, should close on its own once`() {
+        var dismissed = 0
+        show(onDismiss = { dismissed++ }, isShowcase = true)
+
+        composeTestRule.mainClock.advanceTimeBy(SHOWCASE_HALF_MS)
+        assertEquals(0, dismissed)
+
+        composeTestRule.mainClock.advanceTimeBy(SHOWCASE_HALF_MS + DISMISS_WAIT_MS)
+        assertEquals(1, dismissed)
+    }
+
+    @Test
+    fun `when not a showcase, should stay open`() {
+        var dismissed = 0
+        show(onDismiss = { dismissed++ })
+        composeTestRule.mainClock.autoAdvance = false
+
+        composeTestRule.mainClock.advanceTimeBy(SHOWCASE_HALF_MS * 3)
+
+        assertEquals(0, dismissed)
+    }
+
     private companion object {
+        const val SHOWCASE_HALF_MS = 1_500L
+        const val OPEN_MS = 400L
         const val DISMISS_WAIT_MS = 500L
         val LABELS_IN_ORDER = listOf(
             "Clock",

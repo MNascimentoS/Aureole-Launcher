@@ -8,6 +8,7 @@ import androidx.compose.ui.res.stringResource
 import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.composable.menu.AureoleMenuRow
 import dev.mnascimentos.aureole.composable.menu.AureoleMenuSectionLabel
+import dev.mnascimentos.aureole.composable.menu.customizeHomeRowParams
 import dev.mnascimentos.aureole.composable.menu.model.MenuRowParams
 import dev.mnascimentos.aureole.core.designsystem.icons.AllApps
 import dev.mnascimentos.aureole.core.designsystem.icons.Click
@@ -15,6 +16,7 @@ import dev.mnascimentos.aureole.core.designsystem.icons.ColorFill
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
+import dev.mnascimentos.aureole.feature.home.components.containers.model.EditContainerScreenMode
 
 /**
  * Main screen of the container editor: the OPTIONS section with the three sub screens. Save and Cancel live in the
@@ -23,10 +25,9 @@ import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 @Composable
 internal fun MainSettingsContent(
     componentCount: Int,
-    onAppearanceClick: () -> Unit,
-    onBehaviorClick: () -> Unit,
-    onManageItemsClick: () -> Unit,
-    modifier: Modifier = Modifier
+    onOpenMode: (EditContainerScreenMode) -> Unit,
+    modifier: Modifier = Modifier,
+    onCustomizeHome: (() -> Unit)? = null
 ) {
     Column(modifier = modifier) {
         AureoleMenuSectionLabel(text = stringResource(R.string.home_container_edit_options_label))
@@ -34,7 +35,7 @@ internal fun MainSettingsContent(
             MenuRowParams(
                 title = stringResource(R.string.home_container_edit_appearance),
                 subtitle = stringResource(R.string.home_container_edit_appearance_subtitle),
-                onClick = onAppearanceClick,
+                onClick = { onOpenMode(EditContainerScreenMode.APPEARANCE) },
                 icon = { m, c -> AureoleDS.icons.ColorFill(modifier = m, tint = c) },
                 showChevron = true
             )
@@ -43,7 +44,7 @@ internal fun MainSettingsContent(
             MenuRowParams(
                 title = stringResource(R.string.home_container_edit_behavior),
                 subtitle = stringResource(R.string.home_container_edit_behavior_subtitle),
-                onClick = onBehaviorClick,
+                onClick = { onOpenMode(EditContainerScreenMode.BEHAVIOR) },
                 icon = { m, c -> AureoleDS.icons.Click(modifier = m, tint = c) },
                 showChevron = true
             )
@@ -56,11 +57,12 @@ internal fun MainSettingsContent(
                     componentCount,
                     componentCount
                 ),
-                onClick = onManageItemsClick,
+                onClick = { onOpenMode(EditContainerScreenMode.MANAGE_ITEMS) },
                 icon = { m, c -> AureoleDS.icons.AllApps(modifier = m, tint = c) },
                 showChevron = true
             )
         )
+        onCustomizeHome?.let { AureoleMenuRow(customizeHomeRowParams(it)) }
     }
 }
 
@@ -70,9 +72,8 @@ private fun MainSettingsContentPreview() {
     AureoleLauncherTheme {
         MainSettingsContent(
             componentCount = 4,
-            onAppearanceClick = {},
-            onBehaviorClick = {},
-            onManageItemsClick = {}
+            onOpenMode = {},
+            onCustomizeHome = {}
         )
     }
 }

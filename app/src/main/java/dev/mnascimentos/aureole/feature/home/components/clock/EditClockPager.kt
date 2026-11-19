@@ -24,6 +24,7 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.constrainHeight
 import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
+import dev.mnascimentos.aureole.core.designsystem.utils.fadingEdges
 import dev.mnascimentos.aureole.feature.home.components.clock.model.ClockTab
 import dev.mnascimentos.aureole.feature.home.components.clock.model.EditClockPagerParams
 import dev.mnascimentos.aureole.feature.home.components.clock.model.pagerMinHeight
@@ -61,11 +62,13 @@ internal fun EditClockPager(
             R.string.home_clock_tab_page_description,
             stringResource(tab.labelRes)
         )
+        val scrollState = rememberScrollState()
         Column(
             modifier = Modifier
                 .fillMaxWidth()
                 .semantics { contentDescription = description }
-                .verticalScroll(rememberScrollState())
+                .fadingEdges(scrollState, AureoleDS.dimens.fadingEdge)
+                .verticalScroll(scrollState)
                 .padding(horizontal = AureoleDS.dimens.small)
         ) {
             Column(
@@ -125,7 +128,5 @@ private fun ColumnScope.EditClockFormatPage(params: EditClockPagerParams) {
 
 @Composable
 private fun ColumnScope.EditClockColorsPage(uiState: MainUiState, actions: HomeScreenActions) {
-    EditClockTextColorSection(uiState = uiState, actions = actions)
-    Spacer(modifier = Modifier.height(AureoleDS.dimens.medium))
-    EditClockBackgroundSection(uiState = uiState, actions = actions)
+    EditClockColorsSection(uiState = uiState, actions = actions)
 }

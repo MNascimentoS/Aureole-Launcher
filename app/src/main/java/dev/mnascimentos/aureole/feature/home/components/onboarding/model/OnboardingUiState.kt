@@ -47,6 +47,8 @@ data class OnboardingUiState(
     val isCelebrationPending: Boolean = false,
     /** The task screen just closed: the home shows alone for a moment before the list comes back. Never persisted. */
     val isHomePeeking: Boolean = false,
+    /** The item the finished task left on the home, outlined while the home peeks. Never persisted. */
+    val peekItemId: String? = null,
     /** The pending task's own screen saved what the task asks for (the container editor's Save). Never persisted. */
     val isPendingTaskSaved: Boolean = false
 )

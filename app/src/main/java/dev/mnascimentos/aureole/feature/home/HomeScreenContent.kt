@@ -20,6 +20,7 @@ import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.feature.home.components.HomeTopGrabZone
 import dev.mnascimentos.aureole.feature.home.components.content.GridItemContent
 import dev.mnascimentos.aureole.feature.home.components.favorites.model.FavoritesListConfig
+import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.onboardingPeekOutline
 import dev.mnascimentos.aureole.feature.home.components.widgets.model.StackedWidgetConfig
 import dev.mnascimentos.aureole.feature.home.grid.DynamicGridContainer
 import dev.mnascimentos.aureole.feature.home.grid.GridEngineUtils
@@ -81,7 +82,6 @@ internal fun MainHomeLayout(
         topWidgetIds = uiState.topWidgetIds,
         currentHeightDp = currentHeightDp,
         currentHeightPx = currentHeightPx,
-        showWidgetDots = uiState.showWidgetDots,
         hazeState = hazeState
     )
 
@@ -101,15 +101,18 @@ internal fun MainHomeLayout(
                 .padding(horizontal = AureoleDS.dimens.xSmall)
                 .padding(top = AureoleDS.dimens.homeTopGrabZone, bottom = AureoleDS.dimens.xSmall)
         ) { item ->
-            GridItemContent(
-                GridItemContentParams(
-                    item = item,
-                    favConfig = favConfig,
-                    appWidgetHost = appWidgetHost,
-                    stackedWidgetConfig = stackedWidgetConfig,
-                    hazeState = hazeState
+            // The item a checklist task just left gets a soft outline while the home peeks (RF-13).
+            Box(modifier = Modifier.fillMaxSize().onboardingPeekOutline(item.id == uiState.onboarding.peekItemId)) {
+                GridItemContent(
+                    GridItemContentParams(
+                        item = item,
+                        favConfig = favConfig,
+                        appWidgetHost = appWidgetHost,
+                        stackedWidgetConfig = stackedWidgetConfig,
+                        hazeState = hazeState
+                    )
                 )
-            )
+            }
         }
         HomeTopGrabZone(enabled = !uiState.isGridEditMode, onLongPress = actions.onOpenCustomizeBottomSheet)
     }

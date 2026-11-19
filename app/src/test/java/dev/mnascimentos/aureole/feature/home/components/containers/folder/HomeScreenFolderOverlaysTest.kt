@@ -4,7 +4,6 @@ import android.content.ComponentName
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.v2.createComposeRule
-import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onNodeWithText
 import androidx.core.graphics.drawable.toDrawable
 import dev.chrisbanes.haze.HazeState
@@ -70,12 +69,12 @@ class HomeScreenFolderOverlaysTest {
                 CreateFolderOverlay(
                     isVisible = true,
                     onCloseFolder = { actions.onFolderIntent(FolderViewIntent.CloseFolder) },
-                    onSubmitName = { _, _ -> }
+                    onSubmit = {}
                 )
             }
         }
 
-        composeTestRule.onAllNodesWithText("New Folder")[0].assertIsDisplayed()
+        composeTestRule.onNodeWithText("New Folder").assertIsDisplayed()
         composeTestRule.closeOverlayWithBack()
         assertTrue(createClosed)
     }
@@ -87,7 +86,7 @@ class HomeScreenFolderOverlaysTest {
                 CreateFolderOverlay(
                     isVisible = false,
                     onCloseFolder = {},
-                    onSubmitName = { _, _ -> }
+                    onSubmit = {}
                 )
             }
         }
@@ -164,7 +163,6 @@ class HomeScreenFolderOverlaysTest {
             AureoleLauncherTheme {
                 OpenedFolderOverlay(
                     uiState = uiState,
-                    screenHeightPx = 1920f,
                     hazeState = hazeState,
                     actions = actions
                 )
@@ -190,7 +188,6 @@ class HomeScreenFolderOverlaysTest {
             AureoleLauncherTheme {
                 OpenedFolderOverlay(
                     uiState = uiState,
-                    screenHeightPx = 1920f,
                     hazeState = hazeState,
                     actions = actions
                 )
@@ -228,14 +225,13 @@ class HomeScreenFolderOverlaysTest {
             ) {
                 AureoleLauncherTheme {
                     HomeScreenFolderOverlays(
-                        screenHeightPx = 1920f,
                         hazeState = HazeState()
                     )
                 }
             }
         }
 
-        composeTestRule.onNodeWithText("Folder settings").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Media").assertIsDisplayed()
     }
 
     @Test
@@ -260,7 +256,6 @@ class HomeScreenFolderOverlaysTest {
             ) {
                 AureoleLauncherTheme {
                     HomeScreenFolderOverlays(
-                        screenHeightPx = 1920f,
                         hazeState = HazeState()
                     )
                 }
@@ -293,7 +288,6 @@ class HomeScreenFolderOverlaysTest {
             ) {
                 AureoleLauncherTheme {
                     HomeScreenFolderOverlays(
-                        screenHeightPx = 1920f,
                         hazeState = HazeState()
                     )
                 }

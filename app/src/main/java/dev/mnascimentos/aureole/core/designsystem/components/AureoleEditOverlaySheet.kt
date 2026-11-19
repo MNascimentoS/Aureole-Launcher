@@ -8,50 +8,37 @@ import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.TransformOrigin
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.semantics.Role
-import androidx.compose.ui.semantics.contentDescription
-import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.dp
 import dev.chrisbanes.haze.HazeState
-import dev.mnascimentos.aureole.R
-import dev.mnascimentos.aureole.core.designsystem.icons.Logo
 import dev.mnascimentos.aureole.core.designsystem.model.AnchoredSheetState
 import dev.mnascimentos.aureole.core.designsystem.model.AureoleEditOverlayParams
+import dev.mnascimentos.aureole.core.designsystem.model.OverlayHeaderTitle
 import dev.mnascimentos.aureole.core.designsystem.model.OverlayLayout
 import dev.mnascimentos.aureole.core.designsystem.model.OverlaySheetDecorations
 import dev.mnascimentos.aureole.core.designsystem.model.OverlaySheetMotion
 import dev.mnascimentos.aureole.core.designsystem.model.OverlaySheetStateData
-import dev.mnascimentos.aureole.core.designsystem.model.anchoredPreviewTop
+import dev.mnascimentos.aureole.core.designsystem.model.hasHeaderAction
 import dev.mnascimentos.aureole.core.designsystem.model.overlayLayoutFor
+import dev.mnascimentos.aureole.core.designsystem.model.previewFit
 import dev.mnascimentos.aureole.core.designsystem.model.sheetRestFraction
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
@@ -65,6 +52,10 @@ private const val ANIMATION_DURATION_MS = 300
 
 /** The sheet slides out faster than it comes in. */
 private const val SHEET_EXIT_MS = 250
+
+/** The preview shrinks around its bottom center, so its bottom keeps the gap to the sheet. */
+private const val PREVIEW_PIVOT_X = 0.5f
+private const val PREVIEW_PIVOT_Y = 1f
 
 /** Lets the entry spring settle to the pixel instead of stopping 1% short. */
 private const val SHEET_SLIDE_THRESHOLD = 0.001f
@@ -119,7 +110,12 @@ internal fun OverlayContentBox(
             PreviewSlot(
                 previewContent = params.previewContent,
                 modifier = Modifier.fadeWith(stateData),
-                expandFraction = { expandFractionOf(motion, stateData.isExpanded, bounds) }
+                // Stacked, the layout shrinks or fades the preview only when the sheet needs its room (RF-09).
+                expandFraction = if (overlayLayout == OverlayLayout.STACKED) {
+                    { 0f }
+                } else {
+                    { expandFractionOf(motion, stateData.isExpanded, bounds) }
+                }
             )
         }
         val sheet: @Composable () -> Unit = {
@@ -213,11 +209,15 @@ private fun AnchoredPreviewLayout(
         layout(constraints.maxWidth, layoutHeight) {
             val slide = (hiddenFraction() * sheetHeight).roundToInt()
             val sheetTop = layoutHeight - sheetHeight + motion.translation(bounds).roundToInt() + slide
+            val room = (sheetTop - previewTopPaddingPx).toFloat()
             previewPlaceables.forEach { placeable ->
-                placeable.placeRelative(
-                    0,
-                    anchoredPreviewTop(sheetTop, previewGapPx, placeable.height, previewTopPaddingPx)
-                )
+                val fit = previewFit(placeable.height.toFloat(), room, previewGapPx.toFloat())
+                placeable.placeRelativeWithLayer(0, sheetTop - previewGapPx - placeable.height) {
+                    transformOrigin = TransformOrigin(PREVIEW_PIVOT_X, PREVIEW_PIVOT_Y)
+                    scaleX = fit.scale
+                    scaleY = fit.scale
+                    alpha = fit.alpha
+                }
             }
             // Centered: a sheet narrower than the screen (OverlayHostSpec.maxSheetWidth) sits in the middle.
             sheetPlaceables.forEach { it.placeRelative((constraints.maxWidth - it.width) / 2, sheetTop) }
@@ -242,8 +242,10 @@ private fun PreviewSlot(
 }
 
 /**
- * Inside of the overlay sheet: gesture zone, header and content at the top, bottom bar at the bottom.
- * When the sheet is taller than its content (expanded), the free space sits between content and bottom bar.
+ * Inside of the overlay sheet: gesture zone, header (title and logo on one line) and content at the top, bottom bar
+ * at the bottom.
+ * At rest the sheet hugs content and bottom bar; when it is taller than its content (expanded), the free space sits
+ * between content and bottom bar.
  */
 @Composable
 internal fun OverlaySheetBody(
@@ -253,130 +255,62 @@ internal fun OverlaySheetBody(
     sheetContent: (@Composable ColumnScope.() -> Unit)?,
     decorations: OverlaySheetDecorations = OverlaySheetDecorations()
 ) {
-    Box(modifier = Modifier.fillMaxWidth()) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = AureoleDS.dimens.xxSmall, vertical = AureoleDS.dimens.xxSmall),
-            verticalArrangement = Arrangement.SpaceBetween
-        ) {
-            val hasBottomBar = bottomBarContent != null
-            Column(modifier = Modifier.weight(1f, fill = hasBottomBar)) {
-                decorations.gestureZone?.invoke()
-                if (title != null) {
-                    OverlaySheetHeader(
-                        title = title,
-                        titleIcon = decorations.titleIcon
-                    )
-                }
-                if (sheetContent != null) {
-                    val contentPadding = if (decorations.edgeToEdgeContent) 0.dp else AureoleDS.dimens.small
-                    Column(
-                        modifier = Modifier
-                            .padding(horizontal = contentPadding)
-                            .weight(1f, fill = hasBottomBar)
-                            .fillMaxWidth()
-                    ) {
-                        sheetContent()
-                    }
-                }
-            }
-
-            if (bottomBarContent != null) {
-                Column(
-                    modifier = Modifier.padding(
-                        start = AureoleDS.dimens.small,
-                        end = AureoleDS.dimens.small,
-                        top = AureoleDS.dimens.small,
-                        bottom = AureoleDS.dimens.medium
-                    )
-                ) {
-                    bottomBarContent()
-                }
-            }
-        }
-
-        if (decorations.showHeaderAction) {
-            OverlaySheetSettingsSlot(
-                onSettingsClick = onSettingsClick,
-                headerIcon = decorations.headerIcon,
-                modifier = Modifier.align(Alignment.TopEnd)
-            )
-        }
-    }
-}
-
-/** Top-end slot of the sheet: header icon (or logo) that opens settings when [onSettingsClick] is set. */
-@Composable
-private fun OverlaySheetSettingsSlot(
-    onSettingsClick: (() -> Unit)?,
-    headerIcon: (@Composable (Modifier) -> Unit)?,
-    modifier: Modifier = Modifier
-) {
-    val settingsLabel = stringResource(R.string.overlay_sheet_action_settings)
-    Box(
-        modifier = modifier
-            .padding(top = AureoleDS.dimens.minimal, end = AureoleDS.dimens.minimal)
-            .size(AureoleDS.dimens.iconXLarge)
-            .clip(RoundedCornerShape(AureoleDS.dimens.radiusMedium))
-            .then(
-                if (onSettingsClick != null) {
-                    Modifier
-                        .clickable(onClick = onSettingsClick, role = Role.Button)
-                        .semantics { contentDescription = settingsLabel }
-                } else {
-                    Modifier
-                }
-            ),
-        contentAlignment = Alignment.Center
-    ) {
-        if (headerIcon != null) {
-            headerIcon.invoke(Modifier.size(AureoleDS.dimens.iconSmall))
-        } else {
-            AureoleDS.icons.Logo(
-                tint = AureoleDS.colors.onSurfaceHigh,
-                modifier = Modifier.size(AureoleDS.dimens.iconSmall)
-            )
-        }
-    }
-}
-
-@Composable
-private fun OverlaySheetHeader(
-    title: String,
-    titleIcon: (@Composable (Modifier) -> Unit)? = null
-) {
-    Box(
+    Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(
-                start = AureoleDS.dimens.small,
-                top = AureoleDS.dimens.small,
-                end = AureoleDS.dimens.small,
-                bottom = AureoleDS.dimens.medium
-            ),
-        contentAlignment = Alignment.Center
+            .padding(horizontal = AureoleDS.dimens.xxSmall, vertical = AureoleDS.dimens.xxSmall),
+        verticalArrangement = Arrangement.SpaceBetween
     ) {
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            if (titleIcon != null) {
-                Box(
-                    modifier = Modifier
-                        .size(AureoleDS.dimens.iconXLarge)
-                        .clip(RoundedCornerShape(AureoleDS.dimens.radiusSmall))
-                        .background(AureoleDS.colors.surfaceVariant),
-                    contentAlignment = Alignment.Center
-                ) {
-                    titleIcon(Modifier.size(AureoleDS.dimens.iconMedium))
-                }
-                Spacer(modifier = Modifier.width(AureoleDS.dimens.small))
+        // Never filled: at rest the sheet is as tall as what it shows (no empty band above the buttons of a short
+        // confirmation, RF-10); expanded, SpaceBetween still puts the free space above the bottom bar. The
+        // weight only bounds tall content to the room left by the bottom bar.
+        Column(modifier = Modifier.weight(1f, fill = false)) {
+            decorations.gestureZone?.invoke()
+            if (title != null) {
+                val slots = decorations.headerSlots
+                val accessory = slots.accessory
+                val showAction = hasHeaderAction(
+                    showHeaderAction = decorations.showHeaderAction,
+                    hasClick = onSettingsClick != null,
+                    hasCustomIcon = slots.headerIcon != null || accessory != null
+                )
+                OverlaySheetHeader(
+                    title = OverlayHeaderTitle(title, slots.titleIcon, slots.subtitle),
+                    action = when {
+                        !showAction -> null
+                        accessory != null -> accessory
+                        else -> {
+                            { OverlaySheetHeaderLogo(onClick = onSettingsClick, headerIcon = slots.headerIcon) }
+                        }
+                    },
+                    isLeftHanded = decorations.isLeftHanded,
+                    leadingAction = slots.leadingAction
+                )
             }
-            Text(
-                text = title,
-                style = AureoleDS.typography.titleLarge,
-                fontWeight = FontWeight.Bold,
-                color = AureoleDS.colors.onSurfaceHigh,
-                textAlign = TextAlign.Center
-            )
+            if (sheetContent != null) {
+                val contentPadding = if (decorations.edgeToEdgeContent) 0.dp else AureoleDS.dimens.small
+                Column(
+                    modifier = Modifier
+                        .padding(horizontal = contentPadding)
+                        .weight(1f, fill = false)
+                        .fillMaxWidth()
+                ) {
+                    sheetContent()
+                }
+            }
+        }
+
+        if (bottomBarContent != null) {
+            Column(
+                modifier = Modifier.padding(
+                    start = AureoleDS.dimens.small,
+                    end = AureoleDS.dimens.small,
+                    top = AureoleDS.dimens.small,
+                    bottom = AureoleDS.dimens.medium
+                )
+            ) {
+                bottomBarContent()
+            }
         }
     }
 }

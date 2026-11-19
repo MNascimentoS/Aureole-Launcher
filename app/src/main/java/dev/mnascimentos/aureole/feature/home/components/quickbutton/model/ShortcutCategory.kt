@@ -25,11 +25,15 @@ internal fun shortcutsInCategory(options: List<ShortcutAction>, category: Shortc
     options.filter { shortcutCategoryOf(it) == category }
 
 /** Name shown for [action]: the label of the app for "open app", the display name of the shortcut otherwise. */
-internal fun shortcutLabel(action: ShortcutAction, apps: List<AppInfo>): String =
+internal fun shortcutLabel(
+    action: ShortcutAction,
+    apps: List<AppInfo>,
+    nameOf: (ShortcutAction) -> String = { it.displayName }
+): String =
     if (action.type == ShortcutType.OPEN_APP) {
-        apps.find { it.packageName == action.target }?.label ?: action.displayName
+        apps.find { it.packageName == action.target }?.label ?: nameOf(action)
     } else {
-        action.displayName
+        nameOf(action)
     }
 
 /** Text of the preview pill ("On tap: %1$s") for the gesture being edited; unknown gestures get a neutral text. */

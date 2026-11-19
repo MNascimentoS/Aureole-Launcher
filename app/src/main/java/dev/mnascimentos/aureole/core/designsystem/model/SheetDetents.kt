@@ -75,12 +75,3 @@ internal fun crossedDetent(previous: Float, current: Float, detents: List<Float>
         (previous < detent && current >= detent) || (previous > detent && current <= detent)
     }
 }
-
-/**
- * Top of the preview slot so that its bottom sits [gap] above the sheet top.
- * Never above [minTop]: when the sheet expands past it, the preview stays put
- * and the sheet covers it.
- */
-internal fun anchoredPreviewTop(sheetTop: Int, gap: Int, previewHeight: Int, minTop: Int = 0): Int {
-    return maxOf(minTop, sheetTop - gap - previewHeight)
-}

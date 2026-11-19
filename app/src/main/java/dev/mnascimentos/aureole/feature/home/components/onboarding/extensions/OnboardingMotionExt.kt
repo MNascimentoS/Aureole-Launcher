@@ -5,8 +5,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalInspectionMode
 
-/** How long the home shows alone after a task screen closes, before the checklist comes back. */
-const val ONBOARDING_HOME_PEEK_MS = 900L
+/**
+ * How long the home shows alone after a task screen closes, before the checklist comes back: time to see the item
+ * and the bubble's ring fill (D-04).
+ */
+const val ONBOARDING_HOME_PEEK_MS = 1_400L
 
 /** The shorter peek used when the system turned animations off. */
 const val ONBOARDING_HOME_PEEK_REDUCED_MS = 300L

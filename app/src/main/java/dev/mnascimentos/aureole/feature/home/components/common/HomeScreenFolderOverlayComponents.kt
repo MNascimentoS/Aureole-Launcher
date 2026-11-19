@@ -10,7 +10,6 @@ import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.runtime.Composable
@@ -29,6 +28,7 @@ import dev.chrisbanes.haze.hazeEffect
 import dev.mnascimentos.aureole.composable.ProvideHomeUiState
 import dev.mnascimentos.aureole.composable.dialogs.CreateFolderDialog
 import dev.mnascimentos.aureole.core.data.model.AppFolder
+import dev.mnascimentos.aureole.core.data.model.FolderDetails
 import dev.mnascimentos.aureole.core.data.model.LauncherItemState
 import dev.mnascimentos.aureole.core.data.model.LauncherItemType
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
@@ -39,6 +39,7 @@ import dev.mnascimentos.aureole.feature.home.components.containers.folder.Contai
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.EditFolderDialog
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.FolderAppPickerDialog
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.OpenedFolderOverlayUtils
+import dev.mnascimentos.aureole.feature.home.components.containers.folder.OpenedFolderPlacementLayout
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.OpenedFolderPopup
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.ContainerFolderBottomSheetParams
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.FolderPopupActions
@@ -100,7 +101,8 @@ private fun ContainerAppAndFolderOverlays(
                 onOpenSettings = {
                     actions.onCloseContainerFolderBottomSheet()
                     actions.onSettingsClick()
-                }
+                },
+                folder = state.folder
             ),
             onDismiss = actions.onCloseContainerFolderBottomSheet
         )
@@ -148,21 +150,19 @@ private fun WidgetStackOverlay(
 internal fun CreateFolderOverlay(
     isVisible: Boolean,
     onCloseFolder: () -> Unit,
-    onSubmitName: (String, String?) -> Unit
+    onSubmit: (FolderDetails) -> Unit
 ) {
     if (isVisible) {
-        CreateFolderDialog(onDismiss = onCloseFolder, onSubmit = onSubmitName)
+        CreateFolderDialog(onDismiss = onCloseFolder, onSubmit = onSubmit, pickApps = true)
     }
 }
 
 @Composable
 internal fun OpenedFolderOverlay(
     uiState: MainUiState,
-    screenHeightPx: Float,
     hazeState: HazeState,
     actions: HomeScreenActions
 ) {
-    val density = LocalDensity.current
     var lastFolder by remember { mutableStateOf<AppFolder?>(null) }
     val activeFolder = uiState.activeFolder
     if (activeFolder != null) lastFolder = activeFolder
@@ -181,8 +181,6 @@ internal fun OpenedFolderOverlay(
                 params = OpenedFolderOverlayParams(
                     uiState = uiState,
                     folderToDisplay = folderToDisplay,
-                    screenHeightPx = screenHeightPx,
-                    screenDensity = density.density,
                     hazeState = hazeState
                 ),
                 actions = actions
@@ -205,33 +203,35 @@ private fun OpenedFolderOverlayContent(
         actions = actions,
         isGridFolderEnabled = isGridFolderEnabled
     ) {
-        val topInsetDp = WindowInsets.statusBars.asPaddingValues().calculateTopPadding()
-        val clampedTopDp = OpenedFolderOverlayUtils.calculateClampedTopDp(
-            uiState.activeFolderTopYPx,
-            params.screenHeightPx,
-            params.screenDensity,
-            topInsetDp
-        )
-        val align = OpenedFolderOverlayUtils.resolvePopupAlignment(
-            isGridFolderEnabled,
-            uiState.isLeftHandedMode
+        val density = LocalDensity.current
+        val anchorTopPx = OpenedFolderOverlayUtils.folderAnchorTopPx(
+            topYPx = uiState.activeFolderTopYPx,
+            statusInsetPx = WindowInsets.statusBars.getTop(density).toFloat(),
+            fallbackPx = with(density) { AureoleDS.dimens.xxLarge.toPx() }
         )
         val popupPadding = with(OpenedFolderOverlayUtils) {
-            Modifier.popupPadding(isGridFolderEnabled, uiState.isLeftHandedMode, clampedTopDp)
+            Modifier.popupPadding(isGridFolderEnabled, uiState.isLeftHandedMode)
         }
 
-        OpenedFolderPopup(
-            config = OpenedFolderPopupConfig(
-                folder = folderToDisplay,
-                allApps = uiState.apps,
-                actions = FolderPopupActions(
-                    onDismiss = { actions.onFolderIntent(FolderViewIntent.CloseFolder) },
-                    onAppClick = { app -> actions.onFolderIntent(FolderViewIntent.LaunchApp(app.packageName)) }
+        OpenedFolderPlacementLayout(
+            anchorTopPx = anchorTopPx,
+            isGridFolder = isGridFolderEnabled,
+            isLeftHanded = uiState.isLeftHandedMode
+        ) {
+            OpenedFolderPopup(
+                config = OpenedFolderPopupConfig(
+                    folder = folderToDisplay,
+                    allApps = uiState.apps,
+                    actions = FolderPopupActions(
+                        onDismiss = { actions.onFolderIntent(FolderViewIntent.CloseFolder) },
+                        onAppClick = { app -> actions.onFolderIntent(FolderViewIntent.LaunchApp(app.packageName)) },
+                        onAddApps = { actions.onFolderIntent(FolderViewIntent.AddAppToFolder(folderToDisplay.id)) }
+                    ),
+                    isGridFolderEnabled = isGridFolderEnabled
                 ),
-                isGridFolderEnabled = isGridFolderEnabled
-            ),
-            modifier = Modifier.align(align).then(popupPadding)
-        )
+                modifier = popupPadding
+            )
+        }
     }
 }
 
@@ -307,14 +307,8 @@ internal fun RenameFolderOverlay(
         EditFolderDialog(
             folder = uiState.activeFolder,
             onDismiss = { actions.onSetRenameFolderDialogVisible(false) },
-            onSave = { newName, icon ->
-                actions.onFolderIntent(
-                    FolderViewIntent.RenameFolder(
-                        uiState.activeFolder.id,
-                        newName,
-                        icon
-                    )
-                )
+            onSave = { details ->
+                actions.onFolderIntent(FolderViewIntent.RenameFolder(uiState.activeFolder.id, details))
             },
             onDelete = { actions.onFolderIntent(FolderViewIntent.DeleteFolder(uiState.activeFolder.id)) }
         )
@@ -325,6 +319,6 @@ internal fun RenameFolderOverlay(
 @Composable
 private fun CreateFolderOverlayPreview() {
     AureoleLauncherTheme {
-        CreateFolderOverlay(isVisible = true, onCloseFolder = {}, onSubmitName = { _, _ -> })
+        CreateFolderOverlay(isVisible = true, onCloseFolder = {}, onSubmit = {})
     }
 }

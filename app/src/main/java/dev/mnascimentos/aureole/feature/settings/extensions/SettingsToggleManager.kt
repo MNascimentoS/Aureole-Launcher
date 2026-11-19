@@ -6,7 +6,6 @@ import dev.mnascimentos.aureole.feature.settings.model.SettingToggle
 internal object SettingsToggleManager {
     fun toggleSetting(vm: SettingsViewModel, toggle: SettingToggle) {
         when (toggle) {
-            SettingToggle.SHOW_WIDGET_DOTS,
             SettingToggle.HAZE,
             SettingToggle.LEFT_HANDED_MODE,
             SettingToggle.CONTAINER_BACKGROUND,
@@ -28,11 +27,6 @@ internal object SettingsToggleManager {
 
     private fun toggleGroupOne(vm: SettingsViewModel, toggle: SettingToggle) {
         when (toggle) {
-            SettingToggle.SHOW_WIDGET_DOTS -> {
-                val newValue = !vm.uiState.value.showWidgetDots
-                vm.settingsRepository.showWidgetDots = newValue
-                vm.updateUiState { it.copy(showWidgetDots = newValue) }
-            }
             SettingToggle.HAZE -> {
                 if (!vm.settingsRepository.isHazeSupported) return
                 val newValue = !vm.uiState.value.isHazeEnabled

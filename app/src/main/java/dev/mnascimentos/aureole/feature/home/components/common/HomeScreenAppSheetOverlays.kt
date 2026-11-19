@@ -29,7 +29,8 @@ internal fun ContainerAppSheetOverlay(uiState: MainUiState, actions: HomeScreenA
                 actions = AppItemRowActions(
                     onToggleFavorite = { pkg -> actions.onToggleFavoriteWithContainer(pkg, state.panelId) },
                     onEditFavoritesClick = { actions.onOpenFavoritePicker(state.panelId) },
-                    onOpenSettings = actions.onSettingsClick
+                    onOpenSettings = actions.onSettingsClick,
+                    onCustomizeHome = actions.onOpenCustomizeBottomSheet
                 )
             ),
             onDismiss = actions.onCloseContainerAppBottomSheet
@@ -49,7 +50,8 @@ internal fun FolderAppSheetOverlay(uiState: MainUiState, actions: HomeScreenActi
                 actions = AppItemRowActions(
                     onToggleFavorite = { pkg -> actions.onToggleFavorite(pkg) },
                     onEditFavoritesClick = { actions.onOpenFavoritePicker(null) },
-                    onOpenSettings = actions.onSettingsClick
+                    onOpenSettings = actions.onSettingsClick,
+                    onCustomizeHome = actions.onOpenCustomizeBottomSheet
                 )
             ),
             onDismiss = actions.onCloseFolderAppBottomSheet

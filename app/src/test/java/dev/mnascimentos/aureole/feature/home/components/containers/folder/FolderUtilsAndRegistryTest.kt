@@ -1,8 +1,6 @@
 package dev.mnascimentos.aureole.feature.home.components.containers.folder
 
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.test.junit4.v2.createComposeRule
-import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.composable.dialogs.FolderIconRegistry
 import dev.mnascimentos.aureole.core.data.model.AppFolder
 import dev.mnascimentos.aureole.core.data.model.ContainerModel
@@ -25,65 +23,15 @@ class FolderUtilsAndRegistryTest {
     // --- OpenedFolderOverlayUtils Tests ---
 
     @Test
-    fun `when isGridFolderEnabled is true, should resolve alignment to Center`() {
-        val alignment = OpenedFolderOverlayUtils.resolvePopupAlignment(
-            isGridFolderEnabled = true,
-            isLeftHandedMode = false,
-        )
-        assertEquals(Alignment.Center, alignment)
+    fun `when the folder position is known, the anchor should be its window top less the status bar`() {
+        val anchor = OpenedFolderOverlayUtils.folderAnchorTopPx(topYPx = 200f, statusInsetPx = 24f, fallbackPx = 80f)
+        assertEquals(176f, anchor, 0f)
     }
 
     @Test
-    fun `when isGridFolderEnabled is false and isLeftHandedMode is true, should resolve alignment to TopStart`() {
-        val alignment = OpenedFolderOverlayUtils.resolvePopupAlignment(
-            isGridFolderEnabled = false,
-            isLeftHandedMode = true
-        )
-        assertEquals(Alignment.TopStart, alignment)
-    }
-
-    @Test
-    fun `when isGridFolderEnabled is false and isLeftHandedMode is false, should resolve alignment to TopEnd`() {
-        val alignment = OpenedFolderOverlayUtils.resolvePopupAlignment(
-            isGridFolderEnabled = false,
-            isLeftHandedMode = false
-        )
-        assertEquals(Alignment.TopEnd, alignment)
-    }
-
-    @Test
-    fun `when topYPx is positive, should calculate clampedTopDp based on topYPx and screenDensity`() {
-        // topYPx = 200, density = 2.0 -> raw = 100.dp - 24.dp = 76.dp
-        val clamped = OpenedFolderOverlayUtils.calculateClampedTopDp(
-            topYPx = 200f,
-            screenHeightPx = 1920f,
-            screenDensity = 2f,
-            topInsetDp = 24.dp
-        )
-        assertEquals(76.dp, clamped)
-    }
-
-    @Test
-    fun `when topYPx is zero or negative, should default rawTopDp to 40dp`() {
-        val clamped = OpenedFolderOverlayUtils.calculateClampedTopDp(
-            topYPx = 0f,
-            screenHeightPx = 1920f,
-            screenDensity = 2f,
-            topInsetDp = 24.dp
-        )
-        assertEquals(40.dp, clamped)
-    }
-
-    @Test
-    fun `when calculated topDp exceeds maxTopDp, should coerce to maxTopDp`() {
-        // screenHeightPx = 400, density = 2.0 -> (200 - 300).coerceAtLeast(16) = 16.dp maxTopDp
-        val clamped = OpenedFolderOverlayUtils.calculateClampedTopDp(
-            topYPx = 1000f,
-            screenHeightPx = 400f,
-            screenDensity = 2f,
-            topInsetDp = 0.dp
-        )
-        assertEquals(16.dp, clamped)
+    fun `when the folder position is unknown, the anchor should be the fallback`() {
+        val anchor = OpenedFolderOverlayUtils.folderAnchorTopPx(topYPx = 0f, statusInsetPx = 24f, fallbackPx = 80f)
+        assertEquals(80f, anchor, 0f)
     }
 
     @Test

@@ -7,6 +7,9 @@ import dev.mnascimentos.aureole.feature.home.HomeViewModel
 import dev.mnascimentos.aureole.feature.home.components.onboarding.model.AppearancePicker
 import dev.mnascimentos.aureole.feature.home.components.onboarding.model.OnboardingSignal
 
+internal const val DEFAULT_PALETTE_NAME = "Frostbite"
+internal const val DEFAULT_FONT_NAME = "Istok Web"
+
 /**
  * Appearance tasks open their picker on the home. Every other task opens its own screen or the edit mode, so
  * the list collapses to the pill first: the onboarding is the top layer and must not cover it. A skipped task
@@ -25,8 +28,28 @@ fun HomeViewModel.openAppearancePicker(picker: AppearancePicker) {
     updateOnboarding(OnboardingStage.CHECKLIST) { copy(activePicker = picker) }
 }
 
-fun HomeViewModel.dismissAppearancePicker() {
-    updateOnboarding(OnboardingStage.CHECKLIST) { copy(activePicker = null) }
+/**
+ * The picker closed without "Apply" and counts as done. A previewed option stays as it is; with no tap at all the
+ * default applies (Frostbite / Istok Web). Either way it follows the confirm path.
+ */
+fun HomeViewModel.dismissAppearancePicker(hadPreview: Boolean = false) {
+    if (uiState.value.onboarding.stage != OnboardingStage.CHECKLIST) return
+    when (dismissDefaultFor(uiState.value.onboarding.activePicker, hadPreview)) {
+        DismissDefault.PALETTE -> selectPalette(DEFAULT_PALETTE_NAME)
+        DismissDefault.FONT -> selectFont(DEFAULT_FONT_NAME)
+        DismissDefault.NONE -> Unit
+    }
+    confirmAppearancePicker()
+}
+
+internal enum class DismissDefault { NONE, PALETTE, FONT }
+
+/** What a close without "Apply" applies: the default of the [picker] only when nothing was previewed. */
+internal fun dismissDefaultFor(picker: AppearancePicker?, hadPreview: Boolean): DismissDefault = when {
+    hadPreview -> DismissDefault.NONE
+    picker == AppearancePicker.PALETTE -> DismissDefault.PALETTE
+    picker == AppearancePicker.FONT -> DismissDefault.FONT
+    else -> DismissDefault.NONE
 }
 
 /** Applies the palette right away so the whole home re-themes behind the picker. */

@@ -53,6 +53,7 @@ fun LicenseDetailBottomSheet(
         onDismiss = onDismiss,
         modifier = modifier,
         params = MenuSheetParams(
+            showHeaderAction = false,
             bottomBar = {
                 AureolePrimaryActionButton(
                     label = stringResource(buttonLabel),

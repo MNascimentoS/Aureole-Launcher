@@ -21,6 +21,8 @@ data class ClockHeaderConfig(
     val dateFormat: String? = null,
     val textColor: Int? = null,
     val backgroundColor: Int? = null,
+    val textColorRef: String? = null,
+    val backgroundColorRef: String? = null,
     val isBackgroundEnabled: Boolean? = null
 )
 

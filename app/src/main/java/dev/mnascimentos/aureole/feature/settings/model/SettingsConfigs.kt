@@ -1,6 +1,7 @@
 package dev.mnascimentos.aureole.feature.settings.model
 
 import androidx.compose.ui.graphics.vector.ImageVector
+import dev.mnascimentos.aureole.core.data.model.FolderDetails
 import dev.mnascimentos.aureole.core.data.model.WallpaperAdjustments
 
 data class PreferenceItemConfig(
@@ -21,6 +22,7 @@ data class SettingsAdvancedDialogActions(
 
 data class SettingsScreenActions(
     val onBackClick: () -> Unit = {},
+    val onSecretGameOver: (Int) -> Unit = {},
     val onSetDefaultLauncherClick: () -> Unit = {},
     val onOpenFavoritePickerClick: () -> Unit = {},
     val onToggleFavorite: (String) -> Unit = {},
@@ -48,9 +50,8 @@ data class SettingsScreenActions(
     val onClearErrorMessage: () -> Unit = {},
     val onAddFolderClick: () -> Unit = {},
     val onDismissCreateFolderDialog: () -> Unit = {},
-    val onSubmitCreateFolder: (String) -> Unit = {},
+    val onSubmitCreateFolder: (FolderDetails) -> Unit = {},
     val onToggleHaze: () -> Unit = {},
-    val onToggleShowWidgetDots: () -> Unit = {},
     val onToggleInAppUpdate: () -> Unit = {},
     val onHeaderOffsetChanged: (Int) -> Unit = {},
     val onToggleThemedAppIcons: () -> Unit = {},

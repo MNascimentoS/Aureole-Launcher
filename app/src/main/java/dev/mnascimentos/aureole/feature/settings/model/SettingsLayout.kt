@@ -1,5 +1,7 @@
 package dev.mnascimentos.aureole.feature.settings.model
 
+import dev.mnascimentos.aureole.feature.secretgame.model.SecretGameModifiers
+
 /** How the settings screens arrange their content for the available area. */
 enum class SettingsLayout { SINGLE_COLUMN, TWO_PANES }
 
@@ -12,4 +14,11 @@ data class SettingsNavigationActions(
     val onNavigateToBehavior: () -> Unit,
     val onNavigateToAppearance: () -> Unit,
     val onNavigateToAdvanced: () -> Unit
+)
+
+/** What the Settings header needs: the version line, its click and the hooks of the hidden game. */
+data class SettingsHeaderParams(
+    val versionName: String,
+    val onClick: () -> Unit,
+    val secret: SecretGameModifiers
 )

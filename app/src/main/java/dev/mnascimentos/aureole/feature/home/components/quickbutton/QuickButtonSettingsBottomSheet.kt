@@ -2,6 +2,7 @@ package dev.mnascimentos.aureole.feature.home.components.quickbutton
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.res.stringResource
 import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.composable.menu.AureoleMenuListSheet
@@ -14,9 +15,11 @@ import dev.mnascimentos.aureole.core.data.model.ShortcutType
 import dev.mnascimentos.aureole.core.designsystem.icons.Click
 import dev.mnascimentos.aureole.core.designsystem.icons.ColorFill
 import dev.mnascimentos.aureole.core.designsystem.icons.Delete
+import dev.mnascimentos.aureole.core.designsystem.icons.VerticalContainer
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
+import dev.mnascimentos.aureole.feature.home.components.quickbutton.model.localizedName
 import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
 
@@ -41,7 +44,9 @@ fun QuickButtonSettingsBottomSheet(
         modifier = modifier,
         params = MenuSheetParams(
             titleIcon = { m -> AureoleDS.icons.Click(modifier = m, tint = AureoleDS.colors.onSurfaceMedium) },
-            onSettingsClick = { actions.onSettingsClick() }
+            onSettingsClick = { actions.onSettingsClick() },
+            // Item editors have no logo on the title line (RF-05b); the handle still opens the settings.
+            showHeaderAction = false
         )
     ) { dismiss ->
         quickButtonEntries(uiState = uiState, actions = actions, clickSubtitle = clickSubtitle) {
@@ -76,6 +81,18 @@ private fun quickButtonEntries(
             showChevron = true
         )
     ),
+    MenuEntry.Row(
+        MenuRowParams(
+            title = stringResource(R.string.home_folder_container_settings),
+            onClick = {
+                uiState.activeQuickButtonId?.let {
+                    actions.onOpenEditContainerDialog(it)
+                }
+            },
+            icon = { m, c -> AureoleDS.icons.VerticalContainer(modifier = m, tint = c) },
+            showChevron = true
+        )
+    ),
     customizeHomeEntry(onCustomizeHome),
     MenuEntry.Row(
         MenuRowParams(
@@ -91,7 +108,7 @@ private fun quickButtonEntries(
 @Composable
 private fun clickShortcutLabel(activeModel: QuickButtonModel, uiState: MainUiState): String {
     val click = activeModel.shortcuts.click
-    if (click.type != ShortcutType.OPEN_APP) return click.displayName
+    if (click.type != ShortcutType.OPEN_APP) return click.localizedName(LocalResources.current)
     val appLabel = uiState.apps.find { it.packageName == click.target }?.label
     return if (appLabel != null) {
         stringResource(R.string.home_quickbutton_open_app_name, appLabel)

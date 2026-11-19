@@ -14,56 +14,38 @@ import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import dev.mnascimentos.aureole.composable.appitem.AureoleAppIcon
-import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.data.model.QuickButtonModel
-import dev.mnascimentos.aureole.core.data.model.ShortcutAction
 import dev.mnascimentos.aureole.core.data.model.ShortcutType
+import dev.mnascimentos.aureole.core.designsystem.palette.readableOn
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
+import dev.mnascimentos.aureole.feature.home.components.quickbutton.model.NoQuickButtonCallbacks
 import dev.mnascimentos.aureole.feature.home.components.quickbutton.model.QuickButtonGridItemCallbacks
+import dev.mnascimentos.aureole.feature.home.components.quickbutton.model.QuickButtonGridItemStyle
+import dev.mnascimentos.aureole.feature.home.components.quickbutton.model.displayTitle
 
 @Composable
 fun QuickButtonGridItem(
     model: QuickButtonModel,
-    onAction: (ShortcutAction) -> Unit,
-    onLongPress: () -> Unit,
-    modifier: Modifier = Modifier,
-    appInfo: AppInfo? = null
-) {
-    QuickButtonGridItem(
-        model = model,
-        shape = RoundedCornerShape(AureoleDS.dimens.radiusMedium),
-        callbacks = QuickButtonGridItemCallbacks(onAction = onAction, onLongPress = onLongPress),
-        modifier = modifier,
-        appInfo = appInfo
-    )
-}
-
-@Composable
-fun QuickButtonGridItem(
-    model: QuickButtonModel,
-    shape: Shape,
     callbacks: QuickButtonGridItemCallbacks,
     modifier: Modifier = Modifier,
-    appInfo: AppInfo? = null
+    style: QuickButtonGridItemStyle = QuickButtonGridItemStyle()
 ) {
+    val appInfo = style.appInfo
+    val outlineIcon = style.outlineIcon
+    val iconSize = style.iconSize ?: AureoleDS.dimens.iconXLarge
+    val shape = style.shape ?: RoundedCornerShape(AureoleDS.dimens.radiusMedium)
     val currentModel by rememberUpdatedState(model)
     val currentOnAction by rememberUpdatedState(callbacks.onAction)
     val currentOnLongPress by rememberUpdatedState(callbacks.onLongPress)
 
-    val isDefaultBg = model.appearance.backgroundColor == 0 ||
-        model.appearance.backgroundColor == 0xFF455A64.toInt()
-    val backgroundColor = if (isDefaultBg) {
-        AureoleDS.colors.surfaceVariant
-    } else {
-        Color(model.appearance.backgroundColor)
-    }
+    val backgroundColor = model.appearance.backgroundColor.resolve(AureoleDS.colors)
 
     val baseModifier = modifier
         .fillMaxSize()
@@ -71,13 +53,17 @@ fun QuickButtonGridItem(
         .background(backgroundColor)
 
     val strokeModifier = if (model.appearance.strokeEnabled) {
-        baseModifier.border(AureoleDS.dimens.minimal, Color(model.appearance.strokeColor), shape)
+        baseModifier.border(AureoleDS.dimens.minimal, model.appearance.strokeColor.resolve(AureoleDS.colors), shape)
     } else {
         baseModifier
     }
 
+    // The name (or the click action) is what TalkBack reads for the button (botao-rapido RF-01).
+    val name = model.displayTitle(appInfo?.label)
+
     Box(
         modifier = strokeModifier
+            .semantics { contentDescription = name }
             .pointerInput(Unit) {
                 detectTapGestures(
                     onTap = { currentOnAction(currentModel.shortcuts.click) },
@@ -88,13 +74,22 @@ fun QuickButtonGridItem(
     ) {
         val clickShortcut = model.shortcuts.click
         if (clickShortcut.type == ShortcutType.OPEN_APP && appInfo != null) {
-            AureoleAppIcon(app = appInfo, size = AureoleDS.dimens.iconXLarge)
+            AureoleAppIcon(app = appInfo, size = iconSize)
         } else {
+            if (outlineIcon) {
+                // Low contrast (RF-06): a slightly larger copy in a readable color sits behind the icon as its outline.
+                Icon(
+                    painter = painterResource(id = model.appearance.iconRes),
+                    contentDescription = null,
+                    tint = readableOn(backgroundColor, AureoleDS.colors),
+                    modifier = Modifier.size(iconSize + AureoleDS.dimens.xxSmall)
+                )
+            }
             Icon(
-                painter = painterResource(id = model.appearance.icon.iconRes),
+                painter = painterResource(id = model.appearance.iconRes),
                 contentDescription = null,
-                tint = Color(model.appearance.iconColor),
-                modifier = Modifier.size(AureoleDS.dimens.iconXLarge)
+                tint = model.appearance.iconColor.resolve(AureoleDS.colors),
+                modifier = Modifier.size(iconSize)
             )
         }
     }
@@ -105,11 +100,7 @@ fun QuickButtonGridItem(
 private fun QuickButtonGridItemPreview() {
     AureoleLauncherTheme {
         Box(modifier = Modifier.size(AureoleDS.dimens.radiusFull)) {
-            QuickButtonGridItem(
-                model = QuickButtonModel(),
-                onAction = {},
-                onLongPress = {}
-            )
+            QuickButtonGridItem(model = QuickButtonModel(), callbacks = NoQuickButtonCallbacks)
         }
     }
 }

@@ -5,7 +5,9 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
+import androidx.room.Update
 import dev.mnascimentos.aureole.core.data.model.AppFolder
+import dev.mnascimentos.aureole.core.data.model.FolderDetailsUpdate
 import dev.mnascimentos.aureole.core.data.model.FolderEntity
 import dev.mnascimentos.aureole.core.data.model.FolderItemEntity
 import dev.mnascimentos.aureole.core.data.model.FolderWithItems
@@ -32,10 +34,12 @@ interface FolderDao {
             id = appFolder.id,
             panelId = appFolder.panelId,
             name = appFolder.name,
-            color = null,
+            color = appFolder.color?.toJson(),
             iconFallback = appFolder.iconPackage,
             icon = appFolder.icon,
-            displayAsGrid = appFolder.displayAsGrid
+            displayAsGrid = appFolder.displayAsGrid,
+            iconType = appFolder.iconType,
+            emoji = appFolder.emoji
         )
         insertFolderEntity(folderEntity)
         deleteFolderItems(appFolder.id)
@@ -49,8 +53,12 @@ interface FolderDao {
         insertFolderItems(items)
     }
 
-    @Query("UPDATE folders SET name = :name, icon = COALESCE(:icon, icon) WHERE id = :folderId")
-    suspend fun updateFolderDetails(folderId: String, name: String, icon: String?)
+    /** Saves the name and the look of a folder (icon, kind, emoji and own color); apps and container stay. */
+    @Update(entity = FolderEntity::class)
+    suspend fun updateFolderDetails(details: FolderDetailsUpdate)
+
+    @Query("UPDATE folders SET name = :name WHERE id = :folderId")
+    suspend fun renameFolder(folderId: String, name: String)
 
     @Transaction
     suspend fun updateFolderItems(folderId: String, packageNames: List<String>) {

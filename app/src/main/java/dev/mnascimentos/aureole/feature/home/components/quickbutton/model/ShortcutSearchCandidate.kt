@@ -7,5 +7,7 @@ import dev.mnascimentos.aureole.core.data.model.ShortcutAction
 internal data class ShortcutSearchCandidate(
     val action: ShortcutAction,
     val label: String,
-    val app: AppInfo? = null
+    val app: AppInfo? = null,
+    /** False for a saved system shortcut that no app on the device answers: shown, marked, never offered. */
+    val isAvailable: Boolean = true
 )

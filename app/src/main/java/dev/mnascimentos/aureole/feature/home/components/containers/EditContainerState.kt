@@ -10,11 +10,14 @@ import dev.mnascimentos.aureole.core.data.model.AppFolder
 import dev.mnascimentos.aureole.core.data.model.ContainerItemEntity
 import dev.mnascimentos.aureole.core.data.model.ContainerItemType
 import dev.mnascimentos.aureole.core.data.model.ContainerModel
+import dev.mnascimentos.aureole.core.data.model.FolderDetails
 import dev.mnascimentos.aureole.core.data.model.QuickButtonModel
+import dev.mnascimentos.aureole.core.data.model.withDetails
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.components.containers.model.ContainerConfig
 import dev.mnascimentos.aureole.feature.home.components.containers.model.ContainerOptionsState
+import dev.mnascimentos.aureole.feature.home.components.quickbutton.model.normalized
 import java.util.UUID
 
 internal class EditContainerState(
@@ -58,7 +61,7 @@ internal class EditContainerState(
                 item.itemType == ContainerItemType.QUICK_BUTTON &&
                     (item.quickButtonId == qb.id || item.id == qb.id)
             }
-        }
+        }.map { it.copy(appearance = it.appearance.normalized()) }
 
         return panel.copy(
             position = position,
@@ -102,13 +105,16 @@ internal class EditContainerState(
         }
     }
 
-    fun addFolder(name: String) {
+    fun addFolder(name: String) = addFolder(FolderDetails(name = name))
+
+    /** Adds a new folder with the name and look chosen in the folder form. */
+    fun addFolder(details: FolderDetails) {
         val newFolder = AppFolder(
             id = UUID.randomUUID().toString(),
             panelId = panel.id,
-            name = name,
+            name = details.name,
             displayAsGrid = isGridFolderEnabled
-        )
+        ).withDetails(details)
         folders = folders + newFolder
         itemsList = itemsList + ContainerItemEntity(
             id = UUID.randomUUID().toString(),
@@ -131,7 +137,8 @@ internal class EditContainerState(
         }
     }
 
-    fun addQuickButton(model: QuickButtonModel = QuickButtonModel()) {
+    /** Adds a quick button and returns its id, so the sheet can open its editor right away (RF-07). */
+    fun addQuickButton(model: QuickButtonModel = QuickButtonModel()): String {
         val qbId = if (model.id.isNotEmpty()) model.id else UUID.randomUUID().toString()
         val newQuickButton = model.copy(id = qbId)
         quickButtons = quickButtons + newQuickButton
@@ -142,6 +149,27 @@ internal class EditContainerState(
             quickButtonId = newQuickButton.id,
             orderIndex = itemsList.size
         ).also { it.quickButtonModel = newQuickButton }
+        return qbId
+    }
+
+    /** Writes the name and look chosen in the in-place folder editor to the folder [folderId]. */
+    fun updateFolder(folderId: String, details: FolderDetails) {
+        folders = folders.map { if (it.id == folderId) it.withDetails(details) else it }
+    }
+
+    /**
+     * Writes the change [change] made in the in-place quick button editor (the look or the shortcuts) to the button
+     * [quickButtonId].
+     */
+    fun updateQuickButton(quickButtonId: String, change: (QuickButtonModel) -> QuickButtonModel) {
+        val updated = quickButtons.find { it.id == quickButtonId }?.let(change) ?: return
+        quickButtons = quickButtons.map { if (it.id == quickButtonId) updated else it }
+        // The entity keeps its model outside equals(), so a new list would compare equal and not be stored:
+        // the item's model is updated where it is (the save reads it before the quick button list).
+        itemsList.filter { item ->
+            item.itemType == ContainerItemType.QUICK_BUTTON &&
+                (item.quickButtonId == quickButtonId || item.id == quickButtonId)
+        }.forEach { it.quickButtonModel = updated }
     }
 }
 

@@ -4,6 +4,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshots.Snapshot
+import androidx.compose.ui.semantics.SemanticsProperties
+import androidx.compose.ui.test.SemanticsMatcher
+import androidx.compose.ui.test.assertCountEquals
+import androidx.compose.ui.test.hasClickAction
 import androidx.compose.ui.test.junit4.v2.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
@@ -22,6 +26,7 @@ private const val TITLE = "First steps"
 private const val PILL_TEXT = "0/9 first steps"
 private const val MID_TRANSITION_MS = 80L
 private const val SETTLE_MS = 3_000L
+private val isRing = SemanticsMatcher.keyIsDefined(SemanticsProperties.ProgressBarRangeInfo)
 
 @RunWith(RobolectricTestRunner::class)
 class OnboardingChecklistMorphComponentTest {
@@ -90,6 +95,28 @@ class OnboardingChecklistMorphComponentTest {
 
         composeTestRule.onNodeWithText(PILL_TEXT).assertDoesNotExist()
         composeTestRule.onNodeWithText(TITLE).assertExists()
+    }
+
+    @Test
+    fun `when the home peeks, should show the ring bubble with nothing to tap, then open the list`() {
+        onboarding = onboarding.copy(isChecklistExpanded = false, isHomePeeking = true)
+        render()
+
+        composeTestRule.onNode(isRing).assertExists()
+        composeTestRule.onAllNodes(hasClickAction()).assertCountEquals(0)
+        composeTestRule.onNodeWithText(TITLE).assertDoesNotExist()
+        composeTestRule.onNodeWithText(PILL_TEXT).assertDoesNotExist()
+
+        composeTestRule.mainClock.autoAdvance = false
+        onboarding = onboarding.copy(isHomePeeking = false, isChecklistExpanded = true)
+        Snapshot.sendApplyNotifications()
+        composeTestRule.mainClock.advanceTimeByFrame()
+        composeTestRule.mainClock.advanceTimeBy(MID_TRANSITION_MS)
+        composeTestRule.onNodeWithText(TITLE).assertExists()
+        settle()
+
+        composeTestRule.onNodeWithText(TITLE).assertExists()
+        assertEquals(emptyList<Boolean>(), expandedCalls)
     }
 
     @Test

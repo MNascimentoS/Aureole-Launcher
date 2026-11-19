@@ -11,7 +11,7 @@ class SettingsSheetNavTest {
 
     private val appearance = SettingsSheet.Area(SettingsArea.APPEARANCE)
     private val advanced = SettingsSheet.Area(SettingsArea.ADVANCED)
-    private val bgChild = SettingsSheet.Child(SettingsChildKind.BACKGROUND, SettingsArea.APPEARANCE)
+    private val glassChild = SettingsSheet.Child(SettingsChildKind.CARDS_GLASS, SettingsArea.APPEARANCE)
 
     @Test
     fun `opening an area from the root shows that area`() {
@@ -22,8 +22,8 @@ class SettingsSheetNavTest {
 
     @Test
     fun `opening a child swaps it in place of the area and remembers the area`() {
-        val next = reduceSettingsSheet(appearance, SettingsSheetEvent.OpenChild(SettingsChildKind.BACKGROUND))
-        assertEquals(bgChild, next)
+        val next = reduceSettingsSheet(appearance, SettingsSheetEvent.OpenChild(SettingsChildKind.CARDS_GLASS))
+        assertEquals(glassChild, next)
     }
 
     @Test
@@ -34,13 +34,13 @@ class SettingsSheetNavTest {
 
     @Test
     fun `opening a child over a child keeps the area of the first`() {
-        val next = reduceSettingsSheet(bgChild, SettingsSheetEvent.OpenChild(SettingsChildKind.CARDS_GLASS))
-        assertEquals(SettingsSheet.Child(SettingsChildKind.CARDS_GLASS, SettingsArea.APPEARANCE), next)
+        val next = reduceSettingsSheet(glassChild, SettingsSheetEvent.OpenChild(SettingsChildKind.RELEASE_NOTES))
+        assertEquals(SettingsSheet.Child(SettingsChildKind.RELEASE_NOTES, SettingsArea.APPEARANCE), next)
     }
 
     @Test
     fun `closing the child brings its area back`() {
-        val next = reduceSettingsSheet(bgChild, SettingsSheetEvent.CloseChild(SettingsChildKind.BACKGROUND))
+        val next = reduceSettingsSheet(glassChild, SettingsSheetEvent.CloseChild(SettingsChildKind.CARDS_GLASS))
         assertEquals(appearance, next)
     }
 
@@ -52,8 +52,8 @@ class SettingsSheetNavTest {
 
     @Test
     fun `a late close of another child changes nothing`() {
-        val next = reduceSettingsSheet(bgChild, SettingsSheetEvent.CloseChild(SettingsChildKind.CARDS_GLASS))
-        assertEquals(bgChild, next)
+        val next = reduceSettingsSheet(glassChild, SettingsSheetEvent.CloseChild(SettingsChildKind.RELEASE_NOTES))
+        assertEquals(glassChild, next)
         val lateClose = SettingsSheetEvent.CloseChild(SettingsChildKind.CARDS_GLASS)
         assertEquals(appearance, reduceSettingsSheet(appearance, lateClose))
         assertNull(reduceSettingsSheet(null, SettingsSheetEvent.CloseChild(SettingsChildKind.CARDS_GLASS)))
@@ -68,15 +68,15 @@ class SettingsSheetNavTest {
     fun `a late close of another area, or while a child is up, changes nothing`() {
         assertEquals(advanced, reduceSettingsSheet(advanced, SettingsSheetEvent.CloseArea(SettingsArea.BEHAVIOR)))
         assertEquals(
-            bgChild,
-            reduceSettingsSheet(bgChild, SettingsSheetEvent.CloseArea(SettingsArea.APPEARANCE))
+            glassChild,
+            reduceSettingsSheet(glassChild, SettingsSheetEvent.CloseArea(SettingsArea.APPEARANCE))
         )
         assertNull(reduceSettingsSheet(null, SettingsSheetEvent.CloseArea(SettingsArea.APPEARANCE)))
     }
 
     @Test
     fun `back walks child, then area, then root`() {
-        val area = reduceSettingsSheet(bgChild, SettingsSheetEvent.Back)
+        val area = reduceSettingsSheet(glassChild, SettingsSheetEvent.Back)
         assertEquals(appearance, area)
         val root = reduceSettingsSheet(area, SettingsSheetEvent.Back)
         assertNull(root)
@@ -92,7 +92,7 @@ class SettingsSheetNavTest {
     @Test
     fun `the area under a sheet is the open area or the one the child returns to`() {
         assertEquals(SettingsArea.APPEARANCE, appearance.area)
-        assertEquals(SettingsArea.APPEARANCE, bgChild.area)
+        assertEquals(SettingsArea.APPEARANCE, glassChild.area)
         assertNull(SettingsSheet.Child(SettingsChildKind.CONTRIBUTORS, returnTo = null).area)
         val none: SettingsSheet? = null
         assertNull(none.area)
@@ -106,7 +106,7 @@ class SettingsSheetNavTest {
     }
 
     @Test
-    fun `palette and font open inside the Appearance sheet, not as another sheet`() {
+    fun `palette, font and background open inside the Appearance sheet, not as another sheet`() {
         SettingsInnerKind.entries.forEach { kind ->
             val next = reduceSettingsSheet(appearance, SettingsSheetEvent.OpenInner(kind))
             assertEquals(SettingsSheet.Area(SettingsArea.APPEARANCE, inner = kind), next)
@@ -119,8 +119,8 @@ class SettingsSheetNavTest {
         val behavior = SettingsSheet.Area(SettingsArea.BEHAVIOR)
         assertEquals(behavior, reduceSettingsSheet(behavior, SettingsSheetEvent.OpenInner(SettingsInnerKind.PALETTE)))
         assertEquals(
-            bgChild,
-            reduceSettingsSheet(bgChild, SettingsSheetEvent.OpenInner(SettingsInnerKind.FONT))
+            glassChild,
+            reduceSettingsSheet(glassChild, SettingsSheetEvent.OpenInner(SettingsInnerKind.FONT))
         )
         assertNull(reduceSettingsSheet(null, SettingsSheetEvent.OpenInner(SettingsInnerKind.FONT)))
     }
@@ -146,9 +146,9 @@ class SettingsSheetNavTest {
             SettingsSheet.Area(SettingsArea.APPEARANCE, inner = SettingsInnerKind.FONT),
             reduceSettingsSheet(palette, SettingsSheetEvent.OpenInner(SettingsInnerKind.FONT))
         )
-        val child = reduceSettingsSheet(palette, SettingsSheetEvent.OpenChild(SettingsChildKind.BACKGROUND))
-        assertEquals(bgChild, child)
-        val closed = SettingsSheetEvent.CloseChild(SettingsChildKind.BACKGROUND)
+        val child = reduceSettingsSheet(palette, SettingsSheetEvent.OpenChild(SettingsChildKind.CARDS_GLASS))
+        assertEquals(glassChild, child)
+        val closed = SettingsSheetEvent.CloseChild(SettingsChildKind.CARDS_GLASS)
         assertEquals(appearance, reduceSettingsSheet(child, closed))
     }
 
@@ -161,6 +161,10 @@ class SettingsSheetNavTest {
         assertEquals(
             R.string.home_customize_adjust_font,
             settingsSheetTitle(SettingsArea.APPEARANCE, SettingsInnerKind.FONT)
+        )
+        assertEquals(
+            R.string.settings_appearance_set_background_title,
+            settingsSheetTitle(SettingsArea.APPEARANCE, SettingsInnerKind.BACKGROUND)
         )
         assertEquals(R.string.settings_appearance_title, settingsSheetTitle(SettingsArea.APPEARANCE, null))
         assertEquals(R.string.settings_advanced_title, settingsSheetTitle(SettingsArea.ADVANCED, null))
@@ -182,6 +186,7 @@ class SettingsSheetNavTest {
             SettingsChildKind.entries.forEach { kind ->
                 add(SettingsSheet.Child(kind, returnTo = null))
                 SettingsArea.entries.forEach { add(SettingsSheet.Child(kind, it)) }
+                SettingsInnerKind.entries.forEach { add(SettingsSheet.Child(kind, SettingsArea.APPEARANCE, it)) }
             }
         }
         sheets.forEach { sheet -> assertEquals(sheet, decodeSettingsSheet(encodeSettingsSheet(sheet))) }
@@ -199,5 +204,9 @@ class SettingsSheetNavTest {
         assertEquals(appearance, decodeSettingsSheet("area:APPEARANCE:NOPE"))
         // Only Appearance has pickers: a saved one on another area reads as its list.
         assertEquals(advanced, decodeSettingsSheet("area:ADVANCED:PALETTE"))
+        assertEquals(
+            SettingsSheet.Child(SettingsChildKind.WALLPAPER_EDITOR, SettingsArea.ADVANCED),
+            decodeSettingsSheet("child:WALLPAPER_EDITOR:ADVANCED:BACKGROUND")
+        )
     }
 }

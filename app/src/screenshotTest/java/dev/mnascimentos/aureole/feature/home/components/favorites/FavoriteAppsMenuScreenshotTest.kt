@@ -29,7 +29,7 @@ private fun FavoritesMenuDialogCase(isLeftHanded: Boolean, showAllApps: Boolean)
                     rowConfig = AppItemRowConfig(isLeftHandedMode = isLeftHanded),
                     showAllApps = ShowAllAppsParams(checked = showAllApps, onCheckedChange = {})
                 ),
-                actions = FavoriteAppsDialogActions(onCustomizeHome = {})
+                actions = FavoriteAppsDialogActions()
             )
         }
     }

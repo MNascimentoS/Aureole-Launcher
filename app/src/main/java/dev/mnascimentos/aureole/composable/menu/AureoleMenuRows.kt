@@ -38,7 +38,6 @@ import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 
-private const val DESTRUCTIVE_TILE_ALPHA = 0.18f
 private const val NOTE_ALPHA = 0.35f
 private const val HOLD_FILL_ALPHA = 0.28f
 
@@ -51,7 +50,7 @@ fun AureoleMenuRow(
     params: MenuRowParams,
     modifier: Modifier = Modifier
 ) {
-    val titleColor = if (params.isDestructive) AureoleDS.colors.error else AureoleDS.colors.onSurfaceMedium
+    val titleColor = menuRowTitleColor(params.isDestructive)
     val holdProgress = remember { Animatable(0f) }
     val holdFill = AureoleDS.colors.error.copy(alpha = HOLD_FILL_ALPHA)
     LeftHandMirror {
@@ -89,7 +88,7 @@ private fun MenuRowTexts(params: MenuRowParams, titleColor: Color, modifier: Mod
     Column(modifier = modifier) {
         AureoleText(
             text = params.title,
-            color = if (subtitle != null && !params.isDestructive) AureoleDS.colors.onSurfaceHigh else titleColor,
+            color = titleColor,
             format = AureoleTextFormatParams(
                 style = AureoleDS.typography.bodyLarge.copy(textDirection = TextDirection.Content),
                 maxLines = 1,
@@ -112,7 +111,7 @@ private fun MenuRowTexts(params: MenuRowParams, titleColor: Color, modifier: Mod
 
 /**
  * Fixed 36 dp column that centers a 22 dp icon, so every title in a list starts at the same x no matter the icon.
- * A destructive row keeps a tinted tile behind the icon.
+ * A destructive row only tints the icon (no tile behind it).
  */
 @Composable
 internal fun MenuIconColumn(
@@ -121,17 +120,9 @@ internal fun MenuIconColumn(
     isDestructive: Boolean = false
 ) {
     val iconTint = if (isDestructive) AureoleDS.colors.error else AureoleDS.colors.onSurfaceMedium
-    val tileModifier = if (isDestructive) {
-        Modifier
-            .clip(RoundedCornerShape(AureoleDS.dimens.radiusXSmall))
-            .background(AureoleDS.colors.error.copy(alpha = DESTRUCTIVE_TILE_ALPHA))
-    } else {
-        Modifier
-    }
     Box(
         modifier = modifier
-            .size(AureoleDS.dimens.iconXLarge)
-            .then(tileModifier),
+            .size(AureoleDS.dimens.iconXLarge),
         contentAlignment = Alignment.Center
     ) {
         icon(Modifier.size(AureoleDS.dimens.iconLargePlus), iconTint)
@@ -160,7 +151,6 @@ fun AureoleMenuSectionLabel(
             modifier = modifier
                 .fillMaxWidth()
                 .padding(
-                    start = AureoleDS.dimens.xxSmall,
                     end = AureoleDS.dimens.xxSmall,
                     top = AureoleDS.dimens.small,
                     bottom = AureoleDS.dimens.xSmall

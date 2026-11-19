@@ -31,6 +31,7 @@ import dev.mnascimentos.aureole.composable.LocalHomeUiState
 import dev.mnascimentos.aureole.composable.ProvideHomeUiState
 import dev.mnascimentos.aureole.composable.preview.AureolePreviewFrame
 import dev.mnascimentos.aureole.composable.preview.aureoleDashedBorder
+import dev.mnascimentos.aureole.composable.showsHomeSheetLogo
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.data.model.ContainerModel
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleEditOverlay
@@ -43,6 +44,8 @@ import dev.mnascimentos.aureole.feature.home.components.containers.model.Contain
 import dev.mnascimentos.aureole.feature.home.components.containers.model.EditContainerCloser
 import dev.mnascimentos.aureole.feature.home.components.containers.model.EditContainerScreenMode
 import dev.mnascimentos.aureole.feature.home.components.containers.model.EditContainerScreenParams
+import dev.mnascimentos.aureole.feature.home.components.containers.model.EditContainerSheetActions
+import dev.mnascimentos.aureole.feature.home.components.containers.model.ManageItemsEditor
 import dev.mnascimentos.aureole.feature.home.components.containers.model.handleBack
 import dev.mnascimentos.aureole.feature.home.model.LocalHomeActions
 import kotlinx.coroutines.delay
@@ -59,6 +62,7 @@ fun EditContainerScreen(
     val state = rememberEditContainerState(panel)
     var currentMode by remember { mutableStateOf(EditContainerScreenMode.MAIN) }
     var isVisible by remember { mutableStateOf(true) }
+    val itemsEditor = remember { ManageItemsEditor() }
 
     val currentUiState = LocalHomeUiState.current
     val effectiveUiState =
@@ -67,12 +71,7 @@ fun EditContainerScreen(
     val homeActions = LocalHomeActions.current
 
     ProvideHomeUiState(effectiveUiState) {
-        if (!isVisible) {
-            LaunchedEffect(isVisible) {
-                delay(ANIMATION_DURATION_MS)
-                params.onDismiss()
-            }
-        }
+        DismissAfterAnimation(isVisible, params.onDismiss)
         val latestParams by rememberUpdatedState(params)
         val closer = remember(state) {
             EditContainerCloser(
@@ -86,23 +85,34 @@ fun EditContainerScreen(
             modifier = modifier,
             params = AureoleEditOverlayParams(
                 config = AureoleEditOverlayConfig(
-                    title = currentMode.title(),
+                    title = currentMode.title(itemsEditor),
                     onSettingsClick = { homeActions.onSettingsClick() },
+                    showHeaderAction = showsHomeSheetLogo(),
                     hazeState = params.hazeState,
                     isVisible = isVisible,
                     animated = true,
                     isLeftHanded = isLeftHanded,
-                    onBackPress = { currentMode.handleBack(closer) { currentMode = it } },
+                    onBackPress = { currentMode.handleSheetBack(itemsEditor, closer) { currentMode = it } },
                     onDismiss = closer::closeOnce
                 ),
-                previewContent = { EditContainerPreview(state = state) },
+                previewContent = {
+                    EditContainerPreviewSlot(currentMode, itemsEditor, state, params.allApps)
+                },
                 bottomBarContent = null,
                 sheetContent = {
                     EditContainerSheetContent(
                         currentMode = currentMode,
                         state = state,
                         allApps = params.allApps,
-                        onModeChange = { currentMode = it }
+                        itemsEditor = itemsEditor,
+                        actions = EditContainerSheetActions(
+                            onModeChange = { currentMode = it },
+                            onCustomizeHome = {
+                                // Saves what is being edited (like any close), then opens Customize.
+                                closer.closeOnce()
+                                homeActions.onOpenCustomizeBottomSheet()
+                            }
+                        )
                     )
                 }
             )
@@ -110,13 +120,56 @@ fun EditContainerScreen(
     }
 }
 
+/** Waits for the close animation, then dismisses; does nothing while the sheet is visible. */
+@Composable
+private fun DismissAfterAnimation(isVisible: Boolean, onDismiss: () -> Unit) {
+    if (!isVisible) {
+        LaunchedEffect(isVisible) {
+            delay(ANIMATION_DURATION_MS)
+            onDismiss()
+        }
+    }
+}
+
+/** Back from an item editor returns to the list of items, in the same sheet (RF-07); else the usual back. */
+private fun EditContainerScreenMode.handleSheetBack(
+    itemsEditor: ManageItemsEditor,
+    closer: EditContainerCloser,
+    goTo: (EditContainerScreenMode) -> Unit
+) {
+    val wentBack = this == EditContainerScreenMode.MANAGE_ITEMS && itemsEditor.back()
+    if (!wentBack) handleBack(closer, goTo)
+}
+
+/** Title of the sheet: "Manage items" follows the page of [itemsEditor] (RF-07). */
 @Composable
 @ReadOnlyComposable
-private fun EditContainerScreenMode.title(): String = when (this) {
+private fun EditContainerScreenMode.title(itemsEditor: ManageItemsEditor): String =
+    if (this == EditContainerScreenMode.MANAGE_ITEMS) itemsEditor.title() else baseTitle()
+
+@Composable
+@ReadOnlyComposable
+private fun EditContainerScreenMode.baseTitle(): String = when (this) {
     EditContainerScreenMode.MAIN -> stringResource(R.string.home_container_edit_title)
     EditContainerScreenMode.APPEARANCE -> stringResource(R.string.home_container_edit_appearance)
     EditContainerScreenMode.BEHAVIOR -> stringResource(R.string.home_container_edit_behavior)
     EditContainerScreenMode.MANAGE_ITEMS -> stringResource(R.string.home_container_edit_manage_items)
+}
+
+/** The item being edited in place, or else the live preview of the container. */
+@Composable
+private fun EditContainerPreviewSlot(
+    currentMode: EditContainerScreenMode,
+    itemsEditor: ManageItemsEditor,
+    state: EditContainerState,
+    allApps: List<AppInfo>
+) {
+    val isEditorPreview = currentMode == EditContainerScreenMode.MANAGE_ITEMS && itemsEditor.showsItemPreview(state)
+    if (isEditorPreview) {
+        ManageItemsEditorPreview(editor = itemsEditor, state = state, allApps = allApps)
+    } else {
+        EditContainerPreview(state = state)
+    }
 }
 
 /** Live preview of the draft with its label, anchored above the sheet. */
@@ -150,15 +203,16 @@ private fun EditContainerSheetContent(
     currentMode: EditContainerScreenMode,
     state: EditContainerState,
     allApps: List<AppInfo>,
-    onModeChange: (EditContainerScreenMode) -> Unit
+    itemsEditor: ManageItemsEditor,
+    actions: EditContainerSheetActions
 ) {
+    val onModeChange = actions.onModeChange
     when (currentMode) {
         EditContainerScreenMode.MAIN -> {
             MainSettingsContent(
                 componentCount = state.itemsList.size,
-                onAppearanceClick = { onModeChange(EditContainerScreenMode.APPEARANCE) },
-                onBehaviorClick = { onModeChange(EditContainerScreenMode.BEHAVIOR) },
-                onManageItemsClick = { onModeChange(EditContainerScreenMode.MANAGE_ITEMS) }
+                onOpenMode = onModeChange,
+                onCustomizeHome = actions.onCustomizeHome
             )
         }
         EditContainerScreenMode.APPEARANCE, EditContainerScreenMode.BEHAVIOR -> {
@@ -172,7 +226,8 @@ private fun EditContainerSheetContent(
             ManageItemsContent(
                 state = state,
                 allApps = allApps,
-                onBack = { onModeChange(EditContainerScreenMode.MAIN) }
+                onBack = { onModeChange(EditContainerScreenMode.MAIN) },
+                editor = itemsEditor
             )
         }
     }

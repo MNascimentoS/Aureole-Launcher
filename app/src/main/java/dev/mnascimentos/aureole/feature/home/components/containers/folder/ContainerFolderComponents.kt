@@ -24,18 +24,17 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInWindow
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
-import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.composable.LocalHomeUiState
 import dev.mnascimentos.aureole.composable.appitem.AureoleAppIcon
 import dev.mnascimentos.aureole.composable.appitem.model.AureoleAppIconParams
-import dev.mnascimentos.aureole.composable.dialogs.FolderIconRegistry
+import dev.mnascimentos.aureole.composable.dialogs.FolderGlyph
+import dev.mnascimentos.aureole.composable.dialogs.folderOwnColor
 import dev.mnascimentos.aureole.composable.dialogs.model.FolderButtonMetrics
 import dev.mnascimentos.aureole.core.data.model.AppFolder
 import dev.mnascimentos.aureole.core.data.model.QuickButtonModel
@@ -52,12 +51,11 @@ import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.ContainerFolderItemParams
 import dev.mnascimentos.aureole.feature.home.components.containers.model.ContainerConfig
 import dev.mnascimentos.aureole.feature.home.components.quickbutton.QuickButtonGridItem
-import dev.mnascimentos.aureole.feature.home.components.quickbutton.launchAppPackage
-import dev.mnascimentos.aureole.feature.home.components.quickbutton.launchSystemIntent
-import dev.mnascimentos.aureole.feature.home.components.quickbutton.launchVoiceAssistant
 import dev.mnascimentos.aureole.feature.home.components.quickbutton.model.QuickButtonGridItemCallbacks
+import dev.mnascimentos.aureole.feature.home.components.quickbutton.model.QuickButtonGridItemStyle
+import dev.mnascimentos.aureole.feature.home.components.quickbutton.model.displayTitle
+import dev.mnascimentos.aureole.feature.home.components.quickbutton.runQuickButtonAction
 import dev.mnascimentos.aureole.feature.home.model.LocalHomeActions
-import dev.mnascimentos.aureole.util.IntentUtils
 
 private const val FOLDER_BG_INACTIVE_ALPHA = 0.85f
 
@@ -188,7 +186,7 @@ fun ContainerFolderButton(
         modifier = modifier
             .size(buttonSize)
             .clip(RoundedCornerShape(cornerRadius))
-            .background(params.containerColor)
+            .background(folderOwnColor(params.folder) ?: params.containerColor)
             .onGloballyPositioned { coordinates ->
                 onPositionedY(coordinates.positionInWindow().y)
             }
@@ -217,22 +215,12 @@ private fun FolderIconOrTextContent(
     iconSize: Dp,
     textColor: Color
 ) {
-    if (folder.icon != null) {
-        FolderIconRegistry.RenderIcon(
-            name = folder.icon,
-            modifier = Modifier.size(iconSize),
-            tint = textColor
-        )
-    } else {
-        AureoleText(
-            text = folder.name.take(1).uppercase(),
-            color = textColor,
-            format = AureoleTextFormatParams(
-                style = AureoleDS.typography.titleLarge,
-                fontWeight = FontWeight.Bold
-            )
-        )
-    }
+    FolderGlyph(
+        folder = folder,
+        size = iconSize,
+        tint = textColor,
+        letterStyle = AureoleDS.typography.titleLarge
+    )
 }
 
 @Composable
@@ -356,29 +344,18 @@ fun ContainerQuickButtonItem(
         ) {
             QuickButtonGridItem(
                 model = quickButtonModel,
-                appInfo = appInfo,
-                shape = RoundedCornerShape(cornerRadius),
                 callbacks = QuickButtonGridItemCallbacks(
-                    onAction = { shortcutAction ->
-                        when (shortcutAction.type) {
-                            ShortcutType.ALL_APPS -> actions.onAllAppsDrawerOpen()
-                            ShortcutType.ASSISTANT -> launchVoiceAssistant(context)
-                            ShortcutType.SETTINGS -> actions.onSettingsClick()
-                            ShortcutType.NOTIFICATIONS -> IntentUtils.expandNotificationShade(context)
-                            ShortcutType.OPEN_APP -> launchAppPackage(context, shortcutAction.target)
-                            ShortcutType.SYSTEM_INTENT -> launchSystemIntent(context, shortcutAction.target)
-                            ShortcutType.NONE -> { /* Do nothing */ }
-                        }
-                    },
-                    onLongPress = {
-                        actions.onOpenQuickButtonSettings(quickButtonModel.id)
-                    }
-                )
+                    onAction = { runQuickButtonAction(context, actions, it) },
+                    onLongPress = { actions.onOpenQuickButtonSettings(quickButtonModel.id) }
+                ),
+                style = QuickButtonGridItemStyle(shape = RoundedCornerShape(cornerRadius), appInfo = appInfo)
             )
         }
 
-        if (config.showFolderLabels) {
-            ContainerFolderLabel(name = stringResource(R.string.home_grid_item_quick_button))
+        if (quickButtonModel.appearance.showLabel) {
+            ContainerFolderLabel(name = quickButtonModel.displayTitle(appInfo?.label))
+        } else if (config.showFolderLabels) {
+            ContainerFolderLabel(name = quickButtonModel.displayTitle(appInfo?.label))
         }
     }
 }

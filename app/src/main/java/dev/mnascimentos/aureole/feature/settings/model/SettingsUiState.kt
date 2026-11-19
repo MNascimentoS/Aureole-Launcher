@@ -29,7 +29,6 @@ data class SettingsUiState(
     val showFolderLabels: Boolean = false,
     val homeButtonOpensAllApps: Boolean = true,
     val isWidgetRowEnabled: Boolean = true,
-    val showWidgetDots: Boolean = true,
     val favoriteAppPackages: List<String> = emptyList(),
     val allApps: List<AppInfo> = emptyList(),
     val isDefaultLauncher: Boolean = false,
@@ -66,6 +65,7 @@ data class SettingsUiState(
     val showSearchIconPositionDialog: Boolean = false,
     /** The pending "Undo" offer shown at the bottom of the screen. */
     val undoSnackbar: UndoSnackbarState? = null,
+    val secretBestScore: Int = 0,
     val shouldFinishActivity: Boolean = false,
     val errorMessage: TextResource? = null,
 )

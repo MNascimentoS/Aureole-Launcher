@@ -52,3 +52,16 @@ fun revealScrollTarget(current: Int, params: RevealScrollParams): Int = with(par
     val leastScrolled = marginPx + index * slotPx + cardPx + marginPx - viewportPx
     current.toFloat().coerceIn(minOf(leastScrolled, mostScrolled), mostScrolled).toInt()
 }
+
+/** Pages of the landscape stack pager: one per widget and the add card last. */
+fun widgetPagerPages(widgetCount: Int): Int = widgetCount.coerceAtLeast(0) + 1
+
+/**
+ * Width of the one card the landscape pager shows: the row less a [margin] on each side, narrower when its height
+ * ([WIDGET_CARD_HEIGHT_RATIO] of the width) would pass [maxCardHeight], so the whole widget always shows.
+ */
+fun landscapeWidgetCardWidth(rowWidth: Float, margin: Float, maxCardHeight: Float): Float {
+    val byWidth = (rowWidth - 2f * margin).coerceAtLeast(0f)
+    val byHeight = (maxCardHeight / WIDGET_CARD_HEIGHT_RATIO).coerceAtLeast(0f)
+    return minOf(byWidth, byHeight)
+}

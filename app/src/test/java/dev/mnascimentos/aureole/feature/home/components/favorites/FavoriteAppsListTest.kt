@@ -49,7 +49,7 @@ class FavoriteAppsListTest {
     )
 
     @Test
-    fun `when favoriteSectionItems is called with empty list and empty search, should display empty message`() {
+    fun `with no favorites and empty search, only the header shows (the notice above says it)`() {
         val params = FavoriteSectionParams(
             filteredFavorites = emptyList(),
             searchQuery = ""
@@ -63,7 +63,26 @@ class FavoriteAppsListTest {
             }
         }
 
-        composeTestRule.onNodeWithText("Favorites (0)").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Favorites · 0").assertIsDisplayed()
+        composeTestRule.onNodeWithText("No favorite app selected.").assertDoesNotExist()
+    }
+
+    @Test
+    fun `with saved favorites none of which is installed, the empty message shows`() {
+        val params = FavoriteSectionParams(
+            filteredFavorites = emptyList(),
+            searchQuery = "",
+            favoritesCount = 2
+        )
+
+        composeTestRule.setContent {
+            AureoleLauncherTheme {
+                LazyColumn {
+                    favoriteSectionItems(params = params, actions = noActions)
+                }
+            }
+        }
+
         composeTestRule.onNodeWithText("No favorite app selected.").assertIsDisplayed()
     }
 
@@ -99,7 +118,7 @@ class FavoriteAppsListTest {
             }
         }
 
-        composeTestRule.onNodeWithText("Other Apps (0)").assertIsDisplayed()
+        composeTestRule.onNodeWithText("All apps · 0").assertIsDisplayed()
         composeTestRule.onNodeWithText("All apps are already in favorites.").assertIsDisplayed()
     }
 
@@ -118,7 +137,7 @@ class FavoriteAppsListTest {
             }
         }
 
-        composeTestRule.onNodeWithText("Other Apps (1)").assertIsDisplayed()
+        composeTestRule.onNodeWithText("All apps · 1").assertIsDisplayed()
         composeTestRule.onNodeWithText("Novo App").assertIsDisplayed()
     }
 
@@ -183,8 +202,7 @@ class FavoriteAppsListTest {
                         params = FavoriteSectionParams(
                             filteredFavorites = favorites,
                             searchQuery = searchQuery,
-                            favoritesCount = favoritesCount,
-                            allAppsCount = 34
+                            favoritesCount = favoritesCount
                         ),
                         actions = noActions
                     )
@@ -194,10 +212,10 @@ class FavoriteAppsListTest {
     }
 
     @Test
-    fun `with two favorites, should show the drag hint, the numbers and one handle per row`() {
+    fun `with two favorites, should show the reorder hint in the header, the numbers and one handle per row`() {
         setSection(listOf(createApp("Uno", "com.example.uno"), createApp("Dos", "com.example.dos")))
 
-        composeTestRule.onNodeWithText("Hold and drag the button to reorder").assertIsDisplayed()
+        composeTestRule.onNodeWithText("hold ⋮⋮ to reorder").assertIsDisplayed()
         composeTestRule.onNodeWithText("1").assertIsDisplayed()
         composeTestRule.onNodeWithText("2").assertIsDisplayed()
         composeTestRule.onAllNodesWithContentDescription("Reorder").assertCountEquals(2)
@@ -205,27 +223,27 @@ class FavoriteAppsListTest {
     }
 
     @Test
-    fun `with one favorite, should not show the drag hint`() {
+    fun `with one favorite, should not show the reorder hint`() {
         setSection(listOf(createApp("Uno", "com.example.uno")))
 
-        composeTestRule.onNodeWithText("Hold and drag the button to reorder").assertDoesNotExist()
+        composeTestRule.onNodeWithText("hold ⋮⋮ to reorder").assertDoesNotExist()
         composeTestRule.onNodeWithText("1").assertIsDisplayed()
     }
 
     @Test
-    fun `while searching, should not show the drag hint nor the handles`() {
+    fun `while searching, should not show the reorder hint nor the handles`() {
         setSection(listOf(createApp("Uno", "com.example.uno")), searchQuery = "un", favoritesCount = 3)
 
-        composeTestRule.onNodeWithText("Hold and drag the button to reorder").assertDoesNotExist()
+        composeTestRule.onNodeWithText("hold ⋮⋮ to reorder").assertDoesNotExist()
         composeTestRule.onAllNodesWithContentDescription("Reorder").assertCountEquals(0)
     }
 
     @Test
-    fun `without favorites, should show the banner with the number of apps and hide Remove all`() {
+    fun `without favorites, should hide Remove all and the reorder hint`() {
         setSection(emptyList())
 
-        composeTestRule.onNodeWithText("No favorites: the Home shows all 34 apps. Tap + to pick only some.")
-            .assertIsDisplayed()
+        composeTestRule.onNodeWithText("Favorites · 0").assertIsDisplayed()
+        composeTestRule.onNodeWithText("hold ⋮⋮ to reorder").assertDoesNotExist()
         composeTestRule.onNodeWithText("Remove all").assertDoesNotExist()
     }
 

@@ -4,6 +4,7 @@ import android.appwidget.AppWidgetHost
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.ui.unit.Density
+import androidx.compose.ui.unit.Dp
 import dev.chrisbanes.haze.HazeState
 import dev.mnascimentos.aureole.core.data.model.LauncherItemState
 import dev.mnascimentos.aureole.feature.home.components.favorites.model.FavoritesListConfig
@@ -77,7 +78,9 @@ data class GridItemContentParams(
     val appWidgetHost: AppWidgetHost?,
     val stackedWidgetConfig: StackedWidgetConfig,
     val hazeState: HazeState?,
-    val isInScrollView: Boolean = false
+    val isInScrollView: Boolean = false,
+    /** In a group that scrolls sideways: the apps list is one page wide and scrolls on its own (RF-C7). */
+    val isInHorizontalGroup: Boolean = false
 )
 
 data class VerticalScrollViewContentParams(
@@ -105,5 +108,7 @@ data class ScrollViewChildItemParams(
     val appWidgetHost: AppWidgetHost?,
     val stackedWidgetConfig: StackedWidgetConfig,
     val hazeState: HazeState?,
-    val isVertical: Boolean
+    val isVertical: Boolean,
+    /** Width of the group: what one page of the apps list takes in a group that scrolls sideways. */
+    val pageWidth: Dp = Dp.Unspecified
 )

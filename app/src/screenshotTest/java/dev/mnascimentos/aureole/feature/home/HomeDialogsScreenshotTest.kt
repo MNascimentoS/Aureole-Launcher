@@ -153,7 +153,7 @@ private fun EditFolderDialogScreenshotTest() {
         EditFolderDialog(
             folder = folder,
             onDismiss = {},
-            onSave = { _, _ -> },
+            onSave = {},
             onDelete = {}
         )
     }
@@ -471,7 +471,7 @@ private fun FolderFormDialogScreenshotTest() {
         FolderFormDialog(
             folder = sampleFolder,
             onDismiss = {},
-            onSave = { _, _ -> },
+            onSave = {},
             onDelete = {}
         )
     }

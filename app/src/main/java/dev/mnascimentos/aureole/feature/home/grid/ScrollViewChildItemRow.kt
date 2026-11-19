@@ -5,37 +5,31 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.core.data.model.LauncherItemState
-import dev.mnascimentos.aureole.core.data.model.LauncherItemType
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
-import dev.mnascimentos.aureole.core.designsystem.icons.Add
-import dev.mnascimentos.aureole.core.designsystem.icons.AllApps
 import dev.mnascimentos.aureole.core.designsystem.icons.ArrowDown
 import dev.mnascimentos.aureole.core.designsystem.icons.ArrowUp
-import dev.mnascimentos.aureole.core.designsystem.icons.Click
 import dev.mnascimentos.aureole.core.designsystem.icons.Delete
 import dev.mnascimentos.aureole.core.designsystem.icons.Edit
-import dev.mnascimentos.aureole.core.designsystem.icons.MenuIcon
-import dev.mnascimentos.aureole.core.designsystem.icons.VerticalContainer
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.feature.home.grid.model.ScrollViewChildParams
+import dev.mnascimentos.aureole.feature.home.grid.model.effectiveSpan
 import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
 
 @Composable
@@ -59,6 +53,11 @@ fun SingleScrollViewChildRow(
     )
 }
 
+/**
+ * One item of a scroll group, compact (RF-C4): the reorder arrows stacked at the start, then the type icon, the
+ * name with edit and remove at the end, and below the name the size control ("Height" or "Width" with "- Nx +"),
+ * or "Full list" for the apps list, which has no size. Every button is at least 48 dp and has a description.
+ */
 @Composable
 internal fun ScrollViewChildItemCard(
     params: ScrollViewChildParams,
@@ -66,42 +65,34 @@ internal fun ScrollViewChildItemCard(
     onDismissRequest: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Column(
+    Row(
         modifier = modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(AureoleDS.dimens.radiusMedium))
             .background(AureoleDS.colors.surfaceVariant.copy(alpha = 0.45f))
-            .padding(horizontal = AureoleDS.dimens.medium, vertical = AureoleDS.dimens.small)
+            .padding(horizontal = AureoleDS.dimens.xSmall, vertical = AureoleDS.dimens.xxSmall),
+        verticalAlignment = Alignment.CenterVertically
     ) {
-        ScrollViewChildHeaderRow(
-            child = params.child,
-            parentId = params.parentId,
-            actions = actions,
-            onDismissRequest = onDismissRequest
-        )
-
-        Spacer(modifier = Modifier.height(AureoleDS.dimens.xSmall))
-
-        ScrollViewChildReorderAndResizeControls(
-            params = params,
-            actions = actions
-        )
+        ScrollViewChildReorderArrows(params = params, actions = actions)
+        Column(modifier = Modifier.weight(1f)) {
+            ScrollViewChildHeaderRow(params = params, actions = actions, onDismissRequest = onDismissRequest)
+            ScrollViewChildSizeRow(params = params, actions = actions)
+        }
     }
 }
 
 @Composable
 private fun ScrollViewChildHeaderRow(
-    child: LauncherItemState,
-    parentId: String,
+    params: ScrollViewChildParams,
     actions: HomeScreenActions,
     onDismissRequest: () -> Unit
 ) {
+    val child = params.child
     val title = getScrollViewChildTitle(child.type)
+    val editLabel = stringResource(R.string.home_scrollgroup_edit_item, title)
+    val removeLabel = stringResource(R.string.home_scrollgroup_remove_item, title)
 
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
+    Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
         Box(
             modifier = Modifier
                 .size(AureoleDS.dimens.iconXLarge)
@@ -111,139 +102,114 @@ private fun ScrollViewChildHeaderRow(
         ) {
             ChildTypeIcon(child.type)
         }
-
-        Spacer(modifier = Modifier.width(AureoleDS.dimens.small))
-
         AureoleText(
             text = title,
             color = AureoleDS.colors.onSurfaceHigh,
-            modifier = Modifier.weight(1f),
+            modifier = Modifier
+                .weight(1f)
+                .padding(horizontal = AureoleDS.dimens.small),
             format = AureoleTextFormatParams(style = AureoleDS.typography.titleMedium, fontWeight = FontWeight.SemiBold)
         )
-
-        IconButton(
-            onClick = { handleEditChildClick(child, actions, onDismissRequest) },
-            modifier = Modifier.size(AureoleDS.dimens.xLarge)
-        ) {
-            AureoleDS.icons.Edit(
-                tint = AureoleDS.colors.onSurfaceHigh,
-                modifier = Modifier.size(AureoleDS.dimens.iconMedium)
-            )
-        }
-
-        Spacer(modifier = Modifier.width(AureoleDS.dimens.xxSmall))
-
-        IconButton(
-            onClick = { actions.onRemoveChildFromScrollView(parentId, child.id) },
-            modifier = Modifier.size(AureoleDS.dimens.xLarge)
-        ) {
-            AureoleDS.icons.Delete(
-                tint = AureoleDS.colors.error,
-                modifier = Modifier.size(AureoleDS.dimens.iconMedium)
-            )
-        }
+        TouchButton(
+            description = editLabel,
+            onClick = { handleEditChildClick(child, actions, onDismissRequest) }
+        ) { AureoleDS.icons.Edit(tint = AureoleDS.colors.onSurfaceHigh, modifier = Modifier.size(iconSize())) }
+        TouchButton(
+            description = removeLabel,
+            onClick = { actions.onRemoveChildFromScrollView(params.parentId, child.id) }
+        ) { AureoleDS.icons.Delete(tint = AureoleDS.colors.error, modifier = Modifier.size(iconSize())) }
     }
 }
 
 @Composable
-private fun ScrollViewChildReorderAndResizeControls(
-    params: ScrollViewChildParams,
-    actions: HomeScreenActions
-) {
-    val childIndex = params.childIndex
-    val totalChildren = params.totalChildren
-    val child = params.child
-    val parentId = params.parentId
+private fun iconSize() = AureoleDS.dimens.iconMedium
 
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween
-    ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(AureoleDS.dimens.xxSmall)
-        ) {
-            IconButton(
-                onClick = { actions.onMoveChildInScrollView(parentId, child.id, true) },
-                enabled = (childIndex > 0),
-                modifier = Modifier.size(AureoleDS.dimens.large)
-            ) {
-                AureoleDS.icons.ArrowUp(
-                    tint = if (childIndex > 0) {
-                        AureoleDS.colors.onSurfaceHigh
-                    } else {
-                        AureoleDS.colors.onSurfaceMedium.copy(alpha = 0.4f)
-                    },
-                    modifier = Modifier.size(AureoleDS.dimens.iconSmall)
-                )
-            }
-
-            IconButton(
-                onClick = { actions.onMoveChildInScrollView(parentId, child.id, false) },
-                enabled = (childIndex < totalChildren - 1),
-                modifier = Modifier.size(AureoleDS.dimens.large)
-            ) {
-                AureoleDS.icons.ArrowDown(
-                    tint = if (childIndex < totalChildren - 1) {
-                        AureoleDS.colors.onSurfaceHigh
-                    } else {
-                        AureoleDS.colors.onSurfaceMedium.copy(alpha = 0.4f)
-                    },
-                    modifier = Modifier.size(AureoleDS.dimens.iconSmall)
-                )
-            }
-        }
-
-        ScrollViewChildResizeControls(params = params, actions = actions)
-    }
-}
-
+/** A 48 dp button with its own description for TalkBack. */
 @Composable
-private fun ScrollViewChildResizeControls(
-    params: ScrollViewChildParams,
-    actions: HomeScreenActions
+private fun TouchButton(
+    description: String,
+    onClick: () -> Unit,
+    enabled: Boolean = true,
+    content: @Composable () -> Unit
 ) {
-    val child = params.child
-    val isVertical = params.isVertical
-    val spanVal = if (isVertical) child.rowSpan else child.colSpan
-
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
+    IconButton(
+        onClick = onClick,
+        enabled = enabled,
         modifier = Modifier
-            .clip(RoundedCornerShape(AureoleDS.dimens.radiusXSmall))
-            .background(AureoleDS.colors.surface.copy(alpha = 0.5f))
-            .padding(horizontal = AureoleDS.dimens.xxSmall, vertical = AureoleDS.dimens.minimal)
-    ) {
-        IconButton(
-            onClick = { adjustChildSpan(params, actions, -1) },
-            modifier = Modifier.size(AureoleDS.dimens.large)
+            .size(AureoleDS.dimens.minTouchTarget)
+            .semantics { contentDescription = description }
+    ) { content() }
+}
+
+@Composable
+private fun ScrollViewChildReorderArrows(params: ScrollViewChildParams, actions: HomeScreenActions) {
+    val canMoveUp = params.childIndex > 0
+    val canMoveDown = params.childIndex < params.totalChildren - 1
+    val disabled = AureoleDS.colors.onSurfaceMedium.copy(alpha = 0.4f)
+    val enabledTint = AureoleDS.colors.onSurfaceMedium
+    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+        TouchButton(
+            description = stringResource(R.string.home_scrollgroup_move_up),
+            enabled = canMoveUp,
+            onClick = { actions.onMoveChildInScrollView(params.parentId, params.child.id, true) }
         ) {
-            AureoleText(
-                text = "-",
-                color = AureoleDS.colors.onSurfaceHigh,
-                format = AureoleTextFormatParams(style = AureoleDS.typography.titleMedium, fontWeight = FontWeight.Bold)
+            AureoleDS.icons.ArrowUp(
+                tint = if (canMoveUp) enabledTint else disabled,
+                modifier = Modifier.size(AureoleDS.dimens.iconSmall)
             )
         }
+        TouchButton(
+            description = stringResource(R.string.home_scrollgroup_move_down),
+            enabled = canMoveDown,
+            onClick = { actions.onMoveChildInScrollView(params.parentId, params.child.id, false) }
+        ) {
+            AureoleDS.icons.ArrowDown(
+                tint = if (canMoveDown) enabledTint else disabled,
+                modifier = Modifier.size(AureoleDS.dimens.iconSmall)
+            )
+        }
+    }
+}
 
+@Composable
+private fun ScrollViewChildSizeRow(params: ScrollViewChildParams, actions: HomeScreenActions) {
+    val span = params.child.effectiveSpan(params.isVertical)
+    if (span == null) {
+        return
+    }
+    val label = stringResource(
+        if (params.isVertical) R.string.home_scrollgroup_height else R.string.home_scrollgroup_width
+    )
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(bottom = AureoleDS.dimens.xSmall),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.End
+    ) {
+        TouchButton(
+            description = stringResource(R.string.home_scrollgroup_decrease, label),
+            onClick = { adjustChildSpan(params, actions, -1) }
+        ) { StepSymbol("-") }
         AureoleText(
-            text = "${spanVal}x",
+            text = "${span}x",
             color = AureoleDS.colors.onSurfaceHigh,
-            modifier = Modifier.padding(horizontal = AureoleDS.dimens.xxSmall),
             format = AureoleTextFormatParams(style = AureoleDS.typography.bodyMedium, fontWeight = FontWeight.SemiBold)
         )
-
-        IconButton(
-            onClick = { adjustChildSpan(params, actions, 1) },
-            modifier = Modifier.size(AureoleDS.dimens.large)
-        ) {
-            AureoleText(
-                text = "+",
-                color = AureoleDS.colors.onSurfaceHigh,
-                format = AureoleTextFormatParams(style = AureoleDS.typography.titleMedium, fontWeight = FontWeight.Bold)
-            )
-        }
+        TouchButton(
+            description = stringResource(R.string.home_scrollgroup_increase, label),
+            onClick = { adjustChildSpan(params, actions, 1) }
+        ) { StepSymbol("+") }
     }
+}
+
+@Composable
+private fun StepSymbol(symbol: String, color: Color = AureoleDS.colors.onSurfaceHigh) {
+    AureoleText(
+        text = symbol,
+        color = color,
+        format = AureoleTextFormatParams(style = AureoleDS.typography.titleMedium, fontWeight = FontWeight.Bold)
+    )
 }
 
 private fun adjustChildSpan(params: ScrollViewChildParams, actions: HomeScreenActions, delta: Int) {
@@ -255,65 +221,5 @@ private fun adjustChildSpan(params: ScrollViewChildParams, actions: HomeScreenAc
     } else {
         val newSpan = (child.colSpan + delta).coerceAtLeast(1)
         actions.onResizeChildInScrollView(parentId, child.id, newSpan, child.rowSpan)
-    }
-}
-
-private fun handleEditChildClick(
-    child: LauncherItemState,
-    actions: HomeScreenActions,
-    onDismissRequest: () -> Unit
-) {
-    when (child.type) {
-        LauncherItemType.CLOCK -> {
-            actions.onOpenEditClockBottomSheet(child.id)
-            onDismissRequest()
-        }
-        LauncherItemType.SHORTCUTS_CONTAINER,
-        LauncherItemType.SCROLL_VIEW -> {
-            actions.onOpenEditContainerDialog(child.id)
-            onDismissRequest()
-        }
-        LauncherItemType.WIDGET_LIST,
-        LauncherItemType.SINGLE_APP_WIDGET -> {
-            actions.onOpenWidgetStackBottomSheet(null, child.id)
-            onDismissRequest()
-        }
-        LauncherItemType.APPS_LIST -> {
-            actions.onOpenFavoritePicker(child.id)
-            onDismissRequest()
-        }
-        LauncherItemType.QUICK_BUTTON -> {
-            actions.onOpenQuickButtonSettings(child.id)
-            onDismissRequest()
-        }
-        else -> {}
-    }
-}
-
-@Composable
-private fun ChildTypeIcon(type: LauncherItemType?) {
-    val iconModifier = Modifier.size(AureoleDS.dimens.iconMedium)
-    when (type) {
-        LauncherItemType.CLOCK -> AureoleDS.icons.Add(iconModifier)
-        LauncherItemType.APPS_LIST -> AureoleDS.icons.AllApps(iconModifier)
-        LauncherItemType.SHORTCUTS_CONTAINER -> AureoleDS.icons.MenuIcon(iconModifier)
-        LauncherItemType.WIDGET_LIST -> AureoleDS.icons.Add(iconModifier)
-        LauncherItemType.SCROLL_VIEW -> AureoleDS.icons.VerticalContainer(iconModifier)
-        LauncherItemType.QUICK_BUTTON -> AureoleDS.icons.Click(iconModifier)
-        else -> AureoleDS.icons.Add(iconModifier)
-    }
-}
-
-@Composable
-@ReadOnlyComposable
-private fun getScrollViewChildTitle(type: LauncherItemType?): String {
-    return when (type) {
-        LauncherItemType.CLOCK -> stringResource(R.string.home_container_add_clock)
-        LauncherItemType.APPS_LIST -> stringResource(R.string.home_grid_item_apps_list)
-        LauncherItemType.SHORTCUTS_CONTAINER -> stringResource(R.string.home_grid_item_container)
-        LauncherItemType.WIDGET_LIST -> stringResource(R.string.home_grid_item_widget_group)
-        LauncherItemType.SCROLL_VIEW -> stringResource(R.string.home_container_add_scroll_view)
-        LauncherItemType.QUICK_BUTTON -> stringResource(R.string.home_container_add_quick_button)
-        else -> stringResource(R.string.home_grid_scroll_component)
     }
 }

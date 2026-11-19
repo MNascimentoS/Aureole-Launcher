@@ -28,16 +28,17 @@ data class AppearanceSave(
 )
 
 /**
- * What to save when [leaving] goes away: back from that picker saves only its choice and keeps the other; closing
- * the sheet (null) saves both. A choice equal to the one already selected saves nothing.
+ * What to save when [leaving] goes away: back from that picker saves only its choice and keeps the other (back
+ * from the background picker saves neither); closing the sheet (null) saves both. A choice equal to the one
+ * already selected saves nothing.
  */
 fun AppearanceDraft.saveOnLeaving(
     leaving: SettingsInnerKind?,
     selectedPalette: String,
     selectedFont: String
 ): AppearanceSave {
-    val savesPalette = leaving != SettingsInnerKind.FONT
-    val savesFont = leaving != SettingsInnerKind.PALETTE
+    val savesPalette = leaving == null || leaving == SettingsInnerKind.PALETTE
+    val savesFont = leaving == null || leaving == SettingsInnerKind.FONT
     val palette = paletteName.takeIf { savesPalette }
         ?.takeUnless { it.basePaletteName().equals(selectedPalette.basePaletteName(), ignoreCase = true) }
     val font = fontName.takeIf { savesFont }?.takeUnless { it == selectedFont }

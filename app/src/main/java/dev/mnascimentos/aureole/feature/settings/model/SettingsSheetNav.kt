@@ -5,15 +5,15 @@ enum class SettingsArea { APPEARANCE, BEHAVIOR, ADVANCED }
 
 /**
  * Sheets an area opens in its place: the area sheet goes down, this one comes up, and back. The photo editor opens
- * from the background sheet in its place, and gives it back on close.
+ * full screen from the background picker inside Appearance, and gives it back on close.
  */
-enum class SettingsChildKind { BACKGROUND, CARDS_GLASS, RELEASE_NOTES, CONTRIBUTORS, WALLPAPER_EDITOR }
+enum class SettingsChildKind { CARDS_GLASS, RELEASE_NOTES, CONTRIBUTORS, WALLPAPER_EDITOR }
 
 /**
- * Pickers the Appearance sheet shows inside itself (D-09): the content of the sheet slides to the picker and the
- * same preview above it shows the choice live.
+ * Pickers the Appearance sheet shows inside itself (D-09, RF-01 of polimento-ui): the content of the sheet slides to
+ * the picker and the same preview above it shows the choice live.
  */
-enum class SettingsInnerKind { PALETTE, FONT }
+enum class SettingsInnerKind { PALETTE, FONT, BACKGROUND }
 
 /** The sheet on top of the settings root; none (null) is the root itself. */
 sealed interface SettingsSheet {
@@ -21,13 +21,13 @@ sealed interface SettingsSheet {
     data class Area(val area: SettingsArea, val inner: SettingsInnerKind? = null) : SettingsSheet
 
     /**
-     * A sheet opened from [returnTo], which comes back when it closes; null goes back to the root. One opened from
-     * another child sheet ([parent]) gives that one back first.
+     * A sheet opened from [returnTo], which comes back when it closes; null goes back to the root. One opened from a
+     * picker inside the area ([returnInner]) gives back that picker.
      */
     data class Child(
         val kind: SettingsChildKind,
         val returnTo: SettingsArea?,
-        val parent: SettingsChildKind? = null
+        val returnInner: SettingsInnerKind? = null
     ) : SettingsSheet
 }
 
@@ -75,12 +75,12 @@ fun reduceSettingsSheet(state: SettingsSheet?, event: SettingsSheetEvent): Setti
 
 private fun SettingsSheet?.withChild(kind: SettingsChildKind): SettingsSheet {
     if (this is SettingsSheet.Child && this.kind == kind) return this
-    val parent = (this as? SettingsSheet.Child)?.kind?.takeIf { settingsChildReturnsToParent(kind) }
-    return SettingsSheet.Child(kind, returnTo = area, parent = parent)
+    val inner = (this as? SettingsSheet.Area)?.inner?.takeIf { settingsChildReturnsToInner(kind) }
+    return SettingsSheet.Child(kind, returnTo = area, returnInner = inner)
 }
 
-/** Only the photo editor gives back the sheet it opened from; any other child gives back the area. */
-fun settingsChildReturnsToParent(kind: SettingsChildKind): Boolean = kind == SettingsChildKind.WALLPAPER_EDITOR
+/** Only the photo editor gives back the picker it opened from; any other child gives back the area list. */
+fun settingsChildReturnsToInner(kind: SettingsChildKind): Boolean = kind == SettingsChildKind.WALLPAPER_EDITOR
 
 private fun SettingsSheet?.withInner(kind: SettingsInnerKind): SettingsSheet? =
     if (this is SettingsSheet.Area && settingsAreaHasInner(area)) copy(inner = kind) else this
@@ -97,8 +97,7 @@ private fun SettingsSheet?.afterBack(): SettingsSheet? = when (this) {
     null -> null
 }
 
-private fun SettingsSheet.Child.backToArea(): SettingsSheet? =
-    parent?.let { SettingsSheet.Child(it, returnTo) } ?: returnTo?.let { SettingsSheet.Area(it) }
+private fun SettingsSheet.Child.backToArea(): SettingsSheet? = returnTo?.let { SettingsSheet.Area(it, returnInner) }
 
 /**
  * Only the Appearance sheet has pickers inside it (D-09) and the mini-home preview above it (D-04), which shows what

@@ -36,6 +36,7 @@ import androidx.compose.ui.unit.Velocity
 import dev.mnascimentos.aureole.core.designsystem.model.AureoleEditOverlayConfig
 import dev.mnascimentos.aureole.core.designsystem.model.AureoleEditOverlayParams
 import dev.mnascimentos.aureole.core.designsystem.model.GestureZoneState
+import dev.mnascimentos.aureole.core.designsystem.model.OverlayHeaderSlots
 import dev.mnascimentos.aureole.core.designsystem.model.OverlaySheetController
 import dev.mnascimentos.aureole.core.designsystem.model.OverlaySheetDecorations
 import dev.mnascimentos.aureole.core.designsystem.model.OverlaySheetEvents
@@ -80,10 +81,12 @@ internal fun SheetSurface(
             .onSizeChanged { size ->
                 if (motion.fixedHeight(isExpanded, bounds) == null) motion.restHeight = size.height.toFloat()
             }
-            .nestedScroll(nestedScrollConnection)
+            // Locked (a showcase), the sheet stays put: no resize by scrolling or dragging.
+            .then(if (config.isLocked) Modifier else Modifier.nestedScroll(nestedScrollConnection))
             .draggable(
                 state = draggableState,
                 orientation = Orientation.Vertical,
+                enabled = !config.isLocked,
                 onDragStarted = { controller.onDragStarted() },
                 onDragStopped = { velocity -> controller.onRelease(velocity) }
             )
@@ -102,15 +105,21 @@ internal fun SheetSurface(
             bottomBarContent = params.bottomBarContent,
             sheetContent = params.sheetContent,
             decorations = OverlaySheetDecorations(
-                headerIcon = config.headerIcon,
-                titleIcon = config.titleIcon,
                 edgeToEdgeContent = config.edgeToEdgeContent,
-                showHeaderAction = config.showHeaderAction,
+                showHeaderAction = config.showHeaderAction && config.host.showHeaderAction,
+                isLeftHanded = config.isLeftHanded,
+                headerSlots = OverlayHeaderSlots(
+                    headerIcon = config.headerIcon,
+                    titleIcon = config.titleIcon,
+                    subtitle = config.subtitle,
+                    accessory = config.headerAccessory,
+                    leadingAction = config.headerLeadingAction
+                ),
                 gestureZone = {
                     OverlaySheetGestureZone(
                         state = GestureZoneState(isExpanded, config.isLeftHanded, motion.canExpand(bounds)),
-                        onToggleExpanded = controller::toggle,
-                        onSettingsClick = config.onSettingsClick
+                        onToggleExpanded = if (config.isLocked) ({}) else controller::toggle,
+                        onSettingsClick = config.onSettingsClick.takeUnless { config.isLocked }
                     )
                 }
             )

@@ -69,6 +69,14 @@ private fun BackgroundThumbnail(path: String, adjustments: WallpaperAdjustments)
             .clip(RoundedCornerShape(AureoleDS.dimens.radiusSmall))
             .background(AureoleDS.colors.background)
     ) {
+        WallpaperPhotoLayer(path = path, adjustments = adjustments)
+    }
+}
+
+/** The photo at [path] with its framing and dim, filling its parent (the thumbnail and the preview above the sheet). */
+@Composable
+internal fun WallpaperPhotoLayer(path: String, adjustments: WallpaperAdjustments, modifier: Modifier = Modifier) {
+    Box(modifier = modifier.fillMaxSize()) {
         if (path.isNotEmpty()) {
             FramedWallpaperImage(file = File(path), adjustments = adjustments, modifier = Modifier.fillMaxSize())
         }

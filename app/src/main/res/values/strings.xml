@@ -10,7 +10,7 @@
     <!-- Clock -->
     <string name="home_clock_daily_greeting">Daily greeting</string>
     <string name="home_clock_date_on_top">Date on top</string>
-    <string name="home_clock_greeting_and_date">Greeting and date</string>
+    <string name="home_clock_greeting_and_date">Info and date</string>
     <string name="home_clock_custom_text">Custom text</string>
     <string name="home_clock_time_only">Time only</string>
 
@@ -24,13 +24,11 @@
     <!-- Folders -->
     <string name="home_folder_edit_title">Edit Folder</string>
     <string name="home_folder_new_title">New Folder</string>
-    <string name="home_folder_name_label">Folder Name</string>
     <string name="home_folder_name_placeholder">New Folder</string>
-    <string name="home_folder_icon">Folder Icon</string>
     <string name="home_folder_apps_in_folder">Apps in Folder: %1$s</string>
-    <string name="home_folder_no_apps_in_folder">No apps in the folder.</string>
     <string name="core_common_no_apps_found">No apps found.</string>
-    <string name="home_folder_other_apps_count">Other Apps (%1$d)</string>
+    <string name="home_folder_add_apps">Add apps</string>
+    <string name="home_folder_picker_empty">No apps in the folder.</string>
     <string name="home_folder_picker_drag_hint">Hold an app and slide to mark several</string>
     <string name="core_common_search_app_placeholder">Search app&#8230;</string>
 
@@ -47,8 +45,13 @@
     <string name="home_quickbutton_bg_color">Background color</string>
     <string name="home_quickbutton_stroke">Stroke</string>
     <string name="home_quickbutton_stroke_color">Stroke color</string>
-    <string name="home_quickbutton_icon">Icon</string>
     <string name="home_quickbutton_icon_color">Icon color</string>
+    <string name="home_quickbutton_tab_icon">Icon</string>
+    <string name="home_quickbutton_tab_colors">Colors</string>
+    <string name="home_quickbutton_tabs_label">What to edit</string>
+    <string name="home_quickbutton_color_target_label">Which color to change</string>
+    <string name="home_quickbutton_show_name">Show name on the home</string>
+    <string name="home_quickbutton_low_contrast">Low contrast: the icon may be hard to see</string>
 
     <!-- Colors / Theming -->
 
@@ -83,7 +86,6 @@
     <string name="settings_behavior_title">Behavior</string>
     <string name="settings_behavior_home_opens_all_apps">Home opens all apps</string>
     <string name="settings_behavior_all_apps_left_side">All apps on left side</string>
-    <string name="settings_behavior_show_widget_indicator">Show widget indicator</string>
     <string name="settings_behavior_disable_alphabet_scrubber">Disable alphabet scrubber</string>
     <string name="settings_behavior_check_for_updates">Check for updates</string>
     <string name="settings_behavior_header_offset">Header offset</string>
@@ -168,7 +170,6 @@
     <string name="home_clock_align_left">Left</string>
     <string name="home_clock_align_center">Center</string>
     <string name="home_clock_align_right">Right</string>
-    <string name="home_clock_text_color">Text Color</string>
     <string name="home_clock_font_style">Font Style</string>
     <string name="home_clock_font_default">Theme default</string>
     <string name="home_clock_font_bold">Bold</string>
@@ -180,21 +181,7 @@
     <string name="home_clock_time_system">System</string>
     <string name="home_clock_time_12h">12 Hours</string>
     <string name="home_clock_time_24h">24 Hours</string>
-    <string name="home_clock_card_background">Card Background</string>
     <string name="home_clock_show_background">Show background card</string>
-    <string name="home_clock_custom_bg_color">Custom Background Color:</string>
-    <string name="home_clock_color_default">Default</string>
-    <string name="home_clock_color_ice_blue">Ice Blue</string>
-    <string name="home_clock_color_lavender">Lavender</string>
-    <string name="home_clock_color_white">White</string>
-    <string name="home_clock_color_gold">Gold</string>
-    <string name="home_clock_color_mint">Mint</string>
-    <string name="home_clock_color_coral">Coral</string>
-    <string name="home_clock_bg_color_dark_slate">Dark Slate</string>
-    <string name="home_clock_bg_color_deep_purple">Deep Purple</string>
-    <string name="home_clock_bg_color_night_blue">Night Blue</string>
-    <string name="home_clock_bg_color_wine">Wine</string>
-    <string name="home_clock_bg_color_dark_green">Dark Green</string>
     <string name="home_clock_greeting_morning">Good morning</string>
     <string name="home_clock_greeting_afternoon">Good afternoon</string>
     <string name="home_clock_greeting_evening">Good evening</string>
@@ -202,9 +189,6 @@
     <!-- Favorites Dialog -->
     <string name="home_favorites_choose">Choose favorites</string>
     <string name="home_apps_list_show_all">Show all apps</string>
-    <string name="home_favorites_show_labels">Show labels</string>
-    <string name="home_favorites_show_labels_summary">“Favorites” and “All apps”</string>
-    <string name="home_favorites_count">Favorites (%1$d)</string>
     <string name="home_favorites_disable_all">Remove all</string>
     <string name="home_favorites_none_selected">No favorite app selected.</string>
     <string name="home_favorites_none_found">No favorite found.</string>
@@ -231,14 +215,14 @@
     <string name="home_widget_resize_group">Resize Group</string>
     <string name="home_widget_toggle_indicator">Toggle Position Indicator</string>
     <string name="home_widget_move_label">Move</string>
-    <string name="home_widget_move_position">%1$d of %2$d</string>
+    <string name="home_widget_move_position">%1$d of %2$s</string>
     <string name="home_widget_move_previous">Move %1$s earlier</string>
     <string name="home_widget_move_next">Move %1$s later</string>
     <string name="home_widget_menu_section">Group</string>
     <string name="home_widget_remove">Remove</string>
 
     <!-- Edit Container -->
-    <string name="home_container_edit_title">Container settings</string>
+    <string name="home_container_edit_title">Container</string>
     <string name="home_container_edit_appearance">Appearance</string>
     <string name="home_container_edit_behavior">Behavior</string>
     <string name="home_container_edit_manage_items">Manage Items</string>
@@ -289,7 +273,6 @@
     <string name="home_container_add_quick_button">Quick Button</string>
     <string name="home_container_add_scroll_view">Scrolling group</string>
 
-    <string name="home_container_edit_scroll_orientation">Scroll Orientation</string>
     <string name="home_container_edit_vertical">Vertical</string>
     <string name="home_container_edit_horizontal">Horizontal</string>
 
@@ -348,7 +331,7 @@
     <string name="home_grid_item_scroll_view">Scrolling group</string>
     <string name="home_grid_item_quick_button">Quick Button</string>
     <string name="home_grid_item_container">Container</string>
-    <string name="home_grid_current_size" tools:ignore="PluralsCandidate">Current size: %1$d x %2$d cells</string>
+    <string name="home_grid_current_size" tools:ignore="PluralsCandidate">Current size: %1$d x %2$s cells</string>
     <string name="settings_cards_glass_title">Cards and glass</string>
     <string name="settings_cards_glass_corners_label">Corners</string>
     <string name="settings_cards_glass_glass_label">Glass (blur)</string>
@@ -380,23 +363,23 @@
     <string name="home_onboarding_coach_show_me">Show me</string>
     <string name="home_onboarding_coach_success">Nice!</string>
     <string name="home_onboarding_coach_apps_title">Swipe up</string>
-    <string name="home_onboarding_coach_apps_body">to see all your apps. The Home button also opens and closes the list.</string>
-    <string name="home_onboarding_coach_apps_done">Your apps live here. Press back to close.</string>
+    <string name="home_onboarding_coach_apps_body">See all your apps. The Home button also opens and closes the list.</string>
+    <string name="home_onboarding_coach_apps_done">Your apps are here. Press back or the Home button to close.</string>
     <string name="home_onboarding_coach_scrub_title_right">Swipe along the right edge</string>
     <string name="home_onboarding_coach_scrub_title_left">Swipe along the left edge</string>
-    <string name="home_onboarding_coach_scrub_body">and slide down to jump straight to a letter.</string>
+    <string name="home_onboarding_coach_scrub_body">Then slide down to jump straight to a letter.</string>
     <string name="home_onboarding_coach_scrub_done">Quick, right? Let go to close.</string>
     <string name="home_onboarding_coach_customize_title">Touch and hold</string>
-    <string name="home_onboarding_coach_customize_body">an empty spot on the screen to customize what shows up there.</string>
+    <string name="home_onboarding_coach_customize_body">An empty spot on the screen to customize what shows up there.</string>
     <string name="home_onboarding_coach_customize_done">This is where you build your screen.</string>
     <string name="home_onboarding_checklist_title">First steps</string>
     <plurals name="home_onboarding_checklist_progress">
-        <item quantity="one">%1$d of %2$d steps</item>
-        <item quantity="other">%1$d of %2$d steps</item>
+        <item quantity="one">%1$d of %2$s steps</item>
+        <item quantity="other">%1$d of %2$s steps</item>
     </plurals>
     <plurals name="home_onboarding_checklist_pill">
-        <item quantity="one">%1$d/%2$d first steps</item>
-        <item quantity="other">%1$d/%2$d first steps</item>
+        <item quantity="one">%1$d/%2$s first steps</item>
+        <item quantity="other">%1$d/%2$s first steps</item>
     </plurals>
     <string name="home_onboarding_checklist_minimize">Minimize</string>
     <string name="home_onboarding_checklist_dismiss">Don\'t show again</string>
@@ -432,7 +415,6 @@
     <string name="settings_background_section_theme">From your theme</string>
     <string name="settings_background_section_palettes">Palettes</string>
     <string name="settings_background_section_tones">Tones</string>
-    <string name="settings_background_section_vivid">Vivid</string>
     <string name="settings_background_category_cold">Cold</string>
     <string name="settings_background_category_cool">Cool</string>
     <string name="settings_background_category_neutral">Neutral</string>
@@ -441,6 +423,8 @@
     <string name="settings_background_swatch_surface">Surface</string>
     <string name="settings_background_swatch_variant">Variant</string>
     <string name="settings_background_swatch_outline">Outline</string>
+    <string name="settings_background_swatch_accent">Accent</string>
+    <string name="theme_color_section_other_palettes">From other palettes</string>
     <string name="settings_background_light_warning">This color makes a light theme</string>
     <string name="home_undo_action">Undo</string>
     <string name="home_undo_removed_from_folder">%1$s left the folder</string>
@@ -490,21 +474,16 @@
         <item quantity="one">%1$d component</item>
         <item quantity="other">%1$d components</item>
     </plurals>
-    <string name="home_favorites_menu_all_shown">No favorites: shows all apps</string>
-    <string name="home_favorites_manage_drag_hint">Hold and drag the button to reorder</string>
-    <plurals name="home_favorites_manage_empty_banner">
-        <item quantity="one">No favorites: the Home shows all %1$d apps. Tap + to pick only some.</item>
-        <item quantity="other">No favorites: the Home shows all %1$d apps. Tap + to pick only some.</item>
+    <string name="home_favorites_chip_labels">Labels</string>
+    <string name="home_favorites_section_title">Favorites · %1$d</string>
+    <string name="home_favorites_section_all_title">All apps · %1$d</string>
+    <string name="home_favorites_section_reorder_hint">hold ⋮⋮ to reorder</string>
+    <string name="home_favorites_empty_notice_empty">No favorites: the list stays empty on the Home.</string>
+    <plurals name="home_favorites_empty_notice_all">
+        <item quantity="one">No favorites: the Home shows all %1$d apps.</item>
+        <item quantity="other">No favorites: the Home shows all %1$d apps.</item>
     </plurals>
     <string name="home_favorites_manage_drag_handle">Reorder</string>
-    <plurals name="home_favorites_menu_count">
-        <item quantity="one">%1$d favorite, the rest stays hidden</item>
-        <item quantity="other">%1$d favorites, the rest stay hidden</item>
-    </plurals>
-    <plurals name="home_favorites_menu_count_on_top">
-        <item quantity="one">%1$d favorite on top, then all apps</item>
-        <item quantity="other">%1$d favorites on top, then all apps</item>
-    </plurals>
     <string name="settings_appearance_restore_background">Restore background</string>
     <string name="settings_appearance_background_restored">Background restored</string>
     <string name="settings_appearance_background_type">Type</string>
@@ -536,6 +515,7 @@
     <string name="folder_icon_cat_health">Health</string>
     <string name="folder_icon_cat_travel">Travel</string>
     <string name="folder_icon_cat_tools">Tools</string>
+    <string name="folder_icon_cat_actions">Actions</string>
     <string name="home_grid_no_space_error">Not enough free space on the grid for this container.</string>
     <string name="settings_reset_grid_success">Home screen layout reset to default</string>
     <string name="settings_wallpaper_load_error">Could not load the selected image</string>
@@ -559,4 +539,79 @@
     <string name="settings_section_system">System</string>
     <string name="settings_section_about">About</string>
     <string name="settings_section_care_zone">Care zone</string>
+    <string name="home_folder_name_hint">Name it</string>
+    <string name="home_folder_name_a11y">Name, %1$s, edit</string>
+    <string name="home_folder_name_clear">Clear name</string>
+    <string name="home_folder_name_edit">Edit name</string>
+    <string name="home_folder_type_label">What the folder shows</string>
+    <string name="home_folder_type_icon">Icon</string>
+    <string name="home_folder_type_letter">Letter</string>
+    <string name="home_folder_type_emoji">Emoji</string>
+    <string name="home_folder_suggested_for">Suggested for “%1$s”</string>
+    <string name="home_folder_suggested">Suggested</string>
+    <string name="home_folder_all_icons">All icons</string>
+    <plurals name="home_folder_all_icons_count">
+        <item quantity="one">%1$d icon in %2$s categories</item>
+        <item quantity="other">%1$d icons in %2$s categories</item>
+    </plurals>
+    <string name="home_folder_all_icons_back">Back to the folder</string>
+    <string name="home_folder_letter_note">The first letter of the name, in the theme font. It changes with the name.</string>
+    <string name="home_folder_emoji_more">Another emoji</string>
+    <string name="home_folder_emoji_hint">Type an emoji</string>
+    <string name="home_folder_color">Folder color</string>
+    <string name="home_folder_create_pick_apps">Create and pick apps</string>
+    <string name="home_shortcut_name_all_apps">All apps</string>
+    <string name="home_shortcut_name_assistant">Assistant</string>
+    <string name="home_shortcut_name_aureole_settings">Aureole Settings</string>
+    <string name="home_shortcut_name_notifications">Notifications</string>
+    <string name="home_shortcut_name_none">None</string>
+    <string name="home_shortcut_name_open_app">Open App</string>
+    <string name="home_shortcut_name_browser">Browser</string>
+    <string name="home_shortcut_name_calculator">Calculator</string>
+    <string name="home_shortcut_name_calendar">Calendar</string>
+    <string name="home_shortcut_name_camera">Camera</string>
+    <string name="home_shortcut_name_clock">Clock</string>
+    <string name="home_shortcut_name_contacts">Contacts</string>
+    <string name="home_shortcut_name_dialer">Dialer</string>
+    <string name="home_shortcut_name_email">Email</string>
+    <string name="home_shortcut_name_search">Search</string>
+    <string name="home_shortcut_name_settings">Settings</string>
+    <string name="home_shortcut_name_files">Files</string>
+    <string name="home_shortcut_name_messages">Messages</string>
+    <string name="home_shortcut_name_music">Music Player</string>
+    <string name="home_shortcut_name_battery">Battery Settings</string>
+    <string name="home_shortcut_name_bluetooth">Bluetooth Settings</string>
+    <string name="home_shortcut_name_device">Device Settings</string>
+    <string name="home_shortcut_name_display">Display Settings</string>
+    <string name="home_shortcut_name_location">Location Settings</string>
+    <string name="home_shortcut_name_sound">Sound Settings</string>
+    <string name="home_shortcut_name_wifi">Wi-Fi Settings</string>
+    <string name="home_shortcut_unavailable">%1$s (unavailable)</string>
+    <string name="home_scrollgroup_section_scroll">Scroll</string>
+    <string name="home_scrollgroup_section_items">Items</string>
+    <string name="home_scrollgroup_size_cells">%1$s cells</string>
+    <string name="home_scrollgroup_height">Height</string>
+    <string name="home_scrollgroup_width">Width</string>
+    <string name="home_scrollgroup_full_list">Full list</string>
+    <string name="home_scrollgroup_move_up">Move up</string>
+    <string name="home_scrollgroup_move_down">Move down</string>
+    <string name="home_scrollgroup_edit_item">Edit %1$s</string>
+    <string name="home_scrollgroup_remove_item">Remove %1$s</string>
+    <string name="home_scrollgroup_decrease">Decrease %1$s</string>
+    <string name="home_scrollgroup_increase">Increase %1$s</string>
+<string name="secret_game_best_title">High score</string>
+    <string name="secret_game_best_hint">Tap “%1$s” %2$s times to play.</string>
+    <string name="secret_game_score">Score: %1$d</string>
+    <string name="secret_game_new_record">New high score!</string>
+    <string name="secret_game_better_luck">Better luck next time…</string>
+    <string name="secret_game_go">GO!!</string>
+    <string name="secret_game_paused">Paused</string>
+    <string name="secret_game_tap_to_resume">Tap to resume</string>
+    <string name="secret_game_move_left">Move left</string>
+    <string name="secret_game_move_right">Move right</string>
+    <string name="home_clock_color_target_text">Text</string>
+    <string name="home_clock_color_target_card">Card</string>
+    <string name="home_clock_color_target_label">Color target</string>
+    <string name="theme_color_section_default">Default</string>
+    <string name="theme_color_swatch_default">Theme</string>
 </resources>

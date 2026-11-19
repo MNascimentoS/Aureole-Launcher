@@ -51,7 +51,7 @@ class OnboardingActionsFactory(
         onSelectPalette = { name -> viewModel.selectPalette(name) },
         onSelectFont = { name -> viewModel.selectFont(name) },
         onConfirmAppearancePicker = { viewModel.confirmAppearancePicker() },
-        onDismissAppearancePicker = { viewModel.dismissAppearancePicker() },
+        onDismissAppearancePicker = { hadPreview -> viewModel.dismissAppearancePicker(hadPreview) },
         onSetChecklistExpanded = { expanded -> viewModel.setChecklistExpanded(expanded) },
         onDismissChecklist = { viewModel.dismissChecklist() },
         onFinishCelebration = { viewModel.finishCelebration() },

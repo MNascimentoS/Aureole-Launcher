@@ -1,9 +1,16 @@
 package dev.mnascimentos.aureole.feature.home.components.containers.folder
 
 import android.content.ComponentName
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.unit.dp
 import androidx.core.graphics.drawable.toDrawable
 import com.android.tools.screenshot.PreviewTest
 import dev.mnascimentos.aureole.composable.LocalHomeUiState
@@ -127,7 +134,7 @@ private fun WhenFolderFormDialogRendered_shouldRenderFormDialogScreenshotTest() 
         FolderFormDialog(
             folder = folder,
             onDismiss = {},
-            onSave = { _, _ -> },
+            onSave = {},
             onDelete = {}
         )
     }
@@ -227,3 +234,50 @@ private fun WhenOpenedFolderPopupRendered_shouldRenderPopupScreenshotTest() {
         }
     }
 }
+
+/**
+ * RF-17: a folder opened from the last item of the container, at the bottom of the screen, moves up until its bottom
+ * is 16 dp above the navigation bar instead of going under it (previews have no bars: 16 dp above the bottom).
+ */
+@PreviewTest
+@AureolePreview
+@Composable
+private fun WhenFolderOpensFromTheLastItem_shouldStayAboveTheNavigationBarScreenshotTest() {
+    val apps = (1..6).map { index ->
+        AppInfo(
+            label = "App $index",
+            packageName = "com.example.app$index",
+            componentName = ComponentName("com.example.app$index", "MainActivity"),
+            icon = 0xFF1B65C0.toInt().toDrawable()
+        )
+    }
+    val folder = AppFolder(id = "f1", name = "Work", appPackageNames = apps.map { it.packageName })
+    AureoleLauncherTheme {
+        CompositionLocalProvider(
+            LocalHomeUiState provides MainUiState(),
+            LocalLeftHanded provides false,
+            LocalHomeActions provides createMockActions()
+        ) {
+            Box(modifier = Modifier.height(PHONE_HEIGHT).fillMaxWidth()) {
+                OpenedFolderPlacementLayout(
+                    // The folder's top is almost at the bottom of the screen.
+                    anchorTopPx = with(LocalDensity.current) { (PHONE_HEIGHT - 80.dp).toPx() },
+                    isGridFolder = false,
+                    isLeftHanded = false
+                ) {
+                    OpenedFolderPopup(
+                        config = OpenedFolderPopupConfig(
+                            folder = folder,
+                            allApps = apps,
+                            actions = FolderPopupActions(onDismiss = {}, onAppClick = {})
+                        ),
+                        modifier = Modifier.padding(end = 88.dp)
+                    )
+                }
+            }
+        }
+    }
+}
+
+private val PHONE_HEIGHT = 640.dp
+

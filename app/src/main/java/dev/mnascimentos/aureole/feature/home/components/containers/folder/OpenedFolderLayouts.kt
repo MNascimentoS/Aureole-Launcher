@@ -18,6 +18,7 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.NonRestartableComposable
@@ -30,7 +31,6 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.Dp
 import dev.chrisbanes.haze.HazeStyle
 import dev.chrisbanes.haze.HazeTint
 import dev.chrisbanes.haze.hazeEffect
@@ -108,7 +108,7 @@ private fun GridFolderContainer(
             )
         }
         if (params.appsInFolder.isEmpty()) {
-            EmptyFolderGridContent(maxListHeightDp = FolderPopupMetrics.HeightMax)
+            EmptyFolderGridContent(onAddApps = params.actions.onAddApps)
         } else {
             Box(
                 modifier = Modifier
@@ -126,18 +126,25 @@ private fun GridFolderContainer(
 }
 
 @Composable
-private fun EmptyFolderGridContent(maxListHeightDp: Dp) {
-    Box(
+private fun EmptyFolderGridContent(onAddApps: () -> Unit) {
+    Column(
         modifier = Modifier
             .fillMaxWidth()
-            .height(maxListHeightDp),
-        contentAlignment = Alignment.Center
+            .padding(vertical = AureoleDS.dimens.medium),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(AureoleDS.dimens.medium)
     ) {
         Text(
-            text = stringResource(R.string.home_folder_no_apps_in_folder),
+            text = stringResource(R.string.home_folder_picker_empty),
             style = AureoleDS.typography.bodyMedium,
             color = AureoleDS.colors.onSurfaceMedium
         )
+        Button(
+            onClick = onAddApps,
+            shape = RoundedCornerShape(AureoleDS.dimens.radiusFull)
+        ) {
+            Text(stringResource(R.string.home_folder_add_apps))
+        }
     }
 }
 

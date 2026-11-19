@@ -1,10 +1,16 @@
 package dev.mnascimentos.aureole.feature.home.components.onboarding
 
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.snapshots.Snapshot
 import androidx.compose.ui.test.junit4.v2.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
-import dev.mnascimentos.aureole.feature.home.components.onboarding.model.OnboardingGlass
+import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.EDIT_HINT_TEXT_MS
+import dev.mnascimentos.aureole.feature.home.components.onboarding.model.EditHintConfig
+import dev.mnascimentos.aureole.feature.home.grid.model.GridGestureTracker
+import dev.mnascimentos.aureole.feature.home.model.LocalHomeActions
+import dev.mnascimentos.aureole.feature.home.model.createDefaultHomeScreenActions
 import org.junit.Assert.assertEquals
 import org.junit.Rule
 import org.junit.Test
@@ -19,10 +25,17 @@ class OnboardingEditHintComponentTest {
 
     private var saveCount = 0
 
-    private fun render(isVisible: Boolean) {
+    private fun render(isVisible: Boolean, tracker: GridGestureTracker = GridGestureTracker()) {
+        composeTestRule.mainClock.autoAdvance = false
         composeTestRule.setContent {
             AureoleLauncherTheme {
-                OnboardingEditHintComponent(isVisible = isVisible, glass = OnboardingGlass(), onSave = { saveCount++ })
+                val actions = createDefaultHomeScreenActions().copy(gridGestureTracker = tracker)
+                CompositionLocalProvider(LocalHomeActions provides actions) {
+                    OnboardingEditHintComponent(
+                        config = EditHintConfig(isVisible = isVisible),
+                        onSave = { saveCount++ }
+                    )
+                }
             }
         }
     }
@@ -34,6 +47,40 @@ class OnboardingEditHintComponentTest {
         composeTestRule.onNodeWithText(HINT).assertExists()
         composeTestRule.onNodeWithText("Save").performClick()
 
+        assertEquals(1, saveCount)
+    }
+
+    @Test
+    fun `after three seconds, should fold into the save pill and drop the text for good`() {
+        render(isVisible = true)
+
+        composeTestRule.mainClock.advanceTimeBy(EDIT_HINT_TEXT_MS + 100)
+
+        composeTestRule.onNodeWithText(HINT).assertDoesNotExist()
+        composeTestRule.onNodeWithText("Save").performClick()
+        assertEquals(1, saveCount)
+    }
+
+    @Test
+    fun `on the first drag, should fold at once and ignore taps until the gesture ends`() {
+        val tracker = GridGestureTracker()
+        render(isVisible = true, tracker = tracker)
+
+        composeTestRule.runOnUiThread {
+            tracker.begin()
+            Snapshot.sendApplyNotifications()
+        }
+        composeTestRule.mainClock.advanceTimeBy(100)
+        composeTestRule.onNodeWithText(HINT).assertDoesNotExist()
+        composeTestRule.onNodeWithText("Save").performClick()
+        assertEquals(0, saveCount)
+
+        composeTestRule.runOnUiThread {
+            tracker.end()
+            Snapshot.sendApplyNotifications()
+        }
+        composeTestRule.mainClock.advanceTimeBy(100)
+        composeTestRule.onNodeWithText("Save").performClick()
         assertEquals(1, saveCount)
     }
 

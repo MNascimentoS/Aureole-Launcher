@@ -17,6 +17,8 @@ fun SettingsRepository.globalClockConfig(): ClockConfig = ClockConfig(
     dateFormat = clockDateFormat,
     textColor = clockTextColor,
     backgroundColor = clockBackgroundColor,
+    textColorRef = clockTextColorRef,
+    backgroundColorRef = clockBackgroundColorRef,
     isBackgroundEnabled = isClockBackgroundEnabled
 )
 

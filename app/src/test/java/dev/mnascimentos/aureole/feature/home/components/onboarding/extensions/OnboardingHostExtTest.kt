@@ -96,4 +96,12 @@ class OnboardingHostExtTest {
         assertFalse(hint(MainUiState(onboarding = pending)))
         assertFalse(hint(MainUiState(onboarding = pending.copy(pendingTask = null), isGridEditMode = true)))
     }
+
+    @Test
+    fun `sheets should show the logo only once the onboarding is over`() {
+        assertTrue(OnboardingUiState(stage = OnboardingStage.COMPLETED).showsSheetLogo)
+        listOf(OnboardingStage.WELCOME, OnboardingStage.GESTURES, OnboardingStage.CHECKLIST).forEach { stage ->
+            assertFalse(OnboardingUiState(stage = stage).showsSheetLogo)
+        }
+    }
 }

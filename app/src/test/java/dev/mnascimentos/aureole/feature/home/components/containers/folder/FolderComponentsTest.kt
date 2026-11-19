@@ -2,6 +2,7 @@ package dev.mnascimentos.aureole.feature.home.components.containers.folder
 
 import android.content.ComponentName
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.ui.semantics.SemanticsActions
 import androidx.compose.ui.test.assertCountEquals
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.hasClickAction
@@ -12,6 +13,7 @@ import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollTo
+import androidx.compose.ui.test.performSemanticsAction
 import androidx.compose.ui.test.performTextInput
 import androidx.compose.ui.test.performTextReplacement
 import androidx.core.graphics.drawable.toDrawable
@@ -22,6 +24,7 @@ import dev.mnascimentos.aureole.composable.dialogs.CreateFolderDialog
 import dev.mnascimentos.aureole.composable.dialogs.FolderFormDialog
 import dev.mnascimentos.aureole.core.data.model.AppFolder
 import dev.mnascimentos.aureole.core.data.model.AppInfo
+import dev.mnascimentos.aureole.core.data.model.FolderDetails
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.feature.home.components.common.HomeScreenFolderOverlays
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.ContainerAppItemParams
@@ -208,32 +211,26 @@ class FolderComponentsTest {
 
     @Test
     fun `when rendering CreateFolderDialog, should display New Folder title and allow submit`() {
-        var submittedName = ""
-        var submittedIcon: String? = null
+        var submitted: FolderDetails? = null
 
         composeTestRule.setContent {
             AureoleLauncherTheme {
                 CreateFolderDialog(
                     onDismiss = {},
-                    onSubmit = { name, icon ->
-                        submittedName = name
-                        submittedIcon = icon
-                    }
+                    onSubmit = { submitted = it }
                 )
             }
         }
 
-        composeTestRule.onAllNodesWithText("New Folder")[0].assertIsDisplayed()
+        composeTestRule.onNodeWithText("New Folder").assertIsDisplayed()
 
-        // Input new folder name
+        // Type the name in the pill under the preview and create.
         composeTestRule.onNode(hasSetTextAction()).performTextInput("My New Folder")
+        composeTestRule.onNodeWithText("Create and pick apps").performSemanticsAction(SemanticsActions.OnClick)
 
-        // Click Create
-        composeTestRule.onNodeWithText("Create").performClick()
-
-        assertEquals("My New Folder", submittedName)
-        // A new folder opens with the folder icon selected, so saving without choosing keeps it.
-        assertEquals("folder", submittedIcon)
+        assertEquals("My New Folder", submitted?.name)
+        // A new folder saves the icon suggested for its name.
+        assertEquals("folder", submitted?.icon)
     }
 
     @Test
@@ -246,7 +243,7 @@ class FolderComponentsTest {
                 EditFolderDialog(
                     folder = sampleFolder,
                     onDismiss = {},
-                    onSave = { name, _ -> savedName = name },
+                    onSave = { savedName = it.name },
                     onDelete = { deleted = true }
                 )
             }
@@ -254,8 +251,8 @@ class FolderComponentsTest {
 
         composeTestRule.onNodeWithText("Edit Folder").assertIsDisplayed()
 
-        // Click Delete
-        composeTestRule.onNodeWithText("Delete folder").performClick()
+        // Delete sits at the end of the sheet.
+        composeTestRule.onNodeWithText("Delete folder").performSemanticsAction(SemanticsActions.OnClick)
         assertTrue(deleted)
 
         // Closing saves what changed: the new name.
@@ -455,7 +452,7 @@ class FolderComponentsTest {
                 FolderFormDialog(
                     folder = folderWithIcon,
                     onDismiss = { dismissed = true },
-                    onSave = { _, _ -> }
+                    onSave = {}
                 )
             }
         }
@@ -600,7 +597,6 @@ class FolderComponentsTest {
             ) {
                 AureoleLauncherTheme {
                     HomeScreenFolderOverlays(
-                        screenHeightPx = 1920f,
                         hazeState = hazeState
                     )
                 }

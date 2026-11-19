@@ -3,10 +3,12 @@ package dev.mnascimentos.aureole.feature.settings
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dev.mnascimentos.aureole.R
+import dev.mnascimentos.aureole.composable.color.model.RecommendedColors
 import dev.mnascimentos.aureole.core.data.repository.AppRepository
 import dev.mnascimentos.aureole.core.data.repository.FolderRepository
 import dev.mnascimentos.aureole.core.data.repository.GridRepository
 import dev.mnascimentos.aureole.core.data.repository.SettingsRepository
+import dev.mnascimentos.aureole.core.data.repository.migrateVividBackground
 import dev.mnascimentos.aureole.core.designsystem.model.TextResource
 import dev.mnascimentos.aureole.core.designsystem.model.glassLevelOf
 import dev.mnascimentos.aureole.core.undo.UndoController
@@ -62,6 +64,7 @@ class SettingsViewModel(
     }
 
     fun loadSettings() {
+        settingsRepository.migrateVividBackground(RecommendedColors)
         _uiState.update {
             it.copy(
                 isLeftHandedMode = settingsRepository.isLeftHandedMode,
@@ -74,7 +77,6 @@ class SettingsViewModel(
                 showFolderLabels = settingsRepository.showFolderLabels,
                 homeButtonOpensAllApps = settingsRepository.homeButtonOpensAllApps,
                 isWidgetRowEnabled = settingsRepository.isWidgetRowEnabled,
-                showWidgetDots = settingsRepository.showWidgetDots,
                 favoriteAppPackages = settingsRepository.favoriteAppPackages,
                 isCustomWallpaperSet = settingsRepository.isCustomWallpaperSet,
                 customWallpaperPath = settingsRepository.customWallpaperPath,
@@ -100,6 +102,7 @@ class SettingsViewModel(
                 searchIconPosition = settingsRepository.searchIconPosition,
                 headerOffsetPercent = settingsRepository.headerOffsetPercent,
                 cornerRadiusDp = settingsRepository.cornerRadiusDp,
+                secretBestScore = settingsRepository.secretBestScore,
             )
         }
     }

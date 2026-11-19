@@ -1,107 +1,155 @@
 package dev.mnascimentos.aureole.composable.dialogs.model
 
 import dev.mnascimentos.aureole.core.data.model.AppFolder
-import dev.mnascimentos.aureole.core.designsystem.icons.AureoleFolderIcons
-import dev.mnascimentos.aureole.core.designsystem.icons.FolderIconCategory
+import dev.mnascimentos.aureole.core.data.model.FolderDetails
+import dev.mnascimentos.aureole.core.data.model.FolderIconType
+import dev.mnascimentos.aureole.core.designsystem.palette.ThemeColorRef
+import dev.mnascimentos.aureole.core.designsystem.palette.ThemeColorRole
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
+import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class FolderFormModelsTest {
 
-    @Test
-    fun `a blank name becomes the placeholder`() {
-        assertEquals("New Folder", resolveFolderName("", "New Folder"))
-        assertEquals("New Folder", resolveFolderName("   ", "New Folder"))
-    }
+    private val variant = ThemeColorRef.Role(ThemeColorRole.VARIANT)
 
     @Test
-    fun `a typed name is trimmed`() {
+    fun `a blank name becomes the placeholder and a typed one is trimmed`() {
+        assertEquals("New Folder", resolveFolderName("", "New Folder"))
+        assertEquals("New Folder", resolveFolderName("   ", "New Folder"))
         assertEquals("Work", resolveFolderName("  Work ", "New Folder"))
     }
 
     @Test
-    fun `icon rows have the grid columns and keep every icon of the category`() {
-        FolderIconCategory.entries.forEach { category ->
-            val rows = folderIconRows(category)
+    fun `a new folder opens empty, as an icon that follows the suggestions`() {
+        val draft = initialFolderDraft(null)
 
-            assertTrue(rows.dropLast(1).all { it.size == FOLDER_ICON_COLUMNS })
-            assertEquals(folderIconKeys(category), rows.flatten())
-        }
+        assertEquals(FolderFormDraft(name = ""), draft)
+        assertEquals(folderIconSuggestions("").first(), draft.effectiveIcon())
     }
 
     @Test
-    fun `categories cover the 80 icons without repeating any`() {
-        val keys = FolderIconCategory.entries.flatMap { folderIconKeys(it) }
+    fun `editing opens with the details of the folder`() {
+        val folder = AppFolder(
+            name = "Bank",
+            icon = "lock",
+            iconType = FolderIconType.EMOJI,
+            emoji = "x",
+            color = variant
+        )
 
-        assertEquals(80, keys.size)
-        assertEquals(keys.size, keys.toSet().size)
-        assertEquals(AureoleFolderIcons.all.map { it.key }.toSet(), keys.toSet())
+        val expected = FolderFormDraft(
+            name = "Bank",
+            iconType = FolderIconType.EMOJI,
+            icon = "lock",
+            emoji = "x",
+            color = variant
+        )
+        assertEquals(expected, initialFolderDraft(folder))
     }
 
     @Test
-    fun `the first category is shown when no icon is set, and an unknown key shows the folder icon category`() {
-        assertEquals(FolderIconCategory.WORK, initialFolderIconCategory(null))
-        assertEquals(FolderIconCategory.TOOLS, initialFolderIconCategory("nope"))
+    fun `an icon folder without icon opens on Letter, as the home draws it`() {
+        assertEquals(FolderIconType.LETTER, initialFolderDraft(AppFolder(name = "Tools")).iconType)
     }
 
     @Test
-    fun `the initial category is the one of the saved icon, old keys included`() {
-        assertEquals(FolderIconCategory.MEDIA, initialFolderIconCategory("music_note"))
-        assertEquals(FolderIconCategory.MEDIA, initialFolderIconCategory("play"))
-        assertEquals(FolderIconCategory.MONEY, initialFolderIconCategory("cart"))
+    fun `saving a new icon folder pins the suggested icon`() {
+        val details = FolderFormDraft(name = "Banco").toDetails("New Folder")
+
+        assertEquals(FolderDetails(name = "Banco", icon = "account_balance"), details)
     }
 
     @Test
-    fun `an icon is marked when its key or the old key that maps to it is saved`() {
-        assertTrue(isFolderIconSelected("shopping_cart", "cart"))
-        assertTrue(isFolderIconSelected("work", "work"))
-        assertFalse(isFolderIconSelected("work", "star"))
-        assertFalse(isFolderIconSelected("work", null))
+    fun `saving uses the placeholder for a blank name`() {
+        assertEquals("New Folder", FolderFormDraft(name = " ").toDetails("New Folder").name)
     }
 
     @Test
-    fun `the grid opens with the saved icon in view`() {
-        // "lock" is the 3rd icon of TOOLS (row 2 of 5 columns after build, settings): it stays on screen.
-        val row = folderIconRows(FolderIconCategory.TOOLS).indexOfFirst { "star" in it }
+    fun `saving a letter folder keeps the icon chosen before`() {
+        val details = FolderFormDraft(name = "Work", iconType = FolderIconType.LETTER, icon = "star", color = variant)
+            .toDetails("New Folder")
 
-        assertEquals((row - 1).coerceAtLeast(0), folderIconFirstVisibleRow(FolderIconCategory.TOOLS, "star"))
-        assertEquals(0, folderIconFirstVisibleRow(FolderIconCategory.WORK, "work"))
-        assertEquals(0, folderIconFirstVisibleRow(FolderIconCategory.WORK, null))
-        assertEquals(0, folderIconFirstVisibleRow(FolderIconCategory.WORK, "star"))
+        assertEquals(FolderDetails("Work", "star", FolderIconType.LETTER, null, variant), details)
     }
 
     @Test
-    fun `the category index follows the chip order`() {
-        assertEquals(0, folderIconCategoryIndex(FolderIconCategory.WORK))
-        assertEquals(FolderIconCategory.entries.lastIndex, folderIconCategoryIndex(FolderIconCategory.TOOLS))
+    fun `saving a letter folder with no chosen icon writes no icon`() {
+        assertNull(FolderFormDraft(name = "Work", iconType = FolderIconType.LETTER).toDetails("x").icon)
     }
 
     @Test
-    fun `lock and security are two different icons`() {
-        assertEquals("lock", resolveFolderIconKey("lock"))
-        assertEquals("security", resolveFolderIconKey("security"))
-        assertFalse(isFolderIconSelected("lock", "security"))
-        assertTrue(isFolderIconSelected("security", "security"))
+    fun `saving an emoji folder pins the first common emoji when none was chosen`() {
+        val details = FolderFormDraft(name = "Fun", iconType = FolderIconType.EMOJI).toDetails("x")
+
+        assertEquals(FOLDER_EMOJIS.first(), details.emoji)
+        assertEquals(FolderIconType.EMOJI, details.iconType)
     }
 
     @Test
-    fun `every catalog key resolves to itself`() {
-        AureoleFolderIcons.all.forEach { assertEquals(it.key, resolveFolderIconKey(it.key)) }
+    fun `an emoji chosen earlier stays when the folder shows its icon`() {
+        val details = FolderFormDraft(name = "Fun", icon = "star", emoji = "y").toDetails("x")
+
+        assertEquals("y", details.emoji)
+        assertEquals("star", details.icon)
     }
 
     @Test
-    fun `a new folder never counts as a change to save on close`() {
-        assertFalse(folderDetailsChanged(null, "Work", "x"))
+    fun `the letter is the first one of the label, in upper case`() {
+        assertEquals("W", folderLetter(" work"))
+        assertEquals("A", folderLetter(""))
     }
 
     @Test
-    fun `an edited folder is changed by a new name or a new icon only`() {
-        val folder = AppFolder(id = "1", name = "Work", icon = "a")
+    fun `tapping the marked color clears it, any other one is chosen`() {
+        val fixed = ThemeColorRef.Fixed(0xFF112233.toInt())
 
-        assertFalse(folderDetailsChanged(folder, "Work", "a"))
-        assertTrue(folderDetailsChanged(folder, "Play", "a"))
-        assertTrue(folderDetailsChanged(folder, "Work", "b"))
+        assertNull(toggleFolderColor(variant, variant))
+        assertEquals(fixed, toggleFolderColor(variant, fixed))
+        assertEquals(variant, toggleFolderColor(null, variant))
+    }
+
+    @Test
+    fun `a typed emoji goes in front of the common ones, keeping the grid size`() {
+        assertEquals(FOLDER_EMOJIS, folderEmojiChoices(null))
+        assertEquals(FOLDER_EMOJIS, folderEmojiChoices(FOLDER_EMOJIS[3]))
+
+        val choices = folderEmojiChoices("z")
+        assertEquals("z", choices.first())
+        assertEquals(FOLDER_EMOJIS.size, choices.size)
+    }
+
+    @Test
+    fun `the last grapheme keeps whole emojis`() {
+        val thumbsUpWithTone = "👍🏽"
+
+        assertEquals(thumbsUpWithTone, lastGrapheme("ab$thumbsUpWithTone"))
+        assertEquals("🏦", lastGrapheme(" 🏦 "))
+        assertEquals("b", lastGrapheme("ab"))
+        assertNull(lastGrapheme("   "))
+        assertNull(lastGrapheme(""))
+    }
+
+    @Test
+    fun `an icon tile is marked by the selected key, old keys included`() {
+        assertTrue(isFolderIconMarked("shopping_cart", "cart"))
+        assertTrue(isFolderIconMarked("work", "work"))
+        assertFalse(isFolderIconMarked("work", "star"))
+        assertFalse(isFolderIconMarked("work", null))
+        assertTrue(isFolderIconMarked("delete", "delete"))
+    }
+
+    @Test
+    fun `the icon kind maps to the segmented control and back`() {
+        FolderIconType.entries.forEach { assertEquals(it, folderIconTypeAt(folderIconTypeIndex(it))) }
+        assertEquals(FolderIconType.ICON, folderIconTypeAt(-1))
+        assertEquals(FolderIconType.ICON, folderIconTypeAt(FolderIconType.entries.size))
+    }
+
+    @Test
+    fun `the common emojis fill whole rows with the plus tile`() {
+        assertEquals(0, (FOLDER_EMOJIS.size + 1) % FOLDER_EMOJI_COLUMNS)
     }
 }

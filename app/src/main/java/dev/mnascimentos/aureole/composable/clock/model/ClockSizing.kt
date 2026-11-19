@@ -8,8 +8,8 @@ const val GREETING_TRIM_TOP = 0.15f
 const val GREETING_TRIM_BOTTOM = 0.10f
 
 private const val TIME_HEIGHT_FACTOR = 0.95f * (1f - TIME_TRIM_TOP - TIME_TRIM_BOTTOM)
-private const val DATE_RESERVE_DP = 20f * (1f - DATE_TRIM_TOP)
-private const val GREETING_RESERVE_DP = 22f * (1f - GREETING_TRIM_TOP - GREETING_TRIM_BOTTOM)
+private const val DATE_RESERVE_DP = 21f * (1f - DATE_TRIM_TOP)
+private const val GREETING_RESERVE_DP = 23f * (1f - GREETING_TRIM_TOP - GREETING_TRIM_BOTTOM)
 private const val LARGE_TIME_SIZE_PX = 68f
 private const val MEDIUM_TIME_SIZE_PX = 56f
 private val TIME_SIZES_PX = listOf(LARGE_TIME_SIZE_PX, MEDIUM_TIME_SIZE_PX)

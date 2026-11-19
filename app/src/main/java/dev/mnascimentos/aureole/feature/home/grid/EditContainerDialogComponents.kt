@@ -1,33 +1,30 @@
 package dev.mnascimentos.aureole.feature.home.grid
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.RadioButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.semantics.Role
-import androidx.compose.ui.text.font.FontWeight
 import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.composable.LocalHomeUiState
+import dev.mnascimentos.aureole.composable.controls.AureoleIconSegmentedControl
+import dev.mnascimentos.aureole.composable.controls.SegmentedOption
 import dev.mnascimentos.aureole.core.data.model.LauncherItemState
 import dev.mnascimentos.aureole.core.data.model.LauncherItemType
 import dev.mnascimentos.aureole.core.data.model.ScrollOrientation
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
+import dev.mnascimentos.aureole.core.designsystem.icons.HorizontalContainer
+import dev.mnascimentos.aureole.core.designsystem.icons.VerticalContainer
 import dev.mnascimentos.aureole.core.designsystem.model.LocalLeftHanded
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
@@ -84,82 +81,23 @@ internal fun ScrollViewOrientationSelector(
     item: LauncherItemState,
     actions: HomeScreenActions
 ) {
-    Column(modifier = Modifier.fillMaxWidth()) {
-        AureoleText(
-            text = stringResource(R.string.home_container_edit_scroll_orientation),
-            color = AureoleDS.colors.onSurfaceHigh,
-            modifier = Modifier.padding(bottom = AureoleDS.dimens.smallCompact),
-            format = AureoleTextFormatParams(style = AureoleDS.typography.titleMedium, fontWeight = FontWeight.SemiBold)
-        )
-
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(AureoleDS.dimens.small)
-        ) {
-            OrientationOptionCard(
-                title = stringResource(R.string.home_container_edit_vertical),
-                isSelected = item.safeScrollOrientation == ScrollOrientation.VERTICAL,
-                onClick = { actions.onUpdateScrollViewOrientation(item.id, ScrollOrientation.VERTICAL) },
-                modifier = Modifier.weight(1f)
-            )
-
-            OrientationOptionCard(
-                title = stringResource(R.string.home_container_edit_horizontal),
-                isSelected = item.safeScrollOrientation == ScrollOrientation.HORIZONTAL,
-                onClick = { actions.onUpdateScrollViewOrientation(item.id, ScrollOrientation.HORIZONTAL) },
-                modifier = Modifier.weight(1f)
-            )
+    val vertical = stringResource(R.string.home_container_edit_vertical)
+    val horizontal = stringResource(R.string.home_container_edit_horizontal)
+    AureoleIconSegmentedControl(
+        options = listOf(
+            SegmentedOption(vertical) { tint ->
+                AureoleDS.icons.VerticalContainer(Modifier.size(AureoleDS.dimens.iconSmall), tint)
+            },
+            SegmentedOption(horizontal) { tint ->
+                AureoleDS.icons.HorizontalContainer(Modifier.size(AureoleDS.dimens.iconSmall), tint)
+            }
+        ),
+        selectedIndex = if (item.safeScrollOrientation == ScrollOrientation.VERTICAL) 0 else 1,
+        onSelect = { index ->
+            val orientation = if (index == 0) ScrollOrientation.VERTICAL else ScrollOrientation.HORIZONTAL
+            actions.onUpdateScrollViewOrientation(item.id, orientation)
         }
-    }
-}
-
-@Composable
-private fun OrientationOptionCard(
-    title: String,
-    isSelected: Boolean,
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    val bgColor = if (isSelected) {
-        AureoleDS.colors.surfaceVariant.copy(alpha = 0.6f)
-    } else {
-        AureoleDS.colors.surfaceVariant.copy(alpha = 0.35f)
-    }
-    val contentColor = if (isSelected) {
-        AureoleDS.colors.onSurfaceHigh
-    } else {
-        AureoleDS.colors.onSurfaceMedium
-    }
-
-    Row(
-        modifier = modifier
-            .defaultMinSize(minHeight = AureoleDS.dimens.minTouchTarget)
-            .clip(RoundedCornerShape(AureoleDS.dimens.radiusSmall))
-            .background(bgColor)
-            .clickable(
-                role = Role.RadioButton,
-                onClick = onClick
-            )
-            .padding(horizontal = AureoleDS.dimens.xSmall, vertical = AureoleDS.dimens.smallCompact),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.Center
-    ) {
-        RadioButton(
-            selected = isSelected,
-            onClick = null
-        )
-        Spacer(modifier = Modifier.width(AureoleDS.dimens.minimal))
-        AureoleText(
-            text = title,
-            color = contentColor,
-            format = AureoleTextFormatParams(
-                style = AureoleDS.typography.labelLarge,
-                fontWeight = FontWeight.SemiBold,
-                maxLines = 1,
-                softWrap = false
-            )
-        )
-    }
+    )
 }
 
 @AureolePreview

@@ -2,6 +2,7 @@ package dev.mnascimentos.aureole.core.data.db
 
 import androidx.room.TypeConverter
 import dev.mnascimentos.aureole.core.data.model.ContainerItemType
+import dev.mnascimentos.aureole.core.data.model.FolderIconType
 
 class RoomConverters {
     @TypeConverter
@@ -19,4 +20,11 @@ class RoomConverters {
             }
         }
     }
+
+    @TypeConverter
+    fun fromFolderIconType(value: FolderIconType?): String? = value?.name
+
+    @TypeConverter
+    fun toFolderIconType(value: String?): FolderIconType =
+        FolderIconType.entries.firstOrNull { it.name == value } ?: FolderIconType.ICON
 }

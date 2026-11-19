@@ -15,6 +15,7 @@ import androidx.compose.foundation.gestures.waitForUpOrCancellation
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -79,11 +80,13 @@ fun GridAppsListContent(
     params: GridItemContentParams,
     modifier: Modifier = Modifier
 ) {
-    val isInScrollView = params.isInScrollView
+    // In a group the list has no scroll of its own (the group scrolls); sideways it is one page with its own.
+    val isInScrollView = params.isInScrollView && !params.isInHorizontalGroup
     val listModifier = if (isInScrollView) Modifier.fillMaxWidth() else Modifier.fillMaxSize()
+    val groupConfig = params.favConfig.copy(state = rememberLazyListState(), hazeState = null)
     Box(modifier = modifier.then(listModifier)) {
         AppsList(
-            config = if (isInScrollView) params.favConfig.copy(hazeState = null) else params.favConfig,
+            config = if (params.isInScrollView) groupConfig else params.favConfig,
             appWidgetHost = params.appWidgetHost,
             options = FavoritesListOptions(
                 containerId = params.item.id,

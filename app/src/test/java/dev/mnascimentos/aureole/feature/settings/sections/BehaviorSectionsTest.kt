@@ -52,7 +52,6 @@ class BehaviorSectionsTest {
             "All apps on left side",
             "Disable alphabet scrubber",
             "HOME SCREEN",
-            "Show widget indicator",
             "Header offset"
         ).forEach { composeTestRule.onNodeWithText(it).assertExists() }
         val gestures = composeTestRule.onNodeWithText("GESTURES AND APP LIST").getUnclippedBoundsInRoot().top
@@ -64,13 +63,11 @@ class BehaviorSectionsTest {
     fun `toggles fire their actions after the entry guard`() {
         var home = false
         var left = false
-        var dots = false
         var scrubber = false
         render(
             SettingsScreenActions(
                 onToggleHomeButtonOpensAllApps = { home = true },
                 onToggleLeftHandedMode = { left = true },
-                onToggleShowWidgetDots = { dots = true },
                 onToggleDisableAlphabetScrubber = { scrubber = true }
             )
         )
@@ -80,8 +77,7 @@ class BehaviorSectionsTest {
         ShadowSystemClock.advanceBy(Duration.ofMillis(ENTRY_TAP_GUARD_MS))
         composeTestRule.onNodeWithText("Home opens all apps").performScrollTo().performClick()
         composeTestRule.onNodeWithText("All apps on left side").performScrollTo().performClick()
-        composeTestRule.onNodeWithText("Show widget indicator").performScrollTo().performClick()
         composeTestRule.onNodeWithText("Disable alphabet scrubber").performScrollTo().performClick()
-        assertTrue(home && left && dots && scrubber)
+        assertTrue(home && left && scrubber)
     }
 }

@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import dev.mnascimentos.aureole.core.designsystem.icons.AddNew
 import dev.mnascimentos.aureole.core.designsystem.icons.AllApps
 import dev.mnascimentos.aureole.core.designsystem.icons.Calendar
 import dev.mnascimentos.aureole.core.designsystem.icons.Click
@@ -18,7 +19,6 @@ import dev.mnascimentos.aureole.core.designsystem.icons.ColorFill
 import dev.mnascimentos.aureole.core.designsystem.icons.Layout
 import dev.mnascimentos.aureole.core.designsystem.icons.Logo
 import dev.mnascimentos.aureole.core.designsystem.icons.MultipleView
-import dev.mnascimentos.aureole.core.designsystem.icons.Plus
 import dev.mnascimentos.aureole.core.designsystem.icons.ScrollGroup
 import dev.mnascimentos.aureole.core.designsystem.icons.Text
 import dev.mnascimentos.aureole.core.designsystem.icons.VerticalContainer
@@ -44,7 +44,7 @@ internal fun CustomizeItemIcon(item: CustomizeAddItem, tint: Color, modifier: Mo
         CustomizeAddItem.WIDGET_GROUP -> icons.MultipleView(modifier, tint)
         CustomizeAddItem.SCROLL_GROUP -> icons.ScrollGroup(modifier, tint)
         CustomizeAddItem.QUICK_BUTTON -> icons.Click(modifier, tint)
-        CustomizeAddItem.WIDGET -> icons.Plus(modifier, tint)
+        CustomizeAddItem.WIDGET -> icons.AddNew(modifier, tint)
         CustomizeAddItem.SETTINGS -> icons.Logo(
             modifier = modifier
                 .wrapContentSize(unbounded = true)

@@ -11,11 +11,16 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.core.graphics.drawable.toDrawable
@@ -25,10 +30,10 @@ import dev.mnascimentos.aureole.composable.appitem.AppListSkeletonComponent
 import dev.mnascimentos.aureole.composable.appitem.model.AppItemRowActions
 import dev.mnascimentos.aureole.composable.appitem.model.AppItemRowConfig
 import dev.mnascimentos.aureole.composable.clock.model.ClockHazeConfig
-import dev.mnascimentos.aureole.composable.favorites.model.APPS_LIST_MAX_OTHERS_IN_SCROLL_VIEW
 import dev.mnascimentos.aureole.composable.favorites.model.appsListSections
 import dev.mnascimentos.aureole.composable.menu.AureoleMenuSectionLabel
 import dev.mnascimentos.aureole.core.data.model.AppInfo
+import dev.mnascimentos.aureole.core.data.model.OnboardingStage
 import dev.mnascimentos.aureole.core.designsystem.model.LocalLeftHanded
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
@@ -42,6 +47,7 @@ import dev.mnascimentos.aureole.feature.home.components.favorites.model.Favorite
 import dev.mnascimentos.aureole.feature.home.components.favorites.model.FavoritesListOptions
 import dev.mnascimentos.aureole.feature.home.components.favorites.model.FavoritesPreviewMetrics
 import dev.mnascimentos.aureole.feature.home.components.favorites.model.ScrollableAppsListParams
+import dev.mnascimentos.aureole.feature.home.components.favorites.model.shouldScrollToFavorites
 import dev.mnascimentos.aureole.feature.home.components.widgets.StackedWidgetSection
 import dev.mnascimentos.aureole.feature.home.components.widgets.model.StackedWidgetConfig
 import dev.mnascimentos.aureole.feature.home.model.LocalHomeActions
@@ -69,9 +75,9 @@ fun AppsList(
     val favorites = remember(containerId, uiState.containerFavorites, uiState.favoriteAppPackages) {
         uiState.favoritesOf(containerId)
     }
-    val maxOthers = if (options.isInsideScrollView) APPS_LIST_MAX_OTHERS_IN_SCROLL_VIEW else Int.MAX_VALUE
-    val sections = remember(favorites, uiState.apps, options.showAllApps, maxOthers) {
-        appsListSections(uiState.apps, favorites, options.showAllApps, maxOthers)
+    // The whole list, also inside a group (RF-C6): the group scrolls, not the list.
+    val sections = remember(favorites, uiState.apps, options.showAllApps) {
+        appsListSections(uiState.apps, favorites, options.showAllApps)
     }
     val list = AppsListParams(
         sections = sections,
@@ -102,6 +108,7 @@ private fun ScrollableAppsList(params: ScrollableAppsListParams) {
     val config = params.config
     val uiState = params.uiState
     val actions = params.list.actions
+    ScrollToTopOnNewFavorites(config.state, params.list.sections.favorites.size, uiState.onboarding.stage)
 
     LazyColumn(
         state = config.state,
@@ -130,7 +137,6 @@ private fun ScrollableAppsList(params: ScrollableAppsListParams) {
                             topWidgetIds = uiState.topWidgetIds,
                             currentHeightDp = config.currentHeightDp,
                             currentHeightPx = config.currentHeightPx,
-                            showWidgetDots = uiState.showWidgetDots,
                             hazeState = config.hazeState,
                         ),
                         appWidgetHost = params.appWidgetHost
@@ -140,6 +146,16 @@ private fun ScrollableAppsList(params: ScrollableAppsListParams) {
         }
 
         appsListItems(params.list)
+    }
+}
+
+/** Onboarding: new favorites show from the top of the list instead of the list staying on "All apps". */
+@Composable
+private fun ScrollToTopOnNewFavorites(listState: LazyListState, favoriteCount: Int, stage: OnboardingStage) {
+    var previousCount by remember { mutableIntStateOf(favoriteCount) }
+    LaunchedEffect(favoriteCount) {
+        if (shouldScrollToFavorites(previousCount, favoriteCount, stage)) listState.scrollToItem(0)
+        previousCount = favoriteCount
     }
 }
 

@@ -16,6 +16,7 @@ import dev.mnascimentos.aureole.feature.settings.extensions.changeTheme
 import dev.mnascimentos.aureole.feature.settings.extensions.createFolder
 import dev.mnascimentos.aureole.feature.settings.extensions.finishCardsGlass
 import dev.mnascimentos.aureole.feature.settings.extensions.finishWallpaperEditor
+import dev.mnascimentos.aureole.feature.settings.extensions.onSecretGameOver
 import dev.mnascimentos.aureole.feature.settings.extensions.onUndo
 import dev.mnascimentos.aureole.feature.settings.extensions.onUndoExpired
 import dev.mnascimentos.aureole.feature.settings.extensions.performFactoryReset
@@ -70,6 +71,7 @@ private fun buildSettingsScreenActions(
 ): SettingsScreenActions {
     val baseActions = SettingsScreenActions(
         onBackClick = onFinish,
+        onSecretGameOver = viewModel::onSecretGameOver,
         onSetDefaultLauncherClick = openDefaultLauncherSettings,
         onChangeWallpaperClick = {
             photoPickerLauncher.launch(
@@ -112,7 +114,6 @@ private fun applyToggleActions(viewModel: SettingsViewModel, base: SettingsScree
     return base.copy(
         onToggleHomeButtonOpensAllApps = { viewModel.toggleSetting(SettingToggle.HOME_OPENS_ALL_APPS) },
         onToggleWidgetRow = { viewModel.toggleSetting(SettingToggle.WIDGET_ROW) },
-        onToggleShowWidgetDots = { viewModel.toggleSetting(SettingToggle.SHOW_WIDGET_DOTS) },
         onToggleContainerBackground = { viewModel.toggleSetting(SettingToggle.CONTAINER_BACKGROUND) },
         onToggleContainerExpandCell = { viewModel.toggleSetting(SettingToggle.CONTAINER_EXPAND_CELL) },
         onToggleClockBackground = { viewModel.toggleSetting(SettingToggle.CLOCK_BACKGROUND) },

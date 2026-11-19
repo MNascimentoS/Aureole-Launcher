@@ -3,13 +3,11 @@ package dev.mnascimentos.aureole.composable.favorites
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -27,6 +25,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.composable.favorites.model.FavoriteSectionActions
 import dev.mnascimentos.aureole.composable.favorites.model.FavoriteSectionParams
@@ -42,53 +41,81 @@ import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 
+/**
+ * Sticky header of the favorites (RF-A2): "Favorites · N", the reorder hint when [showReorderHint], and "Remove all"
+ * while there is any. Opaque, so the rows scroll under it.
+ */
 @Composable
 internal fun FavoriteSectionHeader(
     count: Int,
-    onRemoveAll: () -> Unit
+    onRemoveAll: () -> Unit,
+    showReorderHint: Boolean = false
 ) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = AureoleDS.dimens.xxSmall),
-        horizontalArrangement = Arrangement.SpaceBetween,
+            .background(AureoleDS.colors.surface)
+            .padding(top = AureoleDS.dimens.xSmall, bottom = AureoleDS.dimens.xxSmall),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        AureoleText(
-            text = stringResource(R.string.home_favorites_count, count),
-            color = AureoleDS.colors.onSurfaceHigh,
-            format = AureoleTextFormatParams(style = AureoleDS.typography.titleSmall, fontWeight = FontWeight.Bold)
-        )
-        if (count > 0) {
-            Box(
-                modifier = Modifier
-                    .clip(RoundedCornerShape(AureoleDS.dimens.radiusFull))
-                    .background(AureoleDS.colors.surfaceVariant.copy(alpha = 0.6f))
-                    .clickable(role = Role.Button, onClick = onRemoveAll)
-                    .padding(horizontal = AureoleDS.dimens.medium, vertical = AureoleDS.dimens.xSmall),
-                contentAlignment = Alignment.Center
-            ) {
-                AureoleText(
-                    text = stringResource(R.string.home_favorites_disable_all),
-                    color = AureoleDS.colors.onSurfaceHigh,
-                    format = AureoleTextFormatParams(
-                        style = AureoleDS.typography.labelMedium,
-                        fontWeight = FontWeight.SemiBold
-                    )
+        SectionTitle(text = stringResource(R.string.home_favorites_section_title, count))
+        val gapModifier = Modifier
+            .weight(1f)
+            .padding(horizontal = AureoleDS.dimens.xSmall)
+        if (showReorderHint) {
+            AureoleText(
+                text = stringResource(R.string.home_favorites_section_reorder_hint),
+                color = AureoleDS.colors.onSurfaceLow,
+                modifier = gapModifier,
+                format = AureoleTextFormatParams(
+                    style = AureoleDS.typography.labelSmall,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
                 )
-            }
+            )
+        } else {
+            Spacer(modifier = gapModifier)
         }
+        if (count > 0) RemoveAllButton(onClick = onRemoveAll)
     }
 }
 
 @Composable
+private fun RemoveAllButton(onClick: () -> Unit) {
+    Box(
+        modifier = Modifier
+            .clip(RoundedCornerShape(AureoleDS.dimens.radiusFull))
+            .background(AureoleDS.colors.surfaceVariant.copy(alpha = 0.6f))
+            .clickable(role = Role.Button, onClick = onClick)
+            .padding(horizontal = AureoleDS.dimens.medium, vertical = AureoleDS.dimens.xSmall),
+        contentAlignment = Alignment.Center
+    ) {
+        AureoleText(
+            text = stringResource(R.string.home_favorites_disable_all),
+            color = AureoleDS.colors.onSurfaceHigh,
+            format = AureoleTextFormatParams(style = AureoleDS.typography.labelMedium, fontWeight = FontWeight.SemiBold)
+        )
+    }
+}
+
+/** Sticky header of the other apps (RF-A2): "All apps · N", opaque so the rows scroll under it. */
+@Composable
 internal fun RemainingSectionHeader(count: Int) {
-    AureoleText(
-        text = stringResource(R.string.home_folder_other_apps_count, count),
-        color = AureoleDS.colors.onSurfaceMedium,
+    Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = AureoleDS.dimens.xxSmall),
+            .background(AureoleDS.colors.surface)
+            .padding(top = AureoleDS.dimens.small, bottom = AureoleDS.dimens.xxSmall)
+    ) {
+        SectionTitle(text = stringResource(R.string.home_favorites_section_all_title, count))
+    }
+}
+
+@Composable
+private fun SectionTitle(text: String) {
+    AureoleText(
+        text = text,
+        color = AureoleDS.colors.onSurfaceHigh,
         format = AureoleTextFormatParams(style = AureoleDS.typography.titleSmall, fontWeight = FontWeight.Bold)
     )
 }
@@ -106,22 +133,17 @@ internal fun LazyListScope.favoriteSectionItems(
     val searchQuery = params.searchQuery
 
     val isSearching = searchQuery.isNotBlank()
-    if (!isSearching && params.favoritesCount >= MIN_FAVORITES_TO_REORDER) {
-        item(key = "fav_drag_hint", contentType = "fav_notice") { FavoriteAppsDragHint() }
-    }
-    if (!isSearching && params.favoritesCount == 0 && params.isShowingAllAppsWhenEmpty) {
-        item(key = "fav_empty_banner", contentType = "fav_notice") {
-            FavoriteAppsEmptyBanner(appCount = params.allAppsCount)
-        }
-    }
-    item {
+    stickyHeader(key = "fav_header", contentType = "section_header") {
         FavoriteSectionHeader(
             count = filteredFavorites.size,
-            onRemoveAll = actions.onRemoveAll
+            onRemoveAll = actions.onRemoveAll,
+            showReorderHint = !isSearching && params.favoritesCount >= MIN_FAVORITES_TO_REORDER
         )
     }
 
     when {
+        // No favorites at all: the one-line notice over the list already says it (RF-03), no second text here.
+        filteredFavorites.isEmpty() && !isSearching && params.favoritesCount == 0 -> Unit
         filteredFavorites.isEmpty() -> item {
             val emptyMsg = if (searchQuery.isBlank()) {
                 stringResource(R.string.home_favorites_none_selected)
@@ -154,7 +176,7 @@ internal fun LazyListScope.favoriteSectionItems(
     }
 }
 
-/** Reordering needs at least two favorites; the drag hint shows from there. */
+/** Reordering needs at least two favorites; the reorder hint of the header shows from there. */
 private const val MIN_FAVORITES_TO_REORDER = 2
 
 /** The favorites in their order: hold the handle of one and drag it up or down, ✕ removes it. */
@@ -189,8 +211,7 @@ internal fun LazyListScope.remainingSectionItems(
     searchQuery: String,
     onToggleFavorite: (String) -> Unit
 ) {
-    item {
-        Spacer(modifier = Modifier.height(AureoleDS.dimens.xSmall))
+    stickyHeader(key = "rem_header", contentType = "section_header") {
         RemainingSectionHeader(count = filteredRemaining.size)
     }
 
@@ -267,7 +288,13 @@ internal fun FavoriteAppsSearchInput(
     OutlinedTextField(
         value = query,
         onValueChange = onQueryChange,
-        placeholder = { AureoleText(stringResource(R.string.home_favorites_search_placeholder)) },
+        placeholder = {
+            // One line, cut with an ellipsis when the chips share the footer (landscape).
+            AureoleText(
+                text = stringResource(R.string.home_favorites_search_placeholder),
+                format = AureoleTextFormatParams(maxLines = 1, overflow = TextOverflow.Ellipsis)
+            )
+        },
         leadingIcon = {
             AureoleDS.icons.Search(
                 tint = AureoleDS.colors.onSurfaceMedium,
@@ -295,7 +322,8 @@ private fun FavoriteAppsListPreview() {
                 .background(AureoleDS.colors.surface)
                 .padding(AureoleDS.dimens.medium)
         ) {
-            FavoriteSectionHeader(count = 3, onRemoveAll = {})
+            FavoriteSectionHeader(count = 3, onRemoveAll = {}, showReorderHint = true)
+            RemainingSectionHeader(count = 12)
             FavoriteAppsSearchInput(query = "", onQueryChange = {})
         }
     }

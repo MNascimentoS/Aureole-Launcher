@@ -31,6 +31,15 @@ class AppearanceDraftTest {
     }
 
     @Test
+    fun `back from the background picker saves neither and keeps both drafts`() {
+        val draft = AppearanceDraft(paletteName = otherPalette, fontName = "Roboto")
+        val saved = draft.saveOnLeaving(SettingsInnerKind.BACKGROUND, selectedPalette, "Istok Web")
+        assertNull(saved.paletteName)
+        assertNull(saved.fontName)
+        assertEquals(draft, saved.rest)
+    }
+
+    @Test
     fun `closing the sheet saves both and leaves nothing`() {
         val draft = AppearanceDraft(paletteName = otherPalette, fontName = "Roboto")
         val saved = draft.saveOnLeaving(null, selectedPalette, "Istok Web")

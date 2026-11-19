@@ -23,6 +23,9 @@ data class AureoleDimens(
     val xLarge: Dp = 32.dp,
     val xxLarge: Dp = 40.dp,
     val minTouchTarget: Dp = 48.dp,
+    val sheetHeaderGap: Dp = 12.dp,
+    val fadingEdge: Dp = 24.dp,
+    val swatchLabelWidth: Dp = 64.dp,
     val homeTopGrabZone: Dp = 40.dp,
 
     // Specific Sizes
@@ -47,6 +50,7 @@ data class AureoleDimens(
     val iconXSmall: Dp = 12.dp,
     val iconSmallCompact: Dp = 14.dp,
     val iconSmall: Dp = 16.dp,
+    val sheetHeaderLogo: Dp = 20.dp,
     val iconMediumSmall: Dp = 18.dp,
     val iconMedium: Dp = 20.dp,
     val iconLargePlus: Dp = 22.dp,

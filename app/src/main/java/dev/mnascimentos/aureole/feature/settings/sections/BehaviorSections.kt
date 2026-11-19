@@ -20,7 +20,6 @@ import dev.mnascimentos.aureole.composable.mirror.LeftHandMirror
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
 import dev.mnascimentos.aureole.core.designsystem.icons.AlignRight
-import dev.mnascimentos.aureole.core.designsystem.icons.Dots
 import dev.mnascimentos.aureole.core.designsystem.icons.Header
 import dev.mnascimentos.aureole.core.designsystem.icons.Press
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
@@ -73,14 +72,6 @@ fun BehaviorSections(
             )
         }
         SettingsSectionGroup(label = stringResource(R.string.settings_section_home_screen)) {
-            AureoleSwitchRow(
-                SwitchRowParams(
-                    title = stringResource(R.string.settings_behavior_show_widget_indicator),
-                    checked = uiState.showWidgetDots,
-                    onCheckedChange = { if (deliberate()) actions.onToggleShowWidgetDots() },
-                    icon = { m, c -> AureoleDS.icons.Dots(modifier = m, tint = c) }
-                )
-            )
             HeaderOffsetRow(
                 headerOffsetPercent = uiState.headerOffsetPercent,
                 onOffsetChanged = actions.onHeaderOffsetChanged

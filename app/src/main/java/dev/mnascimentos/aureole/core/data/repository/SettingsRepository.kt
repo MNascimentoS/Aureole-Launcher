@@ -85,6 +85,15 @@ class SettingsRepository(private val context: Context) {
         get() = prefs.getInt(KEY_CLOCK_BACKGROUND_COLOR, 0)
         set(value) = prefs.edit { putInt(KEY_CLOCK_BACKGROUND_COLOR, value) }
 
+    /** ThemeColorRef JSON of the clock text color; null until one is picked (then [clockTextColor] rules). */
+    var clockTextColorRef: String?
+        get() = prefs.getString(KEY_CLOCK_TEXT_COLOR_REF, null)
+        set(value) = prefs.edit { putString(KEY_CLOCK_TEXT_COLOR_REF, value) }
+
+    var clockBackgroundColorRef: String?
+        get() = prefs.getString(KEY_CLOCK_BACKGROUND_COLOR_REF, null)
+        set(value) = prefs.edit { putString(KEY_CLOCK_BACKGROUND_COLOR_REF, value) }
+
     fun resetClockSettings() {
         prefs.edit {
             putBoolean(KEY_CLOCK_BACKGROUND_ENABLED, false)
@@ -96,6 +105,8 @@ class SettingsRepository(private val context: Context) {
             putString(KEY_CLOCK_DATE_FORMAT, DEFAULT_CLOCK_DATE_FORMAT)
             putInt(KEY_CLOCK_TEXT_COLOR, 0)
             putInt(KEY_CLOCK_BACKGROUND_COLOR, 0)
+            remove(KEY_CLOCK_TEXT_COLOR_REF)
+            remove(KEY_CLOCK_BACKGROUND_COLOR_REF)
         }
     }
 
@@ -122,24 +133,9 @@ class SettingsRepository(private val context: Context) {
         get() = prefs.getBoolean(KEY_HOME_OPENS_ALL_APPS, true)
         set(value) = prefs.edit { putBoolean(KEY_HOME_OPENS_ALL_APPS, value) }
 
-    /**
-     * Migration of the removed "show all apps on Home" switch: true once, when the user had turned it on, so the
-     * caller clears the saved favorites (an empty favorites list now means "show all"). The old key is deleted, so
-     * later calls return false. A switch that was never saved keeps the favorites: the Home never listed all apps.
-     */
-    fun consumeLegacyShowAllApps(): Boolean {
-        val wasOn = prefs.getBoolean(KEY_LEGACY_SHOW_ALL_APPS_ON_HOME, false)
-        if (prefs.contains(KEY_LEGACY_SHOW_ALL_APPS_ON_HOME)) prefs.edit { remove(KEY_LEGACY_SHOW_ALL_APPS_ON_HOME) }
-        return wasOn
-    }
-
     var isWidgetRowEnabled: Boolean
         get() = prefs.getBoolean(KEY_WIDGET_ROW_ENABLED, true)
         set(value) = prefs.edit { putBoolean(KEY_WIDGET_ROW_ENABLED, value) }
-
-    var showWidgetDots: Boolean
-        get() = prefs.getBoolean(KEY_SHOW_WIDGET_DOTS, true)
-        set(value) = prefs.edit { putBoolean(KEY_SHOW_WIDGET_DOTS, value) }
 
     var isInAppUpdateEnabled: Boolean
         get() = prefs.getBoolean(KEY_IN_APP_UPDATE_ENABLED, true)
@@ -368,13 +364,25 @@ class SettingsRepository(private val context: Context) {
         BlurredWallpaperCache.clear(context)
     }
 
-    private val prefs
+    internal val prefs
         get() = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+
+    /** Best score of the hidden game; only [updateSecretBestScore] raises it. */
+    val secretBestScore: Int
+        get() = prefs.getInt(KEY_SECRET_BEST_SCORE, 0)
+
+    /** Saves [score] when it beats the stored best; returns whether it did. */
+    fun updateSecretBestScore(score: Int): Boolean {
+        if (score <= secretBestScore) return false
+        prefs.edit { putInt(KEY_SECRET_BEST_SCORE, score) }
+        return true
+    }
 
     companion object {
         private const val TAG = "SettingsRepository"
         private const val JPEG_QUALITY = 90
         private const val PREFS_NAME = "aureole_settings_prefs"
+        private const val KEY_SECRET_BEST_SCORE = "secret_game_best_score"
         private const val KEY_LEFT_HANDED_MODE = "left_handed_mode"
         private const val KEY_CONTAINER_ENABLED = "container_enabled"
         private const val KEY_CONTAINER_BACKGROUND_ENABLED = "container_background_enabled"
@@ -387,6 +395,8 @@ class SettingsRepository(private val context: Context) {
         private const val KEY_CLOCK_TIME_FORMAT = "clock_time_format"
         private const val KEY_CLOCK_DATE_FORMAT = "clock_date_format"
         private const val KEY_CLOCK_TEXT_COLOR = "clock_text_color"
+        private const val KEY_CLOCK_TEXT_COLOR_REF = "clock_text_color_ref"
+        private const val KEY_CLOCK_BACKGROUND_COLOR_REF = "clock_background_color_ref"
         private const val KEY_CLOCK_BACKGROUND_COLOR = "clock_background_color"
 
         const val DEFAULT_CLOCK_STYLE = ClockConfig.DEFAULT_STYLE
@@ -399,7 +409,6 @@ class SettingsRepository(private val context: Context) {
         private const val KEY_SHOW_FOLDER_LABELS = "show_folder_labels"
         private const val KEY_FAVORITE_APPS = "favorite_apps"
         private const val KEY_HOME_OPENS_ALL_APPS = "home_opens_all_apps"
-        private const val KEY_LEGACY_SHOW_ALL_APPS_ON_HOME = "show_all_apps_on_home"
         private const val KEY_WIDGET_ROW_ENABLED = "widget_row_enabled"
         private const val KEY_IS_CUSTOM_WALLPAPER_SET = "is_custom_wallpaper_set"
         private const val KEY_CUSTOM_WALLPAPER_PATH = "custom_wallpaper_path"
@@ -412,7 +421,6 @@ class SettingsRepository(private val context: Context) {
         private const val KEY_HAZE_ENABLED = "haze_enabled"
         private const val KEY_HAZE_OPACITY = "haze_opacity"
         private const val KEY_HAZE_BLUR_LEVEL = "haze_blur_level"
-        private const val KEY_SHOW_WIDGET_DOTS = "show_widget_dots"
         private const val KEY_IN_APP_UPDATE_ENABLED = "in_app_update_enabled"
         private const val KEY_HEADER_OFFSET_PERCENT = "header_offset_percent"
         private const val KEY_CORNER_RADIUS_DP = "corner_radius_dp"

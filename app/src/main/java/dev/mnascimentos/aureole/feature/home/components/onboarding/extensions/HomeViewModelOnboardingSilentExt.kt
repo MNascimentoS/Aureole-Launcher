@@ -1,6 +1,8 @@
 package dev.mnascimentos.aureole.feature.home.components.onboarding.extensions
 
+import androidx.lifecycle.viewModelScope
 import dev.mnascimentos.aureole.R
+import dev.mnascimentos.aureole.core.data.model.ContainerModel
 import dev.mnascimentos.aureole.core.data.model.LauncherItemType
 import dev.mnascimentos.aureole.core.data.model.OnboardingStage
 import dev.mnascimentos.aureole.core.data.model.OnboardingTask
@@ -11,6 +13,7 @@ import dev.mnascimentos.aureole.feature.home.components.containers.extensions.lo
 import dev.mnascimentos.aureole.feature.home.components.onboarding.model.OnboardingPlacementRequest
 import dev.mnascimentos.aureole.feature.home.grid.extensions.enterGridEditMode
 import dev.mnascimentos.aureole.feature.home.grid.extensions.updateActiveGridItemsInState
+import kotlinx.coroutines.launch
 import java.util.UUID
 
 /**
@@ -66,8 +69,38 @@ internal fun HomeViewModel.placeSilently(type: LauncherItemType): String? {
     gridRepository.saveGridItems(uiState.value.gridItems, uiState.value.isLandscape)
     when (type) {
         LauncherItemType.CLOCK -> giveNewClockItsConfig(item.id)
-        LauncherItemType.SHORTCUTS_CONTAINER -> loadContainers()
+        LauncherItemType.SHORTCUTS_CONTAINER -> saveOnboardingContainer(item.id)
         else -> Unit
     }
     return item.id
 }
+
+/**
+ * Saves the config of the container [id] the checklist just placed: no background, no folder labels and the
+ * folders as a grid. The layout's own container and the one from Customize keep their initial values. Position
+ * and expand cell come from the settings, as for any new container.
+ */
+private fun HomeViewModel.saveOnboardingContainer(id: String) {
+    viewModelScope.launch {
+        containerRepository.saveContainer(
+            onboardingContainerModel(
+                id = id,
+                position = settingsRepository.containerPosition,
+                isExpandCell = settingsRepository.isContainerExpandCell
+            )
+        )
+        loadContainers()
+    }
+}
+
+internal fun onboardingContainerModel(id: String, position: String, isExpandCell: Boolean) = ContainerModel(
+    id = id,
+    title = ONBOARDING_CONTAINER_TITLE,
+    position = position,
+    isExpandCell = isExpandCell,
+    isBackgroundEnabled = false,
+    showFolderLabels = false,
+    isGridFolderEnabled = true
+)
+
+private const val ONBOARDING_CONTAINER_TITLE = "Painel Lateral"

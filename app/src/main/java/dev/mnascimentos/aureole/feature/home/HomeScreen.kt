@@ -53,6 +53,7 @@ import dev.mnascimentos.aureole.feature.home.components.containers.model.EditCon
 import dev.mnascimentos.aureole.feature.home.components.overlays.CustomizeBottomSheet
 import dev.mnascimentos.aureole.feature.home.components.overlays.HomeOverlaysContent
 import dev.mnascimentos.aureole.feature.home.components.overlays.homeDragGestures
+import dev.mnascimentos.aureole.feature.home.components.overlays.model.isCustomizeShowcase
 import dev.mnascimentos.aureole.feature.home.components.scrubber.model.isHomeDragAttached
 import dev.mnascimentos.aureole.feature.home.components.widgets.EditWidgetGroupScreen
 import dev.mnascimentos.aureole.feature.home.components.widgets.model.EditWidgetGroupActions
@@ -229,7 +230,6 @@ private fun BoxScope.HomeScreenBody(
     HomeOverlaysContent(overlaysConfig)
 
     HomeScreenFolderOverlays(
-        screenHeightPx = config.screenHeightPx,
         hazeState = config.hazeState,
         appWidgetHost = config.appWidgetHost
     )
@@ -243,7 +243,8 @@ private fun HomeOverlaysDialogsAndErrors(config: HomeOverlaysConfig) {
         CustomizeBottomSheet(
             uiState = config.uiState,
             actions = config.actions,
-            onDismissRequest = config.actions.onCloseCustomizeBottomSheet
+            onDismissRequest = config.actions.onCloseCustomizeBottomSheet,
+            isShowcase = config.uiState.isCustomizeShowcase
         )
     }
 
@@ -256,6 +257,10 @@ private fun HomeOverlaysDialogsAndErrors(config: HomeOverlaysConfig) {
         )
     }
 
+    HomeEditGridItemOverlay(config = config)
+    HomeEditContainerOverlay(config = config)
+
+    // Last, so it draws over the edit sheets that open it (the group's "Add component"): always visible and focused.
     if (config.uiState.showAddContainerDialog) {
         AddContainerDialog(
             onDismissRequest = config.actions.onCloseAddContainerDialog,
@@ -271,9 +276,6 @@ private fun HomeOverlaysDialogsAndErrors(config: HomeOverlaysConfig) {
             isNested = (config.uiState.targetParentContainerId != null)
         )
     }
-
-    HomeEditGridItemOverlay(config = config)
-    HomeEditContainerOverlay(config = config)
 
     val context = LocalContext.current
     val gridError = config.uiState.gridErrorMessage?.asString()

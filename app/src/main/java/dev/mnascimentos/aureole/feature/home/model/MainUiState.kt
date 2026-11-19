@@ -30,7 +30,6 @@ data class MainUiState(
     val targetWidgetStackId: String? = null,
     val widgetRowHeight: Dp = 160.dp,
     val isWidgetRowEnabled: Boolean = true,
-    val showWidgetDots: Boolean = true,
     val showWidgetPicker: Boolean = false,
     val pendingWidgetId: Int = -1,
 
@@ -49,6 +48,8 @@ data class MainUiState(
     val clockDateFormat: String = SettingsRepository.DEFAULT_CLOCK_DATE_FORMAT,
     val clockTextColor: Int = 0,
     val clockBackgroundColor: Int = 0,
+    val clockTextColorRef: String? = null,
+    val clockBackgroundColorRef: String? = null,
     /** The look of each clock on the grid by item id; a clock missing here uses the clock fields above. */
     val clockConfigs: Map<String, ClockConfig> = emptyMap(),
     val showContainerAddFolderButton: Boolean = true,

@@ -1,8 +1,5 @@
 package dev.mnascimentos.aureole.feature.settings.components
 
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertIsNotEnabled
 import androidx.compose.ui.test.assertIsOff
@@ -13,7 +10,12 @@ import androidx.compose.ui.test.performClick
 import dev.mnascimentos.aureole.composable.color.model.RecommendedColors
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.feature.settings.model.LockScreenOption
-import dev.mnascimentos.aureole.feature.settings.model.SetBackgroundParams
+import dev.mnascimentos.aureole.feature.settings.model.SettingsArea
+import dev.mnascimentos.aureole.feature.settings.model.SettingsInnerKind
+import dev.mnascimentos.aureole.feature.settings.model.SettingsScreenActions
+import dev.mnascimentos.aureole.feature.settings.model.SettingsSheet
+import dev.mnascimentos.aureole.feature.settings.model.SettingsSheetHostParams
+import dev.mnascimentos.aureole.feature.settings.model.SettingsUiState
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
@@ -29,27 +31,28 @@ class BackgroundLockScreenRowTest {
     @get:Rule
     val composeTestRule = createComposeRule()
 
-    private var option by mutableStateOf(LockScreenOption())
     private var turnedOn = 0
     private val turnedOff = mutableListOf<Boolean>()
 
     private fun showSheet(initial: LockScreenOption) {
-        option = initial.copy(
-            onTurnOn = { turnedOn++ },
-            onTurnOff = { turnedOff += it }
-        )
         composeTestRule.setContent {
             AureoleLauncherTheme {
-                SetBackgroundBottomSheet(
-                    SetBackgroundParams(
-                        currentColor = RecommendedColors[1],
-                        isCustomImageSet = false,
-                        onSolidColorSelected = {},
-                        onCustomImageClick = {},
-                        onDismissRequest = {},
-                        lockScreen = option
+                SettingsSheetHost(
+                    params = SettingsSheetHostParams(
+                        uiState = SettingsUiState(
+                            manualSeedColor = RecommendedColors[1],
+                            applyToLockScreen = initial.checked,
+                            canSetWallpaper = initial.isAvailable,
+                            isLockScreenNoticeSeen = initial.isNoticeSeen
+                        ),
+                        actions = SettingsScreenActions(
+                            onLockScreenTurnOn = { turnedOn++ },
+                            onLockScreenTurnOff = { turnedOff += it }
+                        ),
+                        onNavigateToLicenses = {},
+                        initialSheet = SettingsSheet.Area(SettingsArea.APPEARANCE, inner = SettingsInnerKind.BACKGROUND)
                     )
-                )
+                ) {}
             }
         }
     }

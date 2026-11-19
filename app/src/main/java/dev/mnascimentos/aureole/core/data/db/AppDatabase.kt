@@ -21,7 +21,7 @@ import dev.mnascimentos.aureole.core.data.model.FolderItemEntity
         FolderEntity::class,
         FolderItemEntity::class
     ],
-    version = 3,
+    version = 4,
     exportSchema = true
 )
 @TypeConverters(RoomConverters::class)
@@ -47,7 +47,7 @@ abstract class AppDatabase : RoomDatabase() {
         @VisibleForTesting
         internal fun buildDatabase(context: Context, name: String): AppDatabase =
             Room.databaseBuilder(context.applicationContext, AppDatabase::class.java, name)
-                .addMigrations(MIGRATION_2_3)
+                .addMigrations(MIGRATION_2_3, MIGRATION_3_4)
                 .fallbackToDestructiveMigration(dropAllTables = true)
                 .build()
     }

@@ -73,5 +73,7 @@ data class EditContainerItemRowParams(
 data class ManageItemRowParams(
     val item: ContainerItemEntity,
     val folders: List<AppFolder>,
-    val allApps: List<AppInfo>
+    val allApps: List<AppInfo>,
+    /** Opens the item's editor in place (folder, quick button); null for apps, which show no chevron. */
+    val onOpen: (() -> Unit)? = null
 )

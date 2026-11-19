@@ -81,7 +81,7 @@ private fun AppMenuCase(
         params = AppItemBottomSheetParams(
             app = SAMPLE_APPS.last(),
             isFavorite = true,
-            actions = AppItemRowActions(onToggleFavorite = {}, onOpenSettings = {}),
+            actions = AppItemRowActions(onToggleFavorite = {}, onOpenSettings = {}, onCustomizeHome = {}),
             onOpenContainerSettings = if (insideFolder) null else ({}),
             onOpenFolderSettings = if (insideFolder) ({}) else null,
             onRemoveFromFolder = if (insideFolder) ({}) else null,

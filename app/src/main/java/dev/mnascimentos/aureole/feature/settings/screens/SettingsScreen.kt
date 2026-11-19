@@ -91,7 +91,9 @@ private fun SettingsDialogsPrimary(
         ProvideHomeUiState(MainUiState(isLeftHandedMode = uiState.isLeftHandedMode)) {
             CreateFolderDialog(
                 onDismiss = actions.onDismissCreateFolderDialog,
-                onSubmit = actions.onSubmitCreateFolder
+                onSubmit = actions.onSubmitCreateFolder,
+                // Settings closes right after creating, so the folder's app picker is not offered here.
+                pickApps = false
             )
         }
     }

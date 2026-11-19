@@ -27,7 +27,7 @@ import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 
 /**
- * Nothing leaves the app: every item of the inventory in `specs/ajustes-redesign/IDEIA.md` is still on screen (26
+ * Nothing leaves the app: every item of the inventory in `specs/ajustes-redesign/IDEIA.md` is still on screen (25
  * since "Custom colors" left, D-08: the base color stays in Set background → Solid color).
  */
 @RunWith(RobolectricTestRunner::class)
@@ -50,7 +50,6 @@ class SettingsInventoryTest {
         "Home opens all apps",
         "All apps on left side",
         "Disable alphabet scrubber",
-        "Show widget indicator",
         "Header offset"
     )
     private val advancedItems = listOf(
@@ -61,7 +60,7 @@ class SettingsInventoryTest {
     private val rootItems = listOf("Appearance", "Behavior", "Advanced")
 
     @Test
-    fun `the three sections and the root still show all 26 items`() {
+    fun `the three sections and the root still show all 25 items`() {
         composeTestRule.setContent {
             AureoleLauncherTheme {
                 Column(Modifier.verticalScroll(rememberScrollState())) {
@@ -81,7 +80,7 @@ class SettingsInventoryTest {
         }
         val all = appearanceItems + behaviorItems + advancedItems
         all.forEach { composeTestRule.onNodeWithText(it).assertExists() }
-        assertEquals(23, all.size)
+        assertEquals(22, all.size)
     }
 
     @Test
@@ -92,7 +91,7 @@ class SettingsInventoryTest {
             }
         }
         rootItems.forEach { composeTestRule.onNodeWithText(it).assertExists() }
-        assertEquals(26, appearanceItems.size + behaviorItems.size + advancedItems.size + rootItems.size)
+        assertEquals(25, appearanceItems.size + behaviorItems.size + advancedItems.size + rootItems.size)
     }
 
     @Test

@@ -22,14 +22,6 @@ private fun MenuRowsCase(isLeftHanded: Boolean) {
     ProvideHomeUiState(MainUiState(isLeftHandedMode = isLeftHanded)) {
         AureoleLauncherTheme {
             Column(modifier = Modifier.padding(AureoleDS.dimens.medium)) {
-                AureoleMenuRow(
-                    MenuRowParams(
-                        title = "Remove",
-                        onClick = {},
-                        icon = { m, c -> AureoleDS.icons.Delete(modifier = m, tint = c) },
-                        isDestructive = true
-                    )
-                )
                 AureoleMenuNote(text = "Current size: 2 x 2 cells")
                 AureoleMenuSectionLabel(text = "Actions")
                 AureoleMenuRow(
@@ -38,6 +30,15 @@ private fun MenuRowsCase(isLeftHanded: Boolean) {
                         onClick = {},
                         icon = { m, c -> AureoleDS.icons.Settings(modifier = m, tint = c) },
                         showChevron = true
+                    )
+                )
+                // As in the real menus: the destructive row comes last (aureole_components §6).
+                AureoleMenuRow(
+                    MenuRowParams(
+                        title = "Remove",
+                        onClick = {},
+                        icon = { m, c -> AureoleDS.icons.Delete(modifier = m, tint = c) },
+                        isDestructive = true
                     )
                 )
             }

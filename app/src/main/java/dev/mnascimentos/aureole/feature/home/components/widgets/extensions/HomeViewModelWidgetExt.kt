@@ -4,6 +4,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.core.data.model.LauncherItemState
 import dev.mnascimentos.aureole.core.data.model.LauncherItemType
+import dev.mnascimentos.aureole.core.data.repository.consumeLegacyWidgetDotsOff
 import dev.mnascimentos.aureole.feature.home.HomeViewModel
 import dev.mnascimentos.aureole.feature.home.grid.extensions.addGridItem
 import dev.mnascimentos.aureole.feature.home.grid.extensions.dismissGridError
@@ -17,9 +18,6 @@ fun HomeViewModel.loadWidgetSettings() {
     val widgetMap = mutableMapOf<String, List<Int>>()
     widgetMap["top_widgets"] = topIds
 
-    val dotsMap = mutableMapOf<String, Boolean>()
-    putDots(dotsMap, "top_widgets")
-
     val allItems = uiState.value.portraitGridItems + uiState.value.landscapeGridItems
     fun processItem(item: LauncherItemState) {
         val isWidgetType = item.safeType == LauncherItemType.WIDGET_LIST ||
@@ -27,11 +25,15 @@ fun HomeViewModel.loadWidgetSettings() {
         if (isWidgetType) {
             val stackId = item.safeId
             widgetMap[stackId] = widgetRepository.getWidgetIdsForStack(stackId)
-            putDots(dotsMap, stackId)
         }
         item.safeChildren.forEach { child -> processItem(child) }
     }
     allItems.forEach { item -> processItem(item) }
+
+    // The old global switch is gone: when it was off, every existing group keeps its dots off (once).
+    if (settingsRepository.consumeLegacyWidgetDotsOff()) widgetRepository.turnDotsOff(widgetMap.keys)
+    val dotsMap = mutableMapOf<String, Boolean>()
+    widgetMap.keys.forEach { stackId -> putDots(dotsMap, stackId) }
 
     updateUiState {
         it.copy(

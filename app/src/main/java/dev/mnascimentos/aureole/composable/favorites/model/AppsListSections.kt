@@ -3,7 +3,6 @@ package dev.mnascimentos.aureole.composable.favorites.model
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 
 /** How many of the other apps an apps list inside a scroll view shows: it cannot scroll on its own. */
-const val APPS_LIST_MAX_OTHERS_IN_SCROLL_VIEW = 20
 
 /**
  * What an apps list shows: its [favorites] on top, in their saved order, then the [others] when it [showsAll]

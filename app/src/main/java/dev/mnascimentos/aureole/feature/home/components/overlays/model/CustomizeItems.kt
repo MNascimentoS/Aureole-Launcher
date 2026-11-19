@@ -1,6 +1,7 @@
 package dev.mnascimentos.aureole.feature.home.components.overlays.model
 
 import androidx.annotation.StringRes
+import androidx.compose.runtime.FloatState
 import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.core.data.model.LauncherItemType
 import dev.mnascimentos.aureole.feature.home.components.onboarding.model.AppearancePicker
@@ -41,9 +42,14 @@ enum class CustomizeAdjustItem(@StringRes val labelRes: Int) {
     FONT(R.string.home_customize_adjust_font)
 }
 
-/** What the Customize sheet needs from its host: visibility, how to hide it and the pickers it can open. */
+/**
+ * What the Customize sheet needs from its host: visibility, how to hide it and the pickers it can open.
+ *
+ * @property showcaseProgress The showcase countdown (0 to 1) when the sheet is only shown (RF-01); null otherwise.
+ */
 data class CustomizeOverlayParams(
     val isVisible: Boolean,
     val onHide: () -> Unit,
-    val onPick: (AppearancePicker) -> Unit
+    val onPick: (AppearancePicker) -> Unit,
+    val showcaseProgress: FloatState? = null
 )

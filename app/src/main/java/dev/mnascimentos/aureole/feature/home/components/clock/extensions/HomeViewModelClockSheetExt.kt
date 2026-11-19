@@ -30,7 +30,9 @@ fun HomeViewModel.resetClockSettings() {
             clockTimeFormat = settingsRepository.clockTimeFormat,
             clockDateFormat = settingsRepository.clockDateFormat,
             clockTextColor = settingsRepository.clockTextColor,
-            clockBackgroundColor = settingsRepository.clockBackgroundColor
+            clockBackgroundColor = settingsRepository.clockBackgroundColor,
+            clockTextColorRef = settingsRepository.clockTextColorRef,
+            clockBackgroundColorRef = settingsRepository.clockBackgroundColorRef
         )
     }
 }

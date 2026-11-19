@@ -36,6 +36,8 @@ data class MenuRowParams(
 /** Slots of the menu sheet that depend on the caller. */
 data class MenuSheetParams(
     val titleIcon: (@Composable (Modifier) -> Unit)? = null,
+    /** Secondary line under the title, in the sheet header. */
+    val subtitle: String? = null,
     val onSettingsClick: (() -> Unit)? = null,
     val bottomBar: (@Composable () -> Unit)? = null,
     val host: OverlayHostSpec = OverlayHostSpec(),

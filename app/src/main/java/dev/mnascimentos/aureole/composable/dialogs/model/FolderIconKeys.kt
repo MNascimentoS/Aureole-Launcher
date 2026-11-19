@@ -1,9 +1,13 @@
 package dev.mnascimentos.aureole.composable.dialogs.model
 
 import dev.mnascimentos.aureole.core.designsystem.icons.AureoleFolderIcons
+import dev.mnascimentos.aureole.core.designsystem.icons.AureoleIconCatalog
 
 /** Key used when the saved key is null or unknown. */
 const val FOLDER_ICON_FALLBACK = "folder"
+
+/** The only old key whose drawing is not in the unified catalog: the trash can, drawn with the design system icon. */
+const val FOLDER_ICON_TRASH_KEY = "delete"
 
 /** Old keys that have no drawable in the catalog; they still draw with the design system icons. */
 val LEGACY_FOLDER_ICON_KEYS: Set<String> = setOf(
@@ -62,3 +66,15 @@ fun resolveFolderIconKey(name: String?): String {
 
 private fun isKnownFolderIconKey(key: String): Boolean =
     AureoleFolderIcons.resFor(key) != null || key in LEGACY_FOLDER_ICON_KEYS
+
+/**
+ * Key of the [AureoleIconCatalog] that draws the saved [name]: the catalog key it resolves to (old folder keys and
+ * [dev.mnascimentos.aureole.core.data.model.QuickButtonIcon] names included), else the one of an accepted folder
+ * name ("jogos"), else [FOLDER_ICON_TRASH_KEY] or [FOLDER_ICON_FALLBACK].
+ */
+fun folderIconCatalogKey(name: String?): String {
+    AureoleIconCatalog.resolveKey(name)?.let { return it }
+    val folderKey = resolveFolderIconKey(name)
+    return AureoleIconCatalog.resolveKey(folderKey) ?: folderKey.takeIf { it == FOLDER_ICON_TRASH_KEY }
+        ?: FOLDER_ICON_FALLBACK
+}

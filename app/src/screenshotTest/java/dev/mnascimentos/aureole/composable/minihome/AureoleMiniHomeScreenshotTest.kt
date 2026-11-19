@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.android.tools.screenshot.PreviewTest
+import dev.mnascimentos.aureole.composable.minihome.model.MiniHomeFavoritesLayout
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
@@ -13,7 +14,10 @@ import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 private fun MiniHomeCase(isLeftHanded: Boolean, themedIcons: Boolean = false) {
     AureoleLauncherTheme {
         Box(modifier = Modifier.padding(AureoleDS.dimens.medium)) {
-            AureoleMiniHome(content = sampleMiniHomeContent(), isLeftHanded = isLeftHanded, themedIcons = themedIcons)
+            AureoleMiniHome(
+                content = sampleMiniHomeContent(),
+                layout = MiniHomeFavoritesLayout(isLeftHanded = isLeftHanded, themedIcons = themedIcons)
+            )
         }
     }
 }

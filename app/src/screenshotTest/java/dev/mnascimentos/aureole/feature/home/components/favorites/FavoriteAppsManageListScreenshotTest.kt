@@ -17,13 +17,15 @@ import com.android.tools.screenshot.PreviewTest
 import dev.mnascimentos.aureole.composable.LocalHomeUiState
 import dev.mnascimentos.aureole.composable.ProvideHomeUiState
 import dev.mnascimentos.aureole.composable.favorites.FavoriteAppRow
-import dev.mnascimentos.aureole.composable.favorites.FavoriteAppsDragHint
-import dev.mnascimentos.aureole.composable.favorites.FavoriteAppsEmptyBanner
+import dev.mnascimentos.aureole.composable.favorites.FavoriteAppsEmptyNotice
 import dev.mnascimentos.aureole.composable.favorites.FavoriteAppsSheetContent
+import dev.mnascimentos.aureole.composable.favorites.FavoriteSectionHeader
 import dev.mnascimentos.aureole.composable.favorites.RemainingAppRow
 import dev.mnascimentos.aureole.composable.favorites.model.FavoriteAppsDialogActions
 import dev.mnascimentos.aureole.composable.favorites.model.FavoriteAppsDialogConfig
+import dev.mnascimentos.aureole.composable.favorites.model.FavoritesEmptyNotice
 import dev.mnascimentos.aureole.composable.favorites.model.ShowAllAppsParams
+import dev.mnascimentos.aureole.composable.favorites.model.ShowLabelsParams
 import dev.mnascimentos.aureole.composable.mirror.LeftHandMirror
 import dev.mnascimentos.aureole.composable.reorder.model.LocalReorderHandle
 import dev.mnascimentos.aureole.composable.reorder.model.ReorderHandle
@@ -59,9 +61,10 @@ private fun FavoritesManageCase(isLeftHanded: Boolean, favoriteCount: Int = 4) {
                     config = FavoriteAppsDialogConfig(
                         allApps = favoriteSampleApps,
                         favoriteAppPackages = favoriteSampleApps.take(favoriteCount).map { it.packageName },
-                        showAllApps = ShowAllAppsParams(checked = true, onCheckedChange = {})
+                        showAllApps = ShowAllAppsParams(checked = true, onCheckedChange = {}),
+                        showLabels = ShowLabelsParams(checked = true, onCheckedChange = {})
                     ),
-                    actions = FavoriteAppsDialogActions(onCustomizeHome = {})
+                    actions = FavoriteAppsDialogActions()
                 )
             }
         }
@@ -78,7 +81,7 @@ private fun FavoriteAppsManageListRightHandedScreenshotTest() = FavoritesManageC
 @Composable
 private fun FavoriteAppsManageListLeftHandedScreenshotTest() = FavoritesManageCase(isLeftHanded = true)
 
-/** No favorites: the banner says the Home shows all apps, no drag hint. */
+/** No favorites: the one-line notice says the Home shows all apps, no reorder hint. */
 @PreviewTest
 @AureolePreview
 @Composable
@@ -91,7 +94,7 @@ private fun FavoriteAppsManageNoFavoritesRightHandedScreenshotTest() =
 private fun FavoriteAppsManageNoFavoritesLeftHandedScreenshotTest() =
     FavoritesManageCase(isLeftHanded = true, favoriteCount = 0)
 
-/** One favorite: rows with the number, the ✕ and the handle, but no drag hint. */
+/** One favorite: rows with the number, the − and the handle, but no reorder hint. */
 @PreviewTest
 @AureolePreview
 @Composable
@@ -115,8 +118,9 @@ private fun FavoritesManagePiecesCase(isLeftHanded: Boolean) {
                     .padding(AureoleDS.dimens.medium),
                 verticalArrangement = Arrangement.spacedBy(AureoleDS.dimens.xSmall)
             ) {
-                FavoriteAppsDragHint()
-                FavoriteAppsEmptyBanner(appCount = 34)
+                FavoriteSectionHeader(count = 2, onRemoveAll = {}, showReorderHint = true)
+                FavoriteAppsEmptyNotice(notice = FavoritesEmptyNotice.HOME_SHOWS_ALL, appCount = 34)
+                FavoriteAppsEmptyNotice(notice = FavoritesEmptyNotice.HOME_STAYS_EMPTY, appCount = 34)
                 FavoriteAppRow(
                     app = favoriteSampleApps[0],
                     onRemove = {},
@@ -137,7 +141,7 @@ private fun FavoritesManagePiecesCase(isLeftHanded: Boolean) {
     }
 }
 
-/** Drag hint, empty banner, a favorite row with the handle idle and held, and an other-app row with the +. */
+/** Header with the reorder hint, both notices, a favorite row with the handle idle and held, an other-app row. */
 @PreviewTest
 @AureolePreview
 @Composable

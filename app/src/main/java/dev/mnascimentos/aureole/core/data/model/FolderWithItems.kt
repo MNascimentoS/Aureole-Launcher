@@ -2,6 +2,7 @@ package dev.mnascimentos.aureole.core.data.model
 
 import androidx.room.Embedded
 import androidx.room.Relation
+import dev.mnascimentos.aureole.core.designsystem.palette.parseThemeColorRef
 
 data class FolderWithItems(
     @Embedded
@@ -20,7 +21,10 @@ data class FolderWithItems(
             iconPackage = folder.iconFallback,
             icon = folder.icon,
             appPackageNames = items.sortedBy { it.itemOrder }.map { it.packageName },
-            displayAsGrid = folder.displayAsGrid
+            displayAsGrid = folder.displayAsGrid,
+            iconType = folder.iconType,
+            emoji = folder.emoji,
+            color = parseThemeColorRef(folder.color)
         )
     }
 }

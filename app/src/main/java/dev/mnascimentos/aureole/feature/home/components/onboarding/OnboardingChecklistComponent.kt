@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
@@ -28,9 +29,10 @@ import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.core.data.model.OnboardingTask
-import dev.mnascimentos.aureole.core.designsystem.components.AureoleHaloProgress
+import dev.mnascimentos.aureole.core.designsystem.components.AureoleLogoRing
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
+import dev.mnascimentos.aureole.core.designsystem.model.LOGO_RING_LOGO_FRACTION_LARGE
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
@@ -147,10 +149,11 @@ private fun ChecklistHeader(onboarding: OnboardingUiState, shared: ChecklistShar
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier.padding(bottom = AureoleDS.dimens.xSmall)
     ) {
-        AureoleHaloProgress(
+        AureoleLogoRing(
             progress = onboarding.taskProgress,
-            modifier = shared.halo,
-            size = AureoleDS.dimens.iconXLarge,
+            // ~40 dp of logo in a 64 dp ring, as in the prototype (RF-14): the ring grows so the logo can.
+            modifier = shared.halo.size(AureoleDS.dimens.avatarSize),
+            logoFraction = LOGO_RING_LOGO_FRACTION_LARGE,
             contentDescription = progressText
         )
         Column {

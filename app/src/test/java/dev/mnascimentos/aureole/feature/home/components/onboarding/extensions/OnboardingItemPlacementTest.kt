@@ -32,29 +32,43 @@ class OnboardingItemPlacementTest {
     )
 
     @Test
-    fun `when in portrait, should give the clock 10x4, the container 4x6 and the widget list its default`() {
-        assertEquals(OnboardingItemSize(10, 4), onboardingDefaultSize(LauncherItemType.CLOCK, isLandscape = false))
+    fun `when in portrait, should give the clock 20x6, the widget list 20x6 and the container 4x18`() {
+        assertEquals(OnboardingItemSize(20, 6), onboardingDefaultSize(LauncherItemType.CLOCK, isLandscape = false))
         assertEquals(
-            OnboardingItemSize(4, 6),
+            OnboardingItemSize(4, 18),
             onboardingDefaultSize(LauncherItemType.SHORTCUTS_CONTAINER, isLandscape = false)
         )
-        assertEquals(OnboardingItemSize(14, 6), onboardingDefaultSize(LauncherItemType.WIDGET_LIST, false))
-        val clockDefault = GridDefaults.getDefaultSpanForType(LauncherItemType.CLOCK).first
-        assertTrue(10 * 4 < clockDefault.first * clockDefault.second)
+        assertEquals(OnboardingItemSize(20, 6), onboardingDefaultSize(LauncherItemType.WIDGET_LIST, false))
+        val layoutClock = GridDefaults.getDefaultItem(LauncherItemType.CLOCK, false, false)!!
+        assertEquals(
+            OnboardingItemSize(layoutClock.colSpan, layoutClock.rowSpan),
+            onboardingDefaultSize(LauncherItemType.CLOCK)
+        )
     }
 
     @Test
     fun `when the type has no compact size, should keep its default size`() {
-        val default = GridDefaults.getDefaultSpanForType(LauncherItemType.APPS_LIST).first
+        val default = GridDefaults.getDefaultSpanForType(LauncherItemType.QUICK_BUTTON).first
 
         assertEquals(
             OnboardingItemSize(default.first, default.second),
-            onboardingDefaultSize(LauncherItemType.APPS_LIST)
+            onboardingDefaultSize(LauncherItemType.QUICK_BUTTON)
         )
     }
 
     @Test
-    fun `when the default spot is free, should place the compact item there with the new id`() {
+    fun `when adding the apps list, should give it the size the default layout gives it in each orientation`() {
+        listOf(false, true).forEach { isLandscape ->
+            val layout = GridDefaults.getDefaultItem(LauncherItemType.APPS_LIST, isLandscape, false)!!
+            assertEquals(
+                OnboardingItemSize(layout.colSpan, layout.rowSpan),
+                onboardingDefaultSize(LauncherItemType.APPS_LIST, isLandscape)
+            )
+        }
+    }
+
+    @Test
+    fun `when the default spot is free, should place the item there at the layout size with the new id`() {
         val item = placeOnboardingItem(request(LauncherItemType.SHORTCUTS_CONTAINER))
 
         val default = GridDefaults.getDefaultItem(LauncherItemType.SHORTCUTS_CONTAINER, false, false)!!
@@ -62,7 +76,21 @@ class OnboardingItemPlacementTest {
         assertEquals(default.col, item?.col)
         assertEquals(default.row, item?.row)
         assertEquals(4, item?.colSpan)
-        assertEquals(6, item?.rowSpan)
+        assertEquals(18, item?.rowSpan)
+    }
+
+    @Test
+    fun `when the default spot is free, should place the widget list on row 6 at 20x6`() {
+        val item = placeOnboardingItem(request(LauncherItemType.WIDGET_LIST))
+
+        assertEquals(listOf(0, 6, 20, 6), listOf(item?.col, item?.row, item?.colSpan, item?.rowSpan))
+    }
+
+    @Test
+    fun `when left handed, should mirror the container to the first column`() {
+        val item = placeOnboardingItem(request(LauncherItemType.SHORTCUTS_CONTAINER, isLeftHanded = true))
+
+        assertEquals(listOf(0, 12, 4, 18), listOf(item?.col, item?.row, item?.colSpan, item?.rowSpan))
     }
 
     @Test
@@ -73,8 +101,19 @@ class OnboardingItemPlacementTest {
 
         assertEquals(0, item?.col)
         assertEquals(4, item?.row)
-        assertEquals(10, item?.colSpan)
-        assertEquals(4, item?.rowSpan)
+        assertEquals(20, item?.colSpan)
+        assertEquals(6, item?.rowSpan)
+    }
+
+    @Test
+    fun `when the default spot is free, should place the clock at the layout's spot and size`() {
+        val item = placeOnboardingItem(request(LauncherItemType.CLOCK))
+
+        val default = GridDefaults.getDefaultItem(LauncherItemType.CLOCK, false, false)!!
+        assertEquals(
+            listOf(default.col, default.row, 20, 6),
+            listOf(item?.col, item?.row, item?.colSpan, item?.rowSpan)
+        )
     }
 
     @Test
@@ -102,28 +141,30 @@ class OnboardingItemPlacementTest {
     }
 
     @Test
-    fun `when in landscape, should give the clock, container and widget list the smallest size they accept`() {
+    fun `when in landscape, should give the clock, container and widget list the landscape layout size`() {
         listOf(
             LauncherItemType.CLOCK,
             LauncherItemType.SHORTCUTS_CONTAINER,
-            LauncherItemType.WIDGET_LIST
+            LauncherItemType.WIDGET_LIST,
+            LauncherItemType.APPS_LIST
         ).forEach { type ->
-            val minimum = GridDefaults.getDefaultSpanForType(type).second
+            val layout = GridDefaults.getDefaultItem(type, isLandscape = true, isLeftHanded = false)!!
             assertEquals(
-                OnboardingItemSize(minimum.first, minimum.second),
+                OnboardingItemSize(layout.colSpan, layout.rowSpan),
                 onboardingDefaultSize(type, isLandscape = true)
             )
         }
     }
 
     @Test
-    fun `when the grid is landscape, should place the item at the landscape size`() {
+    fun `when the grid is landscape, should place the item at the landscape layout spot and size`() {
         val landscape = GridLimits(GridEngineUtils.LANDSCAPE_MAX_COLS, GridEngineUtils.LANDSCAPE_MAX_ROWS)
 
-        val item = placeOnboardingItem(request(LauncherItemType.CLOCK, limits = landscape).copy(isLandscape = true))
+        val item = placeOnboardingItem(
+            request(LauncherItemType.SHORTCUTS_CONTAINER, limits = landscape).copy(isLandscape = true)
+        )
 
-        assertEquals(1, item?.colSpan)
-        assertEquals(1, item?.rowSpan)
+        assertEquals(listOf(26, 0, 4, 20), listOf(item?.col, item?.row, item?.colSpan, item?.rowSpan))
     }
 
     @Test

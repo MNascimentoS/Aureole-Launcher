@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
@@ -19,7 +20,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.core.data.model.OnboardingStage
 import dev.mnascimentos.aureole.core.data.model.OnboardingTask
-import dev.mnascimentos.aureole.core.designsystem.components.AureoleHaloProgress
+import dev.mnascimentos.aureole.core.designsystem.components.AureoleLogoRing
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
@@ -83,10 +84,9 @@ private fun PillContent(onboarding: OnboardingUiState, shared: ChecklistSharedMo
         horizontalArrangement = Arrangement.spacedBy(AureoleDS.dimens.small),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        AureoleHaloProgress(
+        AureoleLogoRing(
             progress = onboarding.taskProgress,
-            modifier = shared.halo,
-            size = AureoleDS.dimens.iconLarge
+            modifier = shared.halo.size(AureoleDS.dimens.iconLarge)
         )
         AureoleText(
             text = pluralStringResource(

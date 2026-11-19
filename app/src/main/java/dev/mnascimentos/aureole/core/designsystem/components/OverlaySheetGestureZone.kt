@@ -33,7 +33,7 @@ import dev.mnascimentos.aureole.core.designsystem.utils.LongPressViewConfigurati
 private const val GESTURE_ZONE_LONG_PRESS_TIMEOUT_MS = 600L
 
 /** Height of the invisible gesture strip at the top of the sheet. */
-private const val GESTURE_ZONE_HEIGHT_DP = 20
+private const val GESTURE_ZONE_HEIGHT_DP = 10
 
 /**
  * Invisible gesture strip across the top of the overlay sheet; nothing is drawn.

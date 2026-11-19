@@ -42,18 +42,22 @@ import dev.mnascimentos.aureole.composable.reorder.rememberReorderAutoScroll
 import dev.mnascimentos.aureole.composable.reorder.reorderAutoScrollViewport
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.data.model.ContainerModel
-import dev.mnascimentos.aureole.core.designsystem.icons.Add
+import dev.mnascimentos.aureole.core.designsystem.icons.AddNew
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.components.containers.model.ManageItemRowParams
+import dev.mnascimentos.aureole.feature.home.components.containers.model.ManageItemsEditor
+import dev.mnascimentos.aureole.feature.home.components.containers.model.ManageItemsPage
+import dev.mnascimentos.aureole.feature.home.components.containers.model.editorPage
 
 @Composable
 internal fun ManageItemsContent(
     state: EditContainerState,
     allApps: List<AppInfo>,
     onBack: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    editor: ManageItemsEditor = remember { ManageItemsEditor() }
 ) {
     var isCreateFolderDialogVisible by remember { mutableStateOf(false) }
 
@@ -61,20 +65,28 @@ internal fun ManageItemsContent(
         AureoleOverlayWindow(onDismissRequest = { isCreateFolderDialogVisible = false }) {
             CreateFolderDialog(
                 onDismiss = { isCreateFolderDialogVisible = false },
-                onSubmit = { name ->
-                    state.addFolder(name)
+                onSubmit = { details ->
+                    state.addFolder(details)
                     isCreateFolderDialogVisible = false
-                }
+                },
+                // The folder only exists once the container is saved, so there is no app picker to open yet.
+                pickApps = false
             )
         }
     }
 
+    if (editor.isEditing) {
+        Column(modifier = modifier) { ManageItemsEditorContent(editor = editor, state = state, allApps = allApps) }
+        return
+    }
     Column(modifier = modifier) {
         ManageItemsSectionLabel(text = stringResource(R.string.home_container_edit_section_add))
         ManageItemsAddSection(
             state = state,
             allApps = allApps,
-            onOpenCreateFolderDialog = { isCreateFolderDialogVisible = true }
+            onOpenCreateFolderDialog = { isCreateFolderDialogVisible = true },
+            // A new quick button opens its editor right away, in this same sheet (RF-07).
+            onAddQuickButton = { editor.openQuickButton(state.addQuickButton(), isNew = true) }
         )
 
         Spacer(modifier = Modifier.height(AureoleDS.dimens.medium))
@@ -84,7 +96,7 @@ internal fun ManageItemsContent(
             count = state.itemsList.size
         )
 
-        ManageItemsListSection(state = state, allApps = allApps)
+        ManageItemsListSection(state = state, allApps = allApps, editor = editor)
 
         Spacer(modifier = Modifier.height(AureoleDS.dimens.large))
         EditContainerBackButton(onClick = onBack)
@@ -122,7 +134,8 @@ internal fun ManageItemsAddSection(
     state: EditContainerState,
     allApps: List<AppInfo>,
     onOpenCreateFolderDialog: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onAddQuickButton: () -> Unit = { state.addQuickButton() }
 ) {
     Column(
         modifier = modifier
@@ -148,7 +161,7 @@ internal fun ManageItemsAddSection(
 
         ManageItemsAddButtons(
             onOpenCreateFolderDialog = onOpenCreateFolderDialog,
-            onAddQuickButton = { state.addQuickButton() }
+            onAddQuickButton = onAddQuickButton
         )
     }
 }
@@ -177,7 +190,7 @@ private fun ManageItemsAddButtons(
                 .weight(1f)
                 .height(AureoleDS.dimens.itemHeightExtraLarge)
         ) {
-            AureoleDS.icons.Add(
+            AureoleDS.icons.AddNew(
                 tint = AureoleDS.colors.onSurfaceHigh,
                 modifier = Modifier.size(AureoleDS.dimens.iconMedium)
             )
@@ -203,7 +216,7 @@ private fun ManageItemsAddButtons(
                 .weight(1f)
                 .height(AureoleDS.dimens.itemHeightExtraLarge)
         ) {
-            AureoleDS.icons.Add(
+            AureoleDS.icons.AddNew(
                 tint = AureoleDS.colors.onSurfaceHigh,
                 modifier = Modifier.size(AureoleDS.dimens.iconMedium)
             )
@@ -219,7 +232,8 @@ private fun ManageItemsAddButtons(
 @Composable
 internal fun ManageItemsListSection(
     state: EditContainerState,
-    allApps: List<AppInfo>
+    allApps: List<AppInfo>,
+    editor: ManageItemsEditor = remember { ManageItemsEditor() }
 ) {
     if (state.itemsList.isEmpty()) {
         Box(
@@ -236,16 +250,17 @@ internal fun ManageItemsListSection(
             )
         }
     } else {
-        LeftHandMirror { ReorderableManageItems(state = state, allApps = allApps) }
+        LeftHandMirror { ReorderableManageItems(state = state, allApps = allApps, editor = editor) }
     }
 }
 
 /**
- * The items in their order: hold one and drag it up or down to reorder, ✕ removes it. The sheet does not scroll,
- * so the list keeps its own capped scroll; a held item near its top or bottom edge scrolls it.
+ * The items in their order: hold one and drag it up or down to reorder, ✕ removes it, a tap on a folder or a quick
+ * button opens its editor in place (RF-07). The sheet does not scroll, so the list keeps its own capped scroll; a
+ * held item near its top or bottom edge scrolls it.
  */
 @Composable
-private fun ReorderableManageItems(state: EditContainerState, allApps: List<AppInfo>) {
+private fun ReorderableManageItems(state: EditContainerState, allApps: List<AppInfo>, editor: ManageItemsEditor) {
     val scrollState = rememberScrollState()
     val autoScroll = rememberReorderAutoScroll(scrollState)
     Column(
@@ -264,7 +279,17 @@ private fun ReorderableManageItems(state: EditContainerState, allApps: List<AppI
             ),
             autoScroll = autoScroll
         ) { item ->
-            ManageItemRow(params = ManageItemRowParams(item = item, folders = state.folders, allApps = allApps))
+            val onOpen = when (val page = item.editorPage()) {
+                is ManageItemsPage.FolderEditor -> state.folders.find { it.id == page.folderId }
+                    ?.let { folder -> { editor.openFolder(folder) } }
+                is ManageItemsPage.QuickButtonEditor -> {
+                    { editor.openQuickButton(page.quickButtonId) }
+                }
+                else -> null
+            }
+            ManageItemRow(
+                params = ManageItemRowParams(item = item, folders = state.folders, allApps = allApps, onOpen = onOpen)
+            )
         }
     }
 }

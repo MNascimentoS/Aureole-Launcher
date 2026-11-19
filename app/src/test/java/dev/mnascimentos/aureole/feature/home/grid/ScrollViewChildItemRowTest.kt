@@ -76,7 +76,9 @@ class ScrollViewChildItemRowTest {
 
         val context = ApplicationProvider.getApplicationContext<Context>()
         composeTestRule.onNodeWithText(context.getString(R.string.home_grid_item_apps_list)).assertExists()
-        composeTestRule.onNodeWithText("2x").assertExists() // vertical -> rowSpan
+        // The apps list has no size: the row shows neither "Full list" nor "- Nx +".
+        composeTestRule.onNodeWithText(context.getString(R.string.home_scrollgroup_full_list)).assertDoesNotExist()
+        composeTestRule.onNodeWithText("2x").assertDoesNotExist()
     }
 
     @Test

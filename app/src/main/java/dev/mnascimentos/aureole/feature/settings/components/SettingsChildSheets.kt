@@ -11,8 +11,6 @@ import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.settings.components.wallpaper.WallpaperEditorOverlay
 import dev.mnascimentos.aureole.feature.settings.model.CardsGlassParams
 import dev.mnascimentos.aureole.feature.settings.model.ChildSheetLinks
-import dev.mnascimentos.aureole.feature.settings.model.LockScreenOption
-import dev.mnascimentos.aureole.feature.settings.model.SetBackgroundParams
 import dev.mnascimentos.aureole.feature.settings.model.SettingsChildKind
 import dev.mnascimentos.aureole.feature.settings.model.SettingsScreenActions
 import dev.mnascimentos.aureole.feature.settings.model.SettingsSheet
@@ -23,10 +21,9 @@ import dev.mnascimentos.aureole.feature.settings.model.WallpaperEditorParams
 import dev.mnascimentos.aureole.feature.settings.model.toCardsGlassDraft
 
 /**
- * The sheet an area opens in its place (the palette and font pickers open inside the Appearance sheet instead).
- * Each one saves on close as it always did (with its Undo) and calls [onClose] once it has slid out, which brings
- * the area back. The photo editor opens from the background sheet ([ChildSheetLinks.onOpenEditor]) and gives it
- * back the same way.
+ * The sheet an area opens in its place (the palette, font and background pickers open inside the Appearance sheet
+ * instead). Each one saves on close as it always did (with its Undo) and calls [onClose] once it has slid out, which
+ * brings the area back. The photo editor opens full screen from the background picker and gives it back the same way.
  */
 @Composable
 internal fun SettingsChildSheet(
@@ -38,27 +35,6 @@ internal fun SettingsChildSheet(
 ) {
     val host = links.host
     when (kind) {
-        SettingsChildKind.BACKGROUND -> SetBackgroundBottomSheet(
-            params = SetBackgroundParams(
-                currentColor = uiState.manualSeedColor,
-                isCustomImageSet = uiState.isCustomWallpaperSet,
-                onSolidColorSelected = actions.onSelectBackgroundColor,
-                onCustomImageClick = actions.onChangeWallpaperClick,
-                onDismissRequest = onClose,
-                isLeftHanded = uiState.isLeftHandedMode,
-                host = host,
-                customImagePath = uiState.customWallpaperPath,
-                adjustments = uiState.wallpaperAdjustments,
-                onEditPhotoClick = links.onOpenEditor,
-                lockScreen = LockScreenOption(
-                    checked = uiState.applyToLockScreen,
-                    isAvailable = uiState.canSetWallpaper,
-                    isNoticeSeen = uiState.isLockScreenNoticeSeen,
-                    onTurnOn = actions.onLockScreenTurnOn,
-                    onTurnOff = actions.onLockScreenTurnOff
-                )
-            )
-        )
         SettingsChildKind.WALLPAPER_EDITOR -> WallpaperEditorOverlay(
             params = WallpaperEditorParams(
                 photoPath = uiState.customWallpaperPath?.takeIf { uiState.isCustomWallpaperSet && it.isNotEmpty() },
@@ -84,7 +60,7 @@ internal fun SettingsChildSheet(
     }
 }
 
-/** The child sheet on top; the background one can swap itself for the photo editor. */
+/** The child sheet on top. */
 @Composable
 internal fun OpenChild(
     child: SettingsSheet.Child,
@@ -96,15 +72,12 @@ internal fun OpenChild(
         kind = child.kind,
         uiState = host.uiState,
         actions = host.actions,
-        links = ChildSheetLinks(
-            host = overlayHost,
-            onOpenEditor = { dispatch(SettingsSheetEvent.OpenChild(SettingsChildKind.WALLPAPER_EDITOR)) }
-        ),
+        links = ChildSheetLinks(host = overlayHost),
         onClose = { dispatch(SettingsSheetEvent.CloseChild(child.kind)) }
     )
 }
 
-/** A photo was just picked: the editor opens on it in place of the background sheet (RF-01), once. */
+/** A photo was just picked: the editor opens on it over the background picker (RF-01), once. */
 @Composable
 internal fun OpenEditorOnRequest(isRequested: Boolean, onOpen: () -> Unit, onOpened: () -> Unit) {
     val currentOnOpen by rememberUpdatedState(onOpen)

@@ -1,8 +1,12 @@
 package dev.mnascimentos.aureole.feature.home.components.containers.folder.extensions
 
 import dev.mnascimentos.aureole.core.data.model.AppFolder
+import dev.mnascimentos.aureole.core.data.model.FolderDetails
+import dev.mnascimentos.aureole.core.data.model.details
+import dev.mnascimentos.aureole.core.data.model.withDetails
 import dev.mnascimentos.aureole.feature.home.HomeViewModel
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.FolderViewIntent
+import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.afterFolderCreated
 
 fun HomeViewModel.setRenameFolderDialogVisible(visible: Boolean) {
     updateUiState { it.copy(isRenameFolderDialogVisible = visible) }
@@ -12,9 +16,10 @@ fun HomeViewModel.setAddAppToFolderDialogVisible(visible: Boolean) {
     updateUiState { it.copy(isAddAppToFolderDialogVisible = visible) }
 }
 
-internal suspend fun HomeViewModel.createNewFolder(name: String, icon: String? = null) {
+/** Creates the folder and opens it; [pickApps] also opens its app picker ("Create and pick apps"). */
+internal suspend fun HomeViewModel.createNewFolder(details: FolderDetails, pickApps: Boolean = false) {
     val targetPanelId = uiState.value.targetPanelIdForFolder
-    val newFolder = AppFolder(name = name, icon = icon, panelId = targetPanelId)
+    val newFolder = AppFolder(name = details.name, panelId = targetPanelId).withDetails(details)
 
     if (targetPanelId != null) {
         containerRepository.addFolderToPanel(targetPanelId, newFolder)
@@ -35,6 +40,7 @@ internal suspend fun HomeViewModel.createNewFolder(name: String, icon: String? =
     }
 
     refreshFoldersAndOpen(newFolder.id)
+    updateUiState { it.afterFolderCreated(pickApps) }
 }
 
 /** Saves the apps of the folder and offers an "Undo" that puts the previous apps back. */
@@ -48,13 +54,13 @@ internal suspend fun HomeViewModel.saveFolderApps(intent: FolderViewIntent.SaveF
     }
 }
 
-/** Saves the name and icon of the folder and offers an "Undo" that puts the previous ones back. */
+/** Saves the name and look of the folder and offers an "Undo" that puts the previous ones back. */
 internal suspend fun HomeViewModel.renameFolder(intent: FolderViewIntent.RenameFolder) {
     val before = uiState.value.folders.find { it.id == intent.folderId }
-    folderRepository.updateFolderDetails(intent.folderId, intent.newName, intent.icon)
+    folderRepository.updateFolderDetails(intent.folderId, intent.details)
     refreshFoldersAndOpen(intent.folderId)
     updateUiState { it.copy(isRenameFolderDialogVisible = false) }
-    if (before != null && (before.name != intent.newName || before.icon != intent.icon)) {
-        offerFolderUndo { folderRepository.updateFolderDetails(before.id, before.name, before.icon) }
+    if (before != null && before.details() != intent.details) {
+        offerFolderUndo { folderRepository.updateFolderDetails(before.id, before.details()) }
     }
 }

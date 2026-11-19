@@ -7,6 +7,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.composable.minihome.AureoleMiniHome
+import dev.mnascimentos.aureole.composable.minihome.model.MiniHomeFavoritesLayout
 import dev.mnascimentos.aureole.composable.minihome.sampleMiniHomeContent
 import dev.mnascimentos.aureole.composable.sheets.model.AutoSaveOverlayParams
 import dev.mnascimentos.aureole.composable.sheets.model.ThemePreviewOverlayParams
@@ -47,7 +48,7 @@ internal fun ThemePreviewOverlay(
             preview = {
                 AureoleMiniHome(
                     content = sampleMiniHomeContent(),
-                    isLeftHanded = isLeftHanded,
+                    layout = MiniHomeFavoritesLayout(isLeftHanded = isLeftHanded),
                     modifier = Modifier.align(Alignment.Center)
                 )
             },

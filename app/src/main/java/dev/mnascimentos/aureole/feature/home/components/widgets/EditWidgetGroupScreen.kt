@@ -20,6 +20,7 @@ import dev.mnascimentos.aureole.composable.LocalHomeUiState
 import dev.mnascimentos.aureole.composable.menu.AureoleSwitchRow
 import dev.mnascimentos.aureole.composable.menu.model.SwitchRowParams
 import dev.mnascimentos.aureole.composable.preview.AureolePreviewFrame
+import dev.mnascimentos.aureole.composable.showsHomeSheetLogo
 import dev.mnascimentos.aureole.core.data.model.LauncherItemState
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleEditOverlay
 import dev.mnascimentos.aureole.core.designsystem.icons.Dots
@@ -71,6 +72,7 @@ fun EditWidgetGroupScreen(
                 title = stringResource(R.string.home_widget_stack_title),
                 hazeState = params.hazeState,
                 onSettingsClick = actions.onSettingsClick,
+                showHeaderAction = showsHomeSheetLogo(),
                 isLeftHanded = isLeftHanded
             ),
             previewContent = {

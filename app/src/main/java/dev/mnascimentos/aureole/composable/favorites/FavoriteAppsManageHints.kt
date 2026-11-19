@@ -1,7 +1,6 @@
 package dev.mnascimentos.aureole.composable.favorites
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -17,65 +16,52 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow
 import dev.mnascimentos.aureole.R
+import dev.mnascimentos.aureole.composable.favorites.model.FavoritesEmptyNotice
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
-import dev.mnascimentos.aureole.core.designsystem.icons.AllApps
-import dev.mnascimentos.aureole.core.designsystem.icons.DragHandle
+import dev.mnascimentos.aureole.core.designsystem.icons.Info
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 
-/** Fixed tip of the manage list, shown with two or more favorites: how to reorder them. */
+/**
+ * One-line notice of the list without favorites (RF-03): with [FavoritesEmptyNotice.HOME_SHOWS_ALL] the Home shows
+ * all [appCount] apps, with [FavoritesEmptyNotice.HOME_STAYS_EMPTY] the list stays empty there.
+ */
 @Composable
-internal fun FavoriteAppsDragHint(modifier: Modifier = Modifier) {
-    FavoriteAppsNotice(
-        text = stringResource(R.string.home_favorites_manage_drag_hint),
-        modifier = modifier
-    ) {
-        AureoleDS.icons.DragHandle(
-            tint = AureoleDS.colors.onSurfaceHigh,
-            modifier = Modifier.size(AureoleDS.dimens.iconLarge)
-        )
-    }
-}
-
-/** Banner of the manage list without favorites: the Home shows all [appCount] apps. */
-@Composable
-internal fun FavoriteAppsEmptyBanner(appCount: Int, modifier: Modifier = Modifier) {
-    FavoriteAppsNotice(
-        text = pluralStringResource(R.plurals.home_favorites_manage_empty_banner, appCount, appCount),
-        modifier = modifier
-    ) {
-        AureoleDS.icons.AllApps(
-            tint = AureoleDS.colors.onSurfaceHigh,
-            modifier = Modifier.size(AureoleDS.dimens.iconLarge)
-        )
-    }
-}
-
-@Composable
-private fun FavoriteAppsNotice(
-    text: String,
-    modifier: Modifier = Modifier,
-    icon: @Composable () -> Unit
+internal fun FavoriteAppsEmptyNotice(
+    notice: FavoritesEmptyNotice,
+    appCount: Int,
+    modifier: Modifier = Modifier
 ) {
-    val shape = RoundedCornerShape(AureoleDS.dimens.radiusSmall)
+    val text = when (notice) {
+        FavoritesEmptyNotice.HOME_SHOWS_ALL ->
+            pluralStringResource(R.plurals.home_favorites_empty_notice_all, appCount, appCount)
+        FavoritesEmptyNotice.HOME_STAYS_EMPTY -> stringResource(R.string.home_favorites_empty_notice_empty)
+    }
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .clip(shape)
+            .clip(RoundedCornerShape(AureoleDS.dimens.radiusSmall))
             .background(AureoleDS.colors.surfaceVariant.copy(alpha = 0.35f))
-            .border(AureoleDS.dimens.borderMinimal, AureoleDS.colors.outline.copy(alpha = 0.35f), shape)
             .padding(horizontal = AureoleDS.dimens.small, vertical = AureoleDS.dimens.xSmall),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        icon()
-        Spacer(modifier = Modifier.width(AureoleDS.dimens.small))
+        AureoleDS.icons.Info(
+            tint = AureoleDS.colors.onSurfaceMedium,
+            modifier = Modifier.size(AureoleDS.dimens.iconSmall)
+        )
+        Spacer(modifier = Modifier.width(AureoleDS.dimens.xSmall))
         AureoleText(
             text = text,
-            color = AureoleDS.colors.onSurfaceHigh,
-            format = AureoleTextFormatParams(style = AureoleDS.typography.bodySmall)
+            color = AureoleDS.colors.onSurfaceMedium,
+            format = AureoleTextFormatParams(
+                style = AureoleDS.typography.bodySmall,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
         )
     }
 }
@@ -90,8 +76,8 @@ private fun FavoriteAppsManageHintsPreview() {
                 .padding(AureoleDS.dimens.medium),
             verticalArrangement = Arrangement.spacedBy(AureoleDS.dimens.xSmall)
         ) {
-            FavoriteAppsDragHint()
-            FavoriteAppsEmptyBanner(appCount = 34)
+            FavoriteAppsEmptyNotice(notice = FavoritesEmptyNotice.HOME_SHOWS_ALL, appCount = 34)
+            FavoriteAppsEmptyNotice(notice = FavoritesEmptyNotice.HOME_STAYS_EMPTY, appCount = 34)
         }
     }
 }

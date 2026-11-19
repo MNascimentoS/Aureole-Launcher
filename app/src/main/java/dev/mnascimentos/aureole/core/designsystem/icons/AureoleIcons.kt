@@ -28,6 +28,12 @@ fun AureoleIcons.Calendar(
 ) { AureoleIcon(R.drawable.ic_aureole_calendar, modifier, tint) }
 
 @Composable
+fun AureoleIcons.Clock(
+    modifier: Modifier = Modifier,
+    tint: Color? = null
+) { AureoleIcon(R.drawable.ic_aureole_clock, modifier, tint) }
+
+@Composable
 fun AureoleIcons.Icon(
     modifier: Modifier = Modifier,
     tint: Color? = null

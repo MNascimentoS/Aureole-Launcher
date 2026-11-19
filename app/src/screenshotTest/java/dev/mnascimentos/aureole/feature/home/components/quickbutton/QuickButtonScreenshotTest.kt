@@ -6,11 +6,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.android.tools.screenshot.PreviewTest
+import dev.mnascimentos.aureole.core.data.model.QuickButtonAppearance
 import dev.mnascimentos.aureole.core.data.model.QuickButtonModel
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
+import dev.mnascimentos.aureole.feature.home.components.quickbutton.model.NoQuickButtonCallbacks
 import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
+import dev.mnascimentos.aureole.feature.home.model.createDefaultHomeScreenActions
 
 @PreviewTest
 @AureolePreview
@@ -18,11 +21,7 @@ import dev.mnascimentos.aureole.feature.home.model.MainUiState
 private fun QuickButtonGridItemScreenshotTest() {
     AureoleLauncherTheme {
         Box(modifier = Modifier.size(100.dp)) {
-            QuickButtonGridItem(
-                model = QuickButtonModel(),
-                onAction = {},
-                onLongPress = {}
-            )
+            QuickButtonGridItem(model = QuickButtonModel(), callbacks = NoQuickButtonCallbacks)
         }
     }
 }
@@ -76,6 +75,23 @@ private fun QuickButtonAppearanceBottomSheetScreenshotTest() {
                 activeQuickButtonModel = QuickButtonModel()
             ),
             actions = dummyActions,
+            onDismissRequest = {}
+        )
+    }
+}
+
+@PreviewTest
+@AureolePreview
+@Composable
+private fun QuickButtonAppearanceNameShownScreenshotTest() {
+    AureoleLauncherTheme {
+        QuickButtonAppearanceBottomSheet(
+            uiState = MainUiState(
+                activeQuickButtonModel = QuickButtonModel(
+                    appearance = QuickButtonAppearance(label = "Mail", showLabel = true)
+                )
+            ),
+            actions = createDefaultHomeScreenActions(),
             onDismissRequest = {}
         )
     }

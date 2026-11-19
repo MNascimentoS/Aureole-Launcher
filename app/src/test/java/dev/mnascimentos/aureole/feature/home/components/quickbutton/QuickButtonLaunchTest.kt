@@ -70,8 +70,7 @@ class QuickButtonLaunchTest {
         showButton()
 
         val browser = tapWith(ShortcutAction.systemIntent("Browser"))
-        assertEquals(Intent.ACTION_VIEW, browser?.action)
-        assertEquals("http://www.google.com", browser?.dataString)
+        assertEquals(Intent.CATEGORY_APP_BROWSER, browser?.selector?.categories?.single())
         assertTrue((browser?.flags ?: 0) and Intent.FLAG_ACTIVITY_NEW_TASK != 0)
 
         assertEquals(
@@ -79,7 +78,9 @@ class QuickButtonLaunchTest {
             tapWith(ShortcutAction.systemIntent("Camera"))?.action
         )
         assertEquals(Intent.ACTION_DIAL, tapWith(ShortcutAction.systemIntent("Dialer"))?.action)
-        assertEquals(Settings.ACTION_SETTINGS, tapWith(ShortcutAction.systemIntent("Anything else"))?.action)
+        assertEquals(Settings.ACTION_WIFI_SETTINGS, tapWith(ShortcutAction.systemIntent("Wi-Fi Settings"))?.action)
+        // An unknown target does nothing: it never falls back to Settings.
+        assertNull(tapWith(ShortcutAction.systemIntent("Anything else")))
     }
 
     @Test

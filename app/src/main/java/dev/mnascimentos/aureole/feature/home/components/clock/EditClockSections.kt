@@ -1,10 +1,7 @@
 package dev.mnascimentos.aureole.feature.home.components.clock
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ExperimentalLayoutApi
-import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -67,32 +64,8 @@ internal fun EditClockAlignmentSection(
     AureoleSegmentedControl(
         options = ClockAlignmentOption.entries.map { stringResource(it.labelRes) },
         selectedIndex = ClockAlignmentOption.indexOfKey(uiState.clockAlignment),
-        onSelect = { actions.onUpdateClockAlignment(ClockAlignmentOption.entries[it].key) },
-        itemHeight = AureoleDS.dimens.minTouchTarget
+        onSelect = { actions.onUpdateClockAlignment(ClockAlignmentOption.entries[it].key) }
     )
-}
-
-@OptIn(ExperimentalLayoutApi::class)
-@Composable
-internal fun EditClockTextColorSection(
-    uiState: MainUiState,
-    actions: HomeScreenActions
-) {
-    EditClockSectionHeader(title = stringResource(R.string.home_clock_text_color))
-    FlowRow(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(AureoleDS.dimens.smallCompact),
-        verticalArrangement = Arrangement.spacedBy(AureoleDS.dimens.smallCompact)
-    ) {
-        PRESET_TEXT_COLORS.forEach { (nameRes, colorValue) ->
-            EditClockColorSwatchItem(
-                name = stringResource(nameRes),
-                colorValue = colorValue,
-                isSelected = uiState.clockTextColor == colorValue,
-                onClick = { actions.onUpdateClockTextColor(colorValue) }
-            )
-        }
-    }
 }
 
 @Composable
@@ -133,12 +106,18 @@ internal fun EditClockFormatSection(
     }
 }
 
+/**
+ * Sub-label of the format options ("Time", "Date"): shares the section title's start inset,
+ * so both sit on one line.
+ */
 @Composable
 private fun FormatSubtitle(text: String) {
     AureoleText(
         text = text,
         color = AureoleDS.colors.onSurfaceMedium,
-        modifier = Modifier.padding(bottom = AureoleDS.dimens.xSmall),
+        modifier = Modifier.padding(
+            bottom = AureoleDS.dimens.small
+        ),
         format = AureoleTextFormatParams(style = AureoleDS.typography.bodySmall)
     )
 }

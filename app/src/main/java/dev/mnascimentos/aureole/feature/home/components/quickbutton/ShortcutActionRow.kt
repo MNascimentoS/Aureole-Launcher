@@ -16,11 +16,20 @@ import dev.mnascimentos.aureole.core.data.model.ShortcutAction
 import dev.mnascimentos.aureole.core.data.model.ShortcutType
 import dev.mnascimentos.aureole.core.designsystem.icons.AllApps
 import dev.mnascimentos.aureole.core.designsystem.icons.AppSelect
+import dev.mnascimentos.aureole.core.designsystem.icons.Calendar
 import dev.mnascimentos.aureole.core.designsystem.icons.Close
 import dev.mnascimentos.aureole.core.designsystem.icons.Dots
-import dev.mnascimentos.aureole.core.designsystem.icons.Placeholder
+import dev.mnascimentos.aureole.core.designsystem.icons.Folder
+import dev.mnascimentos.aureole.core.designsystem.icons.Image
+import dev.mnascimentos.aureole.core.designsystem.icons.Info
+import dev.mnascimentos.aureole.core.designsystem.icons.Plus
+import dev.mnascimentos.aureole.core.designsystem.icons.Press
+import dev.mnascimentos.aureole.core.designsystem.icons.RotateClockwise
+import dev.mnascimentos.aureole.core.designsystem.icons.Search
 import dev.mnascimentos.aureole.core.designsystem.icons.Settings
 import dev.mnascimentos.aureole.core.designsystem.icons.Star
+import dev.mnascimentos.aureole.core.designsystem.icons.Text
+import dev.mnascimentos.aureole.core.designsystem.icons.Users
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
@@ -59,21 +68,41 @@ private fun ShortcutIconTile(action: ShortcutAction, app: AppInfo?) {
             AureoleAppIcon(app = app, size = AureoleDS.dimens.iconLarge)
         } else {
             val modifier = Modifier.size(AureoleDS.dimens.iconMedium)
-            ShortcutActionIcon(action.type, AureoleDS.colors.onSurfaceMedium, modifier)
+            ShortcutActionIcon(action, AureoleDS.colors.onSurfaceMedium, modifier)
         }
     }
 }
 
 @Composable
-private fun ShortcutActionIcon(type: ShortcutType, tint: Color, modifier: Modifier = Modifier) {
-    when (type) {
+private fun ShortcutActionIcon(action: ShortcutAction, tint: Color, modifier: Modifier = Modifier) {
+    when (action.type) {
         ShortcutType.ALL_APPS -> AureoleDS.icons.AllApps(modifier = modifier, tint = tint)
         ShortcutType.ASSISTANT -> AureoleDS.icons.Star(modifier = modifier, tint = tint)
         ShortcutType.SETTINGS -> AureoleDS.icons.Settings(modifier = modifier, tint = tint)
         ShortcutType.NOTIFICATIONS -> AureoleDS.icons.Dots(modifier = modifier, tint = tint)
         ShortcutType.NONE -> AureoleDS.icons.Close(modifier = modifier, tint = tint)
         ShortcutType.OPEN_APP -> AureoleDS.icons.AppSelect(modifier = modifier, tint = tint)
-        ShortcutType.SYSTEM_INTENT -> AureoleDS.icons.Placeholder(modifier = modifier, tint = tint)
+        ShortcutType.SYSTEM_INTENT -> SystemShortcutIcon(action.target, tint, modifier)
+    }
+}
+
+/** The DS icon of a system shortcut with no app to take the icon from: one per target, never the placeholder. */
+@Composable
+private fun SystemShortcutIcon(target: String, tint: Color, modifier: Modifier = Modifier) {
+    val icons = AureoleDS.icons
+    when (target) {
+        "Browser", "Search" -> icons.Search(modifier = modifier, tint = tint)
+        "Calendar" -> icons.Calendar(modifier = modifier, tint = tint)
+        "Camera" -> icons.Image(modifier = modifier, tint = tint)
+        "Clock" -> icons.RotateClockwise(modifier = modifier, tint = tint)
+        "Contacts" -> icons.Users(modifier = modifier, tint = tint)
+        "Dialer" -> icons.Press(modifier = modifier, tint = tint)
+        "Email", "Messages" -> icons.Text(modifier = modifier, tint = tint)
+        "Files" -> icons.Folder(modifier = modifier, tint = tint)
+        "Music Player" -> icons.Star(modifier = modifier, tint = tint)
+        "Device Settings" -> icons.Info(modifier = modifier, tint = tint)
+        "Calculator" -> icons.Plus(modifier = modifier, tint = tint)
+        else -> icons.Settings(modifier = modifier, tint = tint)
     }
 }
 

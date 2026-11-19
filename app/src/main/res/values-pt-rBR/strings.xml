@@ -24,13 +24,11 @@
     <!-- Folders -->
     <string name="home_folder_edit_title">Editar Pasta</string>
     <string name="home_folder_new_title">Nova Pasta</string>
-    <string name="home_folder_name_label">Nome da Pasta</string>
     <string name="home_folder_name_placeholder">Nova Pasta</string>
-    <string name="home_folder_icon">Ícone da Pasta</string>
     <string name="home_folder_apps_in_folder">Apps na Pasta: %1$s</string>
-    <string name="home_folder_no_apps_in_folder">Nenhum aplicativo na pasta.</string>
     <string name="core_common_no_apps_found">Nenhum aplicativo encontrado.</string>
-    <string name="home_folder_other_apps_count">Outros Aplicativos (%1$d)</string>
+    <string name="home_folder_add_apps">Adicionar apps</string>
+    <string name="home_folder_picker_empty">Nenhum aplicativo na pasta.</string>
     <string name="home_folder_picker_drag_hint">Segure um app e deslize para marcar vários</string>
     <string name="core_common_search_app_placeholder">Buscar aplicativo&#8230;</string>
 
@@ -47,8 +45,13 @@
     <string name="home_quickbutton_bg_color">Cor de fundo</string>
     <string name="home_quickbutton_stroke">Borda</string>
     <string name="home_quickbutton_stroke_color">Cor da borda</string>
-    <string name="home_quickbutton_icon">Ícone</string>
     <string name="home_quickbutton_icon_color">Cor do ícone</string>
+    <string name="home_quickbutton_tab_icon">Ícone</string>
+    <string name="home_quickbutton_tab_colors">Cores</string>
+    <string name="home_quickbutton_tabs_label">O que editar</string>
+    <string name="home_quickbutton_color_target_label">Qual cor mudar</string>
+    <string name="home_quickbutton_show_name">Mostrar nome na home</string>
+    <string name="home_quickbutton_low_contrast">Contraste baixo: o ícone pode ficar difícil de ver</string>
 
     <!-- Colors / Theming -->
 
@@ -83,7 +86,6 @@
     <string name="settings_behavior_title">Comportamento</string>
     <string name="settings_behavior_home_opens_all_apps">Home abre todos os apps</string>
     <string name="settings_behavior_all_apps_left_side">Todos os apps do lado esquerdo</string>
-    <string name="settings_behavior_show_widget_indicator">Exibir indicador de widgets</string>
     <string name="settings_behavior_disable_alphabet_scrubber">Desativar rolagem alfabética</string>
     <string name="settings_behavior_check_for_updates">Verificar atualizações</string>
     <string name="settings_behavior_header_offset">Deslocamento do cabeçalho</string>
@@ -168,7 +170,6 @@
     <string name="home_clock_align_left">Esquerda</string>
     <string name="home_clock_align_center">Centro</string>
     <string name="home_clock_align_right">Direita</string>
-    <string name="home_clock_text_color">Cor do Texto</string>
     <string name="home_clock_font_style">Estilo da Fonte</string>
     <string name="home_clock_font_default">Padrão do tema</string>
     <string name="home_clock_font_bold">Negrito</string>
@@ -180,21 +181,7 @@
     <string name="home_clock_time_system">Sistema</string>
     <string name="home_clock_time_12h">12 Horas</string>
     <string name="home_clock_time_24h">24 Horas</string>
-    <string name="home_clock_card_background">Fundo do Cartão</string>
     <string name="home_clock_show_background">Mostrar cartão de fundo</string>
-    <string name="home_clock_custom_bg_color">Cor de Fundo Personalizada:</string>
-    <string name="home_clock_color_default">Padrão</string>
-    <string name="home_clock_color_ice_blue">Azul Gelado</string>
-    <string name="home_clock_color_lavender">Lavanda</string>
-    <string name="home_clock_color_white">Branco</string>
-    <string name="home_clock_color_gold">Ouro</string>
-    <string name="home_clock_color_mint">Menta</string>
-    <string name="home_clock_color_coral">Coral</string>
-    <string name="home_clock_bg_color_dark_slate">Escuro Slate</string>
-    <string name="home_clock_bg_color_deep_purple">Roxo Profundo</string>
-    <string name="home_clock_bg_color_night_blue">Azul Noturno</string>
-    <string name="home_clock_bg_color_wine">Vinho</string>
-    <string name="home_clock_bg_color_dark_green">Verde Escuro</string>
     <string name="home_clock_greeting_morning">Bom dia</string>
     <string name="home_clock_greeting_afternoon">Boa tarde</string>
     <string name="home_clock_greeting_evening">Boa noite</string>
@@ -202,9 +189,6 @@
     <!-- Favorites Dialog -->
     <string name="home_favorites_choose">Escolher favoritos</string>
     <string name="home_apps_list_show_all">Mostrar todos os apps</string>
-    <string name="home_favorites_show_labels">Mostrar rótulos</string>
-    <string name="home_favorites_show_labels_summary">“Favoritos” e “Todos os apps”</string>
-    <string name="home_favorites_count">Favoritos (%1$d)</string>
     <string name="home_favorites_disable_all">Remover todos</string>
     <string name="home_favorites_none_selected">Nenhum aplicativo favorito selecionado.</string>
     <string name="home_favorites_none_found">Nenhum favorito encontrado.</string>
@@ -232,14 +216,14 @@
     <string name="home_widget_resize_group">Redimensionar Grupo</string>
     <string name="home_widget_toggle_indicator">Alternar Indicador de Posição</string>
     <string name="home_widget_move_label">Mover</string>
-    <string name="home_widget_move_position">%1$d de %2$d</string>
+    <string name="home_widget_move_position">%1$d de %2$s</string>
     <string name="home_widget_move_previous">Mover %1$s para antes</string>
     <string name="home_widget_move_next">Mover %1$s para depois</string>
     <string name="home_widget_menu_section">Grupo</string>
     <string name="home_widget_remove">Remover</string>
 
     <!-- Edit Container -->
-    <string name="home_container_edit_title">Configurações do Container</string>
+    <string name="home_container_edit_title">Container</string>
     <string name="home_container_edit_appearance">Aparência</string>
     <string name="home_container_edit_behavior">Comportamento</string>
     <string name="home_container_edit_manage_items">Gerenciar Itens</string>
@@ -290,7 +274,6 @@
     <string name="home_container_add_quick_button">Botão Rápido</string>
     <string name="home_container_add_scroll_view">Grupo rolável</string>
 
-    <string name="home_container_edit_scroll_orientation">Orientação do Scroll</string>
     <string name="home_container_edit_vertical">Vertical</string>
     <string name="home_container_edit_horizontal">Horizontal</string>
 
@@ -349,7 +332,7 @@
     <string name="home_grid_item_scroll_view">Grupo rolável</string>
     <string name="home_grid_item_quick_button">Botão Rápido</string>
     <string name="home_grid_item_container">Container</string>
-    <string name="home_grid_current_size" tools:ignore="PluralsCandidate">Tamanho atual: %1$d x %2$d células</string>
+    <string name="home_grid_current_size" tools:ignore="PluralsCandidate">Tamanho atual: %1$d x %2$s células</string>
     <string name="settings_cards_glass_title">Cartões e vidro</string>
     <string name="settings_cards_glass_corners_label">Cantos</string>
     <string name="settings_cards_glass_glass_label">Vidro (desfoque)</string>
@@ -381,25 +364,25 @@
     <string name="home_onboarding_coach_show_me">Mostrar para mim</string>
     <string name="home_onboarding_coach_success">Isso aí!</string>
     <string name="home_onboarding_coach_apps_title">Deslize para cima</string>
-    <string name="home_onboarding_coach_apps_body">para ver todos os seus apps. O botão Início também abre e fecha a lista.</string>
-    <string name="home_onboarding_coach_apps_done">Seus apps estão aqui. Toque em voltar para fechar.</string>
+    <string name="home_onboarding_coach_apps_body">Veja todos os seus apps. O botão Início também abre e fecha a lista.</string>
+    <string name="home_onboarding_coach_apps_done">Seus apps estão aqui. Toque em voltar ou no botão Início para fechar.</string>
     <string name="home_onboarding_coach_scrub_title_right">Deslize na borda direita</string>
     <string name="home_onboarding_coach_scrub_title_left">Deslize na borda esquerda</string>
-    <string name="home_onboarding_coach_scrub_body">e desça o dedo para pular direto para uma letra.</string>
+    <string name="home_onboarding_coach_scrub_body">Depois desça o dedo para pular direto para uma letra.</string>
     <string name="home_onboarding_coach_scrub_done">Rápido, né? Solte para fechar.</string>
     <string name="home_onboarding_coach_customize_title">Toque e segure</string>
-    <string name="home_onboarding_coach_customize_body">em um espaço vazio da tela para personalizar o que aparece nela.</string>
+    <string name="home_onboarding_coach_customize_body">Em um espaço vazio da tela para personalizar o que aparece nela.</string>
     <string name="home_onboarding_coach_customize_done">É aqui que você monta sua tela.</string>
     <string name="home_onboarding_checklist_title">Primeiros passos</string>
     <plurals name="home_onboarding_checklist_progress">
-        <item quantity="one">%1$d de %2$d etapas</item>
-        <item quantity="many">%1$d de %2$d etapas</item>
-        <item quantity="other">%1$d de %2$d etapas</item>
+        <item quantity="one">%1$d de %2$s etapas</item>
+        <item quantity="many">%1$d de %2$s etapas</item>
+        <item quantity="other">%1$d de %2$s etapas</item>
     </plurals>
     <plurals name="home_onboarding_checklist_pill">
-        <item quantity="one">%1$d/%2$d primeiros passos</item>
-        <item quantity="many">%1$d/%2$d primeiros passos</item>
-        <item quantity="other">%1$d/%2$d primeiros passos</item>
+        <item quantity="one">%1$d/%2$s primeiros passos</item>
+        <item quantity="many">%1$d/%2$s primeiros passos</item>
+        <item quantity="other">%1$d/%2$s primeiros passos</item>
     </plurals>
     <string name="home_onboarding_checklist_minimize">Minimizar</string>
     <string name="home_onboarding_checklist_dismiss">Não mostrar mais</string>
@@ -435,7 +418,6 @@
     <string name="settings_background_section_theme">Do seu tema</string>
     <string name="settings_background_section_palettes">Paletas</string>
     <string name="settings_background_section_tones">Tons</string>
-    <string name="settings_background_section_vivid">Vivas</string>
     <string name="settings_background_category_cold">Frias</string>
     <string name="settings_background_category_cool">Frescas</string>
     <string name="settings_background_category_neutral">Neutras</string>
@@ -444,6 +426,8 @@
     <string name="settings_background_swatch_surface">Superfície</string>
     <string name="settings_background_swatch_variant">Variante</string>
     <string name="settings_background_swatch_outline">Contorno</string>
+    <string name="settings_background_swatch_accent">Destaque</string>
+    <string name="theme_color_section_other_palettes">De outras paletas</string>
     <string name="settings_background_light_warning">Essa cor gera um tema claro</string>
     <string name="home_undo_action">Desfazer</string>
     <string name="home_undo_removed_from_folder">%1$s saiu da pasta</string>
@@ -494,24 +478,17 @@
         <item quantity="many">%1$d componentes</item>
         <item quantity="other">%1$d componentes</item>
     </plurals>
-    <string name="home_favorites_menu_all_shown">Sem favoritos: mostra todos os apps</string>
-    <string name="home_favorites_manage_drag_hint">Segure e arraste o botão para ordenar</string>
-    <plurals name="home_favorites_manage_empty_banner">
-        <item quantity="one">Sem favoritos: a Home mostra todos os %1$d apps. Toque em + para escolher só alguns.</item>
-        <item quantity="many">Sem favoritos: a Home mostra todos os %1$d apps. Toque em + para escolher só alguns.</item>
-        <item quantity="other">Sem favoritos: a Home mostra todos os %1$d apps. Toque em + para escolher só alguns.</item>
+    <string name="home_favorites_chip_labels">Rótulos</string>
+    <string name="home_favorites_section_title">Favoritos · %1$d</string>
+    <string name="home_favorites_section_all_title">Todos os apps · %1$d</string>
+    <string name="home_favorites_section_reorder_hint">segure ⋮⋮ para ordenar</string>
+    <string name="home_favorites_empty_notice_empty">Sem favoritos: a lista fica vazia na Home.</string>
+    <plurals name="home_favorites_empty_notice_all">
+        <item quantity="one">Sem favoritos: a Home mostra todos os %1$d apps.</item>
+        <item quantity="many">Sem favoritos: a Home mostra todos os %1$d apps.</item>
+        <item quantity="other">Sem favoritos: a Home mostra todos os %1$d apps.</item>
     </plurals>
     <string name="home_favorites_manage_drag_handle">Reordenar</string>
-    <plurals name="home_favorites_menu_count">
-        <item quantity="one">%1$d favorito, o resto fica oculto</item>
-        <item quantity="many">%1$d favoritos, o resto fica oculto</item>
-        <item quantity="other">%1$d favoritos, o resto fica oculto</item>
-    </plurals>
-    <plurals name="home_favorites_menu_count_on_top">
-        <item quantity="one">%1$d favorito no topo, depois todos os apps</item>
-        <item quantity="many">%1$d favoritos no topo, depois todos os apps</item>
-        <item quantity="other">%1$d favoritos no topo, depois todos os apps</item>
-    </plurals>
     <string name="settings_appearance_restore_background">Restaurar fundo</string>
     <string name="settings_appearance_background_restored">Fundo restaurado</string>
     <string name="settings_appearance_background_type">Tipo</string>
@@ -543,6 +520,7 @@
     <string name="folder_icon_cat_health">Saúde</string>
     <string name="folder_icon_cat_travel">Viagem</string>
     <string name="folder_icon_cat_tools">Ferramentas</string>
+    <string name="folder_icon_cat_actions">Ações</string>
     <string name="home_grid_no_space_error">Não há espaço livre suficiente na grade para este container.</string>
     <string name="settings_reset_grid_success">Layout da tela inicial resetado para o padrão</string>
     <string name="settings_wallpaper_load_error">Não foi possível carregar a imagem selecionada</string>
@@ -566,4 +544,80 @@
     <string name="settings_section_system">Sistema</string>
     <string name="settings_section_about">Sobre</string>
     <string name="settings_section_care_zone">Zona de cuidado</string>
+    <string name="home_folder_name_hint">Dar um nome</string>
+    <string name="home_folder_name_a11y">Nome, %1$s, editar</string>
+    <string name="home_folder_name_clear">Limpar nome</string>
+    <string name="home_folder_name_edit">Editar nome</string>
+    <string name="home_folder_type_label">O que a pasta mostra</string>
+    <string name="home_folder_type_icon">Ícone</string>
+    <string name="home_folder_type_letter">Letra</string>
+    <string name="home_folder_type_emoji">Emoji</string>
+    <string name="home_folder_suggested_for">Sugeridos para “%1$s”</string>
+    <string name="home_folder_suggested">Sugeridos</string>
+    <string name="home_folder_all_icons">Todos os ícones</string>
+    <plurals name="home_folder_all_icons_count">
+        <item quantity="one">%1$d ícone em %2$s categorias</item>
+        <item quantity="many">%1$d ícones em %2$s categorias</item>
+        <item quantity="other">%1$d ícones em %2$s categorias</item>
+    </plurals>
+    <string name="home_folder_all_icons_back">Voltar para a pasta</string>
+    <string name="home_folder_letter_note">A primeira letra do nome, na fonte do tema. Muda junto com o nome.</string>
+    <string name="home_folder_emoji_more">Outro emoji</string>
+    <string name="home_folder_emoji_hint">Digite um emoji</string>
+    <string name="home_folder_color">Cor da pasta</string>
+    <string name="home_folder_create_pick_apps">Criar e escolher apps</string>
+    <string name="home_shortcut_name_all_apps">Todos os apps</string>
+    <string name="home_shortcut_name_assistant">Assistente</string>
+    <string name="home_shortcut_name_aureole_settings">Ajustes do Aureole</string>
+    <string name="home_shortcut_name_notifications">Notificações</string>
+    <string name="home_shortcut_name_none">Nenhum</string>
+    <string name="home_shortcut_name_open_app">Abrir app</string>
+    <string name="home_shortcut_name_browser">Navegador</string>
+    <string name="home_shortcut_name_calculator">Calculadora</string>
+    <string name="home_shortcut_name_calendar">Calendário</string>
+    <string name="home_shortcut_name_camera">Câmera</string>
+    <string name="home_shortcut_name_clock">Relógio</string>
+    <string name="home_shortcut_name_contacts">Contatos</string>
+    <string name="home_shortcut_name_dialer">Telefone</string>
+    <string name="home_shortcut_name_email">E-mail</string>
+    <string name="home_shortcut_name_search">Pesquisa</string>
+    <string name="home_shortcut_name_settings">Configurações</string>
+    <string name="home_shortcut_name_files">Arquivos</string>
+    <string name="home_shortcut_name_messages">Mensagens</string>
+    <string name="home_shortcut_name_music">Player de música</string>
+    <string name="home_shortcut_name_battery">Configurações de bateria</string>
+    <string name="home_shortcut_name_bluetooth">Configurações de Bluetooth</string>
+    <string name="home_shortcut_name_device">Informações do aparelho</string>
+    <string name="home_shortcut_name_display">Configurações de tela</string>
+    <string name="home_shortcut_name_location">Configurações de localização</string>
+    <string name="home_shortcut_name_sound">Configurações de som</string>
+    <string name="home_shortcut_name_wifi">Configurações de Wi-Fi</string>
+    <string name="home_shortcut_unavailable">%1$s (indisponível)</string>
+    <string name="home_scrollgroup_section_scroll">Rolagem</string>
+    <string name="home_scrollgroup_section_items">Itens</string>
+    <string name="home_scrollgroup_size_cells">%1$s células</string>
+    <string name="home_scrollgroup_height">Altura</string>
+    <string name="home_scrollgroup_width">Largura</string>
+    <string name="home_scrollgroup_full_list">Lista completa</string>
+    <string name="home_scrollgroup_move_up">Mover para cima</string>
+    <string name="home_scrollgroup_move_down">Mover para baixo</string>
+    <string name="home_scrollgroup_edit_item">Editar %1$s</string>
+    <string name="home_scrollgroup_remove_item">Remover %1$s</string>
+    <string name="home_scrollgroup_decrease">Diminuir %1$s</string>
+    <string name="home_scrollgroup_increase">Aumentar %1$s</string>
+<string name="secret_game_best_title">Recorde</string>
+    <string name="secret_game_best_hint">Toque %2$s vezes em “%1$s” para jogar.</string>
+    <string name="secret_game_score">Pontos: %1$d</string>
+    <string name="secret_game_new_record">Novo recorde!</string>
+    <string name="secret_game_better_luck">Mais sorte na próxima…</string>
+    <string name="secret_game_go">VAI!!</string>
+    <string name="secret_game_paused">Pausado</string>
+    <string name="secret_game_tap_to_resume">Toque para continuar</string>
+    <string name="secret_game_move_left">Mover para a esquerda</string>
+    <string name="secret_game_move_right">Mover para a direita</string>
+    <string name="home_clock_color_target_text">Texto</string>
+    <string name="home_clock_color_target_card">Cartão</string>
+    <string name="home_clock_color_target_label">Alvo da cor</string>
+    <string name="theme_color_section_default">Padrão</string>
+    <string name="theme_color_swatch_default">Tema</string>
 </resources>

@@ -9,6 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.Dp
 import dev.chrisbanes.haze.HazeStyle
 import dev.chrisbanes.haze.HazeTint
 import dev.chrisbanes.haze.hazeEffect
@@ -27,6 +28,7 @@ private const val SOLID_SURFACE_ALPHA = 0.94f
 fun OnboardingGlassCard(
     glass: OnboardingGlass,
     modifier: Modifier = Modifier,
+    contentPadding: Dp = AureoleDS.dimens.medium,
     content: @Composable BoxScope.() -> Unit
 ) {
     val hazeState = glass.hazeState
@@ -47,7 +49,7 @@ fun OnboardingGlassCard(
         modifier = modifier
             .clip(RoundedCornerShape(AureoleDS.dimens.radiusLarge))
             .then(surface)
-            .padding(AureoleDS.dimens.medium),
+            .padding(contentPadding),
         content = content
     )
 }

@@ -134,22 +134,6 @@ class SheetDetentsTest {
     }
 
     @Test
-    fun `when anchoring preview, should sit gap above sheet top`() {
-        assertEquals(1000 - 40 - 300, anchoredPreviewTop(sheetTop = 1000, gap = 40, previewHeight = 300))
-    }
-
-    @Test
-    fun `when sheet is expanded over the preview, should keep the preview at the min top`() {
-        assertEquals(0, anchoredPreviewTop(sheetTop = 100, gap = 40, previewHeight = 300))
-        assertEquals(64, anchoredPreviewTop(sheetTop = 100, gap = 40, previewHeight = 300, minTop = 64))
-    }
-
-    @Test
-    fun `when there is room above the sheet, should ignore the min top`() {
-        assertEquals(660, anchoredPreviewTop(sheetTop = 1000, gap = 40, previewHeight = 300, minTop = 64))
-    }
-
-    @Test
     fun `when the content fits at rest, should not expand`() {
         assertNull(expandTarget(rest = REST, expanded = EXPANDED, contentFull = REST))
     }

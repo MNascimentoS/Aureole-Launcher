@@ -158,7 +158,7 @@ class OnboardingActionsFactoryTest {
     }
 
     @Test
-    fun `when there is no container, should save a 4x6 one and open its editor, task pending`() {
+    fun `when there is no container, should save a 4x18 one and open its editor, task pending`() {
         actions().onTaskClick(OnboardingTask.FILL_CONTAINER)
 
         val state = viewModel.uiState.value
@@ -166,7 +166,7 @@ class OnboardingActionsFactoryTest {
         assertEquals(listOf("container:${container.id}"), calls)
         assertEquals(LauncherItemType.SHORTCUTS_CONTAINER, container.safeType)
         assertEquals(4, container.colSpan)
-        assertEquals(6, container.rowSpan)
+        assertEquals(18, container.rowSpan)
         assertFalse(state.isGridEditMode)
         assertEquals(OnboardingTask.FILL_CONTAINER, state.onboarding.pendingTask)
         assertEquals(container.id, state.onboarding.createdItemId)
@@ -187,15 +187,15 @@ class OnboardingActionsFactoryTest {
     }
 
     @Test
-    fun `when the clock task is tapped, should save a 10x4 clock and open its editor, task pending`() {
+    fun `when the clock task is tapped, should save a 20x6 clock and open its editor, task pending`() {
         actions().onTaskClick(OnboardingTask.ADD_CLOCK)
 
         val state = viewModel.uiState.value
         val clock = state.gridItems.single()
         assertEquals(listOf("clock:${clock.id}"), calls)
         assertEquals(LauncherItemType.CLOCK, clock.safeType)
-        assertEquals(10, clock.colSpan)
-        assertEquals(4, clock.rowSpan)
+        assertEquals(20, clock.colSpan)
+        assertEquals(6, clock.rowSpan)
         assertTrue(state.clockConfigs.containsKey(clock.id))
         assertFalse(state.isGridEditMode)
         assertEquals(OnboardingTask.ADD_CLOCK, state.onboarding.pendingTask)
@@ -348,8 +348,9 @@ class OnboardingActionsFactoryTest {
 
         actions.onTaskClick(OnboardingTask.CHOOSE_PALETTE)
         actions.onSelectPalette("Abyss")
-        actions.onDismissAppearancePicker()
+        actions.onDismissAppearancePicker(true)
         assertEquals("Abyss", viewModel.uiState.value.selectedThemeName)
+        assertTrue(OnboardingTask.CHOOSE_PALETTE in viewModel.uiState.value.onboarding.completedTasks)
 
         actions.onDismissChecklist()
         assertEquals(OnboardingStage.COMPLETED, viewModel.uiState.value.onboarding.stage)

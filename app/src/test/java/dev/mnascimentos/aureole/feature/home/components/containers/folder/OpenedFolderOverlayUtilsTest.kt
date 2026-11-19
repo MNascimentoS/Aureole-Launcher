@@ -1,41 +1,13 @@
 package dev.mnascimentos.aureole.feature.home.components.containers.folder
 
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.core.data.model.AppFolder
 import dev.mnascimentos.aureole.core.data.model.ContainerModel
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
-import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class OpenedFolderOverlayUtilsTest {
-
-    @Test
-    fun testResolvePopupAlignment() {
-        assertEquals(
-            Alignment.Center,
-            OpenedFolderOverlayUtils.resolvePopupAlignment(isGridFolderEnabled = true, isLeftHandedMode = false)
-        )
-        assertEquals(
-            Alignment.TopStart,
-            OpenedFolderOverlayUtils.resolvePopupAlignment(isGridFolderEnabled = false, isLeftHandedMode = true)
-        )
-        assertEquals(
-            Alignment.TopEnd,
-            OpenedFolderOverlayUtils.resolvePopupAlignment(isGridFolderEnabled = false, isLeftHandedMode = false)
-        )
-    }
-
-    @Test
-    fun testCalculateClampedTopDp() {
-        val dp1 = OpenedFolderOverlayUtils.calculateClampedTopDp(100f, 1000f, 2f, 10.dp)
-        assertTrue(dp1.value > 0)
-
-        val dp2 = OpenedFolderOverlayUtils.calculateClampedTopDp(0f, 0f, 2f, 0.dp)
-        assertTrue(dp2.value > 0)
-    }
 
     @Test
     fun testIsGridFolderMode() {

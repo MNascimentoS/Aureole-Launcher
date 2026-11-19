@@ -1,7 +1,6 @@
 package dev.mnascimentos.aureole.feature.settings.model
 
 enum class SettingToggle {
-    SHOW_WIDGET_DOTS,
     HAZE,
     LEFT_HANDED_MODE,
     CONTAINER,

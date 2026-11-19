@@ -26,6 +26,9 @@ import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 
 private const val INACTIVE_BACKGROUND_ALPHA = 0.5f
 
+/** One segment of [AureoleIconSegmentedControl]: its [label] and the optional [icon], drawn in the content color. */
+class SegmentedOption(val label: String, val icon: (@Composable (Color) -> Unit)? = null)
+
 /**
  * Segmented control: a rounded bar with one equal-width segment per option; the selected one is light with dark
  * text. Stateless: it only reports the tapped index through [onSelect]. The caller adds the accessibility
@@ -45,6 +48,24 @@ fun AureoleSegmentedControl(
     modifier: Modifier = Modifier,
     itemHeight: Dp = AureoleDS.dimens.minTouchTarget
 ) {
+    AureoleIconSegmentedControl(
+        options = options.map { SegmentedOption(it) },
+        selectedIndex = selectedIndex,
+        onSelect = onSelect,
+        modifier = modifier,
+        itemHeight = itemHeight
+    )
+}
+
+/** [AureoleSegmentedControl] whose segments may have an icon before the label (see [SegmentedOption]). */
+@Composable
+fun AureoleIconSegmentedControl(
+    options: List<SegmentedOption>,
+    selectedIndex: Int,
+    onSelect: (Int) -> Unit,
+    modifier: Modifier = Modifier,
+    itemHeight: Dp = AureoleDS.dimens.minTouchTarget
+) {
     Row(
         modifier = modifier
             .fillMaxWidth()
@@ -54,11 +75,12 @@ fun AureoleSegmentedControl(
             .selectableGroup(),
         horizontalArrangement = Arrangement.spacedBy(AureoleDS.dimens.xxSmall)
     ) {
-        options.forEachIndexed { index, label ->
+        options.forEachIndexed { index, option ->
             SegmentItem(
-                label = label,
+                label = option.label,
                 isSelected = index == selectedIndex,
                 height = itemHeight,
+                icon = option.icon,
                 onClick = { onSelect(index) }
             )
         }
@@ -66,7 +88,13 @@ fun AureoleSegmentedControl(
 }
 
 @Composable
-private fun RowScope.SegmentItem(label: String, isSelected: Boolean, height: Dp, onClick: () -> Unit) {
+private fun RowScope.SegmentItem(
+    label: String,
+    isSelected: Boolean,
+    height: Dp,
+    icon: (@Composable (Color) -> Unit)?,
+    onClick: () -> Unit
+) {
     val container = if (isSelected) AureoleDS.colors.onSurfaceHigh else Color.Transparent
     val content = if (isSelected) AureoleDS.colors.surface else AureoleDS.colors.onSurfaceLow
     Box(
@@ -78,11 +106,17 @@ private fun RowScope.SegmentItem(label: String, isSelected: Boolean, height: Dp,
             .selectable(selected = isSelected, role = Role.Tab, onClick = onClick),
         contentAlignment = Alignment.Center
     ) {
-        AureoleText(
-            text = label,
-            color = content,
-            format = AureoleTextFormatParams(style = AureoleDS.typography.bodyMedium, maxLines = 1)
-        )
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(AureoleDS.dimens.xxSmall)
+        ) {
+            icon?.invoke(content)
+            AureoleText(
+                text = label,
+                color = content,
+                format = AureoleTextFormatParams(style = AureoleDS.typography.bodyMedium, maxLines = 1)
+            )
+        }
     }
 }
 

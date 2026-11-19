@@ -101,7 +101,7 @@ class EditContainerScreenTest {
             }
         }
 
-        composeTestRule.onNodeWithText("Container settings").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Container").assertIsDisplayed()
     }
 
     @Test
@@ -128,34 +128,30 @@ class EditContainerScreenTest {
             }
         }
 
-        composeTestRule.onNodeWithText("Container settings").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Container").assertIsDisplayed()
     }
 
     @Test
     fun `when MainSettingsContent renders, should show options and trigger callbacks`() {
-        var appearanceClicked = false
-        var behaviorClicked = false
-        var manageItemsClicked = false
+        val opened = mutableListOf<EditContainerScreenMode>()
 
         composeTestRule.setContent {
             AureoleLauncherTheme {
                 MainSettingsContent(
                     componentCount = 4,
-                    onAppearanceClick = { appearanceClicked = true },
-                    onBehaviorClick = { behaviorClicked = true },
-                    onManageItemsClick = { manageItemsClicked = true }
+                    onOpenMode = { opened += it }
                 )
             }
         }
 
         composeTestRule.onNodeWithText("Appearance").assertIsDisplayed().performClick()
-        assertTrue(appearanceClicked)
+        assertEquals(listOf(EditContainerScreenMode.APPEARANCE), opened)
 
         composeTestRule.onNodeWithText("Behavior").assertIsDisplayed().performClick()
-        assertTrue(behaviorClicked)
+        assertEquals(EditContainerScreenMode.BEHAVIOR, opened.last())
 
         composeTestRule.onNodeWithText("Manage Items").assertIsDisplayed().performClick()
-        assertTrue(manageItemsClicked)
+        assertEquals(EditContainerScreenMode.MANAGE_ITEMS, opened.last())
 
         composeTestRule.onNodeWithText("OPTIONS").assertIsDisplayed()
         composeTestRule.onNodeWithText("4 components").assertIsDisplayed()

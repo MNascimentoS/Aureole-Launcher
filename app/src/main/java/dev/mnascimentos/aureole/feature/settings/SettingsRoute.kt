@@ -7,6 +7,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import dev.mnascimentos.aureole.feature.settings.components.SettingsSheetHost
 import dev.mnascimentos.aureole.feature.settings.model.SettingsArea
+import dev.mnascimentos.aureole.feature.settings.model.SettingsNavigationActions
 import dev.mnascimentos.aureole.feature.settings.model.SettingsScreenActions
 import dev.mnascimentos.aureole.feature.settings.model.SettingsSheetHostParams
 import dev.mnascimentos.aureole.feature.settings.model.SettingsUiState
@@ -39,9 +40,12 @@ fun SettingsNavGraph(
             ) { onOpenArea ->
                 SettingsRootScreen(
                     uiState = uiState,
-                    onNavigateToBehavior = { onOpenArea(SettingsArea.BEHAVIOR) },
-                    onNavigateToAppearance = { onOpenArea(SettingsArea.APPEARANCE) },
-                    onNavigateToAdvanced = { onOpenArea(SettingsArea.ADVANCED) }
+                    navigation = SettingsNavigationActions(
+                        onNavigateToBehavior = { onOpenArea(SettingsArea.BEHAVIOR) },
+                        onNavigateToAppearance = { onOpenArea(SettingsArea.APPEARANCE) },
+                        onNavigateToAdvanced = { onOpenArea(SettingsArea.ADVANCED) }
+                    ),
+                    onSecretGameOver = actions.onSecretGameOver
                 )
             }
         }
