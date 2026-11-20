@@ -103,6 +103,8 @@ class SettingsViewModel(
                 headerOffsetPercent = settingsRepository.headerOffsetPercent,
                 cornerRadiusDp = settingsRepository.cornerRadiusDp,
                 secretBestScore = settingsRepository.secretBestScore,
+                secretGamePlayed = settingsRepository.secretGamePlayed,
+                secretSoundOn = settingsRepository.secretSoundOn,
             )
         }
     }

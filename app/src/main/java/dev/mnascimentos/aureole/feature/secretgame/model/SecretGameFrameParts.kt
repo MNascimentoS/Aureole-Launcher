@@ -25,11 +25,11 @@ internal fun SecretGameState.faceTrail(): Float {
 }
 
 internal fun SecretGameState.countdownFrame(): SecretCountdownFrame {
-    val index = (phaseMs / T.COUNT_STEP_MS).toInt().coerceAtMost(T.COUNT_STEPS - 1)
+    val label = countdownLabel() ?: SecretCountdownLabel.THREE
     val k = (phaseMs % T.COUNT_STEP_MS).toFloat() / T.COUNT_STEP_MS
     val alpha = if (k < T.COUNT_FADE_FROM) 1f else 1f - (k - T.COUNT_FADE_FROM) / (1f - T.COUNT_FADE_FROM)
     val scale = T.COUNT_SCALE_FROM - (T.COUNT_SCALE_FROM - 1f) * easeOutCubic(k * T.COUNT_SCALE_SPEED)
-    return SecretCountdownFrame(SecretCountdownLabel.entries[index], alpha, scale)
+    return SecretCountdownFrame(label, alpha, scale)
 }
 
 internal fun SecretGameState.resultAlpha(): Float = when {

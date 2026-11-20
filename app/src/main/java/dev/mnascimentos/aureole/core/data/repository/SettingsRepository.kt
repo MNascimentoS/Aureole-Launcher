@@ -381,11 +381,23 @@ class SettingsRepository(
         return true
     }
 
+    /** Whether the hidden game was ever opened; anyone with a saved best score counts as having played. */
+    var secretGamePlayed: Boolean
+        get() = prefs.getBoolean(KEY_SECRET_GAME_PLAYED, secretBestScore > 0)
+        set(value) = prefs.edit { putBoolean(KEY_SECRET_GAME_PLAYED, value) }
+
+    /** Sound effects of the hidden game (on by default). */
+    var secretSoundOn: Boolean
+        get() = prefs.getBoolean(KEY_SECRET_SOUND_ON, true)
+        set(value) = prefs.edit { putBoolean(KEY_SECRET_SOUND_ON, value) }
+
     companion object {
         private const val TAG = "SettingsRepository"
         private const val JPEG_QUALITY = 90
         private const val PREFS_NAME = "aureole_settings_prefs"
         private const val KEY_SECRET_BEST_SCORE = "secret_game_best_score"
+        private const val KEY_SECRET_GAME_PLAYED = "secret_game_played"
+        private const val KEY_SECRET_SOUND_ON = "secret_game_sound_on"
         private const val KEY_LEFT_HANDED_MODE = "left_handed_mode"
         private const val KEY_CONTAINER_ENABLED = "container_enabled"
         private const val KEY_CONTAINER_BACKGROUND_ENABLED = "container_background_enabled"

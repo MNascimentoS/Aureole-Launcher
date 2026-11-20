@@ -118,6 +118,7 @@ private fun handleEvent(event: SecretGameEvent, haptic: HapticFeedback, onGameOv
             haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
         SecretGameEvent.Crash -> haptic.performHapticFeedback(HapticFeedbackType.LongPress)
         is SecretGameEvent.GameOver -> onGameOver(event.score)
+        is SecretGameEvent.CountdownTick, is SecretGameEvent.ResultShown -> Unit // só som
     }
 }
 

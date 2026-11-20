@@ -72,6 +72,12 @@ sealed interface SecretGameEvent {
 
     data object FireworkBurst : SecretGameEvent
 
+    /** Mudou o número da contagem (3, 2, 1, VAI). */
+    data class CountdownTick(val label: SecretCountdownLabel) : SecretGameEvent
+
+    /** Entrou na tela de pontos: recorde ou "mais sorte na próxima". */
+    data class ResultShown(val isNewRecord: Boolean) : SecretGameEvent
+
     /** Fim da partida: salvar [score] como recorde se for maior. */
     data class GameOver(val score: Int) : SecretGameEvent
 }

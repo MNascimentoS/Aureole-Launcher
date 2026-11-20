@@ -25,8 +25,8 @@ class SecretGameEngine(private val random: Random = Random.Default) {
             SecretGamePhase.EXIT -> SecretGameStep(moved.stepExit())
             SecretGamePhase.PAUSED, SecretGamePhase.DONE -> SecretGameStep(moved)
         }
-        if (bursts == 0) return step
-        return step.copy(events = step.events + List(bursts) { SecretGameEvent.FireworkBurst })
+        val extra = phaseEvents(state, step.state) + List(bursts) { SecretGameEvent.FireworkBurst }
+        return if (extra.isEmpty()) step else step.copy(events = step.events + extra)
     }
 
     /** [direction] -1 = esquerda, 1 = direita. Fora do jogo, ou na borda, não faz nada. */

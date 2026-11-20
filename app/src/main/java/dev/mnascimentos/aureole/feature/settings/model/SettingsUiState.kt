@@ -66,6 +66,8 @@ data class SettingsUiState(
     /** The pending "Undo" offer shown at the bottom of the screen. */
     val undoSnackbar: UndoSnackbarState? = null,
     val secretBestScore: Int = 0,
+    val secretGamePlayed: Boolean = true,
+    val secretSoundOn: Boolean = true,
     val shouldFinishActivity: Boolean = false,
     val errorMessage: TextResource? = null,
 )
