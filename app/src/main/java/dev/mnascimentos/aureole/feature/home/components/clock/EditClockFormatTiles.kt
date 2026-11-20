@@ -71,7 +71,8 @@ internal fun EditClockDateTiles(
     selectedKey: String,
     nowMillis: Long,
     onSelect: (String) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    enabled: Boolean = true
 ) {
     val locale = LocalConfiguration.current.locales[0]
     val selected = ClockDateFormat.fromKey(selectedKey)
@@ -86,7 +87,8 @@ internal fun EditClockDateTiles(
             label = stringResource(option.labelRes),
             selected = option.format == selected,
             onClick = { onSelect(option.format.storageKey) },
-            modifier = tileModifier
+            modifier = tileModifier,
+            enabled = enabled
         )
     }
 }

@@ -14,6 +14,7 @@ import dev.mnascimentos.aureole.core.data.db.AppDatabase
 import dev.mnascimentos.aureole.core.data.image.decodeWallpaperBitmap
 import dev.mnascimentos.aureole.core.data.model.ClockConfig
 import dev.mnascimentos.aureole.core.data.model.WallpaperAdjustments
+import dev.mnascimentos.aureole.core.data.model.resolveClockLayout
 import dev.mnascimentos.aureole.core.designsystem.utils.HazeUtils
 import dev.mnascimentos.aureole.core.image.BlurredWallpaperCache
 import timber.log.Timber
@@ -56,9 +57,20 @@ class SettingsRepository(
         get() = prefs.getBoolean(KEY_CLOCK_BACKGROUND_ENABLED, false)
         set(value) = prefs.edit { putBoolean(KEY_CLOCK_BACKGROUND_ENABLED, value) }
 
+    /** The clock layout key; an old style saved by 0.9.59 or older reads as its layout ([resolveClockLayout]). */
     var clockStyle: String
-        get() = prefs.getString(KEY_CLOCK_STYLE, DEFAULT_CLOCK_STYLE) ?: DEFAULT_CLOCK_STYLE
+        get() = savedClockLayout().layout.key
         set(value) = prefs.edit { putString(KEY_CLOCK_STYLE, value) }
+
+    /** What the message line shows; an old style with a greeting reads as its message ([resolveClockLayout]). */
+    var clockMessage: String
+        get() = savedClockLayout().message.key
+        set(value) = prefs.edit { putString(KEY_CLOCK_MESSAGE, value) }
+
+    private fun savedClockLayout() = resolveClockLayout(
+        style = prefs.getString(KEY_CLOCK_STYLE, DEFAULT_CLOCK_STYLE),
+        message = prefs.getString(KEY_CLOCK_MESSAGE, null)
+    )
 
     var clockCustomGreeting: String
         get() = prefs.getString(KEY_CLOCK_CUSTOM_GREETING, "") ?: ""
@@ -102,6 +114,7 @@ class SettingsRepository(
             putBoolean(KEY_CLOCK_BACKGROUND_ENABLED, false)
             putString(KEY_CLOCK_STYLE, DEFAULT_CLOCK_STYLE)
             putString(KEY_CLOCK_CUSTOM_GREETING, "")
+            remove(KEY_CLOCK_MESSAGE)
             putString(KEY_CLOCK_ALIGNMENT, DEFAULT_CLOCK_ALIGNMENT)
             putString(KEY_CLOCK_FONT_FAMILY, DEFAULT_CLOCK_FONT_FAMILY)
             putString(KEY_CLOCK_TIME_FORMAT, DEFAULT_CLOCK_TIME_FORMAT)
@@ -405,6 +418,7 @@ class SettingsRepository(
         private const val KEY_CLOCK_BACKGROUND_ENABLED = "clock_background_enabled"
         private const val KEY_CLOCK_STYLE = "clock_style"
         private const val KEY_CLOCK_CUSTOM_GREETING = "clock_custom_greeting"
+        private const val KEY_CLOCK_MESSAGE = "clock_message"
         private const val KEY_CLOCK_ALIGNMENT = "clock_alignment"
         private const val KEY_CLOCK_FONT_FAMILY = "clock_font_family"
         private const val KEY_CLOCK_TIME_FORMAT = "clock_time_format"

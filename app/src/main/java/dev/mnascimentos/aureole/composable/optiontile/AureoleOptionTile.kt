@@ -29,7 +29,8 @@ private object OptionTileMetrics {
 
 /**
  * Selectable tile with a [sample] of the option on top and its [label] below. Stateless: the tap is reported through
- * [onClick]. The selected tile gets an outline in the high-emphasis color and is exposed as a radio button.
+ * [onClick]. The selected tile gets an outline in the high-emphasis color and is exposed as a radio button. With
+ * [enabled] false the tile ignores taps and is exposed as disabled; dimming it is up to the caller.
  */
 @Composable
 fun AureoleOptionTile(
@@ -37,7 +38,8 @@ fun AureoleOptionTile(
     label: String,
     selected: Boolean,
     onClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    enabled: Boolean = true
 ) {
     val shape = RoundedCornerShape(AureoleDS.dimens.radiusMedium)
     val borderColor = if (selected) AureoleDS.colors.onSurfaceHigh else Color.Transparent
@@ -47,7 +49,7 @@ fun AureoleOptionTile(
             .clip(shape)
             .background(AureoleDS.colors.surfaceVariant.copy(alpha = OptionTileMetrics.UNSELECTED_ALPHA))
             .border(AureoleDS.dimens.borderMax, borderColor, shape)
-            .selectable(selected = selected, role = Role.RadioButton, onClick = onClick)
+            .selectable(selected = selected, enabled = enabled, role = Role.RadioButton, onClick = onClick)
             .padding(horizontal = AureoleDS.dimens.small, vertical = AureoleDS.dimens.xSmall),
         horizontalAlignment = Alignment.Start,
         verticalArrangement = Arrangement.Center

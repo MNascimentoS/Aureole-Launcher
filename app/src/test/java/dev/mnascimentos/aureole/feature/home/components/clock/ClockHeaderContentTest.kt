@@ -7,6 +7,7 @@ import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.composable.clock.ClockHeaderContent
 import dev.mnascimentos.aureole.composable.clock.model.ClockHeaderContentParams
+import dev.mnascimentos.aureole.core.data.model.ClockLayout
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import org.junit.Rule
 import org.junit.Test
@@ -30,7 +31,7 @@ class ClockHeaderContentTest {
                         colorPrimary = android.graphics.Color.WHITE,
                         composeTextColor = Color.White,
                         greeting = "Boa tarde Teste",
-                        clockStyle = "GREETING_AND_DATE",
+                        layout = ClockLayout.MSG_TIME_DATE,
                         alignment = "CENTER",
                         fontFamily = "DEFAULT",
                         timeFormat = "12H",
@@ -55,7 +56,7 @@ class ClockHeaderContentTest {
                         colorPrimary = android.graphics.Color.WHITE,
                         composeTextColor = Color.White,
                         greeting = "Bom dia Teste",
-                        clockStyle = "DATE_ON_TOP",
+                        layout = ClockLayout.DATE_ON_TOP,
                         alignment = "START",
                         fontFamily = "DEFAULT",
                         timeFormat = "24H",
@@ -77,7 +78,7 @@ class ClockHeaderContentTest {
                         colorPrimary = android.graphics.Color.WHITE,
                         composeTextColor = Color.White,
                         greeting = "Minha Saudacao Oculta",
-                        clockStyle = "TIME_ONLY",
+                        layout = ClockLayout.TIME_ONLY,
                         alignment = "CENTER",
                         fontFamily = "DEFAULT",
                         timeFormat = "12H",
@@ -102,7 +103,7 @@ class ClockHeaderContentTest {
                         colorPrimary = android.graphics.Color.WHITE,
                         composeTextColor = Color.White,
                         greeting = "Bem-vindo de volta!",
-                        clockStyle = "CUSTOM_GREETING",
+                        layout = ClockLayout.MSG_TIME_DATE,
                         alignment = "CENTER",
                         fontFamily = "DEFAULT",
                         timeFormat = "12H",
@@ -127,7 +128,7 @@ class ClockHeaderContentTest {
                         colorPrimary = android.graphics.Color.WHITE,
                         composeTextColor = Color.White,
                         greeting = "Saudacao Compacta",
-                        clockStyle = "GREETING_AND_DATE",
+                        layout = ClockLayout.MSG_TIME_DATE,
                         alignment = "CENTER",
                         fontFamily = "DEFAULT",
                         timeFormat = "12H",
@@ -152,7 +153,7 @@ class ClockHeaderContentTest {
                         colorPrimary = android.graphics.Color.WHITE,
                         composeTextColor = Color.White,
                         greeting = "Saudacao Direita",
-                        clockStyle = "GREETING_AND_DATE",
+                        layout = ClockLayout.MSG_TIME_DATE,
                         alignment = "END",
                         fontFamily = "BOLD",
                         timeFormat = "24H",

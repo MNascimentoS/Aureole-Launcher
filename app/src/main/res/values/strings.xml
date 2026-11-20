@@ -10,9 +10,16 @@
     <!-- Clock -->
     <string name="home_clock_daily_greeting">Daily greeting</string>
     <string name="home_clock_date_on_top">Date on top</string>
-    <string name="home_clock_greeting_and_date">Info and date</string>
     <string name="home_clock_custom_text">Custom text</string>
     <string name="home_clock_time_only">Time only</string>
+    <string name="home_clock_layout_time_on_top">Time on top</string>
+    <string name="home_clock_layout_date_time_msg">Date, Time, Msg</string>
+    <string name="home_clock_layout_msg_time_date">Msg, Time, Date</string>
+    <string name="home_clock_layout_msg_on_top">Msg on top</string>
+    <string name="home_clock_layout_msg_on_bottom">Msg on bottom</string>
+    <string name="home_clock_layout">Layout</string>
+    <string name="home_clock_message">Message</string>
+    <string name="home_clock_format_no_date">This layout doesn\'t show the date.</string>
 
     <string name="home_clock_date_default">Full</string>
     <string name="home_clock_date_short">Short</string>
@@ -163,7 +170,6 @@
 
     <!-- Clock Customization -->
     <string name="home_clock_customize_title">Customize Clock</string>
-    <string name="home_clock_layout_style">Style</string>
     <string name="home_clock_greeting_text">Greeting Text</string>
     <string name="home_clock_greeting_placeholder">E.g: Welcome back!</string>
     <string name="home_clock_alignment">Alignment</string>

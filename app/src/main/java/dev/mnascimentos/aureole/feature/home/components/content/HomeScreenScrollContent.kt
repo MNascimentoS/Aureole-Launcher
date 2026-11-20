@@ -216,8 +216,11 @@ private fun ScrollViewChildItem(params: ScrollViewChildItemParams) {
             Modifier.fillMaxWidth().height(childHeightDp)
         }
         else -> {
+            // Never wider than the visible page: a wide clock (colSpan × ColWidth) used to run past the right edge
+            // of the group and show cut there while the group scrolled (RF-G2).
             val childWidthDp = (ScrollChildDimensions.ColWidth * childItem.colSpan)
                 .coerceAtLeast(ScrollChildDimensions.MinWidth)
+                .let { if (params.pageWidth != Dp.Unspecified) it.coerceAtMost(params.pageWidth) else it }
             Modifier.width(childWidthDp).fillMaxHeight()
         }
     }

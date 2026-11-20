@@ -82,7 +82,7 @@ class EditClockBottomSheetTest {
 
         // Assert
         composeTestRule.onNodeWithText("Customize Clock").assertIsDisplayed()
-        composeTestRule.onNodeWithText("STYLE").assertIsDisplayed()
+        composeTestRule.onNodeWithText("LAYOUT").assertIsDisplayed()
         composeTestRule.onNodeWithText("ALIGNMENT").performScrollTo().assertIsDisplayed()
 
         composeTestRule.onNodeWithText("Format").performClick()
@@ -282,8 +282,8 @@ class EditClockBottomSheetTest {
 
         composeTestRule.onNodeWithText("Time only").performClick()
         assertEquals("TIME_ONLY", selectedStyle)
-        composeTestRule.onNodeWithText("Info and date").performClick()
-        assertEquals("GREETING_AND_DATE", selectedStyle)
+        composeTestRule.onNodeWithText("Msg, Time, Date").performClick()
+        assertEquals("MSG_TIME_DATE", selectedStyle)
     }
 
     @androidx.compose.runtime.Composable

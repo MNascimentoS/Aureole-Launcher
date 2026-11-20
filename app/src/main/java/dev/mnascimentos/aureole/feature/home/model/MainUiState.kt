@@ -42,6 +42,7 @@ data class MainUiState(
     val isClockBackgroundEnabled: Boolean = false,
     val clockStyle: String = SettingsRepository.DEFAULT_CLOCK_STYLE,
     val clockCustomGreeting: String = "",
+    val clockMessage: String = ClockConfig.DEFAULT_MESSAGE,
     val clockAlignment: String = SettingsRepository.DEFAULT_CLOCK_ALIGNMENT,
     val clockFontFamily: String = SettingsRepository.DEFAULT_CLOCK_FONT_FAMILY,
     val clockTimeFormat: String = SettingsRepository.DEFAULT_CLOCK_TIME_FORMAT,

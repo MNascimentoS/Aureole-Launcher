@@ -18,12 +18,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import dev.mnascimentos.aureole.composable.optiontile.AureoleOptionTile
+import dev.mnascimentos.aureole.core.data.model.ClockLine
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
-import dev.mnascimentos.aureole.feature.home.components.clock.model.CLOCK_STYLE_COLUMNS
-import dev.mnascimentos.aureole.feature.home.components.clock.model.ClockStyleLine
-import dev.mnascimentos.aureole.feature.home.components.clock.model.ClockStyleOption
+import dev.mnascimentos.aureole.feature.home.components.clock.model.CLOCK_LAYOUT_COLUMNS
+import dev.mnascimentos.aureole.feature.home.components.clock.model.ClockLayoutOption
 
 private object StyleCardMetrics {
     const val SMALL_LINE_FRACTION = 0.45f
@@ -31,13 +31,14 @@ private object StyleCardMetrics {
 }
 
 /**
- * Clock style picker: one card per [ClockStyleOption], three per row, each with a miniature of the clock.
- * Stateless: the tapped style is reported through [onSelect]. The rows are not mirrored in the left-handed mode.
+ * Clock layout picker: one card per [ClockLayoutOption], three per row, each with a miniature of its lines (the
+ * time is the thick bar; the date and the message are thin, the message lighter). Stateless: the tapped layout is
+ * reported through [onSelect]. The rows are not mirrored in the left-handed mode.
  */
 @Composable
 internal fun EditClockStyleCards(
     selectedKey: String,
-    onSelect: (ClockStyleOption) -> Unit,
+    onSelect: (ClockLayoutOption) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -46,7 +47,7 @@ internal fun EditClockStyleCards(
             .selectableGroup(),
         verticalArrangement = Arrangement.spacedBy(AureoleDS.dimens.xSmall)
     ) {
-        ClockStyleOption.rows.forEach { row ->
+        ClockLayoutOption.rows.forEach { row ->
             Row(horizontalArrangement = Arrangement.spacedBy(AureoleDS.dimens.xSmall)) {
                 row.forEach { option ->
                     StyleCard(
@@ -55,16 +56,16 @@ internal fun EditClockStyleCards(
                         onClick = { onSelect(option) }
                     )
                 }
-                repeat(CLOCK_STYLE_COLUMNS - row.size) { Spacer(modifier = Modifier.weight(1f)) }
+                repeat(CLOCK_LAYOUT_COLUMNS - row.size) { Spacer(modifier = Modifier.weight(1f)) }
             }
         }
     }
 }
 
 @Composable
-private fun RowScope.StyleCard(option: ClockStyleOption, isSelected: Boolean, onClick: () -> Unit) {
+private fun RowScope.StyleCard(option: ClockLayoutOption, isSelected: Boolean, onClick: () -> Unit) {
     AureoleOptionTile(
-        sample = { StyleMiniature(lines = option.lines) },
+        sample = { StyleMiniature(lines = option.layout.lines) },
         label = stringResource(option.labelRes),
         selected = isSelected,
         onClick = onClick,
@@ -73,7 +74,7 @@ private fun RowScope.StyleCard(option: ClockStyleOption, isSelected: Boolean, on
 }
 
 @Composable
-private fun StyleMiniature(lines: List<ClockStyleLine>) {
+private fun StyleMiniature(lines: List<ClockLine>) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -82,15 +83,17 @@ private fun StyleMiniature(lines: List<ClockStyleLine>) {
         horizontalAlignment = Alignment.Start
     ) {
         lines.forEach { line ->
-            val isLarge = line == ClockStyleLine.LARGE
+            val isTime = line == ClockLine.TIME
+            val colors = AureoleDS.colors
+            val color = if (line == ClockLine.MESSAGE) colors.onSurfaceMedium else colors.onSurfaceHigh
             Box(
                 modifier = Modifier
                     .fillMaxWidth(
-                        if (isLarge) StyleCardMetrics.LARGE_LINE_FRACTION else StyleCardMetrics.SMALL_LINE_FRACTION
+                        if (isTime) StyleCardMetrics.LARGE_LINE_FRACTION else StyleCardMetrics.SMALL_LINE_FRACTION
                     )
-                    .height(if (isLarge) AureoleDS.dimens.clockLineHeightLarge else AureoleDS.dimens.xxSmall)
+                    .height(if (isTime) AureoleDS.dimens.clockLineHeightLarge else AureoleDS.dimens.xxSmall)
                     .clip(RoundedCornerShape(AureoleDS.dimens.minimal))
-                    .background(AureoleDS.colors.onSurfaceHigh)
+                    .background(color)
             )
         }
     }
@@ -101,7 +104,7 @@ private fun StyleMiniature(lines: List<ClockStyleLine>) {
 private fun EditClockStyleCardsPreview() {
     AureoleLauncherTheme {
         EditClockStyleCards(
-            selectedKey = ClockStyleOption.DATE_ON_TOP.key,
+            selectedKey = ClockLayoutOption.DATE_ON_TOP.key,
             onSelect = {},
             modifier = Modifier.background(AureoleDS.colors.surface).padding(AureoleDS.dimens.medium)
         )

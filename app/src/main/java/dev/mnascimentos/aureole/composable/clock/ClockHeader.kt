@@ -18,6 +18,8 @@ import androidx.compose.ui.semantics.semantics
 import dev.mnascimentos.aureole.composable.clock.model.ClockHazeConfig
 import dev.mnascimentos.aureole.composable.clock.model.ClockHeaderContentParams
 import dev.mnascimentos.aureole.composable.clock.model.ResolvedClockConfig
+import dev.mnascimentos.aureole.core.data.model.ClockMessage
+import dev.mnascimentos.aureole.core.data.model.resolveClockLayout
 import dev.mnascimentos.aureole.core.data.repository.SettingsRepository
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
@@ -50,7 +52,9 @@ fun ClockHeader(
     val hazeBlurRadius = glassBlurRadius(AureoleDS.dimens.large)
     val hourGreeting = stringResource(greetingRes(hourOfDay()))
 
-    val greeting = if (resolvedConfig.style == "CUSTOM_GREETING" && resolvedConfig.customGreeting.isNotBlank()) {
+    // A style saved by an older version reads as its layout and message, so the look never changes.
+    val layoutChoice = resolveClockLayout(resolvedConfig.style, resolvedConfig.message)
+    val greeting = if (layoutChoice.message == ClockMessage.CUSTOM && resolvedConfig.customGreeting.isNotBlank()) {
         resolvedConfig.customGreeting
     } else {
         hourGreeting
@@ -71,7 +75,14 @@ fun ClockHeader(
             .clockHazeEffect(isHazeEnabled, hazeStateRef, hazeOpacity, hazeBlurRadius, hazeTintColor)
             .background(containerBgColor)
             .clockClickable(onClick, onLongClick)
-            .padding(horizontal = AureoleDS.dimens.medium, vertical = AureoleDS.dimens.xSmall)
+            // Inner room (D-11): the top keeps 8 dp; the sides (16 → 24 dp) and the bottom (8 → 16 dp) get 8 dp
+            // more, in every alignment and in the editor preview, which draws this same card.
+            .padding(
+                start = AureoleDS.dimens.large,
+                end = AureoleDS.dimens.large,
+                top = AureoleDS.dimens.xSmall,
+                bottom = AureoleDS.dimens.medium
+            )
     ) {
         ClockHeaderContent(
             params = ClockHeaderContentParams(
@@ -79,7 +90,7 @@ fun ClockHeader(
                 colorPrimary = colorPrimaryInt,
                 composeTextColor = colorPrimaryCompose,
                 greeting = greeting,
-                clockStyle = resolvedConfig.style,
+                layout = layoutChoice.layout,
                 alignment = resolvedConfig.alignment,
                 fontFamily = resolvedConfig.fontFamily,
                 timeFormat = resolvedConfig.timeFormat,

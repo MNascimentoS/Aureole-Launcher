@@ -5,6 +5,7 @@ import android.content.SharedPreferences
 import androidx.core.content.edit
 import com.google.gson.Gson
 import dev.mnascimentos.aureole.core.data.model.ClockConfig
+import dev.mnascimentos.aureole.core.data.model.withMigratedLayout
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -133,6 +134,9 @@ private const val KEY_CONFIG_PREFIX = "clock_config_"
 
 private fun keyOf(itemId: String) = KEY_CONFIG_PREFIX + itemId
 
-private fun Gson.parseClockConfig(json: String): ClockConfig? = runCatching { fromJson(json, ClockConfig::class.java) }
+/** The config saved as [json], with an old style read as its layout and message ([withMigratedLayout]). */
+private fun Gson.parseClockConfig(json: String): ClockConfig? = runCatching {
+    fromJson(json, ClockConfig::class.java).withMigratedLayout()
+}
     .onFailure { Timber.tag(TAG).w(it, "Ignoring an unreadable clock config") }
     .getOrNull()

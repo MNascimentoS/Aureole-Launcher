@@ -8,6 +8,7 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.key
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
@@ -29,6 +30,8 @@ import dev.mnascimentos.aureole.composable.clock.model.GREETING_TRIM_TOP
 import dev.mnascimentos.aureole.composable.clock.model.TIME_TRIM_BOTTOM
 import dev.mnascimentos.aureole.composable.clock.model.TIME_TRIM_TOP
 import dev.mnascimentos.aureole.composable.clock.model.resolveClockSizing
+import dev.mnascimentos.aureole.core.data.model.ClockLayout
+import dev.mnascimentos.aureole.core.data.model.ClockLine
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
@@ -50,8 +53,8 @@ internal fun ClockHeaderContent(params: ClockHeaderContentParams) {
     val sizing = resolveClockSizing(
         maxHeightDp = params.maxHeight.value,
         fontScale = LocalDensity.current.fontScale,
-        greetingAllowed = params.clockStyle != "TIME_ONLY" && params.clockStyle != "DATE_ON_TOP",
-        hasDate = params.clockStyle != "TIME_ONLY"
+        greetingAllowed = params.layout.showsMessage,
+        hasDate = params.layout.showsDate
     )
 
     val isCompact = params.maxHeight < COMPACT_CONTAINER_HEIGHT_DP.dp
@@ -68,45 +71,39 @@ internal fun ClockHeaderContent(params: ClockHeaderContentParams) {
         modifier = Modifier.fillMaxWidth(),
         horizontalAlignment = horizontalAlignment
     ) {
-        if (params.clockStyle == "DATE_ON_TOP") {
-            ClockDateDisplay(
-                datePattern = datePattern,
-                dateSizeSp = dateSize,
-                dateTypeface = dateTypeface,
-                textColor = params.composeTextColor,
-                textAlign = textAlign
-            )
-        }
-
-        if (sizing.showGreeting) {
-            ClockGreetingDisplay(
-                greeting = params.greeting,
-                greetingSizeSp = greetingSize,
-                fontFamily = fontSpec.fontFamily(),
-                textColor = params.composeTextColor,
-                textAlign = textAlign
-            )
-        }
-
-        ClockTimeDisplay(
-            params = ClockTimeDisplayParams(
-                colorPrimary = params.colorPrimary,
-                textSizePx = sizing.textSizePx,
-                format12 = format12,
-                format24 = format24,
-                typeface = typeface,
-                alignment = params.alignment
-            )
-        )
-
-        if (params.clockStyle != "TIME_ONLY" && params.clockStyle != "DATE_ON_TOP") {
-            ClockDateDisplay(
-                datePattern = datePattern,
-                dateSizeSp = dateSize,
-                dateTypeface = dateTypeface,
-                textColor = params.composeTextColor,
-                textAlign = textAlign
-            )
+        // The lines follow the layout, top to bottom; the message only shows when it fits (resolveClockSizing).
+        params.layout.lines.forEach { line ->
+            // Keyed by line, so a layout change moves the TextClocks instead of rebuilding them.
+            key(line) {
+                when (line) {
+                    ClockLine.MESSAGE -> if (sizing.showGreeting) {
+                        ClockGreetingDisplay(
+                            greeting = params.greeting,
+                            greetingSizeSp = greetingSize,
+                            fontFamily = fontSpec.fontFamily(),
+                            textColor = params.composeTextColor,
+                            textAlign = textAlign
+                        )
+                    }
+                    ClockLine.TIME -> ClockTimeDisplay(
+                        params = ClockTimeDisplayParams(
+                            colorPrimary = params.colorPrimary,
+                            textSizePx = sizing.textSizePx,
+                            format12 = format12,
+                            format24 = format24,
+                            typeface = typeface,
+                            alignment = params.alignment
+                        )
+                    )
+                    ClockLine.DATE -> ClockDateDisplay(
+                        datePattern = datePattern,
+                        dateSizeSp = dateSize,
+                        dateTypeface = dateTypeface,
+                        textColor = params.composeTextColor,
+                        textAlign = textAlign
+                    )
+                }
+            }
         }
     }
 }
@@ -220,7 +217,7 @@ private fun ClockHeaderContentPreview() {
                 colorPrimary = android.graphics.Color.WHITE,
                 composeTextColor = Color.White,
                 greeting = "Boa tarde",
-                clockStyle = "STANDARD",
+                layout = ClockLayout.MSG_TIME_DATE,
                 alignment = "CENTER",
                 fontFamily = "DEFAULT",
                 timeFormat = "12H",
@@ -240,7 +237,7 @@ private fun ClockHeaderContentDateOnTopPreview() {
                 colorPrimary = android.graphics.Color.WHITE,
                 composeTextColor = Color.White,
                 greeting = "Bom dia",
-                clockStyle = "DATE_ON_TOP",
+                layout = ClockLayout.DATE_ON_TOP,
                 alignment = "START",
                 fontFamily = "DEFAULT",
                 timeFormat = "24H",

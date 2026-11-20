@@ -8,6 +8,7 @@ import dev.mnascimentos.aureole.feature.home.model.MainUiState
 fun MainUiState.defaultClockConfig(): ClockConfig = ClockConfig(
     style = clockStyle,
     customGreeting = clockCustomGreeting,
+    message = clockMessage,
     alignment = clockAlignment,
     fontFamily = clockFontFamily,
     timeFormat = clockTimeFormat,
@@ -31,6 +32,7 @@ val MainUiState.editingClockConfig: ClockConfig
 fun MainUiState.withClockFields(config: ClockConfig): MainUiState = copy(
     clockStyle = config.style,
     clockCustomGreeting = config.customGreeting,
+    clockMessage = config.message,
     clockAlignment = config.alignment,
     clockFontFamily = config.fontFamily,
     clockTimeFormat = config.timeFormat,
@@ -52,6 +54,7 @@ fun MainUiState.forClockEditor(): MainUiState = withClockFields(editingClockConf
 fun ClockConfig.toHeaderConfig(): ClockHeaderConfig = ClockHeaderConfig(
     style = style,
     customGreeting = customGreeting,
+    message = message,
     alignment = alignment,
     fontFamily = fontFamily,
     timeFormat = timeFormat,

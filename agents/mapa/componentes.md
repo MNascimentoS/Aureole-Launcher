@@ -44,7 +44,7 @@ Antes de criar um composable, procure aqui. Regras em `agents/aureole_components
 | AureoleThemeSwatchRow, AureolePaletteSwatchRow | composable/color/AureolePaletteRows.kt | Amostras de tema e paletas | Peças do picker |
 | AureoleHueSlider | composable/color/AureoleHueSlider.kt | Slider de matiz | Cor livre (evitar, ver regra §8) |
 | AureoleSegmentedControl, AureoleIconSegmentedControl | composable/controls/AureoleSegmentedControl.kt | Controle segmentado | Poucas opções exclusivas |
-| AureoleOptionTile | composable/optiontile/AureoleOptionTile.kt | Tile de opção visual | Escolha visual |
+| AureoleOptionTile | composable/optiontile/AureoleOptionTile.kt | Tile de opção visual (`enabled` opcional) | Escolha visual |
 | AureoleIconCatalogGrid | composable/icons/AureoleIconCatalogGrid.kt | Catálogo de ícones | Escolher ícone |
 | AureoleSearchField | composable/search/AureoleSearchField.kt | Campo de busca | Busca em sheet |
 | AureoleFloatingSearchBar | core/designsystem/components/AureoleFloatingSearchBar.kt | Busca flutuante | Busca principal |
@@ -73,7 +73,8 @@ Antes de criar um composable, procure aqui. Regras em `agents/aureole_components
 | Nome | Arquivo | Para que serve |
 |---|---|---|
 | ClockHeader | composable/clock/ClockHeader.kt | Relógio do cabeçalho |
-| ClockContainer, HomeClockHeader, EditClockBottomSheet | feature/home/components/clock/ | Relógio e edição na home |
+| ClockContainer, HomeClockHeader, EditClockBottomSheet | feature/home/components/clock/ | Relógio e edição na home; aba Style com Layout (`ClockLayoutOption`, miniaturas de barras) e Message (`ClockMessageOption`); Format › Date desabilitada sem data |
+| ClockLayout, ClockLine, ClockMessage, `resolveClockLayout` | core/data/model/ClockLayout.kt | 7 layouts (linhas de cima para baixo), mensagem saudação/texto e leitura dos estilos antigos (migração) |
 | WidgetPositionIndicatorBar | composable/widgets/WidgetPositionIndicatorBar.kt | Indicador de posição |
 | WidgetPickerScreen, WidgetStackBottomSheet, EditWidgetGroupScreen (carrossel: `EditWidgetGroupCarousel`) | feature/home/components/widgets/ | Widgets na home |
 | AureoleText (2 overloads) | core/designsystem/components/AureoleText.kt | Texto do DS, no lugar de `Text` |

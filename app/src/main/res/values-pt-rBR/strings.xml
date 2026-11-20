@@ -10,9 +10,16 @@
     <!-- Clock -->
     <string name="home_clock_daily_greeting">Saudação diária</string>
     <string name="home_clock_date_on_top">Data em cima</string>
-    <string name="home_clock_greeting_and_date">Saudação e data</string>
     <string name="home_clock_custom_text">Texto personalizado</string>
     <string name="home_clock_time_only">Só a hora</string>
+    <string name="home_clock_layout_time_on_top">Hora em cima</string>
+    <string name="home_clock_layout_date_time_msg">Data, hora, msg</string>
+    <string name="home_clock_layout_msg_time_date">Msg, hora, data</string>
+    <string name="home_clock_layout_msg_on_top">Msg em cima</string>
+    <string name="home_clock_layout_msg_on_bottom">Msg embaixo</string>
+    <string name="home_clock_layout">Layout</string>
+    <string name="home_clock_message">Mensagem</string>
+    <string name="home_clock_format_no_date">Este layout não mostra a data.</string>
 
     <string name="home_clock_date_default">Completo</string>
     <string name="home_clock_date_short">Curto</string>
@@ -163,7 +170,6 @@
 
     <!-- Clock Customization -->
     <string name="home_clock_customize_title">Personalizar Relógio</string>
-    <string name="home_clock_layout_style">Estilo</string>
     <string name="home_clock_greeting_text">Texto da Saudação</string>
     <string name="home_clock_greeting_placeholder">Ex: Bem-vindo(a) de volta!</string>
     <string name="home_clock_alignment">Alinhamento</string>

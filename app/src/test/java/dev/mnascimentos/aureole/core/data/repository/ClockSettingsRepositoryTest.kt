@@ -39,7 +39,7 @@ class ClockSettingsRepositoryTest {
     @Test
     fun `when updating clock settings, should persist updated values`() {
         repository.isClockBackgroundEnabled = true
-        repository.clockStyle = "DYNAMIC_GREETING"
+        repository.clockStyle = "MSG_ON_BOTTOM"
         repository.clockCustomGreeting = "Boa tarde"
         repository.clockAlignment = "START"
         repository.clockFontFamily = "SERIF"
@@ -49,7 +49,7 @@ class ClockSettingsRepositoryTest {
         repository.clockBackgroundColor = 0xFF1E2124.toInt()
 
         assertTrue(repository.isClockBackgroundEnabled)
-        assertEquals("DYNAMIC_GREETING", repository.clockStyle)
+        assertEquals("MSG_ON_BOTTOM", repository.clockStyle)
         assertEquals("Boa tarde", repository.clockCustomGreeting)
         assertEquals("START", repository.clockAlignment)
         assertEquals("SERIF", repository.clockFontFamily)
@@ -61,7 +61,7 @@ class ClockSettingsRepositoryTest {
 
     @Test
     fun `when resetting clock settings, should restore default values`() {
-        repository.clockStyle = "GREETING_AND_DATE"
+        repository.clockStyle = "MSG_TIME_DATE"
         repository.clockTextColor = 0xFFE1BEE7.toInt()
         repository.isClockBackgroundEnabled = true
 
@@ -70,5 +70,35 @@ class ClockSettingsRepositoryTest {
         assertFalse(repository.isClockBackgroundEnabled)
         assertEquals(SettingsRepository.DEFAULT_CLOCK_STYLE, repository.clockStyle)
         assertEquals(0, repository.clockTextColor)
+    }
+
+    @Test
+    fun `when the settings hold an old clock style, should read it as its layout and message`() {
+        repository.clockStyle = "CUSTOM_GREETING"
+
+        assertEquals("MSG_TIME_DATE", repository.clockStyle)
+        assertEquals("CUSTOM", repository.clockMessage)
+        assertEquals("MSG_TIME_DATE", repository.globalClockConfig().style)
+        assertEquals("CUSTOM", repository.globalClockConfig().message)
+    }
+
+    @Test
+    fun `when the settings hold an unknown style, should read the default layout with the greeting`() {
+        repository.clockStyle = "STANDARD"
+
+        assertEquals(SettingsRepository.DEFAULT_CLOCK_STYLE, repository.clockStyle)
+        assertEquals("GREETING", repository.clockMessage)
+    }
+
+    @Test
+    fun `when picking a message and resetting, should save it and then drop it`() {
+        repository.clockStyle = "MSG_ON_BOTTOM"
+        repository.clockMessage = "CUSTOM"
+        assertEquals("CUSTOM", repository.clockMessage)
+
+        repository.resetClockSettings()
+
+        assertEquals(SettingsRepository.DEFAULT_CLOCK_STYLE, repository.clockStyle)
+        assertEquals("GREETING", repository.clockMessage)
     }
 }

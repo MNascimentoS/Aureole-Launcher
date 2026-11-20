@@ -4,6 +4,8 @@ import android.graphics.Typeface
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import dev.chrisbanes.haze.HazeState
+import dev.mnascimentos.aureole.core.data.model.ClockConfig
+import dev.mnascimentos.aureole.core.data.model.ClockLayout
 
 data class ClockHazeConfig(
     val hazeState: HazeState? = null,
@@ -15,6 +17,7 @@ data class ClockHazeConfig(
 data class ClockHeaderConfig(
     val style: String? = null,
     val customGreeting: String? = null,
+    val message: String? = null,
     val alignment: String? = null,
     val fontFamily: String? = null,
     val timeFormat: String? = null,
@@ -31,7 +34,7 @@ internal data class ClockHeaderContentParams(
     val colorPrimary: Int,
     val composeTextColor: Color,
     val greeting: String,
-    val clockStyle: String,
+    val layout: ClockLayout,
     val alignment: String,
     val fontFamily: String,
     val timeFormat: String,
@@ -50,6 +53,7 @@ internal data class ClockTimeDisplayParams(
 data class ResolvedClockConfig(
     val style: String,
     val customGreeting: String,
+    val message: String = ClockConfig.DEFAULT_MESSAGE,
     val alignment: String,
     val fontFamily: String,
     val timeFormat: String,

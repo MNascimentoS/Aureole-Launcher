@@ -40,6 +40,7 @@ internal fun resolveClockConfig(
     return ResolvedClockConfig(
         style = config.style ?: uiState.clockStyle,
         customGreeting = config.customGreeting ?: uiState.clockCustomGreeting,
+        message = config.message ?: uiState.clockMessage,
         alignment = config.alignment ?: uiState.clockAlignment,
         fontFamily = config.fontFamily ?: uiState.clockFontFamily,
         timeFormat = config.timeFormat ?: uiState.clockTimeFormat,

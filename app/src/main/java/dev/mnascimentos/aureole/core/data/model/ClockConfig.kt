@@ -11,6 +11,7 @@ import androidx.annotation.Keep
 data class ClockConfig(
     val style: String = DEFAULT_STYLE,
     val customGreeting: String = "",
+    val message: String = DEFAULT_MESSAGE,
     val alignment: String = DEFAULT_ALIGNMENT,
     val fontFamily: String = DEFAULT_FONT_FAMILY,
     val timeFormat: String = DEFAULT_TIME_FORMAT,
@@ -22,7 +23,9 @@ data class ClockConfig(
     val isBackgroundEnabled: Boolean = false
 ) {
     companion object {
+        /** A [ClockLayout] key; older installs may still hold an old style key ([withMigratedLayout]). */
         const val DEFAULT_STYLE = "DATE_ON_TOP"
+        const val DEFAULT_MESSAGE = "GREETING"
         const val DEFAULT_ALIGNMENT = "CENTER"
         const val DEFAULT_FONT_FAMILY = "SANS_SERIF"
         const val DEFAULT_TIME_FORMAT = "SYSTEM"
