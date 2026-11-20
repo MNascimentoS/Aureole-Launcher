@@ -22,7 +22,7 @@ Antes de criar um composable, procure aqui. Regras em `agents/aureole_components
 | PickFontBottomSheet / PickPaletteBottomSheet | composable/sheets/ | Escolher fonte / paleta | — | Só esses seletores |
 | ReleaseNotesBottomSheet | composable/sheets/ReleaseNotesBottomSheet.kt | Notas da versão | — | Só notas de versão |
 | RenderModalBottomSheetOrInspection | composable/sheets/RenderModalBottomSheetOrInspection.kt | Modal sheet, ou inline no preview | sheetContent | Previews de sheet |
-| AppItemBottomSheet | composable/appitem/AppItemMenus.kt | Menu de ações do app (exemplo de `AureoleMenuListSheet`) | — | Menu de app |
+| AppItemBottomSheet | composable/appitem/AppItemMenus.kt | Menu de ações do app (exemplo de `AureoleMenuListSheet`); sem o logo do Aureole settings no cabeçalho (`showHeaderAction = false`) | — | Menu de app |
 | AureoleSheetTabBar | composable/controls/AureoleSheetTabBar.kt | Barra de abas fixa no rodapé | — | Sheet com abas |
 | AureolePopupBox/Header/MenuSection, AureoleHeaderBanner | core/designsystem/components/AureolePopup.kt | Peças de popup | — | Popups |
 | AureolePopupMenuItem | core/designsystem/components/AureolePopupItem.kt | Item de popup | AureolePopupMenuItemParams | Item em popup |
@@ -66,6 +66,7 @@ Antes de criar um composable, procure aqui. Regras em `agents/aureole_components
 | AppItemRow, AureoleAppIcon, AppListSkeletonComponent | composable/appitem/ | Linha de app, ícone, skeleton |
 | FavoriteAppRowInfo, FavoriteAppDragHandle, RemainingAppRow | composable/favorites/FavoriteAppsDialogComponents.kt | Peças da lista de favoritos |
 | AureoleSectionHeader | core/designsystem/components/AureoleSectionHeader.kt | Cabeçalho de seção |
+| AureoleDivider | core/designsystem/components/AureoleDivider.kt | Divisor do DS (8 dp acima e abaixo); usado nos menus e antes de "Aureole settings" no drawer |
 | AppsList, AppsListDrawer, HomeAppItemRow | feature/home/components/favorites/AppsList.kt, appsdrawer/ | Lista e drawer da home |
 
 ## Relógio, widgets, texto e outros

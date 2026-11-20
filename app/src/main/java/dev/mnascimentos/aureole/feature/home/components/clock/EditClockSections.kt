@@ -38,7 +38,7 @@ internal fun EditClockStyleSection(
     )
 
     if (uiState.clockStyle == "CUSTOM_GREETING") {
-        Spacer(modifier = Modifier.height(AureoleDS.dimens.small))
+        Spacer(modifier = Modifier.height(AureoleDS.dimens.small + AureoleDS.dimens.xSmall))
         OutlinedTextField(
             value = tempCustomGreeting,
             onValueChange = onGreetingChange,
@@ -96,7 +96,7 @@ internal fun EditClockFormatSection(
             nowMillis = nowMillis,
             onSelect = { actions.onUpdateClockTimeFormat(it) }
         )
-        Spacer(modifier = Modifier.height(AureoleDS.dimens.smallCompact))
+        Spacer(modifier = Modifier.height(AureoleDS.dimens.medium))
         FormatSubtitle(text = stringResource(R.string.home_clock_date_format_label))
         EditClockDateTiles(
             selectedKey = uiState.clockDateFormat,

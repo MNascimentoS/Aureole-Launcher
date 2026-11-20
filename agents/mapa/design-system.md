@@ -6,7 +6,7 @@ Base: `app/src/main/java/dev/mnascimentos/aureole/core/designsystem/`. Acesso: `
 | Grupo | Tokens → valor |
 |---|---|
 | Espaço | zero 0, minimal 2, xxSmall 4, xSmall 8, smallCompact 10, small 12, medium 16, large 24, xLarge 32, xxLarge 40 |
-| Layout | minTouchTarget 48, sheetHeaderGap 12, fadingEdge 24, swatchLabelWidth 64, homeTopGrabZone 40 |
+| Layout | minTouchTarget 48, sheetHeaderGap 12, fadingEdge 16, swatchLabelWidth 64, homeTopGrabZone 40 |
 | Tamanhos | itemHeightExtraLarge 52, menuRowHeight 56, avatarSize 64, quickActionIconSize 50, sizeLarge 68, sizeExtraLarge 120, controlHeight 44, dragHandleWidth 44, dragHandleHeight 38, clockLineHeightLarge 14, dashLength 6, floatingElevation 8, previewListMaxHeight 300, shortcutTileHeight 92, settingsContentMaxWidth 480, backgroundThumbHeight 84 |
 | Ícones | iconXSmall 12, iconSmallCompact 14, iconSmall 16, iconMediumSmall 18, sheetHeaderLogo 20, iconMedium 20, iconLargePlus 22, iconLarge 24, iconXLargeSmall 26, iconXLargeMedium 28, iconXLarge 36, iconHuge 40 |
 | Bordas | borderMinimal 1, borderMax 3 |
@@ -56,4 +56,5 @@ Base: `app/src/main/java/dev/mnascimentos/aureole/core/designsystem/`. Acesso: `
 | palette/ThemeColorRef.kt | `ThemeColorRole` (BACKGROUND, SURFACE, VARIANT, OUTLINE, ACCENT) e `ThemeColorRef` (Role ou Fixed), `resolve(colors)`, `toJson`/`parseThemeColorRef` |
 | palette/ThemeSeedColor.kt, VividBackgroundMigration.kt | Semente do tema; migração de fundos "Vivid" |
 | utils/AureolePreview.kt | `@AureolePreview` (dark) e `@AureoleLandscapePreview` (891x411) |
+| utils/PressIndication.kt | `pressHighlightColor`/`aureolePressIndication(colors)`: realce de toque (ripple `onSurfaceHigh`), provido por `AureoleLauncherTheme` via `LocalIndication` para menus e itens de app |
 | utils/ | HazeUtils, FadingEdges (`Modifier.fadingEdges`), GlassBlur, LongPressViewConfiguration, OverlaySheetUtils, SharedTransitionUtils, SystemMotion |

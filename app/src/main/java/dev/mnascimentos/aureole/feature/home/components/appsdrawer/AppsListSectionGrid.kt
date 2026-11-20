@@ -27,7 +27,9 @@ import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.composable.LocalHomeUiState
 import dev.mnascimentos.aureole.composable.appitem.model.AppItemRowActions
 import dev.mnascimentos.aureole.composable.appitem.model.AppItemRowConfig
+import dev.mnascimentos.aureole.composable.appitem.model.AppItemRowMetrics
 import dev.mnascimentos.aureole.core.data.model.AppInfo
+import dev.mnascimentos.aureole.core.designsystem.components.AureoleDivider
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleSectionHeader
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
@@ -87,7 +89,7 @@ fun LazyListScope.appsListItems(
 
 private fun LazyListScope.settingsListItem(actions: HomeScreenActions) {
     item(key = "aureole_settings_item", contentType = "settings_item") {
-        Spacer(modifier = Modifier.height(AureoleDS.dimens.medium))
+        AureoleDivider(modifier = Modifier.padding(horizontal = AureoleDS.dimens.medium))
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -98,7 +100,7 @@ private fun LazyListScope.settingsListItem(actions: HomeScreenActions) {
         ) {
             Box(
                 modifier = Modifier
-                    .size(AppsListMetrics.SettingsIconContainerSize)
+                    .size(AppItemRowMetrics.IconOuterSize)
                     .clip(CircleShape)
                     .background(AureoleDS.colors.surfaceVariant),
                 contentAlignment = Alignment.Center
@@ -106,7 +108,7 @@ private fun LazyListScope.settingsListItem(actions: HomeScreenActions) {
                 // The Aureole logo instead of the gear, in the same circle (RF-08).
                 AureoleDS.icons.Logo(
                     tint = AureoleDS.colors.onSurfaceHigh,
-                    modifier = Modifier.size(AureoleDS.dimens.iconMedium)
+                    modifier = Modifier.size(AppItemRowMetrics.IconInnerSize)
                 )
             }
 

@@ -25,6 +25,11 @@ class AureoleDimensTokensTest {
     }
 
     @Test
+    fun `the sheet fading edge is 16 dp so it stays low over the tab bar`() {
+        assertEquals(16.dp, dimens.fadingEdge)
+    }
+
+    @Test
     fun `the corner radius does not change the new tokens`() {
         val straight = AureoleDimens.forCornerRadius(0)
 

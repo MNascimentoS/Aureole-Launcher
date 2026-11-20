@@ -389,27 +389,7 @@ class AppItemMenusTest {
     }
 
     @Test
-    fun `when header settings button is clicked, should invoke onOpenSettings`() {
-        var settingsOpened = false
-        composeTestRule.setContent {
-            AureoleLauncherTheme {
-                AppItemBottomSheet(
-                    params = AppItemBottomSheetParams(
-                        app = sampleApp,
-                        actions = AppItemRowActions(onOpenSettings = { settingsOpened = true })
-                    ),
-                    onDismiss = {}
-                )
-            }
-        }
-
-        composeTestRule.onNodeWithContentDescription("Aureole settings").performClick()
-
-        assertTrue(settingsOpened)
-    }
-
-    @Test
-    fun `when onOpenSettings is null, should not show the header settings button`() {
+    fun `app menu does not show the Aureole settings logo in the header`() {
         composeTestRule.setContent {
             AureoleLauncherTheme {
                 AppItemBottomSheet(params = AppItemBottomSheetParams(app = sampleApp), onDismiss = {})
