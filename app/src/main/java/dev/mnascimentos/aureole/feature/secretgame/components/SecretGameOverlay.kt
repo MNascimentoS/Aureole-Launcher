@@ -24,6 +24,7 @@ import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.hapticfeedback.HapticFeedback
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
@@ -89,6 +90,7 @@ fun SecretGameOverlay(
             currentOnFinished()
         }
         BackHandler { apply(engine.onBack(state)) }
+        KeepAwake()
         PauseOnBackground { state = engine.onLifecyclePause(state) }
 
         val colors = SecretGameColors(
@@ -114,6 +116,16 @@ private fun handleEvent(event: SecretGameEvent, haptic: HapticFeedback, onGameOv
             haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
         SecretGameEvent.Crash -> haptic.performHapticFeedback(HapticFeedbackType.LongPress)
         is SecretGameEvent.GameOver -> onGameOver(event.score)
+    }
+}
+
+/** While the game is open the screen stays on; it is restored after. */
+@Composable
+private fun KeepAwake() {
+    val view = LocalView.current
+    DisposableEffect(view) {
+        view.keepScreenOn = true
+        onDispose { view.keepScreenOn = false }
     }
 }
 

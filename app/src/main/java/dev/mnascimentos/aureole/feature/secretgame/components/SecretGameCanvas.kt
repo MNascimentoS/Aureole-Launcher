@@ -20,6 +20,8 @@ import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.res.vectorResource
 import dev.mnascimentos.aureole.R
+import dev.mnascimentos.aureole.composable.fireworks.drawFireworks
+import dev.mnascimentos.aureole.composable.fireworks.model.FireworkColors
 import dev.mnascimentos.aureole.feature.secretgame.model.SecretFaceKind
 import dev.mnascimentos.aureole.feature.secretgame.model.SecretGameColors
 import dev.mnascimentos.aureole.feature.secretgame.model.SecretGameFrame
@@ -67,7 +69,7 @@ private fun DrawScope.drawWorld(frame: SecretGameFrame, colors: SecretGameColors
         )
     }
     frame.faces.forEach {
-        drawFaceGlow(it.sprite, colors.face)
+        if (it.trail > 0f) drawTrail(it.sprite, it.trail, colors.ship)
         val (painter, aspect) = if (it.kind == SecretFaceKind.CREATOR) {
             painters.creator to D.FACE_ASPECT_CREATOR
         } else {
@@ -83,6 +85,8 @@ private fun DrawScope.drawWorld(frame: SecretGameFrame, colors: SecretGameColors
         val color = if (it.kind == SecretParticleKind.SHIP) colors.ship else colors.face
         drawCircle(color.copy(alpha = it.life.coerceIn(0f, 1f)), it.radius * u, Offset(it.x * u, it.y * u))
     }
+    val fireworkColors = FireworkColors(colors.ship, colors.face, colors.ship)
+    drawFireworks(frame.rockets, frame.sparks, fireworkColors)
     frame.buttons?.let { drawButtons(it.draw, it.collapse, colors.ship) }
 }
 
@@ -96,22 +100,6 @@ private fun DrawScope.drawSprite(painter: Painter, aspect: Float, sprite: Secret
     }) {
         with(painter) { draw(Size(width, height), sprite.alpha, ColorFilter.tint(tint)) }
     }
-}
-
-private fun DrawScope.drawFaceGlow(sprite: SecretSprite, color: Color) {
-    val u = size.width
-    val w = sprite.width * u * D.FACE_GLOW_WIDTH
-    val h = sprite.width * u * D.FACE_GLOW_HEIGHT
-    val top = sprite.y * u - h * D.FACE_GLOW_RISE
-    drawOval(
-        brush = Brush.verticalGradient(
-            listOf(Color.Transparent, color.copy(alpha = D.FACE_GLOW_ALPHA * sprite.alpha)),
-            startY = top,
-            endY = top + h
-        ),
-        topLeft = Offset(sprite.x * u - w * D.HALF, top),
-        size = Size(w, h)
-    )
 }
 
 private fun DrawScope.drawFlame(frame: SecretGameFrame, color: Color) {

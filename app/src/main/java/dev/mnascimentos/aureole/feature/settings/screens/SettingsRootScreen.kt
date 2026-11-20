@@ -21,6 +21,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -84,7 +85,7 @@ fun SettingsRootScreen(
     val context = LocalContext.current
     val versionName = remember(context) { getVersionName(context) }
     var showReleaseNotes by remember { mutableStateOf(false) }
-    val game = remember { SecretGameHostState() }
+    val game = rememberSaveable(saver = SecretGameHostState.Saver) { SecretGameHostState() }
     val secret = SecretGameModifiers(
         thankYou = Modifier.secretGameTrigger(game, LocalHapticFeedback.current),
         logo = game.logoModifier

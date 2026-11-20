@@ -1,11 +1,11 @@
 package dev.mnascimentos.aureole.composable.fireworks.model
 
-import dev.mnascimentos.aureole.composable.fireworks.model.FireworksTuning as F
 import kotlin.math.PI
 import kotlin.math.cos
 import kotlin.math.exp
 import kotlin.math.sin
 import kotlin.random.Random
+import dev.mnascimentos.aureole.composable.fireworks.model.FireworksTuning as F
 
 /**
  * Fogos de artifício (jogo secreto e fim do onboarding): foguetes sobem e estouram em anel.
@@ -112,16 +112,24 @@ private fun ring(x: Float, y: Float, tone: FireworkTone, random: Random): List<F
         val angle = i * FULL_TURN / F.RING_SPARKS + random.nextFloat() * F.RING_JITTER
         val speed = power * (F.RING_SPEED_MIN + random.nextFloat() * F.RING_SPEED_EXTRA)
         FireworkSpark(
-            x, y, cos(angle) * speed, sin(angle) * speed, F.RING_LIFE,
-            F.RING_RADIUS_MIN + random.nextFloat() * F.RING_RADIUS_EXTRA, tone,
+            x,
+            y,
+            cos(angle) * speed,
+            sin(angle) * speed,
+            F.RING_LIFE,
+            F.RING_RADIUS_MIN + random.nextFloat() * F.RING_RADIUS_EXTRA,
+            tone,
         )
     }
     val core = List(F.CORE_SPARKS) {
         FireworkSpark(
-            x, y,
+            x,
+            y,
             (random.nextFloat() - HALF) * F.CORE_SPEED,
             (random.nextFloat() - HALF) * F.CORE_SPEED,
-            F.CORE_LIFE, F.CORE_RADIUS, FireworkTone.WHITE,
+            F.CORE_LIFE,
+            F.CORE_RADIUS,
+            FireworkTone.WHITE,
         )
     }
     return ring + core

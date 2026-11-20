@@ -607,6 +607,8 @@
     <string name="secret_game_go">GO!!</string>
     <string name="secret_game_paused">Paused</string>
     <string name="secret_game_tap_to_resume">Tap to resume</string>
+    <string name="secret_game_back_to_exit">Back to exit</string>
+    <string name="secret_game_level">Level %1$d</string>
     <string name="secret_game_move_left">Move left</string>
     <string name="secret_game_move_right">Move right</string>
     <string name="home_clock_color_target_text">Text</string>

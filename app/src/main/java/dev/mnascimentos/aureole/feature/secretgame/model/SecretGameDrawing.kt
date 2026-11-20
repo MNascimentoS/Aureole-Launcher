@@ -35,11 +35,20 @@ object SecretGameDrawing {
     const val HUD_ALPHA = 0.45f
     const val HUD_TEXT = 0.06f
     const val HUD_TOP = 0.06f
+    const val LEVEL_TEXT = 0.035f
+    const val LEVEL_GAP = 1.5f
+    const val BACK_HINT_ALPHA = 0.55f
+    const val BACK_HINT_GAP = 0.16f
 
-    const val FACE_GLOW_ALPHA = 0.2f
-    const val FACE_GLOW_WIDTH = 1.5f
-    const val FACE_GLOW_HEIGHT = 1.9f
-    const val FACE_GLOW_RISE = 0.9f
+    const val TRAIL_BASE_RISE = 0.32f
+    const val TRAIL_BASE_WIDTH = 0.68f
+    const val TRAIL_TIP_WIDTH = 0.12f
+    const val TRAIL_BODY_ALPHA = 0.16f
+    const val TRAIL_LINE_ALPHA = 0.35f
+    const val TRAIL_LINE_DP = 1f
+    const val TRAIL_LINE_X = 0.22f
+    const val TRAIL_SIDE_LENGTH = 0.6f
+    const val TRAIL_MID_LENGTH = 0.9f
     const val FLAME_WIDTH = 0.07f
     const val FLAME_HEIGHT = 0.2f
     const val FLAME_ALPHA = 0.55f

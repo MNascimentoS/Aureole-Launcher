@@ -1,10 +1,10 @@
 package dev.mnascimentos.aureole.composable.fireworks.model
 
-import dev.mnascimentos.aureole.composable.fireworks.model.FireworksTuning as F
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
 import kotlin.random.Random
+import dev.mnascimentos.aureole.composable.fireworks.model.FireworksTuning as F
 
 class FireworksTest {
     private val random = Random(SEED)

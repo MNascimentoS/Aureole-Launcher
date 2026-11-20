@@ -2,7 +2,6 @@ package dev.mnascimentos.aureole.feature.secretgame.model
 
 import dev.mnascimentos.aureole.composable.fireworks.model.FireworksState
 import dev.mnascimentos.aureole.composable.fireworks.model.step
-import kotlin.math.exp
 import kotlin.random.Random
 import dev.mnascimentos.aureole.feature.secretgame.model.SecretGameTuning as T
 
@@ -83,11 +82,6 @@ private fun SecretGameState.advanceFireworks(dt: Long, random: Random): Pair<Sec
     val step = fireworks.step(dt, layout.aspect, random)
     return copy(fireworks = step.fireworks) to step.bursts
 }
-
-/** Fração do caminho até a faixa feita em [seconds] (~90 ms para chegar). */
-fun secretShipFollow(seconds: Float): Float = 1f - exp(-T.SHIP_FOLLOW_RATE * seconds)
-
-fun secretTiltKeep(seconds: Float): Float = exp(-T.TILT_DECAY_RATE * seconds)
 
 private fun SecretGameState.stepEnter(): SecretGameState {
     if (phaseMs < T.ENTER_TOTAL_MS) return this

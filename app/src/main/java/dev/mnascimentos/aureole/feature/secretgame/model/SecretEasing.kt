@@ -1,6 +1,8 @@
 package dev.mnascimentos.aureole.feature.secretgame.model
 
+import kotlin.math.exp
 import kotlin.math.pow
+import dev.mnascimentos.aureole.feature.secretgame.model.SecretGameTuning as T
 
 private const val HALF = 0.5f
 private const val CUBIC_IN = 4f
@@ -21,3 +23,8 @@ fun easeInOutCubic(value: Float): Float {
 }
 
 fun easeOutCubic(value: Float): Float = 1f - (1f - clamp01(value)).pow(CUBIC)
+
+/** Fração do caminho até a faixa feita em [seconds] (~90 ms para chegar). */
+fun secretShipFollow(seconds: Float): Float = 1f - exp(-T.SHIP_FOLLOW_RATE * seconds)
+
+fun secretTiltKeep(seconds: Float): Float = exp(-T.TILT_DECAY_RATE * seconds)
