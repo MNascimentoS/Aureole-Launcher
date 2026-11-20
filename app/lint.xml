@@ -6,6 +6,8 @@
     <issue id="GradleDependency" severity="ignore" />
     <!-- Gradle/AGP version notices: upgrading the build tools is out of a release's scope, like GradleDependency. -->
     <issue id="AndroidGradlePluginVersion" severity="ignore" />
+    <!-- Jogo secreto (jogo-secreto-ajustes D-02/D-08): o overlay trava o retrato só enquanto o jogo está aberto e restaura depois. -->
+    <issue id="SourceLockedOrientationActivity" severity="ignore" />
 </lint>
 
 

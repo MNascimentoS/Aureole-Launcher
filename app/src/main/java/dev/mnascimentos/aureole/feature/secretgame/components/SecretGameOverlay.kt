@@ -1,6 +1,8 @@
 package dev.mnascimentos.aureole.feature.secretgame.components
 
+import android.content.pm.ActivityInfo
 import androidx.activity.compose.BackHandler
+import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
@@ -90,7 +92,7 @@ fun SecretGameOverlay(
             currentOnFinished()
         }
         BackHandler { apply(engine.onBack(state)) }
-        KeepAwake()
+        KeepAwakeInPortrait()
         PauseOnBackground { state = engine.onLifecyclePause(state) }
 
         val colors = SecretGameColors(
@@ -119,13 +121,19 @@ private fun handleEvent(event: SecretGameEvent, haptic: HapticFeedback, onGameOv
     }
 }
 
-/** While the game is open the screen stays on; it is restored after. */
+/** While the game is open the screen stays on and the Activity is locked in portrait; both are restored after. */
 @Composable
-private fun KeepAwake() {
+private fun KeepAwakeInPortrait() {
     val view = LocalView.current
-    DisposableEffect(view) {
+    val activity = LocalActivity.current
+    DisposableEffect(view, activity) {
+        val previous = activity?.requestedOrientation
         view.keepScreenOn = true
-        onDispose { view.keepScreenOn = false }
+        activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_USER_PORTRAIT
+        onDispose {
+            view.keepScreenOn = false
+            if (previous != null) activity.requestedOrientation = previous
+        }
     }
 }
 
