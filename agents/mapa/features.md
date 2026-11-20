@@ -8,12 +8,12 @@ Caminhos relativos a `app/src/main/java/dev/mnascimentos/aureole/` (`M/`). Só e
 | Activity | `MainActivity.kt` (chama `MainRoute` e registra 3 observers); helpers em `feature/home/extensions/MainActivityNavExt.kt`, `MainActivityUpdateExt.kt` |
 | Rota | `feature/home/MainRoute.kt`: `rememberHomeActions`, `WidgetHostManager`, `BackHandler`, provê `LocalHomeUiState`/`LocalLeftHanded`/`LocalHomeActions` |
 | Scaffold | `feature/home/MainScaffold.kt`: `HomeScreen` + overlays globais |
-| Screen | `feature/home/HomeScreen.kt` (350 linhas); layout em `HomeScreenContent.kt` (`MainHomeLayout`) |
+| Screen | `feature/home/HomeScreen.kt` (373 linhas); layout em `HomeScreenContent.kt` (`MainHomeLayout`) |
 | ViewModel | `feature/home/HomeViewModel.kt`; extensões em `feature/home/extensions/HomeViewModel*Ext.kt` e `components/*/extensions` |
 | Repositórios | via `model/HomeRepositories.kt`: App, Widget, Settings, Folder, FavoriteContainer, Container, Grid, ClockConfig (+ `UndoController`) |
 | UiState | `model/MainUiState.kt`: apps/busca, widgets, relógio, tema/vidro, wallpaper, pastas, favoritos, grade, containers, flags de sheets, `undoSnackbar`, `onboarding` |
 | Actions | `model/HomeScreenActions.kt` (data class de lambdas `onXxx`); params em `model/HomeScreenConfigs.kt` |
-| Outros models | `MainUiStateFavorites.kt`, `AllAppsOpenSource.kt`, `GestureExclusion.kt`, `HomeLocalProvider.kt` |
+| Outros models | `MainUiStateFavorites.kt`, `AllAppsOpenSource.kt`, `GestureExclusion.kt`, `HomeLocalProvider.kt`, `SwipeDownNotifications.kt` (`verticalSwipeOf`, `SwipeDownConditions.opensNotifications`, `SwipeDownScrollTracker`: quando o deslizar para baixo abre as notificações) |
 - `updateUiState` passa pelo `OnboardingReducer`. Há também `components/widgets/WidgetPickerViewModel.kt`.
 - Estados `showWidgetPopup`, `showWidgetResizeDialog` e `showSettingsDialog` estão no `MainUiState` mas nenhum composable os consome.
 
@@ -26,8 +26,8 @@ Caminhos relativos a `app/src/main/java/dev/mnascimentos/aureole/` (`M/`). Só e
 | containers | `Container`, `EditContainerScreen`; `folder/` com `OpenedFolderPopup` |
 | content | `GridItemContent` (despacha o tipo do item), `HomeScreenScrollContent` |
 | favorites | `AppsList`, `FavoritesListRow` |
-| onboarding | `OnboardingHostComponent`, checklist, `WelcomeScreen`, `GestureCoach`, `DefaultHomeStep` |
-| overlays | `HomeOverlays`, `CustomizeBottomSheet`, `HomeDragGestures`, `InAppUpdateDialog` |
+| onboarding | `OnboardingHostComponent`, checklist, `WelcomeScreen`, `GestureCoach`, `DefaultHomeStep`. Etapas do coach (`GestureCoachStep`, ordem em `visibleGestureSteps`): todos os apps → alfabeto → deslizar para baixo (`NOTIFICATIONS`, só com `swipe_down_notifications` ligado) → tocar e segurar. Paisagem do onboarding: `onboardingLandscapeLayout` + `withOwnLandscapeContent` (container e widgets com id próprio, vazios) |
+| overlays | `HomeOverlays`, `CustomizeBottomSheet`, `HomeDragGestures` (+ `homeSwipeDownNestedScroll`: o delta que sobra de uma lista no topo abre as notificações), `InAppUpdateDialog` |
 | quickbutton | Sheets de Settings, Appearance e ShortcutSelection |
 | scrubber | `CurvedAlphabetScrubber` |
 | widgets | `WidgetPickerScreen`, `WidgetHostManager`, `EditWidgetGroupScreen`, `WidgetStackBottomSheet` |

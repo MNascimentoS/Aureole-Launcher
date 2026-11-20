@@ -15,6 +15,7 @@ import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.drawEdgeScrub
 import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.drawPressAndHold
+import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.drawSwipeDown
 import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.drawSwipeUp
 import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.rememberOnboardingLoopsEnabled
 import dev.mnascimentos.aureole.feature.home.components.onboarding.model.OnboardingMotionSpec
@@ -35,6 +36,7 @@ fun GestureCoachHandComponent(
     val loopMs = when (step) {
         GestureCoachStep.OPEN_APPS -> OnboardingMotionSpec.HAND_SWIPE_LOOP_MS
         GestureCoachStep.ALPHABET_SCRUB -> OnboardingMotionSpec.HAND_EDGE_LOOP_MS
+        GestureCoachStep.NOTIFICATIONS -> OnboardingMotionSpec.HAND_SWIPE_LOOP_MS
         GestureCoachStep.CUSTOMIZE -> OnboardingMotionSpec.HAND_PRESS_LOOP_MS
     }
     val phase = rememberInfiniteTransition(label = "coachHand").animateFloat(
@@ -48,6 +50,7 @@ fun GestureCoachHandComponent(
         when (step) {
             GestureCoachStep.OPEN_APPS -> drawSwipeUp(phase, loopMs, color)
             GestureCoachStep.ALPHABET_SCRUB -> drawEdgeScrub(phase, isLeftHandedMode, color)
+            GestureCoachStep.NOTIFICATIONS -> drawSwipeDown(phase, loopMs, color)
             GestureCoachStep.CUSTOMIZE -> drawPressAndHold(phase, loopMs, color)
         }
     }

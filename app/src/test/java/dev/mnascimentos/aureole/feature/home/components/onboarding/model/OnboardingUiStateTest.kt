@@ -71,7 +71,7 @@ class OnboardingUiStateTest {
     @Test
     fun `when the alphabet scrubber is disabled, should skip the scrub step`() {
         assertEquals(
-            listOf(GestureCoachStep.OPEN_APPS, GestureCoachStep.CUSTOMIZE),
+            listOf(GestureCoachStep.OPEN_APPS, GestureCoachStep.NOTIFICATIONS, GestureCoachStep.CUSTOMIZE),
             visibleGestureSteps(isAlphabetScrubberDisabled = true)
         )
     }
@@ -106,7 +106,7 @@ class OnboardingUiStateTest {
         val state = OnboardingUiState(completedSteps = setOf(GestureCoachStep.OPEN_APPS))
 
         assertEquals(GestureCoachStep.ALPHABET_SCRUB, state.currentGestureStep(isAlphabetScrubberDisabled = false))
-        assertEquals(GestureCoachStep.CUSTOMIZE, state.currentGestureStep(isAlphabetScrubberDisabled = true))
+        assertEquals(GestureCoachStep.NOTIFICATIONS, state.currentGestureStep(isAlphabetScrubberDisabled = true))
         assertEquals(
             null,
             state.copy(completedSteps = GestureCoachStep.entries.toSet()).currentGestureStep(false)

@@ -78,6 +78,7 @@ fun MainUiState.toOnboardingHostParams(hazeState: HazeState?, isTouchExploration
             isLeftHandedMode = isLeftHandedMode,
             isTouchExplorationEnabled = isTouchExplorationEnabled,
             isLandscape = isLandscape,
+            isSwipeDownEnabled = isSwipeDownNotificationsEnabled,
             isAlphabetLoading = alphabet.isEmpty()
         ),
         selection = AppearanceSelection(paletteName = selectedThemeName, fontName = selectedFontName),
@@ -104,4 +105,8 @@ internal fun MainUiState.editHintItems(): List<LauncherItemState> {
 val MainUiState.isScrubberHintVisible: Boolean
     get() = onboarding.stage == OnboardingStage.GESTURES &&
         onboarding.succeededStep == null &&
-        onboarding.currentGestureStep(isAlphabetScrubberDisabled, isLandscape) == GestureCoachStep.ALPHABET_SCRUB
+        onboarding.currentGestureStep(
+            isAlphabetScrubberDisabled,
+            isLandscape,
+            isSwipeDownNotificationsEnabled
+        ) == GestureCoachStep.ALPHABET_SCRUB

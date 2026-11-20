@@ -94,6 +94,7 @@
     <string name="settings_behavior_home_opens_all_apps">Home opens all apps</string>
     <string name="settings_behavior_all_apps_left_side">All apps on left side</string>
     <string name="settings_behavior_disable_alphabet_scrubber">Disable alphabet scrubber</string>
+    <string name="settings_behavior_swipe_down_notifications">Swipe down for notifications</string>
     <string name="settings_behavior_check_for_updates">Check for updates</string>
     <string name="settings_behavior_header_offset">Header offset</string>
 
@@ -378,6 +379,9 @@
     <string name="home_onboarding_coach_customize_title">Touch and hold</string>
     <string name="home_onboarding_coach_customize_body">An empty spot on the screen to customize what shows up there.</string>
     <string name="home_onboarding_coach_customize_done">This is where you build your screen.</string>
+    <string name="home_onboarding_coach_notifications_title">Swipe down</string>
+    <string name="home_onboarding_coach_notifications_body">On the home screen to see your notifications.</string>
+    <string name="home_onboarding_coach_notifications_done">Nice! You can turn this off in Settings › Behavior.</string>
     <string name="home_onboarding_checklist_title">First steps</string>
     <plurals name="home_onboarding_checklist_progress">
         <item quantity="one">%1$d of %2$s steps</item>

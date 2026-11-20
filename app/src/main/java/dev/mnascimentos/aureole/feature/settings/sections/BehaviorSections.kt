@@ -20,6 +20,7 @@ import dev.mnascimentos.aureole.composable.mirror.LeftHandMirror
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
 import dev.mnascimentos.aureole.core.designsystem.icons.AlignRight
+import dev.mnascimentos.aureole.core.designsystem.icons.ArrowDown
 import dev.mnascimentos.aureole.core.designsystem.icons.Header
 import dev.mnascimentos.aureole.core.designsystem.icons.Press
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
@@ -68,6 +69,14 @@ fun BehaviorSections(
                     checked = uiState.isAlphabetScrubberDisabled,
                     onCheckedChange = { if (deliberate()) actions.onToggleDisableAlphabetScrubber() },
                     icon = { m, c -> AureoleDS.icons.AlignRight(modifier = m, tint = c) }
+                )
+            )
+            AureoleSwitchRow(
+                SwitchRowParams(
+                    title = stringResource(R.string.settings_behavior_swipe_down_notifications),
+                    checked = uiState.isSwipeDownNotificationsEnabled,
+                    onCheckedChange = { if (deliberate()) actions.onToggleSwipeDownNotifications() },
+                    icon = { m, c -> AureoleDS.icons.ArrowDown(modifier = m, tint = c) }
                 )
             )
         }

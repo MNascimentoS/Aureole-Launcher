@@ -30,15 +30,17 @@ private fun defaultSlot(type: LauncherItemType): LauncherItemState =
 
 /**
  * The landscape home saved when the onboarding ends, built from what the user has in portrait: only the clock,
- * apps list, widgets and container they built come along, each with its id (so favorites, clock config and
- * container items are shared), its widget stack and settings. They sit where the default landscape layout puts
- * them; the room of a missing one goes to its neighbor (without a clock the apps list takes the whole left column,
- * without widgets the container fills the center). The apps list shows all apps. With none of them in portrait,
- * the result is the default landscape layout. Mirrored for left-handed.
+ * apps list, widgets and container they built come along. The clock and the apps list keep their id (so the clock
+ * config and the favorites are shared); the widgets and the container get their own id and come empty
+ * ([withOwnLandscapeContent], D-17), waiting to be set up in landscape. They sit where the default landscape
+ * layout puts them; the room of a missing one goes to its neighbor (without a clock the apps list takes the whole
+ * left column, without widgets the container fills the center). The apps list shows all apps. With none of them
+ * in portrait, the result is the default landscape layout. Mirrored for left-handed.
  */
 internal fun onboardingLandscapeLayout(
     portraitItems: List<LauncherItemState>,
-    isLeftHanded: Boolean
+    isLeftHanded: Boolean,
+    newId: () -> String = ::randomItemId
 ): List<LauncherItemState> {
     val built = listOf(
         LauncherItemType.CLOCK,
@@ -77,7 +79,7 @@ internal fun onboardingLandscapeLayout(
             minRowSpan = slot.minRowSpan,
             showAllApps = if (type == LauncherItemType.APPS_LIST) true else item.showAllApps
         )
-    }
+    }.withOwnLandscapeContent(portraitItems, newId)
 }
 
 private fun columnWidth(column: LandscapeColumn): Int = when (column) {

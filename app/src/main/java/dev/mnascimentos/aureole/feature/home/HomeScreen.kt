@@ -24,6 +24,7 @@ import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -33,6 +34,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 import dev.chrisbanes.haze.hazeSource
 import dev.chrisbanes.haze.rememberHazeState
 import dev.mnascimentos.aureole.composable.LocalHomeUiState
@@ -53,6 +55,8 @@ import dev.mnascimentos.aureole.feature.home.components.containers.model.EditCon
 import dev.mnascimentos.aureole.feature.home.components.overlays.CustomizeBottomSheet
 import dev.mnascimentos.aureole.feature.home.components.overlays.HomeOverlaysContent
 import dev.mnascimentos.aureole.feature.home.components.overlays.homeDragGestures
+import dev.mnascimentos.aureole.feature.home.components.overlays.homeSwipeDownNestedScroll
+import dev.mnascimentos.aureole.feature.home.components.overlays.swipeDownNestedConnection
 import dev.mnascimentos.aureole.feature.home.components.overlays.model.isCustomizeShowcase
 import dev.mnascimentos.aureole.feature.home.components.scrubber.model.isHomeDragAttached
 import dev.mnascimentos.aureole.feature.home.components.widgets.EditWidgetGroupScreen
@@ -68,8 +72,12 @@ import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
 import dev.mnascimentos.aureole.feature.home.model.HomeScreenBodyConfig
 import dev.mnascimentos.aureole.feature.home.model.LocalHomeActions
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
+import dev.mnascimentos.aureole.feature.home.model.SwipeDownConditions
+import dev.mnascimentos.aureole.feature.home.model.SwipeDownScrollTracker
+import dev.mnascimentos.aureole.feature.home.model.VERTICAL_INTENT_THRESHOLD_DP
 import dev.mnascimentos.aureole.feature.home.model.getWidgetIdsForStack
 import dev.mnascimentos.aureole.feature.home.model.isOverlayActive
+import dev.mnascimentos.aureole.feature.home.model.opensNotifications
 
 private const val DEFAULT_APP_WIDGET_HOST_ID = 1024
 
@@ -147,7 +155,21 @@ private fun Modifier.homeDragModifier(
     val uiState = LocalHomeUiState.current
     val actions = LocalHomeActions.current
     val isLandscape = LocalConfiguration.current.orientation == Configuration.ORIENTATION_LANDSCAPE
-    return homeDragGestures(
+    val density = LocalDensity.current
+    val canSwipeDown = SwipeDownConditions(
+        isEnabled = uiState.isSwipeDownNotificationsEnabled,
+        isOverlayActive = uiState.isOverlayActive,
+        isEditing = uiState.isGridEditMode
+    ).opensNotifications()
+    val currentCanSwipeDown by rememberUpdatedState(canSwipeDown)
+    val currentOnExpand by rememberUpdatedState(actions.onExpandNotificationShade)
+    val tracker = remember(density) {
+        SwipeDownScrollTracker(thresholdPx = with(density) { VERTICAL_INTENT_THRESHOLD_DP.dp.toPx() })
+    }
+    val connection = remember(tracker) {
+        swipeDownNestedConnection(tracker, canOpen = { currentCanSwipeDown }, onOpen = { currentOnExpand() })
+    }
+    return homeSwipeDownNestedScroll(tracker, connection).homeDragGestures(
         HomeDragParams(
             isLeftHandedMode = uiState.isLeftHandedMode,
             // No alphabet in landscape, so no edge scrub there either.
@@ -155,7 +177,8 @@ private fun Modifier.homeDragModifier(
             screenHeightPx = screenHeightPx,
             screenWidthPx = screenWidthPx,
             isAllAppsDrawerOpen = uiState.isAllAppsDrawerOpen,
-            density = LocalDensity.current,
+            density = density,
+            isSwipeDownEnabled = canSwipeDown,
             onAllAppsDrawerOpen = actions.onAllAppsDrawerOpen,
             onAllAppsDrawerOpenFromEdge = actions.onAllAppsDrawerOpenFromEdge,
             onExpandNotificationShade = actions.onExpandNotificationShade,

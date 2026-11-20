@@ -94,6 +94,7 @@
     <string name="settings_behavior_home_opens_all_apps">Home abre todos os apps</string>
     <string name="settings_behavior_all_apps_left_side">Todos os apps do lado esquerdo</string>
     <string name="settings_behavior_disable_alphabet_scrubber">Desativar rolagem alfabética</string>
+    <string name="settings_behavior_swipe_down_notifications">Deslizar para baixo abre notificações</string>
     <string name="settings_behavior_check_for_updates">Verificar atualizações</string>
     <string name="settings_behavior_header_offset">Deslocamento do cabeçalho</string>
 
@@ -379,6 +380,9 @@
     <string name="home_onboarding_coach_customize_title">Toque e segure</string>
     <string name="home_onboarding_coach_customize_body">Em um espaço vazio da tela para personalizar o que aparece nela.</string>
     <string name="home_onboarding_coach_customize_done">É aqui que você monta sua tela.</string>
+    <string name="home_onboarding_coach_notifications_title">Deslize para baixo</string>
+    <string name="home_onboarding_coach_notifications_body">Na tela inicial para ver suas notificações.</string>
+    <string name="home_onboarding_coach_notifications_done">Isso aí! Dá para desligar em Configurações › Comportamento.</string>
     <string name="home_onboarding_checklist_title">Primeiros passos</string>
     <plurals name="home_onboarding_checklist_progress">
         <item quantity="one">%1$d de %2$s etapas</item>

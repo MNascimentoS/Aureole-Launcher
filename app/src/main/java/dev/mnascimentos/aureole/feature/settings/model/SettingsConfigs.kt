@@ -58,6 +58,7 @@ data class SettingsScreenActions(
     val onHeaderOffsetChanged: (Int) -> Unit = {},
     val onToggleThemedAppIcons: () -> Unit = {},
     val onToggleDisableAlphabetScrubber: () -> Unit = {},
+    val onToggleSwipeDownNotifications: () -> Unit = {},
     val onOpenResetGridDialog: () -> Unit = {},
     val onConfirmResetGrid: () -> Unit = {},
     val onDismissResetGridDialog: () -> Unit = {},

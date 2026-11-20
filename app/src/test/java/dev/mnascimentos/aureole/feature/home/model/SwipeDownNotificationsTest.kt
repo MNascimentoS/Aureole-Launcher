@@ -1,0 +1,113 @@
+package dev.mnascimentos.aureole.feature.home.model
+
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
+import org.junit.Assert.assertTrue
+import org.junit.Test
+
+class SwipeDownNotificationsTest {
+
+    private val threshold = 100f
+
+    // region verticalSwipeOf
+
+    @Test
+    fun `a short swipe should be no swipe yet`() {
+        assertEquals(VerticalSwipe.NONE, verticalSwipeOf(totalDx = 0f, totalDy = 90f, thresholdPx = threshold))
+    }
+
+    @Test
+    fun `a long mostly vertical swipe should be up or down`() {
+        assertEquals(VerticalSwipe.DOWN, verticalSwipeOf(totalDx = 20f, totalDy = 150f, thresholdPx = threshold))
+        assertEquals(VerticalSwipe.UP, verticalSwipeOf(totalDx = 20f, totalDy = -150f, thresholdPx = threshold))
+    }
+
+    @Test
+    fun `a diagonal swipe should not count as vertical`() {
+        assertEquals(VerticalSwipe.NONE, verticalSwipeOf(totalDx = 120f, totalDy = 150f, thresholdPx = threshold))
+    }
+
+    // endregion
+
+    // region conditions
+
+    @Test
+    fun `with the toggle on and the plain home, should open the notifications`() {
+        assertTrue(SwipeDownConditions(isEnabled = true).opensNotifications())
+    }
+
+    @Test
+    fun `with the toggle off, should never open`() {
+        assertFalse(SwipeDownConditions(isEnabled = false).opensNotifications())
+    }
+
+    @Test
+    fun `when scrollable content moved during the gesture, should not open`() {
+        assertFalse(SwipeDownConditions(isEnabled = true, hasScrolledContent = true).opensNotifications())
+    }
+
+    @Test
+    fun `with a sheet, folder or the drawer in front, should not open`() {
+        assertFalse(SwipeDownConditions(isEnabled = true, isOverlayActive = true).opensNotifications())
+    }
+
+    @Test
+    fun `in edit mode, should not open`() {
+        assertFalse(SwipeDownConditions(isEnabled = true, isEditing = true).opensNotifications())
+    }
+
+    @Test
+    fun `when the finger started on the alphabet edge, should not open`() {
+        assertFalse(SwipeDownConditions(isEnabled = true, isEdgeGesture = true).opensNotifications())
+    }
+
+    // endregion
+
+    // region nested scroll tracker
+
+    @Test
+    fun `a list at its top should open once the leftover passes the threshold`() {
+        val tracker = SwipeDownScrollTracker(threshold)
+
+        assertFalse(tracker.onPostScroll(consumedY = 0f, availableY = 60f))
+        assertTrue(tracker.onPostScroll(consumedY = 0f, availableY = 60f))
+        assertFalse(tracker.hasScrolledContent)
+    }
+
+    @Test
+    fun `should open only once per gesture`() {
+        val tracker = SwipeDownScrollTracker(threshold)
+
+        assertTrue(tracker.onPostScroll(consumedY = 0f, availableY = 150f))
+        assertFalse(tracker.onPostScroll(consumedY = 0f, availableY = 150f))
+    }
+
+    @Test
+    fun `a list that could still scroll up should keep the gesture, even after reaching its top`() {
+        val tracker = SwipeDownScrollTracker(threshold)
+
+        assertFalse(tracker.onPostScroll(consumedY = 40f, availableY = 0f))
+        assertFalse(tracker.onPostScroll(consumedY = 0f, availableY = 200f))
+        assertTrue(tracker.hasScrolledContent)
+    }
+
+    @Test
+    fun `an upward leftover should never open`() {
+        val tracker = SwipeDownScrollTracker(threshold)
+
+        assertFalse(tracker.onPostScroll(consumedY = 0f, availableY = -300f))
+    }
+
+    @Test
+    fun `reset should start a new gesture`() {
+        val tracker = SwipeDownScrollTracker(threshold)
+        tracker.onPostScroll(consumedY = 40f, availableY = 0f)
+
+        tracker.reset()
+
+        assertFalse(tracker.hasScrolledContent)
+        assertTrue(tracker.onPostScroll(consumedY = 0f, availableY = 150f))
+    }
+
+    // endregion
+}

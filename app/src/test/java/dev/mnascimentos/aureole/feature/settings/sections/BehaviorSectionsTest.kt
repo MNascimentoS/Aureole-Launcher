@@ -51,6 +51,7 @@ class BehaviorSectionsTest {
             "Home opens all apps",
             "All apps on left side",
             "Disable alphabet scrubber",
+            "Swipe down for notifications",
             "HOME SCREEN",
             "Header offset"
         ).forEach { composeTestRule.onNodeWithText(it).assertExists() }
@@ -64,11 +65,13 @@ class BehaviorSectionsTest {
         var home = false
         var left = false
         var scrubber = false
+        var swipeDown = false
         render(
             SettingsScreenActions(
                 onToggleHomeButtonOpensAllApps = { home = true },
                 onToggleLeftHandedMode = { left = true },
-                onToggleDisableAlphabetScrubber = { scrubber = true }
+                onToggleDisableAlphabetScrubber = { scrubber = true },
+                onToggleSwipeDownNotifications = { swipeDown = true }
             )
         )
         composeTestRule.onNodeWithText("Disable alphabet scrubber").performScrollTo().performClick()
@@ -78,6 +81,7 @@ class BehaviorSectionsTest {
         composeTestRule.onNodeWithText("Home opens all apps").performScrollTo().performClick()
         composeTestRule.onNodeWithText("All apps on left side").performScrollTo().performClick()
         composeTestRule.onNodeWithText("Disable alphabet scrubber").performScrollTo().performClick()
-        assertTrue(home && left && scrubber)
+        composeTestRule.onNodeWithText("Swipe down for notifications").performScrollTo().performClick()
+        assertTrue(home && left && scrubber && swipeDown)
     }
 }

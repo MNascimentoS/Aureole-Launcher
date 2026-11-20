@@ -125,6 +125,14 @@ class SettingsToggleManagerTest {
     }
 
     @Test
+    fun `toggle SWIPE_DOWN_NOTIFICATIONS should flip isSwipeDownNotificationsEnabled state`() {
+        val initial = viewModel.uiState.value.isSwipeDownNotificationsEnabled
+        SettingsToggleManager.toggleSetting(viewModel, SettingToggle.SWIPE_DOWN_NOTIFICATIONS)
+        assertEquals(!initial, viewModel.uiState.value.isSwipeDownNotificationsEnabled)
+        assertEquals(!initial, settingsRepository.isSwipeDownNotificationsEnabled)
+    }
+
+    @Test
     fun `toggle SHOW_SETTINGS_BUTTON_IN_ALL_APPS should flip showSettingsButtonInAllApps state`() {
         val initial = viewModel.uiState.value.showSettingsButtonInAllApps
         SettingsToggleManager.toggleSetting(viewModel, SettingToggle.SHOW_SETTINGS_BUTTON_IN_ALL_APPS)

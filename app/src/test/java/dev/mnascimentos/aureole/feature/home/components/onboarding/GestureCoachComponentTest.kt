@@ -125,10 +125,22 @@ class GestureCoachComponentTest {
     }
 
     @Test
-    fun `when the alphabet is disabled, should go from apps to customize`() {
+    fun `when the alphabet is disabled, should go from apps to swipe down`() {
         render(
             onboarding = OnboardingUiState(completedSteps = setOf(GestureCoachStep.OPEN_APPS)),
             config = GestureCoachConfig(isAlphabetScrubberDisabled = true)
+        )
+
+        composeTestRule.onNodeWithText("Swipe down").assertExists()
+    }
+
+    @Test
+    fun `when the swipe down is off, should go from the alphabet to customize`() {
+        render(
+            onboarding = OnboardingUiState(
+                completedSteps = setOf(GestureCoachStep.OPEN_APPS, GestureCoachStep.ALPHABET_SCRUB)
+            ),
+            config = GestureCoachConfig(isSwipeDownEnabled = false)
         )
 
         composeTestRule.onNodeWithText("Touch and hold").assertExists()
@@ -179,6 +191,6 @@ class GestureCoachComponentTest {
             config = GestureCoachConfig(isLandscape = true)
         )
 
-        composeTestRule.onNodeWithText("Touch and hold", substring = true).assertExists()
+        composeTestRule.onNodeWithText("Swipe down", substring = true).assertExists()
     }
 }

@@ -19,6 +19,10 @@ class GestureCoachCopyTest {
             GestureCoachStep.ALPHABET_SCRUB.coachTitleRes(true)
         )
         assertEquals(R.string.home_onboarding_coach_customize_title, GestureCoachStep.CUSTOMIZE.coachTitleRes(true))
+        assertEquals(
+            R.string.home_onboarding_coach_notifications_title,
+            GestureCoachStep.NOTIFICATIONS.coachTitleRes(false)
+        )
     }
 
     @Test
@@ -28,6 +32,10 @@ class GestureCoachCopyTest {
                 (R.string.home_onboarding_coach_apps_body to R.string.home_onboarding_coach_apps_done),
             GestureCoachStep.ALPHABET_SCRUB to
                 (R.string.home_onboarding_coach_scrub_body to R.string.home_onboarding_coach_scrub_done),
+            GestureCoachStep.NOTIFICATIONS to (
+                R.string.home_onboarding_coach_notifications_body to
+                    R.string.home_onboarding_coach_notifications_done
+                ),
             GestureCoachStep.CUSTOMIZE to
                 (R.string.home_onboarding_coach_customize_body to R.string.home_onboarding_coach_customize_done)
         )

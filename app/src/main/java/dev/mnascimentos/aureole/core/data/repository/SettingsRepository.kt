@@ -176,6 +176,11 @@ class SettingsRepository(
         get() = prefs.getBoolean(KEY_DISABLE_ALPHABET_SCRUBBER, false)
         set(value) = prefs.edit { putBoolean(KEY_DISABLE_ALPHABET_SCRUBBER, value) }
 
+    /** Swiping down on the home opens the notification shade; on by default, also for updates (D-02). */
+    var isSwipeDownNotificationsEnabled: Boolean
+        get() = prefs.getBoolean(KEY_SWIPE_DOWN_NOTIFICATIONS, DEFAULT_SWIPE_DOWN_NOTIFICATIONS)
+        set(value) = prefs.edit { putBoolean(KEY_SWIPE_DOWN_NOTIFICATIONS, value) }
+
     var showSettingsButtonInAllApps: Boolean
         get() = prefs.getBoolean(KEY_SHOW_SETTINGS_BUTTON_IN_ALL_APPS, true)
         set(value) = prefs.edit { putBoolean(KEY_SHOW_SETTINGS_BUTTON_IN_ALL_APPS, value) }
@@ -455,6 +460,8 @@ class SettingsRepository(
         private const val KEY_CORNER_RADIUS_DP = "corner_radius_dp"
         private const val KEY_USE_THEMED_APP_ICONS = "use_themed_app_icons"
         private const val KEY_DISABLE_ALPHABET_SCRUBBER = "disable_alphabet_scrubber"
+        private const val KEY_SWIPE_DOWN_NOTIFICATIONS = "swipe_down_notifications"
+        const val DEFAULT_SWIPE_DOWN_NOTIFICATIONS = true
         private const val KEY_SHOW_SETTINGS_BUTTON_IN_ALL_APPS = "show_settings_button_in_all_apps"
         private const val KEY_SETTINGS_BUTTON_POSITION = "settings_button_position"
         private const val KEY_SHOW_SEARCH_BAR_IN_ALL_APPS = "show_search_bar_in_all_apps"

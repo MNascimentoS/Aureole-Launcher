@@ -2,7 +2,9 @@ package dev.mnascimentos.aureole.core.data.repository
 
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotNull
+import org.junit.Assert.assertTrue
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
@@ -32,5 +34,18 @@ class SettingsRepositoryMethodsTest {
         assertNotNull(repository.wallpaperScaleType)
 
         repository.checkDefaultLauncher()
+    }
+
+    @Test
+    fun `swipe down for notifications should be on by default and persist`() {
+        val context = ApplicationProvider.getApplicationContext<Context>()
+        val repository = SettingsRepository(context)
+        repository.prefs.edit().remove("swipe_down_notifications").commit()
+
+        assertTrue(repository.isSwipeDownNotificationsEnabled)
+        repository.isSwipeDownNotificationsEnabled = false
+        assertFalse(SettingsRepository(context).isSwipeDownNotificationsEnabled)
+
+        repository.prefs.edit().remove("swipe_down_notifications").commit()
     }
 }

@@ -69,4 +69,7 @@ object OnboardingMotionSpec {
 
     // Default home success message before moving on
     const val DEFAULT_HOME_SUCCESS_MS = 1400L
+
+    // Swipe down success message, counted once the shade is closed and the home has the focus again
+    const val NOTIFICATIONS_SUCCESS_MS = 3_000L
 }

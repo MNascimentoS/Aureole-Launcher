@@ -11,6 +11,8 @@ enum class OnboardingStage {
 enum class GestureCoachStep {
     OPEN_APPS,
     ALPHABET_SCRUB,
+    /** Swipe down opens the notifications; only while that gesture is on in Settings › Behavior. */
+    NOTIFICATIONS,
     CUSTOMIZE
 }
 

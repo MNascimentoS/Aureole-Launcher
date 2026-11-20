@@ -72,6 +72,7 @@ data class MainUiState(
     val isInAppUpdateEnabled: Boolean = true,
     val isThemedAppIconsEnabled: Boolean = false,
     val isAlphabetScrubberDisabled: Boolean = false,
+    val isSwipeDownNotificationsEnabled: Boolean = true,
     val showSettingsButtonInAllApps: Boolean = true,
     val settingsButtonPosition: String = "Right",
     val showSearchBarInAllApps: Boolean = true,

@@ -57,6 +57,7 @@ data class SettingsUiState(
     val cornerRadiusDp: Int = SettingsRepository.DEFAULT_CORNER_RADIUS_DP,
     val isThemedAppIconsEnabled: Boolean = false,
     val isAlphabetScrubberDisabled: Boolean = false,
+    val isSwipeDownNotificationsEnabled: Boolean = true,
     val showSettingsButtonInAllApps: Boolean = true,
     val settingsButtonPosition: String = "Right",
     val showSearchBarInAllApps: Boolean = true,

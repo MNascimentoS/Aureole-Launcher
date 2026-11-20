@@ -127,7 +127,10 @@ class HomeActionsFactory(
                     context.startActivity(launchIntent)
                 }
             },
-            onExpandNotificationShade = { IntentUtils.expandNotificationShade(context) },
+            onExpandNotificationShade = {
+                viewModel.onOnboardingSignal(OnboardingSignal.NOTIFICATIONS_OPENED)
+                IntentUtils.expandNotificationShade(context)
+            },
             onFolderIntent = { viewModel.onFolderIntent(it) },
             onSetAddAppToFolderDialogVisible = { viewModel.setAddAppToFolderDialogVisible(it) },
             onSetRenameFolderDialogVisible = { viewModel.setRenameFolderDialogVisible(it) },
