@@ -20,6 +20,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.withFrameNanos
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.lerp
@@ -41,8 +42,10 @@ import dev.mnascimentos.aureole.feature.secretgame.model.SecretGameEngine
 import dev.mnascimentos.aureole.feature.secretgame.model.SecretGameEvent
 import dev.mnascimentos.aureole.feature.secretgame.model.SecretGameLayout
 import dev.mnascimentos.aureole.feature.secretgame.model.SecretGamePhase
+import dev.mnascimentos.aureole.feature.secretgame.model.SecretGameSound
 import dev.mnascimentos.aureole.feature.secretgame.model.SecretGameStep
 import dev.mnascimentos.aureole.feature.secretgame.model.SecretLogoPlacement
+import dev.mnascimentos.aureole.feature.secretgame.model.secretSoundsFor
 import dev.mnascimentos.aureole.feature.secretgame.model.toFrame
 import dev.mnascimentos.aureole.feature.secretgame.model.SecretGameDrawing as D
 import dev.mnascimentos.aureole.feature.secretgame.model.SecretGameTuning as T
@@ -57,6 +60,7 @@ private const val NANOS_PER_MS = 1_000_000L
 fun SecretGameOverlay(
     logo: SecretLogoPlacement,
     bestScore: Int,
+    sound: SecretGameSound,
     callbacks: SecretGameCallbacks,
     modifier: Modifier = Modifier
 ) {
@@ -76,9 +80,11 @@ fun SecretGameOverlay(
         val currentOnFrame by rememberUpdatedState(callbacks.onFrame)
         val currentOnGameOver by rememberUpdatedState(callbacks.onGameOver)
         val currentOnFinished by rememberUpdatedState(callbacks.onFinished)
+        val currentSound by rememberUpdatedState(sound)
         val apply = { step: SecretGameStep ->
             state = step.state
             step.events.forEach { handleEvent(it, haptic, currentOnGameOver) }
+            secretSoundsFor(step.events, currentSound.isOn).forEach(currentSound.player::play)
         }
 
         LaunchedEffect(engine) {
@@ -108,6 +114,7 @@ fun SecretGameOverlay(
         ) {
             SecretGameCanvas(frame = state.toFrame(), colors = colors, aspect = layout.aspect)
         }
+        if (state.phase == SecretGamePhase.PAUSED) PausedSoundButton(sound, layout)
         MoveTargets(layout, enabled = state.acceptsInput) { direction -> apply(engine.move(state, direction)) }
     }
 }
@@ -147,6 +154,18 @@ private fun PauseOnBackground(onPause: () -> Unit) {
         owner.lifecycle.addObserver(observer)
         onDispose { owner.lifecycle.removeObserver(observer) }
     }
+}
+
+/** The sound pill under the pause texts: pressing it flips the sound and does not resume the game. */
+@Composable
+private fun BoxWithConstraintsScope.PausedSoundButton(sound: SecretGameSound, layout: SecretGameLayout) {
+    SecretSoundButton(
+        isOn = sound.isOn,
+        onToggle = sound.onToggle,
+        modifier = Modifier
+            .align(Alignment.TopCenter)
+            .offset(y = maxWidth * (layout.aspect * T.CENTER_Y_FRACTION + D.SOUND_BUTTON_GAP))
+    )
 }
 
 /** Transparent touch targets over the ← → frames (bigger than the frames themselves). */

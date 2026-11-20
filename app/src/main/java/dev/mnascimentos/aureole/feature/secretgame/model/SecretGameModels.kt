@@ -1,6 +1,7 @@
 package dev.mnascimentos.aureole.feature.secretgame.model
 
 import dev.mnascimentos.aureole.composable.fireworks.model.FireworksState
+import dev.mnascimentos.aureole.feature.secretgame.audio.SecretSoundPlayer
 enum class SecretGamePhase { ENTER, INTIMIDATE, COUNTDOWN, PLAY, PAUSED, EXPLODE, RESULT, EXIT, DONE }
 
 enum class SecretFaceKind { CREATOR, DREAMER }
@@ -119,3 +120,9 @@ internal data class SecretBurst(
     val count: Int,
     val power: Float
 )
+
+/** What Settings tells the game: the 5th tap opened it, the sound button of the pause was pressed. */
+data class SecretGameActions(val onOpened: () -> Unit = {}, val onSoundToggled: () -> Unit = {})
+
+/** The sound of the game: the [player], whether it is [isOn] (saved) and the [onToggle] of the pause button. */
+data class SecretGameSound(val player: SecretSoundPlayer, val isOn: Boolean, val onToggle: () -> Unit)

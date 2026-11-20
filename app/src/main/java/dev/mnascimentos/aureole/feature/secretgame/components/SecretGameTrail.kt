@@ -1,6 +1,7 @@
 package dev.mnascimentos.aureole.feature.secretgame.components
 
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
@@ -9,48 +10,83 @@ import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.feature.secretgame.model.SecretSprite
 import dev.mnascimentos.aureole.feature.secretgame.model.SecretGameDrawing as D
 
-/** Rastro de um rosto caindo: cauda afunilada e três linhas, com base no topo do rosto. Só é chamado com trail > 0. */
-internal fun DrawScope.drawTrail(sprite: SecretSprite, trail: Float, color: Color) {
+/** Medidas do rastro de um rosto, em px: nasce por trás da cabeça e some para cima; sem nenhuma borda reta. */
+private class TrailBox(val x: Float, val head: Float, val top: Float, val bottom: Float, val w: Float, val h: Float)
+
+/**
+ * Rastro de um rosto caindo, desenhado antes dele. [trail] é o comprimento em larguras de tela e [faceAspect] a
+ * altura ÷ largura do rosto. Só é chamado com trail > 0.
+ */
+internal fun DrawScope.drawTrail(sprite: SecretSprite, trail: Float, faceAspect: Float, color: Color) {
     val u = size.width
-    val x = sprite.x * u
-    val faceWidth = sprite.width * u
-    val baseY = sprite.y * u - D.TRAIL_BASE_RISE * faceWidth
-    val topY = baseY - trail * u
-    val half = faceWidth * D.HALF
-    val baseHalf = half * D.TRAIL_BASE_WIDTH
-    val tipHalf = half * D.TRAIL_TIP_WIDTH
-    val midY = (baseY + topY) * D.HALF
-    val tail = Path().apply {
-        moveTo(x - baseHalf, baseY)
-        quadraticTo(x - (baseHalf + tipHalf) * D.HALF, midY, x - tipHalf, topY)
-        lineTo(x + tipHalf, topY)
-        quadraticTo(x + (baseHalf + tipHalf) * D.HALF, midY, x + baseHalf, baseY)
-        close()
-    }
-    val fade = { alpha: Float ->
-        Brush.verticalGradient(
-            listOf(Color.Transparent, color.copy(alpha = alpha * sprite.alpha)),
-            startY = topY,
-            endY = baseY
-        )
-    }
-    drawPath(tail, fade(D.TRAIL_BODY_ALPHA))
-    listOf(
+    val w = sprite.width * u
+    val h = w * faceAspect
+    val head = sprite.y * u - D.TRAIL_HEAD_RISE * h
+    val box = TrailBox(sprite.x * u, head, head - trail * u, sprite.y * u + D.TRAIL_BOTTOM_DROP * h, w, h)
+    val k = (box.head - box.top) / (box.bottom - box.top)
+    val body = Brush.verticalGradient(
+        colorStops = arrayOf(
+            0f to color.copy(alpha = 0f),
+            D.TRAIL_MID_STOP * k to color.copy(alpha = D.TRAIL_MID_ALPHA * sprite.alpha),
+            k to color.copy(alpha = D.TRAIL_BODY_ALPHA * sprite.alpha),
+            1f to color.copy(alpha = 0f),
+        ),
+        startY = box.top,
+        endY = box.bottom
+    )
+    drawPath(trailBody(box), body)
+    val lines = listOf(
         -D.TRAIL_LINE_X to D.TRAIL_SIDE_LENGTH,
         0f to D.TRAIL_MID_LENGTH,
         D.TRAIL_LINE_X to D.TRAIL_SIDE_LENGTH
-    ).forEach { (offset, length) ->
-        val lineX = x + offset * faceWidth
-        val lineTop = baseY - trail * u * length
-        drawLine(
-            brush = Brush.verticalGradient(
-                listOf(Color.Transparent, color.copy(alpha = D.TRAIL_LINE_ALPHA * sprite.alpha)),
-                startY = lineTop,
-                endY = baseY
-            ),
-            start = Offset(lineX, lineTop),
-            end = Offset(lineX, baseY),
-            strokeWidth = D.TRAIL_LINE_DP.dp.toPx()
+    )
+    lines.forEach { (offset, length) ->
+        drawTrailLine(
+            box,
+            offset,
+            length * trail * u,
+            color.copy(alpha = sprite.alpha)
         )
     }
+}
+
+/** Cauda que sai do topo, desce pelos lados e fecha numa meia elipse embaixo da cabeça. */
+private fun trailBody(box: TrailBox): Path {
+    val rx = D.TRAIL_RADIUS_X * box.w
+    val cy = box.head + D.TRAIL_CENTER_DROP * box.h
+    val controlY = box.head - D.TRAIL_CONTROL_Y * (box.head - box.top)
+    val controlX = D.TRAIL_CONTROL_X * rx
+    val tip = D.TRAIL_TIP_X * box.w
+    return Path().apply {
+        moveTo(box.x - tip, box.top)
+        quadraticTo(box.x - controlX, controlY, box.x - rx, cy)
+        arcTo(
+            Rect(box.x - rx, cy - (box.bottom - cy), box.x + rx, box.bottom),
+            D.HALF_TURN_DEG,
+            -D.HALF_TURN_DEG,
+            false
+        )
+        quadraticTo(box.x + controlX, controlY, box.x + tip, box.top)
+        close()
+    }
+}
+
+private fun DrawScope.drawTrailLine(box: TrailBox, offset: Float, length: Float, color: Color) {
+    val lineX = box.x + offset * box.w
+    val end = box.head + D.TRAIL_LINE_END * box.h
+    val start = box.head - length
+    drawLine(
+        brush = Brush.verticalGradient(
+            colorStops = arrayOf(
+                0f to color.copy(alpha = 0f),
+                D.TRAIL_LINE_PEAK to color.copy(alpha = D.TRAIL_LINE_ALPHA * color.alpha),
+                1f to color.copy(alpha = 0f),
+            ),
+            startY = start,
+            endY = end
+        ),
+        start = Offset(lineX, start),
+        end = Offset(lineX, end),
+        strokeWidth = D.TRAIL_LINE_DP.dp.toPx()
+    )
 }

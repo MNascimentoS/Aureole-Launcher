@@ -23,6 +23,8 @@ data class SettingsAdvancedDialogActions(
 data class SettingsScreenActions(
     val onBackClick: () -> Unit = {},
     val onSecretGameOver: (Int) -> Unit = {},
+    val onSecretGameOpened: () -> Unit = {},
+    val onSecretSoundToggled: () -> Unit = {},
     val onSetDefaultLauncherClick: () -> Unit = {},
     val onOpenFavoritePickerClick: () -> Unit = {},
     val onToggleFavorite: (String) -> Unit = {},

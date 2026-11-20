@@ -30,7 +30,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.composable.sheets.ReleaseNotesBottomSheet
@@ -44,9 +43,16 @@ import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.secretgame.components.SecretGameLayer
+import dev.mnascimentos.aureole.feature.secretgame.components.SecretThankYou
+import dev.mnascimentos.aureole.feature.secretgame.components.rememberSecretShine
+import dev.mnascimentos.aureole.feature.secretgame.components.rememberSecretSoundPlayer
 import dev.mnascimentos.aureole.feature.secretgame.components.secretGameTrigger
+import dev.mnascimentos.aureole.feature.secretgame.model.SecretGameActions
 import dev.mnascimentos.aureole.feature.secretgame.model.SecretGameHostState
 import dev.mnascimentos.aureole.feature.secretgame.model.SecretGameModifiers
+import dev.mnascimentos.aureole.feature.secretgame.model.SecretGameSound
+import dev.mnascimentos.aureole.feature.secretgame.model.SecretSound
+import dev.mnascimentos.aureole.feature.secretgame.model.shouldShowSecretShine
 import dev.mnascimentos.aureole.feature.settings.components.SettingsAreaCard
 import dev.mnascimentos.aureole.feature.settings.extensions.getVersionName
 import dev.mnascimentos.aureole.feature.settings.model.SettingsHeaderParams
@@ -80,17 +86,25 @@ fun SettingsRootScreen(
     uiState: SettingsUiState,
     navigation: SettingsNavigationActions,
     modifier: Modifier = Modifier,
+    secretActions: SecretGameActions = SecretGameActions(),
     onSecretGameOver: (Int) -> Unit
 ) {
     val context = LocalContext.current
     val versionName = remember(context) { getVersionName(context) }
     var showReleaseNotes by remember { mutableStateOf(false) }
     val game = rememberSaveable(saver = SecretGameHostState.Saver) { SecretGameHostState() }
+    val shine = rememberSecretShine(enabled = shouldShowSecretShine(uiState.secretGamePlayed))
+    val player = rememberSecretSoundPlayer()
+    val sound = SecretGameSound(player, uiState.secretSoundOn, secretActions.onSoundToggled)
     val secret = SecretGameModifiers(
-        thankYou = Modifier.secretGameTrigger(game, LocalHapticFeedback.current),
+        thankYou = Modifier.secretGameTrigger(game, LocalHapticFeedback.current, shine) {
+            if (uiState.secretSoundOn) player.play(SecretSound.OPEN)
+            secretActions.onOpened()
+        },
         logo = game.logoModifier
     )
-    val header = SettingsHeaderParams(versionName, onClick = { showReleaseNotes = true }, secret = secret)
+    val header =
+        SettingsHeaderParams(versionName, onClick = { showReleaseNotes = true }, secret = secret, shine = shine)
 
     Box(modifier = modifier.fillMaxSize().then(game.rootModifier)) {
         Scaffold(
@@ -125,7 +139,12 @@ fun SettingsRootScreen(
                 )
             }
         }
-        SecretGameLayer(host = game, bestScore = uiState.secretBestScore, onGameOver = onSecretGameOver)
+        SecretGameLayer(
+            host = game,
+            bestScore = uiState.secretBestScore,
+            sound = sound,
+            onGameOver = onSecretGameOver
+        )
     }
 }
 
@@ -150,7 +169,8 @@ private fun SettingsSingleColumn(
         Spacer(modifier = Modifier.height(AureoleDS.dimens.xxLarge))
         SettingsNavigationList(navigation)
         Spacer(modifier = Modifier.weight(1f))
-        SettingsThankYou(
+        SecretThankYou(
+            shine = header.shine,
             modifier = header.secret.thankYou.padding(top = AureoleDS.dimens.large, bottom = AureoleDS.dimens.xLarge)
         )
     }
@@ -186,7 +206,8 @@ private fun SettingsTwoPanes(
             Box(modifier = Modifier.weight(1f), contentAlignment = Alignment.Center) {
                 SettingsNavigationList(navigation)
             }
-            SettingsThankYou(
+            SecretThankYou(
+                shine = header.shine,
                 modifier = header.secret.thankYou.padding(
                     top = AureoleDS.dimens.large,
                     bottom = AureoleDS.dimens.xLarge
@@ -194,19 +215,6 @@ private fun SettingsTwoPanes(
             )
         }
     }
-}
-
-@Composable
-private fun SettingsThankYou(modifier: Modifier = Modifier) {
-    AureoleText(
-        text = stringResource(R.string.settings_root_thank_you),
-        color = AureoleDS.colors.onSurfaceMedium,
-        modifier = modifier,
-        format = AureoleTextFormatParams(
-            style = AureoleDS.typography.bodyMedium,
-            textAlign = TextAlign.Center
-        )
-    )
 }
 
 @Composable

@@ -16,7 +16,9 @@ import dev.mnascimentos.aureole.feature.settings.extensions.changeTheme
 import dev.mnascimentos.aureole.feature.settings.extensions.createFolder
 import dev.mnascimentos.aureole.feature.settings.extensions.finishCardsGlass
 import dev.mnascimentos.aureole.feature.settings.extensions.finishWallpaperEditor
+import dev.mnascimentos.aureole.feature.settings.extensions.onSecretGameOpened
 import dev.mnascimentos.aureole.feature.settings.extensions.onSecretGameOver
+import dev.mnascimentos.aureole.feature.settings.extensions.onSecretSoundToggled
 import dev.mnascimentos.aureole.feature.settings.extensions.onUndo
 import dev.mnascimentos.aureole.feature.settings.extensions.onUndoExpired
 import dev.mnascimentos.aureole.feature.settings.extensions.performFactoryReset
@@ -72,6 +74,8 @@ private fun buildSettingsScreenActions(
     val baseActions = SettingsScreenActions(
         onBackClick = onFinish,
         onSecretGameOver = viewModel::onSecretGameOver,
+        onSecretGameOpened = viewModel::onSecretGameOpened,
+        onSecretSoundToggled = viewModel::onSecretSoundToggled,
         onSetDefaultLauncherClick = openDefaultLauncherSettings,
         onChangeWallpaperClick = {
             photoPickerLauncher.launch(

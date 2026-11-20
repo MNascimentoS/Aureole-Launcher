@@ -74,3 +74,6 @@ Caminhos relativos a `app/src/main/java/dev/mnascimentos/aureole/` (`M/`). Só e
 - Sem Activity, ViewModel ou repositório; hospedado por `SettingsRootScreen.kt` via `SecretGameLayer` (`components/SecretGameLayer.kt`).
 - Estado: `model/SecretGameHostState.kt` (`isGameOpen`, `showBestScore`, `open()`, `finish()`); engine em `model/SecretGameEngine.kt`.
 - `SecretGameOverlay` abre com `isGameOpen`; `SecretBestScorePopup` (Dialog) com `showBestScore`. O recorde persiste via `SettingsViewModel.onSecretGameOver` e `SettingsRepository.updateSecretBestScore`.
+- Áudio: `audio/SecretSoundPlayer.kt` (SoundPool, `res/raw/secret_*.ogg`; desligado em preview), criado por `rememberSecretSoundPlayer()` em `SettingsRootScreen`; sons por evento em `model/SecretSounds.kt` (`secretSoundsFor`). Mudo na pausa: `components/SecretSoundButton.kt` + `SettingsViewModel.onSecretSoundToggled` (`secretSoundOn`).
+- Brilho do "Muito obrigado!" (só até abrir o jogo uma vez, `secretGamePlayed`): `components/SecretShine.kt` (`rememberSecretShine`, `SecretThankYou`) e `model/SecretShineState.kt`; o gatilho cancela no toque. `SettingsViewModel.onSecretGameOpened` grava `played`.
+- Desenho: `SecretGameTrail.kt` (rastro), `SecretGameButtons.kt` (molduras com `PathMeasure`). Retrato travado só com o jogo aberto (exceção de lint `SourceLockedOrientationActivity`, `jogo-secreto-ajustes` D-08).

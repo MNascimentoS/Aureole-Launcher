@@ -32,6 +32,9 @@ object SecretShineTuning {
     const val HIGHLIGHT_WIDTH = 0.32f
     const val STAR_PEAK_SCALE = 1.15f
     const val STAR_TURN_DEGREES = 110f
+    const val STAR_PEAK_AT = 0.25f
+    const val STAR_SETTLE_AT = 0.55f
+    const val STAR_SETTLE_SCALE = 0.85f
 }
 
 fun shouldShowSecretShine(hasPlayed: Boolean): Boolean = !hasPlayed

@@ -615,6 +615,8 @@
     <string name="secret_game_tap_to_resume">Toque para continuar</string>
     <string name="secret_game_back_to_exit">Voltar para sair</string>
     <string name="secret_game_level">Nível %1$d</string>
+    <string name="secret_game_sound_on">Som ligado</string>
+    <string name="secret_game_sound_off">Som desligado</string>
     <string name="secret_game_move_left">Mover para a esquerda</string>
     <string name="secret_game_move_right">Mover para a direita</string>
     <string name="home_clock_color_target_text">Texto</string>

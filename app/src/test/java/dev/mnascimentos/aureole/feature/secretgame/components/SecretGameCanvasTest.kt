@@ -14,6 +14,7 @@ import dev.mnascimentos.aureole.composable.fireworks.model.FireworkSpark
 import dev.mnascimentos.aureole.composable.fireworks.model.FireworkTone
 import dev.mnascimentos.aureole.composable.fireworks.model.FireworksState
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
+import dev.mnascimentos.aureole.feature.secretgame.model.SecretButtonsFrame
 import dev.mnascimentos.aureole.feature.secretgame.model.SecretFace
 import dev.mnascimentos.aureole.feature.secretgame.model.SecretFaceKind
 import dev.mnascimentos.aureole.feature.secretgame.model.SecretGameColors
@@ -101,6 +102,8 @@ private fun sampleFrames(): List<SecretGameFrame> = listOf(
     sampleState(SecretGamePhase.PLAY, PLAY_MS, score = 300).copy(levelFlashMs = LEVEL_FLASH_SAMPLE_MS).toFrame(),
     sampleState(SecretGamePhase.RESULT, RESULT_MS, score = 290, record = true)
         .copy(fireworks = fireworksSample()).toFrame(),
+    sampleState(SecretGamePhase.ENTER, ENTER_MID_MS).toFrame().copy(buttons = SecretButtonsFrame(0f, 0f)),
+    sampleState(SecretGamePhase.ENTER, ENTER_MID_MS).toFrame().copy(buttons = SecretButtonsFrame(0.5f, 0f)),
 )
 
 private const val SAMPLE_ASPECT = 2.1f

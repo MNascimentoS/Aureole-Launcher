@@ -69,12 +69,12 @@ private fun DrawScope.drawWorld(frame: SecretGameFrame, colors: SecretGameColors
         )
     }
     frame.faces.forEach {
-        if (it.trail > 0f) drawTrail(it.sprite, it.trail, colors.ship)
         val (painter, aspect) = if (it.kind == SecretFaceKind.CREATOR) {
             painters.creator to D.FACE_ASPECT_CREATOR
         } else {
             painters.dreamer to D.FACE_ASPECT_DREAMER
         }
+        if (it.trail > 0f) drawTrail(it.sprite, it.trail, aspect, colors.ship)
         drawSprite(painter, aspect, it.sprite, colors.face)
     }
     if (frame.flame > 0f) drawFlame(frame, colors.ship)

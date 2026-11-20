@@ -44,7 +44,7 @@ Base: `app/src/main/java/dev/mnascimentos/aureole/core/designsystem/`. Acesso: `
 - `LocalLeftHanded` (model/), `LocalHazeState` (`utils/HazeUtils.kt`).
 
 ## Ícones (`icons/`)
-- `AureoleIcons.kt`: classe vazia + `AureoleIcon` + `LocalAureoleIcons`; os ícones ficam em `AureoleIconsPart1..7.kt` (máx. 10 por arquivo, por causa do detekt `TooManyFunctions`); cada ícone é extension `AureoleIcons.PascalCase(modifier, tint)` sobre `R.drawable.ic_aureole_<snake_case>`. 68 ícones, seções por comentário (Base, Set A..D).
+- `AureoleIcons.kt`: classe vazia + `AureoleIcon` + `LocalAureoleIcons`; os ícones ficam em `AureoleIconsPart1..8.kt` (a 8 tem `SoundOn`/`SoundOff` do jogo secreto) (máx. 10 por arquivo, por causa do detekt `TooManyFunctions`); cada ícone é extension `AureoleIcons.PascalCase(modifier, tint)` sobre `R.drawable.ic_aureole_<snake_case>`. 68 ícones, seções por comentário (Base, Set A..D).
 - `AureoleIconCatalog.kt`: `AureoleIconCategory` (ACTIONS, WORK, SOCIAL, MEDIA, GAMES, MONEY, HEALTH, TRAVEL, TOOLS) e `AureoleIconEntry(key, category, res)`.
 - `AureoleFolderIcons.kt`: 80 ícones `ic_folder_<chave>` com `FolderIconCategory`.
 

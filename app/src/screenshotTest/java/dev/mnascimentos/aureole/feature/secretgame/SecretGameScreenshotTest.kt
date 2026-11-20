@@ -16,7 +16,13 @@ import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.secretgame.components.SecretBestScoreCard
 import dev.mnascimentos.aureole.feature.secretgame.components.SecretGameCanvas
+import dev.mnascimentos.aureole.feature.secretgame.components.SecretSoundButton
+import dev.mnascimentos.aureole.feature.secretgame.components.SecretThankYou
+import dev.mnascimentos.aureole.feature.secretgame.model.SecretShineState
+import androidx.compose.foundation.layout.padding
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.graphics.lerp
+import dev.mnascimentos.aureole.feature.secretgame.model.SecretButtonsFrame
 import dev.mnascimentos.aureole.feature.secretgame.model.SecretFace
 import dev.mnascimentos.aureole.feature.secretgame.model.SecretFaceKind
 import dev.mnascimentos.aureole.feature.secretgame.model.SecretGameColors
@@ -88,6 +94,39 @@ fun SecretGameFireworksScreenshotTest() = FrameCase(6)
 @PreviewTest
 @AureolePreview
 @Composable
+fun SecretGameButtonsHiddenScreenshotTest() = FrameCase(7)
+
+@PreviewTest
+@AureolePreview
+@Composable
+fun SecretSoundButtonOnScreenshotTest() {
+    AureoleLauncherTheme { SecretSoundButton(isOn = true, onToggle = {}) }
+}
+
+@PreviewTest
+@AureolePreview
+@Composable
+fun SecretSoundButtonOffScreenshotTest() {
+    AureoleLauncherTheme { SecretSoundButton(isOn = false, onToggle = {}) }
+}
+
+@PreviewTest
+@AureolePreview
+@Composable
+fun SecretThankYouSweepScreenshotTest() {
+    AureoleLauncherTheme { SecretThankYou(shine = SecretShineState(sweep = 0.5f)) }
+}
+
+@PreviewTest
+@AureolePreview
+@Composable
+fun SecretThankYouStarScreenshotTest() {
+    AureoleLauncherTheme { SecretThankYou(shine = SecretShineState(star = 0.25f), modifier = Modifier.padding(24.dp)) }
+}
+
+@PreviewTest
+@AureolePreview
+@Composable
 fun SecretBestScoreEmptyScreenshotTest() {
     AureoleLauncherTheme { SecretBestScoreCard(bestScore = 0, triggerText = "Muito obrigado!") }
 }
@@ -129,6 +168,7 @@ private fun sampleFrames(): List<SecretGameFrame> = listOf(
     sampleState(SecretGamePhase.PLAY, PLAY_MS, score = 300).copy(levelFlashMs = LEVEL_FLASH_SAMPLE_MS).toFrame(),
     sampleState(SecretGamePhase.RESULT, RESULT_MS, score = 290, record = true)
         .copy(fireworks = fireworksSample()).toFrame(),
+    sampleState(SecretGamePhase.ENTER, ENTER_MID_MS).toFrame().copy(buttons = SecretButtonsFrame(0f, 0f)),
 )
 
 private const val SAMPLE_ASPECT = 2.1f
