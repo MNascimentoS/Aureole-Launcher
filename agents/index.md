@@ -13,6 +13,7 @@ Welcome to the **Aureole Launcher** agent documentation hub. This index guides A
    - Rules for Jetpack Compose UI files (`*Screen.kt`, `*Component.kt`, `*Dialog.kt`, `*Sheet.kt`, `*Popup.kt`).
    - Strict separation of UI and Models (all data classes, states, and actions must reside in `model/`).
    - Reusable components in the global `composable/` package.
+   - Action sheets, `OverlaySheetHeader` (`sheetHeaderGap`), abas embaixo com fading edge, `AureoleThemeColorPicker` + `ThemeColorRef`.
 
 3. **[Providers & Dependency Injection](aureole_providers.md)**
    - Koin dependency injection configuration (`di/`).
@@ -28,6 +29,27 @@ Welcome to the **Aureole Launcher** agent documentation hub. This index guides A
 5. **[Design System & Tokens](aureole_design_system.md)**
    - Semantic tokens: `AureoleDS.colors`, `AureoleDS.dimens`, typography, and `AureoleIcons`.
    - Prohibition of hardcoded numeric dimensions or color hexes.
+   - `SmallText` 13 sp; vetor que falha no lint/Robolectric vira PNG em `drawable-nodpi/`.
+
+6. **[Product Context](aureole_product.md)**
+   - O que é o app, pacote, "Teu Apps", créditos e contatos.
+   - Promessa de privacidade (só Crashlytics sai do aparelho).
+   - Site em `docs/` (aureolelauncher.app, privacidade e termos PT/EN) e premium planejado (compra única, sem login).
+
+7. **[Workflow: Specs, Fases e Git](aureole_workflow.md)**
+   - Trabalho novo = spec nova em `specs/<nome>/` (IDEIA → SPEC → PLANO → DECISOES → PROGRESSO → EXECUTAR).
+   - Formato das decisões D-xx, execução por fases, branch `release/x.y.z`, commit só no nome do Mateus, nunca push.
+   - Onde guardar a memória do projeto.
+
+## 🗺️ Mapa do código (leitura sob demanda)
+- Os guias acima são obrigatórios no início de toda tarefa. **[`mapa/index.md`](mapa/index.md)** não: leia o índice e depois só o mapa da área tocada
+  (`componentes`, `design-system`, `features`, `dados`, `receitas`).
+- Antes de criar um componente, token ou repositório, consulte o mapa para reaproveitar o que já existe.
+- A seção "Conflitos" do índice do mapa lista onde o código diverge dos guias.
+
+## 📋 Estado do trabalho
+- **[`specs/index.md`](../specs/index.md)**: specs abertas e concluídas, pendências e decisões que valem além da spec
+  (pasta local, fora do git).
 
 ---
 *Always consult these modular guides when implementing or refactoring features in Aureole Launcher.*
